@@ -73,8 +73,9 @@ public: //platform stuff
     /// Maximum number of history lines to be saved (-1 is all)
     virtual void MaxHistoryLinesSaved(LispInt aNrLines);
 
+protected:
+    virtual void ReadLineSub(LispCharPtr prompt);
 private:
-    void ReadLineSub(LispCharPtr prompt);
     void GetHistory(LispInt aLine);
     void ShowOpen(LispCharPtr prompt,LispInt promptlen,
                   LispChar aOpen, LispChar aClose, LispInt aCurPos);
