@@ -232,3 +232,15 @@ Verify(x+x+x,3*x);
 Verify(x+x-x+x,2*x);
 
 
+// bugs with complex numbers
+Verify((1+I)^0, 1);
+Verify((-I)^0, 1);
+Verify((2*I)^(-10), -1/1024);
+Verify((-I)^(-10), -1);
+Verify((1-I)^(-10), Complex(0,1/32));
+Verify((1-I)^(+10), Complex(0,-32));
+Verify((1+2*I)^(-10), Complex(237/9765625,3116/9765625));
+Verify((1+2*I)^(+10), Complex(237,-3116));
+
+// expansion of negative powers of fractions
+Verify( (-1/2)^(-10), 1024);
