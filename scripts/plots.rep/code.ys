@@ -27,7 +27,7 @@ Plot2D'<backend> on that data.
 /// Top-level 2D plotting routine:
 /// plot several functions sharing the same xrange and other options
 4 # Plot2D(func'list_IsList, _range, options'list_IsList) <--
-	LocalSymbols(var, func, delta, options'hash, c, all'values)
+	LocalSymbols(var, func, delta, options'hash, c, fc, all'values, dummy)
 [
 	Local(var, func, delta, options'hash, c, all'values);
 	all'values := {};
@@ -97,6 +97,8 @@ Plot2D'<backend> on that data.
 			"Plot2D: Error: expression is not a function of one variable: "
 			:(ToString()Write(func))
 		);
+		// Allow ploting constant functions
+		If(Length(var)=0, var:={dummy});
 		// store function name
 		DestructiveAppend(options'hash["yname"], ToString()Write(func));
 		// compute the first point
