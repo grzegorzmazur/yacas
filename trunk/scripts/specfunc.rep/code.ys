@@ -57,13 +57,12 @@
 LnGammaNum(z) := [
 	Local(a, prec, result);
 	prec := GetPrecision();
-	Precision(10);	// save time here
-	a:= Floor(N( 0.9*prec*Ln(10)/Ln(2*Pi) )) + 0.4;	// fudge factor 0.9 :)
+	a:= Div((prec-IntLog(prec,10))*659, 526) + 0.4;	// see algorithm docs
 	/// same as parameter "g" in Godfrey 2001.
 	/// Chosen to satisfy Spouge's error bound:
 	/// error < Sqrt(a)/Real(a+z)/(2*Pi)^(a+1/2)
 //	Echo({"parameter a = ", a, " setting precision to ", Ceil(prec*1.4)});
-	Precision(Ceil(prec*1.4));	// need more precision b/c of roundoff errors
+	Precision(Ceil(prec*1.4));	// need more precision b/c of roundoff errors but don't know exactly how many digits
 	result := LnGammaNum(z,a);
 	Precision(prec);
 	result;

@@ -406,8 +406,8 @@ NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 	Local(x1, x2, i,  old'prec);
 	old'prec := GetPrecision();
 	Precision(prec + 4);	// 4 guard digits
-	x1 := ContFracList(x+10^(-prec));
-	x2 := ContFracList(x-10^(-prec));
+	x1 := ContFracList(N(x+10^(-prec)));
+	x2 := ContFracList(N(x-10^(-prec)));
 	// find where the continued fractions for "x1" and "x2" differ
 	// prepare result in "x1" and length of result in "i"
 	For (i:=1, i<=Length(x1) And i<=Length(x2) And x1[i]=x2[i], i++ ) True;

@@ -43,9 +43,9 @@ must be large enough to produce the required precision. The error estimate for
 this formula is valid for all $z$ such that $Re(z)>0$ and is
 $$error < (2*Pi)^(-a)/Sqrt(2*Pi*a)*(a/(a+z))$$.
 The lowest value of $a$ to produce $P$ correct digits is estimated as
-$$a = 0.9 * P*Ln(10)/Ln(2*Pi)$$.
+$$a = (P-Ln(P)/Ln(10)) * (Ln(10)/Ln(2*Pi))-1/2$$. In practical calculations, the integer logarithm routine {IntLog} is used and the constant $Ln(10)/Ln(2*Pi)$ is approximated from above by 659/526, so that $a$ is not underestimated.
 
-The choice of coefficients $c[k]$ and of the parameter $a$ can be made to
+The coefficients $c[k]$ and  the parameter $a$ can be chosen to
 achieve a greater precision of the approximation formula. However, the recipe
 for the coefficients $c[k]$ given in the paper by Lanczos is too complicated
 for practical calculations in arbitrary precision: the time it would take to
