@@ -8,7 +8,7 @@ TODO:
 - arrays, vectors and matrices!
 - some rules for rendering the formula are slooooww....
   
-- sqrt, integral and summation symbols.
+- sqrt, integral, summation, limits, vectors, matrices.
 
    /
    |
@@ -176,6 +176,74 @@ FormulaBracket(f):=
   MoveOper(l,0,r[4]);
   MoveOper(r,l[3],0);
   MakeOper(0,0,MathAdd(l[3],r[3]),MathAdd(l[4],r[4]),"Func",{l,r},l[2]+l[4]-1);
+];
+
+
+
+10 # FormulaArrayItem(xx_IsList) <--
+[
+  Local(sub,height);
+  sub := {};
+  height := 0;
+  ForEach(item,xx)
+  [
+    Local(made);
+    made := FormulaBracket(Formula(item));
+    If(made[4] > height,Set(height,made[4]));
+    DestructiveAppend(sub,made);
+  ];
+  MakeOper(0,0,0,height,"List",sub,height>>1);
+];
+
+
+20 # FormulaArrayItem(_item) <-- Formula(item);
+
+2 # Formula(xx_IsList) <--
+[
+  Local(sub,width,height);
+  sub:={};
+  width := 0;
+  height := 1;
+
+  ForEach(item,xx)
+  [
+    Local(made);
+    made := FormulaArrayItem(item);
+
+    If(made[3] > width,Set(width,made[3]));
+    MoveOper(made,0,height);
+    Set(height,MathAdd(height,MathAdd(made[4],1)));
+    DestructiveAppend(sub,made);
+  ];
+
+  If(IsList(xx[1]),
+  [
+    Local(i,j);
+    width:=0;
+    For(j:=1,j<=Length(xx[1]),j++)
+    [
+      Local(w);
+      w := 0;
+      For(i:=1,i<=Length(sub),i++)
+      [
+        If(sub[i][6][j][3] > w,w := sub[i][6][j][3]);
+      ];
+      
+      For(i:=1,i<=Length(sub),i++)
+      [
+        MoveOper(sub[i][6][j],width,0);
+      ];
+      width := width+w+1;
+    ];
+    For(i:=1,i<=Length(sub),i++)
+    [
+      sub[i][3] := width;
+    ];
+  ]
+  );
+
+  sub := MakeOper(0,0,width,height,"List",sub,height>>1);
+  FormulaBracket(sub);
 ];
 
 2 # Formula(_xx / _yy) <--

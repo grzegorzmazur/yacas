@@ -12,6 +12,7 @@ Clear(a,b);
 
 NextTest("Testing some internal functions");
 
+
 Verify(aa-aa,0);
 Testing("Apply");
 Verify(Apply("+",{2,3}),5);
@@ -463,6 +464,10 @@ NextTest("Regression on bug reports");
 Verify(CanProve(P Or (Not P And Not Q)),P Or Not Q);
 Verify(Cos(0),1);
 
+Verify(Limit(x,Infinity)(1+1/x)^x,Exp(1));
+Verify(Limit(x,Infinity)(1+2/x)^x,Exp(2));
+Verify(Limit(x,Infinity)(1+1/x)^(2*x),Exp(2));
+Verify(Limit(x,Infinity)-2*x,-Infinity);
 
 /*
 Verify();
