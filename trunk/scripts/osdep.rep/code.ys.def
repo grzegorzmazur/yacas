@@ -1,11 +1,11 @@
 BackgroundCommand
-ChangeDirectory
+ChangeDir
 ConvertOSPath
 CopyFile
-DeleteDirectory
+DeleteDir
+MakeFilePath
 DeleteFile
-LoadOSDependentModule
-MakeDirectory
+MakeDir
 NullFileName
 PrintFileName
 PSViewer
