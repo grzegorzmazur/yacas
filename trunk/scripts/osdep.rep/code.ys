@@ -2,6 +2,19 @@
 
 // this file should load the OS-specific module that handles MakeDir() etc.
 
+// this lists the available OS-specific modules
+SupportedOSes :=
+{
+	{"Unix", "unix.ys"}, // Unix defaults will probably work on MacOSX and BeOS
+	{"Win32", "win32.ys"},
+};
+
+// it seems that we need this here because otherwise we won't be able to load the module... or will we?
+FilePathSeparators :=
+{
+	{"Unix", "/"},
+	{"Win32", "\\"},
+};
 
 /** The variable PlatformOS determines which module we should load.
 It can be set in yacasinit.ys or here, to override PlatformOS(), e.g.:
@@ -9,12 +22,11 @@ PlatformOS:="Win32";
 scripts should not use PlatformOS(), instead they should use
 the global constant PlatformOS, because it might have been set differently by the user's yacasinit (in the standard library, both values are the same.)
 
-Currently the variable PlatformOS is assigned to PlatformOS() in yacasinit.
+Currently the variable PlatformOS is assigned to PlatformOS() in yacasinit, and the only supported variants are "Win32" and "Unix".
 
 */
 
-// it seems that we need this here because otherwise we won't be able to load the module... or will we?
-FilePathSeparator := If(PlatformOS="Win32", "\\", "/");
+FilePathSeparator := FilePathSeparators[PlatformOS];
 
 // definitions of variable-argument functions
 
@@ -44,7 +56,7 @@ CopyFile(file1, file2) := SystemCall(CopyFileCmd(file1, file2));
 SystemCallBg(command) := SystemCall(BackgroundCmd(command));
 
 // convert a path in current OS convention to use separators of the given another OS
-// 10 # ConvertOSPath(path_IsString, OSname_IsString) _ (FilePathSeparators[OSname]=Empty) <-- path;
+10 # ConvertOSPath(path_IsString, OSname_IsString) _ (FilePathSeparators[OSname]=Empty) <-- path;
 20 # ConvertOSPath(path_IsString, OSname_IsString) <--
 [
 	Local(i);
@@ -52,7 +64,7 @@ SystemCallBg(command) := SystemCall(BackgroundCmd(command));
 	[
 		If(
 			StringMid(i, 1, path) = FilePathSeparator,
-			path:=SetStringMid(i, If(OSname="Win32", "\\", "/"), path)
+			path:=SetStringMid(i, FilePathSeparators[OSname], path)
 		);
 	];
 	path;
@@ -64,7 +76,7 @@ LoadOSDependentModule() := Use(
   ConcatStrings(
 	"osdep.rep/",
 // use this file path separator because it works on Windows and on Unix, and for other platforms we can use the archive
-	If(PlatformOS="Win32", "win32.ys", "unix.ys") // Unix defaults will probably work on MacOSX and BeOS
+	SupportedOSes[PlatformOS]
   )
 );
 
