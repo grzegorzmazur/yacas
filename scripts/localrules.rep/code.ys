@@ -150,7 +150,7 @@ UnFence("Where",2);
 ];
 
 30 # (_body Where {}) <-- {};
-40 # (_body Where list_IsList)
+40 # (_body Where list_IsList)_IsList(list[1])
      <--
      [
        Local(head,rest);
@@ -159,6 +159,20 @@ UnFence("Where",2);
        rest:= `(@body Where @rest);
        `(@body Where @head) : rest;
      ];
+
+50 # (_body Where list_IsList)
+     <--
+     [
+       Local(head,rest);
+       While (list != {})
+       [
+          head:=Head(list);
+          body := `(@body Where @head);
+          list:=Tail(list);
+        ];
+        body;
+     ];
+
 
 // (a or b) and (c or d) -> (a and c) or (a and d) or (b and c) or (b and d)
 20 # (list_IsList AddTo _rest) <--

@@ -215,18 +215,23 @@ LocalSymbols(x)
 
 /********** Solve'System **********/
 
-Solve'System(_eqns, _vars) <-- Check(False, "Solve'System: not implemented");
+// for now, just use a very simple backsubstitution scheme
+Solve'System(_eqns, _vars) <-- Solve'SimpleBackSubstitution(eqns,vars);
+
+// Check(False, "Solve'System: not implemented");
 
 
-/********** OldSolve **********/
 
-
-OldSolveNrUses(_fie,_var) <--  Count(VarListAll(fie),var);
-
-
-10 # OldSolve(eq_IsList,var_IsList) <--
+/* Solving sets of equations using simple backsubstitution.
+ * Solve'SimpleBackSubstitution takes all combinations of equations and
+ * variables to solve for, and it then uses SuchThat to find an expression
+ * for this variable, and then if found backsubstitutes it in the other
+ * equations in the hope that they become simpler, resulting in a final
+ * set of solutions.
+ */
+10 # Solve'SimpleBackSubstitution(eq_IsList,var_IsList) <--
 [
- If(Verbose, Echo({"Entering OldSolve"}));
+ If(Verbose, Echo({"Entering Solve'SimpleBackSubstitution"}));
 
   Local(result,i,j,nrvar,nreq,sub);
   nrvar:=Length(var);
@@ -242,10 +247,9 @@ OldSolveNrUses(_fie,_var) <--  Count(VarListAll(fie),var);
   [
     For(j:=1,j<=nreq,j++)
     [
-
-      If(OldSolveNrUses(eq[j],var[i]) = 1,
+      If(Count(VarListAll(eq[j]),var[i]) = 1,
          [
-           sub:=OldSolve(eq[j],var[i]);
+           sub:=SuchThat(Listify(eq[j])[2],var[i]);
 /*
 DestructiveDelete(eq,j);
 nreq--;
@@ -257,21 +261,26 @@ nreq--;
 	   result:=Simplify(Subst(var[i],sub)result);
 /*           eq:=Eliminate(var[i],sub,eq); */
 /*           eq[j] := (0 == 0);  */
-           Local(k);
+           Local(k,reset);
+           reset:=False;
            For(k:=1,k<=Length(eq),k++)
            [
              Local(original);
              original:=eq[k];
-             eq[k]:=Simplify(Subst(var[i],sub)eq[k]);
+             eq[k]:=Subst(var[i],sub)eq[k];
+             eq[k]:=Simplify(eq[k]);
+             eq[k]:=Simplify(eq[k]); //@@@??? TODO I found one example where simplifying twice gives a different result from simplifying once!
+             If(original!=(0==0) And eq[k] = (0 == 0),reset:=True);
              If(Verbose, Echo({"   ",original," simplifies to ",eq[k]}));
            ];
 /*           eq:=Simplify(Subst(var[i],sub)eq); */
 /* Echo({eq});  */
            j:=nreq+1;
+           // restart at the beginning of the variables.
+           If(reset,i:=1); 
          ]);
     ];
   ];
-
 
   Local(zeroeq,tested);
   tested:={};
@@ -282,19 +291,23 @@ nreq--;
   ForEach(item,result)
   [
     Apply(":=",{var,item});
-
+//Echo(Simplify(Eval(eq)));
     If(Simplify(Eval(eq)) = zeroeq,
     [
-      DestructiveAppend(tested,item);
+      ApplyPure("Local",var);
+      DestructiveAppend(tested,Map("==",{var,item}));
     ]);
   ];
-
 /* Echo({"tested is ",tested});  */
-
- If(Verbose, Echo({"Leaving OldSolve"}));
-
+ If(Verbose, Echo({"Leaving Solve'SimpleBackSubstitution"}));
   tested;
 ];
+
+
+
+
+/********** OldSolve **********/
+10 # OldSolve(eq_IsList,var_IsList) <-- Solve'SimpleBackSubstitution(eq,var);
 
 
 90 # OldSolve((left_IsList) == right_IsList,_var) <--

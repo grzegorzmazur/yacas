@@ -43,3 +43,26 @@ ExpandBrackets(ExpandFrac((x+1)/(x-1)+1/x))
 Verify([Local(a);a:=0.1;Simplify(a*b);], 0.1*b);
 Verify([Local(a);a:=0.1;Simplify(a/b);], 0.1/b);
 
+
+// Testing FactorialSimplify
+
+TestYacas(FactorialSimplify((n+1)! / n!),n+1);
+TestYacas(FactorialSimplify((n-k+2)! / (n-k)!),(n-k+2)*(n-k+1));
+TestYacas(FactorialSimplify(2^(n+2)/2^n),4);
+TestYacas(FactorialSimplify((-1)^(n+1)/(-1)^n),-1);
+TestYacas(FactorialSimplify((n+1)! / n! + (n-k+2)! / (n-k)!),n+1 + (n-k+2)*(n-k+1));
+
+TestYacas(FactorialSimplify((n+1)! / n! + (-1)^(n+1)/(-1)^n),n);
+
+/* And now for the piece de resistance: an example from
+   the book "A=B"
+ */
+
+TestYacas(FactorialSimplify(
+  (
+    (n+1)! / (2*k! *(n+1-k)!) -
+    n! / (k! * (n-k)!)        +
+    n! / (2*k! * (n-k)!)      -
+    n! / (2*(k-1)! * (n-k+1)!)
+   )*(k! *(n+1-k)!)/(n!)
+  ),0);
