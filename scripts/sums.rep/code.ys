@@ -34,14 +34,14 @@ Max(list_IsList) <--
 
 */
  
-40 # (n_IsRational)! _(Denom(n)=2 And n>0) <-- Simplify(
-(Sqrt(Pi)/2^Numer(n)) * Numer(n)! / (((Numer(n)-1)/2)!) );
-40 # (n_IsRational)! _(Denom(n)=2 And -n>0) <-- Simplify( 
-(Sqrt(Pi)*(-1)^((Numer(-n)-1)/2)*2^(Numer(-n)-1)*((Numer(-n)-1)/2)!) 
+40 # (n_IsRational)! _(Denom(n)=2 And n>0) <--
+	Sqrt(Pi) * ( Numer(n)! / ( 2^Numer(n)*((Numer(n)-1)/2)! ) );
+40 # (n_IsRational)! _(Denom(n)=2 And -n>0) <--
+	Sqrt(Pi) * ( (-1)^((Numer(-n)-1)/2)*2^(Numer(-n)-1)*((Numer(-n)-1)/2)! 
 / (Numer(-n)-1)! );
 
 /* Want to also compute (2.5)! */
-30 # (n_IsNumber)! _(IsPositiveInteger(N(n*2))) <-- (N(n*2)/2)!;
+30 # (n_IsNumber)! _(IsInteger(N(n*2))) <-- (N(n*2)/2)!;
 
 
 RuleBase("Sum",{sumvar,sumfrom,sumto,sumbody}); 
