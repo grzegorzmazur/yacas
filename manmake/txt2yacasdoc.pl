@@ -343,7 +343,7 @@ sub make_link {
 # initial parse of the yacasdoc ref: separate book name, chapter, section, anchor reference, return array
 sub yacasdoc_parse {
 	my ($text) = shift;
-	if ($text =~ /^#(.+)\/$/)	# shortest form
+	if ($text =~ /^#(.+)$/)	# shortest form
 	{
 		return ("", 0, 0, $1);
 	}
