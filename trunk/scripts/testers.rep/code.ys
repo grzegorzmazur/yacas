@@ -41,13 +41,15 @@ HoldArg("KnownFailure",expr);
 
 Function("Verify",{aLeft,aRight})
 [
-  If (Not(Equals(Eval(aLeft),aRight)),
+	Local(result);
+	result := Eval(aLeft);	// to save time
+  If (Not(Equals(result,aRight)),
     [
       WriteString("******************");
       NewLine();
       Write(aLeft);
       WriteString(" evaluates to ");
-	  Write(Eval(aLeft));
+	  Write(result);
 	  WriteString(" which differs from ");
       Write(aRight);
       NewLine();

@@ -370,6 +370,9 @@ backup:
 	yacas --patchload -pc docs/downloads.html.in > downloads.html
 	ftp -i ftp.xs4all.nl < upload.txt
 
+debug:
+	cd src; make -f makefile.debug
+
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

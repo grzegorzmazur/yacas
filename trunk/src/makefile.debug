@@ -3,22 +3,22 @@ RANLIB = ranlib
 
 
 
-OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
-	deffile.o errors.o genericobject.o genericstructs.o \
-	grower.o infixparser.o lispatom.o lispcleanupstack.o         \
-	lispenvironment.o lispeval.o lispevalhash.o lisphash.o       \
-	lispio.o lispobject.o lispparser.o lispplugin.o lispstring.o  \
-	lispuserfunc.o mathcommands.o mathcommands2.o mathcommands3.o  \
-	mathenvironment.o mathuserfunc.o mathutil.o patcher.o          \
-	patternclass.o patterns.o platmath.o standard.o                \
-	stdcommandline.o stdfileio.o stdstubs.o obmalloc.o stringio.o             \
-	substitute.o tokenizer.o  ctokenizer.o xmltokenizer.o         \
-	yacasapi.o yacasnumbers.o unipoly.o elfdll.o obmalloc.o
+OBJS = anumber-d.o arggetter-d.o arrayclass-d.o commandline-d.o \
+	deffile-d.o errors-d.o genericobject-d.o genericstructs-d.o \
+	grower-d.o infixparser-d.o lispatom-d.o lispcleanupstack-d.o         \
+	lispenvironment-d.o lispeval-d.o lispevalhash-d.o lisphash-d.o       \
+	lispio-d.o lispobject-d.o lispparser-d.o lispplugin-d.o lispstring-d.o  \
+	lispuserfunc-d.o mathcommands-d.o mathcommands2-d.o mathcommands3-d.o  \
+	mathenvironment-d.o mathuserfunc-d.o mathutil-d.o patcher-d.o          \
+	patternclass-d.o patterns-d.o platmath-d.o standard-d.o                \
+	stdcommandline-d.o stdfileio-d.o stdstubs-d.o obmalloc-d.o stringio-d.o             \
+	substitute-d.o tokenizer-d.o  ctokenizer-d.o xmltokenizer-d.o         \
+	yacasapi-d.o yacasnumbers-d.o unipoly-d.o elfdll-d.o obmalloc-d.o
 
 .SUFFIXES: .cpp 
 
-.cpp.o:
-	gcc -x c++ $(INC) -c $<
+%-d.o: %.cpp
+	gcc -x c++ $(INC) -c $< -o $@
 
 all: libyacasdebug.a yacasdebug
 
@@ -29,8 +29,8 @@ libyacasdebug.a : $(OBJS)
 	$(AR) cru libyacasdebug.a $(OBJS)
 	$(RANLIB) libyacasdebug.a
 
-yacasdebug: yacasmain.o elfdll.o commandline.o unixcommandline.o stdcommandline.o debugmem.o libyacasdebug.a
-	gcc -o yacasdebug yacasmain.o elfdll.o commandline.o unixcommandline.o stdcommandline.o debugmem.o libyacasdebug.a -lm -ldl
+yacasdebug: yacasmain-d.o elfdll-d.o commandline-d.o unixcommandline-d.o stdcommandline-d.o debugmem-d.o libyacasdebug.a
+	gcc -o yacasdebug yacasmain-d.o elfdll-d.o commandline-d.o unixcommandline-d.o stdcommandline-d.o debugmem-d.o libyacasdebug.a -lm -ldl
 
 #	-rm -f libyacasdebug.a
 
