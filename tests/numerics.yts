@@ -125,9 +125,9 @@ Gamma(9/2)
 , (105*Sqrt(Pi))/16
 );
 
-KnownFailure(
+Verify(
 Gamma(-10.5)
-= (-2048*Sqrt(Pi))/13749310575
+, (-2048*Sqrt(Pi))/13749310575
 );
 
 
@@ -148,3 +148,52 @@ RoundTo(N( GammaNum(-11.5) ), 20)
 , 0.00000002295758104824
 );
 
+TestYacas(
+RoundTo(N( ZetaNum(-11.5) ), 20)
+, 0.0203969787159427921
+);
+
+TestYacas(
+Zeta(40)
+, (261082718496449122051*Pi^40)/20080431172289638826798401128390556640625
+);
+
+TestYacas(
+Zeta(-11)
+, 691/32760
+);
+
+TestYacas(
+Zeta(-12)
+, 0
+);
+
+TestYacas(
+RoundTo(ZetaNum(40), 19)
+, 1.0000000000009094948
+);
+
+TestYacas(
+RoundTo(ZetaNum(1.5), 19)
+, 2.6123753486854883433
+);
+
+TestYacas(
+Bernoulli(40)
+, -261082718496449122051/13530
+);
+
+Verify(
+ContFracList(355/113)
+, {3,7,16}
+);
+
+Verify(
+ContFracList(-24, 4)
+, {-24}
+);
+
+Verify(
+ContFracList(-355/113)
+, {-4,1,6,16}
+);
