@@ -59,6 +59,8 @@ Function("Conjugate",{a})
 
 
 10 # Arg(x_IsZero) <-- Undefined;
+15 # Arg(x_IsPositiveReal) <-- 0;
+15 # Arg(x_IsNegativeReal) <-- Pi;
 20 # Arg(Complex(r_IsZero,i_IsConstant)) <-- Sign(i)*Pi/2;
 30 # Arg(Complex(r_IsPositiveReal,i_IsConstant)) <-- ArcTan(i/r);
 40 # Arg(Complex(r_IsNegativeReal,i_IsPositiveReal)) <-- Pi+ArcTan(i/r);

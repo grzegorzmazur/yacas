@@ -1,4 +1,5 @@
 Verify
+KnownFailure
 Echo
 VerifyArithmetic
 TestYacas

@@ -29,15 +29,24 @@ Function("Testing",{aLeft})
 ];
 */
 
+Function("KnownFailure",{expr})
+[
+  Echo({"Known failure:"});
+  Eval(expr);
+];
+HoldArg("KnownFailure",expr);
 
 Function("Verify",{aLeft,aRight})
 [
   If (Not(Equals(Eval(aLeft),aRight)),
     [
-      WriteString("***** ");
+      WriteString("******************");
+      NewLine();
       Write(aLeft);
       WriteString(" does not evaluate to ");
       Write(aRight);
+      NewLine();
+      WriteString("******************");
       NewLine();
       False;
     ],
@@ -132,9 +141,22 @@ Function ("TestYacas", {expr, ans})
 [
         Local(difference);
         difference := Simplify(expr-ans);
-        If (difference = 0, True, Prog(Write(expr), WriteString(" is not
-equal to "), Write(ans), NewLine(), WriteString("The difference is "),
-Write(difference), NewLine(), False));
+        If (difference = 0, True,
+            [
+              WriteString("******************");
+              NewLine();
+              Write(expr);
+              WriteString(" is not equal to ");
+              Write(ans);
+              NewLine();
+              WriteString("The difference is ");
+              Write(difference);
+              NewLine();
+              WriteString("******************");
+              NewLine();
+              False;
+             ]
+            );
 ];
 
 HoldArg("TestYacas", expr);
