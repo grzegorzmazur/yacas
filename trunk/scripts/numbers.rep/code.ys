@@ -377,3 +377,5 @@ Function("FermatNumber",{n})[
         ];
 	sum;
 ];
+
+IsPerfect(n_IsPositiveInteger) <-- ProperDivisorsSum(n)=n;

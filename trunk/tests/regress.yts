@@ -194,3 +194,7 @@ N(ArcSin(0.0000000321232123),50)
 Verify(LnNum(1), 0);
 
 Verify(Bin(0,0),1 );
+
+Verify(0|1, 1);
+Verify(0&1, 0);
+Verify(0%1, 0);
