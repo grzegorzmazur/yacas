@@ -91,16 +91,16 @@ install-data-local: $(ALLSCRIPTS)
 	$(mkinstalldirs) $(DESTDIR)$(scriptdir)
 	@list='$(ALLSCRIPTS)'; for p in $$list; do \
 	  dir=`echo "$$p" | sed -e 's,/[^/]*$$,,'`; \
-	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	  if test "$$dir" != "$$p" && test "$$dir" != "."; then \
 	    $(mkinstalldirs) "$(DESTDIR)$(scriptdir)/$$dir"; \
 	  fi; \
 	  f="`echo $$p|sed '$(transform)'`"; \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_SCRIPT) $$p $(DESTDIR)$(scriptdir)/$$f"; \
-	    $(INSTALL_SCRIPT) $$p $(DESTDIR)$(scriptdir)/$$f; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(scriptdir)/$$f"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(scriptdir)/$$f; \
 	  elif test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_SCRIPT) $(srcdir)/$$p $(DESTDIR)$(scriptdir)/$$f"; \
-	    $(INSTALL_SCRIPT) $(srcdir)/$$p $(DESTDIR)$(scriptdir)/$$f; \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(scriptdir)/$$f"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(scriptdir)/$$f; \
 	  else :; fi; \
 	done
 
