@@ -76,6 +76,10 @@ The {FindFile()} function will help locate the Yacas path; we need to use it bec
 
 	In> Func1(2,3);
 	Out> 0.61837;
+When we are finished using the function, we might unload the DLL:
+
+	In> DllUnload("./libfunc1.so");
+	Out> True;
 
 	    A dynamically generated plugin
 
@@ -103,3 +107,5 @@ This is implemented in the function {MakeFunctionPlugin()} (see file {funcplug.y
 	Out> -1.41421;
 
 Now we can use the function {fFast(x,y)} which is implemented using an external plugin library. The function {MakeFunctionPlugin()} assumes that all arguments and return values of functions are real floating-point numbers. The plugin libraries it creates are always in the {plugins/} subdirectory of current working directory and are named like {libNNN_cc_plugin.so}.
+
+If {MakeFunctionPlugin()} is called again to create a plugin function with the same name (but different body), the DLL will be unloaded and loaded as necessary.

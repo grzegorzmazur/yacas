@@ -10,8 +10,8 @@ Verify(TeXForm(g), ...);
 */
 
 Verify(
-TeXForm(Hold(Cos(A-B)*Sqrt(C+D)-(a+b)*c^d+2*I+Complex(a+b,a-b)/I))
-,"$\\left( \\cos \\left( A - B\\right) \\right)  \\sqrt{C + D} - \\left( a + b\\right)  c ^{d} + 2 \\imath  + \\frac{a + b + \\imath  \\left( a - b\\right) }{\\imath } $"
+TeXForm(Hold(Cos(A-B)*Sqrt(C+D)-(a+b)*c^d+2*I+Complex(a+b,a-b)/Complex(0,1)))
+,"$\\cos \\left( A - B\\right)  \\sqrt{C + D} - \\left( a + b\\right)  c ^{d} + 2 \\imath  + \\frac{a + b + \\imath  \\left( a - b\\right) }{\\imath } $"
 );
 
 Verify(
@@ -21,7 +21,7 @@ TeXForm(Hold(Exp(A*B)/C/D/(E+F)*G-(-(a+b)-(c-d))-b^(c^d) -(a^b)^c))
 
 Verify(
 TeXForm(Hold(Cos(A-B)*Sin(a)*f(b,c,d*(e+1))*Sqrt(C+D)-g(a+b)^(c+d)^(c+d)))
-,"$\\left( \\cos \\left( A - B\\right) \\right)  \\left( \\sin a\\right)  f\\left( b, c, d \\left( e + 1\\right) \\right)  \\sqrt{C + D} - \\left( g\\left( a + b\\right)  ^{c + d}\\right)  ^{c + d}$"
+,"$\\cos \\left( A - B\\right)  \\sin a f\\left( b, c, d \\left( e + 1\\right) \\right)  \\sqrt{C + D} - \\left( g\\left( a + b\\right)  ^{c + d}\\right)  ^{c + d}$"
 );
 
 /* this fails because of a bug that D(x) f(y) does not go to 0 */ /*
@@ -31,11 +31,9 @@ TeXForm(3*D(x)f(x,y,z)*Cos(Omega)*Mod(Sin(a)*4,5/a^b))
 );
 */
 
-/* this fails because of a bug in TeXForm: cannot correctly handle bodied functions */ /*
 Verify(
 TeXForm(Hold(D(x)f(x)))
 ,"$\\frac{\\partial}{\\partial x}f\\left( x\\right) $");
-*/
 
 Verify(
 TeXForm(Hold(Not (c<0) And (a+b)*c>= -d^e And (c<=0 Or b+1>0) Or a!=0 And Not (p=q)))
@@ -45,12 +43,12 @@ TeXForm(Hold(Not (c<0) And (a+b)*c>= -d^e And (c<=0 Or b+1>0) Or a!=0 And Not (p
 
 Verify(
 TeXForm((D(x)f(x,y,z))*Cos(Omega)*Mod(Sin(a)*4,5/a^b))
-,"$\\left( \\frac{\\partial}{\\partial x}f\\left( x, y, z\\right) \\right)  \\left( \\cos \\Omega \\right)  \\left( 4 \\left( \\sin a\\right) \\right) \\bmod \\frac{5}{a ^{b}} $"
+,"$\\left( \\frac{\\partial}{\\partial x}f\\left( x, y, z\\right) \\right)  \\cos \\Omega  \\left( 4 \\sin a\\right) \\bmod \\frac{5}{a ^{b}} $"
 );
 
 Verify(
-TeXForm(Pi+Exp(1)-Theta-Integrate(x,1,3/g(Pi))2*theta(x)*Exp(1/x))
-,"$\\pi  + \\exp \\left( 1\\right)  - \\Theta  - \\int _{1 } ^{\\frac{3}{g\\left( \\pi \\right) }  }d x\\left( 2 \\theta \\left( x\\right)  \\exp \\left( \\frac{1}{x} \\right) \\right) $"
+TeXForm(Pi+Exp(1)-Theta-Integrate(x,x1,3/g(Pi))2*theta(x)*Exp(1/x))
+,"$\\pi  + \\exp \\left( 1\\right)  - \\Theta  - \\int _{x_{1}} ^{\\frac{3}{g\\left( \\pi \\right) }  } 2 \\theta \\left( x\\right)  \\exp \\left( \\frac{1}{x} \\right)  dx$"
 );
 
 Verify(
