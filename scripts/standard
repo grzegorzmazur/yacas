@@ -56,12 +56,13 @@ Set(Numeric,False);
 Clear(Pi);
 Function("N",{aNumberBody})
 [
-  Local(prevNumeric,prevPi,numericresult);
+  Local(evalresult,prevNumeric,prevPi,numericresult);
+  Set(evalresult,Eval(aNumberBody));
   Set(prevNumeric,Numeric);
   Set(prevPi,Pi);
   Set(Pi,Pi());
   Set(Numeric,True);
-  Set(numericresult,Eval(aNumberBody));
+  Set(numericresult,Eval(evalresult));
   Set(Numeric,prevNumeric);
   Set(Pi,prevPi);
   numericresult;
@@ -71,14 +72,15 @@ Function("N",{aNumberBody})
 UnFence("N",1);
 Function("N",{aNumberBody,aDigits})
 [
-  Local(prevNumeric,prevPi,numericresult,prevdigits);
+  Local(evalresult,prevNumeric,prevPi,numericresult,prevdigits);
+  Set(evalresult,Eval(aNumberBody));
   Set(prevNumeric,Numeric);
   Set(prevPi,Pi);
   Set(prevdigits,GetPrecision());
   Precision(aDigits);
   Set(Pi,Pi());
   Set(Numeric,True);
-  Set(numericresult,Eval(aNumberBody));
+  Set(numericresult,Eval(evalresult));
   Set(Numeric,prevNumeric);
   Set(Pi,prevPi);
   Precision(prevdigits);
@@ -146,7 +148,16 @@ Function("TableForm",{list})
 101 # _x + (- _y)/(_z) <-- x-(y/z);
 101 # (- _y)/(_z) + _x  <-- x-(y/z);
 101 # (- _x) + _y <-- y-x;
+102 # _x + y_IsNegativeNumber <-- x-(-y);
+102 # _x + (y_IsNegativeNumber)/(_z) <-- x-((-y)/z);
+102 # (y_IsNegativeNumber)/(_z) + _x  <-- x-((-y)/z);
+102 # (x_IsNegativeNumber) + _y <-- y-(-x);
 150 # _n1 / _d + _n2 / _d <-- (n1+n2)/d;
+
+200 # (x_IsNumber + _y)_Not(IsNumber(y)) <-- y+x;
+200 # (_y + x_IsNumber + _z)_Not(IsNumber(y) Or IsNumber(z)) <-- (y+z)+x;
+200 # (x_IsNumber + _y + z_IsNumber)_Not(IsNumber(y)) <-- y+(x+z);
+200 # (_x + y_IsNumber + z_IsNumber)_Not(IsNumber(x)) <-- x+(y+z);
 
 210 # x_IsNumber + (y_IsNumber / z_IsNumber) <--(x*z+y)/z;
 210 # (y_IsNumber / z_IsNumber) + x_IsNumber <--(x*z+y)/z;
@@ -173,8 +184,8 @@ Function("TableForm",{list})
 /* Subtraction arity 1 */
 
 50 # -0 <-- 0;
-55 # - (x_IsNumber) <-- MathSubtract(x);
-110 # - (- _x)      <-- x;
+54 # - (- _x)      <-- x;
+55 # (- (x_IsNumber)) <-- MathSubtract(x);
 110 # - (_x - _y) <-- y-x;
 111 # - (x_IsNumber / _y) <-- (-x)/y;
 200 # - (x_IsList) <-- MapSingle("-",x);
@@ -187,11 +198,13 @@ Function("TableForm",{list})
 100 # _x - _x <-- 0;
 
 110 # _x - (- _y) <-- x + y;
+110 # _x - (y_IsNegativeNumber) <-- x + (-y);
 111 # (_x + _y)- _x <-- y;
 111 # (_x + _y)- _y <-- x;
 112 # _x - (_x + _y) <-- - y;
 112 # _y - (_x + _y) <-- - x;
 113 # (- _x) - _y <-- -(x+y);
+113 # (x_IsNegativeNumber) - _y <-- -((-x)+y);
 
 /* TODO move to this precedence everywhere? */
 10 # (x_IsList) - (y_IsList) <-- Map({{xarg,yarg},xarg-yarg},{x,y});
@@ -366,7 +379,10 @@ Function("TableForm",{list})
 61 # x_IsPositiveNumber ^ y_IsPositiveNumber <-- MathPower(x,y);
 61 # x_IsPositiveNumber ^ y_IsNegativeNumber <-- (1/MathPower(x,-y));
 
-90 # x_IsNegativeNumber ^ y_IsRationalOrNumber <-- Exp(y*Ln(x));
+90 # ((_x) ^ (_m / p_IsOdd))_(Numeric And Not(IsNumber(x)) <-- (N((x)^m)))^(1/p);
+91 # (- _x) ^ (_m / p_IsOdd) <-- -(x)^(m/p);
+91 # x_IsNegativeNumber ^ (_m / p_IsOdd) <-- -(-x)^(m/p);
+92 # (x_IsNegativeNumber ^ y_IsRationalOrNumber)_Numeric <-- Exp(y*Ln(x));
 
 
 70  # (_x ^ m_IsRationalOrNumber) ^ n_IsRationalOrNumber <-- x^(n*m);
