@@ -328,12 +328,12 @@ void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 #endif
 
 UNARYFUNCTION(LispFloor, Floor, FloorFloat)
-// these functions are not yet in yacasapi.cpp but should be eventually
-//UNARYFUNCTION(LispBitCount, BitCount, MathBitCount)
-//UNARYFUNCTION(LispSign, Sign, MathSign)
-//UNARYFUNCTION(LispNegate, Negate, MathNegate)
+UNARYFUNCTION(LispMathNegate, Negate, NegateFloat)
 
-/** this produces the following equivalent code for a unary function:
+/** the macro
+	UNARYFUNCTION(LispFloor, Floor, FloorFloat)
+is used to help interface Yacas with BigNumber. Suppose we need to access a unary function named 'Floor' in BigNumber and 'LispFloor' here, with 'FloorFloat' the backup function for no BigNumber support.
+The macro produces the following equivalent code for the unary function:
 void LispFloor(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 #ifndef NO_USE_BIGFLOAT
@@ -347,13 +347,11 @@ void LispFloor(LispEnvironment& aEnvironment, LispInt aStackTop)
 #endif
 }
 */
+/* FIXME Eventually the BigNumber support will be stable and we can remove old code and simplify these macros */
 
 /// obtain internal precision data on a number object.
 void LispGetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-      // Check that we have the right number of arguments (function name plus one argument).
-      //TESTARGS(2);
-
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aStackTop, 1);
@@ -372,8 +370,6 @@ void LispGetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
 /// set internal precision data on a number object.
 void LispSetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-      // Check that we have the right number of arguments (function name plus two arguments).
-      //TESTARGS(3);
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
@@ -388,6 +384,52 @@ void LispSetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
 #else	// this is not defined without BigNumber, so return something
     RaiseError("Function MathSetExactBits is not available without BigNumber support");
     LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
+#endif
+}
+
+
+/// obtain the bit count of a number object.
+void LispBitCount(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+#ifndef NO_USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      GetNumber(x,aEnvironment, aStackTop, 1);
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+      z->SetTo(x.Ptr()->BitCount());
+      RESULT.Set(NEW LispNumber(z));
+#else	// this is not defined without BigNumber, so return something
+    RaiseError("Function MathBitCount is not available without BigNumber support");
+    LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
+#endif
+}
+
+/// obtain the sign of a number object.
+void LispMathSign(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+#ifndef NO_USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      GetNumber(x,aEnvironment, aStackTop, 1);
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+      z->SetTo(x.Ptr()->Sign());
+      RESULT.Set(NEW LispNumber(z));
+#else	// this is not defined without BigNumber, so return something
+    RaiseError("Function MathSign is not available without BigNumber support");
+    LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
+#endif
+}
+
+/// check whether a number object fits into a platform type.
+void LispMathIsSmall(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+#ifndef NO_USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      GetNumber(x,aEnvironment, aStackTop, 1);
+      if(x.Ptr()->IsSmall())
+	InternalTrue(aEnvironment,RESULT);
+      else
+	InternalFalse(aEnvironment,RESULT);      
+#else	// this is not defined without BigNumber, so return False
+    InternalFalse(aEnvironment,RESULT);
 #endif
 }
 
