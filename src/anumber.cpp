@@ -1313,8 +1313,8 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
     // precision: the resulting precision will be a1.iExp-a2.iExp.
     // This value should at least be WordDigits, so grow a1
     // by WordDigits-(a1.iExp-a2.iExp) = WordDigits+a2.iExp-a1.iExp
+    LispInt digitsNeeded = WordDigits(aQuotient.iPrecision, 10);
     {
-        LispInt digitsNeeded = WordDigits(aQuotient.iPrecision, 10);
 #define noCORRECT_DIVISION
 #ifdef CORRECT_DIVISION
 
@@ -1331,6 +1331,7 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
           WordBaseTimesInt(a1, 10);
           a1.iTensExp--;
         }
+
 #else // CORRECT_DIVISION
 
         LispInt toadd = digitsNeeded+a2.iExp-a1.iExp; 
@@ -1345,6 +1346,22 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
     }
 
     IntegerDivide(aQuotient,aRemainder,a1,a2);
+
+#ifdef CORRECT_DIVISION
+        LispInt min = 1+digitsNeeded;
+        if (aQuotient.iExp+1>min)
+          min = aQuotient.iExp+1;
+        while (aQuotient.NrItems()>min ||
+               (aQuotient.NrItems()==min && aQuotient[aQuotient.NrItems()-1]>10))
+        {
+          PlatDoubleWord carry = 0;
+          BaseDivideInt(aQuotient, 10, WordBase,carry);
+          if (aQuotient[aQuotient.NrItems()-1] == 0)
+            aQuotient.SetNrItems(aQuotient.NrItems()-1);
+          aQuotient.iTensExp++;
+        }
+#endif // CORRECT_DIVISION
+
 }
 
 
