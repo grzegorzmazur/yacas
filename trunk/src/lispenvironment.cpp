@@ -40,7 +40,8 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
     theUserError(NULL),
     iPrettyPrinter(NULL),
     iDebugger(NEW DefaultDebugger),
-    iCurrentTokenizer(&iDefaultTokenizer)
+    iCurrentTokenizer(&iDefaultTokenizer),
+    iArchive(NULL)
 {
     iTrue=NULL;
     iFalse=NULL;
@@ -117,6 +118,7 @@ LispEnvironment::~LispEnvironment()
 
     delete iEvaluator;
     delete iDebugger;
+    delete iArchive;
 }
 
 LispInt LispEnvironment::GetUniqueId()
@@ -528,6 +530,27 @@ LispCharPtr LispEnvironment::ErrorString(LispInt aError)
 
 
 
+LispStringPtr LispEnvironment::FindCachedFile(LispCharPtr aFileName)
+{
+    if (iArchive)
+    {
+        LispInt index = iArchive->iFiles.FindFile(aFileName);
+        if (index>=0)
+        {
+//printf("File %s found in archive!\n",aFileName);
+            LispCharPtr contents = iArchive->iFiles.Contents(index);
+            return NEW LispString(contents,LispFalse);
+        }
+    }
+
+    LispStringPtr hashedname = HashTable().LookUp(aFileName);
+    LispRamFile* ramFile=iRamDisk.LookUp(hashedname);
+    if (ramFile != NULL)
+    {
+        return NEW LispString(ramFile->Contents()->String(),LispTrue);
+    }
+    return NULL;
+}
 
 
 
@@ -611,4 +634,13 @@ void CDllArray::DeleteNamed(LispCharPtr aName, LispEnvironment& aEnvironment)
 //printf("\n");
     }
 }
+
+
+
+
+
+
+
+
+
 

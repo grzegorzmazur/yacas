@@ -65,6 +65,7 @@ int trace_history = 0;
 int use_texmacs_out = 0;
 int patchload=0;
 char* root_dir    = SCRIPT_DIR;
+char* archive     = NULL;
 char* init_script = "yacasinit.ys";
 
 void ReportNrCurrent()
@@ -356,6 +357,26 @@ void LoadYacas()
     
     
 
+    if (archive)
+    {
+        FILE*fin = fopen(archive,"rb");
+        if (!fin)
+        {
+            printf("Error, could not open archive file %s\n",archive);
+        }
+        else
+        {
+            fseek(fin,0,SEEK_END);
+            int fullsize = ftell(fin);
+            fseek(fin,0,SEEK_SET);
+            unsigned char* fullbuf = (unsigned char*)PlatAlloc(fullsize);
+            fread(fullbuf,1,fullsize,fin);
+            fclose(fin);
+            (*yacas)()().iArchive =
+                NEW CCompressedArchive(fullbuf, fullsize, 1);
+        }
+    }
+    
     //TODO #include "../ramscripts/some.inc"
 
     /*TODO test code!!!
@@ -539,6 +560,11 @@ int main(int argc, char** argv)
             {
                 fileind++;
                 root_dir = argv[fileind];
+            }
+            else if (!strcmp(argv[fileind],"--archive"))
+            {
+                fileind++;
+                archive = argv[fileind];
             }
             else
             {

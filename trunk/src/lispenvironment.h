@@ -20,6 +20,7 @@
 #include "lispplugin.h"
 #include "ctokenizer.h"
 #include "xmltokenizer.h"
+#include "archiver.h"
 
 
 class LispDefFiles;
@@ -92,6 +93,8 @@ public:
     void Retract(LispStringPtr aOperator,LispInt aArity);
     void HoldArgument(LispStringPtr  aOperator,LispStringPtr aVariable);
 
+    LispStringPtr FindCachedFile(LispCharPtr aFileName);
+    
 public:
     inline void SetPrecision(LispInt aPrecision);
     inline LispInt Precision(void);
@@ -124,6 +127,7 @@ public:
     DeletingLispCleanup iCleanup;
     LispInt iEvalDepth;
     LispInt iMaxEvalDepth;
+    CCompressedArchive *iArchive;
     LispRamDisk iRamDisk;
     LispEvaluatorBase* iEvaluator;
 
