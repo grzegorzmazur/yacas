@@ -29,7 +29,7 @@ int BlaGetA(Bla* bla)
 {
     return bla->a;
 }
-void Bla_free(Bla* bla)
+void Bla_free(void* bla)
 {
     PlatFree((LispCharPtr)bla);
 }
