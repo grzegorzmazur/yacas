@@ -33,9 +33,17 @@ A version that runs on Psion Series 5 PDAs (ER5) can be found
 <A href="http://www.xs4all.nl/~apinkus/backups/EpocYacas-1.0.43.zip">here</a>. A readme for
 the Epoc release can be found
 <A href="http://www.xs4all.nl/~apinkus/backups/EpocYacas.readme">here</a>. 
+<p>
 German translations (kindly supplied by Klaus-Dieter Möller)
 can be found 
 <A href="http://www.xs4all.nl/~apinkus/backups/yacas-doku.zip">here</a>.
+<p>
+Spanish translations (kindly supplied by Jose Angel de Bustos Perez)
+can be found 
+<A href="http://www.xs4all.nl/~apinkus/backups/yacas-spanish-html.tgz">here (html version)</a> and 
+<A href="http://www.xs4all.nl/~apinkus/backups/yacas-spanish-pdf.tgz">here (pdf version)</a>.
+<p>
+
 
 <H2>Browse the backups directory for older versions</H1>
 Older versions, and versions for other platforms, like Windows,
