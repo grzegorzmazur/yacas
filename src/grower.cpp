@@ -46,8 +46,10 @@ void CArrayGrowerBase::GrowTo(int aNrItems)
             iNrAllocated *= 2;
         */
         /**/
-         while (aNrItems > iNrAllocated)
-             iNrAllocated += iGranularity;
+
+        iNrAllocated = iGranularity*((aNrItems+iGranularity-1)/iGranularity);
+//         while (aNrItems > iNrAllocated)
+//             iNrAllocated += iGranularity;
         /**/
         if (iArray == NULL)
         {

@@ -48,9 +48,9 @@ sed 's/%@/@@/; s/@%/@@/; s/%g$/@g/; /@g$/s/[\\&%]/\\&/g;
 /^[ 	]*VPATH[ 	]*=[^:]*$/d
 
 s%@SHELL@%/bin/sh%g
-s%@CFLAGS@%-g -O2%g
+s%@CFLAGS@%-O2%g
 s%@CPPFLAGS@%%g
-s%@CXXFLAGS@%-g -O2%g
+s%@CXXFLAGS@%-O2%g
 s%@FFLAGS@%%g
 s%@DEFS@%-DHAVE_CONFIG_H%g
 s%@LDFLAGS@%%g
