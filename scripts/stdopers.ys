@@ -9,7 +9,7 @@ Infix("=",9);
 Infix("And",100);
 RightAssociative("And");
 Infix("Or", 101);
-Prefix("Not");
+Prefix("Not", 10);
 Infix("<",9);
 Infix(">",9);
 Infix("<=",9);
@@ -25,8 +25,8 @@ RightPrecedence("-",4);
 Infix("/",3);
 Infix("*",4);
 Infix("^",2);
-Prefix("+",5); 
-Prefix("-",5); 
+Prefix("+",5);
+Prefix("-",5);
 RightPrecedence("-",4);
 Bodied("For",60000);
 Bodied("Until",60000);
@@ -90,7 +90,6 @@ Infix("%",5);
 Infix("/:",10000);
 Infix("/::",10000);
 Infix("<-",1000);
-
 
 
 
