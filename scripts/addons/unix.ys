@@ -85,18 +85,18 @@ MakeFunctionPlugin(extName, argList, fBody) := [
 	NFunction(extName, exportName, argList);
 ];
 
-/* show a Yacas expression graphically in a PS file */
-/* The following global variable will define the available PS viewer */
-PSViewCommand := "gv";
-
-GetYacasPID() := [
 /* Example code to read the PID of the Yacas process into the variable PID
 	We have to jump through the hoops here because we can't redirect STDOUT to a Yacas stream... ideally it would be just this:
 	PID := FromString(ToString() SystemCall("echo $PPID ';'")) Read();
 */
+GetYacasPID() := [
 	SystemCall("echo $PPID ';' > /tmp/yacas-tmp");
 	FromFile("/tmp/yacas-tmp") Read();
 ];
+
+/* show a Yacas expression graphically in a PS file */
+/* The following global variable will define the available PS viewer */
+If(Not(IsBound(PSViewCommand)), PSViewCommand := "gv");
 
 ShowPS(expr) := [
 	/* Create a temporary file */
