@@ -1,4 +1,4 @@
-*REM functions related to number theory[D
+*REM functions related to number theory
 
 			Number theory
 
@@ -623,7 +623,8 @@ This is useful for loops like
 *DESC
 
 {SquareFreeDivisorsList} creates a list of the square-free divisors of $n$.
-Squarefree numbers are numbers that have only simple prime factors.
+Square-free numbers are numbers that have only simple prime factors (no prime powers).
+For example, $18=2*3*3$ is not square-free because it contains a square of $3$ as a factor.
 
 *E.G.
 
@@ -817,18 +818,18 @@ The Jacobi symbol can be efficiently computed without knowing the full factoriza
 *DESC
 
 This function decomposes a Gaussian integer number {z} into a product of
-Gaussian prime factors. 
+Gaussian prime factors.
 A Gaussian integer is a complex number with integer real and imaginary parts.
-A Gaussian Integer can be decomposed into Gaussian primes in essentially a 
+A Gaussian integer $z$ can be decomposed into Gaussian primes essentially in a
 unique way (up to Gaussian units and associated prime factors), i.e. one
-can write it like: 
-$z = u*p[1]^n[1] * ... * p[9]^n[9]$
-where u is a Gaussian unit and p1,p2, \ldots, p9 are Gaussian primes. 
+can write $z$ as
+$$z = u*p[1]^n[1] * ... * p[s]^n[s]$$,
+where $u$ is a Gaussian unit and $p[1]$, $p[2]$, ..., $p[s]$ are Gaussian primes. 
 
 The factorization is returned as a list of pairs. The first member of
-each pair is the factor, while the second member denotes the power to
+each pair is the factor (a Gaussian integer) and the second member denotes the power to
 which this factor should be raised. So the factorization is returned as 
-the list {{{p1,n1}, ..., {p9,n9}}}.
+a list, e.g. {{{p1,n1}, {p2,n2}, ...}}.
 
 *E.G.
 

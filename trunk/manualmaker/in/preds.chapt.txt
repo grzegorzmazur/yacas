@@ -871,8 +871,8 @@ expression. {Pi} is considered a constant.
 
 This function returns {True} if the argument is a Gaussian integer and {False} otherwise.
 A Gaussian integer is a generalization
-of integers into the complex plane. A complex number {a+b*I} is a Gaussian
-integer if and only if {a} and {b} are integers.
+of integers into the complex plane. A complex number $a+b*I$ is a Gaussian
+integer if and only if $a$ and $b$ are integers.
 
 *E.G.
 	In> IsGaussianInteger(5)
@@ -923,20 +923,19 @@ $1$, $-1$, $I$, and $-I$.
 This function returns {True} if the argument
 is a Gaussian prime and {False} otherwise.
 
-In a ring a prime element is one that it is only divisible by the units of
-the ring and it associates (i.e.: the result of multiplying that element by
-a unit).
+A prime element $x$ of a ring is divisible only by the units of
+the ring and by associates of $x$.
+("Associates" of $x$ are elements of the form $x*u$ where $u$ is
+a unit of the ring).
 
 Gaussian primes are Gaussian integers $z=a+b*I$ that satisfy one of the 
 following properties:
 
-- If $Re(z)$ and $Im(z)$ are nonzero then $z$ is a Gaussian prime if and only 
+*	If $Re(z)$ and $Im(z)$ are nonzero then $z$ is a Gaussian prime if and only 
 if $Re(z)^2 + Im(z)^2$ is an ordinary prime.
- 
-- If $Re(z)==0$, then $z$ is a Gaussian prime if and only if $Im(z)$ is an
-ordinary prime and $Im(z):=Mod(3,4)$
-
-- If $Im(z)==0$ then $z$ is a Gaussian prime
+*	If $Re(z)==0$ then $z$ is a Gaussian prime if and only if $Im(z)$ is an
+ordinary prime and $Im(z):=Mod(3,4)$.
+*	If $Im(z)==0$ then $z$ is a Gaussian prime
 if and only if $Re(z)$ is an ordinary prime and $Re(z):=Mod(3,4)$.
 
 *E.G.
