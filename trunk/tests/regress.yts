@@ -1,5 +1,4 @@
 
-
 NextTest("Regression on bug reports");
 
 Verify(N(Sin(a)),Sin(a));
@@ -427,7 +426,10 @@ Verify((Limit(x,Infinity) Zeta(x)), 1);
 Verify((Limit(x,Infinity) (x!)), Infinity);
 
 /* Bug #15 */
-Verify(TrapError(MathPower(0,0.5), error), error);
+Verify(MathPower(0,0.55), 0);
+// MathLog(-1) locks up in gmpnumbers.cpp, will be fixed in scripts
+//FIXME this test should be uncommented eventually
+// Verify(TrapError(MathPower(-1,-0.5), error), error);
 
 /* Bug #16 */
 /* Can't test, bug in build system */
