@@ -223,7 +223,7 @@ FrobeniusNorm(matrix_IsMatrix) <--
 
 
 /* Cramer-like matrix operations */
-Function("Determinant",{matrix})
+20 # Determinant(_matrix) <-- 
 [
   Local(perms,indices,result);
   Check((IsMatrix(matrix)),"Determinant: Argument must be a matrix");
@@ -236,6 +236,14 @@ Function("Determinant",{matrix})
   result;
 ];
 
+10 # Determinant(_matrix)_(IsUpperTriangular(matrix) Or IsLowerTriangular(matrix)) <--
+[ 
+	Local(result);
+	result:=1;
+	ForEach(i, Diagonal(matrix) )
+		result:=result*i;
+	result;
+];
 Function("CoFactor",{matrix,ii,jj})
 [
   Local(perms,indices,result);
