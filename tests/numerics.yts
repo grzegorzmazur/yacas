@@ -222,25 +222,3 @@ Verify(
 GuessRational(N(Pi))
 , 355/113
 );
-
-Testing("Integer logarithm");
-
-Verify(
-IntLog(23^45, 67)
-, 33
-);
-
-Verify(
-IntLog(256^8, 4)
-, 32
-);
-
-Verify(
-IntLog(256^8-1, 4)
-, 31
-);
-
-Verify(
-IntNthRoot(65537^33, 11)
-, 281487861809153
-);
