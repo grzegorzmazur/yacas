@@ -190,7 +190,9 @@ Function ("TeXFormTeXify", {string})
 
 /* Sin, Cos, etc. and their argument is bracketed when it's a sum or product but not bracketed when it's a power. */
 
-TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, {"Cosh","\\cosh "}, {"Sinh","\\sinh "}, {"Tanh","\\tanh "}, {"Ln","\\ln "}, {"ArcCos","\\arccos "}, {"ArcSin","\\arcsin "}, {"ArcTan","\\arctan "}, {"ArcCosh","\\mathrm{arccosh}\\, "}, {"ArcSinh","\\mathrm{arcsinh}\\, "}, {"ArcTanh","\\mathrm{arctanh}\\, "}, {"Max","\\max "}, {"Min","\\min "} };
+TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, {"Cosh","\\cosh "}, {"Sinh","\\sinh "}, {"Tanh","\\tanh "}, {"Ln","\\ln "}, {"ArcCos","\\arccos "}, {"ArcSin","\\arcsin "}, {"ArcTan","\\arctan "}, {"ArcCosh","\\mathrm{arccosh}\\, "}, {"ArcSinh","\\mathrm{arcsinh}\\, "}, {"ArcTanh","\\mathrm{arctanh}\\, "}, {"Max","\\max "}, {"Min","\\min "},
+{"Erf", "\\mathrm{erf}\\, "}, {"Erfc", "\\mathrm{erfc}\\, "},
+};
 
 /* Precedence of 120 because we'd like to process other functions like sqrt or exp first */
 
