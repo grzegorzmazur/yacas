@@ -794,3 +794,122 @@ a polynomial expression.
 
 *SEE OrthoPSum, OrthoGSum, OrthoHSum, OrthoLSum, OrthoTSum, OrthoUSum, OrthoPoly
 
+
+
+*CMD SquareFree --- Return square-free part of polynom p=p(x) in x
+*STD
+*CALL
+	SquareFree(p)
+
+*PARMS
+
+{p} - a polynom in x
+
+*DESC
+
+Given a polynom 
+
+$$ p = p[1]^n[1]* ... * p[m]^n[m] $$
+
+with irreducible polynoms $ p[i] $,
+return the square-free version part (with all the factors having
+multiplicity 1):
+
+$$ p[1]* ... * p[m] $$
+
+*E.G.
+
+	In> Expand((x+1)^5)
+	Out> x^5+5*x^4+10*x^3+10*x^2+5*x+1;
+	In> SquareFree(%)
+	Out> (x+1)/5;
+	In> Monic(%)
+	Out> x+1;
+
+*SEE FindRealRoots, NumRealRoots, MinimumBound, MaximumBound, Factor
+
+
+*CMD FindRealRoots --- Find the real roots of a polynom p=p(x) in x
+*STD
+*CALL
+	FindRealRoots(p)
+
+*PARMS
+
+{p} - a polynom in x
+
+*DESC
+
+Return a list with the real roots of $ p $. It tries to find the real-valued
+roots, and thus requires numeric floating point calculations. The precision
+of the result can be improved by increasing the calculation precision.
+
+*E.G.
+
+	In> p:=Expand((x+3.1)^5*(x-6.23))
+	Out> x^6+9.27*x^5-0.465*x^4-300.793*x^3-
+	1394.2188*x^2-2590.476405*x-1783.5961073;
+	In> FindRealRoots(p)
+	Out> {-3.1,6.23};
+
+*SEE SquareFree, NumRealRoots, MinimumBound, MaximumBound, Factor
+
+
+
+*CMD NumRealRoots --- Return the number of real roots of a polynom p=p(x) in x
+*STD
+*CALL
+	NumRealRoots(p)
+
+*PARMS
+
+{p} - a polynom in x
+
+*DESC
+
+Returns the number of real roots of a polynom $ p $.
+
+*E.G.
+
+	In> NumRealRoots(x^2-1)
+	Out> 2;
+	In> NumRealRoots(x^2+1)
+	Out> 0;
+
+*SEE FindRealRoots, SquareFree, MinimumBound, MaximumBound, Factor
+
+*CMD MinimumBound --- Return a lower bound on the absolute value of the real roots of a polynom p=p(x) in x
+*CMD MaximumBound --- Return an upper bound on the absolute value of the real roots of a polynom p=p(x) in x
+*STD
+*CALL
+	MinimumBound(p)
+
+	MaximumBound(p)
+
+*PARMS
+
+{p} - a polynom in x
+
+*DESC
+
+Return minimum and maximum boubds for the absolute values of the real
+roots of a polynom p. The polynom has to be converted to one with
+rational coefficients first, and be made square-free.
+
+*E.G.
+
+	In> p:=SquareFree(Rationalize((x-3.1)*(x+6.23)))
+	Out> (-40000*x^2-125200*x+772520)/870489;
+	In> MinimumBound(p)
+	Out> 5000000000/2275491039;
+	In> N(%)
+	Out> 2.1973279236;
+	In> MaximumBound(p)
+	Out> 10986639613/1250000000;
+	In> N(%)
+	Out> 8.7893116904;
+
+*SEE SquareFree, NumRealRoots, FindRealRoots, Factor
+
+
+

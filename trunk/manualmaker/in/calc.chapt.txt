@@ -960,6 +960,7 @@ This function drops all terms of order "degree" or higher in
 *STD
 *CALL
 	Newton(expr, var, initial, accuracy)
+	Newton(expr, var, initial, accuracy,min,max)
 
 *PARMS
 
@@ -970,6 +971,10 @@ This function drops all terms of order "degree" or higher in
 {initial} -- initial value for "var" to use in the search
 
 {accuracy} -- minimum required accuracy of the result
+
+{min} -- minimum value for "var" to use in the search
+
+{max} -- maximum value for "var" to use in the search
 
 *DESC
 
@@ -982,10 +987,20 @@ that it has come within a distance {accuracy} of the correct
 solution, and then it will return its best guess. In particular, it
 may loop forever if the algorithm does not converge.
 
+When {min} and {max} are supplied, the Newton iteration takes them
+into account by returning {Fail} if it failed to find a root in
+the given range. Note this doesn't mean there isn't a root, just
+that this algorithm failed to find it due to the trial values
+going outside of the bounds.
+
 *E.G.
 
 	In> Newton(Sin(x),x,3,0.0001)
 	Out> 3.1415926535;
+	In> Newton(x^2-1,x,2,0.0001,-5,5)
+	Out> 1;
+	In> Newton(x^2+1,x,2,0.0001,-5,5)
+	Out> Fail;
 
 *SEE Solve, NewtonNum
 
