@@ -73,11 +73,11 @@ GnuplotCmd(control'file) :=
 {
 	{"Unix", "gnuplot -persist " : control'file},
 	{"Win32", "wgnupl32.exe " : control'file},
-} [PlatformOS];
+} [PlatformOS()];
 
 // this is needed for gnuplot at the end of the control file
 GnuplotExtraCmd() := {
 	{"Unix", ""},
 	{"Win32", "pause -1 \"Press OK to close the plot window.\""},
-} [PlatformOS];
+} [PlatformOS()];
 
