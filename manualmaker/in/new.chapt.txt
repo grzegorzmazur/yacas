@@ -438,7 +438,7 @@ Particular implementations of the multiple-precision library will be wrapped by 
 This API will be not completely exposed to Yacas scripts, because some of these functions are too low-level.
 Among the low-level functions, only those that are very useful for optimization will be available to the Yacas scripts.
 But the full API will be available to C++ plugins, so that multiple-precision algorithms could be efficiently implemented when performance is critical.
-Intermediate-level arithmetic functions such as {MathAdd}, {MathDiv}, {MathMod} and so on, could be implemented either in the Yacas core or in plugins, based on this low-level API.
+Intermediate-level arithmetic functions such as {MathAdd}, {MathDiv}, {MathMod} and so on could be implemented either in the Yacas core or in plugins, through this low-level API.
 The library scripts will be able to transform numerical expressions such as {x:=y+z} into calls of these intermediate-level functions.
 
 
@@ -451,14 +451,16 @@ Equivalent Yacas script code is given, as well as examples of C++ usage.
 1. Input/output operations.
 *	Construct a number from a string in given base.
 The format is the standard integer, fixed-point and floating-point representations of numbers.
-However, the result is always a floating-point number.
-The number will be rounded to a given number of base digits.
-*FOOT It is not clear at this point whether to round to a given number of <i>bits</i> or base digits.
+When the string does not contain the period character "{.}" or the exponent character "{e}" (the exponent character "{@}" can be also used for $base>10$),
+the result is an integer number and the precision argument is ignored.
+Otherwise, the result is a floating-point number
+rounded to a given number of <i>base digits</i>.
 	x.SetTo("2.e-19", 100, 10);
 Here we encounter a problem of ambiguous hexadecimal exponent:
 	x.SetTo("2A8C.E2", 100, 16);
 It is not clear whether the above number is in exponential notation or not.
 But this is hopefully not a critical issue.
+We may assume that the exponent character for $base>10$ is "{@}".
 *	Print a number to a string in a given precision and in a given base.
 The precision is given as the number of digits in the given base.
 The value should be rounded to that number of significant base digits.
@@ -487,7 +489,7 @@ Note that the values are compared arithmetically, their internal precision may d
 	x.BecomeInt(); x.BecomeFloat();
 
 3. Basic arithmetic operations.
-Note that here "precision" always means the number of significant bits, i.e. digits in the base 2, <i>not decimal digits</i>.
+Note that here "precision" always means the number of significant <i>bits</i>, i.e. digits in the base 2, <i>not decimal digits</i>.
 *	Compare two objects, {x<y}. Returns {true} if the numerical comparison holds, regardless of the value types (integer or float).
 	x.LessThan(y)==true;
 *	Compute the integer part of a number, {x := Floor(y)}.
