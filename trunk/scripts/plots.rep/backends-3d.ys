@@ -38,7 +38,7 @@ Plot3DS'gnuplot(values_IsList, _options'hash) <--
   	options'hash["filename"] := MakeFilePath(dirBase, "data")
   );
   // create directory if it does not exist
-    Check(MakeDir(dirBase), "Problem creating a temporary directory, plotting aborted.");
+  Check(MakeDir(dirBase), "Problem creating a temporary directory '": dirBase:"', plotting aborted.");
   // write all data to file(s) and save the filenames
   filename'list := Plot3DS'datafile(values, options'hash);
   // prepare the control file for gnuplot
