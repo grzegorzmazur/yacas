@@ -26,6 +26,8 @@ Verify( Sinh(x)*Csch(x), 1);
 Verify( 1/Coth(x), Tanh(x) );
 
 Verify(2+I*3,Complex(2,3));
+Verify(Magnitude(I+1),Sqrt(2));
+
 Verify(Re(2+I*3),2);
 Verify(Im(2+I*3),3);
 // Shouldn't these be in linalg.yts?

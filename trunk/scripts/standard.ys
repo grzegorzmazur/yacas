@@ -295,8 +295,8 @@ SumListSide(_x, y_IsList) <--
 240 # (x_IsList + _y)_Not(IsList(y)) <-- SumListSide(y,x);
 241 # (_x + y_IsList)_Not(IsList(x)) <-- SumListSide(x,y);
 
-250 # Infinity + y_IsNumber <-- Infinity;
-250 # x_IsNumber + Infinity <-- Infinity;
+250 # Infinity + y_IsComplex <-- Infinity;
+250 # x_IsComplex + Infinity <-- Infinity;
 
 250 # Undefined + _y <-- Undefined;
 250 # _x + Undefined <-- Undefined;
@@ -348,8 +348,8 @@ LocalSymbols(x)
    result;
 ];
 
-250  # Infinity - y_IsNumber <-- Infinity;
-250  # x_IsNumber - Infinity <-- - Infinity;
+250  # Infinity - y_IsComplex <-- Infinity;
+250  # x_IsComplex - Infinity <-- - Infinity;
 
 250 # Undefined - _y <-- Undefined;
 250 # _x - Undefined <-- Undefined;
@@ -430,7 +430,9 @@ LocalSymbols(x)
 
 249  # 0 * Infinity <-- Undefined;
 250  # x_IsNumber * y_IsInfinity <-- Sign(x)*y;
+250  # x_IsComplex * y_IsInfinity <-- Infinity;
 250  # x_IsInfinity * y_IsNumber <-- Sign(y)*x;
+250  # x_IsInfinity * y_IsComplex <-- Infinity;
 
 250  # _x * Undefined <-- Undefined;
 250  # Undefined * _y <-- Undefined;
@@ -475,6 +477,7 @@ LocalSymbols(x)
 
 90 # x_IsInfinity / y_IsInfinity <-- Undefined;
 95  # x_IsInfinity / y_IsNumber <-- Sign(y)*x;
+95  # x_IsInfinity / y_IsComplex <-- Infinity;
 
 90 # Undefined / _y <-- Undefined;
 90 # _y / Undefined <-- Undefined;
@@ -562,12 +565,17 @@ LocalSymbols(x)
 206 # _x ^ n_IsList <-- Map({{xx},x^xx},{n});
 249 # x_IsInfinity ^ 0 <-- Undefined;
 250 # Infinity ^ (_n) <-- Infinity;
+250 # Infinity ^ (_x_IsComplex) <-- Infinity;
 250 # ((-Infinity) ^ (n_IsNumber))_(IsEven(n)) <-- Infinity;
 250 # ((-Infinity) ^ (n_IsNumber))_(IsOdd(n)) <-- -Infinity;
 
 250 # (x_IsNumber ^ Infinity)_(x> -1 And x < 1) <-- 0;
 250 # (x_IsNumber ^ Infinity)_(x< -1) <-- - Infinity;
 250 # (x_IsNumber ^ Infinity)_(x> 1) <-- Infinity;
+
+250 # (x_IsComplex ^ Infinity)_(Magnitude(x) > 1) <-- Infinity;
+250 # (x_IsComplex ^ Infinity)_(Magnitude(x) < -1) <-- -Infinity;
+250 # (x_IsComplex ^ Infinity)_(Magnitude(x) > -1 And Magnitude(x) < 1) <-- 0;
 
 250 # (x_IsNumber ^ -Infinity)_(x> -1 And x < 1) <-- Infinity;
 250 # (x_IsNumber ^ -Infinity)_(x< -1) <-- 0;
