@@ -32,4 +32,5 @@ GaussianGcd
 FactorGaussianInteger
 IsCarmichaelNumber
 PartitionsP
+Eulerian
 }

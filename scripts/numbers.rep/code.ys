@@ -544,6 +544,17 @@ Function("FactorGaussianInteger",{x}) [
 
 IsCarmichaelNumber(n_IsList) <-- MapSingle("IsCarmichaelNumber",n);
 
+/// the restricted partition function
+/// partitions of length k
+
+5  # PartitionsP(n_IsInteger,0)		  	<-- 0;
+5  # PartitionsP(n_IsInteger,n_IsInteger)	<-- 1;
+5  # PartitionsP(n_IsInteger,1)			<-- 1;
+5  # PartitionsP(n_IsInteger,2)			<-- Floor(n/2);
+5  # PartitionsP(n_IsInteger,3)			<-- Round(n^2/12);
+6  # PartitionsP(n_IsInteger,k_IsInteger)_(k>n) <-- 0;
+10 # PartitionsP(n_IsInteger,k_IsInteger)	<-- PartitionsP(n-1,k-1)+PartitionsP(n-k,k);
+
 /// the number of additive partitions of an integer
 5  # PartitionsP(0)	<-- 1;
 5  # PartitionsP(1)	<-- 1;
@@ -685,3 +696,9 @@ Product(list_IsList) <--
 		product:=product*i;
 	product;
 ];
+
+
+Eulerian(n_IsInteger,k_IsInteger) <-- Sum(j,0,k+1,(-1)^j*Bin(n+1,j)*(k-j+1)^n);
+
+
+
