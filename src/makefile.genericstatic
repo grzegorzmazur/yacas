@@ -8,7 +8,9 @@ DEFINES = \
   -DSUPPORT_SERVER \
   -DACCEPT_TYPE_ARG3="int *" \
   -DPLATFORM_OS=\"Generic\" \
-  -DPLUGIN_HANDLER="ElfDll "
+  -DPLUGIN_HANDLER="ElfDll " \
+  -DPLUGIN_DIR="\"./\"" \
+  -DEXE_DLL_PLUGINS
 
   
 # ACCEPT_TYPE_ARG1 int
@@ -26,8 +28,9 @@ OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
 	mathenvironment.o mathuserfunc.o mathutil.o patcher.o          \
 	patternclass.o patterns.o platmath.o standard.o                \
 	stdcommandline.o stdfileio.o stdstubs.o obmalloc.o stringio.o             \
-	substitute.o tokenizer.o xmltokenizer.o ctokenizer.o archiver.o fastprimes.o elfdll.o unixcommandline.o \
-	yacasapi.o yacasmain.o yacasnumbers.o unipoly.o
+	substitute.o tokenizer.o xmltokenizer.o ctokenizer.o archiver.o fastprimes.o elfdll.o unixcommandline.o numbers.o \
+	yacasapi.o yacasmain.o yacasnumbers.o unipoly.o compressedfiles.o \
+	libmath.o exedll.o
 
 .SUFFIXES: .cpp 
 

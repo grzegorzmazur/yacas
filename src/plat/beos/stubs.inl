@@ -48,4 +48,7 @@ inline void PlatMemSet(LispCharPtr aTarget, LispChar aByte, LispInt aNrBytes)
 }
 
 
+#define StrCompare(s1,s2) strcmp((char*)s1,(char*)s2)
+
+
 

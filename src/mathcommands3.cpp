@@ -22,6 +22,7 @@
 #include "errors.h"
 #include "patcher.h"
 #include "platdll.h"
+#include "exedll.h"
 #include "unipoly.h"
 
 #ifdef HAVE_MATH_H
@@ -902,24 +903,35 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
+  //TESTARGS(2);
 
-    LispPtr evaluated;
-    evaluated.Set(ARGUMENT(1).Get());
+  LispPtr evaluated;
+  evaluated.Set(ARGUMENT(1).Get());
 
-    LispStringPtr string = evaluated.Get()->String();
-    CHK_ARG_CORE(string != NULL, 1);
+  LispStringPtr string = evaluated.Get()->String();
+  CHK_ARG_CORE(string != NULL, 1);
 
-    LispString oper;
-    InternalUnstringify(oper, string);
-    LispDllBase *dll = NEW DLLCLASS;
+  LispString oper;
+  InternalUnstringify(oper, string);
+  LispDllBase *dll;
+  LispInt opened = LispFalse;
+
+  ExePluginMaker maker = FindExePlugin(&oper[0]);
+  if (maker != NULL)
+  {
+    dll  = NEW ExeDll(maker);
     Check(dll != NULL,KLispErrNotEnoughMemory);
-    LispInt opened;
-    opened = dll->Open(&oper[0],aEnvironment);
-    if (!opened) delete dll;
-    Check(opened,KLispErrLibraryNotFound);
-    aEnvironment.iDlls.Append(dll);
-    InternalTrue(aEnvironment,RESULT);
+  }
+  else
+  {
+    dll  = NEW DLLCLASS;
+    Check(dll != NULL,KLispErrNotEnoughMemory);
+  }
+  opened = dll->Open(&oper[0],aEnvironment);
+  if (!opened) delete dll;
+  Check(opened,KLispErrLibraryNotFound);
+  aEnvironment.iDlls.Append(dll);
+  InternalTrue(aEnvironment,RESULT);
 }
 
 void LispDllUnload(LispEnvironment& aEnvironment, LispInt aStackTop)

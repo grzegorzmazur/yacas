@@ -51,7 +51,7 @@
     
 // Dynamic link library loader class
 #define DLLCLASS    LispDllBase
-
+#define EXE_DLL_PLUGINS // Enable plugins inside the exe by default
     
 #include <E32STD.H>
 
