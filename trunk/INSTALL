@@ -66,3 +66,21 @@ to build RPMS/SRPMS, and -bb to build RPMS only.
 		want the configure script to run without cached values.
 
 	install-strip: Like install, but strips binaries. Very nice.
+
+
+
+CVS shortlist:
+
+cvs -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas login 
+cvs -z3 -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas co modulename 
+
+export CVS_RSH=ssh1
+
+Type the following, making necessary obvious substitutions for your username and project. 
+  cvs -d:ext:loginname@cvs.yacas.sourceforge.net:/cvsroot/yacas co yacas 
+After initial checkout, you can change into this directory and execute cvs commands without the -d tag. For
+example: 
+  cvs update
+  cvs commit -m "comments for this commit"
+  cvs add myfile.c 
+
