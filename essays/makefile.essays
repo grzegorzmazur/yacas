@@ -1,9 +1,12 @@
-all: ABIN-grammar.chapt MaintenanceHowto.chapt essays.html
+CHAPTERS = ABIN-grammar.chapt MaintenanceHowto.chapt\
+  Plugin_factory.chapt
+
+all: $(CHAPTERS) essays.html
 
 %.chapt: %.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
 
-essays.html: ABIN-grammar.chapt MaintenanceHowto.chapt
+essays.html: $(CHAPTERS)
 	../src/yacas -pc all.ys
 
 clean:

@@ -1,0 +1,113 @@
+/*
+	MakeFunctionPlugin() - create an external plugin for a numerical function
+	All arguments and the return value of the function are assumed to
+be double precision real numbers. Warning: do not pass non-numbers to
+the plugin function.
+	Version 0.1
+	Requires: compiler named "c++" with ELF .so support; Yacas headers in FindFile("")/include; current directory must be writable
+
+	Usage: MakeFunctionPlugin(ExtName, ArgList, Body).
+	
+	ExtName: String, will be the base name of the plugin.
+	ArgList: List of atoms, will be used as argument list for Body.
+	Body: a Yacas expression, must be a CForm()-exportable function of the arguments and may contain numerical constants ("Pi" is allowed and will be converted to floating-point).
+	
+	Example:
+	
+	In> MakeFunctionPlugin("f1", {x,y}, Sin(x/y))
+	Function f1(x,y) loaded from ./libf1_cc_plugin.so
+	Out> True;
+	
+	What it does:
+	1) creates the following files in subdirectory plugins/ of current directory:
+	f1_plugin.h, f1_plugin.cc - C++ code of the plugin; the function is written as "double f1_cc(double x, double y) { return sin(x/y); }"
+	f1_plugin.stub - Yacas-language stub
+	f1_plugin_api.cc - Yacas-generated C++ stub
+	f1_plugin_api.description - Yacas-generated documentation
+	f1_plugin.compile - command line to compile
+	libf1_cc_plugin.so - compiled plugin
+	Note that all files have names matching *_plugin*
+	2) runs the "c++" compiler command
+	3) loads resulting .so object with DllLoad()
+	4) prints an information message on success and error messages if compilation fails.
+
+	If you call MakeFunctionPlugin() repeatedly to define the same
+function, the old files will be overwritten.
+
+*/
+
+MakeArgumentList(argList, padding) := [ /* may assume to have a nonempty list */
+	Local(item, result);
+	/* build a list and add commas after 1st element */
+	result := padding : String(Head(argList));
+	ForEach(item, Tail(argList))
+	  result := result : "," : padding : String(item);
+	result;
+];
+
+MakeFunctionPrototype(name, argList) := [
+	"double " : name : "(" : MakeArgumentList(argList, "double ") : ")";
+];
+
+MakeFunctionPlugin(extName, argList, fBody) := [
+	Local(dirBase, fileBase, intName, includeDir, dllName, dllPath, commandLine);
+	/* check argument type */
+	Check(IsString(extName) And IsList(argList) And Length(argList) > 0,
+	  "Error in MakeFunctionPlugin: " : extName
+	  : " must be a string and " : argList : " a nonempty list.");
+	includeDir := FindFile("include/");
+	Check(includeDir != "",
+	  "Error in MakeFunctionPlugin: no include/ under " : FindFile(""));
+	/* determine file names */
+	dirBase := "plugins/";
+	SystemCall("test -d " : dirBase : "|| mkdir -p " : dirBase);
+	fileBase := dirBase : extName : "_plugin";
+	intName := extName : "_cc";
+	dllName := "lib" : intName : "_plugin.so";
+	dllPath := dirBase : dllName;
+	/* specify more include dirs to be able to compile from different places */
+	commandLine := "c++ -shared -I. -I.. -I" : includeDir : " -I" : includeDir : "plat/linux32 -Wl,-soname," : dllName : " -o " : dllPath : " " : fileBase : ".cc " : fileBase : "_api.cc >& " : fileBase : ".log";
+	/* write C++ header */
+	ToFile(fileBase : ".h")
+	  WriteString(
+		"// GENERATED FILE: " : fileBase : ".h" : Nl()
+		: MakeFunctionPrototype(intName, argList) : ";" : Nl()
+	  );
+	/* write C++ body */
+	ToFile(fileBase : ".cc")
+	  WriteString(
+		"// GENERATED FILE: " : fileBase : ".cc" : Nl()
+		: "#include \"stubs.h\"" : Nl()
+		: "#include \"" : fileBase : ".h\"": Nl()
+		: "#include <math.h>" : Nl()
+		: "const double Pi=" : CForm(Hold(4.*ArcTan(1.))): ";" : Nl()
+		: MakeFunctionPrototype(intName, argList) : " {" : Nl()
+		: "return " : CForm(fBody) : ";" : Nl()
+		: "}" : Nl()
+	  );
+	/* write Yacas stub */
+	ToFile(fileBase : ".stub") [
+	  WriteString(
+	    "/* GENERATED FILE: " : fileBase : ".stub */" : Nl()
+	    : "Use(\"cstubgen.rep/code.ys\"); StubApiCStart();" : Nl()
+	    : "StubApiCInclude(\"\\\"" : fileBase : ".h\\\"\");" : Nl()
+	    : "StubApiCFunction(\"double\", \"" : intName : "\", \"" : extName : "\",");
+	  Write(FillList("double", Length(argList)));
+	  WriteString(
+	    ");" : Nl()
+	    : "StubApiCFile(\"" : fileBase : "_api\");" : Nl()
+	  );
+	];
+	/* generate C++ stub */
+	Load(fileBase : ".stub");
+	/* compile plugin for Linux */
+	ToFile(fileBase : ".compile") WriteString(commandLine : Nl());
+	/* delete old file */
+	SystemCall("rm -f " : dllPath);
+	SystemCall(commandLine);
+	/* If compilation succeeds, DLL file is present */
+	Check(FindFile(dllPath) = dllPath, "Error in MakeFunctionPlugin: compilation of " : fileBase : ".so failed.");
+	/* Load DLL file */
+	DllLoad(dllPath);
+	Echo({"Function " : extName : "(" : MakeArgumentList(argList, ""): ") loaded from " : dllPath});
+];
