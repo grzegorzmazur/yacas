@@ -57,9 +57,11 @@ $(TESTS) $(INSTALL_TESTS): Makefile
 	   echo echo '$@: Running ' $$file '|' tee -a $(TESTRESULT) >> $@; 		                        \
 	   if test -f $$file; then d=.; else d=$(srcdir); fi; 				                        \
 	   if test "$@" = $(TESTS); then 						                        \
-	      echo $(BUILT_YACAS) $$d/$$file '|| echo "****** Exit code $$?" | tee -a' $(TESTRESULT) >> $@;     \
+	      echo \( $(BUILT_YACAS) $$d/$$file                                                                 \
+                   '|| echo "****** Exit code $$?" ) | tee -a' $(TESTRESULT) >> $@;                             \
 	   else										                        \
-	      echo $(INSTALLED_YACAS) $$d/$$file '|| echo "****** Exit code $$?" | tee -a' $(TESTRESULT) >> $@; \
+	      echo \( $(INSTALLED_YACAS) $$d/$$file                                                             \
+                   '|| echo "****** Exit code $$?" ) | tee -a' $(TESTRESULT) >> $@;                             \
 	   fi;										                        \
 	 done
 	@echo echo The output of the test scripts can be found in `pwd`/$(TESTRESULT) >> $@
