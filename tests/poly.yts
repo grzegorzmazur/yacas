@@ -12,3 +12,14 @@ A:=2*x^2+4;
 {C,D}:=polyDivide(A,2,x);
 TestYacas( C, x^2+2 );
 
+
+A:= x^4 - 2*x^3 - 6*x^2 + 12*x + 15;
+B:= x^3 + x^2 -4*x - 4;
+TestYacas(polyGCD(A,B,x),5*x+5);
+
+//works
+KnownFailure(TestYacas(polyGCDExt(A,B,x),{3-x,(x-6)*x+10,5*x+5}));
+
+
+TestYacas(polyGCD(4*x^2+4*x,4*x+4,x), 4*x+4 );
+
