@@ -403,7 +403,7 @@ But of course not all weight functions $rho(x)$ and not all intervals [$a$, $b$]
 There are several "classical" families of orthogonal polynomials that have been of use to theoretical and applied science.
 The "classical" polynomials are always solutions of a simple second-order differential equation and are always a specific case of some hypergeometric function.
 
-The construction of "classical" polynomials always follows the same scheme.
+The construction of "classical" polynomials can be described by the following scheme.
 The function $rho(x)$ must satisfy the so-called Pearson's equation,
 $$ 1/rho(x)*(D(x)rho(x)) = alpha(x)/beta(x) $$,
 where the functions $alpha$, $beta$ are simple:
@@ -416,20 +416,14 @@ $$ rho(a)*beta(a)=rho(b)*beta(b)=0 $$.
 
 *A orthogonal polynomials!Rodrigues formula
 
-If the function $rho(x)$ and the interval [$a$, $b$] is chosen in this way, then the corresponding orthogonal polynomials {q_n(x)} are solutions of the differential equation
-
-	(Deriv(x)(beta(x)*rho(x)*(Deriv(x)q_n(x))))-n*(alpha_1+(n+1)*beta_2)*q[n]=0 .
-
-The polynomials {q_n(x)} are also given by the Rodrigues formula,
-
-	q_n(x) = A[n]/rho(x)*D(x,n)rho(x)*beta(x)^n ,
-
+If the function $rho(x)$ and the interval [$a$, $b$] is chosen in this way, then the corresponding orthogonal polynomials $q_n(x)$ are solutions of the differential equation
+$$(Deriv(x)(beta(x)*rho(x)*(Deriv(x)q_n(x))))-n*(alpha_1+(n+1)*beta_2)*q[n]=0$$.
+The polynomials $q_n(x)$ are also given by the Rodrigues formula,
+$$q_n(x) = A[n]/rho(x)*D(x,n)rho(x)*beta(x)^n$$,
 where $A[n]$ is a normalization constant.
 It is usual practice to normalize the polynomials so that
-
-	(Integrate(x,a,b)(q_n(x))^2*rho(x))=1 .
-
-So the normalization constant can be chosen accordingly.
+$$(Integrate(x,a,b)(q_n(x))^2*rho(x))=1 $$.
+The normalization constant is chosen accordingly.
 
 *A orthogonal polynomials!generating function
 
@@ -437,12 +431,9 @@ Finally, there is a formula for the generating function of the polynomials,
 $$ G(x,w) = 1/rho(x)*rho(t(x,w))/Abs(1-w*(beta_1+2*beta_2*t(x,w))) $$,
 where $t(x,w)$ is the root of $t-x-w*beta(t)=0$ which is nearest to $t=x$ at small $w$.
 This function $G(x,w)$ gives the non-normalized polynomials,
-
-	G(x,w) = Sum(n,0,Infinity, q_n(x)/n! *w^n) ,
-
+$$ G(x,w) = Sum(n,0,Infinity, q_n(x)/n! *w^n) $$,
 where
-
-	q_n(x) = 1/rho(x)*D(x,n)rho(x)*beta(x)^n .
+$$ q_n(x) = 1/rho(x)*D(x,n)rho(x)*beta(x)^n $$.
 
 The classical families of (normalized) orthogonal polynomials are obtained in this framework with the following definitions:
 
@@ -577,7 +568,8 @@ The summation is over integer values of $i$ such that $0<=2*i<=n$, regardless of
 
 *	Laguerre polynomials:
 $$ OrthoL(n,a,x) = Sum(i,0,n,(-x)^i/i! *Bin(n+a,n-i)) $$.
-Here the binomial coefficient must be defined for non-integer $a$ through the Gamma function instead of factorials, which gives
+Here the parameter $a$ might be non-integer.
+So the binomial coefficient must be defined for non-integer $a$ through the Gamma function instead of factorials, which gives
 $$ Bin(n+a,n-i) = ( (n+a)*...*(i+1+a) )/(n-i)! $$.
 The result is a rational function of $a$.
 
