@@ -298,3 +298,7 @@ Verify(Undefined>Undefined, False);
 Verify(Undefined>1, False);
 Verify(Undefined >= -4, False);
 Verify(Undefined <= -4, False);
+
+// Jonathan's bug report
+Precision(10);
+Verify(N(Cos(Pi*.5)), 0);

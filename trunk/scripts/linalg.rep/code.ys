@@ -826,7 +826,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 // In place LU decomposition
 // Pivotting is not implemented
 // Adapted from Numerical Methods with Matlab
-	Gerald Recktenwald, Sec 8.4
+//	Gerald Recktenwald, Sec 8.4
 10 # LU(A_IsSquareMatrix) <--
 [
 	Local(n,matrix,L,U);
