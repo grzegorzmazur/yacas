@@ -12,6 +12,8 @@
 #include "anumber.h"
 #include "mathutil.h"
 
+
+
 /* The Base... functions perform actions on the mantissa part of the
  * number, that is, it treats them as unsigned integers.
  */
@@ -389,6 +391,12 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
     a1.DropTrailZeroes();
     a2.DropTrailZeroes();
 
+#ifdef CORRECT_DIVISION
+    if (a1.iExp) NormalizeFloat(a1,WordDigits(a1.iPrecision, 10));
+    if (a2.iExp) NormalizeFloat(a1,WordDigits(a2.iPrecision, 10));
+#endif // CORRECT_DIVISION
+
+
     // this does some additional removing, as for the multiplication we don't need
     // any trailing zeroes at all, regardless of the value of iExp
     LispInt end;
@@ -434,6 +442,9 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
 
 
     aResult.DropTrailZeroes();
+#ifdef CORRECT_DIVISION
+    if (aResult.iExp) NormalizeFloat(aResult,WordDigits(aResult.iPrecision, 10));
+#endif // CORRECT_DIVISION
 }
 
 static void BalanceFractions(ANumber& a1, ANumber& a2)
@@ -1305,6 +1316,28 @@ void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber
     }
 }
 
+void NormalizeFloat(ANumber& a2, LispInt digitsNeeded)
+{
+  if (a2.iExp - digitsNeeded > 0)
+  {
+    a2.Delete(0,a2.iExp-digitsNeeded);
+    a2.iExp -= (a2.iExp-digitsNeeded);
+  }
+
+  LispInt min = 1+digitsNeeded;
+  if (a2.iExp+1>min)
+    min = a2.iExp+1;
+  while (a2.NrItems()>min ||
+          (a2.NrItems()==min && a2[a2.NrItems()-1]>10))
+  {
+    PlatDoubleWord carry = 0;
+    BaseDivideInt(a2, 10, WordBase,carry);
+    if (a2[a2.NrItems()-1] == 0)
+      a2.SetNrItems(a2.NrItems()-1);
+    a2.iTensExp++;
+  }
+}
+
 
 void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
 {
@@ -1315,10 +1348,10 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
     // by WordDigits-(a1.iExp-a2.iExp) = WordDigits+a2.iExp-a1.iExp
     LispInt digitsNeeded = WordDigits(aQuotient.iPrecision, 10);
     {
-#define noCORRECT_DIVISION
 #ifdef CORRECT_DIVISION
 
-
+        NormalizeFloat(a2,digitsNeeded);
+/*TODO remove?
 {
         if (a2.iExp - digitsNeeded > 0)
         {
@@ -1339,6 +1372,7 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
           a2.iTensExp++;
         }
 }
+*/
 
         LispInt toadd = a2.iExp-a1.iExp; 
         {
@@ -1382,6 +1416,9 @@ if (a1.iTensExp<-1000)
     IntegerDivide(aQuotient,aRemainder,a1,a2);
 
 #ifdef CORRECT_DIVISION
+
+        NormalizeFloat(aQuotient,digitsNeeded);
+/*TODO remove?
         LispInt min = 1+digitsNeeded;
         if (aQuotient.iExp+1>min)
           min = aQuotient.iExp+1;
@@ -1394,6 +1431,7 @@ if (a1.iTensExp<-1000)
             aQuotient.SetNrItems(aQuotient.NrItems()-1);
           aQuotient.iTensExp++;
         }
+*/
 #endif // CORRECT_DIVISION
 
 }
@@ -1496,6 +1534,18 @@ void Sqrt(ANumber& aResult, ANumber& N)
  */
 LispBoolean Significant(ANumber& a)
 {
+
+/*This is what I was working on */
+#ifdef CORRECT_DIVISION
+    LispInt significantDigits = WordDigits(a.iPrecision, 10);
+    NormalizeFloat(a,significantDigits);
+    if ((-a.iTensExp) > a.iPrecision+2)
+    {
+      return LispFalse;
+    }
+    return LispTrue;
+#else
+/* */
     // Calculate number of significant digits
     LispInt significantDigits = WordDigits(a.iPrecision, 10);
 
@@ -1513,6 +1563,7 @@ LispBoolean Significant(ANumber& a)
             return LispTrue;
     }
     return LispFalse;
+#endif // CORRECT_DIVISION
 }
 
 
