@@ -141,7 +141,7 @@ OrthoPolyNumeric(name_IsString, n_IsInteger, p_IsList, _x) <-- [
 		value3 := (ruleCoeffs[1] + x*ruleCoeffs[2])*value2 + ruleCoeffs[3]*value1;
 		value1 := value2;
 		value2 := value3;
-		Echo(index);
+//Serge! 		Echo(index);
 	];
 	value2;
 ];
