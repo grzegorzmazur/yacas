@@ -10,29 +10,40 @@
 
 LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
 {
+    const char *err;
+
     iDllFileName = aDllFile;
-printf("Trying to open [%s]\n",aDllFile);
-    lt_dlinit();
+#ifdef YACAS_DEBUG
+    printf("LtDll::Open: Trying to open [%s]\n",aDllFile);
+#endif
+    if (lt_dlinit() != 0)
+    {
+        err = lt_dlerror();
+	if (err) printf("LtDll::Open: lt_dlinit says %s\n",err);
+    }
     handle = lt_dlopen(aDllFile/*,RTLD_LAZY*/);
     if (handle)
     {
-printf("handle opened\n");
-
+#ifdef YACAS_DEBUG
+        printf("LtDll::Open: handle opened\n");
+#endif
         iPlugin = GetPlugin();
         if (iPlugin)
         {
-
-printf("plugin found\n");
+#ifdef YACAS_DEBUG
+	    printf("LtDll::Open: plugin found\n");
+#endif
             iPlugin->Add(aEnvironment);
         }
+    } 
+    else
+    {
+        err = lt_dlerror();
+	if (err) printf("LtDll::Open: lt_dlopen says %s\n",err);
     }
-
-{
-const char *err = lt_dlerror();
-if (err) printf("Last error: %s\n",err);
-}
     return (handle != NULL && iPlugin != NULL);
 }
+
 LispInt LtDll::Close(LispEnvironment& aEnvironment)
 {
     if (iPlugin)
@@ -47,19 +58,32 @@ LispInt LtDll::Close(LispEnvironment& aEnvironment)
 
 LtDll::~LtDll()
 {
+    const char* err;
+
     if (handle)
     {
         LISPASSERT(iPlugin == NULL);
-        lt_dlclose((lt_dlhandle)handle);
+        if (lt_dlclose((lt_dlhandle)handle) != 0)
+    	{
+    	    err = lt_dlerror();
+    	    if (err) printf("LtDll::~LtDll: lt_dlclose says %s\n",err);
+    	}
     }
     handle = NULL;
 }
 
 LispPluginBase* LtDll::GetPlugin(void)
 {
+    const char* err;
+
     LISPASSERT(handle != NULL);
     LispPluginBase* (*maker)(void);
     maker = (LispPluginBase*(*)(void))lt_dlsym((lt_dlhandle)handle,"maker");
+    if (!maker)
+    {
+        err = lt_dlerror();
+	if (err) printf("LtDll::OpenGetPlugin: lt_dlsym says %s\n",err);
+    }
     /* lt_dlexit(); */
     return maker();
 }
