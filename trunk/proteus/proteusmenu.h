@@ -2,11 +2,7 @@
 #ifndef __proteusmenu_h__
 #define __proteusmenu_h__
 
-#ifdef WORKSHEET
 int font_size = 12;
-#else
-int font_size = 8;
-#endif
 
 static Fl_Menu_Item menuitems[] = 
 {

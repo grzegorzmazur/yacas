@@ -1,54 +1,31 @@
 
 .SUFFIXES: .cpp
 
-YACAS_DIR = ../src
+
+INSTALL_DIR = /usr
+
+YACAS_INCLUDE = $(INSTALL_DIR)/local/share/yacas/include
 
 CXX		=c++
-INCS = -I$(YACAS_DIR) -I$(YACAS_DIR)/plat/linux32 
+INCS =  -I$(YACAS_INCLUDE) -I$(YACAS_INCLUDE)/plat/linux32
 # -Ifl_editor-0.4/
 
 CXXFLAGS	= -O2 -Wno-return-type   
 
 POSTBUILD       = /Developer/Tools/Rez -t APPL -o
 
-# -I/usr/X11R6/include
-
 LDLIBS		=  -lm -L../libltdl/ -ldl -lltdl -framework Carbon -framework ApplicationServices -lsupc++
-
-# -L/usr/X11R6/lib -lX11 -lXext  -lm -ldl
-
 GLDLIBS		=  -lm -framework AGL -framework OpenGL  -framework Carbon -framework ApplicationServices -lsupc++ -lfltk -L/Users/ayalpink/fltk/fltk-1.1.3/lib/ 
-
-
-# -L/usr/X11R6/lib  -lGLU -lGL -lX11 -lXext  -lm
-
 FLTKLIBS        = -lfltk
+YACASLIBS       = -L$(INSTALL_DIR)/local/lib/ -lyacas -lyacasplatform -lyacasnumbers
 
-LIBS = $(LDLIBS) $(FLTKLIBS)
-GLIBS = $(GLDLIBS) $(FLTKLIBS)
+LIBS = $(LDLIBS) $(FLTKLIBS) $(YACASLIBS)
 
-
-THISFILE = makefile.macosx
-
-all-inclusive: conf
-	make clean      -f $(THISFILE)
-	make calculator -f $(THISFILE)
-	make clean      -f $(THISFILE)
-	make worksheet  -f $(THISFILE)
-
-calculator:
-	make proteus EXENAME=proteuscalculator DEFINES=-DCALCULATOR -f $(THISFILE)
-
-worksheet:
-	make proteus EXENAME=proteusworksheet DEFINES=-DWORKSHEET -f $(THISFILE)
-
-tester:
-	make test.exe EXENAME=test.exe DEFINES=-DWORKSHEET -f $(THISFILE)
-
+all-inclusive: conf proteus
 
 # proteuscalculator
 install:
-	cp proteusworksheet /usr/local/bin/
+	cp proteus /usr/local/bin/
 	cp proteus.conf /etc/proteus.conf
 	cp hints WorksheetBanner CalculatorBanner /usr/local/share/yacas/
 	cp proteusbooks.html /usr/local/share/yacas/documentation/proteusbooks.html

@@ -84,7 +84,7 @@ FltkConsole::~FltkConsole()
 FltkConsole::FltkConsole(int x, int y, int w, int h, int aDefaultFontSize)
 : Fl_Widget(x,y,w,h,NULL), iLast(NULL),iDefaultFontSize(aDefaultFontSize),
 hints(NULL),
-iOutputOffsetX(0), iOutputOffsetY(0),
+/*iOutputOffsetX(0), iOutputOffsetY(0), */
 iMouseDownX(0),iMouseDownY(0),iMovingOutput(0),
 iOutputHeight(0),iCurrentHighlighted(-1),
 iInputDirty(1),iOutputDirty(1),iShowInput(1),iEnableInput(1)
@@ -104,6 +104,7 @@ iInputDirty(1),iOutputDirty(1),iShowInput(1),iEnableInput(1)
         LoadHints(buf);
     }
     CommandLineStartNew();
+    UpdateHeight(0);
 }
 
 void FltkConsole::DeleteAll()
@@ -115,6 +116,7 @@ void FltkConsole::DeleteAll()
         iConsoleOut.Delete(0);
     }
     iOutputHeight = 0;
+    UpdateHeight(0);
     iLast = NULL;
     iCurrentHighlighted = -1;
 }
@@ -217,7 +219,7 @@ void FltkConsole::LoadNotePad(LispCharPtr aFile)
         SetInputDirty();
         SetOutputDirty();
         iCurrentHighlighted = 0;
-        iOutputOffsetY = 0;
+//        iOutputOffsetY = 0;
         MakeSureHighlightedVisible();
         redraw();
     }
@@ -299,6 +301,7 @@ void FltkConsole::AddText(LispCharPtr aText,int color, const char* aPrompt,
             toadd = new ConsoleFlatText(aText, color,aPrompt,aFont,aFontSize);
             iLast->Add(toadd);
             iOutputHeight+=toadd->height();
+            
             aText+=len;
         }
         else
@@ -313,6 +316,7 @@ void FltkConsole::AddText(LispCharPtr aText,int color, const char* aPrompt,
         }
     }
     iOutputDirty = 1;
+    UpdateHeight(0);
 }
 
 
@@ -331,6 +335,9 @@ void FltkConsole::Restart()
   
   extern void RestartYacas();
   RestartYacas();
+  extern Fl_Scroll *console_scroll;
+  console_scroll->redraw();
+
 }
 
 void FltkConsole::DoLine(char* inpline)
@@ -382,6 +389,7 @@ void FltkConsole::DoLine(char* inpline)
         {
             iLast = (ConsoleGrouped*)iConsoleOut[iCurrentHighlighted];
             iOutputHeight -= iLast->height();
+            UpdateHeight(0);
             iLast->DeleteAll();
         }
         else
@@ -461,6 +469,45 @@ void FltkConsole::GetHistory(LispInt aLine)
 
 void FltkConsole::MakeSureHighlightedVisible()
 {
+  extern Fl_Scroll *console_scroll;
+  if (iCurrentHighlighted < 0)
+  {
+    int newy;
+    newy=iOutputHeight+20-console_scroll->h();
+    if (newy<0) newy=0;
+    console_scroll->position(console_scroll->xposition(),newy);
+    SetOutputDirty();
+    redraw(); //output changed
+    Fl::flush();
+  }
+  else
+  {
+    int i,nr = iConsoleOut.NrItems();
+    int iy = 0;
+    for (i=0;i<nr && i<iCurrentHighlighted;i++)
+    {
+      int thisheight = iConsoleOut[i]->height();
+      iy+=thisheight;
+    }
+    extern Fl_Scroll *console_scroll;
+    int cons_h = console_scroll->h();
+    int hh=h();
+    int ypos = console_scroll->yposition();
+    int cellh = 0;
+    if (iConsoleOut.NrItems()>0)
+      cellh = iConsoleOut[iCurrentHighlighted]->height();
+    if (iy < ypos || iy+cellh > ypos+cons_h)
+    {
+      if (iy>iOutputHeight+20-console_scroll->h())
+        iy = iOutputHeight+20-console_scroll->h();
+      console_scroll->position(console_scroll->xposition(),iy);
+      SetOutputDirty();
+      redraw(); //output changed
+      Fl::flush();
+    }
+  }
+  return; //NEWA
+/*
 #ifdef SUPPORT_NOTEPAD
     if (iCurrentHighlighted < 0)
     {
@@ -505,6 +552,7 @@ void FltkConsole::MakeSureHighlightedVisible()
     }
 //printf("item %d, offs %d\n",iCurrentHighlighted,iOutputOffsetY);
 #endif
+*/
 }
 
 void FltkConsole::handle_key(int key)
@@ -896,8 +944,8 @@ int FltkConsole::handle(int event)
 //TODO remove?                if (event == FL_PUSH)
                 {
                     iMovingOutput = 1;
-                    iMoveBaseX = iOutputOffsetX;
-                    iMoveBaseY = iOutputOffsetY;
+                    iMoveBaseX = 0;//iOutputOffsetX;
+                    iMoveBaseY = 0; // iOutputOffsetY;
                     iMouseDownX = Fl::event_x();
                     iMouseDownY = Fl::event_y();
 
@@ -911,9 +959,9 @@ int FltkConsole::handle(int event)
                         int i,nr = iConsoleOut.NrItems();
                         for (i=nr-1;i>=0;i--)
                         {
-                            if (lowy+iOutputOffsetY < iy)
+                            if (lowy+0/*iOutputOffsetY*/ < iy)
                                 break;
-                            if (lowy+iOutputOffsetY>iMouseDownY && lowy+iOutputOffsetY - iConsoleOut[i]->height()<iMouseDownY)
+                            if (lowy+0/*iOutputOffsetY*/>iMouseDownY && lowy+0/*iOutputOffsetY*/ - iConsoleOut[i]->height()<iMouseDownY)
                             {
                                 if (prevHighlight == i)
                                 {
@@ -977,10 +1025,12 @@ int FltkConsole::handle(int event)
                     int delta = h()/4;
                     if (Fl::event_shift())
                     {
+/*
                          if (iOutputOffsetY+delta < iOutputHeight)
                             iOutputOffsetY += delta;
                         else
                             iOutputOffsetY = iOutputHeight;
+*/
                     }
                     else
                     {
@@ -993,10 +1043,12 @@ int FltkConsole::handle(int event)
                     int delta = h()/4;
                     if (Fl::event_shift())
                     {
+/*
                         if (iOutputOffsetY-delta > 0)
                             iOutputOffsetY -= delta;
                         else
                             iOutputOffsetY = 0;
+*/
                     }
                     else
                     {
@@ -1058,23 +1110,23 @@ void FltkConsole::DrawInterEdit()
     int inputlowy = y()+h()-fl_height()-fl_descent();
     for (i=nr-1;i>=0;i--)
     {
-        if (lowy+iOutputOffsetY < iy)
+        if (lowy/*+iOutputOffsetY*/ < iy)
             break;
         int selected = (iCurrentHighlighted == i);
         int thisheight = iConsoleOut[i]->height(!selected);
 
         lowy = lowy - thisheight;
-        iConsoleOut[i]->draw(ix+iOutputOffsetX, lowy+iOutputOffsetY, iw,!selected);
+        iConsoleOut[i]->draw(ix/*+iOutputOffsetX*/, lowy/*+iOutputOffsetY*/, iw,!selected);
 #ifdef SUPPORT_NOTEPAD
         if (iCurrentHighlighted == i)
         {
             SetInputFont();
             lowy -= fl_height();
-            inputlowy = lowy+iOutputOffsetY;
-            DrawInputLine(lowy+iOutputOffsetY);
+            inputlowy = lowy/*+iOutputOffsetY*/;
+            DrawInputLine(lowy/*+iOutputOffsetY*/);
 
             fl_color(FL_BLACK);
-            fl_rect(ix+iOutputOffsetX, lowy+iOutputOffsetY, iw, thisheight+fl_height());
+            fl_rect(ix/*+iOutputOffsetX*/, lowy/*+iOutputOffsetY*/, iw, thisheight+fl_height());
         }
 #endif
     }
@@ -1136,16 +1188,16 @@ void FltkConsole::DrawUnderEdit()
         fl_clip(x(),y(),w(),h()-fl_height());
         for (i=nr-1;i>=0;i--)
         {
-            if (lowy+iOutputOffsetY < iy)
+            if (lowy/*+iOutputOffsetY*/ < iy)
                 break;
             int thisheight = iConsoleOut[i]->height();
             lowy = lowy - thisheight;
-            iConsoleOut[i]->draw(ix+iOutputOffsetX, lowy+iOutputOffsetY, iw);
+            iConsoleOut[i]->draw(ix/*+iOutputOffsetX*/, lowy/*+iOutputOffsetY*/, iw);
 #ifdef SUPPORT_NOTEPAD
             if (iCurrentHighlighted == i)
             {
                 fl_color(FL_BLACK);
-                fl_rect(ix+iOutputOffsetX, lowy+iOutputOffsetY, iw, thisheight);
+                fl_rect(ix/*+iOutputOffsetX*/, lowy/*+iOutputOffsetY*/, iw, thisheight);
             }
 #endif
         }
@@ -1245,20 +1297,24 @@ void FltkConsole::DrawUnderEdit()
 */
 }
 
+
+void FltkConsole::UpdateHeight(int aDelta)
+{
+  {
+    iOutputHeight+= aDelta;
+    extern Fl_Scroll *console_scroll;
+    if (console_scroll)
+    {
+      resize(x(),y(),w(),iOutputHeight/*TODO*/);
+      MakeSureHighlightedVisible();
+    }
+  }
+}
 void FltkConsole::AddOutput(ConsoleOutBase* aOutput)
 {
-    iConsoleOut.Append(aOutput);
-    iOutputHeight+=aOutput->height();
-  extern Fl_Scroll *console_scroll;
-  if (console_scroll)
-  {
-    resize(x(),y(),w(),iOutputHeight+32/*TODO*/);
-    int newy;
-    newy=iOutputHeight+32+20-console_scroll->h();
-    if (newy<0) newy=0;
-    console_scroll->position(console_scroll->xposition(),newy);
-    console_scroll->redraw();
-  }
+  iConsoleOut.Append(aOutput);
+  int extraHeight = aOutput->height();
+  UpdateHeight(extraHeight);
 }
 
 void FltkConsole::DeleteHints()

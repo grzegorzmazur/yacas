@@ -1,5 +1,5 @@
 //
-// "$Id: editor.cpp,v 1.3 2003-03-30 16:25:25 ayalpinkus Exp $"
+// "$Id: editor.cpp,v 1.4 2003-05-22 18:42:16 ayalpinkus Exp $"
 //
 // A simple text editor program for the Fast Light Tool Kit (FLTK).
 //
@@ -37,11 +37,7 @@
 #include <FL/Fl_Group.H>		// Fl_Group header file
 #include <FL/Fl_Window.H>		// Fl_Window header file
 #include <FL/fl_ask.H>			// FLTK convenience functions
-#ifdef CALCULATOR
-#include "fl_adjustable_file_chooser.H"		// FLTK file chooser
-#else
 #include <FL/fl_file_chooser.H>		// FLTK file chooser
-#endif
 #include <FL/Fl_Menu_Bar.H>		// Fl_Menu_Bar header file
 #include <FL/Fl_Input.H>		// Fl_Input header file
 #include <FL/Fl_Multiline_Input.H>	// Fl_Multiline_Input header file
@@ -425,12 +421,7 @@ void open_cb(void)
         if (*Changed())
             check_save();
 
-#ifdef CALCULATOR
-    newfile = fl_adjustable_file_chooser("Open File?", "*", FileName());
-#endif
-#ifdef WORKSHEET
     newfile = fl_file_chooser("Open File?", "*", FileName());
-#endif
 
     if (newfile != NULL)
     {
@@ -566,12 +557,8 @@ void editor_close_cb(void)
 void saveas_cb(void) {
   char *newfile;
 
-#ifdef CALCULATOR
-  newfile = fl_adjustable_file_chooser("Save File As?", "*", FileName());
-#endif
-#ifdef WORKSHEET
   newfile = fl_file_chooser("Save File As?", "*", FileName());
-#endif
+
   if (newfile != NULL) save_file(newfile);
 }
 
@@ -680,5 +667,5 @@ void editor_add_items(int minx,int miny,int width, int height, int fontSize)
 
 
 //
-// End of "$Id: editor.cpp,v 1.3 2003-03-30 16:25:25 ayalpinkus Exp $".
+// End of "$Id: editor.cpp,v 1.4 2003-05-22 18:42:16 ayalpinkus Exp $".
 //

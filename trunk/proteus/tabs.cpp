@@ -13,12 +13,7 @@
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Scroll.H>
-#ifdef CALCULATOR
-#include "fl_adjustable_file_chooser.H"		// FLTK file chooser
-#endif
-#ifdef WORKSHEET
 #include <Fl/Fl_File_Chooser.H>
-#endif
 #include <stdlib.h>
 #include "yacas.h"
 #include "editor.h"
@@ -34,6 +29,10 @@
 #define RESULT aEnvironment.iStack.GetElement(aStackTop)
 #define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
 
+//NEWA
+#ifdef WIN32
+#  define snprintf _snprintf
+#endif
 
 
 LispString the_out;
@@ -256,12 +255,7 @@ void cb_menu_insert(Fl_Widget* o, void* v)
 void cb_notepad(Fl_Widget* o, void* v)
 {
     char *newfile;
-#ifdef CALCULATOR
-    newfile = fl_adjustable_file_chooser("Open File?", "*", "");
-#endif
-#ifdef WORKSHEET
     newfile = fl_file_chooser("Open file?","*","");
-#endif
     if (newfile != NULL)
     {
         console->LoadNotePad(newfile);
@@ -391,16 +385,6 @@ CORE_KERNEL_FUNCTION("Exit",LispExit,0,YacasEvaluator::Function | YacasEvaluator
 #undef CORE_KERNEL_FUNCTION
 
 
-/*TODO remove old
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispExit),
-                                           (*yacas)()().HashTable().LookUp("Exit"));
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispShowInput),
-                                           (*yacas)()().HashTable().LookUp("NoteShowInput"));
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispEnableInput),
-                                           (*yacas)()().HashTable().LookUp("NoteEnableInput"));
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispNotepad),
-                                           (*yacas)()().HashTable().LookUp("Notepad"));
-*/
 
 
     char cmd[128];
@@ -413,25 +397,11 @@ CORE_KERNEL_FUNCTION("Exit",LispExit,0,YacasEvaluator::Function | YacasEvaluator
     {
         extern char defdir[128];
         char buf[128];
-#ifdef CALCULATOR
-        sprintf(buf,"%sCalculatorBanner",defdir);
-#endif
-#ifdef WORKSHEET
         sprintf(buf,"%sWorksheetBanner",defdir);
-#endif
         console->LoadNotePad(buf);
         console->handle_key(eEscape); // Highlight should be on bottom line
     }
 
-    /*
-     console->AddGroup(1,0);
-#ifdef WORKSHEET
-    console->AddText("Proteus Notepad\nTo exit Yacas, enter 'quit'.\nType ?? for help, or type ?function for help on a function.\nType 'restart' to restart Yacas.\nTo see example commands, keep typing Example();\n", FL_BLACK,"",FL_HELVETICA_BOLD,12);
-#endif
-#ifdef CALCULATOR
-    console->AddText("Proteus Notepad", FL_BLACK,"",FL_HELVETICA,9);
-    #endif
-    */
     yacas->Evaluate("Load(\"yacasinit.ys\");");
 }
 
@@ -445,7 +415,6 @@ void myexit()
 }
 
 
-#ifdef WORKSHEET
 
 int main(int argc, char **argv)
 {
@@ -556,411 +525,4 @@ int main(int argc, char **argv)
   return Fl::run();
 }
 
-#endif
 
-
-#ifdef CALCULATOR
-
-
-Fl_Button *num_zero_;
-Fl_Button *num_one_;
-Fl_Button *num_two_;
-Fl_Button *num_three_;
-Fl_Button *num_four_;
-Fl_Button *num_five_;
-Fl_Button *num_six_;
-Fl_Button *num_seven_;
-Fl_Button *num_eight_;
-Fl_Button *num_nine_;
-Fl_Button *num_point_;
-Fl_Button *num_quote_;
-Fl_Button *num_equal_;
-Fl_Button *num_colon_;
-Fl_Button *num_leftpar_;
-Fl_Button *num_rightpar_;
-Fl_Button *num_leftbrace_;
-Fl_Button *num_rightbrace_;
-Fl_Button *num_comma_;
-Fl_Button *num_x_;
-Fl_Button *num_y_;
-Fl_Button *num_z_;
-Fl_Button *num_a_;
-Fl_Button *num_b_;
-Fl_Button *num_c_;
-Fl_Button *num_i_;
-Fl_Button *num_j_;
-Fl_Button *num_k_;
-Fl_Button *num_f_;
-Fl_Button *num_g_;
-Fl_Button *num_t_;
-Fl_Button *num_plus_;
-Fl_Button *num_minus_;
-Fl_Button *num_times_;
-Fl_Button *num_divide_;
-Fl_Button *num_power_;
-Fl_Button *num_enter_;
-Fl_Button *num_back_;
-Fl_Button *num_space_;
-Fl_Button *num_help_;
-
-void cb_menu_backspace(Fl_Widget* o, void*)
-{
-    console->handle_key(eBackSpace);
-    console->redraw();
-}
-
-void cb_menu_enter(Fl_Widget* o, void*)
-{
-    console->handle_key(eEnter);
-    console->redraw();
-}
-
-int main(int argc, char **argv)
-{
-
-    GetProteusConfiguration();
-    curoutlen=10;
-    outbuf = (char*)malloc(curoutlen);
-
-    Fl_Window* w;
-    {
-      Fl_Window* o = /* foo_window = */ new Fl_Window(160, 220);
-
-      w = o;
-      {
-        mainTabs = new Fl_Tabs(0, 1, 160, 219);
-        o->selection_color(15);
-        {
-            Fl_Group* o = input = new Fl_Group(2, 15, 158, 215, "Input");
-            {
-              console = new FltkConsole(2,16,156,153,9);
-            }
-            {
-              menubar = new Fl_Menu_Bar(2, 169, 156, 15);
-              menubar->menu(menuitems);
-              menubar->textfont(8);
-              menubar->textsize(10);
-            }
-            {
-              Fl_Button* o = num_seven_ = new Fl_Button(2,184,12,12,"7");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"7");
-            }
-            {
-              Fl_Button* o = num_four_ = new Fl_Button(2,196,12,12,"4");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"4");
-            }
-            {
-              Fl_Button* o = num_one_ = new Fl_Button(2,208,12,12,"1");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"1");
-            }
-            {
-              Fl_Button* o = num_eight_ = new Fl_Button(14,184,12,12,"8");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"8");
-            }
-            {
-              Fl_Button* o = num_five_ = new Fl_Button(14,196,12,12,"5");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"5");
-            }
-            {
-              Fl_Button* o = num_two_ = new Fl_Button(14,208,12,12,"2");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"2");
-            }
-            {
-              Fl_Button* o = num_nine_ = new Fl_Button(26,184,12,12,"9");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"9");
-            }
-            {
-              Fl_Button* o = num_six_ = new Fl_Button(26,196,12,12,"6");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"6");
-            }
-            {
-              Fl_Button* o = num_three_ = new Fl_Button(26,208,12,12,"3");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"3");
-            }
-            {
-              Fl_Button* o = num_plus_ = new Fl_Button(38,184,12,12,"+");
-                      o->labelfont(1);
-                      o->labelsize(10);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"+");
-            }
-            {
-              Fl_Button* o = num_minus_ = new Fl_Button(38,196,12,12,"-");
-                      o->labelfont(1);
-                      o->labelsize(10);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"-");
-            }
-            {
-              Fl_Button* o = num_zero_ = new Fl_Button(38,208,12,12,"0");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"0");
-            }
-            {
-              Fl_Button* o = num_times_ = new Fl_Button(50,184,12,12,"*");
-                      o->labelfont(1);
-                      o->labelsize(10);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"*");
-            }
-            {
-              Fl_Button* o = num_divide_ = new Fl_Button(50,196,12,12,"/");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"/");
-            }
-            {
-              Fl_Button* o = num_point_ = new Fl_Button(50,208,12,12,".");
-                      o->labelfont(1);
-                      o->labelsize(12);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)".");
-            }
-            {
-              Fl_Button* o = num_power_ = new Fl_Button(62,184,12,12,"^");
-                      o->labelfont(1);
-                      o->labelsize(10);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"^");
-            }
-            {
-              Fl_Button* o = num_space_ = new Fl_Button(62,196,12,12," ");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)" ");
-            }
-            {
-              Fl_Button* o = num_comma_ = new Fl_Button(62,208,12,12,",");
-                      o->labelfont(1);
-                      o->labelsize(12);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)",");
-            }
-            {
-              Fl_Button* o = num_leftpar_ = new Fl_Button(74,184,12,12,"(");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"(");
-            }
-            {
-              Fl_Button* o = num_leftbrace_ = new Fl_Button(74,196,12,12,"{");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"{");
-            }
-            {
-              Fl_Button* o = num_colon_ = new Fl_Button(74,208,12,12,":");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)":");
-            }
-            {
-              Fl_Button* o = num_rightpar_ = new Fl_Button(86,184,12,12,")");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)")");
-            }
-            {
-              Fl_Button* o = num_rightbrace_ = new Fl_Button(86,196,12,12,"}");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"}");
-            }
-            {
-              Fl_Button* o = num_equal_ = new Fl_Button(86,208,12,12,"=");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"=");
-            }
-            {
-              Fl_Button* o = num_x_ = new Fl_Button(98,184,12,12,"x");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"x");
-            }
-            {
-              Fl_Button* o = num_a_ = new Fl_Button(98,196,12,12,"a");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"a");
-            }
-            {
-              Fl_Button* o = num_i_ = new Fl_Button(98,208,12,12,"i");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"i");
-            }
-            {
-              Fl_Button* o = num_y_ = new Fl_Button(110,184,12,12,"y");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"y");
-            }
-            {
-              Fl_Button* o = num_b_ = new Fl_Button(110,196,12,12,"b");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"b");
-            }
-            {
-              Fl_Button* o = num_j_ = new Fl_Button(110,208,12,12,"j");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"j");
-            }
-            {
-              Fl_Button* o = num_z_ = new Fl_Button(122,184,12,12,"z");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"z");
-            }
-            {
-              Fl_Button* o = num_c_ = new Fl_Button(122,196,12,12,"c");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"c");
-            }
-            {
-              Fl_Button* o = num_k_ = new Fl_Button(122,208,12,12,"k");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"k");
-            }
-            {
-              Fl_Button* o = num_f_ = new Fl_Button(134,184,12,12,"f");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"f");
-            }
-            {
-              Fl_Button* o = num_g_ = new Fl_Button(134,196,12,12,"%");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"%");
-            }
-            {
-              Fl_Button* o = num_t_ = new Fl_Button(134,208,12,12,"t");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"t");
-            }
-            {
-              Fl_Button* o = num_enter_ = new Fl_Button(146,184,12,12,"@#<-");
-                      o->labeltype(FL_SYMBOL_LABEL);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_backspace);
-            }
-            {
-              Fl_Button* o = num_help_ = new Fl_Button(146,196,12,12,"?");
-                      o->labelfont(1);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_insert,(void*)"?");
-            }
-            {
-              Fl_Button* o = num_back_ = new Fl_Button(146,208,12,12,"@returnarrow");
-                      o->labeltype(FL_SYMBOL_LABEL);
-                      o->labelsize(9);
-                      o->callback((Fl_Callback*)cb_menu_enter);
-            }
-
-                o->labelsize(10);
-                o->end();
-                Fl_Group::current()->resizable(o);
-            }
-
-            {
-                Fl_Group* o = grapher = new Fl_Group(2, 15, 156, 215, "Graph");
-                drawing = new Drawer(2,16,156,203);
-      		      o->labelsize(10);
-                o->end();
-            }
-
-            {
-                Fl_Group* o = new Fl_Group(2, 15, 156, 215, "Edit");
-                editor_add_items(2,16,156,203,9);
-				        o->labelsize(10);
-                o->end();
-            }
-
-            {
-                Fl_Group* o = new Fl_Group(2, 15, 156, 215, "?");
-                {
-                    HelpView* o = helpview_ = new HelpView(2, 16, 156, 181);
-                    helpview_->textsize(8);
-                    o->box(FL_DOWN_BOX);
-                    o->callback((Fl_Callback*)cb_helpview_);
-                    o->end();
-                    Fl_Group::current()->resizable(o);
-                }
-                {
-                    Fl_Button* o = back_ = new Fl_Button(80, 198, 15, 15, "@<");
-                    o->shortcut(0xff51);
-                    o->labeltype(FL_SYMBOL_LABEL);
-                    o->callback((Fl_Callback*)cb_back_);
-                }
-                {
-                    Fl_Button* o = forward_ = new Fl_Button(100, 198, 15, 15, "@>");
-                    o->shortcut(0xff53);
-                    o->labeltype(FL_SYMBOL_LABEL);
-                    o->callback((Fl_Callback*)cb_forward_);
-                }
-                {
-                    Fl_Button* o = smaller_ = new Fl_Button(40, 198, 15, 15, "F");
-                    o->labelfont(1);
-                    o->labelsize(5);
-                    o->callback((Fl_Callback*)cb_smaller_);
-                }
-                {
-                    Fl_Button* o = larger_ = new Fl_Button(60, 198, 15, 15, "F");
-                    o->labelfont(1);
-                    o->labelsize(9);
-                    o->callback((Fl_Callback*)cb_larger_);
-                } 
-
-                {
-                    char helpfile[128];
-                    sprintf(helpfile,"%sdocumentation/%s",defdir,YACAS_DOC);
-                    helpview_->load(helpfile);
-                }
-                o->labelsize(10);
-                o->end();
-            }
-			
-            init_editor();
-
-            mainTabs->end();
-            Fl_Group::current()->resizable(o);
-
-        }
-        {
-            Fl_Button* o = new Fl_Button(148,0,12,12,"X");
-            o->labelfont(1);
-            o->labelsize(9);
-            o->callback((Fl_Callback*)exit);
-        }  
-        Fl_Group::current()->resizable(o);
-        o->end();
-    }
-
-    w->end();
-    RestartYacas();
-  	w->callback(quit_cb);
-    w->show(argc, argv);
-    atexit(myexit);
-    return Fl::run();
-}
-
-#endif
