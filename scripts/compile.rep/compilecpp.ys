@@ -544,7 +544,7 @@ void <?WriteString(\"Plugin_\":pluginName);?>::Remove(LispEnvironment& aEnvironm
 <?
   ForEach(item,constDefs)
   [
-    Echo(\"CONSTANTS[\",item[2],\"]->DecreaseRefCount();\");
+    Echo(\"if (!CONSTANTS[\",item[2],\"]->DecreaseRefCount()) delete CONSTANTS[\",item[2],\"];\");
   ];
 ?>
 
