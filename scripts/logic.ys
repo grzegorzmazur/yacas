@@ -68,15 +68,8 @@ RuleBase("=>",{a,b});
 
 
 
-/*
 35  # LogicSimplify( Not  (_x))_(x != LogicSimplify(x))
-                                                <-- LogicSimplify(Not LogicSimplify(x));        
-*/                                                
-
-130  # LogicSimplify( Not  (_x))                <-- LogNot(x, LogicSimplify(x));
-10 # LogNot(_x,_x) <-- Not (x);
-20 # LogNot(_x,_y) <-- LogicSimplify(Not (y));
-
+                                                <-- LogicSimplify(Not LogicSimplify(x));        /* Transform subexpression */
 
 40 # LogicSimplify( Not ( Not  (_x)))           <-- LogicSimplify(x);                           /* eliminate double negation */
 45 # LogicSimplify((_x)=>(_y))                  <-- LogicSimplify((Not x)  Or  y);              /* eliminate implication */
