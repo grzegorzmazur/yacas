@@ -14,7 +14,7 @@ long theNrDefinedUser=0;
 #define InternalEval environment().iEvaluator->Eval
 
 #define OPERATOR(kind,prec,name) \
-	kind##operators.SetOperator(prec,hash.LookUp(#name))
+	kind##operators.SetOperator(prec,hash.LookUp(#name));
 // for example: OPERATOR(bodied,KMaxPrecedence,While) produces:
 //    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("While"));
 
@@ -40,9 +40,9 @@ input(iEnvironment.iInputStatus)
     // Define the built-in functions by tying their string representation
     // to a kernel callable routine.
 
-#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags)
+#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags);
 
-#define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags)
+#define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags);
 
 #include "corefunctions.h"
 #undef CORE_KERNEL_FUNCTION
