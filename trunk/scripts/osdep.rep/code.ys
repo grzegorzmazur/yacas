@@ -15,11 +15,19 @@ FilePathSeparators :=
 };
 
 // The variable PlatformOS determines which module we should load.
+// It can be set in yacasinit.ys or here,e.g.:
+
+//PlatformOS:="Win32";
+
+If(
+	Not(IsBound(PlatformOS)),
+	[
 // Try to decide this from Version().
 // On Windows, Version() should begin with the letters "Win".
 // Otherwise we assume Unix.
-
-PlatformOS := If(StringMid(1,3,Version())="Win", "Win32", "Unix");
+		PlatformOS := If(StringMid(1,3,Version())="Win", "Win32", "Unix");
+	]
+);
 
 FilePathSeparator := FilePathSeparators[PlatformOS];
 
@@ -58,3 +66,19 @@ CopyFile(file1, file2) := SystemCall(CopyFileCmd(file1, file2));
 20 # DeleteFile(files_IsList) <-- DeleteFile(Head(files)) And DeleteFile(Tail(files));
 
 SystemCallBg(command) := SystemCall(BackgroundCmd(command));
+
+// convert a path in current OS convention to use separators of the given another OS
+10 # ConvertOSPath(path_IsString, OSname_IsString) _ (FilePathSeparators[OSname]=Empty) <-- path;
+20 # ConvertOSPath(path_IsString, OSname_IsString) <--
+[
+	Local(i);
+	For(i:=1, i<=Length(path), i++)
+	[
+		If(
+			StringMid(i, 1, path) = FilePathSeparator,
+			SetStringMid(i, FilePathSeparators[OSname], path)
+		);
+	];
+	path;
+		
+];

@@ -1,5 +1,6 @@
 BackgroundCommand
 ChangeDirectory
+ConvertOSPath
 CopyFile
 DeleteDirectory
 DeleteFile
