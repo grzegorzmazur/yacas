@@ -27,6 +27,11 @@
 30 # n_IsNumber > -Infinity <-- True;
 30 # -Infinity > n_IsNumber <-- False;
 
+40 # Undefined < _n <-- False;
+40 # Undefined > _n <-- False;
+40 # _n > Undefined <-- False;
+40 # _n < Undefined <-- False;
+
 /// grrrr... please do not define == to actually do anything! (sw)
 //10 # n_IsNumber == m_IsNumber <-- n=m;
 
@@ -44,6 +49,10 @@
 30 # Infinity <= n_IsNumber <-- False;
 30 # n_IsNumber <= -Infinity <-- False;
 30 # -Infinity <= n_IsNumber <-- True;
+
+// do we need to define all those separate rules for >= and <= ?
+1000 # _n >= _m <-- (n>m) Or (n=m);
+1000 # _n <= _m <-- (n<m) Or (n=m);
 
 // see above for <=
 5 # n_IsNumber >= 0 <-- MathNot(LessThan(n, 0));

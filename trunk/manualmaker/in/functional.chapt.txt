@@ -137,8 +137,20 @@ all items in the argument list {arglist} are numbers, and return unevaluated oth
 
 This can be useful when plotting functions defined through other Yacas routines that cannot return unevaluated.
 
-*EG
+If the numerical calculation does not return a number (for example,
+it might return the atom {nan}, "not a number", for some arguments),
+then the new function will return {Undefined}.
 
+
+*E.G.
+	In> f(x) := N(Sin(x));
+	Out> True;
+	In> NFunction("f1", "f", {x});
+	Out> True;
+	In> f1(a);
+	Out> f1(a);
+	In> f1(0);
+	Out> 0;
 Suppose we need to define a complicated function {t(x)} which cannot be evaluated unless {x} is a number:
 
 	In> t(x) := If(x<=0.5, 2*x, 2*(1-x));

@@ -18,20 +18,28 @@ MakeFunctionPrototype(name, argList) := [
 	"double " : name : "(" : MakeArgumentList(argList, "double ") : ")";
 ];
 
-MakeFunctionPlugin(extName, fBody) := [
+// predicate to test whether plugins work
+MakeFunctionPlugin() <--
+[
+	If(PlatformOS = "Unix", True, False);
+];
+
+
+MakeFunctionPlugin(_extName, _fBody) <--
+[
 	Local(dirBase, fileBase, intName, exportName, includeDir, dllName, dllPath, commandLine, argList);
-	Check(PlatformOS="Unix", "Error in MakeFunctionPlugin: need a Unix OS.");
+	Check(MakeFunctionPlugin(), "MakeFunctionPlugin: error: the function plugin facility is not available.");
 	/* check argument type */
 	argList := VarList(fBody);
 	Check(IsString(extName) And Length(argList) > 0,
-	  "Error in MakeFunctionPlugin: " : extName
+	  "MakeFunctionPlugin: error: " : extName
 	  : " must be a string and " : argList : " a nonempty list.");
 	includeDir := FindFile("include/");
 	Check(includeDir != "",
-	  "Error in MakeFunctionPlugin: no include/ under " : FindFile(""));
+	  "MakeFunctionPlugin: error: cannot compile, no include/ under " : FindFile(""));
 	/* determine file names */
 	dirBase := "plugins.tmp/";	// where all plugin files will be kept
-    Check(MakeDir(dirBase), "Problem creating a temporary directory, aborted creating plugin.");
+    Check(MakeDir(dirBase), "MakeFunctionPlugin: error: cannot create a temporary directory.");
 	fileBase := dirBase : extName : "_plugin";
 	intName := extName : "_plugin_cc";	// name of C++ function
 	exportName := extName : "_plugin"; // name of intermediate Yacas function
@@ -78,7 +86,7 @@ MakeFunctionPlugin(extName, fBody) := [
 	DeleteFile(dllPath);
 	SystemCall(commandLine);
 	/* If compilation succeeds, DLL file is present */
-	Check(FindFile(dllPath) = dllPath, "Error in MakeFunctionPlugin: compilation of " : fileBase : ".so failed.");
+	Check(FindFile(dllPath) = dllPath, "MakeFunctionPlugin: error: compilation of '" : dllPath : "' failed.");
 	/* Load DLL file */
 	DllUnload(dllPath);
 	DllLoad(dllPath);
