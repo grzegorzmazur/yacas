@@ -398,7 +398,7 @@ int main(void)
 	Next("3");
 	x.Multiply(x,x,100);
 	Next("4");
-	x.Divide(x,x,100);
+	x.Divide(x,x,100);	// possibly zero division requested since x is undefined
 	Next("5");
 	x.Add(x,x,100);
 	Next("6");
@@ -774,6 +774,10 @@ int main(void)
 	y.SetTo(7.);
 	x.Divide(x,y,200);
 	CheckStringValue(x, "0.142857142857142857142857142857142857142857142857142857142857142857143", 1000, 10, "high-precision division");
+
+	Next("division by zero");
+	x.SetTo(0);
+	x.Divide(x,x,100);
 
 	x.SetTo("3.000000000000000000000000000000000000000050104", 150, 10);
 	y.SetTo("3.000000000000000000000000000000000000000050204", 150, 10);
