@@ -1,5 +1,4 @@
-
-cstubgen:
+Stub files use the Yacas cstubgen module.
 
 cstubgen can generate a stub file that allows linking in dynamic
 link libraries into Yacas at runtime. It works by generating
@@ -61,6 +60,35 @@ the environment class (which is needed for almost any thing to do with
 Yacas), somewhere in a global variable. aEnvironment can then be used
 from within a callback function in the plugin that doesn't take the
 extra argument by design.
+
+
+
+extract_stub.pl: a perl script to automatically extract functions from C++ header files.
+It prepares a Yacas-language stub file to be included into the main stub file.
+
+Usage: 
+	cat /usr/include/gsl/*.h | perl -w extract_stub.pl > outputfile.stub
+This will export over a hundred functions from the GSL library, assuming that it its include files are in /usr/include/gsl/.
+The resulting stub file can be Load()-ed from the main stub file.
+
+Sample output:
+---
+StubAPICFunction("double", "gsl_sf_lngamma", "gsl'sf'lngamma", {{"const double",
+ "x"}});
+StubAPICFunction("double", "gsl_sf_gamma", "gsl'sf'gamma", {{"const double", "x"
+}});
+StubAPICFunction("double", "gsl_sf_gammastar", "gsl'sf'gammastar", {{"const doub
+le", "x"}});
+StubAPICFunction("double", "gsl_sf_gammainv", "gsl'sf'gammainv", {{"const double
+", "x"}});
+StubAPICFunction("double", "gsl_sf_taylorcoeff", "gsl'sf'taylorcoeff", {{"const 
+int", "n"}, {"const double", "x"}});
+StubAPICFunction("double", "gsl_sf_fact", "gsl'sf'fact", {{"const unsigned int",
+ "n"}});
+---
+
+Right now, only numerical functions are processed, i.e. functions with numerical types of arguments and return values (double, int or unsigned int).
+This can be configured in the script.
 
 
 
