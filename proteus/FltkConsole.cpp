@@ -7,13 +7,12 @@
 
 TODO:
 
-- remove flplot from cvs
-- add flplot.ys and flplot.ys.def to cvs
 - font size: use the size of the current cell
 - font size: remember, so the user can change default font size.
 - bug: putting current command on last line from a link.
 
-x rip hint box from manual.
+- fill out the help panes
+- Function finder dialog
 
 - console drawer is slow: 
   - render only what is on screen
