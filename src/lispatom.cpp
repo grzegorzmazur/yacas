@@ -6,9 +6,6 @@
 #include "numbers.h"
 #include "standard.h"
 
-const unsigned int BASE10 = 10;
-const unsigned int BASE2 = 2;
-
 //#ifdef YACAS_DEBUG
 #include <stdio.h> //DEBUG
 //#endif
