@@ -70,6 +70,7 @@ Bodied("Section",60000);
 Bodied("SubSection",60000);
 Bodied("Text",60000);
 Bodied("Blurb",60000);
+Bodied("DocumentationComment",60000);
 Bodied("Itemize",2);
 Bodied("Enumerate",2);
 
