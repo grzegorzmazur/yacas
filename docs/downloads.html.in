@@ -1,0 +1,37 @@
+<HTML>
+
+<BODY BGCOLOR="ffffff">
+
+<FONT face="Helvetica" size="3">
+
+<H1>Downloading Yacas version <?WriteString(Version());?></H1>
+
+From this page you can download various parts of the latest
+version of Yacas, version <?WriteString(Version());?>.
+
+<H2>Downloading the Yacas source code</H1>
+The source code is offered in a .tar.gz file, with all
+the source to generate everything relating to Yacas.
+<br>
+The latest version of Yacas is
+<a href="backups/yacas-<?WriteString(Version());?>.tar.gz">yacas-<?WriteString(Version());?>.tar.gz</a>.
+
+<H2>Download the documentation</H1>
+The online <A href="books.html">online documentation</a> in html
+format can also be downloaded as one tar.gz file,
+<A href="backups/manual.html.tar.gz">manual.html.tar.gz</a>.
+<br>
+In addition, there is the postscript version, 
+<A href="backups/manual.ps.tar.gz">manual.ps.tar.gz</a>,
+and the pdf version <A href="backups/manual.pdf.tar.gz">manual.pdf.tar.gz</a>
+of the manual.
+
+<H2>Browse the backups directory for older versions</H1>
+Older versions, and versions for other platforms, like Windows,
+can be found <A href="backups/">here</a>.
+
+</FONT>
+</BODY>
+
+</HTML>
+
