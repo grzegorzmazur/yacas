@@ -26,8 +26,6 @@
   "Determines which TeX mode yacas-notebook should use.
 Choices are 'auctex, 'tex and nil")
 
-(defvar ynb-info-dir "")
-
 (defvar ynb-temp-dir
   "/tmp/"
   "*Directory for temporary files.
@@ -50,8 +48,6 @@ single scan of the document.")
 (defvar ynb-tex-string
   "TeXForm(%);")
 
-(setq ynb-texform nil)
-
 (defvar ynb-dereference-path nil
   "List of buffers referenced in cell assembly.
 Used by `ynb-dereference-buffer' to detect self-reference.")
@@ -65,6 +61,9 @@ The buffers are used in package and cell assembly.")
 
 (defvar ynb-source-buffer nil
   "Buffer from which ynb-collate-cells works.")
+
+(defvar ynb-cell-output ""
+  "The output from sending the cell.")
 
 (defconst ynb-temp-suffix 0
   "Temporary filename suffix.  Incremented by 1 for each filename.")
@@ -1101,36 +1100,21 @@ Return nil if no name or error in name."
 
 ;;; @@ Yacas-Notebook functions for "yacas" cells
 
-(defun ynb-send-line ()
-  "Send the current line to the yacas process."
-  (interactive)
-  (save-excursion
-    (beginning-of-line)
-    (setq bg (point))
-    (end-of-line)
-    (setq ed (point))
-    (yacas-region bg ed)
-    (if ynb-texform
-	(yacas-string ynb-tex-string))))
-
-
-(defun ynb-send-cell ()
+(defun ynb-send-cell (&optional tex)
   "Send input to process. Point must be in a cell."
   (interactive)
   (if (not (ynb-cell-p))
       (error "Not in Yacas cell"))
   (let ((home-buffer (current-buffer))
-        assembled-file start end)
+        assembled-file 
+        start 
+        end
+        cell)
     (if (ynb-reference-p)
         (progn
           (widen) ; So cell references will be found
           (setq assembled-file (ynb-assemble-cell t)))
       (save-excursion
-        (goto-char (ynb-cell-start))
-        (setq start (point))
-        (if (not (setq end (ynb-output-p)))
-            (setq end (ynb-cell-end))))
-      (progn
 	(goto-char (ynb-cell-start))
         ;; Now I want to skip over any blank lines at the beginning of the cell
 	(beginning-of-line)
@@ -1147,61 +1131,74 @@ Return nil if no name or error in name."
 	    (goto-char end)
 	    (while (looking-at "^ *$") (forward-line -1))
 	    (end-of-line)
-	    (setq end (point))))
-	)
-      )
+	    (setq end (point))))))
     (if assembled-file
-	; Loading the assembled file will give the result of True;
-	;(yacas-string (concat "Load\(\"" assembled-file "\"\);"))
-	(let ((assembled-file-buffer) (assembled-file-buffer-contents))
-	  (save-excursion
-	    (set-buffer (find-file-noselect assembled-file))
-	    (setq assembled-file-buffer-contents 
-		  (buffer-substring-no-properties (point-min) (point-max))))
-	  (setq assembled-file-buffer-contents 
-		(yacas-replace-chars-in-string (string-to-char "\n")
-				      (string-to-char " ") 
-				      assembled-file-buffer-contents))
-	  (yacas-string (concat "[" assembled-file-buffer-contents "];")))
-      (yacas-region start end)
-      )))
+        (progn
+          (set-buffer (find-file-noselect assembled-file))
+          (setq cell (buffer-substring-no-properties (point-min) (point-max))))
+      (setq cell (buffer-substring-no-properties start end)))
+    (ynb-send-block cell tex)))
 
+(defun ynb-single-command-get-output (string tex)
+  "Send a command to the Yacas process."
+  (let ((output)
+        (end))
+    (setq string (yacas-strip-string string))
+    (yacas-start)
+    (save-excursion
+      (set-buffer (process-buffer inferior-yacas-process))
+      (goto-char (point-max))
+      (insert string)
+      (setq yacas-input-end (point))
+      (comint-send-input))
+    (while (not (yacas-new-prompt-p))
+      (sit-for 0.100))
+    (if tex
+        (yacas-single-command ynb-tex-string))
+    (save-excursion
+      (set-buffer (process-buffer inferior-yacas-process))
+      (goto-char (point-max))
+      (if tex
+          (progn
+            (re-search-backward yacas-input-prompt-string)
+            (re-search-backward "\$\"")
+            (setq end (point))
+            (goto-char (1+ yacas-input-end))
+;            (re-search-backward yacas-output-prompt-string)
+            (re-search-forward "\"")
+            (forward-char 1)
+            (setq output 
+                  (concat "$$"
+                          (buffer-substring-no-properties (point) end)
+                          "$$")))
+        (forward-line -1)
+        (end-of-line)
+        (forward-char 1)
+        (setq end (point))
+;        (re-search-backward (concat "^" yacas-output-prompt-string))
+;        (goto-char (match-end 0))
+        (goto-char (1+ yacas-input-end))
+        (setq output 
+              (concat 
+               (make-string (length yacas-output-prompt-string) ?\ )
+               (buffer-substring-no-properties (point) end)))
+        (setq output (replace-regexp-in-string "Out>" "    " output))))
+    (if (and tex (not (string= ynb-cell-output "")))
+        (setq ynb-cell-output (concat ynb-cell-output "\n" output))
+      (setq ynb-cell-output (concat ynb-cell-output output)))))
 
-(defun ynb-copy-last-tex-output ()
-  "Copy the last output from Yacas to the kill-ring,
-removing the beginning \"$ and ending $\";"
-  (interactive)
-  (let ((out-start)
-	(out-end)
-	(old-buffer (current-buffer))
-        (yacas-shell (if  (get-buffer-process (current-buffer))
-                         (current-buffer)
-                         (get-buffer "*Yacas*"))))
-    (yacas-wait)
-    (if (null yacas-shell)
-        (message "No Yacas output buffer")
-      (pop-to-buffer yacas-shell)
-      (save-excursion
-	(end-of-buffer)
-	(re-search-backward yacas-input-prompt-string)
-	(re-search-backward "\$\"")
-	(setq out-end (point))
-	(re-search-backward yacas-output-prompt-string)
-	(re-search-forward "\"")
-	(forward-char 1)
-	(setq out-start (point))
-	(copy-region-as-kill out-start out-end)))
-    (pop-to-buffer old-buffer)))
-
+(defun ynb-send-block (stuff &optional tex)
+  "Send a block of code to Yacas."
+  (yacas-start)
+  (setq ynb-cell-output "")
+  (while (string-match ";" stuff)
+    (setq end (1+ (string-match ";" stuff)))
+    (ynb-single-command-get-output (substring stuff 0 end) tex)
+    (setq stuff (substring stuff end))))
 
 (defun ynb-get-output (tex)
   "Insert last output from Yacas.
 Assumes point in cell.  Output inserted at end of cell."
-  (if tex
-      (progn
-	(yacas-string ynb-tex-string)
-	(ynb-copy-last-tex-output)) 
-    (yacas-copy-complete-last-output))
   (goto-char (ynb-cell-end))
   (forward-line 1)		 ; Insert marker before output
   (open-line 1)
@@ -1209,17 +1206,10 @@ Assumes point in cell.  Output inserted at end of cell."
       (insert "\\outputtex")					; ..
     (insert "\\output"))
   (forward-line 1)		 ; ..
-;  (yank))
   (save-excursion
-    (yank)
+    (insert ynb-cell-output)
     (if tex
 	(insert "\n"))))
-
-(defun ynb-put-output ()
-  " "
-  (interactive)
-  (ynb-delete-output)
-  (ynb-get-output nil))
 
 (defun ynb-replace (tex)
   "Replace output (if any) with last Yacas result. Point must be in a cell.
@@ -1229,8 +1219,7 @@ line."
       (error "Not in Yacas cell"))
   (save-excursion
     (ynb-delete-output)
-    (ynb-get-output tex)
-    ))
+    (ynb-get-output tex)))
 
 (defun ynb-update-type-cell (tex)
   "Send input to Yacas and replace output with result.
@@ -1238,7 +1227,7 @@ Point must be in cell.  Output assumed to follow input,
 separated by a ynb-output-marker line."
   (if (not (ynb-cell-p))
       (error "Not in Yacas cell"))
-  (ynb-send-cell)
+  (ynb-send-cell tex)
   (ynb-replace tex))
 
 (defun ynb-update-cell ()
@@ -1253,85 +1242,39 @@ separated by a ynb-output-marker line."
 Point must be in cell.  Output assumed to follow input,
 separated by a ynb-output-marker line."
   (interactive)
-  (setq ynb-texform t)
-  (ynb-update-type-cell t)
-  (setq ynb-texform nil))
+  (ynb-update-type-cell t))
 
 (defun ynb-replace-line-with-tex ()
   "Sends the current line to Yacas, and then replaces it with the Yacas
 output in TeX form."
   (interactive)
-  (setq ynb-texform t)
-  (ynb-replace-line)
-  (setq ynb-texform nil))
+  (interactive)
+  (setq ynb-cell-output "")
+  (ynb-single-command-get-output 
+   (buffer-substring-no-properties (line-beginning-position)
+                                   (line-end-position)) t)
+  (beginning-of-line)
+  (insert "% ")
+  (end-of-line)
+  (forward-line 1)
+  (insert ynb-cell-output)
+  (newline))
 
 (defun ynb-replace-line ()
   "Sends the current line to Yacas, and then replaces it with the Yacas
 output."
   (interactive)
-  (yacas-wait)
-  (ynb-send-line)
-  (yacas-wait)
+  (setq ynb-cell-output "")
+  (ynb-single-command-get-output 
+   (buffer-substring-no-properties (line-beginning-position)
+                                   (line-end-position)) nil)
   (beginning-of-line)
   (insert "% ")
   (end-of-line)
-  (newline)
-  (if ynb-texform
-      (ynb-copy-last-tex-output)
-    (yacas-copy-complete-last-output))
-  (yank))
-
-;; This next part isn't useful right not, but it may be
-;; in the future ...
-; (defun ynb-put-outputgraphics ()
-;   "Insert environment outputgraphic. Assumes point in cell."
-;   (interactive)
-;   (if (not (ynb-cell-p))
-;       (error "Not in Yacas cell"))
-;   (ynb-delete-output)
-;   (goto-char (ynb-cell-end))
-;   (forward-line 1)		 ; Insert marker before output
-;   (open-line 2)		 ; ..
-;   (insert "\\outputgraphics")
-;   (forward-line 1)
-;   (insert (concat "\\mgraphics{" ynb-default-graphics-width "}{"))
-;   (setq pt (point))
-;   (insert "}")
-;   (goto-char pt)
-; 	)
-;
-; (defun ynb-graphics-update ()
-;   "Sends the cell to yacas and inserts a graphics environment"
-;   (interactive)
-;   (ynb-send-cell)
-;   (ynb-put-outputgraphics)
-; )
-
-(defun ynb-dont-show-yacas-buffer ()
-  "Prevents the yacas buffer from automatically popping up."
-  (interactive)
-        (delete-other-windows)
-	(setq pop-up-windows nil)
-	(setq yacas-show-yacas-buffer nil))
-
-(defun ynb-show-yacas-buffer (arg)
-  "Pops the yacas buffer up."
-  (interactive)
-  (if arg
-      (ynb-dont-show-yacas-buffer)
-    (yacas-recenter-output-buffer nil)
-    (setq pop-up-windows t)
-    (setq yacas-show-yacas-buffer t)))
+  (forward-line 1)
+  (insert ynb-cell-output))
 
 ;;; @@ The mode
-;;; First of all, I want to be able to change the keymap depending 
-;;; on whether the point is in a cell or not.
-;;; So I need one keymap for when in a cell, and one for when 
-;;; not in a cell.
-;;; Changing the keymaps doesn't seem to work, so I'll have to do 
-;;; it on a key by key basis.
-;;; yacas-add-keys will add the mupad keys.
-
 
 ;; First, find out what kind of TeX mode is being used.
 (cond
@@ -1350,59 +1293,33 @@ output."
   (setq texmode-map text-mode-map)
   (defun texmode () (text-mode))))
 
-;;; Now, define two keymaps; one default, and one to use when in
-;;; a cell
-;;; These keys will be used both inside and outside of cells
-(defun ynb-add-both-keys (map)
-  (define-key map "\C-c+" 'ynb-forward-cell)
-  (define-key map "\C-c-" 'ynb-backward-cell)
-  (define-key map "\C-c\C-y" 'ynb-show-yacas-buffer)
-  (define-key map "\C-c\C-va" 'ynb-update-all)
-  (define-key map "\C-c\C-vA" 'ynb-tex-update-all)
-  (define-key map "\C-c\C-vq" 'ynb-eval-init)
-  (define-key map "\C-c\C-vi" 'ynb-update-init)
-  (define-key map "\C-c\C-vI" 'ynb-tex-update-init)
-  (define-key map "\C-c?" 'ynb-info-help))
+(defvar yacas-notebook-mode-map nil
+  "Keymap used in yacas-notebook-mode.")
 
-;;; First, the default keymap, an extension of the tex keymap
-(setq yacas-notebook-mode-map (copy-keymap texmode-map))
-(define-key yacas-notebook-mode-map "\C-c\C-v" nil)
-(ynb-add-both-keys yacas-notebook-mode-map)
-(yacas-add-process-keys yacas-notebook-mode-map)
-(define-key yacas-notebook-mode-map "\C-c\C-o" 'ynb-create-cell)
-(define-key yacas-notebook-mode-map "\C-c\C-vl" 'ynb-replace-line)
-(define-key yacas-notebook-mode-map "\C-c\C-vL" 'ynb-replace-line-with-tex)
-
-;;; The cell keymap, an extension of the yacas keymap
-(setq ynb-yacas-map (copy-keymap yacas-mode-map))
-;;; Get rid of yacas-title and yacas-modify
-(define-key ynb-yacas-map "\C-c\C-t" nil)
-(define-key ynb-yacas-map "\C-c\C-m" nil)
-(define-key ynb-yacas-map "\C-c\C-v" nil)
-;; And some keymaps that make sense in cells
-(define-key ynb-yacas-map "\C-c\C-s" 'ynb-send-cell)
-(define-key ynb-yacas-map "\C-c\C-vc" 'ynb-update-cell)
-(define-key ynb-yacas-map "\C-c\C-vC" 'ynb-tex-update-cell)
-(define-key ynb-yacas-map "\C-c\C-d" 'ynb-delete-output)
-(define-key ynb-yacas-map "\C-c\C-q" 'ynb-toggle-init)
-(define-key ynb-yacas-map "\C-c\C-x" 'ynb-package-part)
-(define-key ynb-yacas-map "\C-c@" 'ynb-assemble)
-(define-key ynb-yacas-map [(control c) (control tab)] 
-                                   'ynb-insert-complete-name)
-
-(defvar ynb-latex-keymap-p t)
-
-(defun ynb-change-keymap ()
-  "Set the keymap to the correct keymap"
-  (if (ynb-cell-p)
-      (if ynb-latex-keymap-p
-	  (progn
-	    (setq overriding-local-map ynb-yacas-map)
-	    (setq ynb-latex-keymap-p nil)))
-    (if (not ynb-latex-keymap-p)
-	(progn
-	  (setq overriding-local-map nil)
-	  (setq ynb-latex-keymap-p t)))))
+(if yacas-notebook-mode-map ()
+  (let ((map (copy-keymap texmode-map)))
+    (define-key map "\C-c+" 'ynb-forward-cell)
+    (define-key map "\C-c-" 'ynb-backward-cell)
+    (define-key map "\C-c\C-va" 'ynb-update-all)
+    (define-key map "\C-c\C-vA" 'ynb-tex-update-all)
+    (define-key map "\C-c\C-vq" 'ynb-eval-init)
+    (define-key map "\C-c\C-vi" 'ynb-update-init)
+    (define-key map "\C-c\C-vI" 'ynb-tex-update-init)
+    (define-key map "\C-c?" 'ynb-info-help)
+    (define-key map "\C-c\C-u" nil)
+    (define-key map "\C-c\C-o" 'ynb-create-cell)
+    (define-key map "\C-c\C-ul" 'ynb-replace-line)
+    (define-key map "\C-c\C-uL" 'ynb-replace-line-with-tex)
+    (define-key map "\C-c\C-s" 'ynb-send-cell)
+    (define-key map "\C-c\C-uc" 'ynb-update-cell)
+    (define-key map "\C-c\C-uC" 'ynb-tex-update-cell)
+    (define-key map "\C-c\C-d" 'ynb-delete-output)
+    (define-key map "\C-c\C-q" 'ynb-toggle-init)
+    (define-key map "\C-c\C-x" 'ynb-package-part)
+    (define-key map "\C-c@" 'ynb-assemble)
+    (define-key map [(control c) (control tab)] 
+      'ynb-insert-complete-name)
+    (setq yacas-notebook-mode-map map)))
 
 (define-derived-mode yacas-notebook-mode texmode "Yacas-Notebook"
   "This is a mode intended to allow the user to write documents that
@@ -1429,10 +1346,6 @@ The commands for working with cells are:
 
 (With a prefix, C-u \\[ynb-update-all] and C-u \\[ynb-tex-update-all] will update the cells 
 without prompting)
-Since the Yacas output can be returned to the Yacas-Notebook buffer, by default
-the buffer which runs the Yacas process is not shown.  This can be changed.
- \\[ynb-show-yacas-buffer] show the Yacas buffer
- C-u \\[ynb-show-yacas-buffer] don't show the Yacas buffer.
 Single lines can be evaluated:
  \\[ynb-replace-line] replace the current line with Yacas output
  \\[ynb-replace-line-with-tex] replace the current line with Yacas output 
@@ -1454,18 +1367,16 @@ yacas-notebook-mode next time it's opened.
 
 \\{yacas-notebook-mode-map}
 "
-  (make-local-hook 'post-command-hook)
-  (add-hook 'post-command-hook 'ynb-change-keymap)
   (make-local-variable 'ispell-parser)
   (setq ispell-parser 'tex)
   (make-local-variable 'ispell-tex-p)
   (setq ispell-tex-p t)
   (setq yacas-use-filter t)
+  (use-local-map yacas-notebook-mode-map)
   (if (eq ynb-use-tex 'auctex)
     (progn
       (require 'font-latex)
       (add-hook 'yacas-notebook-mode-hook 'font-latex-setup)))
-  (ynb-dont-show-yacas-buffer)
   (ynb-menu-install-menus)
   (run-hooks 'yacas-notebook-mode-hook))
 
@@ -1589,15 +1500,13 @@ menubar.")
 (defconst ynb-menu-process
   (list
     "Process"
-    ["Start a Yacas process"   yacas-start-process 
+    ["Start a Yacas process"   yacas-start
      (not (processp yacas-process))]
     ["Run Yacas on region"  yacas-region]
     ["Run Yacas on initialization cells"  ynb-eval-init]
     ["Send string to Yacas" yacas-eval-string t]
-    ["Show Yacas buffer"  ynb-show-yacas-buffer]
-    ["Don't show Yacas buffer"  ynb-dont-show-yacas-buffer]
     ["Reset the Yacas process" yacas-reset t]
-    ["Kill Yacas process"  yacas-kill-job (processp yacas-process)]))
+    ["Kill Yacas process"  yacas-stop (processp yacas-process)]))
 
 (defun ynb-info-help ()
   (interactive)
