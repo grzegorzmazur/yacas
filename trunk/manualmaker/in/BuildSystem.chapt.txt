@@ -68,14 +68,13 @@ repository, the {makemake} script in the root of the Yacas source tree
 can (and probably should) be used to invoke {automake} and {autoconf} in
 the right order and with the correct flags.
 
-In the following two sections, the {automake} and {autoconf} utilities
-are shortly explained. In both cases, the reader is referred to the
-documentation included in the {autotools} suite for more
-information. Another useful source of information is 
-<i>GNU Autoconf, Automake, and Libtool</i> 
-by Gary V. Vaughan, Ben Elliston, Tom Tromey and
-Ian Lance, which is published by New Riders. An online version is
-available from <*http://sources.redhat.com/autobook*>.
+In the following three sections, these utilities are briefly
+explained. In all cases, the reader is referred to the documentation
+included in the {autotools} suite for more information. Another useful
+source of information is <i>GNU Autoconf, Automake, and Libtool</i> by
+Gary V. Vaughan, Ben Elliston, Tom Tromey and Ian Lance, which is
+published by New Riders. An online version is available from
+<*http://sources.redhat.com/autobook*>.
 
 
 	    The automake tool
@@ -128,24 +127,34 @@ and two static libraries (libyacas.a and libyacasplatform.a). The
 {configure} script is run, as explained in the next section. They
 contain the names of additional libraries to link in.
 
-From the information contained in these lines, {automake} can
-construct the necessary commands to go in the final {Makefile}.
-Unfortunately not everything is supported that well. For instance,
-Yacas comes with its own documentation system, which is of course not
-supported by {automake}. This has to be handled by {Makefile} rules in
-the traditional way.
+From the information contained in these lines, {automake} can construct
+the necessary commands to go in the final {Makefile}.  This {Makefile}
+does not only support building, testing, and installing the package, but
+also rolling the tar-ball for release (use {make dist} for this, as
+explained in the section <*"Targets for make"|yacasdoc://#make!targets*>
+below). In the above example, {automake} can figure out that
+{yacasmain.cpp} should be included in the distribution.
 
-The Makefiles produced by {automake} and {autoconf} support not only
-building, testing, and installing the package, but also rolling the
-tar-ball for release (use {make dist} for this, as explained in the
-section <*"Targets for make"|yacasdoc://#make!targets*> below). In the above example, {automake} can
-figure out that {yacasmain.cpp} should be included in the
-distribution. This does not always work. For example, {automake} does
-not understand the Yacas documentation system, so there is no way it
-can figure out what files to include in the distribution. To solve
-this problem, the {EXTRA_DIST} variable is introduced. The developer
-should list all files to be included in the distribution that
-{automake} does not know about here.
+Unfortunately not everything is supported that well. For instance, Yacas
+comes with its own documentation system, which is of course not
+supported by {automake}. So we need to tell {automake} how to handle
+these files. To specify which files should be included in the distribution, the
+{EXTRA_DIST} variable can should be used. The developer should list all files
+to be included in the distribution that {automake} does not know about
+here. If we want to run some commands at build or installation time, we
+can specifiy them by {Makefile} rules in the traditional ways. Just
+write the rules in {Makefile.am} and they will be copied verbatim in the
+generated {Makefile}. Please keep in mind that the rules should work on
+a wide variety of platforms in order to retain portability. In
+particular,
+*	remember that the source files may be in a different directory,
+if the user decides to use separate source and build trees (see
+<*"The configure script"|yacasdoc://#build system!configure*>);
+*	only use the automatic variable {$<} in suffix rules, as Solaris
+{make} does not define {$<} correctly in other rules;
+*	do not use pattern rules (like {%.o: %.c}) as they are not
+supported on all platforms, use suffix rules (like {.c.o:})
+instead. (This rule is currently not adhered to.)
 
 We currently assume {automake} version 1.4 or later. Note that version
 1.5 breaks backward compatibility and should be avoided. Version 1.6
@@ -174,40 +183,57 @@ recognized by the {AC_} prefix.
 
 As the {configure.in} file only rarely needs to be changed, we will
 only describe the {autoconf} tool by one example. As explained in the
-previous section, <i>The automake tool</i>, the symbols
-{@NUMBERS_LIB@} and {@NUMBERS_LDFLAGS@} are used in the {Makefile.in}
-to link a library with basic numerical routines into the Yacas
-executable. This gives the user the option to choose between two
+previous section, <*"The automake tool"|yacasdoc://#build system!automake*>, 
+the symbols {@NUMBERS_LIB@} and {@NUMBERS_LDFLAGS@} are used in the
+{Makefile.in} to link a library with basic numerical routines into the
+Yacas executable. This gives the user the option to choose between two
 libraries: the GNU multi-precision arithmetic (GNU MP) library and a
-library provided by the Yacas team.  
+library provided by the Yacas team.
 
-This effect is achieved by the following fragment of {configure.in}.
+This effect is achieved by the following fragment of {configure.in} (for
+clarity, a simplified version is presented).
 
-	AC_ARG_ENABLE(gmp, [  --enable-gmp    ... ])
-	if test "$enable_gmp" = "yes" ; then
+	AC_ARG_WITH(numlib, [  --with-numlib=LIB ... ],  \
+	            with_numlib=$withval,                \
+	            with_numlib="native")
+	case $with_numlib in
+	  native) 
+	    NUMBERS_LIB="libyacasnumbers.la"
+	    NUMBERS_LDFLAGS="-lm"
+	  gmp)
 	    AC_CHECK_LIB(gmp, __gmpz_init, \
 	                 have_gmp=yes, have_gmp=no)
 	    if test "$have_gmp" = "no" ; then
-	       	AC_MSG_ERROR([GNU MP library not found])
+	      AC_MSG_ERROR([GNU MP library not found])
 	    fi
-	    NUMBERS_LIB="libgmpnumbers.a"
+	    NUMBERS_LIB="libgmpnumbers.la"
 	    NUMBERS_LDFLAGS="-lgmp -lm"
-	else
-	    NUMBERS_LIB="libyacasnumbers.a"
-	    NUMBERS_LDFLAGS="-lm"
-	fi
+	esac
 	AC_SUBST(NUMBERS_LIB)
 	AC_SUBST(NUMBERS_LDFLAGS)
 
 The first line tells the {configure} script to accept an extra option,
-{--enable-gmp}. If this option is invoked by the user, then first it is
+{--with-numlib=LIB}. The shell variable {with_numlib} is set to the
+value {LIB} given by the user, or to {native} if the user does not
+specify this option on the command line. 
+
+If the shell variable {with_numlib} has the value {native} (which means
+that the user has either given the {--with-numlib=native} option to
+{configure}, or not used the option at all), then the {NUMBERS_LIB} and
+{NUMBERS_LDFLAGS} shell variables are set to {libyacasnumbers.la} and
+{-lm} respectively.
+
+If on the other hand the {--with-numlib=gmp} option is passed to the
+{configure} script, then first it is
 checked that the GNU MP library is available -- if this is not the
-case, the configuration terminates with an error. Now the
+case, the configuration terminates with an error. Then the
 {NUMBERS_LIB} and {NUMBERS_LDFLAGS} shell variables are set to
-suitable values. The penultimate line says that the value of the
-{NUMBERS_LIB} shell variable should be substituted for the {@NUMBER_LIB@}
-symbol in the {Makefile.in}. The meaning of the last line is left as
-an exercise for the reader.
+suitable values. 
+
+The last two lines say that the value of the {NUMBERS_LIB} and
+{NUMBERS_LDFLAGS} shell variables should be substituted for the
+{@NUMBER_LIB@} and {@NUMBER_LDFLAGS@} symbols respectively, in the
+{Makefile.in}.
 
 This end the brief description of {autoconf}. For more information,
 the reader is referred to the documentation that comes with the
@@ -281,9 +307,15 @@ A nice feature is the possibility to build in a different directory
 than the source directory by simply running {configure} from that
 directory. This not only prevents the source directory from being
 cluttered up by object files and so on, but it also enables the user
-to build for different architectures in different directories, and
-perhaps most importantly, it lets us build Yacas from a CD containing
-the source.
+to build for different architectures in different directories or to
+have the source in a read-only directory. For example, suppose that
+the Yacas source is installed under {/mnt/cdrom/src/yacas} and that
+you want to build Yacas under {/tmp/build-yacas}. This is achieved by
+the following commands
+	mkdir /tmp/build-yacas
+	cd /tmp/build-yacas
+	/mnt/cdrom/src/yacas/configure
+	make
 
 A list of options accepted by the {configure} script can be retrieved
 by invoking it with the {help} option
@@ -300,15 +332,19 @@ where the various files should be installed.
 We will not describe the common {configure} options which are shared
 by all packages, but will restrict ourselves to the options
 exclusively used by Yacas.
-*	{with-numlib}. The supported options so far are {native} (the default) and {gmp}.
-The latter options enables the GNU multi-precision arithmetic library
-(GNU MP), available from <*http://www.swox.com/gmp*>, instead of the
-library provided by the Yacas team. For this to work, the GNU MP
-library must of course be installed.
-*	{enable-debug}. Builds a version of Yacas suitable for debugging. 
+*	{with-numlib=LIB}. This option specifies the arbitrary-precision
+library to use.  The supported values for {LIB} so far are {native} (the
+default) and {gmp}.  The latter options enables the GNU multi-precision
+arithmetic library (GNU MP), available from <*http://www.swox.com/gmp*>,
+instead of the library provided by the Yacas team. For this to work, the
+GNU MP library must of course be installed.
+*	{enable-debug}. Build a version of Yacas suitable for debugging. 
 *	{enable-archive}. Build and install the library archive. The
 library archive resides in the file {scripts.dat} and contains all the
 Yacas scripts in compressed form.
+*	{enable-server}. Build a version of the Yacas executable which
+accepts the {--server} flag, which puts Yacas in server mode (see
+<*"Command-line options"|yacasdoc://intro/3/1/*>) 
 
 The following three options pertain to extensive documentation that
 comes with Yacas. By default, only HTML documentation is generated. 
@@ -327,7 +363,7 @@ script files are installed in {DATADIR/yacas}, where {DATADIR}
 defaults to {PREFIX/share}. In turn, {PREFIX} refers to the value of
 the {prefix} option described above; the default value is
 {/usr/local}. The conclusion is that the script files by default end
-up in {/usr/local/yacas/share}.
+up in {/usr/local/share/yacas}.
 *	{with-html-dir=DIR}. This specifies where to install the HTML
 documentation for the Yacas package. The default is a subdirectory
 named {documentation} of the directory in which the Yacas script files
@@ -528,7 +564,7 @@ fact works.
 
 This section lists the components of the Yacas distributions that have
 not yet been described. 
-*	The {yacas-client} script (see <*Client-server usage|yacasdoc://intro/3/2/*>) resides in the root of
+*	The {yacas-client} script (see <*Client-server usage|yacasdoc://intro/3/1/*>) resides in the root of
 the distribution. This script is copied during installation.
 *	The directory {colorcode} contains a program constructing
 colorful HTML files listing the contests of the Yacas script files. At
@@ -538,9 +574,13 @@ program is compiled, but not installed.
 website. The file {yacaslogo.gif} is also used in the HTML
 documentation of Yacas, therefore this file is copied in the
 appropriate directory during installation.
+*	The directory {embed} contains examples showing how to embed
+Yacas in one's own application; see <*yacasdoc://essays/3/4/*>. This
+part of the build system is still being developed.
 *	The directory {plugins} contains files showing how to build
 plugins, which can be dynamically loaded into Yacas. See 
-<*yacasdoc://essays/3/3/*> for details.
+<*yacasdoc://essays/3/3/*> for details. This part of the build system
+is still being developed.
 
 The build system does not perform any actions for the following
 components of Yacas. 
@@ -548,8 +588,6 @@ components of Yacas.
 in interacting with Yacas from within Emacs. 
 *	The directory {compile} contains the experimental Yacas
 compiler.
-*	The directory {embed} contains examples showing how to embed
-Yacas in one's own application; see <*yacasdoc://essays/3/4/*>.
 *	The directory {epoc} contains the support for the EPOC
 device. See the file {README.EPOC} in the root of the distribution for
 details. 
