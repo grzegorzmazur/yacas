@@ -15,7 +15,8 @@ Book(x) := [	/* this is the first declaration in a file */
 \\setlength{\\textheight}{10.0in}
 
 \\begin{document}
-\\title{" : x : "}
+\\title{%
+" : x : "}
 \\author{by the \\textsc{Yacas} team
 \\thanks{
 This text is part of the \\textsc{Yacas} software package and may be freely
@@ -32,15 +33,20 @@ generated on \\today}
 ");
 ];
 
+// titles of sections are on a separate line to allow the script to catch the "" and not be confused by being inside a {} group
+
 Text(x) := WriteString(x);
 Chapter(x) := WriteString(
-"\\chapter{" : x : "}
+"\\chapter{%
+" : x : "}
 ");
 Section(x) := WriteString(
-"\\section{" : x : "}
+"\\section{%
+" : x : "}
 ");
 SubSection(x) := WriteString(
-"\\subsection*{" : x : "}
+"\\subsection*{%
+" : x : "}
 ");
 
 Itemize(body) :=
@@ -76,7 +82,7 @@ HasTexChars(x) := [
 HtmlTerm(x) :=
 If(x = "Yacas",
 	"\\textsc{Yacas}",
-	If (
+	If(
 		HasTexChars(x),
 		"\\verb|" : x : "|",
 		"\\texttt{" : x : "}"
@@ -145,8 +151,10 @@ ChapterIntro(string) := WriteString("
 ");
 Bodied("ChapterIntro", 60000);
 
-CmdDescription(cmd, desc) := WriteString("
-\\section{" : HtmlTermHeading(cmd) : " --- " : desc : "}
+CmdDescription(cmd, desc) := WriteString(
+"
+\\section{%
+" : HtmlTermHeading(cmd) : " --- " : desc : "}
 ");
 
 StandardLib() := WriteString("

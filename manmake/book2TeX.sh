@@ -22,8 +22,9 @@ if [ -r "$1" ]; then
 	if [ -s "$target" ]; then
 		echo "File '$target' was created."
 		# replace right double quotes by left ones where possible
-		#perl -e 'while(<>) { s/ "/ ``/g; s/^"/``/; print; }' < "$target" > "$target.tmp"
-		#mv "$target.tmp" "$target"
+		# avoid {verbatim}; do not replace "" inside {}
+		perl -e '$out_of_verbatim=1; while(<>) { if($out_of_verbatim) { 1 while s/^([^{}|]*(?:\{[^{}]*\}[^{}|]*|\\verb\|[^|]*\|[^{}|]*)*[^{}|]*[- ()|\[\]\t])"/$1``/g; s/^"/``/; if (/\\begin\{verbatim\}/) {$out_of_verbatim=0; } } elsif(/\\end\{verbatim\}/) { $out_of_verbatim=1 }; print; }' < "$target" > "$target.tmp"
+		mv "$target.tmp" "$target"
 	else
 		echo "book2TeX: Some problem generating file '$target', aborted."
 	fi

@@ -293,10 +293,10 @@ this interval, and are independent of each other.
 
 *SEE Random, RandomIntegerVector
 
-	    Div and Mod for polynomials
+	    {Div} and {Mod} for polynomials
 *STD
 
-Div and Mod are also defined for polynomials.
+{Div} and {Mod} are also defined for polynomials.
 
 *SEE Div, Mod
 
@@ -348,7 +348,7 @@ disappeared.
 
 This command tries to expand all the brackets by repeatedly using the
 distributive laws $a * (b+c) = a*b + a*c$ and $(a+b) * c = a*c + b*c$.
-It goes further than {Expand}, in that it expands all terms.
+It goes further than {Expand}, in that it expands all brackets.
 
 *E.G.
 
@@ -378,18 +378,20 @@ It goes further than {Expand}, in that it expands all terms.
 *DESC
 
 The first calling format with two arguments evaluates the Legendre polynomial
-of degree "n" at the point "x". The second form does the same for the Jacobi
-polynomial with parameters "a" and "b", which should be greater than -1.
+of degree {n} at the point {x}. The second form does the same for the Jacobi
+polynomial with parameters {a} and {b}, which should be both greater than -1.
 
 The Jacobi polynomials are orthogonal with respect to the weight
 function $(1-x)^a *(1+x)^b$ on the interval [-1,1]. They satisfy the
 recurrence relation
-$$P(n,a,b,x) = (2*n + a + b - 1) * (a^2-b^2+x*(2*n+a+b-2)*(n+a+b)/(2*n* (2*n+a+b-2)* (n+a+b))) * P(n-1,a,b,x) - ((n+a-1)* (n+b-1)* (2*n+a+b)/(n* (n+a+b)* (2*n+a+b-2)))*P(n-2,a,b,x)$$
+$$P(n,a,b,x) = (2*n+a+b-1)/(2*n+a+b-2) $$*
+$$ ((a^2-b^2+x*(2*n+a+b-2)*(n+a+b))/(2*n*(n+a+b))) * P(n-1,a,b,x)$$
+$$ - ((n+a-1)*(n+b-1)*(2*n+a+b))/(n*(n+a+b)*(2*n+a+b-2))*P(n-2,a,b,x)$$
 for $n > 1$, with
-$$P(0,a,b,x) = 1$$,
+$P(0,a,b,x) = 1$,
 $$P(1,a,b,x) = (a-b)/2+x*(1+(a+b)/2)$$.
 
-*REM (old version of the equations:)
+*REM (old versions of the equations:)
 //	P(0,a,b,x) = 1,
 //	
 //	             a - b     /     a + b \
@@ -411,18 +413,22 @@ $$P(1,a,b,x) = (a-b)/2+x*(1+(a+b)/2)$$.
 //	      n (n+a+b) (2n+a+b-2)
 
 Legendre polynomials are a special case of Jacobi polynomials with the
-specific parameter values a = b = 0. So they form an orthogonal system
+specific parameter values $a = b = 0$. So they form an orthogonal system
 with respect to the weight function identically equal to 1 on the
-interval [-1,1], and they satisfy the recurrence relations:
+interval [-1,1], and they satisfy the recurrence relation
+$$ P(n,x)=((2*n-1)*x/(2*n))*P(n-1,x)-(n-1)/n*P(n-2,x) $$
+for $n > 1$, with
+$ P(0,x)=1 $,
+$ P(1,x)=x $.
 
-	P(0,x) = 1
-	
-	P(1,x) = x
-	
-	         (2n - 1) x            n - 1
-	P(n,x) = ---------- P(n-1,x) - ----- P(n-2,x),
-	             2n                  n
-for $n > 1$.
+*REM
+//	P(0,x) = 1
+//	
+//	P(1,x) = x
+//	
+//	         (2n - 1) x            n - 1
+//	P(n,x) = ---------- P(n-1,x) - ----- P(n-2,x),
+//	             2n                  n
 
 Most of the work is performed by the internal function {OrthoPoly}.
 
@@ -472,19 +478,16 @@ Most of the work is performed by the internal function {OrthoPoly}.
 
 *DESC
 
-This function evaluates the Hermite polynomial of degree "n" at the
-point "x".
+This function evaluates the Hermite polynomial of degree {n} at the
+point {x}.
 
 The Hermite polynomials are orthogonal with respect to the weight
 function $Exp(-x^2/2)$ on the entire real axis. They satisfy the
-recurrence relations:
-
-	H(0,x) = 1
-	
-	H(1,x) = 2x
-	
-	H(n,x) = 2x H(n-1,x) - 2(n-1) H(n-2,x),
-for $n > 1$.
+recurrence relation
+$$ H(n,x) = 2*x*H(n-1,x) - 2*(n-1)*H(n-2,x) $$
+for $n > 1$, with
+$H(0,x) = 1$,
+$H(1,x) = 2*x$.
 
 Most of the work is performed by the internal function {OrthoPoly}.
 
@@ -513,26 +516,29 @@ Most of the work is performed by the internal function {OrthoPoly}.
 *DESC
 
 This function evaluates the Gegenbauer (or ultraspherical) polynomial
-with parameter "a" and degree "n" at the point "x". The
-parameter "a" should be greater than -1/2.
+with parameter {a} and degree {n} at the point {x}. The
+parameter {a} should be greater than -1/2.
 
 The Gegenbauer polynomials are orthogonal with respect to the weight
 function $(1-x^2)^(a-1/2)$ on the interval [-1,1]. Hence they are
-connected to the Jacobi polynomials via G(n, a, x) =
-P(n, a-1/2, a-1/2, x). They satisfy the recurrence relations:
+connected to the Jacobi polynomials via 
+*REM this formula will be typeset by TeX directly since the script does not touch lonely $ signs
+$G(n, a, x) =
+P(n, a-1/2, a-1/2, x)$. They satisfy the recurrence relation
+$$ G(n,a,x) = 2*(1+(a-1)/n)*x*G(n-1,a,x) $$
+$$ -(1+2*(a-2)/n)*G(n-2,a,x) $$
+for $n>1$, with
+$G(0,a,x) = 1$,
+$G(1,a,x) = 2*x$.
 
-	G(0,a,x) = 1
-	
-	G(1,a,x) = 2 x
-	
-	             /     a - 1 \              
-	G(n,a,x) = 2 | 1 + ----- | x G(n-1,a,x) 
-	             \       n   /              
-	
-	  /     2 (a-2) \
-	- | 1 + ------- | G(n-2,a,x),
-	  \        n    /
-for $n>1$.
+*REM	
+//	             /     a - 1 \              
+//	G(n,a,x) = 2 | 1 + ----- | x G(n-1,a,x) 
+//	             \       n   /              
+//	
+//	  /     2 (a-2) \
+//	- | 1 + ------- | G(n-2,a,x),
+//	  \        n    /
 
 Most of the work is performed by the internal function {OrthoPoly}.
 
@@ -560,27 +566,28 @@ Most of the work is performed by the internal function {OrthoPoly}.
 
 *DESC
 
-This function evaluates the Laguerre polynomial with parameter "a"
-and degree "n" at the point "x". The parameter "a" should be
+This function evaluates the Laguerre polynomial with parameter {a}
+and degree {n} at the point {x}. The parameter {a} should be
 greater than -1.
 
 The Laguerre polynomials are orthogonal with respect to the weight
 function $x^a * Exp(-x)$ on the positive real axis. They satisfy the
-recurrence relations:
+recurrence relation
+$$ L(n,a,x) = (2+(a-1-x)/n)* L(n-1,a,x) $$
+$$ -(1-(a-1)/n)*L(n-2,a,x) $$
+for $n>1$, with 
+$L(0,a,x) = 1$,
+$L(1,a,x) = a + 1 - x$.
 
-	L(0,a,x) = 1
-	
-	L(1,a,x) = a + 1 - x
-	
-	           /     a - 1 - x \             
-	L(n,a,x) = | 2 + --------- | L(n-1,a,x) -
-	           \         n     /             
-	
-	  /     a - 1 \
-	  | 1 + ----- | L(n-2,a,x),
-	  \  	  n   /
+*REM	
+//	           /     a - 1 - x \             
+//	L(n,a,x) = | 2 + --------- | L(n-1,a,x) -
+//	           \         n     /             
+//	
+//	  /     a - 1 \
+//	  | 1 + ----- | L(n-2,a,x),
+//	  \  	  n   /
 
-for $n>1$.
 
 Most of the work is performed by the internal function {OrthoPoly}.
 
@@ -613,17 +620,16 @@ name of this Russian mathematician is also sometimes spelled "Chebyshev".)
 
 The Tschebyscheff polynomials are orthogonal with respect to the weight
 function $(1-x^2)^(-1/2)$. Hence they are a special case of the Gegenbauer
-polynomials $G(n,a,x)$, with $a=0$. They satisfy the recurrence relations:
-
-	T(n,x) = 2 x T(n-1,x) - T(n-2,x),
-	U(n,x) = 2 x U(n-1,x) - U(n-2,x)
+polynomials $G(n,a,x)$, with $a=0$. They satisfy the recurrence relations
+$$ T(n,x) = 2* x* T(n-1,x) - T(n-2,x) $$,
+$$ U(n,x) = 2* x* U(n-1,x) - U(n-2,x) $$
 for $n > 1$, with
-	T(0,x) = 1,
-	T(1,x) = x,
-	U(0,x) = 1,
-	U(1,x) = 2 x.
+$T(0,x) = 1$,
+$T(1,x) = x$,
+$U(0,x) = 1$,
+$U(1,x) = 2*x$.
 
-Tschebyscheff polynomials are evaluated using fast (but numerically unstable) recurrence relations,
+Tschebyscheff polynomials are evaluated using fast (but numerically unstable) recurrence relations
 $$T(2*n,x) = 2*T(n,x)^2-1$$,
 $$T(2*n+1,x) = 2*T(n+1,x)*T(n,x)-x$$,
 $$U(2*n,x) = 2*T(n,x)*U(n,x)-1$$,
@@ -678,10 +684,10 @@ Here is an example numerical calculation where the loss of precision is catastro
 
 *DESC
 
-These functions evaluate the sum of series of orthogonal polynomials at the point "x", with given list of coefficients "c" of the series and fixed polynomial parameters "a", "b" (if applicable).
+These functions evaluate the sum of series of orthogonal polynomials at the point {x}, with given list of coefficients {c} of the series and fixed polynomial parameters {a}, {b} (if applicable).
 
 The list of coefficients starts with the lowest order, so that for example
-OrthoLSum(c, a, x) = c[1]* L[0](a,x) + c[2] L[1](a,x) + ... + c[N] L[N-1](a,x).
+OrthoLSum(c, a, x) = c[1] L[0](a,x) + c[2] L[1](a,x) + ... + c[N] L[N-1](a,x).
 
 See pages for specific orthogonal polynomials for more details on the parameters of the polynomials.
 
@@ -715,8 +721,8 @@ Most of the work is performed by the internal function {OrthoPolySum}. The indiv
 *DESC
 
 This function is used internally to construct orthogonal
-polynomials. It returns the "n"-th polynomial from the family
-"name" with parameters "par" at the point "x".
+polynomials. It returns the {n}-th polynomial from the family
+{name} with parameters {par} at the point {x}.
 
 All known families are stored in the association list {KnownOrthoPoly}. The name serves as key. At the moment
 the following names are known to Yacas: {"Jacobi"}, {"Gegenbauer"}, {"Laguerre"}, {"Hermite"}, {"Tscheb1"},
@@ -756,7 +762,7 @@ It is similar to the function {OrthoPoly} and returns the result of the
 summation of series of polynomials from the family {name} with parameters {par}
 at the point {x}, where {c} is the list of coefficients of the series.
 
-The algorithm used to compute the series without first computing the individual polynomials is the Clenshaw-Smith recurrence scheme. See: Yudell L. Luke. <i>Mathematical functions and their approximations.</i> Academic Press, N. Y., 1975.
+The algorithm used to compute the series without first computing the individual polynomials is the Clenshaw-Smith recurrence scheme. See: Yudell L. Luke. <i>Mathematical functions and their approximations</i>, Academic Press, N. Y., 1975.
 
 If the argument {x} is numerical, the function {OrthoPolySumNumeric} is called.
 Otherwise, the function {OrthoPolySumCoeffs} computes the list of coefficients
