@@ -69,8 +69,7 @@ RELEASE = @RELEASE@
 VERSION = @VERSION@
 scriptdir = @scriptdir@
 
-EXTRA_DIST = all.ys makefile.essays 	yacasinit.ys .cvsignore
-
+EXTRA_DIST = .cvsignore
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -170,13 +169,11 @@ distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
 
-all: essays
+all: 
 
 clean:
-	make clean -f makefile.essays
 
 essays:
-	make -f makefile.essays
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -21,4 +21,5 @@ IsNegativeReal
 IsHermitean
 IsUnitary
 IsVariable
+IsNumericList
 }

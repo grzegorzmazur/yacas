@@ -152,7 +152,7 @@ like in the macro-like functions (For, While, etc.).
 
 *SEE UniqueConstant
 
-*CMD PatchString --- Execute commands between &lt? and ?&gt in string
+*CMD PatchString --- Execute commands between {<?} and {?>} in strings
 
 *CORE
 

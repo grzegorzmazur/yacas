@@ -53,7 +53,7 @@ False
 *DESC
 
 {True} and {False} are typically the result
-of boolean expressions like {2 &lt 3} and {True And False}.
+of boolean expressions like {2 < 3} and {True And False}.
 
 *SEE And, Or, Not
 
@@ -85,7 +85,7 @@ Infinity represents infinity. It can be the result of certain
 calculations.
 
 Note that for most analytic functions Yacas understands Infinity.
-Thus {Infinity*2} will return Infinity, and {a &lt Infinity} will evaluate to True.
+Thus {Infinity*2} will return Infinity, and {a < Infinity} will evaluate to True.
 
 *E.G.
 

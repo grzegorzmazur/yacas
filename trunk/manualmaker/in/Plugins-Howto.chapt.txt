@@ -71,7 +71,7 @@ If compilation succeeds, the dynamic library file {libfunc1.so} is created. This
 
 *	Yacas can use the new plugin after we load it:
 
-	In> DllLoad(FindFile("plugins/libfunc1.so"));
+	In> DllLoad(FindFile("./libfunc1.so"));
 	Out> True;
 
 The {FindFile()} function will help locate the Yacas path; we need to use it because {DllLoad()} requires a full path to the library file. Alternatively, if the plugin file were kept in the Yacas working directory, we could have used the command {DllLoad("./libfunc1.so")}.
@@ -94,7 +94,7 @@ Suppose we had a numerical function on real numbers, e.g.
 	In> f(x,y):=Sin(2*x*Pi)+Sqrt(2)*Cos(y*Pi);
 	Out> True;
 
-We can generate some C++ code that calculates this function for given floating-point arguments:
+We can generate some C++ code that calculates this function for given floating-point arguments (not for multiple-precision numbers):
 
 	In> CForm(f(x,y));
 	Out> "sin(2 * x * Pi) + sqrt(2)
@@ -103,16 +103,16 @@ We can generate some C++ code that calculates this function for given floating-p
 
 Now it is clear that all the steps needed to compile, link, and load a plugin that implements {f(x,y)} can be performed automatically by a Yacas script. (You would need a C++ compiler on your system, of course.)
 
-This is implemented in the function {MakeFunctionPlugin()} (see file {funcplug.ys}). To use it, we might first define a function such as {f(x,y)} above and then call
+This is implemented in the function {MakeFunctionPlugin()} (see file {unix.ys} in the {addons/} subdirectory). To use it, we might first define a function such as {f(x,y)} above and then call
 
 	In> MakeFunctionPlugin("fFast", {x,y}, \
 	  f(x,y));
 	Function fFast(x,y) loaded from
-	  ./libfFast_cc_plugin.so
+	  ./plugins.tmp/libfFast_plugin_cc.so
 	Out> True;
 	In> fFast(2,3);
 	Out> -1.41421;
 
-Now we can use the function {fFast(x,y)} which is implemented using an external plugin library. The function {MakeFunctionPlugin()} assumes that all arguments and return values of functions are real floating-point numbers. The plugin libraries it creates are always in the {plugins/} subdirectory of current working directory and are named like {libNNN_cc_plugin.so}.
+Now we can use the function {fFast(x,y)} which is implemented using an external plugin library. The function {MakeFunctionPlugin()} assumes that all arguments and return values of functions are real floating-point numbers. The plugin libraries it creates are always in the {plugins.tmp/} subdirectory of current working directory and are named like {libNNN_plugin_cc.so}.
 
 If {MakeFunctionPlugin()} is called again to create a plugin function with the same name (but different body), the DLL will be unloaded and loaded as necessary.

@@ -1,12 +1,11 @@
 
 
-EXTRA_DIST = all.ys makefile.essays \
-	yacasinit.ys .cvsignore
+EXTRA_DIST =  .cvsignore
 
-all: essays
+all: 
 
 clean:
-	make clean -f makefile.essays
+	
 
 essays:
-	make -f makefile.essays
+	

@@ -1,35 +1,19 @@
 
 			Arithmetic
 
-*A +
-
-*A -
-
-*A *
-
-*A /
-
-*A ^
-
 *CMD +, -, *, /, ^ --- Arithmetic operations
 
 *STD
 
 *CALL
 
-x+y  (precedence 6)
-
-+x
-
-x-y  (precedence 5)
-
--x
-
-x*y  (precedence 3)
-
-x/y  (precedence 3)
-
-x^y  (precedence 2)
+	x+y  (precedence 6)
+	+x
+	x-y  (precedence 5)
+	-x
+	x*y  (precedence 3)
+	x/y  (precedence 3)
+	x^y  (precedence 2)
 
 *PARMS
 
@@ -79,8 +63,7 @@ x, y - integers, or univariate polynomials
 {Div} performs integer division and {Mod} returns the remainder after division. {Div} and
 {Mod} are also defined for polynomials.
 
-If {Div(x,y)} returns "a" and {Mod(x,y)} equals "b", then these numbers satisfy x =
-a*y + b and 0 <= b < y.
+If {Div(x,y)} returns "a" and {Mod(x,y)} equals "b", then these numbers satisfy $x =a*y + b$ and $0 <= b < y$.
 
 *E.G.
 
@@ -172,18 +155,13 @@ them.
 
 *SEE Gcd
 
-*A \<\<
-
-*A \>\>
-
-*CMD \<\<, \>\> --- Shift operators
+*CMD <<, >> --- Shift operators
 
 *STD
 
 *CALL
-
-n\<\<m
-n\>\>m
+	n<<m
+	n>>m
 
 *PARMS
 
@@ -370,8 +348,8 @@ Converting the floating point numbers to rational numbers will force
 calculations to be done with infinite precision (by using rational
 numbers as representations).
 
-It does this by finding the smallest integer n such that multiplying
-the number with 10^n is an integer. Then it divides by 10^n again,
+It does this by finding the smallest integer $n$ such that multiplying
+the number with $10^n$ is an integer. Then it divides by $10^n$ again,
 depending on the internal gcd calculation to reduce the resulting
 division of integers.
 
@@ -436,7 +414,7 @@ n - integer to test
 *DESC
 
 This command tests whether "n", which should be a positive integer,
-is a prime power, that is whether it is of the form "p^m", with
+is a prime power, that is whether it is of the form $p^m$, with
 "p" prime and "m" an integer.
 
 This function essentially checks for all integers between 2 and the
@@ -475,8 +453,9 @@ decomposed in irreducible polynomials.
 
 The factorization is returned as a list of pairs. The first member of
 each pair is the factor, while the second member denotes the power to
-which this factor should be raised. So the factorization "x = p1^n1 *
-... * p9^n9" is returned as {{{p1,n1}, ..., {p9,n9}}}.
+which this factor should be raised. So the factorization
+$x = p1^n1 * ... * p9^n9$
+is returned as {{{p1,n1}, ..., {p9,n9}}}.
 
 *E.G.
 

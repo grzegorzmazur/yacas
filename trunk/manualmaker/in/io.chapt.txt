@@ -574,7 +574,7 @@ name - name of the file (without {.def} suffix)
 
 The suffix {.def} is appended to "name" and the
 file with this name is loaded. It should contain a list of functions,
-terminated by a {}} (end-of-list character). This
+terminated by a closing brace \} (the end-of-list delimiter). This
 tells the system to load the file "name" as soon as the user calls
 one of the functions named in the file (if not done so already). This
 allows for faster startup times, since not all of the rules databases
@@ -604,7 +604,7 @@ searched for a file called "name". If such a file is not found, {FindFile} retur
 
 *SEE Load, DefaultDirectory
 
-*CMD PatchLoad --- Execute commands between &lt? and ?&gt in file
+*CMD PatchLoad --- Execute commands between {<?} and {?>} in file
 
 *CORE
 
@@ -619,7 +619,7 @@ name - the file to patch
 *DESC
 
 PatchLoad loads in a file and outputs the contents to the current
-output. The file can contain blocks delimited by &lt? and ?&gt
+output. The file can contain blocks delimited by {<?} and {?>}
 (meaning Yacas Begin and Yacas End). The piece of text between
 such delimiters is treated as a separate file with Yacas instructions,
 which is then loaded and executed. All output of write statements

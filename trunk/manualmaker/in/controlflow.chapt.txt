@@ -323,7 +323,8 @@ database.
 	Out> a;
 
 This defines a function {FirstOf} which returns the
-first element of a list. Equivalent definitions would be {FirstOf(_list) <-- list[1]} or {FirstOf(list) := list[1]}.
+first element of a list. Equivalent definitions would be
+{FirstOf(_list) <-- list[1]} or {FirstOf(list) := list[1]}.
 
 *SEE TemplateFunction, Rule, RuleBase, :=
 
@@ -615,14 +616,12 @@ of /: .
 
 The forms the patterns can have are one of:
 
-pattern <- replacement
+	pattern <- replacement
+	{pattern,replacement}
+	{pattern,postpredicate,replacement}
 
-{pattern,replacement}
-
-{pattern,postpredicate,replacement}
-
-Note that for these local rules, <- should be used in stead of
-<-- which defines a global rule.
+Note that for these local rules, {<-} should be used instead of
+{<--} which defines a global rule.
 
 The /: operator traverses an expression much like Subst does: top
 down, trying to apply the rules from the begin of the list of
@@ -664,7 +663,7 @@ This function sets the help browser you want to use to
 browse the help online. It calls helpbrowser with the html
 page as first argument. The default is lynx. If you want to
 use a different browser by default it suffices to create a
-file ~/.yacasrc. and add a line to set the browser in there.
+file {~/.yacasrc} and add a line to set the browser in there.
 
 *E.G.
 

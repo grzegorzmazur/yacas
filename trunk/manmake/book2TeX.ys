@@ -1,7 +1,7 @@
 /* book2TeX - convert Yacas docs back to TeX format (Serge Winitzki)
 	version 0.2 */
 
-/* If one of these occurs inside an HtmlTerm block, it must be made \\verb| |*/
+/* If one of these occurs inside an HtmlTerm block, it must be made \\verb| | or escaped with a backslash */
 TexCharsToEscape := { "{", "}", "#", "_", "&", "\\", "^", "%", "$", "~"};
 
 Book(x) := [	/* this is the first declaration in a file */
@@ -70,10 +70,19 @@ HtmlTerm(x) := [
 	"\\texttt{" : x : "}");
 ];
 
-/* this will escape TeX symbols so that the result can be put into a section heading, i.e. no \verb|| */
-HtmlTermHeading(x) := [
-	HtmlTerm(x);	// for now
+TexEscapeTT(x) := [
+	Local(i, result);
+	For ([i:=1; result:="";], i<=Length(x), i:=i+1) [
+		If (Contains(TexCharsToEscape, x[i]),
+			result := result : "\\"
+		);
+		result := result : x[i];
+	];
+	result;
 ];
+
+/* this will escape TeX symbols so that the result can be put into a section heading, i.e. cannot use \verb|| */
+HtmlTermHeading(x) := "\\texttt{" : TexEscapeTT(x) : "}";
 
 HtmlBreak() := "
 ";
@@ -124,13 +133,23 @@ CmdDescription(cmd, desc) := WriteString("
 ");
 
 StandardLib() := WriteString("
+\\begin{flushright}\\small (standard library)\\end{flushright}
+");
 
-\\begin{flushright} \\small (standard library) \\end{flushright}
+UnixSpecific() := WriteString("
+\\begin{flushright}\\small (Unix-specific add-on)\\end{flushright}
+");
 
+MSWinSpecific() := WriteString("
+\\begin{flushright}\\small (MS Windows-specific add-on)\\end{flushright}
+");
+
+MacSpecific() := WriteString("
+\\begin{flushright}\\small (Macintosh-specific add-on)\\end{flushright}
 ");
 
 BuiltIn() := WriteString("
-\\begin{flushright} \\small (\\textsc{Yacas} internal) \\end{flushright}
+\\begin{flushright}\\small (\\textsc{Yacas} internal)\\end{flushright}
 ");
 
 AddBody(string) := WriteString(string);
@@ -144,8 +163,8 @@ HtmlAnchor(string) := "";
 
 Bodied("HtmlAnchor", 60000);
 Topical(string) := WriteString(
-"\\begin{flushleft}\\textbf{\\small " : string : "}\\end{flushleft}"
-);
+"\\begin{flushleft}\\textbf{\\small " : string : "}\\end{flushleft}
+");
 Bodied("Topical",60000);
 // special escapes
 Gt() := ">";

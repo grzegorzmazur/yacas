@@ -6,12 +6,6 @@ described. These include functions implementing differentiation,
 integration, standard mathematical functions, and the solving of
 equations.
 
-*A Sin
-
-*A Cos
-
-*A Tan
-
 *CMD Sin, Cos, Tan --- Trigonometric functions
 
 *STD
@@ -53,12 +47,6 @@ list, the function is applied to all the entries in the list.
 
 *SEE ArcSin, ArcCos, ArcTan, N, Pi
 
-*A ArcSin
-
-*A ArcCos
-
-*A ArcTan
-
 *CMD ArcSin, ArcCos, ArcTan --- Inverse trigonometric functions
 
 *STD
@@ -89,7 +77,7 @@ is in the interval [0,Pi].
 
 Usually, Yacas leaves these functions alone unless it is forced to do
 a numerical evaluation by the {N} function. If the
-argument is -1. 0, or 1 however, Yacas will simplify the
+argument is -1, 0, or 1 however, Yacas will simplify the
 expression. If the argument is complex,  the expression will be
 rewritten as a {Ln} function.
 
@@ -972,7 +960,7 @@ upto order "order". It uses the function {ReversePoly} to perform the task.
 
 *SEE ReversePoly, Taylor, BigOh
 
-*CMD ReversePoly --- Solve "h(f(x)) = g(x) + O(x^n)" for h
+*CMD ReversePoly --- Solve $h(f(x)) = g(x) + O(x^n)$ for $h$
 
 *STD
 
@@ -1013,7 +1001,8 @@ inverse of "f".
 	In> BigOh(h(f(x)),x,8)
 	Out> x^2;
 	In> h(x)
-	Out> (-2695*(x-1)^7)/131072+(791*(x-1)^6)/32768+(-119*(x-1)^5)/4096+(37*(x-1)^4)
+	Out> (-2695*(x-1)^7)/131072+(791*(x-1)^6)
+	/32768 +(-119*(x-1)^5)/4096+(37*(x-1)^4)
 	/1024+(-3*(x-1)^3)/64+(x-1)^2/16;
 
 *SEE InverseTaylor, Taylor, BigOh
@@ -1336,13 +1325,13 @@ calculations to be done with infinite precision (by using rational
 numbers as representations).
 
 It does this by finding the smallest integer n such that multiplying
-the number with 10^n is an integer. Then it divides by 10^n again,
+the number with $10^n$ is an integer. Then it divides by $10^n$ again,
 depending on the internal gcd calculation to reduce the resulting
 division of integers.
 
 *E.G.
 
-	In> {1.2,3.123,4.5}
+	In> {1.2, 3.123, 4.5}
 	Out> {1.2,3.123,4.5};
 	In> Rationalize(%)
 	Out> {6/5,3123/1000,9/2};

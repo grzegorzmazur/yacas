@@ -466,7 +466,9 @@ SeeAlso(_list)<--
 */
 
 BuiltIn() <-- AddBody("Internal function<br>");
-
+UnixSpecific() <-- AddBody("Unix-specific add-on<br>");
+MacSpecific() <-- AddBody("Macintosh-specific add-on<br>");
+MSWinSpecific() <-- AddBody("MS Windows-specific add-on<br>");
 StandardLib() <-- AddBody("Standard math library<br>");
 
 /* alias for Load() that can be redefined */

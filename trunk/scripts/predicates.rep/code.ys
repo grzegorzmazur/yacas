@@ -80,3 +80,7 @@ IsUnitary(A_IsMatrix) <-- (Transpose(Conjugate(A))*A = Identity(Length(A)));
 
 IsVariable(_expr) <-- (IsAtom(expr) And Not(IsNumber(N(expr))));
 
+// check that all items in the list are numbers
+IsNumericList(arg'list_IsList) <--
+	"And" @ (MapSingle(Hold({{x},IsNumber(N(x))}), arg'list));
+
