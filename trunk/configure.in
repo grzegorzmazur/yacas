@@ -48,9 +48,9 @@ AC_HEADER_TIME
 # Checks for library functions.
 AC_CHECK_FUNCS(select socket strtod strchr)
 
-# checks for libraries
-#AC_CHECK_LIB(dl,dlopen,LIBS="$LIBS -ldl -rdynamic",,-rdynamic)
-# We don't need this anymore now we are using libltdl 
+# Define PLATFORM_OS to be the Operating System
+AC_CANONICAL_HOST
+AC_DEFINE_UNQUOTED(PLATFORM_OS, "\"$host_os\"", [Operating system])
 
 # Check for the existence of the Gnu Scientific Library on this machine
 AM_PATH_GSL(0.0, HAVE_GSL=yes, HAVE_GSL=no)

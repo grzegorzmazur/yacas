@@ -189,14 +189,21 @@ In that case, {FindFunction()} will return the filename under that directory. Ot
 *DESC
 
 The constant {PlatformOS} and the function {PlatformOS()} give a string with an abbreviated description of the platform on which the current Yacas interpreter is running.
-Supported values are currently {"Unix"} and {"Win32"}.
+Possible values are for instance {"gnu-linux"}, {"Win32"} or {"solaris2.6"}.
 This constant can be used in scripts if one needs to know the platform.
+
+Implementation: The value of {PlatformOS} is determined when Yacas is
+compiled. It is usually the operating system as reported by the
+{config.guess} script. However, it may be overridden (on non-Unix
+systems, the script cannot be run and the OS must be specified by
+hand). 
 
 The constant {FilePathSeparator} is the string that separates directories in the file system tree. This is the forward slash ({/}) on Unix and the backslash ({\}) on Windows.
 
 *EG
 
-	In> Check(PlatformOS="Unix","BAAA! I WANT UNIX!")
+	In> Check(StringMid(1, 5, PlatformOS)="linux", \
+	          "BAAA! I WANT LINUX!")
 	Out> True;
 
 *SEE MakeFilePath

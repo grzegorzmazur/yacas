@@ -21,7 +21,7 @@ MakeFunctionPrototype(name, argList) := [
 // predicate to test whether plugins work
 MakeFunctionPlugin() <--
 [
-	If(PlatformOS = "Unix" And FindFile("include/") != "", True, False);
+	If(PlatformOS = "linux-gnu" And FindFile("include/") != "", True, False);
 ];
 
 
@@ -100,7 +100,7 @@ MakeFunctionPlugin(_extName, _fBody) <--
 	PID := FromString(ToString() SystemCall("echo $PPID ';'")) Read();
 */
 GetYacasPID() := [
-	Check(PlatformOS="Unix", "Error in GetYacasPID: need a Unix OS.");
+	Check(PlatformOS!="Win32", "Error in GetYacasPID: need a Unix OS.");
 	SystemCall("echo $PPID ';' > /tmp/yacas-tmpfile");
 	{
 		FromFile("/tmp/yacas-tmpfile") Read(),
@@ -113,7 +113,7 @@ GetYacasPID() := [
 If(Not(IsBound(PSViewCommand)), PSViewCommand := "gv");
 
 ShowPS(expr) := [
-	Check(PlatformOS="Unix", "ShowPS: error: need a Unix OS.");
+	Check(PlatformOS!="Win32", "ShowPS: error: need a Unix OS.");
 	/* Create a temporary file */
 	SystemCall("echo \\\"/tmp/yacas-tmpfile-$$\\\" ';' > /tmp/yacas-tmpfile");
 	filename := FromFile("/tmp/yacas-tmpfile") Read();
