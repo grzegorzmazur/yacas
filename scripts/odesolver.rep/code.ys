@@ -87,8 +87,22 @@ RuleBase("OdeTerm",{px,list});
 
 OdeMakeTerm(xx_IsAtom) <-- OdeTerm(xx,FillList(0,10));
 OdeMakeTerm(yyy(_n)) <-- OdeTerm(0,BaseVector(n+1,10));
+
+/*TODO remove? old code 
 20 # OdeMakeTerm(_xx) <-- xx;
 OdeMakeTermPred(_xx) <-- (xx != OdeMakeTerm(xx));
+*/
+
+20 # OdeMakeTerm(_xx) <-- OdeTerm(xx,FillList(0,10));
+10 # OdeMakeTermPred(_x+_y) <-- False;
+10 # OdeMakeTermPred(_x-_y) <-- False;
+10 # OdeMakeTermPred(  -_y) <-- False;
+10 # OdeMakeTermPred(_x*_y) <-- False;
+10 # OdeMakeTermPred(_x/_y) <-- False;
+10 # OdeMakeTermPred(_x^_y) <-- False;
+20 # OdeMakeTermPred(_rest) <-- True;
+
+
 OdeCoefList(_e) <--
 [
   Substitute(e,"OdeMakeTermPred","OdeMakeTerm");

@@ -363,10 +363,22 @@ void LispTail(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispUnList(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
-    LispArgGetter g(aEnvironment, aArguments);
-    ListArgument(g,list,LispTrue);
-    g.Finalize(1);
-    InternalTail(aResult, list);
+  LispArgGetter g(aEnvironment, aArguments);
+  ListArgument(g,lst,LispTrue);
+  g.Finalize(1);
+  if (lst.Get() != NULL)
+  {
+    LispObject* subList = lst.Get()->SubList()->Get();
+    if (subList)
+      if (subList->String() == aEnvironment.iList)
+      {
+        InternalTail(aResult, lst);
+        return;
+      }
+  }
+  CHK_ARG(LispFalse, 1);
+  
+//  InternalTail(aResult, list);
 }
 
 void LispListify(LispEnvironment& aEnvironment, LispPtr& aResult,
