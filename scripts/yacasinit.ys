@@ -75,10 +75,27 @@ CntDefLoad("specfunc.rep/code.ys");
 //Echo({DefPackages});
 //ForEach(item,DefPackages)Use(item);
 
+RuleBase("SetHelpBrowser",{browser});
+Rule("SetHelpBrowser",1,1,True)
+[
+  Set(Browser,browser);
+];
+RuleBase("Help",{f});
+RuleBase("Help",{});
+Rule("Help",1,1,True)
+[
+  SystemCall(Browser:" ":FindFile("documentation/ref.html"):"#":f);
+];
+Rule("Help",0,1,True)
+[
+  SystemCall(Browser:" ":FindFile("documentation/books.html"));
+];
+/*TODO remove this code causes := to get loaded at startup! Bit of a pity
 SetHelpBrowser(browser):=
 [
   Browser:=browser;
 ];
 Help(f):= SystemCall(Browser:" ":FindFile("documentation/ref.html"):"#":f);
 Help() := SystemCall(Browser:" ":FindFile("documentation/books.html"));
+*/
 SetHelpBrowser("lynx");
