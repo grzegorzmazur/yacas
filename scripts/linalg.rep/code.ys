@@ -155,7 +155,9 @@ Identity(n_IsNonNegativeInteger) <--
     result;
 ];
 
-
+// 
+// Diagonal: return a vector with the diagonal elements of the matrix
+//
 Function("Diagonal",{A})
 [
 	Local(result,i,n);
@@ -225,29 +227,50 @@ FrobeniusNorm(matrix_IsMatrix) <--
 ];
 
 
+10 # Determinant(_matrix)_(IsUpperTriangular(matrix) Or IsLowerTriangular(matrix)) <--
+[ 
+	Local(result);
+	result:=1;
+	ForEach(i, Diagonal(matrix) )
+		result:=result*i;
+	result;
+];
+
+//
+// The fast determinant routine that does the determinant numerically, rule 20, 
+// divides things by the elements on the diagonal of the matrix. So if one of these
+// elements happens to be zero, the result is something like Infinity or Undefined.
+// Use the symbolic determinant in that case, as it is slower but much more robust.
+//
+15 # Determinant(_matrix)_(Length(Select("IsZero",Diagonal(matrix))) > 0) <-- SymbolicDeterminant(matrix);
 
 20 # Determinant(_matrix) <-- 
 [
-        Local(n,s,result);
-        n:=Length(matrix);
+  Local(n,s,result);
+  n:=Length(matrix);
 	result:=1;
 
-        // gaussian elimination
-        ForEach(i, 1 .. (n-1) )[
-                ForEach(k, (i+1) .. n )[
-                        s:=matrix[k][i];
-                        ForEach(j, i .. n )[
-                                matrix[k][j] := matrix[k][j] - (s/matrix[i][i])*matrix[i][j];
-                                //Echo({"matrix[",k,"][",j,"] =", aug[k][j]," - ",
-                                //      matrix[k][i],"/",matrix[i][i],"*",matrix[i][j]," k i =", k,i  });
-                        ];
-                ];
-        ];
-	// now upper triangular
-        ForEach(i, Diagonal(matrix) )
-                result:=result*i;
-        result;
+  // gaussian elimination
+  ForEach(i, 1 .. (n-1) )
+  [
+    ForEach(k, (i+1) .. n )
+    [
+      s:=matrix[k][i];
+      ForEach(j, i .. n )
+      [
+        matrix[k][j] := matrix[k][j] - (s/matrix[i][i])*matrix[i][j];
+        //Echo({"matrix[",k,"][",j,"] =", aug[k][j]," - ",
+        //      matrix[k][i],"/",matrix[i][i],"*",matrix[i][j]," k i =", k,i  });
+      ];
+    ];
+  ];
 
+//Echo("mat: ",matrix);
+//Echo("diagmat: ",Diagonal(matrix));
+	// now upper triangular
+  ForEach(i, Diagonal(matrix) )
+    result:=result*i;
+  result;
 ];
 
 20 # SymbolicDeterminant(_matrix) <-- 
@@ -264,14 +287,6 @@ FrobeniusNorm(matrix_IsMatrix) <--
 ];
 
 
-10 # Determinant(_matrix)_(IsUpperTriangular(matrix) Or IsLowerTriangular(matrix)) <--
-[ 
-	Local(result);
-	result:=1;
-	ForEach(i, Diagonal(matrix) )
-		result:=result*i;
-	result;
-];
 
 Function("Sparsity",{matrix})
 [
