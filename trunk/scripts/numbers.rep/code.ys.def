@@ -17,5 +17,9 @@ ProperDivisorsSum
 Moebius
 Totient
 IsPerfect
+LegendreSymbol
+IsCoprime
+IsQuadraticResidue
+IsGaussianInteger
+IsGaussianPrime
 }
-
