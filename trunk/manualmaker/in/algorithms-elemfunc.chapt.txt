@@ -126,8 +126,10 @@ The basic approach is to numerically solve the equation $r^n=x$.
 
 *A roots!by bisection algorithm
 
-The square root is computed by using the bisection method, which
-works well for integers. The general approach is to scan
+The square root can be computed by using the bisection method, which
+works well for integers (if only the integer part of the square root is needed).
+The algorithm is described in [Johnson 1987].
+The general approach is to scan
 each bit of the input number and to see if a certain bit should be set in the resulting integer.
 The time is linear in the number of decimals, or logarithmic in
 the input number. The method is very similar in approach to the
@@ -245,7 +247,8 @@ In most implementations of arbitrary-precision arithmetic, the time to perform a
 Therefore it makes sense to use a method that avoids divisions.
 One variant of Newton's method is to solve the equation
 $1/r^2=x$.
-The solution of this equation $r=1/Sqrt(x)$ is the limit of the iteration $r'=r+r*(1-r^2*x)/2$ that does not require any divisions (but instead requires three multiplications).
+The solution of this equation $r=1/Sqrt(x)$ is the limit of the iteration $$r'=r+r*(1-r^2*x)/2$$
+that does not require any divisions (but instead requires three multiplications).
 The final multiplication $r*x$ completes the calculation of the square root.
 
 As usual with Newton's method, all errors are automatically corrected, so the working precision can be gradually increased until the last iteration.
@@ -264,11 +267,12 @@ These optimizations do not change the asymptotic complexity of the method, altho
 
 Before using Newton's method, we might apply some argument reduction to speed up the convergence of the iterations.
 Suppose we need to find $Sqrt(x)$.
-Choose an integer $n$ such that $1/4<x':=4^n*x<=1$.
-The value of $n$ is easily found from bit counting: if $b$ is the bit count of $x$, then $n$.
-We find $Sqrt(x)=2^(-n)*Sqrt(x')$.
+Choose an integer $n$ such that $1/4<x':=4^(-n)*x<=1$.
+The value of $n$ is easily found from bit counting: if $b$ is the bit count of $x$, then $$n=Floor((b+1)/2)$$.
+We find $$Sqrt(x)=2^n*Sqrt(x')$$.
 To compute $Sqrt(x')$, we use Newton's method with the initial value $x'[0]$ obtained by interpolation of the function $Sqrt(x)$ on the interval [$1/4$,$1$].
-A suitable interpolation function might be taken as simply $(2*x+1)/3$ or more precisely $1/90*(-28*x^2+95*x+23)$.
+A suitable interpolation function might be taken as simply $(2*x+1)/3$ or more precisely
+$$Sqrt(x) <=> 1/90*(-28*x^2+95*x+23)$$.
 By using a particular interpolation function, we can guarantee a certain number of precise bits at every iteration.
 This may save a few iterations, at the small expense of evaluating the interpolation function once at the beginning.
 
@@ -282,9 +286,9 @@ For a given $s$, it evaluates the integer part of $n^(1/s)$ using only integer a
 The initial guess is $x[0]=2^(b(n)/s)$ where $b(n)$ is the number of bits in $n$ obtained by bit counting or using the integer logarithm function. It is clear that the initial guess is accurate to within a factor of 2. Since the relative error is squared at every iteration, we need as many iteration steps as bits in $n^(1/s)$.
 
 Since we only need the integer part of the root, it is enough to use integer division in the Halley iteration. The sequence $x[k]$ will monotonically approximate the number $n^(1/s)$ from below if we start from an initial guess that is less than the exact value. (We start from below so that we have to deal with smaller integers rather than with larger integers.) If $n=p^s$, then after enough iterations the floating-point value of $x[k]$ would be slightly less than $p$; our value is the integer part of $x[k]$. Therefore, at each step we check whether $1+x[k]$ is a solution of $x^s=n$, in which case we are done; and we also check whether $(1+x[k])^s>n$, in which case the integer part of the root is $x[k]$.
-To speed up the Halley iteration in the worst case when $s^s>n$, it is combined with bisection. The root bracket interval $x1<x<x2$ is maintained and the next iteration $x[k+1]$ is assigned to the midpoint of the interval if Newton's formula does not give sufficiently rapid convergence. The initial root bracket interval can be taken as $x[0]$, $2*x[0]$.
+To speed up the Halley iteration in the worst case when $s^s>n$, it is combined with bisection. The root bracket interval $x1<x<x2$ is maintained and the next iteration $x[k+1]$ is assigned to the midpoint of the interval if Halley's formula does not give sufficiently rapid convergence. The initial root bracket interval can be taken as $x[0]$, $2*x[0]$.
 
-If $b$ is very large, the convergence of both Newton's and Halley's iterations is almost linear until the final few iterations.
+If $s$ is very large ($s^s>n$), the convergence of both Newton's and Halley's iterations is almost linear until the final few iterations.
 Therefore  it is faster to evaluate the floating-point power for large $b$ using the exponential and the logarithm.
 
 
@@ -297,8 +301,8 @@ Computing this "integer logarithm" is a much easier task than computing the loga
 
 Logarithms of complex numbers can be reduced to elementary functions of real numbers, for example:
 $$ Ln(a+I*b)=1/2*Ln(a^2+b^2)+I*ArcTan(b/a) $$.
-For a negative real number, we have
-$$ Ln(-x) = Ln(Abs(x))+I*Pi $$.
+For a negative real number $x<0$, we have
+$$ Ln(x) = Ln(Abs(x))+I*Pi $$.
 This assumes, of course, an appropriate branch cut for the complex logarithm.
 A natural choice is to cut along the negative real semiaxis, $Im(z)=0$, $Re(z)<0$.
 
@@ -416,10 +420,19 @@ then the first approximation to $Ln(a)$ is $m*Ln(2)$.
 (Here we can use a very rough approximation to $Ln(2)$, for example, $2/3$.)
 
 The initial value found in this fashion will be correct to about one bit.
-The number of digits triples at each Halley iteration.
-Therefore the required number of iterations is $Ln(P)/Ln(3)$.
+The number of digits triples at each Halley iteration, so the result will have about $3*k$ correct bits after $k$ iterations (this disregards round-off error).
+Therefore the required number of iterations for $P$ decimal digits is $1/Ln(3)*Ln(P*Ln(2)/Ln(10))$.
 
 This method is currently faster than other methods (with internal math) and so it is implemented in the routine {LnNum}.
+
+This method can be generalized to higher orders.
+Let $y:=1-a*Exp(-x[0])$, where $x[0]$ is a good approximation to $Ln(a)$ so $y$ is small.
+Then
+$ Ln(a) = x[0]+Ln(1-y)$ and we can expand in $y$ to obtain
+$$ Ln(a) = x[0] - y -y^2/2 - y^3/3 - ... $$
+By truncating this sum after $k$-th term we obtain a ($k-1$)-th order method that multiplies the number of correct digits by $k+1$ after each iteration.
+
+The optimal number of terms to take depends on the speed of the implementation of $Exp(x)$.
 
 	    Method 4: AGM
 
@@ -562,6 +575,39 @@ There is a continued fraction representation of the logarithm:
 $$ Ln(1+x) = x/(1+x/(2+x/(3+(4*x)/(4+(4*x)/(5+(9*x)/(6+ ...)))))) $$.
 This fraction converges for all $x$, although the speed of convergence varies with the magnitude of $x$.
 
+This method does not seem to provide a computational advantage compared with the other methods.
+
+	    Method 9: bisection
+
+A simple bisection algorithm for $Ln(x)/Ln(2)$ (the base 2 logarithm) with real $x$ is described in [Johnson 1987].
+
+First, we need to divide $x$ by a certain power of $2$ to reduce $x$ to  $y$ in the interval $1<=y<2$.
+We can use the bit count $m=BitCount(x)$ to find an integer $m$ such that $1/2<=x*2^(-m)<1$ and take $y=x*2^(1-m)$.
+Then $Ln(x)/Ln(2) = Ln(y)/Ln(2)+m-1$.
+
+Now we shall find the bits in the binary representation of $Ln(y)/Ln(2)$, one by one.
+Given a real $y$ such that $1<=y<2$, the value $Ln(y)/Ln(2)$ is between 0 and 1.
+Now,
+$$ Ln(y)/Ln(2) = 2^(-1)*Ln(y^2)/Ln(2) $$.
+The leading bit of this value is $1$ if $y^2>=2$ and 0 otherwise.
+Therefore we need to compute $y' = y^2$ using a long $P$-digit multiplication and compare it with $2$.
+If $y' >= 2$ we set $y=y'/2$, otherwise we set $y=y'$; then we obtain $1<=y<2$ again and repeat the process to extract the next bit of $Ln(y)/Ln(2)$.
+
+The process is finished either when the required number of bits of $Ln(y)/Ln(2)$ is found, or when the precision of the argument is exhausted, whichever occurs first.
+Note that each iteration requires a long multiplication (squaring) of a number, and each squaring loses 1 bit of relative precision, so after $k$ iterations the number of precise bits of $y$ would be $P-k$.
+Therefore we cannot have more iterations than $P$ (the number of precise bits in the original value of $x$).
+The total cost is $O(P*M(P))$.
+
+The squaring at each iteration needs to be performed not with all digits, but with the number of precise digits left in the current value of $y$.
+This does not reduce the asymptotic complexity; it remains $O(P*M(P))$.
+
+Comparing this method with the Taylor series, we find that the only advantage of this method is simplicity.
+The Taylor series requires about $P$ terms, with one long multiplication and one short division per term, while the bisection method does not need any short divisions.
+However, the rectangular method of Taylor summation cuts the time down to $O(Sqrt(P))$ long multiplications, at a cost of some storage and bookkeeping overhead.
+Therefore, the bisection method may give an advantage only at very low precisions.
+(This is why it is sometimes used in microprocessors.)
+The similar method for the exponential function requires a square root at every iteration and is never competitive with the Taylor series.
+
 		Exponential
 
 There are many methods to compute the exponential of a real number.
@@ -621,7 +667,7 @@ An alternative way to compute $x=Exp(a)$ if a fast logarithm routine is availabl
 
 Newton's method gives the iteration
 $$ x'=x*(a+1-Ln(x)) $$.
-The iteration converges quadratically to $Exp(a)$ if the initial value of $x$ is close enough to that value.
+The iteration converges quadratically to $Exp(a)$ if the initial value of $x$ is $0<x<Exp(a+1)$.
 
 A cubically convergent formula is obtained if we replace $Ln(x)=a$ by an equivalent equation
 $$ (Ln(x)-a)/(Ln(x)-a-2) = 0$$.
@@ -629,7 +675,18 @@ For this equation, Newton's method gives the iteration
 $$ x' = x*(1+(a+1-Ln(x))^2)/2 $$.
 This iteration converges for initial values $0<x<Exp(a+2)$ with a cubic convergence rate and requires only one more multiplication, compared with Newton's method for $Ln(x)=a$. A good initial guess can be found by raising 2 to the integer part of $a/Ln(2)$ (the value $Ln(2)$ can be approximated from above by a suitable rational number, e.g. $7050/10171$).
 
-If a good enough initial guess can be obtained so that Newton's iteration converges, then the more complicated cubically convergent iteration should not be used.
+This cubically convergent iteration seems to follow from a good equivalent equation that we guessed.
+But it turns out that it can be generalized to higher orders.
+Let $y:=a-Ln(x[0])$ where $x[0]$ is an approximation to $Exp(a)$; if it is a good approximation, then $y$ is small.
+Then $Exp(a)=x[0]*Exp(y)$.
+Expanding in $y$, we obtain
+$$ Exp(a) = x[0]*(1+y+y^2/2! +y^3/3! + ...) $$,
+and if we truncate the series after $k$-th term, the new approximation will have $k$ times the number of correct digits in $x[0]$.
+It is easy to see that the above cubic iteration is a particular case with $k=3$.
+
+
+The optimal number of terms to take depends on the speed of the implementation of $Ln(x)$.
+
 
 	    Method 4: linear reduction + Taylor series
 
@@ -675,6 +732,8 @@ The cost of this method is $O(M(P*Ln(P))*Ln(P))$ operations.
 There is a continued fraction representation of the exponential function:
 $$ Exp(-x) = 1-x/(1+x/(2-x/(3+x/(2-x/(5+x/(2- ...)))))) $$.
 This fraction converges for all $x$, although the speed of convergence varies with the magnitude of $x$.
+
+This method does not seem to provide a computational advantage compared with the other methods.
 
 
 		Calculation of $Pi$
@@ -738,8 +797,45 @@ At each iteration, the variable $pi$ will have twice as many correct digits as i
 		Trigonometric functions
 
 Trigonometric functions $Sin(x)$, $Cos(x)$ are computed by subtracting $2*Pi$ from $x$ until it is in the range $0<x<2*Pi$ and then using the Taylor series.
+(The value of $Pi$ is precomputed.)
+
 Tangent is computed by dividing $Sin(x)/Cos(x)$ or from $Sin(x)$ using the identity
 $$ Tan(x) = Sin(x)/Sqrt(1-Sin(x)^2) $$.
+
+	    Method 1: Taylor series
+
+The Taylor series for the basic trigonometric functions are
+$$ Sin(x) = x - x^3/3! + x^5/5! - x^7/7! +...$$,
+$$ Cos(x) = 1 - x^2/2! + x^4/4! - x^6/6! +...$$.
+These series converge for all $x$ but are optimal for multiple-precision calculations only for small $x$.
+The convergence rate and possible optimizations are the same as those of the Taylor series for $Exp(x)$.
+
+	    Method 2: argument reduction
+
+Basic argument reduction requires a precomputed value for $Pi/2$.
+The identities $Sin(x+Pi/2)= Cos(x)$, $Cos(x+Pi/2)= -Sin(x)$ can be used to reduce the argument to the range between $0$ and $Pi/2$.
+Then the bisection for $Cos(x)$ and the trisection for $Sin(x)$ are used.
+
+For $Cos(x)$, the bisection identity can be used more efficiently if it is written as
+$$ 1-Cos(2*x) = 4*(1-Cos(x))-2*(1-Cos(x))^2 $$.
+If $1-Cos(x)$ is very small, then this decomposition allows to use a shorter multiplication and reduces round-off error.
+
+For $Sin(x)$, the trisection identity is
+$$ Sin(3*x) = 3*Sin(x) - 4*Sin(x)^3 $$.
+
+The optimal number of bisections or trisections should be estimated to reduce the total computational cost.
+The resulting number will depend on the magnitude of the argument $x$, on the required precision $P$, and on the speed of the available multiplication $M(P)$.
+
+	    Method 3: inverse $ArcTan(x)$
+
+The function $ArcTan(x)$ can be found from its Taylor series, or from the complex AGM method, or by another method.
+Then the function can be inverted by Newton's iteration to obtain $Tan(x)$ and from it also $Sin(x)$, $Cos(x)$ using the trigonometric identities.
+
+Alternatively, $ArcSin(x)$ may be found from the Taylor series and inverted to obtain $Sin(x)$.
+
+This method seems to be of marginal value since efficient direct methods for $Cos(x)$, $Sin(x)$ are available.
+
+		Inverse trigonometric functions
 
 *A computation of $ArcTan(x)$
 
@@ -828,12 +924,17 @@ Therefore, at high enough precision the continued fraction method will be much l
 
 *A factorial
 
-*A double factorial $n!!$
-
 The factorial is defined by $n! := n*(n-1)*...*1$ for integer $n>=1$ and the binomial coefficient is defined by
 $$Bin(n,m) := n! / (m! * (n-m)!)$$.
-A "double factorial" $n!! := n*(n-2)*(n-4)*...$ is also useful for some calculations.
-For convenience, one defines $0! :=1$ and $(-1)!! := 1$.
+
+*A double factorial
+
+The "double factorial" $n!! := n*(n-2)*(n-4)*...$ is also useful for some calculations.
+For convenience, one defines $0! :=1$, $0!! := 1$, and $(-1)!! := 1$;
+with these definitions, the recurrence relations
+$$n! *(n+1) = (n+1)!$$,
+$$n!! *(n+2) = (n+2)!!$$
+are valid also for $n=0$ and $n= -1$.
 
 There are two tasks related to the factorial: the exact integer calculation and an approximate calculation to some floating-point precision. Factorial of $n$ has approximately $n*Ln(n)/Ln(10)$ decimal digits, so an exact calculation is practical only for relatively small $n$. In the current implementation, exact factorials for $n>65535$ are not computed but print an error message advising the user to avoid exact computations of large factorials.
 For example, {LnGammaNum(n+1)} is able to compute $Ln(n!)$ for very large $n$ to any desired floating-point precision.

@@ -40,7 +40,7 @@ R. P. Brent,
 [Brent 1976]
 R. P. Brent,
 <i>The complexity of multiple-precision arithmetic</i>,
-Complexity of Computation Problem Solving, 1976.
+Complexity of Computation Problem Solving, 1976;
 R. P. Brent, 
 <i>Fast multiple-precision evaluation of elementary functions</i>,
 Journal of the ACM 23 (1976), p. 242.
@@ -93,6 +93,11 @@ and other essays, available online at <*http://numbers.computation.free.fr/Const
 B. Haible and T. Papanikolaou,
 <i>Fast Multiprecision Evaluation of Series of Rational Numbers</i>,
 LNCS 1423 (Springer, 1998), p. 338.
+
+[Johnson 1987]
+K. C. Johnson,
+<i>Algorithm 650: Efficient square root implementation on the 68000</i>,
+ACM TOMS 13 (1987), p. 138.
 
 [Kanemitsu <i>et al.</i> 2001]
 S. Kanemitsu, Y. Tanigawa, and M. Yoshimoto,

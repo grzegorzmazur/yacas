@@ -226,7 +226,16 @@ computation with many digits and then proved.
 
 Very high precision computations of special functions <i>might</i> be useful in the future.
 But it is already quite clear that computations with moderately high
-precision (50 or 100 digits) are useful for applied problems.
+precision (say, 50 or 100 decimal digits) are useful for applied problems.
+For example, to obtain the leading asymptotic of an analytic function, we could expand it in series and take the first term.
+But we need to check that the coefficient at what we think is the leading term of the series does not vanish.
+This coefficient could be a certain "exact" number such as $(Cos(355)+1)^2$ ("exact" in the sense that it is made of integers and elementary functions),
+and we cannot say <i>a priori</i> that this number is nonzero.
+The problem of "zero determination" (finding out whether a certain "exact" number is zero)
+is known to be algorithmically unsolvable if we allow transcendental functions.
+The only practical general approach seems to be to compute the number in question with many digits.
+Usually a few digits are enough, but occasionally several hundred digits are needed.
+
 Implementing an efficient algorithm that computes 100 digits of
 $Sin(3/7)$ already involves many of the issues that would also be
 relevant for a 10,000 digit computation. 
@@ -281,7 +290,8 @@ are needed for given $x$, $P$.
 This knowledge allows to estimate the computational cost, in terms of
 the required precision $P$ and of the cost of long multiplication
 $M(P)$, and choose the best algorithm.
-Typically all operations will fall into the following categories
+
+Typically all operations will fall into one of the following categories
 (sorted by the increasing cost):
 
 *A arbitrary-precision computation!speed estimates
@@ -290,6 +300,9 @@ Typically all operations will fall into the following categories
 *	multiplication, division, integer power, integer root: linear in $M(P)$;
 *	elementary functions: $Exp(x)$, $Ln(x)$, $Sin(x)$, $ArcTan(x)$ etc.: $M(P)*Ln(P)$ or slower by some powers of $Ln(P)$;
 *	transcendental functions: $Erf(x)$, $Gamma(x)$ etc.: typically $P*M(P)$ or slower.
+
+The cost of long multiplication $M(P)$ is between $O(P^2)$ for low precision and $O(P*Ln(P))$ for very high precision.
+In some cases, a different algorithm should be chosen if the precision is high enough to allow $M(P)$ faster than $O(P^2)$.
 
 Some algorithms also need moderate storage space
 (e.g. an efficient algorithm for summation of the Taylor series uses $O(Ln(P))$ temporary $P$-digit numbers).
@@ -354,9 +367,11 @@ terms in the Taylor series to compute $Exp(x)$ for $Abs(x)<1$ to $P$
 decimal digits. (Of course, if $x$ is much smaller than 1, many fewer
 terms will suffice.)
 
-		Estimating the unavoidable round-off error
+		Estimating the round-off error
 
 *A arbitrary-precision computation!round-off error estimates
+
+	    Unavoidable round-off errors
 
 As the required precision $P$ grows, an arbitrary-precision algorithm
 will need more iterations or more terms of the series. So the round-off
@@ -370,28 +385,33 @@ increase into account when estimating the total cost of the method.
 
 Here is a simple estimate of the normal round-off error in a computation of
 $n$ terms of a power series.
-Suppose that the terms monotonically decrease in magnitude and that adding one term requires two
+Suppose that the sum of the series is of order $1$, that the terms monotonically decrease in magnitude, and that adding one term requires two
 multiplications and one addition. If all calculations are performed
-with relative precision $epsilon=10^(-P)$, then the total accumulated
-relative round-off error is $3*n*epsilon$. (This is an optimistic
-estimate that needs to be verified in each particular case; what if the
-series begins with some large terms but converges to a very small
-value?) If the relative error is $3*n*epsilon$, it means that our
+with absolute precision $epsilon=10^(-P)$, then the total accumulated
+round-off error is $3*n*epsilon$. If the relative error is $3*n*epsilon$, it means that our
 answer is something like $a*(1+3*n*epsilon)$ where $a$ is the correct
 answer. We can see that out of the total $P$ digits of this answer,
 only the first $k$ decimal digits are correct, where
-$k= -Ln(3*n*epsilon)/Ln(10)$. In other words, we have lost $P-k$ digits
-because of accumulated roundoff error. So we found that we need
-$P-k=Ln(3*n)/Ln(10)$ extra decimal digits to compensate for this
+$k= -Ln(3*n*epsilon)/Ln(10)$. In other words, we have lost
+$$P-k=Ln(3*n)/Ln(10)$$
+digits because of accumulated roundoff error. So we found that we need
+$Ln(3*n)/Ln(10)$ extra decimal digits to compensate for this
 round-off error.
 
+This estimate assumes several things about the series (basically, that the series is "well-behaved").
+These assumptions must be verified in each particular case.
+For example, if the series begins with some large
+terms but converges to a very small value, this estimate is wrong (see the next
+subsection).
+
 In the previous exercise we found the number of terms $n$ for $Exp(x)$. So now we know how many extra digits of working precision we need for this particular case.
+(Warning: the series for $Exp(x)$ is well-behaved only if $x$ is small and positive.)
 
 Below we shall have to perform similar estimates of the required number
 of terms and of the accumulated round-off error in our analysis of the
 algorithms.
 
-		Catastrophic round-off error
+	    Catastrophic round-off error
 
 *A arbitrary-precision computation!catastrophic round-off error
 

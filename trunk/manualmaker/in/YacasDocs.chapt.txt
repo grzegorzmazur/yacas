@@ -160,11 +160,11 @@ will generate a reference to <*this section|yacasdoc://essays/5/2/*> in the docu
 There are currently the following ways to create documentation hyperlinks:
 *	0. Hyperlink into an anchor of the same file:
 	<*yacasdoc://#documentation!hyperlinks*>
-The anchor "{#}{documentation}{!}{hyperlinks}" should have been created using the {*A} label.
-*	0. Hyperlinks into an anchor in a different documentation book:
+The anchor "{documentation}{!}{hyperlinks}" should have been created using the {*A} label.
+*	0. Hyperlink into an anchor in a different documentation book:
 	<*yacasdoc://Algo/3/#adaptive plotting*>
 Note that one must specify the book name "{Algo}" and the chapter number ({3}) for this to work. Currently supported book names are {Algo}, {coding}, {essays}, {intro}, {Lisp}, {ref}, and {refprog}. A warning message is printed if the book name is not given correctly.
-*	0. Hyperlinks into a given chapter or a given section of a documentation book:
+*	0. Hyperlink into a given chapter or a given section of a documentation book:
 	<*yacasdoc://Algo/3/1/*>
 
 *A documentation!equations
