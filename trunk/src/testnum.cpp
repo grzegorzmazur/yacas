@@ -4,6 +4,7 @@
 //#include "yacasprivate.h"
 #include "numbers.h"
 #include <stdio.h>
+#include <stdarg.h>
 #include <math.h>
 
 #define ENABLE_TESTS 1
@@ -365,6 +366,30 @@ void test_string2float(double value, const char* test_string, LispInt precision,
 	
 	CheckEquals(x,y,precision,base,"value read from string matches");
 }
+
+
+char* Message(char* str,...)
+{
+  static char buf[512];
+  va_list arg;
+  va_start (arg, str);
+  vsnprintf (buf, 500, str, arg);
+  va_end (arg);
+  return buf;
+}
+
+
+
+// test only reading from string and comparing to the correct value
+void test_string2string(const char* test_string, LispInt precision=0, LispInt base=10)
+{
+	BigNumber x(test_string,precision,base); // Set string with low precision
+  LispString str;
+  x.ToString(str,200,base); // Request it back with high precision
+  Check(!strcmp(test_string,str.String()),Message("String rep. %s != %s",test_string,str.String()));	
+}
+
+
 
 void test_float2string(double value, const char* test_string, LispInt precision, LispInt base)
 {
@@ -1077,6 +1102,36 @@ int main(void)
 	    x.Add(x,y,prec);	// now should be 0
 	    CheckStringValue(x, "0.", 10, 10, "x=0 now due to roundoff");
 	}
+
+/*Heuh... this didn't work out as I expected...
+   Next("Precision of string representation higher than requested precision");  
+   test_string2string("1");
+   test_string2string("0.1");
+   test_string2string("-0.1");
+
+   test_string2string("1.1");
+   test_string2string("-1.1");
+
+   test_string2string("0.01");
+   test_string2string("-0.01");
+
+   test_string2string("1.01");
+   test_string2string("-1.01");
+
+   test_string2string("0.0000000000000000000001");
+   test_string2string("-0.0000000000000000000001");
+
+   test_string2string("1.0000000000000000000001");
+   test_string2string("-1.0000000000000000000001");
+
+   test_string2string("0.10000000000000000000001e11");
+   test_string2string("-0.10000000000000000000001e11");
+
+   test_string2string("0.10000000000000000000001e-11");
+   test_string2string("-0.10000000000000000000001e-11");
+*/
+
+
 	Next("a calculation from arithmetic.yts");
 	{// compute 10e3*1.2e-4 - 1.2, must get zero
 		BigNumber x("10e3", 10), y("1.2e-4", 10), z("1.2", 10);
@@ -1091,6 +1146,7 @@ int main(void)
 		CheckStringValue(z, "0.", 10, 10, "z is equal to 0.");
 		
 	}
+
 /* not yet implemented
 	Next("precision control for Equals()");
 	Next("precision control for LessThan()");

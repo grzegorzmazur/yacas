@@ -284,7 +284,7 @@ public class ConsoleApplet extends Applet implements KeyListener
       BufferedOutputStream buffered = new BufferedOutputStream(client.getOutputStream());
       DataOutputStream outbound = new DataOutputStream(buffered);
       DataInputStream inbound = new DataInputStream(client.getInputStream());
-      outbound.writeBytes(inputLine);
+      outbound.writeBytes(inputLine+";");
       outbound.flush();
       String responseLine;
       while ((responseLine = inbound.readLine()) != null)

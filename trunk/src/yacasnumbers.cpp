@@ -1165,6 +1165,7 @@ void BigNumber::BitCount(const BigNumber& aX)
 // give BitCount as platform integer
 signed long BigNumber::BitCount() const
 {
+  if (IsZero(*iNumber)) return -(1L<<30);
   ANumber num(iPrecision);
   num.CopyFrom(*iNumber);
   while (num.iTensExp < 0)
@@ -1427,6 +1428,8 @@ void BigNumber::SetTo(double aValue)
   sprintf(dummy,format,aValue);
   SetTo(dummy,iPrecision,10);
   SetIsInteger(LispFalse);
+//  if (iNumber->iExp > 1)
+//    iNumber->RoundBits();
 #else
   //FIXME
   LISPASSERT(0);
@@ -1457,6 +1460,8 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
   
 //TODO remove old  iNumber = NEW ANumber(aString,aPrecision,aBase);
   SetIsInteger(!isFloat && iNumber->iExp == 0 && iNumber->iTensExp == 0);
+//  if (iNumber->iExp > 1)
+//    iNumber->RoundBits();
 }
 
 
