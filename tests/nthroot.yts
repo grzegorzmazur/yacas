@@ -1,0 +1,23 @@
+//////
+// $Id: nthroot.yts,v 1.1 2002-09-16 11:23:33 dreusch Exp $
+// tests for NthRoot
+//////
+
+Testing("-- NthRoot");
+KnownFailure(Verify(NthRoot(-1,2),Hold(NthRoot(-1,2))));
+Verify(NthRoot(2,1),Hold(NthRoot(2,1)));
+Verify(NthRoot(2,2),{1,2});
+Verify(NthRoot(12,2),{2,3});
+Verify(NthRoot(12,3),{1,12});
+Verify(NthRoot(27,3),{3,1});
+Verify(NthRoot(17*13,2),{1,17*13});
+Verify(NthRoot(17*17*13,2),{17,13});
+Verify(NthRoot(17*17*17*13,2),{17,17*13});
+Verify(NthRoot(17*17*17*13,3),{17,13});
+Verify(NthRoot(17*17*17*17*13*13,2),{17*17*13,1});
+Verify(NthRoot(17*17*17*17*13*13,3),{17,17*13*13});
+Verify(NthRoot(17*17*17*17*13*13,4),{17,13*13});
+Verify(NthRoot(17*17*17*17*13*13,5),{1,17*17*17*17*13*13});
+
+//////
+//////

@@ -28,6 +28,7 @@ Set(DefFileList, {
 "multivar.rep/sparsetree.ys",
 "newly.rep/code.ys",
 "numbers.rep/code.ys",
+"numbers.rep/nthroot.ys",
 "odesolver.rep/code.ys",
 "openmath.rep/code.ys",
 "orthopoly.rep/code.ys",

@@ -958,6 +958,41 @@ This function is used to test numbers for prime powers.
 
 *SEE IntLog, MathPower, IsPrimePower
 
+
+*CMD NthRoot --- calculate/simplify nth root of an integer
+*STD
+*CALL
+        NthRoot(m,n)
+
+*PARMS
+
+{m} -- an non-negative integer (m>0)
+
+{n} -- a positive integer greater than 1 (n>1)
+
+*DESC
+
+{NthRoot(m,n)} calculates/simplifies the nth rooth m^(1/n) and
+returns a list {{f,r}}. {f} and {r} are both positive integers
+and represent f*r^(1/n)=m^(1/n). For large {m} and small {n}
+{NthRoot} may work quite slow. Every result {{f,r}} for given
+{m}, {n} is saved in a lookup table, thus subsequent calls to
+{NthRoot} with the same values {m}, {n} will be executed quite
+fast.
+
+*EG
+	In> NthRoot(12,2)
+	Out> {2,3};
+	In> NthRoot(81,3)
+	Out> {3,3};
+	In> NthRoot(3255552,2)
+	Out> {144,157};
+	In> NthRoot(3255552,3)
+	Out> {12,1884};
+
+*SEE IntNthRoot, Factors, MathPower
+
+
 *CMD PAdicExpand --- p-adic expansion
 *STD
 *CALL
