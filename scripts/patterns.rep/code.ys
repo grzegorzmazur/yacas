@@ -39,18 +39,19 @@ Rule("DefinePattern",4,9,Type(patternleft) = "_")
 
 Rule("DefinePattern",4,10,True)
 [
-  Local(patternflat,patternvars, patt, patternoper);
-  patternflat := Listify(patternleft);
-  patternvars := Tail(patternflat);
-  patternoper:=String(Head(patternflat));
-
-  If(Not(RuleBaseDefined(patternoper,Length(patternvars))),
+  Local(patternflat,patternvars, patt, patternoper,arity);
+  Set(patternflat, Listify(patternleft));
+  Set(patternvars, Tail(patternflat));
+  Set(patternoper,String(Head(patternflat)));
+  Set(arity,Length(patternvars));
+  DefLoadFunction(patternoper);
+  If(Not(RuleBaseDefined(patternoper,arity)),
      [
-      MacroRuleBase(patternoper,MakeVector(arg,Length(patternvars)));
+      MacroRuleBase(patternoper,MakeVector(arg,arity));
      ]
     );
-  patt:=PatternCreate(patternvars,postpredicate);
-  MacroRulePattern(patternoper,Length(patternvars),patternprecedence,
+  Set(patt,PatternCreate(patternvars,postpredicate));
+  MacroRulePattern(patternoper,arity,patternprecedence,
             patt)patternright;
   True;
 ];
