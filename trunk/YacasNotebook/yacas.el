@@ -135,6 +135,11 @@
   :group 'yacas
   :type 'integer)
 
+(defcustom yacas-use-emacs-help t
+  "*If non-nil, use browse-url to get help"
+  :group 'yacas
+  :type 'boolean)
+
 ;(defcustom yacas-prompt-regexp "^\\(In> \\|Out> \\)"
 ;  "A regular expression for the Yacas prompt."
 ;  :group 'yacas
@@ -387,7 +392,7 @@ can be used to scroll through the input history.
 
 (defun yacas-help ()
   (interactive)
-  (let ((fn (read-string "Help on: ")))
+  (let ((fn (completing-read "Help on: " yacas-words)))
     (select-window (split-window))
     (if (string= fn "")
         (browse-url
@@ -757,6 +762,8 @@ M-s will bring the next input matching
                    (delete-process inferior-yacas-process))
                (setq inferior-yacas-process nil)
                (run-hooks 'inferior-yacas-exit-hook))) t t)
+  (if yacas-use-emacs-help
+      (yacas-use-emacs-help-start))
   (run-hooks 'inferior-yacas-mode-hook))
 
 ;;;; Interacting with the Yacas process
@@ -925,6 +932,18 @@ M-s will bring the next input matching
     (yacas-single-command (substring stuff 0 end))
     (setq stuff (substring stuff end))))
 
+;;;;
+(defconst yacas-use-emacs-help-string-1
+   "Help():=SystemCall(\"emacsclient -e \\\"(browse-url \\\\\\\"\":FindFile(\"documentation/books.html\"):\"\\\\\\\")\\\"\");")
+
+(defconst yacas-use-emacs-help-string-2
+   "Help(_f)<--SystemCall(\"emacsclient -e \\\"(browse-url \\\\\\\"\":FindFile(\"documentation/ref.html\"):\"#\":f : \"\\\\\\\")\\\"\");")
+
+(defun yacas-use-emacs-help-start ()
+  (server-start)
+  (yacas-single-command yacas-use-emacs-help-string-1)
+  (yacas-single-command yacas-use-emacs-help-string-2))
+
 ;;; Sending information to the process should be done through these
 ;; next four commands
 
@@ -1025,7 +1044,6 @@ do not display the yacas buffer."
       (search-backward "$")
       (setq end (point))
       (buffer-substring-no-properties beg end))))
-
 
 (add-hook 'yacas-start-shell-hooks 'yacas-toggle-prettyform)
 
