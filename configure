@@ -532,7 +532,7 @@ fi
 PACKAGE=yacas
 MAJOR=1
 MINOR=0
-MICRO=47rev1
+MICRO=47rev2
 RELEASE=1
 
 VERSION=$MAJOR.$MINOR.$MICRO
@@ -1002,9 +1002,9 @@ if test "$ac_test_CFLAGS" = set; then
   CFLAGS="$ac_save_CFLAGS"
 elif test $ac_cv_prog_cc_g = yes; then
   if test "$GCC" = yes; then
-    CFLAGS="-O2"
+    CFLAGS="-g -O2"
   else
-    CFLAGS=""
+    CFLAGS="-g"
   fi
 else
   if test "$GCC" = yes; then
@@ -1225,9 +1225,9 @@ if test "$ac_test_CXXFLAGS" = set; then
   CXXFLAGS="$ac_save_CXXFLAGS"
 elif test $ac_cv_prog_cxx_g = yes; then
   if test "$GXX" = yes; then
-    CXXFLAGS="-O2"
+    CXXFLAGS="-g -O2"
   else
-    CXXFLAGS=""
+    CXXFLAGS="-g"
   fi
 else
   if test "$GXX" = yes; then
