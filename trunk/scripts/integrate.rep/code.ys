@@ -255,6 +255,7 @@ IntPureSquare(_vr,_from,_sign2,_sign0,_to) <--
 // Declaration of the anti-derivatives of a few analytic functions
 //
 ////////////////////////////////////////////////
+IntFunc(x,1/_x^(_n),x^(1-n)/(1-n) );
 IntFunc(x,Sin(_x),-Cos(x));
 IntFunc(x,1/Sin(_x), Ln( 1/Sin(x) - Cos(x)/Sin(x) ) );
 IntFunc(x,Cos(_x),Sin(x));
@@ -263,7 +264,8 @@ IntFunc(x,Tan(_x),-Ln(Cos(x)));
 IntFunc(x,Cos(_x)/Sin(_x),Ln(Sin(x)));
 IntFunc(x,Exp(_x),Exp(x));
 IntFunc(x,(C_IsFreeOf(var))^(_x),C^x/Ln(C));
-IntFunc(x,num_IsFreeOf(var) / (_x),num*Ln(Abs(x)));
+// we don't need Ln(Abs(x))
+IntFunc(x,num_IsFreeOf(var) / (_x),num*Ln(x));
 IntFunc(x,Ln(_x),x*Ln(x)-x);
 // where did these 1+1's come from?
 IntFunc(x,(_x)*Ln(_x),(1/(1+1))*x^(1+1)*Ln(x) - (1/(1+1)^2)*x^(1+1) );
