@@ -476,8 +476,9 @@ GuessRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 10 # MatchLinear(_expr)_(Degree(expr,var)<2) <--
 [
   Check(IsUniVar(expr),ToString()Echo({"Incorrect argument ",expr," passed to MatchLinear"}));
-  Check(Not IsBound(A), "Found bound variable which should have been unbound, in MatchLinear");
-  Check(Not IsBound(B), "Found bound variable which should have been unbound, in MatchLinear");
+  Check(Not IsBound(A), ToString()(Echo({"Found bound variable A which should have been unbound, in MatchLinear: ", A, "=", Eval(A)})));
+  Check(Not IsBound(B), ToString()(Echo({"Found bound variable B which should have been unbound, in MatchLinear: ", B, "=", Eval(B)})));
+//  Check(Not IsBound(B), "Found bound variable which should have been unbound, in MatchLinear");
   a := Coef(expr,1);
   b := Coef(expr,0);
   True;
