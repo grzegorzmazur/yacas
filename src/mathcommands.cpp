@@ -1638,9 +1638,17 @@ void LispSystemCall(LispEnvironment& aEnvironment,LispPtr& aResult,
 
     LispString command;
     InternalUnstringify(command, result.Get()->String());
+
+// we would like to pass the exit code back to Yacas. Right now, let's pass True/False according to whether the exit code is 0 or not.
 #ifdef SystemCall
-    SystemCall(command.String());
-    InternalTrue(aEnvironment,aResult);
+	if(SystemCall(command.String()) == 0)
+	{	
+	    InternalTrue(aEnvironment,aResult);
+	}
+	else
+	{
+	    InternalFalse(aEnvironment,aResult);
+	}
 #else
     InternalFalse(aEnvironment,aResult);
 #endif
