@@ -14,7 +14,7 @@ $in_itemized = 0;
 $in_enum = 0;
 $in_htmlcommand = 0;
 
-%star_labels = ( 	# without parameters
+%star_labels = ( 	# without parameters; these Yacas functions must use AddBody()
 	"CALL" => "Topical() \"Calling format:\";",
 	"PARMS" => "Topical() \"Parameters:\";",
 	"DESC" => "Topical() \"Description:\";",
@@ -26,6 +26,8 @@ $in_htmlcommand = 0;
 	"E.G." => "Topical() \"Examples:\";",
 	"EG" => "Topical() \"Example:\";",
 	"TEST" => "",
+	"BREAK" => "LineBreak();",
+	"NEWPAGE" => "PageBreak();",
 );
 
 %intro_labels = (

@@ -162,8 +162,8 @@ public:
     LispNumber(LispHashTable* aHashTable, BigNumber* aNumber,LispStringPtr aString);
     /// construct from a BigNumber; the string representation will be absent
     LispNumber(LispHashTable& aHashTable, BigNumber* aNumber);
-    /// construct from a decimal string representation (also create a number object) and use aPrecision bits (not decimal digits!) 
-    LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt aPrecision);
+    /// construct from a decimal string representation (also create a number object) and use aBasePrecision decimal digits 
+    LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt aBasePrecision);
     virtual ~LispNumber();
     virtual LispObject* Copy(LispInt aRecursed);
     /// return a string representation in decimal with maximum decimal precision allowed by the inherent accuracy of the number
