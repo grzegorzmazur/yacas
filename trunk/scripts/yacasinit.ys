@@ -56,11 +56,11 @@ RuleBase("Help",{f});
 RuleBase("Help",{});
 Rule("Help",1,1,True)
 [
-  SystemCall(Browser:" ":FindFile("documentation/ref.html"):"#":f);
+  SystemCall(Browser:" \"file://":FindFile("documentation/ref.html"):"#":f:"\"");
 ];
 Rule("Help",0,1,True)
 [
-  SystemCall(Browser:" ":FindFile("documentation/books.html"));
+  SystemCall(Browser:" \"file://":FindFile("documentation/books.html"):"\"");
 ];
 
 SetHelpBrowser("lynx");
