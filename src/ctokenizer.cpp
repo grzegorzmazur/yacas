@@ -163,7 +163,7 @@ REDO:
         case '*':
         case '/':
         case '^':
-        case '\%':
+        case '%':
         case '&':
         case ':':
         case '|':
@@ -178,7 +178,7 @@ REDO:
                 case '*':
                 case '/':
                 case '^':
-                case '\%':
+                case '%':
                 case '&':
                 case '=':
                 case '|':
