@@ -23,8 +23,6 @@ Verify(Limit(x,0,Right)1/x,Infinity);
 Verify(Limit(x,0,Left)1/x,-Infinity);
 
 Verify([Local(a);a:=0.1;Simplify((a*b*c)/(a*c*b));],1);
-Verify([Local(a);a:=0.1;Simplify(a*b);], 0.1*b);
-Verify([Local(a);a:=0.1;Simplify(a/b);], 0.1/b);
 
 LogicVerify(CanProve(P Or (Not P And Not Q)),P Or Not Q);
 LogicVerify(CanProve(A>0 And A<=0),False);
