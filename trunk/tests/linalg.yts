@@ -124,3 +124,8 @@ Verify( JacobianMatrix( {x^4*y,Cos(y)}, { x, y}), {{4*x^3*y,x^4},{0,-Sin(y)}} );
 Verify( WronskianMatrix( {Sin(x),Cos(x)}, x) , {{Sin(x),Cos(x)},{Cos(x),-Sin(x)}} );
 
 Verify( Determinant(HilbertMatrix(5)), 1/266716800000 );
+
+Verify( HilbertMatrix(6)*HilbertInverseMatrix(6), Identity(6) );
+
+Verify( FrobeniusNorm({{1,2},{3,4}}), Sqrt(30) );
+

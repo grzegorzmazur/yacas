@@ -181,6 +181,18 @@ Transpose(matrix_IsMatrix) <--
   result;
 ];
 
+FrobeniusNorm(matrix_IsMatrix) <--
+[
+	Local(i,j,result);
+	result:=0;
+	For(i:=1,i<=Length(matrix),i++)
+		For(j:=1,j<=Length(matrix[1]),j++)
+			result:=result+Abs(matrix[i][j])^2;
+	
+	Sqrt(result);
+
+];
+
 
 
 /* Cramer-like matrix operations */
