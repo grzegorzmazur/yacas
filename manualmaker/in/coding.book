@@ -146,7 +146,11 @@ arguments \"x\" and \"y\" here are arbitrary, but they will be globally stored
 and must be later used in descriptions of particular rules for the function
 \"f\". After the new rulebase declaration, the evaluation engine of Yacas
 will begin to really recognize \"f\" as a function, even though no function
-body or equivalently no rules have been defined for it yet. Here is the
+body or equivalently no rules have been defined for it yet.
+
+":
+/*TODO remove!?!?
+Here is the
 difference in how a function object \"g(x)\" behaves before and after a
 ":HtmlTerm("RuleBase"):" declaration: ":
 
@@ -167,7 +171,10 @@ Out> g(2);
 
 "Without a ":HtmlTerm("RuleBase"):" call, a function object behaves
 basically like an atom, never evaluated to anything else but its literal
-representation, because the formal function parameters (e.g. \"a\" in the definition of \"f(a)\") will never be bound to the actual arguments. ": HtmlNewParagraph():
+representation, because the formal function parameters (e.g. \"a\" in the definition of \"f(a)\") will never be bound to the actual arguments.
+*/
+"
+": HtmlNewParagraph():
 
 "The shorthand operator ":HtmlTerm(":="):" for creating user functions that
 we illustrated in the tutorial is actually defined in the scripts and it

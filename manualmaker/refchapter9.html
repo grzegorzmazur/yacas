@@ -47,6 +47,12 @@ Subst
 , <A HREF="refchapter9.html#WithValue" TARGET="Chapters">
 WithValue
 </A>
+, <A HREF="refchapter9.html#/:" TARGET="Chapters">
+/:
+</A>
+, <A HREF="refchapter9.html#/::" TARGET="Chapters">
+/::
+</A>
 , <A HREF="refchapter9.html#SetHelpBrowser" TARGET="Chapters">
 SetHelpBrowser
 </A>
@@ -275,7 +281,92 @@ WithValue(variable,value,expression) : evaluate expression, with
 variable set to value. variable and value can be lists of
 variables and values.
 
-<A NAME="SetHelpBrowser">
+<A NAME="/:">
+
+</A>
+<A NAME="/::">
+
+</A>
+<H3>
+<HR>Local simplification rules
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+
+expression /: patterns <br>
+expressions /:: patterns
+<H5>
+Parameters:
+</H5>
+expression - an expression <br>
+patterns - a list of patterns
+<H5>
+Description:
+</H5>
+Sometimes you have an expression, and you want to use specific
+simplification rules on it that are not done by default. This
+can be done with the /: and the /:: operators. Suppose we have the
+expression containing things like <B><TT>Ln(a*b)</TT></B>, and we want
+to change these into <B><TT>Ln(a)+Ln(b)</TT></B>, the easiest way
+to do this is using the /: operator, as follows:
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Sin(x)*Ln(a*b)
+Out> Sin(x)*Ln(a*b);
+In> % /: { Ln(_x*_y) <- Ln(x)+Ln(y) }
+Out> Sin(x)*(Ln(a)+Ln(b));
+</PRE></TR>
+</TABLE>
+
+A whole list of simplification rules can be built up in the list,
+and they will be applied to the expression on the left hand side
+of /: .
+<P>
+
+The forms the patterns can have are one of:
+
+<P>
+pattern <- replacement
+<P>
+{pattern,replacement}
+<P>
+{pattern,postpredicate,replacement} 
+<P>
+Note that for these local rules, <- should be used in stead of
+<-- which defines a global rule.
+<P>
+
+The /: operator traverses an expression much like Subst does: top
+down, trying to apply the rules from the begin of the list of
+rules to the end of the list of rules. If the rules cannot be applied
+to a sub-expression, it will try the sub expressions of the
+expression being analyzed.
+<P>
+It might be necessary sometimes to use the /:: operator, which
+repeatedly applies the /: operator until the result doesn't change
+any more. Caution is required, since rules can contradict eachother,
+and that could result in an infinite loop. To detect this situation,
+just use /: repeatedly on the expression. The repetitive nature
+should become apparent.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Sin(u)*Ln(a*b) /: { Ln(_x*_y) <- Ln(x)+Ln(y) }
+Out> Sin(u)*(Ln(a)+Ln(b));
+In> Sin(u)*Ln(a*b) /:: { a <- 2, b <- 3 }
+Out> Sin(u)*Ln(6);
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Subst" TARGET="Chapters">
+Subst
+</A>
+, <A NAME="SetHelpBrowser">
 
 </A>
 <H3>

@@ -54,6 +54,9 @@
 
 #define SAFEPOP(_env)  _env.iCleanup.Pop()
 
+#define SystemCall system
+
+    
     
 // These define the internal types for the arbitrary precision
 // number module. The larger they are the better. PlatDoubleWord

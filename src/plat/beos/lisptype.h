@@ -37,6 +37,8 @@
 // hack to disable unix command line.
 #define STD_COMMANDLINE
 
+#define SystemCall system
+
 
 // Exception handling. At the time of writing this was not yet
 // implemented in the same way in several c++ compilers...

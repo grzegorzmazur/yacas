@@ -89,6 +89,12 @@ IsNonZeroInteger
 , <A HREF="refchapter10.html#IsInfinity" TARGET="Chapters">
 IsInfinity
 </A>
+, <A HREF="refchapter10.html#IsPositiveReal" TARGET="Chapters">
+IsPositiveReal
+</A>
+, <A HREF="refchapter10.html#IsNegativeReal" TARGET="Chapters">
+IsNegativeReal
+</A>
 , <A HREF="refchapter10.html#IsConstant" TARGET="Chapters">
 IsConstant
 </A>
@@ -462,58 +468,61 @@ True
 , <A HREF="ref.html#False" TARGET="Chapters">
 False
 </A>
-, <A NAME="c10s1">
+, <A NAME="IsNegativeNumber">
 
 </A>
-<H2>
-<HR>Predicates on numbers
-</H2>
-These predicates return whether the argument is a number,
-and of a specific type.
-<A NAME="IsNegativeNumber">
-
-</A>
-<H3>
-<HR>IsNegativeNumber(n)
-</H3>
 <A NAME="IsNegativeInteger">
 
 </A>
-<H3>
-<HR>IsNegativeInteger(n)
-</H3>
 <A NAME="IsPositiveNumber">
 
 </A>
-<H3>
-<HR>IsPositiveNumber(n)
-</H3>
 <A NAME="IsPositiveInteger">
 
 </A>
-<H3>
-<HR>IsPositiveInteger(n)
-</H3>
 <A NAME="IsNotZero">
 
 </A>
-<H3>
-<HR>IsNotZero(n)
-</H3>
 <A NAME="IsNonZeroInteger">
 
 </A>
-<H3>
-<HR>IsNonZeroInteger(n)
-</H3>
 <A NAME="IsInfinity">
 
 </A>
-<H3>
-<HR>IsInfinity(n)
-</H3>
+<A NAME="IsPositiveReal">
 
-Returns True if the argument is either Infinity or -Infinity
+</A>
+<A NAME="IsNegativeReal">
+
+</A>
+<H3>
+<HR>Predicates on numbers
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+IsNegativeNumber(n) <br>
+IsNegativeInteger(n) <br>
+IsPositiveNumber(n) <br>  
+IsPositiveInteger(n) <br> 
+IsNotZero(n) <br>
+IsNonZeroInteger(n) <br>
+IsInfinity(n) <br>
+IsPositiveReal(n) <br>
+IsNegativeReal(n) <br>
+
+<H5>
+Parameters:
+</H5>
+n - an expression
+<H5>
+Description:
+</H5>
+These predicates return whether the argument is a number,
+and of a specific type. These predicates are typically used
+in combination with patterns. A rule that only holds for a
+positive integer n, would use n_IsPositiveInteger in the
+pattern.
 
 <A NAME="IsConstant">
 

@@ -141,6 +141,36 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
                         userFunc->Evaluate(aResult,aEnvironment,*subList);
                         goto FINISH;
                     }
+#if 1
+                    else
+                    {
+//                        printf("**** Undef: %s\n",head->String()->String());
+
+                        {
+                            LispPtr full;
+                            full.Set(subList->Get()->Copy(LispFalse));
+                            aResult.Set(LispSubList::New(full.Get()));
+
+                            LispIterator iter(*subList);
+                            iter.GoNext();
+
+
+                            while (iter() != NULL)
+                            {
+                                LispPtr next;
+                                aEnvironment.iEvaluator->Eval(aEnvironment, next, *iter.Ptr());
+                                full.Get()->Next().Set(next.Get());
+                                full.Set(next.Get());
+                                iter.GoNext();
+                            }
+                            full.Get()->Next().Set(NULL);
+                        }
+
+
+
+                        goto FINISH;
+                    }
+#endif
                 }
             }
         }

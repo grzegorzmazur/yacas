@@ -58,3 +58,10 @@ Function("Conjugate",{a})
   Substitute(a,{{x},Type(x)="Complex"},{{x},Complex(x[1],-(x[2]))});
 
 
+10 # Arg(x_IsZero) <-- Undefined;
+20 # Arg(Complex(r_IsZero,i_IsConstant)) <-- Sign(i)*Pi/2;
+30 # Arg(Complex(r_IsPositiveReal,i_IsConstant)) <-- ArcTan(i/r);
+40 # Arg(Complex(r_IsNegativeReal,i_IsPositiveReal)) <-- Pi+ArcTan(i/r);
+50 # Arg(Complex(r_IsNegativeReal,i_IsNegativeReal)) <-- ArcTan(i/r)-Pi;
+
+

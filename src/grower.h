@@ -97,7 +97,7 @@ public:
     inline void SetExternalArray(T* aArray, LispInt aNrItems);
     
     /// Copy the array to another array
-    inline void CopyToExternalArray(T*& aArray, bool aPreAlloc);
+    inline void CopyToExternalArray(T*& aArray, LispBoolean aPreAlloc);
 };
 
 /** \class CDeletingArrayGrower calls delete on each element in the

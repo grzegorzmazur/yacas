@@ -1,3 +1,4 @@
+# Generated automatically from Makefile.in by configure.
 # Makefile.in generated automatically by automake 1.4a from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
@@ -11,46 +12,45 @@
 # PARTICULAR PURPOSE.
 
 
-SHELL = @SHELL@
+SHELL = /bin/sh
 
-srcdir = @srcdir@
-top_srcdir = @top_srcdir@
-VPATH = @srcdir@
-prefix = @prefix@
-exec_prefix = @exec_prefix@
+srcdir = .
+top_srcdir = ..
+prefix = /usr/local
+exec_prefix = ${prefix}
 
-bindir = @bindir@
-sbindir = @sbindir@
-libexecdir = @libexecdir@
-datadir = @datadir@
-sysconfdir = @sysconfdir@
-sharedstatedir = @sharedstatedir@
-localstatedir = @localstatedir@
-libdir = @libdir@
-infodir = @infodir@
-mandir = @mandir@
-includedir = @includedir@
+bindir = ${exec_prefix}/bin
+sbindir = ${exec_prefix}/sbin
+libexecdir = ${exec_prefix}/libexec
+datadir = ${prefix}/share
+sysconfdir = ${prefix}/etc
+sharedstatedir = ${prefix}/com
+localstatedir = ${prefix}/var
+libdir = ${exec_prefix}/lib
+infodir = ${prefix}/info
+mandir = ${prefix}/man
+includedir = ${prefix}/include
 oldincludedir = /usr/include
 
 DESTDIR =
 
-pkgdatadir = $(datadir)/@PACKAGE@
-pkglibdir = $(libdir)/@PACKAGE@
-pkgincludedir = $(includedir)/@PACKAGE@
+pkgdatadir = $(datadir)/yacas
+pkglibdir = $(libdir)/yacas
+pkgincludedir = $(includedir)/yacas
 
 top_builddir = ..
 
-ACLOCAL = @ACLOCAL@
-AUTOCONF = @AUTOCONF@
-AUTOMAKE = @AUTOMAKE@
-AUTOHEADER = @AUTOHEADER@
+ACLOCAL = aclocal
+AUTOCONF = autoconf
+AUTOMAKE = automake
+AUTOHEADER = autoheader
 
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA = @INSTALL_DATA@
-INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL = /usr/bin/install -c
+INSTALL_PROGRAM = ${INSTALL}
+INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_SCRIPT = ${INSTALL_PROGRAM}
 INSTALL_STRIP_FLAG =
-transform = @program_transform_name@
+transform = s,x,x,
 
 NORMAL_INSTALL = :
 PRE_INSTALL = :
@@ -58,24 +58,24 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-CC = @CC@
-CPP = @CPP@
-CXX = @CXX@
-MAKEINFO = @MAKEINFO@
-NUMBERS_LDFLAGS = @NUMBERS_LDFLAGS@
-NUMBERS_LIB = @NUMBERS_LIB@
-PACKAGE = @PACKAGE@
-RANLIB = @RANLIB@
-RELEASE = @RELEASE@
-VERSION = @VERSION@
-scriptdir = @scriptdir@
+CC = gcc
+CPP = gcc -E
+CXX = c++
+MAKEINFO = makeinfo
+NUMBERS_LDFLAGS = -lm
+NUMBERS_LIB = libyacasnumbers.a
+PACKAGE = yacas
+RANLIB = ranlib
+RELEASE = 1
+VERSION = 1.0.45rev2
+scriptdir = ${prefix}/share/yacas/
 
-EXTRA_DIST = Makefile.am README Yacas-NB.texinfo Yacas-Names.el 	font-latex.el yacas-notebook.el yacas-notebook.info     	yacas-notebook.sty yacas.el
+EXTRA_DIST = COPYING.HelpDialog FltkConsole.cpp FltkConsole.h FltkHintWindow.cpp 	FltkHintWindow.h HelpView.cpp HelpView.h                                 	books.html.in depend.dep editor.cpp editor.h                             	fl_adjustable_file_chooser.H fl_adjustable_file_chooser.cpp              	flplot fltkgraph.stub fltkgraphstub.cc fltkgraphstub.description         	grapher.cpp grapher.h graphtest hints makefile.agenda                    	makefile.alpha makefile.linux makefile.mark makeinclude                  	mkbackup proteus.conf proteus.dsp proteus.dsw proteusbooks.html          	proteusmenu.h readme.txt tabs.cpp tabs.h testnotes/graphtest2            	testnotes/index testnotes/recursetest testnotes/testnotepad              	testnotes/testnotepad2 todo.txt yacasconf yacdefines.h                           WorksheetBanner CalculatorBanner
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-DIST_COMMON =  README Makefile.am Makefile.in
+DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -85,7 +85,7 @@ GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps YacasNotebook/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps proteus/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
@@ -97,9 +97,10 @@ TAGS:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = YacasNotebook
+subdir = proteus
 
 distdir: $(DISTFILES)
+	$(mkinstalldirs) $(distdir)/testnotes
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \

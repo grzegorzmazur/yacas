@@ -16,7 +16,7 @@ RuleBase("X",{ind});
 10 # (TD(_i) ( (_f) - (_g) ) ) <-- (TD(i)f) - (TD(i)g);
 10 # (TD(_i) (      - (_g) ) ) <--          -  TD(i)g;
 10 # (TD(_i) ( (_f) * (_g) ) ) <-- (TD(i)f)*g + f*(TD(i)g);
-10 # (TD(_i) ( (_f) ^ (n_PositiveIsInteger) ) ) <-- n*(TD(i)f)*f^(n-1);
+10 # (TD(_i) ( (_f) ^ (n_IsPositiveInteger) ) ) <-- n*(TD(i)f)*f^(n-1);
 10 # (TD(_i)Delta(_j,_k)) <-- 0;
 10 # (TD(_i)f_IsNumber) <-- 0;
 

@@ -101,7 +101,7 @@ inline void CArrayGrower<T>::SetExternalArray(T* aArray, LispInt aNrItems)
 
 
 template<class T>
-inline void CArrayGrower<T>::CopyToExternalArray(T*& aArray, bool aPreAlloc)
+inline void CArrayGrower<T>::CopyToExternalArray(T*& aArray, LispBoolean aPreAlloc)
 {
     if (!aPreAlloc)
     {

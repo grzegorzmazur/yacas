@@ -22,6 +22,18 @@ OdeNormalForm(_e) <--
   e := Substitute(OdeLeftHandSideEq(e),"OdeNormPred","OdeNormChange");
 ];
 
+/*TODO better OdeNormalForm?
+OdeNormalForm(_e) <--
+[
+  OdeLeftHandSideEq(e) /:
+    {
+      y <- yyy(0),
+      y' <- yyy(1),
+      y'' <- yyy(2),
+      y(_n) <- yyy(n)
+    };
+];
+*/
 
 10 # OdeChange(yyy(n_IsInteger)) <-- Apply(yn,{n});
 30 # OdeChange(_e) <-- e;

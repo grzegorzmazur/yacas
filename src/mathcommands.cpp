@@ -1552,9 +1552,12 @@ void LispSystemCall(LispEnvironment& aEnvironment,LispPtr& aResult,
 
     LispString command;
     InternalUnstringify(command, result.Get()->String());
-    system(command.String());
-
+#ifdef SystemCall
+    SystemCall(command.String());
     InternalTrue(aEnvironment,aResult);
+#else
+    InternalFalse(aEnvironment,aResult);
+#endif
 }
 
 
