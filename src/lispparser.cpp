@@ -45,7 +45,11 @@ void LispParser::ParseAtom(LispPtr& aResult, LispStringPtr aToken)
 void LispParser::ParseList(LispPtr& aResult)
 {
     LispStringPtr token;
-    LispPtr* iter = &aResult;
+
+//    LispPtr* iter = &aResult;
+
+    aResult.Set(LispAtom::New(iHashTable.LookUp("List")));
+    LispPtr* iter = &(aResult.Get()->Next());
     for (;;)
     {
         //Get token.
