@@ -54,7 +54,7 @@ static void base_glEnd(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
   /* Obtain arguments passed in. */
   LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  g.Finalize( 0);
 
   /* Call the actual function. */
  glEnd();
@@ -194,7 +194,7 @@ static void base_glPushMatrix(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
   /* Obtain arguments passed in. */
   LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  g.Finalize( 0);
 
   /* Call the actual function. */
  glPushMatrix();
@@ -208,7 +208,7 @@ static void base_glPopMatrix(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
   /* Obtain arguments passed in. */
   LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  g.Finalize( 0);
 
   /* Call the actual function. */
  glPopMatrix();
@@ -222,7 +222,7 @@ static void base_glLoadIdentity(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
   /* Obtain arguments passed in. */
   LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  g.Finalize( 0);
 
   /* Call the actual function. */
  glLoadIdentity();
@@ -395,7 +395,7 @@ static void base_GlutViewWidth(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
   /* Obtain arguments passed in. */
   LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  g.Finalize( 0);
 
   /* Call the actual function. */
 int r =  GlutViewWidth();
@@ -409,7 +409,7 @@ static void base_GlutViewHeight(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
   /* Obtain arguments passed in. */
   LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  g.Finalize( 0);
 
   /* Call the actual function. */
 int r =  GlutViewHeight();
@@ -423,7 +423,7 @@ static void base_GlutEnableAnimation(LispEnvironment& aEnvironment, LispPtr& aRe
 {
   /* Obtain arguments passed in. */
   LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  g.Finalize( 0);
 
   /* Call the actual function. */
  GlutEnableAnimation();
@@ -437,7 +437,7 @@ static void base_GlutDisableAnimation(LispEnvironment& aEnvironment, LispPtr& aR
 {
   /* Obtain arguments passed in. */
   LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  g.Finalize( 0);
 
   /* Call the actual function. */
  GlutDisableAnimation();
@@ -451,7 +451,7 @@ static void base_glutPostRedisplay(LispEnvironment& aEnvironment, LispPtr& aResu
 {
   /* Obtain arguments passed in. */
   LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  g.Finalize( 0);
 
   /* Call the actual function. */
  glutPostRedisplay();
@@ -465,7 +465,7 @@ static void base_GlutGetElapsedTime(LispEnvironment& aEnvironment, LispPtr& aRes
 {
   /* Obtain arguments passed in. */
   LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  g.Finalize( 0);
 
   /* Call the actual function. */
 int r =  GlutGetElapsedTime();

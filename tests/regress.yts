@@ -269,3 +269,13 @@ Verify( Integrate(x) x^5000, x^5001/5001 );
 Verify( Integrate(x) Sin(x)/2, (-Cos(x))/2 );
 
 Verify( 2^(-10), 1/1024 );
+
+// The following line catches a bug reported where Simplify
+// would go into an infinite loop. It doesn't check the correctness
+// of the returned value as such, but merely the fact that this
+// simplification terminates in the first place. 
+//
+// The problem was caused by a gcd calculation (from the multivariate
+// code) not terminating.
+Verify( Simplify((a^2+b^2)/(2*a)), (a^2+b^2)/(2*a) );
+
