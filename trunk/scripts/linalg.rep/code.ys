@@ -384,3 +384,47 @@ HilbertInverseMatrix(n):=GenMatrix({{i,j},
 HankelMatrix(n):=GenMatrix({{i,j}, If(i+j-1>n,0,i+j-1) }, n,n );
 HankelMatrix(m,n):=GenMatrix({{i,j}, If(i+j-1>n,0,i+j-1)}, m,n );
 
+10 # Norm(_v) <-- PNorm(v,2);
+
+// p-norm, reduces to euclidean norm when p = 2
+Function("PNorm",{v,p})
+[
+	Local(result,i);
+	Check(p>=1,"PNorm: p must be >= 1");
+
+	result:=0;
+	For(i:=1,i<=Length(v),i++)[
+		result:=result+Abs(v[i])^p;
+	];
+
+	// make it look nicer when p = 2	
+	If(p=2,Sqrt(result),(result)^(1/p) );
+];
+
+// This is the standard textbook definition of the Gram-Schmidt
+// Orthogonalization process, from:
+// Friedberg,Insel,Spence "Linear Algebra"  (1997)
+// TODO: This function does not check if the input vectors are LI, it
+// only checks for zero vectors
+Function("OrthogonalBasis",{W})[
+	Local(V,j,k);
+
+	V:=ZeroMatrix(Length(W),Length(W[1]) );
+
+	V[1]:=W[1];
+	For(k:=2,k<=Length(W),k++)[
+		Check(Not IsZero(Norm(W[k])) ,
+			"OrthogonalBasis: Input vectors must be linearly independent");
+		V[k]:=W[k]-Sum(j,1,k-1,InProduct(W[k],V[j])*V[j]/Norm(V[j])^2);
+	];	
+	V;
+];
+// Like orthogonalization, only normalize all vectors
+Function("OrthonormalBasis",{W})[
+	Local(i);
+	W:=OrthogonalBasis(W);
+	For(i:=1,i<=Length(W),i++)[
+		W[i]:=W[i]/Norm(W[i]);
+	];
+	W;
+];
