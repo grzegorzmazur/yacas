@@ -69,6 +69,7 @@
 #include "numbers.h"
 #include "ramdisk.h" //TODO keep this?
 #include "arggetter.h"
+#include "archiver.h"
 
 //TODO time.h and errors.h are only needed for LispTime
 #include <time.h>
