@@ -146,29 +146,29 @@ HTMLBOOKS = intro.html coding.html essays.html LispProgramming.html Algo.html re
 manicon.html:  books.html $(HTMLBOOKS)
 
 # books.html only depends on top book files (*.book.txt).
-books.html:  $(BOOKS)
+books.html:  $(BOOKS) $(srcdir)/indexmaker $(srcdir)/styleplain
 # this is the old command that generated all HTML docs at once:
 #	-$(ouryacas2) $(srcdir)/in/all
 	-echo '[Use("indexmaker"); GenerateIndex();];' | $(ouryacas2) -fpc
 	# do we need this?
 	#echo "done" > manicon.html.c
 
-intro.html : intro.book $(INTROCHAPTERS)
+intro.html : intro.book $(INTROCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[Use("manualmaker"); GenerateBook("intro");];' | $(ouryacas2) -fpc
 
-coding.html : coding.book $(CODINGCHAPTERS)
+coding.html : coding.book $(CODINGCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[Use("manualmaker"); GenerateBook("coding");];' | $(ouryacas2) -fpc
 
-essays.html : essays.book $(ESSAYCHAPTERS)
+essays.html : essays.book $(ESSAYCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[Use("manualmaker"); GenerateBook("essays");];' | $(ouryacas2) -fpc
 
-ref.html : ref.book $(REFCHAPTERS) refprog.book $(REFPROGCHAPTERS)
+ref.html : ref.book $(REFCHAPTERS) refprog.book $(REFPROGCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[Use("manualmaker"); GenerateTwoBooks("ref","refprog");];' | $(ouryacas2) -fpc
 
-LispProgramming.html : LispProgramming.book $(LISPPROGRAMMINGCHAPTERS)
+LispProgramming.html : LispProgramming.book $(LISPPROGRAMMINGCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[Use("manualmaker"); GenerateBook("LispProgramming");];' | $(ouryacas2) -fpc
 
-Algo.html : Algo.book $(ALGOCHAPTERS)
+Algo.html : Algo.book $(ALGOCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[Use("manualmaker"); GenerateBook("Algo");];' | $(ouryacas2) -fpc
 
 # do we need this?

@@ -92,7 +92,8 @@ BookList():=
     bl:= bl : 
      "<TR>" : "<TD bgcolor=e0e0e0><FONT face=\"Verdana, Arial, Helvetica, sans-serif\" size=\"3\">
      " : HtmlLink(bookinfo["Title"],book:"manual.html","","_top") :
-/*     " or " : HtmlLink(" (single file) ",bookinfo["BaseName"]:".html","","_top") : */
+     " (here a " : HtmlLink("no-frames version", bookinfo["BaseName"]:".html", "", "_top") : "in a single file)
+" :
      "</TR><TR>" : "<TD bgcolor=ffffff><FONT face=\"Verdana, Arial, Helvetica, sans-serif\" size=\"3\">
      " : bookinfo["Blurb"] :"</TR>";
     // this line prevents a crash :)
