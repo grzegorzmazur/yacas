@@ -930,9 +930,11 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 {
   ANumber num(aPrecision);
   num.CopyFrom(*iNumber);
+  if (num.iExp > 1)
+    num.RoundBits();
   num.ChangePrecision(aPrecision);
 
-#define noENABLE_SCI_NOTATION
+#define ENABLE_SCI_NOTATION
 #ifdef ENABLE_SCI_NOTATION
   if (!IsInt())
   {
@@ -945,7 +947,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
       {
         if (num[i] != 0) 
         {
-          if (!(i==num.iExp && num[i]<1000 && num.iTensExp == 0))
+          if (!(i==num.iExp && num[i]<10000 && num.iTensExp == 0))
           {
             greaterOne=LispTrue;
             break;
@@ -1151,17 +1153,48 @@ LispBoolean BigNumber::BitCountIsSmall() const
 void BigNumber::BitCount(const BigNumber& aX)
 {
   if (aX.BitCountIsSmall())
-	SetTo(aX.BitCount());
+  {
+    SetTo(aX.BitCount());
+  }
   else
   {// FIXME
+    LISPASSERT(0);
   }
 }
 
 // give BitCount as platform integer
 signed long BigNumber::BitCount() const
-{//FIXME
-  LISPASSERT(0);
-  return 0;
+{
+  ANumber num(iPrecision);
+  num.CopyFrom(*iNumber);
+  while (num.iTensExp < 0)
+  {
+    PlatDoubleWord carry=0;
+    BaseDivideInt(num,10, WordBase, carry);
+    num.iTensExp++;
+  }
+  while (num.iTensExp > 0)
+  {
+    BaseTimesInt(num,10, WordBase);
+    num.iTensExp--;
+  }
+
+  LispInt i,nr=num.NrItems();
+  for (i=nr-1;i>=0;i--) 
+  {
+    if (num[i] != 0) break;
+  }
+  LispInt bits=(i-num.iExp)*sizeof(PlatWord)*8;
+  if (i>=0)
+  {
+    PlatWord w=num[i];
+    while (w) 
+    {
+      w>>=1;
+      bits++;
+    }
+  }
+  return (bits);
 }
 LispInt BigNumber::Sign() const
 {
@@ -1186,6 +1219,13 @@ void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
 
     ANumber quotient(static_cast<LispInt>(0));
     ::IntegerDivide(quotient, *iNumber, a1, a2);
+
+    if (iNumber->iNegative)
+    {
+      ANumber a3(iPrecision);
+      a3.CopyFrom(*iNumber);
+      ::Add(*iNumber, a3, a2);
+    }
     SetIsInteger(LispTrue);
 }
 
@@ -1193,9 +1233,12 @@ void BigNumber::Floor(const BigNumber& aX)
 {
 //TODO FIXME slow code! But correct
     LispString str;
-//    iNumber->CopyFrom(*aX.iNumber);
-    aX.ToString(str,aX.GetPrecision());
-    iNumber->SetTo(str.String());
+    iNumber->CopyFrom(*aX.iNumber);
+    if (iNumber->iExp>1)
+      iNumber->RoundBits();
+
+//    aX.ToString(str,aX.GetPrecision());
+//    iNumber->SetTo(str.String());
 
     if (iNumber->iTensExp > 0)
     {
@@ -1214,7 +1257,7 @@ void BigNumber::Floor(const BigNumber& aX)
         iNumber->iTensExp++;
       }
     }
-//    iNumber->ChangePrecision(iNumber->iPrecision);
+    iNumber->ChangePrecision(iNumber->iPrecision);
     LispInt i=0;
     LispInt fraciszero=LispTrue;
     while (i<iNumber->iExp && fraciszero)
@@ -1294,7 +1337,12 @@ LispBoolean BigNumber::IsIntValue() const
 {
 //FIXME I need to round first to get more reliable results.
   if (IsInt()) return LispTrue;
-  return (iNumber->iExp == 0 && iNumber->iTensExp == 0);
+  if (iNumber->iExp == 0 && iNumber->iTensExp == 0) return LispTrue;
+  
+  BigNumber num(iPrecision);
+  num.Floor(*this);
+  return Equals(num);
+
 }
 
 
@@ -1332,11 +1380,14 @@ void BigNumber::BecomeInt()
 /// Note that aPrecision=0 means automatic setting (just enough digits to represent the integer).
 void BigNumber::BecomeFloat(LispInt aPrecision)
 {//FIXME: need to specify precision explicitly
-  LispInt precision = aPrecision;
-  if (iNumber->iPrecision>aPrecision)
-    precision = iNumber->iPrecision;
-  iNumber->ChangePrecision(precision);	// is this OK or ChangePrecision means floating-point precision?
-  SetIsInteger(LispFalse);
+  if (IsInt())
+  {
+    LispInt precision = aPrecision;
+    if (iNumber->iPrecision>aPrecision)
+      precision = iNumber->iPrecision;
+    iNumber->ChangePrecision(precision);	// is this OK or ChangePrecision means floating-point precision?
+    SetIsInteger(LispFalse);
+  }
 }
 
 

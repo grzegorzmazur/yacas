@@ -7,6 +7,7 @@
 #include "lispassert.h"
 #include "platdll.h"
 #include "ltdl.h"
+#include "errors.h"
 
 LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
 {
@@ -19,7 +20,10 @@ LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
     if (lt_dlinit() != 0)
     {
         err = lt_dlerror();
-        if (err) printf("LtDll::Open: lt_dlinit says %s\n",err);
+        if (err) 
+        {
+          RaiseError("LtDll::Open: lt_dlinit says %s\n",err);
+        }
     }
     handle = lt_dlopen(aDllFile/*,RTLD_LAZY*/);
     if (handle)
@@ -39,7 +43,10 @@ LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
     else
     {
         err = lt_dlerror();
-        if (err) printf("LtDll::Open: lt_dlopen says %s\n",err);
+        if (err) 
+        {
+          RaiseError("LtDll::Open: lt_dlopen says %s\n",err);
+        }
     }
     return (handle != NULL && iPlugin != NULL);
 }
@@ -58,7 +65,7 @@ LispInt LtDll::Close(LispEnvironment& aEnvironment)
 
 LtDll::~LtDll()
 {
-    const char* err;
+//    const char* err;
 
     if (handle)
     {

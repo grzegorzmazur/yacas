@@ -665,10 +665,19 @@ int main(void)
 	Check(x.IsInt(), "bit count is integer");
 	CheckValues(x.Double(),17, "bit count of 65537 is 17");
 	Check(x.Double()!=16, "bit count of 65537 is not 16");
-	x.SetTo(1./1050000.);
+//	x.SetTo(1./1050000.);
+	x.SetTo(1./1048576.); // 2^20 equals 1048576 I believe...
 	Check(!x.IsInt(), "x is a floating-point value");
 	CheckValues(x.Sign(),1, "x is positive");
+
+/*
+  LispString str;
+  x.ToString(str,40);
+  char* pt = str.String();
+*/
 	x.BitCount(x);
+
+
 	Check(x.IsInt(), "bit count is integer");
 	CheckValues(x.Double(),-20, "bit count of 2^(-20)");
 	Check(x.Double()!=-21, "bit count of 2^(-20) is not -21");

@@ -141,8 +141,12 @@ Function("ApproxInfSum",{expr,start,x,c})
         Local(term,result,k);
         Local(prec,eps,tmp);
         prec:=GetPrecision();
-        Precision(Ceil(1.2*prec)); // this is a guess
-        eps:=5*10^(-prec);
+//        Precision(Ceil(1.2*prec)); // this is a guess
+        Precision(prec+2); // this is a guess
+//        eps:=5*10^(-prec);
+        eps:=10^(-prec);
+//Echo(expr);
+//Echo("     eps = ",N(eps));
 
         term:=1;
         k:=start;
@@ -157,6 +161,12 @@ Function("ApproxInfSum",{expr,start,x,c})
         Precision(prec);
         // This should not round, only truncate
         // some outputs will be off by one in the last digit
+
+//Echo("lastterm = ",N(term));
+
+//Echo("r1",result);
+//Echo("r2",RoundTo(result,prec));
+//Echo("r3",N((result/10)*10));
         RoundTo(result,prec);
 
 

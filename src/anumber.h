@@ -33,6 +33,8 @@ public:
     void SetTo(const LispCharPtr aString,LispInt aBase=10);
     inline void SetPrecision(LispInt aPrecision) {iPrecision = aPrecision;}
     void ChangePrecision(LispInt aPrecision);
+    void RoundBits(void);
+
 public:
     LispInt iExp;
     LispInt iNegative;
