@@ -955,7 +955,33 @@ A non-square matrix cannot be triangular:
 	In> IsUpperTriangular({{1,2,3},{0,1,2}})
 	Out> False;
 
+<<<<<<< linalg.chapt.txt
+*SEE IsDiagonal, IsLowerTriangular
+
+
+*CMD IsLowerTriangular --- test for an lower triangular  matrix
+*STD
+*CALL
+        IsLowerTriangular(A)
+
+*PARMS  
+
+{A} -- a matrix
+
+*DESC
+
+{IsLowerTriangular(A)} returns {True} if {A} is upper triangular and {False} otherwise.
+A upper triangular matrix is one which has all zero entries above the diagonal.
+
+*E.G.
+	In> IsLowerTriangular(Identity(5))
+	Out> True;
+
+*SEE IsDiagonal, IsUpperTriangular
+
+=======
 *SEE IsDiagonal
+>>>>>>> 1.26
 
 *CMD IsSymmetric --- test for a symmetric matrix
 *STD
@@ -1170,6 +1196,34 @@ minimum or a saddle point.
 	\                /
 
 
+*CMD ToeplitzMatrix --- create a Toeplitz matrix
+*STD
+*CALL
+	ToeplitzMatrix(N)
+*PARMS
+
+{N} -- an {n} dimensional row vector
+
+*DESC
+
+The function {ToeplitzMatrix} calculates the Toeplitz matrix given
+an {n} dimensional row vector. This matrix has the same entry in
+all diagonal columns, from upper left to lower right.
+
+*E.G.
+
+	In> PrettyForm(ToeplitzMatrix({1,2,3,4,5}))
+	/                                \
+	| ( 1 ) ( 2 ) ( 3 ) ( 4 ) ( 5 )  |
+	|                                |
+	| ( 2 ) ( 1 ) ( 2 ) ( 3 ) ( 4 )  |
+	|                                |
+	| ( 3 ) ( 2 ) ( 1 ) ( 2 ) ( 3 )  |
+	|                                |
+	| ( 4 ) ( 3 ) ( 2 ) ( 1 ) ( 2 )  |
+	|                                |
+	| ( 5 ) ( 4 ) ( 3 ) ( 2 ) ( 1 )  |
+	\                                /
 
 
 *CMD WronskianMatrix --- calculate the Wronskian matrix
