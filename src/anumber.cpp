@@ -564,7 +564,15 @@ void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
     aResult.DropTrailZeroes();
 
 #ifdef CORRECT_DIVISION
-    if (aResult.iExp || aResult.iTensExp) NormalizeFloat(aResult,WordDigits(aResult.iPrecision, 10));
+    if (aResult.iExp || aResult.iTensExp)
+    {
+      if (aResult.iPrecision < a2.iPrecision)
+        aResult.iPrecision = a2.iPrecision;
+      if (aResult.iPrecision < a1.iPrecision)
+        aResult.iPrecision = a1.iPrecision;
+
+      NormalizeFloat(aResult,WordDigits(aResult.iPrecision, 10));
+    }
 #endif // CORRECT_DIVISION
 
 }

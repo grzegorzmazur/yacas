@@ -288,7 +288,11 @@ void TestArith1(const char* str_value, int base, int val1, double val2)
 	x.Add(x,y, prec);
 	x.Negate(x);
 //	Check(x.Equals(x1), "add and subtract an integer");
-	if (!x.Equals(x1)) printf("WARNING: this test may fail due to roundoff error, please check:\n");
+	if (!x.Equals(x1)) 
+  {
+    printf("WARNING: this test may fail due to roundoff error, please check:\n");
+    printf(   "x:= -(-x+y)+y for x=%s and y=%d\n",str_value,val1);
+  }
 	CheckEquals(x, x1, print_prec, base, "result of add and subtract an integer");
 	x1.SetTo(x);
 	x1.Negate(x1);
