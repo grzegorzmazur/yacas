@@ -59,7 +59,7 @@ Plot2D'<backend> on that data.
 	);
 	If(
 		options'hash["precision"] = Empty,
-		options'hash["precision"] := 0.00001
+		options'hash["precision"] := 0.000001
 	);
 	If(
 		options'hash["output"] = Empty Or IsString(options'hash["output"]) And Plot2D'outputs()[options'hash["output"]] = Empty,
@@ -137,7 +137,10 @@ Plot2D'get'data(_func, _var, _x'init, _y'init, _delta'x, _options'hash) <--
 		// build subintervals
 		{b, c} := N({x'init + (i+1/2)*delta'x, x'init + (i+1)*delta'x});	// this is not computed using "a" to reduce roundoff error
 		{fb, fc} := N(MapSingle({var, func}, {b, c}));
-		result := Concat(result, Tail(Plot2D'adaptive(func, var, {a,b,c}, {fa, fb, fc}, options'hash["depth"], options'hash["precision"] )));
+		result := Concat(result,
+			Tail(Plot2D'adaptive(func, var, {a,b,c}, {fa, fb, fc}, options'hash["depth"],
+				// since we are dividing into "points" subintervals, we need to relax precision
+				options'hash["precision"]*options'hash["points"] )));
 	];
 	result;
 ];
@@ -195,7 +198,11 @@ Plot2D'adaptive(_func, _var, {_a,_b,_c}, {_fa, _fb, _fc}, _depth, _epsilon) <--
 			- Min({fa,fa1,fb,fb1,fc}) ) )
 		),
 		{{a,fa}, {a1,fa1}, {b,fb}, {b1,fb1}, {c,fc}},
-		Concat(Plot2D'adaptive(func, var, {a, a1, b}, {fa, fa1, fb}, depth-1, epsilon), Tail(Plot2D'adaptive(func, var, {b, b1, c}, {fb, fb1, fc}, depth-1, epsilon)))
+		Concat(
+			// recursive call on two halves of the interval; relax precision by factor of 2
+			Plot2D'adaptive(func, var, {a, a1, b}, {fa, fa1, fb}, depth-1, epsilon*2),	// Tail() omits the pair {b, fb}
+			Tail(Plot2D'adaptive(func, var, {b, b1, c}, {fb, fb1, fc}, depth-1, epsilon*2))
+		)
 	);
 ];
 

@@ -22,10 +22,14 @@ Warning: calculations with internal math with precision exceeding 10,000 digits 
 
 		Factorization of integers
 
-Factorization of integers is implemented by functions {Factor} and {Factors}. Both functions try to find all prime factors of a given integer $n$.
+Factorization of integers is implemented by functions {Factor} and {Factors}. Both functions try to find all prime factors of a given integer $n$. (Before doing this, the primality checking algorithm is used to detect whether $n$ is a prime number.)
+Factorization consists of repeatedly finding a factor, i.e. an integer $f$ such that $Mod(n, f)=0$, and dividing $n$ by $f$.
 
 For small prime factors the trial division algorithm is used: $n$ is divided by all prime numbers $p<=200$ until a factor is found.
-After separating small prime factors the Pollard "rho" algorithm is applied to the remaining number. The Pollard "rho" algorithm takes an irreducible polynomial such as $f(x)=x^2+1$ and builds a sequence of integers $x[k+1]:=Mod(f(x[k]),n)$, starting from $x[0]=2$. For each $k$, the value $x[2*k]-x[k]$ is attempted as possibly containing a factor of $n$ in the following sense: The GCD of $x[2*k]-x[k]$ with $n$ is computed, and if $Gcd(x[2*k]-x[k],n)>1$, then that GCD value divides $n$.
+
+After separating small prime factors it is tested whether the number $n$ is an integer power of a prime number.
+
+If the remaining number $n$ is not a prime power, the Pollard "rho" algorithm is applied. The Pollard "rho" algorithm takes an irreducible polynomial such as $f(x)=x^2+1$ and builds a sequence of integers $x[k+1]:=Mod(f(x[k]),n)$, starting from $x[0]=2$. For each $k$, the value $x[2*k]-x[k]$ is attempted as possibly containing a factor of $n$ in the following sense: The GCD of $x[2*k]-x[k]$ with $n$ is computed, and if $Gcd(x[2*k]-x[k],n)>1$, then that GCD value divides $n$.
 
 The Pollard "rho" algorithm may enter an infinite loop when the sequence $x[k]$ repeats itself without giving any factors of $n$. For example, the unmodified "rho" algorithm loops on the number 703. The loop is detected by comparing $x[2*k]$ and $x[k]$. When these two quantities become equal to each other for the first time, the loop may not yet have occurred so the value of GCD is set to 1 and the sequence is continued. But when the equality of $x[2*k]$ and $x[k]$ occurs many times, it indicates that the algorithm has entered a loop. In this case the current implementation stops and prints an error message, "failed to factorize number". A solution may be to randomly choose a different starting number $x[0]$ when a loop occurs (this is currently not implemented) and keep trying until a non-looping sequence is found. A better (and faster) factoring algorithm is needed.
 
@@ -45,50 +49,52 @@ a given initial interval; thus, at most $2^depth$ additional grid points
 will be generated. The function {Plot2D'adaptive} should return a list of
 pairs of points {{{x1,y1}, {x2,y2}, ...}} to be used directly for plotting.
 
+The recursive bisection algorithm goes like this:
+
 *	 1.  Given an interval ($a$, $c$), we split
-         it in half, $b:=(a+c)/2$ and first compute $f(x)$ at five grid
-         points $a$, $a[1]:=(a+b)/2$, $b$, $b[1]:=(b+c)/2$, $c$. 
+it in half, $b:=(a+c)/2$ and first compute $f(x)$ at five grid
+points $a$, $a[1]:=(a+b)/2$, $b$, $b[1]:=(b+c)/2$, $c$. 
 *	 2. If currently $depth <= 0$, return this list of 5 points and
-         values because we cannot refine the grid any more.
-*	 3. Otherwise we check that the function does not change sign too
-         rapidly. The formal criterion is that among these 5 points there are always
-         at least 2 consecutive points of equal sign. Checking is done by
-         the following procedure: Mark the sequence of signs of the values
-         $f(x)$ at the 5 grid points, e.g. "0, +, -, +, +". Here "0" stands
-         for zero. Then, for each pair of consecutive signs, write "1" if
-         the signs are different and "0" otherwise. If one of the signs is
-         0, then also write "0". E.g. we get the sequence of 4 bits "0, 1,
-         1, 0". Each "1" stands for a sign change. Then, for each pair of
-         consecutive bits, write the logical AND of these bits. E.g.: 0, 1,
-         0. Each "1" now signifies that two sign changes occurred, one
-         right after another. If we have all "0" now, then the sign changes
-         are "slow enough". Otherwise they are not "slow enough". We can
-         compute the logical OR of these 3 bits to test this. In our
-         example we get 1. This means that we have a sign change that is
-         too rapid.
-         If the sign is not changing "slow enough" within the interval
-         [a,c], then we need to refine the grid; go to step 5. Otherwise,
-         go to step 4.
+values because we cannot refine the grid any more.
+*	 3. Otherwise check that the function does not change sign too
+rapidly on the interval. The formal criterion is that among these 5 points there are always
+at least 2 consecutive points of equal sign. Checking is done by
+the following procedure: Mark the sequence of signs of the values
+$f(x)$ at the 5 grid points, e.g. "0, +, -, +, +". Here "0" stands
+for zero. Then, for each pair of consecutive signs, write "1" if
+the signs are different and "0" otherwise. If one of the signs is
+0, then also write "0". E.g. we get the sequence of 4 bits "0, 1,
+1, 0". Each "1" stands for a sign change. Then, for each pair of
+consecutive bits, write the logical AND of these bits. E.g.: 0, 1,
+0. Each "1" now signifies that two sign changes occurred, one
+right after another. If we have all "0" now, then the sign changes
+are "slow enough". Otherwise they are not "slow enough". We can
+compute the logical OR of these 3 bits to test this. In our
+example we get 1. This means that we have a sign change that is
+too rapid.
+If the sign is not changing "slow enough" within the interval
+[a,c], then we need to refine the grid; go to step 5. Otherwise,
+go to step 4.
 *	 4. Check that the function values are smooth enough through the
-         interval. Smoothness is controlled by a parameter $epsilon$. The
-         meaning of the parameter $epsilon$ is the relative error of the
-         numerical approximation of the integral of $f(x)$ by the grid. A good heuristic
-         value of $epsilon$ is 1/(the number of pixels on the screen)
-         because it means that no pixels will be missing in the area under
-         the graph. We define $g(x):=f(x)-f[0]$ where $f[0]$ is the minimum of the values of $f(x)$ on the five grid points $a$, $a[1]$, $b$, $b[1]$, and $c$; the function $g(x)$ is therefore nonnegative. Then we compute two different Newton-Cotes quadratures
-		 for $ Integrate(x,b,b[1]) g(x) $ using these five points. (Asymmetric
-         quadratures are chosen to avoid running into an accidental symmetry of the
+interval. Smoothness is controlled by a parameter $epsilon$. The
+meaning of the parameter $epsilon$ is the (relative) error of the
+numerical approximation of the integral of $f(x)$ by the grid. A good heuristic
+value of $epsilon$ is 1/(the number of pixels on the screen)
+because it means that no pixels will be missing in the area under
+the graph. However, for this to work we need to make sure that we are actually computing the area <i>under</i> the graph; so we define $g(x):=f(x)-f[0]$ where $f[0]$ is the minimum of the values of $f(x)$ on the five grid points $a$, $a[1]$, $b$, $b[1]$, and $c$; the function $g(x)$ is nonnegative and has minimum value of 0. Then we compute two different Newton-Cotes quadratures
+for $ Integrate(x,b,b[1]) g(x) $ using these five points. (Asymmetric
+quadratures are chosen to avoid running into an accidental symmetry of the
 function; the first quadrature uses points $a$, $a[1]$, $b$, $b[1]$ and the second
 quadrature uses $b$, $b[1]$, $c$.) If the
-         absolute value of the difference between these quadratures is less
-         than $epsilon$ * (value of the second quadrature), then we
-         are done and we return the list of these five points and values.
+absolute value of the difference between these quadratures is less
+than $epsilon$ * (value of the second quadrature), then we
+are done and we return the list of these five points and values.
 *	 5. Otherwise we need to refine the grid. We compute
-         {Plot2D'adaptive} recursively for the two halves of the interval,
-         i.e. for ($a$,$b$) and ($b$,$c$); we pass the midpoint values as
-         necessary and decrease {depth} by 1. The resulting lists are
-         concatenated (excluding the double value at point $b$) and
-         returned.
+{Plot2D'adaptive} recursively for the two halves of the interval,
+i.e. for ($a$,$b$) and ($b$,$c$); we pass the midpoint values as
+necessary and decrease {depth} by 1. We also multiply $epsilon$ by 2 because we need to maintain constant <i>absolute</i> precision and this means that the relative error for the two subintervals can be twice as large. The resulting two lists for the two subintervals are
+concatenated (excluding the double value at point $b$) and
+returned.
 
 This algorithm works well if the initial number of points and the {depth}
 parameter are large enough.
