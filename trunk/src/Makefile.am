@@ -57,7 +57,7 @@ libgmpnumbers_la_LDFLAGS = -export-dynamic
 
 libltdl_la_SOURCES = ltdl.c
 libltdl_la_LDFLAGS = -export-dynamic -version-info 1:2:1
-libltdl_la_LIBADD = $(LIBADD_DL)
+libltdl_la_LIBADD = 
 
 
 
