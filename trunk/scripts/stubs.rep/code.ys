@@ -135,7 +135,7 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 ];
 1 # Mod(n_IsPositiveInteger,m_IsPositiveInteger) <-- MathMod(n,m);
 2 # Mod(0,_m) <-- 0;
-2 # Mod(_n,Infinity) <-- n;
+2 # Mod(n_IsPositiveInteger,Infinity) <-- n;
 3 # Mod(n_IsInteger,m_IsInteger) <-- MathMod(n,m);
 4 # Mod(n_IsNumber,m_IsNumber) <-- Mod(Rationalize(n),Rationalize(m));
 

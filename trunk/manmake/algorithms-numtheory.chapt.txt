@@ -468,7 +468,7 @@ the factors of $N(z)$ in the decomposition of $z$.
 
 This section discusses factoring polynomials using
 arithmetic modulo prime numbers. Information was
-used from <I>The Art of Computer Programming, Volume 2, Seminumerical Algorithms </I>. 
+used from D. Knuth, <I>The Art of Computer Programming, Volume 2, Seminumerical Algorithms </I>. 
 
 Berlekamp showed that polynomials can be efficiently factored
 when arithmetic is done modulo a prime. The Berlekamp
@@ -602,7 +602,7 @@ slower.
 
 
 
-	Function Factor(poly)
+	Function BinaryFactors(poly)
 	   // testpoly is the square-free version of the 
 	   // polynomial, used for finding the factors. 
 	   // The original polynomials 
@@ -670,6 +670,267 @@ The pseudo-code for {TryFact} reads:
 	         nrroots--;
 	       result:={x-(root),count}:result;
 
+The function {BinaryFactors}, when implemented, yields
+the following interaction in Yacas:
+
+	In> BinaryFactors((x+1)^4*(x-3)^2)
+	Out> {{x-3,2},{x+1,4}};
+
+The above algorithm starts with a factorization modulo 2,
+and then each time tries to guess the next bit of the 
+solution, maintaining a list of potential solutions.
+This list can grow exponentially in certain instances.
+For instance, factoring $(x-a)*(x-2*a)*(x-3*a)* ... $
+implies a that the roots have common factors. The number
+of potential solutions doubles with each iteration, and thus
+the algorithm becomes exponential. One solution would be
+to find a way, a priori, to discard elements in the list,
+such that the number of elements in the list of potential
+solutions stays constant between iterations (or at least
+doesn't grow exponentially).
+
+What the {BinaryFactor} algorithm effectively does is 
+finding a set of potential solutions modulo $2^(n+1)$ when
+given a set of potential solutions modulo $2^n$.
+There is a better algorithm that does something similar:
+Hensel lifting. Hensel lifting is a generalized form of
+Newton iteration, where given a factorization modulo 
+$p$, each iteration returns a factorization modulo $p^2$.
+
+
+
+		Intermezzo: Newton iteration
+
+Newton iteration is based on the following idea: when one
+takes a Taylor series expansion of a function:
+
+$$f(x[0]+dx) := f(x[0]) + (D(x)f(x[0]))*dx + ... $$
+
+Newton iteration then proceeds by taking only the first
+two terms in this series, the constant plus the constant
+times $dx$. Given some good initial value $x_0$, the function
+will is assumed to be close to a root, and the function 
+is assumed to be almost linear, hence this approximation.
+Under these assumptions, if we want $f(x_0+dx)$ to be zero,
+
+$$f(x[0]+dx) = f(x[0]) + (D(x)f(x[0]))*dx = 0 $$
+
+This yields:
+
+$$ dx := -f(x[0])/(D(x)f(x[0])) = 0 $$
+
+And thus a next, better, approximation for the root is
+$x[1]:=x_0-f(x[0])/(D(x)f(x[0]))$, or more general:
+
+$$ x[n+1] =x[n]-f(x[n])/(D(x)f(x[n]))$$
+
+If the root has multiplicity one, a Newton iteration can
+converge <i>quadratically</i>, meaning the number of 
+decimals precision for each iteration doubles.
+
+As an example, we can try to find a root of $Sin(x)$ near
+$3$, which should converge to $Pi$.
+
+Setting precision to 30 digits,
+	In> Precision(30)
+	Out> True;
+
+We first set up a function $dx(x)$:
+	In> dx(x):=Eval(-Sin(x)/(D(x)Sin(x)))
+	Out> True;
+
+And we start with a good initial approximation to $Pi$,
+namely $3$. Note we should set {x} <i>after</i> we set
+dx(x), as the right hand side of the function definition is
+evaluated. We could also have used a different parameter name
+for the definition of the function $dx(x)$.
+
+	In> x:=3
+	Out> 3;
+
+We can now start the iteration:
+
+	In> x:=N(x+dx(x))
+	Out> 3.142546543074277805295635410534;
+	In> x:=N(x+dx(x))
+	Out> 3.14159265330047681544988577172;
+	In> x:=N(x+dx(x))
+	Out> 3.141592653589793238462643383287;
+	In> x:=N(x+dx(x))
+	Out> 3.14159265358979323846264338328;
+	In> x:=N(x+dx(x))
+	Out> 3.14159265358979323846264338328;
+
+As shown, in this example the iteration converges quite
+quickly. 
+
+	    Finding roots of multiple equations in multiple variables using Newton iteration
+
+One generalization, mentioned in W.H. Press et al., 
+<i>NUMERICAL RECIPES in C, The Art of Scientific computing</i>
+is finding roots for multiple functions in multiple variables.
+
+Given $N$ functions in $N$ variables, we want to solve
+
+$$ f_i(x[1],...,x[N]) = 0 $$
+
+for $i = 1 .. N $. If de denote by $X$ the vector 
+$$ X := {x[1],x[2],...,x[N]} $$
+
+and by $dX$ the delta vector, then one can write
+
+$$ f_i(X+dX) := f_i(X)+Sum(j,1,N,(D(x_j)f_i(X)))*dx[j] $$
+
+Setting $f_i(X+dX)$ to zero, one obtains
+
+$$ Sum(j,1,N,a[i][j]*dx_j)=b[i]$$
+
+where
+
+$$a[i][j] := D(x_j)f_i(X)$$
+
+and
+
+$$b_i := -f_i(X)$$
+
+So the generalization is to first initialize $X$ to a good
+initial value, calculate the matrix elements $a[i][j]$ and
+the vector $b[i]$, and then to proceed to calculate $dX$
+by solving the matrix equation, and calculating 
+
+$$X[i+1] := X[i] + dX[i]$$
+
+In the case of one function with one variable, the summation
+reduces to one term, so this linear set of equations was
+a lot simpler in that case. In this case we will have to solve
+this set of linear equations in each iteration.
+
+As an example, suppose we want to find the zeroes for the
+following two functions:
+
+$$f_1(a,x) := Sin(a*x)$$
+
+and
+
+$$f_2(a,x) := a-2$$
+
+It is clear that the solution to this is $a=2$ and $x:=N*Pi/2$
+for any integer value $N$.
+
+We will do calculations with precision 30:
+	In> Precision(30)
+	Out> True;
+
+And set up a vector of functions ${f_1(X),f_2(X)}$
+where $X:={a,x}$
+	In> f(a,x):={Sin(a*x),a-2}
+	Out> True;
+
+Now we set up a function {matrix(a,x)} which returns the
+matrix $a[i][j]$:
+
+	In> matrix(a,x):=Eval({D(a)f(a,x),D(x)f(a,x)})
+	Out> True;
+
+We now set up some initial values:
+
+	In> {a,x}:={1.5,1.5}
+	Out> {1.5,1.5};
+
+
+The iteration converges a lot slower for this example, so we
+will loop 100 times:
+
+	In> For(ii:=1,ii<100,ii++)[{a,x}:={a,x}+\
+	   N(SolveMatrix(matrix(a,x),-f(a,x)));]
+	Out> True;
+	In> {a,x}
+	Out> {2.,0.059667311457823162437151576236};
+
+
+The value for $a$ has already been found. Iterating a
+few more times:
+
+	In> For(ii:=1,ii<100,ii++)[{a,x}:={a,x}+\
+	   N(SolveMatrix(matrix(a,x),-f(a,x)));]
+	Out> True;
+	In> {a,x}
+	Out> {2.,-0.042792753588155918852832259721};
+	In> For(ii:=1,ii<100,ii++)[{a,x}:={a,x}+\
+	   N(SolveMatrix(matrix(a,x),-f(a,x)));]
+	Out> True;
+	In> {a,x}
+	Out> {2.,0.035119151349413516969586788023};
+
+the value for $x$ converges a lot slower this time, and to the uninteresting
+value of zero (a rather trivial zero of this set of functions).
+In fact for all integer values $N$ the value $N*Pi/2$ is a solution.
+Trying various initial values will find them.
+
+
+	    Newton iteration on polynomials
+
+von zur Gathen et al., <i>Modern Computer algebra</i> discusses
+taking the inverse of a polynomial using Newton iteration.
+The task is, given a polynomial $f(x)$, to find a polynomial
+$g(x)$ such that $f(x) = 1/g(x)$, modulo some power in x.
+This implies that we want to find a polynom $g$ for which:
+
+$$h(g) = 1/g-f = 0$$
+
+Applying a Newton iteration step $g[i+1] = g[i] - h(g[i])/(D(g)h(g[i]))$
+to this expression yields:
+
+$$g[i+1] = 2*g[i] - f*(g[i])^2$$
+
+von zur Gathen then proves by induction that for $f(x)$ monic,
+and thus $f(0)=1$, given initial value $g_0(x) = 1$, that
+
+$$Mod(f*g_i=1,x^(2^i))$$
+
+
+Example:
+
+suppose we want to find the polynomial $g(x)$ up to the 7th degree
+for which $Mod(f(x)*g(x) = 1,x^8)$, for the function
+
+$$ f(x):=1+x+x^2/2+x^3/6+x^4/24 $$
+
+First we define the function f:
+
+	In> f:=1+x+x^2/2+x^3/6+x^4/24
+	Out> x+x^2/2+x^3/6+x^4/24+1;
+
+And initialize $g$ and $i$.
+
+	In> g:=1
+	Out> 1;
+	In> i:=0
+	Out> 0;
+
+Now we iterate, increasing $i$, and replacing $g$ with the
+new value for $g$:
+
+	In> [i++;g:=BigOh(2*g-f*g^2,x,2^i);]
+	Out> 1-x;
+	In> [i++;g:=BigOh(2*g-f*g^2,x,2^i);]
+	Out> x^2/2-x^3/6-x+1;
+	In> [i++;g:=BigOh(2*g-f*g^2,x,2^i);]
+	Out> x^7/72-x^6/72+x^4/24-x^3/6+x^2/2-x+1;
+
+The resulting expression must thus be:
+
+$$g(x):=x^7/72-x^6/72+x^4/24-x^3/6+x^2/2-x+1$$
+
+We can easily verify this:
+
+	In> Expand(f*g)
+	Out> x^11/1728+x^10/576+x^9/216+(5*x^8)/576+1;
+
+This expression is 1 modulo $x^8$, as can easily be shown:
+
+	In> BigOh(%,x,8)
+	Out> 1;
 
 
 

@@ -22,6 +22,10 @@ Mkc(poly):=
   Concat(FillList(0,poly[2]),poly[3]);
 ];
 
+10 # MkMod(_n,Infinity) <-- n;
+20 # MkMod(_n,_m) <-- Mod(n,m);
+
+
 // Division: input coefficients for polys, output coefs for quotient and remainder
 Mkd(numer,denom,p):=
 [
@@ -39,20 +43,20 @@ Mkd(numer,denom,p):=
   i:=1;
   While(Length(numer)>=Length(denom))
   [
-    nq:=Mod(Div(numer[1],denom[1]),p);
+    nq:=MkMod(Div(numer[1],denom[1]),p);
     q[ln-(Length(numer)-ld)] := nq;
     For(j:=1,j<=Length(denom),j++)
     [
-      numer[j] := Mod(numer[j] - nq*denom[j],p);
+      numer[j] := MkMod(numer[j] - nq*denom[j],p);
     ];
-    r[i] := Mod(r[1] + numer[1],p);
+    r[i] := MkMod(r[1] + numer[1],p);
 
     numer := Tail(numer);
     i++;
   ];
   For(j:=0,j<Length(numer),j++)  
   [
-    r[i+j] := Mod(r[i+j] + numer[j+1],p);
+    r[i+j] := MkMod(r[i+j] + numer[j+1],p);
   ];
   q:=Reverse(q);
   r:=Reverse(r);
@@ -61,9 +65,22 @@ Mkd(numer,denom,p):=
   {q,r};
 ];
 
+/*
+// Greatest common divisor modulo p
+// input coefficients to polys n,m, and integer p
+// output greatest common divisor
+10 # MkGcd(_n,_m,_p)_(Length(n)<Length(m)) <-- MkGcd(m,n);
+20 # MkGcd(_n,m_IsZeroVector,_p) <-- n;
+30 # MkGcd(_n,_m,_p) <-- 
+[
+  Local(q,r);
+  {q,r} := Mkd(n,m,p);
+  MkGcd(m,r,p);
+];
+*/
 
-SimpleFactor(polynom):=FW(SimpleFactors(polynom));
-SimpleFactors(polynom):=
+BinaryFactor(polynom):=FW(SimpleFactors(polynom));
+BinaryFactors(polynom):=
 [
   Local(list,i,result,p,newlist,poly,nrroots);
 
