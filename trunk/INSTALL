@@ -1,10 +1,21 @@
+There are two ways to compile and install Yacas: 
+* downloading a gzipped tar file (also called a tar-ball)
+* downloading from CVS at sourceforge
+
+Please read the relevant section.
 
 
-This distribution has been tested on a Linux box (RedHat 5.1) and on Debian (stable) 2.2.
+
+A. INSTALLING FROM A TAR-BALL
+-----------------------------
+
+This distribution has been tested on a Linux box (RedHat 5.1) and on 
+Debian (stable) 2.2.
 
 Compiling Yacas from source currently requires a Unix-like environment (CYGWIN
-may work), automake, bash, find, sed, grep. Building documentation requires
-perl, LaTeX, dvips, makeindex.
+may work), bash, find, sed, and grep. Building documentation requires perl for
+the HTML files, and additionally LaTeX, dvips, and makeindex to generate
+PostScript and PDF files.
 
 To compile and install, do the following:
 
@@ -14,40 +25,67 @@ To compile and install, do the following:
 
 * go into the directory created (yacas-<version>).
 
+* follow the steps in Section C. The compilation process.
+
+
+
+B. INSTALLING FROM CVS
+----------------------
+
+This has been tested on a Linux box (RedHat 5.1) and on Debian (stable) 2.2.
+
+Compiling from CVS requires a GNU environment (CYGWIN may work), cvs, autoconf
+(tested with version 2.13), automake (tested with version 1.4), bash, find,
+sed, and grep. Building documentation requires perl for the HTML files, and
+additionally LaTeX, dvips, and makeindex to generate PostScript and PDF files.
+
+To compile and install, do the following:
+
+* login to the CVS server by giving the command
+     cvs -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas login
+  Press return when asked for a passward.
+
+* checkout the source tree with the command
+     cvs -z3 -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas co yacas
+
+* go into the 'yacas' directory.
+
+* run the 'makemake' script.
+
+* follow the steps in Section C. The compilation process.
+
+
+
+C. THE COMPILATION PROCESS
+--------------------------
+
+Having gone through the steps in either Section A or Section B, you can finish
+the procedure by doing the following:
+
 * type './configure' with optional arguments
-  (e.g. './configure --enable-gmp --prefix=/home/user/')
+  (e.g. './configure --enable-gmp --prefix=/home/user/').
+  You can get a list of possible argument by running './configure --help'.
 
 * type 'make'.
 
-* If you wish, type 'make test', to run the test scripts.
+* if you wish, type 'make test', to run the test scripts.
 
-*  type 'make install' (this requires root unless you have configured
-a location in your home directory).
+* type 'make install' (this requires root unless you have configured a
+  location in your home directory).
 
-*  type 'yacas'  and you should see a Yacas prompt!
+* type 'yacas'  and you should see a Yacas prompt!
 
-The scripts
-(which are installed by default in '/usr/local/share/yacas/') should also be
-a good starting point to see some example source code.
-You can always type '??', which should launch the help.
+The scripts (which are installed by default in '/usr/local/share/yacas/')
+should also be a good starting point to see some example source code.  You can
+always type '??', which should launch the help.
 
 To compile and install Proteus, the user interface for Yacas, please go
 into the proteus/ directory and read the readme there.
 
 
-************************************************************
 
-Whenever you modify the configure.in, or a Makefile.am, the new configure
-or Makefile.in will get generated the next time you run make. Or, you can
-do it manually:
-
-        To regenerate the configure script: 'autoconf'
-        To regenerate Makefile.in's: 'automake --gnu --include-deps'
-
-Note that *every* file in the tarball (produced by 'make dist') is there
-because it is listed in a Makefile.am somewhere. (The only exceptions are
-some of the files in the root directory, which are implicitly required).
-
+D. EXTRA INFORMATION
+--------------------
 
 * As a bonus, I rolled a .spec file for Yacas. You can make RPM's! To
 build source and binary RPM's, you can do:
@@ -75,22 +113,3 @@ to build RPMS/SRPMS, and -bb to build RPMS only.
 		want the configure script to run without cached values.
 
 	install-strip: Like install, but strips binaries. Very nice.
-
-
-
-CVS shortlist:
-
-cvs -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas login
-cvs -z3 -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas co yacas
-
-export CVS_RSH=ssh1
-
-Type the following, making necessary obvious substitutions for your username and project.
-  cvs -d:ext:loginname@cvs.yacas.sourceforge.net:/cvsroot/yacas co yacas
-After initial checkout, you can change into this directory and execute cvs commands without the -d tag. For
-example:
-  cvs update
-  cvs commit -m "comments for this commit"
-  cvs add myfile.c
-
-cd /cvsroot/yacas/CVSROOT; co syncmail
