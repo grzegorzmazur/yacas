@@ -82,7 +82,7 @@ IsOrthogonal(A_IsMatrix) <-- (Transpose(A)*A=Identity(Length(A)));
 IsIdempotent(A_IsMatrix) <-- (A^2 = A);
 IsUnitary(A_IsMatrix) <-- (Transpose(Conjugate(A))*A = Identity(Length(A)));
 
-IsVariable(_expr) <-- (IsAtom(expr) And Not(IsNumber(N(expr))));
+IsVariable(_expr) <-- (IsAtom(expr) And Not(expr=Infinity) And Not(expr= -Infinity) And Not(expr=Undefined) And Not(IsNumber(N(expr))));
 
 // check that all items in the list are numbers
 IsNumericList(_arg'list) <-- IsList(arg'list) And
