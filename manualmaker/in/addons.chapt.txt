@@ -46,6 +46,7 @@ Requires: a Unix shell, {latex}, {dvips}, {gv} or another Postscript viewer.
 *UNIX
 *CALL
 	MakeFunctionPlugin("name", body)
+	MakeFunctionPlugin()
 
 *PARMS
 
@@ -55,12 +56,17 @@ Requires: a Unix shell, {latex}, {dvips}, {gv} or another Postscript viewer.
 
 *DESC
 
-Compiles an external plugin library that computes a user-defined numerical
+The first form of the function
+compiles an external plugin library that computes a user-defined numerical
 function and dynamically loads it into Yacas, enabling a new function called
-"name".
+{"name"}.
+
+The second form of the function is a predicate that checks that the function plugin facility is supported.
+(It may not be available on all platforms.)
 
 Requires: a Unix shell, a compiler named {c++} with ELF {.so} support, Yacas
 headers in {FindFile("")/include}; current directory must be writable.
+Error messages will be printed otherwise.
 
 The {body} expression must be a {CForm()}-exportable function of the arguments and may contain numerical constants. {Pi} is allowed and will be converted to
 floating-point.
@@ -68,17 +74,6 @@ floating-point.
 All arguments and the return value of the function are assumed
 to be double precision real numbers. The result of passing a non-numerical argument will be an unevaluated expression.
 	
-	Example:
-	
-	In> MakeFunctionPlugin("f1", {x,y}, Sin(x/y))
-	Function f1(x,y) loaded from
-	plugins.tmp/libf1_plugin_cc.so
-	Out> True;
-	In> f1(2,3)
-	Out> 0.618369803069736989620253;
-	In> f1(x,5)
-	Out> f1(x,5);
-
 The function creates the following files in subdirectory {plugins.tmp/} of current directory:
 *	{f1_plugin.h}, {f1_plugin.cc} -- C++ code of the plugin; the function in the above example is implemented in C++ as
 	double f1_plugin_cc(double x, double y)
@@ -97,7 +92,23 @@ After creating these files, {MakeFunctionPlugin()} will:
 
 If you call {MakeFunctionPlugin()} repeatedly to define a function with the same name, old files will be overwritten and old libraries will be unloaded with {DllUnload()}.
 
-*SEE DllLoad, DllUnload, DllEnumerate, CForm
+If the numerical calculation does not return a number (for example,
+it might return the atom {nan}, "not a number", for some arguments),
+then the new function will return {Undefined}.
+This is the behavior of {NFunction} which is used to wrap the numerical routine.
+
+*EG
+	
+	In> MakeFunctionPlugin("f1", {x,y}, Sin(x/y))
+	Function f1(x,y) loaded from
+	plugins.tmp/libf1_plugin_cc.so
+	Out> True;
+	In> f1(2,3)
+	Out> 0.618369803069736989620253;
+	In> f1(x,5)
+	Out> f1(x,5);
+
+*SEE DllLoad, DllUnload, DllEnumerate, CForm, NFunction
 
 *CMD Version --- show version of Yacas
 *CORE
