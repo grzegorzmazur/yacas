@@ -133,11 +133,6 @@ Function("Rationalize",{a})
   Substitute(a,{{x},IsNumber(x) And Not(IsInteger(x))},"RationalizeNumber");
 
 
-10 # ContFrac(_n) <-- ContFrac(n,6);
-10 # ContFrac(n_IsInteger,_depth) <-- n+rest;
-20 # ContFrac(n_IsNumber,_depth) <-- ContFrac(Rationalize(n),depth);
-30 # ContFrac((n_IsInteger) / (m_IsInteger),_depth) <--
-     ContFracDo(n,m,depth+1);
 
 
 40 # ContFrac(n_CanBeUni,_depth)_(Length(VarList(n)) = 1) <--
@@ -161,11 +156,6 @@ Function("Rationalize",{a})
 
 
 
-/* n/m = 1/ (m/n) = 1/(Div(m,n)+Mod(m,n)/n) */
-     
-10 # ContFracDo(0,_m,_depth) <-- rest;
-15 # ContFracDo(_n,_m,0) <-- rest;
-20 # ContFracDo(_n,_m,_depth) <-- 1/(Div(m,n) + ContFracDo(Mod(m,n),n,depth-1));
     
 10 # Decimal( n_IsInteger ) <-- {n,{0}};
 10 # Decimal( (n_IsPositiveInteger) / (d_IsPositiveInteger) ) <--
@@ -360,5 +350,82 @@ TRun(t/2-t^2,10);
 TRun(t/2-t^2,10);
 TRun(2+t/2-t^2,10);
 */
+
+/////////////////////////////////////////////////
+/// Continuous fractions stuff
+/////////////////////////////////////////////////
+
+/// compute the list of continuous fraction coefficients for a given number
+/// if order is not given, computes to the end
+10 # ContFracList(_n) <-- ContFracList(n, Infinity);
+/// compute list of given length
+10 # ContFracList(_n, _depth)_(depth <= 0) <-- {};
+20 # ContFracList(n_IsInteger, _depth) <-- {n};
+30 # ContFracList(n_IsNumber, _depth) <-- ContFracList(Rationalize(n), depth);
+
+/* n/m = Div(n,m) + 1/( m/Mod(n,m) ) */
+
+40 # ContFracList((n_IsInteger) / (m_IsInteger), _depth) <-- Push( ContFracList(m/Mod(n,m), depth-1) , Div(n,m));
+
+/// old interface
+10 # ContFrac(_n) <-- ContFrac(n, 6);
+20 # ContFrac(_n,_depth) <-- ContFracEval(ContFracList(n, depth), rest);
+
+10 # ContFracEval({}, _rest) <-- rest;
+10 # ContFracEval({_n}, _rest) <-- n+rest;
+20 # ContFracEval(list_IsList, _rest) <-- Head(list) + 1 / ContFracEval(Tail(list), rest);
+
+/// evaluate continued fraction given the list of coefficients
+ContFracEval(list_IsList) <-- ContFracEval(list, 0);
+
+/// find rational number with smallest num./denom. near a given number x
+/// See: HAKMEM, MIT AI Memo 239, 02/29/1972, Item 101C
+NearRational(_x) <-- NearRational(x, Floor(1/2*GetPrecision()));
+NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
+	Local(a, b, i,  old'prec);
+	old'prec := GetPrecision();
+	Precision(prec + 4);	// 4 guard digits
+	a := ContFracList(x+10^(-prec));
+	b := ContFracList(x-10^(-prec));
+	// find where the continued fractions for "a" and "b" differ
+	// prepare result in "a" and length of result in "i"
+	For (i:=1, i<=Length(a) And i<=Length(b) And a[i]=b[i], i++ ) True;
+	If(
+		i>Length(a),
+		// "a" ended but matched, so use "b" as "a"
+		a:=b,
+		If(
+			i>Length(b),
+		// "b" ended but matched, so use "a"
+			True,
+		// neither "a" nor "b" ended and there is a mismatch at "i"
+		// apply recipe: select the smalest of the differing terms
+			a[i]:=Min(a[i],b[i])
+		)
+	);
+	// recipe: add 1 to the last term unless it's the last in the original sequence
+	a[i] := a[i] + If(i=Length(a), 0, 1);
+	If(Verbose, Echo({"NearRational: using ", i, "terms of the continued fraction"}));
+	Precision(old'prec);
+	ContFracEval(Take(a, i));
+];
+
+/// guess the rational number behind an imprecise number
+/// prec parameter is the max number of digits you can have in the denominator
+GuessRational(_x) <-- GuessRational(x, Floor(1/2*GetPrecision()));
+GuessRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
+	Local(denom'estimate, cf, i);
+	denom'estimate := 1;
+	cf := ContFracList(x);
+	For(i:=2, i<=Length(cf) And denom'estimate < 10^prec, i++)
+		denom'estimate := denom'estimate * cf[i];
+	If (i>Length(cf),
+		If(Verbose, Echo({"GuessRational: number is already within limits"})),
+		i--	// do not use the last term
+	);
+	i--;	// loop returns one more number
+	If(Verbose, Echo({"GuessRational: using ", i, "terms of the continued fraction"}));
+	ContFracEval(Take(cf, i));
+];
 
 
