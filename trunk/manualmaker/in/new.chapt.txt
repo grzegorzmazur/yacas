@@ -378,15 +378,24 @@ arithmetic operations such as addition and multiplication, through a set of clas
 
 Integers and floating-point numbers are handled by the same class.
 
-The {BigNumber} class implements a particular internal representation of numbers and Yacas must be compiled to use a specific number library.
-This library will be hidden behind the class {BigNumber}.
+The {BigNumber} class delegates the actual arithmetic operations to the two auxiliary classes, {BigInt} and {BigFloat}.
+These two classes are direct wrappers of the underlying arithmetic library.
+The library implements a particular internal representation of numbers.
+Yacas must be compiled to use a specific number library.
+This library will be hidden from the class {BigNumber} by the classes {BigInt} and {BigFloat}.
+
+The class {BigNumber} performs precision tracking, floating-point formatting, error reporting, integer/floating conversions and so on, while {BigInt} and {BigFloat} only concern themselves with low-level arithmetic operations on integer and floating-point numbers, respectively.
+In this way Yacas does not require the arithmetic library to implement various extra features it needs.
+
 It is impossible to have several number libraries operating at the same time.
 Having several libraries in the same Yacas session does not seem to be very useful;
 it would also incur a lot of overhead because one would have to convert the numbers from one internal library representation to another.
-To compare the performance, one can compile several copies of Yacas against different libraries.
+To compare the performance or for testing purposes, one can compile several copies of Yacas against different libraries.
 
 The number object should be able to render itself back to a string,
 which can then be passed back to the interpreter as a result, if so needed.
+
+
 
 		Interface to the objects
 
@@ -412,7 +421,7 @@ object performing the calculation itself. For example, if a calculation
 were issued, the result would be assigned to {x}, and the old value of {x} is deleted.
 This is equivalent to the Yacas code {x:=x+y}.
 In this case a specific implementation might opt to perform the operation
-estructively ("in-place"). Some operations can be performed much more efficiently in-place, without copying the arguments.
+destructively ("in-place"). Some operations can be performed much more efficiently in-place, without copying the arguments.
 Among them are for example {Negate}, {Add}, {ShiftLeft}, {ShiftRight}.
 
 Therefore, all class methods of {BigNumber} that allow a {BigNumber} object as an argument should behave correctly when called destructively on the same {BigNumber} object.
@@ -712,6 +721,12 @@ Now we can estimate $r$ as
 $$ r <= Abs((x*2^(-m))/(x+y)) + Abs((y*2^(-n))/(x+y)) <= 2^(a+1-m-c)+2^(b+1-n-c)$$.
 This is formally similar to multiplying two numbers with $a+1-m-c$ and $b+1-m-c$ correct bits.
 As in the case of multiplication, we may take the minimum of the two numbers, or double one of them if they are almost equal.
+
+Note that there is one important case when we can estimate the precision better than this.
+Suppose $x$ and $y$ have the same sign; then there is no cancellation when we compute $x+y$.
+The above formula for $r$ gives an estimate
+$$ r < Max(Abs(delta), Abs(epsilon)) $$
+and therefore the precision of the result is at least $p = Min(m,n)$.
 
 If one of the operands is a floating zero represented by $x$={{0.,m}} (see below), then the calculation of the error is formally the same as if $x$={{1.,m}}.
 This is as if the bit count of {{0.,m}} were equal to $1$ (unlike the case of multiplication).
@@ -1024,7 +1039,7 @@ The length of the array of digits is usually available at no computational cost.
 The <i>absolute</i> error $Delta[x]$ of {{x,n}} is of order $Abs(x)*2^(-n)$.
 Given the bit count of $x$, this can be estimated from as 
 $$2^(B(x)-n-1)<=Delta[x]<2^(B(x)-n)$$.
-So the bit count of $Delta$ is $B(x)-n$.
+So the bit count of $Delta[x]$ is $B(x)-n$.
 
 *HEAD {Floor()}
 
@@ -1155,7 +1170,13 @@ $$ p = Min(m-B(x),n-B(y))+B(z)$$
 $$-1-Dist(m-B(x),n-B(y)) $$,
 where the auxiliary function $Dist(a,b)$ is defined as $0$ when $Abs(a-b)>2$ and $1$ otherwise.
 *FOOT The definition of $Dist(a,b)$ is necessarily approximate; if we replace $2$ by a larger number, we shall be overestimating the error in more cases.
-The result is {{z,p}}.
+
+In the case when $x$ and $y$ have the same sign, we have a potentially better estimate $ p = Min(m,n) $.
+We should take this value if it is larger than the value obtained from the above formula.
+
+The result is now {{z,p}}.
+
+
 
 Note that the obtained value of $p$ may be negative (total underflow) even though we have first checked for underflow.
 In that case, we need to transform {{z,p}} into a floating zero, as usual.
