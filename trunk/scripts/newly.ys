@@ -319,7 +319,7 @@ Function("InverseTaylor",{var,val,degree,func})
 [
   Local(l1);
   l1:=UniTaylor(func,var,val,degree);
-  ReversePoly(l1,var,var,var,degree);
+  ReversePoly(l1,var,var,var,degree+1);
 ];
 
 
