@@ -58,20 +58,20 @@ ALGOSOURCES = algo-basic.chapt.txt algo-numapprox.chapt.txt \
 REFCHAPTERS = config.chapt arith.chapt calc.chapt ode.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
 	preds.chapt logic.chapt const.chapt vars.chapt io.chapt \
-	numtheory.chapt strings.chapt transforms.chapt \
+	numtheory.chapt strings.chapt transforms.chapt cl-options.chapt \
 	probability-and-statistics.chapt addons.chapt FDL.chapt
 
 REFSOURCES = config.chapt.txt arith.chapt.txt calc.chapt.txt ode.chapt.txt \
-	linalg.chapt.txt univar.chapt.txt lists.chapt.txt \
+	linalg.chapt.txt univar.chapt.txt lists.chapt.txt cl-options.chapt \
 	functional.chapt.txt controlflow.chapt.txt preds.chapt.txt \
 	logic.chapt.txt const.chapt.txt vars.chapt.txt io.chapt.txt \
 	numtheory.chapt.txt strings.chapt.txt transforms.chapt.txt \
 	probability-and-statistics.chapt.txt addons.chapt.txt FDL.chapt.txt
 
-REFPROGCHAPTERS = yacasapi.chapt FDL.chapt cl-options.chapt glossary.chapt \
+REFPROGCHAPTERS = yacasapi.chapt FDL.chapt glossary.chapt \
 	GPL.chapt numerics.chapt
 # yacasapi.chapt and GPL.chapt have no .txt source
-REFPROGSOURCES = FDL.chapt.txt cl-options.chapt.txt glossary.chapt.txt \
+REFPROGSOURCES = FDL.chapt.txt glossary.chapt.txt \
 	numerics.chapt.txt
 
 CODINGCHAPTERS = YacasDebugger.chapt FDL.chapt
