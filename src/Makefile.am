@@ -38,7 +38,7 @@ libyacas_a_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp \
 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp \
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
-        lispplugin.cpp elfdll.cpp genericstructs.cpp
+        lispplugin.cpp elfdll.cpp genericstructs.cpp unipoly.cpp 
 libyacasplatform_a_SOURCES = platmath.cpp grower.cpp stdstubs.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp
 libyacasplatform_a_LIBADD = @NUMBERS_LIB@
@@ -71,7 +71,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp \
 	plat/win32/lisptype.h \
 	plat/win32/platdll.h   \
 	plat/win32/platfileio.h \
-	plat/win32/stubs.inl     \
+	plat/win32/stubs.inl  unipoly.h   \
 	plat/win32/win32commandline.cpp \
 	plat/win32/win32commandline.h   \
 	plat/win32/yacas.dsp            \

@@ -397,6 +397,10 @@ void LispGetExtraInfo(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments);
 
 
+void LispBerlekamp(LispEnvironment& aEnvironment, LispPtr& aResult,
+                   LispPtr& aArguments);
+
+
 #endif
 
 

@@ -19,6 +19,7 @@
 #include "errors.h"
 #include "patcher.h"
 #include "platdll.h"
+#include "unipoly.h"
 
 
 /*TODO
@@ -611,6 +612,70 @@ void LispGetExtraInfo(LispEnvironment& aEnvironment, LispPtr& aResult,
     }
 }
 
+void LispBerlekamp(LispEnvironment& aEnvironment, LispPtr& aResult,
+                   LispPtr& aArguments)
+{
+    TESTARGS(3);
+    LispPtr polyobj;
+    InternalEval(aEnvironment, polyobj , Argument(aArguments,1));
+    LispPtr primeobj;
+    InternalEval(aEnvironment, primeobj, Argument(aArguments,2));
 
+    LispInt prime = InternalAsciiToInt(primeobj.Get()->String()->String());
+
+    ZZPoly poly;
+    CHK_ARG(polyobj.Get()->SubList() != NULL, 1);
+    LispPtr hold;
+    hold.Set(polyobj.Get());
+    polyobj.Set(polyobj.Get()->SubList()->Get());
+
+    CHK_ARG(polyobj.Get() != NULL, 1);
+    polyobj.Set(polyobj.Get()->Next().Get());
+
+    while (polyobj.Get() != NULL)
+    {
+        ZZ fact;
+        CHK_ARG(polyobj.Get()->String() != NULL, 1);
+        fact = InternalAsciiToInt(polyobj.Get()->String()->String());
+        poly.Append(fact);
+        polyobj.Set(polyobj.Get()->Next().Get());
+    }
+    ZZPolyList result;
+    Berlekamp(result, poly, prime);
+
+    LispInt i;
+    LispPtr head;
+    LispPtr list;
+    for (i=result.NrItems()-1;i>=0;i--)
+    {
+        LispPtr newfactor;
+        LispInt j;
+        for (j=result[i]->Degree();j>=0;j--)
+        {
+            LispChar s[20];
+            InternalIntToAscii(s,(*result[i])[j]);
+            LispPtr add;
+            add.Set(LispAtom::New(aEnvironment.HashTable().LookUp(s)));
+            add.Get()->Next().Set(newfactor.Get());
+            LispPtr hold;
+            hold.Set(add.Get());
+            newfactor.Set(add.Get());
+        }
+
+
+        head.Set(LispAtom::New(aEnvironment.HashTable().LookUp("List")));
+        head.Get()->Next().Set(newfactor.Get());
+
+        LispPtr newItem;
+        newItem.Set(LispSubList::New(head.Get()));
+        LispPtr hold;
+        hold.Set(newItem.Get());
+        newItem.Get()->Next().Set(list.Get());
+        list.Set(newItem.Get());
+    }
+    head.Set(LispAtom::New(aEnvironment.HashTable().LookUp("List")));
+    head.Get()->Next().Set(list.Get());
+    aResult.Set(LispSubList::New(head.Get()));
+}
 
 

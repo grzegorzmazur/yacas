@@ -93,7 +93,7 @@ yacas_LDFLAGS = -ldl -rdynamic
 
 testnum_SOURCES = anumber.cpp grower.cpp lispstring.cpp stdstubs.cpp 	testnum.cpp mathutil.cpp
 
-libyacas_a_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp 	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp 	lispio.cpp lispobject.cpp lispparser.cpp  	lispuserfunc.cpp mathcommands.cpp mathenvironment.cpp 	mathuserfunc.cpp standard.cpp  stdfileio.cpp arggetter.cpp 	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp         lispplugin.cpp elfdll.cpp genericstructs.cpp
+libyacas_a_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp 	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp 	lispio.cpp lispobject.cpp lispparser.cpp  	lispuserfunc.cpp mathcommands.cpp mathenvironment.cpp 	mathuserfunc.cpp standard.cpp  stdfileio.cpp arggetter.cpp 	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp         lispplugin.cpp elfdll.cpp genericstructs.cpp unipoly.cpp 
 
 libyacasplatform_a_SOURCES = platmath.cpp grower.cpp stdstubs.cpp lisphash.cpp 	lispstring.cpp mathutil.cpp
 
@@ -101,7 +101,7 @@ libyacasplatform_a_LIBADD = @NUMBERS_LIB@
 libyacasnumbers_a_SOURCES = anumber.cpp yacasnumbers.cpp 
 libgmpnumbers_a_SOURCES = gmpnumbers.cpp 
 
-EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp 	epocyacas.hrh epocyacas.rss epocyacas.mmp 	epocstubs.cpp grower.inl lisphash.inl lispobject.inl 	lispstring.inl standard.inl 	win32dll.cpp 	depend.dep makefile.beos 	convertcctocpp.bat 	plat/linux32/lisptype.h 	plat/linux32/stubs.inl 	plat/linux32/platfileio.h 	plat/linux32/platdll.h 	plat/linux64/lisptype.h 	plat/linux64/stubs.inl 	plat/linux64/platfileio.h 	plat/linux64/platdll.h 	plat/epoc32/lisptype.h 	plat/epoc32/stubs.inl 	plat/epoc32/platdll.h 	plat/epoc32/platfileio.h 	plat/beos/lisptype.h 	plat/beos/stubs.inl 	plat/beos/platfileio.h 	plat/beos/platdll.h 	plat/win32/lisptype.h 	plat/win32/platdll.h   	plat/win32/platfileio.h 	plat/win32/stubs.inl     	plat/win32/win32commandline.cpp 	plat/win32/win32commandline.h   	plat/win32/yacas.dsp            	plat/win32/yacas_exe.dsp        	plat/win32/yacasmain-win32.cpp
+EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp 	epocyacas.hrh epocyacas.rss epocyacas.mmp 	epocstubs.cpp grower.inl lisphash.inl lispobject.inl 	lispstring.inl standard.inl 	win32dll.cpp 	depend.dep makefile.beos 	convertcctocpp.bat 	plat/linux32/lisptype.h 	plat/linux32/stubs.inl 	plat/linux32/platfileio.h 	plat/linux32/platdll.h 	plat/linux64/lisptype.h 	plat/linux64/stubs.inl 	plat/linux64/platfileio.h 	plat/linux64/platdll.h 	plat/epoc32/lisptype.h 	plat/epoc32/stubs.inl 	plat/epoc32/platdll.h 	plat/epoc32/platfileio.h 	plat/beos/lisptype.h 	plat/beos/stubs.inl 	plat/beos/platfileio.h 	plat/beos/platdll.h 	plat/win32/lisptype.h 	plat/win32/platdll.h   	plat/win32/platfileio.h 	plat/win32/stubs.inl  unipoly.h   	plat/win32/win32commandline.cpp 	plat/win32/win32commandline.h   	plat/win32/yacas.dsp            	plat/win32/yacas_exe.dsp        	plat/win32/yacasmain-win32.cpp
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -125,7 +125,7 @@ lispparser.o lispuserfunc.o mathcommands.o mathenvironment.o \
 mathuserfunc.o standard.o stdfileio.o arggetter.o stringio.o \
 tokenizer.o yacasapi.o genericobject.o arrayclass.o lispevalhash.o \
 patterns.o patternclass.o substitute.o mathcommands2.o mathcommands3.o \
-errors.o patcher.o lispplugin.o elfdll.o genericstructs.o
+errors.o patcher.o lispplugin.o elfdll.o genericstructs.o unipoly.o
 AR = ar
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
@@ -571,7 +571,8 @@ mathcommands3.o: mathcommands3.cpp lispenvironment.h lispobject.h \
  stdfileio.h plat/linux32/platfileio.h infixparser.h lispuserfunc.h \
  mathuserfunc.h platmath.h anumber.h anumber.inl arrayclass.h \
  arrayclass.inl patternclass.h patterns.h substitute.h errors.h \
- patcher.h plat/linux32/platdll.h plat/linux32/../../lispplugin.h
+ patcher.h plat/linux32/platdll.h plat/linux32/../../lispplugin.h \
+ unipoly.h
 mathenvironment.o: mathenvironment.cpp mathenvironment.h \
  lispenvironment.h lispobject.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h refcount.h lispassert.h choices.h \
@@ -670,6 +671,9 @@ tokenizer.o: tokenizer.cpp tokenizer.h lispstring.h \
  lispenvironment.h lispobject.h genericobject.h evalfunc.h \
  lispobject.inl lispevalhash.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h stringio.h lispglobals.h lispplugin.h
+unipoly.o: unipoly.cpp plat/linux32/lisptype.h \
+ plat/linux32/../../choices.h unipoly.h grower.h stubs.h \
+ plat/linux32/stubs.inl grower.inl lispassert.h choices.h
 unixcommandline.o: unixcommandline.cpp unixcommandline.h commandline.h \
  lispstring.h plat/linux32/lisptype.h plat/linux32/../../choices.h \
  grower.h stubs.h plat/linux32/stubs.inl grower.inl lispassert.h \

@@ -238,6 +238,7 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispSetExtraInfo,"SetExtraInfo");
     SetCommand(LispGetExtraInfo,"GetExtraInfo");
 
+    SetCommand(LispBerlekamp,"Berlekamp");
 
     bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("While"));
     bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("Rule"));

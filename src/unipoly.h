@@ -56,4 +56,14 @@ inline ZZ ZZMod::Mod(ZZ x)
     return result;
 }
 
+inline ZZ ZZPoly::Degree()
+{
+    DropEndZeroes();
+    return NrItems()-1;
+}
+
+
+void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo);
+
+
 #endif

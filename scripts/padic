@@ -95,7 +95,7 @@ ExtendedEuclidean(_f,_g) <--
      DestructiveAppend(t,newt);
      i++;
    ];
-   {i,r,s,t};
+   {r[i],s[i],t[i]};
 ];
 
 ExtendedEuclideanMonic(_f,_g) <--
@@ -143,7 +143,7 @@ TableForm({i,r,s,t});
 Echo({});
 */
 
-   {i,r,s,t};
+   {r[i],s[i],t[i]};
 ];
 
 

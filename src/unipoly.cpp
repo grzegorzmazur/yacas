@@ -10,7 +10,7 @@
 #include "lisptype.h"
 #include "unipoly.h"
 
-#define TEST
+#define noTEST
 
 #ifdef TEST
 #include <stdio.h>
@@ -51,11 +51,6 @@ void ZZPoly::DropEndZeroes()
     LispInt nr = NrItems();
     if (nr>1) while (nr>1 && Item(nr-1) == 0) nr--;
     SetNrItems(nr);
-}
-inline ZZ ZZPoly::Degree()
-{
-    DropEndZeroes();
-    return NrItems()-1;
 }
 inline void ZZPoly::Multiply(const ZZ& x,ZZMod& aMod)
 {
@@ -157,6 +152,89 @@ void NullSpaceAlg(ZZPolyList& Q,ZZ deg,ZZPolyList& v,ZZMod& p)
     
 }
 
+void ModUniDivide(ZZPolyList& result,ZZPoly& u, ZZPoly& v, ZZMod& p)
+{
+    ZZ m,n;
+    /*  (m should be >= n) */
+    m = u.Degree();
+    n = v.Degree();
+    LISPASSERT(m >= n);
+    ZZPoly *q,*r;
+    q = new ZZPoly;
+    r = new ZZPoly;
+    ZZ k,j;
+    for (k=0;k<m-n+1;k++) q->Append(0);
+    for (k=0;k<=m;k++) r->Append(u[k]);
+    
+    for(k=m-n;k>=0;k--)
+    {
+        (*q)[k] = p.Div((*r)[n+k],v[n]);
+        for (j=n+k-1;j>=k;j--)
+        {
+            (*r)[j] = p.Mod((*r)[j] - (*q)[k]*v[j-k]);
+        }
+    }
+    r->SetNrItems(n);
+    r->DropEndZeroes();
+    result.Append(q);
+    result.Append(r);
+}
+
+
+ZZPoly* ModGcd2(ZZPoly& u,ZZPoly& v,ZZMod& p)
+{
+    ZZPoly *result;
+    ZZPolyList l;
+
+    if (u.Degree() < v.Degree())
+    {
+        return ModGcd2(v,u,p);
+    }
+
+    
+//printf("BEFORE\n");
+    ModUniDivide(l,u,v,p);
+//printf("AFTER\n");
+
+    /*
+     printf("Degree %d\n",l[1]->Degree());
+PrintPoly(u);
+PrintPoly(v);
+PrintPoly(*(l[0]));
+PrintPoly(*(l[1]));
+getchar();
+*/
+    l[1]->Append(0);
+    if (l[1]->Degree() == 0 && (*l[1])[0] == 0)
+    {
+        result = new ZZPoly;
+        ZZ k;
+        for (k=0;k<=v.Degree();k++) result->Append(v[k]);
+        return result;
+    }
+    result = ModGcd2(v,*(l[1]),p);
+    return result;
+}
+
+ZZPoly* ModGcd(ZZPoly& u,ZZPoly& v,ZZMod& p)
+{
+    if (u.Degree() < v.Degree())
+    {
+        return ModGcd(v,u,p);
+    }
+    ZZPoly* result;
+    result = ModGcd2(u,v,p);
+    ZZ fact;
+    fact = p.Div(1, (*result)[result->Degree()]);
+    result->Multiply(fact,p);
+    return result;
+}
+
+
+
+
+
+
 
 void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
 {
@@ -212,6 +290,101 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
 #endif
     /*
      */
+
+    if (v.NrItems()<2)
+    {
+        ZZPoly *original = new ZZPoly;
+        ZZ i;
+        for (i=0;i<=aPoly.Degree();i++)
+        {
+            original->Append(aPoly[i]);
+        }
+        aResult.Append(original);
+        return;
+    }
+    /* aResult.NrItems() should be zero! */
+    LISPASSERT(aResult.NrItems() == 0);
+    ZZ s,nr;
+    ZZPoly trial;
+    ZZ tt;
+    nr = v[1]->Degree();
+    for (s=0;s<=nr;s++) trial.Append((*v[1])[s]);
+    tt = trial[0];
+    for (s=0;s<modulo;s++)
+    {
+        ZZPoly* res;
+//        PrintPoly(aPoly);
+//        PrintPoly(trial);
+
+        trial[0] = p.Add(trial[0],-s);
+        res = ModGcd(aPoly,trial,p);
+        trial[0] = tt;
+//        printf("s = %d\n",s);
+//        getchar();
+        if (res->Degree() > 0)
+        {
+//            printf("s = %d, degree=%d\n",s,res->Degree());
+//            PrintPoly(*res);
+            aResult.Append(res);
+        }
+        else
+        {
+            delete res;
+        }
+    }
+
+    while(aResult.NrItems() < v.NrItems())
+    {
+        ZZPoly* next;
+        next = aResult[0];
+        aResult[0] = NULL;
+        aResult.Delete(0);
+        ZZPolyList newtoadd;
+
+        for(j=2;j<v.NrItems() && newtoadd.NrItems()+aResult.NrItems() <v.NrItems();j++)
+        {
+            ZZ s,nr;
+            ZZPoly trial;
+            ZZ tt;
+            nr = v[j]->Degree();
+            for (s=0;s<=nr;s++) trial.Append((*v[j])[s]);
+            tt = trial[0];
+            for(s=0;s<modulo && aResult.NrItems()+newtoadd.NrItems()<v.NrItems();s++)
+            {
+                ZZPoly* res;
+                trial[0] = p.Add(trial[0],-s);
+                res = ModGcd(*next,trial,p);
+                trial[0] = tt;
+
+                if (res->Degree() > 0)
+                {
+//                    printf("s = %d, degree=%d\n",s,res->Degree());
+//                    PrintPoly(*res);
+                    newtoadd.Append(res);
+                }
+                else
+                {
+                    delete res;
+                }
+            }
+        }
+        if (newtoadd.NrItems() == 0)
+        {
+            newtoadd.Append(next);
+        }
+        else
+        {
+            delete next;
+        }
+        {
+            ZZ i;
+            for (i=0;i<newtoadd.NrItems();i++)
+            {
+                aResult.Append(newtoadd[i]);
+                newtoadd[i] = NULL;
+            }
+        }
+    }
 }
 
 #ifdef TEST
@@ -222,6 +395,7 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
 
     ZZPolyList result;
     ZZPoly poly;
+    /*
     poly.Append( 8);   // 8*x^0
     poly.Append( 2);   // 2*x^1
     poly.Append( 8);   // 8*x^2
@@ -231,8 +405,14 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
     poly.Append( 1);   // 1*x^6
     poly.Append( 0);   // 0*x^7
     poly.Append( 1);   // 1*x^8
+    */
+    poly.Append(1);
+    poly.Append(2);
+    poly.Append(1);
     printf("Degree = %d\n",poly.Degree());
     Berlekamp(result, poly, 13);
+    printf("RESULT:\n");
+    PrintPolyList(result);
     return 0;
     }
 #endif
