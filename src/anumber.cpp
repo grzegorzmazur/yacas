@@ -108,7 +108,7 @@ void IntToAscii(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
     IntToBaseString(aString,aInt,aBase);
     LispInt i;
     LispInt nr = aString.NrItems();
-    for (i=0;i<nr>>1;i++)
+    for (i=0;i<(nr>>1);i++)
     {
         LispChar c = aString[i];
         aString[i] = Digit(aString[nr-i-1]);
@@ -208,7 +208,7 @@ void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
         LispInt nr = fraction.NrItems()-1; //Excluding the zero terminator
         LispString::ElementTypePtr fractionPtr = &fraction[0];
 
-        for (i=0;i<nr>>1;i++)
+        for (i=0;i<(nr>>1);i++)
         {
             LispChar c = fractionPtr[i];
             fractionPtr[i] = DigitIndex(fractionPtr[nr-i-1]);
@@ -543,7 +543,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase)
         {
             LispInt i;
             LispString::ElementTypePtr rptr = &aResult[0];
-            for (i=0;i<nr>>1;i++)
+            for (i=0;i<(nr>>1);i++)
             {
                 LispString::ElementType c=rptr[i];
                 rptr[i] = Digit(rptr[nr-i-1]);
@@ -614,7 +614,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase)
         // swap order of the digits, and map to ascii
         {
             LispString::ElementTypePtr rptr = &aResult[0];
-            for (i=0;i<nr>>1;i++)
+            for (i=0;i<(nr>>1);i++)
             {
                 LispString::ElementType c=rptr[i];
                 rptr[i] = rptr[nr-i-1];
