@@ -25,9 +25,9 @@ Verify(Min({x}), x);
 Verify(Min(x), x);
 Verify(Min(Exp(x)), Exp(x));
 Verify(Min({1,2,3}), 1);
-/* since Min(multiple args) is disabled, comment this out
+// since Min(multiple args) is disabled, comment this out
 Verify(Min(1,2,3), 1);
 Verify(Min(1,2,0), 0);
 Verify(Min(5,2,3,4), 2);
 Verify(Min(5,2,0,4), 0);
-*/
+
