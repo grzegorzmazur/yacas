@@ -435,7 +435,8 @@ The basic arithmetic class {BigNumber} defines some simple arithmetic operations
 through which other more elaborate functions can be built.
 Particular implementations of the multiple-precision library will be wrapped by the {BigNumber} class, and the rest of the Yacas core should only use the {BigNumber} API and should be ignorant of those implementations.
 
-This API will be not completely exposed to Yacas scripts, because some of these functions are too low-level.
+This API will not be completely exposed to Yacas scripts, because some of these functions are too low-level.
+(For the functions that seem to be useful for Yacas, suggested Yacas bindings are given below.)  
 Among the low-level functions, only those that are very useful for optimization will be available to the Yacas scripts.
 But the full API will be available to C++ plugins, so that multiple-precision algorithms could be efficiently implemented when performance is critical.
 Intermediate-level arithmetic functions such as {MathAdd}, {MathDiv}, {MathMod} and so on could be implemented either in the Yacas core or in plugins, through this low-level API.
@@ -455,6 +456,7 @@ When the string does not contain the period character "{.}" or the exponent char
 the result is an integer number and the precision argument is ignored.
 Otherwise, the result is a floating-point number
 rounded to a given number of <i>base digits</i>.
+C++:
 	x.SetTo("2.e-19", 100, 10);
 Here we encounter a problem of ambiguous hexadecimal exponent:
 	x.SetTo("2a8c.e2", 100, 16);
@@ -465,20 +467,27 @@ We assume that the exponent character for $base>10$ is "{@}" and not "{e}".
 The precision is given as the number of digits in the given base.
 The value should be rounded to that number of significant base digits.
 (Integers are printed exactly, regardless of the given precision.)
+C++:
 	x.ToString(buffer, 200, 16); // hexadecimal
 	x.ToString(buffer, 40, 10); // decimal
 *	Construct a number from a platform number (a 32-bit integer or a double precision value).
+C++:
 	x.SetTo(12345); y.SetTo(-0.001);
 *	Obtain an approximate representation of {x} as double-precision value.
 (The conversion may cause overflow or underflow, in which case the result is undefined.)
+C++:
 	double a=x.Double();
 
 2. Basic object manipulation. These operations, as a rule, do not need to change the numerical value of the object.
 *	Copy a number, {x := y}.
 This operation should copy the numerical value exactly, without change.
+C++:
 	x.SetTo(y);
 *	Compare two numbers for equality, {x = y}.
+C++:
 	x.Equals(y)==true;
+Yacas:
+	MathEquals(x,y)
 Note that the values are compared arithmetically, their internal precision may differ, and integers may be compared to floats.
 It is only guaranteed that {Equals} returns true for equal integers, for an integer and a floating-point number with the same integer value, and for two exactly bit-by-bit equal floating-point numbers.
 Floating-point comparison may be unreliable due to roundoff error and particular internal representations.
@@ -487,21 +496,35 @@ So it may happen that after {y:=x+1;} {y:=y-1;} the comparison
 will return {false}.
 *	Check whether the number {x} is of integer or floating type.
 (Both types are represented by the same class {BigNumber}, and we need to be able to distinguish them.)
+C++:
 	x.IsInt()==true;
 *	Check whether the number {x} has an integer value. (Not necessarily the same as the previous function, because a floating-point type can also have an integer value.)
+C++:
 	x.IsIntValue()==true;
+Yacas: part of the implementation of
+	IsInteger(x)
 *	Change the type of a number from integer to float without changing the numerical value. Change the type from float to integer, rounding off if necessary.
+C++:
 	x.BecomeInt(); x.BecomeFloat();
 
 3. Basic arithmetic operations.
 Note that here "precision" always means the number of significant <i>bits</i>, i.e. digits in the base 2, <i>not decimal digits</i>.
 *	Compare two objects, {x<y}. Returns {true} if the numerical comparison holds, regardless of the value types (integer or float).
+C++:
 	x.LessThan(y)==true;
+Yacas:
+	LessThan(x,y)
 *	Compute the integer part of a number, {x := Floor(y)}.
 This function should round toward arithmetically smaller integers, as usual.
+C++:
 	x.Floor(y);
+Yacas:
+	MathFloor(x)
 *	Report the current precision of a number {x} in bits.
+C++:
 	prec=x.GetPrecision();
+Yacas:
+	GetPrecision(x)
 Every floating-point number contains information about how many significant bits of mantissa it currently has.
 (A particular implementation may hold more bits for convenience but they may not be guaranteed to be correct.)
 Integer numbers are always exact and do not have a concept of precision.
@@ -518,17 +541,32 @@ Note that the {Floor} function is not similar to {Precision} because
 2) {Floor} always decreases the number while {Precision} tries to find the closest approximation.
 For example, if $x= -1123.38$, then {x.Precision(1)} should return {-1024.}, since that's the best one-bit floating-point approximation.
 However, {Floor(-1123.38)} returns {-1124}.
+C++:
 	x.Precision(300);
+Yacas:
+	Precision(x, 300)
 *	Add two numbers, {x := y+z}, at given precision.
+C++:
 	x.Add(y,z, 300);
+Yacas:
+	MathAdd(x,y)
 When subtracting almost equal numbers, a loss of precision will occur.
 *	Negate a number, {x := -y}.
+C++:
 	x.Negate(y);
+Yacas:
+	MathNegate(x)
 *	Multiply two numbers, {x := y*z}, at given precision.
+C++:
 	x.Multiply(y,z, 300);
+Yacas:
+	MathMultiply(x,y)
 *	Divide two numbers, {x := y/z}, at given precision.
 (Integers are divided exactly as integers and the "precision" argument is ignored.)
+C++:
 	x.Divide(y,z, 300);
+Yacas:
+	MathDivide(x,y)
 
 4. Auxiliary operations (useful for optimization purposes but can be performed using the basic arithmetic).
 All these operations are efficient to implement with a binary-based internal representation of big numbers.
@@ -536,15 +574,28 @@ All these operations are efficient to implement with a binary-based internal rep
 Sometimes this helps avoid unnecessary calculations with big numbers.
 Note that the semantics of this operation is different for integers and for floats. An integer is "small" only when it fits into a platform {long} integer.
 A float is "small" when it can be approximated by a platform {double} (that is, when its exponent is not too large).
+C++:
 	x.IsSmall()==true;
+Yacas:
+	MathIsSmall(x)
 *	Multiply two numbers and add to the third, {x := x+y*z}, at given precision. (Optimization of a frequently used operation.)
+C++:
 	x.MultiplyAdd(y,z, 300);
-*	Obtain remainder modulo an integer, {x:=Mod(y,n)}.
+Yacas:
+	MathMultiplyAdd(x,y,z)
+*	Obtain the remainder modulo an integer, {x:=Mod(y,n)}.
+C++:
 	x.Mod(y,n);
+Yacas:
+	MathMod(x,n)
 (Optimization of integer division, important for number theory applications.)
 The integer modulus {n} is a big number.
+The function is undefined for floating-point numbers.
 *	Obtain the sign of the number {x} (result is {-1}, {0} or {1}). (Optimization of comparison with 0.)
+C++:
 	int sign_of_x = x.Sign();
+Yacas:
+	MathSign(x)
 *	Obtain
 the "bit count" of the number {x} (more precisely, the integer part of the binary logarithm of the absolute value of {x}).
 For integers, this function counts the significant bits, i.e. the number of bits needed to represent the integer.
@@ -553,20 +604,30 @@ For floating-point numbers, this function should return the binary exponent of t
 Result is an integer number (a "big number").
 More formally: if $n=BitCount(x)$, and $x!=0$, then $1/2 <= x*2^(-n) < 1$.
 (Optimization of the binary logarithm.)
+C++:
 	x.BitCount(y);
+Yacas:
+	MathBitCount(x)
 *	Bit-shift the number (multiply or divide by the $n$-th power of $2$), {x := y >> n}, {x := y << n}.
 For integers, this operation can be efficiently implemented because it has hardware support.
 For non-integers, this operation is usually also more efficient than multiplication or division by 2 (cf. the standard C function {ldexp}).
 (Optimization of multiplication and division by a power of 2.)
 Note that the shift amount is a big number.
+C++:
 	x.ShiftLeft(y, n); x.ShiftRight(y, n);
+Yacas:
+	ShiftLeft(x,n); ShiftRight(x,n);
 (Versions of these functions with {n} a platform {long} integer are also provided for efficiency.)
 *	Perform bitwise arithmetic, like in C: {x = y&z}, {x = y|z}, {x = y^z}, {x = ~y}.
 This should be implemented only for integers.
 Integer values are interpreted as bit sequences starting from the least significant bit.
 (Optimization of operations on bit streams and some arithmetic involving powers of 2.)
+C++:
 	x.BitAnd(y,z); x.BitOr(y,z);
 	x.BitXor(y,z); x.BitNot(y);
+Yacas:
+	BitAnd(x,y); BitOr(y,z);
+	BitXor(y,z); BitNot(y);
 
 The API includes only the most basic operations.
 All other mathematical functions such as power, logarithm, cosine and so on, can be efficiently implemented using this basic interface.
@@ -585,8 +646,83 @@ These operations (add, multiply, divide) should be nevertheless exact on integer
 
 Integers must grow or shrink when necessary.
 Floating-point values only grow up to the given number of significant bits and then a round-off must occur.
-However, a big number does not necessarily "know" the maximum number of significant bits that it is supposed to represent at any given time.
-A particular library implementation might have this information attached to each big number object, but Yacas should not be concerned about this.
+
+
+There is an alternative to having to explicitly  specify precision for all operations.
+The precision of arithmetic operations on floating-point numbers can be maintained automatically, in a version of "poor man's interval calculus".
+
+Suppose we have two floating-point numbers $x$ and $y$ and we know that they have certain numbers of correct mantissa bits, say $m$ and $n$.
+In other words, $x$ is an approximation to an unknown real number $x'=x*(1+delta)$ and we know that $Abs(delta)<2^(-m)$; and similarly for $y$: $y'=y*(1+epsilon)$ with $Abs(epsilon)<2^(-n)$.
+Here $delta$ and $epsilon$ are the relative errors for $x$ and $y$ and are typically much smaller than $1$.
+
+Suppose that every floating-point number comes with its number of significant digits, i.e. we symbolically represent the numbers as pairs {{x,m}} or {{y,n}}.
+When we perform an arithmetic operation on numbers, we need to update the precision component as well.
+Now we shall consider the basic arithmetic operations to see how the precision is updated.
+
+*HEAD Multiplication
+
+If we need to multiply $x$ and $y$, the correct answer is $x'*y'$ but we only know an approximation to it, $x*y$.
+We can estimate the precision by $x'*y' = x*y*(1+delta)*(1+epsilon)$ and it follows that the relative precision is at most $delta+epsilon$.
+But we only represent the relative errors by the number of bits.
+So we can either set the precision of $x*y$ to the smallest of the precisions of $x$ and $y$, or double it.
+
+More formally, we have the estimates $Abs(delta)<2^(-m)$, $Abs(epsilon)<2^(-n)$ and we need a similar estimate $Abs(r)<2^(-p)$ for $r=delta + epsilon$.
+
+If the two numbers $x$ and $y$ have the same number of correct bits, we should double the error (i.e. decrease the number of significant bits by 1).
+But if they don't have the same number of bits, we cannot really estimate the error very well.
+To be on the safe side, we might double the error if the numbers $x$ and $y$ have almost the same number of significant bits, and leave the error constant if the numbers of significant bits of $x$ and $y$ are very different.
+
+The answer expressed as a formula is $p=Min(m,n)$ if $Abs(m-n)>1$ and $p=Min(m,n)-1$ otherwise.
+
+*HEAD Division
+
+Division is multiplication by the inverse number.
+When we take the inverse of $x*(1+delta)$, we obtain approximately $1/x*(1-delta)$.
+Therefore the precision does not change when we take the inverse.
+So the handling of precision is exactly the same as for the multiplication.
+
+*HEAD Addition
+
+Addition is more complicated because the absolute rather than the relative precision plays the main role,
+and because there may be roundoff errors associated with subtracting almost equal numbers.
+
+Formally, we have the relative precision $r$ of $x+y$ as
+$$ r = (delta*x+epsilon*y)/(x+y) $$.
+We have the bounds on $delta$ and $epsilon$:
+$$ [Abs(delta)<2^(-m); Abs(epsilon)<2^(-n); ] $$,
+and we need to find a bit bound on $r$, i.e. an integer $p$ such that $Abs(r)<2^(-p)$.
+But we cannot estimate $p$ without first computing $x+y$ and analyzing the relative magnitude of $x$ and $y$.
+To perform this estimate, we need to use the bit counts of $x$ and $y$ and on $x+y$.
+Let these bit counts be $a$, $b$ and $c$, so that $Abs(x)<2^(a+1)$, $Abs(y)<2^(b+1)$, and $2^c<=Abs(x+y)<2^(c+1)$.
+(We assume that $x+y!=0$. Otherwise, we obtain an answer $0$ with $0$ correct bits of mantissa, that is, a total loss of precision due to cancellation.)
+Now we can estimate $r$ as
+$$ r <= Abs((x*2^(-m))/(x+y)) + Abs((y*2^(-n))/(x+y)) <= 2^(a+1-m-c)+2^(b+1-n-c)$$.
+This is formally similar to multiplying two numbers with $a+1-m-c$ and $b+1-m-c$ correct bits.
+As in the case of multiplication, we may take the minimum of the two numbers, or double one of them if they are almost equal.
+
+*HEAD Computations with a given target precision
+
+Using these rules, we can maintain a bound on the numerical errors of all calculations.
+But sometimes we know in advance that we shall not be needing any more than a certain number of digits of the answer,
+and we would like to avoid an unnecessarily high precision and reduce the computation time.
+
+In this case we can truncate one or both of the arguments to a smaller precision before starting the operation.
+In both cases (the multiplication and the addition), the precision is given by a formula that involves a comparison of two binary exponents $2^(-g)$ and $2^(-h)$.
+Here $g$ and $h$ are some integers that are easy to obtain during the computation, as we have seen above.
+This comparison will immediately show which of the arguments dominates the error.
+
+The ideal situation would be when one of these exponentials is much smaller than the other, but not very much smaller (that would be a waste of precision).
+In other words, we should aim for $Abs(g-h)<8$ or so, where $8$ is the number of guard bits we would like to maintain.
+(Generally it is a good idea to have at least 8 guard bits;
+somewhat more guard bits do not slow down the calculation very much, but 200 guard bits would be surely an overkill.)
+Then the number that is much more precise than necessary can be truncated.
+
+For example, if we find that $g=250$ and $h=150$, then we can safely truncate $x$ to $160$ bits or so;
+if, in addition, we need only $130$ bits of final precision,
+then we could truncate both $x$ and $y$ to about $140$ bits.
+
+Note that when we need to subtract two almost equal numbers, there will be a necessary loss of precision,
+and it may be impossible to decide on the required target precision before performing the subtraction.
 
 	    Large exponents
 
