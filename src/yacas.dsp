@@ -303,6 +303,10 @@ SOURCE=.\unipoly.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\vm.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\plugins\filescanner\win32_filescanner_plugin.cpp
 # End Source File
 # Begin Source File

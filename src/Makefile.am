@@ -137,7 +137,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	README.LZO lzoconf.h minilzo.c minilzo.h decompressor.cpp \
 	compressor.cpp filescanner.cpp filescanner.h \
 	compressedfiles.h compress.bat \
-	compressor.dsp compressor.dsw win32rcwriter.cpp yacas.pas biginteger.cpp
+	compressor.dsp compressor.dsw win32rcwriter.cpp yacas.pas biginteger.cpp libmath.cpp
 
 
 # list some extra generated files
