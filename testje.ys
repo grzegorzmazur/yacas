@@ -1,4 +1,54 @@
 
+SpecialTerm(_X) <--
+[
+  Local(gather,result,newterm);
+  gather:={};
+  result:=1;
+  `SpecialGather(@X);
+  ForEach(item,gather) 
+  [
+    If(item[2] != 0,
+      [
+        newterm:=Atom(item[1])^item[2];
+        result := `Hold(@result * @newterm);
+      ]);
+  ];
+  result;
+];
+Macro()SpecialGather(expr);
+10 # SpecialGather(_a*_b) <-- [SpecialGather(@a);SpecialGather(@b);];
+10 # SpecialGather((_a*_b)^_c) <-- [SpecialGather(@a ^ @c);SpecialGather(@b ^ @c);];
+10 # SpecialGather((_a^_b)^_c) <-- SpecialGather(@a ^ (@b * @c));
+20 # SpecialGather(a_IsAtom ^ _b) <-- SpecialPow(@a,@b);
+30 # SpecialGather(a_IsConstant) <-- [result := result* @a;];
+40 # SpecialGather(a_IsAtom) <-- SpecialPow(@a,1);
+90 # SpecialGather(_rest) <-- [result := result* @rest;];
+
+Macro()SpecialPow(a,b);
+SpecialPow(_a,_b)
+<-- [
+      Local(name);
+      name:=String(@a);
+      If(gather[name] = Empty,gather[name]:=0);
+      gather[name] := gather[name] + @b;
+    ];
+
+
+
+Special(_x) <-- Simplify(SpecialExpand(x));
+
+10 # SpecialExpand(_a + _b) <-- SpecialExpand(a)+SpecialExpand(b);
+10 # SpecialExpand(_a - _b) <-- SpecialExpand(a)-SpecialExpand(b);
+10 # SpecialExpand(   - _b) <--                 -SpecialExpand(b);
+10 # SpecialExpand(_a * _b) <-- SpecialTerm(SpecialExpand(a)*SpecialExpand(b));
+10 # SpecialExpand(_a ^ _b) <-- SpecialTerm(SpecialExpand(a)^b);
+10 # SpecialExpand(_a / _b) <-- SpecialExpand(a)/SpecialExpand(b);
+10 # SpecialExpand((_a * _b)^ _c) <-- SpecialTerm(SpecialExpand(a^c)*SpecialExpand(b^c));
+
+90 # SpecialExpand(_rest) <-- rest;
+
+EndOfFile;
+
 10 # PowerExpand( Sqrt( _u * _v)) <-- Sqrt(u) *Sqrt(v);
 10 # PowerExpand( Sqrt( _u / _v)) <-- Sqrt(u) /Sqrt(v);
 10 # PowerExpand( (_u * _v) ^ _w) <-- 

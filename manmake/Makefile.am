@@ -41,13 +41,13 @@ ALGOCHAPTERS = algo-basic.chapt algo-numapprox.chapt \
 	algorithms-elemfunc.chapt algorithms-specfunc.chapt \
 	algorithms-numtheory.chapt algorithms-integration.chapt \
 	algorithms-multivar.chapt SturmSequences.chapt FDL.chapt \
-	algo-refs.chapt
+	algo-refs.chapt 
 
 ALGOSOURCES = algo-basic.chapt.txt algo-numapprox.chapt.txt \
 	algorithms-elemfunc.chapt.txt algorithms-specfunc.chapt.txt \
 	algorithms-numtheory.chapt.txt algorithms-integration.chapt.txt \
 	algorithms-multivar.chapt.txt SturmSequences.chapt.txt FDL.chapt.txt \
-	algo-refs.chapt.txt
+	algo-refs.chapt.txt 
 
 REFCHAPTERS = config.chapt arith.chapt calc.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
@@ -74,13 +74,13 @@ CODINGSOURCES = YacasDebugger.chapt.txt FDL.chapt.txt
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
 	SimpleTools.chapt CVS-Howto.chapt YacasDocs.chapt \
 	wester-1994.chapt new.chapt paper.chapt codecheck.chapt \
-	wordproblems.chapt FDL.chapt BuildSystem.chapt
+	wordproblems.chapt FDL.chapt BuildSystem.chapt GlobalMatching.chapt
 
 ESSAYSOURCES = ABIN-grammar.chapt.txt Plugins-Howto.chapt.txt \
 	SimpleTools.chapt.txt CVS-Howto.chapt.txt YacasDocs.chapt.txt \
         paper.chapt.txt wester-1994.chapt.txt new.chapt.txt \
 	wordproblems.chapt.txt FDL.chapt.txt BuildSystem.chapt.txt \
-	codecheck.chapt.txt
+	codecheck.chapt.txt GlobalMatching.chapt.txt
 
 LISPPROGRAMMINGCHAPTERS = LispLanguage.chapt FDL.chapt
 LISPPROGRAMMINGSOURCES = LispLanguage.chapt.txt FDL.chapt.txt
