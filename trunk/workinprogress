@@ -1,19 +1,71 @@
 
 
-f:=x^8+x^6+10*x^4+10*x^3+8*x^2+2*x+8;
-p:=13;
-deg := Degree(f,x);
-u := Coef(f,x,0 .. (deg));
 
-Row(n):=
+Berlekamp(f,var,p):=
 [
-  Local(md,cf);
-  md :=Mod(x^(n*p),f);
-  cf := Coef(md,x,0 .. (deg-1));
-  Map("Mod",{cf,FillList(p,8)});
+  Local(deg,u,a,Q,k,j,v,result);
+  deg := Degree(f,var);
+  u := Coef(f,x,0 .. (deg));
+  a := FillList(0,deg+1);
+  a[deg] := 1;
+  Q:={};
+  ShowPat(a,Q);
+  For (k:=1,k<deg,k++)
+  [
+    For(j:=1,j<=p,j++)
+    [
+      Pat(a,u,deg,p);
+    ];
+    ShowPat(a,Q);
+  ];
+  Q:=Q-Identity(deg);
+
+  Q:=Transpose(Q); /* Transpose, because we want to access columns */
+  v:={};
+  NullSpaceAlg(Q,deg,v,p);
+
+  result:={};
+  [
+    Local(try,s);
+    try:=Sum(v[2]*x^(0 .. (deg-1)));
+    For(s:=0,s<p,s++)
+    [
+      Local(res);
+      res:=ModGcd(f,try-s,var,p); 
+      If(Degree(res)>0,
+      [
+        DestructiveAppend(result,res);
+      ]);
+    ];
+  ];
+  While(Length(result)<Length(v))
+  [
+    Local(next);
+    next:=Head(result);
+    result:=Tail(result);
+    Local(newtoadd);
+    newtoadd:={};
+    For(j:=3,j<=Length(v) And Length(newtoadd)+Length(result)<Length(v),j++)
+    [
+      Local(try,s);
+      try:=Sum(v[j]*var^(0 .. (deg-1)));
+      For(s:=0,s<p And Length(result)+Length(newtoadd)<Length(v),s++)
+      [
+        Local(res);
+        res:=ModGcd(next,try-s,var,p); 
+        If(Degree(res)>0,
+        [
+          DestructiveAppend(newtoadd,res);
+        ]);
+      ];
+    ];
+    If(newtoadd={},result:={next});
+    result:=Concat(result,newtoadd);
+  ];
+  Factorize(result);
 ];
 
-Pat(a,deg,p):=
+Pat(a,u,deg,p):=
 [
   Local(t,i);
   t:=a[1];
@@ -31,29 +83,13 @@ ShowPat(a,Q):=
   r:=Tail(r);
   DestructiveAppend(Q,r);
 ];
-a := FillList(0,deg+1);
-a[deg] := 1;
-Q:={};
-ShowPat(a,Q);
-For (k:=1,k<deg,k++)
-[
-  For(j:=1,j<=p,j++)
-  [
-    Pat(a,deg,p);
-  ];
-  ShowPat(a,Q);
-];
 
-Q:=Q-Identity(deg);
-
-Q:=Transpose(Q); /* Transpose, because we want to access columns */
-/* TableForm(Q); */
 
 NDimod(n,p):=
 [
   Local(m);
   m:=1;
-  While(Mod(m*n,p) != p-1) [m++;];
+  While(Mod(m*n,p) != 1) [m++;];
   m;
 ];
 NListMod(list,p):=
@@ -64,7 +100,7 @@ NListMod(list,p):=
   list;
 ];
 
-NullSpaceAlg(Q,deg,v):=
+NullSpaceAlg(Q,deg,v,p):=
 [
   Local(c,r,k);
   c:=FillList(-1,deg);
@@ -82,7 +118,7 @@ NullSpaceAlg(Q,deg,v):=
       Local(ak,i);
       ak:=Q[jfound][k];
 
-      Q[jfound] := NListMod(Q[jfound] * NDimod(ak,p),p); /* (-1/ak); */
+      Q[jfound] := NListMod(Q[jfound] * (p-1)*NDimod(ak,p),p); /* (-1/ak); */
       For(i:=1,i<=deg,i++)
       [
         If(i!=jfound,
@@ -90,7 +126,6 @@ NullSpaceAlg(Q,deg,v):=
           );
       ];
       c[jfound] := k;
-/*    TableForm(Q); */
     ],
     [
       Local(vnew,j,s);
@@ -102,34 +137,72 @@ NullSpaceAlg(Q,deg,v):=
         [
           If(c[s] = j,vnew[j]:= Q[s][k]);
         ];
-/*        Echo({r,vnew});*/
         DestructiveAppend(v,vnew);
     ]);
   ];
 ];
 
-v:={};
-NullSpaceAlg(Q,deg,v);
-/* TableForm(v); */
 
-For(j:=2,j<=Length(v),j++)
+Function("ModUniDivide",{u,v,p})
 [
-  Local(try,s);
-  try:=Sum(v[j]*x^(0 .. (deg-1)));
-  For(s:=0,s<p,s++)
+  Local(m,n,q,r,k,j);
+  m := Length(u)-1;
+  n := Length(v)-1;
+  While (m>0 And IsZero(u[m+1])) m--;
+  While (n>0 And IsZero(v[n+1])) n--;
+  q := ZeroVector(m-n+1);
+  r := FlatCopy(u);  /*  (m should be >= n) */
+  For(k:=m-n,k>=0,k--)
   [
-    Local(res);
-    Echo({s});
-/*TODO We need a modular Gcd for this one??? */
-    res:=Gcd(f,try-s);
-    If(Degree(res)>0, Echo({s,res}));
-/*
-    Echo({try});
-    Echo({s,res});
-*/    
+    q[k+1] := Mod(r[n+k+1]*NDimod(v[n+1],p),p);
+    For (j:=n+k-1,j>=k,j--)
+    [
+      r[j+1] := Mod(r[j+1] - q[k+1]*v[j-k+1],p);
+    ];
   ];
-/*  Echo({Sum(v[j]*x^(0 .. (deg-1)))});*/
+  Local(end);
+  end:=Length(r);
+  While (end>n)
+  [
+    DestructiveDelete(r,end);
+    end:=end-1;
+  ];
+
+  {q,r};
 ];
+
+
+ModGcd(u,v,var,p) :=
+[
+  If(Degree(u)<Degree(v),[Local(swap);swap:=u;u:=v;v:=swap;]);
+  u:=Coef(u,var,0 .. Degree(u));
+  v:=Coef(v,var,0 .. Degree(v));
+  DropEndZeroes(u);
+  DropEndZeroes(v);
+  Local(r);
+  r:=ModGcd2(u,v,p);
+  r:=NListMod(r*NDimod(r[Length(r)],p),p);
+  NormalForm(UniVariate(var,0,r));
+];
+
+
+ModGcd2(u,v,p) :=
+[
+  Local(l,div,mod,m);
+
+  l:=ModUniDivide(u,v,p);
+
+  div:=l[1];
+  mod:=l[2];
+
+  DropEndZeroes(mod);
+  m := Length(mod);
+  If(m = 0,
+     v,
+     ModGcd2(v,mod,p));
+];
+
+Echo({Berlekamp(x^8+x^6+10*x^4+10*x^3+8*x^2+2*x+8,x,13)});
 
 EndOfFile;
 
