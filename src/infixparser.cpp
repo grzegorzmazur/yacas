@@ -495,7 +495,7 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
             if (iPrecedence < op->iPrecedence){
                 WriteToken(aOutput,"(");
             }else{
-                WriteToken(aOutput," ");
+                aOutput.Write(" ");
             }
             if (left)
                 Print(*left, aOutput,op->iLeftPrecedence);
@@ -570,4 +570,3 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
         }
     }
 }
-
