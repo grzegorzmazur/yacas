@@ -32,7 +32,7 @@
 11 # PDF(DiscreteUniformDistribution(_a,_b), _x) <-- Hold(If(x<a Or x>b, 0 ,1/(b-a+1)));
 
 10 # PDF( PoissonDistribution(_l), n_IsNumber) <-- If(n<0,0,Exp(-l)*l^n/n!);
-10 # PDF(PoissonDistribution(_l),_n) <-- Exp(-l)*l^n/n!;
+11 # PDF(PoissonDistribution(_l),_n) <-- Exp(-l)*l^n/n!;
 
 10 # PDF(GeometricDistribution(_p),_n) <--If(n<0,0,p*(1-p)^n);
 

@@ -13,7 +13,7 @@
   <li> Added direct application of pure functions:
      [pure:={{a,b},a+b} ; ` @pure(2,3);] returns 5 (AP)
   <li> Added documentation on the direct application of pure functions
-       and on back-quoting, in coding.book.txt
+       and on back-quoting, in coding.book.txt (AP)
   <li> Pretty-printing FullForm(...) (AP)
   <li> Made a fix in Makefile.am, the depend target had mysteriously
        disappeared (AP)
@@ -23,16 +23,18 @@
   <li> Split the links section from the main information section on the
        web site, and started a more extensive list of links, to 
        free documentation and articles, and other math packages in
-       general.
+       general. (AP)
   <li> Reorganization of the makefile scripts: fixed make distcheck, make test,
        make installcheck, test script log file, now can build outside source tree (Jitse)
-  <li> BUGFIX: sums.rep/code.ys.def still referred to Sum, should
-       be Add now. Same for statistics.ys and regression.ys (AP)
-  <li> split the long "essays" book into "Essays" and "Algorithms" (SW)
+  <li> BUGFIX: sums.rep/code.ys.def still referred to {Sum}, should
+       be {Add} now. Same for statistics.ys and regression.ys (AP)
+  <li> split the long "essays" book into essays and algorithms ("Algo") (SW)
   <li> added new architecture for random numbers: {Rng}, {RngCreate} etc. (SW)
-  <li> added Euler's constant {gamma} to "cached constants" (SW)
-  <li> renamed "staggered factorials" to "double factorials" as seems to be
-       the accepted terminology (SW)
+  <li> added Euler's constant {gamma} to "cached constants", fixed N() to evaluate N(gamma) (SW)
+  <li> new algorithm docs for orthogonal polynomials, gamma constant, gamma function,
+       error function, continued fractions;
+       renamed "staggered factorials" to "double factorials" in the docs, as
+	   that seems to be the accepted terminology (SW)
 </ul>
 
 <h1>Release of version 1.0.52 (May 23rd, 2002)</h1>
