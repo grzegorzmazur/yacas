@@ -3,7 +3,7 @@ RuleBase("<-",{left,right});
 HoldArg("<-",left);
 HoldArg("<-",right);
 
-
+Set(LocResult,True);
 10 # LocPredicate(exp_IsAtom) <--
 [
   Local(tr,result);
@@ -13,6 +13,7 @@ HoldArg("<-",right);
   [
     If (Head(Head(tr)) = exp,
     [
+      Set(LocResult,Eval(Head(Tail(Head(tr)))));
       result := True;
       tr:={};
     ],
@@ -30,21 +31,24 @@ HoldArg("<-",right);
   result:=False;
   While (tr != {})
   [
-    head := Head(Head(tr));
+    Set(head, Head(Head(tr)));
     If (Not(IsAtom(head)) And exp[0]=head[1] And PatternMatches(head[2], exp),
     [
-      result := True;
-      tr:={};
+      Set(LocResult,Eval(Head(Tail(Head(tr)))));
+      Set(result, True);
+      Set(tr,{});
     ],
     [
-      tr := Tail(tr);
+      Set(tr, Tail(tr));
     ]);
   ];
   result;
 ];
 20 # LocPredicate(_exp) <-- False;
 
-10 # LocChange(exp_IsAtom) <--
+LocChange(_exp) <-- LocResult;
+/*TODO remove!
+10 # LocChange(exp_IsAtom) <-- 
 [
   Local(tr,result);
   tr:=patterns;
@@ -84,6 +88,7 @@ HoldArg("<-",right);
   ];
   result;
 ];
+*/
 
 UnFence("LocPredicate",1);
 UnFence("LocChange",1);
@@ -99,22 +104,33 @@ LocProcess(patterns) :=
   MapSingle("LocProcessSingle",patterns);
 ];
 
-(expression /: patterns) :=
+CompilePatterns(patterns) := LocPatterns(LocProcess(patterns));
+
+
+5 # (_expression /: LocPatterns(_patterns)) <--
 [
-  patterns := LocProcess(patterns);
+  Substitute(expression,"LocPredicate","LocChange");
+];
+10 # (_expression /: _patterns) <--
+[
+  Set(patterns, LocProcess(patterns));
   Substitute(expression,"LocPredicate","LocChange");
 ];
 
-(expression /:: patterns) :=
+5 # (_expression /:: LocPatterns(_patterns)) <--
+[
+  Substitute(expression,"LocPredicate","LocChange");
+];
+10 # (_expression /:: _patterns) <--
 [
   Local(old);
-  patterns := LocProcess(patterns);
-  old := expression;
-  expression := Substitute(expression,"LocPredicate","LocChange");
+  Set(patterns, LocProcess(patterns));
+  Set(old, expression);
+  Set(expression, Substitute(expression,"LocPredicate","LocChange"));
   While (expression != old)
   [
-    old := expression;
-    expression := Substitute(expression,"LocPredicate","LocChange");
+    Set(old, expression);
+    Set(expression, Substitute(expression,"LocPredicate","LocChange"));
   ];
   expression;
 ];
