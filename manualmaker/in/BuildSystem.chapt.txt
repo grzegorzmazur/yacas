@@ -304,6 +304,7 @@ exclusively used by Yacas.
 (GNU MP), available from <*http://www.swox.com/gmp*>, instead of the
 library provided by the Yacas team. For this to work, the GNU MP
 library must of course be installed.
+*	{enable-debug}. Builds a version of Yacas suitable for debugging. 
 *	{enable-archive}. Build and install the library archive. The
 library archive resides in the file {scripts.dat} and contains all the
 Yacas scripts in compressed form.
@@ -374,10 +375,6 @@ directory, compiles Yacas, installs it in a temporary directory, and
 finally checks that the installed version works correctly. Extra flags
 to be passed to the {configure} script (eg. {--enable-archive}) can be
 put in the {DISTCHECK_CONFIGURE_FLAGS} environment variable.
-*	{debug}. This is not a standard target. It builds a version of
-Yacas suitable for debugging. It does not respect the settings of the
-{configure} script.
-
 
 	    The Yacas executable
 
