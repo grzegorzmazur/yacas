@@ -34,7 +34,8 @@ Formatting of source text files uses TAB symbols; if your editor does not suppor
 
 Currently the following markup is implemented:
 
-*	Paragraphs are separated by blank lines. Several blank lines next to each other are equivalent to one.
+*	Paragraphs are separated by blank lines (lines consisting of space or TAB characters or empty). Several blank lines next to each other are equivalent to one. However, TAB-indented blank lines inside a code example (see below) do not create another paragraph.
+
 *	Book heading is quadruple TAB indented. Chapter heading is triple TAB indented. Section heading is double TAB indented. Subsection heading is indented by a TAB and 4 spaces. Chapter and section headings should be in one line (but that line can be as long as needed).
 
 *	Sample code is single TAB indented, for example:
@@ -83,9 +84,11 @@ Note that item text continues until the next itemized line is given or until end
 or
 	<*click here|somewebpage.html*>
 
+
 *	Mathematical expressions should be typed in Yacas notation and surrounded by dollar signs (within one line of text). For example: {$}
 {x^2 + y^2 != z^2 $}
 gives "$x^2+y^2 != z^2$". Double dollar signs will denote a displayed equation, like in $TeX$, but it should still be within one line. As a special exception, one can enter the symbols "$TeX$" and "$LaTeX$" as if they are mathematical expressions, e.g. "{$TeX$}" produces "$TeX$". Mathematics will be kept in Yacas notation in online HTML documents but typeset in $TeX$ when creating printed documentation.
+
 
 *	To include contents of another document, use the {*INCLUDE} directive at the beginning of a line, e.g.
 
@@ -132,13 +135,13 @@ In a subsection there may be either one function documented or several at once: 
 
 	*CMD Sin, Cos, Tan --- Trigonometric ...
 
-In addition, there is a tag {*INTRO} to denote a "reference chapter introduction" corresponding to the {ChapterIntro()} function, {*A} which creates an HTML link to a manual section corresponding to {AddBody(HtmlAnchor()...)}, and a tag {*HEAD} which creates a small heading ({Topical()}). For instance,
-
+In addition, there is a tag {*INTRO} to denote a "reference chapter introduction" corresponding to the {ChapterIntro()} function, {*A} which creates an HTML link to a manual section corresponding to {AddBody(HtmlAnchor()...)}, {*AA} which creates {AddAnchor()}, and {*HEAD} which creates a small heading ({Topical()}). For instance,
 	*PARMS
-is currently implemented in the same way as
+results in the same text as
 	*HEAD Parameters:
 
 This markup should be sufficient for creating reference documentation in plaintext.
+
 
 	    {book2txt}: Conversion of existing documentation to plain text
 
@@ -157,19 +160,17 @@ one can create a source text file {file.chapt.txt} corresponding to the Yacas do
 	12:51pm scriabin>
 
 In the above example, the shell commands in {book2txt.sh} executed the following Yacas commands,
-
 	Use("book2txt.ys");
 	ToFile("file.chapt.txt")
 	  Load("file.chapt");
-
 This requires that the Yacas script {book2txt.ys} be available in the current directory. The shell script {book2txt.sh} assumes that {book2txt.ys} is stored in the same directory as {book2txt.sh}.
 
 Of course, it is possible that some features of Yacas documentation were not implemented in the script and in that case the resulting file must be edited by hand. But the purpose of the {book2txt} script is exactly this: to make a plain text source file to be edited and maintained.
 
 Several files can be converted at once, for example:
-
 	book2txt.sh f1.chapt f2.chapt file3.book
 Each file is processed by an independent Yacas session. Any errors of processing are printed on the screen.
+
 
 	    {book2TeX}: preparing typeset documentation
 
@@ -184,12 +185,11 @@ will prepare a Postscript version, while
 	pdflatex intro.book.tex
 will prepare a PDF version.
 
-The shell commands in {book2txt.sh} execute the following Yacas commands:
 
+The shell commands in {book2txt.sh} execute the following Yacas commands:
 	Use("book2TeX.ys");
 	ToFile("file.chapt.tex")
 	  Load("file.chapt");
-
 This requires that the Yacas script {book2TeX.ys} be available in the current directory. The shell script {book2TeX.sh} assumes that {book2TeX.ys} is stored in the same directory as {book2TeX.sh}.
 
 Not all features of Yacas documentation are compatible with $TeX$ typesetting. To prevent errors, documentation should avoid certain things. In general, it is a good idea to check the typeset appearance of documentation, since it helps detect errors.

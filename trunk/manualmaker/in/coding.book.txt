@@ -162,10 +162,10 @@ Yacas should replace this function with some other expression. To tell Yacas abo
 
 Here is the general syntax for a {Rule()} call:
 
-	Rule("foo", arity, precedence, predicate) body;
+	Rule("foo", arity, precedence, pred) body;
 This specifies that for function {foo} with given
 {arity} ({foo(a,b)} has arity 2), there is a
-rule that if {predicate} is true, then {body}
+rule that if {pred} is true, then {body}
 should be evaluated, and the original expression replaced by the result.
 Predicate and body can use the symbolic names of arguments that were
 declared in the {RuleBase} call.
@@ -326,13 +326,13 @@ The parser is extended slightly to allow for fancier constructs.
 is parsed into the internal notation {(List a b)} , but
 will be printed again as {{a,b};}
 *	Statement blocks like
-{[ }statement1{; } statement2{; ];} . This
-is parsed into a Lisp object {(Prog (}statement1 {) (}statement2 {))} , and printed out again in the proper form.
+{[} statement1 {;} statement2{;];}. This
+is parsed into a Lisp object {(Prog} {(}statement1 {)} {(}statement2 {))}, and printed out again in the proper form.
 *	 Object argument accessors in the form of
-{expr[ index ]} . These
+{expr[ index ]}. These
 are mapped internally to {Nth(expr,index)}. The value of {index}=0 returns the
 operator of the object, {index}=1 the first argument, etc. So,
-if {expr} is {foo(bar)} , then
+if {expr} is {foo(bar)}, then
 {expr[0]} returns {foo}, and
 {expr[1]} returns {bar}. Since lists of the form
 {{...}} are essentially the same as
@@ -358,7 +358,7 @@ next character to the string, so a quote can be added with {\"} (a backslash-quo
 When setting variables or retrieving variable values, variables are
 automatically bound global by default. You can explicitly specify variables to
 be local to a block such as a function body; this will make them invisible
-outside the block. Blocks have the form {[statement1(); statement2(); ]} and local variables are declared by the
+outside the block. Blocks have the form {[} statement1{;} statement2{;} {]} and local variables are declared by the
 {Local()} function.
 
 When entering a block, a new stack frame is pushed for the local variables; it
@@ -590,49 +590,16 @@ We need to understand how to simplify expressions in Yacas, and the best way is 
 
 		The problem
 
-Suppose we want to define special symbols $A(k)$ and $B(k)$ that we can
-multiply with each other or by a number, or add to each other, but not commute
-with each other, i.e. $A(k)*B(k) != B(k)*A(k)$. Here $k$ is merely a label to
-denote that $A(1)$ and $A(2)$ are two different objects. (In physics, these are
-called "creation" and "annihilation" operators for "bosonic quantum fields".)
-Yacas already assumes that the usual multiplication operator "{*}" is
-commutative. Rather than trying to redefine {*}, we shall introduce a special
-multiplication sign "{**}" that we shall use with the objects $A(k)$ and
-$B(k)$; between usual numbers this would be the same as normal multiplication.
-The symbols $A(k)$, $B(k)$ will never be evaluated to numbers, so an expression
-such as {2 ** A(k1) ** B(k2) ** A(k3)} is just going to remain like that. (In
-physics, commuting numbers are called "classical quantities" or "c-numbers"
-while non-commuting objects made up of A(k) and B(k) are called "quantum
-quantities" or "q-numbers".) There are certain commutation relations for these
-symbols: the $A$'s commute between themselves, {A(k)**A(l) = A(l)**A(k)}, and
-also the $B$'s, {B(k)**B(l) = B(l)**B(k)}. However, the $A$'s don't commute
-with the $B$'s: {A(k)**B(l) - B(l)**A(k) = delta(k-l)}. Here the "{delta}" is a
-"classical" function (called the "Dirac $delta$-function") but we aren't going
-to do anything about it, just leave it symbolic like that.
+Suppose we want to define special symbols $A(k)$ and $B(k)$ that we can multiply with each other or by a number, or add to each other, but not commute with each other, i.e. $A(k)*B(k) != B(k)*A(k)$. Here $k$ is merely a label to denote that $A(1)$ and $A(2)$ are two different objects. (In physics, these are called "creation" and "annihilation" operators for "bosonic quantum fields".) Yacas already assumes that the usual multiplication operator "{*}" is commutative. Rather than trying to redefine {*}, we shall introduce a special multiplication sign "{**}" that we shall use with the objects $A(k)$ and $B(k)$; between usual numbers this would be the same as normal multiplication. The symbols $A(k)$, $B(k)$ will never be evaluated to numbers, so an expression such as {2 ** A(k1) ** B(k2) ** A(k3)} is just going to remain like that. (In physics, commuting numbers are called "classical quantities" or "c-numbers" while non-commuting objects made up of A(k) and B(k) are called "quantum quantities" or "q-numbers".) There are certain commutation relations for these symbols: the $A$'s commute between themselves, $A(k)*A(l) = A(l)*A(k)$, and also the $B$'s, $B(k)*B(l) = B(l)*B(k)$. However, the $A$'s don't commute with the $B$'s: $A(k)*B(l) - B(l)*A(k) = delta(k-l)$. Here the "{delta}" is a "classical" function (called the "Dirac $delta$-function") but we aren't going to do anything about it, just leave it symbolic like that.
 
-We would like to be able to manipulate such expressions, expanding brackets,
-collecting similar terms and so on, while taking care to always keep the
-non-commuting terms in the correct order. For example, we want Yacas to
-automatically simplify {2**B(k1)**3**A(k2)} to {6**B(k1)**A(k2)}. Our goal is
-not to implement a general package to tackle complicated non-commutative
-operations; we merely want to teach Yacas about these two kinds of "quantum
-objects" called {A(k)} and {B(k)}, and we shall define one function that a
-physicist would need to apply to these objects. This function applied to any
-given expression containing $A$'s and $B$'s will compute something called a
-"vacuum expectation value", or "VEV" for short, of that expression. This
-function has "classical" values and is defined as follows: VEV of a commuting
-number is just that number, e.g. $VEV(4) = 4$, $VEV(delta(k-l)) = delta(k-l)$;
-and {VEV(}$X${**A(k)) = 0}, {VEV(B(k)**}$X${) = 0} where $X$ is any expression,
-commutative or not. It is straightforward to compute VEV of something that
-contains $A$'s and $B$'s: one just uses the commutation relations to move all
-$B$'s to the left of all $A$'s, and then applies the definition of VEV, simply
-throwing out any remaining q-numbers.
+We would like to be able to manipulate such expressions, expanding brackets, collecting similar terms and so on, while taking care to always keep the non-commuting terms in the correct order. For example, we want Yacas to automatically simplify {2**B(k1)**3**A(k2)} to {6**B(k1)**A(k2)}. Our goal is not to implement a general package to tackle complicated non-commutative operations; we merely want to teach Yacas about these two kinds of "quantum objects" called {A(k)} and {B(k)}, and we shall define one function that a physicist would need to apply to these objects. This function applied to any given expression containing $A$'s and $B$'s will compute something called a "vacuum expectation value", or "VEV" for short, of that expression. This function has "classical", i.e. commuting, values and is defined as follows: VEV of a commuting number is just that number, e.g. $VEV(4) = 4$, $VEV(delta(k-l)) = delta(k-l)$; and $VEV(X*A(k)) = 0$, $VEV(B(k)*X) = 0$ where $X$ is any expression, commutative or not. It is straightforward to compute VEV of something that contains $A$'s and $B$'s: one just uses the commutation relations to move all $B$'s to the left of all $A$'s, and then applies the definition of VEV, simply throwing out any remaining q-numbers.
 
 		First steps
 
 The first thing that comes to mind when we start implementing this in Yacas is to write a rule such as
 
-	10 # A(_k)**B(_l) <-- B(l)**A(k) + delta(k-l);
+	10 # A(_k)**B(_l) <-- B(l)**A(k)
+	  + delta(k-l);
 
 However, this is not going to work right away. In fact this will
 immediately give a syntax error because Yacas doesn't know yet about the
@@ -813,7 +780,8 @@ However, we quickly discover that our definitions don't work. Actually, we have 
 	Line error occurred on:
 	>>>
 	Max evaluation stack depth reached.
-	Please use MaxEvalDepth to increase the stack size as needed.
+	Please use MaxEvalDepth to increase the
+	  stack size as needed.
 This error message means that we have created an infinite recursion. It is easy
 to see that the last rule is at fault: it never stops applying itself when it
 operates on a term containing only $A$'s and no $B$'s. When encountering a term
@@ -835,7 +803,7 @@ It will not perform any extra simplifications but instead delegate all work to
 	  <-- OrderBA(A(k)**(B(l)**x));
 	60 # OrderBAlate(A(_k) ** _x) <-- A(k)**x;
 	65 # OrderBAlate(_x) <-- OrderBA(x);
-Now "OrderBA()" works as desired.
+Now {OrderBA()} works as desired.
 
 
 		Implementing VEV()

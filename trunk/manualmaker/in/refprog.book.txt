@@ -1,0 +1,10 @@
+
+				Yacas programmers function reference
+
+*INCLUDE prog.chapt
+
+*INCLUDE built.chapt
+
+*INCLUDE plugins.chapt
+
+*INCLUDE generic.chapt
