@@ -2,8 +2,8 @@ AM_CXXFLAGS = -DSCRIPT_DIR=\"$(scriptdir)\"
 AM_CPPFLAGS = -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS = yacas
-noinst_PROGRAMS = testnum
-noinst_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
+noinst_PROGRAMS = # testnum
+noinst_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la libltdl.la @NUMBERS_LIB@ 
 EXTRA_LTLIBRARIES = libgmpnumbers.la libyacasnumbers.la 
 
 noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
@@ -16,9 +16,10 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
         lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h \
-        archiver.h elfdll.h cyacas.h
+        archiver.h elfdll.h cyacas.h ltdl.h
 yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
-yacas_LDADD = libyacas.la libyacasplatform.la @NUMBERS_LIB@ @NUMBERS_LDFLAGS@
+yacas_LDADD = libyacas.la libyacasplatform.la libltdl.la @NUMBERS_LIB@ @NUMBERS_LDFLAGS@
+yacas_LDFLAGS = -export-dynamic
 yacas_DEPENDENCIES = libyacas.la libyacasplatform.la @NUMBERS_LIB@
 
 #
@@ -28,8 +29,8 @@ yacas_DEPENDENCIES = libyacas.la libyacasplatform.la @NUMBERS_LIB@
 
 #yacas_LDFLAGS = $(LIBS)
 
-testnum_SOURCES = anumber.cpp grower.cpp lispstring.cpp stdstubs.cpp obmalloc.cpp \
-	testnum.cpp mathutil.cpp
+# testnum_SOURCES = anumber.cpp grower.cpp lispstring.cpp stdstubs.cpp obmalloc.cpp testnum.cpp mathutil.cpp
+
 libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \
 	lispio.cpp lispobject.cpp lispparser.cpp  \
@@ -38,15 +39,27 @@ libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp \
 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp \
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
-        lispplugin.cpp elfdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
+        lispplugin.cpp ltdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
         archiver.cpp
+libyacas_la_LDFLAGS = -export-dynamic
 
 libcyacas_la_SOURCES = cyacas.cpp
+libcyacas_la_LDFLAGS = -export-dynamic
 
 libyacasplatform_la_SOURCES = platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp yacasbase.cpp
+libyacasplatform_la_LDFLAGS = -export-dynamic
 libyacasnumbers_la_SOURCES = anumber.cpp yacasnumbers.cpp 
+libyacasnumbers_la_LDFLAGS = -export-dynamic
 libgmpnumbers_la_SOURCES = gmpnumbers.cpp 
+libgmpnumbers_la_LDFLAGS = -export-dynamic
+
+
+libltdl_la_SOURCES = ltdl.c
+libltdl_la_LDFLAGS = -export-dynamic -version-info 1:2:1
+libltdl_la_LIBADD = $(LIBADD_DL)
+
+
 
 EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp \
 	epocyacas.hrh epocyacas.mmp epocyacasconsole.mmp \
@@ -87,7 +100,8 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	win32yacasdllresource.h yacasdll.dsp yacasdll.dsw yacasdll.rc \
 	setup.py yacasc.i yacas.py \
 	epoccli.cpp epoccli.h epoccli.mmp epocclsv.h epocserv.cpp epocserv.h \
-	epocserv.mmp yacas.rss
+	epocserv.mmp yacas.rss \
+  elfdll.cpp
 
 
  

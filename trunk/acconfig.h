@@ -8,4 +8,7 @@
 #undef ACCEPT_TYPE_ARG3
 #undef socklen_t
 
+#undef LTDL_OBJDIR
+
+
 /* end acconfig.h */
