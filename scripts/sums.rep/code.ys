@@ -108,6 +108,8 @@ n1_IsRationalOrNumber *** n2_IsRationalOrNumber <--
 
 RuleBase("Sum",{sumvar,sumfrom,sumto,sumbody}); 
 
+5  # Sum(_sumvar,sumfrom_IsNumber,sumto_IsNumber,_sumbody)_(sumfrom>sumto) <-- 0;
+
 10 # Sum(_sumvar,sumfrom_IsNumber,sumto_IsNumber,_sumbody)_(sumto<sumfrom) <--
      ApplyPure("Sum",{sumvar,sumto,sumfrom,sumbody});
 20 # Sum(_sumvar,sumfrom_IsNumber,sumto_IsNumber,_sumbody) <--
@@ -267,3 +269,49 @@ Function("Subfactorial",{n})
 ];
 
 30 # Subfactorial(n_IsList) <-- MapSingle("Subfactorial",n);
+
+// Attempt to Sum series 
+
+SumFunc(_sumvar,sumfrom_IsInteger,_sumto,_sumbody,_sum) <--
+[
+	// Take the given answer and create 2 rules, one for an exact match
+	// for sumfrom, and one which will catch sums starting at a different
+	// index and subtract off the difference
+
+	`(40 # Sum(@sumvar,@sumfrom,@sumto,@sumbody)	<-- @sum );
+	`(41 # Sum(@sumvar,p_IsInteger,@sumto,@sumbody) <-- Simplify(@sum - Sum(@sumvar,@sumfrom,sumto - @p,@sumbody)) );
+];
+
+SumFunc(_sumvar,sumfrom_IsInteger,_sumto,_sumbody,_sum,_condition) <--
+[
+
+	`(40 # Sum(@sumvar,@sumfrom,@sumto,@sumbody)_(@condition)    <-- @sum );
+	`(41 # Sum(@sumvar,p_IsInteger,@sumto,@sumbody)_(@condition) <-- 
+		Simplify(@sum - Sum(@sumvar,@sumfrom,sumto - @p,@sumbody)) );
+];
+
+// doesn't work for complex c
+SumFunc(_k,1,_n,_c, c*n, Hold(IsRationalOrNumber(c)) );
+SumFunc(_k,1,_n,_k, n*(n+1)/2 );
+SumFunc(_k,1,_n,_k^2, n*(n+1)*(2*n+1)/6 );
+SumFunc(_k,1,_n,_k^3, (n*(n+1))^2 / 4 );
+SumFunc(_k,1,_n,2*_k-1, n^2 );
+SumFunc(_k,1,_n,HarmonicNumber(_k),(n+1)*HarmonicNumber(n) - n );
+SumFunc(_k,1,_n,Fibonacci(_k)^2, Fibonacci(n)*Fibonacci(n+1) );
+
+
+// Infinite Series
+SumFunc(_k,1,Infinity,1/(_k^_d), Zeta(d), Hold(IsInteger(d)) );
+SumFunc(_k,1,Infinity,_k^(-_d), Zeta(d), Hold(IsInteger(d)) );
+SumFunc(_k,1,Infinity,1/Bin(2*_k,_k), (2*Pi*Sqrt(3)+9)/27 );
+SumFunc(_k,1,Infinity,1/(_k*Bin(2*_k,_k)), (Pi*Sqrt(3))/9 );
+SumFunc(_k,1,Infinity,1/(_k^2*Bin(2*_k,_k)), Zeta(2)/3 );
+SumFunc(_k,1,Infinity,1/(_k^3*Bin(2*_k,_k)), 17*Zeta(4)/36 );
+
+// doesn't work
+SumFunc(_k,1,Infinity,(-1)^(_k-1)/_k, Ln(2) );
+
+HoldArg("SumFunc", condition );
+
+
+
