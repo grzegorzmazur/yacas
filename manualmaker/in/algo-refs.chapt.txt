@@ -1,5 +1,9 @@
 			References
 
+[Abramowitz <i>et al.</i> 1964]
+M. Abramowitz and I. A. Stegun,
+<i>Handbook of Mathematical Functions</i>, National Bureau of Standards, Washington, D.C., 1964.
+
 [Bateman <i>et al.</i> 1953]
 Bateman and Erdelyi,
 <i>Higher Transcendental Functions</i>, McGraw-Hill, 1953.
@@ -55,8 +59,8 @@ P. Godfrey (2001) (unpublished text):
 <*http://winnie.fit.edu/~gabdo/gamma.txt*>.
 
 [Gourdon <i>et al.</i> 2001]
-X. Gourdon and P. Sebah, 
-<i>The Euler constant</i>, online at <*http://numbers.computation.free.fr/Constants/*> (2001).
+X. Gourdon and P. Sebah,
+<i>The Euler constant</i>; <i>The Bernoulli numbers</i>; and other essays, online at <*http://numbers.computation.free.fr/Constants/*> (2001).
 
 [Knuth 1973]
 D. E. Knuth,
