@@ -8,8 +8,8 @@ filescanner_la_SOURCES = filescanner.cpp plugin.cc
 
 filescanner_la_LDFLAGS = -module -avoid-version -no-undefined 
 
-filescanner.cpp: ../../src/filescanner.cpp
-	cp ../../src/filescanner.cpp .
+filescanner.cpp: $(top_srcdir)/src/filescanner.cpp
+	cp $(top_srcdir)/src/filescanner.cpp $(top_srcdir)/plugins/filescanner/
 
 CLEANFILES = 
 
