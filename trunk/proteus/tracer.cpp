@@ -7,17 +7,13 @@
 #include <FL/Fl_Return_Button.H>
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Round_Button.H>
+#include <FL/Fl_Multiline_Input.H>	// Fl_Multiline_Input header file
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #include <signal.h>
 #include <stdlib.h>
-#include "editor.h"
-#include "yacas.h"
-#include "debugclass.h"
 
-
-CYacas *yacas=NULL;
 
 
 struct LineInfo
@@ -69,6 +65,67 @@ Fl_Round_Button *locked;
 int selected = 1;
 void* lineptr = NULL;
 char expression[200],scriptdir[200],tempdir[200],pre_eval[200];
+
+
+
+int get_string(char*expression,char*scriptdir,char*tempdir,
+              char*pre_eval)
+{
+    Fl_Window *window = new Fl_Window(320,145);
+
+    Fl_Input e(60, 10, 250, 25, "Input:");
+    e.value(expression);
+
+    Fl_Input s(60, 35, 250, 25, "Scripts:");
+    s.value(scriptdir);
+
+    Fl_Input t(60, 60, 250, 25, "Temp dir:");
+    t.value(tempdir);
+
+    Fl_Input p(60, 85, 250, 25, "Pre-exec:");
+    p.value(pre_eval);
+
+    Fl_Button cancel(60, 110, 80, 25, "cancel");
+    Fl_Return_Button ok(150, 110, 80, 25, "OK");
+    window->hotspot(&cancel); // you must position modal windows
+    window->end();
+    window->set_modal();
+    window->show();
+    for (;;)
+    {
+        Fl::wait();
+        Fl_Widget *o;
+        while ((o = Fl::readqueue()))
+        {
+            if (o == &ok)
+            {
+                strncpy(expression,e.value(),199);
+                expression[199] = '\0';
+                strncpy(scriptdir,s.value(),199);
+                scriptdir[199] = '\0';
+                strncpy(tempdir, t.value(),199);
+                tempdir[199] = '\0';
+                strncpy(pre_eval, p.value(),199);
+                pre_eval[199] = '\0';
+
+                return 1;
+            }
+            else if (o == &cancel || o == window)
+            {
+                return 0;
+            }
+        }
+    }
+    delete window;
+}
+
+
+#include "editor.h"
+#include "yacas.h"
+#include "debugclass.h"
+
+
+CYacas *yacas=NULL;
 
 
 
@@ -342,55 +399,6 @@ void steptostopcb(Fl_Widget *, void *)
 }
 
 
-int get_string(char*expression,char*scriptdir,char*tempdir,
-              char*pre_eval)
-{
-    Fl_Window window(320,145);
-
-    Fl_Input e(60, 10, 250, 25, "Input:");
-    e.value(expression);
-
-    Fl_Input s(60, 35, 250, 25, "Scripts:");
-    s.value(scriptdir);
-
-    Fl_Input t(60, 60, 250, 25, "Temp dir:");
-    t.value(tempdir);
-
-    Fl_Input p(60, 85, 250, 25, "Pre-exec:");
-    p.value(pre_eval);
-
-    Fl_Button cancel(60, 110, 80, 25, "cancel");
-    Fl_Return_Button ok(150, 110, 80, 25, "OK");
-    window.hotspot(&cancel); // you must position modal windows
-    window.end();
-    window.set_modal();
-    window.show();
-    for (;;)
-    {
-        Fl::wait();
-        Fl_Widget *o;
-        while ((o = Fl::readqueue()))
-        {
-            if (o == &ok)
-            {
-                strncpy(expression,e.value(),199);
-                expression[199] = '\0';
-                strncpy(scriptdir,s.value(),199);
-                scriptdir[199] = '\0';
-                strncpy(tempdir, t.value(),199);
-                tempdir[199] = '\0';
-                strncpy(pre_eval, p.value(),199);
-                pre_eval[199] = '\0';
-
-                return 1;
-            }
-            else if (o == &cancel || o == &window)
-            {
-                return 0;
-            }
-        }
-    }
-}
 
 
 void NewCalculation()
@@ -434,8 +442,6 @@ void NewCalculation()
             yacas->Evaluate(buf);
             delete (*yacas)()().iDebugger;
             (*yacas)()().iDebugger = prev;
-            //TODO remove            yacas->Evaluate("ThunkToTracer();");
-            
         }
         delete yacas;
         yacas=NULL;
@@ -475,6 +481,16 @@ void InterruptHandler(int errupt)
 int main(int argc, char **argv)
 {
     signal(SIGINT, InterruptHandler);
+    extern void
+        Malloc_SetHooks( void *(*malloc_func)(size_t),
+                         void *(*calloc_func)(size_t, size_t),
+                         void *(*realloc_func)(void *, size_t),
+                         void (*free_func)(void *) );
+
+    Malloc_SetHooks( malloc,
+                     calloc,
+                     realloc,
+                     free );
 
     expression[0] = '\0';
     strcpy(scriptdir,"/usr/local/share/yacas/");
