@@ -202,3 +202,5 @@ Verify(0%1, 0);
 Verify(0.0/Sqrt(2),0);
 Verify(0.0000000000/Sqrt(2),0);
 Verify(0.0000^(24),0);
+
+Verify(Bernoulli(24), -236364091/2730);

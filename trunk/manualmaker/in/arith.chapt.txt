@@ -612,11 +612,11 @@ This function returns the {n}th Catalan number, defined as {Bin(2*n,n)/(n+1)}.
 *CMD FermatNumber --- return the {n}th Fermat Number
 *STD
 *CALL
-        FermatNumber(n)
+	FermatNumber(n)
 *PARMS  
 
 {n}     -- positive integer
-        
+
 *DESC
 
 This function returns the {n}th Fermat number, which is defined as
