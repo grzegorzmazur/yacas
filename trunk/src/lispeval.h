@@ -20,10 +20,20 @@ public:
     UserStackInformation():
         iRulePrecedence(-1),iSide(0)
     {
+#ifdef DEBUG_MODE
+        iFileName = "(no file)";
+        iLine = 0;
+#endif
     }
     LispPtr iOperator;
     LispInt iRulePrecedence;
     LispInt iSide; // 0=pattern, 1=body
+
+#ifdef DEBUG_MODE
+    LispCharPtr iFileName;
+    LispInt iLine;
+#endif
+    
 };
 
 

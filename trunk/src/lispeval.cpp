@@ -334,11 +334,22 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
     LispInt i;
     LispInt from=0;
     LispInt upto = objs.NrItems();
+#ifndef DEBUG_MODE
     if (upto-from > 16)
         from = upto-16;
+#endif
     for (i=from;i<upto;i++)
     {
         LispChar str[20];
+#ifdef DEBUG_MODE
+        {
+            aEnvironment.CurrentOutput()->Write(objs[i]->iFileName);
+            aEnvironment.CurrentOutput()->Write("(");
+            InternalIntToAscii(str,objs[i]->iLine);
+            aEnvironment.CurrentOutput()->Write(str);
+            aEnvironment.CurrentOutput()->Write(") : ");
+        }
+#endif
         InternalIntToAscii(str,i);
         aEnvironment.CurrentOutput()->Write("Debug> ");
         aEnvironment.CurrentOutput()->Write(str);
@@ -385,7 +396,15 @@ void TracedStackEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
             if (str)
             {
                 PushFrame();
-                StackInformation().iOperator.Set(LispAtom::New(str));
+                UserStackInformation& st = StackInformation();
+                st.iOperator.Set(LispAtom::New(str));
+#ifdef DEBUG_MODE
+                if (aExpression.Get()->iFileName != NULL)
+                {
+                    st.iFileName = aExpression.Get()->iFileName;
+                    st.iLine = aExpression.Get()->iLine;
+                }
+#endif
             }
         }
     }
