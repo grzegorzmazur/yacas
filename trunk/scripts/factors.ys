@@ -78,17 +78,15 @@ PollardCombineLists(_left,_right) <--
 
 /* TODO for Bk:
    - ModDivide, ModGcd, make an interface for in the scripts.
-   - Handling special case (x-a)^n more efficiently
-   - (x+2)^5*(x-1) goes wrong: last factorization is missed!
-     results in (x+2)^4*(x^2+x-2)
-   - calculations don't terminate if pp(poly) is not monic.
-     we need the Knuth thing for handling non-monic polys,
-     as low as possible (below the handling of rational coeffs).
-   - (x+1)*(x-10) goes wrong (too low prime selected?) It returns
-     x^2+2*x+1
-   - (x+1/2)^3*(x-2)
-   - possibility: factoring over several small primes. See which one
-     is the biggest.
+   - The cases non-monic polynomials and polys with rational
+     coefficients are not handled very well yet. These two
+     are related: if the non-monic goes well then the
+     rational coeffs goes well. Problem is that Knuth describes
+     an order n! algorithm, for the n possible options!
+     This cannot be right... When you have many factors
+     this might go wrong. The algorithm will terminate (a
+     great improvement over the previous) but might not
+     fully factor the polynomial.
 */
 
 10 # FindMod(_poly,_item,_p,_n)_(Degree(Gcd(poly,item)) > 0) <-- Expand(item);
@@ -127,6 +125,7 @@ MergeTerm(_f,_i) <-- MergeTerm(f,i,Assoc(i[1],f));
 FactorUniVarSec(_poly) <--
 [
   Local(checked,i);
+
   checked := Bk(poly);
   Local(pre);
   pre:=Div(poly,FW(checked));
@@ -192,6 +191,7 @@ Bk(_poly) <--
   [
     poly := UniVariate(poly[1],0,poly[3]);
   ];
+
 //  poly := poly*LeadingCoef(poly);
 /*Echo({poly," should have integer coefficients"});*/
   
@@ -199,17 +199,31 @@ Bk(_poly) <--
   [
     Local(dv,dd);
     dd := Apply("D",{x,poly});
-    dv:=Gcd(poly,dd);
+    dv:=0;
+    if (Degree(dd) > 0) [ dv:=Gcd(poly,dd); ];
     if (Degree(dv)>0)
     [
+      Local(new);
       dv := Monic(dv);
       poly := Div(poly,dv);
       poly := MakeInteger(poly);
 /*Echo({poly," should have integer coefficients"});*/
-      MergeFactors(checked, Bk(dv));
+      new := Bk(dv);
+      ForEach(item,new)
+      [
+        While(Mod(poly,item[1]) = 0)
+        [
+          item[2] := item[2] + 1;
+          poly := Div(poly,item[1]);
+        ];
+      ];
+      poly := MakeInteger(poly);
+
+      MergeFactors(checked, new);
 /*Echo({"squarefree: ",checked});      */
     ];
   ];
+
 
   p:=Max(1+2*Abs(Coef(poly,(0 .. Degree(poly)))));
   if (p<5) [p := 5;];

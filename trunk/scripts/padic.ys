@@ -168,7 +168,7 @@ ChineseRemainderInteger(mlist_IsList,vlist_IsList) <--
     msub:=Div(m,mlist[i]);
     euclid := ExtendedEuclidean(msub,mlist[i]);
     Local(c);
-    c:=vlist[i] * euclid[3][ euclid[1] ];
+    c:=vlist[i] * euclid[2];
     c:=Rem(c, mlist[i]);
     DestructiveAppend(clist,c);
     result:=result + msub * c;
@@ -195,7 +195,7 @@ ChineseRemainderPoly(mlist_IsList,vlist_IsList) <--
     euclid := ExtendedEuclideanMonic(msub,mlist[i]);
     Local(c);
 
-    c:=vlist[i] * euclid[3][ euclid[1] ];
+    c:=vlist[i] * euclid[2];
 
     c:=Mod(c, mlist[i]);
 
@@ -217,6 +217,7 @@ PartFracExpand(_g,_f) <--
 /* Echo({"mlist = ",mlist}); */
 
   vlist:=Map("Rem",{FillList(g,Length(mlist)),mlist});
+
   
 /* Echo({"g = ",g}); */
 /* Echo({"vlist = ",vlist}); */
@@ -226,10 +227,13 @@ PartFracExpand(_g,_f) <--
     res:=ChineseRemainderPoly(mlist,vlist)[2]
     );
 
+
 /* Echo({res,mlist});  */
   Local(result,divlist);
 
+
   divlist:=Map("/",{res,mlist});
+
   If(Length(divlist)<2,
     Sum(divlist),
     [
@@ -258,8 +262,8 @@ Apart(_f,_var) <--
      [
        rat:={Coef(rat[1],var,0),Coef(rat[2],var,0)};
        Local(summed,add);
-       summed := PartFracExpand(Rem(rat[1],rat[2]),rat[2]);
-       add:=(rat[1]/rat[2] - Eval(summed));
+       summed := Eval(PartFracExpand(Rem(rat[1],rat[2]),rat[2]));
+       add:=(rat[1]/rat[2] - summed);
        add + summed;
      ]
      ,
@@ -275,31 +279,34 @@ Apart(_f,_var) <--
 
 
 10 # Together((_f/_g) + (_h/_i)) <--
-     (f*i+h*g)/(g*i);
+     Expand(f*i+h*g)/Expand(g*i);
 10 # Together((_f/_g) - (_h/_i)) <--
-     (f*i-h*g)/(g*i);
+     Expand(f*i-h*g)/Expand(g*i);
 
 20 # Together(_f + (_g / _h)) <--
-     (f*h+g)/h;
+     Expand(f*h+g)/h;
 20 # Together((_f/_g) + _h) <--
-     (f+h*g)/g;
+     Expand(f+h*g)/g;
 
 20 # Together(_f - (_g / _h)) <--
-     (f*h-g)/h;
+     Expand(f*h-g)/h;
 20 # Together((_f/_g) - _h) <--
-     (f-h*g)/g;
+     Expand(f-h*g)/g;
 
 20 # Together(- (_g / _h)) <-- (-g)/h;
 
 20 # Together((_f/_g) * _h) <--
-     (f*h)/g;
+     Expand(f*h)/g;
 20 # Together(_h * (_f/_g)) <--
-     (f*h)/g;
+     Expand(f*h)/g;
 
 20 # Together((_f/_g) / _h) <--
-     (f)/(g*h);
+     (f)/Expand(g*h);
 20 # Together(_h / (_f/_g)) <--
-     (g*h)/f;
+     Expand(g*h)/f;
+
+20 # Together(- _f) <-- - Together(f);
+30 # Together(_f) <--  f;
 
 /* Reduce rational function by dividing gcd away */
 GcdReduce(_f,_var)<--
