@@ -279,13 +279,17 @@ In a UNIX environment, the command {SystemCall("ls")} would list the contents of
 
 *SEE Secure
 
-*CMD Function --- define a function
+*CMD Function --- declare or define a function
 *STD
 *CALL
+	Function() func(arglist)
+	Function() func(arglist, ...)
 	Function("op", {arglist}) body
 	Function("op", {arglist, ...}) body
 
 *PARMS
+
+{func(args)} -- function declaration, e.g. {f(x,y)}
 
 {"op"} -- string, name of the function
 
@@ -297,25 +301,36 @@ In a UNIX environment, the command {SystemCall("ls")} would list the contents of
 
 *DESC
 
-This command can be used to declare a new function. It is equivalent to a
+This command can be used to define a new function with named arguments.
+
+
+The number of arguments of the new function and their names are determined by the list {arglist}. If the ellipsis "{...}" follows the last atom in {arglist}, a function with a variable number of arguments is declared (using {RuleBaseListed}). Note that the ellipsis cannot be the only element of {arglist} and <i>must</i> be preceded by an atom.
+
+A function with variable number of arguments can take more arguments than elements in {arglist}; in this case, it obtains its last argument as a list containing all extra arguments.
+
+The short form of the {Function} call merely declares a {RuleBase} for the new function but does not define any function body. This is a convenient shorthand for {RuleBase} and {RuleBaseListed}, when definitions of the function are to be supplied by rules. If the new function has been already declared with the same number of arguments (with or without variable arguments), {Function} returns false and does nothing.
+
+The second, longer form of the {Function} call declares a function and also defines a function body. It is equivalent to a
 single rule such as {op(_arg1, _arg2) <-- body}. The rule will be declared at
 precedence 1025. Any previous rules associated with {"op"} (with the same
 arity) will be discarded. More complicated functions (with more than one body)
 can be defined by adding more rules.
 
-The number of arguments of the new function and their names are determined by the list {arglist}. With the ellipsis "{...}" following the last atom in {arglist}, functions with variable number of arguments can be declared (using {RuleBaseListed}). Note that the ellipsis cannot be the only element of {arglist} and <i>must</i> be preceded by an atom.
-
-A function with variable number of arguments can take more arguments than elements in {arglist}; in this case, it obtains its last argument as a list containing all extra arguments.
-
 *E.G.
 
+This will declare a new function with two or more arguments, but define no rules for it. This is equivalent to {RuleBase ("f1", {x, y, ...})}.
+	In> Function() f1(x,y,...);
+	Out> True;
+	In> Function() f1(x,y);
+	Out> False;
+
+This defines a function {FirstOf} which returns the
+first element of a list. Equivalent definitions would be
+{FirstOf(_list) <-- list[1]} or {FirstOf(list) := list[1]}.
 	In> Function("FirstOf", {list})  list[1];
 	Out> True;
 	In> FirstOf({a,b,c});
 	Out> a;
-This defines a function {FirstOf} which returns the
-first element of a list. Equivalent definitions would be
-{FirstOf(_list) <-- list[1]} or {FirstOf(list) := list[1]}.
 
 The following function will print all arguments to a string:
 	In> Function("PrintAll",{x, ...}) If(IsList(x),
@@ -326,7 +341,7 @@ The following function will print all arguments to a string:
 	In> PrintAll(1,2,3);
 	Out> " 1 2 3";
 
-*SEE TemplateFunction, Rule, RuleBase, :=, Retract, RuleBaseListed
+*SEE TemplateFunction, Rule, RuleBase,  RuleBaseListed, :=, Retract
 
 *CMD Use --- load a file, but not twice
 *CORE

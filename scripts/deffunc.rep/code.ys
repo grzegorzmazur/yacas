@@ -27,6 +27,34 @@ Rule("Function",3,2048,True)
   MacroRule(oper,Length(args),1025,True) body;
 ];
 
+/// shorthand function declarations
+// function with variable number of arguments: Function() f(x,y, ...)
+RuleBase("Function",{oper});
+Rule("Function",1,2047,
+	MathAnd(IsFunction(oper), GreaterThan(Length(oper), 1), Equals( MathNth(oper, Length(oper)), Atom("...") ))
+)
+[
+	Local(args);
+	Set(args,Tail(Listify(oper)));
+	DestructiveDelete(args,Length(args));	// remove trailing "..."
+	If(RuleBaseDefined(Type(oper),Length(args)),
+		False,	// do nothing
+		MacroRuleBaseListed(Type(oper),args)
+	);
+];
+// function with a fixed number of arguments
+Rule("Function",1,2048,
+	MathAnd(IsFunction(oper))
+)
+[
+	Local(args);
+	Set(args,Tail(Listify(oper)));
+	If(RuleBaseDefined(Type(oper),Length(args)),
+		False,	// do nothing
+		MacroRuleBase(Type(oper),args)
+	);
+];
+
 RuleBase("TemplateFunction",{oper,args,body});
 Bodied("TemplateFunction",60000);
 HoldArg("TemplateFunction",oper);
