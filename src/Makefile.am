@@ -60,6 +60,8 @@ libcyacas_la_LDFLAGS = -export-dynamic
 libyacasplatform_la_SOURCES = platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp 
 libyacasplatform_la_LDFLAGS = -export-dynamic
+libyacasplatform_la_DEPENDENCIES= fastprimes.c
+
 libyacasnumbers_la_SOURCES = anumber.cpp yacasnumbers.cpp 
 libyacasnumbers_la_LDFLAGS = -export-dynamic
 libgmpnumbers_la_SOURCES = gmpnumbers.cpp 
