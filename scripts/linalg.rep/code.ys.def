@@ -29,4 +29,5 @@ WronskianMatrix
 HilbertMatrix
 HilbertInverseMatrix
 HankelMatrix
+FrobeniusNorm
 }
