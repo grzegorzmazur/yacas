@@ -118,3 +118,18 @@ Verify(N(Sin(0.1e1)-Sin(1),30),0);
   diff := N(Sin(10e-1)-Sin(1),30);
   Verify(diff > -0.00001 And diff < 0.00001,True);
 ];
+
+
+/* Jonathan reported a problem with Simplify(-Sqrt(8)/2), which returned some
+ * complex expression containing greatest common divisors of square roots.
+ * This was fixed by adding some rules dealing with taking the gcd of two objects
+ * where at least one is a square root.
+ */
+Verify(-Sqrt(8)/2,-Sqrt(2));
+Verify(Sqrt(8)/2,Sqrt(2));
+Verify(Gcd(Sqrt(2),Sqrt(2)),Sqrt(2));
+Verify(Gcd(-Sqrt(2),-Sqrt(2)),Sqrt(2));
+Verify(Gcd(Sqrt(2),-Sqrt(2)),Sqrt(2));
+Verify(Gcd(-Sqrt(2),Sqrt(2)),Sqrt(2));
+
+

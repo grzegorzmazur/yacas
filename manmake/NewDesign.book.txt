@@ -12,6 +12,9 @@ need to be changed and improved.
 
 *INCLUDE NewDesignMisc.chapt
 
+			The static code analyzer
+
+*INCLUDE codecheck.chapt
 
 *REM GNU Free Documentation License
 *INCLUDE FDL.chapt

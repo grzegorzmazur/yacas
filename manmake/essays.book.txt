@@ -28,12 +28,6 @@ to general issues related to the Yacas system development and maintenance.
 
 *INCLUDE BuildSystem.chapt
 
-			The static code analyzer
-
-*INCLUDE codecheck.chapt
-
-
-			Work in progress, specifications
 
 *INCLUDE new.chapt
 

@@ -164,6 +164,12 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 2 # Gcd(n_IsInteger,m_IsInteger) <-- MathGcd(n,m);
 3 # Gcd(_n,_m)_(IsGaussianInteger(m) And IsGaussianInteger(n) )<-- GaussianGcd(n,m);
 
+4 # Gcd(-(_n), (_m)) <-- Gcd(n,m);
+4 # Gcd( (_n),-(_m)) <-- Gcd(n,m);
+4 # Gcd(Sqrt(n_IsInteger),Sqrt(m_IsInteger)) <-- Sqrt(Gcd(n,m));
+4 # Gcd(Sqrt(n_IsInteger),m_IsInteger) <-- Sqrt(Gcd(n,m^2));
+4 # Gcd(n_IsInteger,Sqrt(m_IsInteger)) <-- Sqrt(Gcd(n^2,m));
+
 5 # Gcd(n_IsRationalOrInteger,m_IsRationalOrInteger) <--
 [
   Gcd(Numer(n),Numer(m))/Lcm(Denom(n),Denom(m));
