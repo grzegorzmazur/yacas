@@ -1,4 +1,143 @@
 
+1 # Fib1(1)  <-- 1;
+2 # Fib1(2)  <-- 1;
+3 # Fib1(_n) <-- Fib1(n-1) + Fib1(n-2);
+
+1 # Fib2(1)  <-- 1;
+2 # Fib2(2)  <-- 1;
+3 # Fib2(_n) <-- CacheResult("Fib2",{n},Fib2(n-1) + Fib2(n-2));
+
+CacheResult(_function,_args,_result) <--
+[
+  MacroRulePattern(function,
+                   Length(args),
+                   0,
+                   PatternCreate(args,True))
+                   result;
+  result;
+];
+
+EndOfFile;
+
+
+
+
+
+
+/*
+pat1:={y<-a(n)*x^n,y' <- (n)*a(n)*x^(n-1),y'' <- n*(n-1)*a(n)*x^(n-2)};
+pat2:={(_b)*x^(_m) <- [Local(c);c:=Simplify(m-n);(Subst(n,n-c)b)*x^n;]};
+pat3:={a(_m) <- a(Simplify(m-n))};
+y''+y /: pat1;
+% /: pat2;
+Subst(x^n,1)%;
+% /: pat3;
+*/
+
+
+// Create and return a linear cache object.
+CreateCache();
+// Check if tuple has a cached expression associated with it.
+// If so, remember the cached expression.
+IsCached(cache,expression); 
+// Get last remembered cached expression.
+GetLastCached(cache);
+// Append a cached expression, and return value.
+AddToCached(cache,expression,value);
+// Change last remembered cached value, and return value
+ChangeLastCached(cache,value);
+
+
+10 # f(1) <-- 1;
+20 # f(2) <-- 1;
+30 # f(_x) <-- f(x-1)+f(x-2);
+
+
+fibcache:=CreateCache();
+1 # Fib(1) <-- 1;
+2 # Fib(2) <-- 2;
+10 # Fib(_n)_(IsCached(fibcache,{n})) <-- GetLastCached(fibcache);
+20 # Fib(_n) <-- AddToCached(fibcache,{n},Fib(n-1) + Fib(n-2));
+
+
+
+
+class CachedExpression
+{
+public:
+    LispPtr iExpression;
+    LispPtr iValue;
+};
+
+class ExpressionCacher : public GenericClass
+{
+public:
+    /** Check if tuple has a cached expression associated with it.
+     If so, remember the cached expression.
+     */
+    LispBoolean IsCached(LispPtr& aExpression);
+
+    /// Get last remembered cached expression.
+    void GetLastCached(LispPtr& aResult);
+
+    /// Append a cached expression, and return value.
+    void AddToCached(LispPtr& aExpression,LispPtr& value);
+
+    /// Change last remembered cached value, and return value
+    void ChangeLastCached(LispPtr& cache,LispPtr& value);
+
+public: //required
+    virtual ~ExpressionCacher();
+    virtual LispCharPtr Send(LispArgList& aArgList);
+    virtual LispCharPtr TypeName();
+
+private:
+    CDeletingArrayGrower<CachedExpression*> iCache;
+    LispInt iLastCached;
+};
+virtual ExpressionCacher::~ExpressionCacher()
+{
+}
+virtual LispCharPtr ExpressionCacher::Send(LispArgList& aArgList)
+{
+    return NULL;
+}
+virtual LispCharPtr ExpressionCacher::TypeName()
+{
+    return "\"ExpressionCache\"";
+}
+
+LispBoolean ExpressionCacher::IsCached(LispPtr& aExpression)
+{
+    LispInt nr=iCache.NrItems();
+    LispInt i;
+    for (iLastCached=0;iLastCached<nr;iLastCached++)
+    {
+        if (iCache[iLastCached].iExpression.Get()->Equal(*aExpression.Get()))
+            return 1;
+    }
+    iLastCached = 0;
+    return 0;
+}
+
+void ExpressionCacher::GetLastCached(LispPtr& aResult)
+{
+    aResult.Set(iCache[iLastCached].iValue.Get());
+}
+
+void ExpressionCacher::AddToCached(LispPtr& aExpression,LispPtr& value)
+{
+    CachedExpression* c = new CachedExpression;
+    c->iExpression.Set(aExpression.Get());
+    c->iValue.Set(value.Get());
+    iCache.Append(c);
+}
+
+void ExpressionCacher::ChangeLastCached(LispPtr& cache,LispPtr& value)
+{
+    iCache[iLastCached].iValue.Set(value.Get());
+}
+
 
 EndOfFile;
 
