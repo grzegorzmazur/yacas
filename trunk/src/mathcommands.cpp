@@ -1142,6 +1142,34 @@ void LispMacroRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
     InternalRuleBase(aEnvironment, aResult, aArguments, LispTrue,LispFalse);
 }
 
+void LispDefMacroRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
+                      LispPtr& aArguments)
+{
+    TESTARGS(3);
+    
+    // Get operator
+    LispPtr args;
+    LispPtr body;
+    LispStringPtr orig=NULL;
+    
+    CHK_ARG(Argument(aArguments,1).Get() != NULL, 1);
+    orig = Argument(aArguments,1).Get()->String();
+    CHK_ARG(orig != NULL, 1);
+
+    // The arguments
+    args.Set(Argument(aArguments,2).Get());
+    CHK_ISLIST(args,2);
+
+    // Finally define the rule base
+    aEnvironment.DeclareMacroRuleBase(SymbolName(aEnvironment,orig->String()),
+                                 args.Get()->SubList()->Get()->Next());
+    
+    // Return LispTrue
+    InternalTrue(aEnvironment,aResult);
+
+}
+
+
 void LispRuleBaseListed(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {

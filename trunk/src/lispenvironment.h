@@ -89,6 +89,9 @@ public:
     void DefineRulePattern(LispStringPtr aOperator,LispInt aArity,
                             LispInt aPrecedence, LispPtr& aPredicate,
                             LispPtr& aBody);
+
+    void DeclareMacroRuleBase(LispStringPtr aOperator, LispPtr& aParameters);
+
     void UnFenceRule(LispStringPtr aOperator,LispInt aArity);
     void Retract(LispStringPtr aOperator,LispInt aArity);
     void HoldArgument(LispStringPtr  aOperator,LispStringPtr aVariable);

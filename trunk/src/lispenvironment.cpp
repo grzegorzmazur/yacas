@@ -368,6 +368,19 @@ void LispEnvironment::DeclareRuleBase(LispStringPtr aOperator,
 }
 
 
+void LispEnvironment::DeclareMacroRuleBase(LispStringPtr aOperator, LispPtr& aParameters)
+{
+    LispMultiUserFunction* multiUserFunc = MultiUserFunction(aOperator);
+    MacroUserFunction *newFunc = NEW MacroUserFunction(aParameters);
+    multiUserFunc->DefineRuleBase(newFunc);
+
+#ifdef YACAS_DEBUG
+    {
+        extern long theNrDefinedUser;
+        theNrDefinedUser++;
+    }
+#endif
+}
 
 
 

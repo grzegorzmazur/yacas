@@ -23,7 +23,7 @@ yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_L
 yacas_LDFLAGS = -export-dynamic
 yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c version.h
 
-.PHONY: version.h
+# .PHONY: version.h
 
 # order of libraries is important, @NUMBERS_LIB@ before libyacas.la and that is before libyacasplatform.la
 
@@ -153,7 +153,7 @@ install-data-local: yacas.h
 	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_lib)/$$basefile; \
 	done
 
-version.h:
+version.h: ../config.h
 	echo "#define VERSION \"$(VERSION)\"" > version.h 
 
 
