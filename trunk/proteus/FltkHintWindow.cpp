@@ -1,6 +1,6 @@
 
 #include <FL/Fl.H>
-#include <FL/fl_draw.h>
+#include <FL/fl_draw.H>
 #include "FltkHintWindow.h"
 
 FltkHintWindow::FltkHintWindow(int aTextSize)
