@@ -37,9 +37,18 @@ void Emit(char* iname,char* fname, int flags, int nrargs, int do_refman)
  }
  else if (do_refman == 0)	// print the information for the compiler
  {
+  printf("coreFunctions[\"%s\"] := {\"%s\",%s,%s,%d};\n",
+         iname,
+         fname,
+         (flags & YacasEvaluator::Macro) ? "Macro":"Function",
+         (flags & YacasEvaluator::Variable)    ? "Variable":"Fixed",
+         nrargs
+         );
+/*
   if (flags == (YacasEvaluator::Function | YacasEvaluator::Fixed))
     printf("10  # CompileFn(\"%s\") <-- \"%s\";\n",iname,fname);
- }
+*/
+  }
 }
 
 void print_operator_info(const char* kind, const char* prec, const char* yacas_name, int do_refman)
@@ -53,6 +62,10 @@ void print_operator_info(const char* kind, const char* prec, const char* yacas_n
 
 int main(int number_of_main_args, char**)
 {
+  if (number_of_main_args == 1)
+  {
+    printf("coreFunctions := {};\n\n");
+  }
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) Emit(iname,#fname,flags, nrargs, (number_of_main_args>1) ? 1 : 0);
 #define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) Emit(iname,#fname,flags, nrargs, (number_of_main_args>1) ? 1 : -1)

@@ -93,7 +93,7 @@ ADDONS_SCRIPTFILES = \
 	addons/editvi.ys addons/editvi.ys.def addons/unix.ys addons/unix.ys.def 
 
 GENERATED_SCRIPTFILES = \
-	packages.ys
+	packages.ys corefunctions.ys
 
 #CLEANFILES = $(GENERATED_SCRIPTFILES)
 #noinst_SCRIPTS = $(GENERATED_SCRIPTFILES)
@@ -140,7 +140,7 @@ EXTRA_DIST = $(ALLSCRIPTS) addons/README maketest
 # Automatically generate a full list of all .def files
 # note addons/ directory should be excluded because Yacas reads it already
 
-all-local: $(srcdir)/packages.ys
+all-local: $(srcdir)/packages.ys $(srcdir)/corefunctions.ys
 
 $(srcdir)/packages.ys: Makefile
 	@echo "Creating list of packages in $@..."; \
@@ -149,6 +149,11 @@ $(srcdir)/packages.ys: Makefile
 	find $(srcdir)/../scripts -name \*.def | grep -v addons/ | sort | \
 	sed -e 's,.*scripts/,",;s/\.def/",/' >> $@; \
 	echo "});" >> $@;
+
+$(srcdir)/corefunctions.ys: $(srcdir)/../src/corefunctions.h $(srcdir)/../src/core_yacasmain.h
+	$(srcdir)/../src/gencorefunctions > corefunctions.ys
+
+
 
 check:
 	@(for i in $(ALLSCRIPTS); do echo $$i; done) | sort > scripts-listed-in-makefile.txt
