@@ -2,22 +2,36 @@ Use("testers.ys");
 
 StartTests();
 
-NextTest("Testing LogicSimplify");
+NextTest("Testing CNF");
 
 /*
-    The main point is that LogicSimplify should return an answer in CNF, that is,
+    The main point is that CNF should return an answer in CNF, that is,
     as a conjunction of disjuncts.
 */
 
-Verify(LogicSimplify(A And A),      A);
-Verify(LogicSimplify(A And True),   A);
-Verify(LogicSimplify(A And False),  False);
-Verify(LogicSimplify(A Or  True),   True);
-Verify(LogicSimplify(A Or  False),  A);
-Verify(LogicSimplify(A Or  Not A),  True);
-Verify(LogicSimplify(A And Not A),  False);
+// really simple tests
+Verify(CNF(A And A),      A);
+Verify(CNF(A And True),   A);
+Verify(CNF(A And False),  False);
+Verify(CNF(A Or  True),   True);
+Verify(CNF(A Or  False),  A);
+Verify(CNF(A Or  Not A),  True);
+Verify(CNF(A And Not A),  False);
 
-Verify(LogicSimplify((A And B) Or (A And B)),   A And B);
-Verify(LogicSimplify(A Or (A And B)),           A And(A Or B));
-Verify(LogicSimplify((A => B) And A),            (Not A Or B)And A);
-Verify(LogicSimplify((A And B) And A),           (A And B) And A);
+Verify(CNF((A And B) Or (A And B)),   A And B);
+Verify(CNF(A Or (A And B)),           A And(A Or B));
+Verify(CNF((A => B) And A),           (Not A Or B)And A);
+Verify(CNF((A And B) And A),          (A And B) And A);
+
+/*
+<<<<<<< logic_simplify_test.yts
+Verify(CNF((A And B) Or A),           A And(B Or A));
+Verify(CNF((Not A Or B) And A),       B And A);
+Verify(CNF(A And (Not A Or B)),       A And B);
+Verify(CNF((A And B) And A),          (A And B) And A);
+
+Verify(CNF((A Or B Or Not A),         True);
+Verify(CNF((A Or B Or Not A) And (C), C);
+
+EndTests();=======
+*/
