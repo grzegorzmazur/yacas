@@ -436,7 +436,8 @@ Verify(TrapError(MathPower(0,0.5), error), error);
 Verify(Assoc(x-1, Factors(x^6-1))[2], 1);
 
 /* Bug #18 */
-TestYacas(Integrate(x) x^(1/2), 2/3*x^(3/2));
+//Changed, see next line TestYacas(Integrate(x) x^(1/2), 2/3*x^(3/2));
+TestYacas(Integrate(x) x^(1/2), (2/3)*Sqrt(x)^(3));
 
 Verify(a[2]*Sin(x)/:{Sin(_x) <- sin(x)},a[2]*sin(x));
 
