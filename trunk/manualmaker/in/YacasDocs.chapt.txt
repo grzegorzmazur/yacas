@@ -156,10 +156,10 @@ notation) and surrounded by dollar signs. Both delimiting dollar signs
 {x^2 + y^2 != z^2 $}
 produces $x^2+y^2 != z^2$. Double dollar signs will denote a displayed
 equation, like in $TeX$; both pairs of dollar signs should still be within one
-line. Any punctuation immediately following the second pair of dollar signs will be displayed on the same line. (This is used to get around the limitation of mathematical expressions that cannot end with a comma or a period or with another punctuation mark.) For example, the formula "{$}{$}{x^2/2}{$}{$,}" will produce $$x^2/2$$, with the comma on the same line.
+line. Any punctuation immediately following the second pair of dollar signs will be displayed on the same line. (This is used to get around the limitation of mathematical expressions that cannot end with a comma or a period or with another punctuation mark.) For example, the formula "{$}{$}{x^2/2}{$}{$,}" will produce $$x^2/2$$, with the comma on the same line. A formula such as "{$}x+1;{$}" will generate an error; the semicolon should be moved out of the dollar signs.
 
-As a special exception, one can enter the symbols "$TeX$" and "$LaTeX$"
-as if they are Yacas symbols, i.e. "{$T}{eX$}" produces "$TeX$".
+As special exceptions, one can enter the symbols "$TeX$" and "$LaTeX$"
+as if they are Yacas symbols, i.e. "{$T}{eX$}" produces "$TeX$". One can also enter the name {Yacas} as "{{Yacas}}".
 
 Mathematical expressions <i>must</i> be valid Yacas expressions, with balanced
 parentheses, no hanging periods and so on, or else the Yacas script that
@@ -227,7 +227,7 @@ Notes:
 *	Use of TAB characters is not mandatory between "{*LABEL}" and the following text; ordinary spaces work as well. There must be <i>some</i> whitespace separating the label and the text, however.
 *	The comma-space combination "{, }" is mandatory in label argument lists (but can have several spaces after a comma). Lists of commands are used by the {*CMD} and {*SEE} labels.
 *	Characters {<} and {>} are of special significance to both HTML and $TeX$ and should be always escaped by braces {{}} or by dollar signs.
-*	In the "examples" section, there may be just one example, in which case the "{*EG}" could be used instead of "{*E.G.}". This would generate the word "Example:" instead of "Examples:" in the documentation.
+*	In the "examples" section, there may be just one example, in which case the "{*EG}" could be used instead of "{*E.G.}". This will generate the word "Example:" instead of "Examples:" in the documentation.
 
 In a subsection there may be either one function documented or several at once: for example, it may make sense to document {Sin}, {Cos} and {Tan} together. In this case, all function names should be simply listed in the {*CMD} header, for example:
 
