@@ -97,7 +97,7 @@ The Lisp interpreter is in its {read-eval-print} loop; it reads
 in an expression typed in by the user, evaluates it, and prints
 the result of evaluation to the console. 
 
-The definition of an expression can be given like this: 
+The definition of an expression can be given such; 
 
 *	0. an expression is either an atom, or a list of expressions. 
 *	0. an atom is a word, a list of characters.
@@ -367,12 +367,12 @@ strictly required to build a CAS. When implementing a more
 mature Lisp interpreter, it is wise to define {lambda} and {macro},
 for the convenience of the programmer.
 
-	    Creating and dissecting lists of expressions
+	    Creating and disseminating lists of expressions
 
 Lists of expressions are used to build more elaborate structures.
 The following commands are available for doing so:
 
-To dissect a list:
+To disseminate a list:
 
 *	0. {(first <list>)} - return the first element of a list
 *	0. {(rest <list>)} - return the list with the first item removed.
@@ -694,7 +694,7 @@ argument is {nil}:
 	In> (not nil)
 	Out> t
 
-Then <i>lazy</i> {and} and <i>lazy</i> {or} operations can be defined:
+Then <i>lazy and </i> and <i>lazy or</i> operations can be defined:
 
 	In> (defmacro and (a b) (if (eval a) (eval b) nil) )
 	Out> and
