@@ -347,6 +347,9 @@ SumListSide(_x, y_IsList) <--
      ];
     
 
+90 # Infinity / Infinity <-- Infinity;
+91 # Infinity / _y <-- Infinity;
+91 # -Infinity / _y <-- -Infinity;
 100 # _x / _x <-- 1;
 100 # _x /  1 <-- x;
 100 # (_x / y_IsNegativeNumber) <-- -x/(-y);
@@ -390,6 +393,8 @@ SumListSide(_x, y_IsList) <--
 60 # 0 ^ n_IsRationalOrNumber <-- 0;
 
 /* Regular raising to the power. */
+61 # Infinity ^ (y_IsNegativeNumber) <-- 0;
+61 # (-Infinity) ^ (y_IsNegativeNumber) <-- 0;
 61 # x_IsPositiveNumber ^ y_IsPositiveNumber <-- MathPower(x,y);
 61 # x_IsPositiveNumber ^ y_IsNegativeNumber <-- (1/MathPower(x,-y));
 
