@@ -80,6 +80,7 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
     iTrueAtom.Set(LispAtom::New(iTrue));
     iFalseAtom.Set(LispAtom::New(iFalse));
     PushLocalFrame(LispTrue);
+    iCTokenizer.SetRemarkReceiver(*this);
 }
 
 
