@@ -1103,6 +1103,7 @@ int main(int argc, char** argv)
 //                show_prompt=0;
                 trace_history=1;
                 use_plain = 1;
+                read_eval_print = NULL;
             }
             else if (!strcmp(argv[fileind],"--patchload"))
             {
