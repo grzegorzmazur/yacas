@@ -39,7 +39,7 @@ $$ c[k] = (-1)^(k-1)*(a-k)^(k-1/2)/(e^(k-1)*(k-1)!) $$.
 The parameter $a$ is a free parameter of the approximation that determines also
 the number of terms in the sum. Some choices of $a$ may lead to a slightly more
 precise approximation, but larger $a$ is always better. The number of terms $N$
-must be large enough to produce the required precision. The error estimate for
+must be large enough to produce the required precision. The estimate of the relative error for
 this formula is valid for all $z$ such that $Re(z)>0$ and is
 $$error < (2*Pi)^(-a)/Sqrt(2*Pi*a)*(a/(a+z))$$.
 The lowest value of $a$ to produce $P$ correct digits is estimated as
