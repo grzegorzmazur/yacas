@@ -147,3 +147,41 @@ numbers of the form $r^s+a$ where $s$ is large but $r$ and $a$ are very
 small integers. The best method seems to be the "Special Number
 Field Sieve" which is a faster variant of the GNFS adapted to the problem.
 
+
+		Number Theoretic Functions
+
+A number theoretical function is usually defined as any function that has the 
+integers as a domain, and usually as a range.
+
+{Divisors} currently returns the number of divisors an integer has, while
+{DivisorsSum} returns the sum of these factors. The current
+algorithms reduces this to factoring the number. The following theorem is used:
+
+Let $ p[1]^k[1]* ... *p[r]^k[r] $ be the prime factorization of n, where $r$ is the
+number of prime factors, and $k[r]$ is the multiplicity of $r$-th factor. Then:
+
+$ Divisors(n) = (k[1]+1)*...*(k[r]+1) $
+
+$ DivisorsSum(n) = ( ((p[1]^(k[1]+1) - 1)/(p[1]-1)))*...*(p[r]^(k[r]+1)-1)/(p[r]-1) $
+
+The functions {ProperDivisors} and {ProperDivisorsSum} are functions that do the above,
+except they ignore the actual number {n} itself as a divisor. They are given by:
+
+$ ProperDivisors(n) = Divisors(n) - 1 $
+
+$ ProperDivisorsSum(n) = DivisorsSum(n) - n $ .
+
+The next number theoretic function is {Moebius}, which is defined as:
+
+$ Moebius(n) =    (-1)^r  $  if no factors are repeated
+
+		 $ 0  $      if factors are repeated
+
+	         $  1 $	    if n = 1
+
+This again reduces to factoring the number and investigating their properties. From
+the definition, it can be seen that if $n$ is prime, then {Moebius(n) = -1 }. The predicate
+{IsSquareFree(n)} then reduces to { Moebius(n) != 0 }, which means no factors are repeated.
+
+
+
