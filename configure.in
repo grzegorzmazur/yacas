@@ -18,6 +18,11 @@ AC_PROG_CPP
 AC_PROG_CXX
 AC_PROG_RANLIB
 AC_CHECK_PROG(have_perl, perl, yes, no)
+AC_CHECK_PROG(have_latex, latex, yes, no)
+AC_CHECK_PROG(have_makeindex, makeindex, yes, no)
+AC_CHECK_PROG(have_pdflatex, pdflatex, yes, no)
+AC_CHECK_PROG(have_dvips, dvips, yes, no)
+AC_CHECK_PROG(have_gzip, gzip, yes, no)
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -78,7 +83,32 @@ fi
 AC_SUBST(BOOKS_HTML)
 AC_SUBST(INSTALL_HTML)
 
-# Choice of script directory
+# Generate PS documentation?
+AC_ARG_ENABLE(ps-doc, [  --enable-ps-doc         generate PostScript documentation])
+if test "x$enable_ps_doc" = xyes; then
+	if test "x$have_perl" = xno || test "x$have_latex" = xno \
+	   || test "x$have_makeindex" = xno || test "x$have_dvips" = xno \
+	   || test "x$have_gzip" = xno; then
+		AC_MSG_ERROR([need perl, latex, makeindex, dvips, and gzip to generate Postscript])
+	fi
+	PS_DOCS=ps-docs
+	INSTALL_PS=install-ps
+fi
+AC_SUBST(PS_DOCS)
+AC_SUBST(INSTALL_PS)
+
+# Generate PDF documentation?
+AC_ARG_ENABLE(pdf-doc, [  --enable-pdf-doc        generate PDF documentation])
+if test "x$enable_pdf_doc" = xyes; then
+	if test "x$have_perl" = xno || test "x$have_pdflatex" = xno \
+	   || test "x$have_makeindex" = xno || test "x$have_dvips" = xno; then
+		AC_MSG_ERROR([need perl, pdflatex, and makeindex to generate PDF docs])
+	fi
+	PDF_DOCS=pdf-docs
+fi
+AC_SUBST(PDF_DOCS)
+
+# Choice of directories
 AC_ARG_WITH(script-dir, [  --with-script-dir=DIR   program scripts in DIR [DATADIR/yacas]])
 if test -n "$with_script_dir" ; then
 	scriptdir=$with_script_dir
@@ -86,6 +116,22 @@ else
 	scriptdir=${datadir}/yacas/
 fi
 AC_SUBST(scriptdir)
+
+AC_ARG_WITH(html-dir, [  --with-html-dir=DIR     HTML documentation in DIR [SCRIPTDIR/documentation]])
+if test -n "$with_html_dir" ; then
+	htmldir=$with_html_dir
+else
+	htmldir=${scriptdir}/documentation/
+fi
+AC_SUBST(htmldir)
+
+AC_ARG_WITH(ps-dir, [  --with-ps-dir=DIR       PostScript documentation in DIR [HTMLDIR]])
+if test -n "$with_ps_dir" ; then
+	psdir=$with_ps_dir
+else
+	psdir=${htmldir}
+fi
+AC_SUBST(psdir)
 
 # All done
 AC_OUTPUT(yacas.spec
