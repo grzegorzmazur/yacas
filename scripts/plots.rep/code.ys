@@ -16,6 +16,8 @@ Plot2D'<backend> on that data.
 	3) concatenate resulting lists and return
 */
 
+	LocalSymbols(var, func, range, option, options'list, delta, options'hash, c, fc, all'values, dummy)
+[
 /// interface routines
 1 # Plot2D(_func) <-- Plot2D(func, -5:5);
 2 # Plot2D(_func, _range) <-- "Plot2D" @ {func, range, {}};
@@ -27,9 +29,8 @@ Plot2D'<backend> on that data.
 /// Top-level 2D plotting routine:
 /// plot several functions sharing the same xrange and other options
 4 # Plot2D(func'list_IsList, _range, options'list_IsList) <--
-	LocalSymbols(var, func, delta, options'hash, c, fc, all'values, dummy)
 [
-	Local(var, func, delta, options'hash, c, all'values);
+	Local(var, func, delta, options'hash, c, fc, all'values, dummy);
 	all'values := {};
 	options'hash := "ListToHash" @ {options'list};
 	// store variable name and function representation
@@ -97,11 +98,11 @@ Plot2D'<backend> on that data.
 			"Plot2D: Error: expression is not a function of one variable: "
 			:(ToString()Write(func))
 		);
-		// Allow ploting constant functions
+		// Allow plotting of constant functions
 		If(Length(var)=0, var:={dummy});
-		// store function name
+		// store function name in options
 		DestructiveAppend(options'hash["yname"], ToString()Write(func));
-		// compute the first point
+		// compute the first point to see if it's okay
 		c := range[1];
 		fc := N(Apply({var, func}, {c}));
 		Check(IsNumber(fc),
@@ -120,6 +121,8 @@ Plot2D'<backend> on that data.
 	// call the specified output backend
 	Plot2D'outputs()[options'hash["output"]] @ {all'values, options'hash};
 ];
+
+];	// LocalSymbols()
 
 HoldArgNr("Plot2D", 2, 2);
 HoldArgNr("Plot2D", 3, 2);
