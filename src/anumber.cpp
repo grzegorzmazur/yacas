@@ -1449,7 +1449,7 @@ void ANumber::ChangePrecision(LispInt aPrecision)
     PlatWord zero = 0;
     Insert(0,zero,newExp-oldExp);
   }
-/*
+/* 
   LispInt todel;
   todel=0;
   ElementTypePtr ptr = &((*this)[0]);
@@ -1463,5 +1463,5 @@ void ANumber::ChangePrecision(LispInt aPrecision)
       iExp-=todel;
       Delete(0,todel);
   }
-*/
+ */
 }
