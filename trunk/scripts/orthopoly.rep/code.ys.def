@@ -4,4 +4,11 @@ OrthoH
 OrthoL
 OrthoT
 OrthoU
+OrthoPSum
+OrthoGSum
+OrthoHSum
+OrthoLSum
+OrthoTSum
+OrthoUSum
+EvaluateHornerScheme
 }
