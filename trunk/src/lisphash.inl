@@ -89,8 +89,8 @@ inline void LispAssociatedHash<T>::SetAssociation(const T& aData, LispStringPtr 
         }
     }
 
-    // Append a new string association
-    iHashTable[bin].Append(new LAssoc<T>(aString,aData));
+    // Append a NEW string association
+    iHashTable[bin].Append(NEW LAssoc<T>(aString,aData));
     return;
 }
 

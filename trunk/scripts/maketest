@@ -1,0 +1,21 @@
+
+$(testtarget):
+	$(yacastest) ../tests/arithmetic.yts
+	$(yacastest) ../tests/calculus.yts
+	$(yacastest) ../tests/canprove.yts
+	$(yacastest) ../tests/comments.yts
+	$(yacastest) ../tests/linalg.yts
+	$(yacastest) ../tests/lists.yts
+	$(yacastest) ../tests/logic_simplify_test.yts
+	$(yacastest) ../tests/poly.yts
+	$(yacastest) ../tests/predicates.yts
+	$(yacastest) ../tests/programming.yts
+	$(yacastest) ../tests/radsimp.yts
+	$(yacastest) ../tests/regress.yts
+	$(yacastest) ../tests/simplify.yts
+	$(yacastest) ../tests/solve.yts
+	$(yacastest) ../tests/sums.yts
+	$(yacastest) ../tests/tensors.yts
+	$(yacastest) ../tests/c_tex_form.yts
+	$(yacastest) ../tests/numerics.yts
+	$(yacastest) ../tests/orthopoly.yts

@@ -285,12 +285,12 @@ input(iEnvironment.iInputStatus)
 
 LISPEXPORT CYacas* CYacas::NewL()
 {
-  CYacas* self = new CYacas(new StdUserOutput());
+  CYacas* self = NEW CYacas(NEW StdUserOutput());
   return self;
 }
 LISPEXPORT CYacas* CYacas::NewL(LispOutput* aOutput)
 {
-  CYacas* self = new CYacas(aOutput);
+  CYacas* self = NEW CYacas(aOutput);
   return self;
 }
 

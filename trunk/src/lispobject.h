@@ -20,6 +20,12 @@
 #include "genericobject.h"
 #include "evalfunc.h"
 
+
+#ifdef YACAS_DEBUG
+void IncNrObjects();
+void DecNrObjects();
+#endif
+
 class LispObject;
 
 /** class LispPtr. This class is a smart pointer type class to Lisp
@@ -141,10 +147,6 @@ public:
 private:
     LispPtr* iPtr;
 };
-
-
-void IncNrObjects();
-void DecNrObjects();
 
 
 #include "lispobject.inl"

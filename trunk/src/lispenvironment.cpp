@@ -24,7 +24,7 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
                     LispOperators &aBodiedOperators,
                     LispInput*    aCurrentInput)
     : iPrecision(10),iEvalDepth(0),iMaxEvalDepth(1000),
-    iEvaluator(new BasicEvaluator),iSecure(0),iLastUniqueId(1),
+    iEvaluator(NEW BasicEvaluator),iSecure(0),iLastUniqueId(1),
     iErrorOutput(iError),iCommands(aCommands),
     iUserFunctions(aUserFunctions),
     iHashTable(aHashTable),
@@ -39,7 +39,7 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
     iCurrentInput(aCurrentInput),
     theUserError(NULL),
     iPrettyPrinter(NULL),
-    iDebugger(new DefaultDebugger),
+    iDebugger(NEW DefaultDebugger),
     iCurrentTokenizer(&iDefaultTokenizer)
 {
     iTrue=NULL;
@@ -204,13 +204,13 @@ void LispEnvironment::PushLocalFrame(LispBoolean aFenced)
     if (aFenced)
     {
         LocalVariableFrame *newFrame =
-            new LocalVariableFrame(iLocalsList, NULL);
+            NEW LocalVariableFrame(iLocalsList, NULL);
         iLocalsList = newFrame;
     }
     else
     {
         LocalVariableFrame *newFrame =
-            new LocalVariableFrame(iLocalsList, iLocalsList->iFirst);
+            NEW LocalVariableFrame(iLocalsList, iLocalsList->iFirst);
         iLocalsList = newFrame;
     }
 }
@@ -226,7 +226,7 @@ void LispEnvironment::PopLocalFrame()
 void LispEnvironment::NewLocal(LispStringPtr aVariable,LispObject* aValue)
 {
     LISPASSERT(iLocalsList != NULL);
-    iLocalsList->Add(new LispLocalVariable(aVariable, aValue));
+    iLocalsList->Add(NEW LispLocalVariable(aVariable, aValue));
 }
 
 LispPrinter& LispEnvironment::CurrentPrinter()
@@ -328,7 +328,7 @@ void LispEnvironment::DeclareRuleBase(LispStringPtr aOperator, LispPtr& aParamet
 {
     LispMultiUserFunction* multiUserFunc = MultiUserFunction(aOperator);
     // add an operator with this arity to the multiuserfunc.
-    multiUserFunc->DefineRuleBase(new BranchingUserFunction(aParameters));
+    multiUserFunc->DefineRuleBase(NEW BranchingUserFunction(aParameters));
 
 
 #ifdef YACAS_DEBUG

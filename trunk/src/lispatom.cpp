@@ -7,7 +7,7 @@
 
 LispAtom* LispAtom::New(LispStringPtr aString)
 {
-    LispAtom* self = new LispAtom(aString);
+    LispAtom* self = NEW LispAtom(aString);
     Check(self!=NULL,KLispErrNotEnoughMemory);
     return self;
 }
@@ -33,7 +33,7 @@ LispStringPtr LispAtom::String() const
 
 LispObject* LispAtom::Copy(LispInt aRecursed)
 {
-    LispObject *copied = new LispAtom(iString);
+    LispObject *copied = NEW LispAtom(iString);
 #ifdef DEBUG_MODE
     copied->SetFileAndLine(iFileName, iLine);
 #endif
@@ -43,7 +43,7 @@ LispObject* LispAtom::Copy(LispInt aRecursed)
 
 LispObject* LispAtom::SetExtraInfo(LispPtr& aData)
 {
-    LispObject* result = new LispAnnotatedObject<LispAtom>(this);
+    LispObject* result = NEW LispAnnotatedObject<LispAtom>(this);
     result->SetExtraInfo(aData);
     return result;
 }
@@ -52,7 +52,7 @@ LispObject* LispAtom::SetExtraInfo(LispPtr& aData)
 
 LispSubList* LispSubList::New(LispObject* aSubList)
 {
-    LispSubList* self = new LispSubList(aSubList);
+    LispSubList* self = NEW LispSubList(aSubList);
     Check(self!=NULL,KLispErrNotEnoughMemory);
     return self;
 }
@@ -82,7 +82,7 @@ LispObject* LispSubList::Copy(LispInt aRecursed)
 {
     //TODO recursed copy needs to be implemented still
     LISPASSERT(aRecursed == 0);
-    LispObject *copied = new LispSubList(iSubList.Get());
+    LispObject *copied = NEW LispSubList(iSubList.Get());
 #ifdef DEBUG_MODE
     copied->SetFileAndLine(iFileName, iLine);
 #endif
@@ -92,7 +92,7 @@ LispObject* LispSubList::Copy(LispInt aRecursed)
 
 LispObject* LispSubList::SetExtraInfo(LispPtr& aData)
 {
-    LispObject* result = new LispAnnotatedObject<LispSubList>(this);
+    LispObject* result = NEW LispAnnotatedObject<LispSubList>(this);
     result->SetExtraInfo(aData);
     return result;
 }
@@ -136,7 +136,7 @@ LispSubList::~LispSubList()
 
 LispGenericClass* LispGenericClass::New(GenericClass* aClass)
 {
-    LispGenericClass* self = new LispGenericClass(aClass);
+    LispGenericClass* self = NEW LispGenericClass(aClass);
     Check(self!=NULL,KLispErrNotEnoughMemory);
     return self;
 }
@@ -168,7 +168,7 @@ GenericClass* LispGenericClass::Generic()
 LispObject* LispGenericClass::Copy(LispInt aRecursed)
 {
     //TODO real copy!
-    LispObject *copied = new LispGenericClass(iClass);
+    LispObject *copied = NEW LispGenericClass(iClass);
 #ifdef DEBUG_MODE
     copied->SetFileAndLine(iFileName, iLine);
 #endif
@@ -177,7 +177,7 @@ LispObject* LispGenericClass::Copy(LispInt aRecursed)
 
 LispObject* LispGenericClass::SetExtraInfo(LispPtr& aData)
 {
-    LispObject* result = new LispAnnotatedObject<LispGenericClass>(this);
+    LispObject* result = NEW LispAnnotatedObject<LispGenericClass>(this);
     result->SetExtraInfo(aData);
     return result;
 }

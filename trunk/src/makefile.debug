@@ -20,16 +20,25 @@ OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
 .cpp.o:
 	gcc -x c++ $(INC) -c $<
 
-all:
-	-rm *.o
-	make libyacasdebug.a -f makefile.debug
+all: libyacasdebug.a yacasdebug
 
-INC = -I./plat/linux32/  -DDEBUG_MODE
+INC = -I./plat/linux32/  -DDEBUG_MODE -DSCRIPT_DIR="\"./\"" -DVERSION="\"Debug\"" \
+	-DUSE_ASSERT -DYACAS_DEBUG
 
 libyacasdebug.a : $(OBJS)
 	$(AR) cru libyacasdebug.a $(OBJS)
 	$(RANLIB) libyacasdebug.a
 
+yacasdebug: yacasmain.o elfdll.o commandline.o unixcommandline.o stdcommandline.o debugmem.o libyacasdebug.a
+	gcc -o yacasdebug yacasmain.o elfdll.o commandline.o unixcommandline.o stdcommandline.o debugmem.o libyacasdebug.a -lm -ldl
+
 #	-rm -f libyacasdebug.a
+
+
+testscriptdir = ../scripts/
+yacastest = ./yacasdebug -pc --rootdir $(testscriptdir)
+testtarget = debugtest
+
+include ../scripts/maketest
 
         

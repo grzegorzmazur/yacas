@@ -554,7 +554,7 @@ void LispDllLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
 
     LispString oper;
     InternalUnstringify(oper, string);
-    LispDllBase *dll = new DLLCLASS;
+    LispDllBase *dll = NEW DLLCLASS;
     Check(dll != NULL,KLispErrNotEnoughMemory);
     LispInt opened;
 

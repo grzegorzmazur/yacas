@@ -123,7 +123,7 @@ LispStringPtr LispHashTable::LookUp(LispCharPtr aString,
 #ifdef YACAS_DEBUG
     theNrTokens++;
 #endif
-    iHashTable[bin].Append(new LispString(aString,aStringOwnedExternally));
+    iHashTable[bin].Append(NEW LispString(aString,aStringOwnedExternally));
     return iHashTable[bin][iHashTable[bin].NrItems()-1];
 }
 
@@ -187,7 +187,7 @@ LispStringPtr LispHashTable::LookUpCounted(LispCharPtr aString,
 #ifdef YACAS_DEBUG
     theNrTokens++;
 #endif
-    LispStringPtr str = new LispString();
+    LispStringPtr str = NEW LispString();
     str->SetStringCounted(aString,aLength);
 
     iHashTable[bin].Append(str);
@@ -255,7 +255,7 @@ LispStringPtr LispHashTable::LookUpStringify(LispCharPtr aString,
 #ifdef YACAS_DEBUG
     theNrTokens++;
 #endif
-    LispStringPtr str = new LispString();
+    LispStringPtr str = NEW LispString();
     str->SetStringStringified(aString);
 
     iHashTable[bin].Append(str);
@@ -283,7 +283,7 @@ LispStringPtr LispHashTable::LookUpUnStringify(LispCharPtr aString,
 #ifdef YACAS_DEBUG
     theNrTokens++;
 #endif
-    LispStringPtr str = new LispString();
+    LispStringPtr str = NEW LispString();
     str->SetStringUnStringified(aString);
     iHashTable[bin].Append(str);
     return iHashTable[bin][iHashTable[bin].NrItems()-1];

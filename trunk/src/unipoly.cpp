@@ -65,7 +65,7 @@ inline void ZZPoly::Multiply(const ZZ& x,ZZMod& aMod)
 
 ZZPoly* ShowPat(ZZPoly& a)
 {
-  ZZPoly* result = new ZZPoly();
+  ZZPoly* result = NEW ZZPoly();
   ZZ i;
   for (i=a.NrItems()-2;i>=0;i--) result->Append(a[i]);
   return result;
@@ -130,7 +130,7 @@ void NullSpaceAlg(ZZPolyList& Q,ZZ deg,ZZPolyList& v,ZZMod& p)
         }
         else
         {
-            ZZPoly *vnew = new ZZPoly;
+            ZZPoly *vnew = NEW ZZPoly;
             ZZ j,s;
 
             r = r+1;
@@ -160,8 +160,8 @@ void ModUniDivide(ZZPolyList& result,ZZPoly& u, ZZPoly& v, ZZMod& p)
     n = v.Degree();
     LISPASSERT(m >= n);
     ZZPoly *q,*r;
-    q = new ZZPoly;
-    r = new ZZPoly;
+    q = NEW ZZPoly;
+    r = NEW ZZPoly;
     ZZ k,j;
     for (k=0;k<m-n+1;k++) q->Append(0);
     for (k=0;k<=m;k++) r->Append(u[k]);
@@ -207,7 +207,7 @@ getchar();
     l[1]->Append(0);
     if (l[1]->Degree() == 0 && (*l[1])[0] == 0)
     {
-        result = new ZZPoly;
+        result = NEW ZZPoly;
         ZZ k;
         for (k=0;k<=v.Degree();k++) result->Append(v[k]);
         return result;
@@ -297,7 +297,7 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
 
     if (v.NrItems()<2)
     {
-        ZZPoly *original = new ZZPoly;
+        ZZPoly *original = NEW ZZPoly;
         ZZ i;
         for (i=0;i<=aPoly.Degree();i++)
         {

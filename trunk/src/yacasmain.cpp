@@ -222,10 +222,12 @@ void my_exit(void)
 {
     if (show_prompt)
         printf("Quitting...\n");
-
     delete yacas;
     delete commandline;
     ReportNrCurrent();
+#ifdef DEBUG_MODE
+    YacasCheckMemory();
+#endif
 }
 
 #ifdef PROMPT_SHOW_FREE_MEMORY
@@ -414,12 +416,15 @@ void LoadYacas()
         struct stat statbuf;
         char dir[256];
         char cwd[256];
-        strcpy(dir,SCRIPT_DIR "addons/");
-
+        sprintf(dir,"%saddons/",root_dir);
 
         if ((dp = opendir(dir)) != NULL)
         {
-            yacas->Evaluate("DefaultDirectory(\"" SCRIPT_DIR "addons/\");");
+            {
+                char ld[256];
+                sprintf(ld,"DefaultDirectory(\"%saddons/\");",root_dir);
+                yacas->Evaluate(ld);
+            }
             getcwd(cwd,256);
             chdir(dir);
             while ((entry = readdir(dp)) != NULL)
@@ -485,6 +490,10 @@ int main(int argc, char** argv)
     unsigned char first_stack_var=0;
     the_first_stack_var = &first_stack_var;
 
+#ifdef DEBUG_MODE
+//    PlatAlloc(100); // test the alloc memory leak checker
+#endif
+    
 /*
     printf("sizeof(LispAtom) = %d\n",sizeof(LispAtom));
     printf("sizeof(LispSubList) = %d\n",sizeof(LispSubList));
@@ -592,10 +601,10 @@ int main(int argc, char** argv)
 #ifndef STD_COMMANDLINE
     if (use_plain)
 #endif
-        commandline = new CStdCommandLine;
+        commandline = NEW CStdCommandLine;
 #ifndef STD_COMMANDLINE
     else
-        commandline = new CUnixCommandLine;
+        commandline = NEW CUnixCommandLine;
 #endif
 
     commandline->iTraceHistory = trace_history;

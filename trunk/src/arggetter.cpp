@@ -187,7 +187,7 @@ void ReturnVoidStruct(LispEnvironment& aEnvironment,
                       void* aData,
                       void (*aFree)(void*))
 {
-    aResult.Set(LispGenericClass::New(new GenericStruct(aName,aData,aFree)));
+    aResult.Set(LispGenericClass::New(NEW GenericStruct(aName,aData,aFree)));
 }
 
 

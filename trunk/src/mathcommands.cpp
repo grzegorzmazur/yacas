@@ -448,7 +448,7 @@ void LispConcatenate(LispEnvironment& aEnvironment, LispPtr& aResult,
 static LispStringPtr ConcatenateStrings(LispEnvironment& aEnvironment, LispPtr& aResult,
               LispPtr& aArguments)
 {
-    LispString *str = new LispString;
+    LispString *str = NEW LispString;
     str->SetNrItems(0);
     str->Append('\"');
     LispInt arg=1;
@@ -1425,7 +1425,7 @@ void LispDefaultDirectory(LispEnvironment& aEnvironment, LispPtr& aResult,
     CHK_ARG(orig != NULL, 1);
     LispString oper;
     InternalUnstringify(oper, orig);
-    aEnvironment.iInputDirectories.Append(new LispString(oper.String()));
+    aEnvironment.iInputDirectories.Append(NEW LispString(oper.String()));
     InternalTrue(aEnvironment,aResult);
 }
 
@@ -2003,7 +2003,7 @@ void GenArrayCreate(LispEnvironment& aEnvironment,LispPtr& aResult,
     LispPtr initarg;
     InternalEval(aEnvironment, initarg, Argument(aArguments,2));
      
-    ArrayClass *array = new ArrayClass(size,initarg.Get());
+    ArrayClass *array = NEW ArrayClass(size,initarg.Get());
     aResult.Set(LispGenericClass::New(array));
 }
 
@@ -2077,7 +2077,7 @@ void GenArraySet(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArgum
 void LispTrace(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments)
 {
     TESTARGS(2);
-    LispLocalEvaluator local(aEnvironment,new TracedEvaluator);
+    LispLocalEvaluator local(aEnvironment,NEW TracedEvaluator);
     aEnvironment.iDebugger->Start();
     InternalEval(aEnvironment, aResult, Argument(aArguments,1));
     aEnvironment.iDebugger->Finish();
@@ -2086,7 +2086,7 @@ void LispTrace(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArgumen
 void LispTraceStack(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments)
 {
     TESTARGS(2);
-    LispLocalEvaluator local(aEnvironment,new TracedStackEvaluator);
+    LispLocalEvaluator local(aEnvironment,NEW TracedStackEvaluator);
     InternalEval(aEnvironment, aResult, Argument(aArguments,1));
 }
 
@@ -2273,8 +2273,8 @@ void GenPatternCreate(LispEnvironment& aEnvironment,LispPtr& aResult,
 
 
     YacasPatternPredicateBase* matcher =
-        new YacasPatternPredicateBase(aEnvironment, *ptr,postpredicate);
-    PatternClass *p = new PatternClass(matcher);
+        NEW YacasPatternPredicateBase(aEnvironment, *ptr,postpredicate);
+    PatternClass *p = NEW PatternClass(matcher);
     aResult.Set(LispGenericClass::New(p));
 }
 void GenPatternMatches(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments)

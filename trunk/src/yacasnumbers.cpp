@@ -34,7 +34,7 @@ const LispCharPtr NumericLibraryName()
 void* AsciiToNumber(LispCharPtr aString,LispInt aPrecision)
 {
     Check(IsNumber(aString,LispTrue),KLispErrInvalidArg);
-    return new ANumber(aString,aPrecision);
+    return NEW ANumber(aString,aPrecision);
 }
 LispStringPtr NumberToAscii(void* aNumber,LispHashTable& aHashTable,
                            LispInt aBase)
@@ -45,7 +45,7 @@ LispStringPtr NumberToAscii(void* aNumber,LispHashTable& aHashTable,
 void* NumberCopy(void* aOriginal)
 {
     ANumber* orig = (ANumber*)aOriginal;
-    return new ANumber(*orig);
+    return NEW ANumber(*orig);
 }
 
 void NumberDestroy(void* aNumber)
