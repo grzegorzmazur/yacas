@@ -179,6 +179,7 @@ Function("ApproxInfSum",{expr,start,x,c})
 40 # Erf(x_IsNumber)_(Abs(x) <= 1 )  <-- N(2/Sqrt(Pi)*ApproxInfSum((-1)^k*x^(2*k+1)/((2*k+1)*k!),0,x));
 
 10 # Erfc(_x)		<-- 1 - Erf(x);
+10 # Erfi(_x)		<-- -I*Erf(x*I);
 
 /////////////////////////////////////////////////
 /// Fresnel integrals
@@ -235,3 +236,12 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 	  3	// 3rd order scheme
 	);
 ];
+
+
+Function("Beta",{n,m})
+[
+	Check( (IsRationalOrNumber(n) Or IsComplex(n)) And
+	       (IsRationalOrNumber(m) Or IsComplex(m)), "Beta: argument must be a number" );
+	Gamma(m)*Gamma(n)/Gamma(m+n);
+];
+
