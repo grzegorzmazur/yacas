@@ -1,0 +1,106 @@
+			Creating plugins for Yacas
+
+		Introduction
+
+Yacas supports dynamical loading of libraries ("plugins") at runtime. This allows to interface with other libraries or external code and support additional functionality. In a Yacas session, plugins are seen as additional Yacas functions that become available after a plugin has been loaded. Plugins may be loaded at any time during a Yacas session.
+
+Currently, plugins are implemented as ELF dynamic libraries (or "shared objects", {.so}) under Linux. As of version 1.0.48, plugins are not yet supported on other platforms.
+
+Plugins currently have to be written in C++ and require certain include files from the Yacas source tree. A plugin may be compiled as a shared object after Yacas itself has been compiled and installed successfully.
+
+		An example plugin
+
+Here is what we need to do to make a new plugin:
+
+*	Decide on an interface that will be visible in Yacas. In this example, we will create a new Yacas function Func1(x,y), where x, y are floating-point real numbers; Func1(x,y) should return a floating-point real number. So, our "API" consists of a single function with the following C++ prototype:
+
+	// FILE: func1.h
+	double func1_cc (double x, double y);
+
+*	Write a C++ implementation of this function:
+
+	// FILE: func1.cc
+	#include "stubs.h"	// required
+	#include "func1.h"	// our API exported for the stub
+	
+	#include <math.h>	// we need this for sin()
+	double func1_cc (double x, double y) {
+	  return sin(x/y);
+	}
+
+*	Write the "Yacas stub" for our API. This file is written in the Yacas language and describes the function(s) of our API. Yacas processes this file using the library package {cstubgen} and prepares a C++ file with some Yacas-compatible glue; this file will be the "C++ stub" which we do not have to write ourselves.
+
+For our simple plugin, we shall only need a few lines of code in the Yacas stub:
+
+	/* FILE: func1_api.stub */
+	Use("cstubgen.rep/code.ys");
+	
+	/* Start generating a C++ stub file */
+	StubApiCStart();
+	
+	/* Write some documentation */
+	StubApiCRemark("This function computes beautiful waves.");
+	
+	/* define a plugin-specific include file */
+	StubApiCInclude("\"func1.h\"");
+	
+	/* Declare a plugin-specific function */
+	StubApiCFunction("double","func1","Func1",
+	  { {"double","x"},{"double","y"}});
+	
+	/* generate a C++ stub file "func1_api.cc" */
+	StubApiCFile("func1_api");
+
+Another example of a Yacas stub is found in the file {plugins/example/barepluginapi.stub} of the source tree.
+
+*	Process the "Yacas stub" and generate a C++ stub file {func1_api.cc}.
+
+	yacas -pc func1_api.stub
+
+*	Both of our C++ files, {func1_api.cc} and {func1.cc}, now need to be compiled into a shared object. We shall assume that the Yacas include files have been installed in {/usr/local/include/yacas/}.
+
+	c++ -shared -I/usr/local/include/yacas/ \
+	  -I/usr/local/include/yacas/plat/linux32/ \
+	  -Wl,-soname,libfunc1.so -o libfunc1.so func1.cc func1_api.cc
+
+If compilation succeeds, the dynamic library file {libfunc1.so} is created. This is our plugin; now it could be installed into the Yacas plugin path ({/usr/local/share/yacas/plugins/}) or kept in the working directory.
+
+*	Yacas can use the new plugin after we load it:
+
+	In> DllLoad(FindFile("plugins/libfunc1.so"));
+	Out> True;
+
+The {FindFile()} function will help locate the Yacas path; we need to use it because {DllLoad()} requires a full path to the library file. Alternatively, if the plugin file were kept in the Yacas working directory, we could have used the command {DllLoad("./libfunc1.so")}.
+
+*	Finally, we can use the new function:
+
+	In> Func1(2,3);
+	Out> 0.61837;
+
+		A dynamically generated plugin
+
+Since Yacas can load plugins at runtime, why not have them generated also at runtime? Here is how we could dynamically create plugin functions to speed up numerical calculations.
+
+Suppose we had a numerical function on real numbers, e.g.
+
+	In> f(x,y):=Sin(2*x*Pi)+Sqrt(2)*Cos(y*Pi);
+	Out> True;
+
+We can generate some C++ code that calculates this function for given floating-point arguments:
+
+	In> CForm(f(x,y));
+	Out> "sin(2 * x * Pi) + sqrt(2) * cos(y * Pi)";
+
+(Note that we would need to define {Pi} in the C++ file.)
+
+Now, it is clear that all the steps needed to compile, link, and load a plugin that implements {f(x,y)} can be performed automatically by a Yacas script. (You would need a C++ compiler on your system, of course.)
+
+This is implemented in the function {MakeFunctionPlugin()} (see file {funcplug.ys}). To use it, we might first define a function such as {f(x,y)} above and then call
+
+	In> MakeFunctionPlugin("fFast", {x,y}, f(x,y));
+	Function fFast(x,y) loaded from ./libfFast_cc_plugin.so
+	Out> True;
+	In> fFast(2,3);
+	Out> -1.41421;
+
+Now we can use the function {fFast(x,y)} which is implemented using an external plugin library. The function {MakeFunctionPlugin()} assumes that all arguments and return values of functions are real floating-point numbers. The plugin libraries it creates are always in the plugins/ subdirectory of current working directory and are named like {libNNN_cc_plugin.so}.
