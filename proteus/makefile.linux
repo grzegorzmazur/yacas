@@ -11,7 +11,7 @@ CXXFLAGS	= -O2 -Wno-return-type
 
 LDLIBS		=  -L/usr/X11R6/lib -lX11 -lXext  -lm -ldl
 GLDLIBS		=  -L/usr/X11R6/lib  -lGLU -lGL -lX11 -lXext  -lm
-FLTKLIBS        = -lfltk
+FLTKLIBS        = -lfltk -ldl ../libltdl/ltdl.o
 YACASLIBS       = -L$(INSTALL_DIR)/local/lib/ -lyacas -lyacasplatform -lyacasnumbers
 
 LIBS = $(LDLIBS) $(FLTKLIBS) $(YACASLIBS)

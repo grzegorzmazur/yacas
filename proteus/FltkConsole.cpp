@@ -1597,12 +1597,12 @@ void ConsoleDrawer::draw(int x, int y, int width,int draw_input)
   extern LispString the_out;
   if (iExecute.Get())
   {
-    if (pixmap == NULL)
+    if (!pixmap)
     {
       pixmap = (Fl_Offscreen)fl_create_offscreen(iWidth,iHeight);
       fl_begin_offscreen(pixmap);
   
-      fl_clip(x,y,iWidth,iHeight);
+      fl_clip(0,0,iWidth,iHeight);
   //    fl_translate(x,y);
       LispPtr result;
       iEnvironment.iEvaluator->Eval(iEnvironment,result,iExecute);

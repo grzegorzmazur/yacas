@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Widget.H>
 #include <FL/x.H>
+#undef Status // Hack: fltk defines Status!@##$@#
 #include "grower.h"
 #include "lispstring.h"
 #include "commandline.h"
