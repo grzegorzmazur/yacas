@@ -255,7 +255,7 @@ FindRealRoots(_p,_Mmin,_Mmax) <--
       While (Abs(cold-c)>prec)
       [
         pc:=(p Where x==c);
-Echo(a,b,c);
+//Echo(a,b,c);
         if (Abs(pc) < prec)
         [
           a:=c;
