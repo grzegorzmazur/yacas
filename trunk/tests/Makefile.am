@@ -27,7 +27,7 @@ SPECIAL_TESTFILES = ../manmake/wester-1994.ys
 TESTFILES = $(NORMAL_TESTFILES) $(SPECIAL_TESTFILES)
 
 # To run the version of yacas in the build tree
-BUILT_YACAS = ../src/yacas -pc --rootdir $(top_srcdir)/scripts/:../scripts/ --dlldir ../plugins/example
+BUILT_YACAS = ../src/yacas -pc --rootdir $(top_srcdir)/scripts/:../scripts/ --dlldir ../plugins/example:../src/ 
 
 # To run the installed version of yacas
 INSTALLED_YACAS = $(bindir)/yacas -pc   

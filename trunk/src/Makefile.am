@@ -73,8 +73,12 @@ libmath_la_DEPENDENCIES = yacas
 
 # assuming the directory below does not have plugins!
 libmath.cpp: ../scripts/base.rep/math.ys
+	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
 	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
-	./yacas --rootdir ../scripts/ --dlldir ../ -pc compile.txt
+	./yacas --rootdir ../scripts/ -pc --init compileinit.txt compile.txt
+
+
+
 
 
 EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp \
