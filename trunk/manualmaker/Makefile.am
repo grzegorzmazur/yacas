@@ -118,7 +118,7 @@ yacasapi.chapt: yacasapi.chapt.txt
 
 # special chapter copied from the GPL (need to replace "<" and ">")
 GPL.chapt: $(top_srcdir)/COPYING
-	cat $< | sed -e 's,<,{<},g;s,>,{>},g;' | perl $(top_srcdir)/manmake/txt2yacasdoc.pl > $@
+	cat $(top_srcdir)/COPYING | sed -e 's,<,{<},g;s,>,{>},g;' | perl $(top_srcdir)/manmake/txt2yacasdoc.pl > $@
 
 PS_DOCS = intro.book.ps coding.book.ps essays.book.ps ref.book.ps refprog.book.ps Algo.book.ps LispProgramming.book.ps
 
