@@ -1,5 +1,5 @@
 //
-// "$Id: editor.cpp,v 1.6 2003-06-09 02:14:07 ayalpinkus Exp $"
+// "$Id: editor.cpp,v 1.7 2003-06-09 10:24:04 ayalpinkus Exp $"
 //
 // A simple text editor program for the Fast Light Tool Kit (FLTK).
 //
@@ -65,29 +65,54 @@ static Fl_Text_Buffer     *stylebuf = 0;
 */
 
 FltkHintWindow *hints = NULL;
-
+int yhints = 0;
 void go_next_input();
+void update_hints(const char *text,int length);
+
+
 
 class ProteusInput : public Fl_Text_Editor
 {
 public:
-    FL_EXPORT ProteusInput(int x, int y, int w, int h)
-        : Fl_Text_Editor(x,y,w,h)
-    {};
-    virtual int handle(int event);
-    virtual void draw();
+  FL_EXPORT ProteusInput(int x, int y, int w, int h)
+      : Fl_Text_Editor(x,y,w,h)
+  {};
+  virtual int handle(int event);
+  virtual void draw();
+  inline int CursorPos() const {return mCursorPos;};
+  inline void cursor_xy(int* ix, int* iy)
+  {
+    position_to_xy(CursorPos(), ix,iy);
+  }
+
 };
+
+struct EditDocument
+{
+	int                changed;
+	char               filename[256];
+	char               title[256];
+  Fl_Text_Buffer     *textbuf;
+  // Syntax highlighting stuff...
+  Fl_Text_Buffer     *stylebuf;
+  ProteusInput* editor;
+};
+#define MAX_INPUTS 10
+EditDocument doc[MAX_INPUTS];
+static int current_input = 0;
+static int nr_inputs     = 1;
+
+EditDocument* Document();
+
 
 void ProteusInput::draw()
 {
   Fl_Text_Editor::draw();
   if (hints)
   {
-      int ix,iy;
-      position_to_xy(mCursorPos, &ix,&iy);
       fl_font(FL_HELVETICA,14);
       fl_clip(x(),y(),w(),h());
-      hints->draw(x()+10,iy-10);
+      hints->draw(x()+10,yhints);
       fl_pop_clip();
   }
 }
@@ -112,7 +137,25 @@ int ProteusInput::handle(int event)
                 mainTabs->value(input);
                 return 1;
             }
-            return Fl_Text_Editor::handle(event);
+            int result = Fl_Text_Editor::handle(event);
+            
+            {
+              int cstart = Document()->textbuf->line_start( Document()->editor->CursorPos());
+              int cpos = Document()->editor->CursorPos();
+              int lenc = cpos-cstart;
+              char* text  = Document()->textbuf->text_range(cstart, cpos);
+/*
+{
+  char* buf = malloc(lenc+1);
+  buf[lenc] = '\0';
+  memcpy(buf,text,lenc);
+  printf("[%s]\n",buf);
+  free(buf);
+}
+*/
+              update_hints(text,lenc);
+            }
+            return result;
         }
         break;
     default:
@@ -126,20 +169,6 @@ int ProteusInput::handle(int event)
 
 
 
-struct EditDocument
-{
-	int                changed;
-	char               filename[256];
-	char               title[256];
-  Fl_Text_Buffer     *textbuf;
-  // Syntax highlighting stuff...
-  Fl_Text_Buffer     *stylebuf;
-  ProteusInput* editor;
-};
-#define MAX_INPUTS 10
-EditDocument doc[MAX_INPUTS];
-static int current_input = 0;
-static int nr_inputs     = 1;
 
 class Fl_MyLabel : public Fl_Widget
 {
@@ -351,6 +380,51 @@ compare_keywords(const void *a,
 }
 
 
+void update_hints(const char *text,int length)
+{
+  extern FltkConsole* console;
+
+  int iNrLines = -1;
+  int iNrDescriptions=-1;
+  int iMaxWidth=-1;
+  int iTextSize=-1;
+  int oldyhints=yhints;
+
+  if (hints)
+  {
+    iNrLines = hints->iNrLines;
+    iNrDescriptions=hints->iNrDescriptions;
+    iMaxWidth=hints->iMaxWidth;
+    iTextSize=hints->iTextSize;
+  }
+  delete hints;
+  hints = console->CheckForNewHints((char*)text, length);
+  if (hints)
+  {
+    {
+      int ix,iy;
+      Document()->editor->cursor_xy(&ix,&iy);
+      yhints = iy-2;
+      if (yhints-hints->height()-10 < Document()->editor->y())
+      {
+        yhints = iy+20+hints->height();  
+      }
+    }
+    if (
+        iNrLines > hints->iNrLines ||
+        iNrDescriptions>hints->iNrDescriptions ||
+        iMaxWidth>hints->iMaxWidth ||
+        iTextSize>hints->iTextSize || 
+        yhints != oldyhints
+        ) 
+    {
+      Document()->editor->redisplay_range(0, Document()->textbuf->length());
+    }
+  }
+  else if (iNrLines >=0 )
+    Document()->editor->redisplay_range(0, Document()->textbuf->length());
+}
+
 //
 // 'style_parse()' - Parse text and produce style data.
 //
@@ -367,45 +441,6 @@ style_parse(const char *text,
              *bufptr;
   const char *temp;
 
-/*
-{
-  char* buf = malloc(length+1);
-  buf[length] = '\0';
-  memcpy(buf,text,length);
-  printf("[%s]\n",buf);
-  free(buf);
-}
-*/
-  extern FltkConsole* console;
-  {
-  
-    int iNrLines = -1;
-    int iNrDescriptions=-1;
-    int iMaxWidth=-1;
-    int iTextSize=-1;
-
-    if (hints)
-    {
-      iNrLines = hints->iNrLines;
-      iNrDescriptions=hints->iNrDescriptions;
-      iMaxWidth=hints->iMaxWidth;
-      iTextSize=hints->iTextSize;
-    }
-    delete hints;
-    hints = console->CheckForNewHints((char*)text, length);
-    if (hints)
-    {
-      if (
-          iNrLines > hints->iNrLines ||
-          iNrDescriptions>hints->iNrDescriptions ||
-          iMaxWidth>hints->iMaxWidth ||
-          iTextSize>hints->iTextSize
-         ) 
-         Document()->editor->redisplay_range(0, Document()->textbuf->length());
-    }
-    else if (iNrLines >=0 )
-      Document()->editor->redisplay_range(0, Document()->textbuf->length());
-  }
   for (current = *style, col = 0, last = 0; length > 0; length --, text ++) 
   {
     if (current == 'B') current = 'A';
@@ -429,6 +464,21 @@ style_parse(const char *text,
       else if (strncmp(text, "/*", 2) == 0) 
       {
         current = 'C';
+        *style++ = current; text++; length--; col++;
+        *style++ = current; text++; length--; col++;
+        while (length>1)
+        {
+          if (*text == '\n') col=0;
+          if (!strncmp(text, "*/", 2))
+          {
+            *style++ = current; text++; length--; col++;
+            *style++ = current; text++; length--; col++;
+            current = 'A';
+            break;
+          }
+          *style++ = current; text++; length--; col++;
+        }
+        if (length == 0) break;
       } 
       else if (strncmp(text, "\\\"", 2) == 0) 
       {
@@ -644,6 +694,7 @@ style_update(int        pos,		// I - Position of update
   style = Document()->stylebuf->text_range(start, end);
   last  = style[end - start - 1];
 
+
 //  printf("start = %d, end = %d, text = \"%s\", style = \"%s\"...\n",
 //         start, end, text, style);
 
@@ -842,13 +893,16 @@ static void editor_changed_cb(int, int nInserted, int nDeleted,int, const char*,
   if (loading) w->show_insert_position();
 }
 
-static void new_cb(Fl_Widget*, void*) {
-  if (!check_save()) return;
-
+static void new_cb(Fl_Widget*, void*) 
+{
   if (nr_inputs < MAX_INPUTS)
   {
     current_input = nr_inputs;
     nr_inputs++;
+  }
+  else
+  {
+    if (!check_save()) return;
   }
   Document()->filename[0] = '\0';
   Document()->textbuf->select(0, Document()->textbuf->length());
@@ -872,8 +926,9 @@ static void run_cb(Fl_Widget*, void*)
   console->Restart();
 }
 
-static void open_cb(Fl_Widget*, void*) {
-  if (!check_save()) return;
+static void open_cb(Fl_Widget*, void*) 
+{
+//  if (!check_save()) return;
   if (nr_inputs < MAX_INPUTS && (FileName()[0] != '\0'))
   {
     current_input = nr_inputs;
@@ -1137,7 +1192,7 @@ int main(int argc, char **argv) {
 */
 
 //
-// End of "$Id: editor.cpp,v 1.6 2003-06-09 02:14:07 ayalpinkus Exp $".
+// End of "$Id: editor.cpp,v 1.7 2003-06-09 10:24:04 ayalpinkus Exp $".
 //
 
 
@@ -1180,7 +1235,7 @@ int main(int argc, char **argv) {
 #if 0 //TODO remove, older editor
 
 //
-// "$Id: editor.cpp,v 1.6 2003-06-09 02:14:07 ayalpinkus Exp $"
+// "$Id: editor.cpp,v 1.7 2003-06-09 10:24:04 ayalpinkus Exp $"
 //
 // A simple text editor program for the Fast Light Tool Kit (FLTK).
 //
@@ -1847,7 +1902,7 @@ void editor_add_items(Fl_Group* o,int minx,int miny,int width, int height, int f
 
 
 //
-// End of "$Id: editor.cpp,v 1.6 2003-06-09 02:14:07 ayalpinkus Exp $".
+// End of "$Id: editor.cpp,v 1.7 2003-06-09 10:24:04 ayalpinkus Exp $".
 //
 
 #endif
