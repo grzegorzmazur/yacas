@@ -1,10 +1,13 @@
 
-/* Sparse multinomial representation */
+/* Sparse multinomial representation
 
-/*
+   This file implements sparse multivariate polynomial
+   representation, along with a few algorithms.
+
    - MakeMultiNomial(expression)
      converts an expression to internal sparse multinomial format.
      NormalForm converts back.
+
 
 New proposal for simplify:
 
@@ -337,15 +340,14 @@ MultiDivide(_f,glist_IsList) <--
 
 
 
-
 /*
+
 try(f):=
 [
-  Echo({"input",f});
+  Echo({"In> ",f});
   Local(ms);
   ms:=MultiSimp(f);
-  Echo({"output",ms});
-  Echo({});
+  Echo({"Out> ",ms});
 ];
 //try(D(x,4)Exp((-x^2)/2));
 

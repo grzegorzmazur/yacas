@@ -160,6 +160,44 @@ Function("BubbleSort",{list,compare})
 ];
 
 
+LocalSymbols(max,f,low,high,mid,current)
+[
+FindIsq(max,f)  :=
+[
+  Local(low,high,mid,current);
+  low:=1;
+  high:=max+1;
+  Set(mid,((high+low)>>1));
+  While(high>low And mid>1)
+  [
+    Set(mid,((high+low)>>1));
+    Set(current,Apply(f,{mid}));
+//Echo({low,high,current});
+    If(current = 0,
+       high:=low-1,
+       If(current > 0,
+          Set(high,mid),
+          Set(low,mid+1)
+          )
+       );
+  ];
+  mid;
+];
+];
+UnFence("FindIsq",2);
+LocalSymbols(max,f,result)
+[
+  BSearch(max,f)  :=
+  [
+    Local(result);
+    Set(result, FindIsq(max,f));
+    If(Apply(f,{result})!=0,Set(result,-1));
+    result;
+  ];
+];
+UnFence("BSearch",2);
+
+
 /* VarList: return the variables this expression depends on. */
 VarList(_expr) <-- VarList(expr,"IsVariable");
 
