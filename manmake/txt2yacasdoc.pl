@@ -123,7 +123,7 @@ while (<STDIN>) {
 		&finish_text();
 		$have_par = 1;
 		print "Topical()\"" . &escape_term($1) . "\";\n";
-	} elsif (/^\*(?:A)\s\s*(.*)$/) {	# anchor
+	} elsif (/^\*(?:A|AA)\s\s*(.*)$/) {	# anchor
 		&finish_text();
 		$have_par = 1;
 		print "AddBody(HtmlAnchor() \"" . $1 . "\");\n";
