@@ -12,7 +12,7 @@ void CUnixCommandLine::NewLine()
 
 void CUnixCommandLine::Pause()
 {
-    int i=clock()+CLOCKS_PER_SEC/4;
+    unsigned int i=clock()+CLOCKS_PER_SEC/4;
     while (clock()<i);
 }
 
