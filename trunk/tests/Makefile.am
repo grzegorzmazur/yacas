@@ -11,7 +11,7 @@
 # Special case: the test file "webster.yts" is extracted from the documentation
 
 TESTFILES = arithmetic.yts c_tex_form.yts calculus.yts canprove.yts \
-	comments.yts complex.yts deriv.yts integrate.yts lists.yts \
+	comments.yts complex.yts deriv.yts dimensions.yts integrate.yts lists.yts \
 	logic_simplify_test.yts predicates.yts \
 	tensors.yts multivar.yts numbers.yts io.yts \
 	programming.yts regress.yts simplify.yts solve.yts sums.yts \

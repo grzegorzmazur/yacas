@@ -434,28 +434,30 @@ Function("OrthonormalBasis",{W})[
    Code submitted by Dirk Reusch.
  */
 
-LocalSymbols(x,i,n,dim,result)
+LocalSymbols(x,i,n,m,aux,dim,result)
 [
-  1 # Dimensions(x_IsList) <-- 
+1 # Dimensions(x_IsList) <-- 
+    [
+      Local(i,n,m,aux,dim,result);
+      result:=List(Length(x));
+      If(Length(x)>0 And Length(Select(IsList,x))=Length(x),
       [
-        Local(i,n,dim,result);
-        result:=List(Length(x));
-        If(Length(x)>0 And Length(Select(IsList,x))=Length(x),
-        [
-          n:=Length(x);
-          dim:=Dimensions(x[1]);
-    For(i:=2,i<=n,i++)
-      If(dim!=Dimensions(x[i]),
-      [
-        dim:=List();
-        i:=n+1; // break loop
+        n:=Length(x);
+	dim:=MapSingle(Dimensions,x);
+	m:=Min(MapSingle(Length,dim));
+	
+	For(i:=1,i<=m,i++)
+	[
+	    aux:=Table(dim[j][i],j,1,n,1);
+	    If(Min(aux)=Max(aux),
+	    result:=DestructiveAppend(result,dim[1][i]),
+	    i:=m+1);
+        ];
       ]);
-          result:=Concat(result,dim);
-        ],
-        result);
-      ];
-  
-  2 # Dimensions(_x) <-- List();
+      result;
+    ];
+
+2 # Dimensions(_x) <-- List();
 ];
 
 //////
