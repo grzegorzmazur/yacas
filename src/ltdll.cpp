@@ -101,8 +101,11 @@ LispPluginBase* LtDll::GetPlugin(LispCharPtr aDllFile)
     LispPluginBase* (*maker)(void);
     char buf[1024];
     //TODO potential buffer overflow!
+
     sprintf(buf,"make_%s",aDllFile);
     maker = (LispPluginBase*(*)(void))lt_dlsym((lt_dlhandle)handle,buf);
+
+//    maker = (LispPluginBase*(*)(void))lt_dlsym((lt_dlhandle)handle,"maker");
     if (!maker)
     {
         err = lt_dlerror();

@@ -70,8 +70,21 @@ libyacasnumbers_la_LDFLAGS = -rpath $(libdir)
 libgmpnumbers_la_SOURCES = gmpnumbers.cpp numbers.cpp
 libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 
-libmath_la_SOURCES = 
-libmath_la_LIBADD = libmath.lo
+# 
+# Jitse, is this correct? The following line was replaced with the lines
+# below it. After that change the libmath library compiled again on my
+# Mac OSX. Is it ok though? It is the same as the other plugins, so it 
+# should work...
+# 
+# libmath_la_LIBADD = libmath.lo 
+
+libmath_la_SOURCES = libmath.cpp
+
+# 
+# It appears these flags are not needed for Mac OSX. Keeping them around
+# for future reference...
+# libmath_la_LDFLAGS = -module -avoid-version -no-undefined 
+# 
 
 libmath.cpp: $(top_srcdir)/scripts/base.rep/math.ys yacas
 	(cd ../scripts && make packages.ys corefunctions.ys)

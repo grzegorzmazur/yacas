@@ -926,10 +926,21 @@ void LispDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
     dll  = NEW DLLCLASS;
     Check(dll != NULL,KLispErrNotEnoughMemory);
   }
+#ifdef YACAS_DEBUG
+  printf("DLL allocated\n");
+#endif// YACAS_DEBUG
   opened = dll->Open(&oper[0],aEnvironment);
   if (!opened) delete dll;
+#ifdef YACAS_DEBUG
+  printf("DLL opened, opened=%d\n",opened);
+#endif// YACAS_DEBUG
   Check(opened,KLispErrLibraryNotFound);
   aEnvironment.iDlls.Append(dll);
+
+#ifdef YACAS_DEBUG
+      printf("DLL added, %d DLLs loaded\n",aEnvironment.iDlls.NrItems());
+#endif// YACAS_DEBUG
+
   InternalTrue(aEnvironment,RESULT);
 }
 
