@@ -65,7 +65,8 @@ n1_IsRationalOrNumber *** n2_IsRationalOrNumber <--
 	);
 ];
 
-// Floor() will perform conversion to integer and a, b are already rational
+/// recursive routine to evaluate "partial factorial" a*(a+1)*...*b
+// Floor() will perform conversion to integer and a, b are numbers
 2# Factorial'partial(_a, _b) _ (b-a>=4) <-- Factorial'partial(a, a+Floor((b-a)/2)) * Factorial'partial(a+Floor((b-a)/2)+1, b);
 3# Factorial'partial(_a, _b) _ (b-a>=3) <-- a*(a+1)*(a+2)*(a+3);
 4# Factorial'partial(_a, _b) _ (b-a>=2) <-- a*(a+1)*(a+2);
@@ -73,9 +74,10 @@ n1_IsRationalOrNumber *** n2_IsRationalOrNumber <--
 6# Factorial'partial(_a, _b) _ (b-a>=0) <-- a;
 
 
-/* Binomials */
+/* Binomials -- now using partial factorial for speed */
+// Bin(n,m) = Bin(n, n-m)
 10 # Bin(n_IsPositiveInteger,m_IsNonNegativeInteger)_(2*m <= n) <-- ((n-m+1) *** n) / m!;
-15 # Bin(n_IsPositiveInteger,m_IsNonNegativeInteger)_(2*m > n And m <= n) <-- ((m+1) *** n )/ (n-m)!;
+15 # Bin(n_IsPositiveInteger,m_IsNonNegativeInteger)_(2*m > n And m <= n) <-- Bin(n, n-m);
 20 # Bin(n_IsInteger,m_IsInteger) <-- 0;
 
 /// even/odd staggered factorial: product of even or odd integers up to n
@@ -92,6 +94,7 @@ n1_IsRationalOrNumber *** n2_IsRationalOrNumber <--
 4# Factorial'staggered(_a, _b) _ (b-a>=2) <-- a*(a+2);
 5# Factorial'staggered(_a, _b) <-- a;
 
+/// staggered factorial for lists is threaded
 30 # (n_IsList)!! <-- MapSingle("!!",n);
 
 

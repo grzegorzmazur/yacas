@@ -22,7 +22,7 @@ Plot2D'outputs() := {
 	Note that the "data" backend does not do anything and simply returns the data.
 */
 
-/// trivial backend: return data list (do not confuse with Plot2D'data() defined in the main code which is the middle-level plotting routine)
+/// trivial backend: return data list (do not confuse with Plot2D'get'data() defined in the main code which is the middle-level plotting routine)
 Plot2D'data(values_IsList, _options'hash) <-- values;
 
 /// backend: display graph using gnuplot
