@@ -277,9 +277,9 @@ void LispFullForm(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
     InternalEval(aEnvironment, aResult, Argument(aArguments,1));
     LispPrinter printer;
-    StdUserOutput output;
-    printer.Print(aResult, output, aEnvironment);
-    output.Write("\n");
+//TODO remove    StdUserOutput output;
+    printer.Print(aResult, *aEnvironment.CurrentOutput(), aEnvironment);
+    aEnvironment.CurrentOutput()->Write("\n");
 }
 
 
