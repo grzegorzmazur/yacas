@@ -18,27 +18,27 @@ RadSimp(_n) <--
 
 CheckRadicals(_n,_test) <-- Abs(N(n-test,20)) < 0.000001;
 
+10 # ClampRadicals(_r)_(Abs(r)<0.000001) <-- 0;
+20 # ClampRadicals(_r) <-- r;
+
+
 
 RadSimpTry(_n,_result,_current,_max)<--
 [
   if (LessThan(N(result-n), 0))
   [
     Local(i);
-    For (Set(i,current),i<=max,Set(i,MathAdd(i,1)))
+
+    // First, look for perfect match
+    i:=BSearch(max,Hold({{try},ClampRadicals(N((result+Sqrt(try))-n,20))}));
+    If(i>0,
     [
-      Local(new, test);
-      Set(test,result+Sqrt(i));
+      Set(result,result+Sqrt(i));
+      Set(i,MathAdd(max,1));
+      Set(current,MathAdd(max,1));
+    ]);
 
-/* Echo({"Cut-try ",test});  */
-
-
-      if (CheckRadicals(n,test))
-      [
-        Set(result,test);
-        Set(i,MathAdd(max,1));
-      ];
-    ];
-
+    // Otherwise, search for another solution
     if (LessThan(N(result-n), 0))
     [
       For (Set(i,current),i<=max,Set(i,MathAdd(i,1)))
