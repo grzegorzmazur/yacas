@@ -58,6 +58,14 @@ HoldArg("Verify",aLeft);
 HoldArg("Verify",aRight);
 */
 
+Function("LogicVerify",{aLeft,aRight})
+[
+  If(aLeft != aRight,
+    Verify(CanProve(aLeft => aRight),True)
+  );
+];
+
+
 f1(x,n,m):=(x^n-1)*(x^m-1);
 f2(x,n,m):=x^(n+m)-(x^n)-(x^m)+1;
 

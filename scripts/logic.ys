@@ -105,7 +105,7 @@ RuleBase("=>",{a,b});
 30 # CNFInEq(_exp)                    <-- (CNFInEqSimplify(exp));
 
 10 # CNFInEqSimplify((_x) - (_x))     <-- 0;        // strictly speaking, this is not always valid, i.e. 1/0 - 1/0 != 0...
-100# CNFInEqSimplify(_x)              <-- [Echo({"Hit the bottom of CNFInEqSimplify with ", x, Nl()}); x;];
+100# CNFInEqSimplify(_x)              <-- x; /*Vladimir? [ Echo({"Hit the bottom of CNFInEqSimplify with ", x, Nl()}); x;]; */
                                                     // former "Simplify";
 
 // Some shortcuts to match prev interface
@@ -125,7 +125,7 @@ CanProveAux(_proposition)                           <-- LogicSimplify(propositio
     ForEach(clause, list)
     [
       Local(newclause);
-      //newclause := BubbleSort(LogicRemoveTautologies(Flatten(clause, "Or")), LexLessThan);
+      //newclause := BubbleSort(LogicRemoveTautologies(Flatten(clause, "Or")), LessThan);
       Set(newclause, LogicRemoveTautologies(Flatten(clause, "Or")));
       If(newclause != {True}, DestructiveAppend(clauses, newclause));
     ];
@@ -183,7 +183,7 @@ LocalCmp(_e1, _e2) <-- [
     Set(s1, ToString() Write(e1));
     Set(s2, ToString() Write(e2));
 
-    LexLessThan(s1, s2);
+    LessThan(s1, s2);
 ];
 
 // we may want to add other expression simplifers for new expression types

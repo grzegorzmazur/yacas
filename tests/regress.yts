@@ -3,7 +3,7 @@
 NextTest("Regression on bug reports");
 
 Verify(N(Sin(a)),Sin(a));
-Verify(CanProve(P Or (Not P And Not Q)),P Or Not Q);
+LogicVerify(CanProve(P Or (Not P And Not Q)),P Or Not Q);
 Verify(Cos(0),1);
 Verify(Infinity/Infinity,Undefined);
 Verify(Sqrt(Infinity),Infinity);
@@ -23,9 +23,9 @@ Verify(Limit(x,0,Right)1/x,Infinity);
 Verify(Limit(x,0,Left)1/x,-Infinity);
 
 Verify([Local(a);a:=0.1;Simplify((a*b*c)/(a*c*b));],1);
-Verify(CanProve(P Or (Not P And Not Q)),P Or Not Q);
-Verify(CanProve(A>0 And A<=0),False);
-Verify(CanProve(A>0 Or A<=0),True);
+LogicVerify(CanProve(P Or (Not P And Not Q)),P Or Not Q);
+LogicVerify(CanProve(A>0 And A<=0),False);
+LogicVerify(CanProve(A>0 Or A<=0),True);
 Verify(A<0,A<0);
 Verify(A>0,A>0);
 TestYacas(Arg(Exp(2*I*Pi/3)),Pi-Pi/3);

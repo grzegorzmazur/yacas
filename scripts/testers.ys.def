@@ -3,4 +3,5 @@ KnownFailure
 Echo
 VerifyArithmetic
 TestYacas
+LogicVerify
 }
