@@ -10,8 +10,8 @@ Verify(TeXForm(g), ...);
 */
 
 Verify(
-TeXForm(Hold(Cos(A-B)*Sqrt(C+D)-(a+b)*c^d+2*I+Complex(a+b,a-b)/Complex(0,1)))
-,"$\\left( \\cos \\left( A - B\\right) \\right)  \\sqrt{C + D} - \\left( a + b\\right)  c ^{d} + 2 i + \\frac{a + b + i \\left( a - b\\right) }{I} $"
+TeXForm(Hold(Cos(A-B)*Sqrt(C+D)-(a+b)*c^d+2*I+Complex(a+b,a-b)/I))
+,"$\\left( \\cos \\left( A - B\\right) \\right)  \\sqrt{C + D} - \\left( a + b\\right)  c ^{d} + 2 \\imath  + \\frac{a + b + \\imath  \\left( a - b\\right) }{\\imath } $"
 );
 
 Verify(
@@ -37,7 +37,7 @@ TeXForm(Hold(D(x)f(x)))
 
 Verify(
 TeXForm(Hold(Not (c<0) And (a+b)*c>= -d^e And (c<=0 Or b+1>0) Or a!=0 And Not (p=q)))
-,"$\\mathrm{Not}\\left( c < 0\\right)  \\& \\left( a + b\\right)  c\\geq  - d ^{e} \\& \\left( c\\leq 0 | b + 1 > 0\\right)  | a\\neq 0 \\& \\mathrm{Not}\\left( p = q\\right) $"
+,"$ \\neg c < 0 \\wedge \\left( a + b\\right)  c\\geq  - d ^{e} \\wedge \\left( c\\leq 0 \\vee b + 1 > 0\\right)  \\vee a\\neq 0 \\wedge  \\neg p = q$"
 );
 
 Verify(
