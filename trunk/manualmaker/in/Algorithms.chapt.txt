@@ -99,4 +99,6 @@ grids with a constant step.
 *INCLUDE algorithms-elemfunc.chapt
 *INCLUDE algorithms-specfunc.chapt
 
+			Symbolic algebra algorithms
+
 *INCLUDE algorithms-integration.chapt
