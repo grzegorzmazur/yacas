@@ -14,7 +14,7 @@
 /** Turn on USE_ASSERT to find programming errors through the asserts
  *  placed in various places of the application.
  */
-//#define USE_ASSERT
+#define USE_ASSERT
 
 /** Turn on NO_EXCEPTIONS if you want to disable run-time checking
  *  while executing commands.
