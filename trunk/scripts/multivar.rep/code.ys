@@ -391,20 +391,26 @@ DropZeroLC(MultiNomial(_vars,_terms)) <-- MultiNomial(vars,DropZeroLC(terms));
 
 10 # MultiDivide(f_IsMulti,g_IsList) <--
 [
-  Local(i,nr,q,r,p,v);
+  Local(i,nr,q,r,p,v,finished);
   Set(nr, Length(g));
   Set(v, MultiVars(f));
   Set(q, FillList(0,nr));
   Set(r, 0);
   Set(p, f);
-  While (Not MultiZero(p))
+  Set(finished,MultiZero(p));
+  Local(plt,glt);
+  While (Not finished)
   [
-    Local(plt,glt);
+//Set(g,LocalSymbols(a,b)(Subst(a,b)g));
+//Echo({"p = ",p}); //hier
+//Echo({""}); //hier
     Set(plt, MultiLT(p));
     For(i:=1,i<=nr,i++)
     [
       Set(glt, MultiLT(g[i]));
+      
       if (MultiLM(glt) = MultiLM(plt) Or MultiTermLess({MultiLM(glt),1}, {MultiLM(plt),1}))
+      if (Select({{n},n<0},MultiLM(plt)-MultiLM(glt)) = {})
       [
         Local(ff);
         Set(ff, MultiNomial(v,{{MultiLM(plt)-MultiLM(glt),MultiLC(plt)/MultiLC(glt)}}));
@@ -413,12 +419,21 @@ DropZeroLC(MultiNomial(_vars,_terms)) <-- MultiNomial(vars,DropZeroLC(terms));
         Set(i,nr+2);
       ];
     ];
-    if (i = nr+1)
+
+//Echo({"p3 = ",p}); //hier
+//Echo({"r = ",r});
+    If (i = nr+1,
     [
       Set(r, r + LocalSymbols(a,b)(Subst(a,b)plt));
       Set(p,  p - LocalSymbols(a,b)(Subst(a,b)plt));
-    ];
+    ]);
+//Echo({"r = ",r});
+//Echo({"p4 = ",p}); //hier
     Set(p,DropZeroLC(p));
+//    Set(p,DropZeroLC(LocalSymbols(a,b)(Subst(a,b)p)));
+
+//Echo({"p5 = ",p}); //hier
+    Set(finished,MultiZero(p));
   ];
   {q,r};
 ];
@@ -441,8 +456,16 @@ DropZeroLC(MultiNomial(_vars,_terms)) <-- MultiNomial(vars,DropZeroLC(terms));
   MultiGcd(g,f);
 ];
 
+5  # MultiGcd(MultiNomial(_vars,_terms),g_IsMulti)_(MultiLM(MultiNomial(vars,terms)) = MultiLM(g))
+     <--
+  MultiNomial(vars,{{FillList(0,Length(vars)),1}});
+
+5  # MultiGcd(MultiNomial(_vars,_terms),g_IsMulti)_(Select({{n},n<0},MultiLM(MultiNomial(vars,terms))-MultiLM(g)) != {})
+     <--
+  MultiNomial(vars,{{FillList(0,Length(vars)),1}});
+
 5  # MultiGcd(MultiNomial(_vars,_terms),g_IsMulti)_(NormalForm(g) = 0)
-     <-- MultiNomial(vars,{FillList(0,Length(vars)),0});
+     <-- MultiNomial(vars,{{FillList(0,Length(vars)),1}});
 10 # MultiGcd(f_IsMulti,g_IsMulti) <--
 [
   LocalSymbols(a)

@@ -20,17 +20,18 @@ Rule("Substitute",1,2,IsFunction(body))
 ];
 Rule("Substitute",1,3,True) body;
 
-
-Function("Select",{predicate,list})
+LocalSymbols(predicate,list,result,item)
 [
-  Local(result);
-  result:={};
-  ForEach(item,list)
+  Function("Select",{predicate,list})
   [
-    If(Apply(predicate,{item}),DestructiveAppend(result,item));
+    Local(result);
+    result:={};
+    ForEach(item,list)
+    [
+      If(Apply(predicate,{item}),DestructiveAppend(result,item));
+    ];
+    result;
   ];
-  result;
+  HoldArg("Select",predicate);
+  UnFence("Select",2);
 ];
-HoldArg("Select",predicate);
-UnFence("Select",2);
-
