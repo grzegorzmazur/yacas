@@ -279,3 +279,9 @@ Verify( 2^(-10), 1/1024 );
 // code) not terminating.
 Verify( Simplify((a^2+b^2)/(2*a)), (a^2+b^2)/(2*a) );
 
+// The following is a classical error: 0*x=0 is only true if
+// x is a number! In this case, it is checked for that the
+// multiplication of 0 with a vector returns a zero vector.
+// This would automatically be caught with type checking.
+// More tests of this ilk are possible: 0*matrix, etcetera.
+Verify(0*{a,b,c},{0,0,0});

@@ -241,19 +241,28 @@ Function("SetOrder",{order}) MaxUniOrder:=order;
 
 
 ShiftUniVar(UniVariate(_var,_first,_coefs),_fact,_shift)
-   <-- UniVariate(var,first+shift,fact*coefs);
+   <-- 
+   [
+//Echo("fact, coefs = ",fact,coefs);   
+     UniVariate(var,first+shift,fact*coefs);
+   ];
 
 
 200 # UniVariate(_var,_f1,_c1) * UniVariate(_var,_f2,_c2) <--
 [
   Local(i,j,n,shifted,result);
   Set(result,MakeUni(0,var));
-
+//Echo("c1 = ",var,f1,c1);
+//Echo("c2 = ",var,f2,c2);
   Set(n,Length(c1));
   For(i:=1,i<=n,i++)
   [
+//Echo("before = ",result);
+//Echo("parms = ",var,c1,c2,f1,f2,f1+i-1);
     Set(result,result+ShiftUniVar(UniVariate(var,f2,c2),MathNth(c1,i),f1+i-1));
+//Echo("after = ",result);
   ];
+//Echo("result = ",result);
   result;
 ];
 
