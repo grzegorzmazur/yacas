@@ -1393,9 +1393,9 @@ LispBoolean Significant(ANumber& a)
 void ANumber::ChangePrecision(LispInt aPrecision)
 {
   //First, round.
-/* TODO not working correctly yet 
+/*FIXME TODO not working correctly yet */
   //TODO code bloat! Deserves its own routine!
-  if (iExp>1)
+  if (aPrecision == 0 && iExp>1)
   {
     PlatWord* ptr = (PlatWord*)iArray;
     if (*ptr < (WordBase/2))
@@ -1419,9 +1419,6 @@ void ANumber::ChangePrecision(LispInt aPrecision)
       }
     }
   }
- */
-
-
 
   LispInt oldExp = iExp;
   

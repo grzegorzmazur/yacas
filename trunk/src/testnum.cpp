@@ -145,7 +145,8 @@ void TestTypes1(double value)
 	Check(x.Sign()==-sign, "sign is correct");
 	x.BecomeInt();
 	Check(x.IsInt(), "converted to integer type");
-	Check(x.Double()==-int_value, "value is correct");
+	returned_value = x.Double();
+  Check(returned_value==-int_value, "value is correct");
 	x.BecomeFloat();
 	Check(!x.IsInt(), "convert to float type");
 	Check(x.Double()==-int_value, "value is still correct");
