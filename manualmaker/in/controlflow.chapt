@@ -1,159 +1,612 @@
-
-
 Chapter()"Control flow functions";
 
 AddAnchor("MaxEvalDepth");
-SubSection()"MaxEvalDepth(n)";  Text()"
+SubSection() "MaxEvalDepth";
+BuiltIn();
 
-Use this command to set the maximum evaluation depth. This will
-catch any infinite recursion. For example, f(x):=f(x); and then
-f(x) would keep on calling f(x), which would call f(x), which
-would call f(x)... etcetera. The interpreter will halt if
-the call is n deep. The default value is 100000.
-";
+Topical() "Calling Sequence";
+Text() "MaxEvalDepth(n)";
+
+Topical() "Parameters";
+Text() "n - new maximum evalution depth";
+
+Topical() "Description";
+Text() "
+Use this command to set the maximum evaluation depth to the integer
+\"n\". The default value is 1000. The function " :
+HtmlTerm("MaxEvalDepth") : " returns " : HtmlTerm("True") : ".
+<p> </p>
+The point of having a maximum evaluation depth is to catch any
+infinite recursion. For example, after the definition " :
+HtmlTerm("f(x) := f(x)") : ", evaluating the expression " :
+HtmlTerm("f(x)") : " would call " : HtmlTerm("f(x)") : ", which would
+call " : HtmlTerm("f(x)") : ", etcetera. The interpreter will halt if
+the maximum evaluation depth is reached. Also indirect recursion, like
+the pair of definitions " : HtmlTerm("f(x) := g(x)") : " and " :
+HtmlTerm("g(x) := f(x)") : ", will be caught.";
+
+Topical() "Examples";
+Text() "
+An example of an infinite recursion, caught because the maximum
+evaluation depth is reached." : HtmlCommand("
+In> f(x) := f(x)
+Out> True;
+In> f(x)
+Error on line 1 in file [CommandLine]
+Max evaluation stack depth reached.
+Please use MaxEvalDepth to increase the stack size as needed.") : 
+"<p> </p>
+However, a long calculation may cause the maximum evaluation depth to
+be reached without the presence of infinite recursion. The function " :
+HtmlTerm("MaxEvalDepth") : " is meant for these cases. " :
+HtmlCommand("
+In> 10 # g(0) <-- 1;
+Out> True;
+In> 20 # g(n_IsPositiveInteger) <-- 2 * g(n-1);
+Out> True;
+In> g(1001);
+Error on line 1 in file [CommandLine]
+Max evaluation stack depth reached.
+Please use MaxEvalDepth to increase the stack size as needed.
+
+In> MaxEvalDepth(10000);
+Out> True;
+In> g(1001);
+Out> 214301721437253464189685009812000362112280962341106721488750077674070210224
+98722449863967576313917162551893458351062936503742905713846280871969155149397149
+60786913554964846197084214921012474228375590836430609294996716388253479753511833
+1087892154125829142392955373084335320859663305248773674411336138752;");
+
+
 
 AddAnchor("Hold");
-SubSection()"Hold(expression)";  Text()"
-Hold(expression) : returns expression unevaluated.
+SubSection() "Hold";
+BuiltIn();
 
-";
+Topical() "Calling Sequence";
+Text() "Hold(expr)";
+
+Topical() "Parameters";
+Text() "expr - expression to hold";
+
+Topical() "Description";
+Text() "
+The expression \"expr\" is returned unevaluated. This is useful to
+prevent the evaluation of a certain expression in a context in which
+evaluation normally takes place.";
+
+Topical() "Example";
+Text() HtmlCommand("
+In> Echo({ Hold(1+1), \"=\", 1+1 });
+ 1+1 = 2 
+Out> True;");
+
+Topical() "See Also";
+SeeAlso({"Eval", "HoldArg"});
+
+
 
 AddAnchor("Eval");
-SubSection()"Eval(expression)";  Text()"
-Eval(expression) : Re-evaluates expression.
-";
+SubSection() "Eval";
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "Eval(expr)";
+
+Topical() "Parameters";
+Text() "expr - expression to evaluate";
+
+Topical() "Description";
+Text() "
+This function explicitly requests an evaluation of the expression
+\"expr\", and returns the result of this evaluation.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> a := x;
+Out> x;
+In> x := 5;
+Out> 5;
+In> a;
+Out> x;
+In> Eval(a);
+Out> 5;") : "
+The variable " : HtmlTerm("a") : " is bound to " : HtmlTerm("x") : ",
+and " : HtmlTerm("x") : " is bound to 5. Hence evaluating " :
+HtmlTerm("a") : " will give " : HtmlTerm("x") : ". Only when an extra
+evaluation of " : HtmlTerm("a") : " is requested, the value 5 is
+returned.
+<p> </p>
+Note that the behaviour would be different if we had exchanged the
+assignments. If the assignment " : HtmlTerm("a := x") : " were given
+while " : HtmlTerm("x") : " had the value 5, the variable " :
+HtmlTerm("a") : " would also get the value 5 because the assignment
+operator " : HtmlTerm(":=") : " evaluates the right-hand side.";
+
+Topical() "See Also";
+SeeAlso({"Hold", "HoldArg", ":="});
+
+
 
 AddAnchor("While");
-SubSection()"While(predicate) body";  Text()"
-While(predicate) body : 
-Keep on evaluating \"body\" while \"predicate\"
-evaluates to \"True\". \"predicate\" is tested
-before evaluating the body. While returns \"True\".
-";
+SubSection() "While";
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "While(pred) body";
+
+Topical() "Parameters";
+Text() "
+pred - predicate deciding whether to keep on looping <br>
+body - expression to loop over";
+
+Topical() "Description";
+Text() "
+Keep on evaluating \"body\" while \"pred\" evaluates to " :
+HtmlTerm("True") : ". More precisely, " : HtmlTerm("While") : "
+evaluates the predicate \"pred\", which should evaluate to either " :
+HtmlTerm("True") : " or " : HtmlTerm("False") : ". If the result is "
+: HtmlTerm("True") : ", the expression \"body\" is evaluated and then
+the predicate \"pred\" is again evaluated. If it is still " :
+HtmlTerm("True") : ", the expressions \"body\" and \"pred\" are again
+evaluated and so on until \"pred\" evaluates to " : HtmlTerm("False")
+: ". At that point, the loop terminates and " : HtmlTerm("While") : "
+returns " : HtmlTerm("True") : ".
+<p> </p>
+In particular, if \"pred\" immediately evaluates to " :
+HtmlTerm("False") : ", the body is never executed. " :
+HtmlTerm("While") : " is the fundamental looping construct on which
+all other loop commands are based. It is equivalent to the " :
+HtmlTerm("while") : " command in the programming language C.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> x := 0;
+Out> 0;
+In> While (x! < 10^6) [ Echo({x, x!}); x++; ];
+ 0  1 
+ 1  1 
+ 2  2 
+ 3  6 
+ 4  24 
+ 5  120 
+ 6  720 
+ 7  5040 
+ 8  40320 
+ 9  362880 
+Out> True;");
+
+Topical() "See Also";
+SeeAlso({"Until", "For"});
+
 
 AddAnchor("Until");
-SubSection()"Until(predicate) body";  Text()"
-Until repeats a statement until a predicate becomes
-true. A difference with While is that the statement is evaluated
-at least once, as opposed to While where the body statement is
-evaluated zero or more times.
-";
+SubSection() "Until";
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Until(pred) body";
+
+Topical() "Parameters";
+Text() "
+pred - predicate deciding whether to stop <br>
+body - expression to loop over";
+
+Topical() "Description";
+Text() "
+Keep on evaluating \"body\" until \"pred\" becomes " :
+HtmlTerm("True") : ". More precisely, " : HtmlTerm("Until") : " first
+evaluates the expression \"body\". Then the predicate \"pred\" is
+evaluated, which should yield either " : HtmlTerm("True") : " or " :
+HtmlTerm("False") : ". In the latter case, the expressions \"body\"
+and \"pred\" are again evaluated and this continues as long as
+\"pred\" is " : HtmlTerm("False") : ". As soon as \"pred\" yields " :
+HtmlTerm("True") : ", the loop terminates and " : HtmlTerm("Until") :
+" returns " : HtmlTerm("True") : ".
+<p> </p>
+The main difference with " : HtmlTerm("While") : " is that " :
+HtmlTerm("Until") : " always evaluates the body at least once, but " :
+HtmlTerm("While") : " may not evaluate the body at all. Besides, the
+meaning of the predicate is reversed: " : HtmlTerm("While") : " stops
+if \"pred\" is " : HtmlTerm("False") : " while " : HtmlTerm("Until") :
+" stops if \"pred\" is " : HtmlTerm("True") : ".  <p> </p> The command
+" : HtmlTerm("Until(pred) body;") : " is equivalent to " :
+HtmlTerm("pred; While(Not pred) body;") : ". In fact, the
+implementation of " : HtmlTerm("Until") : " is based on the internal
+command " : HtmlTerm("While") : ". The " : HtmlTerm("Until") : "
+command can be compared to the " : HtmlTerm("do ... while") : "
+construct in the programming language C.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> x := 0;
+Out> 0;
+In> Until (x! > 10^6) [ Echo({x, x!}); x++; ];
+ 0  1 
+ 1  1 
+ 2  2 
+ 3  6 
+ 4  24 
+ 5  120 
+ 6  720 
+ 7  5040 
+ 8  40320 
+ 9  362880 
+Out> True;");
+
+Topical() "See Also";
+SeeAlso({"While", "For"});
+
+
 
 AddAnchor("If");
-SubSection()"If(predicate,then,else)";  Text()"
-If(predicate,then,else) : 
-If statement. If \"predicate\" evaluates to
-\"True\", return result of evaluating the
-\"then\" body, else if there is a \"else\" body,
-return that result, otherwise return \"False\".
-";
+SubSection() "If";
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "
+If(pred, then) <br>
+If(pred, then, else)";
+
+Topical() "Parameters";
+Text() "
+pred - predicate to test <br>
+then - expression to evaluate if \"pred\" is True <br>
+else - expression to evaluate if \"pred\" is False";
+
+Topical() "Description";
+Text() "
+This command implements a branch point. The predicate \"pred\" is
+evaluated, which should result in either " : HtmlTerm("True") : " or "
+: HtmlTerm("False") : ". In the first case, the expression \"then\" is
+evaluated and returned. If the predicate yields " : HtmlTerm("False")
+: ", the expression \"else\" (if present) is evaluated and
+returned. If there is no \"else\" branch (ie. if the first calling
+sequence is used), the " : HtmlTerm("If") : " expression returns " :
+HtmlTerm("False") : ".";
+
+Topical() "Examples";
+Text() "
+The sign function is defined to be 1 if its argument is positive and
+-1 if its argument is negative. A possible implementation is " :
+HtmlCommand("
+In> mysign(x) := If (IsPositiveReal(x), 1, -1); 
+Out> True;
+In> mysign(Pi);
+Out> 1;
+In> mysign(-2.5);
+Out> -1;") : "
+Note that this will give incorrect results, if \"x\" cannot be
+numerically approximated." : HtmlCommand("
+In> mysign(a);
+Out> -1;") : "
+Hence a better implementation would be" : HtmlCommand("
+In> mysign(_x)_IsNumber(N(x)) <-- If (IsPositiveReal(x), 1, -1);
+Out> True;");
+
+
 
 AddAnchor("SystemCall");
-SubSection()"SystemCall(string)";  Text()"
-SystemCall(string) : 
-This will call a command in the surrounding shell Yacas was invoked
-from. SystemCall can be used to pass commands to other programs
-or the operating system. 
+SubSection() "SystemCall";
+BuiltIn();
 
-";
+Topical() "Calling Sequence";
+Text() "SystemCall(str)";
 
+Topical() "Parameters";
+Text() "str - string containing the command to call";
+
+Topical() "Description";
+Text() "
+The command contained in the string \"str\" is executed by the
+underlying Operating System. The return value of " :
+HtmlTerm("SystemCall") : " is " : HtmlTerm("True") : ".
+<p> </p>
+This command is not allowed in the body of the " : HtmlTerm("Secure")
+: " command and will lead to an error.";
+
+Topical() "Examples";
+Text() "
+In a UNIX environment, the command " : HtmlTerm("SystemCall(\"ls\")")
+: " would list the contents of the current directory.";
+
+Topical() "See Also";
+SeeAlso({"Secure"});
 
 
 
 AddAnchor("Function");
-SubSection()"Function(\"operator\",{arguments} ) body";  Text()"
-Function(\"operator\",{arguments} ) body : 
-Use this to declare a simple function, one that doesn't need an entire
-rules data base.
+SubSection() "Function";
+StandardLib();
 
-";
+Topical() "Calling Sequence";
+Text() "Function(\"op\", {arg,...}) body";
+
+Topical() "Parameters";
+Text() "
+op - name of the function <br>
+arg - formal argument to the function <br>
+body - expression compromising the body of the function";
+
+Topical() "Description";
+Text() "
+This command can be used to declare a simple function. It is
+equivalent to the rule " : HtmlTerm("op(_arg, ...) <-- body") : ". Any
+previous rules associated with \"op\" (with the same arity) will be
+discarded. More complicated function can be defined using a rule
+database.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Function(\"FirstOf\", {list})  list[1];
+Out> True;
+In> FirstOf({a,b,c});
+Out> a;") : "
+This defines a function " : HtmlTerm("FirstOf") : " which returns the
+first element of a list. Equivalent definitions would be " :
+HtmlTerm("FirstOf(_list) <-- list[1]") : " or " :
+HtmlTerm("FirstOf(list) := list[1]") : ".";
+
+Topical() "See Also";
+SeeAlso({"TemplateFunction", "Rule", "RuleBase", ":="});
+
+
 
 AddAnchor("Use");
-SubSection()"Use(\"file\")";  Text()"
-Use(\"file\") : 
-This function loads a file if it was not already loaded with Use.
-";
+SubSection() "Use";
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "Use(name)";
+
+Topical() "Parameters";
+Text() "name - name of the file to load";
+
+Topical() "Description";
+Text() "
+If the file \"name\" has been loaded before, either by an earlier call
+to " : HtmlTerm("Use") : " or via the " : HtmlTerm("DefLoad") : "
+mechanism, nothing happens. Otherwise all expressions in the file are
+read and evaluated. " : HtmlTerm("Use") : " always returns " :
+HtmlTerm("True") : ".
+<P> </P>
+The purpose of this function is to make sure that the file will at
+least have been loaded, but is not loaded twice.";
+
+Topical() "See Also";
+SeeAlso({"Load", "DefLoad", "DefaultDirectory"});
+
+
 
 AddAnchor("For");
-SubSection()"For(start,predicate,increment) body";  Text()"
-For(start,predicate,increment) body : 
-Looping in a C style. \"start\" gets called, and then \"body\" as
-long as \"predicate\" evaluates to True\", evaluating
-\"increment\" each time after body was evaluated. Returns \"True\".
+SubSection() "For";
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "For(init, pred, incr) body";
+
+Topical() "Parameters";
+Text() "
+init - expression for performing the initialization <br>
+pred - predicate deciding whether to continue the loop <br>
+incr - expression to increment the counter <br>
+body - expression to loop over";
+
+Topical() "Description";
+Text() "
+This commands implements a C style " : HtmlTerm("for") : " loop. First
+of all, the expression \"init\" is evaluated. Then the predicate
+\"pred\" is evaluated, which should return " : HtmlTerm("True") : " or
+" : HtmlTerm("False") : ". Next the loop is executed as long as the
+predicate yields " : HtmlTerm("True") : ". One traversion of the loop
+consists of the subsequent evaluations of \"body\", \"incr\", and
+\"pred\". Finally, the value " : HtmlTerm("True") : " is returned.
+<p> </p>
+This command is most often used in a form like " : HtmlTerm("For(i=1,
+i<=10, i++) body") : ", which evaluates " : HtmlTerm("body") : " with
+" : HtmlTerm("i") : " subsequently set to 1, 2, 3, 4, 5, 6, 7, 8, 9,
+and 10.
+<p> </p>
+The expression " : HtmlTerm("For(init, pred, incr) body") : " is
+equivalent to " : HtmlTerm("init; While(pred) [body; incr;]") : ".";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> For (i:=1, i<=10, i++) Echo({i, i!});
+ 1  1 
+ 2  2 
+ 3  6 
+ 4  24 
+ 5  120 
+ 6  720 
+ 7  5040 
+ 8  40320 
+ 9  362880 
+ 10  3628800 
+Out> True;");
+
+Topical() "See Also";
+SeeAlso({"While", "Until", "ForEach"});
 
 
-";
 
 AddAnchor("ForEach");
-SubSection()"ForEach(item,{list}) body";  Text()"
-ForEach(item,{list}) body : 
-This function loops over each element in {list}, assigning it to
-the variable \"item\", and calling \"body\". Returns \"True\".
+SubSection() "ForEach";
+StandardLib();
 
-";
+Topical() "Calling sequence";
+Text() "ForEach(var, list) body";
+
+Topical() "Parameters";
+Text() "
+var - looping variable <br>
+list - list of values to assign to \"var\" <br>
+body - expression to evaluate with different values of \"var\"";
+
+Topical() "Description";
+Text() "
+The expression \"body\" is evaluated multiple times. The first time,
+\"var\" has the value of the first element of \"list\", then it gets
+the value of the second element and so on. " : HtmlTerm("ForEach") : "
+returns " : HtmlTerm("True") : ".";
+
+Topical() "Examples";
+Text() HtmlCommand("
+ In> ForEach(i,{2,3,5,7,11}) Echo({i, i!});
+ 2  2 
+ 3  6 
+ 5  120 
+ 7  5040 
+ 11  39916800 
+Out> True;");
+
+Topical() "See Also";
+SeeAlso({"For"});
+
+
 
 AddAnchor("Apply");
-SubSection()"Apply(\"oper\",{list})";  Text()"
-Apply(\"oper\",{list}) : 
-This function applies a operator to the arguments mentioned in the list.
-Eg. \"Apply(\"+\",{2,3});\" would evaluate to \"5\".
+SubSection() "Apply";
+StandardLib();
 
-You can also apply pure functions, declared using the form {varlist,body}.
-Example: \"Apply( {{x,y},x+y} , {2,3} );\" would also evaluate to 5.
+Topical() "Calling sequence";
+Text() "Apply(fn, arglist)";
 
-";
+Topical() "Parameters";
+Text() "
+fn - function to apply <br>
+arglist - list of arguments";
+
+Topical() "Description";
+Text() "
+This function applies the function \"fn\" to the arguments in
+\"arglist\" and returns the result. The first parameter \"fn\" can
+either be a string containing the name of a function  or a pure
+function. Pure functions, modelled after lambda-expressions, have the
+form \"{varlist,body}\", where \"varlist\" is the list of formal
+parameters. Upon application, the formal paramaters are assigned the
+values in \"arglist\" (the second parameter of " : HtmlTerm("Apply") :
+") and the \"body\" is evaluated
+<p> </p>
+An shorthand for " : HtmlTerm("Apply") : " is provided by the " :
+HtmlTerm("@") : " operator.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Apply(\"+\", {5,9});
+Out> 14;
+In> Apply({{x,y}, x-y^2}, {Cos(a), Sin(a)});
+Out> Cos(a)-Sin(a)^2;");
+
+Topical() "See Also";
+SeeAlso({"Map", "MapSingle", "@"});
 
 
 
 AddAnchor("MapArgs");
 SubSection()"MapArgs";
 StandardLib();
-Topical()"Calling Sequence";
-Text()"MapArgs(expression,operation)";
+
+Topical() "Calling Sequence";
+Text() "MapArgs(expr, fn)";
 
 Topical()"Parameters";
 Text()
-"expression - an expression to work on <br>
-operation - an operation to perform on each argument";
+"expr - an expression to work on <br>
+fn - an operation to perform on each argument";
 
 Topical()"Description";
-Text()
-"MapArgs performs an operation on each argument to a function
-call specified in the expression.";
+Text() "
+Every top-level argument in \"expr\" is substituted by the result of
+applying \"fn\" to this argument. Here \"fn\" can be either the name
+of a function or a pure function.";
 
 Topical()"Examples";
 Text()
 HtmlCommand(
-"In> MapArgs(f(x,y,z),\"Sin\")
+"In> MapArgs(f(x,y,z),\"Sin\");
 Out> f(Sin(x),Sin(y),Sin(z));
-");
+In> MapArgs({3,4,5,6}, {{x},x^2});
+Out> {9,16,25,36};");
 
 Topical()"See Also"; 
 SeeAlso({"MapSingle","Map", "Apply"});
 
 
 
-
 AddAnchor("Subst");
-SubSection()"Subst(from,to)body"; Text()"
+SubSection() "Subst";
+StandardLib();
 
-Subst replaces any occurrence of from in body with to. <BR>
+Topical() "Calling Sequence";
+Text() "Subst(from, to) expr";
 
-Example:
-  Subst(x,Sin(y)) x+x -> Sin(y)+Sin(y)
-";
+Topical() "Parameters";
+Text() "
+from - expression to be substituted <br>
+to - expression to substitute for \"from\" <br>
+expr - expression in which the substitution takes place";
+
+Topical() "Description";
+Text() "
+This function substitutes every occurence of \"from\" in \"expr\" by
+\"to\". This is a syntactical substitution: only places where \"from\"
+occurs as a subexpression are affected.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Subst(x, Sin(y)) x^2+x+1;
+Out> Sin(y)^2+Sin(y)+1;
+In> Subst(a+b, x) a+b+c;
+Out> x+c;
+In> Subst(b+c, x) a+b+c;
+Out> a+b+c;") : "
+The explanation for the last result is that the expression " :
+HtmlTerm("a+b+c") : " is internally stored as " : HtmlTerm("(a+b)+c")
+: ". Hence " : HtmlTerm("a+b") : " is a subexpression, but " :
+HtmlTerm("b+c") : " is not.";
+
+Topical() "See Also";
+SeeAlso({"WithValue", "/:"});
+
+
 
 AddAnchor("WithValue");
-SubSection()"WithValue(variable,value,expression)";
-Text()"
-WithValue(variable,value,expression) : evaluate expression, with
-variable set to value. variable and value can be lists of
-variables and values.
-";
+SubSection() "WithValue";
+StandardLib();
 
+Topical() "Calling Sequence";
+Text() "
+WithValue(var, val, expr) <br>
+WithValue({var,...}, {val,...}, expr)";
 
+Topical() "Parameters";
+Text() "
+var - variable to assign to <br>
+val - value to be assigned to \"var\" <br>
+expr - expression to evaluate with \"var\" equal to \"val\"";
 
+Topical() "Description";
+Text() "
+First, the expression \"val\" is assigned to the variable
+\"var\". Then, the expression \"expr\" is evaluated and
+returned. Finally, the assignment is reversed so that the variable 
+\"var\" has the same value as it had before " : HtmlTerm("WithValue")
+: " was evaluated.
+<p> </p>
+The second calling sequence assigns the first element in the list of
+values to the first element in the list of variables, the second value
+to the second variable, etcetera.";
 
+Topical() "Examples";
+Text() HtmlCommand("
+In> WithValue(x, 3, x^2+y^2+1);
+Out> y^2+10;
+In> WithValue({x,y}, {3,2}, x^2+y^2+1);
+Out> 14;");
+
+Topical() "See Also";
+SeeAlso({"Subst", "/:"});
 
 
 
@@ -163,8 +616,8 @@ SubSection()"Local simplification rules";
 StandardLib();
 Topical()"Calling Sequence";
 Text()"
-expression /: patterns <br>
-expressions /:: patterns";
+expression /: patterns (prec. 10000) <br>
+expressions /:: patterns (prec. 10000)";
 
 Topical()"Parameters";
 Text()
@@ -228,19 +681,6 @@ SeeAlso({"Subst"});
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 AddAnchor("SetHelpBrowser");
 SubSection()"SetHelpBrowser";
 StandardLib();
@@ -268,7 +708,7 @@ In> ??
 ");
 
 Topical()"See Also"; 
-SeeAlso({});
+SeeAlso({"Help"});
 
 
 
@@ -336,43 +776,105 @@ SeeAlso({"TraceExp","TraceRule"});
 
 
 AddAnchor("TraceExp");
-SubSection()"TraceExp(expression)";  Text()"
-TraceExp(expression) : turn on tracing facility, and evaluate
-expression. This is useful for tracing the evaluation of small
-routines interactively from the command line.
-";
+SubSection() "TraceExp";
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "TraceExp(expr)";
+
+Topical() "Parameters";
+Text() "expr - expression to trace";
+
+Topical() "Description";
+Text() "
+The expression \"expr\" is evaluated with the tracing facility turned
+on. This means that every subexpression, which is evaluated, is shown
+before and after evaluation. Before evaluation, it is shown in the
+forn " : HtmlTerm("TrEnter(x)") : ", where " : HtmlTerm("x") : "
+denotes the subexpression being evaluated. After the evaluation the
+line " : HtmlTerm("TrLeave(x,y)") : " is printed, where " :
+HtmlTerm("y") : " is the result of the evaluation. The indentation
+shows the nesting level.
+<p> </p>
+Note that this command usually generates huge amounts of output. A
+more specific form of tracing (eg. " : HtmlTerm("TraceRule") : ") is
+probably more useful  for all but very simple expressions.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> TraceExp(2+3);
+  TrEnter(2+3);
+    TrEnter(2);
+    TrLeave(2, 2);
+    TrEnter(3);
+    TrLeave(3, 3);
+    TrEnter(IsNumber(x));
+      TrEnter(x);
+      TrLeave(x, 2);
+    TrLeave(IsNumber(x),True);
+    TrEnter(IsNumber(y));
+      TrEnter(y);
+      TrLeave(y, 3);
+    TrLeave(IsNumber(y),True);
+    TrEnter(True);
+    TrLeave(True, True);
+    TrEnter(MathAdd(x,y));
+      TrEnter(x);
+      TrLeave(x, 2);
+      TrEnter(y);
+      TrLeave(y, 3);
+    TrLeave(MathAdd(x,y),5);
+  TrLeave(2+3, 5);
+Out> 5;");
+
+Topical() "See Also";
+SeeAlso({"TraceStack", "TraceRule"});
+
+
 
 AddAnchor("TraceRule");
-SubSection()"TraceRule(template)expression";  Text()"
-Tracerule(template)expression : turn on tracing facility given
-the template, and evaluate expression. the template is an example
-of the function to trace on. template=x+y would trace all additions,
-showing the arguments passed in, and the result of the addition.
-Only user-defined functions can be traced.
+SubSection() "TraceRule";
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "TraceRule(templ) expr";
+
+Topical() "Parameters";
+Text() "
+templ - template showing the operator to trace <br>
+expr - expression to evaluate with tracing on";
+
+Topical() "Description";
+Text() "
+The tracing facility is turned on for subexpressions of the form
+\"templ\", and the expression \"expr\" is evaluated. The template
+\"templ\" is an example of the function to trace on. Specifically, all
+subexpressions with the same top-level operator and arity as \"templ\"
+are showed. The subexpressions are displayed before (indicated with " :
+HtmlTerm("TrEnter") : ") and after (" : HtmlTerm("TrLeave") : ")
+evaluation. In between, the arguments are showed before and after
+evaluation (" : HtmlTerm("TrArg") : "). Only function defined in
+scripts can be traced.
 <P>  </P>
 This is useful for tracing a function that is called from within
 another function. This way you can see how your function behaves
-in the environment it is used in.
-<P>  </P>
-An example invocation of TraceRule is" :
+in the environment it is used in.";
 
-HtmlCommand(
-"In( 1 ) = TraceRule(x+y)2+3*5+4;":HtmlBreak()
-) :
-"Which should then show something to the effect of ":
+Topical() "Examples";
+Text() HtmlCommand("
+In> TraceRule(x+y) 2+3*5+4;
+    TrEnter(2+3*5+4);
+      TrEnter(2+3*5);
+          TrArg(2, 2);
+          TrArg(3*5, 15);
+      TrLeave(2+3*5, 17);
+        TrArg(2+3*5, 17);
+        TrArg(4, 4);
+    TrLeave(2+3*5+4, 21);
+Out> 21;");
 
-HtmlCommand(
-"    ENTER:2+3*5+4":HtmlBreak():
-"      ENTER:2+3*5":HtmlBreak():
-"          ARG:2 <- 2":HtmlBreak():
-"          ARG:3*5 <- 15":HtmlBreak():
-"      LEAVE:2+3*5 -> 17":HtmlBreak():
-"        ARG:2+3*5 <- 17":HtmlBreak():
-"        ARG:4 <- 4":HtmlBreak():
-"    LEAVE:2+3*5+4 -> 21":HtmlBreak():
-"Out( 0 ) = 21;")
-
-;
+Topical() "See Also";
+SeeAlso({"TraceStack", "TraceExp"});
 
 
 
