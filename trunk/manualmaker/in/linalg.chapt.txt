@@ -925,6 +925,47 @@ equivalently Inverse($A$) = Transpose($A$).
 	In> IsDiagonal(HilbertMatrix(5))
 	Out> False;
 
+*CMD IsUpperTriangular --- test for an upper triangular  matrix
+*STD
+*CALL
+	IsUpperTriangular(A)
+
+*PARMS
+
+{A} -- a matrix
+
+*DESC
+
+{IsUpperTriangular(A)} returns {True} if {A} is upper triangular and {False} otherwise.
+A upper triangular matrix is one which has all zero entries below the diagonal.
+
+*E.G.
+	In> IsUpperTriangular(Identity(5))
+	Out> True;
+
+*SEE IsDiagonal, IsLowerTriangular
+
+
+*CMD IsLowerTriangular --- test for an lower triangular  matrix
+*STD
+*CALL
+        IsLowerTriangular(A)
+
+*PARMS  
+
+{A} -- a matrix
+
+*DESC
+
+{IsLowerTriangular(A)} returns {True} if {A} is upper triangular and {False} otherwise.
+A upper triangular matrix is one which has all zero entries above the diagonal.
+
+*E.G.
+        In> IsLowerTriangular(Identity(5))
+        Out> True;
+
+*SEE IsDiagonal, IsUpperTriangular
+
 
 *CMD IsSymmetric --- test for a symmetric matrix
 *STD
