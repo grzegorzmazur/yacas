@@ -5,11 +5,10 @@
 algebra. They can be used to manipulate vectors, represented as lists,
 and matrices, represented as lists of lists.
 
-*CMD LeviCivita --- The totally anti-symmetric Levi-Civita symbol
+*CMD LeviCivita --- totally anti-symmetric Levi-Civita symbol
 *STD
 *CALL
-
-LeviCivita(list)
+	LeviCivita(list)
 
 *PARMS
 
@@ -17,11 +16,11 @@ list - a list of integers 1 .. n in some order
 
 *DESC
 
-"LeviCivita" implements the Levi-Civita symbol. This is generally
+{LeviCivita} implements the Levi-Civita symbol. This is generally
 useful for tensor calculus.  {list}  should be a list of integers,
 and this function returns 1 if the integers are in successive order,
-eg.  {1,2,3,...}  would return 1. Swapping two elements of this
-list would return -1. So, LeviCivita( {2,1,3} ) would evaluate
+eg. {LeviCivita( {1,2,3,...} )}  would return 1. Swapping two elements of this
+list would return -1. So, {LeviCivita( {2,1,3} )} would evaluate
 to -1.
 
 *E.G.
@@ -35,11 +34,10 @@ to -1.
 
 *SEE Permutations
 
-*CMD Permutations --- Form all permutations of a list
+*CMD Permutations --- get all permutations of a list
 *STD
 *CALL
-
-Permutations(list)
+	Permutations(list)
 
 *PARMS
 
@@ -58,17 +56,15 @@ the original list.
 
 *SEE LeviCivita
 
-*CMD InProduct --- Inner product of vectors
+*CMD InProduct --- inner product of vectors
 *STD
 *CALL
-
-InProduct(a,b)
-
-a . b  (prec. 3)
+	InProduct(a,b)
+	a . b (prec. 3)
 
 *PARMS
 
-a, b - vectors of equal length
+{a}, {b} -- vectors of equal length
 
 *DESC
 
@@ -82,17 +78,15 @@ vectors need to have the same size.
 
 *SEE CrossProduct
 
-*CMD CrossProduct --- Outer product of vectors
+*CMD CrossProduct --- outer product of vectors
 *STD
 *CALL
-
-CrossProduct(a,b)
-
-a X b  (prec. 3)
+	CrossProduct(a,b)
+	a X b  (prec. 3)
 
 *PARMS
 
-a, b - three-dimensional vectors
+{a}, {b} -- three-dimensional vectors
 
 *DESC
 
@@ -111,8 +105,7 @@ Both "a" and "b" have to be three-dimensional.
 *CMD ZeroVector --- Create a vector with all zeroes
 *STD
 *CALL
-
-ZeroVector(n)
+	ZeroVector(n)
 
 *PARMS
 
@@ -129,11 +122,10 @@ This command returns a vector of length "n", filled with zeroes.
 
 *SEE BaseVector, ZeroMatrix, IsZeroVector
 
-*CMD BaseVector --- Base vector
+*CMD BaseVector --- base vector
 *STD
 *CALL
-
-BaseVector(k, n)
+	BaseVector(k, n)
 
 *PARMS
 
@@ -154,11 +146,10 @@ entry, which contains a 1.
 
 *SEE ZeroVector, Identity
 
-*CMD Identity --- Identity matrix
+*CMD Identity --- make identity matrix
 *STD
 *CALL
-
-Identity(n)
+	Identity(n)
 
 *PARMS
 
@@ -176,11 +167,10 @@ matrix has ones on the diagonal while the other entries are zero.
 
 *SEE BaseVector, ZeroMatrix, DiagonalMatrix
 
-*CMD ZeroMatrix --- Matrix filled with zeroes
+*CMD ZeroMatrix --- make a zero matrix
 *STD
 *CALL
-
-ZeroMatrix(n, m)
+	ZeroMatrix(n, m)
 
 *PARMS
 
@@ -203,8 +193,7 @@ completely filled with zeroes.
 *CMD DiagonalMatrix --- Construct a diagonal matrix
 *STD
 *CALL
-
-DiagonalMatrix(d)
+	DiagonalMatrix(d)
 
 *PARMS
 
@@ -219,16 +208,14 @@ whose off-diagonal entries are all zero. The elements of the vector
 *E.G.
 
 	In> DiagonalMatrix(1 .. 4)
-	Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},
-	{0,0,0,4}};
+	Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
 
 *SEE Identity, ZeroMatrix
 
-*CMD IsMatrix --- Test whether argument is a matrix
+*CMD IsMatrix --- test for a matrix
 *STD
 *CALL
-
-IsMatrix(M)
+	IsMatrix(M)
 
 *PARMS
 
@@ -251,11 +238,10 @@ list are themselves lists.
 
 *SEE IsVector
 
-*CMD Normalize --- Normalize a vector
+*CMD Normalize --- normalize a vector
 *STD
 *CALL
-
-Normalize(v)
+	Normalize(v)
 
 *PARMS
 
@@ -263,7 +249,7 @@ v - a vector
 
 *DESC
 
-Return the normalized vector of v: a vector going in the same
+Return the normalized (unit) vector parallel to {v}: a vector having the same
 direction but with length 1.
 
 *E.G.
@@ -275,11 +261,10 @@ direction but with length 1.
 
 *SEE InProduct, CrossProduct
 
-*CMD Transpose --- Transpose of a matrix
+*CMD Transpose --- get transpose of a matrix
 *STD
 *CALL
-
-Transpose(M)
+	Transpose(M)
 
 *PARMS
 
@@ -287,7 +272,7 @@ M - a matrix
 
 *DESC
 
-Transpose returns the transpose of a matrix M. Because matrices are
+{Transpose} returns the transpose of a matrix $M$. Because matrices are
 just lists of lists, this is a useful operation too for lists.
 
 *E.G.
@@ -298,8 +283,7 @@ just lists of lists, this is a useful operation too for lists.
 *CMD Determinant --- Determinant of a matrix
 *STD
 *CALL
-
-Determinant(M)
+	Determinant(M)
 
 *PARMS
 
@@ -312,16 +296,14 @@ Returns the determinant of a matrix M.
 *E.G.
 
 	In> DiagonalMatrix(1 .. 4)
-	Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},
-	{0,0,0,4}};
+	Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
 	In> Determinant(%)
 	Out> 24;
 
 *CMD Trace --- Trace of a matrix
 *STD
 *CALL
-
-Trace(M)
+	Trace(M)
 
 *PARMS
 
@@ -329,22 +311,20 @@ M - a matrix
 
 *DESC
 
-Trace returns the trace of a matrix M (defined as the sum of the
+{Trace} returns the trace of a matrix $M$ (defined as the sum of the
 elements on the diagonal of the matrix).
 
 *E.G.
 
 	In> DiagonalMatrix(1 .. 4)
-	Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},
-	{0,0,0,4}};
+	Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
 	In> Trace(%)
 	Out> 10;
 
-*CMD Inverse --- Inverse of a matrix
+*CMD Inverse --- get inverse of a matrix
 *STD
 *CALL
-
-Inverse(M)
+	Inverse(M)
 
 *PARMS
 
@@ -352,8 +332,8 @@ M - a matrix
 
 *DESC
 
-Inverse returns the inverse of matrix M. The determinant of M should
-be non-zero. Because this function uses Determinant for calculating
+Inverse returns the inverse of matrix $M$. The determinant of $M$ should
+be non-zero. Because this function uses {Determinant} for calculating
 the inverse of a matrix, you can supply matrices with non-numeric
 matrix elements.
 
@@ -367,11 +347,12 @@ matrix elements.
 	In> Simplify(%)
 	Out> {{1/a,0,0},{0,1/b,0},{0,0,1/c}};
 
-*CMD Minor --- Principal minor of a matrix
+*SEE Determinant
+
+*CMD Minor --- get principal minor of a matrix
 *STD
 *CALL
-
-Minor(M,i,j)
+	Minor(M,i,j)
 
 *PARMS
 
@@ -410,8 +391,7 @@ excluding the "i"-th row and "j"-th column.
 *CMD CoFactor --- Cofactor of a matrix
 *STD
 *CALL
-
-CoFactor(M,i,j)
+	CoFactor(M,i,j)
 
 *PARMS
 
@@ -449,11 +429,10 @@ $(-1)^(i+j)$.
 
 *SEE Minor, Determinant, Inverse
 
-*CMD SolveMatrix --- Solve a linear system
+*CMD SolveMatrix --- solve a linear system
 *STD
 *CALL
-
-SolveMatrix(M,v)
+	SolveMatrix(M,v)
 
 *PARMS
 
@@ -463,8 +442,8 @@ v - a vector
 
 *DESC
 
-SolveMatrix returns the vector x that satisfies
-the equation "M x = v". The determinant of M should be non-zero.
+{SolveMatrix} returns the vector $x$ that satisfies
+the equation $M*x = v$. The determinant of $M$ should be non-zero.
 
 *E.G.
 
@@ -477,13 +456,12 @@ the equation "M x = v". The determinant of M should be non-zero.
 	In> A * x;
 	Out> {5,6};
 
-*SEE Inverse, Solve, PSolve
+*SEE Inverse, Solve, PSolve, Determinant
 
-*CMD CharacteristicEquation --- Characteristic polynomial of a matrix
+*CMD CharacteristicEquation --- get characteristic polynomial of a matrix
 *STD
 *CALL
-
-CharacteristicEquation(matrix,var)
+	CharacteristicEquation(matrix,var)
 
 *PARMS
 
@@ -509,15 +487,14 @@ of the matrix, Det(matrix-I*var);
 
 *SEE EigenValues, EigenVectors
 
-*CMD EigenValues --- Eigenvalues of a matrix
+*CMD EigenValues --- get eigenvalues of a matrix
 *STD
 *CALL
-
-EigenValues(matrix)
+	EigenValues(matrix)
 
 *PARMS
 
-matrix - a square matrix
+{matrix} -- a square matrix
 
 *DESC
 
@@ -538,24 +515,22 @@ Det(matrix-x*identity).
 
 *SEE EigenVectors, CharacteristicEquation
 
-*CMD EigenVectors --- Eigenvectors of a matrix
+*CMD EigenVectors --- get eigenvectors of a matrix
 *STD
 *CALL
-
-EigenVectors(matrix,eigenvalues)
-*STD
+	EigenVectors(A,eigenvalues)
 
 *PARMS
 
-matrix - a square matrix
+{matrix} -- a square matrix
 
-eigenvalues - list of eigenvalues as returned by EigenValues
+{eigenvalues} -- list of eigenvalues as returned by {EigenValues}
 
 *DESC
 
-EigenVectors returns a list of the eigenvectors of a matrix.
+{EigenVectors} returns a list of the eigenvectors of a matrix.
 It uses the eigenvalues and the matrix to set up n equations with
-n unknowns for each eigenvalue, and then calls Solve to determine
+n unknowns for each eigenvalue, and then calls {Solve} to determine
 the values of each vector.
 
 *E.G.
@@ -569,15 +544,14 @@ the values of each vector.
 
 *SEE EigenValues, CharacteristicEquation
 
-*CMD IsHermitian --- Test whether a matrix is Hermitian
+*CMD IsHermitian --- test for a Hermitian matrix
 *STD
 *CALL
-
-IsHermitian(A)
+	IsHermitian(A)
 
 *PARMS
 
-A - square matrix
+{A} -- a square matrix
 
 *DESC
 
@@ -594,11 +568,10 @@ If $A$ is a real matrix, it must be symmetric to be Hermitian.
 
 *SEE IsUnitary
 
-*CMD IsOrthogonal --- Test whether a matrix is Orthogonal
+*CMD IsOrthogonal --- test for an orthogonal matrix
 *STD
 *CALL
-
-IsOrthogonal(A)
+	IsOrthogonal(A)
 
 *PARMS
 
@@ -606,8 +579,8 @@ A - square matrix
 
 *DESC
 
-IsOrthogonal(A) returns {True} if {A} is Orthogonal and {False} 
-otherwise. $A$ is Orthogonal iff $A$*Transpose($A$) = Identity, or
+{IsOrthogonal(A)} returns {True} if {A} is orthogonal and {False} 
+otherwise. $A$ is orthogonal iff $A$*Transpose($A$) = Identity, or
 equivalently Inverse($A$) = Transpose($A$).
 
 *E.G.
@@ -633,27 +606,26 @@ equivalently Inverse($A$) = Transpose($A$).
 	Out> True;
 
 
-*CMD IsSymmetric --- Test whether a matrix is Symmetric
+*CMD IsSymmetric --- test for a symmetric matrix
 *STD
 *CALL
-
-IsSymmetric(A)
+	IsSymmetric(A)
 
 *PARMS
 
-A - square matrix
+{A} -- a square matrix
 
 *DESC
 
-IsSymmetric returns {True} if {A} is Symmetric and {False} otherwise.
-$A$ is Symmetic iff Transpose $A$ =$A$. All Hermitian matrices are
+{IsSymmetric(A)} returns {True} if {A} is symmetric and {False} otherwise.
+$A$ is symmetric iff Transpose ($A$) =$A$. All Hermitian matrices are
 symmetric. 
 
 *E.G.
 
-	In> A := {{1,0,0,0,1},{0,2,0,0,0},{0,0,3,0,0},{0,0,0,4,0},{1,0,0,0,5}};
-	Out> {{1,0,0,0,1},{0,2,0,0,0},{0,0,3,0,0},{0,0,0,4,0},{1,0,0,0,5}};
-	In> PrettyForm(%)
+	In> A := {{1,0,0,0,1},{0,2,0,0,0},{0,0,3,0,0},
+	  {0,0,0,4,0},{1,0,0,0,5}};
+	In> PrettyForm(A)
 	/                                \
 	| ( 1 ) ( 0 ) ( 0 ) ( 0 ) ( 1 )  |
 	|                                |
@@ -670,22 +642,21 @@ symmetric.
 	Out> True;
 		
 
-*SEE IsHermitian
+*SEE IsHermitian, IsSkewSymmetric
 
-*CMD IsSkewSymmetric --- Test whether a matrix is SkewSymmetric
+*CMD IsSkewSymmetric --- test for a skew-symmetric matrix
 *STD
 *CALL
-
-IsSkewSymmetric(A)
+	IsSkewSymmetric(A)
 
 *PARMS
 
-A - square matrix
+{A} -- a square matrix
 
 *DESC
 
-IsSkewSymmetric returns {True} if {A} is Skew Symmetric and {False} otherwise.
-$A$ is Skew Symmetic iff Transpose $A$ =$-A$. 
+{IsSkewSymmetric(A)} returns {True} if {A} is skew symmetric and {False} otherwise.
+$A$ is skew symmetic iff Transpose $A$ =$-A$. 
 
 *E.G.
 
@@ -701,24 +672,24 @@ $A$ is Skew Symmetic iff Transpose $A$ =$-A$.
 	In> IsSkewSymmetric(A);
 	Out> True;
 
+*SEE IsSymmetric, IsHermitian
  
-*CMD IsUnitary --- Test whether a matrix is unitary
+*CMD IsUnitary --- test for a unitary matrix
 *STD
 *CALL
-
-IsUnitary(A)
+	IsUnitary(A)
 
 *PARMS
 
-A - square matrix
+{A} -- a square matrix
 
 *DESC
 
 This function tries to find out if A is unitary.
 
-Matrix A is orthogonal iff $A^(-1)$ = Transpose( Conjugate ($A$) ). This is
+A matrix $A$ is orthogonal iff $A^(-1)$ = Transpose( Conjugate($A$) ). This is
 equivalent to the fact that the columns of $A$ build an orthonormal system
-(in respect to the scalar product defined by {InProduct}).
+(with respect to the scalar product defined by {InProduct}).
 
 *E.G.
 
@@ -727,22 +698,21 @@ equivalent to the fact that the columns of $A$ build an orthonormal system
 	In> IsUnitary({{0,I},{2,0}})
 	Out> False;
 
-*SEE IsHermitian
+*SEE IsHermitian, IsSymmetric
 
-*CMD IsIdempotent --- Test whether a matrix is Idempotent
+*CMD IsIdempotent --- test whether a matrix is idempotent
 *STD
 *CALL
-
-IsIdempotent(A)
+	IsIdempotent(A)
 
 *PARMS
 
-A - square matrix
+{A} -- a square matrix
 
 *DESC
 
-IsIdempotent returns {True} if {A} is Idempotent and {False} otherwise.
-$A$ is Idempotent iff $A^2$ =$A$. Note that this also implies that $A$
+{IsIdempotent(A)} returns {True} if {A} is idempotent and {False} otherwise.
+$A$ is idempotent iff $A^2$ =$A$. Note that this also implies that $A$
 to any power is $A$.
 
 *E.G.
@@ -760,11 +730,11 @@ to any power is $A$.
 
 *PARMS
 
-{poly1} - polynomial
+{poly1} -- polynomial
 
-{poly2} - polynomial
+{poly2} -- polynomial
 
-{variable} - variable to express the matrix for
+{variable} -- variable to express the matrix for
 
 *DESC
 
@@ -782,7 +752,8 @@ share common roots only if the resultant is zero.
 	In> ex2:= x^2+a*x-4
 	Out> x^2+a*x-4;
 	In> SylvesterMatrix(ex1,ex2,x)
-	Out> {{1,2,-a,0},{0,1,2,-a},{1,a,-4,0},{0,1,a,-4}};
+	Out> {{1,2,-a,0},{0,1,2,-a},
+	  {1,a,-4,0},{0,1,a,-4}};
 	In> Determinant(%)
 	Out> 16-a^2*a- -8*a-4*a+a^2- -2*a^2-16-4*a;
 	In> Simplify(%)
