@@ -16,13 +16,16 @@ SUBDIRS = . docs inprogress YacasNotebook scripts libltdl src ramscripts \
 ## A script to be installed in the directory for binaries
 bin_SCRIPTS = yacas_client
 
+## These scripts are needed to support plotting with GMT
+PLOTTINGSCRIPTS = yacas-gmtplot2d.sh yacas-gmtplot3d.sh
+
 ## EXTRA_DIST contains the files automake does not know about, that need to go
 ## in the distribution. Note that scripts are not distributed by default.
 
 EXTRA_DIST = yacas.sgml yacas.spec yacas.spec.in makemake mkhomepage \
 	yacas.sh doxy_yacas README.beos README.Win32 ltmain.sh \
 	workinprogress.ys upload.txt readme.bin.win32.txt \
-	makewin.bat $(bin_SCRIPTS)
+	makewin.bat $(bin_SCRIPTS) $(PLOTTINGSCRIPTS)
 
 # The target "test" is an alias for "check"
 test: check
@@ -39,3 +42,9 @@ backup:
 	yacas --patchload -pc docs/downloads.html.in > downloads.html
 	ftp -i ftp.xs4all.nl < upload.txt
 
+## Install the plotting scripts
+install-data-local: $(PLOTTINGSCRIPTS)
+	$(mkinstalldirs) $(pkgdatadir)/
+	-for file in $(PLOTTINGSCRIPTS); do \
+	   $(INSTALL_DATA) $(srcdir)/$$file $(pkgdatadir)/$$file; \
+	done

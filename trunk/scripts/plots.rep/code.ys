@@ -81,3 +81,19 @@ GnuplotExtraCmd() := {
 	{"Win32", "pause -1 \"Press OK to close the plot window.\""},
 } [PlatformOS()];
 
+/// Utility function: prepare a temporary directory for data files, return the directory name
+make'plotting'dir(options'hash) :=
+[
+  Local(dirBase);
+  dirBase := MakeFilePath(TemporaryDir(), "plot.tmp");
+  // the "filename" option could be used
+  If(
+    options'hash["filename"] != Empty,
+  	True,
+	options'hash["filename"] := MakeFilePath(dirBase, "data")
+  );
+  // create directory if it does not exist
+  Check(MakeDir(dirBase), "Problem creating a temporary directory '": dirBase:"', plotting aborted.");
+  dirBase;
+];
+

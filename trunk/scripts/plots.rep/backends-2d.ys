@@ -10,6 +10,7 @@ Plot2D'outputs() := {
 	{"datafile", "Plot2D'datafile"},
 	{"gnuplot", "Plot2D'gnuplot"},
 	{"plotutils", "Plot2D'plotutils"},
+	{"gmt", "Plot2D'gmt"},
 };
 
 /*
@@ -30,15 +31,7 @@ Plot2D'data(values_IsList, _options'hash) <-- values;
 Plot2D'gnuplot(values_IsList, _options'hash) <--
 [
   Local(item, dirBase, filename'list, control'file);
-  dirBase := MakeFilePath(TemporaryDir(), "plot.tmp");
-  // the "filename" option could be used
-  If(
-    options'hash["filename"] != Empty,
-  	True,
-	options'hash["filename"] := MakeFilePath(dirBase, "data")
-  );
-  // create directory if it does not exist
-  Check(MakeDir(dirBase), "Problem creating a temporary directory '": dirBase:"', plotting aborted.");
+  dirBase := make'plotting'dir(options'hash);
   // write all data to file(s) and save the filenames
   filename'list := Plot2D'datafile(values, options'hash);
   // prepare the control file for gnuplot
@@ -67,7 +60,9 @@ Plot2D'gnuplot(values_IsList, _options'hash) <--
 	For(item:=1, item<=Length(values), item++)
 	[
 		// need to convert the data file name to the Unix format, otherwise Gnuplot doesn't work b/c its Windows version doesn't understand the Windows directory separator "\"
-		WriteString("\"" : ConvertOSPath(filename'list[item], "Unix") : "\" title \"" : options'hash["yname"][item] : "\" with lines");
+		WriteString("\"" : ConvertOSPath(filename'list[item], "Unix")
+		  : "\" smooth csplines title \"" : options'hash["yname"][item]
+		  : "\" with lines");
 		// add a comma if necessary
 		If(item<Length(values), WriteString(", "));
 	];
@@ -83,15 +78,7 @@ Plot2D'gnuplot(values_IsList, _options'hash) <--
 Plot2D'plotutils(values_IsList, _options'hash) <--
 [
   Local(item, dirBase, filename, filename'list);
-  dirBase := MakeFilePath(TemporaryDir(), "plot.tmp");
-  // the "filename" option could be used
-  If(
-    options'hash["filename"] != Empty,
-  	True,
-  	options'hash["filename"] := MakeFilePath(dirBase, "data")
-  );
-  // create directory if it does not exist
-  Check(MakeDir(dirBase), "Problem creating a temporary directory '": dirBase:"', plotting aborted.");
+  dirBase := make'plotting'dir(options'hash);
   // write all data to file(s) and save the filenames
   filename'list := Plot2D'datafile(values, options'hash);
   // build command line
@@ -125,3 +112,27 @@ Plot2D'datafile(values_IsList, _options'hash) <--
 	];
 	filename'list;
 ];
+
+/// backend: use GMT and the script yacas-gmtplot2d.sh
+Plot2D'gmt(values_IsList, _options'hash) <--
+[
+  Local(dirBase, filename'list, script'file, ps'file);
+  Use("addons/unix.ys");	// need PSViewCommand
+  dirBase := make'plotting'dir(options'hash);
+  // use a special shell script file for plotting
+  script'file := FindFile("yacas-gmtplot2d.sh");
+  Check(script'file!="", "Missing file yacas-gmtplot3d.sh");
+  // write postscript to this file
+  ps'file := MakeFilePath(dirBase, "gmt-out.ps");
+  // write all data to file(s) and save the filenames
+  filename'list := Plot2D'datafile(values, options'hash);
+  SystemCall("sh " : script'file : " -o " : ps'file
+    : If(options'hash["yrange"] != Empty, " -yrange "
+	  : ToString()Write(options'hash["yrange"][1], options'hash["yrange"][2])
+	  , "")
+    : " " : PrintList(filename'list, " ") );
+  Echo("Displaying PS file");
+  SystemCall(PSViewCommand : " " : ps'file : " &");
+
+];
+

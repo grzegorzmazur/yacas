@@ -9,6 +9,7 @@ Plot3DS'outputs() := {
 	{"data", "Plot3DS'data"},
 	{"datafile", "Plot3DS'datafile"},
 	{"gnuplot", "Plot3DS'gnuplot"},
+	{"gmt", "Plot3DS'gmt"},
 };
 
 /*
@@ -30,15 +31,7 @@ Plot3DS'data(values_IsList, _options'hash) <-- values;
 Plot3DS'gnuplot(values_IsList, _options'hash) <--
 [
   Local(item, dirBase, filename'list, control'file);
-  dirBase := MakeFilePath(TemporaryDir(), "plot.tmp");
-  // the "filename" option could be used
-  If(
-    options'hash["filename"] != Empty,
-  	True,
-  	options'hash["filename"] := MakeFilePath(dirBase, "data")
-  );
-  // create directory if it does not exist
-  Check(MakeDir(dirBase), "Problem creating a temporary directory '": dirBase:"', plotting aborted.");
+  dirBase := make'plotting'dir(options'hash);
   // write all data to file(s) and save the filenames
   filename'list := Plot3DS'datafile(values, options'hash);
   // prepare the control file for gnuplot
@@ -107,3 +100,29 @@ Plot3DS'datafile(values_IsList, _options'hash) <--
 	];
 	filename'list;
 ];
+
+/// backend: use GMT and the script yacas-gmtplot3d.sh
+Plot3DS'gmt(values_IsList, _options'hash) <--
+[
+  Local(dirBase, filename'list, script'file, ps'file);
+  Use("addons/unix.ys");	// need PSViewCommand
+  dirBase := make'plotting'dir(options'hash);
+  // use a special shell script file for plotting
+  script'file := FindFile("yacas-gmtplot3d.sh");
+  Check(script'file!="", "Missing file yacas-gmtplot3d.sh");
+  // write postscript to this file
+  ps'file := MakeFilePath(dirBase, "gmt-out.ps");
+  // write all data to file(s) and save the filenames
+  filename'list := Plot3DS'datafile(values, options'hash);
+  SystemCall("sh " : script'file : " -o " : ps'file
+    : " -grid " : (ToString()Write(
+  options'hash["xpoints"]*2^(options'hash["depth"] - options'hash["used depth"]), options'hash["ypoints"]*2^(options'hash["depth"] - options'hash["used depth"]) ))
+    : If(options'hash["zrange"] != Empty, " -zrange "
+	  : ToString()Write(options'hash["zrange"][1], options'hash["zrange"][2])
+	  , "")
+    : " " : PrintList(filename'list, " ") );
+  Echo("Displaying PS file");
+  SystemCall(PSViewCommand : " " : ps'file : " &");
+
+];
+
