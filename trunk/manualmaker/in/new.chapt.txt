@@ -208,7 +208,7 @@ This implies that the statement of a set of equations declaring
 equalities is on a same footing as the resulting equations stating
 a solution: 
 
-$$ a*x+b==c <=> x==(c-b)/a $$. 
+$$ a*x+b==c => x==(c-b)/a $$. 
 
 If the value of x is needed, the right hand side is more desirable.
 
@@ -243,11 +243,11 @@ left hand side showing the old value, and the right hand side
 showing the new value. Interpreted in that way, {Where} 
 is a little simplifier for expressions, using values found by Solve.
 
-Assigning the variables values, globally, can then be handled with
+Assigning values to the variables values globally can be handled with
 an expression like
 
-        solutions := Solve(equations,{var1,var2});
-	{var1,var2} := Transpose({var1,var2} Where solutions);
+	solns := Solve(equations,{var1,var2});
+	{var1,var2} := Transpose({var1,var2} Where solns);
 
 Multiple sets of values can be applied:
 
@@ -298,7 +298,8 @@ Introducing new information can then be done with the AddTo
 operator:
 
 	In> Solutions2 := (a==2 AddTo Solutions);
-	Out> { a==2 And a>=0 And x==a, a==2 And a<0 And x==-a };
+	Out> { a==2 And a>=0 And x==a, a==2
+	  And a<0 And x==-a };
 
 In the above case both solutions can not be true any more, and thus
 when passing this list to {Solve}:
@@ -310,9 +311,11 @@ when passing this list to {Solve}:
 scheme:
 
 	In> {A==2,c==d} AddTo {b==3 And  d==2}
-	Out> {A==2 And b==3 And d==2,c==d And b==3 And d==2};
+	Out> {A==2 And b==3 And d==2,c==d
+	  And b==3 And d==2};
 	In> {A==2,c==d} AddTo {b==3, d==2}
-	Out> {A==2 And b==3,A==2 And d==2,c==d And b==3,c==d And d==2};
+	Out> {A==2 And b==3,A==2 And d==2,c==d
+	  And b==3,c==d And d==2};
 
 A list {a,b} means that a is a solution, OR b is a solution.
 AddTo then acts as a AND operation:

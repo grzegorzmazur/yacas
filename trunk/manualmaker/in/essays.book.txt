@@ -26,3 +26,4 @@ to general issues related to the Yacas system development.
 
 *INCLUDE new.chapt
 
+*INCLUDE wester-1994.chapt
