@@ -139,4 +139,17 @@ check:
 	@find $(srcdir)/../scripts -name \*.ys -o -name \*.ys.def  \
 	   | sed -e 's,.*scripts/,,' | sort > contents-of-tree.txt
 	@echo "Comparing scripts listed in the Makefile against the contents of the tree"
-	@diff scripts-listed-in-makefile.txt contents-of-tree.txt
+	@if diff scripts-listed-in-makefile.txt contents-of-tree.txt; \
+           then echo " ... ok"; \
+         else \
+           false; \
+         fi
+
+
+
+
+
+
+
+
+
