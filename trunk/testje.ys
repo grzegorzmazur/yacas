@@ -1,13 +1,43 @@
 
+
+
+//F(x,y,n) := x*(y^n)
+
+//D(z)F(x,y,n) =   (y^n)    *(D(z)x) + x*n*y^(n-1)*(D(z)y)
+
+D(x)x;
+
+(Deriv(_var)(F(_x,_y,_n))) <-- Simplify(F(Deriv(var)x,y,n)+x*n*F(Deriv(var)y,y,n-1));
+
+Sf(X,Y,M,simplify) :=
+[
+  Retract("F",3);  
+  Local(fres);
+  `(fres:=D(x,M)F(@X,@Y,-1));
+//Echo("1...",fres);
+  `(F(X,Y,Z) := X*(Y^(@M+1+Z)));
+  fres := Eval(fres);
+  Retract("F",3);  
+  If(simplify,fres:=Simplify(fres));
+  fres/(Y^(M+1));
+];
+
+//nat-tan/t2
+
+
+EndOfFile;
+
   LocalSymbols(theConsts,theFreeVars,msres,msvars,nrconsts,nrvars)
   [
-    Expect(_expr,_consts,_freeVars) <--
+    Expect(_expr,_freeVars) <--
     [
       MM(x);
+      Local(terms,realvars,consts); 
+      realvars:=MultiExpressionList(expr);
+      consts:=Difference(realvars,freeVars);
       msvars:=Concat(consts,freeVars);
       theConsts:=consts;  theFreeVars:=freeVars;
       nrconsts:=Length(consts); nrvars:=Length(msvars);
-      Local(terms,realvars); realvars:=MultiExpressionList(expr);
       Check(Length(Intersection(msvars,realvars))=Length(realvars),"Not all variables enumerated!");
       terms:=MM(expr,msvars)[2];
       msres:=0;
@@ -17,15 +47,16 @@
   
     ExpectOp(deg,coef) :=
     [ 
-      Local(constdeg,freedeg);  
+      Local(constdeg,freedeg,free,const);  
       constdeg:=deg[1 .. nrconsts];
+      const:=1;
+      If(nrconsts>0,const:=Factorize(theConsts^constdeg));
       freedeg:=deg[(nrconsts+1) .. nrvars];
-      msres:=msres+
-        coef*
-        Factorize(theConsts^constdeg)*
-        E(Factorize(theFreeVars^freedeg));
+      free:=Factorize(theFreeVars^freedeg);
+      msres:=msres+coef*const*ReExpect(free);
     ];
-  
+    10 # ReExpect(n_IsConstant) <-- n;
+    20 # ReExpect(_rest) <-- UnList({Expect,rest,theFreeVars});
   ];
 
 
