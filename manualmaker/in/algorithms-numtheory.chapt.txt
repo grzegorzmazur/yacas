@@ -334,12 +334,15 @@ the definition, it can be seen that if $n$ is prime, then $Moebius(n) = -1 $. Th
 
 *A Gaussian integers
 
-A Gaussian integer is a complex number of the form $ z = a+bi$, where $a$ and 
-$b$ are ordinary (rational) integers. The ring of Gaussian integers is usually
+A Gaussian integer is a complex number of the form $ z = a+b*I$, where $a$ and 
+$b$ are ordinary (rational) integers.
+*FOOT To distinguish ordinary integers from Gaussian integers, the ordinary integers (with no imaginary part) are called "rational integers".
+The ring of Gaussian integers is usually
 denoted by $Z[i]$ in the mathematical literature. It is an example of a ring of
 algebraic integers.
 
-The {GaussianNorm} function computes the norm $N(z)=a^2+b^2$ of $z$, which 
+The function {GaussianNorm} computes the norm $N(z)=a^2+b^2$ of $z$.
+The norm
 plays a fundamental role in the arithmetic of Gaussian integers, since it has
 the multiplicative property:
 $$ N(z.w) = N(z).N(w) $$.
@@ -350,7 +353,6 @@ exactly the Gaussian integers whose norm is $1$. The predicate {IsGaussianUnit}
 tests for a Gaussian unit.
 
 Two Gaussian integers $z$ and $w$ are "associated" is $z/w$ is a unit. 
-
 For example, $2+I$ and $-1+2*I$ are associated. 
 
 A Gaussian integer is called prime if it is only divisible by the units and by
@@ -367,8 +369,7 @@ $$ 5 = (2+I)*(2-I) $$.
 
 The ring of Gaussian integers is an example of an Euclidean ring, i.e. a ring 
 where there is a division algorithm, and this makes possible to compute the 
-greatest common divisor using Euclid's algorithm. This is what the {GaussianGcd} 
-function does. 
+greatest common divisor using Euclid's algorithm. This is what the function {GaussianGcd} computes. 
 
 As a consequence, it is possible to prove a version of the  fundamental 
 theorem of arithmetic for this ring: The expression of a Gaussian 
@@ -387,9 +388,9 @@ $-1$ (mod $p$), and it follows that $p$ divides $(a+I)*(a-I)=a^2+1$ in the
 Gaussian  integers. The desired factor is then the {GaussianGcd} of $a+I$ 
 and $p$. If the result is $a+b*I$, then $p=a^2+b^2$. 
 
-If $z$ is a real integer, we factor z in the Gaussian integers, by first 
-factor it in the real integers, and after that factoring each of 
-its integer prime factors in the complex integers.
+If $z$ is a real integer, we factor $z$ in the Gaussian integers, by first 
+factoring it in the rational integers, and after that by factoring each of 
+the integer prime factors in the complex integers.
  
 If $z$ is not a rational integer, we find its possible Gaussian prime factors
 by first factoring its norm $N(z)$ and then computing the exponent of each of 
