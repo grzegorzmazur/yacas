@@ -1,6 +1,162 @@
+		Designing modules in the Yacas scripting language
+
+	    Introduction
+
+For any software project where the source code grows to
+a substantial amount of different modules, there needs to be
+a way to define interfaces between the modules, and a way
+to make sure the modules don't interact with the environment
+in an unintended way. 
+
+One hallmark of a mature programming language is that it 
+supports modules, and a way to define its interface while
+hiding the internals of the module. This section describes
+the mechanisms for doing so in the Yacas scripting language.
+
+	    Demonstration of the problem
+ 
+Unintentional interactions between two modules typically happen 
+when the two modules accidentally share a common 'global'
+resource, and there should be a mechanism to guarantee this
+will not happen.
+
+The following piece of code is a little example that demonstrates
+the problem:
+
+	SetExpand(fn_IsString) <-- [expand:=fn;];
+	ram(x_IsList)_(expand != "") <-- ramlocal(x);
+	expand:="";
+	ramlocal(x) := Map(expand,{x});
+
+This little bit of code defines a function {ram} that calls the
+function {Map}, passing the argument passed if it is a string, and
+if the function to be mapped was set with the {SetExpand} function.
+It contains the following flaws:
+
+*	0. expand is a global variable with a rather generic name, one
+that another module might decide to use.
+*	0. ramlocal was intended to be used from within this module only, and
+doesn't check for correctness of arguments (a small speed up optimization
+that can be used for routines that get called often). As it is, it can be
+called from other parts, or even the command line.
+*	0. the function ramlocal has one parameter, named {x}, which is also
+generic (and might be used in the expression passed in to the function),
+and ramlocal calls Map, which calls {Eval} on the arguments. 
+
+The above code can be entered into a file and loaded from the command
+line at leisure. Now, consider the following command line interaction
+after loading the file with the above code in it:
+
+	In> ramlocal(a)         
+	In function "Length" : 
+	bad argument number 1 (counting from 1)
+	Argument matrix[1] evaluated to a
+	In function call  Length(a)
+	CommandLine(1) : Argument is not a list
+
+We called ramlocal here, which should not have been allowed.
+
+	In> ram(a)
+	Out> ram(a);
+
+The function {ram} checks that the correct arguments are passed in
+and that {SetExpand} was called, so it will not simplify if these
+requirements are not met. 
+
+Here are some lines showing the functionality of this code as
+it was intended to be used:
+
+	In> SetExpand("Sin")
+	Out> "Sin";
+	In> ram({1,2,3})
+	Out> {Sin(1),Sin(2),Sin(3)};
+
+The following piece of code forces the functionality to break
+by passing in an expression containing the variable {x}, which
+is also used as a parameter name to ramlocal.
+
+	In> ram({a,b,c})
+	Out> {Sin(a),Sin(b),Sin(c)};
+	In> ram({x,y,z})
+	Out> {{Sin(x),Sin(y),Sin(z)},Sin(y),Sin(z)};
+
+This result is obviously wrong, comparing it to the call above.
+The following shows that the global variable {expand} is exposed
+to its environment:
+
+	In> expand
+	Out> "Sin";
 
 
+	    Declaring resources to be local to the module
 
+The solution to the problem is {LocalSymbols}, which changes every
+symbol with a specified name to a unique name that could never
+be entered by the user on the command line, guaranteeing that it
+can never interact with the rest of the system. The following code
+snippet is the same as the above, with the correct use of LocalSymbols:
+
+
+	LocalSymbols(x,expand,ramlocal) [
+	  SetExpand(fn_IsString) <-- [expand:=fn;];
+	  ram(x_IsList)_(expand != "") <-- ramlocal(x);
+	  expand:="";
+	  ramlocal(x) := Map(expand,{x});
+	];
+
+
+This version of the same code declares the symbols {x}, {expand}
+and {ramlocal} to be local to this module.
+
+With this the interaction becomes a little bit more predictable:
+
+	In> ramlocal(a)
+	Out> ramlocal(a);
+	In> ram(a)
+	Out> ram(a);
+	In> SetExpand("Sin")
+	Out> "Sin";
+	In> ram({1,2,3})
+	Out> {Sin(1),Sin(2),Sin(3)};
+	In> ram({a,b,c})
+	Out> {Sin(a),Sin(b),Sin(c)};
+	In> ram({x,y,z})
+	Out> {Sin(x),Sin(y),Sin(z)};
+	In> expand
+	Out> expand;
+
+
+	    When to use and when not to use LocalSymbols
+
+The {LocalSymbols} should ideally be used for every global variable,
+for functions that can only be useful within the module and thus
+should not be used by other parts of the system, 
+and for local variables that run the risk of being passed into 
+functions like {Eval}, {Apply}, {Map}, etcetera (functions that
+re-evaluate expressions).
+
+A rigorous solution to this is to make all parameters to functions
+and global variables local symbols by default, but this might cause
+problems when this is not required, or even wanted, behaviour.
+
+The system will never be able to second-guess which function
+calls can be exposed to the outside world, and which ones should
+stay local to the system. It also goes against a design rule of Yacas:
+everything is possible, but not obligatory. This is important 
+at moments when functionality is not wanted, as it can be hard 
+to disable functionality when the system does it automatically.
+
+There are more caveats: if a local variable is made unique with 
+{LocalSymbols}, other routines can not reach it by using the 
+{UnFence} construct. This means that {LocalSymbols} is not always 
+wanted. 
+
+Also, The entire expression the {LocalSymbols} command works
+on is copied and modified before being evaluated, making loading
+time a little slower. This is not a big problem, because the 
+speed hit is usually during calculations, not during loading, but
+it is best to keep this in mind and keep the code passed to 
+{LocalSymbols} concise.
 
 
 
