@@ -93,6 +93,8 @@ char* root_dir    = SCRIPT_DIR;
 #endif
 char* init_script = "yacasinit.ys";
 
+static int readmode = 0;
+
 int compressed_archive = 1;
   
 void ReportNrCurrent()
@@ -141,6 +143,22 @@ void LispStackSize(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispChar buf[30];
     InternalIntToAscii(buf, (int)(the_first_stack_var-(unsigned char*)&buf[0]));
     aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(buf)));
+}
+
+static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispPtr& aResult,
+              LispPtr& aArguments)
+{
+    TESTARGS(2);
+    LispPtr promptObject;
+    aEnvironment.iEvaluator->Eval(aEnvironment, promptObject, Argument(aArguments,1));
+    CHK_ISSTRING(promptObject,1);
+    LispString prompt;
+    InternalUnstringify(prompt, promptObject.Get()->String());
+    readmode = 1;
+    commandline->ReadLine(prompt.String());
+    readmode = 0;
+    char *output =  commandline->iLine.String();
+    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUpStringify(output)));
 }
 
 static void LispHistorySize(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -385,6 +403,8 @@ void LoadYacas()
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispIsPromptShown),
                                            (*yacas)()().HashTable().LookUp("IsPromptShown"));
 
+    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispReadCmdLineString),
+                                           (*yacas)()().HashTable().LookUp("ReadCmdLineString"));
 
 #ifdef _TESTCODE_
     (*yacas)()().Commands().SetAssociation(LispEvaluator(DummyTestFunction),
@@ -565,7 +585,6 @@ void LoadYacas()
     fflush(stdout);
 }
 
-static int readmode = 0;
 void InterruptHandler(int errupt)
 {
     printf("^C pressed\n");
