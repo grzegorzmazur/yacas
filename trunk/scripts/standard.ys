@@ -381,10 +381,12 @@ LocalSymbols(x,y,xarg,yarg)
 
 
 250  # x_IsNumber * y_IsInfinity <-- Sign(x)*y;
-250  # x_IsComplex * y_IsInfinity <-- Sign(Re(x))*Infinity;
 250  # x_IsInfinity * y_IsNumber <-- Sign(y)*x;
-250  # x_IsInfinity * y_IsComplex <-- Sign(Re(y))*Infinity;
 
+/*TODO remove, handled in complex.rep/code.ys now?
+250  # x_IsComplex * y_IsInfinity <-- Complex(Re(x)*Infinity,Im(x)*Infinity);
+250  # x_IsInfinity * y_IsComplex <-- Complex(Re(y)*Infinity,Im(y)*Infinity);
+*/
 
 
 /* Note: this rule MUST be past all the transformations on
