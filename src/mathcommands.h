@@ -416,6 +416,13 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispFastAssoc(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments);
 
+void LispCurrentFile(LispEnvironment& aEnvironment, LispPtr& aResult,
+                     LispPtr& aArguments);
+void LispCurrentLine(LispEnvironment& aEnvironment, LispPtr& aResult,
+                     LispPtr& aArguments);
+
+void LispBackQuote(LispEnvironment& aEnvironment, LispPtr& aResult,
+                     LispPtr& aArguments);
 
 #endif
 

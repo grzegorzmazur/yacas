@@ -191,7 +191,11 @@ The documentation can be improved.
        growing function. BSearch returns -1 if not found,
        FindIsq returns the insertion point.
   <li>   MultiDivide, MultiGcd, Groebner
-
+  <li> CurrentFile, CurrentLine
+  <li> Implemented backquote mechanism: `(...) will substitute
+       every @a with the evaluation of a (and if a is a function
+       the function name is replaced). The end result is evaluated.
+       see substitute.cpp for more details
 
 
   </UL>

@@ -783,7 +783,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispFastAssoc(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments)
 {
-    // Check that we have one argument.
+    // Check that we have two arguments.
     TESTARGS(3);
 
     // key to find
@@ -833,4 +833,34 @@ void LispSetCRemarkReceiver(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
 }
 */
+
+
+void LispCurrentFile(LispEnvironment& aEnvironment, LispPtr& aResult,
+                     LispPtr& aArguments)
+{
+    // Check that we have zero arguments.
+    TESTARGS(1);
+    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUpStringify(aEnvironment.iInputStatus.FileName())));
+}
+
+void LispCurrentLine(LispEnvironment& aEnvironment, LispPtr& aResult,
+                     LispPtr& aArguments)
+{
+    // Check that we have zero arguments.
+    TESTARGS(1);
+    LispChar s[30];
+    InternalIntToAscii(s, aEnvironment.iInputStatus.LineNumber());
+    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(s)));
+}
+
+void LispBackQuote(LispEnvironment& aEnvironment, LispPtr& aResult,
+                     LispPtr& aArguments)
+{
+    // Check that we have one argument.
+    TESTARGS(2);
+    BackQuoteBehaviour behaviour(aEnvironment);
+    LispPtr result;
+    InternalSubstitute(result, Argument(aArguments, 1), behaviour);
+    InternalEval(aEnvironment, aResult, result);
+}
 

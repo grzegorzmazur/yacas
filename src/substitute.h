@@ -50,6 +50,23 @@ private:
     LispInt iNrNames;
 };
 
+/** subst behaviour for backquote mechanism as in LISP.
+ * When typing `(...) all occurrences of @a will be
+ * replaced with:
+ * 1) a evaluated if a is an atom
+ * 2) function call with function name replaced by evaluated
+ *    head of function if a is a function. For instance, if
+ *    a is f(x) and f is g, then f(x) gets replaced by g(x)
+ */
+class BackQuoteBehaviour : public SubstBehaviourBase
+{
+public:
+    BackQuoteBehaviour(LispEnvironment& aEnvironment)
+        : iEnvironment(aEnvironment) {};
+    virtual LispBoolean Matches(LispPtr& aResult, LispPtr& aElement);
+    LispEnvironment& iEnvironment;
+};
+
 
 
 
