@@ -17,8 +17,8 @@ void ParsedObject::Fail()
   if (iLookAhead)
     if (iLookAhead->String())
     {
-      if (IsSymbolic(iLookAhead->String()[0]))
-        RaiseError("Error parsing expression, near token %s (maybe you forgot a space between two operators?)",iLookAhead->String()); 
+//      if (IsSymbolic(iLookAhead->String()[0]))
+//        RaiseError("Error parsing expression, near token %s (maybe you forgot a space between two operators?)",iLookAhead->String()); 
       RaiseError("Error parsing expression, near token %s",iLookAhead->String()); 
     }
   RaiseError("Error parsing expression"); 
@@ -193,6 +193,7 @@ void ParsedObject::InsertAtom(LispStringPtr aString)
     iResult.Set(ptr.Get());
 }
 
+//#include <stdio.h>
 
 void ParsedObject::ReadExpression(LispInt depth)
 {
@@ -227,30 +228,39 @@ void ParsedObject::ReadExpression(LispInt depth)
 //printf("op [%s]\n",iLookAhead->String());
               if (IsSymbolic((*iLookAhead)[0]))
               {
-                LispInt len = iLookAhead->NrItems()-1;
+                LispInt origlen = iLookAhead->NrItems()-1;
+                LispInt len = origlen;
 //printf("IsSymbolic, len=%d\n",len);
 
                 while (len>1)
                 {
                   len--;
-                    LispStringPtr lookUp =
-          iParser.iEnvironment.HashTable().LookUpCounted(iLookAhead->String(),len);
+                  LispStringPtr lookUp =
+                    iParser.iEnvironment.HashTable().LookUpCounted(iLookAhead->String(),len);
 
 //printf("trunc %s\n",lookUp->String());
-                    if (lookUp)
-                    {
-                      op = iParser.iInfixOperators.LookUp(lookUp);
+                  op = iParser.iInfixOperators.LookUp(lookUp);
 //if (op) printf("FOUND\n");
-                      if (op)
-                      {
-                        iLookAhead = lookUp;
-                        LispInput& input = iParser.iInput;
-                        LispInt newPos = input.Position()-(iLookAhead->NrItems()-len);
-                        input.SetPosition(newPos);
+                  if (op)
+                  {
+
+                    LispStringPtr lookUpRight =
+                      iParser.iEnvironment.HashTable().LookUpCounted(&(iLookAhead->String()[len]),origlen-len);
+
+//printf("right: %s (%d)\n",lookUpRight->String(),origlen-len);
+
+                    if (iParser.iPrefixOperators.LookUp(lookUpRight))
+                    {
+//printf("ACCEPT %s\n",lookUp->String());
+                      iLookAhead = lookUp;
+                      LispInput& input = iParser.iInput;
+                      LispInt newPos = input.Position()-(origlen-len);
+                      input.SetPosition(newPos);
 //printf("Pushhback %s\n",&input.StartPtr()[input.Position()]);
-                        break;
-                      }
+                      break;
                     }
+                    else op=NULL;
+                  }
                 }
                 if (op == NULL) return;
               }
