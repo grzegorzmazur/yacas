@@ -101,3 +101,5 @@ Infix("<=>", OpPrecedence("="));
 Infix("Where", 1100);
 Infix("AddTo", 200);
 
+Bodied(Assert, 60000);
+

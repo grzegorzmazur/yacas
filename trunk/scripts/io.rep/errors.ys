@@ -20,7 +20,7 @@ IsError() <--
 ];
 
 /// post an error if assertion fails
-Assert(_predicate, _error'class, _error'object) <--
+(Assert(_predicate, _error'class) _error'object) <--
 [
 	CheckErrorTableau();
 	If(Equals(predicate, True),	// if it does not evaluate to True, it's an error
@@ -33,9 +33,7 @@ Assert(_predicate, _error'class, _error'object) <--
 ];
 
 /// interface
-Assert(_predicate, _error'class) <-- Assert(predicate, error'class, True);
-
-Bodied(Assert, 60000);
+(Assert(_predicate) _error'class) <-- Assert(predicate, error'class) True;
 
 /// print all errors and clear the tableau
 DumpErrors() <--

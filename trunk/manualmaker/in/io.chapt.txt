@@ -108,7 +108,7 @@ print a list:
 
 *DESC
 
-PrettyForm renders an expression in a nicer way, using ascii art.
+{PrettyForm} renders an expression in a nicer way, using ascii art.
 This is generally useful when the result of a calculation is more
 complex than a simple number.
 
@@ -149,8 +149,7 @@ to show 'input = output'.
 	                                     x    x  
 	Taylor( x , 0 , 5 , Sin( x ) ) = x - -- + ---
 	                                     6    120
-	
-	Out> True
+
 
 *SEE PrettyForm
 

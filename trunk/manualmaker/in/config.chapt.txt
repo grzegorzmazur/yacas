@@ -49,7 +49,7 @@ and standard scripts.
 *PARMS
 
 {printer} -- a string containing the name of a function that can
-pretty-print an expression
+"pretty-print" an expression
 
 *DESC
 
@@ -64,7 +64,6 @@ the command line. This can be reset to the internal printer with {PrettyPrinter(
 	
 	True
 	
-	Out>
 	In> Taylor(x,0,5)Sin(x)
 	
 	     3    5
@@ -72,7 +71,6 @@ the command line. This can be reset to the internal printer with {PrettyPrinter(
 	x - -- + ---
 	    6    120
 	
-	Out>
 	In> PrettyPrinter();
 	Out> True;
 	In> Taylor(x,0,5)Sin(x)
@@ -132,3 +130,77 @@ lines.
 	Out> True;
 	In> quit
 
+*CMD Assert --- signal custom error on algorithmic failure
+*STD
+*CALL
+	Assert(pred) "str"
+	Assert(pred, "str") expr
+
+*PARMS
+
+{pred} -- predicate to check
+
+{"str"} -- string to classify the error
+
+{expr} -- expression, error object
+
+*DESC
+
+{Assert} is a global error reporting mechanism. It can be used to check for
+errors and report them. An error is considered to occur when the predicate
+{pred} evaluates to anything except {True}. In this case, the function returns
+{False} and an error object is created and posted to the global error tableau.
+Otherwise the function returns {True}.
+
+Unlike the "hard" error function {Check}, the function {Assert} does not stop
+the execution of the program.
+
+The error object consists of the string {"str"} and optionally an arbitrary
+expression {expr}. The string should be used to classify the kind of error that
+has occurred. The association list of error objects is currently the global
+variable {ErrorTableau}.
+
+Errors can be handled using the functions {IsError} and {DumpErrors} or by a
+custom error handler in the function that is able to handle a certain class of
+errors. Normally, all errors posted during evaluation of an expression should
+be eventually printed to the screen. This is the behavior of prettyprinters
+{PrettyForm} and {TeXForm} which use {DumpErrors}.
+
+*E.G.
+
+	In> Assert(1=0, "bad value") "must be zero"
+	Out> False;
+	In> Assert(1=1, "bad value") "must be one"
+	Out> True;
+	In> DumpErrors()
+	Error: value: must be zero
+	Out> True;
+	In> DumpErrors()
+	Out> True;
+
+*SEE IsError, DumpErrors, Check
+
+*CMD DumpErrors, ClearErrors --- custom error handlers
+*STD
+*CALL
+	DumpErrors()
+	ClearErrors()
+
+*DESC
+
+{DumpErrors} is a simple error handler for the global error reporting mechanism. It prints all errors posted using {Assert} and clears the error tableau.
+
+{ClearErrors} is a trivial error handler that does nothing except it clears the tableau.
+
+*SEE Assert, IsError
+
+*CMD IsError --- check for custom error
+*STD
+*CALL
+	IsError()
+
+*DESC
+
+This predicate returns {True} if any custom errors have been reported using {Assert}.
+
+*SEE IsError, Assert, Check
