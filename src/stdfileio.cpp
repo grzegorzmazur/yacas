@@ -138,13 +138,13 @@ void InternalFindFile(LispCharPtr aFileName, InputDirectories& aInputDirectories
                      LispCharPtr aFoundFile)
 {
     strcpy(aFoundFile,aFileName);
-    FILE* file = fopen(aFileName,"r");
+    FILE* file = fopen(aFileName,"rb");
     LispInt i=0;
     while (file == NULL && i<aInputDirectories.NrItems())
     {
         strcpy(aFoundFile,aInputDirectories[i]->String());
         strcat(aFoundFile,aFileName);
-        file = fopen(aFoundFile,"r");
+        file = fopen(aFoundFile,"rb");
         i++;
     }
     if (file != NULL)
@@ -166,13 +166,13 @@ LispLocalFile::LispLocalFile(LispEnvironment& aEnvironment,
     {
         LispChar othername[1024];//TODO
         strcpy(othername,aFileName);
-        iFile = fopen(aFileName,"r");
+        iFile = fopen(aFileName,"rb");
         LispInt i=0;
         while (iFile == NULL && i<aInputDirectories.NrItems())
         {
             strcpy(othername,aInputDirectories[i]->String());
             strcat(othername,aFileName);
-            iFile = fopen(othername,"r");
+            iFile = fopen(othername,"rb");
             i++;
         }
     }
