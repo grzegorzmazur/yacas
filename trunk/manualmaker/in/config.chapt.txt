@@ -48,7 +48,7 @@ and standard scripts.
 
 *PARMS
 
-printer - a string containing the name of a function that can
+{printer} -- a string containing the name of a function that can
 pretty-print an expression
 
 *DESC
@@ -88,7 +88,7 @@ the command line. This can be reset to the internal printer with {PrettyPrinter(
 
 *PARMS
 
-function - a string containing the name of a function to show help for
+{function} -- a string containing the name of a function to show help for
 
 *DESC
 

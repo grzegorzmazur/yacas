@@ -1565,3 +1565,38 @@ printing every element in the list on a seperate line.
 
 *SEE PrettyForm, Echo, Table
 
+*CMD GlobalPop, GlobalPush --- save/restore variables using a global stack
+*STD
+*CALL
+	GlobalPop(var)
+	GlobalPop()
+	GlobalPush(expr)
+
+*PARMS
+
+{var} -- atom, name of variable to restore from the stack
+
+{expr} -- expression, value to save on the stack
+
+*DESC
+
+These functions operate with a global stack, currently implemented as a list {GlobalStack}.
+
+{GlobalPush} stores a value on the stack. {GlobalPop} removes the last pushed value from the stack. If a variable name is given, the variable is assigned, otherwise the popped value is returned.
+
+If the global stack is empty, an error message is printed.
+
+*E.G.
+
+	In> GlobalPush(3)
+	Out> 3;
+	In> GlobalPush(Sin(x))
+	Out> Sin(x);
+	In> GlobalPop(x)
+	Out> Sin(x);
+	In> GlobalPop(x)
+	Out> 3;
+	In> x
+	Out> 3;
+
+*SEE Push, PopFront

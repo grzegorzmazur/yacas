@@ -51,7 +51,7 @@ list, the function is applied to all the entries in the list.
 
 *PARMS
 
-x - argument to the function
+{x} -- argument to the function
 
 *DESC
 
@@ -98,7 +98,7 @@ list, the function is applied to all the entries in the list.
 
 *PARMS
 
-x - argument to the function
+{x} -- argument to the function
 
 *DESC
 
@@ -127,7 +127,7 @@ list, the function is applied to all the entries in the list.
 
 *PARMS
 
-x - argument to the function
+{x} -- argument to the function
 
 *DESC
 
@@ -157,7 +157,7 @@ list, the function is applied to all the entries in the list.
 
 *PARMS
 
-x - argument to the function
+{x} -- argument to the function
 
 *DESC
 
@@ -191,7 +191,7 @@ list, the function is applied to all the entries in the list.
 
 *PARMS
 
-x - argument to the function
+{x} -- argument to the function
 
 *DESC
 
@@ -225,7 +225,7 @@ list, the function is applied to all the entries in the list.
 
 *PARMS
 
-x - argument to the function
+{x} -- argument to the function
 
 *DESC
 
@@ -259,9 +259,9 @@ list, the function is applied to all the entries in the list.
 
 *PARMS
 
-r - real part
+{r} -- real part
 
-c - imaginary part
+{c} -- imaginary part
 
 *DESC
 
@@ -292,7 +292,7 @@ number. Hence {Im(Sqrt(x))} evaluates to {0} which is only true for nonnegative 
 
 *PARMS
 
-x - argument to the function
+{x} -- argument to the function
 
 *DESC
 
@@ -316,7 +316,7 @@ This function returns the real part of the complex number "x".
 
 *PARMS
 
-x - argument to the function
+{x} -- argument to the function
 
 *DESC
 
@@ -359,7 +359,7 @@ root of -1. It evaluates to {Complex(0,1)}.
 
 *PARMS
 
-x - argument to the function
+{x} -- argument to the function
 
 *DESC
 
@@ -383,7 +383,7 @@ unbound variables are real.
 
 *PARMS
 
-x - argument to the function
+{x} -- argument to the function
 
 *DESC
 
@@ -486,15 +486,15 @@ if "m" is negative or greater than "n"; {Bin(0,0)}=1.
 
 *PARMS
 
-list - list of values to sum
+{list} -- list of values to sum
 
-var - variable to iterate over
+{var} -- variable to iterate over
 
-from - integer value to iterate from
+{from} -- integer value to iterate from
 
-to - integer value to iterate up to
+{to} -- integer value to iterate up to
 
-body - expression to evaluate for each iteration
+{body} -- expression to evaluate for each iteration
 
 *DESC
 
@@ -523,7 +523,7 @@ returned. Obviously, "to" should be greater than or equal to
 
 *PARMS
 
-list - list of values to average
+{list} -- list of values to average
 
 *DESC
 
@@ -548,15 +548,15 @@ entries.
 
 *PARMS
 
-list - list of values to multiply
+{list} -- list of values to multiply
 
-var - variable to iterate over
+{var} -- variable to iterate over
 
-from - integer value to iterate from
+{from} -- integer value to iterate from
 
-to - integer value to iterate up to
+{to} -- integer value to iterate up to
 
-body - expression to evaluate for each iteration
+{body} -- expression to evaluate for each iteration
 
 *DESC
 
@@ -586,9 +586,9 @@ returned. Obviously, "to" should be greater than or equal to
 
 *PARMS
 
-x, y - pair of values to determine the minimum of
+{x}, {y} -- pair of values to determine the minimum of
 
-list - list of values from which the minimum is sought
+{list} -- list of values from which the minimum is sought
 
 *DESC
 
@@ -615,9 +615,9 @@ with numerical values and not with symbolic arguments.
 
 *PARMS
 
-x, y - pair of values to determine the maximum of
+{x}, {y} -- pair of values to determine the maximum of
 
-list - list of values from which the maximum is sought
+{list} -- list of values from which the maximum is sought
 
 *DESC
 
@@ -643,7 +643,7 @@ with numerical values and not with symbolic arguments.
 
 *PARMS
 
-n - number to test
+{n} -- number to test
 
 *DESC
 
@@ -669,7 +669,7 @@ n - number to test
 
 *PARMS
 
-expr - expression to test
+{expr} -- expression to test
 
 *DESC
 
@@ -696,7 +696,7 @@ number. This is the case if the top-level operator of "expr" is {/}.
 
 *PARMS
 
-expr - expression to determine numerator of
+{expr} -- expression to determine numerator of
 
 *DESC
 
@@ -723,7 +723,7 @@ rational nor numeric, the function returns unevaluated.
 
 *PARMS
 
-expr - expression to determine denominator of
+{expr} -- expression to determine denominator of
 
 *DESC
 
@@ -750,11 +750,11 @@ neither rational nor numeric, the function returns unevaluated.
 
 *PARMS
 
-a, b - two objects whose commutator should be computed
+{a}, {b} -- two objects whose commutator should be computed
 
 *DESC
 
-This command computes the commutator of 'a" and "b", ie. the
+This command computes the commutator of 'a" and "b", i.e. the
 expression "a b - b a". For numbers and other objects for which
 multiplication is commutative, the commutator is zero. But this is not
 necessarily the case for matrices.
@@ -803,13 +803,13 @@ necessarily the case for matrices.
 
 *PARMS
 
-var - variable
+{var} -- variable
 
-at - point to get Taylor series around
+{at} -- point to get Taylor series around
 
-order - order of approximation
+{order} -- order of approximation
 
-expr - expression to get Taylor series for
+{expr} -- expression to get Taylor series for
 
 *DESC
 
@@ -841,13 +841,13 @@ limit as "var" approaches "at".
 
 *PARMS
 
-var - variable
+{var} -- variable
 
-at - point to get inverse Taylor series around
+{at} -- point to get inverse Taylor series around
 
-order - order of approximation
+{order} -- order of approximation
 
-expr - expression to get inverse Taylor series for
+{expr} -- expression to get inverse Taylor series for
 
 *DESC
 
@@ -893,13 +893,13 @@ up to order "order". It uses the function {ReversePoly} to perform the task.
 
 *PARMS
 
-f, g - expressions in "var"
+{f}, {g} -- functions of "var"
 
-var - a variable
+{var} -- a variable
 
-newvar - a new variable to express the result in
+{newvar} -- a new variable to express the result in
 
-degree - the degree of the required solution
+{degree} -- the degree of the required solution
 
 *DESC
 
@@ -937,11 +937,11 @@ inverse of "f".
 
 *PARMS
 
-poly - a univariate polynomial
+{poly} -- a univariate polynomial
 
-var - a free variable
+{var} -- a free variable
 
-degree - positive integer
+{degree} -- positive integer
 
 *DESC
 
@@ -962,13 +962,13 @@ This function drops all terms of order "degree" or higher in
 
 *PARMS
 
-expr - an expression to find a zero for
+{expr} -- an expression to find a zero for
 
-var - free variable to adjust to find a zero
+{var} -- free variable to adjust to find a zero
 
-initial - initial value for "var" to use in the search
+{initial} -- initial value for "var" to use in the search
 
-accuracy - minimum required accuracy of the result
+{accuracy} -- minimum required accuracy of the result
 
 *DESC
 
@@ -986,7 +986,115 @@ may loop forever if the algorithm does not converge.
 	In> Newton(Sin(x),x,3,0.0001)
 	Out> 3.1415926535;
 
-*SEE Solve
+*SEE Solve, NewtonNum
+
+*CMD NewtonNum --- low-level optimized Newton's iterations
+*STD
+*CALL
+	NewtonNum(func, x0, prec0, order)
+	NewtonNum(func, x0, prec0)
+	NewtonNum(func, x0)
+
+*PARMS
+
+{func} -- a function specifying the iteration sequence
+
+{x0} -- initial value (must be close enough to the root)
+
+{prec0} -- initial precision (at least 4, default 5)
+
+{order} -- convergence order (typically 2 or 3, default 2)
+
+*DESC
+
+This function is an optimized interface for computing Newton's
+iteration sequences for numerical solution of equations in arbitrary precision.
+
+{NewtonNum} will iterate the given function starting from the initial
+value, until the sequence converges within current precision.
+Initially, up to 5 iterations at the initial precision {prec0} is
+performed (the low precision is set for speed). The initial value {x0}
+must be close enough to the root so that the initial iterations
+converge. If the sequence does not produce even a single correct digit
+of the root after these initial iterations, an error message is
+printed. The default value of the initial precision is 5.
+
+The {order} parameter should give the convergence order of the scheme.
+Normally, Newton iteration converges quadratically (so the default
+value is {order}=2) but some schemes converge faster and you can speed
+up this function by specifying the correct order. (Caution: if you give
+{order}=3 but the sequence is actually quadratic, the result will be
+silently incorrect. It is safe to use {order}=2.)
+
+The verbose option {V} can be used to monitor the convergence. The
+achieved exact digits should roughly form a geometric progression.
+
+*EG
+
+	In> Precision(20)
+	Out> True;
+	In> V(NewtonNum({{x}, x+Sin(x)}, 3, 5, 3))
+	NewtonNum: Info: got 3 exact digits at prec. 7
+	NewtonNum: Info: got 7 exact digits at prec. 9
+	Out> 3.14159265358979323846;
+
+*SEE Newton
+
+*CMD SumTaylorNum --- numerical evaluation of Taylor series
+*STD
+*CALL
+	SumTaylorNum(x, NthTerm, order)
+	SumTaylorNum(x, NthTerm, TermFactor, order)
+
+*PARMS
+
+{NthTerm} -- a function specifying $n$-th coefficient of the series
+
+{x} -- number, value of the expansion variable
+
+{TermFactor} -- a function specifying the ratio of $n$-th term to the previous one
+
+{order} -- power of $x$ in the last term
+
+*DESC
+
+{SumTaylorNum} computes a Taylor series $Sum(k,0,n,a[k]*x^k)$
+numerically. This function allows very efficient computations of
+functions given by Taylor series, although some tweaking of the
+parameters is required for good results.
+
+The coefficients $a[k]$ of the Taylor series are given as functions of one integer variable ($k$). It is convenient to pass them to {SumTaylorNum} as closures.
+For example, if a function {a(k)} is defined, then
+	SumTaylorNum(x, {{k}, a(k)}, n)
+computes the series $Sum(k, 0, n, a(k)*x^k)$.
+
+Often a simple relation between successive coefficients $a[k-1]$,
+$a[k]$ of the series is available; usually they are related by a
+rational factor. In this case, the second form of {SumTaylorNum} should
+be used because it will compute the series faster. The function
+{TermFactor} applied to an integer $k>=1$ must return the ratio
+$a[k]$/$a[k-1]$. (If possible, the function {TermFactor} should return
+a rational number and not a floating-point number.) The function
+{NthTerm} must also be given, but the current implementation only calls
+{NthTerm(0)} and obtains all other coefficients by using {TermFactor}.
+
+The algorithm is described in the essays. The number of terms {order}+1
+must be specified and a sufficiently high precision must be set in
+advance to achieve the desired accuracy.
+
+*EG
+
+To compute 20 digits of $Exp(1)$ using the Taylor series, one needs 21
+digits of working precision and 21 terms of the series: 
+	In> Precision(21)
+	Out> True;
+	In> SumTaylorNum(1, {{k},1/k!}, {{k},1/k}, 21)
+	Out> 2.71828182845904523535;
+	In> RoundTo(N(Ln(%)),20)
+	Out> 1;
+
+
+*SEE Taylor
 
 *CMD D --- differentiation
 *STD
@@ -997,33 +1105,33 @@ may loop forever if the algorithm does not converge.
 
 *PARMS
 
-var - variable
+{var} -- variable
 
-list - a list of variables
+{list} -- a list of variables
 
-expr - expression to take derivative of
+{expr} -- expression to take derivatives of
 
-n - order of derivative
+{n} -- order of derivative
 
 *DESC
 
-This function calculates the derivative of the expression "expr" with
-respect to the variable "var" and returns it. If the third calling
-sequence is used, the "n"-th derivative is determined. Yacas knows
+This function calculates the derivative of the expression {expr} with
+respect to the variable {var} and returns it. If the third calling
+format is used, the {n}-th derivative is determined. Yacas knows
 how the differentiate standard functions such as {Ln}
 and {Sin}.
 
-The {D} operator is threaded in both "var" and
-"expr". This means that if either of them is a list, the function is
+The {D} operator is threaded in both {var} and
+{expr}. This means that if either of them is a list, the function is
 applied to each entry in the list. The results are collected in
-another list which is returned. If both "var" and "expr" are a
+another list which is returned. If both {var} and {expr} are a
 list, their lengths should be equal. In this case, the first entry in
-the list "expr" is differentiated with respect to the first entry in
-the list "var", the second entry in "expr" is differentiated with
-respect to the second entry in "var", and so on.
+the list {expr} is differentiated with respect to the first entry in
+the list {var}, the second entry in {expr} is differentiated with
+respect to the second entry in {var}, and so on.
 
 The {D} operator returns the original function if $n=0$, a common
-mathematical idiom that simplifies many formulas.
+mathematical idiom that simplifies many formulae.
 
 *E.G.
 
@@ -1045,9 +1153,9 @@ mathematical idiom that simplifies many formulas.
 
 *PARMS
 
-vector - vector field to take the curl of
+{vector} -- vector field to take the curl of
 
-basis - list of variables forming the basis
+{basis} -- list of variables forming the basis
 
 *DESC
 
@@ -1075,9 +1183,9 @@ Both "vector" and "basis" should be lists of length 3.
 
 *PARMS
 
-vector - vector field to calculate the divergence of
+{vector} -- vector field to calculate the divergence of
 
-basis - list of variables forming the basis
+{basis} -- list of variables forming the basis
 
 *DESC
 
@@ -1099,33 +1207,30 @@ where {n} is the length of the lists "vector" and
 *CMD Integrate --- integration
 *STD
 *CALL
-	Integrate(var, from, to) expr
+	Integrate(var, x1, x2) expr
 	Integrate(var) expr
 
 *PARMS
 
-var - variable to integrate over
+{var} -- atom, variable to integrate over
 
-from - begin of interval to integrate over
+{x1} -- first point of definite integration
 
-to - end of interval to integrate over
+{x2} -- second point of definite integration
 
-expression - expression to integrate
+{expr} -- expression to integrate
 
 *DESC
 
-This function integrates the expression "expr" with respect to the
-variable "var". The first calling sequence is used to perform
-definite integration: the integration is carried out from "var=form"
-to "var=to". The second form signifies indefinite integration. In
-this case, the function {UniqueConstant} is called
-to get a variable of the form {C}n (where "n" is
-an integer) which represent the integration constant.
+This function integrates the expression {expr} with respect to the
+variable {var}. The first calling format is used to perform
+definite integration: the integration is carried out from $var=x1$
+to $var=x2$". The second form is for indefinite integration.
 
 Some simple integration rules have currently been
-implemented. Polynomials, quotients of polynomials, the transcendental
+implemented. Polynomials, quotients of polynomials, the
 functions {Sin}, {Cos}, {Exp}, and {Ln}, and products of these
-functions with polynomials can all be integrated.
+functions with polynomials can be integrated.
 
 *E.G.
 
@@ -1143,11 +1248,11 @@ functions with polynomials can all be integrated.
 
 *PARMS
 
-expression - expression to simplify
+{expr} -- expression to simplify
 
 *DESC
 
-This function tries to simplify the expression "expr" as much
+This function tries to simplify the expression {expr} as much
 as possible. It does this by grouping powers within terms, and then
 grouping similar terms.
 
@@ -1167,7 +1272,7 @@ grouping similar terms.
 
 *PARMS
 
-expr - an expression containing nested radicals
+{expr} -- an expression containing nested radicals
 
 *DESC
 
@@ -1184,9 +1289,9 @@ unevaluated.
 
 Note that due to the use of numerical approximations, there is a small
 chance that the expression returned by {RadSimp} is
-close but not equal to "expr". The last example underneath
+close but not equal to {expr}. The last example underneath
 illustrates this problem. Furthermore, if the numerical value of
-"expr" is large, the number of possibilities becomes exorbitantly
+{expr} is large, the number of possibilities becomes exorbitantly
 big so the evaluation may take very long.
 
 *E.G.
@@ -1214,7 +1319,7 @@ But this command may yield incorrect results:
 
 *PARMS
 
-expr - an expression containing real numbers
+{expr} -- an expression containing real numbers
 
 *DESC
 
@@ -1247,13 +1352,13 @@ division of integers.
 
 *PARMS
 
-eq - single identity equation
+{eq} -- single identity equation
 
-var - single variable
+{var} -- single variable
 
-eqlist - list of identity equations
+{eqlist} -- list of identity equations
 
-varlist - list of variables
+{varlist} -- list of variables
 
 *DESC
 
@@ -1305,9 +1410,9 @@ An example which {Solve} cannot solve:
 
 *PARMS
 
-expr - expression to make zero
+{expr} -- expression to make zero
 
-var - variable (or subexpression) to solve for
+{var} -- variable (or subexpression) to solve for
 
 *DESC
 
@@ -1342,11 +1447,11 @@ function until the variable "var" is reached.
 
 *PARMS
 
-var - variable (or subexpression) to substitute
+{var} -- variable (or subexpression) to substitute
 
-value - new value of "var"
+{value} -- new value of "var"
 
-expr - expression in which the substitution should take place
+{expr} -- expression in which the substitution should take place
 
 *DESC
 
@@ -1371,9 +1476,9 @@ resulting expression, and returns the result.
 
 *PARMS
 
-poly - a polynomial in "var"
+{poly} -- a polynomial in "var"
 
-var - a variable
+{var} -- a variable
 
 *DESC
 
@@ -1444,13 +1549,13 @@ generated in every Yacas session.
 
 *PARMS
 
-var - a variable
+{var} -- a variable
 
-val - a number
+{val} -- a number
 
-dir - a direction ({Left} or {Right})
+{dir} -- a direction ({Left} or {Right})
 
-expr - an expression
+{expr} -- an expression
 
 *DESC
 
@@ -1485,7 +1590,7 @@ gives "dir" the value {Left}, the limit is taken as
 
 *PARMS
 
-expr - expression to simplify
+{expr} -- expression to simplify
 
 *DESC
 
@@ -1536,11 +1641,11 @@ integrated easily.
 
 *PARMS
 
-xlist - list of argument values
+{xlist} -- list of argument values
 
-ylist - list of function values
+{ylist} -- list of function values
 
-var - free variable for resulting polynomial
+{var} -- free variable for resulting polynomial
 
 *DESC
 
@@ -1599,7 +1704,7 @@ polynomial.
 
 *PARMS
 
-n - an integer
+{n} -- an integer
 
 *DESC
 
