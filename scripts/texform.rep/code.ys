@@ -14,7 +14,7 @@
 	0.4.5 fixes for bracketing of Sum(); added <> to render as \sim and <=> to render as \approx; added Bin()
 	0.4.6 moved the <> and <=> operators to stdopers.ys
 	0.4.7 added Factorize() i.e. Product()
-	0.4.8 added Deriv(x,n), =>, and fixed errors with ArcSinh, ArcCosh, ArcTanh
+	0.4.8 added D(x,n), Deriv(x,n), =>, and fixed errors with ArcSinh, ArcCosh, ArcTanh
 */
 
 /* To do:
@@ -226,6 +226,7 @@ TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, 
 		"\\frac{d^" : TeXForm(n, TeXFormMaxPrec) : "}{d "
 	), TeXForm(x, OpPrecedence("^")), " ^", TeXForm(n, TeXFormMaxPrec), "}", TeXForm(y, OpPrecedence("/")) ) );
 100 # TeXForm(D(_x)_y, _p) <-- TeXForm(Deriv(x) y, p);
+100 # TeXForm(D(_x, _n)_y, _p) <-- TeXForm(Deriv(x, n) y, p);
 
 /* Indexed expressions */
 
