@@ -293,8 +293,9 @@ SumFunc(_sumvar,sumfrom_IsInteger,_sumto,_sumbody,_sum,_condition) <--
 // doesn't work for complex c
 SumFunc(_k,1,_n,_c, c*n, Hold(IsRationalOrNumber(c)) );
 SumFunc(_k,1,_n,_k, n*(n+1)/2 );
-SumFunc(_k,1,_n,_k^2, n*(n+1)*(2*n+1)/6 );
-SumFunc(_k,1,_n,_k^3, (n*(n+1))^2 / 4 );
+//SumFunc(_k,1,_n,_k^2, n*(n+1)*(2*n+1)/6 );
+//SumFunc(_k,1,_n,_k^3, (n*(n+1))^2 / 4 );
+SumFunc(_k,1,_n,_k^_p,(Bernoulli(p+1,n+1) - Bernoulli(p+1))/(p+1), Hold(IsInteger(p)) );
 SumFunc(_k,1,_n,2*_k-1, n^2 );
 SumFunc(_k,1,_n,HarmonicNumber(_k),(n+1)*HarmonicNumber(n) - n );
 SumFunc(_k,1,_n,Fibonacci(_k)^2, Fibonacci(n)*Fibonacci(n+1) );
