@@ -119,6 +119,18 @@ int use_texmacs_out = 0;
 int patchload=0;
 int winsockinitialised=0;
 int hideconsolewindow=0;
+
+#ifndef SCRIPT_DIR
+  #define SCRIPT_DIR "none"
+#endif
+#ifndef PLUGIN_DIR
+  #define PLUGIN_DIR "none"
+#endif
+#ifndef PLATFORM_OS
+  #define PLATFORM_OS "none"
+#endif
+
+
 char* root_dir    = SCRIPT_DIR;
 char* dll_dir     = PLUGIN_DIR;
 #ifndef WIN32
