@@ -229,7 +229,7 @@ DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
 
 5 # MultiGcd(f_IsMulti,g_IsMulti)_(MultiTermLess({MultiLM(f),1},{MultiLM(g),1})) <--
 [
-Echo("lesser");
+//Echo("lesser");
   MultiGcd(g,f);
 ];
 
@@ -251,11 +251,22 @@ Echo("lesser");
   Local(new);
   While(g != 0)
   [
-//Echo("before division: g = ",g);
-    Set(new, MultiDivide(f,{g})[2]);
-//Echo("After division: g = ",g);
+//Echo("before f",f,NormalForm(f));
+//Echo("before g",g,NormalForm(g));
+    Set(new, MultiDivide(f,{g}));
+//Echo("new g",NormalForm(new[1][1]),NormalForm(new[2]));
+If(new[1][1]=0,
+[
+  g:=MakeMultiNomial(1,MultiVars(f));
+//Echo("PRIM ",MultiPrimitivePart(g));
+  new[2]:=0;
+]);
+    Set(new, new[2]);
     Set(f,g);
     Set(g,new);
+    
+//Echo("after f",f,NormalForm(f));
+//Echo("after g",g,NormalForm(g));
   ];
   MultiPrimitivePart(f);
 ];
