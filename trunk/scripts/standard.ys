@@ -367,6 +367,10 @@ LocalSymbols(x)
 100 # (_f  * _x)_(f= -1)  <-- -x;
 100 # (_x  * _f)_(f= -1)  <-- -x;
 
+100 # (_x) * (_x) <-- x^2;
+101 # 0    * (_x) <-- 0;
+101 # (_x) *    0 <-- 0;
+
 100 # x_IsNumber * (y_IsNumber * _z) <-- (x*y)*z;
 100 # x_IsNumber * (_y * z_IsNumber) <-- (x*z)*y;
 
@@ -446,10 +450,6 @@ LocalSymbols(x)
 242 # (x_IsInteger / y_IsInteger) * (v_IsInteger / w_IsInteger) <-- (x*v)/(y*w);
 243 #  x_IsInteger * (y_IsInteger / z_IsInteger) <--  (x*y)/z;
 243 #  (y_IsInteger / z_IsInteger) * x_IsInteger <--  (x*y)/z;
-
-400 # _x * _x <-- x^2;
-401 # 0 * _x <-- 0;
-401 # _x * 0 <-- 0;
 
 
 /* Division */
