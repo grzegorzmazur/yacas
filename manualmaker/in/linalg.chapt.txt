@@ -367,28 +367,76 @@ the vector {expr}, {False} otherwise.
 *CMD IsMatrix --- test for a matrix
 *STD
 *CALL
-	IsMatrix(M)
+	IsMatrix(expr)
+
+	IsMatrix(pred,expr)
 
 *PARMS
 
-{M} -- a mathematical object
+{expr} -- expression to test
+
+{pred} -- predicate test (e.g. IsNumber, IsInteger, ...)
 
 *DESC
 
-{IsMatrix} returns {True} if {M} is a matrix, {False} otherwise. Something is
-considered to be a matrix if it is a list and all the entries of this
-list are themselves lists.
+{IsMatrix(expr)} returns {True} if {expr} is a matrix, {False} otherwise.
+Something is considered to be a matrix if it's a list of vectors of equal
+length.
+{IsMatrix(pred,expr)} returns {True} if {expr} is a matrix and if the
+predicate test {pred} returns {True} when applied to every element of
+the matrix {expr}, {False} otherwise.
 
 *E.G.
 
-	In> IsMatrix(ZeroMatrix(3,4))
+	In> IsMatrix(1)
+	Out> False;
+	In> IsMatrix({1,2})
+	Out> False;
+	In> IsMatrix({{1,2},{3,4}})
 	Out> True;
-	In> IsMatrix(ZeroVector(4))
+	In> IsMatrix(IsRational,{{1,2},{3,4}})
 	Out> False;
-	In> IsMatrix(3)
-	Out> False;
+	In> IsMatrix(IsRational,{{1/2,2/3},{3/4,4/5}})
+	Out> True;
 
-*SEE IsVector
+*SEE IsList, IsVector
+
+
+*CMD IsSquareMatrix --- test for a square matrix
+*STD
+*CALL
+	IsSquareMatrix(expr)
+
+	IsSquareMatrix(pred,expr)
+
+*PARMS
+
+{expr} -- expression to test
+
+{pred} -- predicate test (e.g. IsNumber, IsInteger, ...)
+
+*DESC
+
+{IsSquareMatrix(expr)} returns {True} if {expr} is a square matrix,
+{False} otherwise. Something is considered to be a square matrix if
+it's a matrix having the same number of rows and columns.
+{IsMatrix(pred,expr)} returns {True} if {expr} is a square matrix and
+if the predicate test {pred} returns {True} when applied to every
+element of the matrix {expr}, {False} otherwise.
+
+*E.G.
+
+	In> IsSquareMatrix({{1,2},{3,4}});
+	Out> True;
+	In> IsSquareMatrix({{1,2,3},{4,5,6}});
+	Out> False;
+	In> IsSquareMatrix(IsBoolean,{{1,2},{3,4}});
+	Out> False;
+	In> IsSquareMatrix(IsBoolean,{{True,False},{False,True}});
+	Out> True;
+
+*SEE IsMatrix
+
 
 *CMD Normalize --- normalize a vector
 *STD

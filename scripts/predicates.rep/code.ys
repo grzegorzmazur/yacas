@@ -18,12 +18,16 @@ Function("IsMatrix",{aLeft})
 ];
 */
 
+LocalSymbols(p,x)
+[
 // test for a scalar
 Function("IsScalar",{x}) Not(IsList(x));
 
 /* IsList is checked first, as it is hoped this greatly speeds up checking if something is a matrix.
  */
+/* remove? (dr)
 Function("IsMatrix",{x}) If(IsList(x),Length(Dimensions(x))=2,False);
+*/
 
 // test for a vector
 Function("IsVector",{x})
@@ -46,12 +50,56 @@ Function("IsVector",{p,x})
    result;
 ];
 
+// test for a matrix (dr)
+Function("IsMatrix",{x})
+If(IsList(x) And Length(x)>0,
+[
+   Local(n);
+   n:=Length(x);
+   If(Length(Select(IsVector,x))=n,
+   MapSingle(Length,x)=Length(x[1])+ZeroVector(n),
+   False);
+],
+False);
+
+// test for a matrix w/ element test p (dr)
+Function("IsMatrix",{p,x})
+If(IsMatrix(x),
+[
+   Local(i,j,m,n,result);
+   m:=Length(x);
+   n:=Length(x[1]);
+   i:=1;
+   result:=True;
+   While(i<=m And result)
+   [
+      j:=1;
+      While(j<=n And result)
+      [
+         result:=Apply(p,{x[i][j]});
+         j++;
+      ];
+      i++;
+   ];
+   result;
+],
+False);
+
+/* remove? (dr)
 IsSquareMatrix(_x) <--
 [
    Local(d);
    d:=Dimensions(x);
    Length(d)=2 And d[1]=d[2];
 ];
+*/
+
+// test for a square matrix (dr)
+Function("IsSquareMatrix",{x}) IsMatrix(x) And Length(x)=Length(x[1]);
+// test for a square matrix w/ element test p (dr)
+Function("IsSquareMatrix",{p,x}) IsMatrix(p,x) And Length(x)=Length(x[1]);
+
+]; // LocalSymbols(p,x)
 
 
 Function("IsRational",{aLeft}) Type(aLeft) = "/";

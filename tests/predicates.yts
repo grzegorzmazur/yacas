@@ -142,15 +142,28 @@ Verify(IsMatrix({}),False);
 Verify(IsMatrix({a,b}),False);
 Verify(IsMatrix({{}}),True);
 Verify(IsMatrix({{a}}),True);
+Verify(IsMatrix({{{a}}}),False);
 Verify(IsMatrix({{},a}),False);
 Verify(IsMatrix({{a},b}),False);
 Verify(IsMatrix({{},{}}),True);
+Verify(IsMatrix({{{}},{}}),False);
 Verify(IsMatrix({{},{{}}}),False);
 Verify(IsMatrix({{a,b},{c}}),False);
 Verify(IsMatrix({{a,b},{c,d}}),True);
+Verify(IsMatrix({{a,b},{c,{d}}}),False);
 Verify(IsMatrix({{{}}}), False);
 Verify(IsMatrix({{{a}}}), False);
 Verify(IsMatrix({{{{a}}},{{{b}}}}),False);
+
+Testing("---- IsMatrix(IsInteger)");
+Verify(IsMatrix(IsInteger,{{a,1}}),False);
+Verify(IsMatrix(IsInteger,{{1,2}}),True);
+Verify(IsMatrix(IsInteger,{{1,2/3}}),False);
+Verify(IsMatrix(IsInteger,{{1,2,3},{4,5,6}}),True);
+Verify(IsMatrix(IsInteger,{{1,{2},3},{4,5,6}}),False);
+Verify(IsMatrix(IsInteger,{{1,2,3},{4,5}}),False);
+Verify(IsMatrix(IsInteger,{{Sin(1),2,3},{4,5,6}}),False);
+Verify(IsMatrix(IsInteger,{{Sin(0),2,3},{4,5,6}}),True);
 
 Testing("---- IsSquareMatrix");
 Verify(IsSquareMatrix({{}}),False);
@@ -162,4 +175,3 @@ Verify(IsSquareMatrix({{a,b},{c,d},{e,f}}),False);
 Verify(IsSquareMatrix({{a,b,c},{d,e,f},{g,h,i}}),True);
 Verify(IsSquareMatrix({{a,b,c},{d,e,f}}),False);
 Verify(IsSquareMatrix({{{a,b}},{{c,d}}}), False);
-
