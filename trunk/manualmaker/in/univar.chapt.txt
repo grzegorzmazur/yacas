@@ -545,9 +545,8 @@ parameter {a} should be greater than -1/2.
 The Gegenbauer polynomials are orthogonal with respect to the weight
 function $(1-x^2)^(a-1/2)$ on the interval [-1,1]. Hence they are
 connected to the Jacobi polynomials via 
-*REM this formula will be typeset by TeX directly since the script does not touch lonely $ signs
-$G(n, a, x) =
-P(n, a-1/2, a-1/2, x)$. They satisfy the recurrence relation
+$$ G(n, a, x) = P(n, a-1/2, a-1/2, x) $$.
+They satisfy the recurrence relation
 $$ G(n,a,x) = 2*(1+(a-1)/n)*x*G(n-1,a,x) $$
 $$ -(1+2*(a-2)/n)*G(n-2,a,x) $$
 for $n>1$, with
@@ -785,7 +784,8 @@ It is similar to the function {OrthoPoly} and returns the result of the
 summation of series of polynomials from the family {name} with parameters {par}
 at the point {x}, where {c} is the list of coefficients of the series.
 
-The algorithm used to compute the series without first computing the individual polynomials is the Clenshaw-Smith recurrence scheme. See: Yudell L. Luke. <i>Mathematical functions and their approximations</i>, Academic Press, N. Y., 1975.
+The algorithm used to compute the series without first computing the individual polynomials is the Clenshaw-Smith recurrence scheme.
+(See the algorithms book for explanations.)
 
 If the argument {x} is numerical, the function {OrthoPolySumNumeric} is called.
 Otherwise, the function {OrthoPolySumCoeffs} computes the list of coefficients

@@ -1180,7 +1180,7 @@ digits.
 
 *DESC
 
-This function returns the largest integer smaller than "x".
+This function returns $Floor(x)$, the largest integer smaller than or equal to $x$.
 
 *E.G.
 
@@ -1202,7 +1202,7 @@ This function returns the largest integer smaller than "x".
 
 *DESC
 
-This function returns the smallest integer larger than "x".
+This function returns $Ceil(x)$, the smallest integer larger than or equal to $x$.
 
 *E.G.
 
@@ -1224,7 +1224,7 @@ This function returns the smallest integer larger than "x".
 
 *DESC
 
-This function returns the integer closest to "x". Half-integers
+This function returns the integer closest to $x$. Half-integers
 (i.e. numbers of the form $n + 0.5$, with $n$ an integer) are
 rounded upwards.
 

@@ -283,7 +283,7 @@ OrthoPolySumCoeffs(name_IsString, c_IsList, p_IsList) <-- [
 //////////////////////////////////////////////////
 /// (This is not used now because of numerical instability, until I figure out how much to increase the working precision to get P correct digits.)
 /// See: W. Koepf. Efficient computation of Chebyshev polynomials in computer algebra (unpublished preprint). Contrary to Koepf's claim (unsupported by any calculation in his paper) that the method is numerically stable, I found unsatisfactory numerical behavior for very large orders.
-/// Koepf suggests to use M. Bronstein's algorithm for finding rational solutions of linear ODEs for all other orthogonal polynomials (may be faster than recursion if we want to find the analytic form of the polynomial).
+/// Koepf suggests to use M. Bronstein's algorithm for finding rational solutions of linear ODEs for all other orthogonal polynomials (may be faster than recursion if we want to find the analytic form of the polynomial, but still slower if an explicit formula is available).
 //////////////////////////////////////////////////
 /// Main formulae: T(2*n,x) = 2*T(n,x)^2-1; T(2*n+1,x) = 2*T(n+1,x)*T(n,x)-x;
 /// U(2*n,x) = 2*T(n,x)*U(n,x)-1; T(2*n+1,x) = 2*T(n+1,x)*U(n,x);
@@ -358,31 +358,6 @@ BitList(n) := BitList(n, {});
 /// Fast symbolic computation of some polynomials
 //////////////////////////////////////////////////
 
-/* Coefficients for Legendre, Hermite, Laguerre, Chebyshev polynomials can be obtained by explicit formulae. This is faster than the recurrence if we need the entire polynomial symbolically, but still slower than the recurrence for numerical calculations.
-*/
-
-/*
-
-Legendre polynomials: if $k=Floor(n/2)$, then
-$$ P_n(x) = 2^(-n)*Sum(i,0,k, (-1)^i*x^(n-2*i)*Bin(n,i)*Bin(2*n-2*i,n))$$.
-The summation is over integer values of $i$ such that $0<=2*i<=n$, regardless of whether $n$ is even or odd.
-
-Hermite polynomials:
-For even $n=2*k$ where $k>=0$, 
-$$ H_n(x) = (-2)^(k)*(n-1)!! *Sum(i,0,k, (x^(2*i)*(-4)^i*k!) / ((2*i)! * (k-i)!))) $$,
-and for odd $n=2*k+1$ where $k>=0$,
-$$ H_n(x) = 2*(-2)^(k)*n!! *Sum(i,0,k, (x^(2*i+1)*(-4)^i*k!) / ((2*i+1)! * (k-i)!))) $$.
-
-Laguerre polynomials:
-$$ L_n(a,x) = Sum(i,0,n,(-x)^i/i! *Bin(n+a,n-i)) $$.
-Here the binomial is defined for non-integer $a$ through the Gamma function and gives coefficients that are rational functions of $a$.
-
-Chebyshev polynomials of the first and of the second kind: if $k=Floor(n/2)$, then
-$$ T_n(x) = Sum(i,0,k, (-1)^i*(2*x)^(n-2*i)/(n-i)*Bin(n-i,i)) $$,
-$$ U_n(x) = Sum(i,0,k, (-1)^i*(2*x)^(n-2*i)*Bin(n-i,i)) $$.
-Here it is assumed that $n>0$ (the case $n=0$ must be done separately). The summation is over integer values of $i$ such that $0<=2*i<=n$, regardless of whether $n$ is even or odd.
-
-*/
 
 //////////////////////////////////////////////////
 /// Fast symbolic computation of Legendre polynomials
