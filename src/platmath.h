@@ -26,6 +26,8 @@ LispStringPtr PlatMod(LispCharPtr int1, LispCharPtr int2,LispHashTable& aHashTab
 LispStringPtr PlatDiv(LispCharPtr int1, LispCharPtr int2,LispHashTable& aHashTable,LispInt aPrecision);
 LispStringPtr PlatAbs(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision);
 
+LispStringPtr PlatIsPrime(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision);
+
 
 /*
 class NativeNumber : public NumberBase

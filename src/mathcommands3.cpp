@@ -269,6 +269,12 @@ void LispFac(LispEnvironment& aEnvironment, LispPtr& aResult,
 }
 
 
+void LispFastIsPrime(LispEnvironment& aEnvironment, LispPtr& aResult,
+                  LispPtr& aArguments)
+{
+    LispArithmetic1(aEnvironment, aResult, aArguments, PlatIsPrime);
+}
+
 
 
 void LispFastSin(LispEnvironment& aEnvironment, LispPtr& aResult,

@@ -234,6 +234,7 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispSubst ,"Subst");
     SetCommand(LispLocalSymbols ,"LocalSymbols");
 
+	SetCommand(LispFastIsPrime, "FastIsPrime");
     SetCommand(LispFac ,"MathFac");
     SetCommand(LispApplyPure ,"ApplyPure");
 

@@ -91,8 +91,8 @@ FindPrimeFactor(n, prime) :=
 	{n, power};
 ];
 
-/* simpler method but slower on worstcase such as p^n or n!
-FindPrimeFactor(n, prime) :=
+/* simpler method but slower on worstcase such as p^n or n! */
+FindPrimeFactorSimple(n, prime) :=
 [
 	Local(power, factor);
 	power := 0;
@@ -104,7 +104,7 @@ FindPrimeFactor(n, prime) :=
 	];
 	{n/(factor/prime), power};
 ];
-*/
+/**/
 
 /// Auxiliary function. Factorizes by trials. Return prime factors up to given limit and the remaining number.
 /// E.g. TrialFactorize(42, 2) returns {21, {{2, 1}}} and TrialFactorize(37, 4) returns {37}

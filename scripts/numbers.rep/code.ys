@@ -61,17 +61,19 @@ CountBits(value) :=
 /// obtain next number that has good chances of being prime (not divisible by 2,3)
 1# NextPseudoPrime(i_IsInteger)_(i<=1) <-- 2;
 2# NextPseudoPrime(2) <-- 3;
-2# NextPseudoPrime(3) <-- 5;
-// this works only for odd i>=5
+//2# NextPseudoPrime(3) <-- 5;
 3# NextPseudoPrime(i_IsOdd) <--
 [
 	// this sequence generates numbers not divisible by 2 or 3
+	i := i+2;
+	If(Mod(i,3)=0, i:=i+2, i);
+/* commented out because it slows things down without a real advantage
+// this works only for odd i>=5
 	i := If(
 		Mod(-i,3)=0,
 		i + 2,
 		i + 2*Mod(-i, 3)
 	);
-/* commented out because it slows things down without a real advantage
 	// now check if divisible by 5
 	If(
 		Mod(i,5)=0,
@@ -90,7 +92,11 @@ CountBits(value) :=
 	i;
 ];
 
-/* Returns whether n is a prime */
+/* Returns whether n is a prime for n <= 65537 by a lookup table, very fast */
+
+IsSmallPrime(n_IsInteger) <-- (FastIsPrime(n)>0);
+
+3 # IsPrime(n_IsInteger)_(n<=65537) <-- IsSmallPrime(n);
 
 /* Fast pseudoprime testing: if n is a prime, then 24 divides (n^2-1) */
 5 # IsPrime(n_IsPositiveInteger)_(n > 4 And Mod(n^2-1,24)!=0) <-- False;
@@ -272,7 +278,7 @@ LocalSymbols(p, q)
 		If(
 			IsInteger(p),
 			p,
-			p := Factorize(Select({{q}, Mod(q^2,24)=1 And RabinMiller(q)}, 5 .. 257))
+			p := Factorize(Select({{q}, Mod(q^2,24)=1 And IsSmallPrime(q)}, 5 .. 257))
 		);
 //		p;
 	];
