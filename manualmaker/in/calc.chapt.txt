@@ -404,7 +404,7 @@ argument of 0 is {Undefined}.
 
 *SEE Abs, Sign
 
-*CMD !, !!, ***,Subfactorial  --- factorial and related functions
+*CMD !, !!, ***, Subfactorial  --- factorial and related functions
 *STD
 *CALL
 	n!
@@ -434,7 +434,7 @@ appears in its natural place, also called "derangements."
 The factorial functions are threaded, meaning that if the argument {n} is a
 list, the function will be applied to each element of the list.
 
-For reasons of Yacas syntax, the factorial sign {!} cannot precede other
+Note: For reasons of Yacas syntax, the factorial sign {!} cannot precede other
 non-letter symbols such as {+} or {*}. Therefore, you should enter a space
 after {!} in expressions such as {x! +1}.
 
