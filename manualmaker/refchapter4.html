@@ -110,6 +110,9 @@ Integrate
 , <A HREF="refchapter4.html#Simplify" TARGET="Chapters">
 Simplify
 </A>
+, <A HREF="refchapter4.html#RadSimp" TARGET="Chapters">
+RadSimp
+</A>
 , <A HREF="refchapter4.html#Rationalize" TARGET="Chapters">
 Rationalize
 </A>
@@ -518,7 +521,47 @@ to var=to. Currently, only polynomials can be integrated.
 </H3>
 Simplify(expr) : Simplify tries to simplify an expression as much
 as possible.
-<A NAME="Rationalize">
+<A NAME="RadSimp">
+
+</A>
+<H3>
+<HR>RadSimp
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+RadSimp(expression)
+<H5>
+Parameters:
+</H5>
+expression - an expression containing nested radicals
+<H5>
+Description:
+</H5>
+RadSimp tries to unnest nested radicals. It does this using
+a simple brute force method, and tries to write it out as an
+expression of the form Sqrt(e1) + Sqrt(e2) + ... .
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> RadSimp(Sqrt(9+4*Sqrt(2)))
+Out> 1+Sqrt(8);
+In> RadSimp(Sqrt(5+2*Sqrt(6))+Sqrt(5-2*Sqrt(6)))
+Out> Sqrt(12);
+In> RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2)))))) 
+Out> 3+Sqrt(2);
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Simplify" TARGET="Chapters">
+Simplify
+</A>
+, <A NAME="Rationalize">
 
 </A>
 <H3>

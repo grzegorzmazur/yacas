@@ -16,7 +16,7 @@ RadSimp(_n) <--
 
 /*Echo({"Try ",test}); */
 
-CheckRadicals(_n,_test) <-- Abs(N(Eval(n-test))) < 0.000001;
+CheckRadicals(_n,_test) <-- Abs(N(Eval(n-test),20)) < 0.000001;
 
 
 RadSimpTry(_n,_result,_current,_max)<--

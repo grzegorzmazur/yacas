@@ -26,12 +26,50 @@ In&gt Precision(50)
 <font color=ff0000></font>In&gt N(Exp(Pi*Sqrt(163))) 
 <font color=ff0000> Out&gt 262537412640768743.99999999999925007259719818568885219682604177332393 </font>
 
-5. <font color=0000ff>Simplify 2*infinity-3.</font> : 
+5. <font color=0000ff>Compute an infinite decimal representation of 1/7</font> : 
+In&gt Decimal(1/7) 
+<font color=ff0000> Out&gt {0,{1,4,2,8,5,7}} </font>
+
+6. <font color=0000ff>Compute the first terms of the continued fraction of Pi.</font> : 
+In&gt PrettyForm(ContFrac(Pi())) 
+<font color=ff0000> 
+                 1             
+3 + ---------------------------
+                   1           
+    7 + -----------------------
+                     1         
+        15 + ------------------
+                       1       
+             1 + --------------
+                          1    
+                 292 + --------
+                       1 + rest
+
+Out&gt True </font>
+
+7. <font color=0000ff>Simplify sqrt(2*sqrt(3)+4).</font> : 
+In&gt  RadSimp(Sqrt(2*Sqrt(3)+4)) 
+<font color=ff0000> Out&gt 1+Sqrt(3) </font>
+
+8. <font color=0000ff>Simplify sqrt(14+3*sqrt(3+2*sqrt(5-12*sqrt(3-2*sqrt(2))))).</font> : 
+In&gt RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2)))))) 
+<font color=ff0000> Out&gt 3+Sqrt(2) </font>
+
+9. <font color=0000ff>Simplify 2*infinity-3.</font> : 
 In&gt 2*Infinity-3 
 <font color=ff0000> Out&gt Infinity </font>
 Infinity is also defined for comparisons like a &lt Infinity
 
-6. <font color=0000ff>Expand (x+1)^5, then differentiate and factorize.</font> : 
+10. <font color=0000ff>Compute the normal form of (x^2-4)/(x^2+4x+4).</font> : 
+In&gt  PrettyForm(GcdReduce((x^2-4)/(x^2+4*x+4),x)) 
+<font color=ff0000> 
+-2 + x
+------
+2 + x 
+
+Out&gt True </font>
+
+11. <font color=0000ff>Expand (x+1)^5, then differentiate and factorize.</font> : 
 In&gt  ans:=Factors(D(x)Expand((x+1)^5)) 
 <font color=ff0000></font>In&gt PrettyForm(FW(ans)) 
 <font color=ff0000> 
@@ -40,7 +78,23 @@ In&gt  ans:=Factors(D(x)Expand((x+1)^5))
 
 Out&gt True </font>
 
-7. <font color=0000ff>Invert the 2x2 matrix [[a,b],[1,ab]]. </font> : 
+12. <font color=0000ff>Simplify sqrt(997) - (997^3)^(1/6).</font> : 
+In&gt  RadSimp(Sqrt(997)-997^3^(1/6)) 
+<font color=ff0000> Out&gt 0 </font>
+
+13. <font color=0000ff>Simplify sqrt(999983) - (999983^3)^(1/6).</font> : 
+In&gt RadSimp(Sqrt(999983)-999983^3^(1/6)) 
+<font color=ff0000> Out&gt 0 </font>
+
+14. <font color=0000ff>Recognize that (2^(1/3)+4^(1/3))^3-6*(2^(1/3)+4^(1/3)) - 6 is 0.</font> : 
+In&gt RadSimp((2^(1/3)+4^(1/3))^3-6*(2^(1/3)+4^(1/3))-6) 
+<font color=ff0000> Out&gt 0 </font>
+
+15. <font color=0000ff>Simplify log e^z into z only for -Pi < Im(z) <= Pi.</font> : 
+In&gt Simplify(Ln(Exp(z))) 
+<font color=ff0000> Out&gt z </font>
+
+16. <font color=0000ff>Invert the 2x2 matrix [[a,b],[1,ab]]. </font> : 
 In&gt  A:={{a,b},{1,a*b}} 
 <font color=ff0000></font>In&gt ans:=Inverse(A) 
 <font color=ff0000> Out&gt {{(a*b)/(b*a^2-b),(-b)/(b*a^2-b)},{-1/(b*a^2-b),a/(b*a^2-b)}} </font>
@@ -49,16 +103,16 @@ In&gt TableForm(Simplify(ans))
 {1/(b-b*a^2),1/(b*a-b/a)}
 Out&gt True </font>
 
-8. <font color=0000ff>Find the eigenvalues of the matrix [[5, -3, -7],[-2, 1, 2],[ 2, -3, -4]].</font> : 
+17. <font color=0000ff>Find the eigenvalues of the matrix [[5, -3, -7],[-2, 1, 2],[ 2, -3, -4]].</font> : 
 In&gt  A:={{5,-3,-7},{-2,1,2},{2,-3,-4}} 
 <font color=ff0000></font>In&gt EigenValues(A) 
 <font color=ff0000> Out&gt {1,3,-2} </font>
 
-9. <font color=0000ff>Compute the limit of (1-cos x)/x^2 when x goes to zero. </font> : 
+18. <font color=0000ff>Compute the limit of (1-cos x)/x^2 when x goes to zero. </font> : 
 In&gt Limit(x,0)(1-Cos(x))/x^2 
 <font color=ff0000> Out&gt 1/2 </font>
 
-10. <font color=0000ff>Compute the first terms of the Taylor expansion of 1/sqrt(1-v^2/c^2) at v=0. </font> : 
+19. <font color=0000ff>Compute the first terms of the Taylor expansion of 1/sqrt(1-v^2/c^2) at v=0. </font> : 
 In&gt ans:=Taylor(v,0,4)Sqrt(1/(1-v^2/c^2)) 
 <font color=ff0000></font>In&gt ans:=Simplify(ans) 
 <font color=ff0000></font>In&gt PrettyForm(ans) 
@@ -71,7 +125,7 @@ In&gt ans:=Taylor(v,0,4)Sqrt(1/(1-v^2/c^2))
 
 Out&gt True </font>
 
-11. <font color=0000ff>Compute the inverse of the square of the above expansion. </font> : 
+20. <font color=0000ff>Compute the inverse of the square of the above expansion. </font> : 
 In&gt  ans:=Taylor(v,0,4)(1/ans)^2 
 <font color=ff0000></font>In&gt PrettyForm(Simplify(ans)) 
 <font color=ff0000> 
@@ -83,7 +137,7 @@ In&gt  ans:=Taylor(v,0,4)(1/ans)^2
 
 Out&gt True </font>
 
-12. <font color=0000ff>Compute the Taylor expansion of tan(x) at x=0 by dividing the expansion of sin(x) by that of cos(x). </font> : 
+21. <font color=0000ff>Compute the Taylor expansion of tan(x) at x=0 by dividing the expansion of sin(x) by that of cos(x). </font> : 
 In&gt  ans1:=Taylor(x,0,5)Sin(x)/Cos(x) 
 <font color=ff0000></font>In&gt PrettyForm(ans1) 
 <font color=ff0000>
@@ -103,7 +157,7 @@ x + -- + ------
 </font>In&gt ans1-ans2 
 <font color=ff0000> Out&gt 0 </font>
 
-13. <font color=0000ff>Compute the Legendre polynomials directly.</font> : 
+22. <font color=0000ff>Compute the Legendre polynomials directly.</font> : 
 In&gt 10#Legendre(0,_x)<--1 
 <font color=ff0000></font>In&gt 20#Legendre(n_IsInteger,_x)<--[Local(result);result:=[Local(x);Expand(1/(2^n*n!)*Deriv(x,n)Expand((x^2-1)^n,x));];Eval(result);] 
 <font color=ff0000></font>In&gt ForEach(item,Table(Legendre(i,x),i,0,4,1))PrettyForm(item) 
@@ -132,7 +186,7 @@ x
 8      4          8   
 
 </font>
-14. <font color=0000ff>Compute the Legendre polynomials recursively, using their recurrence of order 2. </font> : 
+23. <font color=0000ff>Compute the Legendre polynomials recursively, using their recurrence of order 2. </font> : 
 In&gt 10#LegendreRecursive(0,_x)<--1 
 <font color=ff0000></font>In&gt 20#LegendreRecursive(1,_x)<--x 
 <font color=ff0000></font>In&gt 30#LegendreRecursive(n_IsPositiveInteger,_x)<--Expand(((2*n-1)*x*LegendreRecursive(n-1,x)-(n-1)*LegendreRecursive(n-2,x))/n) 
@@ -162,11 +216,11 @@ x
 8      4          8   
 
 </font>
-15. <font color=0000ff>Evaluate the fourth Legendre polynomial at 1. </font> : 
+24. <font color=0000ff>Evaluate the fourth Legendre polynomial at 1. </font> : 
 In&gt Legendre(4,1) 
 <font color=ff0000> Out&gt 1 </font>
 
-16. <font color=0000ff>Define the polynomial p = sum( i=1..5, ai*x^i ). </font> : 
+25. <font color=0000ff>Define the polynomial p = sum( i=1..5, ai*x^i ). </font> : 
 In&gt ans:=Sum(MakeVector(a,5)*FillList(x,5)^(1..5)) 
 <font color=ff0000></font>In&gt PrettyForm(ans) 
 <font color=ff0000>
@@ -174,7 +228,7 @@ In&gt ans:=Sum(MakeVector(a,5)*FillList(x,5)^(1..5))
 a1 * x + a2 * x  + a3 * x  + a4 * x  + a5 * x 
 
 </font>
-17. <font color=0000ff>Compute the first terms of the continued fraction of Pi. </font> : 
+26. <font color=0000ff>Compute the first terms of the continued fraction of Pi. </font> : 
 In&gt pi:=N(Pi,20) 
 <font color=ff0000></font>In&gt a:=ContFrac(pi,6) 
 <font color=ff0000></font>In&gt PrettyForm(a) 
@@ -192,21 +246,21 @@ In&gt pi:=N(Pi,20)
                        1 + rest
 
 </font>
-18. <font color=0000ff>Compute an infinite decimal representation of 1/7. </font> : 
+27. <font color=0000ff>Compute an infinite decimal representation of 1/7. </font> : 
 In&gt Decimal(1/7) 
 <font color=ff0000> Out&gt {0,{1,4,2,8,5,7}} </font>
 This result means that the decimal expansion of 1/7 is
 0.142857142857142....
 
-19. <font color=0000ff>Evaluate TRUE and FALSE. </font> : 
+28. <font color=0000ff>Evaluate TRUE and FALSE. </font> : 
 In&gt True And False 
 <font color=ff0000> Out&gt  False </font>
 
-20. <font color=0000ff>Solve the equation tan(x) = 1. </font> : 
+29. <font color=0000ff>Solve the equation tan(x) = 1. </font> : 
 In&gt  Solve(Tan(x)==1,x) 
 <font color=ff0000> Out&gt Pi/4 </font>
 
-21. <font color=0000ff>Revert the Taylor expansion of sin(y) + cos(y) at y=0. </font> : 
+30. <font color=0000ff>Revert the Taylor expansion of sin(y) + cos(y) at y=0. </font> : 
 In&gt t:=InverseTaylor(y,0,6)Sin(y)+Cos(y) 
 <font color=ff0000></font>In&gt PrettyForm(t) 
 <font color=ff0000>
@@ -225,22 +279,22 @@ In&gt s:=Taylor(y,0,6)Sin(y)+Cos(y)
 <font color=ff0000></font>In&gt BigOh(Subst(y,s)t,y,6) 
 <font color=ff0000> Out&gt y </font>
 
-22. <font color=0000ff>Solve the linear (dependent) system x+y+z=6,2x+y+2z=10,x+3y+z=10.</font> : 
+31. <font color=0000ff>Solve the linear (dependent) system x+y+z=6,2x+y+2z=10,x+3y+z=10.</font> : 
 In&gt  Solve({x+y+z==6,2*x+y+2*z==10,x+3*y+z==10},{x,y,z}) 
 <font color=ff0000> Out&gt {{4-z,2,z}} </font>
 
-23. <font color=0000ff>Evaluate True And False</font> : 
+32. <font color=0000ff>Evaluate True And False</font> : 
 In&gt True And False 
 <font color=ff0000> Out&gt  False </font>
 In&gt  CanProve(True And False) 
 <font color=ff0000> Out&gt False </font>
 
-24. <font color=0000ff>Simplify x or (not x)</font> : 
+33. <font color=0000ff>Simplify x or (not x)</font> : 
 In&gt  CanProve(x Or Not x) 
 <font color=ff0000> Out&gt True </font>
 
-25. <font color=0000ff>Simplify x or y or (x and y)</font> : 
+34. <font color=0000ff>Simplify x or y or (x and y)</font> : 
 In&gt  CanProve(x Or y Or x And y) 
 <font color=ff0000> Out&gt x Or y </font>
-25  examples done
+34  examples done
 </FONT></PRE></BODY></HTML>

@@ -304,10 +304,17 @@ Apart(_f,_var) <--
 /* Reduce rational function by dividing gcd away */
 GcdReduce(_f,_var)<--
 [
-  Local(rat,gcd,cc); 
+  Local(rat,gcd); 
   rat:=RationalForm(f,var);
   gcd:=Gcd(rat[1],rat[2]);
 /*  gcd:=gcd*Gcd(Content(rat[1]),Content(rat[2]));*/
-  Expand(Div(rat[1],gcd))/(Expand(Div(rat[2],gcd)));
+
+  Local(numer,denom,lc);
+  numer:=Div(rat[1],gcd);
+  denom:=Div(rat[2],gcd);
+  lc:=LeadingCoef(numer,var);
+  numer:=numer/lc;
+  denom:=denom/lc;
+  Expand(numer)/Expand(denom);
 ];
 

@@ -1,0 +1,29 @@
+
+Readme for BeOS Users/Developers
+
+In order to compile the Yacas source code, you will need a C/C++ compiler. 
+The Development Tools are coming as standard with the PRO version of BeOS 
+only.
+
+BeOS 5.xx Personal Edition users:
+The Development Tools are not coming as standard with the BeOS Personal 
+Edition package. Please download them here (17 MB), if you already haven't:
+ftp://ftp.be.com/pub/beos/BeOS5-DevTools.zip
+and unzip on your desktop. A new .zip file will be unzipped there along with 
+a readme file. Make sure you read the Readme included and unzip the other 
+file to your /boot/.  All the DevTools are now installed and ready to use.
+Then, just follow the next steps.
+
+BeOS 4/5.xx PRO users (PPC and x86):
+Unzip the Yacas Source Code archive somewhere. Open a Terminal and type:
+cd <yacas_dir>
+cd src
+make -f makefile.beos
+
+After a while, a yacas executable will be created on your <yacas_dir>/src/ 
+folder. Move that file to your <yacas_dir>/scripts/ folder and you are all 
+set to go. Please note that Yacas is a Terminal-based application, you will 
+need to run it through the command line.
+
+
+Eugenia.

@@ -280,6 +280,38 @@ Text()"Simplify(expr) : Simplify tries to simplify an expression as much
 as possible.";
 
 
+AddAnchor("RadSimp");
+SubSection()"RadSimp";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"RadSimp(expression)";
+
+Topical()"Parameters";
+Text()"expression - an expression containing nested radicals";
+
+Topical()"Description";
+Text()
+"RadSimp tries to unnest nested radicals. It does this using
+a simple brute force method, and tries to write it out as an
+expression of the form Sqrt(e1) + Sqrt(e2) + ... .
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> RadSimp(Sqrt(9+4*Sqrt(2)))
+Out> 1+Sqrt(8);
+In> RadSimp(Sqrt(5+2*Sqrt(6))+Sqrt(5-2*Sqrt(6)))
+Out> Sqrt(12);
+In> RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2)))))) 
+Out> 3+Sqrt(2);
+");
+
+Topical()"See Also"; 
+SeeAlso({"Simplify"});
+
+
+
 AddAnchor("Rationalize");
 SubSection()"Rationalize(expr)";
 Text()"Rationalize(expr) : convert every real number in expr into a rational
