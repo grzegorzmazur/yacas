@@ -241,7 +241,7 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
 
 
 #ifndef NO_USE_BIGFLOAT
-/*This code would be better, if BigNumber::Equals works
+/*This code would be better, if BigNumber::Equals works*/
 
     BigNumber *n1 = aExpression1.Get()->Number(aEnvironment.Precision());
     BigNumber *n2 = aExpression2.Get()->Number(aEnvironment.Precision());
@@ -253,9 +253,9 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
         }
         if (n1 == NULL) return LispFalse;
         if (n2 == NULL) return LispFalse;
-        if (!n1->Equals(*n2)) return LispFalse;
-//this should be enabled        return LispTrue;
-*/
+        if (n1->Equals(*n2)) return LispTrue;
+//this should be enabled        return LispFalse;
+
     }
 
 #endif
