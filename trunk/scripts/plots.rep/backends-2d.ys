@@ -87,7 +87,8 @@ Plot2D'plotutils(values_IsList, _options'hash) <--
     : " --x-limits " : (ToString()Write(options'hash["xrange"][1], options'hash["xrange"][2]))
     : If(
 		options'hash["yrange"] != Empty,
-		" --y-limits " : (ToString()Write(options'hash["yrange"][1], options'hash["yrange"][2]))
+		" --y-limits " : (ToString()Write(options'hash["yrange"][1], options'hash["yrange"][2])),
+		""
 	)
     : " -X " : (ToString()Write(options'hash["xname"]))
 	: " -Y \"" : PrintList(options'hash["yname"]) : "\" "
