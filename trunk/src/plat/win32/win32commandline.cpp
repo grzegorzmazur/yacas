@@ -1,10 +1,13 @@
 #include <time.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <windows.h>
 
 #include "win32commandline.h"
 
 #define BufSz 256
+
+bool is_NT_or_later = false;
 
 static void win_assert(BOOL condition){
     if(condition) return;
@@ -18,20 +21,21 @@ static void win_assert(BOOL condition){
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
         (LPTSTR) &lpMsgBuf,
         0,
-        NULL );
+        NULL);
 
     MessageBox( NULL, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONINFORMATION );
     // Free the buffer.
-    LocalFree( lpMsgBuf );
+    LocalFree(lpMsgBuf);
     exit(1);
 }
 
-void CWin32CommandLine::color_print(LispCharPtr str, WORD text_attrib){
+void CWin32CommandLine::color_print(const LispCharPtr str, WORD text_attrib){
     BOOL status;
     unsigned len = strlen(str);
     CONSOLE_SCREEN_BUFFER_INFO old_info;
 
     out_console = GetStdHandle(STD_OUTPUT_HANDLE);
+    win_assert(INVALID_HANDLE_VALUE != out_console);
     status = GetConsoleScreenBufferInfo(out_console, &old_info);
     win_assert(status);
 
@@ -48,6 +52,28 @@ void CWin32CommandLine::color_print(LispCharPtr str, WORD text_attrib){
     win_assert(status);
 }
 
+void CWin32CommandLine::color_read(LispCharPtr str, WORD text_attrib){
+    BOOL status;
+    CONSOLE_SCREEN_BUFFER_INFO old_info;
+
+    out_console = GetStdHandle(STD_OUTPUT_HANDLE);
+    win_assert(INVALID_HANDLE_VALUE != out_console);
+    status = GetConsoleScreenBufferInfo(out_console, &old_info);
+    win_assert(status);
+
+    WORD old_attrib = old_info.wAttributes;
+
+    status = SetConsoleTextAttribute(out_console, text_attrib);
+
+    DWORD read;
+    status = ReadConsole(in_console, str, 80, &read, NULL);
+    str[read - 1] = '\0';
+    win_assert(status);
+    // restore the attributes
+    status = SetConsoleTextAttribute(out_console, old_attrib);
+    win_assert(status);
+}
+
 void CWin32CommandLine::NewLine()
 {
     color_print("\n", 0);
@@ -57,6 +83,16 @@ void CWin32CommandLine::Pause()
 {
     int i = clock()+CLOCKS_PER_SEC/4;
     while (clock()<i);
+}
+
+void CWin32CommandLine::ReadLineSub(LispCharPtr prompt){
+    if(_is_NT_or_later){
+        color_print(prompt, FOREGROUND_RED | FOREGROUND_INTENSITY );
+        color_read(prompt, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+        iSubLine = prompt;
+    }else{
+        CCommandLine::ReadLineSub(prompt);
+    }
 }
 
 void CWin32CommandLine::ShowLine(LispCharPtr prompt, LispInt promptlen, LispInt cursor){
@@ -76,49 +112,66 @@ void CWin32CommandLine::ShowLine(LispCharPtr prompt, LispInt promptlen, LispInt 
 }
 
 CWin32CommandLine::CWin32CommandLine() :
-    out_console(GetStdHandle(STD_OUTPUT_HANDLE))
+    out_console(GetStdHandle(STD_OUTPUT_HANDLE)),
+    in_console(GetStdHandle(STD_INPUT_HANDLE)),
+    _is_NT_or_later(false)
 {
-    FILE*f=fopen("history.log","r");
-    if (f)
-    {
-        if(f)
-        {
-            char buff[BufSz];
-            while(fgets(buff,BufSz-2,f))
-            {
-                int i;
-                for(i=0;buff[i] && buff[i] != '\n';++i)
-                    ;
-                buff[i++] = '\0';
-                LispStringPtr ptr = new LispString(buff);
-                iHistory.Append(ptr);
+    win_assert(INVALID_HANDLE_VALUE != out_console);
+    win_assert(INVALID_HANDLE_VALUE != in_console);
+    
+    // figure out the version of windows
+    OSVERSIONINFO osvi; 
+    osvi.dwOSVersionInfoSize  = sizeof(OSVERSIONINFO);
+    GetVersionEx(&osvi);
+
+    _is_NT_or_later = (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT);
+        /* &&
+        ( (osvi.dwMajorVersion > 4) ||
+        ( (osvi.dwMajorVersion == 4) && (osvi.dwMinorVersion > 0) ) );*/
+ 
+    if(!_is_NT_or_later){
+        FILE*f=fopen("history.log", "r");
+        if(f){
+            if(f){
+                char buff[BufSz];
+                while(fgets(buff,BufSz-2,f))
+                {
+                    int i;
+                    for(i=0;buff[i] && buff[i] != '\n';++i)
+                        ;
+                    buff[i++] = '\0';
+                    LispStringPtr ptr = new LispString(buff);
+                    iHistory.Append(ptr);
                 
+                }
+                fclose(f);
             }
-            fclose(f);
         }
     }
-
-    win_assert(INVALID_HANDLE_VALUE != out_console);
 }
 
 CWin32CommandLine::~CWin32CommandLine()
 {
-    FILE*f=fopen("history.log","w");
-    if (f)
-    {
-        int i;
-        for (i=0;i<iHistory.NrItems();i++)
-        {
-            fprintf(f,"%s\n",iHistory[i]->String());
+    if(!_is_NT_or_later){
+        FILE*f=fopen("history.log","w");
+        if (f){
+            int i;
+            for (i=0;i<iHistory.NrItems();i++)
+            {
+                fprintf(f,"%s\n",iHistory[i]->String());
+            }
+            fclose(f);
         }
-        fclose(f);
     }
 }
 
-LispInt CWin32CommandLine::GetKey()
-{
+LispInt CWin32CommandLine::GetKey(){
     LispInt c;
     c = _getch();
+
+    if(!_is_NT_or_later){
+        return c;
+    }
 
 	switch (c) {
 		case 8:
