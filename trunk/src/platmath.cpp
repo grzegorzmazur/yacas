@@ -101,6 +101,17 @@ LispStringPtr PlatAbs(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPreci
 }
 
 
+/// fast checking for prime numbers
+
+#include "fastprimes.c"
+
+LispStringPtr PlatIsPrime(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+{
+    return Double(primes_table_check(unsigned(GetDouble(int1))),aHashTable);
+}
+
+
+
 
 
 

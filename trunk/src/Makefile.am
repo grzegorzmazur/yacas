@@ -105,9 +105,10 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	setup.py yacasc.i yacas.py \
 	epoccli.cpp epoccli.h epoccli.mmp epocclsv.h epocserv.cpp epocserv.h \
 	epocserv.mmp yacas.rss \
-  elfdll.cpp
+  elfdll.cpp fastprimes.c mkfastprimes.pl
 
-
+fastprimes.c: mkfastprimes.pl
+	perl mkfastprimes.pl > fastprimes.c
  
 yacas_include = $(datadir)/yacas/include
 

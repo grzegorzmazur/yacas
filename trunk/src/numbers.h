@@ -104,7 +104,7 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
 #endif
 
 
-/// Virtual base class for low-level multiple-precision arithmetic.
+/// Base class for low-level multiple-precision arithmetic.
 /// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
 class BigNumber : public YacasBase
 {
