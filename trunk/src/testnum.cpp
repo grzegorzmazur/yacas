@@ -866,23 +866,24 @@ int main(void)
 
 	Next("precision");	// compute 100/243 to 9 bits, should be 0.411
 	x.SetTo(100./243.);
-	x.Precision(9);
+	x.Precision(10);
 	y.SetTo(1000.);
 	y.Precision(10);
 	x.Multiply(x,y, 10);
 	y.SetTo(411);
 	Check(x.Equals(y), "x is equal to integer 411");
-	y.BecomeFloat(9);
+	y.BecomeFloat(20);
 	Check(x.Equals(y), "x is equal to float 411.");
 	y.SetTo(412.);
 	Check(x.Equals(y), "x is equal to float 412.");
 	CheckStringValue(x, "412.", 20, 10, "imprecise 100./243. is correct");
-	CheckValues(x.GetPrecision(), 8, "x has precision 8");
-	Check(x.IsIntValue(), "x has integer value due to low precision");
+	CheckValues(x.GetPrecision(), 9, "x has precision 9");
+// this case is on the borderline between having and not having an integer value.
+	Check(!x.IsIntValue(), "x has float value despite low precision");
 	y.SetTo(1234.5678);
 	y.Precision(10);
 	Check(y.IsIntValue(), "y has integer value due to low precision");
-	CheckStringValue(y, "1235.", 10, 10, "value of y is printed correctly");
+	CheckStringValue(y, "1230.", 100, 10, "value of y is printed correctly");
 	x.SetTo(1024);
 	x.ShiftRight(x, 10);
 	CheckStringValue(x, "1", 10, 10, "correct ShiftRight on integer 1024");
@@ -977,7 +978,7 @@ int main(void)
 	CheckValues(x.GetPrecision(), 300, "x has precision 300");
 	CheckStringValue(x,
 	"0.142857142857142857142857142857142857142857"
-	  "1428571428571428571428571428571428571428571429",
+	  "142857142857142857142857142857142857142857142857",
 	1000, 10, "high-precision division");
 
 	Next("division by zero");
@@ -1198,20 +1199,20 @@ int main(void)
 	{// compute 10e3*1.2e-4 - 1.2, must get zero
 		BigNumber x("10e3", 10), y("1.2e-4", 10), z("1.2", 10);
 		z.Negate(z);
-		CheckValues(z.GetPrecision(), 36, "z has correct precision");
+		CheckValues(z.GetPrecision(), 33, "z has correct precision");
 		//z.MultiplyAdd(x,y,10);
 		x.Multiply(x,y,10);
-		CheckValues(x.GetPrecision(), 35, "x has correct precision");
+		CheckValues(x.GetPrecision(), 32, "x has correct precision");
 		z.Add(z,x,10);
-		CheckValues(z.GetPrecision(), 32, "z has correct precision");
+		CheckValues(z.GetPrecision(), 29, "z has correct precision");
 		CheckValues(z.Sign(),0,"z has correct sign");
 		CheckStringValue(z, "0.", 10, 10, "z is equal to 0.");
 	}
 	{
 		BigNumber z("0.000", 10, 10);
-		CheckValues(z.GetPrecision(), 36, "z has correct precision");
+		CheckValues(z.GetPrecision(), 33, "z has correct precision");
 		BigNumber y("0.5", 10, 10);
-		CheckValues(y.GetPrecision(), 36, "y has correct precision");
+		CheckValues(y.GetPrecision(), 33, "y has correct precision");
 		z.Add(z,y,10);
 		
 		CheckValues(z.GetPrecision(), 10, "z has correct precision");
@@ -1225,21 +1226,21 @@ int main(void)
 		BigNumber x("10e3", 10), y("1.2e-4", 10), z0("1.2", 10);
 		BigNumber t1(10);
 		t1.Negate(z0);
-		CheckValues(t1.GetPrecision(), 36, "t1 has correct precision");
+		CheckValues(t1.GetPrecision(), 33, "t1 has correct precision");
 		BigNumber t2(10);
 		t2.Multiply(x,y,10);
-		CheckValues(t2.GetPrecision(), 35, "t2 has correct precision");
+		CheckValues(t2.GetPrecision(), 32, "t2 has correct precision");
 		BigNumber z(10);
 		z.Add(t2,t1, 10);
-		CheckValues(z.GetPrecision(), 32, "z has correct precision");
+		CheckValues(z.GetPrecision(), 29, "z has correct precision");
 		CheckValues(z.Sign(),0,"z has correct sign");
 		CheckStringValue(z, "0.", 10, 10, "z is equal to 0.");
 	}
 	{
 		BigNumber x("0.000", 10, 10);
-		CheckValues(x.GetPrecision(), 36, "x has correct precision");
+		CheckValues(x.GetPrecision(), 33, "x has correct precision");
 		BigNumber y("0.5", 10, 10);
-		CheckValues(y.GetPrecision(), 36, "y has correct precision");
+		CheckValues(y.GetPrecision(), 33, "y has correct precision");
 		BigNumber z(10);
 		z.Add(x,y,10);
 		
@@ -1253,21 +1254,21 @@ int main(void)
 	{
 		BigNumber x("0.10000011", 10, 10);
 		BigNumber y("0.1", 10, 10);	// not necessary to give trailing zeros since we are requesting 10 base digits of precision
-		CheckValues(x.GetPrecision(), 36, Message("x=%10.10f has precision 36 initially", x.Double()));
+		CheckValues(x.GetPrecision(), 33, Message("x=%10.10f has precision 33 initially", x.Double()));
 		y.Negate(y);
-		y.Add(x,y,36);	// y = 0.00000011 now, and has low precision
-		CheckValues(y.GetPrecision(), 14, "y has precision 14");
+		y.Add(x,y,33);	// y = 0.00000011 now, and has low precision
+		CheckValues(y.GetPrecision(), 11, "y has precision 11");
 		for (int i=0; i<100; i++)
 		{
 			x.Add(x,y,36);
 		}
-		CheckValues(x.GetPrecision(), 31, Message("x=%10.10f has precision 31", x.Double()));
+		CheckValues(x.GetPrecision(), 28, Message("x=%10.10f has precision 28", x.Double()));
 		y.Negate(y);
 		for (int i=0; i<100; i++)
 		{
 			x.Add(x,y,36);
 		}
-		CheckValues(x.GetPrecision(), 31, "x has precision 31");
+		CheckValues(x.GetPrecision(), 28, "x has precision 28");
 		CheckStringValue(x, "0.10000011", 10, 10, "x is equal to its old value");
 		
 
@@ -1275,7 +1276,7 @@ int main(void)
 	Next("precision control: Precision(), SetTo(), Negate()");
 	
 	{
-	LispInt prec = 36, prec1 = 10, prec2 = 120;
+	LispInt prec = 33, prec1 = 10, prec2 = 120;
 		BigNumber x("0.1",10,10);
 		CheckValues(x.GetPrecision(), prec, "x has correct initial precision");
 		x.Negate(x);
@@ -1301,13 +1302,22 @@ int main(void)
 	}
 	Next("precision control for Equals() and LessThan()");
 	{
-		BigNumber x("0.1110100001", 0, 2);
+		BigNumber x("0.1110100010", 0, 2);
 		BigNumber y("0.1110100000", 0, 2);
-		Check(x.GetPrecision()>=10, "x has precision at least 10");
+		CheckValues(x.GetPrecision(), 10, "x has precision 10");
+		CheckValues(y.GetPrecision(), 10, "y has precision 10");
+		BigNumber z1(x);
+		z1.Negate(z1);
+		z1.Add(z1,y,10);
+		CheckValues(z1.Sign(),-1,"z1 has correct sign");
+		CheckStringValue(z1, "-0.1e-1000",10,2,"z1 has correct value");
+		CheckValues(z1.GetPrecision(), 0, "z1 has one correct digit");
+		CheckValues(z1.BitCount(), -8, "z1 has bit count -8");
+		
 		Check(!x.Equals(y), "x!=y");
 		Check(!y.Equals(x), "y!=x");
-		Check(!x.LessThan(y), "!x<y after decreasing precision");
-		Check(y.LessThan(x), "y<x after decreasing precision");
+		Check(!x.LessThan(y), "!x<y");
+		Check(y.LessThan(x), "y<x");
 		x.Negate(x);
 		y.Negate(y);
 		Check(x.LessThan(y), "-x<-y");
@@ -1348,7 +1358,39 @@ int main(void)
 		y.SetTo("0.", 5, 2);
 		CheckValues(y.GetPrecision(), 5, "y is 0. with 5 bits");
 	}
-
+	Next("roundoff control for subtraction");
+	{	// when subtracting these two numbers, there is not enough precision to distinguish the result from 0
+		BigNumber x("0.1110100001", 0, 2);
+		BigNumber y("0.1110100000", 0, 2);
+		CheckValues(x.GetPrecision(), 10, "x has precision 10");
+		CheckValues(y.GetPrecision(), 10, "y has precision 10");
+		BigNumber z1(x);
+		z1.Negate(z1);
+		z1.Add(z1,y,10);
+		CheckValues(z1.Sign(),0,"z1 has correct sign");
+		BigNumber z2(0);
+		Check(z2.Equals(z1), "z1 is equal to zero");
+		CheckStringValue(z1, "0.",10,2,"z1 prints as '0.'");
+		CheckValues(z1.GetPrecision(), 8, "z1 has correct order");
+		CheckValues(z1.BitCount(), 1, "z1 has bit count 1");
+	}
+	{	// when subtracting these two numbers, there is enough precision to distinguish the result from 0
+		BigNumber x("0.1110100100", 0, 2);
+		BigNumber y("0.1110100000", 0, 2);
+		CheckValues(x.GetPrecision(), 10, "x has precision 10");
+		CheckValues(y.GetPrecision(), 10, "y has precision 10");
+		BigNumber z1(x);
+		z1.Negate(z1);
+		z1.Add(z1,y,10);
+		CheckValues(z1.Sign(),-1,"z1 has correct sign");
+		BigNumber z2(0);
+		Check(!z2.Equals(z1), "z1 is not equal to zero");
+		z2.SetTo(0.);
+		z2.Precision(7);
+		Check(!z2.Equals(z1), "z1 is equal to zero up to 7 digits");
+		CheckValues(z1.GetPrecision(), 1, "z1 has correct precision");
+		CheckValues(z1.BitCount(), -7, "z1 has bit count -7");
+	}
 /* not yet implemented
 	Next("precision control for IsIntValue()");
 	Next("precision control for floating zero");
