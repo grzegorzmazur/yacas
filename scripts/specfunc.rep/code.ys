@@ -384,37 +384,38 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 	RoundTo(result,prec);
 ];
 
-/* slow convergence?
-CatalanConstNum() := 
+/* geometric convergence as 2^(-n) */
+CatalanConstNum1() := 
 [
-        Local(prec,eps,term,result,k,i);
+        Local(prec,term,nterms,result,n,harmonic'sum);
         prec:=GetPrecision();
+		Precision(10);
+		// estimate the number of terms from above
+		nterms := 1+Floor(N((prec*Ln(10)+Ln(prec*Ln(10)/Ln(2)))/Ln(2)));
         Precision(prec+5);
-        eps:=10^(-prec);
-        result:=0;
-        term:=1;
-        For(k:=0, Abs(term) > eps, k++ )[
-                term:=(k!)^2 * 2^(k-1);
-		term:=term/(2*k+1)!;
-		term:=term*Sum(i,0,k,1/(2*i+1));
-		term:=N(term);
-                //Echo("term is ",term);
-                result:=result+term;
+        result:=0.5;
+        term:=0.5;
+		harmonic'sum := 1;
+        For(n:=1, n<=nterms, n++ )
+		[
+			harmonic'sum := harmonic'sum + N(1/(2*n+1));	// harmonic'sum = Sum(k,0,n,1/(2*k+1))
+			term:=N(term*n/(2*n+1));	// term = (k!)^2*2^(k-1)/(2*k+1)!
+			result:=result+N(term*harmonic'sum);
         ];
         Precision(prec);
 	RoundTo(result,prec);	
 ];
-*/
+
+/* geometric convergence as 4^(-n) */
 
 CatalanConstNum() :=
 [
 	Local(prec, n, result);
 	prec:=GetPrecision();
 
-	Precision(15);
 	// number of terms
-	n := Floor(N(1+prec*Ln(10)/Ln(4)));
-	Precision(prec+2);
+	n := 1+Div(prec*1068+642,643); // prec*Ln(10)/Ln(4)
+	Precision(prec+2);	// 2 guard digits
 	
 	result := N(1/(2*n+1));
 	While(n>0)
@@ -423,8 +424,11 @@ CatalanConstNum() :=
 		n := n-1;
 	];
 	result := MultiplyNum(result, 3/8) + N(Pi/8*Ln(2+Sqrt(3)));
+	Precision(prec);
 	RoundTo(result,prec);
 ];
+
+
 
 10 # Digamma(_n)_(IsPositiveInteger(n)) <-- Sum(m,1,n-1,1/m) - gamma;
 // needs Erf() that takes complex argument
