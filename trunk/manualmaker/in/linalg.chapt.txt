@@ -212,6 +212,55 @@ whose off-diagonal entries are all zero. The elements of the vector
 
 *SEE Identity, ZeroMatrix
 
+*CMD OrthogonalBasis --- create an orthogonal basis 
+*STD
+*CALL
+	OrthogonalBasis(W)
+
+*PARMS
+
+{W} - A linearly independent set of row vectors (aka a matrix)
+
+*DESC
+
+Given a linearly independent set {W} (constructed of rows vectors),
+this command returns an orthogonal basis {V} for {W}, which means 
+that span(V) = span(W) and {InProduct(V[i],V[j]) = 0} when {i != j}.
+This function uses the Gram-Schmidt orthogonalization process.
+
+*E.G.
+
+	In> OrthogonalBasis({{1,1,0},{2,0,1},{2,2,1}}) 
+	Out> {{1,1,0},{1,-1,1},{-1/3,1/3,2/3}};
+
+
+*SEE OrthonormalBasis, InProduct
+
+*CMD OrthonormalBasis --- create an orthonormal basis 
+*STD
+*CALL
+	OrthonormalBasis(W)
+
+*PARMS
+
+{W} - A linearly independent set of row vectors (aka a matrix)
+
+*DESC
+
+Given a linearly independent set {W} (constructed of rows vectors),
+this command returns an orthonormal basis {V} for {W}. This is done
+by first using {OrthogonalBasis(W)}, then dividing each vector by its
+magnitude, so as the give them unit length. 
+
+*E.G.
+
+	In> OrthonormalBasis({{1,1,0},{2,0,1},{2,2,1}})
+	Out> {{Sqrt(1/2),Sqrt(1/2),0},{Sqrt(1/3),-Sqrt(1/3),Sqrt(1/3)},
+		{-Sqrt(1/6),Sqrt(1/6),Sqrt(2/3)}};
+
+*SEE OrthogonalBasis, InProduct, Normalize
+
+
 *CMD IsMatrix --- test for a matrix
 *STD
 *CALL
