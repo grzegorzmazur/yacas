@@ -27,5 +27,9 @@ LispStringPtr PlatDiv(LispCharPtr int1, LispCharPtr int2,LispHashTable& aHashTab
 LispStringPtr PlatAbs(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision);
 
 
+class YacasNativeNumber;
+YacasBigNumber* MakeNativeNumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
+
+
 #endif
 

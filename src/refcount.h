@@ -25,6 +25,74 @@ class RefCountedObject : public RefCountedObjectBase, public YacasBase
 {
 };
 
+template<class T>
+class RefPtr
+{
+public:
+  inline RefPtr();
+  inline RefPtr(T* aObject);
+  inline RefPtr(RefPtr<T>& aObject);
+  inline RefPtr<T>& operator=(T* aObject);
+  inline RefPtr& operator=(RefPtr<T>& aObject);
+  inline ~RefPtr() {SetTo(NULL);}
+  inline T* operator->() const {return iObject;}
+  
+  inline T* Ptr() const {return iObject;}
+private:
+  void SetTo(T* aOther);
+  T* iObject;
+};
+
+template<class T>
+inline RefPtr<T>::RefPtr()
+{
+  iObject = NULL;
+}
+
+template<class T>
+inline RefPtr<T>::RefPtr(RefPtr<T>& aObject)
+{
+  iObject = NULL;
+  SetTo(aObject.Ptr());
+}
+
+template<class T>
+inline RefPtr<T>::RefPtr(T* aObject)
+{
+  iObject = NULL;
+  SetTo(aObject);
+}
+
+template<class T>
+inline RefPtr<T>& RefPtr<T>::operator=(T* aObject)
+{
+  SetTo(aObject);
+  return *this;
+}
+
+template<class T>
+inline RefPtr<T>& RefPtr<T>::operator=(RefPtr<T>& aObject) 
+{
+  SetTo(aObject.Ptr());
+  return *this;
+}
+
+template<class T>
+inline void RefPtr<T>::SetTo(T* aOther)
+{
+  if (iObject)
+  {
+    if (!iObject->DecreaseRefCount())
+    {
+      delete iObject;
+    }
+  }
+  iObject = aOther;
+  if (iObject) iObject->IncreaseRefCount();
+}
+
+
+
 inline RefCountedObjectBase::RefCountedObjectBase() : iReferenceCount(0) {}
 
 inline void RefCountedObjectBase::IncreaseRefCount()

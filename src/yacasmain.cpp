@@ -593,9 +593,43 @@ void InterruptHandler(int errupt)
         exit(0);
 }
 
+
+#include "platmath.h"
+void TestNum()
+{//numeric test code
+  const YacasBigNumberPtr doer(MakeNativeNumber("0",10));
+  const YacasBigNumberPtr result(doer->Multiply(
+                                MakeNativeNumber("23",10),
+                                MakeNativeNumber("45.23e3",10)
+                                        ,10));
+  LispString str;
+  result->ToString(str,10);
+  printf("23*45.23e3 = %s\n",str.String());
+
+  const YacasBigNumberPtr minusOne(MakeNativeNumber("-1.0",10));
+  minusOne->ToString(str,10);
+  printf("-1 = %s\n",str.String());
+  const YacasBigNumberPtr pi(doer->ArcCos(minusOne,10));  
+  pi->ToString(str,10);
+  printf("pi = %s\n",str.String());
+
+
+  const YacasBigNumberPtr zero(doer->ArcSin(doer->Sin(MakeNativeNumber("0",10),10),10));  
+
+  zero->ToString(str,10);
+  printf("zero = %s\n",str.String());
+
+
+}
+
+
+
 #define SHOWSIZE(a)    printf("   sizeof(" #a ") = %d\n",sizeof(a));
 int main(int argc, char** argv)
 {
+//Serge: uncomment this line to see the new numeric class
+//TestNum();
+
     unsigned char first_stack_var=0;
     the_first_stack_var = &first_stack_var;
 

@@ -2,7 +2,6 @@
 #include "yacasprivate.h"
 #include "commandline.h"
 
-#include <stdio.h>
 
 CCommandLine::~CCommandLine()
 {
