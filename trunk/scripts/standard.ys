@@ -494,6 +494,8 @@ LocalSymbols(x)
 250 # (x_IsNumber ^ Infinity)_(x< -1) <-- - Infinity;
 250 # (x_IsNumber ^ Infinity)_(x> 1) <-- Infinity;
 
+// these Magnitude(x)s should probably be changed to Abs(x)s
+
 250 # (x_IsComplex ^ Infinity)_(Magnitude(x) > 1) <-- Infinity;
 250 # (x_IsComplex ^ Infinity)_(Magnitude(x) < -1) <-- -Infinity;
 250 # (x_IsComplex ^ Infinity)_(Magnitude(x) > -1 And Magnitude(x) < 1) <-- 0;
@@ -501,6 +503,10 @@ LocalSymbols(x)
 250 # (x_IsNumber ^ -Infinity)_(x> -1 And x < 1) <-- Infinity;
 250 # (x_IsNumber ^ -Infinity)_(x< -1) <-- 0;
 250 # (x_IsNumber ^ -Infinity)_(x> 1) <-- 0;
+
+255 # (x_IsComplex ^ Infinity)_(Abs(x) == 1) <-- Undefined;
+255 # (x_IsComplex ^ -Infinity)_(Abs(x) == 1) <-- Undefined;
+
 
 
 400 # _x ^ 0 <-- 1;
