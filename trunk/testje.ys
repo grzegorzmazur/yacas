@@ -1,5 +1,73 @@
 
 
+
+  Function() RuleSet'Make(name,rules);
+  HoldArg(RuleSet'Make,rules);
+  Bodied(RuleSet'Make,0);
+  RuleSet'Make(_name)(rules_IsList) <--
+  [
+    Local(enabler);
+    Set(enabler,Enabler(name));
+    MacroSet(enabler,False);
+    ForEach(rule,rules)
+    [
+      DeclareLocalRule(rule);
+    ];
+  ];
+  
+  Enabler(name):=  Atom(String(name):"Enabled");
+  
+  Function() DeclareLocalRule(rule);
+  UnFence(DeclareLocalRule,1);
+  
+  10 # DeclareLocalRule((_n) # (_pattern)_(_post) <-- _body) 
+    <--
+    [ 
+      `((@n) # (@pattern)_((@enabler) And (@post)) <-- (@body) ); 
+    ];
+  20 # DeclareLocalRule((_pattern)_(_post) <-- _body) 
+    <--
+    [
+      `((@pattern)_((@enabler) And (@post)) <-- (@body) );
+    ];
+  30 # DeclareLocalRule((_n) # (_pattern) <-- _body) 
+    <--
+    [
+      `((@n) # (@pattern)_(@enabler) <-- (@body) );
+    ];
+  40 # DeclareLocalRule((_pattern) <-- _body) 
+    <--
+    [
+      `((@pattern)_(@enabler) <-- (@body) );
+    ];
+  
+  
+  RuleSet'Enable(name):=
+  [
+    Local(enabler);
+    Set(enabler,Enabler(name));
+    MacroSet(enabler,True);
+  ];
+  RuleSet'Disable(name):=
+  [
+    Local(enabler);
+    Set(enabler,Enabler(name));
+    MacroSet(enabler,False);
+  ];
+
+
+RuleSet'Make(Norbert)
+{
+  x_IsNumber/y_IsNumber <-- MathDivide(x,y),
+  _a*_b-_b*_a <-- 0,
+  0 # x_IsNumber-x_IsNumber <-- 0,  
+  1 # _x - _x <-- UnList({Atom("-"),x,x})
+};
+//RuleSet'Enable(Norbert);
+
+
+EndOfFile;
+
 mdivide(x,y):=
 [
   Local(v); MM(1);
