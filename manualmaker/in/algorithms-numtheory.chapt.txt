@@ -399,8 +399,7 @@ the factors of $N(z)$ in the decomposition of $z$.
 
 *A References for Gaussian Integers
 
-*	1. G. H. Hardy, E. M. Wright. An Introduction to the Theory of Numbers. Oxford 
-	University Press(1945)
+*	1. G. H. Hardy, E. M. Wright. An Introduction to the Theory of Numbers. Oxford University Press(1945).
 *	2. H. Pollard. The theory of Algebraic Numbers. John Willey and Sons (1965).
 
 
