@@ -38,7 +38,7 @@ TESTRESULT = testresult.txt
 
 ## --------------------------------------------------
 
-EXTRA_DIST = $(TESTFILES)
+EXTRA_DIST = test.bat $(TESTFILES)
 
 $(TESTS) $(INSTALL_TESTS): Makefile
 	@echo 'Making test script "$@"'

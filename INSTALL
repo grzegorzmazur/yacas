@@ -86,17 +86,9 @@ D. COMPILING UNDER WINDOWS
 --------------------------
 
 To compile under Windows using MS Developer Studion, there is a 
-"compress.bat" batch file, located in the ramscripts\ directory. 
-This batch file creates:
-
-	yacas.exe - the executable.
-	scripts.dat - a file with all the scripts compressed inside
-		it. The executable and is file need to be in the
-		same directory.
-	yacas.dll - a dynamic link library allowing you to embed
-		Yacas inside your own executable. It offers the 
-		interface defined by the src\cyacas.h file.
-		See the manual on the Yacas library.
+"makewin.bat" batch file, located in the root directory of this distribution. 
+This batch file creates the full binary release that can also be downloaded, 
+and puts it in the subdirectory "winrel\ ".
 
 The Windows version is checked infrequently, so latest development
 releases might accidentally not compile. Please report if this is
