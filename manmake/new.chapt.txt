@@ -1438,7 +1438,7 @@ line flag.
 
 The language constructs supported depend on two things:
 
-*	1. support in the compiler, implemented in {compile.rep/compilecpp.ys}. If some expression form is not support by the compiler implemented in that file it can not be used in the scripts that need to be compiled. This compiler does not support all constructs yet, but will be expanded over time.
+*	1. support in the compiler, implemented in {compile.rep/compilecpp.ys}. If some expression form is not supported by the compiler implemented in that file it can not be used in the scripts that need to be compiled. This compiler does not support all constructs yet, but will be expanded over time.
 *	1. The position in the {yacasinit.ys} file where it gets loaded further defines the constructs that are allowed, because if the plugin is not found the script will be loaded at that point in the init script. There are some special functions like {Defun} that have specifically been defined to allow for using plugins and scripts as early as possible. Whenever possible the scripts that get compiled to plugins should use {Defun}.
 
 The calling sequence for {Defun} is:
