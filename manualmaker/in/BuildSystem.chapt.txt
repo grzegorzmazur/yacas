@@ -300,7 +300,8 @@ where the various files should be installed.
 We will not describe the common {configure} options which are shared
 by all packages, but will restrict ourselves to the options
 exclusively used by Yacas.
-*	{enable-gmp}. Use the GNU multi-precision arithmetic library
+*	{with-numlib}. The supported options so far are {native} (the default) and {gmp}.
+The latter options enables the GNU multi-precision arithmetic library
 (GNU MP), available from <*http://www.swox.com/gmp*>, instead of the
 library provided by the Yacas team. For this to work, the GNU MP
 library must of course be installed.
