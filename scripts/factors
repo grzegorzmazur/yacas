@@ -320,6 +320,27 @@ Factor(_p) <-- FW(Factors(p));
   result;
 ];
 
+10 # RootsWithMultiples(poly_CanBeUni) <--
+[
+  Local(factors,result,uni,root,i);
+  factors:=Factors(poly);
+  result:={};
+  ForEach(item,factors)
+  [
+    uni:=MakeUni(item[1]);
+    If(Degree(uni) = 1,
+      [
+        root:= -Coef(uni,0)/Coef(uni,1);
+        For(i:=0,i<item[2],i++)
+          result:= {root,item[2]} : result;
+      ]
+      );
+  ];
+  result;
+];
+
+
+
 
 
 

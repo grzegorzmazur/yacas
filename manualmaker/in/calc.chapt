@@ -271,13 +271,16 @@ AddAnchor("Integrate");
 SubSection()"Integrate(var,from,to) body";
 
 Text()"Integrate(var,from,to) body : integrate body over variable var=from
-to var=to. Currently, only polynomials can be integrated.";
+to var=to. Some simple integration rules have currently been implemented.
+Transcendental functions, polynomials, products of transcendental functions
+and polynomials, and rational functions.";
 
 
 AddAnchor("Simplify");
 SubSection()"Simplify(expr)";
 Text()"Simplify(expr) : Simplify tries to simplify an expression as much
-as possible.";
+as possible. It does this by grouping powers within terms, and then
+grouping like terms.";
 
 
 AddAnchor("RadSimp");

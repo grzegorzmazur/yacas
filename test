@@ -1,5 +1,12 @@
 
 
+
+
+
+
+EndOfFile;
+
+
 ZReset():=
 [
   Assign(A,0);

@@ -10,7 +10,7 @@ SCRIPTFILES = complex complex.def constants controlflow controlflow.def \
 	patterns.def predicates predicates.def stats stats.def padic \
 	padic.def testers testers.def factors factors.def tensor tensor.def \
 	texform texform.def print c_form logic logic.def cstubgen \
-        radsimp radsimp.def pslq pslq.def
+        radsimp radsimp.def pslq pslq.def odesolver odesolver.def
 
 script_DATA = $(SCRIPTFILES)
 
