@@ -49,7 +49,7 @@ points $a$, $a[1]:=(a+b)/2$, $b$, $b[1]:=(b+c)/2$, $c$.
 values because we cannot refine the grid any more.
 *	 3. Otherwise, check that the function does not oscillate too
 rapidly on the interval [$a$, $c$]. 
-The formal criterion is that the five values do not make a "zigzag" pattern
+The formal criterion is that the five values are all finite and do not make a "zigzag" pattern
 such as (1,3,2,3,1).
 More formally, we use the following procedure:
 For each three consecutive values, write "1" if the middle value is larger
@@ -82,11 +82,11 @@ returned.
 
 This algorithm works well if the initial number of points and the {depth}
 parameter are large enough.
-These parameters can be adjusted to balance the available computing time and the level of detail in the resulting graph.
+These parameters can be adjusted to balance the available computing time and the desired level of detail in the resulting plot.
 
 Singularities in the function are handled by the step 3.
 Namely, the change in the sequence $a$, $a[1]$, $b$, $b[1]$, $c$ is always considered to be "too rapid" if one of these values is a non-number (e.g. {Infinity} or {Undefined}).
-Thus, the interval immediately adjacent to a singularity will be plotted at the highest allowed refinement level. When plotting the resulting data, the singular points are simply not printed to the data file and the plotting programs do not have any problems.
+Thus, the interval immediately adjacent to a singularity will be plotted at the highest allowed refinement level. When preparing the plotting data, the singular points are simply not printed to the data file and the plotting programs do not encounter any problems.
 
 	    Newton-Cotes quadratures
 
@@ -94,7 +94,7 @@ Thus, the interval immediately adjacent to a singularity will be plotted at the 
 
 The meaning of Newton-Cotes quadrature coefficients is that an integral of a function $f(x)$ is approximated as a sum,
 $$(Integrate(x,a[0],a[n]) f(x)) <=> h*Sum(k,0,n,c[k]*f(a[k]))$$,
-where $h:=a[1]-a[0]$ is the grid step, $a[k]$ are the grid points, and
+where $a[k]$ are the grid points, $h:=a[1]-a[0]$ is the grid step, and
 $c[k]$ are the quadrature coefficients.
 It may seem surprising, but these coefficients $c[k]$ are independent
 of the function $f(x)$ and can be precomputed
@@ -102,25 +102,28 @@ in advance for a given grid $a[k]$.
 The quadrature coefficients do depend on the relative separations in the grid. Here we assume a uniform grid with a constant step
 $h=a[k]-a[k-1]$. (Quadrature coefficients can also be found for non-uniform grids.)
 
-The Newton-Cotes coefficients $c[k]$ for
+The coefficients $c[k]$ for
 grids with a constant step $h$ can be found, for example, by solving the following system of equations,
 $$Sum(k, 0, n, c[k]*k^p) = n^(p+1)/(p+1)$$
-for $p=0$, 1, ..., $n$. This system of equations means that the quadrature correctly approximates the integrals of $p+1$ functions $f(x)=x^p$, $p=0$, 1, ..., $n$, over the interval (0,$n$).
+for $p=0$, 1, ..., $n$. This system of equations means that the quadrature correctly gives the integrals of $p+1$ functions $f(x)=x^p$, $p=0$, 1, ..., $n$, over the interval (0,$n$).
 
-The solution of this system always exists and gives quadrature coefficients as rational numbers. For example, the Simpson quadrature $c[0]=1/6$, $c[1]=2/3$, $c[2]=1/6$ is obtained with $n=2$.
+The solution of this system always exists and gives quadrature coefficients as rational numbers. For example, the well-known Simpson quadrature $c[0]=1/3$, $c[1]=4/3$, $c[2]=1/3$ is obtained with $n=2$.
+An example of using this quadrature is the approximation
+$$ (Integrate(x,0,2)f(x))<=> (f(0)+f(2))/3+4/3*f(1) $$.
 
 *A Newton-Cotes quadratures!for partial intervals
 
 In the same way it is possible to find quadratures for the integral over a subinterval rather than over the whole interval of $x$. In the current implementation of the adaptive plotting algorithm, two quadratures are used: the 3-point quadrature ($n=2$) and the 4-point quadrature ($n=3$) for the integral over the first subinterval, $Integrate(x,a[0],a[1]) f(x)$. Their coefficients are ($5/12$, $2/3$, $-1/12$) and ($3/8$, $19/24$, $-5/24$, $1/24$).
 An example of using the first of these subinterval quadratures would be the approximation
-$$(Integrate(x,0,1) f(x)) <=> h*(5/12*f(0)+2/3*f(1)-1/12*f(2))$$.
-
+$$(Integrate(x,0,1) f(x)) <=> 5/12*f(0)+2/3*f(1)-1/12*f(2)$$.
+These quadratures are intentionally chosen to be asymmetric to avoid an accidental cancellation whent he function $f(x)$ itself is symmetric.
+(Otherwise the error estimate could accidentally become exactly zero.)
 
 		Surface plotting
 
 Here we consider plotting of functions $z=f(x,y)$.
 
-*A plotting!surfaces
+*A plotting!of surfaces
 *A plotting!three-dimensional
 
 The task of surface plotting is to obtain a picture of a two-dimensional surface as if it were a solid object in three dimensions.
@@ -137,7 +140,7 @@ The refinement algorithm will divide a given rectangle in four quarters if the a
 The criterion of a "smooth enough" change is very similar to the procedure outlined in the previous section.
 The change is "smooth enough" if all points are finite, nonsingular values, and if the integral of the function over the rectangle is sufficiently well approximated by a certain low-order "cubature" formula.
 
-A 5-point Newton-Cotes cubature is used to estimate the two-dimensional integral of the function:
+The two-dimensional integral of the function is estimated using the following 5-point Newton-Cotes cubature:
 
 	1/12   0   1/12
 	
@@ -146,8 +149,8 @@ A 5-point Newton-Cotes cubature is used to estimate the two-dimensional integral
 	1/12   0   1/12
 
 An example of using this cubature would be the approximation
-$$ (Integrate(y,0,2)Integrate(x,0,2)f(x,y)) <=> (f(0,0)+f(0,2)+f(2,0)+f(2,2))/12$$
-$$+2*f(1,1)/3$$.
+$$ (Integrate(y,0,1)Integrate(x,0,1)f(x,y)) <=> (f(0,0)+f(0,1)+f(1,0)+f(1,1))/12$$
+$$+2/3*f(1/2,1/2)$$.
 
 Similarly, an 8-point cubature with zero sum is used to estimate the error:
 
@@ -156,10 +159,10 @@ Similarly, an 8-point cubature with zero sum is used to estimate the error:
 	-1/6  -2/3  -1/2
 	
 	 1/2    0    1/3
-This set of coefficients is intentionally chosen to be asymmetric to avoid possible exact cancellations when the function itself is symmetric.
+This set of coefficients was intentionally chosen to be asymmetric to avoid possible exact cancellations when the function itself is symmetric.
 
-One problem with the adaptive surface plotting is that the resulting set of points does not correspond to a rectangular grid in the parameter space ($x$,$y$).
-This is because some regions needed to be bisected more times than others.
+One minor problem with the adaptive surface plotting is that the resulting set of points does not correspond to a rectangular grid in the parameter space ($x$,$y$).
+This is because some rectangles from the initial grid will need to be bisected more times than others.
 So, unless adaptive refinement is disabled, the function {Plot3DS} computes a somewhat disordered set of points.
 However, most surface plotting programs require that the set of data points be a rectangular grid in the parameter space.
 So a smoothing and interpolation procedure is necessary to convert a non-gridded set of data points ("scattered" data) to a gridded set.
@@ -167,6 +170,7 @@ So a smoothing and interpolation procedure is necessary to convert a non-gridded
 The program {gnuplot} has this facility (the "{set dgrid3d}" command), although its implementation may not be optimal for all purposes.
 The current solution in the {Plot3DS} function is to use the {dgrid3d} command and to generate a grid at the highest level of bisection ever used during the adaptive refinement process.
 This quite possibly generates many more grid points than necessary, but a more optimal solution would be more much more time-consuming or would require a specialized external program.
+One such set of programs is the {GMT} ("generic mapping tools") utility suite.
 
 	    Parametric plots
 
@@ -195,7 +199,7 @@ Sometimes higher-dimensional parametric plots are required.
 A line plot in three dimensions is defined by three functions of one variable, for example, $x=f(t)$, $y=g(t)$, $z=h(t)$, and a range of the parameter $t$.
 A surface plot in three dimensions is defined by three functions of two variables each, for example, $x=f(u,v)$, $y=g(u,v)$, $z=h(u,v)$, and a rectangular domain in the ($u$,$v$) space.
 
-The data for parametric plots can be generated separately, as if all functions such as $f(t)$ or $f(u,v)$ were unrelated functions, using the same adaptive plotting algorithms as for usual function plots.
+The data for parametric plots can be generated separately, as if all functions such as $f(t)$ or $f(u,v)$ were unrelated functions, using the same adaptive plotting algorithms as for ordinary function plots.
 The result would be several separate data sets for the $x$, $y$, ... coordinates.
 These data sets could then be combined using an interactive plotting program.
 
@@ -212,7 +216,7 @@ impossible.
 
 A different question is whether a CAS really needs to be able to
 evaluate, say, 10,000 digits of the value of a Bessel function of some
-complex argument.
+10,000-digit complex argument.
 It seems likely that no applied problem of
 natural sciences would need floating-point computations of special
 functions with such a high precision. However, arbitrary-precision
@@ -231,7 +235,7 @@ that is asymptotically logarithmic in the number of digits $P$ and
 linear in the cost of long multiplication (usually denoted $M(P)$).
 All special functions can be evaluated in time that is asymptotically linear in $P$
 and in $M(P)$.
-(However, this asymptotic cost sometimes applies only to very high precision $P>1000$ and different algorithms need to be implemented for calculations in lower precision.)
+(However, this asymptotic cost sometimes applies only to very high precision, e.g., $P>1000$, and different algorithms need to be implemented for calculations in lower precision.)
 
 {Yacas} strives to implement all of its numerical functions in
 arbitrary precision. All integer or rational functions return exact
@@ -253,51 +257,56 @@ algorithms must be implemented for different subdomains of the
 This is needed to select the "working precision" which will typically be somewhat higher than the precision of the final result.
 
 In calculations with machine precision where the number of digits is fixed, the problem of round-off errors is quite prominent.
-There are even some computations where a certain loss of precision is unavoidable.
-For example, $Tan(10^100)$ cannot be computed at all in standard double precision, because for this calculation the value of $Pi$ needs to be represented with at least 100 digits.
-But if we have an arbitrary precision capability, we can always increase precision by a few more digits during intermediate computations and eliminate all round-off error in the final result.
+Every arithmetic operation causes a small loss of precision;
+as a result, a few last digits of the final value are always incorrect.
+But if we have an arbitrary precision capability, we can always increase precision by a few more digits during intermediate computations and thus eliminate all round-off error in the final result.
 We should, of course, take care not to increase the working precision unnecessarily, because any increase of precision means slower calculations.
 Taking twice as many digits as needed and hoping that the result is precise is not a good solution.
 
-Selecting algorithms for computations are the most non-trivial part of
-the implementation. We want to achieve arbitrarily high precision, so
-somehow we need to find either a series, or a continued fraction, or a
+Selecting algorithms for computations is the most non-trivial part of
+the implementation.
+We want to achieve arbitrarily high precision, so
+we need to find either a series, or a continued fraction, or a
 sequence given by explicit formula, that converges to the function in a
-controlled way. It is not enough to use a table of precomputed values
-or an approximation formula that has a limited precision. Recently
-(1980--2000), the interest in research of arbitrary-precision
+controlled way.
+It is not enough to use a table of precomputed values
+or a fixed approximation formula that has a limited precision.
+In the last 30 years, the interest in arbitrary-precision
 computations grew and many efficient algorithms for elementary and
 special functions were published.
 
 Most algorithms are iterative.
-In most cases it is imperative to know in advance how many iterations
+Almost always it is very important to know in advance how many iterations
 are needed for given $x$, $P$.
 This knowledge allows to estimate the computational cost, in terms of
 the required precision $P$ and of the cost of long multiplication
-$M(P)$. Typically all operations will fall into the following categories
+$M(P)$, and choose the best algorithm.
+Typically all operations will fall into the following categories
 (sorted by the increasing cost):
 
 *A arbitrary-precision computation!speed estimates
 
 *	addition, subtraction: linear in $P$;
 *	multiplication, division, integer power, integer root: linear in $M(P)$;
-*	elementary functions: $Exp(x)$, $Ln(x)$, $Sin(x)$, $ArcTan(x)$ etc.: $Ln(P)*M(P)$ or slower by some power of $Ln(P)$;
+*	elementary functions: $Exp(x)$, $Ln(x)$, $Sin(x)$, $ArcTan(x)$ etc.: $M(P)*Ln(P)$ or slower by some powers of $Ln(P)$;
 *	transcendental functions: $Erf(x)$, $Gamma(x)$ etc.: typically $P*M(P)$ or slower.
 
-Some algorithms (e.g. Taylor series summation) also need extra storage space, typically of order $P*Ln(P)$ (i.e. $O(Ln(P))$ temporary $P$-digit numbers).
+Some algorithms also need moderate storage space
+(e.g. an efficient algorithm for summation of the Taylor series uses $O(Ln(P))$ temporary $P$-digit numbers).
 
 	    Estimating convergence of a series
 
 *A Taylor series!required number of terms
 
+Analyzing convergence of a power series is usually not difficult.
 Here is a worked-out example of how we could estimate the required number of terms in the power series
-$$ Exp(x)=1+x+x^2/2! +...+x^n/n! + O(x^(n+1))$$,
-if we need $P$ decimal digits of precision and $x$ is a number of order 1.
+$$ Exp(x)=1+x+x^2/2! +...+x^n/n! + O(x^(n+1))$$
+if we need $P$ decimal digits of precision in the result.
 To be specific, assume that
 $Abs(x)<1$. (A similar calculation can be done for any other bound on $x$.) Suppose we truncate the series after $n$-th term and
 the series converges "well enough" after that term. Then the error will be
 approximately equal to the first term we dropped. (This is what we
-really mean by "converges well enough" and this will generally be the case in all applications, because we would not want to use series that do not converge well enough.)
+really mean by "converges well enough" and this will generally be the case in all applications, because we would not want to use a series that does not converge well enough.)
 
 The term we dropped is $x^(n+1)/(n+1)!$.
 To estimate $n!$ for large $n$, one can use the inequality
@@ -305,7 +314,7 @@ $$ e^(e-1)*(n/e)^n < n! < (n/e)^(n+1)$$
 (valid for all $n>=47$) which provides tight bounds for the growth of
 the factorial, or a weaker inequality which is somewhat easier to use,
 $$ (n/e)^n < n! < ((n+1)/e)^(n+1) $$
-(valid for all $n>=6$). The latter inequality is quite enough for most purposes.
+(valid for all $n>=6$). The latter inequality is sufficient for most purposes.
 
 If we use the upper bound on $n!$ from this estimate, we find that the term we dropped is bounded by
 $$ x^(n+1)/(n+1)! < (e/(n+2))^(n+2) $$.
@@ -313,17 +322,19 @@ We need this number to be smaller than $10^(-P)$. This leads to an inequality
 $$ (e/(n+2))^(n+2) < 10^(-P) $$,
 which we now need to solve for $n$. The left hand side decreases with growing $n$. So it is clear that the inequality will hold for large enough $n$, say for $n>=n0$ where $n0$ is an unknown (integer) value. We can take a logarithm of both sides, replace $n$ with $n0$ and obtain the following equation for $n0$:
 $$ (n0+2)*Ln((n0+2)/e) = P*Ln(10) $$.
-This equation cannot be solved exactly in terms of elementary functions; this is a typical situation in such estimates. However, we do not really need a very precise solution for $n0$; all we need is an estimate of its integer part and it is much simpler to obtain.
+This equation cannot be solved exactly in terms of elementary functions; this is a typical situation in such estimates. However, we do not really need a very precise solution for $n0$; all we need is an estimate of its integer part.
 This is also a typical situation.
 It is acceptable if our approximate value of $n0$ comes out a couple of units higher than necessary, because a couple of extra terms of the Taylor series will not significantly slow down the algorithm (but it is important that we do not underestimate $n0$).
-
 Finally, we are mostly interested in having a good enough answer for
-large values of $P$. So let us assume that $P$ is large (say, 100).
-We can try to guess what the result is: The largest term on the LHS
+large values of $P$.
+
+We can try to guess the result.
+The largest term on the LHS
 grows as $n0*Ln(n0)$ and it should be approximately equal to
-$P*Ln(10)$; $Ln(n0)$ grows very slowly, so this gives us a hint that
-$n0$ is proportional to $P*Ln(10)$. As a first try, set $n0=P*Ln(10)-2$
-and compare the RHS with the LHS; we see that we have overshot by a
+$P*Ln(10)$; but $Ln(n0)$ grows very slowly, so this gives us a hint that
+$n0$ is proportional to $P*Ln(10)$.
+As a first try, we set $n0=P*Ln(10)-2$
+and compare the RHS with the LHS; we find that we have overshot by a
 factor $Ln(P)-1+Ln(Ln(10))$, which is not a large factor. We
 can now compensate and divide $n0$ by this factor, so our second try is
 $$ n0 = (P*Ln(10))/(Ln(P)-1+Ln(Ln(10)))-2 $$.
@@ -339,6 +350,10 @@ terms in the Taylor series to compute $Exp(x)$ for $Abs(x)<1$ to $P$
 decimal digits. (Of course, if $x$ is much smaller than 1, many fewer
 terms will suffice.)
 
+	    Estimating round-off error
+
+*A arbitrary-precision computation!round-off error estimate
+
 As the required precision $P$ grows, an arbitrary-precision algorithm
 will need more iterations or more terms of the series. So the round-off
 error introduced by every floating-point operation will increase. When
@@ -346,13 +361,7 @@ doing arbitrary-precision computations, we can always perform all
 calculations with a few more digits and compensate for round-off error.
 It is however imperative to know in advance how many more digits we
 need to take for our "working precision". We should also take that
-increase into account when estimating the total cost of the method. Of
-course, we should avoid very large roundoff errors; "repeat everything with
-twice as many digits" is not an adequate solution.
-
-	    Estimating round-off error
-
-*A arbitrary-precision computation!round-off error estimate
+increase into account when estimating the total cost of the method.
 
 Here is a simple estimate of the round-off error in a computation of
 $n$ terms of a power series. Suppose that adding each term requires two
@@ -381,11 +390,15 @@ algorithms.
 *A arbitrary-precision computation!Yacas internal math
 
 Currently, Yacas can be compiled to use either internal math (the {yacasnumbers} library) or the
-GNU multiple precision library {gmp}. The algorithms for basic arithmetic in
-the internal math mode are currently rather slow compared with {gmp}. If $P$ is
+GNU multiple precision library ({gmp}).
+
+The algorithms for basic arithmetic in
+the internal math version are currently rather slow compared with {gmp}.
+If $P$ is
 the number of digits of precision, then multiplication and division take
-$M(P)=O(P^2)$ operations in the internal math. (Of course, multiplication and division by a short integer takes time linear in $P$.) Much faster algorithms for long multiplication
-(Karatsuba, Toom-Cook, FFT, Newton-Raphson division etc.) are
+$M(P)=O(P^2)$ operations in the internal math. (Of course, multiplication and division by a short integer takes time linear in $P$.)
+Much faster algorithms
+(Karatsuba, Toom-Cook, FFT multiplication, Newton-Raphson division etc.) are
 implemented in {gmp} where the cost of multiplication is $M(P)=O(P*Ln(P))$ for very large precision. For the
 estimates of computation cost in this book we shall assume that $M(P)$ is at
 least linear in $P$ and maybe slower.
@@ -403,6 +416,7 @@ The function {IntLog} (see below) efficiently computes the integer part of a log
 
 *A arbitrary-precision computation!very large numbers
 
+Arbitrary-precision math is not omnipotent against overflow.
 Consider the problem of representing very large numbers such as $x=Exp(Exp(1000))$.
 Suppose we need a floating-point representation of the number $x$ with $P$ decimal digits of precision.
 In other words, we need to express
@@ -411,9 +425,9 @@ where the mantissa $1<M<10$ is a floating-point number and the exponent
 $E$ is an integer, chosen so that the relative precision is $10^(-P)$.
 How much effort is needed to find $M$ and $E$?
 
-The exponent $E$ is easier to obtain:
-$$ E = Floor(Ln(x)/Ln(10)) = Floor(Exp(1000)/Ln(10))$$.
-To compute $Floor(y)$ exactly as an integer, we need to approximate $y$ with at least $Ln(y)/Ln(10)$ floating-point digits.
+The exponent $E$ is easy to obtain:
+$$ E = Floor(Ln(x)/Ln(10)) = Floor(Exp(1000)/Ln(10)) <=> 8.55 * 10^433$$.
+To compute the integer part $Floor(y)$ of a number $y$ exactly, we need to approximate $y$ with at least $Ln(y)/Ln(10)$ floating-point digits.
 In our example, we find that we need 434 decimal digits to represent $E$.
 
 Once we found $E$, we can write $x=10^(E+m)$ where $m=Exp(1000)/Ln(10)-E$ is a floating-point number, $0<m<1$.
@@ -423,14 +437,14 @@ Therefore, we actually need to evaluate $Exp(1000)/Ln(10)$ with $434+P$ decimal 
 We ran into a perhaps surprising situation: one needs a high-precision calculation even to find the first digit of $x$, because it is necessary to find the exponent $E$ exactly as an integer, and $E$ is a rather large integer.
 A normal double-precision numerical calculation would give an overflow error at this point.
 
-Suppose we have found the number $x=Exp(Exp(1000))$.
+Suppose we have found the number $x=Exp(Exp(1000))$ with some precision.
 What about finding $Sin(x)$?
-Now, this is extremely difficult, because to find even the first digit of $Sin(x)$ we have to evaluate $x$ with <i>absolute</i> error at most 0.5.
+Now, this is extremely difficult, because to find even the first digit of $Sin(x)$ we have to evaluate $x$ with <i>absolute</i> error of at most $0.5$.
 We know, however, that the number $x$ has approximately $10^434$ digits <i>before</i> the decimal point.
 Therefore, we would need to calculate $x$ with at least that many digits.
 Computations with $10^434$ digits is clearly far beyond the capability of modern computers.
 It seems unlikely that even the sign of $Sin(Exp(Exp(1000)))$ will be obtained in the near future.
-It seems even less likely that the sign of $Sin(Exp(Exp(1000)))$ would be of any use to anybody even if it could be computed.
+*FOOT It seems even less likely that the sign of $Sin(Exp(Exp(1000)))$ would be of any use to anybody even if it could be computed.
 
 Suppose that $N$ is the largest integer that our arbitrary-precision facility can reasonably handle.
 (For Yacas internal math library, $N$ is about $10^10000$.)
@@ -442,29 +456,31 @@ It is unlikely that such numbers will arise from sums or products of reasonably-
 *FOOT A factorial function can produce rapidly growing results, but exact factorials $n!$ for large $n$ are well represented by the Stirling formula which involves powers and exponentials.
 For example, suppose a program operates with numbers $x$ of size $N$ or smaller;
 a number such as $10^N$ can be obtained only by multiplying $O(N)$ numbers $x$ together.
-But since $N$ is the largest representable number, it is certainly unfeasible to perform $O(N)$ operations on a computer (at least on a classical computer).
-However, it is feasible to obtain $N$-th power of a number, since it requires only $O(Ln(N))$ operations.
+But since $N$ is the largest representable number, it is certainly unfeasible to perform $O(N)$ sequential operations on a computer.
+However, it is feasible to obtain $N$-th power of a small number, since it requires only $O(Ln(N))$ operations.
 
 *A exponentially large numbers
 
 If numbers larger than $10^N$  are created only by exponentiation operations, then special exponential notation could be used to represent them.
-For example, a very large number $z$ could be stored and manipulated as an unevaluated exponential $z=Exp(M*10^E)$ where $M>=1$ is a floating-point number with $P$ digits of mantissa and $E$ is an integer, $0<E<N$.
+For example, a very large number $z$ could be stored and manipulated as an unevaluated exponential $z=Exp(M*10^E)$ where $M>=1$ is a floating-point number with $P$ digits of mantissa and $E$ is an integer, $Ln(N)<E<N$.
 Let us call such objects "exponentially large numbers" or "exp-numbers" for short.
 
-In practice, we should decide on a threshold value $N$ and promote a number to an exp-number when its decimal exponent exceeds $N$.
+In practice, we should decide on a threshold value $N$ and promote a number to an exp-number when its logarithm exceeds $N$.
 
-Note that an exp-number $z$ might be known to be positive or negative, e.g.
+Note that an exp-number $z$ might be positive or negative, e.g.
 $z= -Exp(M*10^E)$.
 
-Arithmetic operations can be applied to the exp-numbers, although we should warn that exp-large arithmetic is of limited use because of almost certainly critical loss of precision.
+Arithmetic operations can be applied to the exp-numbers.
+However, exp-large arithmetic is of limited use because of almost certainly critical loss of precision.
 The power and logarithm operations can be meaningfully performed on exp-numbers $z$.
 For example, if $z=Exp(M*10^E)$ and $p$ is a normal floating-point number, then $z^p=Exp(p*M*10^E)$ and $Ln(z)=M*10^E$.
 We can also multiply or divide two exp-numbers.
 But it makes no sense to multiply an exp-number $z$ by a normal number because we cannot represent the difference between $z$ and say $2.52*z$.
 Similarly, adding $z$ to anything else would result in a total underflow, since we do not actually know a single digit of the decimal representation of $z$.
 So if $z1$ and $z2$ are exp-numbers, then $z1+z2$ is simply equal to either $z1$ or $z2$ depending on which of them is larger.
-Therefore, an exp-number $z$ acts as an effective "infinity" compared with normal numbers.
-But they should not be used as a device for computing limits: the unavoidable underflow will almost certainly produce wrong results.
+
+We find that an exp-number $z$ acts as an effective "infinity" compared with normal numbers.
+But exp-numbers should not be used as a device for computing limits: the unavoidable underflow will almost certainly produce wrong results.
 For example, trying to verify 
 $$ (Limit(x,0) (Exp(x)-1)/x)  = 1 $$
 by substituting $x=1/z$ with some exp-number $z$ gives 0 instead of 1.
@@ -482,7 +498,7 @@ Each layer is "unrepresentably larger" than the previous one.
 *A exponentially small numbers
 
 The same considerations apply to very small numbers of the order $10^(-N)$ or smaller.
-Such numbers can be manipulated as "exponentially small numbers", i.e. expressions of the form $Exp(-M*10^E)$ with floating-point mantissa $M>=1$ and integer $E$ satisfying $0<E<N$.
+Such numbers can be manipulated as "exponentially small numbers", i.e. expressions of the form $Exp(-M*10^E)$ with floating-point mantissa $M>=1$ and integer $E$ satisfying $Ln(N)<E<N$.
 
 Similarly to exponentially large numbers, only some arithmetic operations can be meaningfully performed.
 Exponentially small numbers act as an effective zero compared with normal numbers.
@@ -498,3 +514,4 @@ A "computation" with exp-numbers is essentially a floating-point computation wit
 A practical problem that needs numbers of this magnitute can probably be restated in terms of more manageable logarithms of such numbers.
 In practice, exp-numbers could be useful not as a means to get a numerical answer,
 but as a warning sign of critical overflow or underflow.
+*FOOT Yacas currently does not implement exp-numbers or any other guards against overflow and underflow.

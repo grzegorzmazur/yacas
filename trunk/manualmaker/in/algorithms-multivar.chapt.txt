@@ -111,13 +111,8 @@ old value (or zero if the key didn't exist in the tree) before evaluating
 This section describes the implementation of multivariate
 polynomials in Yacas.
 
-Concepts and ideas are taken from:
-*	J.H. Davenport, Y. Siret and E. Tournier,
-<i>Computer Algebra, systems and algorithms for algebraic computation</i> (1989),
-Academic Press Limited.
-*	J. von zur Gathen and J. Gerhard,
-<i>Modern Computer Algebra</i> (1999),
-Cambridge University Press.
+Concepts and ideas are taken from the books [Davenport <i>et al.</i> 1989] and [von zur Gathen <i>et al.</i> 1999].
+
 
 	    Definitions
 
