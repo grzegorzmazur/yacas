@@ -184,13 +184,13 @@ plugin-docs.chapt: $(PLUGINDOCSCHAPTERS)
 
 # special chapters built from plugin stubs
 yacas_gsl.chapt: ../plugins/yacas_gsl/yacas_gslapi.man.txt
-	perl $(srcdir)/txt2yacasdoc.pl < $< > $@
+	perl $(srcdir)/txt2yacasdoc.pl < ../plugins/yacas_gsl/yacas_gslapi.man.txt > $@
 example.chapt: ../plugins/example/barepluginapi.man.txt
-	perl $(srcdir)/txt2yacasdoc.pl < $< > $@
+	perl $(srcdir)/txt2yacasdoc.pl < ../plugins/example/barepluginapi.man.txt > $@
 opengl.chapt: ../plugins/opengl/openglapi.man.txt
-	perl $(srcdir)/txt2yacasdoc.pl < $< > $@
+	perl $(srcdir)/txt2yacasdoc.pl < ../plugins/opengl/openglapi.man.txt > $@
 forth.chapt: ../plugins/forth/forthpluginapi.man.txt
-	perl $(srcdir)/txt2yacasdoc.pl < $< > $@
+	perl $(srcdir)/txt2yacasdoc.pl < ../plugins/forth/forthpluginapi.man.txt > $@
 
 
 ps-docs: $(PS_DOCS)
