@@ -376,16 +376,20 @@ LocalSymbols(x)
 
 /* Division */
 
-50 # ((_xx) / 0) <-- Undefined;
-51 # 0 / _x <-- 0;
-52 # (x_IsNumber / y_IsNumber)_((Numeric = True) Or
+50 # 0 / 0 <-- Undefined;
+
+52 # x_IsPositiveNumber / 0 <-- Infinity;
+52 # x_IsNegativeNumber / 0 <-- -Infinity;
+55 # _x / 0 <-- Undefined;
+55 # 0 / _x <-- 0;
+60 # (x_IsNumber / y_IsNumber)_((Numeric = True) Or
                                 Not(IsInteger(x) And IsInteger(y))) <--
     MathDivide(x,y);
 
 
-51 # x_IsNumber / y_IsNegativeNumber <-- (-x)/(-y);
+55 # x_IsNumber / y_IsNegativeNumber <-- (-x)/(-y);
 
-51 # (x_IsNonZeroInteger / y_IsNonZeroInteger)_(MathGcd(x,y) > 1) <--
+55 # (x_IsNonZeroInteger / y_IsNonZeroInteger)_(MathGcd(x,y) > 1) <--
      [
        Local(gcd);
        Set(gcd,MathGcd(x,y));
@@ -394,7 +398,7 @@ LocalSymbols(x)
     
 
 90 # x_IsInfinity / y_IsInfinity <-- Undefined;
-91  # x_IsInfinity / y_IsNumber <-- Sign(y)*x;
+95  # x_IsInfinity / y_IsNumber <-- Sign(y)*x;
 
 90 # Undefined / _y <-- Undefined;
 90 # _y / Undefined <-- Undefined;

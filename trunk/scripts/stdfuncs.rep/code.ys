@@ -25,6 +25,7 @@ HoldArg("TruncRadian",r);
 
 // must prevent it from looping
 6 # Sin(Infinity) 		<-- Undefined;
+6 # Sin(Undefined) <-- Undefined;
 
 110 # Sin(Complex(_r,_i)) <--
     (Exp(I*Complex(r,i)) - Exp(- I*Complex(r,i))) / (I*2) ;
@@ -73,6 +74,7 @@ HoldArg("TruncRadian",r);
 5 # CosMap( 1/2 ) <-- 0;
 
 6 # Cos(Infinity) <-- Undefined;
+6 # Cos(Undefined) <-- Undefined;
 10 # CosMap(_n) <-- UnList({Atom("Cos"),n*Pi});
 
 200 # Cos(v_CanBeUni(Pi))_(Not(Numeric) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
@@ -159,6 +161,7 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 200 # Tan(Pi*(n_IsInteger/2)) <-- Infinity;
 200 # Tan(Pi/2)		      <-- Infinity;
 200 # Tan(Infinity)           <-- Undefined;
+6 # Tan(Undefined) <-- Undefined;
 
 2 # Ln(0)                    <-- -Infinity;
 2 # Ln(1)                    <-- 0;
@@ -210,6 +213,8 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 200 # ArcTan(Infinity) <-- Pi/2;
 200 # ArcTan(-Infinity) <-- -Pi/2;
 200 # ArcTan(Undefined) <-- Undefined;
+200 # ArcSin(Undefined) <-- Undefined;
+200 # ArcCos(Undefined) <-- Undefined;
 
 2 # Sinh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N( (Exp(x)-Exp(-x))/2 );
 2 # Cosh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N( (Exp(x)+Exp(-x))/2 );
@@ -260,6 +265,9 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 200 # Cosh(0)		<-- 1;
 200 # Cosh(Infinity)	<-- Infinity;
 200 # Cosh(-Infinity)	<-- Infinity;
+200 # Sinh(Undefined) <-- Undefined;
+200 # Cosh(Undefined) <-- Undefined;
+200 # Tanh(Undefined) <-- Undefined;
 
 10 # Abs(Infinity) 	<-- Infinity;
 
