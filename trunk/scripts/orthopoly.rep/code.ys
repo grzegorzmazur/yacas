@@ -1,6 +1,6 @@
 /*
 Orthogonal polynomials
-version 1.1
+version 1.2
 (Serge Winitzki)
 
 Polynomials are found from direct recurrence relations. Sums of series of polynomials are found using the Clenshaw-Smith recurrence scheme.
@@ -33,7 +33,7 @@ Usage:
 20 # EvaluateHornerScheme(coeffs_IsList, _x) <-- Head(coeffs)+x*EvaluateHornerScheme(Tail(coeffs), x);
 
 /* Plain polynomials */
-
+// some are computed by general routines, and some are replaced by more efficient routines below
 OrthoP(n_IsInteger, _x)_(n>=0) <-- OrthoP(n, 0, 0, x);
 OrthoP(n_IsInteger, a_IsRationalOrNumber, b_IsRationalOrNumber, _x)_(n>=0 And a> -1 And b> -1) <-- OrthoPoly("Jacobi", n, {a, b}, x);
 
@@ -43,9 +43,8 @@ OrthoH(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Hermite", n, {}, x);
 
 OrthoL(n_IsInteger, a_IsRationalOrNumber, _x)_(n>=0 And a> -1) <-- OrthoPoly("Laguerre", n, {a}, x);
 
-// replaced by more efficient routines below
-//OrthoT(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Tscheb1", n, {}, x);
-//OrthoU(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Tscheb2", n, {}, x);
+OrthoT(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Tscheb1", n, {}, x);
+OrthoU(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Tscheb2", n, {}, x);
 
 /* Sums of series of orthogonal polynomials */
 
@@ -280,14 +279,17 @@ OrthoPolySumCoeffs(name_IsString, c_IsList, p_IsList) <-- [
 ];
 
 //////////////////////////////////////////////////
-/// Very fast computation of Chebyshev polynomials. See: W. Koepf. Efficient computation of Chebyshev polynomials in computer algebra (unpublished, poorly written preprint). Contrary to Koepf's claim (unsupported by any calculation in his paper) that the method is numerically stable, I found unsatisfactory numerical behavior for very large orders...
+/// Very fast computation of Chebyshev polynomials
+//////////////////////////////////////////////////
+/// (This is not used now because of numerical instability, until I figure out how much to increase the working precision to get P correct digits.)
+/// See: W. Koepf. Efficient computation of Chebyshev polynomials in computer algebra (unpublished preprint). Contrary to Koepf's claim (unsupported by any calculation in his paper) that the method is numerically stable, I found unsatisfactory numerical behavior for very large orders.
 /// Koepf suggests to use M. Bronstein's algorithm for finding rational solutions of linear ODEs for all other orthogonal polynomials (may be faster than recursion if we want to find the analytic form of the polynomial).
 //////////////////////////////////////////////////
 /// Main formulae: T(2*n,x) = 2*T(n,x)^2-1; T(2*n+1,x) = 2*T(n+1,x)*T(n,x)-x;
 /// U(2*n,x) = 2*T(n,x)*U(n,x)-1; T(2*n+1,x) = 2*T(n+1,x)*U(n,x);
 /// We avoid recursive calls and build the sequence of bits of n to determine the minimal sequence of n[i] for which T(n[i], x) and U(n[i], x) need to be computed
 //////////////////////////////////////////////////
-
+/*
 /// This function will return the list of binary bits, e.g. BitList(10) returns {1,0,1,0}.
 BitList(n) := BitList(n, {});
 /// This will not be called on very large numbers so it's okay to use recursion
@@ -295,31 +297,31 @@ BitList(n) := BitList(n, {});
 2# BitList(_n, _bits) <-- BitList(Div(n,2), Push(bits, Mod(n,2)));
 
 // Tchebyshev polynomials of 1st kind
-1 # OrthoT(0, _x) <-- 1;
-1 # OrthoT(1, _x) <-- x;
+1 # FastOrthoT(0, _x) <-- 1;
+1 # FastOrthoT(1, _x) <-- x;
 // Tchebyshev polynomials of 2nd kind
-1 # OrthoU(0, _x) <-- 1;
-1 # OrthoU(1, _x) <-- 2*x;
+1 # FastOrthoU(0, _x) <-- 1;
+1 # FastOrthoU(1, _x) <-- 2*x;
 
 // guard against user errors
-2 # OrthoT(_n, _x) _ (IsInteger(n) And n<0) <-- Undefined;
-2 # OrthoU(_n, _x) _ (IsInteger(n) And n<0) <-- Undefined;
+2 # FastOrthoT(_n, _x) _ (IsInteger(n) And n<0) <-- Undefined;
+2 # FastOrthoU(_n, _x) _ (IsInteger(n) And n<0) <-- Undefined;
 
 // make T(), U() of even order more efficient: delegate gruntwork to odd order
-2 # OrthoT(n_IsEven, _x) <-- 2*OrthoT(Div(n,2), x)^2-1;
-2 # OrthoU(n_IsEven, _x) <-- 2*OrthoT(Div(n,2), x)*OrthoU(Div(n,2), x)-1;
+2 # FastOrthoT(n_IsEven, _x) <-- 2*FastOrthoT(Div(n,2), x)^2-1;
+2 # FastOrthoU(n_IsEven, _x) <-- 2*FastOrthoT(Div(n,2), x)*FastOrthoU(Div(n,2), x)-1;
 
-// OrthoT() of odd order
-3 # OrthoT(n_IsOdd, _x) <--
+// FastOrthoT() of odd order
+3 # FastOrthoT(n_IsOdd, _x) <--
 [
 	Local(T1, T2, i);
 	// first bit in the list is always 1, so initialize the pair
-	T1 := OrthoT(1, x);
-	T2 := OrthoT(2, x);
+	T1 := FastOrthoT(1, x);
+	T2 := FastOrthoT(2, x);
 	ForEach(i, Tail(BitList(n)))	// skip first bit
 	[
 		// if the current bit is 1, we need to double the second index, else double the first index.
-		// Invariant: n[i+1] = 2*n[i] + BitList[i] and we need to have OrthoT(n[i]), OrthoT(1+n[i]) as T1, T2. Initially n[1]=1 and after the cycle n[i]=n.
+		// Invariant: n[i+1] = 2*n[i] + BitList[i] and we need to have FastOrthoT(n[i]), FastOrthoT(1+n[i]) as T1, T2. Initially n[1]=1 and after the cycle n[i]=n.
 		{T1, T2} := If
 		(
 			i=1,
@@ -330,14 +332,14 @@ BitList(n) := BitList(n, {});
 	T1;
 ];
 
-// OrthoU() of any order
-3 # OrthoU(_n, _x) <--
+// FastOrthoU() of any order
+3 # FastOrthoU(_n, _x) <--
 [
 	Local(U1, T1, T2, i);
 	// first bit in the list is always 1, so initialize the pair
-	U1 := OrthoU(1, x);
-	T1 := OrthoT(1, x);
-	T2 := OrthoT(2, x);
+	U1 := FastOrthoU(1, x);
+	T1 := FastOrthoT(1, x);
+	T2 := FastOrthoT(2, x);
 	ForEach(i, Tail(BitList(n)))	// skip first bit
 	[
 		// if the current bit is 1, we need to double the second index, else double the first index
@@ -350,4 +352,133 @@ BitList(n) := BitList(n, {});
 		);
 	];
 	U1;
+];
+*/
+//////////////////////////////////////////////////
+/// Fast symbolic computation of some polynomials
+//////////////////////////////////////////////////
+
+/* Coefficients for Legendre, Hermite, Laguerre, Chebyshev polynomials can be obtained by explicit formulae. This is faster than the recurrence if we need the entire polynomial symbolically, but still slower than the recurrence for numerical calculations.
+*/
+
+/*
+
+Legendre polynomials: if $k=Floor(n/2)$, then
+$$ P_n(x) = 2^(-n)*Sum(i,0,k, (-1)^i*x^(n-2*i)*Bin(n,i)*Bin(2*n-2*i,n))$$.
+The summation is over integer values of $i$ such that $0<=2*i<=n$, regardless of whether $n$ is even or odd.
+
+Hermite polynomials:
+For even $n=2*k$ where $k>=0$, 
+$$ H_n(x) = (-2)^(k)*(n-1)!! *Sum(i,0,k, (x^(2*i)*(-4)^i*k!) / ((2*i)! * (k-i)!))) $$,
+and for odd $n=2*k+1$ where $k>=0$,
+$$ H_n(x) = 2*(-2)^(k)*n!! *Sum(i,0,k, (x^(2*i+1)*(-4)^i*k!) / ((2*i+1)! * (k-i)!))) $$.
+
+Laguerre polynomials:
+$$ L_n(a,x) = Sum(i,0,n,(-x)^i/i! *Bin(n+a,n-i)) $$.
+Here the binomial is defined for non-integer $a$ through the Gamma function and gives coefficients that are rational functions of $a$.
+
+Chebyshev polynomials of the first and of the second kind: if $k=Floor(n/2)$, then
+$$ T_n(x) = Sum(i,0,k, (-1)^i*(2*x)^(n-2*i)/(n-i)*Bin(n-i,i)) $$,
+$$ U_n(x) = Sum(i,0,k, (-1)^i*(2*x)^(n-2*i)*Bin(n-i,i)) $$.
+Here it is assumed that $n>0$ (the case $n=0$ must be done separately). The summation is over integer values of $i$ such that $0<=2*i<=n$, regardless of whether $n$ is even or odd.
+
+*/
+
+//////////////////////////////////////////////////
+/// Fast symbolic computation of Legendre polynomials
+//////////////////////////////////////////////////
+
+8# OrthoPolyCoeffs("Jacobi", n_IsInteger, {0,0}) <--
+[
+	Local(i, result);
+	result := ZeroVector(n+1);
+	result[n+1] := (2*n-1)!! /n!;	// coefficient at x^n
+	i := 1;
+	While(2*i<=n)
+	[	// prepare coefficient at x^(n-2*i) now
+		result[n+1-2*i] := -(result[n+3-2*i]*(n-2*i+1)*(n-2*i+2)) / ((2*n-2*i+1)*2*i);
+		i++;
+	];
+	result;
+];
+
+//////////////////////////////////////////////////
+/// Fast symbolic computation of Hermite polynomials
+//////////////////////////////////////////////////
+
+OrthoPolyCoeffs("Hermite", n_IsInteger, {}) <-- HermiteCoeffs(n);
+
+/// Return the list of coefficiets of Hermite polynomials.
+HermiteCoeffs(n_IsEven)_(n>0) <--
+[
+	Local(i, k, result);
+	k := Div(n,2);
+	result := ZeroVector(n+1);
+	result[1] := (-2)^k*(n-1)!!;	// coefficient at x^0
+	For(i:=1,i<=k,i++)	// prepare coefficient at x^(2*i) now
+		result[2*i+1] := Div(-2*result[2*i-1] * (k-i+1), (2*i-1)*i);	// this division is always integer but faster with Div()
+	result;
+];
+HermiteCoeffs(n_IsOdd)_(n>0) <--
+[
+	Local(i, k, result);
+	k := Div(n,2);
+	result := ZeroVector(n+1);
+	result[2] := 2*(-2)^k*(n!!);	// coefficient at x^1
+	For(i:=1,i<=k,i++)	// prepare coefficient at x^(2*i+1) now
+		result[2*i+2] := Div(-2*result[2*i] * (k-i+1), i*(2*i+1));	// this division is always integer but faster with Div()
+	result;
+];
+
+//////////////////////////////////////////////////
+/// Fast symbolic computation of Laguerre polynomials
+//////////////////////////////////////////////////
+
+/// Return the list of coefficients of Laguerre polynomials.
+OrthoPolyCoeffs("Laguerre", n_IsInteger, {_k}) <--
+[
+	Local(i, result);
+	result := ZeroVector(n+1);
+	result[n+1] := (-1)^n/n!;	// coefficient at x^n
+	For(i:=n,i>=1,i--)	// prepare coefficient at x^(i-1) now
+		result[i] := -(result[i+1]*i*(k+i))/(n-i+1);
+	result;
+];
+
+
+//////////////////////////////////////////////////
+/// Fast symbolic computation of Chebyshev polynomials
+//////////////////////////////////////////////////
+
+OrthoPolyCoeffs("Tscheb1", n_IsInteger, {}) <-- ChebTCoeffs(n);
+OrthoPolyCoeffs("Tscheb2", n_IsInteger, {}) <-- ChebUCoeffs(n);
+
+1 # ChebTCoeffs(0) <-- {1};
+2 # ChebTCoeffs(n_IsInteger) <--
+[
+	Local(i, result);
+	result := ZeroVector(n+1);
+	result[n+1] := 2^(n-1);	// coefficient at x^n
+	i := 1;
+	While(2*i<=n)
+	[	// prepare coefficient at x^(n-2*i) now
+		result[n+1-2*i] := -(result[n+3-2*i]*(n-2*i+2)*(n-2*i+1)) / ((n-i)*4*i);
+		i++;
+	];
+	result;
+];
+
+1 # ChebUCoeffs(0) <-- {1};
+2 # ChebUCoeffs(n_IsInteger) <--
+[
+	Local(i, result);
+	result := ZeroVector(n+1);
+	result[n+1] := 2^n;	// coefficient at x^n
+	i := 1;
+	While(2*i<=n)
+	[	// prepare coefficient at x^(n-2*i) now
+		result[n+1-2*i] := -(result[n+3-2*i]*(n-2*i+2)*(n-2*i+1)) / ((n-i+1)*4*i);
+		i++;
+	];
+	result;
 ];
