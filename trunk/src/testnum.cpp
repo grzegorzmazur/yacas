@@ -1108,9 +1108,11 @@ int main(void)
 	    CheckStringValue(x, "0.", 10, 10, "x=0 now due to roundoff");
 	}
 
-/*Heuh... this didn't work out as I expected... 
-*/
+/*Heuh... this didn't work out as I expected... */
    Next("Precision of string representation higher than requested precision");  
+
+   test_string2string("6.23");
+
    test_string2string("1");
    test_string2string("1000000000000000000000");
    test_string2string("10000000.");
@@ -1137,6 +1139,7 @@ int main(void)
 
    test_string2string("0.10000000000000000000001e-11");
    test_string2string("-0.10000000000000000000001e-11");
+
 /**/
 	Next("read strings with many extra zeros correctly");
 	test_string2float(0., "000.0000", 0, 10);
@@ -1190,6 +1193,7 @@ int main(void)
 		
 	}
 	
+
 	Next("a calculation from arithmetic.yts");
 	{// compute 10e3*1.2e-4 - 1.2, must get zero
 		BigNumber x("10e3", 10), y("1.2e-4", 10), z("1.2", 10);
