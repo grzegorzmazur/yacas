@@ -99,7 +99,7 @@ This is the behavior of {NFunction} which is used to wrap the numerical routine.
 
 *EG
 	
-	In> MakeFunctionPlugin("f1", {x,y}, Sin(x/y))
+	In> MakeFunctionPlugin("f1", Sin(x/y))
 	Function f1(x,y) loaded from
 	plugins.tmp/libf1_plugin_cc.so
 	Out> True;
