@@ -280,7 +280,7 @@ This would allow for the following interaction on the command line:
 
 If, in addition, integration were defined as:
 
-	AntiDeriv(log(_x),_x) <-- 1/x;
+	AntiDeriv(log(_x),_x) <-- x*log(x)-x;
 
 Yacas could do integrations involving the newly defined {log}
 function:
