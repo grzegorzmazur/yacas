@@ -9,6 +9,7 @@ SupportedOSes :=
 	{"Default", "unix.ys"},
 };
 
+// unfortunately we need this here because otherwise we won't be able to load the module...
 FilePathSeparator :=
 {
 	{"Unix", "/"},
@@ -17,7 +18,9 @@ FilePathSeparator :=
 	{"Default", "/"},
 };
 
-// this variable says which module we should load
+// this variable says which module we should load - should this go into yacasinit.ys?
 ChosenOS := "Default";
 
-Use("osdep.rep" : FilePathSeparator[ChosenOS] : SupportedOSes[ChosenOS]);
+// this function should probably be called from yacasinit.ys
+LoadOSDependentModule() := Use("osdep.rep" : FilePathSeparator[ChosenOS] : SupportedOSes[ChosenOS]);
+

@@ -65,3 +65,4 @@ Rule("Help",0,1,True)
 
 SetHelpBrowser("lynx");
 
+LoadOSDependentModule();

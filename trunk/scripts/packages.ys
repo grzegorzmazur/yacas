@@ -69,4 +69,5 @@ Set(DefFileList, {
 "trigsimp.rep/code.ys",
 "univar.rep/code.ys",
 "univar.rep/sturm.ys",
+"osdep.rep/code.ys",
 });
