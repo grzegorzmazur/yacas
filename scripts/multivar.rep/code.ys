@@ -376,7 +376,7 @@ DropZeroLC(MultiNomial(_vars,_terms)) <-- MultiNomial(vars,DropZeroLC(terms));
 20 # MultiDivide(_f,g_IsList) <--
 [
   Local(i,v,q,r,nr);
-  v:=VarList({f,g});
+  v:=MultiExpressionList(f+Sum(g));
   f:=MakeMultiNomial(f,v);
   nr := Length(g);
   For(i:=1,i<=nr,i++)
@@ -446,7 +446,7 @@ DropZeroLC(MultiNomial(_vars,_terms)) <-- MultiNomial(vars,DropZeroLC(terms));
 20 # MultiGcd(_f,_g) <--
 [
   Local(v);
-  v:=VarList({f,g});
+  v:=MultiExpressionList(f+g);  //hier
   NormalForm(MultiGcd(MakeMultiNomial(f,v),MakeMultiNomial(g,v)));
 ];
 
