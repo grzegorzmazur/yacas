@@ -3,7 +3,7 @@
 #define __archiver_h__
 
 #include "yacasbase.h"
-#include "../ramscripts/compressedfiles.h"
+#include "compressedfiles.h"
 
 class CCompressedArchive : public YacasBase
 {

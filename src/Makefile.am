@@ -3,7 +3,13 @@
 INCLUDES = @INCLTDL@ -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS =  yacas
-noinst_PROGRAMS = mkfastprimes testnum gencorefunctions
+
+if GENERATE_ARCHIVE
+  noinst_PROGRAMS = mkfastprimes testnum gencorefunctions compressor
+else
+  noinst_PROGRAMS = mkfastprimes testnum gencorefunctions
+endif
+
 lib_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
 EXTRA_LTLIBRARIES = libgmpnumbers.la libyacasnumbers.la 
 
@@ -15,7 +21,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	lispglobals.h lisphash.h lispio.h lispobject.h lispparser.h \
 	lispstring.h lispuserfunc.h corefunctions.h mathcommands.h mathenvironment.h patcher.h \
 	mathuserfunc.h numbers.h platmath.h standard.h patterns.h errors.h arggetter.h \
-	stdfileio.h stringio.h stubs.h tokenizer.h yacas.h ramdisk.h refcount.h \
+	stdfileio.h stringio.h stubs.h tokenizer.h yacas.h refcount.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
         lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h \
@@ -52,7 +58,8 @@ libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp \
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
         lispplugin.cpp ltdll.cpp elfdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
-        archiver.cpp
+        archiver.cpp compressedfiles.cpp 
+
 
 libcyacas_la_SOURCES = cyacas.cpp
 
@@ -122,7 +129,13 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	setup.py yacasc.i yacas.py \
 	epoccli.cpp epoccli.h epoccli.mmp epocclsv.h epocserv.cpp epocserv.h \
 	epocserv.mmp yacas.rss elfdll.cpp \
-	libmath.cpp
+	libmath.cpp \
+	compressedfiles.cpp \
+	README.LZO lzoconf.h minilzo.c minilzo.h decompressor.cpp \
+	compressor.cpp filescanner.cpp filescanner.h \
+	compressedfiles.h compress.bat \
+	compressor.dsp compressor.dsw win32rcwriter.cpp 
+
 
 # list some extra generated files
 CLEANFILES = fastprimes.c core_yacasmain.h
@@ -165,6 +178,36 @@ install-data-local: yacas.h
 
 version.h: ../config.h
 	echo "#define VERSION \"$(VERSION)\"" > version.h 
+
+if GENERATE_ARCHIVE
+
+noinst_DATA = scripts.dat
+checkTARGETS = check-archive
+compressor_SOURCES = compressor.cpp filescanner.cpp minilzo.c filescanner.h minilzo.h 
+
+scripts.dat: compressor
+	./compressor - $(top_srcdir)/scripts/ scripts.dat 
+
+check: $(checkTARGETS)
+
+check-archive: scripts.dat 
+	../src/yacas -pc --archive scripts.dat $(top_srcdir)/tests/arithmetic.yts
+
+
+## We need a bit of a hack to install the 'scripts.dat' file.
+## Ideally, we would like to declare it as lib_LIBRARY, but then automake
+## (at least version 1.4) complains that it doesn't know libraries with
+## a .dat extension. So we install it by hand in $(libdir)
+## Furthermore, we need to install compressedfiles.h because plugins need it.
+
+install-exec-local: scripts.dat
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	$(INSTALL_PROGRAM) scripts.dat $(DESTDIR)$(libdir)/`echo scripts.dat|sed '$(transform)'`
+
+endif
+
+
 
 
 # 

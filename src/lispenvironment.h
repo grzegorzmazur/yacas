@@ -13,7 +13,7 @@
 #include "lispevalhash.h"
 #include "lispcleanupstack.h"
 #include "deffile.h"
-#include "ramdisk.h"
+//TODO remove #include "ramdisk.h"
 #include "lispio.h"
 #include "stringio.h"
 #include "lispglobals.h"
@@ -142,7 +142,7 @@ public:
     LispInt iEvalDepth;
     LispInt iMaxEvalDepth;
     CCompressedArchive *iArchive;
-    LispRamDisk iRamDisk;
+//TODO remove    LispRamDisk iRamDisk;
     LispEvaluatorBase* iEvaluator;
 
 public: // Error information when some error occurs.
