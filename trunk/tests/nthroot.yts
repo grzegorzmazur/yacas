@@ -1,10 +1,15 @@
 //////
-// $Id: nthroot.yts,v 1.1 2002-09-16 11:23:33 dreusch Exp $
+// $Id: nthroot.yts,v 1.2 2002-10-28 20:37:03 ayalpinkus Exp $
 // tests for NthRoot
 //////
 
 Testing("-- NthRoot");
-KnownFailure(Verify(NthRoot(-1,2),Hold(NthRoot(-1,2))));
+
+// you need to use UnList for this one as -1 is actually -(1), eg. a unary function (minus)
+// applied to a positive integer (1). UnList evaluates its arguments, resulting in a negative
+// integer (-1).
+Verify(NthRoot(-1,2),UnList({NthRoot,-1,2}));
+
 Verify(NthRoot(2,1),Hold(NthRoot(2,1)));
 Verify(NthRoot(2,2),{1,2});
 Verify(NthRoot(12,2),{2,3});

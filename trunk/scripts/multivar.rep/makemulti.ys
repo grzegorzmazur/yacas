@@ -113,6 +113,10 @@ LocalSymbols(x,n,vars)  [
         ];
         result;
       ];
+
+  15 #  MakeMultiNomial(_x ^ _n,vars_IsList)_(Not(IsInteger(n)) And IsInteger(Simplify(n))) <--
+        MakeMultiNomial( x ^  Simplify(n),vars);
+
   50 #  MakeMultiNomial(_x ^ (_n),vars_IsList)_(Contains(vars,x)) <--
         [
           Set(n,Simplify(n));
