@@ -196,6 +196,15 @@ void LispVersion(LispEnvironment& aEnvironment, LispPtr& aResult,
     aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp("\"" VERSION "\"")));
 }
 
+void LispIsPromptShown(LispEnvironment& aEnvironment,LispPtr& aResult,
+              LispPtr& aArguments)
+{ // this function must access show_prompt which is a *global* in yacasmain.cpp, so it's not possible to put this function in mathcommands.cpp
+    TESTARGS(1);
+    InternalBoolean(aEnvironment,aResult, show_prompt==1
+	);
+}
+
+
 //#define _TESTCODE_
 #ifdef  _TESTCODE_
 #include "errors.h"
