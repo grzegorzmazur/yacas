@@ -1522,6 +1522,10 @@ void ANumber::ChangePrecision(LispInt aPrecision)
   }
 //  return;
 
+  //FIXME the following line is there to assure there are enough words. Somehow this got truncated?
+  //FIXME numerics.yts fails
+  while (iExp+1>NrItems()) Append(0);
+
   LispInt oldExp = iExp;
   
   iPrecision = aPrecision;
@@ -1543,6 +1547,8 @@ void ANumber::ChangePrecision(LispInt aPrecision)
 
 void ANumber::DropTrailZeroes()
 {
+  while (iExp+1>NrItems()) Append(0);
+  
   {
     LispInt nr=NrItems();
     while (nr>iExp+1 && (*this)[nr-1] == 0) nr--;
