@@ -30,7 +30,12 @@ char* Message(char* str,...)
   static char buf[512];
   va_list arg;
   va_start (arg, str);
+#ifdef HAVE_VSNPRINTF
   vsnprintf (buf, 500, str, arg);
+#else
+  /* Just cross fingers and hope the buffer is large enough */
+  vsprintf (buf, str, arg);
+#endif  
   va_end (arg);
   return buf;
 }
