@@ -110,15 +110,16 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	win32yacasdllresource.h yacasdll.dsp yacasdll.dsw yacasdll.rc \
 	setup.py yacasc.i yacas.py \
 	epoccli.cpp epoccli.h epoccli.mmp epocclsv.h epocserv.cpp epocserv.h \
-	epocserv.mmp yacas.rss \
-  elfdll.cpp mkfastprimes.pl
+	epocserv.mmp yacas.rss elfdll.cpp
 
 CLEANFILES = fastprimes.c
 
 platmath.cpp: fastprimes.c
 
 fastprimes.c: mkfastprimes
-	$(srcdir)/mkfastprimes > fastprimes.c
+	./mkfastprimes > fastprimes.c
+# I think we don't need $(srcdir)/mkfastprimes because this executable
+# is not generated inside the $(srcdir). Please correct if wrong.
  
 yacas_include = $(datadir)/yacas/include
 
