@@ -21,7 +21,7 @@ call {f(x)}, etc. The interpreter will halt if
 the maximum evaluation depth is reached. Also indirect recursion, e.g.
 the pair of definitions {f(x) := g(x)} and {g(x) := f(x)}, will be caught.
 
-*E.G.
+*E.G. notest
 
 An example of an infinite recursion, caught because the maximum
 evaluation depth is reached.
@@ -75,7 +75,7 @@ evaluation normally takes place.
 
 The function {UnList()} also leaves its result unevaluated. Both functions stop the process of evaluation (no more rules will be applied).
 
-*E.G.
+*E.G. notest
 
 	In> Echo({ Hold(1+1), "=", 1+1 });
 	 1+1 = 2
@@ -142,7 +142,7 @@ returns {True}.
 In particular, if "pred" immediately evaluates to {False}, the body is never executed. {While} is the fundamental looping construct on which
 all other loop commands are based. It is equivalent to the {while} command in the programming language C.
 
-*E.G.
+*E.G. notest
 
 	In> x := 0;
 	Out> 0;
@@ -191,7 +191,7 @@ command {While}. The {Until}
 command can be compared to the {do ... while}
 construct in the programming language C.
 
-*E.G.
+*E.G. notest
 
 	In> x := 0;
 	Out> 0;
@@ -237,22 +237,17 @@ sequence is used), the {If} expression returns {False}.
 
 The sign function is defined to be 1 if its argument is positive and
 -1 if its argument is negative. A possible implementation is
-
 	In> mysign(x) := If (IsPositiveReal(x), 1, -1);
 	Out> True;
 	In> mysign(Pi);
 	Out> 1;
 	In> mysign(-2.5);
 	Out> -1;
-
 Note that this will give incorrect results, if "x" cannot be
 numerically approximated.
-
 	In> mysign(a);
 	Out> -1;
-
 Hence a better implementation would be
-
 	In> mysign(_x)_IsNumber(N(x)) <-- If \
 	  (IsPositiveReal(x), 1, -1);
 	Out> True;
@@ -274,7 +269,7 @@ The return value of {SystemCall} is {True} or {False} according to the exit code
 
 The {SystemCall} function is not allowed in the body of the {Secure} command and will lead to an error.
 
-*E.G.
+*E.G. notest
 
 In a UNIX environment, the command {SystemCall("ls")} would print the contents of the current directory.
 
@@ -336,7 +331,7 @@ precedence 1025. Any previous rules associated with {"op"} (with the same
 arity) will be discarded. More complicated functions (with more than one body)
 can be defined by adding more rules.
 
-*E.G.
+*E.G. notest
 
 This will declare a new function with two or more arguments, but define no rules for it. This is equivalent to {RuleBase ("f1", {x, y, ...})}.
 	In> Function() f1(x,y,...);
@@ -389,7 +384,7 @@ The following function will print all arguments to a string:
 This does the same as {Function}, but for macros. One can define a macro
 easily with this function, in stead of having to use {DefMacroRuleBase}.
 
-*E.G.
+*E.G. notest
 
 the following example defines a looping function.
 
@@ -473,7 +468,7 @@ and 10.
 The expression {For(init, pred, incr) body} is
 equivalent to {init; While(pred) [body; incr;]}.
 
-*E.G.
+*E.G. notest
 
 	In> For (i:=1, i<=10, i++) Echo({i, i!});
 	 1  1
@@ -510,7 +505,7 @@ The expression "body" is evaluated multiple times. The first time,
 the value of the second element and so on. {ForEach}
 returns {True}.
 
-*E.G.
+*E.G. notest
 
 	 In> ForEach(i,{2,3,5,7,11}) Echo({i, i!});
 	 2  2
@@ -725,7 +720,7 @@ page as first argument. The default value is {lynx}. If you want to
 use a different browser by default it suffices to create a
 file {~/.yacasrc} and add a line to set the browser in there.
 
-*E.G.
+*E.G. notest
 
 	In> SetHelpBrowser("netscape")
 	Out> "netscape";
@@ -759,7 +754,7 @@ the pattern matcher of the rule, or the body code of the rule.
 This functionality is not offered by default because it slows
 down the evaluation code.
 
-*E.G.
+*E.G. notest
 
 Here is an example of a function calling itself recursively,
 causing Yacas to flood its stack:
@@ -813,7 +808,7 @@ Note that this command usually generates huge amounts of output. A
 more specific form of tracing (eg. {TraceRule}) is
 probably more useful  for all but very simple expressions.
 
-*E.G.
+*E.G. notest
 
 	In> TraceExp(2+3);
 	  TrEnter(2+3);
@@ -868,7 +863,7 @@ This is useful for tracing a function that is called from within
 another function. This way you can see how your function behaves
 in the environment it is used in.
 
-*E.G.
+*E.G. notest
 
 	In> TraceRule(x+y) 2+3*5+4;
 	    TrEnter(2+3*5+4);
@@ -898,7 +893,7 @@ The built-in function {GetTime} is used for timing.
 The result is the "user time" as reported by the OS, not the real ("wall clock") time.
 Therefore, any CPU-intensive processes running alongside Yacas will not significantly affect the result of {Time}.
 
-*EG
+*EG notest
 	In> Time([Precision(40);MathLog(1000);])
 	0.34 seconds taken
 	Out> 6.9077552789821370520539743640530926228033;

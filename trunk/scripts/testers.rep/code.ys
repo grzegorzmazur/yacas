@@ -113,7 +113,8 @@ HoldArg("Verify",aRight);
 
 Macro("Verify", {a,b,message})
 [
-	If(Verify(@a, @b), True, Echo("*** test failed: ", @message));
+	Echo("test ", @message);
+	Verify(@a, @b);
 ];
 
 

@@ -574,6 +574,7 @@ Start with a rational number and obtain a floating-point approximation:
 	In> Rationalize(x)
 	Out> 4718657453/5000000000;
 	In> V(GuessRational(x))
+	
 	GuessRational: using 10 terms of the
 	  continued fraction
 	Out> 956/1013;

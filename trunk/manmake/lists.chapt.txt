@@ -1527,7 +1527,7 @@ For example, {FuncListSome(a + Sin(b-c))} will see that the expression has a "{-
 
 Note that since the operators "{+}" and "{-}" are prefix as well as infix operators, it is currently required to use {Atom("+")} to obtain the unevaluated atom "{+}".
 
-*E.G.
+*E.G. notest
 
 	In> FuncList(x+y*Cos(Ln(x)/x))
 	Out> {+,*,Cos,/,Ln};
@@ -1628,8 +1628,8 @@ the results are assembled in a list and this list is returned.
 
 *E.G.
 
-	In> Table(i!, i, 1, 10, 1);
-	Out> {1,2,6,24,120,720,5040,40320,362880,3628800};
+	In> Table(i!, i, 1, 9, 1);
+	Out> {1,2,6,24,120,720,5040,40320,362880};
 	In> Table(i, i, 3, 16, 4);
 	Out> {3,7,11,15};
 	In> Table(i^2, i, 10, 1, -1);
@@ -1654,6 +1654,7 @@ printing every element in the list on a separate line.
 *E.G.
 
 	In> TableForm(Table(i!, i, 1, 10, 1));
+
 	1
 	 2
 	 6

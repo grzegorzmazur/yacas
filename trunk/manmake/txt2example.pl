@@ -31,21 +31,23 @@ while(<INFILE>) {
 		}
 		if ($have_in == 1)
 		{
-			if (/^\tIn\>\s*(.*)$/)
+			if (m/^\tIn\>\s*(.*)$/)
 			{	# continuation In>, need to trim the preceding backslash
+				$piece = $1;
 				$in_text =~ s/\\$//;
-				$in_text .= $1;
+				$in_text .= $piece;
 			}
-			elsif (/^\tOut\>\s*(.*)$/)
+			elsif (m/^\tOut\>\s*(.*)$/)
 			{	# Out> line started
 				$out_text = $1;
 				$have_in = 0;
 				$have_out = 1;
 			}
-			elsif (/^\t\s*([^ \t].*)$/)
-			{	# nonempty continuation line, need to trim the preceding backslash
+			elsif (m/^\t(\s*[^ \t].*)$/)
+			{	# nonempty In> continuation line, need to trim the preceding backslash
+				$piece = $1;
 				$in_text =~ s/\\$//;
-				$in_text .= $1;
+				$in_text .= $piece;
 			}
 			else
 			{	# none of the above, ignore this line, clear flags, print nothing
@@ -57,8 +59,9 @@ while(<INFILE>) {
 		{
 			if (/^\tOut\>\s*(.*)$/)
 			{	# continuation Out>, need to trim the preceding backslash
-				$in_text =~ s/\\$//;
-				$in_text .= $1;
+				$piece = $1;
+				$out_text =~ s/\\$//;
+				$out_text .= $piece;
 			}
 			elsif (/^\tIn\>\s*(.*)$/)
 			{	# In> line started, print test, clear flags
@@ -68,10 +71,11 @@ while(<INFILE>) {
 				$have_in = 1;
 				$have_out = 0;
 			}
-			elsif (/^\t\s*([^ \t].*)$/)
-			{	# nonempty continuation line, need to trim the preceding backslash
-				$in_text =~ s/\\$//;
-				$in_text .= $1;
+			elsif (/^\t(\s*[^ \t].*)$/)
+			{	# nonempty Out> continuation line, need to trim the preceding backslash
+				$piece = $1;
+				$out_text =~ s/\\$//;
+				$out_text .= $piece;
 			}
 			else
 			{	# none of the above, ignore this line, clear flags, print test
@@ -97,8 +101,9 @@ while(<INFILE>) {
 	}
 	else
 	{	# if not inside *EG: check if it is starting
-		if (/^\*(EG|E\.G\.)\s\s*test\s*$/i # *EG test or *E.G. test
-			or /^\*(EG|E\.G\.)\s*$/i
+		if (/^\*(EG|E\.G\.)\s\s*test\s*$/ # *EG test or *E.G. test
+			or /^\*(EG|E\.G\.)\s*$/
+			or /^\*TEST/
 		)
 		{	# starting EG block
 			$in_EG = 1;
@@ -111,8 +116,8 @@ sub print_test
 {
 	my ($in_text, $out_text) = (@_);
 	# do not print unless both are non-empty
-	$in_text =~ s/;$//;	# trim the final ';' from the In> string
-	$out_text =~ s/;$//;	# trim the final ';' from the Out> string
+	$in_text =~ s/;\s*$//;	# trim the final ';' from the In> string
+	$out_text =~ s/;\s*$//;	# trim the final ';' from the Out> string
 	print << "EOF1" unless ($in_text eq "" or $out_text eq "");
 Verify($in_text, $out_text, "at line $line in file $filename");
 EOF1
@@ -123,7 +128,7 @@ sub start_eg	# what to print into the test file in front of each EG block
 {
 	print << "EOF2";
 /* Testing EG block at line $line in file $filename */
-Precision(10);
+Precision(10);Clear(x);Clear(y);Clear(z);Clear(a);Clear(b); Clear(A);Clear(B);Clear(v);Clear(p);
 EOF2
 }
 

@@ -25,6 +25,7 @@ $in_htmlcommand = 0;
 	"CORE" => "BuiltIn();",
 	"E.G." => "Topical() \"Examples:\";",
 	"EG" => "Topical() \"Example:\";",
+	"TEST" => "",
 );
 
 %intro_labels = (
