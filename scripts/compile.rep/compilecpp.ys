@@ -14,6 +14,36 @@ to do list:
 /* Compile : compile an expression
  */
 Macro()CompileStatement(expression);
+CompileStatement(Defun(_cn,_ag) (_body)) <--
+[
+  Local(callName,compiledName,args,stack,i,nrArgs);
+  Set(callName,(@cn));
+  Set(args,(@ag));
+  Set(compiledName,"Compiled_":(@cn));
+  Set(nrArgs,Length(@ag));  
+//  Echo("CORE_KERNEL_FUNCTION(\"",Type(@f),"\",",compiledName,",",nrArgs,",YacasEvaluator::Function | YacasEvaluator::Fixed)");
+
+//TODO remove  funcDecls := {Type(@f),compiledName,nrArgs} : funcDecls;
+  funcDecls[(@cn)] := {compiledName,Function,Fixed,nrArgs};
+
+  Echo("void ",compiledName,"(LispEnvironment& aEnvironment,LispInt aStackTop)");
+  Echo("{");
+  Set(stack,NewStack());
+  PushStackFrame(stack,fenced);
+  For(i:=1,i<=nrArgs,i++)
+  [
+    AddToStack(stack,String(args[i]));
+    FindOnStack(stack,String(args[i]))["call"] := "ARGUMENT(":String(i):")";
+  ];  
+  CompileBody(Hold(@body),stack);
+  PopStackFrame(stack);
+  Echo("  RESULT.Set(STACK(STACKTOP()-1).Get());");
+  Echo("  POP(1);");
+  Echo("}");
+];
+
+
+
 CompileStatement(f_IsFunction := _body) <--
 [
   Local(callName,compiledName,args,stack,i,nrArgs);
@@ -205,10 +235,10 @@ FromFile(file)
 
 fileBuildString:=
 "
-/* This file was automatically generated with cstubgen.
+/* This file was automatically generated with compilecpp.
 */
 
-#include <stdio.h>
+//#include <stdio.h>
 
 #include \"lisptype.h\"
 #include \"lispenvironment.h\"
@@ -238,14 +268,14 @@ WriteString(funcDefs);
 ?>
 
 
-class BarePlugin : public LispPluginBase
+class <?WriteString(\"Plugin_\":pluginName);?> : public LispPluginBase
 {
 public:
     virtual void Add(LispEnvironment& aEnvironment);
     virtual void Remove(LispEnvironment& aEnvironment);
 };
 
-void BarePlugin::Add(LispEnvironment& aEnvironment)
+void <?WriteString(\"Plugin_\":pluginName);?>::Add(LispEnvironment& aEnvironment)
 {
 <?
 [
@@ -258,7 +288,7 @@ Echo(\"  aEnvironment.SetCommand(\",cname,\",\",String(fname),\",\",nrargs,\",Ya
 ];
 ?>
 }
-void BarePlugin::Remove(LispEnvironment& aEnvironment)
+void <?WriteString(\"Plugin_\":pluginName);?>::Remove(LispEnvironment& aEnvironment)
 {
 <?
 [
@@ -276,29 +306,27 @@ void BarePlugin::Remove(LispEnvironment& aEnvironment)
 extern \"C\" {
 LispPluginBase* maker(void)
 {
-    return NEW BarePlugin;
+    return NEW <?WriteString(\"Plugin_\":pluginName);?>;
 }
 };
 ";
 //{cname,fname,nrargs}
 
-CompileFile(file_IsString)<--
+CompileCpp(file_IsString,pluginName_IsString)<--
 [
   Local(funcDefs);
   Set(funcDecls,{});
   Echo("Converting ",file," to C++ code");
   Set(funcDefs,PatchString(fileCompileString));
-//Echo(funcDefs);
-  Echo("Generating C++ file test.cc");
-  ToFile("test.cc")WriteString(PatchString(fileBuildString));
-//  SystemCall("c++ -DHAVE_CONFIG_H -I. -Isrc -Isrc/plat/linux32/ -O9 -Wall -pedantic -c test.cc -o test.o -fno-common -DPIC");
-//  SystemCall("g++ -module -dynamic -undefined suppress -flat_namespace -dynamiclib  -o test.so  test.o   -lc -install_name  /usr/local/lib/yacas/test.so");
-
-  Echo("Compiling C++ file test.cc into plugin test.so");
-  SystemCall("/bin/sh ./libtool --mode=compile g++ -DHAVE_CONFIG_H  -I. -Isrc -Isrc/plat/linux32/ -O9 -Wall -pedantic -c test.cc -o test.lo");
-  SystemCall("/bin/sh ./libtool --mode=link    g++  -O9 -Wall -pedantic -o test.la -rpath /usr/local/lib/yacas -module -avoid-version -no-undefined  test.lo");
-
+  Echo("Generating C++ file ",pluginName,".cpp");
+  ToFile(pluginName:".cpp")WriteString(PatchString(fileBuildString));
 ];
 
+CcMacOSX(file_IsString,pluginName_IsString)<--
+[
+  Echo("Compiling C++ file ",pluginName,".cpp into plugin ",pluginName,".so");
+  SystemCall("/bin/sh ./libtool --mode=compile g++ -DHAVE_CONFIG_H  -I. -Isrc -Isrc/plat/linux32/ -O9 -Wall -pedantic -c ":pluginName:".cpp -o ":pluginName:".lo");
+  SystemCall("/bin/sh ./libtool --mode=link    g++  -O9 -Wall -pedantic -o ":pluginName:".la -rpath /usr/local/lib/yacas -module -avoid-version -no-undefined  ":pluginName:".lo");
+];
 
 

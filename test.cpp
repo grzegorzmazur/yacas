@@ -1,132 +1,352 @@
 
-#include <stdio.h>
-#include <math.h>
+/* This file was automatically generated with compilecpp.
+*/
 
-template<class T>
-inline T MyFabs(const T v)
+//#include <stdio.h>
+
+#include "lisptype.h"
+#include "lispenvironment.h"
+#include "lispatom.h"
+#include "standard.h"
+#include "arggetter.h"
+#include "lispplugin.h"
+#include "platmath.h"
+#include "stubs.h"
+#include "genericstructs.h"
+#include "mathcommands.h"
+
+
+#define ATOM(_x) LispAtom::New(aEnvironment,_x)
+#define RESULT aEnvironment.iStack.GetElement(aStackTop)
+#define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
+#define PUSH(_x)   aEnvironment.iStack.PushArgOnStack(_x)
+#define POP(_i)    aEnvironment.iStack.PopTo(aEnvironment.iStack.GetStackTop() - _i)
+#define STACKTOP() aEnvironment.iStack.GetStackTop()
+#define STACK(_i)  aEnvironment.iStack.GetElement(_i)
+
+#define ISTRUE(_x) IsTrue(aEnvironment, _x)
+#define ISFALSE(_x) IsFalse(aEnvironment, _x)
+
+
+void Compiled_Trigonometry(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    if (v<0)
-        return -v;
-    return v;
+  PUSH(ATOM("True"));
+  POP(1);
+/* Local(x2,orig)  */
+LispPtr x2 ; x2 .Set(ATOM("x2"));
+LispPtr orig ; orig .Set(ATOM("orig"));
+  PUSH(ATOM("True"));
+  POP(1);
+/* Set(x2,MathMultiply(x,x))  */
+  PUSH(NULL);
+  {
+/* local : x  */
+  PUSH(ARGUMENT(1).Get());
+/* local : x  */
+  PUSH(ARGUMENT(1).Get());
+    LispMultiply(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+  x2.Set(STACK(STACKTOP()-1).Get());
+  POP(1);
+/* While (Equals(Equals(term,0),False) ) */
+   for(;;)
+{
+  PUSH(NULL);
+  {
+  PUSH(NULL);
+  {
+/* local : term  */
+  PUSH(ARGUMENT(4).Get());
+/* number : 0  */
+  PUSH(ATOM("0"));
+    LispEquals(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+/* atom : False  */
+  PUSH(ATOM("False"));
+    LispEquals(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+   if (ISFALSE(STACK(STACKTOP()-1))) break;
+  PUSH(ATOM("True"));
+  POP(1);
+/* Set(term,MathMultiply(term,x2))  */
+  PUSH(NULL);
+  {
+/* local : term  */
+  PUSH(ARGUMENT(4).Get());
+/* local : x2  */
+  PUSH(x2.Get());
+    LispMultiply(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+  ARGUMENT(4).Set(STACK(STACKTOP()-1).Get());
+  POP(1);
+/* Set(i,MathAdd(i,1.0))  */
+  PUSH(NULL);
+  {
+/* local : i  */
+  PUSH(ARGUMENT(2).Get());
+/* number : 1.0  */
+  PUSH(ATOM("1.0"));
+    LispAdd(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+  ARGUMENT(2).Set(STACK(STACKTOP()-1).Get());
+  POP(1);
+/* Set(term,MathDivide(term,i))  */
+  PUSH(NULL);
+  {
+/* local : term  */
+  PUSH(ARGUMENT(4).Get());
+/* local : i  */
+  PUSH(ARGUMENT(2).Get());
+    LispDivide(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+  ARGUMENT(4).Set(STACK(STACKTOP()-1).Get());
+  POP(1);
+/* Set(i,MathAdd(i,1.0))  */
+  PUSH(NULL);
+  {
+/* local : i  */
+  PUSH(ARGUMENT(2).Get());
+/* number : 1.0  */
+  PUSH(ATOM("1.0"));
+    LispAdd(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+  ARGUMENT(2).Set(STACK(STACKTOP()-1).Get());
+  POP(1);
+/* Set(term,MathDivide(MathSubtract(0,term),i))  */
+  PUSH(NULL);
+  {
+  PUSH(NULL);
+  {
+/* number : 0  */
+  PUSH(ATOM("0"));
+/* local : term  */
+  PUSH(ARGUMENT(4).Get());
+    LispSubtract(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+/* local : i  */
+  PUSH(ARGUMENT(2).Get());
+    LispDivide(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+  ARGUMENT(4).Set(STACK(STACKTOP()-1).Get());
+  POP(1);
+/* Set(sum,MathAdd(sum,term))  */
+  PUSH(NULL);
+  {
+/* local : sum  */
+  PUSH(ARGUMENT(3).Get());
+/* local : term  */
+  PUSH(ARGUMENT(4).Get());
+    LispAdd(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+  ARGUMENT(3).Set(STACK(STACKTOP()-1).Get());
+  POP(2);
+}
+  POP(1);
+/* local : sum  */
+  PUSH(ARGUMENT(3).Get());
+  RESULT.Set(STACK(STACKTOP()-1).Get());
+  POP(1);
+}
+void Compiled_MySin(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+  PUSH(NULL);
+  {
+/* local : x  */
+  PUSH(ARGUMENT(1).Get());
+/* number : 1.0  */
+  PUSH(ATOM("1.0"));
+/* local : x  */
+  PUSH(ARGUMENT(1).Get());
+/* local : x  */
+  PUSH(ARGUMENT(1).Get());
+    Compiled_Trigonometry(aEnvironment,STACKTOP()-5 );
+    POP(4 );
+  }
+  RESULT.Set(STACK(STACKTOP()-1).Get());
+  POP(1);
+}
+void Compiled_MyCos(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+  PUSH(NULL);
+  {
+/* local : x  */
+  PUSH(ARGUMENT(1).Get());
+/* number : 0.0  */
+  PUSH(ATOM("0.0"));
+/* number : 1.0  */
+  PUSH(ATOM("1.0"));
+/* number : 1.0  */
+  PUSH(ATOM("1.0"));
+    Compiled_Trigonometry(aEnvironment,STACKTOP()-5 );
+    POP(4 );
+  }
+  RESULT.Set(STACK(STACKTOP()-1).Get());
+  POP(1);
+}
+void Compiled_MyArcSin(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+  PUSH(ATOM("True"));
+  POP(1);
+/* Local(result)  */
+LispPtr result ; result .Set(ATOM("result"));
+  PUSH(ATOM("True"));
+  POP(1);
+/* Set(result,FastArcSin(int1))  */
+  PUSH(NULL);
+  {
+/* local : int1  */
+  PUSH(ARGUMENT(1).Get());
+    LispFastArcSin(aEnvironment,STACKTOP()-2 );
+    POP(1 );
+  }
+  result.Set(STACK(STACKTOP()-1).Get());
+  POP(1);
+/* Local(x,q,s,c)  */
+LispPtr x ; x .Set(ATOM("x"));
+LispPtr q ; q .Set(ATOM("q"));
+LispPtr s ; s .Set(ATOM("s"));
+LispPtr c ; c .Set(ATOM("c"));
+  PUSH(ATOM("True"));
+  POP(1);
+/* Set(q,MathSubtract(MySin(result),int1))  */
+  PUSH(NULL);
+  {
+  PUSH(NULL);
+  {
+/* local : result  */
+  PUSH(result.Get());
+    Compiled_MySin(aEnvironment,STACKTOP()-2 );
+    POP(1 );
+  }
+/* local : int1  */
+  PUSH(ARGUMENT(1).Get());
+    LispSubtract(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+  q.Set(STACK(STACKTOP()-1).Get());
+  POP(1);
+/* While (Equals(Equals(q,0),False) ) */
+   for(;;)
+{
+  PUSH(NULL);
+  {
+  PUSH(NULL);
+  {
+/* local : q  */
+  PUSH(q.Get());
+/* number : 0  */
+  PUSH(ATOM("0"));
+    LispEquals(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+/* atom : False  */
+  PUSH(ATOM("False"));
+    LispEquals(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+   if (ISFALSE(STACK(STACKTOP()-1))) break;
+  PUSH(ATOM("True"));
+  POP(1);
+/* Set(s,MathSubtract(int1,MySin(result)))  */
+  PUSH(NULL);
+  {
+/* local : int1  */
+  PUSH(ARGUMENT(1).Get());
+  PUSH(NULL);
+  {
+/* local : result  */
+  PUSH(result.Get());
+    Compiled_MySin(aEnvironment,STACKTOP()-2 );
+    POP(1 );
+  }
+    LispSubtract(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+  s.Set(STACK(STACKTOP()-1).Get());
+  POP(1);
+/* Set(c,MyCos(result))  */
+  PUSH(NULL);
+  {
+/* local : result  */
+  PUSH(result.Get());
+    Compiled_MyCos(aEnvironment,STACKTOP()-2 );
+    POP(1 );
+  }
+  c.Set(STACK(STACKTOP()-1).Get());
+  POP(1);
+/* Set(q,MathDivide(s,c))  */
+  PUSH(NULL);
+  {
+/* local : s  */
+  PUSH(s.Get());
+/* local : c  */
+  PUSH(c.Get());
+    LispDivide(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+  q.Set(STACK(STACKTOP()-1).Get());
+  POP(1);
+/* Set(result,MathAdd(result,q))  */
+  PUSH(NULL);
+  {
+/* local : result  */
+  PUSH(result.Get());
+/* local : q  */
+  PUSH(q.Get());
+    LispAdd(aEnvironment,STACKTOP()-3 );
+    POP(2 );
+  }
+  result.Set(STACK(STACKTOP()-1).Get());
+  POP(2);
+}
+  POP(1);
+/* local : result  */
+  PUSH(result.Get());
+  RESULT.Set(STACK(STACKTOP()-1).Get());
+  POP(1);
 }
 
-double MyLog(double x,double epsilon)
+
+
+
+class Plugin_test : public LispPluginBase
 {
-    double result=0;
-    double xminusone = -(x-1);
-    double term=-1;
-    int n=1;
+public:
+    virtual void Add(LispEnvironment& aEnvironment);
+    virtual void Remove(LispEnvironment& aEnvironment);
+};
 
-//    printf("MyLog\n");
-    // This part converges fast only iff 0 < x < 2
-    while (MyFabs(term/n) > epsilon)
-    {
-        term*=xminusone;
-        result+=term/n;
-        n++;
-    }
+void Plugin_test::Add(LispEnvironment& aEnvironment)
+{
+  aEnvironment.SetCommand(Compiled_MyArcSin,"MyArcSin",1 ,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(Compiled_MyCos,"MyCos",1 ,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(Compiled_MySin,"MySin",1 ,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(Compiled_Trigonometry,"Trigonometry",4 ,YacasEvaluator::Function | YacasEvaluator::Fixed);
 
-    return result;
 }
-
-double MyPow(double x, double y,double epsilon)
+void Plugin_test::Remove(LispEnvironment& aEnvironment)
 {
-    int revert = 0;
-    double result=0;
+aEnvironment.RemoveCoreCommand("MyArcSin");
+aEnvironment.RemoveCoreCommand("MyCos");
+aEnvironment.RemoveCoreCommand("MySin");
+aEnvironment.RemoveCoreCommand("Trigonometry");
 
-    if (x<=0)
-        return 0;
-    
-    // x^-y = 1/(x^y)
-    if (y<0)
-    {
-        revert=1;
-        y=-y;
-    }
-
-    // This part converges fast only iff y>=1
-    if (y>=1)
-    {
-        double xminusone=x-1;
-        double term=1;
-        int n=0;
-        while(MyFabs(term)>epsilon && y-n>-1)
-        {
-            result=result+term;
-            term*=(y-n);
-            term*=xminusone;
-            n++;
-            term/=n;
-            //                printf("%lg (%lg)\n",result,term);
-        }
-
-        // if this happens it didn't converge after all
-        if (y-n <= -1)
-        {
-//            printf("Result can not be trusted\n");
-            goto OTHER;
-        }
-    }
-    else
-    {
-    OTHER:
-        result=0;
-        // x = xx*1.5^e
-        if (x>1.5)
-        {
-            double xx=1;
-//            printf("shuffle trick\n");
-            int e=0;
-            xx=x;
-            while (xx>1.5)
-            {
-                xx/=1.5;
-                e++;
-             }
-            result = MyPow(xx,y,epsilon) * MyPow(1.5,e*y,epsilon);
-        }
-        else // this one only converges iff x < 2, because of the mylog
-        {
-            double term=1;
-            double ylnx = y*MyLog(x,epsilon);
-            int n=0;
-            while(MyFabs(term)>epsilon)
-            {
-                result = result + term;
-                term*=ylnx;
-                n++;
-                term/=n;
-            }
-        }
-    }
-    
-    if (revert)
-    {
-        result=1/result;
-    }
-    return result;
 }
 
 
-int main(void)
+extern "C" {
+LispPluginBase* maker(void)
 {
-    double x,y,epsilon;
-
-REDO:
-    printf("Calculating x^y:\n");
-    printf("Enter x: ");
-    fscanf(stdin,"%lg",&x);
-    printf("Enter y: ");
-    fscanf(stdin,"%lg",&y);
-
-    epsilon = 1e-15;
-//    printf("Enter precision: ");
-//    fscanf(stdin,"%lg",&epsilon);
-
-    double result = MyPow(x,y,epsilon);
-    printf("%lg^%lg = %lg\n",x,y,result);
-    double other = pow(x,y);
-    printf("standard math library returns %lg (difference %lg)\n",pow(x,y),other-result);
-    goto REDO;
-    return 0;
+    return NEW Plugin_test;
 }
+};
