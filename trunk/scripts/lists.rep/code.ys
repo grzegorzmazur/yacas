@@ -406,8 +406,9 @@ LocalSymbols(func,lists,mapsingleresult,mapsingleitem)
 
 TemplateFunction("MapArgs",{expr,oper})
 [
-   UnList(Concat({expr[0]},
-     Apply("MapSingle",{oper,Tail(Listify(expr))})
+  Set(expr,Listify(expr));
+   UnList(Concat({expr[1]},
+     Apply("MapSingle",{oper,Tail(expr)})
    ) );
 ];
 UnFence("MapArgs",2);
