@@ -39,6 +39,7 @@ trap 'rm -fr yacas.spec
 	scripts/Makefile
 	colorcode/Makefile
 	ramscripts/Makefile
+	tests/Makefile
 	src/Makefile config.h conftest*; exit 1' 1 2 15
 
 # Protect against being on the right side of a sed subst in config.status.
@@ -134,6 +135,7 @@ CONFIG_FILES=${CONFIG_FILES-"yacas.spec
 	scripts/Makefile
 	colorcode/Makefile
 	ramscripts/Makefile
+	tests/Makefile
 	src/Makefile"}
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
   # Support "outfile[:infile[:infile...]]", defaulting infile="outfile.in".
