@@ -73,6 +73,8 @@ Verify(Transpose({{a,b},{c,d}}),{{a,c},{b,d}});
 Testing("Determinant");
 Verify(Determinant({{2,3},{3,1}}),-7);
 Verity( Determinant(ToeplitzMatrix(1 .. 10)), -2816 );
+// check that Determinant gives correct symbolic result
+TestYacas(Determinant({{a,b},{c,d}}),a*d-b*c);
 
 ll:={ {1,2,3},
       {2,-1,4},
