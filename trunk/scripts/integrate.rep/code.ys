@@ -245,11 +245,11 @@ IntPureSquare(_vr,_from,_sign2,_sign0,_to) <--
 //
 ////////////////////////////////////////////////
 IntFunc(x,Sin(_x),-Cos(x));
-IntFunc(x,Csc(_x),-Ln(Csc(x)+Cot(x)));
+//IntFunc(x,Csc(_x),-Ln(Csc(x)+Cot(x)));
 IntFunc(x,Cos(_x),Sin(x));
-IntFunc(x,Sec(_x),Ln(Sec(x)+Tan(x)));
+//IntFunc(x,Sec(_x),Ln(Sec(x)+Tan(x)));
 IntFunc(x,Tan(_x),-Ln(Cos(x)));
-IntFunc(x,Cot(_x),Ln(Sin(x)));
+//IntFunc(x,Cot(_x),Ln(Sin(x)));
 IntFunc(x,Exp(_x),Exp(x));
 IntFunc(x,(C_IsFreeOf(var))^(_x),C^x/Ln(C));
 IntFunc(x,num_IsFreeOf(var) / (_x),num*Ln(Abs(x)));
@@ -257,14 +257,14 @@ IntFunc(x,Ln(_x),x*Ln(x)-x);
 IntFunc(x,(_x)*Ln(_x),(1/(1+1))*x^(1+1)*Ln(x) - (1/(1+1)^2)*x^(1+1) );
 IntFunc(x,Ln(_x)*(_x),(1/(1+1))*x^(1+1)*Ln(x) - (1/(1+1)^2)*x^(1+1) );
 
-IntFunc(x,Csc(_x)^2,-Cot(x));
-IntFunc(x,Sec(_x)^2,Tan(x));
-IntFunc(x,Csc(_x)*Cot(_x),-Csc(x));
-IntFunc(x,Sec(_x)*Tan(_x),Sec(x));
-IntFunc(x,CscH(_x)^2,-CotH(x));
-IntFunc(x,SecH(_x)^2,TanH(x));
-IntFunc(x,CscH(_x)*Cot(_x),-CscH(x));
-IntFunc(x,SecH(_x)*TanH(_x),-SecH(x));
+//IntFunc(x,Csc(_x)^2,-Cot(x));
+//IntFunc(x,Sec(_x)^2,Tan(x));
+//IntFunc(x,Csc(_x)*Cot(_x),-Csc(x));
+//IntFunc(x,Sec(_x)*Tan(_x),Sec(x));
+//IntFunc(x,CscH(_x)^2,-CotH(x));
+//IntFunc(x,SecH(_x)^2,TanH(x));
+//IntFunc(x,CscH(_x)*Cot(_x),-CscH(x));
+//IntFunc(x,SecH(_x)*TanH(_x),-SecH(x));
 
 
 // n>0
@@ -278,47 +278,37 @@ IntFunc(x,Cos(Ln(_x)),x*Sin(Ln(x))/2 - x*Cos(Ln(x))/2 );
 
 IntFunc(x,1/((_x)*Ln(_x)),Ln(Ln(x)));
 
-IntFunc(x,SinH(_x),CosH(x));
-IntFunc(x,SinH(_x)^2,SinH(2*x)/4 - x/2);
+IntFunc(x,Sinh(_x),Cosh(x));
+IntFunc(x,Sinh(_x)^2,Sinh(2*x)/4 - x/2);
+IntFunc(x,1/Sinh(_x),Ln(Tanh(x/2)));
+IntFunc(x,Cosh(_x),Sinh(x));
+IntFunc(x,Cosh(_x)^2,Sinh(2*x)/4 + x/2);
+IntFunc(x,1/Cosh(_x),ArcTan(Sinh(x)));
+IntFunc(x,Tanh(_x),Ln(Cosh(x)));
+IntFunc(x,Tanh(_x)/Cosh(_x),-1/Cosh(x));
+IntFunc(x,1/Cosh(_x)^2,Tanh(x));
+//IntFunc(x,1/Sech(_x)*Coth(_x),-1/Sinh(x));
+IntFunc(x,1/Tanh(_x),Ln(Sinh(x)));
 
-IntFunc(x,CscH(_x),Ln(TanH(x/2)));
-
-IntFunc(x,CosH(_x),SinH(x));
-IntFunc(x,CosH(_x)^2,SinH(2*x)/4 + x/2);
-
-IntFunc(x,SecH(_x),ArcTan(SinH(x)));
-IntFunc(x,TanH(_x),Ln(CosH(x)));
-
-IntFunc(x,SecH(_x)*TanH(_x),-SecH(x));
-IntFunc(x,SecH(_x)^2,TanH(x));
-IntFunc(x,CscH(_x)*CotH(_x),-CscH(x));
-
-IntFunc(x,CotH(_x),Ln(SinH(x)));
 IntFunc(x,Abs(_x),Abs(x)*x/(2*a));
- 
+
 IntFunc(x,ArcTan(_x),x*ArcTan(x) - Ln(x^2 + 1)/2);
-IntFunc(x,ArcCot(_x),(x*ArcCot(x)) + Ln(x^2 + 1)/2);
 IntFunc(x,ArcSin(_x),(x*ArcSin(x)) + Sqrt(1-x^2) );
 IntFunc(x,ArcCos(_x),x*ArcCos(x) - Sqrt(1-x^2) );
-IntFunc(x,ArcSec(_x),x*ArcSec(x) - Ln(x + Sqrt(x^2 - 1)) );
-IntFunc(x,ArcCsc(_x),x*ArcCsc(x) + Ln(x + Sqrt(x^2 - 1) ));
 
-IntFunc(x,ArcTanH(_x),x*ArcTanH(x) + Ln(1-x^2)/2 );
-IntFunc(x,ArcSinH(_x),x*ArcSinH(x) - Sqrt(x^2 + 1) );
-IntFunc(x,ArcCosH(_x),x*ArcCosH(x) - Sqrt(x-1)*Sqrt(x+1) );
-IntFunc(x,ArcSecH(_x),x*ArcSecH(x)-ArcTan(Sqrt(1/x-1)*Sqrt(1/x+1) ) );
-IntFunc(x,ArcCscH(_x),x*ArcCscH(x)+Ln(x+x*Sqrt(1+1/x^2)) );
-IntFunc(x,ArcCotH(_x),x*ArcCotH(x)+1/2*Ln(x^2-1) );
+IntFunc(x,ArcTanh(_x),x*ArcTanh(x) + Ln(1-x^2)/2 );
+IntFunc(x,ArcSinh(_x),x*ArcSinh(x) - Sqrt(x^2 + 1) );
+IntFunc(x,ArcCosh(_x),x*ArcCosh(x) - Sqrt(x-1)*Sqrt(x+1) );
 
 
 // n^2 > x^2 
-IntFunc(x,num_IsFreeOf(var)/(-(_x)^2 + n_IsNumber),num*ArcTanH(x/Sqrt(n))/n);
+//IntFunc(x,num_IsFreeOf(var)/(-(_x)^2 + n_IsNumber),num*ArcTanH(x/Sqrt(n))/n);
 
 // x^2 > n^2
-IntFunc(x,num_IsFreeOf(var)/((_x)^2 - n_IsNumber),num * -ArcCotH(x/Sqrt(n))/Sqrt(n));
+//IntFunc(x,num_IsFreeOf(var)/((_x)^2 - n_IsNumber),num * -ArcCotH(x/Sqrt(n))/Sqrt(n));
 
 // n^2 > x^2
-IntFunc(x,num_IsFreeOf(var)/Sqrt(n_IsNumber - (_x)^2),num*ArcSin(x/Sqrt(n)));
+//IntFunc(x,num_IsFreeOf(var)/Sqrt(n_IsNumber - (_x)^2),num*ArcSin(x/Sqrt(n)));
 
 // previous code is killing this....
 IntFunc(x,num_IsFreeOf(var)/(A_IsNumber + B_IsNumber*(_x))^2,-num/(A*b + B^2*x));
