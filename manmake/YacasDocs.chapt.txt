@@ -12,7 +12,10 @@ were created to help maintain the documentation in an easy-to-read form.
 
 The "source" form of all documentation is maintained in a special plain text format. The format is such that it is clearly readable without any processing and is easy to edit. To compile the documents, the system processes the plain text docs with a script to prepare Yacas-language files and then runs other scripts to produce the final documentation in HTML and other formats.
 
-The source text must be formatted in a certain fashion to delimit sections, code examples, and so on, but the format is easy enough to enter in a plain text editor. Text is marked up mostly by TAB characters, spaces, and asterisks "{*}" at the beginning of a line. The script {txt2yacasdoc.pl} converts this markup into Yacas code for further processing.
+The source text must be formatted in a certain fashion to delimit sections, code examples, and so on, but the format is easy enough to enter in a plain text editor.
+Text is marked up mostly by TAB characters, spaces, and asterisks "{*}" at the beginning of a line.
+The format is easy enough so that, for example, the text of the GNU GPL (the file {COPYING}) can be used as a documentation source file without changes.
+The script {txt2yacasdoc.pl} converts this markup into Yacas code for further processing.
 
 	    Organization of the Yacas documentation
 
@@ -445,6 +448,12 @@ Special labels without arguments that generate headings for the reference manual
 *	{*DESC} -- "Description"
 *	{*E.G.} -- "Examples"
 *	{*EG} -- "Example"
+
+Other special markup:
+
+*	{*BREAK} -- insert an explicit line break at this point (no new paragraph)
+*	{*NEWPAGE} -- start a new page at this point ($LaTeX$ documentation only)
+*	{<*} ... {*>} -- insert a hyperlink
 
 	    Summary of special markup syntax
 

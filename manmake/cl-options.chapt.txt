@@ -122,13 +122,15 @@ started up for users (this has not been tried yet).
 	yacas --rootdir [directory]
 Tells the system where to find the library scripts. Here, {directory} is a
 path that is passed to {DefaultDirectory}. It is also possible to give a
-list of directories, separated by a colon, eg. 
+list of directories, separated by a colon, e.g. 
 {yacas --rootdir scripts/:morescripts/}.
+Note that it is not necessary to append a trailing slash to the directory names.
 
 	yacas --dlldir [directory]
-Tells the system where to find the plugins. Here, {directory} is a
+Tells the system where to find the plugins. Here {directory} is a
 path that is passed to {DllDirectory}. It is also possible to give a
-list of directories, separated by a colon.
+list of directories separated by a colon.
+The default value is specified at compile time, usually {/usr/local/lib/yacas}.
 
 	yacas --archive [file]
 Use a compressed archive instead of the script library.

@@ -1262,19 +1262,21 @@ programming in C++.
 
 In addition to the plugin structure in the Yacas engine, there is
 a module {cstubgen} (currently still under development) that allows
-rapid scripting of a plugin. Essentially all that is required is
+a rapid creation of a plugin that interfaces to an external library.
+Essentially all that is required is
 to write a file that looks like the header file of the original
 library, but written in Yacas syntax. The module {cstubgen} is then
 able to write out a C++ file that can be compiled and linked with
-the original library, and then loaded from within Yacas. Including
-a function in the plugin will typically take just one line of
+the original library, and then loaded from within Yacas.
+To include
+a function in the plugin typically takes one line of
 Yacas code. There are a few examples in the {plugins/}
 directory (the files ending with api.stub). The build system
 converts these automatically to the required C++ files. 
 
 In addition to the C++ stub file, {cstubgen} also automatically generates
 some documentation on the functions included in the stub. This
-documentation is put in a file with extension 'description'.
+documentation is put in a file with extension '.man.txt'.
 
 An example describing the use of {cstubgen} can be found in the essay
 <*"Creating plugins for Yacas"|yacasdoc://essays/3/3/*>. 
@@ -1331,7 +1333,7 @@ that the plugin resides in the file {/usr/local/lib/yacas/example.la}
 *CMD DllUnload --- unload a plugin
 *CORE
 *CALL
-	DllUnload\file)
+	DllUnload(file)
 
 *PARMS
 {file} -- file name of the plugin
@@ -1347,7 +1349,7 @@ delete the first one found to exactly match.
 {DllUnload} always returns {True}, even if no plugin with the name
 {file} is found.
 
-*EG
+*EG notest
 
 First, we load the example plugin, and call the function
 {AddTwoIntegers} which is defined in this plugin.
@@ -1378,7 +1380,7 @@ Then, we unload the plugin, and we check that the function
 {DllEnumerate} returns a list with the names of all the plugins which
 are currently loaded.
 
-*EG
+*EG notest
 
 At startup, no plugins are loaded, so {DllEnumerate()} evaluates to
 the empty list.
@@ -1397,23 +1399,62 @@ This changes after we load the example plugin.
 
 
 
-*CMD StubApiCStart --- start of C++ plugin API
+*CMD StubApiCStart --- begin a C++ plugin API description
 *STD
 *CALL
 	StubApiCStart(name)
 
 *PARMS
-{name} -- name of the plugin
+{name} -- string, name of the plugin
 
 *DESC
 
-To start up generating a c stub file for linking a c library with
-Yacas. A stub specification file needs to start with this
+This function must be called to begin generating a stub file for linking a C or C++ library with Yacas.
+A stub specification file needs to start with this
 function call, to reset the internal state of Yacas for emitting
 a stub C++ file. The parameter {name} should identify the plugin
 uniquely.
 
-*SEE StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCFile, StubApiCSetEnv
+*SEE StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCFile, StubApiCSetEnv, StubApiCPrettyName
+
+
+*CMD StubApiCPrettyName --- give a descriptive name for documentation
+*STD
+*CALL
+	StubApiCPrettyName(name)
+
+*PARMS
+{name} -- descriptive name of the plugin
+
+*DESC
+
+This function sets a descriptive name for a plugin. It should be very short, for example, "plotting" or "XYZ library", and it should not contain the word "plugin".
+
+This name is used for producing documentation. It will appear in the title of the documentation section describing the plugin.
+
+*EG notest
+	StubApiCPrettyName("multithreaded GUI")
+The documentation section will be titled "The multithreaded GUI plugin".
+
+*SEE StubApiCSStart, StubApiCPluginPurpose
+
+
+
+
+*CMD StubApiCPluginPurpose --- document the purpose of the plugin
+*STD
+*CALL
+	StubApiCPluginPurpose(text)
+
+*PARMS
+{text} -- a short description of the plugin
+
+*DESC
+The text should be in the reference manual plain text format.
+(See <*the documentation on the format|yacasdoc://essays/5/2/*>.)
+It will be inserted after the section title in the plugin documentation.
+
+*SEE StubApiCRemark, StubApiCPrettyName
 
 *CMD StubApiCShortIntegerConstant --- declare integer constant in plugin
 *STD
@@ -1511,24 +1552,26 @@ doubles and returns void:
 
 *SEE StubApiCStart, StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFile, StubApiCSetEnv
 
-*CMD StubApiCRemark --- documentation string in plugin
+*CMD StubApiCRemark --- provide more documentation for plugin
 *STD
 *CALL
 	StubApiCRemark(string)
 
 *PARMS
 
-{string} -- comment string to be added to the documentation
+{string} -- text to be added to the documentation
 
 *DESC
 
-StubApiCRemark adds a piece of text to the stub documentation
+{StubApiCRemark} adds the text to the stub documentation
 file that gets generated automatically. The documentation is put in
-a {.description} file while the input file is being processed, so adding
+a {.man.txt} file while the input file is being processed, so adding
 a remark on a function just after a function declaration adds a remark
 on that function.
+The format of the text must be that of the reference manual source in plaintext, see <*documentation on the format|yacasdoc://essays/5/2*>.
 
-*SEE StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCSetEnv, StubApiCFile
+
+*SEE StubApiCPrettyName, StubApiCPluginPurpose, StubApiCStart, StubApiCSetEnv, StubApiCFile
 
 *CMD StubApiCSetEnv --- access Yacas environment in plugin
 *STD
@@ -1557,7 +1600,7 @@ There needs to ba a function in the plugin somewhere of the form
 	}
 Then calling
 	StubApiCSetEnv("GlutSetEnv");
-will force the plugin to call GlutSetEnv at load time. All functions
+will force the plugin to call {GlutSetEnv} at load time. All functions
 in the plugin will then have access to the Yacas environment.
 
 *SEE StubApiCStart, StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCFile
@@ -1631,8 +1674,7 @@ can be accessed through the Yacas interpreter.
 	IsGeneric(object)
 
 *DESC
-Returns {True} if an object is of a generic object
-type.
+Returns {True} if an object is of a generic object type.
 
 *CMD GenericTypeName --- get type name
 *CORE
