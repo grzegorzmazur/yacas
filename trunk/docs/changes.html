@@ -26,8 +26,16 @@
 	{Subfactorial},{IsComposite},{IsSquareFree} (Jonathan Leto)
   <li> added new option {yrange=...} to Plot2D to specify range of ordinate (SW)
   <li> BUGFIX: PrettyForm now works correctly on lists.
-  <li> Update of the files that belong to the epoc distro.
+  <li> Ayal: Update of the files that belong to the epoc distro.
   <li> {Gcd} now takes Gaussian Integers.
+  <li> Added {IsCFormable}, {AssocDelete}, and started a new global error
+       reporting scheme: {IsError}, {Assert}, {DumpErrors}. Prettyprinters
+       ({TeXForm}, {PrettyForm}) report errors. New repository {io.rep} for
+       command-line interaction stuff (help, prettyprinters, errors, ...). Moved
+       {formula.rep} there too. (SW)
+  <li> Cleaned up {yacasinit.ys} and {standard.ys}; moved {print.ys} to
+       {io.rep}; made {packages.ys} automatically generated on {make} and used;
+       cleaned up some old {.def} files that were copies of {.ys} files. (SW)
 </ul>
 
 <h1>Release of version 1.0.51 (April 20th, 2002)</h1>
