@@ -351,6 +351,8 @@ Function("FermatNumber",{n})[
 5  # Moebius(1)	<-- 1;
 10 # Moebius(_n)	<--
 [
+	Check(IsPositiveInteger(n),
+		"Moebius: argument must be positive integer");
         Local(factors,i,repeat);
 	repeat:=0;
         factors:=Factors(n);
@@ -358,18 +360,20 @@ Function("FermatNumber",{n})[
         For(i:=1,i<=len,i++)[
 		If(factors[i][2]>1,repeat:=1);
         ];
-	// very innefficient, because ProperDivisors has to factor it again
 	If(repeat==0,(-1)^len,0);
 
 ];
 
-
-
-
-
-
-
-
-
-
-
+10 # Totient(_n)	<--
+[
+	Check(IsPositiveInteger(n),
+		"Totient: argument must be positive integer");
+	Local(i,sum,factors,len);
+	sum:=n;
+        factors:=Factors(n);
+        len:=Length(factors);
+        For(i:=1,i<=len,i++)[
+		sum:=sum*(1-1/factors[i][1]);
+        ];
+	sum;
+];
