@@ -72,8 +72,13 @@ SubstituteHeld(_body) <--
 20 # Variab2(Held(x_IsAtom)) <-- MakeHeld(UniqueConstant()*x);
 100 # Variab2(Held(_x)) <-- MakeHeld(x);
 
+/*
+C({"+",x,C({"*",-1,y}) })
 
-10 # FlatPlus(Held(_x - _y)) <-- MakeHeld(UnList({Atom("+"),x,-y}));
+*/
+
+10 # FlatPlus(Held(_x - _y)) <--
+     MakeHeld(LocalSymbols(a,b,c)(Subst(a,x)Subst(b,-y)(a+b)));
 20 # FlatPlus(_x) <-- x;
 
 10 # FlatHeld(Held(xheld_IsFunction))_(Type(xheld) = flatheldop)
@@ -81,12 +86,19 @@ SubstituteHeld(_body) <--
     [
      Local(r);
       r := Tail(Listify(xheld));
+/*Echo({"1...",r});*/
       r := MakeHeldList(r);
+/*Echo({"2...",r});*/
       r := MapSingle("SubstituteHeld",r);
+/*Echo({"3...",r});*/
       r := Flatten(r,"List");
+/*Echo({"4...",r});*/
       r := MapSingle("UnHold",r);
+/*Echo({"5...",r});*/
       r := Apply("Concat",r);
+/*Echo({"6...",r});*/
       r := MakeHeld(r);
+/*Echo({"7...",r});*/
       r;
     ];
 30 # FlatHeld(Held(_x)) <-- MakeHeld({x});
