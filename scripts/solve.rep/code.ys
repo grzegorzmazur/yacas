@@ -436,7 +436,9 @@ Precision(requiredPrec+2);
   adjust:= -function/Apply("D",{variable,function});
   delta:=10000;
   result:=initial;
-  While (result > min And result < max And N(delta*Conjugate(delta)>accuracy*accuracy))
+  While (result > min And result < max
+      // avoid numerical underflow due to fixed point math, FIXME when have real floating math
+      And N( Max(Re(delta), -Re(delta), Im(delta), -Im(delta)) ) > accuracy)
   [
     MacroSet(variable,result);
     delta:=N(adjust);
