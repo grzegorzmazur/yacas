@@ -1,6 +1,3 @@
-DefLoad("stdfuncs.rep/numerical.ys");
-
-
 /* Standard analytic functions */
 2 # Sin(x_IsNumber)_(Numeric) <-- SinNum(x);
 4 # Sin(ArcSin(_x))           <-- x;
@@ -126,12 +123,13 @@ DefLoad("stdfuncs.rep/numerical.ys");
 
 /* 2 # Ln(-Infinity)                    <-- 0; */
 2 # Ln(x_IsNegativeNumber)_(Numeric) <-- Complex(Ln(-x), Pi);
-3 # Ln(x_IsNumber)_(Numeric) <-- LnNum(x);
+3 # Ln(x_IsNumber)_(Numeric And x>=1) <-- LnNum(x);
 4 # Ln(Exp(_x))              <-- x;
-
 
 3 # Ln(Complex(_r,_i)) <-- Complex(Ln(Abs(Complex(r,i))), Arg(Complex(r,i)));
 4 # Ln(x_IsNegativeNumber) <-- Complex(Ln(-x), Pi);
+5 # Ln(x_IsNumber)_(Numeric And x<1) <-- - LnNum(MathDivide(1, x));
+
 
 2 # ArcSin(x_IsNumber)_(Numeric And Abs(x)<=1) <-- ArcSinNum(x);
 /// complex ArcSin

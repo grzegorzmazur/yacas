@@ -5,6 +5,7 @@ SCRIPTFILES = \
         newly.rep/code.ys.def numbers.rep/code.ys numbers.rep/code.ys.def random.rep/code.ys random.rep/code.ys.def simplify.rep/code.ys \
         simplify.rep/code.ys.def solve.rep/code.ys solve.rep/code.ys.def standard.ys standard.ys.def stdfuncs.rep/code.ys stdfuncs.rep/code.ys.def \
 		stdfuncs.rep/om.ys stdfuncs.rep/numerical.ys stdfuncs.rep/numerical.ys.def \
+		stdfuncs.rep/nummethods.ys stdfuncs.rep/nummethods.ys.def \
         stdopers.ys stubs.rep/code.ys stubs.rep/code.ys.def stubs.rep/om.ys substitute.rep/code.ys substitute.rep/code.ys.def sums.rep/code.ys sums.rep/code.ys.def \
         univar.rep/code.ys univar.rep/code.ys.def yacasinit.ys assoc.rep/code.ys assoc.rep/code.ys.def html.rep/code.ys html.rep/code.ys.def \
         fakedb.rep/code.ys fakedb.rep/code.ys.def array.rep/code.ys array.rep/code.ys.def example.rep/code.ys example.rep/code.ys.def \
