@@ -121,14 +121,30 @@ For example, at 100 digits of precision it is advisable to use
 the series, whereas the expression used in {ZetaNum(s)} uses
 $$n=Ln(10)/Ln(8)*P$$ terms (of a different series).
 
-		Bessel Functions
+		Bessel functions
 
-Currently Yacas can do {BesselJ(n,x)} where $Abs(x)<=2$, Yacas currently uses the infinite series definition
-to compute the numerical value. The series definition is:
 
+Bessel functions are a family of special functions solving the equation
+$$ (Deriv(x,2)w(x))+1/x*(D(x)w(x))+(1-n^2/x^2)*w(x)=0 $$. There are two linearly independent solutions which can be taken as the pair of Hankel functions $H1(n,x)$, $H2(n,x)$, or as the pair of Bessel-Weber functions $J[n]$, $Y[n]$.
+These pairs are linearly related,
+$J[n]=1/2*(H1(n,x)+H2(n,x))$, $J[n]=1/(2*I)*(H1(n,x)-H2(n,x))$. The function $H2(n,x)$ is the complex conjugate of $H1(n,x)$. This arrangement of four functions is very similar to the relation between $Sin(x)$, $Cos(x)$ and $Exp(I*x)$, $Exp(-I*x)$, which are all solutions of $(Deriv(x,2)f(x))+f(x)=0$.
+
+For large values of $Abs(x)$, there are the following asymptotic series:
+$$ H1(n,x) <> Sqrt(2/(Pi*x))*Exp(I*zeta)*Sum(k,0,Infinity, I^k*A(k,n)/x^k) $$,
+where
+$zeta:=x-1/2*n*Pi-1/4*Pi$ and
+$$ A(k, n) := ( (4*n^2-1^2)*(4*n^2-3^2)*...*(4*n^2-(2*k-1)^2))/(k! *8^k) $$.
+From this one can find the asymptotic series for
+$ J[n] <> Sqrt(2/(Pi*x))*Cos(zeta)*Sum(k,0,Infinity, (-1)^k*A(2*k,n)*x^(-2*k)) - Sqrt(2/(Pi*x))*Sin(zeta)*Sum(k,0,Infinity, (-1)^k*A(2*k+1,n)*x^(-2*k-1)) $ and
+$ Y[n] <> Sqrt(2/(Pi*x))*Sin(zeta)*Sum(k,0,Infinity, (-1)^k*A(2*k,n)*x^(-2*k)) + Sqrt(2/(Pi*x))*Cos(zeta)*Sum(k,0,Infinity, (-1)^k*A(2*k+1,n)*x^(-2*k-1)) $.
+
+The error of a truncated asymptotic series is not larger than the first discarded term if the number of terms is larger than $n-1/2$.
+(See the book: F. W. J. Olver, <i>Asymptotic and special functions</i>, Academic Press, 1974.)
+
+Currently Yacas can compute {BesselJ(n,x)} where $Abs(x)<=2$. Yacas currently uses the Taylor series
+to compute the numerical value:
 $$ BesselJ(n,x) := Sum(k,0,Infinity,(-1)^k*x^(2*k+n)/(2^(2*k+n)* k! * Gamma(k+n+1))) $$.
-
-Note that n need not be an integer. We see from the definition that when $Abs(x)<=2$, the absolute
+Note that $n$ need not be an integer. We see from the definition that when $Abs(x)<=2$, the absolute
 value of each term is always decreasing ( which is called absolutely monotonely decreasing.) From this
 we know that if we stop after $i$ iterations, the error will be bounded by the absolute value of the
 next term. So given a set precision, turn this into a value epsilon, so that we can check if the current
