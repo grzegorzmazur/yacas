@@ -42,6 +42,7 @@ were developed by us.
 
 *INCLUDE algorithms-specfunc.chapt
 
+*INCLUDE algo-refs.chapt
 
 *REM GNU Free Documentation License
 *INCLUDE FDL.chapt

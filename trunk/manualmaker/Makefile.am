@@ -20,8 +20,8 @@ BOOKSOURCES = in/intro.book.txt in/coding.book.txt \
 INTROCHAPTERS = FDL.chapt
 INTROSOURCES = in/FDL.chapt.txt
 
-ALGOCHAPTERS = algo-basic.chapt algo-numapprox.chapt algorithms-elemfunc.chapt algorithms-specfunc.chapt algorithms-numtheory.chapt algorithms-integration.chapt algorithms-multivar.chapt SturmSequences.chapt FDL.chapt
-ALGOSOURCES = in/algo-basic.chapt.txt in/algo-numapprox.chapt.txt in/algorithms-elemfunc.chapt.txt in/algorithms-specfunc.chapt.txt in/algorithms-numtheory.chapt.txt in/algorithms-integration.chapt.txt in/algorithms-multivar.chapt.txt in/SturmSequences.chapt.txt in/FDL.chapt.txt
+ALGOCHAPTERS = algo-basic.chapt algo-numapprox.chapt algorithms-elemfunc.chapt algorithms-specfunc.chapt algorithms-numtheory.chapt algorithms-integration.chapt algorithms-multivar.chapt SturmSequences.chapt FDL.chapt algo-refs.chapt
+ALGOSOURCES = in/algo-basic.chapt.txt in/algo-numapprox.chapt.txt in/algorithms-elemfunc.chapt.txt in/algorithms-specfunc.chapt.txt in/algorithms-numtheory.chapt.txt in/algorithms-integration.chapt.txt in/algorithms-multivar.chapt.txt in/SturmSequences.chapt.txt in/FDL.chapt.txt in/algo-refs.chapt.txt
 
 REFCHAPTERS = config.chapt arith.chapt calc.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \

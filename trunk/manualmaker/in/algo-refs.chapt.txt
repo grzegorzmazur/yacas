@@ -1,0 +1,103 @@
+			References
+
+[Bateman <i>et al.</i> 1953]
+Bateman and Erdelyi,
+<i>Higher Transcendental Functions</i>, McGraw-Hill, 1953.
+
+[Beeler <i>et al.</i> 1972]
+M. Beeler, R. W. Gosper, and R. Schroeppel,
+Memo No. 239, MIT AI Lab (1972), now available online (the so-called "Hacker's Memo" or "HAKMEM").
+
+[Borwein 1995]
+P. Borwein,
+<i>An efficient algorithm for Riemann Zeta function</i> (1995),
+published online and in Canadian Math. Soc. Conf. Proc., 27 (2000), pp. 29-34.
+
+[Borwein <i>et al.</i> 1999]
+J. M. Borwein, D. M. Bradley, R. E. Crandall,
+<i>Computation strategies for the Riemann Zeta function</i>, online preprint
+CECM-98-118 (1999).
+
+[Brent 1975]
+R. P. Brent,
+<i>Multiple-precision zero-finding methods and the complexity of elementary function evaluation</i>, in
+<i>Analytic Computational Complexity</i>, ed. by J. F. Traub, Academic Press, 1975, p. 151; also available online from Oxford Computing Laboratory, as the paper {rpb028}.
+
+[Brent 1978]
+R. P. Brent, 
+<i>A Fortran Multiple-Precision Arithmetic Package</i>,
+ACM TOMS 4, no. 1 (1978), p. 57.
+
+[Brent <i>et al.</i> 1980]
+R. P. Brent and E. M. McMillan,
+<i>Some new algorithms for high precision computation of Euler's constant</i>, Math. Comp. 34 (1980), p. 305.
+
+[Damgard <i>et al.</i> 1993]
+I. B. Damgard, P. Landrock and C. Pomerance, 
+<i>Average Case Error Estimates for the Strong Probable Prime Test</i>,
+Math. Comp. 61, (1993) pp. 177-194.
+
+[Davenport <i>et al.</i> 1989]
+J. H. Davenport, Y. Siret, and E. Tournier,
+<i>Computer Algebra, systems and algorithms for algebraic computation</i>,
+Academic Press, 1989.
+
+[Davenport 1992]
+J. H. Davenport,
+<i>Primality testing revisited</i>, Proc. ISSAC 1992, p. 123.
+
+[Godfrey 2001]
+P. Godfrey (2001) (unpublished text):
+<*http://winnie.fit.edu/~gabdo/gamma.txt*>.
+
+[Gourdon <i>et al.</i> 2001]
+X. Gourdon and P. Sebah, 
+<i>The Euler constant</i>, online at <*http://numbers.computation.free.fr/Constants/*> (2001).
+
+[Lanczos 1964]
+C. J. Lanczos,
+J. SIAM of Num. Anal. Ser. B, vol. 1, p. 86 (1964).
+
+[Luke 1975]
+Y. L. Luke,
+<i>Mathematical functions and their approximations</i>, Academic Press, N. Y., 1975.
+
+[Olver 1974]
+F. W. J. Olver,
+<i>Asymptotics and special functions</i>, Academic Press, 1974.
+
+[Pollard 1978]
+J. Pollard,
+<i>Monte Carlo methods for index computation mod p</i>,
+Mathematics of Computation, vol. 32 (1978), pp. 918-924.
+
+[Pomerance <i>et al.</i> 1980]
+Pomerance et al.,
+Math. Comp. 35 (1980), p. 1003.
+
+[Rabin 1980]
+M. O. Rabin, 
+<i>Probabilistic algorithm for testing primality</i>,
+J. Number Theory 12 (1980), p. 128.
+
+[Smith 1985]
+D. M. Smith,
+<i>Efficient multiple-precision evaluation of elementary functions</i>, 1985 (available online).
+
+[Spouge 1994]
+J. L. Spouge,
+J. SIAM of Num. Anal. 31 (1994), p. 931.
+
+[Thacher 1963]
+H. C. Thacher, Jr.,
+<i>Algorithm 180, Error function for large real X</i>,
+Comm. ACM 6, no. 6 (1963), p. 314.
+
+[Tsimring 1988]
+Sh. E. Tsimring,
+<i>Handbook of special functions and definite integrals: algorithms and programs for calculators</i>, Radio and communications (publisher), Moscow (1988) (in Russian).
+
+[von zur Gathen <i>et al.</i> 1999]
+J. von zur Gathen and J. Gerhard,
+<i>Modern Computer Algebra</i>,
+Cambridge University Press, 1999.
