@@ -778,12 +778,6 @@ int main(void)
 
 	for(int i=0; i<10; ++i) y.Multiply(y,y,10);
 
-{
-  LispString str;
-  y.ToString(str, 10, 10);
-  printf("Number is %s (should be 3)\n",str.String());
-}
-
 	z.Mod(x,y);
 	Check(y.LessThan(x), "3^N<15^N");
 	CheckValues(z.Sign(),0, "15^N divides 3^N");
@@ -1063,6 +1057,15 @@ int main(void)
 	Next("floating-point division");
 	x.SetTo(15.);
 	y.SetTo(4.);
+
+{
+  LispString str;
+  x.ToString(str,100,10);
+  printf("x = %s (should be 15.)\n",str.String());
+  y.ToString(str,100,10);
+  printf("y = %s (should be 4.)\n",str.String());
+}
+
 	z.Divide(x,y,10);
 	CheckStringValue(z, "3.75", 10, 10, "15/4==3.75");
 	x.SetTo(1.);

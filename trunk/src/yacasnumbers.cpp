@@ -791,7 +791,9 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
   if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
   if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
 
-  if (aX.iNumber->iExp == aY.iNumber->iExp && aX.iNumber->iTensExp == aY.iNumber->iTensExp)
+
+  if (iNumber != aX.iNumber && iNumber != aY.iNumber &&
+      aX.iNumber->iExp == aY.iNumber->iExp && aX.iNumber->iTensExp == aY.iNumber->iTensExp)
   {
     ::Add(*iNumber, *aX.iNumber, *aY.iNumber);
   }
@@ -819,11 +821,15 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
   if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
   if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
 
+  LispInt digitPrecision = BITS_TO_DIGITS(aPrecision,10);
+  iPrecision = aPrecision;
+  iNumber->iPrecision = digitPrecision;
+
   ANumber a1(*aX.iNumber);
 //  a1.CopyFrom(*aX.iNumber);
   ANumber a2(*aY.iNumber);
 //  a2.CopyFrom(*aY.iNumber);
-  ANumber remainder(BITS_TO_DIGITS(aPrecision,10));
+  ANumber remainder(digitPrecision);
 
   Check(!IsZero(a2),KLispErrInvalidArg);
   if (aX.IsInt() && aY.IsInt())
@@ -1140,8 +1146,8 @@ LispBoolean BigNumber::IsIntValue() const
 {
 //FIXME I need to round first to get more reliable results.
   if (IsInt()) return LispTrue;
-  if (iNumber->iExp == 0 && iNumber->iTensExp == 0) return LispTrue;
-  
+  iNumber->DropTrailZeroes();
+  if (iNumber->iExp == 0 && iNumber->iTensExp == 0) return LispTrue;  
   BigNumber num(iPrecision);
   num.Floor(*this);
   return Equals(num);
@@ -1165,8 +1171,8 @@ LispBoolean BigNumber::IsSmall() const
     if (tensExp<0)tensExp = -tensExp;
     return
     (
-      iPrecision <= 53	// standard float is 53 bits
-      && tensExp<306	// 1021 bits is about 306 decimals
+      iNumber->iPrecision <= 53	// standard float is 53 bits
+      && tensExp<1021 // 306	// 1021 bits is about 306 decimals
     );
     // standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021
   }
@@ -1175,6 +1181,18 @@ LispBoolean BigNumber::IsSmall() const
 
 void BigNumber::BecomeInt()
 {
+  while (iNumber->iTensExp > 0)
+  {
+    BaseTimesInt(*iNumber,10, WordBase);
+    iNumber->iTensExp--;
+  }
+  while (iNumber->iTensExp < 0)
+  {
+    PlatDoubleWord carry=0;
+    BaseDivideInt(*iNumber,10, WordBase, carry);
+    iNumber->iTensExp++;
+  }
+  
   iNumber->ChangePrecision(0);
   SetIsInteger(LispTrue);
 }
