@@ -1,4 +1,4 @@
-dnl aclocal.m4 generated automatically by aclocal 1.4a
+dnl aclocal.m4 generated automatically by aclocal 1.4
 
 dnl Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
@@ -23,7 +23,7 @@ dnl PARTICULAR PURPOSE.
 # This macro requires AC_CHECK_HEADERS to have already verified the
 # presence or absence of sys/types.h and sys/socket.h.
 #
-# @version $Id: aclocal.m4,v 1.58 2002-03-13 18:34:18 ayalpinkus Exp $
+# @version $Id: aclocal.m4,v 1.59 2002-03-17 11:55:33 winitzki Exp $
 #
 # @author Daniel Richard G. <skunk@mit.edu>
 #
@@ -71,7 +71,7 @@ dnl Check whether sys/socket.h defines type socklen_t. Please note
 dnl that some systems require sys/types.h to be included before
 dnl sys/socket.h can be compiled.
 dnl
-dnl @version $Id: aclocal.m4,v 1.58 2002-03-13 18:34:18 ayalpinkus Exp $
+dnl @version $Id: aclocal.m4,v 1.59 2002-03-17 11:55:33 winitzki Exp $
 dnl @author Lars Brinkhoff <lars@nocrew.org>
 dnl
 AC_DEFUN(TYPE_SOCKLEN_T,
@@ -123,8 +123,6 @@ dnl AM_INIT_AUTOMAKE(package,version, [no-define])
 
 AC_DEFUN(AM_INIT_AUTOMAKE,
 [AC_REQUIRE([AC_PROG_INSTALL])
-dnl We require 2.13 because we rely on SHELL being computed by configure.
-AC_PREREQ([2.13])
 PACKAGE=[$1]
 AC_SUBST(PACKAGE)
 VERSION=[$2]

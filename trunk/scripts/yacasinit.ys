@@ -69,6 +69,7 @@ CntDefLoad("orthopoly.rep/code.ys");
 CntDefLoad("openmath.rep/code.ys");
 CntDefLoad("multivar.rep/code.ys");
 CntDefLoad("specfunc.rep/code.ys");
+CntDefLoad("plots.rep/code.ys");
 
 /* set the help system. This can be overridden in ~/.yacasrc */
 
