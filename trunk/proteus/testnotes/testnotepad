@@ -17,7 +17,7 @@ experimental playing ground.
  
 Follows: a taylor series expansion
 ",False,False);
-Proteus'FontSize(15);
+Proteus'FontSize(18);
 Proteus'AddCommand("Taylor(x,0,5)Sin(x);");
 
 Proteus'FontSize(18);
