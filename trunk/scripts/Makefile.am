@@ -71,7 +71,8 @@ SCRIPTFILES2 = \
 	trigsimp.rep/code.ys trigsimp.rep/code.ys.def 							    \
 	univar.rep/code.ys univar.rep/code.ys.def univar.rep/sturm.ys univar.rep/sturm.ys.def               \
 	univar.rep/Cyclotomic.ys  univar.rep/Cyclotomic.ys.def 						    \
-	probability.rep/code.ys  probability.rep/code.ys.def                                                \
+	univar.rep/sparse.ys  univar.rep/sparse.ys.def 	                                                    \
+        probability.rep/code.ys  probability.rep/code.ys.def                                                \
 	numbers.rep/NumberTheory.ys numbers.rep/NumberTheory.ys.def                                         \
 	numbers.rep/GaussianIntegers.ys numbers.rep/GaussianIntegers.ys.def
 
