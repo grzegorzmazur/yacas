@@ -47,8 +47,36 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
 
     iTrue = HashTable().LookUp("True");
     iFalse = HashTable().LookUp("False");
-    iTrue->IncreaseRefCount();
-    iFalse->IncreaseRefCount();
+
+    iEndOfFile    = iHashTable.LookUp("EndOfFile");
+    iEndStatement = iHashTable.LookUp(";");
+    iProgOpen     = iHashTable.LookUp("[");
+    iProgClose    = iHashTable.LookUp("]");
+    iNth          = iHashTable.LookUp("Nth");
+    iBracketOpen  = iHashTable.LookUp("(");
+    iBracketClose = iHashTable.LookUp(")");
+    iListOpen     = iHashTable.LookUp("{");
+    iListClose    = iHashTable.LookUp("}");
+    iComma        = iHashTable.LookUp(",");
+    iList         = iHashTable.LookUp("List");
+    iProg         = iHashTable.LookUp("Prog");
+
+    iEndOfFile   ->IncreaseRefCount();
+    iEndStatement->IncreaseRefCount();
+    iProgOpen    ->IncreaseRefCount();
+    iProgClose   ->IncreaseRefCount();
+    iNth         ->IncreaseRefCount();
+    iBracketOpen ->IncreaseRefCount();
+    iBracketClose->IncreaseRefCount();
+    iListOpen    ->IncreaseRefCount();
+    iListClose   ->IncreaseRefCount();
+    iComma       ->IncreaseRefCount();
+    iList        ->IncreaseRefCount();
+    iProg        ->IncreaseRefCount();
+
+    iTrue        ->IncreaseRefCount();
+    iFalse       ->IncreaseRefCount();
+
     iTrueAtom.Set(LispAtom::New(iTrue));
     iFalseAtom.Set(LispAtom::New(iFalse));
     PushLocalFrame(LispTrue);
@@ -59,8 +87,22 @@ LispEnvironment::~LispEnvironment()
 {
     PopLocalFrame();
     LISPASSERT(iLocalsList == NULL);
-    iTrue->DecreaseRefCount();
-    iFalse->DecreaseRefCount();
+    iTrue        ->DecreaseRefCount();
+    iFalse       ->DecreaseRefCount();
+
+    iEndOfFile   ->DecreaseRefCount();
+    iEndStatement->DecreaseRefCount();
+    iProgOpen    ->DecreaseRefCount();
+    iProgClose   ->DecreaseRefCount();
+    iNth         ->DecreaseRefCount();
+    iBracketOpen ->DecreaseRefCount();
+    iBracketClose->DecreaseRefCount();
+    iListOpen    ->DecreaseRefCount();
+    iListClose   ->DecreaseRefCount();
+    iComma       ->DecreaseRefCount();
+    iList        ->DecreaseRefCount();
+    iProg        ->DecreaseRefCount();
+
     delete iEvaluator;
     delete iDebugger;
 }

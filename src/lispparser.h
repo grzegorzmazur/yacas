@@ -17,7 +17,7 @@ public:
     LispParser(LispTokenizer& aTokenizer, LispInput& aInput,
                LispHashTable& aHashTable);
     virtual ~LispParser();
-    virtual void Parse(LispPtr& aResult );
+    virtual void Parse(LispPtr& aResult, LispEnvironment& aEnvironment );
 protected:
     void ParseList(LispPtr& aResult);
     void ParseAtom(LispPtr& aResult,LispStringPtr aToken);
@@ -35,7 +35,7 @@ class LispPrinter : public YacasBase
 {
 public:
     virtual ~LispPrinter();
-    virtual void Print(LispPtr& aExpression, LispOutput& aOutput);
+    virtual void Print(LispPtr& aExpression, LispOutput& aOutput, LispEnvironment& aEnvironment);
 };
 
 

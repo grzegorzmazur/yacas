@@ -278,7 +278,7 @@ void LispFullForm(LispEnvironment& aEnvironment, LispPtr& aResult,
     InternalEval(aEnvironment, aResult, Argument(aArguments,1));
     LispPrinter printer;
     StdUserOutput output;
-    printer.Print(aResult, output);
+    printer.Print(aResult, output, aEnvironment);
     output.Write("\n");
 }
 
@@ -822,7 +822,8 @@ void LispWrite(LispEnvironment& aEnvironment, LispPtr& aResult,
     {
         InternalEval(aEnvironment, evaluated, Argument(aArguments,arg));
         aEnvironment.CurrentPrinter().Print(evaluated,
-                                            *aEnvironment.CurrentOutput());
+                                            *aEnvironment.CurrentOutput(),
+                                           aEnvironment);
     }
     InternalTrue(aEnvironment,aResult);
 }
@@ -1516,7 +1517,7 @@ void LispRead(LispEnvironment& aEnvironment, LispPtr& aResult,
                        aEnvironment.PostFix(),
                        aEnvironment.Bodied());
     // Read expression
-    parser.Parse(aResult);
+    parser.Parse(aResult,aEnvironment);
 }
 
 
@@ -2056,7 +2057,7 @@ void LispReadLisp(LispEnvironment& aEnvironment, LispPtr& aResult,
                       *aEnvironment.CurrentInput(),
                       aEnvironment.HashTable());
     // Read expression
-    parser.Parse(aResult);
+    parser.Parse(aResult,aEnvironment);
 }
 
 
