@@ -14,9 +14,10 @@
 #include "win32commandline.h"
 #include "standard.h"
 #include "config.h"
-#include "ramdisk.h" //TODO keep this?
 
-//#define USE_RAMSCRIPTS
+#ifdef USE_RAMSCRIPTS
+#include "ramdisk.h" //TODO keep this?
+#endif
 
 CYacas* yacas=NULL;
 char scriptdir[512];
@@ -68,11 +69,11 @@ void ShowResult(char *prompt)
 {
     if (yacas->Error()[0] != '\0')
     {
-        printf("%s\n",yacas->Error());
+        printf("%s\n", yacas->Error());
     }
     else
     {
-        printf("%s%s\n",prompt,yacas->Result());
+        printf("%s%s\n",prompt, yacas->Result());
     }
     fflush(stdout);
 }
@@ -82,15 +83,11 @@ void parseCommandLine(int argc, char *argv[]);
 void runYacasCalculations(char *arg);
 void runYacasTestScript(void);
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
     {
        const char* yacas_exe = argv[0];
-
        char drive[_MAX_DRIVE]; char fname[_MAX_FNAME]; char ext[_MAX_EXT];
-
        _splitpath( yacas_exe, drive, yacas_dir, fname, ext );
-       
        sprintf(cfg_file_name, "%s\\%s", yacas_dir, "yacas.cfg");
     }
 
@@ -112,17 +109,12 @@ int main(int argc, char *argv[])
     printf("Or type ?function for help on a function.\n");
     printf("To see example commands, keep typing Example();\n");
     while (Busy()) {
-        char prompt[20];
-        sprintf(prompt,"In( %d ) = ",line);
-
-        commandline.ReadLine(prompt);
-        char *inpline =  commandline.iLine.String();
+        commandline.ReadLine("In> ");
+        char *inpline = commandline.iLine.String();
         if (inpline) {
             if(*inpline) {
                 yacas->Evaluate(inpline);
-                char prompt[30];
-                sprintf(prompt,"Out( %d ) = ",line);
-                ShowResult(prompt);
+                ShowResult("Out> ");
                 line++;
             }
         }
@@ -132,14 +124,13 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void loadYacasScriptDir(void){
+void loadYacasScriptDir(){
 	// Are the scripts already loaded?
 	if (scripts) return;
 
 #ifdef USE_RAMSCRIPTS		// make sure the path is right!
   #include "Yacas.Scripts"
 #else
-	int i;
 	FILE *config;
 	char fullpath[512];
 
@@ -150,7 +141,7 @@ void loadYacasScriptDir(void){
         printf("Default directory: %s \n", scriptdir);
 		yacas->Evaluate(fullpath);
 	
-		if(yacas->Error()[0] != '\0') {
+		if(yacas->Error()[0] != '\0'){
 			fclose(config);
 			goto getdir;
 		}
@@ -160,7 +151,7 @@ getdir:
 		printf("Directory where the scripts are (use a full path name)\n");
 		printf("Path: ");	
 		gets(scriptdir);
-		for(i = 0; i <= strlen(scriptdir); i++){
+		for(unsigned i = 0; i <= strlen(scriptdir); i++){
 			if(scriptdir[i] == '\\') 
 				scriptdir[i] = '/';
 		}
