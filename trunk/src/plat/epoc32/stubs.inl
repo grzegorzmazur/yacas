@@ -40,5 +40,6 @@ inline void PlatMemSet(LispCharPtr aTarget, LispChar aByte, LispInt aNrBytes)
   Mem::Fill(aTarget,aNrBytes,aByte);
 }
 
+#define StrCompare(s1,s2) strcmp((char*)s1,(char*)s2)
 
 

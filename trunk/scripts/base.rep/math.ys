@@ -1,7 +1,7 @@
 
 /* This file contains some math functions that can be defined based on the
   BigNumber API. This file should only use the features supported by the
-  compiler, as it gets compiled to a plugin for speed.
+  compiler, as it gets compiled to a plugin for speed.  
  */
 
 Defun("Trigonometry",{x,i,sum,term})

@@ -43,6 +43,7 @@
 
 // Dynamic link library loader class
 #define DLLCLASS    LispDllBase // ElfDll
+#define EXE_DLL_PLUGINS // Enable plugins inside the exe by default
 
 // hack to disable unix command line.
 #define STD_COMMANDLINE

@@ -17,7 +17,7 @@ SOURCE			EPOCSERV.CPP
 SOURCE			grower.cpp	        lispobject.cpp
 SOURCE			lispatom.cpp
 SOURCE			anumber.cpp         lispcleanupstack.cpp
-SOURCE			infixparser.cpp
+SOURCE			infixparser.cpp     exedll.cpp libmath.cpp
 SOURCE			lispeval.cpp        lisphash.cpp
 SOURCE			lispio.cpp          epocstubs.cpp
 SOURCE			lispparser.cpp      lispstring.cpp

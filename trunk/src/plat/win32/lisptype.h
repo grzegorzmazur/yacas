@@ -44,6 +44,7 @@
 
 // Dynamic link library loader class
 #define DLLCLASS    Win32Dll
+#define EXE_DLL_PLUGINS // Enable plugins inside the exe by default
 
 // System calls
 #define SystemCall system

@@ -2,15 +2,12 @@
 
 #include "compressedfiles.h"
 #include "lisptype.h"
-#include "../src/lispassert.h"
-#include "../src/stubs.h"
-#include "../src/standard.h"
+#include "lispassert.h"
+#include "stubs.h"
+#include "standard.h"
 #include "minilzo.h"
 
 
-#ifdef _GCC_BUILD_
-#define StrCompare(s1,s2) strcmp((char*)s1,(char*)s2)
-#endif
 
 
 CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, LispInt aCompressed)
