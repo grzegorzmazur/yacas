@@ -92,7 +92,7 @@ precision numerics. The kernel does not contain any definitions of symbolic
 mathematical operations and tries to be as general and free as possible of
 predefined notions or policies in the domain of symbolic computation.
 
-The plugin inter-operability mechanism allows to extend the \textsc{Yacas} kernel or to use external libraries. A simple C++ API is provided for writing ``stubs'' that make external functions visible in \textsc{Yacas} as new core functions. Plugins are on the same footing as the \textsc{Yacas} kernel and can in principle manipulate all \textsc{Yacas} internal structures. Plugin libraries can be loaded dynamically from \textsc{Yacas} scripts or compiled statically.
+The plugin inter-operability mechanism allows to extend the \textsc{Yacas} kernel or to use external libraries, e.g.~GUI toolkits or implementations of special-purpose algorithms. A simple C++ API is provided for writing ``stubs'' that make external functions appear in \textsc{Yacas} as new core functions. Plugins are on the same footing as the \textsc{Yacas} kernel and can in principle manipulate all \textsc{Yacas} internal structures. Plugins can be compiled either statically or dynamically as shared libraries to be loaded at runtime from \textsc{Yacas} scripts. 
 
 %
 The script library contains declarations of transformation rules and of function
