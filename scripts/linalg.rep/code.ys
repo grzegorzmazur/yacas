@@ -140,6 +140,9 @@ Function("BaseVector",{row,n})
 RandomIntegerVector(_count,_coefmin,_coefmax) <--
   Table(MathFloor(coefmin+Random()*(coefmax+1-coefmin)),i,1,count,1);
 
+RandomIntegerMatrix(_rows,_cols,_coefmin,_coefmax) <--
+	GenMatrix({{i,j}, MathFloor(coefmin+Random()*(coefmax+1-coefmin))}, rows, cols );
+
 
 Identity(n_IsNonNegativeInteger) <--
 [
