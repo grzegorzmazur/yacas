@@ -1,0 +1,154 @@
+/// Plot2D --- adaptive two-dimensional plotting
+/*
+	Algorithm for Plot2D: 
+	1) Split the given interval into Div(points+3, 4) subintervals, and split each subinterval into 4 parts.
+	2) For each of the parts: evaluate function values and call Plot2D'adaptive
+	3) concatenate resulting lists and return
+
+*/
+
+1 # Plot2D(_func) <-- Plot2D(func, -5:5);
+2 # Plot2D(_func, _range) <-- "Plot2D" @ {func, range, {}};
+3 # Plot2D(_func, _range, option_IsFunction) _ (Type(option) = "=") <-- "Plot2D" @ {func, range, {option}};
+4 # Plot2D(_func, _range, options'list_IsList) _ (Length(VarList(func))=1) <-- 
+[
+	Local(var, delta, options'hash, i, a, b, c, all'values);
+	var := VarList(func);        // variable name in a one-element list
+    Check(IsFunction(func) And Length(var)=1, "Plot2D: Error: expression is not a function of one variable: " : (ToString()Write(func)));
+	options'hash := "ListToHash" @ {options'list};
+	// parse range
+	If (
+		Type(range) = "=",	// variable also specified -- ignore for now
+		range := range[1]
+	);
+	If(
+		Type(range) = ":",	// simple range
+		range := N({range[1], range[2]})
+	);
+	// set default option values
+	If(
+		options'hash["points"] = Empty,
+		options'hash["points"] := 20
+	);
+	If(
+		options'hash["depth"] = Empty,
+		options'hash["depth"] := 4
+	);
+	If(
+		options'hash["precision"] = Empty,
+		options'hash["precision"] := 0.000003
+	);
+	If(
+		options'hash["output"] = Empty Or Plot'outputs[String(options'hash["output"])] = Empty,
+		options'hash["output"] := Plot'outputs["default"]
+	);
+	// a "filename" parameter is required when using data file
+	If(
+		options'hash["output"] = datafile And options'hash["filename"] = Empty,
+		options'hash["filename"] := "output.data"
+	);
+	// we will divide each subinterval in 4 parts
+	options'hash["points"] := Div(options'hash["points"]+3, 4);
+	// build subintervals
+	c := range[1]; fc := N(Apply({var, func}, {c}));
+	all'values := {{c, fc}};
+	delta := N( (range[2] - range[1]) / (options'hash["points"]) );
+	For(i:=0, i<options'hash["points"], i++)
+	[
+		{a, fa} := {c, fc}; 
+		b := N(a + delta/2); c := N(a + delta);
+		fa := fc;
+		{fb, fc} := N(MapSingle({var, func}, {b, c}));
+		all'values := Concat(all'values, Tail(Plot2D'adaptive(func, var, {a,b,c}, {fa, fb, fc}, options'hash["depth"], options'hash["precision"] )));
+	];
+	If(Verbose, Echo({"Plot2D: using ", Length(all'values), " points"}));
+	If(
+		options'hash["output"] = datafile,
+		Plot'outputs[String(options'hash["output"])] @ {all'values, options'hash["filename"]},
+		Plot'outputs[String(options'hash["output"])] @ {all'values}
+	);
+];
+
+HoldArgNr("Plot2D", 2, 2);
+HoldArgNr("Plot2D", 3, 2);
+HoldArgNr("Plot2D", 3, 3);
+
+Plot'outputs := {
+	{"default", gnuplot},
+	{"data", "Plot'data"},
+	{"datafile", "Plot'datafile"},
+	{"gnuplot", "Plot'gnuplot"},
+	{"xplot", "Plot'xplot"},
+};
+
+ListToHash(list) :=
+[
+	Local(item, result);
+	result := {};
+	ForEach(item, list)
+		If(
+			IsFunction(item) And Type(item) = "=" And IsAtom(item[1]),
+			result[String(item[1])] := item[2],
+			Echo({"ListToHash: Error: item ", item, " is not of the format a=b"})
+		);
+	result;
+];
+
+HoldArgNr("ListToHash", 1, 1);
+
+/*
+	Plot2D'adaptive returns list of pairs of coordinates { {x1,y1}, {x2,y2},...}
+	All arguments except f() and var must be numbers. var is a one-element list containing the independent variable. The "a,b,c" and "fa, fb, fc" arguments are values of the function that are already computed -- we don't want to recompute them once more.
+	The algorithm:
+	1) compute f(x) at 5 grid points x=a, (a+b)/2, b, (b+c)/2, c
+	2) If current depth <= 0, return this list of 5 points and values.
+	3) Else, compute the Newton-Cotes and the Simpson quadratures for $ Integrate(x, a,c) f(x) $ using these 5 points. Simpson coefficients: (1, 4, 2, 4, 1)/3. Newton-Cotes coefficients: (14, 64, 24, 64, 14)/45. Difference between the quadratures has coefficients (-1, 4, -6, 4, -1)/45. If the abs. value of the difference between these quadratures is less than epsilon * (abs. value of the Simpson quadrature), then we are done and we return the list of 5 points and values.
+	4) Otherwise we are not done. We compute Plot2D'adaptive() recursively for the two halves of the interval: (a,b) and (b,c), pass the midpoint values as necessary and decrease "depth" by 1. The resulting lists are concatenated (excepting the double value at point "b").
+*/
+
+Plot2D'adaptive(_func, _var, {_a,_b,_c}, {_fa, _fb, _fc}, _depth, _epsilon) <--
+[
+	Local(a1, b1, fa1, fb1);
+
+	a1 := N((a+b)/2);
+	b1 := N((b+c)/2);
+	{fa1, fb1} := N(MapSingle({var, func}, {a1, b1}));
+	If(
+		depth<=0 Or Abs( (-fa-fc-6*fb+4*(fa1+fb1))/45 ) <= N( epsilon*Abs( (fa+fc+2*fb+4*(fa1+fb1))/3 ) ),
+		{{a,fa}, {a1,fa1}, {b,fb}, {b1,fb1}, {c,fc}},
+		Concat(Plot2D'adaptive(func, var, {a, a1, b}, {fa, fa1, fb}, depth-1, epsilon), Tail(Plot2D'adaptive(func, var, {b, b1, c}, {fb, fb1, fc}, depth-1, epsilon)))
+	);
+];
+
+/// backend: display graph using gnuplot
+Plot'gnuplot(values_IsList) <--
+[
+  Local(item, dirBase);
+  dirBase := "gnuplot.tmp/";
+  // create directory if it does not exist
+  SystemCall("test -d " : dirBase : "|| mkdir -p " : dirBase);
+  Plot'datafile(values, dirBase:"gnudata.in");
+  ToFile(dirBase:"gnuplot.in") WriteString("plot ":"\"":dirBase:"gnudata.in\" with lines");
+  If(Verbose, Echo( "Plot'gnuplot: created file ":dirBase:"gnudata.in" ));
+  SystemCall("gnuplot -persist ":dirBase:"gnuplot.in");
+];
+
+/// trivial backend: output data as list
+Plot'data(values_IsList) <-- values;
+/// backend: write data into file
+Plot'datafile(values_IsList, filename_IsString) <--
+[
+	Local(item);
+	ToFile(filename) ForEach(item, values) WriteDataItem(item);
+];
+
+WriteDataItem(tuple_IsList) <--
+[
+  Local(item);
+  ForEach(item,tuple)
+  [
+	Write(item);
+	Space();
+  ];
+  NewLine();
+];
