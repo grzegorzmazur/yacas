@@ -21,10 +21,12 @@ $$ x' = x* ( (n-1)/(n+1)*(2*n-1)/(2*n+1) *x^(2*n) + 2*(2*n-1)/(n+1)*x^n*a + a^2)
 require more arithmetic operations per step and are in fact less efficient at high precision.
 
 Halley's method can be generalized to any function $f(x)$. A cubically convergent iteration is always obtained if we replace the equation $f(x)=0$ by an equivalent equation
-$$ g(x):=f(x)/Sqrt(Abs(D(x)f(x))) = 0 $$.
-Here the function $g(x)$ was chosen so that its second derivative vanishes ($D(x,2)g(x)=0$) at the root of the equation $f(x)=0$, independently of where this root is.
+$$ g(x):=f(x)/Sqrt(Abs(D(x)f(x))) = 0 $$
+and use the standard Newton's method on it.
+Here the function $g(x)$ is chosen so that its second derivative vanishes ($D(x,2)g(x)=0$) at the root of the equation $f(x)=0$, independently of where this root is.
 (There is no unique choice of the function $g(x)$ and sometimes another choice is needed to make the iteration more easily computable.)
-The Newton iteration for the equation $g(x)=0$ can be written as
+
+The Halley iteration for the equation $f(x)=0$ can be written as
 $$ x'=x-(2*f(x)*D(x)f(x))/(2*(D(x)f(x))^2-f(x)*Deriv(x,2)f(x)) $$.
 For example, the equation $Exp(x)=a$ is transformed into $g(x) := Exp(x/2)-a*Exp(-x/2)=0$.
 
@@ -59,7 +61,8 @@ with $P$ decimal digits of precision and $x<2$, one would need about $N<=>P*Ln(1
 
 If we do not know in advance how many terms of the Taylor series we need, we cannot do any better than just evaluate each term and check if it is already small enough. So in this case we will have to do $O(N)$ long multiplications. However, we can organize the calculation much more efficiently if we can estimate the necessary number of terms and if we can afford some storage. A "rectangular" algorithm uses $2*Sqrt(N)$ long multiplications (assuming that the coefficients of the series are short rational numbers) and $Sqrt(N)$ units of storage. (See paper: D. M. Smith, <i>Efficient multiple-precision evaluation of elementary functions</i>, 1985.)
 
-Suppose we need to evaluate $Sum(k,0,N, a[k]*x^k)$ and we know that $N$ terms are enough. Suppose also that the coefficients $a[k]$ are rational numbers with small numerators and denominators, so a  multiplication $a[k]*x$ is not a long multiplication (usually, either $a[k]$ or the ratio $a[k]$/$a[k-1]$ is a short rational number). Then we can organize the calculation in a rectangular array with $c$ columns and $r$ rows like this,
+Suppose we need to evaluate $Sum(k,0,N, a[k]*x^k)$ and we know the number of terms $N$ in advance.
+Suppose also that the coefficients $a[k]$ are rational numbers with small numerators and denominators, so a  multiplication $a[k]*x$ is not a long multiplication (usually, either $a[k]$ or the ratio $a[k]$/$a[k-1]$ is a short rational number). Then we can organize the calculation in a rectangular array with $c$ columns and $r$ rows like this,
 $$ a[0]+a[r]*x^r+...+a[(c-1)*r]*x^((c-1)*r) $$+
 $$ x*(a[1]+a[r+1]*x^r+...+a[(c-1)*r+1]*x^((c-1)*r+1)) $$+
 $$ ... $$+
@@ -86,12 +89,19 @@ Several algorithms are based on the arithmetic-geometric mean (AGM) sequence. If
 More formally, one can define the (complex) function of two (complex) numbers $AGM(x,y)$ as the limit of the sequence $a[k]$ where $a[k+1]=1/2*(a[k]+b[k])$, $b[k+1]=Sqrt(a[k]*b[k])$, and the initial values are $a[0]=x$, $b[0]=y$.
 This function is obviously linear, $AGM(k*x, k*y)=k*AGM(x,y)$, so in principle it is enough to compute $AGM(1,x)$ or arbitrarily select $k$ for convenience.
 
-The limit of the AGM sequence is related to the complete elliptic integral by
+Gauss and Legendre have shown that
+the limit of the AGM sequence is related to the complete elliptic integral by
 $$ Pi/2*1/AGM(a,Sqrt(a^2-b^2)) = Integrate(x,0,Pi/2)1/Sqrt(a^2-b^2*Sin(x)^2) $$.
+This integral can be rearranged to provide some other useful functions. For example, with suitable parameters $a$ and $b$, this integral is equal to $Pi$. Thus one obtains a fast method of computing $Pi$.
 
-The definition of the AGM sequence for complex values requires to take a square root $Sqrt(a*b)$, which needs a branch cut to be well-defined. Selecting the natural cut along the negative real semiaxis ($Re(x)<0$, $Im(x)=0$), we obtain a AGM sequence that converges for any initial values $x$, $y$ with positive real part. If the numbers $x$ and $y$ are very different (one is much larger than another), then the numbers $a[k]$, $b[k]$ become approximately equal after about $k=1/Ln(2)*Ln(Abs(Ln(x/y)))$ iterations (note: Brent's paper mistypes this as $1/Ln(2)*Abs(Ln(x/y))$). Then one needs about $Ln(n)/Ln(2)$ more iterations to make the first $n$ decimal digits of $a[k]$ and $b[k]$ coincide, because the relative error $epsilon=1-b/a$ decays approximately as $epsilon[k]=1/8*Exp(-2^k)$.
+The AGM sequence is also defined for complex values $a$, $b$. It requires to take a square root $Sqrt(a*b)$, which needs a branch cut to be defined.
+Selecting the natural cut along the negative real semiaxis ($Re(x)<0$, $Im(x)=0$), we obtain a AGM sequence that converges for any initial values $x$, $y$ with positive real part.
 
-Unlike the Newton iteration, the AGM sequence does not correct errors and all elements need to be computed with full precision. Actually, slightly more precision is needed to compensate for accumulated roundoff error. Brent (paper {rpb028}, see below) says that $O(Ln(Ln(n)))$ bits of accuracy are lost to roundoff error if there are total of $n$ iterations.
+Let us estimate the speed of convergence of the AGM sequence starting from $x$, $y$, following Brent's paper {rpb028} (see reference below). Clearly the worst case is when
+the numbers $x$ and $y$ are very different (one is much larger than another). In this case
+the numbers $a[k]$, $b[k]$ become approximately equal after about $k=1/Ln(2)*Ln(Abs(Ln(x/y)))$ iterations (note: Brent's paper online mistypes this as $1/Ln(2)*Abs(Ln(x/y))$). Then one needs about $Ln(n)/Ln(2)$ more iterations to make the first $n$ decimal digits of $a[k]$ and $b[k]$ coincide, because the relative error $epsilon=1-b/a$ decays approximately as $epsilon[k]=1/8*Exp(-2^k)$.
+
+Unlike the Newton iteration, the AGM sequence does not correct errors and all elements need to be computed with full precision. Actually, slightly more precision is needed to compensate for accumulated roundoff error. Brent (in paper {rpb028}) says that $O(Ln(Ln(n)))$ bits of accuracy are lost to roundoff error if there are total of $n$ iterations.
 
 The AGM sequence can be used for fast computations of $Pi$, $Ln(x)$ and $ArcTan(x)$.
 However, currently the limitations of Yacas internal math make these methods less efficient than simpler methods based on Taylor series and Newton iterations.
@@ -100,12 +110,18 @@ However, currently the limitations of Yacas internal math make these methods les
 
 	    Powers
 
-Integer powers $x^n$ are computed by a fast algorithm with repeated squarings, as 
-described in Knuth's book, <i>The art of computer programming</i>. The algorithm scans bits in the power
-to raise the number to, so the algorithm is linear in the number of 
-decimals, or logarithmic in the power.
-The number $x$ is squared repeatedly (hence the name), and when the appropriate
-bit in the exponent is set, the result is multiplied by $x$.
+Integer powers $x^n$ are computed by a fast algorithm of "binary squaring", as 
+described in Knuth's book, <i>The art of computer programming</i>. The
+algorithm is based on the following trick: if $n$ is even, $n=2*k$, then
+$x^n=(x^k)^2$; and if $n$ is odd, $n=2*k+1$, then $x^n=x*(x^k)^2$. Thus we can
+reduce the calculation of $x^n$ to the calculation of $x^k$ with $k<=n/2$,
+using at most two multiplications. This is one "step"; at each step $n$ is divided by 2. This algorithm stops when $n$ becomes 1,
+which is after $m$ steps where $m$ is the number of bits in $n$.
+
+It is more convenient to implement this algorithm in a slightly different form: suppose we have the bits $b[i]$ of the number $n$, so that $n=b[0]+2*b[1]+...+b[m]*2^m$. Then
+$$ x^n = x^b[0] * (x^2)^b[1] * ... * (x^(2^m))^b[m] $$.
+In other words, we evaluate $x^2$, $x^4$, ... by repeated squaring, and multiply those $x^(2^k)$ for which the $k$-th bit $b[k]$ of the number $n$ is nonzero.
+
 In Yacas script form, the algorithm looks like this:
 
 	power(x_IsPositiveInteger, n_IsPositiveInteger)<--
@@ -125,6 +141,10 @@ In Yacas script form, the algorithm looks like this:
 	];
 {power(m,n)} calculates the result of $ m^n $ for $ n>0 $, $ m>0 $, 
 integer $ n $ and integer $ m $.
+
+Since the "binary squaring" algorithm scans bits in the number $n$,
+the execution time is linear in the number of
+digits of $n$, i.e. logarithmic in $n$.
 
 The square root is computed by using the bisection method, which
 works well for integers. The general approach is to scan
@@ -223,7 +243,7 @@ Below is some {Yacas} script code to perform the calculation for integers.
 
 A separate function {IntNthRoot} is provided to compute the integer part of $n^(1/s)$ for integer $n$ and $s$.
 For a given $s$, it evaluates the integer part of $n^(1/s)$ using only integer arithmetic with integers of size $n^(1+1/s)$. This can be done by Halley's iteration method, solving the equation $x^s=n$. For this function, the Halley iteration sequence is monotonic.
-The initial guess is obtained by bit counting using the integer logarithm function, $x[0]=2^(b(n)/s)$ where $b(n)$ is the number of bits in $n$. It is clear that the initial guess is accurate to within a factor of 2. Since the relative error is squared at every iteration, we need as many iteration steps as bits in $n^(1/s)$.
+The initial guess is $x[0]=2^(b(n)/s)$ where $b(n)$ is the number of bits in $n$ obtained by bit counting or using the integer logarithm function. It is clear that the initial guess is accurate to within a factor of 2. Since the relative error is squared at every iteration, we need as many iteration steps as bits in $n^(1/s)$.
 
 Since we only need the integer part of the root, it is enough to use integer division in the Halley iteration. The sequence $x[k]$ will monotonically approximate the number $n^(1/s)$ from below if we start from an initial guess that is less than the exact value. (We start from below so that we have to deal with smaller integers rather than with larger integers.) If $n=p^s$, then after enough iterations the floating-point value of $x[k]$ would be slightly less than $p$; our value is the integer part of $x[k]$. Therefore, at each step we check whether $1+x[k]$ is a solution of $x^s=n$, in which case we are done; and we also check whether $(1+x[k])^s>n$, in which case the integer part of the root is $x[k]$.
 To speed up the Halley iteration in the worst case when $s^s>n$, it is combined with bisection. The root bracket interval $x1<x<x2$ is maintained and the next iteration $x[k+1]$ is assigned to the midpoint of the interval if the Newton formula does not give sufficiently rapid convergence. The initial root bracket interval can be taken as $x[0]$, $2*x[0]$.
@@ -241,7 +261,9 @@ The logarithm function $Ln(x)$ for general (complex) $x$ can be computed using i
 $$Ln(1+x) = x - x/2 + x^2/3 -...$$
 This series converges only for $Abs(x)<1$, so for all other values of $x$ one first needs to bring the argument into this range by taking several square roots and then using the identity $Ln(x) = 2^k*Ln(x^(2^(-k)))$. This is implemented in the Yacas core (for real $x$).
 
-Currently the routine {LnNum} uses the Halley method for the equation $Exp(x)=a$ to find $x=Ln(a)$. This is currently much faster than other methods.
+Currently the routine {LnNum} uses the Halley method for the equation $Exp(x)=a$ to find $x=Ln(a)$,
+$$ x' = x - 2*(Exp(x)-a)/(Exp(x)+a) $$.
+This is currently quicker than other methods (with internal math).
 
 A much faster algorithm based on the AGM sequence was given by Salamin (see R. P. Brent: <i>Multiple-precision zero-finding methods and the complexity of elementary function evaluation</i>, in <i>Analytic Computational Complexity</i>, ed. by J. F. Traub, Academic Press, 1975, p. 151; also available online from Oxford Computing Laboratory, as the paper {rpb028}).
 The formula is based on an asymptotic relation,
@@ -364,7 +386,7 @@ The routines {PiBrentSalamin()} and {PiBorwein()} are based on much more advance
 
 		Continued fractions with numeric terms
 
-The function {ContFracList} converts a (rational) number $r$ into a regular
+The function {ContFrac} converts a (rational) number $r$ into a regular
 continued fraction,
 $$ r = n[0] + 1/(n[1] + 1/(n[2]+...)) $$.
 Here all numbers $n[i]$ ("terms" of a continued fraction) are integers and all except $n[0]$ must be positive.
@@ -396,7 +418,7 @@ precision, it may become something like $17/3+0.00001$, where the small number
 represents a roundoff error. The continued fraction expansion of this number is
 {{5, 1, 2, 11110, 1, 5, 1, 3, 2777, 2}}. The presence of an unnaturally large
 term $11110$ clearly signifies the place where the floating-point error was
-introduced; all terms following it should be discarted to recover the continued fraction {{5,1,2}} and from it the initial number $17/3$.
+introduced; all terms following it should be discarded to recover the continued fraction {{5,1,2}} and from it the initial number $17/3$.
 
 If a continued fraction for a number $x$ is
 cut right before an unusually large term, and
