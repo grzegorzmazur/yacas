@@ -307,6 +307,10 @@ Rule("Fibonacci",1,1, IsInteger(n) And n > 2)
    ((z << 1)+t)/5;
 ];
 
+5  # Fibonacci(1,_x)			<-- 1; 
+5  # Fibonacci(2,x_IsRationalOrNumber)	<-- x;
+10 # Fibonacci(n_IsPositiveInteger,x_IsRationalOrNumber)  <-- x*Fibonacci(n-1,x)+Fibonacci(n-2,x);
+
 Function("Subfactorial",{n}) 
 [
 	n! * Sum(k,0,n,(-1)^(k)/k!);
@@ -378,8 +382,6 @@ SumFunc(_k,1,_n,HarmonicNumber(_k),(n+1)*HarmonicNumber(n) - n );
 SumFunc(_k,1,_n,Fibonacci(_k)^2, Fibonacci(n)*Fibonacci(n+1) );
 
 // Geometric series! The simplest of them all ;-)
-// I would like to be able to give the user the information
-// that Abs(r)<1
 SumFunc(_k,0,_n,(r_IsFreeOf(k))^(_k), (1-r^(n+1))/(1-r) );
 
 // Infinite Series
