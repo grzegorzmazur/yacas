@@ -50,6 +50,9 @@ I
 , <A HREF="refchapter4.html#Conjugate" TARGET="Chapters">
 Conjugate
 </A>
+, <A HREF="refchapter4.html#Arg" TARGET="Chapters">
+Arg
+</A>
 , <A HREF="refchapter4.html#!" TARGET="Chapters">
 !
 </A>
@@ -342,6 +345,9 @@ Out> -1;
 <A NAME="Conjugate">
 
 </A>
+<A NAME="Arg">
+
+</A>
 <H3>
 <HR>Complex numbers
 </H3>
@@ -352,7 +358,8 @@ Complex(x,y) <br>
 Re(z) <br>
 Im(z) <br>
 I <br>
-Conjugate(expression)
+Conjugate(expression) <br>
+Arg(z)
 
 <H5>
 Parameters:
@@ -376,6 +383,10 @@ real-valued.
 
 Complex(x,y) is the internal representation of a complex number
 in Yacas.
+<P>
+Arg returns the angle a for which the complex number is
+amp*(Cos(angle) + I*Sin(angle)). As such it returns an angle
+from -Pi to +Pi.
 
 <H5>
 Examples:
@@ -388,6 +399,8 @@ In> Re(z)
 Out> 2;
 In> Im(z)
 Out> 3;
+In> Arg(Exp(I*Pi/3))
+Out> Pi/3;
 </PRE></TR>
 </TABLE>
 

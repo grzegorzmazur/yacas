@@ -1,210 +1,163 @@
-SubList:arggetter.cc:    CheckArgType(aResult.Get()->SubList() != NULL ,iNrArgsParsed, iArguments,iEnvironment,
-SubList:arggetter.cc~:    CheckArgType(aResult.Get()->SubList() != NULL ,iNrArgsParsed, iArguments,iEnvironment,
-SubList:infixparser.cc:    InternalReverseList(subList.Get()->SubList()->Get()->Next(),
-SubList:infixparser.cc:                     subList.Get()->SubList()->Get()->Next());
-SubList:infixparser.cc:    LispPtr* subList = aExpression.Get()->SubList();
-SubList:lispenvironment.cc:    Check(iLocals.Get()->SubList() != NULL,KLispErrInvalidStack);
-SubList:lispenvironment.cc:    LispIterator iter(*iLocals.Get()->SubList());
-SubList:lispenvironment.cc:        LispPtr* sub = iter()->SubList();
-SubList:lispenvironment.cc:        local->Get()->SubList()->Get()->Next().Set(aValue.Get());
-SubList:lispenvironment.cc:        aResult.Set(local->Get()->SubList()->Get()->Next().Get());
-SubList:lispenvironment.cc://TODO remove        return &local->Get()->SubList()->Get()->Next();
-SubList:lispenvironment.cc:        local->Get()->SubList()->Get()->Next().Set(NULL);
-SubList:lispenvironment.cc:        LISPASSERT(iLocals.Get()->SubList()!=NULL);
-SubList:lispenvironment.cc:        newly.Set(LispSubList::New(iLocals.Get()->SubList()->Get()));
-SubList:lispenvironment.cc:    LISPASSERT(iLocals.Get()->SubList() != NULL);
-SubList:lispenvironment.cc:    newitem->SubList()->Get()->Next().Set(aValue);
-SubList:lispenvironment.cc:    newitem->Next().Set(iLocals.Get()->SubList()->Get());
-SubList:lispenvironment.cc:    iLocals.Get()->SubList()->Set(newly.Get());
-SubList:lispenvironment.cc~:    Check(iLocals.Get()->SubList() != NULL,KLispErrInvalidStack);
-SubList:lispenvironment.cc~:    LispIterator iter(*iLocals.Get()->SubList());
-SubList:lispenvironment.cc~:        Check(iter()->SubList() != NULL,KLispErrInvalidStack);
-SubList:lispenvironment.cc~:        if (iter()->SubList()->Get()->String() == aVariable)
-SubList:lispenvironment.cc~:        local->Get()->SubList()->Get()->Next().Set(aValue.Get());
-SubList:lispenvironment.cc~:        aResult.Set(local->Get()->SubList()->Get()->Next().Get());
-SubList:lispenvironment.cc~://TODO remove        return &local->Get()->SubList()->Get()->Next();
-SubList:lispenvironment.cc~:        local->Get()->SubList()->Get()->Next().Set(NULL);
-SubList:lispenvironment.cc~:        LISPASSERT(iLocals.Get()->SubList()!=NULL);
-SubList:lispenvironment.cc~:        newly.Set(LispSubList::New(iLocals.Get()->SubList()->Get()));
-SubList:lispenvironment.cc~:    LISPASSERT(iLocals.Get()->SubList() != NULL);
-SubList:lispenvironment.cc~:    newitem->SubList()->Get()->Next().Set(aValue);
-SubList:lispenvironment.cc~:    newitem->Next().Set(iLocals.Get()->SubList()->Get());
-SubList:lispenvironment.cc~:    iLocals.Get()->SubList()->Set(newly.Get());
-SubList:lispeval.cc:        LispPtr* subList = aExpression.Get()->SubList();
-SubList:lispeval.cc:    LispPtr* subList = aExpression.Get()->SubList();
-SubList:lispeval.cc~:        LispPtr* subList = aExpression.Get()->SubList();
-SubList:lispeval.cc~:    LispPtr* subList = aExpression.Get()->SubList();
-SubList:lispobject.inl:    Check(iPtr->Get()->SubList() != NULL,KLispErrNotList);
-SubList:lispobject.inl:    iPtr = iPtr->Get()->SubList();
-SubList:lispobject.inl~:    Check(iPtr->Get()->SubList() != NULL,KLispErrNotList);
-SubList:lispobject.inl~:    iPtr = iPtr->Get()->SubList();
-SubList:lispparser.cc:        else if (iter->Get()->SubList() != NULL)
-SubList:lispparser.cc:            Print(*(iter->Get()->SubList()),aOutput);
-SubList:mathcommands.cc:    head.Get()->Next().Set(aResult.Get()->SubList()->Get());
-SubList:mathcommands.cc:    aResult.Get()->SubList()->Set(head.Get());
-SubList:mathcommands.cc:    head.Get()->Next().Set(list.Get()->SubList()->Get());
-SubList:mathcommands.cc:    InternalReverseList(reversed.Get()->Next(), list.Get()->SubList()->Get()->Next());
-SubList:mathcommands.cc:    LispPtr* subList = evaluated.Get()->SubList();
-SubList:mathcommands.cc:        InternalFlatCopy(*tail.Ptr(),evaluated.Get()->SubList()->Get()->Next());
-SubList:mathcommands.cc:        copied.Set(evaluated.Get()->SubList()->Get());
-SubList:mathcommands.cc:        InternalFlatCopy(copied,*evaluated.Get()->SubList());
-SubList:mathcommands.cc:    InternalFlatCopy(copied,*list.Get()->SubList());
-SubList:mathcommands.cc:    InternalFlatCopy(copied,*evaluated.Get()->SubList());
-SubList:mathcommands.cc:        copied.Set(evaluated.Get()->SubList()->Get());
-SubList:mathcommands.cc:        InternalFlatCopy(copied,*evaluated.Get()->SubList());
-SubList:mathcommands.cc:        copied.Set(evaluated.Get()->SubList()->Get());
-SubList:mathcommands.cc:        InternalFlatCopy(copied,*evaluated.Get()->SubList());
-SubList:mathcommands.cc:                                 args.Get()->SubList()->Get()->Next());
-SubList:mathcommands.cc:                    result.Get()->SubList()!=NULL);
-SubList:mathcommands.cc:    LispPtr *ptr = aArguments.Get()->Next().Get()->SubList();
-SubList:mathcommands.cc:    LispPtr* subList = evaluated.Get()->SubList();
-SubList:mathcommands.cc:    CHK_ARG(iter()->SubList() != NULL,1);
-SubList:mathcommands.cc:    CHK_ARG(iter()->SubList() != NULL,2);
-SubList:mathcommands3.cc:    CHK_ARG(args.Get()->SubList() != NULL,2);
-SubList:mathcommands3.cc:    CHK(args.Get()->SubList()->Get() != NULL,2);
-SubList:mathcommands3.cc:                    args.Get()->SubList()->Get()->Next());
-SubList:mathcommands3.cc:        CHK_ARG(oper.Get()->SubList() != NULL,1);
-SubList:mathcommands3.cc:        CHK_ARG(oper.Get()->SubList()->Get() != NULL,1);
-SubList:mathcommands3.cc:        oper2.Set(oper.Get()->SubList()->Get()->Next().Get());
-SubList:mathcommands3.cc:        CHK_ARG(oper2.Get()->SubList() != NULL,1);
-SubList:mathcommands3.cc:        CHK_ARG(oper2.Get()->SubList()->Get() != NULL,1);
-SubList:mathcommands3.cc:        oper2.Set(oper2.Get()->SubList()->Get()->Next().Get());
-SubList:mathcommands3.cc:        args2.Set(args.Get()->SubList()->Get()->Next().Get());
-SubList:patterns.cc:    if (aExpression.Get()->SubList() == NULL)
-SubList:patterns.cc:    if (aPattern->SubList())
-SubList:patterns.cc:        LispPtr* sublist = aPattern->SubList();
-SubList:patterns.cc~:    if (aExpression.Get()->SubList() == NULL)
-SubList:patterns.cc~:    if (aPattern->SubList())
-SubList:patterns.cc~:        LispPtr* sublist = aPattern->SubList();
-SubList:standard.cc:    if (aPtr.Get()->SubList() == NULL)
-SubList:standard.cc:    if (aPtr.Get()->SubList()->Get() == NULL)
-SubList:standard.cc:    if (!(*aPtr.Get()->SubList()->Get()->String() == "List"))
-SubList:standard.cc:    Check(aArg.Get()->SubList() != NULL,KLispErrInvalidArg);
-SubList:standard.cc:    LispIterator iter(*aArg.Get()->SubList());
-SubList:standard.cc:    Check(aArg.Get()->SubList() != NULL,KLispErrInvalidArg);
-SubList:standard.cc:    LispPtr* iter = aArg.Get()->SubList();
-SubList:standard.cc:    if (aExpression1.Get()->SubList() == aExpression2.Get()->SubList())
-SubList:standard.cc:    if (aExpression1.Get()->SubList())
-SubList:standard.cc:        if (!aExpression2.Get()->SubList())
-SubList:standard.cc:        LispIterator iter1(*aExpression1.Get()->SubList());
-SubList:standard.cc:        LispIterator iter2(*aExpression2.Get()->SubList());
-SubList:standard.cc~:    if (aPtr.Get()->SubList() == NULL)
-SubList:standard.cc~:    if (aPtr.Get()->SubList()->Get() == NULL)
-SubList:standard.cc~:    if (!(*aPtr.Get()->SubList()->Get()->String() == "List"))
-SubList:standard.cc~:    Check(aArg.Get()->SubList() != NULL,KLispErrInvalidArg);
-SubList:standard.cc~:    LispIterator iter(*aArg.Get()->SubList());
-SubList:standard.cc~:    Check(aArg.Get()->SubList() != NULL,KLispErrInvalidArg);
-SubList:standard.cc~:    LispPtr* iter = aArg.Get()->SubList();
-SubList:standard.cc~:    if (aExpression1.Get()->SubList() == aExpression2.Get()->SubList())
-SubList:standard.cc~:    if (aExpression1.Get()->SubList())
-SubList:standard.cc~:        if (!aExpression2.Get()->SubList())
-SubList:standard.cc~:        LispIterator iter1(*aExpression1.Get()->SubList());
-SubList:standard.cc~:        LispIterator iter2(*aExpression2.Get()->SubList());
-SubList:substitute.cc:        LispPtr* oldList = object->SubList();
-Binary file a.out matches
-arggetter.cc:    CheckArgType(aResult.Get()->SubList() != NULL ,iNrArgsParsed, iArguments,iEnvironment,
-arggetter.cc~:    CheckArgType(aResult.Get()->SubList() != NULL ,iNrArgsParsed, iArguments,iEnvironment,
-infixparser.cc:    InternalReverseList(subList.Get()->SubList()->Get()->Next(),
-infixparser.cc:                     subList.Get()->SubList()->Get()->Next());
-infixparser.cc:    LispPtr* subList = aExpression.Get()->SubList();
-Binary file libyacas.a matches
-lispenvironment.cc:    Check(iLocals.Get()->SubList() != NULL,KLispErrInvalidStack);
-lispenvironment.cc:    LispIterator iter(*iLocals.Get()->SubList());
-lispenvironment.cc:        LispPtr* sub = iter()->SubList();
-lispenvironment.cc:        local->Get()->SubList()->Get()->Next().Set(aValue.Get());
-lispenvironment.cc:        aResult.Set(local->Get()->SubList()->Get()->Next().Get());
-lispenvironment.cc://TODO remove        return &local->Get()->SubList()->Get()->Next();
-lispenvironment.cc:        local->Get()->SubList()->Get()->Next().Set(NULL);
-lispenvironment.cc:        LISPASSERT(iLocals.Get()->SubList()!=NULL);
-lispenvironment.cc:        newly.Set(LispSubList::New(iLocals.Get()->SubList()->Get()));
-lispenvironment.cc:    LISPASSERT(iLocals.Get()->SubList() != NULL);
-lispenvironment.cc:    newitem->SubList()->Get()->Next().Set(aValue);
-lispenvironment.cc:    newitem->Next().Set(iLocals.Get()->SubList()->Get());
-lispenvironment.cc:    iLocals.Get()->SubList()->Set(newly.Get());
-lispenvironment.cc~:    Check(iLocals.Get()->SubList() != NULL,KLispErrInvalidStack);
-lispenvironment.cc~:    LispIterator iter(*iLocals.Get()->SubList());
-lispenvironment.cc~:        Check(iter()->SubList() != NULL,KLispErrInvalidStack);
-lispenvironment.cc~:        if (iter()->SubList()->Get()->String() == aVariable)
-lispenvironment.cc~:        local->Get()->SubList()->Get()->Next().Set(aValue.Get());
-lispenvironment.cc~:        aResult.Set(local->Get()->SubList()->Get()->Next().Get());
-lispenvironment.cc~://TODO remove        return &local->Get()->SubList()->Get()->Next();
-lispenvironment.cc~:        local->Get()->SubList()->Get()->Next().Set(NULL);
-lispenvironment.cc~:        LISPASSERT(iLocals.Get()->SubList()!=NULL);
-lispenvironment.cc~:        newly.Set(LispSubList::New(iLocals.Get()->SubList()->Get()));
-lispenvironment.cc~:    LISPASSERT(iLocals.Get()->SubList() != NULL);
-lispenvironment.cc~:    newitem->SubList()->Get()->Next().Set(aValue);
-lispenvironment.cc~:    newitem->Next().Set(iLocals.Get()->SubList()->Get());
-lispenvironment.cc~:    iLocals.Get()->SubList()->Set(newly.Get());
-Binary file lispenvironment.o matches
-lispeval.cc:        LispPtr* subList = aExpression.Get()->SubList();
-lispeval.cc:    LispPtr* subList = aExpression.Get()->SubList();
-lispeval.cc~:        LispPtr* subList = aExpression.Get()->SubList();
-lispeval.cc~:    LispPtr* subList = aExpression.Get()->SubList();
-lispobject.inl:    Check(iPtr->Get()->SubList() != NULL,KLispErrNotList);
-lispobject.inl:    iPtr = iPtr->Get()->SubList();
-lispobject.inl~:    Check(iPtr->Get()->SubList() != NULL,KLispErrNotList);
-lispobject.inl~:    iPtr = iPtr->Get()->SubList();
-lispparser.cc:        else if (iter->Get()->SubList() != NULL)
-lispparser.cc:            Print(*(iter->Get()->SubList()),aOutput);
-mathcommands.cc:    head.Get()->Next().Set(aResult.Get()->SubList()->Get());
-mathcommands.cc:    aResult.Get()->SubList()->Set(head.Get());
-mathcommands.cc:    head.Get()->Next().Set(list.Get()->SubList()->Get());
-mathcommands.cc:    InternalReverseList(reversed.Get()->Next(), list.Get()->SubList()->Get()->Next());
-mathcommands.cc:    LispPtr* subList = evaluated.Get()->SubList();
-mathcommands.cc:        InternalFlatCopy(*tail.Ptr(),evaluated.Get()->SubList()->Get()->Next());
-mathcommands.cc:        copied.Set(evaluated.Get()->SubList()->Get());
-mathcommands.cc:        InternalFlatCopy(copied,*evaluated.Get()->SubList());
-mathcommands.cc:    InternalFlatCopy(copied,*list.Get()->SubList());
-mathcommands.cc:    InternalFlatCopy(copied,*evaluated.Get()->SubList());
-mathcommands.cc:        copied.Set(evaluated.Get()->SubList()->Get());
-mathcommands.cc:        InternalFlatCopy(copied,*evaluated.Get()->SubList());
-mathcommands.cc:        copied.Set(evaluated.Get()->SubList()->Get());
-mathcommands.cc:        InternalFlatCopy(copied,*evaluated.Get()->SubList());
-mathcommands.cc:                                 args.Get()->SubList()->Get()->Next());
-mathcommands.cc:                    result.Get()->SubList()!=NULL);
-mathcommands.cc:    LispPtr *ptr = aArguments.Get()->Next().Get()->SubList();
-mathcommands.cc:    LispPtr* subList = evaluated.Get()->SubList();
-mathcommands.cc:    CHK_ARG(iter()->SubList() != NULL,1);
-mathcommands.cc:    CHK_ARG(iter()->SubList() != NULL,2);
-mathcommands3.cc:    CHK_ARG(args.Get()->SubList() != NULL,2);
-mathcommands3.cc:    CHK(args.Get()->SubList()->Get() != NULL,2);
-mathcommands3.cc:                    args.Get()->SubList()->Get()->Next());
-mathcommands3.cc:        CHK_ARG(oper.Get()->SubList() != NULL,1);
-mathcommands3.cc:        CHK_ARG(oper.Get()->SubList()->Get() != NULL,1);
-mathcommands3.cc:        oper2.Set(oper.Get()->SubList()->Get()->Next().Get());
-mathcommands3.cc:        CHK_ARG(oper2.Get()->SubList() != NULL,1);
-mathcommands3.cc:        CHK_ARG(oper2.Get()->SubList()->Get() != NULL,1);
-mathcommands3.cc:        oper2.Set(oper2.Get()->SubList()->Get()->Next().Get());
-mathcommands3.cc:        args2.Set(args.Get()->SubList()->Get()->Next().Get());
-patterns.cc:    if (aExpression.Get()->SubList() == NULL)
-patterns.cc:    if (aPattern->SubList())
-patterns.cc:        LispPtr* sublist = aPattern->SubList();
-patterns.cc~:    if (aExpression.Get()->SubList() == NULL)
-patterns.cc~:    if (aPattern->SubList())
-patterns.cc~:        LispPtr* sublist = aPattern->SubList();
-standard.cc:    if (aPtr.Get()->SubList() == NULL)
-standard.cc:    if (aPtr.Get()->SubList()->Get() == NULL)
-standard.cc:    if (!(*aPtr.Get()->SubList()->Get()->String() == "List"))
-standard.cc:    Check(aArg.Get()->SubList() != NULL,KLispErrInvalidArg);
-standard.cc:    LispIterator iter(*aArg.Get()->SubList());
-standard.cc:    Check(aArg.Get()->SubList() != NULL,KLispErrInvalidArg);
-standard.cc:    LispPtr* iter = aArg.Get()->SubList();
-standard.cc:    if (aExpression1.Get()->SubList() == aExpression2.Get()->SubList())
-standard.cc:    if (aExpression1.Get()->SubList())
-standard.cc:        if (!aExpression2.Get()->SubList())
-standard.cc:        LispIterator iter1(*aExpression1.Get()->SubList());
-standard.cc:        LispIterator iter2(*aExpression2.Get()->SubList());
-standard.cc~:    if (aPtr.Get()->SubList() == NULL)
-standard.cc~:    if (aPtr.Get()->SubList()->Get() == NULL)
-standard.cc~:    if (!(*aPtr.Get()->SubList()->Get()->String() == "List"))
-standard.cc~:    Check(aArg.Get()->SubList() != NULL,KLispErrInvalidArg);
-standard.cc~:    LispIterator iter(*aArg.Get()->SubList());
-standard.cc~:    Check(aArg.Get()->SubList() != NULL,KLispErrInvalidArg);
-standard.cc~:    LispPtr* iter = aArg.Get()->SubList();
-standard.cc~:    if (aExpression1.Get()->SubList() == aExpression2.Get()->SubList())
-standard.cc~:    if (aExpression1.Get()->SubList())
-standard.cc~:        if (!aExpression2.Get()->SubList())
-standard.cc~:        LispIterator iter1(*aExpression1.Get()->SubList());
-standard.cc~:        LispIterator iter2(*aExpression2.Get()->SubList());
-substitute.cc:        LispPtr* oldList = object->SubList();
-Binary file yacas matches
+**** Undef: Complex
+
+1. Testing some internal functions : Apply ThreadingListables Bases Length Nth Concat Rounding Pslq ListOperations **** Undef: a
+**** Undef: a
+**** Undef: a
+Matrix predicates Boolean Operations NumberCompares Predicates **** Undef: a
+IntegerOperations LocalVariables MapSingle Function definitions 
+2. Testing math stuff : Derivatives BubbleSort LeviCivita VectorProducts UnaryFunctionInverses Solve 
+3. Basic calculations : 
+4. Inproduct : 
+5. Identity matrices : 
+6. VarList : 
+7. Check linear algebra : Normalize DiagonalMatrix ZeroMatrix Transpose Determinant CoFactor Minor Inverse SolveMatrix Trace 
+8. Test rationals : Checking arithmetic with 10  5  8
+Checking arithmetic with  10000000000  5  8
+Checking arithmetic with  10  50  80
+Checking arithmetic with  10000  50  88
+
+9. Polynomials : 
+10. Simplify :  Simplify((x+I)^4) is not
+equal to x^4+4*x^3*I-6*x^2-4*x*I+1
+The difference is  4*x*Complex(0,-1)+4*x*Complex(0,1)
+
+11. Tensors : **** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: v
+**** Undef: PositiveIsInteger
+**** Undef: PositiveIsInteger
+
+12. Propositional logic theorem prover : 
+13. Testing simplifying nested radicals : 
+14. Regression on bug reports : **** Undef: Infinity
+
+15. Tests completed : 

@@ -857,3 +857,50 @@ HtmlNewParagraph() : "There is a slightly more complex and general way of
 defining rules using the ":HtmlTerm("RuleBase()"):" and
 ":HtmlTerm("Rule()"):" functions, but the \"": HtmlTerm("... # ... <--
 ..."):"\" construct is usually sufficiently flexible and much more readable. ";
+
+
+Section()"Local simplification rules";
+Text()
+"Sometimes you have an expression, and you want to use specific
+simplification rules on it that are not done by default. This
+can be done with the /: and the /:: operators. Suppose we have the
+expression containing things like ":HtmlTerm("Ln(a*b)"):", and we want
+to change these into ":HtmlTerm("Ln(a)+Ln(b)"):", the easiest way
+to do this is using the /: operator, as follows:
+":HtmlCommand(
+"In> Sin(x)*Ln(a*b)
+Out> Sin(x)*Ln(a*b);
+In> % /: { Ln(_x*_y) <- Ln(x)+Ln(y) }
+Out> Sin(x)*(Ln(a)+Ln(b));
+"):"
+A whole list of simplification rules can be built up in the list,
+and they will be applied to the expression on the left hand side
+of /: .":
+HtmlNewParagraph():
+"
+The forms the patterns can have are one of:
+":
+HtmlNewParagraph(): "pattern <- replacement":
+HtmlNewParagraph(): "{pattern,replacement}":
+HtmlNewParagraph(): "{pattern,postpredicate,replacement} ":
+HtmlNewParagraph():
+"Note that for these local rules, <- should be used in stead of
+<-- which defines a global rule.":
+HtmlNewParagraph():
+"
+The /: operator traverses an expression much like Subst does: top
+down, trying to apply the rules from the begin of the list of
+rules to the end of the list of rules. If the rules cannot be applied
+to a sub-expression, it will try the sub expressions of the
+expression being analyzed.":
+HtmlNewParagraph():
+"It might be necessary sometimes to use the /:: operator, which
+repeatedly applies the /: operator until the result doesn't change
+any more. Caution is required, since rules can contradict eachother,
+and that could result in an infinite loop. To detect this situation,
+just use /: repeatedly on the expression. The repetitive nature
+should become apparent.
+";
+
+
+

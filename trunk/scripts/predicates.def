@@ -16,6 +16,8 @@ IsInfinity
 IsConstant
 IsBoolean
 IsBoolType
+IsPositiveReal
+IsNegativeReal
 IsHermitean
 IsUnitary
 }

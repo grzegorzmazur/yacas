@@ -352,14 +352,15 @@ static void LnFloat(ANumber& aResult, LispCharPtr int1)
 
     LispInt shifts=0;
     LispBoolean smallenough=LispFalse;
-    ANumber y(int1,aResult.iPrecision);
-    ANumber minusone("-1",aResult.iPrecision);
-    ANumber x(aResult.iPrecision);
+    LispInt precision = 2*aResult.iPrecision;
+    ANumber y(int1,precision);
+    ANumber minusone("-1",precision);
+    ANumber x(precision);
 
-    ANumber delta("0.01",aResult.iPrecision);
+    ANumber delta("0.01",precision);
     while (!smallenough)
     {
-        ANumber tosquare(aResult.iPrecision);
+        ANumber tosquare(precision);
         tosquare.CopyFrom(y);
         Sqrt(y,tosquare);
         shifts++;
@@ -368,28 +369,28 @@ static void LnFloat(ANumber& aResult, LispCharPtr int1)
             smallenough=LispTrue;
     }
     // i <- 0
-    ANumber i("0",aResult.iPrecision);     
+    ANumber i("0",precision);
     // sum <- 1
     aResult.SetTo("0");
     // term <- 1
-    ANumber term("-1",aResult.iPrecision);
+    ANumber term("-1",precision);
     ANumber dummy;
 
-    ANumber one("1",aResult.iPrecision);
+    ANumber one("1",precision);
     // While (term>epsilon)
     while (Significant(term))      
     {
         //   negate term
         Negate(term);
 
-        ANumber orig(aResult.iPrecision);
+        ANumber orig(precision);
 
         orig.CopyFrom(term);
         Multiply(term,orig,x);
         //
         BaseAdd(i, one, WordBase);
         orig.CopyFrom(term);
-        ANumber newTerm(aResult.iPrecision);
+        ANumber newTerm(precision);
         Divide(newTerm, dummy, orig, i);
 
         //   sum <- sum+term
@@ -404,13 +405,10 @@ static void LnFloat(ANumber& aResult, LispCharPtr int1)
 
 LispStringPtr LnFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
 {
-    //TODO
-    return PlatLn(int1, aHashTable,aPrecision);
-/*
+//TODO remove    return PlatLn(int1, aHashTable,aPrecision);
     ANumber sum(aPrecision);
     LnFloat(sum, int1);
     return FloatToString(sum, aHashTable);
-    */
 }
 
 LispStringPtr PowerFloat(LispCharPtr int1, LispCharPtr int2,

@@ -60,6 +60,19 @@ Function ("IsBoolean", {x})
 0 # IsBoolType(False) <-- True;
 1 # IsBoolType(_anythingelse) <-- False;
 
+/* See if a number, when evaluated, would be a positive/negative real value */
+IsPositiveReal(_r) <--
+[
+  r:=N(r);
+  (IsNumber(r) And r >= 0);
+];
+IsNegativeReal(_r) <--
+[
+  r:=N(r);
+  (IsNumber(r) And r <= 0);
+];
+
+
 /* Predicates on matrices */
 IsHermitean(A_IsMatrix) <-- (Conjugate(Transpose(A))=A);
 IsUnitary(A_IsMatrix) <-- (Transpose(Conjugate(A))*A = Identity(Length(A)));

@@ -10,7 +10,7 @@
 #include "lispeval.h"
 #include "standard.h"
 
-#define YACAS_LOGGING
+//#define YACAS_LOGGING
 #include "log.h"
 /*
 */

@@ -259,27 +259,45 @@ SeeAlso({"True","False"});
 
 
 
-Section()"Predicates on numbers";
-Text()"These predicates return whether the argument is a number,
-and of a specific type.";
-
 AddAnchor("IsNegativeNumber");
-SubSection()"IsNegativeNumber(n)";  
 AddAnchor("IsNegativeInteger");
-SubSection()"IsNegativeInteger(n)"; 
 AddAnchor("IsPositiveNumber");
-SubSection()"IsPositiveNumber(n)";  
 AddAnchor("IsPositiveInteger");
-SubSection()"IsPositiveInteger(n)"; 
 AddAnchor("IsNotZero");
-SubSection()"IsNotZero(n)";  
 AddAnchor("IsNonZeroInteger");
-SubSection()"IsNonZeroInteger(n)";
 AddAnchor("IsInfinity");
-SubSection()"IsInfinity(n)";
-Text()"
-Returns True if the argument is either Infinity or -Infinity
+AddAnchor("IsPositiveReal");
+AddAnchor("IsNegativeReal");
+
+SubSection()"Predicates on numbers";
+
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"IsNegativeNumber(n) <br>
+IsNegativeInteger(n) <br>
+IsPositiveNumber(n) <br>  
+IsPositiveInteger(n) <br> 
+IsNotZero(n) <br>
+IsNonZeroInteger(n) <br>
+IsInfinity(n) <br>
+IsPositiveReal(n) <br>
+IsNegativeReal(n) <br>
 ";
+
+Topical()"Parameters";
+Text()"n - an expression";
+
+Topical()"Description";
+Text()
+"These predicates return whether the argument is a number,
+and of a specific type. These predicates are typically used
+in combination with patterns. A rule that only holds for a
+positive integer n, would use n_IsPositiveInteger in the
+pattern.
+";
+
+
 
 
 

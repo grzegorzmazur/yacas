@@ -132,6 +132,12 @@ Writing simplification rules
 </A>
 
 </LI>
+<LI>
+<A HREF="intro.html#c3s7">
+Local simplification rules
+</A>
+
+</LI>
 
 </UL>
 
@@ -1063,6 +1069,57 @@ There is a slightly more complex and general way of
 defining rules using the <B><TT>RuleBase()</TT></B> and
 <B><TT>Rule()</TT></B> functions, but the "<B><TT>... # ... <--
 ...</TT></B>" construct is usually sufficiently flexible and much more readable. 
+<A NAME="c3s7">
+
+</A>
+<H2>
+<HR>Local simplification rules
+</H2>
+Sometimes you have an expression, and you want to use specific
+simplification rules on it that are not done by default. This
+can be done with the /: and the /:: operators. Suppose we have the
+expression containing things like <B><TT>Ln(a*b)</TT></B>, and we want
+to change these into <B><TT>Ln(a)+Ln(b)</TT></B>, the easiest way
+to do this is using the /: operator, as follows:
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Sin(x)*Ln(a*b)
+Out> Sin(x)*Ln(a*b);
+In> % /: { Ln(_x*_y) <- Ln(x)+Ln(y) }
+Out> Sin(x)*(Ln(a)+Ln(b));
+</PRE></TR>
+</TABLE>
+
+A whole list of simplification rules can be built up in the list,
+and they will be applied to the expression on the left hand side
+of /: .
+<P>
+
+The forms the patterns can have are one of:
+
+<P>
+pattern <- replacement
+<P>
+{pattern,replacement}
+<P>
+{pattern,postpredicate,replacement} 
+<P>
+Note that for these local rules, <- should be used in stead of
+<-- which defines a global rule.
+<P>
+
+The /: operator traverses an expression much like Subst does: top
+down, trying to apply the rules from the begin of the list of
+rules to the end of the list of rules. If the rules cannot be applied
+to a sub-expression, it will try the sub expressions of the
+expression being analyzed.
+<P>
+It might be necessary sometimes to use the /:: operator, which
+repeatedly applies the /: operator until the result doesn't change
+any more. Caution is required, since rules can contradict eachother,
+and that could result in an infinite loop. To detect this situation,
+just use /: repeatedly on the expression. The repetitive nature
+should become apparent.
+
 <p>  </P><HR>
 </BODY>
 

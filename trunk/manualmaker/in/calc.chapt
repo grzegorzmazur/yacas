@@ -135,6 +135,7 @@ AddAnchor("Re");
 AddAnchor("Im");
 AddAnchor("I");
 AddAnchor("Conjugate");
+AddAnchor("Arg");
 SubSection()"Complex numbers";
 StandardLib();
 Topical()"Calling Sequence";
@@ -142,7 +143,8 @@ Text()"Complex(x,y) <br>
 Re(z) <br>
 Im(z) <br>
 I <br>
-Conjugate(expression)
+Conjugate(expression) <br>
+Arg(z)
 ";
 
 Topical()"Parameters";
@@ -165,7 +167,11 @@ real-valued.":
 HtmlNewParagraph():
 "
 Complex(x,y) is the internal representation of a complex number
-in Yacas.
+in Yacas.":
+HtmlNewParagraph():
+"Arg returns the angle a for which the complex number is
+amp*(Cos(angle) + I*Sin(angle)). As such it returns an angle
+from -Pi to +Pi.
 ";
 
 Topical()"Examples";
@@ -178,6 +184,8 @@ In> Re(z)
 Out> 2;
 In> Im(z)
 Out> 3;
+In> Arg(Exp(I*Pi/3))
+Out> Pi/3;
 ");
 
 AddAnchor("!");

@@ -35,6 +35,9 @@
 // Dynamic link library loader class
 #define DLLCLASS    ElfDll
 
+// System calls
+#define SystemCall system
+
 // Exception handling. At the time of writing this was not yet
 // implemented in the same way in several c++ compilers...
 

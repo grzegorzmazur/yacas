@@ -63,6 +63,7 @@ CntDefLoad("pslq");
 CntDefLoad("odesolver");
 CntDefLoad("c_form");
 CntDefLoad("limit");
+CntDefLoad("localrules");
 
 /* set the help system. This can be overridden in ~/.yacasrc */
 

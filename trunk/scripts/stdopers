@@ -85,7 +85,12 @@ RightAssociative("else");
 Infix("&",5);
 Infix("|",5);
 Infix("%",5);
-/* Infix("^",5); */
+
+/* local pattern replacement operators */
+Infix("/:",10000);
+Infix("/::",10000);
+Infix("<-",1000);
+
 
 
 

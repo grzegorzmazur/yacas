@@ -129,7 +129,9 @@ HoldArg("TruncRadian",r);
 2 # Ln(x_IsNegativeNumber)_(Numeric) <-- Complex(MathLog(-x), Pi);
 3 # Ln(x_IsNumber)_(Numeric) <-- MathLog(x);
 4 # Ln(Exp(_x))              <-- x;
-3 # Ln(Complex(_r,_i)) <-- Complex( (1/2)*Ln(r^2 + i^2) , ArcTan(  i / r) );
+
+
+3 # Ln(Complex(_r,_i)) <-- Complex(Ln(Abs(Complex(r,i))), Arg(Complex(r,i)));
 4 # Ln(x_IsNegativeNumber) <-- Complex(Ln(-x), Pi);
 
 2 # ArcSin(x_IsNumber)_(Numeric) <-- MathArcSin(x);
@@ -155,6 +157,8 @@ HoldArg("TruncRadian",r);
 110 # ArcTan(Complex(_r,_i)) <--
      (- I*0.5)*Ln(Complex(1,Complex(r,i))/ Complex(1, - Complex(r,i)));
 
+200 # ArcTan(Sqrt(3)) <-- Pi/3;
+200 # ArcTan(-Sqrt(3)) <-- -Pi/3;
 200 # ArcTan(1) <-- Pi/4;
 200 # ArcTan(0) <-- 0;
 200 # ArcTan(_n)_(n = -1) <-- -Pi/4;
@@ -172,6 +176,10 @@ ArcTan(xlist_IsList) <-- MapSingle("ArcTan",xlist);
 
 Exp(xlist_IsList) <-- MapSingle("Exp",xlist);
 Ln(xlist_IsList) <-- MapSingle("Ln",xlist);
+
+
+
+
 
 
 

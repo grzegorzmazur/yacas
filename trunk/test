@@ -1,4 +1,51 @@
 
+10 # MyLog(x_IsPositiveNumber)_(x>2) <--
+[
+  Local(result,n);
+  result := 0;
+  n      := 0;
+  While (x>1)
+  [
+    n++;
+    x := x/1.5;
+  ];
+  MyLog(x) + n*MyLog(1.5);
+];
+20 # MyLog(x_IsPositiveNumber)_(x<0.1) <--
+[
+  Local(n);
+  n:=0;
+
+  While (x<0.1)
+  [
+    n++;
+    x := x*1.5;
+  ];
+  MyLog(x) - n*MyLog(1.5);
+];
+
+30 # MyLog(x_IsPositiveNumber) <--
+[
+  Local(n,result,term,xminusone,toTest);
+
+  result := 0;
+  term   := -1;
+  n      := 1;
+  xminusone := -(x-1);
+  toTest := Abs(N(term/n));
+  While (IsNotZero(toTest))
+  [
+    term   := term * xminusone;
+    result := result +  term/n;
+    n++;
+    toTest := Abs(N(term/n));
+  ];
+  result;
+];
+
+EndOfFile;
+
+
 Use("odesolver");
 Use("univar");
 

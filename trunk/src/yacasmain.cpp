@@ -251,7 +251,8 @@ void LoadYacas()
             }
             closedir(dp);
             chdir(cwd);
-            printf("\n");
+            if (show_prompt)
+                printf("\n");
         }
     }
 
