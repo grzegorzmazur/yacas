@@ -925,7 +925,7 @@ equivalently Inverse($A$) = Transpose($A$).
 	In> IsDiagonal(HilbertMatrix(5))
 	Out> False;
 
-*CMD IsLowerTriangular, IsUpperTriangular --- test for a lower or upper triangular matrix
+*CMD IsLowerTriangular, IsUpperTriangular --- test for a lower or an upper triangular matrix
 *STD
 *CALL
 	IsLowerTriangular(A)
@@ -955,33 +955,7 @@ A non-square matrix cannot be triangular:
 	In> IsUpperTriangular({{1,2,3},{0,1,2}})
 	Out> False;
 
-<<<<<<< linalg.chapt.txt
-*SEE IsDiagonal, IsLowerTriangular
-
-
-*CMD IsLowerTriangular --- test for an lower triangular  matrix
-*STD
-*CALL
-        IsLowerTriangular(A)
-
-*PARMS  
-
-{A} -- a matrix
-
-*DESC
-
-{IsLowerTriangular(A)} returns {True} if {A} is upper triangular and {False} otherwise.
-A upper triangular matrix is one which has all zero entries above the diagonal.
-
-*E.G.
-	In> IsLowerTriangular(Identity(5))
-	Out> True;
-
-*SEE IsDiagonal, IsUpperTriangular
-
-=======
 *SEE IsDiagonal
->>>>>>> 1.26
 
 *CMD IsSymmetric --- test for a symmetric matrix
 *STD
@@ -1076,7 +1050,7 @@ equivalent to the fact that the columns of $A$ build an orthonormal system
 
 *SEE IsHermitian, IsSymmetric
 
-*CMD IsIdempotent --- test whether a matrix is idempotent
+*CMD IsIdempotent --- test for an idempotent matrix
 *STD
 *CALL
 	IsIdempotent(A)
@@ -1088,8 +1062,8 @@ equivalent to the fact that the columns of $A$ build an orthonormal system
 *DESC
 
 {IsIdempotent(A)} returns {True} if {A} is idempotent and {False} otherwise.
-$A$ is idempotent iff $A^2$ =$A$. Note that this also implies that $A$
-to any power is $A$.
+$A$ is idempotent iff $A^2=A$. Note that this also implies that $A$ raised
+to any power is also equal to $A$.
 
 *E.G.
 
@@ -1099,24 +1073,24 @@ to any power is $A$.
 	Out> True;
 
 
-*CMD JacobianMatrix --- calculate the Jacobian matrix of n functions in n variables
+*CMD JacobianMatrix --- calculate the Jacobian matrix of $n$ functions in $n$ variables
 *STD
 *CALL
 	JacobianMatrix(functions,variables)
 
 *PARMS
 
-{functions} -- An {n} dimensional vector of functions
+{functions} -- an $n$-dimensional vector of functions
 
-{variables} -- An {n} dimensional vector of variables
+{variables} -- an $n$-dimensional vector of variables
 
 *DESC
 
 The function {JacobianMatrix} calculates the Jacobian matrix
 of n functions in n variables.
 
-The {ij}th element of the Jacobian matrix is defined as the derivative
-of {i}th function with respect to the {j}th variable.
+The ($i$,$j$)-th element of the Jacobian matrix is defined as the derivative
+of $i$-th function with respect to the $j$-th variable.
 
 *E.G.
 
@@ -1130,20 +1104,20 @@ of {i}th function with respect to the {j}th variable.
 	\                                 /
 
 
-*CMD VandermondeMatrix --- calculate the Vandermonde matrix
+*CMD VandermondeMatrix --- create the Vandermonde matrix
 *STD
 *CALL
 	VandermondeMatrix(vector)
 *PARMS
 
-{vector} -- An {n} dimensional vector 
+{vector} -- an $n$-dimensional vector 
 
 *DESC
 
 The function {VandermondeMatrix} calculates the Vandermonde matrix
 of a vector.
 
-The {ij}th element of the Vandermonde matrix is defined as {i^(j-1)}.
+The ($i$,$j$)-th element of the Vandermonde matrix is defined as $i^(j-1)$.
 
 *E.G.
 	In> VandermondeMatrix({1,2,3,4})
@@ -1159,28 +1133,28 @@ The {ij}th element of the Vandermonde matrix is defined as {i^(j-1)}.
 	| ( 1 ) ( 8 ) ( 27 ) ( 64 )  |
 	\                            /
 
-*CMD HessianMatrix --- calculate the Hessian matrix
+*CMD HessianMatrix --- create the Hessian matrix
 *STD
 *CALL
 	HessianMatrix(function,var)
 *PARMS
 
-{function} -- An function in {n} variables
+{function} -- a function in $n$ variables
 
-{var} -- An {n} dimensian vector of variables
+{var} -- an $n$-dimensional vector of variables
 
 *DESC
 
 The function {HessianMatrix} calculates the Hessian matrix
 of a vector.
 
-The {ij}th element of the Hessian matrix is defined as 
-$ Deriv(var[i]) Deriv(var[j]) function $. If the third
+If $f(x)$ is a function of an $n$-dimensional vector $x$, then the ($i$,$j$)-th element of the Hessian matrix of the function $f(x)$ is defined as 
+$ Deriv(x[i]) Deriv(x[j]) f(x) $. If the third
 order mixed partials are continuous, then the Hessian
-matrix is symmetric.
+matrix is symmetric (a standard theorem of calculus).
 
 The Hessian matrix is used in the second derivative test 
-to discern if a critical point is a local maximum, local
+to discern if a critical point is a local maximum, a local
 minimum or a saddle point.
 
 
@@ -1202,12 +1176,12 @@ minimum or a saddle point.
 	ToeplitzMatrix(N)
 *PARMS
 
-{N} -- an {n} dimensional row vector
+{N} -- an $n$-dimensional row vector
 
 *DESC
 
 The function {ToeplitzMatrix} calculates the Toeplitz matrix given
-an {n} dimensional row vector. This matrix has the same entry in
+an $n$-dimensional row vector. This matrix has the same entries in
 all diagonal columns, from upper left to lower right.
 
 *E.G.
@@ -1226,15 +1200,15 @@ all diagonal columns, from upper left to lower right.
 	\                                /
 
 
-*CMD WronskianMatrix --- calculate the Wronskian matrix
+*CMD WronskianMatrix --- create the Wronskian matrix
 *STD
 *CALL
 	WronskianMatrix(func,var)
 *PARMS
 
-{func} -- An {n} dimensional vector of functions
+{func} -- an $n$-dimensional vector of functions
 
-{var} -- A variable to differentiate with respect to
+{var} -- a variable to differentiate with respect to
 
 *DESC
 
@@ -1245,7 +1219,7 @@ The Wronskian matrix is created by putting each function as the
 first element of each column, and filling in the rest of each
 column by the ($i-1$)-th derivative, where $i$ is the current row.
 
-The Wronskian matrix is used to verify if $n$ functions are linearly
+The Wronskian matrix is used to verify that the $n$ functions are linearly
 independent, usually solutions to a differential equation.
 If the determinant of the Wronskian matrix is zero, then the functions
 are dependent, otherwise they are independent.
