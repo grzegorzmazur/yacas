@@ -12,7 +12,7 @@ EXTRA_DIST = balk.gif cha1.gif cha2.gif changes.html cred1.gif cred2.gif \
 	navbalk.html navinform.html rel1.gif rel2.gif stat1.gif \
 	stat2.gif yacas.gif yacas.html yacaslogo.gif yacas-screenshot.png \
         navman.html manindex.html todo.html links.html downloads.html.in \
-	bugs.txt
+	bugs.txt README
 
 ## The file "yacaslogo.gif" is used in the HTML documentation
 
