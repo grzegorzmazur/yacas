@@ -28,14 +28,18 @@
 30 # ((_n1+_n2) < 0)_((n1 < 0) And (n2 < 0))  <--  True;
 30 # ((_n1+_n2) < 0)_((n1 > 0) And (n2 > 0))  <--  False;
 30 #  _x^a_IsOdd  < 0  <--  x < 0;
-30 #  _x^a_IsEven < 0  <--  True;
+30 #  _x^a_IsEven < 0  <--  False; // This is wrong for complex x
 
 // Add other functions here!  Everything we can compare to 0 should be here.
 40 # (Sqrt(_x))_(x > 0) < 0          <--  False;
 
-// These rules currently don't ever match as Floor() isn't sufficiently
-// clever
 40 # (Sin(_x) < 0)_(Not(IsEven(N(x/Pi))) And IsEven(N(Floor(x/Pi)))) <-- False;
+40 # (Sin(_x) < 0)_(Not(IsOdd (N(x/Pi))) And IsOdd (N(Floor(x/Pi)))) <-- True;
+
+40 # Cos(_x) < 0 <-- Sin(Pi/2-x) < 0;
+
+40 # (Tan(_x) < 0)_(Not(IsEven(N(2*x/Pi))) And IsEven(N(Floor(2*x/Pi)))) <-- False;
+40 # (Tan(_x) < 0)_(Not(IsOdd (N(2*x/Pi))) And IsOdd (N(Floor(2*x/Pi)))) <-- True;
 
 // Functions that need special treatment with more than one of the comparison
 // operators as they always return true or false.  For these we must define
