@@ -1,3 +1,83 @@
+			Interactive session commands
+
+
+*INTRO
+This chapter describes the special commands for the Yacas interactive sessions (for example, to restart or to exit the interpreter).
+These commands are not functions but special directives
+that only apply while running Yacas interactively.
+They should not be used in scripts.
+
+
+*CMD ?, ?? --- get online help
+*CORE
+*CALL
+	?function
+	??
+*PARMS
+
+{function} -- name of function or keyword to request help on
+
+*DESC
+
+The directive {?} is used to request online help while running an interactive session. A name of a function or a help keyword can be specified.
+The corresponding reference manual section will be shown.
+(There is a special glossary section that contains keywords and explains some of the Yacas terminology.)
+
+Function names should be given without quotes.
+Note that function names are case-sensitive in Yacas but the {?} facility will also respond to all lowercase names.
+
+The directive {??} displays the index to all documentation.
+
+Documentation is displayed in a Web browser of your choice. The default choice is {lynx}.
+An alternative browser can be set using the {SetHelpBrowser} function.
+
+*E.G.
+
+Get help on a function:
+	In> ?Random
+The function name can be given in all lowercase:
+	In> ?makefunctionplugin
+
+Get help on a keyword:
+	In> ?arity
+
+Browse all documentation:
+	In> ??
+
+*SEE Help, SetHelpBrowser
+
+*CMD quit, restart, Ctrl-C --- basic session control
+*CORE
+*CALL
+	quit
+	restart
+
+*DESC
+
+Type {quit} or {restart} at the Yacas prompt to exit or to restart the interpreter.
+
+The directives {quit} and {restart} are <i>not</i> reserved words or variable names.
+They take effect only when typed as first characters at a prompt.
+
+Pressing {Ctrl-C} will stop the currently running calculation.
+If there is no currently running calculation, {Ctrl-C} will quit the interpreter.
+
+When the interpreter quits, it saves the command history
+(so quitting by {Ctrl-C} does not mean a "crash").
+
+*E.G.
+
+To be effective, the directive must be typed immediately after the prompt:
+	In> quit
+	Quitting...
+We can use variables named {quit}:
+	In> 1+quit
+	Out> quit+1;
+There is no effect if we type some spaces first: 
+	In>       restart
+	Out> restart;
+
+*SEE Exit
 
 			Startup configuration
 
@@ -81,7 +161,7 @@ Currently implemented prettyprinters are: {PrettyForm}, {TeXForm}, {Print} and
 
 *SEE PrettyForm, Write
 
-*CMD MaxEvalDepth -- set depth of recursion stack
+*CMD MaxEvalDepth --- set depth of recursion stack
 *CORE
 *CALL
 	MaxEvalDepth(n)
@@ -119,7 +199,7 @@ To use netscape for browsing help, enter the following commands:
 	Help() := SystemCall("netscape " :
 	  FindFile("documentation/books.html"));
 
-*SEE SystemCall, FindFile
+*SEE SystemCall, FindFile, ?
 
 *CMD HistorySize --- set size of history file
 *CORE
@@ -143,3 +223,5 @@ lines.
 	In> HistorySize(200)
 	Out> True;
 	In> quit
+
+*SEE quit

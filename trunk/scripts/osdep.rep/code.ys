@@ -1,12 +1,10 @@
 // OS-dependent code (to be replaced or configured at build time)
 
-// this lists the available modules
+// this lists the available OS-specific modules
 SupportedOSes :=
 {
-	{"Unix", "unix.ys"},
+	{"Unix", "unix.ys"}, // Unix defaults will probably work on MacOSX and BeOS
 	{"Win32", "win32.ys"},
-//	{"MacOSX", "macosX.ys"},
-	{"Default", "unix.ys"},
 };
 
 // it seems that we need this here because otherwise we won't be able to load the module... or will we?
@@ -14,20 +12,25 @@ FilePathSeparators :=
 {
 	{"Unix", "/"},
 	{"Win32", "\\"},
-//	{"MacOSX", ":"},
-	{"Default", "/"},
 };
 
-// The variable ChosenOS determines which module we should load.
+// The variable PlatformOS determines which module we should load.
 // Try to decide this from Version().
 // On Windows, Version() should begin with the letters "Win".
 // Otherwise we assume Unix.
-ChosenOS := If(StringMid(1,3,Version())="Win", "Win32", "Default");
 
-FilePathSeparator := FilePathSeparators[ChosenOS];
+PlatformOS := If(StringMid(1,3,Version())="Win", "Win32", "Unix");
 
-// this function should probably be called from yacasinit.ys
-LoadOSDependentModule() := Use("osdep.rep" : FilePathSeparator : SupportedOSes[ChosenOS]);
+FilePathSeparator := FilePathSeparators[PlatformOS];
+
+// this function should be called from yacasinit.ys
+LoadOSDependentModule() := Use(
+  ConcatStrings(
+	"osdep.rep/",
+	// FilePathSeparator,
+	SupportedOSes[PlatformOS]
+  )
+);
 
 // definitions of variable-argument functions
 
@@ -54,3 +57,4 @@ CopyFile(file1, file2) := SystemCall(CopyFileCmd(file1, file2));
 10 # DeleteFile({file_IsString}) <-- DeleteFile(file);
 20 # DeleteFile(files_IsList) <-- DeleteFile(Head(files)) And DeleteFile(Tail(files));
 
+SystemCallBg(command) := SystemCall(BackgroundCmd(command));

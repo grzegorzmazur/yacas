@@ -4,9 +4,9 @@
 
 DeleteFileCmd(filename) := "del \"" : filename : "\"";
 
-DeleteDirCmd(dirname) := "deltree \"" : dirname : "\"";
+DeleteDirCmd(dirname) := "deltree /y \"" : dirname : "\"";
 
-CopyFileCmd(filename1, filename2) := "copy /b \"" : filename1 : "\" \"" : filename2 : "\"";
+CopyFileCmd(filename1, filename2) := "copy /b \"" : filename1 : "\" \"" : filename2 : "\" /y";
 
 MakeDirCmd(dirname) := "md \"" : dirname : "\"";
 

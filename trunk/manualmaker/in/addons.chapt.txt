@@ -168,8 +168,29 @@ In that case, {FindFunction()} will return the filename under that directory. Ot
 *SEE FindFunction
 
 
+*CMD PlatformOS, FilePathseparator --- OS-dependent constants
+*STD
+*CALL
+	PlatformOS
+	FilePathSeparator
+
+*DESC
+
+The constant {PlatformOS} is a string with an abbreviated description of the platform on which the current Yacas interpreter is running.
+Supported values are {"Unix"} and {"Win32"}.
+This constant can be used in scripts where one needs to know the platform.
+
+The constant {FilePathSeparator} is the string that separates directories in the file system tree. This is the forward slash ({/}) on Unix and the backslash ({\}) on Windows.
+
+*EG
+
+	In> Check(PlatformOS="Unix","BAAA! I WANT UNIX!")
+	Out> True;
+
+*SEE MakeFilePath
+
 *CMD CopyFile, DeleteFile, DeleteDir, MakeDir, MakeFilePath, TemporaryDir, TemporaryFile --- manipulate files and directories
-*CORE
+*STD
 *CALL
 	CopyFile("src","dest")
 	DeleteFile("file", ...)
@@ -181,17 +202,18 @@ In that case, {FindFunction()} will return the filename under that directory. Ot
 
 *PARMS
 
-"src", "dest", "file", "dir" -- strings, names of files and directories
+{"src"}, {"dest"}, {"file"}, {"dir"} -- strings, names of files and directories
 
 *DESC
 
 These functions provide a platform-independent interface to file operations on the underlying operating system (OS):
 
 *	{CopyFile} will copy a file {"src"} to another file or directory {"dest"}.
-*	{DeleteFile} will delete one or more files.
-*	{DeleteDir} will delete one or more directories with all their contents.
+*	{DeleteFile} will delete one or more files. If a file does not exist, no error is generated on Unix.
+*	{DeleteDir} will delete one or more directories
+<i>with all their contents</i>. (No warnings or questions are printed,---use with caution!) If a directory does not exist, no error is generated on Unix.
 *	{MakeDir} will create new directories. Under Windows, all intermediate subdirectories must exist for this to work. Under Unix, any intermediate subdirectories will be created automatically if needed.
-*	{MakeFilePath} returns a string which is the file path to the given file under given subdirectories. It uses the global variable {FilePathSeparator} which is the forward slash {/} on Unix and the backward slash {\} on Windows.
+*	{MakeFilePath} returns a string which is the file path to the given file under given subdirectories. It uses the global variable {FilePathSeparator}.
 *	{TemporaryDir} and {TemporaryFile} return the names of a temporary directory and a temporary file. (These names are OS-dependent.)
 
 Absolute file paths or relative file paths can be given (the current directory is the directory where Yacas was started).
@@ -201,7 +223,7 @@ File and directory names should not contain double quotes ({"}). (On Unix, doubl
 
 When operating on many files or directories at once, there may be errors associated with some files but not others.
 The functions return {True} only if all operations succeeded.
-The error messages from the OS may be printed
+Error messages from the OS are printed on the console as usual for {SystemCall}.
 
 *E.G.
 
@@ -209,7 +231,7 @@ The error messages from the OS may be printed
 	Out> "/usr/bin/yacas";
 	In> TemporaryDir()
 	Out> "/tmp";
-If the file {f1.txt} exists:
+If the file {f1.txt} exists, it can be copied:
 	In> CopyFile("f1.txt", "f2.txt")
 	Out> True;
 Create a subdirectory {subdir} under the temporary directory:
@@ -221,23 +243,26 @@ Create a subdirectory {subdir} under the temporary directory:
 Copy a file into the newly created temporary location:
 	In> CopyFile("f2.txt", d)
 	Out> True;
+On Unix, spaces can be included in a file name and quotes can be escaped like this:
+	In> MakeDir("a \\\"")
+	Out> True;
+Now a directory with the name "{a "}" is created.
+
 An unsuccessful attempt to delete a directory:
 	In> DeleteDir("C:\\WINDOWS")
-	rm: cannot remove `C:\\WINDOWS': No such file
-	  or directory
 	Out> False;
 
-*SEE SystemCall
+*SEE SystemCall, FilePathSeparator
 
 
-*CMD BackgroundCmd --- execute a system command in the background
-*CORE
+*CMD SystemCallBg --- execute a system command in the background
+*STD
 *CALL
-	BackgroundCmd("command")
+	SystemCallbg("command")
 
 *PARMS
 
-"command" -- string, command line to execute
+{"command"} -- string, command line to execute
 
 *DESC
 
@@ -246,10 +271,12 @@ This is useful, for example, to start a GUI program while not interrupting the Y
 
 Unlike the {SystemCall} function, the return status of the command is not available.
 
+Error messages from the OS are printed on the console as usual for {SystemCall}.
+
 
 *E.G.
 
-	In> BackgroundCmd("mozilla")
+	In> SystemCallBg("mozilla")
 	Out> True;
 (The Yacas session continues right away, but the disk starts to churn until finally the Mozilla window appears.)
 

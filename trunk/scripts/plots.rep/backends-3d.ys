@@ -29,17 +29,21 @@ Plot3DS'data(values_IsList, _options'hash) <-- values;
 /// backend: display graph using gnuplot
 Plot3DS'gnuplot(values_IsList, _options'hash) <--
 [
-  Local(item, dirBase, filename, filename'list);
-  dirBase := "/tmp/plot.tmp/";
-  filename := "data";
-  // the "filename" option should not be used
-  options'hash["filename"] := dirBase : filename;
-  // create directory if it does not exist (unix specific)
-  SystemCall("test -d " : dirBase : "|| mkdir -p " : dirBase);
+  Local(item, dirBase, filename'list, control'file);
+  dirBase := MakeFilePath(TemporaryDir(), "plot.tmp");
+  // the "filename" option could be used
+  If(
+    options'hash["filename"] != Empty,
+  	True,
+  	options'hash["filename"] := MakeFilePath(dirBase, "data")
+  );
+  // create directory if it does not exist
+    Check(MakeDir(dirBase), "Problem creating a temporary directory, plotting aborted.");
   // write all data to file(s) and save the filenames
   filename'list := Plot3DS'datafile(values, options'hash);
   // prepare the control file for gnuplot
-  ToFile(dirBase : "gnuplot.in")
+  control'file := MakeFilePath(dirBase, "gnuplot.in");
+  ToFile(control'file)
   [
 	WriteString("set surface" : Nl() 
 	: If(options'hash["hidden"], "set hidden3d" : Nl(), ""));
@@ -80,7 +84,7 @@ Plot3DS'gnuplot(values_IsList, _options'hash) <--
 		If(item<Length(values), WriteString(", "));
 	];
   ];
-  SystemCall("gnuplot -persist " : dirBase : "gnuplot.in");
+  SystemCall("gnuplot -persist " : control'file);
 ];
 
 /// backend: write data into file.
