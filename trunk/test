@@ -1,4 +1,75 @@
 
+/*
+class IInterfaceCallBack
+{
+public:
+    virtual void Execute() = 0;
+};
+
+class IUserInterfaceBase
+{
+public: // Support for buttons
+    /// Remove all buttons below screen
+    virtual void ButtonsReset() = 0;
+
+    /// Add one new button below screen
+    virtual void AddButton(LispCharPtr aTitle,
+                           LispChar aShortCutKey,
+                           IInterfaceCallBack* aCallBack) = 0;
+
+    /// Finalize the buttons
+    virtual void ButtonsFinish() = 0;
+
+public: // Access to current expressions
+    /// Append a result to the stack of expressions on screen
+    virtual LispInt AddResult(CResult& aResult) = 0;
+
+    /// Return number of results
+    virtual LispInt NrResults() const = 0;
+
+    /// Get a specific result
+    virtual void GetResult(CResult& aResult, LispInt aIndex) = 0;
+
+    /// Delete a specific result
+    virtual void DeleteResult(LispInt aIndex) = 0;
+};
+
+
+Example code to add buttons:
+this example has a button, and instructs the system to execute
+a yacas command if the button is pressed. In this case it could be
+Simplify applied to the last expression on screen, which the
+object of type CYacasSimpleCallBack could obtain from the interface
+through a call interface.GetResult(result,interface.NrResults())
+
+  CMacUserInterface interface;
+  interface.ButtonsReset();
+  interface.AddButton("Simplify","s",
+                      new CYacasSimpleCallBack("Simplify",interface));
+  interface.ButtonsFinish();
+
+Notes:
+1) this interface wouldn't necessarily require Yacas to be around.
+   It could be used with other calculation engines, although if it is
+   used with Yacas, it is wise to link to it and use some of the
+   classes in the yacas library.
+2) there should probably be a division of the screen into three
+   parts: a menu, the buttons below the screen, and a middle part
+   showing a stack of expressions, or a graph, help text, or something
+   else perhaps.
+3) we probably need an internal representation of equations for the
+   UI, one that can be displayed on screen in a nice way, and can
+   easily be edited with equation editor code.
+4) Even this small interface should get us going. We could write a
+   small piece of test code that runs on any platform, using the
+   above interface to create a user interface.
+
+What do you think of this approach?
+
+Ayal
+
+
+*/
 
 
 

@@ -1821,7 +1821,9 @@ Example: "Curl(FillList(x*y,3),{x,y,z})" will return
 <HR>Integrate(var,from,to) body
 </H3>
 Integrate(var,from,to) body : integrate body over variable var=from
-to var=to. Currently, only polynomials can be integrated.
+to var=to. Some simple integration rules have currently been implemented.
+Transcendental functions, polynomials, products of transcendental functions
+and polynomials, and rational functions.
 <A NAME="Simplify">
 
 </A>
@@ -1829,7 +1831,8 @@ to var=to. Currently, only polynomials can be integrated.
 <HR>Simplify(expr)
 </H3>
 Simplify(expr) : Simplify tries to simplify an expression as much
-as possible.
+as possible. It does this by grouping powers within terms, and then
+grouping like terms.
 <A NAME="RadSimp">
 
 </A>
