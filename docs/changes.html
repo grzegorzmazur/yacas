@@ -27,18 +27,19 @@
        be used for patterns as x_IsFreeOf(y) which makes more sense.
   <li> Ayal: Changed IsHermitean to IsHermitian
   <li> Ayal: fixed bug: Taylor series around a singularity, terminates immediately
-  <li> Ayal: fixed the numerics.yts failure: it was actually a failure by the
-       program to simplify expressions containing Pi.
-  <li> Added experimental scripts "book2ys.*" for automatic extraction of Yacas
+  <li> Ayal: fixed the {numerics.yts} failure: it was actually a failure by the
+       program to simplify expressions containing {Pi}.
+  <li> Added experimental scripts {book2ys.*} for automatic extraction of Yacas
        code from documentation (SW)
   <li> Implemented adaptive 2D plotting {Plot2D} in {plots.rep} and multiple
        backends architecture (so far only gnuplot or plotutils but easy to
        add support for more) - replaces {GnuPlot()} (SW)
   <li> Removed {GnuPlot} altogether -- people should use {Plot2D} since it's much better
-  <li> Improved integer factorization algorithm: Factor(50!) now works, avoiding
-       infinite loop in PollardRhoFactorize(); added factorization tests (SW)
-  <li> New algorithm for IsPrimePower/GetPrimeFactors (SW)
-  <li> Added some tests for Deriv (Jonathan Leto)
+  <li> Improved integer factorization algorithm: {Factor(50!)} now works, avoiding
+       infinite loop in {PollardRhoFactorize}; added factorization tests (SW)
+  <li> New fast algorithm for {IsPrimePower}/{GetPrimePower}; added {IntLog} to replace
+       slow {CountBits}, and {IntNthRoot} to avoid floating-point computations (SW)
+  <li> Added some tests for {Deriv} (Jonathan Leto)
 
 </ul>
 

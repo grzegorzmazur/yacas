@@ -214,3 +214,11 @@ GuessRational(N(Pi))
 , 355/113
 );
 
+Verify(
+IntLog(23^45, 67)
+, 33
+);
+Verify(
+IntNthRoot(65537^33, 11)
+, 281487861809153
+);

@@ -18,6 +18,37 @@ CountBits(value) :=
   );
 ];
 
+/// Return integer part of the logarithm of x in given base. Use only integer arithmetic.
+/// Use variable steps to speed up operation for large numbers x
+IntLog(x, base) :=
+[
+	Local(result, step, factor);
+	result := 0;
+	step := 1;
+	factor := base;
+	// first loop: increase step
+	While (x != 0 And x >= factor)
+	[
+		x := Div(x, factor);
+		result := result + step;
+		factor := factor*factor;
+		step := step*2;
+	];
+	// second loop: decrease step
+	While (step > 0 And x != 1)
+	[
+		step := Div(step,2);	// for each step size down to 1, divide by factor if x is up to it
+		factor := base^step;
+		If(
+			x >= factor,
+			[
+				x:=Div(x, factor);
+				result := result + step;
+			]
+		);
+	];
+	result;
+];
 
 /// obtain next number that has good chances of being prime (not divisible by 2,3)
 1# NextPseudoPrime(i_IsInteger)_(i<=1) <-- 2;
@@ -118,7 +149,7 @@ CheckIntPower(n, limit) :=
 	Local(s0, s, root);
 	If(limit<=1, limit:=2);	// guard against too low value of limit
 	// compute the bound on power s
-	s0 := Div(CountBits(n), CountBits(limit)-1);
+	s0 := IntLog(n, limit);
 	// loop: check whether n^(1/s) is integer for all prime s up to s0
 	root := 0;
 	s := 0;
@@ -144,8 +175,8 @@ CheckIntPower(n, limit) :=
 IntNthRoot(_n, s_IsInteger) <--
 [
 	Local(x, y, q);
-	// initial guess should always undershoot, so we subtract 1
-	x:= 2 ^ Div(CountBits(n)-1, s);
+	// initial guess should always undershoot
+	x:= 2 ^ Div(IntLog(n, 2), s);
 	y := x^s;	// y is always x^s
 	// choose q
 	q:=Div(s, 2);
