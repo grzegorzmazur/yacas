@@ -43,20 +43,20 @@ HoldArg("D",aFunc);
 2 # (Deriv(_var)_x - _y) <--  (Deriv(var)x) - (Deriv(var)y);
 2 # (Deriv(_var)_x * _y) <-- (x*Deriv(var)y) + (Deriv(var)x)*y;
 2 # (Deriv(_var)Sin(_x)) <--  (Deriv(var)x)*Cos(x);
-2 # (Deriv(_var)SinH(_x))<--  (Deriv(var)x)*CosH(x);
-2 # (Deriv(_var)CosH(_x))<--  (Deriv(var)x)*SinH(x);
+2 # (Deriv(_var)Sinh(_x))<--  (Deriv(var)x)*Cosh(x);
+2 # (Deriv(_var)Cosh(_x))<--  (Deriv(var)x)*Sinh(x);
 2 # (Deriv(_var)Cos(_x)) <-- -(Deriv(var)x)*Sin(x);
 2 # (Deriv(_var)Csc(_x)) <--  -(Deriv(var)x)*Csc(x)*Cot(x);
-2 # (Deriv(_var)CscH(_x)) <-- -(Deriv(var)x)*CscH(x)*CotH(x);
+2 # (Deriv(_var)Csch(_x)) <-- -(Deriv(var)x)*Csch(x)*Coth(x);
 2 # (Deriv(_var)Sec(_x)) <--  (Deriv(var)x)*Sec(x)*Tan(x);
-2 # (Deriv(_var)SecH(_x)) <-- -(Deriv(var)x)*SecH(x)*TanH(x);
+2 # (Deriv(_var)Sech(_x)) <-- -(Deriv(var)x)*Sech(x)*Tanh(x);
 2 # (Deriv(_var)Cot(_x)) <--  -(Deriv(var)x)*Csc(x)^2;
-2 # (Deriv(_var)CotH(_x)) <--  (Deriv(var)x)*CscH(x)^2;
+2 # (Deriv(_var)Coth(_x)) <--  (Deriv(var)x)*Csch(x)^2;
 /* Any reason not to use Sec(x)^2 in the future? 
 2 # (Deriv(_var)Tan(_x)) <-- (Deriv(var)x)*Sec(x)^2;
 */
 2 # (Deriv(_var)Tan(_x)) <-- ((Deriv(var) x) / (Cos(x)^2));
-2 # (Deriv(_var)TanH(_x)) <-- (Deriv(var)x)*SecH(x)^2;
+2 # (Deriv(_var)Tanh(_x)) <-- (Deriv(var)x)*Sech(x)^2;
 
 2 # (Deriv(_var)Exp(_x)) <--  (Deriv(var)x)*Exp(x);
 2 # (Deriv(_var)(_x / _y)) <--

@@ -21,12 +21,12 @@ Verify( Sin(x)/Cos(x), Tan(x) );
 //KnownFailure(Verify( Sin(x)^2 + Cos(x)^2, 1 ));
 Verify( TrigSimpCombine(Sin(x)^2 + Cos(x)^2), 1 );
 Verify( Cos(x)/Sin(x), Cot(x) );
-Verify( SinH(x)-CosH(x), Exp(-x));
-Verify( SinH(x)+CosH(x), Exp(x) );
-Verify( SinH(x)/CosH(x), TanH(x) );
-Verify( SinH(Infinity), Infinity);
-Verify( SinH(x)*CscH(x), 1);
-Verify( 1/CotH(x), TanH(x) );
+Verify( Sinh(x)-Cosh(x), Exp(-x));
+Verify( Sinh(x)+Cosh(x), Exp(x) );
+Verify( Sinh(x)/Cosh(x), Tanh(x) );
+Verify( Sinh(Infinity), Infinity);
+Verify( Sinh(x)*Csch(x), 1);
+Verify( 1/Coth(x), Tanh(x) );
 
 /// these two aren't correct: what if n itself is negative or zero?
 //KnownFailure(Verify(Exp(-n*Infinity), 0 ));
