@@ -333,7 +333,7 @@ disappeared.
 	In> Horner(expr1,x)
 	Out> (((x+4)*x+6)*x+4)*x+1;
 
-*SEE Expand, ExpandBrackets
+*SEE Expand, ExpandBrackets, EvaluateHornerScheme
 
 *CMD ExpandBrackets --- expand all brackets
 *STD
@@ -360,6 +360,29 @@ It goes further than {Expand}, in that it expands all brackets.
 	Out> a*b-x*b+x^2-a*x;
 
 *SEE Expand
+
+*CMD EvaluateHornerScheme --- fast evaluation of polynomials
+*STD
+*CALL
+	EvaluateHornerScheme(coeffs,x)
+
+*PARMS
+
+{coeffs} -- a list of coefficients
+
+{x} -- expression
+
+*DESC
+
+This function evaluates a polynomial given as a list of its coefficients, using
+the Horner scheme. The list of coefficients starts with the $0$-th power.
+
+*EG
+
+	In> EvaluateHornerScheme({a,b,c,d},x)
+	Out> a+x*(b+x*(c+x*d));
+
+*SEE Horner
 
 *CMD OrthoP --- Legendre and Jacobi orthogonal polynomials
 *STD
