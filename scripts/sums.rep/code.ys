@@ -106,7 +106,7 @@ n1_IsRationalOrNumber *** n2_IsRationalOrNumber <--
 
 /* Sums */
 
-RuleBase("Sum",{sumvar,sumfrom,sumto,sumbody}); 
+RuleBase("Sum",{sumvar'arg,sumfrom'arg,sumto'arg,sumbody'arg}); 
 
 5  # Sum(_sumvar,sumfrom_IsNumber,sumto_IsNumber,_sumbody)_(sumfrom>sumto) <-- 0;
 
@@ -126,8 +126,8 @@ RuleBase("Sum",{sumvar,sumfrom,sumto,sumbody});
 ];
 
 UnFence("Sum",4);
-HoldArg("Sum",sumvar);
-HoldArg("Sum",sumbody);
+HoldArg("Sum",sumvar'arg);
+HoldArg("Sum",sumbody'arg);
 
 Function("Sum",{sumlist})
 [
@@ -276,6 +276,8 @@ Function("Subfactorial",{n})
 Function() SumFunc(k,from,to,summand, sum, predicate );
 Function() SumFunc(k,from,to,summand, sum);
 HoldArg(SumFunc,predicate);
+HoldArg(SumFunc,sum);
+HoldArg(SumFunc,summand);
 
 // Difference code does not work
 SumFunc(_sumvar,sumfrom_IsInteger,_sumto,_sumbody,_sum) <--
@@ -284,21 +286,34 @@ SumFunc(_sumvar,sumfrom_IsInteger,_sumto,_sumbody,_sum) <--
 	// for sumfrom, and one which will catch sums starting at a different
 	// index and subtract off the difference
 
-	`(40 # Sum(@sumvar,@sumfrom,@sumto,@sumbody )	<-- @sum );
-	`(41 # Sum(@sumvar,p_IsInteger,@sumto,@sumbody) <-- 
-		Simplify(Eval(@sum) - Sum(@sumvar,@sumfrom,sumto - @p,@sumbody)) );
+	`(40 # Sum(@sumvar,@sumfrom,@sumto,@sumbody )	<-- Eval(@sum) );
+	`(41 # Sum(@sumvar,p_IsInteger,@sumto,@sumbody)_(p > @sumfrom) 
+	     <-- 
+	     [
+	          Local(sub);
+		  `(sub := Eval(UnList({Sum,sumvar'arg,@sumfrom,p-1,sumbody'arg})));
+		  Simplify(Eval(@sum) - sub );
+             ]);
 ];
 
 SumFunc(_sumvar,sumfrom_IsInteger,_sumto,_sumbody,_sum,_condition) <--
 [
 
 	`(40 # Sum(@sumvar,@sumfrom,@sumto,@sumbody)_(@condition)    <-- Eval(@sum) );
-	`(41 # Sum(@sumvar,p_IsInteger,@sumto,@sumbody )_(@condition) <-- 
-		Simplify(Eval(@sum) - Sum(@sumvar,@sumfrom,sumto - @p,@sumbody)) );
+	`(41 # Sum(@sumvar,p_IsInteger,@sumto,@sumbody )_(@condition And p > @sumfrom) 
+	     <-- 
+	     [
+	          Local(sub);
+		  `(sub := Eval(UnList({Sum,sumvar'arg,@sumfrom,p-1,sumbody'arg})));
+		  Simplify(Eval(@sum) - sub );
+             ]);
 ];
 
-//doesn't work
-SumFunc(_k,1,_n,_c + _d,Sum(k,1,n,c) + Sum(k,1,n,d) );
+//doesn't work (?)
+SumFunc(_k,1,_n,_c + _d,
+  Eval(UnList({Sum,sumvar'arg,1,n,c})) + 
+  Eval(UnList({Sum,sumvar'arg,1,n,d})) 
+);
 
 SumFunc(_k,1,_n,_c,c*n,IsFreeOf(k,c) );
 SumFunc(_k,1,_n,_k, n*(n+1)/2 );
@@ -309,6 +324,8 @@ SumFunc(_k,1,_n,2*_k-1, n^2 );
 SumFunc(_k,1,_n,HarmonicNumber(_k),(n+1)*HarmonicNumber(n) - n );
 SumFunc(_k,1,_n,Fibonacci(_k)^2, Fibonacci(n)*Fibonacci(n+1) );
 
+// Geometric series! The simplest of them all ;-)
+SumFunc(_k,0,_n,(r_IsFreeOf(k))^(_k), (1-r^(n+1))/(1-r) );
 
 // Infinite Series
 // this allows Zeta a complex argument, which is not supported yet
