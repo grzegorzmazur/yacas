@@ -14,12 +14,27 @@
   n := small'powers[1];	// remainder
   If(n=1, Tail(small'powers),
   // if n!=1, need to factorize the remainder with Pollard Rho algorithm
-	  PollardCombineLists(Tail(small'powers), PollardRhoFactorize(n))
+	  [
+	  	If(Verbose, Echo({"FactorizeInt: Info: remaining number ", n}));
+		SortFactorList(
+	  	  PollardCombineLists(Tail(small'powers), PollardRhoFactorize(n))
+		);
+	  ]
   );
 ];
 
+/// Sort the list of prime factors using HeapSort()
+LocalSymbols(a,b, list) [
+
+SortFactorList(list) := HeapSort(list, {{a,b}, a[1]<b[1]});
+
+];
+
 /// Simple trial factorization: can be very slow for integers > 1,000,000.
-// Try all prime factors up to Sqrt(n)
+/// Try all prime factors up to Sqrt(n).
+/// Resulting factors are automatically sorted.
+/// This function is not used any more.
+/*
 2# TrialFactorize(n_IsPrimePower) <-- {GetPrimePower(n)};
 3# TrialFactorize(n_IsInteger) <--
 [
@@ -32,6 +47,7 @@
 		Concat(Tail(factorization), {{Head(factorization),1}})
 	);
 ];
+*/
 
 /// Auxiliary function. Return the power of a given prime contained in a given integer and remaining integer.
 /// E.g. FindPrimeFactor(63, 3) returns {7, 2} and FindPrimeFactor(42,17) returns {42, 0}
@@ -130,6 +146,7 @@ PollardRhoPolynomial(_x) <-- x^2+1;
 	If(Verbose And repeat<=0, Echo({"PollardRhoFactorize: Warning: stalled while factorizing ", n, "; counters ", x, y}));
   ];
   Check(restarts>0, "PollardRhoFactorize: Error: failed to factorize " : String(n));
+  If(Verbose And gcd > 1, Echo({"PollardRhoFactorize: Info: while factorizing ", n, " found factor ", gcd}));
   /* Return result found */
   PollardCombineLists(PollardRhoFactorize(gcd), PollardRhoFactorize(Div(n,gcd)));
 ];

@@ -22,18 +22,26 @@ CountBits(value) :=
 /// Use variable steps to speed up operation for large numbers x
 IntLog(x, base) :=
 [
-	Local(result, step, factor);
+	Local(result, step, old'step, factor, old'factor);
 	result := 0;
-	step := 1;
-	factor := base;
+	old'step := step := 1;
+	old'factor := factor := base;
 	// first loop: increase step
-	While (x != 0 And x >= factor)
+	While (x >= factor)
 	[
-		x := Div(x, factor);
-		result := result + step;
+		old'factor := factor;
 		factor := factor*factor;
+		old'step := step;
 		step := step*2;
 	];
+	If(x >= base,
+	  [
+		step := old'step;
+		result := step;
+		x := Div(x, old'factor);
+	  ],
+	  step := 0
+	);
 	// second loop: decrease step
 	While (step > 0 And x != 1)
 	[
