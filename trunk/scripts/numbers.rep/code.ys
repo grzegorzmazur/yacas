@@ -182,16 +182,15 @@ CheckIntPower(n, limit) :=
 /// Compute integer part of s-th root of (positive) integer n. Use only integer arithmetic.
 IntNthRoot(_n, s_IsInteger) <--
 [
-	Local(x, y, q);
+	Local(x, y);
 	// initial guess should always undershoot; try to improve it
 	x:= Max({2 ^ Div(IntLog(n, 2), s), 3 ^ Div(IntLog(n, 3), s), 5 ^ Div(IntLog(n, 5), s)});
 	y := x^s;	// y is always x^s
-	// choose q at the point when y''=0 at the root
-	q:=(s-1)/2;
+	// choose q at the point when y''=0 at the root -- makes for no stability problems, no overshooting
+	//q:=(s-1)/2; // (the value of q is now directly substituted below)
 	// Newton iteration. Works well unless "s" is very large (>50)
 	While(y < n)
 	[
-//	Echo({"x=", x});
 		x := Div(x*((s-1)*y+(s+1)*n), ((s+1)*y+(s-1)*n)) + 1;	// add 1 because the floating-point value undershoots
 		y := x^s;
 	];
