@@ -7,7 +7,8 @@ SCRIPTFILES = \
 		stdfuncs.rep/om.ys stdfuncs.rep/numerical.ys stdfuncs.rep/numerical.ys.def \
 		stdfuncs.rep/nummethods.ys stdfuncs.rep/nummethods.ys.def \
         stdopers.ys stubs.rep/code.ys stubs.rep/code.ys.def stubs.rep/om.ys substitute.rep/code.ys substitute.rep/code.ys.def sums.rep/code.ys sums.rep/code.ys.def \
-        univar.rep/code.ys univar.rep/code.ys.def yacasinit.ys assoc.rep/code.ys assoc.rep/code.ys.def html.rep/code.ys html.rep/code.ys.def \
+        univar.rep/code.ys univar.rep/code.ys.def univar.rep/sturm.ys univar.rep/sturm.ys.def \
+	yacasinit.ys assoc.rep/code.ys assoc.rep/code.ys.def html.rep/code.ys html.rep/code.ys.def \
         fakedb.rep/code.ys fakedb.rep/code.ys.def array.rep/code.ys array.rep/code.ys.def example.rep/code.ys example.rep/code.ys.def \
         trigsimp.rep/code.ys trigsimp.rep/code.ys.def patterns.rep/code.ys \
         patterns.rep/code.ys.def predicates.rep/code.ys predicates.rep/code.ys.def stats.rep/code.ys stats.rep/code.ys.def padic.rep/code.ys \

@@ -206,20 +206,27 @@ Function("SolveMatrix",{matrix,vector})
 Function("Newton",{function,variable,initial,accuracy})
 /*block*/
 [
+  Newton(function,variable,initial,accuracy,-Infinity,Infinity);
+];
+Function("Newton",{function,variable,initial,accuracy,min,max})
+/*block*/
+[
   Local(result,adjust,delta);
   MacroLocal(variable);
   function:=N(function);
   adjust:= -function/Apply("D",{variable,function});
   delta:=10000;
   result:=initial;
-  While (N(delta*Conjugate(delta)>accuracy*accuracy))
+  While (result > min And result < max And N(delta*Conjugate(delta)>accuracy*accuracy))
   [
     MacroSet(variable,result);
     delta:=N(adjust);
     result:=result+delta;
   ];
+  if (result <= min Or result >= max) [result := Fail;];
   result;
 ];
+
 HoldArg("Newton",function);
 HoldArg("Newton",variable);
 
