@@ -10,7 +10,7 @@ make clean
 cd src ; make version.h ; cd ..
 make
 cd src ; make -f makefile.ibook ; cd ..
-cd manualmaker ; make ; cd ..
+cd manmake ; make ; cd ..
 sudo make install
 make dist
 # make distcheck
