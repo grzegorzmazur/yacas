@@ -238,13 +238,14 @@ NewtonNum(_func, _x0, _prec0) <-- NewtonNum(func, x0, prec0, 2);
 // prec0 is the initial precision necessary to get convergence started.
 // order is the order of convergence of the given sequence (e.g. 2 or 3).
 // x0 must be close enough so that x1 has a few common digits with x0 after at most 5 iterations.
-NewtonNum(_func, _x0, _prec0, _order) <--
+NewtonNum(_func, _x'init, _prec0, _order) <--
 [
 	Check(prec0>=4, "NewtonNum: Error: initial precision must be at least 4");
 	Check(IsInteger(order) And order>1, "NewtonNum: Error: convergence order must be an integer and at least 2");
-	Local(x1, prec, exact'digits, int'part, initial'tries);
+	Local(x0, x1, prec, exact'digits, int'part, initial'tries);
 	GlobalPush(Numeric);
 	Numeric := True;
+	x0 := x'init;
 	prec := GetPrecision();
 	int'part := IntLog(Ceil(Abs(x0)), 10);	// how many extra digits for numbers like 100.2223
 	// int'part must be set to 0 if we have true floating-point semantics of Precision()
@@ -259,10 +260,13 @@ NewtonNum(_func, _x0, _prec0, _order) <--
 		x0 := x1;
 		x1 := (func @ x0);
 		exact'digits := Common'digits(x0, x1);
-		If(Verbose, Echo("NewtonNum: Info: got", exact'digits, "exact digits at prec. ", GetPrecision()));
+//		If(Verbose, Echo("NewtonNum: Info: got", exact'digits, "exact digits at prec. ", GetPrecision()));
 	];
-	Check(exact'digits >= 1, "NewtonNum: Error: need a more accurate initial value");
-
+	// need to check that the initial precision is achieved
+	If(
+		Assert("value", {"NewtonNum: Error: need a more accurate initial value than", x'init})
+			exact'digits >= 1,
+  [
 	exact'digits :=Min(exact'digits, prec0+2);
 	// run until get prec/order exact digits
 	int'part := IntLog(Ceil(Abs(x1)), 10);	// how many extra digits for numbers like 100.2223
@@ -272,11 +276,15 @@ NewtonNum(_func, _x0, _prec0, _order) <--
 		Precision(2+Min(exact'digits, Div(prec,order)+1)-int'part);
 		x0 := x1;
 		x1 := (func @ x0);
-		If(Verbose, Echo("NewtonNum: Info: got", Common'digits(x0, x1), "exact digits at prec. ", GetPrecision()));
+//		If(Verbose, Echo("NewtonNum: Info: got", Common'digits(x0, x1), "exact digits at prec. ", GetPrecision()));
 	];
 	// last iteration by hand
 	Precision(2+prec);
 	x1 := RoundTo( (func @ x1), prec);
+  ],
+  // did not get a good initial value, so return what we were given
+  x1 := x'init
+	);
 	Precision(prec);
 	GlobalPop(Numeric);
 	x1;
