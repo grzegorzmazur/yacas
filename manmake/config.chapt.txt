@@ -132,19 +132,23 @@ and standard scripts.
 
 *CALL
 	PrettyPrinter(printer)
+	PrettyPrinter()
+	GetPrettyPrinter()
 
 *PARMS
 
-{printer} -- a string containing the name of a function that can
-"pretty-print" an expression
+{printer} -- a string containing the name of a function that can "pretty-print" an expression.
+
 
 *DESC
 
 This function sets up the function printer to print out the results on
-the command line. This can be reset to the internal printer with {PrettyPrinter()}.
+the command line. This can be reset to the internal printer with {PrettyPrinter()} (when no argument is given, the system returns to the default).
 
-Currently implemented prettyprinters are: {PrettyForm}, {TeXForm}, {Print} and
-{DefaultPrint}.
+Currently implemented prettyprinters are: {PrettyForm}, {TeXForm}, {Print}, {OMForm}, {CForm} and {DefaultPrint}.
+
+{GetPrettyPrinter()} returns the current pretty printer, or it returns
+an empty string if the default pretty printer is used.
 
 *E.G.
 
@@ -166,7 +170,7 @@ Currently implemented prettyprinters are: {PrettyForm}, {TeXForm}, {Print} and
 	In> Taylor(x,0,5)Sin(x)
 	Out> x-x^3/6+x^5/120;
 
-*SEE PrettyForm, Write
+*SEE PrettyForm, Write, TeXForm, CForm, OMForm
 
 *CMD MaxEvalDepth --- set depth of recursion stack
 *CORE

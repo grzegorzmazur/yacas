@@ -232,6 +232,7 @@ CORE_KERNEL_FUNCTION("FastIsPrime",LispFastIsPrime,1,YacasEvaluator::Function | 
 CORE_KERNEL_FUNCTION("MathFac",LispFac,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("ApplyPure",LispApplyPure,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("PrettyPrinter",LispPrettyPrinter,1,YacasEvaluator::Function | YacasEvaluator::Variable);
+CORE_KERNEL_FUNCTION("GetPrettyPrinter",LispGetPrettyPrinter,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("GarbageCollect",LispGarbageCollect,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("LazyGlobal",LispLazyGlobal,1,YacasEvaluator::Macro | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("PatchLoad",LispPatchLoad,1,YacasEvaluator::Function | YacasEvaluator::Fixed);

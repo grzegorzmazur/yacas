@@ -14,6 +14,7 @@ Here is a summary of options:
 *	{-t} (enable extra history features)
 *	{--archive} <i>filename</i> (use a given library archive file)
 *	{--init} <i>filename</i> (use a given initial file)
+*	{--read-eval-print} <i>expression</i> (call this expression for the read-eval-print loop)
 *	{--patchload} (use {PatchLoad} to load files)
 *	{--rootdir} <i>directory</i>{/} (specify library directory)
 *	{--server} <i>port</i> (start {Yacas} as a network server on given port)
@@ -57,7 +58,26 @@ the PHP scripting language.
 
 	yacas --init [file]
 Tells the system to load {file} as the initialization file. By default
-it loads the file {yacasinit.ys} from the scripts directory.
+it loads the file {yacasinit.ys} from the scripts directory. Thus for
+customization one has two options: write a {~/.yacasrc} file
+with initialization code (as it is loaded after the initialization
+script is loaded), or write a custom initialization script that first
+uses {yacasinit.ys} and adds some extra custom code.
+
+	yacas --read-eval-print [expression]
+Call {expression} for the read-eval-print loop. The default 
+read-eval-print loop is implemented in the initialization 
+script {yacasinit.ys}. There is a fallback read-eval-print
+loop in the kernel, which can be invoked by passing an empty
+string with this command line option, as {--read-eval-print ""}.
+
+An alternative way to replace the default read-eval-print
+loop is to write a custom initialization script that re-implements
+the read-eval-print loop that us used by default: the function 
+{REP()} which is defined in {yacasinit.ys}.
+
+Care has to be taken with this option, as when the read-eval-print
+expression doesn't function correctly Yacas cannot be quit.
 
 	yacas --server <port>
 On some platforms server mode can be enabled at build time by passing the

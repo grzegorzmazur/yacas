@@ -817,6 +817,15 @@ void LispPrettyPrinter(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalTrue(aEnvironment,RESULT);
 }
 
+void LispGetPrettyPrinter(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+  if (aEnvironment.PrettyPrinter() == NULL)
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp("\"\"")));
+  else
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.PrettyPrinter()));
+}
+
+
 
 void LispGarbageCollect(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
