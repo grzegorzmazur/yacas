@@ -21,37 +21,6 @@ x- Finish integration: if(...)... etcetera
 x- Finish integration: rational functions,
 x- Finish integration: poly*f(x),
 
-		Integration
-
-Integration can be performed by the function Integrate, which
-has two calling conventions:
-
-*	Integrate(variable)expression
-*	Integrate(variable,from,to)expression
-
-Integrate can have its own set of rules for specific integrals,
-which might return a correct answer immediately. Alternatively,
-it calls the function AntiDeriv, to see if the anti-derivative
-can be determined for the integral requested. If this is the
-case, the anti-derivative is used to compose the output.
-The function {IntegrateFinal} performs this last step. The anti-derivative
-should be passed to this function.
-
-	    Trigonometric functions
-
-The function {HasTrig} detects that a function contains trigonometric
-functions, and calls {TrigSimpCombine} to simplify the expression
-such that multiplications between such functions are replaced by
-additions. This is generally an easier form to integrate.
-
-The step performed by {TrigSimpCombine} is done at the very end,
-to give the transformation rules that can deal with simple trigonometric
-functions a first chance to simplify it.
-
-@@@TODO important corrollary: Integrate(x)Sin(Sin(x)) never halts!
-@@@TODO add test code and fix this problem
-@@@TODO fix the broken @ in functional.rep
-@@@TODO make into module by using LocalSymbols
 
 
 

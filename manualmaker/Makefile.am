@@ -30,7 +30,8 @@ CODINGSOURCES = in/YacasDebugger.chapt.txt
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
 	CVS-Howto.chapt YacasDocs.chapt \
 	new.chapt paper.chapt Algorithms.chapt wordproblems.chapt \
-	algorithms-specfunc.chapt algorithms-elemfunc.chapt
+	algorithms-specfunc.chapt algorithms-elemfunc.chapt \
+	algorithms-integration.chapt
 
 ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt \
