@@ -99,7 +99,7 @@ The binary release of this package is bound to that license.
 
 The Yacas source code can be found at:
 
-      http://www.xs4all.nl/~apinkus/yacas.html
+      http://yacas.sf.net/
 
 The license and terms of use have been included in the file 'copying.txt'
 that accompanies this package.

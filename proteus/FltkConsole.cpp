@@ -47,6 +47,7 @@ x- no resetting the cursor back to 0 when staying on the same line?
 #include <FL/Fl.H>
 #include <FL/fl_draw.H>
 #include <FL/Fl_Tabs.H>
+#include <FL/Fl_Scroll.H>
 #include "yacasprivate.h"
 #include "FltkConsole.h"
 #include "FltkHintWindow.h"
@@ -886,7 +887,7 @@ int FltkConsole::handle(int event)
             }
             else
             {
-                if (event == FL_PUSH)
+//TODO remove?                if (event == FL_PUSH)
                 {
                     iMovingOutput = 1;
                     iMoveBaseX = iOutputOffsetX;
@@ -927,6 +928,7 @@ int FltkConsole::handle(int event)
                     }
 #endif
                 }
+/*TODO remove?
                 else
                 {
                     iOutputOffsetX = iMoveBaseX + Fl::event_x() - iMouseDownX;
@@ -941,6 +943,7 @@ int FltkConsole::handle(int event)
                     SetOutputDirty();
                     redraw(); //output changed
                 }
+*/
             }
         }
         break;
@@ -1240,6 +1243,16 @@ void FltkConsole::AddOutput(ConsoleOutBase* aOutput)
 {
     iConsoleOut.Append(aOutput);
     iOutputHeight+=aOutput->height();
+  extern Fl_Scroll *console_scroll;
+  if (console_scroll)
+  {
+    resize(x(),y(),w(),iOutputHeight+32/*TODO*/);
+    int newy;
+    newy=iOutputHeight+32+20-console_scroll->h();
+    if (newy<0) newy=0;
+    console_scroll->position(console_scroll->xposition(),newy);
+    console_scroll->redraw();
+  }
 }
 
 void FltkConsole::DeleteHints()
