@@ -1,4 +1,9 @@
 
+
+#if 0 
+/*TODO REMOVE DEPRECATED in favor of binary factoring
+
+
 #ifndef __unipoly_h__
 #define __unipoly_h__
 
@@ -68,3 +73,6 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo);
 
 
 #endif
+*/
+#endif
+

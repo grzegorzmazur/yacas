@@ -23,7 +23,7 @@
 #include "patcher.h"
 #include "platdll.h"
 #include "exedll.h"
-#include "unipoly.h"
+//TODO remove #include "unipoly.h"
 
 #ifdef HAVE_MATH_H
   #include <math.h>
@@ -985,6 +985,7 @@ void LispGetExtraInfo(LispEnvironment& aEnvironment, LispInt aStackTop)
     }
 }
 
+/*TODO remove
 void LispBerlekamp(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     //TESTARGS(3);
@@ -1031,6 +1032,8 @@ void LispBerlekamp(LispEnvironment& aEnvironment, LispInt aStackTop)
     }
     RESULT.Set(LIST(LA(ATOML("List")) + LA(res)));
 }
+*/
+
 
 void LispDefaultTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
