@@ -76,7 +76,7 @@ class ForthStack : CArrayGrower<ForthValue>
 {
 public:
     void Push(const ForthValue& aValue);
-    const ForthValue& ForthStack::Pop(void);
+    const ForthValue& Pop(void);
 };
 
 

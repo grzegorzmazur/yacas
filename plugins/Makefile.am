@@ -9,14 +9,6 @@ macosx:
 	cd forth ; make libforth.dylib
 	cd yacas_gsl ; make libyacas_gsl.dylib
 
-#
-# Why doesn't this work?
-#
-
-
-
-# -avoid-version -export-dynamic
-
 
 
 #mylib:

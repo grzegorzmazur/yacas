@@ -12,7 +12,6 @@
 
 #define LTDL_OBJDIR "../src"
 
-#define HAVE_LIBGSL 1
 
 /* end acconfig.h */
 
@@ -33,6 +32,15 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
+
+/* Define to 1 if you have the `gsl' library (-lgsl). */
+#define HAVE_LIBGSL 1
+
+/* Define to 1 if you have the `gslcblas' library (-lgslcblas). */
+#define HAVE_LIBGSLCBLAS 1
+
+/* Define to 1 if you have the `m' library (-lm). */
+#define HAVE_LIBM 1
 
 /* Define to 1 if you have the <malloc.h> header file. */
 /* #undef HAVE_MALLOC_H */
