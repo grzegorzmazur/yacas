@@ -24,3 +24,7 @@ Verify(
 IntNthRoot(65537^33, 11)
 , 281487861809153
 );
+
+Testing("Factorial");
+Verify(261! - 261*260!, 0);
+Verify(300! / 250!, 251***300);

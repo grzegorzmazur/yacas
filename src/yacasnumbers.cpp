@@ -835,17 +835,17 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
     Check(nr>=0,KLispErrInvalidArg);
     ANumber fac("1",aPrecision);
     LispInt i;
-/*
     for (i=2;i<=nr;i++)
     {
         BaseTimesInt(fac,i, WordBase);
     }
-*/
+/*
     for (i=2;i<nr;i+=2)
     {
         BaseTimesInt(fac,i*(i+1), WordBase);
     }
     if (i==nr) BaseTimesInt(fac, i, WordBase);
+*/
     return FloatToString(fac, aHashTable);
 }
 
