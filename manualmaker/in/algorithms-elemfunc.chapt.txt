@@ -68,7 +68,7 @@ where $k$ is chosen sufficiently large so that the Taylor series converges quick
 Trigonometric functions $Sin(x)$, $Cos(x)$ are computed by subtracting $2*Pi$ from $x$ until it is in the range $0<x<2*Pi$ and then using Taylor series.
 Tangent is computed by dividing $Sin(x)/Cos(x)$.
 
-Inverse trigonometric functions are computed by Newton's method (for {ArcSin}) or by continuous fraction expansion (for {ArcTan}),
+Inverse trigonometric functions are computed by Newton's method (for {ArcSin}) or by continued fraction expansion (for {ArcTan}),
 $$ArcTan(x) = x/(1+x^2/(3+(2*x)^2/(5+(3*x)^2/(7+...))))$$
 The convergence of this expansion for large $Abs(x)$ is improved by using the identity
 $$ArcTan(x) = Pi/2*Sign(x) - ArcTan(1/x)$$
