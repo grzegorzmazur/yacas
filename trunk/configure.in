@@ -45,7 +45,7 @@ AC_C_INLINE
 AC_HEADER_TIME
 
 # Checks for library functions.
-AC_CHECK_FUNCS(select socket strtod)
+AC_CHECK_FUNCS(select socket strtod strchr)
 
 # checks for libraries
 AC_CHECK_LIB(dl,dlopen,LIBS="$LIBS -ldl -rdynamic",,-rdynamic)

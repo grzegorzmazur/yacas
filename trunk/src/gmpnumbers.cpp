@@ -76,7 +76,7 @@ void initGMPNumber(GMPNumber& x, GMPNumber& y)
   x.exp = y.exp;
 }
 
-void initGMPNumber(GMPNumber& x, long y=0)
+void initGMPNumber(GMPNumber& x, long y)
 {
   mpz_t man;
   mpz_init_set_ui(man,y);
