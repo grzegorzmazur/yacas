@@ -27,10 +27,14 @@ proteusworksheet   : $(WORKSHEET_OBJS) $(YACAS_DIR)/libyacas.a $(YACAS_DIR)/liby
 
 PROTEUS_OBJS = tabs.o editor.o HelpView.o FltkConsole.o grapher.o FltkHintWindow.o fl_adjustable_file_chooser.o
 
-
 proteus   : $(PROTEUS_OBJS) $(YACAS_DIR)/libyacas.a $(YACAS_DIR)/libyacasplatform.a $(YACAS_DIR)/libyacasnumbers.a 
 	$(CXX) $(PROTEUS_OBJS) $(YACAS_DIR)/libyacas.a $(YACAS_DIR)/libyacasplatform.a $(YACAS_DIR)/libyacasnumbers.a -o proteus $(CXXFLAGS) $(LIBS) -lm
 	mv proteus $(EXENAME)
+
+TRACER_OBJS = tracer.cpp
+
+proteustracer: $(TRACER_OBJS)
+	$(CXX) $(TRACER_OBJS) -o proteustracer $(CXXFLAGS) $(LIBS) -lm
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCS) -c $*.cpp -o $*.o

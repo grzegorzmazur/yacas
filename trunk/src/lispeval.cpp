@@ -181,39 +181,92 @@ FINISH:
     aEnvironment.iEvalDepth--;
 }
 
+static void TraceShowExpression(LispEnvironment& aEnvironment,
+                                LispPtr& aExpression)
+{
+    InfixPrinter infixprinter(aEnvironment.PreFix(),
+                              aEnvironment.InFix(),
+                              aEnvironment.PostFix(),
+                              aEnvironment.Bodied());
+    // Print out the current expression
+    LispString outString;
+    StringOutput stream(outString);
+    infixprinter.Print(aExpression, stream);
+
+    // Escape quotes
+    LispInt i;
+    LispChar c = '\\';
+    for (i=outString.NrItems()-1;i>=0;--i)
+    {
+        switch(outString[i])
+        {
+        case '\"':
+            outString.Insert(i,c);
+        }
+    }
+    aEnvironment.CurrentOutput()->Write(&outString[0]);
+}
+
+
 void TraceShowArg(LispEnvironment& aEnvironment,LispPtr& aParam,
                   LispPtr& aValue)
 {
     LispInt i;
+/*TODO remove?
     InfixPrinter infixprinter(aEnvironment.PreFix(),
                               aEnvironment.InFix(),
                               aEnvironment.PostFix(),
                               aEnvironment.Bodied());
+                              */
     for (i=0;i<aEnvironment.iEvalDepth+2;i++)
         aEnvironment.CurrentOutput()->Write("  ");
-    aEnvironment.CurrentOutput()->Write("TrArg(");
+    aEnvironment.CurrentOutput()->Write("TrArg(\"");
+    TraceShowExpression(aEnvironment, aParam);
+/*TODO remove?
     infixprinter.Print(aParam,*aEnvironment.CurrentOutput());
-    aEnvironment.CurrentOutput()->Write(",");
+    */
+    aEnvironment.CurrentOutput()->Write("\",\"");
+    TraceShowExpression(aEnvironment, aValue);
+/*TODO remove?
     infixprinter.Print(aValue,*aEnvironment.CurrentOutput());
-    aEnvironment.CurrentOutput()->Write(");\n");
+    */
+    aEnvironment.CurrentOutput()->Write("\");\n");
 }
+
 
 void TraceShowEnter(LispEnvironment& aEnvironment,
                     LispPtr& aExpression)
 {
-    
-    
     LispInt i;
     for (i=0;i<aEnvironment.iEvalDepth;i++)
         aEnvironment.CurrentOutput()->Write("  ");
-    aEnvironment.CurrentOutput()->Write("TrEnter(");
+    aEnvironment.CurrentOutput()->Write("TrEnter(\"");
+
+    TraceShowExpression(aEnvironment, aExpression);
+/*TODO remove?
     InfixPrinter infixprinter(aEnvironment.PreFix(),
                               aEnvironment.InFix(),
                               aEnvironment.PostFix(),
                               aEnvironment.Bodied());
+    // Print out the current expression
+    LispString outString;
+    StringOutput stream(outString);
+    infixprinter.Print(aExpression, stream);
 
-    infixprinter.Print(aExpression, *aEnvironment.CurrentOutput());
-    aEnvironment.CurrentOutput()->Write(");\n");
+    // Escape quotes
+    LispInt i;
+    for (i=outString.NrItems()-1;i>=0;--i)
+    {
+        switch(outString[i])
+        {
+        case '\"':
+            outString.Insert(i,'\\');
+        }
+    }
+    aEnvironment.CurrentOutput()->Write(&outString[0]);
+*/
+//    infixprinter.Print(aExpression, *aEnvironment.CurrentOutput());
+    aEnvironment.CurrentOutput()->Write("\");\n");
 }
 
 
@@ -225,7 +278,13 @@ void TraceShowLeave(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispInt i;
     for (i=0;i<aEnvironment.iEvalDepth;i++)
         aEnvironment.CurrentOutput()->Write("  ");
-    aEnvironment.CurrentOutput()->Write("TrLeave(");
+    aEnvironment.CurrentOutput()->Write("TrLeave(\"");
+
+    TraceShowExpression(aEnvironment, aExpression);
+    aEnvironment.CurrentOutput()->Write("\",\"");
+    TraceShowExpression(aEnvironment, aResult);
+/*TODO remove?
+
     InfixPrinter infixprinter(aEnvironment.PreFix(),
                               aEnvironment.InFix(),
                               aEnvironment.PostFix(),
@@ -234,7 +293,8 @@ void TraceShowLeave(LispEnvironment& aEnvironment, LispPtr& aResult,
     infixprinter.Print(aExpression, *aEnvironment.CurrentOutput());
     aEnvironment.CurrentOutput()->Write(",");
     infixprinter.Print(aResult, *aEnvironment.CurrentOutput());
-    aEnvironment.CurrentOutput()->Write(");\n");
+    */
+    aEnvironment.CurrentOutput()->Write("\");\n");
 }
 
 
