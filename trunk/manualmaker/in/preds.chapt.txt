@@ -6,12 +6,9 @@ A predicate is a function that returns a boolean value, i.e. {True} or {False}. 
 often used in patterns, For instance, a rule that only holds for a
 positive integer would use a pattern like {n_IsPositiveInteger}.
 
-*CMD < --- Test whether lhs is smaller than rhs
-
+*CMD < --- Test for "less than"
 *STD
-
 *CALL
-
 	e1 < e2 (prec. 9)
 
 *PARMS
@@ -40,12 +37,9 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 
 *SEE IsNumber, IsInfinity, N
 
-*CMD > --- Test whether lhs is larger than rhs
-
+*CMD > --- Test for "greater than"
 *STD
-
 *CALL
-
 	e1 > e2 (prec. 9)
 
 *PARMS
@@ -74,12 +68,9 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 
 *SEE IsNumber, IsInfinity, N
 
-*CMD <= --- Test whether lhs is smaller or equal rhs
-
+*CMD <= --- Test for "less or equal"
 *STD
-
 *CALL
-
 	e1 <= e2 (prec. 9)
 
 *PARMS
@@ -109,13 +100,10 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 
 *SEE IsNumber, IsInfinity, N
 
-*CMD >= --- Test whether lhs is larger or equal rhs
-
+*CMD >= --- Test for "greater or equal"
 *STD
-
 *CALL
-
-e1 >= e2 (prec. 9)
+	e1 >= e2 (prec. 9)
 
 *PARMS
 
@@ -144,13 +132,10 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 
 *SEE IsNumber, IsInfinity, N
 
-*CMD != --- Test whether two expressions are not equal
-
+*CMD != --- Test for "not equal"
 *STD
-
 *CALL
-
-e1 != e2 (prec. 9)
+	e1 != e2 (prec. 9)
 
 *PARMS
 
@@ -173,13 +158,10 @@ The expression {e1 != e2} is equivalent to {Not(e1 = e2)}.
 
 *SEE =
 
-*CMD = --- Test whether two expressoins are equal
-
+*CMD = --- Test whether two expressions are equal
 *STD
-
 *CALL
-
-e1 = e2 (prec. 9)
+	e1 = e2 (prec. 9)
 
 *PARMS
 
@@ -193,8 +175,8 @@ the same.
 
 Note that the test is on syntactic equality, not mathematical
 equality. Hence even if the result is {False}, the
-expressions can still be (mathematically) equal; see the examples
-underneath. Put otherwise, this function tests whether the two
+expressions can still be <i>mathematically</i> equal; see the examples
+below. Put otherwise, this function tests whether the two
 expressions would be displayed in the same way if they were printed.
 
 *E.G.
@@ -212,22 +194,19 @@ expressions would be displayed in the same way if they were printed.
 *SEE !=, Equals
 
 *CMD Not --- Logical negation
-
 *CORE
-
 *CALL
-
-Not bool
+	Not expr
 
 *PARMS
 
-bool - a boolean expression
+{expr} -- a boolean expression
 
 *DESC
 
-Not returns the logical negation of the argument bool. If bool is
-False it returns True, and if the argument is True Not returns False.
-If the argument is neither True nor False it returns the entire
+Not returns the logical negation of the argument expr. If {expr} is
+{False} it returns {True}, and if {expr} is {True}, {Not expr} returns {False}.
+If the argument is neither {True} nor {False}, it returns the entire
 expression with evaluated arguments.
 
 *E.G.
@@ -242,18 +221,14 @@ expression with evaluated arguments.
 *SEE And, Or
 
 *CMD And --- Logical conjunction
-
 *CORE
-
 *CALL
-
-a1 And a2  (prec. 100)
-
-And(a1,a2,a3,...,an)
+	a1 And a2  (prec. 100)
+	And(a1, a2, a3, ..., aN)
 
 *PARMS
 
-a1 .. an - boolean values (True or False)
+a1, ..., aN - boolean values (may evaluate to {True} or {False})
 
 *DESC
 
@@ -279,27 +254,23 @@ arguments that didn't evaluate to True or False yet.
 *SEE Or, Not
 
 *CMD Or --- Logical disjunction
-
 *CORE
-
 *CALL
-
-a1 Or a2  (prec. 101)
-
-Or(a1,a2,a3,...,an)
+	a1 Or a2  (prec. 101)
+	Or(a1, a2, a3, ..., aN)
 
 *PARMS
 
-a1 .. an - boolean values (True or False)
+a1, ..., aN - boolean expressions (may evaluate to {True} or {False})
 
 *DESC
 
-This function returns True if an argument is encountered
+This function returns {True} if an argument is encountered
 that is true (scanning from left to right). The
-Or operation is lazy, it returns True as soon as a True argument
-is found (from left to right). If an argument other than True or
-False is encountered a new Or expression is returned with all
-arguments that didn't evaluate to True or False yet.
+{Or} operation is "lazy", it returns {True} as soon as a {True} argument
+is found (from left to right). If an argument other than {True} or
+{False} is encountered, an unevaluated {Or} expression is returned with all
+arguments that didn't evaluate to {True} or {False} yet.
 
 *E.G.
 
@@ -313,14 +284,10 @@ arguments that didn't evaluate to True or False yet.
 *SEE And, Not
 
 *CMD IsFreeOf --- Test whether expression depends on variable
-
 *STD
-
 *CALL
-
-IsFreeOf(expr, var)
-
-IsFreeOf(expr, {var, ...})
+	IsFreeOf(expr, var)
+	IsFreeOf(expr, {var, ...})
 
 *PARMS
 
@@ -354,12 +321,9 @@ expression {D(x) a*x+b} evaluates to {a}, which does not depend on {x}.
 *SEE Contains
 
 *CMD IsZeroVector --- Test whether list contains only zeroes
-
 *STD
-
 *CALL
-
-IsZeroVector(list)
+	IsZeroVector(list)
 
 *PARMS
 
@@ -380,13 +344,10 @@ only zeroes and {False} otherwise.
 
 *SEE IsList, ZeroVector
 
-*CMD IsNonObject --- Test whether argument is not an Object()
-
+*CMD IsNonObject --- Test whether argument is not an {Object()}
 *STD
-
 *CALL
-
-IsNonObject(expr)
+	IsNonObject(expr)
 
 *PARMS
 
@@ -405,12 +366,9 @@ In fact, the result is always {True}.
 *SEE Object
 
 *CMD IsEven --- Test whether integer is even
-
 *STD
-
 *CALL
-
-IsEven(n)
+	IsEven(n)
 
 *PARMS
 
@@ -432,12 +390,9 @@ even if it is divisible by two. Hence the even numbers are 0, 2, 4, 6,
 *SEE IsOdd, IsInteger
 
 *CMD IsOdd --- Test whether integer is odd
-
 *STD
-
 *CALL
-
-IsOdd(n)
+	IsOdd(n)
 
 *PARMS
 
@@ -459,12 +414,9 @@ odd if it is not divisible by two. Hence the odd numbers are 1, 3, 5,
 *SEE IsEven, IsInteger
 
 *CMD IsFunction --- Test whether argument is a composite object
-
 *CORE
-
 *CALL
-
-IsFunction(expr)
+	IsFunction(expr)
 
 *PARMS
 
@@ -485,12 +437,9 @@ atom. This includes not only obvious functions like {f(x)}, but also expressions
 *SEE IsAtom, IsList, Type
 
 *CMD IsAtom --- Test whether argument is an atom
-
 *CORE
-
 *CALL
-
-IsAtom(expr)
+	IsAtom(expr)
 
 *PARMS
 
@@ -511,12 +460,9 @@ variables are all atoms.
 *SEE IsFunction, IsNumber, IsString
 
 *CMD IsString --- Test whether argument is an string
-
 *CORE
-
 *CALL
-
-IsString(expr)
+	IsString(expr)
 
 *PARMS
 
@@ -566,12 +512,9 @@ function, so {IsNumber} will return {False}.
 *SEE IsAtom, IsString, IsInteger, IsPositiveNumber, IsNegativeNumber, Complex
 
 *CMD IsList --- Test whether argument is a list
-
 *CORE
-
 *CALL
-
-IsList(expr)
+	IsList(expr)
 
 *PARMS
 
@@ -606,12 +549,9 @@ Returns {True} when called on a list of numbers or expressions that evaluate to 
 *SEE N, IsNumber
 
 *CMD IsBound --- test whether a variable is bound to a value
-
 *CORE
-
 *CALL
-
-IsBound(var)
+	IsBound(var)
 
 *PARMS
 
@@ -634,12 +574,9 @@ it has a value. The argument "var" is not evaluated.
 *SEE IsAtom
 
 *CMD IsBoolean --- Test whether argument is a Boolean
-
 *STD
-
 *CALL
-
-IsBoolean(expression)
+	IsBoolean(expression)
 
 *PARMS
 
@@ -664,12 +601,9 @@ functions that return a boolean result, like
 *SEE True, False
 
 *CMD IsNegativeNumber --- Test whether argument is a negative number
-
 *STD
-
 *CALL
-
-IsNegativeNumber(n)
+	IsNegativeNumber(n)
 
 *PARMS
 
@@ -690,12 +624,9 @@ number, the function returns {False}.
 *SEE IsNumber, IsPositiveNumber, IsNotZero, IsNegativeInteger, IsNegativeReal
 
 *CMD IsNegativeInteger --- Test whether argument is a negative integer
-
 *STD
-
 *CALL
-
-IsNegativeInteger(n)
+	IsNegativeInteger(n)
 
 *PARMS
 
@@ -717,12 +648,9 @@ negative. The negative integers are -1, -2, -3, -4, -5, etcetera. If
 *SEE IsPositiveInteger, IsNonZeroInteger, IsNegativeNumber
 
 *CMD IsPositiveNumber --- Test whether argument is a positive number
-
 *STD
-
 *CALL
-
-IsPositiveNumber(n)
+	IsPositiveNumber(n)
 
 *PARMS
 
@@ -743,12 +671,9 @@ number the function returns {False}.
 *SEE IsNumber, IsNegativeNumber, IsNotZero, IsPositiveInteger, IsPositiveReal
 
 *CMD IsPositiveInteger --- Test whether argument is a positive integer
-
 *STD
-
 *CALL
-
-IsPositiveInteger(n)
+	IsPositiveInteger(n)
 
 *PARMS
 
@@ -770,12 +695,9 @@ integer the function returns {False}.
 *SEE IsNegativeInteger, IsNonZeroInteger, IsPositiveNumber
 
 *CMD IsNotZero --- Test whether argument is a nonzero number
-
 *STD
-
 *CALL
-
-IsNotZero(n)
+	IsNotZero(n)
 
 *PARMS
 
@@ -797,12 +719,9 @@ n - number to test
 *SEE IsNumber, IsPositiveNumber, IsNegativeNumber, IsNonZeroInteger
 
 *CMD IsNonZeroInteger --- Test whether argument is a nonzero integer
-
 *STD
-
 *CALL
-
-IsNonZeroInteger(n)
+	IsNonZeroInteger(n)
 
 *PARMS
 
@@ -823,12 +742,9 @@ not an integer, the result is {False}.
 *SEE IsPositiveInteger, IsNegativeInteger, IsNotZero
 
 *CMD IsInfinity --- Test whether argument is an infinity
-
 *STD
-
 *CALL
-
-IsInfinity(expr)
+	IsInfinity(expr)
 
 *PARMS
 
@@ -849,12 +765,9 @@ case if "expr" is either {Infinity} or {-Infinity}.
 *SEE Integer
 
 *CMD IsPositiveReal --- Test whether argument is numerically positive
-
 *STD
-
 *CALL
-
-IsPositiveReal(expr)
+	IsPositiveReal(expr)
 
 *PARMS
 
@@ -882,12 +795,9 @@ Yacas can not determine the sign of this expression.
 *SEE IsNegativeReal, IsPositiveNumber, N
 
 *CMD IsNegativeReal --- Test whether argument is numerically negative
-
 *STD
-
 *CALL
-
-IsNegativeReal(expr)
+	IsNegativeReal(expr)
 
 *PARMS
 
@@ -915,12 +825,9 @@ Yacas can not determine the sign of this expression.
 *SEE IsPositiveReal, IsNegativeNumber, N
 
 *CMD IsConstant --- Test whether argument is constant
-
 *STD
-
 *CALL
-
-IsConstant(expr)
+	IsConstant(expr)
 
 *PARMS
 

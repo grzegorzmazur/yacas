@@ -522,7 +522,7 @@ least have been loaded, but is not loaded twice.
 
 *SEE Load, DefLoad, DefaultDirectory
 
-*CMD DefLoad --- Load a .def file
+*CMD DefLoad --- Load a {.def} file
 *CORE
 *CALL
 
