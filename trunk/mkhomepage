@@ -23,16 +23,16 @@ make dist
 if [ -d homepage ] ; then : ; else  mkdir homepage ; fi; 
 cd homepage
 
-cp ../manualmaker/*.html .
+cp ../manmake/*.html .
 cp ../docs/yacaslogo.gif .
 tar -zcvf manual.html.tar.gz *
-cp ../manualmaker/*.ps .
-cp ../manualmaker/*.pdf .
+cp ../manmake/*.ps .
+cp ../manmake/*.pdf .
 tar -zcvf manual.ps.tar.gz *.ps
 tar -zcvf manual.pdf.tar.gz *.pdf
 rm *.ps *.pdf
 
-cp ../docs/*.gif ../docs/*.html .
+cp ../docs/*.gif ../docs/*.png ../docs/*.html .
 cp yacas.html index.html
 yacas --patchload -pc ../docs/downloads.html.in > downloads.html
 
