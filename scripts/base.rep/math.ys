@@ -161,5 +161,9 @@ Defun("MathFloatPower", {x,y})
 
 // power function that works for all real x, y
 /// FIXME: No precision tracking yet.
+
 Defun("MathPower", {x,y})
-	If(IsInteger(y), MathIntPower(x,y), MathFloatPower(x,y));
+// avoid MathPower(0,float)
+	If(Equals(x,0),0, If(Equals(x,1),1, 
+	  If(IsInteger(y), MathIntPower(x,y), MathFloatPower(x,y))
+	));
