@@ -16,6 +16,7 @@ unsigned failed = 0;
 unsigned passed = 0;
 
 #define Check(a,b) CheckL(__LINE__,a,b)
+#define CheckValues(a,b,c) CheckValuesL(__LINE__,a,b,c)
 #define CheckStringEquals(a,b,c) CheckL(__LINE__,a,b,c)
 #define CheckStringValue(a,b,c,d,e) CheckStringValueL(__LINE__,a,b,c,d,e) 
 #define CheckEquals(a,b,c,d,e) CheckEqualsL(__LINE__,a,b,c,d,e) 
@@ -43,6 +44,23 @@ void CheckL(int line, bool test_condition, const char* test_description)
     if (!test_condition)
     {
         printf("@@@@@@@ (line %d) %s: failed\n",line, test_description);
+		++failed;
+    }
+    else
+    {
+	if (show_passed)
+	    printf("\t%s: passed\n", test_description);
+	++passed;
+    }
+    fflush(stdout);
+}
+
+// check that the condition is true and print diagnostic
+void CheckValuesL(int line, double x, double y, const char* test_description)
+{
+    if (x!=y)
+    {
+        printf("@@@@@@@ (line %d) %s: failed, %f!=%f\n",line, test_description, x, y);
 		++failed;
     }
     else
@@ -100,56 +118,61 @@ void TestTypes1(double value)
 	BigNumber x;
 	x.SetTo(int_value);
 	Check(x.IsInt(), "set to integer type");
-	Check(x.Double()==int_value, "value is correct");
+	CheckValues(x.Double(),int_value, "value is correct");
 	Check(x.IsIntValue(), "is an integer value");
-	Check(x.Sign()==int_sign, "sign is correct");
+	CheckValues(x.Sign(),int_sign, "sign is correct");
 	x.BecomeInt();
 	Check(x.IsInt(), "still integer type");
 	x.BecomeFloat();
 	Check(!x.IsInt(), "converted to double type");
-	Check(x.Double()==int_value, "value is still correct");
-	Check(x.Sign()==int_sign, "sign is correct");
+	CheckValues(x.Double(),int_value, "value is still correct");
+	CheckValues(x.Sign(),int_sign, "sign is correct");
 	Check(x.IsSmall(), "value is small");
 	x.BecomeInt();
 	Check(x.IsInt(), "converted to integer type");
-	Check(x.Double()==int_value, "value is still correct");
+	CheckValues(x.Double(),int_value, "value is still correct");
 	x.Negate(x);	// negate an integer
-	Check(x.Double()==-int_value, "value is negated");
-	Check(x.Sign()==-int_sign, "sign is correct");
+	CheckValues(x.Double(),-int_value, "value is negated");
+	CheckValues(x.Sign(),-int_sign, "sign is correct");
 
 // test floats
 	x.SetTo(value);
-	Check(!x.IsInt(), "set to float type");
-  double returned_value =x.Double();
-  Check(returned_value==value, "value is correct");
-// value doesn't have to be float
-	//	Check(!x.IsIntValue(), "is not an integer value");
-	x.BecomeFloat();
-	Check(!x.IsInt(), "still float type");
-	Check(x.Double()==value, "value is still correct");
-	Check(x.IsSmall(), "value is small");
-	Check(x.Sign()==sign, "sign is correct");
-
 	BigNumber y;
 	y.SetTo(value);	// test constructor from double
 	Check(y.IsSmall(), "value is small");
 	Check(y.Equals(x), "y=x");
 	Check(x.Equals(y), "x=y");
+	CheckValues(x.Double(), y.Double(), "x=y by double value");
+	CheckValues(x.Sign(), y.Sign(), "x=y by sign");
+	CheckValues(x.BitCount(), y.BitCount(), "x=y by bit count");
+	Check(!x.IsInt(), "set to float type");
+  double returned_value =x.Double();
+  CheckValues(returned_value,value, "value is correct");
+// value doesn't have to be float
+	//	Check(!x.IsIntValue(), "is not an integer value");
+	x.BecomeFloat(x.GetPrecision());
+	Check(!x.IsInt(), "still float type");
+	CheckValues(x.Double(),value, "value is still correct");
+	Check(x.IsSmall(), "value is small");
+	CheckValues(x.Sign(),sign, "sign is correct");
+
+	Check(y.Equals(x), "y=x");
+	Check(x.Equals(y), "x=y");
 	y.SetTo(int_value);	// constructor from integers
-	Check(y.Double()==int_value, "value of y is correct");
+	CheckValues(y.Double(),int_value, "value of y is correct");
 	Check(y.IsInt() && y.IsIntValue(), "y is integer");
 
 	x.Negate(x);	// negate a float
 	returned_value = x.Double();
-  Check(returned_value==-value, "value is negated");
-	Check(x.Sign()==-sign, "sign is correct");
+  CheckValues(returned_value,-value, "value is negated");
+	CheckValues(x.Sign(),-sign, "sign is correct");
 	x.BecomeInt();
 	Check(x.IsInt(), "converted to integer type");
 	returned_value = x.Double();
-  Check(returned_value==-int_value, "value is correct");
+  CheckValues(returned_value,-int_value, "value is correct");
 	x.BecomeFloat();
 	Check(!x.IsInt(), "convert to float type");
-	Check(x.Double()==-int_value, "value is still correct");
+	CheckValues(x.Double(),-int_value, "value is still correct");
 	Check(x.IsIntValue(), "is an integer value");
 	Check(x.IsSmall(), "value is small");
 
@@ -171,7 +194,7 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 
 	Check(!x.IsInt(), "x is a float type as read");
 	Check(y.IsInt(), "y is an integer type as read");
-	Check(x.Double()==double_value, "double value is correct");
+	CheckValues(x.Double(),double_value, "double value is correct");
 	if (x.Double()!=double_value) printf("mismatch: %24e vs %24e\n", x.Double(), double_value);
 	x.ToString(str, precision, base);
 	CheckStringEquals(str, float_printed, "float value is printed back correctly");
@@ -179,8 +202,8 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 	Check(y.IsIntValue(), "y has an integer value as read");
 	y.ToString(str, precision, base);
 	CheckStringEquals(str, int_string, "int value is printed back correctly");
-	Check(x.Sign()==sign, "sign of x is correct");
-	Check(y.Sign()==sign, "sign of y is correct");
+	CheckValues(x.Sign(),sign, "sign of x is correct");
+	CheckValues(y.Sign(),sign, "sign of y is correct");
 
 	y.ToString(str,precision, base);
 	CheckStringEquals(str,int_string,"read integer value correctly");
@@ -188,7 +211,7 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 	Check(!z.IsInt(), "z has float type");
 	Check(!z.IsIntValue(), "z has a float value");
 	z.BecomeInt();
-	Check(z.Sign()==sign, "sign of z is correct");
+	CheckValues(z.Sign(),sign, "sign of z is correct");
 	z.ToString(str,precision,base);
 	CheckStringEquals(str,int_string,"convert to integer value correctly");
 	Check(z.IsInt(), "z is an integer now");
@@ -203,11 +226,14 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 	Check(!z.Equals(x), "z!=x");
 	Check(!x.Equals(y), "x!=y");
 	
-	z.BecomeFloat();
+	z.BecomeFloat(x.GetPrecision());
 	Check(!z.IsInt(), "z is not an integer now");
-	Check(z.Sign()==sign, "sign of z is correct");
+	CheckValues(z.Sign(),sign, "sign of z is correct");
 	Check(z.IsIntValue(), "z still has an integer value");
 	Check(!x.Equals(z), "x!=z");
+	Check(!z.Equals(x), "z!=x");
+	if (x.Equals(z))
+		printf("problematic value: x=%f, precision %d, %d bits\n", x.Double(), x.GetPrecision(), z.GetPrecision());
 
 	
 	BigNumber t;
@@ -215,7 +241,7 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 	Check(t.Equals(x), "t=x");
 	Check(t.Equals(t), "t=t");
 	t.Negate(t);
-	Check(t.Sign()==-sign, "sign of t is correct");
+	CheckValues(t.Sign(),-sign, "sign of t is correct");
 	Check(!t.Equals(x), "t!=x now");
 	Check(!x.LessThan(x), "x<x is false");
 	Check(!t.LessThan(t), "t<t is false");
@@ -479,7 +505,7 @@ int main(void)
 	x.BecomeFloat();
 	Next("11");
 	x.Precision(100);
-	Check(x.GetPrecision()==100, "set precision successfully");
+	CheckValues(x.GetPrecision(),100, "set precision successfully");
 	x.BecomeInt();
 	Next("12");
 	x.BitOr(x,x);
@@ -488,18 +514,18 @@ int main(void)
 	
 	Next("construct 0 from string");
 	BigNumber y("0", 10);	// construct
-	Check(y.Double()==0, "value of 0 is correct");
+	CheckValues(y.Double(),0, "value of 0 is correct");
 	Check(y.IsInt(), "0 is of integer type");
 	Check(y.IsIntValue(), "value of 0 is integer");
 
 	y.SetTo("0.", 10);	// construct
-	Check(y.Double()==0, "value of 0. is correct");
+	CheckValues(y.Double(),0, "value of 0. is correct");
 	Check(!y.IsInt(), "0. is of float type");
 	Check(y.IsIntValue(), "value of 0. is integer");
 
 	Next("read binary string");
 	y.SetTo("-101010", 50, 2);	// construct with given precision
-	Check(y.Double()==-42, "value is correct");
+	CheckValues(y.Double(),-42, "value is correct");
 	Check(y.IsInt(), "has int type");
 	Check(y.IsIntValue(), "value is integer");
 	Check(y.IsSmall(), "value is small");
@@ -510,7 +536,7 @@ int main(void)
 	Next("testing big integers");
 	x.SetTo("010203040506070809101112131415161718192021222324252627282930", 0, 10);	// the precision argument should be ignored when reading integers
 	Check(x.IsInt(), "has integer type");
-	Check(x.Sign()==1, "has positive value");
+	CheckValues(x.Sign(),1, "has positive value");
 	Check(x.IsIntValue(), "has integer value");
 	Check(!x.IsSmall(), "big integer is not small");
 	x.Multiply(x,x,0);
@@ -519,7 +545,7 @@ int main(void)
 	Check(!x.IsSmall(), "big integer is not small");
 	y.SetTo(2);
 	y.Mod(x,y);
-	Check(y.Double()==0, "value is even");
+	CheckValues(y.Double(),0, "value is even");
 	x.BecomeFloat();
 	Check(!x.IsInt(), "has float type");
 	Check(x.IsIntValue(), "still has integer value type");
@@ -572,14 +598,14 @@ int main(void)
 	Check(y.IsIntValue(), "y has integer value");
 	BigNumber z(y);	// copy constructor
 	Check(!z.IsInt(), "z is of float type");
-	Check(z.Double()==-15416, "value is still -15416");
+	CheckValues(z.Double(),-15416, "value is still -15416");
 	Check(z.IsSmall(), "value is small");
 	
 	Next("test integer conversion");
 	z.BecomeInt();
 	x.SetTo(z);	// copy assignment
 	Check(x.IsInt(), "is of integer type");
-	Check(x.Double()==-15416, "value is still -15416");
+	CheckValues(x.Double(),-15416, "value is still -15416");
 	Check(x.IsSmall(), "value is small");
 
 	Next("equality");
@@ -593,7 +619,7 @@ int main(void)
 	Check(x.Equals(z), "x=z");
 	x.Negate(x);	// negate an integer
 	Check(x.IsInt(), "x still of integer type");
-	Check(x.Double()==15416, "value is now 15416");
+	CheckValues(x.Double(),15416, "value is now 15416");
 	Check(!z.Equals(x), "z!=-x");
 	Check(!y.Equals(x), "y!=-x");
 	
@@ -630,24 +656,36 @@ int main(void)
 	{
 		t.Add(t,x,10);
 	}
-	Check(t.Double()==4950, "correct sum of n from 0 to 99");
+	CheckValues(t.Double(),4950, "correct sum of n from 0 to 99");
 	
 	Next("bit counts");
 	x.SetTo(65537);
 	x.BitCount(x);
 	Check(x.IsInt(), "bit count is integer");
-	Check(x.Double()==17, "bit count of 65537 is 17");
+	CheckValues(x.Double(),17, "bit count of 65537 is 17");
 	Check(x.Double()!=16, "bit count of 65537 is not 16");
 	x.SetTo(1./1050000.);
 	Check(!x.IsInt(), "x is a floating-point value");
-	Check(x.Sign()==1, "x is positive");
-	printf("value of x is %f, bit count %ld\n", x.Double(), x.BitCount());
+	CheckValues(x.Sign(),1, "x is positive");
 	x.BitCount(x);
 	Check(x.IsInt(), "bit count is integer");
-	printf("value of x is %f\n", x.Double());
-	Check(x.Double()==-20, "bit count of 2^(-20)");
+	CheckValues(x.Double(),-20, "bit count of 2^(-20)");
 	Check(x.Double()!=-21, "bit count of 2^(-20) is not -21");
 	Check(x.Double()!=-19, "bit count of 2^(-20) is not -19");
+	
+	long B_x;
+#define test_bit_count(a) \
+	x.SetTo(a); \
+	B_x = x.BitCount(); \
+	x.BecomeFloat(); \
+	CheckValues(x.BitCount(), B_x, "bit count is equal after BecomeFloat()");
+
+	test_bit_count(2)
+	test_bit_count(0)
+	test_bit_count(-1)
+	test_bit_count(1)
+	test_bit_count(12345)
+	
 	
 	Next("arithmetic with large powers");
 	// compute 15^(large number) and check that it divides both 3^(that number) and 5^(that number)
@@ -658,11 +696,11 @@ int main(void)
 	for(int i=0; i<10; ++i) y.Multiply(y,y,10);
 	z.Mod(x,y);
 	Check(y.LessThan(x), "3^N<15^N");
-	Check(z.Sign()==0, "15^N divides 3^N");
+	CheckValues(z.Sign(),0, "15^N divides 3^N");
 	z.SetTo(5);
 	for(int i=0; i<10; ++i) z.Multiply(z,z,10);
 	t.Mod(x,z);
-	Check(t.Sign()==0, "15^N divides 5^N");
+	CheckValues(t.Sign(),0, "15^N divides 5^N");
 	y.Multiply(z,y,10);
 	Check(x.Equals(y), "15^N = 3^N*5^N");
 	
@@ -781,21 +819,26 @@ int main(void)
 	z.BitAnd(z,t);	// result of BitNot is negative
 	Check(z.Equals(t), "bit Not operation correct");
 	CheckEquals(z, t, 50, 16, "bit Not operation result printed correctly");
-	Next("precision");
-	x.BecomeFloat();
-	x.Precision(10);
+
+	Next("precision");	// compute 100/243 to 9 bits, should be 0.411
 	x.SetTo(100./243.);
-	x.Precision(10);
+	x.Precision(9);
 	y.SetTo(1000.);
 	y.Precision(10);
 	x.Multiply(x,y, 10);
-	x.Precision(10);
-	CheckStringValue(x, "411.", 20, 10, "imprecise 100./243. is correct");
+	y.SetTo(411);
+	Check(x.Equals(y), "x is equal to integer 411");
+	y.BecomeFloat(9);
+	Check(x.Equals(y), "x is equal to float 411.");
+	y.SetTo(412.);
+	Check(x.Equals(y), "x is equal to float 412.");
+	CheckStringValue(x, "412.", 20, 10, "imprecise 100./243. is correct");
+	CheckValues(x.GetPrecision(), 8, "x has precision 8");
 	Check(x.IsIntValue(), "x has integer value due to low precision");
 	y.SetTo(1234.5678);
 	y.Precision(10);
 	Check(y.IsIntValue(), "y has integer value due to low precision");
-	CheckStringValue(y, "1234.", 10, 10, "value of y is printed correctly");
+	CheckStringValue(y, "1235.", 10, 10, "value of y is printed correctly");
 	x.SetTo(1024);
 	x.ShiftRight(x, 10);
 	CheckStringValue(x, "1", 10, 10, "correct ShiftRight on integer 1024");
@@ -884,9 +927,14 @@ int main(void)
 	z.Divide(x,y,10);
 	CheckStringValue(z, "3.75", 10, 10, "15/4==3.75");
 	x.SetTo(1.);
-	y.SetTo(7.);
-	x.Divide(x,y,200);
-	CheckStringValue(x, "0.142857142857142857142857142857142857142857142857142857142857142857143", 1000, 10, "high-precision division");
+	x.Precision(300);
+	y.SetTo(7);
+	x.Divide(x,y,300);
+	CheckValues(x.GetPrecision(), 300, "x has precision 300");
+	CheckStringValue(x,
+	"0.142857142857142857142857142857142857142857"
+	  "1428571428571428571428571428571428571428571429",
+	1000, 10, "high-precision division");
 
 	Next("division by zero");
 	x.SetTo(0);
@@ -908,6 +956,7 @@ int main(void)
 		CheckStringEquals(str, "3.000000000000000000000000000000000000000050104","printed back a large number of digits from string");
 	}
 	y.SetTo(-3.);
+	y.Precision(200);
 	x.Add(x, y, 200);
 	Check(x.Sign()>0, "read big float value correctly");
 	
@@ -952,7 +1001,7 @@ int main(void)
 	x.MultiplyAdd(y,z,10);
 	Check(!x.IsInt(), "x is now float");
 	Check(x.IsIntValue(), "x has integer value");
-	Check(x.Double()==21, "x==22");
+	CheckValues(x.Double(),21, "x==22");
 	CheckStringValue(x, "21.", 10, 10, "10+2*5.5 = 21.");
 	
 	Next("arithmetic 2");
@@ -967,25 +1016,27 @@ int main(void)
 	TestArith2(1.0e-15, -2.0e-15);
 	
 	Next("rough precision control");
-	{// compute ((1+2^(-149)) - 1) * 2^149 with 150 bits and compare with 1
+	{// compute ((1+2^(-150+s)) - 1) * 2^(150-s) with 150 bits and compare with 1
 	    BigNumber x;
-	    LispInt prec = 150;
+	    LispInt prec = 150,	// at most 180
+	    	shift_amount = 8;	// currently at least 2
 	    x.SetTo(1.);
 	    x.Precision(prec);
 	    CheckStringValue(x, "1.", 10, 10, "x=1.");
-	    Check(x.GetPrecision()==prec, "correct precision is set on x");
+	    CheckValues(x.GetPrecision(),prec, "correct precision is set on x");
 	    BigNumber y;
 	    y.SetTo(1.);
 	    y.Precision(prec);
-	    y.ShiftRight(y,prec-1); // y = 2 ^ (-149)
+	    y.ShiftRight(y,prec-shift_amount); // y = 2 ^ (-150+s)
 	    x.Add(x,y,prec);	// now x should be slightly different from 1
 	    y.SetTo(-1);
 	    x.Add(x,y,prec);	// now x should be positive, equal to 2^(-149)
-	    Check(x.Sign()==1, "x is positive");
-	    x.ShiftLeft(x,prec-1); // x = 2^149* x
+	    CheckValues(x.Sign(),1, "x is positive");
+	    x.ShiftLeft(x,prec-shift_amount); // x = 2^(150-s)* x
 	    CheckStringValue(x, "1.", 10, 10, "x=1. again");
+	    CheckValues(x.GetPrecision(), shift_amount-2, "x has correct precision");
 	// compute  (1+10^(-60))-1, this should be 0 with 150 bits
-	    y.SetTo(1.e-60);
+	    y.SetTo(1.e-60);	// at least 60
 	    y.Precision(prec);
 	    x.SetTo(1.);
 	    x.Precision(prec);
