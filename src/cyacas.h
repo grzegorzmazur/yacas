@@ -26,6 +26,13 @@ char* yacas_error();
  *  of yacas_result should be considered undefined.
  */
 char* yacas_result();
+
+/** yacas_output : return pointer to output printed while evaluating
+ * an expression.
+ */
+char* yacas_output();
+
+
 /** yacas_exit : clean up all things related to the main Yacas
  *  evaluation environment
  */

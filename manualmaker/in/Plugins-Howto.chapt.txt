@@ -148,6 +148,9 @@ evaluating an expression. This function is only meaningful if
 there was no error. In the case of an error, the return value
 of {yacas_result} should be considered undefined.
 
+	char* yacas_output();
+Return pointer to output printed while evaluating an expression.
+
 	void yacas_exit();
 Clean up all things related to the main Yacas
 evaluation environment
