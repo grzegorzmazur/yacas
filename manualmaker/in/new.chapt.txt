@@ -917,9 +917,9 @@ once. For example, if $f(x)$ itself contains some floating-point numbers,
 then we should be unable to evaluate it with higher precision than
 possible. So it seems that we need access to low-level operations:  the
 padding and the query of current precision.
-
-This interface is already drafted in new.chapt.txt as GetExactBits(x)  
-and SetExactBits(x,n) - operations directed at particular number objects.
+The proposed interface is {GetExactBits(x)}
+and {SetExactBits(x,n)}.
+These operations are directed at particular number objects.
 
 	    Summary of arbitrary-precision semantics
 
@@ -927,19 +927,15 @@ and SetExactBits(x,n) - operations directed at particular number objects.
 This information can be queried by {GetExactBits(x)} so that the relative error of {x} is not larger than $2^(-n)$ if $n$={GetExactBits(x)}.
 This information can be modified by {SetExactBits(x,n)} (see below).
 Error estimates are not guaranteed to be correct.
-*	1. The number 0 is either an integer {0} or a floating-point {0.};
-a "floating zero" .
+*	1. The number 0 is either an integer {0} or a floating-point {0.}
+(a "floating zero" for short).
 For a floating zero, the "number of exact bits" means an absolute error, not a relative error.
 It means that if {x=0.} and {GetExactBits(x)} returns $n$, then $x$ represents a number such that $-2^(-n)<=x<=2^(-n)$.
-*REM
-The number 0 is always taken as an integer 0; there is no separate
-floating-point "0."; so e.g. 1.0 - 1.0 returns the integer 0.
 *	1. An integer and a float are equal only if the float has an 
 integer value, within its precision. Two floats are equal only if their values differ by less than the largest of their error estimates.
-*REM
-all their bits are exactly equal. (The application should not really 
-compare floats for equality unless they have integer values, in which 
-case the comparison can be mathematically exact.)
+In particular, it means that an integer zero is always equal to any floating zero, and any two floating zeros are equal.
+It follows that if {x=y}, then for any floating zeros {x+0.=y+0.} and {x-y=0.} as well.
+(So this arithmetic is not obviously inconsistent.)
 *	1. {IsInteger(x)} returns {True} if {x} has integer <i>type</i>;
 {IsIntValue(x)} returns {True} if {x} has either integer type or floating type but an integer value within its precision.
 For example,
@@ -949,21 +945,22 @@ For example,
 *	1. {Precision(n)} sets a global parameter that controls the precision of
 <i>newly created floats</i>.
 It does not modify previously created floating-point numbers, and it has no effect on integer calculations.
-New number objects can be created in two ways: from literal strings and from calculations.
+New number objects can be created in three ways: from literal strings, from integers, and from calculations with other floats.
 For example,
 	x:=1.33;
 	y:=x/2;
 Here {x} is created from a literal string {"1.33"} and {y} is created as a result of division.
+Converting an integer to a float is similar to converting from a literal string representing the integer.
 A new number object created from a literal string must have at least as many bits of mantissa as is required to represent the value given by the string.
 The string might be very long but we want to retain all information from a string, so we may have to make the number much more precise than the currently declared {Precision}.
 *FOOT Note that the argument {n} of {Precision(n)} means <i>decimal</i> digits, not bits.
 But if the necessary number of digits to represent the string is less than {n}, then the new number object will have the number of bits that corresponds to {n} decimal digits.
-Thus, in creating objects from strings, {Precision} sets the <i>minimum</i> precision of the resulting object.
+Thus, in creating objects from strings or from integers, {Precision} sets the <i>minimum</i> precision of the resulting floating-point number.
 On the other hand, a new number object created from a calculation will already have an error estimate and will "know" its real precision.
 But a directive {Precision(n)} indicates that we are only interested in $n$ digits of a result.
 Therefore, a calculation should not generate <i>more</i> digits than
 {n}, even if its operands have more digits.
-Thus, in creating objects from strings, {Precision} sets the <i>maximum</i> precision of the resulting object.
+Thus, in creating objects from operations, {Precision} sets the <i>maximum</i> precision of the resulting floating-point number.
 *	1. {SetExactBits(x,n)} will make the number {x} think that it has {n} exact
 bits. If {x} had more exact bits before, then it may be rounded. If {x}
 had fewer exact bits before, then it may be padded. (The way the padding is done
