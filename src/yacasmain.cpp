@@ -314,11 +314,15 @@ int main(int argc, char** argv)
 
     signal(SIGINT, InterruptHandler);
 
-
+// define STD_COMMANDLINE if you want the standard command line always
+#ifndef STD_COMMANDLINE
     if (use_plain)
+#endif
         commandline = new CStdCommandLine;
+#ifndef STD_COMMANDLINE
     else
         commandline = new CUnixCommandLine;
+#endif
 
     commandline->iTraceHistory = trace_history;
     
