@@ -37,3 +37,5 @@ Verify(CanProve( A And (Not A Or Or B Or C)),   B Or C);
 Verify(CanProve( A==3 And (A==2 Or B Or C)),    B Or C);
 Verify(CanProve( A==3 And (A<2  Or B Or C)),    B Or C);
 Verify(CanProve( A==3 And (A>2  Or B Or C)),    A==3 And (A>2  Or B Or C));
+
+Verify(CanProve(Not(Not (p_2-NULL==0))Or Not(p_2-NULL==0)), True);
