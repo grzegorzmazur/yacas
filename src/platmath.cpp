@@ -110,6 +110,7 @@ unsigned primes_table_check(unsigned p)
 {
 	unsigned index;
 	unsigned field;
+	if (p==0) return primes_table_limit;
 	if (p==2) return 1;
 	if (p<2 || p>primes_table_limit || (p & 1) == 0) return 0;
 	p >>= 1;
