@@ -174,7 +174,8 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 3 # Ln(Complex(_r,_i)) <-- Complex(Ln(Abs(Complex(r,i))), Arg(Complex(r,i)));
 4 # Ln(x_IsNegativeNumber) <-- Complex(Ln(-x), Pi);
 
-2 # ArcSin(x_IsNumber)_(Numeric) <-- MathArcSin(x);
+2 # ArcSin(x_IsNumber)_(Numeric And Abs(x)<=1) <-- MathArcSin(x);
+3 # ArcSin(x_IsNumber)_(Numeric) <-- Sign(x)*(Pi/2+I*ArcCosh(x));
 4 # ArcSin(Sin(_x))           <-- x;
 110 # ArcSin(Complex(_r,_i)) <--
     (- I) * Ln((I*Complex(r,i)) + ((1-(Complex(r,i)^2))^(1/2)));
@@ -182,7 +183,7 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 200 # ArcSin(1) <-- Pi/2;
 200 # ArcSin(_n)_(n = -1) <-- -Pi/2;
 
-2 # ArcCos(x_IsNumber)_(Numeric) <-- Pi/2-MathArcSin(x);
+2 # ArcCos(x_IsNumber)_(Numeric) <-- Pi/2-ArcSin(x);
 4 # ArcCos(Cos(_x))           <-- x;
 5 # (ArcTan(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- -ArcTan(-x);
 110 # ArcCos(Complex(_r,_i)) <--
@@ -210,10 +211,24 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 200 # ArcTan(-Infinity) <-- -Pi/2;
 200 # ArcTan(Undefined) <-- Undefined;
 
-2   # Sinh(x_IsNumber)_(Numeric) <-- N((Exp(x)-Exp(-x))/2);
-2   # Cosh(x_IsNumber)_(Numeric) <-- N((Exp(x)+Exp(-x))/2);
-2   # Tanh(x_IsNumber)_(Numeric) <-- N(Sinh(x)/Cosh(x));
+2 # Sinh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N( (Exp(x)-Exp(-x))/2 );
+2 # Cosh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N( (Exp(x)+Exp(-x))/2 );
+2 # Tanh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N( Sinh(x)/Cosh(x) );
 
+
+10 # ArcSinh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N( Ln(x+Sqrt(x^2+1)) );
+10 # ArcCosh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N( Ln(x+Sqrt(x^2-1)) );
+10 # ArcTanh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N( Ln((1+x)/(1-x))/2 );
+
+200 # ArcSinh(Infinity) <-- Infinity;
+200 # ArcSinh(-Infinity) <-- -Infinity;
+200 # ArcSinh(Undefined) <-- Undefined;
+200 # ArcCosh(Infinity) <-- Infinity;
+200 # ArcCosh(-Infinity) <-- Infinity+I*Pi/2;
+200 # ArcCosh(Undefined) <-- Undefined;
+200 # ArcTanh(Infinity) <-- Infinity+I*Pi/2;
+200 # ArcTanh(-Infinity) <-- -Infinity-I*Pi/2;	// this is a little silly b/c we don't support correct branch cuts yet
+200 # ArcTanh(Undefined) <-- Undefined;
 
 /* hyperbolic stuff */
 100 # 1/Coth(_x)	<-- Tanh(x);
@@ -230,8 +245,10 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 100 # Sinh(_x)+Cosh(_x)		<-- Exp(x);
 100 # Sinh(_x)-Cosh(_x)		<-- Exp(-x);
 
-100 # Sinh(I*_x)        <-- I*Sin(x);
-100 # Cosh(I*_x)        <-- Cos(x);
+// this is never activated
+//100 # Sinh(I*_x)        <-- I*Sin(x);
+//100 # Cosh(I*_x)        <-- Cos(x);
+
 100 # Sinh(_x)/Cosh(_x) <-- Tanh(x);
 100 # Sinh(_x)*Csch(_x) <-- 1;
 100 # Cosh(_x)*Sech(_x) <-- 1;
@@ -245,15 +262,15 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 200 # Cosh(-Infinity)	<-- Infinity;
 
 10 # Abs(Infinity) 	<-- Infinity;
-10 # Factorial(Infinity)<-- Infinity;
+10 # (Infinity)! <-- Infinity;
 
 /* Threading of standard analytic functions */
 Sin(xlist_IsList) <-- MapSingle("Sin",xlist);
 Cos(xlist_IsList) <-- MapSingle("Cos",xlist);
 Tan(xlist_IsList) <-- MapSingle("Tan",xlist);
-Sinh(xlist_IsList) <-- MapSinhgle("Sinh",xlist);
-Cosh(xlist_IsList) <-- MapSinhgle("Cosh",xlist);
-Tanh(xlist_IsList) <-- MapSinhgle("Tanh",xlist);
+Sinh(xlist_IsList) <-- MapSingle("Sinh",xlist);
+Cosh(xlist_IsList) <-- MapSingle("Cosh",xlist);
+Tanh(xlist_IsList) <-- MapSingle("Tanh",xlist);
 
 
 ArcSin(xlist_IsList) <-- MapSingle("ArcSin",xlist);

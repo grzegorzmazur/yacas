@@ -3,10 +3,11 @@
 
 /* Round to specified number of digits */
 RoundTo(x_IsNumber, prec_IsPositiveInteger) <-- N(Round(x*10^prec)*10^(-prec));
+// complex numbers too
+RoundTo(Complex(r_IsNumber, i_IsNumber), prec_IsPositiveInteger) <-- Complex(RoundTo(r, prec), RoundTo(i, prec));
 
-
-//
-ShoLine() := [Echo({CurrentFile(),":",CurrentLine()});];
+// print current file and line
+ShowLine() := [Echo({CurrentFile(),": ",CurrentLine()});];
 
 
 /* Logging functions */
@@ -53,7 +54,7 @@ Function("Verify",{aLeft,aRight})
     [
       WriteString("******************");
       NewLine();
-ShoLine();
+      ShowLine();
       Write(aLeft);
       WriteString(" evaluates to ");
 	  Write(result);
@@ -169,7 +170,7 @@ Function ("TestYacas", {expr, ans})
 			[
 			  WriteString("******************");
 			  NewLine();
-ShoLine();
+			  ShowLine();
 			  Write(expr);
 			  WriteString(" evaluates to ");
 			  NewLine();
