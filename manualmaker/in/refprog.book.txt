@@ -1771,3 +1771,9 @@ $$ u = v*Div(u,v) + Mod(u,v) $$.
 	Out> True;
 
 *SEE Verify
+
+
+
+
+*REM GNU Free Documentation License
+*INCLUDE FDL.chapt

@@ -33,3 +33,8 @@ the command line for ordinary tasks.
 *INCLUDE strings.chapt
 
 *INCLUDE addons.chapt
+
+
+
+*REM GNU Free Documentation License
+*INCLUDE FDL.chapt

@@ -10,32 +10,32 @@ noinst_PROGRAMS = books.html
 BOOKS = intro.book coding.book ref.book refprog.book essays.book
 
 BOOKSOURCES = in/intro.book.txt in/coding.book.txt \
-	in/ref.book.txt in/refprog.book.txt in/essays.book.txt
+	in/ref.book.txt in/refprog.book.txt in/essays.book.txt in/FDL.chapt.txt
 
 REFCHAPTERS = config.chapt arith.chapt calc.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
 	preds.chapt logic.chapt const.chapt vars.chapt io.chapt \
-	strings.chapt addons.chapt
+	strings.chapt addons.chapt FDL.chapt
 
 REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt \
 	in/linalg.chapt.txt in/univar.chapt.txt in/lists.chapt.txt \
 	in/functional.chapt.txt in/controlflow.chapt.txt in/preds.chapt.txt \
 	in/logic.chapt.txt in/const.chapt.txt in/vars.chapt.txt in/io.chapt.txt \
-	in/strings.chapt.txt in/addons.chapt.txt 
+	in/strings.chapt.txt in/addons.chapt.txt in/FDL.chapt.txt
 
-REFPROGCHAPTERS = yacasapi.chapt
+REFPROGCHAPTERS = yacasapi.chapt FDL.chapt
 # yacasapi.chapt has no .txt source
 REFPROGSOURCES =
 
-CODINGCHAPTERS = YacasDebugger.chapt
-CODINGSOURCES = in/YacasDebugger.chapt.txt
+CODINGCHAPTERS = YacasDebugger.chapt FDL.chapt
+CODINGSOURCES = in/YacasDebugger.chapt.txt in/FDL.chapt.txt
 
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
 	CVS-Howto.chapt YacasDocs.chapt wester-1994.chapt \
 	new.chapt paper.chapt Algorithms.chapt wordproblems.chapt \
 	algorithms-specfunc.chapt algorithms-elemfunc.chapt \
 	algorithms-integration.chapt algorithms-multivar.chapt \
-	SturmSequences.chapt
+	SturmSequences.chapt FDL.chapt
 
 ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt \
@@ -43,7 +43,7 @@ ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 		in/Algorithms.chapt.txt in/wordproblems.chapt.txt \
 	in/algorithms-specfunc.chapt.txt in/algorithms-elemfunc.chapt.txt \
 	in/algorithms-integration.chapt.txt in/algorithms-multivar.chapt.txt \
-	in/SturmSequences.chapt.txt
+	in/SturmSequences.chapt.txt in/FDL.chapt.txt
 
 # Yacas code extracted from the docs
 CODESNIPPETS = wester-1994.ys
