@@ -21,7 +21,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
 yacas_LDFLAGS = -export-dynamic
-yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c
+yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c version.h
 
 
 
@@ -153,7 +153,7 @@ install-data-local: yacas.h
 	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_lib)/$$basefile; \
 	done
 
-versionstamper:
+version.h:
 	echo "#define VERSION \"$(VERSION)\"" > version.h 
 
 

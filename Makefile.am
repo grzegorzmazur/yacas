@@ -20,7 +20,7 @@ bin_SCRIPTS = yacas_client
 ## in the distribution. Note that scripts are not distributed by default.
 
 EXTRA_DIST = yacas.sgml yacas.spec yacas.spec.in makemake mkhomepage mkmanual \
-	yacas.sh doxy_yacas README.beos README.Win32 ltmain.sh libtool.m4 \
+	yacas.sh doxy_yacas README.beos README.Win32 ltmain.sh \
 	workinprogress.ys upload.txt readme.bin.win32.txt $(bin_SCRIPTS)
 
 # The target "test" is an alias for "check"

@@ -1,10 +1,10 @@
 
 EXTRA_DIST = \
-	forth/depend.dep  forth/forthplugin.cc    \
-	forth/forthpluginapi.stub                 \
-	forth/forth.cc    forth/forthplugin.h     \
-	forth/makefile.plugin                     \
-	forth/forth.h                             
+	forthplugin.cc    \
+	forthpluginapi.stub                 \
+	forth.cc    forthplugin.h     \
+	makefile.plugin                     \
+	forth.h                             
 
 
 INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/
