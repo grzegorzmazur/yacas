@@ -517,6 +517,8 @@ C++:
 	x.Floor(y);
 Yacas:
 	MathFloor(x)
+If there are enough digits in {x} to compute its integer part, then the result is an exact integer.
+Otherwise the floating-point value {x} is returned unchanged.
 *	{BigNumber::GetExactBits} -- Report the current precision of a number {x} in bits.
 C++:
 	prec=x.GetExactBits();
@@ -703,7 +705,7 @@ $$ [Abs(delta)<2^(-m); Abs(epsilon)<2^(-n); ] $$,
 and we need to find a bit bound on $r$, i.e. an integer $p$ such that $Abs(r)<2^(-p)$.
 But we cannot estimate $p$ without first computing $x+y$ and analyzing the relative magnitude of $x$ and $y$.
 To perform this estimate, we need to use the bit counts of $x$ and $y$ and on $x+y$.
-Let these bit counts be $a$, $b$ and $c$, so that $Abs(x)<2^(a+1)$, $Abs(y)<2^(b+1)$, and $2^c<=Abs(x+y)<2^(c+1)$.
+Let these bit counts be $a$, $b$ and $c$, so that $Abs(x)<2^a$, $Abs(y)<2^b$, and $2^(c-1)<=Abs(x+y)<2^c$.
 (At first we assume that $x!=0$, $y!=0$, and $x+y!=0$.)
 Now we can estimate $r$ as
 $$ r <= Abs((x*2^(-m))/(x+y)) + Abs((y*2^(-n))/(x+y)) <= 2^(a+1-m-c)+2^(b+1-n-c)$$.
@@ -803,7 +805,7 @@ However, the opposite approach is also completely possible: no two floating-poin
 It seems that no algorithm really needs a test for equality of floats.
 The two useful comparisons on floats $x$, $y$ seem to be the following:
 *	1. whether $Abs(x-y)<epsilon$ where $epsilon$ is a given floating-point number representing the precision,
-*	2. whether $x$ is zero, positive or negative.
+*	2. whether $x$ is positive, negative, or zero.
 
 Given these predicates, it seems that any floating-point algorithm can be implemented
 just as efficiently as with any "reasonable" definition of the floating-point equality.
@@ -937,13 +939,15 @@ These operations are directed at particular number objects.
 	    Summary of arbitrary-precision semantics
 
 *	1. All integers are always exact; all floats carry an error estimate, which is stored as the number of correct bits of mantissa they have.
-This information can be queried by {GetExactBits(x)} so that the relative error of {x} is not larger than $2^(-n)$ if $n$={GetExactBits(x)}.
-This information can be modified by {SetExactBits(x,n)} (see below).
-Error estimates are not guaranteed to be correct.
+Symbolically, each float is a pair {{x,n}} where {x} is a floating-point value and {n} is a (platform) integer value.
+If $x!=0$, then the relative error of $x$ is not larger than $2^(-n)$.
+This integer {n} is returned by {GetExactBits(x)}
+and can be modified by {SetExactBits(x,n)} (see below).
+Error estimates are not guaranteed to be correct in all cases, but they should give sensible upper bounds on the error.
 *	1. The number 0 is either an integer {0} or a floating-point {0.}
 (a "floating zero" for short).
 For a floating zero, the "number of exact bits" means an absolute error, not a relative error.
-It means that if {x=0.} and {GetExactBits(x)} returns $n$, then $x$ represents a number such that $-2^(-n)<=x<=2^(-n)$.
+It means that the symbolic pair {{0.,n}} represents a number $x$ such that $-2^(-n)<=x<=2^(-n)$.
 *	1. An integer and a float are equal only if the float has an 
 integer value, within its precision. Two floats are equal only if their values differ by less than the largest of their error estimates.
 In particular, it means that an integer zero is always equal to any floating zero, and any two floating zeros are equal.
@@ -961,8 +965,10 @@ It does not modify previously created floating-point numbers, and it has no effe
 New number objects can be created in three ways: from literal strings, from integers, and from calculations with other floats.
 For example,
 	x:=1.33;
-	y:=x/2;
-Here {x} is created from a literal string {"1.33"} and {y} is created as a result of division.
+	y:=x/3;
+Here {x} is created from a literal string {"1.33"},
+a temporary float is created from an integer {3},
+and {y} is created as a result of division of two floats.
 Converting an integer to a float is similar to converting from a literal string representing the integer.
 A new number object created from a literal string must have at least as many bits of mantissa as is required to represent the value given by the string.
 The string might be very long but we want to retain all information from a string, so we may have to make the number much more precise than the currently declared {Precision}.
@@ -985,6 +991,164 @@ calls are performed with precision estimates, so that all results know
 how precise they really are. Then in most cases it
 will be unnecessary to call {SetExactBits} or {GetExactBits} explicitly.
 This will be needed only in certain numerical applications that need to control the working precision for efficiency.
+
+	    Formal definitions for precision of arithmetic operations
+
+Here we shall consider arithmetic operations on floats $x$ and $y$, represented as pairs {{x,m}} and {{y,n}}.
+The result of the operation is $z$, represented as a pair {{z,p}}.
+
+We give formulae for $p$ in terms of $x$, $y$, $m$, and $n$.
+Sometimes the bit count of a number $x$ is needed; it is denoted $B(x)$ for brevity.
+
+*HEAD Formal definitions
+
+A pair {{x,m}} where $x$ is a floating-point value and $m$ is an integer value (the "number of correct bits") denotes a real number between $x*(1-2^(-m))$ and $x*(1+2^(-m))$ when $x!=0$,
+and a real number between $-2^(-m)$ and $2^(-m)$ when $x=0$ (a "floating zero").
+
+The bit count $B(x)$ is an integer function of $x$ defined for real $x!=0$ by
+$$ B(x) := 1+Floor(Ln(Abs(x))/Ln(2)) $$.
+This function also satisfies
+$$ 2^(B(x)-1) <= Abs(x) < 2^B(x) $$.
+For example, $B(1/4)= -1$, $B(1)=B(3/2)=1$, $B(4)=3$.
+The bit count of zero is arbitrarily set to 1.
+For integer $x$, the value $B(x)$ is the number of bits needed to write the binary representation of $x$.
+
+The bit count function can be usually computed in <i>constant</i> time because the usual representation of long numbers is by arrays of platform integers and a binary exponent.
+The length of the array of digits is usually available at no computational cost.
+
+The <i>absolute</i> error in {{x,n}} is at most $Abs(x)*2^(-n)$.
+Given the bit count of $x$, this can be estimated from above as $Delta<2^(B(x)-n)$.
+So the bit count of $Delta$ is $B(x)-n$.
+
+*HEAD {Floor()}
+
+The function {Floor({x,m})} gives an integer result if there are enough digits to determine it exactly, and otherwise returns the unchanged floating-point number.
+The condition for {Floor({x,m})} to give an exact result is
+$$ m>=B(x) $$.
+
+*HEAD {BecomeFloat()}
+
+The function {BecomeFloat(n)} will convert an integer to a float with at least $n$ digits of precision.
+If {x} is the original integer value, then the result is {{x,Max(n,B(x))}}.
+
+*HEAD {Equals()}
+
+We need to compare {{x,m}} and {{y,n}}.
+
+If $x!=0$ and $y!=0$, then {{x,m}={y,n}} if and only if
+$$ Abs(x-y)<Max(2^(-m)*Abs(x), 2^(-n)*Abs(y)) $$.
+Checking these conditions does not require long multiplications, but involves one long addition and some long comparisons.
+
+A fast sufficient (but not a necessary) condition is:
+if $B(x-y)<=Min(B(x)-m,B(y)-n)-1$ then {{x,m}={y,n}}.
+A fast necessary (but not a sufficient) condition is:
+if {{x,m}={y,n}} then $B(x-y)<=Max(B(x)-m,B(y)-n)+1$.
+
+If one of the numbers is an integer, then the above conditions are still avlid if its number of correct bits is formally taken to be infinite.
+If one of the numbers is a floating zero, then the condition is:
+
+{{0.,m}={y,n}} if and only if $Abs(y)<2^(-m)$.
+
+*HEAD Transformation into a floating zero
+
+Note that using the above definition of comparison it might be possible to have a number {{x,n}} with $x!=0$ such that {{0.,m}={x,n}} for some $m$.
+Such $x$ will effectively be "equal to zero", because we do not know enough digits to distinguish it from zero.
+But then from the definition of {{x,n}} it follows that 0 is within the allowed interval for $x$; this is only possible if $n>=1$.
+
+We may therefore transform any number {{x,n}} such that $x!=0$ and $n>=1$
+into a floating zero {{0.,p}} where $p= -n-B(x)$.
+
+*HEAD {LessThan()}
+
+If {{x,m}}={{y,n}} according to the comparison function {Equals()}, then the predicate {LessThan} is false.
+Otherwise it is true if and only if $x<y$ as floats.
+
+*HEAD {IsIntValue()}
+
+To check whether {{x,n}} has an integer value within its precision, we first need to compute $y:=x-Floor(x)$={x-Floor(x)} as a float value (without precision control).
+If $x$ does not have enough digits to compute {Floor(x)} accurately (see above), then $x$ has an integer value.
+Otherwise if $y$ is exactly zero as a float value, then $x$ also has an integer value.
+Otherwise {{x,n}} has an integer value if and only if $B(y)< -n$.
+
+*HEAD {Sign()}
+
+The sign of {{x,n}} is defined as the sign of the float value $x$.
+(The number {{x,n}} should have been reduced to a floating zero if necessary.)
+
+*HEAD Addition and subtraction
+
+We need to add {{x,m}} and {{y,n}} to get the result {{z,p}}.
+Subtraction is the same as addition, except we negate the second number.
+When we negate a number, its precision never changes.
+
+First consider the case when $x+y!=0$.
+
+If say $x$ is zero, i.e. {{0.,m}} (but $x+y!=0$), then the situation with precision is the same as if $x$ were {{1.,m}}, because then the relative precision is equal to the absolute precision.
+In that case we replace the bit count of $x$ by $B(0)=1$ and proceed by the same route.
+
+The float value $z=x+y$ needs to be calculated first.
+To calculate it, we need the target precision of only
+$$ 1+Max(B(x),B(y))-Max(B(x)-m,B(y)-n) $$
+bits.
+(An easy upper bound on this is $1+Max(m,n)$ but this is wasteful when $x$ and $y$ have very different precisions.)
+
+Then we compute $B(z)$ and determine the precision $p$ as
+$$ p = Min(m-B(x),n-B(y))+B(z)$$
+$$-1-Dist(m-B(x),n-B(y)) $$,
+where the auxiliary function $Dist(a,b)$ is defined as $0$ when $Abs(a-b)>2$ and $1$ otherwise.
+The result is {{z,p}}.
+
+Now consider the case when $x+y=0$.
+
+This is only possible when $B(x)=B(y)$.
+Then the result is {{0.,p}} where $p$ is found as
+$$ p = 1+Min(m,n)-B(x)-Dist(m,n) $$.
+Note that this is the same formula as in the general case, if we define $B(z)=B(0):=1$.
+Therefore one can use this definition of the bit count and use just one formula for the precision of addition.
+
+If the addition needs to be performed with a given maximum precision $P$, and it turns out that $p>P$, then we may truncate the final result to $P$ digits and set its precision to $P$ instead.
+(It is advisable to leave a few bits untruncated as guard bits.)
+However, the first operation {z:=x+y} must be performed with the precision specified above, or else we run the danger of losing significant digits of $z$.
+
+*HEAD Multiplication
+
+We need to multiply {{x,m}} and {{y,n}} to get the result {{z,p}}.
+
+First consider the case when $x!=0$ and $y!=0$.
+The resulting value is $z=x*y$ and the precision is
+$$ p = Min(m,n)-Dist(m,n) $$.
+
+Now consider the case when {{x,m}}={{0,m}} but $y!=0$.
+The result $z=0$ and the resulting precision is
+$$ p = m-B(y)+1 $$.
+
+Finally, consider the case when {{x,m}}={{0,m}} and {{y,n}}={{0,n}}.
+The result $z=0$ and the resulting precision is
+$$ p = m+n $$.
+
+The last two formulae are the same as the first one if we defined the bit count of {{0.,m}} as $1-m$.
+This differs from the "standard" arbitrary definition of $B(0)=1$.
+The "standard" definition is convenient for the handling of addition.
+
+If the multiplication needs to be performed to a given target precision $P$ which is larger than the estimate $p$, then we can save time by truncating both operands to $P$ digits before performing the multiplication.
+(It is advisable to leave a few bits untruncated as guard bits.)
+
+*HEAD Division
+
+Division is handled in the same way as multiplication, except that division by either an integer or a floating zero is not permitted.
+
+*HEAD {ShiftLeft()}, {ShiftRight()}
+
+These operations efficiently multiply a number by a positive or negative power of $2$.
+Since $2$ is an exact integer, the precision handling is similar to that of multiplication of floats by integers.
+
+If the number {{x,n}} is nonzero, then only $x$ changes by shifting but $n$ does not change.
+If {{x,n}} is a floating zero, then $x$ does not change and $n$ is decremented ({ShiftLeft}) or incremented ({ShiftRight}) by the shift amount.
+
+*HEAD Mixed integer/float arithmetic
+
+If one of the operands is an integer, then we should formally define its number of exact digits as infinite.
+Then all formulae continue to hold, as long as the other operand is a float.
 
 		Implementation notes
 
