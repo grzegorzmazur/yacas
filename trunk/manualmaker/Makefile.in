@@ -75,19 +75,19 @@ ouryacas = ../src/yacas --rootdir ../scripts/
 
 noinst_PROGRAMS = books.html
 
-ALLBOOKS = in/intro.book in/coding.book in/ref.book in/refprog.book 	in/essays.book
+ALLBOOKS = intro.book coding.book ref.book refprog.book 	essays.book
 
 
 ALLBOOKSOURCES = in/intro.book.txt in/coding.book.txt 	in/ref.book.txt in/refprog.book.txt in/essays.book.txt
 
 
-REFCHAPTERS = in/config.chapt in/arith.chapt in/calc.chapt in/linalg.chapt 	in/univar.chapt in/lists.chapt in/functional.chapt in/controlflow.chapt 	in/preds.chapt in/logic.chapt in/const.chapt in/vars.chapt in/io.chapt 	in/strings.chapt
+REFCHAPTERS = config.chapt arith.chapt calc.chapt linalg.chapt 	univar.chapt lists.chapt functional.chapt controlflow.chapt 	preds.chapt logic.chapt const.chapt vars.chapt io.chapt 	strings.chapt
 
 
 REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt in/linalg.chapt.txt 	in/univar.chapt.txt in/lists.chapt.txt in/functional.chapt.txt in/controlflow.chapt.txt 	in/preds.chapt.txt in/logic.chapt.txt in/const.chapt.txt in/vars.chapt.txt in/io.chapt.txt 	in/strings.chapt.txt
 
 
-ESSAYCHAPTERS = in/ABIN-grammar.chapt in/Plugins-Howto.chapt 	in/CVS-Howto.chapt in/YacasDocs.chapt
+ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt 	CVS-Howto.chapt YacasDocs.chapt
 
 
 ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt 	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt
@@ -282,13 +282,15 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Stuff for automatic generation of Yacas books
-%.chapt: %.chapt.txt
+%.chapt: in/%.chapt.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
-%.book: %.book.txt
+%.book: in/%.book.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
 
-%.book.tex: in/%.book
+%.book.tex: %.book
 	../manmake/book2TeX.sh $< $@
+
+essays.book.tex: essays.book $(ESSAYCHAPTERS)
 
 %.dvi: %.tex
 	latex $< > /dev/null
@@ -312,7 +314,7 @@ texdocs: coding.book.ps coding.book.pdf \
 
 clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.toc *.log *.ps *.pdf \
-	coding*html intro*html ref*html .o core *~ texdocs.c \
+	coding*html intro*html ref*html essays*html .o core *~ texdocs.c \
 	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(ALLBOOKS)
 
 books.html:  $(ALLBOOKS) $(REFCHAPTERS) $(ESSAYCHAPTERS)

@@ -270,7 +270,15 @@ when an unsafe evaluation is done (Like a script sent over the
 internet to be evaluated on a computer).
 
 
-			Built-in functions
+			Built-in (core) functions
+
+*INTRO Yacas comes with a small core of built-in functions and a large library of user-defined functions. It is important for a developer to know which functions are built-in and cannot be redefined or {Retract}-ed. All core functions are listed in the file {yacasapi.cc} in the {src/} subdirectory of the Yacas source tree. The declarations typically look like this:
+
+	SetCommand(LispSubtract, "MathSubtract");
+Here {LispSubtract} is the Yacas internal name for the function and {MathSubtract} is the name visible to the Yacas language.
+
+Built-in bodied functions and infix operators are declared in the same file.
+
 
 *CMD MathNot --- ...
 
