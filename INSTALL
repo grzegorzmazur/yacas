@@ -2,7 +2,11 @@
 
 This distribution has been tested on a Linux box (RedHat 5.1) and on Debian (stable) 2.2.
 
-To install, do the following:
+Compiling Yacas from source currently requires a Unix-like environment (CYGWIN
+may work), automake, bash, find, sed, grep. Building documentation requires
+perl, LaTeX, dvips, makeindex.
+
+To compile and install, do the following:
 
 * download yacas-<latest>.tgz
 
@@ -19,11 +23,14 @@ To install, do the following:
 * type 'make install'.
 
 *  type 'yacas'  and you should see a Yacas prompt!
-   You could now type 'Load("scripts/examples/tests.ys");' to perform some
-   standard tests. The scripts
-   (which are installed in '/usr/local/share/yacas/') should also be
-   a good starting point to see some example source code.
-   You can always type '??', which should launch the help.
+
+*  You could now type 'make test' to perform some
+   standard tests. 
+   
+The scripts
+(which are installed by default in '/usr/local/share/yacas/') should also be
+a good starting point to see some example source code.
+You can always type '??', which should launch the help.
 
 To compile and install Proteus, the user interface for Yacas, please go
 into the proteus/ directory and read the readme there.
