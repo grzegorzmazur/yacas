@@ -112,24 +112,21 @@ To use netscape for browsing help, enter the following commands:
 *SEE SystemCall, FindFile
 
 *CMD HistorySize --- Set size of history file
-
 *CORE
-
 *CALL
-
-HistorySize(n)
+	HistorySize(n)
 
 *PARMS
 
-n - number of lines to store in history file
+{n} -- number of lines to store in history file
 
 *DESC
 
 When exiting, yacas saves the command line history to a
 file {~/.yacas_history}. By default it will only
-save the last 50 lines, to save space on the harddisk. This can be
-overridden with this function. Passing -1 tells the system to save all
-the lines.
+save the last 50 lines, to save space on the hard disk. This can be
+overridden with this function. Passing -1 tells the system to save <i>all</i>
+lines.
 
 *E.G.
 

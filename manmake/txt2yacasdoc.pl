@@ -9,7 +9,7 @@ $debug_pars = ("@ARGV" =~ /-debug/) ? 1 : 0;	# This is for debugging only: break
 
 $have_Text = 0;	# Means we have a Text() declared somewhere above
 $have_par = 1;	# Means we already have a new paragraph
-$in_text = 0;	# Means we are inside quotes of the Text()
+$in_quotes = 0;	# Means we are inside quotes of the Text()
 $in_itemized = 0;
 $in_enum = 0;
 $in_htmlcommand = 0;
@@ -33,29 +33,31 @@ while (<STDIN>) {
 	s/"/\\"/g;	# escape all quotes in the source text
 	# First deal with TAB-indented lines
 	if (not $in_htmlcommand and /^\t\t\t\t([^ ].*)$/) {	# Book
-		&finish_text();
+		&finish_text_close_quote();
 		print "\tBook()\"", &escape_term($1), "\";\n\n";
 		$have_par = 1;
 	} elsif (not $in_htmlcommand and /^\t\t\t([^ ].*)$/) {	# Chapter
-		&finish_text();
+		&finish_text_close_quote();
 		print "\tChapter()\"", &escape_term($1), "\";\n\n";
 		$have_par = 1;
 	} elsif (not $in_htmlcommand and /^\t\t([^ ].*)$/) {	# Section
-		&finish_text();
+		&finish_text_close_quote();
 		print "\tSection()\"", &escape_term($1), "\";\n\n";
 		$have_par = 1;
 	} elsif (not $in_htmlcommand and /^\t    ([^ ].*)$/) {	# Subsection
-		&finish_text();
+		&finish_text_close_quote();
 		print "\tSubSection()\"", &escape_term($1), "\";\n\n";
 		$have_par = 1;
 	}
+	#############################################################
 	# HtmlCommand processed here
+	#############################################################
 	elsif ((not $in_htmlcommand and /^\t( {0,2}[^ \t].*)$/) or ($in_htmlcommand and /^\t(.*)$/)) {	# Sample code (HtmlCommand); cannot start with empty line
-		&start_text();
+		&start_text_open_quote();
 		if (not $in_htmlcommand) {
 			if ($debug_pars) {
-				&finish_text();
-				&start_text();
+				&finish_text_close_quote();
+				&start_text_open_quote();
 			}
 			&close_quote();
 			print ":HtmlCommand(\"\n";
@@ -63,12 +65,15 @@ while (<STDIN>) {
 		}
 		print "$1\n" unless ($1 eq "*");	# Special feature to allow code examples that start with indented lines
 		$have_par = 0;
-		$in_text = 1;
-	}	# Now not TAB-indented lines
-	elsif (/^\s*$/) {	# New paragraph
+		$in_quotes = 1;
+	}	# Now processing not-TAB-indented lines
+	#############################################################
+	# New paragraph	
+	#############################################################
+	elsif (/^\s*$/) {
 		if (not $have_par) {
-			&finish_text();
-			&start_text();
+			&finish_text_close_quote();
+			&start_text_open_quote();
 			print "\":HtmlNewParagraph():\n\n\"";
 			$have_par = 1;
 		}
@@ -78,37 +83,37 @@ while (<STDIN>) {
 	#############################################################
 	elsif (/^\*\t[0-9]+\. (.*)$/) {	# Enum
 			if ($debug_pars) {
-				&finish_text();
-				&start_text();
+				&finish_text_close_quote();
+				&start_text_open_quote();
 			}
+		&start_text_open_quote();
 		&close_quote();
-		&start_text();
 		if ($in_enum) {
 			print ":Item()\"", &escape_term($1), "\n";
 		} else {
 			print ":Enumerate() (\nItem()\"", &escape_term($1), "\n";
 			$in_enum = 1;
 		}
-		$in_text = 1;
+		$in_quotes = 1;
 		$have_par = 0;
 	} elsif (/^\*\t(.*)$/) {	# Itemized
 			if ($debug_pars) {
-				&finish_text();
-				&start_text();
+				&finish_text_close_quote();
+				&start_text_open_quote();
 			}
+		&start_text_open_quote();
 		&close_quote();
-		&start_text();
 		if ($in_itemized) {
 			print ":Item()\"", &escape_term($1), "\n";
 		} else {
 			print ":Itemize() (\nItem()\"", &escape_term($1), "\n";
 			$in_itemized = 1;
 		}
-		$in_text = 1;
+		$in_quotes = 1;
 		$have_par = 0;
 	}	# Now non-TAB indented markup
 	elsif (/^\*INCLUDE\s\s*([^ ].*)\s*$/i) {	# Include another file
-		&finish_text();
+		&finish_text_close_quote();
 		$have_par = 1;
 		print "IncludeFile(\"$1\");\n\n";
 	}
@@ -116,22 +121,22 @@ while (<STDIN>) {
 	# stuff for refman
 	#############################################################
 	elsif (/^\*([-A-Z.]+)\s*$/ and defined($star_labels{$1})) {	# labels without parameters
-		&finish_text();
+		&finish_text_close_quote();
 		$have_par = 1;
 		print $star_labels{$1} . "\n";
 	} elsif (/^\*(?:HEAD)\s\s*(.*)$/) {	# Topical()
-		&finish_text();
+		&finish_text_close_quote();
 		$have_par = 1;
 		print "Topical()\"" . &escape_term($1) . "\";\n";
 	} elsif (/^\*(?:A|AA)\s\s*(.*)$/) {	# anchor
-		&finish_text();
+		&finish_text_close_quote();
 		$have_par = 1;
 		print "AddBody(HtmlAnchor() \"" . $1 . "\");\n";
 	} elsif (/^\*SEE\s\s*(.*)$/) {	# SeeAlso()
 		$names = $1;
 		$names =~ s/\s*$//;
 		$names =~ s/^\s*//;
-		&finish_text();
+		&finish_text_close_quote();
 		$have_par = 1;
 		print "Topical()\"See also:\";\nSeeAlso({";
 		$have_prev_name = 0;
@@ -141,13 +146,13 @@ while (<STDIN>) {
 		}
 		print "});\n";
 	} elsif (/^\*SEE\s*(.*)$/) {	# empty SeeAlso()
-		&finish_text();
+		&finish_text_close_quote();
 		$have_par = 1;
 		# do nothing
 	} elsif (/^\*(?:CMD|FUNC)\s\s*(.*)\s*---\s*(.*)$/) {	# CmdDescription()
 		$names = $1;
 		$title = $2;
-		&finish_text();
+		&finish_text_close_quote();
 		$have_par = 1;
 		print "\n";	# separate from previous command (has no effect on docs)
 		# Trim extra spaces
@@ -163,10 +168,10 @@ while (<STDIN>) {
 		print "CmdDescription(\"" . $names . "\", \"" . &escape_term($title) . "\");\n";
 	} elsif (/^\*INTRO\s\s*(.*)$/ or /^\*INTRO\s*()$/) {	# ChapterIntro()
 		$text = $1;
-		&finish_text();
+		&finish_text_close_quote();
 		$have_par = ($text =~ /^\s*$/) ? 1 : 0;
 		print "ChapterIntro()\"" . &escape_term($text) . "\n";
-		$in_text = 1;
+		$in_quotes = 1;
 		$have_Text = 1;
 	} else {
 	#############################################################
@@ -176,43 +181,45 @@ while (<STDIN>) {
 		if ($in_htmlcommand) {
 			&close_quote();	# this will close HtmlCommand too
 		}
-		&start_text();
-		&open_quote();
+		&start_text_open_quote();
 		print &escape_term($_), "\n";
 		$have_par = 0;
-		$in_text = 1;
+		$in_quotes = 1;
 	}
 }
 
 # Finish up
 
-&finish_text();
+&finish_text_close_quote();
 print "\n";
 
 sub close_quote {
-	if ($in_text) {
+	if ($in_quotes) {
 		print "\"" ;
+		$in_quotes = 0;
 	}
 	if ($in_htmlcommand) {
 		print ")";
+		$in_htmlcommand = 0;
 	}
-	$in_htmlcommand = $in_text = 0;
 }
 sub open_quote {
-	if (not $in_text) {
+	if (not $in_quotes) {
 		print ":\"" ;
-		$in_text = 1;
+		$in_quotes = 1;
 	}
 }
-sub start_text {	# start a Text() block if necessary
+sub start_text_open_quote {	# start a Text() block if necessary
 	if ($have_Text == 0) {
 		&close_quote();
 		print "Text()\"";
-		$have_Text = $in_text = 1;
+		$have_Text = $in_quotes = 1;
+	} elsif (not $in_quotes) {
+		&open_quote();
 	}
 }
 
-sub finish_text {
+sub finish_text_close_quote {
 	&close_quote();
 	if ($in_itemized) {
 		print "\n)";
