@@ -516,8 +516,11 @@ Compute a large factorial using arbitrary
 precision integers.
 
 *A {ToBase}
+*A {FromBase}
 	ToBase(16,255);
-Convert to another number base.
+	FromBase(16,"2FF");
+Convert between the decimal notation and another number base.
+(In Yacas, all numbers are written in decimal notation.)
 
 	Expand((1+x)^5);
 Expand the expression into a polynomial.

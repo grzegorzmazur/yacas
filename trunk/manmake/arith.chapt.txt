@@ -168,34 +168,44 @@ shifts, so they act as multiplication or division by powers of 2.
 *CMD FromBase, ToBase --- conversion from/to non-decimal base
 *CORE
 *CALL
-	FromBase(base,number)
-	ToBase(base,number)
+	FromBase(base,"string")
+	ToBase(base, number)
 
 *PARMS
 
-{base} -- integer, base to write the numbers in
+{base} -- integer, base to convert to/from
 
-{number} -- integer, number to write out in the base representation
+{number} -- integer, number to write out in a different base
+
+{"string"} -- string representing a number in a different base
 
 *DESC
 
-{FromBase} converts "number", written in base
-"base", to base 10. {ToBase} converts "number",
-written in base 10, to base "base".
+In Yacas, all numbers are written in decimal notation (base 10).
+The two functions {FromBase}, {ToBase} convert numbers between base 10 and a different base.
+Numbers in non-decimal notation are represented by strings.
 
+{FromBase} converts an integer, written as a string in base
+{base}, to base 10. {ToBase} converts {number},
+written in base 10, to base {base}.
+
+*REM where is this p-adic capability? - sw
 These functions use the p-adic expansion capabilities of the built-in
 arbitrary precision math libraries.
 
+Non-integer arguments are not supported.
+
 *E.G.
 
-	In> FromBase(2,111111)
-	Out> 63;
-	In> ToBase(16,255)
-	Out> ff;
+Write the binary number {111111} as a decimal number:
 
-The first command writes the binary number {111111}
-in decimal base. The second command converts {255}
-(in decimal base) to hexadecimal base.
+	In> FromBase(2,"111111")
+	Out> 63;
+
+Write the (decimal) number {255} in hexadecimal notation:
+
+	In> ToBase(16,255)
+	Out> "ff";
 
 *SEE PAdicExpand
 
