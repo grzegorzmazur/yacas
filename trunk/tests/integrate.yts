@@ -23,6 +23,8 @@ Verify(Integrate(x) 1/Tan(x), Ln(Sin(x)) );
 Verify(Integrate(x) 1/Cosh(x)^2, Tanh(x) );
 Verify(Integrate(x) 1/Sqrt(3-x^2), ArcSin(x/Sqrt(3)) );
 Verify(Integrate(x) Erf(x), x*Erf(x)+1/(Exp(x^2)*Sqrt(Pi)) );
+Verify(Integrate(x) Sin(x)/(2*y+4),(-Cos(x))/(2*(y+2)));
+
 
 TestNonIntegrable(Integrate(x) x^(1/x));
 TestNonIntegrable(Integrate(x) x^(Sin(x)));

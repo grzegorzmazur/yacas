@@ -264,3 +264,6 @@ Verify((1==2) != False, True);
 Verify((a==2) != False, True);
 
 Verify( Integrate(x) x^5000, x^5001/5001 );
+
+Verify( Integrate(x) Sin(x)/2, (-Cos(x))/2 );
+
