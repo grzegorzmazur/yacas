@@ -66,8 +66,10 @@ UnFence("IntegrateMultiplicative",4);
 [
 	if( IsFreeOf(var,expr))[
 		expr;
-	] else [
+	] else if ( HasFunc(expr,Sin) Or HasFunc(expr,Cos) )[
 		Simplify(TrigSimpCombine(expr));
+	] else [
+		Simplify(expr);
 	];
 ];
 
@@ -99,6 +101,8 @@ UnFence("IntegrateMultiplicative",4);
 10 # AntiDeriv(_var,_x + _y) <-- AntiDeriv(var,x) + AntiDeriv(var,y);
 10 # AntiDeriv(_var,_x - _y) <-- AntiDeriv(var,x) - AntiDeriv(var,y);
 10 # AntiDeriv(_var,   - _y) <--            - AntiDeriv(var,y);
+
+10 # AntiDeriv(_var,x_IsVariable/c_IsFreeOf(x) ) <-- AntiDeriv(var,x)/c;
 
 
 
@@ -255,6 +259,8 @@ IntPureSquare(_vr,_from,_sign2,_sign0,_to) <--
 // Declaration of the anti-derivatives of a few analytic functions
 //
 ////////////////////////////////////////////////
+
+
 IntFunc(x,1/_x^(_n),x^(1-n)/(1-n) );
 IntFunc(x,Sin(_x),-Cos(x));
 IntFunc(x,1/Sin(_x), Ln( 1/Sin(x) - Cos(x)/Sin(x) ) );

@@ -262,3 +262,5 @@ Verify((1==1) != True, True);
 Verify((a==a) != True, True);
 Verify((1==2) != False, True);
 Verify((a==2) != False, True);
+
+Verify( Integrate(x) x^5000, x^5001/5001 );
