@@ -368,9 +368,6 @@ void LoadYacas()
     }
     if (yacas->Error()[0] != '\0')
         ShowResult("");
-    if (use_texmacs_out)
-        yacas->Evaluate("PrettyPrinter(\"TexForm\");");
-
 
     /* renaming .cc to .cpp files (I know, doesn't belong here ;-) ) */
     /*
@@ -443,7 +440,7 @@ void LoadYacas()
                 char dummy[256];
                 strcpy(dummy,entry->d_name);
                 strstr(dummy,".def")[0] = '\0';
-                if (show_prompt)
+                if (show_prompt && !use_texmacs_out)
                     printf("[%s] ",dummy);
                 sprintf(buf,"DefLoad(\"%s\");",dummy);
                 yacas->Evaluate(buf);
@@ -613,12 +610,17 @@ int main(int argc, char** argv)
 
 
     char* inprompt="",*outprompt="";
-    if (show_prompt)
+    if (show_prompt && !use_texmacs_out)
     {
         inprompt = "In> ";
         outprompt = "Out> ";
     }
 
+    if (use_texmacs_out)
+    {
+        (*yacas)()().SetPrettyPrinter((*yacas)()().HashTable().LookUp("\"TexForm\""));
+//        yacas->Evaluate("ToString()PrettyPrinter(\"TexForm\");");
+    }
 
     if (fileind<argc)
     {
@@ -668,17 +670,16 @@ RESTART:
         if (use_texmacs_out)
         {
             printf("%cverbatim:",TEXMACS_DATA_BEGIN);
-        }
-
-        printf("Numeric mode: \"%s\"\n",NumericLibraryName());
-        printf("To exit Yacas, enter  Exit(); or quit or Ctrl-c. Type ?? for help.\n");
-        printf("Or type ?function for help on a function.\n");
-        printf("Type 'restart' to restart Yacas.\n");
-        printf("To see example commands, keep typing Example();\n");
-
-        if (use_texmacs_out)
-        {
+            printf("Yacas " VERSION " under TeXmacs\n");
             printf("%c",TEXMACS_DATA_END);
+        }
+        else 
+        {
+            printf("Numeric mode: \"%s\"\n",NumericLibraryName());
+            printf("To exit Yacas, enter  Exit(); or quit or Ctrl-c. Type ?? for help.\n");
+            printf("Or type ?function for help on a function.\n");
+            printf("Type 'restart' to restart Yacas.\n");
+            printf("To see example commands, keep typing Example();\n");
         }
         fflush(stdout);
     }
