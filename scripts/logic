@@ -95,6 +95,7 @@ CanProveAux(_proposition) <--
     newclause:=LogicRemoveTautologies(RemoveDuplicates(Flatten(clause,"Or")));
     If(newclause != {}, DestructiveAppend(clauses,newclause));
   ];
+
   clauses:=RemoveDuplicates(clauses);
   clauses:=LogicCombine(clauses);
 
@@ -165,12 +166,14 @@ LogicCombine(_list) <--
   [
     Local(redo);
     redo:=False;
+    if (Length(list[i]) > 1)
     For(j:=1,Not(redo) And (j<=Length(list[i])),j++)
     [
       Local(tocombine,n);
       n:=LogicSimplify( Not (list[i][j]));
+
       tocombine:=LogicFindWith(list,n);
-      If(tocombine > 0,
+      If(tocombine > 0 And i<tocombine,
          [
 If(i>=tocombine,Echo({"WRONG!!!"}));
 
