@@ -187,6 +187,7 @@ Transpose(matrix_IsMatrix) <--
 Function("Determinant",{matrix})
 [
   Local(perms,indices,result);
+  Check((IsMatrix(matrix)),"Determinant: Argument must be a matrix");
   indices:=Table(i,i,1,Length(matrix),1);
   perms:=Permutations(indices);
   result:=0;
