@@ -95,22 +95,27 @@ void Fl_My_Browser::my_remove(int line)
 void Fl_My_Browser::my_insert_line(int line, int expandInfo, const char* text,
                                   char*f, int l)
 {
-    if (expandInfo >= 0)
+    LineInfo *fexpand = NULL;
+    char buf[256];
+
+    if ((expandInfo >= 0) || (f != NULL && l > 0))
     {
-        LineInfo *fexpand = (LineInfo *)malloc(sizeof(LineInfo));
+        fexpand = (LineInfo *)malloc(sizeof(LineInfo));
         fexpand->toExpand = expandInfo;
         fexpand->expanded = 0;
         fexpand->file = f;
         fexpand->line = l;
-        char buf[256];
+    }
+    if (expandInfo >= 0)
+    {
         strcpy(buf,"@b");
         strncpy(&buf[2],text,250);
-        insert(line, buf, fexpand);
     }
     else
     {
-        insert(line, text, NULL);
+        strncpy(&buf[0],text,250);
     }
+    insert(line, buf, fexpand);
 }
 
 int Fl_My_Browser::load_in(int line, int fileNo)
