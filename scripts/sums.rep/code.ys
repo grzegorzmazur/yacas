@@ -50,8 +50,9 @@ HalfIntegerFactorial(n_IsOdd) _ (n<0)  <--
 // new version using staggered factorials
 HalfIntegerFactorial(n_IsOdd) _ (n>0) <--
 	Sqrt(Pi) * ( n!! / 2^((n+1)/2) );
-HalfIntegerFactorial(n_IsOdd) _ (n<0)  <--
+HalfIntegerFactorial(n_IsOdd) _ (n< -1)  <--
 	Sqrt(Pi) * ( (-1)^((-n-1)/2)*2^((-n-1)/2) / (-n-2)!! );
+HalfIntegerFactorial(n_IsOdd) _ (n= -1)  <-- Sqrt(Pi);
 
 /* Want to also compute (2.5)! */
 40 # (n_IsRationalOrNumber)! _(Denom(Rationalize(n))=2) <-- HalfIntegerFactorial(Numer(Rationalize(n)));
