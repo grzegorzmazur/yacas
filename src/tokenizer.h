@@ -23,6 +23,7 @@ private:
 };
 
 // utility functions
+LispBoolean IsDigit(LispChar c);
 LispBoolean IsAlpha(LispChar c);
 LispBoolean IsAlNum(LispChar c);
 LispBoolean IsSymbolic(LispChar c);

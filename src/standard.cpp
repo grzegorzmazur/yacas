@@ -396,3 +396,26 @@ void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
 }
 
 
+LispInt StrCompare(LispCharPtr f1, LispCharPtr f2)
+{
+    while (*f1)
+    {
+        /* f1 > f2  */
+        if ( (*f2) == '\0')
+            return 1;
+        if (*f1 < *f2)
+            return -1;
+        else if (*f1 > *f2)
+            return 1;
+        f1++;
+        f2++;
+    }
+
+    /* f1 < f2  */
+    if (*f2)
+        return -1;
+    /* f1 = f2 */
+    return 0;
+}
+
+

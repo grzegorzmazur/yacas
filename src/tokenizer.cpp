@@ -14,7 +14,7 @@
 #include "lisperror.h"
 #include "numbers.h"
 
-static LispBoolean IsDigit(LispChar c)
+LispBoolean IsDigit(LispChar c)
 {
     return ((c>='0' && c<='9'));
 }

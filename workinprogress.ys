@@ -100,7 +100,12 @@ GetLastCached(cache);
 AddToCached(cache,expression,value);
 // Change last remembered cached value, and return value
 ChangeLastCached(cache,value);
-
+// CacheFirst
+// CacheNext
+// CacheResetFetch
+// CacheFind
+// CacheIsSet
+// CacheInsert(cache,expression,value);
 
 10 # f(1) <-- 1;
 20 # f(2) <-- 1;
