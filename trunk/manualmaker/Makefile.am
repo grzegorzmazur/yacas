@@ -1,6 +1,9 @@
+# $(srcdir) is the manualmaker/ directory and $(top_srcdir) is the Yacas tree
+# so this file should work even if we are building Yacas in a different directory
+# (TeX works but HTML docs still fail in that case b/c of dependencies on in/all, manualmaker, styleplain etc.)
 
-# newly compiled version of yacas
-ouryacas = ../src/yacas --rootdir ../scripts/
+# newly compiled version of yacas in ../src (not necessarily under $(srcdir))
+ouryacas = ../src/yacas --rootdir $(top_srcdir)/scripts/
 
 noinst_PROGRAMS = books.html
 
@@ -50,14 +53,14 @@ EXTRA_DIST = \
 	in/dummies .cvsignore
 
 # Stuff for automatic generation of Yacas books
-%.chapt: in/%.chapt.txt
-	perl ../manmake/txt2yacasdoc.pl < $< > $@
+%.chapt: $(srcdir)/in/%.chapt.txt
+	perl $(top_srcdir)/manmake/txt2yacasdoc.pl < $< > $@
 
-%.book: in/%.book.txt
-	perl ../manmake/txt2yacasdoc.pl < $< > $@
+%.book: $(srcdir)/in/%.book.txt
+	perl $(top_srcdir)/manmake/txt2yacasdoc.pl < $< > $@
 
 %.book.tex: %.book
-	sh ../manmake/book2TeX.sh $< $@
+	sh $(top_srcdir)/manmake/book2TeX.sh -run "$(ouryacas)" $< $@
 
 %.dvi: %.tex
 	latex $< > /dev/null
@@ -75,7 +78,7 @@ EXTRA_DIST = \
 
 # experimental: extract Yacas code from books
 %.ys: %.chapt
-	sh ../manmake/book2ys.sh $< $@
+	sh $(top_srcdir)/manmake/book2ys.sh -run "$(ouryacas)" $< $@
 
 
 # specify books that need chapters
@@ -85,8 +88,8 @@ refprog.book.tex : refprog.book $(REFPROGCHAPTERS)
 coding.book.tex : coding.book $(CODINGCHAPTERS)
 
 # special "virtual" chapter built from yacasapi.cpp
-in/yacasapi.chapt.txt : ../src/yacasapi.cpp
-	perl ../manmake/api2txt.pl < ../src/yacasapi.cpp > in/yacasapi.chapt.txt
+in/yacasapi.chapt.txt : $(top_srcdir)/src/yacasapi.cpp
+	perl $(top_srcdir)/manmake/api2txt.pl < $(top_srcdir)/src/yacasapi.cpp > in/yacasapi.chapt.txt
 
 # TeX/PS/PDF top target
 texdocs: \
@@ -107,7 +110,7 @@ yacas_helpdir = $(datadir)/yacas/documentation
 
 books.html:  $(BOOKS) $(REFCHAPTERS) $(ESSAYCHAPTERS) \
    $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(CODESNIPPETS)
-	-$(ouryacas) in/all
+	-$(ouryacas) $(srcdir)/in/all
 	echo "done" > books.html.c
 
 # No separate chapters
@@ -138,7 +141,9 @@ dist-hook:
 # do not copy html files any more
 #	-cp $(srcdir)/*.html  $(distdir) 
 
+# not sure if this is very helpful b/c we are overriding distcheck in the top Makefile
 distcheck-hook:
+	make texdocs
 	make test
 
 install-data-local: books.html 

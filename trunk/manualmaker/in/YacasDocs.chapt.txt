@@ -60,12 +60,13 @@ There is a single option for {txt2yacasdoc}:
 	perl txt2yacasdoc.pl -debug < file.txt \
 	  > file.chapt
 This option is to be used for debugging, i.e. when the resulting file does not
-compile in Yacas. The effect of this option is to introduce many more breaks
+compile in Yacas. The effect of this option is to introduce more breaks
 between text strings in the generated file, so that the {Text()} function is
 called more often. It is then easier to locate the source of the problem in the
 Yacas-language file (Yacas will tell you the last line in the Yacas-language
 file at which a syntax error occurred). This option is largely obsolete because
 the {Text()} function is called frequently enough by default.
+See below for hints about finding syntax errors in documentation when the manual does not compile.
 
 	    Formatting of source text files
 
@@ -306,9 +307,10 @@ Each file is processed by an independent Yacas session. Any errors of processing
 
 	    {book2TeX}: preparing typeset documentation
 
-The script {book2TeX.sh} prepares a $TeX$ file out of a Yacas-language documentation book. Usage is similar to {book2txt.sh}, except that only one file is processed at a time. For example:
+The script {book2TeX.sh} prepares a $TeX$ file out of a Yacas-language documentation book. Usage is similar to {book2txt.sh}, except that only one file is processed at a time and the file must be a "book", not just a "chapter". For example:
 	book2TeX.sh intro.book intro.book.tex
-will create a $TeX$-formatted version of the introductory tutorial. It can be processed with standard tools, for example
+will create a $LaTeX$-formatted version of the introductory tutorial.
+The $LaTeX$ file can be processed with standard tools, for example
 	latex intro.book.tex
 	latex intro.book.tex
 	dvips -o intro.book.ps intro.book dvi
@@ -322,7 +324,10 @@ The shell commands in {book2txt.sh} execute the following Yacas commands:
 	Use("book2TeX.ys");
 	ToFile("file.chapt.tex")
 	  Load("file.chapt");
-This requires that the Yacas script {book2TeX.ys} be available in the current directory. The shell script {book2TeX.sh} assumes that {book2TeX.ys} is stored in the same directory as {book2TeX.sh}.
+This requires that the Yacas script {book2TeX.ys} be available in the current directory. The shell script {book2TeX.sh} assumes that {book2TeX.ys} is stored in the same directory as {book2TeX.sh} and that the Yacas executable is available in the directory {../src/}. Alternatively, the command line of the Yacas executable can be specified by the {-run} option. For example, the {Makefile} runs {book2TeX.sh} like this:
+	book2TeX.sh -run "yacas-dir/src/yacas --rootdir
+	  yacas-dir/scripts" file.book file.book.tex
+Note that the entire Yacas command line is given in quotes.
 
 Not all features of Yacas documentation are compatible with $TeX$ typesetting. To prevent errors, documentation should avoid certain things. In general, it is a good idea to check the typeset appearance of documentation, since it helps detect errors.
 
@@ -340,14 +345,14 @@ non-evaluating call {TeXMath()} in the Yacas-language documentation, which
 formats into HTML using a {Write()} call or into $TeX$ using a {TeXForm()}
 call, as necessary. Testing should be performed on documentation before
 releasing it. The most stringent limitation is that the expression between
-dollar signs should evaluate in Yacas (perhaps to itself) and not cause syntax
-errors. In case of doubt, try whether the expression evaluates without errors
+dollar signs should evaluate in Yacas (preferably to itself) and not cause syntax
+errors. In case of doubt, check that the expression evaluates without errors
 and then try to use {TeXForm} on that expression and see if that evaluates
-without errors.
+without errors as well. For example, expressions such as {x!+1} cause a syntax error and this will break the compilation of the manual (both HTML and $TeX$).
 
 	    {book2ys}: extracting Yacas code from books
 
-{book2ys.sh} is a shell script that extracts Yacas code examples from a documentation chapter into a separate file. Usage is similar to {book2TeX.sh}. For example, the benchmarking test code {wester.yts} is automatically extracted from the corresponding essay chapter by the command
+{book2ys.sh} is a shell script that extracts Yacas code examples from a documentation chapter into a separate file. Usage is similar to {book2TeX.sh}. For example, the benchmarking test code {wester.yts} can be automatically extracted from the corresponding essay chapter by the command
 	sh ../manmake/book2ys.sh wester-1994.chapt
 After this command, the file {wester-1994.ys} is created. Note that {wester-1994.chapt} is in Yacas language and is itself a generated file.
 
@@ -393,3 +398,17 @@ Special labels without arguments that generate headings for the reference manual
 *	{*DESC} -- "Description"
 *	{*E.G.} -- "Examples"
 *	{*EG} -- "Example"
+
+	    Debugging the manual
+
+Sometimes the manual compilation {make} or {make texdocs} will break after you edit the plaintext manual sources. This can happen for one of the two reasons:
+*	1. A math syntax error. You have used a mathematical formula that does not evaluate to a Yacas expression. Unbalanced parentheses, invalid infix operators such as {>-}, or forgotten punctuation inside the formula such as {x+1:} are the most frequent culprits. This will break both HTML and $TeX$ manual formats.
+*	2. The HTML format compiles but the $TeX$ does not ({latex} never finishes, i.e. it shows an error message which you do not see because it is redirected to {/dev/null} and waits for your input). This means that the generated $TeX$ code is incorrect. You probably forgot to balance braces {{}} or something more subtle happened.
+
+In case of a math syntax error, the documentation exporter cannot print the paragraph where the error occurred, but it usually prints the preceding paragraph. Currently, the easiest way to locate the error is to generate the {.tex} output and look at it, e.g.:
+	{make ref.book.tex; less ref.book.tex}
+The last line in the {.tex} file must be {\end{document}}. If it is not, then the last portion of the text you see in the {.tex} file is the text directly before the paragraph where the error occurred. Most probably, there is a malformatted math formula in the next paragraph of your plaintext source.
+
+If the last line is  {\end{document}} but {latex} does not finish, you will have to run {latex} by hand, e.g.
+	latex ref.book.tex
+and look at the error message(s) it prints.

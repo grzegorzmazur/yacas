@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -46,10 +46,9 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -307,7 +306,7 @@ uninstall: uninstall-recursive
 all-am: Makefile config.h
 all-redirect: all-recursive-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
 
@@ -376,10 +375,13 @@ debug:
 	cd src; make -f makefile.debug
 
 # these targets will help "make checkdist" do the right thing
+dvi: texdocs
+installcheck: test
 
 # This target untars the dist file and tries a VPATH configuration.  Then
 # it guarantees that the distribution is self-contained by making another
 # tarfile.
+# Note that this is currently a cludge and conflicts with automatically generated "distcheck" target, but I don't know how to fix this.
 distcheck: dist
 	-rm -rf $(distdir)
 	GZIP=$(GZIP_ENV) $(TAR) zxf $(distdir).tar.gz
@@ -388,8 +390,8 @@ distcheck: dist
 	cd $(distdir) \
 	  && ../configure --srcdir=. --prefix=$$dc_install_base \
 	  && $(MAKE) $(AM_MAKEFLAGS) \
-	  && $(MAKE) $(AM_MAKEFLAGS) texdocs \
 	  && $(MAKE) $(AM_MAKEFLAGS) test \
+	  && $(MAKE) $(AM_MAKEFLAGS) texdocs \
 	  && $(MAKE) $(AM_MAKEFLAGS) install \
 	  && $(MAKE) $(AM_MAKEFLAGS) installcheck \
 	  && $(MAKE) $(AM_MAKEFLAGS) dist

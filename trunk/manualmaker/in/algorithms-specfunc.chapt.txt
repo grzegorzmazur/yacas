@@ -53,7 +53,9 @@ compute the array of $N$ coefficients $c[k]$ grows as $N^3$. Therefore it is
 better to use less precise but much simpler formulae derived by Spouge.
 
 In the calculation of the sum $Sum(k, 1, N, c[k]*(z+k)^(-1))$, round-off error
-can lead to a serious loss of precision. At version 1.0.49, Yacas is limited in
+can lead to a serious loss of precision. At version
+*EVAL Version() : ","
+{Yacas} is limited in
 its internal arbitrary precision facility in that does not support
 floating-point numbers with mantissa; this hinders precise calculations with
 floating-point numbers. (This concern does not apply to Yacas linked with

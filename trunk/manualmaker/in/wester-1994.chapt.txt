@@ -4,7 +4,8 @@ In his 1994 paper <i>Review of CAS mathematical capabilities</i>, Michael Wester
 
 Below is the list of Wester's problems with the corresponding {Yacas} code. "OK" means a satisfactory solution, "BUG" means that {Yacas} gives a wrong solution or breaks down, "NO" means that the relevant functionality is not yet implemented.
 
-{Yacas} version: 1.0.51
+{Yacas} version:
+*EVAL Version()
 
 *	1. (OK) $50!$
 	Verify(25!, 15511210043330985984000000);
