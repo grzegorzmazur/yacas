@@ -52,7 +52,11 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
               if (verbose_debug)
               {
                 char buf[1024];
+#ifdef HAVE_VSNPRINTF
+                snprintf(buf,1024,"Debug> Loading file %s for function %s\n",def->iFileName()->String(),head->String()->String());
+#else
                 sprintf(buf,"Debug> Loading file %s for function %s\n",def->iFileName()->String(),head->String()->String());
+#endif
                 aEnvironment.CurrentOutput()->Write(buf);
               }
             }
@@ -66,7 +70,11 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
               if (verbose_debug)
               {
                 char buf[1024];
+#ifdef HAVE_VSNPRINTF
+                snprintf(buf,1024,"Debug> Finished loading file %s\n",def->iFileName()->String());
+#else
                 sprintf(buf,"Debug> Finished loading file %s\n",def->iFileName()->String());
+#endif
                 aEnvironment.CurrentOutput()->Write(buf);
               }
             }

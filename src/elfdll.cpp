@@ -26,8 +26,13 @@ printf("Trying to open [%s]\n",aDllFile);
     if (handle == NULL)
     {
       char tempbuf[256];
+#ifdef HAVE_VSNPRINTF
+      snprintf(tempbuf,256,"%s/%s.so",PLUGIN_DIR,aDllFile);
+#else
       sprintf(tempbuf,"%s/%s.so",PLUGIN_DIR,aDllFile);
+#endif
       handle = dlopen(tempbuf,RTLD_LAZY);
+
     }
 
     if (handle)

@@ -92,6 +92,14 @@ iInputDirty(1),iOutputDirty(1),iShowInput(1),iEnableInput(1)
         extern char defdir[128];
         char buf[128];
         sprintf(buf,"%shints",defdir);
+        {
+          FILE*f=fopen(buf,"r");
+          if (!f) 
+          {
+            strcpy(buf,"hints");
+          }
+          else fclose(f);
+        }
         LoadHints(buf);
     }
     CommandLineStartNew();

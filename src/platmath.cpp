@@ -20,8 +20,12 @@ double GetDouble(LispCharPtr aString)
 LispStringPtr Double(double aValue, LispHashTable& aHashTable)
 {
     char dummy[150];
-//    sprintf(dummy,"%.24g",aValue);
+
+#ifdef HAVE_VSNPRINTF
+    snprintf(dummy,150,"%f",aValue);
+#else
     sprintf(dummy,"%f",aValue);
+#endif
     return aHashTable.LookUp(dummy);
 }
 
@@ -308,10 +312,18 @@ void BigNumber::ToString(LispString& aResult, LispInt aBase) const
   switch (type)
   {
   case KInteger:
+#ifdef HAVE_VSNPRINTF
+    snprintf(dummy,150,"%ld",value.i);
+#else
     sprintf(dummy,"%ld",value.i);
+#endif
     break;
   case KDouble:
+#ifdef HAVE_VSNPRINTF
+    snprintf(dummy,150,"%f",value.d);
+#else
     sprintf(dummy,"%f",value.d);
+#endif
     break;
   }
   aResult.SetStringCounted(dummy,PlatStrLen(dummy));

@@ -13,311 +13,273 @@
 
 
 
-static void base_fl_color(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+
+
+static void base_fl_color(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  ShortIntegerArgument(g, arg1, LispTrue);
-  ShortIntegerArgument(g, arg2, LispTrue);
-  ShortIntegerArgument(g, arg3, LispTrue);
-  g.Finalize(3);
+  ShortIntegerArgument(arg1,  1 );
+  ShortIntegerArgument(arg2,  2 );
+  ShortIntegerArgument(arg3,  3 );
+  
 
   /* Call the actual function. */
  fl_color(arg1, arg2, arg3);
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_font(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_font(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  ShortIntegerArgument(g, arg1, LispTrue);
-  ShortIntegerArgument(g, arg2, LispTrue);
-  g.Finalize(2);
+  ShortIntegerArgument(arg1,  1 );
+  ShortIntegerArgument(arg2,  2 );
+  
 
   /* Call the actual function. */
  fl_font(arg1, arg2);
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_draw(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_draw(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  InpStringArgument(g,arg1,LispTrue);
-  ShortIntegerArgument(g, arg2, LispTrue);
-  ShortIntegerArgument(g, arg3, LispTrue);
-  g.Finalize(3);
+  InpStringArgument(arg1, 1);
+  ShortIntegerArgument(arg2,  2 );
+  ShortIntegerArgument(arg3,  3 );
+  
 
   /* Call the actual function. */
  fl_draw(arg1, arg2, arg3);
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_height(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_height(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  
 
   /* Call the actual function. */
 int r =  fl_height();
 
 /* Return result. */
-  ReturnShortInteger(aEnvironment,aResult,r);
+  ReturnShortInteger(aEnvironment,aEnvironment.iStack.GetElement(aStackTop),r);
 }
 
-static void base_fl_descent(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_descent(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  
 
   /* Call the actual function. */
 int r =  fl_descent();
 
 /* Return result. */
-  ReturnShortInteger(aEnvironment,aResult,r);
+  ReturnShortInteger(aEnvironment,aEnvironment.iStack.GetElement(aStackTop),r);
 }
 
-static void base_fl_width(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_width(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  InpStringArgument(g,arg1,LispTrue);
-  g.Finalize(1);
+  InpStringArgument(arg1, 1);
+  
 
   /* Call the actual function. */
 double r =  fl_width(arg1);
 
 /* Return result. */
-  ReturnDoubleFloat(aEnvironment,aResult,r);
+  ReturnDoubleFloat(aEnvironment,aEnvironment.iStack.GetElement(aStackTop),r);
 }
 
-static void base_fl_push_matrix(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_push_matrix(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  
 
   /* Call the actual function. */
  fl_push_matrix();
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_pop_matrix(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_pop_matrix(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  
 
   /* Call the actual function. */
  fl_pop_matrix();
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_scale(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_scale(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  DoubleFloatArgument(g,arg1,LispTrue);
-  DoubleFloatArgument(g,arg2,LispTrue);
-  g.Finalize(2);
+  DoubleFloatArgument(arg1, 1);
+  DoubleFloatArgument(arg2, 2);
+  
 
   /* Call the actual function. */
  fl_scale(arg1, arg2);
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_translate(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_translate(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  DoubleFloatArgument(g,arg1,LispTrue);
-  DoubleFloatArgument(g,arg2,LispTrue);
-  g.Finalize(2);
+  DoubleFloatArgument(arg1, 1);
+  DoubleFloatArgument(arg2, 2);
+  
 
   /* Call the actual function. */
  fl_translate(arg1, arg2);
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_rotate(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_rotate(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  DoubleFloatArgument(g,arg1,LispTrue);
-  g.Finalize(1);
+  DoubleFloatArgument(arg1, 1);
+  
 
   /* Call the actual function. */
  fl_rotate(arg1);
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_begin_points(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_begin_points(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  
 
   /* Call the actual function. */
  fl_begin_points();
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_begin_line(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_begin_line(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  
 
   /* Call the actual function. */
  fl_begin_line();
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_begin_loop(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_begin_loop(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  
 
   /* Call the actual function. */
  fl_begin_loop();
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_begin_polygon(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_begin_polygon(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  
 
   /* Call the actual function. */
  fl_begin_polygon();
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_vertex(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_vertex(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  DoubleFloatArgument(g,arg1,LispTrue);
-  DoubleFloatArgument(g,arg2,LispTrue);
-  g.Finalize(2);
+  DoubleFloatArgument(arg1, 1);
+  DoubleFloatArgument(arg2, 2);
+  
 
   /* Call the actual function. */
  fl_vertex(arg1, arg2);
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_end_points(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_end_points(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  
 
   /* Call the actual function. */
  fl_end_points();
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_end_line(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_end_line(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  
 
   /* Call the actual function. */
  fl_end_line();
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_end_loop(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_end_loop(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  
 
   /* Call the actual function. */
  fl_end_loop();
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
 
-static void base_fl_end_polygon(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_fl_end_polygon(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
-  g.Finalize(0);
+  
 
   /* Call the actual function. */
  fl_end_polygon();
 
 /* Return result. */
-  InternalTrue(aEnvironment,aResult);
+  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));
 }
  
 
 
-class ThisPlugin : public LispPluginBase
+class FltkgraphPlugin : public LispPluginBase
 {
 public:
     virtual void Add(LispEnvironment& aEnvironment);
     virtual void Remove(LispEnvironment& aEnvironment);
 };
-void ThisPlugin::Add(LispEnvironment& aEnvironment)
+void FltkgraphPlugin::Add(LispEnvironment& aEnvironment)
 {
   SetShortIntegerConstant(aEnvironment, "FlHelvetica", FL_HELVETICA);
   SetShortIntegerConstant(aEnvironment, "FlHelveticaBold", FL_HELVETICA_BOLD);
@@ -336,58 +298,61 @@ void ThisPlugin::Add(LispEnvironment& aEnvironment)
   SetShortIntegerConstant(aEnvironment, "FlScreenBold", FL_SCREEN_BOLD);
   SetShortIntegerConstant(aEnvironment, "FlZapfDingbats", FL_ZAPF_DINGBATS);
 
-  aEnvironment.SetCommand(base_fl_color, "FlColor");
-  aEnvironment.SetCommand(base_fl_font, "FlFont");
-  aEnvironment.SetCommand(base_fl_draw, "FlDraw");
-  aEnvironment.SetCommand(base_fl_height, "FlHeight");
-  aEnvironment.SetCommand(base_fl_descent, "FlDescent");
-  aEnvironment.SetCommand(base_fl_width, "FlWidth");
-  aEnvironment.SetCommand(base_fl_push_matrix, "FlPushMatrix");
-  aEnvironment.SetCommand(base_fl_pop_matrix, "FlPopMatrix");
-  aEnvironment.SetCommand(base_fl_scale, "FlScale");
-  aEnvironment.SetCommand(base_fl_translate, "FlTranslate");
-  aEnvironment.SetCommand(base_fl_rotate, "FlRotate");
-  aEnvironment.SetCommand(base_fl_begin_points, "FlBeginPoints");
-  aEnvironment.SetCommand(base_fl_begin_line, "FlBeginLine");
-  aEnvironment.SetCommand(base_fl_begin_loop, "FlBeginLoop");
-  aEnvironment.SetCommand(base_fl_begin_polygon, "FlBeginPolygon");
-  aEnvironment.SetCommand(base_fl_vertex, "FlVertex");
-  aEnvironment.SetCommand(base_fl_end_points, "FlEndPoints");
-  aEnvironment.SetCommand(base_fl_end_line, "FlEndLine");
-  aEnvironment.SetCommand(base_fl_end_loop, "FlEndLoop");
-  aEnvironment.SetCommand(base_fl_end_polygon, "FlEndPolygon");
+  aEnvironment.SetCommand(base_fl_color, "FlColor",3,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_font, "FlFont",2,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_draw, "FlDraw",3,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_height, "FlHeight",0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_descent, "FlDescent",0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_width, "FlWidth",1,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_push_matrix, "FlPushMatrix",0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_pop_matrix, "FlPopMatrix",0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_scale, "FlScale",2,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_translate, "FlTranslate",2,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_rotate, "FlRotate",1,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_begin_points, "FlBeginPoints",0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_begin_line, "FlBeginLine",0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_begin_loop, "FlBeginLoop",0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_begin_polygon, "FlBeginPolygon",0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_vertex, "FlVertex",2,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_end_points, "FlEndPoints",0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_end_line, "FlEndLine",0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_end_loop, "FlEndLoop",0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  aEnvironment.SetCommand(base_fl_end_polygon, "FlEndPolygon",0,YacasEvaluator::Function | YacasEvaluator::Fixed);
 }
 
-void ThisPlugin::Remove(LispEnvironment& aEnvironment)
+void FltkgraphPlugin::Remove(LispEnvironment& aEnvironment)
 {
 //printf("CLOSED DLL!!!\n");
-  aEnvironment.RemoveCommand("FlColor");
-  aEnvironment.RemoveCommand("FlFont");
-  aEnvironment.RemoveCommand("FlDraw");
-  aEnvironment.RemoveCommand("FlHeight");
-  aEnvironment.RemoveCommand("FlDescent");
-  aEnvironment.RemoveCommand("FlWidth");
-  aEnvironment.RemoveCommand("FlPushMatrix");
-  aEnvironment.RemoveCommand("FlPopMatrix");
-  aEnvironment.RemoveCommand("FlScale");
-  aEnvironment.RemoveCommand("FlTranslate");
-  aEnvironment.RemoveCommand("FlRotate");
-  aEnvironment.RemoveCommand("FlBeginPoints");
-  aEnvironment.RemoveCommand("FlBeginLine");
-  aEnvironment.RemoveCommand("FlBeginLoop");
-  aEnvironment.RemoveCommand("FlBeginPolygon");
-  aEnvironment.RemoveCommand("FlVertex");
-  aEnvironment.RemoveCommand("FlEndPoints");
-  aEnvironment.RemoveCommand("FlEndLine");
-  aEnvironment.RemoveCommand("FlEndLoop");
-  aEnvironment.RemoveCommand("FlEndPolygon");
+  aEnvironment.RemoveCoreCommand("FlColor");
+  aEnvironment.RemoveCoreCommand("FlFont");
+  aEnvironment.RemoveCoreCommand("FlDraw");
+  aEnvironment.RemoveCoreCommand("FlHeight");
+  aEnvironment.RemoveCoreCommand("FlDescent");
+  aEnvironment.RemoveCoreCommand("FlWidth");
+  aEnvironment.RemoveCoreCommand("FlPushMatrix");
+  aEnvironment.RemoveCoreCommand("FlPopMatrix");
+  aEnvironment.RemoveCoreCommand("FlScale");
+  aEnvironment.RemoveCoreCommand("FlTranslate");
+  aEnvironment.RemoveCoreCommand("FlRotate");
+  aEnvironment.RemoveCoreCommand("FlBeginPoints");
+  aEnvironment.RemoveCoreCommand("FlBeginLine");
+  aEnvironment.RemoveCoreCommand("FlBeginLoop");
+  aEnvironment.RemoveCoreCommand("FlBeginPolygon");
+  aEnvironment.RemoveCoreCommand("FlVertex");
+  aEnvironment.RemoveCoreCommand("FlEndPoints");
+  aEnvironment.RemoveCoreCommand("FlEndLine");
+  aEnvironment.RemoveCoreCommand("FlEndLoop");
+  aEnvironment.RemoveCoreCommand("FlEndPolygon");
 }
 
 extern "C" {
 LispPluginBase* maker(void)
 {
-    return new ThisPlugin;
+    return NEW FltkgraphPlugin;
 }
 
 };
+
+
+
 

@@ -19,6 +19,6 @@ Integrate(x,a,b)Sin(x)
 :iel:True
 Summation
 :
-Sum(1 .. 10)
+Add(1 .. 10)
 :il:Notepad(FindFile("index"));
 Back to index

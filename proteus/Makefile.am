@@ -4,7 +4,7 @@ EXTRA_DIST = COPYING.HelpDialog FltkConsole.cpp FltkConsole.h FltkHintWindow.cpp
 	fl_adjustable_file_chooser.H fl_adjustable_file_chooser.cpp              \
 	flplot fltkgraph.stub fltkgraphstub.cc fltkgraphstub.description         \
 	grapher.cpp grapher.h graphtest hints makefile.agenda                    \
-	makefile.alpha makefile.linux makefile.mark makeinclude                  \
+	makefile.alpha makefile.linux makefile.macosx makefile.mark makeinclude                  \
 	mkbackup proteus.conf proteus.dsp proteus.dsw proteusbooks.html          \
 	proteusmenu.h readme.txt tabs.cpp tabs.h testnotes/graphtest2            \
 	testnotes/index testnotes/recursetest testnotes/testnotepad              \

@@ -18,17 +18,20 @@
 LispEnvironment* graphEnvironment;
 LispPtr graph;
 
+#define InternalEval aEnvironment.iEvaluator->Eval
+#define RESULT aEnvironment.iStack.GetElement(aStackTop)
+#define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
 
-static void FlGraphStart(LispEnvironment& aEnvironment, LispPtr& aResult,
-                       LispPtr& aArguments)
+
+
+static void FlGraphStart(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    TESTARGS(2);
     graphEnvironment = &aEnvironment;
-    graph.Set(Argument(aArguments,1).Get());
+    graph.Set(ARGUMENT(1).Get());
     extern Fl_Tabs* mainTabs;
     extern Fl_Group* grapher;
     mainTabs->value(grapher);
-    InternalTrue(aEnvironment,aResult);
+    InternalTrue(aEnvironment,RESULT);
 }
 
 
@@ -36,8 +39,14 @@ static void FlGraphStart(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 void AddGraphingCapabilities(LispEnvironment& aEnvironment)
 {
+
+#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) aEnvironment.SetCommand(fname,iname,nrargs,flags)
+CORE_KERNEL_FUNCTION("FlGraphStart",FlGraphStart,1,YacasEvaluator::Macro | YacasEvaluator::Fixed);
+#undef CORE_KERNEL_FUNCTION
+/*
   aEnvironment.SetCommand(FlGraphStart, "FlGraphStart");
-  ThisPlugin fl_plugin;
+*/
+  FltkgraphPlugin fl_plugin;
   fl_plugin.Add(aEnvironment);
 }
 
