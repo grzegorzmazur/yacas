@@ -22,11 +22,8 @@ texdocs: essays.book.pdf essays.book.ps
 
 %.dvi: %.tex
 	latex $<
-	latex $<
 
-%.pdf: %.dvi
+%.pdf %.ps: %.dvi
 #	dvipdf $<
 	pdflatex $*
-
-%.ps: %.dvi
 	dvips -o $@ $<
