@@ -139,7 +139,7 @@ Unfortunately not everything is supported that well. For instance, Yacas
 comes with its own documentation system, which is of course not
 supported by {automake}. So we need to tell {automake} how to handle
 these files. To specify which files should be included in the distribution, the
-{EXTRA_DIST} variable can should be used. The developer should list all files
+{EXTRA_DIST} variable can  be used. The developer should list all files
 to be included in the distribution that {automake} does not know about
 here. If we want to run some commands at build or installation time, we
 can specifiy them by {Makefile} rules in the traditional ways. Just
@@ -235,7 +235,7 @@ The last two lines say that the value of the {NUMBERS_LIB} and
 {@NUMBER_LIB@} and {@NUMBER_LDFLAGS@} symbols respectively, in the
 {Makefile.in}.
 
-This end the brief description of {autoconf}. For more information,
+This ends the brief description of {autoconf}. For more information,
 the reader is referred to the documentation that comes with the
 package.
 
