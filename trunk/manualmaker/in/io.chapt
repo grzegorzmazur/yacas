@@ -536,13 +536,7 @@ Sin
 ( 
 x 
 ) 
-Out> True
-");
-
-Topical() "Bugs";
-Text() "In fact, " : HtmlTerm("ReadToken") : " never returns " :
-HtmlTerm("EndOfFile") : ". Hence the example above will end up in an
-endless loop and not display anything.";
+Out> True;");
 
 Topical() "See Also";
 SeeAlso({"FromFile", "FromString", "Read", "LispRead"});
