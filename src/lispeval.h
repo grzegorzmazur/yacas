@@ -14,6 +14,7 @@
 void InternalEval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
 */
 
+
 class UserStackInformation : public YacasBase
 {
 public:
@@ -37,7 +38,9 @@ public:
     
 };
 
-
+/// Abstract evaluator for Lisp expressions.
+/// Eval() is a pure virtual function, to be provided by the derived class.
+/// The other functions are stubs.
 
 class LispEvaluatorBase : public YacasBase
 {
@@ -51,10 +54,42 @@ private:
     UserStackInformation iBasicInfo;
 };
 
+/// The basic evaluator for Lisp expressions.
 
 class BasicEvaluator : public LispEvaluatorBase
 {
 public:
+  /// Evaluate a Lisp expression
+  /// \param aEnvironment the Lisp environment, in which the
+  /// evaluation should take place.
+  /// \param aResult the result of the evaluation.
+  /// \param aExpression the expression to evaluate.
+  ///
+  /// First, the evaluation depth is checked. An error is raised if
+  /// the maximum evaluation depth is exceeded. 
+  ///
+  /// The next step is the actual evaluation. \a aExpression is a
+  /// LispObject, so we can distinguish three cases.
+  ///   - If \a aExpression is a string starting with \c " , it is
+  ///     simply copied in \a aResult. If it starts with another
+  ///     character (this includes the case where it represents a
+  ///     number), the environment is checked to see whether a
+  ///     variable with this name exists. If it does, its value is
+  ///     copied in \a aResult, otherwise \a aExpression is copied.
+  ///   - If \a aExpression is a list, the head of the list is
+  ///     examined. If the head is not a string. InternalApplyPure()
+  ///     is called. If the head is a string, it is checked against
+  ///     the core commands; if there is a check, the corresponding
+  ///     evaluator is called. Then it is checked agaist the list of
+  ///     user function with GetUserFunction() . Again, the
+  ///     corresponding evaluator is called if there is a check. If
+  ///     all fails, ReturnUnEvaluated() is called. 
+  ///   - Otherwise (ie. if \a aExpression is a generic object), it is
+  ///     copied in \a aResult.
+  ///
+  /// \note The result of this operation must be a unique (copied)
+  /// element! Eg. its Next might be set... 
+  ///
   virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
 };
 

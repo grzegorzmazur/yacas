@@ -49,8 +49,11 @@ void LispEval(LispEnvironment& aEnvironment,LispInt aStackTop)
     InternalEval(aEnvironment, RESULT, ARGUMENT(1));
 }
 
-
-
+/// Execute the Yacas commands \c Set and \c MacroSet.
+/// The argument \a aMacroMode determines whether the first argument
+/// should be evaluated. The real work is done by
+/// LispEnvironment::SetVariable() . 
+/// \sa LispSetVar(), LispMacroSetVar()
 static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, LispBoolean aMacroMode)
 {
     LispStringPtr varstring=NULL;
@@ -73,11 +76,15 @@ static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
     InternalTrue(aEnvironment,RESULT);
 }
 
-
+/// Corresponds to the Yacas function \c Set.
+/// This function simply calls InternalSetVar() .
 void LispSetVar(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     InternalSetVar(aEnvironment, aStackTop, LispFalse);
 }
+
+/// Corresponds to the Yacas function \c MacroSet.
+/// This function simply calls InternalSetVar() .
 void LispMacroSetVar(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     InternalSetVar(aEnvironment, aStackTop, LispTrue);
@@ -939,6 +946,8 @@ void LispLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
+/// Implements the Yacas functions \c RuleBase and \c MacroRuleBase .
+/// The real work is done by LispEnvironment::DeclareRuleBase().
 static void InternalRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop, 
                              LispInt aListed)
 {
@@ -964,6 +973,8 @@ static void InternalRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop,
     InternalTrue(aEnvironment,RESULT);
 }
 
+/// Corresponds to the Yacas function \c RuleBase .
+/// This function simply calls InternalRuleBase().
 void LispRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     InternalRuleBase(aEnvironment, aStackTop, LispFalse);
@@ -2200,25 +2211,9 @@ void LispFindFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
     RESULT.Set(LispAtom::New(aEnvironment,"\"\""));
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/// Corresponds to the Yacas function \c PatternCreate .
+/// This function constructs a new PatternClass, and puts it in a new
+/// LispGenericObject. The result is set to this LispGenericObject.
 void GenPatternCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     //TESTARGS(3);

@@ -5,6 +5,9 @@
 
 #include "yacasbase.h"
 
+/// Not used.
+/// This class has pure virtual functions, but no derived classes, so
+/// it can never be used.
 class LispArgList : public YacasBase
 {
 public:
@@ -14,6 +17,7 @@ public:
   virtual LispBoolean Compare(LispInt aIndex, LispCharPtr aString)=0;
 };
 
+/// Abstract class which can be put inside a LispGenericClass.
 class GenericClass : public YacasBase
 {
 public:

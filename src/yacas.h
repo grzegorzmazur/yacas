@@ -1,4 +1,5 @@
-
+/// \file
+/// Definitions of DefaultYacasEnvironment and CYacas.
 
 #ifndef __yacas_h__
 #define __yacas_h__
@@ -18,6 +19,12 @@
 #include "lisperror.h"
 #include "lispuserfunc.h"
 
+
+/// The default environment for a Yacas session.
+/// This class constructs a LispEnvironment (to be found in
+/// #iEnvironment), and defines the Yacas core functions. The core
+/// functions are listed in corefunctions.h . Examples of core
+/// functions are \c Head, \c Set and \c Eval.
 
 class DefaultYacasEnvironment : public YacasBase
 {
@@ -51,26 +58,65 @@ public:
 };
 
 
+/// The Yacas engine.
+/// This is the only class that applications need to use. It can
+/// evaluate Yacas expressions. Every instance has its own Yacas
+/// environment, in which the expressions are evaluated.
+
 class CYacas : public YacasBase
 {
 public:
-    LISPIMPORT static CYacas* NewL();
-    LISPIMPORT static CYacas* NewL(LispOutput* aOutput);
+
+    /// Pseudo-constructor.
+    /// \return A new instance of CYacas, with output connected to a
+    /// new instance of StdUserOutput. 
+    LISPIMPORT static CYacas* NewL(); 
+
+    /// Pseudo-constructor.
+    /// \return A new instance of CYacas, with output connected to \p
+    /// aOutput. 
+    LISPIMPORT static CYacas* NewL(LispOutput* aOutput); 
+
+    /// Destructor.
     LISPIMPORT virtual ~CYacas();
+
+    /// Return the underlying Yacas environment.
     inline DefaultYacasEnvironment& operator()() {return environment;}
+
+    /// Evaluate a Yacas expression.
+    /// First, \p aExpression is parsed by an InfixParser. Then it is
+    /// evaluated in the underlying Lisp environment. Finally, the
+    /// result is printed to #iResultOutput via the pretty printer or,
+    /// if this is not defined, via an InfixPrinter.
     virtual void Evaluate(const LispCharPtr aExpression);
+
+    /// Return the result of the expression.
+    /// This is stored in #iResult.
     virtual LispCharPtr Result();
+
+    /// Return the error message produced by the last evaluation.
+    /// The error is retrieved from #environment.
     virtual LispCharPtr Error();
+
+    /// Whether an error occured during the last evaluation.
     inline LispBoolean IsError();
-private:
-  CYacas(LispOutput* aOutput);
 
 private:
-  DefaultYacasEnvironment environment;
+    
+    /// Constructor.
+    /// The output of #environment is directed to \p aOutput.
+    CYacas(LispOutput* aOutput);
 
-  LispString iResult;
+private:
 
-  StringOutput iResultOutput;
+    /// The underlying Yacas environment  
+    DefaultYacasEnvironment environment;
+
+    /// String containing the result of the last evaluation
+    LispString iResult;
+
+    /// Stream pointing to #iResult.
+    StringOutput iResultOutput;
 };
 
 inline LispBoolean CYacas::IsError()

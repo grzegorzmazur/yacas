@@ -25,6 +25,12 @@ class RefCountedObject : public RefCountedObjectBase, public YacasBase
 {
 };
 
+/// Smart pointer.
+/// This class implements a smart pointer to some derived class of
+/// RefCountedObjectBase. It increases and decreases the reference
+/// counter of the object pointed to, and deletes it if the reference
+/// count reaches zero.
+
 template<class T>
 class RefPtr
 {

@@ -71,6 +71,12 @@
 
 
 #ifndef NO_USE_BIGFLOAT
+
+/// Construct a BigNumber from one of the arguments.
+/// \param x (on output) the constructed bignumber
+/// \param aEnvironment the current environment
+/// \param aStackTop the index of the top of the stack
+/// \param aArgNr the index of the argument to be converted
 void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
     RefPtr<BigNumber> num; 
@@ -151,6 +157,12 @@ void LispGcd(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
+/// Corresponds to the Yacas function \c MathAdd.
+/// If called with one argument (unary plus), this argument is
+/// converted to BigNumber. If called with two arguments (binary plus),
+/// both argument are converted to a BigNumber, and these are added
+/// together at the current precision. The sum is returned.
+/// \sa GetNumber(), BigNumber::Add()
 void LispAdd(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispInt length = InternalListLength(ARGUMENT(0));

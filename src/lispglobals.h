@@ -12,6 +12,12 @@
 #include "lisphash.h"
 
 
+/// Value of a Lisp global variable.
+/// The only special feature of this class is the attribute
+/// #iEvalBeforeReturn, which defaults to #LispFalse. If this
+/// attribute is set to #LispTrue, the value in #iValue needs to be
+/// evaluated to get the value of the Lisp variable.
+/// \sa LispEnvironment::GetVariable(), LispEnvironment::SetGlobalEvaluates()
 
 class LispGlobalVariable : public YacasBase
 {
@@ -24,6 +30,8 @@ public:
     LispPtr iValue;
     LispBoolean iEvalBeforeReturn;
 };
+
+/// Associated hash of LispGlobalVariable objects
 
 class LispGlobal : public LispAssociatedHash<LispGlobalVariable>
 {
