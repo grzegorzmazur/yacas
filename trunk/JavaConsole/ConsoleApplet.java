@@ -18,17 +18,17 @@ import java.net.*;
 
 public class ConsoleApplet extends Applet implements KeyListener
 {
-  static AppletOutput out;
-  static Socket client;
-  static String serverAddress;
-  static int serverPort;
+  AppletOutput out;
+  Socket client;
+  String serverAddress;
+  int serverPort;
   /// Applet initialization
   public void init() 
   {
     setLayout (null);
     addKeyListener(this);
 
-    out = new AppletOutput();
+    out = new AppletOutput(this);
     
     serverAddress = getParameter("ADDRESS");
     if (serverAddress == null) serverAddress = new String("127.0.0.1");
@@ -216,6 +216,8 @@ public class ConsoleApplet extends Applet implements KeyListener
         AddLine(inputPrompt+inputLine);
 
         PerformRequest("Out> ",inputLine);
+//        outputDirty = true;
+//        inputDirty = true;
         repaint(0);
         ResetInput();
       }
@@ -228,17 +230,21 @@ public class ConsoleApplet extends Applet implements KeyListener
       repaint(0,getHeight()-2*fontHeight,getWidth(),2*fontHeight);
     }
   }
-  static void PerformRequest(String outputPrompt,String inputLine)
+  void PerformRequest(String outputPrompt,String inputLine)
   {
     boolean succeed = false;
     if (inputLine.startsWith("restart"))
     {
+/*
       if (client != null) 
       {
         try { client.close(); } catch(Exception e){out.println(e);}
       }
       client = null;
+*/
+      stop();
       out.println("Restarting");
+      start();
       return;
     }
 
@@ -311,15 +317,15 @@ public class ConsoleApplet extends Applet implements KeyListener
   }
 
   final static int nrLines =  60;
-  static String lines[] = new String[nrLines];
-  static int currentLine=0;
+  String lines[] = new String[nrLines];
+  int currentLine=0;
   void AddLine(String text)
   {
     AddLineStatic(text);
     repaint(0);
   }
 
-  static void AddLineStatic(String text)
+  void AddLineStatic(String text)
   {
     lines[currentLine] = text;
     currentLine = (currentLine+1)%nrLines;
@@ -389,10 +395,10 @@ public class ConsoleApplet extends Applet implements KeyListener
   }
   String inputLine  = new String();
   int cursorPos = 0;
-  static final int inset = 5;
+  final int inset = 5;
   
-  static String inputPrompt = "In> ";
-  static String outputPrompt = "Out> ";
+  final static String inputPrompt = "In> ";
+  final static String outputPrompt = "Out> ";
 
   static final int fontHeight = 12;
 	private Font font = new Font("Monaco", /*Font.ITALIC + Font.BOLD*/Font.PLAIN, fontHeight);
@@ -404,17 +410,22 @@ public class ConsoleApplet extends Applet implements KeyListener
   int currentHistoryLine = 0;
   int historyBrowse = 0;
 
-  static boolean inputDirty = true;
-  static boolean outputDirty = true;
+  boolean inputDirty = true;
+  boolean outputDirty = true;
 
 
   class AppletOutput 
   {
+    public AppletOutput(ConsoleApplet aApplet)
+    {
+      iApplet = aApplet;
+    }
+    ConsoleApplet iApplet;
     public void write(int c) throws IOException
     {
       if (c == '\n')
       {
-        ConsoleApplet.AddLineStatic(buffer.toString());
+        iApplet.AddLineStatic(buffer.toString());
         buffer = new StringBuffer();
       }
       else
