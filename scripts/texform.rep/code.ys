@@ -7,6 +7,7 @@
 	0.2 fixed bracketing of Exp, added all infix ops and math functions
 	0.3 fixed bracketing of lists, changed bracketing of math functions, modified TeX representation of user-defined functions (up to two-letter functions are in italics), added TeX Greek letters
 	0.4 added nth roots, Sum, Limit, Integrate, hyperbolics, set operations, Abs, Max, Min, "==", ":=", Infinity; support indexed expressions A[i] and matrices.
+	0.4.1 bugfixes for [] operator, support for multiple indices a[1][2][3]
 */
 
 /* To do:
@@ -153,7 +154,16 @@ TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, 
 
 /* Indexed expressions */
 
+/* This seems not to work because x[i] is replaced by Nth(x,i) */
+/*
 100 # TeXForm(_x [ _i ], _p) <-- ConcatStrings(TeXForm(x, TeXFormMaxPrec), " _{", TeXForm(i, TeXFormMaxPrec), "}");
+*/
+/* Need to introduce auxiliary function, or else have trouble with arguments of Nth being lists */
+100 # TeXForm(Nth(Nth(_x, i_IsList), _j), _p) <-- TeXForm(TeXFormNth(x, Append(i,j)), p);
+100 # TeXForm(TeXFormNth(Nth(_x, i_IsList), _j), _p) <-- TeXForm(TeXFormNth(x, Append(i,j)), p);
+110 # TeXForm(Nth(Nth(_x, _i), _j), _p) <-- TeXForm(TeXFormNth(x, List(i,j)), p);
+120 # TeXForm(Nth(_x, _i), _p) <-- ConcatStrings(TeXForm(x, TeXFormMaxPrec), " _{", TeXForm(i, TeXFormMaxPrec), "}");
+120 # TeXForm(TeXFormNth(_x, _i), _p) <-- ConcatStrings(TeXForm(x, TeXFormMaxPrec), " _{", TeXForm(i, TeXFormMaxPrec), "}");
 
 /* Matrices are always bracketed. Precedence 80 because lists are at 100. */
 

@@ -99,3 +99,24 @@ In the above example, the shell commands in {book2txt.sh} executed the following
 This requires that the Yacas script {book2txt.ys} is available in the current directory. The shell script {book2txt.sh} assumes that {book2txt.ys} is stored in the same directory as {book2txt.sh}.
 
 Of course, it is possible that some features of Yacas documentation were not implemented in the script and in that case the resulting file must be edited by hand. But the purpose of the {book2txt} script is exactly this: to make a plain text source file to be edited and maintained.
+
+		{book2TeX}: preparing typeset documentation
+
+The script {book2TeX.sh} prepares a \TeX file out of a Yacas-language documentation book. Usage is similar to {book2txt.sh}, for example:
+	book2TeX.sh intro.book
+will create a \TeX-formatted version introductory guide. It can be processed with standard tools, for example
+
+	latex intro.book.tex
+	latex intro.book.tex
+	dvips -o intro.book.ps intro.book dvi
+will prepare a Postscript version, while
+
+	latex intro.book.tex
+	pdflatex intro.book.tex
+will prepare a PDF version.
+
+Not all features of Yacas documentation are compatible with \TeX typesetting. To prevent errors, documentation should avoid certain things. In general, it is a good idea to check the typeset appearance of documentation, since it helps detect errors.
+
+For example, symbols such as {#}, {\}, {_} and {&} are special to TeX. They should not normally be used in plain text; it is fine to use them in "typerwriter" text or code samples. \TeX commands may be entered but will not be rendered in HTML online documentation.
+
+The current implementation uses a "report" style which allows chapters, sections, subsections and includes an automatically generated table of contents. (\LaTeX should be run twice to produce it.)

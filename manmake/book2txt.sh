@@ -11,13 +11,13 @@ else
 ourdir=`dirname $0`
 if [ -r "$1" ]; then
 	rm -f "$1.txt"
-	echo '[Use("'"$ourdir"'/book2txt.ys"); ToFile("'"$1"'.txt") Load("'"$1"'");];' | yacas -f
+	echo 'ToFile("'"$1"'.txt") [ Use("'"$ourdir"'/book2txt.ys"); Load("'"$1"'"); ];' | yacas -f
 	if [ -s "$1.txt" ]; then
 		echo "File '$1.txt' was created."
 		perl -e 'undef $/; $_=<>; s/ +\n/\n/g; s/\n\n\n+/\n\n/g; s/\n ([^ ])/\n$1/g; print;' < "$1.txt" > "$1.txt.tmp"
 		mv "$1.txt.tmp" "$1.txt"
 	else
-		echo "book2txt: some problem encountered."
+		echo "book2txt: Some problem generating file '$1.txt', aborted."
 	fi
 else
 	echo "Error: cannot read input file '$1'."
