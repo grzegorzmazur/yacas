@@ -26,6 +26,37 @@ x- Finish integration: poly*f(x),
 */
 
 
+IsContinuing:=False;
+
+RuleBase("Continue",{expr});
+HoldArg("Continue",expr);
+10 # Continue(_expr)_(Not IsContinuing) <-- Eval(expr);
+
+C(expr):=
+[
+  Set(IsContinuing,True);
+  Set(expr,`Continue(@expr));
+  While(Type(expr) = "Continue")
+  [
+    expr:=Eval(expr[1]);
+  ];
+  Set(IsContinuing,False);
+  expr;
+];
+HoldArg("C",expr);
+
+factorial(_n) <-- factorial2(n,1);
+
+1# factorial2(0, _f) <-- f;
+2# factorial2(_n, _f) <--
+[
+Echo({"Stack size = ",StaSiz()});
+  `Continue(factorial2((@n)-1, (@f)*(@n)));
+];
+
+
+EndOfFile;
+
 EndOfFile;
 
 /* implementation of Where : examples:
