@@ -20,6 +20,8 @@ SCRIPTFILES = \
         multivar.rep/sparsetree.ys multivar.rep/sparsetree.ys.def \
         multivar.rep/sparsenomial.ys \
         specfunc.rep/code.ys specfunc.rep/code.ys.def \
+		specfunc.rep/gamma.ys specfunc.rep/gamma.ys.def specfunc.rep/zeta.ys specfunc.rep/zeta.ys.def \
+		specfunc.rep/bessel.ys specfunc.rep/bessel.ys.def specfunc.rep/bernou.ys specfunc.rep/bernou.ys.def \
 	plots.rep/code.ys plots.rep/code.ys.def plots.rep/backends-2d.ys
 
 script_DATA = # $(SCRIPTFILES)
