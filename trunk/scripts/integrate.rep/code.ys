@@ -30,8 +30,14 @@ UnFence("IntegrateMultiplicative",4);
 // to indefIntegrate
 //
 ////////////////////////////////////////////////
-100 # indefIntegrate(_var,_from,_to,_expr,_a,_b) 
-    <-- IntegrateRange(var,expr,from,to,AntiDeriv(var,expr));
+100 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(Type(AntiDeriv(var,IntClean(var,expr))) != "AntiDeriv") 
+    <--
+    IntegrateRange(var,expr,from,to,AntiDeriv(var,IntClean(var,expr)));
+101 # indefIntegrate(_var,_from,_to,_expr,_a,_b)
+    <-- `Hold(Integrate(@var,@from,@to)(@expr));
+//    <-- IntegrateRange(var,expr,from,to,AntiDeriv(var,expr));
+
+
 
 ////////////////////////////////////////////////
 //

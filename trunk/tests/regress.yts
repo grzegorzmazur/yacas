@@ -320,6 +320,7 @@ Verify(Undefined*0,Undefined);
 // more than on the exact result (which is hopefully correct also ;-) )
 Verify(Groebner({x*(y-1),y*(x-1)}),{x*y-x,x*y-y,y-x,y^2-y});
 
-
+// Reported by Yannick Versley
+Verify((Integrate(x,a,b)Cos(x)^2) - ((b-Sin((-2)*b)/2)/2-(a-Sin((-2)*a)/2)/2),0);
 
 
