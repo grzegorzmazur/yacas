@@ -725,6 +725,120 @@ The function is currently implemented using a global variable {Verbose} which ca
 
 
 
+*CMD Plot3DS --- three-dimensional (surface) plotting
+*STD
+*CALL
+	Plot3DS(f(x,y))
+	Plot3DS(f(x,y), a:b, c:d)
+	Plot3DS(f(x,y), a:b, c:d, option=value)
+	Plot3DS(f(x,y), a:b, c:d, option=value, ...)
+	Plot3DS(list, ...)
+
+*PARMS
+
+{f(x,y)} -- unevaluated expression containing two variables (function to be plotted)
+
+{list} -- list of functions to plot
+
+{a}, {b}, {c}, {d} -- numbers, plotting ranges in the $x$ and $y$ coordinates
+
+{option} -- atom, option name
+
+{value} -- atom, number or string (value of option)
+
+*DESC
+The routine {Plot3DS} performs adaptive plotting of a function
+of two variables in the specified ranges.
+The result is presented as a surface given by the equation $z=f(x,y)$.
+Several functions can be plotted at once, by giving a list of functions.
+Various plotting options can be specified.
+Output can be directed to a plotting program (the default is to use
+{gnuplot}), to a data file, or to a list of values.
+
+The function parameter {f(x,y)} must evaluate to a Yacas expression containing
+at most two variables. (The variables do not have to be called {x} and {y}.)
+Also, {N(f(x,y))} must evaluate to a real (not complex) numerical value when given numerical values of the arguments {x}, {y}.
+If the function {f(x,y)} does not satisfy these requirements, an error is raised.
+
+Several functions may be specified as a list but they have to depend on the same symbolic variables, for example, {{f(x,y), g(y,x)}}, but not {{f(x,y), g(a,b)}}.
+The functions will be plotted on the same graph using the same coordinate ranges.
+
+If you have defined a function which accepts a number but does not
+accept an undefined variable, {Plot3DS} will fail to plot it.
+Use {NFunction} to overcome this difficulty.
+
+Data files are created in a temporary directory {/tmp/plot.tmp/} unless otherwise requested.
+File names
+and other information is printed if the {Verbose} option is switched on using {V()}.
+
+The current algorithm uses Newton-Cotes cubatures and some heuristics for error estimation (see <*yacasdoc://Algo/3/1/*>).
+The initial rectangular grid of {xpoints+1}*{ypoints+1} points is refined within any rectangle where the integral
+of $f(x,y)$ is not approximated to the given precision by
+the existing grid.
+
+Default plotting range is {-5:5} in both coordinates.
+A range can also be specified with a variable name, e.g. {x= -5:5} (note the mandatory space separating "{=}" and "{-}").
+The variable name {x} should be the same as that used in the function {f(x,y)}.
+If ranges are not given with variable names, the first variable encountered in the function {f(x,y)} is associated with the first of the two ranges.
+
+Options are of the form {option=value}. Currently supported option names
+are: "points", "precision", "depth", "output", "filename", "yrange". Option values
+are either numbers or special unevaluated atoms such as {data}.
+If you need to use the names of these atoms
+in your script, strings can be used (e.g. {output="gnuplot"}). Several option/value pairs may be specified (the function {Plot3DS} has a variable number of arguments).
+
+*	{zrange}: the range of the $z$ axis to use for plotting, e.g.
+{zrange=0:20}. If no range is specified, the default is usually to
+leave the choice to the plotting backend. Automatic choice based on actual values may
+give visually inadequate plots if the function has a singularity.
+*	{points}, {xpoints}, {ypoints}: initial number of points (default 10 each) -- at least that
+many points will be plotted in each coordinate.
+The initial grid of this many points will be
+adaptively refined.
+If {points} is specified, it serves as a default for both {xpoints} and {ypoints}; this value may be overridden by {xpoints} and {ypoints} values.
+*	{precision}: graphing precision (default $0.01$). This is interpreted as the relative precision of computing the integral of $f(x,y)-Min(f(x,y))$ using the grid points. For a smooth, non-oscillating function this value should be roughly 1/(number of screen pixels in the plot).
+*	{depth}: max. refinement depth, logarithmic (default 3) -- means there will be at most $2^depth$ extra points per initial grid point (in each coordinate).
+*	{output}: name of the plotting backend. Supported names:
+{gnuplot} (default), {datafile}, {data}.
+The {gnuplot} backend will display
+the plot on the screen (this requires the {gnuplot} program).
+The {datafile} backend will write the numerical data to a text file with specified name.
+The {data} backend will return the data as a list of triples such as {{{x1, y1, z1}, {x2, y2, z2}, ...}}.
+*	{filename}: specify name of the output file (currently used only by the {datafile} output option). For example: {filename="data1.txt"}.
+The default is the name {"output.data"}.
+*	{hidden}: boolean value, whether to use the hidden-line visualization. Default is {True}.
+
+Other options may be supported in the future. Note that currently the
+support for {gnuplot} is Unix-specific.
+
+The current implementation can deal with a singularity within the plotting range only if the function {f(x,y)} returns {Infinity}, {-Infinity} or
+{Undefined} at the singularity.
+If the function {f(x,y)} generates a numerical error and fails at a
+singularity, {Plot3DS} will fail only if one of the grid points falls on the
+singularity.
+(All grid points are generated by bisection so in principle the
+endpoints and the {xpoints}, {ypoints} parameters could be chosen to avoid numerical
+singularities.)
+
+
+*E.G.
+	In> Plot3DS(a*b^2)
+	Out> True;
+	In> V(Plot3DS(Sin(x)*Cos(y),x=0:20, y=0:20,depth=3))
+	CachedConstant: Info: constant Pi is being 
+	  recalculated at precision 10
+	CachedConstant: Info: constant Pi is being
+	  recalculated at precision 11
+	Plot3DS: using 1699  points for function Sin(x)*Cos(y)
+	Plot3DS: max. used 8 subdivisions for Sin(x)*Cos(y)
+	Plot3DS'datafile: created file '/tmp/plot.tmp/data1'
+	Out> True;
+
+
+*SEE V, NFunction, MakeFunctionPlugin, Plot2D
+
+
+
 *CMD Plot2D --- adaptive two-dimensional plotting
 *STD
 *CALL
@@ -736,11 +850,11 @@ The function is currently implemented using a global variable {Verbose} which ca
 
 *PARMS
 
-{f(x)} -- unevaluated expression containing one variable (function to be plotted)
+{f(x)} -- unevaluated expression containing one variables (function to be plotted)
 
 {list} -- list of functions to plot
 
-{a}, {b} -- numbers, plotting range
+{a}, {b} -- numbers, plotting range in the $x$ coordinate
 
 {option} -- atom, option name
 
@@ -748,20 +862,32 @@ The function is currently implemented using a global variable {Verbose} which ca
 
 *DESC
 The routine {Plot2D} performs adaptive plotting of one or several functions
-of one variable in the specified range. Several functions are specified by
-giving a list of expressions. Various plotting options can be
-specified. Output can be directed to a plotting program (the default is to use
+of one variable in the specified range.
+The result is presented as a line given by the equation $y=f(x)$.
+Several functions can be plotted at once.
+Various plotting options can be specified.
+Output can be directed to a plotting program (the default is to use
 {gnuplot}), to a data file, or to a list of values.
 
-The function parameter {f(x)} must be an unevaluated expression containing
-a variable (not necessarily called {x}). Several functions may be specified as a list and they do not have to depend on the same variable, for example, {{f(x), g(y)}}.
+The function parameter {f(x)} must evaluate to a Yacas expression containing
+at most one variable. (The variable does not have to be called {x}.)
+Also, {N(f(x))} must evaluate to a real (not complex) numerical value when given a numerical value of the argument {x}.
+If the function {f(x)} does not satisfy these requirements, an error is raised.
 
-Data files are created in a temporary directory {/tmp/plot.tmp/}. File names
+Several functions may be specified as a list and they do not have to depend on the same variable, for example, {{f(x), g(y)}}.
+The functions will be plotted on the same graph using the same coordinate ranges.
+
+If you have defined a function which accepts a number but does not
+accept an undefined variable, {Plot2D} will fail to plot it.
+Use {NFunction} to overcome this difficulty.
+
+Data files are created in a temporary directory {/tmp/plot.tmp/} unless otherwise requested.
+File names
 and other information is printed if the {Verbose} option is switched on using {V()}.
 
-The current algorithm uses Newton-Cotes quadratures and some heuristics for error estimation (see the essay chapter on adaptive plotting).
-The initial grid of {points+1} points is refined between any grid points $a$, $b$ where the integral
-$Integrate(x,a,b)f(x)$ is not approximated within given precision by
+The current algorithm uses Newton-Cotes quadratures and some heuristics for error estimation (see <*yacasdoc://Algo/3/1/*>).
+The initial grid of {points+1} points is refined between any grid points $a$, $b$ if the integral
+$Integrate(x,a,b)f(x)$ is not approximated to the given precision by
 the existing grid.
 
 Default plotting range is {-5:5}. Range can also be specified as {x= -5:5} (note the mandatory space separating "{=}" and "{-}");
@@ -777,32 +903,30 @@ in your script, strings can be used (e.g. {output="gnuplot"}). Several option/va
 {yrange=0:20}. If no range is specified, the default is usually to
 leave the choice to the plotting backend. {gnuplot} and {plotutils}
 will choose the range automatically based on actual values (which may
-lead to inadequate plots if the function has a singularity).
+give visually inadequate plots if the function has a singularity).
 *	{points}: initial number of points (default 23) -- at least that
 many points will be plotted. The initial grid of this many points will be
 adaptively refined. 
 *	{precision}: graphing precision (default $10^(-6)$). This is interpreted as the relative precision of computing the integral of $f(x)-Min(f(x))$ using the grid points. For a smooth, non-oscillating function this value should be roughly 1/(number of screen pixels in the plot).
 *	{depth}: max. refinement depth, logarithmic (default 5) -- means there will be at most $2^depth$ extra points per initial grid point.
-*	{output}: symbolic name of the plotting backend. Supported values:
-{gnuplot} (default), {plotutils}, {datafile}, {data}. The {gnuplot} value will display
-the plot on the screen (requires the {gnuplot} program). The {plotutils}
-value requires the GNU {plotutils} suite and the {graph} program (under X Window).The {datafile} value will write the data to a text file with specified name. The {data} value will return the data as a list of pairs such as {{{x1,y1}, {x2,y2}, ...}}
-*	{filename}: specify name of the output file (currently used only by the {datafile} output option). For example: {filename="data1.txt"}. Default is the name {"output.data"}.
+*	{output}: name of the plotting backend. Supported names:
+{gnuplot} (default), {plotutils}, {datafile}, {data}.
+The {gnuplot} and {plotutils} backends will display
+the plot on the screen (this requires either the {gnuplot} program or the GNU {plotutils} suite and the {graph} program (under X Window).
+The {datafile} backend will write the numerical data to a text file with specified name.
+The {data} backend will return the data as a list of pairs such as {{{x1,y1}, {x2,y2}, ...}}.
+*	{filename}: specify name of the output file (currently used only by the {datafile} output option). For example: {filename="data1.txt"}.
+The default is the name {"output.data"}.
 
 Other options may be supported in the future. Note that currently the
 support for {gnuplot} and GNU {plotutils} is Unix-specific.
 
-A frequently encountered problem: the parameter {f(x)} <i>must</i> evaluate to
-an expression that contains a variable (or to a constant). Test your function
-for this! If you have defined some {f(x)} which accepts a number but does not
-accept an undefined variable, {Plot2D} will fail to plot it. Use
-{NFunction} to overcome this difficulty.
-
-The current implementation can deal with a singularity at endpoints or at any
-grid point only if the function {f(x)} returns {Infinity}, {-Infinity} or
-{Undefined}. If the function {f(x)} generates a numerical error and fails at a
-singularity, {Plot2D} will fail too, if one of the grid points falls on the
-singularity. (All grid points are generated by bisection so in principle the
+The current implementation can deal with a singularity within the plotting range only if the function {f(x)} returns {Infinity}, {-Infinity} or
+{Undefined} at the singularity.
+If the function {f(x)} generates a numerical error and fails at a
+singularity, {Plot2D} will fail only if one of the grid points falls on the
+singularity.
+(All grid points are generated by bisection so in principle the
 endpoints and the {points} parameter could be chosen to avoid numerical
 singularities.)
 
@@ -833,5 +957,5 @@ If a function takes a long time to evaluate, one can use
 	Out> True;
 
 
-*SEE V, NFunction, MakeFunctionPlugin
+*SEE V, NFunction, MakeFunctionPlugin, Plot3DS
 

@@ -35,6 +35,8 @@ Set(DefFileList, {
 "padic.rep/code.ys",
 "patterns.rep/code.ys",
 "plots.rep/code.ys",
+"plots.rep/plot2d.ys",
+"plots.rep/plot3d.ys",
 "predicates.rep/code.ys",
 "probability.rep/code.ys",
 "pslq.rep/code.ys",
