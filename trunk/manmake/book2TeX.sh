@@ -14,9 +14,11 @@ else
 	target="$2"
 fi
 ourdir=`dirname $0`
+yacas="$ourdir/../src/yacas --rootdir $ourdir/../scripts/"
+
 if [ -r "$1" ]; then
 	rm -f "$target"
-	echo 'ToFile("'"$target"'") [ Use("'"$ourdir"'/book2TeX.ys"); Load("'"$1"'"); TeXFinishUp(); ];' | yacas -f
+	echo 'ToFile("'"$target"'") [ Use("'"$ourdir"'/book2TeX.ys"); Load("'"$1"'"); TeXFinishUp(); ];' | $yacas -f
 	if [ -s "$target" ]; then
 		echo "File '$target' was created."
 		#perl -e 'while(<>) { s/([%])/\\$1/g; print; }' < "$target" > "$target.tmp"
