@@ -1400,6 +1400,7 @@ is the length of the list.
 *PARMS
 
 {list} -- a list to be printed
+
 {padding} -- (optional) a string
 
 *DESC

@@ -533,7 +533,7 @@ appended to it, so you should make sure to include a forward or backward slash
 
 In addition to the console mode, an experimental persistent session facility is provided through the script {yacas_client}. By means of this script, the user can configure third-party applications to pass commands to a constantly running "Yacas server" and get output. The "Yacas server" is automatically started by {yacas_client}. It may run on a remote computer; in that case the user should have a user account on the remote computer and privileges to execute {yacas_client} there, as well as {rsh} or {ssh} access. The purpose of {yacas_client} is to enable users to pass commands to Yacas within a persistent session while running another application such as a text editor.
 
-The script {yacas_client} reads Yacas commands from the standard input and passes them to the running "Yacas server"; it then waits 2 seconds and prints whatever output Yacas produced up to this time. Usage may looks like this:
+The script {yacas_client} reads Yacas commands from the standard input and passes them to the running "Yacas server"; it then waits 2 seconds and prints whatever output Yacas produced up to this time. Usage may look like this:
 
 	8:20pm Unix>echo "x:=3" | yacas_client
 	Starting server.
@@ -560,7 +560,7 @@ Persistence of the session means that Yacas remembered the value of {x} between 
 
 The "Yacas server" is started automatically when first used and can be stopped either by quitting Yacas or by an explicit option {yacas_client -stop}, in which case {yacas_client} does not read standard input.
 
-The script {yacas_client} reads standard input and writes to standard output, so it can be used via remote shell execution. For example, if an account "user" on a remote computer "remote.host" is accessible through {ssh}, then {yacas_client} can be used remotely like this:
+The script {yacas_client} reads standard input and writes to standard output, so it can be used via remote shell execution. For example, if an account "user" on a remote computer "remote.host" is accessible through {ssh}, then {yacas_client} can be used remotely, like this:
 
 	echo "x:=2;" | \
 	  ssh user@remote.host yacas_client
@@ -617,14 +617,14 @@ you will enter expressions of the form {Func(var1,var2)}, or using infix operato
 operators: {-x}, or postfix operators: {x++}.
 The parser is case-sensitive and overall the syntax conventions resemble
 the C language. Last but not least there are the so called "bodied"
-functions, which unlike normal functions such as {f(x,y)}
+functions, which, unlike normal functions such as {f(x,y)},
 keep the last argument outside of the bracketed argument list:
 "{f(x) y}". This looks somewhat like a mathematical
 "operator" $f(x)$ acting on $y$. A
 typical example is the function {While} which looks like
 "{While (predicate) body;}". The derivative operator {D(x)}
 is also defined as a "bodied" function. Note that if we defined a
-"bodied" function {A} with only one argument, we'd have to
+"bodied" function {A} with only one argument, we would have to
 use it like this: "{A() x;}" and it would look a bit odd.
 In this case we could make "A" a prefix operator and then the syntax
 would become somewhat cleaner: "{A x;}"
@@ -790,7 +790,7 @@ Some more examples of rules:
 	20 # _x - _x <-- 0;
 	ArcSin(Sin(_x)) <-- x;
 
-Yacas will first try to match the pattern like a template. Names preceded
+Yacas will first try to match the pattern as a template. Names preceded
 or followed by an underscore can match any one object: a number, a
 function, a list, etc. Yacas will assign the relevant variables as local
 variables within the rule, and try the predicates as stated in the pattern.
@@ -807,7 +807,7 @@ defining rules using the functions {Rule()}, {RuleBase()} and
 Sometimes you have an expression, and you want to use specific
 simplification rules on it that should not be universally applied. This
 can be done with the {/:} and the {/::} operators. Suppose we have the
-expression containing things like {Ln(a*b)}, and we want
+expression containing things such as {Ln(a*b)}, and we want
 to change these into {Ln(a)+Ln(b)}, the easiest way
 to do this is using the {/:} operator as follows:
 

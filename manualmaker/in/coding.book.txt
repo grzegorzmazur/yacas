@@ -191,7 +191,7 @@ bound to the parameter: {HoldArg("foo",a)} would then
 declare that the a arguments in both {foo(a)} and {foo(a,b)} should not be evaluated before bound to {a}. Here
 the argument name {a} should be the same as that used in the {RuleBase()} call when declaring these functions.
 Inhibiting evaluation of certain arguments is useful for procedures
-performing actions based partly on a variable in the expression, like
+performing actions based partly on a variable in the expression, such as
 integration, differentiation, looping, etc., and will be typically used for
 functions that are algorithmic and procedural by
 nature.
@@ -338,10 +338,10 @@ future.
 
 The parser is extended slightly to allow for fancier constructs.
 
-*	Lists, like for example {{a,b}}. This then
+*	Lists, e.g. {{a,b}}. This then
 is parsed into the internal notation {(List a b)} , but
 will be printed again as {{a,b};}
-*	Statement blocks like
+*	Statement blocks such as
 {[} statement1 {;} statement2{;];}. This
 is parsed into a Lisp object {(Prog} {(}statement1 {)} {(}statement2 {))}, and printed out again in the proper form.
 *	 Object argument accessors in the form of
@@ -365,7 +365,7 @@ The expression directly following the {While(...)} block is added as a last argu
 
 This scheme allows coding the algorithms in an almost C-like syntax.
 
-Strings are generally represented with quotes around them, like
+Strings are generally represented with quotes around them, e.g.
 "this is a string". Backslash {\} in a string will unconditionally add the
 next character to the string, so a quote can be added with {\"} (a backslash-quote sequence).
 
@@ -495,8 +495,8 @@ One unfortunate disadvantage of rule-based programming is that rules
 can sometimes cooperate in unwanted ways.
 
 One example of how rules can produce unwanted results is the rule {a*0 <-- 0}.
-This would always seem to be true. However, when a is a vector, like
-{a:={b,c,d}} , then {a*0} should actually return {{0,0,0}}, that is, a zero
+This would always seem to be true. However, when a is a vector, e.g.
+{a:={b,c,d}}, then {a*0} should actually return {{0,0,0}}, that is, a zero
 vector. The rule {a*0 <-- 0} actually changes the type of the expression from a
 vector to an integer! This can have severe consequences when other functions
 using this expressions as an argument expect a vector, or even worse, have a
@@ -504,7 +504,7 @@ definition of how to work on vectors, and a different one for working on
 numbers.
 
 When writing rules for an operator, it is assumed that the operator working on
-arguments, like {Cos} or {*}, will always have the same properties regardless
+arguments, e.g. {Cos} or {*}, will always have the same properties regardless
 of the arguments. The Taylor series expansion of $Cos(a)$ is the same
 regardless of whether $a$ is a real number, complex number or even a matrix.
 Certain trigonometric identities should hold for the {Cos} function, regardless
@@ -632,7 +632,7 @@ However, soon we find that we forgot about operator precedence. Our simple-minde
 	In> CForm( (a+b) * c );
 	Out> "a + b * c";
 
-We need to get something like "(a+b)*c" in this case. How would we add a rule to insert parentheses around subexpressions? A simple way out would be to put parentheses around every subexpression, replacing our rules by something like
+We need to get something like "(a+b)*c" in this case. How would we add a rule to insert parentheses around subexpressions? A simple way out would be to put parentheses around every subexpression, replacing our rules by something like this:
 
 	100 # CForm(_a + _b) <-- "(" : CForm(a)
 	  : " + " : CForm(b) : ")";
@@ -704,7 +704,7 @@ We need to understand how to simplify expressions in Yacas, and the best way is 
 
 		The problem
 
-Suppose we want to define special symbols $A(k)$ and $B(k)$ that we can multiply with each other or by a number, or add to each other, but not commute with each other, i.e. $A(k)*B(k) != B(k)*A(k)$. Here $k$ is merely a label to denote that $A(1)$ and $A(2)$ are two different objects. (In physics, these are called "creation" and "annihilation" operators for "bosonic quantum fields".) Yacas already assumes that the usual multiplication operator "{*}" is commutative. Rather than trying to redefine {*}, we shall introduce a special multiplication sign "{**}" that we shall use with the objects $A(k)$ and $B(k)$; between usual numbers this would be the same as normal multiplication. The symbols $A(k)$, $B(k)$ will never be evaluated to numbers, so an expression such as {2 ** A(k1) ** B(k2) ** A(k3)} is just going to remain like that. (In physics, commuting numbers are called "classical quantities" or "c-numbers" while non-commuting objects made up of A(k) and B(k) are called "quantum quantities" or "q-numbers".) There are certain commutation relations for these symbols: the $A$'s commute between themselves, $A(k)*A(l) = A(l)*A(k)$, and also the $B$'s, $B(k)*B(l) = B(l)*B(k)$. However, the $A$'s don't commute with the $B$'s: $A(k)*B(l) - B(l)*A(k) = delta(k-l)$. Here the "{delta}" is a "classical" function (called the "Dirac $delta$-function") but we aren't going to do anything about it, just leave it symbolic like that.
+Suppose we want to define special symbols $A(k)$ and $B(k)$ that we can multiply with each other or by a number, or add to each other, but not commute with each other, i.e. $A(k)*B(k) != B(k)*A(k)$. Here $k$ is merely a label to denote that $A(1)$ and $A(2)$ are two different objects. (In physics, these are called "creation" and "annihilation" operators for "bosonic quantum fields".) Yacas already assumes that the usual multiplication operator "{*}" is commutative. Rather than trying to redefine {*}, we shall introduce a special multiplication sign "{**}" that we shall use with the objects $A(k)$ and $B(k)$; between usual numbers this would be the same as normal multiplication. The symbols $A(k)$, $B(k)$ will never be evaluated to numbers, so an expression such as {2 ** A(k1) ** B(k2) ** A(k3)} is just going to remain like that. (In physics, commuting numbers are called "classical quantities" or "c-numbers" while non-commuting objects made up of A(k) and B(k) are called "quantum quantities" or "q-numbers".) There are certain commutation relations for these symbols: the $A$'s commute between themselves, $A(k)*A(l) = A(l)*A(k)$, and also the $B$'s, $B(k)*B(l) = B(l)*B(k)$. However, the $A$'s don't commute with the $B$'s: $A(k)*B(l) - B(l)*A(k) = delta(k-l)$. Here the "{delta}" is a "classical" function (called the "Dirac $delta$-function") but we aren't going to do anything about it, just leave it symbolic.
 
 We would like to be able to manipulate such expressions, expanding brackets, collecting similar terms and so on, while taking care to always keep the non-commuting terms in the correct order. For example, we want Yacas to automatically simplify {2**B(k1)**3**A(k2)} to {6**B(k1)**A(k2)}. Our goal is not to implement a general package to tackle complicated non-commutative operations; we merely want to teach Yacas about these two kinds of "quantum objects" called {A(k)} and {B(k)}, and we shall define one function that a physicist would need to apply to these objects. This function applied to any given expression containing $A$'s and $B$'s will compute something called a "vacuum expectation value", or "VEV" for short, of that expression. This function has "classical", i.e. commuting, values and is defined as follows: VEV of a commuting number is just that number, e.g. $VEV(4) = 4$, $VEV(delta(k-l)) = delta(k-l)$; and $VEV(X*A(k)) = 0$, $VEV(B(k)*X) = 0$ where $X$ is any expression, commutative or not. It is straightforward to compute VEV of something that contains $A$'s and $B$'s: one just uses the commutation relations to move all $B$'s to the left of all $A$'s, and then applies the definition of VEV, simply throwing out any remaining q-numbers.
 
