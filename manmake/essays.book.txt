@@ -9,6 +9,7 @@ to general issues related to the Yacas system development and maintenance.
 
 *INCLUDE wester-1994.chapt
 
+
 			On Yacas programming
 
 *INCLUDE ABIN-grammar.chapt
@@ -29,7 +30,8 @@ to general issues related to the Yacas system development and maintenance.
 
 			The static code analyzer
 
-*INCLUDE codecheck.chapt.txt
+*INCLUDE codecheck.chapt
+
 
 			Work in progress, specifications
 
