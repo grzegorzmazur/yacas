@@ -3,14 +3,14 @@
 //////////////////////////////////////////////////
 
 /// definitions of backends
-DefLoad("plots.rep/backends-2d.ys");
+Use("plots.rep/backends-2d.ys");
 
 /*
 	Plot2D is an interface for various backends (Plot2D'...). It calls
-Plot2D'data to obtain the list of points and values, and then it calls
+Plot2D'get'data to obtain the list of points and values, and then it calls
 Plot2D'<backend> on that data.
 
-	Algorithm for Plot2D'data: 
+	Algorithm for Plot2D'get'data: 
 	1) Split the given interval into Div(points+3, 4) subintervals, and split each subinterval into 4 parts.
 	2) For each of the parts: evaluate function values and call Plot2D'adaptive
 	3) concatenate resulting lists and return
@@ -112,7 +112,7 @@ Plot2D'<backend> on that data.
 			:"'"
 		);
 		// compute all other data points
-		DestructiveAppend(all'values, Plot2D'data(func, var, c, fc, delta, options'hash));
+		DestructiveAppend(all'values, Plot2D'get'data(func, var, c, fc, delta, options'hash));
 		If(Verbose, Echo({"Plot2D: using ", Length(all'values[Length(all'values)]), " points for function ", func}), True);
 	];
 	// call the specified output backend
@@ -126,7 +126,7 @@ HoldArgNr("Plot2D", 3, 3);
 /// this is the middle-level plotting routine; it generates the initial
 /// grid, calls the adaptive routine, and gathers data points.
 /// func must be just one function (not a list)
-Plot2D'data(_func, _var, _x'init, _y'init, _delta'x, _options'hash) <--
+Plot2D'get'data(_func, _var, _x'init, _y'init, _delta'x, _options'hash) <--
 [
 	Local(i, a, fa, b, fb, c, fc, result);
 	// initialize list by first points (later will always use Tail() to exclude first points of subintervals)
