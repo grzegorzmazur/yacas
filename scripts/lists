@@ -161,16 +161,16 @@ Function("BubbleSort",{list,compare})
 
 
 /* VarList: return the variables this expression depends on. */
-Function("VarList",{expr})  RemoveDuplicates(VarListAll(N(expr)));
+Function("VarList",{expr})  RemoveDuplicates(VarListAll(expr));
 
 /*
- * RuleBase for VarListAll: recursively traverse na expression looking
+ * RuleBase for VarListAll: recursively traverse an expression looking
  * up all variables the expression depends on.
  */
 RuleBase("VarListAll",{expr});
 
 /* Accept any variable. */
-Rule("VarListAll",1,0,IsAtom(expr) And Not(IsNumber(expr))) {expr};
+Rule("VarListAll",1,0,IsAtom(expr) And Not(IsNumber(N(expr)))) {expr};
 
 /* Otherwise check all leafs of a function. */
 Rule("VarListAll",1,1,IsFunction(expr))
