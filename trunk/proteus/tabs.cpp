@@ -355,9 +355,6 @@ void LispNotepad(LispEnvironment& aEnvironment,LispInt aStackTop)
     InternalTrue(aEnvironment,RESULT);
 }
 
-extern int currentNotepadFontSize;
-extern int currentNotepadFontColor;
-extern int currentNotepadFontType;
 
 void LispNotepadAddCommand(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
@@ -367,22 +364,22 @@ void LispNotepadAddCommand(LispEnvironment& aEnvironment,LispInt aStackTop)
   LispString oper;
   InternalUnstringify(oper, orig);
   console->AddGroup(1, 1);
-  console->AddText(&oper[0], currentNotepadFontColor,"In> ",currentNotepadFontType,currentNotepadFontSize);
+  console->AddText(&oper[0], console->NotepadFontColor(),"In> ",console->NotepadFontType(),console->NotepadFontSize());
   extern CYacas* yacas;
   yacas->Evaluate(&oper[0]);
 //  if (!internal)
   {
     if (the_out[0])
     {
-      console->AddText(the_out.String(), FL_RED,"  ",FL_COURIER,currentNotepadFontSize);
+      console->AddText(the_out.String(), FL_RED,"  ",FL_COURIER,console->NotepadFontSize());
     }
     if (yacas->Error()[0] != '\0')
     {
-      console->AddText(yacas->Error(), FL_RED,"Error> ",currentNotepadFontType,currentNotepadFontSize);
+      console->AddText(yacas->Error(), FL_RED,"Error> ",console->NotepadFontType(),console->NotepadFontSize());
     }
     else
     {
-      console->AddText(yacas->Result(), FL_BLUE,"Out> ",currentNotepadFontType,currentNotepadFontSize);
+      console->AddText(yacas->Result(), FL_BLUE,"Out> ",console->NotepadFontType(),console->NotepadFontSize());
     }
     extern ConsoleOutBase* cell_to_insert;
     if (cell_to_insert)
@@ -416,7 +413,7 @@ void LispNotepadAddLink(LispEnvironment& aEnvironment,LispInt aStackTop)
   LispInt enableinput = IsTrue(aEnvironment, ARGUMENT(4));
 
   console->AddGroup(showinput, enableinput);
-  console->AddText(&oper[0], currentNotepadFontColor,"",currentNotepadFontType,currentNotepadFontSize);
+  console->AddText(&oper[0], console->NotepadFontColor(),"",console->NotepadFontType(),console->NotepadFontSize());
 
   char* buf = (char*)malloc(text.NrItems()+1); //TODO check for null pointer
   strcpy(buf,&text[0]);
@@ -433,7 +430,7 @@ NEXTLINE:
   if (*end == '\0') last=1;
   *end=0;
   {
-    console->AddText(start, currentNotepadFontColor,"",currentNotepadFontType,currentNotepadFontSize);
+    console->AddText(start, console->NotepadFontColor(),"",console->NotepadFontType(),console->NotepadFontSize());
     start=end+1;
     if (!last)
       goto NEXTLINE;
@@ -448,20 +445,20 @@ NEXTLINE:
 void LispNotepadFontType(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
   ShortIntegerArgument(arg1,  1 );
-  currentNotepadFontType = arg1;
+  console->NotepadFontType(arg1);
   InternalTrue(aEnvironment,RESULT);
 }
 
 void LispNotepadFontSize(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
   ShortIntegerArgument(arg1,  1 );
-  currentNotepadFontSize = arg1;
+  console->NotepadFontSize(arg1);
   InternalTrue(aEnvironment,RESULT);
 }
 void LispNotepadFontColor(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
   ShortIntegerArgument(arg1,  1 );
-  currentNotepadFontColor = arg1;
+  console->NotepadFontColor(arg1);
   InternalTrue(aEnvironment,RESULT);
 }
 
@@ -569,7 +566,7 @@ int main(int argc, char **argv)
           menubar->textsize(12);
         }
         console_scroll = new Fl_Scroll(11,43,619,267);
-        console = new FltkConsole(11,43,2048,267,12);
+        console = new FltkConsole(11,43,2048,267);
 //        console->resize(console->x(),console->y(),console->w()+1024,console->h()+1024);
 //        console = new FltkConsole(11,43,618,265,12);
         console_scroll->end();

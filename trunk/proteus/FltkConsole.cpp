@@ -7,8 +7,13 @@
 
 TODO:
 
-- font size: use the size of the current cell
-- font size: remember, so the user can change default font size.
+- manripper moved: also move in cvs
+
+- "restart notepad" menu item
+- cursor: select part of input
+- select: copy/paste
+- hints, list current matches, and do auto-completion with selection filling out the rest.
+- graphing optimization: draw to bitmap, possible?
 - bug: putting current command on last line from a link.
 
 - fill out the help panes
@@ -115,7 +120,7 @@ const char* errorPrompt = "Error> ";
 const char* linkPrompt = "Link: ";
 #define BufSz 512
 
-#define SetInputFont() fl_font(FL_HELVETICA,iDefaultFontSize)
+#define SetInputFont() fl_font(iDefaultFontType,iDefaultFontSize)
 #define INPUT_PROMPT "$ "
 
 
@@ -133,18 +138,23 @@ FltkConsole::~FltkConsole()
     DisposeHints();
 }
 
-FltkConsole::FltkConsole(int x, int y, int w, int h, int aDefaultFontSize)
-: Fl_Widget(x,y,w,h,NULL), iLast(NULL),iDefaultFontSize(aDefaultFontSize),
-hints(NULL),
+
+
+
+FltkConsole::FltkConsole(int x, int y, int w, int h)
+: Fl_Widget(x,y,w,h,NULL), iLast(NULL),hints(NULL),
 /*iOutputOffsetX(0), iOutputOffsetY(0), */
 iMouseDownX(0),iMouseDownY(0),iMovingOutput(0),
 iOutputHeight(0),iCurrentHighlighted(-1),
 iInputDirty(1),iOutputDirty(1),iShowInput(1),iEnableInput(1)
 {
+
+    ResetNotepadState();
+
     {
         extern char defdir[128];
         char buf[128];
-        sprintf(buf,"%shints",defdir);
+        sprintf(buf,"%sdocumentation/hints",defdir);
         {
           FILE*f=fopen(buf,"r");
           if (!f) 
@@ -155,6 +165,34 @@ iInputDirty(1),iOutputDirty(1),iShowInput(1),iEnableInput(1)
         }
         LoadHints(buf);
     }
+    
+    char fname[256];
+#ifdef HAVE_VSNPRINTF
+    snprintf(fname,256,"%s/.yacas_history",getenv("HOME"));
+#else
+    sprintf(fname,"%s/.yacas_history",getenv("HOME"));
+#endif
+    FILE*f=fopen(fname,"r");
+    if (f)
+    {
+        if(f)
+        {
+            char buff[BufSz];
+            while(fgets(buff,BufSz-2,f))
+            {
+                int i;
+                for(i=0;buff[i] && buff[i] != '\n';++i)
+                    ;
+                buff[i++] = '\0';
+                LispStringPtr ptr = NEW LispString(buff);
+                iHistoryList.Append(ptr);
+                
+            }
+            fclose(f);
+        }
+    }
+    iMaxHistoryLinesSaved = 1024;
+    iHistoryList.ResetHistoryPosition();
     CommandLineStartNew();
     UpdateHeight(0);
 }
@@ -190,14 +228,16 @@ void FltkConsole::SaveNotePad(LispCharPtr aFile)
   }
 }
 
-int currentNotepadFontSize=15;
-int currentNotepadFontColor=FL_BLACK;
-int currentNotepadFontType=FL_HELVETICA;
+void FltkConsole::ResetNotepadState()
+{
+  iDefaultFontSize = 15;
+  iDefaultFontColor = FL_BLACK;
+  iDefaultFontType = FL_HELVETICA_BOLD;
+}
+
 void FltkConsole::LoadNotePad(LispCharPtr aFile)
 {
-  currentNotepadFontSize = 15;
-  currentNotepadFontColor=FL_BLACK;
-  currentNotepadFontType=FL_HELVETICA;
+  ResetNotepadState();
 
   DeleteAll();
   extern CYacas* yacas;
@@ -334,6 +374,32 @@ void FltkConsole::CommandLineStartNew()
 
 void FltkConsole::SaveHistory()
 {
+  char fname[256];
+#ifdef HAVE_VSNPRINTF
+  snprintf(fname,256,"%s/.yacas_history",getenv("HOME"));
+#else
+  sprintf(fname,"%s/.yacas_history",getenv("HOME"));
+#endif
+  
+  FILE*f=fopen(fname,"w");
+  if (f)
+  {
+    int i;
+    int from=0;
+    if (iMaxHistoryLinesSaved>=0)
+    {
+      if (iHistoryList.NrLines()>iMaxHistoryLinesSaved)
+      {
+        from = iHistoryList.NrLines()-iMaxHistoryLinesSaved;
+      }
+    }
+    for (i=from;i<iHistoryList.NrLines();i++)
+    {
+      LispStringPtr ptr = iHistoryList.GetLine(i);
+      fprintf(f,"%s\n",ptr->String());
+    }
+    fclose(f);
+  }
 }
 
 void FltkConsole::AddGroup()
@@ -448,7 +514,7 @@ void FltkConsole::DoLine(char* inpline)
             }
             else if (!strncmp(inpline,"quit",4))
             {
-                exit(0);
+              exit(0);
             }
         }
     }
@@ -485,7 +551,7 @@ void FltkConsole::DoLine(char* inpline)
     if (font_size==0) font_size=iDefaultFontSize;
 
     if (addable)
-      AddText(inpline, FL_BLACK,inPrompt,FL_HELVETICA,font_size);
+      AddText(inpline, iDefaultFontColor,inPrompt,iDefaultFontType,font_size);
     //SetInputDirty();
     SetOutputDirty();
 //    redraw(); //output changed
@@ -680,13 +746,27 @@ void FltkConsole::handle_key(int key)
 #ifdef SUPPORT_NOTEPAD
         {
             DeleteHints();
+
+            if (Fl::event_shift())
+            {
+              if (iHistoryList.ArrowUp(iSubLine,cursor))
+              {
+                SetInputDirty();
+                redraw(); //output changed
+                Fl::flush();
+              }
+              break;
+            }
+
             if (iCurrentHighlighted>0)
-                SetCurrentHighlighted(iCurrentHighlighted-1);
+            {
+              SetCurrentHighlighted(iCurrentHighlighted-1);
+            }
             else if (iCurrentHighlighted == 0)
             {
             }
             else
-                SetCurrentHighlighted(iConsoleOut.NrItems()-1);
+              SetCurrentHighlighted(iConsoleOut.NrItems()-1);
             SetOutputDirty();
             MakeSureHighlightedVisible();
             cursor = iSubLine.NrItems()-1;
@@ -700,6 +780,16 @@ void FltkConsole::handle_key(int key)
 #ifdef SUPPORT_NOTEPAD
         {
             DeleteHints();
+
+            if (Fl::event_shift())
+            {
+              iHistoryList.ArrowDown(iSubLine,cursor);
+              SetInputDirty();
+              redraw(); //output changed
+              Fl::flush();
+              break;
+            }
+
             if (iCurrentHighlighted < 0)
             {
             }
@@ -717,7 +807,12 @@ void FltkConsole::handle_key(int key)
 #endif
         break;
     case eTab:
+        if (Fl::event_shift())
         {
+          iHistoryList.Complete(iSubLine,cursor);
+          redraw(); //output changed
+          Fl::flush();
+          break;
         }
         break;
     case eEscape:
@@ -740,6 +835,7 @@ void FltkConsole::handle_key(int key)
         DeleteHints();
         if (iSubLine.NrItems()>1)
         {
+            iHistoryList.AddLine(iSubLine);
             CommandLineEnd();
             if (iCurrentHighlighted < 0 )
                 CommandLineStartNew();
@@ -1161,6 +1257,7 @@ void FltkConsole::DrawInputLine(int lowy)
 {
     const char* text = &iSubLine[0];
     int iix =  x() + (int)fl_width(INPUT_PROMPT);
+    SetInputFont();
     int cur = iix+(int)fl_width(text, cursor);
 
     int limit = x()+w()-8;
@@ -1170,7 +1267,6 @@ void FltkConsole::DrawInputLine(int lowy)
         cur = limit;
     }
 
-    SetInputFont();
     fl_color(FL_RED);
     fl_draw(INPUT_PROMPT,x(),lowy+fl_height()-fl_descent());
 
@@ -1431,13 +1527,6 @@ void ConsoleDrawer::draw(int x, int y, int width,int draw_input)
   extern LispString the_out;
   if (iExecute.Get())
   {
-    char buf[300];
-    sprintf(buf,"{FlWindowWidth,FlWindowHeight}:={%d,%d};",
-            (int)iWidth,
-            (int)iHeight);
-    yacas->Evaluate(buf);
-    the_out.SetNrItems(0);
-    the_out.Append('\0');
     fl_clip(x,y,iWidth,iHeight);
     fl_translate(x,y);
     LispPtr result;

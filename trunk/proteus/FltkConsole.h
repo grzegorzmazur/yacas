@@ -7,6 +7,7 @@
 #include <FL/Fl_Widget.H>
 #include "grower.h"
 #include "lispstring.h"
+#include "commandline.h"
 #include "yacas.h"
 
 
@@ -93,29 +94,11 @@ private:
 
 
 
-
-
-
-enum ESpecialChars
-{
-    eDelete     = 0x1000,
-    eBackSpace,
-    eLeft,
-    eRight,
-    eUp,
-    eDown,
-    eHome,
-    eEnd,
-    eEnter,
-    eTab,
-    eEscape,
-};
-
 class FltkHintWindow;
 class FltkConsole : public Fl_Widget
 {
 public:
-    FltkConsole(int x, int y, int w, int h, int aDefaultFontSize);
+    FltkConsole(int x, int y, int w, int h);
     ~FltkConsole();
     void SaveHistory();
     void Restart();
@@ -137,6 +120,7 @@ public:
     inline void EnableInput(int aEnableInput) {iEnableInput = aEnableInput;};
     void DeleteAll();
 private:
+    void ResetNotepadState();
     void TryToHint(int ifrom,int ito);
     void CheckForNewHints();
     void DeleteHints();
@@ -158,14 +142,29 @@ private:
 public:
     CDeletingArrayGrower<ConsoleOutBase*> iConsoleOut;
     ConsoleGrouped *iLast;
+
+    inline int NotepadFontSize() const { return iDefaultFontSize; }
+    inline int NotepadFontColor() const { return iDefaultFontColor; }
+    inline int NotepadFontType() const { return iDefaultFontType; }
+
+    inline void NotepadFontSize(int i) { iDefaultFontSize = i; }
+    inline void NotepadFontColor(int i) { iDefaultFontColor = i; }
+    inline void NotepadFontType(int i) { iDefaultFontType = i; }
     
 protected:
+
+    CConsoleHistory iHistoryList;
+    LispInt iMaxHistoryLinesSaved;
     LispInt cursor;
     LispInt iFullLineDirty;
     public:
     LispString iLine;
     LispString iSubLine;
+
     int iDefaultFontSize;
+    int iDefaultFontColor;
+    int iDefaultFontType;
+
     FltkHintWindow* hints;
     int iMouseDownX;
     int iMouseDownY;

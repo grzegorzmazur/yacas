@@ -23,7 +23,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
         lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h \
         archiver.h elfdll.h cyacas.h GPL_stuff.h
 
-yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
+yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
 yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c version.h GPL_stuff.h
 
@@ -54,7 +54,7 @@ libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp \
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
         lispplugin.cpp ltdll.cpp elfdll.cpp exedll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
-        archiver.cpp compressedfiles.cpp 
+        archiver.cpp compressedfiles.cpp commandline.cpp
 
 
 libcyacas_la_SOURCES = cyacas.cpp

@@ -10,7 +10,17 @@ ouryacas = ../src/yacas --rootdir $(top_srcdir)/scripts/:../scripts/
 ## BOOKS_HTML is either "manicon.html" or empty
 ## PS_DOCS    is either "ps-docs" or empty
 ## PDF_DOCS   is either "pdf-docs" or empty
-all-am: @BOOKS_HTML@ @PS_DOCS@ @PDF_DOCS@
+all-am: @BOOKS_HTML@ @PS_DOCS@ @PDF_DOCS@ hints
+
+noinst_PROGRAMS = manripper
+
+manripper_SOURCES = manripper.cpp 
+
+hints: manripper
+	./manripper ref.book.txt refprog.book.txt > hints.unsorted 
+	sort -t ":" hints.unsorted > hints.sorted
+	echo "::::" > tail.txt
+	cat hints.sorted tail.txt > hints
 
 ## ytxt2tex is to be installed in $(bindir). 
 bin_SCRIPTS = ytxt2tex
@@ -110,7 +120,7 @@ EXTRA_DIST = txt2example.pl book2txt.sh book2txt.ys \
 	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) \
 	$(INTROSOURCES) $(NEWDESIGNSOURCES) \
 	$(REFPROGSOURCES) $(ALGOSOURCES) $(LISPPROGRAMMINGSOURCES) \
-	dummies 
+	dummies hints
 
 # Stuff for automatic generation of Yacas books
 
@@ -233,7 +243,10 @@ Algo.html : Algo.book $(ALGOCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("Algo");];' | $(ouryacas) -fpc
 
 ## Hook to install documentation
-install-data-local: @INSTALL_HTML@ @INSTALL_PS@ install-scripts
+install-data-local: @INSTALL_HTML@ @INSTALL_PS@ install-scripts install-hints
+
+install-hints: hints
+	$(INSTALL_DATA) $(srcdir)/hints $(pkgdatadir)/documentation/hints
 
 install-scripts: $(ytxt2tex_DEPS)
 	$(mkinstalldirs) $(pkgdatadir)/manmake/
