@@ -113,6 +113,26 @@ Verify(IsConstant(Infinity), True);
 Verify(IsConstant(-Infinity), True);
 Verify(IsConstant(Undefined), True);
 
+Testing("-- IsScalar");
+Verify(IsScalar(a),True);
+Verify(IsScalar({a}),False);
+
+Testing("-- IsVector");
+Verify(IsVector(1),False);
+Verify(IsVector(a),False);
+Verify(IsVector(Sin(a)+2),False);
+Verify(IsVector({}),True);
+Verify(IsVector({{}}),False);
+Verify(IsVector({1,2,a,4}),True);
+Verify(IsVector({1,{2,a},4}),False);
+Verify(IsVector({{a,b,c}}),False);
+
+Testing("-- IsVector(IsNumber)");
+Verify(IsVector(IsNumber,{a,b,c}),False);
+Verify(IsVector(IsNumber,{a,2,c}),False);
+Verify(IsVector(IsNumber,{2,2.5,4}),True);
+Verify(IsVector(IsNumber,{Pi,2,3}),False);
+
 
 Testing("-- Matrix Predicates");
 
