@@ -64,6 +64,8 @@ int show_prompt = 1;
 int trace_history = 0;
 int use_texmacs_out = 0;
 int patchload=0;
+char* root_dir    = SCRIPT_DIR;
+char* init_script = "yacasinit.ys";
 
 void ReportNrCurrent()
 {
@@ -355,10 +357,13 @@ void LoadYacas()
      (*yacas)()().HashTable().LookUp("testfile",LispTrue)
                                         );
                                         */
-
-    yacas->Evaluate("DefaultDirectory(\"" SCRIPT_DIR "\");");
-
-    yacas->Evaluate("Load(\"yacasinit.ys\");");
+    {
+        char buf[1000];
+        sprintf(buf,"DefaultDirectory(\"%s\");",root_dir);
+        yacas->Evaluate(buf);
+        sprintf(buf,"Load(\"%s\");",init_script);
+        yacas->Evaluate(buf);
+    }
     if (yacas->Error()[0] != '\0')
         ShowResult("");
     if (use_texmacs_out)
@@ -503,6 +508,16 @@ int main(int argc, char** argv)
             else if (!strcmp(argv[fileind],"--patchload"))
             {
                 patchload=1;
+            }
+            else if (!strcmp(argv[fileind],"--init"))
+            {
+                fileind++;
+                init_script = argv[fileind];
+            }
+            else if (!strcmp(argv[fileind],"--rootdir"))
+            {
+                fileind++;
+                root_dir = argv[fileind];
             }
             else
             {

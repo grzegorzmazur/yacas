@@ -395,6 +395,8 @@ void LispDllLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
                  LispPtr& aArguments);
 void LispDllUnload(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments);
+void LispDllEnumerate(LispEnvironment& aEnvironment, LispPtr& aResult,
+                      LispPtr& aArguments);
 
 void LispSetExtraInfo(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments);

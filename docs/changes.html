@@ -46,7 +46,11 @@
   <li> Initial version of profiler in the Yacas debugger: show
        all functions called with the number of times they are called,
        and sorted by call count.
-  <li> Added the function DllUnload() to unload plugins.
+  <li> Added the function DllUnload to unload plugins.
+  <li> Floats obtained from a system call now get mapped to
+       78 decimals precision iso. the default 6.
+  <li> Added the '--init [file]' and '--rootdir [path]' options.
+  <li> Added DllEnumerate, which returns a list of loaded DLLs/plugins.
   <li> Initial version of LaTeX exporter for Yacas documentation; optional
        target "make texdocs" will prepare Postscript and PDF versions;
 	   TeXShowPS() will display a Yacas expression in PS (Unix only)

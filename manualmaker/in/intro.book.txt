@@ -501,6 +501,16 @@ but with PatchLoad. This is useful for generating html pages for a
 web site using the Yacas scripting language, much like you can do with
 the php scripting language.
 
+	yacas --init [file]
+Tells the system to load {file} as the initialization file. Otherwise
+it loads the file {yacasinit.ys} from the scripts directory.
+
+	yacas --rootdir [directory]
+Tells the system where to find the scripts. This is a path that
+is passed to DefaultDirectory, and file names are appended to it,
+so make sure to also include a forward or backward slash (depending
+on the platform) at the end.
+
 		Client/server usage
 
 In addition to the console mode, an experimental persistent session facility is provided through the script {yacas_client}. By means of this script, the user can configure third-party applications to pass commands to a constantly running "Yacas server" and get output. The "Yacas server" is automatically started by {yacas_client}. It may run on a remote computer; in that case the user should have a user account on the remote computer and privileges to execute {yacas_client} there, as well as {rsh} or {ssh} access. The purpose of {yacas_client} is to enable users to pass commands to Yacas within a persistent session while running another application such as a text editor.
