@@ -145,7 +145,7 @@ RuleBase("Sum",{sumvar'arg,sumfrom'arg,sumto'arg,sumbody'arg});
 10 # Sum(_sumvar,sumfrom_IsNumber,sumto_IsNumber,_sumbody)_(sumto<sumfrom) <--
      ApplyPure("Sum",{sumvar,sumto,sumfrom,sumbody});
 20 # Sum(_sumvar,sumfrom_IsNumber,sumto_IsNumber,_sumbody) <--
-[
+LocalSymbols(sumi,sumsum)[
    Local(sumi,sumsum);
    sumsum:=0;
    For(sumi:=sumfrom,sumi<=sumto,sumi++)
