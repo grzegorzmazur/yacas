@@ -22,8 +22,8 @@ Retract("f",1);
 Retract("f1",1);
 f(x) := N(Abs(1/x-1));
 Verify(f(0), Infinity);
-Verify(RoundTo(f(3),GetPrecision()), 0.6666666666);
+Verify(RoundTo(f(3),GetPrecision()), 0.6666666667);
 NFunction("f1", "f", {x});
 Verify(f1(0), Undefined);
-Verify(RoundTo(f1(3),GetPrecision()), 0.6666666666);
+Verify(RoundTo(f1(3),GetPrecision()), 0.6666666667);
 
