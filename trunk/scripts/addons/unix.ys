@@ -21,7 +21,7 @@ MakeFunctionPrototype(name, argList) := [
 // predicate to test whether plugins work
 MakeFunctionPlugin() <--
 [
-	If(PlatformOS = "Unix", True, False);
+	If(PlatformOS = "Unix" And FindFile("include/") != "", True, False);
 ];
 
 
