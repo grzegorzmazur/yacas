@@ -236,6 +236,7 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispPatchString,"PatchString");
     SetCommand(LispDllLoad,"DllLoad");
     SetCommand(LispDllUnload,"DllUnload");
+    SetCommand(LispDllEnumerate,"DllEnumerate");
 
     SetCommand(LispSetExtraInfo,"SetExtraInfo");
     SetCommand(LispGetExtraInfo,"GetExtraInfo");

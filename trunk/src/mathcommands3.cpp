@@ -594,6 +594,24 @@ void LispDllUnload(LispEnvironment& aEnvironment, LispPtr& aResult,
     InternalTrue(aEnvironment,aResult);
 }
 
+void LispDllEnumerate(LispEnvironment& aEnvironment, LispPtr& aResult,
+                      LispPtr& aArguments)
+{
+    TESTARGS(1);
+    LispInt i;
+    LispObject *res = NULL;
+    for (i=aEnvironment.iDlls.NrItems()-1;i>=0;i--)
+    {
+        LispString orig;
+        orig = aEnvironment.iDlls[i]->DllFileName();
+        LispString oper;
+        InternalStringify(oper, &orig);
+
+        res = LA(ATOML(&oper[0])) + LA(res);
+    }
+    aResult.Set(LIST(LA(ATOML("List")) + LA(res)));
+}
+
 void LispSetExtraInfo(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments)
 {

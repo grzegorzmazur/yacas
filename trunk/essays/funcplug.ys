@@ -19,7 +19,7 @@ the plugin function.
 	Out> True;
 	
 	What it does:
-	1) creates the following files in subdirectory plugins/ of current directory:
+	1) creates the following files in subdirectory plugins.tmp/ of current directory:
 	f1_plugin.h, f1_plugin.cc - C++ code of the plugin; the function is written as "double f1_cc(double x, double y) { return sin(x/y); }"
 	f1_plugin.stub - Yacas-language stub
 	f1_plugin_api.cc - Yacas-generated C++ stub
@@ -59,7 +59,7 @@ MakeFunctionPlugin(extName, argList, fBody) := [
 	Check(includeDir != "",
 	  "Error in MakeFunctionPlugin: no include/ under " : FindFile(""));
 	/* determine file names */
-	dirBase := "plugins/";
+	dirBase := "plugins.tmp/";
 	SystemCall("test -d " : dirBase : "|| mkdir -p " : dirBase);
 	fileBase := dirBase : extName : "_plugin";
 	intName := extName : "_cc";
