@@ -75,7 +75,11 @@ IsNegativeReal(_r) <--
 
 
 /* Predicates on matrices */
+IsSkewSymmetric(A_IsMatrix) <-- (Transpose(A)=(-1*A));
 IsHermitean(A_IsMatrix) <-- (Conjugate(Transpose(A))=A);
+IsSymmetric(A_IsMatrix) <-- (Transpose(A)=A);
+IsOrthogonal(A_IsMatrix) <-- (Transpose(A)*A=Identity(Length(A)));
+IsIdempotent(A_IsMatrix) <-- (A^2 = Identity(Length(A)));
 IsUnitary(A_IsMatrix) <-- (Transpose(Conjugate(A))*A = Identity(Length(A)));
 
 IsVariable(_expr) <-- (IsAtom(expr) And Not(IsNumber(N(expr))));

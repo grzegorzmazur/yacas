@@ -99,4 +99,21 @@ Verify(IsList({1,2,3}),True);
 Verify(IsMatrix(ll),True);
 Clear(ll);
 
+Verify( IsSymmetric(Identity(10)), True ); 
+Verify( IsOrthogonal(2*Identity(10)), False );
+A := {{1,2,2},{2,1,-2},{-2,2,-1}};
+Verify( IsOrthogonal(A/3), True );
+Verity( IsSymmetric(Identity(10)), True );
+Verify( IsSymmetric({{1}}),True );
+A := {{1,0,0,0,1},{0,2,0,0,0},{0,0,3,0,0},{0,0,0,4,0},{1,0,0,0,5}};
+Verify( IsSymmetric(A),True );
+A := {{0,2,0,0,1},{0,0,3,0,0},{0,0,0,4,0},{1,0,0,0,5}};
+Verify( IsSymmetric(A),False);
+A := {{0,-1},{1,0}};
+Verify( IsSkewSymmetric(A), True );
+Verify( IsSkewSymmetric(Identity(10)), False );
+Verify( IsSkewSymmetric(ZeroMatrix(10,10)), True );
 
+
+Verify( IsIdempotent(Identity(20)), True );
+Verify( IsIdempotent(ZeroMatrix(10,10)), False );
