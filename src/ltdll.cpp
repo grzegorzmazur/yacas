@@ -14,7 +14,11 @@ LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
 
     iDllFileName = aDllFile;
 #ifdef YACAS_DEBUG
-    printf("LtDll::Open: Trying to open [%s]\n",aDllFile);
+    {
+      extern int verbose_debug;
+      if (verbose_debug)
+        printf("LtDll::Open: Trying to open [%s]\n",aDllFile);
+    }
 #endif
     if (lt_dlinit() != 0)
     {
@@ -30,13 +34,17 @@ LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
     if (handle)
     {
 #ifdef YACAS_DEBUG
-        printf("LtDll::Open: handle opened\n");
+        extern int verbose_debug;
+        if (verbose_debug)
+          printf("LtDll::Open: handle opened\n");
 #endif
         iPlugin = GetPlugin();
         if (iPlugin)
         {
 #ifdef YACAS_DEBUG
-          printf("LtDll::Open: plugin found\n");
+          extern int verbose_debug;
+          if (verbose_debug)
+            printf("LtDll::Open: plugin found\n");
 #endif
           iPlugin->Add(aEnvironment);
         }
