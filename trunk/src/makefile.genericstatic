@@ -30,12 +30,19 @@ OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
 	stdcommandline.o stdfileio.o stdstubs.o obmalloc.o stringio.o             \
 	substitute.o tokenizer.o xmltokenizer.o ctokenizer.o archiver.o fastprimes.o elfdll.o unixcommandline.o numbers.o \
 	yacasapi.o yacasmain.o yacasnumbers.o unipoly.o compressedfiles.o \
-	libmath.o exedll.o
+	libmath.o exedll.o \
+	../plugins/pcre/study.o ../plugins/pcre/pcre.o \
+	../plugins/pcre/maketables.o ../plugins/pcre/pcreposix.o \
+	../plugins/pcre/get.o ../plugins/pcre/plugin.o
 
-.SUFFIXES: .cpp 
+.SUFFIXES: .cpp.cc 
 
 .cpp.o:
-	gcc -x c++ $(INC) -c $< 
+	gcc -x c++ $(INC) -c $< -o $*.o
+
+.cc.o:
+	gcc -x c++ $(INC) -c $< -o $*.o
+
 
 #.cpp.o:
 #	gcc -x c++ $(INC) -c $<
@@ -48,10 +55,10 @@ fastprimes.o:
 	./mkfastprimes > fastprimes.c
 	gcc -c fastprimes.c
 
-INC = -I./plat/linux32/  $(DEFINES)  -I../ -I./ -O9 -Wall -pedantic 
+INC = -I./plat/linux32/  -I../../src/ -I../../src/plat/linux32 $(DEFINES)  -I../ -I./ -O9 -Wall -pedantic 
 
 yacas-static : fastprimes.o $(OBJS)
-	gcc $(OBJS) -lstdc++  -o yacas-static
+	g++ $(OBJS) -lstdc++  -o yacas-static
 	strip yacas-static
 
 
