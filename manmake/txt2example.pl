@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 # Extract In>/Out> examples from txt documentation, create ys test scripts using Verify().
-# Usage: perl txt2example.pl < file.chapt.txt > file.yts
+# Usage: perl txt2example.pl file.chapt.txt > file.yts
 
 $in_EG = 0;	# within an example block
 $have_in = 0; # within an In> line
@@ -9,16 +9,23 @@ $have_out = 0; # within an Out> line
 $in_text = "";	# text after In>
 $out_text = ""; # text after Out>
 
-while(<STDIN>) {
+$filename = $ARGV[0];
+open(INFILE, "$filename") || die "txt2example.pl: Error: cannot open file '$filename'\n";
+
+$line = 0;	# line number
+
+while(<INFILE>) {
+	$line++;
 	chomp;
-	# Only care about certain lines: start with *EG or *E.G., finish with a * label, each line must be either In> or Out> and TAB-indented
-	# The lines labeled "test" are selected for export, all other lines are not
+	# Only care about certain lines: start with *EG or *E.G., finish with a * label, each example line must be either In> or Out> and TAB-indented
+	# The lines labeled "test" or not labeled are selected for export, all other lines are not (e.g. we can write "*E.G. notest" and it will not be tested)
 	if ($in_EG == 1)
 	{
 		if (/^\*/)
 		{	# finish *EG block
 			&print_test($in_text, $out_text);
 			$in_EG = 0;
+			&finish_eg();
 			$out_text = $in_text = "";
 			$have_in = $have_out = 0;
 		}
@@ -35,8 +42,8 @@ while(<STDIN>) {
 				$have_in = 0;
 				$have_out = 1;
 			}
-			elsif (/^\t\s*(.*)$/)
-			{	# continuation line, need to trim the preceding backslash
+			elsif (/^\t\s*([^ \t].*)$/)
+			{	# nonempty continuation line, need to trim the preceding backslash
 				$in_text =~ s/\\$//;
 				$in_text .= $1;
 			}
@@ -61,8 +68,8 @@ while(<STDIN>) {
 				$have_in = 1;
 				$have_out = 0;
 			}
-			elsif (/^\t\s*(.*)$/)
-			{	# continuation line, need to trim the preceding backslash
+			elsif (/^\t\s*([^ \t].*)$/)
+			{	# nonempty continuation line, need to trim the preceding backslash
 				$in_text =~ s/\\$//;
 				$in_text .= $1;
 			}
@@ -90,11 +97,12 @@ while(<STDIN>) {
 	}
 	else
 	{	# if not inside *EG: check if it is starting
-		if (/^\*(EG|E\.G\.)\s\s*test/i # *EG test or *E.G. test
-			or /^\*(EG|E\.G\.)/i
+		if (/^\*(EG|E\.G\.)\s\s*test\s*$/i # *EG test or *E.G. test
+			or /^\*(EG|E\.G\.)\s*$/i
 		)
-		{
+		{	# starting EG block
 			$in_EG = 1;
+			&start_eg();
 		}		
 	}
 }
@@ -103,12 +111,23 @@ sub print_test
 {
 	my ($in_text, $out_text) = (@_);
 	# do not print unless both are non-empty
+	$in_text =~ s/;$//;	# trim the final ';' from the In> string
 	$out_text =~ s/;$//;	# trim the final ';' from the Out> string
-	print << "EOF" unless ($in_text eq "" or $out_text eq "");
-Verify($in_text, $out_text);
-
-EOF
+	print << "EOF1" unless ($in_text eq "" or $out_text eq "");
+Verify($in_text, $out_text, "at line $line in file $filename");
+EOF1
 
 }
 
+sub start_eg	# what to print into the test file in front of each EG block
+{
+	print << "EOF2";
+/* Testing EG block at line $line in file $filename */
+Precision(10);
+EOF2
+}
+
+sub finish_eg
+{
+}
 
