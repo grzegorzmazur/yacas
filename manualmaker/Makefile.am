@@ -43,12 +43,12 @@ CODINGSOURCES = in/YacasDebugger.chapt.txt in/FDL.chapt.txt
 
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt SimpleTools.chapt \
 	CVS-Howto.chapt YacasDocs.chapt wester-1994.chapt \
-	new.chapt paper.chapt wordproblems.chapt FDL.chapt
+	new.chapt paper.chapt wordproblems.chapt FDL.chapt BuildSystem.chapt
 
 ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt in/SimpleTools.chapt.txt \
 	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt \
         in/new.chapt.txt in/paper.chapt.txt in/wester-1994.chapt.txt \
-		in/wordproblems.chapt.txt in/FDL.chapt.txt
+	in/wordproblems.chapt.txt in/FDL.chapt.txt in/BuildSystem.chapt.txt
 
 LISPPROGRAMMINGCHAPTERS = LispLanguage.chapt FDL.chapt
 LISPPROGRAMMINGSOURCES = in/LispLanguage.chapt.txt in/FDL.chapt.txt

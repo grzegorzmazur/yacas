@@ -13,24 +13,38 @@ This can be found at the following address:
 
 	    The {autoconf}/{automake} system
 
-The important thing to remember with the autoconf/automake system is
-that there are files enumerating the files and directories that are
-part of the distribution. The {Makefile.am} files contain the lists
-of files that are part of the distribution, and are in the 
-respective directory. If a file is added by a developer, but it is
-not added to the list in the file {Makefile.am}, it will not be
-added to the tarball {yacas-*.tar.gz} which is uploaded to the backup repository. 
-It has the nice side effect that you can have local files which
-don't automatically get added to the distribution.
+*A build system
+The short story is as follows. You probably do not need to bother about this
+unless you introduce a new file. However, if you add a new file, it probably
+should be added to the {Makefile.am} file in the same directory. In many
+cases, it should be clear from the {Makefile.am} file where your new file
+should be added. For instance, new Yacas script files go into the huge list
+in {scripts/Makefile.am} that is assigned to the {SCRIPTFILES} variable.
+Similarly, test scripts should go in the list in {tests/Makefile.am} that is
+assigned to the {TESTFILES} variable. Note that you should probably also run
+the {cvs add} command, as explained in the section on CVS below. If you remove
+a file, then you should go through the inverse procedure.
 
-Adding a directory requires adding the directory name to various
-places also, in configure scripts etc.
-To make sure that the {tar.gz} distribution is complete, you can run the command
+The addition of new files to the {Makefile.am} ensures that it will be added
+to the tarball {yacas-*.tar.gz} which is uploaded to the backup repository.
+This has the nice side effect that you can have local files which don't
+automatically get added to the distribution (by not adding them to the
+{Makefile.am} file). Additionally, files which are not listed in {Makefile.am}
+may not be built and/or installed automatically.  To make sure that the
+{tar.gz} distribution is complete, you can run the command
 	make distcheck
-This may take a little while, as it needs to rebuild and test the whole system from the {tar.gz} tarball.
+This may take a little while, as it needs to rebuild and test the whole system
+from the {tar.gz} tarball.
+
+If you want to do more complicated things (like adding files which are not
+Yacas script or test files, or files which should be compiled or installed
+only conditionally), or if you are simply curious, you can read more in the
+chapter entitled "The Yacas build system".
+
 
 	    Maintaining Yacas through a {cvs} repository
 
+*A CVS
 {CVS} provides an efficient way for developers to work together, automatically
 merging changes various developers make, and at the same tile is a back up 
 system (uploading your changes to another computer from which you can
@@ -68,6 +82,7 @@ In commands to be described in this document are in short:
 
 	    Checking out an initial version of Yacas
 
+*A CVS!check out
 There are two ways to check out a version of Yacas: as anonymous 
 user and as maintainer. Anonymous users don't need to log in,
 but also have no right to commit changes. Maintainers first need
@@ -106,6 +121,7 @@ will know where to find them, which is why you don't need that flag.
 
 	    Use case scenario 1 : getting the latest version of Yacas
 
+*A CVS!update
 You haven't looked at Yacas for a while (shame on you!) and want 
 to check out the latest version. Just type
 
@@ -125,6 +141,7 @@ will print messages only about changed files.
 
 	    Use case scenario 2 : you made changes to Yacas
 
+*A CVS!commit
 You got the latest version, but saw this huge, glaring omission in
 Yacas, and start hacking away to add it yourself. After a while, 
 after playing with the code you wrote, and if you think you are
