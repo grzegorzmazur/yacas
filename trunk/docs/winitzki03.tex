@@ -1,0 +1,304 @@
+%% LyX 1.3 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{llncs}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+
+\makeatletter
+
+
+\usepackage{babel}
+\makeatother
+\begin{document}
+
+\title{Arbitrary-precision computations of Chebyshev polynomials}
+
+
+\author{Serge Winitzki}
+
+
+\institute{Department of Physics, Ludwig-Maximilians University, 80333 Munich,
+Germany}
+
+\maketitle
+\begin{abstract}
+I describe and compare several methods for an arbitrary-precision
+computation of Chebyshev polynomials $T_{n}\left(x\right)$, $U_{n}\left(x\right)$
+for general complex $x$. In particular, I analyze the methods in
+the limits of large orders $n$ and a large required precision.
+\end{abstract}
+
+\section{Introduction}
+
+The Chebyshev (Tschebyscheff) polynomials of the first and the second
+kind are two families of orthogonal polynomials which may be defined
+as \cite{AS64}\begin{eqnarray}
+T_{n}\left(\cos\phi\right) & \equiv & \cos n\phi,\label{eq:def-T}\\
+U_{n}\left(\cos\phi\right) & \equiv & \frac{\sin\left(n+1\right)\phi}{\sin\phi}.\label{eq:def-U}\end{eqnarray}
+The polynomials $T_{n}\left(x\right)$ and $U_{n}\left(x\right)$
+are of degree $n$; the first polynomials are $T_{0}=U_{0}=1$, $T_{1}=x,$
+$U_{1}=2x$.
+
+We consider the problem of computing the values $T_{n}\left(x\right)$,
+$U_{n}\left(x\right)$ to a relative precision of $P$ digits, assuming
+that $x$ is known exactly or can be computed to an arbitrary accuracy.
+We shall analyze several available methods for computing the Chebyshev
+polynomials and compare their efficiency. In particular, we are interested
+in the case when both $n$, the order of the polynomials, and the
+required precision $P$ are large.
+
+We assume that an arbitrary-precision arithmetic facility is available
+and denote by $M\left(P\right)$ the cost of a multiple-precision
+multiplication of two $P$-digit numbers. To be specific, we consider
+the target relative precision of $P$ decimal digits (if the result
+is unusually close to $0$, we fall back to the absolute precision).
+A generalization of our results to any non-decimal base will be made
+straightforward by the presence of explicit base $10$ logarithms.
+
+
+\section{Available methods}
+
+We discuss each method and give estimates of the asymptotic costs.
+
+
+\subsection{From defining relations}
+
+The method is to evaluate Eqs.~(\ref{eq:def-T})-(\ref{eq:def-U})
+rewritten as
+
+\begin{eqnarray}
+T_{n}\left(x\right) & = & \cos\left[n\arccos x\right],\label{eq:Tcos}\\
+U_{n}\left(x\right) & = & \frac{\sin\left[\left(n+1\right)\arccos x\right]}{\sqrt{1-x^{2}}}=\sqrt{\frac{1-\left[T_{n+1}\left(x\right)\right]^{2}}{1-x^{2}}}.\label{eq:Usin}\end{eqnarray}
+ The computation according to these formulae requires an extended-precision
+evaluation of $y\equiv\arccos x$ and then of $\cos y$ as well as
+of square roots.
+
+
+\subsubsection{The case of $\left|x\right|<1$.}
+
+In this case, Eqs.~(\ref{eq:Tcos})-(\ref{eq:Usin}) can be used
+directly. For large $n$ the computation of $\cos ny$ leads to a
+loss of precision because of the periodicity of the cosine. To obtain
+$P$ digits of $\cos ny$, one needs to know $y$ with at least $P+\log_{10}\left|ny\right|$
+digits of relative accuracy. Therefore $x$ must be known to at least
+the same precision.
+
+The asymptotic cost of computing a square root or any trigonometric
+function to $P$ digits is $O\left(M\left(P\right)\ln P\right)$ for
+large $P$ (see e.g.~\cite{Brent76}), while for moderate $P$ the
+optimal algorithms for trigonometric functions require $O\left(M\left(P\right)P^{1/3}\right)$
+operations \cite{Smith89}. Assuming that $x$ is not close to $\pm1$
+we can disregard $\log_{10}\left|y\right|$ and find the total cost
+of computing $y$ for large $n$ and $P$ as\begin{equation}
+O\left[M\left(P+\log_{10}n\right)\ln\left(P+\log_{10}n\right)\right].\label{eq:Cost1}\end{equation}
+This is the dominant cost of the computation of $T_{n}\left(x\right)$
+since $\cos ny$ is computed in $O\left(M\left(P\right)\ln P\right)$
+operations. For smaller $P$, the cost is\begin{equation}
+O\left(M\left(P+\log_{10}n\right)\left(P+\log_{10}n\right)^{1/3}\right).\label{eq:Cost1a}\end{equation}
+
+
+The computational cost of $U_{n}\left(x\right)$ is asymptotically
+equivalent to that of $T_{n}\left(x\right)$.
+
+Alternatively, one may rewrite Eqs.~(\ref{eq:Tcos})-(\ref{eq:Usin})
+without trigonometric functions as\begin{eqnarray}
+T_{n} & = & \frac{1}{2}\left(x+i\sqrt{1-x^{2}}\right)^{n}+\frac{1}{2}\left(x-i\sqrt{1-x^{2}}\right)^{-n},\label{eq:T0sqrt}\\
+U_{n} & = & \frac{1}{2i\sqrt{1-x^{2}}}\left[\left(x+i\sqrt{1-x^{2}}\right)^{n+1}-\left(x+i\sqrt{1-x^{2}}\right)^{-n-1}\right].\label{eq:U0sqrt}\end{eqnarray}
+The calculation of $n$-th powers can be performed by a fast squaring
+algorithm that requires $O\left(\ln n\right)$ multiplications. The
+asymptotic cost of a computation using Eqs.~(\ref{eq:T0sqrt}), (\ref{eq:U0sqrt})
+is therefore \begin{equation}
+O\left[M\left(P+\log_{10}n\right)\ln n\right].\label{eq:Cost2}\end{equation}
+
+
+
+\subsubsection{The case of $\left|x\right|>1$.}
+
+For $\left|x\right|>1$ we can avoid using complex-valued functions
+in Eqs.~(\ref{eq:Tcos})-(\ref{eq:Usin}) if we use the equivalent
+relations\begin{eqnarray}
+T_{n} & = & \cosh\left[n\,\textrm{arccosh}\, x\right]=\cosh\left[n\ln\left(x+\sqrt{x^{2}-1}\right)\right]\label{eq:Tcosh}\\
+ & = & \frac{1}{2}\left(x+\sqrt{x^{2}-1}\right)^{n}+\frac{1}{2}\left(x+\sqrt{x^{2}-1}\right)^{-n},\label{eq:Tsqrt}\\
+U_{n} & = & \frac{1}{\sqrt{x^{2}-1}}\sinh\left[\left(n+1\right)\ln\left(x+\sqrt{x^{2}-1}\right)\right]\label{eq:Usinh}\\
+ & = & \frac{1}{2\sqrt{x^{2}-1}}\left[\left(x+\sqrt{x^{2}-1}\right)^{n+1}-\left(x+\sqrt{x^{2}-1}\right)^{-n-1}\right].\label{eq:Usqrt}\end{eqnarray}
+ 
+
+We obtain two alternative forms of the computation: using hyperbolic
+functions or using square roots and powers. The cost of computing
+the hyperbolic functions and the logarithms is again given by Eqs.~(\ref{eq:Cost1}),
+(\ref{eq:Cost1a}). The asymptotic cost of the computation using Eqs.~(\ref{eq:Tsqrt}),
+(\ref{eq:Usqrt}) is given by Eq.~(\ref{eq:Cost2}).
+
+Note that for $Re\, x<-1$ the roundoff error in computing $x+\sqrt{x^{2}-1}$
+should be avoided by using the relation\begin{equation}
+x+\sqrt{x^{2}-1}=-\frac{1}{-x+\sqrt{x^{2}-1}}.\end{equation}
+ Alternatively, one should use the symmetry properties to reduce the
+problem to $Re\, x\geq0$.
+
+
+\subsubsection{The case of $x\approx1$.}
+
+The points $x=\pm1$ are special because of the branching point of
+the inverse cosine. We have $T_{n}\left(\pm1\right)=1$ and $U_{n}\left(\pm1\right)=\pm\left(n+1\right)$.
+However, a direct computation for $x$ very close to $\pm1$ leads
+to a loss of precision unless special precautions are taken.
+
+Suppose $x=1-q\cdot10^{-Q}$, where $Q\geq1$ and $q$ is of order
+$1$. The computation of $y=\arccos x$ can proceed as $y=\arcsin\sqrt{1-x^{2}}$
+with\begin{equation}
+1-x^{2}=q\cdot10^{-Q}\left(2-q\cdot10^{-Q}\right)\end{equation}
+ is small. Therefore \begin{equation}
+y\approx10^{-Q/2}\sqrt{2q}\end{equation}
+is found to about the same accuracy as $q$ (strictly speaking, $y$
+has one more precise bit of mantissa compared with $q$). Then $\log_{10}y\approx-Q/2$.
+We need to know $q$ with $P+\log_{10}n-Q/2$ digits (relative accuracy).
+The cost is\begin{equation}
+O\left[M\left(P\right)\ln P\right]+O\left[M\left(P+\log_{10}n-Q/2\right)\ln\left(P+\log_{10}n-Q/2\right)\right].\end{equation}
+ If $Q>2\log_{10}n$ (or equivalently $n^{2}\left|1-x\right|<1$)
+then $T_{n}\left(x\right)\approx1$ and $U_{n}\left(x\right)\approx n+1$
+and the cost of computation is $O\left(M\left(P\right)\ln P\right)$.
+Otherwise $T_{n}\left(x\right)$ and $U_{n}\left(x\right)$ are not
+close to their limiting values and the cost is only slightly smaller
+than that of Eq.~(\ref{eq:Cost1}).
+
+
+\subsection{From linear recurrences}
+
+The Chebyshev polynomials satisfy linear recurrences\begin{equation}
+T_{n+2}\left(x\right)=2xT_{n}\left(x\right)-T_{n-1}\left(x\right).\end{equation}
+A straightforward computation would require $O\left(n\right)$ long
+multiplications. A matrix form of the same relation,\begin{eqnarray}
+\left(\begin{array}{c}
+T_{n+1}\\
+T_{n}\end{array}\right) & = & \left[\begin{array}{cc}
+2x & -1\\
+1 & 0\end{array}\right]^{n}\left(\begin{array}{c}
+x\\
+1\end{array}\right),\\
+\left(\begin{array}{c}
+U_{n+1}\\
+U_{n}\end{array}\right) & = & \left[\begin{array}{cc}
+2x & -1\\
+1 & 0\end{array}\right]^{n}\left(\begin{array}{c}
+2x\\
+1\end{array}\right),\end{eqnarray}
+ reduces the cost to $O\left(\ln n\right)$ multiplications if we
+use the fast squaring algorithm for matrix powers. However, each multiplication
+will now lose one bit of precision, therefore the working precision
+must be increased by $\log_{10}n$ digits. The asymptotic cost is
+given by Eq.~(\ref{eq:Cost2}).
+
+
+\subsection{From quadratic recurrences}
+
+The following quadratic recurrence relations can also be used \cite{AS64},
+\begin{eqnarray}
+T_{m+n}\left(x\right) & = & 2T_{m}\left(x\right)T_{n}\left(x\right)-T_{m-n}\left(x\right),\label{eq:Tquad}\\
+U_{m+n}\left(x\right) & = & 2U_{m}\left(x\right)T_{n}\left(x\right)-U_{m-n}\left(x\right).\label{eq:Uquad}\end{eqnarray}
+ These relations recursively reduce the computation of $T_{n}\left(x\right)$,
+$U_{n}\left(x\right)$ to the same computation for smaller numbers
+$n$ until we reach $T_{n}$, $U_{n}$ for $n=1$ or $n=0$ that do
+not require any computations. The number of recursion steps can be
+made $O\left(\ln n\right)$. Therefore the cost is $O\left(\ln n\right)$
+long multiplications.
+
+It is not difficult to implement this method without recursion. The
+idea is to build a sequence of numbers $n_{1}$, $n_{2}$, ..., $n$
+needed to compute $T_{n}\left(x\right)$, $U_{n}\left(x\right)$.
+There are many sequences that can be used.
+
+One way to build such a sequence is to divide $n$ approximately by
+$2$ at every step. For example, to compute $T_{19}\left(x\right)$
+we use $T_{10}\left(x\right)$ and $T_{9}\left(x\right)$, i.e.~$m=10$
+and $n=9$ in Eq.~(\ref{eq:Tquad}). We can write this chain symbolically
+as $19\sim c\left(9,10\right)$. For $T_{10}\left(x\right)$ we need
+only $T_{5}\left(x\right)$. This we can write as $10\sim c\left(5\right)$.
+Similarly we find: $9\sim c\left(4,5\right)$. Therefore, we can find
+both $T_{9}\left(x\right)$ and $T_{10}\left(x\right)$ if we know
+$T_{4}\left(x\right)$ and $T_{5}\left(x\right)$. Eventually we find
+the following chain of pairs: \[
+19\sim c\left(9,10\right)\sim c\left(4,5\right)\sim c\left(2,3\right)\sim c\left(1,2\right)\sim c\left(1\right).\]
+ So $T_{19}\left(x\right)$ can be computed by finding $T_{k}\left(x\right)$
+sequentially for all $k$ that appear in the chain (1, 2, 3, 4, 5,
+9, 10, 19). There are about $2\log_{2}n$ elements in the chain that
+leads to the number $n$. We can generate this chain in a straightforward
+way by examining the bits in the binary representation of $n$.
+
+The sequence obtained in this fashion is not the most optimal one.
+For example, for $n=19$ there is a shorter sequence (1,2,3,5,7,12,19)
+that is reminiscent of the Fibonacci sequence because many elements
+are sums of the two previous elements. To build a better sequence
+for general $n$, one could use the {}``golden ratio''\begin{equation}
+\varphi=\frac{\sqrt{5}-1}{2}\end{equation}
+and choose the elements in such a way as to make their successive
+ratios close to $\varphi$. For example: $\varphi\cdot19\approx11.74$,
+therefore we choose $12$ as the next number; $19-12=7$ and $12-7=5$,
+so we obtain the segment (5, 7, 12, 19) that fits Eq.~(\ref{eq:Tquad})
+with $m=12$ and $n=7$. Further, $7-5=2$ and $5-2=3$, hence the
+chain (1,2,3,5,7,12,19). The number of elements in Fibonacci chains
+is about $\log_{\varphi}n$ which is somewhat smaller than $2\log_{2}n$
+obtained above.
+
+Note that the quadratic recurrences are more numerically unstable:
+due to squaring at every step, we lose one bit of relative precision
+on the average. Numerical values need to be evaluated with an extended
+working precision. As before, we obtain that one needs about $\log_{10}n$
+additional digits to compensate for the accumulated roundoff error.
+The asymptotic cost is therefore given by Eq.~(\ref{eq:Cost2}).
+
+
+\subsection{Using explicit coefficients}
+
+The coefficients of the Chebyshev polynomials can be obtained by explicit
+formulae. If $k=\left\lfloor \frac{n}{2}\right\rfloor $ and $n>0$,
+then \begin{eqnarray}
+T_{n}\left(x\right) & = & \sum_{i=0}^{k}\left(-1\right)^{i}\frac{\left(2x\right)^{n-2i}}{n-i}{{n-i \choose i}},\label{eq:Texplicit}\\
+U_{n}\left(x\right) & = & \sum_{i=0}^{k}\left(-1\right)^{i}\left(2x\right)^{n-2i}{{n-i \choose i}}.\label{eq:Uexplicit}\end{eqnarray}
+ The summation is over integer values of $i$ such that $0\leq2i\leq n$,
+regardless of whether $n$ is even or odd.
+
+If computed straightforwardly, Eqs.~(\ref{eq:Texplicit})-(\ref{eq:Uexplicit})
+require $O\left(M\left(P\right)n\right)$ operations. To avoid an
+accumulation of the roundoff error during $n$ arithmetic operations,
+we would need $O\left(\log_{10}n\right)$ additional digits of working
+precision. In the formulae for the coefficients there is no need to
+compute factorials every time: the next coefficient can be obtained
+from the previous one by a few short multiplications and divisions.
+Therefore, a faster method can be used \cite{Smith89} that reduces
+the cost to \begin{equation}
+O\left(M\left(P+\log_{10}n\right)\sqrt{n}\right).\label{eq:Cost3}\end{equation}
+
+
+It is clear that for large $n$ and $P$ the present method is inferior
+to any of the methods with the cost of Eq.~(\ref{eq:Cost2}). At
+very small $n$ this method could outperform other methods due to
+its lower overhead.
+
+
+\section{Conclusions}
+
+We obtained explicit cost estimates for the described methods of arbitrary-precision
+computation of the Chebyshev polynomials. The most efficient methods
+fall into two categories: one described by the cost estimate of Eq.~(\ref{eq:Cost1})
+and the other by Eq.~(\ref{eq:Cost2}). It is easy to see by inspection
+that the lowest asymptotic cost is given by Eq.~(\ref{eq:Cost1})
+for very large $n\gg P$ and by Eq.~(\ref{eq:Cost2}) for very large
+$P\gg n$. However, the threshold values of $n$ and $P$ cannot be
+determined without considering a particular implementation of the
+methods. The methods of linear and quadratic recurrences have the
+same asymptotic cost {[}Eq.~(\ref{eq:Cost2}){]}. A choice of the
+best method for given $n$ and $P$ requires system-specific benchmarks
+(see e.g.~\cite{Koepf99}).
+
+\begin{thebibliography}{1}
+\bibitem{AS64}M. Abramowitz and I. Stegun, eds., \emph{Handbook of special functions},
+National Bureau of Standards, 1964.
+\bibitem{Brent76}R. P. Brent, {}``Fast multiple-precision evaluation of elementary
+functions'', Journal of the ACM \textbf{23}, p. 242 (1976).
+\bibitem{Smith89}D. M. Smith, {}``Efficient multiple-precision evaluation of elementary
+functions'', Math. Comp. \textbf{52}, p. 131 (1989).
+\bibitem{Koepf99}W. Koepf, {}``Efficient computation of Chebyshev polynomials'',
+in: M. Wester (Ed.): \emph{Computer Algebra Systems: A Practical Guide},
+John Wiley, Chichester, 1999, p. 79.\end{thebibliography}
+
+\end{document}
