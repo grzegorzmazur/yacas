@@ -26,11 +26,11 @@ DoSingle(i) := Single(globalDeg,i);
   MakeCof(Multiplex("DoSingle","+",0));
 ];
 
-35 # CofFromDEaux(constant_IsAtom) <--
+36 # CofFromDEaux(constant_IsAtom) <--
 [
   globalDeg := 0;
   
-  CofMul(E,MakeCof(Multiplex("DoSingle","*",1)));
+  CofMul(constant,MakeCof(Multiplex("DoSingle","*",1)));
 ];
 
 CofFromDE(_f) <-- CofFromDEaux(OdeNormalForm(f));
@@ -168,19 +168,26 @@ CofTry(10,1,y' == E*y,{aS0==1,aS1==1,E==1});
 
 
 /* harmonic (solutions are sin,cos) */
-CofDoHarmonic(12,1);
-CofTry(10,1,y'' + E*y == 0,{aS0==0,aS1==1,aS3== -1/6});
-
-
 /*
-CofDoXsqr(12,1); 
-CofSetUp({aS0==1,aS1==2,aS5==1});
+CofTry(10,1,y'' + E*y == 0,{aS0==0,aS1==1,aS3== -1/6});
 */
 
 /*
-CofDoNormal(20,1);
+CofTry(8,1,y'' + x^2 * y == E*y,{aS0==1,aS1==2,aS5==1});
+*/
+
+
+
+
+/*
+CofDoNormal(10,1);
 CofSetUp({aS0==1,aS1==0,E == 0});
 */
+
+
+
+CofTry(10,1,y' + x * y == 0,{aS0==1,aS1==0});
+
 
 /*
 CofDoNormal(3,2);
@@ -194,8 +201,8 @@ CofSetUp({alpha==1,E==0,aS1==1,aS3==1});
 
 
 CofSolve();
-/*
 CofPlot();
+/*
 */
 
 
