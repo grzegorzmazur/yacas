@@ -75,8 +75,8 @@ GammaNum(z,a) := N(Exp(LnGammaNum(z,a)));	/// should not be used by applications
 10 # Gamma(_n)_(IsInteger(n) And n<=0) <-- Infinity;
 10 # LnGamma(_n)_(IsInteger(n) And n<=0) <-- Infinity;
 
-20 # Gamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or IsInteger(N(2*n))) <-- (n-1)!;
-20 # LnGamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or IsInteger(N(2*n))) <-- Ln((n-1)!);
+20 # Gamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or IsInteger(N(2*n))) <-- Eval((n-1)!);
+20 # LnGamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or IsInteger(N(2*n))) <-- Eval(Ln((n-1)!));
 
 30 # Gamma(_x)_(Numeric And IsNumber(N(x))) <-- GammaNum(x);
 30 # LnGamma(_x)_(Numeric And IsNumber(N(x))) <-- LnGammaNum(x);
@@ -123,24 +123,34 @@ ZetaNumCoeffEj(j,n) := [
 	);
 ];
 
-ZetaNum(s) := [
+/// User interface for ZetaNum(s,n)
+10 # ZetaNum(_s) _ (N(s)=0) <-- -0.5;
+10 # ZetaNum(_s) _ (N(s)=1) <-- Infinity;
+20 # ZetaNum(_s) <-- [
 	Local(n, prec, result);
 	prec := GetPrecision();
-	Precision(6);
-	// choose between methods
-	If (N(Re(s)) > N(1+(prec*Ln(10))/(Ln(prec)+0.1) ),
+	If(	// use identity if s<1/2 to replace with larger s. Also must be sn!=0 or else we get infinity * zero
+		N(Re(s)) < 0.5,
+		// call ourselves with a different argument
 		[
-			n:= N(10^(prec/(s-1)))+2;	// 2 guard terms
-			If (Verbose, Echo({"ZetaNum: direct method, precision ", prec, ", n = ", n}));
-			Precision(prec+2);	// 2 guard digits
-			result := ZetaNum1(s, n);
+			If(Verbose, Echo({"ZetaNum: using s->1-s identity, s=", s, ", precision ", prec}));
+			result :=  2*Exp(LnGammaNum(1-s)-(1-s)*Ln(2*Pi()))*Sin(Pi()*s/2) * ZetaNum(1-s);
 		],
-		[
-			n := Ceil( N( prec*Ln(10)/Ln(8) + 2 ) );	// add 2 digits just in case
-			If (Verbose, Echo({"ZetaNum: Borwein' method, precision ", prec, ", n = ", n}));
-			Precision(prec+2);	// 2 guard digits
-			result := ZetaNum(s, n);
-		]
+		// choose between methods
+		If (N(Re(s)) > N(1+(prec*Ln(10))/(Ln(prec)+0.1), 6),
+			[	// use direct summation
+				n:= N(10^(prec/(s-1)), 6)+2;	// 2 guard terms
+				If (Verbose, Echo({"ZetaNum: direct method, precision ", prec, ", n = ", n}));
+				Precision(prec+2);	// 2 guard digits
+				result := ZetaNum1(s, n);
+			],
+			[	// use ZetaNum(s, n)
+				n := Ceil( N( prec*Ln(10)/Ln(8) + 2, 6 ) );	// add 2 digits just in case
+				If (Verbose, Echo({"ZetaNum: Borwein's method, precision ", prec, ", n = ", n}));
+				Precision(prec+2);	// 2 guard digits
+				result := ZetaNum(s, n);
+			]
+		)
 	);
 	Precision(prec);
 	result;
@@ -153,20 +163,7 @@ ZetaNum(s) := [
 10 # Zeta(n_IsInteger)_(n<0) <-- -Bernoulli(-n+1)/(-n+1);
 
 /// compute numeric value
-20 # Zeta(_s)_(Numeric And IsNumber(N(s))) <--
-[
-	Local(sn);
-	sn:=N(s);
-	If(
-	  sn=1,
-	  Infinity,
-	  If(	// use identity if s<1/2 to replace with larger s. Also must be sn!=0 or else we get infinity * zero
-		Re(sn)>= 0.5,
-		ZetaNum(sn),
-		N( 2*Gamma(1-sn)*Sin(N(Pi*sn/2))/(2*Pi)^(1-sn) ) * ZetaNum(1-sn)
-	  )
-	 );
-];
+20 # Zeta(_s)_(Numeric And IsNumber(N(s))) <-- N(ZetaNum(N(s)));
 
 /////////////////////////////////////////////////
 /// Bernoulli numbers and polynomials

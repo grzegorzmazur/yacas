@@ -7,7 +7,7 @@ distribution. The yacas debugger consists of:
 *	{./yacasdebug}, a separate program
 *	{libyacasdebug.a}, a static library that can be linked in
 
-The debug version has to be built separately from the 'normal'
+The debug version has to be built separately from the "production"
 version of Yacas (all source files have to be recompiled).
 
 	    Why introduce a debug version?
@@ -22,21 +22,23 @@ and mean, while still offering advanced debug features.
 
 	    How to build {yacasdebug}
 
-The yacas debugging components can be built by going into the 
-{src/} directory, and using the file {makefile.debug} to build 
+The yacas debugging components can be built by the command
+	make debug
+or, alternatively, by going into the 
+{src/} directory and using the file {makefile.debug} to build 
 it:
 
 	cd src/
-	make clean
 	make -f makefile.debug
 
-Note the object files generated are not suited for the normal Yacas
-executable. To rebuild the normal version a {make clean} is required.
+Note the object files generated are called {*-d.o} and are suited for the
+normal Yacas executable. The static library {libyacasdebug.a} is built instead
+of the normal {libyacas.a}.
 
 The file {makefile.debug} was written to compile under Linux, but
 should work on other platforms with little tweaks.
 
-After the build the debug files can be found in the {src/} directory.
+After the build the debug version of Yacas can be found in the {src/} directory.
 
 To invoke the debugger, type
 
@@ -50,13 +52,18 @@ so the {--rootdir} command line option is required.
 The Yacas debugger is in development still, but already has
 some useful features. 
 
-Yacasdebug:
-*	keeps track of the memory allocated and freed, and shows any memory leaks when the program is quit.
-*	shows which files are loaded when, to load function definitions.
-*	keeps a file name and line number for each object loaded from file, for debugging purposes.
+When you build {yacasdebug} and run a command, it will:
+*	keep track of the memory allocated and freed, and show any memory leaks
+when you quit the program.
+*	show which files are loaded to read function definitions and when.
+*	keep a file name and line number for each object loaded from file, for
+debugging purposes.
+*	show you the stack trace when evaluation goes into an infinite recursion
+(equivalent of always using {TraceStack}) and print file names and line numbers
+for all rules.
 
 The {libyacasdebug.a} library is used by {proteusdebugger}, a graphical
-front-end for debugging which is in development still also.
+front-end for debugging which is also still in development.
 
 Future versions will have the ability to step through code and to
 watch local and global variables while executing, modifying them

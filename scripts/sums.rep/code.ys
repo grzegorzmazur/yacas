@@ -33,15 +33,13 @@ Max(list_IsList) <--
 (-(2*z+1)/2)! = Sqrt(Pi)*(-1)^z*z!*2^(2*z) / (2*z)! for z >= 0
 
 */
- 
-40 # (n_IsRational)! _(Denom(n)=2 And n>0) <--
-	Sqrt(Pi) * ( Numer(n)! / ( 2^Numer(n)*((Numer(n)-1)/2)! ) );
-40 # (n_IsRational)! _(Denom(n)=2 And -n>0) <--
-	Sqrt(Pi) * ( (-1)^((Numer(-n)-1)/2)*2^(Numer(-n)-1)*((Numer(-n)-1)/2)! 
-/ (Numer(-n)-1)! );
+HalfIntegerFactorial(n_IsOdd) _ (n>0) <--
+	Sqrt(Pi) * ( n! / ( 2^n*((n-1)/2)! ) );
+HalfIntegerFactorial(n_IsOdd) _ (n<0)  <--
+	Sqrt(Pi) * ( (-1)^((-n-1)/2)*2^(-n-1)*((-n-1)/2)! / (-n-1)! );
 
 /* Want to also compute (2.5)! */
-30 # (n_IsNumber)! _(IsInteger(N(n*2))) <-- (N(n*2)/2)!;
+40 # (n_IsRationalOrNumber)! _(Denom(Rationalize(n))=2) <-- HalfIntegerFactorial(Numer(Rationalize(n)));
 
 
 RuleBase("Sum",{sumvar,sumfrom,sumto,sumbody}); 
