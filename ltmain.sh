@@ -54,8 +54,8 @@ modename="$progname"
 # Constants.
 PROGRAM=ltmain.sh
 PACKAGE=libtool
-VERSION=1.3.5
-TIMESTAMP=" (1.3 2000/11/22 00:47:10)"
+VERSION=1.3.4
+TIMESTAMP=" (1.385.2.196 1999/12/07 21:47:57)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -1079,20 +1079,12 @@ compiler."
 	    # These systems don't actually have c library (as such)
 	    continue
 	    ;;
-	  *-*-rhapsody*)
-	    # Rhapsody C library is in the System framework
-	    deplibs="$deplibs -framework System"
-	    ;;
 	  esac
 	elif test "$arg" = "-lm"; then
 	  case "$host" in
 	  *-*-cygwin* | *-*-beos*)
 	    # These systems don't actually have math library (as such)
 	    continue
-	    ;;
-	  *-*-rhapsody*)
-	    # Rhapsody math library is in the System framework
-	    deplibs="$deplibs -framework System"
 	    ;;
 	  esac
 	fi
@@ -1802,10 +1794,6 @@ compiler."
 	case "$host" in
 	*-*-cygwin* | *-*-mingw* | *-*-os2* | *-*-beos*)
 	  # these systems don't actually have a c library (as such)!
-	  ;;
-        *-*-rhapsody*)
-	  # Rhapsody C library is in the System framework
-	  deplibs="$deplibs -framework System"
 	  ;;
 	*)
 	  # Add libc to deplibs on all other systems.
@@ -2939,21 +2927,13 @@ else
       # Run the actual program with our arguments.
 "
 	case $host in
+	*-*-cygwin* | *-*-mingw | *-*-os2*)
 	  # win32 systems need to use the prog path for dll
 	  # lookup to work
-	*-*-cygwin*)
-	  $echo >> $output "\
-      exec \$progdir/\$program \${1+\"\$@\"}
-"
-	  ;;
-
-	# Backslashes separate directories on plain windows
-	*-*-mingw | *-*-os2*)
 	  $echo >> $output "\
       exec \$progdir\\\\\$program \${1+\"\$@\"}
 "
 	  ;;
-
 	*)
 	  $echo >> $output "\
       # Export the path to the program.
