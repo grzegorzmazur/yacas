@@ -278,8 +278,8 @@ void ANumber::CopyFrom(ANumber& aOther)
 
     //TODO there HAS to be a faster way to copy...
     LispInt nr = aOther.NrItems();
-    ANumber::ElementTypePtr sptr = &aOther[0];
-    ANumber::ElementTypePtr tptr = &Item(0);
+    ANumber::ElementTypePtr sptr = &( aOther[0]);
+    ANumber::ElementTypePtr tptr = &((*this)[0]);
     while (nr--)
     {
         *tptr++ = *sptr++;
