@@ -97,4 +97,7 @@ Infix("<-",1000);
 Infix("<>", OpPrecedence("="));
 Infix("<=>", OpPrecedence("="));
 
+/* Operators for Solve: Where and AddTo */
+Infix("Where", 1100);
+Infix("AddTo", 200);
 

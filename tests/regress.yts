@@ -83,3 +83,11 @@ Verify((3!) !, 720);
 Verify(3! !, 720);
 
 TestYacas(TrigSimpCombine(Exp(A*X)),Exp(A*X));
+TestYacas(TrigSimpCombine(x^Sin(a*x+b)),x^Sin(a*x+b));
+Verify(CanBeUni(x^(-1)),False);
+
+
+
+
+
+

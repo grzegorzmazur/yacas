@@ -51,6 +51,11 @@ RuleBase("TrigChange",{f});
 Rule("TrigChange",1,1,Type(f)="Cos") FCos(1,f[1]);
 Rule("TrigChange",1,1,Type(f)="Sin") FSin(1,f[1]);
 
+RuleBase("TrigUnChange",{f});
+Rule("TrigUnChange",1,1,Type(f)="FCos") Cos(f[2]);
+Rule("TrigUnChange",1,1,Type(f)="FSin") Sin(f[2]);
+
+
 /* Do a full replacement to internal format on a term. */
 RuleBase("FReplace",{f});
 UnFence("FReplace",1);
@@ -99,11 +104,15 @@ TrigNegate(f):=
   UnList({f[0],-(f[1]),f[2]});
 ];
 
+
+FUnTrig(result) := Substitute(result,"IsFTrig","TrigUnChange");
+
 Rule("FSimpTerm",2,1,Type(f) = "-" And NrArgs(f)=1)
 [
   Local(result);
   result:=FSimpTerm(f[1],{{},{}});
   Substitute(result,"IsFTrig","TrigNegate");
+//TODO remove  Substitute(result,"IsFTrig","TrigNegate");
 ];
 Rule("FSimpTerm",2,1,Type(f) = "-" And NrArgs(f)=2)
 [
@@ -364,12 +373,12 @@ FLog("sassoc",sassoc);
   ForEach(item,cassoc)
   [
 Log("item",item);
-    result:=result+Expand(FFromInternal(item[2]))*Cos(item[1]);
+    result:=result+Expand(FUnTrig(FFromInternal(item[2])))*Cos(item[1]);
   ];
   ForEach(item,sassoc)
   [
 Log("item",item);
-    result:=result+Expand(FFromInternal(item[2]))*Sin(item[1]);
+    result:=result+Expand(FUnTrig(FFromInternal(item[2])))*Sin(item[1]);
   ];
 
   result;
