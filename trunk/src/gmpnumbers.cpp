@@ -28,6 +28,7 @@ static char* getstrGMPNumber(GMPNumber& x, long prec);
 static LispStringPtr GMPNumberToString(GMPNumber& x, LispHashTable& h, 
                                        LispInt prec=10);
 static void GMPNumberCopy(GMPNumber& x, GMPNumber& y);
+static void GMPNumberZeroFill(GMPNumber& x);
 static void GMPNumberAdd(GMPNumber& r, GMPNumber& x, GMPNumber& y);
 static void GMPNumberSubtract(GMPNumber& r, GMPNumber& x, GMPNumber& y); 
 static void GMPNumberMultiply(GMPNumber& r, GMPNumber& x, GMPNumber& y);
@@ -36,6 +37,9 @@ static void GMPNumberInvert(GMPNumber& r, GMPNumber& x, long prec);
 static void GMPNumberPower(GMPNumber& r, GMPNumber& x, long e, long prec);
 static void GMPNumberNeg(GMPNumber& r, GMPNumber& x);
 static void GMPNumberAbs(GMPNumber& r, GMPNumber& x);
+static void GMPNumberDiv(GMPNumber& r, GMPNumber& x, GMPNumber& y);
+static void GMPNumberMod(GMPNumber& r, GMPNumber& x, GMPNumber& y);
+static void GMPNumberSqrt(GMPNumber& r, GMPNumber& x, long prec);
 static void SetGMPPrecision(LispInt aPrecision);
 
 static LispStringPtr IntegerToString(mpz_t& aInt, LispHashTable& aHashTable);
@@ -139,26 +143,27 @@ char* getstrGMPNumber(GMPNumber& x, long prec=10)
   long rawsize = mpz_sizeinbase(x.man,10);
   size_t size;
   if (rawsize+x.exp<=0) size=-x.exp+4;
-  else if (x.exp>0) size=rawsize+x.exp+2;
-  else size=rawsize+2;
+  else if (x.exp>0) size=rawsize+x.exp+4;
+  else size=rawsize+4;
   char *s, *str=(char*)malloc(size);
   mpz_get_str(str,10,x.man);
+  char *st=str;
+  size_t length = strlen(str);
+  if(mpz_sgn(x.man)<0) {st++;length--;}
   if (x.exp>0) {
-    s = str+strlen(str);
+    s = st+length;
     int exp=x.exp;
     while(exp) {
       *s++='0';
-      exp--;
+      exp--;  
     }
     *s='\0';
-  } else if (x.exp+rawsize<=0) {
-    size_t length = strlen(str);
-    size_t exp = -x.exp;
-    s = str + length - 1;
-    while (s>str && *s == '0') {*s--; exp--; length--;}
+  } else if (x.exp+length<=0) {
+    size_t exp = -x.exp; 
+    s = st + length - 1;
+    while (s>st && *s == '0') {*s--; exp--; length--;}
     *++s='\0';
-    s = str;
-    if(mpz_sgn(x.man)<0) {s++;length--;}
+    s = st; 
     if (length>prec) {
       exp-=length-prec;
       length=prec;
@@ -176,20 +181,19 @@ char* getstrGMPNumber(GMPNumber& x, long prec=10)
       *s++='.';
       s+=length;
       exp-=length;
-      sprintf(s,"E-%ld",exp);
+      sprintf(s,"E-%ld",exp); 
     }
   } else if (x.exp<0) {
-    size_t length = strlen(str);
-    size_t exp = -x.exp;
+    size_t exp = -x.exp; 
     if (exp>prec) {
       length-=exp-prec;
       exp=prec;
-      *(str+length)='\0';
+      *(st+length)='\0';
     }
     size_t index = length-exp;
-    memmove(str+index+1, str+index, exp+1);
-    str[index]='.';
-    s = str+length;
+    memmove(st+index+1, st+index, exp+1);
+    st[index]='.';
+    s = st+length;
     while (*s=='0') s--;
     if (*s=='.') *s='\0';
     else *++s='\0';
@@ -210,6 +214,18 @@ void GMPNumberCopy(GMPNumber& x, GMPNumber& y)
 {
   mpz_set(x.man,y.man);
   x.exp=y.exp;
+}
+
+static void GMPNumberZeroFill(GMPNumber& x)
+{
+  if (x.exp>0) {
+    mpz_t factor;
+    mpz_init_set_ui(factor,10);
+    mpz_pow_ui(factor,factor,x.exp);
+    mpz_mul(x.man,x.man,factor);
+    mpz_clear(factor);
+    x.exp=0;
+  }
 }
 
 void GMPNumberAdd(GMPNumber& r, GMPNumber& x, GMPNumber& y)
@@ -298,6 +314,52 @@ void GMPNumberDivide(GMPNumber& r, GMPNumber& x, GMPNumber& y, long prec)
   } else {
     mpz_set_ui(r.man,0);
     r.exp = 0;
+  }
+}
+
+static void GMPNumberSqrt(GMPNumber& r, GMPNumber& x, long prec)
+{
+  int neg = mpz_sgn(x.man);
+  if (neg==0) {
+    mpz_set_ui(r.man,0);
+    r.exp = 0;
+  } else if (neg>0) {
+    GMPNumberZeroFill(x);
+    long exp = -x.exp;
+    long adjust = exp&1;
+    mpz_t factor;
+    mpz_init_set_ui(factor,10);
+    mpz_pow_ui(factor,factor,prec<<1+adjust);
+    mpz_mul(r.man,x.man,factor);
+    mpz_sqrt(r.man,r.man);
+    mpz_clear(factor);
+    r.exp=-((exp-adjust)>>1)-prec;
+  } else {
+  //TODO Error: taking sqrt of negative number
+  }
+}
+
+static void GMPNumberDiv(GMPNumber& r, GMPNumber& x, GMPNumber& y)
+{
+  GMPNumberZeroFill(x);
+  GMPNumberZeroFill(y);
+  mpz_set_ui(r.man,0);
+  r.exp=0;
+  if (!(x.exp || y.exp)) {
+    int neg = mpz_sgn(x.man)/mpz_sgn(y.man);
+    if (neg) mpz_tdiv_q(r.man,x.man,y.man);
+  }
+}
+
+static void GMPNumberMod(GMPNumber& r, GMPNumber& x, GMPNumber& y)
+{
+  GMPNumberZeroFill(x);
+  GMPNumberZeroFill(y);
+  mpz_set_ui(r.man,0);
+  r.exp=0;
+  if (!(x.exp || y.exp)) {
+    int neg = mpz_sgn(x.man)/mpz_sgn(y.man);
+    if (neg) mpz_tdiv_r(r.man,x.man,y.man);
   }
 }
 
@@ -521,19 +583,12 @@ LispStringPtr LnFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPreci
 
 LispStringPtr SqrtFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
 {
-//TODO handle integer case
-    SetGMPPrecision(aPrecision);
-    mpf_t i1;
-    mpf_init(i1);
-    mpf_set_str(i1,int1,10);
-
-    mpf_t res;
-    mpf_init(res);
-    mpf_sqrt(res,i1);
-    LispStringPtr result = FloatToString(res, aHashTable);
-    mpf_clear(i1);
-    mpf_clear(res);
-    return result;
+  GMPNumber x;
+  initGMPNumber(x,int1);
+  GMPNumberSqrt(x,x,aPrecision);
+  LispStringPtr result = GMPNumberToString(x, aHashTable, aPrecision);
+  clearGMPNumber(x);
+  return result;
 }
 
 LispStringPtr AbsFloat(LispCharPtr int1, LispHashTable& aHashTable
@@ -662,18 +717,34 @@ LispStringPtr CeilFloat( LispCharPtr int1, LispHashTable& aHashTable,
     return PlatCeil( int1,aHashTable, aPrecision);
 }
 
-LispStringPtr ModFloat( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHashTable,
-                        LispInt aPrecision)
+LispStringPtr ModFloat( LispCharPtr int1, LispCharPtr int2, 
+                        LispHashTable& aHashTable, LispInt aPrecision)
 {
-//TODO
-    return PlatMod( int1, int2, aHashTable, aPrecision);
+  GMPNumber r,x,y;
+  initGMPNumber(r);
+  initGMPNumber(x,int1);
+  initGMPNumber(y,int2);
+  GMPNumberMod(r,x,y);        
+  LispStringPtr result = GMPNumberToString(r, aHashTable, aPrecision);
+  clearGMPNumber(r);
+  clearGMPNumber(x);
+  clearGMPNumber(y);
+  return result;
 }
 
 LispStringPtr DivFloat( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHashTable,
                         LispInt aPrecision)
 {
-//TODO
-    return PlatDiv( int1, int2, aHashTable, aPrecision);
+  GMPNumber r,x,y;
+  initGMPNumber(r);
+  initGMPNumber(x,int1);
+  initGMPNumber(y,int2);
+  GMPNumberDiv(r,x,y);        
+  LispStringPtr result = GMPNumberToString(r, aHashTable, aPrecision);
+  clearGMPNumber(r);
+  clearGMPNumber(x);
+  clearGMPNumber(y);
+  return result;
 }
 
 LispStringPtr EFloat( LispHashTable& aHashTable,
@@ -873,7 +944,7 @@ LispStringPtr BitAnd(LispCharPtr int1, LispCharPtr int2,
 
     mpz_t res;
     mpz_init(res);
-		mpz_and(res,i1,i2);
+    mpz_and(res,i1,i2);
     LispStringPtr result = IntegerToString(res, aHashTable);
     mpz_clear(i1);
     mpz_clear(i2);
@@ -893,7 +964,7 @@ LispStringPtr BitOr(LispCharPtr int1, LispCharPtr int2,
 
     mpz_t res;
     mpz_init(res);
-		mpz_ior(res,i1,i2);
+    mpz_ior(res,i1,i2);
     LispStringPtr result = IntegerToString(res, aHashTable);
     mpz_clear(i1);
     mpz_clear(i2);
