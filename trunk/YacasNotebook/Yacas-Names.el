@@ -113,7 +113,6 @@
 "Mod"
 "Div"
 "Limit"
-"AntiDeriv"
 "Integrate"
 "Curl"
 "Diverge"

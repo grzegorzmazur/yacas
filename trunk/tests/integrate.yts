@@ -3,4 +3,52 @@
 Verify(Integrate(x,a,b)Exp(Sin(x)),Integrate(x,a,b)Exp(Sin(x)));
 Verify(Integrate(x    )Exp(Sin(x)),Integrate(x    )Exp(Sin(x)));
 
+// Verify that Yacas cannot integrate these expressions.
+// Yacas needs to return the integration unevaluated, or
+// return a correct answer (if it happens to be able to do
+// these integrals in the future).
+TestNonIntegrable(_expr) <-- Verify(Type(expr) = "Integrate",True);
+
+// The following two used to get the interpreter into an infinite
+// loop. Fixed in version 1.0.51
+TestNonIntegrable(Integrate(x)(x*Ln(x)));
+TestNonIntegrable(Integrate(x)Sin(Exp(x)));
+TestNonIntegrable(Integrate(x) x^(-1));
+TestNonIntegrable(Integrate(x) x^(1/x));
+TestNonIntegrable(Integrate(x) x^(Sin(x)));
+TestNonIntegrable(Integrate(x) Exp(x^2));
+TestNonIntegrable(Integrate(x) Sin(x^2));
+
+TestYacas(Integrate(x,0,A)Sin(x),1 - Cos(A));
+TestYacas(Integrate(x,0,A)x^2,(A^3)/3);
+TestYacas(Integrate(x,0,A)Sin(B*x),1/B-Cos(B*A)/B);
+TestYacas(Integrate(x,0,A)(x^2+2*x+1)/(x+1),(A^2)/2+A);
+TestYacas(Integrate(x,0,A)(x+1)/(x^2+2*x+1),Ln(A+1));
+
+
+// Test MatchLinear: code heavily used with integration
+LocalSymbols(TestMatchLinearTrue,TestMatchLinearFalse) [
+
+  TestMatchLinearTrue(_var,_expr,_expected) <--
+  [
+    Local(a,b);
+    Verify(MatchLinear(var,expr),True);
+    a:=Simplify(a-expected[1]);
+    b:=Simplify(b-expected[2]);
+    `TestYacas(@a,0);
+    `TestYacas(@b,0);
+  ];
+  TestMatchLinearFalse(_var,_expr) <--
+  [
+    Local(a,b);
+    Verify(MatchLinear(var,expr),False);
+  ];
+
+  TestMatchLinearTrue(x,(R+1)*x+(T-1),{(R+1),(T-1)});
+  TestMatchLinearTrue(x,x+T,{1,T});
+  TestMatchLinearTrue(x,a*x+b,{a,b});
+  TestMatchLinearFalse(x,Sin(x)*x+(T-1));
+  TestMatchLinearFalse(x,x+Sin(x));
+
+];
 

@@ -19,4 +19,5 @@ LagrangeInterpolant
 ReversePoly
 InverseTaylor
 Series
+MatchLinear
 }
