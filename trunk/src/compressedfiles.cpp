@@ -1,5 +1,5 @@
 
-
+#include "yacasprivate.h"
 #include "compressedfiles.h"
 #include "lisptype.h"
 #include "lispassert.h"

@@ -98,7 +98,7 @@ static void PcreNextToken(LispEnvironment& aEnvironment, LispInt aStackTop)
       RESULT.Set(LispAtom::New(aEnvironment,"EndOfFile"));
       return;
     }
-    char* resultbuf = (char*)malloc(ovector[1]-ovector[0]+3); //TODO use plat allocs!
+    char* resultbuf = (char*)PlatAlloc(ovector[1]-ovector[0]+3); //TODO use plat allocs!
     char*trg = resultbuf;
     *trg++ = '\"';
     memcpy(trg,&trav[ovector[0]],ovector[1]-ovector[0]);
@@ -111,7 +111,7 @@ static void PcreNextToken(LispEnvironment& aEnvironment, LispInt aStackTop)
     res = LA(patterns[i].type.Get())+LA(res);
     res = LA(ATOML(resultbuf)) + LA(res);
     RESULT.Set(LIST(LA(ATOML("List")) + LA(res)));
-    free(resultbuf); //TODO use plat allocs!
+    PlatFree(resultbuf); //TODO use plat allocs!
 }
 
 static void PcreLexer(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -135,8 +135,12 @@ static void PcreLexer(LispEnvironment& aEnvironment, LispInt aStackTop)
             if (sub)
             {
                 sub = sub->Next().Get();
+                if(sub == NULL) 
+                  RaiseError("Invalid argument in PcreLexer: not enough elements in a sublist");
                 LispStringPtr pattern = aEnvironment.HashTable().LookUpUnStringify(sub->String()->String());
                 LispPtr type;
+                if(sub->Next().Get() == NULL) 
+                  RaiseError("Invalid argument in PcreLexer: not enough elements in a sublist");
                 type.Set(sub->Next().Get()->Copy(LispFalse));
 
 //printf("Pattern \"%s\" type %d\n",pattern->String(),type);

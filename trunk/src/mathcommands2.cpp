@@ -81,3 +81,54 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalEval(aEnvironment, RESULT, result);
 }
 
+
+
+void LispCharString(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+  LispStringPtr str;
+  str = ARGUMENT(1).Get()->String();
+  CHK_ARG_CORE(str != NULL,2);
+  CHK_ARG_CORE(IsNumber(str->String(),LispFalse),2);
+  LispInt asciiCode = InternalAsciiToInt(str->String());
+
+  LispChar ascii[4];
+  ascii[0] = '\"';
+  ascii[1] = (LispChar)asciiCode;
+  ascii[2] = '\"';
+  ascii[3] = '\0';
+  RESULT.Set(LispAtom::New(aEnvironment,ascii));
+}
+
+
+void LispInDebugMode(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+#ifdef YACAS_DEBUG
+  InternalTrue(aEnvironment,RESULT);
+#else
+  InternalFalse(aEnvironment,RESULT);
+#endif
+}
+
+void LispDebugFile(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+#ifndef YACAS_DEBUG
+  RaiseError("Cannot call DebugFile in non-debug version of Yacas");
+#else
+  LispCharPtr file = ARGUMENT(1).Get()->iFileName;
+  if (file == NULL) file = "";
+  LispStringPtr str = aEnvironment.HashTable().LookUpStringify(file);
+  RESULT.Set(LispAtom::New(aEnvironment,str->String()));
+#endif
+}
+
+void LispDebugLine(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+#ifndef YACAS_DEBUG
+  RaiseError("Cannot call DebugLine in non-debug version of Yacas");
+#else
+  LispChar number[30];
+  InternalIntToAscii(number,ARGUMENT(1).Get()->iLine);
+  RESULT.Set(LispAtom::New(aEnvironment,number));
+#endif
+}
+
