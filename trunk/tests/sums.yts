@@ -19,3 +19,15 @@ Verify(Average({1,2,3,4,5}), 3);
 Verify(Average({0}), 0);
 Verify(Average({}), Undefined);
 
+Verify(Min(0,1),0);
+Verify(Min({}), Undefined);
+Verify(Min({x}), x);
+Verify(Min(x), x);
+Verify(Min(Exp(x)), Exp(x));
+Verify(Min({1,2,3}), 1);
+/* since Min(multiple args) is disabled, comment this out
+Verify(Min(1,2,3), 1);
+Verify(Min(1,2,0), 0);
+Verify(Min(5,2,3,4), 2);
+Verify(Min(5,2,0,4), 0);
+*/
