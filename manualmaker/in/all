@@ -13,7 +13,6 @@ WriteString("<HTML>
 </HTML>");
 
 
-//Use("html.ys");
 SetHtmlDirectory("");
 Use("styleplain");  /* style cheet for the documentation */
 Use("manualmaker"); /* engine that renders book to html */
@@ -23,9 +22,27 @@ InitBooks();        /* Initialize book building */
 InitBook("intro");
 Blurb()
 "This document gives a short introduction on Yacas.
-Included is a short tutorial on the syntax, and some
-commands to get you started. There are also some examples.";
+Included is a brief tutorial on the syntax, and some
+commands to get you started using Yacas. There are also some examples.";
 Load("intro.book");
+
+  GarbageCollect();
+
+InitBook("coding");
+Blurb()
+"This document should get you started programming in Yacas. There
+are some explanations and hands-on tutorials.";
+Load("coding.book");
+
+  GarbageCollect();
+
+InitBook("essays");
+Blurb()
+"This is a book of essays on using Yacas. It covers various topics, from
+using the Yacas system for specific calculations
+to general issues related to the Yacas system development.";
+
+Load("essays.book");
 
   GarbageCollect();
 
@@ -42,11 +59,6 @@ Blurb()
 This reference contains all the functions that might be useful
 when programming in Yacas.";
 Load("refprog.book");
-
-InitBook("coding");
-Blurb()
-"This document should get you started programming in Yacas.";
-Load("coding.book");
 
   GarbageCollect();
 
@@ -69,6 +81,10 @@ EmitHtmlFramed();
 
 SelectBook("coding");
 EmitHtmlFramed();
+
+SelectBook("essays");
+EmitHtmlFramed();
+EmitHtmlSimple();
 
   GarbageCollect();
 

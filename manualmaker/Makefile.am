@@ -4,10 +4,11 @@ ouryacas = ../src/yacas --rootdir ../scripts/
 
 noinst_PROGRAMS = books.html
 
-ALLBOOKS = in/intro.book in/coding.book in/ref.book in/refprog.book
+ALLBOOKS = in/intro.book in/coding.book in/ref.book in/refprog.book \
+	in/essays.book
 
 ALLBOOKSOURCES = in/intro.book.txt in/coding.book.txt \
-	in/ref.book.txt in/refprog.book.txt
+	in/ref.book.txt in/refprog.book.txt in/essays.book.txt
 
 REFCHAPTERS = in/config.chapt in/arith.chapt in/calc.chapt in/linalg.chapt \
 	in/univar.chapt in/lists.chapt in/functional.chapt in/controlflow.chapt \
@@ -19,11 +20,18 @@ REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt in/linalg.
 	in/preds.chapt.txt in/logic.chapt.txt in/const.chapt.txt in/vars.chapt.txt in/io.chapt.txt \
 	in/strings.chapt.txt
 
+ESSAYCHAPTERS = in/ABIN-grammar.chapt in/Plugins-Howto.chapt \
+	in/CVS-Howto.chapt in/YacasDocs.chapt
+
+
+ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
+	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt
+
 
 EXTRA_DIST = \
 	manualmaker styleplain in/all \
 	in/intromaker in/codingmaker in/refmaker in/refprogmaker \
-	$(REFSOURCES) $(ALLBOOKSOURCES) \
+	$(REFSOURCES) $(ALLBOOKSOURCES) $(ESSAYSOURCES) \
 	in/dummies newhelp yacasinit.ys .cvsignore
 
 # Stuff for automatic generation of Yacas books
@@ -50,18 +58,19 @@ EXTRA_DIST = \
 
 # TeX/PS/PDF top target
 texdocs: coding.book.ps coding.book.pdf \
-	intro.book.ps intro.book.pdf \
-	refprog.book.ps refprog.book.pdf
+		intro.book.ps intro.book.pdf \
+		refprog.book.ps refprog.book.pdf \
+		essays.book.ps essays.book.pdf
 	echo "done" > texdocs.c
 
 clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.toc *.log *.ps *.pdf \
 	coding*html intro*html ref*html .o core *~ texdocs.c \
-	$(REFCHAPTERS) $(ALLBOOKS)
+	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(ALLBOOKS)
 
 yacas_helpdir = $(datadir)/yacas/documentation
 
-books.html:  $(ALLBOOKS) $(REFCHAPTERS)
+books.html:  $(ALLBOOKS) $(REFCHAPTERS) $(ESSAYCHAPTERS)
 	-$(ouryacas) in/all
 	echo "done" > books.html.c
 
@@ -74,6 +83,10 @@ intro.html : in/intro.book
 coding.html : in/coding.book
 	-$(ouryacas) in/codingmaker
 	touch books.html
+
+#essays.html : in/essays.book $(ESSAYCHAPTERS)
+#	-$(ouryacas) in/essaysmaker
+#	touch books.html
 
 ref.html : in/ref.book $(REFCHAPTERS)
 	-$(ouryacas) in/refmaker
