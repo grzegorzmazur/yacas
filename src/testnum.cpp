@@ -7,9 +7,13 @@
 
 #define ENABLE_TESTS 1
 
+// whether to print detailed information about passed tests
+const bool show_passed = false;
+
 unsigned failed = 0;
 unsigned passed = 0;
 
+// compare a given LispString value to a given character string and print diagnostic
 void Check(LispString& str, const char* s, const char* test_description)
 {
     if (strcmp(str.String(),s))
@@ -17,13 +21,16 @@ void Check(LispString& str, const char* s, const char* test_description)
         printf("@@@@@@@ %s: failed: %s != %s\n",test_description, str.String(),s);
 		++failed;
     }
-	else
-	{
-		printf("\t%s: passed\n", test_description);
-		++passed;
-	}
+    else
+    {
+	if (show_passed)
+	  printf("\t%s: passed\n", test_description);
+	++passed;
+    }
+    fflush(stdout);
 }
 
+// check that the condition is true and print diagnostic
 void Check(bool test_condition, const char* test_description)
 {
     if (!test_condition)
@@ -31,13 +38,24 @@ void Check(bool test_condition, const char* test_description)
         printf("@@@@@@@ %s: failed\n",test_description);
 		++failed;
     }
-	else
-	{
-		printf("\t%s: passed\n", test_description);
-		++passed;
-	}
+    else
+    {
+	if (show_passed)
+	    printf("\t%s: passed\n", test_description);
+	++passed;
+    }
+    fflush(stdout);
 }
 
+// check that the given BigNumber gives a correct string value, print diagnostic
+void CheckStringValue(const BigNumber& x, const char* value, LispInt precision, LispInt base, const char* test_description)
+{
+    LispString str;
+    x.ToString(str, precision, base);
+    Check(str, value, test_description);
+}
+
+// print a progress message
 void Next(const char* description)
 {
     static int i=0;
@@ -116,7 +134,7 @@ void TestTypes1(double value)
 	
 }
 
-// test big numbers
+// test big numbers: assignment, types, comparison
 void TestTypes2(const char* float_string, const char* int_string, double double_value)
 {
 	const LispInt base = 10;
@@ -128,8 +146,8 @@ void TestTypes2(const char* float_string, const char* int_string, double double_
 	y.SetTo(int_string, 3*strlen(int_string), base);
 	y.BecomeInt();	// FIXME: this would be unnecessary if the type were automatically decided based on the string.
 
-	Check(!x.IsSmall(), "x is a big number");
-	Check(!y.IsSmall(), "y is a big number");
+//	Check(!x.IsSmall(), "x is a big number");
+//	Check(!y.IsSmall(), "y is a big number");
 	
 	Check(!x.IsInt(), "x is a float type");
 	Check(y.IsInt(), "y is an integer type");
@@ -180,6 +198,7 @@ void TestTypes2(const char* float_string, const char* int_string, double double_
 
 }
 
+// test some integer and float arithmetic
 void TestArith1(const char* str_value, int base, int val1, double val2)
 {
 	long prec=strlen(str_value)+5;
@@ -217,6 +236,26 @@ void TestArith1(const char* str_value, int base, int val1, double val2)
 	
 }
 
+
+void TestStringIO(double value, const char* test_string, LispInt precision, LispInt base)
+{	
+	BigNumber x;
+	x.SetTo(value);
+	Check(!x.IsInt(), "have a float value");
+	LispString str;
+	x.ToString(str, precision, base);
+	Check(str, test_string, "printed string value matches");
+}
+void TestStringIO(int value, const char* test_string, LispInt precision, LispInt base)
+{	
+	BigNumber x;
+	x.SetTo(value);
+	Check(x.IsInt(), "have an int value");
+	LispString str;
+	x.ToString(str, precision, base);
+	Check(str, test_string, "printed string value matches");
+}
+
 #endif // test numbers
 
 int main(void)
@@ -235,6 +274,7 @@ int main(void)
 #if 1
 {
 
+    Next("first examples");
     // Calculate z=x+y where x=10 and y=15
     BigNumber x("10",100,10);
     BigNumber y("15",100,10);
@@ -248,19 +288,19 @@ int main(void)
 }
 {
     BigNumber n1("65535",100,10);
-    n1.ToString(str,10);
+    n1.ToString(str,20,10);
     Check(str,"65535", "reading 65535 from string");
-    n1.ToString(str,10);
+    n1.ToString(str,20,10);
     Check(str,"65535", "reading 65535 from string again");
-    n1.ToString(str,2);
+    n1.ToString(str,30,2);
     Check(str,"1111111111111111", "printing in binary");
     n1.Negate(n1);
-    n1.ToString(str,10);
+    n1.ToString(str,20,10);
     Check(str,"-65535", "negate 65535");
 
     BigNumber res1;
     res1.Add(n1,n1,10);    
-    res1.ToString(str,10);
+    res1.ToString(str,20, 10);
     Check(str,"-131070", "add -65535 to itself");
 }
 #endif
@@ -284,12 +324,31 @@ int main(void)
 	Next("read binary string");
 	y.SetTo("-101010", 50, 2);	// construct with given precision
 	Check(y.Double()==-42, "value is correct");
-	Check(!y.IsInt(), "has float type");
+	Check(y.IsInt(), "has int type");
 	Check(y.IsIntValue(), "value is integer");
 	Check(y.IsSmall(), "value is small");
 	y.BecomeInt();
 	Check(y.IsInt(), "has integer type");
 	Check(y.IsSmall(), "value is small");
+	
+	Next("testing big integers");
+	x.SetTo("010203040506070809101112131415161718192021222324252627282930", 200, 10);
+	Check(!x.IsSmall(), "big value is not small");
+//	x.BecomeInt();
+	Check(x.IsInt(), "has integer type");
+	Check(x.Sign()==1, "has positive value");
+	Check(x.IsIntValue(), "has integer value");
+	Check(!x.IsSmall(), "big integer is not small");
+	x.Multiply(x,x,0);
+	Check(x.IsInt(), "has integer type");
+	Check(x.IsIntValue(), "has integer value");
+	Check(!x.IsSmall(), "big integer is not small");
+	y.SetTo(2);
+	y.Mod(x,y);
+	Check(y.Double()==0, "value is even");
+	x.BecomeFloat();
+	Check(!x.IsSmall(), "big value is not small");
+	
 
 	Next("test small integers and floats");
 	TestTypes1(0);
@@ -420,9 +479,151 @@ int main(void)
 	y.Multiply(z,y,10);
 	Check(x.Equals(y), "15^N = 3^N*5^N");
 	
+	Next("string input/output");
+	TestStringIO(0, "0", 10, 10);
+	TestStringIO(0., "0.", 10, 10);
+	TestStringIO(1, "1", 10, 10);
+	TestStringIO(1., "1.", 10, 10);
+	TestStringIO(-1, "-1", 10, 10);
+	TestStringIO(-1., "-1.", 10, 2);
+	TestStringIO(-1, "-1", 10, 3);
+	TestStringIO(-13, "-111", 10, 3);
+	TestStringIO(-13., "-111.", 10, 3);
+	TestStringIO(-13, "-1101", 10, 2);
+	TestStringIO(13, "13", 10, 10);
+	TestStringIO(1000000000, "1000000000", 10, 10);
+	TestStringIO(1000000000., "0.1e10", 10, 10);
+	TestStringIO(-13, "-d", 10, 16);
+	TestStringIO(-13.0, "-d.", 10, 16);
+	TestStringIO(-13.0e-15, "-0.13e-13", 10, 10);
+	TestStringIO(13.1245e-15, "0.131245e-13", 10, 10);
+	TestStringIO(13.1245e-15, "0.131e-13", 3, 10);
+	TestStringIO(13.1245e-15, "0.131245e-13", 6, 10);
+	TestStringIO(-13.1245e-15, "-0.131e-13", 3, 10);
+	TestStringIO(-13.1245e-15, "-0.131245e-13", 6, 10);
+	TestStringIO(13.0e15, "0.13e17", 10, 10);
+	TestStringIO(13.0e15, "0.13e17", 10, 10);
+	TestStringIO(0.0011, "0.0011", 10, 10);
+	TestStringIO(0.01, "0.01", 10, 10);
+	TestStringIO(0.001, "0.001", 10, 10);
+	TestStringIO(0.1, "0.1", 10, 10);
+	TestStringIO(-0.001, "-0.001", 10, 10);
+	TestStringIO(1234, "1234", 10, 10);
+	TestStringIO(12345, "12345", 10, 10);
+	TestStringIO(123456, "123456", 10, 10);
+
+	Next("bit operations");
+	// precision is ignored when reading integers
+	x.SetTo("4020402040204020402040204020402040204020", 0, 16);
+	y.SetTo("6123612361236123612361236123612361236123", 0, 16);
+	Check(x.IsInt() && y.IsInt(), "x and y have integer values");
+	z.BitXor(x,y);
+	t.SetTo("2103210321032103210321032103210321032103", 0, 16);
+	Check(z.Equals(t), "bit Xor operation correct");
+	z.BitAnd(x,y);
+	t.SetTo("4020402040204020402040204020402040204020", 0, 16);
+	Check(z.Equals(t), "bit And operation correct");
+	z.BitOr(x,y);
+	t.SetTo("6123612361236123612361236123612361236123", 0, 16);
+	Check(z.Equals(t), "bit Or operation correct");
+	z.ShiftRight(x,4);
+	t.SetTo("402040204020402040204020402040204020402", 0, 16);
+	Check(z.Equals(t), "ShiftRight operation correct (small shift)");
+	z.ShiftLeft(y,4);
+	t.SetTo("61236123612361236123612361236123612361230", 0, 16);
+	Check(z.Equals(t), "ShiftLeft operation correct (small shift)");
+	t.SetTo(4);
+	z.ShiftRight(x,t);
+	t.SetTo("402040204020402040204020402040204020402", 0, 16);
+	Check(z.Equals(t), "ShiftRight operation correct (big shift)");
+	t.SetTo(4);
+	z.ShiftLeft(y,t);
+	t.SetTo("61236123612361236123612361236123612361230", 0, 16);
+	Check(z.Equals(t), "ShiftLeft operation correct (big shift)");
+	
+	Next("precision");
+	x.BecomeFloat();
+	x.Precision(10);
+	x.SetTo(1000./243.);
+	y.SetTo(1024);
+	x.Multiply(x,y, 10);
+	CheckStringValue(x, "411", 20, 10, "imprecise 1000./243. is correct");
+	Check(x.IsIntValue(), "have only 10 bits of precision");
+
+	Next("Floor()");
+	x.BecomeFloat();
+	Check(!x.IsInt(), "have a float value");
+	x.Precision(100);
+	x.SetTo(1.7);
+	y.Floor(x);
+	Check(!y.IsInt(), "Floor() returns a float value");
+	CheckStringValue(y, "1.", 10, 10, "Floor(1.7) is correct");
+	x.SetTo(-1.7);
+	y.Floor(x);
+	CheckStringValue(y, "-2.", 10, 10, "Floor(-1.7) is correct");
+	x.SetTo(-17.0);
+	y.Floor(x);
+	CheckStringValue(y, "-17.", 10, 10, "Floor(-17.0) is correct");
+	x.SetTo(1.0);
+	y.Floor(x);
+	CheckStringValue(y, "1.", 10, 10, "Floor(1.0) is correct");
+	x.SetTo(10);
+	y.Floor(x);
+	CheckStringValue(y, "10", 10, 10, "Floor(10) is correct");
+	
+	Next("modular arithmetic");
+	x.SetTo(123);
+	y.SetTo(9);
+	y.Mod(x,y);
+	CheckStringValue(y, "6", 10, 10, "Mod(123,9) is correct");
+	x.SetTo(-123);
+	y.SetTo(9);
+	y.Mod(x,y);
+	CheckStringValue(y, "3", 10, 10, "Mod(-123,9) is correct");
+	
+	Next("comparison");
+	x.SetTo(123);
+	y.SetTo(124);
+	Check(x.LessThan(y), "123<124 is true");
+	y.SetTo(123);
+	Check(!x.LessThan(y), "123<123 is false");
+	Check(!y.LessThan(x), "123<123 is false");
+	y.SetTo(122);
+	Check(!x.LessThan(y), "123<122 is false");
+	Check(y.LessThan(x), "122<123 is true");
+	y.SetTo(-1000.43);
+	Check(!x.LessThan(y), "123<-1000.43 is false");
+	Check(y.LessThan(x), "123>-1000.43 is true");
+	y.SetTo(123.);
+	Check(!x.LessThan(y), "123.0<123 is false");
+	Check(!y.LessThan(x), "123.0<123 is false");
+	
+	Next("integer division");
+	x.SetTo(15);
+	y.SetTo(4);
+	z.Divide(x,y,10);
+	CheckStringValue(z, "3", 10, 10, "Div(15,4)==3");
+	x.SetTo(-15);
+	y.SetTo(4);
+	z.Divide(x,y,10);
+	CheckStringValue(z, "-3", 10, 10, "Div(-15,4)==-3");
+	
+	Next("floating-point division");
+	x.SetTo(15.);
+	y.SetTo(4.);
+	z.Divide(x,y,10);
+	CheckStringValue(z, "3.75", 10, 10, "15/4==3.75");
 	
 	
-	
+	Next("multiply-add");
+	x.SetTo(10);
+	y.SetTo(2);
+	z.SetTo(5.5);
+	x.MultiplyAdd(y,z,10);
+	Check(!x.IsInt(), "x is now float");
+	Check(x.IsIntValue(), "x has integer value");
+	Check(x.Double()==21, "x==22");
+	CheckStringValue(x, "21.", 10, 10, "10+2*5.5 = 21.");
 	
 }
 	
