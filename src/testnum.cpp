@@ -472,6 +472,7 @@ void test_less_than(const char* str1, const char* str2, int base)
 	x.SetTo(str1, 0, base);
 	y.SetTo(str2, 0, base);
 	Check(!x.Equals(y), Message("%s (%d bits) != %s (%d bits)", str1, x.GetPrecision(), str2, y.GetPrecision()));
+	Check(!y.Equals(x), Message("%s (%d bits) != %s (%d bits)", str2, y.GetPrecision(), str1, x.GetPrecision()));
 	Check(x.LessThan(y), Message("%s (%d bits) < %s (%d bits)", str1, x.GetPrecision(), str2, y.GetPrecision()));
 	Check(!y.LessThan(x), Message("! %s (%d bits) < %s (%d bits)", str2, y.GetPrecision(), str1, x.GetPrecision()));
 }
@@ -1528,6 +1529,8 @@ int main(void)
 		test_less_than("1e-5", "2e-5", 10);
 		test_less_than("1e-5", "1e-3", 10);
 		test_less_than("1", "1.0000000000000000000001", 10);
+		test_less_than("-1.00000000000000000000000000001262177448353", "-1", 10);
+		test_less_than("1", "1.00000000000000000000000000001262177448353", 10);
 		test_less_than("1e-115", "2e-105", 10);
 		test_less_than("2e-15", "2e-5", 10);
 		test_less_than("2e-1", "1", 10);
@@ -1601,7 +1604,24 @@ int main(void)
 		CheckValues(x.Sign(), 0, "x is 0");
 		CheckValues(x.GetPrecision(), 6, "x has 6 bits");
 	}
-//	Next("precision control for addition");
+	{
+		Next("precision control for addition");
+		BigNumber x("1.00000000000000000000000000001262177448353", 0, 10);
+		// this number is nearly 1 + 2^(-96) and this somehow triggers an error in the gmp version
+		BigNumber y("1", 0, 10);	// integer 1
+		Check(y.LessThan(x), "1<x");
+		BigNumber z(x), t(y);
+		Check(y.LessThan(z), "1<z");
+		z.Negate(x);	// now z = - 1.000...0126...
+		t.Negate(t);	// now t = -1
+		Check(z.LessThan(t), "z<t");
+		Check(!z.Equals(t), "z!=t");
+		Check(!t.Equals(z), "t!=z");
+		z.Add(z,y,x.GetPrecision());
+		Check(z.Sign() == -1, "-x+1 < 0");
+		Check(z.GetPrecision()<x.GetPrecision()-80, "precision is lost after subtraction");
+		
+	}
 //	Next("precision control for multiplication");
 //	Next("precision control for division");
 //	Next("precision control for mixed integer/float arithmetic");
