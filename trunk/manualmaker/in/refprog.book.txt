@@ -532,25 +532,26 @@ the first argument of {Set} would be unevaluated.
 	Out> Sin(x);
 
 
-*SEE MacroSet, MacroLocal, MacroRuleBase, Hold, HoldArg
+*SEE MacroSet, MacroLocal, MacroRuleBase, Hold, HoldArg, DefMacroRuleBase
 
 
 
-*CMD DefMacroRuleBase --- Define a macro (in stead of function)
+*CMD DefMacroRuleBase --- define a function as a macro
 *STD
 *CALL
 	DefMacroRuleBase(name,params)
 
 *PARMS
 
-{name} -- string, name of function
+{name} -- string, name of a function
 
-{params} -- list of arguments to function
+{params} -- list of arguments
 
 *DESC
 
 {DefMacroRuleBase} is similar to {RuleBase}, with the difference that it declares a macro,
-in stead of a function.
+instead of a function.
+After this call, rules can be defined for the function "{name}", but their interpretation will be different.
 
 With the usual functions, the evaluation model is that of the <i>applicative-order model of 
 substitution</i>, meaning that first the arguments are evaluated, and then the function 
@@ -558,46 +559,37 @@ is applied to the result of evaluating these arguments. The function is entered,
 code inside the function can not access local variables outside of its own local variables.
 
 With macros, the evaluation model is that of the <i>normal-order model of substitution</i>,
-meaning that occurrences of variables in an expression first get substituted into the 
+meaning that all occurrences of variables in an expression are first substituted into the 
 body of the macro, and only then is the resulting expression evaluated <i>in its
-calling environment</i>. This is important, because in principle then macro bodies
-can access the local variables from the calling environment, where functions can not do that.
+calling environment</i>. This is important, because then in principle a macro body
+can access the local variables from the calling environment, whereas functions can not do that.
 
 As an example, suppose there is a function {square}, which squares its argument, and a function
 {add}, which adds its arguments. Suppose the definitions of these functions are:
 
-	add(x,y) <-- x + y
-
+	add(x,y) <-- x+y;
 and
-
-	square(x) <-- x*x
-
+	square(x) <-- x*x;
 In applicative-order mode (the usual way functions are evaluated), in the following expression
-
 	add(square(2),square(3))
-
 first the arguments to {add} get evaluated. So, first {square(2)} is evaluated.
 To evaluate this, first {2} is evaluated, but this evaluates to itself. Then
 the {square} function is applied to it, {2*2}, which returns 4. The same
 is done for {square(3)}, resulting in {9}. Only then, after evaluating these two
-arguments, is {add} applied to them, which is equivalent to
-
+arguments, {add} is applied to them, which is equivalent to
 	add(4,9)
-
 resulting in calling {4+9}, which in turn results in {13}.
 
 In contrast, when {add} is a macro, the arguments to {add} are first
 expanded. So 
-
 	add(square(2),square(3))
-
 first expands to 
-
 	square(2) + square(3)
+and then this expression is evaluated, as if the user had written it directly.
+In other words, {square(2)} is not evaluated before the macro has been fully expanded.
 
-and then that is evaluated. 
 
-One more difference between macros and 
+*REM One more difference between macros and 
 
 Macros are useful for customizing syntax, and compilers can potentially
 greatly optimize macros, as they can be inlined in the calling environment,
@@ -609,12 +601,13 @@ has to be created on the fly. Also, when one of the parameters to the macro
 occur more than once in the body of the macro, it is evaluated multiple times.
 
 When defining transformation rules for macros, the variables to be substituted
-need to be prepended by the {@} operator, similar to the back-quoting mechanism.
+need to be preceded by the {@} operator, similar to the back-quoting mechanism.
 Apart from that, the two are similar, and all transformation rules can also be
 applied to macros.
 
-Macros can co-exist with functions. One can have a function {foo(a,b)}
-with two arguments, but a macro {foo(a,b,c)} with three arguments.
+Macros can co-exist with functions with the same name but different arity.
+For instance, one can have a function {foo(a,b)}
+with two arguments, and a macro {foo(a,b,c)} with three arguments.
 
 
 *EG
