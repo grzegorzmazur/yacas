@@ -1227,14 +1227,14 @@ LispBoolean BigNumber::IsSmall() const
     return (nr <= iNumber->iExp+1);
   }
   else
-  // a function to test smallness of a float is not present in ANumber, need to code a workaround to determine whether a mpf_t fits into double.
+  // a function to test smallness of a float is not present in ANumber, need to code a workaround to determine whether a number fits into double.
   {
     LispInt tensExp = iNumber->iTensExp;
     if (tensExp<0)tensExp = -tensExp;
     return
     (
       iPrecision <= 53	// standard float is 53 bits
-      && tensExp<1021
+      && tensExp<306	// 1021 bits is about 306 decimals
     );
     // standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021
   }
