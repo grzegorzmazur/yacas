@@ -10,10 +10,12 @@ ouryacas = ../src/yacas --rootdir $(top_srcdir)/scripts/:../scripts/
 # top target
 all-am: @BOOKS_HTML@ @PS_DOCS@ @PDF_DOCS@
 
-BOOKS = intro.book coding.book ref.book refprog.book essays.book Algo.book
+BOOKS = intro.book coding.book ref.book refprog.book essays.book \
+	Algo.book LispProgramming.book
 
 BOOKSOURCES = in/intro.book.txt in/coding.book.txt \
-	in/ref.book.txt in/refprog.book.txt in/essays.book.txt in/Algo.book.txt
+	in/ref.book.txt in/refprog.book.txt in/essays.book.txt \
+	in/Algo.book.txt LispProgramming.book.txt
 
 INTROCHAPTERS = FDL.chapt
 INTROSOURCES = in/FDL.chapt.txt
@@ -48,6 +50,10 @@ ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt in/SimpleToo
         in/new.chapt.txt in/paper.chapt.txt in/wester-1994.chapt.txt \
 		in/wordproblems.chapt.txt in/FDL.chapt.txt
 
+LISPPROGRAMMINGCHAPTERS = LispLanguage.chapt
+LISPPROGRAMMINGSOURCES = LispLanguage.chapt.txt
+
+
 # Yacas code extracted from the docs
 CODESNIPPETS = wester-1994.ys
 
@@ -56,8 +62,10 @@ check_SCRIPTS = wester-1994.ys
 
 EXTRA_DIST = \
 	manualmaker styleplain in/all \
-	in/intromaker in/codingmaker in/refmaker in/refprogmaker in/essaysmaker\
-	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) $(INTROSOURCES) $(REFPROGSOURCES) $(ALGOSOURCES) \
+	in/intromaker in/codingmaker in/refmaker in/refprogmaker in/essaysmaker \
+	in/LispProgrammingmaker \
+	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) $(INTROSOURCES) \
+	$(REFPROGSOURCES) $(ALGOSOURCES) $(LISPPROGRAMMINGSOURCES) \
 	in/dummies .cvsignore
 
 # Stuff for automatic generation of Yacas books
@@ -100,6 +108,7 @@ refprog.book.tex : refprog.book $(REFPROGCHAPTERS)
 coding.book.tex : coding.book $(CODINGCHAPTERS)
 intro.book.tex: intro.book $(INTROCHAPTERS)
 Algo.book.tex: Algo.book $(ALGOCHAPTERS)
+LispProgramming.book.tex: LispProgramming.book $(LISPPROGRAMMINGCHAPTERS)
 
 # special "virtual" chapter built from yacasapi.cpp
 yacasapi.chapt.txt : $(top_srcdir)/src/yacasapi.cpp
@@ -123,7 +132,8 @@ clean:
 ouryacas2 = ../src/yacas --rootdir $(top_srcdir)/scripts/:../scripts/:$(srcdir)/:$(srcdir)/in/
 
 books.html:  $(BOOKS) $(REFCHAPTERS) $(ESSAYCHAPTERS) \
-   $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(ALGOCHAPTERS)
+   $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(ALGOCHAPTERS) \
+   $(LISPPROGRAMMINGCHAPTERS)
 	-$(ouryacas2) $(srcdir)/in/all
 	echo "done" > books.html.c
 
@@ -145,6 +155,10 @@ ref.html : ref.book $(REFCHAPTERS)
 
 refprog.html : refprog.book $(REFPROGCHAPTERS)
 	-$(ouryacas) in/refprogmaker
+	touch books.html
+
+LispProgramming.html : LispProgramming.book $(REFPROGCHAPTERS)
+	-$(ouryacas) in/LispProgrammingmaker
 	touch books.html
 
 noindex: intro.html ref.html coding.html essays.html refprog.html

@@ -1,5 +1,5 @@
 
-Use("datastructs.ys");
+
 LocalSymbols(st)
 [
   st:=NewStack();
