@@ -20,6 +20,69 @@ least linear in $P$.
 
 Warning: calculations with internal math with precision exceeding 10,000 digits are currently impractically slow.
 
+		Adaptive plotting
+
+The adaptive plotting routine {Plot2D'adaptive} uses a simple algorithm
+to select the optimal grid to approximate the function. The same algorithm
+for adaptive grid refinement could be used for numerical integration. The
+idea is that plotting and numerical integration require the same kind of
+detailed knowledge about the behavior of the function.
+
+The algorithm first splits the interval into a specified initial number of
+equal subintervals, and then repeatedly splits each subinterval in half
+until the function is well enough approximated by the resulting grid. The
+integer parameter {depth} gives the maximum number of binary splittings for
+a given initial interval; thus, at most $2^depth$ additional grid points
+will be generated. The function {Plot2D'adaptive} will return the list of
+pairs of points {{{x1,y1}, {x2,y2}, ...}}.
+
+*     1. To plot a function $f(x)$ within an interval ($a$, $c$), we split
+         it in half, $b:=(a+c)/2$ and first compute $f(x)$ at five grid
+         points $x=a$, $(a+b)/2$, $b$, $(b+c)/2$, $c$. 
+*	 2. If currently $depth <= 0$, return this list of 5 points and
+         values because we cannot refine the grid any more.
+*	 3. Otherwise we check that among these 5 points there are always
+         at least 2 consecutive points of equal sign. Checking is done by
+         the following procedure: Mark the sequence of signs of the values
+         $f(x)$ at the 5 grid points, e.g. "0, +, -, +, +". Here "0" stands
+         for zero. Then, for each pair of consecutive signs, write "1" if
+         the signs are different and "0" otherwise. If one of the signs is
+         0, then also write "0". E.g. we get the sequence of 4 bits "0, 1,
+         1, 0". Each "1" stands for a sign change. Then, for each pair of
+         consecutive bits, write the logical AND of these bits. E.g.: 0, 1,
+         0. Each "1" now signifies that two sign changes occurred, one
+         right after another. If we have all "0" now, then the sign changes
+         are "slow enough". Otherwise they are not "slow enough". We can
+         compute the logical OR of these 3 bits to test this. In our
+         example we get 1. This means that we have a sign change that is
+         too rapid.
+	 If the sign is not changing "slow enough" within the interval
+         [a,c], then we need to refine the grid; go to step 5. Otherwise,
+         go to step 4.
+*	 4. Check that the function values are smooth enough through the
+         interval. Smoothness is controlled by a parameter $epsilon$. The
+         meaning of the parameter $epsilon$ is the relative error of the
+         approximation of the integral by the quadratures. A good heuristic
+         value of $epsilon$ is 1/(the number of pixels on the screen)
+         because it means that no pixels will be missing in the area under
+         the graph. We compute the Newton-Cotes and the Simpson quadratures
+         for $ Integrate(x,a,c) f(x) $ using these 5 points. The Simpson
+         coefficients are: (1, 4, 2, 4, 1)/3; and the Newton-Cotes
+         coefficients are: (14, 64, 24, 64, 14)/45. Difference between the
+         quadratures has coefficients (-1, 4, -6, 4, -1)/45. If the
+         abs. value of the difference between these quadratures is less
+         than $epsilon$ * (abs. value of the Simpson quadrature), then we
+         are done and we return the list of 5 points and values.
+*	 5. Otherwise we need to refine the grid. We compute
+         {Plot2D'adaptive} recursively for the two halves of the interval,
+         i.e. for ($a$,$b$) and ($b$,$c$); we pass the midpoint values as
+         necessary and decrease {depth} by 1. The resulting lists are
+         concatenated (excepting the double value at point $b$) and
+         returned.
+
+This algorithm works well if the initial number of points and if the depth
+of splitting are large enough.
+
 *INCLUDE algorithms-elemfunc.chapt
 *INCLUDE algorithms-specfunc.chapt
 
