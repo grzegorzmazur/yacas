@@ -230,7 +230,7 @@ LispStringPtr LispNumber::String()
     LISPASSERT(iNumber.Ptr() != NULL);	// either the string is null or the number but not both
     LispString *str = NEW LispString;
     // export the current number to string and store it as LispNumber::iString
-    iNumber->ToString(*str, bits_to_digits(iNumber->GetPrecision(),BASE10), BASE10);
+    iNumber->ToString(*str, bits_to_digits(MAX(1,iNumber->GetPrecision()),BASE10), BASE10);
     iString = str;	
   }
   return iString.Ptr();
