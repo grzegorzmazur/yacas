@@ -32,3 +32,53 @@ Rule("Deriv",2,3,Type(aFunc) = "BesselI" And aVar != aFunc[1])
 
 
 
+
+
+
+/*
+  1) finish statistics
+  2) document: Variance, StdDev, GeometricMean, HarmonicMean, Sort,
+     Median, AlphaQuantile
+     also explain their uses.
+  3) Sort
+  4) special functions: gamma, erf, bessel
+*/
+
+
+Variance(x_IsList)      <-- (Average(x^2)-Average(x)^2);
+StdDev(x_IsList)        <-- Sqrt(Variance(x));
+GeometricMean(x_IsList) <-- Factorize(x)^(1/Length(x));
+HarmonicMean(x_IsList)  <-- Length(x)/Sum(1/x);
+
+Median(x_IsList)        <-- AlphaQuantile(1/2,x);
+AlphaQuantile(_alpha, x_IsList) <--
+[
+  Local( index );
+  x:=Sort(x);
+  index := N((Length(x)+1) * alpha);
+  if (IsInteger( index ) )
+    x[ index ]
+  else
+  [
+    index:=Floor(index);
+    ((x[ index ] + x[ index + 1 ])/2);
+  ];
+];
+
+
+
+
+
+
+Sort(x_IsList)  <-- BubbleSort(x,"LessThan");
+
+Verify(Variance({3,5,7}),8/3);
+Verify(StdDev({3,5,7}),Sqrt(8/3));
+Verify(GeometricMean({2, 5, 10, 13}), 1300^(1/4));
+Verify(HarmonicMean({3,12,17}), 612/97);
+Verify(Median({5, 2, 13, 11}), 8);
+Verify(Median({13, 2, 5, 11,7}), 7);
+
+
+
+

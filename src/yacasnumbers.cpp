@@ -571,6 +571,7 @@ LispStringPtr FloorFloat( LispCharPtr int1, LispHashTable& aHashTable,
     {
         if (i1[i] != 0)
             fraciszero=LispFalse;
+        i++;
     }
     i1.Delete(0,i1.iExp);
     i1.iExp=0;
@@ -594,6 +595,7 @@ LispStringPtr CeilFloat( LispCharPtr int1, LispHashTable& aHashTable,
     {
         if (i1[i] != 0)
             fraciszero=LispFalse;
+        i++;
     }
     i1.Delete(0,i1.iExp);
     i1.iExp=0;
