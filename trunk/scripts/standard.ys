@@ -419,6 +419,12 @@ SumListSide(_x, y_IsList) <--
 
 
 70  # (_x ^ m_IsRationalOrNumber) ^ n_IsRationalOrNumber <-- x^(n*m);
+
+80 # (x_IsNumber/y_IsNumber) ^ n_IsPositiveInteger <-- x^n/y^n;
+80 # x_IsNegativeNumber ^ n_IsEven <-- (-x)^n;
+80 # x_IsNegativeNumber ^ n_IsOdd <-- -((-x)^n);
+
+/*TODO remove?
 80 # x_IsRationalOrNumber ^ n_IsPositiveInteger <--
 [
   Local(mult,result);
@@ -433,6 +439,7 @@ SumListSide(_x, y_IsList) <--
   result;
 //  x*x^(n-1);
 ];
+*/
 
 100  # ((_x)*(_x ^ _m)) <-- x^(m+1);
 100  # ((_x ^ _n)*(_x ^ _m)) <-- x^(m+n);
