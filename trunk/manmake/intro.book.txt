@@ -766,10 +766,7 @@ new function "{@@(x):=x^2;}" expressions such as
 unless you also define the operator "{:=@@}". This is
 because the parser will not stop at "{:=}" when trying to
 make sense of that expression. The correct way to deal with this is to
-insert a space: "{a:= @@(b)}". Similarly, {a!+3} will cause an error unless you define "{!+}", so use a space: {a! +3}. Spaces are
-<i>not</i> required in situations such as
-"{a:=-1}", but this is so only because the operator
-{:=-} is actually defined in {Yacas}.
+insert a space: "{a:= @@(b)}". Similarly, {a!+3} will cause an error unless you define "{!+}", so use a space: {a! +3}.
 
 Let's now have a hands-on primer for these syntactic features. Suppose we wanted to define a function $F(x,y)=x/y+y/x$. We could use the standard syntax:
 
