@@ -14,6 +14,9 @@ TestNonIntegrable(_expr) <-- Verify(Type(expr) = "Integrate",True);
 // FIXED!!! TestNonIntegrable(Integrate(x)(x*Ln(x)));
 TestNonIntegrable(Integrate(x)Sin(Exp(x)));
 Verify(Integrate(x) x^(-1),Ln(x)); // Well done Jonathan! ;-)
+Verify(Integrate(x) 1/x,Ln(x) );
+//Verify(Integrate(x) 1/x^2, -1/x );
+Verify(Integrate(x) Ln(x), x*Ln(x)-x );
 TestNonIntegrable(Integrate(x) x^(1/x));
 TestNonIntegrable(Integrate(x) x^(Sin(x)));
 TestNonIntegrable(Integrate(x) Exp(x^2));
@@ -23,7 +26,7 @@ TestYacas(Integrate(x,0,A)Sin(x),1 - Cos(A));
 TestYacas(Integrate(x,0,A)x^2,(A^3)/3);
 TestYacas(Integrate(x,0,A)Sin(B*x),1/B-Cos(B*A)/B);
 TestYacas(Integrate(x,0,A)(x^2+2*x+1)/(x+1),(A^2)/2+A);
-TestYacas(Integrate(x,0,A)(x+1)/(x^2+2*x+1),Ln(Abs(A+1)));
+TestYacas(Integrate(x,0,A)(x+1)/(x^2+2*x+1),Ln(A+1));
 
 // Check that threaded integration works
 Verify((Integrate(x,0,1) {1,x*x,1+x})-{1,1/3,3/2},{0,0,0});
