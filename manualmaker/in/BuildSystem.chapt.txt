@@ -141,7 +141,7 @@ the traditional way.
 The Makefiles produced by {automake} and {autoconf} support not only
 building, testing, and installing the package, but also rolling the
 tar-ball for release (use {make dist} for this, as explained in the
-section <i>Targets for make</i>). In the above example, {automake} can
+section <*"Targets for make"|yacasdoc://#make!targets*> below). In the above example, {automake} can
 figure out that {yacasmain.cpp} should be included in the
 distribution. This does not always work. For example, {automake} does
 not understand the Yacas documentation system, so there is no way it
@@ -337,7 +337,7 @@ choose between the GNU MP library or a library distributed with Yacas
 using the {enable-gmp} option of the {configure} script.
 
 The {src} directory contains furthermore the source for the
-{libcyacas} library (see <i>Embedding Yacas into a c or c++ application</i>)
+{libcyacas} library (see <*yacasdoc://essays/3/4/*>)
 and the {testnum} executable. 
 
 At installation time, not only the {yacas} executable is installed but
@@ -367,8 +367,7 @@ full list of all {.def} files, is automatically generated.
 *A build system!documentation
 *A documentation!building
 
-The documentation system for Yacas is explained in the section
-<i>Preparing and maintaining Yacas documentation</i>. 
+The documentation system for Yacas is explained in <*yacasdoc://essays/5/2/*>. 
 
 The documentation is generated from plain text source files with the
 {txt} extension in the {manualmaker/in} directory. The source files
@@ -393,7 +392,7 @@ At the moment, the {Makefile.am} for the documentation is rather
 messy. For this reason, we do not describe it in detail. Instead, we
 just point out some special features:
 *	The Yacas interpreter is needed to generate the documentation.
-*	The section <i>Full listing of core function</i> in the
+*	The section <i>Full listing of core functions</i> in the
 programmer's reference book is generated from the Yacas source by the
 {api2txt.pl} script.
 *	The Yacas code from the section 
@@ -437,18 +436,17 @@ This script runs all the tests through the installed Yacas executable.
 
 A special case is the last test, which goes through the problems put
 forward by Michael Wester (see the section 
-<i>M. Wester's CAS benchmark and Yacas</i>). The commands for this
+<*M. Wester's CAS benchmark and Yacas|yacasdoc://essays/2/*>). The commands for this
 tests are not in a {yts} file in the {tests} directory, but are
-extracted from the documentation (see the section <i>The documentation</i>,
-immediately above).
+extracted from the documentation
+(see <*the immediately preceding section|yacasdoc://#documentation!building*>).
 
 
 	    Other components
 
 This section lists the components of the Yacas distributions that have
 not yet been described. 
-*	The {yacas-client} script (see the section <i>Client/server usage</i>
-in the book <i>Getting started with Yacas</i>) resides in the root of
+*	The {yacas-client} script (see <*Client-server usage|yacasdoc://intro/3/2/*>) resides in the root of
 the distribution. This script is copied during installation.
 *	The directory {colorcode} contains a program constructing
 colorful HTML files listing the contests of the Yacas script files. At
@@ -471,14 +469,13 @@ in interacting with Yacas from within Emacs.
 *	The directory {compile} contains the experimental Yacas
 compiler.
 *	The directory {embed} contains examples showing how to embed
-Yacas in one's own application; see the section 
-<i>Embedding Yacas into a c or c++ application</i>.
+Yacas in one's own application; see <yacasdoc://essays/3/4/*>.
 *	The directory {epoc} contains the support for the EPOC
 device. See the file {README.EPOC} in the root of the distribution for
 details. 
 *	The directory {plugins} contains files showing how to build
 plugins, which can be dynamically loaded into Yacas. See the section 
-<i>Creating plugins for Yacas</i> for details.
+<*yacasdoc://essays/3/3/*> for details.
 *	The directory {proteus} contains an experimental
 implementation of a graphical interface to Yacas. 
 

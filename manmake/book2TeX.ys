@@ -1,5 +1,5 @@
 /* book2TeX - convert Yacas docs back to TeX format (Serge Winitzki)
-	version 0.2 */
+	version 0.3 */
 
 /* If one of these occurs inside an HtmlTerm block, it must be made \\verb| | or escaped with a backslash */
 TexCharsToEscape := { "{", "}", "#", "_", "&", "\\", "^", "%", "$", "~"};
@@ -252,3 +252,13 @@ HoldArgNr("DocEval", 1, 1);
 
 DocFootnote(x) := "\\footnote{":x:"}
 ";
+
+// TeX representation of a Yacasdoc reference
+YacasDocLink(bookname, text, url) :=
+  If(bookname = "", "",
+  	If (text = bookname,
+		"\\emph{" : text : "}",
+		"\\emph{" : text : "}, in \\emph{" : bookname : "}"
+	)
+);
+
