@@ -103,6 +103,7 @@ else
 	AC_MSG_WARN([Not building GNU Scientic Library (GSL) plugin])
 	AC_MSG_WARN([because the library was not found.])
 fi
+AM_CONDITIONAL(BUILD_GSL_PLUGIN, test -n "$GSL_PLUGIN")
 AC_SUBST(GSL_PLUGIN)
 
 # Check for OpenGL library
