@@ -115,3 +115,8 @@ Verify( IsSkewSymmetric(Identity(10)), False );
 Verify( IsSkewSymmetric(ZeroMatrix(10,10)), True );
 Verify( IsIdempotent(Identity(20)), True );
 Verify( IsIdempotent(ZeroMatrix(10,10)), True );
+
+
+Verify(VandermondeMatrix({1,2,3,4}),{{1,1,1,1},{1,2,3,4},{1,4,9,16},{1,8,27,64}});
+
+

@@ -18,6 +18,7 @@ X
 .
 Commutator
 SylvesterMatrix
+VandermondeMatrix
 MatrixRow
 MatrixColumn
 GenMatrix
