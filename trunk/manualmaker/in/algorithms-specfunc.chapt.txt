@@ -70,9 +70,10 @@ faster and leads to smaller roundoff errors. Second, intermediate calculations
 are performed at 40{%} higher precision than requested. This is much slower but
 allows to obtain results at desired precision.
 
-*A Stirling's formula
+If the factorial of a large integer or half-integer $n$ needs to be computed not exactly but only with a certain floating-point precision, it is faster (for large enough $Abs(n)$) not to evaluate an exact integer product, but to use the {GammaNum} approximation.
 
-If the factorial of a large integer or half-integer $n$ needs to be computed not exactly but only with a certain floating-point precision, it is faster (for large enough $Abs(n)$) not to evaluate an exact integer product, but to use the {GammaNum} approximation or Stirling's asymptotic formula,
+
+One c or Stirling's asymptotic formula,
 $$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)+1/(12*n)-1/(360*n^3)+...$$
 This method is currently not implemented in Yacas.
 
@@ -80,35 +81,64 @@ This method is currently not implemented in Yacas.
 
 More traditional ways of calculating the Gamma function are the Stirling asymptotic series and the Sweeney-Brent method of combined series.
 
+*A Stirling's formula
+
+One of the
+
 *A Gamma function!by asymptotic series
 
-The Stirling asymptotic series is
+This formula is the same as the Stirling asymptotic series for the Gamma function,
 $$ Ln(Gamma(x)) <> (x-1/2)*Ln(x)-x+1/2*Ln(2*Pi) $$
 $$ + Sum(n,1,Infinity, B[2*n]/(2*n*(2*n-1)*x^(2*n-1))) $$.
-This series requires finding the Bernoulli numbers $B[n]$ up to a sufficiently high index $n$.
+This series is valid asymptotically for large $Abs(x)$, also for complex values of $x$ (but excluding the negative real values).
+Computation of this series  up to $n=N$ requires finding the Bernoulli numbers $B[n]$ up to $N$.
 
-*REM FIXME
-For a given value of $x$, the terms of this series decrease at first, but then start to grow.
-The value of $n$ at which the series starts to grow and diverge is
-$n=Pi*x-1/2$.
+For a given (large) value of $Abs(x)$, the terms of this series decrease at first, but then start to grow.
+(Here $x$ can be a complex number.)
+There exist estimates for the error term of the asymptotic series (see [Abramowitz <i>et al.</i> 1964], 6.1.42).
+Roughly the error is of the order of the first discarded term.
+
+We can estimate the magnitude of the terms using the asymptotic formula for the Bernoulli numbers (see below).
+After some algebra, we find that the value of $n$ at which the series starts to grow and diverge is
+$n[0]<=>Pi*Abs(x)+2$.
+Therefore at given $x$ we can only use the asymptotic series up to the $n[0]$-th term.
+
+For example, if we take $x=10$, then we find that the 32-nd term of the asymptotic series has the smallest magnitude (about $10^(-28)$) but the following terms start to grow.
+
+To be on the safe side, we should drop a few more terms from the series.
+Define the number of terms by $n[0]:=Pi*Abs(x)$.
+Then the order of magnitude of the $n[0]$-th term is $Exp(-2*Pi*Abs(x))/(2*Pi^2*Abs(x))$.
+This should be compared with the magnitude of the sum of the series which is of order $Abs(x*Ln(x))$.
+We find that the relative precision of $P$ decimal digits or better is achieved if
+$$ (2*Pi-1)*x+(x+1)*Ln(x)+3.9 > P*Ln(10) $$.
+If ($x$,$P$) do not satisfy this inequality, the asymptotic method does not provide enough precision.
+For example, with $x=10$ we obtain $P<=35$.
+So the asymptotic series gives the value of $Gamma(10)$ with not more than 35 decimal digits.
+
+For very large $P$, the inequality is satisfied when roughly $x>P*Ln(10)/Ln(P)$.
+Assuming that the Bernoulli numbers are precomputed, the complexity of this method is that of computing a Taylor series with $n[0]$ terms, which is roughly $O(Sqrt(P))*M(P)$.
 
 
-Using the identity
+What if $x$ is not large enough? Using the identity
 $ x*Gamma(x) = Gamma(x+1) $,
 we can reduce the computation of $Gamma(x)$ to $Gamma(x+M)$ for some integer $M$.
-Then we can choose $M$ to be large enough so that the Stirling asymptotic series gives the required precision when evaluated at $x+M$.
+Then we can choose $M$ to be large enough so that the asymptotic series gives the required precision when evaluated at $x+M$.
+We shall have to divide the result $M$ times by some numbers to obtain $Gamma(x)$.
+Therefore, the complexity of this method for given ($x$,$P$) is increased by
+$M(P)*(P*Ln(10)/Ln(P)-x)$.
+For small $x$ this will be the dominant contribution to the complexity.
 
-*REM FIXME
+If the Bernoulli numbers are not precomputed, then their calculation dominates the complexity of the algorithm.
 
 *A Gamma function!by Sweeney-Brent method
 
-The second method for the Gamma function was used in Brent's Fortran MP package [Brent 1978].
-Brent refers to a 1963 paper by D. W. Sweeney for the origin of this method. Therefore we called this the "Sweeney-Brent" method.
+The second method for the Gamma function was used in R. P. Brent's Fortran MP package [Brent 1978].
+Brent refers to a 1963 paper by D. W. Sweeney for the origin of this method. Therefore we called this method the "Sweeney-Brent" method.
 
-The idea  is to represent the Gamma function as a sum of two integrals,
+The idea is to represent the Gamma function as a sum of two integrals,
 $$ Gamma(x) = (Integrate(u,0,M) u^(x-1)*Exp(-u)) + (Integrate(u,M,Infinity) u^(x-1)*Exp(-u)) $$.
 The above equation is clearly an identity for any $M$.
-Both integrals in this equation are approximated by power series.
+Both integrals in this equation can be approximated by power series.
 The parameter $M$ can be chosen to minimize the error of the approximation, as we shall see below.
 
 The first integral in this equation can be found as a sum of the Taylor series (expanding $Exp(-u)$ near $u=0$),
@@ -118,7 +148,7 @@ The second integral can be approximated by an asymptotic series using standard m
 
 *REM FIXME
 
-Calculations are faster if $M$ is chosen as an integer value.
+Calculations are somewhat faster if $M$ is chosen as an integer value.
 
 
 		Euler's constant $gamma$
@@ -135,7 +165,7 @@ Approximately $gamma<=>0.577216$.
 
 Computing $gamma$ by the series in the definition is extremely slow.
 A much faster method can be used, based on some identities of Bessel functions.
-(See [Brent <i>et al.</i> 1980] and [Gourdon <i>et al.</i> 2001].
+(See [Brent <i>et al.</i> 1980] and [Gourdon <i>et al.</i> 2001].)
 
 The basic formulae for the "fast" method (Brent's method "B1") are:
 $$gamma <=> S(n) / V(n) - Ln(n) $$,
@@ -153,7 +183,7 @@ Note that we need to compute $S(n)$ and $V(n)$ with enough precision, so the sum
 Instead, we can simply add terms to the series for $V(n)$ and $S(n)$ until desired precision is achieved.
 Knowing $k[max]$ in advance would help only if we needed to compare this method for computing $gamma$ with some other method, or if we would use the rectangular method of evaluating the Taylor series.)
 
-According to Brent's paper, the error of this approximation of $gamma$, assuming that $S(n)$ and $V(n)$ are computed exactly, is
+According to [Brent <i>et al.</i> 1980], the error of this approximation of $gamma$, assuming that $S(n)$ and $V(n)$ are computed exactly, is
 $$ Abs(gamma-S(n)/V(n)) < Pi*Exp(-4*n) $$.
 Therefore the parameter $n$ is proportional to the number of digits we need.
 If we need $P$ decimal digits (of absolute, not relative, precision), then we have to choose
@@ -412,9 +442,9 @@ The Bernoulli polynomials $B(x)[n]$ can be found by first computing an array of 
 We consider two distinct computational tasks: evaluate a Bernoulli number exactly as
 a rational, or find it approximately to a specified floating-point precision.
 There are also two possible problem settings: either we need to
-evaluate <i>all</i> Bernoulli numbers $B[n]$ up to some $n$, or we only
-need one isolated value $B[n]$ for some $n$. Depending on how large $n$
-is, different algorithms need to be used in these cases.
+evaluate <i>all</i> Bernoulli numbers $B[n]$ up to some $n$ (this situation occurs most often in practice), or we only
+need one isolated value $B[n]$ for some large $n$. Depending on how large $n$
+is, different algorithms can be chosen in these cases.
 
 	    Exact evaluation of Bernoulli numbers
 
@@ -435,12 +465,12 @@ The required number of digits $P$ to store the numerator of $B[n]$ is asymptotic
 
 *A Bernoulli numbers!from Zeta function
 
-For large (even) values of the index $n$, the Bernoulli numbers $B[n]$ are
+For large (even) values of the index $n$, a single Bernoulli number $B[n]$ can be
 computed by a more efficient procedure: the integer part and the fractional
-part of $B[n]$ are found separately.
+part of $B[n]$ are found separately
+(this method is also well explained in [Gourdon <i>et al.</i> 2001]).
 
 *A Clausen -- von Staudt, theorem of
-
 *A Bernoulli numbers!fractional part of
 
 First, by the theorem of Clausen -- von
