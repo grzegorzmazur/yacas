@@ -1615,9 +1615,11 @@ in the plugin will then have access to the Yacas environment.
 *CMD StubApiCFile --- set file name for plugin API
 *STD
 *CALL
-	StubApiCFile(basename)
+	StubApiCFile(pluginname,basename)
 
 *PARMS
+
+{pluginname} -- name of the plugin, as passed to {DllLoad}
 
 {basename} -- name for the generation of the stub file
 
@@ -1626,6 +1628,10 @@ in the plugin will then have access to the Yacas environment.
 Generate the C++ stub file, "basename.cc", and a documentation file
 named "basename.description". The descriptions are automatically
 generated while adding functions and constants to the stub.
+
+{pluginname} should be the name as passed to {DllLoad}. If the
+plugin name is loaded with {DllLoad("example")}, then pluginname
+should be {"example"}.
 
 *SEE StubApiCStart, StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCSetEnv
 

@@ -55,7 +55,7 @@ For our simple plugin, we shall only need a few lines of code in the Yacas stub:
 	
 	/* generate a C++ stub file
 	  "func1_api.cc" */
-	StubApiCFile("func1_api");
+	StubApiCFile("libfunc1","func1_api");
 
 Another example of a Yacas stub is found in the file {plugins/example/barepluginapi.stub} of the source tree.
 

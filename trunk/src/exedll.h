@@ -19,7 +19,7 @@ public:
     virtual LispInt Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment);
     virtual LispInt Close(LispEnvironment& aEnvironment);
 protected:
-    virtual LispPluginBase* GetPlugin(void);
+    virtual LispPluginBase* GetPlugin(LispCharPtr aDllFile);
 private:
     LispPluginBase* (*iMaker)(void);
 };

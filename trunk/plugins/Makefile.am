@@ -1,6 +1,6 @@
 
 
-SUBDIRS =  example forth opengl yacas_gsl pcre
+SUBDIRS =  example forth opengl yacas_gsl pcre filescanner
 
 EXTRA_DIST = doc.txt extract_stub.pl README    
 

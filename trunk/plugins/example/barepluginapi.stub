@@ -29,5 +29,5 @@ StubApiCFunction("void","BlaSetA",{"Bla*","int"});
 StubApiCFunction("int","BlaGetA",{"Bla*"});
 
 /* export the c file for compilation */
-StubApiCFile("barepluginapi");
+StubApiCFile("example","barepluginapi");
 

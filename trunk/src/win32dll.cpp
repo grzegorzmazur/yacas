@@ -14,7 +14,7 @@ LispInt Win32Dll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
 
     if (handle)
     {
-        iPlugin = GetPlugin();
+        iPlugin = GetPlugin(aDllFile);
         if (iPlugin)
         {
             iPlugin->Add(aEnvironment);
@@ -44,11 +44,14 @@ Win32Dll::~Win32Dll()
     }
     handle = NULL;
 }
-LispPluginBase* Win32Dll::GetPlugin(void)
+LispPluginBase* Win32Dll::GetPlugin(LispCharPtr aDllFile)
 {
     LISPASSERT(handle != NULL);
     LispPluginBase* (*maker)(void);
-    maker = (LispPluginBase*(*)(void))GetProcAddress((HMODULE)handle,"maker");
+    char buf[1024];
+    //TODO potential buffer overflow!
+    sprintf(buf,"make_%s",aDllFile);
+    maker = (LispPluginBase*(*)(void))GetProcAddress((HMODULE)handle,buf);
     return maker();
 }
 

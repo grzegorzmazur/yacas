@@ -10,5 +10,5 @@ StubApiCRemark("This is the forth api.");
 StubApiCInclude("\"forthplugin.h\"");
 
 /* export the c file for compilation */
-StubApiCFile("forthpluginapi");
+StubApiCFile("forth","forthpluginapi");
 

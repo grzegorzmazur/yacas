@@ -37,7 +37,7 @@ LispPluginBase* LispDllBase::Plugin(void)
 }
 
 /* default functionality fails to open a library */
-LispPluginBase* LispDllBase::GetPlugin(void)
+LispPluginBase* LispDllBase::GetPlugin(LispCharPtr aDllFile)
 {
     return NULL;
 }

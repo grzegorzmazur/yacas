@@ -148,7 +148,7 @@ LispPluginBase* maker(void)
 #endif //HAVE_GL_GLUT_H
 ");
 
-StubApiCFile("openglapi");
+StubApiCFile("opengl","openglapi");
 /*
 */
 

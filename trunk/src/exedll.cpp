@@ -20,6 +20,7 @@ struct ExeDllEntry
 extern "C" {
 extern LispPluginBase* make_libmath(void);
 extern LispPluginBase* make_pcre(void);
+extern LispPluginBase* make_filescanner(void);
 };
 #endif
 
@@ -29,6 +30,7 @@ static const ExeDllEntry exeDllentries[] =
 #ifdef EXE_DLL_PLUGINS
   {"libmath",make_libmath},
   {"pcre",make_pcre},
+  {"filescanner",make_filescanner},
 #endif
 };
 
@@ -80,7 +82,7 @@ LispInt ExeDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
 #ifdef YACAS_DEBUG
         printf("ExeDll::Open: handle opened\n");
 #endif
-        iPlugin = GetPlugin();
+        iPlugin = GetPlugin(aDllFile);
         if (iPlugin)
         {
 #ifdef YACAS_DEBUG
@@ -102,7 +104,7 @@ LispInt ExeDll::Close(LispEnvironment& aEnvironment)
   }
   return 0;
 }
-LispPluginBase* ExeDll::GetPlugin(void)
+LispPluginBase* ExeDll::GetPlugin(LispCharPtr aDllFile)
 {
   LISPASSERT(iMaker != NULL);
   if (!iMaker)

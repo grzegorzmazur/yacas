@@ -40,7 +40,7 @@ printf("Trying to open [%s]\n",aDllFile);
 #ifdef YACAS_DEBUG
 printf("handle opened\n");
 #endif
-        iPlugin = GetPlugin();
+        iPlugin = GetPlugin(aDllFile);
         if (iPlugin)
         {
 #ifdef YACAS_DEBUG
@@ -76,12 +76,15 @@ LtDll::~LtDll()
     }
     handle = NULL;
 }
-LispPluginBase* LtDll::GetPlugin(void)
+LispPluginBase* LtDll::GetPlugin(LispCharPtr aDllFile)
 {
 #if HAVE_DLFCN_H
     LISPASSERT(handle != NULL);
     LispPluginBase* (*maker)(void);
-    maker = (LispPluginBase*(*)(void))dlsym(handle,"maker");
+    char buf[1024];
+    //TODO potential buffer overflow!
+    sprintf(buf,"make_%s",aDllFile);
+    maker = (LispPluginBase*(*)(void))dlsym(handle,buf);
     return maker();
 #endif
     return NULL;

@@ -175,11 +175,7 @@ void PcrePlugin::Remove(LispEnvironment& aEnvironment)
 
 extern "C" {
 
-#ifdef EXE_DLL_PLUGINS
 LispPluginBase* make_pcre(void)
-#else
-LispPluginBase* maker(void)
-#endif
 {
     return NEW PcrePlugin;
 }

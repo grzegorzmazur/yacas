@@ -50,7 +50,7 @@ public:
     virtual ~LispDllBase();
     LispCharPtr DllFileName() const;
 protected:
-    virtual LispPluginBase* GetPlugin(void);
+    virtual LispPluginBase* GetPlugin(LispCharPtr aDllFile);
 protected:
     LispPluginBase* iPlugin;
     LispString iDllFileName;

@@ -21,7 +21,7 @@ YACASLIBS       = -L$(INSTALL_DIR)/lib/ -lyacas -lyacasplatform -lyacasnumbers
 
 LIBS = $(LDLIBS) $(FLTKLIBS) $(YACASLIBS)
 
-all-inclusive: yacdefines.h proteus  hints
+all-inclusive: yacdefines.h proteus  hints browse
 
 # proteuscalculator
 install:
