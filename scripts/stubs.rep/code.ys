@@ -44,7 +44,7 @@
 
 10 # n_IsNumber >= m_IsNumber <-- MathOr(Equals(n,m), GreaterThan(n,m));
 20 # (n1_IsNumber/n2_IsNumber) >= (m1_IsNumber/m2_IsNumber) <--
-     n1*m2 <= m1*n2;
+     n1*m2 >= m1*n2;
 20 # (n1_IsNumber            ) >= (m1_IsNumber/m2_IsNumber) <--
      n1*m2 >= m1;
 20 # (n1_IsNumber/n2_IsNumber) >= (m1_IsNumber            ) <--

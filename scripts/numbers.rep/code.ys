@@ -182,21 +182,59 @@ CheckIntPower(n, limit) :=
 /// Compute integer part of s-th root of (positive) integer n. Use only integer arithmetic.
 IntNthRoot(_n, s_IsInteger) <--
 [
-	Local(x, y);
-	// initial guess should always undershoot; try to improve it
-	x:= Max({2 ^ Div(IntLog(n, 2), s), 3 ^ Div(IntLog(n, 3), s), 5 ^ Div(IntLog(n, 5), s)});
-	y := x^s;	// y is always x^s
-	// choose q at the point when y''=0 at the root -- makes for no stability problems, no overshooting
-	//q:=(s-1)/2; // (the value of q is now directly substituted below)
-	// Newton iteration. Works well unless "s" is very large (>50)
-	While(y < n)
+	Local(x1, x2, x'new, y1);
+	// initial guess should always undershoot
+	//	x1:= 2 ^ Div(IntLog(n, 2), s); 	// this is worse than we can make it
+	x1 := IntLog(n,2);
+	// select initial interval using (the number of bits in n) mod s
+	// note that if the answer is 1, the initial guess must also be 1 (not 0)
+	x2 := Div(x1, s);	// save these values for the next If()
+	x1 := Mod(x1, s)/s;	// this is kept as a fraction
+	// now assign the initial interval, x1 <= root <= x2
+	{x1, x2} := If(
+		x1 >= 263/290,	// > Ln(15/8)/Ln(2)
+		Div({15,16}*2^x2, 8),
+		If(
+		x1 >= 373/462,	// > Ln(7/4)/Ln(2)
+		Div({7,8}*2^x2, 4),
+		If(
+		x1 >= 179/306,	// > Ln(3/2)/Ln(2)
+		Div({6,7}*2^x2, 4),
+		If(
+		x1 >= 113/351,	// > Ln(5/4)/Ln(2)
+		Div({5,6}*2^x2, 4),
+		Div({4,5}*2^x2, 4)	// between x1 and (5/4)*x1
+	))));
+	// check whether x2 is the root
+	y1 := x2^s;
+	If(
+		y1=n,
+		x1 := x2,
+		// x2 is not a root, so continue as before with x1
+		y1 := x1^s	// henceforth, y1 is always x1^s
+	);
+	// Newton iteration combined with bisection
+	While(y1 < n)
 	[
-		x := Div(x*((s-1)*y+(s+1)*n), ((s+1)*y+(s-1)*n)) + 1;	// add 1 because the floating-point value undershoots
-		y := x^s;
+//	Echo({x1, x2});
+		x'new := Div(x1*((s-1)*y1+(s+1)*n), (s+1)*y1+(s-1)*n) + 1;	// add 1 because the floating-point value undershoots
+		If(
+			x'new < Div(x1+x2, 2),
+			// x'new did not reach the midpoint, need to check progress
+			If(
+				Div(x1+x2, 2)^s <= n,
+				// Newton's iteration is not making good progress, so leave x2 in place and update x1 by bisection
+				x'new := Div(x1+x2, 2),
+				// Newton's iteration knows what it is doing. Update x2 by bisection
+				x2 := Div(x1+x2, 2)
+			)
+			// else, x'new reached the midpoint, good progress, continue
+		);
+		x1 := x'new;
+		y1 := x1^s;
 	];
-	If(y<=n, x, x-1);	// subtract 1 if we undershot
+	If(y1=n, x1, x1-1);	// subtract 1 if we overshot
 ];
-
 
 CatalanNumber(_n) <-- 
 [	
