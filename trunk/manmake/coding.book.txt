@@ -1733,8 +1733,8 @@ After the debugger has been invoked, the following commands can be used
 in interactive mode while debugging:
 
 *	1. {DebugRun()} - continue evaluating the expression
-*	1. {DebugStep()} - perform one step, until the interpreter finds the next (sub)
-expression to evaluate
+*	1. {DebugStep()} - perform one step, until the interpreter finds the next (sub) expression to evaluate
+*	1. {DebugStepOver()} - perform one step, but just evaluate the current expression, not tracing into it.
 *	1. {DebugStop()} - completely halt evaluation
 *	1. {DebugVerbose(verbose)} - turn on trace-like output to the console
 *	1. {DebugAddBreakpoint(name)} - set a breakpoint at a certain function. The interpreter
@@ -1745,6 +1745,29 @@ after it has fired the first time.
 *	1. {BreakpointsClear()} - remove all breakpoints (including the custom break point predicate).
 *	1. {DebugLocals()} - show the currently available local variables
 *	1. {DebugCallstack()} - show the current function call stack
+
+
+
+	    Stepping through the files while debugging
+
+The debug version of {Yacas} (which can be obtained by
+passing the {--enable-debug} parameter to ./configure)
+keeps track of where each function was defined. For each
+object in the tree kept in memory it maintains a filename
+and line number. This is used by the debug code. When using
+the debug version, the part of the file that is currently
+being executed will be shown. In front of the file lines
+there can be a sign ">". This points at the current line
+being executed. In addition, one can put breakpoints at
+specific lines in specific files. These will be shown
+with a "*" in front of the lines.
+
+The additional commands available when the debug version
+of the {Yacas} executable is used are:
+
+*	1. {DebugShowCode()} - shows the current block of code being executed
+*	1. {DebugBreakAt(file,line)} - add a breakpoint at a specific point in a specific file. The file must be entered as it would have been entered when loading it. A user-defined file would go by "userdef.ys", whereas one of the {Yacas} scripts would be for example "linalg.rep/code.ys"
+*	1. {DebugRemoveBreakAt(file,line)} - remove a breakpoint
 
 
 
