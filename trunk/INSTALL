@@ -14,19 +14,18 @@ To compile and install, do the following:
 
 * go into the directory created (yacas-<version>).
 
-* type './makemake'
+* type './configure' with optional arguments
+  (e.g. './configure --enable-gmp --prefix=/home/user/')
 
 * type 'make'.
 
-* You can, if you wish, type 'make test', to run the test script.
+* If you wish, type 'make test', to run the test scripts.
 
-* type 'make install'.
+*  type 'make install' (this requires root unless you have configured
+a location in your home directory).
 
 *  type 'yacas'  and you should see a Yacas prompt!
 
-*  You could now type 'make test' to perform some
-   standard tests. 
-   
 The scripts
 (which are installed by default in '/usr/local/share/yacas/') should also be
 a good starting point to see some example source code.
