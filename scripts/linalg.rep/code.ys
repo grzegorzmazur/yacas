@@ -276,7 +276,7 @@ Function("CoFactor",{matrix,ii,jj})
 
 
 
-Minor(matrix,i,j) := CoFactor(matrix,i,j)/(-1^(i+j));
+Minor(matrix,i,j) := CoFactor(matrix,i,j)*(-1)^(i+j);
 
 Function("Inverse",{matrix})
 [
