@@ -6,6 +6,8 @@ to general issues related to the Yacas system development.
 
 *INCLUDE paper.chapt
 
+*INCLUDE wester-1994.chapt
+
 			On Yacas programming
 
 *INCLUDE ABIN-grammar.chapt
@@ -25,5 +27,3 @@ to general issues related to the Yacas system development.
 			Work in progress, specifications
 
 *INCLUDE new.chapt
-
-*INCLUDE wester-1994.chapt
