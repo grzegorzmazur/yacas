@@ -92,11 +92,14 @@ CountBits(value) :=
 	i;
 ];
 
-/* Returns whether n is a prime for n <= 65537 by a lookup table, very fast */
+/* Returns whether n is a small by a lookup table, very fast.
+The largest prime number in the table is returned by FastIsPrime(0). */
 
-IsSmallPrime(n_IsInteger) <-- (FastIsPrime(n)>0);
+2 # IsSmallPrime(0) <-- False;
+3 # IsSmallPrime(n_IsInteger) <-- (FastIsPrime(n)>0);
+
 2 # IsPrime(_n)_(Not IsInteger(n) Or n<=1) <-- False;
-3 # IsPrime(n_IsInteger)_(n<=65537) <-- IsSmallPrime(n);
+3 # IsPrime(n_IsInteger)_(n<=FastIsPrime(0)) <-- IsSmallPrime(n);
 
 /* Fast pseudoprime testing: if n is a prime, then 24 divides (n^2-1) */
 5 # IsPrime(n_IsPositiveInteger)_(n > 4 And Mod(n^2-1,24)!=0) <-- False;
