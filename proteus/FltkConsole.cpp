@@ -7,6 +7,7 @@
 
 TODO:
 
+- arrows and delete should do new hints too.
 - document the user interface
 - document the files that should be available, and where they should be.
 
