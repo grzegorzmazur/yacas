@@ -23,27 +23,37 @@ LazyGlobal(I);
 RuleBase("CachedConstant", {C'cache, C'atom, C'func});
 UnFence("CachedConstant", 3);	// not sure if this is useful
 HoldArg("CachedConstant", C'func);
+HoldArg("CachedConstant", C'cache);	// name of the cache
 // check syntax: must be called on an atom and a function
 Rule("CachedConstant", 3, 10, MathAnd(IsAtom(C'atom), IsFunction(C'func)))
 [
  	Local(C'name);
-	Set(C'name, String(C'atom));
-	// create the cache it if it does not already exist
-	If(MathNot(IsList(C'cache)), MacroSet(C'cache, {}));
-	// declare the constant function if it does not already exist
+	Set(C'name, String(C'atom));	// this is for later conveniences
+
+	If(	// create the cache it if it does not already exist
+		IsAtom(Eval(C'cache)),
+		MacroSet(Eval(C'cache), {})
+	);
+//	Write({"debug step 0: ", C'cache, Eval(C'cache), C'atom, C'func, C'name});
+	// check that the constant is not already defined
 	If(
-	  Equals(FastAssoc(C'name, Eval(C'cache)), Empty),	// not already defined
-	  [
+	  Equals(FastAssoc(C'name, Eval(C'cache)), Empty),	// the constant is not already defined, so need to define "C'atom" and the corresponding function "C'atom"()
+	  [	// e.g. C'atom evaluates to Pi, C'cache to a name e.g. CacheOfConstantsN, which is bound to a hash
 		MacroClear(C'atom);
+//		Write({"debug step 1: ", Cache'name, C'cache, Eval(C'cache)});
+		// add the new constant to the cache
+//		MacroSet(Cache'name, Insert(Eval(C'cache), 1, {C'name, 0, 0}));
 		DestructiveInsert(Eval(C'cache), 1, {C'name, 0, 0});
-		// define the new function C'atom()
-		// note: this should only be called when Numeric=True, so no N()
+//		Write({"debug step 2: ", Cache'name, C'cache, Eval(C'cache)});
+		// define the new function "C'atom"()
+		// note: this should not use N() because it may be called from inside N() itself
 		MacroRuleBase(C'name, {});
 		`( Rule(@C'name, 0, 1024, True)
 		[
 			Local(new'prec, new'C, cached'C);
-//			Clear(@C'atom);
 			Set(new'prec, GetPrecision());
+			// fetch the cache entry for this constant
+			// note that this procedure will store the name of the cache here in this statement as Eval(C'cache)
 			Set(cached'C, FastAssoc(@C'name, @C'cache));
 			If(
 			  LessThan(MathNth(cached'C, 2), new'prec),
@@ -59,8 +69,10 @@ Rule("CachedConstant", 3, 10, MathAnd(IsAtom(C'atom), IsFunction(C'func)))
 			);
 		]);
 		// calculate C'atom at current precision for the first time
-		Eval(UnList({C'atom}));	// C'name @ {};
+//		Eval(UnList({C'atom}));	// "C'name"();
+		// we do not need this until the constant is used; it will just slow us down
 	  ],
+	  // the constant is defined
 	  Echo("CachedConstant: Warning: constant ", C'atom, " already defined")		
 	);
 ];
@@ -68,24 +80,31 @@ Rule("CachedConstant", 3, 10, MathAnd(IsAtom(C'atom), IsFunction(C'func)))
 Rule("CachedConstant", 3, 20, True)
 	Echo("CachedConstant: Error: ", C'atom, " must be an atom and ", C'func, " must be a function.");
 
-/// assign numerical values to all cached constants
+/// assign numerical values to all cached constants: using fixed cache "CacheOfConstantsN"
+// this is called from N()
 Function("AssignCachedConstantsN", {})
 [
 	Local(var);
 	ForEach(var, AssocIndices(CacheOfConstantsN))
-		MacroSet(Atom(var), Eval(UnList({Atom(var)})));
+	[
+		MacroSet(Atom(var), UnList({Atom(var)}));	// Pi:=Hold(Pi());
+		Eval(UnList({LazyGlobal, Atom(var)}));	// LazyGlobal(Pi);
+		// this way the routine Pi() will be actually called only when the variable is used
+	];
 ];
 UnFence("AssignCachedConstantsN", 0);
 
-/// clear values from all cached constants
+/// clear values from all cached constants: using fixed cache "CacheOfConstantsN"
+// this is called from N()
 Function("ClearCachedConstantsN", {})
 [
-	Local(var);
-	ForEach(var, AssocIndices(CacheOfConstantsN))
-		MacroClear(Atom(var));
+	Local(c'entry);
+	ForEach(c'entry, CacheOfConstantsN)
+		MacroClear(Atom(c'entry[1]));
 ];
 UnFence("ClearCachedConstantsN", 0);
 
 /// declare some constants now
 CachedConstant(CacheOfConstantsN, Pi, MathPi());
+CachedConstant(CacheOfConstantsN, gamma, GammaConstNum());
 
