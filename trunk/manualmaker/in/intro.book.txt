@@ -505,11 +505,11 @@ the php scripting language.
 Tells the system to load {file} as the initialization file. Otherwise
 it loads the file {yacasinit.ys} from the scripts directory.
 
-	yacas --rootdir [directory]
-Tells the system where to find the scripts. This is a path that
-is passed to DefaultDirectory, and file names are appended to it,
-so make sure to also include a forward or backward slash (depending
-on the platform) at the end.
+	yacas --rootdir [directory]/
+Tells the system where to find the library scripts. Here, {directory/} is a
+path that is passed to {DefaultDirectory}, and file names will be simply
+appended to it, so you should make sure to include a forward or backward slash
+(depending on the platform) at the end.
 
 		Client/server usage
 

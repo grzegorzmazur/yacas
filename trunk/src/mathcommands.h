@@ -286,6 +286,8 @@ void LispRightPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
                           LispPtr& aArguments);
 
 
+void LispIsBodied(LispEnvironment& aEnvironment, LispPtr& aResult,
+               LispPtr& aArguments);
 void LispIsInFix(LispEnvironment& aEnvironment, LispPtr& aResult,
                LispPtr& aArguments);
 void LispIsPreFix(LispEnvironment& aEnvironment, LispPtr& aResult,

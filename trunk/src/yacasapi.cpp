@@ -179,6 +179,7 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispLeftPrecedence     ,"LeftPrecedence");
     SetCommand(LispRightPrecedence    ,"RightPrecedence");
 
+    SetCommand(LispIsBodied      ,"IsBodied");
     SetCommand(LispIsInFix      ,"IsInfix");
     SetCommand(LispIsPreFix     ,"IsPrefix");
     SetCommand(LispIsPostFix    ,"IsPostfix");

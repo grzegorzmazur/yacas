@@ -1786,6 +1786,19 @@ void LispIsInFix(LispEnvironment& aEnvironment, LispPtr& aResult,
         InternalFalse(aEnvironment, aResult);
 }
 
+void LispIsBodied(LispEnvironment& aEnvironment, LispPtr& aResult,
+               LispPtr& aArguments)
+{
+
+    LispInFixOperator* op = OperatorInfo(aEnvironment,
+                                         aArguments,
+                                         aEnvironment.Bodied());
+    if (op != NULL)
+        InternalTrue( aEnvironment, aResult);
+    else
+        InternalFalse(aEnvironment, aResult);
+}
+
 void LispGetPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
                        LispPtr& aArguments)
 {
@@ -1801,7 +1814,12 @@ void LispGetPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
 			op = OperatorInfo(aEnvironment,
                               aArguments,
                               aEnvironment.PostFix());
-    	 	CHK(op!=NULL, KLispErrIsNotInFix);
+	        if (op == NULL) {	// or maybe it's a bodied function
+				op = OperatorInfo(aEnvironment,
+                              aArguments,
+                              aEnvironment.Bodied());
+    	 		CHK(op!=NULL, KLispErrIsNotInFix);
+			}
 		}
 	}
     LispChar buf[30];
