@@ -688,7 +688,7 @@ before doing a numerical calculation using a Taylor series. It greatly
 speeds up the calculation if the value passed is a large number.
 
 The library uses the formula
-$$TruncRadian(r) = r - Floor( r/(2*Pi) )*2*Pi
+$$TruncRadian(r) = r - Floor( r/(2*Pi) )*2*Pi$$
 where $r$ and $2*Pi$ are calculated with twice the precision used in the
 environment to make sure there is no rounding error in the significant
 digits.

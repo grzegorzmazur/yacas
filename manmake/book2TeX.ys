@@ -21,8 +21,8 @@ Book(x) := [	/* this is the first declaration in a file */
 This text is part of the Yacas software package and may be freely
 distributed under the terms of the GNU General Public License (GPL) for
 documentation, version 2 or later.
-Principal documentation authors and contributors:
-Ayal Zwi Pinkus, Jitse Niesen, Serge Winitzki.
+Principal documentation authors:
+Ayal Zwi Pinkus, Serge Winitzki, Jitse Niesen.
 }}
 \\date{\\textsc{Yacas} version: " : Version() : "
 \\\\
