@@ -20,6 +20,16 @@ least linear in $P$.
 
 Warning: calculations with internal math with precision exceeding 10,000 digits are currently impractically slow.
 
+		Factorization of integers
+
+Factorization of integers is implemented by functions {Factor} and {Factors}. Both functions try to find all prime factors of a given integer $n$.
+
+For small integers $n<100000$ the trial division algorithm is used: $n$ is divided by all prime numbers $p<=Sqrt(n)$ until a factor is found.
+
+For larger integers, the trial division algorithm is used to find any prime factors $p<200$ and then the Pollard "rho" algorithm is applied to the remaining number. The "rho" algorithm chooses an irreducible polynomial such as $f(x)=x^2+1$ and builds a sequence of integers $x[k+1] := Mod( f(x[k]), n)$ starting from $x[0]=2$. For each $k$, the value $x[2*k]-x[k]$ is attempted as possibly containing a factor of $n$ in the following sense: The GCD of $x[2*k]-x[k]$ with $n$ is computed, and if $Gcd(x[2*k]-x[k], n)>1$, then that value is a factor of $n$.
+
+The Pollard "rho" algorithm may enter an infinite loop when the sequence $x[k]$ repeats itself without giving any factors of $n$. For example, the unmodified "rho" algorithm loops on the number 703. The loop is detected by comparing $x[2*k]$ and $x[k]$. When these two quantities become equal to each other for the first time, the loop may not yet have occurred so the value of GCD is set to 1 and the sequence is continued. But when the equality of $x[2*k]$ and $x[k]$ occurs many times, it indicates that the algorithm has entered a loop. In this case the current implementation stops and prints an error message, "failed to factorize number". A solution may be to randomly choose a different starting number $x[0]$ when a loop occurs (this is currently not implemented) and keep trying until a non-looping sequence is found. A better (and faster) factoring algorithm is needed.
+
 		Adaptive plotting
 
 The adaptive plotting routine {Plot2D'adaptive} uses a simple algorithm
