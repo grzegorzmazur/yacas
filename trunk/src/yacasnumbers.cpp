@@ -1126,7 +1126,7 @@ void BigNumber::SetTo(double value)
 
 
 // assign from string
-void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10)
+void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {//FIXME
 }
 
