@@ -94,7 +94,7 @@ void NullSpaceAlg(ZZPolyList& Q,ZZ deg,ZZPolyList& v,ZZMod& p)
     r=0;
     for (k=0;k<deg;k++)
     {
-        ZZ j,jfound;
+        ZZ jfound;
 
         for (jfound=0;jfound<deg;jfound++)
         {
