@@ -145,7 +145,13 @@ LispInt WordDigits(LispInt aPrecision, LispInt aBase)
         aBase>>=1;
         bitsPerBase++;
     }
-    return (aPrecision*bitsPerBase+WordBits)/WordBits;
+    // I changed this to add two extra words at the end in stead of one, when
+    // we moved over to scientific notation. An example of what went wrong was
+    // typing -6.23, which for sufficiently low precision got read as 6.229999
+    // The original thought was that one word should be enough. This  will have
+    // to be examined more closely.
+    return (aPrecision*bitsPerBase+2*WordBits)/WordBits;
+//    return (aPrecision*bitsPerBase+WordBits)/WordBits;
 }
 
 
@@ -1393,6 +1399,31 @@ LispBoolean Significant(ANumber& a)
 }
 
 
+void ANumber::RoundBits(void)
+{
+  PlatWord* ptr = (PlatWord*)iArray;
+  if (*ptr < (WordBase/2))
+  {
+    *ptr = 0;
+  }
+  else
+  {
+    *ptr = 0;
+    PlatDoubleWord carry=1;
+    LispInt i,nr=NrItems();
+    for (i=1;i<nr;i++)
+    {
+        PlatDoubleWord dword = ptr[i]+carry;
+        ptr[i] = dword%WordBase;
+        carry = dword / WordBase;
+    }
+    if (carry)
+    {
+      Append(carry);
+    }
+  }
+}
+
 void ANumber::ChangePrecision(LispInt aPrecision)
 {
   //First, round.
@@ -1400,27 +1431,7 @@ void ANumber::ChangePrecision(LispInt aPrecision)
   //TODO code bloat! Deserves its own routine!
   if (aPrecision == 0 && iExp>1)
   {
-    PlatWord* ptr = (PlatWord*)iArray;
-    if (*ptr < (WordBase/2))
-    {
-      *ptr = 0;
-    }
-    else
-    {
-      *ptr = 0;
-      PlatDoubleWord carry=1;
-      LispInt i,nr=NrItems();
-      for (i=1;i<nr;i++)
-      {
-          PlatDoubleWord dword = ptr[i]+carry;
-          ptr[i] = dword%WordBase;
-          carry = dword / WordBase;
-      }
-      if (carry)
-      {
-        Append(carry);
-      }
-    }
+    RoundBits();
   }
 
   LispInt oldExp = iExp;

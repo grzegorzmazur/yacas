@@ -10,7 +10,7 @@
 
 Precision(5);
 
-sl() := []; //;Echo(CurrentFile(),CurrentLine());
+sl() := []; //Echo(CurrentFile(),CurrentLine());
 TryRandomPoly(deg,coefmin,coefmax):=
 [
   //GarbageCollect();
@@ -48,7 +48,11 @@ Echo("roots ",roots);
   Verify(px . px < 0.01);
 ];
 
+sl();
+
 Verify(FindRealRoots((x+2)^9*(x-4)^5*(x-1)^4),{-2.,1.,4.});
+
+sl();
 
 //TODO TryRandomRoots(3,-10,10);  sl();
 //TODO TryRandomRoots(3,-10,10);  sl();
@@ -68,9 +72,12 @@ Verify(FindRealRoots(Expand((x*(x-10)^3*(x+2)^2))),{0,-2.,10.});
 Verify(FindRealRoots((x^2+20)*(x^2+10)),{});
 Verify(NumRealRoots((x^2+20)*(x^2+10)),0);
 
+sl();
 
 // Simple test on Squarefree
 TestYacas(Monic(SquareFree((x-1)^2*(x-3)^3)),Monic((x-1)*(x-3)));
+
+sl();
 
 // Check the rare case where the bounds finder lands on
 // exactly a root
@@ -86,14 +93,26 @@ sl();
   p:=Expand((x-3.1)*(x+6.23));
   Verify(FindRealRoots(p),{-6.23,3.1});
 ];
+
+sl();
+Verify(GetPrecision(),5);
+Verify(FindRealRoots(Expand((x-3.1)*(x+6.23))),{-6.23,3.1});
+
 sl();
 
 TryRandomPoly(5,5,1000);  sl();
+sl();
 TryRandomPoly(5,5,1000);  sl();
+sl();
 TryRandomPoly(5,5,1000);  sl();
+sl();
 TryRandomPoly(5,5,1000);  sl();
+sl();
 TryRandomPoly(5,5,1000);  sl();
+sl();
 TryRandomPoly(5,5,1000);  sl();
+sl();
+
 
 //RandomPoly(_var,_degree,_coefmin,_coefmax)
 //RandomIntegerVector(_count,_coefmin,_coefmax)
