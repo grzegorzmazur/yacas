@@ -11,6 +11,27 @@ IntLog(23^45, 67)
 );
 
 Verify(
+IntLog(1, 67)
+, 0
+);
+Verify(
+IntLog(2, 67)
+, 0
+);
+Verify(
+IntLog(0, 67)
+, 0
+);
+Verify(
+IntLog(1, 1)
+, Undefined
+);
+Verify(
+IntLog(2, 1)
+, Undefined
+);
+
+Verify(
 IntLog(256^8, 4)
 , 32
 );
