@@ -33,7 +33,7 @@ TestNonIntegrable(Integrate(x) Sin(x^2));
 
 TestYacas(Integrate(x,0,A)Sin(x),1 - Cos(A));
 TestYacas(Integrate(x,0,A)x^2,(A^3)/3);
-TestYacas(Integrate(x,0,A)Sin(B*x),1/B-Cos(B*A)/B);
+TestYacas(Integrate(x,0,A)Sin(B*x),1/B-Cos(A*B)/B);
 TestYacas(Integrate(x,0,A)(x^2+2*x+1)/(x+1),(A^2)/2+A);
 TestYacas(Integrate(x,0,A)(x+1)/(x^2+2*x+1),Ln(A+1));
 
