@@ -27,7 +27,7 @@
 
 10 # Zeta(1) <-- Infinity;
 10 # Zeta(0) <-- -1/2;	// let's save time
-10 # Zeta(3) <-- Zeta3();	// special case
+10 # Zeta(3)_Numeric <-- Zeta3();	// special case
 10 # Zeta(n_IsEven)_(n>0) <-- Pi^n*(2^(n-1)/n! *Abs(Bernoulli(n)));
 10 # Zeta(n_IsInteger)_(n<0) <-- -Bernoulli(-n+1)/(-n+1);
 
