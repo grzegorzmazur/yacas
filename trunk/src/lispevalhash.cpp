@@ -15,13 +15,7 @@
 
 #define InternalEval aEnvironment.iEvaluator->Eval
 
-/*TODO remove
-void LispEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-                             LispPtr& aArguments)
-{
-    iCaller(aEnvironment,aResult,aArguments);
-}
-*/
+
 void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,LispPtr& aArguments)
 {
 

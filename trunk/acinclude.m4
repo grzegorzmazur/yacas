@@ -14,7 +14,7 @@ dnl
 dnl NOTE: This is just a modified version of the AC_FUNC_SELECT_ARGTYPES
 dnl macro. Credit for that one goes to David MacKenzie et. al.
 dnl
-dnl @version $Id: acinclude.m4,v 1.9 2003-03-09 14:07:27 jitseniesen Exp $
+dnl @version $Id: acinclude.m4,v 1.10 2003-03-09 21:59:19 ayalpinkus Exp $
 dnl @author Daniel Richard G. <skunk@mit.edu>
 dnl
 AC_DEFUN([AC_FUNC_ACCEPT_ARGTYPES],
@@ -94,7 +94,7 @@ dnl URL accordingly.
 dnl
 dnl minor bugfix by ahmet inan <auto@ainan.org>
 dnl
-dnl @version $Id: acinclude.m4,v 1.9 2003-03-09 14:07:27 jitseniesen Exp $
+dnl @version $Id: acinclude.m4,v 1.10 2003-03-09 21:59:19 ayalpinkus Exp $
 dnl @author Matthew D. Langston <langston@SLAC.Stanford.EDU>
 
 AC_DEFUN([MDL_HAVE_OPENGL],
@@ -1959,7 +1959,7 @@ else
     #        cross-compilation, but unfortunately the echo tests do not
     #        yet detect zsh echo's removal of \ escapes.  Also zsh mangles
     #	     `"' quotes if we put them in here... so don't!
-    archive_cmds='$CC -r -keep_private_externs -nostdlib -o ${lib}-master.o $libobjs && $CC $(test .$module = .yes && echo -bundle || echo -dynamiclib) $allow_undefined_flag -o $lib ${lib}-master.o $deplibs$linker_flags $(test .$module != .yes && echo -install_name $rpath/$soname $verstring)'
+     archive_cmds='$nonopt -module -dynamic -undefined suppress -flat_namespace -dynamiclib $allow_undefined_flag -o $lib $libobjs  $deplibs$linker_flags -install_name $rpath/$soname $verstring'
     # We need to add '_' to the symbols in $export_symbols first
     #archive_expsym_cmds="$archive_cmds"' && strip -s $export_symbols'
     hardcode_direct=yes
