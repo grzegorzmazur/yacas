@@ -11,7 +11,7 @@
 # Enumerated text is marked by * followed by Tab, number and period.
 # Text surrounded by <i>...</i> becomes emphasized (must be on a single line!)
 # Text surrounded by {} becomes fixed-width (must not contain more than four nested sets of {} inside!)
-# Text surrounded by <* *> is made into hyperlinks into the manual (SeeAlso()), e.g. <*FlatCopy, Take,Length*> is translated into SeeAlso({"FlatCopy", "Take", "Length"})
+# Text surrounded by <* *> is made into hyperlinks into the manual (SeeAlso()), e.g. <*FlatCopy, Take,Length*> is translated into SeeAlso({"FlatCopy", "Take", "Length"}). If that text begins with http:// or ftp:// it is made into an HTML hyperlink.
 # 
 # Use with care, test output with manualmaker
 
@@ -135,12 +135,16 @@ sub escape_term {
 	$text =~ s/\{($regexes[$nmax])\}/":HtmlTerm("$1"):"/go;
 	# <i>emphasis</i>
 	$text =~ s/<i>(.*)<\/i>/":HtmlEmphasis("$1"):"/gi;
-	# <see also>
-	$text =~ s/<\*(([^*]|\*[^>])+)\*>/&make_seealso($1);/ge;
+	# "see also" and explicit hyperlinks
+	$text =~ s/<\*((?:[^*]|\*[^>])+)\*>/&make_link($1);/ge;
 	$text;
 }
 
-sub make_seealso {
+sub make_link {
 	my ($text) = @_;
-	"\":SeeAlso({\"" . join("\", \"", split(/, */, $text)) . "\"}):\"";
+	if ($text =~ /^(ftp|http|file):\/\/[^>]+$/i) {
+		return "\":HtmlLink(\"$text\", \"$text\"):\"";
+	} else {
+		return "\":SeeAlso({\"" . join("\", \"", split(/, */, $text)) . "\"}):\"";
+	}
 }
