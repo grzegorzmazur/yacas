@@ -6,15 +6,21 @@
 #include "numbers.h"
 #include "standard.h"
 
+const unsigned int BASE10 = 10;
+const unsigned int BASE2 = 2;
+
 //#ifdef YACAS_DEBUG
 #include <stdio.h> //DEBUG
 //#endif
+
+/// construct an atom from a string representation.
 LispObject* LispAtom::New(LispEnvironment& aEnvironment, LispStringPtr aString)
 {
   LispObject* self;
 #ifndef NO_USE_BIGFLOAT
-  if (IsNumber(aString->String(),LispTrue))
+  if (IsNumber(aString->String(),LispTrue))	// check if aString is a number (int or float)
   {
+    /// construct a number from a decimal string representation (also create a number object)
     self = NEW LispNumber(aEnvironment.HashTable(), aString, aEnvironment.BinaryPrecision());
   }
   else
@@ -199,7 +205,7 @@ LispObject* LispGenericClass::SetExtraInfo(LispPtr& aData)
 
 #ifndef NO_USE_BIGFLOAT
 
-
+    /// construct from another LispNumber
 LispNumber::LispNumber(LispHashTable* aHashTable, BigNumber* aNumber,LispStringPtr aString)
   : iHashTable(aHashTable)
 {
@@ -208,19 +214,25 @@ LispNumber::LispNumber(LispHashTable* aHashTable, BigNumber* aNumber,LispStringP
 }
 
 
+    /// construct from a BigNumber; the string representation will be absent until requested
 LispNumber::LispNumber(LispHashTable& aHashTable, BigNumber* aNumber)
   : iHashTable(&aHashTable)
 {
   iString = NULL;
   iNumber =aNumber;
 }
+
+    /// construct from a decimal string representation (also create a number object) and use aPrecision bits (not decimal digits!) 
 LispNumber::LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt aPrecision)
   : iHashTable(&aHashTable)
 {
   iString = aString;
-  iNumber = NULL;
+  iNumber = NULL;	// purge whatever it was
+  // create a new BigNumber object out of iString, set its precision in bits
   Number(aPrecision);
 }
+
+    /// return a string representation in decimal (always in decimal!)
 LispStringPtr LispNumber::String() 
 {
   if (iString.Ptr() == NULL)
@@ -228,9 +240,14 @@ LispStringPtr LispNumber::String()
     LISPASSERT(iNumber.Ptr() != NULL);
     LISPASSERT(iHashTable != NULL);
     LispString *str = NEW LispString;
+    // export the current number to string and store it as LispNumber::iString
+    // FIXME API breach: precision must be in digits, not in bits here!
     iNumber->ToString(*str,iNumber->GetPrecision());
+    // register the string with the hash table
+    // - do we actually want this to be done? (maybe only for small numbers?)
     LISPASSERT(iHashTable != NULL);
     iString = iHashTable->LookUp(str);
+//	iString = str;	// this does not work: various rules with explicit numbers fail
 
 //#ifdef YACAS_DEBUG
 //printf("Converting to string representation %s\n",iString->String()); //DEBUG
@@ -254,6 +271,8 @@ LispObject* LispNumber::Copy(LispInt aRecursed)
 #endif
     return copied;
 }
+
+    /// create a BigNumber object out of a stored string, at given precision (in bits)
 BigNumber* LispNumber::Number(LispInt aPrecision)
 {
   if (iNumber.Ptr() == NULL)
@@ -262,29 +281,21 @@ BigNumber* LispNumber::Number(LispInt aPrecision)
 //#ifdef YACAS_DEBUG
 //printf("Converting from string representation %s\n",iString->String()); //DEBUG
 //#endif
-    RefPtr<LispString> str; str = iString.Ptr();
-    iNumber = NEW BigNumber(str->String(),aPrecision);
+    RefPtr<LispString> str;
+    str = iString.Ptr();
+    // FIXME API breach: aPrecision is supposed to be in digits, not in bits!
+    iNumber = NEW BigNumber(str->String(), aPrecision, BASE10);
   }
   else if (iNumber->GetPrecision() < aPrecision && !iNumber->IsInt())
   {
     if (iString.Ptr())
-    {
+    {// FIXME same API breach
       iNumber->SetTo(iString.Ptr()->String(),aPrecision);
     }
     else
-    {
+    {	// precision in bits, ok
       iNumber->Precision(aPrecision);
     }
-/*
-    LISPASSERT(iHashTable != NULL);
-    {
-      LispString str;
-      iNumber->ToString(str,aPrecision);
-      BigNumber* newNum = NEW BigNumber(str.String(),aPrecision);
-      iNumber = newNum;
-      iString = NULL;
-    }
-*/
   }
   return iNumber.Ptr();
 }

@@ -925,6 +925,9 @@ void BigNumber::SetTo(const BigNumber& aOther)
   iNumber->CopyFrom(*aOther.iNumber);
   SetIsInteger(aOther.IsInt());
 }
+
+/// Export a number to a string in given base to given base digits
+// FIXME API breach: aPrecision is supposed to be in digits, not bits
 void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase) const
 {
   ANumber num(BITS_TO_DIGITS(aPrecision,aBase));
@@ -1458,32 +1461,34 @@ void BigNumber::SetTo(double aValue)
 }
 
 
-// assign from string
+// assign from string at given precision (in base digits or bits?? the API says in base digits, but here apparently in bits)
+// FIXME: API breach
 void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
-{//FIXME
+{//FIXME -- ?
   iPrecision = aPrecision;
-  LispInt digits = BITS_TO_DIGITS(aPrecision,10);
+  LispInt digits = BITS_TO_DIGITS(aPrecision,aBase);
   LispBoolean isFloat = 0;
   const LispCharPtr ptr = aString;
   while (*ptr && *ptr != '.') ptr++;
   if (*ptr == '.')
   {
     isFloat = 1;
-    ptr++;
+
+/* this code is not doing anything useful, it seems
+
+   ptr++;
     const LispCharPtr start = ptr;
     while (IsDigit(*ptr)) ptr++;
     LispInt digits = ptr-start;
     if (ptr-start>digits) 
       digits = ptr-start;
+*/
   }
   if (iNumber == NULL)   iNumber = NEW ANumber(digits);
   iNumber->SetPrecision(digits);
   iNumber->SetTo(aString,aBase);
   
-//TODO remove old  iNumber = NEW ANumber(aString,aPrecision,aBase);
   SetIsInteger(!isFloat && iNumber->iExp == 0 && iNumber->iTensExp == 0);
-//  if (iNumber->iExp > 1)
-//    iNumber->RoundBits();
 }
 
 
