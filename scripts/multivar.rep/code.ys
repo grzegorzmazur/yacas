@@ -186,7 +186,18 @@ DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
         Local(ff);
       Set(ff, CreateTerm(v,{MultiLM(plt)-MultiLM(glt),MultiLC(plt)/MultiLC(glt)}));
         q[i] := q[i] + ff;
+        Local(ltbefore,ltafter);
+        Set(ltbefore,MultiLeadingTerm(p));
+//        Echo(ltbefore,MultiLeadingTerm(p));
         Set(p, p - ff*g[i]);
+        Set(ltafter,MultiLeadingTerm(p));
+//        Echo(ltbefore,MultiLeadingTerm(p));
+        if (ltbefore[1] = ltafter[1])
+        [
+          Set(ltafter,MultiLT(p));
+          Set(p,p-ltafter);
+        ];
+//        Echo(ltbefore,MultiLeadingTerm(p));
         Set(i,nr+2);
       ];
     ];
@@ -196,6 +207,7 @@ DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
       Set(r, r + LocalSymbols(a,b)(Subst(a,b)plt));
       Set(p,  p - LocalSymbols(a,b)(Subst(a,b)plt));
     ]);
+//Echo(p);
     Set(finished,MultiZero(p));
   ];
   {q,r};
@@ -217,6 +229,7 @@ DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
 
 5 # MultiGcd(f_IsMulti,g_IsMulti)_(MultiTermLess({MultiLM(f),1},{MultiLM(g),1})) <--
 [
+Echo("lesser");
   MultiGcd(g,f);
 ];
 
@@ -238,7 +251,9 @@ DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
   Local(new);
   While(g != 0)
   [
+//Echo("before division: g = ",g);
     Set(new, MultiDivide(f,{g})[2]);
+//Echo("After division: g = ",g);
     Set(f,g);
     Set(g,new);
   ];
