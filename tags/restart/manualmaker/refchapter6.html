@@ -1,0 +1,224 @@
+<HTML>
+<A NAME="c6">
+
+</A>
+<A HREF="refchapter6.html#Expand" TARGET="Chapters">
+Expand
+</A>
+, <A HREF="refchapter6.html#Degree" TARGET="Chapters">
+Degree
+</A>
+, <A HREF="refchapter6.html#Coef" TARGET="Chapters">
+Coef
+</A>
+, <A HREF="refchapter6.html#PSolve" TARGET="Chapters">
+PSolve
+</A>
+, <A HREF="refchapter6.html#Div" TARGET="Chapters">
+Div
+</A>
+, <A HREF="refchapter6.html#Mod" TARGET="Chapters">
+Mod
+</A>
+, <A HREF="refchapter6.html#Content" TARGET="Chapters">
+Content
+</A>
+, <A HREF="refchapter6.html#PrimitivePart" TARGET="Chapters">
+PrimitivePart
+</A>
+, <A HREF="refchapter6.html#RandomPoly" TARGET="Chapters">
+RandomPoly
+</A>
+, <A HREF="refchapter6.html#LeadingCoef" TARGET="Chapters">
+LeadingCoef
+</A>
+, <A HREF="refchapter6.html#Monic" TARGET="Chapters">
+Monic
+</A>
+, <A HREF="refchapter6.html#BigOh" TARGET="Chapters">
+BigOh
+</A>
+, <HEAD><TITLE>Polynomials</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+Polynomials
+</H1>
+<A NAME="Expand">
+
+</A>
+<H3>
+<HR>Expand(expr)
+</H3>
+
+
+Expand(expr) : expands a univariate. Example: Expand((1+x)^2)
+would evaluate to 1+2*x+x^2.
+
+If the expression depends on more than one variable, you can
+specify which variable to expand to using Expand(expr,var);
+Also, you can expand to multiple variables, by specifying the
+order in which to expand, in a list, using Expand(expr,{varlist}).
+
+
+<A NAME="Degree">
+
+</A>
+<H3>
+<HR>Degree(expr) or Degree(expression, variable)
+</H3>
+
+
+Degree(expr) : return the degree of a polynomial. Example: <B><TT>Degree((1+x)^2);</TT></B> evaluates to 2. 
+<P>
+The version accepting an additional variable as an argument can be
+used to get the degree of a multivariate polynomial with respect to
+that variable. Example: <B><TT>Degree(a+b*x^3,a);</TT></B>returns 1.
+<A NAME="Coef">
+
+</A>
+<H3>
+<HR>Coef(expr,var,order)
+</H3>
+
+
+Coef(expr,var,order) : return the coefficient of order for expression
+expr treated as a univariate with respect to the variable var.
+
+<P>
+
+The argument to parameter order can also be a list of integers, in
+which case this function returns a list of coefficients.
+
+
+<A NAME="PSolve">
+
+</A>
+<H3>
+<HR>PSolve(expr,var)
+</H3>
+
+
+PSolve(expr,var) : solve expr=0, treating expr as a polynomial in
+the variable var. The result returned is the value var should take
+for expr=0 to be true. This has been implemented for polynomials
+upto degree 2.
+
+
+<A NAME="Div">
+
+</A>
+<H3>
+<HR>Div(n,m)
+</H3>
+
+
+Div(n,m) : div is also defined for polynomials.
+
+
+<A NAME="Mod">
+
+</A>
+<H3>
+<HR>Mod(n,m)
+</H3>
+
+
+Mod(n,m) : mod is also defined for polynomials.
+
+<A NAME="Content">
+
+</A>
+<H3>
+<HR>Content(poly)
+</H3>
+
+Content(poly) : determine the content of a univariate polynomial.
+The content is the greatest common divisor of each term in the
+polynomial. The content of 2*x^2+4*x should be 2*x for instance.
+
+<A NAME="PrimitivePart">
+
+</A>
+<H3>
+<HR>PrimitivePart(poly)
+</H3>
+
+PrimitivePart(poly) : determine the primitive part of a univariate polynomial.
+This is defined as PrimitivePart(poly)*Content(poly) = poly, and can
+easily be checked with Expand(PrimitivePart(poly)*Content(poly))
+which should be equal to Expand(poly).
+
+<A NAME="RandomPoly">
+
+</A>
+<H3>
+<HR>RandomPoly(var,deg,coefmin,coefmax)
+</H3>
+
+RandomPoly(var,deg,coefmin,coefmax) :
+generate a random polynomial in variable var, of degree deg,
+with coefficients ranging from coefmin to coefmax (inclusive).
+
+
+<A NAME="LeadingCoef">
+
+</A>
+<H3>
+<HR>LeadingCoef(poly)
+</H3>
+
+LeadingCoef(poly) : get the leading coefficient of the polynomial poly.
+If there are more variables in poly, you can specify which variable
+is the main one, by adding it as an argument:
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> LeadingCoef(a*x^2+2,x)
+Out> a;</PRE>
+</TABLE>
+
+
+
+<A NAME="Monic">
+
+</A>
+<H3>
+<HR>Monic(poly)
+</H3>
+
+Monic(poly) : return the monic part of the polynomial poly.
+This is poly/LeadingCoef(poly). This function also accepts
+a second argument, specifying the variable of the univariate
+polynomial:
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> f:=a*x^2+b
+Out> a*x^2+b;
+In> PrettyForm(Monic(f,x))
+
+b    2
+- + x 
+a     
+
+Out> True;
+</PRE>
+</TABLE>
+
+
+
+<A NAME="BigOh">
+
+</A>
+<H3>
+<HR>BigOh(_uv,_var,_degree)
+</H3>
+BigOh(poly,var,degree) : Given a polynomial poly in variable var,
+drop all terms of order degree or higher.
+
+
+
+</BODY>
+
+</FONT>
+
+</HTML>

@@ -1,0 +1,328 @@
+
+Chapter()"Predicates";
+
+AddAnchor(Lt());
+SubSection()"x ":Lt():" y (prec. 9)";  Text()"
+x < y : Return True if \"x\" is smaller than \"y\", False otherwise.
+
+";
+
+AddAnchor(Gt());
+SubSection()"x ":Gt():" y (prec. 9)";  Text()"
+x > y : Return True if \"x\" is larger than \"y\", False otherwise.
+
+";
+
+AddAnchor(Lt():"=");
+SubSection()"x ":Lt():"= y (prec. 9)";  Text()"
+x <= y : Return True if \"x\" is smaller than or equals \"y\", False otherwise.
+
+";
+
+AddAnchor(Gt():"=");
+SubSection()"x ":Gt():"= y (prec. 9)";  Text()"
+x >= y : Return True if \"x\" is larger than or equals \"y\", False otherwise.
+
+";
+
+AddAnchor("!=");
+SubSection()"x!=y (prec. 9)";  Text()"
+x!=y : Return True if \"x\" is not equal to \"y\", False otherwise.
+
+
+";
+
+AddAnchor("=");
+SubSection()"x=y  (prec. 9)";  Text()"
+x=y : This operator performs the same action as Equals(x,y).
+It returns True if x and y would be displayed on screen the same,
+False otherwise.
+
+";
+
+
+AddAnchor("Not");
+SubSection()"Not";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()"Not bool";
+
+Topical()"Parameters";
+Text()"bool - a boolean expression";
+
+Topical()"Description";
+Text()"Not returns the logical negation of the argument bool. If bool is
+False it returns True, and if the argument is True Not returns False.
+If the argument is neither True nor False it returns the entire
+expression with evaluated arguments.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Not True
+Out> False;
+In> Not False
+Out> True;
+In> Not(a)
+Out> Not a;
+");
+
+Topical()"See Also"; 
+SeeAlso({"And","Or"});
+
+
+
+
+
+
+AddAnchor("And");
+SubSection()"And";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()
+"a1 And a2 <br>
+And(a1,a2,a3,...,an)";
+
+Topical()"Parameters";
+Text()"a1 .. an - boolean values (True or False)";
+
+Topical()"Description";
+Text()"This function returns True if all arguments are true. The
+And operation is lazy, it returns False as soon as a False argument
+is found (from left to right). If an argument other than True or
+False is encountered a new And expression is returned with all
+arguments that didn't evaluate to True or False yet.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> True And False
+Out> False;
+In> And(True,True)
+Out> True;
+In> False And a
+Out> False;
+In> True And a
+Out> And(a);
+In> And(True,a,True,b)
+Out> b And a;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Or","Not"});
+
+
+
+
+AddAnchor("Or");
+SubSection()"Or";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()"a1 Or a2 <br>
+Or(a1,a2,a3,...,an)";
+
+Topical()"Parameters";
+Text()"a1 .. an - boolean values (True or False)";
+
+Topical()"Description";
+Text()"This function returns True if an argument is encountered
+that is true (scanning from left to right). The
+Or operation is lazy, it returns True as soon as a True argument
+is found (from left to right). If an argument other than True or
+False is encountered a new Or expression is returned with all
+arguments that didn't evaluate to True or False yet.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> True Or False
+Out> True;
+In> False Or a
+Out> Or(a);
+In> Or(False,a,b,True)
+Out> True;
+");
+
+Topical()"See Also"; 
+SeeAlso({"And","Not"});
+
+
+
+
+AddAnchor("IsFreeOf");
+SubSection()"IsFreeOf(expression,variable) or IsFreeOf(expression,{varlist})";  Text()"
+Returns wether \"expression\" depends on
+\"variable\". \"expression\" is evaluated beforehand.
+Example: \"IsFreeOf(x+y,x);\" evaluates to \"False\".":
+HtmlNewParagraph():
+"When a list of variables is passed, IsFreeOf returns True iff the
+expression is independent of all the variables listed.
+\"IsFreeOf(x+y,{a,b});\" would return True, and \"IsFreeOf(x+y,{a,x});\"
+would return False.
+";
+
+AddAnchor("IsZeroVector");
+SubSection()"IsZeroVector(vector)";  Text()"
+Returns wether \"vector\" only contains zeroes.
+\"vector\" should be a list.
+
+";
+
+AddAnchor("IsNonObject");
+SubSection()"IsNonObject(x)";  Text()"
+IsNonObject(x) : returns true if x is not of
+the form Object(...).
+";
+
+AddAnchor("IsEven");
+AddAnchor("IsOdd");
+SubSection()"IsEven(n) and IsOdd(n)";
+Text()
+"Returns whether the integer n is even or odd (an integer n is even
+if n divided by 2 is also an integer).";
+
+
+AddAnchor("IsFunction");
+SubSection()"IsFunction(expr)";  Text()"
+IsFunction(expr) : Predicate that checks the type of a object.
+cos(a) is a function. 
+";
+
+AddAnchor("IsAtom");
+SubSection()"IsAtom(expr)";  Text()"
+IsAtom(expr) : Predicate that checks the type of a object.
+Atoms are any object that can be represented with a text string (that
+is, excluding lists). 
+";
+
+AddAnchor("IsString");
+SubSection()"IsString(expr)";  Text()"
+IsString(expr) : Predicate that checks the type of a object.
+Strings have the form \"string\",
+that is, with quotes.
+";
+
+AddAnchor("IsNumber");
+SubSection()"IsNumber(expr)";  Text()"
+IsNumber(expr) : Predicate that checks the type of a object.
+1.2 or 1 are numbers. 
+";
+
+AddAnchor("IsInteger");
+SubSection()"IsInteger(expr)";  Text()"
+IsInteger(expr) : Predicate that checks the type of a object.
+1 is a integer. ";
+
+AddAnchor("IsList");
+SubSection()"IsList(expr)";  Text()"
+IsList(expr) : Predicate that checks the type of a object.
+{cos,a} is a list.
+";
+
+AddAnchor("IsBound");
+SubSection()"IsBound(var)";  Text()"
+IsBound(var) :Predicate that checks the type of a object.
+IsBound checks to see if variable var is bound.
+";
+
+AddAnchor("IsBoolean");
+SubSection()"IsBoolean";
+StandardLib();
+
+Topical()"Calling Sequence";
+Text()"IsBoolean(expression)";
+
+Topical()"Parameters";
+Text()"expression - an expression";
+
+Topical()"Description";
+Text()"IsBoolean returns True if the argument is of a boolean type.
+This means it has to be either True, False, or an expression involving
+functions that return a boolean result, like
+=, &gt, &lt, &gt=, &lt=, !=, And, Not, Or.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> IsBoolean(a)
+Out> False;
+In> IsBoolean(True)
+Out> True;
+In> IsBoolean(a And b)
+Out> True;
+
+");
+
+Topical()"See Also"; 
+SeeAlso({"True","False"});
+
+
+
+Section()"Predicates on numbers";
+Text()"These predicates return whether the argument is a number,
+and of a specific type.";
+
+AddAnchor("IsNegativeNumber");
+SubSection()"IsNegativeNumber(n)";  
+AddAnchor("IsNegativeInteger");
+SubSection()"IsNegativeInteger(n)"; 
+AddAnchor("IsPositiveNumber");
+SubSection()"IsPositiveNumber(n)";  
+AddAnchor("IsPositiveInteger");
+SubSection()"IsPositiveInteger(n)"; 
+AddAnchor("IsNotZero");
+SubSection()"IsNotZero(n)";  
+AddAnchor("IsNonZeroInteger");
+SubSection()"IsNonZeroInteger(n)";
+AddAnchor("IsInfinity");
+SubSection()"IsInfinity(n)";
+Text()"
+Returns True if the argument is either Infinity or -Infinity
+";
+
+
+
+AddAnchor("IsConstant");
+SubSection()"IsConstant";
+StandardLib();
+
+Topical()"Calling Sequence";
+Text()"IsConstant(expression)";
+
+Topical()"Parameters";
+Text()"expression - some expression";
+
+Topical()"Description";
+Text()"IsConstant returns True if the expression is some constant
+or a function with constant arguments. It does this by checking
+that no variables are referenced in the expression.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> IsConstant(Cos(x))
+Out> False;
+In> IsConstant(Cos(2))
+Out> True;
+In> IsConstant(Cos(2+x))
+Out> False;
+");
+
+Topical()"See Also"; 
+SeeAlso({"IsNumber","IsInteger"});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,303 @@
+<HTML>
+<A NAME="c5">
+
+</A>
+<HEAD><TITLE>Advanced example 2: implementing a non-commutative algebra</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+Advanced example 2: implementing a non-commutative algebra
+</H1>
+
+We need to understand how to work with expressions in Yacas, and the best way is to try writing our own algebraic expression handler. In this chapter we'll consider a simple implementation of a particular non-commutative algebra called the Heisenberg algebra. This algebra was introduced by Dirac to develop quantum field theory. We won't explain any physics here, but instead we shall to delve somewhat deeper into the workings of Yacas.
+<A NAME="c5s1">
+
+</A>
+<H2>
+<HR>The problem
+</H2>
+Suppose we want to define special symbols A(k) and B(k) that we can
+multiply with each other or by a number, or add to each other, but not
+commute with each other, i.e. <B><TT>A(k)*B(k) != B(k)*A(k)</TT></B>. Here
+"k" is merely a label, so A(1) and A(2) must be two different objects.
+(In physics, these are called "creation" (B) and "annihilation" (A)
+operators for "bosonic quantum fields".) Yacas already assumes that the
+usual multiplication operator "*" is commutative. Therefore we shall
+introduce a special multiplication sign "<B><TT>**</TT></B>" that we
+shall use with the objects A(k) and B(k), but not between usual numbers.
+The symbols A(k), B(k) will never be evaluated to numbers, so an expression
+such as <B><TT>2 ** A(k1) ** B(k2) ** A(k3)</TT></B> is just going to
+remain like that. (In physics, the usual, commuting numbers are called
+"classical quantities" or "c-numbers" while non-commuting objects made
+up of A(k) and B(k) are called "quantum quantities".) There are some
+commutation relations for these symbols: the A's commute between
+themselves, <B><TT>A(k)**A(l) = A(l)**A(k)</TT></B>, and also the B's,
+<B><TT>B(k)**B(l) = B(l)**B(k)</TT></B>. However, the A's don't commute
+with the B's: <B><TT>A(k)**B(l) - B(l)**A(k) = Delta(k-l)</TT></B>. Here
+the "Delta" is a "classical" function (called the "Dirac
+delta-function") but we aren't going to do anything about it, just leave
+it symbolic like that.
+<P>
+Now we would like to manipulate such expressions, expanding brackets,
+collecting similar terms and so on, while taking care to always keep the
+non-commuting terms in the correct order. For example, we want Yacas to
+automatically simplify <B><TT>2**B(k1)**3**A(k2)</TT></B> to
+<B><TT>6**B(k1)**A(k2)</TT></B>. Our goal is not to implement a general
+package to tackle complicated non-commutative operations; we merely want to
+teach Yacas about the two kinds of "quantum objects" called A(k) and
+B(k), and we shall define one functions that a physicist needs from these
+objects. The function will compute something called a "vacuum expectation
+value" or "VEV" of any given expression containing A's and B's. This
+function has "classical" values and is defined as follows: VEV of a
+commuting number is just that number, e.g. VEV(4) = 4, VEV(Delta(k-l)) =
+Delta(k-l); and VEV(X**A(k)) = 0, VEV(B(k)**X) = 0 where X is any
+expression, commutative or not. It is straightforward to compute VEV of
+something that contains A's and B's: we just use the commutation relations
+to move all B's to the left of all A's, and then apply the definition of
+VEV.
+<A NAME="c5s2">
+
+</A>
+<H2>
+<HR>First steps
+</H2>
+The first thing that comes to mind when we start implementing this in Yacas is to write a rule such as <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+10 # A(_k)**B(_l) <-- B(l)**A(k) + Delta(k-l);</PRE>
+</TABLE>
+However, this is not going to work right away. In fact this will
+immediately give a syntax error because Yacas doesn't know yet about the
+new multiplication <B><TT>**</TT></B>. Let's mend that: we shall define a
+new infix operator with the same precedence as multiplication.
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+RuleBase("**", {x,y});
+Infix("**", OpPrecedence("*"));
+</PRE>
+</TABLE>
+Now we can use this new multiplication operator in expressions, and it doesn't evaluate to anything -- exactly what we need. But we find that things don't quite work: <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> A(_k)**B(_l) <-- B(l)**A(k)+Delta(k-l);
+Out> True;
+In> A(x)**B(y)
+Out> B(l)**A(k)+Delta(k-l);
+</PRE>
+</TABLE>
+Yacas doesn't grok that Delta(k), A(k) and B(k) are functions. This can be fixed by declaring <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+RuleBase("A", {k});
+RuleBase("B", {k});
+RuleBase("Delta", {k});
+</PRE>
+</TABLE>
+Now things work as intended:<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> A(y)**B(z)*2
+Out> 2*(B(z)**A(y)+Delta(y-z));
+</PRE>
+</TABLE>
+
+<A NAME="c5s3">
+
+</A>
+<H2>
+<HR>Structure of expressions
+</H2>
+Are we done yet? Let's try to calculate more things with our A's and B's: <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> A(k)*2**B(l)
+Out> 2*A(k)**B(l);
+In> A(x)**A(y)**B(z)
+Out> A(x)**A(y)**B(z);
+In> (A(x)+B(x))**B(y)*3
+Out> 3*(A(x)+B(x))**B(y);
+</PRE>
+</TABLE>
+After we gave it slightly more complicated input, Yacas didn't fully
+evaluate expressions containing the new multiplication operation: it didn't
+move constants together, didn't expand brackets, and, somewhat
+mysteriously, it didn't apply the rule in the first line above -- although
+it seems like it should have. Before we hurry to fix these things, let's
+think some more about how Yacas represents our new expressions. Let's start
+with the first line above: <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> FullForm( A(k)*2**B(l) )
+(** (* 2 (A k ))(B l ))
+Out> 2*A(k)**B(l);
+</PRE>
+</TABLE>
+What looks like <B><TT>2*A(k)**B(l)</TT></B> on the screen is really <B><TT>(2*A(k)) ** B(l)</TT></B> inside Yacas. In other words, the commutation rule didn't apply because there is no subexpression of the form <B><TT>A(...)**B(...)</TT></B> in this expression. It seems that we would need many rules to exhaust all ways in which the adjacent factors A(k) and B(l) might be divided between subexpressions. We run into this difficulty because Yacas represents all expressions as trees of functions and leaves the semantics to us. To Yacas, the "*" operator is fundamentally no different from any other function, and "(a*b)*c" and "a*(b*c)" are two basically different expressions. It would take a considerable amount of work to teach Yacas to recognize all such cases as identical. This is a design choice and it was made by the author of Yacas to achieve greater flexibility and extensibility.
+<P>
+A solution for this problem is not to write rules for all possible cases (there are infinitely many cases) but to systematically reduce expressions to a <I>canonical form</I>. "Experience has shown that" (a phrase used when we can't come up with specific arguments) symbolic manipulation of unevaluated trees is not efficient unless these trees are forced to a pattern that reflects their semantics.
+<P>
+We should choose a canonical form for all such expressions in a way that makes our calculations -- namely, the VEV() function -- easier. In our case, our expressions contain two kinds of ingredients: normal, commutative numbers and maybe a number of "quantum" symbols A(k) and B(k) multiplied together with the "**" operator. It will not be possible to divide anything by A(k) or B(k). 
+<P>
+A possible canonical form for expressions with A's and B's is the
+following. All commutative numbers are moved to the left of the expression
+and grouped together as one factor; all non-commutative products are
+simplified to a single chain, all brackets expanded. A canonical expression
+should not contain any extra brackets in its non-commutative part. For
+example, (A(x)+B(x)*x)**B(y)*y**A(z) should be regrouped as a sum of two
+terms, (y)**(A(x)**(B(y))**A(z)) and (x*y)**(B(x)**(B(y))**A(z)). Here we
+wrote out all parentheses to show explicitly which operations are grouped.
+(We have chosen the grouping of non-commutative factors to go from left to
+right, however this does not seem to be an important choice.) On the screen
+this will look simply <B><TT>y ** A(x) ** B(y)</TT></B> and
+<B><TT>x*y** B(x) ** B(y) ** A(z)</TT></B> because we have defined the
+precedence of the "**" operator to be the same as that of the normal
+multiplication, so Yacas won't insert any more
+parentheses.
+<P>
+This canonical form will allow Yacas to apply all the usual rules on the commutative factor while cleanly separating all non-commutative parts for special treatment. Note that a commutative factor such as <B><TT>x*y</TT></B> will be multiplied by a single non-commutative piece with "<B><TT>**</TT></B>".
+<P>
+The basic idea behind the "canonical form" is this: we should define our evaluation rules in such a way that any expression containing A(k) and B(k) will be always automatically reduced to the canonical form after one full evaluation. All functions on our new objects will assume that the object is already in the canonical form and should return objects in the same canonical form.
+<A NAME="c5s4">
+
+</A>
+<H2>
+<HR>Implementing the canonical form
+</H2>
+Now that we have a design, let's look at some implementation
+issues. We would like to write evaluation rules involving the new operator
+"<B><TT>**</TT></B>" as well as the ordinary multiplications and
+additions involving usual numbers, so that all "classical" numbers and all
+"quantum" objects are grouped together separately. This should be
+accomplished with rules that expand brackets, exchange the bracketing order
+of expressions and move commuting factors to the left. For now, we shall not concern ourselves with divisions and subtractions.
+
+<P>
+First, we need to distinguish "classical" terms from "quantum" ones. For this, we shall define a predicate "IsQuantum()" recursively, as follows: <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+    /* Predicate IsQuantum(): will return True if the expression
+	contains A(k) or B(k) and False otherwise */
+10 # IsQuantum(A(_x)) <-- True;
+10 # IsQuantum(B(_x)) <-- True;
+    /* Result of a binary operation may be Quantum */
+20 # IsQuantum(_x + _y) <-- IsQuantum(x) Or IsQuantum(y);
+20 # IsQuantum(+ _y) <-- IsQuantum(y);
+20 # IsQuantum(_x * _y) <-- IsQuantum(x) Or IsQuantum(y);
+20 # IsQuantum(_x ** _y) <-- IsQuantum(x) Or IsQuantum(y);
+    /* If none of the rules apply, the object is not Quantum */
+30 # IsQuantum(_x) <-- False;
+</PRE>
+</TABLE>
+
+<P>
+Now we shall construct rules that implement reduction to the canonical form. The rules will be given precedences, so that the reduction proceeds by clearly defined steps. All rules at precedence X will benefit from all simplifications at earlier precedences.<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+    /* First, replace * by ** if one of the factors is Quantum
+    to guard against user error */
+10 # (_x * _y)_(IsQuantum(x) Or IsQuantum(y)) <-- x ** y;
+    /* Replace ** by * if neither of the factors is Quantum */
+10 # (_x ** _y)_(Not(IsQuantum(x) Or IsQuantum(y))) <-- x * y;
+    /* Now we are guaranteed that ** is used between Quantum values */
+    /* Expand all brackets involving Quantum values */
+15 # (_x + _y) ** _z <-- x ** z + y ** z;
+15 # _z ** (_x + _y) <-- z ** x + z ** y;
+    /* Now we are guaranteed that there are no brackets next to ** */
+    /* Regroup the ** multiplications toward the right */
+20 # (_x ** _y) ** _z <-- x ** (y ** z);
+    /* Move classical factors to the left: first, inside brackets */
+30 # (x_IsQuantum ** _y)_(Not(IsQuantum(y))) <-- y ** x;
+    /* Then, move across brackets: y and z are already ordered
+    by the previous rule */
+    /* First, if we have Q ** (C ** Q) */
+35 # (x_IsQuantum ** (_y ** _z))_(Not(IsQuantum(y))) <-- y ** (x ** z);
+    /* Second, if we have C ** (C ** Q) */
+35 # (_x ** (_y ** _z))_(Not(IsQuantum(x) Or IsQuantum(y))) <-- (x*y) ** z;
+</PRE>
+</TABLE>
+After we execute this in Yacas, all expressions involving additions and multiplications are automatically reduced to the canonical form. Extending these rules to subtractions and divisions is straightforward.
+<A NAME="c5s5">
+
+</A>
+<H2>
+<HR>Implementing commutation rules
+</H2>
+But we still haven't implemented the commutation rules. It is perhaps not necessary to have commutation rules automatically applied at each evaluation. We shall define the function "OrderBA()" that will bring all B's to the left of all A's by using the commutation relation. Again, our definition will be recursive. We shall assign it a later precedence than our quantum evaluation rules, so that our objects will always be in canonical form. We need a few more rules to implement the commutation relation and to propagate the ordering operation down the expression tree: <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+    /* Commutation relation */
+40 # OrderBA(A(_k) ** B(_l)) <-- B(l)**A(k) + Delta(k-l);
+40 # OrderBA(A(_k) ** (B(_l) ** _x)) <-- OrderBA(OrderBA(A(k)**B(l)) ** x);
+    /* Ordering simple terms */
+40 # OrderBA(_x)_(Not(IsQuantum(x))) <-- x;
+40 # OrderBA(A(_k)) <-- A(k);
+40 # OrderBA(B(_k)) <-- B(k);
+    /* Sums of terms */
+40 # OrderBA(_x + _y) <-- OrderBA(x) + OrderBA(y);
+    /* Product of a classical and a quantum value */
+40 # OrderBA(_x ** _y)_(Not(IsQuantum(x))) <-- x ** OrderBA(y);
+    /* B() ** X : B is already at left, no need to order it */
+50 # OrderBA(B(_k) ** _x) <-- B(k)**OrderBA(x);
+    /* A() ** X : need to order X first */
+50 # OrderBA(A(_k) ** _x) <-- OrderBA(A(k)**OrderBA(x));
+</PRE>
+</TABLE>
+These rules seem to be enough for our purposes. Note that the commutation relation is implemented by the first two rules; the first one is used by the second one which applies when interchanging factors A and B separated by brackets. This inconvenience of having to define several rules for what seems to be "one thing to do" is a consequence of tree-like structure of expressions in Yacas. It is perhaps the price we have to pay for conceptual simplicity of the design.
+<A NAME="c5s6">
+
+</A>
+<H2>
+<HR>Avoiding infinite recursion
+</H2>
+However we quickly discover that our definitions don't work. Actually we have run into a difficulty typical of rule-based programming: <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> OrderBA(A(k)**A(l))
+Error on line 1 in file [CommandLine]
+Line error occurred on:
+>>>
+Max evaluation stack depth reached.
+Please use MaxEvalDepth to increase the stack size as needed.
+</PRE>
+</TABLE>
+This error message means that we have created an infinite recursion. It is easy to see that the last rule is at fault: it never stops applying itself when it operates on a term containing only A's and no B's. When encountering a term such as "A() ** X", the routine cannot determine whether "X" has already been ordered or not, and it unnecessarily keeps ordering it again and again. We can circumvent this difficulty by using an auxiliary ordering function that we shall call "OrderBAlate". This function will operate only on terms of the form "A() ** X" and only after "X" has been ordered. It will not perform any extra simplifications but instead delegate all work to "OrderBA". <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+50 # OrderBA(A(_k) ** _x) <-- OrderBAlate(A(k)**OrderBA(x));
+55 # OrderBAlate(_x + _y) <-- OrderBAlate(x) + OrderBAlate(y);
+55 # OrderBAlate(A(_k) ** B(_l)) <-- OrderBA(A(k)**B(l));
+55 # OrderBAlate(A(_k) ** (B(_l) ** _x)) <-- OrderBA(A(k)**(B(l)**x));
+60 # OrderBAlate(A(_k) ** _x) <-- A(k)**x;
+65 # OrderBAlate(_x) <-- OrderBA(x);
+</PRE>
+</TABLE>
+Now "OrderBA()" works as desired.
+<A NAME="c5s7">
+
+</A>
+<H2>
+<HR>Implementing VEV()
+</H2>
+Now it is easy to define the function "VEV()". This function should first order all A's and B's so that B's are always to the left of A's. After the resulting expression is evaluated, all its "quantum" terms will either end with an A(k) or begin with a B(k), so that "VEV()" of those terms will return 0. The value of "VEV()" of a classical term is just that term. The implementation could look like this: <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+100 # VEV(_x) <-- VEVOrd(OrderBA(x));
+    /* Everything is expanded now, deal term by term */
+100 # VEVOrd(_x + _y) <-- VEVOrd(x) + VEVOrd(y);
+    /* Now cancel all quantum terms */
+110 # VEVOrd(x_IsQuantum) <-- 0;
+    /* Classical terms are left */
+120 # VEVOrd(_x) <-- x;
+</PRE>
+</TABLE>
+To avoid infinite recursion in calling "OrderBA()", we had to introduce an auxiliary function "VEVOrd()" that assumes its argument to be ordered. 
+<P>
+Finally, we try some example calculations to test our rules. <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> OrderBA(A(x)*B(y))
+Out> B(y)**A(x)+Delta(x-y);
+In> OrderBA(A(x)*B(y)*B(z))
+Out> B(y)**B(z)**A(x)+Delta(x-z)**B(y)+Delta(x-y)**B(z);
+In> VEV(A(k)*B(l))
+Out> Delta(k-l);
+In> VEV(A(k)*B(l)*A(x)*B(y))
+Out> Delta(k-l)*Delta(x-y);
+In> VEV(A(k)*A(l)*B(x)*B(y))
+Out> Delta(l-y)*Delta(k-x)+Delta(l-x)*Delta(k-y);
+</PRE>
+</TABLE>
+
+
+
+</BODY>
+
+</FONT>
+
+</HTML>

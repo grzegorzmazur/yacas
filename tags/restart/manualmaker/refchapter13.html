@@ -1,0 +1,191 @@
+<HTML>
+<A NAME="c13">
+
+</A>
+<A HREF="refchapter13.html#:=" TARGET="Chapters">
+:=
+</A>
+, <A HREF="refchapter13.html#Set" TARGET="Chapters">
+Set
+</A>
+, <A HREF="refchapter13.html#Clear" TARGET="Chapters">
+Clear
+</A>
+, <A HREF="refchapter13.html#Local" TARGET="Chapters">
+Local
+</A>
+, <A HREF="refchapter13.html#++" TARGET="Chapters">
+++
+</A>
+, <A HREF="refchapter13.html#--" TARGET="Chapters">
+--
+</A>
+, <A HREF="refchapter13.html#Object" TARGET="Chapters">
+Object
+</A>
+, <A HREF="refchapter13.html#LazyGlobal" TARGET="Chapters">
+LazyGlobal
+</A>
+, <HEAD><TITLE>Variables</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+Variables
+</H1>
+<A NAME=":=">
+
+</A>
+<H3>
+<HR>x:=y
+</H3>
+
+x:=y :  Assignment. The ":=" operator can be used for three different types
+of assignment:
+
+Assigning a variable: as in "x:=2;",
+Defining a new function: as in "f(x):=Sin(2*x);", or
+Assigning a list item a value: as in "list[i] := 2;"
+
+
+<A NAME="Set">
+
+</A>
+<H3>
+<HR>Set(variable, value)
+</H3>
+
+Set(variable, value) : Sets variable to evaluated value and returns "True".
+
+
+<A NAME="Clear">
+
+</A>
+<H3>
+<HR>Clear(...)
+</H3>
+
+Clear(...) : Makes sure variables specified in "..." are not bound
+any more to a value, and returns True.
+
+
+<A NAME="Local">
+
+</A>
+<H3>
+<HR>Local(...)
+</H3>
+
+Local(...) :
+Mark the variables in the unevaluated argument list as
+local variables (local within a Prog block or a function).
+
+
+<A NAME="++">
+
+</A>
+<H3>
+<HR>x++
+</H3>
+
+x++ : increment the variable "x".
+
+
+<A NAME="--">
+
+</A>
+<H3>
+<HR>x--
+</H3>
+
+x-- : decrement the variable "x".
+
+
+<A NAME="Object">
+
+</A>
+<H3>
+<HR>Object("predicate",object)
+</H3>
+
+Object("predicate",object) : declaration of an
+incomplete object. This function returns "object"
+as soon as "predicate" returns "True" on it. 
+Example: "Object("IsNumber",x);" returns itself,
+where if x was an integer, it would return that
+integer.
+
+<A NAME="LazyGlobal">
+
+</A>
+<H3>
+<HR>LazyGlobal
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+LazyGlobal(var)
+<H5>
+Parameters:
+</H5>
+var - variable (held argument)
+<H5>
+Description:
+</H5>
+LazyGlobal enforces that a global variable will re-evaluate
+when used. The global variable needs to exist for this function
+to work. Also, this functionality doesn't survive if Clear(var)
+is called afterwards. <p>
+
+Places where this is used include the global variables % and I.<p>
+
+The use of lazy in the name stems from the concept of lazy evaluation.
+The object the global variable is bound to will only be evaluated when
+called. The LazyGlobal property only holds once: after that, the result
+of evaluation is stored in the global variable, and it won't be reevaluated again:
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> a:=Hold(Taylor(x,0,30)Sin(x))
+Out> Taylor(x,0,30)Sin(x);
+In> LazyGlobal(a)
+</PRE>
+</TABLE>
+
+
+Then the first time you call a it evaluates Taylor(...) and assigns the result to a. The next time
+you call a it immediately returns the result.
+LazyGlobal is called for "%" each time "%" changes.
+
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> a:=Hold(2+3)
+Out> 2+3;
+In> a
+Out> 2+3;
+In> LazyGlobal(a)
+Out> True;
+In> a
+Out> 5;
+
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Set" TARGET="Chapters">
+Set
+</A>
+, <A HREF="ref.html#Clear" TARGET="Chapters">
+Clear
+</A>
+, <A HREF="ref.html#Local" TARGET="Chapters">
+Local
+</A>
+, 
+</BODY>
+
+</FONT>
+
+</HTML>

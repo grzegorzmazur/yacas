@@ -1,0 +1,565 @@
+<HTML>
+<A NAME="c10">
+
+</A>
+<A HREF="refchapter10.html#&lt;" TARGET="Chapters">
+&lt;
+</A>
+, <A HREF="refchapter10.html#&gt;" TARGET="Chapters">
+&gt;
+</A>
+, <A HREF="refchapter10.html#&lt;=" TARGET="Chapters">
+&lt;=
+</A>
+, <A HREF="refchapter10.html#&gt;=" TARGET="Chapters">
+&gt;=
+</A>
+, <A HREF="refchapter10.html#!=" TARGET="Chapters">
+!=
+</A>
+, <A HREF="refchapter10.html#=" TARGET="Chapters">
+=
+</A>
+, <A HREF="refchapter10.html#Not" TARGET="Chapters">
+Not
+</A>
+, <A HREF="refchapter10.html#And" TARGET="Chapters">
+And
+</A>
+, <A HREF="refchapter10.html#Or" TARGET="Chapters">
+Or
+</A>
+, <A HREF="refchapter10.html#IsFreeOf" TARGET="Chapters">
+IsFreeOf
+</A>
+, <A HREF="refchapter10.html#IsZeroVector" TARGET="Chapters">
+IsZeroVector
+</A>
+, <A HREF="refchapter10.html#IsNonObject" TARGET="Chapters">
+IsNonObject
+</A>
+, <A HREF="refchapter10.html#IsEven" TARGET="Chapters">
+IsEven
+</A>
+, <A HREF="refchapter10.html#IsOdd" TARGET="Chapters">
+IsOdd
+</A>
+, <A HREF="refchapter10.html#IsFunction" TARGET="Chapters">
+IsFunction
+</A>
+, <A HREF="refchapter10.html#IsAtom" TARGET="Chapters">
+IsAtom
+</A>
+, <A HREF="refchapter10.html#IsString" TARGET="Chapters">
+IsString
+</A>
+, <A HREF="refchapter10.html#IsNumber" TARGET="Chapters">
+IsNumber
+</A>
+, <A HREF="refchapter10.html#IsInteger" TARGET="Chapters">
+IsInteger
+</A>
+, <A HREF="refchapter10.html#IsList" TARGET="Chapters">
+IsList
+</A>
+, <A HREF="refchapter10.html#IsBound" TARGET="Chapters">
+IsBound
+</A>
+, <A HREF="refchapter10.html#IsBoolean" TARGET="Chapters">
+IsBoolean
+</A>
+, <A HREF="refchapter10.html#IsNegativeNumber" TARGET="Chapters">
+IsNegativeNumber
+</A>
+, <A HREF="refchapter10.html#IsNegativeInteger" TARGET="Chapters">
+IsNegativeInteger
+</A>
+, <A HREF="refchapter10.html#IsPositiveNumber" TARGET="Chapters">
+IsPositiveNumber
+</A>
+, <A HREF="refchapter10.html#IsPositiveInteger" TARGET="Chapters">
+IsPositiveInteger
+</A>
+, <A HREF="refchapter10.html#IsNotZero" TARGET="Chapters">
+IsNotZero
+</A>
+, <A HREF="refchapter10.html#IsNonZeroInteger" TARGET="Chapters">
+IsNonZeroInteger
+</A>
+, <A HREF="refchapter10.html#IsInfinity" TARGET="Chapters">
+IsInfinity
+</A>
+, <A HREF="refchapter10.html#IsConstant" TARGET="Chapters">
+IsConstant
+</A>
+, <HEAD><TITLE>Predicates</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+Predicates
+</H1>
+<A NAME="&lt;">
+
+</A>
+<H3>
+<HR>x &lt; y (prec. 9)
+</H3>
+
+x < y : Return True if "x" is smaller than "y", False otherwise.
+
+
+<A NAME="&gt;">
+
+</A>
+<H3>
+<HR>x &gt; y (prec. 9)
+</H3>
+
+x > y : Return True if "x" is larger than "y", False otherwise.
+
+
+<A NAME="&lt;=">
+
+</A>
+<H3>
+<HR>x &lt;= y (prec. 9)
+</H3>
+
+x <= y : Return True if "x" is smaller than or equals "y", False otherwise.
+
+
+<A NAME="&gt;=">
+
+</A>
+<H3>
+<HR>x &gt;= y (prec. 9)
+</H3>
+
+x >= y : Return True if "x" is larger than or equals "y", False otherwise.
+
+
+<A NAME="!=">
+
+</A>
+<H3>
+<HR>x!=y (prec. 9)
+</H3>
+
+x!=y : Return True if "x" is not equal to "y", False otherwise.
+
+
+
+<A NAME="=">
+
+</A>
+<H3>
+<HR>x=y  (prec. 9)
+</H3>
+
+x=y : This operator performs the same action as Equals(x,y).
+It returns True if x and y would be displayed on screen the same,
+False otherwise.
+
+
+<A NAME="Not">
+
+</A>
+<H3>
+<HR>Not
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Not bool
+<H5>
+Parameters:
+</H5>
+bool - a boolean expression
+<H5>
+Description:
+</H5>
+Not returns the logical negation of the argument bool. If bool is
+False it returns True, and if the argument is True Not returns False.
+If the argument is neither True nor False it returns the entire
+expression with evaluated arguments.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Not True
+Out> False;
+In> Not False
+Out> True;
+In> Not(a)
+Out> Not a;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#And" TARGET="Chapters">
+And
+</A>
+, <A HREF="ref.html#Or" TARGET="Chapters">
+Or
+</A>
+, <A NAME="And">
+
+</A>
+<H3>
+<HR>And
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+a1 And a2 <br>
+And(a1,a2,a3,...,an)
+<H5>
+Parameters:
+</H5>
+a1 .. an - boolean values (True or False)
+<H5>
+Description:
+</H5>
+This function returns True if all arguments are true. The
+And operation is lazy, it returns False as soon as a False argument
+is found (from left to right). If an argument other than True or
+False is encountered a new And expression is returned with all
+arguments that didn't evaluate to True or False yet.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> True And False
+Out> False;
+In> And(True,True)
+Out> True;
+In> False And a
+Out> False;
+In> True And a
+Out> And(a);
+In> And(True,a,True,b)
+Out> b And a;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Or" TARGET="Chapters">
+Or
+</A>
+, <A HREF="ref.html#Not" TARGET="Chapters">
+Not
+</A>
+, <A NAME="Or">
+
+</A>
+<H3>
+<HR>Or
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+a1 Or a2 <br>
+Or(a1,a2,a3,...,an)
+<H5>
+Parameters:
+</H5>
+a1 .. an - boolean values (True or False)
+<H5>
+Description:
+</H5>
+This function returns True if an argument is encountered
+that is true (scanning from left to right). The
+Or operation is lazy, it returns True as soon as a True argument
+is found (from left to right). If an argument other than True or
+False is encountered a new Or expression is returned with all
+arguments that didn't evaluate to True or False yet.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> True Or False
+Out> True;
+In> False Or a
+Out> Or(a);
+In> Or(False,a,b,True)
+Out> True;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#And" TARGET="Chapters">
+And
+</A>
+, <A HREF="ref.html#Not" TARGET="Chapters">
+Not
+</A>
+, <A NAME="IsFreeOf">
+
+</A>
+<H3>
+<HR>IsFreeOf(expression,variable) or IsFreeOf(expression,{varlist})
+</H3>
+
+Returns wether "expression" depends on
+"variable". "expression" is evaluated beforehand.
+Example: "IsFreeOf(x+y,x);" evaluates to "False".
+<P>
+When a list of variables is passed, IsFreeOf returns True iff the
+expression is independent of all the variables listed.
+"IsFreeOf(x+y,{a,b});" would return True, and "IsFreeOf(x+y,{a,x});"
+would return False.
+
+<A NAME="IsZeroVector">
+
+</A>
+<H3>
+<HR>IsZeroVector(vector)
+</H3>
+
+Returns wether "vector" only contains zeroes.
+"vector" should be a list.
+
+
+<A NAME="IsNonObject">
+
+</A>
+<H3>
+<HR>IsNonObject(x)
+</H3>
+
+IsNonObject(x) : returns true if x is not of
+the form Object(...).
+
+<A NAME="IsEven">
+
+</A>
+<A NAME="IsOdd">
+
+</A>
+<H3>
+<HR>IsEven(n) and IsOdd(n)
+</H3>
+Returns whether the integer n is even or odd (an integer n is even
+if n divided by 2 is also an integer).
+<A NAME="IsFunction">
+
+</A>
+<H3>
+<HR>IsFunction(expr)
+</H3>
+
+IsFunction(expr) : Predicate that checks the type of a object.
+cos(a) is a function. 
+
+<A NAME="IsAtom">
+
+</A>
+<H3>
+<HR>IsAtom(expr)
+</H3>
+
+IsAtom(expr) : Predicate that checks the type of a object.
+Atoms are any object that can be represented with a text string (that
+is, excluding lists). 
+
+<A NAME="IsString">
+
+</A>
+<H3>
+<HR>IsString(expr)
+</H3>
+
+IsString(expr) : Predicate that checks the type of a object.
+Strings have the form "string",
+that is, with quotes.
+
+<A NAME="IsNumber">
+
+</A>
+<H3>
+<HR>IsNumber(expr)
+</H3>
+
+IsNumber(expr) : Predicate that checks the type of a object.
+1.2 or 1 are numbers. 
+
+<A NAME="IsInteger">
+
+</A>
+<H3>
+<HR>IsInteger(expr)
+</H3>
+
+IsInteger(expr) : Predicate that checks the type of a object.
+1 is a integer. 
+<A NAME="IsList">
+
+</A>
+<H3>
+<HR>IsList(expr)
+</H3>
+
+IsList(expr) : Predicate that checks the type of a object.
+{cos,a} is a list.
+
+<A NAME="IsBound">
+
+</A>
+<H3>
+<HR>IsBound(var)
+</H3>
+
+IsBound(var) :Predicate that checks the type of a object.
+IsBound checks to see if variable var is bound.
+
+<A NAME="IsBoolean">
+
+</A>
+<H3>
+<HR>IsBoolean
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+IsBoolean(expression)
+<H5>
+Parameters:
+</H5>
+expression - an expression
+<H5>
+Description:
+</H5>
+IsBoolean returns True if the argument is of a boolean type.
+This means it has to be either True, False, or an expression involving
+functions that return a boolean result, like
+=, &gt, &lt, &gt=, &lt=, !=, And, Not, Or.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> IsBoolean(a)
+Out> False;
+In> IsBoolean(True)
+Out> True;
+In> IsBoolean(a And b)
+Out> True;
+
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#True" TARGET="Chapters">
+True
+</A>
+, <A HREF="ref.html#False" TARGET="Chapters">
+False
+</A>
+, <A NAME="c10s1">
+
+</A>
+<H2>
+<HR>Predicates on numbers
+</H2>
+These predicates return whether the argument is a number,
+and of a specific type.
+<A NAME="IsNegativeNumber">
+
+</A>
+<H3>
+<HR>IsNegativeNumber(n)
+</H3>
+<A NAME="IsNegativeInteger">
+
+</A>
+<H3>
+<HR>IsNegativeInteger(n)
+</H3>
+<A NAME="IsPositiveNumber">
+
+</A>
+<H3>
+<HR>IsPositiveNumber(n)
+</H3>
+<A NAME="IsPositiveInteger">
+
+</A>
+<H3>
+<HR>IsPositiveInteger(n)
+</H3>
+<A NAME="IsNotZero">
+
+</A>
+<H3>
+<HR>IsNotZero(n)
+</H3>
+<A NAME="IsNonZeroInteger">
+
+</A>
+<H3>
+<HR>IsNonZeroInteger(n)
+</H3>
+<A NAME="IsInfinity">
+
+</A>
+<H3>
+<HR>IsInfinity(n)
+</H3>
+
+Returns True if the argument is either Infinity or -Infinity
+
+<A NAME="IsConstant">
+
+</A>
+<H3>
+<HR>IsConstant
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+IsConstant(expression)
+<H5>
+Parameters:
+</H5>
+expression - some expression
+<H5>
+Description:
+</H5>
+IsConstant returns True if the expression is some constant
+or a function with constant arguments. It does this by checking
+that no variables are referenced in the expression.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> IsConstant(Cos(x))
+Out> False;
+In> IsConstant(Cos(2))
+Out> True;
+In> IsConstant(Cos(2+x))
+Out> False;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#IsNumber" TARGET="Chapters">
+IsNumber
+</A>
+, <A HREF="ref.html#IsInteger" TARGET="Chapters">
+IsInteger
+</A>
+, 
+</BODY>
+
+</FONT>
+
+</HTML>

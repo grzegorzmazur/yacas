@@ -1,0 +1,83 @@
+
+Chapter()"Constants";
+
+
+AddAnchor("%");
+SubSection()"%";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()"%";
+
+Topical()"Parameters";
+Text()"";
+
+Topical()"Description";
+Text()
+"% evaluates to the previous result on the command line. % is a global
+variable that is bound to the previous result from the command line.
+Using % will evaluate the previous result (This uses the functionality
+offered by the LazyGlobal command). <p>
+
+Typical examples are ":HtmlTerm("Simplify(%)"):" and ":
+HtmlTerm("PrettyForm(%)"): "to simplify and show the result in a nice
+form respectively.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Taylor(x,0,5)Sin(x)
+Out> x-x^3/6+x^5/120;
+In> PrettyForm(%)
+
+     3    5 
+    x    x  
+x - -- + ---
+    6    120
+
+
+");
+
+Topical()"See Also"; 
+SeeAlso({"LazyGlobal"});
+
+
+
+AddAnchor("True");
+AddAnchor("False");
+SubSection()"True and False";  Text()"
+
+":HtmlTerm("True"):" and ":HtmlTerm("False"):" are typically the result
+of boolean expressions like ":HtmlTerm("2 &lt 3"):" and ":
+HtmlTerm("True And False"):".";
+
+
+AddAnchor("EndOfFile");
+SubSection()"EndOfFile";  Text()"
+EndOfFile : End of file marker when reading from file. If a file
+contains the expression ":HtmlTerm("EndOfFile;"):" the
+operation will stop reading the file at that point.
+";
+
+AddAnchor("Infinity");
+SubSection()"Infinity";  Text()"
+
+Infinity represents infinity. It can be the result of certain
+calculations." :
+HtmlNewParagraph() :
+"
+Note that for most analytic functions Yacas understands Infinity.
+Thus ":HtmlTerm("Infinity*2"):" will return Infinity, and ":
+HtmlTerm("a &lt Infinity"):" will evaluate to True.
+";
+
+AddAnchor("Pi");
+SubSection()"Pi";  Text()"
+
+Pi represents the value of pi. When the N(..) function is used,
+Pi is set to the correct value. It is probably better to use
+Pi than Pi(), for simplification purposes.
+
+";
+
+

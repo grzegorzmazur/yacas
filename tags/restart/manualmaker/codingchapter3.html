@@ -1,0 +1,118 @@
+<HTML>
+<A NAME="c3">
+
+</A>
+<HEAD><TITLE>Advanced example 1: parsing expressions (CForm)</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+Advanced example 1: parsing expressions (CForm)
+</H1>
+In this chapter we show how Yacas represents expressions and how we
+can build functions that work on all expressions. Our specific example will
+be "CForm()", a standard library function that converts Yacas expressions
+into C or C++ code. (Although the input format of Yacas expressions is
+already very close to C and perhaps could be converted to C by means of an
+external text filter, it is instructive to understand how to define Yacas
+functions that produce C code.) We shall only design the core mechanism of
+"CForm()" and build a limited version that handles only expressions using
+the four arithmetic actions.
+<A NAME="c3s1">
+
+</A>
+<H2>
+<HR>Recursive parsing of expression trees
+</H2>
+As we have seen in the tutorial, Yacas represents all expressions as trees, or equivalently, as lists of lists. For example, the expression "<B><TT>a+b+c+d+e</TT></B>" is for Yacas a tree of depth 4 that could be visualized as <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+     "+"
+   a    "+"
+       b   "+" 
+          c   "+"
+              d  e
+</PRE>
+</TABLE>
+Complicated expressions are thus built from simple ones in a general and flexible way. If we want a function that acts on sums of any number of terms, we only need to define this function on a single atom and on a sum of two terms, and the Yacas engine will recursively perform the action on the entire tree. 
+<P>
+So our first try is to define rules for transforming an atom and for transforming sums and products. The result of CForm() will always be a string and we can use recursion like this: <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> 100 # CForm(a_IsAtom) <-- String(a);
+Out> True;
+In> 100 # CForm(_a + _b) <-- CForm(a) : " + " : CForm(b);
+Out> True;
+In> 100 # CForm(_a * _b) <-- CForm(a) : " * " : CForm(b);
+Out> True;
+</PRE>
+</TABLE>
+We used the string concatenation operator "<B><TT>:</TT></B>" and we
+added spaces around the binary operators for clarity. All rules have the
+same precedence 100 because there are no conflicts in rule ordering so far:
+these rules apply in mutually exclusive cases. Let's try converting some
+simple expressions now: <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> CForm(a+b*c);
+Out> "a + b * c";
+In> CForm(a+b*c*d+e+1+f);
+Out> "a + b * c * d + e + 1 + f";
+</PRE>
+</TABLE>
+After just three rules, we were able to process even some complicated expressions. How did it work? We could illustrate the steps Yacas went through when simplifying <B><TT>CForm(a+b*c)</TT></B> roughly like this: <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+CForm(a+b*c)
+    ... apply 2nd rule
+CForm(a) : " + " : Cform(b*c)
+    ... apply 1st rule and 3rd rule
+"a" : " + " : Cform(b) : " * " : Cform(c)
+    ... apply 1st rule
+"a" : " + " : "b" : " * " : "c"
+    ... concatenate strings
+"a + b * c"
+</PRE>
+</TABLE>
+
+<A NAME="c3s2">
+
+</A>
+<H2>
+<HR>Handling precedence of infix operations
+</H2>
+It seems that recursion will do all the work for us. The power of recursion is indeed great and heavy use of recursion is built in the design of Yacas. We just need to add rules for more operators, for example, the unary addition, subtraction and division: <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+100 # CForm(+ _a) <-- "+ " : CForm(a);
+100 # CForm(- _a) <-- "- " : CForm(a);
+100 # CForm(_a - _b) <-- CForm(a) : " - " : CForm(b);
+100 # CForm(_a / _b) <-- CForm(a) : " / " : CForm(b);
+</PRE>
+</TABLE>
+However, soon enough we find that we forgot about operator precedence. Our simple-minded "CForm()" gives wrong C code for expressions like this: <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> CForm( (a+b) * c );
+Out> "a + b * c";
+</PRE>
+</TABLE>
+We need to get something like "(a+b)*c" in this case. How would we add a rule to insert parentheses around subexpressions? We could just insert them at every subexpression, replacing our rules by something like <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+100 # CForm(_a + _b) <-- "(" : CForm(a) : " + " : CForm(b) : ")";
+100 # CForm(- _a) <-- "(- " : CForm(a) : ")";
+</PRE>
+</TABLE>
+and so on. This will always produce correct C code, e.g. in our case "((a+b)*c)", but generally the output will be full of unnecessary parentheses. 
+<P>
+We could improve the situation by inserting parentheses only if the higher-order expression requires them; for this to work, we need to make a call such as "CForm(a+b)" aware that the enveloping expression has a multiplication by "c" in it. This can be implemented by passing an extra argument to "CForm()" that will indicate the precedence of the enveloping operation. A compound expression that uses an infix operator must be bracketed if the precedence of that infix operator is higher than the precedence of the enveloping infix operation.
+<P>
+We shall define an auxiliary function that we shall also call "CForm" but with a second argument, the precedence of the enveloping infix operation. If there is no enveloping operation, we shall set the precedence to a large number, e.g. 60000, so that no parentheses will be inserted around the whole expression. The new "CForm(expr, precedence)" will handle two cases: either parentheses are necessary, or unnecessary. For clarity we shall implement these cases in two separate rules. The initial call to "CForm(expr)" will be delegated to "CForm(expr, precedence)". The precedence values of infix operators such as +" and "*" is fixed in Yacas but may change from version to version, so we shall use the function <B><TT>OpPrecedence()</TT></B> to determine it. The new rules could look like this: <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+PlusPrec := OpPrecedence("+");
+100 # CForm(_expr) <-- CForm(expr, 60000);
+100 # CForm(_a + _b, _prec)_(PlusPrec>prec) <--
+    "(" : CForm(a, PlusPrec) : " + " : CForm(b, PlusPrec) : ")";
+120 # CForm(_a + _b, _prec) <--
+    CForm(a, PlusPrec) : " + " : CForm(b, PlusPrec);
+</PRE>
+</TABLE>
+and so on. We omitted the predicate for the last rule because it has a later precedence than the preceding rule. The way we wrote these rules is unnecessarily repetitive but straightforward and it illustrates the central ideas of expression processing in Yacas. The standard library implements "CForm()" essentially in this way. In addition the library implementation supports standard mathematical functions, arrays and so on, and is better organized to allow easier extensions and avoid repetition of code.
+
+</BODY>
+
+</FONT>
+
+</HTML>

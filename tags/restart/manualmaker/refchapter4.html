@@ -1,0 +1,697 @@
+<HTML>
+<A NAME="c4">
+
+</A>
+<A HREF="refchapter4.html#Sin" TARGET="Chapters">
+Sin
+</A>
+, <A HREF="refchapter4.html#Cos" TARGET="Chapters">
+Cos
+</A>
+, <A HREF="refchapter4.html#Tan" TARGET="Chapters">
+Tan
+</A>
+, <A HREF="refchapter4.html#ArcSin" TARGET="Chapters">
+ArcSin
+</A>
+, <A HREF="refchapter4.html#ArcCos" TARGET="Chapters">
+ArcCos
+</A>
+, <A HREF="refchapter4.html#ArcTan" TARGET="Chapters">
+ArcTan
+</A>
+, <A HREF="refchapter4.html#Exp" TARGET="Chapters">
+Exp
+</A>
+, <A HREF="refchapter4.html#Ln" TARGET="Chapters">
+Ln
+</A>
+, <A HREF="refchapter4.html#Sqrt" TARGET="Chapters">
+Sqrt
+</A>
+, <A HREF="refchapter4.html#Abs" TARGET="Chapters">
+Abs
+</A>
+, <A HREF="refchapter4.html#Sign" TARGET="Chapters">
+Sign
+</A>
+, <A HREF="refchapter4.html#Complex" TARGET="Chapters">
+Complex
+</A>
+, <A HREF="refchapter4.html#Re" TARGET="Chapters">
+Re
+</A>
+, <A HREF="refchapter4.html#Im" TARGET="Chapters">
+Im
+</A>
+, <A HREF="refchapter4.html#I" TARGET="Chapters">
+I
+</A>
+, <A HREF="refchapter4.html#!" TARGET="Chapters">
+!
+</A>
+, <A HREF="refchapter4.html#Bin" TARGET="Chapters">
+Bin
+</A>
+, <A HREF="refchapter4.html#Sum" TARGET="Chapters">
+Sum
+</A>
+, <A HREF="refchapter4.html#Average" TARGET="Chapters">
+Average
+</A>
+, <A HREF="refchapter4.html#Factorize" TARGET="Chapters">
+Factorize
+</A>
+, <A HREF="refchapter4.html#Min" TARGET="Chapters">
+Min
+</A>
+, <A HREF="refchapter4.html#Max" TARGET="Chapters">
+Max
+</A>
+, <A HREF="refchapter4.html#IsZero" TARGET="Chapters">
+IsZero
+</A>
+, <A HREF="refchapter4.html#IsRational" TARGET="Chapters">
+IsRational
+</A>
+, <A HREF="refchapter4.html#Numer" TARGET="Chapters">
+Numer
+</A>
+, <A HREF="refchapter4.html#Denom" TARGET="Chapters">
+Denom
+</A>
+, <A HREF="refchapter4.html#Commutator" TARGET="Chapters">
+Commutator
+</A>
+, <A HREF="refchapter4.html#Taylor" TARGET="Chapters">
+Taylor
+</A>
+, <A HREF="refchapter4.html#InverseTaylor" TARGET="Chapters">
+InverseTaylor
+</A>
+, <A HREF="refchapter4.html#ReversePoly" TARGET="Chapters">
+ReversePoly
+</A>
+, <A HREF="refchapter4.html#Newton" TARGET="Chapters">
+Newton
+</A>
+, <A HREF="refchapter4.html#D" TARGET="Chapters">
+D
+</A>
+, <A HREF="refchapter4.html#Diverge" TARGET="Chapters">
+Diverge
+</A>
+, <A HREF="refchapter4.html#Curl" TARGET="Chapters">
+Curl
+</A>
+, <A HREF="refchapter4.html#Integrate" TARGET="Chapters">
+Integrate
+</A>
+, <A HREF="refchapter4.html#Simplify" TARGET="Chapters">
+Simplify
+</A>
+, <A HREF="refchapter4.html#Rationalize" TARGET="Chapters">
+Rationalize
+</A>
+, <A HREF="refchapter4.html#Conjugate" TARGET="Chapters">
+Conjugate
+</A>
+, <A HREF="refchapter4.html#Solve" TARGET="Chapters">
+Solve
+</A>
+, <A HREF="refchapter4.html#SuchThat" TARGET="Chapters">
+SuchThat
+</A>
+, <A HREF="refchapter4.html#Eliminate" TARGET="Chapters">
+Eliminate
+</A>
+, <A HREF="refchapter4.html#PSolve" TARGET="Chapters">
+PSolve
+</A>
+, <A HREF="refchapter4.html#Pi" TARGET="Chapters">
+Pi
+</A>
+, <A HREF="refchapter4.html#Fibonacci" TARGET="Chapters">
+Fibonacci
+</A>
+, <A HREF="refchapter4.html#Random" TARGET="Chapters">
+Random
+</A>
+, <A HREF="refchapter4.html#VarList" TARGET="Chapters">
+VarList
+</A>
+, <A HREF="refchapter4.html#Limit" TARGET="Chapters">
+Limit
+</A>
+, <A HREF="refchapter4.html#TrigSimpCombine" TARGET="Chapters">
+TrigSimpCombine
+</A>
+, <A HREF="refchapter4.html#LagrangeInterpolant" TARGET="Chapters">
+LagrangeInterpolant
+</A>
+, <HEAD><TITLE>Calculus</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+Calculus
+</H1>
+<A NAME="Sin">
+
+</A>
+<A NAME="Cos">
+
+</A>
+<A NAME="Tan">
+
+</A>
+<A NAME="ArcSin">
+
+</A>
+<A NAME="ArcCos">
+
+</A>
+<A NAME="ArcTan">
+
+</A>
+<H3>
+<HR>Trigonometric functions
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Sin(x)<br>
+Cos(x)<br>
+Tan(x)<br>
+ArcSin(x)<br>
+ArcCos(x)<br>
+ArcTan(x)<br>
+
+<H5>
+Parameters:
+</H5>
+x - some number
+<H5>
+Description:
+</H5>
+These functions represent the trigonometric functions and their
+inverses. Yacas leaves them alone even if x is a number, trying to keep
+the result as exact as possible. The floating point approximations of
+these functions can be forced by using the N(...) functions. <p>
+
+Yacas knows some trigonometric identities, so it can simplify to exact
+results even if N is not used. This is the case when the arguments are
+of the form Pi, Pi/2 etcetera.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Sin(1)
+Out> Sin(1);
+In> N(Sin(1),20)
+Out> 0.84147098480789650665;
+In> Sin(Pi/4)
+Out> Sqrt(2)/2;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#N" TARGET="Chapters">
+N
+</A>
+, <A HREF="ref.html#Pi" TARGET="Chapters">
+Pi
+</A>
+, <A NAME="Exp">
+
+</A>
+<H3>
+<HR>Exp(x)
+</H3>
+Exp(x) : Calculate e^x.
+<A NAME="Ln">
+
+</A>
+<H3>
+<HR>Ln(x)
+</H3>
+Ln(x) :  Calculate natural logarithm of x.
+<A NAME="Sqrt">
+
+</A>
+<H3>
+<HR>Sqrt(x)
+</H3>
+Sqrt(x) : calculate the square root of x.
+<A NAME="Abs">
+
+</A>
+<A NAME="Sign">
+
+</A>
+<H3>
+<HR>Abs, Sign
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Abs(x) <BR>
+Sign(x)
+
+<H5>
+Parameters:
+</H5>
+x - a number
+<H5>
+Description:
+</H5>
+Abs(x) returns the absolute value of a number.
+Abs(x)*Sign(x) should always be equal to x. Sign(x) returns 1
+if the number is positive, -1 otherwise.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Abs(-2)
+Out> 2;
+In> Sign(-2)
+Out> -1;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A NAME="Complex">
+
+</A>
+<H3>
+<HR>Complex(x,y)
+</H3>
+This represents a complex number x+I*y.
+<A NAME="Re">
+
+</A>
+<H3>
+<HR>Re(z)
+</H3>
+Return real part of complex number z.
+<A NAME="Im">
+
+</A>
+<H3>
+<HR>Im(z)
+</H3>
+Return imaginary part of complex number z.
+<A NAME="I">
+
+</A>
+<H3>
+<HR>I
+</H3>
+This is the pure imaginary number I (for which i*I=-1).
+You can type 2+I*3, which would evaluate to
+Complex(2,3). Re and Im return the real and
+imaginary parts of a number respectively.
+<A NAME="!">
+
+</A>
+<H3>
+<HR>n!
+</H3>
+Factorial. n! evaluates to n*(n-1)*(n-2)*....*1.
+<A NAME="Bin">
+
+</A>
+<H3>
+<HR>Bin(n,m)
+</H3>
+Bin(n,m) evaluates to n!/(n!*(n-m)!)
+<A NAME="Sum">
+
+</A>
+<H3>
+<HR>Sum(var,from,to,body) and Sum({list})
+</H3>
+Sum(var,from,to,body) :
+Sum does a summation over "body", setting variable "var"
+from "from" upto and including "to", incrementing it by 1 each
+time.
+<P>
+Sum({list}) : calculate the sum of the elements in a list.
+Example : Sum({1,2,3}) evaluates to 6.
+<A NAME="Average">
+
+</A>
+<H3>
+<HR>Average({list})
+</H3>
+Average({list}) : calculate the average of the elements in a list.
+Example : Average({1,2,3}) evaluates to 2.
+<A NAME="Factorize">
+
+</A>
+<H3>
+<HR>Factorize(var,from,to,body) and Factorize({list})
+</H3>
+Factorize(var,from,to,body) :
+Factorize does a factorization over "body", setting variable "var"
+from "from" upto and including "to", incrementing it by 1 each
+time.
+<P>
+Factorize({list}) : calculate the product of the elements in a list.
+Example : Factorize({1,2,3}) evaluates to 6.
+<A NAME="Min">
+
+</A>
+<A NAME="Max">
+
+</A>
+<H3>
+<HR>Min(x,y), Min({...}), Max(x,y) and Max({...})
+</H3>
+Min and Max return the minimum and maximum value of their
+arguments respectively. Min and max can either be called with
+two numbers as arguments, or with a list of numbers.
+
+<A NAME="IsZero">
+
+</A>
+<H3>
+<HR>IsZero(x)
+</H3>
+IsZero(x) : Returns wether x is zero or not.
+<A NAME="IsRational">
+
+</A>
+<H3>
+<HR>IsRational(r)
+</H3>
+IsRational(r) : Rational numbers are anything like a/b, or 2/5.
+<A NAME="Numer">
+
+</A>
+<H3>
+<HR>Numer(r)
+</H3>
+Numer(r) : Return numerator of a rational number.
+<A NAME="Denom">
+
+</A>
+<H3>
+<HR>Denom(r)
+</H3>
+Denom(r) : Return denominator of a rational number.
+<A NAME="Commutator">
+
+</A>
+<H3>
+<HR>Commutator(a,b)
+</H3>
+Commutator(a,b) :
+Return "a b - b a". For numbers and such this is
+zero, for matrices in general it isn't.
+<A NAME="Taylor">
+
+</A>
+<H3>
+<HR>Taylor(var,var0,order)function
+</H3>
+Taylor(var,var0,order)function :
+Return the Taylor series expansion of function "function", with
+respect to variable "var", around "var=var0", upto order "order".
+<A NAME="InverseTaylor">
+
+</A>
+<H3>
+<HR>InverseTaylor(var,value,degree) func
+</H3>
+InverseTaylor(var,value,degree) func : build a taylor series expansion
+of the inverse of function func, with respect to variable var around value, upto
+degree. InverseTaylor uses the function ReversePoly to perform the
+task.
+
+
+<A NAME="ReversePoly">
+
+</A>
+<H3>
+<HR>ReversePoly(f,g,var,newvar,degree)
+</H3>
+ReversePoly(f,g,var,newvar,degree) :
+
+Given polynomials f(var) and h(var), determine a polynomial
+h(newvar) for which h(f(var)) = g(var). The resulting polynomial
+will be of degree degree. The only requirement is that the
+first derivative of f should not be zero.
+
+<P>
+
+This function is used to determine the taylor series expansion of
+a function: if g(var)=var, then h(f(var))=var, so h will be the
+inverse of f.
+
+<A NAME="Newton">
+
+</A>
+<H3>
+<HR>Newton(function,variable,initial,accuracy)
+</H3>
+Newton(function,variable,initial,accuracy) :
+Find a zero of "function", as a function of "variable",
+starting around value "initial", and continuing until
+the value for "variable" is maximally "accuracy" away
+from the correct value.
+<A NAME="D">
+
+</A>
+<H3>
+<HR>D(variable)expression
+</H3>
+D(variable)  expression :
+Calculate analytic derivative of an expression. "D(x) Sin(x);"
+"Cos(x);".
+
+The D operator is also threaded:
+"D({x,y,z}) Sin(x*y)" will return {Cos(x*y)*y,Cos(x*y)*x,0}
+
+<P>
+Alternatively, you can call D with "D(variable,n)expression".
+In that case the n-th derivative will be taken.
+<A NAME="Diverge">
+
+</A>
+<H3>
+<HR>Diverge(vector, basis)
+</H3>
+Diverge(vector, basis) : Calculate the divergence of
+a vector.
+
+Example: "Diverge(FillList(x*y,3),{x,y,z})" will return
+{y,x,0}
+
+<A NAME="Curl">
+
+</A>
+<H3>
+<HR>Curl(vector, basis)
+</H3>
+Curl(vector, basis) : Calculate the curl of a vector.
+
+Example: "Curl(FillList(x*y,3),{x,y,z})" will return
+{x,-y,y-x}
+
+<A NAME="Integrate">
+
+</A>
+<H3>
+<HR>Integrate(var,from,to) body
+</H3>
+Integrate(var,from,to) body : integrate body over variable var=from
+to var=to. Currently, only polynomials can be integrated.
+<A NAME="Simplify">
+
+</A>
+<H3>
+<HR>Simplify(expr)
+</H3>
+Simplify(expr) : Simplify tries to simplify an expression as much
+as possible.
+<A NAME="Rationalize">
+
+</A>
+<H3>
+<HR>Rationalize(expr)
+</H3>
+Rationalize(expr) : convert every real number in expr into a rational
+number.
+<A NAME="Conjugate">
+
+</A>
+<H3>
+<HR>Conjugate(expr)
+</H3>
+Conjugate(expr) : return the conjugate of expr (given that all
+variables are real or integer).
+
+<A NAME="Solve">
+
+</A>
+<H3>
+<HR>Solve(expr1==expr2,variable)
+</H3>
+Solve(expr1==expr2,variable) :
+A very simple solver. It can for now solve expressions where the variable
+to be solved for only occurs once.
+
+"Solve(a+x*y==z,x);" would evaluate to "(z-a)/y".
+
+<P>
+
+Solve can solve simple sets of equations. Pass the equations in a list,
+as well as the variables to be solved for. The solver will then use
+SuchThat, in combination with Eliminate, to simplify the equations.
+This suffices for all linear equations and a large group of simple
+non-linear equations.
+
+<P>
+
+When the variable argument receives a list of variables to solve for,
+Solve returns a list of results, with each result being a solution
+to the set of equations.
+
+<A NAME="SuchThat">
+
+</A>
+<H3>
+<HR>SuchThat(function,var)
+</H3>
+
+SuchThat(function,var) : try to find a simple expression for variable var,
+given the equality function=0. This function basically only handles
+expressions where the variable var only occurs once. It does its work
+by applying the inverse of the top function, until the variable is
+reached.
+
+<A NAME="Eliminate">
+
+</A>
+<H3>
+<HR>Eliminate(var,replace,function)
+</H3>
+
+Eliminate(var,replace,function) : replace all instances of
+<B><TT>var</TT></B> in <B><TT>function</TT></B> with <B><TT>relpace</TT></B>
+and call Simplify on the resulting expression.
+
+<A NAME="PSolve">
+
+</A>
+<H3>
+<HR>PSolve(expr,var)
+</H3>
+PSolve(expr) : solve expr=0 with respect to variable var, treating
+it expr as a polynomial. It currently solves upto degree 2.
+
+<A NAME="Pi">
+
+</A>
+<H3>
+<HR>Pi()
+</H3>
+Pi() : Returns pi to the current precision.
+<A NAME="Fibonacci">
+
+</A>
+<H3>
+<HR>Fibonacci(n)
+</H3>
+Fibonacci(n) : Calculate Fibonacci number "n".
+<A NAME="Random">
+
+</A>
+<H3>
+<HR>Random()
+</H3>
+Random() : Returns a random number between 0 and 1.
+<A NAME="VarList">
+
+</A>
+<H3>
+<HR>VarList(expression)
+</H3>
+VarList(expression) : Returns a list with all the variables
+"expression" depends on. Example: "VarList(Sin(x));" should
+return "{x};".
+<A NAME="Limit">
+
+</A>
+<H3>
+<HR>Limit(variable,value) function
+</H3>
+Limit(variable,value)function : determine the
+value "function" converges to when "variable"
+goes to "value" from positive infinity.
+Examples : 
+"Limit(x,0) Sin(x)/x;" evaluates to "1", and 
+"Limit(x,0) (Sin(x)-Tan(x))/(x^3);" evaluates to "-1/2".
+
+<A NAME="TrigSimpCombine">
+
+</A>
+<H3>
+<HR>TrigSimpCombine(expression)
+</H3>
+TrigSimpCombine(expression) : 
+This is the module that does the trigonometric simplification:
+Cos(...)*Sin(...) -> Cos(...)+Sin(...)
+<P>
+It also tries to simplify the resulting expression as much as possible,
+trying to combine all like terms.
+
+<A NAME="LagrangeInterpolant">
+
+</A>
+<H3>
+<HR>LagrangeInterpolant({xlist},{ylist},var)
+</H3>
+
+LagrangeInterpolant({xlist},{ylist},var) :
+
+given a set of points (x_i,y_i) with all nonzero y_i, find the
+polynomial that goes through these points. The first argument
+passed to the function should be the list of x_i values, the
+second one should be the list of y_i values, and the third
+argument should be the variable used to build up the polynomial.
+
+
+<P>
+
+
+This routine uses the Lagrange interpolant formula to build up the
+polynomial. For three terms this is:
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> PrettyForm(LagrangeInterpolant(MakeVector(x,3),MakeVector(y,3),x))
+
+y1 * ( x - x2 ) * ( x - x3 )   y2 * ( x - x1 ) * ( x - x3 ) 
+---------------------------- + ---------------------------- 
+ ( x1 - x2 ) * ( x1 - x3 )      ( x2 - x1 ) * ( x2 - x3 )   
+
+  y3 * ( x - x1 ) * ( x - x2 )
++ ----------------------------
+   ( x3 - x1 ) * ( x3 - x2 )  
+
+Out> True;</PRE>
+</TABLE>
+
+
+
+
+
+</BODY>
+
+</FONT>
+
+</HTML>

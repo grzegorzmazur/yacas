@@ -1,0 +1,21 @@
+
+all :
+	cd example ; make -f makefile.plugin ; cd ..
+	cd opengl  ; make -f makefile.plugin ; cd ..
+	cd forth   ; make -f makefile.plugin ; cd ..
+
+clean :
+	cd example ; make clean -f makefile.plugin ; cd ..
+	cd opengl  ; make clean -f makefile.plugin ; cd ..
+	cd forth   ; make clean -f makefile.plugin ; cd ..
+
+depend :
+	cd example ; make depend -f makefile.plugin ; cd ..
+	cd opengl  ; make depend -f makefile.plugin ; cd ..
+	cd forth   ; make depend -f makefile.plugin ; cd ..
+
+install:
+	-mkdir /usr/local/share/yacas/plugins/
+	cp */*.so /usr/local/share/yacas/plugins/
+
+

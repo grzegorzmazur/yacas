@@ -1,0 +1,15 @@
+
+Additional packages can be put in this directory. Call
+
+yacas -d
+
+to get the directory to install extra scripts in. 
+
+If you have the package 'foo' just copy the file 'foo' and 'foo.def'
+to the addons/ directory in the directory returned by 'yacas -d'.
+foo.def will be automatically loaded. At startup you should
+see 'Adding package [foo]'
+
+If you have some package you released, please let me know, so I can make
+a link to it from the main Yacas home page.
+

@@ -1,0 +1,204 @@
+
+Chapter()"Input/Output";
+
+AddAnchor("FullForm");
+SubSection()"FullForm(expression)";  Text()"
+FullForm(expression) : 
+Displays evaluated form of \"expression\", and returns it.
+
+";
+
+AddAnchor("Echo");
+SubSection()"Echo({...})";  Text()"
+
+Echo writes the contents of the list passed to it to the current
+output, and calls NewLine(). If an entry in the list is a string
+it writes the string unstringified. Example:":
+
+HtmlCommand("
+f(x):=x^2;
+Echo({\"The square of two is \",f(2)});
+"):
+
+"which should write out \"The square of two is 2\" to the current
+output";
+
+AddAnchor("PrettyForm");
+SubSection()"PrettyForm(expr)";
+Text()"
+PrettyForm shows the expression in a nicer form, closer to
+the notation usually used when a human writes down an expression.
+Example:
+
+":HtmlCommand(
+"In> PrettyForm(Taylor(x,0,9)Sin(x))
+
+     /  3 \\    5     /  7 \\      9  
+    -\\ x  /   x     -\\ x  /     x   
+x + ------- + --- + ------- + ------
+       6      120    5040     362880
+
+Out> True;"):"
+
+This is generally useful when the result of a calculation is more
+complex than a simple number.
+
+";
+
+
+
+
+
+
+AddAnchor("Write");
+SubSection()"Write(...)";  Text()"
+Write(...) : Write out the expressions contained in \"...\" (evaluated).
+
+";
+
+AddAnchor("WriteString");
+SubSection()"WriteString(string)";  Text()"
+WriteString(string) : Writes out a literal string, which should be of
+the form \"string\" (surrounded by quotes). The argument is evaluated.
+
+";
+
+AddAnchor("Space");
+SubSection()"Space(nr)";  Text()"
+Space(nr) : Print out \"nr\" spaces. The \"nr\"
+argument is optional, the default value being 1.
+
+";
+
+AddAnchor("NewLine");
+SubSection()"NewLine(nr)";  Text()"
+NewLine(nr) : Print out \"nr\" newlines. The \"nr\"
+argument is optional, the default value being 1.
+
+";
+
+
+AddAnchor("FromFile");
+SubSection()"FromFile(\"file\") body";  Text()"
+FromFile(\"file\") body : Open \"file\" for reading, and execute body, returning
+its result.
+
+";
+
+AddAnchor("FromString");
+SubSection()"FromString(\"string\") body";  Text()"
+FromString(\"string\") body : use \"string\" to parse from when issuing
+a read from file, and execute body, returning its result.
+
+";
+
+AddAnchor("ToString");
+SubSection()"ToString() body"; Text()"
+ToString redirects all output (from Write or WriteString, for instance)
+to a string, and returns this string.
+";
+
+
+AddAnchor("Read");
+SubSection()"Read()";  Text()"
+Read() : 
+Read expression from current input, and return result. When the end of an
+input file is encountered, the token atom \"EndOfFile\" is returned.
+
+";
+
+AddAnchor("LispRead");
+SubSection()"LispRead()";  Text()"
+Read() : 
+Read expression from current input, and return result. When the end of an
+input file is encountered, the token atom \"EndOfFile\" is returned.
+<P>
+This function is different from ":HtmlTerm("Read()"):
+" in that it parses an expression
+in lisp syntax: so you need to type ":HtmlTerm("(+ a b)"):
+" in stead of ":HtmlTerm("a+b"):
+". The advantage of lisp syntax is that it is less unambiguous than the
+infix operator grammar Yacas uses by default.
+";
+
+
+AddAnchor("ReadToken");
+SubSection()"ReadToken()";  Text()"
+ReadToken() : Read token from current input, and return result.                          
+When the end of an input file is encountered, the token
+atom \"EndOfFile\" is returned.
+
+";
+
+AddAnchor("ToFile");
+SubSection()"ToFile(\"file\")";  Text()"
+ToFile(\"file\") : 
+Open \"file\" for writing, and execute body, returning its result.
+
+";
+
+AddAnchor("Load");
+SubSection()"Load(\"filename\")";  Text()"
+Load(\"filename\") : Reads in and evaluates expressions from the file
+with file name filename.
+
+See also \"Use\".
+
+";
+
+AddAnchor("Use");
+SubSection()"Use(\"filename\")";  Text()"
+
+Use(\"filename\") : Reads in and evaluates expressions from the file
+with file name filename if it hasn't been loaded before. This function
+makes sure the file will at least have been loaded, but not loaded twice.
+
+See also \"Load\".
+
+";
+
+AddAnchor("DefLoad");
+SubSection()"DefLoad(\"filename\")";  Text()"
+
+DefLoad(\"filename\") : Loads a file filename.def, which should have a
+list of functions, terminated by a }. This tells the system to load
+the file \"filename\" as soon as the user calls one of the functions
+named in the file (if not done so already). This allows for faster
+startup times, since not all of the rules databases need to be loaded,
+just the descriptions on which files to load for which functions.
+";
+
+
+AddAnchor("FindFile");
+SubSection()"FindFile(name)"; Text()"
+FindFile returns the file that would be opened when a Load(name)
+would be invoked. It returns the full path to the file.
+";
+
+AddAnchor("PatchLoad");
+SubSection()"PatchLoad";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()"PatchLoad(filename)";
+
+Topical()"Parameters";
+Text()"filename - the file to patch";
+
+Topical()"Description";
+Text()
+"PatchLoad loads in a file and outputs the contents to the current
+output. The file can contain blocks delimited by &lt? and ?&gt
+(meaning Yacas Begin and Yacas End). The piece of text between
+such delimiters is treated as a separate file with Yacas instructions,
+which is then loaded and executed. All output of write statements
+in that block will be written to the same current output.
+<P>
+This is similar to the way php works. You can have a static text file
+with dynamic content generated by Yacas.
+";
+
+Topical()"See Also"; 
+SeeAlso({"PatchString","Load"});
+
+
+
