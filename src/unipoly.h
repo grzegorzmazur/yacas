@@ -2,11 +2,12 @@
 #ifndef __unipoly_h__
 #define __unipoly_h__
 
+#include "yacasbase.h"
 #include "grower.h"
 
 typedef  LispInt ZZ;
 
-class ZZMod
+class ZZMod : public YacasBase
 {
 public:
     ZZMod(LispInt aMod);

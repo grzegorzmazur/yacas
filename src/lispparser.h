@@ -6,11 +6,12 @@
 #ifndef __lispparser_h__
 #define __lispparser_h__
 
+#include "yacasbase.h"
 #include "lispobject.h"
 #include "tokenizer.h"
 #include "lispio.h"
 #include "lisphash.h"
-class LispParser
+class LispParser : public YacasBase
 {
 public:
     LispParser(LispTokenizer& aTokenizer, LispInput& aInput,
@@ -30,7 +31,7 @@ public:
 
 
 
-class LispPrinter
+class LispPrinter : public YacasBase
 {
 public:
     virtual ~LispPrinter();

@@ -3,6 +3,7 @@
 #ifndef __genericstruct_h__
 #define __genericstruct_h__
 
+#include "yacasbase.h"
 #include "genericobject.h"
 
 /** \class GenericStruct This class maintains a pointer to some arbitrary

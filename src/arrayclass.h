@@ -2,7 +2,7 @@
 #ifndef __arrayclass_h__
 #define __arrayclass_h__
 
-#include "lisptype.h"
+#include "yacasbase.h"
 #include "lispobject.h"
 #include "genericobject.h"
 

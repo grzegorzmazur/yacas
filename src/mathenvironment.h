@@ -6,6 +6,7 @@
 #ifndef __mathenvironment_h__
 #define __mathenvironment_h__
 
+#include "yacasbase.h"
 #include "lispenvironment.h"
 #include "lispevalhash.h"
 #include "lispobject.h"

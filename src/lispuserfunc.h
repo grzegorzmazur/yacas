@@ -3,6 +3,7 @@
 #ifndef __lispuserfunc_h__
 #define __lispuserfunc_h__
 
+#include "yacasbase.h"
 #include "lispobject.h"
 #include "lispenvironment.h"
 #include "lisphash.h"
@@ -47,7 +48,7 @@ public:
 };
 
 class LispDefFile;
-class LispMultiUserFunction
+class LispMultiUserFunction : public YacasBase
 {
 public:
     LispMultiUserFunction() : iFileToOpen(NULL) {};

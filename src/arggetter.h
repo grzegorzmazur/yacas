@@ -2,6 +2,7 @@
 #ifndef __arggetter_h__
 #define __arggetter_h__
 
+#include "yacasbase.h"
 
 
 /**
@@ -11,7 +12,7 @@
  */
 
 
-class LispArgGetter
+class LispArgGetter : public YacasBase
 {
 public:
     inline LispArgGetter(LispEnvironment& aEnvironment, LispPtr& aArguments);

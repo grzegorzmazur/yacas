@@ -2,6 +2,7 @@
 #ifndef __standard_h__
 #define __standard_h__
 
+#include "yacasbase.h"
 #include "lispobject.h"
 #include "lispenvironment.h"
 #include "lisphash.h"
@@ -56,7 +57,7 @@ LispInt StrCompare(LispCharPtr f1, LispCharPtr f2);
 
 #define ATOML(_s) LispAtom::New(aEnvironment.HashTable().LookUp(_s))
 #define LIST(_c) LispSubList::New(_c)
-class LispObjectAdder
+class LispObjectAdder : public YacasBase
 {
 public:
     LispObjectAdder(LispObject* aPtr)

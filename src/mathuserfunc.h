@@ -2,6 +2,7 @@
 #ifndef __mathuserfunc_h__
 #define __mathuserfunc_h__
 
+#include "yacasbase.h"
 #include "lispuserfunc.h"
 #include "grower.h"
 
@@ -10,7 +11,7 @@ class PatternClass;
 class BranchingUserFunction : public LispArityUserFunction
 {
 public:
-    class BranchParameter
+    class BranchParameter : public YacasBase
     {
     public:
         BranchParameter(LispStringPtr aParameter,
@@ -19,7 +20,7 @@ public:
         LispStringPtr iParameter;
         LispInt       iHold;
     };
-    class BranchRuleBase
+    class BranchRuleBase : public YacasBase
     {
     public:
         virtual ~BranchRuleBase();

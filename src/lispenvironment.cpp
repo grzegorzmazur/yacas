@@ -1,5 +1,5 @@
 
-#include "yacasprivate.h"
+#include "yacasbase.h"
 #include "choices.h"
 #include "lispenvironment.h"
 #include "lispplugin.h"
@@ -371,7 +371,8 @@ void LispEnvironment::SetCommand(LispEvalCaller aEvaluatorFunc, LispCharPtr aStr
     extern long theNrDefinedBuiltIn;
     theNrDefinedBuiltIn++;
 #endif
-    Commands().SetAssociation(LispEvaluator(aEvaluatorFunc),
+    LispEvaluator eval(aEvaluatorFunc);
+    Commands().SetAssociation(eval,
                             HashTable().LookUp(aString,LispTrue));
 }
 

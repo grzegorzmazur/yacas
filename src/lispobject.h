@@ -14,7 +14,7 @@
 #ifndef __lispobject_h__
 #define __lispobject_h__
 
-#include "lisptype.h"
+#include "yacasbase.h"
 #include "refcount.h"
 #include "lispstring.h"
 #include "genericobject.h"
@@ -29,7 +29,7 @@ class LispObject;
  *  to the next object, and in diverse parts of the built-in internal
  *  functions to hold temporary values.
  */
-class LispPtr
+class LispPtr : public YacasBase
 {
 public:
     inline LispPtr();
@@ -129,7 +129,7 @@ private:
  * should be used in stead of LispPtr if you are going to traverse
  * a lisp expression in a non-destructive way.
  */
-class LispIterator
+class LispIterator  : public YacasBase
 {
 public:
     LispIterator(LispPtr& aPtr);

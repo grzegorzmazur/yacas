@@ -3,6 +3,7 @@
 #ifndef __yacas_h__
 #define __yacas_h__
 
+#include "yacasbase.h"
 #include "lispstring.h"
 #include "stringio.h"
 #include "tokenizer.h"
@@ -18,7 +19,7 @@
 #include "lispuserfunc.h"
 
 
-class DefaultYacasEnvironment
+class DefaultYacasEnvironment : public YacasBase
 {
 public:
     DefaultYacasEnvironment();
@@ -51,7 +52,7 @@ public:
 };
 
 
-class CYacas
+class CYacas : public YacasBase
 {
 public:
     LISPIMPORT static CYacas* NewL();

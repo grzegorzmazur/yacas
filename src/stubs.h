@@ -5,10 +5,6 @@
 #ifndef __stubs_h__
 #define __stubs_h__
 
-#ifndef __yacasprivate_h__
-#error "You might not want to include this file outside of Yacas!"
-#endif
-
 #include "lisptype.h"
 
 #ifdef NO_GLOBALS
@@ -23,28 +19,39 @@ void *PlatObReAlloc(void *p, size_t nbytes);
 #define PlatReAlloc(orig,nr) (LispCharPtr)PlatObReAlloc((void*)orig,(size_t)nr)
 #define PlatFree(orig)       PlatObFree((void*)orig)
 
-
-enum TAllocTypes
-{
-    EAlloc=0
-};
-
+#ifdef YACAS_DEBUG
+#include <stdio.h>
 inline void* operator new(size_t size)
 {
+    int* ptr = NULL;
+    *ptr = 1;
+    printf("new called\n");
     return PlatAlloc(size);
 }
 inline void* operator new[](size_t size)
 {
+    int* ptr = NULL;
+    *ptr = 1;
+    printf("new called\n");
     return PlatAlloc(size);
 }
 inline void operator delete(void* object)
 {
+    int* ptr = NULL;
+    *ptr = 1;
+    printf("delete called\n");
     PlatFree((LispCharPtr)object);
 }
 inline void operator delete[](void* object)
 {
+    int* ptr = NULL;
+    *ptr = 1;
+    printf("delete called\n");
     PlatFree((LispCharPtr)object);
 }
+
+#endif
+
 
 #endif
 

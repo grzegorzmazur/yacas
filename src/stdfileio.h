@@ -6,6 +6,7 @@
 #ifndef __stdfileio_h__
 #define __stdfileio_h__
 
+#include "yacasbase.h"
 #include "lispio.h"
 #include "lispenvironment.h"
 

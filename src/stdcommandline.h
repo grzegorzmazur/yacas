@@ -13,6 +13,7 @@
 #endif
 #include <time.h>
 
+#include "yacasbase.h"
 #include "commandline.h"
 /** Simple no-frills implementation of CCommandLine, using stdlibc-functions
  *  only, and no ansi characters. No history is supported either.

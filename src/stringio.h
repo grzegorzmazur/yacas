@@ -6,6 +6,7 @@
 #ifndef __stringio_h__
 #define __stringio_h__
 
+#include "yacasbase.h"
 #include "lispio.h"
 #include "lispstring.h"
 

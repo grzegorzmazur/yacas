@@ -3,15 +3,16 @@
 #define __refcount_h__
 
 #include "lispassert.h"
+#include "yacasbase.h"
 /** Implementation of a reference-counted object. This object doesn't
  *  implement deletion, it just does the bookkeeping. The routine that
  *  calls DecreaseRefCount is responsible for actually deleting the
  *  object if this function returns zero.
  */
-class RefCountedObject
+class RefCountedObjectBase
 {
 public:
-    inline RefCountedObject();
+    inline RefCountedObjectBase();
     inline void IncreaseRefCount();
     inline ReferenceType DecreaseRefCount();
     inline ReferenceType ReferenceCount() const;
@@ -20,22 +21,26 @@ private:
     ReferenceType iReferenceCount;
 };
 
-inline RefCountedObject::RefCountedObject() : iReferenceCount(0) {}
+class RefCountedObject : public RefCountedObjectBase, public YacasBase
+{
+};
 
-inline void RefCountedObject::IncreaseRefCount()
+inline RefCountedObjectBase::RefCountedObjectBase() : iReferenceCount(0) {}
+
+inline void RefCountedObjectBase::IncreaseRefCount()
 {
     LISPASSERT(iReferenceCount<ReferenceMax);
     iReferenceCount++;
 }
 
-inline ReferenceType RefCountedObject::DecreaseRefCount()
+inline ReferenceType RefCountedObjectBase::DecreaseRefCount()
 {
 //    LISPASSERT(iReferenceCount>0);
     iReferenceCount--;
     return iReferenceCount;
 }
 
-inline ReferenceType RefCountedObject::ReferenceCount() const
+inline ReferenceType RefCountedObjectBase::ReferenceCount() const
 {
     return iReferenceCount;
 }

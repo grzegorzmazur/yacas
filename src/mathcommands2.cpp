@@ -1,6 +1,6 @@
 
 
-#include "yacasprivate.h"
+#include "yacasbase.h"
 #include "lispenvironment.h"
 #include "standard.h"
 #include "lispeval.h"
@@ -40,12 +40,12 @@ void LispSubst(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispLocalSymbols(LispEnvironment& aEnvironment, LispPtr& aResult,
                       LispPtr& aArguments)
 {
-    LispInt nrArguments = InternalListLength(aArguments);  \
+    LispInt nrArguments = InternalListLength(aArguments);
 
     LispInt nrSymbols = nrArguments-2;
 
-    LispStringPtr *names = new LispStringPtr[nrSymbols];
-    LispStringPtr *localnames = new LispStringPtr[nrSymbols];
+    LispStringPtr *names = (LispStringPtr *)PlatAlloc(sizeof(LispStringPtr)*nrSymbols);
+    LispStringPtr *localnames = (LispStringPtr *)PlatAlloc(sizeof(LispStringPtr)*nrSymbols);
     //TODO names and localnames should be pushed on the cleanup stack!!!
     CHK(names != NULL,KLispErrNotEnoughMemory);
     CHK(localnames != NULL,KLispErrNotEnoughMemory);
@@ -74,8 +74,8 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispPtr& aResult,
     LocalSymbolBehaviour behaviour(names,localnames,nrSymbols);
     LispPtr result;
     InternalSubstitute(result, Argument(aArguments, nrArguments-1), behaviour);
-    delete[] names;
-    delete[] localnames;
+    PlatFree(names);
+    PlatFree(localnames);
 
 
     InternalEval(aEnvironment, aResult, result);

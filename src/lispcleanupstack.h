@@ -11,6 +11,7 @@
 #ifndef __lispcleanupstack_h__
 #define __lispcleanupstack_h__
 
+#include "yacasbase.h"
 #include "grower.h"
 
 /** Base class that specifies one pure abstract method Delete.
@@ -24,7 +25,7 @@
  *  reading prematurely finishes through an exception, the file
  *  should be closed.
  */
-class LispBase
+class LispBase : public YacasBase
 {
 public:
     virtual void Delete()=0;
@@ -35,7 +36,7 @@ public:
  *  cleanup code itself (particularly for newer c++ compilers).
  *  Alternatively SAFEPUSH and SAFEPOP can then be defined to do nothing.
  */
-class LispCleanup
+class LispCleanup : public YacasBase
 {
 public:
     virtual ~LispCleanup();

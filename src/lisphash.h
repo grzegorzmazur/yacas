@@ -7,8 +7,8 @@
 #ifndef __lisphash_h__
 #define __lisphash_h__
 
+#include "yacasbase.h"
 #include "grower.h"
-#include "lisptype.h"
 #include "lispstring.h"
 
 
@@ -26,7 +26,7 @@ LispInt LispHashPtr(LispStringPtr aString);
  * This also allows fast comparison of two strings (two strings
  * are equal iff the pointers to the strings are equal).
  */
-class LispHashTable
+class LispHashTable : public YacasBase
 {
 public:
     ~LispHashTable();
@@ -65,7 +65,7 @@ class VoidGrow : public CArrayGrower<void*>
  * are maintained in a hash table (like LispHashTable above).
  */
 template<class T>
-class LispAssociatedHash
+class LispAssociatedHash : public YacasBase
 {
 public:
     inline ~LispAssociatedHash();

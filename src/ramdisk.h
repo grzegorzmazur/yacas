@@ -14,6 +14,7 @@
 #ifndef __ramdisk_h__
 #define __ramdisk_h__
 
+#include "yacasbase.h"
 #include "lisphash.h"
 #include "lispstring.h"
 #include "grower.h"
@@ -21,7 +22,7 @@
 /** class representing the contents of a file. See LispRamDisk for
  *  more details.
  */
-class LispRamFile
+class LispRamFile : public YacasBase
 {
 public:
     LispRamFile(LispCharPtr aFileContents)
@@ -31,7 +32,8 @@ public:
     LispRamFile(const LispRamFile& orig)
         : iFileContents(orig.iFileContents.String(),LispTrue)
         {
-        }
+        };
+    ~LispRamFile() {};
     LispStringPtr Contents()
     {
         return &iFileContents;
