@@ -579,6 +579,38 @@ the php scripting language.
 Tells the system to load {file} as the initialization file. Otherwise
 it loads the file {yacasinit.ys} from the scripts directory.
 
+	yacas --server <port>
+
+On some platforms server mode can be enabled by passing the
+flag {--enable-server} to the {./configure} script. {Yacas}
+then allows you to pass the flag {--server} with a port number
+behind it, and the {Yacas} executable will listen to the socket
+behind that port in stead of going through the command line.
+
+Commands can be sent to the server by sending a text line as
+one block of data, and the server will respond back with a
+response. 
+One can test this function by using {telnet}. First, set up
+the server by calling
+
+	yacas --server 9734
+
+and then invoke {telnet} in another window, through for example:
+
+	telnet 127.0.0.1 9734
+
+and type a line and enter. The result will be one line back.
+
+Some security measures and resource management measures have been 
+taken. No more than 10 connections can be alive at any time, 
+a calculation cannot take more than 30 seconds, and {Yacas}
+operates in <i>secure</i> mode, much like calling an expression
+by passing it as an argument to the {Secure} function.
+This means that no system calls are allowed, and no writing to
+local files, amongst other things. Something that has not been 
+taken care of yet is memory use. A calculation could take up all
+memory, but not for longer than 30 seconds. 
+
 	yacas --rootdir [directory]/
 Tells the system where to find the library scripts. Here, {directory/} is a
 path that is passed to {DefaultDirectory}, and file names will be simply
