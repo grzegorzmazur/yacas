@@ -67,16 +67,23 @@
         { \
             LispChar linenum[20]; \
             InternalIntToAscii(linenum,_e.iInputStatus.LineNumber()); \
-            _o.Write("Error on line ");\
-            _o.Write(linenum);\
-            _o.Write(" in file [");\
             _o.Write(_e.iInputStatus.FileName());\
-            _o.Write("]\n"); \
+            _o.Write("(");\
+            _o.Write(linenum);\
+            _o.Write(") : ");\
         } \
         _e.iCleanup.Delete(); \
         _o.Write(_e.ErrorString(b)); \
         _o.Write("\n"); \
     }
+
+//            _o.Write("Error on line ");\
+//            _o.Write(linenum);\
+//            _o.Write(" in file [");\
+//            _o.Write(_e.iInputStatus.FileName());\
+//            _o.Write("]\n"); \
+
+
 // The following line should also be printed. BUT: it causes
 // a segfault on following commands!
 //            _o.Write(_e.iInputStatus.Line(_e.iInputDirectories));

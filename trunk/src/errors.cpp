@@ -21,7 +21,7 @@ void ShowFunctionError(LispPtr& aArguments,
     {
         aEnvironment.iErrorOutput.Write("In function \"");
         aEnvironment.iErrorOutput.Write(string->String());
-        aEnvironment.iErrorOutput.Write("\" : ");
+        aEnvironment.iErrorOutput.Write("\" : \n");
     }
 }
 
