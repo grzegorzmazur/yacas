@@ -119,7 +119,7 @@ sub print_table
  * It contains a bit-mapped table of prime numbers up to $table_limit
  * and a function to test whether a small number is prime by a table lookup.
  */
-unsigned long primes_table_limit = $table_limit;
+const unsigned long primes_table_limit = $table_limit;
 const unsigned long primes_table[] = {
 EOF1
 	for (@table)
@@ -141,7 +141,7 @@ unsigned primes_table_check(unsigned p)
 	field = p & 31;
 	return ((primes_table[index] & (1 << field))==0) ? 0 : 1;
 }
-/* Testing: run mkfastprimes.pl > fastprimes.c and then compile the following file: */
+/* Testing: run 'mkfastprimes.pl > fastprimes.c' and then compile the following file: */
 /*
 	#include <stdio.h>
 	#include "fastprimes.c"
