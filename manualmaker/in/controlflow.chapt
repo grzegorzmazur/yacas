@@ -492,7 +492,7 @@ SeeAlso({"Map", "MapSingle", "@"});
 
 
 
-CmdDescription("MagArgs", "Apply a function to all top-level arguments");
+CmdDescription("MapArgs", "Apply a function to all top-level arguments");
 StandardLib();
 
 Topical() "Calling Sequence";
