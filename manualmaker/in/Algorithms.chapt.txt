@@ -263,3 +263,5 @@ In the same way it is possible to find quadratures for the integral over a subin
 *INCLUDE algorithms-multivar.chapt
 
 *INCLUDE algorithms-integration.chapt
+
+*INCLUDE SturmSequences.chapt
