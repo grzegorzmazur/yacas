@@ -40,38 +40,48 @@
 #endif
 
 
+
 #ifdef YACAS_DEBUG
 #include <stdio.h>
 inline void* operator new(size_t size)
 {
     int* ptr = NULL;
+    printf("WARNING! Global new called\n");
+#ifndef DEBUG_MODE
     *ptr = 1;
-    printf("new called\n");
+#endif
     return PlatAlloc(size);
 }
 inline void* operator new[](size_t size)
 {
     int* ptr = NULL;
+    printf("WARNING! Global new called\n");
+#ifndef DEBUG_MODE
     *ptr = 1;
-    printf("new called\n");
+#endif
     return PlatAlloc(size);
 }
 inline void operator delete(void* object)
 {
     int* ptr = NULL;
+    printf("WARNING! Global delete called\n");
+#ifndef DEBUG_MODE
     *ptr = 1;
-    printf("delete called\n");
+#endif
     PlatFree((LispCharPtr)object);
 }
 inline void operator delete[](void* object)
 {
     int* ptr = NULL;
+    printf("WARNING! Global delete called\n");
+#ifndef DEBUG_MODE
     *ptr = 1;
-    printf("delete called\n");
+#endif
     PlatFree((LispCharPtr)object);
 }
 
 #endif
+
 
 
 #endif

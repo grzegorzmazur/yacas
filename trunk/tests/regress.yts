@@ -28,7 +28,7 @@ LogicVerify(CanProve(A>0 And A<=0),False);
 LogicVerify(CanProve(A>0 Or A<=0),True);
 Verify(A<0,A<0);
 Verify(A>0,A>0);
-TestYacas(Arg(Exp(2*I*Pi/3)),Pi-Pi/3);
+TestYacas(Arg(Exp(2*I*Pi/3)),2*Pi/3);
 
 TestYacas(Content(1/2*x+1/2),1/2);
 TestYacas(PrimitivePart(1/2*x+1/2),x+1);
@@ -92,4 +92,21 @@ Verify(f(703), True);
 Verify(f(485), True);
 Verify(f(170410240), True);
 
+
+
+
+
+/* bug reported by Jonathan:
+   All functions that do not have Taylor Expansions about
+   the given point go into infinite loops.
+ */
+
+Verify(Taylor(x,0,5) Ln(x),Undefined);
+Verify(Taylor(x,0,5) 1/x,Undefined);
+Verify(Taylor(x,0,5) 1/Sin(x),Undefined);
+
+// Yacas used to not simplify the following, due to Pi being
+// considered constant. The expression was thus not expanded
+// as a univariate polynomial in Pi
+TestYacas(2*Pi/3,(Pi-Pi/3));
 

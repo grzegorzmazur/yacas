@@ -64,6 +64,7 @@ n_IsInteger >> m_IsInteger <-- ShiftRight(n,m);
 
 0 # Sqrt(0) <-- 0;
 0 # Sqrt(Infinity) <--  Infinity;
+0 # Sqrt(Undefined) <--  Undefined;
 1 # Sqrt(x_IsPositiveInteger)_(IsInteger(MathSqrt(x))) <-- MathSqrt(x);
 2 # Sqrt(x_IsPositiveNumber)_(Numeric) <-- MathSqrt(x);
 2 # Sqrt(x_IsNegativeNumber) <-- Complex(0,Sqrt(-x));
@@ -139,9 +140,10 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 30 # Rem(n_CanBeUni,m_CanBeUni) <-- Mod(n,m);
 
 
-0 # Gcd(0,_m) <-- m;
-0 # Gcd(_n,0) <-- n;
-1 # Gcd(n_IsInteger,m_IsInteger) <-- MathGcd(n,m);
+0 # Gcd(0,0) <-- 1;
+1 # Gcd(0,_m) <-- m;
+1 # Gcd(_n,0) <-- n;
+2 # Gcd(n_IsInteger,m_IsInteger) <-- MathGcd(n,m);
 
 5 # Gcd(n_IsRationalOrInteger,m_IsRationalOrInteger) <--
 [
@@ -155,6 +157,7 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
       first:=Gcd(list[1],list[2]);
       Gcd(first:Tail(Tail(list)));
     ];
+14 # Gcd({0}) <-- 1;
 15 # Gcd({_head}) <-- head;
 
 20 # Gcd(list_IsList)_(Length(list)=2) <-- Gcd(list[1],list[2]);

@@ -3,9 +3,10 @@
 
 YACAS_DIR = ../src
 
-CXX		=c++
-INCS = -I$(YACAS_DIR) -I$(YACAS_DIR)/plat/linux32 -Ifl_editor-0.4/
-CXXFLAGS	= -O2 -Wno-return-type   -I/usr/X11R6/include
+CXX		= gcc -x c++
+INCS = -I$(YACAS_DIR) -I$(YACAS_DIR)/plat/linux32 
+# -Ifl_editor-0.4/
+CXXFLAGS	= -Wno-return-type   -I/usr/X11R6/include
 
 LDLIBS		=  -L/usr/X11R6/lib -lX11 -lXext  -lm -ldl
 GLDLIBS		=  -L/usr/X11R6/lib  -lGLU -lGL -lX11 -lXext  -lm
@@ -13,16 +14,17 @@ FLTKLIBS        = -lfltk
 
 LIBS = $(LDLIBS) $(FLTKLIBS)
 GLIBS = $(GLDLIBS) $(FLTKLIBS)
-DEFINES = -DDEBUG_MODE
+DEFINES = -DUSE_ASSERT -DDEBUG_MODE -DSCRIPT_DIR="\"./\"" -DVERSION="\"Debug\"" \
+	-DUSE_ASSERT -DYACAS_DEBUG
 
 TRACER_OBJS = tracer.o editor.o fl_adjustable_file_chooser.o debugclass.o ../src/debugmem-d.o
 
 proteusdebugger: $(TRACER_OBJS) ../src/libyacasdebug.a
-	$(CXX) $(TRACER_OBJS) ../src/libyacasdebug.a -o proteusdebugger $(CXXFLAGS) $(LIBS) -lm
+	gcc $(TRACER_OBJS) ../src/libyacasdebug.a -o proteusdebugger $(CXXFLAGS) $(LIBS) -lm
 
 BROWSER_OBJS = browse.cpp
 proteusbrowser:  $(BROWSER_OBJS)
-	$(CXX) $(BROWSER_OBJS) -o proteusbrowser $(CXXFLAGS) $(LIBS) -lm
+	gcc $(BROWSER_OBJS) -o proteusbrowser $(CXXFLAGS) $(LIBS) -lm
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCS) -c $*.cpp -o $*.o

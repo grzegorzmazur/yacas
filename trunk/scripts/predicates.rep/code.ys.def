@@ -19,7 +19,7 @@ IsBoolean
 IsBoolType
 IsPositiveReal
 IsNegativeReal
-IsHermitean
+IsHermitian
 IsUnitary
 IsVariable
 IsNumericList

@@ -73,7 +73,7 @@ static Fl_Menu_Item menuitems[] =
  {"LeviCivita", 0,  cb_menu_insert, (void*)"LeviCivita(", 0, 0, 0, font_size, 0},
  {"IsUnitary", 0, cb_menu_insert, (void*)"IsUnitary(", 0, 0, 0, font_size, 0},
  {"IsMatrix", 0, cb_menu_insert, (void*)"IsMatrix(", 0, 0, 0, font_size, 0},
- {"IsHermitean", 0, cb_menu_insert, (void*)"IsHermitean(", 0, 0, 0, font_size, 0},
+ {"IsHermitian", 0, cb_menu_insert, (void*)"IsHermitian(", 0, 0, 0, font_size, 0},
  {"Inverse", 0, cb_menu_insert, (void*)"Inverse(", 0, 0, 0, font_size, 0},
  {"InProduct", 0,  cb_menu_insert, (void*)"InProduct(", 0, 0, 0, font_size, 0},
  {"Identity", 0, cb_menu_insert, (void*)"Identity(", 0, 0, 0, font_size, 0},

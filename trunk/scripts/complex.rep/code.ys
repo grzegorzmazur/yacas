@@ -77,6 +77,7 @@ Function("Conjugate",{a})
   Substitute(a,{{x},Type(x)="Complex"},{{x},Complex(x[1],-(x[2]))});
 
 
+10 # Arg(Complex(Cos(_x),Sin(_x))) <-- x;
 10 # Arg(x_IsZero) <-- Undefined;
 15 # Arg(x_IsPositiveReal) <-- 0;
 15 # Arg(x_IsNegativeReal) <-- Pi;
@@ -84,5 +85,4 @@ Function("Conjugate",{a})
 30 # Arg(Complex(r_IsPositiveReal,i_IsConstant)) <-- ArcTan(i/r);
 40 # Arg(Complex(r_IsNegativeReal,i_IsPositiveReal)) <-- Pi+ArcTan(i/r);
 50 # Arg(Complex(r_IsNegativeReal,i_IsNegativeReal)) <-- ArcTan(i/r)-Pi;
-
 

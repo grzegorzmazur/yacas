@@ -46,7 +46,7 @@
 "IsPrime"
 "IsZeroVector"
 "IsUnitary"
-"IsHermitean"
+"IsHermitian"
 "MathOr"
 "MathNot"
 "MathAnd"

@@ -222,6 +222,10 @@ SumListSide(_x, y_IsList) <--
 250 # Infinity + y_IsNumber <-- Infinity;
 250 # x_IsNumber + Infinity <-- Infinity;
 
+250 # Undefined + _y <-- Undefined;
+250 # _x + Undefined <-- Undefined;
+
+
 
 /* Subtraction arity 1 */
 
@@ -271,6 +275,8 @@ LocalSymbols(x)
 250  # Infinity - y_IsNumber <-- Infinity;
 250  # x_IsNumber - Infinity <-- - Infinity;
 
+250 # Undefined - _y <-- Undefined;
+250 # _x - Undefined <-- Undefined;
 
 210 # x_IsNumber - (y_IsNumber / z_IsNumber) <--(x*z-y)/z;
 210 # (y_IsNumber / z_IsNumber) - x_IsNumber <--(y-x*z)/z;
@@ -349,6 +355,9 @@ LocalSymbols(x)
 250  # x_IsNumber * y_IsInfinity <-- Sign(x)*y;
 250  # x_IsInfinity * y_IsNumber <-- Sign(y)*x;
 
+250  # _x * Undefined <-- Undefined;
+250  # Undefined * _y <-- Undefined;
+
 
 /* Note: this rule MUST be past all the transformations on
  * matrices, since they are lists also.
@@ -365,7 +374,7 @@ LocalSymbols(x)
 
 /* Division */
 
-50 # _x / 0 <-- Undefined;
+50 # ((_xx) / 0) <-- Undefined;
 51 # 0 / _x <-- 0;
 52 # (x_IsNumber / y_IsNumber)_((Numeric = True) Or
                                 Not(IsInteger(x) And IsInteger(y))) <--
@@ -384,6 +393,9 @@ LocalSymbols(x)
 
 90 # x_IsInfinity / y_IsInfinity <-- Undefined;
 91  # x_IsInfinity / y_IsNumber <-- Sign(y)*x;
+
+90 # Undefined / _y <-- Undefined;
+90 # _y / Undefined <-- Undefined;
 
 
 100 # _x / _x <-- 1;
@@ -428,6 +440,9 @@ LocalSymbols(x)
 59 # 1 ^ _n <-- 1;
 59 # 0 ^ 0 <-- Undefined;
 60 # 0 ^ n_IsRationalOrNumber <-- 0;
+
+59 # _x ^ Undefined <-- Undefined;
+59 # Undefined ^ _x <-- Undefined;
 
 /* Regular raising to the power. */
 61 # Infinity ^ (y_IsNegativeNumber) <-- 0;

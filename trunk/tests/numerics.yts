@@ -127,8 +127,7 @@ Gamma(9/2)
 , (105*Sqrt(Pi))/16
 );
 
-KnownFailure(
-TestYacas(Gamma(-10.5), (-2048*Sqrt(Pi))/13749310575));
+KnownFailure(TestYacas(Gamma(-10.5), (-2048*Sqrt(Pi))/13749310575));
 
 
 TestYacas(
@@ -145,7 +144,6 @@ TestYacas(
 RoundTo(N( GammaNum(-11.5) ), 20)
 , 0.00000002295758104824
 );
-
 
 TestYacas(
 RoundTo(N( GammaNum(-12.5) ), 20)

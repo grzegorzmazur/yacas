@@ -569,11 +569,11 @@ the values of each vector.
 
 *SEE EigenValues, CharacteristicEquation
 
-*CMD IsHermitean --- Test whether a matrix is Hermitean
+*CMD IsHermitian --- Test whether a matrix is Hermitian
 *STD
 *CALL
 
-IsHermitean(A)
+IsHermitian(A)
 
 *PARMS
 
@@ -581,15 +581,15 @@ A - square matrix
 
 *DESC
 
-IsHermitean(A) returns {True} if {A} is Hermitian and {False}
+IsHermitian(A) returns {True} if {A} is Hermitian and {False}
 otherwise. $A$ is a Hermitian matrix iff Conjugate( Transpose $A$ )=$A$.
 If $A$ is a real matrix, it must be symmetric to be Hermitian.
 
 *E.G.
 
-	In> IsHermitean({{0,I},{-I,0}})
+	In> IsHermitian({{0,I},{-I,0}})
 	Out> True;
-	In> IsHermitean({{0,I},{2,0}})
+	In> IsHermitian({{0,I},{2,0}})
 	Out> False;
 
 *SEE IsUnitary
@@ -619,7 +619,7 @@ equivalent to the fact that the columns of $A$ build an orthonormal system
 	In> IsUnitary({{0,I},{2,0}})
 	Out> False;
 
-*SEE IsHermitean
+*SEE IsHermitian
 
 
 *CMD SylvesterMatrix --- calculate the Sylvester matrix of two polynomials

@@ -64,7 +64,17 @@ MultiExpressionList(_expr) <-- VarList(expr,"IsMultiExpression");
 10 # IsMultiExpression(_x / _y) <-- False;
 10 # IsMultiExpression(_x ^ y_IsInteger) <-- False;
 11 # IsMultiExpression(_x ^ _y)_(IsInteger(Simplify(y))) <-- False;
-10 # IsMultiExpression(x_IsConstant) <-- False;
+//10 # IsMultiExpression(x_IsConstant) <-- False;
+10 # IsMultiExpression(x_IsMultiConstant) <-- False;
+
+//TODO: shoulnd't this be more global? The problem right now is 
+// that IsConstant/IsVariable take Pi to be a constant...
+IsMultiConstant(_n) <-- (VarList(n,"IsVr")={});
+10 # IsVr(n_IsNumber) <-- False;
+10 # IsVr(n_IsFunction) <-- False;
+10 # IsVr(n_IsString) <-- False;
+20 # IsVr(_n) <-- True;
+
 
 100 # IsMultiExpression(_x) <-- True;
 
@@ -116,7 +126,7 @@ MM(_expr,_vars) <--  MakeMultiNomial(expr,vars);
 MakeMultiNomial(_expr) <-- MakeMultiNomial(ExpandBrackets(expr),MultiExpressionList(expr));
 
 LocalSymbols(a,vars)  [
-  10 #  MakeMultiNomial(a_IsConstant,vars_IsList) <--
+  10 #  MakeMultiNomial(a_IsMultiConstant,vars_IsList) <--
         MultiNomial(vars,{{FillList(0,Length(vars)),a}});
 ];
 
