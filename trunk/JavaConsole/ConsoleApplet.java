@@ -35,9 +35,15 @@ public class ConsoleApplet extends Applet implements KeyListener
   out.println("Welcome to the Yacas console applet!");
   out.println("");
   out.println("Connecting to the server at address "+serverAddress+" on port "+serverPort);
-//  PerformRequest("Connected: version of engine is ","Atom(Version())");
-//  out.println("");
-
+  try
+  {
+    PerformRequest("Connected: version of engine is ","Atom(Version())");
+    out.println("");
+  }
+  catch (Exception e)
+  {
+    out.println(e);
+  } 
 
   }
 
@@ -184,6 +190,10 @@ public class ConsoleApplet extends Applet implements KeyListener
       succeed = true;
     }
     catch (IOException ex)
+    {
+      out.println(ex);
+    }
+    catch (Exception ex)
     {
       out.println(ex);
     }
