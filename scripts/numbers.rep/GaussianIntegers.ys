@@ -135,8 +135,8 @@ Function("FactorGaussianInteger",{x}) [
 
 	re:=Re(x);im:=Im(x);
 
-	If(re<0, re:=-re );
-	If(im<0, im:=-im );
+	If(re<0, re:=(-re) );
+	If(im<0, im:=(-im) );
 	norm:=re^2+im^2;
 
 	if( IsComposite(norm) )[
