@@ -39,7 +39,17 @@ where $q$ and $r$ are such that $q$ is odd and $n-1 = q*2^r$.
 
 An additional check suggested by Davenport is activated if $r>2$ (i.e. if $n:=Mod(1,4)$ which is true for only 1/2 of all odd numbers). If $i>=1$ is found such that $b^(q*2^i):=Mod(n-1,n)$, then $b^(q*2^(i-1))$ is a square root of $-1$ modulo $n$. If $n$ is prime, there may be only two different square roots of $-1$. Therefore we should store the set of found values of roots; if there are more than two such roots, then we have found roots $s1$, $s2$ of $-1$ such that $0!=Mod(s1+s2+1,n)$. Then $s1^2-s2^2:=Mod(0,n)$ and $n$ is definitely composite because e.g. $Gcd(s1+s2,n)>1$. This check costs very little computational effort but guards against some strong pseudoprimes.
 
-Yet another small improvement comes from the paper of Damgard and Landrock. They found that the strong primality test sometimes (rarely) passes on composite numbers $n$ for more than $1/8$ of all bases $x<n$ if $n$ is such that either $3*n+1$ or $8*n+1$ is a perfect square. It's easy to show that if $n$ is a large enough prime number, then neither $3*n+1$, nor $8*n+1$, nor any $s*n+1$ with small integer $s$ can be a perfect square. (If $s*n+1=r^2$, then $s*n=(r-1)*(r+1)$.) Testing for a perfect square is quick and does not slow down the routine very much. This is however not implemented in Yacas because it seems that perfect squares are rare enough for this improvement not to be very significant.
+Yet another small improvement comes from the paper of Damgard and Landrock.
+They found that the strong primality test sometimes (rarely) passes on
+composite numbers $n$ for more than $1/8$ of all bases $x<n$ if $n$ is such
+that either $3*n+1$ or $8*n+1$ is a perfect square, or if $n$ is a
+Carmichael number. Checking Carmichael numbers is slow, but it is easy to show that
+if $n$ is a large enough prime number, then neither $3*n+1$, nor $8*n+1$,
+nor any $s*n+1$ with small integer $s$ can be a perfect square. (If
+$s*n+1=r^2$, then $s*n=(r-1)*(r+1)$.) Testing for a perfect square is quick
+and does not slow down the routine very much. This is however not
+implemented in Yacas because it seems that perfect squares are rare enough
+for this improvement not to be very significant.
 
 If an integer is not "strongly-probably-prime" for a given base $b$, then it is
 a composite number. However, the reciprocal is false, i.e. "strongly-probably-prime" numbers can actually be composite. Composite strongly-probably-prime numbers for
@@ -150,12 +160,12 @@ Field Sieve" which is a faster variant of the GNFS adapted to the problem.
 
 		Number Theoretic Functions
 
-A number theoretical function is usually defined as any function that has the 
-integers as a domain, and usually as a range.
+A number theoretical function is any function that takes integer arguments,
+produces integer values, and is of interest to number theory.
 
 {Divisors} currently returns the number of divisors an integer has, while
 {DivisorsSum} returns the sum of these factors. The current
-algorithms reduces this to factoring the number. The following theorem is used:
+algorithms need to factor the number. The following theorem is used:
 
 Let $ p[1]^k[1]* ... *p[r]^k[r] $ be the prime factorization of n, where $r$ is the
 number of prime factors, and $k[r]$ is the multiplicity of $r$-th factor. Then:
@@ -171,17 +181,14 @@ $ ProperDivisors(n) = Divisors(n) - 1 $
 
 $ ProperDivisorsSum(n) = DivisorsSum(n) - n $ .
 
-The next number theoretic function is {Moebius}, which is defined as:
+The next number theoretic function is {Moebius}, which is defined as
+follows: $Moebius(n)=(-1)^r$ if no factors are repeated, $Moebius(n)=0$ if
+some factors are repeated, and $Moebius(n)=1$ if $n = 1$.
 
-$ Moebius(n) =    (-1)^r  $  if no factors are repeated
-
-		 $ 0  $      if factors are repeated
-
-	         $  1 $	    if n = 1
-
-This again reduces to factoring the number and investigating their properties. From
-the definition, it can be seen that if $n$ is prime, then {Moebius(n) = -1 }. The predicate
-{IsSquareFree(n)} then reduces to { Moebius(n) != 0 }, which means no factors are repeated.
+This again requires to factor the number completely and investigate the
+properties of its factors. From
+the definition, it can be seen that if $n$ is prime, then $Moebius(n) = -1 $. The predicate
+{IsSquareFree(n)} then reduces to $Moebius(n)!=0$, which means no factors are repeated.
 
 
 
