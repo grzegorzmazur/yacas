@@ -48,10 +48,12 @@
 #ifndef WIN32
   #include "unixcommandline.h"
   #define FANCY_COMMAND_LINE CUnixCommandLine
+  #define PLATFORM_OS "\"Unix\""
 #else
   #include "win32commandline.h"
   #define FANCY_COMMAND_LINE CWin32CommandLine
   #define SCRIPT_DIR ""
+  #define PLATFORM_OS "\"Windows\""
 #endif
 
 
@@ -126,6 +128,11 @@ LispBoolean Busy()
 }
 
 
+void LispPlatformOS(LispEnvironment& aEnvironment, LispPtr& aResult,
+              LispPtr& aArguments)
+{
+  aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(PLATFORM_OS)));
+}
 
 void LispExit(LispEnvironment& aEnvironment, LispPtr& aResult,
               LispPtr& aArguments)
@@ -389,6 +396,9 @@ void DeclarePath(char *ptr2)
 void LoadYacas()
 {
     yacas = CYacas::NewL();
+
+    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispPlatformOS),
+                                           (*yacas)()().HashTable().LookUp("PlatformOS"));
 
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispExit),
                                            (*yacas)()().HashTable().LookUp("Exit"));
