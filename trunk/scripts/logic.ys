@@ -126,8 +126,13 @@ CanProveAux(_proposition)                           <-- LogicSimplify(propositio
         i.e. if we have (A And B) And ( B And A), only the first one will
         persist.
     */
+
+
+
     Set(clauses, RemoveDuplicates(clauses));
+
     If(Equals(level, 3) And (Length(clauses) != 0), [
+        Set(clauses, DoUnitSubsumptionAndResolution(clauses));
         Set(clauses, LogicCombine(clauses));
     ]);
 
@@ -149,21 +154,25 @@ CanProveAux(_proposition)                           <-- LogicSimplify(propositio
    the proposition is true. Negating twice is just a trick to
    allow all the simplification rules a la De Morgan to operate
  */
-/*CanProve(_proposition) <-- CanProveAux( Not CanProveAux( Not proposition));*/
+/*CanProve(_proposition)    <-- CanProveAux( Not CanProveAux( Not proposition));*/
 
-CanProve(_proposition) <-- CanProveAux( proposition );
+CanProve(_proposition)      <-- CanProveAux( proposition );
 
-1 # SimpleNegate(Not (_x)) <-- x;
-2 # SimpleNegate(_x)       <-- Not(x);
+1 # SimpleNegate(Not (_x))  <-- x;
+2 # SimpleNegate(_x)        <-- Not(x);
 
 /* LogicRemoveTautologies scans a list representing e1 Or e2 Or ... to find
    if there are elements p and  Not p in the list. This signifies p Or Not p,
    which is always True. These pairs are removed. Another function that is used
    is RemoveDuplicates, which converts p Or p into p.
- */
+*/
 
 /* this can be optimized to walk through the lists a bit more efficiently and also take
 care of duplicates in one pass */
+
+// Return values:
+//  {True} means True
+//  {} means False
 LogicRemoveTautologies(_e) <--
 [
   Local(i, len, negationfound); len := Length(e);
@@ -183,14 +192,14 @@ LogicRemoveTautologies(_e) <--
 
         If(Equals(y, n),
             [
-/*                Echo({"Deleting from ", e, " i=", i, ", j=", j, Nl()}); */
+                //Echo({"Deleting from ", e, " i=", i, ", j=", j, Nl()});
 
                 Set(negationfound, True);
-/*                Echo({"Removing clause ", i, Nl()}); */
+                //Echo({"Removing clause ", i, Nl()});
             ],
         If(Equals(y, x),
             [
-/*                Echo({"Deleting from ", e, " j=", j, Nl()});    */
+                //Echo({"Deleting from ", e, " j=", j, Nl()});
                 DestructiveDelete(e, j);
                 Set(len,MathSubtract(len,1));
             ])
@@ -202,17 +211,30 @@ LogicRemoveTautologies(_e) <--
   If(negationfound, {True}, e);            /* note that a list is returned */
 ];
 
+10 # Contradict((_x) - (_y) == 0, (_x) - (_z) == 0)_(y != z)     <-- True;
+12 # Contradict((_x) == (_y), (_x) == (_z))_(y != z)             <-- True;
+13 # Contradict((_x) - (_y) == 0, (_x) - (_z) >= 0)_(z > y)      <-- True;
+14 # Contradict((_x) - (_y) == 0, (_x) - (_z) >  0)_(z > y)      <-- True;
+15 # Contradict(_a, _b)                                          <-- Equals(SimpleNegate(a), b);
+
 /* find the number of the list that contains n in it, a pointer to a list of lists in passed */
-LogicFindWith(_list,_n)<--
+LogicFindWith(_list, _i, _n) <--
 [
-  Local(i);
-  Local(result);
-  Set(result, -1);
-  For(Set(i,1),(result<0) And (i<=Length(list)),Set(i,MathAdd(i,1)))
+  Local(result, index, j);
+  result := -1; index := -1;
+
+  For(j := i+1, (result<0) And (j <= Length(list)), j++)
   [
-    If( Contains(MathNth(list,i),n),Set(result,i));
+    Local(k, len); len := Length(list[j]);
+    For(k := 1, (result<0) And (k<=len), k++)
+    [
+      Local(el); el := list[j][k];
+
+      If(Contradict(n, el),
+        [result := j; index := k;]);
+    ];
   ];
-  result;
+  {result, index};
 ];
 
 /* LogicCombine is responsible for scanning a list of lists, which represent
@@ -225,35 +247,135 @@ LogicCombine(_list) <--
   Local(i, j);
   For(Set(i,1), i<=Length(list), Set(i,MathAdd(i,1)))
   [
-/*    Echo({"list[", i, "/", Length(list), "]: ", list[i], Nl()}); */
+    //Echo({"list[", i, "/", Length(list), "]: ", list[i], Nl()});
     Local(redo);
     Set(redo, False);
 
-    For(j:=1, Not(redo) And (j<=Length(MathNth(list,i))),j++)
+    For(j := 1, Not(redo) And (j<=Length(list[i])), j++)
     [
-    Local(tocombine, n);
-    Set(n, SimpleNegate(Not (list[i][j])));
+      Local(tocombine, n);
+      Set(n, list[i][j]);
 
-    Set(tocombine, LogicFindWith(list, n));  // this is the list we will combine the current one with
-    If(tocombine > 0 And i<tocombine,
-        [
-        If(i>=tocombine,Echo({"WRONG!!!"}));
+      Local(k);
+      {tocombine, k} := LogicFindWith(list, i, n);// search forward for n, tocombine is the list we
+                                                  // will combine the current one with
+      If(tocombine != -1,
+      [
+        Local(combination);
+        Check(k != -1, "k is -1");
 
-        DestructiveDelete(MathNth(list,i),j);
-        DestructiveDelete(MathNth(list,tocombine),Find(MathNth(list,tocombine),n));
-        list[i]:= LogicRemoveTautologies(Concat(MathNth(list,i),MathNth(list,tocombine)));
-        DestructiveDelete(list,tocombine);
-        If(Equals(MathNth(list,i), {False}), list[i]:={});
-        If(Equals(MathNth(list,i), {}),
-            [
-            Set(list,{{}});
-            Set(i,MathAdd(Length(list)+1));
-            ],
-            Set(i,0));
-        Set(redo, True);
-        ]
-        );
+        DestructiveDelete(list[i], j);
+        DestructiveDelete(list[tocombine], k);
+
+        combination := LogicRemoveTautologies(Concat(list[i], list[tocombine]));
+        DestructiveDelete(list, tocombine);       // delete tocombine from the list, it's represented
+                                                  // by combination, which will be list[i]
+        list[i] := combination;
+
+        If(combination = {False},                 // false is represented as {}
+          list[i]:={});
+
+        If(combination = {},                      // the combined clause is false, so the whole thing is false
+          [list:={{}}; i := Length(list)+1;], i:=0);
+
+        redo := True;                             // this signals that we should break out of the inner loop
+      ]);
     ];
   ];
   list;
 ];
+
+10 # Subsumes((_x) - (_y) == 0, Not ((_x) - (_z)==0))_(y!=z)    <-- True;
+
+90 # Subsumes((_x), (_x))                                       <-- True;
+
+100# Subsumes((_x), (_y))                                       <-- False;
+
+
+// perform unit subsumption and resolutiuon for a unit clause # i
+// a boolean indicated whether there was a change is returned
+DoUnitSubsumptionAndResolution(_list) <--
+[
+    Local(i, isFalse, isTrue, changed);
+    isFalse := False;
+    isTrue  := False;
+    changed := True;
+
+    //Echo({"In DoUnitSubsumptionAndResolution", Nl()});
+
+    While(changed) [
+      changed := False;
+
+      For(i:=1, (Not isFalse And Not isTrue) And i <= Length(list), i++)
+      [
+        If(Length(list[i]) = 1, [
+          Local(x); x := list[i][1]; //n := SimpleNegate(x);
+          //Echo({"Unit clause ", x, Nl()});
+
+          // found a unit clause, {x}, not use it to modify other clauses
+          For(j:=1, (Not isFalse And Not isTrue) And j <= Length(list), j++)
+          [
+              If(i !=j, [
+                Local(deletedClause); deletedClause := False;
+                For(k:=1, (Not isFalse And Not isTrue And Not deletedClause) And k <= Length(list[j]),  k++)
+                [
+                    // In both of these, if a clause becomes empty, the whole thing is False
+
+                    // unit subsumption -- this kills clause j
+                    If(Subsumes(x, list[j][k]), [
+                        //Echo({x, " subsumes ", list[j][k], i,j,Nl()});
+
+                        // delete this clause
+                        DestructiveDelete(list, j);
+                        j--;
+                        If(i>j, i--);   // i also needs to be decremented
+                        deletedClause := True;
+                        changed := True;
+                        If(Length(list) = 0, [isTrue := True;]);
+                    ],
+                      // else, try unit resolution
+                    If(Contradict(x, list[j][k]), [
+                        //Echo({x, " contradicts", list[j][k], Nl()});
+                        DestructiveDelete(list[j], k);
+                        k--;
+                        changed := True;
+                        If(Length(list[j]) = 0, [isFalse := True;]);
+                    ])
+                    );
+                ];
+              ]);
+          ];
+        ]);
+      ];
+    ];
+
+    list;
+];
+
+/*
+DP(_list) <--
+[
+  Local(isTrue, isFalse, changed);
+  isTrue := False; isFalse := False; changed := True;
+
+  // unit propagation
+  While(Not isFalse And Not isTrue And changed,
+    For(i:=1, i<=Length(list) And (Not isTrue And Not isFalse),  i++)
+    [
+        If(Length(list[i]) = 1,
+            {isFalse, isTrue, changed} := DoUnitSubsumptionAndResolution(list, i);
+        ]);
+    ]
+  );
+
+  If(isTrue) return {True};
+  If(isFalse) return {};
+
+  // splitting
+  // pick L for splitting
+  L := PickForSplitting(list);
+  If(DP(Append(list, {L})), True,
+    If(isF
+
+];
+*/
