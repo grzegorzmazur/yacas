@@ -64,28 +64,27 @@
 
 
 #define InternalEval aEnvironment.iEvaluator->Eval
+#define RESULT aEnvironment.iStack.GetElement(aStackTop)
+#define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
 
 
 
 #ifndef NO_USE_BIGFLOAT
-void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispPtr& aArguments, LispInt aArgNr)
+void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
-    LispPtr result;
-    InternalEval(aEnvironment, result, Argument(aArguments,aArgNr));
-    RefPtr<BigNumber> num; num = result.Get()->Number(aEnvironment.BinaryPrecision());
-    CHK_ARG(num.Ptr() != NULL,aArgNr);
+    RefPtr<BigNumber> num; 
+    num = ARGUMENT(aArgNr).Get()->Number(aEnvironment.BinaryPrecision());
+    CHK_ARG_CORE(num.Ptr() != NULL,aArgNr);
     x = num;
 }
 #endif // USE_BIGFLOAT
 
 //FIXME remove these
-void LispArithmetic2(LispEnvironment& aEnvironment, LispPtr& aResult,
-                     LispPtr& aArguments,
+void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispStringPtr (*func)(LispCharPtr f1, LispCharPtr f2,LispHashTable& aHashTable,LispInt aPrecision),
                     LispBoolean arbbase=LispFalse);
 
-void LispArithmetic1(LispEnvironment& aEnvironment, LispPtr& aResult,
-                     LispPtr& aArguments,
+void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispStringPtr (*func)(LispCharPtr f1, LispHashTable& aHashTable,LispInt aPrecision));
 
 
@@ -94,151 +93,163 @@ void LispArithmetic1(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 
 //FIXME remove these
-void LispArithmetic1(LispEnvironment& aEnvironment, LispPtr& aResult,
-                     LispPtr& aArguments,
+void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispStringPtr (*func)(LispCharPtr f1, LispHashTable& aHashTable,LispInt aPrecision))
 {
-    TESTARGS(2);
+    //TESTARGS(2);
 
     LispStringPtr str1;
 
     LispPtr result1;
-    InternalEval(aEnvironment, result1, Argument(aArguments,1));
+    result1.Set(ARGUMENT(1).Get());
 
     str1 = result1.Get()->String();
-    CHK_ARG(str1 != NULL,1);
-    CHK_ARG(IsNumber(str1->String(),LispTrue),1);
-    aResult.Set(LispAtom::New(aEnvironment,func(str1->String(),
+    CHK_ARG_CORE(str1 != NULL,1);
+    CHK_ARG_CORE(IsNumber(str1->String(),LispTrue),1);
+    RESULT.Set(LispAtom::New(aEnvironment,func(str1->String(),
                                    aEnvironment.HashTable(),
                                    aEnvironment.Precision()))); // Serge, you probably want this to be BinaryPrecision() (or we move to hte scripts of course)
 }
 
 
 //FIXME remove these
-void LispArithmetic2(LispEnvironment& aEnvironment, LispPtr& aResult,
-                     LispPtr& aArguments,
+void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispStringPtr (*func)(LispCharPtr f1, LispCharPtr f2,LispHashTable& aHashTable,LispInt aPrecision),
                     LispBoolean arbbase)
 {
-    TESTARGS(3);
+    //TESTARGS(3);
 
     LispStringPtr str1;
     LispStringPtr str2;
 
     LispPtr result1;
     LispPtr result2;
-    InternalEval(aEnvironment, result1, Argument(aArguments,1));
-    InternalEval(aEnvironment, result2, Argument(aArguments,2));
+    result1.Set(ARGUMENT(1).Get());
+    result2.Set(ARGUMENT(2).Get());
 
     str1 = result1.Get()->String();
     str2 = result2.Get()->String();
-    CHK_ARG(str1 != NULL,1);
-    CHK_ARG(str2 != NULL,2);
+    CHK_ARG_CORE(str1 != NULL,1);
+    CHK_ARG_CORE(str2 != NULL,2);
     if (!arbbase)
     {
-        CHK_ARG(IsNumber(str1->String(),LispTrue) ,1);
-        CHK_ARG(IsNumber(str2->String(),LispTrue) ,2);
+        CHK_ARG_CORE(IsNumber(str1->String(),LispTrue) ,1);
+        CHK_ARG_CORE(IsNumber(str2->String(),LispTrue) ,2);
     }
 
-    aResult.Set(LispAtom::New(aEnvironment,func(str1->String(),str2->String(),
+    RESULT.Set(LispAtom::New(aEnvironment,func(str1->String(),str2->String(),
                                    aEnvironment.HashTable(),
                                    aEnvironment.Precision()))); // Serge, you probably want this to be BinaryPrecision() (or we move to hte scripts of course)
 }
 
 
-void LispMultiply(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispMultiply(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
-      GetNumber(x,aEnvironment, aArguments, 1);
-      GetNumber(y,aEnvironment, aArguments, 2);
+      GetNumber(x,aEnvironment, aStackTop, 1);
+      GetNumber(y,aEnvironment, aStackTop, 2);
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->Multiply(*x.Ptr(),*y.Ptr(),aEnvironment.BinaryPrecision());
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
       return;
 #endif // USE_BIGFLOAT
-    LispArithmetic2(aEnvironment, aResult, aArguments, MultiplyFloat);
+    LispArithmetic2(aEnvironment, aStackTop, MultiplyFloat);
 }
 
-void LispAdd(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+//TODO we need to have Gcd in BigNumber!
+void LispGcd(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispInt length = InternalListLength(aArguments);
+    LispStringPtr str1;
+    str1 = ARGUMENT(1).Get()->String();
+    CHK_ARG_CORE(str1 != NULL ,1);
+    CHK_ARG_CORE(IsNumber(str1->String(),LispFalse) ,1);
+
+    LispStringPtr str2;
+    str2 = ARGUMENT(2).Get()->String();
+    CHK_ARG_CORE(str2 != NULL ,2);
+    CHK_ARG_CORE(IsNumber(str2->String(),LispFalse) ,2);
+
+    RESULT.Set(LispAtom::New(aEnvironment,GcdInteger(str1->String(),str2->String(),
+                                         aEnvironment.HashTable())));
+}
+
+
+void LispAdd(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+    LispInt length = InternalListLength(ARGUMENT(0));
     if (length == 2)
     {
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aArguments, 1);
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),x.Ptr()));
+      GetNumber(x,aEnvironment, aStackTop, 1);
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),x.Ptr()));
       return;
 #endif
-        LispArithmetic1(aEnvironment, aResult, aArguments, PlusFloat);
+        LispArithmetic1(aEnvironment, aStackTop, PlusFloat);
     }
     else
     {
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
-      GetNumber(x,aEnvironment, aArguments, 1);
-      GetNumber(y,aEnvironment, aArguments, 2);
+      GetNumber(x,aEnvironment, aStackTop, 1);
+      GetNumber(y,aEnvironment, aStackTop, 2);
       LispInt bin = aEnvironment.BinaryPrecision();
       BigNumber *z = NEW BigNumber(bin);
       z->Add(*x.Ptr(),*y.Ptr(),aEnvironment.BinaryPrecision());
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
       return;
 #endif // USE_BIGFLOAT
 
-        LispArithmetic2(aEnvironment, aResult, aArguments, AddFloat);
+        LispArithmetic2(aEnvironment, aStackTop, AddFloat);
     }
 }
 
-void LispSubtract(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispSubtract(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispInt length = InternalListLength(aArguments);
+    LispInt length = InternalListLength(ARGUMENT(0));
     if (length == 2)
     {
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aArguments, 1);
+      GetNumber(x,aEnvironment, aStackTop, 1);
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->Negate(*x.Ptr());
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
       return;
 #endif
-        LispArithmetic1(aEnvironment, aResult, aArguments, NegateFloat);
+        LispArithmetic1(aEnvironment, aStackTop, NegateFloat);
     }
     else
     {
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
-      GetNumber(x,aEnvironment, aArguments, 1);
-      GetNumber(y,aEnvironment, aArguments, 2);
+      GetNumber(x,aEnvironment, aStackTop, 1);
+      GetNumber(y,aEnvironment, aStackTop, 2);
       BigNumber yneg;
       yneg.Negate(*y.Ptr());
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->Add(*x.Ptr(),yneg,aEnvironment.BinaryPrecision());
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
       return;
 #endif // USE_BIGFLOAT
-        LispArithmetic2(aEnvironment, aResult, aArguments, SubtractFloat);
+        LispArithmetic2(aEnvironment, aStackTop, SubtractFloat);
     }
 }
 
 
-void LispDivide(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispDivide(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 // Serge, what was the deal again with divide, floats and integers mixed in the same function?
 //	yes, divide works differently on integers and on floats -- see new.chapt -- Serge
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
-      GetNumber(x,aEnvironment, aArguments, 1);
-      GetNumber(y,aEnvironment, aArguments, 2);
+      GetNumber(x,aEnvironment, aStackTop, 1);
+      GetNumber(y,aEnvironment, aStackTop, 2);
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
 	  // if both arguments are integers, then BigNumber::Divide would perform an integer divide, but we want a float divide here.
 	  if (x.Ptr()->IsInt() && y.Ptr()->IsInt())
@@ -256,87 +267,80 @@ void LispDivide(LispEnvironment& aEnvironment, LispPtr& aResult,
 	  {
 		  z->Divide(*x.Ptr(), *y.Ptr(),aEnvironment.BinaryPrecision());
 	  }
-	  aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+	  RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
       return;
 #endif // USE_BIGFLOAT
-    LispArithmetic2(aEnvironment, aResult, aArguments, DivideFloat);
+    LispArithmetic2(aEnvironment, aStackTop, DivideFloat);
 }
 
 
-void LispSin(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispSin(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aResult, aArguments, SinFloat);
+    LispArithmetic1(aEnvironment, aStackTop, SinFloat);
 }
 
-void LispCos(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispCos(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aResult, aArguments, CosFloat);
+    LispArithmetic1(aEnvironment, aStackTop, CosFloat);
 }
 
-void LispTan(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispTan(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aResult, aArguments, TanFloat);
+    LispArithmetic1(aEnvironment, aStackTop, TanFloat);
 }
 
-void LispArcSin(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispArcSin(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aResult, aArguments, ArcSinFloat);
+    LispArithmetic1(aEnvironment, aStackTop, ArcSinFloat);
 }
 
-void LispArcCos(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispArcCos(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aResult, aArguments, ArcCosFloat);
+    LispArithmetic1(aEnvironment, aStackTop, ArcCosFloat);
 }
 
-void LispArcTan(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispArcTan(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aResult, aArguments, ArcTanFloat);
+    LispArithmetic1(aEnvironment, aStackTop, ArcTanFloat);
 }
 
-void LispSqrt(LispEnvironment& aEnvironment, LispPtr& aResult,
-              LispPtr& aArguments)
+void LispSqrt(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aResult, aArguments, SqrtFloat);
+    LispArithmetic1(aEnvironment, aStackTop, SqrtFloat);
 }
 
 
 #ifndef NO_USE_BIGFLOAT
 #define UNARYFUNCTION(LispName, BigNumName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
       RefPtr<BigNumber> x; \
-      GetNumber(x,aEnvironment, aArguments, 1); \
+      GetNumber(x,aEnvironment, aStackTop, 1); \
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision()); \
       z->BigNumName(*x.Ptr()); \
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
 }
 #define BINARYFUNCTION(LispName, BigNumName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
       RefPtr<BigNumber> x; \
       RefPtr<BigNumber> y; \
-      GetNumber(x,aEnvironment, aArguments, 1); \
-      GetNumber(y,aEnvironment, aArguments, 2); \
+      GetNumber(x,aEnvironment, aStackTop, 1); \
+      GetNumber(y,aEnvironment, aStackTop, 2); \
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision()); \
       z->BigNumName(*x.Ptr(), *y.Ptr()); \
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
 }
 #else
 #define UNARYFUNCTION(LispName, BigNumName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
-    LispArithmetic1(aEnvironment, aResult, aArguments, OldName); \
+    LispArithmetic1(aEnvironment, aStackTop, OldName); \
 }
 #define BINARYFUNCTION(LispName, BigNumName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
-    LispArithmetic2(aEnvironment, aResult, aArguments, OldName); \
+    LispArithmetic2(aEnvironment, aStackTop, OldName); \
 }
 #endif
 
@@ -347,120 +351,113 @@ UNARYFUNCTION(LispFloor, Floor, FloorFloat)
 //UNARYFUNCTION(LispNegate, Negate, MathNegate)
 
 /** this produces the following equivalent code for a unary function:
-void LispFloor(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFloor(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aArguments, 1);
+      GetNumber(x,aEnvironment, aStackTop, 1);
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->Floor(*x.Ptr());
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else
-    LispArithmetic1(aEnvironment, aResult, aArguments, FloorFloat);
+    LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
 #endif
 }
 */
 
 /// obtain internal precision data on a number object.
-void LispGetExactBits(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispGetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
       // Check that we have the right number of arguments (function name plus one argument).
-      TESTARGS(2);
+      //TESTARGS(2);
 
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aArguments, 1);
+      GetNumber(x,aEnvironment, aStackTop, 1);
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->SetTo(
 	    (x.Ptr()->IsInt())
 		? x.Ptr()->BitCount()	// for integers, return the bit count
 	  	: x.Ptr()->GetPrecision() 	// for floats, return the precision
       );
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else	// this is not defined without BigNumber, so return something
     RaiseError("Function MathGetExactBits is not available without BigNumber support");
-    LispArithmetic1(aEnvironment, aResult, aArguments, FloorFloat);
+    LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
 #endif
 }
 /// set internal precision data on a number object.
-void LispSetExactBits(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispSetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
       // Check that we have the right number of arguments (function name plus two arguments).
-      TESTARGS(3);
+      //TESTARGS(3);
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
-      GetNumber(x,aEnvironment, aArguments, 1);
-      GetNumber(y,aEnvironment, aArguments, 2);
+      GetNumber(x,aEnvironment, aStackTop, 1);
+      GetNumber(y,aEnvironment, aStackTop, 2);
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->SetTo(*x.Ptr());
 	  // do nothing for integers
 	  if (!(z->IsInt()))
 	    z->Precision((long)(y->Double()));	// segfaults unless y is defined?
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else	// this is not defined without BigNumber, so return something
     RaiseError("Function MathSetExactBits is not available without BigNumber support");
-    LispArithmetic1(aEnvironment, aResult, aArguments, FloorFloat);
+    LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
 #endif
 }
 
 
-void LispCeil(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispCeil(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aArguments, 1);
+      GetNumber(x,aEnvironment, aStackTop, 1);
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->Negate(*x.Ptr());
       z->Floor(*z);	// danger: possible exception raised in Floor() leads to a memory leak because z is not destroyed
       z->Negate(*z);
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else
-   LispArithmetic1(aEnvironment, aResult, aArguments, CeilFloat);
+   LispArithmetic1(aEnvironment, aStackTop, CeilFloat);
 #endif
 }
 
-void LispAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispAbs(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aArguments, 1);
+      GetNumber(x,aEnvironment, aStackTop, 1);
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->SetTo(*x.Ptr());
       if (x.Ptr()->Sign()<0)
 	      z->Negate(*x.Ptr());
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else
-   LispArithmetic1(aEnvironment, aResult, aArguments, AbsFloat);
+   LispArithmetic1(aEnvironment, aStackTop, AbsFloat);
 #endif
 }
 //BINARYFUNCTION(LispMod, Mod, ModFloat)
 /* this will be gone */
-void LispMod(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispMod(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic2(aEnvironment, aResult, aArguments, ModFloat);
+    LispArithmetic2(aEnvironment, aStackTop, ModFloat);
 }
 /* up to here */
 
-void LispDiv(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispDiv(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
-      GetNumber(x,aEnvironment, aArguments, 1);
-      GetNumber(y,aEnvironment, aArguments, 2);
+      GetNumber(x,aEnvironment, aStackTop, 1);
+      GetNumber(y,aEnvironment, aStackTop, 2);
 	  if (x.Ptr()->IsInt() && y.Ptr()->IsInt())
 	  {	// both integer, perform integer division
     	  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
     	  z->Divide(*x.Ptr(),*y.Ptr(),aEnvironment.BinaryPrecision());
-    	  aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+    	  RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
     	  return;
 	  }
 	  else
@@ -472,50 +469,45 @@ void LispDiv(LispEnvironment& aEnvironment, LispPtr& aResult,
 	  }
 	  
 #endif // USE_BIGFLOAT
-    LispArithmetic2(aEnvironment, aResult, aArguments, DivFloat);
+    LispArithmetic2(aEnvironment, aStackTop, DivFloat);
 }
 
-void LispLog(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispLog(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aResult, aArguments, LnFloat);
+    LispArithmetic1(aEnvironment, aStackTop, LnFloat);
 }
 
-void LispExp(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispExp(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aResult, aArguments, ExpFloat);
+    LispArithmetic1(aEnvironment, aStackTop, ExpFloat);
 }
 
-void LispPower(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispPower(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
-    LispArithmetic2(aEnvironment, aResult, aArguments, PowerFloat);
+    LispArithmetic2(aEnvironment, aStackTop, PowerFloat);
 }
 
 
 
-void LispFac(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFac(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aResult, aArguments, LispFactorial);
+    LispArithmetic1(aEnvironment, aStackTop, LispFactorial);
 }
 
 
 // platform functions, taking/returning a platform int/float
 
-void LispFastIsPrime(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastIsPrime(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aArguments, 1);
+      GetNumber(x,aEnvironment, aStackTop, 1);
       long result = primes_table_check((unsigned long)(x->Double()));
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->SetTo(result);
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else
-    LispArithmetic1(aEnvironment, aResult, aArguments, PlatIsPrime);
+    LispArithmetic1(aEnvironment, aStackTop, PlatIsPrime);
 #endif
 }
 
@@ -526,50 +518,50 @@ void LispFastIsPrime(LispEnvironment& aEnvironment, LispPtr& aResult,
   // this warning is here just to be sure what we are compiling
     #warning do not have math.h
     #define PLATFORM_UNARY(LispName, PlatformName, LispBackupName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
-      LispBackupName(aEnvironment, aResult, aArguments); \
+      LispBackupName(aEnvironment, aStackTop); \
 }
     #define PLATFORM_BINARY(LispName, PlatformName, LispBackupName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
-      LispBackupName(aEnvironment, aResult, aArguments); \
+      LispBackupName(aEnvironment, aStackTop); \
 }
   #else	// HAVE_MATH_H
     #define PLATFORM_UNARY(LispName, PlatformName, LispBackupName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
       RefPtr<BigNumber> x; \
-      GetNumber(x,aEnvironment, aArguments, 1); \
+      GetNumber(x,aEnvironment, aStackTop, 1); \
       double result = PlatformName(x->Double()); \
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision()); \
       z->SetTo(result); \
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
 }
     #define PLATFORM_BINARY(LispName, PlatformName, LispBackupName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
       RefPtr<BigNumber> x, y; \
-      GetNumber(x,aEnvironment, aArguments, 1); \
-      GetNumber(y,aEnvironment, aArguments, 2); \
+      GetNumber(x,aEnvironment, aStackTop, 1); \
+      GetNumber(y,aEnvironment, aStackTop, 2); \
       double result = PlatformName(x->Double(), y->Double()); \
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision()); \
       z->SetTo(result); \
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
 }
   #endif
 #else	// NO_USE_BIGFLOAT
   // this warning is here just to be sure what we are compiling
   #warning not using BigNumber:: functions
   #define PLATFORM_UNARY(LispName, PlatformName, LispBackupName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
-    LispArithmetic1(aEnvironment, aResult, aArguments, OldName);
+    LispArithmetic1(aEnvironment, aStackTop, OldName);
 }
   #define PLATFORM_BINARY(LispName, PlatformName, LispBackupName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
-    LispArithmetic2(aEnvironment, aResult, aArguments, OldName);
+    LispArithmetic2(aEnvironment, aStackTop, OldName);
 }
 #endif
 
@@ -578,24 +570,23 @@ void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArgumen
 // this will generate the following equivalent code:
 /*
 
-void LispFastSin(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastSin(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 #ifndef NO_USE_BIGFLOAT
 #ifdef HAVE_MATH_H
       RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aArguments, 1);
+      GetNumber(x,aEnvironment, aStackTop, 1);
       double result = sin(x->Double());
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->SetTo(result);
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else
-      LispSin(aEnvironment, aResult, aArguments);
+      LispSin(aEnvironment, aStackTop);
 #endif
       return;
 #endif
 
-    LispArithmetic1(aEnvironment, aResult, aArguments, PlatSin);
+    LispArithmetic1(aEnvironment, aStackTop, PlatSin);
 }
 
 */
@@ -617,77 +608,64 @@ void LispFastSin(LispEnvironment& aEnvironment, LispPtr& aResult,
 	PLATFORM_BINARY(LispFastMod, fmod, LispMod, PlatMod)
 
 /* this will be gone 
-void LispFastCos(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastCos(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic1(aEnvironment, aResult, aArguments, PlatCos);
+    LispArithmetic1(aEnvironment, aStackTop, PlatCos);
 }
-void LispFastTan(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastTan(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic1(aEnvironment, aResult, aArguments, PlatTan);
+    LispArithmetic1(aEnvironment, aStackTop, PlatTan);
 }
 
-void LispFastArcSin(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastArcSin(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic1(aEnvironment, aResult, aArguments, PlatArcSin);
+    LispArithmetic1(aEnvironment, aStackTop, PlatArcSin);
 }
-void LispFastArcCos(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastArcCos(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic1(aEnvironment, aResult, aArguments, PlatArcCos);
+    LispArithmetic1(aEnvironment, aStackTop, PlatArcCos);
 }
-void LispFastArcTan(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastArcTan(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic1(aEnvironment, aResult, aArguments, PlatArcTan);
+    LispArithmetic1(aEnvironment, aStackTop, PlatArcTan);
 }
-void LispFastExp(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastExp(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic1(aEnvironment, aResult, aArguments, PlatExp);
+    LispArithmetic1(aEnvironment, aStackTop, PlatExp);
 }
-void LispFastLog(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastLog(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic1(aEnvironment, aResult, aArguments, PlatLn);
+    LispArithmetic1(aEnvironment, aStackTop, PlatLn);
 }
 
-void LispFastPower(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastPower(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic2(aEnvironment, aResult, aArguments, PlatPower);
+    LispArithmetic2(aEnvironment, aStackTop, PlatPower);
 }
 
-void LispFastSqrt(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastSqrt(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic1(aEnvironment, aResult, aArguments, PlatSqrt);
+    LispArithmetic1(aEnvironment, aStackTop, PlatSqrt);
 }
 
-void LispFastFloor(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastFloor(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic1(aEnvironment, aResult, aArguments, PlatFloor);
+    LispArithmetic1(aEnvironment, aStackTop, PlatFloor);
 }
 
-void LispFastCeil(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastCeil(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic1(aEnvironment, aResult, aArguments, PlatCeil);
+    LispArithmetic1(aEnvironment, aStackTop, PlatCeil);
 }
 
-void LispFastMod(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastMod(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic2(aEnvironment, aResult, aArguments, PlatMod);
+    LispArithmetic2(aEnvironment, aStackTop, PlatMod);
 }
 
-void LispFastAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFastAbs(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic1(aEnvironment, aResult, aArguments, PlatAbs);
+    LispArithmetic1(aEnvironment, aStackTop, PlatAbs);
 }
 up to here */
 
@@ -702,118 +680,110 @@ BINARYFUNCTION(LispBitXor, BitXor, BitXor)
 //BINARYFUNCTION(LispBitNot, BitNot, BitNot)
 */
 /* this will be gone */
-void LispShiftLeft(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispShiftLeft(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic2(aEnvironment, aResult, aArguments, ShiftLeft);
+    LispArithmetic2(aEnvironment, aStackTop, ShiftLeft);
 }
-void LispShiftRight(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispShiftRight(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic2(aEnvironment, aResult, aArguments, ShiftRight);
+    LispArithmetic2(aEnvironment, aStackTop, ShiftRight);
 }
 
-void LispBitAnd(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispBitAnd(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic2(aEnvironment, aResult, aArguments, BitAnd);
+    LispArithmetic2(aEnvironment, aStackTop, BitAnd);
 }
-void LispBitOr(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispBitOr(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic2(aEnvironment, aResult, aArguments, BitOr);
+    LispArithmetic2(aEnvironment, aStackTop, BitOr);
 }
-void LispBitXor(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispBitXor(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME
-    LispArithmetic2(aEnvironment, aResult, aArguments, BitXor);
+    LispArithmetic2(aEnvironment, aStackTop, BitXor);
 }
 /* up to here */
 
 
-void LispFromBase(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(3);
+    //TESTARGS(3);
 
     // Get the base to convert to:
     // Evaluate first argument, and store result in oper
     LispPtr oper;
-    InternalEval(aEnvironment, oper, Argument(aArguments,1));
+    oper.Set(ARGUMENT(1).Get());
     // Check that result is a number, and that it is in fact an integer
     RefPtr<BigNumber> num; num = oper.Get()->Number(aEnvironment.BinaryPrecision());
-    CHK_ARG(num.Ptr() != NULL,1);
-    CHK_ARG(num->IsInt(),1);
+    CHK_ARG_CORE(num.Ptr() != NULL,1);
+    CHK_ARG_CORE(num->IsInt(),1);
 
     // Get a short platform integer from the first argument
     LispStringPtr str1;
     str1 = oper.Get()->String();
-    CHK_ARG(str1 != NULL,1);
+    CHK_ARG_CORE(str1 != NULL,1);
     LispInt base = InternalAsciiToInt(str1->String());
 
     // Get the number to convert
     LispPtr fromNum;
-    InternalEval(aEnvironment, fromNum, Argument(aArguments,2));
+    fromNum.Set(ARGUMENT(2).Get());
     LispStringPtr str2;
     str2 = fromNum.Get()->String();
-    CHK_ARG(str2 != NULL,2);
+    CHK_ARG_CORE(str2 != NULL,2);
 
     // convert using correct base
     BigNumber *z = NEW BigNumber(str2->String(),aEnvironment.BinaryPrecision(),base);
-    aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+    RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 }
-void LispToBase(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
+void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(3);
+    //TESTARGS(3);
 
     // Get the base to convert to:
     // Evaluate first argument, and store result in oper
     LispPtr oper;
-    InternalEval(aEnvironment, oper, Argument(aArguments,1));
+    oper.Set(ARGUMENT(1).Get());
     // Check that result is a number, and that it is in fact an integer
     RefPtr<BigNumber> num; num = oper.Get()->Number(aEnvironment.BinaryPrecision());
-    CHK_ARG(num.Ptr() != NULL,1);
-    CHK_ARG(num->IsInt(),1);
+    CHK_ARG_CORE(num.Ptr() != NULL,1);
+    CHK_ARG_CORE(num->IsInt(),1);
 
     // Get a short platform integer from the first argument
     LispStringPtr str1;
     str1 = oper.Get()->String();
-    CHK_ARG(str1 != NULL,1);
+    CHK_ARG_CORE(str1 != NULL,1);
     LispInt base = InternalAsciiToInt(str1->String());
 
     // Get the number to convert
     RefPtr<BigNumber> x;
-    GetNumber(x,aEnvironment, aArguments, 2);
+    GetNumber(x,aEnvironment, aStackTop, 2);
 
     // convert using correct base
     LispString str;
     x->ToString(str,aEnvironment.BinaryPrecision(),base);
     // Get unique string from hash table, and create an atom from it.
-    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str.String())));
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str.String())));
 }
 
 
 
-void LispApplyPure(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments)
+void LispApplyPure(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(3);
+    //TESTARGS(3);
 
     LispPtr oper;
-    InternalEval(aEnvironment, oper, Argument(aArguments,1));
+    oper.Set(ARGUMENT(1).Get());
     LispPtr args;
-    InternalEval(aEnvironment, args, Argument(aArguments,2));
+    args.Set(ARGUMENT(2).Get());
 
-    CHK_ARG(args.Get()->SubList() != NULL,2);
-    CHK(args.Get()->SubList()->Get() != NULL,2);
+    CHK_ARG_CORE(args.Get()->SubList() != NULL,2);
+    CHK_CORE(args.Get()->SubList()->Get() != NULL,2);
 
     
 
     // Apply a pure string
     if (oper.Get()->String() != NULL)
     {
-        InternalApplyString(aEnvironment, aResult,
+        InternalApplyString(aEnvironment, RESULT,
                     oper.Get()->String(),
                     args.Get()->SubList()->Get()->Next());
     }
@@ -821,17 +791,16 @@ void LispApplyPure(LispEnvironment& aEnvironment, LispPtr& aResult,
     {   // Apply a pure function {args,body}.
         LispPtr args2;
         args2.Set(args.Get()->SubList()->Get()->Next().Get());
-        CHK_ARG(oper.Get()->SubList() != NULL,1);
-        CHK_ARG(oper.Get()->SubList()->Get() != NULL,1);
-        InternalApplyPure(oper,args2,aResult,aEnvironment);
+        CHK_ARG_CORE(oper.Get()->SubList() != NULL,1);
+        CHK_ARG_CORE(oper.Get()->SubList()->Get() != NULL,1);
+        InternalApplyPure(oper,args2,RESULT,aEnvironment);
     }
 }
 
 
-void LispPrettyPrinter(LispEnvironment& aEnvironment, LispPtr& aResult,
-                       LispPtr& aArguments)
+void LispPrettyPrinter(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispInt nrArguments = InternalListLength(aArguments);
+    LispInt nrArguments = InternalListLength(ARGUMENT(0));
 
     if (nrArguments == 1)
     {
@@ -839,46 +808,43 @@ void LispPrettyPrinter(LispEnvironment& aEnvironment, LispPtr& aResult,
     }
     else
     {
-        CHK(nrArguments == 2,KLispErrWrongNumberOfArgs);
+        CHK_CORE(nrArguments == 2,KLispErrWrongNumberOfArgs);
         LispPtr oper;
-        InternalEval(aEnvironment, oper, Argument(aArguments,1));
-        CHK_ISSTRING(oper,1);
+        oper.Set(ARGUMENT(1).Get());
+        CHK_ISSTRING_CORE(oper,1);
         aEnvironment.SetPrettyPrinter(oper.Get()->String());
     }
-    InternalTrue(aEnvironment,aResult);
+    InternalTrue(aEnvironment,RESULT);
 }
 
 
-void LispGarbageCollect(LispEnvironment& aEnvironment, LispPtr& aResult,
-                        LispPtr& aArguments)
+void LispGarbageCollect(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(1);
+    //TESTARGS(1);
     aEnvironment.HashTable().GarbageCollect();
     
-    InternalTrue(aEnvironment,aResult);
+    InternalTrue(aEnvironment,RESULT);
 }
 
-void LispLazyGlobal(LispEnvironment& aEnvironment, LispPtr& aResult,
-                    LispPtr& aArguments)
+void LispLazyGlobal(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(2);
-    LispStringPtr string = Argument(aArguments,1).Get()->String();
-    CHK_ARG(string != NULL, 1);
+    //TESTARGS(2);
+    LispStringPtr string = ARGUMENT(1).Get()->String();
+    CHK_ARG_CORE(string != NULL, 1);
     aEnvironment.SetGlobalEvaluates(string);
-    InternalTrue(aEnvironment,aResult);
+    InternalTrue(aEnvironment,RESULT);
 
 }
 
-void LispPatchLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments)
+void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(2);
+    //TESTARGS(2);
 
     LispPtr evaluated;
-    InternalEval(aEnvironment, evaluated, Argument(aArguments,1));
+    evaluated.Set(ARGUMENT(1).Get());
 
     LispStringPtr string = evaluated.Get()->String();
-    CHK_ARG(string != NULL, 1);
+    CHK_ARG_CORE(string != NULL, 1);
 
     LispString oper;
     InternalUnstringify(oper, string);
@@ -897,19 +863,18 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
               *aEnvironment.CurrentOutput(),
               aEnvironment);
     aEnvironment.iInputStatus.RestoreFrom(oldstatus);
-    InternalTrue(aEnvironment,aResult);
+    InternalTrue(aEnvironment,RESULT);
 }
 
-void LispPatchString(LispEnvironment& aEnvironment, LispPtr& aResult,
-                     LispPtr& aArguments)
+void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(2);
+    //TESTARGS(2);
 
     LispPtr evaluated;
-    InternalEval(aEnvironment, evaluated, Argument(aArguments,1));
+    evaluated.Set(ARGUMENT(1).Get());
     
     LispStringPtr string = evaluated.Get()->String();
-    CHK_ARG(string != NULL, 1);
+    CHK_ARG_CORE(string != NULL, 1);
     LispString oper;
     InternalUnstringify(oper, string);
 
@@ -920,19 +885,18 @@ void LispPatchString(LispEnvironment& aEnvironment, LispPtr& aResult,
 
     PatchLoad(&oper[0], newOutput, aEnvironment);
 
-    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(str.String())));
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(str.String())));
 }
 
-void LispDllLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments)
+void LispDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(2);
+    //TESTARGS(2);
 
     LispPtr evaluated;
-    InternalEval(aEnvironment, evaluated, Argument(aArguments,1));
+    evaluated.Set(ARGUMENT(1).Get());
 
     LispStringPtr string = evaluated.Get()->String();
-    CHK_ARG(string != NULL, 1);
+    CHK_ARG_CORE(string != NULL, 1);
 
     LispString oper;
     InternalUnstringify(oper, string);
@@ -943,30 +907,28 @@ void LispDllLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
     if (!opened) delete dll;
     Check(opened,KLispErrLibraryNotFound);
     aEnvironment.iDlls.Append(dll);
-    InternalTrue(aEnvironment,aResult);
+    InternalTrue(aEnvironment,RESULT);
 }
 
-void LispDllUnload(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments)
+void LispDllUnload(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(2);
+    //TESTARGS(2);
     LispPtr evaluated;
-    InternalEval(aEnvironment, evaluated, Argument(aArguments,1));
+    evaluated.Set(ARGUMENT(1).Get());
 
     LispStringPtr string = evaluated.Get()->String();
-    CHK_ARG(string != NULL, 1);
+    CHK_ARG_CORE(string != NULL, 1);
 
     LispString oper;
     InternalUnstringify(oper, string);
     aEnvironment.iDlls.DeleteNamed(&oper[0],aEnvironment);
 
-    InternalTrue(aEnvironment,aResult);
+    InternalTrue(aEnvironment,RESULT);
 }
 
-void LispDllEnumerate(LispEnvironment& aEnvironment, LispPtr& aResult,
-                      LispPtr& aArguments)
+void LispDllEnumerate(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(1);
+    //TESTARGS(1);
     LispInt i;
     LispObject *res = NULL;
     for (i=aEnvironment.iDlls.NrItems()-1;i>=0;i--)
@@ -978,71 +940,68 @@ void LispDllEnumerate(LispEnvironment& aEnvironment, LispPtr& aResult,
 
         res = LA(ATOML(&oper[0])) + LA(res);
     }
-    aResult.Set(LIST(LA(ATOML("List")) + LA(res)));
+    RESULT.Set(LIST(LA(ATOML("List")) + LA(res)));
 }
 
-void LispSetExtraInfo(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments)
+void LispSetExtraInfo(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(3);
+    //TESTARGS(3);
 
     LispPtr object;
-    InternalEval(aEnvironment, object, Argument(aArguments,1));
+    object.Set(ARGUMENT(1).Get());
 
     LispPtr info;
-    InternalEval(aEnvironment, info, Argument(aArguments,2));
+    info.Set(ARGUMENT(2).Get());
 
-    aResult.Set( object.Get()->SetExtraInfo(info) );
+    RESULT.Set( object.Get()->SetExtraInfo(info) );
 }
 
 
-void LispGetExtraInfo(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments)
+void LispGetExtraInfo(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(2);
+    //TESTARGS(2);
 
     LispPtr object;
-    InternalEval(aEnvironment, object, Argument(aArguments,1));
+    object.Set(ARGUMENT(1).Get());
 
     LispPtr* result = object.Get()->ExtraInfo();
     if (result == NULL)
     {
-        InternalFalse(aEnvironment,aResult);
+        InternalFalse(aEnvironment,RESULT);
     }
     else if (result->Get() == NULL)
     {
-        InternalFalse(aEnvironment,aResult);
+        InternalFalse(aEnvironment,RESULT);
     }
     else
     {
-        aResult.Set(result->Get());
+        RESULT.Set(result->Get());
     }
 }
 
-void LispBerlekamp(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments)
+void LispBerlekamp(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(3);
+    //TESTARGS(3);
     LispPtr polyobj;
-    InternalEval(aEnvironment, polyobj , Argument(aArguments,1));
+    polyobj.Set(ARGUMENT(1).Get());
     LispPtr primeobj;
-    InternalEval(aEnvironment, primeobj, Argument(aArguments,2));
+    primeobj.Set(ARGUMENT(2).Get());
 
     LispInt prime = InternalAsciiToInt(primeobj.Get()->String()->String());
 
     ZZPoly poly;
-    CHK_ARG(polyobj.Get()->SubList() != NULL, 1);
+    CHK_ARG_CORE(polyobj.Get()->SubList() != NULL, 1);
     LispPtr hold;
     hold.Set(polyobj.Get());
     polyobj.Set(polyobj.Get()->SubList()->Get());
 
-    CHK_ARG(polyobj.Get() != NULL, 1);
+    CHK_ARG_CORE(polyobj.Get() != NULL, 1);
     polyobj.Set(polyobj.Get()->Next().Get());
 
     while (polyobj.Get() != NULL)
     {
         ZZ fact;
-        CHK_ARG(polyobj.Get()->String() != NULL, 1);
+        CHK_ARG_CORE(polyobj.Get()->String() != NULL, 1);
         fact = InternalAsciiToInt(polyobj.Get()->String()->String());
         poly.Append(fact);
         polyobj.Set(polyobj.Get()->Next().Get());
@@ -1064,56 +1023,51 @@ void LispBerlekamp(LispEnvironment& aEnvironment, LispPtr& aResult,
         }
         res = LIST(LA(ATOML("List")) + LA(sub)) + LA(res);
     }
-    aResult.Set(LIST(LA(ATOML("List")) + LA(res)));
+    RESULT.Set(LIST(LA(ATOML("List")) + LA(res)));
 }
 
-void LispDefaultTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments)
+void LispDefaultTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(1);
+    //TESTARGS(1);
     aEnvironment.iCurrentTokenizer = &aEnvironment.iDefaultTokenizer;
-    InternalTrue(aEnvironment,aResult);
+    InternalTrue(aEnvironment,RESULT);
 }
 
-void LispCommonLispTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments)
+void LispCommonLispTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(1);
+    //TESTARGS(1);
     aEnvironment.iCurrentTokenizer = &aEnvironment.iCommonLispTokenizer;
-    InternalTrue(aEnvironment,aResult);
+    InternalTrue(aEnvironment,RESULT);
 }
-void LispCTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments)
+void LispCTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(1);
+    //TESTARGS(1);
     aEnvironment.iCurrentTokenizer = &aEnvironment.iCTokenizer;
-    InternalTrue(aEnvironment,aResult);
+    InternalTrue(aEnvironment,RESULT);
 }
 
-void LispXmlTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
-                      LispPtr& aArguments)
+void LispXmlTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(1);
+    //TESTARGS(1);
     aEnvironment.iCurrentTokenizer = &aEnvironment.iXmlTokenizer;
-    InternalTrue(aEnvironment,aResult);
+    InternalTrue(aEnvironment,RESULT);
 }
 
-void LispExplodeTag(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments)
+void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(2);
+    //TESTARGS(2);
     LispPtr out;
-    InternalEval(aEnvironment, out, Argument(aArguments,1));
-    CHK_ISSTRING(out,1);
+    out.Set(ARGUMENT(1).Get());
+    CHK_ISSTRING_CORE(out,1);
 
     LispCharPtr str = out.Get()->String()->String();
     str++;
     if (str[0] != '<')
     {
-        aResult.Set(out.Get());
+        RESULT.Set(out.Get());
         return;
     }
-    CHK_ARG(str[0] == '<',1);
+    CHK_ARG_CORE(str[0] == '<',1);
     str++;
     LispCharPtr type = "\"Open\"";
 
@@ -1154,9 +1108,9 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispPtr& aResult,
         }
         name.Append('\"');
         name.Append('\0');
-        CHK_ARG(str[0] == '=',1);
+        CHK_ARG_CORE(str[0] == '=',1);
         str++;
-        CHK_ARG(str[0] == '\"',1);
+        CHK_ARG_CORE(str[0] == '\"',1);
         LispString value;
         value.SetNrItems(0);
         value.Append(*str++);
@@ -1180,7 +1134,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispPtr& aResult,
     }
     
     info = LIST(LA(ATOML("List")) + LA(info));
-    aResult.Set(
+    RESULT.Set(
                 LIST(
                      LA(ATOML("XmlTag")) +
                      LA(ATOML(tag.String())) +
@@ -1191,26 +1145,25 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispPtr& aResult,
 }
 
 
-void LispFastAssoc(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments)
+void LispFastAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     // Check that we have two arguments.
-    TESTARGS(3);
+    //TESTARGS(3);
 
     // key to find
     LispPtr key;
-    InternalEval(aEnvironment, key , Argument(aArguments,1));
+    key.Set(ARGUMENT(1).Get());
     
     // assoc-list to find it in
     LispPtr list;
-    InternalEval(aEnvironment, list , Argument(aArguments,2));
+    list.Set(ARGUMENT(2).Get());
 
     LispObject* t;
 
     //Check that it is a compound object
-    CHK_ARG(list.Get()->SubList() != NULL, 2);
+    CHK_ARG_CORE(list.Get()->SubList() != NULL, 2);
     t = list.Get()->SubList()->Get();
-    CHK_ARG(t != NULL, 2);
+    CHK_ARG_CORE(t != NULL, 2);
     t = t->Next().Get();
 
     while (t != NULL)
@@ -1225,7 +1178,7 @@ void LispFastAssoc(LispEnvironment& aEnvironment, LispPtr& aResult,
                 temp.Set(sub);
                 if(InternalEquals(aEnvironment,key,temp))
                 {
-                    aResult.Set(t);
+                    RESULT.Set(t);
                     return;
                 }
                 
@@ -1235,43 +1188,39 @@ void LispFastAssoc(LispEnvironment& aEnvironment, LispPtr& aResult,
     }
 
     
-    aResult.Set(ATOML("Empty"));
+    RESULT.Set(ATOML("Empty"));
 }
 
-void LispCurrentFile(LispEnvironment& aEnvironment, LispPtr& aResult,
-                     LispPtr& aArguments)
+void LispCurrentFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     // Check that we have zero arguments.
-    TESTARGS(1);
-    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(aEnvironment.iInputStatus.FileName())));
+    //TESTARGS(1);
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(aEnvironment.iInputStatus.FileName())));
 }
 
-void LispCurrentLine(LispEnvironment& aEnvironment, LispPtr& aResult,
-                     LispPtr& aArguments)
+void LispCurrentLine(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     // Check that we have zero arguments.
-    TESTARGS(1);
+    //TESTARGS(1);
     LispChar s[30];
     InternalIntToAscii(s, aEnvironment.iInputStatus.LineNumber());
-    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(s)));
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(s)));
 }
 
-void LispBackQuote(LispEnvironment& aEnvironment, LispPtr& aResult,
-                     LispPtr& aArguments)
+void LispBackQuote(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     // Check that we have one argument.
-    TESTARGS(2);
+    //TESTARGS(2);
     BackQuoteBehaviour behaviour(aEnvironment);
     LispPtr result;
-    InternalSubstitute(result, Argument(aArguments, 1), behaviour);
-    InternalEval(aEnvironment, aResult, result);
+    InternalSubstitute(result, ARGUMENT( 1), behaviour);
+    InternalEval(aEnvironment, RESULT, result);
 }
 
 // this function is declared in yacasapi.cpp
-void LispVersion(LispEnvironment& aEnvironment, LispPtr& aResult,
-                 LispPtr& aArguments)
+void LispVersion(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp("\"" VERSION "\"")));
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp("\"" VERSION "\"")));
 }
 
 

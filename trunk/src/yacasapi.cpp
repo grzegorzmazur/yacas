@@ -25,18 +25,19 @@ DefaultYacasEnvironment::~DefaultYacasEnvironment()
 }
 
 
+/*TODO remove
 void DefaultYacasEnvironment::SetCommand(LispEvalCaller aEvaluatorFunc,
                                          LispCharPtr aString)
 {
     iEnvironment.SetCommand(aEvaluatorFunc, aString);
 }
-
+*/
 DefaultYacasEnvironment::DefaultYacasEnvironment(LispOutput* aOutput)
 :output(aOutput),infixprinter(prefixoperators,
              infixoperators,
              postfixoperators,
               bodiedoperators),
-iEnvironment(commands,userFunctions,
+iEnvironment(/*commands,*/coreCommands,userFunctions,
                  globals,hash,output,infixprinter,
                  prefixoperators,infixoperators,
                  postfixoperators,bodiedoperators,&input),
@@ -45,24 +46,31 @@ input(iEnvironment.iInputStatus)
     // Define the buitl-in functions by tying their string representation
     // to a kernel callable routine.
 
-    SetCommand(LispQuote         ,"Hold");
-    SetCommand(LispEval          ,"Eval");
-    SetCommand(LispSetVar        ,"Set");
-    SetCommand(LispMacroSetVar   ,"MacroSet");
-    SetCommand(LispClearVar      ,"Clear");
-    SetCommand(LispMacroClearVar ,"MacroClear");
-    SetCommand(LispFullForm      ,"FullForm");
+#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags);
+#define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags);
+#include "corefunctions.h"
+#undef CORE_KERNEL_FUNCTION
+#undef CORE_KERNEL_FUNCTION_ALIAS
 
-    SetCommand(LispHead          ,"Head");
-    SetCommand(LispNth           ,"MathNth");
-    SetCommand(LispTail          ,"Tail");
-    SetCommand(LispDestructiveReverse       ,"DestructiveReverse");
-    SetCommand(LispLength        ,"Length");
-    SetCommand(LispList          ,"List");
-    SetCommand(LispUnList        ,"UnList");
-    SetCommand(LispListify       ,"Listify");
-    SetCommand(LispConcatenate   ,"Concat");
-    SetCommand(LispConcatenateStrings   ,"ConcatStrings");
+/*
+//    SetCommand(LispQuote         ,"Hold");
+//    SetCommand(LispEval          ,"Eval");
+//    SetCommand(LispSetVar        ,"Set");
+//    SetCommand(LispMacroSetVar   ,"MacroSet");
+//    SetCommand(LispClearVar      ,"Clear");
+//    SetCommand(LispMacroClearVar ,"MacroClear");
+//    SetCommand(LispFullForm      ,"FullForm");
+
+
+//    SetCommand(LispNth           ,"MathNth");
+//    SetCommand(LispTail          ,"Tail");
+//    SetCommand(LispDestructiveReverse       ,"DestructiveReverse");
+//    SetCommand(LispLength        ,"Length");
+//    SetCommand(LispList          ,"List");
+//    SetCommand(LispUnList        ,"UnList");
+//    SetCommand(LispListify       ,"Listify");
+//    SetCommand(LispConcatenate   ,"Concat");
+//    SetCommand(LispConcatenateStrings   ,"ConcatStrings");
     SetCommand(LispDelete        ,"Delete");
     SetCommand(LispInsert        ,"Insert");
     SetCommand(LispReplace       ,"Replace");
@@ -74,13 +82,13 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispLazyOr        ,"Or");
     SetCommand(LispEquals        ,"Equals");
     SetCommand(LispEquals        ,"=");
-    SetCommand(LispWrite         ,"Write");
+//    SetCommand(LispWrite         ,"Write");
+//    SetCommand(LispWriteString   ,"WriteString");
     SetCommand(LispMathLibName         ,"MathLibrary");
     SetCommand(LispVersion         ,"Version");
-    SetCommand(LispWriteString   ,"WriteString");
     SetCommand(LispProgBody      ,"Prog");
-    SetCommand(LispNewLocal      ,"Local");
-    SetCommand(LispMacroNewLocal ,"MacroLocal");
+//    SetCommand(LispNewLocal      ,"Local");
+//    SetCommand(LispMacroNewLocal ,"MacroLocal");
     SetCommand(LispWhile         ,"While");
     
     SetCommand(LispMultiply      ,"MathMultiply");
@@ -100,7 +108,7 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispBodied        ,"Bodied");
     SetCommand(LispAtomize       ,"Atom");
     SetCommand(LispStringify     ,"String");
-    SetCommand(LispLoad          ,"Load");
+//    SetCommand(LispLoad          ,"Load");
 
     SetCommand(LispRuleBase      ,"RuleBase");
     SetCommand(LispMacroRuleBase ,"MacroRuleBase");
@@ -161,13 +169,13 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispGcd   ,"MathGcd");
 
 
-    SetCommand(LispDefaultDirectory   ,"DefaultDirectory");
-    SetCommand(LispFromFile   ,"FromFile");
-    SetCommand(LispFromString ,"FromString");
-    SetCommand(LispToFile   ,"ToFile");
-    SetCommand(LispToString ,"ToString");
-    SetCommand(LispRead   ,"Read");
-    SetCommand(LispReadToken   ,"ReadToken");
+//    SetCommand(LispDefaultDirectory   ,"DefaultDirectory");
+//    SetCommand(LispFromFile   ,"FromFile");
+//    SetCommand(LispFromString ,"FromString");
+//    SetCommand(LispRead   ,"Read");
+//    SetCommand(LispReadToken   ,"ReadToken");
+//    SetCommand(LispToFile   ,"ToFile");
+//    SetCommand(LispToString ,"ToString");
     SetCommand(LispDestructiveDelete,"DestructiveDelete");
     SetCommand(LispDestructiveInsert,"DestructiveInsert");
     SetCommand(LispDestructiveReplace,"DestructiveReplace");
@@ -280,6 +288,8 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispCurrentLine ,"CurrentLine");
 
     SetCommand(LispBackQuote ,"`");
+
+*/
     
     OPERATOR(bodied,KMaxPrecedence,While);
     OPERATOR(bodied,KMaxPrecedence,Rule);
@@ -381,7 +391,10 @@ void CYacas::Evaluate(const LispCharPtr aExpression)
          environment().SetGlobalEvaluates(percent);
          
      },environment().iErrorOutput,environment());
-
+     
+//printf("stack top = %d (should be zero)\n",environment().iStack.GetStackTop());
+     environment().iStack.PopTo(0);
+//     LISPASSERT(environment().iStack.GetStackTop() == 0);
 }
 
 LispCharPtr CYacas::Result()

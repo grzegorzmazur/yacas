@@ -19,6 +19,7 @@
 [
   Local(a,i,tot);
   a:=100;
+  Retract(forloop,4);
   Macro(forloop,{init,pred,inc,body}) 
   [
     @init;

@@ -8,7 +8,7 @@
 /* Implementation of Nth that allows extending. */
 RuleBase("Nth",{alist,aindex});
 Rule("Nth",2,10,
-    MathAnd(Equals(IsFunction(alist),True),
+    And(Equals(IsFunction(alist),True),
             Equals(IsInteger(aindex),True),
             Not(Equals(Head(Listify(alist)),Nth))
             ))
@@ -18,7 +18,7 @@ Rule("Nth",2,10,
 
 
 Rule("Nth",2,14,
-     MathAnd(Equals(IsString(alist),True),IsList(aindex))
+     And(Equals(IsString(alist),True),IsList(aindex))
     )
 [
   Local(result);
@@ -39,7 +39,7 @@ Rule("Nth",2,20,Equals(IsList(aindex),True))
 ];
 
 Rule("Nth",2,30,
-   MathAnd(
+   And(
            Equals(IsGeneric(alist),True),
            Equals(GenericTypeName(alist),"Array"),
            Equals(IsInteger(aindex),True)
@@ -237,7 +237,7 @@ SumListSide(_x, y_IsList) <--
 //50 # -0 <-- 0;
 51 # -Undefined <-- Undefined;
 54 # - (- _x)      <-- x;
-55 # (- (x_IsNumber)) <-- MathSubtract(x);
+55 # (- (x_IsNumber)) <-- MathSubtract(0,x);
 100 # _x - n_IsConstant*(_x)   <-- (1-n)*x;
 100 # n_IsConstant*(_x) - _x   <-- (n-1)*x;
 

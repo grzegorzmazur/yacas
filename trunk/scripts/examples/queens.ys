@@ -31,7 +31,7 @@ Queens(n_IsPositiveInteger) <--
 [
   Local(result);
   Set(result, False);
-  While(MathAnd(Not(result), Not(Equals(list, {}))))
+  While(And(Not(result), Not(Equals(list, {}))))
   [
     Set(result, IsOnDiagonal(n,Head(list)));
     Set(list, Tail(list));

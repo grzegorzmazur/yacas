@@ -47,10 +47,12 @@ public:
 };
 
 
+
 class LispEnvironment : public YacasBase
 {
 public:
-    LispEnvironment(LispCommands& aCommands,
+    LispEnvironment(/*TODO remove LispCommands& aCommands, */
+                    YacasCoreCommands &aCoreCommands,
                     LispUserFunctions& aUserFunctions,
                     LispGlobal& aGlobals,
                     LispHashTable& aHashTable,
@@ -74,9 +76,13 @@ public:
     void CurrentLocals(LispPtr& aResult);
 
 public:
-    inline LispCommands& Commands();
-    void SetCommand(LispEvalCaller aEvaluatorFunc, LispCharPtr aString);
+//TODO remove    inline LispCommands& Commands();
+    inline YacasCoreCommands& CoreCommands();
+//TODO remove    void SetCommand(LispEvalCaller aEvaluatorFunc, LispCharPtr aString);
+    void SetCommand(YacasEvalCaller aEvaluatorFunc, LispCharPtr aString,LispInt aNrArgs,LispInt aFlags);
+
     void RemoveCommand(LispCharPtr aString);
+    void RemoveCoreCommand(LispCharPtr aString);
 
     inline  LispHashTable& HashTable();
     LispUserFunction* UserFunction(LispPtr& aArguments);
@@ -222,7 +228,8 @@ private:
 public: //Well... only because I want to be able to show the stack to the outside world...
     LocalVariableFrame *iLocalsList;
 private:
-    LispCommands&  iCommands;
+//TODO remove    LispCommands&  iCommands;
+    YacasCoreCommands& iCoreCommands;
     LispUserFunctions& iUserFunctions;
     LispHashTable& iHashTable;
     LispDefFiles   iDefFiles;
@@ -249,6 +256,42 @@ public:
     CTokenizer    iCTokenizer;
     XmlTokenizer  iXmlTokenizer;
     LispTokenizer* iCurrentTokenizer;
+
+public:
+  /** YacasArgStack implements a stack of pointers to objects that can be used to pass
+  *  arguments to functions, and receive results back.
+  */
+  class YacasArgStack
+  {
+  public:
+    //TODO appropriate constructor?
+    YacasArgStack() : iStack(50000,NULL),iStackTop(0) {}
+    inline LispInt GetStackTop() const {return iStackTop;}
+    inline void PushArgOnStack(LispObject* aObject) 
+    {
+      iStack.SetElement(iStackTop,aObject);
+      iStackTop++;
+    }
+    inline LispPtr& GetElement(LispInt aPos) 
+    {
+      LISPASSERT(aPos>=0 && aPos < iStackTop);
+      return iStack.GetElement(aPos);
+    }
+    inline void PopTo(LispInt aTop) 
+    {
+      LISPASSERT(aTop<=iStackTop);
+      while (iStackTop>aTop)
+      {
+        iStackTop--;
+        iStack.SetElement(iStackTop,NULL);
+      }
+    }
+  protected:
+    LispPtrArray iStack;
+    LispInt iStackTop;
+  };
+
+  YacasArgStack iStack;
 };
 
 
@@ -270,10 +313,18 @@ inline LispInt LispEnvironment::BinaryPrecision(void)
     return digits_to_bits(iPrecision,10);
 }
 
+/*TODO remove
 inline LispCommands& LispEnvironment::Commands()
 {
     return iCommands;
 }
+*/
+
+inline YacasCoreCommands& LispEnvironment::CoreCommands()
+{
+    return iCoreCommands;
+}
+
 
 inline LispHashTable& LispEnvironment::HashTable()
 {

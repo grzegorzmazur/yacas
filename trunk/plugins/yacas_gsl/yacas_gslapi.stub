@@ -9,7 +9,7 @@ StubApiCRemark("This plugin links to the Gnu Scientific Library.");
 /* define an include file for the stub file */
 StubApiCInclude("\"yacas_gsl.h\"");
 
-/*
+
 StubApiCPrelog(
 "
 #ifdef HAVE_CONFIG_H
@@ -18,7 +18,7 @@ StubApiCPrelog(
 #ifdef HAVE_LIBGSL
 #include \"gsl/gsl_sf.h\"
 ");
-*/
+
 
 /* Declare a function */
 StubApiCFunction("double", "gsl_sf_bessel_J0","gsl'sf'bessel'J0",{"double"});
@@ -38,7 +38,7 @@ StubApiCFunction("void","BlaSetA",{"Bla*","int"});
 StubApiCFunction("int","BlaGetA",{"Bla*"});
 */
 
-/*
+
 StubApiCPostlog(
 "
 #else
@@ -50,7 +50,7 @@ LispPluginBase* maker(void)
 };
 #endif //HAVE_LIBGSL
 ");
-*/
+
 
 
 /* export the c file for compilation */

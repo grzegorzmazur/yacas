@@ -11,14 +11,23 @@
 
 #define CORE_FUNCTION(NAME) void NAME(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments);
 
+#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) void fname(LispEnvironment& aEnvironment, LispInt aStackTop);
+#define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) 
+
+#include "corefunctions.h"
+#undef CORE_KERNEL_FUNCTION
+#undef CORE_KERNEL_FUNCTION_ALIAS
+
 //
 // Evaluation direction.
 //
-CORE_FUNCTION(LispQuote)
-CORE_FUNCTION(LispEval)
+//DONE CORE_FUNCTION(LispQuote)
+//DONE CORE_FUNCTION(LispEval)
+
 //
 // Input/output functions
 //
+/*DONE
 CORE_FUNCTION(LispWrite)
 CORE_FUNCTION(LispWriteString)
 CORE_FUNCTION(LispFullForm)
@@ -30,19 +39,23 @@ CORE_FUNCTION(LispReadToken)
 CORE_FUNCTION(LispToFile)
 CORE_FUNCTION(LispToString)
 CORE_FUNCTION(LispLoad)
+*/
+
 //
 // Variable setting/clearing
 //
+/*
 CORE_FUNCTION(LispSetVar)
 CORE_FUNCTION(LispMacroSetVar)
 CORE_FUNCTION(LispClearVar)
 CORE_FUNCTION(LispMacroClearVar)
 CORE_FUNCTION(LispNewLocal)
 CORE_FUNCTION(LispMacroNewLocal)
+*/
 //
 // List and compound object manipulation
 //
-CORE_FUNCTION(LispHead)
+/*
 CORE_FUNCTION(LispNth)
 CORE_FUNCTION(LispTail)
 CORE_FUNCTION(LispDestructiveReverse)
@@ -52,16 +65,21 @@ CORE_FUNCTION(LispUnList)
 CORE_FUNCTION(LispListify)
 CORE_FUNCTION(LispConcatenate)
 CORE_FUNCTION(LispConcatenateStrings)
-CORE_FUNCTION(LispNoCacheConcatenateStrings)
+*/
+
+/*
 CORE_FUNCTION(LispDelete)
+CORE_FUNCTION(LispDestructiveDelete)
 CORE_FUNCTION(LispInsert)
+CORE_FUNCTION(LispDestructiveInsert)
 CORE_FUNCTION(LispReplace)
+CORE_FUNCTION(LispDestructiveReplace)
 CORE_FUNCTION(LispAtomize)
 CORE_FUNCTION(LispStringify)
-CORE_FUNCTION(LispDestructiveDelete)
-CORE_FUNCTION(LispDestructiveInsert)
-CORE_FUNCTION(LispDestructiveReplace)
 CORE_FUNCTION(LispFlatCopy)
+
+//???CORE_FUNCTION(LispNoCacheConcatenateStrings)
+
 //
 // Program control flow
 //
@@ -172,7 +190,7 @@ CORE_FUNCTION(LispBitXor)
 CORE_FUNCTION(LispSecure)
 CORE_FUNCTION(LispFindFile)
 CORE_FUNCTION(LispFindFunction)
-/* Generic objecs support */
+// Generic objecs support 
 CORE_FUNCTION(LispIsGeneric)
 CORE_FUNCTION(LispGenericTypeName)
 CORE_FUNCTION(GenArrayCreate)
@@ -192,7 +210,7 @@ CORE_FUNCTION(LispReadLispListed)
 CORE_FUNCTION(LispType)
 CORE_FUNCTION(LispStringMid)
 CORE_FUNCTION(LispSetStringMid)
-/* Pattern matching */
+// Pattern matching 
 CORE_FUNCTION(GenPatternCreate)
 CORE_FUNCTION(GenPatternMatches)
 CORE_FUNCTION(LispRuleBaseDefined)
@@ -225,4 +243,7 @@ CORE_FUNCTION(LispFastAssoc)
 CORE_FUNCTION(LispCurrentFile)
 CORE_FUNCTION(LispCurrentLine)
 CORE_FUNCTION(LispBackQuote)
+
+*/
+
 #endif

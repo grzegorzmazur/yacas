@@ -146,16 +146,28 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
             {
                 if (head->String())
                 {
-                    LispEvaluator* evaluator =
-                        aEnvironment.Commands().LookUp(head->String());
+/*TODO remove
+                  {
+                    LispEvaluator* evaluator = aEnvironment.Commands().LookUp(head->String());
+                    // Try to find a built-in command
+                    if (evaluator)
+                    {
+                      evaluator->Evaluate(aResult, aEnvironment, *subList);
+                      goto FINISH;
+                    }
+                  }
+*/
+                  {
+                    YacasEvaluator* evaluator = aEnvironment.CoreCommands().LookUp(head->String());
                     // Try to find a built-in command
                     if (evaluator)
                     {
                         evaluator->Evaluate(aResult, aEnvironment, *subList);
                         goto FINISH;
                     }
+                  }
 
-                    else // Else try to find a user-defined function
+//                    else // Else try to find a user-defined function
                     {
                         LispUserFunction* userFunc;
                         userFunc = GetUserFunction(aEnvironment, subList);
@@ -365,7 +377,7 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
         aEnvironment.CurrentPrinter().Print(objs[i]->iOperator, *aEnvironment.CurrentOutput(),aEnvironment);
 
         LispInt internal;
-        internal = (NULL != aEnvironment.Commands().LookUp(objs[i]->iOperator.Get()->String()));
+        internal = (NULL != aEnvironment.CoreCommands().LookUp(objs[i]->iOperator.Get()->String()));
         if (internal)
         {
             aEnvironment.CurrentOutput()->Write(" (Internal function) ");

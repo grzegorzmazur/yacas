@@ -2,8 +2,9 @@
 #include "yacasprivate.h"
 #include "arrayclass.h"
 
-ArrayClass::ArrayClass(LispInt aSize,LispObject* aInitialItem)
+ArrayClass::ArrayClass(LispInt aSize,LispObject* aInitialItem) : iArray(aSize,aInitialItem)
 {
+/*TODO remove
     iSize=aSize;
     iArray = NEW LispPtr[aSize];
     LispInt i;
@@ -11,13 +12,14 @@ ArrayClass::ArrayClass(LispInt aSize,LispObject* aInitialItem)
     {
         iArray[i].Set(aInitialItem);
     }
+*/
 }
 
 
 ArrayClass::~ArrayClass()
 {
 //printf("before delete\n");
-    delete[] iArray;
+//TODO remove    delete[] iArray;
 //printf("after delete\n");
 }
 

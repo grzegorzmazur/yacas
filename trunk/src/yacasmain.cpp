@@ -164,68 +164,58 @@ LispBoolean Busy()
     return busy;
 }
 
-
-void LispPlatformOS(LispEnvironment& aEnvironment, LispPtr& aResult,
-              LispPtr& aArguments)
+#define RESULT aEnvironment.iStack.GetElement(aStackTop)
+#define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
+void LispPlatformOS(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp("\"" PLATFORM_OS "\"")));
+  RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp("\"" PLATFORM_OS "\"")));
 }
 
-void LispExit(LispEnvironment& aEnvironment, LispPtr& aResult,
-              LispPtr& aArguments)
+void LispExit(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     busy=LispFalse;
 //    Check(0,KQuitting);
-    InternalTrue(aEnvironment, aResult);
+    InternalTrue(aEnvironment, RESULT);
 }
 
 unsigned char *the_first_stack_var;
 
-void LispStackSize(LispEnvironment& aEnvironment, LispPtr& aResult,
-              LispPtr& aArguments)
+void LispStackSize(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispChar buf[30];
     InternalIntToAscii(buf, (int)(the_first_stack_var-(unsigned char*)&buf[0]));
-    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
 }
 
-static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispPtr& aResult,
-              LispPtr& aArguments)
+static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(2);
     LispPtr promptObject;
-    aEnvironment.iEvaluator->Eval(aEnvironment, promptObject, Argument(aArguments,1));
-    CHK_ISSTRING(promptObject,1);
+    promptObject.Set(ARGUMENT(1).Get());
+    CHK_ISSTRING_CORE(promptObject,1);
     LispString prompt;
     InternalUnstringify(prompt, promptObject.Get()->String());
     readmode = 1;
     commandline->ReadLine(prompt.String());
     readmode = 0;
     char *output =  commandline->iLine.String();
-    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(output)));
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(output)));
 }
 
-static void LispHistorySize(LispEnvironment& aEnvironment, LispPtr& aResult,
-                            LispPtr& aArguments)
+static void LispHistorySize(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     /* Obtain arguments passed in. */
-    LispArgGetter g(aEnvironment, aArguments);
-    ShortIntegerArgument(g, depth, LispTrue);
-    g.Finalize(2);
-
+    ShortIntegerArgument(depth, 1);
     commandline->MaxHistoryLinesSaved(depth);
 
     /* Return result. */
-    InternalTrue(aEnvironment,aResult);
+    InternalTrue(aEnvironment,RESULT);
 }
 
-void LispTime(LispEnvironment& aEnvironment, LispPtr& aResult,
-              LispPtr& aArguments)
+void LispTime(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(2);
     clock_t starttime = clock();
     LispPtr res;
-    aEnvironment.iEvaluator->Eval(aEnvironment, res, Argument(aArguments,1));
+    aEnvironment.iEvaluator->Eval(aEnvironment, res, ARGUMENT(1));
     clock_t endtime = clock();
     double timeDiff;
 
@@ -234,87 +224,14 @@ void LispTime(LispEnvironment& aEnvironment, LispPtr& aResult,
     timeDiff /= CLOCKS_PER_SEC;
     char buf[100];
     sprintf(buf,"%g",timeDiff);
-    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
-}
-
-void ShStack(LispEnvironment& aEnvironment, LispPtr& aResult,
-             LispPtr& aArguments)
-{
-#if 0
-    /* gcc 3.0 doesn't allow us to have these classes, since they
-      are declared global */
-    LispEnvironment::LocalVariableFrame* fr = aEnvironment.iLocalsList;
-    
-    LispEnvironment::LispLocalVariable* ptr = fr->iFirst;
-    int nr=0;
-    while (ptr != NULL)
-    {
-        printf("%s ",ptr->iVariable->String());
-        nr++;
-        ptr = ptr->iNext;
-    }
-    printf("nr = %d\n",nr);
-#endif
-    InternalTrue(aEnvironment, aResult);
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
 }
 
 
-
-void LispIsPromptShown(LispEnvironment& aEnvironment,LispPtr& aResult,
-              LispPtr& aArguments)
+void LispIsPromptShown(LispEnvironment& aEnvironment,LispInt aStackTop)
 { // this function must access show_prompt which is a *global* in yacasmain.cpp, so it's not possible to put this function in mathcommands.cpp
-    TESTARGS(1);
-    InternalBoolean(aEnvironment,aResult, show_prompt==1
-   );
+    InternalBoolean(aEnvironment,RESULT, show_prompt==1);
 }
-
-
-//#define _TESTCODE_
-#ifdef  _TESTCODE_
-#include "errors.h"
-#define InternalEval aEnvironment.iEvaluator->Eval
-void DummyTestFunction(LispEnvironment& aEnvironment, LispPtr& aResult,
-              LispPtr& aArguments)
-{
-    // Check that we have one argument.
-    TESTARGS(2);
-
-    // Evaluate the first argument
-    LispPtr list;
-    InternalEval(aEnvironment, list , Argument(aArguments,1));
-
-    //Check that it is a compound object
-    CHK_ARG(list.Get()->SubList() != NULL, 1);
-    LispObject *walker = list.Get()->SubList()->Get();
-    walker = walker->Next().Get();
-    
-    LispObject* result = ATOML("List");
-    while (walker != NULL)
-    {
-        char buf[200];
-        CHK_ARG(walker->SubList() != NULL, 1);
-        LispObject* var = walker->SubList()->Get();
-        CHK_ARG(var != NULL, 1);
-        CHK_ARG(var->String() != NULL, 1);
-        CHK_ARG(!strcmp(var->String()->String(),"_"), 1);
-        var = var->Next().Get();
-        CHK_ARG(var != NULL, 1);
-        CHK_ARG(var->String() != NULL, 1);
-        strcpy(buf,var->String()->String());
-        var = var->Next().Get();
-        CHK_ARG(var != NULL, 1);
-        CHK_ARG(var->String() != NULL, 1);
-        strcat(buf,var->String()->String());
-        result = LA(result) + LA(ATOML(buf));
-        walker = walker->Next().Get();
-    }
-
-    LispPtr extra;
-    PARSE(extra,"p_100 And Not p_101");
-    result = LA(result) + LA(extra.Get());
-    aResult.Set(LIST(result));
-}
-#endif
 
 
 void my_exit(void)
@@ -448,33 +365,28 @@ void LoadYacas(LispOutput* aOutput=NULL)
     else
       yacas = CYacas::NewL();
 
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispPlatformOS),
-                                           (*yacas)()().HashTable().LookUp("OSVersion"));
 
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispExit),
-                                           (*yacas)()().HashTable().LookUp("Exit"));
+#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) (*yacas)()().SetCommand(fname,iname,nrargs,flags);
+
+CORE_KERNEL_FUNCTION("OSVersion",LispPlatformOS,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("Exit",LispExit,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("HistorySize",LispHistorySize,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("StaSiz",LispStackSize,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("IsPromptShown",LispIsPromptShown,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("ReadCmdLineString",LispReadCmdLineString,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator::Fixed)
+
+#undef CORE_KERNEL_FUNCTION
+/*TODO remove
+    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispPlatformOS),(*yacas)()().HashTable().LookUp("OSVersion"));
+    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispExit),(*yacas)()().HashTable().LookUp("Exit"));
    // this function is declared in yacasapi.cpp rather than here
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispHistorySize),
-                                           (*yacas)()().HashTable().LookUp("HistorySize"));
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispStackSize),
-                                           (*yacas)()().HashTable().LookUp("StaSiz"));
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(ShStack),
-                                           (*yacas)()().HashTable().LookUp("ShStack"));
-
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispIsPromptShown),
-                                           (*yacas)()().HashTable().LookUp("IsPromptShown"));
-
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispReadCmdLineString),
-                                           (*yacas)()().HashTable().LookUp("ReadCmdLineString"));
-
-#ifdef _TESTCODE_
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(DummyTestFunction),
-                                           (*yacas)()().HashTable().LookUp("DummyTestFunction"));
-#endif // _TESTCODE_
-
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispTime),
-                                           (*yacas)()().HashTable().LookUp("GetTime"));
-    
+    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispHistorySize),(*yacas)()().HashTable().LookUp("HistorySize"));
+    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispStackSize),(*yacas)()().HashTable().LookUp("StaSiz"));
+    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispIsPromptShown),(*yacas)()().HashTable().LookUp("IsPromptShown"));
+    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispReadCmdLineString),(*yacas)()().HashTable().LookUp("ReadCmdLineString"));
+    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispTime),(*yacas)()().HashTable().LookUp("GetTime"));
+*/    
     
 
     if (archive)
@@ -1075,9 +987,11 @@ int main(int argc, char** argv)
     unsigned char first_stack_var=0;
     the_first_stack_var = &first_stack_var;
 
+//printf("sizeof(LispPtr) = %d\n",sizeof(LispPtr));
 #ifdef YACAS_DEBUG
   if (verbose_debug)
   {
+    SHOWSIZE(LispPtr);
     SHOWSIZE(LispString);
     SHOWSIZE(LispAtom);
     SHOWSIZE(LispHashTable);

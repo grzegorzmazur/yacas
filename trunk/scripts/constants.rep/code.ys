@@ -8,7 +8,7 @@
  * with "Complex".
  */
 
-I := Complex(0,1);
+Set(I,Complex(0,1));
 LazyGlobal(I);
 
 //////////////////////////////////////////////////
@@ -25,7 +25,7 @@ UnFence("CachedConstant", 3);	// not sure if this is useful
 HoldArg("CachedConstant", C'func);
 HoldArg("CachedConstant", C'cache);	// name of the cache
 // check syntax: must be called on an atom and a function
-Rule("CachedConstant", 3, 10, MathAnd(IsAtom(C'atom), IsFunction(C'func)))
+Rule("CachedConstant", 3, 10, And(IsAtom(C'atom), IsFunction(C'func)))
 [
  	Local(C'name);
 	Set(C'name, String(C'atom));	// this is for later conveniences

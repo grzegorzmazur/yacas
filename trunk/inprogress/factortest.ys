@@ -130,7 +130,7 @@ Mkd(numer,denom,p):=
 
 
 
-BinaryFactor(polynom):=FW(SimpleFactors(polynom));
+BinaryFactor(polynom):=FW(BinaryFactors(polynom));
 BinaryFactors(polynom):=
 [
   Local(list,i,result,p,newlist,poly,nrroots);
@@ -240,8 +240,8 @@ newlist:=RemoveDuplicates(newlist);
 
     p:=2*p;
 
-//Echo(p,Length(list),list);
-
+Echo("Solutions modulo ",p," with ",Length(list),"potential solutions"/*,list*/);
+//Echo("testpoly is ",testpoly);
   ]; 
 
   // If the polynom is not one, it is a polynomial which is not reducible any further

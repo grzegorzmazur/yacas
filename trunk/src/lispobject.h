@@ -58,6 +58,27 @@ private:
 };
 
 
+/** \class LispPtrArray is similar to LispPtr, but implements an array
+ *  of pointers to objects.
+ */
+class LispPtrArray : public YacasBase
+{
+public: //required
+    LispPtrArray(LispInt aSize,LispObject* aInitialItem);
+    ~LispPtrArray();
+    void GrowTo(LispInt aNewSize);
+public: //array-specific
+    inline LispInt Size();
+    inline LispPtr& GetElement(LispInt aItem);
+    inline void SetElement(LispInt aItem,LispObject* aObject);
+private:
+    LispInt iSize;
+    LispPtr* iArray;
+};
+
+
+
+
 
 /** class LispObject is the base object class that can be put in
  *  linked lists. It either has a pointer to a string, obtained through

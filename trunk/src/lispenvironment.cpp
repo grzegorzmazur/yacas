@@ -10,10 +10,11 @@
 #include "mathuserfunc.h"
 #include "errors.h"
 
-
 #define InternalEval iEvaluator->Eval
 
-LispEnvironment::LispEnvironment(LispCommands& aCommands,
+
+LispEnvironment::LispEnvironment(/*TODO remove LispCommands& aCommands, */
+                    YacasCoreCommands& aCoreCommands,
                     LispUserFunctions& aUserFunctions,
                     LispGlobal& aGlobals,
                     LispHashTable& aHashTable,
@@ -35,7 +36,8 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
     iErrorOutput(iError),
     iDebugger(NULL),
     iLocalsList(NULL),
-    iCommands(aCommands),
+//TODO remove    iCommands(aCommands),
+    iCoreCommands(aCoreCommands),
     iUserFunctions(aUserFunctions),
     iHashTable(aHashTable),
     iPrinter(aPrinter),
@@ -487,6 +489,7 @@ void LispEnvironment::DefineRulePattern(LispStringPtr aOperator,LispInt aArity,
 
 
 
+/*TODO remove
 void LispEnvironment::SetCommand(LispEvalCaller aEvaluatorFunc, LispCharPtr aString)
 {
 #ifdef YACAS_DEBUG
@@ -497,10 +500,28 @@ void LispEnvironment::SetCommand(LispEvalCaller aEvaluatorFunc, LispCharPtr aStr
     Commands().SetAssociation(eval,
                             HashTable().LookUp(aString,LispTrue));
 }
+*/
 
+void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, LispCharPtr aString,LispInt aNrArgs,LispInt aFlags)
+{
+#ifdef YACAS_DEBUG
+    extern long theNrDefinedBuiltIn;
+    theNrDefinedBuiltIn++;
+#endif
+    YacasEvaluator eval(aEvaluatorFunc,aNrArgs,aFlags);
+    CoreCommands().SetAssociation(eval,HashTable().LookUp(aString,LispTrue));
+}
+
+
+/*TODO remove
 void LispEnvironment::RemoveCommand(LispCharPtr aString)
 {
     Commands().Release(HashTable().LookUp(aString,LispTrue));
+}
+*/
+void LispEnvironment::RemoveCoreCommand(LispCharPtr aString)
+{
+    CoreCommands().Release(HashTable().LookUp(aString,LispTrue));
 }
 
 void LispEnvironment::SetUserError(LispCharPtr aErrorString)

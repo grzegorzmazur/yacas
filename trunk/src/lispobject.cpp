@@ -115,3 +115,21 @@ LispIterator& LispIterator::operator=(LispPtr& aPtr)
 }
     
 
+
+
+LispPtrArray::LispPtrArray(LispInt aSize,LispObject* aInitialItem)
+{
+    iSize=aSize;
+    iArray = NEW LispPtr[aSize];
+    LispInt i;
+    for (i=0;i<aSize;i++)
+    {
+        SetElement(i,aInitialItem);
+    }
+}
+
+LispPtrArray::~LispPtrArray()
+{
+    delete [] iArray;
+}
+

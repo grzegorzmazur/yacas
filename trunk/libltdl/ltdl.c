@@ -2690,6 +2690,7 @@ try_dlopen (phandle, filename)
 	}
       if (!file)
 	{
+printf("FILE IS %s\n",filename);
 	  file = fopen (filename, LT_READTEXT_MODE);
 	}
 

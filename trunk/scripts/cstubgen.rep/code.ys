@@ -74,7 +74,7 @@ CArgsGet(args_IsList) <--
   i:=1;
   ForEach(arg,args)
   [
-    CArgsGet(CArgType(arg),i);
+    CArgsGet(CArgType(arg),i,i);
     i++;
   ];
 ];
@@ -85,41 +85,39 @@ CArgsGet(args_IsList) <--
 10 # CArgName(arg_IsList,_i)_(Length(arg)>1) <-- arg[2];
 20 # CArgName(_arg,_i) <-- "arg":String(i);
 
-20 # CArgsGet("int",_i) <--
+20 # CArgsGet("int",_i,_argnr) <--
 [
- 
-
- WriteString(PatchString(
-"  ShortIntegerArgument(g, <? WriteString(\"arg\":String(i)); ?>, LispTrue);
+  WriteString(PatchString(
+"  ShortIntegerArgument(<? WriteString(\"arg\":String(i)); ?>, <?Write(argnr);?> );
 "));
 ];
 
 
-20 # CArgsGet("double",_i) <--
+20 # CArgsGet("double",_i,_argnr) <--
 [
  WriteString(PatchString(
-"  DoubleFloatArgument(g,<? WriteString(\"arg\":String(i)); ?>,LispTrue);
+"  DoubleFloatArgument(<? WriteString(\"arg\":String(i)); ?>,<?Write(argnr);?>);
 "));
 ];
 
-20 # CArgsGet("input_string",_i) <--
+20 # CArgsGet("input_string",_i,_argnr) <--
 [
  WriteString(PatchString(
-"  InpStringArgument(g,<? WriteString(\"arg\":String(i)); ?>,LispTrue);
+"  InpStringArgument(<? WriteString(\"arg\":String(i)); ?>,<?Write(argnr);?>);
 "));
 ];
 
-30 # CArgsGet(name_IsString,_i)_(cstructs[name] != Empty) <--
+30 # CArgsGet(name_IsString,_i,_argnr)_(cstructs[name] != Empty) <--
 [
  WriteString(PatchString(
-"  VoidStructArgument(<?WriteString(name);?>,g,<? WriteString(\"arg\":String(i)); ?>,LispTrue,<?Write(name);?>);
+"  VoidStructArgument(<?WriteString(name);?>,<? WriteString(\"arg\":String(i)); ?>,<?Write(argnr);?>,<?Write(name);?>);
 "));
 ];
 
 
 
 
-100 # CArgsGet(_a,_i) <-- Check(False,"Argument type ":a:" not supported");
+100 # CArgsGet(_a,_i,_argnr) <-- Check(False,"Argument type ":a:" not supported");
 
 CCall(returntype,fname,args):=
 [
@@ -135,16 +133,16 @@ CCall(returntype,fname,args):=
 ];
 
 10  # CReturnResult("void") <--
-    WriteString("  InternalTrue(aEnvironment,aResult);");
+    WriteString("  InternalTrue(aEnvironment,aEnvironment.iStack.GetElement(aStackTop));");
 
 10  # CReturnResult("int") <--
-    WriteString("  ReturnShortInteger(aEnvironment,aResult,r);");
+    WriteString("  ReturnShortInteger(aEnvironment,aEnvironment.iStack.GetElement(aStackTop),r);");
 10  # CReturnResult("double") <--
-    WriteString("  ReturnDoubleFloat(aEnvironment,aResult,r);");
+    WriteString("  ReturnDoubleFloat(aEnvironment,aEnvironment.iStack.GetElement(aStackTop),r);");
 
 20  # CReturnResult(name_IsString)_(cstructs[name] != Empty)<--
 
-    WriteString("  ReturnVoidStruct(aEnvironment, aResult,":String(name):", r,":cstructs[name]:");");
+    WriteString("  ReturnVoidStruct(aEnvironment, aEnvironment.iStack.GetElement(aStackTop),":String(name):", r,":cstructs[name]:");");
 
 100 # CReturnResult(_r) <-- Check(False,"Return type ":r:" not supported");
 
@@ -161,14 +159,12 @@ CCall(returntype,fname,args):=
 
 funcstring:=
 "
-static void base_<? WriteString(fname); ?>(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments)
+static void base_<? WriteString(fname); ?>(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   /* Obtain arguments passed in. */
-  LispArgGetter g(aEnvironment, aArguments);
 <?
 CArgsGet(args);
-?>  g.Finalize(<?Write(Length(args));?>);
+?>  
 
   /* Call the actual function. */
 <?CCallContain(returntype);?> <?CCall(returntype,fname,args); ?>
@@ -182,11 +178,11 @@ CReturnResult(returntype);
 
 
 cadderstring:=
-"  aEnvironment.SetCommand(base_<? WriteString(fname); ?>, <? Write(fname2); ?>);
+"  aEnvironment.SetCommand(base_<? WriteString(fname); ?>, <? Write(fname2); ?>,<?Write(Length(args));?>,YacasEvaluator::Function | YacasEvaluator::Fixed);
 ";
 
 cremoverstring:=
-"  aEnvironment.RemoveCommand(<? Write(fname2); ?>);
+"  aEnvironment.RemoveCoreCommand(<? Write(fname2); ?>);
 ";
 
 

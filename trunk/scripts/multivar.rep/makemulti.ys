@@ -62,9 +62,10 @@ LocalSymbols(x,y,vars)  [
       <-- MultiNomial(vars,terms);
 
 // This rule would accept almost all terms, assuming them to be const.
-40 #  MakeMultiNomial(_x,vars_IsList) <--
+100 #  MakeMultiNomial(_x,vars_IsList) <--
+      [
       CreateTerm(vars,{FillList(0,Length(vars)),x});
-
+      ];
 
 ];
 

@@ -34,7 +34,7 @@ HoldArgNr("ForEach",3,1);
 HoldArgNr("ForEach",3,3);
 
 
-10 # Apply(_applyoper,_applyargs) _ (MathOr(IsString(applyoper), IsList(applyoper))) <-- ApplyPure(applyoper,applyargs);
+10 # Apply(_applyoper,_applyargs) _ (Or(IsString(applyoper), IsList(applyoper))) <-- ApplyPure(applyoper,applyargs);
 20 # Apply(_applyoper,_applyargs) <-- ApplyPure(String(applyoper),applyargs);
 UnFence("Apply",2);
 
