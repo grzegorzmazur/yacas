@@ -1,4 +1,15 @@
 
+dn():=
+[
+  While (True)
+  [
+    Echo("...OUT> ",Eval(FromString(ReadCmdLineString("...IN> "):";")Read()));
+    DumpErrors();
+  ];
+];
+
+EndOfFile;
+
 
 Out> 2*Pi+x+y;
 In> expr:=MM(x+y+3*Pi/2+2*ArcTan(s),vars)

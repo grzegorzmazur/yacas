@@ -1,6 +1,7 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = README.TXT makefile.examples
+EXTRA_DIST = README.TXT makefile.examples \
+	wintest1.cpp wintest1.dsp wintest1.dsw
 
 noinst_PROGRAMS = example1 example2 example3
 example1_SOURCES = example1.c

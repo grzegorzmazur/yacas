@@ -65,6 +65,31 @@ Yacas executable is run from. The name of the gnuplot executable must be
 Note that if you are running Yacas under the CYGWIN environment, then plotting may not work (it is not tested).
 
 
+USING THE YACAS DLL FROM WITHIN YOUR OWN C++ PROJECT IN MS DEVELOPER STUDIO
+===========================================================================
+
+The yacadll.dll dynamic link library offers the API described in
+the cyacas.h header file. In order to use the DLL, one needs to:
+
+1) include the "cyacas.h" header file in the C or C++ file that needs access to the API
+2) change the settings so the compiler knows where to find the "cyacas.h" header file
+3) Link against the yacasdll.lib file
+2) change the settings so the compiler knows where to find the "yacasdll.lib" library file
+5) the file yacasdll.dll has to be placed in the right place (placing it in the same directory 
+   as the executable will work).
+
+The DLL\ subdirectory contains the DLL, LIB and H files required, as well as a subdirectory
+examples\ with some example projects.
+
+
+TEST SUITE
+==========
+
+The Yacas test suite is included with the distribution. Just run test.bat
+in the tests\ directory. These files also provide a nice set of example
+expressions you might want to play around with.
+
+
 TERMS OF USE
 ============
 
