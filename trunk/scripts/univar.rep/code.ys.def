@@ -20,4 +20,6 @@ Horner
 DivPoly
 DropEndZeroes
 polyDivide
+polyGCD
+polyGCDExt
 }
