@@ -1,6 +1,7 @@
 
 Write(hello);
 
+/*
 Repeat(nr,body):=
 [
   Local(i);
@@ -14,6 +15,7 @@ Repeat(nr,body):=
 ];
 HoldArg("Repeat",body);
 UnFence("Repeat",2);
+*/
 /*
 */
 //DllLoad("./libplugin.so");

@@ -347,7 +347,7 @@ void InternalLoad(LispEnvironment& aEnvironment,LispStringPtr aFileName)
     {
         //TODO make the file api platform independent!!!!
         // Open file
-        LispLocalFile localFP(aEnvironment, oper.String(),LispTrue,
+        LispLocalFile localFP(aEnvironment, hashedname->String(),LispTrue,
                               aEnvironment.iInputDirectories);
         Check(localFP.iOpened != 0, KLispErrFileNotFound);
         FILEINPUT newInput(localFP,aEnvironment.iInputStatus);

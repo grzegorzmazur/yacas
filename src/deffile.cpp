@@ -123,7 +123,7 @@ void LoadDefFile(LispEnvironment& aEnvironment, LispStringPtr aFileName)
     }
     else
     {
-        LispLocalFile localFP(aEnvironment, flatfile.String(),LispTrue,
+        LispLocalFile localFP(aEnvironment, hashedname->String(),LispTrue,
                               aEnvironment.iInputDirectories);
         Check(localFP.iOpened != 0, KLispErrFileNotFound);
         FILEINPUT newInput(localFP,aEnvironment.iInputStatus);

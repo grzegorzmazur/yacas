@@ -385,8 +385,8 @@ LocalSymbols(x)
 52 # x_IsNegativeNumber / 0 <-- -Infinity;
 55 # _x / 0 <-- Undefined;
 55 # 0 / _x <-- 0;
-60 # (x_IsNumber / y_IsNumber)_((Numeric = True) Or
-                                Not(IsInteger(x) And IsInteger(y))) <--
+60 # (x_IsNumber / y_IsNumber)_((Numeric = True) /* Sorry, Serge Or
+                                Not(IsInteger(x) And IsInteger(y)) */ ) <--
     MathDivide(x,y);
 
 // unnecessary rule (see #100 below). TODO: REMOVE
