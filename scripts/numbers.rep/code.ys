@@ -287,7 +287,7 @@ Repunit(n_IsPositiveInteger) <--
 HarmonicNumber(n_IsInteger,r_IsPositiveInteger) <--
 [
 	// small speed up
-	if( IsZero(r) )[
+	if( r==1 )[
 		Sum(k,1,n,1/k);	
 	] else [
 		Sum(k,1,n,1/k^r);	

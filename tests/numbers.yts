@@ -51,3 +51,4 @@ Verify(261! - 261*260!, 0);
 Verify(300! / 250!, 251***300);
 
 Verify(Repunit(3), 111 );
+Verify(HarmonicNumber(5), 137/60 );
