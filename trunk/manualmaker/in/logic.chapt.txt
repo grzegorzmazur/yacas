@@ -38,34 +38,31 @@ to it:
 
 It does this in the following way: in order to prove a proposition $p$, it
 suffices to prove that  $Not p$ is false. It continues to simplify  $Not p$
-using the rules
+using the rules:
 
 	Not  ( Not x)      --> x
-(eliminate double negation)
-	x=>y        -->  Not x  Or  y
-(eliminate implication)
-	Not (x And y)      -->  Not x  Or   Not y
-(De Morgan's law)
-	Not (x  Or  y)    -->  Not x  And   Not y
-(De Morgan's law)
-	(x  And  y)  Or  z --> (x Or z) And (y Or z)
-(distribution)
-	x  Or  (y  And  z) --> (x Or y) And (x Or z)
-(distribution)
-
-And the obvious other rules, such as,
+(eliminate double negation),
+	x=>y  -->  Not x  Or  y
+(eliminate implication),
+	Not (x And y)  -->  Not x  Or  Not y
+(De Morgan's law),
+	Not (x Or y) -->  Not x  And  Not y
+(De Morgan's law),
+	(x And y) Or z --> (x Or z) And (y Or z)
+(distribution),
+	x Or (y And z) --> (x Or y) And (x Or z)
+(distribution),
+and the obvious other rules, such as,
 	True Or x --> True
 etc.
 The above rules will translate a proposition into a form
 
 	(p1  Or  p2  Or  ...)  And  (q1  Or  q2
 	   Or  ...)  And ...
-
 If any of the clauses is false, the entire expression will be false.
 In the next step, clauses are scanned for situations of the form:
 
 	(p Or Y)  And  ( Not p Or Z) --> (Y Or Z)
-
 If this combination {(Y Or Z)} is empty, it is false, and
 thus the entire proposition is false.
 

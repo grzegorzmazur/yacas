@@ -2,9 +2,7 @@
 			Control flow functions
 
 *CMD MaxEvalDepth --- Set the maximum evaluation depth
-
 *CORE
-
 *CALL
 
 MaxEvalDepth(n)
@@ -34,32 +32,35 @@ evaluation depth is reached.
 	In> f(x)
 	Error on line 1 in file [CommandLine]
 	Max evaluation stack depth reached.
-	Please use MaxEvalDepth to increase the stack size as needed.
+	Please use MaxEvalDepth to increase the stack
+	size as needed.
 
 However, a long calculation may cause the maximum evaluation depth to
 be reached without the presence of infinite recursion. The function {MaxEvalDepth} is meant for these cases.
 
 	In> 10 # g(0) <-- 1;
 	Out> True;
-	In> 20 # g(n_IsPositiveInteger) <-- 2 * g(n-1);
+	In> 20 # g(n_IsPositiveInteger) <-- \
+	  2 * g(n-1);
 	Out> True;
 	In> g(1001);
 	Error on line 1 in file [CommandLine]
 	Max evaluation stack depth reached.
-	Please use MaxEvalDepth to increase the stack size as needed.
+	Please use MaxEvalDepth to increase the stack
+	size as needed.
 	
 	In> MaxEvalDepth(10000);
 	Out> True;
 	In> g(1001);
-	Out> 214301721437253464189685009812000362112280962341106721488750077674070210224
-	98722449863967576313917162551893458351062936503742905713846280871969155149397149
-	60786913554964846197084214921012474228375590836430609294996716388253479753511833
-	1087892154125829142392955373084335320859663305248773674411336138752;
+	Out> 21430172143725346418968500981200036211228096234
+	1106721488750077674070210224987224498639675763139171
+	6255189345835106293650374290571384628087196915514939
+	7149607869135549648461970842149210124742283755908364
+	3060929499671638825347975351183310878921541258291423
+	92955373084335320859663305248773674411336138752;
 
 *CMD Hold --- Do not evaluate the argument
-
 *CORE
-
 *CALL
 
 Hold(expr)
@@ -83,9 +84,7 @@ evaluation normally takes place.
 *SEE Eval, HoldArg
 
 *CMD Eval --- Evaluate the argument
-
 *CORE
-
 *CALL
 
 Eval(expr)
@@ -123,9 +122,7 @@ operator {:=} evaluates the right-hand side.
 *SEE Hold, HoldArg, :=
 
 *CMD While --- Loop while a condition is met
-
 *CORE
-
 *CALL
 
 While(pred) body
@@ -151,7 +148,8 @@ all other loop commands are based. It is equivalent to the {while} command in th
 
 	In> x := 0;
 	Out> 0;
-	In> While (x! < 10^6) [ Echo({x, x!}); x++; ];
+	In> While (x! < 10^6) \
+	  [ Echo({x, x!}); x++; ];
 	 0  1
 	 1  1
 	 2  2
@@ -167,9 +165,7 @@ all other loop commands are based. It is equivalent to the {while} command in th
 *SEE Until, For
 
 *CMD Until --- Loop until a condition is met
-
 *STD
-
 *CALL
 
 Until(pred) body
@@ -191,7 +187,7 @@ and "pred" are again evaluated and this continues as long as
 The main difference with {While} is that {Until} always evaluates the body at least once, but {While} may not evaluate the body at all. Besides, the
 meaning of the predicate is reversed: {While} stops
 if "pred" is {False} while {Until} stops if "pred" is {True}.
-  The command
+The command
 {Until(pred) body;} is equivalent to {pred; While(Not pred) body;}. In fact, the
 implementation of {Until} is based on the internal
 command {While}. The {Until}
@@ -202,7 +198,8 @@ construct in the programming language C.
 
 	In> x := 0;
 	Out> 0;
-	In> Until (x! > 10^6) [ Echo({x, x!}); x++; ];
+	In> Until (x! > 10^6) \
+	  [ Echo({x, x!}); x++; ];
 	 0  1
 	 1  1
 	 2  2
@@ -218,14 +215,10 @@ construct in the programming language C.
 *SEE While, For
 
 *CMD If --- Branch point
-
 *CORE
-
 *CALL
-
-If(pred, then)
-
-If(pred, then, else)
+	If(pred, then)
+	If(pred, then, else)
 
 *PARMS
 
@@ -248,7 +241,8 @@ sequence is used), the {If} expression returns {False}.
 The sign function is defined to be 1 if its argument is positive and
 -1 if its argument is negative. A possible implementation is
 
-	In> mysign(x) := If (IsPositiveReal(x), 1, -1);
+	In> mysign(x) := If (IsPositiveReal(x), \
+	  1, -1);
 	Out> True;
 	In> mysign(Pi);
 	Out> 1;
@@ -263,13 +257,12 @@ numerically approximated.
 
 Hence a better implementation would be
 
-	In> mysign(_x)_IsNumber(N(x)) <-- If (IsPositiveReal(x), 1, -1);
+	In> mysign(_x)_IsNumber(N(x)) <-- If \
+	  (IsPositiveReal(x), 1, -1);
 	Out> True;
 
 *CMD SystemCall --- Pass a command to the shell
-
 *CORE
-
 *CALL
 
 SystemCall(str)
@@ -292,9 +285,7 @@ In a UNIX environment, the command {SystemCall("ls")} would list the contents of
 *SEE Secure
 
 *CMD Function --- Define a function
-
 *STD
-
 *CALL
 
 Function("op", {arg,...}) body
@@ -329,9 +320,7 @@ first element of a list. Equivalent definitions would be
 *SEE TemplateFunction, Rule, RuleBase, :=
 
 *CMD Use --- Load a file, but not twice
-
 *CORE
-
 *CALL
 
 Use(name)
@@ -353,9 +342,7 @@ least have been loaded, but is not loaded twice.
 *SEE Load, DefLoad, DefaultDirectory
 
 *CMD For --- C-style for loop
-
 *STD
-
 *CALL
 
 For(init, pred, incr) body
@@ -405,9 +392,7 @@ equivalent to {init; While(pred) [body; incr;]}.
 *SEE While, Until, ForEach
 
 *CMD ForEach --- Loop over all entries in list
-
 *STD
-
 *CALL
 
 ForEach(var, list) body
@@ -440,9 +425,7 @@ returns {True}.
 *SEE For
 
 *CMD Apply --- Apply a function
-
 *STD
-
 *CALL
 
 Apply(fn, arglist)
@@ -475,9 +458,7 @@ An shorthand for {Apply} is provided by the {@} operator.
 *SEE Map, MapSingle, @
 
 *CMD MapArgs --- Apply a function to all top-level arguments
-
 *STD
-
 *CALL
 
 MapArgs(expr, fn)
@@ -504,9 +485,7 @@ of a function or a pure function.
 *SEE MapSingle, Map, Apply
 
 *CMD Subst --- Perform a substitution
-
 *STD
-
 *CALL
 
 Subst(from, to) expr
@@ -539,9 +518,7 @@ The explanation for the last result is that the expression {a+b+c} is internally
 *SEE WithValue, /:
 
 *CMD WithValue --- Temporary assignment during an evaluation
-
 *STD
-
 *CALL
 
 WithValue(var, val, expr)
@@ -581,9 +558,7 @@ to the second variable, etcetera.
 *A /::
 
 *CMD /:, /:: --- Local simplification rules
-
 *STD
-
 *CALL
 
 expression /: patterns (prec. 10000)
@@ -607,12 +582,13 @@ to do this is using the /: operator, as follows:
 
 	In> Sin(x)*Ln(a*b)
 	Out> Sin(x)*Ln(a*b);
-	In> % /: { Ln(_x*_y) <- Ln(x)+Ln(y) }
+	In> % /: { Ln(_x*_y) <- Ln(x) \
+	  +Ln(y) }
 	Out> Sin(x)*(Ln(a)+Ln(b));
 
 A whole list of simplification rules can be built up in the list,
 and they will be applied to the expression on the left hand side
-of /: .
+of {/:} .
 
 The forms the patterns can have are one of:
 
@@ -621,18 +597,18 @@ The forms the patterns can have are one of:
 	{pattern,postpredicate,replacement}
 
 Note that for these local rules, {<-} should be used instead of
-{<--} which defines a global rule.
+{<--} which would be used in a global rule.
 
-The /: operator traverses an expression much like Subst does: top
-down, trying to apply the rules from the begin of the list of
+The {/:} operator traverses an expression much like {Subst} does, that is, top
+down, trying to apply the rules from the begining of the list of
 rules to the end of the list of rules. If the rules cannot be applied
-to a sub-expression, it will try the sub expressions of the
-expression being analyzed.
+to an expression, it will try subexpressions of that
+expression and so on.
 
 It might be necessary sometimes to use the /:: operator, which
 repeatedly applies the /: operator until the result doesn't change
-any more. Caution is required, since rules can contradict eachother,
-and that could result in an infinite loop. To detect this situation,
+any more. Caution is required, since rules can contradict each other,
+which could result in an infinite loop. To detect this situation,
 just use /: repeatedly on the expression. The repetitive nature
 should become apparent.
 
@@ -646,12 +622,9 @@ should become apparent.
 *SEE Subst
 
 *CMD SetHelpBrowser --- Set the HTML browser to use for help
-
 *STD
-
 *CALL
-
-SetHelpBrowser(helpbrowser)
+	SetHelpBrowser(helpbrowser)
 
 *PARMS
 
@@ -660,8 +633,8 @@ helpbrowser - string containing a html browser to use for help
 *DESC
 
 This function sets the help browser you want to use to
-browse the help online. It calls helpbrowser with the html
-page as first argument. The default is lynx. If you want to
+browse the help online. It calls the help browser with the html
+page as first argument. The default value is {lynx}. If you want to
 use a different browser by default it suffices to create a
 file {~/.yacasrc} and add a line to set the browser in there.
 
@@ -674,9 +647,7 @@ file {~/.yacasrc} and add a line to set the browser in there.
 *SEE Help
 
 *CMD TraceStack --- Show calling stack after an error occurs
-
 *CORE
-
 *CALL
 
 TraceStack(expression)
@@ -728,14 +699,13 @@ causing Yacas to flood its stack:
 	Debug> 997 :  IsList (Internal function)
 	Error on line 1 in file [CommandLine]
 	Max evaluation stack depth reached.
-	Please use MaxEvalDepth to increase the stack size as needed.
+	Please use MaxEvalDepth to increase the stack
+	size as needed.
 
 *SEE TraceExp, TraceRule
 
 *CMD TraceExp --- Evaluate with tracing enabled
-
 *CORE
-
 *CALL
 
 TraceExp(expr)
@@ -788,9 +758,7 @@ probably more useful  for all but very simple expressions.
 *SEE TraceStack, TraceRule
 
 *CMD TraceRule --- Turn on tracing for a particular function
-
 *CORE
-
 *CALL
 
 TraceRule(templ) expr

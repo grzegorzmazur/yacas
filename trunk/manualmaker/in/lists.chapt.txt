@@ -674,7 +674,8 @@ efficiency).
 The following shows a possible way to define a command that reverses a
 list nondestructively.
 
-	In> reverse(l_IsList) <-- DestructiveReverse(FlatCopy(l));
+	In> reverse(l_IsList) <-- DestructiveReverse \
+	  (FlatCopy(l));
 	Out> True;
 	In> lst := {a,b,c,d,e};
 	Out> {a,b,c,d,e};
@@ -1078,9 +1079,11 @@ lists. The entries in the result are listed in the same order as in
 
 	In> Intersection({a,b,c}, {b,c,d});
 	Out> {b,c};
-	In> Intersection({a,e,i,o,u}, {f,o,u,r,t,e,e,n});
+	In> Intersection({a,e,i,o,u}, {f,o,u,r,t,e, \
+	  e,n});
 	Out> {e,o,u};
-	In> Intersection({1,2,2,3,3,3}, {1,1,2,2,3,3});
+	In> Intersection({1,2,2,3,3,3}, \
+	  {1,1,2,2,3,3});
 	Out> {1,2,2,3,3};
 
 *SEE Union, Difference
@@ -1107,9 +1110,11 @@ the lists. In the resulting list, any element will occur only once.
 
 	In> Union({a,b,c}, {b,c,d});
 	Out> {a,b,c,d};
-	In> Union({a,e,i,o,u}, {f,o,u,r,t,e,e,n});
+	In> Union({a,e,i,o,u}, {f,o,u,r,t,e, \
+	  e,n});
 	Out> {a,e,i,o,u,f,r,t,n};
-	In> Union({1,2,2,3,3,3}, {2,2,3,3,4,4});
+	In> Union({1,2,2,3,3,3}, \
+	  {2,2,3,3,4,4});
 	Out> {1,2,3,4};
 
 *SEE Intersection, Difference

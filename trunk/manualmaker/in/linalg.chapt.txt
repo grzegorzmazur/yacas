@@ -5,10 +5,8 @@
 algebra. They can be used to manipulate vectors, represented as lists,
 and matrices, represented as lists of lists.
 
-*CMD LeviCivita --- The totally anti-symmetric Levi Civita tensor
-
+*CMD LeviCivita --- The totally anti-symmetric Levi-Civita symbol
 *STD
-
 *CALL
 
 LeviCivita(list)
@@ -19,7 +17,7 @@ list - a list of integers 1 .. n in some order
 
 *DESC
 
-"LeviCivita" implements the Levi Civita symbol. This is generally
+"LeviCivita" implements the Levi-Civita symbol. This is generally
 useful for tensor calculus.  {list}  should be a list of integers,
 and this function returns 1 if the integers are in successive order,
 eg.  {1,2,3,...}  would return 1. Swapping two elements of this
@@ -38,9 +36,7 @@ to -1.
 *SEE Permutations
 
 *CMD Permutations --- Form all permutations of a list
-
 *STD
-
 *CALL
 
 Permutations(list)
@@ -57,14 +53,13 @@ the original list.
 *E.G.
 
 	In> Permutations({a,b,c})
-	Out> {{a,b,c},{a,c,b},{c,a,b},{b,a,c},{b,c,a},{c,b,a}};
+	Out> {{a,b,c},{a,c,b},{c,a,b},{b,a,c},
+	{b,c,a},{c,b,a}};
 
 *SEE LeviCivita
 
 *CMD InProduct --- Inner product of vectors
-
 *STD
-
 *CALL
 
 InProduct(a,b)
@@ -88,9 +83,7 @@ vectors need to have the same size.
 *SEE CrossProduct
 
 *CMD CrossProduct --- Outer product of vectors
-
 *STD
-
 *CALL
 
 CrossProduct(a,b)
@@ -116,9 +109,7 @@ Both "a" and "b" have to be three-dimensional.
 *SEE InProduct
 
 *CMD ZeroVector --- Create a vector with all zeroes
-
 *STD
-
 *CALL
 
 ZeroVector(n)
@@ -139,9 +130,7 @@ This command returns a vector of length "n", filled with zeroes.
 *SEE BaseVector, ZeroMatrix, IsZeroVector
 
 *CMD BaseVector --- Base vector
-
 *STD
-
 *CALL
 
 BaseVector(k, n)
@@ -166,9 +155,7 @@ entry, which contains a 1.
 *SEE ZeroVector, Identity
 
 *CMD Identity --- Identity matrix
-
 *STD
-
 *CALL
 
 Identity(n)
@@ -190,9 +177,7 @@ matrix has ones on the diagonal while the other entries are zero.
 *SEE BaseVector, ZeroMatrix, DiagonalMatrix
 
 *CMD ZeroMatrix --- Matrix filled with zeroes
-
 *STD
-
 *CALL
 
 ZeroMatrix(n, m)
@@ -216,9 +201,7 @@ completely filled with zeroes.
 *SEE ZeroVector, Identity
 
 *CMD DiagonalMatrix --- Construct a diagonal matrix
-
 *STD
-
 *CALL
 
 DiagonalMatrix(d)
@@ -236,14 +219,13 @@ whose off-diagonal entries are all zero. The elements of the vector
 *E.G.
 
 	In> DiagonalMatrix(1 .. 4)
-	Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
+	Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},
+	{0,0,0,4}};
 
 *SEE Identity, ZeroMatrix
 
 *CMD IsMatrix --- Test whether argument is a matrix
-
 *STD
-
 *CALL
 
 IsMatrix(M)
@@ -254,9 +236,9 @@ M - a mathematical object
 
 *DESC
 
-IsMatrix returns True if M is a matrix, False otherwise. Something is
+{IsMatrix} returns {True} if {M} is a matrix, {False} otherwise. Something is
 considered to be a matrix if it is a list and all the entries of this
-list are lists themselves.
+list are themselves lists.
 
 *E.G.
 
@@ -270,9 +252,7 @@ list are lists themselves.
 *SEE IsVector
 
 *CMD Normalize --- Normalize a vector
-
 *STD
-
 *CALL
 
 Normalize(v)
@@ -296,9 +276,7 @@ direction but with length 1.
 *SEE InProduct, CrossProduct
 
 *CMD Transpose --- Transpose of a matrix
-
 *STD
-
 *CALL
 
 Transpose(M)
@@ -318,9 +296,7 @@ just lists of lists, this is a useful operation too for lists.
 	Out> {{a},{b}};
 
 *CMD Determinant --- Determinant of a matrix
-
 *STD
-
 *CALL
 
 Determinant(M)
@@ -336,14 +312,13 @@ Returns the determinant of a matrix M.
 *E.G.
 
 	In> DiagonalMatrix(1 .. 4)
-	Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
+	Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},
+	{0,0,0,4}};
 	In> Determinant(%)
 	Out> 24;
 
 *CMD Trace --- Trace of a matrix
-
 *STD
-
 *CALL
 
 Trace(M)
@@ -360,14 +335,13 @@ elements on the diagonal of the matrix).
 *E.G.
 
 	In> DiagonalMatrix(1 .. 4)
-	Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
+	Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},
+	{0,0,0,4}};
 	In> Trace(%)
 	Out> 10;
 
 *CMD Inverse --- Inverse of a matrix
-
 *STD
-
 *CALL
 
 Inverse(M)
@@ -388,14 +362,13 @@ matrix elements.
 	In> DiagonalMatrix({a,b,c})
 	Out> {{a,0,0},{0,b,0},{0,0,c}};
 	In> Inverse(%)
-	Out> {{(b*c)/(a*b*c),0,0},{0,(a*c)/(a*b*c),0},{0,0,(a*b)/(a*b*c)}};
+	Out> {{(b*c)/(a*b*c),0,0},{0,(a*c)/(a*b*c),0},
+	{0,0,(a*b)/(a*b*c)}};
 	In> Simplify(%)
 	Out> {{1/a,0,0},{0,1/b,0},{0,0,1/c}};
 
 *CMD Minor --- Principal minor of a matrix
-
 *STD
-
 *CALL
 
 Minor(M,i,j)
@@ -435,9 +408,7 @@ excluding the "i"-th row and "j"-th column.
 *SEE CoFactor, Determinant, Inverse
 
 *CMD CoFactor --- Cofactor of a matrix
-
 *STD
-
 *CALL
 
 CoFactor(M,i,j)
@@ -479,9 +450,7 @@ $(-1)^(i+j)$.
 *SEE Minor, Determinant, Inverse
 
 *CMD SolveMatrix --- Solve a linear system
-
 *STD
-
 *CALL
 
 SolveMatrix(M,v)
@@ -511,9 +480,7 @@ the equation "M x = v". The determinant of M should be non-zero.
 *SEE Inverse, Solve, PSolve
 
 *CMD CharacteristicEquation --- Characteristic polynomial of a matrix
-
 *STD
-
 *CALL
 
 CharacteristicEquation(matrix,var)
@@ -543,9 +510,7 @@ of the matrix, Det(matrix-I*var);
 *SEE EigenValues, EigenVectors
 
 *CMD EigenValues --- Eigenvalues of a matrix
-
 *STD
-
 *CALL
 
 EigenValues(matrix)
@@ -558,11 +523,11 @@ matrix - a square matrix
 
 EigenValues returns the eigenvalues of a matrix.
 The eigenvalues x of a matrix M are the numbers such that
-M*v=x*v for some vector.
+$M*v=x*v$ for some vector.
 
 It first determines the characteristic equation, and then factorizes this
 equation, returning the roots of the characteristic equation
-det(matrix-x*identity).
+Det(matrix-x*identity).
 
 *E.G.
 
@@ -574,13 +539,10 @@ det(matrix-x*identity).
 *SEE EigenVectors, CharacteristicEquation
 
 *CMD EigenVectors --- Eigenvectors of a matrix
-
 *STD
-
 *CALL
 
 EigenVectors(matrix,eigenvalues)
-
 *STD
 
 *PARMS
@@ -608,9 +570,7 @@ the values of each vector.
 *SEE EigenValues, CharacteristicEquation
 
 *CMD IsHermitean --- Test whether a matrix is Hermitean
-
 *STD
-
 *CALL
 
 IsHermitean(A)
@@ -621,9 +581,9 @@ A - square matrix
 
 *DESC
 
-IsHermitean(A) returns True if A is Hermitean and False
-otherwise. A is a Hermitean matrix iff Conjugate(Transpose(A))=A.
-For real matrices A is tested to be symmetric.
+IsHermitean(A) returns {True} if {A} is Hermitian and {False}
+otherwise. $A$ is a Hermitian matrix iff Conjugate( Transpose $A$ )=$A$.
+If $A$ is a real matrix, it must be symmetric to be Hermitian.
 
 *E.G.
 
@@ -635,9 +595,7 @@ For real matrices A is tested to be symmetric.
 *SEE IsUnitary
 
 *CMD IsUnitary --- Test whether a matrix is unitary
-
 *STD
-
 *CALL
 
 IsUnitary(A)
@@ -650,9 +608,9 @@ A - square matrix
 
 This function tries to find out if A is unitary.
 
-Matrix A is orthogonal iff $A^(-1)$ = Transpose(Conjugate($A$)). This is
-equivalent to the fact that the columns of A build an orthonormal system
-(in respect to the scalar product defined by InProduct).
+Matrix A is orthogonal iff $A^(-1)$ = Transpose( Conjugate ($A$) ). This is
+equivalent to the fact that the columns of $A$ build an orthonormal system
+(in respect to the scalar product defined by {InProduct}).
 
 *E.G.
 

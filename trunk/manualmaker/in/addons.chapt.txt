@@ -24,37 +24,38 @@ Exports a Yacas expression to $LaTeX$, generates a Postscript file and shows it 
 Requires: Unix shell, LaTeX, dvips, gv or another Postscript viewer.
 
 *EG
-	In> [ PSViewCommand := "ghostview"; ShowPS(x+2*Sin(x)); ]
-	Expression exported as /tmp/yacas-tmpfile-28802.tex
+	In> [ PSViewCommand := "ghostview"; \
+	  ShowPS(x+2*Sin(x)); ]
+	Expression exported as /tmp/yacas-tmp
+	file-28802.tex
 	Out> True;
 
 *CMD MakeFunctionPlugin --- compile numerical functions into plugins
 *UNIX
 *CALL
-	MakeFunctionPlugin("name", {args}, body)
+	MakeFunctionPlugin("name", body)
 
 *PARMS
 
 {"name"} -- string, name of a new function
 
-{{args}} -- list of atoms, will be used as argument list for {body}
-
-{body} -- expression, body of function of arguments to be compiled
+{body} -- expression, function of arguments, must evaluate to a function of some variables. 
 
 *DESC
 
-All arguments and the return value of the function are assumed to
-be double precision real numbers. Warning: do not pass non-numbers to
-the plugin function.
+Compiles an external plugin library that computes a user-defined numerical
+function and dynamically loads it into Yacas, enabling a new function called
+"name".
 
 Requires: Unix shell, compiler named "c++" with ELF {.so} support; Yacas
 headers in {FindFile("")/include}; current directory must be writable. The
 {body} expression must be a {CForm()}-exportable function of the arguments and
 may contain numerical constants ({Pi} is allowed and will be converted to
-floating-point). All arguments and the return value of the function are assumed
-to be double precision real numbers.
+floating-point).
 
-The result of passing a non-numerical argument will be unevaluated.
+All arguments and the return value of the function are assumed
+to be double precision real numbers.
+The result of passing a non-numerical argument will be an unevaluated expression.
 	
 	Example:
 	
@@ -66,9 +67,8 @@ The result of passing a non-numerical argument will be unevaluated.
 	Out> 0.618369803069736989620253;
 	In> f1(x,5)
 	Out> f1(x,5);
-	
-	What it does:
-*	1. Creates the following files in subdirectory {plugins.tmp/} of current directory:
+
+The function creates the following files in subdirectory {plugins.tmp/} of current directory:
 *	{f1_plugin.h}, {f1_plugin.cc} -- C++ code of the plugin; the function in the above example is implemented in C++ as
 	double f1_plugin_cc(double x, double y)
 	  { return sin(x/y); }
@@ -79,11 +79,47 @@ The result of passing a non-numerical argument will be unevaluated.
 *	{libf1_plugin_cc.so} -- compiled plugin
 Note that all files have names matching "{*_plugin*}".
 
-*	2. Runs a "c++" compiler command.
-*	3. Loads resulting .so object with DllLoad().
-*	4. Prints an information message on success and all error messages if compilation fails.
+After creating these files, {MakeFunctionPlugin()} will:
+*	1. Run a "c++" compiler command;
+*	1. Load resulting .so object with {DllLoad()};
+*	1. Print an information message on success and all error messages if compilation fails.
 
-	If you call {MakeFunctionPlugin()} repeatedly to define a function with the same
-name, old files will be overwritten.
+If you call {MakeFunctionPlugin()} repeatedly to define a function with the same name, old files will be overwritten and old libraries will be unloaded with {DllUnload()}.
 
 *SEE DllLoad, DllUnload, DllEnumerate
+
+
+*CMD GnuPlot --- plot functions of one variable
+*UNIX
+*CALL
+	GnuPlot(x1, x2, numpoints, function)
+
+*PARMS
+
+x1, x2 -- interval in which to plot the function
+numpoints -- number of points in the interval
+function -- expression containing a variable
+
+*DESC
+
+Requires {gnuplot}. Calls the {gnuplot} plotting program to plot a graph of the given function in the given range, using {numpoints} equally spaced points. Creates data files {gnuplot.in} and {gnudata.in} in the current working directory, so you can use those files to prepare better graphs.
+
+Most frequently encountered problem: {function} <i>must</i> evaluate to an expression that contains a variable. Test your function! If you have defined {f(x)} which only accepts a number but does not accept an undefined variable, {GnuPlot()} will fail to plot it. Use {NFunction()} to overcome this difficulty.
+
+*EG
+
+	In> f(x) := Cos(( Abs(Pi/x))^1.5);
+	Out> True;
+	In> GnuPlot(-1, 1, 101, f(x) );
+	Out> True;
+We find that 101 is too few points to accurately represent this function. However, calculations with more points would take a long time. To speed up the calculation, compile this function online:
+
+	In> MakeFunctionPlugin("f1", f(x));
+	Function f1(x) loaded from plugins.tmp
+	/libf1_plugin_cc.so
+	Out> True;
+	In> GnuPlot(-1, 1, 10001, f1(x))
+	Out> True;
+
+*SEE NFunction, MakeFunctionPlugin
+

@@ -279,7 +279,7 @@ behaviour, in which expressions are kept in symbolic form (eg. {Sqrt(2)} instead
 Application of the {N} operator will make Yacas
 calculate floating point representations of functions whenever
 possible. In addition, the variable {Pi} is bound to
-the value of pi up to the required precision.
+the value of $Pi$ up to the required precision.
 
 *E.G.
 
@@ -331,7 +331,7 @@ division of integers.
 
 *SEE IsRational
 
-*CMD IsPrime --- Test whether argument is a prime number
+*CMD IsPrime --- Test for a prime number
 *STD
 *CALL
 
@@ -343,7 +343,7 @@ n - integer to test
 
 *DESC
 
-This command tests whether "n", which should be a positive integer,
+This command checks whether "n", which should be a positive integer,
 is a prime number. A number is a prime number if it is only divisible
 by 1 and itself. As a special case, 1 is not a prime number.
 
@@ -362,11 +362,12 @@ long time for large numbers.
 	In> IsPrime(23)
 	Out> True;
 	In> Select("IsPrime", 1 .. 100)
-	Out> {2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97};
+	Out> {2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,
+	  53,59,61,67,71,73,79,83,89,97};
 
 *SEE IsPrimePower, Factors
 
-*CMD IsPrimePower --- Test whether argument is a prime power
+*CMD IsPrimePower --- Test for a power of a prime number
 *STD
 *CALL
 
@@ -394,7 +395,8 @@ large numbers.
 	In> IsPrimePower(10)
 	Out> False;
 	In> Select("IsPrimePower", 1 .. 50)
-	Out> {2,3,4,5,7,8,9,11,13,16,17,19,23,25,27,29,31,32,37,41,43,47,49};
+	Out> {2,3,4,5,7,8,9,11,13,16,17,19,23,25,27,
+	  29,31,32,37,41,43,47,49};
 
 *SEE IsPrime, Factors
 
@@ -501,22 +503,20 @@ same type.
 *CMD ContFrac --- Continued fraction expansion
 *STD
 *CALL
-
-ContFrac(x)
-
-ContFrac(x, maxdepth)
+	ContFrac(x)
+	ContFrac(x, maxdepth)
 
 *PARMS
 
-x - expression to break down
+{x} - expression to expand in continued fractions
 
 maxdepth - maximum required depth of result
 
 *DESC
 
-This command returns the continued fraction expansion of "n", which
+This command returns the continued fraction expansion of {x}, which
 should be either a floating point number or a polynomial. If
-"maxdepth" is not specified, it defaults to 6. The remainder is
+{maxdepth} is not specified, it defaults to 6. The remainder is
 denoted by {rest}.
 
 This is especially useful for polynomials, since series expansions
@@ -682,7 +682,7 @@ x - a number
 *DESC
 
 This function returns the integer closest to "x". Half-integers
-(ie. numbers of the form "n + 0.5", with "n" an integers) are
+(i.e. numbers of the form $n + 0.5$, with $n$ an integer) are
 rounded upwards.
 
 *E.G.
@@ -701,8 +701,7 @@ rounded upwards.
 *CMD Pslq --- Search for integer relations between reals
 *STD
 *CALL
-
-Pslq(xlist,precision)
+	Pslq(xlist,precision)
 
 *PARMS
 
@@ -713,20 +712,20 @@ precision - required number of digits precision of calculation
 *DESC
 
 This function is an integer relation detection algorithm. This means
-that, given the numbers "x[i]" in the list "xlist", it tries
-to find integer coefficients "a[i]" such that "a[1]*x[1] + ... +
-a[n]*x[n] = 0". The list of integer coefficients is returned.
+that, given the numbers $x[i]$ in the list "xlist", it tries
+to find integer coefficients $a[i]$ such that
+$a[1]*x[1]$ + ... + $a[n]*x[n] = 0$.
+The list of integer coefficients is returned.
 
 The numbers in "xlist" must evaluate to floating point numbers if
 the {N} operator is applied on them.
 
-*E.G.
+*EG
 
 	In> Pslq({ 2*Pi+3*Exp(1) , Pi , Exp(1) },20)
 	Out> {1,-2,-3};
 
 Note: in this example the system detects correctly that
-{1 * (2*Pi+3*E) + (-2) * (Pi) + (-3) * (E) = 0}
+$1 * (2*Pi+3*E) + (-2) * (Pi) + (-3) * (E) = 0$.
 
 *SEE N
-
