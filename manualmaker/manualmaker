@@ -492,5 +492,5 @@ EscapeLtGt(string) := [
 ];
 
 /// this is just cosmetic, used in the manual
-If(Not Infix("<>"), Infix("<>", OpPrecedence("=")));
-If(Not Infix("<=>"), Infix("<=>", OpPrecedence("=")));
+If(Not IsInfix("<>"), Infix("<>", OpPrecedence("=")));
+If(Not IsInfix("<=>"), Infix("<=>", OpPrecedence("=")));
