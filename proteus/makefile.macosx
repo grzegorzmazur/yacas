@@ -2,9 +2,9 @@
 .SUFFIXES: .cpp
 
 
-INSTALL_DIR = /usr
+INSTALL_DIR = /usr/local
 
-YACAS_INCLUDE = $(INSTALL_DIR)/local/share/yacas/include
+YACAS_INCLUDE = $(INSTALL_DIR)/share/yacas/include
 
 CXX		=c++
 INCS =  -I$(YACAS_INCLUDE) -I$(YACAS_INCLUDE)/plat/linux32
@@ -17,7 +17,7 @@ POSTBUILD       = /Developer/Tools/Rez -t APPL -o
 LDLIBS		=  -lm -L../libltdl/ -ldl -lltdl -framework Carbon -framework ApplicationServices -lsupc++
 GLDLIBS		=  -lm -framework AGL -framework OpenGL  -framework Carbon -framework ApplicationServices -lsupc++ -lfltk -L/Users/ayalpink/fltk/fltk-1.1.3/lib/ 
 FLTKLIBS        = -lfltk
-YACASLIBS       = -L$(INSTALL_DIR)/local/lib/ -lyacas -lyacasplatform -lyacasnumbers
+YACASLIBS       = -L$(INSTALL_DIR)/lib/ -lyacas -lyacasplatform -lyacasnumbers
 
 LIBS = $(LDLIBS) $(FLTKLIBS) $(YACASLIBS)
 

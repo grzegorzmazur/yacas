@@ -233,9 +233,13 @@ void FltkConsole::LoadNotePad(LispCharPtr aFile)
             the_out.Append('\0');
         }
         fclose(f);
+
+        iOutputHeight+=15; // for the cursor, TODO what was the define again for the cursor height?
+        UpdateHeight(0);
+
         SetInputDirty();
         SetOutputDirty();
-        iCurrentHighlighted = 0;
+        SetCurrentHighlighted(0); // to update the initial line value
 //        iOutputOffsetY = 0;
         MakeSureHighlightedVisible();
         redraw();
@@ -298,6 +302,7 @@ void FltkConsole::AddText(LispCharPtr aText,int color, const char* aPrompt,
 {
     if (iLast == NULL)
         return;
+    iOutputHeight-=iLast->height();
     ConsoleOutBase* toadd;
 
     char buffer[BufSz+1];
@@ -317,8 +322,7 @@ void FltkConsole::AddText(LispCharPtr aText,int color, const char* aPrompt,
         {
             toadd = new ConsoleFlatText(aText, color,aPrompt,aFont,aFontSize);
             iLast->Add(toadd);
-            iOutputHeight+=toadd->height();
-            
+//TODO remove            iOutputHeight+=toadd->height();
             aText+=len;
         }
         else
@@ -327,11 +331,12 @@ void FltkConsole::AddText(LispCharPtr aText,int color, const char* aPrompt,
             buffer[len] = '\0';
             toadd = new ConsoleFlatText(buffer, color,aPrompt,aFont,aFontSize);
             iLast->Add(toadd);
-            iOutputHeight+=toadd->height();
+//TODO remove            iOutputHeight+=toadd->height();
             if (aText[len] == '\n') aText++;
             aText+=len;
         }
     }
+    iOutputHeight+=iLast->height();
     iOutputDirty = 1;
     UpdateHeight(0);
 }
@@ -1324,6 +1329,7 @@ void FltkConsole::UpdateHeight(int aDelta)
     {
       resize(x(),y(),w(),iOutputHeight/*TODO*/);
       MakeSureHighlightedVisible();
+      console_scroll->redraw();
     }
   }
 }
