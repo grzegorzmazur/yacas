@@ -207,7 +207,7 @@ The formatting explained in the previous section is enough to create most of the
 The additional elements all start with an asterisk "{*}" in the first position on a line, followed by an uppercase keyword. A typical reference manual subsection documenting a certain function may look like this in plain text:
 
 	*CMD PrintList --- print list with padding
-	*STDLIB
+	*STD
 	
 	*CALL
 	{PrintList}(list)
@@ -230,7 +230,7 @@ Compare this with the reference manual section on the function {PrintList} to se
 
 Notes:
 *	Some labels have parameters and some other labels do not; labels that do not have parameters must be put alone on a line.
-*	The {*STDLIB} label is for functions defined in the standard library and the {*CORE} label is for built-in functions defined in the Yacas core engine. In addition, {*UNIX}, {*MSWIN} and {*MAC} can be used to label Unix, MS Windows and Macintosh-specific add-on functions.
+*	The {*STD} label is for functions defined in the standard library and the {*CORE} label is for built-in functions defined in the Yacas core engine. In addition, {*UNIX}, {*MSWIN} and {*MAC} can be used to label Unix, MS Windows and Macintosh-specific add-on functions.
 *	Use of TAB characters is not mandatory between "{*LABEL}" and the following text; ordinary spaces work as well. There must be <i>some</i> whitespace separating the label and the text, however.
 *	The comma-space combination "{, }" is mandatory in label argument lists (but can have several spaces after a comma). Lists of commands are used by the {*CMD} and {*SEE} labels.
 *	Characters {<} and {>} are of special significance to both HTML and $TeX$ and should be always escaped by braces {{}} or by dollar signs.
