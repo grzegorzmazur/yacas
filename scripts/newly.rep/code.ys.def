@@ -10,6 +10,10 @@ EigenValues
 EigenVectors
 Rationalize
 ContFrac
+ContFracList
+ContFracEval
+NearRational
+GuessRational
 Decimal
 LagrangeInterpolant
 ReversePoly

@@ -454,14 +454,13 @@ it shows the result in a nicer human readable format.
 *CMD PAdicExpand --- p-adic expansion
 *STD
 *CALL
-
-PAdicExpand(n, p)
+	PAdicExpand(n, p)
 
 *PARMS
 
-n - number, or polynomial, to expand
+{n} - number, or polynomial, to expand
 
-p - base to expand in
+{p} - base to expand in
 
 *DESC
 
@@ -487,23 +486,23 @@ same type.
 
 *SEE Mod, ContFrac, FromBase, ToBase
 
-*CMD ContFrac --- Continued fraction expansion
+*CMD ContFrac --- continued fraction expansion
 *STD
 *CALL
 	ContFrac(x)
-	ContFrac(x, maxdepth)
+	ContFrac(x, depth)
 
 *PARMS
 
 {x} - expression to expand in continued fractions
 
-maxdepth - maximum required depth of result
+{depth} - maximum required depth of result
 
 *DESC
 
 This command returns the continued fraction expansion of {x}, which
 should be either a floating point number or a polynomial. If
-{maxdepth} is not specified, it defaults to 6. The remainder is
+{depth} is not specified, it defaults to 6. The remainder is
 denoted by {rest}.
 
 This is especially useful for polynomials, since series expansions
@@ -539,25 +538,123 @@ calculated using a continued fraction expansion.
 	
 	Out> True;
 
-*SEE PAdicExpand, N
+*SEE ContFracList, NearRational, GuessRational, PAdicExpand, N
 
-*CMD Decimal --- Decimal representation of a rational
+
+*CMD ContFracList, ContFracEval --- manipulate continued fractions
 *STD
 *CALL
-
-Decimal(frac)
+	ContFracList(frac)
+	ContFracList(frac, depth)
+	ContFracEval(list)
+	ContFracEval(list, rest)
 
 *PARMS
 
-frac - a rational number
+{frac} -- a number to be expanded
+
+{depth} -- desired number of terms
+
+{list} -- a list of coefficients
+
+{rest} -- expression to put at the end of the continued fraction
 
 *DESC
 
-This function returns the infinite decimal representation of the
-rational number "frac".  It returns a list, with the first element
+The function {ContFracList} computes terms of the continued fraction
+representation of a rational number {frac}.  It returns a list of terms of length {depth}. If {depth} is not specified, it returns all terms.
+
+The function {ContFracEval} converts a list of coefficients into a continued fraction expression. The optional parameter {rest} specifies the symbol to put at the end of the expansion. If it is not given, the result is the same as if {rest=0}.
+
+*E.G.
+
+	In> A:=ContFracList(33/7 + 0.000001)
+	Out> {4,1,2,1,1,20409,2,1,13,2,1,4,1,1,3,3,2};
+	In> ContFracEval(Take(A, 5))
+	Out> 33/7;
+	In> ContFracEval(Take(A,3), remainder)
+	Out> 1/(1/(remainder+2)+1)+4;
+	
+*SEE ContFrac, GuessRational
+
+*CMD GuessRational, NearRational --- find optimal rational approximations
+*STD
+*CALL
+	GuessRational(x)
+	GuessRational(x, digits)
+	NearRational(x)
+	NearRational(x, digits)
+
+*PARMS
+
+{x} -- a number to be approximated
+
+{digits} -- desired number of decimal digits
+
+*DESC
+
+The functions {GuessRational(x)} and {NearRational(x)} attempt to find "optimal"
+rational approximations to a given value {x}. The approximations are "optimal"
+in the sense of having smallest numerators and denominators among all rational
+numbers close to {x}. This is done by computing a continued fraction
+representation of {x} and truncating it at a suitably chosen term.  Both
+functions return a rational number which is an approximation of {x}.
+
+Unlike the function {Rationalize()} which converts floating-point numbers to
+rationals without loss of precision, the functions {GuessRational()} and
+{NearRational()} are intended to find the best rational that is <i>approximately</i>
+equal to a given value.
+
+The function {GuessRational()} is useful if you have obtained a floating-point
+representation of a rational number and you know approximately how many digits
+its exact representation should contain. This function takes an optional second
+parameter {digits} which limits the number of decimal digits in the denominator
+of the resulting rational number. If this parameter is not given, it defaults
+to half the current precision. This function truncates the continuous fraction expansion when it encounters an unusually large value (see example).
+
+The function {NearRational(x)} is useful if you would like to find an "optimal"
+rational number that lies in a certain small interval around a certain value
+{x}. This function takes an optional second parameter {digits} which has
+slightly different meaning: it specifies the number of digits of precision of
+the approximation; in other words, the difference between {x} and the resulting
+rational number should be at most one digit of that precision. The parameter
+{digits} also defaults to half of the current precision.
+
+*E.G.
+
+	In> x:=0.943731490621
+	Out> 0.943731490621
+	In> Rationalize(x)
+	Out> 47186574531/50000000000;
+	In> V(GuessRational(x))
+	GuessRational: using 10 terms of the
+	  continued fraction
+	Out> 956/1013;
+	In> ContFracList(x)
+	Out> {0,1,16,1,3,2,1,1,1,1,508848,3,1,2,1,2,2};
+	In> NearRational(x)
+	Out> 218/231;
+	In> NearRational(x, 10)
+	Out> 956/1013;
+
+*SEE ContFrac, ContFracList, Rationalize
+
+*CMD Decimal --- decimal representation of a rational
+*STD
+*CALL
+	Decimal(frac)
+
+*PARMS
+
+{frac} - a rational number
+
+*DESC
+
+This function returns the infinite decimal representation of a
+rational number {frac}.  It returns a list, with the first element
 being the number before the decimal point and the last element the
 sequence of digits that will repeat forever. All the intermediate list
-elements are the initial digits.
+elements are the initial digits before the period sets in.
 
 *E.G.
 
@@ -568,7 +665,7 @@ elements are the initial digits.
 
 *SEE N
 
-*CMD TruncRadian --- Remainder modulo $2*Pi$
+*CMD TruncRadian --- remainder modulo $2*Pi$
 *STD
 *CALL
 
