@@ -1,4 +1,5 @@
 
+/* C++ grammar definition */
 
 Use("codecheck.rep/codetransform.ys");
 Use("codecheck.rep/genericparser.ys");
