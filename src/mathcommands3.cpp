@@ -828,3 +828,9 @@ void LispFastAssoc(LispEnvironment& aEnvironment, LispPtr& aResult,
 }
 
 
+void LispSetCRemarkReceiver(LispEnvironment& aEnvironment, LispPtr& aResult,
+                            LispPtr& aArguments)
+{
+}
+
+

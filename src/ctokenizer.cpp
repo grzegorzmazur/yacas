@@ -11,6 +11,24 @@
 #include "lispstring.h"
 
 #include "ctokenizer.h"
+#include "standard.h"
+
+void CTokenizer::EmitRemark(LispStringPtr remark)
+{
+    if (iEnvironment)
+    {
+        //TODO ugly! Slow on resources!
+        remark = iEnvironment->HashTable().LookUpStringify(remark->String());
+        //TODO ugly!
+        LispEnvironment& aEnvironment = *iEnvironment;
+        LispStringPtr oper = iEnvironment->HashTable().LookUp("\"TokenizerEmitRemark\"");
+        LispPtr result;
+        LispPtr args;
+        args.Set(ATOML(remark->String()));
+        InternalApplyString(*iEnvironment, result,oper,args);
+    }
+}
+
 
 LispStringPtr CTokenizer::NextToken(LispInput& aInput,
                                              LispHashTable& aHashTable)
@@ -66,6 +84,12 @@ REDO:
         if (aInput.Peek() == '/')
         {
             aInput.Next();  // consume /
+
+            if (iEnvironment)
+            {
+                LispStringPtr remark = iEnvironment->HashTable().LookUpCounted(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos);
+                EmitRemark(remark);
+            }
             goto REDO;
         }
         goto FALSEALARM;
@@ -74,6 +98,13 @@ REDO:
     {
         aInput.Next(); //consume /
         while (aInput.Next() != '\n' && !aInput.EndOfStream());
+
+        if (iEnvironment)
+        {
+            LispStringPtr remark = iEnvironment->HashTable().LookUpCounted(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos);
+            EmitRemark(remark);
+        }
+
         goto REDO;
     }
     // parse literal strings
