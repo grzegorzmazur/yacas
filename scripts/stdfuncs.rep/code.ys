@@ -7,7 +7,7 @@
 6 # (Sin(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- -Sin(-x);
 
 // must prevent it from looping
-6 # Sin(Infinity) 		<-- Undefined;
+6 # Sin(x_IsInfinity) 		<-- Undefined;
 6 # Sin(Undefined) <-- Undefined;
 
 110 # Sin(Complex(_r,_i)) <--
@@ -57,7 +57,7 @@
 5 # CosMap( 1/2 ) <-- 0;
 5 # CosMap( 2/5 ) <-- (Sqrt(5)-1)/4;
 
-6 # Cos(Infinity) <-- Undefined;
+6 # Cos(x_IsInfinity) <-- Undefined;
 6 # Cos(Undefined) <-- Undefined;
 10 # CosMap(_n) <-- UnList({Atom("Cos"),n*Pi});
 

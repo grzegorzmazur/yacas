@@ -34,6 +34,8 @@ IsComplexII(_c) <-- (ImII(c) != 0);
 2 # Complex(Complex(_r1,_i1),_i2) <-- Complex(r1,i1+i2);
 2 # Complex(_r1,Complex(_r2,_i2)) <-- Complex(r1-i2,r2);
 
+6 # Complex(Undefined,_x) <-- Undefined;
+6 # Complex(_x,Undefined) <-- Undefined;
 
 /*Real parts */
 110 # Re(Complex(_r,_i)) <-- r;

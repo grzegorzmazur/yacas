@@ -9,7 +9,7 @@ Verify(I^3, -I);
 Verify(I^4, 1);
 Verify(I^5, I);
 Verify(1^I, 1);
-Verify(0^I, 0);
+Verify(0^I, Undefined);
 Verify(I^(-I), Exp(Pi/2));
 Verify((1+I)^33, 65536+I*65536);
 Verify((1+I)^(-33), (1-I)/131072);
