@@ -9,13 +9,14 @@
 	0.4 added nth roots, Sum, Limit, Integrate, hyperbolics, set operations, Abs, Max, Min, "==", ":=", Infinity; support indexed expressions A[i] and matrices.
 	0.4.1 bugfixes for [] operator, support for multiple indices a[1][2][3]
 	0.4.2 fix for variable names ending on digits "a2" represented as $a_2$
-	0.4.3 bugfixes: complex I, indeterminate integration; relaxed bracketing of Sin(); implemented $TeX$ and $LaTeX$ correctly now (using \textrm{})
+	0.4.3 bugfixes: complex I, indeterminate integration; relaxed bracketing of Sin()-like functions; implemented $TeX$ and $LaTeX$ correctly now (using \textrm{})
+	0.4.4 use ordinary instead of partial derivative if expression has only one variable
 */
 
 /* To do:
 	0. Find and fix bugs.
-	1. The current bracketing approach has limitations: can't omit extra brackets sometimes. " sin a b" is ambiguous, so need to do either "sin a sin b" or "(sin a) b" Hold((a*b)*Sqrt(x)). This doesn't hurt of course.
-	2. Need to figure out how to deal with variable names such as "a2" or "alpha3"
+	1. The current bracketing approach has limitations: can't omit extra brackets sometimes. " sin a b" is ambiguous, so need to do either "sin a sin b" or "(sin a) b" Hold((a*b)*Sqrt(x)). The current approach is *not* to bracket functions unless the enveloping operation is more binding than multiplication. This produces "sin a b" for both Sin(a*b) and Sin(a)*b but is the current mathematical practice.
+	2. Need to figure out how to deal with variable names such as "alpha3"
 */
 
 TexForm(_expr) <-- [WriteString(TeXForm(expr));NewLine();];
@@ -201,7 +202,10 @@ TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, 
 
 /* Derivatives */
 
-100 # TeXForm(Deriv(_x)_y, _p) <-- TeXFormBracketIf(p<OpPrecedence("-"), ConcatStrings("\\frac{\\partial}{\\partial ", TeXForm(x, OpPrecedence("^")), "}", TeXForm(y, OpPrecedence("/")) ) );
+/* Use partial derivative only when the expression has several variables */
+100 # TeXForm(Deriv(_x)_y, _p) <-- TeXFormBracketIf(p<OpPrecedence("-"), ConcatStrings(
+	If(Length(VarList(y))>1, "\\frac{\\partial}{\\partial ", "\\frac{d}{d "
+	), TeXForm(x, OpPrecedence("^")), "}", TeXForm(y, OpPrecedence("/")) ) );
 
 100 # TeXForm(D(_x)_y, _p) <-- TeXForm(Deriv(x) y, p);
 
