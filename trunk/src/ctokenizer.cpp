@@ -253,6 +253,10 @@ REDO:
             }
             goto REDO;
         default:
+            if (iPreProcessLine)
+            {
+                goto FINISH;
+            }
             goto REDO;
         }
     }
