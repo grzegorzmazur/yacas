@@ -71,9 +71,10 @@ libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 libmath_la_SOURCES = libmath.cpp
 libmath_la_DEPENDENCIES = yacas
 
+# assuming the directory below does not have plugins!
 libmath.cpp: ../scripts/base.rep/math.ys
 	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
-	./yacas --rootdir ../scripts/ -pc compile.txt
+	./yacas --rootdir ../scripts/ --dlldir ../ -pc compile.txt
 
 
 EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp \
