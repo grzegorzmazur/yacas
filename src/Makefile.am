@@ -1,5 +1,5 @@
-DEFS = @DEFS@ -DSCRIPT_DIR=\"$(scriptdir)\"
-INCLUDES = -I$(top_builddir) -I$(srcdir)/plat/linux32 -I../..
+AM_CXXFLAGS = -DSCRIPT_DIR=\"$(scriptdir)\"
+AM_CPPFLAGS = -I$(srcdir)/plat/linux32
 
 
 bin_PROGRAMS = yacas
@@ -42,7 +42,7 @@ libyacas_a_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
         lispplugin.cpp elfdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
         archiver.cpp
-        
+
 libyacasplatform_a_SOURCES = platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp yacasbase.cpp
 libyacasplatform_a_LIBADD = @NUMBERS_LIB@
@@ -84,14 +84,14 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	makefile.agenda yacas.dsp yacas.dsw \
         debugmem.cpp debugmem.h
 
-
 yacas_include = $(datadir)/yacas/include
 
 clean-compile:
 	test -z "libyacasplatform.a" || rm -rf libyacasplatform.a
 	test -z "libyacasdebug.a" || rm -rf libyacasdebug.a
 	test -z "yacasdebug" || rm -rf yacasdebug
-        
+
+## Do we want to install headers or not?
 
 install-data-local: yacas.h
 	$(mkinstalldirs) $(yacas_include)/
@@ -113,10 +113,4 @@ install-data-local: yacas.h
 	basefile=`basename $$file`; \
 	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/plat/linux32/$$basefile; \
 	done
-
-include depend.dep
-
-depend:
-	gcc -MM *.cpp $(INCLUDES) > depend.dep
-
 

@@ -1,4 +1,8 @@
-DefaultDirectory("in/");
+/* This makes sure that the $srcdir gets included in the path */
+SystemCall("echo 'DefaultDirectory(\"'$srcdir/'\");' > tmp.find-srcdir");
+SystemCall("echo 'DefaultDirectory(\"'$srcdir/in/'\");' >> tmp.find-srcdir");
+Load("tmp.find-srcdir");
+SystemCall("rm tmp.find-srcdir");
 
 SetHtmlDirectory("");
 Use("styleplain");  /* style cheet for the documentation */

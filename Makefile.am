@@ -1,14 +1,29 @@
-SUBDIRS = docs inprogress YacasNotebook scripts src ramscripts essays manualmaker colorcode plugins proteus tests manmake compile
+## Makefile.am -- Process this file with automake to produce Makefile.in
+
+## SUBDIRS lists the directories that make will descend into.
+## Note: this list needs to be synchronized with "configure.in"
+
+## Interdependency: to get a working "yacas", the source in "src" need to be
+## compiled, and "packages.ys" in "scripts" need to be generated. We need a
+## working "yacas" to make the manual in "manualmaker", and to run the test
+## suite in "tests". In addition, one of the tests to be run is generated in
+## "manualmaker".
+
+SUBDIRS = . docs inprogress YacasNotebook scripts src ramscripts essays \
+	manualmaker colorcode plugins proteus tests manmake compile
+
+## A script to be installed in the directory for binaries
+bin_SCRIPTS = yacas_client
+
+## EXTRA_DIST contains the files automake does not know about, that need to go
+## in the distribution. Note that scripts are not distributed by default.
 
 EXTRA_DIST = yacas.sgml yacas.spec yacas.spec.in makemake mkhomepage mkmanual \
-	yacas.sh yacas_client doxy_yacas yacas.el README.beos README.Win32 \
-	workinprogress.ys upload.txt readme.bin.win32.txt
+	yacas.sh doxy_yacas yacas.el README.beos README.Win32 \
+	workinprogress.ys upload.txt readme.bin.win32.txt $(bin_SCRIPTS)
 
-install-data-local:
-	-cp yacas_client $(bindir)/
-
-test:
-	cd scripts ; make test
+# The target "test" is an alias for "check"
+test: check
 
 texdocs:
 	cd manualmaker ; make texdocs
@@ -22,31 +37,8 @@ backup:
 debug:
 	cd src; make -f makefile.debug
 
-# these targets will help "make checkdist" do the right thing
-dvi: texdocs
-installcheck: test
-
-# This target untars the dist file and tries a VPATH configuration.  Then
-# it guarantees that the distribution is self-contained by making another
-# tarfile.
-# Note that this is currently a cludge and conflicts with automatically generated "distcheck" target, but I don't know how to fix this.
-distcheck: dist
-	-rm -rf $(distdir)
-	GZIP=$(GZIP_ENV) $(TAR) zxf $(distdir).tar.gz
-	mkdir $(distdir)/=inst
-	dc_install_base=`cd $(distdir)/=inst && pwd`; \
-	cd $(distdir) \
-	  && ../configure --srcdir=. --prefix=$$dc_install_base \
-	  && $(MAKE) $(AM_MAKEFLAGS) \
-	  && $(MAKE) $(AM_MAKEFLAGS) test \
-	  && $(MAKE) $(AM_MAKEFLAGS) texdocs \
-	  && $(MAKE) $(AM_MAKEFLAGS) install \
-	  && $(MAKE) $(AM_MAKEFLAGS) installcheck \
-	  && $(MAKE) $(AM_MAKEFLAGS) dist
-	-rm -rf $(distdir)
-	@banner="$(distdir).tar.gz is ready for distribution"; \
-	dashes=`echo "$$banner" | sed s/./=/g`; \
-	echo "$$dashes"; \
-	echo "$$banner"; \
-	echo "$$dashes"
-	
+## # these targets will help "make checkdist" do the right thing
+## # Jitse: look into this
+##
+## dvi: texdocs
+## installcheck: test

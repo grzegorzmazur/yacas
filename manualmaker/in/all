@@ -1,5 +1,3 @@
-DefaultDirectory("in/");
-
 ToFile("manicon.html")
 WriteString("<HTML>
 <BODY BGCOLOR=ffffff>
