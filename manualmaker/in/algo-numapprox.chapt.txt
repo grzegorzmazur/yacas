@@ -524,14 +524,35 @@ To evaluate the truncated series term by term, one needs $N-1$ long multiplicati
 
 If we do not know in advance how many terms of the Taylor series we need, we cannot do any better than just evaluate each term and check if it is already small enough. So in this case we will have to perform $O(N)$ long multiplications.
 However, we can organize the calculation much more efficiently if we are able to estimate the necessary number of terms and to afford some storage.
-A "rectangular" algorithm uses $2*Sqrt(N)$ long multiplications (assuming that the coefficients of the series are short rational numbers) and $Sqrt(N)$ units of storage. (See [Smith 1985].)
 
-*A Taylor series!$O(Sqrt(N))$ "rectangular" method
+There are two cases: first, the argument $x$ is a small integer or rational number with very few digits; second, the argument $x$ has $P$ digits.
+In the first case, it is better to use either Horner's scheme (for small $P$) or the binary splitting technique (for large $P$).
+In the second case, it is better to use the "rectangular" algorithm.
+In both cases we need to know the number of terms in advance, as we will have to repeat the whole calculation if a few more terms are needed.
+
+*A Taylor series!by Horner's scheme
+*A Horner's scheme
+
+Horner's scheme is widely known and consists of the following rearrangement,
+$$ Sum(k,0,N-1,a[k]*x^k) = a[0]+x*(a[1]+x*(a[2]+x*( ... + x*a[N-1]))) $$
+The calculation is started from the last coefficient $a[N-1]$ toward the first.
+If $x$ is small, then the round-off error accumulated during the summation is constantly being multiplied by a small number $x$ and thus is significantly reduced.
+If the coefficients $a[k]$ are related by a simple ratio, then the scheme may be modified to simplify the calculations.
+A precision control may be also applied to reduce the computation time: for example, $x*a[N-1]$ needs to be computed with very low precision if $x$ is small.
+This does not change the asymptotic complexity of the method: it still requires $O(N)=O(P)$ multiplications by $x$, so for general real $x$ the complexity is $O(P*M(P))$.
+However, if $x$ is a small rational number, then the multiplication by $x$ is short and takes $O(P)$ operations.
+In that case, the total complexity of the method is $O(P^2)$.
+
+
+*A Taylor series!by $O(Sqrt(N))$ "rectangular" method
+
+The "rectangular" algorithm uses $2*Sqrt(N)$ long multiplications (assuming that the coefficients of the series are short rational numbers) and $Sqrt(N)$ units of storage. (See [Smith 1985].)
+For high-precision $x$, this method provides a significant advantage over Horner's scheme.
 
 Suppose we need to evaluate $Sum(k,0,N, a[k]*x^k)$ and we know the number of terms $N$ in advance.
 Suppose also that the coefficients $a[k]$ are rational numbers with small numerators and denominators, so a  multiplication $a[k]*x$ is not a long multiplication (usually, either $a[k]$ or the ratio $a[k]$/$a[k-1]$ is a short rational number). Then we can organize the calculation in a rectangular array with $c$ columns and $r$ rows like this,
 $$ a[0]+a[r]*x^r+...+a[(c-1)*r]*x^((c-1)*r) $$+
-$$ x*(a[1]+a[r+1]*x^r+...+a[(c-1)*r+1]*x^((c-1)*r+1)) $$+
+$$ x*(a[1]+a[r+1]*x^r+...+a[(c-1)*r+1]*x^((c-1)*r)) $$+
 $$ ... $$+
 $$ x^(r-1)*(a[r-1]+a[2*r+1]*x^r+...) $$.
 To evaluate this rectangle, we first compute $x^r$ (which, if done by the fast
@@ -553,6 +574,7 @@ The rectangular method saves the number of long multiplications by $x$ but incre
 If $x$ is a small integer or a small rational number, multiplications by $x$ are fast and it does not make sense to use the rectangular method.
 Direct evaluation of the series is more efficient in that case.
 When the coefficients of the series are also small rationals, and when a fast multiplication is available (faster than quadratic), then the binary splitting method (see below) is the best one to use.
+With all rational arguments and slow multiplication, Horner's scheme seems to be the best choice.
 
 	    Truncating the working precision
 
@@ -564,7 +586,8 @@ and the precision with which we obtain it can be gradually decreased from column
 For example, if $x^r < 10^(-M)$, then we only need $P-k*M$ decimal digits of $x^(r*k)$ when evaluating the $k$-th column.
 (This assumes that the coefficients $a[i]$ do not grow, which is the case for most of the practically useful series.)
 
-This reduces the computation time.
+Reducing the working precision saves some computation time.
+(We also need to estimate $M$ but this can usually be done quickly by bit counting.)
 Instead of $O(Sqrt(P))$ long multiplications at precision $P$, we now need one long multiplication at precision $P$, another long multiplication at precision $P-M$, and so on.
 This technique will not change the asymptotic complexity which remains $O(Sqrt(P)*M(P))$, but it will reduce the constant factor in front of the $O$.
 
