@@ -90,7 +90,7 @@ description is terse but clear:
 
 The HAKMEM text (M. Beeler, R. W. Gosper, and R. Schroeppel: Memo No. 239, MIT AI Lab, 1972, available as HTML online from various places) contains several interesting insights relevant to continued fractions and other numerical algorithms.
 
-	    Precision of approximation by continued fractions
+	    Accurate computation of continued fractions
 
 Sometimes an analytic function $f(x)$ can be approximated using a continued
 fraction that contains $x$ in its terms. Examples include: the inverse tangent
@@ -110,6 +110,41 @@ evaluate a continued fraction with more and more terms until the desired
 precision is achieved. The formula for the precision of the continued fraction
 approximation used in the "top-down" method sometimes allows to estimate the
 number of terms in advance.
+
+A continued fraction
+$$ a[0]+b[0]/(a[1]+b[1]/(a[2]+...))$$
+is specified by a set of <i>terms</i> ($a[i]$, $b[i]$). [If continued fractions are used to approximate analytic functions such as $ArcTan(x)$, then ($a[i]$, $b[i]$) will be some infinite sequences that depend on $x$.]
+Denote the truncated fraction containing only terms from $m$ to $n$, i.e.
+$$ a[m]+b[m]/(a[m+1]+b[m+1]/(...+b[n]/a[n]))$$,
+by $F[m][n]$.
+In this notation, the continued fraction that we need to compute is $F[0][n]$. Our problem is first, to select a large enough $n$ so that $F[0][n]$ gives enough precision, and second, to compute the value of $F[0][n]$.
+
+The "bottom-up" method is to select some value of $n$ and start evaluating the fraction from the bottom. First we take $F[n][n]=a[n]$ and then we use the obvious relation of backward recurrence,
+$$ F[m][n] = a[m]+b[m]/F[m+1][n] $$,
+to obtain successively $F[n-1][n]$, ..., $F[0][n]$. This method requires one long division at each step.
+
+An alternative implementation may be to imagine that all $a[i]$, $b[i]$ are
+integers, and to obtain the numerator and the denominator of $F[0][n]$
+separately as two simultaneous backward recurrences. If 
+$F[m+1][n] = p[m+1]/q[m+1]$, then 
+$p[m]=a[m]*p[m+1]+b[m]*q[m+1]$ and $q[m]=p[m+1]$. This method would start with
+$p[n]=a[n]$, $q[n]=1$ and require two long multiplications at each step; the only
+division will be performed at the very end. Sometimes this method allows to
+reduce the roundoff error.
+
+There is an improvement to this method that can sometimes increase the achieved
+precision without computing more terms. Namely, we choose for $F[0][n]$ not the
+obvious $a[n]$ but another number that more closely approximates the remainder
+of the fraction which we are not computing.
+*REM FIXME
+
+The "bottom-up" method obviously requires to know the number of terms $n$ in
+advance; calculations have to be started all over again if more terms are
+needed. Also, it provides no error estimate.
+
+The "top-down" method is slower and is based on the error estimate which we shall now derive. We need to estimate the difference between successive approximations $F[0][n]$ and $F[0][n+1]$.
+The basic recurrence relation is
+$$ F[m][n+1] - F[m][n] = -(b[m]*(F[m+1][n+1]-F[m+1][n]))/(F[m+1][n+1]*F[m+1][n]) $$.
 
 *REM FIXME
 
