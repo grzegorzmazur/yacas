@@ -16,7 +16,7 @@ HoldArg("genericReshape",frustum);
 
 frustumFlat() :=
 [
- glOrtho(0,GlutViewWidth(),0,GlutViewHeight(), -10, 10);
+ glOrtho(0,GlutViewWidth(),0,GlutViewHeight(), -100, 100);
 ];
 
 
@@ -48,14 +48,18 @@ frustumDynamic(viewWidth,viewBack,viewFront,perspective):=
     True;
 ];
 
-
+modeLines:=False;
 DrawQuad(p1,p2,p3,p4):=
 [
-  glBegin(Eval(Atom("GL_QUADS")));
+  if (modeLines)
+    glBegin(Eval(Atom("GL_LINE_STRIP")))
+  else
+    glBegin(Eval(Atom("GL_QUADS")));
   glVertex3d(p1[1],p1[2],p1[3]);
   glVertex3d(p2[1],p2[2],p2[3]);
   glVertex3d(p3[1],p3[2],p3[3]);
   glVertex3d(p4[1],p4[2],p4[3]);
+  if (modeLines) glVertex3d(p1[1],p1[2],p1[3]);
   glEnd();
 ];
 

@@ -3,8 +3,8 @@
  A very very simple script, drawing a red line, one side of which
  is draggable with the mouse.
 */
-Use("glututils");
-DllLoad("./libopengl.so");
+Use(FindFile("addons/glututils"));
+DllLoad(FindFile("addons/libopengl.so"));
 
 10 # GlutKeyHandler("q",_x,_y) <-- Check(False,"Leaving");
 10 # GlutKeyHandler("Q",_x,_y) <-- Check(False,"Leaving");
@@ -24,20 +24,20 @@ GlutReshape():=genericReshape(frustumFlat());
 
 GlutRender():=
 [
-  glClearColor(0,0,0,0);
+  glClearColor(64,64,64,0);
   glClear(FromBase(16,fffff));
   glColor4d(255.0,0,0,0);
 
   glPushMatrix();
-/*
-  glTranslated(GlutViewWidth()>>1,GlutViewHeight()>>1,0);
-  glRotated(angle,0,0,1);
-*/
+
   glBegin(Eval(Atom("GL_LINES")));
   glVertex3d(3, 100.5, 0);
   glVertex3d(tox, toy, 0);
   glEnd();
 
+  glTranslated(GlutViewWidth()>>1,GlutViewHeight()>>1,0);
+ 
+  glRotated(angle,0,0,1);
   DrawParal({10,10,0},{10,0,0},{0,10,0});
 
   glPopMatrix();
@@ -51,7 +51,7 @@ GlutIdle():=
   glutPostRedisplay();
 ];
 
-/* GlutEnableAnimation();  */
+ GlutEnableAnimation();  
 
 GlutMainLoop("title",100,100);
 

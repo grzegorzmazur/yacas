@@ -1,7 +1,7 @@
 
 # configurable
 
-YACAS_SOURCE = /root/myprojects/yacas-latest
+YACAS_SOURCE = /root/myprojects/yacas
 
 # static
 
@@ -27,6 +27,10 @@ libopengl.so: openglapi.o glutcode.o
 
 openglapi.cc : openglapi.stub
 	yacas -pc openglapi.stub
+
+install:
+	cp libopengl.so /usr/local/share/yacas/addons/
+	cp glututils /usr/local/share/yacas/addons/
 
 include depend.dep
 
