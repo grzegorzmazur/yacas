@@ -52,7 +52,7 @@ sub mark_as_prime
 	my ($index, $field);
 	if ($p > 2 and $p <= $table_limit and $p % 2 == 1)
 	{
-		if ($verbose and $steps_done < int(10*$p/$table_limit))
+		if ($verbose and $steps_done*$table_limit < 10*$p)
 		{
 			printf STDERR "%2d%% ... ", $steps_done*10;
 			++$steps_done;
@@ -78,13 +78,14 @@ sub check_if_prime
 	my ($p) = (@_);
 	my $limit = int(sqrt($p));
 	my $divisor = 3;
-	return 1 if ($p==2 or $p==3);
-	return 0 if ($p <= 1 or ($p*$p-1)%24 != 0);
+	return 1 if ($p==2 or $p==3 or $p==5);
+	return 0 if ($p <= 1 or ($p%2==0) or ($p%3==0) or ($p%5==0));
 	# try all pseudoprime divisors up to sqrt(p)
 	while ($divisor <= $limit and $p % $divisor != 0)
 	{
-		$divisor = next_pseudoprime($divisor);
+		$divisor += 2;
 # do not do this, it slows things down a lot
+#		$divisor = next_pseudoprime($divisor);
 #		while (not check_prime_from_table($divisor))
 #		{
 #			$divisor = next_pseudoprime($divisor);
@@ -102,7 +103,7 @@ sub fill_table
 		mark_as_prime($p);
 		last if ($p > $table_limit);
 		$p = next_pseudoprime($p);
-		while(not check_if_prime($p))
+		while((not check_if_prime($p)) and $p <= $table_limit)
 		{
 			$p = next_pseudoprime($p);
 		}
