@@ -163,3 +163,4 @@ Verify({{1,2},{3,4}}^2,{{7,10},{15,22}});
 // And check that raising powers still works on lists/vectors (dotproduct?) correctly
 Verify({2,3}^2,{4,9});
 
+Verif( D(x,0) Sin(x), Sin(x) );

@@ -25,4 +25,5 @@ GenMatrix
 RandomIntegerVector
 JacobianMatrix
 HessianMatrix
+WronskianMatrix
 }

@@ -350,8 +350,14 @@ Function("GenMatrix",{func,m,n})
 HoldArg("GenMatrix",func);
 UnFence("GenMatrix",3);
 
+// The arguments of the following functions
+// should be checked
+
 // this takes N funcs in N vars
 JacobianMatrix(f,v):=GenMatrix({{i,j},Deriv(v[j])f[i]},Length(f),Length(f));
 
 // this takes 1 func in N vars
 HessianMatrix(f,v):=GenMatrix({{i,j}, Deriv(v[i]) Deriv(v[j]) f},Length(v),Length(v));
+
+// this takes N funcs in 1 var
+WronskianMatrix(f,v):=GenMatrix({{i,j}, Deriv(v,i-1) f[j]}, Length(f), Length(f) );
