@@ -401,7 +401,7 @@ Function("TableForm",{list})
 100  # ((_x)*(_x ^ _m)) <-- x^(m+1);
 100  # ((_x)^(_n))*((_y)^(_n)) <-- (x*y)^n;
 
-100  # ((x_IsNumber)^(_n/(_m)))_(n>1) <-- MathPower(x,n)^(1/m);
+100  # ((x_IsNumber)^(n_IsNumber/(_m)))_(n>1) <-- MathPower(x,n)^(1/m);
 
 100 # Sqrt(_n)^(m_IsEven) <-- n^(m/2);
 
