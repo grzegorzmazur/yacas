@@ -1850,27 +1850,28 @@ Such functions can have any arity larger or equal to a certain minimum arity (th
 
 *SEE Function, OpPrecedence, Rule
 
-*A arrays
-	    arrays
+*A array
+	    array
 
 An array is a container object that can hold a fixed number of other Yacas objects in it.
 Individual elements of an array can be accessed using the {[]} operation.
+Most list operations also work on arrays.
 
 Arrays are faster than lists but the array size cannot be changed.
 
 *SEE ArrayCreate
 
-*A atoms
-	    atoms
+*A atom
+	    atom
 
 Atoms are basic Yacas objects that are used to represent symbols, numbers, and function names.
 An atom has a string representation which is shown when it is displayed.
 For example, {3.14159}, {x}, {A123}, {+}, {"good morning"} are atoms.
 
 Atoms can be of type string, number, or symbol. For example, {y1} is a symbolic atom, {954} is a number atom, and {""} is an (empty) string atom.
-Symbolic atoms are normally used in {Yacas} to denote mathematical unknowns and function names. Number and string atomes are used to denote values.
+Symbolic atoms are normally used in {Yacas} to denote mathematical unknowns and function names. Number and string atoms are used to denote values.
 
-A symbolic atom can be bound to a value (in which case it becomes a variable), to a rule or several rules (in which case it becomes a function).
+A symbolic atom can be bound to a value (in which case it becomes a variable), or to a rule or several rules (in which case it becomes a function).
 An atom can also have a property object.
 
 *SEE Atom, String
@@ -1880,8 +1881,8 @@ An atom can also have a property object.
 
 Abbreviation for "computer algebra system". {Yacas} is a CAS.
 
-*A constants
-	    constants
+*A constant
+	    constant
 
 Constants such as {I}, {Pi} or {GoldenRatio} are symbolic atoms that are specially interpreted by {Yacas}.
 For example, there are simplification rules that transform expressions such as {Sin(Pi)} into {0}.
@@ -1892,9 +1893,9 @@ These are the "cached constants".
 
 *SEE N, CachedConstant, Pi, GoldenRatio, CatalanConstant, gamma, I, Precision
 
-*A equations
+*A equation
 *A {==}
-	    equations
+	    equation
 
 To denote symbolic equations, the operator {==} is used.
 This operator does not assign or compare its sides.
@@ -1907,12 +1908,13 @@ The symbolic equation operator {==} is also useful to represent solutions of equ
 
 *SEE Solve, Where, Plot2D
 
-*A functions
-	    functions
+*A function
+	    function
 
 A function is a symbolic atom that is bound to a rule or several rules.
-A function can have 0 or more arguments.
-Arguments are arbitrary objects.
+A function can have none, one, or more arguments.
+Functions can also have a variable number of arguments.
+Arguments of functions are arbitrary Yacas objects.
 
 Functions can be evaluated, that is, the rules bound to them may be executed.
 For example, {Cos(Pi+0)} is an expression that contains two functions and four atoms.
@@ -1936,12 +1938,13 @@ Some functions are built-in and implemented in C++, while others are library fun
 
 The built-in functions are usually less flexible than the library functions because they cannot be left unevaluated.
 Given incorrect arguments, a built-in function will generate an error.
+However, a user-defined function may simply return unevaluated in such cases.
 
 
 *SEE Function, Rule, <--
 
-*A lists
-	    lists
+*A list
+	    list
 
 A list is a basic {Yacas} container object. A list is written as e.g. {{a, b, c}} or {{}} (empty list).
 Individual elements of a list can be accessed using the {[]} operation.
@@ -1963,12 +1966,15 @@ For example, the expression {Cos(x+1)} is represented internally as a nested lis
 *A matrix
 	    matrix
 
-A matrix is represented as a list of lists. Some linear algebra operations are supported.
+A matrix is represented as a list of lists.
+Matrices are represented in the "row-major" order: a matrix is a list of rows, and each row is a list of its elements.
 
-*SEE Determinant
+Some basic linear algebra operations on matrices are supported.
 
-*A operators
-	    operators
+*SEE Determinant, Identity, IsDiagonal, EigenValues
+
+*A operator
+	    operator
 
 Operators are functions that have special syntax declared for them.
 An operator can be "bodied", infix, prefix or postfix.
@@ -1981,14 +1987,14 @@ Apart from the syntax, operators are exactly the same as any other functions, th
 *A plotting
 	    plotting
 
-Plotting is currently supported via the {Plot2D} function.
-Functions of one variable can be plotted on a given interval with given precision.
-{Yacas} generates the numerical data and external programs are used to actually produce the plots.
+Plotting is currently supported via the {Plot2D} and {Plot3DS} functions.
+Functions of one or two variables can be plotted on given intervals with a given precision.
+{Yacas} generates all numerical data for plots, while external programs such as {gnuplot} or {plotutils} are executed to actually produce and display the plots.
 
-*SEE Plot2D
+*SEE Plot2D, Plot3DS
 
-*A plugins
-	    plugins
+*A plugin
+	    plugin
 
 A plugin is an compiled dynamic library of functions that can be loaded into {Yacas} at run time.
 After loading a plugin, the functions implemented in the library become available as new Yacas functions.
@@ -2002,13 +2008,14 @@ Currently plugins have to be written in C++.
 Precedence is a property of the syntax of a given operator that specifies how this function is parsed.
 Only operators, i.e. functions with special syntax, can have precedence.
 Precedence values are nonnegative integers: 0, 1, ...
+The lowest numbers bind the most tighly.
 
-For example, the operator "{+}" binds less tightly (i.e. has a higher precedence value) than the operator "{*}" and so the expression {a+b*c} is parsed as {a+(b*c)}, as one would expect.
+For example, the operator "{+}" binds less tightly (i.e. has a higher precedence <i>value</i>) than the operator "{*}" and so the expression {a+b*c} is parsed as {a+(b*c)}, as one would expect.
 
 *SEE Bodied, OpPrecedence
 
-*A rules
-	    rules
+*A rule
+	    rule
 
 Rules are the principal mechanism of expression evaluation in {Yacas}.
 A rule specifies that a certain symbolic expression is to be replaced by another expression.
@@ -2028,8 +2035,8 @@ Rules can be erased or added at run time.
 
 *SEE Rule, <--, Retract
 
-*A strings
-	    strings
+*A string
+	    string
 
 A string is an atom with character string value, for example, {"abcd"}.
 Individual characters of the string can be accessed using the {[]} operation.
