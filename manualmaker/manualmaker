@@ -1,3 +1,6 @@
+// needed to read html.rep/code.ys, or else get error at bodied function HtmlAnchor()
+SetHtmlDirectory("");	// reads html.rep/code.ys
+Use("styleplain");  /* style sheet for the documentation */
 
 Book(title) :=
 [
@@ -602,4 +605,43 @@ DocFootnote(x) := "<h6>" : x : "</h6>";
 // HTML representation of a Yacasdoc reference
 YacasDocLink(bookname, text, url) :=
   If(bookname = "", "", HtmlLink(text, url, "", ""));
+
+
+// create an HTML version of a book
+GenerateBook(BaseName) :=
+[
+	InitBooks();        /* Initialize book building */
+	InitBook(BaseName);
+	Load(BaseName:".book");
+	GarbageCollect();
+	SelectBook(BaseName);
+	EmitHtmlFramed();
+// we don't really need any non-framed HTML any more, but we need this for the Makefile
+	EmitHtmlSimple();
+];
+
+// create a combined HTML of two books as well as separate HTML files
+// -- used to prepare online help from the ref and refprog books
+
+GenerateTwoBooks(BaseName1, BaseName2) :=
+[
+	InitBooks();        /* Initialize book building */
+	InitBook(BaseName1);
+	Load(BaseName1:".book");
+	GarbageCollect();
+	InitBook(BaseName2);
+	Load(BaseName2:".book");
+	GarbageCollect();
+	SelectBook(BaseName1);
+	EmitHtmlFramed();
+	SelectBook(BaseName2);
+	EmitHtmlFramed();
+// we don't really need non-framed refprog.html but let's do it anyway
+	EmitHtmlSimple();
+	GroupBooks(BaseName1, BaseName2);
+	SelectBook(BaseName1);
+	EmitHtmlSimple();
+
+];
+
 

@@ -93,7 +93,7 @@
 #define SOCKLEN_T unsigned int //socklen_t
 #endif
 
-
+#include "GPL_stuff.h"
 
 CYacas* yacas=NULL;
 CCommandLine *commandline = NULL;
@@ -1113,11 +1113,18 @@ RESTART:
         if (use_texmacs_out)
         {
             printf("%cverbatim:",TEXMACS_DATA_BEGIN);
-            printf("Yacas " VERSION " under TeXmacs\n");
+            printf("This is Yacas version `" VERSION "' under TeXmacs\n");
+            printf(GPL_blurb_nohelp);
             printf("%c",TEXMACS_DATA_END);
         }
         else 
         {
+            printf("This is Yacas version '" VERSION "'.\n");
+#ifdef WIN32
+            printf(GPL_blurb_nohelp);
+#else
+            printf(GPL_blurb);
+#endif
             printf("Numeric mode: \"%s\"\n",NumericLibraryName());
             printf("To exit Yacas, enter  Exit(); or quit or Ctrl-c. Type ?? for help.\n");
             printf("Or type ?function for help on a function.\n");

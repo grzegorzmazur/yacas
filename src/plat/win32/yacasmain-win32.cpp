@@ -13,7 +13,10 @@
 
 #include "win32commandline.h"
 #include "standard.h"
-#define VERSION "Windows-latest"
+// what's up with this VERSION define?
+//#define VERSION "Windows-latest"
+
+#include "GPL_stuff.h"
 
 #ifdef USE_RAMSCRIPTS
 #include "ramdisk.h" //TODO keep this?
@@ -128,6 +131,8 @@ int main(int argc, char *argv[]){
 	loadYacasScriptDir();
 	CWin32CommandLine commandline;
 
+    printf("Yacas " VERSION "\n");
+    printf(GPL_blurb_nohelp);
     printf("To exit Yacas, enter  Exit(); or Ctrl-c. Type ?? for help.\n");
     printf("Or type ?function for help on a function.\n");
     printf("To see example commands, keep typing Example();\n");
