@@ -16,7 +16,7 @@
 FactorialSimplify(x):=
 [
   // Substitute binomials
-  x:=(x/:{Bin(_n,_m)<--(n!)/((k!)*(n-k)!)});
+  x:=(x/:{Bin(_n,_m)<- (n!)/((k!)*(n-k)!)});
   // Expand expression as much as possible so that the terms become
   // simple rationals.
 
