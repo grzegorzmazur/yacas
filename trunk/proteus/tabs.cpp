@@ -14,6 +14,7 @@
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Scroll.H>
 #include <Fl/Fl_File_Chooser.H>
+#include <Fl/Fl_Help_Dialog.H>
 #include <stdlib.h>
 #include "yacas.h"
 #include "editor.h"
@@ -74,10 +75,19 @@ Fl_Menu_Bar *menubar;
 
 void HelpGo(char* f)
 {
+/*Fl_Help_Dialog does not seem ready for prime time yet :-(
+    Fl_Help_Dialog *help = new Fl_Help_Dialog;
+    help->load(f);
+    help->show(0,NULL);
+    Fl::run();
+    delete help;
+*/
+
     index_ ++;
     max_ = index_;
     strcpy(file_[index_],f);
     helpview_->load(f);
+
 }
 
 char *outbuf;

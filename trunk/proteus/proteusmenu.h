@@ -9,11 +9,12 @@ static Fl_Menu_Item menuitems[] =
  {"&File", FL_ALT+'f',  0, NULL, 64, 0, 0, font_size, 0},
    {"&new", FL_ALT+'n',  new_cb, (void*)"TODO", 0, 0, 0, font_size, 0},
    {"l&oad", FL_ALT+'o',  cb_notepad, (void*)NULL, 0, 0, 0, font_size, 0},
-   {"TODO save", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+//TODO   {"TODO save", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
    {"s&ave as", FL_ALT+'a',  cb_save_notepad, (void*)NULL, 0, 0, 0, font_size, 0},
    {"TODO about", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
    {"&quit", FL_ALT+'q',  quit_cb, (void*)NULL, 0, 0, 0, font_size, 0},
    {0},
+/*TODO
  {"&Edit", FL_ALT+'e',  0, NULL, 64, 0, 0, font_size, 0},
    {"TODO cut", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
    {"TODO copy", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
@@ -31,13 +32,10 @@ static Fl_Menu_Item menuitems[] =
    {"TODO edit", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
    {"TODO delete", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
    {0},
+*/
  {"&Help", FL_ALT+'h',  0, NULL, 64, 0, 0, font_size, 0},
    {"&contents", FL_ALT+'c',  help_intro_cb, (void*)"proteusbooks.html", 0, 0, 0, font_size, 0},
-   {"&introduction", FL_ALT+'i',  help_intro_cb, (void*)"intro.html", 0, 0, 0, font_size, 0},
-   {"TODO tutorial", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
-   {"TODO find function", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
    {"&detailed help on function", FL_ALT+'d',  help_detailed_function_cb, (void*)NULL, 0, 0, 0, font_size, 0},
-   {"TODO programmers reference", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
    {0},
  {0}
 };
