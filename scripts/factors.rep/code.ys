@@ -464,12 +464,23 @@ Bk(_poly,_prime) <--
 
 10 # Roots(poly_CanBeUni) <--
 [
-  Local(factors,result,uni,root,i);
+  Local(factors,result,uni,root,i,deg);
   factors:=Factors(poly);
   result:={};
   ForEach(item,factors)
   [
     uni:=MakeUni(item[1]);
+    deg:=Degree(uni);
+    If(deg > 0 And deg < 3,
+      [
+        root:= PSolve(uni);
+        If(Not IsList(root),root:={root});
+        For(i:=0,i<item[2],i++)
+          result:= Concat(root, result);
+      ]
+      );
+
+/*TODO remove, old code?
     If(Degree(uni) = 1,
       [
         root:= -Coef(uni,0)/Coef(uni,1);
@@ -477,18 +488,30 @@ Bk(_poly,_prime) <--
           result:= root : result;
       ]
       );
+*/
   ];
   result;
 ];
 
 10 # RootsWithMultiples(poly_CanBeUni) <--
 [
-  Local(factors,result,uni,root,i);
+  Local(factors,result,uni,root,i,deg);
   factors:=Factors(poly);
   result:={};
   ForEach(item,factors)
   [
     uni:=MakeUni(item[1]);
+
+    deg:=Degree(uni);
+    If(deg > 0 And deg < 3,
+      [
+        root:= PSolve(uni);
+        If(Not IsList(root),root:={root});
+        For(i:=1,i<=Length(root),i++)
+          result:= Concat({{root[i],item[2]}}, result);
+      ]
+      );
+/*TODO remove, old code?
     If(Degree(uni) = 1,
       [
         root:= -Coef(uni,0)/Coef(uni,1);
@@ -496,6 +519,7 @@ Bk(_poly,_prime) <--
           result:= {root,item[2]} : result;
       ]
       );
+*/
   ];
   result;
 ];
