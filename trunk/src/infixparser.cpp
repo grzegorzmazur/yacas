@@ -1,4 +1,8 @@
 
+
+//#include <stdio.h>
+
+
 #include "yacasprivate.h"
 #include "lispassert.h"
 #include "infixparser.h"
@@ -565,6 +569,14 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
             }
             else
             {
+                LispInt bracket = LispFalse;
+                if (bodied)
+                {
+//printf("%d > %d\n",iPrecedence, bodied->iPrecedence);
+                  if (iPrecedence < bodied->iPrecedence) 
+                    bracket = LispTrue;
+                }
+                if (bracket) WriteToken(aOutput,"(");
                 if (string != NULL)
                 {
                   WriteToken(aOutput,string->String());
@@ -597,6 +609,8 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                 WriteToken(aOutput,")");
                 if (iter())
                     Print(*iter.Ptr(), aOutput, bodied->iPrecedence);
+
+                if (bracket) WriteToken(aOutput,")");
             }
         }
     }
