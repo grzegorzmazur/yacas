@@ -271,9 +271,60 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 	);
 ];
 
+10 # Beta(_n,_m)	<-- Gamma(m)*Gamma(n)/Gamma(m+n);
+10 # DirichletEta(_z)	<-- (1-2/2^z)*Zeta(z);
+10 # DirichletLambda(_z)<-- (1-1/2^z)*Zeta(z);
+10 # Sinc(_x)		<-- If(x=0,1,Sin(x)/x);
 
-Function("Beta",{n,m})
-[
-	Gamma(m)*Gamma(n)/Gamma(m+n);
+
+////// Polylogarithm Function
+10 # PolyLog(_n,0)		<-- 0;
+// this is nicer than -Ln(1/2)
+10 # PolyLog(1,1/2)             <-- Ln(2);
+10 # PolyLog(_n,1)		<-- Zeta(n);
+10 # PolyLog(_n,_m)_(m= -1)	<-- DirichletEta(n);
+10 # PolyLog(_n,_x)_(n< 0)	<-- (1/((1-x)^(-n+1)))*Sum(i,0,-n,Eulerian(-n,i)*x^(-n-i) );
+//10 # PolyLog(_n,_x)_(n= -3)	<-- x*(x^2 + 4*x + 1)/(x-1)^4;
+//10 # PolyLog(_n,_x)_(n= -2)	<-- x*(x+1)/(1-x)^3;
+//10 # PolyLog(_n,_x)_(n= -1)	<-- x/(1-x)^2;
+10 # PolyLog(0,_x)		<-- x/(1-x);
+10 # PolyLog(1,_x)		<-- -Ln(1-x);
+// special values
+10 # PolyLog(2,1/2)		<-- (Pi^2 - 6*Ln(2)^2)/12;
+10 # PolyLog(3,1/2)		<-- (4*Ln(2)^3 - 2*Pi^2*Ln(2)+21*Zeta(3))/24;
+10 # PolyLog(2,2)		<-- Pi^2/4 - Pi*I*Ln(2);
+
+20 # PolyLog(_n,_x)_( x < -1 )  <-- [
+	(-1)^(n-1)*PolyLog(n,1/x) - ((Ln(-x))^n)/n! - 
+	Sum(r,1,Floor(n/2), 
+		2^(2*r-2)*Pi^(2*r)*Abs(Bernoulli(2*r))*Ln(-x)^(n-2*r)/( (2*r)! * (n - 2*r)! ) );
 ];
+20 # PolyLog(_n,_x)_( x>= -1 And x < 0 ) <-- [
+	// this makes the domain [-1,0) into [0,1],
+	// so if the summation representation is used, it is monotone
+	PolyLog(n,x^2)/2^(n-1) - PolyLog(n,-x) ;	
+
+];
+
+20 # PolyLog(_n,_x)_(x > 0 And x <= 1) <-- [
+	Local(result,prec,term,k,eps);
+	prec:=GetPrecision();
+	eps:=10^(-prec);
+	result:=0;
+	// Sorry Serge, I was only getting 2 digits of precision with this
+	//terms:=Floor(10 + N(prec*Ln(10)/Ln(prec) - 1));
+	//Precision( prec + Floor(N(Ln(6*terms)/Ln(10))) );
+	//result:=SumTaylorNum(x, {{k}, x^(k+1)/(k+1)^n }, terms );
+	Precision(prec+5);
+	term:=1;
+	For(k:=1,term>eps,k++)[
+		term:=N(x^k/k^n);
+		result:=result+term;
+	];	
+	Precision(prec);
+	RoundTo(result,prec);
+];
+
+
+
 
