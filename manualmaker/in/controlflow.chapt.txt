@@ -883,3 +883,23 @@ in the environment it is used in.
 
 *SEE TraceStack, TraceExp
 
+*CMD Time --- measure the time taken by a function
+*CORE
+*CALL
+	Time(expr)
+*PARMS
+{expr} -- any expression
+*DESC
+
+The function {Time(expr)} evaluates the expression {expr} and prints the time in seconds needed for the evaluation.
+The result is the "user time" as reported by the OS, not the real ("wall clock") time.
+Therefore, CPU-intensive processes running alongside Yacas will not significantly affect the result of {Time}.
+
+The time is printed to the console, not to the current output stream.
+
+
+
+*EG
+	In> Time([Precision(40);MathLog(1000);])
+	0.34 seconds taken
+	Out> 6.9077552789821370520539743640530926228033;
