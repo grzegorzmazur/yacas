@@ -23,6 +23,7 @@
 
 // we still need some of these functions but it will eventually all be removed
 //#ifdef NO_USE_BIGFLOAT
+#if 1
 
 struct GMPNumber {
   mpz_t man;
@@ -1229,7 +1230,19 @@ LispStringPtr BitXor(LispCharPtr int1, LispCharPtr int2,
     return result;*/
 }
 
-//#endif // NO_USE_BIGFLOAT
+#else // if not NO_USE_BIGFLOAT
+LispInt NumericSupportForMantissa()
+{
+    return LispTrue;
+}
+
+const LispCharPtr NumericLibraryName()
+{
+    return BigNumber::NumericLibraryName();
+}
+
+
+#endif // NO_USE_BIGFLOAT
 
 #ifdef USE_NEW_BIGNUM
 
@@ -1663,7 +1676,7 @@ const void* BigInt::ExportData() const
 ///// End of BigInt implementation
 //////////////////////////////////////////////////
 
-#else
+#else	// if not USE_NEW_BIGNUM
 
 //////////////////////////////////////////////////
 ///// BigNumber implementation by wrapping GMP
@@ -2112,7 +2125,8 @@ void BigNumber::BecomeInt()
 /// Note that aPrecision=0 means automatic setting (just enough digits to represent the integer).
 void BigNumber::BecomeFloat(LispInt aPrecision)
 {
-	LISPASSERT(aPrecision >= 0);
+//	if (Sign()!=0 && aPrecision<0) RaiseError("BigNumber::BecomeFloat debug: %e, %d", Double(), aPrecision);
+	if (Sign()!=0) LISPASSERT(aPrecision >= 0);
   if (IsInt())
   {	// the precision of the resulting float is at least the number of bits in the int_, i.e. its bit count
 	iPrecision = MAX((LispInt)BitCount(), aPrecision)+GUARD_BITS;
@@ -2264,15 +2278,14 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
     else	// int + float, need to promote to float
     {
       BigNumber temp(aX);
-      temp.BecomeFloat(1+aY.GetPrecision()+aX.BitCount()-aY.BitCount()+4);	// 4 guard bits here
+      // avoid negative precision
+      temp.BecomeFloat(MAX((long)0, 1 + aY.GetPrecision()+aX.BitCount()-aY.BitCount()) +4);	// 4 guard bits here
       Add(temp, aY, aPrecision);
     }
   else
     if (aY.IsInt())	// float + int, need to promote to float
     {
-      BigNumber temp(aY);
-      temp.BecomeFloat(1+aX.GetPrecision()+aY.BitCount()-aX.BitCount()+4);	// 4 guard bits here
-      Add(aX, temp, aPrecision);
+      Add(aY, aX, aPrecision);
     }
     else	// float + float
     {
@@ -2470,7 +2483,7 @@ void BigNumber::Floor(const BigNumber& aX)
 	SetTo(aX);
   }
 
-//  LISPASSERT(iPrecision >= 0);
+  if (Sign()!=0) LISPASSERT(iPrecision >= 0);
 }
 
 // round to a given precision (in bits) and set target precision. Does not change the number if the current precision is lower, or if the number is an integer.
@@ -2478,7 +2491,8 @@ void BigNumber::Precision(LispInt aPrecision)
 {
   if (!IsInt())
   {	// set precision flags
-	LISPASSERT(aPrecision >= 0);
+  // we allow negative precision only on floating zeros
+	if (Sign()!=0) LISPASSERT(aPrecision >= 0);
 	iPrecision = aPrecision;
 	aPrecision = MAX(aPrecision + (LispInt)GUARD_BITS, 1);	// pretend that the requested precision is actually larger
   	mpf_set_prec(float_, aPrecision);

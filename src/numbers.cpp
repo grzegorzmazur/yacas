@@ -564,15 +564,13 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
     else	// int + float, need to promote to float
     {
       BigNumber temp(aX);
-      temp.BecomeFloat(1+aY.GetPrecision()+aX.BitCount()-aY.BitCount()+4);	// 4 guard bits here
+      temp.BecomeFloat(MAX((long)0, 1 + aY.GetPrecision()+aX.BitCount()-aY.BitCount()) +4);	// 4 guard bits here
       Add(temp, aY, aPrecision);
     }
   else
     if (aY.IsInt())	// float + int, need to promote to float
     {
-      BigNumber temp(aY);
-      temp.BecomeFloat(1+aX.GetPrecision()+aY.BitCount()-aX.BitCount()+4);	// 4 guard bits here
-      Add(aX, temp, aPrecision);
+    	Add(aY, aX, aPrecision);
     }
     else	// float + float
     {
