@@ -299,7 +299,8 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
     {
         ZZPoly *original = NEW ZZPoly;
         ZZ i;
-        for (i=0;i<=aPoly.Degree();i++)
+        LispInt degree = aPoly.Degree();
+        for (i=0;i<=degree;i++)
         {
             original->Append(aPoly[i]);
         }
@@ -336,10 +337,12 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
             delete res;
         }
     }
-
+    if (aResult.NrItems() == 0) return;
     while(aResult.NrItems() < v.NrItems())
     {
         ZZPoly* next;
+//        LispInt nrr = aResult.NrItems();
+//        LispInt nrv = v.NrItems();
         next = aResult[0];
         aResult[0] = NULL;
         aResult.Delete(0);
