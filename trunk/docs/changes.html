@@ -7,7 +7,20 @@
 
 
 <FONT face="Helvetica" size="3">
-<h1>Release of version 1.0.50 (???,  2002)</h1>
+<h1>Release of version 1.0.51 (???, 2002)</h1>
+<ul>
+  <li> Implemented a fast recursive factorial algorithm in scripts; added new
+	   functions n!! ("staggered factorial") and a *** b ("partial factorial"),
+	   significant speedups of Bin() and MathFac(); factorial of half-integer
+	   arguments now uses fast staggered factorials; all documented (SW)
+  <li> Removed HTML files from tar.gz to save 30% space -- they are regenerated
+	   anyway, and users can download documentation separately if they can't
+	   make it (note: generating HTML or PS/PDF docs currently requires Perl)
+  <li> Added experimental scripts "book2ys.*" for automatic extraction of Yacas
+	   code from documentation (SW)
+
+</ul>
+<h1>Release of version 1.0.50 (Mar. 12, 2002)</h1>
 <ul>
   <li> Started essay chapter on numerical algorithms used in Yacas
   <li> Fixed bug in the definition of IsEven() and IsOdd()
@@ -47,11 +60,12 @@
        the build scripts
   <li> fixed documentation building scripts so that individual (non-framed) html
        files can now be built
-  <li> added a paper describing Yacas (in essays book)
+  <li> added a paper describing Yacas (in essays book) and a short conference
+       paper (docs/paper1.tex, docs/llncs.cls)
   <li> implemented fast sorting ({HeapSort}) for lists and generic arrays
   <li> fixed Swap() to work on generic arrays as well
   <li> fixed Postfix() to accept precedence argument
-  <li> small improvement to Bernoulli numbers
+  <li> a small improvement to Bernoulli numbers
 
 </ul>
 
