@@ -1,0 +1,88 @@
+
+GaussianNorm(z_IsGaussianInteger) <-- Re(z)^2+Im(z)^2;
+
+GaussianMod(z_IsGaussianInteger,w_IsGaussianInteger) <-- z - w * Round(z/w);
+
+IsGaussianUnit(z_IsGaussianInteger) <-- GaussianNorm(z)=1;
+
+/*
+10 # IsGaussianPrime(p_IsInteger) <-- IsPrime(p) And Mod(p,3)=1;
+20 # IsGaussianPrime(p_IsGaussianInteger) <-- IsPrime(GaussianNorm(p));
+*/
+
+/* GaussianFactorPrime(p): auxiliary function for Gaussian factors.
+If p is a rational prime of the form 4n+1, we find a factor of p in the
+Gaussian Integers. We compute 
+  a = (2n)!
+By Wilson's theorem a^2 is -1 (mod p), it follows that
+
+        p| (a+I)(a-I)
+
+in the Gaussian integers. The desired factor is then the Gaussian GCD of a+i 
+and p. Note: If the result is Complex(a,b), then p=a^2+b^2 */
+
+GaussianFactorPrime(p_IsInteger) <-- [
+ Local(a,i);
+ a := 1;
+ For (i:=2,i<=(p-1)/2,i++) a := Mod(a*i,p);
+ GaussianGcd(a+I,p);
+];
+
+/* AddGaussianFactor: auxiliary function for Gaussian Factors. 
+L is a lists of factors of the Gaussian integer z and p is a Gaussian prime
+that we want to add to the list. We first find the exponent e of p in the 
+decomposition of z (into Gaussian primes). If it is not zero, we add {p,e}
+to the list */
+
+AddGaussianFactor(L_IsList,z_IsGaussianInteger,p_IsGaussianInteger) <-- 
+[
+ Local(e);
+ e :=0;
+ While (IsGaussianInteger(z:= z/p)) e++;
+ If (e != 0, DestructiveAppend(L,{p,e}));
+];
+
+/* GaussianFactors(n) : returns a list of factors of n, in a similar 
+way to Factors(n).
+If n is a rational integer, we factor n in the Gaussian integers, by first 
+factor it in the rational integers, and after that factoring each of 
+its integer prime factors. */
+
+10 # GaussianFactors(n_IsInteger) <--
+[
+ Local(ifactors,gfactors,p,alpha);
+ ifactors := Factors(n);
+ gfactors := {};
+ ForEach(p,ifactors) 
+ [
+   If (p[1]=2, [ DestructiveAppend(gfactors,{1+I,p[2]}); 
+                 DestructiveAppend(gfactors,{1-I,p[2]}); ]);
+   If (Mod(p[1],4)=3, DestructiveAppend(gfactors,p));
+   If (Mod(p[1],4)=1, [ alpha := GaussianFactorPrime(p[1]);
+                        DestructiveAppend(gfactors,{alpha,p[2]});
+                        DestructiveAppend(gfactors,{Conjugate(alpha),p[2]});
+                      ]);                    
+ ]; 
+gfactors;
+];
+
+/* If z is is a Gaussian integer, we find its possible Gassian prime factors, 
+by factoring its norm */
+
+20 # GaussianFactors(z_IsGaussianInteger) <--
+[
+ Local(n,nfactors,gfactors,p);
+  gfactors :={};
+  n := GaussianNorm(z);
+  nfactors := Factors(n);
+  ForEach(p,nfactors) 
+  [
+   If (p[1]=2, [ AddGaussianFactor(gfactors,z,1+I);]);
+   If (Mod(p[1],4)=3, AddGaussianFactor(gfactors,z,p[1]));
+   If (Mod(p[1],4)=1, [ alpha := GaussianFactorPrime(p[1]);
+                        AddGaussianFactor(gfactors,z,alpha);
+                        AddGaussianFactor(gfactors,z,Conjugate(alpha));
+                      ]);                    
+ ];
+ gfactors;
+];
