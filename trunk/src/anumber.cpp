@@ -1326,11 +1326,19 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
             a1.Insert(0,zero);
             a1.iExp++;
         }
-        while (a1.NrItems()<a2.NrItems()+digitsNeeded || a1[a1.NrItems()-1]<a2[a2.NrItems()-1])
+        
+        if (!IsZero(a1)) 
         {
-          WordBaseTimesInt(a1, 10);
-          a1.iTensExp--;
+          while (a1.NrItems()<a2.NrItems()+digitsNeeded || a1[a1.NrItems()-1]<a2[a2.NrItems()-1])
+          {
+            WordBaseTimesInt(a1, 10);
+            a1.iTensExp--;
+          }
         }
+/*
+if (a1.iTensExp<-1000)
+  a1.iTensExp=-1000;
+*/
 
 #else // CORRECT_DIVISION
 
