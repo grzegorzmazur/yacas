@@ -449,3 +449,8 @@ Verify(a[2]*Sin(x)/:{Sin(_x) <- sin(x)},a[2]*sin(x));
 // Gaussian elimination, but taking the elements on the diagonal as pivot points.
 Verify(IsZero(Determinant( {{1,-1,0,0},{0,0,-1,1},{1,0,0,1},{0,1,1,0}} )),True);
 
+// The following failed when numerics changed so that 0e-1 was not matched to 0 any more in 
+// a transformation rule defining the less than operator.
+Verify(ExpNum(0),1);
+Verify(ExpNum(0e-1),1);
+Verify(500 < 0e-1,False);

@@ -1,5 +1,5 @@
 
-f():=[];//Echo(CurrentLine());
+f():=[]; //Echo(CurrentLine());
 
 Verify( Lucas(143), {767772505664398093937756525279,1242282009792667284144565908482}); f();
 Verify( CatalanNumber(6), 132 ); f();

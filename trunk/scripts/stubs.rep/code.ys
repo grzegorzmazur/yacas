@@ -15,7 +15,7 @@
 // Convert our comparisons to a canonical form with zero on one side
 5  # (_n < _m)_(m != 0)  <--  n-m < 0;
 
-10 # n_IsNumber < 0  <--  LessThan(n,0);
+10 # (n_IsNumber < _m)_(m=0)  <--  LessThan(n,0);
 
 // Deal with Infinity
 20 #  Infinity < 0 <-- False;
