@@ -7,15 +7,18 @@
 
 TODO:
 
-- manripper moved: also move in cvs
+- document the user interface
+- document the files that should be available, and where they should be.
 
+x manripper moved: also move in cvs
+- warnings for descriptions that don't have a calling convention (descriptions left in the map).
 - "restart notepad" menu item
 - cursor: select part of input
 - select: copy/paste
 - hints, list current matches, and do auto-completion with selection filling out the rest.
 - graphing optimization: draw to bitmap, possible?
 - bug: putting current command on last line from a link.
-
+- Mac install: mac exes seem to care about where they are dumped.
 - fill out the help panes
 - Function finder dialog
 
@@ -850,6 +853,7 @@ void FltkConsole::handle_key(int key)
                     free(text);
                 }
         }
+        iHistoryList.ResetHistoryPosition();
         return;
         break;
     default:
@@ -857,6 +861,12 @@ void FltkConsole::handle_key(int key)
             LispChar cc=(LispChar)key;
             iSubLine.Insert(cursor,cc);
             iFullLineDirty = 1;
+            if (cc == '(' || cc == ')')
+            {
+              delete hints;
+              hints=NULL;
+            }
+
         }
         cursor++;
         if (hints == NULL)
@@ -1185,7 +1195,13 @@ void FltkConsole::InsertText(const LispCharPtr aText)
    {
     LispChar c = *aText++; 
     iSubLine.Insert(cursor++,c);
+    if (c == '(' || c == ')')
+    {
+      delete hints;
+      hints=NULL;
+    }
    }
+
    if (hints == NULL)
      CheckForNewHints();
 }
