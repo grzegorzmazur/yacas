@@ -17,7 +17,6 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_CXX
 
-
 AC_CHECK_PROG(have_perl, perl, yes, no)
 AC_CHECK_PROG(have_latex, latex, yes, no)
 AC_CHECK_PROG(have_makeindex, makeindex, yes, no)
@@ -25,11 +24,13 @@ AC_CHECK_PROG(have_pdflatex, pdflatex, yes, no)
 AC_CHECK_PROG(have_dvips, dvips, yes, no)
 AC_CHECK_PROG(have_gzip, gzip, yes, no)
 
-# libtool support
-#AC_LIBTOOL_DLOPEN
-
-
-
+# If using GNU compilers, use extra flags to get warnings
+if test "$GCC" = yes; then
+  CFLAGS="$CFLAGS -Wall -pedantic"
+fi;
+if test "$GXX" = yes; then
+  CXXFLAGS="$CXXFLAGS -Wall -pedantic"
+fi;
 
 # Checks for header files.
 AC_HEADER_STDC
