@@ -27,15 +27,23 @@ check-archive: scripts.dat
 ## Ideally, we would like to declare it as lib_LIBRARY, but then automake
 ## (at least version 1.4) complains that it doesn't know libraries with
 ## a .dat extension. So we install it by hand in $(libdir)
+## Furthermore, we need to install compressedfiles.h because plugins need it.
+
+yacas_include = $(datadir)/yacas/include
 
 install-exec-local: scripts.dat
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
 	$(INSTALL_PROGRAM) scripts.dat $(DESTDIR)$(libdir)/`echo scripts.dat|sed '$(transform)'`
 
+install-data-local: compressedfiles.h
+	$(INSTALL_DATA) $(srcdir)/compressedfiles.h $(yacas_include)/compressedfiles.h
+
+
 uninstall-local:
 	@$(NORMAL_UNINSTALL)
 	rm -f $(DESTDIR)$(libdir)/`echo scripts.dat|sed '$(transform)'`
+	rm -f $(yacas_include)/compressedfiles.h
 
 endif
 
