@@ -383,7 +383,9 @@ BernoulliArray1(n_IsEven) _ (n>=2) <--
 30 # BesselJ(_n,_z)_(n<0 And IsInteger(n) ) <-- (-1)^n*BesselJ(-n,z);
 
 // When I put "And Numeric" on the next rule, I lose precision. Why ?
-40 # BesselJ(_n,x_IsComplex)_(Abs(x)<=1)  <-- N(BesselJNsmall(n,x));
+// Also, if I move the the "_IsComplex" to the end with "IsComplex(x)" 
+// I lose precision.
+40 # BesselJ(_n,x_IsComplex)_(Abs(x)<=2)  <-- N(BesselJNsmall(n,x));
 
 50 # BesselJ(0,x_IsComplex)_(Numeric) <-- N(BesselJN0(x));
 
@@ -398,7 +400,7 @@ BernoulliArray1(n_IsEven) _ (n>=2) <--
 Function("BesselJNsmall",{n,x})
 [
         Local(term,result,k);
-        Local(prec,eps);
+        Local(prec,eps,tmp);
         prec:=GetPrecision();
         Precision(Ceil(1.2*prec)); // this is a guess
         eps:=.5*10^(-prec);
@@ -418,6 +420,7 @@ Function("BesselJNsmall",{n,x})
 	// This should not round, only truncate
 	// some outputs will be off by one in the last digit
 	RoundTo(result,prec);
+
 ];
 
 // Seems to get about 8 digits precision for most real numbers
