@@ -8,7 +8,7 @@ which you can easily write your own symbolic manipulation algorithms.
 The core engine supports arbitrary precision arithmetic (although it can
 optionally be linked with the library "libgmp2") and is able to execute
 symbolic manipulations on various mathematical objects by following
-user-defined rules.
+user-defined rules.  
 
 Read the file INSTALL for instructions on how to compile and install
 Yacas. Yacas is portable across most Unix-ish platforms and requires a
