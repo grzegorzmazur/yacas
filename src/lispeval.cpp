@@ -181,15 +181,14 @@ FINISH:
     aEnvironment.iEvalDepth--;
 }
 
-static void TraceShowExpression(LispEnvironment& aEnvironment,
-                                LispPtr& aExpression)
+void ShowExpression(LispString& outString, LispEnvironment& aEnvironment,
+                    LispPtr& aExpression)
 {
     InfixPrinter infixprinter(aEnvironment.PreFix(),
                               aEnvironment.InFix(),
                               aEnvironment.PostFix(),
                               aEnvironment.Bodied());
     // Print out the current expression
-    LispString outString;
     StringOutput stream(outString);
     infixprinter.Print(aExpression, stream);
 
@@ -204,6 +203,12 @@ static void TraceShowExpression(LispEnvironment& aEnvironment,
             outString.Insert(i,c);
         }
     }
+}
+static void TraceShowExpression(LispEnvironment& aEnvironment,
+                                LispPtr& aExpression)
+{
+    LispString outString;
+    ShowExpression(outString, aEnvironment, aExpression);
     aEnvironment.CurrentOutput()->Write(&outString[0]);
 }
 
@@ -394,13 +399,14 @@ void TracedStackEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
 void TracedEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
                            LispPtr& aExpression)
 {
-    TraceShowEnter(aEnvironment, aExpression);
-
-    Interact();
+    aEnvironment.iDebugger->Enter(aEnvironment, aExpression);
+//TODO remove    TraceShowEnter(aEnvironment, aExpression);
+//    Interact();
     BasicEvaluator::Eval(aEnvironment, aResult, aExpression);
 
-    TraceShowLeave(aEnvironment, aResult, aExpression);
-    Interact();
+    aEnvironment.iDebugger->Leave(aEnvironment, aResult, aExpression);
+//    TraceShowLeave(aEnvironment, aResult, aExpression);
+//    Interact();
 }
 
 void TracedEvaluator::Interact()
@@ -409,4 +415,25 @@ void TracedEvaluator::Interact()
 }
 
 
+YacasDebuggerBase::~YacasDebuggerBase()
+{
+}
+
+
+void DefaultDebugger::Start()
+{
+}
+void DefaultDebugger::Finish()
+{
+}
+void DefaultDebugger::Enter(LispEnvironment& aEnvironment, 
+                                    LispPtr& aExpression)
+{
+    TraceShowEnter(aEnvironment, aExpression);
+}
+void DefaultDebugger::Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
+                                    LispPtr& aExpression)
+{
+    TraceShowLeave(aEnvironment, aResult, aExpression);
+}
 

@@ -9,7 +9,8 @@ EXTRA_DIST = COPYING.HelpDialog FltkConsole.cpp FltkConsole.h FltkHintWindow.cpp
 	proteusmenu.h readme.txt tabs.cpp tabs.h testnotes/graphtest2            \
 	testnotes/index testnotes/recursetest testnotes/testnotepad              \
 	testnotes/testnotepad2 todo.txt yacasconf yacdefines.h                   \
-        WorksheetBanner CalculatorBanner tracer.cpp tracer.ys makefile.tracer
+        WorksheetBanner CalculatorBanner tracer.cpp tracer.ys makefile.tracer    \
+        debugclass.cpp debugclass.h
 
 
 

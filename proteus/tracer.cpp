@@ -13,6 +13,9 @@
 #include <stdlib.h>
 #include "editor.h"
 #include "yacas.h"
+#include "debugclass.h"
+
+
 
 struct LineInfo
 {
@@ -115,7 +118,7 @@ int Fl_My_Browser::load_in(int line, int fileNo)
     int added = 0;
     char cmd[8192];
     char buf[256];
-    sprintf(buf,"exp.%d",fileNo);
+    sprintf(buf,"%sexp.%d",tempdir,fileNo);
     FILE* f=fopen(buf,"r");
     if (!f) return 0;
     for(;;)
@@ -349,7 +352,7 @@ int main(int argc, char **argv)
 {
     expression[0] = '\0';
     strcpy(scriptdir,"/usr/local/share/yacas/");
-    tempdir[0] = '\0';
+    strcpy(tempdir,"/tmp/proteusdebugger/");
     pre_eval[0] = '\0';
 
     {
@@ -381,7 +384,11 @@ int main(int argc, char **argv)
             fclose(f);
         }
     }
-
+    {
+        char buf[200];
+        sprintf(buf,"mkdir %s",tempdir);
+        system(buf);
+    }
 
     {
         CYacas *yacas = CYacas::NewL();
@@ -398,8 +405,13 @@ int main(int argc, char **argv)
         {
             char buf[300];
             sprintf(buf,"ToFile(\"trace.tmp\")TraceExp(%s);",expression);
+            YacasDebuggerBase* prev = (*yacas)()().iDebugger;
+            (*yacas)()().iDebugger = new ProteusDebugger(tempdir);
             yacas->Evaluate(buf);
-            yacas->Evaluate("ThunkToTracer();");
+            delete (*yacas)()().iDebugger;
+            (*yacas)()().iDebugger = prev;
+            //TODO remove            yacas->Evaluate("ThunkToTracer();");
+            
         }
         delete yacas;
     }
@@ -411,30 +423,35 @@ int main(int argc, char **argv)
 //  const char* fname = (argc>1 ) ? argv[1] : "exp.1";
   Fl_Window window(400,400,"Proteus Debugger");
   window.box(FL_NO_BOX); // because it is filled with browser
-
+  window.resizable(window);
   selected = 1;
   lineptr = NULL;
   
   mainTabs = new Fl_Tabs(0, 0, 400, 400);
   window.resizable(mainTabs);
   {
-      Fl_Group *o = input = new Fl_Group(10, 20, 390, 390, "Trace");
+      Fl_Group *o = input = new Fl_Group(10, 20, 390, 380, "Trace");
 //      tracer = new Fl_My_Browser(0,20,200,378,0);
 
-      Fl_Tile *t = new Fl_Tile(10,20,390,390);
+      Fl_Tile *t = new Fl_Tile(10,20,390,380);
+
+//      fileViewer = new Fl_My_Browser(200,20,200,378,0);
+      fileViewer = new Fl_My_Browser(0,20,400,190,0);
+      fileViewer->align(FL_ALIGN_CLIP);
 
       tracer = new Fl_My_Browser(0,210,400,160,0);
       tracer->callback(b_cb);
       tracer->load_in(1,0);
 //      tracer->position(0);
       tracer->align(FL_ALIGN_CLIP);
-//      fileViewer = new Fl_My_Browser(200,20,200,378,0);
-      fileViewer = new Fl_My_Browser(0,20,400,190,0);
-      fileViewer->align(FL_ALIGN_CLIP);
+      
+//      Fl_Group::current()->resizable(t);
       t->end();
-      Fl_Group::current()->resizable(t);
 
+      
+      Fl_Group *buts = new Fl_Group(0, 372, 400, 20);
       Fl_Button *b = new Fl_Button(20, 375, 40, 20, ">");
+
       b->callback(stepcb,0);
       b = new Fl_Button(60, 375, 40, 20, ">>");
       b->callback(multistepcb,0);
@@ -442,12 +459,12 @@ int main(int argc, char **argv)
       b->callback(multistepovercb,0);
 
       locked = new Fl_Round_Button(150,375,100,20,"Lock file");
-
-      Fl_Group::current()->resizable(t);
-      
-//      o->resizable(t);
       o->end();
-      Fl_Group::current()->resizable(o);
+      o->resizable(t);
+      Fl_Group::current()->resizable(t);
+//      tracer->resizable(t);
+//      t->resizable(b);
+
   }
   {
       Fl_Group *o = new Fl_Group(10, 20, 390, 380, "Profile");

@@ -15,10 +15,10 @@ LIBS = $(LDLIBS) $(FLTKLIBS)
 GLIBS = $(GLDLIBS) $(FLTKLIBS)
 DEFINES = -DDEBUG_MODE
 
-TRACER_OBJS = tracer.o editor.o fl_adjustable_file_chooser.o
+TRACER_OBJS = tracer.o editor.o fl_adjustable_file_chooser.o debugclass.o
 
-proteustracer: $(TRACER_OBJS) ../src/libyacasdebug.a
-	$(CXX) $(TRACER_OBJS) ../src/libyacasdebug.a -o proteustracer $(CXXFLAGS) $(LIBS) -lm
+proteusdebugger: $(TRACER_OBJS) ../src/libyacasdebug.a
+	$(CXX) $(TRACER_OBJS) ../src/libyacasdebug.a -o proteusdebugger $(CXXFLAGS) $(LIBS) -lm
 
 
 .cpp.o:

@@ -37,7 +37,8 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
     iBodiedOperators(aBodiedOperators),
     iCurrentInput(aCurrentInput),
     theUserError(NULL),
-    iPrettyPrinter(NULL)
+    iPrettyPrinter(NULL),
+    iDebugger(new DefaultDebugger)
 {
     iTrue=NULL;
     iFalse=NULL;
@@ -59,6 +60,7 @@ LispEnvironment::~LispEnvironment()
     iTrue->DecreaseRefCount();
     iFalse->DecreaseRefCount();
     delete iEvaluator;
+    delete iDebugger;
 }
 
 LispInt LispEnvironment::GetUniqueId()
