@@ -1,4 +1,20 @@
 
+DllLoad("filescanner");
+AddFileSizes(base_IsString,fname_IsString,False) <-- [ dirsize := dirsize + FileSize(base:fname); ];
+10 # ShowDir(base_IsString,".",_isdir) <-- [];
+10 # ShowDir(base_IsString,"..",_isdir) <-- [];
+20 # ShowDir(base_IsString,dirname_IsString,True) <--
+[
+  dirsize := 0;
+  ScanFiles(base,dirname,"AddFileSizes");
+  Echo(dirname," (",(dirsize+(1<<20)-1)>>20," Mb)");
+];
+ScanMaps(dir_IsString) <-- ScanFiles(dir,"","ShowDir");
+
+
+EndOfFile;
+
+
 
 Macro()DO(for,expr);
 Infix("DO",1001);

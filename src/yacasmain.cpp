@@ -331,6 +331,41 @@ void LispTime(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
+
+
+void LispFileSize(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+    LispPtr fnameObject;
+    fnameObject.Set(ARGUMENT(1).Get());
+    CHK_ISSTRING_CORE(fnameObject,1);
+    LispString fname;
+    InternalUnstringify(fname, fnameObject.Get()->String());
+
+    long fileSize = 0;
+    FILE* f = fopen(fname.String(),"rb");
+    if(f != NULL)
+    {
+      fseek(f,0,SEEK_END);
+      fileSize = ftell(f);
+      fclose(f);
+    }
+    else
+    {
+      printf("[[%s]]\n",fname.String());
+    }    
+    char buf[100];
+    
+#ifdef HAVE_VSNPRINTF
+    snprintf(buf,100,"%ld",fileSize);
+#else
+    sprintf(buf,"%ld",fileSize);
+#endif
+    RESULT.Set(LispAtom::New(aEnvironment,buf));
+}
+
+
+
+
 void LispIsPromptShown(LispEnvironment& aEnvironment,LispInt aStackTop)
 { // this function must access show_prompt which is a *global* in yacasmain.cpp, so it's not possible to put this function in mathcommands.cpp
     InternalBoolean(aEnvironment,RESULT, show_prompt==1);
@@ -511,6 +546,7 @@ CORE_KERNEL_FUNCTION("StaSiz",LispStackSize,0,YacasEvaluator::Function | YacasEv
 CORE_KERNEL_FUNCTION("IsPromptShown",LispIsPromptShown,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("ReadCmdLineString",LispReadCmdLineString,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("FileSize",LispFileSize,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 
 #undef CORE_KERNEL_FUNCTION
     
