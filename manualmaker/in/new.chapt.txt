@@ -443,40 +443,70 @@ to C++ code).
 
 The basic arithmetic operations that need to be implemented by the multiple-precision library are listed here.
 The operations are divided into several categories for convenience.
+Examples of C++ usage are given.
 
 1. Input/output operations.
 *	Construct a number from a string in given base.
-*	Print a number to a string in given base and in given precision.
-*	Construct a number from a platform (e.g. 32-bit) integer or double precision value.
+	x.SetTo("2e-19", 10);
+*	Print a number to a string in given precision and in given base.
+	x.ToString(buffer, 40, 10)
+*	Construct a number from a platform number (a 32-bit integer or a double precision value).
+	x.SetTo(12345); y.SetTo(0.001);
 *	Obtain an approximate representation of {x} as double-precision value.
+	double a=x.Double();
 
 2. Basic object manipulation. These operations, as a rule, do not need to change the numerical value of the object.
 *	Copy a number, {x := y}.
+	x.SetTo(y);
 *	Compare two numbers for equality, {x = y}. Note that the values are compared arithmetically, the internal precision may differ, and integers may be compared to floats.
+	Equals(x,y);
 *	Check whether the number {x} is of integer or floating type.
-*	Check whether the number {x} has an integer value. (Not necessarily the same as the previous function.)
+	x.IsInt();
+*	Check whether the number {x} has an integer value. (Not necessarily the same as the previous function, because a floating-point type can also have an integer value.)
+	x.IsIntValue();
 *	Change the type of a number from integer to float without changing the numerical value. Change the type from float to integer, rounding off if necessary.
+	x.MakeInt(); x.MakeFloat();
 
 3. Basic arithmetic operations.
 *	Compare two objects, {x<y}. Returns {true} if the numerical comparison holds, regardless of the value types (integer/float).
+	LessThan(x,y);
 *	Compute the integer part of a number, {x := Floor(y)}.
+	x.Floor(y);
 *	Round the number {x} to a given floating-point precision (previous function is not a particular case of this function), {x := Round(y,n)}.
+	x.Round(y, 40);
 *	Add two numbers, {x := y+z}, at given precision.
+	x.Add(y,z, 40);
 *	Negate a number, {x := -y}.
+	x.Negate(y);
 *	Multiply two numbers, {x := y*z}, at given precision.
-*	Divide two numbers, {x := y/z}, at given precision. (Integers are divided exactly as integers.)
+	x.Mul(y,z, 40);
+*	Divide two numbers, {x := y/z}, at given precision.
+(Integers are divided exactly as integers and the "precision" argument is ignored.)
+	x.Div(y,z, 40);
 
 4. Auxiliary operations (useful for optimization purposes but can be performed using the basic arithmetic).
+All these operations are efficient to implement with a binary-based internal representation of big numbers.
+*	Check whether the number {x} fits in a platform integer or double. (Optimization of comparison.)
+Sometimes this can help avoid unnecessary calculations with big numbers.
+	x.IsShort();
 *	Multiply two numbers and add to the third, {x := x+y*z}, at given precision. (Optimization of a frequently used operation.)
+	x.AddMul(y,z, 40);
 *	Add and multiply two integer numbers modulo a third integer number, {x := Mod(y+z,n)}, {x := Mod(y*z,n)}. (Optimization of integer division, very important for number theory applications.)
+Note that the integer modulus can also be a big number.
+	x.AddMod(y,z,n); x.MulMod(y,z,n);
 *	Obtain the sign of the number {x} (result is {-1}, {0} or {1}). (Optimization of comparison with 0.)
+	int sign_of_x = x.Sign();
 *	Obtain
 the "bit count" of the number {x} (more precisely, the integer part of the binary logarithm of the absolute value of {x}).
 For integers, this function counts the significant bits.
 For floating-point numbers, this function should return the binary exponent of the number (with sign).
-Result is an integer number ("big" number, not a 32-bit platform value). (Optimization of the binary logarithm.)
-*	Bit-shift the number (multiply or divide by 2), {x := x >> n}, {x := x << n}. This operation can be efficiently implemented using bit-shifts for integers as well as for non-integers. (Optimization of multiplication and division by a power of 2.)
+Result is an integer number (a "big" number, because it can exceed even a 32-bit platform {long} value). (Optimization of the binary logarithm.)
+	x.BitCount(y);
+*	Bit-shift the number (multiply or divide by 2), {x := y >> n}, {x := y << n}. This operation can be efficiently implemented using bit-shifts for integers as well as for non-integers. (Optimization of multiplication and division by a power of 2.)
+Note that the shift amount is a big number.
+	x.ShiftLeft(y, n); x.ShiftRight(y, n);
 *	Perform bitwise arithmetic {x := y&z}, {x := y|z}, {x := y^z}. This should be implemented only for integers. (Optimization of operations on bit streams.)
+	x.BitAnd(y,z); x.BitOr(y,z); x.BitXor(y,z);
 
 All other functions such as power, logarithm, cosine and so on, can be efficiently implemented using this basic interface.
 
@@ -487,7 +517,7 @@ Floating-point values only grow up to the given number of significant digits and
 
 This API will be not completely exposed to Yacas scripts, because some of these functions are too low-level.
 But this API will be available to C++ plugins.
-Intermediate-level arithmetic functions such as {MathAdd}, {MathDiv}, {MathMod} and so on, could be implemented either in the Yacas core or as plug-ins, based on this low-level API.
+Intermediate-level arithmetic functions such as {MathAdd}, {MathDiv}, {MathMod} and so on, could be implemented either in the Yacas core or in plugins, based on this low-level API.
 
 The library scripts will be able to transform numerical expressions such as {x:=y+z} into calls of these intermediate-level functions.
 Among the low-level functions, only those that are very useful for optimization will be available to the Yacas scripts.
