@@ -28,6 +28,14 @@ LispStringPtr PlatAbs(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPreci
 
 LispStringPtr PlatIsPrime(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision);
 
+// table lookup for small prime numbers
+unsigned primes_table_check(unsigned long p);
+unsigned primes_table_range();
+
+// lookup table for Ln(n)/Ln(2)
+double log2_table_lookup(unsigned n);
+// table range is from 1 to this value
+unsigned log2_table_range();
 
 /*
 class NativeNumber : public NumberBase

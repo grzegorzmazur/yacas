@@ -6,7 +6,12 @@
  */
 
 #include <gmp.h>
-#include <math.h>
+// do not use math.h without necessity
+/*
+#ifdef HAVE_MATH_H
+  #include <math.h>
+#endif
+*/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -1295,11 +1300,13 @@ void BigNumber::SetTo(const BigNumber& aOther)
   type_ = aOther.type_;
 }
 
+
 // assign from string, result is always a float type
 void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {// FIXME: we use gmp to read into float_, so we cannot read expfloats, e.g. 1.3e123412341234123412341234, which should be possible.
-	// estimate the number of bits we are going to have
-	iPrecision = (LispInt) (1+double(aPrecision) * log(aBase)/log(2));
+	//FIXME: need to check that aBase is between 2 and 32
+	// estimate the number of bits we need to have
+	iPrecision = (LispInt) (1+double(aPrecision) * log2_table_lookup(unsigned(aBase)));
 	// decide whether the string is an integer or a float
   if (strchr(aString, '.') || aBase<10 && (strchr(aString, 'e') || strchr(aString,'E')) || strchr(aString, '@'))
   {	// converting to a float
