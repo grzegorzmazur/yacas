@@ -258,6 +258,9 @@ exclusively used by Yacas.
 (GNU MP), available from <*http://www.swox.com/gmp*>, instead of the
 library provided by the Yacas team. For this to work, the GNU MP
 library must of course be installed.
+*	{enable-archive}. Build and install the library archive. The
+library archive resides in the file {scripts.dat} and contains all the
+Yacas scripts in compressed form.
 
 The following three options pertain to extensive documentation that
 comes with Yacas. By default, only HTML documentation is generated. 
@@ -284,6 +287,9 @@ are installed.
 *	{with-ps-dir=DIR}. Where to install the PostScript and PDF
 documentation. This defaults to the same directory as for the
 documentation in HTML format.
+
+Furthermore, the opposites of the above options (eg. {disable-gmp})
+are also recognized.
 
 
 	    Targets for make
@@ -351,7 +357,7 @@ developers to embed Yacas in their own programs.
 *A scripts!installation
 
 The Yacas script files with extension {ys} can be found in the
-{scripts} directory and its "repository" subdirectories. From the
+{scripts/} directory and its "repository" subdirectories. From the
 point of view of the build system, this is an extremely simple
 directory: all script files and {.def} files are listed in the
 {SCRIPTFILES} variable in {Makefile.am}, and they should be copied
@@ -360,6 +366,10 @@ should be preserved.
 
 There is one exception here: the {packages.ys} file, which contains a
 full list of all {.def} files, is automatically generated.
+
+The {check} target checks that all the script files and {.def} files
+listed in the {Makefile.am} are indeed present, and vice versa, that
+all files present in the {scripts/} hierarchy are indeed listed. 
 
 
 	    The documentation
@@ -442,6 +452,26 @@ extracted from the documentation
 (see <*the immediately preceding section|yacasdoc://#documentation!building*>).
 
 
+	    The library archive
+
+The library archive is a file, commonly called {scripts.dat}, which
+contains all the scripts in compressed form. If Yacas is started with
+the {--archive} flag, it uses the contents of this file. This is
+useful for binary releases, as one needs only two files: the Yacas
+executable and the library archive.
+
+Support for the library archive resides in the {ramscripts/}
+directory. It contains the code for the {compressor} program. This
+program generates the library archive.
+
+The archive is only built if the {enable-archive} option is
+passed to the {configure} script. In that case, the {compressor}
+program is built and run. At installation time, the generated archive
+is installed in the library directory ({/usr/local/lib} by
+default). There is also a test to check that the generated archive in
+fact works.
+
+
 	    Other components
 
 This section lists the components of the Yacas distributions that have
@@ -456,11 +486,6 @@ program is compiled, but not installed.
 website. The file {yacaslogo.gif} is also used in the HTML
 documentation of Yacas, therefore this file is copied in the
 appropriate directory during installation.
-*	The directory {ramscripts} contains a program which reads in
-the scripts in the {scripts} directory, and outputs the c++ source
-code you need to include just after the {CYacas} environment object
-has been constructed to stdout. This program is compiled but not
-installed. 
 
 The build system does not perform any actions for the following
 components of Yacas. 
