@@ -2,6 +2,7 @@
    - Factorize
 */
 
+UniVarList(expr) := VarList(expr);
 
 /* we need to use "predicates" because we are adding to IsZero */
 Use("predicates.rep/code.ys");
@@ -220,15 +221,18 @@ Rule("Degree",1,0, IsUniVar(expr))
 
 /*TODO this can be made twice as fast!*/
 
-201 # (aLeft_IsUniVar * _aRight)_(Not(Contains(VarList(aRight),aLeft[1]))) <--
+//MRK TODO remove 201 # (aLeft_IsUniVar * _aRight)_(Not(Contains(UniVarList(aRight),aLeft[1]))) <--
+201 # (aLeft_IsUniVar * _aRight)_((IsFreeOf(aLeft[1],aRight))) <--
 [
     aRight*aLeft;
 ];
 
-200 # (_factor * UniVariate(_var,_first,_coefs))_(Not(Contains(VarList(factor),var))) <--
+//MRK TODO remove 200 # (_factor * UniVariate(_var,_first,_coefs))_(Not(Contains(UniVarList(factor),var))) <--
+200 # (_factor * UniVariate(_var,_first,_coefs))_((IsFreeOf(var,factor))) <--
   UniVariate(var,first,coefs*factor);
 
-200 # (UniVariate(_var,_first,_coefs)/_factor)_(Not(Contains(VarList(factor),var))) <--
+//MRK TODO remove 200 # (UniVariate(_var,_first,_coefs)/_factor)_(Not(Contains(UniVarList(factor),var))) <--
+200 # (UniVariate(_var,_first,_coefs)/_factor)_((IsFreeOf(var,factor))) <--
   UniVariate(var,first,coefs/factor);
 
 
@@ -283,10 +287,10 @@ Function("ShiftUniVar",{uni,fact,shift})
   result;
 ];
 
-10 # Coef(uv_IsUniVar,_order)_(order<uv[2]) <-- 0;
-10 # Coef(uv_IsUniVar,_order)_(order>=uv[2]+Length(uv[3])) <-- 0;
-20 # Coef(uv_IsUniVar,_order) <-- uv[3][(order-uv[2])+1];
-30 # Coef(uv_CanBeUni,_order) <-- Coef(MakeUni(uv),order);
+10 # Coef(uv_IsUniVar,order_IsInteger)_(order<uv[2]) <-- 0;
+10 # Coef(uv_IsUniVar,order_IsInteger)_(order>=uv[2]+Length(uv[3])) <-- 0;
+20 # Coef(uv_IsUniVar,order_IsInteger) <-- uv[3][(order-uv[2])+1];
+30 # Coef(uv_CanBeUni,_order)_(IsInteger(order) Or IsList(order)) <-- Coef(MakeUni(uv),order);
 
 Function("Coef",{expression,var,order})
     NormalForm(Coef(MakeUni(expression,var),order));
@@ -329,7 +333,7 @@ Function("UniTaylor",{taylorfunction,taylorvariable,taylorat,taylororder})
 ];
 
 
-Function("MakeUni",{expression}) MakeUni(expression,VarList(expression));
+Function("MakeUni",{expression}) MakeUni(expression,UniVarList(expression));
 
 /* Convert normal form to univariate expression */
 RuleBase("MakeUni",{expression,var});
@@ -611,7 +615,7 @@ RandomPoly(_var,_degree,_coefmin,_coefmax) <--
 /* CanBeUni returns whether the function can be converted to a
  * univariate, with respect to a variable.
  */
-Function("CanBeUni",{expression}) CanBeUni(VarList(expression),expression);
+Function("CanBeUni",{expression}) CanBeUni(UniVarList(expression),expression);
 
 
 /* Accepting an expression as being convertable to univariate */

@@ -157,6 +157,8 @@ Rule("NormalForm",1,1000,True) expression;
 100 # 0 + _x    <-- x;
 100 # _x + 0    <-- x;
 100 # _x + _x   <-- 2*x;
+100 # _x + n_IsConstant*(_x)   <-- (n+1)*x;
+100 # n_IsConstant*(_x) + _x   <-- (n+1)*x;
 101 # _x + - _y <-- x-y;
 101 # _x + (- _y)/(_z) <-- x-(y/z);
 101 # (- _y)/(_z) + _x  <-- x-(y/z);
@@ -211,6 +213,9 @@ SumListSide(_x, y_IsList) <--
 51 # -Undefined <-- Undefined;
 54 # - (- _x)      <-- x;
 55 # (- (x_IsNumber)) <-- MathSubtract(x);
+100 # _x - n_IsConstant*(_x)   <-- (1-n)*x;
+100 # n_IsConstant*(_x) - _x   <-- (n-1)*x;
+
 110 # - (_x - _y) <-- y-x;
 111 # - (x_IsNumber / _y) <-- (-x)/y;
 LocalSymbols(x)
@@ -287,8 +292,10 @@ LocalSymbols(x)
 100 # (_y / _z) * _x <-- (x*y)/z;
 100 # (_x * y_IsNumber)_Not(IsNumber(x)) <-- y*x;
 
-100 # (_x * _y)* _x ^ n_IsInteger <-- y * x^(n+1);
-100 # (_y * _x)* _x ^ n_IsInteger <-- y * x^(n+1);
+100 # (_x) * (_x) ^ (n_IsConstant) <-- x^(n+1);
+100 # (_x) ^ (n_IsConstant) * (_x) <-- x^(n+1);
+100 # (_x * _y)* _x ^ n_IsConstant <-- y * x^(n+1);
+100 # (_y * _x)* _x ^ n_IsConstant <-- y * x^(n+1);
 
 105 # x_IsNumber * -(_y) <-- (-x)*y;
 105 # (-(_x)) * (y_IsNumber) <-- (-y)*x;

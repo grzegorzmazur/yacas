@@ -245,34 +245,6 @@ Rule("Gcd",2,100,True)
 20 # Round(x_IsComplex)  _ (IsRationalOrNumber(Re(x)) And IsRationalOrNumber(Im(x)) ) 
 		<-- MathFloor(N(Re(x)+0.5)) + MathFloor(N(Im(x)+0.5))*I;
 
-//
-// II is the imaginary number Sqrt(-1), and remains that way.
-// The difference is it isn't converted to the form Complex(x,y).
-//
-
-10 # II^n_IsNegativeInteger <-- (-II)^(-n);
-20 # (II^_n)_(IsEven(n) = True) <-- (-1)^(n>>1);
-20 # (II^_n)_(IsOdd(n)  = True) <--  II*(-1)^(n>>1);
-
-Set(complexReduce,
-Hold(
-{
-  Exp(x_IsComplexII) <- Exp(ReII(x))*(Cos(ImII(x))+II*Sin(ImII(x)))
-}));
-
-
-NN(_c) <--
-[
-  Local(result);
-  c := (c /:: complexReduce);
-  result := Coef(Expand(c,II),II,{0,1});
-  result;
-];
-ReII(_c) <-- NN(c)[1];
-ImII(_c) <-- NN(c)[2];
-IsComplexII(_c) <-- (ImII(c) != 0);
-
-
 
 
 

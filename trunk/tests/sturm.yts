@@ -8,7 +8,7 @@
    visible when turning show file/line on.
 */
 
-sl() := Echo(CurrentFile(),CurrentLine());
+sl() := []; //Echo(CurrentFile(),CurrentLine());
 TryRandomPoly(deg,coefmin,coefmax):=
 [
   //GarbageCollect();
