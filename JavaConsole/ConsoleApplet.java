@@ -9,6 +9,7 @@ import java.net.*;
 public class ConsoleApplet extends Applet implements KeyListener
 {
   static AppletOutput out;
+  static Socket client;
   static String serverAddress;
   static int serverPort;
   /// Applet initialization
@@ -31,30 +32,43 @@ public class ConsoleApplet extends Applet implements KeyListener
 
     ResetInput();
 
-  out.println("");
-  out.println("Welcome to the Yacas console applet!");
-  out.println("");
-  out.println("Connecting to the server at address "+serverAddress+" on port "+serverPort);
-  try
-  {
-    PerformRequest("Connected: version of engine is ","Atom(Version())");
-    out.println("");
-  }
-  catch (Exception e)
-  {
-    out.println(e);
-  } 
   }
 
   public void start()
   {  
-    dispatchEvent(
-      new FocusEvent(this, FocusEvent.FOCUS_GAINED));
-    setVisible(true);
-    setEnabled(true);
+    ResetInput();
+    try
+    {
+      client = new Socket(serverAddress,serverPort);
+    }
+    catch (Exception e)
+    {
+      out.println(e);
+    }
+    out.println("");
+    out.println("Welcome to the Yacas console applet!");
+    out.println("");
+    out.println("Connecting to the server at address "+serverAddress+" on port "+serverPort);
+    try
+    {
+      PerformRequest("Connected: version of engine is ","Atom(Version())");
+      out.println("");
+    }
+    catch (Exception e)
+    {
+      out.println(e);
+    } 
   }
   public void stop()
   {
+      try
+      {
+        client.close();
+      }
+      catch (Exception e)
+      {
+      }
+      client = null;
   }
 
   private void ResetInput()
@@ -183,7 +197,6 @@ public class ConsoleApplet extends Applet implements KeyListener
     boolean succeed = false;
     try
     {
-      Socket client = new Socket(serverAddress,serverPort);
       BufferedOutputStream buffered = new BufferedOutputStream(client.getOutputStream());
       DataOutputStream outbound = new DataOutputStream(buffered);
       DataInputStream inbound = new DataInputStream(client.getInputStream());
@@ -193,10 +206,10 @@ public class ConsoleApplet extends Applet implements KeyListener
       while ((responseLine = inbound.readLine()) != null)
       {
         AddLineStatic(outputPrompt+responseLine);
+        break;
       }
-      outbound.close();
-      inbound.close();
-      client.close();
+//      outbound.close();
+//      inbound.close();
       succeed = true;
     }
     catch (IOException ex)
