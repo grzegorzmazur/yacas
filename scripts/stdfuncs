@@ -152,7 +152,7 @@ HoldArg("TruncRadian",r);
 200 # ArcCos(1) <-- 0;
 200 # ArcCos(_n)_(n = -1) <-- Pi;
 
-2 # ArcTan(x_IsNumber)_(Numeric) <-- MathArcTan(x);
+2 # ArcTan(x_IsNumber)_(Numeric) <-- MyArcTan(x);
 4 # ArcTan(Tan(_x))           <-- x;
 110 # ArcTan(Complex(_r,_i)) <--
      (- I*0.5)*Ln(Complex(1,Complex(r,i))/ Complex(1, - Complex(r,i)));
@@ -179,6 +179,18 @@ Ln(xlist_IsList) <-- MapSingle("Ln",xlist);
 
 
 
+10 # ContArcTan(_x,_n,_n) <-- (2*n-1);
+20 # ContArcTan(_x,_n,_m) <--
+[
+  (2*n-1) + (n*x)^2/ContArcTan(x,n+1,m);
+];
+
+MyArcTan(x,n) :=
+[
+  x/ContArcTan(x,1,n);
+];
+
+MyArcTan(x) := MyArcTan(x,2*GetPrecision());
 
 
 
