@@ -674,18 +674,21 @@ LispStringPtr DivFloat( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHash
 LispStringPtr PiFloat( LispHashTable& aHashTable,
                         LispInt aPrecision)
 {
-    // Newtons method for finding pi:
+    // Newton's method for finding pi:
     // x[0] := 3.1415926
     // x[n+1] := x[n] - Tan(x[n])
 
-    ANumber result("3.14159265358979323846",aPrecision);
-    ANumber x(aPrecision);	// dummy variable
-    ANumber q("10", aPrecision);	// initial value must be "significant"
-    ANumber s(aPrecision);
-    ANumber c(aPrecision);
+    LispInt cur_prec = 20;  // precision of the initial guess
+    ANumber result("3.14159265358979323846",aPrecision);    // initial guess
     
-	while (Significant(q))
+    while (cur_prec < aPrecision)
     {
+        cur_prec *= 3;	// precision triples at each iteration
+        if (cur_prec > aPrecision) cur_prec = aPrecision;
+        ANumber x(cur_prec);    // dummy variables need to be created at new precision
+        ANumber q(cur_prec);
+        ANumber s(cur_prec);
+        ANumber c(cur_prec);
         // Get Tan(result)
         x.CopyFrom(result);
         SinFloat(s, x);
@@ -696,7 +699,8 @@ LispStringPtr PiFloat( LispHashTable& aHashTable,
         // Calculate new result: result:=result-Tan(oldresult);
         Negate(q);
         x.CopyFrom(result);
-        Add(result,x,q);
+        Add(s,x,q);
+        result.CopyFrom(s);
     }
     return FloatToString(result, aHashTable);
 }
