@@ -1031,9 +1031,37 @@ void BigNumber::BitNot(const BigNumber& aX)
 // give BitCount as platform integer
 signed long BigNumber::BitCount() const
 {
+/*
+  int low=0;
+  int high = 0;
+  int i;
+  for (i=0;i<iNumber->NrItems();i++)
+  {
+    if ((*iNumber)[i] != 0)
+    {
+      high = i;
+    }
+  }
+  if (low > high)
+    low = high;
+  LispInt bits=(high-low)*sizeof(PlatWord)*8;
+  return bits;
+*/
+
   if (IsZero(*iNumber)) return 0;//-(1L<<30);
   ANumber num(*iNumber);
 //  num.CopyFrom(*iNumber);
+
+  if (num.iTensExp < 0)
+  {
+    LispInt digs = WordDigits(num.iPrecision, 10);
+    PlatWord zero=0;
+    while(num.iExp<digs)
+    {
+        num.Insert(0,zero);
+        num.iExp++;
+    }
+  }
   while (num.iTensExp < 0)
   {
     PlatDoubleWord carry=0;

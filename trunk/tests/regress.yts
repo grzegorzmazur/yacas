@@ -460,3 +460,9 @@ Verify(IsZero(Determinant( {{1,-1,0,0},{0,0,-1,1},{1,0,0,1},{0,1,1,0}} )),True);
 Verify(ExpNum(0),1);
 Verify(ExpNum(0e-1),1);
 Verify(500 < 0e-1,False);
+
+// version 1.0.56: Due to MathBitCount returning negative values sometimes, functions depending on 
+// proper functioning failed. MathSqrtFloat failed for instance on N(1/2). It did give the right
+// result for 0.5.
+NumericEqual(N(Sqrt(500000e-6),20),N(Sqrt(0.0000005e6),20),20);
+NumericEqual(N(Sqrt(0.5),20),N(Sqrt(N(1/2)),20),20);
