@@ -65,8 +65,29 @@ MultiNomialAdd(MultiNomial(_vars,_terms1),MultiNomial(_vars,_terms2)) <--
   MultiNomial(vars,terms1);
 ];
 
+MultiTermLess({_deg1,_fact1},{_deg2,_fact2}) <--
+  [
+    Local(deg);
+    deg := deg1-deg2;
+    While(deg != {} And Head(deg) = 0) [ deg := Tail(deg);];
+    if (deg = {})
+    [
+      if (fact1-fact2 < 0) True else False;
+    ]
+    else
+    [
+      if (deg[1] < 0) True else False;
+    ];
+  ];
 10 # MultiAddTerm(_terms,_t)_(Assoc(t[1],terms) = Empty) <-- 
-     DestructiveAppend(terms,t);
+     [
+       Local(i,nr);
+       nr:=Length(terms);
+       i:=1;
+       While (i<=nr And MultiTermLess(t,terms[i])) i++;
+       DestructiveInsert(terms,i,t);
+       /* DestructiveAppend(terms,t); */
+     ];
 20 # MultiAddTerm(_terms,_t) <--
      [
        Local(as);
@@ -93,6 +114,59 @@ MultiNomialMultiply(MultiNomial(_vars,_terms1),MultiNomial(_vars,_terms2)) <--
 
 MultiNomialNegate(MultiNomial(_vars,_terms)) <-- ForEach(t,terms) [t[2] := -t[2]; ];
 
+
+
+10 # MultiDegree(MultiNomial(_vars,{})) <-- FillList(-Infinity,Length(vars));
+20 # MultiDegree(MultiNomial(_vars,_terms)) <-- Head(Head(terms));
+
+10 # MultiLeadingCoef(MultiNomial(_vars,{})) <-- 0;
+20 # MultiLeadingCoef(MultiNomial(_vars,_terms)) <-- (Head(terms)[2]);
+
+10 # MultiLeadingMono(MultiNomial(_vars,{})) <-- 0;
+20 # MultiLeadingMono(MultiNomial(_vars,_terms)) <-- Factorize(vars^(Head(Head(terms))));
+
+20 # MultiLeadingTerm(_m) <-- MultiLeadingCoef(m) * MultiLeadingMono(m);
+
+/*
+MultiDivide(_f,glist_IsList) <--
+[
+  Local(i,v,g,nr,q,r,p);
+  v:=VarList({f,glist});
+  f:=MakeMultiNomial(f,v);
+  nr := Length(glist);
+  g:=FillList(0,nr);
+  For(i:=1,i<=nr,i++)
+  [
+    g[i] := MakeMultiNomial(glist,v);
+  ];
+
+  q:=FillList(0,nr);
+  r:=0;
+  p:=f;
+  While (p != 0)
+  [
+    For(i:=1,i<=nr,i++)
+    [
+      if (MultiTermLess({MultiDegree(g[i])[1],1}, {MultiDegree(p)[1],1}))
+      [
+        Local(ff);
+        ff := ...;
+        q[i] := q[i] + ff;
+        p := p - ff*g[i];
+        nr:=i+2;
+      ];
+    ];
+    if (i = nr+1)
+    [
+      Local(ff);
+      ff := ...;
+      r := r + ff;
+      p := p - ff;
+    ];
+  ];
+  {q,r};
+];
+*/
 
 EndOfFile;
 

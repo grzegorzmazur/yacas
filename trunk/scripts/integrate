@@ -157,7 +157,7 @@ Rule("Integrate",4,1,Type(Apply("AntiDeriv",{expr,var})) != "AntiDeriv")
   result;
 ];
 
-
+(Integrate(_var)_f) <-- AntiDeriv(f,var)+UniqueConstant();
 
 10 # HasTrig(Sin(_x)) <-- True;
 10 # HasTrig(Cos(_x)) <-- True;
