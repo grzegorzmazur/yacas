@@ -748,8 +748,6 @@ void LispFromBase(LispEnvironment& aEnvironment, LispPtr& aResult,
     // convert using correct base
     BigNumber *z = NEW BigNumber(str2->String(),aEnvironment.BinaryPrecision(),base);
     aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
-
-//TODO remove old code    LispArithmetic2(aEnvironment, aResult, aArguments, FromBase,LispTrue);
 }
 void LispToBase(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
@@ -780,8 +778,6 @@ void LispToBase(LispEnvironment& aEnvironment, LispPtr& aResult,
     x->ToString(str,aEnvironment.BinaryPrecision(),base);
     // Get unique string from hash table, and create an atom from it.
     aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str.String())));
-
-//TODO remove old code?    LispArithmetic2(aEnvironment, aResult, aArguments, ToBase);
 }
 
 
@@ -930,23 +926,10 @@ void LispDllLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispDllBase *dll = NEW DLLCLASS;
     Check(dll != NULL,KLispErrNotEnoughMemory);
     LispInt opened;
-
-//    printf("file is [%s]\n"&(oper[0]));
-    
     opened = dll->Open(&oper[0],aEnvironment);
     if (!opened) delete dll;
     Check(opened,KLispErrLibraryNotFound);
-    /*TODO remove?
-    LispPluginBase* plugin = dll->Plugin();
-    if (plugin == NULL)
-    {
-        delete dll;
-        Check(plugin != NULL,KLispErrLibraryNotFound);
-    }
-    */
     aEnvironment.iDlls.Append(dll);
-//TODO remove?    plugin->Add(aEnvironment);
-
     InternalTrue(aEnvironment,aResult);
 }
 
@@ -1148,8 +1131,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispPtr& aResult,
         LispString name;
         name.SetNrItems(0);
         name.Append('\"');
-        
-//TODO remove?        LispCharPtr start = str;
+
         while (IsAlpha(*str))
         {
             LispChar c = *str++;
@@ -1159,10 +1141,8 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispPtr& aResult,
         }
         name.Append('\"');
         name.Append('\0');
-//printf("Should be =, is %c\n",str[0]);
         CHK_ARG(str[0] == '=',1);
         str++;
-//printf("Should be \", is %c\n",str[0]);
         CHK_ARG(str[0] == '\"',1);
         LispString value;
         value.SetNrItems(0);
@@ -1244,14 +1224,6 @@ void LispFastAssoc(LispEnvironment& aEnvironment, LispPtr& aResult,
     
     aResult.Set(ATOML("Empty"));
 }
-
-/*TODO remove!
-void LispSetCRemarkReceiver(LispEnvironment& aEnvironment, LispPtr& aResult,
-                            LispPtr& aArguments)
-{
-}
-*/
-
 
 void LispCurrentFile(LispEnvironment& aEnvironment, LispPtr& aResult,
                      LispPtr& aArguments)

@@ -135,3 +135,15 @@ Verifiy({3,4}^2,{9,16});
 Verifiy({2}^{3,4},Hold({2}^{3,4}));
 Verifiy({3,4}^{2},Hold({3,4}^{2}));
 Verifiy({1,2}^{3,4},{1,16});
+
+// non-destructive Reverse operation
+[
+  Local(lst,revlst);
+  lst:={a,b,c,13,19};
+  revlst:=Reverse(lst);
+  Verify(revlst,{19,13,c,b,a});
+  Verify(lst,{a,b,c,13,19});
+];
+Verify(IsBound(lst),False);
+Verify(IsBound(revlst),False);
+

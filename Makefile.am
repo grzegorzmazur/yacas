@@ -30,7 +30,7 @@ test: check
 dvi: texdocs
 
 texdocs:
-	cd manmake ; make ps-docs 
+	cd manmake ; make ps-docs ; make pdf-docs
 
 backup:
 	-rm yacas-*.tar.gz

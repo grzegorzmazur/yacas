@@ -18,9 +18,6 @@
 #include "refcount.h"
 #include "lispstring.h"
 #include "genericobject.h"
-/*TODO remove?
-#include "evalfunc.h"
-*/
 
 #ifdef YACAS_DEBUG
 void IncNrObjects();

@@ -19,7 +19,6 @@ LispDefFile::LispDefFile(const LispDefFile& aOther)
 LispDefFile::LispDefFile(LispStringPtr aFileName)
 {
     iFileName.Set(aFileName);
-//TODO remove?    aFileName->IncreaseRefCount();
     iIsLoaded=0;
 }
 
@@ -27,7 +26,6 @@ LispDefFile::LispDefFile(LispStringPtr aFileName)
 LispDefFile::~LispDefFile()
 {
     iFileName.Set(NULL);
-//TODO remove?    iFileName->DecreaseRefCount();
 }
 
 void LispDefFile::SetLoaded()
@@ -109,12 +107,10 @@ void LoadDefFile(LispEnvironment& aEnvironment, LispStringPtr aFileName)
 
     
     LispStringPtr hashedname = aEnvironment.HashTable().LookUp(flatfile.String());
-//TODO remove    LispRamFile* ramFile=aEnvironment.iRamDisk.LookUp(hashedname);
 
     InputStatus oldstatus = aEnvironment.iInputStatus;
     aEnvironment.iInputStatus.SetTo(hashedname->String());
 
-    //TODO remove    if (ramFile != NULL)
     if (contents)
     {
         StringInput newInput(*contents,aEnvironment.iInputStatus);

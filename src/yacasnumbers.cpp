@@ -28,8 +28,6 @@ static LispStringPtr FloatToString(ANumber& aInt, LispHashTable& aHashTable
 LispInt NumericSupportForMantissa()
 {
   return LispTrue;
-    // TODO make it a mission in life to support mantissa!
-//    return LispFalse;
 }
 
 const LispCharPtr NumericLibraryName()
@@ -449,7 +447,6 @@ static void LnFloat(ANumber& aResult, LispCharPtr int1)
 
 LispStringPtr LnFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
 {
-//TODO remove    return PlatLn(int1, aHashTable,aPrecision);
     ANumber sum(aPrecision);
     LnFloat(sum, int1);
     return FloatToString(sum, aHashTable);

@@ -5,13 +5,6 @@
 
 CCommandLine::~CCommandLine()
 {
-    /*TODO remove???
-     LispInt i;
-    for (i=0;i<iHistory.NrItems();i++)
-    {
-        delete iHistory[i];
-        }
-        */
 }
 
 

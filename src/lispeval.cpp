@@ -527,7 +527,6 @@ void DefaultDebugger::Enter(LispEnvironment& aEnvironment,
   iTopExpr.Set(aExpression.Get()->Copy(LispFalse));
   LispPtr result;
   defaultEval.Eval(aEnvironment, result, iEnter);
-  //TODO remove    TraceShowEnter(aEnvironment, aExpression);
 }
 void DefaultDebugger::Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
                                     LispPtr& aExpression)
@@ -537,7 +536,6 @@ void DefaultDebugger::Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
   iTopExpr.Set(aExpression.Get()->Copy(LispFalse));
   iTopResult.Set(aResult.Get());
   defaultEval.Eval(aEnvironment, result, iLeave);
-//TODO remove    TraceShowLeave(aEnvironment, aResult, aExpression);
 }
 
 LispBoolean DefaultDebugger::Stopped()
