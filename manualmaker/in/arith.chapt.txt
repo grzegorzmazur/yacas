@@ -909,6 +909,146 @@ $0$.
 
 *SEE StirlingNumber1
 
+*CMD DivisorsList --- the list of divisors
+*STD
+*CALL
+	DivisorsList(n)
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+{DivisorsList} creates a list of the divisors of $n$.
+This is useful for loops like
+
+	ForEach(d,DivisorsList(n))
+
+*E.G.
+
+	In> DivisorsList(18)
+	Out> {1,2,3,6,9,18};
+
+*SEE DivisorsSum
+
+*CMD SquareFreeDivisorsList --- the list of square-free divisors
+*STD
+*CALL
+	SquareFreeDivisorsList(n)
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+{SquareFreeDivisorsList} creates a list of the square-free divisors of $n$.
+Squarefree numbers are numbers that have only simple prime factors.
+
+*E.G.
+
+	In> SquareFreeDivisorsList(18)
+	Out> {1,2,3,6};
+
+*SEE DivisorsList
+
+*CMD MoebiusDivisorsList --- the list of divisors and Moebius values
+*STD
+*CALL
+	MoebiusDivisorsList(n)
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+Returns a list of pairs of the form {{d,m}}, where {d} runs through the squarefree divisors of $n$ and $m=Moebius(d)$. 
+This is more efficient than making a list of all 
+square-free divisors of $n$ and then computing {Moebius} on each of them.
+It is useful for computing the cyclotomic polinomials. 
+It can be useful in other computations based on the Moebius inversion formula. 
+
+*E.G.
+
+	In> MoebiusDivisorsList(18)
+	Out> {{1,1},{2,-1},{3,-1},{6,1}};
+
+*SEE DivisorsList, Moebius
+
+
+*CMD SumForDivisors --- loop over divisors
+*STD
+*CALL
+	SumForDivisors(var,n,expr)
+*PARMS
+
+{var} -- atom, variable name
+
+{n} -- positive integer
+
+{expr} -- expression depending on {var}
+
+*DESC
+
+This function performs the sum of the values of the expression {expr} while the variable {var} runs through 
+the divisors of {n}.
+For example, {SumForDivisors(d, 10, d^2)} sums $d^2$ where $d$ runs 
+through the divisors of $10$.
+This kind of computation is frequently used in number theory.
+
+*SEE DivisorsList
+
+*CMD RamanujanSum --- compute the "Ramanujan sum"
+*STD
+*CALL
+	RamanujanSum(k,n)
+
+*PARMS
+
+{k}, {n} -- positive integers
+
+*DESC
+This function computes the Ramanujan sum, i.e. the sum of the $n$-th powers of 
+the $k$-th primitive roots of the unit:
+
+$$ Sum(l,0,k-1, Exp(2*Pi*I*(l*n)/k)) $$.
+
+The computation is done by using the formula in Apostol,
+<i>Introduction to Analytic Theory</i> (Springer-Verlag), Theorem 8.6.
+
+*CMD Cyclotomic --- construct the cyclotomic polynomial
+*STD
+*CALL
+	Cyclotomic(n,x)
+
+*PARMS
+
+{n} -- positive integer
+
+{x} -- variable
+
+*DESC
+
+Returns the cyclotomic polinomial in the variable {x}
+(which is the minimal polynomial of the $n$-th primitive
+roots of the unit, over the field of rational numbers).
+ 
+For $n$ even, we write $n= m*k$, where $k$ is a power of $2$ 
+and $m$ is odd, and reduce it to the case of even $m$ since:
+
+$ Cyclotomic(n,x) = Cyclotomic(m,-x^(k/2)) $.
+
+If $m=1$, $n$ is a power of $2$, and $Cyclotomic(n,x)= x^k+1$.
+
+For $n$ odd, the algoritm is based on the formula
+
+$ Cyclotomic(n,x) := Prod((x^(n/d)-1)^mu(d)) $,
+ 
+where $d$ runs through the divisors of $n$.
+In order to compute this in a efficient way, we use the function
+{MoebiusDivisorsList}. Then we compute in {poly1} the product
+of $x^(n/d)-1$ with $mu(d)=1$ , and in {poly2} the product of these polynomials
+with  $mu(d)= -1$. Finally we compute the quotient {poly1}/{poly2}.
+
 
 
 *CMD IntLog --- integer part of logarithm
