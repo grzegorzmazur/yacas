@@ -51,7 +51,7 @@ Plot2D'<backend> on that data.
 	// set default option values
 	If(
 		options'hash["points"] = Empty,
-		options'hash["points"] := 20
+		options'hash["points"] := 23
 	);
 	If(
 		options'hash["depth"] = Empty,
@@ -59,7 +59,7 @@ Plot2D'<backend> on that data.
 	);
 	If(
 		options'hash["precision"] = Empty,
-		options'hash["precision"] := 0.000003
+		options'hash["precision"] := 0.00001
 	);
 	If(
 		options'hash["output"] = Empty Or IsString(options'hash["output"]) And Plot2D'outputs()[options'hash["output"]] = Empty,
@@ -188,7 +188,11 @@ Plot2D'adaptive(_func, _var, {_a,_b,_c}, {_fa, _fb, _fc}, _depth, _epsilon) <--
 		  smooth'sign'change(fa, fa1, fb) And smooth'sign'change(fa1, fb, fb1) And smooth'sign'change(fb, fb1, fc)
 		  And
 		  // condition for the values not to change too rapidly
-		  Abs( (-fa-fc-6*fb+4*(fa1+fb1))/45 ) <= N( epsilon*Abs( (fa+fc+2*fb+4*(fa1+fb1))/3 ) )
+		  Abs( (fa-5*fa1+9*fb-7*fb1+2*fc)/24 )	// this is the Simpson quadrature for the (fb,f1) subinterval (using points b,b1,c), subtracted from the 4-point Newton-Cotes quadrature for the (fb,fb1) subinterval (using points a, a1, b, b1)
+		  	<= N( epsilon*(	// the expression here will be nonnegative because we subtract the minimum value
+		    //(fa+fc+2*fb+4*(fa1+fb1))/12	// this is 1/4 of the Simpson quadrature on the whole interval
+			(5*fb+8*fb1-fc)/12	// this is the Simpson quadrature for the (fb,f1) subinterval
+			- Min({fa,fa1,fb,fb1,fc}) ) )
 		),
 		{{a,fa}, {a1,fa1}, {b,fb}, {b1,fb1}, {c,fc}},
 		Concat(Plot2D'adaptive(func, var, {a, a1, b}, {fa, fa1, fb}, depth-1, epsilon), Tail(Plot2D'adaptive(func, var, {b, b1, c}, {fb, fb1, fc}, depth-1, epsilon)))
