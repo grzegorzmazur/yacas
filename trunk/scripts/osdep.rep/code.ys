@@ -7,8 +7,9 @@ PlatformOS() := Eval(
    If(GreaterThan(Length(OSVersion()),5) And StringMid(1,5,OSVersion()) = "linux",   "Unix", 
    If(GreaterThan(Length(OSVersion()),6) And StringMid(1,6,OSVersion()) = "darwin",   "Unix", 
    If(GreaterThan(Length(OSVersion()),7) And StringMid(1,7,OSVersion()) = "solaris", "Unix",
-   If(OSVersion() = "Win32",                  "Win32", 
-   /* otherwise */                             "Unknown")))));
+   If(GreaterThan(Length(OSVersion()),7) And StringMid(1,7,OSVersion()) = "freebsd", "Unix",
+   If(OSVersion() = "Win32",   "Win32", 
+   /* otherwise */             Check(False, "Unsupported platform ":OSVersion())))))));
 
 // this lists the available OS-specific modules
 SupportedOSes :=
