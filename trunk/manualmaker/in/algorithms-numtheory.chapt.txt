@@ -95,7 +95,7 @@ After separating small prime factors, we test whether the number $n$ is an integ
 Now we need to check whether $n$ is of the form $p^s$ for $s=2$, 3, ..., $s[0]$. Note that if for example $n=p^24$ for some $p$, then the square root of $n$ will already be an integer, $n^(1/2)=p^12$. Therefore it is enough to test whether $n^(1/s)$ is an integer for all <i>prime</i> values of $s$ up to $s[0]$, and then we will definitely discover whether $n$ is a power of some other integer.
 The testing is performed using the integer square root function {IntNthRoot} which quickly computes the integer part of $n$-th root of an integer number. If we discover that $n$ has an integer root $p$ of order $s$, we have to check that $p$ itself is a prime power (we use the same algorithm recursively). The number $n$ is a prime power if and only if $p$ is itself a prime power. If we find no integer roots of orders $s<=s[0]$, then $n$ is not a prime power.
 
-If the number $n$ is not a prime power, the Pollard "rho" algorithm is applied (J. Pollard, <i>Monte Carlo methods for index computation mod p</i>, Mathematics of Computation, volume 32, pages
+If the number $n$ is not a prime power, the Pollard "rho" algorithm is applied (J. Pollard, <i>Monte Carlo methods for index computation mod p</i>, Mathematics of Computation, vol. 32, pp.
 918-924, 1978). The Pollard "rho" algorithm takes an irreducible polynomial, e.g. $p(x)=x^2+1$ and builds a sequence of integers $x[k+1]:=Mod(p(x[k]),n)$, starting from $x[0]=2$. For each $k$, the value $x[2*k]-x[k]$ is attempted as possibly containing a common factor with $n$. The GCD of $x[2*k]-x[k]$ with $n$ is computed, and if $Gcd(x[2*k]-x[k],n)>1$, then that GCD value divides $n$.
 
 The idea behind the "rho" algorithm is to generate an effectively
@@ -132,18 +132,18 @@ A better (and faster) integer factoring algorithm is needed.
 Modern factoring algorithms are all probabilistic (i.e. they do not
 guarantee a particular finishing time) and fall into three categories:
 *	1. Methods that work well (i.e. quickly) if there is a relatively
-small factor $p$ (even if $n$ itself is large). Pollard's "rho"
+small factor $p$ of $n$ (even if $n$ itself is large). Pollard's "rho"
 algorithm belongs to this category. The fastest in this category is
 Lenstra's elliptic curves method (ECM).
-*	2. Methods that work equally well regardless of the size of factors
+*	2. Methods that work equally quickly regardless of the size of factors
 (but slower with larger $n$). These are the continued fractions method
-and the various "sieve" methods. The best is the "General Number Field
+and the various "sieve" methods. The current best is the "General Number Field
 Sieve" (GNFS) but it is quite a complicated algorithm requiring
 operations with high-order algebraic numbers. The next best one is the
 "Multiple Polynomial Quadratic Sieve" (MPQS).
 *	3. Methods that are suitable only for numbers of special
 "interesting" form, e.g. Fermat numbers $2^(2^k)-1$ or generally
 numbers of the form $r^s+a$ where $s$ is large but $r$ and $a$ are very
-small integers. The best method seems to be again the Special Number
-Field Sieve.
+small integers. The best method seems to be the "Special Number
+Field Sieve" which is a faster variant of the GNFS adapted to the problem.
 
