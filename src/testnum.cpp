@@ -494,7 +494,7 @@ int main(void)
 //////////////////////////////////////////////////
 ///// BigNumber comprehensive test suite
 //////////////////////////////////////////////////
-	printf("SizeOf(BigNumber)=%d\n", sizeof(BigNumber));
+	printf("SizeOf(BigNumber)=%ld\n", sizeof(BigNumber));
 
 	Next("library name");	
 	printf("\tTesting numeric library: '%s'.\n", BigNumber::NumericLibraryName());

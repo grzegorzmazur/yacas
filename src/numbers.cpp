@@ -23,13 +23,7 @@
 // TO DO:
 // design and implement exp-float, or decide why it is unnecessary.
 
-const unsigned GUARD_BITS = 8;	// we leave this many guard bits untruncated in various situations when we need to truncate precision by hand
 
-template<class T> inline T MAX(T x, T y) { if (x<y) return y; else return x; }
-template<class T> inline T MIN(T x, T y) { if (x>y) return y; else return x; }
-
-const long DIST_BITS = 3;	// at least this many bits of difference
-template<class T> inline T DIST(T x, T y) { return (x>=y && x>=y+DIST_BITS || y>=x && y>=x+DIST_BITS) ? 0 : 1; }
 
 
 BigNumber::BigNumber(LispInt aPrecision) { init(aPrecision); }
@@ -474,17 +468,17 @@ void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrec
     }
     else	// int + float, need to promote to float
     {
-		if (aX.Sign()==0)
-		{	// multiplying by integer 0, set result to integer 0
-			SetTo(0);
-		}
-		else
-		{	// multiplying by nonzero integer, precision is unmodified
-    	  BigNumber temp(aX);
-    	  temp.BecomeFloat(aY.GetPrecision()+GUARD_BITS);	// enough digits here
-    	  Multiply(temp, aY, aPrecision);
-		  iPrecision = MIN(aPrecision, aY.GetPrecision());
-		}
+      if (aX.Sign()==0)
+      {	// multiplying by integer 0, set result to integer 0
+        SetTo(0);
+      }
+      else
+      {	// multiplying by nonzero integer, precision is unmodified
+          BigNumber temp(aX);
+          temp.BecomeFloat(aY.GetPrecision()+GUARD_BITS);	// enough digits here
+          Multiply(temp, aY, aPrecision);
+        iPrecision = MIN(aPrecision, aY.GetPrecision());
+      }
     }
   else
     if (aY.IsInt())	// float + int, need to promote to float
