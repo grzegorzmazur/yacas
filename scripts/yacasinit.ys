@@ -31,8 +31,17 @@ Rule("Defun",3,0,True)
 ];
 
 // And here is one example plugin call: either load the plugin, or if that fails
-// load the script that is used to compile the plugin instead.
-TrapError(DllLoad("libmath"),Use("base.rep/math.ys"));
+// load the script that is used to compile the plugin instead. You can set up
+// your own init file to disabling loading of scripts, by setting LoadPlugIns to 
+// false.
+If(Equals(LoadPlugIns,False),
+  [
+    Use("base.rep/math.ys");
+  ],
+  [
+    TrapError(DllLoad("libmath"),Use("base.rep/math.ys"));
+  ]
+  );
 
 Use("patterns.rep/code.ys");
 

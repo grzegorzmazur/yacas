@@ -1356,3 +1356,142 @@ If now we increase precision to 20 digits, the object {x} will be interpreted as
 This behavior is more intuitive to people who are used to decimal fractions.
 
 
+
+
+			The Yacas script compilation system
+
+{Yacas} currently comes with a compiler that can convert scripts
+to C++ code. This facility will be used in the future to move
+as many functions defined in the kernel to scripts as possible.
+
+The advantages of this approach are:
+
+*	1. It makes the kernel smaller, easier to maintain, and easier to port to other languages (one target might be Java in the future).
+*	1. {Yacas} scripts are far more readable than the equivalent {C++} code.
+
+The disadvantages are:
+
+*	1. This feature adds more complexity to the build system and makes it slightly more difficult for developers to work on the scripts that get compiled. The hope is that the inconvenience has been minimized as much as possible.
+*	1. The resulting code might not be as efficient as hand-coded {C++}. This will be solved as much as possible by having the compiler emit optimized code.
+
+The {Yacas} system comes with a compiler that can compile
+scripts to {C++} files. To invoke, one can call
+
+	CompileCpp(scriptfile,pluginname);
+
+while in {Yacas}. {scriptfile} needs to be a full path to
+a script file, and pluginname is the base name for the 
+plugin. This function creates a file {$(pluginname).cpp},
+a C++ file that can be compiled into a plugin.
+
+		Development of scripts that get compiled to plugins
+
+
+	    Disabling plugin loading
+
+For the scripts that come as part of the distribution,
+the scripts are static as far as the end user is concerned.
+The scripts get compiled once into plugins, when {Yacas} is
+built, and after that the user just uses the binary
+version of {Yacas}.
+
+For the developer, however, it is a nuissance to have to
+compile the scripts each time something is changed.
+
+When working on the scripts that need to be compiled it
+is better if the scripts get loaded in favor of the
+plugins. To achieve this a programmer can create his own
+initialization script, in which he can store:
+
+	Set(LoadPlugIns,False);
+	Use("yacasinit.ys");
+
+and pass this file as argument to the {--init} command
+line flag.
+
+
+	    Language constructs supported by the compiler
+
+The language constructs supported depend on two things:
+
+*	1. support in the compiler, implemented in {compile.rep/compilecpp.ys}. If some expression form is not support by the compiler implemented in that file it can not be used in the scripts that need to be compiled. This compiler does not support all constructs yet, but will be expanded over time.
+*	1. The position in the {yacasinit.ys} file where it gets loaded further defines the constructs that are allowed, because if the plugin is not found the script will be loaded at that point in the init script. There are some special functions like {Defun} that have specifically been defined to allow for using plugins and scripts as early as possible. Whenever possible the scripts that get compiled to plugins should use {Defun}.
+
+The calling sequence for {Defun} is:
+
+	Defun(FunctionName,Arguments)Body;
+
+Or when used from {LISP}
+
+	(Defun FunctionName Arguments Body) 
+
+
+For example, {Defun} can be used in infix grammar script
+as:
+
+	Defun("add",{x,y}) MathAdd(x,y);
+
+The {LISP} equivalent would be:
+
+	(Defun "add" (List x y) (MathAdd x y))
+
+
+{Defun} is defined entirely in terms of functions supported
+by the kernel, so it can be the very first function defined
+in the initialization script. As such it can be defined 
+even before plugins get loaded.
+
+There is one additional limitation: Compiled code can currently
+only call functions that have already been defined. This includes
+the functions in the kernel, and the scripts and plugins loaded
+before this script or plugin was loaded.
+
+Why {LISP} expressions, instead of the usual infix grammar notation?
+Somewhere in the future the infix grammar parser will also be
+defined in script. And since the compiler only allows 
+use of functions that have already been defined, the functions
+used by the infix grammar parser have to be defined in 
+{LISP} syntax. If you think this is too strict, there is the 
+added advantage of using functions that have already been 
+compiled, in that the resulting code will be faster (the compiled
+code calls other compiled code directly).
+
+Other than that, <i>all</i> functions with fixed number of
+arguments in the kernel are supported, and some macros and
+functions or macros with variable number of arguments.
+
+This will be extended over time.
+
+		Bootstrapping scripts as plugins into {Yacas}
+
+The file {yacasinit.ys} contains lines like:
+
+	TrapError(DllLoad("libmath"),Use("base.rep/math.ys"));
+
+What this does is it tries to load the plugin with name {libmath},
+and if this fails it tries to load the script {base.rep/math.ys}
+instead. So until the plugin exists {Yacas} uses the script
+file that is used to build the plugin instead.
+
+The first time the {Yacas} executable is built the
+plugins are not available. To compile the plugins
+{Yacas} itself is needed. Being able to use the scripts
+in stead of the plugins solves this chicken-and-egg
+problem. At first there are the scripts, and {Yacas}
+will be a little bit slower, but it will work, and can
+be used to compile the scripts to plugins, after which it
+will be faster.
+
+The scripts that get compiled in are grouped in the {base.rep/}
+directory in the {scripts/} directory.
+
+
+		Steps to make a compiled script
+
+The steps involved in making a script that can get compiled are:
+
+*	1. Define the script in the {base.rep/} directory. It is important that the file does not have an associated {def} file, or has an empty one.
+*	1. Add code in {src/Makefile.am} to compile the plugin. See the {libmath} as an example template that gets compiled from {base.rep/math.ys}. The steps involved are to first convert from script to {C++}, and then from the generated {C++} file to a binary plugin.
+*	1. Add code to {yacasinit.ys} to load the plugin or alternatively the script file. See support for {libmath} as an example.
+
+
