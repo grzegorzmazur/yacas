@@ -24,6 +24,7 @@
 //      - p : plain mode. No fancy readline functionality.
 //      - c : inhibits printing the prompt to the console
 //      - t : follow history when entering on the command line
+//      - w : hides the console window in Windows
 //
 // Example: 'yacas -pc' will use minimal command line interaction,
 //          showing no prompts, and with no readline functionality.
@@ -50,13 +51,14 @@
   #include "unixcommandline.h"
   #define FANCY_COMMAND_LINE CUnixCommandLine
   /* PLATFORM_OS is defined in config.h */
-#else
-  #include "win32commandline.h"
+#else  
+  #define _WINSOCKAPI_				// Prevent inclusion of winsock.h in windows.h 
+  #define _WIN32_WINDOWS 0x0410		// Make sure that Waitable Timer functions are declared in winbase.h 
+  #include "win32commandline.h"      
   #define FANCY_COMMAND_LINE CWin32CommandLine
   #define SCRIPT_DIR ""
   #define PLATFORM_OS "\"Win32\""
 #endif
-
 
 #include "stdcommandline.h"
 #include "standard.h"
@@ -82,12 +84,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
+
+#ifndef WIN32
+  #include <sys/wait.h>
+  #include <sys/socket.h>
+  #include <netinet/in.h>
+  #include <arpa/inet.h>
+  #include <unistd.h>
+  #include <sys/ioctl.h>
+#else
+  #define FD_SETSIZE  2048
+  #include <winsock2.h>
+#endif
+
 #define SOCKLEN_T unsigned int //socklen_t
 #endif
 
@@ -101,11 +110,14 @@ int show_prompt = 1;
 int trace_history = 0;
 int use_texmacs_out = 0;
 int patchload=0;
+int winsockinitialised=0;
+int hideconsolewindow=0;
 char* root_dir    = SCRIPT_DIR;
 #ifndef WIN32
   char* archive     = NULL;
 #else
   char* archive     = "scripts.dat";
+  HANDLE htimer = 0;
 #endif
 char* init_script = "yacasinit.ys";
 
@@ -305,6 +317,13 @@ void my_exit(void)
     ReportNrCurrent();
 #ifdef YACAS_DEBUG
     YacasCheckMemory();
+#endif
+
+#ifdef WIN32
+	 if (winsockinitialised)
+    {
+		  WSACleanup();
+    }
 #endif
 }
 
@@ -642,7 +661,12 @@ void BusErrorHandler(int errupt)
 #ifdef SUPPORT_SERVER
 
 CYacas* clientToStop = NULL;
+
+#ifndef WIN32
 void stopClient(int sig)
+#else
+VOID CALLBACK stopClient(LPVOID lpArgToCompletionRoutine, DWORD dwTimerLowValue, DWORD dwTimerHighValue)
+#endif
 {
   if (clientToStop)
   {
@@ -651,9 +675,30 @@ void stopClient(int sig)
 }
 
 #define MAX_CONNECTIONS 10
+
 int runserver(int argc,char** argv)
 {
-    int server_sockfd, client_sockfd;
+#ifdef WIN32
+   if (hideconsolewindow)
+	{
+	   // format a "unique" newWindowTitle
+		char newWindowTitle[256];	
+		wsprintf(newWindowTitle,"%d/%d", GetTickCount(), GetCurrentProcessId());
+		// change current window title
+		SetConsoleTitle(newWindowTitle);
+		// ensure window title has been updated
+		Sleep(40);
+		// look for newWindowTitle
+		HWND hwndFound = FindWindow(NULL, newWindowTitle);
+		// If found, hide it
+		if ( hwndFound != NULL)
+		{
+		   ShowWindow( hwndFound, SW_HIDE);
+		}
+	}
+#endif
+	
+	int server_sockfd, client_sockfd;
     SOCKLEN_T server_len, client_len;
     struct sockaddr_in server_address;
     struct sockaddr_in client_address;
@@ -661,7 +706,8 @@ int runserver(int argc,char** argv)
     int maxConnections;
     int nrSessions = 0;
     fd_set readfds, testfds;
-    LispString outStrings[MAX_CONNECTIONS];
+    // LispString outStrings[MAX_CONNECTIONS];
+	LispString outStrings;
 
     CYacas* used_clients[FD_SETSIZE];
     int serverbusy;
@@ -673,15 +719,32 @@ int runserver(int argc,char** argv)
     maxConnections=MAX_CONNECTIONS;
     nrSessions=0;
 
-
+#ifndef WIN32
     signal(SIGPIPE,SIG_IGN);
+#else
+    WSADATA wsadata;
+
+    if (WSAStartup(0x101, &wsadata))
+    {  
+       perror("YacasServer Could not initiate Winsock DLL\n");
+       exit(1);
+    }
+	 else
+    {
+		 winsockinitialised = 1;
+    }
+#endif
 
     server_sockfd = socket(AF_INET, SOCK_STREAM, 0);
     {
         int rsp;
+#ifndef WIN32
         if (setsockopt(server_sockfd,SOL_SOCKET,SO_REUSEADDR,(void*)&rsp,sizeof(int)))
+#else
+		  if (setsockopt(server_sockfd,SOL_SOCKET,SO_REUSEADDR,(const char *)&rsp,sizeof(int)))
+#endif
         {
-            perror("YacasServer Could not set socket options\n");
+            perror("YacasServer Could not set socket options\n");            
             exit(1);
         }
     }
@@ -695,12 +758,12 @@ int runserver(int argc,char** argv)
 
     if (bind(server_sockfd, (struct sockaddr *)&server_address, server_len))
     {
-        perror("YacasServer Could not bind to the socket\n");
+        perror("YacasServer Could not bind to the socket\n");        
         exit(1);
     }
     if (listen(server_sockfd, maxConnections))
     {
-        perror("YacasServer Could not listen to the socket\n");
+        perror("YacasServer Could not listen to the socket\n");        
         exit(1);
     }
     
@@ -725,19 +788,25 @@ int runserver(int argc,char** argv)
 
         if(result < 1)
         {
-            perror("server5");
+            perror("server5");            
             exit(1);
         }
         for(fd = 0; fd < FD_SETSIZE; fd++)
         {
+#ifndef WIN32
             while(waitpid(-1,NULL,WNOHANG) > 0); /* clean up child processes */
+#endif
             if(FD_ISSET(fd,&testfds))
             {
                 if(fd == server_sockfd)
                 {
                     client_len = sizeof(client_address);
-                    client_sockfd = accept(server_sockfd, 
-                        (struct sockaddr *)&client_address, (ACCEPT_TYPE_ARG3)&client_len);
+#ifndef WIN32
+                    client_sockfd = accept(server_sockfd, (struct sockaddr *)&client_address, (ACCEPT_TYPE_ARG3)&client_len);
+#else
+					     client_sockfd = accept(server_sockfd, (struct sockaddr *)&client_address, (int *)&client_len);
+#endif
+
 #ifdef __CYGWIN__
                     if (client_sockfd != 0xffffffff)
 #endif
@@ -751,11 +820,18 @@ int runserver(int argc,char** argv)
                 }
                 else
                 {
+#ifndef WIN32
                     ioctl(fd, FIONREAD, &nread);
-
+#else
+					     ioctlsocket(fd, FIONREAD, (unsigned long *)&nread);
+#endif
                     if(nread == 0)
                     {
+#ifndef WIN32
                         close(fd);
+#else	
+						      closesocket(fd);
+#endif
                         FD_CLR(fd, &readfds);
                         delete used_clients[fd];
                         used_clients[fd] = NULL;
@@ -771,10 +847,14 @@ int runserver(int argc,char** argv)
                         char* buffer = (char*)malloc(nread+1);
                         if (!buffer) 
                         {
-                          printf("Error: seem to have run out of memory\n");
+                          printf("Error: seem to have run out of memory\n");                          
                           exit(-1);
                         }
+#ifndef WIN32
                         read(fd, buffer, nread);
+#else
+						      recv(fd, buffer, nread, 0);
+#endif
                         buffer[nread] = '\0';
 /*
                         int i;
@@ -794,7 +874,11 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[fd]);
                               if (nrSessions >= maxConnections)
                               {
                                 char* limtxt = "Maximum number of connections reached, sorry\r\n";
+#ifndef WIN32
                                 write(fd, limtxt, strlen(limtxt));
+#else
+								        send(fd, limtxt, strlen(limtxt), 0);
+#endif
                                 continue;
                               }
 
@@ -802,7 +886,7 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[fd]);
 #ifdef YACAS_DEBUG
   printf("Loading new Yacas environment\n");
 #endif
-                              StringOutput *out = NEW StringOutput(outStrings[fd]);
+                              StringOutput *out = NEW StringOutput(outStrings);
                               LoadYacas(out);
                               used_clients[fd] = yacas;
                               yacas = NULL;
@@ -818,19 +902,35 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[fd]);
                             if (seconds>0)
                             {
                                 clientToStop = used_clients[clfd];
-                                signal(SIGALRM,stopClient);
+#ifndef WIN32
+								        signal(SIGALRM,stopClient);
                                 alarm(seconds);
+#else
+                                LARGE_INTEGER timedue;
+                                timedue.QuadPart = seconds  * -10000000;
+                                
+                                htimer = CreateWaitableTimer(NULL, true, "WaitableTimer");
+                                SetWaitableTimer(htimer, &timedue, 0, stopClient, NULL, 0);
+#endif                                
                             }
 #ifdef YACAS_DEBUG
                             printf("In> %s\n",buffer);
 #endif
-                            outStrings[fd].SetNrItems(1);
-                            outStrings[fd][0] = '\0';
+                            outStrings.SetNrItems(1);
+                            outStrings[0] = '\0';
                             used_clients[clfd]->Evaluate(buffer);
                             free(buffer);
                             if (seconds>0)
                             {
-                                signal(SIGALRM,SIG_IGN);
+#ifndef WIN32
+								        signal(SIGALRM,SIG_IGN);
+#else
+
+                                if (htimer)
+                                {
+                                   CancelWaitableTimer(htimer);
+                                }
+#endif
                             }
                             if (used_clients[clfd]->IsError())
                             {
@@ -838,17 +938,18 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[fd]);
                             }
                             else
                             {
-                              response = used_clients[clfd]->Result();
+                                response = used_clients[clfd]->Result();
                             }
 
                             int buflen=strlen(response);
 #ifdef YACAS_DEBUG
-                            printf("%s",outStrings[fd].String());
+                            printf("%s",outStrings.String());
                             printf("Out> %s\n",response);
 #endif
                             if (response)
                             {
-                              write(fd, outStrings[fd].String(), strlen(outStrings[fd].String()));
+#ifndef WIN32
+							         write(fd, outStrings.String(), strlen(outStrings.String()));
                               write(fd,"]\r\n",3);
                               if (buflen>0)
                               {
@@ -856,6 +957,16 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[fd]);
                                 write(fd,"\r\n",2);
                               }
                               write(fd,"]\r\n",3);
+#else
+                              send(fd, outStrings.String(), strlen(outStrings.String()), 0);
+                              send(fd,"]\r\n",3, 0);
+                              if (buflen>0)
+                              {
+                                send(fd, response, buflen, 0);
+                                send(fd,"\r\n",2, 0);
+                              }
+                              send(fd,"]\r\n",3, 0);
+#endif
                             }
 
 // enable if fork needed
@@ -866,6 +977,9 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[fd]);
             }
         }
     }
+#ifdef WIN32
+    WSACleanup();
+#endif
     return 0;
 }
 #endif
@@ -951,13 +1065,14 @@ int main(int argc, char** argv)
                 archive = argv[fileind];
             }
             else if (!strcmp(argv[fileind],"--server"))
-            {
+            {    
                 fileind++;
+
                 if (fileind<argc)
                 {
                   server_mode=1;
                   server_port = atoi(argv[fileind]);
-                }
+                }                
             }
 
             else if (!strcmp(argv[fileind],"--uncompressed-archive"))
@@ -992,6 +1107,10 @@ int main(int argc, char** argv)
                 {
                     printf("%s\n",SCRIPT_DIR);
                     return 0;
+                }
+				    if (strchr(argv[fileind],'w'))
+                {
+                    hideconsolewindow=1;
                 }
               
 #ifdef HAVE_CONFIG_H
@@ -1035,6 +1154,7 @@ int main(int argc, char** argv)
     }
     */
 
+    atexit(my_exit);
 
 #ifdef SUPPORT_SERVER
     if (server_mode)
@@ -1044,7 +1164,6 @@ int main(int argc, char** argv)
     }
 #endif
 
-    atexit(my_exit);
 /*
 #ifdef SIGBUS
   signal(SIGBUS,BusErrorHandler);

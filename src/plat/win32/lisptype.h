@@ -97,6 +97,12 @@
 #define PlatDoubleWord unsigned long
 #define PlatSignedDoubleWord signed long
 
+// Fake config.h, some defines I'm sure are valid on Windows
+#define HAVE_MATH_H   1
+#define HAVE_STDIO_H  1
+#define HAVE_STRTOD   1
+
+
 
 #endif
 
