@@ -61,7 +61,7 @@ REFCHAPTERS = config.chapt arith.chapt calc.chapt ode.chapt linalg.chapt \
 	numtheory.chapt strings.chapt \
 	probability-and-statistics.chapt addons.chapt FDL.chapt
 
-REFSOURCES = config.chapt.txt arith.chapt.txt calc.chapt.txt \
+REFSOURCES = config.chapt.txt arith.chapt.txt calc.chapt.txt ode.chapt.txt \
 	linalg.chapt.txt univar.chapt.txt lists.chapt.txt \
 	functional.chapt.txt controlflow.chapt.txt preds.chapt.txt \
 	logic.chapt.txt const.chapt.txt vars.chapt.txt io.chapt.txt \
