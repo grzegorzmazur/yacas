@@ -10,7 +10,7 @@ EXTRA_DIST = \
         in/refprog.book in/controlflow.chapt newhelp in/plugins.chapt   \
 	in/ref.book in/univar.chapt in/vars.chapt yacasinit.ys in/generic.chapt \
 	in/intromaker in/refmaker in/refprogmaker in/codingmaker in/logic.chapt \
-        in/config.chapt in/strings.chapt 
+        in/config.chapt in/strings.chapt .cvsignore
 
 %.chapt: %.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
