@@ -10,7 +10,7 @@ Section()"The Yacas Architecture";
 
 Text() "Yacas is designed as a small core engine that interprets a library
 of scripts. The core engine provides the syntax parser and a number of
-hard-wired functions, such as ":HtmlTerm("Set()"):" or 
+hard-wired functions, such as ":HtmlTerm("Set()"):" or
 ":HtmlTerm("MathExp()"):" which cannot be redefined by the user. The script
 library resides in the scripts directory \"":HtmlTerm("scripts"):"\" and
 contains higher-level definitions of functions and constants. The library
@@ -61,15 +61,16 @@ In> Type({1,2,3});
 Out> \"List\";
 "):
 
-"Internally, atoms are stored as strings and compounds as lists. The
-functions ":HtmlTerm("String()"):" and ":HtmlTerm("Atom()"):" convert
-between atoms and strings. A Yacas list ":HtmlTerm("{1,2,3}"):" is
-internally a list ":HtmlTerm("(List 1 2 3)"):" which is the same as a
-function call ":HtmlTerm("List(1,2,3)"):" and for this reason the \"type\"
-of a list is the string ":HtmlTerm("\"List\""):". During evaluation, atoms
-can be interpreted as numbers, or as variables that may be bound to some
-value, while compounds are interpreted as function
-calls.":HtmlNewParagraph():
+"Internally, atoms are stored as strings and compounds as lists. (The Yacas
+lexical analyzer is case-sensitive, so ":HtmlTerm("List"):" and
+":HtmlTerm("list"):" are different atoms.) The functions
+":HtmlTerm("String()"):" and ":HtmlTerm("Atom()"):" convert between atoms and
+strings. A Yacas list ":HtmlTerm("{1,2,3}"):" is internally a list
+":HtmlTerm("(List 1 2 3)"):" which is the same as a function call
+":HtmlTerm("List(1,2,3)"):" and for this reason the \"type\" of a list is the
+string ":HtmlTerm("\"List\""):". During evaluation, atoms can be interpreted as
+numbers, or as variables that may be bound to some value, while compounds are
+interpreted as function calls.":HtmlNewParagraph():
 
 "Note that atoms that result from an ":HtmlTerm("Atom()"):" call may be
 invalid and never evaluate to anything. For example,
@@ -431,16 +432,17 @@ next character to the string, so a quote can be added with \\\" .";
 Section()"Scope Of Variable Bindings";
 
 Text()
-"When setting variables or retrieving variable values, variables
-are automatically bound global by default. You can explicitly
-specify variables to be local. When invoking a function, a new
-stack frame is pushed for the locals, so the code inside a
-function body doesn't see the locals of the caller. A statement
-block can have its own locals that are not visible outside the
-block (blocks have the form ":HtmlTerm("[statement1(); statement2(); ]"):" etc.). ":HtmlNewParagraph():
+"When setting variables or retrieving variable values, variables are
+automatically bound global by default. You can explicitly specify variables to
+be local to a block such as a function body; this will make them invisible
+outside the block. Blocks have the form ":HtmlTerm("[statement1();
+statement2(); ]"):" and local variables are declared by the
+":HtmlTerm("Local()"):" function. ":HtmlNewParagraph():
 
-"You can tell the interpreter that a function can see the local variables
-from the calling environment by declaring ":HtmlTerm("UnFence(funcname,
+"When entering a block, a new stack frame is pushed for the local variables; it
+means that the code inside a block doesn't see the local variables of the ":HtmlEmphasis("caller"):" either!
+You can tell the interpreter that a function should see local variables of the
+calling environment; to do this, declare ":HtmlTerm("UnFence(funcname,
 arity)"):" on the specified function.";
 
 Chapter()"Coding style";
@@ -504,10 +506,18 @@ often implicitly need to be able to assume something is a number.
 
 Section()"Ordering of rules";
 Text()
-"The implementor of a rule set can specify the order in which rules
-should be tried. This can be used to let the engine try more specific
-rules before trying less specific rules.
-" : HtmlNewParagraph() :
+"The implementor of a rule set can specify the order in which rules should be
+tried. This can be used to let the engine try more specific rules (those
+involving more elements in the pattern) before trying less specific rules.
+Ordering of rules can be also explicitly given by precedence numbers. The Yacas
+engine will split the expression into subexpressions, and will try to apply all
+matching rules to a given subexpression in order of precedence. " :
+HtmlNewParagraph() :
+
+"A rule with precedence 100 is defined by the syntax such as" : HtmlNewParagraph() :
+HtmlCommand("
+100 # f(_x + _y) <-- f(x) + f(y);
+") : HtmlNewParagraph() :
 
 "The problem mentioned above with a rule for vectors and scalars could be solved by making two rules:" : HtmlNewParagraph() :
 
@@ -521,24 +531,26 @@ HtmlNewParagraph():
 "The ordering of the precedence of the rules in the standard math
 scripts is currently: ":
 
-
-Enumerate() 
+Enumerate()
 (
-Item()"50-60: Args are numbers: directly calculate. 
+Item()"50-60: Args are numbers: directly calculate.
      These are put in the beginning, so they are tried first.
      This is useful for quickly obtaining numeric results
      if all the arguments are numeric already, and symbolic
      transformations are not necessary. " :
-Item()"100-199: tautologies.   
+Item()"100-199: tautologies.
      Transformations that do not change the type of the argument, and
      are always true." :
 Item()"200-399: type-specific transformations.
      Transformations for specific types of objects. " :
 Item()"400-599: transformarions on scalars (variables are assumed to be scalars).
      Meaning transformations that can potentially change the type
-     of an argument. " 
+     of an argument. "
 )
 ;
+
+Load("../../essays/ABIN-grammar.chapt");
+
 
 Chapter()"Advanced example 1: parsing expressions (CForm)";
 
@@ -548,7 +560,7 @@ be \"CForm()\", a standard library function that converts Yacas expressions
 into C or C++ code. (Although the input format of Yacas expressions is
 already very close to C and perhaps could be converted to C by means of an
 external text filter, it is instructive to understand how to define Yacas
-functions that produce C code.) We shall only design the core mechanism of
+functions that produce C code.) Here we shall only design the core mechanism of
 \"CForm()\" and build a limited version that handles only expressions using
 the four arithmetic actions.";
 
@@ -557,7 +569,7 @@ Section()"Recursive parsing of expression trees";
 Text()"As we have seen in the tutorial, Yacas represents all expressions as trees, or equivalently, as lists of lists. For example, the expression \"":HtmlTerm("a+b+c+d+e"):"\" is for Yacas a tree of depth 4 that could be visualized as ":HtmlCommand("
      \"+\"
    a    \"+\"
-       b   \"+\" 
+       b   \"+\"
           c   \"+\"
               d  e
 "):
@@ -641,7 +653,7 @@ functions on other problems, but it makes debugging easier too.":HtmlNewParagrap
 
 "The options you have for debugging a faulty function are ":
 
-Enumerate() 
+Enumerate()
 (
 Item()"Invoke the function from the command line, passing in different
   arguments, to see how it behaves." :
@@ -654,7 +666,7 @@ Section()"The trace facilities";
 
 Text()"There are two trace facilities: ":
 
-Enumerate() 
+Enumerate()
 (
 Item()"TraceExp : TraceExp traces the full
   expression, showing all calls to user- or system-defined functions,
@@ -791,7 +803,7 @@ In> FullForm( A(k)*2**B(l) )
 (** (* 2 (A k ))(B l ))
 Out> 2*A(k)**B(l);
 "):
- 
+
 "What looks like ":HtmlTerm("2*A(k)**B(l)"):" on the screen is really ":HtmlTerm("(2*A(k)) ** B(l)"):" inside Yacas. In other words, the commutation rule didn't apply because there is no subexpression of the form ":HtmlTerm("A(...)**B(...)"):" in this expression. It seems that we would need many rules to exhaust all ways in which the adjacent factors A(k) and B(l) might be divided between subexpressions. We run into this difficulty because Yacas represents all expressions as trees of functions and leaves the semantics to us. To Yacas, the \"*\" operator is fundamentally no different from any other function, and \"(a*b)*c\" and \"a*(b*c)\" are two basically different expressions. It would take a considerable amount of work to teach Yacas to recognize all such cases as identical. This is a design choice and it was made by the author of Yacas to achieve greater flexibility and extensibility.":HtmlNewParagraph():
 
 "A solution for this problem is not to write rules for all possible cases (there are infinitely many cases) but to systematically reduce expressions to a ":HtmlEmphasis("canonical form"):". \"Experience has shown that\" (a phrase used when we can't come up with specific arguments) symbolic manipulation of unevaluated trees is not efficient unless these trees are forced to a pattern that reflects their semantics.":HtmlNewParagraph():
@@ -949,7 +961,7 @@ Out> Delta(l-y)*Delta(k-x)+Delta(l-x)*Delta(k-y);
 
 
 Text()
-"DISCARDED 
+"DISCARDED
 "Atoms are generally thought of as strings. You can always separate
 things with spaces or newlines. The symbolic signs like +-*= etc.
 are treated as separate characters from the alphabetic and numerical

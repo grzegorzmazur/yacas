@@ -104,6 +104,8 @@ libgmpnumbers_a_SOURCES = gmpnumbers.cpp
 
 EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp 	epocyacas.hrh epocyacas.rss epocyacas.mmp 	epocstubs.cpp grower.inl lisphash.inl lispobject.inl 	lispstring.inl standard.inl 	win32dll.cpp 	depend.dep makefile.beos 	convertcctocpp.bat 	plat/linux32/lisptype.h 	plat/linux32/stubs.inl 	plat/linux32/platfileio.h 	plat/linux32/platdll.h 	plat/linux64/lisptype.h 	plat/linux64/stubs.inl 	plat/linux64/platfileio.h 	plat/linux64/platdll.h 	plat/epoc32/lisptype.h 	plat/epoc32/stubs.inl 	plat/epoc32/platdll.h 	plat/epoc32/platfileio.h 	plat/beos/lisptype.h 	plat/beos/stubs.inl 	plat/beos/platfileio.h 	plat/beos/platdll.h 	plat/win32/lisptype.h 	plat/win32/platdll.h   	plat/win32/platfileio.h 	plat/win32/stubs.inl  unipoly.h   	plat/win32/win32commandline.cpp 	plat/win32/win32commandline.h   	plat/win32/yacas.dsp            	plat/win32/yacas_exe.dsp        	plat/win32/yacasmain-win32.cpp makefile.debug
 
+
+yacas_include = $(datadir)/yacas/include
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -316,7 +318,7 @@ installcheck: installcheck-am
 install-exec-am: install-binPROGRAMS
 install-exec: install-exec-am
 
-install-data-am:
+install-data-am: install-data-local
 install-data: install-data-am
 
 install-am: all-am
@@ -377,11 +379,23 @@ install-binPROGRAMS mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
 clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS tags \
 mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
 distdir info-am info dvi-am dvi check check-am installcheck-am \
-installcheck install-exec-am install-exec install-data-am install-data \
-install-am install uninstall-am uninstall all-redirect all-am all \
-installdirs mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+installcheck install-exec-am install-exec install-data-local \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
+
+install-data-local: yacas.h
+	$(mkinstalldirs) $(yacas_include)/
+	-for file in $(srcdir)/*.h; do \
+	basefile=`basename $$file`; \
+	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/$$basefile; \
+	done
+	-for file in $(srcdir)/*.inl; do \
+	basefile=`basename $$file`; \
+	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/$$basefile; \
+	done
 
 anumber.o: anumber.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl anumber.h \
