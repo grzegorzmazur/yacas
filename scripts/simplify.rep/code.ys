@@ -20,7 +20,8 @@
 
 
 Eliminate(_var,_replace,_function) <-- Simplify(Subst(var,replace)function);
-ExpandBrackets(_xx) <-- SimpExpand(SimpImplode(SimpFlatten(xx)));
+//ExpandBrackets(_xx) <-- SimpExpand(SimpImplode(SimpFlatten(xx)));
+ExpandBrackets(x) := NormalForm(MM(x));
 
 Function("Flatten",{body,flattenoper})
 [
