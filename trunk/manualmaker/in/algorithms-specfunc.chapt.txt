@@ -228,6 +228,8 @@ Another useful relation is
 $$ (D(x)Gamma(x)[x= -1]) = -gamma $$.
 Approximately $gamma<=>0.577216$.
 
+	    Method 1: Brent's decomposition
+
 Computing $gamma$ by the series in the definition is extremely slow.
 A much faster method can be used, based on some identities of Bessel functions.
 (See [Brent <i>et al.</i> 1980] and [Gourdon <i>et al.</i> 2001].)
@@ -274,6 +276,8 @@ $$ gamma <=> U(n)/V(n)-W(n)/V(n)^2 $$.
 The precision of this approximation is of order $O(Exp(-8*n))$ instead of $O(Exp(-4*n))$ in Brent's method "B1".
 However, this is not such a great savings in time, because almost as much additional work has to be done to compute $W(n)$.
 Brent estimated that the method "B3" is about 20{%} faster than "B1".
+
+	    Method 2: Brent's summation trick
 
 Computation of $S(n)$ seems to need $H[k]$ first, and a long multiplication by $H[k]$ at each term.
 To compute $S(n)$ and $V(n)$ faster and more accurately, Brent suggested the following trick that avoids this long multiplication and computes $H[k]$ simultaneously with the series.
@@ -341,13 +345,21 @@ $$ 1+1/(2*3)*(1/3+2/(2*5)*(1/5+3/(2*7)*(1/7+ ...) ) ) $$.
 This takes $O(P^2)$ operations because there are $O(P)$ short multiplications and divisions of $P$-digit numbers by small integers.
 At very high precision, the binary splitting technique can be used instead of Horner's scheme to further reduce the computation time to $O(M(P)*Ln(P)^2)$.
 
+A drawback of this scheme is that it requires a separate high-precision computation of $Pi$, $Sqrt(3)$ and of the logarithm.
+
 	    Other methods
 
-Another method is based on the formula
+Another method is based on an identity by Ramanujan.
+The formula is
 $$ G = Sum(k,0,Infinity,(k!)^2/(2*k+1)! *2^(k-1)*Sum(j,0,k,1/(2*j+1))) $$.
 The $k$-th term of the outer sum is of order $2^(-k)$ and so we need to take about $P*Ln(10)/Ln(2)$ terms for $P$ decimal digits.
 But each term is more complicated than in the first method's series.
-The running time of this formula is a few times slower.
+The running time of this formula seems to be a few times slower than the previous method.
+
+This method was used by [Fee 1990] combined with Brent's summation trick (see the section on the Euler constant).
+This trick allows to avoid a separate computation of the harmonic sum, and thus avoids all long multiplications.
+The running time is $O(P^2)$ as implemented there.
+Since there are only rational numbers involved, the binary splitting technique can be used at high precision.
 
 A third formula is more complicated but the convergence is much faster and there is no need to evaluate any other transcendental functions.
 This formula is called "Broadhurst's series".
