@@ -1,11 +1,11 @@
 #! /bin/sh -v
 
 aclocal 
-automake --gnu --add-missing 
 autoheader
+automake --gnu --add-missing 
 autoconf 
 cd libltdl 
 aclocal  
-automake 
 autoheader
+automake --gnu --add-missing
 autoconf
