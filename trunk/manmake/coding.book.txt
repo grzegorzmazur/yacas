@@ -1630,7 +1630,117 @@ When writing a code segment, it is generally a good idea to separate the
 problem into many small functions. Not only can you then reuse these
 functions on other problems, but it makes debugging easier too.
 
-For debugging a faulty function, in addition to the usual trial-and-error method and the "print everything" method, Yacas offers some trace facilities. You can try to trace applications of rules during evaluation of the function ({TraceRule()}, {TraceExp()}) or see the stack after an error has occurred ({TraceStack()}). Finally, you may want to run a debugging version of Yacas.
+For debugging a faulty function, in addition to the usual trial-and-error method and the "print everything" method, Yacas offers some trace facilities. You can try to trace applications of rules during evaluation of the function ({TraceRule()}, {TraceExp()}) or see the stack after an error has occurred ({TraceStack()}). 
+
+There is also an interactive debugger, which shall be introduced
+in this chapter.
+
+Finally, you may want to run a debugging version of Yacas. This
+version of the executable maintains more information about 
+the operations it performs, and can report on this. 
+
+This chapter will start with the interactive debugger, as it
+is the easiest and most useful feature to use, and then proceed
+to explain the trace and profiling facilities. Finally, the
+internal workings of the debugger will be explained. It is highly
+customizable (in fact, most of the debugging code is written in
+Yacas itself), so for bugs that are really difficult to track
+one can write custom code to track it.
+
+
+
+
+
+		The interactive command line debugger
+
+Yacas comes with a full interactive command line based debugger. 
+The evaluator has hooks so that a programmer can customize evaluation.
+A very advanced use is to roll a custom debugger for a specific bug.
+This section will not go into that, but show the current facilities
+offered by the interactive command line debugger.
+
+	    An example
+
+Let us start with a simple example. Suppose we ran into the problem where
+a function called returns an error:
+
+	In> Contains(a,{a,b,c})
+	In function "Head" : 
+	bad argument number 1 (counting from 1)
+	The offending argument list evaluated to a
+	CommandLine(1) : Argument is not a list
+
+and suppose we want to examine what went wrong. We can invoke the debugger
+by calling {Debug}, with the expression to debug as argument:
+
+	In> Debug(Contains(a,{a,b,c}))
+	>>> Contains(a,{a,b,c}) 
+	Debug> 
+
+The screen now shows the expression we passed in, and a {Debug>} prompt.
+The debugger has essentially been started and put in interactive mode.
+This would for instance be a good moment to add breakpoints. For now, we
+will just start by running the code, to see where it fails:
+
+	Debug> DebugRun()
+	DebugOut> False 
+	CommandLine(1) : Argument is not a list
+	>>> Head(list) 
+	Debug> 
+
+The interpreter runs into a problem and falls back to the interactive
+mode of the debugger. We can now enter expressions on the command line,
+and they will be evaluated in the context the interpreter was stopped
+in. For instance, it appears the interpreter tried to evaluate {Head(list)},
+but {list} does not seem to be a list. So, to check this, we examine the
+contents of the variable {list}:
+
+	Debug> list;
+	DebugOut> a 
+
+Indeed {list} is bound to {a}, which is not a list. Examining all the
+local variables on the stack, we find:
+
+	Debug> DebugLocals()
+	
+	*************** Current locals on the stack ****************
+	      list  : a 
+	      element  : {a,b,c} 
+	      result  : False 
+	
+	DebugOut> True 
+
+So it seems we swapped the two arguments, as the values of {list} and
+{element} should be swapped. We first drop out of the debugger, and
+then try the call with the arguments swapped:
+
+	Debug> DebugStop();
+	DebugOut> True 
+	CommandLine(1) : Debugging halted
+	
+	In> Contains({a,b,c},a)
+	Out> True;
+
+so we found the problem.
+
+
+	    Debugging functions supported
+
+After the debugger has been invoked, the following commands can be used
+in interactive mode while debugging:
+
+*	1. {DebugRun()} - continue evaluating the expression
+*	1. {DebugStep()} - perform one step, until the interpreter finds the next (sub)
+expression to evaluate
+*	1. {DebugStop()} - completely halt evaluation
+*	1. {DebugVerbose(verbose)} - turn on trace-like output to the console
+*	1. {BreakpointAdd(name)} - set a breakpoint at a certain function. The interpreter
+will now stop at the point where the arguments to a function need to be evaluated.
+*	1. {BreakpointsClear()} - remove all breakpoints.
+*	1. {DebugLocals()} - show the currently available local variables
+*	1. {DebugCallstack()} - show the current function call stack
+
+
 
 		The trace facilities
 
@@ -1639,6 +1749,8 @@ The trace facilities are:
 *	0. {TraceExp} : traces the full expression, showing all calls to user- or system-defined functions, their arguments, and the return values. For complex functions this can become a long list of function calls.
 *	0. {TraceRule} : traces one single user-defined function (rule). It shows each invocation, the arguments passed in, and the returned values. This is useful for tracking the behaviour of that function in the environment it is intended to be used in.
 *	0. {TraceStack} : shows a few last function calls before an error has occurred.
+*	0. {Profile} : report on statistics (number of times functions
+were called, etcetera). Useful for performance analysis.
 
 The online manual pages (e.g. {?TraceStack}) have more information about the use of these functions.
 
@@ -1657,6 +1769,294 @@ Which should then show something to the effect of
 	        TrArg(4,4);
 	    TrLeave(2+3*5+4,21);
 	Out> 21;
+
+
+
+			Custom evaluation facilities
+
+Yacas supports a special form of evaluation where hooks are
+placed when evaluation enters or leaves an expression. 
+
+This section will explain the way custom evaluation is supported
+in {Yacas}, and will proceed to demonstrate how it can be used
+by showing code to trace, interactively step through, profile,
+and write custom debugging code.
+
+Debugging, tracing and profiling has been implemented in the
+debug.rep/ module, but a simplification of that code
+will be presented here to show the basic concepts.
+
+		The basic infrastructure for custom evaluation
+
+The name of the function is {CustomEval}, and the calling sequence
+is:
+
+	CustomEval(enter,leave,error,expression);
+
+Here, {expression} is the expression to be evaluated, {enter}
+some expression that should be evaluated when entering an
+expression, and {leave} an expression to be evaluated when leaving
+evaluation of that expression.
+
+The {error} expression is evaluated when an error occurred. If an error
+occurs, this is caught high up, the {error} expression is called, and 
+the debugger goes back to evaluating {enter} again so the situation can
+be examined. When the debugger needs to stop, the {error} expression
+is the place to call {CustomEval'Stop()} (see explantation below).
+
+The {CustomEval} function can be used to write custom debugging
+tools. Examples are: 
+
+*	1. a trace facility following entering and leaving functions
+*	1. interactive debugger for stepping through evaluation of an 
+expression.
+*	1. profiler functionality, by having the callback functions do the 
+bookkeeping on counts of function calls for instance.
+
+In addition, custom code can be written to for instance halt evaluation
+and enter interactive mode as soon as some very specific situation
+occurs, like "stop when function foo is called while the function bar
+is also on the call stack and the value of the local variable x is
+less than zero". 
+
+As a first example, suppose we define the functions TraceEnter(),
+TraceLeave() and {TraceExp()} as follows:
+
+	TraceStart() := [indent := 0;];
+	TraceEnter() :=
+	[
+	   indent++;
+	   Space(2*indent);
+	   Echo("Enter ",CustomEval'Expression());
+	];
+	TraceLeave() :=
+	[
+	   Space(2*indent);
+	   Echo("Leave ",CustomEval'Result());
+	   indent--;
+	];
+	Macro(TraceExp,{expression})
+	[
+	   TraceStart();
+	   CustomEval(TraceEnter(),TraceLeave(),CustomEval'Stop(),@expression);
+	];
+
+
+allows us to have tracing in a very basic way. We can now call:
+
+	In> TraceExp(2+3)
+	  Enter 2+3 
+	    Enter 2 
+	    Leave 2 
+	    Enter 3 
+	    Leave 3 
+	    Enter IsNumber(x) 
+	      Enter x 
+	      Leave 2 
+	    Leave True 
+	    Enter IsNumber(y) 
+	      Enter y 
+	      Leave 3 
+	    Leave True 
+	    Enter True 
+	    Leave True 
+	    Enter MathAdd(x,y) 
+	      Enter x 
+	      Leave 2 
+	      Enter y 
+	      Leave 3 
+	    Leave 5 
+	  Leave 5 
+	Out> 5;
+
+This example shows the use of {CustomEval'Expression} and
+{CustomEval'Result}. These functions give some extra access
+to interesting information while evaluating the expression.
+The functions defined to allow access to information while
+evaluating are:
+
+*	1. {CustomEval'Expression()} - return expression currently
+on the top call stack for evaluation.
+*	1. {CustomEval'Result()} - when the {leave} argument is called this
+function returns what the evaluation of the top expression will return.
+*	1. {CustomEval'Locals()} - returns a list with the current local variables.
+*	1. {CustomEval'Stop()} - stop debugging execution
+
+		A simple interactive debugger
+
+The following code allows for simple interactive debugging:
+
+
+	DebugStart():=
+	[
+	   debugging:=True;
+	   breakpoints:={};
+	];
+	DebugRun():= [debugging:=False;];
+	DebugStep():=[debugging:=False;nextdebugging:=True;];
+	BreakpointAdd(fname_IsString) <-- [ breakpoints := fname:breakpoints;];
+	BreakpointsClear() <-- [ breakpoints := {};];
+	Macro(DebugEnter,{})
+	[
+	   Echo(">>> ",CustomEval'Expression());
+	   If(debugging = False And
+	      IsFunction(CustomEval'Expression()) And 
+	      Contains(breakpoints,Type(CustomEval'Expression())),   debugging:=True);
+	   nextdebugging:=False;
+	   While(debugging)
+	   [
+	      debugRes:=Eval(FromString(ReadCmdLineString("Debug> "):";")Read());
+	      If(debugging,Echo("DebugOut> ",debugRes));
+	   ];
+	   debugging:=nextdebugging;
+	];
+	Macro(DebugLeave,{})
+	[
+	   Echo(CustomEval'Result()," <-- ",CustomEval'Expression());
+	];
+	Macro(Debug,{expression})
+	[
+	   DebugStart();
+	   CustomEval(DebugEnter(),DebugLeave(),debugging:=True,@expression);
+	];
+
+This code allows for the following interaction:
+
+	In> Debug(2+3)
+	>>> 2+3 
+	Debug> 
+
+The console now shows the current expression being evaluated, and a debug
+prompt for interactive debugging. We can enter {DebugStep()}, which steps to
+the next expression to be evaluated:
+
+	Debug> DebugStep();
+	>>> 2 
+	Debug> 
+
+This shows that in order to evaluate {2+3} the interpreter first needs
+to evaluate {2}. If we step further a few more times, we arrive at:
+
+	>>> IsNumber(x) 
+	Debug> 
+
+Now we might be curious as to what the value for {x} is. We can dynamically
+obtain the value for {x} by just typing it on the command line. 
+
+	>>> IsNumber(x) 
+	Debug> x
+	DebugOut> 2 
+
+{x} is set to {2}, so we expect {IsNumber} to return {True}. Stepping again:
+
+	Debug> DebugStep();
+	>>> x 
+	Debug> DebugStep();
+	2  <-- x 
+	True  <-- IsNumber(x) 
+	>>> IsNumber(y) 
+
+So we see this is true. We can have a look at which local variables are currently
+available by calling {CustomEval'Locals()}:
+
+	Debug> CustomEval'Locals()
+	DebugOut> {arg1,arg2,x,y,aLeftAssign,aRightAssign} 
+
+And when bored, we can proceed with {DebugRun()} which will continue the
+debugger until finished in this case (a more sophisticated debugger can
+add breakpoints, so running would halt again at for instance a breakpoint).
+
+	Debug> DebugRun()
+	>>> y 
+	3  <-- y 
+	True  <-- IsNumber(y) 
+	>>> True 
+	True  <-- True 
+	>>> MathAdd(x,y) 
+	>>> x 
+	2  <-- x 
+	>>> y 
+	3  <-- y 
+	5  <-- MathAdd(x,y) 
+	5  <-- 2+3 
+	Out> 5;
+
+
+The above bit of code also supports primitive breakpointing, in that
+one can instruct the evaluator to stop when a function will be entered.
+The debugger then stops just before the arguments to the function are 
+evaluated. In the following example, we make the debugger stop when 
+a call is made to the {MathAdd} function:
+
+	In> Debug(2+3)
+	>>> 2+3 
+	Debug> BreakpointAdd("MathAdd")
+	DebugOut> {"MathAdd"} 
+	Debug> DebugRun()
+	>>> 2 
+	2  <-- 2 
+	>>> 3 
+	3  <-- 3 
+	>>> IsNumber(x) 
+	>>> x 
+	2  <-- x 
+	True  <-- IsNumber(x) 
+	>>> IsNumber(y) 
+	>>> y 
+	3  <-- y 
+	True  <-- IsNumber(y) 
+	>>> True 
+	True  <-- True 
+	>>> MathAdd(x,y) 
+	Debug> 
+
+The arguments to {MathAdd} can now be examined, or execution continued.
+
+One great advantage of defining much of the debugger in script code can
+be seen in the {DebugEnter} function, where the breakpoints are checked,
+and execution halts when a breakpoint is reached. In this case the condition
+for stopping evaluation is rather simple: when entering a speficic function,
+stop. However, nothing stops a programmer from writing a custom debugger
+that could stop on any condition, halting at e very special case.
+
+
+
+		Profiling
+
+A simple profiler that counts the number of times each function is
+called can be written such:
+
+	ProfileStart():=
+	[
+	   profilefn:={};
+	];
+	10 # ProfileEnter()_(IsFunction(CustomEval'Expression())) <-- 
+	[
+	   Local(fname);
+	   fname:=Type(CustomEval'Expression());
+	   If(profilefn[fname]=Empty,profilefn[fname]:=0);
+	   profilefn[fname] := profilefn[fname]+1;
+	];
+	Macro(Profile,{expression})
+	[
+	   ProfileStart();
+	   CustomEval(ProfileEnter(),True,CustomEval'Stop(),@expression);
+	   ForEach(item,profilefn)
+	     Echo("Function ",item[1]," called ",item[2]," times");
+	];
+
+
+which allows for the interaction:
+
+	In> Profile(2+3)
+	Function MathAdd called 1  times
+	Function IsNumber called 2  times
+	Function + called 1  times
+	Out> True;
+
+
+
+
 
 
 *INCLUDE YacasDebugger.chapt

@@ -2245,13 +2245,56 @@ void GenArraySet(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArgum
     InternalTrue( aEnvironment, aResult);
 }
 
-void LispTrace(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments)
+void LispCustomEval(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments)
 {
-    TESTARGS(2);
-    LispLocalEvaluator local(aEnvironment,NEW TracedEvaluator);
-    aEnvironment.iDebugger->Start();
-    InternalEval(aEnvironment, aResult, Argument(aArguments,1));
-    aEnvironment.iDebugger->Finish();
+  TESTARGS(5);
+  if (aEnvironment.iDebugger) delete aEnvironment.iDebugger;
+  aEnvironment.iDebugger = NEW DefaultDebugger(Argument(aArguments,1), Argument(aArguments,2),Argument(aArguments,3));
+  LispLocalEvaluator local(aEnvironment,NEW TracedEvaluator);
+  aEnvironment.iDebugger->Start();
+  InternalEval(aEnvironment, aResult, Argument(aArguments,4));
+  aEnvironment.iDebugger->Finish();
+  delete aEnvironment.iDebugger;
+  aEnvironment.iDebugger = NULL;
+}
+
+void LispCustomEvalExpression(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments)
+{
+  TESTARGS(1);
+  if (aEnvironment.iDebugger == NULL)
+  {
+    RaiseError("Trying to get CustomEval results while not in custom evaluation");
+  }
+  aResult.Set(aEnvironment.iDebugger->iTopExpr.Get()); 
+}
+void LispCustomEvalResult(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments)
+{
+  TESTARGS(1);
+  if (aEnvironment.iDebugger == NULL)
+  {
+    RaiseError("Trying to get CustomEval results while not in custom evaluation");
+  }
+  aResult.Set(aEnvironment.iDebugger->iTopResult.Get()); 
+}
+
+
+
+void LispCustomEvalLocals(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments)
+{
+  TESTARGS(1);
+  aEnvironment.CurrentLocals(aResult);
+}
+
+void LispCustomEvalStop(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments)
+{
+  TESTARGS(1);
+  if (aEnvironment.iDebugger == NULL)
+  {
+    RaiseError("Trying to get CustomEval results while not in custom evaluation");
+  }
+  aEnvironment.iDebugger->iStopped = LispTrue;
+
+  InternalTrue(aEnvironment,aResult);
 }
 
 void LispTraceStack(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments)

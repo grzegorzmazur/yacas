@@ -7,6 +7,7 @@ Set(DefFileList, {
 "constants.rep/code.ys",
 "controlflow.rep/code.ys",
 "cstubgen.rep/code.ys",
+"debug.rep/code.ys",
 "deffunc.rep/code.ys",
 "deriv.rep/code.ys",
 "example.rep/code.ys",

@@ -189,6 +189,7 @@ FINISH:
     aEnvironment.iEvalDepth--;
 }
 
+
 void ShowExpression(LispString& outString, LispEnvironment& aEnvironment,
                     LispPtr& aExpression)
 {
@@ -225,12 +226,6 @@ void TraceShowArg(LispEnvironment& aEnvironment,LispPtr& aParam,
                   LispPtr& aValue)
 {
     LispInt i;
-/*TODO remove?
-    InfixPrinter infixprinter(aEnvironment.PreFix(),
-                              aEnvironment.InFix(),
-                              aEnvironment.PostFix(),
-                              aEnvironment.Bodied());
-                              */
     for (i=0;i<aEnvironment.iEvalDepth+2;i++)
         aEnvironment.CurrentOutput()->Write("  ");
     aEnvironment.CurrentOutput()->Write("TrArg(\"");
@@ -300,6 +295,7 @@ void TraceShowLeave(LispEnvironment& aEnvironment, LispPtr& aResult,
     TraceShowExpression(aEnvironment, aResult);
     aEnvironment.CurrentOutput()->Write("\");\n");
 }
+
 
 
 void TracedStackEvaluator::PushFrame()
@@ -482,20 +478,35 @@ void TracedStackEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
 void TracedEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
                            LispPtr& aExpression)
 {
-    aEnvironment.iDebugger->Enter(aEnvironment, aExpression);
-//TODO remove    TraceShowEnter(aEnvironment, aExpression);
-//    Interact();
-    BasicEvaluator::Eval(aEnvironment, aResult, aExpression);
+  if(aEnvironment.iDebugger == NULL) RaiseError("Internal error: debugging failing");
+  if(aEnvironment.iDebugger->Stopped()) RaiseError("Debugging halted");
 
-    aEnvironment.iDebugger->Leave(aEnvironment, aResult, aExpression);
-//    TraceShowLeave(aEnvironment, aResult, aExpression);
-//    Interact();
+REENTER:
+  errorStr.SetNrItems(1); errorStr[0] = '\0';
+  LispTrap(aEnvironment.iDebugger->Enter(aEnvironment, aExpression),errorOutput,aEnvironment);
+  if(aEnvironment.iDebugger->Stopped()) RaiseError("Debugging halted");
+  if (errorStr[0])
+  {
+    aEnvironment.CurrentOutput()->Write(errorStr.String());
+    goto REENTER;
+  }
+
+  errorStr.SetNrItems(1); errorStr[0] = '\0';
+  LispTrap(BasicEvaluator::Eval(aEnvironment, aResult, aExpression),errorOutput,aEnvironment);
+
+  if (errorStr[0])
+  {
+    aEnvironment.CurrentOutput()->Write(errorStr.String());
+    aEnvironment.iDebugger->Error(aEnvironment);
+    goto REENTER;
+  }
+
+  if(aEnvironment.iDebugger->Stopped()) RaiseError("Debugging halted");
+
+  aEnvironment.iDebugger->Leave(aEnvironment, aResult, aExpression);
+  if(aEnvironment.iDebugger->Stopped()) RaiseError("Debugging halted");
 }
 
-void TracedEvaluator::Interact()
-{
-//    getchar();
-}
 
 
 YacasDebuggerBase::~YacasDebuggerBase()
@@ -512,11 +523,32 @@ void DefaultDebugger::Finish()
 void DefaultDebugger::Enter(LispEnvironment& aEnvironment, 
                                     LispPtr& aExpression)
 {
-    TraceShowEnter(aEnvironment, aExpression);
+  LispLocalEvaluator local(aEnvironment,NEW BasicEvaluator);
+  iTopExpr.Set(aExpression.Get()->Copy(LispFalse));
+  LispPtr result;
+  defaultEval.Eval(aEnvironment, result, iEnter);
+  //TODO remove    TraceShowEnter(aEnvironment, aExpression);
 }
 void DefaultDebugger::Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
                                     LispPtr& aExpression)
 {
-    TraceShowLeave(aEnvironment, aResult, aExpression);
+  LispLocalEvaluator local(aEnvironment,NEW BasicEvaluator);
+  LispPtr result;
+  iTopExpr.Set(aExpression.Get()->Copy(LispFalse));
+  iTopResult.Set(aResult.Get());
+  defaultEval.Eval(aEnvironment, result, iLeave);
+//TODO remove    TraceShowLeave(aEnvironment, aResult, aExpression);
+}
+
+LispBoolean DefaultDebugger::Stopped()
+{
+  return iStopped;
+}
+
+void DefaultDebugger::Error(LispEnvironment& aEnvironment)
+{
+  LispLocalEvaluator local(aEnvironment,NEW BasicEvaluator);
+  LispPtr result;
+  defaultEval.Eval(aEnvironment, result, iError);
 }
 
