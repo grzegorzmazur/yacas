@@ -33,7 +33,7 @@ LispInt CStdCommandLine::GetKey()
 
 void CStdCommandLine::ReadLine(LispCharPtr prompt)
 {
-    printf(prompt);
+    printf(prompt); fflush(stdout);
     char buffer[4001];
     int offs=0;
 MORE:

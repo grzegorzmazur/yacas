@@ -16,9 +16,9 @@ KnownFailure(N(N(1+Pi)-Pi,20) = 1);		// "N" should have "HoldArg" in some way, s
 */
 NumericEqual(N(Pi,70),3.1415926535897932384626433832795028841971693993751058209749445923078164062862,70);
 
-Verify( RoundTo(N(Sec(2)), 9), -2.402997962);
+NumericEqual( RoundTo(N(Sec(2)), 9), -2.402997962, 9);
 NumericEqual( RoundTo(N(Csc(2)), 9),  1.09975017,9);
-Verify( RoundTo(N(Cot(2)), 9), -0.457657554);
+NumericEqual( RoundTo(N(Cot(2)), 9), -0.457657554, 9);
 NumericEqual( RoundTo(N(Sinh(2)), 9), 3.626860408,9);
 
 Verify( RoundTo(N(ArcSin(2)), 9), Complex(1.570796327,1.316957897));
@@ -27,7 +27,7 @@ Verify( RoundTo(N(ArcTan(2*I)), 9), Complex(1.570796327,0.549306144));
 NumericEqual( RoundTo(N(ArcSinh(2)), 9), 1.443635475,9);
 NumericEqual( RoundTo(N(ArcCosh(2)), 9), 1.316957897,9);
 TestYacas( RoundTo(N(ArcCosh(-2)), 8), Complex(-1.3169579,3.14159265));
-Verify( RoundTo(N(ArcTanh(2)), 9), Complex(0.549306144,1.570796327));
+NumericEqual( RoundTo(N(ArcTanh(2)), 9), Complex(0.549306144,1.570796327),9);
 
 /* Numerical tests - all confirmed with Maple */
 Precision(50);
@@ -62,10 +62,10 @@ RoundTo(N(Tan(20.0)), 49)
 , 2.2371609442247422652871732477303491783724839749188
 ); f();
 
-Verify(
+NumericEqual(
 RoundTo(N(Exp(10.32)), 48)
 , 30333.257596224603560034348335010962177837648633545013
-); f();
+,48); f();
 
 Verify(
 RoundTo(N(Ln(10.32/4.07)), 49)
@@ -77,16 +77,16 @@ RoundTo(N(1.3^10.32), 48)
 , 14.99323664825717956473936947123246987802978985306
 ); f();
 
-Verify(
+NumericEqual(
 RoundTo(N(Sqrt(5.3)), 50)
 , 2.30217288664426764419484158642020185018583028263367
-); f();
+,50); f();
 
 // this failed in gmp due to broken MathSqrt()
-Verify(
+NumericEqual(
 RoundTo(N(Sqrt(25.3)), 50)
 , 5.0299105359837166789719353820984438468186649281130
-);
+,50);
 
 // this failed due to broken RoundTo()
 Verify(
@@ -94,22 +94,22 @@ RoundTo(MathPower(13, -23), 50)
 , 0.23949855470974885180294666343025235387321690490245e-25
 );
 
-Verify(
+NumericEqual(
 RoundTo([x:=Newton(x*Exp(x)-4,x,1,10^(-49)); N(x*Exp(x));], 49)
 , 4.
-); f();
+,49); f();
 Verify(Newton(x^2+1,x,1,0.1,-3,3), Fail); f();
 Verify(Newton(x^2-1,x,1,0.1,-3,3), 1); f();
 
-Verify(
+NumericEqual(
 RoundTo(N(ArcSin(0.32)), 49)
 , 0.3257294872946301593103199105324500784354180998123
-); f();
+,49); f();
 
-Verify(
+NumericEqual(
 RoundTo(N(Sin(N(ArcSin(0.1234567)))), 49)
 , 0.1234567
-); f();
+,49); f();
 
 /* ArcSin(x) for x close to 1 */
 
