@@ -2,5 +2,5 @@
 Verify(Factorize(i,1,3,i),6);
 
 Verify( Sum(k,1,n,k), n*(n+1)/2 );
-Verify( Sum(k,1,n,k^3), (n*(n+1))^2 / 4 );
+Verify( Simplify(Sum(k,1,n,k^3)), Simplify( (n*(n+1))^2 / 4 ) );
 Verify( Sum(k,1,Infinity,1/k^2), Zeta(2) );
