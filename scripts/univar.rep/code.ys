@@ -748,7 +748,7 @@ DivPoly(_A,_B,_var,_deg) <--
 polyDivide(_A,_B,_var) <--
 [
 	Local(Q,R);
-	Check( LeadingCoef(B,var) != 0,
+	Check( Not IsZero(LeadingCoef(B,var)),
 		"polyDivide: Cannot divide by zero polynomial");
 	//Echo("in polydiv");
 
@@ -759,11 +759,13 @@ polyDivide(_A,_B,_var) <--
 	] else [
 		Local(T,delta);
 		Q:=MakeUni(0,var);
-	        R:=MakeUni(A,var);
+    R:=MakeUni(A,var);
 		delta:= Degree(R) - Degree(B);
-		While( LeadingCoef(R) != 0 And delta >= 0 ) [
+		While( Not(IsZero(LeadingCoef(R))) And delta >= 0 ) 
+    [
 			//Echo({"delta",delta});
 			T:= (LeadingCoef(R, var)/LeadingCoef(B))*var^(delta); 
+      T:=MakeUni(T,var);
 			Q:= Q + T;	
 			R:= R - B*T;
 			//Echo({"R",R});
@@ -775,7 +777,8 @@ polyDivide(_A,_B,_var) <--
 	// seeing that a UniVar(etc) - (etc) = 0
 	// There is a much better way to do this.
 	//Echo("going to simplify Q,R");
-        Q:=Horner(Simplify(Q),var);
+
+  Q:=Horner(Simplify(Q),var);
 	R:=Horner(Simplify(R),var);
 
 	{Q,R};

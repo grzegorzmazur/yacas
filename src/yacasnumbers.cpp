@@ -1250,10 +1250,12 @@ void BigNumber::SetTo(double value)
 void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {//FIXME
   iPrecision = aPrecision;
+  LispBoolean isFloat = 0;
   const LispCharPtr ptr = aString;
   while (*ptr && *ptr != '.') ptr++;
   if (*ptr == '.')
   {
+    isFloat = 1;
     ptr++;
     const LispCharPtr start = ptr;
     while (IsDigit(*ptr)) ptr++;
@@ -1261,9 +1263,12 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
     if (digits>aPrecision) 
       aPrecision = digits;
   }
-  if (iNumber)   delete iNumber;
-  iNumber = NEW ANumber(aString,aPrecision,aBase);
-  SetIsInteger(iNumber->iExp == 0 && iNumber->iTensExp == 0);
+  if (iNumber == NULL)   iNumber = NEW ANumber(aPrecision);
+  iNumber->SetPrecision(aPrecision);
+  iNumber->SetTo(aString,aBase);
+  
+//  iNumber = NEW ANumber(aString,aPrecision,aBase);
+  SetIsInteger(!isFloat && iNumber->iExp == 0 && iNumber->iTensExp == 0);
 }
 
 

@@ -232,7 +232,7 @@ void ANumber::SetTo(const LispCharPtr aString,LispInt aBase)
         LispString base;
         IntToBaseString(base,WordBase,aBase);
 
-        LispInt nrDigits = WordDigits(iPrecision,aBase);
+        LispInt nrDigits = WordDigits(iPrecision,aBase)/*+1*/;
         for (i=0;i<nrDigits;i++)
         {
             PlatWord word=0;
@@ -270,6 +270,8 @@ void ANumber::SetTo(const LispCharPtr aString,LispInt aBase)
             Insert(0,word);
             iExp++;
         }
+//        Delete(0);
+//        iExp--;
     }
 
     // Parse the E<num> part at the end
@@ -590,7 +592,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, Lisp
     aNumber.SetNrItems(nr);
 
     //Formatting small numbers can be done faster.
-    if (!aForceFloat && aNumber.iExp == 0 && nr == 1)
+    if (aNumber.iExp == 0 && nr == 1)
     {
         BaseIntNumber(aResult, aNumber[0], aBase);
         nr=aResult.NrItems();
@@ -608,6 +610,11 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, Lisp
                 rptr[nr>>1] = Digit(rptr[nr>>1]);
         }
 
+        if (aForceFloat)
+        {
+          if (!(aResult.NrItems()==1 && aResult[0] == '0'))
+            aResult.Append('.');
+        }
         if (aNumber.iNegative)
         {
             if (aResult.NrItems()>1 || aResult[0] != '0')
@@ -616,6 +623,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, Lisp
                 aResult.Insert(0,c);
             }
         }
+        
         goto TENSEXP;
     }
     {
