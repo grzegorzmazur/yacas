@@ -82,6 +82,7 @@ void PrintExpression(LispString& aResult, LispPtr& aExpression,
                      LispEnvironment& aEnvironment,
                      LispInt aMaxChars);
 
+LispStringPtr SymbolName(LispEnvironment& aEnvironment,LispCharPtr aSymbol);
 
 #include "standard.inl"
 

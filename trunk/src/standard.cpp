@@ -372,7 +372,7 @@ void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
     Check(InternalIsString(aOperator),KLispErrNotString);
 
     LispAtom *head =
-        LispAtom::New(aEnvironment.HashTable().LookUpUnStringify(aOperator->String()));
+        LispAtom::New(SymbolName(aEnvironment, aOperator->String()));
     head->Next().Set(aArgs.Get());
     LispPtr body;
     body.Set(LispSubList::New(head));
@@ -492,6 +492,19 @@ void PrintExpression(LispString& aResult, LispPtr& aExpression,
         aResult[aMaxChars-1] = '.';
         aResult[aMaxChars] = '\0';
         aResult.SetNrItems(aMaxChars+1);
+    }
+}
+
+LispStringPtr SymbolName(LispEnvironment& aEnvironment,
+                         LispCharPtr aSymbol)
+{
+    if (aSymbol[0] == '\"')
+    {
+        return aEnvironment.HashTable().LookUpUnStringify(aSymbol);
+    }
+    else
+    {
+        return aEnvironment.HashTable().LookUp(aSymbol);
     }
 }
 
