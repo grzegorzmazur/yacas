@@ -51,17 +51,54 @@ SortFactorList(list) := HeapSort(list, {{a,b}, a[1]<b[1]});
 
 /// Auxiliary function. Return the power of a given prime contained in a given integer and remaining integer.
 /// E.g. FindPrimeFactor(63, 3) returns {7, 2} and FindPrimeFactor(42,17) returns {42, 0}
+// use variable step loops, like in IntLog()
 FindPrimeFactor(n, prime) :=
 [
-	Local(power);
-	power := 0;
-	While(Mod(n, prime)=0)
+	Local(power, factor, old'factor, step);
+	power := 1;
+	old'factor := 1;	// in case the power should be 0
+	factor := prime;
+	// first loop: increase step
+	While(Mod(n, factor)=0)	// avoid division, just compute Mod()
 	[
-		n := Div(n, prime);
-		power++;
+		old'factor := factor;	// save old value here, avoid sqrt
+		factor := factor^2;
+		power := power*2;
+	];
+	power := Div(power,2);
+	factor := old'factor;
+	n := Div(n, factor);
+	// second loop: decrease step
+	step := Div(power,2);
+	While(step>0 And n > 1)
+	[
+		factor := prime^step;
+		If(
+			Mod(n, factor)=0,
+			[
+				n := Div(n, factor);
+				power := power + step;
+			]
+		);
+		step := Div(step, 2);
 	];
 	{n, power};
 ];
+
+/* simpler method but slower on worstcase such as p^n or n!
+FindPrimeFactor(n, prime) :=
+[
+	Local(power, factor);
+	power := 0;
+	factor := prime;
+	While(Mod(n, factor)=0)
+	[
+		factor := factor*prime;
+		power++;
+	];
+	{n/(factor/prime), power};
+];
+*/
 
 /// Auxiliary function. Factorizes by trials. Return prime factors up to given limit and the remaining number.
 /// E.g. TrialFactorize(42, 2) returns {21, {{2, 1}}} and TrialFactorize(37, 4) returns {37}
