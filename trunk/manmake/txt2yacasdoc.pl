@@ -234,9 +234,12 @@ sub escape_term {
 		$regex="(?:$regex\{$regex\})*$regex";
 	}
 	$text =~ s/\{($regex)\}/":HtmlTerm("$1"):"/go;
+	# special escapes \< \> for HTML
+	$text =~ s/\\</":Lt():"/g;
+	$text =~ s/\\>/":Gt():"/g;
 	# math
-	$text =~ s/\$\$([^\$]+)\$\$/":TeXMathD($1):"/g;
-	$text =~ s/\$([^\$]+)\$/":TeXMath($1):"/g;
+	$text =~ s/\$\$([^\$"]+)\$\$/":TeXMathD($1):"/g;
+	$text =~ s/\$([^\$"]+)\$/":TeXMath($1):"/g;
 	# <i>emphasis</i>
 	$text =~ s/<i>((?:[^<]|<[^\/]|<\/[^i]|<\/i[^>])*)<\/i>/":HtmlEmphasis("$1"):"/gi;
 	# explicit hyperlinks

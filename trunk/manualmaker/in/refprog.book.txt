@@ -1,5 +1,5 @@
 
-				Yacas programmers function reference
+				Yacas programmer's function reference
 
 *INCLUDE prog.chapt
 
