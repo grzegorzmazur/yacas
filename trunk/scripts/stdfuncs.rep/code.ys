@@ -1,5 +1,4 @@
 
-
 /* TruncRadian truncates the radian r so it is between 0 and 2*Pi.
  * It calculates r mod 2*Pi using the required precision.
  */
@@ -212,8 +211,18 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 200 # ArcTan(-Infinity) <-- -Pi/2;
 200 # ArcTan(Undefined) <-- Undefined;
 
+2   # Sec(x_IsNumber)_(Numeric) <-- N(1/Cos(x));
+2   # Csc(x_IsNumber)_(Numeric) <-- N(1/Sin(x));
+2   # Cot(x_IsNumber)_(Numeric) <-- N(1/Tan(x));
+2   # SinH(_x_IsNumber)_(Numeric) <-- N(Exp(x)-Exp(-x)/2);
+2   # CosH(_x_IsNumber)_(Numeric) <-- N((Exp(x)+Exp(-x))/2);
+2   # TanH(_x_IsNumber)_(Numeric) <-- N(SinH(x)/CosH(x));
+2   # CotH(_x_IsNumber)_(Numeric) <-- N(CosH(x)/SinH(x));
+2   # SecH(_x_IsNumber)_(Numeric) <-- N(1/CosH(x));
+2   # CscH(_x_IsNumber)_(Numeric) <-- N(1/SinH(x));
+
+
 /* Hyperbolic stuff */
-5   # SinH(_x_IsNumber) <-- (Exp(x)+Exp(-x))/2;
 100 # 1/CotH(_x)	<-- TanH(x);
 100 # 1/SecH(_x)	<-- CosH(x);
 100 # 1/CscH(_x)	<-- SinH(x);
@@ -275,4 +284,6 @@ MyArcTan(x,n) :=
 ];
 
 MyArcTan(x) := MyArcTan(x,2*GetPrecision());
+
+
 
