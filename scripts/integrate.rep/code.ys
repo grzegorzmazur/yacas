@@ -101,6 +101,7 @@ UnFence("IntegrateMultiplicative",4);
 10 # AntiDeriv(_var,   - _y) <--            - AntiDeriv(var,y);
 
 
+
 ////////////////////////////////////////////////
 //
 // Multiplying a polynomial with another (integrable)
@@ -255,27 +256,29 @@ IntPureSquare(_vr,_from,_sign2,_sign0,_to) <--
 //
 ////////////////////////////////////////////////
 IntFunc(x,Sin(_x),-Cos(x));
-//IntFunc(x,Csc(_x),-Ln(Csc(x)+Cot(x)));
+IntFunc(x,1/Sin(_x), Ln( 1/Sin(x) - Cos(x)/Sin(x) ) );
 IntFunc(x,Cos(_x),Sin(x));
-//IntFunc(x,Sec(_x),Ln(Sec(x)+Tan(x)));
+IntFunc(x,1/Cos(_x),Ln(1/Cos(x)+Tan(x)));
 IntFunc(x,Tan(_x),-Ln(Cos(x)));
-//IntFunc(x,Cot(_x),Ln(Sin(x)));
+IntFunc(x,Cos(_x)/Sin(_x),Ln(Sin(x)));
 IntFunc(x,Exp(_x),Exp(x));
 IntFunc(x,(C_IsFreeOf(var))^(_x),C^x/Ln(C));
 IntFunc(x,num_IsFreeOf(var) / (_x),num*Ln(Abs(x)));
 IntFunc(x,Ln(_x),x*Ln(x)-x);
+// where did these 1+1's come from?
 IntFunc(x,(_x)*Ln(_x),(1/(1+1))*x^(1+1)*Ln(x) - (1/(1+1)^2)*x^(1+1) );
 IntFunc(x,Ln(_x)*(_x),(1/(1+1))*x^(1+1)*Ln(x) - (1/(1+1)^2)*x^(1+1) );
 
-//IntFunc(x,Csc(_x)^2,-Cot(x));
-//IntFunc(x,Sec(_x)^2,Tan(x));
-//IntFunc(x,Csc(_x)*Cot(_x),-Csc(x));
-//IntFunc(x,Sec(_x)*Tan(_x),Sec(x));
-//IntFunc(x,CscH(_x)^2,-CotH(x));
-//IntFunc(x,SecH(_x)^2,TanH(x));
-//IntFunc(x,CscH(_x)*Cot(_x),-CscH(x));
-//IntFunc(x,SecH(_x)*TanH(_x),-SecH(x));
+IntFunc(x,1/Sin(_x)^2,-Cos(x)/Sin(x) );
+IntFunc(x,1/Cos(_x)^2,Tan(x) );
+IntFunc(x,1/(Sin(_x)*Tan(_x)),-1/Sin(x));
+IntFunc(x,Tan(_x)/Cos(_x),1/Cos(x));
+IntFunc(x,1/Sinh(_x)^2,-1/Tanh(x));
+IntFunc(x,1/Cosh(_x)^2,TanH(x));
+IntFunc(x,1/(Sinh(_x)*Tan(_x)),-1/Sinh(x));
+IntFunc(x,Tanh(_x)/Cosh(_x),-1/Cosh(x));
 
+IntFunc(x,Exp(n_IsNumber*_x)*Sin(m_IsNumber*_x),Exp(n*x)*(n*Sin(m*x)- m*Cos(m*x))/(m^2+n^2) );
 
 // n>0
 IntFunc(x,Ln(_x)*(_x)^n_IsNumber,(1/(n+1))*x^(n+1)*Ln(x) - (1/(n+1)^2)*x^(n+1) );
