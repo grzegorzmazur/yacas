@@ -18,7 +18,7 @@ FilePathSeparators :=
 // It can be set in yacasinit.ys or here,e.g.:
 
 //PlatformOS:="Win32";
-
+If(PlatformOS() = "Windows",PlatformOS:="Win32");
 If(
 	Not(IsBound(PlatformOS)),
 	[
