@@ -1699,7 +1699,7 @@ const void* BigInt::ExportData() const
 // debugging
 #define RaiseError1 printf
 
-BigNumber::BigNumber(LispInt aPrecision) { iPrecision = aPrecision; init(); }
+BigNumber::BigNumber(LispInt aPrecision) { init(); iPrecision = aPrecision; }
 
 void BigNumber::init()
 {// this function should be called only from constructors because it is not recommended to re-initialize a non-cleared gmp object

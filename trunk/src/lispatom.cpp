@@ -234,21 +234,17 @@ LispStringPtr LispNumber::String()
 {
   if (iString.Ptr() == NULL)
   {
-    LISPASSERT(iNumber.Ptr() != NULL);
-    LISPASSERT(iHashTable != NULL);
+    LISPASSERT(iNumber.Ptr() != NULL);	// either the string is null or the number but not both
     LispString *str = NEW LispString;
     // export the current number to string and store it as LispNumber::iString
     // FIXME API breach: precision must be in digits, not in bits here!
 	// must be replaced with bits_to_digits(iNumber->GetPrecision(), BASE10)
     iNumber->ToString(*str, iNumber->GetPrecision(), BASE10);
-    // register the string with the hash table
-    LISPASSERT(iHashTable != NULL);
+    // register the string with the hash table - trying to avoid this now
+//    LISPASSERT(iHashTable != NULL);
 //    iString = iHashTable->LookUp(str);
-    iString = str;	// this does not work: various rules with explicit numbers fail
+    iString = str;	// this used to not work, testing now
 
-//#ifdef YACAS_DEBUG
-//printf("Converting to string representation %s\n",iString->String()); //DEBUG
-//#endif
   }
   return iString.Ptr();
 }
@@ -269,11 +265,12 @@ LispObject* LispNumber::Copy(LispInt aRecursed)
     return copied;
 }
 
-    /// create a BigNumber object out of a stored string, at given precision (in decimal!)
+    /// Return a BigNumber object.
+// Will create a BigNumber object out of a stored string, at given precision (in decimal) - that's why the aPrecision argument must be here - but only if no BigNumber object is already present
 BigNumber* LispNumber::Number(LispInt aPrecision)
 {
   if (iNumber.Ptr() == NULL)
-  {
+  {	// create and store a BigNumber out of string
     LISPASSERT(iString.Ptr() != NULL);
 //#ifdef YACAS_DEBUG
 //printf("Converting from string representation %s\n",iString->String()); //DEBUG
@@ -283,20 +280,20 @@ BigNumber* LispNumber::Number(LispInt aPrecision)
     // aPrecision is in digits, not in bits, ok
     iNumber = NEW BigNumber(str->String(), aPrecision, BASE10);
   }
-  // FIXME: GetPrecision() returns bits, but aPrecision is in digits
-  // solution: use bits_to_digits(iNumber->GetPrecision(), BASE10) or digits_to_bits(aPrecision, BASE10)
-  //AYAL: fixed?
-  else if (bits_to_digits(iNumber->GetPrecision(),BASE10) < aPrecision && !iNumber->IsInt())
+
+  // check if the BigNumber object has enough precision, if not, extend it
+  // (applies only to floats). Note that iNumber->GetPrecision() might be < 0
+  else if (!iNumber->IsInt() && iNumber->GetPrecision() < (LispInt)digits_to_bits(aPrecision, BASE10))
   {
     if (iString.Ptr())
-    {// aPrecision is in digits, not in bits, ok
-      iNumber->SetTo(iString.Ptr()->String(),aPrecision);
+    {// have string representation, can extend precision
+      iNumber->SetTo(iString.Ptr()->String(),aPrecision, BASE10);
     }
     else
-    {	// FIXME API breach: precision must be in bits, not in digits
-		// replace aPrecision by digits_to_bits(aPrecision, BASE10)
-    //AYAL: fixed?
-      iNumber->Precision(digits_to_bits(aPrecision,BASE10));
+    {
+	// do not have string representation, cannot extend precision!
+		// FIXME: the statement below should be removed
+    iNumber->Precision(digits_to_bits(aPrecision,BASE10));
     }
   }
   return iNumber.Ptr();

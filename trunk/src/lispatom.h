@@ -4,6 +4,7 @@
  * class LispAtom. This class implements one atom, which is a
  * reference to a string it represents, and a pointer to the next
  * lisp atom if it is in a list.
+ * It also has a pointer to the annotation object.
  * The local class LispPtr implements automatic garbage collection
  * through reference counting.
  *
@@ -13,7 +14,8 @@
  * operation is first requested on the atom. The BigNumber representation is
  * converted to the string representation whenever the number needs to be printed i.e. LispAtom::String() method is requested.
  * The string is held in the number (to avoid repeated conversions) and also cached in the string cache (this caching will eventually be abandoned).
- * Usually the BigNumber inside the LispNumber will not change by itself.
+ * When LispNumber is constructed from BigNumber, no string representation is available.
+ * Conversion from string to BigNumber is done only if no BigNumber object is present.
  */
 
 #ifndef __lispatom_h__
