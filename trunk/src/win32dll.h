@@ -8,7 +8,7 @@ class Win32Dll : public LispDllBase
 {
 public:
     Win32Dll() : handle(NULL) {}
-    virtual ~Win32Dlll();
+    virtual ~Win32Dll();
     virtual LispInt Open(LispCharPtr aDllFile);
     virtual LispPluginBase* GetPlugin(void);
 private:
