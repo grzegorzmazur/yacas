@@ -28,6 +28,23 @@
 
 //  FlGraphStart(Eval(flplot2d));
 
+  Local(execute);
+  execute:={};
+  
+  `[
+    Local(dowidth,crect,plist);
+    dowidth:=(@dowidth);
+    crect:=(@crect);
+    plist:=(@plist);
+    @flplot2d2;
+  ];
+  execute:=Hold(FlTranslate(FlWindow[1],FlWindow[2])):execute;
+  DestructiveAppend(execute,Hold(FlTranslate(-FlWindow[1],-FlWindow[2])));
+  `FlGraphStart(@execute);
+
+
+
+/*TODO remove?
   `FlGraphStart(
   [
     Local(dowidth,crect,plist);
@@ -36,6 +53,7 @@
     plist:=(@plist);
     @flplot2d;
   ]);
+*/
 
   True;
 ]);
@@ -49,6 +67,7 @@ GraphColorForLine(2) <-- FlColor(0,255,0);
 GraphColorForLine(3) <-- FlColor(0,0,255);
 GraphColorForLine(0) <-- FlColor(255,0,255);
 
+//TODO remove this version?
   flplot2d := Hold(
   [
     Local(flx,fly,flw,flh,i,line,ll);
@@ -76,7 +95,7 @@ GraphColorForLine(0) <-- FlColor(255,0,255);
     ];
     crect := FlWindow;
     /* Clear the screen */
-    FlColor(255,255,255);
+    FlColor(192,192,192);
     FlBeginPolygon();
     FlVertex(flx,fly);
     FlVertex(flx,fly+flh);
@@ -107,4 +126,74 @@ GraphColorForLine(0) <-- FlColor(255,0,255);
         FlEndLine();
      ];
    ]);
+
+
+Macro(ExB,{op,args})
+[
+  Local(a);
+  Set(a,@args);
+  DestructiveAppend(execute,UnList((@op):a));
+];
+
+  flplot2d2 := Hold(
+  [
+    Local(flx,fly,flw,flh,i,line,ll);
+    
+    flx:=0;
+    fly:=0;
+    flw:=FlWindow[3];
+    flh:=FlWindow[4];
+
+    Local(nr);
+    nr := Length(plist);
+    /* Get the screen extent */
+    if (crect != FlWindow) 
+    [
+      mlist:=FillList(0,nr);
+      N(
+      For(line:=1,line<=nr,line++)
+      [
+        ll:=FillList(0,dowidth);
+        For(i:=1,i<=dowidth,i++)
+        [
+          ll[i] := N({flx+((i-1)*flw)/(dowidth-1),fly+(plist[line][i]*flh)});
+        ];
+        mlist[line] := ll;
+      ]);
+    ];
+    crect := FlWindow;
+    /* Clear the screen */
+    ExB(FlColor,{192,192,192});
+    ExB(FlBeginPolygon,{});
+    ExB(FlVertex,{flx,fly});
+    ExB(FlVertex,{flx,fly+flh});
+    ExB(FlVertex,{flx+flw,fly+flh});
+    ExB(FlVertex,{flx+flw,fly});
+    ExB(FlEndPolygon,{});
+
+    For(line:=1,line<=Length(mlist),line++)
+    [
+        Local(ll,h);
+        ll:=mlist[line];
+        ExB(GraphColorForLine,{line&3});
+        ExB(FlBeginLine,{});
+        For(i:=1,i<=dowidth,i++)
+        [
+          if (Length(ll)>0)
+          [
+            h:=Head(ll);
+            if (IsList(h)) 
+            if (Length(h) > 1)
+              if (IsNumber(h[1]) And IsNumber(h[2]))
+              [
+                ExB(FlVertex,{h[1],h[2]});
+              ];
+            ll:=Tail(ll);
+          ];
+        ];
+        ExB(FlEndLine,{});
+     ];
+   ]);
+
+
 
