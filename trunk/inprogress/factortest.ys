@@ -18,7 +18,7 @@ Mkn(list,n):= Mod(list,n);
 // input poly, output coefficients
 Mkc(poly):=
 [
-  poly:=MakeUni(poly,x);
+  poly:=MakeUni(Expand(poly),x);
   Concat(FillList(0,poly[2]),poly[3]);
 ];
 
@@ -60,24 +60,75 @@ Mkd(numer,denom,p):=
   ];
   q:=Reverse(q);
   r:=Reverse(r);
-  DropendZeroes(q);
-  DropendZeroes(r);
+  DropEndZeroes(q);
+  DropEndZeroes(r);
   {q,r};
 ];
 
-/*
+
 // Greatest common divisor modulo p
 // input coefficients to polys n,m, and integer p
 // output greatest common divisor
-10 # MkGcd(_n,_m,_p)_(Length(n)<Length(m)) <-- MkGcd(m,n);
+10 # MkGcd(_n,_m,_p)_(Length(n)<Length(m)) <-- MkGcd(m,n,p);
 20 # MkGcd(_n,m_IsZeroVector,_p) <-- n;
 30 # MkGcd(_n,_m,_p) <-- 
 [
   Local(q,r);
   {q,r} := Mkd(n,m,p);
-  MkGcd(m,r,p);
+
+  [
+    Local(u,i);
+    u:=1;
+    For(i:=1,i<p,i++)
+      If(Mod(i*r[Length(r)],p) = 1,u:=i);
+    r:=Mod(r*u,p);
+  ];
+
+//  Echo("(n,m) = ",n,m,"(q,r) = ",q,r);
+  If(Length(r)>=Length(m),{1},MkGcd(m,r,p));
 ];
-*/
+
+
+10 # MkExtEuclid(_n,_m,_p)_(Length(n) < Length(m))
+   <-- 
+   [
+     Local(res);
+     res:=MkExtEuclid(m,n,p);
+     {res[2],res[1],res[3]};
+   ];
+20 # MkExtEuclid(_n,_m,_p) 
+   <-- MkExtEuclidAux(p,{{1},{},n},{{},{1},m},{0,0,0});
+10 # MkExtEuclidAux(_p,_u,_v,_t)_IsZeroVector(v[3])
+   <-- u;
+20 # MkExtEuclidAux(_p,_u,_v,_t) <-- 
+[
+  Local(q,r);
+  {q,r} := Mkd(u[3],v[3],p);
+
+  [
+    Local(uu,i);
+    uu:=1;
+    For(i:=1,i<p,i++)
+      If(Mod(i*r[Length(r)],p) = 1,uu:=i);
+    r:=Mod(r*uu,p);
+  ];
+
+
+  t:={
+       Mod(Mkc(Mkpc(u[1])-Mkpc(v[1])*Mkpc(q)),p),
+       Mod(Mkc(Mkpc(u[2])-Mkpc(v[2])*Mkpc(q)),p),
+       Mod(Mkc(Mkpc(u[3])-Mkpc(v[3])*Mkpc(q)),p)
+     };
+   u:=v;
+   v:=t;
+//  Echo("(n,m) = ",n,m,"(q,r) = ",q,r);
+  If(Length(v[3])>=Length(u[3]),u,MkExtEuclidAux(p,u,v,t));
+];
+
+
+
+
+
 
 BinaryFactor(polynom):=FW(SimpleFactors(polynom));
 BinaryFactors(polynom):=
@@ -97,8 +148,16 @@ BinaryFactors(polynom):=
   list:={};
 
   // Start off with the seeds for factoring
-  If(IsZeroVector(Mkd(testpoly,{0,1},2)[2]),list:=0:list);
-  If(IsZeroVector(Mkd(testpoly,{-1,1},2)[2]),list:=1:list);
+  If(IsZeroVector(Mkd(testpoly,{0,1},2)[2]),list:={0,1}:list);
+  If(IsZeroVector(Mkd(testpoly,{-1,1},2)[2]),list:={-1,1}:list);
+
+//@@@
+/*
+  If(IsZeroVector(Mkd(testpoly,{0,0},2)[2]),list:={0,1}:list);
+  If(IsZeroVector(Mkd(testpoly,{-1,0},2)[2]),list:={-1,1}:list);
+*/
+//@@@
+
   p:=2;
   nrroots:=Length(poly)-1;
 
@@ -108,28 +167,81 @@ BinaryFactors(polynom):=
     For(i:=1,i<=Length(list),i++)
     [
       Local(lst1);
-      TryFact(-list[i]);
-      TryFact(-p+list[i]);
-      TryFact(list[i]);
-      TryFact(p-list[i]);
+
+//      TryFact(list[i]);
+
+      TryFact({-list[i][1],list[i][2]});
+      TryFact({-p+list[i][1],list[i][2]});
+      TryFact({list[i][1],list[i][2]});
+      TryFact({p-list[i][1],list[i][2]});
+
+//@@@
+/*
+      TryFact({-list[i][1],-p+list[i][2]});
+      TryFact({-p+list[i][1],-p+list[i][2]});
+      TryFact({list[i][1],-p+list[i][2]});
+      TryFact({p-list[i][1],-p+list[i][2]});
+
+      TryFact({-list[i][1],-list[i][2]});
+      TryFact({-p+list[i][1],-list[i][2]});
+      TryFact({list[i][1],-list[i][2]});
+      TryFact({p-list[i][1],-list[i][2]});
+
+      TryFact({-list[i][1],p-list[i][2]});
+      TryFact({-p+list[i][1],p-list[i][2]});
+      TryFact({list[i][1],p-list[i][2]});
+      TryFact({p-list[i][1],p-list[i][2]});
+*/
+//@@@
+
+
     ];  
 
     // Given the partial solutions so far (potential roots modulo p), determine 
     // new roots up to modulo 2*p. This step essentially adds one binary bit
     // to the potential solutions and checks if they are still a solution.
     newlist:={};
+
+//Echo("before ",list);
     For(i:=1,i<=Length(list),i++)
     [
-      If(IsZeroVector(Mkd(testpoly,{-(list[i]+p),1},2*p)[2]),
-        newlist:=(list[i]+p):newlist);
-      If(IsZeroVector(Mkd(testpoly,{-(list[i]),1},2*p)[2]),
-        newlist:=(list[i]):newlist);
-    ];
+      If(IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]},2*p)[2]),
+        newlist:={(list[i][1]+p),list[i][2]}:newlist);
+      If(IsZeroVector(Mkd(testpoly,{(list[i][1]),list[i][2]},2*p)[2]),
+        newlist:={(list[i][1]),list[i][2]}:newlist);
 
-//Echo(p,Length(list),list);
+//@@@
+/*
+      If(IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]+p},2*p)[2]),
+        newlist:={(list[i][1]+p),list[i][2]+p}:newlist);
+      If(IsZeroVector(Mkd(testpoly,{(list[i][1]),list[i][2]+p},2*p)[2]),
+        newlist:={(list[i][1]),list[i][2]+p}:newlist);
+
+      If(IsZeroVector(Mkd(testpoly,{(list[i][1]+p),-p+list[i][2]},2*p)[2]),
+        newlist:={(list[i][1]+p),-p+list[i][2]}:newlist);
+      If(IsZeroVector(Mkd(testpoly,{(list[i][1]),-p+list[i][2]},2*p)[2]),
+        newlist:={(list[i][1]),-p+list[i][2]}:newlist);
+
+      If(IsZeroVector(Mkd(testpoly,{(list[i][1]+p),-list[i][2]},2*p)[2]),
+        newlist:={(list[i][1]+p),-list[i][2]}:newlist);
+      If(IsZeroVector(Mkd(testpoly,{(list[i][1]),-list[i][2]},2*p)[2]),
+        newlist:={(list[i][1]),-list[i][2]}:newlist);
+*/
+//@@@
+    ];
+//@@@
+newlist:=RemoveDuplicates(newlist);
+//@@@
+
+//Echo("after ",newlist);
+
     // We now have a new set of potential roots, modulo 2*p
     list:=newlist;
+
     p:=2*p;
+
+//Echo(p,Length(list),list);
+
   ]; 
 
   // If the polynom is not one, it is a polynomial which is not reducible any further
@@ -148,23 +260,50 @@ BinaryFactors(polynom):=
  */
 Macro(TryFact,{root})
 [
-  lst1:=Mkd(testpoly,{-(@root),1},Infinity);
+  lst1:=Mkd(testpoly,(@root),Infinity);
   If(IsZeroVector(lst1[2]),
     [
       testpoly:=lst1[1];
-      lst1:=Mkd(poly,{-(@root),1},Infinity);
+      lst1:=Mkd(poly,(@root),Infinity);
       Local(count);
       count:=0;
       While(IsZeroVector(lst1[2]))
       [
         count++;
         poly:=lst1[1];
-        lst1:=Mkd(poly,{-(@root),1},Infinity);
+        lst1:=Mkd(poly,(@root),Infinity);
         nrroots--;
       ];
-      result:={x-(@root),count}:result;
+      result:={(@root)[2]*x+(@root)[1],count}:result;
     ]
   );
+];
+
+
+
+try(f,g,h,p):=
+[
+  Local(e,gnew,hnew,ext,s,t,q,r);
+  ext:=MkExtEuclid(Mkc(g),Mkc(h),p);
+  s:=Mkpc(ext[1]);
+  t:=Mkpc(ext[2]);
+
+
+//  e:=Expand(f-g*h);
+//  {q,r} := Mkd(Mkc(s*e),h,p);
+//  q:=Mkpc(q);
+//  r:=Mkpc(r);
+//  gnew:=Mkpc(Mkn(Mkc(g+t*e+q*g),p));
+//  hnew:=Mkpc(Mkn(Mkc(h+r),p));
+
+
+//Echo("expression = ",Expand(g+t*e));
+//Echo("coefs = ",Mkc(g+t*e));
+//Echo("modulo ",p," is ",Mkn(Mkc(g+t*e),p));
+//Echo("result is ",Mkpc(Mkn(Mkc(g+t*e),p)));
+  gnew:=Mkpc(Mkn(Mkc(g+t*e),p));
+  hnew:=Mkpc(Mkn(Mkc(h+s*e),p));
+  {gnew,hnew};
 ];
 
 
