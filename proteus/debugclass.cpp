@@ -109,7 +109,7 @@ void ProteusDebugger::Dump()
 
 void ProteusDebugger::AddStackFrame()
 {
-    traceStack->Append(new DebugStackFrame);
+    traceStack->Append(NEW DebugStackFrame);
 }
 void ProteusDebugger::DropStackFrame()
 {
@@ -119,7 +119,7 @@ void ProteusDebugger::DropStackFrame()
 
 void ProteusDebugger::Start()
 {
-    traceStack = new DebugStack;
+    traceStack = NEW DebugStack;
     traceFile = 1;
     running = 1;
     AddStackFrame();
