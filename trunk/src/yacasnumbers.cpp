@@ -762,8 +762,17 @@ void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrec
 
   iNumber->ChangePrecision(BITS_TO_DIGITS(aPrecision,10));
 
-  :: Multiply(*iNumber,*aX.iNumber,*aY.iNumber);
-/*TODO remove old?
+  if (iNumber == aX.iNumber || iNumber == aY.iNumber)
+  {
+    ANumber a1(*aX.iNumber);
+    ANumber a2(*aY.iNumber);
+    :: Multiply(*iNumber,a1,a2);
+  }
+  else
+  {
+    :: Multiply(*iNumber,*aX.iNumber,*aY.iNumber);
+  }
+/*TODO remove old? 
   ANumber a1(*aX.iNumber);
   ANumber a2(*aY.iNumber);
   :: Multiply(*iNumber,a1,a2);
