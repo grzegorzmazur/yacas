@@ -63,7 +63,11 @@
 /* For the moment, the function is called Taylor2. */
 
 /* HELP: Is this the correct mechanism to signal incorrect input? */
-
+/*COMMENT FROM AYAL: Formally, I would do it the other way around, although this is more efficient. This 
+  scheme says: all following rules hold if n>=0. Ideally you'd have a rule "this transformation rule holds
+  if n>=0". But then you would end up checking that n>=0 for each transformation rule, making things a little
+  bit slower (but more correct, more elegant).
+  */
 10 # (Taylor2(_x, _a, _n) _y)
    _ (Not(IsPositiveInteger(n) Or IsZero(n)))
    <-- Check(False, 
@@ -90,6 +94,13 @@
  * The number of coefficients to be computed before concluding that a
  * given power series is zero */
 
+
+/*COMMENT FROM AYAL: I would wrap this code in a LocalSymbols, with Taylor'LPS'Param1 a local symbol.
+ */
+/*COMMENT FROM AYAL: This parameter, 15, seems to be a bit arbitrary. This implies that there is an input
+   with more than 15 zeroes, and then a non-zero coefficient, that this would fail on. Correct? Is there not
+   a more accurate estimation of this parameter?
+ */
 Taylor'LPS'Param1 := 15;
 
 /**********************************************************************
@@ -583,6 +594,56 @@ _[
 110 # Taylor'LPS'CompOrder(_x, 1/_x)     <-- -1;
 110 # Taylor'LPS'CompCoeff(_x, 1/_x, -1) <-- 1;
 111 # Taylor'LPS'CompCoeff(_x, 1/_x, _n) <-- 0;
+
+
+/*COMMENT FROM AYAL: Jitse, what do you think, fall-through defaulting to calculating the coefficient 
+  the hard way? Worst-case, if people define a taylor series in this module it is faster, otherwise it uses
+  the old scheme that does explicit derivatives, which is slower, but still better than not returning a result 
+  at all? With this change the new taylor code is at least as good as the old code? 
+  
+  The ugly part is obvious: instead of having a rule here that says "I work for the following input" I had to
+  find out empirically what the "exclude list" is, eg. the input it will not work on. This because the system
+  as it works currently yields "dunno", at which moment some other routine picks up. 
+  
+  I think we can refactor this.
+ */
+
+
+
+
+Taylor'LPS'AcceptDeriv(_expr) <-- 
+        (Contains({"ArcTan"},Type(expr)));
+/*
+        ( Type(Deriv(x)(expr)) != "Deriv"
+         And Not Contains({
+          "/","+","*","^","-","Sin","Cos","Sqrt","Ln","Exp","Tan"
+          },Type(expr)));
+*/
+
+200 # Taylor'LPS'CompOrder(_x, (_expr))_(Taylor'LPS'AcceptDeriv(expr)) 
+    <-- 
+    [
+//Echo("CompOrder for ",expr);
+//      0; //generic case, assume zeroeth coefficient is non-zero.
+      Local(n);
+      n:=0;
+      While ((Limit(x,0)expr) = 0 And n<Taylor'LPS'Param1)
+      [
+        expr := Deriv(x)expr;
+        n++;
+      ];
+//Echo(" is ",n);
+      n;
+    ];
+200 # Taylor'LPS'CompCoeff(_x, (_expr), _n)_
+      (Taylor'LPS'AcceptDeriv(expr) And n>=0 ) <-- 
+    [
+    // This routine is written out for debugging purposes
+      Local(result);
+      result:=(Limit(x,0)(Deriv(x,n)expr))/(n!);
+Echo(expr," ",n," ",result);
+      result;
+    ];
 
 /* Default */
 

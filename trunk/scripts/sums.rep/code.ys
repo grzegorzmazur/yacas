@@ -210,7 +210,18 @@ Factorize(sumlist_IsList) <--
 ];
 
 
+/*COMMENT FROM AYAL: Jitse, I added some code to make Taylor2 work in the most general case too I believe.
+  Could you check to see if you agree with my changes? If that is correct, perhaps we can start calling Taylor2
+  by default in stead of Taylor1.
+ */
 Function("Taylor",{taylorvariable,taylorat,taylororder,taylorfunction})
+  Taylor1(taylorvariable,taylorat,taylororder)(taylorfunction);
+
+/*COMMENT FROM AYAL: this is the old slow but working version of Taylor series expansion. Jitse wrote a
+ * faster version which resides in taylor.ys, and uses lazy power series. This slow but correct version is still
+ * useful for tests (the old and the new routine should yield identical results).
+ */
+Function("Taylor1",{taylorvariable,taylorat,taylororder,taylorfunction})
 [
   Local(n,result,dif,polf);
   [
