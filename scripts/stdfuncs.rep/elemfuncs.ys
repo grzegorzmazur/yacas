@@ -8,13 +8,21 @@
  *  These implementations are not necessarily the best optimized versions.
  */
 
-/// MathMul2Exp(x,n): multiply x by 2^n.
+/// MathMul2Exp(x,n): multiply x by 2^n for integer n. This should be implemented in the core, but it doesn't hurt to define it here as well.
 10 # MathMul2Exp(_x,0) <-- x;
-20 # MathMul2Exp(_x,_n)_(n>0) <-- MathMultiply(x, MathPower(2,n));
-30 # MathMul2Exp(_x,_n)_(n<0) <-- MathDivide(x, MathPower(2,-n));
+20 # MathMul2Exp(_x,_n) <-- MathMultiply(x, MathPower(2,n));
+//20 # MathMul2Exp(_x,_n)_(n>0) <-- MathMultiply(x, MathPower(2,n));
+//30 # MathMul2Exp(_x,_n)_(n<0) <-- MathDivide(x, MathPower(2,-n));
+
+/// BitsToDigits(n,base) and DigitsToBits(n,base). Enough to compute at low precision.
+
+BitsToDigits(n, base) := MathFloor(0.51+n*N(Ln(2)/Ln(base),10));
+DigitsToBits(n, base) := MathFloor(0.51+n*N(Ln(base)/Ln(2),10));
 
 
-/*: Count number of bits in an integer or a float number. MathBitCount(0)=1. */
+
+///  MathBitCount: count number of bits in an integer or a float number.
+/*  MathBitCount(0)=1. */
 10 # MathBitCount(0) <-- 1;
 20 # MathBitCount(_x) _ (x<0) <-- MathBitCount(-x);
 
@@ -28,7 +36,7 @@
 		While(value<1)
 		[
 			nbits--;
-			value := MathMul2Exp(value,1); //FIXME this should work for floats too
+			value := MathMul2Exp(value,1);
 		];
 	],
 	[	// need to divide by 2
@@ -41,15 +49,6 @@
 	nbits;
 ];
 
-// tests - can move to tests/ Serge? Shouldn't this move? Also, there was a typo, indicating
-// there is no test code? ;-)
-Verify(MathBitCount(4),3);
-Verify(MathBitCount(-3), 2);
-Verify(MathBitCount(3), 2);
-Verify(MathBitCount(0), 1);
-Verify(MathBitCount(-0.6), 0);
-Verify(MathBitCount(0.5), 0);
-Verify(MathBitCount(0.3),-1);
 
 
 /// MathPower(x,y).
@@ -60,7 +59,7 @@ Verify(MathBitCount(0.3),-1);
 5 # MathPower(1, _y) <-- 1;
 // integer powers:
 10 # MathPower(_x, y_IsInteger) <-- IntPowerNum(x, y, MathMultiply, 1);
-// real powers:
+// real powers: this needs precision tracking.
 20 # MathPower(_x, _y) <-- MathExp(MathMultiply(y,MathLn(x)));
 
 
@@ -166,18 +165,43 @@ Verify(MathBitCount(0.3),-1);
 	// increase precision by some bits to allow for roundoff
 	Precision(prec+IntLog(prec, 10)+2);
 	// compute Exp(x/2^shift) - 1
-	result := MathExp'Taylor1(MathMul2Exp(x,-shift));
-	While(shift>0)
-	[	// lose 'shift' bits of precision here
-		result := MathMul2Exp(result, 1) + MathMultiply(result, result);
-		shift--;
-	];
-	
+	result := MathExp'Doubling1(MathExp'Taylor1(MathMul2Exp(x,-shift)), shift);
 	Precision(prec);
 	RoundTo(1+result, prec);
 ];
 
-/// Straightforward Taylor series, compute (Exp(x)-1)/x.
+/// Identity transformation, compute Exp(x)-1 from value=Exp(x/2^n)-1
+
+MathExp'Doubling1(value, n) :=
+[
+	Local(shift, result);
+	shift := n;
+	result := value;
+	While (shift>0)	// lose 'shift' bits of precision here
+	[
+		result := MathMul2Exp(result, 1) + MathMultiply(result, result);
+		shift--;
+	];
+	result;
+];
+
+/// Identity transformation, compute Exp(x) from value=Exp(x/2^n)
+
+MathExp'Doubling(value, n) :=
+[
+	Local(shift, result);
+	shift := n;
+	result := value;
+	While (shift>0)	// lose 'shift' bits of precision here
+	[
+		result := MathMultiply(result, result);
+		shift--;
+	];
+	result;
+];
+
+
+/// Compute Exp(x)-1 from the Taylor series for (Exp(x)-1)/x.
 MathExp'Taylor1(x) :=
 [
 	Local(num'terms, prec, Bx);
@@ -188,7 +212,7 @@ MathExp'Taylor1(x) :=
 	x*SumTaylorNum(x, 1, {{k}, 1/(k+1)}, num'terms);
 ];
 
-/// Sin(x), Taylor series for Sin(x)/x
+/// Compute Sin(x), Taylor series for Sin(x)/x
 MathSin'Taylor(x) :=
 [
 	Local(num'terms, prec, Bx);
@@ -198,6 +222,22 @@ MathSin'Taylor(x) :=
 	// (P*Ln(10)-Ln(x)-2)/(Ln(P*Ln(10)-Ln(x)-2)-Ln(x)-2); use Ln(x)<=B(x)*Ln(2)
 	x*SumTaylorNum(MathMultiply(x,x), 1, {{k}, -1/(2*k*(2*k+1))}, num'terms);
 ];
+
+/// Identity transformation, compute Sin(x) from value=Sin(x/3^n)
+
+MathSin'Tripling(value, n) :=
+[
+	Local(shift, result);
+	shift := n;
+	result := value;
+	While (shift>0)	// lose 'shift' bits of precision here
+	[	// Sin(x)*(3-4*Sin(x)^2)
+		result := MathMultiply(result, 3 - MathMul2Exp(MathMultiply(result,result), 2) );
+		shift--;
+	];
+	result;
+];
+
 
 /// Cos(x), Taylor series
 MathCos'Taylor(x) :=
@@ -210,6 +250,22 @@ MathCos'Taylor(x) :=
 	SumTaylorNum(MathMultiply(x,x), 1, {{k}, -1/(2*k*(2*k-1))}, num'terms);
 ];
 
+/// Identity transformation, compute 1-Cos(x) from value=1-Cos(x/2^n)
+
+MathCos'Doubling1(value, n) :=
+[
+	Local(shift, result);
+	shift := n;
+	result := value;
+	While (shift>0)	// lose 'shift' bits of precision here
+	[
+		result := MathMultiply(MathMul2Exp(result, 1), 2 - result);
+		shift--;
+	];
+	result;
+];
+
+
 /// Ln(x), Taylor series for Ln(1+y)/y, use only with 1/2<x<3/2
 MathLn'Taylor(x) :=
 [
@@ -221,6 +277,20 @@ MathLn'Taylor(x) :=
 	y*SumTaylorNum(-y, {{k}, 1/(k+1)}, num'terms);
 ];
 
+/// Compute Ln(x) from Ln(x^(2^(1/n)))
+MathLn'Doubling(value, n) :=
+[
+	Local(shift, result);
+	shift := n;
+	result := value;
+	While (shift>0)	// lose 'shift' bits of precision here
+	[
+		result := MathMultiply(result, result);
+		shift--;
+	];
+	result;
+];
+
 /// ArcTan(x), Taylor series for ArcTan(x)/x, use only with -1/2<x<1/2
 MathArcTan'Taylor(x) :=
 [
@@ -230,6 +300,7 @@ MathArcTan'Taylor(x) :=
 	// here -Ln(x) must be positive
 	x*SumTaylorNum(-MathMultiply(x,x), {{k}, 1/(2*k+1)}, num'terms);
 ];
+
 
 /// The constant Pi. Using a simple method, solve Cos(x)=0.
 // iterate x := x + Cos(x) + 1/6 *Cos(x)^3 + ... to converge to x=Pi/2
