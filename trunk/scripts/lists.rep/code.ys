@@ -206,11 +206,16 @@ Function("VarList",{expr,filter})
   RemoveDuplicates(VarListAll(expr,filter));
 ];
 
+
+
 /*
  * RuleBase for VarListAll: recursively traverse an expression looking
  * up all variables the expression depends on.
  */
 /* Accept any variable. */
+
+VarListAll(_expr) <-- VarListAll(expr,"IsVariable");
+
 10 # VarListAll(_expr,_filter)_(Apply(filter,{expr}) = True) <--
      {expr};
 

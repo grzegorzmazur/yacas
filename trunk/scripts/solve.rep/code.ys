@@ -26,6 +26,7 @@ SolveNrUses(_fie,_var) <--  Count(VarListAll(fie),var);
   [
     For(j:=1,j<=nreq,j++)
     [
+
       If(SolveNrUses(eq[j],var[i]) = 1,
          [
            sub:=Solve(eq[j],var[i]);

@@ -39,6 +39,7 @@ REDO:
     else if (c == ';') {}
     else if (c == '~') {}
     else if (c == '?') {}
+    else if (c == '$') {} // '$' is reserved for pattern matching!
     else if (c == '\\') {}
     else if (c == '.' && !IsDigit(aInput.Peek()) )
     {
