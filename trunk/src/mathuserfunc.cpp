@@ -352,19 +352,6 @@ void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEn
 }
 
 
-LispBoolean MacroUserFunction::MacroRule::Matches(LispEnvironment& aEnvironment, LispPtr* aArguments)
-{
-  return LispTrue;
-}
-LispInt MacroUserFunction::MacroRule::Precedence() const
-{
-  return 0;
-}
-LispPtr& MacroUserFunction::MacroRule::Body()
-{
-  return iBody;
-}
-
 
 MacroUserFunction::MacroUserFunction(LispPtr& aParameters)
   : BranchingUserFunction(aParameters)
@@ -512,6 +499,48 @@ FINISH:
         TraceShowLeave(aEnvironment, aResult,tr);
         tr.Set(NULL);
     }
+}
+
+
+ListedMacroUserFunction::ListedMacroUserFunction(LispPtr& aParameters)
+  : MacroUserFunction(aParameters)
+{
+}
+LispInt ListedMacroUserFunction::IsArity(LispInt aArity) const
+{
+    return (Arity() <= aArity);
+}
+void ListedMacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
+              LispPtr& aArguments)
+{
+    LispPtr newArgs;
+    LispIterator iter(aArguments);
+    LispPtr* ptr =  &newArgs;
+    LispInt arity = Arity();
+    LispInt i=0;
+    while (i < arity && iter() != NULL)
+    {
+        ptr->Set(iter()->Copy(LispFalse));
+        ptr = &(ptr->Get()->Next());
+        i++;
+        iter.GoNext();
+    }
+    if (iter()->Next().Get() == NULL)
+    {
+        ptr->Set(iter()->Copy(LispFalse));
+        ptr = &(ptr->Get()->Next());
+        i++;
+        iter.GoNext();
+        LISPASSERT(iter() == NULL);
+    }
+    else
+    {
+        LispPtr head;
+        head.Set(LispAtom::New(aEnvironment.iList));
+        head.Get()->Next().Set(iter());
+        ptr->Set(LispSubList::New(head.Get()));
+    }
+    MacroUserFunction::Evaluate(aResult, aEnvironment, newArgs);
 }
 
 

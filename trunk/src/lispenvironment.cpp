@@ -367,11 +367,18 @@ void LispEnvironment::DeclareRuleBase(LispStringPtr aOperator,
 #endif
 }
 
-
-void LispEnvironment::DeclareMacroRuleBase(LispStringPtr aOperator, LispPtr& aParameters)
+void LispEnvironment::DeclareMacroRuleBase(LispStringPtr aOperator, LispPtr& aParameters, LispInt aListed)
 {
     LispMultiUserFunction* multiUserFunc = MultiUserFunction(aOperator);
-    MacroUserFunction *newFunc = NEW MacroUserFunction(aParameters);
+    MacroUserFunction *newFunc;
+    if (aListed)
+    {
+      newFunc = NEW ListedMacroUserFunction(aParameters);
+    }
+    else
+    {
+      newFunc = NEW MacroUserFunction(aParameters);
+    }
     multiUserFunc->DefineRuleBase(newFunc);
 
 #ifdef YACAS_DEBUG
@@ -381,6 +388,7 @@ void LispEnvironment::DeclareMacroRuleBase(LispStringPtr aOperator, LispPtr& aPa
     }
 #endif
 }
+
 
 
 

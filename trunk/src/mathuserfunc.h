@@ -122,6 +122,7 @@ public:
     MacroUserFunction(LispPtr& aParameters);
     virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
                   LispPtr& aArguments);
+/*
     class MacroRule : public BranchRuleBase
     {
     public:
@@ -132,8 +133,19 @@ public:
     private:
         LispPtr iBody;
     };
-
+*/
 };
+
+
+class ListedMacroUserFunction : public MacroUserFunction
+{
+public:
+    ListedMacroUserFunction(LispPtr& aParameters);
+    virtual LispInt IsArity(LispInt aArity) const;
+    virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
+                  LispPtr& aArguments);
+};
+
 
 
 
