@@ -53,11 +53,6 @@ MultiSimp(_expr) <--
 
 20 # MultiSimp2(expr_IsMulti) <--
 [
-//Echo({"step2 ",expr});
-//Echo({"content ",MultiContent(expr)});
-//Echo({"content ",NormalForm(MultiContent(expr))});
-//Echo({"pp ",MultiPrimitivePart(expr)});
-//Echo({"pp ",NormalForm(MultiPrimitivePart(expr))});
   NormalForm(MultiContent(expr))*NormalForm(MultiPrimitivePart(expr));
 ];
 30 # MultiSimp2(_expr) <-- expr;
@@ -140,7 +135,6 @@ LocalSymbols(a,vars)  [
 LocalSymbols(a,vars,pow)  [
   20 #  MultiSingleFactor(_vars,_a,_pow) <--
     [
-//Echo({vars,a,pow});
       Local(term);
       term:={FillList(0,Length(vars)),1};
       term[1][Find(vars,a)] := pow;
@@ -236,20 +230,14 @@ LocalSymbols(x,n,vars)  [
           Set(result,MakeMultiNomial(1,vars));
 	  While(n>0)
           [
-//Echo({"1...",n});
             If(n&1 != 0, Set(result, MultiNomialMultiply(result,mult)));
-//Echo({"2...",n});
             Set(n,n>>1);
-//Echo({"3...",n});
             If(n!=0,Set(mult,MultiNomialMultiply(mult,mult)));
-//Echo({"4...",n});
           ];
-//Echo({"end"});
           result;
         ];
   50 #  MakeMultiNomial(_x ^ (_n),vars_IsList)_(Contains(vars,x)) <--
         [
-//Echo({"ENTER!"});
           Set(n,Simplify(n));
           If(IsInteger(n),
             MultiSingleFactor(vars,x,n),
@@ -261,17 +249,13 @@ LocalSymbols(x,n,vars)  [
 LocalSymbols(x,vars)  [
   100 #  MakeMultiNomial(x_IsFunction,vars_IsList) <--
   [
-//Echo({"Adding unknown",x});
-         MultiSingleFactor(vars,x,1);
+     MultiSingleFactor(vars,x,1);
   ];
 ];
 
 
 MultiNomialAdd(MultiNomial(_vars,_terms1),MultiNomial(_vars,_terms2)) <--
 [
-//Echo({Length(terms1),Length(terms2)});
-//If(Length(terms1)>0 And Length(terms2)>0,Echo({"top   ",terms1[1],terms2[1]}));
-//If(Length(terms1)>0 And Length(terms2)>0,Echo({"dwn   ",terms1[Length(terms1)],terms2[Length(terms2)]}));
   Local(i,t1,t2,inspt);
   Set(t1,terms1);
   Set(i,1);
@@ -301,7 +285,6 @@ MultiNomialAdd(MultiNomial(_vars,_terms1),MultiNomial(_vars,_terms2)) <--
 ];
 20 # Muaddterm(_h1,_h2)_(MultiTermLess(h1,h2)) <--
 [
-//Echo({"inspt"});
   Set(inspt,{h2,i}:inspt);
   Set(t2,Tail(t2));
 ];
@@ -430,7 +413,7 @@ DropZeroLC(MultiNomial(_vars,_terms)) <-- MultiNomial(vars,DropZeroLC(terms));
 30 # DropZeroLC({_pows,0},terms_IsList) <-- DropZeroLC(terms);
 40 # DropZeroLC(_pows,terms_IsList) <-- pows:terms;
 
-/*
+/*************************************************************
   MultiDivide :
   input
     f - a multivariate polynomial
@@ -440,10 +423,7 @@ DropZeroLC(MultiNomial(_vars,_terms)) <-- MultiNomial(vars,DropZeroLC(terms));
     
   Basically quotient and remainder after division by a group of
   polynomials.
- */
-
-
-
+**************************************************************/
 20 # MultiDivide(_f,g_IsList) <--
 [
   Local(i,v,q,r,nr);
@@ -472,9 +452,6 @@ DropZeroLC(MultiNomial(_vars,_terms)) <-- MultiNomial(vars,DropZeroLC(terms));
   Local(plt,glt);
   While (Not finished)
   [
-//Set(g,LocalSymbols(a,b)(Subst(a,b)g));
-//Echo({"p = ",p}); //hier
-//Echo({""}); //hier
     Set(plt, MultiLT(p));
     For(i:=1,i<=nr,i++)
     [
@@ -498,12 +475,7 @@ DropZeroLC(MultiNomial(_vars,_terms)) <-- MultiNomial(vars,DropZeroLC(terms));
       Set(r, r + LocalSymbols(a,b)(Subst(a,b)plt));
       Set(p,  p - LocalSymbols(a,b)(Subst(a,b)plt));
     ]);
-//Echo({"r = ",r});
-//Echo({"p4 = ",p}); //hier
     Set(p,DropZeroLC(p));
-//    Set(p,DropZeroLC(LocalSymbols(a,b)(Subst(a,b)p)));
-
-//Echo({"p5 = ",p}); //hier
     Set(finished,MultiZero(p));
   ];
   {q,r};
