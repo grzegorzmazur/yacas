@@ -1,0 +1,6 @@
+
+// verify that unknown integrals don't simplify
+Verify(Integrate(x,a,b)Exp(Sin(x)),Integrate(x,a,b)Exp(Sin(x)));
+Verify(Integrate(x    )Exp(Sin(x)),Integrate(x    )Exp(Sin(x)));
+
+
