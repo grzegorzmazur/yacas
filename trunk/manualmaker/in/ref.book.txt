@@ -1,4 +1,7 @@
-
+*BLURB
+A reference of functions accessible from within Yacas.
+This reference contains all functions that can be useful from
+the command line.
 				Yacas user's function reference
 
 *INCLUDE config.chapt

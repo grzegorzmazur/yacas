@@ -1,22 +1,13 @@
-
-/* Initialize book building. */
-
 DefaultDirectory("in/");
 
-//Use("html");
 SetHtmlDirectory("");
-Use("styleplain");  /* style cheet for the documentation */
+Use("styleplain");  /* style sheet for the documentation */
 Use("manualmaker"); /* engine that renders book to html */
 
 InitBooks();        /* Initialize book building */
 
 InitBook("coding");
-Blurb()
-"This document should get you started programming in Yacas.";
 Load("coding.book");
 
 SelectBook("coding");
-EmitHtmlFramed();
 EmitHtmlSimple();
-
-

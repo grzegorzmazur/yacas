@@ -1,4 +1,7 @@
-
+*BLURB 
+A reference of functions accessible from within Yacas.
+This reference contains all functions that might be useful
+when programming in Yacas.
 				Yacas programmer's function reference
 
 
@@ -507,6 +510,14 @@ the Yacas source tree. The declarations typically look like this:
 Here {LispSubtract} is the Yacas internal name for the function and {MathSubtract} is the name visible to the Yacas language.
 
 Built-in bodied functions and infix operators are declared in the same file.
+
+		Listing of core functions
+
+The following Yacas functions are currently declared in {yacasapi.cpp}
+as core functions:
+
+*INCLUDE yacasapi.chapt
+
 
 
 *CMD MathNot --- built-in logical "not"

@@ -1,23 +1,13 @@
-
-/* Initialize book building. */
-
 DefaultDirectory("in/");
 
-//Use("html");
 SetHtmlDirectory("");
-Use("styleplain");  /* style cheet for the documentation */
+Use("styleplain");  /* style sheet for the documentation */
 Use("manualmaker"); /* engine that renders book to html */
 
 InitBooks();        /* Initialize book building */
 
 InitBook("intro");
-Blurb()
-"This document gives a short introduction on Yacas.
-Included is a short tutorial on the syntax, and some
-commands to get you started. There are also some examples.";
 Load("intro.book");
 
 SelectBook("intro");
-EmitHtmlFramed();
 EmitHtmlSimple();
-

@@ -9,9 +9,12 @@
  */
 
 
+/* a : b will now return unevaluated (rather than cause error of invalid argument in Concat) if neither a nor b is a list and if one of them is not a string
+*/
 RuleBase(":",{head,tail});
-Rule(":",2,1,IsList(tail)  ) Concat({head},tail);
-Rule(":",2,1,IsString(tail)) ConcatStrings(head,tail);
+Rule(":",2,20,IsList(head) And Not IsList(tail) ) Concat(head,{tail});
+Rule(":",2,30,IsList(tail) ) Concat({head},tail);
+Rule(":",2,10,IsString(tail) And IsString(head)) ConcatStrings(head,tail);
 UnFence(":",2);
 
 

@@ -1,6 +1,3 @@
-
-/* Initialize book building. */
- 
 DefaultDirectory("in/");
 
 ToFile("manicon.html")
@@ -10,54 +7,34 @@ WriteString("<HTML>
   <img src=\"yacaslogo.gif\" BORDER=0>
 </A>
 </BODY>
-</HTML>");
-
+</HTML>
+");
 
 SetHtmlDirectory("");
-Use("styleplain");  /* style cheet for the documentation */
+Use("styleplain");  /* style sheet for the documentation */
 Use("manualmaker"); /* engine that renders book to html */
 
 InitBooks();        /* Initialize book building */
 
 InitBook("intro");
-Blurb()
-"This document gives a short introduction on Yacas.
-Included is a brief tutorial on the syntax, and some
-commands to get you started using Yacas. There are also some examples.";
 Load("intro.book");
 
   GarbageCollect();
 
 InitBook("coding");
-Blurb()
-"This document should get you started programming in Yacas. There
-are some explanations and hands-on tutorials.";
 Load("coding.book");
 
   GarbageCollect();
 
 InitBook("essays");
-Blurb()
-"This is a book of essays on using Yacas. It covers various topics, from
-using the Yacas system for specific calculations
-to general issues related to the Yacas system development.";
-
 Load("essays.book");
 
   GarbageCollect();
 
 InitBook("ref");
-Blurb()
-"A reference of functions accessible from within Yacas.
-This reference contains all the functions that can be useful from
-the command line";
 Load("ref.book");
 
 InitBook("refprog");
-Blurb()
-"A reference of functions accessible from within Yacas.
-This reference contains all the functions that might be useful
-when programming in Yacas.";
 Load("refprog.book");
 
   GarbageCollect();
@@ -65,7 +42,7 @@ Load("refprog.book");
 /* Emit framed version of the manual. */
 SelectBook("intro");
 EmitHtmlFramed();
-EmitHtmlSimple();
+//EmitHtmlSimple();
 
   GarbageCollect();
 
@@ -84,7 +61,7 @@ EmitHtmlFramed();
 
 SelectBook("essays");
 EmitHtmlFramed();
-EmitHtmlSimple();
+//EmitHtmlSimple();
 
   GarbageCollect();
 
@@ -96,20 +73,6 @@ EmitHtmlSimple();
 
 /* make the index of framed books */
 EmitBookIndex();
-
-  GarbageCollect();
-
-/* Export the currently built book to html in a simple form. */
-/*
-SelectBook("intro");
-EmitHtmlSimple();
-SelectBook("ref");
-EmitHtmlSimple();
-SelectBook("refprog");
-EmitHtmlSimple();
-SelectBook("coding");
-EmitHtmlSimple();
-*/
 
 
 

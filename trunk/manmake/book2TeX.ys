@@ -16,8 +16,17 @@ Book(x) := [	/* this is the first declaration in a file */
 
 \\begin{document}
 \\title{" : x : "}
-\\author{by the \\textsc{Yacas} team}
-\\date{\\textsc{Yacas} version: " : Version() : "}
+\\author{by the \\textsc{Yacas} team
+\\thanks{
+This text is part of the Yacas software package and may be freely
+distributed under the terms of the GNU General Public License (GPL) for
+documentation, version 2 or later.
+Principal documentation authors and contributors:
+Ayal Zwi Pinkus, Jitse Niesen, Serge Winitzki.
+}}
+\\date{\\textsc{Yacas} version: " : Version() : "
+\\\\
+generated \\today}
 \\maketitle
 \\tableofcontents
 ");
@@ -172,6 +181,8 @@ Topical(string) := If(string = "See also:", "",
 ")
 );
 Bodied("Topical",60000);
+Blurb(string) := [ True ];	// Blurb() does nothing in TeX mode
+Bodied("Blurb",60000);
 // special escapes
 Gt() := ">";
 Lt() := "<";
