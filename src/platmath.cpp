@@ -16,7 +16,8 @@ double GetDouble(LispCharPtr aString)
 LispStringPtr Double(double aValue, LispHashTable& aHashTable)
 {
     char dummy[150];
-    sprintf(dummy,"%.24g",aValue);
+//    sprintf(dummy,"%.24g",aValue);
+    sprintf(dummy,"%f",aValue);
     return aHashTable.LookUp(dummy);
 }
 
