@@ -147,6 +147,10 @@ while (<STDIN>) {
 		&finish_text_close_quote();
 		#$have_par = 0;
 		print "AddBody(DocFootnote(\"" . &escape_term($1) . "\"));\n";
+	} elsif (/^\*YSFILE\s\s*(.*)$/) {	# designate a .ys output file name
+		&finish_text_close_quote();
+		#$have_par = 0;
+		print "ysFileName(\"$1\");\n";
 	}
 	#############################################################
 	# stuff for refman
@@ -314,7 +318,7 @@ sub make_link {
 	} elsif ($text =~ /^yacasdoc:\/\/(.+)$/) {	# pure yacasdoc ref
 		return "\":YacasDocLink(\"" . yacasdoc_bookname($1) . "\", \"" . yacasdoc_bookname($1) . "\", \"" . yacasdoc_localURL($1) . "\"):\"";
 	} elsif ($text =~ /^([^|]+)\|yacasdoc:\/\/([^|]+)$/) {	# yacasdoc ref with anchored text
-		return "\":YacasDocLink(\"" . yacasdoc_bookname($1) . "\", \"$1\", \"" . yacasdoc_localURL($2) . "\"):\"";
+		return "\":YacasDocLink(\"" . yacasdoc_bookname($2) . "\", \"$1\", \"" . yacasdoc_localURL($2) . "\"):\"";
 	} elsif ($text =~ /^([^|]+)\|([^|]+)$/) {	# URL with anchored text
 		return "\":HtmlLink(\"$1\", \"$2\", \"\", \"\"):\"";
 	} else {
@@ -322,12 +326,13 @@ sub make_link {
 	}
 }
 
-# A yacasdoc reference may looks like this:
+# A yacasdoc reference may look like this:
 # <*yacasdoc://#Bessel functions*>  - a ref to an anchor in the same file, book name empty
 # <*yacasdoc://Algo/1/#Bessel functions*>  - a ref to an anchor in a chapter
 # <*yacasdoc://Algo/1/3/#Bessel functions*> - a ref to an anchor in a section in chapter
 # <*yacasdoc://Algo/1/*> - a ref to a chapter
 # <*yacasdoc://Algo/1/3/*> - a ref to a section in chapter
+# <*anchored text|yacasdoc://Algo/1/3/*> - a yacasdoc ref with anchored text
 
 # The three subs below receive the text "Algo/1/3/#Bessel functions"
 

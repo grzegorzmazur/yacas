@@ -1,22 +1,49 @@
-/* book2ys - extract Yacas code from Yacas docs (Serge Winitzki)
-	version 0.1
-	Extract all tab-indented lines (HtmlCommand), except for the ones that start with In> or Out> -- those are omitted
-	
+/* book2ys - extract Yacas code from Yacas docs (by Serge Winitzki)
+	version 0.2
+	0.1 Extract all tab-indented lines (HtmlCommand), except for the ones that start with In> or Out> -- those are omitted
+	0.2 The variable StripComments controls whether any comments are printed.
+	The function ysFileName specifies an alternative output file name for code extraction.
 */
 
+curFileName := "-";	// default file name
+outputSoFar := "";	// accumulated output in case we aren't printing to the default file 
 
-Chapter(x) := WriteString(
+// function to change the current output file name
+ysFileName(newFileName) :=
+If(
+	newFileName != curFileName,
+	[
+		// the file has changed, let's write out the old one
+		If(
+			curFileName != "-",	// otherwise it has already been written out
+			ToFile(curFileName)WriteString(outputSoFar)
+		);
+		outputSoFar := "";
+		curFileName := newFileName;
+	]
+);
+
+/// Write either to default output or to an alternative file
+10 # WriteOut("") <-- True;
+20 # WriteOut(x_IsString)_(curFileName = "-") <-- WriteString(x);
+30 # WriteOut(x_IsString) <-- 
+[	// accumulate output here, since we can't append to files
+	outputSoFar := ConcatStrings(outputSoFar, x);
+];
+
+
+Chapter(x) := WriteOut(
 "// \\chapter{" : x : "}
 ");
-Section(x) := WriteString(
+Section(x) := WriteOut(
 "// \\section{" : x : "}
 ");
-SubSection(x) := WriteString(
+SubSection(x) := WriteOut(
 "// \\subsection*{" : x : "}
 ");
 
-Enumerate(x) := "";
-Itemize(x) := "";
+Enumerate(x) := x;
+Itemize(x) := x;
 
 HtmlNewParagraph() := "
 
@@ -30,7 +57,8 @@ is'code'sample(x) :=
 	StringMid(i, 3, x) = "In>" Or StringMid(i, 4, x) = "Out>";
 ];
 
-make'comments(x) :=
+10 # make'comments(_x)_StripComments <-- "";
+20 # make'comments(_x) <--
 [
 	Local(i);
 	For(i:=1, i<=Length(x), i++)
@@ -42,7 +70,7 @@ make'comments(x) :=
 ];
 
 HtmlCommand(x) :=
-	WriteString(
+	WriteOut(
 		If(
 			Not is'code'sample(x), 
 			x,
@@ -50,13 +78,13 @@ HtmlCommand(x) :=
 		)
 	);
 
-HtmlEmphasis(x) := "";
+HtmlEmphasis(x) := x;
 
 /* decide whether to use "verb" or "texttt" based on whether the string contains any of the special characters #, _, \, &, {, }, ~ */
 
-HtmlTerm(x) := "";
+HtmlTerm(x) := x;
 
-HtmlTermHeading(x) := "";
+HtmlTermHeading(x) := x;
 
 HtmlBreak() := "
 ";
@@ -78,22 +106,24 @@ IncludeFile(x) := Load(x);
 
 HtmlLink(text, url, param1, param2) := "";
 
+Text() text := True;
+
 RuleBase("TeXMath", {x});
 RuleBase("TeXMathD", {x});
 RuleBase("TeXMathD", {x,y});
 HoldArg("TeXMath", x);
 HoldArg("TeXMathD", x);
 /* use <-- since := would redefine everything */
-TeXMath(_x) <-- "";
-TeXMathD(_x) <-- "";
+TeXMath(_x) <-- x;
+TeXMathD(_x) <-- x;
 // special form: punctuation at the end of a displayed equation
-TeXMathD(_x, _string) <-- "";
+TeXMathD(_x, _string) <-- x;
 
 /* stuff for refman */
 
 Bodied("ChapterIntro", 60000);
 
-AddBody(string) := WriteString(string);
+AddBody(string) := WriteOut(string);
 
 // make SeeAlso print "See also" and do not do the Topical thing
 
