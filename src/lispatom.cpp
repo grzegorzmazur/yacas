@@ -243,8 +243,8 @@ LispStringPtr LispNumber::String()
     iNumber->ToString(*str, iNumber->GetPrecision(), BASE10);
     // register the string with the hash table
     LISPASSERT(iHashTable != NULL);
-    iString = iHashTable->LookUp(str);
-//	iString = str;	// this does not work: various rules with explicit numbers fail
+//    iString = iHashTable->LookUp(str);
+    iString = str;	// this does not work: various rules with explicit numbers fail
 
 //#ifdef YACAS_DEBUG
 //printf("Converting to string representation %s\n",iString->String()); //DEBUG
@@ -285,7 +285,8 @@ BigNumber* LispNumber::Number(LispInt aPrecision)
   }
   // FIXME: GetPrecision() returns bits, but aPrecision is in digits
   // solution: use bits_to_digits(iNumber->GetPrecision(), BASE10) or digits_to_bits(aPrecision, BASE10)
-  else if (iNumber->GetPrecision() < aPrecision && !iNumber->IsInt())
+  //AYAL: fixed?
+  else if (bits_to_digits(iNumber->GetPrecision(),BASE10) < aPrecision && !iNumber->IsInt())
   {
     if (iString.Ptr())
     {// aPrecision is in digits, not in bits, ok
@@ -294,7 +295,8 @@ BigNumber* LispNumber::Number(LispInt aPrecision)
     else
     {	// FIXME API breach: precision must be in bits, not in digits
 		// replace aPrecision by digits_to_bits(aPrecision, BASE10)
-      iNumber->Precision(aPrecision);
+    //AYAL: fixed?
+      iNumber->Precision(digits_to_bits(aPrecision,BASE10));
     }
   }
   return iNumber.Ptr();

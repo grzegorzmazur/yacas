@@ -12,7 +12,7 @@
 #include "lispeval.h"
 #include "standard.h"
 
-#define noMATCH_NUMBERS
+#define MATCH_NUMBERS
 
 
 //#define YACAS_LOGGING

@@ -217,6 +217,7 @@ BoundRealRoots(_p,_Mmin,_Mmax) <--
 FindRealRoots(_p) <--
 [
 //Echo("0...");
+//Echo("0...");
   p:=SquareFree(Rationalize(p));
 //Echo("1...");
 //Echo("2...",MinimumBound(p));
@@ -244,7 +245,7 @@ FindRealRoots(_p,_Mmin,_Mmax) <--
     r := Fail;
 //Echo("newton1",`Hold(Newton(@p,x,@c,@prec,@a,@b)));
     if (a != b) [r := `Newton(@p,x,@c,prec,a,b);];
-//Echo("newton2");
+//Echo("newton2",r," ",CurrentFile(),CurrentLine());
     if (r = Fail)
     [
       Local(c,cold,pa,pb,pc);

@@ -126,8 +126,15 @@ IsNegativeInteger(x):= IsInteger(x) And x < 0;
 IsNonNegativeInteger(x):=IsInteger(x) And x >= 0;
 IsPositiveInteger(x):= IsInteger(x) And x > 0;
 
+
+/*
+10 # IsZero(x_IsNumber) <-- (MathDivide( Round( MathMultiply(x, 10^GetPrecision()) ), 10^GetPrecision() ) = 0);
+10 # IsNotZero(x_IsNumber)       <-- ( RoundTo(x,GetPrecision()) != 0);
+*/
+
 10 # IsZero(x_IsNumber) <-- ( (x+0.5)-0.5  = 0);
 10 # IsNotZero(x_IsNumber)       <-- ( (x+0.5)-0.5 != 0);
+
 10 # IsNotZero(x_IsInfinity) <-- True;
 1000 # IsZero(_n) <-- False;
 1000 # IsNotZero(_n) <-- False;
