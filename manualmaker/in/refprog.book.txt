@@ -1,7 +1,7 @@
 *BLURB 
-A reference of functions accessible from within Yacas.
-This reference contains all functions that might be useful
-when programming in Yacas.
+This is the second part of the Yacas function reference.
+This reference contains functions that might be useful
+for programming in Yacas.
 				Yacas programmer's function reference
 
 			Programming
