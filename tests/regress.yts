@@ -249,3 +249,11 @@ Verify( I^(Infinity), Undefined );
 Verify( I^(-Infinity), Undefined );
 Verify( Limit(n,Infinity) n*I^n, Undefined );
 
+Verify(1 <= 1.0, True);
+Verify(-1 <= -1.0, True);
+Verify(0 <= 0.0, True);
+Verify(0.0 <= 0, True);
+Verify(1 >= 1.0, True);
+Verify(-1 >= -1.0, True);
+Verify(0 >= 0.0, True);
+Verify(0.0 >= 0, True);

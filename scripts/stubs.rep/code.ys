@@ -29,7 +29,10 @@
 
 10 # n_IsNumber == m_IsNumber <-- n=m;
 
-10 # n_IsNumber <= m_IsNumber <-- MathOr(Equals(n,m), LessThan(n,m));
+// bug fix: Equals(1, 1.0) returns False and we want 1 <= 1.0 to return True.
+5 # n_IsNumber <= 0 <-- MathOr(n=0, LessThan(n, 0));
+10 # n_IsNumber <= m_IsNumber <-- (MathSubtract(n,m)<=0);
+
 20 # (n1_IsNumber/n2_IsNumber) <= (m1_IsNumber/m2_IsNumber) <--
      n1*m2 <= m1*n2;
 20 # (n1_IsNumber            ) <= (m1_IsNumber/m2_IsNumber) <--
@@ -41,8 +44,10 @@
 30 # n_IsNumber <= -Infinity <-- False;
 30 # -Infinity <= n_IsNumber <-- True;
 
+// see above for <=
+5 # n_IsNumber >= 0 <-- MathOr(n=0, GreaterThan(n, 0));
+10 # n_IsNumber >= m_IsNumber <-- (MathSubtract(n,m)>=0);
 
-10 # n_IsNumber >= m_IsNumber <-- MathOr(Equals(n,m), GreaterThan(n,m));
 20 # (n1_IsNumber/n2_IsNumber) >= (m1_IsNumber/m2_IsNumber) <--
      n1*m2 >= m1*n2;
 20 # (n1_IsNumber            ) >= (m1_IsNumber/m2_IsNumber) <--
