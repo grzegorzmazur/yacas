@@ -730,6 +730,10 @@ void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     str2 = fromNum.Get()->String();
     CHK_ARG_CORE(str2 != NULL,2);
 
+    // Added, unquote a string
+    CHK_ARG_CORE(InternalIsString(str2),2);
+    str2 = aEnvironment.HashTable().LookUpUnStringify(str2->String());
+
     // convert using correct base
     BigNumber *z = NEW BigNumber(str2->String(),aEnvironment.BinaryPrecision(),base);
     RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
@@ -761,7 +765,9 @@ void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispString str;
     x->ToString(str,aEnvironment.BinaryPrecision(),base);
     // Get unique string from hash table, and create an atom from it.
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str.String())));
+
+//TODO remove, old version?    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str.String())));
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(str.String())));
 }
 
 

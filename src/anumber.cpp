@@ -185,7 +185,7 @@ void ANumber::SetTo(const LispCharPtr aString,LispInt aBase)
     {
         if (aString[endNumberIndex]=='.')
             endIntIndex = endNumberIndex;
-        if (aString[endNumberIndex]=='e' || aString[endNumberIndex]=='E')
+        if (aBase < 14 && aString[endNumberIndex]=='e' || aString[endNumberIndex]=='E')
             endFloatIndex = endNumberIndex;
         endNumberIndex++;
     }

@@ -348,3 +348,7 @@ Verify(UnList({Cos,x}),Cos(x));
 // Reported by Serge: xml tokenizer not general enough
 Verify(XmlExplodeTag("<p/>"),   XmlTag("P",{},"OpenClose"));
 Verify(XmlExplodeTag("<p / >"), XmlTag("P",{},"OpenClose"));
+
+Verify(ToBase(16,30),"1e");
+Verify(FromBase(16,"1e"),30);
+
