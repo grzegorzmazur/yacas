@@ -1,5 +1,36 @@
 
+10 # De(_x + _y) <-- Max(De(x),De(y));
+10 # De(_x - _y) <-- Max(De(x),De(y));
+10 # De(_x * _y) <-- Max(De(x),De(y));
+10 # De(_x / _y) <--     De(x);
+10 # De(- _x )   <--     De(x);
+10 # De(y(_n))   <--     n;
+20 # De(_x)      <--     0;
 
+pat1 := {y <- y(0), y' <- y(1), y'' <- y(2)};
+pat2 := {y(_n) <- A(m+n)*MFac(n)};
+pat3 := {MFac(0) <- 1, MFac(_n) <- (m+n)*MFac(n-1)};
+
+Pro(f,deg,cons) :=
+[
+  Local(norm,d,in,li,pt);
+  norm := (f /: pat1);
+  d := De(norm);
+  in := (norm /: pat2);
+  in := (in /:: pat3);
+  in := Apply("SuchThat",{in,A(m+d)});
+  in := Subst(m,m-d)in;
+  li := (MapSingle("A",0 .. d-1) /: cons);
+  pt := Concat(cons,{{A(_m),m>=d,in}});
+  While(Length(li)<=deg)
+  [
+    Local(te);
+    te:=(A(Length(li))/: pt /: pt);
+    pt := {A(Length(li)),te}:pt;
+    DestructiveAppend(li,te);
+  ];
+  Sum(li*x^(0 .. deg));
+];
 
 
 EndOfFile;
