@@ -41,6 +41,12 @@ LispInt StringInput::Position()
 {
     return iCurrent;
 }
+void StringInput::SetPosition(LispInt aPosition)
+{
+  LISPASSERT(aPosition>=0);
+  LISPASSERT(aPosition<iString.NrItems());
+  iCurrent = aPosition;
+}
 
 
 StringOutput::StringOutput(LispString& aString) : iString(aString) { }

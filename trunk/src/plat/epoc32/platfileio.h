@@ -30,6 +30,7 @@ public:
     void Rewind();
     virtual LispCharPtr StartPtr();
     virtual LispInt Position();
+    virtual void SetPosition(LispInt aPosition);
 protected:
     RFile &iFile;
     LispCharPtr iBuffer;

@@ -75,6 +75,7 @@ public:
      */
     virtual LispCharPtr StartPtr() = 0;
     virtual LispInt Position() = 0;
+    virtual void SetPosition(LispInt aPosition) = 0;
 protected:
     InputStatus& iStatus;
 };

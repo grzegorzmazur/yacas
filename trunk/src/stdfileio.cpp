@@ -59,6 +59,12 @@ LispInt StdFileInput::Position()
     return 0;
 }
 
+void StdFileInput::SetPosition(LispInt aPosition)
+{
+  LISPASSERT(0);
+}
+
+
 
 
 StdFileOutput::StdFileOutput(FILE* aFile) : iFile(aFile) { }
@@ -132,6 +138,12 @@ LispCharPtr CachedStdFileInput::StartPtr()
 LispInt CachedStdFileInput::Position()
 {
     return iCurrentPos;
+}
+void CachedStdFileInput::SetPosition(LispInt aPosition)
+{
+  LISPASSERT(aPosition>=0);
+  LISPASSERT(aPosition<iNrBytes);
+  iCurrentPos = aPosition;
 }
 
 

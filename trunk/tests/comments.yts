@@ -10,3 +10,6 @@ a:= 3;
 /* // test3 */
 
 //Echo({a, Nl()});
+
+// Check parsing
+a==-b; // This would generate a parse error in Yacas versions 1.0.54 and earlier

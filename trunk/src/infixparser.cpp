@@ -223,7 +223,47 @@ void ParsedObject::ReadExpression(LispInt depth)
         {
             LispInFixOperator* op = iParser.iInfixOperators.LookUp(iLookAhead);
             if (op == NULL)
+            {
+//printf("op [%s]\n",iLookAhead->String());
+              if (IsSymbolic((*iLookAhead)[0]))
+              {
+                LispInt len = iLookAhead->NrItems()-1;
+//printf("IsSymbolic, len=%d\n",len);
+
+                while (len>1)
+                {
+                  len--;
+                    LispStringPtr lookUp =
+          iParser.iEnvironment.HashTable().LookUpCounted(iLookAhead->String(),len);
+
+//printf("trunc %s\n",lookUp->String());
+                    if (lookUp)
+                    {
+                      op = iParser.iInfixOperators.LookUp(lookUp);
+//if (op) printf("FOUND\n");
+                      if (op)
+                      {
+                        iLookAhead = lookUp;
+                        LispInput& input = iParser.iInput;
+                        LispInt newPos = input.Position()-(iLookAhead->NrItems()-len);
+                        input.SetPosition(newPos);
+//printf("Pushhback %s\n",&input.StartPtr()[input.Position()]);
+                        break;
+                      }
+                    }
+                }
+                if (op == NULL) return;
+              }
+              else
+              {
                 return;
+              }
+
+
+
+
+//              return;
+            }
             if (depth < op->iPrecedence)
                 return;
             LispInt upper=op->iPrecedence;

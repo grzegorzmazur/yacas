@@ -557,14 +557,14 @@ RuleBase("==",{left,right});
 RuleBase("!==",{left,right});
 
 
+/*TODO remove?
 Function("+-",{x,y})  x + -y;
 Function("/-",{x,y})  x / -y;
 Function("*-",{x,y})  x * -y;
 Function("^-",{x,y})  x ^ -y;
-
 Function(":=-",{xleft,yminright}) Check(False, "Error parsing expression. Please put a space between := and -");
 Function(":=+",{xleft,yright}) Check(False, "Error parsing expression. Please put a space between := and +");
-
+*/
 
 a_IsNonNegativeInteger & b_IsNonNegativeInteger <-- BitAnd(a,b);
 a_IsNonNegativeInteger | b_IsNonNegativeInteger <-- BitOr(a,b);
