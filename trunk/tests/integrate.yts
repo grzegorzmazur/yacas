@@ -11,7 +11,7 @@ TestNonIntegrable(_expr) <-- Verify(Type(expr) = "Integrate",True);
 
 // The following two used to get the interpreter into an infinite
 // loop. Fixed in version 1.0.51
-TestNonIntegrable(Integrate(x)(x*Ln(x)));
+// FIXED!!! TestNonIntegrable(Integrate(x)(x*Ln(x)));
 TestNonIntegrable(Integrate(x)Sin(Exp(x)));
 TestNonIntegrable(Integrate(x) x^(-1));
 TestNonIntegrable(Integrate(x) x^(1/x));
@@ -23,7 +23,7 @@ TestYacas(Integrate(x,0,A)Sin(x),1 - Cos(A));
 TestYacas(Integrate(x,0,A)x^2,(A^3)/3);
 TestYacas(Integrate(x,0,A)Sin(B*x),1/B-Cos(B*A)/B);
 TestYacas(Integrate(x,0,A)(x^2+2*x+1)/(x+1),(A^2)/2+A);
-TestYacas(Integrate(x,0,A)(x+1)/(x^2+2*x+1),Ln(A+1));
+TestYacas(Integrate(x,0,A)(x+1)/(x^2+2*x+1),Ln(Abs(A+1)));
 
 
 // Test MatchLinear: code heavily used with integration
