@@ -1233,7 +1233,7 @@ LispStringPtr BitXor(LispCharPtr int1, LispCharPtr int2,
 // - optimize some arithmetic functions to use _ui or _si versions in case some operands are small integers. (IsSmall() checks that it fits into signed long.)
 
 
-BigNumber::BigNumber() { init(); }
+BigNumber::BigNumber(LispInt aPrecision) { iPrecision = aPrecision; init(); }
 
 void BigNumber::init()
 {// this function should be called only from constructors because it is not recommended to re-initialize a non-cleared gmp object
@@ -1254,6 +1254,7 @@ BigNumber::~BigNumber()
 // construct from string
 BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {
+  iPrecision = aPrecision;
 	init();
 	SetTo(aString, aPrecision, aBase);
 }
@@ -1262,6 +1263,7 @@ BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 /// copy constructor
 BigNumber::BigNumber(const BigNumber& aOther)
 {
+  iPrecision = aOther.GetPrecision();
 	init();
 	SetTo(aOther);
 }

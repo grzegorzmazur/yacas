@@ -3,13 +3,24 @@
 #include "lispatom.h"
 #include "lispassert.h"
 #include "lisperror.h"
+#include "numbers.h"
+#include "standard.h"
 
+#include <stdio.h> //DEBUG
 
-LispAtom* LispAtom::New(LispStringPtr aString)
+LispObject* LispAtom::New(LispStringPtr aString)
 {
-    LispAtom* self = NEW LispAtom(aString);
-    Check(self!=NULL,KLispErrNotEnoughMemory);
-    return self;
+  LispObject* self;
+  if (IsNumber(aString->String(),LispTrue))
+  {
+    self = NEW LispNumber(aString);
+  }
+  else
+  {
+    self = NEW LispAtom(aString);
+  }
+  Check(self!=NULL,KLispErrNotEnoughMemory);
+  return self;
 }
 
 LispAtom::LispAtom(LispStringPtr aString)
@@ -187,4 +198,78 @@ LispObject* LispGenericClass::SetExtraInfo(LispPtr& aData)
     return result;
 }
 
+
+
+LispNumber::LispNumber(LispHashTable* aHashTable, BigNumber* aNumber,LispStringPtr aString)
+  : iHashTable(aHashTable)
+{
+  iNumber = aNumber;
+  iString = aString;
+}
+
+
+LispNumber::LispNumber(LispHashTable& aHashTable, BigNumber* aNumber)
+  : iHashTable(&aHashTable)
+{
+  iString = NULL;
+  iNumber =aNumber;
+}
+LispNumber::LispNumber(LispStringPtr aString)
+  : iHashTable(NULL)
+{
+  iString = aString;
+  iNumber = NULL;
+}
+LispStringPtr LispNumber::String() const
+{
+  if (iString == NULL)
+  {
+    LISPASSERT(iNumber.Ptr() != NULL);
+    LISPASSERT(iHashTable != NULL);
+    LispStringPtr str = NEW LispString;
+    iNumber->ToString(*str,iNumber->GetPrecision());
+    ((LispNumber*)this)->iString = iHashTable->LookUp(str);
+
+#ifdef YACAS_DEBUG
+printf("Converting to string representation %s\n",iString->String()); //DEBUG
+#endif
+  }
+  return iString;
+}
+
+LispNumber::~LispNumber()
+{
+//  delete iNumber;
+  iNumber = NULL;
+}
+LispObject* LispNumber::Copy(LispInt aRecursed)
+{
+    LispObject *copied;
+    copied = NEW LispNumber(iHashTable, iNumber.Ptr(), iString);
+
+#ifdef YACAS_DEBUG
+    copied->SetFileAndLine(iFileName, iLine);
+#endif
+    return copied;
+}
+BigNumber* LispNumber::Number(LispInt aPrecision)
+{
+  if (iNumber.Ptr() == NULL)
+  {
+    LISPASSERT(iString != NULL);
+#ifdef YACAS_DEBUG
+printf("Converting from string representation %s\n",iString->String()); //DEBUG
+#endif
+    iNumber = NEW BigNumber(iString->String(),aPrecision);
+  }
+  return iNumber.Ptr();
+}
+
+
+LispObject* LispNumber::SetExtraInfo(LispPtr& aData)
+{
+    LispObject* result = NEW LispAnnotatedObject<LispNumber>(this);
+    result->SetExtraInfo(aData);
+    return result;
+}
 

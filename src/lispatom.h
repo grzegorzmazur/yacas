@@ -23,7 +23,7 @@
 class LispAtom : public LispObject
 {
 public:
-    static LispAtom* New(LispStringPtr aString);
+    static LispObject* New(LispStringPtr aString);
     virtual ~LispAtom();
     virtual LispStringPtr String() const;
     virtual LispObject* Copy(LispInt aRecursed);
@@ -159,6 +159,23 @@ private:
     GenericClass* iClass;
 };
 
+class LispHashTable;
+class LispNumber : public LispObject
+{
+public:
+    LispNumber(LispHashTable* aHashTable, BigNumber* aNumber,LispStringPtr aString);
+    LispNumber(LispHashTable& aHashTable, BigNumber* aNumber);
+    LispNumber(LispStringPtr aString);
+    virtual ~LispNumber();
+    virtual LispObject* Copy(LispInt aRecursed);
+    virtual LispStringPtr String() const;
+    virtual BigNumber* Number(LispInt aPrecision);
+    LispObject* SetExtraInfo(LispPtr& aData);
+private:
+    RefPtr<BigNumber> iNumber;
+    LispStringPtr iString;
+    LispHashTable* iHashTable;
+};
 
 
 

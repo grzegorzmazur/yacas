@@ -49,6 +49,10 @@ LispPtr* LispObject::ExtraInfo()
     return NULL;
 }
 
+BigNumber* LispObject::Number(LispInt aPrecision)
+{
+    return NULL;
+}
 
 GenericClass* LispObject::Generic()
 {

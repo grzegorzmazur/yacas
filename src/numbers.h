@@ -106,14 +106,14 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
 
 /// Base class for low-level multiple-precision arithmetic.
 /// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
-class BigNumber : public YacasBase
+class BigNumber : public RefCountedObject
 {
 public: //constructors
   BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
 /// copy constructor
   BigNumber(const BigNumber& aOther);
   // no constructors from int or double to avoid automatic conversions
-  BigNumber();
+  BigNumber(LispInt aPrecision = 20);
   ~BigNumber();
   // assign from another number
   void SetTo(const BigNumber& aOther);
@@ -174,6 +174,11 @@ public:/// Bitwise operations, return result in *this.
   
   /// Give sign (-1, 0, 1)
   LispInt Sign() const;
+
+public:
+  inline LispInt GetPrecision() const {return iPrecision;};
+private: 
+  LispInt iPrecision;
 
 #ifdef USE_NATIVE
 
