@@ -56,13 +56,12 @@ Set(Numeric,False);
 Clear(Pi);
 Function("N",{aNumberBody})
 [
-  Local(evalresult,prevNumeric,prevPi,numericresult);
-  Set(evalresult,Eval(aNumberBody));
+  Local(prevNumeric,prevPi,numericresult);
   Set(prevNumeric,Numeric);
   Set(prevPi,Pi);
   Set(Pi,Pi());
   Set(Numeric,True);
-  Set(numericresult,Eval(evalresult));
+  Set(numericresult,Eval(aNumberBody));
   Set(Numeric,prevNumeric);
   Set(Pi,prevPi);
   numericresult;
@@ -72,21 +71,19 @@ Function("N",{aNumberBody})
 UnFence("N",1);
 Function("N",{aNumberBody,aDigits})
 [
-  Local(evalresult,prevNumeric,prevPi,numericresult,prevdigits);
-  Set(evalresult,Eval(aNumberBody));
+  Local(prevNumeric,prevPi,numericresult);
   Set(prevNumeric,Numeric);
   Set(prevPi,Pi);
   Set(prevdigits,GetPrecision());
   Precision(aDigits);
   Set(Pi,Pi());
   Set(Numeric,True);
-  Set(numericresult,Eval(evalresult));
+  Set(numericresult,Eval(aNumberBody));
   Set(Numeric,prevNumeric);
   Set(Pi,prevPi);
   Precision(prevdigits);
   numericresult;
 ];
-HoldArg("N",aNumberBody); 
 UnFence("N",2);
 
 
