@@ -80,6 +80,8 @@ This is a list of some expressions that currently go wrong:
        Out> 0;
        apparently, it doesn't work with complex numbers although it works with
        reals. Probably a trivial bug.
+  <li> In> Limit(x, Infinity) x*I
+       Out> Infinity*Complex(0,1);
   <li> In> Simplify(2*x/4.5)
        never stops
   <li> In> Integrate(x) x^(-1) should return Ln(x)
