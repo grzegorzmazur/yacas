@@ -911,7 +911,7 @@ BigNumber::BigNumber(LispInt aPrecision)
 {
   iPrecision = aPrecision;
   iNumber = NEW ANumber(aPrecision);
-  SetIsInteger(LispFalse);
+  SetIsInteger(LispTrue);
 }
 
 BigNumber::~BigNumber()
@@ -1215,7 +1215,7 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
 
 
 LispBoolean BigNumber::IsInt() const
-{//FIXME ???
+{
   return (iType == KInt);
 }
 
@@ -1228,9 +1228,25 @@ LispBoolean BigNumber::IsIntValue() const
 
 LispBoolean BigNumber::IsSmall() const
 {
-  if (iNumber->iExp == 0 && iNumber->iTensExp == 0 && iNumber->NrItems() <2) 
-    return LispTrue;
-  return LispFalse; 
+  if (IsInt())
+  {
+    PlatWord* ptr = &((*iNumber)[iNumber->NrItems()-1]);
+    LispInt nr=iNumber->NrItems();
+    while (nr>1 && *ptr == 0) {ptr--;nr--;}
+    return (nr <= iNumber->iExp+1);
+  }
+  else
+  // a function to test smallness of a float is not present in ANumber, need to code a workaround to determine whether a mpf_t fits into double.
+  {
+    LispInt tensExp = iNumber->iTensExp;
+    if (tensExp<0)tensExp = -tensExp;
+    return
+    (
+      iPrecision <= 53	// standard float is 53 bits
+      && tensExp<1021
+    );
+    // standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021
+  }
 }
 
 

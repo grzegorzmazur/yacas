@@ -15,12 +15,17 @@ const bool show_passed = false;
 unsigned failed = 0;
 unsigned passed = 0;
 
+#define Check(a,b) CheckL(__LINE__,a,b)
+#define Check3(a,b,c) CheckL(__LINE__,a,b,c)
+#define CheckStringValue(a,b,c,d,e) CheckStringValueL(__LINE__,a,b,c,d,e) 
+#define CheckEquals(a,b,c,d,e) CheckEqualsL(__LINE__,a,b,c,d,e) 
+
 // compare a given LispString value to a given character string and print diagnostic
-void Check(LispString& str, const char* s, const char* test_description)
+void CheckL(int line, LispString& str, const char* s, const char* test_description)
 {
     if (strcmp(str.String(),s))
     {
-        printf("@@@@@@@ %s: failed: %s != %s\n",test_description, str.String(),s);
+        printf("@@@@@@@ (line %d) %s: failed: %s != %s\n",line, test_description, str.String(),s);
 		++failed;
     }
     else
@@ -33,11 +38,11 @@ void Check(LispString& str, const char* s, const char* test_description)
 }
 
 // check that the condition is true and print diagnostic
-void Check(bool test_condition, const char* test_description)
+void CheckL(int line, bool test_condition, const char* test_description)
 {
     if (!test_condition)
     {
-        printf("@@@@@@@ %s: failed\n",test_description);
+        printf("@@@@@@@ (line %d) %s: failed\n",line, test_description);
 		++failed;
     }
     else
@@ -50,20 +55,23 @@ void Check(bool test_condition, const char* test_description)
 }
 
 // check that the given BigNumber gives a correct string value, print diagnostic
-void CheckStringValue(const BigNumber& x, const char* value, LispInt precision, LispInt base, const char* test_description)
+void CheckStringValueL(int line, 
+                      const BigNumber& x, const char* value, 
+                      LispInt precision, 
+                      LispInt base, const char* test_description)
 {
     LispString str;
     x.ToString(str, precision, base);
-    Check(str, value, test_description);
+    CheckL(line,str, value, test_description);
 }
 
 // check that the two numbers are equal by their string representation in given base to given number of base digits
-void CheckEquals(const BigNumber& x1, const BigNumber& x2, LispInt precision, LispInt base, const char* test_description)
+void CheckEqualsL(int line,const BigNumber& x1, const BigNumber& x2, LispInt precision, LispInt base, const char* test_description)
 {
     LispString str1, str2;
     x1.ToString(str1, precision, base);
     x2.ToString(str2, precision, base);
-    Check(str1, str2.String(), test_description);
+    CheckL(line, str1, str2.String(), test_description);
 }
 
 // print a progress message
@@ -163,23 +171,23 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 	Check(x.Double()==double_value, "double value is correct");
 	if (x.Double()!=double_value) printf("mismatch: %24e vs %24e\n", x.Double(), double_value);
 	x.ToString(str, precision, base);
-	Check(str, float_printed, "float value is printed back correctly");
+	Check3(str, float_printed, "float value is printed back correctly");
 	Check(!x.IsIntValue(), "x has a non-integer value as read");
 	Check(y.IsIntValue(), "y has an integer value as read");
 	y.ToString(str, precision, base);
-	Check(str, int_string, "int value is printed back correctly");
+	Check3(str, int_string, "int value is printed back correctly");
 	Check(x.Sign()==sign, "sign of x is correct");
 	Check(y.Sign()==sign, "sign of y is correct");
 
 	y.ToString(str,precision, base);
-	Check(str,int_string,"read integer value correctly");
+	Check3(str,int_string,"read integer value correctly");
 	BigNumber z(x);
 	Check(!z.IsInt(), "z has float type");
 	Check(!z.IsIntValue(), "z has a float value");
 	z.BecomeInt();
 	Check(z.Sign()==sign, "sign of z is correct");
 	z.ToString(str,precision,base);
-	Check(str,int_string,"convert to integer value correctly");
+	Check3(str,int_string,"convert to integer value correctly");
 	Check(z.IsInt(), "z is an integer now");
 	Check(z.IsIntValue(), "z has an integer value now");
 	// now x is a float, y is an integer, and z is =Round(x).
@@ -326,7 +334,7 @@ void TestStringIO(double value, const char* test_string, LispInt precision, Lisp
 	Check(!x.IsInt(), "have a float value");
 	LispString str;
 	x.ToString(str, precision, base);
-	Check(str, test_string, "printed string value matches");
+	Check3(str, test_string, "printed string value matches");
 	TestStringIO2(value,test_string, precision,base);
 }
 
@@ -337,7 +345,7 @@ void TestStringIO_int(int value, const char* test_string, LispInt precision, Lis
 	Check(x.IsInt(), "have an integer value");
 	LispString str;
 	x.ToString(str, precision, base);
-	Check(str, test_string, "printed string value matches");
+	Check3(str, test_string, "printed string value matches");
 }
 
 #endif // test numbers
@@ -367,25 +375,25 @@ int main(void)
     // cast the result to a string
     LispString  str;
     z.ToString(str,10);
-    Check(str,"25", "adding 10 and 15");
+    Check3(str,"25", "adding 10 and 15");
 
 }
 {
     BigNumber n1("65535",100,10);
     n1.ToString(str,20,10);
-    Check(str,"65535", "reading 65535 from string");
+    Check3(str,"65535", "reading 65535 from string");
     n1.ToString(str,20,10);
-    Check(str,"65535", "reading 65535 from string again");
+    Check3(str,"65535", "reading 65535 from string again");
     n1.ToString(str,30,2);
-    Check(str,"1111111111111111", "printing in binary");
+    Check3(str,"1111111111111111", "printing in binary");
     n1.Negate(n1);
     n1.ToString(str,20,10);
-    Check(str,"-65535", "negate 65535");
+    Check3(str,"-65535", "negate 65535");
 
     BigNumber res1;
     res1.Add(n1,n1,10);    
     res1.ToString(str,20, 10);
-    Check(str,"-131070", "add -65535 to itself");
+    Check3(str,"-131070", "add -65535 to itself");
 }
 #endif
 {
@@ -409,12 +417,24 @@ int main(void)
 	x.Multiply(x,x,100);
 	Next("4");
 	Next("4.a");
+  try
   {
     BigNumber y;
   	y.Divide(y,y,100);	// This works
   }
+  catch (LispInt err)
+  {
+    printf("Correctly caught division by zero exception.\n");
+  }
 	Next("4.b");
-	x.Divide(x,x,100);	// possibly zero division requested since x is undefined
+  try
+  {
+  	x.Divide(x,x,100);	// possibly zero division requested since x is undefined
+  }
+  catch (LispInt err)
+  {
+    printf("Correctly caught division by zero exception.\n");
+  }
 	Next("5");
 	x.Add(x,x,100);
 	Next("6");
@@ -832,7 +852,14 @@ int main(void)
 
 	Next("division by zero");
 	x.SetTo(0);
-	x.Divide(x,x,100);
+  try
+  {
+    x.Divide(x,x,100);
+  }
+  catch (LispInt err)
+  {
+    printf("Correctly caught division by zero exception.\n");
+  }
 
 	x.SetTo("3.000000000000000000000000000000000000000050104", 150, 10);
 	y.SetTo("3.000000000000000000000000000000000000000050204", 150, 10);
@@ -840,7 +867,7 @@ int main(void)
 	{
 		LispString str;
 		x.ToString(str, 50, 10);
-		Check(str, "3.000000000000000000000000000000000000000050104","printed back a large number of digits from string");
+		Check3(str, "3.000000000000000000000000000000000000000050104","printed back a large number of digits from string");
 	}
 	y.SetTo(-3.);
 	x.Add(x, y, 200);
@@ -850,7 +877,7 @@ int main(void)
 		BigNumber a("3.000000000000000000000000000000000000000050104", 150, 10);
 		LispString str;
 		a.ToString(str, 50, 10);
-		Check(str, "3.000000000000000000000000000000000000000050104","constructor from string");
+		Check3(str, "3.000000000000000000000000000000000000000050104","constructor from string");
 		
 	}
 	{
@@ -858,7 +885,7 @@ int main(void)
 		BigNumber b(a);
 		LispString str;
 		b.ToString(str, 50, 10);
-		Check(str, "3.000000000000000000000000000000000000000050104","copy constructor");
+		Check3(str, "3.000000000000000000000000000000000000000050104","copy constructor");
 		
 	}
 	{
@@ -866,7 +893,7 @@ int main(void)
 		a.SetTo("3.000000000000000000000000000000000000000050104", 150, 10);
 		LispString str;
 		a.ToString(str, 50, 10);
-		Check(str, "3.000000000000000000000000000000000000000050104","assignment from string using a fresh number");
+		Check3(str, "3.000000000000000000000000000000000000000050104","assignment from string using a fresh number");
 		
 	}
 	{
@@ -876,7 +903,7 @@ int main(void)
 		b.SetTo(a);
 		LispString str;
 		b.ToString(str, 50, 10);
-		Check(str, "3.000000000000000000000000000000000000000050104","assignment from string and a copy operation");
+		Check3(str, "3.000000000000000000000000000000000000000050104","assignment from string and a copy operation");
 		
 	}
 	
