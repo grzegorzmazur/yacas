@@ -1291,22 +1291,6 @@ void LispIsPromptShown(LispEnvironment& aEnvironment,LispPtr& aResult,
 	);
 }
 
-void LispIsUnix(LispEnvironment& aEnvironment,LispPtr& aResult,
-              LispPtr& aArguments)
-{
-    TESTARGS(1);
-    InternalBoolean(aEnvironment,aResult,
-#ifndef WIN32
-#ifdef HAVE_SYS_SOCKET_H
-		true
-#else
-		false
-#endif
-#endif
-	);
-}
-
-
 void LispIsFunction(LispEnvironment& aEnvironment,LispPtr& aResult,
               LispPtr& aArguments)
 {
