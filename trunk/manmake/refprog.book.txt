@@ -4,18 +4,6 @@ This reference contains functions that might be useful
 for programming in Yacas.
 				Yacas programmer's function reference
 
-
-*REM GNU General Public License
-
-			GNU General Public License
-*INTRO This chapter contains the GNU General Public License (GPL).
-This information is important for everyone using or modifying the Yacas source code or binaries.
-
-*A license
-*A licence
-
-*INCLUDE GPL.chapt
-
 			Programming
 
 *INTRO This chapter describes functions useful for writing Yacas scripts.
@@ -1785,6 +1773,19 @@ $$ u = v*Div(u,v) + Mod(u,v) $$.
 *SEE Verify
 
 *INCLUDE glossary.chapt
+
+
+*REM GNU General Public License
+
+			GNU General Public License
+*INTRO This chapter contains the GNU General Public License (GPL).
+This information is important for everyone using or modifying the Yacas source code or binaries.
+
+*A license
+*A licence
+
+*INCLUDE GPL.chapt
+
 
 *REM GNU Free Documentation License
 *INCLUDE FDL.chapt

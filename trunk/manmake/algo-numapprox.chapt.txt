@@ -427,7 +427,7 @@ We find that the error of the continued fraction approximation to $Erfc(x)$
 decreases with $n$ in a geometric progression
 (i.e. roughly as some constant to the power of $n$), for any $v$.
 
-	   Usefulness of continued fractions
+	    Usefulness of continued fractions
 
 Many mathematical functions have a representation as a continued fraction.
 Some systems of "exact arithmetic" even use continued fractions as a primary internal representation of real numbers.
@@ -484,7 +484,7 @@ The Halley iteration for the equation $f(x)=0$ can be written as
 $$ x'=x-(2*f(x)*D(x)f(x))/(2*(D(x)f(x))^2-f(x)*Deriv(x,2)f(x)) $$.
 For example, the equation $Exp(x)=a$ is transformed into $g(x) := Exp(x/2)-a*Exp(-x/2)=0$.
 
-Halley's iteration, despite its faster convergence rate, may be more cumbersome to evaluate than Newton's iteration and so it may not provide a more efficient numerical method for some functions. Only in some special cases is Halley's iteration just as simple to compute as Newton's iteration. But Halley's method has another advantage: it is generally less sensitive to the choice of the initial point $x[0]$. An extreme example of sensitivity to the initial point is the equation $x^(-2)= 12$ for which Newton's iteration $x'=3*x/2-6*x^3$ converges to the root only from initial points $0<x[0] <0.5$ and wildly diverges otherwise, while Halley's iteration converges to the root from any $x[0]>0$.
+Halley's iteration, despite its faster convergence rate, may be more cumbersome to evaluate than Newton's iteration and so it may not provide a more efficient numerical method for some functions. Only in some special cases is Halley's iteration just as simple to compute as Newton's iteration. But Halley's method has another advantage: it is generally less sensitive to the choice of the initial point $x[0]$. An extreme example of sensitivity to the initial point is the equation $x^(-2)= 12$ for which Newton's iteration $x'=3/2*x-6*x^3$ converges to the root only from initial points $0<x[0] <0.5$ and wildly diverges otherwise, while Halley's iteration converges to the root from any $x[0]>0$.
 
 It is at any rate not true that Halley's method always converges better than Newton's method. For instance, it diverges on the equation $2*Cos(x)=x$ unless started at $x[0]$ within the interval ($-1/6*Pi$,$7/6*Pi$). Another example is the equation $Ln(x)=a$. This equation allows to compute $x=Exp(a)$ if a fast method for computing $Ln(x)$ is available (e.g. the AGM-based method). For this equation, Newton's iteration
 $$ x' = x*(1+a-Ln(x)) $$
@@ -538,14 +538,16 @@ For other functions the formulae quickly become very complicated and unsuitable 
 *A Newton's method!precision control
 
 
-Newton's method is particularly convenient for multiple precision calculations because of its insensitivity to accumulated errors: if $x[k]$ at some iteration is found with a small error, the error will be corrected at the next iteration. Therefore it is not necessary to compute all iterations with the full required precision; each iteration needs to be performed at the precision of the root expected from that iteration. For example, if we know that the initial approximation is accurate to 3 digits, then (assuming quadratic convergence)
+Newton's method and its generalizations are particularly convenient for multiple precision calculations because of their insensitivity to accumulated errors:
+if $x[k]$ at some iteration is found with a small error, the error will be corrected at the next iteration. Therefore it is not necessary to compute all iterations with the full required precision; each iteration needs to be performed at the precision of the root expected from that iteration. For example, if we know that the initial approximation is accurate to 3 digits, then (assuming quadratic convergence)
 *FOOT This disregards the possibility that the convergence might be slightly slower. For example, when the precision at one iteration is $n$ digits, it might be $2*n-10$ digits at the next iteration. In these (fringe) cases, the initial approximation must be already precise enough (e.g. to at least 10 digits in this example).
 it is enough to perform the first iteration to 6 digits, the second iteration to 12 digits and so on. In this way, multiple precision calculations are enormously speeded up.
 
 For practical evaluation, iterations must be supplemented with "quality control".
 For example, if $x0$ and $x1$ are two consecutive approximations that are
 already very close, we can quickly compute the achieved (relative) precision by
-finding the number of leading zeros in the number $Abs(x0-x1)/Max(x0,x1)$. This
+finding the number of leading zeros in the number $$Abs(x0-x1)/Max(x0,x1)$$.
+This
 is easily done using the bit count function. After performing a small number of
 initial iterations at low precision, we can make sure that $x1$ has at least a
 certain number of correct digits of the root. Then we know which precision to
@@ -682,20 +684,34 @@ The conclusion is that in each case we should compute the optimal order $k$ in a
 
 Taylor series for analytic functions  is a common method of evaluation.
 
+	    Method 1: simple summation
+
+If we do not know the required number of terms in advance, we cannot do any better than just evaluate each term and check if it is already small enough.
 Take, for example, the series for $Exp(x)$.
 To straightforwardly evaluate
 $$Exp(x)<=>Sum(k,0,N-1,x^k/k!)$$
 with $P$ decimal digits of precision and $x<2$, one would need about $N<=>P*Ln(10)/Ln(P)$ terms of the series.
-To evaluate the truncated series term by term, one needs $N-1$ long multiplications.
-(Divisions by large integers $k!$ can be replaced by a short division of the previous term by $k$. Also, we do not need to evaluate powers $x^k$ separately, since the next term is obtained from the previous one by multiplication by $x$.) In addition, about $Ln(N)/Ln(10)$ decimal digits will be lost due to accumulated round-off errors; therefore the working precision must be increased by this many digits.
 
-If we do not know in advance how many terms of the Taylor series we need, we cannot do any better than just evaluate each term and check if it is already small enough. So in this case we will have to perform $O(N)$ long multiplications.
-However, we can organize the calculation much more efficiently if we are able to estimate the necessary number of terms and to afford some storage.
+Divisions by large integers $k!$ and separate evaluations of powers $x^k$ are avoided if we store the previous term.
+The next term can be obtained  by a short division of the previous term by $k$ and a long multiplication by $x$.
+Then we only need $O(N)$ long multiplications to evaluate the series.
+Usually the required number of terms $N=O(P)$, so the total cost is $O(P*M(P))$.
 
-There are two cases: first, the argument $x$ is a small integer or rational number with very few digits; second, the argument $x$ has $P$ digits.
-In the first case, it is better to use either Horner's scheme (for small $P$) or the binary splitting technique (for large $P$).
-In the second case, it is better to use the "rectangular" algorithm.
-In both cases we need to know the number of terms in advance, as we will have to repeat the whole calculation if a few more terms are needed.
+There is no accumulation of round-off error in this method if $x$ is small enough (in the case of $Exp(x)$, a sufficient condition is $Abs(x)<1/2$).
+To see this, suppose that $x$ is known to $P$ digits (with relative error $10^(-P)$).
+Since $Abs(x)<1/2$, the $n$-th term $x^n/n! < 4^(-n)$ (this is a rough estimate but it is enough).
+Since each multiplication by $x$ results in adding 1 significant bit of relative round-off error, the relative error of $x^n/n!$ is about $2^n$ times the relative error of $x$, i.e. $2^n*10^(-P)$.
+So the absolute round-off error of $x^n/n!$ is not larger than
+$$ Delta<4^(-n)*2^n*10^(-P)=2^(-n)*10^(-P) $$.
+Therefore all terms with $n>1$ contribute less than $10^(-P)$ of absolute round-off error, i.e. less than was originally present in $x$.
+
+In practice, one could truncate the precision of $x^n/n!$ as $n$ grows, leaving a few guard bits each time to keep the round-off error negligibly small and yet to gain some computation speed.
+This however does not change the asymptotic complexity of the method---it remains $O(P*M(P))$.
+
+However, if $x$ is a small rational number, then the multiplication by $x$ is short and takes $O(P)$ operations.
+In that case, the total complexity of the method is $O(P^2)$ which is always faster than $O(P*M(P))$.
+
+	    Method 2: Horner's scheme
 
 *A Taylor series!by Horner's scheme
 *A Horner's scheme
@@ -703,18 +719,27 @@ In both cases we need to know the number of terms in advance, as we will have to
 Horner's scheme is widely known and consists of the following rearrangement,
 $$ Sum(k,0,N-1,a[k]*x^k) = a[0]+x*(a[1]+x*(a[2]+x*( ... + x*a[N-1]))) $$
 The calculation is started from the last coefficient $a[N-1]$ toward the first.
-If $x$ is small, then the round-off error accumulated during the summation is constantly being multiplied by a small number $x$ and thus is significantly reduced.
-If the coefficients $a[k]$ are related by a simple ratio, then the scheme may be modified to simplify the calculations.
-A precision control may be also applied to reduce the computation time: for example, $x*a[N-1]$ needs to be computed with very low precision if $x$ is small.
-This does not change the asymptotic complexity of the method: it still requires $O(N)=O(P)$ multiplications by $x$, so for general real $x$ the complexity is $O(P*M(P))$.
+If $x$ is small, then the round-off error generated during the summation is constantly being multiplied by a small number $x$ and thus is always insignificant.
+Even if $x$ is not small or if the coefficients of the series are not small, Horner's scheme usually results in a smaller round-off error than the simple summation.
+
+If the coefficients $a[k]$ are related by a simple ratio, then Horner's scheme may be modified to simplify the calculations.
+For example, the Horner scheme for the Taylor series for $Exp(x)$ may be written as
+$$ Sum(k,0,N-1,x^k/k!) = 1+x*(1+x/2*(1+x/3*(...+x/(N-1)))) $$.
+This avoids computing the factorial function.
+
+Similarly to the simple summation method, the working precision for Horner's scheme may be adjusted to reduce the computation time: for example, $x*a[N-1]$ needs to be computed with just a few significant digits if $x$ is small.
+This does not change the asymptotic complexity of the method: it requires $O(N)=O(P)$ long multiplications by $x$, so for general real $x$ the complexity is again $O(P*M(P))$.
 However, if $x$ is a small rational number, then the multiplication by $x$ is short and takes $O(P)$ operations.
 In that case, the total complexity of the method is $O(P^2)$.
 
+	    Method 3: "rectangle"
 
 *A Taylor series!by $O(Sqrt(N))$ "rectangular" method
 
-The "rectangular" algorithm uses $2*Sqrt(N)$ long multiplications (assuming that the coefficients of the series are short rational numbers) and $Sqrt(N)$ units of storage. (See [Smith 1985].)
-For high-precision $x$, this method provides a significant advantage over Horner's scheme.
+We can organize the calculation much more efficiently if we are able to estimate the necessary number of terms and to afford some storage (see [Smith 1985]).
+
+The "rectangular" algorithm uses $2*Sqrt(N)$ long multiplications (assuming that the coefficients of the series are short rational numbers) and $Sqrt(N)$ units of storage.
+For high-precision floating-point $x$, this method provides a significant advantage over Horner's scheme.
 
 Suppose we need to evaluate $Sum(k,0,N, a[k]*x^k)$ and we know the number of terms $N$ in advance.
 Suppose also that the coefficients $a[k]$ are rational numbers with small numerators and denominators, so a  multiplication $a[k]*x$ is not a long multiplication (usually, either $a[k]$ or the ratio $a[k]$/$a[k-1]$ is a short rational number). Then we can organize the calculation in a rectangular array with $c$ columns and $r$ rows like this,
@@ -739,9 +764,7 @@ One might wonder if we should not try to arrange the Taylor series in a cube or 
 
 The rectangular method saves the number of long multiplications by $x$ but increases the number of short multiplications and additions.
 If $x$ is a small integer or a small rational number, multiplications by $x$ are fast and it does not make sense to use the rectangular method.
-Direct evaluation of the series is more efficient in that case.
-When the coefficients of the series are also small rationals, and when a fast multiplication is available (faster than quadratic), then the binary splitting method (see below) is the best one to use.
-With all rational arguments and slow multiplication, Horner's scheme seems to be the best choice.
+Direct evaluation schemes are more efficient in that case.
 
 	    Truncating the working precision
 
@@ -758,6 +781,21 @@ Reducing the working precision saves some computation time.
 Instead of $O(Sqrt(P))$ long multiplications at precision $P$, we now need one long multiplication at precision $P$, another long multiplication at precision $P-M$, and so on.
 This technique will not change the asymptotic complexity which remains $O(Sqrt(P)*M(P))$, but it will reduce the constant factor in front of the $O$.
 
+Like the previous two methods, there is no accumulated round-off error if $x$ is small.
+
+	    Which method to use
+
+There are two cases: first, the argument $x$ is a small integer or rational number with very few digits and the result needs to be found as a floating-point number with $P$ digits;
+second, the argument $x$ itself is a floating-point number with $P$ digits.
+
+In the first case, it is better to use either Horner's scheme (for small $P$, slow multiplication) or the binary splitting technique (for large $P$, fast multiplication).
+The rectangular method is actually <i>slower</i> than Horner's scheme if $x$ and the coefficients $a[k]$ are small rational numbers.
+In the second case (when $x$ is a floating-point number), it is better to use the "rectangular" algorithm.
+
+In both cases we need to know the number of terms in advance, as we will have to repeat the whole calculation if a few more terms are needed.
+The simple summation method rarely gives an advantage over Horner's scheme, because it is almost always the case that one can easily compute the number of terms required for any target precision.
+
+Note that if the argument $x$ is not small, round-off error will become significant and needs to be considered separately for a given series.
 
 	    Speed-up for some functions
 
@@ -917,12 +955,17 @@ In other words, we need to perform long multiplications of integers of size $O(P
 The binary splitting method performs better than the straightforward summation method if the cost of multiplication is smaller than $O(P^2)/Ln(P)$.
 
 Thus there are two main limitations of the binary splitting method:
-*	we can only compute functions of small integer or rational arguments;
-*	the method is faster only at high enough precision, when advanced multiplication methods become more efficient than simple $O(P^2)$ methods.
+*	As a rule, we can only compute functions of small integer or rational arguments.
+(As an exception, certain elementary functions <i>can</i> be computed by the binary splitting method for general floating-point arguments, with some clever tricks.)
+*	The method is fast only at high enough precision, when advanced multiplication methods become more efficient than simple $O(P^2)$ methods.
+The binary splitting method is actually <i>slower</i> than the simple summation when the long integer multiplication is $M(P)=O(P^2)$.
 
 Some advantages of the method are:
-*	the method is asymptotically fast and, when applicable, outperforms most other methods at very high precision;
-*	the method uses exact integer arithmetic, so one can store exact intermediate results of the calculation for checkpointing and parallelization, and also one can later resume the summation to get more precision.
+*	The method is asymptotically fast and, when applicable, outperforms most other methods at very high precision.
+*	There is no accumulated round-off error since the method uses exact integer arithmetic.
+*	The sum of a long series can be split into many independent partial sums which can be computed in parallel.
+One can store exact intermediate results of a partial summation (a few long integers), which provides straightforward checkpointing: a failed partial summation can be repeated without repeating all other parts.
+One can also resume the summation later to get more precision, without starting all over again.
 
 	    Description of the method
 
@@ -934,7 +977,7 @@ Usually the series is of the particular form
 $$ S(0,N) := Sum(n,0,N-1, a(n)/b(n)*(p(0)* ... *p(n))/(q(0)* ... *q(n))) $$,
 where $a$, $b$, $p$, $q$ are polynomials in $n$ with small integer coefficients and values that fit into $O(Ln(n))$ bits.
 
-For example, the Taylor series for $ArcSin(x)$ is of this form:
+For example, the Taylor series for $ArcSin(x)$ (when $x$ is a short rational number) is of this form:
 $$ ArcSin(x) = x + 1/2*x^3/3+(1*3)/(2*4)*x^5/5+(1*3*5)/(2*4*6)*x^7/7 + ...$$
 This example is of the above form with the definitions $a=1$, $b(n)=2*n+1$, $p(n)=x^2*(2*n-1)$, $q(n)=2*n$ for $n>=1$ and $p(0)=x$, $q(0)=1$.
 (The method will apply only if $x$ is a rational number.)
