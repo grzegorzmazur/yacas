@@ -1,4 +1,19 @@
 
+
+
+
+EndOfFile;
+
+
+
+/*
+Infix("|->",100);
+RuleBase("|->",{left,right});
+(_var |-> _exp) <-- {{var},exp};
+HoldArg("|->",right);
+EndOfFile;
+*/
+
 10 # MyLog(x_IsPositiveNumber)_(x>2) <--
 [
   Local(result,n);
