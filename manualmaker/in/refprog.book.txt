@@ -880,16 +880,20 @@ the execution of the program.
 
 The error object consists of the string {"str"} and an arbitrary
 expression {expr}. The string should be used to classify the kind of error that
-has occurred, for example "domain" or "format". The association list of error objects is currently the global
+has occurred, for example "domain" or "format". The error object can be any expression that might be useful for handling the error later;
+for example, a list of erroneous values and explanations.
+The association list of error objects is currently the global
 variable {ErrorTableau}.
 
 If the parameter {expr} is missing, {Assert} substitutes {True}. If both optional parameters {"str"} and {expr} are missing, {Assert} creates an error of class {"generic"}.
 
 Errors can be handled by a
 custom error handler in the portion of the code that is able to handle a certain class of
-errors using the functions {IsError}, {GetError} and {ClearError}. Normally, all errors posted during evaluation of an expression should
+errors. The functions {IsError}, {GetError} and {ClearError} can be used.
+
+Normally, all errors posted to the error tableau during evaluation of an expression should
 be eventually printed to the screen. This is the behavior of prettyprinters
-{PrettyForm} and {TeXForm} which use {DumpErrors}.
+{DefaultPrint}, {Print}, {PrettyForm} and {TeXForm}; they call {DumpErrors} after evaluating the expression.
 
 *E.G.
 
@@ -906,7 +910,7 @@ be eventually printed to the screen. This is the behavior of prettyprinters
 	In> GetError("bad value");
 	Out> "must be zero";
 	In> DumpErrors()
-	Error: value: must be zero
+	Error: bad value: must be zero
 	Out> True;
 No more errors left:
 	In> IsError()
@@ -916,7 +920,7 @@ No more errors left:
 
 *SEE IsError, DumpErrors, Check, GetError, ClearError, ClearErrors
 
-*CMD DumpErrors, ClearErrors --- custom error handlers
+*CMD DumpErrors, ClearErrors --- simple error handlers
 *STD
 *CALL
 	DumpErrors()
@@ -950,7 +954,7 @@ error we are interested in. It returns {True} if any errors of the given class
 *SEE GetError, ClearError, Assert, Check
 
 
-*CMD GetError, ClearError --- handle custom errors
+*CMD GetError, ClearError --- custom errors handlers
 *STD
 *CALL
 	GetError("str")
@@ -961,6 +965,8 @@ error we are interested in. It returns {True} if any errors of the given class
 {"str"} -- string to classify the error
 
 *DESC
+
+These functions can be used to create a custom error handler.
 
 {GetError} returns the error object if a custom error of class {"str"} has been
 reported using {Assert}, or {False} if no errors of this class have been
