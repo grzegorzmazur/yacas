@@ -1490,7 +1490,7 @@ void LispFromFile(LispEnvironment& aEnvironment, LispPtr& aResult,
     {
         //TODO make the file api platform independent!!!!
         // Open file
-        LispLocalFile localFP(aEnvironment, orig->String(),LispTrue,
+        LispLocalFile localFP(aEnvironment, hashedname->String(),LispTrue,
                               aEnvironment.iInputDirectories);
         CHK(localFP.iOpened != 0, KLispErrFileNotFound);
         FILEINPUT newInput(localFP,aEnvironment.iInputStatus);

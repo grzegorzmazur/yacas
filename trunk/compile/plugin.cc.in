@@ -27,6 +27,7 @@ class ThisPlugin : public LispPluginBase
 {
 public:
     virtual void Add(LispEnvironment& aEnvironment);
+    virtual void Remove(LispEnvironment& aEnvironment);
 
 <?
 DriverDefineFunctionPrototypes();
@@ -39,6 +40,12 @@ void ThisPlugin::Add(LispEnvironment& aEnvironment)
 DriverInitializeSymbols();
 DriverLinkFunctions();
 ?>
+}
+
+
+void ThisPlugin::Remove(LispEnvironment& aEnvironment)
+{
+  //TODO this plugin cannot unload itself yet!
 }
 
 
