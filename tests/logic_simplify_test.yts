@@ -1,37 +1,39 @@
 Use("testers.ys");
+Use("logic.ys");
 
 StartTests();
 
 NextTest("Testing CNF");
 
+
 /*
     The main point is that CNF should return an answer in CNF, that is,
     as a conjunction of disjuncts.
 */
-
-// really simple tests
 Verify(CNF(A And A),      A);
 Verify(CNF(A And True),   A);
+
+
 Verify(CNF(A And False),  False);
 Verify(CNF(A Or  True),   True);
 Verify(CNF(A Or  False),  A);
 Verify(CNF(A Or  Not A),  True);
 Verify(CNF(A And Not A),  False);
 
-Verify(CNF((A And B) Or (A And B)),   A And B);
-Verify(CNF(A Or (A And B)),           A And(A Or B));
-Verify(CNF((A => B) And A),           (Not A Or B)And A);
-Verify(CNF((A And B) And A),          (A And B) And A);
 
-/*
-<<<<<<< logic_simplify_test.yts
-Verify(CNF((A And B) Or A),           A And(B Or A));
-Verify(CNF((Not A Or B) And A),       B And A);
-Verify(CNF(A And (Not A Or B)),       A And B);
-Verify(CNF((A And B) And A),          (A And B) And A);
+Verify(CNF((A And B) Or (A And B)),             A And B);
+Verify(CNF(A Or (A And B)),                     A And(A Or B));
+Verify(CNF((A => B) And A),                     (Not A Or B)And A);
+Verify(CNF((A And B) And A),                    (A And B) And A);
+Verify(CNF(Not (A And B) And A),                (Not A Or Not B) And A);
 
-Verify(CNF((A Or B Or Not A),         True);
-Verify(CNF((A Or B Or Not A) And (C), C);
+Verify(CanProve((A Or B) And Not A),            B And Not A);
+Verify(CanProve((A Or B) And (Not A Or C)),     B Or C);
+Verify(CanProve((B Or A) And (Not A Or C)),     B Or C);
+Verify(CanProve( A And (A Or Or B Or C)),       A);
+Verify(CanProve( A And (Not A Or Or B Or C)),   B Or C);
 
-EndTests();=======
-*/
+// this is a test of contradication, A==3 should kick A==2 out as they're contradictory
+Verify(CanProve( A==3 And (A==2 Or B Or C)),    B Or C);
+Verify(CanProve( A==3 And (A<2  Or B Or C)),    B Or C);
+Verify(CanProve( A==3 And (A>2  Or B Or C)),    A==3 And (A>2  Or B Or C));
