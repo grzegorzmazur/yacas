@@ -79,6 +79,7 @@ CFormMathFunctions :=
     {"Cosh","cosh"},
     {"Sinh","sinh"},
     {"Tanh","tanh"},
+    {"Exp","exp"},
     {"Ln","log"},
     {"ArcCos","arccos"},
     {"ArcCos","arccos"},
