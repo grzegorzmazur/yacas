@@ -3,35 +3,50 @@
 TODO:
 x Yank in the other routines I defined so far.
 x support for passing arguments
+- finish the simulator:
+  - not only adding frame, but also pointer to global (or placeholder), and start of code block,
+    so we can simulate name spaces, and jumping to other name spaces.
+  - typing: declare types, and act correspondingly. Compiler also has to deal with type conversions!
 - dynamically extending the list of functions you can call.
 - C++ version of the VM
+  - API:
+    - create a stack
+      - function to create a stack with initial arguments on it.
+    - create a code array type
+      - create a function to add ops to the stack.
+      - Create a function to execute a code block with stack
 */
 
-Macro()Test(expression);
+
+
+
+/*TODO remove
 PExprEcho(_e) <-- Echo(" ",e);
-
 PExpr := PExprEcho;
-//5 # Test(_rest) <-- Echo("PExpr is ",@PExpr);
-10 # Test(_x + _y) <-- [Test(@x);Test(@y);@PExpr("AddFloats");];
-10 # Test(_x - _y) <-- [Test(@x);Test(@y);@PExpr("NegFloat");@PExpr("AddFloats");];
-10 # Test(   - _y) <-- [         Test(@y);@PExpr("NegFloat");];
-10 # Test(_x * _y) <-- [Test(@x);Test(@y);@PExpr("MulFloats");];
-10 # Test(_x / _y) <-- [Test(@x);Test(@y);@PExpr("DivFloats");];
-10 # Test(_x ^ _y) <-- [Test(@x);Test(@y);@PExpr("PowFloats");];
+*/
 
-10 # Test(Sin(_x)) <-- [Test(@x);@PExpr("SinFloat");];
-10 # Test(Cos(_x)) <-- [Test(@x);@PExpr("CosFloat");];
-10 # Test(Tan(_x)) <-- [Test(@x);@PExpr("TanFloat");];
+Macro()CompileExpression(expression);
+//5 # CompileExpression(_rest) <-- Echo("PExpr is ",@PExpr);
+10 # CompileExpression(_x + _y) <-- [CompileExpression(@x);CompileExpression(@y);@PExpr("AddFloats");];
+10 # CompileExpression(_x - _y) <-- [CompileExpression(@x);CompileExpression(@y);@PExpr("NegFloat");@PExpr("AddFloats");];
+10 # CompileExpression(   - _y) <-- [         CompileExpression(@y);@PExpr("NegFloat");];
+10 # CompileExpression(_x * _y) <-- [CompileExpression(@x);CompileExpression(@y);@PExpr("MulFloats");];
+10 # CompileExpression(_x / _y) <-- [CompileExpression(@x);CompileExpression(@y);@PExpr("DivFloats");];
+10 # CompileExpression(_x ^ _y) <-- [CompileExpression(@x);CompileExpression(@y);@PExpr("PowFloats");];
 
-10 # Test(ArcSin(_x)) <-- [Test(@x);@PExpr("AsinFloat");];
-10 # Test(ArcCos(_x)) <-- [Test(@x);@PExpr("AcosFloat");];
-10 # Test(ArcTan(_x)) <-- [Test(@x);@PExpr("AtanFloat");];
+10 # CompileExpression(Sin(_x)) <-- [CompileExpression(@x);@PExpr("SinFloat");];
+10 # CompileExpression(Cos(_x)) <-- [CompileExpression(@x);@PExpr("CosFloat");];
+10 # CompileExpression(Tan(_x)) <-- [CompileExpression(@x);@PExpr("TanFloat");];
 
-10 # Test(Exp(_x))    <-- [Test(@x);@PExpr("ExpFloat");];
-10 # Test(Ln(_x))     <-- [Test(@x);@PExpr("LnFloat");];
+10 # CompileExpression(ArcSin(_x)) <-- [CompileExpression(@x);@PExpr("AsinFloat");];
+10 # CompileExpression(ArcCos(_x)) <-- [CompileExpression(@x);@PExpr("AcosFloat");];
+10 # CompileExpression(ArcTan(_x)) <-- [CompileExpression(@x);@PExpr("AtanFloat");];
 
-20 # Test(x_IsNumber) <-- [@PExpr("PushFloat");@PExpr(@x);];
-30 # Test(x_IsAtom)_Contains(args,x) <-- 
+10 # CompileExpression(Exp(_x))    <-- [CompileExpression(@x);@PExpr("ExpFloat");];
+10 # CompileExpression(Ln(_x))     <-- [CompileExpression(@x);@PExpr("LnFloat");];
+
+20 # CompileExpression(x_IsNumber) <-- [@PExpr("PushFloat");@PExpr(@x);];
+30 # CompileExpression(x_IsAtom)_Contains(args,x) <-- 
 [
   @PExpr("GetArg");
   Local(id);
@@ -39,9 +54,9 @@ PExpr := PExprEcho;
   Apply(PExpr,{id});
 ];
 
-100 # Test(_rest) <-- Check(False,ToString()Echo("Can not compile expression ",rest));
+100 # CompileExpression(_rest) <-- Check(False,ToString()Echo("Can not compile expression ",@rest));
 
-UnFence("Test",1);
+UnFence("CompileExpression",1);
 
 Macro("Compile",{ar,expr})
 [
@@ -50,7 +65,7 @@ Macro("Compile",{ar,expr})
   args:= @ar;
   code:={};
   PExpr := Hold({{n},DestructiveAppend(code,n)});
-  Test(@expr);
+  CompileExpression(@expr);
   Apply(PExpr,{"Return"});
   code;
 ];
@@ -135,7 +150,7 @@ ExecOp("GetArg") <--
   Local(index,value);
   Set(index,OpCode());
   Set(value,stack[Length(stack)+1-st-index]);
-Echo("Getting arg nr ",index," value is ",value);
+//Echo("Getting arg nr ",index," value is ",value);
   VMStack'Push(stack,value);
 ];
 
@@ -145,14 +160,14 @@ code := Compile({},Sin(2)+3^4)
 RunFunction(code,VMStack'PushArguments(VMStack'New(),{}),1,1);
 */
 
-
+PushArgs(args) := VMStack'PushArguments(VMStack'New(),args);
 CompileFn(fname,args,body) :=
 [
   Local(code);
   code := `Compile(@args,@body);
 //Echo("Code is ");
 //Write(code);
-  `(Function(@fname,@args)RunFunction(@code,VMStack'PushArguments(VMStack'New(),@args),1,1));
+  `(Function(@fname,@args)RunFunction(@code,PushArgs(@args),1,1));
 
 ];
 
