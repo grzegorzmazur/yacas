@@ -444,7 +444,8 @@ void LispConcatenate(LispEnvironment& aEnvironment, LispPtr& aResult,
     aResult.Set(LispSubList::New(all.Get()));
 }
 
-void LispConcatenateStrings(LispEnvironment& aEnvironment, LispPtr& aResult,
+
+static LispStringPtr ConcatenateStrings(LispEnvironment& aEnvironment, LispPtr& aResult,
               LispPtr& aArguments)
 {
     LispString *str = new LispString;
@@ -472,10 +473,14 @@ void LispConcatenateStrings(LispEnvironment& aEnvironment, LispPtr& aResult,
     
     str->Append('\"');
     str->Append('\0');
-
+    return str;
+}
+void LispConcatenateStrings(LispEnvironment& aEnvironment, LispPtr& aResult,
+              LispPtr& aArguments)
+{
+    LispString *str = ConcatenateStrings(aEnvironment, aResult, aArguments);
     aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(str)));
 }
-
 
 static void InternalDelete(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments, LispInt aDestructive)

@@ -84,6 +84,8 @@ void LispConcatenate(LispEnvironment& aEnvironment, LispPtr& aResult,
               LispPtr& aArguments);
 void LispConcatenateStrings(LispEnvironment& aEnvironment, LispPtr& aResult,
               LispPtr& aArguments);
+void LispNoCacheConcatenateStrings(LispEnvironment& aEnvironment, LispPtr& aResult,
+              LispPtr& aArguments);
 void LispDelete(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments);
 void LispInsert(LispEnvironment& aEnvironment, LispPtr& aResult,
