@@ -60,9 +60,11 @@ if test "$enable_gmp" = "yes" ; then
 	fi
 	NUMBERS_LIB="libgmpnumbers.la"
 	NUMBERS_LDFLAGS="-lgmp -lm"
+	NUMBERS_CFLAGS="-DENABLE_GMP"
 else
 	NUMBERS_LIB="libyacasnumbers.la"
 	NUMBERS_LDFLAGS="-lm"
+	NUMBERS_CFLAGS=""
 fi
 AC_SUBST(NUMBERS_LIB)
 AC_SUBST(NUMBERS_LDFLAGS)

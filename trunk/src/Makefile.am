@@ -1,5 +1,5 @@
-AM_CXXFLAGS = -DSCRIPT_DIR=\"$(scriptdir)\"
-AM_CPPFLAGS = -I$(srcdir)/plat/linux32
+AM_CXXFLAGS = -DSCRIPT_DIR=\"$(scriptdir)\" $(NUMBERS_CFLAGS)
+AM_CPPFLAGS = -I$(srcdir)/plat/linux32 $(NUMBERS_CFLAGS)
 
 bin_PROGRAMS = yacas
 noinst_PROGRAMS = testnum

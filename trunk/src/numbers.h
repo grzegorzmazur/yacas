@@ -88,73 +88,15 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
 
 
 
-/** Base number class. It is recommended that the derived classes add the following 
- *  static method to construct a number type:
- *
- *  static YacasBigNumber* Make(LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
- *
+/** Base number class. 
  */
  
-//TODO remove!!!
-#if 0
-// reference-counting through a smart pointer, so we can do automatic clean up on numbers
-class YacasBigNumber;
-typedef const RefPtr<YacasBigNumber> YacasBigNumberPtr;
-// pure abstract class representing a number
-class YacasBigNumber : public RefCountedObject
-{
-public: //constructors
-  /// Copy a number class
-  virtual YacasBigNumber* Copy() const = 0;
-  /// ToString : return string representation of number in aResult 
-  virtual void ToString(LispString& aResult, LispInt aBase) = 0;
-public: //information retrieval on library used  
-  /// Numeric library name
-  virtual const LispCharPtr NumericLibraryName() = 0;
-public://arithmetic
-  /// Multiply two numbers, and return result in aResult
-  virtual YacasBigNumber* Multiply(YacasBigNumberPtr& aX, YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
-  /** Multiply two numbers, and add to aResult (this is useful and generally efficient to implement).
-   * This is most likely going to be used by internal functions only, using aResult as an accumulator.
-   */
-  virtual YacasBigNumber* MultiplyAdd(YacasBigNumber* aResult,
-                YacasBigNumberPtr& aX, 
-                YacasBigNumberPtr& aY, 
-                LispInt aPrecision) = 0;
-  /// Add two numbers, and return result in aResult
-  virtual YacasBigNumber* Add(YacasBigNumberPtr& aX, YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
-  /// Negate the current number, and return it
-  virtual YacasBigNumber* Negate() = 0;
-  /// Divide, and return result. Note: if the two arguments are integer, it should return an integer result!
-  virtual YacasBigNumber* Divide(YacasBigNumberPtr& aX, YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
-
-public://bitwise operations  
-  virtual YacasBigNumber* ShiftLeft( YacasBigNumberPtr& aX, LispInt aNrToShift) = 0;
-  virtual YacasBigNumber* ShiftRight( YacasBigNumberPtr& aX, LispInt aNrToShift) = 0;
-  virtual YacasBigNumber* BitAnd(YacasBigNumberPtr& aX, YacasBigNumberPtr& aY) = 0;
-  virtual YacasBigNumber* BitOr(YacasBigNumberPtr& aX, YacasBigNumberPtr& aY) = 0;
-  virtual YacasBigNumber* BitXor(YacasBigNumberPtr& aX, YacasBigNumberPtr& aY) = 0;
-
-protected: // I don't want any one to construct this class any other way!
-  YacasBigNumber(){};
-
-
-};
-#endif //0
 
 /// Virtual base class for low-level multiple-precision arithmetic.
 /// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
 class NumberBase : public YacasBase
 {
 public: //constructors
-// default constructor
-  NumberBase() { };
-// copy constructor
-  NumberBase(const NumberBase& ) { };
-// construct from string
-  NumberBase(const LispString& number, LispInt aPrecision, LispInt aBase=10) {};
-// construct from a double value
-  NumberBase(double number, LispInt aPrecision) {};
   // assign to another number
  virtual void SetTo(const NumberBase& ) = 0;
   /// ToString : return string representation of number in aResult 
@@ -194,6 +136,7 @@ public:/// Bitwise operations, return result in *this.
 
 
 /*DEPRECATED, TODO remove
+  These now need to be implemented in script, at the very least.
 public: //base conversions
   virtual YacasBigNumber* FromBase( const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY,  LispInt aPrecision) = 0;
   virtual YacasBigNumber* ToBase( const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY,  LispInt aPrecision) = 0;
@@ -228,23 +171,6 @@ public://comparisons
   virtual LispBoolean LessThan(const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
 
 */
-
-
-
-
-
-
-/*
-YacasBigNumberPtr adder = MakeBigNum();
-YacasBigNumberPtr result =  adder->Add(
-                              MakeBigNum("23",10),
-                              MakeBigNum("45.23e3",10)
-                                      );
-  LispString str;
-  result->ToString(str,10);
-  aResult.Set(LispAtom::New(iEnvironment.HashTable().Lookup(str.String())));
-*/
-
 
 #endif
 
