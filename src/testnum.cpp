@@ -3,7 +3,11 @@
 
 #include <stdio.h>
 #include "yacasprivate.h"
-#include "anumber.h"
+
+//#include "refcount.h"
+#include "numbers.h"
+#include "platmath.h"
+
 
 
 void Check(LispString& str,char* s)
@@ -28,7 +32,7 @@ void Finish()
     fflush(stdout);
 }
 
-
+/*
 void Faculty(ANumber& fac,int n)
 {
     fac.SetTo("1");
@@ -43,19 +47,50 @@ void Faculty(ANumber& fac,int n)
         Multiply(fac,re,f);
     }
 }
-
+*/
 int main(void)
 {
     LispString  str;
+/*
     ANumber res1("10",100,10);
     ANumber res2("10",100,10);
     ANumber res3("10",100,10);
-
-    printf("WordBits = %d\n",WordBits);
-    printf("WordMask = %ld\n",WordMask);
-    printf("Starting tests...\n");
+*/
+//    printf("WordBits = %d\n",WordBits);
+//    printf("WordMask = %ld\n",WordMask);
+//    printf("Starting tests...\n");
 
     Next(); //1
+
+{
+
+    // Calculate z=x+y where x=10 and y=15
+    YacasBigNumberPtr x(MakeNativeNumber("10",100,10));
+    YacasBigNumberPtr y(MakeNativeNumber("15",100,10));
+    YacasBigNumberPtr z(x->Add(x,y,10));    
+    // cast the result to a string
+    LispString  str;
+    z->ToString(str,10);
+    Check(str,"25");
+
+}
+
+    const YacasBigNumberPtr n1(MakeNativeNumber("65535",100,10));
+    n1->ToString(str,10);
+    Check(str,"65535");
+    n1->ToString(str,10);
+    Check(str,"65535");
+    n1->ToString(str,2);
+    Check(str,"1111111111111111");
+    n1->Negate();
+    n1->ToString(str,10);
+    Check(str,"-65535");
+
+    const YacasBigNumberPtr res1(n1->Add(n1,n1,10));    
+    res1->ToString(str,10);
+    Check(str,"-131070");
+
+/*
     ANumber n1("65535",100,10);
     ANumberToString(str, n1, 10);
     Check(str,"65535");
@@ -71,8 +106,8 @@ int main(void)
     Add(res1, n1, n1);
     ANumberToString(str, res1, 16);
     Check(str,"1fffe");
-
-    
+*/
+/*    
     n1.SetTo("ff0000",16);
     ANumberToString(str, n1, 16);
     Check(str,"ff0000");
@@ -87,7 +122,6 @@ int main(void)
         sprintf(ss,"%lx",0xff0000-15L);
         Check(str,ss);
     }
-
     Next(); //2
 
     n1.SetTo("5a5a5a5a5a5a5a5a5a5a5a5a",16);
@@ -138,24 +172,24 @@ int main(void)
     ANumberToString(str, res3, 10);
     Check(str, "0");
 
-/*
-    {
-        char ss[100];
-    RED:
-        printf("numer = ");
-        fscanf(stdin,"%s",ss);
-        n1.SetTo(ss);
-        printf("denom = ");
-        fscanf(stdin,"%s",ss);
-        n2.SetTo(ss);
-        Divide(res2, res3, n1, n2);
-        ANumberToString(str, res2, 10);
-        printf("quotient : %s\n",str.String());
-        ANumberToString(str, res3, 10);
-        printf("remainder : %s\n",str.String());
-        goto RED;
-    }
-    */
+
+//    {
+//        char ss[100];
+//    RED:
+//        printf("numer = ");
+//        fscanf(stdin,"%s",ss);
+//        n1.SetTo(ss);
+//        printf("denom = ");
+//        fscanf(stdin,"%s",ss);
+//        n2.SetTo(ss);
+//        Divide(res2, res3, n1, n2);
+//        ANumberToString(str, res2, 10);
+//        printf("quotient : %s\n",str.String());
+//        ANumberToString(str, res3, 10);
+//        printf("remainder : %s\n",str.String());
+//        goto RED;
+//    }
+
 
     n1.SetTo("10");
     n2.SetTo("2");
@@ -187,7 +221,7 @@ int main(void)
 
     ANumberToString(str, n1, 10);
     Check(str, "1.5");
-    
+*/    
 /*
     n1.SetTo("");
     n2.SetTo("");

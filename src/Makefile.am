@@ -2,7 +2,7 @@ AM_CXXFLAGS = -DSCRIPT_DIR=\"$(scriptdir)\"
 AM_CPPFLAGS = -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS = yacas
-noinst_PROGRAMS = # testnum
+noinst_PROGRAMS = testnum
 noinst_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la libltdl.la @NUMBERS_LIB@ 
 EXTRA_LTLIBRARIES = libgmpnumbers.la libyacasnumbers.la 
 
@@ -29,7 +29,11 @@ yacas_DEPENDENCIES = libyacas.la libyacasplatform.la @NUMBERS_LIB@
 
 #yacas_LDFLAGS = $(LIBS)
 
-# testnum_SOURCES = anumber.cpp grower.cpp lispstring.cpp stdstubs.cpp obmalloc.cpp testnum.cpp mathutil.cpp
+testnum_SOURCES = testnum.cpp 
+testnum_LDADD = libyacas.la libyacasplatform.la libltdl.la @NUMBERS_LIB@ @NUMBERS_LDFLAGS@
+testnum_LDFLAGS = -export-dynamic
+testnum_DEPENDENCIES = libyacas.la libyacasplatform.la @NUMBERS_LIB@
+
 
 libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \

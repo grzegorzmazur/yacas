@@ -12,7 +12,12 @@
 #include <FL/fl_draw.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Menu_Item.H>
+#ifdef CALCULATOR
 #include "fl_adjustable_file_chooser.H"		// FLTK file chooser
+#endif
+#ifdef WORKSHEET
+#include <Fl/Fl_File_Chooser.H>
+#endif
 #include <stdlib.h>
 #include "yacas.h"
 #include "editor.h"
@@ -245,7 +250,12 @@ void cb_menu_insert(Fl_Widget* o, void* v)
 void cb_notepad(Fl_Widget* o, void* v)
 {
     char *newfile;
+#ifdef CALCULATOR
     newfile = fl_adjustable_file_chooser("Open File?", "*", "");
+#endif
+#ifdef WORKSHEET
+    newfile = fl_file_chooser("Open file?","*","");
+#endif
     if (newfile != NULL)
     {
         console->LoadNotePad(newfile);

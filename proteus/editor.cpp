@@ -1,5 +1,5 @@
 //
-// "$Id: editor.cpp,v 1.1 2001-02-22 19:19:55 ayalpinkus Exp $"
+// "$Id: editor.cpp,v 1.2 2002-10-27 21:58:48 ayalpinkus Exp $"
 //
 // A simple text editor program for the Fast Light Tool Kit (FLTK).
 //
@@ -357,11 +357,11 @@ void changed_cb(void) {
 }
 
 void copy_cb(void) {
-  EditorInput()->copy();
+  EditorInput()->copy(0);
 }
 
 void cut_cb(void) {
-  EditorInput()->copy();
+  EditorInput()->copy(0);
   EditorInput()->cut();
 }
 
@@ -666,5 +666,5 @@ void editor_add_items(int minx,int miny,int width, int height, int fontSize)
 
 
 //
-// End of "$Id: editor.cpp,v 1.1 2001-02-22 19:19:55 ayalpinkus Exp $".
+// End of "$Id: editor.cpp,v 1.2 2002-10-27 21:58:48 ayalpinkus Exp $".
 //

@@ -597,8 +597,8 @@ void InterruptHandler(int errupt)
 #include "platmath.h"
 void TestNum()
 {//numeric test code
-  const YacasBigNumberPtr doer(MakeNativeNumber("0",10));
-  const YacasBigNumberPtr result(doer->Multiply(
+  YacasBigNumberPtr doer(MakeNativeNumber("0",10));
+  YacasBigNumberPtr result(doer->Multiply(
                                 MakeNativeNumber("23",10),
                                 MakeNativeNumber("45.23e3",10)
                                         ,10));
@@ -606,20 +606,9 @@ void TestNum()
   result->ToString(str,10);
   printf("23*45.23e3 = %s\n",str.String());
 
-  const YacasBigNumberPtr minusOne(MakeNativeNumber("-1.0",10));
+  YacasBigNumberPtr minusOne(MakeNativeNumber("-1.0",10));
   minusOne->ToString(str,10);
   printf("-1 = %s\n",str.String());
-  const YacasBigNumberPtr pi(doer->ArcCos(minusOne,10));  
-  pi->ToString(str,10);
-  printf("pi = %s\n",str.String());
-
-
-  const YacasBigNumberPtr zero(doer->ArcSin(doer->Sin(MakeNativeNumber("0",10),10),10));  
-
-  zero->ToString(str,10);
-  printf("zero = %s\n",str.String());
-
-
 }
 
 
