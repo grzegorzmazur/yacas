@@ -1,0 +1,36 @@
+
+Chapter()"Functional operators";
+
+AddAnchor(":");
+SubSection()"item:list"; Text()"
+prepends an item to a list, or a string. 
+Examples:
+ a:b:c:{}       ->  {a,b,c} <BR>
+ \"hello\":\" \":\"world\" -> \"hello world\"
+";
+
+AddAnchor("@");
+SubSection()"\"oper\" @ arg"; Text()"
+Applies an operator to arguments.
+Examples:
+ \"Sin\" @ a      ->   Sin(a)
+ \"Sin\" @ {a,b}  ->   Sin(a,b)
+
+";
+
+AddAnchor("/@");
+SubSection()"oper /@ arglist"; Text()"
+Applies an operator to arguments in a list, in a threaded manner.
+Example:
+ \"Sin\" /@ {a,b} ->   {Sin(a),Sin(b)}
+
+";
+
+AddAnchor("..");
+SubSection()"n .. m"; Text()"
+returns a list of numbers from n upto m.
+Example:
+ 1 .. 4         ->   {1,2,3,4}
+";
+
+

@@ -1,0 +1,356 @@
+/*
+TODO:
+x inclusion of a potential
+x return a polynomial
+x maybe terminal-based? remember the last result, and allow
+  operations on them.
+- allow specifying a d.e. using notation of the form y'' - E*y == 0
+- clean up this file (comments!)
+*/
+
+
+cofdegree:=6;  /* user-defined */
+cofdim:=1;
+
+CofDegree(_v) <-- (cofdegree := v);
+CofDim(_v) <-- (cofdim := v);
+CofEq(_eq) <-- (cofeq := eq);
+
+
+10 # IsIntegerArray({}) <-- True;
+20 # IsIntegerArray(list_IsList) <-- IsIntegerArray(Head(list),Tail(list));
+
+10 # IsIntegerArray(head_IsInteger,_tail) <-- IsIntegerArray(tail);
+20 # IsIntegerArray(_head,_tail) <-- False;
+
+RuleBase("Cof",{var,body});
+
+10 # ApplyCof(coefs_IsIntegerArray,Cof(_vars,_body)) <--
+[
+  Local(v,i);
+
+  v:=MakeVector(i,Length(coefs));
+  Eval(UnList(MacroLocal:v));
+  ForEach(item,Transpose({v,coefs}))
+  [
+    MacroSet(item[1],item[2]);
+  ];
+
+/* Echo({"coefs are ",coefs,Eval(body)});  */
+  UnList({Cof,vars,Eval(body)});
+];
+
+20 # ApplyCof(_arr,_otherwise) <-- otherwise;
+
+10 # DerivCof(Cof(_vars,_body),_var)_(Contains(vars,var)) <--
+[
+  Local(index,i);
+  index := Find(vars,var);
+  i:=Atom("i":String(index));
+  body:=i*body;
+  body:=Apply("Subst",{i,(i+1),body});
+  UnList({Cof,vars,body});
+];
+
+20 # DerivCof(Cof(_vars,_body),_var) <-- 0;
+
+5 # Cof(_vars,_body1) + Cof(_vars,_body2) <-- UnList({Cof,vars,body1+body2});
+5 # Cof(_vars,_body1) - Cof(_vars,_body2) <-- UnList({Cof,vars,body1-body2});
+5 #                   - Cof(_vars,_body1) <-- UnList({Cof,vars,- body1});
+
+10 # CofMatch((_at)[_ind]) <-- True;
+20 # CofMatch(_term) <-- False;
+
+10 # CofChange((_at)[ind_IsNegativeInteger]) <-- Check(False,"Invalid index!");
+15 # CofChange((_at)[_ind])_CofMatch(at) <--
+[
+  Local(left);
+  left:=CofChange(at);
+  If(left = 0, 0,
+     Atom(String(left):"S":String(ind)));
+];
+20 # CofChange((_at)[_ind]) <-- Atom(String(at):"S":String(ind));
+
+CofMap(body):=
+[
+  Substitute(body,"CofMatch","CofChange");
+];
+
+
+CofListed(term) :=
+[
+  Local(j,list);
+  list:=ZeroVector(cofdegree^cofdim); 
+
+  For(j:=0,j<cofdegree^cofdim,j++)
+  [
+    Local(as,rr);
+    as:=Concat(PAdicExpandInternal(j,cofdegree),ZeroVector(cofdim));
+    as:=as[1 .. cofdim];
+    rr:=(ApplyCof(as,term)[2]);
+    rr:=CofMap(rr);
+    list[j+1]:=rr;
+  ];
+  list;
+];
+
+10 # CofMul(_fact,Cof(_vars,_body)) <-- Cof(vars,fact*body);
+
+10 # CofFits({},{}) <-- True;
+20 # CofFits(_small,_limit) <--
+[
+  If(Head(small) <= Head(limit),
+     CofFits(Tail(small),Tail(limit)),
+     False
+     );
+];
+
+RuleBase("CofM",{arg1,arg2,arg3});
+10 # CofM(n_IsIntegerArray,_cof1,_cof2) <--
+[
+  Local(i,j,result,max,nr);
+  max:=Max(n)+1;
+  nr:=max^cofdim;
+  cof1:=Eval(cof1);
+  cof2:=Eval(cof2);
+  result:=0;
+
+  For(j:=0,j<nr,j++)
+  [
+    Local(f1,f2,as);
+    as:=Concat(PAdicExpandInternal(j,max),ZeroVector(cofdim));
+    as:=as[1 .. cofdim];
+
+    If(CofFits(as,n),
+      [
+      f1:=Eval(ApplyCof(  as,cof1));
+      f2:=Eval(ApplyCof(n-as,cof2));
+      f1:= (f1[2]);
+      f2:= (f2[2]);
+      result:=result+f1*f2;
+      ]);
+  ];
+
+  result;
+];
+
+HoldArg("CofM",arg2);
+HoldArg("CofM",arg3);
+
+10 # CofArrays(_term,{}) <-- term;
+20 # CofArrays(_term,list_IsList) <-- CofArrays(term[list[1]],Tail(list));
+
+MakeCof() <--
+[
+  Local(base,ilist,i,a);
+  ilist:=MakeVector(i,cofdim);
+  base:=CofArrays(a,ilist);
+  Cof(MakeVector(x,cofdim),base);
+];
+
+MakeCof(_term) <--
+[
+  Cof(MakeVector(x,cofdim),term);
+];
+
+MakeCofM(_cof1,_cof2) <--
+[
+  Local(ilist);
+  ilist:=MakeVector(i,cofdim);
+  MakeCof(UnList({CofM,ilist,cof1,cof2}));
+];
+
+
+Multiplex(_f,_op,_id) <--
+[
+  Local(ilist,result,i);
+  result:=id;
+  ilist:=MakeVector(i,cofdim);
+  For(i:=1,i<=cofdim,i++)
+  [
+    Local(newterm);
+    newterm:=Apply(f,{ilist[i]});
+    result:=Apply(op,{result,newterm});
+  ];
+  result;
+];
+
+CofShow()<--
+[
+  Local(i);
+  Echo({"####################"});
+  For(i:=1,i<=Length(cfeqs),i++)
+  [
+    Echo({i,". ",cfeqs[i]});
+  ];
+  True;
+];
+
+CofShowVars()<--
+[
+  Local(i);
+  Echo({"####################"});
+  For(i:=1,i<=Length(cfeqs),i++)
+  [
+    Echo({i,". ",VarList(cfeqs[i])});
+  ];
+  True;
+];
+
+CofFindE()<--
+[
+  Local(result);
+  
+  ForEach(item,cf2)
+  [
+    If(item[1] = E,result:=item[2]);
+  ];
+  result;
+];
+
+
+CofESolve(_extra)<--
+[
+  Local(list);
+  list:=CofListed(cofeq);
+  For(i:=1,i<=Length(list),i++)
+  [
+    If(Not(IsFreeOf(list[i],E)),
+      list[i]:=E-SuchThat(list[i],E)
+      );
+  ];
+  cfeqs:=Map("==",{list, FillList(0,cofdegree^cofdim)});  
+  cfeqs:=Concat(extra,cfeqs);
+  CofShow();
+  True;
+];
+
+CofSetUp(_extra)<--
+[
+  Local(list);
+  list:=CofListed(cofeq);
+  cfeqs:=Map("==",{list, FillList(0,cofdegree^cofdim)});  
+  cfeqs:=Concat(extra,cfeqs);
+  CofShow();
+  True;
+];
+
+CofSolve()<--
+[
+  Local(vr,vr2);
+  vr:=VarList(cfeqs);
+  cf2:=V(Solve(cfeqs,vr));
+  If(Length(cf2)>0,
+  [
+    vr2:=VarList(cf2[1]);
+    cf2:=Map("List",{vr,cf2[1]});
+    TableForm(cf2);
+    Echo({Length(vr2),vr2});
+  ]);
+  True;
+];
+
+CofTry(_extra) <--
+[
+  CofSetUp(extra);
+  CofSolve();
+];
+
+DerivCofAll2(_term) <--
+[
+  Local(x,result);
+  result:=0;
+  x:=MakeVector(x,cofdim);
+  ForEach(item,x)
+  [
+    result:=result+DerivCof(DerivCof(term,item),item);
+  ];
+  result;
+];
+
+DerivCofAll1(_term) <--
+[
+  Local(x,result);
+  result:=0;
+  x:=MakeVector(x,cofdim);
+  ForEach(item,x)
+  [
+    result:=result+DerivCof(term,item);
+  ];
+  result;
+];
+
+
+CofTaylor(_cof,_n) <--
+[
+  Local(result);
+  result:=0;
+  For(i:=0,i<=n,i++)
+  [
+    result:=result+(ApplyCof({i},cof)[2])*x^i;
+  ];
+  result;
+];
+
+CofT(_r)<--
+[
+  Local(item);
+  ForEach(item,cf2)
+  [
+    r:=Apply("Subst",{item[1],item[2],r});
+  ];
+  r;
+];
+CofT()<--
+[
+  CofT(CofMap(CofTaylor(MakeCof(),cofdegree)));
+];
+
+
+EndOfFile;
+
+
+f(x,n):=Sum(MakeVector(a,n)*x^(0 .. n-1));
+
+
+uu:= (Deriv(x,2)f(x,cofdegree+2))+A*f(x,cofdegree);
+
+/* uu:= (Deriv(x,2)f(x,cofdegree+2))+(Taylor(x,0,cofdegree+2)Sin(10*x))*f(x,cofdegree); */
+
+
+cf:=Map("==",{Coef(uu,x,0 .. cofdegree-1), FillList(0,cofdegree)});
+
+/*
+cf:= (a1==0):cf;
+cf:= (a2==1):cf;
+*/
+cf:= (a1==0):cf;
+cf:= (a2==1):cf;
+
+
+Echo({cf});
+cf2:=Solve(cf,MakeVector(a,cofdegree+2));
+
+Echo({cf2[1]});
+
+poly:=NormalForm(UniVariate(x,0,cf2[1]));
+PrettyForm(poly);
+
+/*
+
+fmod(x,y):=
+[
+  x:=N(Eval(x),2*GetPrecision());
+  y:=N(Eval(y),2*GetPrecision());
+  N(x-MathFloor(x/y)*y);
+];
+HoldArg("fmod",x);
+HoldArg("fmod",y);
+
+*/
+  
+
+
+
+
+

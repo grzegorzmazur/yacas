@@ -1,0 +1,43 @@
+
+Book()"Yacas users function reference";
+
+Load("config.chapt"); GarbageCollect();  
+Load("arith.chapt");  GarbageCollect();  
+Load("calc.chapt");  GarbageCollect();
+Load("linalg.chapt");  GarbageCollect();
+Load("univar.chapt");  GarbageCollect();
+Load("lists.chapt");  GarbageCollect();
+Load("functional.chapt");  GarbageCollect();
+Load("controlflow.chapt");  GarbageCollect();
+Load("preds.chapt");  GarbageCollect();
+Load("logic.chapt");  GarbageCollect();
+Load("const.chapt");  GarbageCollect();
+Load("vars.chapt");  GarbageCollect();
+Load("io.chapt");  GarbageCollect(); 
+
+/*
+  GarbageCollect();
+  GarbageCollect();
+  GarbageCollect();
+  GarbageCollect();
+  GarbageCollect();
+  GarbageCollect();
+  GarbageCollect();
+  GarbageCollect();
+  GarbageCollect();
+  GarbageCollect();
+  GarbageCollect();
+  GarbageCollect();
+  GarbageCollect();
+  GarbageCollect();
+*/
+
+
+
+
+/*
+*/
+
+/*
+*/
+

@@ -1,0 +1,23 @@
+
+
+/* Initialize book building. */
+
+DefaultDirectory("in/");
+
+Use("html");
+SetHtmlDirectory("");
+Use("styleplain");  /* style cheet for the documentation */
+Use("manualmaker"); /* engine that renders book to html */
+
+InitBooks();        /* Initialize book building */
+
+InitBook("ref");
+Blurb()
+"A full reference of all functions accessible from within Yacas.";
+Load("ref.book");
+
+SelectBook("ref");
+EmitHtmlFramed();
+EmitHtmlSimple(); 
+
+

@@ -1,0 +1,99 @@
+
+/* Initialize book building. */
+
+DefaultDirectory("in/");
+
+ToFile("manicon.html")
+WriteString("<HTML>
+<BODY BGCOLOR=ffffff>
+<A HREF=\"books.html\" TARGET=\"_parent\">
+  <img src=\"yacaslogo.gif\" BORDER=0>
+</A>
+</BODY>
+</HTML>");
+
+
+Use("html");
+SetHtmlDirectory("");
+Use("styleplain");  /* style cheet for the documentation */
+Use("manualmaker"); /* engine that renders book to html */
+
+InitBooks();        /* Initialize book building */
+
+InitBook("intro");
+Blurb()
+"This document gives a short introduction on Yacas.
+Included is a short tutorial on the syntax, and some
+commands to get you started. There are also some examples.";
+Load("intro.book");
+
+  GarbageCollect();
+
+InitBook("ref");
+Blurb()
+"A reference of functions accessible from within Yacas.
+This reference contains all the functions that can be useful from
+the command line";
+Load("ref.book");
+
+InitBook("refprog");
+Blurb()
+"A reference of functions accessible from within Yacas.
+This reference contains all the functions that might be useful
+when programming in Yacas.";
+Load("refprog.book");
+
+InitBook("coding");
+Blurb()
+"This document should get you started programming in Yacas.";
+Load("coding.book");
+
+  GarbageCollect();
+
+/* Emit framed version of the manual. */
+SelectBook("intro");
+EmitHtmlFramed();
+EmitHtmlSimple();
+
+  GarbageCollect();
+
+SelectBook("ref");
+EmitHtmlFramed();
+
+  GarbageCollect();
+
+SelectBook("refprog");
+EmitHtmlFramed();
+
+  GarbageCollect();
+
+SelectBook("coding");
+EmitHtmlFramed();
+
+  GarbageCollect();
+
+GroupBooks("ref","refprog");
+SelectBook("ref");
+EmitHtmlSimple();
+
+  GarbageCollect();
+
+/* make the index of framed books */
+EmitBookIndex();
+
+  GarbageCollect();
+
+/* Export the currently built book to html in a simple form. */
+/*
+SelectBook("intro");
+EmitHtmlSimple();
+SelectBook("ref");
+EmitHtmlSimple();
+SelectBook("refprog");
+EmitHtmlSimple();
+SelectBook("coding");
+EmitHtmlSimple();
+*/
+
+
+

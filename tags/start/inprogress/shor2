@@ -1,0 +1,360 @@
+
+/* shor 0.1
+ * This file implements the shor algorithm.
+ *
+ * Change log:
+ * 0.1 initial version, implementation of the classical version of
+ *     the factoring algorithm, and some matrix operations using
+ *     the tensor package.
+ */
+
+
+/* A short description due to Matthew Hayward :
+
+
+Steps to Shor's Algorithm 
+
+Shor's algorithm for factoring a given integer n can be broken into
+some simple steps. 
+
+Step 1) Determine if the number n is a prime, a even number, or an
+integer power of a prime number. If it is
+we will not use Shor's algorithm. There are efficient classical methods
+for determining if a integer n belongs
+to one of the above groups, and providing factors for it if it is. This
+step would be performed on a classical computer. 
+
+Step 2) Pick a integer q that is the power of 2 such that "n^2 <= q < 2*n^2".
+This step would be done on a classical computer. 
+
+Step 3) Pick a random integer x that is coprime to n. When two numbers
+are coprime it means that their greatest common divisor is 1. There
+are efficient classical methods for picking such an x. This step would be
+done on a classical computer. 
+
+Step 4) Create a quantum register and partition it into two sets,
+register 1 and register 2. Thus the state of our quantum computer can
+be given by: |reg1, reg2>. Register 1 must have enough qubits to represent
+integers as large as q - 1. Register 2 must have enough qubits to represent
+integers as large as n - 1. The calculations for how many qubits are
+needed would be done on a classical computer. 
+
+Step 5) Load register 1 with an equally weighted superposition of all
+integers from 0 to q - 1. Load register 2 with all zeros. This
+operation would be performed by our quantum computer. The total state
+of the quantum memory register at this point is: 
+
+"1/Sqrt(q) Sum(a,0,q-1) |a,0>"
+
+Step 6) Now apply the transformation "x^a mod n" to for each number stored in
+register 1 and store the result in register 2. Due to quantum parallelism
+this will take only one step, as the quantum computer will
+only calculate "x^|a> mod n", where |a> is the superposition of states created in
+step 5. This step is performed on the quantum computer. The state of the
+quantum memory register at this point is: 
+
+"1/Sqrt(q) Sum(a,0,q-1) |a,x^a mod n>"
+
+Step 7) Measure the second register, and observe some value k. This has
+the side effect of collapsing register one into a equal superposition of
+each value a between 0 and q-1 such that 
+
+"x^a mod n = k"
+
+This operation is performed by the quantum computer. The state of the
+quantum memory register after this step is: 
+
+"1/Sqrt(||A||) Sum(a' elements of A) |a',k>"
+
+Where A is the set of a's such that "x^a mod n = k", and ||A|| is the
+number of elements in that set. 
+
+Step 8) Now compute the discrete Fourier transform on register one. The
+discrete Fourier transform when applied to a state |a>changes it in the
+following manner: 
+
+"|a> = 1/Sqrt(q) Sum(c=0,q-1) |c> *Exp(2*Pi*I*a*c/q)"
+
+This step is performed by the quantum computer in one step through quantum
+parallelism. After the discrete Fourier transform our register is in
+the state: 
+
+"1/Sqrt(||A||) Sum(a' element of A) 1/Sqrt(q) Sum(c=0,q-1) |c,k> *Exp(2*Pi*I*a'*c/q)"
+
+Step 9) Measure the state of register one, call this value m, this integer
+m has a very high probability of being a multiple of q/r, where r is the
+desired period. This step is performed by the quantum computer. 
+
+Step 10) Take the value m, and on a classical computer do some post
+processing which calculates r based on knowledge of m and q. There
+are many ways to do this post processing. This post processing is done on a
+classical computer. 
+
+Step 11) Once you have attained r, a factor of n can be determined by
+taking "Gcd(x^(r/2)+1,n)" and "Gcd(x^(r/2)-1,n)"
+. If you have found a factor of n, then stop, if not
+go to step 4. This final step is done on a classical computer. 
+
+Step 11 contains a provision for what to do if Shor's algorithm failed
+to produce factors of n. There are a few reasons why Shor's algorithm
+can fail, for example the discrete Fourier transform could be measured
+to be 0 in step 9, making the post processing in step 10 impossible.
+The algorithm will sometimes find factors of 1 and n, which is not
+useful either. For these reasons step 11 must be able to jump back
+to step four to start over. (Williams, Clearwater) 
+
+
+ */
+ 
+
+
+
+
+/* ClassicPeriod : this is the computation that the Shor
+   algorithm is supposed to perform more efficiently.
+   It tries to find the period of n^(p+1) mod m. That is, it
+   will return the p for which n mod m = n^p mod m
+   Example: ClassicPeriod(4,15) -> 2
+ */
+
+ClassicPeriod(n,m):=
+[
+  Local(i,first,period);
+  i:=n;
+  period:=1;
+  first:=Mod(i,m);
+  i:=i*n;
+  While(Mod(i,m)!=first)
+  [
+    i:=i*n;
+    period++;
+  ];
+  period;
+];
+
+/* ClassicFactors does the same as Factors, but using a period
+   Example: ClassicFactors(4,15,ClassicPeriod(4,15)) -> {5,3}
+ */
+ClassicFactors(n,m,period):=
+[
+  Local(res);
+  res:=Sqrt(n^period);
+  {Gcd(res+1,m),Gcd(res-1,m)};
+];
+
+
+
+/* Rot: tensor defining a rotation in a plane spanned by two
+ * arbitrary base vectors. Rot(n,m,i,j,a) gives the matrix element
+ * (i,j) of a rotation matrix that rotates the space in the plane (n,m)
+ * around angle a.
+ */
+
+5  # Rot(ii_IsInteger,_ii,jj_IsInteger,_jj,_angle) <-- 1;
+6  # Rot(ii_IsInteger,_ii,jj_IsInteger,kk_IsInteger,_angle) <-- 0; 
+10 # Rot(_ii,_jj,_ii,_ii,_angle) <-- Cos(angle);
+10 # Rot(_ii,_jj,_ii,_jj,_angle) <-- -Sin(angle);
+10 # Rot(_ii,_jj,_jj,_ii,_angle) <-- Sin(angle);
+10 # Rot(_ii,_jj,_jj,_jj,_angle) <-- Cos(angle);
+20 # Rot(ii_IsInteger,jj_IsInteger,kk_IsInteger,_kk,_angle)_
+     (kk!= ii And kk != jj) <-- 1;
+
+30 # Rot(ii_IsInteger,jj_IsInteger,kk_IsInteger,ll_IsInteger,_angle)_
+  (kk != ii And kk != jj) <-- 0;
+30 # Rot(ii_IsInteger,jj_IsInteger,kk_IsInteger,ll_IsInteger,_angle)_
+  (ll != ii And ll != jj) <-- 0;
+
+
+/* Two examples of use of Rot:
+ * - f1(i,a) returns the i-th vector element
+ *   after rotating a vector X in an aight-dimensional space in the
+ *   plane (2,5).
+ *
+ * - f2(i,a1,a2) does the same, rotating over (5,3) and then (2,5)
+
+  f1(i,a):=Eval(TExplicitSum(8)TSum({j})Rot(2,5,i,j,a)*X(j));
+  f2(i,a1,a2):=Eval(TExplicitSum(16)TSum({j,k})Rot(2,5,i,j,a1)*Rot(5,3,j,k,a2)*X(k));
+
+*/
+
+/* Mir: mirror a vector. Mir(i,j,k) is the matrix that converts a vector
+ * into one with the i-th component changed from X(i) to -X(i).
+ */
+
+5 # Mir(_ii,_ii,_ii) <-- -1;
+6 # Mir(_ii,_jj,_jj) <--  1;
+7 # Mir(_ii,jj_IsInteger,kk_IsInteger) <--  0;
+
+/* Example, mirror the i-th component, and show the j-th component 
+  f3(i,j):=Eval(TExplicitSum(8)TSum({k})Mir(i,j,k)*X(k));
+ */
+
+/* InsertBit inserts a bit into a number num, at position index. the
+ * first bit has index 0.
+ */
+
+InsertBit(_index,_bit,_num) <--
+[
+  Local(low,high,lowmask);
+  lowmask := (1<<index)-1;
+  low := BitAnd(num,lowmask);
+  high:= (num-low)<<1;
+  BitOr(BitOr(low,high),bit*(1<<index));
+];
+
+/* Had is an implementation of the Hadamard gate. It rotates the bit n
+ * into a superposition of states (0,1) by rotating around angle Pi/4.
+
+Had(_n,_Nbits,_ii,_jj) <--
+[
+  Local(list,result,i1,i2,kk,in,kkk);
+  result := 1;
+  list:= (0 .. (2^(Nbits-1) - 1));
+  kkk:=MakeVector(kk,2^(Nbits-1)-1);
+  kk:=Concat({ii},kkk,{jj});
+  in:=1;
+  ForEach(item,list)
+  [
+    i1:=InsertBit(n,0,item)+1;
+    i2:=InsertBit(n,1,item)+1;
+    result:=result*Rot(i1,i2,kk[in],kk[in+1],Pi/4);
+    in++;
+  ];
+  TExplicitSum(2^Nbits)(TSum(kkk)result);
+];
+
+/* Example: apply one Hadamard gate to a vector space on qubit 1.
+  f4(i):=Eval(TExplicitSum(8)TSum({j})Had(1,3,i,j)*X(j));
+ */
+
+/* Applying the Hadamard gate twice: a quantum not gate on qubit 1.
+  f5(i):=Eval(TExplicitSum(4)TSum({j,k})Had(1,2,i,j)*Had(1,2,j,k)*X(k));
+ */
+
+/* This example prepares the state in its ground state:
+ * XX(1)=1 and XX(n!=1)=0.
+ * Applying the Hadamard gate to all the bits. This prepares the system in
+ * a state where each combination is equally probable. Try it out with f6(n),
+ * which should return 1/2 for any integer (1 .. 4)
+ * 
+  RuleBase("XX",{i});
+  f6(i):=Eval(TExplicitSum(4)TSum({j,k})Had(0,2,i,j)*Had(1,2,j,k)*XX(k));
+  10 # XX(1) <-- 1;
+  20 # XX(_n) <-- 0;
+*/
+
+
+/* CN: Controlled Not gate. If the control bit is set, the target
+ * bit is inverted.
+ */
+CN(_target,_control,_Nbits,_ii,_jj) <--
+[
+  Local(list,result,i1,i2,kk,in,kkk,cntl);
+  result := 1;
+  list:= (0 .. (2^(Nbits-1) - 1));
+  kkk:=MakeVector(kk,2^(Nbits-2)-1);
+  kk:=Concat({ii},kkk,{jj});
+  in:=1;
+  cntl:= (1<<control);
+
+  ForEach(item,list)
+  [
+   i1:=InsertBit(target,0,item)+1;
+   i2:=InsertBit(target,1,item)+1;
+    If (BitAnd(cntl,i1-1)!= 0,
+    [
+      result:=result*Rot(i1,i2,kk[in],kk[in+1],Pi/2);
+      in++;
+    ]);  
+  ];
+
+  TExplicitSum(2^Nbits)(TSum(kkk)result);
+];
+
+/* Example using CN: 3-qubit space, with bit 0 the control bit
+ * and bit 1 th target bit. This f7(1)=X(1), f7(2)=-X(4), f7(3)=X(3)
+ * and f7(4)=X(2)
+  f7(i):=Eval(TExplicitSum(8)TSum({j})CN(1,0,3,i,j)*X(j));
+*/
+
+
+
+
+
+10 # ShorFactor(_M,_x)_(Mod(M , 2) = 0) <--
+  [
+  Echo({"Number is even. Factors found : ",M," = 2*",M>>1});
+  {2,M>>1};
+  ];
+20 # ShorFactor(M_IsPrime,_x) <--
+  [
+  Echo({"Numer is prime. It cannot be factored."});
+  {};
+  ];
+
+25 # ShorFactor(M_IsPrimePower,_x) <--
+  [
+  Echo({M," is a prime power (not handled yet)."});
+  {M,1};
+  ];
+
+30 # ShorFactor(_M,_x)_
+([
+  Local(factor);
+  factor := MathGcd(M,x);
+  factor != 1 And factor != M;
+]) <--
+    [
+     Local(factor);
+    factor := MathGcd(M,x);
+    Echo({"Factor found since GCD(",M,",",x,")=",factor});
+    {factor,M/factor};
+    ];
+40 # ShorFactor(_M,_x) <--
+[
+  Local(q,inbits,outbits);
+  q:= (1<<CountBits(M^2));
+  inbits:=CountBits(q-1);
+  outbits:=CountBits(M-1);
+
+/*
+  shorinitstate(i):=Eval(InState(inbits,i));
+
+  shormodexpstate(i):=Eval(ModExpState(inbits,i,x,M));
+  nr:= (1<<(inbits+outbits));
+  For(i:=1,i<=nr,i++)
+  [
+    If(shormodexpstate(i) != 0, ShowModExp(inbits,i,x,M));
+  ];
+*/
+
+  /* TODO old way of calculating */
+  ClassicFactors(x,M,ClassicPeriod(x,M));
+];
+
+
+10 # InState(_inbits,i_IsInteger)_((i>>inbits) = 0) <-- 1/Sqrt(1<<inbits);
+20 # InState(_inbits,i_IsInteger)                   <-- 0;
+
+
+ModExpState(_inbits,i_IsInteger,_x,_M) <--
+[
+  Local(in,out);
+  i--;
+  in := BitAnd(i,(1<<inbits)-1);
+  out:= (i-in)>>inbits;
+/* Echo({out,aMod(x^in,M)}); */
+  If(out = Mod(x^in,M), 1/Sqrt(1<<inbits), 0);
+];
+
+ShowModExp(_inbits,i_IsInteger,_x,_M) <--
+[
+  Local(in,out);
+  i--;
+  in := BitAnd(i,(1<<inbits)-1);
+  out:= (i-in)>>inbits;
+  Echo({in,out});
+];
+
+
+

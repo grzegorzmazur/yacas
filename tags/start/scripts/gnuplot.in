@@ -1,0 +1,1 @@
+plot "gnudata.in1" with lines, "gnudata.in2" with lines

@@ -1,0 +1,342 @@
+<HTML>
+<A NAME="c14">
+
+</A>
+<A HREF="refchapter14.html#FullForm" TARGET="Chapters">
+FullForm
+</A>
+, <A HREF="refchapter14.html#Echo" TARGET="Chapters">
+Echo
+</A>
+, <A HREF="refchapter14.html#PrettyForm" TARGET="Chapters">
+PrettyForm
+</A>
+, <A HREF="refchapter14.html#Write" TARGET="Chapters">
+Write
+</A>
+, <A HREF="refchapter14.html#WriteString" TARGET="Chapters">
+WriteString
+</A>
+, <A HREF="refchapter14.html#Space" TARGET="Chapters">
+Space
+</A>
+, <A HREF="refchapter14.html#NewLine" TARGET="Chapters">
+NewLine
+</A>
+, <A HREF="refchapter14.html#FromFile" TARGET="Chapters">
+FromFile
+</A>
+, <A HREF="refchapter14.html#FromString" TARGET="Chapters">
+FromString
+</A>
+, <A HREF="refchapter14.html#ToString" TARGET="Chapters">
+ToString
+</A>
+, <A HREF="refchapter14.html#Read" TARGET="Chapters">
+Read
+</A>
+, <A HREF="refchapter14.html#LispRead" TARGET="Chapters">
+LispRead
+</A>
+, <A HREF="refchapter14.html#ReadToken" TARGET="Chapters">
+ReadToken
+</A>
+, <A HREF="refchapter14.html#ToFile" TARGET="Chapters">
+ToFile
+</A>
+, <A HREF="refchapter14.html#Load" TARGET="Chapters">
+Load
+</A>
+, <A HREF="refchapter14.html#Use" TARGET="Chapters">
+Use
+</A>
+, <A HREF="refchapter14.html#DefLoad" TARGET="Chapters">
+DefLoad
+</A>
+, <A HREF="refchapter14.html#FindFile" TARGET="Chapters">
+FindFile
+</A>
+, <A HREF="refchapter14.html#PatchLoad" TARGET="Chapters">
+PatchLoad
+</A>
+, <HEAD><TITLE>Input/Output</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+Input/Output
+</H1>
+<A NAME="FullForm">
+
+</A>
+<H3>
+<HR>FullForm(expression)
+</H3>
+
+FullForm(expression) : 
+Displays evaluated form of "expression", and returns it.
+
+
+<A NAME="Echo">
+
+</A>
+<H3>
+<HR>Echo({...})
+</H3>
+
+
+Echo writes the contents of the list passed to it to the current
+output, and calls NewLine(). If an entry in the list is a string
+it writes the string unstringified. Example:<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+f(x):=x^2;
+Echo({"The square of two is ",f(2)});
+</PRE>
+</TABLE>
+which should write out "The square of two is 2" to the current
+output
+<A NAME="PrettyForm">
+
+</A>
+<H3>
+<HR>PrettyForm(expr)
+</H3>
+
+PrettyForm shows the expression in a nicer form, closer to
+the notation usually used when a human writes down an expression.
+Example:
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> PrettyForm(Taylor(x,0,9)Sin(x))
+
+     /  3 \    5     /  7 \      9  
+    -\ x  /   x     -\ x  /     x   
+x + ------- + --- + ------- + ------
+       6      120    5040     362880
+
+Out> True;</PRE>
+</TABLE>
+
+
+This is generally useful when the result of a calculation is more
+complex than a simple number.
+
+
+<A NAME="Write">
+
+</A>
+<H3>
+<HR>Write(...)
+</H3>
+
+Write(...) : Write out the expressions contained in "..." (evaluated).
+
+
+<A NAME="WriteString">
+
+</A>
+<H3>
+<HR>WriteString(string)
+</H3>
+
+WriteString(string) : Writes out a literal string, which should be of
+the form "string" (surrounded by quotes). The argument is evaluated.
+
+
+<A NAME="Space">
+
+</A>
+<H3>
+<HR>Space(nr)
+</H3>
+
+Space(nr) : Print out "nr" spaces. The "nr"
+argument is optional, the default value being 1.
+
+
+<A NAME="NewLine">
+
+</A>
+<H3>
+<HR>NewLine(nr)
+</H3>
+
+NewLine(nr) : Print out "nr" newlines. The "nr"
+argument is optional, the default value being 1.
+
+
+<A NAME="FromFile">
+
+</A>
+<H3>
+<HR>FromFile("file") body
+</H3>
+
+FromFile("file") body : Open "file" for reading, and execute body, returning
+its result.
+
+
+<A NAME="FromString">
+
+</A>
+<H3>
+<HR>FromString("string") body
+</H3>
+
+FromString("string") body : use "string" to parse from when issuing
+a read from file, and execute body, returning its result.
+
+
+<A NAME="ToString">
+
+</A>
+<H3>
+<HR>ToString() body
+</H3>
+
+ToString redirects all output (from Write or WriteString, for instance)
+to a string, and returns this string.
+
+<A NAME="Read">
+
+</A>
+<H3>
+<HR>Read()
+</H3>
+
+Read() : 
+Read expression from current input, and return result. When the end of an
+input file is encountered, the token atom "EndOfFile" is returned.
+
+
+<A NAME="LispRead">
+
+</A>
+<H3>
+<HR>LispRead()
+</H3>
+
+Read() : 
+Read expression from current input, and return result. When the end of an
+input file is encountered, the token atom "EndOfFile" is returned.
+<P>
+This function is different from <B><TT>Read()</TT></B> in that it parses an expression
+in lisp syntax: so you need to type <B><TT>(+ a b)</TT></B> in stead of <B><TT>a+b</TT></B>. The advantage of lisp syntax is that it is less unambiguous than the
+infix operator grammar Yacas uses by default.
+
+<A NAME="ReadToken">
+
+</A>
+<H3>
+<HR>ReadToken()
+</H3>
+
+ReadToken() : Read token from current input, and return result.                          
+When the end of an input file is encountered, the token
+atom "EndOfFile" is returned.
+
+
+<A NAME="ToFile">
+
+</A>
+<H3>
+<HR>ToFile("file")
+</H3>
+
+ToFile("file") : 
+Open "file" for writing, and execute body, returning its result.
+
+
+<A NAME="Load">
+
+</A>
+<H3>
+<HR>Load("filename")
+</H3>
+
+Load("filename") : Reads in and evaluates expressions from the file
+with file name filename.
+
+See also "Use".
+
+
+<A NAME="Use">
+
+</A>
+<H3>
+<HR>Use("filename")
+</H3>
+
+
+Use("filename") : Reads in and evaluates expressions from the file
+with file name filename if it hasn't been loaded before. This function
+makes sure the file will at least have been loaded, but not loaded twice.
+
+See also "Load".
+
+
+<A NAME="DefLoad">
+
+</A>
+<H3>
+<HR>DefLoad("filename")
+</H3>
+
+
+DefLoad("filename") : Loads a file filename.def, which should have a
+list of functions, terminated by a }. This tells the system to load
+the file "filename" as soon as the user calls one of the functions
+named in the file (if not done so already). This allows for faster
+startup times, since not all of the rules databases need to be loaded,
+just the descriptions on which files to load for which functions.
+
+<A NAME="FindFile">
+
+</A>
+<H3>
+<HR>FindFile(name)
+</H3>
+
+FindFile returns the file that would be opened when a Load(name)
+would be invoked. It returns the full path to the file.
+
+<A NAME="PatchLoad">
+
+</A>
+<H3>
+<HR>PatchLoad
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+PatchLoad(filename)
+<H5>
+Parameters:
+</H5>
+filename - the file to patch
+<H5>
+Description:
+</H5>
+PatchLoad loads in a file and outputs the contents to the current
+output. The file can contain blocks delimited by &lt? and ?&gt
+(meaning Yacas Begin and Yacas End). The piece of text between
+such delimiters is treated as a separate file with Yacas instructions,
+which is then loaded and executed. All output of write statements
+in that block will be written to the same current output.
+<P>
+This is similar to the way php works. You can have a static text file
+with dynamic content generated by Yacas.
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#PatchString" TARGET="Chapters">
+PatchString
+</A>
+, <A HREF="ref.html#Load" TARGET="Chapters">
+Load
+</A>
+, 
+</BODY>
+
+</FONT>
+
+</HTML>

@@ -1,0 +1,25 @@
+
+/* MiStr converts a list of atoms into a list of strings */
+MiStr(list):=Map({{ii},String(ii)},{list});
+
+
+/* MiReInd builds a list of unique variables.
+   MiReInd("x",MiStr(1 .. 3)) will return {x1,x2,x3}
+ */
+MiReInd(var,list):=Map({{ii},Atom(ConcatStrings(var,ii))},{list});
+
+/* MiInt performs integrations one after the other.
+   MiInt({x,y},{0,0},{y,m},2) should return something like m^2.
+ */
+MiInt(vars,froms,tos,body):=
+[
+  While(vars != {})
+  [
+    body:=Apply("Integrate",{vars[1],froms[1],tos[1],body});
+    vars:=Tail(vars);
+    froms:=Tail(froms);
+    tos:=Tail(tos);
+  ];
+  body;
+];
+

@@ -1,0 +1,163 @@
+
+
+
+/* Comparison operators. They call the internal comparison routines when
+ * both arguments are numbers. The value Infinity is also understood.
+*/
+
+10 # n_IsNumber < m_IsNumber <-- LessThan(n,m);
+20 # (n1_IsNumber/n2_IsNumber) < (m1_IsNumber/m2_IsNumber) <--
+     n1*m2 < m1*n2;
+20 # (n1_IsNumber            ) < (m1_IsNumber/m2_IsNumber) <--
+     n1*m2 < m1;
+20 # (n1_IsNumber/n2_IsNumber) < (m1_IsNumber            ) <--
+     n1    < m1*n2;
+30 # n_IsNumber < Infinity <-- True;
+30 # Infinity < n_IsNumber <-- False;
+30 # n_IsNumber < -Infinity <-- False;
+30 # -Infinity < n_IsNumber <-- True;
+
+10 # n_IsNumber > m_IsNumber <-- GreaterThan(n,m);
+20 # (n1_IsNumber/n2_IsNumber) > (m1_IsNumber/m2_IsNumber) <--
+     n1*m2 > m1*n2;
+20 # (n1_IsNumber            ) > (m1_IsNumber/m2_IsNumber) <--
+     n1*m2 > m1;
+20 # (n1_IsNumber/n2_IsNumber) > (m1_IsNumber            ) <--
+     n1    > m1*n2;
+30 # n_IsNumber > Infinity <-- False;
+30 # Infinity > n_IsNumber <-- True;
+30 # n_IsNumber > -Infinity <-- True;
+30 # -Infinity > n_IsNumber <-- False;
+
+
+10 # n_IsNumber <= m_IsNumber <-- MathOr(Equals(n,m), LessThan(n,m));
+20 # (n1_IsNumber/n2_IsNumber) <= (m1_IsNumber/m2_IsNumber) <--
+     n1*m2 <= m1*n2;
+20 # (n1_IsNumber            ) <= (m1_IsNumber/m2_IsNumber) <--
+     n1*m2 <= m1;
+20 # (n1_IsNumber/n2_IsNumber) <= (m1_IsNumber            ) <--
+     n1    <= m1*n2;
+30 # n_IsNumber <= Infinity <-- True;
+30 # Infinity <= n_IsNumber <-- False;
+30 # n_IsNumber <= -Infinity <-- False;
+30 # -Infinity <= n_IsNumber <-- True;
+
+
+10 # n_IsNumber >= m_IsNumber <-- MathOr(Equals(n,m), GreaterThan(n,m));
+20 # (n1_IsNumber/n2_IsNumber) >= (m1_IsNumber/m2_IsNumber) <--
+     n1*m2 <= m1*n2;
+20 # (n1_IsNumber            ) >= (m1_IsNumber/m2_IsNumber) <--
+     n1*m2 >= m1;
+20 # (n1_IsNumber/n2_IsNumber) >= (m1_IsNumber            ) <--
+     n1    >= m1*n2;
+30 # n_IsNumber >= Infinity <-- False;
+30 # Infinity >= n_IsNumber <-- True;
+30 # n_IsNumber >= -Infinity <-- True;
+30 # -Infinity >= n_IsNumber <-- False;
+
+
+Function("!=",{aLeft,aRight}) Not(aLeft=aRight);      
+
+/* Shifting operators */
+
+n_IsInteger << m_IsInteger <-- ShiftLeft(n,m);
+n_IsInteger >> m_IsInteger <-- ShiftRight(n,m);
+
+0 # Sqrt(0) <-- 0;
+1 # Sqrt(x_IsPositiveInteger)_(IsInteger(MathSqrt(x))) <-- MathSqrt(x);
+2 # Sqrt(x_IsPositiveNumber)_(Numeric) <-- MathSqrt(x);
+2 # Sqrt(x_IsNegativeNumber) <-- Complex(0,Sqrt(-x));
+/* 3 # Sqrt(x_IsNumber/y_IsNumber) <-- Sqrt(x)/Sqrt(y); */
+
+/* Threading  */
+Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
+
+400 # x_IsRationalOrNumber * Sqrt(y_IsRationalOrNumber)  <-- Sign(x)*Sqrt(x^2*y);
+400 # Sqrt(y_IsRationalOrNumber) * x_IsRationalOrNumber  <-- Sign(x)*Sqrt(x^2*y);
+400 # x_IsRationalOrNumber / Sqrt(y_IsRationalOrNumber)  <-- Sign(x)*Sqrt(x^2/y);
+400 # Sqrt(y_IsRationalOrNumber) / x_IsRationalOrNumber  <-- Sign(x)*Sqrt(y/(x^2));
+400 # Sqrt(y_IsRationalOrNumber) / Sqrt(x_IsRationalOrNumber)  <-- Sqrt(y/x);
+400 # Sqrt(y_IsRationalOrNumber) * Sqrt(x_IsRationalOrNumber)  <-- Sqrt(y*x);
+400 # Sqrt(x_IsInteger)_IsInteger(MathSqrt(x)) <-- MathSqrt(x);
+400 # Sqrt(x_IsInteger/y_IsInteger)_(IsInteger(MathSqrt(x)) And IsInteger(MathSqrt(y))) <-- MathSqrt(x)/MathSqrt(y);
+
+/* Integer divisions */
+0 # Div(n_IsInteger,m_IsInteger) <-- MathDiv(n,m);
+1 # Div(0  ,_m) <-- 0;
+30 # Div(n_CanBeUni,m_CanBeUni) <--
+[
+  Local(vars);
+  vars:=VarList(n+m);
+  NormalForm(Div(MakeUni(n,vars),MakeUni(m,vars)));
+];
+
+0 # Mod(n_IsNegativeInteger,m_IsInteger) <-- m+MathMod(n,m);
+0 # Mod(n_IsPositiveInteger,m_IsInteger) <-- MathMod(n,m);
+1 # Mod(0,_m) <-- 0;
+30 # Mod(n_CanBeUni,m_CanBeUni) <--
+[
+  Local(vars);
+  vars:=VarList(n+m);
+  NormalForm(Mod(MakeUni(n,vars),MakeUni(m,vars)));
+];
+
+0 # Rem(n_IsNegativeInteger,m_IsInteger) <-- MathMod(n,m);
+0 # Rem(n_IsPositiveInteger,m_IsInteger) <-- MathMod(n,m);
+1 # Rem(0,_m) <-- 0;
+30 # Rem(n_CanBeUni,m_CanBeUni) <-- Mod(n,m);
+
+
+0 # Gcd(0,_m) <-- m;
+0 # Gcd(_n,0) <-- n;
+1 # Gcd(n_IsInteger,m_IsInteger) <-- MathGcd(n,m);
+
+
+10 # Gcd(list_IsList)_(Length(list)>2) <--
+    [
+      Local(first);
+      first:=Gcd(list[1],list[2]);
+      Gcd(first:Tail(Tail(list)));
+    ];
+15 # Gcd({_head}) <-- head;
+
+20 # Gcd(list_IsList)_(Length(list)=2) <-- Gcd(list[1],list[2]);
+
+30 # Gcd(n_CanBeUni,m_CanBeUni) <--
+[
+  Local(vars);
+  vars:=VarList(n+m);
+  NormalForm(Gcd(MakeUni(n,vars),MakeUni(m,vars)));
+];
+
+
+/* Least common multiple */
+Lcm(a,b):=Div(a*b,Gcd(a,b));
+
+/* Expand expands polynomials.
+ */
+10 # Expand(expr_CanBeUni) <-- NormalForm(MakeUni(expr));
+20 # Expand(_expr) <-- expr;
+
+10 # Expand(_expr,_var)_CanBeUni(expr,var) <-- NormalForm(MakeUni(expr,var));
+20 # Expand(_expr,_var) <-- expr;
+
+
+
+RuleBase("Object",{pred,x});
+Rule("Object",2,0,Apply(pred,{x})=True) x;
+
+/*TODO move to math */
+Rule("Gcd",2,100,True)
+[
+   NormalForm(Gcd(MakeUni(n),MakeUni(m)));
+];
+
+
+10 # Abs(n_IsNumber) <-- MathAbs(n);
+20 # Abs(n_IsList) <-- MapSingle("Abs",n);
+
+10 # Sign(n_IsPositiveNumber) <-- 1;
+20 # Sign(n_IsNumber) <-- -1;
+15 # Sign(n_IsNumber/m_IsNumber) <-- Sign(n)*Sign(m);
+20 # Sign(n_IsList) <-- MapSingle("Sign",n);
+

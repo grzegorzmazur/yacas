@@ -1,0 +1,14 @@
+IsFreeOf
+IsZeroVector
+WithValue
+Limit
+CharacteristicEquation
+EigenValues
+EigenVectors
+Rationalize
+ContFrac
+Decimal
+LagrangeInterpolant
+ReversePoly
+InverseTaylor
+}

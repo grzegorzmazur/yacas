@@ -1,0 +1,350 @@
+<HTML>
+<A NAME="c5">
+
+</A>
+<A HREF="refchapter5.html#LeviCivita" TARGET="Chapters">
+LeviCivita
+</A>
+, <A HREF="refchapter5.html#Permutations" TARGET="Chapters">
+Permutations
+</A>
+, <A HREF="refchapter5.html#InProduct" TARGET="Chapters">
+InProduct
+</A>
+, <A HREF="refchapter5.html#CrossProduct" TARGET="Chapters">
+CrossProduct
+</A>
+, <A HREF="refchapter5.html#ZeroVector" TARGET="Chapters">
+ZeroVector
+</A>
+, <A HREF="refchapter5.html#BaseVector" TARGET="Chapters">
+BaseVector
+</A>
+, <A HREF="refchapter5.html#Identity" TARGET="Chapters">
+Identity
+</A>
+, <A HREF="refchapter5.html#IsMatrix" TARGET="Chapters">
+IsMatrix
+</A>
+, <A HREF="refchapter5.html#Normalize" TARGET="Chapters">
+Normalize
+</A>
+, <A HREF="refchapter5.html#ZeroMatrix" TARGET="Chapters">
+ZeroMatrix
+</A>
+, <A HREF="refchapter5.html#Transpose" TARGET="Chapters">
+Transpose
+</A>
+, <A HREF="refchapter5.html#Determinant" TARGET="Chapters">
+Determinant
+</A>
+, <A HREF="refchapter5.html#DiagonalMatrix" TARGET="Chapters">
+DiagonalMatrix
+</A>
+, <A HREF="refchapter5.html#Trace" TARGET="Chapters">
+Trace
+</A>
+, <A HREF="refchapter5.html#Inverse" TARGET="Chapters">
+Inverse
+</A>
+, <A HREF="refchapter5.html#CoFactor" TARGET="Chapters">
+CoFactor
+</A>
+, <A HREF="refchapter5.html#Minor" TARGET="Chapters">
+Minor
+</A>
+, <A HREF="refchapter5.html#SolveMatrix" TARGET="Chapters">
+SolveMatrix
+</A>
+, <A HREF="refchapter5.html#CharacteristicEquation" TARGET="Chapters">
+CharacteristicEquation
+</A>
+, <A HREF="refchapter5.html#EigenValues" TARGET="Chapters">
+EigenValues
+</A>
+, <A HREF="refchapter5.html#EigenVectors" TARGET="Chapters">
+EigenVectors
+</A>
+, <HEAD><TITLE>Linear Algebra</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+Linear Algebra
+</H1>
+<A NAME="LeviCivita">
+
+</A>
+<H3>
+<HR>LeviCivita({list})
+</H3>
+LeviCivita({list}) :
+"LeviCivita" implements the Levi Civita symbol. This is generally
+useful for tensor calculus.  {list}  should be a list of integers,
+and this function returns 1 if the integers are in successive order,
+eg.  {1,2,3,...}  would return 1. Swapping two elements of this
+list would return -1. So, LeviCivita( {2,1,3} ) would evaluate
+to -1.
+
+<A NAME="Permutations">
+
+</A>
+<H3>
+<HR>Permutations({list})
+</H3>
+Permutations({list}) :
+Permutations returns a list with all the premutations of the original
+list.
+
+<A NAME="InProduct">
+
+</A>
+<H3>
+<HR>InProduct(a,b)
+</H3>
+InProduct(a,b) (or alternatively a . b) :
+Calculate the inproduct of two vectors.
+
+<A NAME="CrossProduct">
+
+</A>
+<H3>
+<HR>CrossProduct(a,b)
+</H3>
+CrossProduct(a,b) (or alternatively a X b) :
+Calculate the crossproduct of two three-dimensional vectors.
+
+<A NAME="ZeroVector">
+
+</A>
+<H3>
+<HR>ZeroVector(n)
+</H3>
+ZeroVector(n) : ZeroVector returns a list with n zeroes.
+
+<A NAME="BaseVector">
+
+</A>
+<H3>
+<HR>BaseVector(row,n)
+</H3>
+BaseVector(row,n) : BaseVector returns a vector with item row set to 1, the
+other n-1 set to zero.
+
+
+<A NAME="Identity">
+
+</A>
+<H3>
+<HR>Identity(n)
+</H3>
+Identity(n) : Identity returns a identity matrix of dimension n x n.
+
+<A NAME="IsMatrix">
+
+</A>
+<H3>
+<HR>IsMatrix(x)
+</H3>
+IsMatrix(x) : Predicates checking if the object x is a matrix.
+
+<A NAME="Normalize">
+
+</A>
+<H3>
+<HR>Normalize(v)
+</H3>
+Normalize(v) : Return the normalized vector v.
+
+
+<A NAME="ZeroMatrix">
+
+</A>
+<H3>
+<HR>ZeroMatrix(n,m)
+</H3>
+ZeroMatrix(n,m) : Returns a matrix with n rows and m columns, all zeros.
+
+
+<A NAME="Transpose">
+
+</A>
+<H3>
+<HR>Transpose(M)
+</H3>
+Transpose(M) : Return the transpose of a matrix M.
+
+<A NAME="Determinant">
+
+</A>
+<H3>
+<HR>Determinant(M)
+</H3>
+Determinant(M) : Return the determinant of a matrix M.
+
+<A NAME="DiagonalMatrix">
+
+</A>
+<H3>
+<HR>DiagonalMatrix(v)
+</H3>
+DiagonalMatrix(v) : Return a square matrix with the elements of vector
+v on the diagonal of the matrix. All other elements are zero.
+
+
+<A NAME="Trace">
+
+</A>
+<H3>
+<HR>Trace(M)
+</H3>
+Trace(M) : Return the trace of a matrix M (defined as the sum of the
+elements on the diagonal of the matrix).
+
+
+<A NAME="Inverse">
+
+</A>
+<H3>
+<HR>Inverse(M)
+</H3>
+Inverse(M) : Return the inverse of matrix M. The determinant of M should
+be non-zero.
+
+
+<A NAME="CoFactor">
+
+</A>
+<H3>
+<HR>CoFactor(M,i,j)
+</H3>
+CoFactor(M,i,j) : This function returns the cofactor of a matrix around
+the element (i,j). The cofactor is the minor times
+(-1)^(i+j)
+
+
+<A NAME="Minor">
+
+</A>
+<H3>
+<HR>Minor(M,i,j)
+</H3>
+Minor(M,i,j) : This function returns the minor of a matrix around
+the element (i,j). The minor is the determinant of the matrix
+excluding the ith row and jth column.
+
+
+<A NAME="SolveMatrix">
+
+</A>
+<H3>
+<HR>SolveMatrix(M,v)
+</H3>
+SolveMatrix(M,v) : This function returns the vector x that satisfies
+the equation "M x = v". The determinant of M should be non-zero.
+
+
+<A NAME="CharacteristicEquation">
+
+</A>
+<H3>
+<HR>CharacteristicEquation(matrix,var)
+</H3>
+CharacteristicEquation(matrix,var) : 
+calculate characteristic equation of "matrix", using
+"var". The zeros os this equation are the eigenvalues
+of the matrix, Det(matrix-I var);
+
+<A NAME="EigenValues">
+
+</A>
+<H3>
+<HR>EigenValues
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+EigenValues(matrix)
+<H5>
+Parameters:
+</H5>
+matrix - a square matrix
+<H5>
+Description:
+</H5>
+EigenValues returns the eigenvalues of a matrix.
+The eigenvalues x of a matrix M are the numbers such that
+M*v=x*v for some vector.<BR>
+It first determines the characteristic equation, and then factorizes this
+equation, returning the roots of the characteristic equation
+det(matrix-x*identity).
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> M:={{1,2},{2,1}}
+Out> {{1,2},{2,1}};
+In> EigenValues(M)
+Out> {3,-1};
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#EigenVectors" TARGET="Chapters">
+EigenVectors
+</A>
+, <A HREF="ref.html#CharacteristicEquation" TARGET="Chapters">
+CharacteristicEquation
+</A>
+, <A NAME="EigenVectors">
+
+</A>
+<H3>
+<HR>EigenVectors
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+EigenVectors(matrix,eigenvalues)
+Standard math library<br><H5>
+Parameters:
+</H5>
+matrix - matrix - a square matrix <br>
+ eigenvalues - list of eigenvalues as returned by EigenValues
+
+<H5>
+Description:
+</H5>
+EigenVectors returns a list of the eigenvectors of a matrix.
+It uses the eigenvalues and the matrix to set up n equations with
+n unknowns for each eigenvalue, and then calls Solve to determine
+the values of each vector.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> M:={{1,2},{2,1}}
+Out> {{1,2},{2,1}};
+In> e:=EigenValues(M)
+Out> {3,-1};
+In> EigenVectors(M,e)
+Out> {{-ki2/ -1,ki2},{-ki2,ki2}};
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#EigenValues" TARGET="Chapters">
+EigenValues
+</A>
+, <A HREF="ref.html#CharacteristicEquation" TARGET="Chapters">
+CharacteristicEquation
+</A>
+, 
+</BODY>
+
+</FONT>
+
+</HTML>
