@@ -863,6 +863,53 @@ of order $r$ is returned, which is defined as $Sum(k,1,n,k^(-r))$.
 
 *SEE Sum
 
+*CMD StirlingNumber1 --- return the {n,m}th Stirling Number of the first kind
+*STD
+*CALL
+	StirlingNumber1(n,m)
+*PARMS
+
+{n}, {m}	-- positive integers
+
+*DESC
+
+This function returns the signed Stirling Number of the first kind.
+All Stirling Numbers are integers. If $ m > n $, then {StirlingNumber1} returns
+$0$.
+
+*E.G.
+
+	In> StirlingNumber1(10,5)
+	Out> -269325;
+	In> StirlingNumber1(3,6)
+	Out> 0;
+
+*SEE StirlingNumber2
+
+*CMD StirlingNumber2 --- return the {n,m}th Stirling Number of the second kind
+*STD
+*CALL
+        StirlingNumber1(n,m)
+*PARMS
+
+{n}, {m}        -- positive integers
+
+*DESC
+
+This function returns the Stirling Number of the second kind.
+All Stirling Numbers are positive integers. If $ m > n $, then {StirlingNumber2} returns
+$0$.
+
+*E.G.
+
+	In> StirlingNumber2(3,6)
+	Out> 0;
+	In> StirlingNumber2(10,4)
+	Out> 34105;
+
+*SEE StirlingNumber1
+
+
 
 *CMD IntLog --- integer part of logarithm
 *STD
