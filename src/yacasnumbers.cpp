@@ -658,8 +658,8 @@ void BigNumber::SetTo(const BigNumber& aOther)
 // FIXME API breach: aPrecision is supposed to be in digits, not bits
 void BigNumber::ToString(LispString& aResult, LispInt aBasePrecision, LispInt aBase) const
 {
-  ANumber num(aBasePrecision);
-  num.CopyFrom(*iNumber);
+  ANumber num(*iNumber);
+//  num.CopyFrom(*iNumber);
   
   //TODO this round-off code is not correct yet, but will work in most cases
   // This is a bit of a messy way to round off numbers. It is probably incorrect,
@@ -708,8 +708,8 @@ double BigNumber::Double() const
 // There are platforms that don't have strtod
 #ifdef HAVE_STRTOD
   LispString str;
-  ANumber num(iNumber->iPrecision);
-  num.CopyFrom(*iNumber);
+  ANumber num(*iNumber);
+//  num.CopyFrom(*iNumber);
   ANumberToString(str, num, 10);
   char* endptr;
   return strtod(str.String(),&endptr);
@@ -734,13 +734,13 @@ void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrec
   if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
 
   iNumber->ChangePrecision(BITS_TO_DIGITS(aPrecision,10));
-  ANumber a1(BITS_TO_DIGITS(aPrecision,10));
-  a1.CopyFrom(*aX.iNumber);
-  ANumber a2(BITS_TO_DIGITS(aPrecision,10));
-  a2.CopyFrom(*aY.iNumber);
-//  iNumber->ChangePrecision(BITS_TO_DIGITS(aY.GetPrecision()+GUARD_BITS,10));
+
+  :: Multiply(*iNumber,*aX.iNumber,*aY.iNumber);
+/*TODO remove old?
+  ANumber a1(*aX.iNumber);
+  ANumber a2(*aY.iNumber);
   :: Multiply(*iNumber,a1,a2);
-//  iPrecision = MIN(aPrecision, aY.GetPrecision());
+*/
 }
 void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {//FIXME
@@ -754,26 +754,17 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
 
   if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
   if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
-/*???
-  if (iNumber == aX.iNumber)
+
+  if (aX.iNumber->iExp == aY.iNumber->iExp && aX.iNumber->iTensExp == aY.iNumber->iTensExp)
   {
-    ANumber a2(*aY.iNumber);
-    ::Add(*iNumber, *iNumber, a2);
+    ::Add(*iNumber, *aX.iNumber, *aY.iNumber);
   }
   else
   {
-    ANumber a1(*aX.iNumber);
-    ANumber a2(*aY.iNumber);
+    ANumber a1(*aX.iNumber );
+    ANumber a2(*aY.iNumber );
     ::Add(*iNumber, a1, a2);
   }
-  iNumber->SetPrecision(aPrecision);
-*/
-/*TODO remove old? */
-  ANumber a1(BITS_TO_DIGITS(aPrecision,10));
-  a1.CopyFrom(*aX.iNumber);
-  ANumber a2(BITS_TO_DIGITS(aPrecision,10));
-  a2.CopyFrom(*aY.iNumber);
-	::Add(*iNumber, a1, a2);
   iNumber->SetPrecision(aPrecision);
 /* */
 }
@@ -792,10 +783,10 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
   if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
   if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
 
-  ANumber a1(BITS_TO_DIGITS(aPrecision,10));
-  a1.CopyFrom(*aX.iNumber);
-  ANumber a2(BITS_TO_DIGITS(aPrecision,10));
-  a2.CopyFrom(*aY.iNumber);
+  ANumber a1(*aX.iNumber);
+//  a1.CopyFrom(*aX.iNumber);
+  ANumber a2(*aY.iNumber);
+//  a2.CopyFrom(*aY.iNumber);
   ANumber remainder(BITS_TO_DIGITS(aPrecision,10));
 
   Check(!IsZero(a2),KLispErrInvalidArg);
@@ -919,8 +910,8 @@ void BigNumber::BitNot(const BigNumber& aX)
 signed long BigNumber::BitCount() const
 {
   if (IsZero(*iNumber)) return -(1L<<30);
-  ANumber num(BITS_TO_DIGITS(iPrecision,10));
-  num.CopyFrom(*iNumber);
+  ANumber num(*iNumber);
+//  num.CopyFrom(*iNumber);
   while (num.iTensExp < 0)
   {
     PlatDoubleWord carry=0;
@@ -977,10 +968,10 @@ void BigNumber::DumpDebugInfo()
 /// integer operation: *this = y mod z
 void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
 {
-    ANumber a1(BITS_TO_DIGITS(iPrecision,10));
-    ANumber a2(BITS_TO_DIGITS(iPrecision,10));
-    a1.CopyFrom(*aY.iNumber);
-    a2.CopyFrom(*aZ.iNumber);
+    ANumber a1(*aY.iNumber);
+    ANumber a2(*aZ.iNumber);
+//    a1.CopyFrom(*aY.iNumber);
+//    a2.CopyFrom(*aZ.iNumber);
     Check(a1.iExp == 0, KLispErrNotInteger);
     Check(a2.iExp == 0, KLispErrNotInteger);
     Check(!IsZero(a2),KLispErrInvalidArg);
@@ -990,8 +981,8 @@ void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
 
     if (iNumber->iNegative)
     {
-      ANumber a3(BITS_TO_DIGITS(iPrecision,10));
-      a3.CopyFrom(*iNumber);
+      ANumber a3(*iNumber);
+//      a3.CopyFrom(*iNumber);
       ::Add(*iNumber, a3, a2);
     }
     SetIsInteger(LispTrue);
@@ -1040,8 +1031,8 @@ void BigNumber::Floor(const BigNumber& aX)
 
     if (iNumber->iNegative && !fraciszero)
     {
-        ANumber orig(BITS_TO_DIGITS(iPrecision,10));
-        orig.CopyFrom(*iNumber);
+        ANumber orig(*iNumber);
+//        orig.CopyFrom(*iNumber););
         ANumber minone("-1",10);
         ::Add(*iNumber,orig,minone);
     }
@@ -1067,13 +1058,22 @@ void BigNumber::Precision(LispInt aPrecision)
 //basic object manipulation
 LispBoolean BigNumber::Equals(const BigNumber& aOther) const
 {
-/*???
-  if (IsInt() && aOther.IsInt())
+
+  if (iNumber->iExp == aOther.iNumber->iExp)
   {
-    return iNumber->ExactlyEqual(*aOther.iNumber);
-  }
-  else
-*/
+    iNumber->DropTrailZeroes();
+    aOther.iNumber->DropTrailZeroes();
+  
+    if (IsZero(*iNumber))
+        iNumber->iNegative = LispFalse;
+    if (IsZero(*aOther.iNumber))
+        aOther.iNumber->iNegative = LispFalse;
+    if (iNumber->ExactlyEqual(*aOther.iNumber))
+      return LispTrue;
+    if (IsInt())
+      return LispFalse;
+    }
+
   {
     //TODO optimize!!!!
     BigNumber diff;
@@ -1082,6 +1082,7 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
     LispInt precision = GetPrecision();
     if (precision<aOther.GetPrecision()) precision = aOther.GetPrecision();
     diff.Add(*this,otherNeg,BITS_TO_DIGITS(precision,10));
+
     return !Significant(*diff.iNumber);
   }
 }
@@ -1153,10 +1154,10 @@ void BigNumber::BecomeFloat(LispInt aPrecision)
 
 LispBoolean BigNumber::LessThan(const BigNumber& aOther) const
 {
-  ANumber a1(BITS_TO_DIGITS(iPrecision,10));
-  a1.CopyFrom(*this->iNumber);
-  ANumber a2(BITS_TO_DIGITS(iPrecision,10));
-  a2.CopyFrom(*aOther.iNumber);
+  ANumber a1(*this->iNumber);
+//  a1.CopyFrom(*this->iNumber);
+  ANumber a2(*aOther.iNumber);
+//  a2.CopyFrom(*aOther.iNumber);
 	return ::LessThan(a1, a2);
 }
 
