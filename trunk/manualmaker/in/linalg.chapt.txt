@@ -726,7 +726,7 @@ to any power is $A$.
 *CMD JacobianMatrix --- calculate the Jacobian matrix of n functions in n variables
 *STD
 *CALL
-        JacobianMatrix(functions,variables)
+	JacobianMatrix(functions,variables)
 
 *PARMS
 
@@ -786,7 +786,7 @@ The {ij}th element of the Vandermonde matrix is defined as {i^(j-1)}.
 *CMD HessianMatrix --- calculate the Hessian matrix
 *STD
 *CALL
-        HessianMatrix(function,var)
+	HessianMatrix(function,var)
 *PARMS
 
 {function} -- An function in {n} variables
@@ -825,7 +825,7 @@ minimum or a saddle point.
 *CMD WronskianMatrix --- calculate the Wronskian matrix
 *STD
 *CALL
-        WronskianMatrix(func,var)
+	WronskianMatrix(func,var)
 *PARMS
 
 {func} -- An {n} dimensional vector of functions
