@@ -1,4 +1,8 @@
 
+
+EndOfFile;
+
+
 Use("logic.ys");
 CNFInEqSimplify := {{x},x}; // "Simplify";
 For(i:=1,i<100,i++)

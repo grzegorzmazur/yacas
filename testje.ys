@@ -1,4 +1,20 @@
 
+
+EndOfFile;
+EndOfFile;
+EndOfFile;
+EndOfFile;
+
+  int j=0;
+  int k=0;
+  while(j<i)
+  {
+    k=k+j;
+    j=j+1;
+  }
+
+
+
 /* Simplification of nested radicals.
 */
 
