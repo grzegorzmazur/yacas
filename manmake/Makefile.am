@@ -92,8 +92,7 @@ CODESNIPPETS = wester-1994.ys
 check_SCRIPTS = wester-1994.ys
 
 
-EXTRA_DIST = test.txt \
-	api2txt.pl book2txt.sh book2txt.ys \
+EXTRA_DIST = api2txt.pl book2txt.sh book2txt.ys \
 	book2xml.sh book2xml.ys \
 	book2ys.sh book2ys.ys ys2book.pl \
 	ytxt2tex $(ytxt2tex_DEPS) \
