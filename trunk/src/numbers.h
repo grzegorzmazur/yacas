@@ -120,8 +120,8 @@ public: //constructors
   // assign from string
   void SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
     // assign from a platform type
-  void SetTo(int);
-  void SetTo(double);
+  void SetTo(LispInt value);
+  void SetTo(double value);
 public: // Convert back to other types
   /// ToString : return string representation of number in aResult to given precision (base digits)
   void ToString(LispString& aResult, LispInt aPrecision, LispInt aBase=10) const;
@@ -142,10 +142,10 @@ public://basic object manipulation
 public://arithmetic
   /// Multiply two numbers at given precision and put result in *this
   void Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
-  /** Multiply two numbers, and add to aResult (this is useful and generally efficient to implement).
+  /** Multiply two numbers, and add to *this (this is useful and generally efficient to implement).
    * This is most likely going to be used by internal functions only, using aResult as an accumulator.
    */
-  void MultiplyAdd(BigNumber& aResult, const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
+  void MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
   /// Add two numbers at given precision and return result in *this
   void Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
   /// Negate the given number, return result in *this
@@ -155,14 +155,10 @@ public://arithmetic
 
   /// integer operation: *this = y mod z
   void Mod(const BigNumber& aY, const BigNumber& aZ);
-    /// integer operation: x+y mod z
-  void AddMod(const BigNumber& aX, const BigNumber& aY, const BigNumber& aZ);
-  /// integer operation: *this = x*y mod z
-  void MultiplyMod(const BigNumber& aX, const BigNumber& aY, const BigNumber& aZ);
 
 public:
   void Floor(const BigNumber& aX);
-  void Round(const BigNumber& aX, LispInt aPrecision);
+  void Precision(LispInt aPrecision);
 
 public:/// Bitwise operations, return result in *this.
   void ShiftLeft( const BigNumber& aX, LispInt aNrToShift);
@@ -196,7 +192,12 @@ private:
 
 #else 
   #ifdef USE_GMP
-
+  // auxiliary internal private functions
+  bool IsExpFloat() const;
+  // convert types to int and float and initialize
+  void turn_float();
+  void turn_int();
+  
   enum EType
   { // bit masks, so that ExpFloat is also Float.
 	  KInt = 1,

@@ -933,15 +933,15 @@ double BigNumber::Double() const
 
 const LispCharPtr BigNumber::NumericLibraryName()
 {
-  return "Internal implementation";
+  return "Internal Yacas numbers";
 }
 
 void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
   :: Multiply(*iNumber,*aX.iNumber,*aY.iNumber);
 }
-void BigNumber::MultiplyAdd(BigNumber& aResult, const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
-{
+void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
+{//FIXME
   LISPASSERT(0);
 }
 void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
@@ -962,7 +962,7 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
     ANumber remainder(aPrecision);
     ::Divide(*iNumber,remainder,*aX.iNumber,*aY.iNumber);
 }
-void BigNumber::ShiftLeft( const BigNumber& aX, LispInt aNrToShift)
+void BigNumber::ShiftLeft(const BigNumber& aX, LispInt aNrToShift)
 {
   if (aX.iNumber != iNumber)
   {
@@ -970,7 +970,7 @@ void BigNumber::ShiftLeft( const BigNumber& aX, LispInt aNrToShift)
   }
   ::BaseShiftLeft(*iNumber,aNrToShift);
 }
-void BigNumber::ShiftRight( const BigNumber& aX, LispInt aNrToShift)
+void BigNumber::ShiftRight(const BigNumber& aX, LispInt aNrToShift)
 {
   if (aX.iNumber != iNumber)
   {
@@ -1050,7 +1050,7 @@ void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
   }
 }
 void BigNumber::BitCount(const BigNumber& aX)
-{
+{//FIXME
   LISPASSERT(0);
 }
 LispInt BigNumber::Sign() const
@@ -1058,6 +1058,85 @@ LispInt BigNumber::Sign() const
   if (iNumber->iNegative) return -1;
   if (IsZero(*iNumber)) return 0;
   return 1;
+}
+
+
+
+
+/// integer operation: *this = y mod z
+void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
+{//FIXME
+}
+
+void BigNumber::Floor(const BigNumber& aX)
+{//FIXME
+}
+
+
+void BigNumber::Precision(LispInt aPrecision)
+{//FIXME
+}
+
+
+//basic object manipulation
+bool BigNumber::Equals(const BigNumber& aOther) const
+{//FIXME
+}
+
+
+inline bool BigNumber::IsInt() const
+{//FIXME
+}
+
+
+bool BigNumber::IsIntValue() const
+{//FIXME
+}
+
+
+bool BigNumber::IsSmall() const
+{//FIXME
+}
+
+
+void BigNumber::BecomeInt()
+{//FIXME
+}
+
+
+void BigNumber::BecomeFloat()
+{//FIXME
+}
+
+
+bool BigNumber::LessThan(const BigNumber& aOther) const
+{//FIXME
+}
+
+// assign from a platform type
+void BigNumber::SetTo(LispInt value)
+{//FIXME
+}
+
+
+void BigNumber::SetTo(double value)
+{//FIXME
+}
+
+
+// assign from string
+void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10)
+{//FIXME
+}
+
+
+void BigNumber::ShiftLeft(const BigNumber& aX, const BigNumber& aNrToShift)
+{//FIXME
+}
+
+
+void BigNumber::ShiftRight(const BigNumber& aX, const BigNumber& aNrToShift)
+{//FIXME
 }
 
 #endif

@@ -238,7 +238,7 @@ int main(void)
 	Check(y.Double()==0, "value of 0");
 
 	Next();
-	BigNumber y("-101010", 50, 2);	// construct with given precision
+	y.SetTo("-101010", 50, 2);	// construct with given precision
 	Check(y.Double()==-42, "value is correct");
 	Check(y.IsInt() && y.IsIntValue(), "value is integer");
 
@@ -291,7 +291,7 @@ int main(void)
 	Check(x.Equals(z), "x=z");
 	x.Negate(x);	// negate an integer
 	Check(x.IsInt(), "x still of integer type");
-	Check(x.Double()==15416, "value is now 15416")
+	Check(x.Double()==15416, "value is now 15416");
 	Check(!z.Equals(x), "z!=-x");
 	Check(!y.Equals(x), "y!=-x");
 	

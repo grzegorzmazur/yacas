@@ -107,6 +107,10 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	epocserv.mmp yacas.rss \
   elfdll.cpp mkfastprimes.pl
 
+CLEANFILES = fastprimes.c
+
+platmath.cpp: fastprimes.c
+
 fastprimes.c: mkfastprimes.pl
 	perl mkfastprimes.pl > fastprimes.c
  
