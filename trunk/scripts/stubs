@@ -86,9 +86,12 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 1 # Div(0  ,_m) <-- 0;
 30 # Div(n_CanBeUni,m_CanBeUni) <--
 [
-  Local(vars);
+
+  Local(vars,nl,ml);
   vars:=VarList(n+m);
-  NormalForm(Div(MakeUni(n,vars),MakeUni(m,vars)));
+  nl := MakeUni(n,vars);
+  ml := MakeUni(m,vars);
+  NormalForm(Div(nl,ml));
 ];
 
 0 # Mod(n_IsNegativeInteger,m_IsInteger) <-- m+MathMod(n,m);

@@ -8,6 +8,9 @@
 */
 
 
+/* we need to use "predicates" because we are adding to IsZero */
+Use("predicates"); 
+
 RuleBase("NormalForm",{expression});
 Rule("NormalForm",1,1000,True) expression;
 
@@ -45,6 +48,7 @@ Rule("UniVariate",3,1000,IsComplex(var) Or IsList(var))
 RuleBase("Degree",{expr});
 Rule("Degree",1,0, IsUniVar(expr))
 [
+
   Local(i,min,max);
   min:=expr[2];
   max:=min+Length(expr[3]);
@@ -55,7 +59,13 @@ Rule("Degree",1,0, IsUniVar(expr))
 Rule("Degree",1,1, True)
     Degree(MakeUni(expr));
 
-Degree(_poly,_var) <-- Degree(MakeUni(poly,var));
+0 # Degree(_poly,_var) <--
+[
+  Local(uni);
+  uni := MakeUni(poly,var);
+  Degree(uni);
+];
+
 
 500 # (aLeft_IsUniVar + aRight_IsUniVar)_(aLeft[1] = (aRight[1])) <--
 [
@@ -366,15 +376,18 @@ Rule("MakeUni",2,30,Type(expression) = "-" And NrArgs(expression) = 2)
 0 # Mod(n_IsUniVar,m_IsUniVar)_(Degree(n) < Degree(m)) <-- n;
 1 # Div(n_IsUniVar,m_IsUniVar)_
     (n[1] = m[1] And Degree(n) >= Degree(m)) <--
+[
     UniVariate(n[1],0,
                UniDivide(Concat(ZeroVector(n[2]),n[3]),
                          Concat(ZeroVector(m[2]),m[3]))[1]);
+];                         
 1 # Mod(n_IsUniVar,m_IsUniVar)_
     (n[1] = m[1] And Degree(n) >= Degree(m)) <--
+[
     UniVariate(n[1],0,
                UniDivide(Concat(ZeroVector(n[2]),n[3]),
                          Concat(ZeroVector(m[2]),m[3]))[2]);
-
+];
 
 
 
