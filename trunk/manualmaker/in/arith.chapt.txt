@@ -143,7 +143,7 @@ them.
 
 *PARMS
 
-n, m - integers
+{n}, {m} -- integers
 
 *DESC
 
@@ -166,9 +166,9 @@ shifts, so they act like multiplication or division by powers of 2.
 
 *PARMS
 
-base - a base to write the numbers in
+{base} -- integer, base to write the numbers in
 
-number - a number to write out in the base representation
+{number} -- integer, number to write out in the base representation
 
 *DESC
 
@@ -192,14 +192,14 @@ in decimal base. The second command converts {255}
 
 *SEE PAdicExpand
 
-*CMD Precision --- Sets the precision
+*CMD Precision --- set the precision
 *CORE
 *CALL
 	Precision(n)
 
 *PARMS
 
-n - new precision
+{n} - integer, new precision
 
 *DESC
 
@@ -222,7 +222,7 @@ at least "n" digits after the decimal point.
 
 *SEE GetPrecision, N
 
-*CMD GetPrecision --- Returns the current precision
+*CMD GetPrecision --- get the current precision
 *CORE
 *CALL
 	GetPrecision()
@@ -242,19 +242,17 @@ This command returns the current precision, as set by {Precision}.
 
 *SEE Precision, N
 
-*CMD N --- Numerical approximation
+*CMD N --- compute numerical approximation
 *STD
 *CALL
-
-N(expr)
-
-N(expr, prec)
+	N(expr)
+	N(expr, prec)
 
 *PARMS
 
-expr - expression to evaluate
+{expr} -- expression to evaluate
 
-prec - precision to use
+{prec} -- integer, precision to use
 
 *DESC
 
@@ -285,7 +283,7 @@ the value of $Pi$ up to the required precision.
 
 *SEE Precision, GetPrecision, Pi
 
-*CMD Rationalize --- Convert floating point numbers to fractions
+*CMD Rationalize --- convert floating point numbers to fractions
 *STD
 *CALL
 	Rationalize(expr)
@@ -317,7 +315,7 @@ division of integers.
 
 *SEE IsRational
 
-*CMD IsPrime --- Test for a prime number
+*CMD IsPrime --- test for a prime number
 *STD
 *CALL
 	IsPrime(n)
@@ -352,7 +350,7 @@ long time for large numbers.
 
 *SEE IsPrimePower, Factors
 
-*CMD IsPrimePower --- Test for a power of a prime number
+*CMD IsPrimePower --- test for a power of a prime number
 *STD
 *CALL
 	IsPrimePower(n)
@@ -410,7 +408,7 @@ fact prime.
 *SEE IsPrime
 
 
-*CMD Factors --- Factorization
+*CMD Factors --- factorization
 *STD
 *CALL
 	Factors(x)
@@ -440,7 +438,7 @@ is returned as {{{p1,n1}, ..., {p9,n9}}}.
 
 *SEE Factor, IsPrime
 
-*CMD Factor --- Factorization, in pretty form
+*CMD Factor --- factorization, in pretty form
 *STD
 *CALL
 	Factors(x)
@@ -472,6 +470,53 @@ it shows the result in a nicer human readable format.
 
 *SEE Factors, IsPrime, PrettyForm
 
+*CMD IntLog --- integer part of logarithm
+*STD
+*CALL
+	IntLog(n, base)
+
+*PARMS
+
+{n}, {base} -- positive integers
+
+*DESC
+
+{IntLog} calculates the integer part of the logarithm of {n} in base {base}. The algorithm uses only integer math and may be faster than computing $$Ln(n)/Ln(base)$$ with multiple precision floating-point math and rounding off to get the integer part.
+
+This function can also be used to quickly count the digits in a given number.
+
+*E.G.
+Count the number of bits:
+	In> IntLog(257^8, 2)
+	Out> 64;
+
+Count the number of decimal digits:
+	In> IntLog(321^321, 10)
+	Out> 804;
+
+*SEE IntNthRoot, Div, Mod, Ln
+
+*CMD IntNthRoot --- integer part of $n$-th root
+*STD
+*CALL
+	IntNthRoot(x, n)
+
+*PARMS
+
+{x}, {n} -- positive integers
+
+*DESC
+
+{IntNthRoot} calculates the integer part of the $n$-th root of $x$. The algorithm uses only integer math and may be faster than computing $x^(1/n)$ with floating-point and rounding.
+
+This function is used to test numbers for prime powers.
+
+*EG
+	In> IntNthRoot(65537^111, 37)
+	Out> 281487861809153;
+
+*SEE IntLog, MathPower, IsPrimePower
+
 *CMD PAdicExpand --- p-adic expansion
 *STD
 *CALL
@@ -479,9 +524,9 @@ it shows the result in a nicer human readable format.
 
 *PARMS
 
-{n} - number, or polynomial, to expand
+{n} -- number or polynomial to expand
 
-{p} - base to expand in
+{p} -- base to expand in
 
 *DESC
 
@@ -515,9 +560,9 @@ same type.
 
 *PARMS
 
-{x} - expression to expand in continued fractions
+{x} -- number or polynomial to expand in continued fractions
 
-{depth} - maximum required depth of result
+{depth} -- integer, maximum required depth of result
 
 *DESC
 
