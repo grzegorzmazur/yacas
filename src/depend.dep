@@ -78,7 +78,8 @@ errors.o: errors.cpp lispenvironment.h lispobject.h \
  tokenizer.h standard.h lispatom.h numbers.h standard.inl lispeval.h \
  errors.h
 genericobject.o: genericobject.cpp genericobject.h \
- plat/linux32/lisptype.h plat/linux32/../../choices.h
+ plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
+ plat/linux32/stubs.inl
 genericstructs.o: genericstructs.cpp genericstructs.h genericobject.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h
 gmpnumbers.o: gmpnumbers.cpp plat/linux32/lisptype.h \
@@ -136,8 +137,8 @@ lisphash.o: lisphash.cpp lisperror.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h lispstring.h grower.h stubs.h \
  plat/linux32/stubs.inl grower.inl lispassert.h choices.h refcount.h \
  lispstring.inl lisphash.h lisphash.inl
-lispio.o: lispio.cpp lispio.h plat/linux32/lisptype.h \
- plat/linux32/../../choices.h
+lispio.o: lispio.cpp stubs.h plat/linux32/lisptype.h \
+ plat/linux32/../../choices.h plat/linux32/stubs.inl lispio.h
 lispobject.o: lispobject.cpp lispobject.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h refcount.h lispassert.h choices.h \
  lispstring.h grower.h stubs.h plat/linux32/stubs.inl grower.inl \
@@ -223,6 +224,8 @@ mathuserfunc.o: mathuserfunc.cpp mathuserfunc.h lispuserfunc.h \
  tokenizer.h lispeval.h standard.h lispatom.h numbers.h standard.inl \
  patterns.h patternclass.h
 mathutil.o: mathutil.cpp plat/linux32/lisptype.h \
+ plat/linux32/../../choices.h
+obmalloc.o: obmalloc.cpp plat/linux32/lisptype.h \
  plat/linux32/../../choices.h
 patcher.o: patcher.cpp plat/linux32/lisptype.h \
  plat/linux32/../../choices.h lispio.h standard.h lispobject.h \

@@ -746,7 +746,7 @@ _FETCH_HOOKS( void *(**malloc_funcp)(size_t),
 }
 #endif /* !WITH_MALLOC_HOOKS */
 
-
+/*
 LispCharPtr PlatAlloc(LispInt aNrBytes)
 {
     return (LispCharPtr)PlatObAlloc((size_t)aNrBytes);
@@ -759,4 +759,4 @@ void PlatFree(LispCharPtr aOrig)
 {
     PlatObFree((void*)aOrig);
 }
-
+*/
