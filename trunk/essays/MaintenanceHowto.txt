@@ -110,6 +110,12 @@ The {-d} option here states that you are also interested in new directories
 that were added to the repository. Oddly enough, cvs will only get
 you changed and added files, not added directories, by default.
 
+A command
+
+	cvs -q update -d
+
+will print messages only about changed files.
+
 		Use case scenario 2 : you made changes to Yacas
 
 You got the latest version, but saw this huge, glaring omission in
