@@ -272,11 +272,9 @@ LispStringPtr ArcSinFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aP
 	// we are using PlatArcSin() as the initial guess
 	// maybe, for y very close to 1 or to -1 convergence will
 	// suffer but seems okay in some tests
-    LispStringPtr iResult = PlatArcSin(int1,  aHashTable, 0);	// is this LispCharPtr or LispStringPtr?
-	ANumber result(iResult->String(), aPrecision);	// what is this??
-	// how do I get an ANumber from the result of PlatArcSin()?
-	// am I leaking memory in the above hack with string pointers?
-	// hopefully not if LispString is ref counted
+    LispStringPtr iResult = PlatArcSin(int1,  aHashTable, 0);
+	ANumber result(iResult->String(), aPrecision);	// hack, hack, hack
+	// how else do I get an ANumber from the result of PlatArcSin()?
     ANumber x(aPrecision);	// dummy variable
     ANumber q("10", aPrecision);	// initial value must be "significant"
     ANumber s(aPrecision);
