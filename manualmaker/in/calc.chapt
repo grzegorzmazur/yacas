@@ -50,20 +50,57 @@ SeeAlso({"N","Pi"});
 
 
 
-
-
-
 AddAnchor("Exp");
-SubSection()"Exp(x)";
-Text()"Exp(x) : Calculate e^x.";
-
 AddAnchor("Ln");
-SubSection()"Ln(x)";
-Text()"Ln(x) :  Calculate natural logarithm of x.";
+SubSection()"Exp(x), Ln(x)";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Exp(x) <br> Ln(x)";
+
+Topical()"Parameters";
+Text()"x - a number";
+
+Topical()"Description";
+Text()
+"Calculate e^x, or its inverse, ln(x), respectively.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> Exp(2)
+Out> Exp(2);
+In> Ln(%)
+Out> 2;
+");
+
 
 AddAnchor("Sqrt");
-SubSection()"Sqrt(x)";
-Text()"Sqrt(x) : calculate the square root of x.";
+SubSection()"Sqrt";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Sqrt(x)";
+
+Topical()"Parameters";
+Text()"x - anumber";
+
+Topical()"Description";
+Text()
+"Calculate the square root of x.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> Sqrt(16)
+Out> 4;
+In> Sqrt(15)
+Out> Sqrt(15);
+In> N(Sqrt(15))
+Out> 3.8729833462;
+");
+
+
 
 AddAnchor("Abs");
 AddAnchor("Sign");
@@ -82,7 +119,7 @@ Topical()"Description";
 Text()
 "Abs(x) returns the absolute value of a number.
 Abs(x)*Sign(x) should always be equal to x. Sign(x) returns 1
-if the number is positive, -1 otherwise.";
+if the number is positive or zero, -1 otherwise.";
 
 Topical()"Examples";
 Text()
@@ -93,77 +130,186 @@ In> Sign(-2)
 Out> -1;
 ");
 
-Topical()"See Also"; 
-SeeAlso({});
-
-
 AddAnchor("Complex");
-SubSection()"Complex(x,y)";
-Text()"This represents a complex number x+I*y.";
-
 AddAnchor("Re");
-SubSection()"Re(z)";
-Text()"Return real part of complex number z.";
-
 AddAnchor("Im");
-SubSection()"Im(z)";
-Text()"Return imaginary part of complex number z.";
-
 AddAnchor("I");
-SubSection()"I";
-Text()"This is the pure imaginary number I (for which i*I=-1).
-You can type 2+I*3, which would evaluate to
-Complex(2,3). Re and Im return the real and
-imaginary parts of a number respectively.";
+AddAnchor("Conjugate");
+SubSection()"Complex numbers";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Complex(x,y) <br>
+Re(z) <br>
+Im(z) <br>
+I <br>
+Conjugate(expression)
+";
 
+Topical()"Parameters";
+Text()
+"x - a real number <br>
+y - a real number  <br>
+z - a real or complex number <br>
+expression - an expression containing complex numbers
+";
+
+Topical()"Description";
+Text()
+"Complex(x,y) represents a complex number x+I*y, where I is a pure
+imaginary number, I = Sqrt(-1). Re(z) returns the real part of a
+complex number, and Im(z) returns the imaginary part. Conjugate
+returns the complex conjugate of an expression. It does this
+by replacing all occurrences of Complex(a,b) in the expression with
+Complex(a,-b). This operation assumes all unbound variables are
+real-valued.":
+HtmlNewParagraph():
+"
+Complex(x,y) is the internal representation of a complex number
+in Yacas.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> z := 2+3*I
+Out> Complex(2,3);
+In> Re(z)
+Out> 2;
+In> Im(z)
+Out> 3;
+");
 
 AddAnchor("!");
-SubSection()"n!";
-Text()"Factorial. n! evaluates to n*(n-1)*(n-2)*....*1.";
-
-
 AddAnchor("Bin");
-SubSection()"Bin(n,m)";
-Text()"Bin(n,m) evaluates to n!/(n!*(n-m)!)";
+SubSection()"Factorial and binomial numbers";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"n!, Bin(n,m)";
+
+Topical()"Parameters";
+Text()
+"n - a positive integer <br>
+m - a positive integer";
+
+Topical()"Description";
+Text()
+"n! evaluates to n*(n-1)*(n-2)*....*1. Bin(n,m) evaluates to n!/(n!*(n-m)!).
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> 10!
+Out> 3628800;
+In> Bin(10,4)
+Out> 210;
+In> (10!)/((6!)*(4!))
+Out> 210;
+In> (3/2)!
+Out> (3*Sqrt(Pi))/4;
+");
 
 
 AddAnchor("Sum");
-SubSection()"Sum(var,from,to,body) and Sum({list})";
-Text()"Sum(var,from,to,body) :
-Sum does a summation over \"body\", setting variable \"var\"
-from \"from\" upto and including \"to\", incrementing it by 1 each
-time.":
-HtmlNewParagraph():
-
-"Sum({list}) : calculate the sum of the elements in a list.
-Example : Sum({1,2,3}) evaluates to 6.";
-
-
 AddAnchor("Average");
-SubSection()"Average({list})";
-Text()"Average({list}) : calculate the average of the elements in a list.
-Example : Average({1,2,3}) evaluates to 2.";
-
-
 AddAnchor("Factorize");
-SubSection()"Factorize(var,from,to,body) and Factorize({list})";
-Text()"Factorize(var,from,to,body) :
-Factorize does a factorization over \"body\", setting variable \"var\"
-from \"from\" upto and including \"to\", incrementing it by 1 each
-time.":
+SubSection()"Sums and products.";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"Sum(var,from,to,body) <br>
+Sum(list)              <br>
+Average(list)          <br>
+Factorize(var,from,to,body) <br>
+Factorize(list)
+";
 
+Topical()"Parameters";
+Text()
+"var - a variable to iterate over <br>
+from - integer value to iterate from <br>
+to - integer value to iterate upto   <br>
+body - expression to evaluate for each iteration <br>
+list - list of values to iterate over";
+
+Topical()"Description";
+Text()
+"Sum returns the sum of a list of values. Factorize returns
+the product of a list of values. Average returns the average
+of a list of values.":
 HtmlNewParagraph():
+"
+Iteration can either proceed over the elements of a list passed in,
+or by evaluating \'body\' by iterating variable \'var\' from value
+\'from\' upto \'to\'. 'to' should be greater than or equal to from.
+";
 
-"Factorize({list}) : calculate the product of the elements in a list.
-Example : Factorize({1,2,3}) evaluates to 6.";
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> Sum(i,1,3,i)
+Out> 6;
+In> Sum({1,2,3})
+Out> 6;
+In> Sum(1 .. 3)
+Out> 6;
+In> Average(1 .. 3)
+Out> 2;
+In> Factorize(i,1,3,i)
+Out> 6;
+In> Factorize({1,2,3})
+Out> 6;
+In> Factorize(1 .. 3)
+Out> 6;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Max","Min"});
+
+
 
 AddAnchor("Min");
 AddAnchor("Max");
-SubSection()"Min(x,y), Min({...}), Max(x,y) and Max({...})";
-Text()"Min and Max return the minimum and maximum value of their
+SubSection()"Minimum and maximum values";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"Min(x,y) <br>
+Min(list) <br>
+Max(x,y)  <br>
+Max(list)";
+
+Topical()"Parameters";
+Text()
+"x - a number <br>
+y - a number  <br>
+list - a list of numbers";
+
+Topical()"Description";
+Text()
+"Min and Max return the minimum and maximum value of their
 arguments respectively. Min and max can either be called with
-two numbers as arguments, or with a list of numbers.
-";
+two numbers as arguments, or with a list of numbers.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> Min(2,3)
+Out> 2;
+In> Max(2,3)
+Out> 3;
+In> Min(5 .. 15)
+Out> 5;
+In> Max(5 .. 15)
+Out> 15;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Sum","Average"});
 
 
 AddAnchor("IsZero");
@@ -171,47 +317,183 @@ SubSection()"IsZero(x)";
 Text()"IsZero(x) : Returns wether x is zero or not.";
 
 
+
 AddAnchor("IsRational");
-SubSection()"IsRational(r)";
-Text()"IsRational(r) : Rational numbers are anything like a/b, or 2/5.";
-
 AddAnchor("Numer");
-SubSection()"Numer(r)";
-Text()"Numer(r) : Return numerator of a rational number.";
-
 AddAnchor("Denom");
-SubSection()"Denom(r)";
-Text()"Denom(r) : Return denominator of a rational number.";
+SubSection()"Rational numbers";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"IsRational(r) <br>
+Numer(r) <br>
+Denom(r)";
+
+Topical()"Parameters";
+Text()"r - a rational number or expression";
+
+Topical()"Description";
+Text()
+"Rational numbers are anything like a/b, or 2/5. IsRational returns
+True if the argument is a rational expression, and False otherwise.
+Numer and Denom return the numerator and denominator of a rational
+expression, respectively.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> IsRational(a)
+Out> False;
+In> IsRational(a/b)
+Out> True;
+In> Numer(a/b)
+Out> a;
+In> Denom(a/b)
+Out> b;
+");
 
 
 AddAnchor("Commutator");
-SubSection()"Commutator(a,b)";
-Text()"Commutator(a,b) :
-Return \"a b - b a\". For numbers and such this is
+SubSection()"Commutator";
+BuiltIn()/StandardLib();
+Topical()"Calling Sequence";
+Text()"Commutator(a,b)";
+
+Topical()"Parameters";
+Text()
+"a - a mathematical object <br>
+b - a mathematical object";
+
+Topical()"Description";
+Text()
+"Return \"a b - b a\". For numbers and such this is
 zero, for matrices in general it isn't.";
 
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> Commutator(2,3)
+Out> 0;
+In> m1:=Identity(3)
+Out> {{1,0,0},{0,1,0},{0,0,1}};
+In> m1[1][2] := a
+Out> True;
+In> m2:=Identity(3)
+Out> {{1,0,0},{0,1,0},{0,0,1}};
+In> m2[2][2] := a
+Out> True;
+In> Commutator(m1,m2)
+Out> {{0,a^2-a,0},{0,0,0},{0,0,0}};
+");
+
 AddAnchor("Taylor");
-SubSection()"Taylor(var,var0,order)function";
-Text()"Taylor(var,var0,order)function :
-Return the Taylor series expansion of function \"function\", with
-respect to variable \"var\", around \"var=var0\", upto order \"order\".";
+SubSection()"Taylor";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Taylor(var,at,order)expression";
 
-AddAnchor("InverseTaylor");
-SubSection()"InverseTaylor(var,value,degree) func";
+Topical()"Parameters";
+Text()
+"var - variable <br>
+at - point to get taylor series around <br>
+order - order of approximation <br>
+expression - expression to get taylor series for";
 
-Text()"InverseTaylor(var,value,degree) func : build a taylor series expansion
-of the inverse of function func, with respect to variable var around value, upto
-degree. InverseTaylor uses the function ReversePoly to perform the
-task.
-
+Topical()"Description";
+Text()
+"Return the Taylor series expansion of function \"expression\", with
+respect to variable \"var\", around \"var=at\", upto order \"order\".
 ";
 
-AddAnchor("ReversePoly");
-SubSection()"ReversePoly(f,g,var,newvar,degree)";
+Topical()"Examples";
 Text()
-"ReversePoly(f,g,var,newvar,degree) :
+HtmlCommand(
+"
+In> Taylor(x,0,9)Sin(x)
 
-Given polynomials f(var) and h(var), determine a polynomial
+     3    5      7       9  
+    x    x      x       x   
+x - -- + --- - ---- + ------
+    6    120   5040   362880
+
+Out> 
+");
+
+Topical()"See Also"; 
+SeeAlso({"InverseTaylor","ReversePoly","BigOh"});
+
+
+AddAnchor("InverseTaylor");
+SubSection()"InverseTaylor";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"InverseTaylor(var,at,degree) expression";
+
+Topical()"Parameters";
+Text()
+"var - variable <br>
+at - point to get inverse taylor series around <br>
+order - order of approximation <br>
+expression - expression to get inverse taylor series for";
+
+Topical()"Description";
+Text()
+"InverseTaylor builds a taylor series expansion
+of the inverse of function func, with respect to variable var around value, upto
+degree. InverseTaylor uses the function ReversePoly to perform the
+task.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> exp1 := Taylor(x,0,7)Sin(x)
+
+     3    5      7 
+    x    x      x  
+x - -- + --- - ----
+    6    120   5040
+
+Out> 
+In> exp2 := InverseTaylor(x,0,8)ArcSin(x)
+
+ 5      7     3    
+x      x     x     
+--- - ---- - -- + x
+120   5040   6     
+
+Out> 
+In> Simplify(exp1-exp2)
+
+0
+
+Out> 
+");
+
+Topical()"See Also"; 
+SeeAlso({"ReversePoly","Taylor","BigOh"});
+
+
+AddAnchor("ReversePoly");
+SubSection()"ReversePoly";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"ReversePoly(f,g,var,newvar,degree)";
+
+Topical()"Parameters";
+Text()
+"f - a function of one free variable 'var'<br>
+g - a function of one free variable 'var'<br>
+var - a variable<br>
+newvar - a new variable to express the result in<br>
+degree - The degree of the required solution
+";
+
+Topical()"Description";
+Text()
+"Given polynomials f(var) and g(var), determine a polynomial
 h(newvar) for which h(f(var)) = g(var). The resulting polynomial
 will be of degree degree. The only requirement is that the
 first derivative of f should not be zero.
@@ -223,64 +505,232 @@ a function: if g(var)=var, then h(f(var))=var, so h will be the
 inverse of f.
 ";
 
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> f(x):=Eval(Expand((1+x)^4))
+Out> True;
+In> g(x) := x^2
+Out> True;
+In> h(y):=Eval(ReversePoly(f(x),g(x),x,y,8))
+Out> True;
+In> BigOh(h(f(x)),x,8)
+Out> x^2;
+In> h(x)
+Out> (-2695*(x-1)^7)/131072+(791*(x-1)^6)/32768+(-119*(x-1)^5)/4096+(37*(x-1)^4)/1024+(-3*(x-1)^3)/64+(x-1)^2/16;
+");
+
+Topical()"See Also"; 
+SeeAlso({"InverseTaylor","Taylor","BigOh"});
+
+AddAnchor("BigOh");
+SubSection()"BigOh";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"BigOh(poly,var,degree)";
+
+Topical()"Parameters";
+Text()
+"poly - a univariate polynomial <br>
+var - a free variable <br>
+degree - positive integer";
+
+Topical()"Description";
+Text()
+"BigOh drops all terms of order degree or higher in a 
+given polynomial poly in variable var.
+.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> BigOh(1+x+x^2+x^3,x,2)
+Out> x+1;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Taylor","InverseTaylor"});
+
+
+
 
 AddAnchor("Newton");
-SubSection()"Newton(function,variable,initial,accuracy)";
-Text()"Newton(function,variable,initial,accuracy) :
-Find a zero of \"function\", as a function of \"variable\",
+SubSection()"Newton";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Newton(expression,variable,initial,accuracy)";
+
+Topical()"Parameters";
+Text()"
+expression - an expression to find a zero for <br>
+variable - free variable to adjust to find a zero <br>
+initial - initial value to use in the search      <br>
+accuracy - minimum required accuracy of the result
+";
+
+Topical()"Description";
+Text()
+"Find a zero of \"expression\", as a function of \"variable\",
 starting around value \"initial\", and continuing until
 the value for \"variable\" is maximally \"accuracy\" away
 from the correct value.";
 
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> Newton(Sin(x),x,3,0.0001)
+Out> 3.1415926535;
+");
+
+
+
 
 AddAnchor("D");
-SubSection()"D(variable)expression";
-Text()"D(variable)  expression :
-Calculate analytic derivative of an expression. \"D(x) Sin(x);\"
-\"Cos(x);\".
+SubSection()"Derivatives";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"D(var)expression <br>
+D(list)expression <br>
+D(var,n)expression
+";
 
-The D operator is also threaded:
-\"D({x,y,z}) Sin(x*y)\" will return {Cos(x*y)*y,Cos(x*y)*x,0}
-":
+Topical()"Parameters";
+Text()
+"var - variable <br>
+list - a list of variables <br>
+expression - expression to take derivative of <br>
+n - order of derivative
+";
 
-HtmlNewParagraph():
-"Alternatively, you can call D with \"D(variable,n)expression\".
-In that case the n-th derivative will be taken.";
+Topical()"Description";
+Text()
+"Calculate analytic derivative of an expression.
+The D operator is threaded.
+Alternatively, D can be invoked with \"D(variable,n)expression\".
+In that case the n-th derivative will be taken.
+";
 
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> D(x)Sin(x*y)
+Out> y*Cos(x*y);
+In> D({x,y,z})Sin(x*y)
+Out> {y*Cos(x*y),x*Cos(x*y),0};
+In> D(x,2)Sin(x*y)
+Out> -Sin(x*y)*y^2;
+In> D(x){Sin(x),Cos(x)}
+Out> {Cos(x),-Sin(x)};
+");
+
+Topical()"See Also"; 
+SeeAlso({"Integrate","Taylor"});
 
 AddAnchor("Diverge");
-SubSection()"Diverge(vector, basis)";
-Text()"Diverge(vector, basis) : Calculate the divergence of
-a vector.
-
-Example: \"Diverge(FillList(x*y,3),{x,y,z})\" will return
-{y,x,0}
-";
-
-
 AddAnchor("Curl");
-SubSection()"Curl(vector, basis)";
-Text()"Curl(vector, basis) : Calculate the curl of a vector.
-
-Example: \"Curl(FillList(x*y,3),{x,y,z})\" will return
-{x,-y,y-x}
+SubSection()"Diverge and Curl";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"Diverge(vector, basis) <br>
+Curl(vector, basis) 
 ";
+
+Topical()"Parameters";
+Text()
+"vector - a vector <br>
+basis - a list of variables";
+
+Topical()"Description";
+Text()
+"Diverge(vector, basis) will calculate the divergence of a vector.
+Curl(vector, basis) calculate the curl of a vector.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> Diverge({x*y,x*y,x*y},{x,y,z})
+Out> {y,x,0};
+In> Curl({x*y,x*y,x*y},{x,y,z})
+Out> {x,-y,y-x};
+");
+
+Topical()"See Also"; 
+SeeAlso({"D"});
 
 
 AddAnchor("Integrate");
-SubSection()"Integrate(var,from,to) body";
+SubSection()"Integrate";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"Integrate(var,from,to) expression <br>
+Integrate(var) expression
+";
 
-Text()"Integrate(var,from,to) body : integrate body over variable var=from
+Topical()"Parameters";
+Text()
+"var - variable to integrate over <br>
+from - value to integrate from <br>
+to - value to integrate upto <br>
+expression - expression to integrate over
+";
+
+Topical()"Description";
+Text()
+"Integrate an expression over variable var=from
 to var=to. Some simple integration rules have currently been implemented.
 Transcendental functions, polynomials, products of transcendental functions
 and polynomials, and rational functions.";
 
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> Integrate(x,a,b)Cos(x)
+Out> Sin(b)-Sin(a);
+In> Integrate(x)Cos(x)
+Out> Sin(x)+C9;
+");
+
+Topical()"See Also"; 
+SeeAlso({"D"});
+
 
 AddAnchor("Simplify");
-SubSection()"Simplify(expr)";
-Text()"Simplify(expr) : Simplify tries to simplify an expression as much
+SubSection()"Simplify";
+BuiltIn()/StandardLib();
+Topical()"Calling Sequence";
+Text()"Simplify(expression)";
+
+Topical()"Parameters";
+Text()"expression - an expression";
+
+Topical()"Description";
+Text()
+"Simplify tries to simplify an expression as much
 as possible. It does this by grouping powers within terms, and then
-grouping like terms.";
+grouping like terms.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> a*b*a^2/b-a^3
+Out> (b*a^3)/b-a^3;
+In> Simplify(a*b*a^2/b-a^3)
+Out> 0;
+");
+
+Topical()"See Also"; 
+SeeAlso({"TrigSimpCombine","RadSimp"});
 
 
 AddAnchor("RadSimp");
@@ -315,40 +765,80 @@ SeeAlso({"Simplify"});
 
 
 
-AddAnchor("Rationalize");
-SubSection()"Rationalize(expr)";
-Text()"Rationalize(expr) : convert every real number in expr into a rational
-number.";
 
-AddAnchor("Conjugate");
-SubSection()"Conjugate(expr)";
-Text()"Conjugate(expr) : return the conjugate of expr (given that all
-variables are real or integer).
-";
+AddAnchor("Rationalize");
+SubSection()"Rationalize";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Rationalize(expression)";
+
+Topical()"Parameters";
+Text()"expression - an expression containing real numbers";
+
+Topical()"Description";
+Text()
+"Convert every real number in expr into a rational number.
+This is useful when a calculation needs to be done on
+floating point numbers and the algorithm is unstable.
+Converting the floating point numbers to rational numbers
+will force calculations to be done with infinite precision
+(by using rational numbers as representations).";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> {1.2,3.123,4.5}
+Out> {1.2,3.123,4.5};
+In> Rationalize(%)
+Out> {6/5,3123/1000,9/2};
+");
 
 
 AddAnchor("Solve");
-SubSection()"Solve(expr1==expr2,variable)";
-Text()"Solve(expr1==expr2,variable) :
-A very simple solver. It can for now solve expressions where the variable
-to be solved for only occurs once.
+SubSection()"Solve";
+BuiltIn()/StandardLib();
+Topical()"Calling Sequence";
+Text()
+"Solve(eq,var) <br>
+ Solve(eqlist,varlist)
+";
 
-\"Solve(a+x*y==z,x);\" would evaluate to \"(z-a)/y\".
-":
-HtmlNewParagraph():
-"
-Solve can solve simple sets of equations. Pass the equations in a list,
+Topical()"Parameters";
+Text()
+"eq - single identity equation <br>
+var - single variable <br>
+eqlist - list of identity equations <br>
+varlist - list of variables";
+
+Topical()"Description";
+Text()
+"Solve tries to solve (a set of) equations for (a set of) variables.
+
+Pass the equations in a list,
 as well as the variables to be solved for. The solver will then use
 SuchThat, in combination with Eliminate, to simplify the equations.
 This suffices for all linear equations and a large group of simple
 non-linear equations.
-":
-HtmlNewParagraph():
-"
+
 When the variable argument receives a list of variables to solve for,
 Solve returns a list of results, with each result being a solution
 to the set of equations.
 ";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> Solve(a+x*y==z,x)
+Out> (z-a)/y;
+In> Solve({a*x+y==0,x+z==0},{x,y})
+Out> {{-z,z*a}};
+");
+
+Topical()"See Also"; 
+SeeAlso({"SuchThat","Subst","Eliminate"});
+
 
 AddAnchor("SuchThat");
 SubSection()"SuchThat";
@@ -387,75 +877,244 @@ Topical()"See Also";
 SeeAlso({"Solve","Subst","Simplify"});
 
 
-
-
 AddAnchor("Eliminate");
-SubSection()"Eliminate(var,replace,function)";
-Text()"
-Eliminate(var,replace,function) : replace all instances of
-":HtmlTerm("var"):" in ":HtmlTerm("function"):" with ":HtmlTerm("relpace"):"
-and call Simplify on the resulting expression.
+SubSection()"Eliminate";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Eliminate(original,replace,expression)";
+
+Topical()"Parameters";
+Text()
+"original - expression <br>
+replace -  expression <br>
+expression - expression 
 ";
+
+Topical()"Description";
+Text()
+"Replace all instances of
+":HtmlTerm("original"):" in ":HtmlTerm("expression"):" with ":HtmlTerm("replace"):"
+and call Simplify on the resulting expression.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> Subst(Cos(b),c)(Sin(a)+Cos(b)^2/c)
+
+            2
+           c 
+Sin( a ) + --
+           c 
+
+Out> 
+In> Eliminate(Cos(b),c,Sin(a)+Cos(b)^2/c)
+
+Sin( a ) + c
+
+Out> 
+");
+
+Topical()"See Also"; 
+SeeAlso({"SuchThat","Subst"});
+
+
+
 
 
 AddAnchor("PSolve");
-SubSection()"PSolve(expr,var)";
+SubSection()"PSolve";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"PSolve(expr,var)";
 
-Text()"PSolve(expr) : solve expr=0 with respect to variable var, treating
-it expr as a polynomial. It currently solves upto degree 2.
-";
+Topical()"Parameters";
+Text()
+"expr - an expression <br>
+var - a variable";
+
+Topical()"Description";
+Text()
+"solve expr=0 with respect to variable var, treating
+it expr as a polynomial. It currently solves upto degree 3.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> PSolve(b*x+a,x)
+Out> -a/b;
+In> PSolve(c*x^2+b*x+a,x)
+Out> {(Sqrt(b^2-4*c*a)-b)/(2*c),(-(b+Sqrt(b^2-4*c*a)))/(2*c)};
+");
+
+Topical()"See Also"; 
+SeeAlso({"Solve","Factor"});
 
 
-AddAnchor("Pi");
-SubSection()"Pi()";
-Text()"Pi() : Returns pi to the current precision.";
+SubSection()"Pi";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()"Pi()";
 
+Topical()"Description";
+Text()
+"Returns pi to the current precision. Usually this function will
+not be called directly. The constant 'Pi' can (and should) be used to
+represent pi, so simplification rules can do work. Then when the
+function N is invoked Pi will be replaced with the value returned
+by Pi().";
 
-AddAnchor("Fibonacci");
-SubSection()"Fibonacci(n)";
-Text()"Fibonacci(n) : Calculate Fibonacci number \"n\".";
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> Pi()
+Out> 3.14159265358979323846;
+In> Precision(40)
+Out> True;
+In> Pi()
+Out> 3.1415926535897932384626433832795028841971;
+");
+
+Topical()"See Also"; 
+SeeAlso({"N","Pi"});
 
 
 AddAnchor("Random");
-SubSection()"Random()";
-Text()"Random() : Returns a random number between 0 and 1.";
+SubSection()"Random";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Random()";
+
+Topical()"Description";
+Text()
+"Returns a random number between 0 and 1.";
 
 
 AddAnchor("VarList");
-SubSection()"VarList(expression)";
-Text()"VarList(expression) : Returns a list with all the variables
-\"expression\" depends on. Example: \"VarList(Sin(x));\" should
-return \"{x};\".";
+SubSection()"VarList";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"VarList(expression)";
+
+Topical()"Parameters";
+Text()"expression - an expression";
+
+Topical()"Description";
+Text()
+"Returns a list with all the variables
+\"expression\" depends on.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> VarList(Sin(x))
+Out> {x};
+In> VarList(x+a*y)
+Out> {x,a,y};
+");
+
+Topical()"See Also"; 
+SeeAlso({"IsFreeOf"});
 
 
 AddAnchor("Limit");
-SubSection()"Limit(variable,value) function";
-Text()"Limit(variable,value)function : determine the
-value \"function\" converges to when \"variable\"
-goes to \"value\" from positive infinity.
-Examples : 
-\"Limit(x,0) Sin(x)/x;\" evaluates to \"1\", and 
-\"Limit(x,0) (Sin(x)-Tan(x))/(x^3);\" evaluates to \"-1/2\".
-";
+SubSection()"Limit";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Limit(variable,value) expression";
+
+Topical()"Parameters";
+Text()
+"variable - a variable <br>
+value - a number <br>
+expression - an expression";
+
+Topical()"Description";
+Text()
+"Determine the
+value \"expression\" converges to when \"variable\"
+goes to \"value\" from positive infinity.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Limit(x,0) Sin(x)/x
+Out> 1;
+In> Limit(x,0) (Sin(x)-Tan(x))/(x^3)
+Out> -1/2;
+");
+
 
 
 AddAnchor("TrigSimpCombine");
-SubSection()"TrigSimpCombine(expression)";
-Text()"TrigSimpCombine(expression) : 
-This is the module that does the trigonometric simplification:
+SubSection()"TrigSimpCombine";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"TrigSimpCombine(expression)";
+
+Topical()"Parameters";
+Text()"expression - an expression";
+
+Topical()"Description";
+Text()
+"This is the module that does the trigonometric simplification:
 Cos(...)*Sin(...) -> Cos(...)+Sin(...)
 <P>
 It also tries to simplify the resulting expression as much as possible,
-trying to combine all like terms.
+trying to combine all like terms.":
+HtmlNewParagraph():
+"
+This function is used in for instance Integrate, to bring down
+the expression into a simpler form that can be integrated easily.
 ";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> TrigSimpCombine(Cos(a)^2+Sin(a)^2)
+
+1
+
+Out> 
+In> TrigSimpCombine(Cos(a)^2-Sin(a)^2)
+
+Cos( 2 * a )
+
+Out> 
+In> TrigSimpCombine(Cos(a)^2*Sin(b))
+
+Sin( b )   Sin( -2 * a + b )   Sin( -2 * a - b )
+-------- + ----------------- - -----------------
+   2               4                   4        
+
+Out> 
+");
+
+Topical()"See Also"; 
+SeeAlso({"Simplify","Integrate"});
+
+
 
 
 AddAnchor("LagrangeInterpolant");
-SubSection()"LagrangeInterpolant({xlist},{ylist},var)";
-Text()"
-LagrangeInterpolant({xlist},{ylist},var) :
+SubSection()"LagrangeInterpolant";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"LagrangeInterpolant(xlist,ylist,var)";
 
-given a set of points (x_i,y_i) with all nonzero y_i, find the
+Topical()"Parameters";
+Text()
+"xlist - list of values <br>
+ylist - list f values <br>
+var - free variable for resulting polynomial";
+
+Topical()"Description";
+Text()
+"Given a set of points (x_i,y_i) with all nonzero y_i, find the
 polynomial that goes through these points. The first argument
 passed to the function should be the list of x_i values, the
 second one should be the list of y_i values, and the third
@@ -464,10 +1123,13 @@ argument should be the variable used to build up the polynomial.
 ":HtmlNewParagraph():"
 
 This routine uses the Lagrange interpolant formula to build up the
-polynomial. For three terms this is:
+polynomial.";
 
-":HtmlCommand(
-"In> PrettyForm(LagrangeInterpolant(MakeVector(x,3),MakeVector(y,3),x))
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> LagrangeInterpolant({x1,x2,x3},{y1,y2,y3},x)
 
 y1 * ( x - x2 ) * ( x - x3 )   y2 * ( x - x1 ) * ( x - x3 ) 
 ---------------------------- + ---------------------------- 
@@ -477,13 +1139,32 @@ y1 * ( x - x2 ) * ( x - x3 )   y2 * ( x - x1 ) * ( x - x3 )
 + ----------------------------
    ( x3 - x1 ) * ( x3 - x2 )  
 
-Out> True;"):"
-
-
-";
-
+Out> 
+");
 
 
 
+AddAnchor("Fibonacci");
+SubSection()"Fibonacci";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Fibonacci(n)";
+
+Topical()"Parameters";
+Text()"n - an integer";
+
+Topical()"Description";
+Text()
+"Calculate Fibonacci number \"n\".";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> Fibonacci(4)
+Out> 3;
+In> Fibonacci(8)
+Out> 21;
+");
 
 

@@ -11,6 +11,21 @@ Tail
 , <A HREF="refchapter7.html#Length" TARGET="Chapters">
 Length
 </A>
+, <A HREF="refchapter7.html#MapSingle" TARGET="Chapters">
+MapSingle
+</A>
+, <A HREF="refchapter7.html#Map" TARGET="Chapters">
+Map
+</A>
+, <A HREF="refchapter7.html#RandomIntegerVector" TARGET="Chapters">
+RandomIntegerVector
+</A>
+, <A HREF="refchapter7.html#MakeVector" TARGET="Chapters">
+MakeVector
+</A>
+, <A HREF="refchapter7.html#Select" TARGET="Chapters">
+Select
+</A>
 , <A HREF="refchapter7.html#Nth" TARGET="Chapters">
 Nth
 </A>
@@ -130,21 +145,6 @@ Table
 </A>
 , <A HREF="refchapter7.html#TableForm" TARGET="Chapters">
 TableForm
-</A>
-, <A HREF="refchapter7.html#MapSingle" TARGET="Chapters">
-MapSingle
-</A>
-, <A HREF="refchapter7.html#Map" TARGET="Chapters">
-Map
-</A>
-, <A HREF="refchapter7.html#RandomIntegerVector" TARGET="Chapters">
-RandomIntegerVector
-</A>
-, <A HREF="refchapter7.html#MakeVector" TARGET="Chapters">
-MakeVector
-</A>
-, <A HREF="refchapter7.html#Select" TARGET="Chapters">
-Select
 </A>
 , <HEAD><TITLE>List operations</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
 <BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
@@ -269,6 +269,177 @@ Tail
 </A>
 , <A HREF="ref.html#Nth" TARGET="Chapters">
 Nth
+</A>
+, <A NAME="MapSingle">
+
+</A>
+<A NAME="Map">
+
+</A>
+<H3>
+<HR>Applying a function to multiple values
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+MapSingle(function,list) <br>
+Map(function,doublelist)
+
+<H5>
+Parameters:
+</H5>
+function - a function to apply <br>
+list - list of arguments to be passed to function accepting a single argument
+doublelist - list of lists of arguments to be passed to a function
+
+<H5>
+Description:
+</H5>
+MapSingle performs Apply on every item in list, returning a
+list of the results.
+
+<P>
+
+Map performs Apply on every set of items in doublelist, returning a
+list of the results. Eg. Map("+",{{a,b},{c,d}}) would return {a+c,b+d}.
+doublelist should be a list of lists each the same size. 
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> MapSingle("Sin",{a,b,c})
+Out> {Sin(a),Sin(b),Sin(c)};
+In> Map("+",{{a,b},{c,d}})
+Out> {a+c,b+d};
+In> "Sin" /@ {a,b,c}
+Out> {Sin(a),Sin(b),Sin(c)};
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#/@" TARGET="Chapters">
+/@
+</A>
+, <A NAME="RandomIntegerVector">
+
+</A>
+<H3>
+<HR>RandomIntegerVector
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+RandomIntegerVector(nr,from,to)
+<H5>
+Parameters:
+</H5>
+nr - integer
+from - integer
+to - integer
+
+<H5>
+Description:
+</H5>
+RandomIntegerVector generates a vector of random
+integers p in the range [from,to] (including from and to).
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> RandomIntegerVector(4,-3,3)
+Out> {0,3,2,-2};
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Random" TARGET="Chapters">
+Random
+</A>
+, <A HREF="ref.html#RandomPoly" TARGET="Chapters">
+RandomPoly
+</A>
+, <A NAME="MakeVector">
+
+</A>
+<H3>
+<HR>MakeVector
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+MakeVector(var,n)
+<H5>
+Parameters:
+</H5>
+var - free variable<br>
+n - integer
+<H5>
+Description:
+</H5>
+MakeVector(var,n) : return a vector of unique numbered variable names.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> MakeVector(a,3)
+Out> {a1,a2,a3};
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#RandomIntegerVector" TARGET="Chapters">
+RandomIntegerVector
+</A>
+, <A HREF="ref.html#ZeroVector" TARGET="Chapters">
+ZeroVector
+</A>
+, <A NAME="Select">
+
+</A>
+<H3>
+<HR>Select
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Select(predicate,list)
+<H5>
+Parameters:
+</H5>
+predicate - a predicate function<br>
+list - a list of elements to select from
+<H5>
+Description:
+</H5>
+Select returns a sublist of list, containing all
+elements for which the predicate returned after applying the
+predicate on that list element. 
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Select("IsInteger",{a,b,2,c,3,d,4,e,f})
+Out> {2,3,4};
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Length" TARGET="Chapters">
+Length
+</A>
+, <A HREF="ref.html#Find" TARGET="Chapters">
+Find
 </A>
 , <A NAME="Nth">
 
@@ -816,75 +987,6 @@ values from "from" upto "to", incrementing "step" each time.
 Tableform({list}) : 
 TableForm writes out a list in a nicer readable form, eg. one line for
 each element in the list.
-
-
-<A NAME="MapSingle">
-
-</A>
-<H3>
-<HR>MapSingle("operator",{list})
-</H3>
-
-MapSingle("operator",{list}) : 
-MapSingle performs Apply on every item in {list}, returning a
-list of the results.
-
-
-<A NAME="Map">
-
-</A>
-<H3>
-<HR>Map("operator",{lists})
-</H3>
-
-Map("operator",{lists}) : 
-{lists} should be a list of lists each the same size. 
-Map performs Apply on every set of items in {lists}, returning a
-list of the results. Eg. Map("+",{{a,b},{c,d}}) would return {a+c,b+d}.
-
-<A NAME="RandomIntegerVector">
-
-</A>
-<H3>
-<HR>RandomIntegerVector(nr,from,to)
-</H3>
-
-RandomIntegerVector(nr,from,to) : generate a vector of random
-integers p in the range [from,to] (including from and to).
-
-<A NAME="MakeVector">
-
-</A>
-<H3>
-<HR>MakeVector(var,n)
-</H3>
-
-MakeVector(var,n) : return a vector of unique numbered variable names.
-Example:
-
-<TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> MakeVector(a,3)
-Out> {a1,a2,a3};</PRE></TR>
-</TABLE>
-
-
-
-<A NAME="Select">
-
-</A>
-<H3>
-<HR>Select(predicate,list)
-</H3>
-
-Select(predicate,list) : return a sublist of list, containing all
-elements for which the predicate returned after applying the
-predicate on that list element. Example:
-
-<TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Select("IsInteger",{a,b,2,c,3,d,4,e,f})
-Out> {2,3,4};</PRE></TR>
-</TABLE>
-
 
 
 

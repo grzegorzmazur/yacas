@@ -11,6 +11,9 @@ Echo
 , <A HREF="refchapter14.html#PrettyForm" TARGET="Chapters">
 PrettyForm
 </A>
+, <A HREF="refchapter14.html#EvalFormula" TARGET="Chapters">
+EvalFormula
+</A>
 , <A HREF="refchapter14.html#Write" TARGET="Chapters">
 Write
 </A>
@@ -59,6 +62,9 @@ FindFile
 , <A HREF="refchapter14.html#PatchLoad" TARGET="Chapters">
 PatchLoad
 </A>
+, <A HREF="refchapter14.html#Nl" TARGET="Chapters">
+Nl
+</A>
 , <HEAD><TITLE>Input/Output</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
 <BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
 <H1>
@@ -97,30 +103,93 @@ output
 
 </A>
 <H3>
-<HR>PrettyForm(expr)
+<HR>PrettyForm
 </H3>
-
-PrettyForm shows the expression in a nicer form, closer to
-the notation usually used when a human writes down an expression.
-Example:
-
-<TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> PrettyForm(Taylor(x,0,9)Sin(x))
-
-     /  3 \    5     /  7 \      9  
-    -\ x  /   x     -\ x  /     x   
-x + ------- + --- + ------- + ------
-       6      120    5040     362880
-
-Out> True;</PRE></TR>
-</TABLE>
-
-
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+PrettyForm(expr)
+<H5>
+Parameters:
+</H5>
+expr - an expression
+<H5>
+Description:
+</H5>
+PrettyForm renders an expression in a nicer way, using ascii art.
 This is generally useful when the result of a calculation is more
 complex than a simple number.
 
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Taylor(x,0,9)Sin(x)
+Out> x-x^3/6+x^5/120-x^7/5040+x^9/362880;
+In> PrettyForm(%)
 
-<A NAME="Write">
+     3    5      7       9  
+    x    x      x       x   
+x - -- + --- - ---- + ------
+    6    120   5040   362880
+
+Out> True;
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#EvalFormula" TARGET="Chapters">
+EvalFormula
+</A>
+, <A HREF="ref.html#PrettyPrinter" TARGET="Chapters">
+PrettyPrinter
+</A>
+, <A NAME="EvalFormula">
+
+</A>
+<H3>
+<HR>EvalFormula
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+EvalFormula(expression)
+<H5>
+Parameters:
+</H5>
+expression - an expression
+
+<H5>
+Description:
+</H5>
+Show an evaluation in a nice way, using PrettyPrinter
+   to show 'input = output'.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In&gt EvalFormula(Taylor(x,0,7)Sin(x)) 
+
+                                      3    5      7 
+                                     x    x      x  
+Taylor( x , 0 , 7 , Sin( x ) ) = x - -- + --- - ----
+                                     6    120   5040
+
+Out&gt True 
+
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#PrettyForm" TARGET="Chapters">
+PrettyForm
+</A>
+, <A NAME="Write">
 
 </A>
 <H3>
@@ -334,7 +403,23 @@ PatchString
 , <A HREF="ref.html#Load" TARGET="Chapters">
 Load
 </A>
-, 
+, <A NAME="Nl">
+
+</A>
+<H3>
+<HR>Nl
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Nl()
+<H5>
+Description:
+</H5>
+This function returns a string with one element in it, a new line
+  character. Useful for building strings to send to some output in the
+  end.
+
 </BODY>
 
 </FONT>

@@ -80,20 +80,45 @@ LazyGlobal
 
 </A>
 <H3>
-<HR>True and False
+<HR>Boolean constants
 </H3>
-
-
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+True <br>
+False
+<H5>
+Description:
+</H5>
 <B><TT>True</TT></B> and <B><TT>False</TT></B> are typically the result
 of boolean expressions like <B><TT>2 &lt 3</TT></B> and <B><TT>True And False</TT></B>.
-<A NAME="EndOfFile">
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#And" TARGET="Chapters">
+And
+</A>
+, <A HREF="ref.html#Or" TARGET="Chapters">
+Or
+</A>
+, <A HREF="ref.html#Not" TARGET="Chapters">
+Not
+</A>
+, <A NAME="EndOfFile">
 
 </A>
 <H3>
 <HR>EndOfFile
 </H3>
-
-EndOfFile : End of file marker when reading from file. If a file
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+EndOfFile
+<H5>
+Description:
+</H5>
+End of file marker when reading from file. If a file
 contains the expression <B><TT>EndOfFile;</TT></B> the
 operation will stop reading the file at that point.
 
@@ -103,8 +128,13 @@ operation will stop reading the file at that point.
 <H3>
 <HR>Infinity
 </H3>
-
-
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Infinity
+<H5>
+Description:
+</H5>
 Infinity represents infinity. It can be the result of certain
 calculations.
 <P>
@@ -112,20 +142,57 @@ calculations.
 Note that for most analytic functions Yacas understands Infinity.
 Thus <B><TT>Infinity*2</TT></B> will return Infinity, and <B><TT>a &lt Infinity</TT></B> will evaluate to True.
 
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> 2*Infinity
+Out> Infinity;
+In> 2<Infinity
+Out> True;
+</PRE></TR>
+</TABLE>
+
 <A NAME="Pi">
 
 </A>
 <H3>
 <HR>Pi
 </H3>
-
-
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Pi
+<H5>
+Description:
+</H5>
 Pi represents the value of pi. When the N(..) function is used,
 Pi is set to the correct value. It is probably better to use
 Pi than Pi(), for simplification purposes.
 
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Sin(3*Pi/2)
+Out> -1;
+In> Pi
+Out> Pi;
+In> N(Pi)
+Out> 3.1415926535;
+</PRE></TR>
+</TABLE>
 
-
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Sin" TARGET="Chapters">
+Sin
+</A>
+, <A HREF="ref.html#Cos" TARGET="Chapters">
+Cos
+</A>
+, 
 </BODY>
 
 </FONT>

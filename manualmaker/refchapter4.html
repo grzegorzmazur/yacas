@@ -47,6 +47,9 @@ Im
 , <A HREF="refchapter4.html#I" TARGET="Chapters">
 I
 </A>
+, <A HREF="refchapter4.html#Conjugate" TARGET="Chapters">
+Conjugate
+</A>
 , <A HREF="refchapter4.html#!" TARGET="Chapters">
 !
 </A>
@@ -92,6 +95,9 @@ InverseTaylor
 , <A HREF="refchapter4.html#ReversePoly" TARGET="Chapters">
 ReversePoly
 </A>
+, <A HREF="refchapter4.html#BigOh" TARGET="Chapters">
+BigOh
+</A>
 , <A HREF="refchapter4.html#Newton" TARGET="Chapters">
 Newton
 </A>
@@ -116,9 +122,6 @@ RadSimp
 , <A HREF="refchapter4.html#Rationalize" TARGET="Chapters">
 Rationalize
 </A>
-, <A HREF="refchapter4.html#Conjugate" TARGET="Chapters">
-Conjugate
-</A>
 , <A HREF="refchapter4.html#Solve" TARGET="Chapters">
 Solve
 </A>
@@ -130,12 +133,6 @@ Eliminate
 </A>
 , <A HREF="refchapter4.html#PSolve" TARGET="Chapters">
 PSolve
-</A>
-, <A HREF="refchapter4.html#Pi" TARGET="Chapters">
-Pi
-</A>
-, <A HREF="refchapter4.html#Fibonacci" TARGET="Chapters">
-Fibonacci
 </A>
 , <A HREF="refchapter4.html#Random" TARGET="Chapters">
 Random
@@ -151,6 +148,9 @@ TrigSimpCombine
 </A>
 , <A HREF="refchapter4.html#LagrangeInterpolant" TARGET="Chapters">
 LagrangeInterpolant
+</A>
+, <A HREF="refchapter4.html#Fibonacci" TARGET="Chapters">
+Fibonacci
 </A>
 , <HEAD><TITLE>Calculus</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
 <BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
@@ -229,24 +229,68 @@ Pi
 , <A NAME="Exp">
 
 </A>
-<H3>
-<HR>Exp(x)
-</H3>
-Exp(x) : Calculate e^x.
 <A NAME="Ln">
 
 </A>
 <H3>
-<HR>Ln(x)
+<HR>Exp(x), Ln(x)
 </H3>
-Ln(x) :  Calculate natural logarithm of x.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Exp(x) <br> Ln(x)
+<H5>
+Parameters:
+</H5>
+x - a number
+<H5>
+Description:
+</H5>
+Calculate e^x, or its inverse, ln(x), respectively.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Exp(2)
+Out> Exp(2);
+In> Ln(%)
+Out> 2;
+</PRE></TR>
+</TABLE>
+
 <A NAME="Sqrt">
 
 </A>
 <H3>
-<HR>Sqrt(x)
+<HR>Sqrt
 </H3>
-Sqrt(x) : calculate the square root of x.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Sqrt(x)
+<H5>
+Parameters:
+</H5>
+x - anumber
+<H5>
+Description:
+</H5>
+Calculate the square root of x.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Sqrt(16)
+Out> 4;
+In> Sqrt(15)
+Out> Sqrt(15);
+In> N(Sqrt(15))
+Out> 3.8729833462;
+</PRE></TR>
+</TABLE>
+
 <A NAME="Abs">
 
 </A>
@@ -271,7 +315,7 @@ Description:
 </H5>
 Abs(x) returns the absolute value of a number.
 Abs(x)*Sign(x) should always be equal to x. Sign(x) returns 1
-if the number is positive, -1 otherwise.
+if the number is positive or zero, -1 otherwise.
 <H5>
 Examples:
 </H5>
@@ -283,102 +327,235 @@ Out> -1;
 </PRE></TR>
 </TABLE>
 
-<H5>
-See Also:
-</H5>
 <A NAME="Complex">
 
 </A>
-<H3>
-<HR>Complex(x,y)
-</H3>
-This represents a complex number x+I*y.
 <A NAME="Re">
 
 </A>
-<H3>
-<HR>Re(z)
-</H3>
-Return real part of complex number z.
 <A NAME="Im">
 
 </A>
-<H3>
-<HR>Im(z)
-</H3>
-Return imaginary part of complex number z.
 <A NAME="I">
 
 </A>
-<H3>
-<HR>I
-</H3>
-This is the pure imaginary number I (for which i*I=-1).
-You can type 2+I*3, which would evaluate to
-Complex(2,3). Re and Im return the real and
-imaginary parts of a number respectively.
-<A NAME="!">
+<A NAME="Conjugate">
 
 </A>
 <H3>
-<HR>n!
+<HR>Complex numbers
 </H3>
-Factorial. n! evaluates to n*(n-1)*(n-2)*....*1.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Complex(x,y) <br>
+Re(z) <br>
+Im(z) <br>
+I <br>
+Conjugate(expression)
+
+<H5>
+Parameters:
+</H5>
+x - a real number <br>
+y - a real number  <br>
+z - a real or complex number <br>
+expression - an expression containing complex numbers
+
+<H5>
+Description:
+</H5>
+Complex(x,y) represents a complex number x+I*y, where I is a pure
+imaginary number, I = Sqrt(-1). Re(z) returns the real part of a
+complex number, and Im(z) returns the imaginary part. Conjugate
+returns the complex conjugate of an expression. It does this
+by replacing all occurrences of Complex(a,b) in the expression with
+Complex(a,-b). This operation assumes all unbound variables are
+real-valued.
+<P>
+
+Complex(x,y) is the internal representation of a complex number
+in Yacas.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> z := 2+3*I
+Out> Complex(2,3);
+In> Re(z)
+Out> 2;
+In> Im(z)
+Out> 3;
+</PRE></TR>
+</TABLE>
+
+<A NAME="!">
+
+</A>
 <A NAME="Bin">
 
 </A>
 <H3>
-<HR>Bin(n,m)
+<HR>Factorial and binomial numbers
 </H3>
-Bin(n,m) evaluates to n!/(n!*(n-m)!)
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+n!, Bin(n,m)
+<H5>
+Parameters:
+</H5>
+n - a positive integer <br>
+m - a positive integer
+<H5>
+Description:
+</H5>
+n! evaluates to n*(n-1)*(n-2)*....*1. Bin(n,m) evaluates to n!/(n!*(n-m)!).
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> 10!
+Out> 3628800;
+In> Bin(10,4)
+Out> 210;
+In> (10!)/((6!)*(4!))
+Out> 210;
+In> (3/2)!
+Out> (3*Sqrt(Pi))/4;
+</PRE></TR>
+</TABLE>
+
 <A NAME="Sum">
 
 </A>
-<H3>
-<HR>Sum(var,from,to,body) and Sum({list})
-</H3>
-Sum(var,from,to,body) :
-Sum does a summation over "body", setting variable "var"
-from "from" upto and including "to", incrementing it by 1 each
-time.
-<P>
-Sum({list}) : calculate the sum of the elements in a list.
-Example : Sum({1,2,3}) evaluates to 6.
 <A NAME="Average">
 
 </A>
-<H3>
-<HR>Average({list})
-</H3>
-Average({list}) : calculate the average of the elements in a list.
-Example : Average({1,2,3}) evaluates to 2.
 <A NAME="Factorize">
 
 </A>
 <H3>
-<HR>Factorize(var,from,to,body) and Factorize({list})
+<HR>Sums and products.
 </H3>
-Factorize(var,from,to,body) :
-Factorize does a factorization over "body", setting variable "var"
-from "from" upto and including "to", incrementing it by 1 each
-time.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Sum(var,from,to,body) <br>
+Sum(list)              <br>
+Average(list)          <br>
+Factorize(var,from,to,body) <br>
+Factorize(list)
+
+<H5>
+Parameters:
+</H5>
+var - a variable to iterate over <br>
+from - integer value to iterate from <br>
+to - integer value to iterate upto   <br>
+body - expression to evaluate for each iteration <br>
+list - list of values to iterate over
+<H5>
+Description:
+</H5>
+Sum returns the sum of a list of values. Factorize returns
+the product of a list of values. Average returns the average
+of a list of values.
 <P>
-Factorize({list}) : calculate the product of the elements in a list.
-Example : Factorize({1,2,3}) evaluates to 6.
-<A NAME="Min">
+
+Iteration can either proceed over the elements of a list passed in,
+or by evaluating 'body' by iterating variable 'var' from value
+'from' upto 'to'. 'to' should be greater than or equal to from.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Sum(i,1,3,i)
+Out> 6;
+In> Sum({1,2,3})
+Out> 6;
+In> Sum(1 .. 3)
+Out> 6;
+In> Average(1 .. 3)
+Out> 2;
+In> Factorize(i,1,3,i)
+Out> 6;
+In> Factorize({1,2,3})
+Out> 6;
+In> Factorize(1 .. 3)
+Out> 6;
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Max" TARGET="Chapters">
+Max
+</A>
+, <A HREF="ref.html#Min" TARGET="Chapters">
+Min
+</A>
+, <A NAME="Min">
 
 </A>
 <A NAME="Max">
 
 </A>
 <H3>
-<HR>Min(x,y), Min({...}), Max(x,y) and Max({...})
+<HR>Minimum and maximum values
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Min(x,y) <br>
+Min(list) <br>
+Max(x,y)  <br>
+Max(list)
+<H5>
+Parameters:
+</H5>
+x - a number <br>
+y - a number  <br>
+list - a list of numbers
+<H5>
+Description:
+</H5>
 Min and Max return the minimum and maximum value of their
 arguments respectively. Min and max can either be called with
 two numbers as arguments, or with a list of numbers.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Min(2,3)
+Out> 2;
+In> Max(2,3)
+Out> 3;
+In> Min(5 .. 15)
+Out> 5;
+In> Max(5 .. 15)
+Out> 15;
+</PRE></TR>
+</TABLE>
 
-<A NAME="IsZero">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Sum" TARGET="Chapters">
+Sum
+</A>
+, <A HREF="ref.html#Average" TARGET="Chapters">
+Average
+</A>
+, <A NAME="IsZero">
 
 </A>
 <H3>
@@ -388,63 +565,227 @@ IsZero(x) : Returns wether x is zero or not.
 <A NAME="IsRational">
 
 </A>
-<H3>
-<HR>IsRational(r)
-</H3>
-IsRational(r) : Rational numbers are anything like a/b, or 2/5.
 <A NAME="Numer">
 
 </A>
-<H3>
-<HR>Numer(r)
-</H3>
-Numer(r) : Return numerator of a rational number.
 <A NAME="Denom">
 
 </A>
 <H3>
-<HR>Denom(r)
+<HR>Rational numbers
 </H3>
-Denom(r) : Return denominator of a rational number.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+IsRational(r) <br>
+Numer(r) <br>
+Denom(r)
+<H5>
+Parameters:
+</H5>
+r - a rational number or expression
+<H5>
+Description:
+</H5>
+Rational numbers are anything like a/b, or 2/5. IsRational returns
+True if the argument is a rational expression, and False otherwise.
+Numer and Denom return the numerator and denominator of a rational
+expression, respectively.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> IsRational(a)
+Out> False;
+In> IsRational(a/b)
+Out> True;
+In> Numer(a/b)
+Out> a;
+In> Denom(a/b)
+Out> b;
+</PRE></TR>
+</TABLE>
+
 <A NAME="Commutator">
 
 </A>
 <H3>
-<HR>Commutator(a,b)
+<HR>Commutator
 </H3>
-Commutator(a,b) :
+Internal function<br>Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Commutator(a,b)
+<H5>
+Parameters:
+</H5>
+a - a mathematical object <br>
+b - a mathematical object
+<H5>
+Description:
+</H5>
 Return "a b - b a". For numbers and such this is
 zero, for matrices in general it isn't.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Commutator(2,3)
+Out> 0;
+In> m1:=Identity(3)
+Out> {{1,0,0},{0,1,0},{0,0,1}};
+In> m1[1][2] := a
+Out> True;
+In> m2:=Identity(3)
+Out> {{1,0,0},{0,1,0},{0,0,1}};
+In> m2[2][2] := a
+Out> True;
+In> Commutator(m1,m2)
+Out> {{0,a^2-a,0},{0,0,0},{0,0,0}};
+</PRE></TR>
+</TABLE>
+
 <A NAME="Taylor">
 
 </A>
 <H3>
-<HR>Taylor(var,var0,order)function
+<HR>Taylor
 </H3>
-Taylor(var,var0,order)function :
-Return the Taylor series expansion of function "function", with
-respect to variable "var", around "var=var0", upto order "order".
-<A NAME="InverseTaylor">
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Taylor(var,at,order)expression
+<H5>
+Parameters:
+</H5>
+var - variable <br>
+at - point to get taylor series around <br>
+order - order of approximation <br>
+expression - expression to get taylor series for
+<H5>
+Description:
+</H5>
+Return the Taylor series expansion of function "expression", with
+respect to variable "var", around "var=at", upto order "order".
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Taylor(x,0,9)Sin(x)
+
+     3    5      7       9  
+    x    x      x       x   
+x - -- + --- - ---- + ------
+    6    120   5040   362880
+
+Out> 
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#InverseTaylor" TARGET="Chapters">
+InverseTaylor
+</A>
+, <A HREF="ref.html#ReversePoly" TARGET="Chapters">
+ReversePoly
+</A>
+, <A HREF="ref.html#BigOh" TARGET="Chapters">
+BigOh
+</A>
+, <A NAME="InverseTaylor">
 
 </A>
 <H3>
-<HR>InverseTaylor(var,value,degree) func
+<HR>InverseTaylor
 </H3>
-InverseTaylor(var,value,degree) func : build a taylor series expansion
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+InverseTaylor(var,at,degree) expression
+<H5>
+Parameters:
+</H5>
+var - variable <br>
+at - point to get inverse taylor series around <br>
+order - order of approximation <br>
+expression - expression to get inverse taylor series for
+<H5>
+Description:
+</H5>
+InverseTaylor builds a taylor series expansion
 of the inverse of function func, with respect to variable var around value, upto
 degree. InverseTaylor uses the function ReversePoly to perform the
 task.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> exp1 := Taylor(x,0,7)Sin(x)
 
+     3    5      7 
+    x    x      x  
+x - -- + --- - ----
+    6    120   5040
 
-<A NAME="ReversePoly">
+Out> 
+In> exp2 := InverseTaylor(x,0,8)ArcSin(x)
+
+ 5      7     3    
+x      x     x     
+--- - ---- - -- + x
+120   5040   6     
+
+Out> 
+In> Simplify(exp1-exp2)
+
+0
+
+Out> 
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#ReversePoly" TARGET="Chapters">
+ReversePoly
+</A>
+, <A HREF="ref.html#Taylor" TARGET="Chapters">
+Taylor
+</A>
+, <A HREF="ref.html#BigOh" TARGET="Chapters">
+BigOh
+</A>
+, <A NAME="ReversePoly">
 
 </A>
 <H3>
-<HR>ReversePoly(f,g,var,newvar,degree)
+<HR>ReversePoly
 </H3>
-ReversePoly(f,g,var,newvar,degree) :
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+ReversePoly(f,g,var,newvar,degree)
+<H5>
+Parameters:
+</H5>
+f - a function of one free variable 'var'<br>
+g - a function of one free variable 'var'<br>
+var - a variable<br>
+newvar - a new variable to express the result in<br>
+degree - The degree of the required solution
 
-Given polynomials f(var) and h(var), determine a polynomial
+<H5>
+Description:
+</H5>
+Given polynomials f(var) and g(var), determine a polynomial
 h(newvar) for which h(f(var)) = g(var). The resulting polynomial
 will be of degree degree. The only requirement is that the
 first derivative of f should not be zero.
@@ -455,76 +796,298 @@ This function is used to determine the taylor series expansion of
 a function: if g(var)=var, then h(f(var))=var, so h will be the
 inverse of f.
 
-<A NAME="Newton">
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> f(x):=Eval(Expand((1+x)^4))
+Out> True;
+In> g(x) := x^2
+Out> True;
+In> h(y):=Eval(ReversePoly(f(x),g(x),x,y,8))
+Out> True;
+In> BigOh(h(f(x)),x,8)
+Out> x^2;
+In> h(x)
+Out> (-2695*(x-1)^7)/131072+(791*(x-1)^6)/32768+(-119*(x-1)^5)/4096+(37*(x-1)^4)/1024+(-3*(x-1)^3)/64+(x-1)^2/16;
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#InverseTaylor" TARGET="Chapters">
+InverseTaylor
+</A>
+, <A HREF="ref.html#Taylor" TARGET="Chapters">
+Taylor
+</A>
+, <A HREF="ref.html#BigOh" TARGET="Chapters">
+BigOh
+</A>
+, <A NAME="BigOh">
 
 </A>
 <H3>
-<HR>Newton(function,variable,initial,accuracy)
+<HR>BigOh
 </H3>
-Newton(function,variable,initial,accuracy) :
-Find a zero of "function", as a function of "variable",
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+BigOh(poly,var,degree)
+<H5>
+Parameters:
+</H5>
+poly - a univariate polynomial <br>
+var - a free variable <br>
+degree - positive integer
+<H5>
+Description:
+</H5>
+BigOh drops all terms of order degree or higher in a 
+given polynomial poly in variable var.
+.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> BigOh(1+x+x^2+x^3,x,2)
+Out> x+1;
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Taylor" TARGET="Chapters">
+Taylor
+</A>
+, <A HREF="ref.html#InverseTaylor" TARGET="Chapters">
+InverseTaylor
+</A>
+, <A NAME="Newton">
+
+</A>
+<H3>
+<HR>Newton
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Newton(expression,variable,initial,accuracy)
+<H5>
+Parameters:
+</H5>
+
+expression - an expression to find a zero for <br>
+variable - free variable to adjust to find a zero <br>
+initial - initial value to use in the search      <br>
+accuracy - minimum required accuracy of the result
+
+<H5>
+Description:
+</H5>
+Find a zero of "expression", as a function of "variable",
 starting around value "initial", and continuing until
 the value for "variable" is maximally "accuracy" away
 from the correct value.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Newton(Sin(x),x,3,0.0001)
+Out> 3.1415926535;
+</PRE></TR>
+</TABLE>
+
 <A NAME="D">
 
 </A>
 <H3>
-<HR>D(variable)expression
+<HR>Derivatives
 </H3>
-D(variable)  expression :
-Calculate analytic derivative of an expression. "D(x) Sin(x);"
-"Cos(x);".
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+D(var)expression <br>
+D(list)expression <br>
+D(var,n)expression
 
-The D operator is also threaded:
-"D({x,y,z}) Sin(x*y)" will return {Cos(x*y)*y,Cos(x*y)*x,0}
+<H5>
+Parameters:
+</H5>
+var - variable <br>
+list - a list of variables <br>
+expression - expression to take derivative of <br>
+n - order of derivative
 
-<P>
-Alternatively, you can call D with "D(variable,n)expression".
+<H5>
+Description:
+</H5>
+Calculate analytic derivative of an expression.
+The D operator is threaded.
+Alternatively, D can be invoked with "D(variable,n)expression".
 In that case the n-th derivative will be taken.
-<A NAME="Diverge">
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> D(x)Sin(x*y)
+Out> y*Cos(x*y);
+In> D({x,y,z})Sin(x*y)
+Out> {y*Cos(x*y),x*Cos(x*y),0};
+In> D(x,2)Sin(x*y)
+Out> -Sin(x*y)*y^2;
+In> D(x){Sin(x),Cos(x)}
+Out> {Cos(x),-Sin(x)};
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Integrate" TARGET="Chapters">
+Integrate
+</A>
+, <A HREF="ref.html#Taylor" TARGET="Chapters">
+Taylor
+</A>
+, <A NAME="Diverge">
 
 </A>
-<H3>
-<HR>Diverge(vector, basis)
-</H3>
-Diverge(vector, basis) : Calculate the divergence of
-a vector.
-
-Example: "Diverge(FillList(x*y,3),{x,y,z})" will return
-{y,x,0}
-
 <A NAME="Curl">
 
 </A>
 <H3>
-<HR>Curl(vector, basis)
+<HR>Diverge and Curl
 </H3>
-Curl(vector, basis) : Calculate the curl of a vector.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Diverge(vector, basis) <br>
+Curl(vector, basis) 
 
-Example: "Curl(FillList(x*y,3),{x,y,z})" will return
-{x,-y,y-x}
+<H5>
+Parameters:
+</H5>
+vector - a vector <br>
+basis - a list of variables
+<H5>
+Description:
+</H5>
+Diverge(vector, basis) will calculate the divergence of a vector.
+Curl(vector, basis) calculate the curl of a vector.
 
-<A NAME="Integrate">
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Diverge({x*y,x*y,x*y},{x,y,z})
+Out> {y,x,0};
+In> Curl({x*y,x*y,x*y},{x,y,z})
+Out> {x,-y,y-x};
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#D" TARGET="Chapters">
+D
+</A>
+, <A NAME="Integrate">
 
 </A>
 <H3>
-<HR>Integrate(var,from,to) body
+<HR>Integrate
 </H3>
-Integrate(var,from,to) body : integrate body over variable var=from
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Integrate(var,from,to) expression <br>
+Integrate(var) expression
+
+<H5>
+Parameters:
+</H5>
+var - variable to integrate over <br>
+from - value to integrate from <br>
+to - value to integrate upto <br>
+expression - expression to integrate over
+
+<H5>
+Description:
+</H5>
+Integrate an expression over variable var=from
 to var=to. Some simple integration rules have currently been implemented.
 Transcendental functions, polynomials, products of transcendental functions
 and polynomials, and rational functions.
-<A NAME="Simplify">
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Integrate(x,a,b)Cos(x)
+Out> Sin(b)-Sin(a);
+In> Integrate(x)Cos(x)
+Out> Sin(x)+C9;
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#D" TARGET="Chapters">
+D
+</A>
+, <A NAME="Simplify">
 
 </A>
 <H3>
-<HR>Simplify(expr)
+<HR>Simplify
 </H3>
-Simplify(expr) : Simplify tries to simplify an expression as much
+Internal function<br>Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Simplify(expression)
+<H5>
+Parameters:
+</H5>
+expression - an expression
+<H5>
+Description:
+</H5>
+Simplify tries to simplify an expression as much
 as possible. It does this by grouping powers within terms, and then
 grouping like terms.
-<A NAME="RadSimp">
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> a*b*a^2/b-a^3
+Out> (b*a^3)/b-a^3;
+In> Simplify(a*b*a^2/b-a^3)
+Out> 0;
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#TrigSimpCombine" TARGET="Chapters">
+TrigSimpCombine
+</A>
+, <A HREF="ref.html#RadSimp" TARGET="Chapters">
+RadSimp
+</A>
+, <A NAME="RadSimp">
 
 </A>
 <H3>
@@ -568,46 +1131,96 @@ Simplify
 
 </A>
 <H3>
-<HR>Rationalize(expr)
+<HR>Rationalize
 </H3>
-Rationalize(expr) : convert every real number in expr into a rational
-number.
-<A NAME="Conjugate">
-
-</A>
-<H3>
-<HR>Conjugate(expr)
-</H3>
-Conjugate(expr) : return the conjugate of expr (given that all
-variables are real or integer).
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Rationalize(expression)
+<H5>
+Parameters:
+</H5>
+expression - an expression containing real numbers
+<H5>
+Description:
+</H5>
+Convert every real number in expr into a rational number.
+This is useful when a calculation needs to be done on
+floating point numbers and the algorithm is unstable.
+Converting the floating point numbers to rational numbers
+will force calculations to be done with infinite precision
+(by using rational numbers as representations).
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> {1.2,3.123,4.5}
+Out> {1.2,3.123,4.5};
+In> Rationalize(%)
+Out> {6/5,3123/1000,9/2};
+</PRE></TR>
+</TABLE>
 
 <A NAME="Solve">
 
 </A>
 <H3>
-<HR>Solve(expr1==expr2,variable)
+<HR>Solve
 </H3>
-Solve(expr1==expr2,variable) :
-A very simple solver. It can for now solve expressions where the variable
-to be solved for only occurs once.
+Internal function<br>Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Solve(eq,var) <br>
+ Solve(eqlist,varlist)
 
-"Solve(a+x*y==z,x);" would evaluate to "(z-a)/y".
+<H5>
+Parameters:
+</H5>
+eq - single identity equation <br>
+var - single variable <br>
+eqlist - list of identity equations <br>
+varlist - list of variables
+<H5>
+Description:
+</H5>
+Solve tries to solve (a set of) equations for (a set of) variables.
 
-<P>
-
-Solve can solve simple sets of equations. Pass the equations in a list,
+Pass the equations in a list,
 as well as the variables to be solved for. The solver will then use
 SuchThat, in combination with Eliminate, to simplify the equations.
 This suffices for all linear equations and a large group of simple
 non-linear equations.
 
-<P>
-
 When the variable argument receives a list of variables to solve for,
 Solve returns a list of results, with each result being a solution
 to the set of equations.
 
-<A NAME="SuchThat">
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Solve(a+x*y==z,x)
+Out> (z-a)/y;
+In> Solve({a*x+y==0,x+z==0},{x,y})
+Out> {{-z,z*a}};
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#SuchThat" TARGET="Chapters">
+SuchThat
+</A>
+, <A HREF="ref.html#Subst" TARGET="Chapters">
+Subst
+</A>
+, <A HREF="ref.html#Eliminate" TARGET="Chapters">
+Eliminate
+</A>
+, <A NAME="SuchThat">
 
 </A>
 <H3>
@@ -663,88 +1276,299 @@ Simplify
 
 </A>
 <H3>
-<HR>Eliminate(var,replace,function)
+<HR>Eliminate
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Eliminate(original,replace,expression)
+<H5>
+Parameters:
+</H5>
+original - expression <br>
+replace -  expression <br>
+expression - expression 
 
-Eliminate(var,replace,function) : replace all instances of
-<B><TT>var</TT></B> in <B><TT>function</TT></B> with <B><TT>relpace</TT></B>
+<H5>
+Description:
+</H5>
+Replace all instances of
+<B><TT>original</TT></B> in <B><TT>expression</TT></B> with <B><TT>replace</TT></B>
 and call Simplify on the resulting expression.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Subst(Cos(b),c)(Sin(a)+Cos(b)^2/c)
 
-<A NAME="PSolve">
+            2
+           c 
+Sin( a ) + --
+           c 
+
+Out> 
+In> Eliminate(Cos(b),c,Sin(a)+Cos(b)^2/c)
+
+Sin( a ) + c
+
+Out> 
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#SuchThat" TARGET="Chapters">
+SuchThat
+</A>
+, <A HREF="ref.html#Subst" TARGET="Chapters">
+Subst
+</A>
+, <A NAME="PSolve">
 
 </A>
 <H3>
-<HR>PSolve(expr,var)
+<HR>PSolve
 </H3>
-PSolve(expr) : solve expr=0 with respect to variable var, treating
-it expr as a polynomial. It currently solves upto degree 2.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+PSolve(expr,var)
+<H5>
+Parameters:
+</H5>
+expr - an expression <br>
+var - a variable
+<H5>
+Description:
+</H5>
+solve expr=0 with respect to variable var, treating
+it expr as a polynomial. It currently solves upto degree 3.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> PSolve(b*x+a,x)
+Out> -a/b;
+In> PSolve(c*x^2+b*x+a,x)
+Out> {(Sqrt(b^2-4*c*a)-b)/(2*c),(-(b+Sqrt(b^2-4*c*a)))/(2*c)};
+</PRE></TR>
+</TABLE>
 
-<A NAME="Pi">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Solve" TARGET="Chapters">
+Solve
+</A>
+, <A HREF="ref.html#Factor" TARGET="Chapters">
+Factor
+</A>
+, <H3>
+<HR>Pi
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Pi()
+<H5>
+Description:
+</H5>
+Returns pi to the current precision. Usually this function will
+not be called directly. The constant 'Pi' can (and should) be used to
+represent pi, so simplification rules can do work. Then when the
+function N is invoked Pi will be replaced with the value returned
+by Pi().
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Pi()
+Out> 3.14159265358979323846;
+In> Precision(40)
+Out> True;
+In> Pi()
+Out> 3.1415926535897932384626433832795028841971;
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#N" TARGET="Chapters">
+N
+</A>
+, <A HREF="ref.html#Pi" TARGET="Chapters">
+Pi
+</A>
+, <A NAME="Random">
 
 </A>
 <H3>
-<HR>Pi()
+<HR>Random
 </H3>
-Pi() : Returns pi to the current precision.
-<A NAME="Fibonacci">
-
-</A>
-<H3>
-<HR>Fibonacci(n)
-</H3>
-Fibonacci(n) : Calculate Fibonacci number "n".
-<A NAME="Random">
-
-</A>
-<H3>
-<HR>Random()
-</H3>
-Random() : Returns a random number between 0 and 1.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Random()
+<H5>
+Description:
+</H5>
+Returns a random number between 0 and 1.
 <A NAME="VarList">
 
 </A>
 <H3>
-<HR>VarList(expression)
+<HR>VarList
 </H3>
-VarList(expression) : Returns a list with all the variables
-"expression" depends on. Example: "VarList(Sin(x));" should
-return "{x};".
-<A NAME="Limit">
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+VarList(expression)
+<H5>
+Parameters:
+</H5>
+expression - an expression
+<H5>
+Description:
+</H5>
+Returns a list with all the variables
+"expression" depends on.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> VarList(Sin(x))
+Out> {x};
+In> VarList(x+a*y)
+Out> {x,a,y};
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#IsFreeOf" TARGET="Chapters">
+IsFreeOf
+</A>
+, <A NAME="Limit">
 
 </A>
 <H3>
-<HR>Limit(variable,value) function
+<HR>Limit
 </H3>
-Limit(variable,value)function : determine the
-value "function" converges to when "variable"
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Limit(variable,value) expression
+<H5>
+Parameters:
+</H5>
+variable - a variable <br>
+value - a number <br>
+expression - an expression
+<H5>
+Description:
+</H5>
+Determine the
+value "expression" converges to when "variable"
 goes to "value" from positive infinity.
-Examples : 
-"Limit(x,0) Sin(x)/x;" evaluates to "1", and 
-"Limit(x,0) (Sin(x)-Tan(x))/(x^3);" evaluates to "-1/2".
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Limit(x,0) Sin(x)/x
+Out> 1;
+In> Limit(x,0) (Sin(x)-Tan(x))/(x^3)
+Out> -1/2;
+</PRE></TR>
+</TABLE>
 
 <A NAME="TrigSimpCombine">
 
 </A>
 <H3>
-<HR>TrigSimpCombine(expression)
+<HR>TrigSimpCombine
 </H3>
-TrigSimpCombine(expression) : 
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+TrigSimpCombine(expression)
+<H5>
+Parameters:
+</H5>
+expression - an expression
+<H5>
+Description:
+</H5>
 This is the module that does the trigonometric simplification:
 Cos(...)*Sin(...) -> Cos(...)+Sin(...)
 <P>
 It also tries to simplify the resulting expression as much as possible,
 trying to combine all like terms.
+<P>
 
-<A NAME="LagrangeInterpolant">
+This function is used in for instance Integrate, to bring down
+the expression into a simpler form that can be integrated easily.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> TrigSimpCombine(Cos(a)^2+Sin(a)^2)
+
+1
+
+Out> 
+In> TrigSimpCombine(Cos(a)^2-Sin(a)^2)
+
+Cos( 2 * a )
+
+Out> 
+In> TrigSimpCombine(Cos(a)^2*Sin(b))
+
+Sin( b )   Sin( -2 * a + b )   Sin( -2 * a - b )
+-------- + ----------------- - -----------------
+   2               4                   4        
+
+Out> 
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Simplify" TARGET="Chapters">
+Simplify
+</A>
+, <A HREF="ref.html#Integrate" TARGET="Chapters">
+Integrate
+</A>
+, <A NAME="LagrangeInterpolant">
 
 </A>
 <H3>
-<HR>LagrangeInterpolant({xlist},{ylist},var)
+<HR>LagrangeInterpolant
 </H3>
-
-LagrangeInterpolant({xlist},{ylist},var) :
-
-given a set of points (x_i,y_i) with all nonzero y_i, find the
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+LagrangeInterpolant(xlist,ylist,var)
+<H5>
+Parameters:
+</H5>
+xlist - list of values <br>
+ylist - list f values <br>
+var - free variable for resulting polynomial
+<H5>
+Description:
+</H5>
+Given a set of points (x_i,y_i) with all nonzero y_i, find the
 polynomial that goes through these points. The first argument
 passed to the function should be the list of x_i values, the
 second one should be the list of y_i values, and the third
@@ -755,10 +1579,13 @@ argument should be the variable used to build up the polynomial.
 
 
 This routine uses the Lagrange interpolant formula to build up the
-polynomial. For three terms this is:
-
+polynomial.
+<H5>
+Examples:
+</H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> PrettyForm(LagrangeInterpolant(MakeVector(x,3),MakeVector(y,3),x))
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> LagrangeInterpolant({x1,x2,x3},{y1,y2,y3},x)
 
 y1 * ( x - x2 ) * ( x - x3 )   y2 * ( x - x1 ) * ( x - x3 ) 
 ---------------------------- + ---------------------------- 
@@ -768,11 +1595,39 @@ y1 * ( x - x2 ) * ( x - x3 )   y2 * ( x - x1 ) * ( x - x3 )
 + ----------------------------
    ( x3 - x1 ) * ( x3 - x2 )  
 
-Out> True;</PRE></TR>
+Out> 
+</PRE></TR>
 </TABLE>
 
+<A NAME="Fibonacci">
 
-
+</A>
+<H3>
+<HR>Fibonacci
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Fibonacci(n)
+<H5>
+Parameters:
+</H5>
+n - an integer
+<H5>
+Description:
+</H5>
+Calculate Fibonacci number "n".
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Fibonacci(4)
+Out> 3;
+In> Fibonacci(8)
+Out> 21;
+</PRE></TR>
+</TABLE>
 
 
 </BODY>

@@ -488,28 +488,33 @@ Topical()"See Also";
 SeeAlso({});
 
 
-
 AddAnchor("Decimal");
-SubSection()"Decimal(frac)";
-Text()"
-Decimal(frac) : return the infinite decimal representation
+SubSection()"Decimal";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Decimal(frac)";
+
+Topical()"Parameters";
+Text()"frac - a rational number";
+
+Topical()"Description";
+Text()
+"Decimal returns the infinite decimal representation
 of a number. This function returns a list, with the first
 element being the number before the decimal point and the
 last element the sequence of digits that will repeat
 forever. All the intermediate list elements are the initial
 digits.
-"
-:HtmlNewParagraph():
-"
-Example:
+";
 
-":HtmlCommand(
+Topical()"Examples";
+Text()
+HtmlCommand(
 "In> Decimal(1/22)
 Out> {0,0,{4,5}};
 In> N(1/22,30)
-Out> 0.045454545454545454545454545454;"):"
-
-";
+Out> 0.045454545454545454545454545454;
+");
 
 
 AddAnchor("TruncRadian");

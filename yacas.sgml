@@ -1,0 +1,257 @@
+<!doctype refentry PUBLIC "-//Davenport//DTD DocBook V3.0//EN" [
+
+  <!-- Fill in your name for FIRSTNAME and SURNAME. -->
+  <!ENTITY dhfirstname "<firstname>Gopal</firstname>">
+  <!ENTITY dhsurname   "<surname>Narayanan</surname>">
+  <!-- Please adjust the date whenever revising the manpage. -->
+  <!ENTITY dhdate      "<date>March 10, 2001</date>">
+  <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
+       allowed: see man(7), man(1). -->
+  <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
+  <!ENTITY dhemail     "<email>(gopal@debian.org)</email>">
+  <!ENTITY dhusername  "Gopal Narayanan">
+  <!ENTITY dhucpackage "<refentrytitle>yacas</refentrytitle>">
+  <!ENTITY dhpackage   "yacas">
+  <!ENTITY dhpackage2   "yacas_client">
+
+  <!ENTITY debian      "<productname>Debian GNU/Linux</productname>">
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+]>
+
+<refentry>
+  <docinfo>
+    <address>
+      &dhemail;
+    </address>
+    <author>
+      &dhfirstname;
+      &dhsurname;
+    </author>
+    <copyright>
+      <year>2001</year>
+      <holder>&dhusername;</holder>
+    </copyright>
+    &dhdate;
+  </docinfo>
+  <refmeta>
+    &dhucpackage;
+
+    &dhsection;
+  </refmeta>
+  <refnamediv>
+    <refname>&dhpackage;, &dhpackage2;</refname>
+
+    <refpurpose>small and flexible general-purpose computer algebra system</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+
+      <arg><option>options</option></arg>
+
+      <arg><option>{filename}</option></arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIPTION</title>
+
+<para>This manual page documents briefly the
+<command>&dhpackage;</command> and <command>&dhpackage2;</command>
+commands.</para>
+
+    <para> <command>Yacas</command> (Yet Another Computer Algebra System) is a small and
+highly flexible general-purpose computer algebra language. The syntax
+uses a infix-operator grammar parser. The distribution contains a
+small library of mathematical functions, but its real strength is in
+the language in which you can easily write your own symbolic
+manipulation algorithms.  The core engine supports arbitrary precision
+arithmetic, and is linked with the GNU arbitrary precision math
+library, and is able to execute symbolic manipulations on various
+mathematical objects by following user-defined rules. </para>
+
+
+    <para>This manual page was written for the &debian; distribution
+      because the original program does not have a manual page.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>OPTIONS</title>
+	     <para> A summary of options is given below </para>
+	    
+    <variablelist>
+      <varlistentry>
+        <term><option>-c</option>
+        </term>
+        <listitem>
+          <para>Inhibit printing of prompts "In>" and "Out>". Useful
+          for non-interactive sessions. </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-f</option>
+        </term>
+        <listitem>
+          <para>Reads standard input as one file, but executes only
+the first statement in it. (You may want to use a statement block to
+have several statements executed.)</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><option>-p</option></term>
+	<listitem>
+	  <para>Does not use terminal capabilities, no fancy editing
+	  on the command line and no escape sequences printed. Useful
+	  for non-interactive sessions. </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<TERM><OPTION>-t</option></term>
+	<LISTITEM>
+	  <PARA>Enable some extra history recall functionality in
+console mode: after executing a command from the history list, the
+next unmodified command from the history list will be automatically
+entered on the command line.</para>
+	</listitem>
+      </varlistentry>
+      <VARLISTENTRY> 
+	<TERM><OPTION>{filename}</option></term>
+	<LISTITEM> 
+	  <para>Reads and executes commands in the filename and
+	exits. Equivalent to "Load()".  </para>
+	</listitem>
+      </varlistentry>
+      <VARLISTENTRY>
+	<TERM><OPTION>-v</option></term>
+	<LISTITEM>
+	  <para>Prints version information and exits. </para>
+	</listitem>
+      </varlistentry>
+      <VARLISTENTRY>
+	<term><OPTION>-d</option></term>
+	<LISTITEM>
+	  <para>Prints the path to the Yacas library directory and exits</para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+<para>The default operation of <COMMAND> Yacas</command> is to run in
+the interactive console mode. <COMMAND>Yacas</command> accepts several
+options that modify its operation.  Options can be combined.</para>
+
+<PARA> In addition to the console mode, an experimental persistent
+session facility is provided through the script
+<command>&dhpackage2;</command>. By means of this script, the user can
+configure third-party applications to pass commands to a constantly
+running "Yacas server" and get output.  The "Yacas server" is
+automatically started by <command>&dhpackage2;</command>. It may run
+on a remote computer; in that case the user should have a user account
+on the remote computer and privileges to execute
+<command>&dhpackage2;</command> there, as well as rsh or ssh
+access. The purpose of <command>&dhpackage2;</command> is to enable
+users to pass commands to <command>Yacas</command> within a persistent
+session while running another application such as a text editor.
+
+The script <command>&dhpackage2;</command> reads
+<command>&dhpackage;</command> commands from the standard input and
+passes them to the running "Yacas server"; it then waits 2 seconds and
+prints whatever output <command>&dhpackage;</command> produced up to
+this time. Usage may looks like this:
+    </para>
+
+<PROGRAMLISTING>
+8:20pm Unix>echo "x:=3" | yacas_client 
+ Starting server.
+ [editvi] [gnuplot] 
+ True;
+ To exit Yacas, enter  Exit(); or quit or Ctrl-c. Type ?? for help.
+ Or type ?function for help on a function.
+ Type 'restart' to restart Yacas.
+ To see example commands, keep typing Example();
+ In> x:=3
+ Out> 3;
+ In> 8:21pm Unix>echo "x:=3+x" | yacas_client
+ In> x:=3+x
+ Out> 6;
+ In> 8:23pm Unix>yacas_client -stop
+ In> quit
+ Quitting...
+ Server stopped.
+ 8:23pm Unix>
+      </programlisting>
+
+    <para>
+      Persistence of the session means that
+<command>&dhpackage;</command> remembered the value of "x" between
+invocations of <command>&dhpackage2;</command>. If there is not enough
+time for Yacas to produce output within 2 seconds, the output will be
+displayed the next time you call <command>&dhpackage2;</command>.</para>
+
+<para>
+The "Yacas server" is started automatically when first used and can be
+stopped either by quitting <command>&dhpackage;</command> or by an
+explicit option <command>&dhpackage2;</command> -stop, in which case
+<command>&dhpackage2;</command> does not read standard input.</para>
+
+<para> The script <command>&dhpackage2;</command> reads standard input
+and writes to standard output, so it can be used via remote shell
+execution. For instance, if an account "user" on a remote computer
+"remote.host" is accessible through ssh, then
+<command>&dhpackage2;</command> can be used remotely like this:</para>
+
+<PROGRAMLISTING>
+echo "x:=2;" | ssh user@remote.host yacas_client
+    </programlisting>
+
+<para>On a given host computer running the "Yacas server", each user
+currently may have only one persistent Yacas session.</para>
+
+  </refsect1>
+  <refsect1>
+    <title>SEE ALSO</title>
+    <para>
+      <ulink
+      url="file:/usr/share/yacas/documentation/books.html">/usr/share/yacas/documentation/books.html</ulink>
+      or <ulink
+      url="http://www.xs4all.nl/~apinkus/manindex.html">http://www.xs4all.nl/~apinkus/manindex.html
+      </ulink> for more information.</para>
+
+  </refsect1>
+  <refsect1>
+    <title>AUTHOR</title>
+    <para> <COMMAND>&dhpackage;</command> was written by Ayal Pinkus
+    (apinkus@xs4all.nl). <COMMAND>&dhpackage;</command> is available
+    at <ulink
+      url="http://www.xs4all.nl/~apinkus/yacas.html">http://www.xs4all.nl/~apinkus/yacas.html
+      </ulink>.</para>
+
+    <para>This manual page was written by &dhusername; &dhemail; for
+      the &debian; system (but may be used by others).</para>
+
+    <!-- <para>Permission is granted to copy, distribute and/or modify
+      this document under the terms of the <acronym>GNU</acronym> Free
+      Documentation License, Version 1.1 or any later version
+      published by the Free Software Foundation; with no Invariant
+      Sections, no Front-Cover Texts and no Back-Cover Texts.  A copy
+      of the license can be found under
+      <filename>/usr/share/common-licenses/FDL</filename>.</para> -->
+
+  </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-default-dtd-file:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

@@ -2,27 +2,6 @@
 Chapter()"Programming";
 
 
-AddAnchor("Atom");
-SubSection()"Atom(\"atom\")";  Text()"
-Atom(\"atom\") : 
-Returns an atom with the string representation given
-as the evaluated argument. Example: \"Atom(\"foo\");\" returns
-\"foo\".
-
-";
-
-AddAnchor("String");
-SubSection()"String(atom)";  Text()"
-String(atom) : Inverse of Atom: turns atom into \"atom\".
-";
-
-AddAnchor("ConcatStrings");
-SubSection()"ConcatStrings(strings)";  Text()"
-ConcatStrings(strings) : 
-Concatenate strings. Example:
-\"ConcatStrings(\"a\",\"b\",\"c\");\" will return \"abc\".
-
-";
 
 SubSection()"/* comment */";  Text()"
 A comment block in a source file.

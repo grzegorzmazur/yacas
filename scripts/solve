@@ -203,22 +203,22 @@ Function("SolveMatrix",{matrix,vector})
 
 
 Function("Newton",{function,variable,initial,accuracy})
-N(
+/*block*/
 [
   Local(result,adjust,delta);
   MacroLocal(variable);
-  function:=Apply("Eval",{function});
+  function:=N(function);
   adjust:= -function/Apply("D",{variable,function});
   delta:=10000;
   result:=initial;
-  While (delta*Conjugate(delta)>accuracy*accuracy)
+  While (N(delta*Conjugate(delta)>accuracy*accuracy))
   [
     MacroSet(variable,result);
-    delta:=Eval(adjust);
+    delta:=N(adjust);
     result:=result+delta;
   ];
   result;
-]);
+];
 HoldArg("Newton",function);
 HoldArg("Newton",variable);
 

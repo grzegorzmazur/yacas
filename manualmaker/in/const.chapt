@@ -43,26 +43,52 @@ SeeAlso({"LazyGlobal"});
 
 
 
+
+
+
 AddAnchor("True");
 AddAnchor("False");
-SubSection()"True and False";  Text()"
+SubSection()"Boolean constants";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()
+"True <br>
+False";
 
-":HtmlTerm("True"):" and ":HtmlTerm("False"):" are typically the result
+Topical()"Description";
+Text()
+"":HtmlTerm("True"):" and ":HtmlTerm("False"):" are typically the result
 of boolean expressions like ":HtmlTerm("2 &lt 3"):" and ":
-HtmlTerm("True And False"):".";
+HtmlTerm("True And False"):".
+";
+
+Topical()"See Also"; 
+SeeAlso({"And","Or","Not"});
 
 
 AddAnchor("EndOfFile");
-SubSection()"EndOfFile";  Text()"
-EndOfFile : End of file marker when reading from file. If a file
+SubSection()"EndOfFile";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()"EndOfFile";
+
+Topical()"Description";
+Text()
+"End of file marker when reading from file. If a file
 contains the expression ":HtmlTerm("EndOfFile;"):" the
 operation will stop reading the file at that point.
 ";
 
-AddAnchor("Infinity");
-SubSection()"Infinity";  Text()"
 
-Infinity represents infinity. It can be the result of certain
+AddAnchor("Infinity");
+SubSection()"Infinity";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Infinity";
+
+Topical()"Description";
+Text()
+"Infinity represents infinity. It can be the result of certain
 calculations." :
 HtmlNewParagraph() :
 "
@@ -71,13 +97,44 @@ Thus ":HtmlTerm("Infinity*2"):" will return Infinity, and ":
 HtmlTerm("a &lt Infinity"):" will evaluate to True.
 ";
 
-AddAnchor("Pi");
-SubSection()"Pi";  Text()"
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> 2*Infinity
+Out> Infinity;
+In> 2<Infinity
+Out> True;
+");
 
-Pi represents the value of pi. When the N(..) function is used,
+
+AddAnchor("Pi");
+SubSection()"Pi";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Pi";
+
+
+Topical()"Description";
+Text()
+"Pi represents the value of pi. When the N(..) function is used,
 Pi is set to the correct value. It is probably better to use
 Pi than Pi(), for simplification purposes.
-
 ";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Sin(3*Pi/2)
+Out> -1;
+In> Pi
+Out> Pi;
+In> N(Pi)
+Out> 3.1415926535;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Sin","Cos"});
+
+
 
 

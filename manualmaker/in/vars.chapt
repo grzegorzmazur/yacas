@@ -108,5 +108,25 @@ Topical()"See Also";
 SeeAlso({"Set","Clear","Local"});
 
 
+AddAnchor("UniqueConstant");
+SubSection()"UniqueConstant";
+StandardLib();
+Topical()"Calling Sequence";
+Text() "UniqueConstant()";
+
+Topical()"Description";
+Text()"This function returns a unique constant atom each time you call it,
+  starting with a C character, and a unique number appended to it.";
+
+Topical()"Examples";
+Text()
+HtmlCommand("
+In&gt UniqueConstant() 
+Out&gt C9 
+In&gt  UniqueConstant() 
+Out&gt C10 
+
+");
+
 
 

@@ -2,35 +2,73 @@
 Chapter()"Polynomials";
 
 AddAnchor("Expand");
-SubSection()"Expand(expr)"; Text()"
+SubSection()"Expand";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"Expand(expr) <br>
+Expand(expr,var)
+Expand(expr,varlist)
+";
 
-Expand(expr) : expands a univariate. Example: Expand((1+x)^2)
+Topical()"Parameters";
+Text()
+"expr - a univariate polynomial expression <br>
+var - a variable <br>
+varlist - a list of variables
+";
+
+Topical()"Description";
+Text()
+"Expand(expr) : expands a univariate. Example: Expand((1+x)^2)
 would evaluate to 1+2*x+x^2.
 
 If the expression depends on more than one variable, you can
-specify which variable to expand to using Expand(expr,var);
+specify which variable to expand to using Expand(expr,var).
 Also, you can expand to multiple variables, by specifying the
 order in which to expand, in a list, using Expand(expr,{varlist}).
-
 ";
 
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Expand((1+x)^4,x)
+Out> x^4+4*x^3+6*x^2+4*x+1;
+");
+
+Topical()"See Also"; 
+SeeAlso({"ExpandBrackets"});
+
 AddAnchor("Degree");
-SubSection()"Degree(expr) or Degree(expression, variable)";
+AddAnchor("Coef");
+SubSection()"Coefficients of univariate polynomials";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"Degree(expr)     <br>
+Degree(expr, var) <br>
+Coef(expr,var,order)
+";
 
-Text()"
+Topical()"Parameters";
+Text()
+"expr - an expression <br>
+var - a variable <br>
+order - an integer";
 
-Degree(expr) : return the degree of a polynomial. Example: ":
+Topical()"Description";
+Text()
+"
+Degree returns the degree of a polynomial. Example: ":
 HtmlTerm("Degree((1+x)^2);"):" evaluates to 2. ":
 
 HtmlNewParagraph():
 "The version accepting an additional variable as an argument can be
 used to get the degree of a multivariate polynomial with respect to
-that variable. Example: ":HtmlTerm("Degree(a+b*x^3,a);"):"returns 1.";
-
-AddAnchor("Coef");
-SubSection()"Coef(expr,var,order)"; Text()"
-
-Coef(expr,var,order) : return the coefficient of order for expression
+that variable. Example: ":HtmlTerm("Degree(a+b*x^3,a);"):"returns 1.":
+HtmlNewParagraph():
+"
+Coef returns the coefficient of order for expression
 expr treated as a univariate with respect to the variable var.
 ":
 HtmlNewParagraph():
@@ -39,106 +77,208 @@ The argument to parameter order can also be a list of integers, in
 which case this function returns a list of coefficients.
 
 ";
-/*
-"";
-*/
 
-AddAnchor("PSolve");
-SubSection()"PSolve(expr,var)"; Text()"
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> e := Expand((a+x)^4,x)
+Out> x^4+4*a*x^3+(a^2+(2*a)^2+a^2)*x^2+(a^2*2*a+2*a^3)*x+a^4;
+In> Degree(e,a)
+Out> 4;
+In> Coef(e,a,2)
+Out> 6*x^2;
+In> Coef(e,a,0 .. 4)
+Out> {x^4,4*x^3,6*x^2,4*x,1};
+");
 
-PSolve(expr,var) : solve expr=0, treating expr as a polynomial in
-the variable var. The result returned is the value var should take
-for expr=0 to be true. This has been implemented for polynomials
-upto degree 2.
+Topical()"See Also"; 
+SeeAlso({"Expand"});
 
-";
-
-
-AddAnchor("Div");
-SubSection()"Div(n,m)"; Text()"
-
-Div(n,m) : div is also defined for polynomials.
-
-";
-
-AddAnchor("Mod");
-SubSection()"Mod(n,m)"; Text()"
-
-Mod(n,m) : mod is also defined for polynomials.
-";
 
 AddAnchor("Content");
-SubSection()"Content(poly)"; Text()"
-Content(poly) : determine the content of a univariate polynomial.
-The content is the greatest common divisor of each term in the
-polynomial. The content of 2*x^2+4*x should be 2*x for instance.
+AddAnchor("PrimitivePart");
+SubSection()"Content and primitive parts of univariate polynomials";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"Content(poly) <br>
+PrimitivePart(poly)
 ";
 
-AddAnchor("PrimitivePart");
-SubSection()"PrimitivePart(poly)"; Text()"
-PrimitivePart(poly) : determine the primitive part of a univariate polynomial.
+Topical()"Parameters";
+Text()"poly - a univariate polynomial with constant coefficients";
+
+Topical()"Description";
+Text()
+"
+Content determines the content of a univariate polynomial.
+The content is the greatest common divisor of each term in the
+polynomial. The content of 2*x^2+4*x should be 2*x for instance.
+":
+HtmlNewParagraph():
+"
+PrimitivePart determines the primitive part of a univariate polynomial.
 This is defined as PrimitivePart(poly)*Content(poly) = poly, and can
 easily be checked with Expand(PrimitivePart(poly)*Content(poly))
 which should be equal to Expand(poly).
 ";
 
-
-AddAnchor("RandomPoly");
-SubSection()"RandomPoly(var,deg,coefmin,coefmax)";
-Text()"
-RandomPoly(var,deg,coefmin,coefmax) :
-generate a random polynomial in variable var, of degree deg,
-with coefficients ranging from coefmin to coefmax (inclusive).
-
-";
-
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> e := 2*x^2+4*x
+Out> 2*x^2+4*x;
+In> Content(e)
+Out> 2*x;
+In> PrimitivePart(e)
+Out> x+2;
+In> Expand(Content(e)*PrimitivePart(e))
+Out> 2*x^2+4*x;
+");
 
 AddAnchor("LeadingCoef");
-SubSection()"LeadingCoef(poly)";
-Text()"
-LeadingCoef(poly) : get the leading coefficient of the polynomial poly.
-If there are more variables in poly, you can specify which variable
-is the main one, by adding it as an argument:
-
-":HtmlCommand(
-"In> LeadingCoef(a*x^2+2,x)
-Out> a;"):"
-
+AddAnchor("Monic");
+SubSection()"LeadingCoef and Monic";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"LeadingCoef(poly) <br>
+LeadingCoef(poly,var) <br>
+Monic(poly) <br>
+Monic(poly,var)
 ";
 
+Topical()"Parameters";
+Text()"poly - a univariate polynomial";
 
-AddAnchor("Monic");
-SubSection()"Monic(poly)";
-Text()"
-Monic(poly) : return the monic part of the polynomial poly.
+Topical()"Description";
+Text()
+"LeadingCoef returns the leading coefficient of the polynomial poly.
+If there are more variables in poly, you can specify which variable
+is the main one, by adding it as an argument.
+
+Monic returns the monic part of the polynomial poly.
 This is poly/LeadingCoef(poly). This function also accepts
 a second argument, specifying the variable of the univariate
-polynomial:
-
-":HtmlCommand(
-"
-In> f:=a*x^2+b
-Out> a*x^2+b;
-In> PrettyForm(Monic(f,x))
-
-b    2
-- + x 
-a     
-
-Out> True;
-"):"
-
+polynomial. The leading coefficient of the monic polynomial will
+thus be one.
 ";
 
-
-AddAnchor("BigOh");
-SubSection()"BigOh(_uv,_var,_degree)";
+Topical()"Examples";
 Text()
-"BigOh(poly,var,degree) : Given a polynomial poly in variable var,
-drop all terms of order degree or higher.
+HtmlCommand(
+"In> e := a*x^2 + b
+Out> a*x^2+b;
+In> LeadingCoef(e,x)
+Out> a;
+In> Monic(e,x)
+Out> x^2+b/a;
+");
 
+
+AddAnchor("RandomPoly");
+SubSection()"RandomPoly";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"RandomPoly(var,deg,coefmin,coefmax)";
+
+Topical()"Parameters";
+Text()
+"var - free variable for resulting univariate polynomial <br>
+deg - degree of resulting univariate polynomial <br>
+coefmin - minimum value for coefficients <br>
+coefmax - maximum value for coefficients
 ";
 
+Topical()"Description";
+Text()
+"RandomPoly generates a random polynomial in variable var, of
+degree deg, with coefficients ranging from coefmin to coefmax
+(inclusive).";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> RandomPoly(x,3,-10,10)
+Out> 3*x^3+10*x^2+ -4*x-6;
+In> RandomPoly(x,3,-10,10)
+Out> -2*x^3+ -8*x^2+8;
+");
+Topical()"See Also"; 
+SeeAlso({"Random","RandomIntegerVector"});
+
+
+SubSection()"Div and Mod for polynomials";
+StandardLib();
+Text()"";
+
+Text()
+"
+Div and Mod are also defined for polynomials.
+";
+
+Topical()"See Also"; 
+SeeAlso({"Div","Mod"});
+
+
+AddAnchor("Horner");
+SubSection()"Horner";
+StandardLib();
+Topical()"Calling Sequence";
+Text() "Horner(expression,variable)";
+
+Topical()"Parameters";
+Text()"expression - an expression
+variable - a variable
+";
+
+Topical()"Description";
+Text()"Horner turns a univariate polynomial into a Horner form,
+   ((x+a)*x+b)*x+c ... . This is usually an efficient way to
+   evaluate a polynomial.";
+
+Topical()"Examples";
+Text()
+HtmlCommand("
+In&gt expr1:=Expand((1+x)^4) 
+Out&gt x^4+4*x^3+6*x^2+4*x+1 
+In&gt  Horner(expr1,x) 
+Out&gt (((x+4)*x+6)*x+4)*x+1 
+
+");
+
+Topical()"See Also"; 
+SeeAlso({"Expand", "ExpandBrackets"});
+
+
+
+AddAnchor("ExpandBrackets");
+SubSection()"ExpandBrackets";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"ExpandBrackets(expr)";
+
+Topical()"Parameters";
+Text()"expr - a multivariate polynomial";
+
+Topical()"Description";
+Text()
+"ExpandBrackets goes further than Expand, in that it expands
+all terms.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Expand((a-x)*(b-x),x)
+Out> x^2-(b+a)*x+a*b;
+In> Expand((a-x)*(b-x),{x,a,b})
+Out> x^2-(b+a)*x+b*a;
+In> ExpandBrackets((a-x)*(b-x))
+Out> a*b-x*b+x^2-a*x;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Expand"});
 
 
 

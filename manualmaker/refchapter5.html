@@ -23,23 +23,23 @@ BaseVector
 , <A HREF="refchapter5.html#Identity" TARGET="Chapters">
 Identity
 </A>
+, <A HREF="refchapter5.html#ZeroMatrix" TARGET="Chapters">
+ZeroMatrix
+</A>
+, <A HREF="refchapter5.html#DiagonalMatrix" TARGET="Chapters">
+DiagonalMatrix
+</A>
 , <A HREF="refchapter5.html#IsMatrix" TARGET="Chapters">
 IsMatrix
 </A>
 , <A HREF="refchapter5.html#Normalize" TARGET="Chapters">
 Normalize
 </A>
-, <A HREF="refchapter5.html#ZeroMatrix" TARGET="Chapters">
-ZeroMatrix
-</A>
 , <A HREF="refchapter5.html#Transpose" TARGET="Chapters">
 Transpose
 </A>
 , <A HREF="refchapter5.html#Determinant" TARGET="Chapters">
 Determinant
-</A>
-, <A HREF="refchapter5.html#DiagonalMatrix" TARGET="Chapters">
-DiagonalMatrix
 </A>
 , <A HREF="refchapter5.html#Trace" TARGET="Chapters">
 Trace
@@ -80,186 +80,486 @@ Linear Algebra
 
 </A>
 <H3>
-<HR>LeviCivita({list})
+<HR>LeviCivita
 </H3>
-LeviCivita({list}) :
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+LeviCivita(list)
+<H5>
+Parameters:
+</H5>
+list - a list of integers 1 .. n in some order
+<H5>
+Description:
+</H5>
 "LeviCivita" implements the Levi Civita symbol. This is generally
 useful for tensor calculus.  {list}  should be a list of integers,
 and this function returns 1 if the integers are in successive order,
 eg.  {1,2,3,...}  would return 1. Swapping two elements of this
 list would return -1. So, LeviCivita( {2,1,3} ) would evaluate
 to -1.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> LeviCivita({1,2,3})
+Out> 1;
+In> LeviCivita({2,1,3})
+Out> -1;
+In> LeviCivita({2,2,3})
+Out> 0;
+</PRE></TR>
+</TABLE>
 
-<A NAME="Permutations">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Permutations" TARGET="Chapters">
+Permutations
+</A>
+, <A NAME="Permutations">
 
 </A>
 <H3>
-<HR>Permutations({list})
+<HR>Permutations
 </H3>
-Permutations({list}) :
-Permutations returns a list with all the premutations of the original
-list.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Permutations(list)
+<H5>
+Parameters:
+</H5>
+list - a list of elements
+<H5>
+Description:
+</H5>
+Permutations returns a list with all the permutations of
+the original list.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Permutations({a,b,c})
+Out> {{a,b,c},{a,c,b},{c,a,b},{b,a,c},{b,c,a},{c,b,a}};
+</PRE></TR>
+</TABLE>
 
-<A NAME="InProduct">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#LeviCivita" TARGET="Chapters">
+LeviCivita
+</A>
+, <A NAME="InProduct">
 
 </A>
-<H3>
-<HR>InProduct(a,b)
-</H3>
-InProduct(a,b) (or alternatively a . b) :
-Calculate the inproduct of two vectors.
-
 <A NAME="CrossProduct">
 
 </A>
 <H3>
-<HR>CrossProduct(a,b)
+<HR>Vector products
 </H3>
-CrossProduct(a,b) (or alternatively a X b) :
-Calculate the crossproduct of two three-dimensional vectors.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+InProduct(a,b) (or alternatively a . b) <br>
+CrossProduct(a,b) (or alternatively a X b)
+
+<H5>
+Parameters:
+</H5>
+a - a vector <br>
+b - a vector
+<H5>
+Description:
+</H5>
+InProduct and CrossProduct return the inner product and outer product
+of two vectors, respectively. For CrossProduct the vectors have to be
+three-dimensional.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> {a,b,c} . {d,e,f}
+Out> a*d+b*e+c*f;
+In> {a,b,c} X {d,e,f}
+Out> {b*f-c*e,c*d-a*f,a*e-b*d};
+</PRE></TR>
+</TABLE>
 
 <A NAME="ZeroVector">
 
 </A>
-<H3>
-<HR>ZeroVector(n)
-</H3>
-ZeroVector(n) : ZeroVector returns a list with n zeroes.
-
 <A NAME="BaseVector">
 
 </A>
-<H3>
-<HR>BaseVector(row,n)
-</H3>
-BaseVector(row,n) : BaseVector returns a vector with item row set to 1, the
-other n-1 set to zero.
-
-
 <A NAME="Identity">
 
 </A>
+<A NAME="ZeroMatrix">
+
+</A>
+<A NAME="DiagonalMatrix">
+
+</A>
 <H3>
-<HR>Identity(n)
+<HR>Vector and matrix creation
 </H3>
-Identity(n) : Identity returns a identity matrix of dimension n x n.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+ZeroVector(n) <br>
+BaseVector(row,n) <br>
+Identity(n) <br>
+ZeroMatrix(n,m) <br>
+DiagonalMatrix(v)
+
+<H5>
+Parameters:
+</H5>
+n - an integer <br>
+m - an integer <br>
+row - a positive integer <= n <br>
+v - a list of values
+<H5>
+Description:
+</H5>
+ZeroVector returns a list with n zeroes.
+<P>
+
+BaseVector returns a vector with item row
+set to 1, the other n-1 set to zero.
+<P>
+Identity returns a identity matrix of dimension n x n.
+<P>
+ZeroMatrix Returns a matrix with n rows and m columns,
+all zeros.
+<P>
+DiagonalMatrix returns a square matrix with the elements of vector
+v on the diagonal of the matrix. All other elements are zero.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> ZeroVector(4)
+Out> {0,0,0,0};
+In> BaseVector(2,4)
+Out> {0,1,0,0};
+In> Identity(3)
+Out> {{1,0,0},{0,1,0},{0,0,1}};
+In> ZeroMatrix(3,4)
+Out> {{0,0,0,0},{0,0,0,0},{0,0,0,0}};
+In> DiagonalMatrix(1 .. 4)
+Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
+</PRE></TR>
+</TABLE>
 
 <A NAME="IsMatrix">
 
 </A>
 <H3>
-<HR>IsMatrix(x)
+<HR>IsMatrix
 </H3>
-IsMatrix(x) : Predicates checking if the object x is a matrix.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+IsMatrix(M)
+<H5>
+Parameters:
+</H5>
+M - a mathematical object
+<H5>
+Description:
+</H5>
+IsMatrix returns True if M is a matrix, False otherwise.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> IsMatrix(ZeroMatrix(3,4))
+Out> True;
+In> IsMatrix(ZeroVector(4))
+Out> False;
+In> IsMatrix(3)
+Out> False;
+</PRE></TR>
+</TABLE>
 
 <A NAME="Normalize">
 
 </A>
 <H3>
-<HR>Normalize(v)
+<HR>Normalize
 </H3>
-Normalize(v) : Return the normalized vector v.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Normalize(v)
+<H5>
+Parameters:
+</H5>
+v - a vector
+<H5>
+Description:
+</H5>
+Return the normalized vector of v: a vector going in the same
+direction but with length 1.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Normalize({3,4})
+Out> {3/5,4/5};
+In> % . %
+Out> 1;
+</PRE></TR>
+</TABLE>
 
-
-<A NAME="ZeroMatrix">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#InProduct" TARGET="Chapters">
+InProduct
+</A>
+, <A HREF="ref.html#CrossProduct" TARGET="Chapters">
+CrossProduct
+</A>
+, <A NAME="Transpose">
 
 </A>
 <H3>
-<HR>ZeroMatrix(n,m)
+<HR>Transpose
 </H3>
-ZeroMatrix(n,m) : Returns a matrix with n rows and m columns, all zeros.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Transpose(M)
+<H5>
+Parameters:
+</H5>
+M - a matrix
+<H5>
+Description:
+</H5>
+Transpose returns the transpose of a matrix M. Because matrices are
+just lists of lists, this is a useful operation too for lists.
 
-
-<A NAME="Transpose">
-
-</A>
-<H3>
-<HR>Transpose(M)
-</H3>
-Transpose(M) : Return the transpose of a matrix M.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Transpose({{a,b}})
+Out> {{a},{b}};
+</PRE></TR>
+</TABLE>
 
 <A NAME="Determinant">
 
 </A>
 <H3>
-<HR>Determinant(M)
+<HR>Determinant
 </H3>
-Determinant(M) : Return the determinant of a matrix M.
-
-<A NAME="DiagonalMatrix">
-
-</A>
-<H3>
-<HR>DiagonalMatrix(v)
-</H3>
-DiagonalMatrix(v) : Return a square matrix with the elements of vector
-v on the diagonal of the matrix. All other elements are zero.
-
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Determinant(M)
+<H5>
+Parameters:
+</H5>
+M - a matrix
+<H5>
+Description:
+</H5>
+Returns the determinant of a matrix M.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> DiagonalMatrix(1 .. 4)
+Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
+In> Determinant(%)
+Out> 24;
+</PRE></TR>
+</TABLE>
 
 <A NAME="Trace">
 
 </A>
 <H3>
-<HR>Trace(M)
+<HR>Trace
 </H3>
-Trace(M) : Return the trace of a matrix M (defined as the sum of the
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Trace(M)
+<H5>
+Parameters:
+</H5>
+M - a matrix
+<H5>
+Description:
+</H5>
+Trace returns the trace of a matrix M (defined as the sum of the
 elements on the diagonal of the matrix).
-
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> DiagonalMatrix(1 .. 4)
+Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
+In> Trace(%)
+Out> 10;
+</PRE></TR>
+</TABLE>
 
 <A NAME="Inverse">
 
 </A>
 <H3>
-<HR>Inverse(M)
+<HR>Inverse
 </H3>
-Inverse(M) : Return the inverse of matrix M. The determinant of M should
-be non-zero.
-
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Inverse(M)
+<H5>
+Parameters:
+</H5>
+M - a matrix
+<H5>
+Description:
+</H5>
+Inverse returns the inverse of matrix M. The determinant of M should
+be non-zero. Because this function uses Determinant for calculating
+the inverse of a matrix, you can supply matrices with non-numeric
+matrix elements.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> DiagonalMatrix({a,b,c})
+Out> {{a,0,0},{0,b,0},{0,0,c}};
+In> Inverse(%)
+Out> {{(b*c)/(a*b*c),0,0},{0,(a*c)/(a*b*c),0},{0,0,(a*b)/(a*b*c)}};
+In> Simplify(%)
+Out> {{1/a,0,0},{0,1/b,0},{0,0,1/c}};
+</PRE></TR>
+</TABLE>
 
 <A NAME="CoFactor">
 
 </A>
-<H3>
-<HR>CoFactor(M,i,j)
-</H3>
-CoFactor(M,i,j) : This function returns the cofactor of a matrix around
-the element (i,j). The cofactor is the minor times
-(-1)^(i+j)
-
-
 <A NAME="Minor">
 
 </A>
 <H3>
-<HR>Minor(M,i,j)
+<HR>CoFactor and Minor
 </H3>
-Minor(M,i,j) : This function returns the minor of a matrix around
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+CoFactor(M,i,j) <br>
+Minor(M,i,j)
+
+<H5>
+Parameters:
+</H5>
+M - a matrix <br>
+i - a positive integer <br>
+j - a positive integer
+<H5>
+Description:
+</H5>
+
+Minor returns the minor of a matrix around
 the element (i,j). The minor is the determinant of the matrix
 excluding the ith row and jth column.
+<P>
 
+CoFactor returns the cofactor of a matrix around
+the element (i,j). The cofactor is the minor times
+(-1)^(i+j)
 
-<A NAME="SolveMatrix">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Determinant" TARGET="Chapters">
+Determinant
+</A>
+, <A HREF="ref.html#Inverse" TARGET="Chapters">
+Inverse
+</A>
+, <A NAME="SolveMatrix">
 
 </A>
 <H3>
-<HR>SolveMatrix(M,v)
+<HR>SolveMatrix
 </H3>
-SolveMatrix(M,v) : This function returns the vector x that satisfies
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+SolveMatrix(M,v)
+<H5>
+Parameters:
+</H5>
+M - a matrix <br>
+v - a vector
+<H5>
+Description:
+</H5>
+SolveMatrix returns the vector x that satisfies
 the equation "M x = v". The determinant of M should be non-zero.
-
 
 <A NAME="CharacteristicEquation">
 
 </A>
 <H3>
-<HR>CharacteristicEquation(matrix,var)
+<HR>CharacteristicEquation
 </H3>
-CharacteristicEquation(matrix,var) : 
-calculate characteristic equation of "matrix", using
-"var". The zeros os this equation are the eigenvalues
-of the matrix, Det(matrix-I var);
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+CharacteristicEquation(matrix,var)
+<H5>
+Parameters:
+</H5>
+matrix - a matrix <br>
+var - a free variable
+<H5>
+Description:
+</H5>
+CharacteristicEquation
+returns the characteristic equation of "matrix", using
+"var". The zeros of this equation are the eigenvalues
+of the matrix, Det(matrix-I*var);
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> DiagonalMatrix({a,b,c})
+Out> {{a,0,0},{0,b,0},{0,0,c}};
+In> CharacteristicEquation(%,x)
+Out> (a-x)*(b-x)*(c-x);
+In> Expand(%,x)
+Out> (b+a+c)*x^2-x^3-((b+a)*c+a*b)*x+a*b*c;
+</PRE></TR>
+</TABLE>
 
-<A NAME="EigenValues">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#EigenValues" TARGET="Chapters">
+EigenValues
+</A>
+, <A HREF="ref.html#EigenVectors" TARGET="Chapters">
+EigenVectors
+</A>
+, <A NAME="EigenValues">
 
 </A>
 <H3>
