@@ -404,7 +404,7 @@ argument of 0 is {Undefined}.
 
 *SEE Abs, Sign
 
-*CMD RootsOfUnity --- return the $n$ roots of unity (1)
+*CMD RootsOfUnity --- find the $n$ complex roots of unity
 *STD
 *CALL
 	RootsOfUnity(n)
@@ -415,9 +415,8 @@ argument of 0 is {Undefined}.
 
 *DESC
 
-This function returns the $n$ roots of unity in an $n$-dimensional vector. The first
-element of this vector is the primitive $n$-th root of unity, and the last element will
-be simply {1}.
+This function returns the list of $n$ roots of unity. The first
+element of this list is the primitive $n$-th root of unity, and the last element is simply {1}.
 
 *E.G.
 	In> RootsOfUnity(3)
