@@ -1,0 +1,66 @@
+		The Yacas debugger program
+
+	    Introduction
+
+This essay describes the yacas debugger that comes with the 
+distribution. The yacas debugger consists of:
+*	{./yacasdebug}, a separate program
+*	libyacasdebug.a, a static library that can be linked against
+
+The debug version has to be built independently from the 'normal'
+version of Yacas.
+
+	    Why introduce a debug version?
+
+The reason for introducing a debug version is that for a debugger 
+it is often necessary to introduce features that make the interpreter
+slower. For the main kernel this is unacceptable, but for a debugging
+version this is defendable. It is good for testing small programs,
+to see where a calculation breaks. Having certain features only
+in the debug version keeps the release executable can be kept lean 
+and mean, while still offering advanced debug features.
+
+	    How to build {yacasdebug}
+
+The yacas debugging components can be built by going into the 
+{src/} directory, and using the file {makefile.debug} to build 
+it:
+
+	cd src/
+	make clean
+	make -f makefile.debug
+
+Note the object files generated are not suited for the normal Yacas
+executable. To rebuild the normal version a {make clean} is required.
+
+The file {makefile.debug} was written to compile under Linux, but
+should work on other platforms with little tweaks.
+
+After the build the debug files can be found in the {src/} directory.
+
+To invoke the debugger, type
+
+	./yacasdebug --rootdir ../scripts/
+
+The Yacas debugger assumes the current directory for scripts,
+so the {--rootdir} command line option is required.
+
+	    What does {yacasdebug} offer?
+
+The Yacas debugger is in development still, but already has
+some useful features. 
+
+Yacasdebug:
+*	keeps track of the memory allocated and freed, and shows any memory leaks when the program is quit.
+*	shows which files are loaded when, to load function definitions.
+*	keeps a file name and line number for each object loaded from file, for debugging purposes.
+
+The {libyacasdebug.a} library is used by {proteusdebugger}, a graphical
+front-end for debugging which is in development still also.
+
+Future versions will have the ability to step through code and to
+watch local and global variables while executing, modifying them
+on the fly.
+
+
+

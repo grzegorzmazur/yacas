@@ -645,3 +645,32 @@ case {L} (from "line").
 
 *SEE NewLine
 
+*CMD V --- Verbose mode output
+*STD
+*CALL
+	V(expression)
+
+*PARMS
+
+{expression} - expression to be evaluated in verbose mode
+
+*DESC
+
+The function {V(expression)} will evaluate the expression in 
+verbose mode. Various parts of Yacas can show extra information
+about the work done while doing a calculation when using {V}.
+
+*E.G.
+
+	In> Solve({x+2==0},{x})
+	Out> {{-2}};
+	In> V(Solve({x+2==0},{x}))
+	Entering Solve
+	From  x+2==0  it follows that  x  = -2 
+	   x+2==0  simplifies to  True 
+	Leaving Solve
+	Out> {{-2}};
+
+*SEE Echo, N, Solve
+
+

@@ -22,6 +22,28 @@ Sometimes it does not work. For example, when using $Sin(x)^2+Cos(x)^2$ as its {
 *SEE OtherCommands, MoreCommands
 
 
+*CMD <command> --- <short descr>
+*CORE/STD
+*CALL
+	<calling seq>
+
+*PARMS
+
+<parm> - <pardesc>
+
+*DESC
+
+<desc>
+
+*E.G.
+
+	<cmdline>
+
+*SEE <cmd1>, <cmd2>
+
+=====================================================================
+
+
 
 
 Abs

@@ -532,7 +532,7 @@ fi
 PACKAGE=yacas
 MAJOR=1
 MINOR=0
-MICRO=48rev3
+MICRO=49
 RELEASE=1
 
 VERSION=$MAJOR.$MINOR.$MICRO
@@ -1427,7 +1427,7 @@ else
 int main() {
 
 /* Ultrix mips cc rejects this.  */
-typedef int charset[2]; const charset x = {0,0};
+typedef int charset[2]; const charset x;
 /* SunOS 4.1.1 cc rejects this.  */
 char const *const *ccp;
 char **p;
@@ -1502,7 +1502,7 @@ for ac_kw in inline __inline__ __inline; do
 #include "confdefs.h"
 
 int main() {
-} int $ac_kw foo() {
+} $ac_kw foo() {
 ; return 0; }
 EOF
 if { (eval echo configure:1509: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then

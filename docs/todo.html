@@ -163,14 +163,13 @@ The documentation can be improved.
 
 <li> document the following commands:
   <UL>
-  <li> ExpressionDepth, SylvesterMatrix, PAdicExpandInternal, GetPrimeFactors, 
+  <li> II, ReII, ImII, IsComplexII
+  <li> ExpressionDepth, PAdicExpandInternal, GetPrimeFactors, 
           Rem, Roots, Apart, Together
   <li> UnHoldable, GcdReduce, ApplyPure
 	DestructiveAppendList, PatternMatches, PatternCreate, RuleBaseDefined,
-	FindFunction, TemplateFunction, Lambda (in combination with Apply), 
+	TemplateFunction, Lambda (in combination with Apply), 
 	Primes, MapArgs, Substitute, 
-  <li> restart, quit, Version(), GarbageCollect()
-  <li>   V, GetExtraInfo, SetExtraInfo
   <li> %, |, &, ^, if, else (else binds to the last if)
   <li> DivPoly, RootsWithMultiples,
   <li> OdeSolve
@@ -181,20 +180,29 @@ The documentation can be improved.
   <li> Extended predicates in the pattern matcher (needs to be explained).
   <li> CTokenizer(), DefaultTokenizer()
 
-  <li> II, ReII, ImII, IsComplexII
   <li> XmlTokenizer, XmlExplodeTag
   <li> BSearch, FindIsq Search for a zero in a monotonously
        growing function. BSearch returns -1 if not found,
        FindIsq returns the insertion point.
   <li>   MultiDivide, MultiGcd, Groebner
-  <li> CurrentFile, CurrentLine
-  <li> --patchload, RoundTo, TestYacas
-  <li> Implemented backquote mechanism: `(...) will substitute
+  <li> 
+  <li> 	Verify
+	KnownFailure
+	VerifyArithmetic
+	TestYacas
+	RoundTo
+	LogicVerify
+
+
+  <li> restart, quit, 
+
+
+  <li> (done) FindFunction, CurrentFile, CurrentLine, Version(),
+       GarbageCollect(), V, GetExtraInfo, SetExtraInfo, SylvesterMatrix, 
+  <li> (done) Implemented backquote mechanism: `(...) will substitute
        every @a with the evaluation of a (and if a is a function
        the function name is replaced). The end result is evaluated.
        see substitute.cpp for more details
-
-  <li> ./yacasdebug: document 
 
 
   </UL>

@@ -13,4 +13,6 @@
 
 *INCLUDE YacasDocs.chapt
 
+*INCLUDE YacasDebugger.chapt
+
 *INCLUDE new.chapt
