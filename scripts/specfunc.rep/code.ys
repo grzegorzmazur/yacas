@@ -368,22 +368,38 @@ BernoulliArray1(n_IsEven) _ (n>=2) <--
 ];
 
 10 # BesselJ(0,0) 	<-- 1;
+10 # BesselI(0,0)	<-- 1;
 10 # BesselJ(_n,0)_(n>0) <-- 0;
+10 # BesselI(_n,0)_(n>0) <-- 0;
 10 # BesselJ(_n,0)_(n<0 And IsInteger(n)) <-- 0;
+10 # BesselI(_n,0)_(n<0 And IsInteger(n)) <-- 0;
 10 # BesselJ(_n,0)_(n<0 And Not IsInteger(n)) <-- Infinity;
+
+// The following should be ComplexInfinity, if/when that is implemented
+10 # BesselI(_n,0)_(n<0 And Not IsInteger(n)) <-- Infinity;
+
 10 # BesselJ(0,Infinity)<-- 0;
 20 # BesselJ(1/2,_x)	<-- Sqrt(2/(x*Pi))*Sin(x);
+20 # BesselI(1/2,_x)	<-- Sqrt(2/(x*Pi))*Sinh(x);
 20 # BesselJ(-1/2,_x)	<-- Sqrt(2/(x*Pi))*Cos(x);
 20 # BesselJ(3/2,_x)	<-- Sqrt(2/(x*Pi))*(Sin(x)/x - Cos(x));
+
+20 # BesselI(3/2,_x)    <-- Sqrt(2/(x*Pi))*(Cosh(x) - Sinh(x)/x);
+
 20 # BesselJ(-3/2,_x)	<-- Sqrt(2/(x*Pi))*(Cos(x)/x + Sin(x));
-20 # BesselJ(5/2,_x)	<-- Sqrt(2/(x*Pi))*( (3/x^2 -1)*Sin(x) - 3*Cos(x)/x );
+
+20 # BesselJ(5/2,_x)	<-- Sqrt(2/(x*Pi))*((3/x^2 - 1)*Sin(x) - 3*Cos(x)/x );
+20 # BesselI(5/2,_x)    <-- Sqrt(2/(x*Pi))*((3/x^2 + 1)*Sinh(x) - 3*Cosh(x)/x );
+
 20 # BesselJ(-5/2,_x)      <-- Sqrt(2/(x*Pi))*( (3/x^2 -1)*Cos(x) + 3*Sin(x)/x );
 
 
 // Forward recursion, works great, but really slow when n << x
-30 # BesselJ(_n,_x)_(IsInteger(n) And Abs(x)> 2*Gamma(n)) <-- N((2*(n+1)/x)*BesselJ(n+1,x) - BesselJ(n+2,x));
+30 # BesselJ(_n,_x)_(IsInteger(n) And Abs(x) > 2*Gamma(n)) <-- N((2*(n+1)/x)*BesselJ(n+1,x) - BesselJ(n+2,x));
 
 30 # BesselJ(_n,_z)_(n<0 And IsInteger(n) ) <-- (-1)^n*BesselJ(-n,z);
+30 # BesselI(_n,_z)_(n<0 And IsInteger(n) ) <-- BesselI(-n,z);
+
 
 // When I put "And Numeric" on the next rule, I lose precision. Why ?
 // Also, if I move the the "_IsComplex" to the end with "IsComplex(x)" 

@@ -141,19 +141,34 @@ $ Y[n] <> Sqrt(2/(Pi*x))*Sin(zeta)*Sum(k,0,Infinity, (-1)^k*A(2*k,n)*x^(-2*k)) +
 The error of a truncated asymptotic series is not larger than the first discarded term if the number of terms is larger than $n-1/2$.
 (See the book: F. W. J. Olver, <i>Asymptotic and special functions</i>, Academic Press, 1974.)
 
-Currently Yacas can compute {BesselJ(n,x)} where $Abs(x)<=2$. Yacas currently uses the Taylor series
-to compute the numerical value:
+Currently Yacas can compute {BesselJ(n,x)} for all $x$ where $n$ is an integer and for $Abs(x)<= 2*Gamma(n)$ when
+n is any real number. Yacas currently uses the Taylor series
+when $Abs(x)<= 2*Gamma(n)$ to compute the numerical value:
 $$ BesselJ(n,x) := Sum(k,0,Infinity,(-1)^k*x^(2*k+n)/(2^(2*k+n)* k! * Gamma(k+n+1))) $$.
-Note that $n$ need not be an integer. We see from the definition that when $Abs(x)<=2$, the absolute
-value of each term is always decreasing ( which is called absolutely monotonely decreasing.) From this
-we know that if we stop after $i$ iterations, the error will be bounded by the absolute value of the
-next term. So given a set precision, turn this into a value epsilon, so that we can check if the current
-term will contribute to the sum at the prescribed precision. Before doing this, Yacas currently increases
-the precision by 20{%} to do interim calculations. This is a heuristic that works, it is not backed by theory.
-The value epsilon is given by $eps:=5*10^(-prec)$, where $prec$ was the previous precision. This is directly
-from the definition of floating point number who is correct to $prec$ digits: A number correct to $prec$ digits
-has a rounding error no greater than $5*10^(-prec)$ . Beware that some books incorrectly have $.5$ instead of $5$,
-which is incorrect.
+
+If $Abs(x) > 2*Gamma(n)$ and $n$ is an integer, then Yacas uses the forward recursion
+identity:
+
+$$ BesselJ(n,x) := (2*(n+1)/x)*BesselJ(n+1,x) - BesselJ(n+2,x) $$
+
+until the given BesselJ function is represented in terms of higher order terms which 
+all satisfy $Abs(x) <= 2*Gamma(n)$. Note that when $n$ is much smaller than $x$, the
+algorithm gets quite slow because the number of Bessel functions evaluated grows like $2^i$, where $i$ is
+the number of times the recurrence identity is used.
+
+We see from the definition that when $Abs(x)<=2*Gamma(n)$, the absolute value
+of each term is always decreasing ( which is called absolutely monotonely
+decreasing.) From this we know that if we stop after $i$ iterations, the error
+will be bounded by the absolute value of the next term. So given a set
+precision, turn this into a value epsilon, so that we can check if the current
+term will contribute to the sum at the prescribed precision. Before doing this,
+Yacas currently increases the precision by 20{%} to do interim calculations.
+This is a heuristic that works, it is not backed by theory.  The value epsilon
+is given by $eps:=5*10^(-prec)$, where $prec$ was the previous precision. This
+is directly from the definition of floating point number who is correct to
+$prec$ digits: A number correct to $prec$ digits has a rounding error no
+greater than $5*10^(-prec)$ . Beware that some books incorrectly have $.5$
+instead of $5$, which is incorrect.
 
 Bug: Something is not right with complex numbers, but pure imaginary are OK.
 
