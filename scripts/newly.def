@@ -3,7 +3,6 @@ UniqueConstant
 IsFreeOf
 IsZeroVector
 WithValue
-Limit
 CharacteristicEquation
 EigenValues
 EigenVectors

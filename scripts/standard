@@ -218,7 +218,7 @@ SumListSide(_x, y_IsList) <--
 /* Subtraction arity 1 */
 
 50 # -0 <-- 0;
-51 # -Indefinite <-- Indefinite;
+51 # -Undefined <-- Undefined;
 54 # - (- _x)      <-- x;
 55 # (- (x_IsNumber)) <-- MathSubtract(x);
 110 # - (_x - _y) <-- y-x;
@@ -229,7 +229,7 @@ SumListSide(_x, y_IsList) <--
 /* Subtraction arity 2 */
 50  # x_IsNumber - y_IsNumber <-- MathSubtract(x,y);
 50  # x_IsNumber - y_IsNumber <-- MathSubtract(x,y);
-60  # Infinity - Infinity <-- Indefinite;
+60  # Infinity - Infinity <-- Undefined;
 100 # 0 - _x <-- -x;
 100 # _x - 0 <-- x;
 100 # _x - _x <-- 0;
@@ -335,7 +335,7 @@ SumListSide(_x, y_IsList) <--
    result;
 ];
 
-249  # 0 * Infinity <-- Indefinite;
+249  # 0 * Infinity <-- Undefined;
 250  # x_IsNumber * y_IsInfinity <-- Sign(x)*y;
 250  # x_IsInfinity * y_IsNumber <-- Sign(y)*x;
 
@@ -355,7 +355,7 @@ SumListSide(_x, y_IsList) <--
 
 /* Division */
 
-50 # _x / 0 <-- Indefinite;
+50 # _x / 0 <-- Undefined;
 51 # 0 / _x <-- 0;
 52 # (x_IsNumber / y_IsNumber)_((Numeric = True) Or
                                 Not(IsInteger(x) And IsInteger(y))) <--
@@ -372,7 +372,7 @@ SumListSide(_x, y_IsList) <--
      ];
     
 
-90 # x_IsInfinity / y_Infinity <-- Indefinite;
+90 # x_IsInfinity / y_Infinity <-- Undefined;
 91  # x_IsInfinity / y_IsNumber <-- Sign(y)*x;
 
 
@@ -413,10 +413,10 @@ SumListSide(_x, y_IsList) <--
 /* Faster version of raising power to 0.5 */
 50 # (x_IsPositiveNumber ^ (1/2))_(Numeric) <-- Sqrt(x);
 50 # (x_IsPositiveNumber ^ (1/2))_IsInteger(MathSqrt(x)) <-- MathSqrt(x);
-/* ??? I don't think this is right? 58 # 1 ^ n_IsInfinity <-- Indefinite; */
+58 # 1 ^ n_IsInfinity <-- Undefined; 
 59 # _x ^ 1 <-- x;
 59 # 1 ^ _n <-- 1;
-59 # 0 ^ 0 <-- Indefinite;
+59 # 0 ^ 0 <-- Undefined;
 60 # 0 ^ n_IsRationalOrNumber <-- 0;
 
 /* Regular raising to the power. */
@@ -454,7 +454,7 @@ SumListSide(_x, y_IsList) <--
 201 # xlist_IsList ^ n_IsConstant <-- Map({{xx},xx^n},{xlist});
 202 # _x ^ n_IsList <-- Map({{xx},x^xx},{n});
 
-249 # x_IsInfinity ^ 0 <-- Indefinite;
+249 # x_IsInfinity ^ 0 <-- Undefined;
 250 # Infinity ^ (_n) <-- Infinity;
 250 # ((-Infinity) ^ (n_IsNumber))_(IsEven(n)) <-- Infinity;
 250 # ((-Infinity) ^ (n_IsNumber))_(IsOdd(n)) <-- -Infinity;

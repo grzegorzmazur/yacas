@@ -76,7 +76,8 @@ Sign(_var, _tar, _dir, _exp, _n)
 410 # Lim(_var, _tar, _dir, _x * _y)_
 ((IsZero(Lim(var, tar, dir, x)) And IsInfinity(Lim(var, tar, dir, y)))
   Or (IsInfinity(Lim(var, tar, dir, x)) And IsZero(Lim(var, tar, dir, y))))
-<-- Lim(var, tar, dir, ApplyPure("D", {var, y})/ApplyPure("D", {var, 1/x}));
+<-- Lim(var, tar, dir, Simplify(ApplyPure("D", {var, y})/ApplyPure("D",
+{var, 1/x})));
 
 /*  Default rule  */
 420 # Lim(_var, _tar, _dir, _x * _y)
@@ -137,6 +138,19 @@ UnFence("LimitArgs",1); /* Allow LimitArgs to have access to the local variables
   Local(l); l := Lim(var, tar, Left, exp);
   If ( l = Lim(var, tar, Right, exp),
        l,
-       Indefinite
+       Undefined
      );
 ];
+
+
+
+
+/* User-callable function */
+
+(Limit(_var,_lim)(_fie)) <-- Lim(var,lim,fie);
+UnFence("Limit",3);
+
+
+
+
+

@@ -64,6 +64,7 @@ n_IsInteger << m_IsInteger <-- ShiftLeft(n,m);
 n_IsInteger >> m_IsInteger <-- ShiftRight(n,m);
 
 0 # Sqrt(0) <-- 0;
+0 # Sqrt(Infinity) <--  Infinity;
 1 # Sqrt(x_IsPositiveInteger)_(IsInteger(MathSqrt(x))) <-- MathSqrt(x);
 2 # Sqrt(x_IsPositiveNumber)_(Numeric) <-- MathSqrt(x);
 2 # Sqrt(x_IsNegativeNumber) <-- Complex(0,Sqrt(-x));
