@@ -46,13 +46,14 @@ ChapterIntro(text) :=
 
 Bodied("ChapterIntro", 60000);
 
-AddAnchor(aAnchor):=
-[
-  /*AddBody*/(HtmlAnchor()aAnchor);
-/*  plain["Chapters"][currentChapter]["Commands"] :=
+AddAnchor(aAnchor):= "";	// do nothing, since anchors are not very useful in HTML. HtmlAnchor() will be used on anchors that are important for HTML.
+/*[
+  AddBody(HtmlAnchor()aAnchor);
+  plain["Chapters"][currentChapter]["Commands"] :=
      Concat(plain["Chapters"][currentChapter]["Commands"], 
-            {{ChapterLink(aAnchor), ""}}); */
+            {{ChapterLink(aAnchor), ""}}); 
 ];
+*/
 
 SectionTag(chapterIndex,sectionIndex):=
   "c" : String(chapterIndex) : "s" : String(sectionIndex) ;
