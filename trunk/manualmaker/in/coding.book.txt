@@ -539,19 +539,19 @@ When writing a code segment, it is generally a good idea to separate the
 problem into many small functions. Not only can you then reuse these
 functions on other problems, but it makes debugging easier too.
 
-The options you have for debugging a faulty function are
-
-*	0. Invoke the function from the command line, passing in different   arguments, to see how it behaves.
-*	0. Trace applications of rules during execution of the function
+For debugging a faulty function, in addition to the usual trial-and-error method and the "print everything" method, Yacas has some trace facilities. You can try to trace applications of rules during evaluation of the function ({TraceRule()}, {TraceExp()}) or see the stack after an error has occurred ({TraceStack()}).
 
 		The trace facilities
 
 The trace facilities are:
 
-*	0. {TraceExp} : traces the full   expression, showing all calls to user- or system-defined functions,   their arguments, and the return values. For complex functions this   can become a long list of function calls.
-*	0. {TraceRule} : traces one single user-defined function (rule).   It shows each invokation, the arguments passed in, and the return   values. This is useful for tracking the behaviour of that function   in the environment it is intended to be used in.
+*	0. {TraceExp} : traces the full expression, showing all calls to user- or system-defined functions, their arguments, and the return values. For complex functions this can become a long list of function calls.
+*	0. {TraceRule} : traces one single user-defined function (rule). It shows each invocation, the arguments passed in, and the returned values. This is useful for tracking the behaviour of that function in the environment it is intended to be used in.
+*	0. {TraceStack} : shows a few last function calls before an error has occurred.
 
-An example invocation of TraceRule is
+The online manual pages (e.g. {?TraceStack}) have more information about the use of these functions.
+
+An example invocation of {TraceRule} is
 
 	In> TraceRule(x+y)2+3*5+4;
 
@@ -653,8 +653,8 @@ Are we done yet? Let's try to calculate more things with our $A$'s and $B$'s:
 	In> (A(x)+B(x))**2**B(y)*3
 	Out> 3*(A(x)+B(x))**2**B(y);
 After we gave it slightly more complicated input, Yacas didn't fully
-evaluate expressions containing the new multiplication operation: it didn't
-move constants together, didn't expand brackets, and, somewhat
+evaluate expressions containing the new {**} operation: it didn't
+move constants {2} and {3} together, didn't expand brackets, and, somewhat
 mysteriously, it didn't apply the rule in the first line above -- although
 it seems like it should have. Before we hurry to fix these things, let's
 think some more about how Yacas represents our new expressions. Let's start
