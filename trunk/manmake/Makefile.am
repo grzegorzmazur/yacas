@@ -55,7 +55,7 @@ ALGOSOURCES = algo-basic.chapt.txt algo-numapprox.chapt.txt \
 	algorithms-multivar.chapt.txt SturmSequences.chapt.txt FDL.chapt.txt \
 	algo-refs.chapt.txt 
 
-REFCHAPTERS = config.chapt arith.chapt calc.chapt linalg.chapt \
+REFCHAPTERS = config.chapt arith.chapt calc.chapt ode.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
 	preds.chapt logic.chapt const.chapt vars.chapt io.chapt \
 	numtheory.chapt strings.chapt \

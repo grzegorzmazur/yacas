@@ -12,6 +12,8 @@ the command line for ordinary tasks.
 
 *INCLUDE calc.chapt
 
+*INCLUDE ode.chapt
+
 *INCLUDE linalg.chapt
 
 *INCLUDE univar.chapt
