@@ -9,4 +9,10 @@ CatalanNumber
 Repunit
 ProductPrimesTo257
 HarmonicNumber
+FermatNumber
+Divisors
+DivisorsSum
+ProperDivisors
+ProperDivisorsSum
+Moebius
 }

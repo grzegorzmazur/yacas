@@ -56,3 +56,5 @@ Verify(HarmonicNumber(5), 137/60 );
 Verify( Subfactorial(0), 1 );
 Verify( Subfactorial(21), 18795307255050944540 );
 
+Verify( Divisors(180), 18 );
+Verify( DivisorsSum(180), 546 );
