@@ -2,6 +2,8 @@
 #include "yacasprivate.h"
 #include "commandline.h"
 
+#include <stdio.h>
+
 CCommandLine::~CCommandLine()
 {
     /*TODO remove???
@@ -12,6 +14,7 @@ CCommandLine::~CCommandLine()
         }
         */
 }
+
 
 void CCommandLine::GetHistory(LispInt aLine)
 {
@@ -104,6 +107,92 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
             if (cursor<iSubLine.NrItems()-1)
                 cursor++;
             break;
+
+
+
+
+
+
+      case eUp:
+        {
+          LispString prefix;
+          prefix.SetStringCounted(iSubLine.String(),cursor);
+
+          if (history == 0) history = iHistory.NrItems()-1;
+
+          int i = history - 1;
+
+//printf("Searching for [%s] starting at %d (of %d)\n",prefix.String(),i,iHistory.NrItems());
+          LispString histpre;
+          while (i > 0)
+          {
+            histpre.SetStringCounted(iHistory[i]->String(),cursor);
+            if (histpre == prefix)
+              break;
+            i--;
+          }
+          if (i >= 0 && i != history && histpre == prefix)
+          {
+            history = i;
+            GetHistory(history);
+
+            iFullLineDirty = 1;
+            iHistoryUnchanged = 1;
+          }
+        }
+        break;
+      case eDown:
+        {
+          LispString prefix;
+          prefix.SetStringCounted(iSubLine.String(),cursor);
+          int i = history + 1;
+          LispString histpre;
+          while (i < iHistory.NrItems())
+          {
+            histpre.SetStringCounted(iHistory[i]->String(),cursor);
+            if (histpre == prefix)
+              break;
+            i++;
+          }
+          if (i < iHistory.NrItems() && histpre == prefix)
+          {
+            history = i;
+            GetHistory(history);
+            iFullLineDirty = 1;
+            iHistoryUnchanged = 1;
+          }
+          else 
+          {
+
+//printf("end encountered: %d [%s]\n",i,prefix.String());
+            history = iHistory.NrItems();
+//            iSubLine = prefix;
+
+            {
+              iSubLine.SetNrItems(0);
+              LispInt i;
+              for (i=0;i<prefix.NrItems();i++)
+              {
+                iSubLine.Append(prefix[i]);
+              }
+              iSubLine.Append('\0');
+            }
+//printf("set to: %d [%s]\n",history,iSubLine.String());
+
+//            int pos = cursorPos;
+//            ResetInput();
+//            inputLine = prefix;
+//            cursorPos = pos;
+            iFullLineDirty = 1;
+            iHistoryUnchanged = 1;
+          }
+        }
+        break;
+
+
+
+/*
+
         case eUp:
             if (history>0)
             {
@@ -132,6 +221,7 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
                 iFullLineDirty = 1;
             }
             break;
+*/
         case eTab:
             {
                 LispInt prevhistory=history;
@@ -179,7 +269,8 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
                 NewLine();
                 LispStringPtr ptr = NEW LispString();
                 *ptr = iSubLine.String();
-                iHistory.Append(ptr);
+                if (!iHistoryUnchanged)
+                  iHistory.Append(ptr);
             }
             return;
             break;
