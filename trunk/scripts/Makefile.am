@@ -13,7 +13,7 @@ SCRIPTFILES = \
         texform.rep/code.ys texform.rep/code.ys.def print.ys c_form.rep/code.ys c_form.rep/code.ys.def logic.rep/code.ys logic.rep/code.ys.def cstubgen.rep/code.ys cstubgen.rep/code.ys.def \
         radsimp.rep/code.ys radsimp.rep/code.ys.def pslq.rep/code.ys pslq.rep/code.ys.def odesolver.rep/code.ys odesolver.rep/code.ys.def limit.rep/code.ys limit.rep/code.ys.def \
         localrules.rep/code.ys localrules.rep/code.ys.def rabinmiller.rep/code.ys rabinmiller.rep/code.ys.def \
-        orthopoly.rep/code.ys orthopoly.rep/code.ys.def \
+        orthopoly.rep/code.ys orthopoly.rep/code.ys.def openmath.rep/code.ys openmath.rep/code.ys.def \
         multivar.rep/code.ys multivar.rep/code.ys.def 
 
 script_DATA = # $(SCRIPTFILES)
