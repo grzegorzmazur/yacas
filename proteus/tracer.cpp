@@ -6,6 +6,7 @@
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Return_Button.H>
 #include <FL/Fl_Tile.H>
+#include <FL/Fl_Round_Button.H>
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -29,6 +30,7 @@ public:
     {
         type(FL_HOLD_BROWSER);
         strcpy(oldfile,"");
+        last_selected = -1;
     };
 
 void my_item_select(void *l) {item_select(l,1);};
@@ -43,8 +45,10 @@ void my_insert_line(int line, int expandInfo, const char* text,
                    char*f,int l);
 void Fl_My_Browser::collapse(int line);
 int load_in(int line, int fileNo);
-void switchToFile(char* newfile,int line);
+int switchToFile(char* newfile,int line);
+void go_viewer_line(int line) {last_selected = line;select(line);}
 char oldfile[200];
+int last_selected;
 };
 
 Fl_Tabs* mainTabs;
@@ -52,8 +56,13 @@ Fl_My_Browser *tracer;
 Fl_My_Browser *fileViewer;
 Fl_My_Browser *profiler;
 Fl_Group* input;
+Fl_Round_Button *locked;
 int selected = 1;
 void* lineptr = NULL;
+char expression[200],scriptdir[200],tempdir[200],pre_eval[200];
+
+
+
 void Fl_My_Browser::collapse(int line)
 {
     LineInfo *lineinfo =  (LineInfo *)data(line);
@@ -135,23 +144,39 @@ int Fl_My_Browser::load_in(int line, int fileNo)
     return added;
 }
 
-void Fl_My_Browser::switchToFile(char* newfile,int line)
+int Fl_My_Browser::switchToFile(char* newfile,int line)
 {
+    int changed=0;
+    if (locked->value())
+    {
+        if (!strcmp(oldfile,newfile))
+        {
+            if (line != fileViewer->last_selected)
+                changed = 1;
+//            ::selected = line;
+            fileViewer->go_viewer_line(line);
+            fileViewer->make_visible(line);
+        }
+        return changed;
+    }
     if (strcmp(oldfile,newfile))
     {
+        changed=1;
         fileViewer->clear();
         fileViewer->load(newfile);
         strcpy(oldfile,newfile);
     }
-    fileViewer->select(line);
+//    ::selected = line;
+    fileViewer->go_viewer_line(line);
     fileViewer->make_visible(line);
+    return changed;
 }
 
-void CallSelect()
+int CallSelect()
 {
     Fl_My_Browser* oo = tracer;
     LineInfo *lineinfo =  (LineInfo *)oo->data(selected);
-
+    int linechanged = 0;
     if (lineinfo != NULL)
     {
         if (lineinfo->expanded)
@@ -163,18 +188,25 @@ void CallSelect()
             if (lineinfo->file)
             {
                 char buf[200];
-                sprintf(buf,"/usr/local/share/yacas/%s",lineinfo->file);
-                FILE*f = fopen(buf,"r");
+                FILE*f;
+                sprintf(buf,"%s",lineinfo->file);
+                f = fopen(buf,"r");
+                if (!f)
+                {
+                    sprintf(buf,"%s%s",scriptdir,lineinfo->file);
+                    f = fopen(buf,"r");
+                }
                 if (f)
                 {
                     fclose(f);
-                    fileViewer->switchToFile(buf, lineinfo->line);
+                    linechanged = fileViewer->switchToFile(buf, lineinfo->line);
                 }
 
             }
             lineinfo->expanded = oo->load_in(selected+1, lineinfo->toExpand);
         }
     }
+    return linechanged;
 }
 
 void b_cb(Fl_Widget* o, void* )
@@ -185,8 +217,11 @@ void b_cb(Fl_Widget* o, void* )
     CallSelect();
 }
 
-void stepcb(Fl_Widget *, void *)
+
+void DoStep(int gonewline,int stepover)
 {
+    int changed = 0;
+REDO:
     if (lineptr == NULL)
     {
         lineptr = tracer->my_item_first();
@@ -195,9 +230,19 @@ void stepcb(Fl_Widget *, void *)
     LineInfo *lineinfo =  (LineInfo *)tracer->data(selected);
     if (lineinfo != NULL)
     {
-        if (!lineinfo->expanded)
+        if (stepover)
         {
-            lineinfo->expanded = tracer->load_in(selected+1, lineinfo->toExpand);
+            if (lineinfo->expanded)
+            {
+                tracer->collapse(selected);
+            }
+        }
+        else
+        {
+            if (!lineinfo->expanded)
+            {
+                lineinfo->expanded = tracer->load_in(selected+1, lineinfo->toExpand);
+            }
         }
     }
     lineinfo = NULL;
@@ -210,51 +255,147 @@ void stepcb(Fl_Widget *, void *)
     if (lineptr != NULL)
     {
         tracer->select(selected,1);
-        CallSelect();
+        changed = CallSelect();
     }
+    if (gonewline!=0 && changed == 0 && lineptr != NULL)
+        goto REDO;
 
+    if (lineptr != NULL)
+    {
+        lineinfo =  (LineInfo *)tracer->data(selected);
+        if (lineinfo->expanded)
+        {
+            tracer->collapse(selected);
+        }
+    }
+    else
+    {
+        gonewline = 0;
+        stepover = 0;
+        goto REDO;
+    }
+}
+void stepcb(Fl_Widget *, void *)
+{
+    DoStep(0,0);
 }
 
-int get_string(char*buffer) {
-  Fl_Window window(320,75);
-  Fl_Input input(60, 10, 250, 25, "Input:");
-  input.value(buffer);
-  Fl_Button cancel(60, 40, 80, 25, "cancel");
-  Fl_Return_Button ok(150, 40, 80, 25, "OK");
-  window.hotspot(&cancel); // you must position modal windows
-  window.end();
-  window.set_modal();
-  window.show();
-  for (;;) {
-    Fl::wait();
-    Fl_Widget *o;
-    while ((o = Fl::readqueue())) {
-      if (o == &ok) {
-	strcpy(buffer,input.value());
-	return 1;
-      } else if (o == &cancel || o == &window) {
-	return 0;
-      }
+void multistepcb(Fl_Widget *, void *)
+{
+    DoStep(1,0);
+}
+void multistepovercb(Fl_Widget *, void *)
+{
+    DoStep(1,1);
+}
+
+int get_string(char*expression,char*scriptdir,char*tempdir,
+              char*pre_eval)
+{
+    Fl_Window window(320,145);
+
+    Fl_Input e(60, 10, 250, 25, "Input:");
+    e.value(expression);
+
+    Fl_Input s(60, 35, 250, 25, "Scripts:");
+    s.value(scriptdir);
+
+    Fl_Input t(60, 60, 250, 25, "Temp dir:");
+    t.value(tempdir);
+
+    Fl_Input p(60, 85, 250, 25, "Pre-exec:");
+    p.value(pre_eval);
+
+    Fl_Button cancel(60, 110, 80, 25, "cancel");
+    Fl_Return_Button ok(150, 110, 80, 25, "OK");
+    window.hotspot(&cancel); // you must position modal windows
+    window.end();
+    window.set_modal();
+    window.show();
+    for (;;)
+    {
+        Fl::wait();
+        Fl_Widget *o;
+        while ((o = Fl::readqueue()))
+        {
+            if (o == &ok)
+            {
+                strncpy(expression,e.value(),199);
+                expression[199] = '\0';
+                strncpy(scriptdir,s.value(),199);
+                scriptdir[199] = '\0';
+                strncpy(tempdir, t.value(),199);
+                tempdir[199] = '\0';
+                strncpy(pre_eval, p.value(),199);
+                pre_eval[199] = '\0';
+
+                return 1;
+            }
+            else if (o == &cancel || o == &window)
+            {
+                return 0;
+            }
+        }
     }
-  }
 }
 
 
 
 int main(int argc, char **argv)
 {
-    char expression[200];
-    get_string(expression);
+    expression[0] = '\0';
+    strcpy(scriptdir,"/usr/local/share/yacas/");
+    tempdir[0] = '\0';
+    pre_eval[0] = '\0';
+
+    {
+        FILE* f = fopen("tracerrc","r");
+        if (f)
+        {
+            fgets(expression,199,f);
+            expression[strlen(expression)-1] = '\0';
+            fgets(scriptdir,199,f);
+            scriptdir[strlen(scriptdir)-1] = '\0';
+            fgets(tempdir,199,f);
+            tempdir[strlen(tempdir)-1] = '\0';
+            fgets(pre_eval,199,f);
+            pre_eval[strlen(pre_eval)-1] = '\0';
+            fclose(f);
+        }
+    }
+    
+    if (!get_string(expression,scriptdir,tempdir, pre_eval))
+        return 0;
+    {
+        FILE* f = fopen("tracerrc","w");
+        if (f)
+        {
+            fprintf(f,"%s\n",expression);
+            fprintf(f,"%s\n",scriptdir);
+            fprintf(f,"%s\n",tempdir);
+            fprintf(f,"%s\n",pre_eval);
+            fclose(f);
+        }
+    }
+
+
     {
         CYacas *yacas = CYacas::NewL();
-        yacas->Evaluate("DefaultDirectory(\"/usr/local/share/yacas/\");");
+        char buf[200];
+        sprintf(buf,"DefaultDirectory(\"%s\");",scriptdir);
+        yacas->Evaluate(buf);
         yacas->Evaluate("Load(\"yacasinit.ys\");");
         yacas->Evaluate("ForEach(item,DefPackages)Use(item);");
         yacas->Evaluate("Load(\"tracer.ys\");");
+        if (pre_eval[0])
+        {
+            yacas->Evaluate(pre_eval);
+        }
         {
             char buf[300];
-            sprintf(buf,"NiceTraceExp(%s)",expression);
+            sprintf(buf,"ToFile(\"trace.tmp\")TraceExp(%s);",expression);
             yacas->Evaluate(buf);
+            yacas->Evaluate("ThunkToTracer();");
         }
         delete yacas;
     }
@@ -281,17 +422,26 @@ int main(int argc, char **argv)
       tracer = new Fl_My_Browser(0,210,400,160,0);
       tracer->callback(b_cb);
       tracer->load_in(1,0);
-      tracer->position(0);
+//      tracer->position(0);
       tracer->align(FL_ALIGN_CLIP);
 //      fileViewer = new Fl_My_Browser(200,20,200,378,0);
       fileViewer = new Fl_My_Browser(0,20,400,190,0);
       fileViewer->align(FL_ALIGN_CLIP);
       t->end();
+      Fl_Group::current()->resizable(t);
 
-      Fl_Button *b = new Fl_Button(20, 375, 80, 20, "Step");
+      Fl_Button *b = new Fl_Button(20, 375, 40, 20, ">");
       b->callback(stepcb,0);
+      b = new Fl_Button(60, 375, 40, 20, ">>");
+      b->callback(multistepcb,0);
+      b = new Fl_Button(100, 375, 40, 20, "\\/");
+      b->callback(multistepovercb,0);
 
+      locked = new Fl_Round_Button(150,375,100,20,"Lock file");
+
+      Fl_Group::current()->resizable(t);
       
+//      o->resizable(t);
       o->end();
       Fl_Group::current()->resizable(o);
   }
@@ -313,18 +463,6 @@ int main(int argc, char **argv)
       Fl_Group::current()->resizable(o);
   }
   
-  /*
-   browser.type(FL_HOLD_BROWSER);
-  //browser.color(42);
-  browser.callback(b_cb);
-  // browser.scrollbar_right();
-  //browser.has_scrollbar(Fl_Browser::BOTH_ALWAYS);
-
-  browser.load_in(1,0);
-
-  browser.position(0);
-  window.resizable(&browser);
-  */
   window.show(argc,argv);
   return Fl::run();
 }
