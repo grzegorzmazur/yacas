@@ -52,6 +52,8 @@ void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
 void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
                         LispCharPtr aString);
 
+LispInt StrCompare(LispCharPtr f1, LispCharPtr f2);
+
 
 #include "standard.inl"
 

@@ -132,27 +132,6 @@ void LispMacroClearVar(LispEnvironment& aEnvironment,
  returns 0, and it returns 1 if f1>f2
  */
 
-static LispInt StrCompare(LispCharPtr f1, LispCharPtr f2)
-{
-    while (*f1)
-    {
-        /* f1 > f2  */
-        if ( (*f2) == '\0')
-            return 1;
-        if (*f1 < *f2)
-            return -1;
-        else if (*f1 > *f2)
-            return 1;
-        f1++;
-        f2++;
-    }
-
-    /* f1 < f2  */
-    if (*f2)
-        return -1;
-    /* f1 = f2 */
-    return 0;
-}
 static LispBoolean LexLessThan(LispCharPtr f1, LispCharPtr f2, LispHashTable& aHashTable,LispInt aPrecision)
 {
     return (StrCompare(f1, f2)<0);

@@ -257,9 +257,43 @@ void ParsedObject::ReadAtom()
         LispStringPtr theOperator = iLookAhead;
         MatchToken(iLookAhead);
 
-        ReadExpression(op->iPrecedence);
-        InsertAtom(theOperator);
-        Combine(1);
+        LispInt negativeNumber = 0;
+        
+        if (!StrCompare(theOperator->String(), "-"))
+        {
+            LispChar c = iLookAhead->String()[0];
+            if (IsDigit(c) || c == '.')
+                negativeNumber = 1;
+        }
+        if (negativeNumber)
+        {
+            LispString str(iLookAhead->String());
+            {
+                LispInt neg = 0;
+                LispInt nr = iLookAhead->NrItems()-1;
+                LispInt i;
+                LispCharPtr p = iLookAhead->String();
+                for (i=0;i<nr && !neg;i++)
+                {
+                    if (p[i] != '0' && p[i] != '.')
+                        neg = 1;
+                }
+                if (neg)
+                {
+                    LispChar c = '-';
+                    str.Insert(0,c,1);
+                }
+            }
+
+            InsertAtom(iParser.iHashTable.LookUp(str.String()));
+            MatchToken(iLookAhead);
+        }
+        else
+        {
+            ReadExpression(op->iPrecedence);
+            InsertAtom(theOperator);
+            Combine(1);
+        }
     }
     // Else parse brackets
     else if (iLookAhead == iParser.iBracketOpen)
@@ -368,7 +402,6 @@ void ParsedObject::ReadAtom()
         MatchToken(iLookAhead);
         Combine(1);
     }
-
 }
 
 
