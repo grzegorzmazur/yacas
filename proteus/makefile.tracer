@@ -20,6 +20,9 @@ TRACER_OBJS = tracer.o editor.o fl_adjustable_file_chooser.o debugclass.o ../src
 proteusdebugger: $(TRACER_OBJS) ../src/libyacasdebug.a
 	$(CXX) $(TRACER_OBJS) ../src/libyacasdebug.a -o proteusdebugger $(CXXFLAGS) $(LIBS) -lm
 
+BROWSER_OBJS = browse.cpp
+proteusbrowser:  $(BROWSER_OBJS)
+	$(CXX) $(BROWSER_OBJS) -o proteusbrowser $(CXXFLAGS) $(LIBS) -lm
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCS) -c $*.cpp -o $*.o

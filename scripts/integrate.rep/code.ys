@@ -1,10 +1,63 @@
 
 /*
- funny integrals:
+		Integration
+
+Integration can be performed by the function Integrate, which
+has two calling conventions:
+
+*	Integrate(variable)expression
+*	Integrate(variable,from,to)expression
+
+Integrate can have its own set of rules for specific integrals,
+which might return a correct answer immediately. Alternatively,
+it calls the function AntiDeriv, to see if the anti-derivative
+can be determined for the integral requested. If this is the
+case, the anti-derivative is used to compose the output.
+
+
+
+  funny integrals:
    - Integrate(x,0,n)(1+x)*Cos((2*x)*Pi) with integer n
    - Integrate(x,0,n)(1-x)*Cos((2*x)*Pi) with integer n
  */
 
+//
+// Integration calls.
+//
+
+// Determine integral by finding the anti-derivative
+100 # (Integrate(_var,_from,_to)_expr)
+    <-- Integrate(var,from,to,`AntiDeriv(@expr,@var))expr;
+
+// Return un-evaluated, because no anti-derivative was found
+10 # (Integrate(_var,_from,_to,AntiDeriv(_expr,_var))_expr)
+    <-- `Hold(Integrate(_var,_from,_to)_expr);
+
+// Anti-derivative found, use for computing the integral
+10 # (Integrate(_var,_from,_to,_antideriv)_expr)
+    <--
+[
+  Local(result);
+  MacroLocal(var);
+  MacroSet(var,to);
+  result:=Eval(antideriv);
+  MacroSet(var,from);
+  result:=result-Eval(antideriv);
+  result;
+];
+
+// Compute only the anti-derivative, if there is one
+(Integrate(_var)_f) <-- AntiDeriv(f,var)+UniqueConstant();
+
+//
+// Computation of the anti-derivative
+//
+
+//
+// simple arithmetic expansions:
+//   Integrate(x)(f+g) = Integrate(x)(f)+Integrate(x)(g)
+// etcetera
+//
 2 # AntiDeriv(_expr,_var)_Not(Contains(VarList(expr),var)) <--
     expr*var;
 3 # AntiDeriv(_exx * _exy,_var)_Not(Contains(VarList(exx),var))  <--
@@ -14,6 +67,10 @@
 4 # AntiDeriv(_exx + _exy,_var) <-- AntiDeriv(exx,var)+AntiDeriv(exy,var);
 4 # AntiDeriv(_exx - _exy,_var) <-- AntiDeriv(exx,var)-AntiDeriv(exy,var);
 4 # AntiDeriv(- (_exx) ,_var) <-- -AntiDeriv(exx,var);
+
+//
+// Anti-derivative of a univariate polynomial
+//
 10 # AntiDeriv(UniVariate(_var,_first,_coefs),_var) <--
 [
   Local(result);
@@ -24,6 +81,10 @@
   ];
   UniVariate(var,first+1,result);
 ];
+
+//
+// A term is a simple term from a polynomial.
+//
 
 CanBeTerm(_expr,_var) <-- (MakeTerm(expr,var) != False);
 10 # MakeTerm(     _var ^ (n_IsFreeOf(var)), _var) <-- {var,n,1};
@@ -46,7 +107,7 @@ CanBeTerm(_expr,_var) <-- (MakeTerm(expr,var) != False);
       (term[1]^(term[2]+1))/(term[3]*(term[2]+1));
     ];
 
-
+// If the above fails, try a univariate polynomial
 12 # AntiDeriv(_expr,_var)_CanBeUni(expr,var) <--
     NormalForm(AntiDeriv(Apply("MakeUni",{expr,var}),var));
 
@@ -142,22 +203,6 @@ CanBeTerm(_expr,_var) <-- (MakeTerm(expr,var) != False);
 /*  Apply("AntiDeriv",{Apply("TrigSimpCombine",{exp}),var});*/
 ];
 
-RuleBase("Integrate",{var,from,to,expr});
-HoldArg("Integrate",var);
-/* HoldArg("Integrate",expr); */
-Rule("Integrate",4,1,Type(Apply("AntiDeriv",{expr,var})) != "AntiDeriv")
-[
-  Local(ad,result);
-  MacroLocal(var);
-  ad:=Apply("AntiDeriv",{expr,var});
-  MacroSet(var,to);
-  result:=Eval(ad);
-  MacroSet(var,from);
-  result:=result-Eval(ad);
-  result;
-];
-
-(Integrate(_var)_f) <-- AntiDeriv(f,var)+UniqueConstant();
 
 10 # HasTrig(Sin(_x)) <-- True;
 10 # HasTrig(Cos(_x)) <-- True;
