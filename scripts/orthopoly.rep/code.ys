@@ -281,7 +281,7 @@ OrthoPolySumCoeffs(name_IsString, c_IsList, p_IsList) <-- [
 
 //////////////////////////////////////////////////
 /// Very fast computation of Chebyshev polynomials. See: W. Koepf. Efficient computation of Chebyshev polynomials in computer algebra (unpublished, poorly written preprint). Contrary to Koepf's claim (unsupported by any calculation in his paper) that the method is numerically stable, I found unsatisfactory numerical behavior for very large orders...
-/// Koepf suggests to use M. Bronstein's algorithm for finding rational solutions of linear ODEs for all other orthogonal polynomials (may be faster than recursion).
+/// Koepf suggests to use M. Bronstein's algorithm for finding rational solutions of linear ODEs for all other orthogonal polynomials (may be faster than recursion if we want to find the analytic form of the polynomial).
 //////////////////////////////////////////////////
 /// Main formulae: T(2*n,x) = 2*T(n,x)^2-1; T(2*n+1,x) = 2*T(n+1,x)*T(n,x)-x;
 /// U(2*n,x) = 2*T(n,x)*U(n,x)-1; T(2*n+1,x) = 2*T(n+1,x)*U(n,x);
