@@ -124,6 +124,7 @@ RuleBase("Sum",{sumvar,sumfrom,sumto,sumbody});
        ];
    sumsum;
 ];
+
 UnFence("Sum",4);
 HoldArg("Sum",sumvar);
 HoldArg("Sum",sumbody);
@@ -272,47 +273,60 @@ Function("Subfactorial",{n})
 
 // Attempt to Sum series 
 
+Function() SumFunc(k,from,to,summand, sum, predicate );
+Function() SumFunc(k,from,to,summand, sum);
+HoldArg(SumFunc,predicate);
+
+// Difference code does not work
 SumFunc(_sumvar,sumfrom_IsInteger,_sumto,_sumbody,_sum) <--
 [
 	// Take the given answer and create 2 rules, one for an exact match
 	// for sumfrom, and one which will catch sums starting at a different
 	// index and subtract off the difference
 
-	`(40 # Sum(@sumvar,@sumfrom,@sumto,@sumbody)	<-- @sum );
-	`(41 # Sum(@sumvar,p_IsInteger,@sumto,@sumbody) <-- Simplify(@sum - Sum(@sumvar,@sumfrom,sumto - @p,@sumbody)) );
+	`(40 # Sum(@sumvar,@sumfrom,@sumto,@sumbody )	<-- @sum );
+	`(41 # Sum(@sumvar,p_IsInteger,@sumto,@sumbody) <-- 
+		Simplify(Eval(@sum) - Sum(@sumvar,@sumfrom,sumto - @p,@sumbody)) );
 ];
 
 SumFunc(_sumvar,sumfrom_IsInteger,_sumto,_sumbody,_sum,_condition) <--
 [
 
-	`(40 # Sum(@sumvar,@sumfrom,@sumto,@sumbody)_(@condition)    <-- @sum );
-	`(41 # Sum(@sumvar,p_IsInteger,@sumto,@sumbody)_(@condition) <-- 
-		Simplify(@sum - Sum(@sumvar,@sumfrom,sumto - @p,@sumbody)) );
+	`(40 # Sum(@sumvar,@sumfrom,@sumto,@sumbody)_(@condition)    <-- Eval(@sum) );
+	`(41 # Sum(@sumvar,p_IsInteger,@sumto,@sumbody )_(@condition) <-- 
+		Simplify(Eval(@sum) - Sum(@sumvar,@sumfrom,sumto - @p,@sumbody)) );
 ];
 
-// doesn't work for complex c
-SumFunc(_k,1,_n,_c, c*n, Hold(IsRationalOrNumber(c)) );
+//doesn't work
+SumFunc(_k,1,_n,_c + _d,Sum(k,1,n,c) + Sum(k,1,n,d) );
+
+SumFunc(_k,1,_n,_c,c*n,IsFreeOf(k,c) );
 SumFunc(_k,1,_n,_k, n*(n+1)/2 );
 //SumFunc(_k,1,_n,_k^2, n*(n+1)*(2*n+1)/6 );
 //SumFunc(_k,1,_n,_k^3, (n*(n+1))^2 / 4 );
-SumFunc(_k,1,_n,_k^_p,(Bernoulli(p+1,n+1) - Bernoulli(p+1))/(p+1), Hold(IsInteger(p)) );
+SumFunc(_k,1,_n,_k^_p,(Bernoulli(p+1,n+1) - Bernoulli(p+1))/(p+1), IsInteger(p) );
 SumFunc(_k,1,_n,2*_k-1, n^2 );
 SumFunc(_k,1,_n,HarmonicNumber(_k),(n+1)*HarmonicNumber(n) - n );
 SumFunc(_k,1,_n,Fibonacci(_k)^2, Fibonacci(n)*Fibonacci(n+1) );
 
 
 // Infinite Series
-SumFunc(_k,1,Infinity,1/(_k^_d), Zeta(d), Hold(IsInteger(d)) );
-SumFunc(_k,1,Infinity,_k^(-_d), Zeta(d), Hold(IsInteger(d)) );
+// this allows Zeta a complex argument, which is not supported yet
+SumFunc(_k,1,Infinity,1/(_k^_d), Zeta(d), IsFreeOf(k,d) );
+SumFunc(_k,1,Infinity,_k^(-_d), Zeta(d), IsFreeOf(k,d) );
+
+SumFunc(_k,0,Infinity,_x^(2*_k+1)/(2*_k+1)!,Sinh(x) );
+SumFunc(_k,0,Infinity,_x^(2*_k)/(2*_k)!,Cosh(x) );
+SumFunc(_k,0,Infinity,_x^(2*_k+1)/(2*_k+1),ArcTanh(x) );
+SumFunc(_k,0,Infinity,1/(_k)!,Exp(1) );
+SumFunc(_k,0,Infinity,_x^_k/(_k)!,Exp(x) );
+
 SumFunc(_k,1,Infinity,1/Bin(2*_k,_k), (2*Pi*Sqrt(3)+9)/27 );
 SumFunc(_k,1,Infinity,1/(_k*Bin(2*_k,_k)), (Pi*Sqrt(3))/9 );
 SumFunc(_k,1,Infinity,1/(_k^2*Bin(2*_k,_k)), Zeta(2)/3 );
 SumFunc(_k,1,Infinity,1/(_k^3*Bin(2*_k,_k)), 17*Zeta(4)/36 );
 
-// doesn't work
+// anything with (-1)^k doesn't work
 SumFunc(_k,1,Infinity,(-1)^(_k-1)/_k, Ln(2) );
-
-HoldArg("SumFunc", condition );
-
 
 
