@@ -41,21 +41,18 @@ Verify(Taylor2(x,0,9) Sin(x), x - x^3/6 + x^5/120 - x^7/5040 + x^9/362880);
 Verify(Taylor2(x,0,6) Cos(x), 1 - x^2/2 + x^4/24 - x^6/720);
 Verify(Taylor2(x,0,6) Exp(x),
        1 + x + x^2/2 + x^3/6 + x^4/24 + x^5/120 + x^6/720);
-KnownFailure(
-       (Taylor2(x,1,6) 1/x) =
+Verify(Taylor2(x,1,6) 1/x,
        1 - (x-1) + (x-1)^2 - (x-1)^3 + (x-1)^4 - (x-1)^5 + (x-1)^6);
-KnownFailure(
-       (Taylor2(x,1,6) Ln(x)) =
+Verify(Taylor2(x,1,6) Ln(x),
        (x-1) - (x-1)^2/2 + (x-1)^3/3 - (x-1)^4/4 + (x-1)^5/5 - (x-1)^6/6);
 Verify(Taylor2(x,0,6) x/(Exp(x)-1),
        1 - x/2 + x^2/12 - x^4/720 + x^6/30240);
 Verify(Taylor2(x,0,6) Sin(x)^2+Cos(x)^2, 1);
-KnownFailure(
-       (Taylor2(x,0,14) Sin(Tan(x)) - Tan(Sin(x))) =
-       -1/30*x^7 - 29/756*x^9 - 1913/75600*x^11 - 95/7392*x^13);
-KnownFailure(
-       (Taylor2(t,a+1,2) Exp(c*t)) =
-       Exp(c*a+c) + c*Exp(c*a+c)*(t-a-1) + c^2*Exp(c*a+c)*(t-a-1)^2/2);
+TestYacas(Taylor2(x,0,14) Sin(Tan(x)) - Tan(Sin(x)),
+          -1/30*x^7 - 29/756*x^9 - 1913/75600*x^11 - 95/7392*x^13);
+TestYacas((Taylor2(t,a+1,2) Exp(c*t)),
+          Exp(c*(a+1)) + c*Exp(c*(a+1))*(t-a-1) 
+                       + c^2*Exp(c*(a+1))*(t-a-1)^2/2);
 
 // Consistency checks
 
@@ -71,15 +68,16 @@ TestYacas(Taylor2(x,0,7) (Sin(x)/Ln(1+x)),
           Taylor2(x,0,7) ((Taylor2(x,0,8) Sin(x)) / Taylor2(x,0,8) Ln(1+x)));
 TestYacas(Taylor2(t,0,7) (Sin(t)^2),
           Taylor2(t,0,7) ((Taylor2(t,0,7) Sin(t))^2));
+TestYacas(Taylor2(x,0,7) Cos(Ln(x+1)),
+          Taylor2(x,0,7) (Subst(y,Taylor2(x,0,7)Ln(x+1)) Cos(y)));
 
 100 # Taylor'LPS'CompOrder(_x, jn(_x)) <-- 5;
 100 # Taylor'LPS'CompCoeff(_x, jn(_x), _k) <-- Atom("jn":String(k));
 
 Verify(Taylor2(t,0,8) jn(t), jn5*t^5 + jn6*t^6 + jn7*t^7 + jn8*t^8);
-KnownFailure(
-       (Taylor2(x,0,10) Exp(jn(x))) =
-       1 + jn5/2*x^5 + jn6/2*x^6 + jn7/2*x^7 + jn8/2*x^8 
-         + jn9/2*x^9 + (jn10/2+jn5/6)*x^10);
+Verify((Taylor2(x,0,10) Exp(jn(x))),
+       1 + jn5*x^5 + jn6*x^6 + jn7*x^7 + jn8*x^8 
+         + jn9*x^9 + (jn10+jn5^2/2)*x^10);
 
 // Some examples of power series
 
@@ -96,6 +94,7 @@ Verify(p1, Hold(Taylor'LPS(0, {1,1,1/2,1/6}, x, Exp(x))));
 // Taylor'LPS'Coeffs can get pre-computed coefficients
 
 Verify(Taylor'LPS'Coeffs(p1, 0, 3), {1,1,1/2,1/6});
+Verify(Taylor'LPS'Coeffs(p1, -3, -1), {0,0,0});
 Verify(Taylor'LPS'Coeffs(p2, -1, 3), {0,0,1,0,-1/6});
 Verify(Taylor'LPS'Coeffs(p3, 0, 3), {a0,a1,a2,a3});
 Verify(Taylor'LPS'Coeffs(p4, -1, 1), {0,-1/2,0});
@@ -310,7 +309,25 @@ Verify(pp, Taylor'LPS(0, {1,1,1,2/3,1/2}, x, Taylor'LPS'Multiply(pp1, pp2))
            Where pp3 == Taylor'LPS(0, {1,0,-1/2,0,1/24}, x, Cos(x)));
 
 // Raising to a natural power
-// Taylor'LPS'Power is not implemented yet
+
+// No tests (Taylor'LPS'Power is not implemented yet)
  
 // Composition
-// TBA
+
+Verify(Taylor'LPS'Construct(x, Ln(Sin(x))),
+       Taylor'LPS(Undefined, {}, x, Taylor'LPS'Compose(pp1,pp2))
+       Where {pp1 == Taylor'LPS(Undefined, {}, x, Ln(x)),
+	      pp2 == Taylor'LPS(1, {}, x, Sin(x))});
+
+Verify(Taylor'LPS'Construct(x, Ln(Cos(x))),
+       Taylor'LPS(Undefined, {}, x, Taylor'LPS'Compose(pp1,pp2))
+       Where {pp1 == Taylor'LPS(Undefined, {}, x, Ln(1+x)),
+	      pp2 == Taylor'LPS(Undefined, {}, x, Taylor'LPS'Add(pp3,pp4)),
+	      pp3 == Taylor'LPS(0, {1}, x, Cos(x)),
+	      pp4 == Taylor'LPS(Undefined, {}, x, -1)});
+
+pp := Taylor'LPS(Undefined, {}, x, 
+                 Taylor'LPS'Compose(FlatCopy(p1), FlatCopy(p2)));
+Verify(Taylor'LPS'Coeffs(pp, 0, 3), {1, 1, 1/2, 0});
+Verify(pp, Taylor'LPS(0, {1,1,1/2,0}, x, Taylor'LPS'Compose(p1,p2)));
+
