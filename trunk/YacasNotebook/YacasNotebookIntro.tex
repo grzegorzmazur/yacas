@@ -1,0 +1,405 @@
+%-*-Yacas-Notebook-*-
+\documentclass[12pt]{article}
+\input yacas-notebook
+
+\def\ys{\textsf{yacas}}
+\def\yn{\textsf{yacas}\texttt{-notebook}}
+\begin{document}
+
+\title{A Very Quick Introduction to \yn}
+\author{Jay Belanger}
+\date{}
+
+\maketitle
+
+\section{Introduction}
+
+\yn\ is an Emacs mode which allows a user to interact with \ys\
+while in an Emacs buffer, in a notebook-type way, and allows for the
+results to be typeset using \LaTeX.  It is based on Dan
+Dill's \TeX/Mathematica.  \yn\ is an extension of
+\TeX\ mode, and so has most of the \TeX-mode commands available
+(although \texttt{TeX-command-master} has been rebound to 
+\texttt{C-c C-c C-c}).  To install \yn, place \texttt{yacas-notebook.el} and
+\texttt{yacas.el} somewhere in the load path for Emacs, and put
+\texttt{yacas-notebook.tex} somewhere in the \TeX\ inputs path.  Make sure
+that \texttt{yacas-notebook.el} is loaded  (say by putting the line
+\begin{verbatim}
+(autoload 'yacas-notebook-mode "yacas-notebook" "yacas-notebook mode" t)
+\end{verbatim}
+in your \texttt{.emacs} file) and typing \texttt{M-x yacas-notebook-mode}.  In
+order for \LaTeX\ to format the document correctly, you must input
+\texttt{yacas-notebook.tex} by writing
+\begin{verbatim}
+\input yacas-notebook
+\end{verbatim}
+somewhere in the preamble to the document.
+If you want font-locking, then you need to have it turned on (for GNU
+Emacs, this can be done by having  
+\begin{verbatim}
+(global-font-lock-mode 1)
+\end{verbatim}
+in your \texttt{.emacs} file) and you need
+\texttt{font-latex.el} somewhere in
+your Emacs load path, this file is included with Auc\TeX. 
+
+\section{Cells}
+
+A cell is the basic unit of \ys\ code in \yn.  It consists of
+text between
+\begin{verbatim}
+\yacas
+\end{verbatim}
+and
+\begin{verbatim}
+\endyacas
+\end{verbatim}
+A cell can be created by typing \texttt{C-c C-c o
+  (yacas-notebook-create-cell)}.  (Most of \yn's keybindings begin with
+\texttt{C-c C-c}, the \texttt{o} in this case stands for
+\textbf{o}pening a cell.)  The delimiters will then be placed in the
+buffer, and the point will be placed between them.  While in a cell,
+\texttt{yacas.el}'s formatting commands will be available. (The
+keybindings will have and extra \texttt{C-c} in front, so they won't
+conflict with the \TeX\ keybindings.  For example, in
+\texttt{yacas-mode}, to insert an \textbf{If} statement, use
+\texttt{C-c C-i}, in \texttt{yacas-notebook-mode}, use \texttt{C-c C-c
+C-i}. The formatting commands will always be available; however,
+outside of a cell, the indentation may not work correctly.)
+
+When working with several cells, you can jump between them by using
+\texttt{C-c C-c + (yacas-notebook-forward-cell)} to go to the next cell and
+\texttt{C-c C-c - (yacas-notebook-backward-cell)} to go to the previous cell.
+
+\section{Evaluating Cells}
+
+The contents of a cell can be sent to a buffer in which \ys\ is
+running by the command \texttt{C-c C-c s (yacas-notebook-send-cell)}.  (The
+\ys\ cell can be killed when desired by the command 
+\texttt{C-c C-c k (yacas-kill-job)}.)  While the cell contents will
+then be evaluated, by default you won't be able to see the \ys\
+buffer.  To see the \ys\ buffer in the bottom half of the window,
+you can use the command \texttt{C-c C-c B (yacas-notebook-show-yacas-buffer)},
+to hide the \ys\ buffer again, use \texttt{C-c C-c b
+(yacas-notebook-dont-show-yacas-buffer)}.  However, \yn\ is designed to
+have all the action take place in the document buffer.  To see the
+\ys\ output in the document buffer, the command \texttt{M-x
+  yacas-notebook-put-output} will take the most recent output in the \ys\
+buffer and place it in the \yn\ cell, separated from the input by
+the marker
+\begin{verbatim}
+\output
+\end{verbatim}
+(Note that if there is more than one command in the cell, only the
+output from the last command will be returned, although all the
+commands will be evaluated.  This is because only the output from the
+last command appears in the \ys\ buffer.)
+The command \texttt{C-c C-c u (yacas-notebook-update)} will both send the cell
+to the \ys\ buffer and return the results.  To differentiate
+$\sin(x^2)$, for example, type \texttt{D(x)Sin(x\^{}2);} in a cell:
+\begin{verbatim}
+\yacas
+D(x)Sin(x^2);
+\endyacas
+\end{verbatim}
+After typing \texttt{C-c C-c u}, it will look like
+\begin{verbatim}
+\yacas
+D(x)Sin(x^2);
+\output
+           /  2 \
+2 * x * Cos\ x  /
+\endyacas
+\end{verbatim}
+(By default, the output will be in \textbf{PrettyForm} from.  This
+behavior can be changed by typing \texttt{M-x yacas-toggle-prettyform}.)
+To delete the output and return the cell to its original form, you can
+use the command \texttt{C-c C-c d (yacas-notebook-delete-output)}.  If the
+document is to be \TeX{}ed, the above cell will look like
+\yacas
+D(x)Sin(x^2);
+\endyacas
+and the cell with output will look like
+\yacas
+D(x)Sin(x^2);
+\output
+           /  2 \
+2 * x * Cos\ x  /
+\endyacas
+
+\yn\ can take advantage of the fact that \ys\ can give its output
+in \TeX\ form.  The command \texttt{C-c C-c U (yacas-tex-update)}
+works the same as \texttt{C-c C-c u}, except now the output is in
+\TeX\ form, ready to be formatted by \TeX.  In general, if
+\texttt{C-c C-c} \textsl{letter} returns \ys\ output, 
+\texttt{C-c C-c} \textsl{capital letter} will return the output in
+\TeX\ form.  (For the most part, \yn\ should work with either
+\TeX\ or \LaTeX\.)  The above cell would become
+\begin{verbatim}
+\yacas
+D(x)Sin(x^2);
+\outputtex
+2 x \left( \cos x ^{2}\right) 
+\endyacas
+\end{verbatim}
+which, when \TeX{}ed, would become
+\newpage
+\yacas
+D(x)Sin(x^2);
+\outputtex
+2 x \left( \cos x ^{2}\right) 
+\endyacas
+
+(Note that whenever a cell is updated, any old output is discarded and
+replaced with new output.)  The command \texttt{C-c C-c a
+(yacas-notebook-eval-all)} will update all of the cells in your document,
+stopping at each one to ask if you indeed want it updated.  Given an
+argument, \texttt{C-u C-c C-c a}, it will update all of the cells in
+the document without asking.  The command \texttt{C-c C-c A} behaves
+similarly, except now all the output is returned in \TeX\ form.
+
+\section{Initialization Cells}
+
+It is possible that you want certain cells evaluated separately from
+the others; perhaps, for example, you want certain cells evaluated
+whenever you open the document.  This can be done using initialization
+cells.  An initialization cell is delimited by
+\begin{verbatim}
+\yacas[* Initialization Cell *]
+
+\endyacas
+\end{verbatim}
+The command \texttt{C-c C-c q (yacas-notebook-toggle-init)} will turn a cell
+into an initialization cell, applying \texttt{C-c C-c q} again will
+turn it back into a regular cell.  When \TeX{}ed, an initialization
+cell will look like
+\yacas[* Initialization Cell *]
+D(x)Sin(x^2);
+\endyacas
+
+Initialization cells behave like regular cells, except that they can
+be evaluated as a group.  To evaluate all initialization cells
+(without displaying the output in the document buffer), the command
+\texttt{C-c C-c Q (yacas-notebook-eval-init)} will go to each of the
+initialization cells and evaluate them.  If you want the output of the
+cells to be brought back, stopping at each cell to see if you want it
+updated, then use the command \texttt{C-c C-c v
+  (yacas-notebook-update-init)}.  With an argument, \texttt{C-u C-c C-c v},
+the initialization cells will be updated without asking  The command
+\texttt{C-c C-c V (yacas-notebook-tex-eval-init)} behaves just like
+\texttt{C-c C-c c}, except that the output is returned in \TeX\ form.
+
+\section{Referencing other cells}
+
+Along \ys\ code, a cell can contain references to other cells, and
+when the original cell is sent to \ys, the reference is replaced by
+the referenced cell's contents (but only in the \ys\ buffer, the
+cell's contents in the document buffer is not changed).  In order to
+do this, the original cell must be marked by having a label of the
+form \texttt{<}\textit{filename:cell label}\texttt{>}.  (The reason
+for the \textit{filename} will become apparent later, and \textit{cell
+  label} is optional for the referencing cell.)  The referenced cell
+must also be labeled, with the same \textit{filename} but a unique
+\textit{cell label}.  To reference the other cell, the original cell
+need only contain the marker for the referenced cell.  For example,
+given cell 1:
+\begin{verbatim}
+\yacas<filename:optional>
+<filename:definef>
+D(x)f(x);
+\endyacas
+\end{verbatim}
+and cell 2:
+\begin{verbatim}
+\yacas<filename:definef>
+f(x):=Sin(x^2);
+\endyacas
+\end{verbatim}
+then the result of updating cell 1 (\texttt{C-c C-c u}) will be:
+\begin{verbatim}
+\yacas<filename:optional>
+<filename:definef>
+D(x)f(x);
+\output
+           /  2 \
+2 * x * Cos\ x  /
+\endyacas
+\end{verbatim}
+When \TeX{}ed, the top line will contain a copy of the marker:
+\newpage
+\yacas<filename:optional>
+<filename:definef>
+D(x)f(x);
+\output
+           /  2 \
+2 * x * Cos\ x  /
+\endyacas
+
+A cell can contain more than one reference, and referenced cells can
+themselves contain references.
+
+If you want the references in a cell to be replaced by the actual
+code, the command \texttt{C-c C-c = (yacas-notebook-assemble-cell)} will
+expand all the references and put the code into a separate buffer (so
+it will not affect the original document).
+
+\section{Web}
+
+
+The reason for the ability to reference other cells isso that you can
+write what Donald Knuth calls literate programs.  The idea is that the
+program is written in a form natural to the author rather than natural
+to the computer.  (Another aspect of Knuth's system is that the code
+is carefully documented, hence the name ``literate programming'', but
+that is done naturally in \yn.) Knuth called his original literate
+programming tool \texttt{WEB}, since, as he puts it, ``the structure
+of a software program may be thought of as a web that is made up of
+many interconnected pieces.''  \yn's ability in this respect is
+taken directly from \TeX/Mathematica, and is ultimately based on
+\texttt{WEB}.  To create a program, the ``base cell'' or ``package
+cell'' should contain a label of the form
+\texttt{<}\textit{filename:}\texttt{>} (no cell label), and can
+contain references of the form
+\texttt{<}\textit{filename:part}\texttt{>} (same file name as the base
+cell).  
+
+As a simple example, suppose I want to create a program to sum the
+first $n$ squares.  I could start:
+\newpage
+\begin{verbatim}
+\yacas<squaresum:>
+SumOfSquares(n) :=
+[
+   Local(L);
+   <squaresum:makelist>
+   <squaresum:squarelist>
+   <squaresum:addlist>
+]; /* SumOfSquares(n) */
+\endyacas
+\end{verbatim}
+I would then need cells:
+\begin{verbatim}
+\yacas<squaresum:makelist>
+L:= 1 .. n;
+\endyacas
+
+\yacas<squaresum:squarelist>
+<squaresum:definesquare>
+L:= MapSingle("square", L);
+\endyacas
+
+\yacas<squaresum:addlist>
+Sum(L);
+\endyacas
+\end{verbatim}
+and then also
+\begin{verbatim}
+\yacas<squaresum:definesquare>
+square(x) := x^2;
+\endyacas
+\end{verbatim}
+
+\newpage
+
+When \TeX{}ed, the header of the cell will say that it determines the
+file \texttt{squaresum}.
+\yacas<squaresum:>
+SumOfSquares(n) :=
+[
+   Local(L);
+   <squaresum:makelist>
+   <squaresum:squarelist>
+   <squaresum:addlist>
+]; /* SumOfSquares(n) */
+\endyacas
+
+The command \texttt{C-c C-c (yacas-notebook-assemble-package)} will put all
+the pieces together in the file it determines.  The resulting file, in
+this case, will be named \texttt{squaresum} and will contain:
+\begin{verbatim}
+SumOfSquares(n) :=
+[
+   Local(L);
+   L:= 1 .. n;
+   square(x) := x^2;
+   L:= MapSingle("square", L);
+   Sum(L);
+]; /* SumOfSquares(n) */
+\end{verbatim}
+
+\section{Miscellaneous}
+
+It is possible that you want to evaluate part of your document that
+isn't in a cell, whether it be a portion of a cell or not in a cell.
+The command \texttt{C-c C-c C-r (yacas-region)} will send the current
+region to the \ys\ buffer.  The command \texttt{C-c C-c n
+  (yacas-notebook-replace-line)}, however, will send the current line to \ys\,
+comment out the current line, and the write the \ys\ output in the
+current buffer.  The command \texttt{C-c C-c N} will do the same
+thing, except it will return the output in \TeX\ form.
+
+\appendix
+
+
+\section{\yn\ commands}
+
+
+\vskip .5 in
+
+\begin{tabular}{ll}
+\texttt{C-c C-c o} & Create a cell \\
+\texttt{C-c C-c u} & Update the cell's output \\
+\texttt{C-c C-c U} & Update the cell's output in \TeX\ form \\
+\texttt{C-c C-c d} & Delete the cell's output \\
+\texttt{C-c C-c +} & Go to the next cell \\
+\texttt{C-c C-c -} & Go to the previous cell\\
+\texttt{C-c C-c a} & Update all of the cells \\
+\texttt{C-u C-c C-c a} & Update all of the cells without prompting\\
+\texttt{C-c C-c A} & Update all of the cells in \TeX\ form\\
+\texttt{C-u C-c C-c A} & 
+                    Update all of the cells in \TeX\ form without prompting\\
+\texttt{C-c C-c q} & Toggle whether or not the current cell is an
+                 initialization cell\\
+\texttt{C-c C-c Q} & Evaluate all of the initialization cells \\
+\texttt{C-c C-c v} & Update all of the initialization cells \\
+\texttt{C-c C-c V} & Update all of the initialization cells in \TeX form\\
+\texttt{C-c C-c =} & Assemble a cell with references \\
+\texttt{C-c C-c @} & Assemble a cell which defines a package \\
+\texttt{C-c C-c B} & Show the \ys\ buffer \\
+\texttt{C-c C-c b} & Don't show the \ys\ buffer\\
+\texttt{C-c C-c n} & Replace the current line with \ys\ output \\
+\texttt{C-c C-c N} & Replace the current line with \ys\ output in \TeX\ form\\
+\end{tabular}
+
+\newpage
+
+
+\section{\ys\ functions}
+
+Here are the functions from \ys\ mode which are also used in \yn\
+mode.
+
+\vskip .5 in
+
+\begin{tabular}{ll}
+\texttt{C-c C-c C-r} & Send the current region to \ys\ \\
+\texttt{C-c C-c C-k} & Kill the \ys\ process\\
+\texttt{C-c C-c C-p} & Insert a procedure \\
+\texttt{C-c C-c C-v} & Insert another local variable in a procedure \\
+\texttt{C-c C-c C-i} & Insert an \texttt{If} statement\\
+\texttt{C-c C-c C-e} & Insert the \texttt{else} part of \texttt{If}\\
+\texttt{C-c C-c C-f} & Insert a \texttt{For} statement \\
+\texttt{C-c C-c C-a} & Insert a \texttt{ForEach} statement \\
+\texttt{C-c C-c C-w} & Insert a \texttt{While} statement\\
+\texttt{C-c C-c C-u} & Insert an \texttt{Until} statement\\
+\texttt{C-c C-c C-o} & Copy the last \ys\ output\\
+\texttt{C-c C-c C-s} & Copy the complete last \ys\ output\\
+\texttt{C-c C-c C-t} & Recenter the \ys\ buffer\\
+\texttt{C-c C-c \#} & Insert an inline comment \\
+\texttt{C-c C-c ]} & Indent a region\\
+\texttt{C-c C-c >} & Move forward to the same indentation level \\
+\texttt{C-c C-c <} & Move backward to the same indentation level \\
+\end{tabular}
+
+
+\end{document}
