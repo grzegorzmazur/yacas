@@ -16,6 +16,7 @@
 	0.4.7 added Factorize() i.e. Product()
 	0.4.8 added D(x,n), Deriv(x,n), =>, and fixed errors with ArcSinh, ArcCosh, ArcTanh
 	0.4.9 fixed omission: (fraction)^n was not put in brackets
+	0.4.10 cosmetic change: insert \cdot between numbers in cases like 2*10^n
 */
 
 /* To do:
@@ -72,6 +73,10 @@ TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv "}, {
 	/* Template for "regular" binary infix operators:
 100 # TeXForm(_x + _y, _p) <-- TeXFormBracketIf(p<OpPrecedence("+"), ConcatStrings(TeXForm(x, OpLeftPrecedence("+")), " + ", TeXForm(y, OpRightPrecedence("+")) ) );
 	*/
+// special cases: things like x*2 and 2*10^x look ugly without a period
+115 # TeXForm(_expr * n_IsNumber, _p) <-- TeXFormBracketIf(p<OpPrecedence("*"), ConcatStrings(TeXForm(expr, OpLeftPrecedence("*")), "\\cdot ", TeXForm(n, OpRightPrecedence("*")) ) );
+// cases such as 2*20!, 2*10^x
+116 # TeXForm(n_IsNumber * _expr, _p) _ (IsFunction(expr) And Contains({"^", "!", "!!"}, Type(expr)) And IsNumber(Listify(expr)[2])) <-- TeXFormBracketIf(p<OpPrecedence("*"), ConcatStrings(TeXForm(n, OpLeftPrecedence("*")), "\\cdot ", TeXForm(expr, OpRightPrecedence("*")) ) );
 
 	/* generic binary ops here */
 120 # TeXForm(expr_IsFunction, _p)_(NrArgs(expr)=2 And IsInfix(Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence(Type(expr)), ConcatStrings(TeXForm(Listify(expr)[2], OpLeftPrecedence(Type(expr))), TeXFormTeXify(Type(expr)), TeXForm(Listify(expr)[3], OpRightPrecedence(Type(expr))) ) );
