@@ -5,7 +5,7 @@
 #
 # Use with care, test output with manualmaker
 
-$debug_pars = 0;	# This is for debugging only: breaks HTML docs, but it is useful because it makes all paragraphs into separate Text() invocations and then it's a lot easier to debug book2TeX or manualmaker in Yacas - just look at the resulting .tex or .book file to see where it stopped generating.
+$debug_pars = ("@ARGV" =~ /-debug/) ? 1 : 0;	# This is for debugging only: breaks HTML docs, but it is useful because it makes all paragraphs into separate Text() invocations and then it's a lot easier to debug book2TeX or manualmaker in Yacas - just look at the resulting .tex or .book file to see where it stopped generating.
 
 $have_Text = 0;	# Means we have a Text() declared somewhere above
 $have_par = 1;	# Means we already have a new paragraph
@@ -77,6 +77,10 @@ while (<STDIN>) {
 	#			Star-based markup
 	#############################################################
 	elsif (/^\*\t[0-9]+\. (.*)$/) {	# Enum
+			if ($debug_pars) {
+				&finish_text();
+				&start_text();
+			}
 		&close_quote();
 		&start_text();
 		if ($in_enum) {
@@ -88,6 +92,10 @@ while (<STDIN>) {
 		$in_text = 1;
 		$have_par = 0;
 	} elsif (/^\*\t(.*)$/) {	# Itemized
+			if ($debug_pars) {
+				&finish_text();
+				&start_text();
+			}
 		&close_quote();
 		&start_text();
 		if ($in_itemized) {
