@@ -1853,12 +1853,17 @@ void LispGetRightPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispInFixOperator* op = OperatorInfo(aEnvironment,
                                          aArguments,
                                          aEnvironment.InFix());
-    if (op == NULL) {	// infix and prefix operators have right precedence
-	    op = OperatorInfo(aEnvironment,
+    if (op == NULL) {   // bodied, infix and prefix operators have right precedence
+        op = OperatorInfo(aEnvironment,
                           aArguments,
                           aEnvironment.PreFix());
-   	 	CHK(op!=NULL, KLispErrIsNotInFix);
-	}
+        if (op == NULL) {   // or maybe it's a bodied function
+            op = OperatorInfo(aEnvironment,
+                          aArguments,
+                          aEnvironment.Bodied());
+            CHK(op!=NULL, KLispErrIsNotInFix);
+        }
+    }
 
     LispChar buf[30];
     InternalIntToAscii(buf, op->iRightPrecedence);
