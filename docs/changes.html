@@ -28,8 +28,7 @@
        when either x or y was negative.
   <li> Bug fix: Mod(x,y) is now undefined if y is less than zero.
   <li> added txt2yacasdoc.pl - converts plain text to Yacas doc files
-  <li> Introduced an "essays" directory meant as repository for a book of
-       essays on using Yacas
+  <li> Started an "essays" book with essays on using Yacas
   <li> Added essays on: Yacas maintenance howto, formatting documentation,
        writing plugins
   <li> Added part to installation: yacas header files are now
@@ -47,20 +46,22 @@
        all functions called with the number of times they are called,
        and sorted by call count.
   <li> Added the function DllUnload to unload plugins.
+  <li> Added MakeFunctionPlugin() to dynamically generate plugins (Unix only)
   <li> Floats obtained from a system call now get mapped to
        78 decimals precision iso. the default 6.
   <li> Added the '--init [file]' and '--rootdir [path]' options.
   <li> Added DllEnumerate, which returns a list of loaded DLLs/plugins.
   <li> Initial version of LaTeX exporter for Yacas documentation; optional
        target "make texdocs" will prepare Postscript and PDF versions;
-	   TeXShowPS() will display a Yacas expression in PS (Unix only)
-  <li> Fixed Op{,Right,Left}Precedence() for prefix/postfix operators
+       ShowPS() will display a Yacas expression in a Postscript viewer (Unix only)
+  <li> Fixed Op{,Right,Left}Precedence() for prefix/postfix/bodied operators
   <li> Fixed broken Windows version, was due to command line support
        trying to use WinNT-native command line.
   <li> All documentation is now maintained in plain text format and exported
-       to HTML and optionally to LaTeX.
+       to HTML. All five documentation books are hyperlinked.
   <li> Fixed the ArcSin, ArcCos, ArcTan functions to work correctly with
        multiple-precision numbers (when using internal math).
+  <li> Added tests/numerics.yts to test multiple-precision math.     
   <li> 30% speedup of numerical calculations by caching previously found
        multiple-precision value of Pi.
 </ul>
