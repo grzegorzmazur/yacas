@@ -382,8 +382,10 @@ void LoadYacas()
     (*yacas)()().Commands().SetAssociation(LispEvaluator(ShStack),
                                            (*yacas)()().HashTable().LookUp("ShStack"));
 
-    
-    
+    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispIsPromptShown),
+                                           (*yacas)()().HashTable().LookUp("IsPromptShown"));
+
+
 #ifdef _TESTCODE_
     (*yacas)()().Commands().SetAssociation(LispEvaluator(DummyTestFunction),
                                            (*yacas)()().HashTable().LookUp("DummyTestFunction"));

@@ -503,9 +503,12 @@ the end of an input file is encountered, the token atom {EndOfFile} is returned.
 *SEE FromFile, FromString, LispRead, ReadToken, Write
 
 *CMD LispRead --- read an expression in LISP-syntax
+*CMD LispReadListed --- read an expression in LISP-syntax, and return result in Yacas lists in stead of expressions
 *CORE
 *CALL
 	LispRead()
+
+	LispReadListed()
 
 *DESC
 
@@ -517,6 +520,11 @@ The expression {a+b} is written in LISP syntax as {(+ a b)}. The advantage of th
 less ambiguous than the infix operator grammar that Yacas uses by
 default.
 
+The function {LispReadListed} reads lisp expressions, and returns
+them in a lists, in stead of the form usual to Yacas (expressions).
+This is more useful for reading real Lisp expressions, where the 
+first object in a list can be a list again.
+
 *E.G.
 
 	In> FromString("(+ a b)") LispRead();
@@ -524,6 +532,10 @@ default.
 	In> FromString("(List (Sin x) (- (Cos x)))") \
 	  LispRead();
 	Out> {Sin(x),-Cos(x)};
+	In> FromString("(+ a b)")LispRead()
+	Out> a+b;
+	In> FromString("(+ a b)")LispReadListed()
+	Out> {+,a,b};
 
 *SEE FromFile, FromString, Read, ReadToken, FullForm
 

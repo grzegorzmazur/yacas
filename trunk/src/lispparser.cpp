@@ -6,7 +6,8 @@
 
 LispParser::LispParser(LispTokenizer& aTokenizer, LispInput& aInput,
            LispHashTable& aHashTable)
-: iTokenizer(aTokenizer), iInput(aInput),iHashTable(aHashTable) {}
+    : iTokenizer(aTokenizer), iInput(aInput),iHashTable(aHashTable),
+    iListed(LispFalse) {}
 
 LispParser::~LispParser() {}
 void LispParser::Parse(LispPtr& aResult, LispEnvironment& aEnvironment)
@@ -46,10 +47,12 @@ void LispParser::ParseList(LispPtr& aResult)
 {
     LispStringPtr token;
 
-//    LispPtr* iter = &aResult;
-
-    aResult.Set(LispAtom::New(iHashTable.LookUp("List")));
-    LispPtr* iter = &(aResult.Get()->Next());
+    LispPtr* iter = &aResult;
+    if (iListed)
+    {
+        aResult.Set(LispAtom::New(iHashTable.LookUp("List")));
+        iter  = &(aResult.Get()->Next());
+    }
     for (;;)
     {
         //Get token.

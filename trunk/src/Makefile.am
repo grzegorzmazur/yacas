@@ -3,8 +3,8 @@ AM_CPPFLAGS = -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS = yacas
 noinst_PROGRAMS = testnum
-noinst_LIBRARIES = libyacas.a @NUMBERS_LIB@
-EXTRA_LIBRARIES = libgmpnumbers.a libyacasnumbers.a libyacasplatform.a
+noinst_LIBRARIES = libyacas.a @NUMBERS_LIB@ libcyacas.a
+EXTRA_LIBRARIES = libgmpnumbers.a libyacasnumbers.a libyacasplatform.a 
 
 noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	infixparser.h lispassert.h lispatom.h lispcleanupstack.h \
@@ -16,7 +16,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
         lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h \
-        archiver.h elfdll.h 
+        archiver.h elfdll.h cyacas.h
 yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = libyacas.a libyacasplatform.a @NUMBERS_LIB@ @NUMBERS_LDFLAGS@ 
 
@@ -41,6 +41,8 @@ libyacas_a_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
         lispplugin.cpp elfdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
         archiver.cpp
+
+libcyacas_a_SOURCES = cyacas.cpp
 
 libyacasplatform_a_SOURCES = platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp yacasbase.cpp
@@ -86,6 +88,8 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 
 yacas_include = $(datadir)/yacas/include
 
+yacas_lib     = $(datadir)/yacas/lib
+
 clean-compile:
 	test -z "libyacasplatform.a" || rm -rf libyacasplatform.a
 	test -z "libyacasdebug.a" || rm -rf libyacasdebug.a
@@ -95,6 +99,7 @@ clean-compile:
 
 install-data-local: yacas.h
 	$(mkinstalldirs) $(yacas_include)/
+	$(mkinstalldirs) $(yacas_lib)/
 	$(mkinstalldirs) $(yacas_include)/plat/
 	$(mkinstalldirs) $(yacas_include)/plat/linux32/
 	-for file in $(srcdir)/*.h; do \
@@ -112,6 +117,10 @@ install-data-local: yacas.h
 	-for file in $(srcdir)/plat/linux32/*.inl; do \
 	basefile=`basename $$file`; \
 	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/plat/linux32/$$basefile; \
+	done
+	-for file in $(srcdir)/*.a; do \
+	basefile=`basename $$file`; \
+	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_lib)/$$basefile; \
 	done
 
 versionstamper:

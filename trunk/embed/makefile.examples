@@ -1,0 +1,31 @@
+
+PROGS = example1 example2 example3
+
+all: $(PROGS)
+
+INSTDIR = /usr/local/share/yacas/
+
+CFLAGS = -I$(INSTDIR)include
+LDFLAGS = $(INSTDIR)lib/libcyacas.a \
+	$(INSTDIR)lib/libyacas.a \
+	$(INSTDIR)lib/libyacasplatform.a \
+	$(INSTDIR)lib/libyacasnumbers.a -ldl -rdynamic
+
+clean:
+	-rm *.o core *~ $(PROGS)
+
+example1: example1.c
+	gcc -c example1.c $(CFLAGS)
+	gcc example1.o $(LDFLAGS) -o example1
+	strip example1
+
+example2: example2.c
+	gcc -c example2.c $(CFLAGS)
+	gcc example2.o $(LDFLAGS) -o example2
+	strip example2
+
+example3: example3.c
+	gcc -c example3.c $(CFLAGS)
+	gcc example3.o $(LDFLAGS) -o example3
+	strip example3
+

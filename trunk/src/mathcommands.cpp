@@ -2139,6 +2139,17 @@ void LispReadLisp(LispEnvironment& aEnvironment, LispPtr& aResult,
     // Read expression
     parser.Parse(aResult,aEnvironment);
 }
+void LispReadLispListed(LispEnvironment& aEnvironment, LispPtr& aResult,
+                  LispPtr& aArguments)
+{
+    LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
+    LispParser parser(tok,
+                      *aEnvironment.CurrentInput(),
+                      aEnvironment.HashTable());
+    parser.iListed = LispTrue;
+    // Read expression
+    parser.Parse(aResult,aEnvironment);
+}
 
 
 void LispTraceRule(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments)
