@@ -88,6 +88,8 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 // x' := x - 2 * (Exp(x)-a) / (Exp(x)+a) = x-2+4*a/(Exp(x)+a)
 LnNum(x_IsNumber)_(x>=1) <-- NewtonLn(x);
 
+LnNum(x_IsNumber)_(0<x And x<1) <-- - LnNum(MathDivide(1,x));
+
 NewtonLn(x) :=
 	LocalSymbols(y)
 [
