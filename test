@@ -1,4 +1,19 @@
 
+Given
+  f(x):=a*x^2+x^4;
+
+This has extrema x=0 or x= Sqrt(a/2) or x= -Sqrt(a/2)
+
+  h(x):=(x-(a/(4*x)+x/2));
+goes to Sqrt(a/2), and
+
+  h(x):=-(x-(a/(4*x)+x/2));
+alternates between Sqrt(a/2) and -Sqrt(a/2) respectively.
+
+
+EndOfFile;
+
+
 /*
 class IInterfaceCallBack
 {

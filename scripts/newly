@@ -45,8 +45,10 @@ TemplateFunction("WithValue",{var,val,expr})
 ];
 
 10 # LimitChange((_xex)/(_yex))_
-    (IsZero(WithValue(var,lim,xex)) And
-     IsZero(WithValue(var,lim,yex))) <--
+     ((IsZero(WithValue(var,lim,xex)) And
+       IsZero(WithValue(var,lim,yex))) Or
+      (IsInfinity(WithValue(var,lim,xex)) And
+       IsInfinity(WithValue(var,lim,yex)))) <--
     LimitChange(Apply("D",{var,xex})/Apply("D",{var,yex}));
 20 # LimitChange(_xex) <--
     [
@@ -55,8 +57,10 @@ TemplateFunction("WithValue",{var,val,expr})
 UnFence("LimitChange",1);
 
 10 # LimitPredicate((_xex)/(_yex))_
-    (IsZero(WithValue(var,lim,xex)) And
-     IsZero(WithValue(var,lim,yex))) <-- True;
+     ((IsZero(WithValue(var,lim,xex)) And
+       IsZero(WithValue(var,lim,yex))) Or
+      (IsInfinity(WithValue(var,lim,xex)) And
+       IsInfinity(WithValue(var,lim,yex)))) <-- True;
 20 # LimitPredicate(_x) <-- False;
 UnFence("LimitPredicate",1);
 
