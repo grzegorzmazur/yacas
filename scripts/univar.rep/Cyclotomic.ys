@@ -150,7 +150,7 @@ CyclotomicFactor(_a,_b) <--
 ];
 
 10  # OldCyclotomic(1,_x) <-- _x-1;
-20  # OldCyclotomic(n_IsInteger,_x) <-- InternalCyclotomic(n,x,True);
+20  # OldCyclotomic(n_IsInteger,_x) <-- OldInternalCyclotomic(n,x,True);
 
 // This new implementation makes use of the internal representations of univariate
 // polynomials as SparseUniVar(var,termlist).
@@ -176,7 +176,7 @@ CyclotomicFactor(_a,_b) <--
        ];
        k := k/2 ;
        If(m>1, [
-	         p:= NewInternalCyclotomic(m,x)[2];
+	         p:= InternalCyclotomic(m,x)[2];
                  // Substitute x by -x^k
                  result:={};
                  ForEach(t,p)
