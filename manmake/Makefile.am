@@ -47,13 +47,13 @@ ALGOCHAPTERS = algo-basic.chapt algo-numapprox.chapt \
 	algorithms-elemfunc.chapt algorithms-specfunc.chapt \
 	algorithms-numtheory.chapt algorithms-integration.chapt \
 	algorithms-multivar.chapt SturmSequences.chapt FDL.chapt \
-	algo-refs.chapt 
+	algo-refs.chapt algo-contfrac.chapt
 
 ALGOSOURCES = algo-basic.chapt.txt algo-numapprox.chapt.txt \
 	algorithms-elemfunc.chapt.txt algorithms-specfunc.chapt.txt \
 	algorithms-numtheory.chapt.txt algorithms-integration.chapt.txt \
 	algorithms-multivar.chapt.txt SturmSequences.chapt.txt FDL.chapt.txt \
-	algo-refs.chapt.txt 
+	algo-refs.chapt.txt algo-contfrac.chapt.txt
 
 REFCHAPTERS = config.chapt arith.chapt calc.chapt ode.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
