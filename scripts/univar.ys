@@ -601,6 +601,21 @@ Rule("PSolve",1,1,IsUniVar(uni) And Degree(uni) = 3 )
   {a+b+adjust,w*a+ww*b+adjust,ww*a+w*b+adjust};
 ];
 
+Rule("PSolve",1,1,IsUniVar(uni) And Degree(uni) = 4 )
+[
+    Local(coef4,a1,a2,a3,a4,y,y1,z);
+
+    coef4:=Coef(uni,4);
+    a1:=Coef(uni,3)/coef4;
+    a2:=Coef(uni,2)/coef4;
+    a3:=Coef(uni,1)/coef4;
+    a4:=Coef(uni,0)/coef4;
+
+    y1:=Head(PSolve(y^3-a2*y^2+(a1*a3-4*a4)*y+(4*a2*a4-a3^2-a1^2*a4),y));
+    
+    Concat(PSolve(z^2+1/2*(a1+Sqrt(a1^2-4*a2+4*y1))*z+1/2*(y1-Sqrt(y1^2-4*a4)),z),
+     PSolve(z^2+1/2*(a1-Sqrt(a1^2-4*a2+4*y1))*z+1/2*(y1+Sqrt(y1^2-4*a4)),z));
+];
 
 Function("PSolve",{uni,var})
     [
