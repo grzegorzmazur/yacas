@@ -1746,13 +1746,16 @@ LIBS="-lgmp  $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 1748 "configure"
 #include "confdefs.h"
+#include <gmp.h>
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
     builtin and then its argument prototype would still apply.  */
-char mpz_init();
+/*char mpz_init();*/
 
 int main() {
-mpz_init()
+/*mpz_init()*/
+mpz_t a;
+mpz_init(a)
 ; return 0; }
 EOF
 if { (eval echo configure:1759: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
