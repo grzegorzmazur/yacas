@@ -20,8 +20,6 @@ double GetDouble(LispObject* aInteger)
     RaiseError("Argument is not a number: %s",aInteger->String());
   }
   return number->Double();
-
-//TODO remove return strtod(aString,NULL); 
 }
 
 LispObject* Double(LispEnvironment& aEnvironment,double aValue)

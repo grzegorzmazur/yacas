@@ -143,25 +143,6 @@ static void CosFloat(ANumber& aResult, ANumber& x)
     Trigonometry(x,i,aResult,term);
 }
 
-/*TODO remove
-static void SinFloat(ANumber& aResult, LispCharPtr int1)
-{
-    // Cos(x)=Sum(i=0 to Inf) (-1)^i x^(2i) /(2i)!
-    // Which incrementally becomes the algorithm:
-    //
-    ANumber x(int1,aResult.iPrecision);
-    SinFloat(aResult,x);
-}
-
-static void CosFloat(ANumber& aResult, LispCharPtr int1)
-{
-    // Cos(x)=Sum(i=0 to Inf) (-1)^i x^(2i) /(2i)!
-    // Which incrementally becomes the algorithm:
-    //
-    ANumber x(int1,aResult.iPrecision);
-    CosFloat(aResult,x);
-}
-*/
 
 LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
@@ -498,14 +479,6 @@ LispObject* ShiftLeft( LispObject* int1, LispObject* int2, LispEnvironment& aEnv
   LispInt bits = InternalAsciiToInt(int2->String()->String());
   number->ShiftLeft(*int1->Number(aPrecision),bits);
   return NEW LispNumber(number);
-/*TODO remove
-  ANumber i1(int1->String()->String(),aPrecision);
-  LISPASSERT(i1.iExp == 0);
-
-  LispInt bits = InternalAsciiToInt(int2->String()->String());
-  BaseShiftLeft(i1,bits);
-  return FloatToString(i1, aEnvironment);
-*/
 }
 
 
@@ -515,14 +488,6 @@ LispObject* ShiftRight( LispObject* int1, LispObject* int2, LispEnvironment& aEn
   LispInt bits = InternalAsciiToInt(int2->String()->String());
   number->ShiftRight(*int1->Number(aPrecision),bits);
   return NEW LispNumber(number);
-/*TODO remove
-  ANumber i1(int1->String()->String(),aPrecision);
-  LISPASSERT(i1.iExp == 0);
-
-  LispInt bits = InternalAsciiToInt(int2->String()->String());
-  BaseShiftRight(i1,bits);
-  return FloatToString(i1, aEnvironment);
-*/
 }
 
 static void DivideInteger( ANumber& aQuotient, ANumber& aRemainder,
@@ -602,106 +567,6 @@ static LispObject* FloatToString(ANumber& aInt,
 }
 
 
-
-/*TODO remove
-LispObject* BitAnd(LispObject* int1, LispObject* int2,
-                     LispEnvironment& aEnvironment,LispInt aPrecision)
-{
-    ANumber i1(int1->String()->String(),aPrecision);
-    ANumber i2(int2->String()->String(),aPrecision);
-    Check(i1.iExp == 0, KLispErrNotInteger);
-    Check(i2.iExp == 0, KLispErrNotInteger);
-
-    ANumber res(aPrecision);
-    LispInt len1=i1.NrItems(), len2=i2.NrItems();
-    LispInt min=len1,max=len2;
-    if (min>max)
-    {
-        LispInt swap=min;
-        min=max;
-        max=swap;
-    }
-    res.GrowTo(min);
-    LispInt i;
-    for (i=0;i<len1 && i<len2;i++)
-    {
-        res[i] = i1[i] & i2[i];
-    }
-
-    return FloatToString(res, aEnvironment);
-}
-
-LispObject* BitOr(LispObject* int1, LispObject* int2,
-                     LispEnvironment& aEnvironment,LispInt aPrecision)
-{
-    ANumber i1(int1->String()->String(),aPrecision);
-    ANumber i2(int2->String()->String(),aPrecision);
-    Check(i1.iExp == 0, KLispErrNotInteger);
-    Check(i2.iExp == 0, KLispErrNotInteger);
-    ANumber res(aPrecision);
-    LispInt len1=i1.NrItems(), len2=i2.NrItems();
-    LispInt min=len1,max=len2;
-    if (min>max)
-    {
-        LispInt swap=min;
-        min=max;
-        max=swap;
-    }
-    
-    res.GrowTo(max);
-
-    LispInt i;
-    for (i=0;i<len1 && i<len2;i++)
-    {
-        res[i] = i1[i] | i2[i];
-    }
-    for (i=len1;i<len2;i++)
-    {
-        res[i] = i2[i];
-    }
-    for (i=len2;i<len1;i++)
-    {
-        res[i] = i1[i];
-    }
-        return FloatToString(res, aEnvironment);
-}
-
-LispObject* BitXor(LispObject* int1, LispObject* int2,
-                     LispEnvironment& aEnvironment,LispInt aPrecision)
-{
-    ANumber i1(int1->String()->String(),aPrecision);
-    ANumber i2(int2->String()->String(),aPrecision);
-    Check(i1.iExp == 0, KLispErrNotInteger);
-    Check(i2.iExp == 0, KLispErrNotInteger);
-    ANumber res(aPrecision);
-    LispInt len1=i1.NrItems(), len2=i2.NrItems();
-    LispInt min=len1,max=len2;
-    if (min>max)
-    {
-        LispInt swap=min;
-        min=max;
-        max=swap;
-    }
-    
-    res.GrowTo(max);
-
-    LispInt i;
-    for (i=0;i<len1 && i<len2;i++)
-    {
-        res[i] = i1[i] ^ i2[i];
-    }
-    for (i=len1;i<len2;i++)
-    {
-        res[i] = i2[i];
-    }
-    for (i=len2;i<len1;i++)
-    {
-        res[i] = i1[i];
-    }
-    return FloatToString(res, aEnvironment);
-}
-*/
-
 LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     LispInt nr = InternalAsciiToInt(int1->String()->String());
@@ -712,13 +577,6 @@ LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,LispIn
     {
         BaseTimesInt(fac,i, WordBase);
     }
-/*
-    for (i=2;i<nr;i+=2)
-    {
-        BaseTimesInt(fac,i*(i+1), WordBase);
-    }
-    if (i==nr) BaseTimesInt(fac, i, WordBase);
-*/
     return FloatToString(fac, aEnvironment);
 }
 
@@ -1328,15 +1186,6 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aBasePrecision,LispInt a
   if (*ptr == '.')
   {
     isFloat = 1;
-
-/* this code is not doing anything useful, it seems - TODO REMOVE?
-   ptr++;
-    const LispCharPtr start = ptr;
-    while (IsDigit(*ptr)) ptr++;
-    LispInt digits = ptr-start;
-    if (ptr-start>digits) 
-      digits = ptr-start;
-*/
   }
   if (iNumber == NULL)   iNumber = NEW ANumber(digits);
   iNumber->SetPrecision(digits);

@@ -485,7 +485,7 @@ void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
     InternalEval(aEnvironment, aResult, lispexpr);
 }
 
-/*TODO remove?
+/*TODO put somewhere else? Platform-independent strcmp
 LispInt PlatStrCompare(LispCharPtr f1, LispCharPtr f2)
 {
     while (*f1)

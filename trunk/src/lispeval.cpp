@@ -162,17 +162,6 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
             {
                 if (head->String())
                 {
-/*TODO remove
-                  {
-                    LispEvaluator* evaluator = aEnvironment.Commands().LookUp(head->String());
-                    // Try to find a built-in command
-                    if (evaluator)
-                    {
-                      evaluator->Evaluate(aResult, aEnvironment, *subList);
-                      goto FINISH;
-                    }
-                  }
-*/
                   {
                     YacasEvaluator* evaluator = aEnvironment.CoreCommands().LookUp(head->String());
                     // Try to find a built-in command

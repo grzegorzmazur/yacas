@@ -72,25 +72,6 @@ LispEnvironment::LispEnvironment(
     iComma        = LispAtom::New(*this,",");
     iList         = LispAtom::New(*this,"List");
     iProg         = LispAtom::New(*this,"Prog");
-
-/*TODO remove
-    iEndOfFile   ->IncreaseRefCount();
-    iEndStatement->IncreaseRefCount();
-    iProgOpen    ->IncreaseRefCount();
-    iProgClose   ->IncreaseRefCount();
-    iNth         ->IncreaseRefCount();
-    iBracketOpen ->IncreaseRefCount();
-    iBracketClose->IncreaseRefCount();
-    iListOpen    ->IncreaseRefCount();
-    iListClose   ->IncreaseRefCount();
-    iComma       ->IncreaseRefCount();
-    iList        ->IncreaseRefCount();
-    iProg        ->IncreaseRefCount();
-
-    iTrue        ->IncreaseRefCount();
-    iFalse       ->IncreaseRefCount();
-*/
-
     PushLocalFrame(LispTrue);
     iCTokenizer.SetRemarkReceiver(*this);
 }
@@ -111,23 +92,6 @@ LispEnvironment::~LispEnvironment()
     }
     
     LISPASSERT(iLocalsList == NULL);
-/*TODO remove
-    iTrue        ->DecreaseRefCount();
-    iFalse       ->DecreaseRefCount();
-
-    iEndOfFile   ->DecreaseRefCount();
-    iEndStatement->DecreaseRefCount();
-    iProgOpen    ->DecreaseRefCount();
-    iProgClose   ->DecreaseRefCount();
-    iNth         ->DecreaseRefCount();
-    iBracketOpen ->DecreaseRefCount();
-    iBracketClose->DecreaseRefCount();
-    iListOpen    ->DecreaseRefCount();
-    iListClose   ->DecreaseRefCount();
-    iComma       ->DecreaseRefCount();
-    iList        ->DecreaseRefCount();
-    iProg        ->DecreaseRefCount();
-*/
     delete iEvaluator;
     if (iDebugger) delete iDebugger;
     delete iArchive;
@@ -609,15 +573,6 @@ LispStringPtr LispEnvironment::FindCachedFile(LispCharPtr aFileName)
 //printf("File %s unsuccessfully decompressed\n",aFileName);
         }
     }
-
-/*TODO remove
-    LispStringPtr hashedname = HashTable().LookUp(aFileName);
-    LispRamFile* ramFile=iRamDisk.LookUp(hashedname);
-    if (ramFile != NULL)
-    {
-        return NEW LispString(ramFile->Contents()->String(),LispTrue);
-    }
-*/
     return NULL;
 }
 

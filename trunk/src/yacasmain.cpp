@@ -499,16 +499,6 @@ CORE_KERNEL_FUNCTION("ReadCmdLineString",LispReadCmdLineString,1,YacasEvaluator:
 CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator::Fixed)
 
 #undef CORE_KERNEL_FUNCTION
-/*TODO remove
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispPlatformOS),(*yacas)()().HashTable().LookUp("OSVersion"));
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispExit),(*yacas)()().HashTable().LookUp("Exit"));
-   // this function is declared in yacasapi.cpp rather than here
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispHistorySize),(*yacas)()().HashTable().LookUp("HistorySize"));
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispStackSize),(*yacas)()().HashTable().LookUp("StaSiz"));
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispIsPromptShown),(*yacas)()().HashTable().LookUp("IsPromptShown"));
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispReadCmdLineString),(*yacas)()().HashTable().LookUp("ReadCmdLineString"));
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispTime),(*yacas)()().HashTable().LookUp("GetTime"));
-*/    
     
 
     if (archive)
@@ -546,14 +536,7 @@ CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator
             fclose(fin);
         }
     }
-    
 
-    /*TODO test code!!!
-     (*yacas)()().iRamDisk.SetAssociation(
-     LispRamFile("WriteString(\"Hello world!\");"),
-     (*yacas)()().HashTable().LookUp("testfile",LispTrue)
-                                        );
-                                        */
     {
         /* Split up root_dir in pieces separated by colons, and run 
            DefaultDirectory on each of them. */

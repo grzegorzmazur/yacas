@@ -140,7 +140,6 @@ void LispMultiply(LispEnvironment& aEnvironment, LispInt aStackTop)
       RESULT.Set(NEW LispNumber(z));
       return;
 #endif // USE_BIGFLOAT
-//TODO remove    LispArithmetic2(aEnvironment, aStackTop, MultiplyFloat);
 }
 
 //TODO we need to have Gcd in BigNumber!
@@ -163,7 +162,6 @@ void LispAdd(LispEnvironment& aEnvironment, LispInt aStackTop)
       RESULT.Set(NEW LispNumber(x.Ptr()));
       return;
 #endif
-//TODO remove        LispArithmetic1(aEnvironment, aStackTop, PlusFloat);
     }
     else
     {
@@ -178,8 +176,6 @@ void LispAdd(LispEnvironment& aEnvironment, LispInt aStackTop)
       RESULT.Set(NEW LispNumber(z));
       return;
 #endif // USE_BIGFLOAT
-
-//TODO remove        LispArithmetic2(aEnvironment, aStackTop, AddFloat);
     }
 }
 
@@ -196,7 +192,6 @@ void LispSubtract(LispEnvironment& aEnvironment, LispInt aStackTop)
       RESULT.Set(NEW LispNumber(z));
       return;
 #endif
-//TODO remove        LispArithmetic1(aEnvironment, aStackTop, NegateFloat);
     }
     else
     {
@@ -212,7 +207,6 @@ void LispSubtract(LispEnvironment& aEnvironment, LispInt aStackTop)
       RESULT.Set(NEW LispNumber(z));
       return;
 #endif // USE_BIGFLOAT
-//TODO remove        LispArithmetic2(aEnvironment, aStackTop, SubtractFloat);
     }
 }
 
@@ -246,36 +240,8 @@ void LispDivide(LispEnvironment& aEnvironment, LispInt aStackTop)
 	  RESULT.Set(NEW LispNumber(z));
       return;
 #endif // USE_BIGFLOAT
-//TODO remove    LispArithmetic2(aEnvironment, aStackTop, DivideFloat);
 }
 
-
-/*TODO remove
-void LispSin(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aStackTop, SinFloat);
-}
-
-void LispCos(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aStackTop, CosFloat);
-}
-
-void LispTan(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aStackTop, TanFloat);
-}
-
-void LispArcSin(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aStackTop, ArcSinFloat);
-}
-
-void LispExp(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aStackTop, ExpFloat);
-}
-*/
 
 void LispArcCos(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
@@ -494,7 +460,6 @@ void LispDiv(LispEnvironment& aEnvironment, LispInt aStackTop)
 	  }
 	  
 #endif // USE_BIGFLOAT
-//TODO remove    LispArithmetic2(aEnvironment, aStackTop, DivFloat);
 }
 
 void LispLog(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -712,20 +677,7 @@ void LispShiftRight(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispArithmetic2(aEnvironment, aStackTop, ShiftRight);
 }
 
-/*TODO remove?
-void LispBitAnd(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic2(aEnvironment, aStackTop, BitAnd);
-}
-void LispBitOr(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic2(aEnvironment, aStackTop, BitOr);
-}
-void LispBitXor(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic2(aEnvironment, aStackTop, BitXor);
-}
-*/
+
 /* up to here */
 
 
@@ -746,12 +698,6 @@ void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     // Get a short platform integer from the first argument
     LispInt base = (LispInt)(num->Double());
-	/* this seems to be old code that doesn't use num, TODO REMOVE
-    LispStringPtr str1;
-    str1 = oper.Get()->String();
-    CHK_ARG_CORE(str1 != NULL,1);
-    LispInt base = InternalAsciiToInt(str1->String());
-    */
 
     // Get the number to convert
     LispPtr fromNum;
@@ -788,12 +734,7 @@ void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     // Get a short platform integer from the first argument
     LispInt base = (LispInt)(num->Double());
-	/* this seems to be old code that doesn't use num, TODO REMOVE
-    LispStringPtr str1;
-    str1 = oper.Get()->String();
-    CHK_ARG_CORE(str1 != NULL,1);
-    LispInt base = InternalAsciiToInt(str1->String());
-    */
+
     // Get the number to convert
     RefPtr<BigNumber> x;
     GetNumber(x,aEnvironment, aStackTop, 2);
@@ -806,7 +747,6 @@ void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     x->ToString(str,aEnvironment.BinaryPrecision(),base);
     // Get unique string from hash table, and create an atom from it.
 
-//TODO remove, old version?    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str.String())));
     RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(str.String())->String()));
 }
 

@@ -30,6 +30,10 @@ Mkc(poly):=
 Mkd(numer,denom,p):=
 [
   Local(q,r,i,j,ln,ld,nq);
+
+numer:=MkMod(numer,p);
+denom:=MkMod(denom,p);
+
   DropEndZeroes(numer);
   DropEndZeroes(denom);
 

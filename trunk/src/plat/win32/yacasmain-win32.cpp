@@ -18,9 +18,6 @@
 
 #include "GPL_stuff.h"
 
-#ifdef USE_RAMSCRIPTS
-#include "ramdisk.h" //TODO keep this?
-#endif
 
 CYacas* yacas=NULL;
 char scriptdir[512];
@@ -155,9 +152,6 @@ void loadYacasScriptDir(){
 	// Are the scripts already loaded?
 	if (scripts) return;
 
-#ifdef USE_RAMSCRIPTS		// make sure the path is right!
-  #include "Yacas.Scripts"
-#else
 	FILE *config;
 	char fullpath[512];
     if (root_dir)
@@ -223,8 +217,6 @@ getdir:
 	strcat(fullpath, "\");");
 
     yacas->Evaluate(fullpath);
-
-#endif	// USE_RAMSCRIPTS
 
     {
       char buf[500];
