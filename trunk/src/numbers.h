@@ -113,8 +113,11 @@ public: //constructors
   BigNumber(const BigNumber& aOther);
   BigNumber();
   ~BigNumber();
-  // assign to another number
+  // assign from another number
   void SetTo(const BigNumber& aOther);
+  // assign from a platform type
+  void SetTo(int);
+  void SetTo(double);
 public: // Convert back to other types
   /// ToString : return string representation of number in aResult 
   void ToString(LispString& aResult, LispInt aBase) const;
@@ -123,6 +126,15 @@ public: // Convert back to other types
 public: //information retrieval on library used  
   /// Numeric library name
   const LispCharPtr NumericLibraryName() const;
+
+public://basic object manipulation
+  bool Equals(const BigNumber& aOther) const;
+  bool IsInt() const;
+  bool IsIntValue() const;
+  bool IsSmall() const;
+  void BecomeInt();
+  void BecomeFloat();
+  bool LessThan(const BigNumber& aOther) const;
 public://arithmetic
   /// Multiply two numbers at given precision and put result in *this
   void Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
@@ -137,14 +149,31 @@ public://arithmetic
   /// Divide two numbers and return result in *this. Note: if the two arguments are integer, it should return an integer result!
   void Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
 
+  /// integer operation: *this = y mod z
+  void Mod(const BigNumber& aY, const BigNumber& aZ);
+    /// integer operation: x+y mod z
+  void AddMod(const BigNumber& aX, const BigNumber& aY, const BigNumber& aZ);
+  /// integer operation: *this = x*y mod z
+  void MultiplyMod(const BigNumber& aX, const BigNumber& aY, const BigNumber& aZ);
+
+public:
+  void Floor(const BigNumber& aX);
+  void Round(const BigNumber& aX, LispInt aPrecision);
+
 public:/// Bitwise operations, return result in *this.
   void ShiftLeft( const BigNumber& aX, LispInt aNrToShift);
   void ShiftRight( const BigNumber& aX, LispInt aNrToShift);
+  void ShiftLeft( const BigNumber& aX, const BigNumber& aNrToShift);
+  void ShiftRight( const BigNumber& aX, const BigNumber& aNrToShift);
   void BitAnd(const BigNumber& aX, const BigNumber& aY);
   void BitOr(const BigNumber& aX, const BigNumber& aY);
   void BitXor(const BigNumber& aX, const BigNumber& aY);
   /// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
+  /// Integer version: applying this to floats may cause overflow
   LispInt BitCount() const;
+  /// General version, guaranteed to work but usually suboptimal for integers
+  void BitCount(const BigNumber& aX);
+  
   /// Give sign (-1, 0, 1)
   LispInt Sign() const;
 
