@@ -11,7 +11,7 @@
 
 SUBDIRS = . docs inprogress YacasNotebook scripts libltdl src ramscripts \
 	essays manualmaker colorcode plugins proteus tests manmake compile \
-	embed JavaConsole
+	embed JavaConsole epoc
 
 ## A script to be installed in the directory for binaries
 bin_SCRIPTS = yacas_client
