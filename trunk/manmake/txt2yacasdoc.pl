@@ -5,6 +5,8 @@
 #
 # Use with care, test output with manualmaker
 
+$debug_pars = 0;	# This is for debugging only: breaks HTML docs, but it is useful because it makes all paragraphs into separate Text() invocations and then it's a lot easier to debug book2TeX or manualmaker in Yacas - just look at the resulting .tex or .book file to see where it stopped generating.
+
 $have_Text = 0;	# Means we have a Text() declared somewhere above
 $have_par = 1;	# Means we already have a new paragraph
 $in_text = 0;	# Means we are inside quotes of the Text()
@@ -45,7 +47,7 @@ while (<STDIN>) {
 		$in_text = 1;
 	}	# Now not TAB-indented lines
 	elsif (/^\s*$/) {	# New paragraph
-	if (0 == 1) {	# This is for debugging only: breaks HTML docs
+	if ($debug_pars) {
 		&finish_text();
 		&start_text();
 	}
