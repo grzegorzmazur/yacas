@@ -3,16 +3,6 @@
 /*                            */ 
 
 
-/*  Composition rules  */
-
-/* Predicate to determine whether we are dealing with a function in one
-   variable. */
-10 # IsSingleArgumentFunction(f_IsFunction)_(NrArgs(f) = 1) <-- True;
-20 # IsSingleArgumentFunction(_f)                           <-- False;
-
-100 # Lim(_var, _tar, _dir, f_IsSingleArgumentFunction) <--
-        Eval(UnList({f[0],Lim(var, tar, dir, f[1])}));
-
 /*  Exponentiation rules  */
 
 /*  Special limit #1:  0 ^ 0;  #2:  1 ^ Infinity;  #3:  Infinity ^ 0  */
@@ -126,10 +116,15 @@ Sign(_var, _tar, _dir, _exp, _n)
 610 # Lim(_var, _tar, _dir, _x + _y)
 <-- Lim(var, tar, dir, x)+Lim(var, tar, dir, y);
 
-
 /*  Global default rule : evaluate expression  */
 
-700 # Lim(_var, _tar, _dir, _exp)
+700 # Lim(_var, _tar, _dir, exp_IsFunction)
+<-- Eval(MapArgs(exp,"LimitArgs"));
+
+LimitArgs(_arg) <-- Lim(var,tar,dir,arg);
+UnFence("LimitArgs",1); /* Allow LimitArgs to have access to the local variables of the caller. */
+
+701 # Lim(_var, _tar, _dir, _exp)
 <-- Eval(ApplyPure("Subst", {var, tar, exp}));
 
   
