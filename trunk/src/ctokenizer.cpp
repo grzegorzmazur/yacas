@@ -40,7 +40,15 @@ REDO:
     else if (c == '~') {}
     else if (c == '?') {}
     else if (c == '$') {} // '$' is reserved for pattern matching!
-    else if (c == '\\') {}
+    else if (c == '\\')
+    {
+        while (aInput.Next() != '\n' && !aInput.EndOfStream());
+        goto REDO;
+//        if (iPreProcessLine)
+//        {
+//        }
+        
+    }
     else if (c == '.' && !IsDigit(aInput.Peek()) )
     {
         while (aInput.Peek() == '.')
