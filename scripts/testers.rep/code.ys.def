@@ -6,5 +6,6 @@ RandVerifyArithmetic
 VerifyDiv
 TestYacas
 RoundTo
+NumericEqual
 LogicVerify
 }
