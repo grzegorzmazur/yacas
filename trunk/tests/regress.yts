@@ -434,3 +434,6 @@ Verify(TrapError(MathPower(0,0.5), error), error);
 
 /* Bug #17 */
 KnownFailure(Assoc(x-1, Factors(x^6-1)) = 1);
+
+
+Verify(a[2]*Sin(x)/:{Sin(_x) <- sin(x)},a[2]*sin(x));
