@@ -427,30 +427,6 @@ IsPerfect(n_IsPositiveInteger) <-- ProperDivisorsSum(n)=n;
         If(a^((p-1)/2) % p = 1, True, False);
 ];
 
-5  # IsGaussianInteger(x_IsList)	<-- False;
-
-// ?????? why is the following rule needed?
-5  # IsGaussianInteger(ProductPrimesTo257)	<-- False;
-
-10 # IsGaussianInteger(x_IsComplex)  	<-- (IsInteger(Re(x)) And IsInteger(Im(x)));
-// to catch IsGaussianInteger(x+2) from Apart
-15 # IsGaussianInteger(_x)	<-- False;
-Function("IsGaussianPrime",{x})
-[
-        if( IsGaussianInteger(x) )[
-                if( IsZero(Re(x)) )[
-                        ( Abs(Im(x)) % 4 = 3 And IsPrime(Abs(Im(x))) );
-                ] else if ( IsZero(Im(x)) ) [
-                        ( Abs(Re(x)) % 4 = 3 And IsPrime(Abs(Re(x))) );
-                ] else [
-                        IsPrime(Re(x)^2 + Im(x)^2);
-                ];
-        ] else [
-                False;
-        ];
-
-];
-
 // Digital root of n (repeatedly add digits until reach a single digit).
 10 # DigitalRoot(n_IsPositiveInteger) <-- If(n%9=0,9,n%9);
 
@@ -480,53 +456,6 @@ IsAmicablePair(m_IsPositiveInteger,n_IsPositiveInteger) <-- ( ProperDivisorsSum(
 ];
 
 IsSquareFree(n_IsInteger)	<-- ( Moebius(n) != 0 );
-
-10 # GaussianGcd(n_IsGaussianInteger,m_IsGaussianInteger) <--
-[
-	If(N(Abs(m))=0,n, GaussianGcd(m,n - m*Round(n/m) ) );
-];
-
-// Algorithm adapted from: Number Theory: A Programmer's Guide
-//			Mark Herkommer
-// Program 8.7.1c, p 264
-// This function needs to be modified to return the factors in
-// data structure instead of printing them out
-Function("FactorGaussianInteger",{x}) [
-	Check( IsGaussianInteger(x), "FactorGaussianInteger: argument must be a Gaussian integer");
-	Local(re,im,norm,a,b,d,i,j);
-
-	re:=Re(x);im:=Im(x);
-
-	If(re<0, re:=-re );
-	If(im<0, im:=-im );
-	norm:=re^2+im^2;
-
-	if( IsComposite(norm) )[
-		For(i:=0, i^2 <= norm, i++ )[	// real part
-			For(j:=0, i^2 + j^2 <= norm, j++)[	// complex part
-				if( Not( (i = re And j = im) Or
-					 (i = im And j = re) ) )[ // no associates
-					d:=i^2+j^2;
-					if( d > 1 )[
-						a := re * i + im * j;
-						b := im * i - re * j;
-						While( (Mod(a,d) = 0) And  (Mod(b,d) = 0) ) [
-							FactorGaussianInteger(Complex(i,j));
-							re:= a/d;
-							im:= b/d;
-							a := re * i + im * j;
-							b := im * i - re * j;
-							norm := re^2 + im^2;
-						];
-					];
-				];
-			];
-		];
-		If( re != 1 Or im != 0, Echo(Complex(re,im)) );
-	] else [
-		Echo(Complex(re,im));
-	];
-];
 
 // Carmichael numbers are odd,squarefree and have at least 3 prime factors
 5  # IsCarmichaelNumber(n_IsEven)		<-- False;

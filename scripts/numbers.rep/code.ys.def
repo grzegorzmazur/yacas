@@ -6,9 +6,7 @@ DivisorsSum
 Euler
 EulerArray
 Eulerian
-FactorGaussianInteger
 FermatNumber
-GaussianGcd
 GetPrimePower
 HarmonicNumber
 IntLog
@@ -17,8 +15,6 @@ IsAmicablePair
 IsCarmichaelNumber
 IsComposite
 IsCoprime
-IsGaussianInteger
-IsGaussianPrime
 IsIrregularPrime
 IsPerfect
 IsPrime
