@@ -1742,33 +1742,33 @@ The following code, when compiled
 results in 
 
 
-	VmFunction(fac);
-	  VmPushNulls(1);
-	  VmPush(ARGUMENT(1));
-	  VmPushConstant(_constant0);
-	  VmCall(LispEquals, 2 );
-	  VmPop(2 );
-	  VmJumpIfFalse(C20 );
-	  VmPop(1);
-	  VmPushConstant(_constant0);
-	  VmJump(C21 );
-	VmLabel(C20 );
-	  VmPop(1);
-	  VmPushNulls(1);
-	  VmPush(ARGUMENT(1));
-	  VmPushNulls(2);
-	  VmPush(ARGUMENT(1));
-	  VmPushConstant(_constant1);
-	  VmCall(LispAdd, 2 );
-	  VmPop(2 );
-	  VmCall(Compiled_fac, 1 );
-	  VmPop(1 );
-	  VmCall(LispMultiply, 2 );
-	  VmPop(2 );
-	VmLabel(C21 );
-	  VmSetRegister(RESULT);
-	  VmPop(1 );
-	VmFunctionEnd();
+	VmFunction(fac)
+	  VmPushNulls(1)
+	  VmPush(1)
+	  VmPushConstant(0)
+	  VmCall(LispEquals, 2 )
+	  VmPop(2 )
+	  VmJumpIfFalse(C20 )
+	  VmPop(1)
+	  VmPushConstant(0)
+	  VmJump(C21 )
+	VmLabel(C20 )
+	  VmPop(1)
+	  VmPushNulls(1)
+	  VmPush(1)
+	  VmPushNulls(2)
+	  VmPush(1)
+	  VmPushConstant(1)
+	  VmCall(LispAdd, 2 )
+	  VmPop(2 )
+	  VmCall(Compiled_fac, 1 )
+	  VmPop(1 )
+	  VmCall(LispMultiply, 2 )
+	  VmPop(2 )
+	VmLabel(C21 )
+	  VmSetRegister(0)
+	  VmPop(1 )
+	VmFunctionEnd()
 
 Only the indented lines generate instructions, so this would be
 23 instructions. 

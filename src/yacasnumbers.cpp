@@ -625,7 +625,7 @@ BigNumber::BigNumber(const LispCharPtr aString,LispInt aBasePrecision,LispInt aB
 }
 BigNumber::BigNumber(const BigNumber& aOther)
 {
-  iNumber = NEW ANumber(aOther.GetPrecision());
+  iNumber = NULL; //TODO remove NEW ANumber(aOther.GetPrecision());
   SetTo(aOther);
 }
 BigNumber::BigNumber(LispInt aPrecision)
@@ -643,8 +643,14 @@ BigNumber::~BigNumber()
 void BigNumber::SetTo(const BigNumber& aOther)
 {
   iPrecision = aOther.GetPrecision();
-  if (iNumber == NULL) iNumber = NEW ANumber(aOther.GetPrecision());
-  iNumber->CopyFrom(*aOther.iNumber);
+  if (iNumber == NULL) 
+  {
+    iNumber = NEW ANumber(*aOther.iNumber);
+  }
+  else
+  {
+    iNumber->CopyFrom(*aOther.iNumber);
+  }
   SetIsInteger(aOther.IsInt());
 }
 
@@ -748,13 +754,28 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
 
   if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
   if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
-
+/*???
+  if (iNumber == aX.iNumber)
+  {
+    ANumber a2(*aY.iNumber);
+    ::Add(*iNumber, *iNumber, a2);
+  }
+  else
+  {
+    ANumber a1(*aX.iNumber);
+    ANumber a2(*aY.iNumber);
+    ::Add(*iNumber, a1, a2);
+  }
+  iNumber->SetPrecision(aPrecision);
+*/
+/*TODO remove old? */
   ANumber a1(BITS_TO_DIGITS(aPrecision,10));
   a1.CopyFrom(*aX.iNumber);
   ANumber a2(BITS_TO_DIGITS(aPrecision,10));
   a2.CopyFrom(*aY.iNumber);
 	::Add(*iNumber, a1, a2);
   iNumber->SetPrecision(aPrecision);
+/* */
 }
 void BigNumber::Negate(const BigNumber& aX)
 {
@@ -1046,15 +1067,23 @@ void BigNumber::Precision(LispInt aPrecision)
 //basic object manipulation
 LispBoolean BigNumber::Equals(const BigNumber& aOther) const
 {
-//  return iNumber->ExactlyEqual(*aOther.iNumber);
-
-  BigNumber diff;
-  BigNumber otherNeg;
-  otherNeg.Negate(aOther);
-  LispInt precision = GetPrecision();
-  if (precision<aOther.GetPrecision()) precision = aOther.GetPrecision();
-  diff.Add(*this,otherNeg,BITS_TO_DIGITS(precision,10));
-  return !Significant(*diff.iNumber);
+/*???
+  if (IsInt() && aOther.IsInt())
+  {
+    return iNumber->ExactlyEqual(*aOther.iNumber);
+  }
+  else
+*/
+  {
+    //TODO optimize!!!!
+    BigNumber diff;
+    BigNumber otherNeg;
+    otherNeg.Negate(aOther);
+    LispInt precision = GetPrecision();
+    if (precision<aOther.GetPrecision()) precision = aOther.GetPrecision();
+    diff.Add(*this,otherNeg,BITS_TO_DIGITS(precision,10));
+    return !Significant(*diff.iNumber);
+  }
 }
 
 
