@@ -10,4 +10,6 @@ Erf
 Erfc
 FresnelSin
 FresnelCos
+LambertW
+LambertWNum
 }
