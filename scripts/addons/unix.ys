@@ -128,7 +128,7 @@ ShowPS(expr) := [
 ");
 	WriteString("Expression exported as " : filename : ".tex" : Nl());
 	/* Make PS file */
-	SystemCall("cd /tmp; latex " : filename : " > /dev/null; dvips -q -T 22in,17in -o " : filename : ".ps " : filename : ".dvi");
+	SystemCall("cd /tmp; latex " : filename : " > /dev/null; dvips -E -q -T 22in,17in -o " : filename : ".ps " : filename : ".dvi");
 	/* Show PS file */
 	SystemCall(PSViewCommand : " " : filename : ".ps; rm -f " : filename : ".*");
 ];
