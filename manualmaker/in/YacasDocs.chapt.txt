@@ -67,12 +67,6 @@ Yacas-language file (Yacas will tell you the last line in the Yacas-language
 file at which a syntax error occurred). This option is largely obsolete because
 the {Text()} function is called frequently enough by default.
 
-If a manual book does not compile after you made some changes, examine the
-Yacas-language files ({*.chapt}, {*.book}), find the line at which an error
-occurred, and try to see what happened. Most probable cause of error is
-unbalanced brackets, parentheses, or dollar signs; or expressions which should
-not be split between lines were accidentally split after reformatting the text.
-
 	    Formatting of source text files
 
 Formatting of source text files uses TAB symbols; if your editor does not support them and converts them to spaces, you should convert the results back to contain real TAB symbols using the standard Unix {unexpand} utility or a custom perl script.
@@ -251,6 +245,11 @@ one "chapter intro" paragraph per chapter.
 
 This markup should be sufficient for creating reference documentation in plain text.
 
+If a manual book does not compile after you made some changes, examine the
+Yacas-language files ({*.chapt}, {*.book}), find the line at which an error
+occurred, and try to see what happened. Most probable cause of error is
+unbalanced brackets, parentheses, or dollar signs; or expressions which should
+not be split between lines were accidentally split after reformatting the text. Mathematical expressions cannot contain a trailing period (e.g. you cannot say {$}{x+a.$} -- the period should go outside dollar signs.
 
 	    {book2txt}: Conversion of existing documentation to plain text
 
