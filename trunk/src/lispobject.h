@@ -103,7 +103,7 @@ public:
     inline void SetFlag(LispInt aFlag);
     inline void ResetFlag(LispInt aFlag);
 
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
     LispCharPtr iFileName;
     LispInt iLine;
     
@@ -121,7 +121,7 @@ protected:
         IncNrObjects();
 #endif
 
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
         iFileName = NULL;
         iLine = 0;
 #endif

@@ -305,7 +305,7 @@ void my_exit(void)
     delete yacas;
     delete commandline;
     ReportNrCurrent();
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
     YacasCheckMemory();
 #endif
 }
@@ -816,7 +816,7 @@ int main(int argc, char** argv)
     unsigned char first_stack_var=0;
     the_first_stack_var = &first_stack_var;
 
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
     SHOWSIZE(LispString);
     SHOWSIZE(LispAtom);
     SHOWSIZE(LispHashTable);
@@ -826,7 +826,7 @@ int main(int argc, char** argv)
 #endif
 
     
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
     //    PlatAlloc(100); // test the alloc memory leak checker
     CHECKPTR(NULL);
 #endif
@@ -1061,7 +1061,7 @@ RESTART:
 
     while (Busy())
     {
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
         LispLocalEvaluator local((*yacas)()(),NEW TracedStackEvaluator);
 #endif
         

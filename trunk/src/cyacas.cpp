@@ -20,8 +20,8 @@ HANDLE hResInfo, hRes;
 
 void yacas_init()
 {
-    stringout = new LispString();
-    output = new StringOutput(*stringout);
+    stringout = NEW LispString();
+    output = NEW StringOutput(*stringout);
     yacas = CYacas::NewL(output);
 #ifdef WIN32
 

@@ -11,7 +11,7 @@ public:
     inline ~YacasBase() {};
 #ifdef MY_ALLOCS
 
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
     inline void* operator new(size_t size, char* aFile, int aLine);
     inline void* operator new[](size_t size, char* aFile, int aLine);
 #else
@@ -25,7 +25,7 @@ public:
 
 #ifdef MY_ALLOCS
 
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
 inline void* YacasBase::operator new(size_t size, char* aFile, int aLine)
 {
     return YacasMallocPrivate(size,aFile,aLine);

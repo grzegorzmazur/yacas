@@ -120,7 +120,7 @@ void CheckArgType(LispInt aPredicate, LispInt aArgNr, LispPtr& aArguments,LispEn
         aEnvironment.iErrorOutput.Write(strout.String());
         aEnvironment.iErrorOutput.Write("\n");
 
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
         printf("Problem occurred at %s(%d)\n",
                aArguments.Get()->iFileName,
                aArguments.Get()->iLine

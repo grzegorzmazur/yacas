@@ -114,7 +114,7 @@ LispObject* LispAnnotatedObject<T>::Copy(LispInt aRecursed)
     LispObject *result = NEW LispAnnotatedObject<T>(copied.Get());
     copied.Set(iAdditionalInfo.Get()->Copy(aRecursed));
     result->SetExtraInfo(copied);
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
     result->SetFileAndLine(iFileName, iLine);
 #endif
     return result;

@@ -25,7 +25,7 @@
 /* #undef HAVE_DLD_H */
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
-/* #undef HAVE_DLFCN_H */
+#define HAVE_DLFCN_H 1
 
 /* Define to 1 if you have the <dl.h> header file. */
 /* #undef HAVE_DL_H */

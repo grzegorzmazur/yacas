@@ -20,7 +20,7 @@ public:
     UserStackInformation():
         iRulePrecedence(-1),iSide(0)
     {
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
         iFileName = "(no file)";
         iLine = 0;
 #endif
@@ -30,7 +30,7 @@ public:
     LispInt iRulePrecedence;
     LispInt iSide; // 0=pattern, 1=body
 
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
     LispCharPtr iFileName;
     LispInt iLine;
 #endif

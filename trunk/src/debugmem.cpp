@@ -5,7 +5,7 @@
 #include "stubs.h"
 #include "lispassert.h"
 
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
 
 #ifdef NO_GLOBALS
 #error "Memory heap checking only possible with global variables!"

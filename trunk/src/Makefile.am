@@ -47,7 +47,7 @@ libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp \
 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp \
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
-        lispplugin.cpp ltdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
+        lispplugin.cpp elfdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
         archiver.cpp
 libyacas_la_LDFLAGS = -export-dynamic
 
@@ -55,7 +55,7 @@ libcyacas_la_SOURCES = cyacas.cpp
 libcyacas_la_LDFLAGS = -export-dynamic
 
 libyacasplatform_la_SOURCES = platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
-	lispstring.cpp mathutil.cpp yacasbase.cpp
+	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp 
 libyacasplatform_la_LDFLAGS = -export-dynamic
 libyacasnumbers_la_SOURCES = anumber.cpp yacasnumbers.cpp 
 libyacasnumbers_la_LDFLAGS = -export-dynamic
@@ -103,7 +103,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	plat/win32/yacas_exe.dsp        \
 	plat/win32/yacasmain-win32.cpp makefile.debug Makefile.win32 \
 	makefile.agenda yacas.dsp yacas.dsw \
-  debugmem.cpp debugmem.h \
+  debugmem.h \
 	win32dllresource.h win32yacasdll.h win32yacasdll.cpp \
 	win32yacasdllresource.h yacasdll.dsp yacasdll.dsw yacasdll.rc \
 	setup.py yacasc.i yacas.py \

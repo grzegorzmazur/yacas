@@ -254,7 +254,7 @@ void TraceShowEnter(LispEnvironment& aEnvironment,
     TraceShowExpression(aEnvironment, aExpression);
     aEnvironment.CurrentOutput()->Write("\",\"");
 
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
     if (aExpression.Get()->iFileName)
         aEnvironment.CurrentOutput()->Write(aExpression.Get()->iFileName); //file
     else
@@ -263,7 +263,7 @@ void TraceShowEnter(LispEnvironment& aEnvironment,
     aEnvironment.CurrentOutput()->Write(""); //file
 #endif
     aEnvironment.CurrentOutput()->Write("\",");
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
     {
         LispChar buf[30];
         InternalIntToAscii(buf,aExpression.Get()->iLine);
@@ -336,14 +336,14 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
     LispInt from=0;
     LispInt upto = objs.NrItems();
     
-//#ifndef DEBUG_MODE
+//#ifndef YACAS_DEBUG
 //    if (upto-from > 16)
 //        from = upto-16;
 //#endif
     for (i=from;i<upto;i++)
     {
         LispChar str[20];
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
         {
             aEnvironment.CurrentOutput()->Write(objs[i]->iFileName);
             aEnvironment.CurrentOutput()->Write("(");
@@ -353,7 +353,7 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
         }
 #endif
         InternalIntToAscii(str,i);
-#ifndef DEBUG_MODE
+#ifndef YACAS_DEBUG
         aEnvironment.CurrentOutput()->Write("Debug> ");
 #endif
         aEnvironment.CurrentOutput()->Write(str);
@@ -453,7 +453,7 @@ void TracedStackEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
                 UserStackInformation& st = StackInformation();
                 st.iOperator.Set(LispAtom::New(str));
                 st.iExpression.Set(aExpression.Get());
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
                 if (aExpression.Get()->iFileName != NULL)
                 {
                     st.iFileName = aExpression.Get()->iFileName;
