@@ -1083,14 +1083,15 @@ Same limitations as {Plot2D}.
 *CMD XmlExplodeTag --- convert XML strings to tag objects
 *CORE
 *CALL
-	XmlExplodeTag(tagstring)
+	XmlExplodeTag(xmltext)
 *PARMS
 
-{tagstring} -- string containing one xml token
+{xmltext} -- string containing some XML tokens
 
 *DESC
 
-{XmlExplodeTag} parses an XML token and returns a Yacas expression.
+{XmlExplodeTag} parses the first XML token in {xmltext}
+and returns a Yacas expression.
 
 The following subset of XML syntax is supported currently:
 
@@ -1118,6 +1119,8 @@ If given a plain text string, the same string is returned.
 	  {"NAME","blah blah"}},"Open");
 	In> XmlExplodeTag("</p>")
 	Out> XmlTag("P",{},"Close");
+	In> XmlExplodeTag("<br/>")
+	Out> XmlTag("BR",{},"OpenClose");
 
 *SEE XmlTokenizer
 
@@ -1159,7 +1162,8 @@ Any malformed XML will be treated as plain text.
 
 *EG notest
 
-	In> [XmlTokenizer(); q:=ReadToken(); DefaultTokenizer();q;]
+	In> [XmlTokenizer(); q:=ReadToken(); \
+	  DefaultTokenizer();q;]
 	<a>Out> <a>;
 
 Note that:
