@@ -1,0 +1,69 @@
+
+Testing("Predicates");
+Verify(IsFunction(a(b)),True);
+Verify(IsFunction(a),False);
+Verify(IsList({a,b,c}),True);
+Verify(IsList(a),False);
+Verify(IsAtom({a,b,c}),False);
+Verify(IsAtom(a),True);
+Verify(IsAtom(123),True);
+
+Verify(IsNumber(123),True);
+Verify(IsNumber(123.123),True);
+Verify(IsNumber(a),False);
+Verify(IsNumber({a}),False);
+
+Verify(IsInteger(123),True);
+Verify(IsInteger(123.123),False);
+Verify(IsInteger(a),False);
+Verify(IsInteger({a}),False);
+
+Testing("Boolean Operations");
+Verify(False And False,False);
+Verify(True And False,False);
+Verify(False And True,False);
+Verify(True And True,True);
+
+Verify(False Or False,False);
+Verify(True Or False,True);
+Verify(False Or True,True);
+Verify(True Or True,True);
+
+Verify(Not(True),False);
+Verify(Not(False),True);
+
+Verify(Equals(a,b),False);
+Verify(Equals(a,a),True);
+Verify(Equals({a,b},{a}),False);
+Verify(Equals({a,b},{a,b}),True);
+
+Testing("NumberCompares");
+Verify(LessThan(2,3),True);
+Verify(LessThan(3,2),False);
+Verify(GreaterThan(2,3),False);
+Verify(GreaterThan(3,2),True);
+
+Verify(.1<2,True);
+Verify(0.1<2,True);
+Verify(.3<2,True);
+Verify(.1>2,False);
+Verify(0.1>2,False);
+Verify(.3>2,False);
+
+Verify(2<.1,False);
+Verify(2<0.1,False);
+Verify(2<.3,False);
+Verify(2>.1,True);
+Verify(2>0.1,True);
+Verify(2>.3,True);
+
+Testing("Matrix predicates");
+Verify(IsHermitean({{0,I},{-I,0}}),True);
+Verify(IsHermitean({{0,I},{-I,1}}),True);
+Verify(IsHermitean({{0,I},{-2*I,0}}),False);
+
+Verify(IsUnitary({{0,I},{-I,0}}),True);
+Verify(IsUnitary({{0,I},{-I,1}}),False);
+Verify(IsUnitary({{0,I},{-2*I,0}}),False);
+
+

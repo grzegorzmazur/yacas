@@ -1,4 +1,16 @@
 
+
+/*******************************************************************
+   Test scripts moved to directory tests/
+********************************************************************/   
+
+
+EndOfFile;
+
+
+
+
+
 /* Test script for the Yacas computer algebra system.
  * Copyright 1999 Ayal Pinkus
  *
@@ -12,6 +24,7 @@ Clear(a,b);
 
 NextTest("Testing some internal functions");
 
+Verify(ConcatStrings("a","b","c"),"abc");
 
 Verify(aa-aa,0);
 Testing("Apply");
@@ -394,10 +407,6 @@ Verify(N(2/5),0.4);
 Verify(IsRational(2/5),True);
 Verify(Numer(2/5),2);
 Verify(Denom(2/5),5);
-
-Verify(ConcatStrings("a","b","c"),"abc");
-
-
 
 VerifyArithmetic(10,5,8);
 VerifyArithmetic(10000000000,5,8);

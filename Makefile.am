@@ -6,6 +6,6 @@ install-data-local:
 	-cp yacas_client $(bindir)/
 
 test:
-	cd scripts ; ../src/yacas examples/tests
+	cd scripts ; make test
 
 

@@ -1,0 +1,102 @@
+
+
+Testing("LeviCivita");
+Verify(LeviCivita({1,2,3}),1);
+Verify(LeviCivita({2,1,3}),-1);
+Verify(LeviCivita({1,1,3}),0);
+
+Testing("VectorProducts");
+[
+  Local(l,m,n);
+  l:={1,0,0};
+  m:={0,1,0};
+  n:={0,0,1};
+
+  Verify(l X m, {0,0,1});
+  Verify(m X n, {1,0,0});
+  Verify(n X l, {0,1,0});
+  Verify(l X n, {0,-1,0});
+
+  Verify(l . m, 0);
+  Verify(m . n, 0);
+  Verify(n . l, 0);
+
+  Verify(l . l, 1);
+];
+
+
+[
+  Local(a,b);
+
+/* Strangeness: change variable below into a, and the crossproducts
+ * later on fail!
+ */
+  a:={1,2,3};
+  b:={3,1,5};
+  Verify( a . b , 20);
+  Verify(CrossProduct({1,2,3} , {4,2,5}) , {4,7,-6});
+];
+Verify(aa,Hold(aa));
+
+
+NextTest("Inproduct");
+a:={1,2,3};
+b:={3,1,5};
+Verify( a . b , 20);
+
+Verify(CrossProduct({1,2,3} , {4,2,5}) , {4,7,-6});
+Verify({1,2,3} X {4,2,5},{4,7,-6});
+Clear(a,b);
+
+NextTest("Identity matrices");
+Verify(Identity(4),
+   { {1,  0,  0,  0} ,
+     {0,  1,  0,  0} ,
+     {0,  0,  1,  0} ,
+     {0,  0,  0,  1} });
+
+
+NextTest("Check linear algebra");
+/* Normalize */
+Testing("Normalize");
+Verify(N(Normalize({3,4})),N({3/5,4/5}));
+/* DiagonalMatrix */
+Testing("DiagonalMatrix");
+Verify(DiagonalMatrix({2,3,4}),{{2,0,0},{0,3,0},{0,0,4}});
+/* ZeroMatrix */
+Testing("ZeroMatrix");
+Verify(ZeroMatrix(2,3),{{0,0,0},{0,0,0}});
+/* Transpose */
+Testing("Transpose");
+Verify(Transpose({{a,b},{c,d}}),{{a,c},{b,d}});
+/* Determinant */
+Testing("Determinant");
+Verify(Determinant({{2,3},{3,1}}),-7);
+
+ll:={ {1,2,3},
+      {2,-1,4},
+      {3,4,3}
+    };
+/* CoFactor */
+Testing("CoFactor");
+Verify(N(CoFactor(ll,1,2)),6);
+/* Minor */
+Testing("Minor");
+Verify(N(Minor(ll,1,2)),-6);
+/* Inverse */
+Testing("Inverse");
+Verify(Inverse(ll)*ll,Identity(3));
+/* SolveMatrix */
+Testing("SolveMatrix");
+Verify(ll*SolveMatrix(ll,{1,2,3}),{1,2,3});
+/* Trace */
+Testing("Trace");
+Verify(Trace(ll),1-1+3);
+/* IsVector */
+Verify(IsList(ll),True);
+Verify(IsList({1,2,3}),True);
+/* IsMatrix */
+Verify(IsMatrix(ll),True);
+Clear(ll);
+
+

@@ -1,0 +1,26 @@
+
+
+NextTest("Tensors");
+
+TestYacas(TSimplify( TSum({j}) Delta(i,j)*v(j) ),v(i));
+TestYacas(TSimplify( TSum({j,i}) Delta(i,j)*Delta(i,j) ), Ndim);
+TestYacas(TSimplify( TSum({j,i}) Delta(i,j)*Delta(j,i) ), Ndim);
+TestYacas(TSimplify( TSum({j}) Delta(i,j)*Delta(j,k) ), Delta(i,k));
+TestYacas(TSimplify( TSum({i}) v(i)*v(i) ), TSum({i})(v(i)^2));
+Retract("v",1);
+RuleBase("v",{ii});
+f(i,j):=v(i)*v(j);
+TestYacas(f(i,i),v(i)^2);
+TestYacas(TSimplify( TSum({i}) f(i,i) ),TSum({i})(v(i)^2));
+TestYacas(TSimplify( TSum({j}) Delta(i,j)*f(j,k) ),v(i)*v(k));
+
+TestYacas(TSimplify(TSum({i,j}) Delta(i,j)*f(i,j) ),  TSum({j})v(j)^2);
+TestYacas(TSimplify(TSum({i})X(j)*TD(i)X(i)),  Ndim*X(j));
+TestYacas(TSimplify(TSum({i}) TD(i)(X(i)*X(j)) ), Ndim*X(j)+X(j));
+TestYacas(TSimplify(TSum({i}) X(i)*TD(i)X(j) ), X(j));
+TestYacas(TSimplify(TSum({i})TD(i)v(i)),  TSum({i})TD(i)v(i));
+
+TestYacas(TSimplify(TSum({i,j})TD(i)TD(j)(X(i)*X(j))), Ndim+Ndim^2);
+TestYacas(TSimplify(TSum({i})TD(i)(X(i)*X(j)*X(j))),  Ndim*X(j)^2+2*X(j)^2);
+TestYacas(TSimplify(TSum({i,j,k})TD(i)TD(j)TD(k)(X(i)*X(j)*X(k))),  3*Ndim^2+2*Ndim+Ndim^3);
+
