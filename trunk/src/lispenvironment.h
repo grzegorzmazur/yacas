@@ -16,6 +16,7 @@
 #include "lispio.h"
 #include "stringio.h"
 #include "lispglobals.h"
+#include "lispplugin.h"
 
 
 class LispDefFiles;
