@@ -15,8 +15,10 @@
 #include "lispobject.h"
 #include "lispstring.h"
 
-// this is to show that numerical atoms are in decimal
-const unsigned int BASE10 = 10;
+/// This should be used whenever constants 2, 10 mean binary and decimal.
+// maybe move somewhere else?
+#define BASE10 10
+#define BASE2 2
 
 // Flags used for atom types. These are not strictly necessary, but
 // do speed up certain evaluations by avoiding a lot of overhead.
