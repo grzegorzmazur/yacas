@@ -64,6 +64,8 @@ CntDefLoad("odesolver.ys");
 CntDefLoad("c_form.ys");
 CntDefLoad("limit.ys");
 CntDefLoad("localrules.ys");
+CntDefLoad("rabinmiller.ys");
+CntDefLoad("orthopoly.ys");
 
 /* set the help system. This can be overridden in ~/.yacasrc */
 

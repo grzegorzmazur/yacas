@@ -12,7 +12,8 @@ SCRIPTFILES = \
         padic.ys.def testers.ys testers.ys.def factors.ys factors.ys.def tensor.ys tensor.ys.def \
         texform.ys texform.ys.def print.ys c_form.ys c_form.ys.def logic.ys logic.ys.def cstubgen.ys \
         radsimp.ys radsimp.ys.def pslq.ys pslq.ys.def odesolver.ys odesolver.ys.def limit.ys limit.ys.def \
-        localrules.ys localrules.ys.def
+        localrules.ys localrules.ys.def rabinmiller.ys rabinmiller.ys.def \
+        orthopoly.ys orthopoly.ys.def
 
 script_DATA = $(SCRIPTFILES)
 

@@ -75,7 +75,7 @@ to build RPMS/SRPMS, and -bb to build RPMS only.
 CVS shortlist:
 
 cvs -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas login
-cvs -z3 -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas co modulename
+cvs -z3 -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas co yacas
 
 export CVS_RSH=ssh1
 
