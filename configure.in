@@ -26,7 +26,7 @@ AC_CHECK_PROG(have_gzip, gzip, yes, no)
 
 # libtool support
 #AC_LIBTOOL_DLOPEN
-#AM_PROG_LIBTOOL
+AM_PROG_LIBTOOL
 
 
 # Checks for header files.
