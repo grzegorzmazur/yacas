@@ -411,7 +411,6 @@ one of its arguments. This might happen when one argument passed in is actually 
 object performing the calculation itself. For example, if a calculation
 
 	x.Add(x,y);
-
 were issued, the result would be assigned to x, so the old 
 value x contained would be disposed any way. In this case
 the specific implementation might opt to perform the operation
@@ -452,7 +451,9 @@ Equivalent Yacas script code is given, as well as examples of C++ usage.
 1. Input/output operations.
 *	Construct a number from a string in given base.
 The format is the standard integer, fixed-point and floating-point representations of numbers.
+However, the result is always a floating-point number.
 The number will be rounded to a given number of base digits.
+*FOOT It is not clear at this point whether to round to a given number of <i>bits</i> or base digits.
 	x.SetTo("2.e-19", 100, 10);
 Here we encounter a problem of ambiguous hexadecimal exponent:
 	x.SetTo("2A8C.E2", 100, 16);
@@ -492,8 +493,14 @@ Note that here "precision" always means the number of significant bits, i.e. dig
 *	Compute the integer part of a number, {x := Floor(y)}.
 This function should round toward arithmetically smaller integers, as usual.
 	x.Floor(y);
-*	Round the number {x} to a given floating-point precision, {x := Round(y,n)}. (The {Floor(x)} function is not quite the same as {Round(x,0)}.)
-	x.Round(y, 300);
+*	Truncate (or expand) the number {x} to a given floating-point precision of {n} bits.
+This has an effect of converting the number to the floating-point type with {n} significant bits of mantissa.
+Note that the {Floor} function is not similar to {Precision} because
+1) {Floor} converts to an integer value while {Precision} converts to a floating-point value,
+2) {Floor} always decreases the number while {Precision} gives the best approximation.
+For example, if $x= -1123.38$, then {x.Precision(1)} should return {-1024.}, since that's the best one-bit floating-point approximation.
+However, {Floor(-1123.38)} returns {-1124}.
+	x.Precision(300);
 *	Add two numbers, {x := y+z}, at given precision.
 	x.Add(y,z, 300);
 When subtracting almost equal numbers, a loss of precision will occur.
@@ -514,12 +521,8 @@ Sometimes this helps avoid unnecessary calculations with big numbers.
 	x.MultiplyAdd(y,z, 300);
 *	Obtain remainder modulo an integer, {x:=Mod(y,n)}.
 	x.Mod(y,n);
-(Optimization of integer division.)
-The integer modulus {n} is a big number.
-*	Add and multiply two integer numbers modulo a third integer number, {x := Mod(y+z,n)}, {x := Mod(y*z,n)}.
 (Optimization of integer division, important for number theory applications.)
 The integer modulus {n} is a big number.
-	x.AddMod(y,z,n); x.MultiplyMod(y,z,n);
 *	Obtain the sign of the number {x} (result is {-1}, {0} or {1}). (Optimization of comparison with 0.)
 	int sign_of_x = x.Sign();
 *	Obtain
@@ -543,6 +546,10 @@ Integer values are interpreted as bit sequences starting from the least signific
 	x.BitAnd(y,z); x.BitOr(y,z); x.BitXor(y,z);
 
 All other mathematical functions such as power, logarithm, cosine and so on, can be efficiently implemented using this basic interface.
+
+Note that generally the arithmetic functions will set the type of the resulting object to the type of the result of the operation.
+For example, operations that only apply to integers ({Mod}, {BitAnd} etc.) will set the type of the resulting object to integer if it is a float.
+The results of these operations on non-integer arguments are undefined.
 
 		Implementation notes
 
@@ -605,6 +612,10 @@ The basic assumption of the plugin architecture is that plugins can provide new 
 Suppose that some other function, such as a computation of the elliptic integral which heavily uses the square root, were implemented in the core using the {BigNumber} API.
 Then it will not be able to use the square root function supplied by the plugin because it has been already compiled into the Yacas kernel.
 
+Third, we might put all functions that use the basic API ({MathSqrt}, {MathSin} etc.) into the script library and not into the Yacas kernel.
+When Yacas is compiled with a particular numerical library, the functions available from the library will also be compiled as the kernel versions of {MathSqrt}, {MathPower} and so on.
+Since Yacas tries to call the kernel functions before the script library functions, the available kernel versions of {MathSqrt} etc. will supersede the script versions, but other functions such as {BesselJ} will be used from the script library.
+The only drawback of this scheme is that a plugin will not be able to use the faster versions of the functions, unless the plugin was compiled specifically with the requirement of the particular numerical library.
 
-So it appears that the first solution is preferable.
+So it appears that either the first or the third solution is viable.
 
