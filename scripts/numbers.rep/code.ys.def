@@ -29,4 +29,6 @@ IsAmicablePair
 IsIrregularPrime
 IsSquareFree
 GaussianGcd
+FactorGaussianInteger
+IsCarmichaelNumber
 }

@@ -450,10 +450,11 @@ IsTwinPrime(n_IsPositiveInteger)	<-- (IsPrime(n) And IsPrime(n+2));
 IsAmicablePair(m_IsPositiveInteger,n_IsPositiveInteger) <-- ( ProperDivisorsSum(m)==n And ProperDivisorsSum(n)==m );
 
 5  # IsIrregularPrime(p_IsComposite)	<-- False;
+// First irregular prime is 37
+5  # IsIrregularPrime(_p)_(p<37)	<-- False;
 
 // an odd prime p is irregular iff p divides the numerator of a Bernoulli number B(2*n) with 
 // 2*n+1<p
-// Currently malfunctional due to bug with Bernoulli
 10 # IsIrregularPrime(p_IsPositiveInteger) <--
 [
 	Local(i,irregular);
@@ -461,7 +462,7 @@ IsAmicablePair(m_IsPositiveInteger,n_IsPositiveInteger) <-- ( ProperDivisorsSum(
 	i:=1;
 	irregular:=False;
 
-	While(2*i + 1 < p)[
+	While( 2*i + 1 < p And (irregular = False) )[
 		If( Abs(Numer(Bernoulli(2*i))) % p == 0, irregular:=True );			
 		i++;
 	];
@@ -475,3 +476,69 @@ IsSquareFree(n_IsInteger)	<-- ( Moebius(n) != 0 );
 [
 	If(N(Abs(m))==0,n, GaussianGcd(m,n - m*Round(n/m) ) );
 ];
+
+// Algorithm adapted from: Number Theory: A Programmer's Guide
+//			Mark Herkommer
+// Program 8.7.1c, p 264
+// This function needs to be modified to return the factors in 
+// data structure instead of printing them out
+Function("FactorGaussianInteger",{x}) [
+	Check( IsGaussianInteger(x), "FactorGaussianInteger: argument must be a Gaussian integer");
+	Local(re,im,norm,a,b,d,i,j);
+
+	re:=Re(x);im:=Im(x);
+
+	If(re<0, re:=-re );
+	If(im<0, im:=-im );
+	norm:=re^2+im^2;
+
+	if( IsComposite(norm) )[
+		For(i:=0, i^2 <= norm, i++ )[	// real part
+			For(j:=0, i^2 + j^2 <= norm, j++)[	// complex part
+				if( Not( (i == re And j == im) Or 
+					 (i == im And j == re) ) )[ // no associates
+					d:=i^2+j^2;
+					if( d > 1 )[
+						a := re * i + im * j;
+						b := im * i - re * j;
+						While( (Mod(a,d) == 0) And  (Mod(b,d) == 0) ) [
+							FactorGaussianInteger(Complex(i,j));
+							re:= a/d;
+							im:= b/d;
+							a := re * i + im * j;
+							b := im * i - re * j;
+							norm := re^2 + im^2;
+						];
+					];
+				];
+			];
+		];
+		If( re != 1 Or im != 0, Echo(Complex(re,im)) );
+	] else [
+		Echo(Complex(re,im));
+	];
+];
+
+// Carmichael numbers are odd,squarefree and have at least 3 prime factors
+5  # IsCarmichaelNumber(n_IsEven)		<-- False;
+5  # IsCarmichaelNumber(_n)_(n<561)		<-- False;
+10 # IsCarmichaelNumber(n_IsPositiveInteger)	<--
+[
+	Local(i,factors,length,carmichael);
+
+	factors:=Factors(n);
+	carmichael:=True;
+	length:=Length(factors);
+	if( length < 3)[
+		 carmichael:=False;
+	] else [
+		For(i:=1,i<=length,i++)[
+			//Echo( n-1,"%",factors[i][1]-1,"=", Mod(n-1,factors[i][1]-1) );
+			If( Mod(n-1,factors[i][1]-1) != 0, carmichael:=False );
+			If(factors[i][2]>1,carmichael:=False);
+		];
+	];
+	carmichael;
+];
+
+IsCarmichaelNumber(n_IsList) <-- MapSingle("IsCarmichaelNumber",n);

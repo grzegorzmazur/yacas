@@ -435,6 +435,7 @@ Bk(_poly,_prime) <--
 /* New factorization : split between integers and polynomials. */
 10 # Factors(p_IsInteger) <-- FactorizeInt(p);
 20 # Factors(p_CanBeUni)_(Length(VarList(p)) = 1) <--  FactorUniVarSec(p);
+30 # Factors(p_IsGaussianInteger)	<-- FactorGaussianInteger(p);
 
 
 
@@ -497,9 +498,15 @@ Factor(_p) <-- FW(Factors(p));
   result;
 ];
 
-
-
-
-
-
-
+// The bud of an Quadratic Seive algorithm
+// congruence solving code must be written first
+Function("FactorQS",{n})[
+	Local(x,k,fb,j);	
+	// optimal number of primes in factor base
+	// according to Fundamental Number Theory with Applications - Mollin, p130
+	k:=Round(N(Sqrt(Exp(Sqrt(Ln(n)*Ln(Ln(n)))))));
+	fb:=ZeroVector(k);
+	For(j:=1,j<=k,j++)[
+		fb[j]:=NextPrime(j);
+	];
+];
