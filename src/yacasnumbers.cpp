@@ -932,7 +932,8 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
   num.CopyFrom(*iNumber);
   num.ChangePrecision(aPrecision);
 
-/* enable this to get scientific notation
+#define noENABLE_SCI_NOTATION
+#ifdef ENABLE_SCI_NOTATION
   if (!IsInt())
   {
     for(;;)
@@ -944,8 +945,11 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
       {
         if (num[i] != 0) 
         {
-          greaterOne=LispTrue;
-          break;
+          if (!(i==num.iExp && num[i]<1000 && num.iTensExp == 0))
+          {
+            greaterOne=LispTrue;
+            break;
+          }
         }
       }
       if (!greaterOne) break;
@@ -954,7 +958,8 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
       num.iTensExp++;
     }
   }
-*/
+#endif
+
   ANumberToString(aResult, num, aBase,(iType == KFloat));
 }
 double BigNumber::Double() const

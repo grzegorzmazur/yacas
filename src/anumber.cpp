@@ -278,6 +278,7 @@ void ANumber::SetTo(const LispCharPtr aString,LispInt aBase)
     // Parse the E<num> part at the end
     if (endNumberIndex > endFloatIndex+1)
     {
+      if (aString[endFloatIndex] == '.') endFloatIndex++;
         iTensExp = PlatAsciiToInt((LispCharPtr)&aString[endFloatIndex+1]);
 //printf("%s mapped to %d\n",&aString[endFloatIndex+1],iTensExp);
     }
