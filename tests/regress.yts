@@ -110,3 +110,21 @@ Verify(Taylor(x,0,5) 1/Sin(x),Undefined);
 // as a univariate polynomial in Pi
 TestYacas(2*Pi/3,(Pi-Pi/3));
 
+TestYacas(( a*(Sqrt(Pi))^2/2), (a*Pi)/2);
+TestYacas(( 3*(Sqrt(Pi))^2/2), (3*Pi)/2); 
+TestYacas(( a*(Sqrt(b ))^2/2), (a*b)/2);
+
+// Bug was found: gcd sometimes returned 0! Very bad, since the 
+// value returned by gcd is usually used to divide out greatest
+// common divisors, and dividing by zero is not a good idea.
+Verify(Gcd(0,0),1);
+Verify(Gcd({0}),1);
+
+// Factorize didn't check for correct input
+Verify(Factorize(10), Factorize(10));
+Verify(Factorize(-1), Factorize(-1));
+Verify(Factorize(Infinity), Factorize(Infinity));
+Verify(Factorize(1 .. 10),3628800);
+
+
+

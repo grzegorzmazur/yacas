@@ -147,7 +147,7 @@ UnFence("Factorize",4);
 HoldArg("Factorize",sumvar);
 HoldArg("Factorize",sumbody);
 
-Function("Factorize",{sumlist})
+Factorize(sumlist_IsList) <--
 [
    Local(sumi,sumsum);
    sumsum:=1;

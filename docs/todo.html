@@ -17,6 +17,7 @@ more consistent.
        not being freed after an error occurred, the user functions
        table corrupted after a reload.
   <li> Clean up integration code, and document algorithm used.
+  <li> document the extra Is... predicates for matrices that was added by Jonathan
   <li> document threaded use of integration
   <li> sparserep from multi, use for uni too
   <li> n .. m more elegant
@@ -86,17 +87,23 @@ This is a list of some expressions that currently go wrong:
        reals. Probably a trivial bug.
   <li> In> Simplify(2*x/4.5)
        never stops
-  <li> In> Simplify( a*(Sqrt(Pi))^2/2)
-       never stops, even though the following examples work:
-  <li> In> Simplify( 3*(Sqrt(Pi))^2/2)
-       Out> (3*Pi)/2;  // ok
-  <li> In> Simplify( a*(Sqrt(b))^2/2)
-       Out> (a*b)/2;   // ok
   <li> In> Integrate(x) x^(-1) should return Ln(x)
   <li> In> Integrate(x) Ln(0)
        Out> C35-Infinity*x;
   <li> Integrate(x)x^500, Integrate(x)(1/x^2)
   <li> TrigSimpCombine(x^500)
+
+  <li> some limits not working correctly when using infinity:
+       Limit(x,Infinity) Sin(x),
+       Limit(x,Infinity) Cos(x),
+       Limit(x,Infinity) Tan(x),
+       Limit(x,Infinity) Gamma(x),
+       Limit(x,Infinity) Factorial(x),
+       Limit(x,Infinity) Abs(x),
+
+  <li> factorize not checking for correctness of arguments:
+       Factorize(Infinity), Factorize(-1)      
+
 </ul>
 </pre>
 
