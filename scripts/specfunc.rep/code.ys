@@ -385,7 +385,12 @@ BernoulliArray1(n_IsEven) _ (n>=2) <--
 // When I put "And Numeric" on the next rule, I lose precision. Why ?
 // Also, if I move the the "_IsComplex" to the end with "IsComplex(x)" 
 // I lose precision.
-40 # BesselJ(_n,x_IsComplex)_(Abs(x)<=2)  <-- N(BesselJNsmall(n,x));
+
+40 # BesselJ(_n,x_IsComplex)_(Abs(x)<= 2*Gamma(n) )  <-- N(BesselNsmall(n,x,0));
+40 # BesselI(_n,x_IsComplex)_(Abs(x)<= 2*Gamma(n) )  <-- N(BesselNsmall(n,x,1));
+
+// This is buggy
+40 # BesselY(_n,x_IsComplex)_(Abs(x)<= 2*Gamma(n) )  <-- N((Cos(n*Pi)*BesselJ(n,x) - BesselJ(-n,x))/Sin(Pi*n));
 
 50 # BesselJ(0,x_IsComplex)_(Numeric) <-- N(BesselJN0(x));
 
@@ -397,7 +402,7 @@ BernoulliArray1(n_IsEven) _ (n>=2) <--
 // When {n} is an integer, this is fast.
 // When {n} is not, it is pretty slow due to Gamma() 
 
-Function("BesselJNsmall",{n,x})
+Function("BesselNsmall",{n,x,modified})
 [
         Local(term,result,k);
         Local(prec,eps,tmp);
@@ -410,7 +415,9 @@ Function("BesselJNsmall",{n,x})
         result:=0;
         While( Abs(term) >= eps )[
                 term:=x^(2*k+n);
-		If(k%2=1, term:=term*-1 );
+		// The only difference between BesselJ and BesselI
+		// is an alternating term
+		If( k%2=1 And modified=0 , term:=term*-1 );
 		term:=N(term/(2^(2*k+n)* k! * Gamma(k+n+1) ));
                 //Echo({"term is ",term});
                 result:=result+term;
