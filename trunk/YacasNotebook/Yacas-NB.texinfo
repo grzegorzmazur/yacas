@@ -86,7 +86,7 @@ while interacting with @yacas{}.
 * Running Yacas Interactively::  
 * Yacas-Notebook mode commands::  
 * Yacas mode commands::         
-* AUC@TeX{} commands::          
+* AUCTeX commands::          
 
 @end menu
 
@@ -101,7 +101,7 @@ previous packages.}
 While the @command{yacas-mode} provided by @file{yacas.el} is designed
 to help write @yacas{} programs, @ynb{} is designed to help write
 documents that include @yacas{} code.  @ynb{} is an extension of the
-La@TeX{} mode provided by AUC@TeX{}@footnote{This can be configured so
+La@TeX{} mode provided by AUCTeX@footnote{This can be configured so
 that @ynb{} extends the standard @TeX{} mode provided by Emacs, or just
 text mode.}, and so has the La@TeX{} mode commands available.  The
 resulting document can be run by La@TeX{}; this requires putting 
@@ -109,7 +109,13 @@ resulting document can be run by La@TeX{}; this requires putting
 \usepackage@{yacas-notebook@}
 @end example
 @noindent
-in the preamble.
+in the preamble.  If the output contains long lines, and the La@TeX{}
+breqn package is available, then put
+@example
+\usepackage[breqn]@{yacas-notebook@}
+@end example
+@noindent
+in the preamble instead.
 
 @node Cells , Evaluating cells, Introduction, Top
 @chapter Cells
@@ -217,7 +223,7 @@ form, ready to be formatted by La@TeX{}.  In general, if
 \yacas
 D(x)Sin(x^2);
 \outputtex
-2 x \left( \cos x ^@{2@}\right) 
+\ys 2 x \left( \cos x ^@{2@}\right) \\
 \endyacas
 @end example
 @c @iftex
@@ -528,11 +534,11 @@ expects to find the @yacas{} documentation, by default it is
 @noindent
 There are a few (very few) things that you can do to customize @ynb{}.  
 
-By default, @ynb{} is an extension of AUC@TeX{} mode.  This can be
+By default, @ynb{} is an extension of AUCTeX mode.  This can be
 changed by changing the variable @code{ynb-use-tex}.  The possible
 values are @code{'auctex}, @code{'tex} and @code{nil}.  Setting
 @code{ynb-use-tex} (the default) to @code{'auctex} will make @ynb{}
-an extension of AUC@TeX{}, setting it to @code{'tex} will make @ynb{} an
+an extension of AUCTeX, setting it to @code{'tex} will make @ynb{} an
 extension of Emacs's default @TeX{} mode, and setting
 @code{ynb-use-tex} to @code{nil} will make @ynb{} an extension of
 text-mode.  So, for example, putting 
@@ -827,7 +833,7 @@ assemble the package that the cell defines.
 @yacas{} output in @TeX{} form.
 @end multitable
 
-@node Yacas mode commands, AUC@TeX{} commands, Yacas-Notebook mode commands, Top
+@node Yacas mode commands, AUCTeX commands, Yacas-Notebook mode commands, Top
 @appendix Yacas mode commands
 
 @noindent
@@ -965,8 +971,8 @@ of indentation.
 @tab Bring up the info file for @yacas{}
 @end multitable
 
-@node AUC@TeX{} commands,  , Yacas mode commands, Top
-@appendix AUC@TeX{} commands
+@node AUCTeX commands,  , Yacas mode commands, Top
+@appendix AUCTeX commands
 
 @noindent
 @strong{Inserting commands}
