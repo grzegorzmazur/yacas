@@ -1,5 +1,5 @@
 :n:DefaultDirectory("./testnotes/");
-:n:Use("print");
+:n:Use("print.ys");
 :n:PrettyPrinter("Print");
 :iel:True
 This is an example index for a notepad tutorial.
