@@ -195,31 +195,33 @@ private:
   /// GMP wrapper starts here
   public:
   /// These functions will enable us to use arbitrary GMP functions without changing this class definition.
-  // copy from gmp objects (which must have values)
-  import_gmp(mpz_t gmp_int);
-  import_gmp(mpf_t gmp_float);
-  // copy to gmp objects (which must be already initialized and of correct type)
-  export_gmp(mpz_t gmp_int) const;
-  export_gmp(mpf_t gmp_float) const;
+  /// Copy from gmp objects (which must have values).
+  void import_gmp(mpz_t gmp_int);
+  void import_gmp(mpf_t gmp_float);
+  // Copy to gmp objects (which must be already initialized and of correct type).
+  void export_gmp(mpz_t gmp_int) const;
+  void export_gmp(mpf_t gmp_float) const;
   private:
-  // auxiliary internal private functions
-  bool IsExpFloat() const;
-  // convert types to int and float and initialize
+  /// Auxiliary internal private functions.
+  /// Initialize all gmp objects.
   void init();
+  /// Change types to int and float but do not convert any values.
   void turn_float();
   void turn_int();
-  /// This gives the current type of the BigNumber
+  /// This type gives masks to check the current type of the BigNumber.
   enum EType
-  { // bit masks: KExpFloat is also KFloat.
+  { /// bit masks: KExpFloat includes KFloat.
 	  KInt = 1,
 	  KFloat = 2,
 	  KExpFloat = 6,
   };
   mpz_t int_;	// these two are not in a union
   mpf_t float_;	// because we want to avoid excessive memory reallocation.
-  
+  /// Type flag (a bit mask).
   unsigned type_;
-  mpz_t exponent_; 	// this is only used for ExpFloats when the exponent is out of range for GMP.
+  mpz_t exponent_; 	// this is only used for exp-floats when the exponent is out of range for GMP.
+  /// Check whether we are of exp-float type.
+  bool IsExpFloat() const;
   
   /// GMP wrapper ends here.
   #else
