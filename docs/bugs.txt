@@ -15,7 +15,7 @@ Summary:
  7. (RESOLVED?)[Complex] Im() and Undefined or Infinity
  8. [Linear Algebra] EigenValues() with complex matrix hangs
  9. (RESOLVED?)[Calculus] Integration through singularities
-10. [Simplify] Simplify(x^(-2)/(1-x)^3) returns 0
+10. (RESOLVED?)[Simplify] Simplify(x^(-2)/(1-x)^3) returns 0
 11. [Trigonometry] ArcCos(Cos(beta)) returns beta
 12. [Calculus] 'Limit(n, Infinity) n^5/2^n' uses L'Hopital incorrectly
 13. [Trigonometry] 'TrigSimpCombine(x^500)' returns nothing
@@ -24,7 +24,7 @@ Summary:
 16. (COULD NOT REPRODUCE)[Build System]  mathcommands3.cpp is compiled twice and libyacas is linked
     twice
 17. (RESOLVED?)[Polynomials] Factor(x^6-1) gives wrong result
-18. [Integration]Integrating fractional powers
+18. (RESOLVED?)[Integration]Integrating fractional powers
 ----------------------------------------------------------------------
 
 Bug #1
@@ -190,6 +190,8 @@ Title: [Simplify] Simplify(x^(-2)/(1-x)^3) returns 0
 Submitted by: Jonathan Leto
 Date: 2002-06-30
 
+Fixed 2003-05-20
+
 ----------------------------------------------------------------------
 
 Bug #11
@@ -257,7 +259,6 @@ Bug #15
 Title: [Core] 'MathPower(0,0.5)' locks up
 Submitted by: Ayal Pinkus
 
-<<<<<<< bugs.txt
 Resolved? Right now the behaviour is:
 
   In> MathPower(0,0.5)
