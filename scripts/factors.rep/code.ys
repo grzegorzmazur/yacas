@@ -438,8 +438,10 @@ Bk(_poly,_prime) <--
 30 # Factors(p_IsGaussianInteger)	<-- GaussianFactors(p);
 
 
+// This is so Factor(Sin(x)) doesn't return FWatom(Sin(x))
+//Factor(_p) <-- FW(Factors(p));
+10 # Factor(p_CanBeUni) <-- FW(Factors(p));
 
-Factor(_p) <-- FW(Factors(p));
 
 /* FW: pass FW the result of Factors, and it will show it in the
  * form of p0^n0*p1^n1*...
