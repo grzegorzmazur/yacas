@@ -79,6 +79,7 @@ CORE_KERNEL_FUNCTION("Replace",LispReplace,3,YacasEvaluator::Function | YacasEva
 CORE_KERNEL_FUNCTION("DestructiveReplace",LispDestructiveReplace,3,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("Atom",LispAtomize,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("String",LispStringify,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("CharString",LispCharString,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("FlatCopy",LispFlatCopy,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 
 //???CORE_KERNEL_FUNCTION("",LispNoCacheConcatenateStrings);
@@ -141,8 +142,6 @@ CORE_KERNEL_FUNCTION("MathMultiply",LispMultiply,2,YacasEvaluator::Function | Ya
 CORE_KERNEL_FUNCTION("MathAdd",LispAdd,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathSubtract",LispSubtract,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathDivide",LispDivide,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
-CORE_KERNEL_FUNCTION("MathDebugInfo",LispDumpBigNumberDebugInfo,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
-
 CORE_KERNEL_FUNCTION("MathArcCos",LispArcCos,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathArcTan",LispArcTan,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("Precision",LispPrecision,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
@@ -256,6 +255,14 @@ CORE_KERNEL_FUNCTION("FastAssoc",LispFastAssoc,2,YacasEvaluator::Function | Yaca
 CORE_KERNEL_FUNCTION("CurrentFile",LispCurrentFile,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("CurrentLine",LispCurrentLine,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("`",LispBackQuote,1,YacasEvaluator::Macro | YacasEvaluator::Fixed);
+
+//
+// Debugging functions
+//
+CORE_KERNEL_FUNCTION("MathDebugInfo",LispDumpBigNumberDebugInfo,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("InDebugMode",LispInDebugMode,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("DebugFile",LispDebugFile,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("DebugLine",LispDebugLine,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 
 //
 // Information functions
