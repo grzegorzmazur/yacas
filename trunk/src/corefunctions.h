@@ -109,7 +109,7 @@ CORE_KERNEL_FUNCTION("RuleBaseListed",LispRuleBaseListed,2,YacasEvaluator::Macro
 CORE_KERNEL_FUNCTION("MacroRuleBaseListed",LispMacroRuleBaseListed,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("DefMacroRuleBase",LispDefMacroRuleBase,2,YacasEvaluator::Macro | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("DefMacroRuleBaseListed",LispDefMacroRuleBaseListed,2,YacasEvaluator::Macro | YacasEvaluator::Fixed);
-CORE_KERNEL_FUNCTION("HoldArg",LispHoldArg,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("HoldArg",LispHoldArg,2,YacasEvaluator::Macro | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("Rule",LispNewRule,5,YacasEvaluator::Macro | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MacroRule",LispMacroNewRule,5,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("UnFence",LispUnFence,2,YacasEvaluator::Function | YacasEvaluator::Fixed);

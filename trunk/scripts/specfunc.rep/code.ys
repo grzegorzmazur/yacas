@@ -156,6 +156,7 @@ Function("ApproxInfSum",{expr,start,x,c})
 		//Echo({"term is ",term});
                 k:=k+1;
 		result:=result+term;
+
         ];
 		If(Verbose, Echo("ApproxInfSum: Info: using ", k, " terms of the series"));
         Precision(prec);
@@ -167,9 +168,8 @@ Function("ApproxInfSum",{expr,start,x,c})
 //Echo("r1",result);
 //Echo("r2",RoundTo(result,prec));
 //Echo("r3",N((result/10)*10));
-        RoundTo(result,prec);
 
-
+  result;
 ];
 
 /////////////////////////////////////////////////
