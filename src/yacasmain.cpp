@@ -317,7 +317,8 @@ void ShowResult(char *prompt)
     }
     else
     {
-        printf("%s%s\n",prompt,yacas->Result());
+        if ((*yacas)()().PrettyPrinter()==NULL)
+            printf("%s%s\n",prompt,yacas->Result());
     }
     if (use_texmacs_out)
     {
