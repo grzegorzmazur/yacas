@@ -391,7 +391,7 @@ void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
     Check(InternalIsString(aOperator),KLispErrNotString);
 
     LispObject *head =
-        LispAtom::New(aEnvironment,SymbolName(aEnvironment, aOperator->String()));
+        LispAtom::New(aEnvironment,SymbolName(aEnvironment, aOperator->String())->String());
     head->Next().Set(aArgs.Get());
     LispPtr body;
     body.Set(LispSubList::New(head));

@@ -212,7 +212,7 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
                         while (last->Next().Get() != NULL)
                             last = last->Next().Get();
                         
-                        last->Next().Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str)));
+                        last->Next().Set(LispAtom::New(aEnvironment,str));
 
 //                        third.Get()->Next().Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str)));
                         LispPtr *pred = NEW LispPtr;

@@ -77,7 +77,7 @@ LispBoolean LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
     {
         if (name == iOriginalNames[i])
         {
-            aResult.Set(LispAtom::New(iEnvironment,iNewNames[i]));
+            aResult.Set(LispAtom::New(iEnvironment,iNewNames[i]->String()));
 #ifdef YACAS_DEBUG
             aResult.Get()->SetFileAndLine(aElement.Get()->iFileName,aElement.Get()->iLine);
 #endif

@@ -86,6 +86,9 @@ inline void RefPtr<T>::SetTo(T* aOther)
     if (!iObject->DecreaseRefCount())
     {
       delete iObject;
+#ifdef YACAS_DEBUG
+      DecNrObjects();
+#endif
     }
   }
   iObject = aOther;

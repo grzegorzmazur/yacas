@@ -49,7 +49,7 @@ void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,Lis
     if (iFlags & Variable)
     {
       LispPtr head;
-      head.Set(LispAtom::New(aEnvironment,aEnvironment.iList));
+      head.Set(aEnvironment.iList->Copy(LispFalse));
       head.Get()->Next().Set(iter());
       aEnvironment.iStack.PushArgOnStack(LispSubList::New(head.Get()));
     }
@@ -72,7 +72,7 @@ void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,Lis
 
 //printf("Enter\n");
       LispPtr head;
-      head.Set(LispAtom::New(aEnvironment,aEnvironment.iList));
+      head.Set(aEnvironment.iList->Copy(LispFalse));
       head.Get()->Next().Set(iter());
       LispPtr list;
       list.Set(LispSubList::New(head.Get()));

@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 #include "lisptype.h"
 #include "numbers.h"
 #include "standard.h"
@@ -671,39 +672,39 @@ void SetMPFPrecision(LispInt aPrecision)
 }
 
 
-LispStringPtr GcdInteger(LispCharPtr int1, LispCharPtr int2,
-                         LispHashTable& aHashTable)
+LispObject* GcdInteger(LispObject* int1, LispObject* int2,
+                         LispEnvironment& aEnvironment)
 {
     mpz_t i1;
     mpz_t i2;
     mpz_init(i1);
-    mpz_set_str(i1,int1,10);
+    mpz_set_str(i1,int1->String()->String(),10);
     mpz_init(i2);
-    mpz_set_str(i2,int2,10);
+    mpz_set_str(i2,int2->String()->String(),10);
 
     mpz_t res;
     mpz_init(res);
     mpz_gcd(res,i1,i2);
     GMPNumber r;
     initGMPNumber(r,res);
-    LispStringPtr result = GMPNumberToString(r, aHashTable);
+    LispStringPtr result = GMPNumberToString(r, aEnvironment.HashTable());
     clearGMPNumber(r);
     mpz_clear(i1);
     mpz_clear(i2);
     mpz_clear(res);
-    return result;
+    return LispAtom::New(aEnvironment,result->String());
 }
 
-LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    LispInt nr = InternalAsciiToInt(int1);
+    LispInt nr = InternalAsciiToInt(int1->String()->String());
     Check(nr>=0,KLispErrInvalidArg);
     GMPNumber r;
     initGMPNumber(r);
     mpz_fac_ui (r.man, nr);
-    LispStringPtr result = GMPNumberToString(r, aHashTable);
+    LispStringPtr result = GMPNumberToString(r, aEnvironment.HashTable());
     clearGMPNumber(r);
-    return result;
+    return LispAtom::New(aEnvironment,result->String());
 }
 
 LispStringPtr AddFloat(LispCharPtr int1, LispCharPtr int2,
@@ -789,88 +790,86 @@ LispStringPtr MultiplyFloat(LispCharPtr int1, LispCharPtr int2,
   return result;
 }
 
-LispStringPtr PowerFloat(LispCharPtr int1, LispCharPtr int2,
-                         LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
 //TODO: handle case int2 != integer
   GMPNumber r,x;
-  long y = atol(int2);
+  long y = atol(int2->String()->String());
   initGMPNumber(r);
-  initGMPNumber(x,int1);
+  initGMPNumber(x,int1->String()->String());
   GMPNumberPower(r,x,y,aPrecision);        
-  LispStringPtr result = GMPNumberToString(r, aHashTable, aPrecision);
+  LispStringPtr result = GMPNumberToString(r, aEnvironment.HashTable(), aPrecision);
   clearGMPNumber(r);
   clearGMPNumber(x);
-  return result;
+  return LispAtom::New(aEnvironment,result->String());
 }
 
 
 
-LispStringPtr SinFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     //TODO
-    return PlatSin(int1, aHashTable, 0);
+    return PlatSin(aEnvironment, int1, 0);
 }
 
-LispStringPtr CosFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* CosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     //TODO
-    return PlatCos(int1, aHashTable, 0);
+    return PlatCos(aEnvironment, int1, 0);
 }
-
-LispStringPtr TanFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     //TODO
-    return PlatTan(int1, aHashTable, 0);
+    return PlatTan(aEnvironment, int1, 0);
 }
 
-LispStringPtr ArcSinFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     //TODO
-    return PlatArcSin(int1,  aHashTable, 0);
+    return PlatArcSin(aEnvironment, int1, 0);
 }
 
-LispStringPtr ArcCosFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* ArcCosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     //TODO
-    return PlatArcCos(int1,  aHashTable, 0);
+    return PlatArcCos(aEnvironment,int1, 0);
 }
 
-LispStringPtr ArcTanFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* ArcTanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     //TODO
-    return PlatArcTan(int1,  aHashTable, 0);
+    return PlatArcTan(aEnvironment,int1, 0);
 }
 
-LispStringPtr ExpFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
   GMPNumber x;
-  initGMPNumber(x,int1);
+  initGMPNumber(x,int1->String()->String());
   GMPNumberExp(x,x,aPrecision);
-  LispStringPtr result = GMPNumberToString(x, aHashTable, aPrecision);
+  LispStringPtr result = GMPNumberToString(x, aEnvironment.HashTable(), aPrecision);
   clearGMPNumber(x);
-  return result;
+  return LispAtom::New(aEnvironment, result->String());
 }
 
-LispStringPtr LnFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* LnFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
   GMPNumber x;
-  initGMPNumber(x,int1);
+  initGMPNumber(x,int1->String()->String());
   GMPNumberLog(x,x,aPrecision);
-  LispStringPtr result = GMPNumberToString(x, aHashTable, aPrecision);
+  LispStringPtr result = GMPNumberToString(x, aEnvironment.HashTable(), aPrecision);
   clearGMPNumber(x);
-  return result;
+  return LispAtom::New(aEnvironment, result->String());
 }
 
 
-LispStringPtr SqrtFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
   GMPNumber x;
-  initGMPNumber(x,int1);
+  initGMPNumber(x,int1->String()->String());
   GMPNumberSqrt(x,x,aPrecision);
-  LispStringPtr result = GMPNumberToString(x, aHashTable, aPrecision);
+  LispStringPtr result = GMPNumberToString(x, aEnvironment.HashTable(), aPrecision);
   clearGMPNumber(x);
-  return result;
+  return LispAtom::New(aEnvironment,result->String());
 }
 
 LispStringPtr AbsFloat(LispCharPtr int1, LispHashTable& aHashTable
@@ -920,27 +919,27 @@ LispBoolean GreaterThan(LispCharPtr int1, LispCharPtr int2,
 
 
 
-LispStringPtr ShiftLeft( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* ShiftLeft( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
   GMPNumber x;
-  initGMPNumber(x,int1);
-  unsigned long bits = atol(int2);
+  initGMPNumber(x,int1->String()->String());
+  unsigned long bits = atol(int2->String()->String());
   GMPNumberShiftLeft(x,x,bits);
-  LispStringPtr result = GMPNumberToString(x, aHashTable, aPrecision);
+  LispStringPtr result = GMPNumberToString(x, aEnvironment.HashTable(), aPrecision);
   clearGMPNumber(x);
-  return result;
+  return LispAtom::New(aEnvironment,result->String());
 }
 
 
-LispStringPtr ShiftRight( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* ShiftRight( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
   GMPNumber x;
-  initGMPNumber(x,int1);
-  unsigned long bits = atol(int2);
+  initGMPNumber(x,int1->String()->String());
+  unsigned long bits = atol(int2->String()->String());
   GMPNumberShiftRight(x,x,bits);
-  LispStringPtr result = GMPNumberToString(x, aHashTable, aPrecision);
+  LispStringPtr result = GMPNumberToString(x, aEnvironment.HashTable(), aPrecision);
   clearGMPNumber(x);
-  return result;
+  return LispAtom::New(aEnvironment,result->String());
 }
 
 
@@ -997,19 +996,19 @@ LispStringPtr CeilFloat( LispCharPtr int1, LispHashTable& aHashTable,
   return result;
 }
 
-LispStringPtr ModFloat( LispCharPtr int1, LispCharPtr int2, 
-                        LispHashTable& aHashTable, LispInt aPrecision)
+LispObject* ModFloat( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,
+                        LispInt aPrecision)
 {
   GMPNumber r,x,y;
   initGMPNumber(r);
-  initGMPNumber(x,int1);
-  initGMPNumber(y,int2);
+  initGMPNumber(x,int1->String()->String());
+  initGMPNumber(y,int2->String()->String());
   GMPNumberMod(r,x,y);        
-  LispStringPtr result = GMPNumberToString(r, aHashTable, aPrecision);
+  LispStringPtr result = GMPNumberToString(r, aEnvironment.HashTable(), aPrecision);
   clearGMPNumber(r);
   clearGMPNumber(x);
   clearGMPNumber(y);
-  return result;
+  return LispAtom::New(aEnvironment,result->String());
 }
 
 LispStringPtr DivFloat( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHashTable,
@@ -1027,15 +1026,14 @@ LispStringPtr DivFloat( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHash
   return result;
 }
 
-LispStringPtr PiFloat( LispHashTable& aHashTable,
-                        LispInt aPrecision)
+LispObject* PiFloat( LispEnvironment& aEnvironment, LispInt aPrecision)
 {
   GMPNumber x;
   initGMPNumber(x);
   GMPNumberPi(x,aPrecision);
-  LispStringPtr result = GMPNumberToString(x, aHashTable, aPrecision);
+  LispStringPtr result = GMPNumberToString(x, aEnvironment.HashTable(), aPrecision);
   clearGMPNumber(x);
-  return result;
+  return LispAtom::New(aEnvironment,result->String());
 }
 
 static LispStringPtr IntegerToString(mpz_t& aInt,

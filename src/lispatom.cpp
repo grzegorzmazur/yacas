@@ -6,24 +6,24 @@
 #include "numbers.h"
 #include "standard.h"
 
-//#ifdef YACAS_DEBUG
+#ifdef YACAS_DEBUG
 #include <stdio.h> //DEBUG
-//#endif
+#endif
 
 /// construct an atom from a string representation.
-LispObject* LispAtom::New(LispEnvironment& aEnvironment, LispStringPtr aString)
+LispObject* LispAtom::New(LispEnvironment& aEnvironment, LispCharPtr aString)
 {
   LispObject* self;
 #ifndef NO_USE_BIGFLOAT
-  if (IsNumber(aString->String(),LispTrue))	// check if aString is a number (int or float)
+  if (IsNumber(aString,LispTrue))	// check if aString is a number (int or float)
   {
     /// construct a number from a decimal string representation (also create a number object)
-    self = NEW LispNumber(aEnvironment.HashTable(), aString, aEnvironment.Precision());
+    self = NEW LispNumber(NEW LispString(aString), aEnvironment.Precision());
   }
   else
 #endif
   {
-    self = NEW LispAtom(aString);
+    self = NEW LispAtom(aEnvironment.HashTable().LookUp(aString));
   }
   Check(self!=NULL,KLispErrNotEnoughMemory);
   return self;
@@ -38,9 +38,7 @@ LispAtom::LispAtom(LispStringPtr aString)
 }
 LispAtom::~LispAtom()
 {
-//printf("lispatom1\n");
     iString->DecreaseRefCount();
-//printf("lispatom2\n");
 }
 
 
@@ -171,9 +169,7 @@ LispGenericClass::~LispGenericClass()
     iClass->iReferenceCount--;
     if (iClass->iReferenceCount == 0)
     {
-//printf("generic object just got deleted!\n");
         delete iClass;
-//printf("deleted\n");
     }
     iClass=NULL;
 }
@@ -203,8 +199,7 @@ LispObject* LispGenericClass::SetExtraInfo(LispPtr& aData)
 #ifndef NO_USE_BIGFLOAT
 
     /// construct from another LispNumber
-LispNumber::LispNumber(LispHashTable* aHashTable, BigNumber* aNumber,LispStringPtr aString)
-  : iHashTable(aHashTable)
+LispNumber::LispNumber(BigNumber* aNumber,LispStringPtr aString)
 {
   iString = aString;
   iNumber = aNumber;
@@ -212,16 +207,14 @@ LispNumber::LispNumber(LispHashTable* aHashTable, BigNumber* aNumber,LispStringP
 
 
     /// construct from a BigNumber; the string representation will be absent until requested
-LispNumber::LispNumber(LispHashTable& aHashTable, BigNumber* aNumber)
-  : iHashTable(&aHashTable)
+LispNumber::LispNumber(BigNumber* aNumber)
 {
   iString = NULL;
   iNumber =aNumber;
 }
 
     /// construct from a decimal string representation (also create a number object) and use aBasePrecision digits
-LispNumber::LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt aBasePrecision)
-  : iHashTable(&aHashTable)
+LispNumber::LispNumber(LispStringPtr aString, LispInt aBasePrecision)
 {
   iString = aString;
   iNumber = NULL;	// purge whatever it was
@@ -229,7 +222,7 @@ LispNumber::LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt
   Number(aBasePrecision);
 }
 
-    /// return a string representation in decimal
+/// return a string representation in decimal
 LispStringPtr LispNumber::String() 
 {
   if (iString.Ptr() == NULL)
@@ -238,24 +231,19 @@ LispStringPtr LispNumber::String()
     LispString *str = NEW LispString;
     // export the current number to string and store it as LispNumber::iString
     iNumber->ToString(*str, bits_to_digits(iNumber->GetPrecision(),BASE10), BASE10);
-    // register the string with the hash table - trying to avoid this now
-//    LISPASSERT(iHashTable != NULL);
-//    iString = iHashTable->LookUp(str);
-    iString = str;	// this used to not work, testing now
-	// when we are sure this works, we can remove iHashTable from LispNumber (Ayal?)
+    iString = str;	
   }
   return iString.Ptr();
 }
 
 LispNumber::~LispNumber()
 {
-//  delete iNumber;
   iNumber = NULL;
 }
 LispObject* LispNumber::Copy(LispInt aRecursed)
 {
     LispObject *copied;
-    copied = NEW LispNumber(iHashTable, iNumber.Ptr(), iString.Ptr());
+    copied = NEW LispNumber(iNumber.Ptr(), iString.Ptr());
 
 #ifdef YACAS_DEBUG
     copied->SetFileAndLine(iFileName, iLine);
@@ -270,9 +258,6 @@ BigNumber* LispNumber::Number(LispInt aBasePrecision)
   if (iNumber.Ptr() == NULL)
   {	// create and store a BigNumber out of string
     LISPASSERT(iString.Ptr() != NULL);
-//#ifdef YACAS_DEBUG
-//printf("Converting from string representation %s\n",iString->String()); //DEBUG
-//#endif
     RefPtr<LispString> str;
     str = iString.Ptr();
     // aBasePrecision is in digits, not in bits, ok

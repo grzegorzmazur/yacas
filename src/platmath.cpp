@@ -12,98 +12,104 @@
 #include "errors.h"
 
 
-double GetDouble(LispCharPtr aString)
+double GetDouble(LispObject* aInteger)
 {
-    return strtod(aString,NULL); //TODO!
+  BigNumber* number = aInteger->Number(0);
+  if (number == NULL)
+  {
+    RaiseError("Argument is not a number: %s",aInteger->String());
+  }
+  return number->Double();
+
+//TODO remove return strtod(aString,NULL); 
 }
 
-LispStringPtr Double(double aValue, LispHashTable& aHashTable)
+LispObject* Double(LispEnvironment& aEnvironment,double aValue)
 {
-    char dummy[150];
-
+  char buf[150];
 #ifdef HAVE_VSNPRINTF
-    snprintf(dummy,150,"%f",aValue);
+    snprintf(buf,150,"%g",aValue);
 #else
-    sprintf(dummy,"%f",aValue);
+    sprintf(buf,"%g",aValue);
 #endif
-    return aHashTable.LookUp(dummy);
+  return LispAtom::New(aEnvironment,buf);
 }
 
-LispStringPtr PlatSin(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatSin(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(sin(GetDouble(int1)),aHashTable);
+    return Double(aEnvironment, sin(GetDouble(int1)));
 }
 
-LispStringPtr PlatCos(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatCos(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(cos(GetDouble(int1)),aHashTable);
+    return Double(aEnvironment, cos(GetDouble(int1)));
 }
 
-LispStringPtr PlatTan(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatTan(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(tan(GetDouble(int1)),aHashTable);
+    return Double(aEnvironment, tan(GetDouble(int1)));
 }
 
-LispStringPtr PlatArcSin(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatArcSin(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(asin(GetDouble(int1)),aHashTable);
+    return Double(aEnvironment, asin(GetDouble(int1)));
 }
 
-LispStringPtr PlatArcCos(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatArcCos(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(acos(GetDouble(int1)),aHashTable);
+    return Double(aEnvironment, acos(GetDouble(int1)));
 }
 
-LispStringPtr PlatArcTan(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatArcTan(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(atan(GetDouble(int1)),aHashTable);
+    return Double(aEnvironment, atan(GetDouble(int1)));
 }
 
-LispStringPtr PlatExp(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatExp(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(exp(GetDouble(int1)),aHashTable);
+    return Double(aEnvironment, exp(GetDouble(int1)));
 }
 
-LispStringPtr PlatLn(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatLn(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(log(GetDouble(int1)),aHashTable);
+    return Double(aEnvironment, log(GetDouble(int1)));
 }
 
-LispStringPtr PlatPower(LispCharPtr int1, LispCharPtr int2,
-                        LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatPower(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2,
+                        LispInt aPrecision)
 {
-    return Double(pow(GetDouble(int1),GetDouble(int2)),aHashTable);
+    return Double(aEnvironment, pow(GetDouble(int1),GetDouble(int2)));
 }
 
 
 
-LispStringPtr PlatSqrt(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatSqrt(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(sqrt(GetDouble(int1)),aHashTable);
+    return Double(aEnvironment, sqrt(GetDouble(int1)));
 }
-LispStringPtr PlatPi(LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatPi(LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    return Double(acos(-1.0),aHashTable);
+    return Double(aEnvironment, acos(-1.0));
 }
-LispStringPtr PlatFloor(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatFloor(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(floor(GetDouble(int1)),aHashTable);
+    return Double(aEnvironment, floor(GetDouble(int1)));
 }
-LispStringPtr PlatCeil(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatCeil(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(ceil(GetDouble(int1)),aHashTable);
+    return Double(aEnvironment, ceil(GetDouble(int1)));
 }
-LispStringPtr PlatMod(LispCharPtr int1, LispCharPtr int2,LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatMod(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2,LispInt aPrecision)
 {
-    return Double(fmod(GetDouble(int1),GetDouble(int2)),aHashTable);
+    return Double(aEnvironment, fmod(GetDouble(int1),GetDouble(int2)));
 }
-LispStringPtr PlatDiv(LispCharPtr int1, LispCharPtr int2,LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatDiv(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2,LispInt aPrecision)
 {
-    return Double(((long)GetDouble(int1))/((long)GetDouble(int2)),aHashTable);
+    return Double(aEnvironment,((long)GetDouble(int1))/((long)GetDouble(int2)));
 }
-LispStringPtr PlatAbs(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatAbs(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(fabs(GetDouble(int1)),aHashTable);
+    return Double(aEnvironment, fabs(GetDouble(int1)));
 }
 
 
@@ -126,245 +132,9 @@ unsigned primes_table_check(unsigned long p)
 	return ((primes_table[index] & (1 << field))==0) ? 0 : 1;
 }
 
-LispStringPtr PlatIsPrime(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PlatIsPrime(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(primes_table_check((unsigned long)(GetDouble(int1))), aHashTable);
+    return Double(aEnvironment, primes_table_check((unsigned long)(GetDouble(int1))));
 }
 
 
-/* And here is a reference implementation of BigNumber: one using native types.
-*/
-
-#ifdef USE_NATIVE
-BigNumber::BigNumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase)
-{
-  if (strchr(aString,'.') || strchr(aString,'e') || strchr(aString,'E'))
-  {
-    type  = KDouble;
-    value.d = GetDouble(aString);
-  }
-  else
-  {
-    type  = KInteger;
-    value.i = atoi(aString);
-  }
-}
-
-BigNumber::BigNumber(const BigNumber& aOther)
-{
-  type  = aOther.type;
-  value = aOther.value;
-}
-
-BigNumber::BigNumber() 
-{
-  type = KDouble;value.d = 0.0;
-}
-
-
-BigNumber::~BigNumber()
-{
-}
-
-void BigNumber::ToString(LispString& aResult, LispInt aBase) const 
-{
-  char dummy[150];
-  dummy[0] = '\0';
-  switch (type)
-  {
-  case KInteger:
-#ifdef HAVE_VSNPRINTF
-    snprintf(dummy,150,"%ld",value.i);
-#else
-    sprintf(dummy,"%ld",value.i);
-#endif
-    break;
-  case KDouble:
-#ifdef HAVE_VSNPRINTF
-    snprintf(dummy,150,"%f",value.d);
-#else
-    sprintf(dummy,"%f",value.d);
-#endif
-    break;
-  }
-  aResult.SetStringCounted(dummy,PlatStrLen(dummy));
-}
-const LispCharPtr BigNumber::NumericLibraryName() const
-{
-  return "Native types";
-}
-
-//          result->value.i assign ((BigNumber)aX).value.i op ((BigNumber)aY).value.i; 
-
-
-#define TWO_FUNC_WITH(result,assign,op) \
-{ \
-const BigNumber* x = ((const BigNumber*)(&aX));\
-const BigNumber* y = ((const BigNumber*)(&aY));\
-  switch (x->type) \
-  { \
-    case KInteger: \
-      switch (y->type) \
-      { \
-        case KInteger: \
-          result->type = KInteger; \
-          result->value.i assign ((x->value.i) op (y->value.i)); \
-          break; \
-        case KDouble: \
-          result->type = KDouble; \
-          result->value.d assign ((x->value.i) op (y->value.d)); \
-          break; \
-      } \
-      break; \
-    case KDouble: \
-      switch (y->type) \
-      { \
-        case KInteger: \
-          result->type = KDouble; \
-          result->value.d assign ((x->value.d) op (y->value.i)); \
-          break; \
-        case KDouble: \
-          result->type = KDouble; \
-          result->value.d assign ((x->value.d) op (y->value.d)); \
-          break; \
-      } \
-      break; \
-  } \
-}
-
-#define TWO_FUNC(assign,op) \
-{ \
-  LISPASSERT(!StrCompare(aX.NumericLibraryName(), aY.NumericLibraryName())); \
-  LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); \
-  TWO_FUNC_WITH(this,assign,op) \
-}
-
-
-void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision) 
-TWO_FUNC(=,*)
-
-void BigNumber::MultiplyAdd(BigNumber& aResult,
-              const BigNumber& aX, 
-              const BigNumber& aY, 
-              LispInt aPrecision) 
-TWO_FUNC_WITH(((BigNumber*)(&aResult)),+=,*)
-
-void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision) 
-TWO_FUNC(=,+)
-
-void BigNumber::Negate(const BigNumber& aX) 
-{
-  switch (((const BigNumber*)(&aX))->type)
-  {
-    case KInteger: value.i = -((BigNumber*)(&aX))->value.i; break;
-    case KDouble:  value.d = -((BigNumber*)(&aX))->value.d; break;
-  }
-}
-void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision) 
-TWO_FUNC(=,/)
-
-void BigNumber::ShiftLeft( const BigNumber& aX, LispInt aNrToShift)
-{
-  LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
-  LISPASSERT(x.type == KInteger);
-  value.i = ((BigNumber*)(&aX))->value.i << aNrToShift;
-}
-void BigNumber::ShiftRight( const BigNumber& aX, LispInt aNrToShift)
-{
-  LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
-  LISPASSERT(x.type == KInteger);
-  value.i = ((BigNumber*)(&aX))->value.i >> aNrToShift;
-}
-void BigNumber::BitAnd(const BigNumber& aX, const BigNumber& aY)
-{
-  LISPASSERT(!StrCompare(aX.NumericLibraryName(), aY.NumericLibraryName())); 
-  LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
-  LISPASSERT(x->type != KInteger);
-  LISPASSERT(y->type != KInteger);
-  value.i = (((BigNumber*)(&aX))->value.i) & (((BigNumber*)(&aY))->value.i);
-}
-void BigNumber::BitOr(const BigNumber& aX, const BigNumber& aY)
-{
-  LISPASSERT(!StrCompare(aX.NumericLibraryName(), aY.NumericLibraryName())); 
-  LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
-  LISPASSERT(x->type != KInteger);
-  LISPASSERT(y->type != KInteger);
-  value.i = (((BigNumber*)(&aX))->value.i) | (((BigNumber*)(&aY))->value.i);
-}
-void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
-{
-  LISPASSERT(!StrCompare(aX.NumericLibraryName(), aY.NumericLibraryName())); 
-  LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
-  LISPASSERT(x->type != KInteger);
-  LISPASSERT(y->type != KInteger);
-  value.i = (((BigNumber*)(&aX))->value.i) ^ (((BigNumber*)(&aY))->value.i);
-}
-
-
-double BigNumber::Double() const
-{
-  LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
-  if (type == KInteger)
-    return double(value.i);
-  else//if (type == KDouble)
-    return value.d;
-}
-
-LispInt BigNumber::BitCount() const
-{
-  LispInt result = 0;
-  if (type == KInteger)
-  {
-  // prepare the absolute value of the integer for shifting
-    long temp = (value.i < 0) ? -value.i : value.i;
-    while (temp>0)
-    {
-      temp >>= 1;
-      ++result;
-    }
-  }
-  else	// KDouble, return the binary exponent
-  {
-  // prepare the absolute value of the number
-    double temp = (value.d < 0) ? -value.d : value.d;
-    if (temp<1)
-    {
-      while (temp<1)
-      {
-        temp *= 2;
-	++result;
-      }
-    }
-    else if (temp>1)
-    {
-      while (temp>1)
-      {
-        temp /= 2;
-	++result;
-      }
-    }
-  }
-  return result;
-}
-
-LispInt BigNumber::Sign() const
-{
-  if (type == KInteger)
-  {
-    return ( (value.i > 0) ? 1 : ((value.i < 0) ? -1 : 0) );
-  }
-  else
-  {
-    return ( (value.d > 0) ? 1 : ((value.d < 0) ? -1 : 0) );
-  }
-}
-
-
-void BigNumber::SetTo(const BigNumber& aX)
-{
-  LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
-  type = ((BigNumber*)(&aX))->type;
-  value = ((BigNumber*)(&aX))->value;
-}
-
-#endif

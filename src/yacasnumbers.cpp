@@ -23,8 +23,7 @@
 
 #define BITS_TO_DIGITS(x,n) (bits_to_digits(x,n))
 
-static LispStringPtr FloatToString(ANumber& aInt, LispHashTable& aHashTable
-                                  , LispInt aBase = 10);
+static LispObject* FloatToString(ANumber& aInt, LispEnvironment& aEnvironment, LispInt aBase = 10);
 
 LispInt NumericSupportForMantissa()
 {
@@ -42,116 +41,32 @@ const LispCharPtr NumericLibraryName()
  * the ascii version of a number will not be required, so only the
  * internal version needs to be stored.
  */
-void* AsciiToNumber(LispCharPtr aString,LispInt aPrecision)
-{
-    Check(IsNumber(aString,LispTrue),KLispErrInvalidArg);
-    return NEW ANumber(aString,aPrecision);
-}
-LispStringPtr NumberToAscii(void* aNumber,LispHashTable& aHashTable,
-                           LispInt aBase)
-{
-    return FloatToString(*((ANumber*)aNumber),aHashTable,aBase);
-}
 
-void* NumberCopy(void* aOriginal)
+
+
+LispObject* GcdInteger(LispObject* int1, LispObject* int2,
+                         LispEnvironment& aEnvironment)
 {
-    ANumber* orig = (ANumber*)aOriginal;
-    return NEW ANumber(*orig);
+  BigNumber* i1 = int1->Number(0);
+  BigNumber* i2 = int2->Number(0);
+  Check(i1->iNumber->iExp == 0, KLispErrNotInteger);
+  Check(i2->iNumber->iExp == 0, KLispErrNotInteger);
+  BigNumber* res = NEW BigNumber();
+  BaseGcd(*res->iNumber,*i1->iNumber,*i2->iNumber);
+  return NEW LispNumber(res);
 }
 
-void NumberDestroy(void* aNumber)
-{
-    ANumber* orig = (ANumber*)aNumber;
-    delete orig;
-}
-
-
-LispStringPtr GcdInteger(LispCharPtr int1, LispCharPtr int2,
-                         LispHashTable& aHashTable)
-{
-    ANumber i1(int1,10);
-    ANumber i2(int2,10);
-    Check(i1.iExp == 0, KLispErrNotInteger);
-    Check(i2.iExp == 0, KLispErrNotInteger);
-    ANumber res(10);
-    BaseGcd(res,i1,i2);
-    LispStringPtr result = FloatToString(res, aHashTable);
-    return result;
-}
-
-LispStringPtr MultiplyFloat(LispCharPtr int1, LispCharPtr int2,
-                            LispHashTable& aHashTable,LispInt aPrecision)
-{
-    ANumber i1(int1,aPrecision);
-    ANumber i2(int2,aPrecision);
-    ANumber res(aPrecision);
-    Multiply(res,i1,i2);
-    LispStringPtr result = FloatToString(res, aHashTable);
-    return result;
-}
-
-LispStringPtr AddFloat(LispCharPtr int1, LispCharPtr int2,
-                       LispHashTable& aHashTable,LispInt aPrecision)
-{
-    ANumber i1(int1,aPrecision);
-    ANumber i2(int2,aPrecision);
-    ANumber res(aPrecision);
-    Add(res,i1,i2);
-    LispStringPtr result = FloatToString(res, aHashTable);
-    return result;
-}
-
-LispStringPtr PlusFloat(LispCharPtr int1,LispHashTable& aHashTable
-                       ,LispInt aPrecision)
-{
-    ANumber i1(int1,aPrecision);
-    LispStringPtr result = FloatToString(i1, aHashTable);
-    return result;
-}
-
-
-LispStringPtr SubtractFloat(LispCharPtr int1, LispCharPtr int2,
-                            LispHashTable& aHashTable,LispInt aPrecision)
-{
-    ANumber i1(int1,aPrecision);
-    ANumber i2(int2,aPrecision);
-    ANumber res(aPrecision);
-    Subtract(res,i1,i2);
-    LispStringPtr result = FloatToString(res, aHashTable);
-    return result;
-}
-
-LispStringPtr NegateFloat(LispCharPtr int1, LispHashTable& aHashTable
-                          ,LispInt aPrecision)
-{
-    ANumber i1(int1,aPrecision);
-    Negate(i1);
-    LispStringPtr result = FloatToString(i1, aHashTable);
-    return result;
-}
-
-LispStringPtr DivideFloat(LispCharPtr int1, LispCharPtr int2,
-                          LispHashTable& aHashTable,LispInt aPrecision)
-{
-    ANumber i1(int1,aPrecision);
-    ANumber i2(int2,aPrecision);
-
-    Check(!IsZero(i2),KLispErrDivideByZero);
-
-    if (IsZero(i1))
-    {
-        return aHashTable.LookUp("0");
-    }
-    ANumber res(aPrecision);
-    ANumber remainder(aPrecision);
-    Divide(res,remainder,i1,i2);
-    LispStringPtr result = FloatToString(res, aHashTable);
-    return result;
-}
 
 
 static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
 {
+  while (x.iTensExp<0)
+  {
+    PlatDoubleWord carry=0;
+    BaseDivideInt(x,10, WordBase, carry);
+    x.iTensExp++;
+  }
+
     ANumber x2(sum.iPrecision);
     Multiply(x2,x,x);
     ANumber one("1",sum.iPrecision);
@@ -203,6 +118,9 @@ static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
 
 static void SinFloat(ANumber& aResult, ANumber& x)
 {
+    // Sin(x)=Sum(i=0 to Inf) (-1)^i x^(2i+1) /(2i+1)!
+    // Which incrementally becomes the algorithm:
+    //
     // i <- 1
     ANumber i("1",aResult.iPrecision);
     // sum <- x
@@ -213,14 +131,6 @@ static void SinFloat(ANumber& aResult, ANumber& x)
     Trigonometry(x,i,aResult,term);
 }
 
-static void SinFloat(ANumber& aResult, LispCharPtr int1)
-{
-    // Sin(x)=Sum(i=0 to Inf) (-1)^i x^(2i+1) /(2i+1)!
-    // Which incrementally becomes the algorithm:
-    //
-    ANumber x(int1,aResult.iPrecision);
-    SinFloat(aResult,x);
-}
 
 static void CosFloat(ANumber& aResult, ANumber& x)
 {
@@ -233,6 +143,16 @@ static void CosFloat(ANumber& aResult, ANumber& x)
     Trigonometry(x,i,aResult,term);
 }
 
+/*TODO remove
+static void SinFloat(ANumber& aResult, LispCharPtr int1)
+{
+    // Cos(x)=Sum(i=0 to Inf) (-1)^i x^(2i) /(2i)!
+    // Which incrementally becomes the algorithm:
+    //
+    ANumber x(int1,aResult.iPrecision);
+    SinFloat(aResult,x);
+}
+
 static void CosFloat(ANumber& aResult, LispCharPtr int1)
 {
     // Cos(x)=Sum(i=0 to Inf) (-1)^i x^(2i) /(2i)!
@@ -241,88 +161,105 @@ static void CosFloat(ANumber& aResult, LispCharPtr int1)
     ANumber x(int1,aResult.iPrecision);
     CosFloat(aResult,x);
 }
+*/
 
-LispStringPtr SinFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
+//PrintNumber("Sin input: %s\n",*int1->Number(aPrecision)->iNumber);
     ANumber sum(aPrecision);
-    SinFloat(sum, int1);
-    return FloatToString(sum, aHashTable);
+    ANumber x(*int1->Number(aPrecision)->iNumber);
+
+
+    SinFloat(sum, x);
+    return FloatToString(sum, aEnvironment);
 }
 
 
-LispStringPtr CosFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* CosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     ANumber sum(aPrecision);
-    CosFloat(sum, int1);
-    return FloatToString(sum, aHashTable);
+    ANumber x(*int1->Number(aPrecision)->iNumber);
+    CosFloat(sum, x);
+    return FloatToString(sum, aEnvironment);
 }
 
-LispStringPtr TanFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     // Tan(x) = Sin(x)/Cos(x)
-
     ANumber s(aPrecision);
-    SinFloat(s, int1);
-
+    {
+      ANumber x(*int1->Number(aPrecision)->iNumber);
+      SinFloat(s, x);
+//      SinFloat(s,int1->String()->String());
+    }
     ANumber c(aPrecision);
-    CosFloat(c, int1);
-
+    {
+      ANumber x(*int1->Number(aPrecision)->iNumber);
+      CosFloat(c, x);
+//      CosFloat(c,int1->String()->String());
+    }
     ANumber result(aPrecision);
     ANumber dummy(aPrecision);
     Divide(result,dummy,s,c);
-    
-    return FloatToString(result, aHashTable);
-
+    return FloatToString(result, aEnvironment);
 }
 
-LispStringPtr ArcSinFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+
+LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
+//PrintNumber("ArcSin input: \n",*int1->Number(aPrecision)->iNumber);
+
 	// Use Newton's method to solve sin(x) = y by iteration:
     // x := x - (Sin(x) - y) / Cos(x)
 	// this is similar to PiFloat()
 	// we are using PlatArcSin() as the initial guess
 	// maybe, for y very close to 1 or to -1 convergence will
 	// suffer but seems okay in some tests
-    LispStringPtr iResult = PlatArcSin(int1,  aHashTable, 0);
-	ANumber result(iResult->String(), aPrecision);	// hack, hack, hack
+//printf("%s(%d)\n",__FILE__,__LINE__);
+//printf("input: %s\n",int1->String()->String());
+//PrintNumber("digits ",*int1->Number(aPrecision)->iNumber);
+  RefPtr<LispObject> iResult(PlatArcSin(aEnvironment, int1,  0));
+	ANumber result(*iResult->Number(aPrecision)->iNumber);	// hack, hack, hack
+
 	// how else do I get an ANumber from the result of PlatArcSin()?
-    ANumber x(aPrecision);	// dummy variable
-    ANumber q("10", aPrecision);	// initial value must be "significant"
-    ANumber s(aPrecision);
-    ANumber c(aPrecision);
+  ANumber x(aPrecision);	// dummy variable
+  ANumber q("10", aPrecision);	// initial value must be "significant"
+  ANumber s(aPrecision);
+  ANumber c(aPrecision);
 	
 	while (Significant(q))
-    {
-        x.CopyFrom(result);
-        SinFloat(s, x);
+  {
+    x.CopyFrom(result);
+    SinFloat(s, x);
 		Negate(s);
-        x.CopyFrom(s);
-		ANumber y(int1, aPrecision);
+    x.CopyFrom(s);
+		ANumber y(*int1->Number(aPrecision)->iNumber);
+//PrintNumber("y = ",y);
 		Add(s, x, y);
-        // now s = y - Sin(x)
+    // now s = y - Sin(x)
 		x.CopyFrom(result);
-        CosFloat(c, x);
-        Divide(q,x,s,c);
+    CosFloat(c, x);
+    Divide(q,x,s,c);
 		// now q = (y - Sin(x)) / Cos(x)
 
-        // Calculate result:=result+q;
-        x.CopyFrom(result);
-        Add(result,x,q);
-    }
-    return FloatToString(result, aHashTable);
+    // Calculate result:=result+q;
+    x.CopyFrom(result);
+    Add(result,x,q);
+  }
+  return FloatToString(result, aEnvironment);
 }
 
 // ArcCosFloat should be defined in scripts through ArcSinFloat
-LispStringPtr ArcCosFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* ArcCosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     //TODO
-    return PlatArcCos(int1,  aHashTable, 0);
+    return PlatArcCos(aEnvironment, int1, 0);
 }
 
-LispStringPtr ArcTanFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* ArcTanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     //TODO
-    return PlatArcTan(int1,  aHashTable, 0);
+    return PlatArcTan(aEnvironment, int1, 0);
 }
 
 static void ExpFloat(ANumber& aResult, ANumber& x)
@@ -372,16 +309,16 @@ static void ExpFloat(ANumber& aResult, ANumber& x)
     }
 }
 
-LispStringPtr ExpFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     ANumber sum(aPrecision);
-    ANumber x(int1,aPrecision);
+    ANumber x(*int1->Number(aPrecision)->iNumber);
     ExpFloat(sum, x);
-    return FloatToString(sum, aHashTable);
+    return FloatToString(sum, aEnvironment);
 }
 
 
-static void LnFloat(ANumber& aResult, LispCharPtr int1)
+static void LnFloat(ANumber& aResult, ANumber& int1)
 {
     // Optimization for convergence: the following taylor
     // series converges faster when x is close to zero.
@@ -397,7 +334,7 @@ static void LnFloat(ANumber& aResult, LispCharPtr int1)
     LispInt shifts=0;
     LispBoolean smallenough=LispFalse;
     LispInt precision = 2*aResult.iPrecision;
-    ANumber y(int1,precision);
+    ANumber y(int1);
 
     if (!Significant(y)) RaiseError("MathLog does not handle zero");
     if (y.iNegative) RaiseError("MathLog does not handle negative numbers");
@@ -451,25 +388,25 @@ static void LnFloat(ANumber& aResult, LispCharPtr int1)
 
 
 
-LispStringPtr LnFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* LnFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     ANumber sum(aPrecision);
-    LnFloat(sum, int1);
-    return FloatToString(sum, aHashTable);
+    ANumber x(*int1->Number(aPrecision)->iNumber);
+    LnFloat(sum, x);
+    return FloatToString(sum, aEnvironment);
 }
 
-LispStringPtr PowerFloat(LispCharPtr int1, LispCharPtr int2,
-                         LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     // If is integer
-    if (IsNumber(int2,LispFalse))
+    if (int2->Number(aPrecision)->iNumber->iExp == 0)
     {
         // Raising to the power of an integer can be done fastest by squaring
         // and bitshifting: x^(a+b) = x^a*x^b . Then, regarding each bit
         // in y (seen as a binary number) as added, the algorithm becomes:
         //
-        ANumber x(int1,aPrecision);
-        ANumber y(int2,aPrecision);
+        ANumber x(*int1->Number(aPrecision)->iNumber);
+        ANumber y(*int2->Number(aPrecision)->iNumber);
         LispBoolean neg = y.iNegative;
         y.iNegative=LispFalse;
         
@@ -507,152 +444,69 @@ LispStringPtr PowerFloat(LispCharPtr int1, LispCharPtr int2,
         }
         
         // result
-        return FloatToString(result, aHashTable);
+        return FloatToString(result, aEnvironment);
     }
 
     ANumber lnn(aPrecision);
-    LnFloat(lnn, int1);
-
-    ANumber exn(int2,aPrecision);
+    {
+      ANumber x(*int1->Number(aPrecision)->iNumber);
+      LnFloat(lnn, x);
+    }
+    ANumber exn(*int2->Number(aPrecision)->iNumber);
 
     ANumber x(aPrecision);
     Multiply(x,exn,lnn);
     ANumber result(aPrecision);
     ExpFloat(result, x);
-    return FloatToString(result, aHashTable);
+    return FloatToString(result, aEnvironment);
 }
 
 
 
-LispStringPtr SqrtFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    ANumber i1(int1,aPrecision);
+    ANumber i1(*int1->Number(aPrecision)->iNumber);
     ANumber res(aPrecision);
     Sqrt(res,i1);
-    LispStringPtr result = FloatToString(res, aHashTable);
-    return result;
-}
-
-LispStringPtr AbsFloat( LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
-{
-    ANumber i1(int1,aPrecision);
-    i1.iNegative = LispFalse;
-    LispStringPtr result = FloatToString(i1, aHashTable);
-    return result;
+    return FloatToString(res, aEnvironment);
 }
 
 
 
-LispBoolean LessThan(LispCharPtr int1, LispCharPtr int2,
-                       LispHashTable& aHashTable,LispInt aPrecision)
+
+
+
+LispObject* ShiftLeft( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    ANumber i1(int1,aPrecision);
-    ANumber i2(int2,aPrecision);
-    LispBoolean result = LessThan(i1,i2);
-    return result;
-}
+  BigNumber *number = NEW BigNumber();
+  LispInt bits = InternalAsciiToInt(int2->String()->String());
+  number->ShiftLeft(*int1->Number(aPrecision),bits);
+  return NEW LispNumber(number);
+/*TODO remove
+  ANumber i1(int1->String()->String(),aPrecision);
+  LISPASSERT(i1.iExp == 0);
 
-LispBoolean GreaterThan(LispCharPtr int1, LispCharPtr int2,
-                       LispHashTable& aHashTable,LispInt aPrecision)
-{
-    ANumber i1(int1,aPrecision);
-    ANumber i2(int2,aPrecision);
-    LispBoolean result = GreaterThan(i1,i2);
-    return result;
-}
-
-
-
-LispStringPtr ShiftLeft( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHashTable,LispInt aPrecision)
-{
-    ANumber i1(int1,aPrecision);
-    LISPASSERT(i1.iExp == 0);
-
-    LispInt bits = InternalAsciiToInt(int2);
-    BaseShiftLeft(i1,bits);
-    LispStringPtr result = FloatToString(i1, aHashTable);
-    return result;
+  LispInt bits = InternalAsciiToInt(int2->String()->String());
+  BaseShiftLeft(i1,bits);
+  return FloatToString(i1, aEnvironment);
+*/
 }
 
 
-LispStringPtr ShiftRight( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* ShiftRight( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    ANumber i1(int1,aPrecision);
-    LISPASSERT(i1.iExp == 0);
+  BigNumber *number = NEW BigNumber();
+  LispInt bits = InternalAsciiToInt(int2->String()->String());
+  number->ShiftRight(*int1->Number(aPrecision),bits);
+  return NEW LispNumber(number);
+/*TODO remove
+  ANumber i1(int1->String()->String(),aPrecision);
+  LISPASSERT(i1.iExp == 0);
 
-    LispInt bits = InternalAsciiToInt(int2);
-    BaseShiftRight(i1,bits);
-    LispStringPtr result = FloatToString(i1, aHashTable);
-    return result;
-}
-
-
-LispStringPtr FromBase( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHashTable,
-                        LispInt aPrecision)
-{
-    LispInt base = InternalAsciiToInt(int1);
-    ANumber i2(int2,aPrecision,base);
-    LispStringPtr result = FloatToString(i2, aHashTable,10);
-    return result;
-}
-
-
-LispStringPtr ToBase( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHashTable,
-                    LispInt aPrecision)
-{
-    LispInt base = InternalAsciiToInt(int1);
-    ANumber i2(int2,aPrecision,10);
-    LispStringPtr result = FloatToString(i2, aHashTable,base);
-    return result;
-}
-
-LispStringPtr FloorFloat( LispCharPtr int1, LispHashTable& aHashTable,
-                        LispInt aPrecision)
-{
-    ANumber i1(int1,aPrecision);
-    LispInt i=0;
-    LispInt fraciszero=LispTrue;
-
-    while (i<i1.iExp && fraciszero)
-    {
-        if (i1[i] != 0)
-            fraciszero=LispFalse;
-        i++;
-    }
-    i1.Delete(0,i1.iExp);
-    i1.iExp=0;
-    if (i1.iNegative && !fraciszero)
-    {
-        ANumber orig(aPrecision);
-        orig.CopyFrom(i1);
-        ANumber minone("-1",10);
-        Add(i1,orig,minone);
-    }
-    return FloatToString(i1, aHashTable,10);
-}
-
-LispStringPtr CeilFloat( LispCharPtr int1, LispHashTable& aHashTable,
-                         LispInt aPrecision)
-{
-    ANumber i1(int1,aPrecision);
-    LispInt i=0;
-    LispInt fraciszero=LispTrue;
-    while (i<i1.iExp && fraciszero)
-    {
-        if (i1[i] != 0)
-            fraciszero=LispFalse;
-        i++;
-    }
-    i1.Delete(0,i1.iExp);
-    i1.iExp=0;
-    if (!i1.iNegative && !fraciszero)
-    {
-        ANumber orig(aPrecision);
-        orig.CopyFrom(i1);
-        ANumber one("1",10);
-        Add(i1,orig,one);
-    }
-    return FloatToString(i1, aHashTable,10);
+  LispInt bits = InternalAsciiToInt(int2->String()->String());
+  BaseShiftRight(i1,bits);
+  return FloatToString(i1, aEnvironment);
+*/
 }
 
 static void DivideInteger( ANumber& aQuotient, ANumber& aRemainder,
@@ -668,27 +522,17 @@ static void DivideInteger( ANumber& aQuotient, ANumber& aRemainder,
     IntegerDivide(aQuotient, aRemainder, a1, a2);
 }
 
-LispStringPtr ModFloat( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHashTable,
+LispObject* ModFloat( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,
                         LispInt aPrecision)
 {
     ANumber quotient(static_cast<LispInt>(0));
     ANumber remainder(static_cast<LispInt>(0));
-    DivideInteger( quotient, remainder, int1, int2, aPrecision);
-    return FloatToString(remainder, aHashTable,10);
+    DivideInteger( quotient, remainder, int1->String()->String(), int2->String()->String(), aPrecision);
+    return FloatToString(remainder, aEnvironment,10);
 
 }
 
-LispStringPtr DivFloat( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHashTable,
-                        LispInt aPrecision)
-{
-    ANumber quotient(static_cast<LispInt>(0));
-    ANumber remainder(static_cast<LispInt>(0));
-    DivideInteger( quotient, remainder, int1, int2, aPrecision);
-    return FloatToString(quotient, aHashTable,10);
-}
-
-LispStringPtr PiFloat( LispHashTable& aHashTable,
-                        LispInt aPrecision)
+LispObject* PiFloat( LispEnvironment& aEnvironment, LispInt aPrecision)
 {
     // Newton's method for finding pi:
     // x[0] := 3.1415926
@@ -728,32 +572,27 @@ LispStringPtr PiFloat( LispHashTable& aHashTable,
     }
 	
 //    return aHashTable.LookUp("3.14"); // Just kidding, Serge ;-)
-    return FloatToString(result, aHashTable);
+    return FloatToString(result, aEnvironment);
 }
 
 
 
-static LispStringPtr FloatToString(ANumber& aInt,
-                            LispHashTable& aHashTable, LispInt aBase)
+static LispObject* FloatToString(ANumber& aInt,
+                            LispEnvironment& aEnvironment, LispInt aBase)
 {
-    LispStringPtr result = NEW LispString;
-    ANumberToString(*result, aInt, aBase);
-    return result;
-
-/*TODO FIXME remove?
     LispString result;
     ANumberToString(result, aInt, aBase);
-    return aHashTable.LookUp(result.String());
-*/
+    return LispAtom::New(aEnvironment, result.String());
 }
 
 
 
-LispStringPtr BitAnd(LispCharPtr int1, LispCharPtr int2,
-                     LispHashTable& aHashTable,LispInt aPrecision)
+/*TODO remove
+LispObject* BitAnd(LispObject* int1, LispObject* int2,
+                     LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    ANumber i1(int1,aPrecision);
-    ANumber i2(int2,aPrecision);
+    ANumber i1(int1->String()->String(),aPrecision);
+    ANumber i2(int2->String()->String(),aPrecision);
     Check(i1.iExp == 0, KLispErrNotInteger);
     Check(i2.iExp == 0, KLispErrNotInteger);
 
@@ -773,15 +612,14 @@ LispStringPtr BitAnd(LispCharPtr int1, LispCharPtr int2,
         res[i] = i1[i] & i2[i];
     }
 
-    LispStringPtr result = FloatToString(res, aHashTable);
-    return result;
+    return FloatToString(res, aEnvironment);
 }
 
-LispStringPtr BitOr(LispCharPtr int1, LispCharPtr int2,
-                     LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* BitOr(LispObject* int1, LispObject* int2,
+                     LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    ANumber i1(int1,aPrecision);
-    ANumber i2(int2,aPrecision);
+    ANumber i1(int1->String()->String(),aPrecision);
+    ANumber i2(int2->String()->String(),aPrecision);
     Check(i1.iExp == 0, KLispErrNotInteger);
     Check(i2.iExp == 0, KLispErrNotInteger);
     ANumber res(aPrecision);
@@ -809,16 +647,14 @@ LispStringPtr BitOr(LispCharPtr int1, LispCharPtr int2,
     {
         res[i] = i1[i];
     }
-    
-    LispStringPtr result = FloatToString(res, aHashTable);
-    return result;
+        return FloatToString(res, aEnvironment);
 }
 
-LispStringPtr BitXor(LispCharPtr int1, LispCharPtr int2,
-                     LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* BitXor(LispObject* int1, LispObject* int2,
+                     LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    ANumber i1(int1,aPrecision);
-    ANumber i2(int2,aPrecision);
+    ANumber i1(int1->String()->String(),aPrecision);
+    ANumber i2(int2->String()->String(),aPrecision);
     Check(i1.iExp == 0, KLispErrNotInteger);
     Check(i2.iExp == 0, KLispErrNotInteger);
     ANumber res(aPrecision);
@@ -846,14 +682,13 @@ LispStringPtr BitXor(LispCharPtr int1, LispCharPtr int2,
     {
         res[i] = i1[i];
     }
-    
-    LispStringPtr result = FloatToString(res, aHashTable);
-    return result;
+    return FloatToString(res, aEnvironment);
 }
+*/
 
-LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    LispInt nr = InternalAsciiToInt(int1);
+    LispInt nr = InternalAsciiToInt(int1->String()->String());
     Check(nr>=0,KLispErrInvalidArg);
     ANumber fac("1",aPrecision);
     LispInt i;
@@ -868,7 +703,7 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
     }
     if (i==nr) BaseTimesInt(fac, i, WordBase);
 */
-    return FloatToString(fac, aHashTable);
+    return FloatToString(fac, aEnvironment);
 }
 
 /* This code will compute factorials faster when multiplication becomes better than quadratic time
@@ -895,7 +730,7 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
     Check(nr>=0,KLispErrInvalidArg);
 	ANumber fac("1",aPrecision);
 	tree_factorial(fac, 1, nr, aPrecision);
-    return FloatToString(fac, aHashTable);
+    return FloatToString(fac, aEnvironment);
 }
 
 */

@@ -178,7 +178,7 @@ void ReportNrCurrent()
 #define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
 void LispPlatformOS(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp("\"" PLATFORM_OS "\"")));
+  RESULT.Set(LispAtom::New(aEnvironment,"\"" PLATFORM_OS "\""));
 }
 
 void LispExit(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -202,7 +202,7 @@ void LispStackSize(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispChar buf[30];
     InternalIntToAscii(buf, (int)(the_first_stack_var-(unsigned char*)&buf[0]));
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
+    RESULT.Set(LispAtom::New(aEnvironment,buf));
 }
 
 
@@ -270,7 +270,7 @@ static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackT
     LispString prompt;
     InternalUnstringify(prompt, promptObject.Get()->String());
     char* output = ReadInputString(prompt.String());
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(output)));
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(output)->String()));
 }
 
 static void LispHistorySize(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -302,7 +302,7 @@ void LispTime(LispEnvironment& aEnvironment, LispInt aStackTop)
 #else
     sprintf(buf,"%g",timeDiff);
 #endif
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
+    RESULT.Set(LispAtom::New(aEnvironment,buf));
 }
 
 

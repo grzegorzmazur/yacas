@@ -149,24 +149,22 @@ public: // Error information when some error occurs.
     InputStatus iInputStatus;
     LispInt iSecure;
 public: // pre-found
-    LispStringPtr iTrue;
-    LispStringPtr iFalse;
+    RefPtr<LispObject> iTrue;
+    RefPtr<LispObject> iFalse;
 
-    LispStringPtr iEndOfFile;
-    LispStringPtr iEndStatement;
-    LispStringPtr iProgOpen;
-    LispStringPtr iProgClose;
-    LispStringPtr iNth;
-    LispStringPtr iBracketOpen;
-    LispStringPtr iBracketClose;
-    LispStringPtr iListOpen;
-    LispStringPtr iListClose;
-    LispStringPtr iComma;
-    LispStringPtr iList;
-    LispStringPtr iProg;
+    RefPtr<LispObject> iEndOfFile;
+    RefPtr<LispObject> iEndStatement;
+    RefPtr<LispObject> iProgOpen;
+    RefPtr<LispObject> iProgClose;
+    RefPtr<LispObject> iNth;
+    RefPtr<LispObject> iBracketOpen;
+    RefPtr<LispObject> iBracketClose;
+    RefPtr<LispObject> iListOpen;
+    RefPtr<LispObject> iListClose;
+    RefPtr<LispObject> iComma;
+    RefPtr<LispObject> iList;
+    RefPtr<LispObject> iProg;
 
-    LispPtr iTrueAtom;
-    LispPtr iFalseAtom;
     LispInt iLastUniqueId;
 
 public: // Error reporting
