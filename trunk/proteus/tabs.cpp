@@ -12,6 +12,7 @@
 #include <FL/fl_draw.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Menu_Item.H>
+#include <FL/Fl_Scroll.H>
 #ifdef CALCULATOR
 #include "fl_adjustable_file_chooser.H"		// FLTK file chooser
 #endif
@@ -46,6 +47,9 @@ Fl_Select_Browser *chapter;
 Fl_Select_Browser *paragraph;
 Fl_Multiline_Input *helptext;
 Fl_Group* grapher;
+
+Fl_Scroll *console_scroll = NULL;
+
 
 HelpView* helpview_;
 Fl_Button *back_;
@@ -402,7 +406,7 @@ CORE_KERNEL_FUNCTION("Exit",LispExit,0,YacasEvaluator::Function | YacasEvaluator
 void myexit()
 {
     console->SaveHistory();
-    printf("Quitting...\n");
+//    printf("Quitting...\n");
     delete yacas;
     yacas = NULL;
 }
@@ -429,6 +433,7 @@ int main(int argc, char **argv)
       mainTabs = new Fl_Tabs(5, 1, 630, 315);
       o->selection_color(15);
       {
+
         Fl_Group* o = input = new Fl_Group(10, 20, 630, 310, "Input");
         {
           menubar = new Fl_Menu_Bar(11,23,618,20);
@@ -436,9 +441,14 @@ int main(int argc, char **argv)
           menubar->textfont(10);
           menubar->textsize(12);
         }
-        console = new FltkConsole(11,43,618,265,12);
+        console_scroll = new Fl_Scroll(11,43,618,265);
+        console = new FltkConsole(11,43,2048,265,12);
+//        console->resize(console->x(),console->y(),console->w()+1024,console->h()+1024);
+//        console = new FltkConsole(11,43,618,265,12);
+        console_scroll->end();
         o->end();
-        Fl_Group::current()->resizable(o);
+//        Fl_Group::current()->resizable(o);
+        Fl_Group::current()->resizable(console_scroll);
       }
       {
         Fl_Group* o = grapher = new Fl_Group(10, 20, 630, 310, "Graph");
@@ -505,9 +515,16 @@ int main(int argc, char **argv)
   }
 
   RestartYacas();
+
+
   w->callback(quit_cb);
-  w->show(argc, argv);
+  w->show(1, argv);
   atexit(myexit);
+  if (argc>1)
+  {
+    console->LoadNotePad(argv[1]);
+    console->redraw();
+  }
   return Fl::run();
 }
 
