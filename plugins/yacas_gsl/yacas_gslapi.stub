@@ -12,7 +12,10 @@ StubApiCInclude("\"yacas_gsl.h\"");
 StubApiCPrelog(
 "
 #include \"gsl/gsl_sf.h\"
+#include \"gsl/gsl_sys.h\"
 #include \"gsl/gsl_pow_int.h\"
+#include \"gsl/gsl_randist.h\"
+#include \"gsl/gsl_math.h\"
 ");
 
 // Automatically generated stubs
