@@ -128,7 +128,7 @@ void FltkConsole::SaveNotePad(LispCharPtr aFile)
   FILE*f=fopen(aFile,"w");
   if(f)
   {
-    fprintf(f,"\n");
+    fprintf(f,":iel:True\nSaved note pad: %s\n:\n",aFile);
     int i;
     for (i=0;i<iConsoleOut.NrItems();i++)
     {
