@@ -17,6 +17,9 @@ Verify(Integrate(x) x^(-1),Ln(x)); // Well done Jonathan! ;-)
 Verify(Integrate(x) 1/x,Ln(x) );
 
 Verify(Integrate(x) 1/x^2, -x^ -1 );
+Verify(Integrate(x) 6/x^2, (-6)*x^-1);
+Verify(Integrate(x) 3/Sin(x),3*Ln(1/Sin(x)-Cos(x)/Sin(x)) );
+
 Verify(Integrate(x) Ln(x), x*Ln(x)-x );
 Verify(Integrate(x) x^5000, x^5001/5001 );
 Verify(Integrate(x) 1/Tan(x), Ln(Sin(x)) );
