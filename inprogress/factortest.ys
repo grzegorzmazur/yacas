@@ -252,7 +252,7 @@ BinaryFactors(polynom):=
     // to the potential solutions and checks if they are still a solution.
     Set(newlist,{});
 
-Echo("before ",list,result);
+//Echo("before ",list,result);
 //Echo("4...");
     For(i:=1,i<=Length(list),i++)
     [
@@ -265,12 +265,15 @@ Echo("before ",list,result);
 /* */
       If(Not(isMonic),
       [
-Echo("testpoly ",testpoly);
-If(list[i] = {1,0},Echo("doing ",p," ",testpoly," ",Mkd(testpoly,{(list[i][1]+p),list[i][2]+p},2*p)));
+//Echo("testpoly ",testpoly);
+//If(list[i] = {1,0},Echo("doing ",p," ",testpoly," ",Mkd(testpoly,{(list[i][1]+p),list[i][2]+p},2*p)));
 
-        If(IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]+p},2*p)[2]),
+        Local(pp);
+        //Set(pp,(2*p));
+        Set(pp,NextPrime(2*p));
+        If(IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]+p},pp)[2]),
           Set(newlist,               {(list[i][1]+p),list[i][2]+p}:newlist));
-        If(IsZeroVector(Mkd(testpoly,{(list[i][1]  ),list[i][2]+p},2*p)[2]),
+        If(IsZeroVector(Mkd(testpoly,{(list[i][1]  ),list[i][2]+p},pp)[2]),
           Set(newlist,               {(list[i][1]  ),list[i][2]+p}:newlist));
 
 /*
@@ -307,7 +310,7 @@ Set(newlist,RemoveDuplicates(newlist));
 
     Set(p,2*p);
 
-Echo("Solutions modulo ",p," with ",Length(list),"potential solutions"/*,list*/);
+//Echo("Solutions modulo ",p," with ",Length(list),"potential solutions"/*,list*/);
 //Echo("testpoly is ",testpoly);
   ]; 
 
