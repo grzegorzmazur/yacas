@@ -1,13 +1,14 @@
 
 # configurable
 
-YACAS_SOURCE = /root/myprojects/yacas
+YACAS_SOURCE = /Users/ayalpink/yacas/src
+# /usr/local/share/yacas/include
 
 # static
 
 CC = c++
 
-INCLUDES = -I$(YACAS_SOURCE)/src -I$(YACAS_SOURCE)/src/plat/linux32
+INCLUDES = -I$(YACAS_SOURCE) -I$(YACAS_SOURCE)/plat/linux32
 
 LIBS = -ldl
 

@@ -75,7 +75,7 @@ CUnixCommandLine::CUnixCommandLine()
         }
     }
     history=iHistory.NrItems();
-    iMaxLines = 50;
+    iMaxLines = 1024;
 
 }
 CUnixCommandLine::~CUnixCommandLine()

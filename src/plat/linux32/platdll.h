@@ -1,6 +1,6 @@
 
-#ifndef __elfdll_h__
-#define __elfdll_h__
+#ifndef __ltdll_h__
+#define __ltdll_h__
 
 #include "../../lispplugin.h"
 
