@@ -218,7 +218,16 @@ AC_SUBST(PDF_DOCS)
 
 # Generate and install library archive?
 AC_ARG_ENABLE(archive, [  --enable-archive        generate library archive [default=no]])
-AM_CONDITIONAL(GENERATE_ARCHIVE, test "x$enable_archive" = xyes)
+if test "x$enable_archive" = xyes; then
+	COMPRESSOR_PRG=compressor
+	SCRIPTS_DAT=scripts.dat
+	CHECK_ARCHIVE=check-archive
+	INSTALL_ARCHIVE=install-archive
+fi
+AC_SUBST(COMPRESSOR_PRG)
+AC_SUBST(SCRIPTS_DAT)
+AC_SUBST(CHECK_ARCHIVE)
+AC_SUBST(INSTALL_ARCHIVE)
 
 # Choice of directories
 AC_ARG_WITH(script-dir, [  --with-script-dir=DIR   program scripts in DIR [DATADIR/yacas]])

@@ -3,7 +3,8 @@
 INCLUDES = @INCLTDL@ -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS =  yacas
-noinst_PROGRAMS = mkfastprimes testnum gencorefunctions compressor
+noinst_PROGRAMS = mkfastprimes testnum gencorefunctions @COMPRESSOR_PRG@
+EXTRA_PROGRAMS = compressor
 
 lib_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
 EXTRA_LTLIBRARIES = libgmpnumbers.la libyacasnumbers.la 
@@ -171,14 +172,13 @@ install-data-local: yacas.h
 version.h: ../config.h
 	echo "#define VERSION \"$(VERSION)\"" > version.h 
 
-noinst_DATA = scripts.dat
-checkTARGETS = check-archive
+noinst_DATA = @SCRIPTS_DAT@
 compressor_SOURCES = compressor.cpp filescanner.cpp minilzo.c filescanner.h minilzo.h 
 
 scripts.dat: compressor
 	./compressor - $(top_srcdir)/scripts/ scripts.dat 
 
-check: $(checkTARGETS)
+check: @CHECK_ARCHIVE@
 
 check-archive: scripts.dat 
 	../src/yacas -pc --archive scripts.dat $(top_srcdir)/tests/arithmetic.yts
@@ -190,7 +190,9 @@ check-archive: scripts.dat
 ## a .dat extension. So we install it by hand in $(libdir)
 ## Furthermore, we need to install compressedfiles.h because plugins need it.
 
-install-exec-local: scripts.dat
+install-exec-local: @INSTALL_ARCHIVE@
+
+install-archive: scripts.dat
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
 	$(INSTALL_PROGRAM) scripts.dat $(DESTDIR)$(libdir)/`echo scripts.dat|sed '$(transform)'`
