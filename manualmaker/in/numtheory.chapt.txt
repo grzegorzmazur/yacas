@@ -693,9 +693,9 @@ the $k$-th primitive roots of the unit:
 
 $$ Sum(l,1,k, Exp(2*Pi*I*(l*n)/k)) $$
 
-where l runs thought the integers between 1 and k-1 that are coprime to l.
+where $l$ runs thought the integers between $1$ and $k-1$ that are coprime to $l$.
 
-The computation is done by using the formula in Apostol,
+The computation is done by using the formula in T. M. Apostol,
 <i>Introduction to Analytic Theory</i> (Springer-Verlag), Theorem 8.6.
 
 *CMD Cyclotomic --- construct the cyclotomic polynomial
