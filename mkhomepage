@@ -1,16 +1,45 @@
 #! /bin/bash
 
+# clean
+rm yacas-*.tar.gz
+make clean
 
+# Rebuild yacas and the documentation
+./makemake
+./configure
+make
+make install
+make dist
+# make distcheck
+
+# make ps/pdf documentation
+make texdocs
+
+
+# Copy all the files to a homepage directory
 if [ -d homepage ] ; then : ; else  mkdir homepage ; fi; 
 cd homepage
-if [ -d backups ] ; then : ; else  mkdir backups ; fi; 
+
 cp ../manualmaker/*.html .
+tar -zcvf manual.html.tar.gz *
+cp ../manualmaker/*.ps .
+cp ../manualmaker/*.pdf .
+tar -zcvf manual.ps.tar.gz *.ps
+tar -zcvf manual.pdf.tar.gz *.pdf
+rm *.ps *.pdf
+
 cp ../docs/*.gif ../docs/*.html .
 cp yacas.html index.html
+yacas --patchload -pc ../docs/downloads.html.in > downloads.html
+
+if [ -d backups ] ; then : ; else  mkdir backups ; fi; 
+mv manual.html.tar.gz backups
+mv manual.ps.tar.gz backups
+mv manual.pdf.tar.gz backups
 cd backups
 mv ../../yacas-*.tar.gz .
 cd ..
-tar -zcvf ../homepage.tgz *
+# tar -zcvf ../homepage.tgz *
 cd ..
-rm -rf homepage/
+# rm -rf homepage/
 
