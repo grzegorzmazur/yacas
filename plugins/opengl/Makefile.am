@@ -9,7 +9,7 @@ EXTRA_DIST = \
   glututils      
 
 
-INCLUDES = -I../../src -I../../src/plat/linux32/ 
+INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/ 
 # -I$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Libraries/CIncludes -framework AGL -framework OpenGL
 
 noinst_LTLIBRARIES = libopengl.la

@@ -1,9 +1,10 @@
 AM_CXXFLAGS = -DSCRIPT_DIR=\"$(scriptdir)\" $(NUMBERS_CFLAGS) $(DEBUG_FLAGS) $(SERVER_FLAGS)
-AM_CPPFLAGS = -I$(srcdir)/plat/linux32 $(NUMBERS_CFLAGS) $(DEBUG_FLAGS) $(SERVER_FLAGS)
+AM_CPPFLAGS = $(NUMBERS_CFLAGS) $(DEBUG_FLAGS) $(SERVER_FLAGS)
+INCLUDES = @INCLTDL@ -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS =  yacas
 noinst_PROGRAMS = mkfastprimes testnum 
-noinst_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la libltdl.la @NUMBERS_LIB@ 
+noinst_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
 EXTRA_LTLIBRARIES = libgmpnumbers.la libyacasnumbers.la 
 
 noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
@@ -16,9 +17,9 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
         lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h \
-        archiver.h elfdll.h cyacas.h ltdl.h
+        archiver.h elfdll.h cyacas.h
 yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
-yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la libltdl.la @NUMBERS_LDFLAGS@
+yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
 yacas_LDFLAGS = -export-dynamic
 yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c
 
@@ -34,7 +35,7 @@ yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c
 #yacas_LDFLAGS = $(LIBS)
 
 testnum_SOURCES = testnum.cpp 
-testnum_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la libltdl.la @NUMBERS_LDFLAGS@
+testnum_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
 testnum_LDFLAGS = -export-dynamic
 testnum_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la
 
@@ -49,7 +50,7 @@ libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp \
 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp \
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
-        lispplugin.cpp elfdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
+        lispplugin.cpp ltdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
         archiver.cpp
 libyacas_la_LDFLAGS = -export-dynamic
 
@@ -63,12 +64,6 @@ libyacasnumbers_la_SOURCES = anumber.cpp yacasnumbers.cpp
 libyacasnumbers_la_LDFLAGS = -export-dynamic
 libgmpnumbers_la_SOURCES = gmpnumbers.cpp 
 libgmpnumbers_la_LDFLAGS = -export-dynamic
-
-
-libltdl_la_SOURCES = ltdl.c
-libltdl_la_LDFLAGS = -export-dynamic -version-info 1:2:1
-libltdl_la_LIBADD = 
-
 
 
 EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp \
@@ -118,8 +113,8 @@ platmath.cpp: fastprimes.c
 
 fastprimes.c: mkfastprimes
 	./mkfastprimes > fastprimes.c
-# I think we don't need $(srcdir)/mkfastprimes because this executable
-# is not generated inside the $(srcdir). Please correct if wrong.
+# We don't want $(srcdir)/mkfastprimes because this executable
+# is not generated inside the $(srcdir). 
  
 yacas_include = $(datadir)/yacas/include
 

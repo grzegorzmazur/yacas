@@ -7,7 +7,7 @@ EXTRA_DIST = \
 	forth/forth.h                             
 
 
-INCLUDES = -I../../src -I../../src/plat/linux32/
+INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/
 noinst_LTLIBRARIES = libforth.la
 libforth_la_SOURCES = forthpluginapi.cc forthplugin.cc forth.cc
 libforth_la_LDFLAGS = -module
