@@ -170,9 +170,22 @@ it is best to keep this in mind and keep the code passed to
 	    Introduction
 
 @@@@@@@@@@@@@@@@@@@@@@@@
+
 THIS IS A DRAFT, THE FUNCTIONALITY DESCRIBED BELOW IS NOT FULLY
 IMPLEMENTED YET!!! THIS IS JUST A PROPOSAL FOR HOW SOLVE MIGHT
 WORK.
+
+Worries: 
+
+*	need to change all code that uses Solve
+*	need a lot of changes in documentation
+*	arguments to solve are a bit more verbose than the previous
+version: Solve({eq1,eq2},vars) versus Solve(eq1 And eq2,vars). Suddenly
+things like Solve(leftlist==rightlist,vars) is not possible any more.
+This has to be done with extra commands (which is ok?). It can not
+stay the way it was, because lists now mean something else, a collection
+of disjunct solutions.
+
 @@@@@@@@@@@@@@@@@@@@@@@@
 
 The difference between a problem stated and a solution given is
