@@ -6,6 +6,7 @@
  *
  */
 
+//#include <stdio.h>
 
 #include "yacasprivate.h"
 #include "anumber.h"
@@ -154,8 +155,8 @@ LispInt WordDigits(LispInt aPrecision, LispInt aBase)
     // typing -6.23, which for sufficiently low precision got read as 6.229999
     // The original thought was that one word should be enough. This  will have
     // to be examined more closely.
-    return (aPrecision*bitsPerBase+2*WordBits)/WordBits;
-//    return (aPrecision*bitsPerBase+WordBits)/WordBits;
+//    return (aPrecision*bitsPerBase+2*WordBits)/WordBits;
+    return (aPrecision*bitsPerBase+WordBits)/WordBits;
 }
 
 
@@ -198,7 +199,14 @@ void ANumber::SetTo(const LispCharPtr aString,LispInt aBase)
         endFloatIndex = endIntIndex;
 //printf("%s\n",aString);        
 //printf("\tendint = %d, endfloat = %d, endnumber = %d\n",endIntIndex,endFloatIndex,endNumberIndex);        
-        
+
+//printf("%d digits\n",endFloatIndex-endIntIndex-1);
+/*
+    if (endFloatIndex-endIntIndex > iPrecision) 
+    {
+      iPrecision = endFloatIndex-endIntIndex;
+    }
+*/        
     // Go to least significant digit first
     const LispCharPtr ptr = aString + endIntIndex-1; 
     
@@ -243,7 +251,9 @@ void ANumber::SetTo(const LispCharPtr aString,LispInt aBase)
         LispString base;
         IntToBaseString(base,WordBase,aBase);
 
-        LispInt nrDigits = WordDigits(iPrecision,aBase)/*+1*/;
+        LispInt nrDigits;
+        nrDigits = WordDigits(iPrecision,aBase)/*+1*/;        
+
         for (i=0;i<nrDigits;i++)
         {
             PlatWord word=0;
@@ -292,6 +302,7 @@ void ANumber::SetTo(const LispCharPtr aString,LispInt aBase)
         iTensExp = PlatAsciiToInt((LispCharPtr)&aString[endFloatIndex+1]);
 //printf("%s mapped to %d\n",&aString[endFloatIndex+1],iTensExp);
     }
+    DropTrailZeroes();
 //PrintNumber("      ",*this);
 }
 
@@ -338,6 +349,9 @@ void Negate(ANumber& aNumber)
 void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
 {
     // Truncate zeroes (the multiplication is heavy enough as it is...)
+    a1.DropTrailZeroes();
+    a2.DropTrailZeroes();
+/*TODO remove, superseded by a better version?
     LispInt todel;
 
     todel=0;
@@ -361,7 +375,9 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
         a2.iExp-=todel;
         a2.Delete(0,todel);
     }
-
+*/    
+    // this does some additional removing, as for the multiplication we don't need
+    // any trailing zeroes at all, regardless of the value of iExp
     LispInt end;
 
     end=a1.NrItems();
@@ -377,7 +393,7 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
         end--;
     }
     a2.SetNrItems(end);
-    
+
     // Multiply
     BaseMultiplyFull(aResult,a1,a2);
 
@@ -399,6 +415,7 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
         a2.Append(0);
     while(aResult.NrItems()<aResult.iExp+1)
         aResult.Append(0);
+    aResult.DropTrailZeroes();
 }
 
 static void BalanceFractions(ANumber& a1, ANumber& a2)
@@ -525,6 +542,7 @@ void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
             aResult.CopyFrom(zero);
         }
     }
+    aResult.DropTrailZeroes();
 }
 
 
@@ -582,6 +600,7 @@ void Subtract(ANumber& aResult, ANumber& a1, ANumber& a2)
             aResult.CopyFrom(zero);
         }
     }
+    aResult.DropTrailZeroes();
 }
 
 
@@ -1509,3 +1528,24 @@ void ANumber::ChangePrecision(LispInt aPrecision)
   }
  */
 }
+
+
+
+void ANumber::DropTrailZeroes()
+{
+  {
+    LispInt nr=NrItems();
+    while (nr>iExp+1 && (*this)[nr-1] == 0) nr--;
+    SetNrItems(nr);
+  }
+  {
+    LispInt low=0;
+    while (low<iExp && (*this)[low] == 0) low++;
+    if (low)
+    {
+      Delete(0,low);
+      iExp-=low;
+    }
+  }
+}
+

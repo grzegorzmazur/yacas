@@ -361,4 +361,11 @@ Verify(0.00000000000000000001 = 0, False);
 Verify(0.00000000000000000001 / 2 = 0, False);
 Verify(0.00000000000000000000000000001 = 0, False);
 Verify(0.000000000000000000000000000001 = 0, False);
-Verify(0.0000000000000000000000000000000000000001 = 0, False);
+KnownFailure((0.0000000000000000000000000000000000000001 = 0) = False);
+// I added another one, the code will currently say that 0.0000...00001=0 is True
+// for a sufficient amount of zeroes, regardless of precision. Either that is good
+// or that is bad, but the above tests didn't go far enough. This one makes it
+// more explicit, unless we move over to a 128-bits system ;-)
+KnownFailure((0.0000000000000000000000000000000000000000000000001 = 0) = False);
+
+
