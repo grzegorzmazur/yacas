@@ -289,7 +289,7 @@ Repunit(n_IsPositiveInteger) <--
 HarmonicNumber(n_IsInteger,r_IsPositiveInteger) <--
 [
 	// small speed up
-	if( r==1 )[
+	if( r=1 )[
 		Sum(k,1,n,1/k);	
 	] else [
 		Sum(k,1,n,1/k^r);	
@@ -373,7 +373,7 @@ Function("FermatNumber",{n})[
         For(i:=1,i<=len,i++)[
 		If(factors[i][2]>1,repeat:=1);
         ];
-	If(repeat==0,(-1)^len,0);
+	If(repeat=0,(-1)^len,0);
 
 ];
 
@@ -408,8 +408,8 @@ Function("FermatNumber",{n})[
 
 IsPerfect(n_IsPositiveInteger) <-- ProperDivisorsSum(n)=n;
 
-5  # IsCoprime(list_IsList)                     <-- (Lcm(list) == Product(list));
-10 # IsCoprime(n_IsInteger,m_IsInteger)		<-- (Gcd(n,m) == 1);
+5  # IsCoprime(list_IsList)                     <-- (Lcm(list) = Product(list));
+10 # IsCoprime(n_IsInteger,m_IsInteger)		<-- (Gcd(n,m) = 1);
 
 // Algorithm adapted from:
 // Elementary Number Theory, David M. Burton
@@ -418,7 +418,7 @@ IsPerfect(n_IsPositiveInteger) <-- ProperDivisorsSum(n)=n;
 [
         Check( IsInteger(a) And IsInteger(p) And p>2 And IsCoprime(a,p) And IsPrime(p),
                 "IsQuadraticResidue: Invalid arguments"); 
-        If(a^((p-1)/2) % p == 1, True, False);
+        If(a^((p-1)/2) % p = 1, True, False);
 ];
 
 5  # IsGaussianInteger(x_IsList)	<-- False;
@@ -444,11 +444,11 @@ Function("IsGaussianPrime",{x})
 ];
 
 // Digital root of n (repeatedly add digits until reach a single digit).
-10 # DigitalRoot(n_IsPositiveInteger) <-- If(n%9==0,9,n%9);
+10 # DigitalRoot(n_IsPositiveInteger) <-- If(n%9=0,9,n%9);
 
 IsTwinPrime(n_IsPositiveInteger)	<-- (IsPrime(n) And IsPrime(n+2));
 
-IsAmicablePair(m_IsPositiveInteger,n_IsPositiveInteger) <-- ( ProperDivisorsSum(m)==n And ProperDivisorsSum(n)==m );
+IsAmicablePair(m_IsPositiveInteger,n_IsPositiveInteger) <-- ( ProperDivisorsSum(m)=n And ProperDivisorsSum(n)=m );
 
 5  # IsIrregularPrime(p_IsComposite)	<-- False;
 // First irregular prime is 37
@@ -464,7 +464,7 @@ IsAmicablePair(m_IsPositiveInteger,n_IsPositiveInteger) <-- ( ProperDivisorsSum(
 	irregular:=False;
 
 	While( 2*i + 1 < p And (irregular = False) )[
-		If( Abs(Numer(Bernoulli(2*i))) % p == 0, irregular:=True );			
+		If( Abs(Numer(Bernoulli(2*i))) % p = 0, irregular:=True );			
 		i++;
 	];
 	irregular;
@@ -475,7 +475,7 @@ IsSquareFree(n_IsInteger)	<-- ( Moebius(n) != 0 );
 
 10 # GaussianGcd(n_IsGaussianInteger,m_IsGaussianInteger) <--
 [
-	If(N(Abs(m))==0,n, GaussianGcd(m,n - m*Round(n/m) ) );
+	If(N(Abs(m))=0,n, GaussianGcd(m,n - m*Round(n/m) ) );
 ];
 
 // Algorithm adapted from: Number Theory: A Programmer's Guide
@@ -496,13 +496,13 @@ Function("FactorGaussianInteger",{x}) [
 	if( IsComposite(norm) )[
 		For(i:=0, i^2 <= norm, i++ )[	// real part
 			For(j:=0, i^2 + j^2 <= norm, j++)[	// complex part
-				if( Not( (i == re And j == im) Or 
-					 (i == im And j == re) ) )[ // no associates
+				if( Not( (i = re And j = im) Or 
+					 (i = im And j = re) ) )[ // no associates
 					d:=i^2+j^2;
 					if( d > 1 )[
 						a := re * i + im * j;
 						b := im * i - re * j;
-						While( (Mod(a,d) == 0) And  (Mod(b,d) == 0) ) [
+						While( (Mod(a,d) = 0) And  (Mod(b,d) = 0) ) [
 							FactorGaussianInteger(Complex(i,j));
 							re:= a/d;
 							im:= b/d;

@@ -8,7 +8,7 @@ Median(x) :=
  sx := BubbleSort(x,"<");
  n := Length(x);
  n2 := (n>>1);
- If(Mod(n,2) == 1, sx[n2+1], (sx[n2]+sx[n2+1])/2);
+ If(Mod(n,2) = 1, sx[n2+1], (sx[n2]+sx[n2+1])/2);
 ];
 
 Variance(x) := Add((x-Mean(x))^2)/Length(x);

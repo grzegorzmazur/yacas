@@ -25,7 +25,7 @@ Verify(IsError("testing1234"), True);
 
 // report errors
 Verify(ToString()DumpErrors(), "Error: testing
-Error: testing1234: {1,2,3,4} 
+Error: testing1234: {1, 2, 3, 4}
 ");
 
 // no more errors now

@@ -50,19 +50,33 @@ IsError(error'class_IsString) <--
 /// print all errors and clear the tableau
 DumpErrors() <--
 [
-	Local(index);
+	Local(error'object, error'word);
 	CheckErrorTableau();
-	ForEach(index, ErrorTableau)
-	[
+	ForEach(error'object, ErrorTableau)
+	[	// error'object might be e.g. {"critical", {"bad bad", -1000}}
 		If(
-			IsList(index),
-			If(	// special case: {"error'class", True}
-				Length(index)=2 And index[2]=True,
-				Echo("Error: ", index[1]),
-				Echo(Concat({"Error: ", index[1], ": "}, Tail(index)))
-			),
-			// index is not a list: just print it
-			Echo("Error: ", index)
+			IsList(error'object),
+			[
+				If( // special case: error class "warning"
+					Length(error'object) > 0 And error'object[1] = "warning",
+					[
+						error'word := "Warning";
+						error'object[1] := "";	// don't print the word "warning" again
+					],
+					error'word := "Error: "	// important hack: insert ": " here but not after "Warning"
+				);
+
+				If(	// special case: {"error'class", True}
+					Length(error'object)=2 And error'object[2]=True,
+					Echo(error'word, error'object[1]),
+					[
+						Echo(error'word, error'object[1], ": ",
+							PrintList(Tail(error'object)));
+					]
+				);
+			],
+			// error'object is not a list: just print it
+			Echo("Error: ", error'object)
 		);
 	];
 	ClearErrors();

@@ -87,4 +87,31 @@ Verify( IsCoprime(1 .. 10), False );
 Verify( IsCoprime({9,40}), True );
 
 Verify( IsCarmichaelNumber( {561,1105,1729,2465,2821,6601,8911} ),{True,True,True,True,True,True,True} );
+Verify( IsCarmichaelNumber( {0,1,2,1727,2463,2823,6603} ),{False,False,False,False,False,False,False} );
 
+
+/* mysteriously does not work yet...
+[
+	Testing("Random numbers");
+	Local(r1, r2, r3, x1, x2, x3);
+
+	RngCreate(r1);	// create a default RNG object, return structure
+	RngCreate(r2, 12345);	// create RNG object with given seed
+	RngCreate(r3, seed==12345, engine==advanced, dist==gauss);
+
+	Rng(r1);
+	Rng(r1);
+	x1:=Rng(r2);
+	x2:=Rng(r2);
+	x3:=Rng(r3);
+
+	Rng(r3);
+	Verify(x1=x2, False);
+	RngSeed(r2, 12345);
+	Verify(Rng(r2), x1);
+	Verify(Rng(r2), x2);
+	RngSeed(r3, 12345);
+	Verify(Rng(r3), x3);
+
+];
+*/

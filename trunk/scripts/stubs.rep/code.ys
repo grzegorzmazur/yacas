@@ -27,7 +27,8 @@
 30 # n_IsNumber > -Infinity <-- True;
 30 # -Infinity > n_IsNumber <-- False;
 
-10 # n_IsNumber == m_IsNumber <-- n=m;
+/// grrrr... please do not define == to actually do anything! (sw)
+//10 # n_IsNumber == m_IsNumber <-- n=m;
 
 // bug fix: Equals(1, 1.0) returns False and we want 1 <= 1.0 to return True.
 5 # n_IsNumber <= 0 <-- MathNot(GreaterThan(n, 0));
@@ -186,7 +187,7 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 	Lcm(first:Tail(Tail(list)));
 ];
 
-10 # Lcm(list_IsList)_(Length(list)==2) <-- Lcm(list[1],list[2]);
+10 # Lcm(list_IsList)_(Length(list)=2) <-- Lcm(list[1],list[2]);
 
 
 /* Expand expands polynomials.

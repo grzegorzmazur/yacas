@@ -20,15 +20,17 @@ Plot2D'<backend> on that data.
 [
 
 // declaration of Plot2D with variable number of arguments
+Function() Plot2D(func);
+Function() Plot2D(func, range);
 Function() Plot2D(func, range, options, ...);
 
 /// interface routines
-1 # Plot2D(_func) <-- Plot2D(func, -5:5);
-2 # Plot2D(_func, _range) <-- "Plot2D" @ {func, range, {}};
-3 # Plot2D(_func, _range, option_IsFunction) _ (Type(option) = "=") <-- "Plot2D" @ {func, range, {option}};
+1 # Plot2D(_func) <-- ("Plot2D" @ {func, -5:5});
+2 # Plot2D(_func, _range) <-- ("Plot2D" @ {func, range, {}});
+3 # Plot2D(_func, _range, option_IsFunction) _ (Type(option) = "=") <-- ("Plot2D" @ {func, range, {option}});
 
 /// Plot a single function
-5 # Plot2D(_func, _range, options'list_IsList)_(Not IsList(func)) <-- "Plot2D" @ {{func}, range, options'list};
+5 # Plot2D(_func, _range, options'list_IsList)_(Not IsList(func)) <-- ("Plot2D" @ {{func}, range, options'list});
 
 /// Top-level 2D plotting routine:
 /// plot several functions sharing the same xrange and other options
@@ -134,6 +136,8 @@ Function() Plot2D(func, range, options, ...);
 
 ];	// LocalSymbols()
 
+//HoldArg("Plot2D", range);
+//HoldArg("Plot2D", options);
 HoldArgNr("Plot2D", 2, 2);
 HoldArgNr("Plot2D", 3, 2);
 HoldArgNr("Plot2D", 3, 3);
@@ -170,13 +174,13 @@ ListToHash(list) :=
 	result := {};
 	ForEach(item, list)
 		If(
-			IsFunction(item) And Type(item) = "=" And IsAtom(item[1]),
+			IsFunction(item) And (Type(item) = "=" Or Type(item) = "==") And IsAtom(item[1]),
 			result[String(item[1])] := If(
 				IsAtom(item[2]) And Not IsNumber(item[2]) And Not IsString(item[2]),
 				String(item[2]),
 				item[2]
 			),
-			Echo({"ListToHash: Error: item ", item, " is not of the format a=b"})
+			Echo({"ListToHash: Error: item ", item, " is not of the format a=b or a==b"})
 		);
 	result;
 ];
