@@ -107,7 +107,8 @@ void CWin32CommandLine::ShowLine(){
 void CWin32CommandLine::ShowLine(LispCharPtr prompt, LispInt promptlen, LispInt cursor){
   iLastPrompt = prompt;
   putchar('\r');							// clear line
-	for (int i=0;i<79;i++) putchar(' ');
+  int i;
+	for (i=0;i<79;i++) putchar(' ');
 
     assert(iSubLine.NrItems() != 0);
     char str[BufSz];
