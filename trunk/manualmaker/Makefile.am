@@ -37,7 +37,8 @@ ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt \
         in/new.chapt.txt in/paper.chapt.txt \
 		in/Algorithms.chapt.txt in/wordproblems.chapt.txt \
-	in/algorithms-specfunc.chapt.txt in/algorithms-elemfunc.chapt.txt
+	in/algorithms-specfunc.chapt.txt in/algorithms-elemfunc.chapt.txt \
+	in/algorithms-integration.chapt.txt
 
 EXTRA_DIST = \
 	manualmaker styleplain in/all \
