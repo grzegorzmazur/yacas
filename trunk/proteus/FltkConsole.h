@@ -132,31 +132,19 @@ private:
 protected:
     LispInt cursor;
     LispInt iFullLineDirty;
-//TODO remove?    LispInt iHistoryUnchanged;
-//TODO remove?    LispInt history;
-    
-public:
+    public:
     LispString iLine;
     LispString iSubLine;
-//TODO remove?    LispInt iTraceHistory;
-//TODO remove?    LispInt iMaxLines;
-
-/*TODO remove?     CDeletingArrayGrower<LispStringPtr> iHistory; */
-
     int iDefaultFontSize;
     FltkHintWindow* hints;
-//    int iOutputOffsetX;
-//    int iOutputOffsetY;
     int iMouseDownX;
     int iMouseDownY;
     int iMoveBaseX;
     int iMoveBaseY;
     int iMovingOutput;
     int iOutputHeight;
-
 protected:
     LispInt iCurrentHighlighted;
-
 private:
     int iInputDirty;
     int iOutputDirty;

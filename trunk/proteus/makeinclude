@@ -57,7 +57,8 @@ texdocs: proteusmanual.book proteusmanual.book.tex proteusmanual.book.pdf
 
 proteusmanual.book.tex: $(PROTEUSMANUALCHAPTERS) proteusmanual.book 
 
-
+fltkgraphstub.cc: fltkgraph.stub
+	yacas -pc fltkgraph.stub
 
 include depend.dep
 

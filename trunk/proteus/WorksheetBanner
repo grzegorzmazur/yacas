@@ -1,15 +1,24 @@
 
 PrettyPrinter("PrettyForm");
-
+Proteus'FontType(FlHelveticaBold);
+Proteus'FontSize(26);
+Proteus'AddLink("True","Proteus Notepad",False,False);
+Proteus'FontType(FlHelvetica);
+Proteus'FontSize(15);
+Proteus'FontColor(FlColorGray0);
 Proteus'AddLink("True",
-"a
-Proteus Notepad
-To exit Yacas, enter 'quit'.
+"To exit Yacas, enter 'quit'.
 Type ?? for help, or type ?function for help on a function.
 Type 'restart' to restart Yacas.
 To see example commands, keep typing Example();
  
 ",False,False);
+
+Proteus'FontSize(15);
+Proteus'FontColor(FlColorGreen);
+
 Proteus'AddLink("Example()","(press enter on this cell for an example)",False,True);
+
+//Proteus'FontColor(FlColorBlack);
 
 

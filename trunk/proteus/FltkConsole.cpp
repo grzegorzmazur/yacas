@@ -2,9 +2,29 @@
 
 /*
 
+//    redraw(); //output changed
+//    Fl::flush();
+
 TODO:
-- loading a notepad seems to require the first line to be empty?
-- save note books
+x loading a notepad seems to require the first line to be empty?
+x save note books
+x convert the previous example note pads to the new format.
+
+- links should always keep their text, and not change
+- input cells should maintain their font sizes
+- document the graphing capabilities
+- prompt changing
+- command processing changing: $
+- graphing cell:
+  - flplot for new grapher, make an flplot2
+    - flplot2 should not be using any globals!
+  - consoleoutbase-derived class that does the same as Drawer, but in a
+cell.
+  - FltkGraphStart that adds a graphing cell, like the Proteus'AddCommand
+does.
+- flplot not installed?
+- flplot not loaded by default?
+
 - Notepad(FindFile("")) crashes, empty file name should be trapped
   before fopen is called.
 - embedded grapher
@@ -55,6 +75,9 @@ TODO:
 #include "HelpView.h"
 #include "yacas.h"
 
+#ifdef WIN32
+#  define snprintf _snprintf
+#endif
 
 #define SUPPORT_NOTEPAD
 
@@ -128,7 +151,7 @@ void FltkConsole::SaveNotePad(LispCharPtr aFile)
   FILE*f=fopen(aFile,"w");
   if(f)
   {
-    fprintf(f,":iel:True\nSaved note pad: %s\n:\n",aFile);
+    fprintf(f,"Proteus'AddLink(\"True\",\"Saved note pad: %s\",False,False);\n",aFile);
     int i;
     for (i=0;i<iConsoleOut.NrItems();i++)
     {
@@ -139,13 +162,29 @@ void FltkConsole::SaveNotePad(LispCharPtr aFile)
   }
 }
 
+int currentNotepadFontSize=15;
+int currentNotepadFontColor=FL_BLACK;
+int currentNotepadFontType=FL_HELVETICA;
 void FltkConsole::LoadNotePad(LispCharPtr aFile)
 {
+  currentNotepadFontSize = 15;
+  currentNotepadFontColor=FL_BLACK;
+  currentNotepadFontType=FL_HELVETICA;
+
   DeleteAll();
   extern CYacas* yacas;
   char buf[256];//TODO buffer overflow problem
   snprintf(buf,256,"Load(\"%s\");",aFile);
   yacas->Evaluate(buf);
+
+  iOutputHeight+=15; // for the cursor, TODO what was the define again for the cursor height?
+  UpdateHeight(0);
+
+  SetCurrentHighlighted(0); // to update the initial line value
+  //        iOutputOffsetY = 0;
+  MakeSureHighlightedVisible();//hier
+  redraw(); //output changed
+  Fl::flush();
   return;
 
     int prevshow = iShowInput;
@@ -335,7 +374,6 @@ void FltkConsole::Restart()
   RestartYacas();
   extern Fl_Scroll *console_scroll;
   console_scroll->redraw();
-
 }
 
 void FltkConsole::DoLine(char* inpline)
@@ -409,8 +447,8 @@ void FltkConsole::DoLine(char* inpline)
     AddText(inpline, FL_BLACK,inPrompt,FL_HELVETICA,iDefaultFontSize);
     //SetInputDirty();
     SetOutputDirty();
-    redraw(); //output changed
-    Fl::flush();
+//    redraw(); //output changed
+//    Fl::flush();
     {
 //        extern CYacas* yacas;
 //        yacas->Evaluate(inpline);
@@ -478,8 +516,8 @@ void FltkConsole::MakeSureHighlightedVisible()
     if (newy<0) newy=0;
     console_scroll->position(console_scroll->xposition(),newy);
     SetOutputDirty();
-    redraw(); //output changed
-    Fl::flush();
+//    redraw(); //output changed
+//    Fl::flush();
   }
   else
   {
@@ -503,8 +541,8 @@ void FltkConsole::MakeSureHighlightedVisible()
         iy = iOutputHeight+20-console_scroll->h();
       console_scroll->position(console_scroll->xposition(),iy);
       SetOutputDirty();
-      redraw(); //output changed
-      Fl::flush();
+//      redraw(); //output changed
+//      Fl::flush();
     }
   }
   return; //NEWA
@@ -597,8 +635,6 @@ void FltkConsole::handle_key(int key)
                 SetCurrentHighlighted(iConsoleOut.NrItems()-1);
             SetOutputDirty();
             MakeSureHighlightedVisible();
-            //                iOutputOffsetY += iConsoleOut[iCurrentHighlighted]->height();
-            //                iOutputOffsetY -= iConsoleOut[iCurrentHighlighted]->height();
             cursor = iSubLine.NrItems()-1;
             break;
         }
@@ -1041,6 +1077,8 @@ void FltkConsole::DrawInterEdit()
     iOutputDirty = 0;
     return;
 }
+
+
 void FltkConsole::DrawInputLine(int lowy)
 {
     const char* text = &iSubLine[0];
@@ -1118,7 +1156,7 @@ void FltkConsole::UpdateHeight(int aDelta)
   {
     iOutputHeight+= aDelta;
     extern Fl_Scroll *console_scroll;
-    if (console_scroll)
+    if (iOutputHeight>0 && console_scroll)
     {
       resize(x(),y(),w(),iOutputHeight);
       MakeSureHighlightedVisible();
@@ -1160,7 +1198,7 @@ ConsoleOutBase::~ConsoleOutBase()
 
 void ConsoleFlatText::Save(FILE* f)
 {
-  fprintf(f,"%s\n",iText.String());
+  fprintf(f,"Proteus'AddCommand(\"%s\");\n",iText.String());
 }
 
 ConsoleFlatText::ConsoleFlatText(LispCharPtr aText, int aColor, const char* aPrompt,
