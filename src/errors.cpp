@@ -162,7 +162,7 @@ void RaiseError(char* str,...)
 #endif  
   va_end (arg);
 #else
-  PlatMemCopy(theGenericErrorBuf, str, PlatStrLen(str))
+  PlatMemCopy(theGenericErrorBuf, str, PlatStrLen(str));
 #endif
   Check(LispFalse,KLispErrGenericFormat);
 }
