@@ -592,9 +592,42 @@ Rule("PSolve",1,1,IsUniVar(uni) And Degree(uni) = 3 )
   {a+b+adjust,w*a+ww*b+adjust,ww*a+w*b+adjust};
 ];
 
+/* 
+How to solve the quartic equation?
+
+The equation is x^4 + a1 x^3 + a2 x^2 + a3 x + a4 = 0.
+The idea is to write the left-hand side as the difference of two
+squares: (x^2 + p x + q)^2 - (s x + t)^2. 
+Eliminating the parentheses and equation coefficients yields four
+equations for the four unknowns p, q, s and t:
+  a1 = 2p              (1)
+  a2 = p^2 + 2q - s^2  (2)
+  a3 = 2pq - 2st       (3)
+  a4 = q^2 - t^2       (4)
+From the first equation, we find that p = a1/2. Substituting this in
+the other three equations and rearranging gives
+  s^2 = a1^2/4 - a2 + 2q   (5)
+  2st = a1 q - a3          (6)
+  t^2 = q^2 - a4           (7)
+We now take the square (6) and substitute (5) and (7):
+  4 (a1^2/4 - a2 + 2q) (q^2 - a4) = (a1 q - a3)^2  <==>
+  8 q^3 - 4 a2 q^2 + (2 a1 a3 - 8 a4) q + 4 a2 a4 - a1^2 a4 - a3^2 = 0.
+Miraculously, we got a cubic equation for q. Suppose we can solve this
+equation. We can then compute t from (7): t = sqrt(q^2 - a4). If t is
+nonzero, we can compute s from (6). Note that we cannot compute s from
+(5), since we introduced an extra solution when squaring (6). However,
+if t is zero, then no extra solution was introduced and we can safely
+use (5). Having found the values of p, q, s and t, we can factor the
+difference of squares and solve the quartic:
+  x^4 + a1 x^3 + a2 x^2 + a3 x + a4 = (x^2 + p x + q)^2 - (s x + t)^2 
+                 = (x^2 + p x + q + s x + t) (x^2 + p x + q - sx - t).
+The four roots of the quartic are the two roots of the first quadratic
+factor plus the two roots of the second quadratic factor.
+*/
+
 Rule("PSolve",1,1,IsUniVar(uni) And Degree(uni) = 4 )
 [
-    Local(coef4,a1,a2,a3,a4,y,y1,z);
+    Local(coef4,a1,a2,a3,a4,y,y1,z,t,s);
 
     coef4:=Coef(uni,4);
     a1:=Coef(uni,3)/coef4;
@@ -602,10 +635,12 @@ Rule("PSolve",1,1,IsUniVar(uni) And Degree(uni) = 4 )
     a3:=Coef(uni,1)/coef4;
     a4:=Coef(uni,0)/coef4;
 
+    /* y1 = 2q, with q as above. */
     y1:=Head(PSolve(y^3-a2*y^2+(a1*a3-4*a4)*y+(4*a2*a4-a3^2-a1^2*a4),y));
-    
-    Concat(PSolve(z^2+1/2*(a1+Sqrt(a1^2-4*a2+4*y1))*z+1/2*(y1-Sqrt(y1^2-4*a4)),z),
-     PSolve(z^2+1/2*(a1-Sqrt(a1^2-4*a2+4*y1))*z+1/2*(y1+Sqrt(y1^2-4*a4)),z));
+    t := Sqrt(y1^2/4-a4);
+    If(t=0, s:=Sqrt(y1+a1^2/4-a2), s:=(a1*y1-2*a3)/(4*t));
+    Concat(PSolve(z^2+(a1/2+s)*z+y1/2+t,z),
+           PSolve(z^2+(a1/2-s)*z+y1/2-t,z));
 ];
 
 Function("PSolve",{uni,var})
