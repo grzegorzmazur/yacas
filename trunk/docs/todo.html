@@ -185,19 +185,7 @@ The documentation can be improved.
        growing function. BSearch returns -1 if not found,
        FindIsq returns the insertion point.
   <li>   MultiDivide, MultiGcd, Groebner
-  <li> 
-  <li> 	Verify
-	KnownFailure
-	VerifyArithmetic
-	TestYacas
-	RoundTo
-	LogicVerify
-
-
   <li> restart, quit, 
-
-
-
 
   </UL>
   <li> Add a 'History of Yacas' to the introduction.
@@ -221,7 +209,7 @@ These are nice to haves in the engine.
      evaluate something within the environment. Together with
      Apply this would allow for packages.
   <li> engine-side apply "op" for speed.
-<li> faster Pi() calculation --? seems okay now
+<li> faster Pi() calculation --? seems okay for now
 <li>  LispCleanupStack: implement LocalLispString and LocalLispPtr.
 <li>  Clean up c++ code a little: Remove ALL TODO's and write javadoc-able-comments in the
       source code.
@@ -239,7 +227,7 @@ These are nice to haves in the engine.
 
 <li> Clean up TrigSimpCombine and Simplify in such a way as to make the
       code reusable for other simplifications.
-<li> QSort
+<li> QSort (? have HeapSort now)
 <li> BinarySearch (array!)
 <li> FourierTransform?
 <li> LaplaceTransform?
@@ -252,6 +240,48 @@ These are nice to haves in the engine.
 <li> Try all the 131 Wester tests.
 
 </ul>
+
+<h2> Serge's grand roadmap</h2>
+
+These plans are possibly further away but (in my opinion) important enough to keep in mind.
+
+<ol>
+<li> Engine/language improvements
+
+ <ol>
+ <li> Multiple-precision (MP) math should be redesigned with the following goals:
+
+  <ol>
+  <li> Internal "big number" format must be better than char*. There must be two basic classes: "big int" (always signed and dynamically allocated) and "big float". "Big float" may consist simply of two big integers (mantissa and exponent, both signed). I'd rather have the exponent a big integer than a 32-bit -- many MP libraries suffer from this problem.
+  <li> MP wrapper class holds big numbers in the internal format and passes them to either "ANumber" or "GMPNumber" backends with hopefully minimal conversion on input and output. MP algorithms such as ArcSin() should not have to be written separately for each MP backend; they are written using the MP wrapper class. Plugins can also use the MP wrapper class only.
+  <li> Almost all MP numerical algorithms should be coded in the script library rather than compiled. (except for critical ones). Experiments with MathPi() show that it does not really slow things down when the bulk of the calculation is in the numerics.
+  </ol>
+
+This should mostly take care of the MP calculations - no need to reimplement Karatsuba multiplication etc., it's all already done in GMP and platforms without GMP are probably not suitable for serious numerics.
+
+ </ol>
+
+<li> Library improvements
+ <ol>
+ <li> Library could be redesigned to streamline all calculations:
+  <ol>
+  <li> remove default ad hoc simplifications such as a^2*b^2 <-- (a*b)^2, 4*b/c <-- (4*b)/c etc. -- instead provide functions for collecting powers, exponentials, coefficients for a variable, etc., so that the user can do this when needed
+  <li> use property tags to make simplification algorithms more understandable
+  <li> remove unconventional notation such as a+-b or a^-c
+  <li> modify precedences of infix operations: 10, 20, 30 instead of 0,1,2 to allow more fine-grained control
+  </ol>
+  <li> Implement classical algorithms as well as newest algorithms -- the more different algorithms, the better. There is frequently no "best" algorithm.
+ </ol>
+
+
+<li> Other items
+ <ol>
+ <li> Improve GUI so that it is more usable than the xterm text mode
+ <li> Allow inline graphics in documentation (EPS / PNG / JPG ?)
+ <li> All symbolic and numerical algorithms should be documented as soon as they are implemented -- make Yacas a repository of algorithm codes and documentation.
+ </ol>
+</ol>
+
 
 </FONT>
 </BODY>
