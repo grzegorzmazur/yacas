@@ -21,8 +21,7 @@ BOOKS = intro.book coding.book ref.book refprog.book essays.book \
 	Algo.book LispProgramming.book NewDesign.book
 
 BOOKSOURCES = intro.book.txt coding.book.txt ref.book.txt refprog.book.txt \
-	essays.book.txt Algo.book.txt LispProgramming.book.txt \ 
-	NewDesign.book.txt
+	essays.book.txt Algo.book.txt LispProgramming.book.txt NewDesign.book.txt
 
 PS_DOCS = intro.book.ps coding.book.ps essays.book.ps ref.book.ps \
 	refprog.book.ps Algo.book.ps LispProgramming.book.ps \
@@ -34,7 +33,7 @@ PDF_DOCS = intro.book.pdf coding.book.pdf essays.book.pdf ref.book.pdf \
 
 # refprog.html is not listed because it is generated together with ref.html
 HTMLBOOKS = intro.html coding.html essays.html ref.html \
-	Algo.html LispProgramming.html NewDesign.book.html
+	Algo.html LispProgramming.html NewDesign.html
 
 INTROCHAPTERS = FDL.chapt cl-options.chapt
 
@@ -181,6 +180,9 @@ books.html:  $(BOOKS) $(srcdir)/indexmaker $(srcdir)/styleplain
 
 intro.html : intro.book $(INTROCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("intro");];' | $(ouryacas) -fpc
+
+NewDesign.html : NewDesign.book $(NEWDESIGNCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
+	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("NewDesign");];' | $(ouryacas) -fpc
 
 coding.html : coding.book $(CODINGCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("coding");];' | $(ouryacas) -fpc
