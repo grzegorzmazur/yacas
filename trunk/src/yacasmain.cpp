@@ -320,10 +320,12 @@ void my_exit(void)
 #endif
 
 #ifdef WIN32
+  #ifdef SUPPORT_SERVER
 	 if (winsockinitialised)
     {
 		  WSACleanup();
     }
+  #endif
 #endif
 }
 

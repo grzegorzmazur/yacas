@@ -66,9 +66,9 @@ Rule("Help",0,1,True)
 SetHelpBrowser("lynx");
 
 // LoadOSDependentModule();	// not really needed any more
-PlatformOS := 
-   If(StringMid(1,5,PlatformOS()) = "linux",   "Unix", 
-   If(StringMid(1,7,PlatformOS()) = "solaris", "Unix",
+Set(PlatformOS,
+   If(Greaterthan(Length(PlatformOS()),5) And StringMid(1,5,PlatformOS()) = "linux",   "Unix", 
+   If(Greaterthan(Length(PlatformOS()),7) And StringMid(1,7,PlatformOS()) = "solaris", "Unix",
    If(PlatformOS() = "Win32",                  "Win32", 
-   /* otherwise */                             "Unknown")));
+   /* otherwise */                             "Unknown"))));
               
