@@ -496,7 +496,14 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
             }
             else
             {
-                WriteToken(aOutput,string->String());
+                if (string != NULL)
+                {
+                  WriteToken(aOutput,string->String());
+                }
+                else
+                {
+                  Print(*subList,aOutput,0);
+                }
                 WriteToken(aOutput,"(");
 
                 LispIterator counter(*iter.Ptr());

@@ -1,7 +1,9 @@
 OdeSolve
 OdeTest
 OdeOrder
-OdeAuxiliaryEquation
-OdeCoefList
-OdeMakeTerm
+//these functions below should never be accessible from the outside world! For internal
+// use, undocumented, and might change in the future.
+//TODO remove? OdeAuxiliaryEquation
+//TODO remove? OdeCoefList
+//TODO remove? OdeMakeTerm
 }

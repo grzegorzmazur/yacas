@@ -1,5 +1,24 @@
 
 
+Out> 2*Pi+x+y;
+In> expr:=MM(x+y+3*Pi/2+2*ArcTan(s),vars)
+Out> MultiNomial({ArcTan(s),Pi,x,y},{{1,{{0,{{0,{{0,2}}}}}}},{0,{{1,{{0,{{0,3/2}}}}},{0,{{1,{{0,1}}},{0,{{1,1},{0,0}}}}}}}});
+In> res:=MultiDivide(expr,{dv})
+Out> {{MultiNomial({ArcTan(s),Pi,x,y},{{0,{{0,{{0,{{0,2}}}}}}}})},MultiNomial({ArcTan(s),Pi,x,y},{{0,{{1,{{0,{{0,5/2}}}}},{0,{{1,{{0,1}}},{0,{{1,1}}}}}}}})};
+In> NormalForm(res[1][1])
+
+
+SpSimplify(_expression) <--
+[
+  Local(vars,dv,res);
+  vars:=MultiExpressionList(expression);
+  
+];
+
+
+
+
+
 EndOfFile;
 
 //Expression(Term({factor,factor},{factor,factor}));
