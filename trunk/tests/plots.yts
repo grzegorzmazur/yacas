@@ -16,6 +16,21 @@ Verify(Plot3DS({y,z},-1:1,-1:1,output=datafile,points=2,filename=test), {"test1"
 Verify(DeleteFile("test1"), True);
 Verify(DeleteFile("test2"), True);
 
+// test Plugin (this only works if run from the build tree, as we do not install plugins yet)
+If (FindFile("../plugins/example/libexample.la") != "",
+    [
+       DllLoad("../plugins/example/libexample.la");
+       Verify(AddTwoIntegers(1,2), 3);
+       Verify(AddTwoDoubles(1.5,2.7), 4.2);
+       mybla := CreateBla(5,7);
+       Verify(BlaGetA(mybla), 5);
+       BlaSetA(mybla, -2);
+       Verify(BlaGetA(mybla), -2);
+       DllUnload("../plugins/example/libexample.la");
+    ],
+    Echo("libexample.la not found, so plugins are not tested.")
+); 
+
 // test MakeFunctionPlugin
 If(MakeFunctionPlugin(),
 	[
