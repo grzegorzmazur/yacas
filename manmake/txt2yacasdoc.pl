@@ -10,8 +10,10 @@
 # Itemized text is marked by * in the first position, followed by Tab
 # Enumerated text is marked by * followed by Tab, number and period.
 # Text surrounded by <i>...</i> becomes emphasized (must be on a single line!)
-# Text surrounded by {} becomes fixed-width (must not contain more than one set of {} inside!)
-# Use with care, test with manualmaker
+# Text surrounded by {} becomes fixed-width (must not contain more than four nested sets of {} inside!)
+# Text surrounded by <* *> is made into hyperlinks into the manual (SeeAlso()), e.g. <*FlatCopy, Take,Length*> is translated into SeeAlso({"FlatCopy", "Take", "Length"})
+# 
+# Use with care, test output with manualmaker
 
 $have_Text = 0;	# Means we have a Text() declared somewhere above
 $have_par = 1;	# Means we already have a new paragraph
@@ -67,7 +69,7 @@ while (<STDIN>) {
 		if ($in_itemized) {
 			print ":Item()\"", &escape_term($1), "\n";
 		} else {
-			print ":Enumerate() (\nItem()\"", &escape_term($1), "\n";
+			print ":Itemize() (\nItem()\"", &escape_term($1), "\n";
 			$in_itemized = 1;
 		}
 		$in_text = 1;
@@ -116,9 +118,29 @@ sub finish_text {
 	$have_Text = 0;
 }
 
+# This is called on a piece of plain text which should be inside quotes
+# (extra quotes need to be supplied as necessary)
+# We need to convert special escapes to their Yacas representation
 sub escape_term {
 	my ($text) = @_;
-	$text =~ s/\{((?:[^{}]*(?:\{[^{}]+\})*)+)\}/":HtmlTerm("$1"):"/g;
+# this would only allow one level of nested braces:
+#	$text =~ s/\{((?:[^{}]*\{[^{}]*\})*[^{}]*)\}/":HtmlTerm("$1"):"/g;
+	# {HtmlTerm}. Need to get the interior braces. Build the regex recursively:
+	$regexes[0]='[^{}]*';	# if this is 'nobraces', then
+#	oneornobraces = (nobraces {nobraces})* nobraces ;
+	$nmax = 4;	# Max nesting level
+	for($i=0; $i<$nmax; ++$i) {
+		$regexes[$i+1]="(?:" . $regexes[$i] . "\{" . $regexes[$i] . "\})*" . $regexes[$i];
+	}
+	$text =~ s/\{($regexes[$nmax])\}/":HtmlTerm("$1"):"/go;
+	# <i>emphasis</i>
 	$text =~ s/<i>(.*)<\/i>/":HtmlEmphasis("$1"):"/gi;
+	# <see also>
+	$text =~ s/<\*(([^*]|\*[^>])+)\*>/&make_seealso($1);/ge;
 	$text;
+}
+
+sub make_seealso {
+	my ($text) = @_;
+	"\":SeeAlso({\"" . join("\", \"", split(/, */, $text)) . "\"}):\"";
 }
