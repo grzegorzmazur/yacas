@@ -2,3 +2,13 @@
 NextTest("Polynomials");
 TestYacas(Expand((1+x)^2),1+2*x+x^2);
 
+A:=3*x^3+x^2+x+5;
+B:=5*x^2 - 3*x + 1;
+{C,D}:=polyDivide(A,B,x);
+
+TestYacas( Simplify(B*C+D), A );
+
+A:=2*x^2+4;
+{C,D}:=polyDivide(A,2,x);
+TestYacas( C, x^2+2 );
+
