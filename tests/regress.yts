@@ -166,3 +166,16 @@ Verify({2,3}^2,{4,9});
 Verify( D(x,0) Sin(x), Sin(x) );
 
 Verify( 2/3 >= 1/3, True);
+
+Verify( Infinity + I, Infinity );
+Verify( Infinity - I, Infinity );
+Verify( I - Infinity,-Infinity );
+Verify( I + Infinity, Infinity );
+Verify( I*Infinity,Infinity);
+Verify(-I*Infinity,-Infinity);
+Verify( Infinity*I,Infinity);
+Verify(  Infinity^I,Infinity);
+Verify( (2*I)^Infinity, Infinity );
+Verify( Infinity/I,Infinity );
+Verify( Sign(Infinity), 1 );
+Verify( Sign(-Infinity), -1 );

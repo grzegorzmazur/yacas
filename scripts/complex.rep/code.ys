@@ -76,6 +76,9 @@ IsNotComplex(x) := Not(IsComplex(x));
 Function("Conjugate",{a})
   Substitute(a,{{x},Type(x)="Complex"},{{x},Complex(x[1],-(x[2]))});
 
+Function("Magnitude",{x}) [
+	Sqrt(Re(x)^2 + Im(x)^2);
+];
 
 10 # Arg(Complex(Cos(_x),Sin(_x))) <-- x;
 10 # Arg(x_IsZero) <-- Undefined;
