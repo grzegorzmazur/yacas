@@ -304,7 +304,7 @@ LocalSymbols(x,y,xarg,yarg)
 400 # 0 / _x <-- 0;
 
 /* Faster version of raising power to 0.5 */
-50 # (x_IsPositiveNumber ^ (1/2))_(Numeric) <-- Sqrt(x);
+50 # _x ^ (1/2) <-- Sqrt(x);
 50 # (x_IsPositiveNumber ^ (1/2))_IsInteger(MathSqrt(x)) <-- MathSqrt(x);
 58 # 1 ^ n_IsInfinity <-- Undefined; 
 59 # _x ^ 1 <-- x;
