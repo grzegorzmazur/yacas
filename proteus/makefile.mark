@@ -31,7 +31,7 @@ worksheet:
 install:
 	cp proteusworksheet proteuscalculator /usr/local/bin/
 	cp proteus.conf /etc/proteus.conf
-	cp hints /usr/local/share/yacas/
+	cp hints WorksheetBanner CalculatorBanner /usr/local/share/yacas/
 	cp proteusbooks.html /usr/local/share/yacas/documentation/proteusbooks.html
 
 

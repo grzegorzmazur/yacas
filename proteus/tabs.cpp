@@ -361,13 +361,29 @@ void RestartYacas()
 
     AddGraphingCapabilities((*yacas)()());
 
-    console->AddGroup(1,0);
+
+    {
+        extern char defdir[128];
+        char buf[128];
+#ifdef CALCULATOR
+        sprintf(buf,"%sCalculatorBanner",defdir);
+#endif
+#ifdef WORKSHEET
+        sprintf(buf,"%sWorksheetBanner",defdir);
+#endif
+        console->LoadNotePad(buf);
+        console->handle_key(eEscape); // Highlight should be on bottom line
+    }
+
+    /*
+     console->AddGroup(1,0);
 #ifdef WORKSHEET
     console->AddText("Proteus Notepad\nTo exit Yacas, enter 'quit'.\nType ?? for help, or type ?function for help on a function.\nType 'restart' to restart Yacas.\nTo see example commands, keep typing Example();\n", FL_BLACK,"",FL_HELVETICA_BOLD,12);
 #endif
 #ifdef CALCULATOR
     console->AddText("Proteus Notepad", FL_BLACK,"",FL_HELVETICA,9);
-#endif
+    #endif
+    */
     yacas->Evaluate("Load(\"yacasinit\");");
 }
 

@@ -137,4 +137,31 @@ SeeAlso({"Sin","Cos"});
 
 
 
+AddAnchor("Undefined");
+SubSection()"Undefined";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Undefined";
+
+Topical()"Description";
+Text()
+"Undefined is a token that can be returned by a function when it considers
+its input to be invalid. The resulting output is then undefined.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> 2*Infinity
+Out> Infinity;
+In> 0*Infinity
+Out> Undefined;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Infinity"});
+
+
+
+
+
 
