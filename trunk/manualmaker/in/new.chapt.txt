@@ -497,8 +497,6 @@ After these two rules, the following interactive session is possible:
 	
 	log( a ) + 2 * log( x )
 	
-	Out> 
-
 Integration of the new function {log} can be defined by adding a rule for the
 {AntiDeriv} function atom,
 
@@ -509,14 +507,11 @@ Now Yacas can do integrations involving the newly defined {log} function, for ex
 	
 	log( a ) * x + n * ( x * log( x ) - x ) + C18
 	
-	Out> 
 	In> Integrate(x,B,C)log(a*x^n)
 	
 	log( a ) * C + n * ( C * log( C ) - C ) -
 	
 	( log( a ) * B + n * ( B * log( B ) - B ) )
-	
-	Out> 
 
 
 Rules are applied when their associated patterns match and when their
@@ -585,7 +580,6 @@ Basic operations of elementary calculus have been implemented:
 	
 	Exp( 1 )
 	
-	Out> 
 	In> Taylor(x,0,5)ArcSin(x)
 	
 	     3        5
@@ -593,7 +587,6 @@ Basic operations of elementary calculus have been implemented:
 	x + -- + ------
 	    6      40  
 	
-	Out> 
 	In> InverseTaylor(x,0,5)Sin(x)
 	
 	     5    3    
@@ -601,7 +594,6 @@ Basic operations of elementary calculus have been implemented:
 	------ + -- + x
 	  40     6     
 	
-	Out> 
 	In> Integrate(x,a,b)Ln(x)+x
 	
 	                   2   /                    2 \
@@ -609,14 +601,12 @@ Basic operations of elementary calculus have been implemented:
 	b * Ln( b ) - b + -- - | a * Ln( a ) - a + -- |
 	                  2    \                   2  /
 	
-	Out> 
 	In> Integrate(x)1/(x^2-1)
 	
 	Ln( 2 * ( x - 1 ) )   Ln( 2 * ( x + 1 ) )      
 	------------------- - ------------------- + C38
 	         2                     2               
 	
-	Out> 
 	In> Integrate(x)Sin(a*x)^2*Cos(b*x)
 	
 	Sin( b * x )   Sin( -2 * x * a + b * x )   
@@ -627,12 +617,10 @@ Basic operations of elementary calculus have been implemented:
 	------------------------- + C39
 	   4 * ( -2 * a - b )          
 	
-	Out> 
 	In> OdeSolve(y''==4*y)
 	
 	C193 * Exp( -2 * x ) + C195 * Exp( 2 * x )
-	
-	Out> 
+
 
 Solving systems of equations has been implemented using a generalized Gaussian
 elimination scheme:
