@@ -146,7 +146,7 @@ while (<STDIN>) {
 	} elsif (/^\*(?:A|AA)\s\s*(.*)$/) {	# anchor
 		&finish_text_close_quote();
 		$have_par = 1;
-		print "AddBody(HtmlAnchor() \"" . $1 . "\");\n";
+		print "AddBody(AddAnchor() \"" . $1 . "\");\n";
 	} elsif (/^\*SEE\s\s*(.*)$/) {	# SeeAlso()
 		$names = $1;
 		$names =~ s/\s*$//;
@@ -179,8 +179,11 @@ while (<STDIN>) {
 			foreach $name (split(/,[ \t]+/, $names)) {
 				print "AddBody(HtmlAnchor() \"" . $name . "\");\n";
 			}
+			print "CmdDescriptionMany";
+		} else {
+			print "CmdDescriptionSingle";
 		}
-		print "CmdDescription(\"" . $names . "\", \"" . &escape_term($title) . "\");\n";
+		print "(\"" . $names . "\", \"" . &escape_term($title) . "\");\n";
 	} elsif (/^\*(INTRO|BLURB|REM)\s*(.*)$/) {	# ChapterIntro(), Blurb(), DocComment()
 		$label = $1;
 		$text = $2;
