@@ -368,7 +368,8 @@ void FltkgraphPlugin::Remove(LispEnvironment& aEnvironment)
 }
 
 extern "C" {
-LispPluginBase* maker(void)
+LispPluginBase* make_fltkgraph
+(void) 
 {
     return NEW FltkgraphPlugin;
 }

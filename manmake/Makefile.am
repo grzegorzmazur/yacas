@@ -70,7 +70,7 @@ REFCHAPTERS = config.chapt arith.chapt calc.chapt ode.chapt linalg.chapt \
 	preds.chapt logic.chapt const.chapt vars.chapt io.chapt \
 	numtheory.chapt strings.chapt transforms.chapt cl-options.chapt \
 	probability-and-statistics.chapt addons.chapt FDL.chapt \
-	plugin-docs.chapt
+	plugin-docs.chapt filescanner.chapt pcre.chapt
 
 REFSOURCES = config.chapt.txt arith.chapt.txt calc.chapt.txt ode.chapt.txt \
 	linalg.chapt.txt univar.chapt.txt lists.chapt.txt cl-options.chapt.txt \
@@ -78,7 +78,7 @@ REFSOURCES = config.chapt.txt arith.chapt.txt calc.chapt.txt ode.chapt.txt \
 	logic.chapt.txt const.chapt.txt vars.chapt.txt io.chapt.txt \
 	numtheory.chapt.txt strings.chapt.txt transforms.chapt.txt \
 	probability-and-statistics.chapt.txt addons.chapt.txt FDL.chapt.txt \
-	plugin-docs.chapt.txt
+	plugin-docs.chapt.txt filescanner.chapt.txt pcre.chapt.txt
 
 
 REFPROGCHAPTERS = yacasapi.chapt FDL.chapt glossary.chapt \
@@ -191,7 +191,7 @@ GPL.chapt: $(top_srcdir)/COPYING
 
 
 # this chapter depends on special chapters
-PLUGINDOCSCHAPTERS = yacas_gsl.chapt example.chapt opengl.chapt forth.chapt
+PLUGINDOCSCHAPTERS = filescanner.chapt pcre.chapt yacas_gsl.chapt example.chapt opengl.chapt forth.chapt
 plugin-docs.chapt: $(PLUGINDOCSCHAPTERS)
 
 # special chapters built from plugin stubs

@@ -1,0 +1,65 @@
+
+
+		The file scanner plugin
+
+The file scanner plugin allows the programmer to scan files and
+directories in the file system. It is currently supported for
+Unix-like and Windows systems.
+
+To use the plugin, the plugin has to be loaded through:
+
+	Use("filescanner");
+
+The file scanner plugin offers one principal new function;
+{ScanFiles}. The prototype for this function is:
+
+	ScanFiles(BaseDirectory,SubDirectory,CallFunction);
+
+The arguments:
+
+*	{BaseDirectory} - the base directory to scan in
+*	{SubDirectory} - the sub-directory to scan in
+*	{CallFunction} - the call-back function
+
+The call-back function should accept three arguments: the 
+base directory, the file name and a boolean specifying if the
+file is a sub-directory. 
+
+The full file name can be obtained by concatenating the file
+name to the base directory. If the file is a sub-directory,
+the file name can be used as the name of the sub-directory in
+subsequent recursive calls to {ScanFiles}.
+
+For example, the following definition of the function {tst}
+can be used as a third argument to {ScanFiles}, in order to
+scan directories recursively, printing file names of files in
+the directories.
+
+	// File, print
+	10 # tst(_a,_b,False) <-- Echo("File: ",b)
+	// Directory, scan recursively
+	20 # tst(_a,_b,True) <-- ScanFiles(a,b,"tst")
+
+Then, if the {Yacas} source is in {/Users/ayalpink/yacas/},
+one can call:
+
+	ScanFiles("/Users/someone/yacas/","plugins","tst")
+
+The first lines of output (in {Yacas} version 1.0.55) is:
+
+	File: plugins/.cvsignore
+	File: plugins/CVS/Entries
+	File: plugins/CVS/Repository
+	File: plugins/CVS/Root
+	File: plugins/doc.txt
+
+Here the scan went into the {CVS} sub-directory. Appending
+these file names to the base directory, {/Users/someone/yacas/},
+would give the full path to the file.
+
+
+
+
+
+
+

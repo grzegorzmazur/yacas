@@ -322,6 +322,7 @@ AC_OUTPUT(yacas.spec
 	plugins/opengl/Makefile
 	plugins/yacas_gsl/Makefile
 	plugins/pcre/Makefile
+	plugins/filescanner/Makefile
 	scripts/Makefile
 	colorcode/Makefile
 	JavaConsole/Makefile

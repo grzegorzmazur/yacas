@@ -78,5 +78,5 @@ StubApiCFunction("void","fl_end_polygon","FlEndPolygon",{});
 
 /* StubApiCSetEnv("FltkGraph"); */
 
-StubApiCFile("fltkgraphstub");
+StubApiCFile("fltkgraph","fltkgraphstub");
 

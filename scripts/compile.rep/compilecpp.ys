@@ -304,11 +304,11 @@ void <?WriteString(\"Plugin_\":pluginName);?>::Remove(LispEnvironment& aEnvironm
 
 
 extern \"C\" {
-#ifdef EXE_DLL_PLUGINS
+// #ifdef EXE_DLL_PLUGINS
 LispPluginBase* <?WriteString(\"make_\":pluginName);?>(void)
-#else
-LispPluginBase* maker(void)
-#endif
+//#else
+//LispPluginBase* maker(void)
+//#endif
 {
     return NEW <?WriteString(\"Plugin_\":pluginName);?>;
 }

@@ -257,7 +257,7 @@ WriteString(cremovers);
 ?>}
 
 extern \"C\" {
-LispPluginBase* maker(void)
+LispPluginBase* <?Echo(\"make_\":plfname);?>(void) 
 {
     return NEW <? WriteString(pluginname); ?>;
 }
@@ -316,7 +316,7 @@ StubApiCFunction(returntype,fname,fname2,args) :=
 ];
 
 
-StubApiCFile(file):=
+StubApiCFile(plfname,file):=
 [
   ToFile(file:".cc")WriteString(PatchString(fileapi));
   ToFile(file:".man.txt")WriteString(ConcatStrings(StubMakeTitle(), cremarks));

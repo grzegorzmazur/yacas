@@ -78,7 +78,7 @@ MakeFunctionPlugin(_extName, _fBody) <--
 	  Write(FillList("double", Length(argList)));
 	  WriteString(
 	    ");" : Nl()
-	    : "StubApiCFile(\"" : fileBase : "_api\");" : Nl()
+	    : "StubApiCFile(\"":fileBase:"\",\"" : fileBase : "_api\");" : Nl()
 	  );
 	];
 	/* generate C++ stub */

@@ -33,7 +33,8 @@ OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
 	libmath.o exedll.o \
 	../plugins/pcre/study.o ../plugins/pcre/pcre.o \
 	../plugins/pcre/maketables.o ../plugins/pcre/pcreposix.o \
-	../plugins/pcre/get.o ../plugins/pcre/plugin.o
+	../plugins/pcre/get.o ../plugins/pcre/plugin.o \
+  filescanner.o ../plugins/filescanner/plugin.o
 
 .SUFFIXES: .cpp.cc 
 

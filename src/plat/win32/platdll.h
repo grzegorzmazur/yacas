@@ -11,7 +11,7 @@ public:
     virtual ~Win32Dll();
     virtual LispInt Open(LispCharPtr aDllFile, LispEnvironment& aEnvironment);
     virtual LispInt Close(LispEnvironment& aEnvironment);
-    virtual LispPluginBase* GetPlugin(void);
+    virtual LispPluginBase* GetPlugin(LispCharPtr aDllFile);
 private:
     void *handle;
 };

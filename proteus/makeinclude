@@ -22,6 +22,13 @@ proteus   : $(PROTEUS_OBJS)
 	$(CXX) $(PROTEUS_OBJS) -o proteus $(CXXFLAGS) $(LIBS) 
 	$(POSTBUILD) 
 
+BROWSE_OBJS = browse.cpp
+
+browse   : $(BROWSE_OBJS)  
+	$(CXX) $(BROWSE_OBJS) -o browse $(CXXFLAGS) $(LIBS) 
+	/Developer/Tools/Rez -t APPL -o browse /usr/local/include/FL/mac.r
+
+
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCS) -c $*.cpp -o $*.o
 

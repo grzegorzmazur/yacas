@@ -38,7 +38,7 @@ LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
         if (verbose_debug)
           printf("LtDll::Open: handle opened\n");
 #endif
-        iPlugin = GetPlugin();
+        iPlugin = GetPlugin(aDllFile);
         if (iPlugin)
         {
 #ifdef YACAS_DEBUG
@@ -93,13 +93,16 @@ LtDll::~LtDll()
     handle = NULL;
 }
 
-LispPluginBase* LtDll::GetPlugin(void)
+LispPluginBase* LtDll::GetPlugin(LispCharPtr aDllFile)
 {
     const char* err;
 
     LISPASSERT(handle != NULL);
     LispPluginBase* (*maker)(void);
-    maker = (LispPluginBase*(*)(void))lt_dlsym((lt_dlhandle)handle,"maker");
+    char buf[1024];
+    //TODO potential buffer overflow!
+    sprintf(buf,"make_%s",aDllFile);
+    maker = (LispPluginBase*(*)(void))lt_dlsym((lt_dlhandle)handle,buf);
     if (!maker)
     {
         err = lt_dlerror();
