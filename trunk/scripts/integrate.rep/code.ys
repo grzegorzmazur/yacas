@@ -1,4 +1,3 @@
-
 /*
 		Integration
 
@@ -13,28 +12,46 @@ which might return a correct answer immediately. Alternatively,
 it calls the function AntiDeriv, to see if the anti-derivative
 can be determined for the integral requested. If this is the
 case, the anti-derivative is used to compose the output.
+The function {IntegrateFinal} performs this last step. The anti-derivative
+should be passed to this function.
+
+	    Trigonometric functions
+
+The function {HasTrig} detects that a function contains trigonometric
+functions, and calls {TrigSimpCombine} to simplify the expression
+such that multiplications between such functions are replaced by
+additions. This is generally an easier form to integrate.
+
+The step performed by {TrigSimpCombine} is done at the very end,
+to give the transformation rules that can deal with simple trigonometric
+functions a first chance to simplify it.
+
+@@@TODO important corrollary: Integrate(x)Sin(Sin(x)) never halts!
+@@@TODO add test code and fix this problem
+@@@TODO fix the broken @ in functional.rep
+@@@TODO make into module by using LocalSymbols
 
 
-
-  funny integrals:
-   - Integrate(x,0,n)(1+x)*Cos((2*x)*Pi) with integer n
-   - Integrate(x,0,n)(1-x)*Cos((2*x)*Pi) with integer n
  */
 
+////////////////////////////////////////////////////
 //
 // Integration calls.
 //
+// Determine integral by finding the anti-derivative. Determine the
+// anti-derivative and pass it on to IntegrateFinal for processing
+//
+////////////////////////////////////////////////////
 
-// Determine integral by finding the anti-derivative
 100 # (Integrate(_var,_from,_to)_expr)
-    <-- Integrate(var,from,to,`AntiDeriv(@expr,@var))expr;
+    <-- IntegrateFinal(var,from,to,`AntiDeriv(@expr,@var),expr);
+100 # (Integrate(_var)_f) <-- IntegrateFinal(AntiDeriv(f,var));
 
 // Return un-evaluated, because no anti-derivative was found
-10 # (Integrate(_var,_from,_to,AntiDeriv(_expr,_var))_expr)
-    <-- `Hold(Integrate(_var,_from,_to)_expr);
-
+10 # IntegrateFinal(_var,_from,_to,AntiDeriv(_expr,_var),_expr)
+    <-- `Hold(Integrate(@var,@from,@to)@expr);
 // Anti-derivative found, use for computing the integral
-10 # (Integrate(_var,_from,_to,_antideriv)_expr)
+20 # IntegrateFinal(_var,_from,_to,_antideriv,_expr)
     <--
 [
   Local(result);
@@ -46,18 +63,27 @@ case, the anti-derivative is used to compose the output.
   result;
 ];
 
+////////////////////////////////////////////////////
+//
 // Compute only the anti-derivative, if there is one
-(Integrate(_var)_f) <-- AntiDeriv(f,var)+UniqueConstant();
+//
+////////////////////////////////////////////////////
+10 # IntegrateFinal(AntiDeriv(_exp,_var)) <-- `(Hold(Integrate(@var)(@exp)));
+20 # IntegrateFinal(_antideriv) <-- antideriv+UniqueConstant();
 
+////////////////////////////////////////////////////
 //
 // Computation of the anti-derivative
 //
+////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////
 //
 // simple arithmetic expansions:
 //   Integrate(x)(f+g) = Integrate(x)(f)+Integrate(x)(g)
 // etcetera
 //
+////////////////////////////////////////////////////
 2 # AntiDeriv(_expr,_var)_Not(Contains(VarList(expr),var)) <--
     expr*var;
 3 # AntiDeriv(_exx * _exy,_var)_Not(Contains(VarList(exx),var))  <--
@@ -160,24 +186,32 @@ CanBeTerm(_expr,_var) <-- (MakeTerm(expr,var) != False);
      UnList({Atom("else"), (AntiDeriv(left,var)), (AntiDeriv(right,var)) } );
 
 
+////////////////////////////////////////////////////
+//
+// Taking the anti-derivative of an expression poly(x)*f(x)
+// for which poly(x) is a univariate polynomial in x and
+// there exists an anti-derivative for f(x)
+//
+////////////////////////////////////////////////////
 15 # AntiDeriv(_exx * _exy,_var)_(CanBeUni(exx,var) And
                             Type(Apply("AntiDeriv",{exy,var})) != "AntiDeriv") <--
 [
-  Local(anti);
-  anti:=Apply("AntiDeriv",{exy,var});
-  exx*anti-
-    Apply("AntiDeriv",{anti*Deriv(var)exx,var});
+  Local(anti,cf);
+  anti:= `AntiDeriv(@exy,var);
+  cf:=anti*Deriv(var)exx;
+//  Echo({exx*anti,exx*exy,cf});
+  exx*anti - `AntiDeriv(@cf,@var);
 ];
-
 
 
 15 # AntiDeriv(_exy * _exx,_var)_(CanBeUni(exx,var) And
                             Type(Apply("AntiDeriv",{exy,var})) != "AntiDeriv") <--
 [
-  Local(anti);
-  anti:=Apply("AntiDeriv",{exy,var});
-  exx*anti-
-    Apply("AntiDeriv",{anti*Deriv(var)exx,var});
+  Local(anti,cf);
+  anti:= `AntiDeriv(@exy,var);
+  cf:=anti*Deriv(var)exx;
+//  Echo({exx*anti,exx*exy,cf});
+  exx*anti - `AntiDeriv(@cf,@var);
 ];
 
 16 # AntiDeriv(_exy / _exx,_var)_(IsFreeOf(exx,var)) <--

@@ -163,3 +163,165 @@ it is best to keep this in mind and keep the code passed to
 
 
 
+
+
+
+
+
+
+
+
+
+
+			Yacas: a computer algebra system
+
+		Abstract
+
+We describe the computer algebra system Yacas and its underlying
+design.
+
+@@@todo
+
+		Introduction
+
+Yacas is a small CAS which has been in development since beginning 1999.
+The aim was to make a small system suitable for easily doing research
+in the field of symbolic mathematics. Yacas offers a scripting language
+that allows for concise description of mathematical algorithms.
+
+As a secondary goal, the system will evolve into a full-blown
+general purpose computer algebra system in the future.
+
+		Design
+
+Yacas consists of an interpreter for a scripting language. The scripting
+language has been written in c++.
+
+The aims for Yacas were:
+
+	    Portability
+
+Yacas should be as platform-independent as possible. Yacas is written
+in a subset of c++ which is supported by almost all, if not all, c++
+compilers. The platform-specific parts have been clearly separated
+to facilitate easy porting to other systems. Even the standard c++
+library is considered to be platform-specific, as there exist 
+platforms without support even for the standard c++ libraries.
+
+To date Yacas can be run on Linux and various other Unix variants,
+Windows, Psion organizers, BeOS, and Apple iMacs. Creating an 
+executable for other platforms should not be a problem.
+
+	    Ease of use
+
+The system should support a scripting language that allows
+the user to express mathematical algorithms in a convenient way. A few
+lines of code should go a long way.
+
+Although Yacas works internally as a small Lisp-style interpreter,
+interaction is through an infix grammar language, so the user doesn't 
+see any Lisp style syntax.
+
+
+@@@examples
+
+	    Coding elegance over speed
+
+Speed is obviously an important
+factor. One big reason to use computers for doing mathematical 
+calculations is that computers can do enormous amounts of tedious operations
+in very little time. For Yacas, where a choice had to be made between
+speed and elegance of code, elegance was chosen. This enhances maintainability
+for the future.
+
+This means that special-purpose systems designed for specific types
+of calculations will outperform Yacas. Yacas offers a plugin 
+system with which other libraries with such features can be linked
+in to the system.
+
+	    Policy-free engine
+
+The Yacas system is built around two components: the kernel which
+is written in c++, and the mathematical logic, which is written 
+in the scripting language.
+
+The core kernel is written in c++ and it offers basic functionality, 
+and tries to be as policy-free as possible. 
+The fact that the plus operator is an infix operator,
+for instance, is defined in the scripts that come with Yacas.
+It would be theoretically possible to write an entirely different
+CAS based on the c++ kernel, with different syntax and different naming 
+conventions, by replacing the standard scripts.
+
+The policy-free scheme means that Yacas is highly configurable through
+its scripting language.
+
+The policy-free concept extends to typing: strong typing is
+not required by the kernel, but can be enforced by the 
+scripts (which also handle the declaration of transformation
+rules and functions). The language offers features, but does not
+enforce the use of them. Strong typing is a policy which
+can be enforced in the scripts, if necessary.
+
+	    Stand-alone package
+
+Yacas should work as a stand alone package, requiring minimum
+support from other operating system components. The system could
+be compiled to use other arbitrary precision arithmetic libraries,
+but the software comes with its own arbitrary precision arithmetic
+module also. This is a corollary of the program being easy to port.
+A dependency on libraries that might not be available on other
+platforms would reduce ease of portability.
+
+		The core kernel
+
+The decision to write a custom language as opposed to taking an
+already existing one was to have full control over the system.
+While most of the features are syntactic sugar on top of a Lisp 
+interpreter, some features not commonly found in Lisp systems were 
+added, such as the system of transformation rules.
+
+The core kernel is an interpreter from the Lisp family, with
+an infix grammar interface. In addition the core kernel supports
+declaring transformation rules, and has its own arbitrary precision
+arithmetic module.
+
+Extra functionality can be added through a plugin structure, where
+dynamic link libraries can be loaded to add extra functionality
+not found in the system. This can be used to add functionality
+offered by system libraries, or other special-purpose libraries
+for doing mathematical calculations.
+
+		The Yacas scripting language
+
+@@@large section to be written with lots of examples
+
+		Documentation
+
+The documentation is extensive, and growing every day. Yacas comes
+with its own document formatting language for easily writing
+documentation in text form. This text form can then easily be
+converted to html, postscript or pdf format.
+
+		Future plans
+
+The aim for Yacas is to become an industrial-strength CAS, and to
+remain a research tool for easily trying out various methods of
+calculation.
+
+The plugin structure will be fortified in the future, and a rich
+set of extra additional libraries, system-specific as well as
+mathematics-oriented, should be loadable from the Yacas system.
+
+The issue of speed is also continuously being addressed. 
+
+		References
+
+
+
+
+
+
+
+
+

@@ -1,12 +1,16 @@
 
 $(testtarget):
 	$(yacastest) ../tests/arithmetic.yts
+	$(yacastest) ../tests/c_tex_form.yts
 	$(yacastest) ../tests/calculus.yts
 	$(yacastest) ../tests/canprove.yts
 	$(yacastest) ../tests/comments.yts
+	$(yacastest) ../tests/integrate.yts
 	$(yacastest) ../tests/linalg.yts
 	$(yacastest) ../tests/lists.yts
 	$(yacastest) ../tests/logic_simplify_test.yts
+	$(yacastest) ../tests/numerics.yts
+	$(yacastest) ../tests/orthopoly.yts
 	$(yacastest) ../tests/poly.yts
 	$(yacastest) ../tests/predicates.yts
 	$(yacastest) ../tests/programming.yts
@@ -16,6 +20,3 @@ $(testtarget):
 	$(yacastest) ../tests/solve.yts
 	$(yacastest) ../tests/sums.yts
 	$(yacastest) ../tests/tensors.yts
-	$(yacastest) ../tests/c_tex_form.yts
-	$(yacastest) ../tests/numerics.yts
-	$(yacastest) ../tests/orthopoly.yts

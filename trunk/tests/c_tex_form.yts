@@ -47,10 +47,10 @@ TeXForm((D(x)f(x,y,z))*Cos(Omega)*Mod(Sin(a)*4,5/a^b))
 );
 
 
-KnownFailure(Verify(
+Verify(
 TeXForm(Pi+Exp(1)-Theta-Integrate(x,x1,3/g(Pi))2*theta(x)*Exp(1/x))
 ,"$\\pi  + \\exp \\left( 1\\right)  - \\Theta  - \\int _{x_{1}} ^{\\frac{3}{g\\left( \\pi \\right) }  } 2 \\theta \\left( x\\right)  \\exp \\left( \\frac{1}{x} \\right)  dx$"
-));
+);
 
 Verify(
 TeXForm({a[3]*b[5]-c[1][2],{a,b,c,d}})
