@@ -28,7 +28,8 @@ LispBoolean InternalIsList(LispPtr& aPtr)
         return LispFalse;
     if (aPtr.Get()->SubList()->Get() == NULL)
         return LispFalse;
-    if (!(*aPtr.Get()->SubList()->Get()->String() == "List"))
+    //TODO this StrEqual is far from perfect. We could pass in a LispEnvironment object...
+    if (!(StrEqual(aPtr.Get()->SubList()->Get()->String()->String(), "List")))
         return LispFalse;
     return LispTrue;
 }

@@ -70,10 +70,6 @@ private:
 #define LispStringRef LispString &
 #define LispStringPtr LispString *
 
-/** Simple function that determines if two strings are equal */
-LispInt StrEqual(LispCharPtr ptr1, LispCharPtr ptr2);
-
-
 
 #include "lispstring.inl"
 #endif

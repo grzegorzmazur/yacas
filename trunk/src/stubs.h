@@ -7,6 +7,10 @@
 
 #include "lisptype.h"
 
+/** Simple function that determines if two strings are equal */
+inline LispInt StrEqual(LispCharPtr ptr1, LispCharPtr ptr2);
+
+
 #ifdef NO_GLOBALS
 LispCharPtr PlatAlloc(LispInt aNrBytes);
 LispCharPtr PlatReAlloc(LispCharPtr aOrig, LispInt aNrBytes);
