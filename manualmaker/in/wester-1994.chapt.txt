@@ -35,8 +35,9 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 *	11. (NO) Standard deviation of the sample (1, 2, 3, 4, 5).
 *	12. (NO) Hypothesis testing with $t$-distribution.
 *	13. (NO) Hypothesis testing with normal distribution (M. Wester probably meant the $chi^2$ distribution).
-*	14. (BUG?) $(x^2-4)/(x^2+4*x+4) = (x-2)/(x+2)$.
-	Simplify((x^2-4)/(x^2+4*x+4));
+*	14. (OK) $(x^2-4)/(x^2+4*x+4) = (x-2)/(x+2)$.
+	Verify(GcdReduce((x^2-4)/(x^2+4*x+4),x),
+	  (x-2)/(x+2));
 *	15. (NO) $(Exp(x)-1)/(Exp(x/2)+1) = Exp(x/2)-1$.
 *	16. (OK) Expand $(1+x)^20$, take derivative and factorize.
 	Factor(D(x) Expand((1+x)^20));
@@ -64,20 +65,29 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 *	30. (OK) $(2^(1/3)+4^(1/3))^2-6*(2^(1/3)+4^(1/3))-6 = 0$
 	Verify(RadSimp((2^(1/3)+4^(1/3))^3-6*(2^(1/3)+
 	  4^(1/3))-6), 0);
-*	43. (NO) Assuming $Re(x)>0$, $Re(y)>0$, deduce $x^(1/n)*y^(1/n)-(x*y)^(1/n) = 0$.
-*	46. (NO) Transform equations, $(x==2)/2 + (1==1) => x/2+1==2$.  
 *	31. (NO) $Ln(Tan(x/2+Pi/4))-ArcSinh(Tan(x))=0$
 *	32. (NO) Numerically, the expression $Ln(Tan(x/2+Pi/4))-ArcSinh(Tan(x))=0$ and its derivative at $x=0$ are zero.
 	Ln(Tan(x/2+Pi/4))-ArcSinh(Tan(x));
 	D(x)(Ln(Tan(x/2+Pi/4))-ArcSinh(Tan(x)));
 *	33. (NO) $Ln((2*Sqrt(r)+1)/Sqrt(4*r+4*Sqrt(r)+1)) = 0$.
-*	34. (NO) $(4*r+4*Sqrt(r)+1)^(Sqrt(r)/(2*Sqrt(r)+1)) * (2*Sqrt(r)+1)^(1/(2*Sqrt(r)+1)) - 2*Sqrt(r)-1 = 0$, assuming $r>0$.
+*	34. (NO) $(4*r+4*Sqrt(r)+1)^(Sqrt(r)/(2*Sqrt(r)+1)) * (2*Sqrt(r)+1)^((2*Sqrt(r)+1)^(-1)) - 2*Sqrt(r)-1 = 0$, assuming $r>0$.
 *	35. (OK) Obtain real and imaginary parts of $Ln(3+4*I)$.
 	Verify(
 	  Hold({ {x}, {Re(x), Im(x)}}) @ Ln(3+4*I)
 	  , {Ln(5),ArcTan(4/3)});
 *	36. (BUG) Obtain real and imaginary parts of $Tan(x+I*y)$.
 	Hold({ {x}, {Re(x), Im(x)}}) @ Tan(x+I*y);
+*	41. (BUG) Simplify $Ln(Exp(z))$ to $z$ for $-Pi<Im(z)<=Pi$.
+	Verify(Simplify(Ln(Exp(z))), z);
+(no conditions on $z$ are used)
+*	43. (NO) Assuming $Re(x)>0$, $Re(y)>0$, deduce $x^(1/n)*y^(1/n)-(x*y)^(1/n) = 0$.
+*	46. (NO) Transform equations, $(x==2)/2 + (1==1) => x/2+1==2$.  
+*	52. (BUG) Solve $Exp(x)=1$ and get all solutions.
+	Verify(Solve(Exp(x)==1,x), 0);
+(get only one solution)
+*	54. (BUG) Solve $Tan(x)=1$ and get all solutions.
+	Verify(Solve(Tan(x)==1,x), Pi/4);
+(get only one solution)
 *	60. (OK) Solve a degenerate 3x3 linear system.
 	Verify(Solve({x+y+z==6, 2*x+y+2*z==10,
 	  x+3*y+z==10}, {x,y,z}), {{4-z,2,z}});
@@ -98,10 +108,37 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 *	76. (OK) $D(x) Abs(x)$
 	Verify(D(x) Abs(x), Sign(x));
 *	77. (OK) $D(x) Integrate(x) Abs(x) = Abs(x)*x/2$
-	Verify(D(x)((Integrate(x) Abs(x)) - Abs(x)*x/2), 0);
-Note that {Integrate} currently always add an arbitrary constant and we can't {Verify} the results directly.
-*	91. (BUG?) Taylor series of $1/Sqrt(1-v^2/c^2)$ at $v=0$.
-	Taylor(v,0,4) 1/Sqrt(1-v^2/c^2);
+	Verify(Simplify(Integrate(x) Abs(x)),
+	  Abs(x)*x/2);
+*	78. (OK) Compute derivative of $Abs(x)$, piecewise defined.
+	Verify(D(x)if(x<0) (-x) else x,
+	  if(x<0) -1 else 1);
+*	79. (OK) Integrate $Abs(x)$, piecewise defined.
+	Verify(Simplify(Integrate(x)
+	  if(x<0) (-x) else x),
+	  if(x<0) (-x^2/2) else x^2/2);
+*	91. (OK) Taylor series of $1/Sqrt(1-v^2/c^2)$ at $v=0$.
+	S := Taylor(v,0,4) 1/Sqrt(1-v^2/c^2);
+	TestYacas(S, 1+v^2/(2*c^2)+3/8*v^4/c^4);
+Note: The result of {Taylor} is not in convenient form but is equivalent.
+*	92. (OK) Compute the Taylor expansion of the inverse square of the above.
+	TestYacas(Taylor(v,0,4) 1/S^2, 1-v^2/c^2);
+Note: The result of {Taylor} is not in convenient form but is equivalent.
+*	93. (OK) (Taylor expansion of $Sin(x)$)/(Taylor expansion of $Cos(x)$) = (Taylor expansion of $Tan(x)$).
+	TestYacas(Taylor(x,0,5)(Taylor(x,0,5)Sin(x))/
+	  (Taylor(x,0,5)Cos(x)), Taylor(x,0,5)Tan(x));
+*	94. (BUG) Taylor expansion of $(Ln(x))^a*Exp(-b*x)$ at $x=1$.
+	//Taylor(x,1,3)(Ln(x))^a*Exp(-b*x);
+(bugs in Deriv manipulation)
+*	97. (BUG) Taylor expansion of $Ln(Sin(x)/x)$ at $x=0$.
+	//Taylor(x,0,5) Ln(Sin(x)/x);
+(never stops)
+*	98. (NO) Compute $n$-th term of the Taylor series of $Ln(Sin(x)/x)$ at $x=0$.
+*	99. (NO) Compute $n$-th term of the Taylor series of $Exp(-x)*Sin(x)$ at $x=0$.
+*	100. (OK) Solve $x=Sin(y)+Cos(y)$ for $y$ as Taylor series in $x$ at $x=1$.
+	TestYacas(InverseTaylor(y,0,4) Sin(y)+Cos(y),
+	  (y-1)+(y-1)^2/2+2*(y-1)^3/3+(y-1)^4);
+Note that {InverseTaylor} does not give the series in terms of $x$ but in terms of $y$ which is semantically wrong. But other CAS do the same.
 *	123. (OK) Compute Legendre polynomials directly from Rodrigues's formula, $P[n] = 1/(2*n)!! * Deriv(x,n) (x^2-1)^n$.
 	P(n,x) := Expand( 1/(2*n)!! *
 	  Deriv(x,n) (x^2-1)^n );
