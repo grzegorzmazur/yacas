@@ -180,8 +180,24 @@ CheckIntPower(n, limit) :=
 	);
 ];
 
-/// Compute integer part of s-th root of (positive) integer n. Use only integer arithmetic.
+/// Compute integer part of s-th root of (positive) integer n.
 IntNthRoot(_n, s_IsInteger) <--
+[
+	Local(result, k);
+	GlobalPush(GetPrecision());
+	// find integer k such that 2^k <= n^(1/s) < 2^(k+1)
+	k := Div(IntLog(n, 2), s);
+	// therefore we need k*Ln(2)/Ln(10) digits for the floating-point calculation
+	Precision(2+Div(k*3361, 11165));	// 643/2136 < Ln(2)/Ln(10) < 3361/11165
+	result := Round(MathExp(MathDivide(LnNum(MathDivide(n, 2^(k*s))), s))*2^k);
+	Precision(GlobalPop());
+	// result is rounded and so it may overshoot (we do not use Floor above because numerical calculations may undershoot)
+	If(result^s>n, result-1, result);
+];
+
+/* algorithm using only integer arithmetic.
+(this is slower than the floating-point algorithm for large numbers because all calculations are with long integers)
+IntNthRoot1(_n, s_IsInteger) <--
 [
 	Local(x1, x2, x'new, y1);
 	// initial guess should always undershoot
@@ -236,6 +252,7 @@ IntNthRoot(_n, s_IsInteger) <--
 	];
 	If(y1=n, x1, x1-1);	// subtract 1 if we overshot
 ];
+*/
 
 CatalanNumber(_n) <-- 
 [	
