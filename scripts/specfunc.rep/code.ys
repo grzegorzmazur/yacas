@@ -384,6 +384,7 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 	RoundTo(result,prec);
 ];
 
+/* slow convergence?
 CatalanConstNum() := 
 [
         Local(prec,eps,term,result,k,i);
@@ -402,6 +403,27 @@ CatalanConstNum() :=
         ];
         Precision(prec);
 	RoundTo(result,prec);	
+];
+*/
+
+CatalanConstNum() :=
+[
+	Local(prec, n, result);
+	prec:=GetPrecision();
+
+	Precision(15);
+	// number of terms
+	n := Floor(N(1+prec*Ln(10)/Ln(4)));
+	Precision(prec+2);
+	
+	result := N(1/(2*n+1));
+	While(n>0)
+	[
+		result := MultiplyNum(result, n/(4*n+2))+N(1/(2*n-1));
+		n := n-1;
+	];
+	result := MultiplyNum(result, 3/8) + N(Pi/8*Ln(2+Sqrt(3)));
+	RoundTo(result,prec);
 ];
 
 10 # Digamma(_n)_(IsPositiveInteger(n)) <-- Sum(m,1,n-1,1/m) - gamma;
