@@ -73,7 +73,7 @@ texdocs: \
 clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.toc *.log *.ps *.pdf \
 	coding*html intro*html ref*html essays*html .o core *~ texdocs.c \
-	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(ALLBOOKS)
+	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(ALLBOOKS) manicon.html
 
 yacas_helpdir = $(datadir)/yacas/documentation
 
