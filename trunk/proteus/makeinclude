@@ -27,9 +27,15 @@ proteusworksheet   : $(WORKSHEET_OBJS) $(YACAS_DIR)/libyacas.la $(YACAS_DIR)/lib
 
 PROTEUS_OBJS = tabs.o editor.o HelpView.o FltkConsole.o grapher.o FltkHintWindow.o 
 
-proteus   : $(PROTEUS_OBJS) $(YACAS_DIR)/libyacas.la $(YACAS_DIR)/libyacasplatform.la $(YACAS_DIR)/libyacasnumbers.la 
-	$(CXX) $(PROTEUS_OBJS) $(YACAS_DIR)/libyacas.la $(YACAS_DIR)/libyacasplatform.la $(YACAS_DIR)/libyacasnumbers.la -o proteus $(CXXFLAGS) $(LIBS) -lm
+proteus   : $(PROTEUS_OBJS) $(YACAS_DIR)/libyacas.la $(YACAS_DIR)/.libs/libyacasplatform.la $(YACAS_DIR)/.libs/libyacasnumbers.la 
+	$(CXX) $(PROTEUS_OBJS) $(YACAS_DIR)/.libs/libyacas.a $(YACAS_DIR)/.libs/libyacasplatform.a $(YACAS_DIR)/.libs/libyacasnumbers.a -o proteus $(CXXFLAGS) $(LIBS) -lm
+	$(POSTBUILD) $@ /usr/local/include/FL/mac.r
 	mv proteus $(EXENAME)
+
+
+test.exe: test.cxx
+	$(CXX) test.cxx -o test.exe $(CXXFLAGS) $(LIBS) -lm $(CXXFLAGS) $(LDLIBS) $(GLDLIBS) $(INCS) -O2 -Wall -Wunused  -fno-exceptions
+	$(POSTBUILD) $@ /usr/local/include/FL/mac.r
 
 
 .cpp.o:

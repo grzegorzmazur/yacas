@@ -229,7 +229,11 @@ REDO:
           if (strlen(&inpline[1]) < 100)
           {
             char buf[120];
+#ifdef HAVE_VSNPRINTF
+            snprintf(buf,120,"Help(\"%s\")",&inpline[1]);
+#else
             sprintf(buf,"Help(\"%s\")",&inpline[1]);
+#endif
             yacas->Evaluate(buf);
             goto REDO;
           }
@@ -290,7 +294,11 @@ void LispTime(LispEnvironment& aEnvironment, LispInt aStackTop)
     timeDiff = endtime-starttime;
     timeDiff /= CLOCKS_PER_SEC;
     char buf[100];
+#ifdef HAVE_VSNPRINTF
+    snprintf(buf,100,"%g",timeDiff);
+#else
     sprintf(buf,"%g",timeDiff);
+#endif
     RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
 }
 
@@ -374,7 +382,9 @@ void build_full_prompt(char* full_prompt, const char* prompt, const int maxlen)
         fclose(meminfo);
         meminfo = (FILE*) NULL;
         if (strlen(entry) + strlen(prompt) + 5 < maxlen)
-          sprintf(full_prompt, "%sk %s", entry, prompt);
+        {
+          sprintf(full_prompt, "%sk %s", entry, prompt); //TODO use snprintf instead!
+        }
         else
         {
             strncpy(full_prompt, prompt, maxlen);
@@ -422,9 +432,21 @@ void DeclarePath(char *ptr2)
 {
   char buf[1000];
   if (ptr2[strlen(ptr2)-1] != PATH_SEPARATOR)
+  {
+#ifdef HAVE_VSNPRINTF
+    snprintf(buf,1000,"DefaultDirectory(\"%s%c\");",ptr2,PATH_SEPARATOR);
+#else
     sprintf(buf,"DefaultDirectory(\"%s%c\");",ptr2,PATH_SEPARATOR);
+#endif
+  }
   else
+  {
+#ifdef HAVE_VSNPRINTF
+    snprintf(buf,1000,"DefaultDirectory(\"%s\");",ptr2);
+#else
     sprintf(buf,"DefaultDirectory(\"%s\");",ptr2);
+#endif
+  }
   yacas->Evaluate(buf);
 }
 
@@ -523,7 +545,11 @@ CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator
    }
         DeclarePath(ptr2);
         char buf[1000];
+#ifdef HAVE_VSNPRINTF
+        snprintf(buf,1000,"Load(\"%s\");",init_script);
+#else
         sprintf(buf,"Load(\"%s\");",init_script);
+#endif
         yacas->Evaluate(buf);
     }
     if (yacas->IsError())
@@ -574,13 +600,21 @@ CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator
         struct stat statbuf;
         char dir[256];
         char cwd[256];
+#ifdef HAVE_VSNPRINTF
+        snprintf(dir,256,"%saddons/",root_dir);
+#else
         sprintf(dir,"%saddons/",root_dir);
+#endif
 
         if ((dp = opendir(dir)) != NULL)
         {
             {
                 char ld[256];
+#ifdef HAVE_VSNPRINTF
+                snprintf(ld,256,"DefaultDirectory(\"%saddons/\");",root_dir);
+#else
                 sprintf(ld,"DefaultDirectory(\"%saddons/\");",root_dir);
+#endif
                 yacas->Evaluate(ld);
             }
             getcwd(cwd,256);
@@ -603,7 +637,11 @@ CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator
                 strstr(dummy,".def")[0] = '\0';
                 if (show_prompt && !use_texmacs_out)
                     printf("[%s] ",dummy);
+#ifdef HAVE_VSNPRINTF
+                snprintf(buf,512,"DefLoad(\"%s\");",dummy);
+#else
                 sprintf(buf,"DefLoad(\"%s\");",dummy);
+#endif
                 yacas->Evaluate(buf);
             }
             closedir(dp);
@@ -615,13 +653,20 @@ CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator
 #endif
     {
         char fname[256];
+#ifdef HAVE_VSNPRINTF
+        snprintf(fname,256,"%s/.yacasrc",getenv("HOME"));
+#else
         sprintf(fname,"%s/.yacasrc",getenv("HOME"));
+#endif
         FILE* test=fopen(fname,"r");
         if (test)
         {
             fclose(test);
-
+#ifdef HAVE_VSNPRINTF
+            snprintf(fname,256,"Load(\"%s/.yacasrc\");",getenv("HOME"));
+#else
             sprintf(fname,"Load(\"%s/.yacasrc\");",getenv("HOME"));
+#endif
             yacas->Evaluate(fname);
         }
     }
@@ -1303,11 +1348,19 @@ int main(int argc, char** argv)
             char s[200];
             if (patchload)
             {
+#ifdef HAVE_VSNPRINTF
+                snprintf(s,200,"PatchLoad(\"%s\");",argv[fileind]);
+#else
                 sprintf(s,"PatchLoad(\"%s\");",argv[fileind]);
+#endif
             }
             else
             {
+#ifdef HAVE_VSNPRINTF
+                snprintf(s,200,"Load(\"%s\");",argv[fileind]);
+#else
                 sprintf(s,"Load(\"%s\");",argv[fileind]);
+#endif
             }
             yacas->Evaluate(s);
 

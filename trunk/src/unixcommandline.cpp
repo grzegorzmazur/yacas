@@ -53,7 +53,11 @@ CUnixCommandLine::CUnixCommandLine()
     tcsetattr(0, TCSADRAIN, &rl_termio);
 
     char fname[256];
+#ifdef HAVE_VSNPRINTF
+    snprintf(fname,256,"%s/.yacas_history",getenv("HOME"));
+#else
     sprintf(fname,"%s/.yacas_history",getenv("HOME"));
+#endif
     FILE*f=fopen(fname,"r");
     if (f)
     {
@@ -82,7 +86,11 @@ CUnixCommandLine::~CUnixCommandLine()
 {
     tcsetattr(0, TCSADRAIN, &orig_termio);
     char fname[256];
+#ifdef HAVE_VSNPRINTF
+    snprintf(fname,256,"%s/.yacas_history",getenv("HOME"));
+#else
     sprintf(fname,"%s/.yacas_history",getenv("HOME"));
+#endif
     
     FILE*f=fopen(fname,"w");
     if (f)

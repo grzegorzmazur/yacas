@@ -1419,7 +1419,11 @@ void BigNumber::SetTo(long aValue)
 #ifdef HAVE_STDIO_H
   char dummy[150];
   //FIXME platform code
+#ifdef HAVE_VSNPRINTF
+  snprintf(dummy,150,"%ld",aValue);
+#else
   sprintf(dummy,"%ld",aValue);
+#endif
   SetTo(dummy,iPrecision,10);
   SetIsInteger(LispTrue);
 #else
@@ -1436,8 +1440,13 @@ void BigNumber::SetTo(double aValue)
   char dummy[150];
   //FIXME platform code
   char format[20];
+#ifdef HAVE_VSNPRINTF
+  snprintf(format,20,"%%.%dg",iPrecision);
+  snprintf(dummy,150,format,aValue);
+#else
   sprintf(format,"%%.%dg",iPrecision);
   sprintf(dummy,format,aValue);
+#endif
   SetTo(dummy,iPrecision,10);
   SetIsInteger(LispFalse);
 //  if (iNumber->iExp > 1)
