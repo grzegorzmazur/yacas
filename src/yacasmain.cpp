@@ -597,15 +597,15 @@ void InterruptHandler(int errupt)
 #include "platmath.h"
 void TestNum()
 {//numeric test code
-  NativeNumber result;
-  NativeNumber x("23",10);
-  NativeNumber y("45.23e3",10);
+  BigNumber result;
+  BigNumber x("23",10);
+  BigNumber y("45.23e3",10);
   result.Multiply(x,y,10);
   LispString str;
   result.ToString(str,10);
   printf("23*45.23e3 = %s\n",str.String());
 
-  NativeNumber minusOne("-1.0",10);
+  BigNumber minusOne("-1.0",10);
   minusOne.ToString(str,10);
   printf("-1 = %s\n",str.String());
 }
@@ -615,7 +615,6 @@ void TestNum()
 #define SHOWSIZE(a)    printf("   sizeof(" #a ") = %d\n",sizeof(a));
 int main(int argc, char** argv)
 {
-//Serge: uncomment this line to see the new numeric class
 //TestNum();
 
     unsigned char first_stack_var=0;

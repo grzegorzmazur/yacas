@@ -29,7 +29,7 @@ public:
     ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision=10);
     inline ANumber(ANumber& aOther) {CopyFrom(aOther);}
     ~ANumber();
-    void CopyFrom(ANumber& aOther);
+    void CopyFrom(const ANumber& aOther);
     void SetTo(LispCharPtr aString,LispInt aBase=10);
     inline void SetPrecision(LispInt aPrecision) {iPrecision = aPrecision;}
     void ChangePrecision(LispInt aPrecision);

@@ -281,7 +281,7 @@ void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
 //PrintNumber("      ",*this);
 }
 
-void ANumber::CopyFrom(ANumber& aOther)
+void ANumber::CopyFrom(const ANumber& aOther)
 {
     iExp       = aOther.iExp;
     iTensExp   = aOther.iTensExp;

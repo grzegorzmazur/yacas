@@ -5,6 +5,7 @@
 #include "lispenvironment.h"
 #include "yacasbase.h"
 
+
 /// Create a internal number object from an ascii string.
 void* AsciiToNumber(LispCharPtr aString,LispInt aPrecision);
 
@@ -91,86 +92,88 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
 /** Base number class. 
  */
  
+// You can enable this define to have a BigNumber implementation based on 'double' and 'long'
+#define noUSE_NATIVE
+
+#ifndef USE_NATIVE
+  #ifdef USE_GMP
+    //...
+  #else
+    class ANumber;
+  #endif
+#endif
+
 
 /// Virtual base class for low-level multiple-precision arithmetic.
 /// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
-class NumberBase : public YacasBase
+class BigNumber : public YacasBase
 {
 public: //constructors
+  BigNumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
+  BigNumber(const BigNumber& aOther);
+  BigNumber();
+  ~BigNumber();
   // assign to another number
- virtual void SetTo(const NumberBase& ) = 0;
+  void SetTo(const BigNumber& aOther);
+public: // Convert back to other types
   /// ToString : return string representation of number in aResult 
-  virtual void ToString(LispString& aResult, LispInt aBase) const = 0;
+  void ToString(LispString& aResult, LispInt aBase) const;
+  /// Give approximate representation as a double number
+  double Double() const;
 public: //information retrieval on library used  
   /// Numeric library name
-  virtual const LispCharPtr NumericLibraryName() const = 0;
+  const LispCharPtr NumericLibraryName() const;
 public://arithmetic
   /// Multiply two numbers at given precision and put result in *this
-  virtual void Multiply(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
+  void Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
   /** Multiply two numbers, and add to aResult (this is useful and generally efficient to implement).
    * This is most likely going to be used by internal functions only, using aResult as an accumulator.
    */
-  virtual void MultiplyAdd(NumberBase& aResult, const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
+  void MultiplyAdd(BigNumber& aResult, const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
   /// Add two numbers at given precision and return result in *this
-  virtual void Add(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
+  void Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
   /// Negate the given number, return result in *this
-  virtual void Negate(const NumberBase& aX) = 0;
+  void Negate(const BigNumber& aX);
   /// Divide two numbers and return result in *this. Note: if the two arguments are integer, it should return an integer result!
-  virtual void Divide(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
+  void Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
 
 public:/// Bitwise operations, return result in *this.
-  virtual void ShiftLeft( const NumberBase& aX, LispInt aNrToShift) = 0;
-  virtual void ShiftRight( const NumberBase& aX, LispInt aNrToShift) = 0;
-  virtual void BitAnd(const NumberBase& aX, const NumberBase& aY) = 0;
-  virtual void BitOr(const NumberBase& aX, const NumberBase& aY) = 0;
-  virtual void BitXor(const NumberBase& aX, const NumberBase& aY) = 0;
+  void ShiftLeft( const BigNumber& aX, LispInt aNrToShift);
+  void ShiftRight( const BigNumber& aX, LispInt aNrToShift);
+  void BitAnd(const BigNumber& aX, const BigNumber& aY);
+  void BitOr(const BigNumber& aX, const BigNumber& aY);
+  void BitXor(const BigNumber& aX, const BigNumber& aY);
   /// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
-  virtual LispInt BitCount() const = 0;
-  /// Give approximate representation as a double number
-  virtual double Double() const = 0;
+  LispInt BitCount() const;
   /// Give sign (-1, 0, 1)
-  virtual LispInt Sign() const = 0;
+  LispInt Sign() const;
+
+#ifdef USE_NATIVE
+
+private:
+  enum EType
+  {
+    KInteger = 0,
+    KDouble=1,
+  };
+  union UValue
+  {
+    long i;
+    double  d;
+  };
+  EType type;
+  UValue value;
+
+#else 
+  #ifdef USE_GMP
+  //...
+  #else
+    ANumber* iNumber;
+  #endif
+#endif
 };
 
 
-
-
-/*DEPRECATED, TODO remove
-  These now need to be implemented in script, at the very least.
-public: //base conversions
-  virtual YacasBigNumber* FromBase( const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY,  LispInt aPrecision) = 0;
-  virtual YacasBigNumber* ToBase( const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY,  LispInt aPrecision) = 0;
-
-  /// Calculate GCD of this object with another, and return result in aResult
-  virtual YacasBigNumber* Gcd(YacasBigNumberPtr aX, YacasBigNumberPtr aY) = 0;
-
-  /// Raise power, and return result
-  virtual YacasBigNumber* Power(const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY,LispInt aPrecision) = 0;
-
-public: //trigonometric functions
-  virtual YacasBigNumber* Sin(const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
-  virtual YacasBigNumber* Cos(const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
-  virtual YacasBigNumber* Tan(const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
-  virtual YacasBigNumber* ArcSin(const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
-  virtual YacasBigNumber* ArcCos(const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
-  virtual YacasBigNumber* ArcTan(const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
-  virtual YacasBigNumber* Exp(const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
-  virtual YacasBigNumber* Ln(const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
-public://other functions  
-  virtual YacasBigNumber* Sqrt(const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
-  virtual YacasBigNumber* Abs( const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
-  virtual YacasBigNumber* Factorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision) = 0;
-  virtual YacasBigNumber* Pi(LispInt aPrecision) = 0;
-  virtual YacasBigNumber* Mod( const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
-  virtual YacasBigNumber* Div( const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
-  virtual LispBoolean GreaterThan(const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
-
-  virtual YacasBigNumber* Floor(const YacasBigNumberPtr& aX, LispInt aPrecision) = 0;
-  virtual YacasBigNumber* Ceil( const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
-public://comparisons  
-  virtual LispBoolean LessThan(const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
-
-*/
 
 #endif
 

@@ -111,7 +111,8 @@ LispStringPtr PlatAbs(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPreci
 /* And here is a reference implementation of YacasBigNumber: one using native types.
 */
 
-NativeNumber::NativeNumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+#ifdef USE_NATIVE
+BigNumber::BigNumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {
   if (strchr(aString,'.') || strchr(aString,'e') || strchr(aString,'E'))
   {
@@ -124,7 +125,24 @@ NativeNumber::NativeNumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase)
     value.i = atoi(aString);
   }
 }
-void NativeNumber::ToString(LispString& aResult, LispInt aBase) const 
+
+BigNumber::BigNumber(const BigNumber& aOther)
+{
+  type  = aOther.type;
+  value = aOther.value;
+}
+
+BigNumber::BigNumber() 
+{
+  type = KDouble;value.d = 0.0;
+}
+
+
+BigNumber::~BigNumber()
+{
+}
+
+void BigNumber::ToString(LispString& aResult, LispInt aBase) const 
 {
   char dummy[150];
   dummy[0] = '\0';
@@ -139,18 +157,18 @@ void NativeNumber::ToString(LispString& aResult, LispInt aBase) const
   }
   aResult.SetStringCounted(dummy,PlatStrLen(dummy));
 }
-const LispCharPtr NativeNumber::NumericLibraryName() const
+const LispCharPtr BigNumber::NumericLibraryName() const
 {
   return "Native types";
 }
 
-//          result->value.i assign ((NativeNumber)aX).value.i op ((NativeNumber)aY).value.i; 
+//          result->value.i assign ((BigNumber)aX).value.i op ((BigNumber)aY).value.i; 
 
 
 #define TWO_FUNC_WITH(result,assign,op) \
 { \
-const NativeNumber* x = ((const NativeNumber*)(&aX));\
-const NativeNumber* y = ((const NativeNumber*)(&aY));\
+const BigNumber* x = ((const BigNumber*)(&aX));\
+const BigNumber* y = ((const BigNumber*)(&aY));\
   switch (x->type) \
   { \
     case KInteger: \
@@ -190,68 +208,68 @@ const NativeNumber* y = ((const NativeNumber*)(&aY));\
 }
 
 
-void NativeNumber::Multiply(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) 
+void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision) 
 TWO_FUNC(=,*)
 
-void NativeNumber::MultiplyAdd(NumberBase& aResult,
-              const NumberBase& aX, 
-              const NumberBase& aY, 
+void BigNumber::MultiplyAdd(BigNumber& aResult,
+              const BigNumber& aX, 
+              const BigNumber& aY, 
               LispInt aPrecision) 
-TWO_FUNC_WITH(((NativeNumber*)(&aResult)),+=,*)
+TWO_FUNC_WITH(((BigNumber*)(&aResult)),+=,*)
 
-void NativeNumber::Add(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) 
+void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision) 
 TWO_FUNC(=,+)
 
-void NativeNumber::Negate(const NumberBase& aX) 
+void BigNumber::Negate(const BigNumber& aX) 
 {
-  switch (((const NativeNumber*)(&aX))->type)
+  switch (((const BigNumber*)(&aX))->type)
   {
-    case KInteger: value.i = -((NativeNumber*)(&aX))->value.i; break;
-    case KDouble:  value.d = -((NativeNumber*)(&aX))->value.d; break;
+    case KInteger: value.i = -((BigNumber*)(&aX))->value.i; break;
+    case KDouble:  value.d = -((BigNumber*)(&aX))->value.d; break;
   }
 }
-void NativeNumber::Divide(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) 
+void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision) 
 TWO_FUNC(=,/)
 
-void NativeNumber::ShiftLeft( const NumberBase& aX, LispInt aNrToShift)
+void BigNumber::ShiftLeft( const BigNumber& aX, LispInt aNrToShift)
 {
   LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
   LISPASSERT(x.type == KInteger);
-  value.i = ((NativeNumber*)(&aX))->value.i << aNrToShift;
+  value.i = ((BigNumber*)(&aX))->value.i << aNrToShift;
 }
-void NativeNumber::ShiftRight( const NumberBase& aX, LispInt aNrToShift)
+void BigNumber::ShiftRight( const BigNumber& aX, LispInt aNrToShift)
 {
   LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
   LISPASSERT(x.type == KInteger);
-  value.i = ((NativeNumber*)(&aX))->value.i >> aNrToShift;
+  value.i = ((BigNumber*)(&aX))->value.i >> aNrToShift;
 }
-void NativeNumber::BitAnd(const NumberBase& aX, const NumberBase& aY)
+void BigNumber::BitAnd(const BigNumber& aX, const BigNumber& aY)
 {
   LISPASSERT(!StrCompare(aX.NumericLibraryName(), aY.NumericLibraryName())); 
   LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
   LISPASSERT(x->type != KInteger);
   LISPASSERT(y->type != KInteger);
-  value.i = (((NativeNumber*)(&aX))->value.i) & (((NativeNumber*)(&aY))->value.i);
+  value.i = (((BigNumber*)(&aX))->value.i) & (((BigNumber*)(&aY))->value.i);
 }
-void NativeNumber::BitOr(const NumberBase& aX, const NumberBase& aY)
+void BigNumber::BitOr(const BigNumber& aX, const BigNumber& aY)
 {
   LISPASSERT(!StrCompare(aX.NumericLibraryName(), aY.NumericLibraryName())); 
   LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
   LISPASSERT(x->type != KInteger);
   LISPASSERT(y->type != KInteger);
-  value.i = (((NativeNumber*)(&aX))->value.i) | (((NativeNumber*)(&aY))->value.i);
+  value.i = (((BigNumber*)(&aX))->value.i) | (((BigNumber*)(&aY))->value.i);
 }
-void NativeNumber::BitXor(const NumberBase& aX, const NumberBase& aY)
+void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
 {
   LISPASSERT(!StrCompare(aX.NumericLibraryName(), aY.NumericLibraryName())); 
   LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
   LISPASSERT(x->type != KInteger);
   LISPASSERT(y->type != KInteger);
-  value.i = (((NativeNumber*)(&aX))->value.i) ^ (((NativeNumber*)(&aY))->value.i);
+  value.i = (((BigNumber*)(&aX))->value.i) ^ (((BigNumber*)(&aY))->value.i);
 }
 
 
-double NativeNumber::Double() const
+double BigNumber::Double() const
 {
   LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
   if (type == KInteger)
@@ -260,7 +278,7 @@ double NativeNumber::Double() const
     return value.d;
 }
 
-LispInt NativeNumber::BitCount() const
+LispInt BigNumber::BitCount() const
 {
   LispInt result = 0;
   if (type == KInteger)
@@ -297,7 +315,7 @@ LispInt NativeNumber::BitCount() const
   return result;
 }
 
-LispInt NativeNumber::Sign() const
+LispInt BigNumber::Sign() const
 {
   if (type == KInteger)
   {
@@ -310,10 +328,11 @@ LispInt NativeNumber::Sign() const
 }
 
 
-void NativeNumber::SetTo(const NumberBase& aX)
+void BigNumber::SetTo(const BigNumber& aX)
 {
   LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
-  type = ((NativeNumber*)(&aX))->type;
-  value = ((NativeNumber*)(&aX))->value;
+  type = ((BigNumber*)(&aX))->type;
+  value = ((BigNumber*)(&aX))->value;
 }
 
+#endif

@@ -11,6 +11,10 @@
 #include "platmath.h"
 #include "lisperror.h"
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 static LispStringPtr FloatToString(ANumber& aInt, LispHashTable& aHashTable
                                   , LispInt aBase = 10);
 
@@ -878,3 +882,183 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
 }
 
 */
+
+
+
+
+
+
+#ifndef USE_NATIVE
+
+
+BigNumber::BigNumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+{
+  iNumber = NEW ANumber(aString,aPrecision,aBase);
+}
+BigNumber::BigNumber(const BigNumber& aOther)
+{
+  iNumber = NEW ANumber(*aOther.iNumber);
+}
+BigNumber::BigNumber()
+{
+  iNumber = NEW ANumber();
+}
+
+BigNumber::~BigNumber()
+{
+  delete iNumber;
+}
+
+void BigNumber::SetTo(const BigNumber& aOther)
+{
+  iNumber->CopyFrom(*aOther.iNumber);
+}
+void BigNumber::ToString(LispString& aResult, LispInt aBase) const
+{
+  ANumberToString(aResult, *iNumber, aBase);
+}
+double BigNumber::Double() const
+{
+// There are platforms that don't have strtod
+#ifdef HAVE_STRTOD
+  LispString str;
+  ANumberToString(str, *iNumber, 10);
+  char* endptr;
+  return strtod(str.String(),&endptr);
+#else
+  LISPASSERT(0);
+  return 0.0;
+#endif
+}
+
+const LispCharPtr BigNumber::NumericLibraryName() const
+{
+  return "Internal implementation";
+}
+
+void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
+{
+  :: Multiply(*iNumber,*aX.iNumber,*aY.iNumber);
+}
+void BigNumber::MultiplyAdd(BigNumber& aResult, const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
+{
+  LISPASSERT(0);
+}
+void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
+{
+	::Add(*iNumber, *aX.iNumber, *aY.iNumber);
+}
+void BigNumber::Negate(const BigNumber& aX)
+{
+  if (aX.iNumber != iNumber)
+  {
+    iNumber->CopyFrom(*aX.iNumber);
+  }
+  ::Negate(*iNumber);
+
+}
+void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
+{
+    ANumber remainder(aPrecision);
+    ::Divide(*iNumber,remainder,*aX.iNumber,*aY.iNumber);
+}
+void BigNumber::ShiftLeft( const BigNumber& aX, LispInt aNrToShift)
+{
+  if (aX.iNumber != iNumber)
+  {
+    iNumber->CopyFrom(*aX.iNumber);
+  }
+  ::BaseShiftLeft(*iNumber,aNrToShift);
+}
+void BigNumber::ShiftRight( const BigNumber& aX, LispInt aNrToShift)
+{
+  if (aX.iNumber != iNumber)
+  {
+    iNumber->CopyFrom(*aX.iNumber);
+  }
+  ::BaseShiftRight(*iNumber,aNrToShift);
+}
+void BigNumber::BitAnd(const BigNumber& aX, const BigNumber& aY)
+{
+  LispInt len1=aX.iNumber->NrItems(), len2=aY.iNumber->NrItems();
+  LispInt min=len1,max=len2;
+  if (min>max)
+  {
+    LispInt swap=min;
+    min=max;
+    max=swap;
+  }
+  iNumber->GrowTo(min);
+  LispInt i;
+  for (i=0;i<len1 && i<len2;i++)
+  {
+    (*iNumber)[i] = (*aX.iNumber)[i] & (*aY.iNumber)[i];
+  }
+}
+void BigNumber::BitOr(const BigNumber& aX, const BigNumber& aY)
+{
+  LispInt len1=(*aX.iNumber).NrItems(), len2=(*aY.iNumber).NrItems();
+  LispInt min=len1,max=len2;
+  if (min>max)
+  {
+    LispInt swap=min;
+    min=max;
+    max=swap;
+  }
+  
+  iNumber->GrowTo(max);
+
+  LispInt i;
+  for (i=0;i<len1 && i<len2;i++)
+  {
+    (*iNumber)[i] = (*aX.iNumber)[i] | (*aY.iNumber)[i];
+  }
+  for (i=len1;i<len2;i++)
+  {
+    (*iNumber)[i] = (*aY.iNumber)[i];
+  }
+  for (i=len2;i<len1;i++)
+  {
+    (*iNumber)[i] = (*aX.iNumber)[i];
+  }
+}
+void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
+{
+  LispInt len1=(*aX.iNumber).NrItems(), len2=(*aY.iNumber).NrItems();
+  LispInt min=len1,max=len2;
+  if (min>max)
+  {
+    LispInt swap=min;
+    min=max;
+    max=swap;
+  }
+  
+  iNumber->GrowTo(max);
+
+  LispInt i;
+  for (i=0;i<len1 && i<len2;i++)
+  {
+    (*iNumber)[i] = (*aX.iNumber)[i] ^ (*aY.iNumber)[i];
+  }
+  for (i=len1;i<len2;i++)
+  {
+    (*iNumber)[i] = (*aY.iNumber)[i];
+  }
+  for (i=len2;i<len1;i++)
+  {
+    (*iNumber)[i] = (*aX.iNumber)[i];
+  }
+}
+LispInt BigNumber::BitCount() const
+{
+  LISPASSERT(0);
+  return 0;
+}
+LispInt BigNumber::Sign() const
+{
+  if (iNumber->iNegative) return -1;
+  if (IsZero(*iNumber)) return 0;
+  return 1;
+}
+
+#endif

@@ -1,13 +1,9 @@
 
 
 
-#include <stdio.h>
-#include "yacasprivate.h"
-
-//#include "refcount.h"
+//#include "yacasprivate.h"
 #include "numbers.h"
-#include "platmath.h"
-
+#include <stdio.h>
 
 
 void Check(LispString& str,char* s)
@@ -62,12 +58,13 @@ int main(void)
 
     Next(); //1
 
+#if 0
 {
 
     // Calculate z=x+y where x=10 and y=15
-    NativeNumber x("10",100,10);
-    NativeNumber y("15",100,10);
-    NativeNumber z;
+    BigNumber x("10",100,10);
+    BigNumber y("15",100,10);
+    BigNumber z;
     z.Add(x,y,10);    
     // cast the result to a string
     LispString  str;
@@ -76,7 +73,7 @@ int main(void)
 
 }
 
-    NativeNumber n1("65535",100,10);
+    BigNumber n1("65535",100,10);
     n1.ToString(str,10);
     Check(str,"65535");
     n1.ToString(str,10);
@@ -87,10 +84,13 @@ int main(void)
     n1.ToString(str,10);
     Check(str,"-65535");
 
-    NativeNumber res1;
+    BigNumber res1;
     res1.Add(n1,n1,10);    
     res1.ToString(str,10);
     Check(str,"-131070");
+
+
+#endif
 
 /*
     ANumber n1("65535",100,10);
