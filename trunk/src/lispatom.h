@@ -142,17 +142,27 @@ class LispHashTable;
 class LispNumber : public LispObject
 {
 public:
+    /// constructors:
+    /// construct from another number
     LispNumber(LispHashTable* aHashTable, BigNumber* aNumber,LispStringPtr aString);
+    /// construct from a BigNumber
     LispNumber(LispHashTable& aHashTable, BigNumber* aNumber);
+    /// construct from a decimal string representation (also creates a number object) and assign aPrecision bits (not decimal digits!) 
     LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt aPrecision);
     virtual ~LispNumber();
     virtual LispObject* Copy(LispInt aRecursed);
+    /// return a string representation in decimal with maximum allowed decimal precision?
     virtual LispStringPtr String();
+    /// create a BigNumber object out of a stored string, at given precision (in bits)
     virtual BigNumber* Number(LispInt aPrecision);
+    /// annotate
     LispObject* SetExtraInfo(LispPtr& aData);
 private:
+    /// number object
     RefPtr<BigNumber> iNumber;
+    /// string representation in decimal?
     RefPtr<LispString> iString;
+    /// hash table pointer (what for?)
     LispHashTable* iHashTable;
 };
 
