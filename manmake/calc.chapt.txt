@@ -1462,18 +1462,18 @@ large group of simple nonlinear equations.
 
 *E.G.
 
-	In> Solve(a+x*y==z,x)
+	In> OldSolve(a+x*y==z,x)
 	Out> (z-a)/y;
-	In> Solve({a*x+y==0,x+z==0},{x,y})
+	In> OldSolve({a*x+y==0,x+z==0},{x,y})
 	Out> {{-z,z*a}};
 
 This means that "x = (z-a)/y" is a solution of the first equation
 and that "x = -z", "y = z*a" is a solution of the systems of
 equations in the second command.
 
-An example which {Solve} cannot solve:
+An example which {OldSolve} cannot solve:
 
-	In> Solve({x^2-x == y^2-y,x^2-x == y^3+y},{x,y});
+	In> OldSolve({x^2-x == y^2-y,x^2-x == y^3+y},{x,y});
 	Out> {};
 
 *SEE Solve, SuchThat, Eliminate, PSolve, ==
