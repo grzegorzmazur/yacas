@@ -1,6 +1,6 @@
 
 
-This distribution has only been tested on a Linux box (RedHat 5.1)
+This distribution has been tested on a Linux box (RedHat 5.1) and on Debian (stable) 2.2.
 
 To install, do the following:
 
@@ -10,11 +10,11 @@ To install, do the following:
 
 * go into the directory created (yacas-<version>).
 
-* type './configure'
+* type './makemake'
 
 * type 'make'.
 
-* You can now, if you like, type 'make test', to run the test script.
+* You can, if you wish, type 'make test', to run the test script.
 
 * type 'make install'.
 
