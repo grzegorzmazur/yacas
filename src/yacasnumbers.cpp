@@ -20,6 +20,8 @@
   #include <stdio.h>
 #endif
 
+#define BITS_TO_DIGITS(x,n) (bits_to_digits(x,n))
+
 static LispStringPtr FloatToString(ANumber& aInt, LispHashTable& aHashTable
                                   , LispInt aBase = 10);
 
@@ -910,7 +912,7 @@ BigNumber::BigNumber(const BigNumber& aOther)
 BigNumber::BigNumber(LispInt aPrecision)
 {
   iPrecision = aPrecision;
-  iNumber = NEW ANumber(bits_to_digits(aPrecision,10));
+  iNumber = NEW ANumber(BITS_TO_DIGITS(aPrecision,10));
   SetIsInteger(LispTrue);
 }
 
@@ -928,11 +930,11 @@ void BigNumber::SetTo(const BigNumber& aOther)
 }
 void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase) const
 {
-  ANumber num(bits_to_digits(aPrecision,aBase));
+  ANumber num(BITS_TO_DIGITS(aPrecision,aBase));
   num.CopyFrom(*iNumber);
   if (num.iExp > 1)
     num.RoundBits();
-  num.ChangePrecision(bits_to_digits(aPrecision,aBase));
+  num.ChangePrecision(BITS_TO_DIGITS(aPrecision,aBase));
 
 #define ENABLE_SCI_NOTATION
 #ifdef ENABLE_SCI_NOTATION
@@ -990,12 +992,12 @@ const LispCharPtr BigNumber::NumericLibraryName()
 void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
   SetIsInteger(aX.IsInt() && aY.IsInt());
-  iNumber->ChangePrecision(bits_to_digits(aPrecision,10));
-  ANumber a1(bits_to_digits(aPrecision,10));
+  iNumber->ChangePrecision(BITS_TO_DIGITS(aPrecision,10));
+  ANumber a1(BITS_TO_DIGITS(aPrecision,10));
   a1.CopyFrom(*aX.iNumber);
-  ANumber a2(bits_to_digits(aPrecision,10));
+  ANumber a2(BITS_TO_DIGITS(aPrecision,10));
   a2.CopyFrom(*aY.iNumber);
-//  iNumber->ChangePrecision(bits_to_digits(aY.GetPrecision()+GUARD_BITS,10));
+//  iNumber->ChangePrecision(BITS_TO_DIGITS(aY.GetPrecision()+GUARD_BITS,10));
   :: Multiply(*iNumber,a1,a2);
 //  iPrecision = MIN(aPrecision, aY.GetPrecision());
 }
@@ -1008,9 +1010,9 @@ void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aP
 void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
   SetIsInteger(aX.IsInt() && aY.IsInt());
-  ANumber a1(bits_to_digits(aPrecision,10));
+  ANumber a1(BITS_TO_DIGITS(aPrecision,10));
   a1.CopyFrom(*aX.iNumber);
-  ANumber a2(bits_to_digits(aPrecision,10));
+  ANumber a2(BITS_TO_DIGITS(aPrecision,10));
   a2.CopyFrom(*aY.iNumber);
 	::Add(*iNumber, a1, a2);
 }
@@ -1025,11 +1027,11 @@ void BigNumber::Negate(const BigNumber& aX)
 }
 void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
-  ANumber a1(bits_to_digits(aPrecision,10));
+  ANumber a1(BITS_TO_DIGITS(aPrecision,10));
   a1.CopyFrom(*aX.iNumber);
-  ANumber a2(bits_to_digits(aPrecision,10));
+  ANumber a2(BITS_TO_DIGITS(aPrecision,10));
   a2.CopyFrom(*aY.iNumber);
-  ANumber remainder(bits_to_digits(aPrecision,10));
+  ANumber remainder(BITS_TO_DIGITS(aPrecision,10));
 
   Check(!IsZero(a2),KLispErrInvalidArg);
   if (aX.IsInt() && aY.IsInt())
@@ -1169,7 +1171,7 @@ void BigNumber::BitCount(const BigNumber& aX)
 signed long BigNumber::BitCount() const
 {
   if (IsZero(*iNumber)) return -(1L<<30);
-  ANumber num(bits_to_digits(iPrecision,10));
+  ANumber num(BITS_TO_DIGITS(iPrecision,10));
   num.CopyFrom(*iNumber);
   while (num.iTensExp < 0)
   {
@@ -1213,8 +1215,8 @@ LispInt BigNumber::Sign() const
 /// integer operation: *this = y mod z
 void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
 {
-    ANumber a1(bits_to_digits(iPrecision,10));
-    ANumber a2(bits_to_digits(iPrecision,10));
+    ANumber a1(BITS_TO_DIGITS(iPrecision,10));
+    ANumber a2(BITS_TO_DIGITS(iPrecision,10));
     a1.CopyFrom(*aY.iNumber);
     a2.CopyFrom(*aZ.iNumber);
     Check(a1.iExp == 0, KLispErrNotInteger);
@@ -1226,7 +1228,7 @@ void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
 
     if (iNumber->iNegative)
     {
-      ANumber a3(bits_to_digits(iPrecision,10));
+      ANumber a3(BITS_TO_DIGITS(iPrecision,10));
       a3.CopyFrom(*iNumber);
       ::Add(*iNumber, a3, a2);
     }
@@ -1276,7 +1278,7 @@ void BigNumber::Floor(const BigNumber& aX)
 
     if (iNumber->iNegative && !fraciszero)
     {
-        ANumber orig(bits_to_digits(iPrecision,10));
+        ANumber orig(BITS_TO_DIGITS(iPrecision,10));
         orig.CopyFrom(*iNumber);
         ANumber minone("-1",10);
         ::Add(*iNumber,orig,minone);
@@ -1293,7 +1295,7 @@ void BigNumber::Precision(LispInt aPrecision)
   }
   else
   {
-    iNumber->ChangePrecision(bits_to_digits(aPrecision,10));
+    iNumber->ChangePrecision(BITS_TO_DIGITS(aPrecision,10));
   }
   SetIsInteger(iNumber->iExp == 0 && iNumber->iTensExp == 0);
   iPrecision = aPrecision;
@@ -1325,7 +1327,7 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
   BigNumber otherNeg;
   otherNeg.Negate(aOther);
   diff.Add(*this,otherNeg,GetPrecision());
-  diff.iNumber->ChangePrecision(bits_to_digits(iPrecision,10));
+  diff.iNumber->ChangePrecision(BITS_TO_DIGITS(iPrecision,10));
 
   return !Significant(*diff.iNumber);
 /* */
@@ -1390,7 +1392,7 @@ void BigNumber::BecomeFloat(LispInt aPrecision)
     LispInt precision = aPrecision;
     if (iPrecision > aPrecision)
       precision = iPrecision;
-    iNumber->ChangePrecision(bits_to_digits(precision,10));	// is this OK or ChangePrecision means floating-point precision?
+    iNumber->ChangePrecision(BITS_TO_DIGITS(precision,10));	// is this OK or ChangePrecision means floating-point precision?
     SetIsInteger(LispFalse);
   }
 }
@@ -1398,9 +1400,9 @@ void BigNumber::BecomeFloat(LispInt aPrecision)
 
 LispBoolean BigNumber::LessThan(const BigNumber& aOther) const
 {
-  ANumber a1(bits_to_digits(iPrecision,10));
+  ANumber a1(BITS_TO_DIGITS(iPrecision,10));
   a1.CopyFrom(*this->iNumber);
-  ANumber a2(bits_to_digits(iPrecision,10));
+  ANumber a2(BITS_TO_DIGITS(iPrecision,10));
   a2.CopyFrom(*aOther.iNumber);
 	return ::LessThan(a1, a2);
 }
@@ -1445,7 +1447,7 @@ void BigNumber::SetTo(double aValue)
 void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {//FIXME
   iPrecision = aPrecision;
-  LispInt digits = bits_to_digits(aPrecision,10);
+  LispInt digits = BITS_TO_DIGITS(aPrecision,10);
   LispBoolean isFloat = 0;
   const LispCharPtr ptr = aString;
   while (*ptr && *ptr != '.') ptr++;
