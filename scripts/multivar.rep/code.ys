@@ -292,8 +292,31 @@ MultiNomialMultiply(MultiNomial(_vars,_terms1),MultiNomial(_vars,_terms2)) <--
   MultiNomial(vars,result);
 ];
 
+MultiNomialMultiply(
+     MultiNomial(_vars,_terms1)/MultiNomial(_vars,_terms2),
+     MultiNomial(_vars,_terms3)/MultiNomial(_vars,_terms4)) <--
+[
+  MultiNomialMultiply(MultiNomial(vars,terms1),MultiNomial(vars,terms3))/
+  MultiNomialMultiply(MultiNomial(vars,terms2),MultiNomial(vars,terms4));
+];
+MultiNomialMultiply(
+     MultiNomial(_vars,_terms1)/MultiNomial(_vars,_terms2),
+     MultiNomial(_vars,_terms3)) <--
+[
+  MultiNomialMultiply(MultiNomial(vars,terms1),MultiNomial(vars,terms3))/
+  MultiNomial(vars,terms2);
+];
+MultiNomialMultiply(
+     MultiNomial(_vars,_terms3),
+     MultiNomial(_vars,_terms1)/MultiNomial(_vars,_terms2)) <--
+[
+  MultiNomialMultiply(MultiNomial(vars,terms1),MultiNomial(vars,terms3))/
+  MultiNomial(vars,terms2);
+];
+
 10 # MultiNomialMultiply(_a,_b) <--
 [
+  Echo({"ERROR!",a,b});
   Echo({"ERROR!",Type(a),Type(b)});
 ];
 
