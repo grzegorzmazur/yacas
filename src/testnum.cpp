@@ -1606,21 +1606,22 @@ int main(void)
 	}
 	{
 		Next("precision control for addition");
-		BigNumber x("1.00000000000000000000000000001262177448353", 0, 10);
+#define bad_num  "1.00000000000000000000000000001262177448353"
+		BigNumber x(bad_num, 0, 10);
 		// this number is nearly 1 + 2^(-96) and this somehow triggers an error in the gmp version
 		BigNumber y("1", 0, 10);	// integer 1
 		Check(y.LessThan(x), "1<x");
-		BigNumber z(x), t(y);
-		Check(y.LessThan(z), "1<z");
+		BigNumber z(y), t(y);
+		Check(y.LessThan(x), "1<x");
 		z.Negate(x);	// now z = - 1.000...0126...
 		t.Negate(t);	// now t = -1
 		Check(z.LessThan(t), "z<t");
 		Check(!z.Equals(t), "z!=t");
 		Check(!t.Equals(z), "t!=z");
-		z.Add(z,y,x.GetPrecision());
+		CheckStringValue(z, "-" bad_num, 80, 10, "z prints correctly");
+		z.Add(z,y,x.GetPrecision());	// -1.000...0126... + 1 is just below 0
 		Check(z.Sign() == -1, "-x+1 < 0");
-		Check(z.GetPrecision()<x.GetPrecision()-80, "precision is lost after subtraction");
-		
+		Check(z.GetPrecision()<x.GetPrecision()-90, "at least 90 bits of precision are lost on subtraction");
 	}
 //	Next("precision control for multiplication");
 //	Next("precision control for division");

@@ -2368,6 +2368,7 @@ void BigNumber::Negate(const BigNumber& aX)
   else
   {
     if (IsInt()) turn_float();	// we are not aX
+	mpf_set_prec(float_, aX.GetPrecision());
     mpf_neg(float_, aX.float_);
   }
   iPrecision = aX.GetPrecision();
@@ -2479,16 +2480,16 @@ void BigNumber::Floor(const BigNumber& aX)
     {
       SetTo(aX);
 	  BecomeInt();
-	// do not have enough precision, so raise error?
-      RaiseError("BigNumber::Floor: error: not enough precision of argument %e (%d bits)", aX.Double(), aX.GetPrecision());
+	// aX does not have enough precision to distinguish its Floor() part uniquely
+	// this situation typically occurs in RoundTo() calls
+//      printf("BigNumber::Floor: error: not enough precision of argument %e (%d bits)", aX.Double(), aX.GetPrecision());
     }
   }
-  else if (this != &aX) // no change for integers or for exp floats, or if we don't have enough digits; just assign the value
+  // aX is integer now
+  else if (this != &aX) // no change for integers, just assign the value
   {
 	SetTo(aX);
   }
-	// this is just to check that we aren't returning normally (error should have been raised already)
-  if (Sign()!=0) LISPASSERT(iPrecision >= 0);
 }
 
 // round to a given precision (in bits) and set target precision. Does not change the number if the current precision is lower, or if the number is an integer.
