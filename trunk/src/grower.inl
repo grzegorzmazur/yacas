@@ -119,7 +119,12 @@ inline CDeletingArrayGrower<T>::CDeletingArrayGrower(LispInt aGranularity)
 template <class T>
 inline CDeletingArrayGrower<T>::~CDeletingArrayGrower()
 {
-    DestructArray(*this);
+  LispInt i,nr;
+  nr = NrItems();
+  for (i=0;i<nr;i++)
+  {
+    delete Item(i);
+  }
 }
 
 
