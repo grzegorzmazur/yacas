@@ -10,7 +10,7 @@
 #define ACCEPT_TYPE_ARG3 int *
 /* #undef socklen_t */
 
-#define LTDL_OBJDIR "../src"
+/* #undef LTDL_OBJDIR */
 
 
 /* end acconfig.h */

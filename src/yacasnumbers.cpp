@@ -1081,21 +1081,25 @@ void BigNumber::Precision(LispInt aPrecision)
 //basic object manipulation
 bool BigNumber::Equals(const BigNumber& aOther) const
 {//FIXME
+  return false; // function has to return *some* result
 }
 
 
 bool BigNumber::IsInt() const
 {//FIXME
+  return false; // function has to return *some* result
 }
 
 
 bool BigNumber::IsIntValue() const
 {//FIXME
+  return false; // function has to return *some* result
 }
 
 
 bool BigNumber::IsSmall() const
 {//FIXME
+  return false; // function has to return *some* result
 }
 
 

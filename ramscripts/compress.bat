@@ -7,6 +7,8 @@ call win32rcwriter.exe
 copy scripts.rc ..\src\
 cd ..\src
 pause
+call msdev mkfastprimes.dsp /MAKE "mkfastprimes - Win32 Release" 
+call release\mkfastprimes.exe > fastprimes.c
 call msdev yacasdll.dsp /MAKE "yacasdll - Win32 Release" 
 call msdev yacas.dsp /MAKE "yacas - Win32 Release" 
 pause
