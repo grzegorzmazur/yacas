@@ -198,7 +198,7 @@ Mkmul(x,y):=
 BinaryFactor(polynom):=FW(BinaryFactors(polynom));
 BinaryFactors(polynom):=
 [
-  Local(list,i,result,p,newlist,poly,nrroots,unrat,leadingcoef,lowestcoef,an,origdegree);
+  Local(list,i,result,p,newlist,poly,nrroots,unrat,leadingcoef,lowestcoef,an,origdegree,anmul,andiv);
   Set(result,{});
 
   // Make list of coefficients
@@ -214,7 +214,8 @@ BinaryFactors(polynom):=
   //Echo("monic poly = ",poly);
   Set(polynom,Mkpc(poly));
   Set(andiv,an^(origdegree-1));
-
+  Set(anmul,1);
+  
   Set(leadingcoef,poly[Length(poly)]);
   [ 
     Local(i);
@@ -336,7 +337,7 @@ If(p=4 And list[i] = {0,1},
 
 //Echo("andiv = ",andiv," an = ",an);
   Set(poly,poly*an^(0 .. (Length(poly)-1)));
-  Set(poly,poly/(unrat * andiv ));
+  Set(poly,anmul*poly/(unrat * andiv ));
   If(poly != {1},Set(result,{Mkpc(poly),1}:result));
 
   result;
@@ -372,10 +373,12 @@ Macro(TryFact,{root})
           Set(lst1,Mkd(poly,(@root),Infinity));
           nrroots--;
         ];
-        Local(lgcd);
+        Local(lgcd,lc);
         Set(lgcd,Gcd({andiv,an*(@root)[2],(@root)[1]}));
-        Set(result,{Div(an*(@root)[2],lgcd)*x+Div((@root)[1],lgcd),count}:result);
+        Set(lc,Div(an*(@root)[2],lgcd));
+        Set(result,{x+Div((@root)[1],lgcd)/lc,count}:result);
         Set(andiv,Div(andiv,lgcd^count));
+        Set(anmul,anmul*lc^count);
       ]
     );
   ]);
