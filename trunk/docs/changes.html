@@ -34,9 +34,8 @@
        representation later.
   <li> Ayal: implementation of sparse trees: a recursive sparse representation
        that can be useful for polynomials and matrices/vectors.
-  <li> Ayal: implemented pre-loading files for functions for which a def
-       file prescribes loading a function, when calling DefLoadFunction(function).
-       This is used when declaring a &lt;-- pattern.
+  <li> Ayal: when a rule is being defined for a new function which is mentioned in a .def file, the corresponding script file is immediately loaded.
+       This is used to make sure that &lt;-- patterns do not hide library definitions.
   <li> Ayal: fixed bug where redeclaring a function could cause segfaults.
   <li> Ayal: functions with variable number of arguments implemented (RuleBaseListed).
   <li> Added convenient Function() and := formats for declaring functions with
@@ -45,7 +44,7 @@
   <li> Documentation updates: added experimental scripts {book2ys.*} for
        automatic extraction of Yacas code from documentation; added comment
        (*REM) label and trailing punctuation to displayed equations; documented
-       Newton and Halley's method in essays (SW)
+       Newton and Halley's method, AGM sequence, Taylor summation in essays (SW)
   <li> Implemented adaptive 2D plotting {Plot2D} in {plots.rep} and multiple
        backends architecture (so far only gnuplot or plotutils but easy to
        add support for more) - replaces {GnuPlot()} (SW)
@@ -71,7 +70,8 @@
        number generators (SW)
   <li> Apply() and @ can now work on function atoms as well as on function names (SW)
   <li> Fixed all known bugs dealing with {Infinity} and {I}, including {Limit} bugs.
-  <li> Added a preliminary version of BesselJ,BesselI,Erfc,FresnelSin,FresnelCos (Jonathan Leto)
+  <li> Added preliminary versions of BesselJ, BesselI, Erf, Erfc, FresnelSin, FresnelCos (Jonathan Leto)
+  <li> Ayal: made floating point not propagating in expressions like 1/1.2
 </ul>
 
 <h1>Release of version 1.0.50 (March 12th,  2002)</h1>
