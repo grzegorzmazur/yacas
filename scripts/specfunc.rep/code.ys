@@ -278,6 +278,8 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 
 
 ////// Polylogarithm Function
+// Note: currently, the numerics are only working for x \in [-1,1]
+
 10 # PolyLog(_n,0)		<-- 0;
 // this is nicer than -Ln(1/2)
 10 # PolyLog(1,1/2)             <-- Ln(2);
@@ -294,19 +296,30 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 10 # PolyLog(3,1/2)		<-- (4*Ln(2)^3 - 2*Pi^2*Ln(2)+21*Zeta(3))/24;
 10 # PolyLog(2,2)		<-- Pi^2/4 - Pi*I*Ln(2);
 
-20 # PolyLog(_n,_x)_( x < -1 )  <-- [
-	(-1)^(n-1)*PolyLog(n,1/x) - ((Ln(-x))^n)/n! - 
-	Sum(r,1,Floor(n/2), 
+20 # PolyLog(_n,_x)_(Numeric And  x < -1 )  <-- [
+	Local(prec,result);
+	prec:=GetPrecision();
+	Precision(prec+5);
+	result:= (-1)^(n-1)*PolyLog(n,1/x) - ((Ln(-x))^n)/n! - 
+	Sum(r,1,Round(n/2), 
 		2^(2*r-2)*Pi^(2*r)*Abs(Bernoulli(2*r))*Ln(-x)^(n-2*r)/( (2*r)! * (n - 2*r)! ) );
+	Precision(prec);
+	RoundTo(result,prec);
 ];
-20 # PolyLog(_n,_x)_( x>= -1 And x < 0 ) <-- [
+20 # PolyLog(_n,_x)_(Numeric And x>= -1 And x < 0 ) <-- [
 	// this makes the domain [-1,0) into [0,1],
 	// so if the summation representation is used, it is monotone
-	PolyLog(n,x^2)/2^(n-1) - PolyLog(n,-x) ;	
+        Local(prec,result);
+        prec:=GetPrecision();
+        Precision(prec+5);
+
+	result:=PolyLog(n,x^2)/2^(n-1) - PolyLog(n,-x) ;	
+        Precision(prec);
+        RoundTo(result,prec);
 
 ];
 
-20 # PolyLog(_n,_x)_(x > 0 And x <= 1) <-- [
+20 # PolyLog(_n,_x)_(Numeric And x > 0 And x <= 1) <-- [
 	Local(result,prec,term,k,eps);
 	prec:=GetPrecision();
 	eps:=10^(-prec);
