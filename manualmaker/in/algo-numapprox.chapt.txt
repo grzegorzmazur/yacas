@@ -52,7 +52,7 @@ when adding one more term would change the result by less than the specified
 precision. To realize this in practice, we need an estimate of how much a
 continued fraction changes when we add one term.
 
-The routine {GuessRational} uses an easy upper bound for the difference of continued fractions that differ only by an additional last term:
+The routine {GuessRational} uses a (somewhat weak) upper bound for the difference of continued fractions that differ only by an additional last term:
 $$ Abs(delta) := Abs( 1/(a[1]+1/(...+1/a[n])) - 1/(a[1]+1/(...+1/a[n+1])) ) < 1/ ((a[1]*...*a[n])^2 * a[n+1]) $$.
 Thus we should compute the product of successive terms $a[i]$ of the continued fraction and stop at $a[n]$ at which this product exceeds the maximum number of digits. The routine {GuessRational} has a second parameter {prec} which is by default 1/2 times the number of decimal digits of current precision; it stops at $a[n]$ at which the product $a[1]*...*a[n]$ exceeds $10^prec$.
 
@@ -60,6 +60,7 @@ The above estimate for $delta$ hinges on the inequality
 $$ 1/(a+1/(b+...)) < 1/a $$
 and is suboptimal if some terms $a[i]=1$, because the product of $a[i]$ does not increase when one of the terms is equal to 1, whereas in fact these terms do make $delta$ smaller. A somewhat better estimate would be obtained if we use the inequality
 $$ 1/(a+1/(b+1/(c+...))) < 1/(a+1/(b+1/c)) $$.
+(See the next section for more explanations of precision of continued fraction approximations.)
 This does not lead to a significant improvement if $a>1$ but makes a difference when $a=1$. In the product $a[1]*...*a[n]$, the terms $a[i]$ which are equal to 1 should be replaced by
 $$ a[i]+1/(a[i+1]+1/a[i+2])$$.
 Since the comparison of $a[1]*...*a[n]$ with $10^prec$ is qualitative, it it enough to do calculations for it with limited precision.
@@ -227,6 +228,128 @@ $$ F[1][n]*...*F[n][n] = P[n]+Q[n]*F[n][n] = Q[n+1] $$.
 (We have used the recurrence relation for $Q[n+1]$.) Now it follows that
 $$ f[n+1]:=F[0][n+1]-F[0][n] = ((-1)^n*b[0]*...*b[n])/(Q[n+2]*Q[n+1]) $$.
 Thus we have converted the continued fraction into a series, i.e. $F[0][n]=Sum(k,0,n,f[k])$ with $f[k]$ defined above.
+
+	    Estimating convergence of continued fractions
+
+Suppose we are given the terms $a[k]$, $b[k]$ that define an infinite continued
+fraction, and we are interested to estimate its rate of convergence. 
+We need to find the number of terms $n$ for which the error of approximation is
+less than a given $epsilon$. In our notation, we need to solve
+$$ Abs(f[n+1]) < epsilon $$
+for $n$.
+
+The formula that we derived for $f[n+1]$ gives an error estimate for
+the continued fraction truncated at the $n$-th term.
+But this formula contains numbers $Q[k]$ in the denominator.
+The problem now is to find how quickly the sequence $Q[k]$ grows.
+
+It is not always easy to get a handle on this sequence; in most cases there is
+no closed-form expression for $Q[k]$.
+The recurrence relation for it can be rewritten as
+$$ Q[k+2]=a[k+1]*Q[k+1]+b[k]*Q[k] $$,
+for $k>=0$, with initial values $Q[0]=0$ and $Q[1]=1$.
+
+A simple lower bound on the growth can be quickly obtained from this recurrence
+relation.
+Assume that $a[k]>0$, $b[k]>0$.
+It is clear that all $Q[k]$ are positive, and so $Q[k+1]>=a[k]*Q[k]$.
+Therefore $Q[k]$ grows at least as the product of all $a[k]$:
+$$ Q[k+1] >= Factorize(i,1,k, a[k]) $$.
+This result gives the following upper bound on the precision,
+$$ Abs(f[n+1]) <= (b[0]*...*b[n])/((a[1]*...*a[n])^2*a[n+1]) $$.
+
+We have successfully used this bound to estimate the relative error of the
+continued fraction expansion for $ArcTan(x)$ at small $x$.
+However, at large $x$ this bound becomes greater than 1. 
+This does not mean that the continued fraction does not converge, it merely
+indicates that the bound is too weak in some cases. 
+The sequence $Q[k]$ actually grows faster than the product of all $a[k]$ and we
+sometimes a tighter bound on this growth.
+
+We shall now consider another example when the growth of this sequence can be
+estimated analytically. 
+The complementary error function $Erfc(x)$ can be computed using an auxiliary
+continued fraction
+$$ Sqrt(Pi)/2*x*Exp(x^2)*Erfc(x)=1/(1+v/(1+(2*v)/(1+(3*v)/(1+...)))) $$,
+where $v:=(2*x^2)^(-1)$ is a small parameter, $v<1/2$. 
+The terms of this continued fraction are: $a[k]=1$, $b[k]=k*v$, for $k>=1$, and $a[0]=0$, $b[0]=1$.
+
+The simple bound would give $Abs(f[n+1])<=(v^n*n!)$ and this expression grows with $n$.
+But we know that our continued fraction actually converges for any $v$ and $f[n+1]$ must tend to zero for large $n$.
+It seems that the simple bound is not strong enough for any $v$ and we need a better bound.
+
+The asymptotic growth of the sequence $Q[k]$ can be estimated in this case by the method of stationary phase.
+This method is somewhat complicated but quite powerful.
+The method requires that we find an integral representation for $Q[k]$, and then it gives the dominant contribution to the integral as an asymptotic series in $k^(-1)$.
+We actually only need the leading terms of the series which are easy to find (even without a CAS).
+
+An integral representation for $Q[k]$ can be obtained using the method of generating functions.
+Consider a function $G(s)$ defined by the infinite series
+$$ G(s) = Sum(k, 0, Infinity, Q[k+1]*(I*s)^k/k!) $$.
+$G(s)$ is usually called the "generating function" of a sequence.
+We shifted the index to $k+1$ for cosmetic convenience, since $Q[0]=0$.
+The imaginary unit in front of $s$ is not strictly necessary to introduce but
+it usually makes the generating function nicer (on the real axis, that is).
+
+It is generally the case that if we know a simple linear recurrence relation for a sequence, then we can also easily find its generating function.
+The generating function will satisfy a linear differential equation.
+To guess this equation, we write down the series for $G(s)$ and its
+derivative $D(s)G(s)$ and try to find their linear combination which is
+identically zero because of the recurrence relation.
+(There is, of course, a computer algebra algorithm for doing this automatically.)
+
+In the case of our continued fraction above, we find that
+$$ I*(D(s)G(s)) = (1-I*v*s)*G(s) $$.
+The solution with the obvious initial condition $G(0)=1$ is
+$$ G(s) = Exp(-I*s-v*s^2/2) $$.
+
+The second step is to obtain an integral representation for $Q[k]$.
+This is possible because $Q[k]$ are equal to the derivatives of the generating function at $s=0$:
+$$ Q[k+1] = I^k*D(s, k) G(s=0) $$.
+If we had an integral representation for $G(s)$, we could also obtain one for $Q[k]$ by differentiation.
+
+We use the fact that derivatives of Fourier transforms are "easy".
+The generating function $G(s)$ has a Fourier representation,
+$$ G(s) = (1/Sqrt(2*Pi*v)) * Integrate(t, -Infinity, Infinity) Exp(-t^2/(2*v)-I*s*(t+1)) $$.
+Taking the derivatives with respect to $s$ at $s=0$, we obtain an integral representation for $Q[k]$:
+$$ Q[k+1] = (1/Sqrt(2*Pi*v)) * Integrate(t, -Infinity, Infinity) (1+t)^n * Exp(-t^2/(2*v)) $$.
+
+Now we can use the method of stationary phase.
+(See any textbook on mathematical physics.)
+We represent the integrand as an exponential of some function $g(t,n)$ and find "stationary points" where this function has local maxima:
+$$ Q[k+1] = (1/Sqrt(2*Pi*v)) * Integrate(t, -Infinity, Infinity) Exp(g(t,n)) $$,
+$$ g(t,n) := -t^2/(2*v)+n*Ln(1+t) $$.
+(Note that the logarithm here must acquire an imaginary part $I*Pi$ for $t<-1$.)
+We expect that when $n$ is large, $g(t,n)$ will have a peak or several peaks at certain values of $t$.
+At other values of $t$, the value of $g(t,n)$ will be much smaller and, since $g$ is in the exponential, the integral is dominated by the contribution of the peaks.
+We find that in our case, two peaks occur at approximately $t1<=> -1/2+Sqrt(n*v)$ and $t2<=> -1/2-Sqrt(n*v)$. 
+We assume that $n$ is large enough so that $n*v>1/2$. Then the first peak is at a positive $t$ and the second peak is at a negative $t$.
+
+The contribution of the peaks can be computed from the Taylor approximation of $g(t,n)$ near the peaks.
+We can expand, for example,
+$$ g(t,n) <=> g(t1,n) - (Deriv(t,2)g(t1,n))*(t-t1)^2/2 $$
+near $t=t1$.
+The values $g(t1,n)$ and $Deriv(t,2)g(t1,n)$, and likewise for $t2$, are constants that we already know since we know $t1$ and $t2$.
+Then the integral of $Exp(g)$ will be approximated by the integral of the form
+$$ Integrate(t, -Infinity, Infinity) Exp(g(t1,n) - (Deriv(t,2)g(t1,n))*(t-t1)^2/2) $$.
+This is a Gaussian integral that can be easily evaluated, with the result
+$$ e^g(t1,n)*Sqrt((2*Pi)/Deriv(t,2)g(t1,n)) $$.
+This will be the leading term of the contribution of the peak at $t1$;
+there will be a similar expression for the contribution of $t2$.
+We find that the peak at $t1$ gives a larger contribution, by the factor $Exp(2*Sqrt(n/v))$.
+This factor is about 4 when $n>v/2$, and a factor of 4 is large enough to ignore the peak at $t2$ for the purposes of our error analysis.
+
+We find, after some algebra, that the leading asymptotic of $Q[k]$ is
+$$ Q[n+1] <=> Exp(Sqrt(n/v)-1/(4*v)-n/2)/Sqrt(2)*(v*n)^(n/2) $$.
+This, together with the Stirling formula
+$$ n! <=> Sqrt(2*Pi*n)*(n/e)^n $$,
+allows to estimate the error of the continued fraction approximation:
+$$ Abs(f[n+1]) <=> 2*Sqrt((2*Pi*n)/v)*Exp(-n/2-2*Sqrt(n/v)+1/(2*v)) $$.
+(By the way, the Stirling formula can be also derived using the method of stationary phase from an integral representation of the Gamma function.)
+
+
+We find that indeed the error decreases with $n$ in a geometric progression (i.e. roughly as some constant to the power of $n$).
+
 
 
 		Newton's method and its improvements
