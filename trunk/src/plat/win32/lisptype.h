@@ -28,9 +28,15 @@
 // Number of bits to use for reference-counting. This can actually
 // grow significantly, when sub-expressions are copied (in which
 // case a LispSubList references the same sequence of LispObjects!)
+#ifdef USE_LONG_REF_COUNTS
+#define ReferenceBits 32
+#define ReferenceType unsigned long
+#define ReferenceMax ((unsigned long)0xffffffff)
+#else
 #define ReferenceBits 16
 #define ReferenceType unsigned short
 #define ReferenceMax ((unsigned short)0xffff)
+#endif
 
 // Platform-independent booleans
 #define LispFalse 0
