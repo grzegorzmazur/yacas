@@ -278,4 +278,9 @@ RoundTo(1.09317119002909585408+I*0.00475463306931818955275, 19)
 // testing GammaConstNum against Maple
 Testing("Gamma constant");
 Precision(40);
-Verify(GammaConstNum(), 0.5772156649015328606065120900824024310422);
+Verify(gamma()+0, 0.5772156649015328606065120900824024310422);
+Precision(20);
+Verify(gamma,Atom("gamma"));
+Verify(gamma()+0, 0.5772156649015328606);
+Verify(RoundTo(N(1/2+gamma+Pi), 19), 4.2188083184913260991);
+
