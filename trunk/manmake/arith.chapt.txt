@@ -507,19 +507,22 @@ The function {ContFracEval} converts a list of coefficients into a continued fra
 	
 *SEE ContFrac, GuessRational
 
-*CMD GuessRational, NearRational --- find optimal rational approximations
+*CMD GuessRational, NearRational, BracketRational --- find optimal rational approximations
 *STD
 *CALL
 	GuessRational(x)
 	GuessRational(x, digits)
 	NearRational(x)
 	NearRational(x, digits)
+	BracketRational(x, eps)
 
 *PARMS
 
-{x} -- a number to be approximated
+{x} -- a number to be approximated (must be already evaluated to floating-point)
 
-{digits} -- desired number of decimal digits
+{digits} -- desired number of decimal digits (integer)
+
+{eps} -- desired precision
 
 *DESC
 
@@ -558,6 +561,11 @@ resulting rational number should be at most one digit of that
 precision. The parameter {digits} also defaults to half of the current
 precision.
 
+The function {BracketRational(x,eps)} can be used to find approximations with a given relative precision from above and from below.
+This function returns a list of two rational numbers {{r1,r2}} such that $r1<x<r2$ and $Abs(r2-r1)<Abs(x*eps)$.
+The argument {x} must be already evaluated to enough precision so that this approximation can be meaningfully found.
+If the approximation with the desired precision cannot be found, the function returns an empty list.
+
 *E.G.
 
 Start with a rational number and obtain a floating-point approximation:
@@ -577,6 +585,10 @@ The first 10 terms of this continued fraction correspond to the correct continue
 This function found a different rational number closeby because the precision was not high enough.
 	In> NearRational(x, 10)
 	Out> 956/1013;
+Find an approximation to $Ln(10)$ good to 8 digits:
+	In> BracketRational(N(Ln(10)), 10^(-8))
+	Out> {12381/5377,41062/17833};
+
 
 *SEE ContFrac, ContFracList, Rationalize
 
