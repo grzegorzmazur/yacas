@@ -6,13 +6,11 @@
 //    Fl::flush();
 
 TODO:
-
-- arrows and delete should do new hints too.
+- not all functions get ripped correctly, see output from manripper
+- delete should do new hints too.
 - document the user interface
 - document the files that should be available, and where they should be.
 
-x manripper moved: also move in cvs
-- warnings for descriptions that don't have a calling convention (descriptions left in the map).
 - "restart notepad" menu item
 - cursor: select part of input
 - select: copy/paste
@@ -22,6 +20,11 @@ x manripper moved: also move in cvs
 - Mac install: mac exes seem to care about where they are dumped.
 - fill out the help panes
 - Function finder dialog
+
+x warnings for descriptions that don't have a calling convention (descriptions left in the map).
+x backup pixmap rendering.
+x manripper moved: also move in cvs
+
 
 - console drawer is slow: 
   - render only what is on screen
@@ -104,6 +107,7 @@ does.
 #include <FL/fl_draw.H>
 #include <FL/Fl_Tabs.H>
 #include <FL/Fl_Scroll.H>
+#include <FL/Fl_Pixmap.H>
 
 #include "yacasprivate.h"
 #include "FltkConsole.h"
@@ -739,11 +743,30 @@ void FltkConsole::handle_key(int key)
         break;
     case eLeft:
         if (cursor>0)
-            cursor--;
+        {
+          cursor--;
+
+          if (iSubLine[cursor] == '(' || iSubLine[cursor] == ')')
+          {
+            delete hints;
+            hints=NULL;
+          }
+          if (hints == NULL)
+            CheckForNewHints();
+        }
         break;
     case eRight:
         if (cursor<iSubLine.NrItems()-1)
-            cursor++;
+        {
+          if (iSubLine[cursor] == '(' || iSubLine[cursor] == ')')
+          {
+            delete hints;
+            hints=NULL;
+          }
+          cursor++;
+          if (hints == NULL)
+            CheckForNewHints();
+        }
         break;
     case eUp:
 
@@ -1535,8 +1558,14 @@ int ConsoleOutBase::InputIsVisible()
 
 
 ConsoleDrawer::ConsoleDrawer(LispEnvironment& aEnvironment,LispPtr& aExecute,int aWidth,int aHeight)
-: iEnvironment(aEnvironment),iExecute(aExecute),iWidth(aWidth),iHeight(aHeight)
+: iEnvironment(aEnvironment),iExecute(aExecute),iWidth(aWidth),iHeight(aHeight), pixmap(NULL)
 {
+}
+
+ConsoleDrawer::~ConsoleDrawer()
+{
+  if (pixmap)
+    fl_delete_offscreen(pixmap);
 }
 void ConsoleDrawer::draw(int x, int y, int width,int draw_input)
 {
@@ -1544,12 +1573,23 @@ void ConsoleDrawer::draw(int x, int y, int width,int draw_input)
   extern LispString the_out;
   if (iExecute.Get())
   {
-    fl_clip(x,y,iWidth,iHeight);
-    fl_translate(x,y);
-    LispPtr result;
-    iEnvironment.iEvaluator->Eval(iEnvironment,result,iExecute);
-    fl_translate(-x,-y);
-    fl_pop_clip();
+    if (pixmap == NULL)
+    {
+      pixmap = (Fl_Offscreen)fl_create_offscreen(iWidth,iHeight);
+      fl_begin_offscreen(pixmap);
+  
+      fl_clip(x,y,iWidth,iHeight);
+  //    fl_translate(x,y);
+      LispPtr result;
+      iEnvironment.iEvaluator->Eval(iEnvironment,result,iExecute);
+  //    fl_translate(-x,-y);
+      fl_pop_clip();
+  
+      fl_end_offscreen();
+      //fl_draw_pixmap((const char*const*)p, 0,0,FL_BACKGROUND_COLOR);
+    }
+    if (pixmap)
+      fl_copy_offscreen(x,y,iWidth,iHeight,pixmap,0,0);
   }
 }
 

@@ -1,6 +1,54 @@
 
 				Proteus user interface manual
 
+			Introduction to the Proteus user interface
+
+Proteus is a graphical front-end to Yacas. 
+
+The command line version of Yacas allows one to enter a command.
+After pressing enter, the result of the calculation is shown.
+This works in the Proteus user interface also, but with a slight
+difference: the calculations (input and output) are stored
+in 'cells'. Each cell can be revisited later, to modify the 
+calculation.
+
+Access to a command history is provided by using the 'shift'
+key. Where the up, down and tab keys can be used in the
+console version of Yacas, the same can be used in Proteus,
+but with the shift key pressed.
+
+The Proteus user interface version offers the standard 
+shortcuts for help: {?} and {??}, and the quitting/restarting
+shortcuts {quit} and {restart}. 
+
+Proteus further offers some features not offered by the
+command line version: when entering expressions a tip
+box can pop up with some information on the function being
+typed in (the calling sequence, and a short description of
+what the function does).
+
+In addition, notepads can be crafted, with normal text
+in cells, mixed with calculations. A notepad can be seen
+as a document that presents a calculation. 
+
+Lastly, graphical cells can be embedded in notepads.
+Custom code can be written to render a some graphic.
+The function {FlPlot} is provided to draw a simple
+2-dimensional graph of a function.
+
+
+			Proteus-specific commands
+
+	FlPlot(f(x),from,to,nr)
+	FlPlot({f1(x),f2(x),...,fn(x)},from,to,nr)
+
+Plot a simple 2d graph.
+
+	Notepad("notepad");
+
+Load a notepad from file.
+
+
 			Hand-writing a notepad
 
 Important note: the notepad functionality discussed in
@@ -186,7 +234,7 @@ into the notepad. The syntax is:
 
 	FlGraphStart(Expression,Width,Height);
 
-"Expression" gets executed whenever the graph needs
+"Expression" gets executed the first time the graph needs
 to be drawn. "Expression" can then use other graphics
 commands to draw it.
 
@@ -197,10 +245,12 @@ widget sets. This is not a problem, since a script
 can be written to generate an expression that 
 renders a graph.
 
-For efficient rendering, it is best to do as many
-calculations as possible <i>before</i> the
-call to {FlGraphStart}, so that "Expression" only
-contains simple calls to the functions that do the drawing.
+For efficient rendering, the result of the first
+render is stored in a bitmap for consequent drawing
+to screen. This is valid only when the graph that would 
+be rendered is exactly the same each time it is rendered.
+This is typically the case with a static graph with
+fixed size.
 
 		Graphing functions
 

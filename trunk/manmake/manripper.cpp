@@ -119,4 +119,15 @@ int main(int argc, char** argv)
     fprintf(stderr,"BOOK %s\n",argv[i]);
     ProcessFile(argv[i]);
   }
+  CmdEntries::const_iterator iter = commands.begin();
+  while (iter != commands.end())
+  {
+    if (iter->second.c_str()[0])
+    {
+      fprintf(stderr,"WARNING: no call sequences for function %s\n",iter->first.c_str());
+    }
+    iter++;
+  }
+
+
 }
