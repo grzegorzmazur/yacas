@@ -1,4 +1,235 @@
 
+Infix("Where", OpPrecedence(":=")+100);
+Infix("AddTo", OpPrecedence("And")+100);
+// Declare 
+RuleBase("IntegrateMultiplicative",{var,from,a,b});
+UnFence("IntegrateMultiplicative",4);
+Bodied("integrate",60000);
+
+
+RuleBase("Where",{left,right});
+//HoldArg("Where",left);
+//HoldArg("Where",right);
+UnFence("Where",2);
+10 # (_body Where _var == _value)
+     <-- `[Local(@var);@var := @value;@body;];
+20 # (_body Where (_a And _b))
+     <--
+[
+  Set(body,`(@body Where @a));
+  `(@body Where @b);
+];
+
+30 # (_body Where {}) <-- {};
+40 # (_body Where list_IsList)
+     <--
+     [
+       Local(head,rest);
+       head:=Head(list);
+       rest:=Tail(list);
+       rest:= `(@body Where @rest);
+       `(@body Where @head) : rest;
+     ];
+
+// (a or b) and (c or d) -> (a and c) or (a and d) or (b and c) or (b and d)
+20 # (list_IsList AddTo _rest) <--
+[
+  Local(res);
+  res:={};
+  ForEach(item,list)
+  [
+    res := Concat(res,item AddTo rest);
+  ];
+  res;
+];
+30 # (_a'item AddTo list_IsList) <--
+[
+  MapSingle({{orig},a'item And orig},list);
+];
+40 # (_a'item AddTo _b) <-- a'item And b;
+
+
+(integrate(_var)(_expr)) <-- Int(var,IntClean(var,expr));
+(integrate(_var,_from,_to)(_expr)) <--
+[
+  `Local(@var,antideriv);
+  antideriv := Int(var,expr);
+  `(@antideriv Where @var == @to) - `(@antideriv Where @var == @from);
+];
+
+
+10 # IntClean(_var,_expr) <-- TrigSimpCombine(expr);
+
+
+10 # Int(_var,_x + _y) <-- Int(var,x) + Int(var,y);
+10 # Int(_var,_x - _y) <-- Int(var,x) - Int(var,y);
+10 # Int(_var,   - _y) <--            - Int(var,y);
+20 # Int(_var,_exp) <--
+[
+  Local(a,b);
+  IntegrateMultiplicative(var,exp,a,b);
+];
+
+IntFunc(_vr,_from,_to) <--
+[
+  `(50 # IntegrateMultiplicative(_var,@from,_dummy1,_dummy2)_MatchLinear(var,@vr) <-- (@to)/a);
+];
+
+
+IntFunc(x,Sin(_x),-Cos(x));
+IntFunc(x,Cos(_x),Sin(x));
+IntFunc(x,Tan(_x),-Ln(Cos(x)));
+IntFunc(x,Exp(_x),Exp(x));
+IntFunc(x,Ln(_x),x*Ln(x)-x);
+IntFunc(x,SinH(_x),CosH(x));
+IntFunc(x,CosH(_x),SinH(x));
+IntFunc(x,TanH(_x),Ln(CosH(x)));
+
+
+
+/** MatchLinear(variable,expression)
+
+    MatchLinear tries to match an expression to a linear (degree less than
+    two) polynomial. The function returns True if it could match, and
+    it stores the resulting coefficients in the variables 'a' and 'b'
+    as a side effect. The function calling this predicate should declare
+    local variables 'a' and 'b' for this purpose.
+    MatchLinear tries to match to constant coefficients which don't
+    depend on the variable passed in, trying to find a form 'a*x+b'
+    with 'a' and 'b' not depending on 'x' if 'x' is given as the variable.
+
+    Examples:
+    In> MatchLinear(x,(R+1)*x+(T-1))
+    Out> True;
+    In> {a,b};
+    Out> {R+1,T-1};
+    In> MatchLinear(x,Sin(x)*x+(T-1))
+    Out> False;
+
+    
+ */
+
+10 # MatchLinear(var_IsAtom,_expr)_CanBeUni(expr,var) <--
+[
+  Set(expr,MakeUni(expr,var));
+  MatchLinear(expr);
+];
+20 # MatchLinear(_var,_expr) <-- False;
+
+10 # MatchLinear(_expr)_(Degree(expr,var)<2) <--
+[
+  Check(IsUniVar(expr),ToString()Echo({"Incorrect argument ",expr," passed to MatchLinear"}));
+  Check(Not IsBound(A), "Found bound variable which should have been unbound, in MatchLinear");
+  Check(Not IsBound(B), "Found bound variable which should have been unbound, in MatchLinear");
+  a := Coef(expr,1);
+  b := Coef(expr,0);
+  True;
+];
+20 # MatchLinear(_expr) <-- False;
+UnFence("MatchLinear",1);
+UnFence("MatchLinear",2);
+
+
+/* Test code */
+LocalSymbols(TestMatchLinearTrue,TestMatchLinearFalse) [
+
+  TestMatchLinearTrue(_var,_expr,_expected) <--
+  [
+    Local(a,b);
+    Verify(MatchLinear(var,expr),True);
+    a:=Simplify(a-expected[1]);
+    b:=Simplify(b-expected[2]);
+    `TestYacas(@a,0);
+    `TestYacas(@b,0);
+  ];
+  TestMatchLinearFalse(_var,_expr) <--
+  [
+    Local(a,b);
+    Verify(MatchLinear(var,expr),False);
+  ];
+
+  TestMatchLinearTrue(x,(R+1)*x+(T-1),{(R+1),(T-1)});
+  TestMatchLinearTrue(x,x+T,{1,T});
+  TestMatchLinearTrue(x,a*x+b,{a,b});
+  TestMatchLinearFalse(x,Sin(x)*x+(T-1));
+  TestMatchLinearFalse(x,x+Sin(x));
+
+];
+
+
+/*
+*/
+
+EndOfFile;
+
+/* implementation of Where : examples:
+	In> x^2+y^2 Where x==3 
+	Out> y^2+9;
+	In> x^2+y^2 Where x==3 And y==2
+	Out> 13;
+	In> x^2+y^2 Where {x==3 And y==2}
+	Out> 13;
+	In> x^2+y^2 Where {{x==3, y==2}}
+	Out> 13;
+
+	In> x^2+y^2 Where x <- 3 And y <- 2
+	In> x^2+y^2 Where Ln(_x*_y) == Ln(x)+Ln(y)
+                    And   y == 2
+
+Possible way to insert solutions returned by Solve into the original
+equations:
+
+        equations := {a+b*x==c And d+x==3};
+        equations := {a+b*x==c,    d+x==3};
+        variables := {x};
+        solutions := Solve(equations,variables)
+           {{x == 3-d And x == (c-a)/b}};
+           {{x == 3-d,    x == (c-a)/b}};
+        equations /: solutions;     // fill in all solutions
+        equations /: {solution[1]}; // fill in first solution
+
+
+Recursively being able to use solutions from Solve as new equations
+to a next Solve? Gathering constraints?
+
+This is not complete yet. We could change this into an assume thing.
+Also: it Solve should return something that can be used for this?
+
+So, we need a design decision here! The results of Solve have to
+be a possible argument to  /:, and to "Where", and perhaps even :=.
+
+Difference between /: and Where could be that /: evaluates its
+arguments first?
+Or:
+
+    x^2+y^2 Where Eval(solutions);
+
+Or:
+    `(@equations Where @solutions);
+
+?
+
+Also, we might start to think of an Assume scheme?
+
+Chapter: how to cache previous results.
+Chapter: how to cache found sub-results when pattern-matching.
+
+Various checks:
+
+	In> Check(False,[str:="THIS TEXT SHOULD NEVER SHOW UP";Echo({str});str;]);
+	THIS TEXT SHOULD NEVER SHOW UP
+	In function "Check" : 
+	CommandLine(1) : "THIS TEXT SHOULD NEVER SHOW UP"
+	In> Check(True,[str:="THIS TEXT SHOULD NEVER SHOW UP";Echo({str});str;]);
+	Out> True;
+
+
+*/
+
+
+
+EndOfFile;
+
 
 f(y,n) :=
 [

@@ -358,15 +358,18 @@ FLog("sassoc",sassoc);
   /* Now rebuild the normal form */
   Local(result);
   result:=0;
+
+//Echo({cassoc});
+//Echo({sassoc});
   ForEach(item,cassoc)
   [
 Log("item",item);
-    result:=result+Expand(item[2])*Cos(item[1]);
+    result:=result+Expand(FFromInternal(item[2]))*Cos(item[1]);
   ];
   ForEach(item,sassoc)
   [
 Log("item",item);
-    result:=result+Expand(item[2])*Sin(item[1]);
+    result:=result+Expand(FFromInternal(item[2]))*Sin(item[1]);
   ];
 
   result;

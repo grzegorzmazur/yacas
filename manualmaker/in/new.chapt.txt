@@ -158,3 +158,189 @@ speed hit is usually during calculations, not during loading, but
 it is best to keep this in mind and keep the code passed to 
 {LocalSymbols} concise.
 
+
+
+
+
+
+
+
+		How Yacas Deals With Sets of Solutions
+
+	    Introduction
+
+@@@@@@@@@@@@@@@@@@@@@@@@
+THIS IS A DRAFT, THE FUNCTIONALITY DESCRIBED BELOW IS NOT FULLY
+IMPLEMENTED YET!!! THIS IS JUST A PROPOSAL FOR HOW SOLVE MIGHT
+WORK.
+@@@@@@@@@@@@@@@@@@@@@@@@
+
+The difference between a problem stated and a solution given is
+a subtle one. From a mathematical standpoint, 
+
+	In> Integrate(x,0,B)Cos(x)
+	Out> Sin(B);
+
+And thus
+
+	Integrate(x,0,B)Cos(x) == Sin(B)
+
+is a true statement. Furthermore, the left hand side is mathematically
+equivalent to the right hand side. Working out the integration, to
+arrive at an expression that doesn't imply integration any more is
+generally perceived to be a more desirable result, even though
+the two sides are equivalent mathematically.
+
+This implies that the statement of a set of equations declaring
+equalities is on a same footing as the resulting equations stating
+a solution: 
+
+$$ a*x+b==c <=> x==(c-b)/a $$. 
+
+If the value of x is needed, the right hand side is more desirable.
+
+Viewed in this way, the responsibility of a {Solve} function could
+be to manipulate a set of equations in such a way that a certain
+piece of information can be pried from it (in this case the value
+of $ x == x(a,b,c) $ .
+
+A next step is to be able to use the result returned by a {Solve}
+operation. 
+
+	    Implementation Semantics of Solve in Yacas
+
+Suppose there is a set of variables that has a specific combination
+of solutions and these solutions need to be filled in in an expression:
+the {Where} operator can be used for this:
+
+	In> x^2+y^2 Where x==2 And y==3
+	Out> 13;
+
+Solve can return one such solution tuple, or a list of tuples.
+The list of equations can be passed in to Solve in exactly the same
+way. Thus:
+
+	In> Solve(eq1,var)
+	Out> a1==b1;
+	In> Solve(eq1 And eq2 And eq3,varlist)
+	Out> {a1==b1 And a2==b2,a1==b3 And a2==b4};
+
+These equations can be seen as simple simplification rules, the
+left hand side showing the old value, and the right hand side
+showing the new value. Interpreted in that way, {Where} 
+is a little simplifier for expressions, using values found by Solve.
+
+Assigning the variables values, globally, can then be handled with
+an expression like
+
+        solutions := Solve(equations,{var1,var2});
+	{var1,var2} := Transpose({var1,var2} Where solutions);
+
+Multiple sets of values can be applied:
+
+	In> x^2+y^2 Where {x==2 And y==2,x==3 And y==3}
+	Out> {8,18};
+
+This assigns the the variables lists of values. These variables
+can then be inserted into other expressions, where threading will
+fill in all the solutions, and return all possible answers.
+	
+Groups of equations can be combined, with
+
+	Equations := EquationSet1 AddTo EquationSet2
+
+or, 
+
+	Equations := Equations AddTo Solutions;
+
+Where {Solutions} could have been returned by {Solve}. This last
+step makes explicit the fact that equations are on a same footing,
+mathematically, as solutions to equations, and are just another
+way of looking at a problem.
+
+The equations returned can go farther in that multiple solutions
+can be returned: if the value of $ x $ is needed and the equation
+determining the value of $ x $ is $ x := Abs(a) $, then a set
+of returned solutions could look like:
+
+	Solutions := { a>=0 And x==a, a<0 And x== -a }
+
+The semantics of this list is:
+
+	either a >= 0 And x equals a, or
+	       a < 0 And x equals -a
+
+
+When more information is published, for instance the value
+of $ a $ has been determined, the sequence for solving this
+can look like:
+
+	In> Solve(a==2 AddTo Solutions,{x})
+	Out> x==2;
+
+The solution {a<0 And x==-a} can not be satisfied, and thus is removed
+from the list of solutions.
+
+Introducing new information can then be done with the AddTo
+operator:
+
+	In> Solutions2 := (a==2 AddTo Solutions);
+	Out> { a==2 And a>=0 And x==a, a==2 And a<0 And x==-a };
+
+In the above case both solutions can not be true any more, and thus
+when passing this list to {Solve}:
+
+	In> Solve(Solutions2,{x})
+	Out> x==2;
+
+{AddTo} combines multiple equations through a tensor-product like
+scheme:
+
+	In> {A==2,c==d} AddTo {b==3 And  d==2}
+	Out> {A==2 And b==3 And d==2,c==d And b==3 And d==2};
+	In> {A==2,c==d} AddTo {b==3, d==2}
+	Out> {A==2 And b==3,A==2 And d==2,c==d And b==3,c==d And d==2};
+
+A list {a,b} means that a is a solution, OR b is a solution.
+AddTo then acts as a AND operation:
+	(a or b) and (c or d) => 
+	(a or b) Addto (c or d) => 
+	(a and c) or (a and d) or (b and c) or (b and d)
+
+
+{Solve} gathers information as a list of identities. The second
+argument is a hint as to what it needs to solve for. It can be a list
+of variables, but also "Ode" (to solve ordinary differential equations),
+"Trig" (to simplify for trigonometric identities), "Exp" to simplify
+for expressions of the form $ Exp(x) $, or "Logic" to simplify
+expressions containing logic. The "Logic" simplifier also should
+deal with $ a > 2 And a < 0 $ which it should be able to reduce 
+to {False}.
+
+{Solve} also leaves room for an 'assume' type mechanism, where the
+equations evolve to keep track of constraints. When for instance
+the equation $ x == Sin(y) $ is encountered, this might result
+in a solution set 
+
+	y == ArcSin(x) And x>=-1 And x <= 1
+
+
+	    Use Case Scenarios
+
+TODO@@@@ THIS SECTION IS GOING TO CONTAIN EXPLICIT EXAMPLES OF
+SOLVING INTERESTING SETS OF EQUATIONS, AND SHOWING THAT THE SOLVE
+SCHEME IS ACTUALLY EASY TO USE.
+
+
+
+
+
+
+
+
+
+
+
+
+
+

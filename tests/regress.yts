@@ -82,4 +82,4 @@ LocalSymbols(f,p,a,b,x,n,simple,u,v)
 Verify((3!) !, 720);
 Verify(3! !, 720);
 
-
+TestYacas(TrigSimpCombine(Exp(A*X)),Exp(A*X));
