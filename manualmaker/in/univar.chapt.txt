@@ -14,11 +14,11 @@ orthogonal polynomials.
 
 *PARMS
 
-expr - a polynomial expression
+{expr} -- a polynomial expression
 
-var - a variable
+{var} -- a variable
 
-varlist - a list of variables
+{varlist} -- a list of variables
 
 *DESC
 
@@ -68,9 +68,9 @@ so on.
 
 *PARMS
 
-expr - a polynomial
+{expr} -- a polynomial
 
-var - a variable occurring in "expr"
+{var} -- a variable occurring in "expr"
 
 *DESC
 
@@ -99,11 +99,11 @@ mentioned.
 
 *PARMS
 
-expr - a polynomial
+{expr} -- a polynomial
 
-var - a variable occurring in "expr"
+{var} -- a variable occurring in "expr"
 
-order - integer or list of integers
+{order} -- integer or list of integers
 
 *DESC
 
@@ -131,7 +131,7 @@ coefficients.
 
 *PARMS
 
-expr - univariate polynomial
+{expr} -- univariate polynomial
 
 *DESC
 
@@ -160,7 +160,7 @@ content with the primitive part.
 
 *PARMS
 
-expr - univariate polynomial
+{expr} -- univariate polynomial
 
 *DESC
 
@@ -191,9 +191,9 @@ polynomial.
 
 *PARMS
 
-poly - a polynomial
+{poly} -- a polynomial
 
-var - a variable
+{var} -- a variable
 
 *DESC
 
@@ -230,9 +230,9 @@ sequence may be used.
 
 *PARMS
 
-poly - a polynomial
+{poly} -- a polynomial
 
-var - a variable
+{var} -- a variable
 
 *DESC
 
@@ -269,13 +269,13 @@ calling sequence may be used.
 
 *PARMS
 
-var - free variable for resulting univariate polynomial
+{var} -- free variable for resulting univariate polynomial
 
-deg - degree of resulting univariate polynomial
+{deg} -- degree of resulting univariate polynomial
 
-coefmin - minimum value for coefficients
+{coefmin} -- minimum value for coefficients
 
-coefmax - maximum value for coefficients
+{coefmax} -- maximum value for coefficients
 
 *DESC
 
@@ -307,9 +307,9 @@ Div and Mod are also defined for polynomials.
 
 *PARMS
 
-expr - a polynomial in "var"
+{expr} -- a polynomial in "var"
 
-var - a variable
+{var} -- a variable
 
 *DESC
 
@@ -342,7 +342,7 @@ disappeared.
 
 *PARMS
 
-expr - an expression
+{expr} -- an expression
 
 *DESC
 
@@ -369,11 +369,11 @@ It goes further than {Expand}, in that it expands all terms.
 
 *PARMS
 
-n - degree of polynomial
+{n} -- degree of polynomial
 
-x - point to evaluate polynomial at
+{x} -- point to evaluate polynomial at
 
-a, b - parameters for Jacobi polynomial
+{a}, {b} -- parameters for Jacobi polynomial
 
 *DESC
 
@@ -383,28 +383,32 @@ polynomial with parameters "a" and "b", which should be greater than -1.
 
 The Jacobi polynomials are orthogonal with respect to the weight
 function $(1-x)^a *(1+x)^b$ on the interval [-1,1]. They satisfy the
-recurrence relations:
+recurrence relation
+$$P(n,a,b,x) = (2*n + a + b - 1) * (a^2-b^2+x*(2*n+a+b-2)*(n+a+b)/(2*n* (2*n+a+b-2)* (n+a+b))) * P(n-1,a,b,x) - ((n+a-1)* (n+b-1)* (2*n+a+b)/(n* (n+a+b)* (2*n+a+b-2)))*P(n-2,a,b,x)$$
+for $n > 1$, with
+$$P(0,a,b,x) = 1$$,
+$$P(1,a,b,x) = (a-b)/2+x*(1+(a+b)/2)$$.
 
-	P(0,a,b,x) = 1
-	
-	             a - b     /     a + b \
-	P(1,a,b,x) = ----- + x | 1 + ----- |
-	               2       \       2   /
-	
-	                               
-	                               
-	P(n,a,b,x) = (2n + a + b - 1) *
-	                               
-	
-	    2   2
-	   a - b + x (2n+a+b-2) (n+a+b)
-	   ---------------------------- P(n-1,a,b,x)
-	      2n (2n+a+b-2) (n+a+b)
-	
-	    (n+a-1) (n+b-1) (2n+a+b)
-	 -  ------------------------ P(n-2,a,b,x),    
-	      n (n+a+b) (2n+a+b-2)
-for $n > 1$.
+*REM (old version of the equations:)
+//	P(0,a,b,x) = 1,
+//	
+//	             a - b     /     a + b \
+//	P(1,a,b,x) = ----- + x | 1 + ----- | ,
+//	               2       \       2   /
+//	
+//	
+//	
+//	P(n,a,b,x) = (2n + a + b - 1) *
+//	
+//	
+//	    2   2
+//	   a - b + x (2n+a+b-2) (n+a+b)
+//	   ---------------------------- P(n-1,a,b,x)
+//	      2n (2n+a+b-2) (n+a+b)
+//	
+//	    (n+a-1) (n+b-1) (2n+a+b)
+//	 -  ------------------------ P(n-2,a,b,x)
+//	      n (n+a+b) (2n+a+b-2)
 
 Legendre polynomials are a special case of Jacobi polynomials with the
 specific parameter values a = b = 0. So they form an orthogonal system
@@ -462,9 +466,9 @@ Most of the work is performed by the internal function {OrthoPoly}.
 
 *PARMS
 
-n - degree of polynomial
+{n} -- degree of polynomial
 
-x - point to evaluate polynomial at
+{x} -- point to evaluate polynomial at
 
 *DESC
 
@@ -500,11 +504,11 @@ Most of the work is performed by the internal function {OrthoPoly}.
 
 *PARMS
 
-n - degree of polynomial
+{n} -- degree of polynomial
 
-a - parameter
+{a} -- parameter
 
-x - point to evaluate polynomial at
+{x} -- point to evaluate polynomial at
 
 *DESC
 
@@ -548,11 +552,11 @@ Most of the work is performed by the internal function {OrthoPoly}.
 
 *PARMS
 
-n - degree of polynomial
+{n} -- degree of polynomial
 
-a - parameter
+{a} -- parameter
 
-x - point to evaluate polynomial at
+{x} -- point to evaluate polynomial at
 
 *DESC
 
@@ -597,9 +601,9 @@ Most of the work is performed by the internal function {OrthoPoly}.
 
 *PARMS
 
-n - degree of polynomial
+{n} -- degree of polynomial
 
-x - point to evaluate polynomial at
+{x} -- point to evaluate polynomial at
 
 *DESC
 
@@ -666,11 +670,11 @@ Here is an example numerical calculation where the loss of precision is catastro
 
 *PARMS
 
-c - list of coefficients
+{c} -- list of coefficients
 
-a, b - parameters of specific polynomials
+{a}, {b} -- parameters of specific polynomials
 
-x - point to evaluate polynomial at
+{x} -- point to evaluate polynomial at
 
 *DESC
 
@@ -700,13 +704,13 @@ Most of the work is performed by the internal function {OrthoPolySum}. The indiv
 
 *PARMS
 
-name - string containing name of orthogonal family
+{name} -- string containing name of orthogonal family
 
-n - degree of the polynomial
+{n} -- degree of the polynomial
 
-par - list of values for the parameters
+{par} -- list of values for the parameters
 
-x - point to evaluate at
+{x} -- point to evaluate at
 
 *DESC
 

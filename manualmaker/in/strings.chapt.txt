@@ -8,11 +8,11 @@
 
 *PARMS
 
-index - index of substring to get
+{index} -- index of substring to get
 
-substring - substring to store
+{substring} -- substring to store
 
-string - string to store substring in.
+{string} -- string to store substring in.
 
 *DESC
 
@@ -33,11 +33,11 @@ a new changed copy.
 
 *PARMS
 
-index - index of substring to get
+{index} -- index of substring to get
 
-length - length of substring to get
+{length} -- length of substring to get
 
-string - string to get substring from
+{string} -- string to get substring from
 
 *DESC
 
@@ -61,9 +61,9 @@ accessed using the {[]} operator.
 
 *PARMS
 
-atom - an atom
+{atom} -- an atom
 
-"string" - a string
+{"string"} -- a string
 
 *DESC
 
@@ -87,7 +87,7 @@ as the evaluated argument. Example: {Atom("foo");} returns
 
 *PARMS
 
-strings - one or more strings
+{strings} -- one or more strings
 
 *DESC
 
@@ -103,13 +103,13 @@ Concatenates strings.
 *CMD LocalSymbols --- create unique local symbols with given prefix
 *STD
 *CALL
-	LocalSymbols(...)body
+	LocalSymbols(var1, var2, ...) body
 
 *PARMS
 
-... - list of symbols
+{var1}, {var2}, ... -- atoms, symbols to be made local
 
-body - expression to execute
+{body} -- expression to execute
 
 *DESC
 
@@ -136,7 +136,7 @@ for example, in the macro-like functions ({For}, {While}, etc.).
 
 *PARMS
 
-string - a string to patch
+{string} -- a string to patch
 
 *DESC
 

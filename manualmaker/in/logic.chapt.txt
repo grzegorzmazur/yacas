@@ -8,7 +8,7 @@
 
 *PARMS
 
-proposition -- an expression with logical operations
+{proposition} -- an expression with logical operations
 
 *DESC
 

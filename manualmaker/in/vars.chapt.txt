@@ -12,13 +12,13 @@
 
 *PARMS
 
-var - variable which should be assigned
+{var} -- atom, variable which should be assigned
 
-expr - expression to assign to the variable or body of function
+{expr} -- expression to assign to the variable or body of function
 
-i - index (can be integer or string)
+{i} -- index (can be integer or string)
 
-fn - atom, name of a new function to define
+{fn} -- atom, name of a new function to define
 
 {arg1}, {arg2} -- atoms, names of arguments of the new function {fn}
 
@@ -179,9 +179,9 @@ expansion is computed only once.
 
 *PARMS
 
-var - variable which should be assigned
+{var} -- variable which should be assigned
 
-exp - expression to assign to the variable
+{exp} -- expression to assign to the variable
 
 *DESC
 
@@ -208,7 +208,7 @@ has more uses, e.g. changing individual entries in a list.
 
 *PARMS
 
-var - name of variable to be cleared
+{var} -- name of variable to be cleared
 
 *DESC
 
@@ -236,7 +236,7 @@ True.
 
 *PARMS
 
-var - name of variable to be declared as local
+{var} -- name of variable to be declared as local
 
 *DESC
 
@@ -286,7 +286,7 @@ the block.
 
 *PARMS
 
-var - variable to increment
+{var} -- variable to increment
 
 *DESC
 
@@ -314,7 +314,7 @@ programming language C.
 
 *PARMS
 
-var - variable to decrement
+{var} -- variable to decrement
 
 *DESC
 
@@ -344,9 +344,9 @@ in the programming language C.
 
 *PARMS
 
-pred - name of the predicate to apply
+{pred} -- name of the predicate to apply
 
-exp - expression on which "pred" should be applied
+{exp} -- expression on which "pred" should be applied
 
 *DESC
 
@@ -373,7 +373,7 @@ so-called incomplete types.
 
 *PARMS
 
-var - variable (held argument)
+{var} -- variable (held argument)
 
 *DESC
 

@@ -17,7 +17,7 @@ which simply read a specified file.
 
 *PARMS
 
-expr - expression to be printed in LISP-format
+{expr} -- expression to be printed in LISP-format
 
 *DESC
 
@@ -104,7 +104,7 @@ print a list:
 
 *PARMS
 
-expr - an expression
+{expr} -- an expression
 
 *DESC
 
@@ -134,7 +134,7 @@ complex than a simple number.
 
 *PARMS
 
-expr - an expression
+{expr} -- an expression
 
 *DESC
 
@@ -337,9 +337,9 @@ Then we can have the following dialogue:
 
 *PARMS
 
-str - a string containing the text to parse
+{str} -- a string containing the text to parse
 
-body - expression to be evaluated
+{body} -- expression to be evaluated
 
 *DESC
 
@@ -365,9 +365,9 @@ result of "body" is returned.
 
 *PARMS
 
-name - string, the name of the file to write the result to
+{name} -- string, the name of the file to write the result to
 
-body - expression to be evaluated
+{body} -- expression to be evaluated
 
 *DESC
 
@@ -426,7 +426,7 @@ After this command the file {out} contains:
 
 *PARMS
 
-body - expression to be evaluated
+{body} -- expression to be evaluated
 
 *DESC
 
@@ -523,7 +523,7 @@ combination of the semantics of the tokens. Hence {a := foo} consists of three t
 
 *PARMS
 
-name - string, name of the file to load
+{name} -- string, name of the file to load
 
 *DESC
 
@@ -539,7 +539,7 @@ evaluated. {Load} always returns {true}.
 
 *PARMS
 
-name - string, name of the file to load
+{name} -- string, name of the file to load
 
 *DESC
 
@@ -560,7 +560,7 @@ least have been loaded, but is not loaded twice.
 
 *PARMS
 
-name - string, name of the file (without {.def} suffix)
+{name} -- string, name of the file (without {.def} suffix)
 
 *DESC
 
@@ -582,7 +582,7 @@ which functions.
 
 *PARMS
 
-name - string, name of the file or directory to find
+{name} -- string, name of the file or directory to find
 
 *DESC
 
@@ -602,7 +602,7 @@ searched for a file called "name". If such a file is not found, {FindFile} retur
 
 *PARMS
 
-name - string, name of the file to "patch"
+{name} -- string, name of the file to "patch"
 
 *DESC
 

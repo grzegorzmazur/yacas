@@ -18,7 +18,7 @@ numbers. Many of them also work on polynomials.
 
 *PARMS
 
-{x} and {y} - objects for which arithmetic operations are defined
+{x} and {y} -- objects for which arithmetic operations are defined
 
 *DESC
 
@@ -43,7 +43,7 @@ to being built-in). This means that they can be extended by the user.
 
 *PARMS
 
-{x}, {y} - integers or univariate polynomials
+{x}, {y} -- integers or univariate polynomials
 
 *DESC
 
@@ -69,9 +69,9 @@ If {Div(x,y)} returns "a" and {Mod(x,y)} equals "b", then these numbers satisfy 
 
 *PARMS
 
-{n}, {m} - integers or univariate polynomials
+{n}, {m} -- integers or univariate polynomials
 
-{list} - a list of all integers or all univariate polynomials
+{list} -- a list of all integers or all univariate polynomials
 
 *DESC
 
@@ -197,7 +197,7 @@ in decimal base. The second command converts {255}
 
 *PARMS
 
-{n} - integer, new precision
+{n} -- integer, new precision
 
 *DESC
 
@@ -288,7 +288,7 @@ the value of $Pi$ up to the required precision.
 
 *PARMS
 
-expr - an expression containing real numbers
+{expr} -- an expression containing real numbers
 
 *DESC
 
@@ -320,7 +320,7 @@ division of integers.
 
 *PARMS
 
-n - integer to test
+{n} -- integer to test
 
 *DESC
 
@@ -355,7 +355,7 @@ long time for large numbers.
 
 *PARMS
 
-n - integer to test
+{n} -- integer to test
 
 *DESC
 
@@ -413,7 +413,7 @@ fact prime.
 
 *PARMS
 
-x - integer or univariate polynomial
+{x} -- integer or univariate polynomial
 
 *DESC
 
@@ -443,7 +443,7 @@ is returned as {{{p1,n1}, ..., {p9,n9}}}.
 
 *PARMS
 
-x - integer or univariate polynomial
+{x} -- integer or univariate polynomial
 
 *DESC
 
@@ -721,7 +721,7 @@ This function found a different rational number closeby because the precision wa
 
 *PARMS
 
-{frac} - a rational number
+{frac} -- a rational number
 
 *DESC
 
@@ -747,7 +747,7 @@ elements are the initial digits before the period sets in.
 
 *PARMS
 
-{r} - a number
+{r} -- a number
 
 *DESC
 
@@ -780,7 +780,7 @@ digits.
 
 *PARMS
 
-x - a number
+{x} -- a number
 
 *DESC
 
@@ -802,7 +802,7 @@ This function returns the largest integer smaller than "x".
 
 *PARMS
 
-x - a number
+{x} -- a number
 
 *DESC
 
@@ -824,7 +824,7 @@ This function returns the smallest integer larger than "x".
 
 *PARMS
 
-x - a number
+{x} -- a number
 
 *DESC
 
@@ -852,9 +852,9 @@ rounded upwards.
 
 *PARMS
 
-{xlist} - list of numbers
+{xlist} -- list of numbers
 
-precision - required number of digits precision of calculation
+{precision} -- required number of digits precision of calculation
 
 *DESC
 

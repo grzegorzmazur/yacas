@@ -12,7 +12,7 @@ and matrices, represented as lists of lists.
 
 *PARMS
 
-list - a list of integers 1 .. n in some order
+{list} -- a list of integers 1 .. n in some order
 
 *DESC
 
@@ -41,7 +41,7 @@ to -1.
 
 *PARMS
 
-list - a list of elements
+{list} -- a list of elements
 
 *DESC
 
@@ -109,7 +109,7 @@ Both "a" and "b" have to be three-dimensional.
 
 *PARMS
 
-n - length of the vector to return
+{n} -- length of the vector to return
 
 *DESC
 
@@ -129,9 +129,9 @@ This command returns a vector of length "n", filled with zeroes.
 
 *PARMS
 
-k - index of the base vector to construct
+{k} -- index of the base vector to construct
 
-n - dimension of the vector
+{n} -- dimension of the vector
 
 *DESC
 
@@ -153,7 +153,7 @@ entry, which contains a 1.
 
 *PARMS
 
-n - size of the matrix
+{n} -- size of the matrix
 
 *DESC
 
@@ -174,9 +174,9 @@ matrix has ones on the diagonal while the other entries are zero.
 
 *PARMS
 
-n - number of rows
+{n} -- number of rows
 
-m - number of columns
+{m} -- number of columns
 
 *DESC
 
@@ -197,7 +197,7 @@ completely filled with zeroes.
 
 *PARMS
 
-d - list of values to put on the diagonal
+{d} -- list of values to put on the diagonal
 
 *DESC
 
@@ -219,7 +219,7 @@ whose off-diagonal entries are all zero. The elements of the vector
 
 *PARMS
 
-M - a mathematical object
+{M} -- a mathematical object
 
 *DESC
 
@@ -245,7 +245,7 @@ list are themselves lists.
 
 *PARMS
 
-v - a vector
+{v} -- a vector
 
 *DESC
 
@@ -268,7 +268,7 @@ direction but with length 1.
 
 *PARMS
 
-M - a matrix
+{M} -- a matrix
 
 *DESC
 
@@ -287,7 +287,7 @@ just lists of lists, this is a useful operation too for lists.
 
 *PARMS
 
-M - a matrix
+{M} -- a matrix
 
 *DESC
 
@@ -307,7 +307,7 @@ Returns the determinant of a matrix M.
 
 *PARMS
 
-M - a matrix
+{M} -- a matrix
 
 *DESC
 
@@ -328,13 +328,13 @@ elements on the diagonal of the matrix).
 
 *PARMS
 
-M - a matrix
+{M} -- a matrix
 
 *DESC
 
 Inverse returns the inverse of matrix $M$. The determinant of $M$ should
 be non-zero. Because this function uses {Determinant} for calculating
-the inverse of a matrix, you can supply matrices with non-numeric
+the inverse of a matrix, you can supply matrices with non-numeric (symbolic)
 matrix elements.
 
 *E.G.
@@ -356,15 +356,15 @@ matrix elements.
 
 *PARMS
 
-M - a matrix
+{M} -- a matrix
 
-i, j - positive integers
+{i}, {j} - positive integers
 
 *DESC
 
 Minor returns the minor of a matrix around
-the element (i,j). The minor is the determinant of the matrix
-excluding the "i"-th row and "j"-th column.
+the element ($i$, $j$). The minor is the determinant of the matrix obtained from $M$ by
+deleting the $i$-th row and the $j$-th column.
 
 *E.G.
 
@@ -395,14 +395,14 @@ excluding the "i"-th row and "j"-th column.
 
 *PARMS
 
-M - a matrix
+{M} -- a matrix
 
-i, j - positive integers
+{i}, {j} - positive integers
 
 *DESC
 
-CoFactor returns the cofactor of a matrix around
-the element (i,j). The cofactor is the minor times
+{CoFactor} returns the cofactor of a matrix around
+the element ($i$, $j$). The cofactor is the minor times
 $(-1)^(i+j)$.
 
 *E.G.
@@ -436,9 +436,9 @@ $(-1)^(i+j)$.
 
 *PARMS
 
-M - a matrix
+{M} -- a matrix
 
-v - a vector
+{v} -- a vector
 
 *DESC
 
@@ -465,9 +465,9 @@ the equation $M*x = v$. The determinant of $M$ should be non-zero.
 
 *PARMS
 
-matrix - a matrix
+{matrix} -- a matrix
 
-var - a free variable
+{var} -- a free variable
 
 *DESC
 
@@ -575,7 +575,7 @@ If $A$ is a real matrix, it must be symmetric to be Hermitian.
 
 *PARMS
 
-A - square matrix
+{A} -- square matrix
 
 *DESC
 
