@@ -11,8 +11,11 @@ yacas_gsl_la_LDFLAGS = $(GSL_LIBS) -module -avoid-version -no-undefined -rpath $
 
 CLEANFILES = yacas_gslapi.cc yacas_gslapi.description
 
-yacas_gslapi.cc : yacas_gslapi.stub
+yacas_gslapi.cc : yacas_gslapi.stub gsl_auto.stub
 	../../src/yacas --rootdir ../../scripts/:$(top_srcdir)/scripts/ -pc $(srcdir)/yacas_gslapi.stub
+
+gsl_auto.stub : $(srcdir)/../extract_stub.pl
+	cat `echo $(GSL_CFLAGS) | sed -e 's/-I//'`/gsl/*.h | perl $(srcdir)/../extract_stub.pl > gsl_auto.stub
 
 yacas_gsl.dylib: yacas_gsl.lo yacas_gslapi.lo
 	c++ -module -dynamic -undefined suppress -flat_namespace -dynamiclib -o $@ yacas_gsl.lo yacas_gslapi.lo $(LIBS)
