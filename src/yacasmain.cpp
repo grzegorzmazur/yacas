@@ -157,6 +157,8 @@ int compressed_archive = 1;
 int server_mode = 0;
 int server_port = 9734;
 
+char* execute_commnd = NULL;
+
 //TODO global!!!
 static LispBoolean busy=LispTrue;
 static LispBoolean restart=LispFalse;
@@ -1277,6 +1279,19 @@ int main(int argc, char** argv)
             }
 
 
+            else if (!strcmp(argv[fileind],"--execute"))
+            {    
+                fileind++;
+
+                if (fileind<argc)
+                {
+                  execute_commnd = argv[fileind];
+                }                
+            }
+
+
+
+
             else if (!strcmp(argv[fileind],"--uncompressed-archive"))
             {
                 // This is just test code, to see if the engine
@@ -1449,6 +1464,17 @@ int main(int argc, char** argv)
     }
     if (show_prompt && (!use_texmacs_out))
         ShowResult("");
+    if (execute_commnd != NULL)
+    {
+        yacas->Evaluate(execute_commnd);
+        if (yacas->IsError())
+        {
+            printf("Error in file %s:\n",argv[fileind]);
+            printf("%s\n",yacas->Error());
+        }
+        if (show_prompt && (!use_texmacs_out))
+          ShowResult("");
+    }
 
     if (use_stdin)
     {

@@ -7,6 +7,12 @@
 
 <h1>Release of version 1.0.57 (???)</h1>
 <ul>
+  <li> added --execute as a command line argument, to allow executing 
+       expressions from the command line.
+  <li> many bug fixes relating to numerics, all tests now pass again.
+  <li> added yacas_secure() function to switch to secure mode.
+  <li> Disable using archive when --rootdir is specified on the command line.
+       This is useful for Windows version, which tries the archive by default.
   <li> optimizations to the script compiler: pre-building constant
        atoms used in routines (AP).
   <li> reporting an error if the initialization script fails (AP).
