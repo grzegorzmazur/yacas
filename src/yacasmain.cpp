@@ -1059,15 +1059,18 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
 
 
 #define SHOWSIZE(a)    printf("   sizeof(" #a ") = %ld\n",sizeof(a));
+
 int main(int argc, char** argv)
 {
     unsigned char first_stack_var=0;
     the_first_stack_var = &first_stack_var;
 
+
 //printf("sizeof(LispPtr) = %d\n",sizeof(LispPtr));
 #ifdef YACAS_DEBUG
   if (verbose_debug)
   {
+    SHOWSIZE(LispUserFunctions);
     SHOWSIZE(LispPtr);
     SHOWSIZE(LispString);
     SHOWSIZE(LispAtom);
