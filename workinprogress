@@ -126,6 +126,8 @@ NullSpaceAlg(Q,deg,v,p):=
           );
       ];
       c[jfound] := k;
+      TableForm(Q);
+      Echo({});
     ],
     [
       Local(vnew,j,s);

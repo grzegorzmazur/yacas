@@ -104,8 +104,15 @@ Function("Taylor",{taylorvariable,taylorat,taylororder,taylorfunction})
   Local(n,result,dif,polf);
   [
     MacroLocal(taylorvariable);
-
-    result:=Apply("Limit",{taylorvariable,taylorat,taylorfunction});
+    [
+      MacroLocal(taylorvariable);
+      MacroSet(taylorvariable, taylorat);
+      result:=Eval(taylorfunction);
+    ];
+    If(result=Undefined,
+    [
+      result:=Apply("Limit",{taylorvariable,taylorat,taylorfunction});
+    ]);
 /*
     MacroSet(taylorvariable,taylorat);
     result:=Eval(taylorfunction);
@@ -116,9 +123,20 @@ Function("Taylor",{taylorvariable,taylorat,taylororder,taylorfunction})
   For(n:=1,n<=taylororder,n++)
   [
     dif:= Deriv(taylorvariable) dif;
+    Local(term);
     MacroLocal(taylorvariable);
-
-    result:=result+Apply("Limit",{taylorvariable,taylorat,(dif/(n!))})*(polf^n);
+    [
+      MacroLocal(taylorvariable);
+      MacroSet(taylorvariable, taylorat);
+      term:=Eval(dif);
+    ];
+    If(term=Undefined,
+    [
+      term:=Apply("Limit",{taylorvariable,taylorat,dif});
+    ]);
+      
+    result:=result+(term/(n!))*(polf^n);
+/*    result:=result+Apply("Limit",{taylorvariable,taylorat,(dif/(n!))})*(polf^n); */
 /*
     MacroSet(taylorvariable,taylorat);
     result:=result+(Eval(dif)/(n!))*(polf^n);
