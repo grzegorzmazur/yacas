@@ -3,6 +3,7 @@
    - - - a not working correctly...
  - make a RetractRule with a predicate as argument.
  */
+#include "yacasprivate.h"
 #include "yacasbase.h"
 #include "patterns.h"
 #include "standard.h"

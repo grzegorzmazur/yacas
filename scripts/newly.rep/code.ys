@@ -128,10 +128,17 @@ EigenVectors(_matrix,_eigenvalues) <--
 Function("RationalizeNumber",{x})
 [
   Check(IsNumber(x),"RationalizeNumber: Error: " : (ToString()Write(x)) :" is not a number");
-  Local(n);
+  Local(n,xrounded);
   n:=1;
-  While(Not(IsInteger(x)))  [ n:=n*10; x:=x*10; ];
-  x/n;
+  // We can not take for granted that the internal representation is rounded properly...
+  xrounded:=RoundTo(x,GetPrecision());
+  While(Not(IsInteger(xrounded)))  
+  [ 
+    n:=n*10; x:=x*10; 
+  xrounded:=RoundTo(x,GetPrecision());
+//Echo(x,"/",n);
+  ];
+  xrounded/n;
 ];
 
 Function("Rationalize",{a'number})

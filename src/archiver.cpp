@@ -1,4 +1,5 @@
 
+#include "yacasprivate.h"
 #include "archiver.h"
 #include "../ramscripts/compressedfiles.cpp"
 #include "../ramscripts/minilzo.c"

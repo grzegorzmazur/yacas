@@ -6,8 +6,9 @@
 #include "numbers.h"
 #include "standard.h"
 
+//#ifdef YACAS_DEBUG
 #include <stdio.h> //DEBUG
-
+//#endif
 LispObject* LispAtom::New(LispEnvironment& aEnvironment, LispStringPtr aString)
 {
   LispObject* self;
@@ -245,9 +246,9 @@ LispStringPtr LispNumber::String()
     LISPASSERT(iHashTable != NULL);
     iString = iHashTable->LookUp(str);
 
-#ifdef YACAS_DEBUG
+//#ifdef YACAS_DEBUG
 //printf("Converting to string representation %s\n",iString->String()); //DEBUG
-#endif
+//#endif
   }
   return iString.Ptr();
 }
@@ -272,9 +273,9 @@ BigNumber* LispNumber::Number(LispInt aPrecision)
   if (iNumber.Ptr() == NULL)
   {
     LISPASSERT(iString.Ptr() != NULL);
-#ifdef YACAS_DEBUG
+//#ifdef YACAS_DEBUG
 //printf("Converting from string representation %s\n",iString->String()); //DEBUG
-#endif
+//#endif
     RefPtr<LispString> str; str = iString.Ptr();
     iNumber = NEW BigNumber(str->String(),aPrecision);
   }

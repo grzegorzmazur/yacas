@@ -18,10 +18,10 @@ int check_if_prime(const int p)
 void print_table()
 {
 	int i, p, q;
-	for(i = 0; i < primes_table_size; ++i)
+	for(i = 0; i < (int)primes_table_size; ++i)
 		primes_table[i] = 0;
 	// fill table
-	for(p = 3; p <= primes_table_limit; )
+	for(p = 3; p <= (int)primes_table_limit; )
 	{
 		// mark p as prime in the bit field
 		i = p >> 4;
@@ -29,11 +29,11 @@ void print_table()
 		primes_table[i] |= (1 << q);
 		// find the next prime
 		p += 2;
-		for ( ;p <= primes_table_limit && check_if_prime(p) == 0; p+=2);
+		for ( ;p <= (int)primes_table_limit && check_if_prime(p) == 0; p+=2);
 	}
 	
-	printf(" const unsigned long primes_table_limit = %d;\n const unsigned char primes_table[] = {\n", primes_table_limit);
-	for(i=0; i<primes_table_size; ++i)
+	printf(" const unsigned long primes_table_limit = %ld;\n const unsigned char primes_table[] = {\n", primes_table_limit);
+	for(i=0; i<(int)primes_table_size; ++i)
 		printf("0x%02x,\n", primes_table[i]);
 	printf("};\n");
 }

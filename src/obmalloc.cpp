@@ -48,6 +48,8 @@
  *    in Proc. 1995 Int'l. Workshop on Memory Management, September 1995.
  */
 
+#include "yacasprivate.h"
+
 #include "lisptype.h"
 #include "stubs.h"
 //TODO is this always true?

@@ -104,7 +104,7 @@ AC_MSG_RESULT($enable_debug)
 if test "$enable_debug" = "yes" ; then
   AC_DEFINE(YACAS_DEBUG,, [Define to build the debug version])
   AC_DEFINE(USE_ASSERT,, [Define to build the debug version])
-  DEBUG_FLAGS="-DYACAS_DEBUG -DUSE_ASSERT"
+  DEBUG_FLAGS=""
 else
   DEBUG_FLAGS=""
 fi
@@ -117,7 +117,7 @@ AC_MSG_RESULT($enable_server)
 if test "$enable_server" = "yes" ; then
   AC_FUNC_ACCEPT_ARGTYPES
   AC_DEFINE(SUPPORT_SERVER,, [Define to build the network server version])
-  SERVER_FLAGS="-DSUPPORT_SERVER"
+  SERVER_FLAGS=""
 else
   SERVER_FLAGS=""
 fi

@@ -1,4 +1,5 @@
 //#include <stdio.h>
+#include "yacasprivate.h"
 #include "tokenizer.h"
 
 /* Default parse algorithm:

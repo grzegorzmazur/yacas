@@ -14,8 +14,8 @@
 10 # Gamma(_n)_(IsInteger(n) And n<=0) <-- Infinity;
 10 # LnGamma(_n)_(IsInteger(n) And n<=0) <-- Infinity;
 
-20 # Gamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or IsInteger(N(2*n))) <-- Eval((n-1)!);
-20 # LnGamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or IsInteger(N(2*n))) <-- Eval(Ln((n-1)!));
+20 # Gamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or IsInteger(RoundTo(2*n,GetPrecision()))) <-- Eval((n-1)!);
+20 # LnGamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or IsInteger(RoundTo(2*n,GetPrecision()))) <-- Eval(Ln((n-1)!));
 
 30 # Gamma(x_IsConstant)_(Numeric) <-- GammaNum(N(x));
 30 # LnGamma(x_IsConstant)_(Numeric) <-- LnGammaNum(N(x));

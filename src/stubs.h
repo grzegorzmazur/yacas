@@ -45,36 +45,36 @@
 #include <stdio.h>
 inline void* operator new(size_t size)
 {
-    int* ptr = NULL;
     printf("WARNING! Global new called\n");
 #ifndef YACAS_DEBUG
+    int* ptr = NULL;
     *ptr = 1;
 #endif
     return PlatAlloc(size);
 }
 inline void* operator new[](size_t size)
 {
-    int* ptr = NULL;
     printf("WARNING! Global new called\n");
 #ifndef YACAS_DEBUG
+    int* ptr = NULL;
     *ptr = 1;
 #endif
     return PlatAlloc(size);
 }
 inline void operator delete(void* object)
 {
-    int* ptr = NULL;
     printf("WARNING! Global delete called\n");
 #ifndef YACAS_DEBUG
+    int* ptr = NULL;
     *ptr = 1;
 #endif
     PlatFree((LispCharPtr)object);
 }
 inline void operator delete[](void* object)
 {
-    int* ptr = NULL;
     printf("WARNING! Global delete called\n");
 #ifndef YACAS_DEBUG
+    int* ptr = NULL;
     *ptr = 1;
 #endif
     PlatFree((LispCharPtr)object);
