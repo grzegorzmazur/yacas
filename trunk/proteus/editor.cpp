@@ -1,5 +1,5 @@
 //
-// "$Id: editor.cpp,v 1.5 2003-06-08 23:01:07 ayalpinkus Exp $"
+// "$Id: editor.cpp,v 1.6 2003-06-09 02:14:07 ayalpinkus Exp $"
 //
 // A simple text editor program for the Fast Light Tool Kit (FLTK).
 //
@@ -53,6 +53,7 @@
 #include <FL/Fl_Scroll.H>
 #include <FL/Fl_Tabs.H>
 #include "FltkConsole.h"
+#include "FltkHintWindow.h"
 
 /*
 static int                changed = 0;
@@ -63,6 +64,8 @@ static Fl_Text_Buffer     *textbuf = 0;
 static Fl_Text_Buffer     *stylebuf = 0;
 */
 
+FltkHintWindow *hints = NULL;
+
 void go_next_input();
 
 class ProteusInput : public Fl_Text_Editor
@@ -72,7 +75,22 @@ public:
         : Fl_Text_Editor(x,y,w,h)
     {};
     virtual int handle(int event);
+    virtual void draw();
 };
+
+void ProteusInput::draw()
+{
+  Fl_Text_Editor::draw();
+  if (hints)
+  {
+      int ix,iy;
+      position_to_xy(mCursorPos, &ix,&iy);
+      fl_font(FL_HELVETICA,14);
+      fl_clip(x(),y(),w(),h());
+      hints->draw(x()+10,iy-10);
+      fl_pop_clip();
+  }
+}
 
 
 int ProteusInput::handle(int event)
@@ -215,6 +233,8 @@ void make_current_visible()
 //    EditorInput()->mark(Document()->mark);
 
     redo_title();
+    delete hints;
+    hints = NULL;
 }
 
 void go_next_input()
@@ -240,7 +260,9 @@ Fl_Text_Display::Style_Table_Entry
 		     { FL_BLUE,       FL_COURIER,        14 }, // D - Strings
 		     { FL_DARK_RED,   FL_COURIER,        14 }, // E - Directives
 		     { FL_DARK_RED,   FL_COURIER_BOLD,   14 }, // F - Types
-		     { FL_BLUE,       FL_COURIER_BOLD,   14 }  // G - Keywords
+		     { FL_BLUE,       FL_COURIER_BOLD,   14 }, // G - Keywords
+		     { FL_DARK_MAGENTA, FL_COURIER_BOLD, 14 },  // H - Operators
+		     { FL_RED,   FL_COURIER,        14 } // I - Digits
 		   };
 const char         *code_keywords[] = {	// List of known C/C++ keywords...
 		     "and",
@@ -336,7 +358,8 @@ compare_keywords(const void *a,
 void
 style_parse(const char *text,
             char       *style,
-	    int        length) {
+	    int        length) 
+{
   char	     current;
   int	     col;
   int	     last;
@@ -344,73 +367,132 @@ style_parse(const char *text,
              *bufptr;
   const char *temp;
 
-  for (current = *style, col = 0, last = 0; length > 0; length --, text ++) {
+/*
+{
+  char* buf = malloc(length+1);
+  buf[length] = '\0';
+  memcpy(buf,text,length);
+  printf("[%s]\n",buf);
+  free(buf);
+}
+*/
+  extern FltkConsole* console;
+  {
+  
+    int iNrLines = -1;
+    int iNrDescriptions=-1;
+    int iMaxWidth=-1;
+    int iTextSize=-1;
+
+    if (hints)
+    {
+      iNrLines = hints->iNrLines;
+      iNrDescriptions=hints->iNrDescriptions;
+      iMaxWidth=hints->iMaxWidth;
+      iTextSize=hints->iTextSize;
+    }
+    delete hints;
+    hints = console->CheckForNewHints((char*)text, length);
+    if (hints)
+    {
+      if (
+          iNrLines > hints->iNrLines ||
+          iNrDescriptions>hints->iNrDescriptions ||
+          iMaxWidth>hints->iMaxWidth ||
+          iTextSize>hints->iTextSize
+         ) 
+         Document()->editor->redisplay_range(0, Document()->textbuf->length());
+    }
+    else if (iNrLines >=0 )
+      Document()->editor->redisplay_range(0, Document()->textbuf->length());
+  }
+  for (current = *style, col = 0, last = 0; length > 0; length --, text ++) 
+  {
     if (current == 'B') current = 'A';
-    if (current == 'A') {
+    if (*text == '/' || (isspace(*text) && current != 'C' && current != 'D')) current = 'A';
+
+    if (current == 'A') 
+    {
       // Check for directives, comments, strings, and keywords...
-      if (col == 0 && *text == '#') {
+      if (col == 0 && *text == '#') 
+      {
         // Set style to directive
         current = 'E';
-      } else if (strncmp(text, "//", 2) == 0) {
+      } 
+      else if (strncmp(text, "//", 2) == 0) 
+      {
         current = 'B';
-	for (; length > 0 && *text != '\n'; length --, text ++) *style++ = 'B';
+        for (; length > 0 && *text != '\n'; length --, text ++) *style++ = 'B';
 
         if (length == 0) break;
-      } else if (strncmp(text, "/*", 2) == 0) {
+      } 
+      else if (strncmp(text, "/*", 2) == 0) 
+      {
         current = 'C';
-      } else if (strncmp(text, "\\\"", 2) == 0) {
+      } 
+      else if (strncmp(text, "\\\"", 2) == 0) 
+      {
         // Quoted quote...
-	*style++ = current;
-	*style++ = current;
-	text ++;
-	length --;
-	col += 2;
-	continue;
-      } else if (*text == '\"') {
+        *style++ = current;
+        *style++ = current;
+        text ++;
+        length --;
+        col += 2;
+        continue;
+      } 
+      else if (*text == '\"') 
+      {
         current = 'D';
-      } else if (!last && islower(*text)) {
+      } 
+      else if (!last && islower(*text)) 
+      {
         // Might be a keyword...
-	for (temp = text, bufptr = buf;
-	     islower(*temp) && bufptr < (buf + sizeof(buf) - 1);
-	     *bufptr++ = *temp++);
+        for (temp = text, bufptr = buf;
+        islower(*temp) && bufptr < (buf + sizeof(buf) - 1);
+        *bufptr++ = *temp++);
 
-        if (!islower(*temp)) {
-	  *bufptr = '\0';
-
+        if (!islower(*temp)) 
+        {
+          *bufptr = '\0';
           bufptr = buf;
 
-	  if (bsearch(&bufptr, code_types,
+          if (current != 'D' && bsearch(&bufptr, code_types,
 	              sizeof(code_types) / sizeof(code_types[0]),
-		      sizeof(code_types[0]), compare_keywords)) {
-	    while (text < temp) {
-	      *style++ = 'F';
-	      text ++;
-	      length --;
-	      col ++;
-	    }
-
-	    text --;
-	    length ++;
-	    last = 1;
-	    continue;
-	  } else if (bsearch(&bufptr, code_keywords,
+		      sizeof(code_types[0]), compare_keywords)) 
+          {
+            while (text < temp) 
+            {
+              *style++ = 'F';
+              text ++;
+              length --;
+              col ++;
+            }
+            text --;
+            length ++;
+            last = 1;
+            continue;
+          } 
+          else if (current != 'D' && bsearch(&bufptr, code_keywords,
 	                     sizeof(code_keywords) / sizeof(code_keywords[0]),
-		             sizeof(code_keywords[0]), compare_keywords)) {
-	    while (text < temp) {
-	      *style++ = 'G';
-	      text ++;
-	      length --;
-	      col ++;
-	    }
-
-	    text --;
-	    length ++;
-	    last = 1;
-	    continue;
-	  }
-	}
+		             sizeof(code_keywords[0]), compare_keywords)) 
+          {
+            while (text < temp) 
+            {
+              *style++ = 'G';
+              text ++;
+              length --;
+              col ++;
+            }
+            text --;
+            length ++;
+            last = 1;
+            continue;
+          }
+        }
       }
-    } else if (current == 'C' && strncmp(text, "*/", 2) == 0) {
+    } 
+    else if (current == 'C' && strncmp(text, "*/", 2) == 0) 
+    {
       // Close a C comment...
       *style++ = current;
       *style++ = current;
@@ -419,36 +501,56 @@ style_parse(const char *text,
       current = 'A';
       col += 2;
       continue;
-    } else if (current == 'D') {
+    } 
+    else if (current == 'D') 
+    {
       // Continuing in string...
-      if (strncmp(text, "\\\"", 2) == 0) {
+      if (strncmp(text, "\\\"", 2) == 0) 
+      {
         // Quoted end quote...
-	*style++ = current;
-	*style++ = current;
-	text ++;
-	length --;
-	col += 2;
-	continue;
-      } else if (*text == '\"') {
+        *style++ = current;
+        *style++ = current;
+        text ++;
+        length --;
+        col += 2;
+        continue;
+      } 
+      else if (*text == '\"') 
+      {
         // End quote...
-	*style++ = current;
-	col ++;
-	current = 'A';
-	continue;
+        *style++ = current;
+        col ++;
+        current = 'A';
+        continue;
       }
     }
 
     // Copy style info...
-    if (current == 'A' && (*text == '{' || *text == '}')) *style++ = 'G';
-    else *style++ = current;
+    if (current == 'A' && 
+         (*text == '{' || *text == '}'
+       || *text == '(' || *text == ')'
+       || *text == '[' || *text == ']'
+         )) *style++ = 'G';
+    else if (current == 'A' && 
+              (
+                (isgraph(*text) && !isalnum(*text)) ||
+                ispunct(*text)
+              )
+            )
+      *style++ = 'H';
+    else if (current == 'A' && isdigit(*text))
+      *style++ = 'I';
+    else 
+      *style++ = current;
     col ++;
 
     last = isalnum(*text) || *text == '.';
 
-    if (*text == '\n') {
+    if (isspace(*text) && current != 'C')
+    {
       // Reset column and possibly reset the style
-      col = 0;
-      if (current == 'B' || current == 'E') current = 'A';
+      if (*text == '\n') col = 0;
+      if (current == 'B' || current == 'E' || current == 'H' || current == 'I') current = 'A';
     }
   }
 }
@@ -1035,7 +1137,7 @@ int main(int argc, char **argv) {
 */
 
 //
-// End of "$Id: editor.cpp,v 1.5 2003-06-08 23:01:07 ayalpinkus Exp $".
+// End of "$Id: editor.cpp,v 1.6 2003-06-09 02:14:07 ayalpinkus Exp $".
 //
 
 
@@ -1078,7 +1180,7 @@ int main(int argc, char **argv) {
 #if 0 //TODO remove, older editor
 
 //
-// "$Id: editor.cpp,v 1.5 2003-06-08 23:01:07 ayalpinkus Exp $"
+// "$Id: editor.cpp,v 1.6 2003-06-09 02:14:07 ayalpinkus Exp $"
 //
 // A simple text editor program for the Fast Light Tool Kit (FLTK).
 //
@@ -1745,7 +1847,7 @@ void editor_add_items(Fl_Group* o,int minx,int miny,int width, int height, int f
 
 
 //
-// End of "$Id: editor.cpp,v 1.5 2003-06-08 23:01:07 ayalpinkus Exp $".
+// End of "$Id: editor.cpp,v 1.6 2003-06-09 02:14:07 ayalpinkus Exp $".
 //
 
 #endif

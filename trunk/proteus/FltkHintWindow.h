@@ -14,7 +14,7 @@ public:
     void AddLine(LispCharPtr aText);
     void AddDescription(LispCharPtr aText);
     virtual FL_EXPORT void draw(int x, int y);
-private:
+public:
     LispCharPtr iText[MAX_HINT_LINES];
     int iNrLines;
 
