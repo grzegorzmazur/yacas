@@ -4,7 +4,6 @@ EXTRA_DIST = \
 	forthplugin.cc    \
 	forthpluginapi.stub                 \
 	forth.cc    forthplugin.h     \
-	makefile.plugin                     \
 	forth.h                             
 
 

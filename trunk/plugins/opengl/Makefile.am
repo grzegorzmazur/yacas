@@ -3,7 +3,6 @@
 EXTRA_DIST = \
 	glutcode.cc            \
 	glutcode.h             \
-	makefile.plugin        \
 	new                    \
 	openglapi.stub         \
 	testscript             \
