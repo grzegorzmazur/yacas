@@ -452,7 +452,7 @@ P(n,a,b,x) = (2n + a + b - 1) * ---------------------------- P(n-1,a,b,x)
 <p> </p>
 Legendre polynomials are a special case of Jacobi polynomials with the
 specific parameter values a = b = 0. So they form an orthogonal system
-with respect to the weight function identically equal to one on the
+with respect to the weight function identically equal to 1 on the
 interval [-1,1], and they satisfy the recurrence relations: " :
 HtmlCommand("
 P(0,x) = 1
@@ -504,7 +504,7 @@ In> OrthoP(3, 1, 2, 0.5);
 Out> ");
 
 Topical() "See Also";
-SeeAlso({"OrthoG", "OrthoPoly"});
+SeeAlso({"OrthoPSum", "OrthoG", "OrthoPoly"});
 
 
 
@@ -545,7 +545,7 @@ In> OrthoH(6, 0.5);
 Out> 31;");
 
 Topical() "See Also";
-SeeAlso({"OrthoPoly"});
+SeeAlso({"OrthoHSum", "OrthoPoly"});
 
 
 
@@ -586,13 +586,13 @@ HtmlTerm("OrthoPoly") : ".";
 
 Topical() "Examples";
 Text() HtmlCommand("
-IIn> OrthoG(5, 1, x);
+In> OrthoG(5, 1, x);
 Out> x*((32*x^2-32)*x^2+6);
 In> OrthoG(5, 2, -0.5);
 Out> 2;");
 
 Topical() "See Also";
-SeeAlso({"OrthoP", "OrthoT", "OrthoU", "OrthoPoly"});
+SeeAlso({"OrthoP", "OrthoT", "OrthoU", "OrthoGSum", "OrthoPoly"});
 
 
 
@@ -638,7 +638,7 @@ In> OrthoL(3, 1/2, 0.25);
 Out> 1.2005208334;");
 
 Topical() "See Also";
-SeeAlso({"OrthoPoly"});
+SeeAlso({"OrthoLSum", "OrthoPoly"});
 
 
 
@@ -680,7 +680,7 @@ In> OrthoT(10, 0.9);
 Out> -0.2007474688;");
 
 Topical() "See Also";
-SeeAlso({"OrthoG", "OrthoU", "OrthoPoly"});
+SeeAlso({"OrthoG", "OrthoU", "OrthoTSum", "OrthoPoly"});
 
 
 
@@ -698,7 +698,7 @@ x - point to evaluate polynomial at";
 Topical() "Description";
 Text() "
 This function evaluates the Tschebyscheff polynomial of the second kind
-of degree \"n\" at the point \"x\". The name is also spelled Chebyshev.
+of degree \"n\" at the point \"x\". (The name is also spelled Chebyshev.)
 <p> </p>
 The Tschebyscheff polynomials of the second kind are orthogonal with
 respect to the weight function (1-x^2)^(1/2). Hence they are a
@@ -722,8 +722,53 @@ In> OrthoU(10, 0.9);
 Out> -2.2234571776;");
 
 Topical() "See Also";
-SeeAlso({"OrthoG", "OrthoT", "OrthoPoly"});
+SeeAlso({"OrthoG", "OrthoT", "OrthoUSum", "OrthoPoly"});
 
+CmdDescription("OrthoPSum", "Sums of series of Legendre and Jacobi polynomials");
+CmdDescription("OrthoHSum", "Sums of series of Hermite polynomials");
+CmdDescription("OrthoLSum", "Sums of series of Laguerre polynomials");
+CmdDescription("OrthoGSum", "Sums of series of Gegenbauer polynomials");
+CmdDescription("OrthoTSum", "Sums of series of Tschebyscheff polynomials of first kind");
+CmdDescription("OrthoUSum", "Sums of series of Tschebyscheff polynomials of second kind");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "OrthoPSum(c, x); <br>
+OrthoPSum(c, a, b, x); <br>
+OrthoHSum(c, x); <br>
+OrthoLSum(c, a, x); <br>
+OrthoGSum(c, a, x); <br>
+OrthoTSum(c, x); <br>
+OrthoUSum(c, x);";
+
+Topical() "Parameters";
+Text() "
+c - list of coefficients <br>
+a, b - parameters of specific polynomials <br>
+x - point to evaluate polynomial at <br>
+";
+
+
+Topical() "Description";
+Text() "
+These functions evaluate the sum of series of orthogonal polynomials at the point \"x\", with given list of coefficients \"c\" of the series and fixed polynomial parameters \"a\", \"b\" (if applicable).
+<p> </p>
+The list of coefficients starts with the lowest order, so that for example";
+Text() HtmlCommand("
+OrthoLSum(c, a, x) = c[1] L_0(a,x) + c[2] L_1(a,x) + ... + c[N] L_{N-1}(a,x).
+");
+Text() "See pages for specific orthogonal polynomials for more details. <p> </p>
+Most of the work is performed by the internal function " :
+HtmlTerm("OrthoPolySum") : ". The individual polynomials entering the series are not computed, only the sum of the series.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Expand(OrthoPSum({1,0,0,1/7,1/8}, 3/2, 2/3, x));
+Out> (7068985*x^4)/3981312+(1648577*x^3)/995328+(-3502049*x^2)/4644864+(-4372969*x)/6967296+28292143/27869184;
+");
+
+Topical() "See Also";
+SeeAlso({"OrthoP", "OrthoG", "OrthoH", "OrthoL", "OrthoT", "OrthoU", "OrthoPolySum"});
 
 
 CmdDescription("OrthoPoly", 
@@ -756,16 +801,47 @@ is a pure function that takes two arguments: the order \"n\" and the
 extra parameters \"p\", and returns a list of two lists: the first list
 contains the coefficients {A,B} of the n=1 polynomial, i.e. \"A+B*x\";
 the second list contains the coefficients {A,B,C} in the recurrence
-relation, i.e. \"P_n = (A+B*x)*P_{n-1}+C*P_{n-2}\". (So far there are
-only 3 coefficients in the second list, i.e. no \"C+D*x\", but we don't
-want to be limited.)
+relation, i.e. \"P_n = (A+B*x)*P_{n-1}+C*P_{n-2}\". (There are
+only 3 coefficients in the second list, because none of the polynomials use \"C+D*x\" instead of \"C\" in the recurrence relation. This is assumed in the implementation!)
 <p> </p>
-If the argument \"x\" is numeric, the function " :
+If the argument \"x\" is numerical, the function " :
 HtmlTerm("OrthoPolyNumeric") : " is called. Otherwise, the function "
 : HtmlTerm("OrthoPolyCoeffs") : " computes a list of coefficients, and
-" : HtmlTerm("EvaluateHornerScheme") : " converts this lists into a
-polynomial.";
+" : HtmlTerm("EvaluateHornerScheme") : " converts this list into a
+polynomial expression.";
 
 Topical() "See Also";
-SeeAlso({"OrthoP", "OrthoG", "OrthoH", "OrthoL", "OrthoT", "OrthoU"});
+SeeAlso({"OrthoP", "OrthoG", "OrthoH", "OrthoL", "OrthoT", "OrthoU", "OrthoPolySum"});
+
+
+CmdDescription("OrthoPolySum", 
+               "Internal function for computing series of orthogonal polynomials");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "OrthoPolySum(name, c, par, x)";
+
+Topical() "Parameters";
+Text() "
+name - string containing name of orthogonal family <br>
+c - list of coefficients <br>
+par - list of values for the parameters <br>
+x - point to evaluate at";
+
+Topical() "Description";
+Text() "
+This function is used internally to compute series of orthogonal
+polynomials. It is similar to the function " : HtmlTerm("OrthoPoly") : " and returns the result of the summation of series of polynomials from the family
+\"name\" with parameters \"par\" at the point \"x\", where \"c\" is the list of coefficients of the series.
+<p> </p>
+The algorithm used to compute the series without first computing the individual polynomials is the Clenshaw-Smith recurrence scheme. See: Yudell L. Luke. <i>Mathematical functions and their approximations.</i> Academic Press, N. Y., 1975.
+<p> </p>
+If the argument \"x\" is numerical, the function " :
+HtmlTerm("OrthoPolySumNumeric") : " is called. Otherwise, the function "
+: HtmlTerm("OrthoPolySumCoeffs") : " computes the list of coefficients of the resulting polynomial, and
+" : HtmlTerm("EvaluateHornerScheme") : " converts this list into a
+polynomial expression.";
+
+Topical() "See Also";
+SeeAlso({"OrthoPSum", "OrthoGSum", "OrthoHSum", "OrthoLSum", "OrthoTSum", "OrthoUSum", "OrthoPoly"});
 

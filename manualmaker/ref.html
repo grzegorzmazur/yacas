@@ -5182,8 +5182,29 @@ OrthoT
 , <A HREF="refchapter6.html#OrthoU" TARGET="Chapters">
 OrthoU
 </A>
+, <A HREF="refchapter6.html#OrthoPSum" TARGET="Chapters">
+OrthoPSum
+</A>
+, <A HREF="refchapter6.html#OrthoHSum" TARGET="Chapters">
+OrthoHSum
+</A>
+, <A HREF="refchapter6.html#OrthoLSum" TARGET="Chapters">
+OrthoLSum
+</A>
+, <A HREF="refchapter6.html#OrthoGSum" TARGET="Chapters">
+OrthoGSum
+</A>
+, <A HREF="refchapter6.html#OrthoTSum" TARGET="Chapters">
+OrthoTSum
+</A>
+, <A HREF="refchapter6.html#OrthoUSum" TARGET="Chapters">
+OrthoUSum
+</A>
 , <A HREF="refchapter6.html#OrthoPoly" TARGET="Chapters">
 OrthoPoly
+</A>
+, <A HREF="refchapter6.html#OrthoPolySum" TARGET="Chapters">
+OrthoPolySum
 </A>
 .
 <H1>
@@ -5780,7 +5801,7 @@ P(n,a,b,x) = (2n + a + b - 1) * ---------------------------- P(n-1,a,b,x)
 <p> </p>
 Legendre polynomials are a special case of Jacobi polynomials with the
 specific parameter values a = b = 0. So they form an orthogonal system
-with respect to the weight function identically equal to one on the
+with respect to the weight function identically equal to 1 on the
 interval [-1,1], and they satisfy the recurrence relations: <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 P(0,x) = 1
@@ -5838,7 +5859,10 @@ Out> </PRE></TR>
 <H5>
 See Also:
 </H5>
-<A HREF="ref.html#OrthoG" TARGET="Chapters">
+<A HREF="ref.html#OrthoPSum" TARGET="Chapters">
+OrthoPSum
+</A>
+, <A HREF="ref.html#OrthoG" TARGET="Chapters">
 OrthoG
 </A>
 , <A HREF="ref.html#OrthoPoly" TARGET="Chapters">
@@ -5894,7 +5918,10 @@ Out> 31;</PRE></TR>
 <H5>
 See Also:
 </H5>
-<A HREF="ref.html#OrthoPoly" TARGET="Chapters">
+<A HREF="ref.html#OrthoHSum" TARGET="Chapters">
+OrthoHSum
+</A>
+, <A HREF="ref.html#OrthoPoly" TARGET="Chapters">
 OrthoPoly
 </A>
 .<A NAME="OrthoG">
@@ -5944,7 +5971,7 @@ Examples:
 </H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
-IIn> OrthoG(5, 1, x);
+In> OrthoG(5, 1, x);
 Out> x*((32*x^2-32)*x^2+6);
 In> OrthoG(5, 2, -0.5);
 Out> 2;</PRE></TR>
@@ -5961,6 +5988,9 @@ OrthoT
 </A>
 , <A HREF="ref.html#OrthoU" TARGET="Chapters">
 OrthoU
+</A>
+, <A HREF="ref.html#OrthoGSum" TARGET="Chapters">
+OrthoGSum
 </A>
 , <A HREF="ref.html#OrthoPoly" TARGET="Chapters">
 OrthoPoly
@@ -6020,7 +6050,10 @@ Out> 1.2005208334;</PRE></TR>
 <H5>
 See Also:
 </H5>
-<A HREF="ref.html#OrthoPoly" TARGET="Chapters">
+<A HREF="ref.html#OrthoLSum" TARGET="Chapters">
+OrthoLSum
+</A>
+, <A HREF="ref.html#OrthoPoly" TARGET="Chapters">
 OrthoPoly
 </A>
 .<A NAME="OrthoT">
@@ -6080,6 +6113,9 @@ OrthoG
 , <A HREF="ref.html#OrthoU" TARGET="Chapters">
 OrthoU
 </A>
+, <A HREF="ref.html#OrthoTSum" TARGET="Chapters">
+OrthoTSum
+</A>
 , <A HREF="ref.html#OrthoPoly" TARGET="Chapters">
 OrthoPoly
 </A>
@@ -6104,7 +6140,7 @@ Description:
 </H5>
 
 This function evaluates the Tschebyscheff polynomial of the second kind
-of degree "n" at the point "x". The name is also spelled Chebyshev.
+of degree "n" at the point "x". (The name is also spelled Chebyshev.)
 <p> </p>
 The Tschebyscheff polynomials of the second kind are orthogonal with
 respect to the weight function (1-x^2)^(1/2). Hence they are a
@@ -6140,8 +6176,114 @@ OrthoG
 , <A HREF="ref.html#OrthoT" TARGET="Chapters">
 OrthoT
 </A>
+, <A HREF="ref.html#OrthoUSum" TARGET="Chapters">
+OrthoUSum
+</A>
 , <A HREF="ref.html#OrthoPoly" TARGET="Chapters">
 OrthoPoly
+</A>
+.<A NAME="OrthoPSum">
+
+</A>
+<H3>
+<HR>OrthoPSum -- Sums of series of Legendre and Jacobi polynomials
+</H3>
+<A NAME="OrthoHSum">
+
+</A>
+<H3>
+<HR>OrthoHSum -- Sums of series of Hermite polynomials
+</H3>
+<A NAME="OrthoLSum">
+
+</A>
+<H3>
+<HR>OrthoLSum -- Sums of series of Laguerre polynomials
+</H3>
+<A NAME="OrthoGSum">
+
+</A>
+<H3>
+<HR>OrthoGSum -- Sums of series of Gegenbauer polynomials
+</H3>
+<A NAME="OrthoTSum">
+
+</A>
+<H3>
+<HR>OrthoTSum -- Sums of series of Tschebyscheff polynomials of first kind
+</H3>
+<A NAME="OrthoUSum">
+
+</A>
+<H3>
+<HR>OrthoUSum -- Sums of series of Tschebyscheff polynomials of second kind
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+OrthoPSum(c, x); <br>
+OrthoPSum(c, a, b, x); <br>
+OrthoHSum(c, x); <br>
+OrthoLSum(c, a, x); <br>
+OrthoGSum(c, a, x); <br>
+OrthoTSum(c, x); <br>
+OrthoUSum(c, x);
+<H5>
+Parameters:
+</H5>
+
+c - list of coefficients <br>
+a, b - parameters of specific polynomials <br>
+x - point to evaluate polynomial at <br>
+
+<H5>
+Description:
+</H5>
+
+These functions evaluate the sum of series of orthogonal polynomials at the point "x", with given list of coefficients "c" of the series and fixed polynomial parameters "a", "b" (if applicable).
+<p> </p>
+The list of coefficients starts with the lowest order, so that for example
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+OrthoLSum(c, a, x) = c[1] L_0(a,x) + c[2] L_1(a,x) + ... + c[N] L_{N-1}(a,x).
+</PRE></TR>
+</TABLE>
+
+See pages for specific orthogonal polynomials for more details. <p> </p>
+Most of the work is performed by the internal function <B><TT>OrthoPolySum</TT></B>. The individual polynomials entering the series are not computed, only the sum of the series.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Expand(OrthoPSum({1,0,0,1/7,1/8}, 3/2, 2/3, x));
+Out> (7068985*x^4)/3981312+(1648577*x^3)/995328+(-3502049*x^2)/4644864+(-4372969*x)/6967296+28292143/27869184;
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#OrthoP" TARGET="Chapters">
+OrthoP
+</A>
+, <A HREF="ref.html#OrthoG" TARGET="Chapters">
+OrthoG
+</A>
+, <A HREF="ref.html#OrthoH" TARGET="Chapters">
+OrthoH
+</A>
+, <A HREF="ref.html#OrthoL" TARGET="Chapters">
+OrthoL
+</A>
+, <A HREF="ref.html#OrthoT" TARGET="Chapters">
+OrthoT
+</A>
+, <A HREF="ref.html#OrthoU" TARGET="Chapters">
+OrthoU
+</A>
+, <A HREF="ref.html#OrthoPolySum" TARGET="Chapters">
+OrthoPolySum
 </A>
 .<A NAME="OrthoPoly">
 
@@ -6176,13 +6318,12 @@ is a pure function that takes two arguments: the order "n" and the
 extra parameters "p", and returns a list of two lists: the first list
 contains the coefficients {A,B} of the n=1 polynomial, i.e. "A+B*x";
 the second list contains the coefficients {A,B,C} in the recurrence
-relation, i.e. "P_n = (A+B*x)*P_{n-1}+C*P_{n-2}". (So far there are
-only 3 coefficients in the second list, i.e. no "C+D*x", but we don't
-want to be limited.)
+relation, i.e. "P_n = (A+B*x)*P_{n-1}+C*P_{n-2}". (There are
+only 3 coefficients in the second list, because none of the polynomials use "C+D*x" instead of "C" in the recurrence relation. This is assumed in the implementation!)
 <p> </p>
-If the argument "x" is numeric, the function <B><TT>OrthoPolyNumeric</TT></B> is called. Otherwise, the function <B><TT>OrthoPolyCoeffs</TT></B> computes a list of coefficients, and
-<B><TT>EvaluateHornerScheme</TT></B> converts this lists into a
-polynomial.
+If the argument "x" is numerical, the function <B><TT>OrthoPolyNumeric</TT></B> is called. Otherwise, the function <B><TT>OrthoPolyCoeffs</TT></B> computes a list of coefficients, and
+<B><TT>EvaluateHornerScheme</TT></B> converts this list into a
+polynomial expression.
 <H5>
 See Also:
 </H5>
@@ -6203,6 +6344,64 @@ OrthoT
 </A>
 , <A HREF="ref.html#OrthoU" TARGET="Chapters">
 OrthoU
+</A>
+, <A HREF="ref.html#OrthoPolySum" TARGET="Chapters">
+OrthoPolySum
+</A>
+.<A NAME="OrthoPolySum">
+
+</A>
+<H3>
+<HR>OrthoPolySum -- Internal function for computing series of orthogonal polynomials
+</H3>
+Standard math library<br><H5>
+Calling sequence:
+</H5>
+OrthoPolySum(name, c, par, x)
+<H5>
+Parameters:
+</H5>
+
+name - string containing name of orthogonal family <br>
+c - list of coefficients <br>
+par - list of values for the parameters <br>
+x - point to evaluate at
+<H5>
+Description:
+</H5>
+
+This function is used internally to compute series of orthogonal
+polynomials. It is similar to the function <B><TT>OrthoPoly</TT></B> and returns the result of the summation of series of polynomials from the family
+"name" with parameters "par" at the point "x", where "c" is the list of coefficients of the series.
+<p> </p>
+The algorithm used to compute the series without first computing the individual polynomials is the Clenshaw-Smith recurrence scheme. See: Yudell L. Luke. <i>Mathematical functions and their approximations.</i> Academic Press, N. Y., 1975.
+<p> </p>
+If the argument "x" is numerical, the function <B><TT>OrthoPolySumNumeric</TT></B> is called. Otherwise, the function <B><TT>OrthoPolySumCoeffs</TT></B> computes the list of coefficients of the resulting polynomial, and
+<B><TT>EvaluateHornerScheme</TT></B> converts this list into a
+polynomial expression.
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#OrthoPSum" TARGET="Chapters">
+OrthoPSum
+</A>
+, <A HREF="ref.html#OrthoGSum" TARGET="Chapters">
+OrthoGSum
+</A>
+, <A HREF="ref.html#OrthoHSum" TARGET="Chapters">
+OrthoHSum
+</A>
+, <A HREF="ref.html#OrthoLSum" TARGET="Chapters">
+OrthoLSum
+</A>
+, <A HREF="ref.html#OrthoTSum" TARGET="Chapters">
+OrthoTSum
+</A>
+, <A HREF="ref.html#OrthoUSum" TARGET="Chapters">
+OrthoUSum
+</A>
+, <A HREF="ref.html#OrthoPoly" TARGET="Chapters">
+OrthoPoly
 </A>
 .<p>  </P><HR><A NAME="c7">
 
