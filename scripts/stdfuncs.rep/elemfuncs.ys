@@ -17,10 +17,17 @@
 // real powers:
 20 # MathPower(_x, _y) <-- MathExp(MathMultiply(y,MathLn(x)));
 
+/// MathPower(x,y,op): cost functions.
+10 # MathPower(_x, y_IsInteger, "+") <-- 2*CountBits(y);
+10 # MathPower(_x, y_IsInteger, "1") <-- 8*CountBits(y);
+20 # MathPower(_x, _y, _op) <-- 0;
+
+
 /// MathSqrt(x).
 /// Compute square root(x) with nonnegative x.
 10 # MathSqrt(0) <-- 0;
-20 # MathSqrt(x_IsInteger) <-- BisectSqrt(x);
+// BisectSqrt() works only on integers
+//20 # MathSqrt(x_IsInteger) <-- BisectSqrt(x);
 30 # MathSqrt(x_IsPositiveNumber) <-- x*NewtonNum({{r}, r+r*(1-x*r^2)/2}, FastPower(x,-0.5), 4, 2);
 
 //{BisectSqrt(N)} computes the integer part of $ Sqrt(N) $ for integer $N$.

@@ -536,9 +536,11 @@ The integer modulus {n} is a big number.
 	int sign_of_x = x.Sign();
 *	Obtain
 the "bit count" of the number {x} (more precisely, the integer part of the binary logarithm of the absolute value of {x}).
-For integers, this function counts the significant bits.
+For integers, this function counts the significant bits, i.e. the number of bits needed to represent the integer.
+(The bit count of 4 is 3.)
 For floating-point numbers, this function should return the binary exponent of the number (with sign), like the integer output of the standard C function {frexp}.
 Result is an integer number (a "big number").
+More formally: if $n=BitCount(x)$, and $x!=0$, then $1/2 <= x*2^(-n) < 1$.
 (Optimization of the binary logarithm.)
 	x.BitCount(y);
 *	Bit-shift the number (multiply or divide by the $n$-th power of $2$), {x := y >> n}, {x := y << n}.
