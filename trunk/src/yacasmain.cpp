@@ -38,6 +38,9 @@
 #include <sys/stat.h>
 #endif
 
+#ifdef HAVE_SIGNAL_H
+#include <signal.h>
+#endif
 
 #ifdef WIN32
   #define PATH_SEPARATOR '\\'
@@ -57,7 +60,7 @@
   #include "win32commandline.h"      
   #define FANCY_COMMAND_LINE CWin32CommandLine
   #define SCRIPT_DIR ""
-  #define PLATFORM_OS "\"Win32\""
+  #define PLATFORM_OS "Win32"
 #endif
 
 #include "stdcommandline.h"
@@ -79,7 +82,6 @@
 //#define PROMPT_SHOW_FREE_MEMORY
 
 #ifdef SUPPORT_SERVER
-#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -166,7 +168,7 @@ LispBoolean Busy()
 void LispPlatformOS(LispEnvironment& aEnvironment, LispPtr& aResult,
               LispPtr& aArguments)
 {
-  aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(PLATFORM_OS)));
+  aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp("\"" PLATFORM_OS "\"")));
 }
 
 void LispExit(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -644,7 +646,11 @@ void LoadYacas(LispOutput* aOutput=NULL)
     fflush(stdout);
 }
 
+#ifdef SIGHANDLER_NO_ARGS
+void InterruptHandler(void)
+#else
 void InterruptHandler(int errupt)
+#endif
 {
     printf("^C pressed\n");
     (*yacas)()().iEvalDepth = (*yacas)()().iMaxEvalDepth+100;
@@ -672,7 +678,11 @@ void BusErrorHandler(int errupt)
 CYacas* clientToStop = NULL;
 
 #ifndef WIN32
+#ifdef SIGHANDLER_NO_ARGS
+void stopClient(void)
+#else
 void stopClient(int sig)
+#endif
 #else
 VOID CALLBACK stopClient(LPVOID lpArgToCompletionRoutine, DWORD dwTimerLowValue, DWORD dwTimerHighValue)
 #endif
