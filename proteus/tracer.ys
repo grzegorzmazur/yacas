@@ -1,0 +1,90 @@
+
+/* example using javascript for outputting a trace of an execution.
+ * NiceTraceExp does the same as TraceExp, but exporting the result
+ * as a html file with an expandable list (using javascript).
+ * NiceTraceRule does the same, but for TraceRule.
+ *
+ * You can use this file standalone by typing Load("tracejscript"),
+ * calling one of the NiceTrace.. functions and then starting up
+ * netscape with trace.html.
+ */
+
+
+Indent() :=
+[
+  Local(result,i);
+  result:="";
+  For(i:=Length(traceStack),i>=1,i--) [result := result:"    ";];
+  result;
+];
+Last(list) := list[Length(list)];
+Dump():=
+[
+  Local(head);
+  head := Head(traceStack);
+  ToFile(TraceFile(traceFile))
+  [
+    ForEach(item,head)
+    [
+      Echo({item[1]});
+      Echo({item[2]});
+    ];
+    Echo({"end"});
+  ];
+];
+
+TrEnter(_expr) <--
+[
+  DestructiveAppend(traceStack[1],{-1,indent:"ENTER: ":expr});
+  traceStack := {}:traceStack;
+  indent := Indent();
+];
+HoldArg("TrEnter",arg1);
+
+
+TrLeave(_expr,_result) <--
+[
+  if (Length(Head(traceStack)) > 0)
+  [
+    Dump();
+    traceStack := Tail(traceStack);
+    Last(traceStack[1])[1] := traceFile;
+    traceFile++;
+  ]
+  else
+  [
+    traceStack := Tail(traceStack);
+  ];
+  indent := Indent();
+  DestructiveAppend(traceStack[1],{-1,indent:"LEAVE: ":result});
+];
+HoldArg("TrLeave",arg1);
+HoldArg("TrLeave",arg2);
+
+
+TraceFile(_i) <-- ("exp.":String(i));
+
+ThunkToTracer() <--
+[
+  traceFile := 1;
+  traceStack := {{}};
+  indent := Indent();
+  Load("trace.tmp");
+  While(Length(traceStack)>1) TrLeave("STOPPED","STOPPED");
+  Dump();
+  traceStack := {{{traceFile,"BEGIN"},{-1,"END"}}};
+  traceFile := 0;
+  Dump();
+];
+
+
+NiceTraceExp(_expr) <--
+[
+  Local(res);
+  res:=ToFile("trace.tmp")Eval(UnList({TraceExp,expr}));
+  ThunkToTracer();
+  res;
+];
+HoldArg("NiceTraceExp",arg1);
+
+
