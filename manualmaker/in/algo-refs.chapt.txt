@@ -9,6 +9,11 @@ S. Ahlgren and K. Ono,
 <i>Addition and counting: the arithmetic of partitions</i>,
 Notices of the AMS 48 (2001), p. 978.
 
+[Bailey <i>et al.</i> 1997]
+D. H. Bailey, P. B. Borwein, and S. Plouffe,
+<i>On The Rapid Computation of Various Polylogarithmic Constants</i>,
+Math. Comp. 66 (1997), p. 903.
+
 [Bateman <i>et al.</i> 1953]
 Bateman and Erdelyi,
 <i>Higher Transcendental Functions</i>, McGraw-Hill, 1953.
