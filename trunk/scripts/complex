@@ -23,29 +23,29 @@ IsNotComplex(x) := Not(IsComplex(x));
 /* Addition */
 
 110 # Complex(_r1,_i1) + Complex(_r2,_i2) <-- Complex(r1+r2,i1+i2);
-111 # Complex(_r,_i) + x_IsNumber <-- Complex(r+x,i);
-111 # x_IsNumber + Complex(_r,_i) <-- Complex(r+x,i);
+111 # Complex(_r,_i) + x_IsConstant <-- Complex(r+x,i);
+111 # x_IsConstant + Complex(_r,_i) <-- Complex(r+x,i);
  
 110 # - Complex(_r,_i) <-- Complex(-r,-i);
 
-110 # Complex(_r,_i) - x_IsNumber <-- Complex(r-x,i);
-110 # x_IsNumber - Complex(_r,_i) <-- Complex((-r)+x,-i);
+110 # Complex(_r,_i) - x_IsConstant <-- Complex(r-x,i);
+110 # x_IsConstant - Complex(_r,_i) <-- Complex((-r)+x,-i);
 111 # Complex(_r1,_i1) - Complex(_r2,_i2) <-- Complex(r1-r2,i1-i2);
 
 /* Multiplication */
 110 # Complex(_r1,_i1) * Complex(_r2,_i2) <--
     Complex(r1*r2-i1*i2,r1*i2+r2*i1);
-111 # Complex(_r,_i) * y_IsNumber <-- Complex(r*y,i*y);
-111 # y_IsNumber * Complex(_r,_i) <-- Complex(r*y,i*y);
+111 # Complex(_r,_i) * y_IsConstant <-- Complex(r*y,i*y);
+111 # y_IsConstant * Complex(_r,_i) <-- Complex(r*y,i*y);
 
-230 # Complex(_r,_i) * (y_IsNumber / _z) <-- (Complex(r*y,i*y))/z;
-230 # (y_IsNumber / _z) * Complex(_r,_i) <-- (Complex(r*y,i*y))/z;
-
-
-110 # x_IsNumber / Complex(_r,_i) <-- (x*Conjugate(Complex(r,i)))/(r^2+i^2);
+230 # Complex(_r,_i) * (y_IsConstant / _z) <-- (Complex(r*y,i*y))/z;
+230 # (y_IsConstant / _z) * Complex(_r,_i) <-- (Complex(r*y,i*y))/z;
 
 
-111 # Complex(_r,_i) / y_IsNumber <-- Complex(r/y,i/y);
+110 # x_IsConstant / Complex(_r,_i) <-- (x*Conjugate(Complex(r,i)))/(r^2+i^2);
+
+
+111 # Complex(_r,_i) / y_IsConstant <-- Complex(r/y,i/y);
 
 110 # (_x ^ Complex(_r,_i)) <-- Exp(Complex(r,i)*Ln(x));
 

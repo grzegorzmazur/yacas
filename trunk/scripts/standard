@@ -355,16 +355,20 @@ Function("TableForm",{list})
 400 # 0 / _x <-- 0;
 
 /* Faster version of raising power to 0.5 */
-50 # (x_IsNumber ^ (1/2))_(Numeric) <-- Sqrt(x);
-50 # (x_IsNumber ^ (1/2))_IsInteger(MathSqrt(x)) <-- MathSqrt(x);
+50 # (x_IsPositiveNumber ^ (1/2))_(Numeric) <-- Sqrt(x);
+50 # (x_IsPositiveNumber ^ (1/2))_IsInteger(MathSqrt(x)) <-- MathSqrt(x);
 59 # _x ^ 1 <-- x;
 59 # 1 ^ _n <-- 1;
 59 # 0 ^ 0 <-- 1;
 60 # 0 ^ n_IsRationalOrNumber <-- 0;
 
 /* Regular raising to the power. */
-61 # x_IsNumber ^ y_IsPositiveNumber <-- MathPower(x,y);
-61 # x_IsNumber ^ y_IsNegativeNumber <-- (1/MathPower(x,-y));
+61 # x_IsPositiveNumber ^ y_IsPositiveNumber <-- MathPower(x,y);
+61 # x_IsPositiveNumber ^ y_IsNegativeNumber <-- (1/MathPower(x,-y));
+
+61 # x_IsNegativeNumber ^ y_IsRationalOrNumber <-- Exp(y*Ln(x));
+
+
 70  # (_x ^ m_IsRationalOrNumber) ^ n_IsRationalOrNumber <-- x^(n*m);
 80 # x_IsRationalOrNumber ^ n_IsPositiveInteger <-- x*x^(n-1);
 
