@@ -568,3 +568,24 @@ ToLowerCase(string) :=
 	For(i:=1, i<=Length(string), i++) result := result : If(UCStrings[string[i]] != Empty, UCStrings[string[i]], string[i]);
 	result;
 ];
+
+// inline Yacas code
+DocEval(x) :=
+[
+	Local(result);
+	result:=Eval(x);	// this already prints anything that x printed
+	
+	If(
+		result = True,	// if the expression resulted in True, do not print "True"
+		True,
+		// otherwise print result
+		If(
+			IsString(result),
+			WriteString(result),
+			Write(result)
+		)
+	);
+	NewLine();
+];
+
+HoldArgNr("DocEval", 1);

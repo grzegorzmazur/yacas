@@ -5,7 +5,7 @@
 TexCharsToEscape := { "{", "}", "#", "_", "&", "\\", "^", "%", "$", "~"};
 
 Book(x) := [	/* this is the first declaration in a file */
-	WriteString("
+	AddBody("
 \\documentclass[twocolumn,10pt]{report}
 
 \\setlength{\\topmargin}{-1.2in}
@@ -35,16 +35,16 @@ generated on \\today}
 
 // titles of sections are on a separate line to allow the script to catch the "" and not be confused by being inside a {} group
 
-Text(x) := WriteString(x);
-Chapter(x) := WriteString(
+Text(x) := AddBody(x);
+Chapter(x) := AddBody(
 "\\chapter{%
 " : x : "}
 ");
-Section(x) := WriteString(
+Section(x) := AddBody(
 "\\section{%
 " : x : "}
 ");
-SubSection(x) := WriteString(
+SubSection(x) := AddBody(
 "\\subsection*{%
 " : x : "}
 ");
@@ -62,7 +62,7 @@ Enumerate(body) :=
 
 Item(body) := "\\item{" : body : "}";
 
-HtmlNewParagraph() := "
+HtmlNewParagraph() := "%end of paragraph
 
 ";
 
@@ -119,7 +119,7 @@ Bodied("DocumentationComment",60000);
 Bodied("Itemize",2);
 Bodied("Enumerate",2);
 
-TeXFinishUp() := WriteString("
+TeXFinishUp() := AddBody("
 \\end{document}
 ");
 
@@ -146,41 +146,42 @@ TeXMathD(_x, _string) <-- "$$" : TeXForm(x, TeXFormMaxPrec) : string : "$$";
 
 /* stuff for refman */
 
-ChapterIntro(string) := WriteString("
+ChapterIntro(string) := AddBody("
 " : string : "
 ");
 Bodied("ChapterIntro", 60000);
 
-CmdDescription(cmd, desc) := WriteString(
+CmdDescription(cmd, desc) := AddBody(
 "
 \\section{%
 " : HtmlTermHeading(cmd) : " --- " : desc : "}
 ");
 
-StandardLib() := WriteString("
+StandardLib() := AddBody("
 \\begin{flushright}\\small (standard library)\\end{flushright}
 ");
 
-UnixSpecific() := WriteString("
+UnixSpecific() := AddBody("
 \\begin{flushright}\\small (Unix-specific)\\end{flushright}
 ");
 
-MSWinSpecific() := WriteString("
+MSWinSpecific() := AddBody("
 \\begin{flushright}\\small (MS Windows-specific)\\end{flushright}
 ");
 
-MacSpecific() := WriteString("
+MacSpecific() := AddBody("
 \\begin{flushright}\\small (Macintosh-specific)\\end{flushright}
 ");
 
-BuiltIn() := WriteString("
+BuiltIn() := AddBody("
 \\begin{flushright}\\small (\\textsc{Yacas} internal)\\end{flushright}
 ");
 
+// this could in principle also post-process the TeX code, e.g. replace " by `` '' etc., but it's faster to do it in Perl
 AddBody(string) := WriteString(string);
 
 // make SeeAlso print "See also" and do not do the Topical thing
-SeeAlso(list) := WriteString("
+SeeAlso(list) := AddBody("
 \\begin{flushleft}\\textbf{\\small See also:}
 " : PrintList(MapSingle("HtmlTerm", list), ", ")
 : "
@@ -192,7 +193,7 @@ HtmlAnchor(string) := "";
 
 Bodied("HtmlAnchor", 60000);
 Topical(string) := If(string = "See also:", "",
-	WriteString(
+	AddBody(
 "\\begin{flushleft}\\textbf{\\small " : string : "}\\end{flushleft}
 ")
 );
@@ -202,3 +203,24 @@ Bodied("Blurb",60000);
 // special escapes
 Gt() := ">";
 Lt() := "<";
+
+// inline Yacas code
+DocEval(x) :=
+[
+	Local(result);
+	result:=Eval(x);	// this already prints anything that x printed
+	
+	If(
+		result = True,	// if the expression resulted in True, do not print "True"
+		True,
+		// otherwise print result
+		If(
+			IsString(result),
+			WriteString(result),
+			Write(result)
+		)
+	);
+	NewLine();
+];
+
+HoldArgNr("DocEval", 1);
