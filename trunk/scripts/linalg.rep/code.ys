@@ -713,7 +713,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 		ForEach(k, (i+1) .. rowsb )[
 			s:=aug[k][i];
 			ForEach(j, i .. (rowsb+1) )[
-				If( aug[i][i] = 0 )[
+				//If( aug[i][i] = 0 )[
 				aug[k][j] := aug[k][j] - (s/aug[i][i])*aug[i][j];
 				//Echo({"aug[",k,"][",j,"] =", aug[k][j]," - ", 
 				//	aug[k][i],"/",aug[i][i],"*",aug[i][j]," k i =", k,i  });
