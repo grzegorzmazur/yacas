@@ -12,3 +12,5 @@
 *INCLUDE CVS-Howto.chapt
 
 *INCLUDE YacasDocs.chapt
+
+*INCLUDE new.chapt

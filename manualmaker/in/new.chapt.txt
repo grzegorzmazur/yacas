@@ -1,0 +1,208 @@
+		Draft for new reference documentation
+
+*CMD CurrentFile, CurrentLine --- Show current file and line of input
+*CORE
+*CALL
+	CurrentFile()
+	CurrentLine()
+
+*PARMS
+
+none
+
+*DESC
+
+The functions {CurrentFile()} and {CurrentLine()} return a string
+with the file name of the current file, and the current line 
+of input respectively.
+
+These functions are most useful in batch file calculations, where
+there is a need to determine at which line an error occurred. It is
+easy to define a function 
+
+	tst() := Echo({CurrentFile(),CurrentLine()});
+
+which can then be spread out over the input file at various places,
+to see how far the interpreter reaches before an error occurs.
+
+*E.G.
+
+	none
+
+*SEE Echo
+
+
+*CMD Version --- Show version of Yacas
+*CORE
+*CALL
+	Version()
+
+*PARMS
+
+none
+
+*DESC
+
+The function {Version()} returns the version of the Yacas interpreter,
+as a string.
+
+*E.G.
+
+	In> Version()
+	Out> "1.0.48rev3";
+	In> LessThan(Version(), "1.0.47")
+	Out> False;
+	In> GreaterThan(Version(), "1.0.47")
+	Out> True;
+
+The last two calls show that the {LessThan} and {GreaterThan}
+functions can be used for comparing version numbers. This 
+method is only guaranteed, however, if the version is always expressed
+in the form {d.d.dd} as above.
+
+*SEE LessThan, GreaterThan
+
+
+*CMD GarbageCollect --- Do garbage collection on unused memory
+*CORE
+*CALL
+	GarbageCollect()
+
+*PARMS
+
+none
+
+*DESC
+
+{GarbageCollect()} garbage-collects unused memory. The Yacas system
+uses a reference counting system for most objects, so this call
+is usually not necessary. 
+
+Reference counting refers to bookkeeping where in each object a 
+counter is held, keeping track of the number of parts in the system 
+using that object. When this count drops to zero, the object is 
+automatically removed. Reference counting is not the fastest way
+of doing garbage collection, but it can be implemented in a very
+clean way with very little code.
+
+Among the most important objects that are not reference counted are
+the strings. {GarbageCollect()} collects these and disposes of them
+when they are not used any more. 
+
+{GarbageCollect()} is useful when doing a lot of text processing,
+to clean up the text buffers. It is not highly needed, but it keeps
+memory use low.
+
+
+
+*CMD FindFunction --- Finding the file a function is defined in
+*CORE
+*CALL
+	FindFunction(function)
+
+*PARMS
+
+function - a function name in string format
+
+*DESC
+
+This function is useful for quickly finding the file a function is
+defined in. It is likely to only be useful for developers. The
+function {FindFunction()} scans the def files that were loaded at
+start-up. This means that functions that were not defined in def
+files, but were loaded directly, will not be found with 
+{FindFunction()}.
+
+*E.G.
+
+	In> FindFunction("Sum")
+	Out> "sums.rep/code.ys";
+	In> FindFunction("Integrate")
+	Out> "integrate.rep/code.ys";
+
+*SEE Vi
+
+
+*CMD Vi --- Edit a file or function
+*UNIX
+*CALL
+	Vi(filename);
+	Vi(functionname);
+
+*PARMS
+
+filename - name of a file to edit
+
+functionname - name of a function to find for editing
+
+*DESC
+
+{Vi} will try to edit a file, or if the argument passed is a
+function, it will try to edit the file the function is defined in.
+It will try to do so by invoking vi.
+
+It finds the function by scanning the *.def files that have been
+reported to the system (using the function {FindFunction}).
+If editing a function, the command will jump directly to the first
+occurrence of the name of the function in the file (usually the 
+beginning of a definition of a function).
+
+To be really useful, you need to go to the directory containing
+the original files, to edit the original files.
+
+*E.G.
+
+	In> Vi("yacasinit.ys")
+	Out> True;
+	In> Vi("Sum")
+	Out> True;
+
+*SEE FindFunction
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*CMD <command> --- <short descr>
+*CORE/STD
+*CALL
+	<calling seq>
+
+*PARMS
+
+<parm> - <pardesc>
+
+*DESC
+
+<desc>
+
+*E.G.
+
+	<cmdline>
+
+*SEE <cmd1>, <cmd2>
+
+=====================================================================

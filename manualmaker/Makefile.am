@@ -22,12 +22,11 @@ REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt \
 	in/strings.chapt.txt in/addons.chapt.txt
 
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
-	CVS-Howto.chapt YacasDocs.chapt
+	CVS-Howto.chapt YacasDocs.chapt new.chapt
 
 
 ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
-	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt
-
+	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt in/new.chapt.txt
 
 EXTRA_DIST = \
 	manualmaker styleplain in/all \
