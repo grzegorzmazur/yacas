@@ -137,6 +137,10 @@ add it with
 
 {cvs add -kb } [list of file names of binary files]
 
+Note that, when adding files to the CVS, you should normally also add them to
+the distribution list. This is done by adding the file name to the {EXTRA_DIST}
+variable in the file {Makefile.am} in the directory where you adding the file.
+
 In case files need to be removed, there are two options:
 
 *	The file is still on your drive: call {cvs remove -f [filename]} to remove

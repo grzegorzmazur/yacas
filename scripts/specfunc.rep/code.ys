@@ -1,0 +1,203 @@
+/////////////////////////////////////////////////
+/// Euler's Gamma function
+/////////////////////////////////////////////////
+
+/// This procedure computes the uniform approximation for the Gamma function
+/// due to Lanczos and Spouge (the so-called "less precise coefficients")
+/// evaluated at arbitrary precision by using a large number of terms
+/// See J. L. Spouge, SIAM J. of Num. Anal. 31, 931 (1994)
+/// See also Paul Godfrey 2001 (unpublished): http://winnie.fit.edu/~gabdo/gamma.txt for a discussion
+
+/// Calculate the uniform approximation to the logarithm of the Gamma function
+/// in the Re z > 0 half-plane; argument z may be symbolic or complex
+/// but current value of precision is used
+/// Note that we return LnGamma(z), not of z+1
+/// This function should not be used by applications
+10 # LnGammaNum(_z, _a)_(N(Re(z))<0) <-- N(Ln(Pi/Sin(Pi*z))-LnGammaNum(1-z));
+20 # LnGammaNum(_z, _a) <-- [
+	Local(e, k, tmpcoeff, coeff, result);
+	a := Max(a, 4);	// guard against low values
+	e := N(Exp(1));
+	k:=Ceil(a);	// prepare k=N+1; the k=N term is probably never significant but we don't win much by excluding it
+	result := 0;	// prepare for last term
+	// use Horner scheme to prevent loss of precision
+	While(k>1) [	// 'result' will accumulate just the sum for now
+		k:=k-1;
+		result := N( MathPower(a-k,k)/((z+k)*Sqrt(a-k))-result/(e*k) );
+	];
+	N(Ln(1+Exp(a-1)/Sqrt(2*Pi)*result) + Ln(2*Pi)/2 -a-z+(z+1/2)*Ln(z+a) - Ln(z));
+];
+
+/* this routine is much slower and less precise
+20 # LnGammaNum0(_z, _a) <-- [
+	Local(e, k, tmpcoeff, coeff0, coeff, result);
+	e := N(Exp(1));
+	a := Max(a, 4);	// guard against low values
+	coeff0 := 1;
+	result := coeff0;
+	tmpcoeff := N(Exp(a-1)/Sqrt(2*Pi));
+	For(k:=1, k<=Ceil(a)-1, k++) [
+		coeff := N(tmpcoeff*(a-k)^(k-1/2));
+//		Echo({"coeff c[", k, "] =",  coeff});
+		result := N(result + coeff/(z+k));
+//		Echo({"sum at step ", k, " =",  result});
+		tmpcoeff := N(-tmpcoeff/(k*e));
+	];
+//	Echo({k, " coefficients, last is", tmpcoeff});
+	N(Ln(result) + Ln(2*Pi)/2 - a  - z +(z+1/2)*Ln(z+a) - Ln(z));
+];
+*/
+
+LnGammaNum(z) := [
+	Local(a, prec, result);
+	prec := GetPrecision();
+	Precision(10);	// save time here
+	a:= Floor(N( 0.9*prec*Ln(10)/Ln(2*Pi) )) + 0.4;	// fudge factor 0.9 :)
+	/// same as parameter "g" in Godfrey 2001.
+	/// Chosen to satisfy Spouge's error bound:
+	/// error < Sqrt(a)/Real(a+z)/(2*Pi)^(a+1/2)
+//	Echo({"parameter a = ", a, " setting precision to ", Ceil(prec*1.4)});
+	Precision(Ceil(prec*1.4));	// need more precision b/c of roundoff errors
+	result := LnGammaNum(z,a);
+	Precision(prec);
+	result;
+];
+
+GammaNum(z) := N(Exp(LnGammaNum(z)));
+GammaNum(z,a) := N(Exp(LnGammaNum(z,a)));	/// should not be used by applications
+
+//Retract("Gamma", 1);	// want to be able to Load() this many times
+/// User visible functions: Gamma(x), LnGamma(x)
+10 # Gamma(_n)_(IsInteger(n) And n<=0) <-- Infinity;
+10 # LnGamma(_n)_(IsInteger(n) And n<=0) <-- Infinity;
+
+20 # Gamma(n_IsNumber)_(IsPositiveInteger(n) Or IsInteger(N(2*n))) <-- (n-1)!;
+20 # LnGamma(n_IsNumber)_(IsPositiveInteger(n) Or IsInteger(N(2*n))) <-- Ln((n-1)!);
+
+30 # Gamma(_x)_(Numeric And IsNumber(N(x))) <-- GammaNum(x);
+30 # LnGamma(_x)_(Numeric And IsNumber(N(x))) <-- LnGammaNum(x);
+
+/////////////////////////////////////////////////
+/// Riemann's Zeta function
+/////////////////////////////////////////////////
+
+/// Analytic and numerical computations of Riemann's Zeta function
+/// See: Bateman, Erdelyi: <i>Higher Transcendental Functions<i>, vol. 1;
+/// P. Borwein, <i>An efficient algorithm for Riemann Zeta function<i> (1995).
+
+/// Numerical computation of Zeta function using Borwein's "third" algorithm
+/// The value of $n$ must be large enough to ensure required precision
+/// Also $s$ must satisfy $Re(s)+n+1 > 0$
+Retract("ZetaNum", 2);
+ZetaNum(_s, n_IsInteger) <-- [
+	Local(result, j, sign);
+	result := 0;
+	sign := 1;	// flipping sign
+	For(j:=0, j<=2*n-1, j++)
+	[	// this is suboptimal b/c we can compute the coefficients a lot faster in this same loop, but ok for now
+		result := N(result + sign*ZetaNumCoeffEj(j,n)/(1+j)^s );
+		sign := -sign;
+	];
+	N(result/(2^n)/(1-2^(1-s)));
+];
+
+/// Compute coefficients e[j] (see Borwein -- excluding (-1)^j )
+ZetaNumCoeffEj(j,n) := [
+	Local(k);
+	2^n-If(j<n,
+		0,
+		Sum(k,0,j-n,Bin(n,k))	// this is suboptimal but ok for now
+	);
+];
+
+ZetaNum(s) := [
+	Local(n, prec, result);
+	prec := GetPrecision();
+	Precision(6);
+	n := Ceil( N( prec*Ln(10)/Ln(8) + 2 ) );	// add 2 digits just in case
+//	Echo({"ZetaNum: precision ", prec, ", using n=", n});
+	Precision(prec+2);	// 2 guard digits
+	result := ZetaNum(s, n);
+	Precision(prec);
+	result;
+];
+
+/// use identities for exact values of Zeta
+10 # Zeta(1) <-- Infinity;
+10 # Zeta(0) <-- -1/2;
+10 # Zeta(n_IsEven)_(n>0) <-- Pi^n*(2^(n-1)/n! *Abs(Bernoulli(n)));
+10 # Zeta(n_IsInteger)_(n<0) <-- -Bernoulli(-n+1)/(-n+1);
+
+/// compute numeric value
+20 # Zeta(_s)_(Numeric And IsNumber(N(s))) <--
+[
+	Local(sn);
+	sn:=N(s);
+	If(
+	  sn=1,
+	  Infinity,
+	  If(	// use identity if s<1/2 to replace with larger s. Also must be sn!=0 or else we get infinity * zero
+		Re(sn)>= 0.5,
+		ZetaNum(sn),
+		N( 2*Gamma(1-sn)*Sin(Pi*sn/2)/(2*Pi)^(1-sn) ) * ZetaNum(1-sn)
+	  )
+	 );
+];
+
+/////////////////////////////////////////////////
+/// Bernoulli numbers and polynomials
+/////////////////////////////////////////////////
+
+/// Bernoulli(n): interface to Bernoulli numbers
+10 # Bernoulli(0) <-- 1;
+10 # Bernoulli(1) <-- -1/2;
+15 # Bernoulli(n_IsInteger)_(n<0) <-- Undefined;
+30 # Bernoulli(n_IsOdd) <-- 0;
+
+/// numerical computations of Bernulli numbers use two different methods, one good for small numbers and one good only for very large numbers (using Zeta function)
+20 # Bernoulli(n_IsEven) <-- BernoulliArray(n)[n+1];
+/*
+20 # Bernoulli(n_IsEven)_(n<=Bernoulli1Threshold) <-- BernoulliArray(n)[n+1];
+20 # Bernoulli(n_IsEven)_(n>Bernoulli1Threshold) <-- Bernoulli1(n);
+*/
+
+/// Bernoulli1Threshold could in principle be set by the user
+/*If(Not IsBound(Bernoulli1Threshold), Bernoulli1Threshold := 200);
+*/
+/// Simple implementation of the recurrence relation: create an array of Bernoulli numbers
+// special case: n=0 or n=1
+10 # BernoulliArray(n_IsInteger)_(n=0 Or n=1) <-- [
+	Local(B);
+	B:=ArrayCreate(n+1,0);
+	B[1] := 1;
+	If(n=1, B[2] := -1/2);
+	B;
+];
+/// Assume n>=2
+20 # BernoulliArray(n_IsInteger) <-- [
+	Local(B, i, k);
+	B:=ArrayCreate(n+1, 0);	// array of B[k], k=1,2,... where B[1] is the 0th Bernoulli number
+	// it would be better not to store the odd elements but let's optimize this later
+	// we could also maintain a global cache of Bernoulli numbers computed so far, but it won't really speed up things at large n
+	// all odd elements after B[2] are zero
+	B[1] := 1;
+	B[2] := -1/2;
+	B[3] := 1/6;
+	For(i:=4, i<=n, i := i+2)	// compute and store B[i]
+	[	// do not sum over odd elements that are zero anyway - cuts time in half
+		B[i+1] := -1/(i+1)*(B[1]+B[2]*(i+1)+Sum(k, 1, i/2-1, B[k*2+1]*Bin(i+1,k*2) ) );
+	];
+	B;
+];
+
+/// Bernoulli polynomials of degree n in variable x
+Bernoulli(n_IsInteger, _x) <-- [
+	Local(B, i, result);
+	B := BernoulliArray(n);
+	result := B[1];
+	For(i:=n-1, i>=0, i--) [
+		result := result * x + B[n-i+1]*Bin(n,i);
+	];
+	result;
+];
+

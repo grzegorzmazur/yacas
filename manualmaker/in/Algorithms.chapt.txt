@@ -58,15 +58,25 @@ By the identity $ArcCos(x) := Pi/2 - ArcSin(x)$, the inverse cosine is reduced t
 
 Hyperbolic and inverse hyperbolic functions are reduced to exponentials and logarithms.
 
-	    Euler's $Gamma$-function
+	    Euler's Gamma function
 
-For integer values of the argument, Euler's $Gamma$-function ({Gamma()})
+Euler's Gamma function $Gamma(z)$ is defined for complex $z$ such that $Re(z)>0$ by the integral
+$$Gamma(z):=Integrate(z, 0, Infinity) Exp(-t)*t^(z-1)$$
+The Gamma function satisfies several identities that can be proved by rearranging this integral; for example, $Gamma(z+1)=z*Gamma(z)$. This identity defines $Gamma(z)$ for all complex $z$. The Gamma function is regular everywhere except nonpositive integers (0, -1, -2, ...) where it diverges.
+
+For real integer $z>0$, the Gamma function is the same as the factorial, 
 $$ Gamma(n+1) := n! $$
-is computed exactly (the multiple-precision factorial routine is implemented in Yacas core for speed). For half-integer values it is also computed exactly, using the following identities (here $n$ is a nonnegative integer):
+so the factorial notation can be used for the Gamma function too. Some formulae become a little simpler if written in factorials.
+
+The Gamma function is implemented as {Gamma(x)}. At integer values {n} of the
+argument, {Gamma(n)} is computed exactly (the multiple-precision factorial
+routine is implemented in Yacas core for speed). For half-integer values it is
+also computed exactly, using the following identities (here $n$ is a
+nonnegative integer):
 $$ (+(2*n+1)/2)! = Sqrt(Pi)*(2*n+1)! / (2^(2*n+1)*n!) $$
 $$ (-(2*n+1)/2)! = (-1)^n*Sqrt(Pi) * (2^(2*n)*n!) / (2*n)! $$
 
-For arbitrary complex arguments with nonnegative real part, the function {GammaNum()} computes a uniform appoximation of Lanczos and Spouge (with the so-called "less precise coefficients of Spouge"). See: C. J. Lanczos, J. SIAM of Num. Anal. Ser. B, vol. 1, 86 (1964); J. L. Spouge, J. SIAM of Num. Anal., vol. 31, 931 (1994). See also: Paul Godfrey 2001 (unpublished): <*http://winnie.fit.edu/~gabdo/gamma.txt*> for some explanations on the method. 
+For arbitrary complex arguments with nonnegative real part, the library function {GammaNum(x)} computes a uniform appoximation of Lanczos and Spouge (with the so-called "less precise coefficients of Spouge"). See: C. J. Lanczos, J. SIAM of Num. Anal. Ser. B, vol. 1, 86 (1964); J. L. Spouge, J. SIAM of Num. Anal., vol. 31, 931 (1994). See also: Paul Godfrey 2001 (unpublished): <*http://winnie.fit.edu/~gabdo/gamma.txt*> for some explanations on the method. 
 The method gives the $Gamma$-function only for arguments with positive real part; at negative values of the real part of the argument, the $Gamma$-function is computed via the identity
 $$Gamma(x)*Gamma(1-x) = Pi/Sin(Pi*x)$$
 
@@ -96,3 +106,56 @@ are implemented. First, a Horner scheme is used to compute the sum; this is
 faster and leads to smaller roundoff errors. Second, intermediate calculations
 are performed at 40{%} higher precision than requested. This is much slower but
 allows to obtain results at desired precision.
+
+	    Riemann's Zeta function
+
+Riemann's Zeta function $zeta(s)$ is defined for complex $s$ such that $Re(s)>0$ as a sum of inverse powers of integers:
+$$zeta(s) := Sum(n,0,Infinity, 1/n^s)$$
+This function can be analytically continued to the entire complex plane except the point $s=1$ where it diverges. It satisfies several identities, for example, a formula useful for negative $Re(s)$,
+$$zeta(1-s) = (2*Gamma(s))/(2*Pi)^s*Cos((Pi*s)/2)*zeta(s)$$
+and a formula for even integers that helps in numerical testing,
+$$zeta(2*n) = ((-1)^(n+1)*(2*Pi)^(2*n))/(2*(2*n)!)*B[2*n]$$
+where $B[n]$ are Bernoulli numbers.
+
+The classic book of Bateman and Erdelyi, <i>Higher Transcendental Functions</i>, vol. 1, describes many results concerning analytic properties of $zeta(s)$.
+
+For the numerical evaluation of Riemann's Zeta function with arbitrary
+precision to become feasible, one needs special algorithms. Recently P. Borwein
+gave a simple and quick approximation algorithm for positive $Re(s)$
+(P. Borwein,
+<i>An efficient algorithm for Riemann Zeta function</i> (1995),
+published online and in Canadian Math. Soc. Conf. Proc., 27 (2000), 29-34.) See
+also:
+J. M. Borwein, D. M. Bradley, R. E. Crandall:
+<i>Computation strategies for the Riemann Zeta function</i>, preprint
+CECM-98-118, 1999, for a review of methods.
+
+It is the "third" algorithm from P. Borwein's paper which is
+implemented in Yacas. The approximation formula valid for $Re(s) > -(n-1)$ is
+$$ zeta(s) = 1/(2^n*(1-2^(1-s)))*Sum(j,0,2*n-1, e[j]/(j+1)^s) $$
+where the coefficients $e[j]$ for $j=0$, ..., $2*n-1$ are defined by
+$$ e[j] := (-1)^(j-1)*(Sum(k,0,j-n, n! /(k! *(n-k)!))-2^n) $$
+and the empty sum (for $j<n$) is taken to be zero.
+The parameter $n$ must be chosen high enough to achieve desired precision. The error estimate for this formula is approximately $$error < 8^(-n)$$ for the relative precision, which means that to achieve $P$ correct digits, we must have $n>P*Ln(10)$/$Ln(8)$.
+
+The library function {Zeta(s)} calls {ZetaNum(s)} to compute this approximation formula for $Re(s)>1/2$ and uses the identity above to get the value for other $s$.
+
+	    Bernoulli numbers and polynomials
+
+The Bernoulli numbers $B[n]$ are defined by the series expansion of the following generating function,
+$$z/(e^z-1) = Sum(n, 0, Infinity, B[n]*z^n/n!)$$
+The Bernoulli polynomials $B(x)[n]$ are defined similarly by
+$$(z*Exp(z*x))/(e^z-1) = Sum(n, 0, Infinity, B(x)[n]*z^n/n!)$$
+Note the relation
+$$B(x)[n] = Sum(k,0,n,x^k*B[n-k]*Bin(n,k))$$
+where $Bin(n,k)$ are binomial coefficients.
+
+Bernoulli numbers are used in various Taylor series expansions, in the Euler-Maclauren series resummation formula, in Riemann's Zeta function and so on. For example, the sum of (integer) $p$-th powers of consecutive integers is given by
+$$Sum(k, 0, n-1, k^p) = (B(n)[p+1] - B[p+1])/(p+1)$$
+
+In the {Bernoulli()} routine,
+Bernoulli numbers are evaluated via the recursion relation,
+$$B[n] = -1/(n+1)*Sum(k,0,n-1,B[k]*Bin(n+1,k))$$
+This formula requires to find the entire set of $B[k]$ with $k$ up to a given $n$ to compute $B[n]$. Therefore at large $n$ this algorithm becomes very slow and should be replaced by another.
+
+The Bernoulli polynomials $B[n]$ are found by first computing the array of Bernoulli numbers and then applying the above formula for the coefficients.
