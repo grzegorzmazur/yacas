@@ -6,13 +6,13 @@ A predicate is a function that returns a boolean value, i.e. {True} or {False}. 
 often used in patterns, For instance, a rule that only holds for a
 positive integer would use a pattern like {n_IsPositiveInteger}.
 
-*CMD \< --- Test whether lhs is smaller than rhs
+*CMD < --- Test whether lhs is smaller than rhs
 
 *STD
 
 *CALL
 
-e1 \< e2 (prec. 9)
+	e1 < e2 (prec. 9)
 
 *PARMS
 
@@ -40,13 +40,13 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 
 *SEE IsNumber, IsInfinity, N
 
-*CMD \> --- Test whether lhs is larger than rhs
+*CMD > --- Test whether lhs is larger than rhs
 
 *STD
 
 *CALL
 
-e1 \> e2 (prec. 9)
+	e1 > e2 (prec. 9)
 
 *PARMS
 
@@ -74,13 +74,13 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 
 *SEE IsNumber, IsInfinity, N
 
-*CMD \<= --- Test whether lhs is smaller or equal rhs
+*CMD <= --- Test whether lhs is smaller or equal rhs
 
 *STD
 
 *CALL
 
-e1 \<= e2 (prec. 9)
+	e1 <= e2 (prec. 9)
 
 *PARMS
 
@@ -109,13 +109,13 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 
 *SEE IsNumber, IsInfinity, N
 
-*CMD \>= --- Test whether lhs is larger or equal rhs
+*CMD >= --- Test whether lhs is larger or equal rhs
 
 *STD
 
 *CALL
 
-e1 \>= e2 (prec. 9)
+e1 >= e2 (prec. 9)
 
 *PARMS
 
@@ -334,7 +334,7 @@ This function checks whether the expression "expr" (after being
 evaluated) depends on the variable "var". It returns {False} if this is the case and {True}
 otherwise.
 
-The second form test whether the expression depends on <em>any</em> of
+The second form test whether the expression depends on <i>any</i> of
 the variables named in the list. The result is {True} if none of the variables appear in the expression and {False} otherwise.
 
 *E.G.
@@ -639,7 +639,7 @@ expression - an expression
 IsBoolean returns True if the argument is of a boolean type.
 This means it has to be either True, False, or an expression involving
 functions that return a boolean result, like
-=, &gt, &lt, &gt=, &lt=, !=, And, Not, Or.
+{=}, {>}, {<}, {>=}, {<=}, {!=}, {And}, {Not}, {Or}.
 
 *E.G.
 
@@ -666,7 +666,7 @@ n - number to test
 
 *DESC
 
-{IsNegativeNumber(n)} evaluates to {True} if "n" is (strictly) negative, ie. if n<0. If "n" is not a
+{IsNegativeNumber(n)} evaluates to {True} if "n" is (strictly) negative, ie. if $n<0$. If "n" is not a
 number, the function returns {False}.
 
 *E.G.
@@ -719,7 +719,7 @@ n - number to test
 
 *DESC
 
-{IsPositiveNumber(n)} evaluates to {True} if "n" is (strictly) positive, ie. if n>0. If "n" is not a
+{IsPositiveNumber(n)} evaluates to {True} if "n" is (strictly) positive, ie. if $n>0$. If "n" is not a
 number the function returns {False}.
 
 *E.G.

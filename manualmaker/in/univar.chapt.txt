@@ -28,8 +28,8 @@ varlist - a list of variables
 *DESC
 
 This command brings a polynomial in expanded form, in which
-polynomials are represented in the form c0 + c1*x + c2*x^2 + ... +
-cn*x^n. In this form, it is easier to test whether a polynomial is
+polynomials are represented in the form 
+$c0 + c1*x + c2*x^2 + ... + c[n]*x^n$. In this form, it is easier to test whether a polynomial is
 zero, namely by testing whether all coefficients are zero.
 
 If the polynomial "expr" contains only one variable, the first
@@ -430,7 +430,7 @@ polynomial with parameters "a" and "b", which should be greater
 than -1.
 
 The Jacobi polynomials are orthogonal with respect to the weight
-function (1-x)^a (1+x)^b on the interval [-1,1]. They satisfy the
+function $(1-x)^a *(1+x)^b$ on the interval [-1,1]. They satisfy the
 recurrence relations:
 
 	P(0,a,b,x) = 1
@@ -439,15 +439,21 @@ recurrence relations:
 	P(1,a,b,x) = ----- + x | 1 + ----- |
 	               2       \       2   /
 	
-	                                 2   2
-	                                a - b + x (2n+a+b-2) (n+a+b)
-	P(n,a,b,x) = (2n + a + b - 1) * ---------------------------- P(n-1,a,b,x)
-	                                   2n (2n+a+b-2) (n+a+b)
+	                               
+	                               
+	P(n,a,b,x) = (2n + a + b - 1) *
+	                               
 	
+	    2   2
+	   a - b + x (2n+a+b-2) (n+a+b)
+	   ---------------------------- P(n-1,a,b,x)
+	      2n (2n+a+b-2) (n+a+b)
 	
-	                (n+a-1) (n+b-1) (2n+a+b)
-	             -  ------------------------ P(n-2,a,b,x),         for n > 1.
-	                  n (n+a+b) (2n+a+b-2)
+	    (n+a-1) (n+b-1) (2n+a+b)
+	 -  ------------------------ P(n-2,a,b,x),    
+	      n (n+a+b) (2n+a+b-2)
+
+for n > 1.
 
 Legendre polynomials are a special case of Jacobi polynomials with the
 specific parameter values a = b = 0. So they form an orthogonal system
@@ -522,7 +528,7 @@ This function evaluates the Hermite polynomial of degree "n" at the
 point "x".
 
 The Hermite polynomials are orthogonal with respect to the weight
-function e^(-x^2/2) on the entire real axis. They satisfy the
+function $Exp(-x^2/2)$ on the entire real axis. They satisfy the
 recurrence relations:
 
 	H(0,x) = 1
@@ -565,7 +571,7 @@ with parameter "a" and degree "n" at the point "x". The
 parameter "a" should be greater than -1/2.
 
 The Gegenbauer polynomials are orthogonal with respect to the weight
-function (1-x^2)^(a-1/2) on the interval [-1,1]. Hence they are
+function $(1-x^2)^(a-1/2)$ on the interval [-1,1]. Hence they are
 connected to the Jacobi polynomials via G(n, a, x) =
 P(n, a-1/2, a-1/2, x). They satisfy the recurrence relations:
 
@@ -611,7 +617,7 @@ and degree "n" at the point "x". The parameter "a" should be
 greater than -1.
 
 The Laguerre polynomials are orthogonal with respect to the weight
-function x^a * e^(-x) on the positive real axis. They satisfy the
+function $x^a * Exp(-x)$ on the positive real axis. They satisfy the
 recurrence relations:
 
 	L(0,a,x) = 1
@@ -653,7 +659,7 @@ This function evaluates the Tschebyscheff polynomial of the first kind
 of degree "n" at the point "x". The name is also spelled Chebyshev.
 
 The Tschebyscheff polynomials of the first kind are orthogonal with
-respect to the weight function (1-x^2)^(-1/2). Hence they are a
+respect to the weight function $(1-x^2)^(-1/2)$. Hence they are a
 special case of the Gegenbauer polynomials, with a=0. They satisfy the
 recurrence relations:
 
@@ -694,7 +700,7 @@ This function evaluates the Tschebyscheff polynomial of the second kind
 of degree "n" at the point "x". (The name is also spelled Chebyshev.)
 
 The Tschebyscheff polynomials of the second kind are orthogonal with
-respect to the weight function (1-x^2)^(1/2). Hence they are a
+respect to the weight function $(1-x^2)^(1/2)$. Hence they are a
 special case of the Gegenbauer polynomials, with a=1. They satisfy the
 recurrence relations:
 
@@ -803,7 +809,7 @@ is a pure function that takes two arguments: the order "n" and the
 extra parameters "p", and returns a list of two lists: the first list
 contains the coefficients {A,B} of the n=1 polynomial, i.e. "A+B*x";
 the second list contains the coefficients {A,B,C} in the recurrence
-relation, i.e. "P_n = (A+B*x)*P_{n-1}+C*P_{n-2}". (There are
+relation, i.e. $P[n] = (A+B*x)*P[n-1]+C*P[n-2]$. (There are
 only 3 coefficients in the second list, because none of the polynomials use "C+D*x" instead of "C" in the recurrence relation. This is assumed in the implementation!)
 
 If the argument "x" is numerical, the function {OrthoPolyNumeric} is called. Otherwise, the function {OrthoPolyCoeffs} computes a list of coefficients, and

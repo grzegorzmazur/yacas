@@ -13,12 +13,13 @@ ALLBOOKSOURCES = in/intro.book.txt in/coding.book.txt \
 REFCHAPTERS = config.chapt arith.chapt calc.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
 	preds.chapt logic.chapt const.chapt vars.chapt io.chapt \
-	strings.chapt
+	strings.chapt addons.chapt
 
-REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt in/linalg.chapt.txt \
-	in/univar.chapt.txt in/lists.chapt.txt in/functional.chapt.txt in/controlflow.chapt.txt \
-	in/preds.chapt.txt in/logic.chapt.txt in/const.chapt.txt in/vars.chapt.txt in/io.chapt.txt \
-	in/strings.chapt.txt
+REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt \
+	in/linalg.chapt.txt in/univar.chapt.txt in/lists.chapt.txt \
+	in/functional.chapt.txt in/controlflow.chapt.txt in/preds.chapt.txt \
+	in/logic.chapt.txt in/const.chapt.txt in/vars.chapt.txt in/io.chapt.txt \
+	in/strings.chapt.txt in/addons.chapt.txt
 
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
 	CVS-Howto.chapt YacasDocs.chapt
@@ -43,8 +44,6 @@ EXTRA_DIST = \
 %.book.tex: %.book
 	../manmake/book2TeX.sh $< $@
 
-essays.book.tex: essays.book $(ESSAYCHAPTERS)
-
 %.dvi: %.tex
 	latex $< > /dev/null
 	latex $< > /dev/null
@@ -58,11 +57,17 @@ essays.book.tex: essays.book $(ESSAYCHAPTERS)
 	pdflatex $* > /dev/null
 	@echo Documentation created: $*.pdf
 
+# specify books that need chapters
+essays.book.tex: essays.book $(ESSAYCHAPTERS)
+ref.book.tex : ref.book $(REFCHAPTERS)
+
 # TeX/PS/PDF top target
-texdocs: coding.book.ps coding.book.pdf \
-		intro.book.ps intro.book.pdf \
-		refprog.book.ps refprog.book.pdf \
-		essays.book.ps essays.book.pdf
+texdocs: \
+		intro.book.tex intro.book.ps intro.book.pdf \
+		coding.book.tex coding.book.ps coding.book.pdf \
+		essays.book.tex essays.book.ps essays.book.pdf \
+		ref.book.tex ref.book.ps ref.book.pdf \
+		refprog.book.tex refprog.book.ps refprog.book.pdf
 	echo "done" > texdocs.c
 
 clean:

@@ -72,10 +72,12 @@ are of no significance to the resulting documentation. The first symbol on a lin
 
 Note that item text continues until the next itemized line is given or until end of paragraph.
 
+Nesting of enumerated or itemized environments is not yet supported.
+
 *	Emphasized text (<i>italics</i>) should be surrounded by {<i>}
 {</i>}. Note that the whole emphasized fragment of text must be located within a single line, or else it will not be emphasized.
 
-*	{Typewriter font} text is surrounded by braces {{}}. The typewriter font fragment must be within a single line and must not contain more than four nested sets of {{}} inside.
+*	{Typewriter font} text is surrounded by braces {{}}. The typewriter font fragment must be within a single line and must not contain more than four nested sets of {{}} inside. A limitation of this markup is that there is no way to put a single brace in typewriter font alone without a matching brace.
 
 *	Web hyperlinks are surrounded by {<*}
 {*>}. Text of the link must begin with {http://} or {ftp://}. Alternatively, a hyperlink with anchored text is made by the markup {<*}
@@ -126,7 +128,7 @@ Compare this with the reference manual section on the function {PrintList} to se
 
 Notes:
 *	Some labels have parameters and some other labels do not; labels that do not have parameters must be put alone on a line
-*	The {*STDLIB} label is for functions defined in the standard library and the {*CORE} label is for built-in functions defined in the Yacas core engine.
+*	The {*STDLIB} label is for functions defined in the standard library and the {*CORE} label is for built-in functions defined in the Yacas core engine. In addition, {*UNIX}, {*MSWIN} and {*MAC} can be used to label Unix, MS Windows and Macintosh-specific add-on functions.
 *	Use of TAB characters is not mandatory between "{*LABEL}" and the following text; ordinary spaces work as well. There must be <i>some</i> whitespace separating the label and the text, however.
 *	The comma-space combination "{, }" is mandatory in lists (but can have several spaces after a comma). Lists of commands are used by the {*CMD} and {*SEE} labels.
 *	Characters {<} and {>} are of special significance to both HTML and TeX and should be escaped.

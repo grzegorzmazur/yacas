@@ -18,6 +18,9 @@ $in_htmlcommand = 0;
 	"CALL" => "Topical() \"Calling format:\";",
 	"PARMS" => "Topical() \"Parameters:\";",
 	"DESC" => "Topical() \"Description:\";",
+	"UNIX" => "UnixSpecific();",
+	"MSWIN" => "MSWinSpecific();",
+	"MAC" => "MacSpecific();",
 	"STD" => "StandardLib();",
 	"CORE" => "BuiltIn();",
 	"E.G." => "Topical() \"Examples:\";",
@@ -64,13 +67,9 @@ while (<STDIN>) {
 	}	# Now not TAB-indented lines
 	elsif (/^\s*$/) {	# New paragraph
 		if (not $have_par) {
-			&close_quote();
+			&finish_text();
 			&start_text();
-			if ($in_itemized or $in_enum or $in_htmlcommand) {
-				print ")\n";
-				$in_itemized = $in_enum = $in_htmlcommand = 0;
-			}
-			print ":HtmlNewParagraph()\n\n";
+			print "\":HtmlNewParagraph():\n\n\"";
 			$have_par = 1;
 		}
 	}
@@ -215,13 +214,18 @@ sub start_text {	# start a Text() block if necessary
 
 sub finish_text {
 	&close_quote();
-	if ($in_itemized or $in_enum) {
-		print "\n);" ;
-		$in_itemized = $in_enum = 0;
-	} else {
-		print ";" if ($have_Text);
+	if ($in_itemized) {
+		print "\n)";
+		$in_itemized = 0;
 	}
-	$have_Text = 0;
+	if ($in_enum) {
+		print "\n)";
+		$in_enum = 0;
+	}
+	if ($have_Text) {
+		print ";";
+		$have_Text = 0;
+	}
 }
 
 # This routine is called on a piece of plain text which should be inside quotes

@@ -1,0 +1,89 @@
+			Platform-dependent packages
+
+*CMD GetYacasPID --- obtain Yacas process number
+*UNIX
+*CALL
+	GetYacasPID()
+
+*DESC
+Returns an integer containing the process number (PID) of the Yacas session.
+
+Requires: Unix shell.
+
+*CMD ShowPS --- view equations graphically
+*UNIX
+*CALL
+	ShowPS(expr)
+
+*PARMS
+{expr} -- any expression (not evaluated)
+
+*DESC
+Exports a Yacas expression to $LaTeX$, generates a Postscript file and shows it in a viewer. The free viewer {gv} must be available on the Unix shell path. An alternative viewer can be specified by assigning to the global variable PSViewCommand.
+
+Requires: Unix shell, LaTeX, dvips, gv or another Postscript viewer.
+
+*EG
+	In> [ PSViewCommand := "ghostview"; ShowPS(x+2*Sin(x)); ]
+	Expression exported as /tmp/yacas-tmpfile-28802.tex
+	Out> True;
+
+*CMD MakeFunctionPlugin --- compile numerical functions into plugins
+*UNIX
+*CALL
+	MakeFunctionPlugin("name", {args}, body)
+
+*PARMS
+
+{"name"} -- string, name of a new function
+
+{{args}} -- list of atoms, will be used as argument list for {body}
+
+{body} -- expression, body of function of arguments to be compiled
+
+*DESC
+
+All arguments and the return value of the function are assumed to
+be double precision real numbers. Warning: do not pass non-numbers to
+the plugin function.
+
+Requires: Unix shell, compiler named "c++" with ELF {.so} support; Yacas
+headers in {FindFile("")/include}; current directory must be writable. The
+{body} expression must be a {CForm()}-exportable function of the arguments and
+may contain numerical constants ({Pi} is allowed and will be converted to
+floating-point). All arguments and the return value of the function are assumed
+to be double precision real numbers.
+
+The result of passing a non-numerical argument will be unevaluated.
+	
+	Example:
+	
+	In> MakeFunctionPlugin("f1", {x,y}, Sin(x/y))
+	Function f1(x,y) loaded from
+	  plugins.tmp/libf1_plugin_cc.so
+	Out> True;
+	In> f1(2,3)
+	Out> 0.618369803069736989620253;
+	In> f1(x,5)
+	Out> f1(x,5);
+	
+	What it does:
+*	1. Creates the following files in subdirectory {plugins.tmp/} of current directory:
+*	{f1_plugin.h}, {f1_plugin.cc} -- C++ code of the plugin; the function in the above example is implemented in C++ as
+	double f1_plugin_cc(double x, double y)
+	  { return sin(x/y); }
+*	{f1_plugin.stub} -- Yacas-language stub
+*	{f1_plugin_api.cc} -- Yacas-generated C++ stub
+*	{f1_plugin_api.description} - Yacas-generated documentation
+*	{f1_plugin.compile} -- command line to compile
+*	{libf1_plugin_cc.so} -- compiled plugin
+Note that all files have names matching "{*_plugin*}".
+
+*	2. Runs a "c++" compiler command.
+*	3. Loads resulting .so object with DllLoad().
+*	4. Prints an information message on success and all error messages if compilation fails.
+
+	If you call {MakeFunctionPlugin()} repeatedly to define a function with the same
+name, old files will be overwritten.
+
+*SEE DllLoad, DllUnload, DllEnumerate

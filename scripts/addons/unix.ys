@@ -1,39 +1,8 @@
 /*
 	MakeFunctionPlugin() - create an external plugin for a numerical function
-	All arguments and the return value of the function are assumed to
-be double precision real numbers. Warning: do not pass non-numbers to
-the plugin function.
 	Version 0.1
 	Requires: compiler named "c++" with ELF .so support; Yacas headers in FindFile("")/include; current directory must be writable
-
-	Usage: MakeFunctionPlugin(ExtName, ArgList, Body).
-	
-	ExtName: String, will be the base name of the plugin.
-	ArgList: List of atoms, will be used as argument list for Body.
-	Body: a Yacas expression, must be a CForm()-exportable function of the arguments and may contain numerical constants ("Pi" is allowed and will be converted to floating-point).
-	
-	Example:
-	
-	In> MakeFunctionPlugin("f1", {x,y}, Sin(x/y))
-	Function f1(x,y) loaded from ./libf1_cc_plugin.so
-	Out> True;
-	
-	What it does:
-	1) creates the following files in subdirectory plugins.tmp/ of current directory:
-	f1_plugin.h, f1_plugin.cc - C++ code of the plugin; the function is written as "double f1_cc(double x, double y) { return sin(x/y); }"
-	f1_plugin.stub - Yacas-language stub
-	f1_plugin_api.cc - Yacas-generated C++ stub
-	f1_plugin_api.description - Yacas-generated documentation
-	f1_plugin.compile - command line to compile
-	libf1_cc_plugin.so - compiled plugin
-	Note that all files have names matching *_plugin*
-	2) runs the "c++" compiler command
-	3) loads resulting .so object with DllLoad()
-	4) prints an information message on success and error messages if compilation fails.
-
-	If you call MakeFunctionPlugin() repeatedly to define the same
-function, the old files will be overwritten.
-
+	Usage: MakeFunctionPlugin(ExtName, ArgList, Body)
 */
 
 MakeArgumentList(argList, padding) := [ /* may assume to have a nonempty list */
@@ -50,7 +19,7 @@ MakeFunctionPrototype(name, argList) := [
 ];
 
 MakeFunctionPlugin(extName, argList, fBody) := [
-	Local(dirBase, fileBase, intName, includeDir, dllName, dllPath, commandLine);
+	Local(dirBase, fileBase, intName, exportName, includeDir, dllName, dllPath, commandLine);
 	/* check argument type */
 	Check(IsString(extName) And IsList(argList) And Length(argList) > 0,
 	  "Error in MakeFunctionPlugin: " : extName
@@ -59,11 +28,12 @@ MakeFunctionPlugin(extName, argList, fBody) := [
 	Check(includeDir != "",
 	  "Error in MakeFunctionPlugin: no include/ under " : FindFile(""));
 	/* determine file names */
-	dirBase := "plugins.tmp/";
+	dirBase := "plugins.tmp/";	// where all plugin files will be kept
 	SystemCall("test -d " : dirBase : "|| mkdir -p " : dirBase);
 	fileBase := dirBase : extName : "_plugin";
-	intName := extName : "_cc";
-	dllName := "lib" : intName : "_plugin.so";
+	intName := extName : "_plugin_cc";	// name of C++ function
+	exportName := extName : "_plugin"; // name of intermediate Yacas function
+	dllName := "lib" : intName : ".so";
 	dllPath := dirBase : dllName;
 	/* specify more include dirs to be able to compile from different places */
 	commandLine := "c++ -shared -I. -I.. -I" : includeDir : " -I" : includeDir : "plat/linux32 -Wl,-soname," : dllName : " -o " : dllPath : " " : fileBase : ".cc " : fileBase : "_api.cc >& " : fileBase : ".log";
@@ -91,7 +61,7 @@ MakeFunctionPlugin(extName, argList, fBody) := [
 	    "/* GENERATED FILE: " : fileBase : ".stub */" : Nl()
 	    : "Use(\"cstubgen.rep/code.ys\"); StubApiCStart();" : Nl()
 	    : "StubApiCInclude(\"\\\"" : fileBase : ".h\\\"\");" : Nl()
-	    : "StubApiCFunction(\"double\", \"" : intName : "\", \"" : extName : "\",");
+	    : "StubApiCFunction(\"double\", \"" : intName : "\", \"" : exportName : "\",");
 	  Write(FillList("double", Length(argList)));
 	  WriteString(
 	    ");" : Nl()
@@ -111,19 +81,24 @@ MakeFunctionPlugin(extName, argList, fBody) := [
 	DllUnload(dllPath);
 	DllLoad(dllPath);
 	Echo({"Function " : extName : "(" : MakeArgumentList(argList, ""): ") loaded from " : dllPath});
+	/* define wrapper */
+	NFunction(extName, exportName, argList);
 ];
 
 /* show a Yacas expression graphically in a PS file */
 /* The following global variable will define the available PS viewer */
 PSViewCommand := "gv";
-ShowPS(expr) := [
+
+GetYacasPID() := [
 /* Example code to read the PID of the Yacas process into the variable PID
 	We have to jump through the hoops here because we can't redirect STDOUT to a Yacas stream... ideally it would be just this:
-	PID := FromString(ToString() SystemCall("echo $PPID")) Read();
-/*
-	SystemCall("echo $PPID ';' > /tmp/yacas-tmp");
-	PID := FromFile("/tmp/yacas-tmp") Read();
+	PID := FromString(ToString() SystemCall("echo $PPID ';'")) Read();
 */
+	SystemCall("echo $PPID ';' > /tmp/yacas-tmp");
+	FromFile("/tmp/yacas-tmp") Read();
+];
+
+ShowPS(expr) := [
 	/* Create a temporary file */
 	SystemCall("echo \\\"/tmp/yacas-tmpfile-$$\\\" ';' > /tmp/yacas-tmp");
 	filename := FromFile("/tmp/yacas-tmp") Read();

@@ -452,7 +452,7 @@ i, j - positive integers
 
 CoFactor returns the cofactor of a matrix around
 the element (i,j). The cofactor is the minor times
-(-1)^(i+j)
+$(-1)^(i+j)$.
 
 *E.G.
 
@@ -650,7 +650,7 @@ A - square matrix
 
 This function tries to find out if A is unitary.
 
-Matrix A is orthogonal iff A^(-1) = Transpose(Conjugate(A)). This is
+Matrix A is orthogonal iff $A^(-1)$ = Transpose(Conjugate($A$)). This is
 equivalent to the fact that the columns of A build an orthonormal system
 (in respect to the scalar product defined by InProduct).
 

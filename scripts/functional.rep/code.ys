@@ -24,3 +24,15 @@ Function("/@",{func,lst}) Apply("MapSingle",{func,lst});
 Function("..",{from,to}) Table(i,i,from,to,1);
 
 
+/* NFunction("new'func", "old'func" {arg'list}) will define a wrapper function
+around  "old'func", called "new'func", which will return "old'func(arg'list)"
+only when all arguments are numbers and will return unevaluated
+"new'func(arg'list)" otherwise. */
+
+NFunction(new'name_IsString, old'name_IsString, arg'list_IsList) <-- [
+	MacroRuleBase(new'name, arg'list);
+	MacroRule(new'name, Length(arg'list), 0,	// check whether all args are numeric
+		UnList({IsNumericList, arg'list})
+	)
+		UnList({Atom("@"), old'name, arg'list}); // cannot use '@' b/c get a syntax error
+];
