@@ -21,7 +21,7 @@ require more arithmetic operations per step and are in fact less efficient at hi
 Halley's method can be generalized to any function $f(x)$. A cubically convergent iteration is obtained if we replace the equation $f(x)=0$ by an equivalent equation
 $$ g(x):=f(x)/Sqrt(Abs(D(x)f(x))) = 0 $$.
 Here the function $g(x)$ was chosen so that its second derivative vanishes ($D(x,2)g(x)=0$) at the root of the equation $f(x)=0$, independently of where this root is. The Newton iteration for the equation $g(x)=0$ can be written as
-$$ x'=x-(2*f(x)*D(x)f(x))/(2*(D(x)f(x))^2-f(x)*D(x,2)f(x)) $$.
+$$ x'=x-(2*f(x)*D(x)f(x))/(2*(D(x)f(x))^2-f(x)*Deriv(x,2)f(x)) $$.
 It is sometimes simpler to apply Newton's iteration directly to the modified equation $g(x)=0$.
 
 Halley's iteration, despite its faster convergence rate, may be more cumbersome to evaluate than Newton's iteration and so it may not provide a more efficient numerical method for some functions. Only in some special cases is Halley's iteration just as simple to compute as Newton's iteration. But Halley's method has another advantage: it is generally less sensitive to the choice of the initial point $x[0]$. An extreme example of sensitivity to the initial point is the equation $x^(-2)= 12$ for which Newton's iteration $x'=3*x/2-6*x^3$ converges to the root only from initial points $0<x[0] <0.5$ and wildly diverges otherwise, while Halley's iteration converges to the root from any $x[0]>0$.
@@ -42,19 +42,21 @@ with $P$ decimal digits of precision and $x<2$, one would need about $N<=>P*Ln(1
 
 If we do not know in advance how many terms of the Taylor series we need, we cannot do any better than just evaluate each term and check if it is already small enough. So in this case we will have to do $O(N)$ long multiplications. However, we can organize the calculation much more efficiently if we can estimate the necessary number of terms and if we can afford some storage. A "rectangular" algorithm uses $2*Sqrt(N)$ long multiplications (assuming that the coefficients of the series are short rational numbers) and $Sqrt(N)$ units of storage. (See paper: D. M. Smith, <i>Efficient multiple-precision evaluation of elementary functions</i>, 1985.)
 
-Suppose we need to evaluate $Sum(k,0,N, a[k]*x^k)$ and we know that $N$ terms are enough for $P$ decimal digits. Typically $N$ will be $O(P)$. Suppose also that the coefficients $a[k]$ are rational numbers with small numerators and denominators, so a  multiplication $a[k]*x$ is not a long multiplication (usually, either $a[k]$ or the ratio $a[k]$/$a[k-1]$ is a short rational number). Then we can organize the calculation in a rectangular array with $c$ columns and $r$ rows like this,
+Suppose we need to evaluate $Sum(k,0,N, a[k]*x^k)$ and we know that $N$ terms are enough. Suppose also that the coefficients $a[k]$ are rational numbers with small numerators and denominators, so a  multiplication $a[k]*x$ is not a long multiplication (usually, either $a[k]$ or the ratio $a[k]$/$a[k-1]$ is a short rational number). Then we can organize the calculation in a rectangular array with $c$ columns and $r$ rows like this,
 $$ a[0]+a[r]*x^r+...+a[(c-1)*r]*x^((c-1)*r) $$+
-$$ x*(a[1]+a[r+1]*x^r+...) $$+
+$$ x*(a[1]+a[r+1]*x^r+...+a[(c-1)*r+1]*x^((c-1)*r+1)) $$+
 $$ ... $$+
 $$ x^(r-1)*(a[r-1]+a[2*r+1]*x^r+...) $$.
-To evaluate this rectangle, we first to compute $x^r$ (which, if done by the fast binary algorithm, requires $O(Ln(r))$ long multiplications), and then we compute the $c-1$ successive powers of $x^r$, namely
+To evaluate this rectangle, we first compute $x^r$ (which, if done by the fast
+binary algorithm, requires $O(Ln(r))$ long multiplications). Then we compute
+the $c-1$ successive powers of $x^r$, namely
 $x^(2*r)$, $x^(3*r)$, ..., $x^((c-1)*r)$ in $c-1$ long
-multiplications. The partial sums in the $r$ rows are evaluated column by column as more powers of $x^r$ become available. This requires storage of $r$ intermediate results and no long multiplications, assuming that the coefficients $a[k]$ can be multiplied by the power of $x^r$ using short multiplications only. If a simple formula relating the coefficients $a[k]$ and $a[k-1]$ is available, then a column can be computed and added to the accumulated row values using only short operations, e.g. $a[r+1]*x^r$ can be computed from $a[r]*x^r$ (note that each column contains some consecutive terms of the series). After this, we need $r-1$ more
-multiplications for the rows (using the Horner scheme). We have potentially saved time because we do not
+multiplications. The partial sums in the $r$ rows are evaluated column by column as more powers of $x^r$ become available. This requires storage of $r$ intermediate results but no more long multiplications by $x$. If a simple formula relating the coefficients $a[k]$ and $a[k-1]$ is available, then a whole column can be computed and added to the accumulated row values using only short operations, e.g. $a[r+1]*x^r$ can be computed from $a[r]*x^r$ (note that each column contains some consecutive terms of the series). Otherwise, we would need to multiply each coefficient $a[k]$ separately by the power of $x$; if the coefficients $a[k]$  are short numbers, this is also a short operation. After this, we need $r-1$ more
+multiplications for the vertical summation of rows (using the Horner scheme). We have potentially saved time because we do not
 need to evaluate powers such as $x^(r+1)$ separately, so we do not have to multiply $x$ by itself quite so many
 times.
 
-The total required number of long multiplications is $r+c+Ln(r)-1$ and we have the condition $r*c>=N$. The minimum number of multiplications is around  $2*Sqrt(N)$ at $r<=>Sqrt(N)-1/2$ (the formula $r<=>Sqrt(N-Sqrt(N))$ can be used with an integer square root algorithm). Therefore, by arranging the Taylor series in a rectangle of sides $r$ and $c$, we have obtained an algorithm which costs $O(Sqrt(N))$ instead of $O(N)$ long multiplications and requires $Sqrt(N)$ units of storage.
+The total required number of long multiplications is $r+c+Ln(r)-2$. The minimum number of multiplications, given that $r*c>=N$, is around  $2*Sqrt(N)$ at $r<=>Sqrt(N)-1/2$ (the formula $r<=>Sqrt(N-Sqrt(N))$ can be used with an integer square root algorithm). Therefore, by arranging the Taylor series in a rectangle of sides $r$ and $c$, we have obtained an algorithm which costs $O(Sqrt(N))$ instead of $O(N)$ long multiplications and requires $Sqrt(N)$ units of storage.
 
 One might wonder if we should not try to arrange the Taylor series in a cube or another multidimensional matrix instead of a rectangle. However, calculations show that this does not save time: the optimal arrangement is the two-dimensional rectangle.
 
@@ -131,7 +133,7 @@ An alternative way to compute $x=Exp(a)$ at large precision would be to solve th
 $$ (Ln(x)-a)/(Ln(x)-a-2) = 0$$.
 For this equation, Newton's method gives the iteration
 $$ x' = x*(1+(a+1-Ln(x))^2)/2 $$.
-This iteration converges for initial values $0<x<Exp(a+2)$ with a cubic convergence rate. A good initial guess can be found by raising 2 to the integer part of $a/Ln(2)$.
+This iteration converges for initial values $0<x<Exp(a+2)$ with a cubic convergence rate and requires only one more multiplication, compared with Newton's method for $Ln(x)=a$. A good initial guess can be found by raising 2 to the integer part of $a/Ln(2)$ (the value $Ln(2)$ can be approximated from above by a suitable rational number, e.g. $7050/10171$).
 
 	    Trigonometric
 
@@ -336,5 +338,5 @@ Binomial coefficients $Bin(n,m)$ are found by first selecting the smaller of $m$
 
 	    Approximate factorials
 
-A floating-point computation of the factorial may proceed either via Euler's Gamma function or by a direct method (multiplying the integers). If the required precision is much less than the number of digits in the exact factorial, then almost all multiplications will be truncated to the precision $P$ and the tree method $O(n*Ln(n)*M(P))$ is slower than the simple method $O(n*P)$.
+A floating-point computation of the factorial may proceed either via Euler's Gamma function or by a direct method (multiplying the integers). If the required precision is much less than the number of digits in the exact factorial, then almost all multiplications will be truncated to the precision $P$ and the tree method $O(n*M(P))$ is always slower than the simple method $O(n*P)$.
 
