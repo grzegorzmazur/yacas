@@ -869,8 +869,8 @@ expression. {Pi} is considered a constant.
 
 *DESC
 
-This function returns a boolean value depending on whether or not
-the argument is a Gaussian integer. A Gaussian integer is a generalization
+This function returns {True} if the argument is a Gaussian integer and {False} otherwise.
+A Gaussian integer is a generalization
 of integers into the complex plane. A complex number {a+b*I} is a Gaussian
 integer if and only if {a} and {b} are integers.
 
@@ -894,8 +894,9 @@ integer if and only if {a} and {b} are integers.
 
 *DESC
 
-This function returns a boolean value depending on whether or not
-the argument is a unit in the Gaussian integers (i.e.: 1,-1,I or -I). 
+This function returns {True} if
+the argument is a unit in the Gaussian integers and {False} otherwise.
+There are four "units" in the ring of Gaussian integers, which are $1$, $-1$, $I$, and $-I$.
 	
 *E.G.
 	In> IsGaussianInteger(I)
@@ -903,7 +904,7 @@ the argument is a unit in the Gaussian integers (i.e.: 1,-1,I or -I).
 	In> IsGaussianUnit(5+6*I)
 	Out> False;
 
-*SEE  IsGaussianInteger, IsGausianPrime, GaussianNorm
+*SEE  IsGaussianInteger, IsGaussianPrime, GaussianNorm
 
 
 *CMD IsGaussianPrime ---  test for a Gaussian prime
@@ -916,13 +917,15 @@ the argument is a unit in the Gaussian integers (i.e.: 1,-1,I or -I).
 
 *DESC
 
-This function returns a boolean value depending on whether or not the argument
-is a Gaussian prime. Gaussian primes are Gaussian integers $z=a+b*I$
-that satisfy one of the following properties. If $Re(z)$ and $Im(z)$ are nonzero then,
+This function returns {True} if the argument
+is a Gaussian prime and {False} otherwise.
+
+Gaussian primes are Gaussian integers $z=a+b*I$
+that satisfy one of the following properties. If $Re(z)$ and $Im(z)$ are nonzero then
 $z$ is a Gaussian prime if and only if $Re(z)^2 + Im(z)^2$ is an ordinary
 prime. If $Re(z)==0$, then $z$ is a Gaussian prime if and only if $Im(z)$ is an
-ordinary prime and $Im(z):=Mod(3,4)$. If $Im(z)==0$, then $z$ is a Gaussian prime
-if and only if $Re(z)$ is an ordinary prime and $Re(z):=Mod(3,4)$. 
+ordinary prime and $Im(z):=Mod(3,4)$. If $Im(z)==0$ then $z$ is a Gaussian prime
+if and only if $Re(z)$ is an ordinary prime and $Re(z):=Mod(3,4)$.
 
 *E.G.
 	In> IsGaussianPrime(13)
@@ -940,24 +943,24 @@ if and only if $Re(z)$ is an ordinary prime and $Re(z):=Mod(3,4)$.
 *CMD MatchLinear --- match an expression to a polynomial of degree one in a variable
 *STD
 *CALL
-	MatchLinear(variable,expression)
+	MatchLinear(x,expr)
 
 *PARMS
 
-{variable} -- variable to express the univariate polynomial in
+{x} -- variable to express the univariate polynomial in
 
-{expression} -- expression to match
+{expr} -- expression to match
 
 *DESC
 
-MatchLinear tries to match an expression to a linear (degree less than
-two) polynomial. The function returns True if it could match, and
-it stores the resulting coefficients in the variables 'a' and 'b'
+{MatchLinear} tries to match an expression to a linear (degree less than
+two) polynomial. The function returns {True} if it could match, and
+it stores the resulting coefficients in the variables "{a}" and "{b}"
 as a side effect. The function calling this predicate should declare
-local variables 'a' and 'b' for this purpose.
-MatchLinear tries to match to constant coefficients which don't
-depend on the variable passed in, trying to find a form 'a*x+b'
-with 'a' and 'b' not depending on 'x' if 'x' is given as the variable.
+local variables "{a}" and "{b}" for this purpose.
+{MatchLinear} tries to match to constant coefficients which don't
+depend on the variable passed in, trying to find a form "{a*x+b}"
+with "{a}" and "{b}" not depending on {x} if {x} is given as the variable.
 
 *E.G.
 

@@ -62,8 +62,16 @@ IsNotComplex(x) := Not(IsComplex(x));
 111 # Complex(_r1,_i1) - Complex(_r2,_i2) <-- Complex(r1-r2,i1-i2);
 
 /* Multiplication */
+110 # Complex(_r1,_i1) * Complex(_r2,_i2) <-- Complex(r1*r2-i1*i2,r1*i2+r2*i1);
+/* right now this is slower than above
 110 # Complex(_r1,_i1) * Complex(_r2,_i2) <--
-    Complex(r1*r2-i1*i2,r1*i2+r2*i1);
+[	// the Karatsuba trick
+	Local(A,B);
+	A:=r1*r2;
+	B:=i1*i2;
+	Complex(A-B,(r1+i1)*(r2+i2)-A-B);
+];
+*/
 300 # Complex(_r,_i) * y_IsConstant <-- Complex(r*y,i*y);
 300 # y_IsConstant * Complex(_r,_i) <-- Complex(r*y,i*y);
 
