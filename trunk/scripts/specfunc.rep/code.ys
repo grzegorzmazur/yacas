@@ -170,13 +170,14 @@ Function("ApproxInfSum",{expr,start,x,c})
 /////////////////////////////////////////////////
 
 10 # Erf(0)		<-- 0;
-10 # Erfc(0)		<-- 1;
+//10 # Erfc(0)		<-- 1;
 10 # Erf(Infinity)	<-- 1;
-10 # Erfc(Infinity)	<-- 0;
-10 # Erf(x)_(x<0)	<-- Erf(-x);
-10 # Erfc(x)		<-- 1 - Erf(x);
-40 # Erf(_x)_(Abs(x) <= 1 )  <-- N(2/Sqrt(Pi)*ApproxInfSum((-1)^k*x^(2*k+1)/((2*k+1)*k!),0,x));
+10 # Erf(Undefined) <-- Undefined;
+//10 # Erfc(Infinity)	<-- 0;
+10 # Erf(x_IsNumber)_(x<0)	<-- Erf(-x);
+40 # Erf(x_IsNumber)_(Abs(x) <= 1 )  <-- N(2/Sqrt(Pi)*ApproxInfSum((-1)^k*x^(2*k+1)/((2*k+1)*k!),0,x));
 
+10 # Erfc(_x)		<-- 1 - Erf(x);
 
 /////////////////////////////////////////////////
 /// Fresnel integrals
@@ -184,11 +185,11 @@ Function("ApproxInfSum",{expr,start,x,c})
 
 10 # FresnelSin(0)		<-- 0;
 10 # FresnelSin(Infinity)	<-- 1/2;
-10 # FresnelSin(_x)_(x<0)	<-- -FresnelSin(x);
+10 # FresnelSin(x_IsNumber)_(x<0)	<-- -FresnelSin(x);
 10 # FresnelCos(0)              <-- 0;
 10 # FresnelCos(Infinity)       <-- 1/2;
-10 # FresnelCos(_x)_(x<0)       <-- -FresnelCos(x);
+10 # FresnelCos(x_IsNumber)_(x<0)       <-- -FresnelCos(x);
 
-40 # FresnelSin(_x)_(Abs(x) <= 1) <-- N(Sqrt(2/Pi)*ApproxInfSum((-1)^(k+1)*x^(2*k+1)/(k! * (2*k+1)),1,x));
-40 # FresnelCos(_x)_(Abs(x) <= 1) <-- N(Sqrt(2/Pi)*ApproxInfSum((-1)^(k+1)*x^(4*k-3)/((4*k-3) * (2*k-2)! ),1,x));
+40 # FresnelSin(x_IsNumber)_(Abs(x) <= 1) <-- N(Sqrt(2/Pi)*ApproxInfSum((-1)^(k+1)*x^(2*k+1)/(k! * (2*k+1)),1,x));
+40 # FresnelCos(x_IsNumber)_(Abs(x) <= 1) <-- N(Sqrt(2/Pi)*ApproxInfSum((-1)^(k+1)*x^(4*k-3)/((4*k-3) * (2*k-2)! ),1,x));
 
