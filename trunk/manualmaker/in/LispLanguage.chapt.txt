@@ -366,10 +366,7 @@ macro, as when {unless} is called, the arguments should not
 be evaluated first. Unless can be defined as:
 
 	(defmacro unless (predicate body) 
-	  (if (eval predicate) 
-	     nil 
-	     (eval body) 
-	) )    
+	  (if predicate nil body) )    
 
 This makes {unless} work, as the following interaction shows:
 
@@ -396,7 +393,7 @@ Examples involving {defun}:
 	Out> (b end )
 
 In addition, nameless (pure) functions can be made, which work
-exactly as their {defun}/{Defmacro} counterparts, as {lambda}
+exactly as their {defun}/{defmacro} counterparts, as {lambda}
 and {macro}:
 
 *	0. {(lambda <arguments> <body>)} - define a pure unnamed function.
@@ -684,8 +681,8 @@ possible to define an {if} operation:
 	In> (defmacro Newif
 	          (pred then else)
 	          (cond
-	             ( (eval pred) (eval then) )
-	             ( t           (eval else) )
+	             ( pred then)
+	             ( t    else)
 	        ) )
 	Out> Newif
 	In> (Newif (equal 'a 'b) 'c 'd)
@@ -747,7 +744,7 @@ and with this we can start to print functions for boolean expressions.
 First, let us define a {not} operator, which returns True if its
 argument is {nil}:
 
-	In> (defmacro not (a)  (null (eval a) ) )
+	In> (defmacro not (a)  (null a) )
 	Out> not
 	In> (not 'a)
 	Out> nil
@@ -756,9 +753,9 @@ argument is {nil}:
 
 Then <i>lazy and </i> and <i>lazy or</i> operations can be defined:
 
-	In> (defmacro and (a b) (if (eval a) (eval b) nil) )
+	In> (defmacro and (a b) (if a b nil))
 	Out> and
-	In> (defmacro or  (a b) (if (eval a) t (eval b) ) )      
+	In> (defmacro or  (a b) (if a t b) )      
 	Out> or
 
 These evaluate their first argument first, and decide to evaluate the
@@ -777,7 +774,7 @@ The {unless} operation could equally well have been defined
 by using {or}:
 
 	In> (defmacro unless (predicate body) 
-	  (or (eval predicate) (eval body) ) )    
+	  (or predicate body) )    
 	Out> unless
 	In> (unless t (print 'SOMETHING))
 	Out> nil
