@@ -14,6 +14,7 @@ SCRIPTFILES = \
         patterns.rep/code.ys.def predicates.rep/code.ys predicates.rep/code.ys.def stats.rep/code.ys stats.rep/code.ys.def padic.rep/code.ys \
         padic.rep/code.ys.def testers.rep/code.ys testers.rep/code.ys.def factors.rep/code.ys factors.rep/code.ys.def tensor.rep/code.ys tensor.rep/code.ys.def \
         texform.rep/code.ys texform.rep/code.ys.def io.rep/code.ys io.rep/code.ys.def io.rep/print.ys io.rep/formula.ys io.rep/errors.ys c_form.rep/code.ys c_form.rep/code.ys.def \
+		io.rep/defaultprint.ys io.rep/defaultprint.ys.def \
 		logic.rep/code.ys logic.rep/code.ys.def logic.rep/om.ys cstubgen.rep/code.ys cstubgen.rep/code.ys.def \
         radsimp.rep/code.ys radsimp.rep/code.ys.def pslq.rep/code.ys pslq.rep/code.ys.def odesolver.rep/code.ys odesolver.rep/code.ys.def limit.rep/code.ys limit.rep/code.ys.def \
         localrules.rep/code.ys localrules.rep/code.ys.def rabinmiller.rep/code.ys rabinmiller.rep/code.ys.def \
