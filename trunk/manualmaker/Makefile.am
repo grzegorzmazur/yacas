@@ -17,8 +17,8 @@ BOOKSOURCES = in/intro.book.txt in/coding.book.txt \
 	in/ref.book.txt in/refprog.book.txt in/essays.book.txt \
 	in/Algo.book.txt in/LispProgramming.book.txt
 
-INTROCHAPTERS = FDL.chapt
-INTROSOURCES = in/FDL.chapt.txt
+INTROCHAPTERS = FDL.chapt cl-options.chapt
+INTROSOURCES = in/FDL.chapt.txt in/cl-options.chapt.txt
 
 ALGOCHAPTERS = algo-basic.chapt algo-numapprox.chapt algorithms-elemfunc.chapt algorithms-specfunc.chapt algorithms-numtheory.chapt algorithms-integration.chapt algorithms-multivar.chapt SturmSequences.chapt FDL.chapt algo-refs.chapt
 ALGOSOURCES = in/algo-basic.chapt.txt in/algo-numapprox.chapt.txt in/algorithms-elemfunc.chapt.txt in/algorithms-specfunc.chapt.txt in/algorithms-numtheory.chapt.txt in/algorithms-integration.chapt.txt in/algorithms-multivar.chapt.txt in/SturmSequences.chapt.txt in/FDL.chapt.txt in/algo-refs.chapt.txt
@@ -26,17 +26,19 @@ ALGOSOURCES = in/algo-basic.chapt.txt in/algo-numapprox.chapt.txt in/algorithms-
 REFCHAPTERS = config.chapt arith.chapt calc.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
 	preds.chapt logic.chapt const.chapt vars.chapt io.chapt numtheory.chapt \
-	strings.chapt probability-and-statistics.chapt addons.chapt FDL.chapt
+	strings.chapt probability-and-statistics.chapt \
+	addons.chapt FDL.chapt
 
 REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt \
 	in/linalg.chapt.txt in/univar.chapt.txt in/lists.chapt.txt \
 	in/functional.chapt.txt in/controlflow.chapt.txt in/preds.chapt.txt \
 	in/logic.chapt.txt in/const.chapt.txt in/vars.chapt.txt in/io.chapt.txt in/numtheory.chapt.txt \
-	in/strings.chapt.txt in/probability-and-statistics.chapt.txt in/addons.chapt.txt in/FDL.chapt.txt
+	in/strings.chapt.txt in/probability-and-statistics.chapt.txt \
+	in/addons.chapt.txt in/FDL.chapt.txt
 
-REFPROGCHAPTERS = yacasapi.chapt FDL.chapt
+REFPROGCHAPTERS = yacasapi.chapt FDL.chapt cl-options.chapt
 # yacasapi.chapt has no .txt source
-REFPROGSOURCES =
+REFPROGSOURCES = in/FDL.chapt.txt in/cl-options.chapt.txt
 
 CODINGCHAPTERS = YacasDebugger.chapt FDL.chapt
 CODINGSOURCES = in/YacasDebugger.chapt.txt in/FDL.chapt.txt

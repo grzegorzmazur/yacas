@@ -543,124 +543,15 @@ After this you should see a window with a plot.
 
 			Let's learn some more
 
-		Command-line options
+		Using Yacas from the console
 
-The default operation of {Yacas} is to run in the interactive console mode. {Yacas} accepts several options that modify its operation. Options can be combined, for example, {yacas -pc} {filename} will execute a file non-interactively. Here is a summary of options:
+*INCLUDE cl-options.chapt
 
-	yacas -c
-Inhibit printing of prompts {In>} and {Out>}. Useful for non-interactive sessions.
+	    Client/server usage
 
-	yacas -f
-Reads standard input as one file, but executes only the first statement in it. (You may want to use a statement block to have several statements executed.)
-
-	yacas -p
-Does not use terminal capabilities, no fancy editing on the command line and no escape sequences printed. Useful for non-interactive sessions.
-
-	yacas -t
-Enable some extra history recall functionality in console mode: after executing a command from the history list, the next unmodified command from the history list will be automatically entered on the command line.
-
-*A executing script files
-	yacas [options] {filename}
-Reads and executes commands in the filename and exits. Equivalent to {Load()}.
-
-	yacas -v
-Prints version information and exits.
-
-	yacas -d
-Prints the path to the {Yacas} library directory and exits.
-
-	yacas --patchload
-Will load every file on the command line not with the normal Load command,
-but with PatchLoad. This is useful for generating html pages for a
-web site using the {Yacas} scripting language, much like you can do with
-the php scripting language.
-
-	yacas --init [file]
-Tells the system to load {file} as the initialization file. Otherwise
-it loads the file {yacasinit.ys} from the scripts directory.
-
-	yacas --server <port>
-
-On some platforms server mode can be enabled by passing the
-flag {--enable-server} to the {./configure} script. {Yacas}
-then allows you to pass the flag {--server} with a port number
-behind it, and the {Yacas} executable will listen to the socket
-behind that port in stead of going through the command line.
-
-Commands can be sent to the server by sending a text line as
-one block of data, and the server will respond back with a
-response. 
-One can test this function by using {telnet}. First, set up
-the server by calling
-
-	yacas --server 9734
-
-and then invoke {telnet} in another window, through for example:
-
-	telnet 127.0.0.1 9734
-
-and type a line and enter. The result will be one line back.
-
-Some security measures and resource management measures have been 
-taken. No more than 10 connections can be alive at any time, 
-a calculation cannot take more than 30 seconds, and {Yacas}
-operates in <i>secure</i> mode, much like calling an expression
-by passing it as an argument to the {Secure} function.
-This means that no system calls are allowed, and no writing to
-local files, amongst other things. Something that has not been 
-taken care of yet is memory use. A calculation could take up all
-memory, but not for longer than 30 seconds. 
-
-	yacas --rootdir [directory]/
-Tells the system where to find the library scripts. Here, {directory/} is a
-path that is passed to {DefaultDirectory}, and file names will be simply
-appended to it, so you should make sure to include a forward or backward slash
-(depending on the platform) at the end. It is also possible to give a
-list of directories, separated by a colon, eg. 
-{yacas --rootdir scripts/:morescripts/}.
-
-	yacas --archive [file]
-Use a compressed archive instead of the script library.
-
-*A using compressed libraries
-{Yacas} has an experimental system where files can be compressed into
-one file, and accessed through this command line option. The advantages
-are:
-
-*	0. Smaller disk/memory use (useful if {Yacas} is used on small hand-held computers).
-*	0. No problems with directory path separators: "{path}/{file}" will always
-resolve to the right file, no matter what platform (read: Windows) it runs on.
-*	0. The start-up time of the program might improve a little, since 
-a smaller file is loaded from disk (disk access being slow), and then decompressed
-in memory, which might be a lot faster than loading from disk.
-
-An additional savings is due to the fact that the script files are 
-stripped from white spaces and comments, making them smaller and faster loading.
-
-To prepare the compressed library archive, go into the {ramscripts/} directory
-and type
-	make -f makefile.compressor
-The result should be the archive file {scripts.dat}.
-Then launch {Yacas} with the command line option {--archive scripts.dat},
-with the file {scripts.dat} in the current directory.
-
-The reason that the {scripts.dat} file is not built automatically is
-that it is not tested, at this time, that the build process works on all
-platforms.
-
-When an archive is present, it will be tried before trying to load scripts from the library directories.
-Typing 
-	make archivetest -f makefile.compressor
-in the {ramscripts/} directory runs all the test scripts using the archived
-files.
-
-The currently supported compression schemes are uncompressed, 
-and compressed with {minilzo}. Script file stripping (removing whitespace
-and comments) may be disabled by editing {compressor.cpp} (variable {strip_script}).
-
-		Client/server usage
-
-In addition to the console mode, an experimental persistent session facility is provided through the script {yacas_client}. By means of this script, the user can configure third-party applications to pass commands to a constantly running "{Yacas} server" and get output. The "{Yacas} server" is automatically started by {yacas_client}. It may run on a remote computer; in that case the user should have a user account on the remote computer and privileges to execute {yacas_client} there, as well as {rsh} or {ssh} access. The purpose of {yacas_client} is to enable users to pass commands to {Yacas} within a persistent session while running another application such as a text editor.
+In addition to the interactive console sessions, a remote persistent session facility is provided through the script {yacas_client}.
+(This is currently only supported on Unix platforms.)
+By means of this script, the user can configure third-party applications to pass commands to a constantly running "{Yacas} server" and get output. The "{Yacas} server" is automatically started by {yacas_client}. It may run on a remote computer; in that case the user should have a user account on the remote computer and privileges to execute {yacas_client} there, as well as {rsh} or {ssh} access. The purpose of {yacas_client} is to enable users to pass commands to {Yacas} within a persistent session while running another application such as a text editor.
 
 *A {yacas_client}
 The script {yacas_client} reads {Yacas} commands from the standard input and passes them to the running "{Yacas} server"; it then waits 2 seconds and prints whatever output {Yacas} produced up to this time. Usage may look like this:
