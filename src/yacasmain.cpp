@@ -36,6 +36,13 @@
 #include <sys/stat.h>
 #endif
 
+
+#ifdef WIN32
+  #define PATH_SEPARATOR '\\'
+#else
+  #define PATH_SEPARATOR '/'
+#endif
+
 #include "yacas.h"
 
 #ifndef WIN32
@@ -342,6 +349,15 @@ void ShowResult(char *prompt)
     fflush(stdout);
 }
 
+void DeclarePath(char *ptr2)
+{
+  char buf[1000];
+  if (ptr2[strlen(ptr2)-1] != PATH_SEPARATOR)
+    sprintf(buf,"DefaultDirectory(\"%s%c\");",ptr2,PATH_SEPARATOR);
+  else
+    sprintf(buf,"DefaultDirectory(\"%s\");",ptr2);
+  yacas->Evaluate(buf);
+}
 
 void LoadYacas()
 {
@@ -418,20 +434,19 @@ void LoadYacas()
     {
       /* Split up root_dir in pieces separated by colons, and run 
 	 DefaultDirectory on each of them. */
-        char buf[1000], *ptr1, *ptr2;
+        char *ptr1, *ptr2;
 	ptr1 = ptr2 = root_dir;
 	while (*ptr1 != '\0') {
 	  while (*ptr1 != '\0' && *ptr1 != ':') ptr1++;
 	  if (*ptr1 == ':') {
 	    *ptr1 = '\0';
-	    sprintf(buf,"DefaultDirectory(\"%s\");",ptr2);
-	    yacas->Evaluate(buf);
+            DeclarePath(ptr2);
 	    ptr1++;
 	    ptr2 = ptr1;
 	  }
 	}
-        sprintf(buf,"DefaultDirectory(\"%s\");",ptr2);
-        yacas->Evaluate(buf);
+        DeclarePath(ptr2);
+        char buf[1000];
         sprintf(buf,"Load(\"%s\");",init_script);
         yacas->Evaluate(buf);
     }
