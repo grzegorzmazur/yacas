@@ -25,25 +25,38 @@ RuleBase("=>",{a,b});
 
 10  # LogicSimplify( Not  True)                  <-- False;
 11  # LogicSimplify( Not  False)                 <-- True;
-12  # LogicSimplify(True   And  _x)              <-- LogicSimplify(x);
-13  # LogicSimplify(False  And  _x)              <-- False;
+12  # LogicSimplify(True   And  (_x))            <-- LogicSimplify(x);
+13  # LogicSimplify(False  And  (_x))            <-- False;
 14  # LogicSimplify(_x   And  True)              <-- LogicSimplify(x);
 15  # LogicSimplify(_x  And  False)              <-- False;
-16  # LogicSimplify(True   Or  _x)               <-- True;
-17  # LogicSimplify(False  Or  _x)               <-- LogicSimplify(x);
-18  # LogicSimplify(_x  Or  True )               <-- True;
-19  # LogicSimplify(_x  Or  False)               <-- LogicSimplify(x);
+16  # LogicSimplify(True   Or  (_x))             <-- True;
+17  # LogicSimplify(False  Or  (_x))             <-- LogicSimplify(x);
+18  # LogicSimplify((_x)  Or  True )             <-- True;
+19  # LogicSimplify((_x)  Or  False)             <-- LogicSimplify(x);
 
 /*Still not fully sure about these, but...  */
-21  # LogicSimplify(_x  Or  _x)                  <-- LogicSimplify(x);
-22  # LogicSimplify(_x  And  _x)                 <-- LogicSimplify(x);
-23  # LogicSimplify(_x  Or Not (_x))             <-- True;
-14  # LogicSimplify(Not (_x)  Or _x)             <-- True;
-25  # LogicSimplify(_x  And Not (_x))            <-- False;
-26  # LogicSimplify(Not (_x)  And _x)            <-- False;
-/**/
+21  # LogicSimplify((_x)  Or  (_x))              <-- LogicSimplify(x);
+22  # LogicSimplify((_x)  And  (_x))             <-- LogicSimplify(x);
+23  # LogicSimplify((_x)  Or Not (_x))           <-- True;
+23  # LogicSimplify(Not (_x)  Or _x)             <-- True;
+24  # LogicSimplify((_x)  And Not (_x))          <-- False;
+24  # LogicSimplify(Not (_x)  And (_x))          <-- False;
 
-30  # LogicSimplify((_x)  Or  (_y))_(x!= LogicSimplify(x) Or y!=LogicSimplify(y))               /* Transform subexpression */
+25  # LogicSimplify(((_x) == (_y)) Or ((_x) !== (_y)))   <-- True;
+25  # LogicSimplify(((_x) !== (_y)) Or ((_x) == (_y)))   <-- True;
+26  # LogicSimplify(((_x) == (_y)) And ((_x) !== (_y)))  <-- False;
+26  # LogicSimplify(((_x) !== (_y)) And ((_x) == (_y)))  <-- False;
+27  # LogicSimplify(((_x) >= (_y)) And ((_x) < (_y)))    <-- False;
+27  # LogicSimplify(((_x) < (_y)) And ((_x) >= (_y)))    <-- False;
+28  # LogicSimplify(((_x) >= (_y)) Or ((_x) < (_y)))     <-- True;
+28  # LogicSimplify(((_x) < (_y)) Or ((_x) >= (_y)))     <-- True
+
+29  # LogicSimplify(((_x) > (_y)) And ((_x) <= (_y)))    <-- False;
+29  # LogicSimplify(((_x) <= (_y)) And ((_x) > (_y)))    <-- False;
+30  # LogicSimplify(((_x) > (_y)) Or ((_x) <= (_y)))     <-- True;
+30  # LogicSimplify(((_x) <= (_y)) Or ((_x) > (_y)))     <-- True
+
+31  # LogicSimplify((_x)  Or  (_y))_(x!= LogicSimplify(x) Or y!=LogicSimplify(y))               /* Transform subexpression */
                                                 <-- LogicSimplify(LogicSimplify(x) Or LogicSimplify(y));
 35  # LogicSimplify( Not  (_x))_(x != LogicSimplify(x))
                                                 <-- LogicSimplify(Not LogicSimplify(x));        /* Transform subexpression */
@@ -59,21 +72,22 @@ RuleBase("=>",{a,b});
 
 90 # LogicSimplify((_x)  And  (_y))             <-- LogicSimplify(x) And LogicSimplify(y);      /* Transform subexpression */
 
-101 # LogicSimplify( (_x) < (_y) )               <-- Simplify(x <   y);
-102 # LogicSimplify( (_x) > (_y) )               <-- Simplify(x >   y);
-103 # LogicSimplify( (_x) >= (_y) )              <-- Simplify(x >=  y);
-104 # LogicSimplify( (_x) <= (_y) )              <-- Simplify(x <=  y);
-105 # LogicSimplify( (_x) == (_y) )              <-- Simplify(x ==  y);
-106 # LogicSimplify( (_x) !== (_y) )             <-- Simplify(x !== y);
+101 # LogicSimplify( (_x) < (_y) )              <-- Simplify(x <   y);
+102 # LogicSimplify( (_x) > (_y) )              <-- Simplify(x >   y);
+103 # LogicSimplify( (_x) >= (_y) )             <-- Simplify(x >=  y);
+104 # LogicSimplify( (_x) <= (_y) )             <-- Simplify(x <=  y);
+105 # LogicSimplify( (_x) == (_y) )             <-- Simplify(x ==  y);
+106 # LogicSimplify( (_x) !== (_y) )            <-- Simplify(x !== y);
 
-111 # LogicSimplify( Not((_x) <  (_y)) )         <-- Simplify( x >= y );
-112 # LogicSimplify( Not((_x) >  (_y)) )         <-- Simplify( x <= y );
-113 # LogicSimplify( Not((_x) <= (_y)) )         <-- Simplify( x > y );
-114 # LogicSimplify( Not((_x) >= (_y)) )         <-- Simplify( x < y );
-115 # LogicSimplify( Not((_x) == (_y)) )         <-- Simplify( x !== y );
-116 # LogicSimplify( Not((_x) !== (_y)) )        <-- Simplify( x == y );
+111 # LogicSimplify( Not((_x) <  (_y)) )        <-- Simplify( x >= y );
+112 # LogicSimplify( Not((_x) >  (_y)) )        <-- Simplify( x <= y );
+113 # LogicSimplify( Not((_x) <= (_y)) )        <-- Simplify( x > y );
+114 # LogicSimplify( Not((_x) >= (_y)) )        <-- Simplify( x < y );
+115 # LogicSimplify( Not((_x) == (_y)) )        <-- Simplify( x !== y );
+116 # LogicSimplify( Not((_x) !== (_y)) )       <-- Simplify( x == y );
 
-200 # LogicSimplify(_x)                          <-- x;                          /* Accept as fully simplified, fallthrough case */
+/* Accept as fully simplified, fallthrough case */
+200 # LogicSimplify(_x)                         <-- x;
 
 
 /* Simplify the logic expression to see if it is true. */
