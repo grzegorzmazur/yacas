@@ -306,5 +306,5 @@ Verify(N(Cos(Pi*.5)), 0);
 // Jitse's bug report
 Verify(CForm(4), "4.");
 Verify(CForm(4.), "4.");
-Verify(CForm(0), "0");
+Verify(CForm(0), "0.");
 
