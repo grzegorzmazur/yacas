@@ -123,13 +123,13 @@ public:
     inline void ShowInput(int aShowInput)     {iShowInput   = aShowInput;};
     inline void EnableInput(int aEnableInput) {iEnableInput = aEnableInput;};
     void DeleteAll();
+    FltkHintWindow* CheckForNewHints(char* text, int length);
 private:
     void ResetNotepadState();
-    void TryToHint(int ifrom,int ito);
-    void CheckForNewHints();
+    FltkHintWindow* TryToHint(char* text, int length);
     void DeleteHints();
-    void CreateHints();
-    void AddHintLine(LispCharPtr aText, LispCharPtr aDescription);
+    FltkHintWindow* CreateHints(int fontsize);
+    void AddHintLine(FltkHintWindow* hints, LispCharPtr aText, LispCharPtr aDescription);
     void AddOutput(ConsoleOutBase* aOutput);
     void CommandLineStartNew();
     void CommandLineEnd();

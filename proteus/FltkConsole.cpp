@@ -747,7 +747,7 @@ void FltkConsole::handle_key(int key)
           iSubLine.Delete(cursor);
           iFullLineDirty = 1;
           if (hints == NULL)
-            CheckForNewHints();
+            hints = CheckForNewHints(&iSubLine[0],cursor);
         }
         break;
     case eBackSpace:
@@ -762,7 +762,7 @@ void FltkConsole::handle_key(int key)
           iSubLine.Delete(cursor);
           iFullLineDirty = 1;
           if (hints == NULL)
-            CheckForNewHints();
+            hints = CheckForNewHints(&iSubLine[0],cursor);
         }
         break;
     case eLeft:
@@ -776,7 +776,7 @@ void FltkConsole::handle_key(int key)
             hints=NULL;
           }
           if (hints == NULL)
-            CheckForNewHints();
+            hints = CheckForNewHints(&iSubLine[0],cursor);
         }
         break;
     case eRight:
@@ -789,7 +789,7 @@ void FltkConsole::handle_key(int key)
           }
           cursor++;
           if (hints == NULL)
-            CheckForNewHints();
+            hints = CheckForNewHints(&iSubLine[0],cursor);
         }
         break;
     case eUp:
@@ -918,7 +918,7 @@ void FltkConsole::handle_key(int key)
         }
         cursor++;
         if (hints == NULL)
-          CheckForNewHints();
+          hints = CheckForNewHints(&iSubLine[0],cursor);
         break;
     }
 }
@@ -1011,55 +1011,59 @@ int LoadHints(char* file)
 }
 
 
-
-void FltkConsole::TryToHint(int ifrom,int ito)
+FltkHintWindow* FltkConsole::TryToHint(char* text, int length)
 {
-    int nrhints = hintTexts.NrItems();
-    int i,start;
-    start = hoffsets[(unsigned char)iSubLine[ifrom]];
-    if (start<0)
-        return;
-    for (i = start;i<nrhints;i++)
+  FltkHintWindow* hints = NULL;
+  int nrhints = hintTexts.NrItems();
+  int i,start;
+  start = hoffsets[(unsigned char)text[0]];
+  if (start<0)
+      return NULL;
+  for (i = start;i<nrhints;i++)
+  {
+    if ((unsigned char)text[0] < (unsigned char)hintTexts[i].base[0])
+      break;
+    int baselen = strlen(hintTexts[i].base);
+    if (length==baselen)
     {
-        if ((unsigned char)iSubLine[ifrom] < (unsigned char)hintTexts[i].base[0])
-            break;
-        int baselen = strlen(hintTexts[i].base);
-        if (ito-ifrom==baselen)
-        {
-          if (!strncmp(&iSubLine[ifrom],hintTexts[i].base,baselen))
-          {
-            if (hints == NULL)
-                CreateHints();
-            AddHintLine(hintTexts[i].hint,hintTexts[i].description);
-          }
-        }
+      if (!strncmp(text,hintTexts[i].base,baselen))
+      {
+        if (hints == NULL)
+            hints = CreateHints(iDefaultFontSize);
+        AddHintLine(hints, hintTexts[i].hint,hintTexts[i].description);
+      }
     }
+  }
+  return hints;
 }
 
-void FltkConsole::CheckForNewHints()
+
+FltkHintWindow* FltkConsole::CheckForNewHints(char* text, int length)
 {
+  FltkHintWindow* hints = NULL;
 	int braces = 1;
 
 	int ifrom,ito;
-	ito = cursor;
+	ito = length;
 
 	while (ito > 0 && braces > 0)
 	{
 	  ito --;
-	  if (iSubLine[ito] == '(')
+	  if (text[ito] == '(')
 		braces--;
-	  if (iSubLine[ito] == ')')
+	  if (text[ito] == ')')
 		braces++;
 	}
 	if (braces == 0 && ito>0)
 	{
 	  ifrom = ito-1;
-	  while (ifrom>0 && IsAlpha(iSubLine[ifrom])) ifrom--;
+	  while (ifrom>0 && IsAlpha(text[ifrom])) ifrom--;
 	  if (ifrom >= 0)
-		if (!IsAlpha(iSubLine[ifrom])) ifrom++;
+		if (!IsAlpha(text[ifrom])) ifrom++;
 	  if (ito>ifrom)
-		TryToHint(ifrom,ito);
+    hints = TryToHint(&text[ifrom],ito-ifrom);
 	}
+  return hints;
 }
 
 void FltkConsole::SetCurrentHighlighted(int i)
@@ -1251,7 +1255,7 @@ void FltkConsole::InsertText(const LispCharPtr aText)
    }
 
    if (hints == NULL)
-     CheckForNewHints();
+      hints = CheckForNewHints(&iSubLine[0],cursor);
 }
 
 //iCurrentHighlighted
@@ -1419,13 +1423,15 @@ void FltkConsole::DeleteHints()
     }
 }
 
-void FltkConsole::CreateHints()
+FltkHintWindow* FltkConsole::CreateHints(int fontsize)
 {
-    DeleteHints();
-    hints = new FltkHintWindow(iDefaultFontSize);
-    iOutputDirty=1;
+  FltkHintWindow* hints;
+//    DeleteHints();
+  hints = new FltkHintWindow(fontsize);
+  iOutputDirty=1;
+  return hints;
 }
-void FltkConsole::AddHintLine(LispCharPtr aText, LispCharPtr aDescription)
+void FltkConsole::AddHintLine(FltkHintWindow* hints, LispCharPtr aText, LispCharPtr aDescription)
 {
     hints->AddLine(aText);
     if (aDescription[0] != '\0')
