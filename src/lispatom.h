@@ -64,7 +64,7 @@ LispAnnotatedObject<T>::LispAnnotatedObject(LispObject* aOriginal)
 
 template<class T>
 LispObject* LispAnnotatedObject<T>::SetExtraInfo(LispPtr& aData)
-{ iAdditionalInfo.Set(aData.Get()); }
+{ iAdditionalInfo.Set(aData.Get()); return this;}
 
 template<class T>
 LispPtr* LispAnnotatedObject<T>::ExtraInfo()
@@ -97,8 +97,9 @@ EvalFuncBase* LispAnnotatedObject<T>::EvalFunc()
 template<class T>
 void LispAnnotatedObject<T>::SetEvalFunc(EvalFuncBase* aEvalFunc)
 {
-    return iObject.Get()->SetEvalFunc(aEvalFunc);
+    /*return */iObject.Get()->SetEvalFunc(aEvalFunc);
 }
+
 template<class T>
 LispObject* LispAnnotatedObject<T>::Copy(LispInt aRecursed)
 {
