@@ -1450,7 +1450,7 @@ void BigNumber::SetTo(double aValue)
   sprintf(format,"%%.%dg",iPrecision);
   sprintf(dummy,format,aValue);
 #endif
-  SetTo(dummy,iPrecision,10);
+  SetTo(dummy,iPrecision,BASE10);
   SetIsInteger(LispFalse);
 //  if (iNumber->iExp > 1)
 //    iNumber->RoundBits();
@@ -1461,10 +1461,10 @@ void BigNumber::SetTo(double aValue)
 }
 
 
-// assign from string at given precision (in base digits or bits?? the API says in base digits, but here apparently in bits)
-// FIXME: API breach
+// assign from string at given precision (the API says in base digits)
+// FIXME: API breach: aPrecision is passed in digits but used as if it were bits
 void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
-{//FIXME -- ?
+{//FIXME -- what?
   iPrecision = aPrecision;
   LispInt digits = BITS_TO_DIGITS(aPrecision,aBase);
   LispBoolean isFloat = 0;
@@ -1474,8 +1474,7 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
   {
     isFloat = 1;
 
-/* this code is not doing anything useful, it seems
-
+/* this code is not doing anything useful, it seems - TODO REMOVE?
    ptr++;
     const LispCharPtr start = ptr;
     while (IsDigit(*ptr)) ptr++;

@@ -742,7 +742,7 @@ void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     // convert using correct base
 	// FIXME: API breach, must pass precision in base digits and not in bits!
 	// if converting an integer, the precision argument is ignored,
-	// but if converting a float, need to use bits_to_digits on BinaryPrecision
+	// but if converting a float, need to use bits_to_digits(BinaryPrecision, base)
     BigNumber *z = NEW BigNumber(str2->String(),aEnvironment.BinaryPrecision(),base);
     RESULT.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 }
@@ -777,7 +777,7 @@ void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispString str;
 	// FIXME: API breach, must pass precision in base digits and not in bits!
 	// if converting an integer, the precision argument is ignored,
-	// but if converting a float, need to use bits_to_digits on BinaryPrecision
+	// but if converting a float, need to use bits_to_digits(BinaryPrecision, base)
     x->ToString(str,aEnvironment.BinaryPrecision(),base);
     // Get unique string from hash table, and create an atom from it.
 
