@@ -28,7 +28,7 @@ returned.
 This can be useful if you want to study the internal representation of
 a certain expression.
 
-*E.G.
+*E.G. notest
 
 	In> FullForm(a+b+c);
 	(+ (+ a b )c )
@@ -73,7 +73,7 @@ be printed, followed by a newline.
 
 {Echo} always returns {True}.
 
-*E.G.
+*E.G. notest
 
 	In> Echo(5+3);
 	 8
@@ -217,7 +217,7 @@ The verbose option prints names of functions that are not exportable.
 
 The second calling format of {IsCFormable} can be used to "allow" certain function names that will be available in the C++ code.
 
-*E.G.
+*E.G. notest
 
 	In> IsCFormable(Sin(a1)+2*Cos(b1))
 	Out> True;
@@ -250,7 +250,7 @@ output. Note that Write accept an arbitrary number of arguments, all
 of which are written to the current output (see second
 example). {Write} always returns {True}.
 
-*E.G.
+*E.G. notest
 
 	In> Write(1);
 	1Out> True;
@@ -277,7 +277,7 @@ The expression "string" is evaluated and written to the current
 output without quotation marks. The argument should be a
 string. WriteString always returns True.
 
-*E.G.
+*E.G. notest
 
 	In> Write("Hello, world!");
 	"Hello, world!"Out> True;
@@ -306,7 +306,7 @@ The command {Space()} prints one space on the
 current output. The second form prints {nr} spaces on the current
 output. The result is always True.
 
-*E.G.
+*E.G. notest
 
 	In> Space(5);
 	     Out> True;
@@ -329,7 +329,7 @@ The command {NewLine()} prints one newline character
 on the current output. The second form prints "nr" newlines on the
 current output. The result is always True.
 
-*E.G.
+*E.G. notest
 
 	In> NewLine();
 	
@@ -355,7 +355,7 @@ The current input is connected to the file "name". Then the expression
 from current input, they will now read from the file "name". Finally, the
 file is closed and the result of evaluating "body" is returned.
 
-*E.G.
+*E.G. notest
 
 Suppose that the file {foo} contains
 
@@ -419,7 +419,7 @@ file is closed and the result of evaluating "body" is returned.
 If the file is opened again, the old contents will be overwritten.
 This is a limitation of {ToFile}: one cannot append to a file that has already been created.
 
-*E.G.
+*E.G. notest
 
 Here is how one can create a file with C code to evaluate an expression:
 
@@ -536,7 +536,7 @@ This function will typically be used in situations where one wants a custom
 read-eval-print loop. 
 
 
-*E.G.
+*E.G. notest
 
 The following defines a function that when invoked keeps asking
 for an expression (the <i>read</i> step), and then takes 
@@ -595,7 +595,7 @@ The result can be thought of as applying {Listify} to {LispRead}.
 The function {LispReadListed} is more useful for reading arbitrary LISP expressions, because the 
 first object in a list can be itself a list (this is never the case for Yacas expressions where the first object in a list is always a function atom).
 
-*E.G.
+*E.G. notest
 
 	In> FromString("(+ a b)") LispRead();
 	Out> a+b;
@@ -624,7 +624,7 @@ it is the smallest unit in which a command can be divided, so that the
 semantics (that is the meaning) of the command is in some sense a
 combination of the semantics of the tokens. Hence {a := foo} consists of three tokens, namely {a}, {:=}, and {foo}.
 
-*E.G.
+*E.G. notest
 
 	In> FromString("a := Sin(x)") While \
 	  ((tok := ReadToken()) != EndOfFile) \
@@ -755,7 +755,7 @@ output in the end.
 Note that the second letter in the name of this command is a lower
 case {L} (from "line").
 
-*E.G.
+*E.G. notest
 
 	In> WriteString("First line" : Nl() : "Second line" : Nl());
 	First line
@@ -781,7 +781,7 @@ about the work done while doing a calculation when using {V}.
 
 The function is currently implemented using a global variable {Verbose} which can be set to {True} or {False}.
 
-*E.G.
+*E.G. notest
 
 	In> Solve({x+2==0},{x})
 	Out> {{-2}};
@@ -896,7 +896,7 @@ The executable must be called {wgnupl32.exe} and the file {wgnuplot.mnu} must be
 *	Some extra messages are printed to the console.
 *	All files are created in the subdirectory {plot.tmp} under the current directory; also the system cannot determine whether the current directory is writable and whether the {plot.tmp} subdirectory has been successfully created.
 
-*E.G.
+*E.G. notest
 	In> Plot2D({(2+x)/(2-x),Exp(y)},-1.8:1.5)
 	Out> True;
 	In> V(Plot2D(Sin(1/x),0:1, depth=4, \
@@ -1028,7 +1028,7 @@ The {filename} option is optional if using graphical backends, but can be used t
 
 Same limitations as {Plot2D}.
 
-*E.G.
+*E.G. notest
 	In> Plot3DS(a*b^2)
 	Out> True;
 	In> V(Plot3DS(Sin(x)*Cos(y),x=0:20, y=0:20,depth=3))

@@ -122,7 +122,7 @@ symbol can not accidentally be entered by a user.
 This is useful in cases where a guaranteed free variable is needed,
 for example, in the macro-like functions ({For}, {While}, etc.).
 
-*E.G.
+*E.G. notest
 
 	In> LocalSymbols(a,b)a+b
 	Out> $a6+ $b6;

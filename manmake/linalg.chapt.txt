@@ -528,9 +528,9 @@ direction but with length 1.
 
 *E.G.
 
-	In> Normalize({3,4})
+	In> v:=Normalize({3,4})
 	Out> {3/5,4/5};
-	In> % . %
+	In> v . v
 	Out> 1;
 
 *SEE InProduct, CrossProduct
@@ -569,9 +569,9 @@ Returns the determinant of a matrix M.
 
 *E.G.
 
-	In> DiagonalMatrix(1 .. 4)
+	In> A:=DiagonalMatrix(1 .. 4)
 	Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
-	In> Determinant(%)
+	In> Determinant(A)
 	Out> 24;
 
 *CMD Trace --- trace of a matrix
@@ -590,9 +590,9 @@ elements on the diagonal of the matrix).
 
 *E.G.
 
-	In> DiagonalMatrix(1 .. 4)
+	In> A:=DiagonalMatrix(1 .. 4)
 	Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
-	In> Trace(%)
+	In> Trace(A)
 	Out> 10;
 
 *CMD Inverse --- get inverse of a matrix
@@ -613,12 +613,12 @@ matrix elements.
 
 *E.G.
 
-	In> DiagonalMatrix({a,b,c})
+	In> A:=DiagonalMatrix({a,b,c})
 	Out> {{a,0,0},{0,b,0},{0,0,c}};
-	In> Inverse(%)
+	In> B:=Inverse(A)
 	Out> {{(b*c)/(a*b*c),0,0},{0,(a*c)/(a*b*c),0},
 	{0,0,(a*b)/(a*b*c)}};
-	In> Simplify(%)
+	In> Simplify(B)
 	Out> {{1/a,0,0},{0,1/b,0},{0,0,1/c}};
 
 *SEE Determinant
@@ -653,7 +653,6 @@ deleting the $i$-th row and the $j$-th column.
 	|                    |
 	| ( 7 ) ( 8 ) ( 9 )  |
 	\                    /
-	
 	Out> True;
 	In> Minor(A,1,2);
 	Out> -6;
@@ -692,7 +691,6 @@ $(-1)^(i+j)$.
 	|                    |
 	| ( 7 ) ( 8 ) ( 9 )  |
 	\                    /
-	
 	Out> True;
 	In> CoFactor(A,1,2);
 	Out> 6;
@@ -786,11 +784,11 @@ of the matrix, Det(matrix-I*var);
 
 *E.G.
 
-	In> DiagonalMatrix({a,b,c})
+	In> A:=DiagonalMatrix({a,b,c})
 	Out> {{a,0,0},{0,b,0},{0,0,c}};
-	In> CharacteristicEquation(%,x)
+	In> B:=CharacteristicEquation(A,x)
 	Out> (a-x)*(b-x)*(c-x);
-	In> Expand(%,x)
+	In> Expand(B,x)
 	Out> (b+a+c)*x^2-x^3-((b+a)*c+a*b)*x+a*b*c;
 
 *SEE EigenValues, EigenVectors
@@ -896,6 +894,7 @@ equivalently Inverse($A$) = Transpose($A$).
 	In> A := {{1,2,2},{2,1,-2},{-2,2,-1}};
 	Out> {{1,2,2},{2,1,-2},{-2,2,-1}};
 	In> PrettyForm(A/3)
+
 	/                      \
 	| / 1 \  / 2 \ / 2 \   |
 	| | - |  | - | | - |   |
@@ -983,6 +982,7 @@ $A$ is symmetric iff Transpose ($A$) =$A$.
 	In> A := {{1,0,0,0,1},{0,2,0,0,0},{0,0,3,0,0},
 	  {0,0,0,4,0},{1,0,0,0,5}};
 	In> PrettyForm(A)
+
 	/                                \
 	| ( 1 ) ( 0 ) ( 0 ) ( 0 ) ( 1 )  |
 	|                                |
@@ -1020,6 +1020,7 @@ $A$ is skew symmetric iff $Transpose(A)$ =$-A$.
 	In> A := {{0,-1},{1,0}}
 	Out> {{0,-1},{1,0}};
 	In> PrettyForm(%)
+
 	/               \
 	| ( 0 ) ( -1 )  |
 	|               |
@@ -1104,6 +1105,7 @@ of $i$-th function with respect to the $j$-th variable.
 	In> JacobianMatrix( {Sin(x),Cos(y)}, {x,y} ); 
 	Out> {{Cos(x),0},{0,-Sin(y)}};
 	In> PrettyForm(%)
+
 	/                                 \
 	| ( Cos( x ) ) ( 0 )              |
 	|                                 |
@@ -1130,6 +1132,7 @@ The ($i$,$j$)-th element of the Vandermonde matrix is defined as $i^(j-1)$.
 	In> VandermondeMatrix({1,2,3,4})
 	Out> {{1,1,1,1},{1,2,3,4},{1,4,9,16},{1,8,27,64}};
 	In>PrettyForm(%)
+
 	/                            \
 	| ( 1 ) ( 1 ) ( 1 )  ( 1 )   |
 	|                            |
@@ -1170,6 +1173,7 @@ minimum or a saddle point.
 	In> HessianMatrix(3*x^2-2*x*y+y^2-8*y, {x,y} )
 	Out> {{6,-2},{-2,2}};
 	In> PrettyForm(%)
+
 	/                \
 	| ( 6 )  ( -2 )  |
 	|                |
@@ -1226,6 +1230,7 @@ The Hilbert matrix is extremely sensitive to manipulate and invert numerically.
 *E.G.
 
 	In> PrettyForm(HilbertMatrix(4))
+
 	/                          \
 	| ( 1 ) / 1 \ / 1 \ / 1 \  |
 	|       | - | | - | | - |  |
@@ -1262,6 +1267,7 @@ entries that grow in magnitude rapidly.
 
 *E.G.
 	In> PrettyForm(HilbertInverseMatrix(4))
+
 	/                                         \
 	| ( 16 )   ( -120 )  ( 240 )   ( -140 )   |
 	|                                         |
@@ -1292,6 +1298,7 @@ all diagonal columns, from upper left to lower right.
 *E.G.
 
 	In> PrettyForm(ToeplitzMatrix({1,2,3,4,5}))
+
 	/                                \
 	| ( 1 ) ( 2 ) ( 3 ) ( 4 ) ( 5 )  |
 	|                                |
@@ -1334,6 +1341,7 @@ are dependent, otherwise they are independent.
 	Out> {{Sin(x),Cos(x),x^4},{Cos(x),-Sin(x),4*x^3},
 	  {-Sin(x),-Cos(x),12*x^2}};
 	In> PrettyForm(%)
+
 	/                                                 \
 	| ( Sin( x ) )      ( Cos( x ) )      /  4 \      |
 	|                                     \ x  /      |
@@ -1345,12 +1353,12 @@ are dependent, otherwise they are independent.
 	|                                     \ 12 * x  / |
 	\                                                 /
 The last element is a linear combination of the first two, so the determinant is zero:
-	In> Determinant( WronskianMatrix( {x^4,x^3,2*x^4 
+	In> A:=Determinant( WronskianMatrix( {x^4,x^3,2*x^4 
 	  + 3*x^3},x ) )
 	Out> x^4*3*x^2*(24*x^2+18*x)-x^4*(8*x^3+9*x^2)*6*x
 	  +(2*x^4+3*x^3)*4*x^3*6*x-4*x^6*(24*x^2+18*x)+x^3
 	  *(8*x^3+9*x^2)*12*x^2-(2*x^4+3*x^3)*3*x^2*12*x^2;
-	In> Simplify(%)
+	In> Simplify(A)
 	Out> 0;
 
 
@@ -1382,12 +1390,12 @@ share common roots only if the resultant is zero.
 	Out> x^2+2*x-a;
 	In> ex2:= x^2+a*x-4
 	Out> x^2+a*x-4;
-	In> SylvesterMatrix(ex1,ex2,x)
+	In> A:=SylvesterMatrix(ex1,ex2,x)
 	Out> {{1,2,-a,0},{0,1,2,-a},
 	  {1,a,-4,0},{0,1,a,-4}};
-	In> Determinant(%)
+	In> B:=Determinant(A)
 	Out> 16-a^2*a- -8*a-4*a+a^2- -2*a^2-16-4*a;
-	In> Simplify(%)
+	In> Simplify(B)
 	Out> 3*a^2-a^3;
 
 The above example shows that the two polynomials have common
@@ -1480,6 +1488,7 @@ are uniformly distributed in this interval.
 
 *E.G.
 	In> PrettyForm( RandomIntegerMatrix(5,5,-2^10,2^10) )
+
 	/                                               \
 	| ( -506 ) ( 749 )  ( -574 ) ( -674 ) ( -106 )  |
 	|                                               |

@@ -622,7 +622,7 @@ Most of the work is performed by the internal function {OrthoPoly}.
 
 *SEE OrthoLSum, OrthoPoly
 
-*CMD OrthoT, OrthoU --- Tschebyscheff polynomials
+*CMD OrthoT, OrthoU --- Chebyshev polynomials
 *STD
 *CALL
 	OrthoT(n, x);
@@ -636,11 +636,11 @@ Most of the work is performed by the internal function {OrthoPoly}.
 
 *DESC
 
-These functions evaluate the Tschebyscheff polynomials of the first kind
+These functions evaluate the Chebyshev polynomials of the first kind
 $T(n,x)$ and of the second kind $U(n,x)$, of degree "n" at the point "x". (The
-name of this Russian mathematician is also sometimes spelled "Chebyshev".)
+name of this Russian mathematician is also sometimes spelled "Tschebyscheff".)
 
-The Tschebyscheff polynomials are orthogonal with respect to the weight
+The Chebyshev polynomials are orthogonal with respect to the weight
 function $(1-x^2)^(-1/2)$. Hence they are a special case of the Gegenbauer
 polynomials $G(n,a,x)$, with $a=0$. They satisfy the recurrence relations
 $$ T(n,x) = 2* x* T(n-1,x) - T(n-2,x) $$,
@@ -651,15 +651,6 @@ $T(1,x) = x$,
 $U(0,x) = 1$,
 $U(1,x) = 2*x$.
 
-Tschebyscheff polynomials are evaluated using fast (but numerically unstable) recurrence relations
-$$T(2*n,x) = 2*T(n,x)^2-1$$,
-$$T(2*n+1,x) = 2*T(n+1,x)*T(n,x)-x$$,
-$$U(2*n,x) = 2*T(n,x)*U(n,x)-1$$,
-$$U(2*n+1,x) = 2*T(n+1,x)*U(n,x)$$.
-This allows to
-compute $T(n,x)$ and $U(n,x)$ in time logarithmic in $n$. Note that the functions return the polynomials in a sparse unexpanded form.
-
-Warning: because of numerical instability of this algorithm, polynomials of very large orders on floating-point arguments should be evaluated with increased precision.
 
 *E.G.
 
@@ -672,14 +663,6 @@ Warning: because of numerical instability of this algorithm, polynomials of very
 	In> OrthoU(10, 0.9);
 	Out> -2.2234571776;
 
-Here is an example numerical calculation where the loss of precision is catastrophic:
-
-	In> OrthoT(10000000000001, 0.9)
-	Out> 0.1851470834;
-	In> Precision(20);
-	Out> True;
-	In> OrthoT(10000000000001, 0.9)
-	Out> -0.79727552022438356731;
 
 *SEE OrthoG, OrthoTSum, OrthoUSum, OrthoPoly
 
@@ -841,7 +824,7 @@ Return a list with the real roots of $ p $. It tries to find the real-valued
 roots, and thus requires numeric floating point calculations. The precision
 of the result can be improved by increasing the calculation precision.
 
-*E.G.
+*E.G. notest
 
 	In> p:=Expand((x+3.1)^5*(x-6.23))
 	Out> x^6+9.27*x^5-0.465*x^4-300.793*x^3-

@@ -142,7 +142,7 @@ it might return the atom {nan}, "not a number", for some arguments),
 then the new function will return {Undefined}.
 
 
-*E.G.
+*E.G. notest
 	In> f(x) := N(Sin(x));
 	Out> True;
 	In> NFunction("f1", "f", {x});
@@ -204,7 +204,7 @@ It accepts sets of variable/value pairs defined as
 and fills in the corresponding values. Lists of value pairs are
 also possible, as:
 
-	{var1==val1 And var2==val2 , var1==val3
+	{var1==val1 And var2==val2, var1==val3
 	  And var2==val4}
 
 These values might be obtained through {Solve}.
@@ -260,7 +260,7 @@ any more, since a==2 And a<0 can never be true at the same time.
 
 *E.G.
 
-	In> {A==2,c==d} AddTo {b==3 And  d==2}
+	In> {A==2,c==d} AddTo {b==3 And d==2}
 	Out> {A==2 And b==3 And d==2,c==d
 	  And b==3 And d==2};
 	In> {A==2,c==d} AddTo {b==3, d==2}

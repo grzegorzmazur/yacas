@@ -84,9 +84,9 @@ list, the function is applied to all entries in the list.
 	In> Sin(ArcSin(1/3))
 	Out> 1/3;
 	
-	In> N(ArcSin(0.75))
+	In> x:=N(ArcSin(0.75))
 	Out> 0.848062;
-	In> N(Sin(%))
+	In> N(Sin(x))
 	Out> 0.7499999477;
 
 *SEE Sin, Cos, Tan, N, Pi, Ln
@@ -1316,9 +1316,9 @@ division of integers.
 
 *E.G.
 
-	In> {1.2, 3.123, 4.5}
+	In> x:={1.2, 3.123, 4.5}
 	Out> {1.2,3.123,4.5};
-	In> Rationalize(%)
+	In> Rationalize(x)
 	Out> {6/5,3123/1000,9/2};
 
 *SEE IsRational
@@ -1412,9 +1412,9 @@ function until the variable "var" is reached.
 	Out> (-a)/b;
 	In> SuchThat(Cos(a)+Cos(b)^2, Cos(b))
 	Out> Cos(a)^(1/2);
-	In> Expand(a*x+b*x+c, x)
+	In> A:=Expand(a*x+b*x+c, x)
 	Out> (a+b)*x+c;
-	In> SuchThat(%, x)
+	In> SuchThat(A, x)
 	Out> (-c)/(a+b);
 
 *SEE Solve, Subst, Simplify
@@ -1802,7 +1802,7 @@ Note that Euler's constant $gamma<=>0.57722$ is the lowercase {gamma} in Yacas.
 	Out> True;
 	In> Gamma(1.3)
 	Out> Gamma(1.3);
-	In> N(%)
+	In> N(Gamma(1.3))
 	Out> 0.897470696306277188493754954771;
 	In> Gamma(1.5)
 	Out> Sqrt(Pi)/2;
@@ -1835,7 +1835,7 @@ Note that Euler's constant $gamma<=>0.57722$ is the lowercase {gamma} in Yacas.
 	Out> Infinity;
 	In> Zeta(1.3)
 	Out> Zeta(1.3);
-	In> N(%)
+	In> N(Zeta(1.3))
 	Out> 3.93194921180954422697490751058798;
 	In> Zeta(2)
 	Out> Pi^2/6;
@@ -1893,9 +1893,9 @@ An auxiliary function {BernoulliArray(n)} might be useful too: it returns an arr
 
 	In> Euler(6)
 	Out> -61;
-	In> Euler(5,x)
+	In> A:=Euler(5,x)
 	Out> (x-1/2)^5+(-10*(x-1/2)^3)/4+(25*(x-1/2))/16;
-	In> Simplify(%)
+	In> Simplify(A)
 	Out> (2*x^5-5*x^4+5*x^2-1)/2;
 
 *SEE Bin
@@ -1949,9 +1949,10 @@ Note that Euler's Gamma function $Gamma(x)$ is the capitalized {Gamma} in Yacas.
 
 	In> gamma+Pi
 	Out> gamma+Pi;
-	In> N(%)
+	In> N(gamma+Pi)
 	Out> 3.7188083184;
 	In> [Precision(20);V(gamma());]
+	
 	CachedConstant: Info: constant gamma is being
 	  recalculated at precision 20 
 	GammaConstNum: Info: used 56 iterations at
@@ -1982,14 +1983,16 @@ The numerical value of the constant can also be obtained as {N(GoldenRatio)}.
 
 *E.G.
 
-	In> GoldenRatio - 1
+	In> x:=GoldenRatio - 1
 	Out> GoldenRatio-1;
-	In> N(%)
+	In> N(x)
 	Out> 0.6180339887;
 	In> N(1/GoldenRatio)
 	Out> 0.6180339887;
 	In> [Precision(20);V(GoldenRatio());]
-	CachedConstant: Info: constant GoldenRatio is being recalculated at precision 20 
+
+	CachedConstant: Info: constant GoldenRatio is
+	being recalculated at precision 20 
 	Out> 1.6180339887498948482;
 
 
@@ -2019,7 +2022,9 @@ The low-level numerical computations are performed by the routine {CatalanConstN
 	In> DirichletBeta(2)
 	Out> Catalan;
 	In> [Precision(20);V(Catalan());]
-	CachedConstant: Info: constant Catalan is being recalculated at precision 20
+
+	CachedConstant: Info: constant Catalan is
+	being recalculated at precision 20
 	Out> 0.91596559417721901505;
 
 
