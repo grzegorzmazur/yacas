@@ -1,0 +1,29 @@
+
+
+ManP(text,_t) <-- WriteString(t);
+ManP(author,_t) <-- WriteString("<i>":t:"</i>");
+ManP(text,_t) <-- WriteString(t);
+ManP(title,_t) <-- WriteString("<H1>":t:"</H1>");
+ManP(section,_t) <-- WriteString("<H2>":t:"</H2>");
+ManP(subsection,_t) <-- WriteString("<H3>":t:"</H3>");
+ManP(break,_t) <-- WriteString("<P>":t:"</P>");
+ManP(em,_t) <-- WriteString("<b><tt>":t:"</tt></b>");
+ManP(tt,_t) <-- WriteString("<TABLE CELLPADDING=\"3\" WIDTH=\"90%\">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE><b>
+":t:"
+</b></PRE></TR>
+</TABLE>");
+
+ManP(warn,_t) <-- WriteString("<H1>@@@TODO":t:"</H1>");
+ManP(htmllink,_t) <-- WriteString("<A HREF=\"":t:"\">":t:"</A>");
+
+10 # ManP(_anything,_t)
+<--
+[
+  Check(False,"ERROR: unknown section type ",anything);
+];
+
+ManP(enter) <-- WriteString("<HTML><BODY BGCOLOR=WHITE>");
+ManP(leave) <-- WriteString("</BODY></HTML>");
+
+
