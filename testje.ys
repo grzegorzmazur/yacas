@@ -1,4 +1,40 @@
 
+10 # PowerExpand( Sqrt( _u * _v)) <-- Sqrt(u) *Sqrt(v);
+10 # PowerExpand( Sqrt( _u / _v)) <-- Sqrt(u) /Sqrt(v);
+10 # PowerExpand( (_u * _v) ^ _w) <-- 
+   [
+     Local(left,right);
+     left:=PowerExpand(u^w);
+     right:=PowerExpand(v^w);
+     `Hold((@left) * (@right));
+   ];
+10 # PowerExpand( (_u / _v) ^ _w) <-- u^w / v^w;
+10# PowerExpand( (_u ^ _v) ^_w) <-- PowerExpand( u^(v*w));
+10 # PowerExpand( Ln ( _u ^ _v)) <-- v * Ln(  PowerExpand( u ) );
+10 # PowerExpand( Ln(_u * _v)) <-- Ln(u) + Ln(v);
+10 # PowerExpand( Ln(_u / _v)) <-- Ln(u) - Ln(v);
+10 # PowerExpand( Exp( _u + _v)) <-- Exp(u) * Exp(v);
+10 # PowerExpand( Exp( _u - _v)) <-- Exp(u) /Exp(v);
+
+99 # PowerExpand( _u + _v) <-- PowerExpand(u) + PowerExpand(v);
+99 # PowerExpand( _u - _v) <-- PowerExpand(u) - PowerExpand(v);
+
+100 # PowerExpand( _expr) <-- expr;
+
+50 # PowerExpand(_x ^ n_IsPositiveInteger) <-- 
+   [
+     ExpandPow(x,n);
+   ];
+
+10 # ExpandPow(_x,1) <-- x;
+20 # ExpandPow(_x,_n) <-- 
+   [
+     Local(rest);
+     rest:=ExpandPow(x,n-1);
+     `Hold((@x)*(@rest));
+   ];
+EndOfFile;
+
 /*
 1) Flatten, based on addition, and process all terms.
 2) Separate F(n,k) into G(n)*G(k), and work on them.
