@@ -15,6 +15,15 @@ Verify( Limit(x,Infinity) Gamma(x), Infinity );
 Verify( Limit(x,Infinity) Abs(x), Infinity );
 Verify( Limit(x,Infinity) Factorial(x), Infinity);
 
+Verify( Sin(x)/Cos(x), Tan(x) );
+KnownFailure(Verify( Sin(x)^2 + Cos(x)^2, 1 ));
+Verify( Cos(x)/Sin(x), Cot(x) );
+Verify( SinH(x)-CosH(x), Exp(-x));
+Verify( SinH(x)+CosH(x), Exp(x) );
+Verify( SinH(x)/CosH(x), TanH(x) );
+Verify( SinH(Infinity), Infinity);
+Verify( SinH(x)*CscH(x), 1);
+Verify( 1/CotH(x), TanH(x) );
 
 
 
