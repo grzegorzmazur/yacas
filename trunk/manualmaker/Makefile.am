@@ -50,8 +50,8 @@ ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt in/SimpleToo
         in/new.chapt.txt in/paper.chapt.txt in/wester-1994.chapt.txt \
 		in/wordproblems.chapt.txt in/FDL.chapt.txt
 
-LISPPROGRAMMINGCHAPTERS = LispLanguage.chapt
-LISPPROGRAMMINGSOURCES = LispLanguage.chapt.txt
+LISPPROGRAMMINGCHAPTERS = LispLanguage.chapt FDL.chapt
+LISPPROGRAMMINGSOURCES = in/LispLanguage.chapt.txt in/FDL.chapt.txt
 
 
 # Yacas code extracted from the docs
@@ -111,21 +111,21 @@ Algo.book.tex: Algo.book $(ALGOCHAPTERS)
 LispProgramming.book.tex: LispProgramming.book $(LISPPROGRAMMINGCHAPTERS)
 
 # special "virtual" chapter built from yacasapi.cpp
-yacasapi.chapt.txt : $(top_srcdir)/src/yacasapi.cpp
+yacasapi.chapt.txt: $(top_srcdir)/src/yacasapi.cpp
 	perl $(top_srcdir)/manmake/api2txt.pl < $(top_srcdir)/src/yacasapi.cpp > yacasapi.chapt.txt
 yacasapi.chapt: yacasapi.chapt.txt
 	perl $(top_srcdir)/manmake/txt2yacasdoc.pl < $< > $@
 
-PS_DOCS = intro.book.ps coding.book.ps essays.book.ps ref.book.ps refprog.book.ps Algo.book.ps
+PS_DOCS = intro.book.ps coding.book.ps essays.book.ps ref.book.ps refprog.book.ps Algo.book.ps LispProgramming.book.ps
 
 ps-docs: $(PS_DOCS)
 
-pdf-docs: intro.book.pdf coding.book.pdf essays.book.pdf ref.book.pdf refprog.book.pdf Algo.book.pdf
+pdf-docs: intro.book.pdf coding.book.pdf essays.book.pdf ref.book.pdf refprog.book.pdf Algo.book.pdf LispProgramming.book.pdf
 
 clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.idx *.ind *.ilg *.toc *.log *.ps *.pdf \
 	coding*html intro*html ref*html essays*html Algo*html .o core *~ texdocs.c \
-	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS) \
+	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(LISPPROGRAMMINGCHAPTERS) \
 	$(CODESNIPPETS) $(ALGOCHAPTERS) yacasapi.chapt.txt $(BOOKS) manicon.html
 
 # Newly-built version of yacas with an extended search path

@@ -94,7 +94,7 @@ There are various sources on the internet describing the early history
 of Lisp.
 
 *REM should we put up a list here? Or have our own short history? Mention
-*REM McCarthy etcetera?
+McCarthy etcetera?
 
 		The Lisp interactive command line interface
 
@@ -103,7 +103,7 @@ The Lisp interpreter is in its {read-eval-print} loop; it reads
 in an expression typed in by the user, evaluates it, and prints
 the result of evaluation to the console. 
 
-The definition of an expression can be given such; 
+The definition of an expression can be given like this: 
 
 *	0. an expression is either an atom, or a list of expressions. 
 *	0. an atom is a word, a list of characters.
@@ -382,12 +382,12 @@ for the convenience of the programmer.
 
 *REM TODO I need a macro example, as soon as it works!
 
-	    Creating and disseminating lists of expressions
+	    Creating and dissecting lists of expressions
 
-lists of expressions are used to build more elaborate structures.
+Lists of expressions are used to build more elaborate structures.
 The following commands are available for doing so:
 
-To disseminate a list:
+To dissect a list:
 
 *	0. {(first <list>)} - return the first element of a list
 *	0. {(rest <list>)} - return the list with the first item removed.
@@ -693,7 +693,7 @@ argument is {nil}:
 	In> (not nil)
 	Out> t
 
-Then <i>lazy and</i> and <i>lazy or</i> operations can be defined:
+Then <i>lazy</i> {and} and <i>lazy</i> {or} operations can be defined:
 
 	In> (defmacro and (a b) (if (eval a) (eval b) nil) )
 	Out> and
@@ -762,7 +762,7 @@ but they are not strictly necessary, or they can be implemented
 in Lisp code using more basic primitives.
 
 
-@@@@@
+*REM @@@@@
 
 
 *	0. {(let ( (<var-1> <val-1>) ... (<var-n> <val-n>) ) <body>)} -
