@@ -5,7 +5,7 @@
 UniVarList(expr) := VarList(expr);
 
 /* we need to use "predicates" because we are adding to IsZero */
-Use("predicates.rep/code.ys");
+//TODO remove we shouldn't explicitly use Use Use("predicates.rep/code.ys");
 
 
 0 # NormalForm(UniVariate(_var,_first,_coefs)) <--

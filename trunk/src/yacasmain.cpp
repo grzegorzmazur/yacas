@@ -724,16 +724,22 @@ int runserver(int argc,char** argv)
                     else
                     {
                         process++;
-
-                        char* buffer = (char*)malloc(nread+1);
-      
+                        LispString cmd;
+                        cmd.SetNrItems(0);
+                        char* buffer = (char*)malloc(nread);
                         read(fd, buffer, nread);
-                        buffer[nread]='\0';
-                        
+                        int i;
+                        for (i=0;i<nread;i++) 
+                        {
+                          cmd.Append(buffer[i]);
+                        }
+                        free(buffer);
+                        cmd.Append('\0');                        
                         if (fork() == 0)
                         {
+
                         
-    char* response = buffer;
+    char* response = cmd.String();
     LoadYacas();
     (*yacas)()().iSecure = 1;
     if (seconds>0)
@@ -741,7 +747,7 @@ int runserver(int argc,char** argv)
         signal(SIGALRM,exit);
         alarm(seconds);
     }
-    yacas->Evaluate(buffer);
+    yacas->Evaluate(cmd.String());
     if (seconds>0)
     {
         signal(SIGALRM,SIG_IGN);
@@ -756,7 +762,7 @@ int runserver(int argc,char** argv)
     }
 
                             int buflen=strlen(response);
-printf("In> %s",buffer);
+printf("In> %s",cmd.String());
 printf("Out> %s",response);
 
                             if (response)
@@ -764,7 +770,6 @@ printf("Out> %s",response);
                                 if (buflen>0)
                                     write(fd, response, buflen);
                             }
-                            free(buffer);
                             delete yacas;
                             yacas = NULL;
                             close(fd);
