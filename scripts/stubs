@@ -84,6 +84,15 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 /* Integer divisions */
 0 # Div(n_IsInteger,m_IsInteger) <-- MathDiv(n,m);
 1 # Div(0  ,_m) <-- 0;
+2 # Div(n_IsRationalOrNumber,m_IsRationalOrNumber) <--
+[
+  Local(n1,n2,m1,m2);
+  n1:=Numer(n);
+  n2:=Denom(n);
+  m1:=Numer(m);
+  m2:=Denom(m);
+  Div(n1*m2,m1*n2);
+];
 30 # Div(n_CanBeUni,m_CanBeUni) <--
 [
 
@@ -97,6 +106,15 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 0 # Mod(n_IsNegativeInteger,m_IsInteger) <-- m+MathMod(n,m);
 0 # Mod(n_IsPositiveInteger,m_IsInteger) <-- MathMod(n,m);
 1 # Mod(0,_m) <-- 0;
+2 # Mod(n_IsRationalOrNumber,m_IsRationalOrNumber) <--
+[
+  Local(n1,n2,m1,m2);
+  n1:=Numer(n);
+  n2:=Denom(n);
+  m1:=Numer(m);
+  m2:=Denom(m);
+  Mod(n1*m2,m1*n2)/(n2*m2);
+];
 30 # Mod(n_CanBeUni,m_CanBeUni) <--
 [
   Local(vars);

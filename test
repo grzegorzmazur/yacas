@@ -5,8 +5,12 @@
        LogicSimplify(P And (x>n)) Or ( (Not p) And (y>n));
 
 
-y      := y(x);
-degree := 5;
-DSolve( dd(y,x,2) + x*y
+- Use p^2-1 = 24*n
+- Use the fact that the above n, (n-1) cannot be divisible by 3.
+- Start with least significant digit.
+- Use the above to walk faster through n.
+- Use the above to truncate
+  multiplication routes (24*n = ...xyz, being an impossibility
+  for any n, so truncate).
 
 

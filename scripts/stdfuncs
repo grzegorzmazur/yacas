@@ -26,6 +26,27 @@ HoldArg("TruncRadian",r);
 5 # Sin(_y * x_IsNegativeNumber)   <-- -Sin(y*(-x));
 110 # Sin(Complex(_r,_i)) <--
     (Exp(I*Complex(r,i)) - Exp(- I*Complex(r,i))) / (I*2) ;
+
+
+1 # SinMap( _n )_(Not(IsRationalOrNumber(n))) <-- UnList({Atom("Sin"),n*Pi});
+2 # SinMap( _n )_(n<0) <-- -SinMap(-n);
+2 # SinMap( _n )_(n>2) <-- SinMap(Mod(n,2));
+3 # SinMap( _n )_(n>1) <-- SinMap(n-2);
+4 # SinMap( _n )_(n>1/2) <-- SinMap(1-n);
+
+5 # SinMap( n_IsInteger ) <-- 0;
+5 # SinMap( 1/6 ) <-- 1/2;
+5 # SinMap( 1/4 ) <-- Sqrt(2)/2;
+5 # SinMap( 1/3 ) <-- Sqrt(3)/2;
+5 # SinMap( 1/2 ) <-- 1;
+10 # SinMap(_n) <-- UnList({Atom("Sin"),n*Pi});
+
+200 # Sin(_v)_(CanBeUni(v,Pi) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
+[
+  SinMap(Coef(v,Pi,1));
+];  
+
+/*TODO remove?
 200 # Sin(0) <-- 0;
 200 # Sin(Pi) <-- 0;
 200 # Sin(n_IsInteger * Pi) <-- 0;
@@ -38,10 +59,13 @@ HoldArg("TruncRadian",r);
 
 200 # Sin(((n_IsNegativeInteger * Pi)/2)) <-- -Sin(Pi*((-n)/2));
 200 # Sin(((n_IsNegativeInteger * Pi)/2)) <-- -Sin(Pi*((-n)/2));
+*/
 
 /* TODO very ugly! */
+/*TODO remove?
 200 # Sin((Pi)/4) <--  Sqrt(2)/2;
 200 # Cos((Pi)/4) <--  Sqrt(2)/2;
+*/
 
 2 # Cos(x_IsNumber)_(Numeric) <--
 [
@@ -54,6 +78,24 @@ HoldArg("TruncRadian",r);
 5 # Cos(_y * x_IsNegativeNumber)   <-- Cos(y*(-x));
 110 # Cos(Complex(_r,_i)) <--
     (Exp(I*Complex(r,i)) + Exp(- I*Complex(r,i))) / (2) ;
+
+1 # CosMap( _n )_(Not(IsRationalOrNumber(n))) <-- UnList({Atom("Cos"),n*Pi});
+2 # CosMap( _n )_(n<0) <-- CosMap(-n);
+2 # CosMap( _n )_(n>2) <-- CosMap(Mod(n,2));
+3 # CosMap( _n )_(n>1) <-- CosMap(2-n);
+4 # CosMap( _n )_(n>1/2) <-- -CosMap(1-n);
+
+5 # CosMap( 0 ) <-- 1;
+5 # CosMap( 1/6 ) <-- Sqrt(3)/2;
+5 # CosMap( 1/4 ) <-- Sqrt(2)/2;
+5 # CosMap( 1/3 ) <-- 1/2;
+5 # CosMap( 1/2 ) <-- 0;
+10 # CosMap(_n) <-- UnList({Atom("Cos"),n*Pi});
+
+200 # Cos(_v)_(CanBeUni(v,Pi) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
+      CosMap(Coef(v,Pi,1));
+
+/*TODO remove?
 200 # Cos(0)  <-- 1;
 200 # Cos(Pi) <-- -1;
 200 # Cos(n_IsEven * Pi) <-- 1;
@@ -61,6 +103,7 @@ HoldArg("TruncRadian",r);
 200 # Cos((n_IsInteger*Pi) / 2)  <-- 0;
 200 # Cos(Pi / 2)  <-- 0;
 200 # Cos(-Pi / 2)  <-- 0;
+*/
 
 
 100 # Sin(_x)/Tan(_x) <-- Cos(x);
@@ -96,10 +139,11 @@ HoldArg("TruncRadian",r);
 2 # Ln(0)                    <-- -Infinity;
 2 # Ln(1)                    <-- 0;
 2 # Ln(Infinity)                    <-- Infinity;
-2 # Ln(-Infinity)                    <-- 0;
+/* 2 # Ln(-Infinity)                    <-- 0; */
 3 # Ln(x_IsNumber)_(Numeric) <-- MathLog(x);
 4 # Ln(Exp(_x))              <-- x;
 3 # Ln(Complex(_r,_i)) <-- Complex( (1/2)*Ln(r^2 + i^2) , ArcTan(  i / r) );
+4 # Ln(x_IsNegativeNumber) <-- Complex(Ln(-x), Pi);
 
 2 # ArcSin(x_IsNumber)_(Numeric) <-- MathArcSin(x);
 4 # ArcSin(Sin(_x))           <-- x;
