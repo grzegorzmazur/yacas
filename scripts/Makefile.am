@@ -22,6 +22,7 @@ SCRIPTFILES = 	        										    \
 	limit.rep/code.ys limit.rep/code.ys.def 							    \
 	linalg.rep/code.ys linalg.rep/code.ys.def 							    \
 	lists.rep/code.ys lists.rep/code.ys.def 							    \
+	lists.rep/scopestack.ys lists.rep/scopestack.ys.def 						    \
 	localrules.rep/code.ys localrules.rep/code.ys.def 						    \
 	logic.rep/code.ys logic.rep/code.ys.def logic.rep/om.ys 					    \
 	multivar.rep/code.ys multivar.rep/code.ys.def multivar.rep/makemulti.ys  			    \

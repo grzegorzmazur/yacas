@@ -254,6 +254,8 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispBerlekamp,"Berlekamp");
 
     SetCommand(LispDefaultTokenizer,"DefaultTokenizer");
+    SetCommand(LispCommonLispTokenizer,"CommonLispTokenizer");
+    
     SetCommand(LispCTokenizer      ,"CTokenizer");
     SetCommand(LispXmlTokenizer    ,"XmlTokenizer");
 

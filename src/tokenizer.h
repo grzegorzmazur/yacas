@@ -23,6 +23,14 @@ private:
     LispString iToken; //Can be used as a token container.
 };
 
+class CommonLispTokenizer : public LispTokenizer
+{
+public:
+    virtual LispStringPtr NextToken(LispInput& aInput,
+                                    LispHashTable& aHashTable);
+};
+
+
 // utility functions
 LispBoolean IsDigit(LispChar c);
 LispBoolean IsAlpha(LispChar c);

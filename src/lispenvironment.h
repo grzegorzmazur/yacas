@@ -238,6 +238,7 @@ private:
     LispStringPtr iPrettyPrinter;
 public:
     LispTokenizer iDefaultTokenizer;
+    CommonLispTokenizer iCommonLispTokenizer;
     CTokenizer    iCTokenizer;
     XmlTokenizer  iXmlTokenizer;
     LispTokenizer* iCurrentTokenizer;

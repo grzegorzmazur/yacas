@@ -675,6 +675,14 @@ void LispDefaultTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
     aEnvironment.iCurrentTokenizer = &aEnvironment.iDefaultTokenizer;
     InternalTrue(aEnvironment,aResult);
 }
+
+void LispCommonLispTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
+                   LispPtr& aArguments)
+{
+    TESTARGS(1);
+    aEnvironment.iCurrentTokenizer = &aEnvironment.iCommonLispTokenizer;
+    InternalTrue(aEnvironment,aResult);
+}
 void LispCTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments)
 {
