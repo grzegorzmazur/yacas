@@ -1080,7 +1080,7 @@ int main(int argc, char** argv)
 
     
 #ifdef YACAS_DEBUG
-    //    PlatAlloc(100); // test the alloc memory leak checker
+//        PlatAlloc(100); // test the alloc memory leak checker
     CHECKPTR(NULL);
 #endif
     
@@ -1118,27 +1118,33 @@ int main(int argc, char** argv)
             else if (!strcmp(argv[fileind],"--init"))
             {
                 fileind++;
-                init_script = argv[fileind];
+                if (fileind<argc)
+                  init_script = argv[fileind];
             }
             else if (!strcmp(argv[fileind],"--read-eval-print"))
             {
                 fileind++;
 
 //printf("rep %d\n",argv[fileind][0]);
-                if (argv[fileind][0])
-                  read_eval_print = argv[fileind];
-                else
-                  read_eval_print = NULL;
+                if (fileind<argc)
+                {
+                  if (argv[fileind][0])
+                    read_eval_print = argv[fileind];
+                  else
+                    read_eval_print = NULL;
+                }
             }
             else if (!strcmp(argv[fileind],"--rootdir"))
             {
                 fileind++;
-                root_dir = argv[fileind];
+                if (fileind<argc)
+                  root_dir = argv[fileind];
             }
             else if (!strcmp(argv[fileind],"--archive"))
             {
                 fileind++;
-                archive = argv[fileind];
+                if (fileind<argc)
+                  archive = argv[fileind];
             }
             else if (!strcmp(argv[fileind],"--server"))
             {    
@@ -1158,8 +1164,11 @@ int main(int argc, char** argv)
                 // files will not be used in general, except for
                 // platforms where minilzo.c doesn't compile.
                 fileind++;
-                archive = argv[fileind];
-                compressed_archive = 0;
+                if (fileind<argc)
+                {
+                  archive = argv[fileind];
+                  compressed_archive = 0;
+                }
             }
             else
             {
