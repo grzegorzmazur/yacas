@@ -205,8 +205,8 @@ Function("SolveMatrix",{matrix,vector})
 
 Function("Newton",{function,variable,initial,accuracy})
 /*block*/
-[
-  Newton(function,variable,initial,accuracy,-Infinity,Infinity);
+[	// since we call a function with HoldArg(), we need to evaluate some variables by hand
+  `Newton(@function,@variable,initial,accuracy,-Infinity,Infinity);
 ];
 Function("Newton",{function,variable,initial,accuracy,min,max})
 /*block*/
