@@ -322,7 +322,7 @@
      {\end{displaymath}}
 \fi
   
-\def\yac@stexeqn#1\\{\begin{yacasmath} #1 \end{yacasmath}}
+\def\yac@stexeqn#1;{\begin{yacasmath} #1 \end{yacasmath}}
 
 \def\outputtex{
      \endyac@sinputverbatim
@@ -332,7 +332,7 @@
      \yac@stexoutput
      \sm@llsk
      \begingroup
-     \def\ys{\yac@stexeqn}
+     \def\out{\yac@stexeqn}
 %     \def\par{}
 %     $$
 }      
