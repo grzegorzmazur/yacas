@@ -184,7 +184,7 @@ Then a more precise approximation for $gamma$ is
 $$ gamma <=> U(n)/V(n)-W(n)/V(n)^2 $$.
 The precision of this approximation is of order $O(Exp(-8*n))$ instead of $O(Exp(-4*n))$ in Brent's method "B1".
 However, this is not such a great savings in time, because almost as much additional work has to be done to compute $W(n)$.
-Brent estimated this "B3" method to be about 20% faster than "B1".
+Brent estimated this "B3" method to be about 20{%} faster than "B1".
 
 Computation of $S(n)$ seems to need $H[k]$ first, and a long multiplication by $H[k]$ at each term.
 To compute $S(n)$ and $V(n)$ faster and more accurately, Brent suggested the following trick that avoids this long multiplication and computes $H[k]$ simultaneously with the series.
