@@ -119,6 +119,7 @@ private:
     void DrawUnderEdit();
     void DrawInputLine(int lowy);
     void DoLine(char* inpline);
+    void UpdateHeight(int aDelta);
 private:
     CDeletingArrayGrower<ConsoleOutBase*> iConsoleOut;
     ConsoleGrouped *iLast;
@@ -139,8 +140,8 @@ public:
 
     int iDefaultFontSize;
     FltkHintWindow* hints;
-    int iOutputOffsetX;
-    int iOutputOffsetY;
+//    int iOutputOffsetX;
+//    int iOutputOffsetY;
     int iMouseDownX;
     int iMouseDownY;
     int iMoveBaseX;

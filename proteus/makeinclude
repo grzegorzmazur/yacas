@@ -1,10 +1,10 @@
 
 
 
-all : conf proteuscalculator proteusworksheet
+all : conf proteus
 
 distclean:  clean
-	-rm -f proteuscalculator proteusform
+	-rm -f proteus
 
 depend :
 	gcc -MM *.cpp $(INCS) > depend.dep
@@ -15,28 +15,12 @@ clean :
 conf:
 	yacas -pc yacasconf
 
-CALCULATOR_OBJS = tabs.o editor.o HelpView.o FltkConsole.o grapher.o FltkHintWindow.o fl_adjustable_file_chooser.o
-proteuscalculator   : $(CALCULATOR_OBJS) $(YACAS_DIR)/libyacas.a $(YACAS_DIR)/libyacasplatform.a $(YACAS_DIR)/libyacasnumbers.a 
-	$(CXX) $(CALCULATOR_OBJS) $(YACAS_DIR)/libyacas.a $(YACAS_DIR)/libyacasplatform.a $(YACAS_DIR)/libyacasnumbers.a -o proteuscalculator $(CXXFLAGS) $(LIBS) -lm
-
-WORKSHEET_OBJS = tabs.large.o editor.o HelpView.o FltkConsole.o grapher.o FltkHintWindow.o 
-
-proteusworksheet   : $(WORKSHEET_OBJS) $(YACAS_DIR)/libyacas.la $(YACAS_DIR)/libyacasplatform.la $(YACAS_DIR)/libyacasnumbers.la 
-	$(CXX) $(WORKSHEET_OBJS) $(YACAS_DIR)/libyacas.la $(YACAS_DIR)/libyacasplatform.la $(YACAS_DIR)/libyacasnumbers.la -o proteusworksheet $(CXXFLAGS) $(LIBS) -lm
-
 
 PROTEUS_OBJS = tabs.o editor.o HelpView.o FltkConsole.o grapher.o FltkHintWindow.o 
 
-proteus   : $(PROTEUS_OBJS) $(YACAS_DIR)/libyacas.la $(YACAS_DIR)/.libs/libyacasplatform.la $(YACAS_DIR)/.libs/libyacasnumbers.la 
-	$(CXX) $(PROTEUS_OBJS) $(YACAS_DIR)/.libs/libyacas.a $(YACAS_DIR)/.libs/libyacasplatform.a $(YACAS_DIR)/.libs/libyacasnumbers.a -o proteus $(CXXFLAGS) $(LIBS) -lm
+proteus   : $(PROTEUS_OBJS)  
+	$(CXX) $(PROTEUS_OBJS) -o proteus $(CXXFLAGS) $(LIBS) 
 	$(POSTBUILD) $@ /usr/local/include/FL/mac.r
-	mv proteus $(EXENAME)
-
-
-test.exe: test.cxx
-	$(CXX) test.cxx -o test.exe $(CXXFLAGS) $(LIBS) -lm $(CXXFLAGS) $(LDLIBS) $(GLDLIBS) $(INCS) -O2 -Wall -Wunused  -fno-exceptions
-	$(POSTBUILD) $@ /usr/local/include/FL/mac.r
-
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCS) -c $*.cpp -o $*.o

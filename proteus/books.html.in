@@ -45,6 +45,50 @@ Programming in Yacas
 
      This document should get you started programming in Yacas.</TR>
 </P>
+<P>
+<A HREF=<? Write( FindFile("documentation/Algochapters.html"));?>
+
+TARGET="_top">
+The Yacas Book of Algorithms
+</A>
+   This book is a detailed description of the algorithms used in the 
+Yacas system for exact symbolic and arbitrary-precision numerical 
+computations. Very few of these algorithms are new, and most are 
+well-known. The goal of this book is to become a compendium of all
+relevant issues of design and implementation of these algorithms. 
+</P>
+
+<P>
+<A HREF=<? Write( FindFile("documentation/essayschapters.html"));?>
+
+TARGET="_top">
+Essays on Yacas
+</A>
+This is a book of essays on Yacas. It covers various topics, from 
+using the Yacas system for specific calculations to general issues
+related to the Yacas system development and maintenance. 
+</P>
+
+<P>
+<A HREF=<? Write( FindFile("documentation/NewDesignchapters.html"));?>
+
+TARGET="_top">
+Design documents for new features
+</A>
+This book contains some design documents that are in progress, for new features or features or implementation details that need to be changed and improved.
+</P>
+
+<P>
+<A HREF=<? Write( FindFile("documentation/LispProgrammingchapters.html"));?>
+
+TARGET="_top">
+(IN PROGRESS) Lisp as an Implementation Language for Computer Algebra Systems
+</A>
+Lisp is a very simple language, one suited for doing computer algebra. 
+Almost all CAS systems today owe a lot to the ideas that came from Lisp. 
+This is a book on the Lisp language, and its connection to Yacas. Yacas 
+is built on top of a Lisp dialect.
+</P>
 
 
 </BODY>

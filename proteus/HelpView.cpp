@@ -1,5 +1,5 @@
 //
-// "$Id: HelpView.cpp,v 1.1 2001-02-22 19:19:55 ayalpinkus Exp $"
+// "$Id: HelpView.cpp,v 1.2 2003-05-22 18:42:16 ayalpinkus Exp $"
 //
 //   Help Viewer widget routines.
 //
@@ -279,7 +279,7 @@ HelpView::draw()
   if (scrollbar_.visible())
   {
     draw_child(scrollbar_);
-    draw_box(b, x(), y(), w() - 7, h(), bgcolor_);
+    draw_box(b, x(), y(), w() - 14, h(), bgcolor_);
   }
   else
 #endif
@@ -1306,7 +1306,7 @@ HelpView::format()
 
 
 #ifdef ENABLE_SCROLLBAR
-  if (size_ < (h() - 8))
+  if (size_ < (h() - 15))
     scrollbar_.hide();
   else
     scrollbar_.show();
@@ -1592,7 +1592,7 @@ HelpView::HelpView(int        xx,	// I - Left position
   targets_(NULL)
 
 #ifdef ENABLE_SCROLLBAR
-,scrollbar_(xx + ww - 7, yy, 7, hh)
+,scrollbar_(xx + ww - 14, yy, 14, hh)
 #endif
 {
   filename_[0] = '\0';
@@ -1742,7 +1742,7 @@ HelpView::resize(int xx,	// I - New left position
 {
   Fl_Widget::resize(xx, yy, ww, hh);
 #ifdef ENABLE_SCROLLBAR
-  scrollbar_.resize(xx + ww - 7, yy, 7, hh);
+  scrollbar_.resize(xx + ww - 14, yy, 14, hh);
 #endif
   format();
 }
@@ -1834,5 +1834,5 @@ scrollbar_callback(Fl_Widget *s, void *)
 
 
 //
-// End of "$Id: HelpView.cpp,v 1.1 2001-02-22 19:19:55 ayalpinkus Exp $".
+// End of "$Id: HelpView.cpp,v 1.2 2003-05-22 18:42:16 ayalpinkus Exp $".
 //

@@ -1,38 +1,28 @@
 
 .SUFFIXES: .cpp
 
-YACAS_DIR = ../src
+INSTALL_DIR = /usr
+
+YACAS_INCLUDE = $(INSTALL_DIR)/local/share/yacas/include
 
 CXX		=c++
-INCS = -I$(YACAS_DIR) -I$(YACAS_DIR)/plat/linux32 -I/usr/X11R6/include
+INCS =  -I$(YACAS_INCLUDE) -I$(YACAS_INCLUDE)/plat/linux32 -I/usr/X11R6/include
 CXXFLAGS	= -O2 -Wno-return-type   
 
 LDLIBS		=  -L/usr/X11R6/lib -lX11 -lXext  -lm -ldl
 GLDLIBS		=  -L/usr/X11R6/lib  -lGLU -lGL -lX11 -lXext  -lm
 FLTKLIBS        = -lfltk
+YACASLIBS       = -L$(INSTALL_DIR)/local/lib/ -lyacas -lyacasplatform -lyacasnumbers
 
-LIBS = $(LDLIBS) $(FLTKLIBS)
-GLIBS = $(GLDLIBS) $(FLTKLIBS)
+LIBS = $(LDLIBS) $(FLTKLIBS) $(YACASLIBS)
 
 POSTBUILD       = ls
 
+all-inclusive: conf proteus
 
-THISFILE = makefile.linux
-
-all-inclusive: conf
-	make clean      -f $(THISFILE)
-	make calculator -f $(THISFILE)
-	make clean      -f $(THISFILE)
-	make worksheet  -f $(THISFILE)
-
-calculator:
-	make proteus EXENAME=proteuscalculator DEFINES=-DCALCULATOR -f $(THISFILE)
-
-worksheet:
-	make proteus EXENAME=proteusworksheet DEFINES=-DWORKSHEET -f $(THISFILE)
-
+# proteuscalculator
 install:
-	cp proteusworksheet proteuscalculator /usr/local/bin/
+	cp proteus /usr/local/bin/
 	cp proteus.conf /etc/proteus.conf
 	cp hints WorksheetBanner CalculatorBanner /usr/local/share/yacas/
 	cp proteusbooks.html /usr/local/share/yacas/documentation/proteusbooks.html
