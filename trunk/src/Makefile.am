@@ -70,13 +70,19 @@ libyacasnumbers_la_LDFLAGS = -rpath $(libdir)
 libgmpnumbers_la_SOURCES = gmpnumbers.cpp numbers.cpp
 libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 
-# 
-# Jitse, is this correct? The following line was replaced with the lines
-# below it. After that change the libmath library compiled again on my
-# Mac OSX. Is it ok though? It is the same as the other plugins, so it 
-# should work...
-# 
-# libmath_la_LIBADD = libmath.lo 
+# The libmath.cpp source file is generated as follows
+
+libmath.cpp: $(top_srcdir)/scripts/base.rep/math.ys yacas
+	(cd ../scripts && make packages.ys corefunctions.ys)
+	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
+	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
+	./yacas --rootdir  $(top_srcdir)/scripts -pc --init compileinit.txt compile.txt
+
+# We used to have "libmath_la_LIBADD = libmath.lo" because libmath.cpp
+# is a built source. However, this broke the build process on some
+# Macs, so we replaced it by the line below. Hopefully, it will not
+# bite us later. Some discussion of this issue is at
+# http://www.gnu.org/software/automake/manual/html_node/Sources.html
 
 libmath_la_SOURCES = libmath.cpp
 
@@ -85,12 +91,6 @@ libmath_la_SOURCES = libmath.cpp
 # for future reference...
 # libmath_la_LDFLAGS = -module -avoid-version -no-undefined 
 # 
-
-libmath.cpp: $(top_srcdir)/scripts/base.rep/math.ys yacas
-	(cd ../scripts && make packages.ys corefunctions.ys)
-	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
-	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
-	./yacas --rootdir  $(top_srcdir)/scripts -pc --init compileinit.txt compile.txt
 
 
 EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp \
