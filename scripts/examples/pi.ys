@@ -1,0 +1,75 @@
+/* Calculating Pi to multiple precision using advanced methods */
+
+/* Defined: PiNNewton(), PiBrentSalamin(), PiBorwein() */
+
+/* First method: solve equation sin x = 0 near 3.14159 using Nth order Newton method: x[n] = x[n-1] - ( tan(x) - tan(x)^3/3 + tan(x)^5/5 +...)
+*/
+
+PiNNewton() := [
+	Local(result, delta, k, Epsilon);
+	Epsilon := 2*10 ^ (-GetPrecision());
+
+	/* initial approximation */
+	result := 3.14159265;
+	delta := 1; k := 0;
+	
+	While(Abs(delta) > Epsilon) [
+		delta := N(Tan(result));
+		delta := N(delta - delta^3/3 + delta^5/5 - delta^7/7);
+		result := N(result - delta);
+		k := k+1;
+	];
+	Echo({"8th order Newton's method: ", k, "iterations, ": Nl() : "Pi=", result}); 
+	result;
+];
+
+/* Method due to Brent and Salamin (1976) */
+PiBrentSalamin() := [
+	Local(a, b, c, s, k, p, result, Epsilon);
+	Epsilon := 2*10 ^ (-GetPrecision());
+
+	/* initialization */
+	a := 1; b := N(1/Sqrt(2)); s := N(1/2); k := 0;
+	/* this is just to make sure we stop - the algorithm does not require initialization of p */
+	p := 0; result := 1;
+	/* repeat until precision is saturated */
+	While(Abs(p-result) >= Epsilon) [
+		k := k+1;
+		result := p;
+		/* arithmetic and geometric mean */
+		{a, b} := {N((a+b)/2), N(Sqrt(a*b))};
+		/* difference between them is scaled by 2^k */
+		s := N(s - 2^k*(a^2-b^2));
+		p := N(2*a^2/s);
+	];
+	Echo({"Brent and Salamin's algorithm: ", k, "iterations, ": Nl() : "Pi=", result}); 
+	
+	result;
+];
+
+/* Method due to Borwein (c. 1988) -- "quartic" method */
+PiBorwein() := [
+	Local(a, y, y4s, k, result, Epsilon);
+	Epsilon := 2*10 ^ (-GetPrecision());
+
+	/* initialization */
+	a:=N(6-4*Sqrt(2)); y := N(Sqrt(2)-1); k := 0;
+	result := 0;
+	/* repeat until precision is saturated */
+	While(Abs(a-result) >= Epsilon) [
+		result := a;
+		/* precompute (1-y^4)^(1/4) */
+		y4s:=N(Sqrt(Sqrt(1-y^4)));
+		/* black magic */
+		y := N((1-y4s)/(1+y4s));
+		/* more black magic */
+		a := a*(1+y)^4-2^(2*k+3)*y*(1+y+y^2);
+		k := k+1;
+	];
+	/* {a} will converge to 1/Pi */
+	result := N(1/result);
+
+	Echo({"Borwein's quartic algorithm: ", k, "iterations, ": Nl() : "Pi=", result}); 
+	result;
+];
+	
