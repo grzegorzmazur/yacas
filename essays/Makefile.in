@@ -69,7 +69,7 @@ RELEASE = @RELEASE@
 VERSION = @VERSION@
 scriptdir = @scriptdir@
 
-EXTRA_DIST = ABIN-grammar.txt ABIN.ys all.ys makefile.essays essays.book.txt 	yacasinit.ys MaintenanceHowto.txt .cvsignore 	Plugin_factory.txt txt2yacasdoc.txt
+EXTRA_DIST = all.ys makefile.essays 	yacasinit.ys .cvsignore
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -177,9 +177,6 @@ clean:
 
 essays:
 	make -f makefile.essays
-
-texdocs:
-	make texdocs -f makefile.essays
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
