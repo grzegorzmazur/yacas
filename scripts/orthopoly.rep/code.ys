@@ -43,8 +43,9 @@ OrthoH(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Hermite", n, {}, x);
 
 OrthoL(n_IsInteger, a_IsRationalOrNumber, _x)_(n>=0 And a> -1) <-- OrthoPoly("Laguerre", n, {a}, x);
 
-OrthoT(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Tscheb1", n, {}, x);
-OrthoU(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Tscheb2", n, {}, x);
+// replaced by more efficient routines below
+//OrthoT(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Tscheb1", n, {}, x);
+//OrthoU(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Tscheb2", n, {}, x);
 
 /* Sums of series of orthogonal polynomials */
 
@@ -276,4 +277,77 @@ OrthoPolySumCoeffs(name_IsString, c_IsList, p_IsList) <-- [
 	];
 	tmpCoeffs[n-index+1] := ruleCoeffs[2]*newCoeffs[n-index];
 	tmpCoeffs;
+];
+
+//////////////////////////////////////////////////
+/// Very fast computation of Chebyshev polynomials. See: W. Koepf. Efficient computation of Chebyshev polynomials in computer algebra (unpublished, poorly written preprint). Contrary to Koepf's claim (unsupported by any calculation in his paper) that the method is numerically stable, I found unsatisfactory numerical behavior for very large orders...
+/// Koepf suggests to use M. Bronstein's algorithm for finding rational solutions of linear ODEs for all other orthogonal polynomials (may be faster than recursion).
+//////////////////////////////////////////////////
+/// Main formulae: T(2*n,x) = 2*T(n,x)^2-1; T(2*n+1,x) = 2*T(n+1,x)*T(n,x)-x;
+/// U(2*n,x) = 2*T(n,x)*U(n,x)-1; T(2*n+1,x) = 2*T(n+1,x)*U(n,x);
+/// We avoid recursive calls and build the sequence of bits of n to determine the minimal sequence of n[i] for which T(n[i], x) and U(n[i], x) need to be computed
+//////////////////////////////////////////////////
+
+/// This function will return the list of binary bits, e.g. BitList(10) returns {1,0,1,0}.
+BitList(n) := BitList(n, {});
+/// This will not be called on very large numbers so it's okay to use recursion
+1# BitList(0, _bits) <-- bits;
+2# BitList(_n, _bits) <-- BitList(Div(n,2), Push(bits, Mod(n,2)));
+
+// Tchebyshev polynomials of 1st kind
+1 # OrthoT(0, _x) <-- 1;
+1 # OrthoT(1, _x) <-- x;
+// Tchebyshev polynomials of 2nd kind
+1 # OrthoU(0, _x) <-- 1;
+1 # OrthoU(1, _x) <-- 2*x;
+
+// guard against user errors
+2 # OrthoT(_n, _x) _ (IsInteger(n) And n<0) <-- Undefined;
+2 # OrthoU(_n, _x) _ (IsInteger(n) And n<0) <-- Undefined;
+
+// make T(), U() of even order more efficient: delegate gruntwork to odd order
+2 # OrthoT(n_IsEven, _x) <-- 2*OrthoT(Div(n,2), x)^2-1;
+2 # OrthoU(n_IsEven, _x) <-- 2*OrthoT(Div(n,2), x)*OrthoU(Div(n,2), x)-1;
+
+// OrthoT() of odd order
+3 # OrthoT(n_IsOdd, _x) <--
+[
+	Local(T1, T2, i);
+	// first bit in the list is always 1, so initialize the pair
+	T1 := OrthoT(1, x);
+	T2 := OrthoT(2, x);
+	ForEach(i, Tail(BitList(n)))	// skip first bit
+	[
+		// if the current bit is 1, we need to double the second index, else double the first index.
+		// Invariant: n[i+1] = 2*n[i] + BitList[i] and we need to have OrthoT(n[i]), OrthoT(1+n[i]) as T1, T2. Initially n[1]=1 and after the cycle n[i]=n.
+		{T1, T2} := If
+		(
+			i=1,
+			{2*T1*T2-x, 2*T2^2-1},
+			{2*T1^2-1, 2*T1*T2-x}
+		);
+	];
+	T1;
+];
+
+// OrthoU() of any order
+3 # OrthoU(_n, _x) <--
+[
+	Local(U1, T1, T2, i);
+	// first bit in the list is always 1, so initialize the pair
+	U1 := OrthoU(1, x);
+	T1 := OrthoT(1, x);
+	T2 := OrthoT(2, x);
+	ForEach(i, Tail(BitList(n)))	// skip first bit
+	[
+		// if the current bit is 1, we need to double the second index, else double the first index
+		// Invariant: n[i+1] = 2*n[i] + BitList[i] and we need to have U(n[i]), T(n[i]), T(1+n[i]) as U1, T1, T2. Initially n[1]=1 and after the cycle n[i]=n.
+		{U1, T1, T2} := If
+		(
+			i=1,
+			{2*U1*T2, 2*T1*T2-x, 2*T2^2-1},
+			{2*U1*T1-1, 2*T1^2-1, 2*T1*T2-x}
+		);
+	];
+	U1;
 ];

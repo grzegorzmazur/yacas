@@ -606,46 +606,10 @@ Most of the work is performed by the internal function {OrthoPoly}.
 
 *SEE OrthoLSum, OrthoPoly
 
-*CMD OrthoT --- Tschebyscheff polynomials of the first kind
+*CMD OrthoT, OrthoU --- Tschebyscheff polynomials
 *STD
 *CALL
 	OrthoT(n, x);
-
-*PARMS
-
-n - degree of polynomial
-
-x - point to evaluate polynomial at
-
-*DESC
-
-This function evaluates the Tschebyscheff polynomial of the first kind
-of degree "n" at the point "x". The name is also spelled Chebyshev.
-
-The Tschebyscheff polynomials of the first kind are orthogonal with
-respect to the weight function $(1-x^2)^(-1/2)$. Hence they are a
-special case of the Gegenbauer polynomials, with a=0. They satisfy the
-recurrence relations:
-
-	T(0,x) = 1
-	T(1,x) = x
-	T(n,x) = 2 x T(n-1,x) - T(n-2,x),
-for $n > 1$.
-
-Most of the work is performed by the internal function {OrthoPoly}.
-
-*E.G.
-
-	In> OrthoT(3, x);
-	Out> x*(4*x^2-3);
-	In> OrthoT(10, 0.9);
-	Out> -0.2007474688;
-
-*SEE OrthoG, OrthoU, OrthoTSum, OrthoPoly
-
-*CMD OrthoU --- Tschebyscheff polynomials of the second kind
-*STD
-*CALL
 	OrthoU(n, x);
 
 *PARMS
@@ -656,29 +620,55 @@ x - point to evaluate polynomial at
 
 *DESC
 
-This function evaluates the Tschebyscheff polynomial of the second kind
-of degree "n" at the point "x". (The name of this Russian mathematician is also sometimes spelled "Chebyshev".)
+These functions evaluate the Tschebyscheff polynomials of the first kind
+$T(n,x)$ and of the second kind $U(n,x)$, of degree "n" at the point "x". (The
+name of this Russian mathematician is also sometimes spelled "Chebyshev".)
 
-The Tschebyscheff polynomials of the second kind are orthogonal with
-respect to the weight function $(1-x^2)^(1/2)$. Hence they are a
-special case of the Gegenbauer polynomials, with a=1. They satisfy the
-recurrence relations:
+The Tschebyscheff polynomials are orthogonal with respect to the weight
+function $(1-x^2)^(-1/2)$. Hence they are a special case of the Gegenbauer
+polynomials $G(n,a,x)$, with $a=0$. They satisfy the recurrence relations:
 
-	U(0,x) = 1
-	U(1,x) = 2 x
-	U(n,x) = 2 x U(n-1,x) - U(n-2,x),
-for $n > 1$.
+	T(n,x) = 2 x T(n-1,x) - T(n-2,x),
+	U(n,x) = 2 x U(n-1,x) - U(n-2,x)
+for $n > 1$, with
+	T(0,x) = 1,
+	T(1,x) = x,
+	U(0,x) = 1,
+	U(1,x) = 2 x.
 
-Most of the work is performed by the internal function {OrthoPoly}.
+Tschebyscheff polynomials are evaluated using fast (but numerically unstable) recurrence relations,
+$$T(2*n,x) = 2*T(n,x)^2-1$$
+$$T(2*n+1,x) = 2*T(n+1,x)*T(n,x)-x$$
+$$U(2*n,x) = 2*T(n,x)*U(n,x)-1$$
+$$U(2*n+1,x) = 2*T(n+1,x)*U(n,x)$$
+This allows to
+compute $T(n,x)$ and $U(n,x)$ in time logarithmic in $n$. Note that the functions return the polynomials in a sparse unexpanded form.
+
+Warning: because of numerical instability of this algorithm, polynomials of very large orders on floating-point arguments should be evaluated with increased precision.
 
 *E.G.
 
+	In> OrthoT(3, x);
+	Out> 2*x*(2*x^2-1)-x;
+	In> OrthoT(10, 0.9);
+	Out> -0.2007474688;
 	In> OrthoU(3, x);
-	Out> x*(8*x^2-4);
+	Out> 4*x*(2*x^2-1);
 	In> OrthoU(10, 0.9);
 	Out> -2.2234571776;
 
-*SEE OrthoG, OrthoT, OrthoUSum, OrthoPoly
+Here is an example numerical calculation where the loss of precision is catastrophic:
+
+	In> OrthoT(10000000000001, 0.9)
+	Out> 0.1851470834;
+	In> Precision(20);
+	Out> True;
+	In> OrthoT(10000000000001, 0.9)
+	Out> -0.79727552022438356731;
+
+*SEE OrthoG, OrthoTSum, OrthoUSum, OrthoPoly
+
+
 
 *CMD OrthoPSum, OrthoHSum, OrthoLSum, OrthoGSum, OrthoTSum, OrthoUSum --- Sums of series of orthogonal polynomials
 *STD
