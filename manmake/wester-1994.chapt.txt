@@ -25,7 +25,7 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 *	6. (OK) Obtain period of decimal fraction 1/7=0.(142857).
 	Verify(Decimal(1/7), {0,{1,4,2,8,5,7}});
 *	7. Continued fraction of 3.1415926535.
-	Verify(ContFracList(3.1415926535, 6),
+	Verify([Local(p,r);p:=GetPrecision();Precision(12);r:=ContFracList(3.1415926535, 6);Precision(p);r;],
 	  {3,7,15,1,292,1});
 *	8. (OK) $Sqrt(2*Sqrt(3)+4) = 1+Sqrt(3)$.
 	Verify(RadSimp(Sqrt(2*Sqrt(3)+4)), 1+Sqrt(3));

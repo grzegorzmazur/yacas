@@ -123,8 +123,8 @@ Verify(1+2.00e3,2001.);
 Verify(1+2.000e3,2001.);
 Verify(1+2.0000e3,2001.);
 
-Verify(N(Sqrt(1e4))-100,0);
-Verify(N(Sqrt(1.0e4))-100,0);
+NumericEqual(N(Sqrt(1e4))-100,0,GetPrecision());
+NumericEqual(N(Sqrt(1.0e4))-100,0,GetPrecision());
 
 Verify(2.0000e3-1,1999.);
 [

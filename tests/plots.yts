@@ -1,8 +1,11 @@
 
 // some tests to verify that plotting works
 
-Verify(Plot2D(a,-1:1,output=data,points=4,depth=0), {{{-1,-1},{-0.5,-0.5},{0,0},{0.5,0.5},{1,1}}});
-Verify(Plot2D(b,b= -1:1,output=data,points=4), {{{-1,-1},{-0.5,-0.5},{0,0},{0.5,0.5},{1,1}}});
+/* I stringified the results for now, as that is what the tests used to mean. The correct way to deal with this
+ * would be to compare the resulting numbers to accepted precision.
+ */
+Verify(ToString()Write(Plot2D(a,-1:1,output=data,points=4,depth=0)), "{{{-1,-1},{-0.5,-0.5},{0,0},{0.5,0.5},{1,1}}}");
+Verify(ToString()Write(Plot2D(b,b= -1:1,output=data,points=4)), "{{{-1,-1},{-0.5,-0.5},{0,0},{0.5,0.5},{1,1}}}");
 Verify(Plot2D({1,y},-1:1,output=datafile), {"output.data1", "output.data2"});
 Verify(DeleteFile("output.data1"), True);
 Verify(DeleteFile("output.data2"), True);
