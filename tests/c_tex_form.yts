@@ -37,7 +37,7 @@ TeXForm(Hold(D(x)f(x)))
 
 Verify(
 TeXForm(Hold(Not (c<0) And (a+b)*c>= -d^e And (c<=0 Or b+1>0) Or a!=0 And Not (p=q)))
-,"$ \\neg c < 0 \\wedge \\left( a + b\\right)  c\\geq  - d ^{e} \\wedge \\left( c\\leq 0 \\vee b + 1 > 0\\right)  \\vee a\\neq 0 \\wedge  \\neg p = q$"
+,"$ \\neg c < 0\\wedge \\left( a + b\\right)  c\\geq  - d ^{e}\\wedge \\left( c\\leq 0\\vee b + 1 > 0\\right) \\vee a\\neq 0\\wedge  \\neg p = q$"
 );
 
 
