@@ -1,3 +1,7 @@
 OdeSolve
 OdeTest
+OdeOrder
+OdeAuxiliaryEquation
+OdeCoefList
+OdeMakeTerm
 }
