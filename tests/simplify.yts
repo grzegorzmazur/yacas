@@ -25,3 +25,5 @@ TestYacas( Simplify(1/(1/(1/(1/(1/(1/x+1)+1)+1)+1)+1) ),(5*x+3)/(8*x+5) );
 /*Serge: these are not handled yet ;-)
 TestYacas( Simplify((x^2-y^2)/(x+y)), x-y );
 */
+
+TestYacas(ExpandFrac(x+y/x+1/3),(x^2+y+x/3)/x);

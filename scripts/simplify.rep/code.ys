@@ -87,3 +87,42 @@ RuleBase("SimpDiv",{x,y});
 30 # SimpImplode(_x) <-- x;
 
 
+//////////////////////////////////////////////////
+/// ExpandFrac --- normalize rational functions (no simplification)
+//////////////////////////////////////////////////
+
+5 # ExpandFrac(expr_IsList) <-- MapSingle("ExpandFrac", expr);
+
+// expression does not contain fractions
+10 # ExpandFrac(_expr)_Not(HasFuncSome(expr, "/", {Atom("+"), Atom("-"), *, /, ^})) <-- expr;
+15 # ExpandFrac(a_IsRationalOrNumber) <-- a;
+20 # ExpandFrac(_expr) <-- ExpandFrac'combine(GetNumerDenom(expr));
+
+ExpandFrac'combine({_a, _b}) <-- a/b;
+
+/// GetNumerDenom(x) returns a pair of expressions representing normalized numerator and denominator; GetNumerDenom(x, a) multiplies the numerator by the number a
+GetNumerDenom(_expr, _a) <-- GetNumerDenom(expr)*{a,1};
+
+// on expressions that are not fractions, we return unit denominator
+10 # GetNumerDenom(_expr)_Not(HasFuncSome(expr, "/", {Atom("+"), Atom("-"), *, /, ^})) <-- {expr, 1};
+// rational numbers are not simplified
+15 # GetNumerDenom(a_IsRationalOrNumber) <-- {a, 1};
+// arithmetic
+20 # GetNumerDenom(_a + _b) <-- ExpandFrac'add(GetNumerDenom(a), GetNumerDenom(b));
+20 # GetNumerDenom(_a - _b) <-- ExpandFrac'add(GetNumerDenom(a), GetNumerDenom(b, -1));
+20 # GetNumerDenom(- _a) <-- GetNumerDenom(a, -1);
+20 # GetNumerDenom(+ _a) <-- GetNumerDenom(a);
+20 # GetNumerDenom(_a * _b) <-- ExpandFrac'multiply(GetNumerDenom(a), GetNumerDenom(b));
+20 # GetNumerDenom(_a / _b) <-- ExpandFrac'divide(GetNumerDenom(a), GetNumerDenom(b));
+// integer powers
+20 # GetNumerDenom(_a ^ b_IsInteger)_(b > 1) <-- ExpandFrac'multiply(GetNumerDenom(a), GetNumerDenom(a^(b-1)));
+20 # GetNumerDenom(_a ^ b_IsInteger)_(b < -1) <-- ExpandFrac'divide(GetNumerDenom(1), GetNumerDenom(a^(-b)));
+20 # GetNumerDenom(_a ^ b_IsInteger)_(b = -1) <-- ExpandFrac'divide(GetNumerDenom(1), GetNumerDenom(a));
+// non-integer powers are not considered to be rational functions
+25 # GetNumerDenom(_a ^ _b) <-- {a^b, 1};
+
+// arithmetic on fractions; not doing any simplification here, whereas we might want to
+ExpandFrac'add({_a, _b}, {_c, _d}) <-- {a*d+b*c, b*d};
+ExpandFrac'multiply({_a, _b}, {_c, _d}) <-- {a*c, b*d};
+ExpandFrac'divide({_a, _b}, {_c, _d}) <-- {a*d, b*c};
+
