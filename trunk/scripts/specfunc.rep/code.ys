@@ -409,12 +409,12 @@ BernoulliArray1(n_IsEven) _ (n>=2) <--
 //40 # BesselI(_n,x_IsComplex)_(Abs(x)<= 2*Gamma(n) )  <-- N(BesselNsmall(n,x,1));
 40 # BesselJ(_n,x_IsComplex)_(Abs(x)<= 2*Gamma(n) )  <-- 
 [
-ApproxInfSum((-1)^k*(x/2)^(2*k+c[1])/(k! * Gamma(k+c[1]+1) ),1,0,{n} );
+ApproxInfSum((-1)^k*(x/2)^(2*k+c[1])/(k! * Gamma(k+c[1]+1) ),0,x,{n} );
 ];
 
 40 # BesselI(_n,x_IsComplex)_(Abs(x)<= 2*Gamma(n) )  <--
 [
-ApproxInfSum((x/2)^(2*k+c[1])/(k! * Gamma(k+c[1]+1) ),1,0,{n} );
+ApproxInfSum((x/2)^(2*k+c[1])/(k! * Gamma(k+c[1]+1) ),0,x,{n} );
 ];
 
 
