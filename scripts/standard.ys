@@ -419,7 +419,20 @@ SumListSide(_x, y_IsList) <--
 
 
 70  # (_x ^ m_IsRationalOrNumber) ^ n_IsRationalOrNumber <-- x^(n*m);
-80 # x_IsRationalOrNumber ^ n_IsPositiveInteger <-- x*x^(n-1);
+80 # x_IsRationalOrNumber ^ n_IsPositiveInteger <--
+[
+  Local(mult,result);
+  Set(mult,x);
+  Set(result,1);
+  While(n>0)
+  [
+    If(n&1 != 0, Set(result, result*mult));
+    Set(n,n>>1);
+    Set(mult,mult*mult);
+  ];
+  result;
+//  x*x^(n-1);
+];
 
 100  # ((_x)*(_x ^ _m)) <-- x^(m+1);
 100  # ((_x ^ _n)*(_x ^ _m)) <-- x^(m+n);

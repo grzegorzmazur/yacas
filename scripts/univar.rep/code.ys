@@ -202,6 +202,9 @@ Rule("Degree",1,0, IsUniVar(expr))
  TODO put somewhere else!!!
  */
 10 # RepeatedSquaresMultiply(_a,- (n_IsInteger)) <-- 1/RepeatedSquaresMultiply(a,n);
+
+15 #  RepeatedSquaresMultiply(UniVariate(_var,_first,{_coef}),(n_IsInteger)) <--
+      UniVariate(var,first*n,{coef^n});
 20 # RepeatedSquaresMultiply(_a,n_IsInteger) <--
 [
   Local(m,b);
