@@ -91,8 +91,11 @@ MakeFunctionPlugin(extName, fBody) := [
 	PID := FromString(ToString() SystemCall("echo $PPID ';'")) Read();
 */
 GetYacasPID() := [
-	SystemCall("echo $PPID ';' > /tmp/yacas-tmp");
-	FromFile("/tmp/yacas-tmp") Read();
+	SystemCall("echo $PPID ';' > /tmp/yacas-tmpfile");
+	{
+		FromFile("/tmp/yacas-tmpfile") Read(),
+		SystemCall("rm -f /tmp/yacas-tmpfile")
+	} [1];
 ];
 
 /* show a Yacas expression graphically in a PS file */
@@ -101,9 +104,9 @@ If(Not(IsBound(PSViewCommand)), PSViewCommand := "gv");
 
 ShowPS(expr) := [
 	/* Create a temporary file */
-	SystemCall("echo \\\"/tmp/yacas-tmpfile-$$\\\" ';' > /tmp/yacas-tmp");
-	filename := FromFile("/tmp/yacas-tmp") Read();
-	SystemCall("rm -f /tmp/yacas-tmp");
+	SystemCall("echo \\\"/tmp/yacas-tmpfile-$$\\\" ';' > /tmp/yacas-tmpfile");
+	filename := FromFile("/tmp/yacas-tmpfile") Read();
+	SystemCall("rm -f /tmp/yacas-tmpfile");
 	ToFile(filename : ".tex") WriteString(
 "\\documentclass{article} \\begin{document} \\thispagestyle{empty}
 " : TeXForm(expr) : "

@@ -1,9 +1,4 @@
 
-
-/* Binomials */
-10 # Bin(n_IsNonNegativeInteger,m_IsNonNegativeInteger)_(m <= n) <-- n! /(m! *(n-m)!);
-20 # Bin(n_IsInteger,m_IsInteger) <-- 0;
-
 /* Levi-civita symbol */
 Function("LeviCivita",{indices})
 [

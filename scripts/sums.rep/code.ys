@@ -24,7 +24,10 @@ Max(list_IsList) <--
 /* Factorials */
 
 10 # 0! <-- 1;
-20 # ((n_IsPositiveInteger)!) <-- MathFac(n);
+20 # ((n_IsPositiveInteger)!) <-- [
+	Check(n <= 65535, "Factorial: Error: the argument " : ( ToString() Write(n) ) : " is too large, you may want to avoid exact calculation");
+	MathFac(n);
+];
 30 # ((n_IsList)!) <-- MapSingle("!",n);
 
 /* formulae for half-integer factorials:
@@ -32,15 +35,68 @@ Max(list_IsList) <--
 (+(2*z+1)/2)! = Sqrt(Pi)*(2*z+1)! / (2^(2*z+1)*z!) for z >= 0
 (-(2*z+1)/2)! = Sqrt(Pi)*(-1)^z*z!*2^(2*z) / (2*z)! for z >= 0
 
+Staggered factorials are more efficient:
+	(2*n-1)!! := 1*3*...*(2*n-1) = (2*n)! / (2^n*n!)
+	(2*n)!! := 2*4*...*(2*n) = 2^n*n!
+
 */
+/* // old version - not using staggered factorials
 HalfIntegerFactorial(n_IsOdd) _ (n>0) <--
 	Sqrt(Pi) * ( n! / ( 2^n*((n-1)/2)! ) );
 HalfIntegerFactorial(n_IsOdd) _ (n<0)  <--
 	Sqrt(Pi) * ( (-1)^((-n-1)/2)*2^(-n-1)*((-n-1)/2)! / (-n-1)! );
+*/
+// new version using staggered factorials
+HalfIntegerFactorial(n_IsOdd) _ (n>0) <--
+	Sqrt(Pi) * ( n!! / 2^((n+1)/2) );
+HalfIntegerFactorial(n_IsOdd) _ (n<0)  <--
+	Sqrt(Pi) * ( (-1)^((-n-1)/2)*2^((-n-1)/2) / (-n-2)!! );
 
 /* Want to also compute (2.5)! */
 40 # (n_IsRationalOrNumber)! _(Denom(Rationalize(n))=2) <-- HalfIntegerFactorial(Numer(Rationalize(n)));
 
+/// partial factorial
+n1_IsRationalOrNumber *** n2_IsRationalOrNumber <--
+[
+	Check(n2-n1 <= 65535, "Partial factorial: Error: the range " : ( ToString() Write(n2-n1) ) : " is too large, you may want to avoid exact calculation");
+	If(n2-n1<0,
+		1,
+		Factorial'partial(n1, n2)
+	);
+];
+
+// Floor() will perform conversion to integer and a, b are already rational
+2# Factorial'partial(_a, _b) _ (b-a>=4) <-- Factorial'partial(a, a+Floor((b-a)/2)) * Factorial'partial(a+Floor((b-a)/2)+1, b);
+3# Factorial'partial(_a, _b) _ (b-a>=3) <-- a*(a+1)*(a+2)*(a+3);
+4# Factorial'partial(_a, _b) _ (b-a>=2) <-- a*(a+1)*(a+2);
+5# Factorial'partial(_a, _b) _ (b-a>=1) <-- a*(a+1);
+6# Factorial'partial(_a, _b) _ (b-a>=0) <-- a;
+
+
+/* Binomials */
+10 # Bin(n_IsPositiveInteger,m_IsNonNegativeInteger)_(2*m <= n) <-- ((n-m+1) *** n) / m!;
+15 # Bin(n_IsPositiveInteger,m_IsNonNegativeInteger)_(2*m > n And m <= n) <-- ((m+1) *** n )/ (n-m)!;
+20 # Bin(n_IsInteger,m_IsInteger) <-- 0;
+
+/// even/odd staggered factorial: product of even or odd integers up to n
+1# (n_IsPositiveInteger)!! _ (n<=3) <-- n;
+2# (n_IsPositiveInteger)!! <--
+[
+	Check(n<=65535, "Staggered factorial: Error: the argument " : ( ToString() Write(n) ) : " is too large, you may want to avoid exact calculation");
+	Factorial'staggered(2+Mod(n, 2), n);
+];
+
+// the purpose of this mess "Div(a+b,2)+1+Mod(Div(a+b,2)+1-a, 2)" is to obtain the smallest integer which is >= Div(a+b,2)+1 and is also odd or even when a is odd or even; we need to add at most 1 to (Div(a+b,2)+1)
+2# Factorial'staggered(_a, _b) _ (b-a>=6) <-- Factorial'staggered(a, Div(a+b,2)) * Factorial'staggered(Div(a+b,2)+1+Mod(Div(a+b,2)+1-a, 2), b);
+3# Factorial'staggered(_a, _b) _ (b-a>=4) <-- a*(a+2)*(a+4);
+4# Factorial'staggered(_a, _b) _ (b-a>=2) <-- a*(a+2);
+5# Factorial'staggered(_a, _b) <-- a;
+
+30 # (n_IsList)!! <-- MapSingle("!!",n);
+
+
+
+/* Sums */
 
 RuleBase("Sum",{sumvar,sumfrom,sumto,sumbody}); 
 

@@ -633,26 +633,26 @@ However, regardess of presentation, internally all functions and operators
 are equal and merely take a certain number of arguments. The user may
 define or redefine any operators with either "normal" names such as "A"
 or names made of one or more of the special symbols {+ - * /} {= ` ~ :} {! @ # $} {^ & * _} {| < >} and declare them to be infix, postfix, or
-prefix operators, as well as normal or bodied functions. (The symbol {%} is reserved for the result of the previous expression.)
+prefix operators, as well as normal or bodied functions. (The symbol {%} is reserved for the result of the previous expression; the decimal point {.} is special and cannot be part of an operator's name unless the whole name consists entirely of points, e.g. the "{..}" operator.)
 Some of these operators and combinations are already defined in Yacas's
 script library, for instance the "syntactic sugar" operators such as
 {:=} or {<--}, but they can be in principle
-redefined. These "special" operators are in no way special, except
+redefined or erased. These "special" operators are in no way special to the system, except
 for their syntax.
 
-All infix, prefix, and postfix operators and bodied
+All infix, prefix, postfix operators and bodied
 functions can be assigned a precedence; infix operators in addition have a
 left and a right precedence. All this will only affect the syntax of input
 and could be arranged for the user's convenience.
 
-The only caveat is to make sure you always type a space between any
+An important caveat is to make sure you always type a space between any
 symbols that could make up an operator. For instance, after you define a
 new function "{@@(x):=x^2;}" expressions such as
 "{a:=@@(b);}" typed without spaces will cause an error
 unless you also define the operator "{:=@@}". This is
 because the parser will not stop at "{:=}" when trying to
 make sense of that expression. The correct way to deal with this is to
-insert a space: "{a:= @@(b);}" Spaces are
+insert a space: "{a:= @@(b)}". Similarly, {a!+3} will cause an error unless you define "{!+}", so use a space: {a! +3}. Spaces are
 <i>not</i> required in situations such as
 "{a:=-1}", but this is so only because the operator
 {:=-} is actually defined in Yacas.

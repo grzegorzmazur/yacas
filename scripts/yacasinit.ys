@@ -28,13 +28,13 @@ Rule("CntDefLoad",1,1,True)
  */
 CntDefLoad("solve.rep/code.ys");
 CntDefLoad("deriv.rep/code.ys");
+CntDefLoad("sums.rep/code.ys");
 CntDefLoad("linalg.rep/code.ys");
 CntDefLoad("random.rep/code.ys");
 CntDefLoad("lists.rep/code.ys");
 CntDefLoad("controlflow.rep/code.ys");
 CntDefLoad("complex.rep/code.ys");
 CntDefLoad("stdfuncs.rep/code.ys");
-CntDefLoad("sums.rep/code.ys");
 CntDefLoad("newly.rep/code.ys");
 CntDefLoad("univar.rep/code.ys");
 CntDefLoad("stubs.rep/code.ys");
