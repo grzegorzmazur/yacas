@@ -405,6 +405,9 @@ void LispDefaultTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispCTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments);
 
+void LispFastAssoc(LispEnvironment& aEnvironment, LispPtr& aResult,
+                   LispPtr& aArguments);
+
 
 #endif
 

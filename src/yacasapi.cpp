@@ -243,7 +243,9 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispDefaultTokenizer,"DefaultTokenizer");
     SetCommand(LispCTokenizer      ,"CTokenizer");
 
-    
+    SetCommand(LispFastAssoc    ,"FastAssoc");
+
+
     bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("While"));
     bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("Rule"));
     bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("MacroRule"));
