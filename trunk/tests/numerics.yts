@@ -7,7 +7,7 @@
 
 Precision(10);
 
-KnownFailure(N(Sqrt(2),5) = 1.41421);		// no idea where the problem is
+Verify(N(Sqrt(2),5), 1.41421);		// no idea where the problem is
 KnownFailure(N(N(1+Pi)-Pi,20) = 1);		// "N" should have "HoldArg" in some way, so inner "N" is evaluated with outer precision 20
 
 /* Got the first digits of Pi from the following page:

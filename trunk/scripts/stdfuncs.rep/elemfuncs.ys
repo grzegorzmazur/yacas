@@ -7,13 +7,13 @@
  *  then the kernel version will automatically shadow these functions.
  *  These implementations are not necessarily the best optimized versions.
  */
-
+/* this is now moved to base.rep/math.ys
 /// MathMul2Exp(x,n): multiply x by 2^n for integer n. This should be implemented in the core, but it doesn't hurt to define it here as well.
 10 # MathMul2Exp(_x,0) <-- x;
 20 # MathMul2Exp(_x,_n) <-- MathMultiply(x, MathPower(2,n));
 //20 # MathMul2Exp(_x,_n)_(n>0) <-- MathMultiply(x, MathPower(2,n));
 //30 # MathMul2Exp(_x,_n)_(n<0) <-- MathDivide(x, MathPower(2,-n));
-
+*/
 /// BitsToDigits(n,base) and DigitsToBits(n,base). Enough to compute at low precision.
 
 BitsToDigits(n, base) := MathFloor(0.51+n*N(Ln(2)/Ln(base),10));
@@ -51,7 +51,7 @@ DigitsToBits(n, base) := MathFloor(0.51+n*N(Ln(base)/Ln(2),10));
 ];
 */
 
-
+/* this is already moved to base.rep/math.ys
 /// MathPower(x,y).
 /// Compute x^y, using a binary algorithm for integer y and exp/log for all other cases.
 /// FIXME: No precision tracking yet.
@@ -68,14 +68,14 @@ DigitsToBits(n, base) := MathFloor(0.51+n*N(Ln(base)/Ln(2),10));
 10 # MathPower(_x, y_IsInteger) <-- IntPowerNum(x, y, MathMultiply, 1);
 // real powers: this needs precision tracking.
 20 # MathPower(_x, _y) <-- MathExp(MathMultiply(y,MathLn(x)));
-
+*/
 
 /// MathSqrt(x).
 /// Compute square root(x) with nonnegative x. FIXME: No precision tracking yet.
-10 # MathSqrt(0) <-- 0;
+10 # MathSqrt1(0) <-- 0;
 // BisectSqrt() works only on integers
-//20 # MathSqrt(x_IsInteger) <-- BisectSqrt(x);
-30 # MathSqrt(x_IsPositiveNumber) <-- x*NewtonNum({{r}, r+r*(1-x*r^2)/2}, FastPower(x,-0.5), 4, 2);
+//20 # MathSqrt1(x_IsInteger) <-- BisectSqrt(x);
+30 # MathSqrt1(x_IsPositiveNumber) <-- x*NewtonNum({{r}, r+r*(1-x*r^2)/2}, FastPower(x,-0.5), 4, 2);
 
 //{BisectSqrt(N)} computes the integer part of $ Sqrt(N) $ for integer $N$.
 	//sqrt(1) = 1, sqrt(0) = 0
@@ -158,7 +158,7 @@ DigitsToBits(n, base) := MathFloor(0.51+n*N(Ln(base)/Ln(2),10));
 
 /// MathExp(x). Use the shifted squaring argument reduction and Taylor series.
 /// FIXME: No precision tracking yet.
-
+/* This is mostly moved to base.rep/math.ys
 10 # MathExp(0) <-- 1;
 20 # MathExp(_x)_(x<0) <-- MathDivide(1, MathExp(-x));
 30 # MathExp(_x)_(x>1) <-- MathExp(MathMul2Exp(x,-1))^2;
@@ -176,7 +176,7 @@ DigitsToBits(n, base) := MathFloor(0.51+n*N(Ln(base)/Ln(2),10));
 	Precision(prec);
 	RoundTo(1+result, prec);
 ];
-
+*/
 /// Identity transformation, compute Exp(x)-1 from value=Exp(x/2^n)-1
 
 MathExp'Doubling1(value, n) :=
@@ -193,7 +193,7 @@ MathExp'Doubling1(value, n) :=
 ];
 
 /// Identity transformation, compute Exp(x) from value=Exp(x/2^n)
-
+/*
 MathExp'Doubling(value, n) :=
 [
 	Local(shift, result);
@@ -206,7 +206,7 @@ MathExp'Doubling(value, n) :=
 	];
 	result;
 ];
-
+*/
 
 /// Compute Exp(x)-1 from the Taylor series for (Exp(x)-1)/x.
 MathExp'Taylor1(x) :=

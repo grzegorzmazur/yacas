@@ -2050,7 +2050,17 @@ LispBoolean BigNumber::IsIntValue() const
 	// *this has integer value if it's an integer or if it does not have enough digits to be non-integer, or if it's exactly equal to an integer
   if (IsInt() || GetPrecision() < BitCount() || mpf_integer_p(float_))
 	  return LispTrue;
+  else
+  {
   // check if the number is integer within its precision
+  	BigNumber temp;
+	temp.Floor(*this);
+	if (temp.Equals(*this))
+	  	return LispTrue;
+	else
+		return LispFalse;
+  }
+/*TODO REMOVE
   // compute y=x-Floor(x)
   BigNumber y;
   y.Floor(*this);
@@ -2068,6 +2078,7 @@ LispBoolean BigNumber::IsIntValue() const
 	  return LispTrue;
   else
 	  return LispFalse;
+*/
 }
 
 // check whether the number fits into a system long or double type
@@ -2454,6 +2465,11 @@ void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
   	if (!IsInt()) turn_int();
   	mpz_mod(int_, aY.int_, aZ.int_);
   }
+  else	// at least one is float, generate error
+  {
+  	RaiseError("BigNumber::Mod: called with noninteger parameters, %f, %f", aY.Double(), aZ.Double());
+	this->SetTo(0);
+  }
 }
 
 /* this can be done later in plugins or in library-dependent wrappers
@@ -2473,10 +2489,24 @@ void BigNumber::Floor(const BigNumber& aX)
   {
     if(aX.GetPrecision() >= aX.BitCount())
     {	// now aX is a float for which we can evaluate Floor()
-      turn_float();	// just in case we are integer; we are not aX
-      // we are float now
-      mpf_floor(float_, aX.float_);
-      BecomeInt();	// we are integer now
+	// note: if aX has integer value, then Floor(aX) = aX, even though the gmp floor function might return aX-1
+	// but we can't use IsIntValue() here because IsIntValue() uses Floor()
+	// aX has integer value when mpf_floor(aX)=aX or aX-1
+	  BigNumber temp(aX);
+	  mpf_floor(temp.float_, aX.float_);
+	  temp.BecomeInt();	// temp is the first approximation to floor(aX)
+	  if (temp.Equals(aX))	// try whether mpf_floor(aX) is close to aX
+		  this->SetTo(temp);	// aX has integer value
+	  else
+	  {	// try whether mpf_floor(aX)+1 is close to aX
+	  	BigNumber one, temp_plus_1;
+		one.SetTo(1);
+		temp_plus_1.Add(temp, one, 0);	// both integers, so precision is unimportant
+		if (temp_plus_1.Equals(aX))
+			this->SetTo(temp_plus_1);	// aX has integer value
+		else
+			this->SetTo(temp);
+	  }
     }
     else
     {
