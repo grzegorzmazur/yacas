@@ -74,6 +74,17 @@ void StripScript(char *contents,int &stripsize)
         c = contents[src++];
         switch (c)
         {
+        case '\"':
+          contents[trg++] = c;
+          while (contents[src] != '\"')
+          {
+            if (contents[src] == '\\') 
+              contents[trg++] = contents[src++];
+            contents[trg++] = contents[src++];
+          }
+          c = contents[src++];
+          goto NORMAL;
+          break;
         case ' ':
         case '\t':
             while (contents[src] == ' ' || contents[src] == '\t') src++;

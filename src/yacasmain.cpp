@@ -43,9 +43,11 @@
 #endif
 
 #ifdef WIN32
-  #define PATH_SEPARATOR '\\'
+  #define PATH_SEPARATOR   '\\' 
+  #define PATH_SEPARATOR_2 "\\\\" // Yes, four! Escaped once by C, then in Yacas.
 #else
-  #define PATH_SEPARATOR '/'
+  #define PATH_SEPARATOR   '/'
+  #define PATH_SEPARATOR_2 "/"
 #endif
 
 #include "yacas.h"
@@ -436,9 +438,9 @@ void DeclarePath(char *ptr2)
   if (ptr2[strlen(ptr2)-1] != PATH_SEPARATOR)
   {
 #ifdef HAVE_VSNPRINTF
-    snprintf(buf,1000,"DefaultDirectory(\"%s%c\");",ptr2,PATH_SEPARATOR);
+    snprintf(buf,1000,"DefaultDirectory(\"%s%s\");",ptr2,PATH_SEPARATOR_2);
 #else
-    sprintf(buf,"DefaultDirectory(\"%s%c\");",ptr2,PATH_SEPARATOR);
+    sprintf(buf,"DefaultDirectory(\"%s%s\");",ptr2,PATH_SEPARATOR_2);
 #endif
   }
   else
@@ -456,7 +458,7 @@ void DeclareDllPath(char *ptr2)
 {
   char buf[1000];
   if (ptr2[strlen(ptr2)-1] != PATH_SEPARATOR)
-    sprintf(buf,"DllDirectory(\"%s%c\");",ptr2,PATH_SEPARATOR);
+    sprintf(buf,"DllDirectory(\"%s%s\");",ptr2,PATH_SEPARATOR_2);
   else
     sprintf(buf,"DllDirectory(\"%s\");",ptr2);
   yacas->Evaluate(buf);
