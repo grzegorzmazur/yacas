@@ -1,0 +1,14 @@
+
+				Essays on Yacas
+
+			On Yacas programming
+
+*INCLUDE ABIN-grammar.chapt
+
+*INCLUDE Plugins-Howto.chapt
+
+			For Yacas developers
+
+*INCLUDE CVS-Howto.chapt
+
+*INCLUDE YacasDocs.chapt
