@@ -12,7 +12,27 @@ polynomials modulo
 integers.
 */
 
-LocalSymbols(Mkp,Mkpc,Mkn,Mkc,Mkd,MkGcd,MkExtEuclid,MkExtEuclidAux,TryFact)[
+//LocalSymbols(PowerMod,Mkp,Mkpc,Mkn,Mkc,MkMod,MkDiv,Mkd,MkGcd,MkExtEuclid,MkExtEuclidAux,TryFact)[
+
+
+PowerMod(x_IsPositiveInteger, 
+    n_IsPositiveInteger,
+    m_IsPositiveInteger) <--
+[
+  Local(result);
+  result:=1;
+  x:=Mod(x,m);
+  While(n != 0)
+  [
+    if ((n&1) = 1)
+  [
+      result := Mod(result*x,m);
+    ];
+    x := Mod(x*x,m);
+    n := n>>1;
+  ];
+  result;
+];
 
 // input roots, output poly
 Mkp(roots):= Factorize(x-roots);
@@ -34,6 +54,8 @@ Mkc(poly):=
 10 # MkMod(_n,Infinity) <-- n;
 20 # MkMod(_n,_m) <-- Mod(n,m);
 
+10 # MkDiv(_n,_m,Infinity) <-- Div(n,m);
+20 # MkDiv(_n,_m,_p) <-- MkMod(n*m^(p-2),p);
 
 // Division: input coefficients for polys, output coefs for quotient and remainder
 Mkd(numer,denom,p):=
@@ -58,7 +80,8 @@ Mkd(numer,denom,p):=
   [
     While(Length(numer)>=Length(denom))
     [
-      Set(nq,MkMod(Div(numer[1],denom[1]),p));
+//      Set(nq,MkMod(Div(numer[1],denom[1]),p));
+      Set(nq,MkDiv(numer[1],denom[1],p));
       q[ln-(Length(numer)-ld)] := nq;
       For(j:=1,j<=Length(denom),j++)
       [
@@ -186,13 +209,17 @@ BinaryFactors(polynom):=
   If(IsZeroVector(Mkd(testpoly,{1,0},2)[2]),Set(list,{1,0}:list));
   If(IsZeroVector(Mkd(testpoly,{0,0},2)[2]),Set(list,{0,0}:list));
 
-//Echo("initial list = ",list);
+Echo("initial list = ",list);
 
   Set(p,2);
   Set(nrroots,Length(poly)-1);
 
   While(nrroots>0 And Length(list)>0)
   [
+    Local(pp);
+    Set(pp,(2*p));
+//    Set(pp,NextPrime(2*p));
+//    Set(pp,NextPrime(p));
 
     // check if any of the factors already divides the original polynomial
     For(i:=1,i<=Length(list),i++)
@@ -214,33 +241,35 @@ BinaryFactors(polynom):=
     // to the potential solutions and checks if they are still a solution.
     Set(newlist,{});
 
-    Local(pp);
-    //Set(pp,(2*p));
-    Set(pp,NextPrime(2*p));
-//    Set(pp,NextPrime(p));
+//Echo("testpoly is ",testpoly);
+
     For(i:=1,i<=Length(list),i++)
     [
       If(Not(list[i] = {1,0} And p>leadingcoef),
-	  [
+      [
 
-If(IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]},pp)[2]),
-			Set(newlist,
-{(list[i][1]+p),list[i][2]}:newlist));
-		  If(IsZeroVector(Mkd(testpoly,{(list[i][1]
-),list[i][2]},pp)[2]),
-			Set(newlist,               {(list[i][1]
-),list[i][2]}:newlist));
-	  ]);
+/*
+If(p=2 And list[i] = {1,1},
+[
+  Echo("GOT ",list[i]," ",p," ",pp," ",Mkd(testpoly,{(list[i][1]),list[i][2]+p},pp));
+]);
+If(p=4 And list[i] = {1,3},
+[
+  Echo("GOT ",list[i]," ",p," ",pp," ",Mkd(testpoly,{(list[i][1]+p),list[i][2]},pp));
+]);
+*/
+        If(IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]},pp)[2]),
+	  		  Set(newlist,{(list[i][1]+p),list[i][2]}:newlist));
+        If(IsZeroVector(Mkd(testpoly,{(list[i][1]),list[i][2]},pp)[2]),
+			    Set(newlist,{(list[i][1]),list[i][2]}:newlist));
+      ]);
       If(Not(isMonic),
       [
 
-If(IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]+p},pp)[2]),
-          Set(newlist,
-{(list[i][1]+p),list[i][2]+p}:newlist));
-        If(IsZeroVector(Mkd(testpoly,{(list[i][1]
-),list[i][2]+p},pp)[2]),
-          Set(newlist,               {(list[i][1]
-),list[i][2]+p}:newlist));
+        If(IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]+p},pp)[2]),
+          Set(newlist,{(list[i][1]+p),list[i][2]+p}:newlist));
+        If(IsZeroVector(Mkd(testpoly,{(list[i][1]),list[i][2]+p},pp)[2]),
+          Set(newlist,{(list[i][1]),list[i][2]+p}:newlist));
       ]);
     ];
 
@@ -251,7 +280,7 @@ If(IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]+p},pp)[2]),
 
     Set(p,2*p);
 
-//Echo("Solutions modulo ",p," with ",Length(list),"potential solutions",list);
+Echo("Solutions modulo ",p," with ",Length(list),"potential solutions",list);
 //Echo("     with current result ",result);
 //Echo("testpoly is ",testpoly);
   ];
@@ -281,7 +310,9 @@ Macro(TryFact,{root})
     Set(lst1,Mkd(testpoly,(@root),Infinity));
     If(IsZeroVector(lst1[2]),
       [
+//Echo("testpoly1 ",testpoly);
         Set(testpoly,lst1[1]);
+//Echo("testpoly2 ",testpoly);
         Set(lst1,Mkd(poly,(@root),Infinity));
         Local(count);
         Set(count,0);
@@ -297,6 +328,28 @@ Macro(TryFact,{root})
     );
   ]);
 ];
+
+
+nthroot(x,n):=
+[
+  Local(s,t,g,p,l,ln,pp);
+  Set(l,1);  Set(p,2);  Set(ln,1);
+  While ((1<<(n*p))<x) [Set(p,MathMultiply(p,2));Set(ln,MathAdd(ln,1));];
+  Set(t,1);  Set(g,1);  Set(s,1);  Set(pp,p);
+  While(l<=ln)
+  [
+    Set(g,MathMod(g-(t*g-x)*s,pp));
+    If(LessThan(g,0),Set(g,MathAdd(g,pp)));
+    Set(t,PowerMod(g,(n-1),pp*p));
+    If(LessThan(t,0),Set(t,MathAdd(t,pp*p)));
+    Set(s,MathMod(2*s-n*t*s*s,pp));
+    If(LessThan(s,0),Set(s,MathAdd(s,pp)));
+    Set(l,MathAdd(l,1));
+    Set(pp,MathMultiply(p,pp));
+  ];
+  g;
+];
+
 
 
 ];

@@ -1,4 +1,10 @@
 
+  10 # f(UniVariate(_var,_first,_coefs),_var) <-- UniVariate(var,0,Concat(FillList(1,first),(coefs+1)));
+  20 # f(_expr,_var) <-- NormalForm(f(MakeUni(expr,var),var));
+
+
+EndOfFile;
+
 
 Load("inprogress/factortest.ys");
 

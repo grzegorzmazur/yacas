@@ -620,6 +620,7 @@ CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator
         printf("%cverbatim:",TEXMACS_DATA_BEGIN);
     }
 #ifndef WIN32 //TODO fix, with the file scanner in ramscripts
+    if (root_dir != NULL && root_dir[0] != '\0')
     {
         DIR *dp;
         struct dirent* entry;
