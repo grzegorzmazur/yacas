@@ -13,7 +13,7 @@
   // first, find powers of 2, 3, ..., p with p=257 currently -- this speeds up PollardRho and should avoids its worst-case performance
   // do a quick check first - this will save us time especially if we want to move 257 up a lot
   If(
-  	Gcd(ProductPrimesTo257, n) > 1,	// if this is > 1, we need to separate some factors. Gcd() is very fast
+  	Gcd(ProductPrimesTo257(), n) > 1,	// if this is > 1, we need to separate some factors. Gcd() is very fast
 	small'powers := TrialFactorize(n, 257),	// value is {n1, {p1,q1}, {p2,q2}, ...} and n1=1 if completely factorized into these factors, and the remainder otherwise
 	small'powers := {n}	// pretend we had run TrialFactorize without success
   );
