@@ -10,11 +10,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <signal.h>
 #include <stdlib.h>
 #include "editor.h"
 #include "yacas.h"
 #include "debugclass.h"
 
+
+CYacas *yacas=NULL;
 
 
 struct LineInfo
@@ -412,7 +415,7 @@ void NewCalculation()
     }
 
     {
-        CYacas *yacas = CYacas::NewL();
+        yacas = CYacas::NewL();
         char buf[200];
         sprintf(buf,"DefaultDirectory(\"%s\");",scriptdir);
         yacas->Evaluate(buf);
@@ -435,6 +438,7 @@ void NewCalculation()
             
         }
         delete yacas;
+        yacas=NULL;
     }
     fileViewer->clear();
     tracer->clear();
@@ -454,9 +458,24 @@ void newcb(Fl_Widget *, void *)
     NewCalculation();
 }
 
+void InterruptHandler(int errupt)
+{
+    if (yacas)
+    {
+        printf("^C pressed\n");
+        (*yacas)()().iEvalDepth = (*yacas)()().iMaxEvalDepth+100;
+    }
+    else
+    {
+        exit(0);
+    }
+}
+
 
 int main(int argc, char **argv)
 {
+    signal(SIGINT, InterruptHandler);
+
     expression[0] = '\0';
     strcpy(scriptdir,"/usr/local/share/yacas/");
     strcpy(tempdir,"/tmp/proteusdebugger/");
