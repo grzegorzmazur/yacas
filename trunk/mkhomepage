@@ -6,11 +6,11 @@ make clean
 
 # Rebuild yacas and the documentation
 ./makemake
-./configure CXXFLAGS="" CFLAGS="" --enable-server --enable-ps-doc --enable-pdf-doc
-cd src ; make version.h ; cd ..
+./configure CXXFLAGS="-O9" CFLAGS="-O9" --disable-shared --enable-server --enable-ps-doc --enable-pdf-doc
+#cd src ; make version.h ; cd ..
 make
-cd src ; make -f makefile.ibook ; cd ..
-cd manmake ; make ; cd ..
+#cd src ; make -f makefile.ibook ; cd ..
+#cd manmake ; make ; cd ..
 sudo make install
 make dist
 # make distcheck

@@ -47,6 +47,9 @@
 /* Define to 1 if you have the `select' function. */
 #undef HAVE_SELECT
 
+/* Define to 1 if you have the <signal.h> header file. */
+#undef HAVE_SIGNAL_H
+
 /* Define to 1 if you have the `socket' function. */
 #undef HAVE_SOCKET
 
@@ -121,6 +124,9 @@
 
 /* Directory in which scripts are installed */
 #undef SCRIPT_DIR
+
+/* Define if signal hander as set by signal() has no arguments */
+#undef SIGHANDLER_NO_ARGS
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS

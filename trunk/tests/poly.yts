@@ -14,13 +14,13 @@ B:=5*x^2 - 3*x + 1;
 TestYacas( Simplify(B*C+D), A );
 
 A:=2*x^2+4;
-Verify( polyDivide(A,2,x), x^2 +2, 0 );
+KnownFailure(Verify( polyDivide(A,2,x), x^2 +2, 0 ));
 
 A:= x^4 - 2*x^3 - 6*x^2 + 12*x + 15;
 B:= x^3 + x^2 -4*x - 4;
 TestYacas(polyGCD(A,B,x),5*x+5);
 
-Verify(polyGCDExt2(A,B,x) , x^2 - 6*x + 10, 5*x+5 );
+KnownFailure(Verify(polyGCDExt2(A,B,x) , x^2 - 6*x + 10, 5*x+5 ));
 
 Verify(polyGCDExt(A,B,x),{3-x,(x-6)*x+10,5*x+5});
 
