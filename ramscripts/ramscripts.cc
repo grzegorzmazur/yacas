@@ -86,9 +86,13 @@ void ProcessDirectory(char* dir)
 
     char fulldir[500];
     strcpy(fulldir,maindir);
+    strcat(fulldir,"/");
     strcat(fulldir,dir);
-    fulldir[strlen(fulldir)-1] = '\0';
-    
+//    fulldir[strlen(fulldir)-1] = '\0';
+
+    char cur[256];
+    getcwd(cur,256);
+    fprintf(stderr,"Trying to open [%s]\n(we are now in %s)\n",fulldir,cur);
     if ((dp = opendir(fulldir)) == NULL)
     {
         fprintf(stderr,"Error opening directory!\n");
@@ -128,6 +132,12 @@ void ProcessDirectory(char* dir)
 
             ProcessDirectory(dirname);
             chdir(fulldir);
+
+    char cur[256];
+    getcwd(cur,256);
+    fprintf(stderr,"Succeeded, we are now in %s)\n",cur);
+    fprintf(stderr,"   we should be in %s)\n",fulldir);
+
             continue;
         }
 
@@ -145,6 +155,8 @@ int main(int argc, char** argv)
     {
         strcpy(maindir,argv[1]); //"/root/myprojects/yacas-latest/ramscripts");
     }
+    chdir(maindir);
+    getcwd(maindir,500);
 
     ProcessDirectory("");
 
