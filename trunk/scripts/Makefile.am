@@ -24,7 +24,7 @@ EXTRA_DIST = $(SCRIPTFILES) \
 	examples/tests \
 	examples/findsum \
 	examples/queens examples/benchmark \
-	examples/benchmark2 examples/benchbuild   \
+	examples/benchmark2 examples/benchbuild  examples/goldbach examples/series \
 	addons/README addons/editvi addons/editvi.def addons/gnuplot \
         addons/gnuplot.def
  

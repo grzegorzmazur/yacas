@@ -164,9 +164,9 @@ Function("TableForm",{list})
 150 # _n1 / _d + _n2 / _d <-- (n1+n2)/d;
 
 200 # (x_IsNumber + _y)_Not(IsNumber(y)) <-- y+x;
-200 # (_y + x_IsNumber + _z)_Not(IsNumber(y) Or IsNumber(z)) <-- (y+z)+x;
-200 # (x_IsNumber + _y + z_IsNumber)_Not(IsNumber(y)) <-- y+(x+z);
-200 # (_x + y_IsNumber + z_IsNumber)_Not(IsNumber(x)) <-- x+(y+z);
+200 # ((_y + x_IsNumber) + _z)_Not(IsNumber(y) Or IsNumber(z)) <-- (y+z)+x;
+200 # ((x_IsNumber + _y) + z_IsNumber)_Not(IsNumber(y)) <-- y+(x+z);
+200 # ((_x + y_IsNumber) + z_IsNumber)_Not(IsNumber(x)) <-- x+(y+z);
 
 210 # x_IsNumber + (y_IsNumber / z_IsNumber) <--(x*z+y)/z;
 210 # (y_IsNumber / z_IsNumber) + x_IsNumber <--(x*z+y)/z;
@@ -176,8 +176,7 @@ Function("TableForm",{list})
 220 # + x_IsList          <-- MapSingle("+",x);
 220 # xlist_IsList + ylist_IsList <-- Map("+",{xlist,ylist});
 
-240 # (x_IsList + y_IsNonObject)_Not(IsList(y)) <-- y+x;
-241 # (x_IsNonObject + y_IsList)_Not(IsList(x)) <--
+SumListSide(_x, y_IsList) <--
 [
    Local(i,result);
    result:={};
@@ -185,6 +184,9 @@ Function("TableForm",{list})
    [ DestructiveInsert(result,i,x + y[i]); ];
    result;
 ];
+
+240 # (x_IsList + _y)_Not(IsList(y)) <-- SumListSide(y,x);
+241 # (_x + y_IsList)_Not(IsList(x)) <-- SumListSide(x,y);
 
 250 # Infinity + _y <-- Infinity;
 250 # _x + Infinity <-- Infinity;
@@ -350,7 +352,7 @@ Function("TableForm",{list})
 200 # (_x / _y)/ _z <-- x/(y*z);
 
 230 # _x / (_y / _z) <-- (x*z)/y;
-240 # x_IsList / y_IsList <-- Map("/",{x,y});
+240 # xlist_IsList / ylist_IsList <-- Map("/",{xlist,ylist});
 
 
 250 # x_IsList / _y <--

@@ -405,7 +405,7 @@ VerifyArithmetic(10000,50,88);
 
 
 NextTest("Polynomials");
-Verify(Expand((1+x)^2),1+2*x+x^2);
+TestYacas(Expand((1+x)^2),1+2*x+x^2);
 
 /* Test Simplify() */
 NextTest("Simplify");
