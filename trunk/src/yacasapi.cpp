@@ -152,6 +152,8 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispFastPower ,"FastPower");
 
     SetCommand(LispPrecision ,"Precision");
+    SetCommand(LispGetExactBits  ,"MathGetExactBits");
+    SetCommand(LispSetExactBits  ,"MathSetExactBits");
 
     SetCommand(LispSqrt   ,"MathSqrt");
     SetCommand(LispFloor  ,"MathFloor");
