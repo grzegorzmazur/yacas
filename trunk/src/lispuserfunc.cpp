@@ -1,4 +1,5 @@
 
+#include "yacasprivate.h"
 #include "lispuserfunc.h"
 #include "standard.h"
 

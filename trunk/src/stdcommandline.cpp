@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 
+#include "yacasprivate.h"
 #include "stdcommandline.h"
 
 #define KMaxStdLen 4001

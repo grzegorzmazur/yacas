@@ -7,7 +7,7 @@
  */
 
 
-#include "lisptype.h"
+#include "yacasprivate.h"
 #include "unipoly.h"
 
 #define noTEST

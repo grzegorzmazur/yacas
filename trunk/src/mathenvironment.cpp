@@ -1,4 +1,5 @@
     
+#include "yacasprivate.h"
 #include "mathenvironment.h"
 #include "lispatom.h"
 #include "standard.h"

@@ -1,5 +1,6 @@
 
 
+#include "yacasprivate.h"
 #include "stdfileio.h"
 
 // For lack of better place to put it...

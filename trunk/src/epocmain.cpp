@@ -19,6 +19,7 @@
 #include "epocyacas.hrh"
 #include <epocyacas.rsg>
 
+#include "yacasprivate.h"
 #include "yacas.h"
 #include "commandline.h"
 #include "standard.h"

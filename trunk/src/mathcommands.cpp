@@ -1,5 +1,6 @@
 
 
+#include "yacasprivate.h"
 #include "lispenvironment.h"
 #include "standard.h"
 #include "lispeval.h"
@@ -38,9 +39,64 @@ void LispQuote(LispEnvironment& aEnvironment,
     TESTARGS(2);
     aResult.Set(Argument(aArguments,1).Get()->Copy(LispFalse));
 }
+
+/*TODO remove? just an experiment, didn't pan out it seems
+template<int T>
+class CArgs
+{
+public:
+    inline CArgs(LispPtr& aArguments,LispEnvironment& aEnvironment);
+    inline LispPtr& Arg(LispInt aIndex);
+    inline void Eval(LispInt aIndex);
+private:
+    LispEnvironment& iEnvironment;
+    LispPtr *iArgs[T];
+};
+template<int T>
+inline CArgs<T>::CArgs(LispPtr& aArguments,LispEnvironment& aEnvironment)
+: iEnvironment(aEnvironment)
+{
+   LISPASSERT(aArguments.Get() != NULL);
+   LispPtr* ptr = &aArguments.Get()->Next();
+   LispInt i;
+   for (i=0;i<T;i++)
+   {
+      iArgs[i] = ptr;
+      ptr = &ptr->Get()->Next();
+   }
+   if (ptr->Get() != NULL)
+   {
+	ErrorNrArgs(T, InternalListLength(aArguments)-1, aArguments, aEnvironment);
+   }
+}
+
+template<int T>
+inline LispPtr& CArgs<T>::Arg(LispInt aIndex)
+{
+    LISPASSERT(aIndex >= 0 && aIndex < T);
+    return *iArgs[aIndex];
+}
+
+ template<int T>
+inline void CArgs<T>::Eval(LispInt aIndex)
+{
+   LispPtr result;
+   iEnvironment.iEvaluator->Eval(iEnvironment, result, iArgs[aIndex]);
+   iArgs[aIndex].Set(result.Get());
+}
+*/
+
+
 void LispEval(LispEnvironment& aEnvironment,LispPtr& aResult,
               LispPtr& aArguments)
 {
+    /*TODO remove? just an experiment, didn't pan out it seems
+    CArgs<1> args(aArguments,aEnvironment);
+    LispPtr result;
+    InternalEval(aEnvironment, result, args.Arg(0));
+    InternalEval(aEnvironment, aResult, result);
+    */
+
     TESTARGS(2);
     LispPtr result;
     InternalEval(aEnvironment, result, Argument(aArguments,1));

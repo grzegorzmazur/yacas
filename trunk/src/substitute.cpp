@@ -1,4 +1,5 @@
 
+#include "yacasprivate.h"
 #include "substitute.h"
 #include "lispatom.h"
 #include "standard.h"

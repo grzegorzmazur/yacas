@@ -10,8 +10,6 @@
 #ifndef _GROWER_H_
 #define _GROWER_H_
 
-#include "stubs.h"
-
 /** \class CArrayGrowerBase has the base utility functions needed for a
  *  growing array. It implements the operations without knowing the types
  *  the array stores. A derived template class can then use these utility

@@ -3,6 +3,7 @@
  *  implementation of the more heavy functions that should not be inlined.
  */
 
+#include "yacasprivate.h"
 #include "lispstring.h"
 #include "stubs.h"
 

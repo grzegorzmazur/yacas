@@ -1,5 +1,5 @@
 
-#include "stubs.h"
+#include "yacasprivate.h"
 #include "lispio.h"
 
 void InputStatus::SetTo(LispCharPtr aFileName)

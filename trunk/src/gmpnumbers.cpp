@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "lisptype.h"
+#include "yacasprivate.h"
 #include "numbers.h"
 #include "standard.h"
 #include "platmath.h"

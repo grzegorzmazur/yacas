@@ -1,4 +1,5 @@
 
+#include "yacasprivate.h"
 #include "arrayclass.h"
 
 ArrayClass::ArrayClass(LispInt aSize,LispObject* aInitialItem)

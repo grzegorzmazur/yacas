@@ -4,7 +4,7 @@
  * by yacas any way
  */
 
-#include "lisptype.h"
+#include "yacasprivate.h"
 #include "numbers.h"
 #include "standard.h"
 #include "anumber.h"

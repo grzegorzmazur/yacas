@@ -1,4 +1,5 @@
 
+#include "yacasprivate.h"
 #include "lispparser.h"
 #include "lispatom.h"
 #include "lisperror.h"

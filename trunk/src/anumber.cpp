@@ -7,6 +7,7 @@
  */
 
 
+#include "yacasprivate.h"
 #include "anumber.h"
 #include "mathutil.h"
 

@@ -1,4 +1,5 @@
 
+#include "yacasprivate.h"
 #include "lispobject.h"
 
 #ifdef YACAS_DEBUG

@@ -1,5 +1,6 @@
 
 
+#include "yacasprivate.h"
 #include "yacas.h"
 
 #include "tokenizer.h"
