@@ -1,0 +1,108 @@
+
+
+
+TraceStart() := [indent := 0;];
+TraceEnter() :=
+[
+    indent++;
+    Space(2*indent);
+    Echo("Enter ",CustomEval'Expression());
+];
+TraceLeave() :=
+[
+    Space(2*indent);
+    Echo("Leave ",CustomEval'Result());
+    indent--;
+];
+Macro(TraceExp,{expression})
+[
+    TraceStart();
+    CustomEval(TraceEnter(),TraceLeave(),CustomEval'Stop(),@expression);
+];
+
+
+
+DebugStart():=
+[
+   debugging:=True;
+   breakpoints:={};
+   debugstopped:=False;
+   debugverbose:=False;
+   debugcallstack:={};
+];
+DebugRun():= [debugging:=False;];
+DebugStep():=[debugging:=False;nextdebugging:=True;];
+DebugStop():=[debugging:=False;debugstopped:=True;CustomEval'Stop();];
+DebugVerbose(verbose):=[debugverbose:=verbose;];
+BreakpointAdd(fname_IsString) <-- [ breakpoints := fname:breakpoints;];
+BreakpointsClear() <-- [ breakpoints := {};];
+Macro(DebugLocals,{})
+[
+  Echo("");
+  Echo("*************** Current locals on the stack ****************");
+  ForEach(item,CustomEval'Locals())
+  [
+    Echo("      ",item," : ",Eval(item));
+  ];
+  Echo("");
+];
+DebugCallstack() <-- 
+[
+  Echo("");
+  Echo("*************** Function call stack ****************");
+  ForEach(item,debugcallstack)
+  [
+    if(IsFunction(item))
+      Echo("      Function ",Type(item))
+    else
+      Echo("      Variable ",item);
+  ];
+  Echo("");
+];
+
+Macro(DebugEnter,{})
+[
+  debugcallstack := CustomEval'Expression():debugcallstack;
+   If(debugging = False And
+      IsFunction(CustomEval'Expression()) And 
+      Contains(breakpoints,Type(CustomEval'Expression())),   debugging:=True);
+   nextdebugging:=False;
+   If (debugging,Echo(">>> ",CustomEval'Expression()));
+   While(debugging)
+   [
+      Echo("DebugOut> ",Eval(FromString(ReadCmdLineString("Debug> "):";")Read()));
+//      If(debugging,Echo("DebugOut> ",debugRes));
+   ];
+   debugging:=nextdebugging;
+];
+Macro(DebugLeave,{})
+[
+  debugcallstack := Tail(debugcallstack);
+  If(debugverbose,Echo(CustomEval'Result()," <-- ",CustomEval'Expression()));
+];
+Macro(Debug,{expression})
+[
+   DebugStart();
+   CustomEval(DebugEnter(),DebugLeave(),If(debugstopped,Check(False,"Debug stopped"),[debugging:=True;debugcallstack := Tail(debugcallstack);]),@expression);
+];
+
+
+ProfileStart():=
+[
+    profilefn:={};
+];
+10 # ProfileEnter()_(IsFunction(CustomEval'Expression())) <-- 
+[
+    Local(fname);
+    fname:=Type(CustomEval'Expression());
+    If(profilefn[fname]=Empty,profilefn[fname]:=0);
+    profilefn[fname] := profilefn[fname]+1;
+];
+Macro(Profile,{expression})
+[
+    ProfileStart();
+    CustomEval(ProfileEnter(),True,CustomEval'Stop(),@expression);
+    ForEach(item,profilefn)
+      Echo("Function ",item[1]," called ",item[2]," times");
+];
+
