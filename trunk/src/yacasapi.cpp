@@ -70,7 +70,7 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispEquals        ,"=");
     SetCommand(LispWrite         ,"Write");
     SetCommand(LispMathLibName         ,"MathLibrary");
-    SetCommand(LispVersion         ,"Version");
+    //Sorry Serge, not yet :-(    SetCommand(LispVersion         ,"Version");
     /*TODO remove!
     Set*Command(LispSpace         ,"Space");
     Set*Command(LispNewLine       ,"NewLine");
