@@ -232,18 +232,25 @@ Write the (decimal) number {255} in hexadecimal notation:
 
 *PARMS
 
-{n} -- integer, new precision
+{n} -- integer, new value of precision
 
 *DESC
 
-This command sets the number of binary digits to be used in
-calculations. All subsequent floating point operations will allow for
-at least {n} digits after the decimal point.
+This command sets the number of decimal digits to be used in calculations.
+All subsequent floating point operations will allow for
+at least {n} digits of mantissa.
+
+This is not the number of digits after the decimal point.
+For example, {123.456} has 3 digits after the decimal point and 6 digits of mantissa.
+The number {123.456} is adequately computed by specifying {Precision(6)}.
+
+The call {Precision(n)} will not guarantee that all results are precise to {n} digits.
 
 When the precision is changed, all variables containing previously calculated values
 remain unchanged.
 The {Precision} function only makes all further calculations proceed with a different precision.
 
+Also, when typing floating-point numbers, the current value of {Precision} is used to implicitly determine the number of precise digits in the number.
 
 *E.G.
 
@@ -255,12 +262,19 @@ The {Precision} function only makes all further calculations proceed with a diff
 	Out> True;
 	In> x:=N(Sin(1))
 	Out> 0.84147098480789650665;
-	In> GetPrecision()
-	Out> 20;
+
+The value {x} is not changed by a {Precision()} call:
+
 	In> [ Precision(10); x; ]
 	Out> 0.84147098480789650665;
-	In> x+0
+
+The value {x} is rounded off to 10 digits after an arithmetic operation:
+
+	In> x+0.
 	Out> 0.8414709848;
+
+In the above operation, {0.} was interpreted as a number which is precise to 10 digits (the user does not need to type {0.0000000000} for this to happen).
+So the result of {x+0.} is precise only to 10 digits.
 
 *SEE GetPrecision, N
 
