@@ -48,14 +48,31 @@ AC_HEADER_TIME
 AC_CHECK_FUNCS(select socket strtod strchr)
 
 # checks for libraries
-AC_CHECK_LIB(dl,dlopen,LIBS="$LIBS -ldl -rdynamic",,-rdynamic)
+#AC_CHECK_LIB(dl,dlopen,LIBS="$LIBS -ldl -rdynamic",,-rdynamic)
+# We don't need this anymore now we are using libltdl 
 
+# Check for the existence of the Gnu Scientific Library on this machine
+AM_PATH_GSL(0.0, HAVE_GSL=yes, HAVE_GSL=no)
+# The first argument of AM_PATH_GSL is the minimum version we require
+if test "$HAVE_GSL" = "yes" ; then
+	GSL_PLUGIN=libyacas_gsl.la
+else
+	AC_MSG_WARN([Not building GNU Scientic Library (GSL) plugin])
+	AC_MSG_WARN([because the library was not found.])
+fi
+AC_SUBST(GSL_PLUGIN)
 
-# check for the existence of the Gnu Scientific Library on this machine
-AC_CHECK_LIB(m,main)
-AC_CHECK_LIB(gslcblas,main)
-AC_CHECK_LIB(gsl,main)
-
+# Check for OpenGL library
+MDL_HAVE_OPENGL
+AM_CONDITIONAL(BUILD_OPENGL_PLUGIN, test -n "$GL_LIBS");
+if test -n "$GL_LIBS"; then
+	OPENGL_PLUGIN=libopengl.la
+	AC_CHECK_HEADERS(GL/glut.h)
+else
+	AC_MSG_WARN([Not building the OpenGL plugin])
+	AC_MSG_WARN([because the library was not found.])
+fi
+AC_SUBST(OPENGL_PLUGIN)
 
 # Choice of arbitrary precision library
 AC_ARG_ENABLE(gmp, [  --enable-gmp            use GNU MP [default=no]])
