@@ -2,7 +2,15 @@
 /* Functions that aid in testing */
 
 /* Round to specified number of digits */
-RoundTo(x_IsNumber, prec_IsPositiveInteger) <-- MathDivide( Round( MathMultiply(x, 10^prec) ), 10^prec );
+RoundTo(x_IsNumber, prec_IsPositiveInteger) <-- 
+[
+  Local(oldPrec,result);
+  oldPrec:=GetPrecision();
+  Precision(prec);
+  Set(result,MathDivide( Round( MathMultiply(x, 10^prec) ), 10^prec ));
+  Precision(oldPrec);
+  result;
+];
 // complex numbers too
 RoundTo(Complex(r_IsNumber, i_IsNumber), prec_IsPositiveInteger) <-- Complex(RoundTo(r, prec), RoundTo(i, prec));
 
