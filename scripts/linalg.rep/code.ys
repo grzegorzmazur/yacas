@@ -823,4 +823,42 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	matrix;
 ];
 
+// In place LU decomposition
+// Pivotting is not implemented
+// Adapted from Numerical Methods with Matlab
+	Gerald Recktenwald, Sec 8.4
+10 # LU(A_IsSquareMatrix) <--
+[
+	Local(n,matrix,L,U);
+	n:=Length(A);
+	L:=ZeroMatrix(n,n);
+	U:=ZeroMatrix(n,n);
+	matrix:=ZeroMatrix(n,n);
+
+        ForEach(i,1 .. n)
+                ForEach(j,1 .. n)
+                        matrix[i][j] := A[i][j];
+
+	// loop over pivot rows
+	ForEach(i,1 ..(n-1))[
+		// loop over column below the pivot
+		ForEach(k,i+1 .. n)[
+			// compute multiplier and store it in L
+			matrix[k][i] := matrix[k][i] / matrix[i][i];
+			// loop over elements in row k
+			ForEach(j,i+1 .. n)[
+				matrix[k][j] := matrix[k][j] - matrix[k][i]*matrix[i][j];
+			];
+		];
+	];
+	ForEach(i,1 .. n)[
+		ForEach(j,1 .. n)[
+			If(i<=j,U[i][j]:=matrix[i][j],L[i][j]:=matrix[i][j]);
+		];
+		// diagonal of L is always 1's
+		L[i][i]:=1;
+	];
+
+	{L,U};
+];
 
