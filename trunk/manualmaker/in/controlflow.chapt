@@ -219,12 +219,12 @@ These are usually the only items of interest on the stack.
 This is probably by far the most useful debugging function in
 Yacas. It shows the last few things it did just after an error
 was generated somewhere.
-<P>
+<P>  </P>
 For each stack frame, it shows if the function evaluated was a
 built-in function or a user-defined function, and for the user-defined
 function, the number of the rule it is trying whether it was evaluating
 the pattern matcher of the rule, or the body code of the rule.
-<P>
+<P>  </P>
 This functionality is not offered by default because it slows
 down the evaluation code.
 
@@ -278,11 +278,11 @@ the template, and evaluate expression. the template is an example
 of the function to trace on. template=x+y would trace all additions,
 showing the arguments passed in, and the result of the addition.
 Only user-defined functions can be traced.
-<P>
+<P>  </P>
 This is useful for tracing a function that is called from within
 another function. This way you can see how your function behaves
 in the environment it is used in.
-<P>
+<P>  </P>
 An example invocation of TraceRule is" :
 
 HtmlCommand(

@@ -11,81 +11,54 @@ Startup configuration
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c2">
 Arithmetic
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c3">
 Other operations on numbers
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c4">
 Calculus
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c5">
 Linear Algebra
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c6">
 Polynomials
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c7">
 List operations
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c8">
 Functional operators
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c9">
 Control flow functions
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c10">
 Predicates
@@ -107,72 +80,48 @@ Propositional logic theorem prover
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c12">
 Constants
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c13">
 Variables
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c14">
 Input/Output
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c1">
 Programming
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c2">
 Built-in functions
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c3">
 The Yacas plugin structure
 </A>
 
 </LI>
-<UL>
-
-</UL>
 <LI>
 <A HREF="ref.html#c4">
 Generic objects
 </A>
 
 </LI>
-<UL>
-
-</UL>
 
 </UL>
 <A NAME="c1">
@@ -232,7 +181,7 @@ Examples:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> DefaultDirectory("/home/user/myscripts/");
 Out> True;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -297,7 +246,7 @@ In> PrettyPrinter();
 Out> True;
 In> Taylor(x,0,5)Sin(x)
 Out> x-x^3/6+x^5/120;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -337,7 +286,7 @@ Examples:
 To use netscape for browsing help, enter the following commands:<TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Help(_f) <-- SystemCall("netscape ":FindFile("documentation/ref.html"):"#":f);
 Help() := SystemCall("netscape ":FindFile("documentation/books.html"));
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -377,13 +326,13 @@ Examples:
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> HistorySize(200)
 Out> True;
 In> quit
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
 See Also:
 </H5>
-<p><HR><A NAME="c2">
+<p>  </P><HR><A NAME="c2">
 
 </A>
 <A HREF="refchapter2.html#+" TARGET="Chapters">
@@ -452,13 +401,13 @@ Examples:
 Out> 5;
 In> 2*3
 Out> 6;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
 See Also:
 </H5>
-<p><HR><A NAME="c3">
+<p>  </P><HR><A NAME="c3">
 
 </A>
 <A HREF="refchapter3.html#Div" TARGET="Chapters">
@@ -568,7 +517,7 @@ Examples:
 Out> 1;
 In> Mod(5,3)
 Out> 2;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -609,7 +558,7 @@ determining the greatest common divisor:
 2) if both n and m are even then return 2*Gcd(n/2,m/2)
 3) if exactly one of n or m (say n) is even then return Gcd(n/2,m)
 4) if both n and m are odd and, say, n>m then return Gcd( (n-m)/2,m)
-</PRE>
+</PRE></TR>
 </TABLE>
 This is a rather fast algorithm on computers that can efficiently shift
 integers. <br>
@@ -622,7 +571,7 @@ For lists Gcd uses the identity
 
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Gcd({a,b,c}) = Gcd(Gcd(a,b),c)
-</PRE>
+</PRE></TR>
 </TABLE>
 
 
@@ -634,7 +583,7 @@ Examples:
 Out> 5;
 In> Gcd({60,24,120})
 Out> 12;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -666,7 +615,7 @@ for which there are two integers p,q so such that p*n=q*m=L.
 This is calculated with the formula:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Lcm(n,m) = Div(n*m,Gcd(n,m))
-</PRE>
+</PRE></TR>
 </TABLE>
 
 This means it also works
@@ -679,7 +628,7 @@ Examples:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Lcm(60,24)
 Out> 120;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -718,7 +667,7 @@ Examples:
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Examples:
 1&lt;&lt;10; should evaluate to 1024
 -1024&gt;&gt;10; should evaluate to -1
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <A NAME="FromBase">
@@ -744,7 +693,7 @@ number - a number to write out in the base representation
 <H5>
 Description:
 </H5>
-Conversion of numbers to and from base 10 numbers.<p>
+Conversion of numbers to and from base 10 numbers.<p>  </p>
 
 These functions use the p-adic expansion capabilities of the built-in
 arbitrary precision math libraries.  
@@ -757,7 +706,7 @@ Examples:
 Out> 63;
 In> ToBase(16,255)
 Out> ff;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -804,7 +753,7 @@ In> N(Sin(1))
 Out> 0.84147098480789650665;
 In> GetPrecision()
 Out> 20;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -837,7 +786,7 @@ as possible in calculations using division, or trigonometric functions
 like Sin, Cos, etcetera.
 N forces Yacas to calculate floating point representations
 of functions whenever possible, using the current precision or the
-specified precision. <p>
+specified precision. <p>  </p>
 
 In addition, the variable Pi is bound to the value of pi up to the
 required precision.
@@ -858,7 +807,7 @@ In> Pi
 Out> Pi;
 In> N(Pi,20)
 Out> 3.14159265358979323846;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -890,7 +839,7 @@ Description:
 Rationalize scans the entire expression replacing all floating
 point values into rational representations p/q for some integers p and
 q, such that the division of p by q gives the original floating point
-value up to the number of digits of the original floating point value. <p>
+value up to the number of digits of the original floating point value. <p>  </p>
 
 It does this by finding the smallest integer n such that
 multiplying the number with 10^n is an integer. Then it divides by 10^n
@@ -905,7 +854,7 @@ Examples:
 Out> Sin(1.234);
 In> Rationalize(%)
 Out> Sin(617/500);
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -957,10 +906,10 @@ x - an integer number or univariate polynomial to factor
 Description:
 </H5>
 Factors decomposes integer numbers or univariate polynomials
-into a product of primes or irreducible polynomials. <p>
+into a product of primes or irreducible polynomials. <p>  </p>
 
 The result of Factors is a list of lists of the form {p,n}, where each
-p^n divides the original x. <p>
+p^n divides the original x. <p>  </p>
 
 Factor shows the result of Factors in a nicer human readable format.
 
@@ -975,7 +924,7 @@ In> PrettyForm(Factor(12))
  2    
 2  * 3
 
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -1006,7 +955,7 @@ So for instance
                    2     3
 4 + 3 * 10 + 2 * 10  + 10 
 
-Out> True;</PRE>
+Out> True;</PRE></TR>
 </TABLE>
 
 This function should also work on polynomials.
@@ -1053,7 +1002,7 @@ Examples:
                  292 + --------
                        1 + rest
 
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -1081,7 +1030,7 @@ Example:
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Decimal(1/22)
 Out> {0,0,{4,5}};
 In> N(1/22,30)
-Out> 0.045454545454545454545454545454;</PRE>
+Out> 0.045454545454545454545454545454;</PRE></TR>
 </TABLE>
 
 
@@ -1107,7 +1056,7 @@ TruncRadian calculates r mod 2*Pi, returning a value
 between 0 and 2*Pi. This function is used in the trigonometry
 functions, just before doing the numerical calculation. It
 greatly speeds up the calculation if the value passed is a big
-number. <p>
+number. <p>  </p>
 The library uses the formula
 
 <TABLE CELLPADDING="3" WIDTH="90%">
@@ -1118,7 +1067,7 @@ r - MathFloor| ------ | * 2 * Pi
              \ 2 * Pi /         
 
 
-</PRE>
+</PRE></TR>
 </TABLE>
 
 
@@ -1137,7 +1086,7 @@ In> TruncRadian(6.28)
 Out> 6.28;
 In> TruncRadian(6.29)
 Out> 0.0068146929;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -1178,7 +1127,7 @@ Examples:
 Out> 1;
 In> Floor(-1.1)
 Out> -2;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -1216,7 +1165,7 @@ Examples:
 Out> 2;
 In> Ceil(-1.1)
 Out> -1;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -1259,7 +1208,7 @@ Out> -1;
 In> Round(-1.51)
 Out> -2;
 
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -1303,14 +1252,14 @@ Examples:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Pslq({ 2*Pi+3*Exp(1) , Pi , Exp(1) },20)
 Out> {1,-2,-3};
-</PRE>
+</PRE></TR>
 </TABLE>
 Note: in this example the system detects correctly that
 <B><TT>1* (2*Pi+3*E) -2*(Pi) - 3*(E) = 0</TT></B>
 <H5>
 See Also:
 </H5>
-<p><HR><A NAME="c4">
+<p>  </P><HR><A NAME="c4">
 
 </A>
 <A HREF="refchapter4.html#Sin" TARGET="Chapters">
@@ -1507,7 +1456,7 @@ Description:
 These functions represent the trigonometric functions and their
 inverses. Yacas leaves them alone even if x is a number, trying to keep
 the result as exact as possible. The floating point approximations of
-these functions can be forced by using the N(...) functions. <p>
+these functions can be forced by using the N(...) functions. <p>  </p>
 
 Yacas knows some trigonometric identities, so it can simplify to exact
 results even if N is not used. This is the case when the arguments are
@@ -1523,7 +1472,7 @@ In> N(Sin(1),20)
 Out> 0.84147098480789650665;
 In> Sin(Pi/4)
 Out> Sqrt(2)/2;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -1589,7 +1538,7 @@ Examples:
 Out> 2;
 In> Sign(-2)
 Out> -1;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -1864,7 +1813,7 @@ In> RadSimp(Sqrt(5+2*Sqrt(6))+Sqrt(5-2*Sqrt(6)))
 Out> Sqrt(12);
 In> RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2)))))) 
 Out> 3+Sqrt(2);
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -1953,7 +1902,7 @@ In> Expand(a*x+b*x+c,x)
 Out> c+(a+b)*x;
 In> SuchThat(%,x)
 Out> (-c)/(a+b);
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -2077,13 +2026,13 @@ y1 * ( x - x2 ) * ( x - x3 )   y2 * ( x - x1 ) * ( x - x3 )
 + ----------------------------
    ( x3 - x1 ) * ( x3 - x2 )  
 
-Out> True;</PRE>
+Out> True;</PRE></TR>
 </TABLE>
 
 
 
 
-<p><HR><A NAME="c5">
+<p>  </P><HR><A NAME="c5">
 
 </A>
 <A HREF="refchapter5.html#LeviCivita" TARGET="Chapters">
@@ -2373,7 +2322,7 @@ In> M:={{1,2},{2,1}}
 Out> {{1,2},{2,1}};
 In> EigenValues(M)
 Out> {3,-1};
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -2418,7 +2367,7 @@ In> e:=EigenValues(M)
 Out> {3,-1};
 In> EigenVectors(M,e)
 Out> {{-ki2/ -1,ki2},{-ki2,ki2}};
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -2459,7 +2408,7 @@ Examples:
 Out> True;
 In> IsHermitean({{0,I},{2,0}})
 Out> False;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -2499,7 +2448,7 @@ Examples:
 Out> True;
 In> IsUnitary({{0,I},{2,0}})
 Out> False;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -2508,7 +2457,7 @@ See Also:
 <A HREF="ref.html#IsHermitean" TARGET="Chapters">
 IsHermitean
 </A>
-, <p><HR><A NAME="c6">
+, <p>  </P><HR><A NAME="c6">
 
 </A>
 <A HREF="refchapter6.html#Expand" TARGET="Chapters">
@@ -2680,7 +2629,7 @@ is the main one, by adding it as an argument:
 
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> LeadingCoef(a*x^2+2,x)
-Out> a;</PRE>
+Out> a;</PRE></TR>
 </TABLE>
 
 
@@ -2708,7 +2657,7 @@ b    2
 a     
 
 Out> True;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 
@@ -2723,7 +2672,7 @@ BigOh(poly,var,degree) : Given a polynomial poly in variable var,
 drop all terms of order degree or higher.
 
 
-<p><HR><A NAME="c7">
+<p>  </P><HR><A NAME="c7">
 
 </A>
 <A HREF="refchapter7.html#Head" TARGET="Chapters">
@@ -2902,7 +2851,7 @@ Examples:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Head({a,b,c})
 Out> a;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -2938,7 +2887,7 @@ Examples:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Tail({a,b,c})
 Out> {b,c};
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -2977,7 +2926,7 @@ Examples:
 Out> 3;
 In> Length("abcdef");
 Out> 6;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -3428,7 +3377,7 @@ Examples:
 Out> {a,b*c,d};
 In> Flatten({a,{b,c},d},"List");
 Out> {a,b,c,d};
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -3471,7 +3420,7 @@ Examples:
 Out> a+b+c;
 In> UnFlatten({a,b,c},"*",1)
 Out> a*b*c;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -3586,7 +3535,7 @@ Example:
 
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> MakeVector(a,3)
-Out> {a1,a2,a3};</PRE>
+Out> {a1,a2,a3};</PRE></TR>
 </TABLE>
 
 
@@ -3604,12 +3553,12 @@ predicate on that list element. Example:
 
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Select("IsInteger",{a,b,2,c,3,d,4,e,f})
-Out> {2,3,4};</PRE>
+Out> {2,3,4};</PRE></TR>
 </TABLE>
 
 
 
-<p><HR><A NAME="c8">
+<p>  </P><HR><A NAME="c8">
 
 </A>
 <A HREF="refchapter8.html#:" TARGET="Chapters">
@@ -3675,7 +3624,7 @@ returns a list of numbers from n upto m.
 Example:
  1 .. 4         ->   {1,2,3,4}
 
-<p><HR><A NAME="c9">
+<p>  </P><HR><A NAME="c9">
 
 </A>
 <A HREF="refchapter9.html#MaxEvalDepth" TARGET="Chapters">
@@ -3851,7 +3800,7 @@ Examples:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> PatchString("Two plus three is &lt? Write(2+3); ?&gt ");
 Out> "Two plus three is 5 ";
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -3940,7 +3889,7 @@ Example:
 
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> LocalSymbols(a,b)a+b
-Out> $a6+ $b6;</PRE>
+Out> $a6+ $b6;</PRE></TR>
 </TABLE>
 
 
@@ -4002,7 +3951,7 @@ Examples:
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> SetHelpBrowser("netscape")
 Out> "netscape";
 In> ??
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -4031,12 +3980,12 @@ These are usually the only items of interest on the stack.
 This is probably by far the most useful debugging function in
 Yacas. It shows the last few things it did just after an error
 was generated somewhere.
-<P>
+<P>  </P>
 For each stack frame, it shows if the function evaluated was a
 built-in function or a user-defined function, and for the user-defined
 function, the number of the rule it is trying whether it was evaluating
 the pattern matcher of the rule, or the body code of the rule.
-<P>
+<P>  </P>
 This functionality is not offered by default because it slows
 down the evaluation code.
 
@@ -4068,7 +4017,7 @@ Debug> 997 :  IsList (Internal function)
 Error on line 1 in file [CommandLine]
 Max evaluation stack depth reached.
 Please use MaxEvalDepth to increase the stack size as needed.
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -4103,19 +4052,19 @@ the template, and evaluate expression. the template is an example
 of the function to trace on. template=x+y would trace all additions,
 showing the arguments passed in, and the result of the addition.
 Only user-defined functions can be traced.
-<P>
+<P>  </P>
 This is useful for tracing a function that is called from within
 another function. This way you can see how your function behaves
 in the environment it is used in.
-<P>
+<P>  </P>
 An example invocation of TraceRule is<TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In( 1 ) = TraceRule(x+y)2+3*5+4;<P></PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In( 1 ) = TraceRule(x+y)2+3*5+4;<P>  </P></PRE></TR>
 </TABLE>
 Which should then show something to the effect of <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>    ENTER:2+3*5+4<P>      ENTER:2+3*5<P>          ARG:2 <- 2<P>          ARG:3*5 <- 15<P>      LEAVE:2+3*5 -> 17<P>        ARG:2+3*5 <- 17<P>        ARG:4 <- 4<P>    LEAVE:2+3*5+4 -> 21<P>Out( 0 ) = 21;</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>    ENTER:2+3*5+4<P>  </P>      ENTER:2+3*5<P>  </P>          ARG:2 <- 2<P>  </P>          ARG:3*5 <- 15<P>  </P>      LEAVE:2+3*5 -> 17<P>  </P>        ARG:2+3*5 <- 17<P>  </P>        ARG:4 <- 4<P>  </P>    LEAVE:2+3*5+4 -> 21<P>  </P>Out( 0 ) = 21;</PRE></TR>
 </TABLE>
 
-<p><HR><A NAME="c10">
+<p>  </P><HR><A NAME="c10">
 
 </A>
 <A HREF="refchapter10.html#&lt;" TARGET="Chapters">
@@ -4305,7 +4254,7 @@ In> Not False
 Out> True;
 In> Not(a)
 Out> Not a;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -4354,7 +4303,7 @@ In> True And a
 Out> And(a);
 In> And(True,a,True,b)
 Out> b And a;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -4400,7 +4349,7 @@ In> False Or a
 Out> Or(a);
 In> Or(False,a,b,True)
 Out> True;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -4564,7 +4513,7 @@ Out> True;
 In> IsBoolean(a And b)
 Out> True;
 
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -4659,7 +4608,7 @@ In> IsConstant(Cos(2))
 Out> True;
 In> IsConstant(Cos(2+x))
 Out> False;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -4671,7 +4620,7 @@ IsNumber
 , <A HREF="ref.html#IsInteger" TARGET="Chapters">
 IsInteger
 </A>
-, <p><HR><A NAME="c11">
+, <p>  </P><HR><A NAME="c11">
 
 </A>
 <A HREF="refchapter11.html#CanProve" TARGET="Chapters">
@@ -4701,7 +4650,7 @@ Yacas has a small built-in propositional logic theorem prover.
 It can be invoked with a call to CanProve. <br>
 
 An example of a proposition is 'if a implies b and b implies c then
-a implies c'. Yacas supports the following operators <p>
+a implies c'. Yacas supports the following operators <P>  </P>
 
  Not     negation, read as 'not'        <br>
  And     conjunction, read as 'and'     <br> 
@@ -4712,7 +4661,7 @@ So the above mentioned proposition would be represented by
 
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>( (a=>b) And (b=>c) ) => (a=>c)
-</PRE>
+</PRE></TR>
 </TABLE>
 
  
@@ -4723,13 +4672,13 @@ to it:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> CanProve(( (a=>b) And (b=>c) ) => (a=>c))
 Out> True;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 
 It does this the following way: in order to prove proposition p, it
 suffices to prove that  Not p is false. It continues to simplify  Not p
-using the rules <p>
+using the rules <P>  </P>
 
 
 <TABLE CELLPADDING="3" WIDTH="90%">
@@ -4739,7 +4688,7 @@ x=>y        -->  Not x  Or  y   eliminate implication
  Not (x  Or  y)    -->  Not x  And   Not y  De Morgan's law
 (x  And  y)  Or  z --> (x Or z) And (y Or z)  Distribution
 x  Or  (y  And  z) --> (x Or y) And (x Or z)  Distribution
-</PRE>
+</PRE></TR>
 </TABLE>
 
 And the obvious other rules: 'True Or x --> True' etc.
@@ -4747,7 +4696,7 @@ The above rules will translate the proposition into a form
 
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>(p1  Or  p2  Or  ...)  And  (q1  Or  q2  Or  ...)  And ...
-</PRE>
+</PRE></TR>
 </TABLE>
 
 
@@ -4755,12 +4704,12 @@ If any of the clauses is false, the entire expression will be false.
 In the next step, clauses are scanned for situations of the form:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>(p Or Y)  And  ( Not p Or Z) --> (Y Or Z)
-</PRE>
+</PRE></TR>
 </TABLE>
 
 
 If this combination <B><TT>(Y Or Z)</TT></B> is empty, it is false, and
-thus the entire proposition is false. <p>
+thus the entire proposition is false. <P>  </P>
 
 As a last step, the algorithm negates the result again. This has the
 added advantage of simplifying the expression further. 
@@ -4781,7 +4730,7 @@ Out> False;
 In> CanProve(a  Or b Or (a And b))     
 Out> a Or b;
 
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -4802,7 +4751,7 @@ Or
 , <A HREF="ref.html#Not" TARGET="Chapters">
 Not
 </A>
-, <p><HR><A NAME="c12">
+, <p>  </P><HR><A NAME="c12">
 
 </A>
 <A HREF="refchapter12.html#%" TARGET="Chapters">
@@ -4846,7 +4795,7 @@ Description:
 % evaluates to the previous result on the command line. % is a global
 variable that is bound to the previous result from the command line.
 Using % will evaluate the previous result (This uses the functionality
-offered by the LazyGlobal command). <p>
+offered by the LazyGlobal command). <p>  </p>
 
 Typical examples are <B><TT>Simplify(%)</TT></B> and <B><TT>PrettyForm(%)</TT></B>to simplify and show the result in a nice
 form respectively.
@@ -4865,7 +4814,7 @@ x - -- + ---
     6    120
 
 
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -4926,7 +4875,7 @@ Pi is set to the correct value. It is probably better to use
 Pi than Pi(), for simplification purposes.
 
 
-<p><HR><A NAME="c13">
+<p>  </P><HR><A NAME="c13">
 
 </A>
 <A HREF="refchapter13.html#:=" TARGET="Chapters">
@@ -5058,9 +5007,9 @@ Description:
 LazyGlobal enforces that a global variable will re-evaluate
 when used. The global variable needs to exist for this function
 to work. Also, this functionality doesn't survive if Clear(var)
-is called afterwards. <p>
+is called afterwards. <P>  </P>
 
-Places where this is used include the global variables % and I.<p>
+Places where this is used include the global variables % and I.<P>  </P>
 
 The use of lazy in the name stems from the concept of lazy evaluation.
 The object the global variable is bound to will only be evaluated when
@@ -5071,7 +5020,7 @@ of evaluation is stored in the global variable, and it won't be reevaluated agai
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> a:=Hold(Taylor(x,0,30)Sin(x))
 Out> Taylor(x,0,30)Sin(x);
 In> LazyGlobal(a)
-</PRE>
+</PRE></TR>
 </TABLE>
 
 
@@ -5093,7 +5042,7 @@ Out> True;
 In> a
 Out> 5;
 
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -5108,7 +5057,7 @@ Clear
 , <A HREF="ref.html#Local" TARGET="Chapters">
 Local
 </A>
-, <p><HR><A NAME="c14">
+, <p>  </P><HR><A NAME="c14">
 
 </A>
 <A HREF="refchapter14.html#FullForm" TARGET="Chapters">
@@ -5196,7 +5145,7 @@ it writes the string unstringified. Example:<TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 f(x):=x^2;
 Echo({"The square of two is ",f(2)});
-</PRE>
+</PRE></TR>
 </TABLE>
 which should write out "The square of two is 2" to the current
 output
@@ -5219,7 +5168,7 @@ Example:
 x + ------- + --- + ------- + ------
        6      120    5040     362880
 
-Out> True;</PRE>
+Out> True;</PRE></TR>
 </TABLE>
 
 
@@ -5324,7 +5273,7 @@ input file is encountered, the token atom "EndOfFile" is returned.
 Read() : 
 Read expression from current input, and return result. When the end of an
 input file is encountered, the token atom "EndOfFile" is returned.
-<P>
+<P>  </P>
 This function is different from <B><TT>Read()</TT></B> in that it parses an expression
 in lisp syntax: so you need to type <B><TT>(+ a b)</TT></B> in stead of <B><TT>a+b</TT></B>. The advantage of lisp syntax is that it is less unambiguous than the
 infix operator grammar Yacas uses by default.
@@ -5428,7 +5377,7 @@ output. The file can contain blocks delimited by &lt? and ?&gt
 such delimiters is treated as a separate file with Yacas instructions,
 which is then loaded and executed. All output of write statements
 in that block will be written to the same current output.
-<P>
+<P>  </P>
 This is similar to the way php works. You can have a static text file
 with dynamic content generated by Yacas.
 
@@ -5441,7 +5390,7 @@ PatchString
 , <A HREF="ref.html#Load" TARGET="Chapters">
 Load
 </A>
-, <p><HR><A NAME="c1">
+, <p>  </P><HR><A NAME="c1">
 
 </A>
 <A HREF="refprogchapter1.html#Atom" TARGET="Chapters">
@@ -5813,7 +5762,7 @@ and system calls are not allowed. This can protect the system
 when an unsafe evaluation is done (Like a script sent over the
 internet to be evaluated on a computer).
 
-<p><HR><A NAME="c2">
+<p>  </P><HR><A NAME="c2">
 
 </A>
 <A HREF="refprogchapter2.html#MathNot" TARGET="Chapters">
@@ -5995,7 +5944,7 @@ ShiftLeft(number,bits), ShiftRight(number,bits) :
 Shift number bits to left or right.
 
 
-<p><HR><A NAME="c3">
+<p>  </P><HR><A NAME="c3">
 
 </A>
 <A HREF="refprogchapter3.html#DllLoad" TARGET="Chapters">
@@ -6033,14 +5982,14 @@ it to interface with other libraries that support additional
 functionality. For example, there could be a plugin enabling
 the user to script a user interface from within Yacas, or a
 specific powerful library to do numeric calculations.
-<p>
+<P>  </P>
 The plugin feature is currently in an experimental stage. There
 are some examples in the plugins/ directory. These are not built
 by default because they cannot be guaranteed to compile on every
 platform (yet). The plugins need to be compiled after Yacas itself
 has been compiled and installed successfully. The plugins/ directory
 contains a README file with more details on compilation. 
-<p>
+<P>  </P>
 In addition to the plugin structure in the Yacas engine, there is
 a 'cstubgen' module (currently still in development) that allows
 rapid scripting of a plugin. Essentially all that is required is
@@ -6053,15 +6002,15 @@ Yacas code. There are a few examples in the plugins/
 directory (the files ending with api.stub). The make file
 makefile.plugin is configured to automatically convert these to
 the required c++ files.
-<p>
+<P>  </P>
 In addition to the c++ stub file cstubgen also automatically generates
 some documentation on the functions included in the stub. This
 documentation is put in a file with extension 'description'.
-<p>
+<P>  </P>
 The plugin facility is not supported for each platform yet. Specifically,
 it is only supported on platforms that support the elf binary format.
 (loading DLLs is platform-dependent).
-<p>
+<P>  </P>
 This chapter assumes the reader is comfortable programming in c++.
 
 <A NAME="DllLoad">
@@ -6090,7 +6039,7 @@ Examples:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> DllLoad("./libopengl.so");
 Out> True;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -6250,12 +6199,12 @@ Description:
 This function declares a library function, along with its
 calling sequence. cstubgen will then generate the c++ code
 required to call this function.
-<p>
+<P>  </P>
 Return type, function name, and list of arguments should be
 literal strings (surrounded by quotes).
-<p>
+<P>  </P>
 If fname2 is not supplied, it will be assumed to be the same as fname.
-<p>
+<P>  </P>
 The return types currently supported are "int", "double" and "void".
 
 The argument values that are currently supported
@@ -6273,7 +6222,7 @@ Examples:
 To define the opengl function glVertex3d that accepts three
 doubles and returns void:<TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>StubApiCFunction("void","glVertex3d",{"double","double","double"});
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -6358,7 +6307,7 @@ the environment class (which is needed for almost any thing to do with
 Yacas), somewhere in a global variable. aEnvironment can then be used
 from within a callback function in the plugin that doesn't take the
 extra argument by design.
-<p>
+<P>  </P>
 There needs to ba a function in the plugin somewhere of the form 
 
 <TABLE CELLPADDING="3" WIDTH="90%">
@@ -6367,7 +6316,7 @@ void GlutSetEnv(LispEnvironment& aEnv)
 {
     env = &aEnv;
 }
-</PRE>
+</PRE></TR>
 </TABLE>
 
 Then calling
@@ -6375,7 +6324,7 @@ Then calling
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>StubApiCSetEnv("GlutSetEnv");
 
-</PRE>
+</PRE></TR>
 </TABLE>
 
 will force the plugin to call GlutSetEnv at load time. All functions
@@ -6463,7 +6412,7 @@ StubApiCStruct declares a struct in a specific library. The name
 should be followed by an asterisk (clearly showing it is a pointer).
 After that, in the stub api definition, this type can be used as
 argument or return type to functions to the library.
-<p>
+<P>  </P>
 By default the struct will be deleted from memory with a normal
 call to free(...). This can be overriden with a function given
 as second argument, freefunction. This is needed in the case where
@@ -6479,12 +6428,12 @@ in a library header file, define:<TABLE CELLPADDING="3" WIDTH="90%">
   int a;
   int b;
 } SomeStruct;
-</PRE>
+</PRE></TR>
 </TABLE>
 Then in the stub file you can declare this struct by calling:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>StubApiCStruct("SomeStruct*")
-</PRE>
+</PRE></TR>
 </TABLE>
 
 
@@ -6498,7 +6447,7 @@ See Also:
 , <A HREF="ref.html" TARGET="Chapters">
 
 </A>
-, <p><HR><A NAME="c4">
+, <p>  </P><HR><A NAME="c4">
 
 </A>
 <A HREF="refprogchapter4.html#IsGeneric" TARGET="Chapters">
@@ -6618,7 +6567,7 @@ Creates an array from the contents of the list passed in.
 
 Creates a list from the contents of the array passed in.
 
-<p><HR>
+<p>  </P><HR>
 </BODY>
 
 </FONT>

@@ -85,8 +85,10 @@ CArgsGet(args_IsList) <--
 
 20 # CArgsGet("int",_i) <--
 [
+ 
+
  WriteString(PatchString(
-"  ShortIntegerArgument(g, arg<?Write(i);?>, LispTrue);
+"  ShortIntegerArgument(g, <? WriteString(\"arg\":String(i)); ?>, LispTrue);
 "));
 ];
 
@@ -94,21 +96,21 @@ CArgsGet(args_IsList) <--
 20 # CArgsGet("double",_i) <--
 [
  WriteString(PatchString(
-"  DoubleFloatArgument(g,arg<?Write(i);?>,LispTrue);
+"  DoubleFloatArgument(g,<? WriteString(\"arg\":String(i)); ?>,LispTrue);
 "));
 ];
 
 20 # CArgsGet("input_string",_i) <--
 [
  WriteString(PatchString(
-"  InpStringArgument(g,arg<?Write(i);?>,LispTrue);
+"  InpStringArgument(g,<? WriteString(\"arg\":String(i)); ?>,LispTrue);
 "));
 ];
 
 30 # CArgsGet(name_IsString,_i)_(cstructs[name] != Empty) <--
 [
  WriteString(PatchString(
-"  VoidStructArgument(<?WriteString(name);?>,g,arg<?Write(i);?>,LispTrue,<?Write(name);?>);
+"  VoidStructArgument(<?WriteString(name);?>,g,<? WriteString(\"arg\":String(i)); ?>,LispTrue,<?Write(name);?>);
 "));
 ];
 

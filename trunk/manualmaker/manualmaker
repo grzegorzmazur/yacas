@@ -102,7 +102,7 @@ Blurb(text):=
 HtmlCommand(command):=
 [
 HtmlTable(3,"90%",
-"<TR>" : "<TD WIDTH=100% bgcolor=e0e0e0>" : "<PRE>" : command : "</PRE>"
+"<TR>" : "<TD WIDTH=100% bgcolor=e0e0e0>" : "<PRE>" : command : "</PRE></TR>"
          );
 ];
 
@@ -110,7 +110,7 @@ HtmlTerm(term):= ("<B><TT>" : term : "</TT></B>");
 
 HtmlEmphasis(word) := ("<I>" : word : "</I>");
 
-HtmlBreak():="<P>";
+HtmlBreak():="<P>  </P>";
 
 
 Enumerate(body):=
@@ -182,11 +182,10 @@ InitBook(basename):=
 
 
 
-SimpleSectionsIndex(filename,chapter):=
+SimpleSectionsIndex(filename,chapter,sections):=
 [
-  Local(bl,section,sections,index);
+  Local(bl,section,index);
   bl:="";
-  sections:=AssocIndices(plain["Chapters"][chapter]["Sections"]);
   index:=plain["Chapters"][chapter]["Index"];
 
   ForEach(section,sections)
@@ -209,17 +208,21 @@ SimpleChapterIndex(filename,chapters):=
     HtmlLink(chapter,filename,
        ChapterTag(plain["Chapters"][chapter]["Index"]),""));
       );
-    bl:=bl : HtmlTag(bullets,SimpleSectionsIndex(filename,chapter));
+    sections:=AssocIndices(plain["Chapters"][chapter]["Sections"]);
+    if (sections != {})
+    [
+      bl:=bl : HtmlTag(bullets,SimpleSectionsIndex(filename,chapter,sections));
+    ];
   ];
   bl;
 ];
 
 
-FramedSectionsIndex(filename,chapter):=
+FramedSectionsIndex(filename,chapter,sections):=
 [
-  Local(bl,section,sections,index);
+  Local(bl,section,index);
   bl:="";
-  sections:=AssocIndices(plain["Chapters"][chapter]["Sections"]);
+/*  sections:=AssocIndices(plain["Chapters"][chapter]["Sections"]); */
   index:=plain["Chapters"][chapter]["Index"];
 
   ForEach(section,sections)
@@ -244,7 +247,12 @@ FramedChapterIndex(chapters):=
     HtmlLink(chapter,file,
        ChapterTag(plain["Chapters"][chapter]["Index"]),"Chapters"));
       );
-    bl:=bl : HtmlTag(bullets,FramedSectionsIndex(file,chapter));
+
+    sections:=AssocIndices(plain["Chapters"][chapter]["Sections"]);
+    if (sections != {})
+    [
+      bl:=bl : HtmlTag(bullets,FramedSectionsIndex(file,chapter,sections));
+    ];
   ];
   bl;
 ];
@@ -281,7 +289,7 @@ NewLine();
     [
       bodytext:=bodytext :
                 plain["Chapters"][chapter]["KeyWords"] :
-                plain["Chapters"][chapter]["Body"] : "<p><HR>";
+                plain["Chapters"][chapter]["Body"] : "<p>  </P><HR>";
     ];
 
     WriteString(
@@ -355,8 +363,8 @@ BookList():=
      "<TR>" : "<TD bgcolor=e0e0e0><FONT face=\"Verdana, Arial, Helvetica, sans-serif\" size=\"3\">
      " : HtmlLink(bookinfo["Title"],book:"manual.html","","_top") :
 /*     " or " : HtmlLink(" (single file) ",bookinfo["BaseName"]:".html","","_top") : */
-     "<TR>" : "<TD bgcolor=ffffff><FONT face=\"Verdana, Arial, Helvetica, sans-serif\" size=\"3\">
-     " : bookinfo["Blurb"];
+     "</TR><TR>" : "<TD bgcolor=ffffff><FONT face=\"Verdana, Arial, Helvetica, sans-serif\" size=\"3\">
+     " : bookinfo["Blurb"] :"</TR>";
   ];
   bl;
 ];

@@ -220,12 +220,14 @@ void LoadYacas()
         struct dirent* entry;
         struct stat statbuf;
         char dir[256];
+        char cwd[256];
         strcpy(dir,SCRIPT_DIR "addons/");
     
         if ((dp = opendir(dir)) != NULL)
         {
             yacas->Evaluate("DefaultDirectory(\"" SCRIPT_DIR "addons/\");");
-            //            chdir(dir);
+            getcwd(cwd,256);
+            chdir(dir);
             while ((entry = readdir(dp)) != NULL)
             {
                 memset(&statbuf,0,sizeof(struct stat));
@@ -247,6 +249,8 @@ void LoadYacas()
                 sprintf(buf,"DefLoad(\"%s\");",dummy);
                 yacas->Evaluate(buf);
             }
+            closedir(dp);
+            chdir(cwd);
             printf("\n");
         }
     }

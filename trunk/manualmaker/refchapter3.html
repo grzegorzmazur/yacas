@@ -111,7 +111,7 @@ Examples:
 Out> 1;
 In> Mod(5,3)
 Out> 2;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -152,7 +152,7 @@ determining the greatest common divisor:
 2) if both n and m are even then return 2*Gcd(n/2,m/2)
 3) if exactly one of n or m (say n) is even then return Gcd(n/2,m)
 4) if both n and m are odd and, say, n>m then return Gcd( (n-m)/2,m)
-</PRE>
+</PRE></TR>
 </TABLE>
 This is a rather fast algorithm on computers that can efficiently shift
 integers. <br>
@@ -165,7 +165,7 @@ For lists Gcd uses the identity
 
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Gcd({a,b,c}) = Gcd(Gcd(a,b),c)
-</PRE>
+</PRE></TR>
 </TABLE>
 
 
@@ -177,7 +177,7 @@ Examples:
 Out> 5;
 In> Gcd({60,24,120})
 Out> 12;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -209,7 +209,7 @@ for which there are two integers p,q so such that p*n=q*m=L.
 This is calculated with the formula:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Lcm(n,m) = Div(n*m,Gcd(n,m))
-</PRE>
+</PRE></TR>
 </TABLE>
 
 This means it also works
@@ -222,7 +222,7 @@ Examples:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Lcm(60,24)
 Out> 120;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -261,7 +261,7 @@ Examples:
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Examples:
 1&lt;&lt;10; should evaluate to 1024
 -1024&gt;&gt;10; should evaluate to -1
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <A NAME="FromBase">
@@ -287,7 +287,7 @@ number - a number to write out in the base representation
 <H5>
 Description:
 </H5>
-Conversion of numbers to and from base 10 numbers.<p>
+Conversion of numbers to and from base 10 numbers.<p>  </p>
 
 These functions use the p-adic expansion capabilities of the built-in
 arbitrary precision math libraries.  
@@ -300,7 +300,7 @@ Examples:
 Out> 63;
 In> ToBase(16,255)
 Out> ff;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -347,7 +347,7 @@ In> N(Sin(1))
 Out> 0.84147098480789650665;
 In> GetPrecision()
 Out> 20;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -380,7 +380,7 @@ as possible in calculations using division, or trigonometric functions
 like Sin, Cos, etcetera.
 N forces Yacas to calculate floating point representations
 of functions whenever possible, using the current precision or the
-specified precision. <p>
+specified precision. <p>  </p>
 
 In addition, the variable Pi is bound to the value of pi up to the
 required precision.
@@ -401,7 +401,7 @@ In> Pi
 Out> Pi;
 In> N(Pi,20)
 Out> 3.14159265358979323846;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -433,7 +433,7 @@ Description:
 Rationalize scans the entire expression replacing all floating
 point values into rational representations p/q for some integers p and
 q, such that the division of p by q gives the original floating point
-value up to the number of digits of the original floating point value. <p>
+value up to the number of digits of the original floating point value. <p>  </p>
 
 It does this by finding the smallest integer n such that
 multiplying the number with 10^n is an integer. Then it divides by 10^n
@@ -448,7 +448,7 @@ Examples:
 Out> Sin(1.234);
 In> Rationalize(%)
 Out> Sin(617/500);
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -500,10 +500,10 @@ x - an integer number or univariate polynomial to factor
 Description:
 </H5>
 Factors decomposes integer numbers or univariate polynomials
-into a product of primes or irreducible polynomials. <p>
+into a product of primes or irreducible polynomials. <p>  </p>
 
 The result of Factors is a list of lists of the form {p,n}, where each
-p^n divides the original x. <p>
+p^n divides the original x. <p>  </p>
 
 Factor shows the result of Factors in a nicer human readable format.
 
@@ -518,7 +518,7 @@ In> PrettyForm(Factor(12))
  2    
 2  * 3
 
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -549,7 +549,7 @@ So for instance
                    2     3
 4 + 3 * 10 + 2 * 10  + 10 
 
-Out> True;</PRE>
+Out> True;</PRE></TR>
 </TABLE>
 
 This function should also work on polynomials.
@@ -596,7 +596,7 @@ Examples:
                  292 + --------
                        1 + rest
 
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -624,7 +624,7 @@ Example:
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Decimal(1/22)
 Out> {0,0,{4,5}};
 In> N(1/22,30)
-Out> 0.045454545454545454545454545454;</PRE>
+Out> 0.045454545454545454545454545454;</PRE></TR>
 </TABLE>
 
 
@@ -650,7 +650,7 @@ TruncRadian calculates r mod 2*Pi, returning a value
 between 0 and 2*Pi. This function is used in the trigonometry
 functions, just before doing the numerical calculation. It
 greatly speeds up the calculation if the value passed is a big
-number. <p>
+number. <p>  </p>
 The library uses the formula
 
 <TABLE CELLPADDING="3" WIDTH="90%">
@@ -661,7 +661,7 @@ r - MathFloor| ------ | * 2 * Pi
              \ 2 * Pi /         
 
 
-</PRE>
+</PRE></TR>
 </TABLE>
 
 
@@ -680,7 +680,7 @@ In> TruncRadian(6.28)
 Out> 6.28;
 In> TruncRadian(6.29)
 Out> 0.0068146929;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -721,7 +721,7 @@ Examples:
 Out> 1;
 In> Floor(-1.1)
 Out> -2;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -759,7 +759,7 @@ Examples:
 Out> 2;
 In> Ceil(-1.1)
 Out> -1;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -802,7 +802,7 @@ Out> -1;
 In> Round(-1.51)
 Out> -2;
 
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>
@@ -846,7 +846,7 @@ Examples:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Pslq({ 2*Pi+3*Exp(1) , Pi , Exp(1) },20)
 Out> {1,-2,-3};
-</PRE>
+</PRE></TR>
 </TABLE>
 Note: in this example the system detects correctly that
 <B><TT>1* (2*Pi+3*E) -2*(Pi) - 3*(E) = 0</TT></B>

@@ -69,9 +69,9 @@ Topical()"Description";
 Text()"LazyGlobal enforces that a global variable will re-evaluate
 when used. The global variable needs to exist for this function
 to work. Also, this functionality doesn't survive if Clear(var)
-is called afterwards. <p>
+is called afterwards. <P>  </P>
 
-Places where this is used include the global variables % and I.<p>
+Places where this is used include the global variables % and I.<P>  </P>
 
 The use of lazy in the name stems from the concept of lazy evaluation.
 The object the global variable is bound to will only be evaluated when

@@ -1,6 +1,6 @@
 
 /* Initialize book building. */
-
+ 
 DefaultDirectory("in/");
 
 ToFile("manicon.html")

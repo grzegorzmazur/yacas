@@ -26,90 +26,90 @@ here:
 <HR>Miscellaneous capabilities
 </H2>
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>100!;</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>100!;</PRE></TR>
 </TABLE>
 Compute a large factorial using arbitrary
 precision integers.
 <P>
 
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>ToBase(16,255);</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>ToBase(16,255);</PRE></TR>
 </TABLE>
 Convert to another number base.
 <P>
 
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Expand((1+x)^5);</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Expand((1+x)^5);</PRE></TR>
 </TABLE>
 Expand the expression into a polynomial.
 <P>
 
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Apply("+",{2,3});</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Apply("+",{2,3});</PRE></TR>
 </TABLE>
 Apply an operator to a list of arguments. This
 example would evaluate to 5.
 <P>
 
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Apply({{x,y},x+y},{2,3});</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Apply({{x,y},x+y},{2,3});</PRE></TR>
 </TABLE>
 Apply a pure function to a list of arguments. This
 example would also evaluate to 5.
 <P>
 
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>D(x)D(x) Sin(x);</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>D(x)D(x) Sin(x);</PRE></TR>
 </TABLE>
 Take derivatives of a function.
 <P>
 
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Solve(a+x*y==z,x);</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Solve(a+x*y==z,x);</PRE></TR>
 </TABLE>
 Solve an equation for a variable.
 <P>
 
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Taylor(x,0,5) Sin(x);</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Taylor(x,0,5) Sin(x);</PRE></TR>
 </TABLE>
 Calculate the taylor series expansion of a function.
 <P>
 
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Limit(x,0) Sin(x)/x;</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Limit(x,0) Sin(x)/x;</PRE></TR>
 </TABLE>
 Calculate the limit of a function as a variable
 approaches a value.
 <P>
 
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Newton(Sin(x),x,3,0.0001);</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Newton(Sin(x),x,3,0.0001);</PRE></TR>
 </TABLE>
 Use Newton's method for numerically finding a zero of a function.
 <P>
 
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>DiagonalMatrix({a,b,c});</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>DiagonalMatrix({a,b,c});</PRE></TR>
 </TABLE>
 Create a matrix with the elements specified
 in the vector on the diagonal.
 <P>
 
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Integrate(x,a,b) x*Sin(x);</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Integrate(x,a,b) x*Sin(x);</PRE></TR>
 </TABLE>
 Integrate a function over variable x, from a to b.
 <P>
 
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Factors(x^2-1);</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Factors(x^2-1);</PRE></TR>
 </TABLE>
 Factorize a polynomial.
 <P>
 
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Apart(1/(x^2-1),x);</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Apart(1/(x^2-1),x);</PRE></TR>
 </TABLE>
 Create a partial fraction expansion of a polynomial.
 <P>
@@ -124,7 +124,7 @@ Here is an example of a semi-real numerical calculation using Yacas. The problem
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 1/(2*Pi)*Sin(q*phi)/Sin(2*q*phi)+ 1/Pi*Sum(n, 0, Infinity,
   Cos(n*chi) * Sin(Sqrt(q^2-n^2)*phi) / Sin(Sqrt(q^2-n^2)*phi) )
-</PRE>
+</PRE></TR>
 </TABLE>
  Here <B><TT>q</TT></B>, <B><TT>phi</TT></B> and <B><TT>chi</TT></B> are numerical parameters of the problem. We would like to plot this series evaluated at fixed <B><TT>q</TT></B> and <B><TT>phi</TT></B> as function of <B><TT>chi</TT></B> between 0 and <B><TT>2*Pi</TT></B>.
 <P>
@@ -158,10 +158,10 @@ phi:=2;
 f(x) := g(q, phi, x);
 	/* Plot from 0 to 2*Pi with 80 points */
 GnuPlot(0, N(2*Pi), 80, f(x));
-</PRE>
+</PRE></TR>
 </TABLE>
 Name this file "fun1" and execute this script by typing<TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Load("fun1");</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Load("fun1");</PRE></TR>
 </TABLE>
 After this you should see a window with a plot.
 

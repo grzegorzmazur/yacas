@@ -17,43 +17,43 @@ The default operation of Yacas is to run in the interactive console mode. Yacas 
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 yacas -c
-</PRE>
+</PRE></TR>
 </TABLE>
 Inhibit printing of prompts "In>" and "Out>". Useful for non-interactive sessions.
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 yacas -f
-</PRE>
+</PRE></TR>
 </TABLE>
 Reads standard input as one file, but executes only the first statement in it. (You may want to use a statement block to have several statements executed.)
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 yacas -p
-</PRE>
+</PRE></TR>
 </TABLE>
 Does not use terminal capabilities, no fancy editing on the command line and no escape sequences printed. Useful for non-interactive sessions.
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 yacas -t
-</PRE>
+</PRE></TR>
 </TABLE>
 Enable some extra history recall functionality in console mode: after executing a command from the history list, the next unmodified command from the history list will be automatically entered on the command line.
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 yacas {filename}
-</PRE>
+</PRE></TR>
 </TABLE>
 Reads and executes commands in the filename and exits. Equivalent to "Load()".
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 yacas -v
-</PRE>
+</PRE></TR>
 </TABLE>
 Prints version information and exits.
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 yacas -d
-</PRE>
+</PRE></TR>
 </TABLE>
 Prints the path to the Yacas library directory and exits.
 
@@ -81,7 +81,7 @@ In> quit
 Quitting...
 Server stopped.
 8:23pm Unix>
-</PRE>
+</PRE></TR>
 </TABLE>
 Persistence of the session means that Yacas remembered the value of "x" between invocations of <B><TT>yacas_client</TT></B>. If there is not enough time for Yacas to produce output within 2 seconds, the output will be displayed the next time you call <B><TT>yacas_client</TT></B>. 
 <P>
@@ -90,7 +90,7 @@ The "Yacas server" is started automatically when first used and can be stopped e
 The script <B><TT>yacas_client</TT></B> reads standard input and writes to standard output, so it can be used via remote shell execution. For instance, if an account "user" on a remote computer "remote.host" is accessible through ssh, then <B><TT>yacas_client</TT></B> can be used remotely like this: <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 echo "x:=2;" | ssh user@remote.host yacas_client
-</PRE>
+</PRE></TR>
 </TABLE>
 
  On a given host computer running the "Yacas server", each user currently may have only one persistent Yacas session.
@@ -116,7 +116,7 @@ local to a compound statement block by the function <B><TT>Local(var1, var2,...)
 Some functions in Yacas can be <I>threaded</I>. This means that calling the function
 with a list as argument will result in a list with that function being
 called on each item in the list. E.g. <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Sin({a,b,c});</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Sin({a,b,c});</PRE></TR>
 </TABLE>
 will result in <B><TT>{Sin(a),Sin(b),Sin(c)}</TT></B>. This functionality is implemented for most normal analytic functions and arithmetic
 operators. 
@@ -133,13 +133,13 @@ In> Listify(a+b*(c+d));
 Out> {+,a,b*(c+d)};
 In> UnList({Atom("+"),x,1});
 Out> x+1;
-</PRE>
+</PRE></TR>
 </TABLE>
 Note that the first element of the list is the name of the function <B><TT>+</TT></B> which is equivalently represented as <B><TT>Atom("+")</TT></B> and that the subexpression "b*(c+d)" was not converted to the list form.
 <I>Pure functions</I> are the equivalent of "lambda expressions"
 of LISP. They are currently implemented using lists and the operator
 Apply(). The following line: <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Apply( {{x,y},x+y} , {2,3} );</PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Apply( {{x,y},x+y} , {2,3} );</PRE></TR>
 </TABLE>
 would evaluate to 5.
 <P>
@@ -205,7 +205,7 @@ Let's now have a hands-on primer for these syntactic constructions. Suppose we w
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 In> F(a,b) := a/b + b/a;
 Out> True;
-</PRE>
+</PRE></TR>
 </TABLE>
  and then use the function as <B><TT>F(1,2);</TT></B> We might also declare an equivalent infix operation, let's call it "<B><TT>xx</TT></B>", so that we could write simply "1 xx 2". Infix operators must have a precedence, so let's assign it the precedence of the usual division operator. The declaration goes as follows: <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
@@ -215,7 +215,7 @@ In> a xx b := a/b + b/a;
 Out> True;
 In> 3 xx 2 + 1;
 Out> 19/6;
-</PRE>
+</PRE></TR>
 </TABLE>
 Check the math and note how the precedence works! We have chosen the name "<B><TT>xx</TT></B>" just to show that we don't need to use the special characters in the infix operator's name. However we must define this operator as infix before using it in expressions, or we'd get syntax errors.
 <P>
@@ -225,7 +225,7 @@ function and also define it as a mathematical operator
 "bodied" function and then proceed as before:<TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE> In>
 Bodied("##", OpPrecedence("/")); Out> True; In> ##(a) b := a xx b; Out>
-True; In> ##(1) 3 + 2; Out> 16/3; </PRE>
+True; In> ##(1) 3 + 2; Out> 16/3; </PRE></TR>
 </TABLE>
 We have used the name "##" but we
 could have used any other name such as "xx" or "F" or even "_-+@+-_".
@@ -258,7 +258,7 @@ factorial. Tll this is accomplished by the following three lines:<TABLE CELLPADD
 IsIntegerGreaterThanZero(_n) <-- IsInteger(n) And n>0;
 10 # f(0) <-- 1;
 20 # f(n_IsIntegerGreaterThanZero) <-- n*f(n-1);
-</PRE>
+</PRE></TR>
 </TABLE>
 We have first defined a new predicate
 <B><TT>IsIntegerGreaterThanZero()</TT></B> and then defined two
@@ -293,7 +293,7 @@ operator is to be used only on the left hand side of the rule operator
 There are actually another equivalent way of writing the second rule: <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 20 # f(_n)_(IsIntegerGreaterThanZero(n)) <-- n*f(n-1);
-</PRE>
+</PRE></TR>
 </TABLE>
 The underscore <I>after</I> the function object is a predicate that should return True, or else there is no match. This predicate may be a complicated expression involving several logical operations, unlike the simple checking of just one predicate in the <B><TT>n_IsIntegerGreaterThanZero</TT></B> construct.
 <P>
@@ -313,7 +313,7 @@ Additional predicates can be specified too. <B><TT>IsIntegerGreaterThanZero</TT>
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 10 # IsIntegerGreaterThanZero(n_IsInteger)_(n>0) <-- True;
 20 # IsIntegerGreaterThanZero(_n) <-- False;
-</PRE>
+</PRE></TR>
 </TABLE>
 Where the first rule specifies that if n is an integer, and greater than
 zero, the predicate is true, and the second rule states that the
@@ -331,7 +331,7 @@ Some more examples of rules:<TABLE CELLPADDING="3" WIDTH="90%">
 _x + 0 <-- x;
 _x - _x <-- 0;
 ArcSin(Sin(_x)) <-- x;
-</PRE>
+</PRE></TR>
 </TABLE>
 Yacas will first try to match the pattern like a template. Names preceded
 or followed by an underscore can match any one object: a number, a

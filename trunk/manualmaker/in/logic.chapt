@@ -18,7 +18,7 @@ Text()"Yacas has a small built-in propositional logic theorem prover.
 It can be invoked with a call to CanProve. <br>
 
 An example of a proposition is 'if a implies b and b implies c then
-a implies c'. Yacas supports the following operators <p>
+a implies c'. Yacas supports the following operators <P>  </P>
 
  Not     negation, read as 'not'        <br>
  And     conjunction, read as 'and'     <br> 
@@ -42,7 +42,7 @@ Out> True;
 
 It does this the following way: in order to prove proposition p, it
 suffices to prove that  Not p is false. It continues to simplify  Not p
-using the rules <p>
+using the rules <P>  </P>
 
 
 ":HtmlCommand(
@@ -67,7 +67,7 @@ In the next step, clauses are scanned for situations of the form:
 "):"
 
 If this combination ":HtmlTerm("(Y Or Z)"):" is empty, it is false, and
-thus the entire proposition is false. <p>
+thus the entire proposition is false. <P>  </P>
 
 As a last step, the algorithm negates the result again. This has the
 added advantage of simplifying the expression further. 

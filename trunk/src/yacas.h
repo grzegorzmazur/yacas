@@ -22,11 +22,13 @@ class DefaultYacasEnvironment
 {
 public:
     DefaultYacasEnvironment();
+    DefaultYacasEnvironment(LispOutput* aOutput);
     virtual ~DefaultYacasEnvironment();
     LispEnvironment& operator() () {return iEnvironment;}
     void SetCommand(LispEvalCaller aEvaluatorFunc,LispCharPtr aString);
     
 private:
+    LispOutput* output;
     LispHashTable hash;
     LispPrinter printer;
 
@@ -45,7 +47,6 @@ private:
     LispEnvironment iEnvironment;
 
 public:
-    StdUserOutput output;
     CachedStdUserInput input;
 };
 
@@ -53,14 +54,15 @@ public:
 class CYacas
 {
 public:
-  LISPIMPORT static CYacas* NewL();
-  LISPIMPORT virtual ~CYacas();
-  inline DefaultYacasEnvironment& operator()() {return environment;}
-  virtual void Evaluate(LispCharPtr aExpression);
-  virtual LispCharPtr Result();
-  virtual LispCharPtr Error();
+    LISPIMPORT static CYacas* NewL();
+    LISPIMPORT static CYacas* NewL(LispOutput* aOutput);
+    LISPIMPORT virtual ~CYacas();
+    inline DefaultYacasEnvironment& operator()() {return environment;}
+    virtual void Evaluate(LispCharPtr aExpression);
+    virtual LispCharPtr Result();
+    virtual LispCharPtr Error();
 private:
-  CYacas();
+  CYacas(LispOutput* aOutput);
 
 private:
   DefaultYacasEnvironment environment;

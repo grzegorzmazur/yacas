@@ -29,7 +29,7 @@ As we have seen in the tutorial, Yacas represents all expressions as trees, or e
        b   "+" 
           c   "+"
               d  e
-</PRE>
+</PRE></TR>
 </TABLE>
 Complicated expressions are thus built from simple ones in a general and flexible way. If we want a function that acts on sums of any number of terms, we only need to define this function on a single atom and on a sum of two terms, and the Yacas engine will recursively perform the action on the entire tree. 
 <P>
@@ -41,7 +41,7 @@ In> 100 # CForm(_a + _b) <-- CForm(a) : " + " : CForm(b);
 Out> True;
 In> 100 # CForm(_a * _b) <-- CForm(a) : " * " : CForm(b);
 Out> True;
-</PRE>
+</PRE></TR>
 </TABLE>
 We used the string concatenation operator "<B><TT>:</TT></B>" and we
 added spaces around the binary operators for clarity. All rules have the
@@ -53,7 +53,7 @@ In> CForm(a+b*c);
 Out> "a + b * c";
 In> CForm(a+b*c*d+e+1+f);
 Out> "a + b * c * d + e + 1 + f";
-</PRE>
+</PRE></TR>
 </TABLE>
 After just three rules, we were able to process even some complicated expressions. How did it work? We could illustrate the steps Yacas went through when simplifying <B><TT>CForm(a+b*c)</TT></B> roughly like this: <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
@@ -66,7 +66,7 @@ CForm(a) : " + " : Cform(b*c)
 "a" : " + " : "b" : " * " : "c"
     ... concatenate strings
 "a + b * c"
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <A NAME="c3s2">
@@ -81,19 +81,19 @@ It seems that recursion will do all the work for us. The power of recursion is i
 100 # CForm(- _a) <-- "- " : CForm(a);
 100 # CForm(_a - _b) <-- CForm(a) : " - " : CForm(b);
 100 # CForm(_a / _b) <-- CForm(a) : " / " : CForm(b);
-</PRE>
+</PRE></TR>
 </TABLE>
 However, soon enough we find that we forgot about operator precedence. Our simple-minded "CForm()" gives wrong C code for expressions like this: <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 In> CForm( (a+b) * c );
 Out> "a + b * c";
-</PRE>
+</PRE></TR>
 </TABLE>
 We need to get something like "(a+b)*c" in this case. How would we add a rule to insert parentheses around subexpressions? We could just insert them at every subexpression, replacing our rules by something like <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 100 # CForm(_a + _b) <-- "(" : CForm(a) : " + " : CForm(b) : ")";
 100 # CForm(- _a) <-- "(- " : CForm(a) : ")";
-</PRE>
+</PRE></TR>
 </TABLE>
 and so on. This will always produce correct C code, e.g. in our case "((a+b)*c)", but generally the output will be full of unnecessary parentheses. 
 <P>
@@ -107,7 +107,7 @@ PlusPrec := OpPrecedence("+");
     "(" : CForm(a, PlusPrec) : " + " : CForm(b, PlusPrec) : ")";
 120 # CForm(_a + _b, _prec) <--
     CForm(a, PlusPrec) : " + " : CForm(b, PlusPrec);
-</PRE>
+</PRE></TR>
 </TABLE>
 and so on. We omitted the predicate for the last rule because it has a later precedence than the preceding rule. The way we wrote these rules is unnecessarily repetitive but straightforward and it illustrates the central ideas of expression processing in Yacas. The standard library implements "CForm()" essentially in this way. In addition the library implementation supports standard mathematical functions, arrays and so on, and is better organized to allow easier extensions and avoid repetition of code.
 
