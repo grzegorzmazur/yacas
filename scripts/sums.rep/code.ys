@@ -309,11 +309,21 @@ SumFunc(_sumvar,sumfrom_IsInteger,_sumto,_sumbody,_sum,_condition) <--
              ]);
 ];
 
-//doesn't work (?)
+// Some type of canonical form is needed so that these match when
+// given in a different order, like x^k/k! vs. (1/k!)*x^k 
+// works !
 SumFunc(_k,1,_n,_c + _d,
   Eval(UnList({Sum,sumvar'arg,1,n,c})) + 
   Eval(UnList({Sum,sumvar'arg,1,n,d})) 
 );
+SumFunc(_k,1,_n,_c*_expr,Eval(c*UnList({Sum,sumvar'arg,1,n,expr})), IsFreeOf(k,c) );
+SumFunc(_k,1,_n,_expr/_c,Eval(UnList({Sum,sumvar'arg,1,n,expr})/c), IsFreeOf(k,c) );
+
+// this only works when the index=1
+// If the limit of the general term is not zero, then the series diverges
+// We need something like IsUndefined(term), because this croaks when limit return Undefined
+SumFunc(_k,1,Infinity,_expr,Infinity,Eval(Abs(UnList({Limit,sumvar'arg,Infinity,expr})) > 0));
+SumFunc(_k,1,Infinity,1/k,Infinity);
 
 SumFunc(_k,1,_n,_c,c*n,IsFreeOf(k,c) );
 SumFunc(_k,1,_n,_k, n*(n+1)/2 );
@@ -325,6 +335,8 @@ SumFunc(_k,1,_n,HarmonicNumber(_k),(n+1)*HarmonicNumber(n) - n );
 SumFunc(_k,1,_n,Fibonacci(_k)^2, Fibonacci(n)*Fibonacci(n+1) );
 
 // Geometric series! The simplest of them all ;-)
+// I would like to be able to give the user the information
+// that Abs(r)<1
 SumFunc(_k,0,_n,(r_IsFreeOf(k))^(_k), (1-r^(n+1))/(1-r) );
 
 // Infinite Series
@@ -333,17 +345,15 @@ SumFunc(_k,1,Infinity,1/(_k^_d), Zeta(d), IsFreeOf(k,d) );
 SumFunc(_k,1,Infinity,_k^(-_d), Zeta(d), IsFreeOf(k,d) );
 
 SumFunc(_k,0,Infinity,_x^(2*_k+1)/(2*_k+1)!,Sinh(x) );
+SumFunc(_k,0,Infinity,(-1)^k*_x^(2*_k+1)/(2*_k+1)!,Sin(x) );
 SumFunc(_k,0,Infinity,_x^(2*_k)/(2*_k)!,Cosh(x) );
+SumFunc(_k,0,Infinity,(-1)^k*_x^(2*_k)/(2*_k)!,Cos(x) );
 SumFunc(_k,0,Infinity,_x^(2*_k+1)/(2*_k+1),ArcTanh(x) );
 SumFunc(_k,0,Infinity,1/(_k)!,Exp(1) );
 SumFunc(_k,0,Infinity,_x^_k/(_k)!,Exp(x) );
-
 SumFunc(_k,1,Infinity,1/Bin(2*_k,_k), (2*Pi*Sqrt(3)+9)/27 );
 SumFunc(_k,1,Infinity,1/(_k*Bin(2*_k,_k)), (Pi*Sqrt(3))/9 );
 SumFunc(_k,1,Infinity,1/(_k^2*Bin(2*_k,_k)), Zeta(2)/3 );
 SumFunc(_k,1,Infinity,1/(_k^3*Bin(2*_k,_k)), 17*Zeta(4)/36 );
-
-// anything with (-1)^k doesn't work
 SumFunc(_k,1,Infinity,(-1)^(_k-1)/_k, Ln(2) );
-
 
