@@ -23,8 +23,7 @@ LispPluginBase* Win32Dll::GetPlugin(void)
 {
     LISPASSERT(handle != NULL);
     LispPluginBase* (*maker)(void);
-    maker = (LispPluginBase*(*)(void))LoadLibrary((HMODULE)
-handle,"maker");
+    maker = (LispPluginBase*(*)(void))GetProcAddress((HMODULE)handle,"maker");
     return maker();
 }
 
