@@ -1,7 +1,7 @@
 
 			Variables
 
-*CMD := --- Assignment
+*CMD := --- assignment
 *STD
 *CALL
 	var := exp
@@ -160,7 +160,7 @@ expansion is computed only once.
 
 *SEE Set, Clear, [], Rule, Infix, Eval
 
-*CMD Set --- Assignment
+*CMD Set --- assignment
 *CORE
 *CALL
 	Set(var, exp)
@@ -178,7 +178,7 @@ named "var". The first argument is not evaluated. The value True
 is returned.
 
 The statement {Set(var, exp)} is equivalent to {var := exp}, but the {:=} operator
-has more uses like changing individual entries in a list.
+has more uses, e.g. changing individual entries in a list.
 
 *E.G.
 
@@ -189,7 +189,7 @@ has more uses like changing individual entries in a list.
 
 *SEE Clear, :=
 
-*CMD Clear --- Undo an assignment
+*CMD Clear --- undo an assignment
 *CORE
 *CALL
 	Clear(var, ...)
@@ -267,7 +267,7 @@ the block.
 
 *SEE LocalSymbols, Prog, [], UnFence
 
-*CMD ++ --- Increment variable
+*CMD ++ --- increment variable
 *STD
 *CALL
 	var++
@@ -295,7 +295,7 @@ programming language C.
 
 *SEE --, :=
 
-*CMD -- --- Decrement variable
+*CMD -- --- decrement variable
 *STD
 *CALL
 	var--
@@ -325,11 +325,10 @@ in the programming language C.
 
 *SEE ++, :=
 
-*CMD Object --- Create an incomplete type
+*CMD Object --- create an incomplete type
 *STD
 *CALL
-
-Object("pred", exp)
+	Object("pred", exp)
 
 *PARMS
 
@@ -355,7 +354,7 @@ so-called incomplete types.
 
 *SEE IsNonObject
 
-*CMD LazyGlobal --- Global variable is to be evaluated lazily
+*CMD LazyGlobal --- global variable is to be evaluated lazily
 *CORE
 *CALL
 	LazyGlobal(var)
@@ -400,7 +399,7 @@ you call {a} it immediately returns the result.
 
 *SEE Set, Clear, Local, %, I
 
-*CMD UniqueConstant --- Create a unique identifier
+*CMD UniqueConstant --- create a unique identifier
 *STD
 *CALL
 	UniqueConstant()

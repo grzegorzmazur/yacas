@@ -1,7 +1,7 @@
 
 			String manipulation
 
-*CMD SetStringMid --- Change a substring
+*CMD SetStringMid --- change a substring
 *CORE
 *CALL
 	SetStringMid(index,substring,string)
@@ -26,7 +26,7 @@ a new changed copy.
 
 *SEE StringMid, Length
 
-*CMD StringMid --- Retrieve a substring
+*CMD StringMid --- retrieve a substring
 *CORE
 *CALL
 	StringMid(index,length,string)
@@ -53,7 +53,7 @@ accessed using the {[]} operator.
 
 *SEE SetStringMid, Length
 
-*CMD String, Atom --- Convert atom to string and vice versa
+*CMD String, Atom --- convert atom to string and vice versa
 *CORE
 *CALL
 	Atom("string")
@@ -80,7 +80,7 @@ as the evaluated argument. Example: {Atom("foo");} returns
 	In> Atom("a")
 	Out> a;
 
-*CMD ConcatStrings --- Concatenate strings
+*CMD ConcatStrings --- concatenate strings
 *CORE
 *CALL
 	ConcatStrings(strings)
@@ -100,7 +100,7 @@ Concatenates strings.
 
 *SEE :
 
-*CMD LocalSymbols --- Create unique local symbols with given prefix
+*CMD LocalSymbols --- create unique local symbols with given prefix
 *STD
 *CALL
 	LocalSymbols(...)body
@@ -129,7 +129,7 @@ for example, in the macro-like functions ({For}, {While}, etc.).
 
 *SEE UniqueConstant
 
-*CMD PatchString --- Execute commands between {<?} and {?>} in strings
+*CMD PatchString --- execute commands between {<?} and {?>} in strings
 *CORE
 *CALL
 	PatchString(string)

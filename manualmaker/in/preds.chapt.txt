@@ -4,12 +4,13 @@
 *INTRO
 A predicate is a function that returns a boolean value, i.e. {True} or {False}. Predicates are
 often used in patterns, For instance, a rule that only holds for a
-positive integer would use a pattern like {n_IsPositiveInteger}.
+positive integer would use a pattern such as {n_IsPositiveInteger}.
 
-*CMD < --- Test for "less than"
+*CMD < --- test for "less than"
 *STD
 *CALL
-	e1 < e2 (prec. 9)
+	e1 < e2
+(prec. 9)
 
 *PARMS
 
@@ -37,10 +38,11 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 
 *SEE IsNumber, IsInfinity, N
 
-*CMD > --- Test for "greater than"
+*CMD > --- test for "greater than"
 *STD
 *CALL
-	e1 > e2 (prec. 9)
+	e1 > e2
+(prec. 9)
 
 *PARMS
 
@@ -68,10 +70,11 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 
 *SEE IsNumber, IsInfinity, N
 
-*CMD <= --- Test for "less or equal"
+*CMD <= --- test for "less or equal"
 *STD
 *CALL
-	e1 <= e2 (prec. 9)
+	e1 <= e2
+(prec. 9)
 
 *PARMS
 
@@ -100,10 +103,11 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 
 *SEE IsNumber, IsInfinity, N
 
-*CMD >= --- Test for "greater or equal"
+*CMD >= --- test for "greater or equal"
 *STD
 *CALL
-	e1 >= e2 (prec. 9)
+	e1 >= e2
+(prec. 9)
 
 *PARMS
 
@@ -132,10 +136,11 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 
 *SEE IsNumber, IsInfinity, N
 
-*CMD != --- Test for "not equal"
+*CMD != --- test for "not equal"
 *STD
 *CALL
-	e1 != e2 (prec. 9)
+	e1 != e2
+(prec. 9)
 
 *PARMS
 
@@ -158,10 +163,11 @@ The expression {e1 != e2} is equivalent to {Not(e1 = e2)}.
 
 *SEE =
 
-*CMD = --- Test for equality of expressions
+*CMD = --- test for equality of expressions
 *STD
 *CALL
-	e1 = e2 (prec. 9)
+	e1 = e2
+(prec. 9)
 
 *PARMS
 
@@ -193,7 +199,7 @@ if they were printed.
 
 *SEE !=, Equals
 
-*CMD Not --- Logical negation
+*CMD Not --- logical negation
 *CORE
 *CALL
 	Not expr
@@ -220,23 +226,24 @@ expression with evaluated arguments.
 
 *SEE And, Or
 
-*CMD And --- Logical conjunction
+*CMD And --- logical conjunction
 *CORE
 *CALL
-	a1 And a2  (prec. 100)
+	a1 And a2
+(prec. 100)
 	And(a1, a2, a3, ..., aN)
 
 *PARMS
 
-a1, ..., aN - boolean values (may evaluate to {True} or {False})
+{a}1, ..., {a}N - boolean values (may evaluate to {True} or {False})
 
 *DESC
 
-This function returns True if all arguments are true. The
-And operation is lazy, it returns False as soon as a False argument
-is found (from left to right). If an argument other than True or
-False is encountered a new And expression is returned with all
-arguments that didn't evaluate to True or False yet.
+This function returns {True} if all arguments are true. The
+{And} operation is "lazy", i.e. it returns {False} as soon as a {False} argument
+is found (from left to right). If an argument other than {True} or
+{False} is encountered a new {And} expression is returned with all
+arguments that didn't evaluate to {True} or {False} yet.
 
 *E.G.
 
@@ -253,21 +260,22 @@ arguments that didn't evaluate to True or False yet.
 
 *SEE Or, Not
 
-*CMD Or --- Logical disjunction
+*CMD Or --- logical disjunction
 *CORE
 *CALL
-	a1 Or a2  (prec. 101)
+	a1 Or a2
+(prec. 101)
 	Or(a1, a2, a3, ..., aN)
 
 *PARMS
 
-a1, ..., aN - boolean expressions (may evaluate to {True} or {False})
+{a}1, ..., {a}N - boolean expressions (may evaluate to {True} or {False})
 
 *DESC
 
 This function returns {True} if an argument is encountered
 that is true (scanning from left to right). The
-{Or} operation is "lazy", it returns {True} as soon as a {True} argument
+{Or} operation is "lazy", i.e. it returns {True} as soon as a {True} argument
 is found (from left to right). If an argument other than {True} or
 {False} is encountered, an unevaluated {Or} expression is returned with all
 arguments that didn't evaluate to {True} or {False} yet.
@@ -283,7 +291,7 @@ arguments that didn't evaluate to {True} or {False} yet.
 
 *SEE And, Not
 
-*CMD IsFreeOf --- Test whether expression depends on variable
+*CMD IsFreeOf --- test whether expression depends on variable
 *STD
 *CALL
 	IsFreeOf(var, expr)
@@ -320,7 +328,7 @@ expression {D(x) a*x+b} evaluates to {a}, which does not depend on {x}.
 
 *SEE Contains
 
-*CMD IsZeroVector --- Test whether list contains only zeroes
+*CMD IsZeroVector --- test whether list contains only zeroes
 *STD
 *CALL
 	IsZeroVector(list)
@@ -344,7 +352,7 @@ only zeroes and {False} otherwise.
 
 *SEE IsList, ZeroVector
 
-*CMD IsNonObject --- Test whether argument is not an {Object()}
+*CMD IsNonObject --- test whether argument is not an {Object()}
 *STD
 *CALL
 	IsNonObject(expr)
@@ -365,7 +373,7 @@ In fact, the result is always {True}.
 
 *SEE Object
 
-*CMD IsEven --- Test for an even integer
+*CMD IsEven --- test for an even integer
 *STD
 *CALL
 	IsEven(n)
@@ -389,7 +397,7 @@ even if it is divisible by two. Hence the even numbers are 0, 2, 4, 6,
 
 *SEE IsOdd, IsInteger
 
-*CMD IsOdd --- Test for an odd integer
+*CMD IsOdd --- test for an odd integer
 *STD
 *CALL
 	IsOdd(n)
@@ -413,7 +421,7 @@ odd if it is not divisible by two. Hence the odd numbers are 1, 3, 5,
 
 *SEE IsEven, IsInteger
 
-*CMD IsFunction --- Test for a composite object
+*CMD IsFunction --- test for a composite object
 *CORE
 *CALL
 	IsFunction(expr)
@@ -424,8 +432,8 @@ expr - expression to test
 
 *DESC
 
-This function tests whether "expr" is a composite object, ie. not an
-atom. This includes not only obvious functions like {f(x)}, but also expressions like {x+5} and lists.
+This function tests whether "expr" is a composite object, i.e. not an
+atom. This includes not only obvious functions such as {f(x)}, but also expressions such as {x+5} and lists.
 
 *E.G.
 
@@ -436,7 +444,7 @@ atom. This includes not only obvious functions like {f(x)}, but also expressions
 
 *SEE IsAtom, IsList, Type
 
-*CMD IsAtom --- Test for an atom
+*CMD IsAtom --- test for an atom
 *CORE
 *CALL
 	IsAtom(expr)
@@ -459,7 +467,7 @@ variables are all atoms.
 
 *SEE IsFunction, IsNumber, IsString
 
-*CMD IsString --- Test for an string
+*CMD IsString --- test for an string
 *CORE
 *CALL
 	IsString(expr)
@@ -482,7 +490,7 @@ within quotes, eg. {"duh"}.
 
 *SEE IsAtom, IsNumber
 
-*CMD IsNumber --- Test for a number
+*CMD IsNumber --- test for a number
 *CORE
 *CALL
 	IsNumber(expr)
@@ -494,7 +502,7 @@ expr - expression to test
 *DESC
 
 This function tests whether "expr" is a number. There are two kinds
-of numbers, integers (like 6) and reals (like -2.75 or 6.0). Note that a
+of numbers, integers (e.g. 6) and reals (e.g. -2.75 or 6.0). Note that a
 complex number is represented by the {Complex}
 function, so {IsNumber} will return {False}.
 
@@ -511,7 +519,7 @@ function, so {IsNumber} will return {False}.
 
 *SEE IsAtom, IsString, IsInteger, IsPositiveNumber, IsNegativeNumber, Complex
 
-*CMD IsList --- Test for a list
+*CMD IsList --- test for a list
 *CORE
 *CALL
 	IsList(expr)
@@ -523,7 +531,7 @@ expr - expression to test
 *DESC
 
 This function tests whether "expr" is a list. A list is a sequence
-between curly braces, like {{2, 3, 5}}.
+between curly braces, e.g. {{2, 3, 5}}.
 
 *E.G.
 
@@ -573,7 +581,7 @@ it has been assigned a value. The argument "var" is not evaluated.
 
 *SEE IsAtom
 
-*CMD IsBoolean --- Test for a Boolean value
+*CMD IsBoolean --- test for a Boolean value
 *STD
 *CALL
 	IsBoolean(expression)
@@ -586,7 +594,7 @@ expression - an expression
 
 IsBoolean returns True if the argument is of a boolean type.
 This means it has to be either True, False, or an expression involving
-functions that return a boolean result, like
+functions that return a boolean result, e.g.
 {=}, {>}, {<}, {>=}, {<=}, {!=}, {And}, {Not}, {Or}.
 
 *E.G.
@@ -600,7 +608,7 @@ functions that return a boolean result, like
 
 *SEE True, False
 
-*CMD IsNegativeNumber --- Test for a negative number
+*CMD IsNegativeNumber --- test for a negative number
 *STD
 *CALL
 	IsNegativeNumber(n)
@@ -623,7 +631,7 @@ if $n<0$. If {n} is not a number, the functions return {False}.
 
 *SEE IsNumber, IsPositiveNumber, IsNotZero, IsNegativeInteger, IsNegativeReal
 
-*CMD IsNegativeInteger --- Test for a negative integer
+*CMD IsNegativeInteger --- test for a negative integer
 *STD
 *CALL
 	IsNegativeInteger(n)
@@ -647,7 +655,7 @@ negative. The negative integers are -1, -2, -3, -4, -5, etcetera. If
 
 *SEE IsPositiveInteger, IsNonZeroInteger, IsNegativeNumber
 
-*CMD IsPositiveNumber --- Test for a positive number
+*CMD IsPositiveNumber --- test for a positive number
 *STD
 *CALL
 	IsPositiveNumber(n)
@@ -670,7 +678,7 @@ if $n>0$. If {n} is not a number the function returns {False}.
 
 *SEE IsNumber, IsNegativeNumber, IsNotZero, IsPositiveInteger, IsPositiveReal
 
-*CMD IsPositiveInteger --- Test for a positive integer
+*CMD IsPositiveInteger --- test for a positive integer
 *STD
 *CALL
 	IsPositiveInteger(n)
@@ -694,7 +702,7 @@ function returns {False}.
 
 *SEE IsNegativeInteger, IsNonZeroInteger, IsPositiveNumber
 
-*CMD IsNotZero --- Test for a nonzero number
+*CMD IsNotZero --- test for a nonzero number
 *STD
 *CALL
 	IsNotZero(n)
@@ -717,7 +725,7 @@ number, the function returns {False}.
 
 *SEE IsNumber, IsPositiveNumber, IsNegativeNumber, IsNonZeroInteger
 
-*CMD IsNonZeroInteger --- Test for a nonzero integer
+*CMD IsNonZeroInteger --- test for a nonzero integer
 *STD
 *CALL
 	IsNonZeroInteger(n)
@@ -740,7 +748,7 @@ not an integer, the result is {False}.
 
 *SEE IsPositiveInteger, IsNegativeInteger, IsNotZero
 
-*CMD IsInfinity --- Test for an infinity
+*CMD IsInfinity --- test for an infinity
 *STD
 *CALL
 	IsInfinity(expr)
@@ -763,7 +771,7 @@ case if {expr} is either {Infinity} or {-Infinity}.
 
 *SEE Integer
 
-*CMD IsPositiveReal --- Test for a numerically positive value
+*CMD IsPositiveReal --- test for a numerically positive value
 *STD
 *CALL
 	IsPositiveReal(expr)
@@ -793,7 +801,7 @@ Yacas can not determine the sign of this expression.
 
 *SEE IsNegativeReal, IsPositiveNumber, N
 
-*CMD IsNegativeReal --- Test for a numerically negative value
+*CMD IsNegativeReal --- test for a numerically negative value
 *STD
 *CALL
 	IsNegativeReal(expr)
@@ -823,7 +831,7 @@ Yacas can not determine the sign of this expression.
 
 *SEE IsPositiveReal, IsNegativeNumber, N
 
-*CMD IsConstant --- Test for a constant
+*CMD IsConstant --- test for a constant
 *STD
 *CALL
 	IsConstant(expr)
@@ -854,7 +862,7 @@ expression. {Pi} is considered a constant.
 
 
 
-*CMD MatchLinear --- Match an expression to a polynomial of degree one in a variable
+*CMD MatchLinear --- match an expression to a polynomial of degree one in a variable
 *STD
 *CALL
 	MatchLinear(variable,expression)

@@ -1,7 +1,7 @@
 
 			Control flow functions
 
-*CMD MaxEvalDepth --- Set the maximum evaluation depth
+*CMD MaxEvalDepth --- set the maximum evaluation depth
 *CORE
 *CALL
 	MaxEvalDepth(n)
@@ -18,7 +18,7 @@ Use this command to set the maximum evaluation depth to the integer
 The point of having a maximum evaluation depth is to catch any
 infinite recursion. For example, after the definition {f(x) := f(x)}, evaluating the expression {f(x)} would call {f(x)}, which would
 call {f(x)}, etcetera. The interpreter will halt if
-the maximum evaluation depth is reached. Also indirect recursion, like
+the maximum evaluation depth is reached. Also indirect recursion, e.g.
 the pair of definitions {f(x) := g(x)} and {g(x) := f(x)}, will be caught.
 
 *E.G.
@@ -58,7 +58,7 @@ be reached without the presence of infinite recursion. The function {MaxEvalDept
 	3060929499671638825347975351183310878921541258291423
 	92955373084335320859663305248773674411336138752;
 
-*CMD Hold --- Do not evaluate the argument
+*CMD Hold --- do not evaluate the argument
 *CORE
 *CALL
 	Hold(expr)
@@ -83,7 +83,7 @@ The function {UnList()} also leaves its result unevaluated. Both functions stop 
 
 *SEE Eval, HoldArg, UnList
 
-*CMD Eval --- Evaluate the argument
+*CMD Eval --- evaluate the argument
 *CORE
 *CALL
 	Eval(expr)
@@ -120,7 +120,7 @@ operator {:=} evaluates the right-hand side.
 
 *SEE Hold, HoldArg, :=
 
-*CMD While --- Loop while a condition is met
+*CMD While --- loop while a condition is met
 *CORE
 *CALL
 	While(pred) body
@@ -162,7 +162,7 @@ all other loop commands are based. It is equivalent to the {while} command in th
 
 *SEE Until, For
 
-*CMD Until --- Loop until a condition is met
+*CMD Until --- loop until a condition is met
 *STD
 *CALL
 	Until(pred) body
@@ -211,7 +211,7 @@ construct in the programming language C.
 
 *SEE While, For
 
-*CMD If --- Branch point
+*CMD If --- branch point
 *CORE
 *CALL
 	If(pred, then)
@@ -257,7 +257,7 @@ Hence a better implementation would be
 	  (IsPositiveReal(x), 1, -1);
 	Out> True;
 
-*CMD SystemCall --- Pass a command to the shell
+*CMD SystemCall --- pass a command to the shell
 *CORE
 *CALL
 	SystemCall(str)
@@ -279,7 +279,7 @@ In a UNIX environment, the command {SystemCall("ls")} would list the contents of
 
 *SEE Secure
 
-*CMD Function --- Define a function
+*CMD Function --- define a function
 *STD
 *CALL
 	Function("op", {arg,...}) body
@@ -313,7 +313,7 @@ first element of a list. Equivalent definitions would be
 
 *SEE TemplateFunction, Rule, RuleBase, :=
 
-*CMD Use --- Load a file, but not twice
+*CMD Use --- load a file, but not twice
 *CORE
 *CALL
 	Use(name)
@@ -334,7 +334,7 @@ least have been loaded, but is not loaded twice.
 
 *SEE Load, DefLoad, DefaultDirectory
 
-*CMD For --- C-style for loop
+*CMD For --- C-style {for} loop
 *STD
 *CALL
 	For(init, pred, incr) body
@@ -359,7 +359,7 @@ predicate yields {True}. One traversion of the loop
 consists of the subsequent evaluations of "body", "incr", and
 "pred". Finally, the value {True} is returned.
 
-This command is most often used in a form like {For(i=1, i<=10, i++) body}, which evaluates {body} with
+This command is most often used in a form such as {For(i=1, i<=10, i++) body}, which evaluates {body} with
 {i} subsequently set to 1, 2, 3, 4, 5, 6, 7, 8, 9,
 and 10.
 
@@ -383,7 +383,7 @@ equivalent to {init; While(pred) [body; incr;]}.
 
 *SEE While, Until, ForEach
 
-*CMD ForEach --- Loop over all entries in list
+*CMD ForEach --- loop over all entries in list
 *STD
 *CALL
 	ForEach(var, list) body
@@ -415,7 +415,7 @@ returns {True}.
 
 *SEE For
 
-*CMD Apply --- Apply a function
+*CMD Apply --- apply a function to arguments
 *STD
 *CALL
 	Apply(fn, arglist)
@@ -447,7 +447,7 @@ An shorthand for {Apply} is provided by the {@} operator.
 
 *SEE Map, MapSingle, @
 
-*CMD MapArgs --- Apply a function to all top-level arguments
+*CMD MapArgs --- apply a function to all top-level arguments
 *STD
 *CALL
 	MapArgs(expr, fn)
@@ -473,7 +473,7 @@ of a function or a pure function.
 
 *SEE MapSingle, Map, Apply
 
-*CMD Subst --- Perform a substitution
+*CMD Subst --- perform a substitution
 *STD
 *CALL
 	Subst(from, to) expr
@@ -505,7 +505,7 @@ The explanation for the last result is that the expression {a+b+c} is internally
 
 *SEE WithValue, /:
 
-*CMD WithValue --- Temporary assignment during an evaluation
+*CMD WithValue --- temporary assignment during an evaluation
 *STD
 *CALL
 	WithValue(var, val, expr)
@@ -539,7 +539,7 @@ to the second variable, etcetera.
 
 *SEE Subst, /:
 
-*CMD /:, /:: --- Local simplification rules
+*CMD /:, /:: --- local simplification rules
 *STD
 *CALL
 	expression /: patterns
@@ -557,7 +557,7 @@ to the second variable, etcetera.
 Sometimes you have an expression, and you want to use specific
 simplification rules on it that are not done by default. This
 can be done with the {/:} and the {/::} operators. Suppose we have the
-expression containing things like {Ln(a*b)}, and we want
+expression containing things such as {Ln(a*b)}, and we want
 to change these into {Ln(a)+Ln(b)}, the easiest way
 to do this is using the {/:} operator, as follows:
 
@@ -579,7 +579,7 @@ The forms the patterns can have are one of:
 Note that for these local rules, {<-} should be used instead of
 {<--} which would be used in a global rule.
 
-The {/:} operator traverses an expression much like {Subst} does, that is, top
+The {/:} operator traverses an expression much as {Subst} does, that is, top
 down, trying to apply the rules from the begining of the list of
 rules to the end of the list of rules. If the rules cannot be applied
 to an expression, it will try subexpressions of that
@@ -601,7 +601,7 @@ should become apparent.
 
 *SEE Subst
 
-*CMD SetHelpBrowser --- Set the HTML browser to use for help
+*CMD SetHelpBrowser --- set the HTML browser to use for help
 *STD
 *CALL
 	SetHelpBrowser(helpbrowser)
@@ -626,7 +626,7 @@ file {~/.yacasrc} and add a line to set the browser in there.
 
 *SEE Help
 
-*CMD TraceStack --- Show calling stack after an error occurs
+*CMD TraceStack --- show calling stack after an error occurs
 *CORE
 *CALL
 	TraceStack(expression)
@@ -683,7 +683,7 @@ causing Yacas to flood its stack:
 
 *SEE TraceExp, TraceRule
 
-*CMD TraceExp --- Evaluate with tracing enabled
+*CMD TraceExp --- evaluate with tracing enabled
 *CORE
 *CALL
 	TraceExp(expr)
@@ -735,7 +735,7 @@ probably more useful  for all but very simple expressions.
 
 *SEE TraceStack, TraceRule
 
-*CMD TraceRule --- Turn on tracing for a particular function
+*CMD TraceRule --- turn on tracing for a particular function
 *CORE
 *CALL
 	TraceRule(template) expr

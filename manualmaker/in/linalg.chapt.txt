@@ -102,7 +102,7 @@ Both "a" and "b" have to be three-dimensional.
 
 *SEE InProduct
 
-*CMD ZeroVector --- Create a vector with all zeroes
+*CMD ZeroVector --- create a vector with all zeroes
 *STD
 *CALL
 	ZeroVector(n)
@@ -190,7 +190,7 @@ completely filled with zeroes.
 
 *SEE ZeroVector, Identity
 
-*CMD DiagonalMatrix --- Construct a diagonal matrix
+*CMD DiagonalMatrix --- construct a diagonal matrix
 *STD
 *CALL
 	DiagonalMatrix(d)
@@ -280,7 +280,7 @@ just lists of lists, this is a useful operation too for lists.
 	In> Transpose({{a,b}})
 	Out> {{a},{b}};
 
-*CMD Determinant --- Determinant of a matrix
+*CMD Determinant --- determinant of a matrix
 *STD
 *CALL
 	Determinant(M)
@@ -300,7 +300,7 @@ Returns the determinant of a matrix M.
 	In> Determinant(%)
 	Out> 24;
 
-*CMD Trace --- Trace of a matrix
+*CMD Trace --- trace of a matrix
 *STD
 *CALL
 	Trace(M)
@@ -388,7 +388,7 @@ excluding the "i"-th row and "j"-th column.
 
 *SEE CoFactor, Determinant, Inverse
 
-*CMD CoFactor --- Cofactor of a matrix
+*CMD CoFactor --- cofactor of a matrix
 *STD
 *CALL
 	CoFactor(M,i,j)
@@ -723,7 +723,7 @@ to any power is $A$.
 	Out> True;
 
 
-*CMD JacobianMatrix --- Calculate the Jacobian matrix of n functions in n variables
+*CMD JacobianMatrix --- calculate the Jacobian matrix of n functions in n variables
 *STD
 *CALL
         JacobianMatrix(functions,variables)
@@ -754,7 +754,7 @@ of {i}th function with respect to the {j}th variable.
 	\                                 /
 
 
-*CMD VandermondeMatrix --- Calculate the Vandermonde matrix
+*CMD VandermondeMatrix --- calculate the Vandermonde matrix
 *STD
 *CALL
 	VandermondeMatrix(vector)
@@ -783,7 +783,7 @@ The {ij}th element of the Vandermonde matrix is defined as {i^(j-1)}.
 	| ( 1 ) ( 8 ) ( 27 ) ( 64 )  |
 	\                            /
 
-*CMD HessianMatrix --- Calculate the Hessian matrix
+*CMD HessianMatrix --- calculate the Hessian matrix
 *STD
 *CALL
         HessianMatrix(function,var)
@@ -822,7 +822,7 @@ minimum or a saddle point.
 
 
 
-*CMD WronskianMatrix --- Calculate the Wronskian matrix
+*CMD WronskianMatrix --- calculate the Wronskian matrix
 *STD
 *CALL
         WronskianMatrix(func,var)

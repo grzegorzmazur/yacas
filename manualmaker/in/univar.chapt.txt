@@ -5,7 +5,7 @@
 polynomials. This includes functions for constructing and evaluating
 orthogonal polynomials.
 
-*CMD Expand --- Put polynomial in expanded form
+*CMD Expand --- put polynomial in expanded form
 *STD
 *CALL
 	Expand(expr)
@@ -64,7 +64,7 @@ so on.
 
 *SEE ExpandBrackets
 
-*CMD Degree --- Degree of a polynomial
+*CMD Degree --- degree of a polynomial
 *STD
 *CALL
 	Degree(expr)
@@ -96,7 +96,7 @@ mentioned.
 
 *SEE Expand, Coef
 
-*CMD Coef --- Coefficient of a polynomial
+*CMD Coef --- coefficient of a polynomial
 *STD
 *CALL
 	Coef(expr, var, order)
@@ -128,11 +128,10 @@ coefficients.
 
 *SEE Expand, Degree, LeadingCoef
 
-*CMD Content --- Content of a univariate polynomial
+*CMD Content --- content of a univariate polynomial
 *STD
 *CALL
-
-Content(expr)
+	Content(expr)
 
 *PARMS
 
@@ -158,11 +157,10 @@ content with the primitive part.
 
 *SEE PrimitivePart, Gcd
 
-*CMD PrimitivePart --- Primitive part of a univariate polynomial
+*CMD PrimitivePart --- primitive part of a univariate polynomial
 *STD
 *CALL
-
-PrimitivePart(expr)
+	PrimitivePart(expr)
 
 *PARMS
 
@@ -189,13 +187,11 @@ polynomial.
 
 *SEE Content
 
-*CMD LeadingCoef --- Leading coefficient of a polynomial
+*CMD LeadingCoef --- leading coefficient of a polynomial
 *STD
 *CALL
-
-LeadingCoef(poly)
-
-LeadingCoef(poly, var)
+	LeadingCoef(poly)
+	LeadingCoef(poly, var)
 
 *PARMS
 
@@ -230,13 +226,11 @@ sequence may be used.
 
 *SEE Coef, Monic
 
-*CMD Monic --- Monic part of a polynomial
+*CMD Monic --- monic part of a polynomial
 *STD
 *CALL
-
-Monic(poly)
-
-Monic(poly, var)
+	Monic(poly)
+	Monic(poly, var)
 
 *PARMS
 
@@ -272,11 +266,10 @@ calling sequence may be used.
 
 *SEE LeadingCoef
 
-*CMD RandomPoly --- Construct a random polynomial
+*CMD RandomPoly --- construct a random polynomial
 *STD
 *CALL
-
-RandomPoly(var,deg,coefmin,coefmax)
+	RandomPoly(var,deg,coefmin,coefmax)
 
 *PARMS
 
@@ -311,7 +304,7 @@ Div and Mod are also defined for polynomials.
 
 *SEE Div, Mod
 
-*CMD Horner --- Convert polynomial in Horner form
+*CMD Horner --- convert polynomial into Horner form
 *STD
 *CALL
 	Horner(expr, var)
@@ -346,11 +339,10 @@ disappeared.
 
 *SEE Expand, ExpandBrackets
 
-*CMD ExpandBrackets --- Expand all terms
+*CMD ExpandBrackets --- expand all brackets
 *STD
 *CALL
-
-ExpandBrackets(expr)
+	ExpandBrackets(expr)
 
 *PARMS
 
@@ -670,7 +662,7 @@ Here is an example numerical calculation where the loss of precision is catastro
 
 
 
-*CMD OrthoPSum, OrthoHSum, OrthoLSum, OrthoGSum, OrthoTSum, OrthoUSum --- Sums of series of orthogonal polynomials
+*CMD OrthoPSum, OrthoHSum, OrthoLSum, OrthoGSum, OrthoTSum, OrthoUSum --- sums of series of orthogonal polynomials
 *STD
 *CALL
 	OrthoPSum(c, x);
@@ -710,11 +702,10 @@ Most of the work is performed by the internal function {OrthoPolySum}. The indiv
 
 *SEE OrthoP, OrthoG, OrthoH, OrthoL, OrthoT, OrthoU, OrthoPolySum
 
-*CMD OrthoPoly --- Internal function for constructing orthogonal polynomials
+*CMD OrthoPoly --- internal function for constructing orthogonal polynomials
 *STD
 *CALL
-
-OrthoPoly(name, n, par, x)
+	OrthoPoly(name, n, par, x)
 
 *PARMS
 
@@ -748,11 +739,10 @@ polynomial expression.
 
 *SEE OrthoP, OrthoG, OrthoH, OrthoL, OrthoT, OrthoU, OrthoPolySum
 
-*CMD OrthoPolySum --- Internal function for computing series of orthogonal polynomials
+*CMD OrthoPolySum --- internal function for computing series of orthogonal polynomials
 *STD
 *CALL
-
-OrthoPolySum(name, c, par, x)
+	OrthoPolySum(name, c, par, x)
 
 *PARMS
 
