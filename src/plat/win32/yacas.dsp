@@ -501,10 +501,6 @@ SOURCE=..\..\..\..\yacas\src\tokenizer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\yacas\src\unixcommandline.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\yacas\src\win32dll.h
 # End Source File
 # Begin Source File
