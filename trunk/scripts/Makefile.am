@@ -1,7 +1,7 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
 SCRIPTFILES = 	        										    \
-	./glview.ys ./standard.ys ./standard.ys.def ./stdopers.ys ./yacasinit.ys 			    \
+	./glview.ys ./standard.ys ./standard.ys.def ./stdopers.ys ./yacasinit.ys ./packages.ys		    \
 	array.rep/code.ys array.rep/code.ys.def 							    \
 	assoc.rep/code.ys assoc.rep/code.ys.def 							    \
 	c_form.rep/code.ys c_form.rep/code.ys.def 							    \
