@@ -3,7 +3,7 @@
 /* acconfig.h */
 
 #define PACKAGE "yacas"
-#define VERSION "1.0.53rev9"
+#define VERSION "1.0.54"
 
 #define ACCEPT_TYPE_ARG1 int
 #define ACCEPT_TYPE_ARG2 struct sockaddr *
@@ -47,6 +47,9 @@
 
 /* Define to 1 if you have the `select' function. */
 #define HAVE_SELECT 1
+
+/* Define to 1 if you have the <signal.h> header file. */
+#define HAVE_SIGNAL_H 1
 
 /* Define to 1 if you have the `socket' function. */
 #define HAVE_SOCKET 1
@@ -115,13 +118,16 @@
 #define PACKAGE_VERSION ""
 
 /* Operating system */
-#define PLATFORM_OS "\"darwin6.0\""
+#define PLATFORM_OS "darwin6.0"
 
 /* Directory in which plugins are installed */
 #define PLUGIN_DIR "/usr/local/lib/yacas"
 
 /* Directory in which scripts are installed */
 #define SCRIPT_DIR "/usr/local/share/yacas/"
+
+/* Define if signal hander as set by signal() has no arguments */
+/* #undef SIGHANDLER_NO_ARGS */
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -139,7 +145,7 @@
 /* #undef USE_GMP */
 
 /* Version number of package */
-#define VERSION "1.0.53rev9"
+#define VERSION "1.0.54"
 
 /* Define to 1 if the X Window System is missing or not being used. */
 #define X_DISPLAY_MISSING 1
