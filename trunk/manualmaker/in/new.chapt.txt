@@ -945,12 +945,14 @@ If $x!=0$, then the relative error of $x$ is not larger than $2^(-n)$.
 This integer {n} is returned by {GetExactBits(x)}
 and can be modified by {SetExactBits(x,n)} (see below).
 Error estimates are not guaranteed to be correct in all cases, but they should give sensible upper bounds on the error.
+A number {{x,n}} stands for an interval between $x*(1-2^(-n))$ and $x*(1+2^(-n))$.
 *	1. The number 0 is either an integer {0} or a floating-point {0.}
 (a "floating zero" for short).
 For a floating zero, the "number of exact bits" means an absolute error, not a relative error.
-It means that the symbolic pair {{0.,n}} represents a number $x$ such that $-2^(-n)<=x<=2^(-n)$.
-*	1. An integer and a float are equal only if the float has an 
-integer value, within its precision. Two floats are equal only if their values differ by less than the largest of their error estimates.
+It means that the symbolic pair {{0.,n}} represents all number $x$ in the interval $-2^(-n)<=x<=2^(-n)$.
+*	1. An integer and a float are equal only if the float contains this
+integer value within its precision interval.
+Two floats are equal only if their values differ by less than the largest of their error estimates (i.e. if their precision intervals intersect).
 In particular, it means that an integer zero is always equal to any floating zero, and any two floating zeros are equal.
 It follows that if {x=y}, then for any floating zeros {x+0.=y+0.} and {x-y=0.} as well.
 (So this arithmetic is not obviously inconsistent.)
@@ -1017,8 +1019,9 @@ For integer $x$, the value $B(x)$ is the number of bits needed to write the bina
 The bit count function can be usually computed in <i>constant</i> time because the usual representation of long numbers is by arrays of platform integers and a binary exponent.
 The length of the array of digits is usually available at no computational cost.
 
-The <i>absolute</i> error $Delta$ of {{x,n}} is at most $Abs(x)*2^(-n)$.
-Given the bit count of $x$, this can be estimated from above as $Delta<2^(B(x)-n)$.
+The <i>absolute</i> error $Delta[x]$ of {{x,n}} is of order $Abs(x)*2^(-n)$.
+Given the bit count of $x$, this can be estimated from as 
+$$2^(B(x)-n-1)<=Delta[x]<2^(B(x)-n)$$.
 So the bit count of $Delta$ is $B(x)-n$.
 
 *HEAD {Floor()}
@@ -1032,33 +1035,61 @@ $$ m>=B(x) $$.
 The function {BecomeFloat(n)} will convert an integer to a float with at least $n$ digits of precision.
 If {x} is the original integer value, then the result is {{x,p}} where $p=Max(n,B(x))$.
 
+
+*HEAD Underflow check
+
+It is possible to have a number {{x,n}} with $x!=0$ such that {{0.,m}={x,n}} for some $m$.
+This would mean that the floating zero {{0.,m}} is not precise enough to be distinguished from {{x,n}}, i.e.
+$$ Abs(x) < 2^(-m) $$.
+This situation is normal.
+But it would be meaningless to have a number {{x,n}} with $x!=0$ and a precision interval that contains $0$.
+Such {{x,n}} will in effect be equal to <i>any</i> zero {{0.,m}}, because we do not know enough digits of {x} to distinguish {{x,n}} from zero.
+
+From the definition of {{x,n}} with $x!=0$ it follows that 0 can be within the precision interval only if $n<= -1$.
+Therefore, we should transform any number {{x,n}} such that $x!=0$ and $n<= -1$
+into a floating zero {{0.,p}} where
+$$p=n-B(x)$$.
+(Now it is not necessarily true that $p>=0$.)
+This check should be performed at any point where a new precision estimate {n} is obtained for a number {x} and where a cancellation may occur (e.g. after a subtraction).
+Then we may assume that any given float is already reduced to zero if possible.
+
 *HEAD {Equals()}
 
 We need to compare {{x,m}} and {{y,n}}.
 
-If $x!=0$ and $y!=0$, then {{x,m}={y,n}} if and only if
-$$ Abs(x-y)<Max(2^(-m)*Abs(x), 2^(-n)*Abs(y)) $$.
-Checking these conditions does not require long multiplications, but involves one long addition and some long comparisons.
+First, we can quickly check that the values $x$ and $y$ have the same nonzero signs and the same bit counts, $B(x)=B(y)$.
+If $x>0$ and $y<0$ or vice versa, or if $B(x)=B(y)$, then the two numbers are definitely unequal.
+We can also check whether both $x=y=0$; if this is the case, then we know that {{x,m}={y,n}} because any two zeros are equal.
 
-A fast sufficient (but not a necessary) condition is:
-if $B(x-y)<=Min(B(x)-m,B(y)-n)-1$ then {{x,m}={y,n}}.
-A fast necessary (but not a sufficient) condition is:
-if {{x,m}={y,n}} then $B(x-y)<=Max(B(x)-m,B(y)-n)+1$.
-
-If one of the numbers is an integer {x} and the other is a float {{y,n}}, then
-{x={y,n}} if and only if $$ Abs(x-y)<2^(-n)*Abs(y) $$.
-If one of the numbers is a floating zero, then
+However, a floating zero can be sometimes equal to a nonzero number.
+So we should now exclude this possibility:
 {{0.,m}={y,n}} if and only if $Abs(y)<2^(-m)$.
+This condition is equivalent to $$ B(y) < -m $$.
 
-*HEAD Transformation into a floating zero
+If these checks do not provide the answer, the only possibility left is when
+$x!=0$ and $y!=0$ and $B(x)=B(y)$.
 
-Note that using the above definition of comparison it might be possible to have a number {{x,n}} with $x!=0$ such that {{0.,m}={x,n}} for some $m$.
-Such $x$ will effectively be "equal to zero", because we do not know enough digits to distinguish it from zero.
-But then from the definition of {{x,n}} it follows that 0 is within the allowed interval for $x$; this is only possible if $n<= -1$.
+Now we can consider two cases: (1) both $x$ and $y$ are floats, (2) one is a float and the other is an integer.
 
-We may therefore transform any number {{x,n}} such that $x!=0$ and $n<= -1$
-into a floating zero {{0.,p}} where $p= n-B(x)$.
-This check should be performed at any point where a new precision estimate {n} is obtained for a number {x} and where a cancellation may occur (e.g. after a subtraction).
+In the first case, {{x,m}={y,n}} if and only if the following condition holds:
+$$ Abs(x-y)<Max(2^(-m)*Abs(x), 2^(-n)*Abs(y)) $$.
+This is a somewhat complicated condition but its evaluation does not require any long multiplications, only long additions, bit shifts and comparisons.
+
+It is always necessary to compute $x-y$ (one long addition);
+this computation needs to be done with $Min(m,n)$ bits of precision.
+
+After computing $x-y$, we can avoid the full evaluation of the complicated condition by first checking some easier conditions with the bit count of $x-y$.
+A fast sufficient (but not a necessary) condition is:
+if $B(x-y)<=B(x)-Min(m,n)-1$ then {{x,m}={y,n}}.
+A fast necessary (but not a sufficient) condition is:
+if $B(x-y)>B(x)-Min(m,n)+1$ then {{x,m}!={y,n}}.
+If neither of these conditions can give us the answer,
+we have to evaluate the full condition by computing $Abs(x)*2^(-m)$ and $Abs(x)*2^(-m)$ and comparing with $Abs(x-y)$.
+
+In the second case, one of the numbers is an integer {x} and the other is a float {{y,n}}.
+Then {x={y,n}} if and only if $$ Abs(x-y)<2^(-n)*Abs(y) $$.
+For the computation of $x-y$, we need to convert {x} into a float with precision of $n$ digits, i.e. replace the integer {x} by a float {{x,n}}.
+Then we may use the procedure for the first case (two floats) instead of implementing a separate comparison procedure for integers.
 
 
 *HEAD {LessThan()}
@@ -1068,9 +1099,10 @@ Otherwise it is true if and only if $x<y$ as floats.
 
 *HEAD {IsIntValue()}
 
-To check whether {{x,n}} has an integer value within its precision, we first need to compute $y:=x-Floor(x)$={x-Floor(x)} as a float value (without precision control).
-If $x$ does not have enough digits to compute {Floor(x)} accurately (see above), then we conclude that $x$ has an integer value.
-Otherwise if $y$ is exactly zero as a float value, then $x$ also has an integer value.
+To check whether {{x,n}} has an integer value within its precision, we first need to check that {{x,n}} has enough digits to compute $Floor(x)$={Floor(x)} accurately.
+If not (if $n<B(x)$), then we conclude that $x$ has an integer value.
+Otherwise we compute $y:=x-Floor(x)$ as a float value (without precision control) to {n} bits.
+If $y$ is exactly zero as a float value, then $x$ has an integer value.
 Otherwise {{x,n}} has an integer value if and only if $B(y)< -n$.
 
 This procedure is basically the same as comparing {{x,n}} with {Floor(x)}.
@@ -1080,7 +1112,7 @@ This procedure is basically the same as comparing {{x,n}} with {Floor(x)}.
 The sign of {{x,n}} is defined as the sign of the float value $x$.
 (The number {{x,n}} should have been reduced to a floating zero if necessary.)
 
-*HEAD Addition and subtraction
+*HEAD Addition and subtraction ({Add}, {Negate})
 
 We need to add {{x,m}} and {{y,n}} to get the result {{z,p}}.
 Subtraction is the same as addition, except we negate the second number.
@@ -1088,11 +1120,27 @@ When we negate a number, its precision never changes.
 
 First consider the case when $x+y!=0$.
 
-If say $x$ is zero, i.e. {{0.,m}} (but $x+y!=0$), then the situation with precision is the same as if $x$ were {{1.,m}}, because then the relative precision is equal to the absolute precision.
-In that case we replace the bit count of $x$ by $B(0)=1$ and proceed by the same route.
+If $x$ is zero, i.e. {{0.,m}} (but $x+y!=0$), then the situation with precision is the same as if $x$ were {{1.,m}}, because then the relative precision is equal to the absolute precision.
+In that case we take the bit count of $x$ as $B(0)=1$ and proceed by the same route.
 
-The float value $z=x+y$ needs to be calculated first.
-To calculate it, we need the target precision of only
+First, we should decide whether it is necessary to add the given numbers.
+It may be unnecessary if e.g. $x+y<=>x$ within precision of $x$
+(we may say that a "total underflow" occurred during addition).
+To check for this, we need to estimate the absolute errors of $x$ and $y$:
+$$ 2^(B(x)-m-1) <= Delta[x] < 2^(B(x)-m) $$,
+$$ 2^(B(y)-n-1) <= Delta[y] < 2^(B(y)-n) $$.
+Addition is not necessary if $Abs(x)<=Delta[y]$ or if $Abs(y)<=Delta[x]$.
+Since we should rather perform an addition than wrongly dismiss it as unnecessary, we should use a sufficient condition here: if
+$$ B(x)<=B(y)-n-1 $$
+then we can neglect $x$ and set $z=y$, $p=n-Dist(B(x),B(y)-n-1)$.
+(We subtract one bit from the precision of $y$ in case $x$ is close to the absolute error.)
+Also, if
+$$ B(y)<=B(x)-m-1 $$
+then we can neglect $y$ and set $z=x$, $p=m-Dist(B(y),B(x)-m-1)$.
+
+Suppose none of these checks were successful.
+Now, the float value $z=x+y$ needs to be calculated.
+To find it, we need the target precision of only
 $$ 1+Max(B(x),B(y))-Max(B(x)-m,B(y)-n) $$
 bits.
 (An easy upper bound on this is $1+Max(m,n)$ but this is wasteful when $x$ and $y$ have very different precisions.)
@@ -1101,9 +1149,13 @@ Then we compute $B(z)$ and determine the precision $p$ as
 $$ p = Min(m-B(x),n-B(y))+B(z)$$
 $$-1-Dist(m-B(x),n-B(y)) $$,
 where the auxiliary function $Dist(a,b)$ is defined as $0$ when $Abs(a-b)>2$ and $1$ otherwise.
+*FOOT The definition of $Dist(a,b)$ is necessarily approximate; if we replace $2$ by a large number, we shall be overestimating the error in more cases.
 The result is {{z,p}}.
 
-Now consider the case when $x+y=0$.
+Note that the obtained value of $p$ may be negative (total underflow) even though we have first checked for underflow.
+In that case, we need to transform {{z,p}} into a floating zero, as usual.
+
+Now consider the case when $z:=x+y=0$.
 
 This is only possible when $B(x)=B(y)$.
 Then the result is {{0.,p}} where $p$ is found as
@@ -1115,6 +1167,16 @@ If the addition needs to be performed with a given maximum precision $P$, and it
 (It is advisable to leave a few bits untruncated as guard bits.)
 However, the first operation {z:=x+y} must be performed with the precision specified above, or else we run the danger of losing significant digits of $z$.
 
+*HEAD Adding integers to floats
+
+If an integer {x} needs to be added to a float {{y,n}}, then we should formally use the same procedure as if {x} had infinitely many precise bits.
+In practice we can take some shortcuts.
+It is enough to convert the integer to a float {{x,m}} with a certain finite precision $m$ and then follow the general procedure.
+The precision $m$ must be large enough so that the absolute error of {{x,m}} is smaller than the absolute error of {{y,n}}: $B(x)-m<=B(y)-n-1$, hence
+$$ m>=1+n+B(x)-B(y) $$.
+In practice we may allow for a few guard bits over the minimum $m$.
+
+
 *HEAD Multiplication
 
 We need to multiply {{x,m}} and {{y,n}} to get the result {{z,p}}.
@@ -1122,6 +1184,8 @@ We need to multiply {{x,m}} and {{y,n}} to get the result {{z,p}}.
 First consider the case when $x!=0$ and $y!=0$.
 The resulting value is $z=x*y$ and the precision is
 $$ p = Min(m,n)-Dist(m,n) $$.
+
+If one of the numbers is an integer {x}, and the other is a float {{y,n}}, it is enough to convert {x} to a float with somewhat more than $n$ bits, e.g. {{x,n+3}}, so that the $Dist$ function does not decrement the precision of the result.
 
 Now consider the case when {{x,m}}={{0,m}} but $y!=0$.
 The result $z=0$ and the resulting precision is
@@ -1131,9 +1195,12 @@ Finally, consider the case when {{x,m}}={{0,m}} and {{y,n}}={{0,n}}.
 The result $z=0$ and the resulting precision is
 $$ p = m+n $$.
 
-The last two formulae are the same as the first one if we defined the bit count of {{0.,m}} as $1-m$.
+The last two formulae are the same if we defined the bit count of {{0.,m}} as $1-m$.
 This differs from the "standard" definition of $B(0)=1$.
-The "standard" definition is convenient for the handling of addition.
+(The "standard" definition is convenient for the handling of addition.)
+With this non-standard definition, we may use the unified formula
+$$ p=2-B(x)-B(y) $$
+for the case when one of $x$, $y$ is a floating zero.
 
 If the multiplication needs to be performed to a given target precision $P$ which is larger than the estimate $p$, then we can save time by truncating both operands to $P$ digits before performing the multiplication.
 (It is advisable to leave a few bits untruncated as guard bits.)
@@ -1144,6 +1211,7 @@ Division is handled essentially in the same way as multiplication.
 The relative precision of {x/y} is the same as the relative precision of {x*y} as long as both $x!=0$ and $y!=0$.
 
 When $x=0$ and $y!=0$, the result of division {{0.,m}/{y,n}} is a floating zero {{0.,p}} where $ p= m+B(y)-1$.
+When $x$ is an integer zero, the result is also an integer zero.
 
 Division by an integer zero or by a floating zero is not permitted.
 
@@ -1159,10 +1227,6 @@ if {{x,n}} is a floating zero, then $x$ does not change and $n$ is decremented (
 	{x, n} >> s = {x>>s, n};
 	{0.,n} >> s = {0., n+s};
 
-*HEAD Mixed integer/float arithmetic
-
-If one of the operands is an integer, then we should formally define its number of exact digits as infinite.
-Then all formulae continue to hold, as long as the other operand is a float.
 
 		Implementation notes
 
