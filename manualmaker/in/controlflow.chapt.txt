@@ -4,12 +4,11 @@
 *CMD MaxEvalDepth --- Set the maximum evaluation depth
 *CORE
 *CALL
-
-MaxEvalDepth(n)
+	MaxEvalDepth(n)
 
 *PARMS
 
-n - new maximum evalution depth
+{n} -- new maximum evalution depth
 
 *DESC
 
@@ -62,12 +61,11 @@ be reached without the presence of infinite recursion. The function {MaxEvalDept
 *CMD Hold --- Do not evaluate the argument
 *CORE
 *CALL
-
-Hold(expr)
+	Hold(expr)
 
 *PARMS
 
-expr - expression to hold
+{expr} -- expression to hold
 
 *DESC
 
@@ -75,23 +73,24 @@ The expression "expr" is returned unevaluated. This is useful to
 prevent the evaluation of a certain expression in a context in which
 evaluation normally takes place.
 
+The function {UnList()} also leaves its result unevaluated. Both functions stop the process of evaluation (no more rules will be applied).
+
 *E.G.
 
 	In> Echo({ Hold(1+1), "=", 1+1 });
 	 1+1 = 2
 	Out> True;
 
-*SEE Eval, HoldArg
+*SEE Eval, HoldArg, UnList
 
 *CMD Eval --- Evaluate the argument
 *CORE
 *CALL
-
-Eval(expr)
+	Eval(expr)
 
 *PARMS
 
-expr - expression to evaluate
+{expr} -- expression to evaluate
 
 *DESC
 
@@ -124,14 +123,13 @@ operator {:=} evaluates the right-hand side.
 *CMD While --- Loop while a condition is met
 *CORE
 *CALL
-
-While(pred) body
+	While(pred) body
 
 *PARMS
 
-pred - predicate deciding whether to keep on looping
+{pred} -- predicate deciding whether to keep on looping
 
-body - expression to loop over
+{body} -- expression to loop over
 
 *DESC
 
@@ -167,14 +165,13 @@ all other loop commands are based. It is equivalent to the {while} command in th
 *CMD Until --- Loop until a condition is met
 *STD
 *CALL
-
-Until(pred) body
+	Until(pred) body
 
 *PARMS
 
-pred - predicate deciding whether to stop
+{pred} -- predicate deciding whether to stop
 
-body - expression to loop over
+{body} -- expression to loop over
 
 *DESC
 
@@ -222,11 +219,11 @@ construct in the programming language C.
 
 *PARMS
 
-pred - predicate to test
+{pred} -- predicate to test
 
-then - expression to evaluate if "pred" is True
+{then} -- expression to evaluate if "pred" is True
 
-else - expression to evaluate if "pred" is False
+{else} -- expression to evaluate if "pred" is False
 
 *DESC
 
@@ -263,12 +260,11 @@ Hence a better implementation would be
 *CMD SystemCall --- Pass a command to the shell
 *CORE
 *CALL
-
-SystemCall(str)
+	SystemCall(str)
 
 *PARMS
 
-str - string containing the command to call
+{str} -- string containing the command to call
 
 *DESC
 
@@ -286,16 +282,15 @@ In a UNIX environment, the command {SystemCall("ls")} would list the contents of
 *CMD Function --- Define a function
 *STD
 *CALL
-
-Function("op", {arg,...}) body
+	Function("op", {arg,...}) body
 
 *PARMS
 
-op - name of the function
+{op} -- name of the function
 
-arg - formal argument to the function
+{arg} -- formal argument to the function
 
-body - expression compromising the body of the function
+{body} -- expression compromising the body of the function
 
 *DESC
 
@@ -321,12 +316,11 @@ first element of a list. Equivalent definitions would be
 *CMD Use --- Load a file, but not twice
 *CORE
 *CALL
-
-Use(name)
+	Use(name)
 
 *PARMS
 
-name - name of the file to load
+{name} -- name of the file to load
 
 *DESC
 
@@ -343,18 +337,17 @@ least have been loaded, but is not loaded twice.
 *CMD For --- C-style for loop
 *STD
 *CALL
-
-For(init, pred, incr) body
+	For(init, pred, incr) body
 
 *PARMS
 
-init - expression for performing the initialization
+{init} -- expression for performing the initialization
 
-pred - predicate deciding whether to continue the loop
+{pred} -- predicate deciding whether to continue the loop
 
-incr - expression to increment the counter
+{incr} -- expression to increment the counter
 
-body - expression to loop over
+{body} -- expression to loop over
 
 *DESC
 
@@ -393,16 +386,15 @@ equivalent to {init; While(pred) [body; incr;]}.
 *CMD ForEach --- Loop over all entries in list
 *STD
 *CALL
-
-ForEach(var, list) body
+	ForEach(var, list) body
 
 *PARMS
 
-var - looping variable
+{var} -- looping variable
 
-list - list of values to assign to "var"
+{list} -- list of values to assign to "var"
 
-body - expression to evaluate with different values of "var"
+{body} -- expression to evaluate with different values of "var"
 
 *DESC
 
@@ -426,14 +418,13 @@ returns {True}.
 *CMD Apply --- Apply a function
 *STD
 *CALL
-
-Apply(fn, arglist)
+	Apply(fn, arglist)
 
 *PARMS
 
-fn - function to apply
+{fn} -- function to apply
 
-arglist - list of arguments
+{arglist} -- list of arguments
 
 *DESC
 
@@ -459,14 +450,13 @@ An shorthand for {Apply} is provided by the {@} operator.
 *CMD MapArgs --- Apply a function to all top-level arguments
 *STD
 *CALL
-
-MapArgs(expr, fn)
+	MapArgs(expr, fn)
 
 *PARMS
 
-expr - an expression to work on
+{expr} -- an expression to work on
 
-fn - an operation to perform on each argument
+{fn} -- an operation to perform on each argument
 
 *DESC
 
@@ -486,16 +476,15 @@ of a function or a pure function.
 *CMD Subst --- Perform a substitution
 *STD
 *CALL
-
-Subst(from, to) expr
+	Subst(from, to) expr
 
 *PARMS
 
-from - expression to be substituted
+{from} -- expression to be substituted
 
-to - expression to substitute for "from"
+{to} -- expression to substitute for "from"
 
-expr - expression in which the substitution takes place
+{expr} -- expression in which the substitution takes place
 
 *DESC
 
@@ -519,18 +508,16 @@ The explanation for the last result is that the expression {a+b+c} is internally
 *CMD WithValue --- Temporary assignment during an evaluation
 *STD
 *CALL
-
-WithValue(var, val, expr)
-
-WithValue({var,...}, {val,...}, expr)
+	WithValue(var, val, expr)
+	WithValue({var,...}, {val,...}, expr)
 
 *PARMS
 
-var - variable to assign to
+{var} -- variable to assign to
 
-val - value to be assigned to "var"
+{val} -- value to be assigned to "var"
 
-expr - expression to evaluate with "var" equal to "val"
+{expr} -- expression to evaluate with "var" equal to "val"
 
 *DESC
 
@@ -561,9 +548,9 @@ to the second variable, etcetera.
 
 *PARMS
 
-expression - an expression
+{expression} -- an expression
 
-patterns - a list of patterns
+{patterns} -- a list of patterns
 
 *DESC
 
@@ -621,7 +608,7 @@ should become apparent.
 
 *PARMS
 
-helpbrowser - string containing a html browser to use for help
+{helpbrowser} -- string containing a html browser to use for help
 
 *DESC
 
@@ -642,12 +629,11 @@ file {~/.yacasrc} and add a line to set the browser in there.
 *CMD TraceStack --- Show calling stack after an error occurs
 *CORE
 *CALL
-
-TraceStack(expression)
+	TraceStack(expression)
 
 *PARMS
 
-expression - an expression to evaluate
+{expression} -- an expression to evaluate
 
 *DESC
 
@@ -700,12 +686,11 @@ causing Yacas to flood its stack:
 *CMD TraceExp --- Evaluate with tracing enabled
 *CORE
 *CALL
-
-TraceExp(expr)
+	TraceExp(expr)
 
 *PARMS
 
-expr - expression to trace
+{expr} -- expression to trace
 
 *DESC
 
@@ -753,24 +738,23 @@ probably more useful  for all but very simple expressions.
 *CMD TraceRule --- Turn on tracing for a particular function
 *CORE
 *CALL
-
-TraceRule(templ) expr
+	TraceRule(template) expr
 
 *PARMS
 
-templ - template showing the operator to trace
+{template} -- template showing the operator to trace
 
-expr - expression to evaluate with tracing on
+{expr} -- expression to evaluate with tracing on
 
 *DESC
 
 The tracing facility is turned on for subexpressions of the form
-"templ", and the expression "expr" is evaluated. The template
-"templ" is an example of the function to trace on. Specifically, all
-subexpressions with the same top-level operator and arity as "templ"
-are showed. The subexpressions are displayed before (indicated with {TrEnter}) and after ({TrLeave})
-evaluation. In between, the arguments are showed before and after
-evaluation ({TrArg}). Only function defined in
+"template", and the expression "expr" is evaluated. The template
+"template" is an example of the function to trace on. Specifically, all
+subexpressions with the same top-level operator and arity as "template"
+are shown. The subexpressions are displayed before (indicated with {TrEnter}) and after ({TrLeave})
+evaluation. In between, the arguments are shown before and after
+evaluation ({TrArg}). Only functions defined in
 scripts can be traced.
 
 This is useful for tracing a function that is called from within
