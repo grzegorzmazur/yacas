@@ -10,10 +10,28 @@
 #define ACCEPT_TYPE_ARG3 int *
 #define socklen_t int
 
+#define LTDL_OBJDIR "../src"
+
+
 /* end acconfig.h */
+
+/* Define to 1 if you have the <ctype.h> header file. */
+#define HAVE_CTYPE_H 1
+
+/* Define to 1 if you have the <dld.h> header file. */
+/* #undef HAVE_DLD_H */
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+/* #undef HAVE_DLFCN_H */
+
+/* Define to 1 if you have the <dl.h> header file. */
+/* #undef HAVE_DL_H */
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
+
+/* Define to 1 if you have the <malloc.h> header file. */
+/* #undef HAVE_MALLOC_H */
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
@@ -26,6 +44,9 @@
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
+
+/* Define to 1 if you have the <stdio.h> header file. */
+#define HAVE_STDIO_H 1
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #define HAVE_STDLIB_H 1
