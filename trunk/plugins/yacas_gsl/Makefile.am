@@ -1,15 +1,13 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = yacas_gslapi.stub
-
-
 INCLUDES = $(GSL_CFLAGS) -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/ 
 noinst_LTLIBRARIES = $(GSL_PLUGIN)
 EXTRA_LTLIBRARIES = libyacas_gsl.la
-libyacas_gsl_la_SOURCES = yacas_gsl.cc
+libyacas_gsl_la_SOURCES = yacas_gsl.cc yacas_gsl.h yacas_gslapi.stub 
 libyacas_gsl_la_LIBADD = yacas_gslapi.cc
 libyacas_gsl_la_LDFLAGS = $(GSL_LIBS) -module -rpath `pwd`
 
+CLEANFILES = yacas_gslapi.cc yacas_gslapi.description
 
 yacas_gslapi.cc : yacas_gslapi.stub
 	../../src/yacas --rootdir ../../scripts/:$(top_srcdir)/scripts/ -pc $(srcdir)/yacas_gslapi.stub
