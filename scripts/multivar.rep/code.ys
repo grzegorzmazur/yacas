@@ -144,9 +144,22 @@ LocalSymbols(x,y,vars)  [
         MakeMultiNomial(x,vars) * MakeMultiNomial(y,vars);
 ];
 
-LocalSymbols(x,y,vars)  [
+
+10 # MultiRemoveGcd(x_IsMulti/y_IsMulti) <--
+[
+  Local(gcd);
+  Set(gcd,MultiGcd(x,y));
+  Set(x,MultiDivide(x,{gcd})[1][1]);
+  Set(y,MultiDivide(y,{gcd})[1][1]);
+  x/y;
+];
+20 # MultiRemoveGcd(_x) <-- x;
+
+LocalSymbols(x,y,vars,gcd,a,a)  [
   30 #  MakeMultiNomial(_x / _y,vars_IsList) <--
-        MakeMultiNomial(x,vars)/MakeMultiNomial(y,vars);
+        [
+          MultiRemoveGcd(MakeMultiNomial(x,vars)/MakeMultiNomial(y,vars));
+        ];
   ];
 
 
@@ -162,21 +175,21 @@ MultiNomial(_vars,_x) - MultiNomial(_vars,_y) <--
 
 - MultiNomial(_vars,_x) <--
         MultiNomialNegate(MultiNomial(vars,x));
-x_IsMulti + (y_IsMulti/z_IsMulti) <-- (x*z+y)/z;
-(y_IsMulti/z_IsMulti) + x_IsMulti <-- (x*z+y)/z;
+x_IsMulti + (y_IsMulti/z_IsMulti) <-- ((x*z+y)/z);
+(y_IsMulti/z_IsMulti) + x_IsMulti <-- ((x*z+y)/z);
 
-(y_IsMulti/z_IsMulti) + (x_IsMulti/w_IsMulti) <-- (y*w+x*z)/(z*w);
-(y_IsMulti/z_IsMulti) - (x_IsMulti/w_IsMulti) <-- (y*w-x*z)/(z*w);
+(y_IsMulti/z_IsMulti) + (x_IsMulti/w_IsMulti) <-- ((y*w+x*z)/(z*w));
+(y_IsMulti/z_IsMulti) - (x_IsMulti/w_IsMulti) <-- ((y*w-x*z)/(z*w));
 
-(y_IsMulti/z_IsMulti) * (x_IsMulti/w_IsMulti) <-- (y*x)/(z*w);
-(y_IsMulti/z_IsMulti) / (x_IsMulti/w_IsMulti) <-- (y*w)/(z*x);
+(y_IsMulti/z_IsMulti) * (x_IsMulti/w_IsMulti) <-- ((y*x)/(z*w));
+(y_IsMulti/z_IsMulti) / (x_IsMulti/w_IsMulti) <-- ((y*w)/(z*x));
 
-x_IsMulti - (y_IsMulti/z_IsMulti) <-- (x*z-y)/z;
-(y_IsMulti/z_IsMulti) - x_IsMulti <-- (y-x*z)/z;
-(a_IsMulti/(c_IsMulti/b_IsMulti))    <-- (a*b)/c;
-((a_IsMulti/c_IsMulti)/b_IsMulti)    <-- a/(b*c);
-((a_IsMulti/b_IsMulti) * c_IsMulti)  <-- (a*c)/b;
-(a_IsMulti * (c_IsMulti/b_IsMulti))  <-- (a*c)/b;
+x_IsMulti - (y_IsMulti/z_IsMulti) <-- ((x*z-y)/z);
+(y_IsMulti/z_IsMulti) - x_IsMulti <-- ((y-x*z)/z);
+(a_IsMulti/(c_IsMulti/b_IsMulti))    <-- ((a*b)/c);
+((a_IsMulti/c_IsMulti)/b_IsMulti)    <-- (a/(b*c));
+((a_IsMulti/b_IsMulti) * c_IsMulti)  <-- ((a*c)/b);
+(a_IsMulti * (c_IsMulti/b_IsMulti))  <-- ((a*c)/b);
 - ((a_IsMulti)/(b_IsMulti))         <-- (-a)/b;
 
 
@@ -232,14 +245,9 @@ MultiTermLess({_deg1,_fact1},{_deg2,_fact2}) <--
     Local(deg);
     deg := deg1-deg2;
     While(deg != {} And Head(deg) = 0) [ deg := Tail(deg);];
-    if (deg = {})
-    [
-      if (fact1-fact2 < 0) True else False;
-    ]
-    else
-    [
-      if (deg[1] < 0) True else False;
-    ];
+
+    ((deg = {}) And (fact1-fact2 < 0)) Or
+    ((deg != {}) And (deg[1] < 0));
   ];
 10 # MultiAddTerm(_terms,_t)_(Assoc(t[1],terms) = Empty) <--
      [
@@ -297,48 +305,123 @@ MultiNomialNegate(MultiNomial(_vars,_terms)) <--
 
 20 # MultiLeadingTerm(_m) <-- MultiLeadingCoef(m) * MultiLeadingMono(m);
 
+MultiVars(MultiNomial(_vars,_terms)) <-- vars;
+
+10 # MultiLT(MultiNomial(_vars,{})) <--
+     MultiNomial(vars,{{FillList(0,Length(vars)),0}});
+20 # MultiLT(MultiNomial(_vars,_terms)) <-- MultiNomial(vars,{terms[1]});
+10 # MultiLM(MultiNomial(_vars,{})) <-- FillList(0,Length(vars));
+20 # MultiLM(MultiNomial(_vars,_terms)) <-- terms[1][1];
+10 # MultiLC(MultiNomial(_vars,{})) <-- 0;
+20 # MultiLC(MultiNomial(_vars,_terms)) <-- terms[1][2];
+
+10 # MultiZero(MultiNomial(_vars,{})) <-- True;
+20 # MultiZero(MultiNomial(_vars,_terms)) <-- False;
+
+DropZeroLC(MultiNomial(_vars,_terms)) <-- MultiNomial(vars,DropZeroLC(terms));
+10 # DropZeroLC({}) <-- {};
+20 # DropZeroLC(terms_IsList) <-- DropZeroLC(Head(terms),Tail(terms));
+
+30 # DropZeroLC({_pows,0},terms_IsList) <-- DropZeroLC(terms);
+40 # DropZeroLC(_pows,terms_IsList) <-- pows:terms;
+
 /*
-MultiDivide(_f,glist_IsList) <--
+  MultiDivide :
+  input
+    f - a multivariate polynomial
+    g[1 .. n] - a list of polynomials to divide by
+  output
+    {q[1 .. n],r} such that f = q[1]*g[1] + ... + q[n]*g[n] + r
+    
+  Basically quotient and remainder after division by a group of
+  polynomials.
+ */
+
+
+
+20 # MultiDivide(_f,g_IsList) <--
 [
-  Local(i,v,g,nr,q,r,p);
-  v:=VarList({f,glist});
+  Local(i,v,q,r,nr);
+  v:=VarList({f,g});
   f:=MakeMultiNomial(f,v);
-  nr := Length(glist);
-  g:=FillList(0,nr);
+  nr := Length(g);
   For(i:=1,i<=nr,i++)
   [
-    g[i] := MakeMultiNomial(glist,v);
+    g[i] := MakeMultiNomial(g[i],v);
   ];
+  {q,r}:=MultiDivide(f,g);
+  q:=MapSingle("NormalForm",q);
+  r:=NormalForm(r);
+  {q,r};
+];
 
+10 # MultiDivide(f_IsMulti,g_IsList) <--
+[
+  Local(i,nr,q,r,p,v);
+  nr := Length(g);
+  v := MultiVars(f);
   q:=FillList(0,nr);
   r:=0;
   p:=f;
-  While (p != 0)
+  While (Not MultiZero(p))
   [
+    Local(plt,glt);
+    plt:=MultiLT(p);
     For(i:=1,i<=nr,i++)
     [
-      if (MultiTermLess({MultiDegree(g[i])[1],1}, {MultiDegree(p)[1],1}))
+      glt:=MultiLT(g[i]);
+      if (MultiLM(glt) = MultiLM(plt) Or MultiTermLess({MultiLM(glt),1}, {MultiLM(plt),1}))
       [
         Local(ff);
-        ff := ...;
+        ff := MultiNomial(v,{{MultiLM(plt)-MultiLM(glt),MultiLC(plt)/MultiLC(glt)}});
         q[i] := q[i] + ff;
         p := p - ff*g[i];
-        nr:=i+2;
+        i:=nr+2;
       ];
     ];
     if (i = nr+1)
     [
-      Local(ff);
-      ff := ...;
-      r := r + ff;
-      p := p - ff;
+      r := r + LocalSymbols(a,b)(Subst(a,b)plt);
+      p := p - LocalSymbols(a,b)(Subst(a,b)plt);
     ];
+    p:=DropZeroLC(p);
   ];
   {q,r};
 ];
-*/
+
+//TODO optimize this! keeps on converting to and from internal format!
+20 # MultiGcd(_f,_g) <--
+[
+  Local(v);
+  v:=VarList({f,g});
+  NormalForm(MultiGcd(MakeMultiNomial(f,v),MakeMultiNomial(g,v)));
+];
 
 
+5 # MultiGcd(f_IsMulti,g_IsMulti)_(MultiTermLess({MultiLM(f),1},{MultiLM(g),1})) <--
+[
+  MultiGcd(g,f);
+];
+
+10 # MultiGcd(f_IsMulti,g_IsMulti) <--
+[
+  LocalSymbols(a)
+  [
+    Set(f,Subst(a,a)f);
+    Set(g,Subst(a,a)g);
+  ];
+  Local(new);
+  While(g != 0)
+  [
+    Set(new, MultiDivide(f,{g})[2]);
+    Set(f,g);
+    Set(g,new);
+  ];
+  MultiPrimitivePart(f);
+];
+
+
+tst:= (-2*m^3*y)/M^2-(m^2*y)/M+m*y+1/(1/(2*y*m+(-6*y*m^2)/M+(4*m^3*y)/M^2)+1/((-6*m^2*y)/M+(4*m^3*y)/M^2+2*y*m));
 
 /*
 
@@ -351,7 +434,6 @@ try(f):=
 ];
 //try(D(x,4)Exp((-x^2)/2));
 
-tst:= (-2*m^3*y)/M^2-(m^2*y)/M+m*y+1/(1/(2*y*m+(-6*y*m^2)/M+(4*m^3*y)/M^2)+1/((-6*m^2*y)/M+(4*m^3*y)/M^2+2*y*m));
 //try(1/(1+1/x));
 //try(1/(1+1/(1+1/x)));
 
