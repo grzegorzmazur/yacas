@@ -646,6 +646,35 @@ IsCarmichaelNumber(n_IsList) <-- MapSingle("IsCarmichaelNumber",n);
 	   Round(pa);
  ];
 
+/// integer partitions by recurrence relation P(n) = Sum(k,1,n, (-1)^(k+1)*( P(n-k*(3*k-1)/2)+P(n-k*(3*k+1)/2) ) ) = P(n-1)+P(n-2)-P(n-5)-P(n-7)+...
+/// where 1, 2, 5, 7, ... is the "generalized pentagonal sequence"
+/// this method is faster with internal math for number<300 or so.
+PartitionsP'recur(number_IsPositiveInteger) <--
+[
+	// need storage of n values PartitionsP(k) for k=1,...,n
+	Local(cache, n, k, pentagonal, P);
+	cache:=ArrayCreate(number+1,1);	// cache[n] = PartitionsP(n-1)
+	n := 1;
+	While(n<number)	// this will never execute if number=1
+	[
+		n++;
+		// compute PartitionsP(n) now
+		P := 0;
+		k := 1;
+		pentagonal := 1;	// pentagonal is always equal to the first element in the k-th pair of the "pentagonal sequence" of pairs {k*(3*k-1)/2, k*(3*k+1)/2}
+		sign := 1;
+		While(pentagonal<=n)
+		[
+			P := P + (cache[n-pentagonal+1]+If(pentagonal+k<=n, cache[n-pentagonal-k+1], 0))*sign;
+			pentagonal := pentagonal + 3*k+1;
+			k++;
+			sign := -sign;
+		];
+		cache[n+1] := P;	// P(n) computed, store result
+	];
+	cache[number+1];
+];
+PartitionsP'recur(0) <-- 1;
 
 // the product of all the elements of a list
 Product(list_IsList) <--
