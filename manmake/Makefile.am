@@ -1,5 +1,5 @@
 noinst_PROGRAMS = manmake
 manmake_SOURCES = manmake.cc
-EXTRA_DIST = README mangen test.txt txt2yacasdoc.pl
+EXTRA_DIST = README mangen test.txt txt2yacasdoc.pl book2txt.sh book2txt.ys
 
 

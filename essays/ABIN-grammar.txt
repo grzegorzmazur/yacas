@@ -31,7 +31,9 @@ true" and {NANBB} means "it is false that both B0 and negation of B0 are true".
 The {NANBB} statement is true in this interpretation but the deductive system
 of ABIN is too weak to obtain its proof.)
 
-The easiest way to implement this language in Yacas is by using predicates. Our
+	    Implementation using predicates
+
+The easiest way to model the ABIN language in Yacas is by using predicates. Our
 goal will be to define a predicate {IsProvable(x)} that will return {True} when
 {x} is a provable ABIN statement and {False} otherwise. We shall define
 {IsProvable(x)} recursively through several auxiliary predicates. Naturally, we

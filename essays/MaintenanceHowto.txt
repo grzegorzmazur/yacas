@@ -7,9 +7,9 @@ take into account:
 *	The autoconf/automake part - makefile maintenance over various systems.
 *	The cvs system - enabling developers to work together.
 *	The back up repository - storage of tar balls with versions of Yacas.
-This can be found at <*http://www.xs4all.nl/~apinkus/backups/*>
+This can be found at <*http://www.xs4all.nl/~apinkus/backups/*>.
 
-		The autoconf/automake system
+	    The autoconf/automake system
 
 The important thing to remember with the autoconf/automake system is
 that there are files enumerating the files and directories that are
@@ -24,7 +24,7 @@ don't automatically get added to the distribution.
 Adding a directory requires adding the directory name to various
 places also, in configure scripts etcerera.
 
-		Maintaining Yacas through the cvs repository
+	    Maintaining Yacas through the cvs repository
 
 Cvs provides an efficient way for developers to work together, automatically
 merging changes various developers make, and at the same tile is a back up 
@@ -34,7 +34,7 @@ up it becomes very easy to use. This section describes the few commands
 needed for keeping your version and the version in the Yacas repository
 up to date.
 
-		How does cvs work?
+	    How does cvs work?
 
 Cvs has a copy of the files in the repository somewhere in a directory
 on some system, possibly your computer. Then there is such a thing
@@ -61,7 +61,7 @@ In commands to be described in this document are in short:
 *	{cvs add} to add a file or directory.
 *	{cvs remove} to remove a file.
 
-		Checking out an initial version of Yacas
+	    Checking out an initial version of Yacas
 
 There are two ways to check out a version of Yacas: as anonymous 
 user and as maintainer. Anonymous users don't need to log in,
@@ -97,7 +97,7 @@ out, and type the cvs command without the {-d...} flag. This flag
 just tells cvs where to find the repository. But future cvs commands
 will know where to find them, which is why you don't need that flag.
 
-		Use case scenario 1 : getting the latest version of Yacas
+	    Use case scenario 1 : getting the latest version of Yacas
 
 You haven't looked at Yacas for a while (shame on you!) and want 
 to check out the latest version. Just type
@@ -116,7 +116,7 @@ A command
 
 will print messages only about changed files.
 
-		Use case scenario 2 : you made changes to Yacas
+	    Use case scenario 2 : you made changes to Yacas
 
 You got the latest version, but saw this huge, glaring omission in
 Yacas, and start hacking away to add it yourself. After a while, 
@@ -176,10 +176,4 @@ to fix small bugs. You type that in, and your version gets merged
 with the changes others made, and they get your changes, and you 
 backed up your changes at the same time (all with that little command!).
 
-You can find more on cvs at <*http://cvsbook.red-bean.com/*>
-
-
-
-
-
-
+You can find more information about cvs at <*http://cvsbook.red-bean.com/*>.

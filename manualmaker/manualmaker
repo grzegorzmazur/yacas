@@ -1,6 +1,4 @@
 
-
-
 Book(title) :=
 [
 WriteString("Creating Book ");
@@ -468,6 +466,5 @@ BuiltIn() <-- AddBody("Internal function<br>");
 
 StandardLib() <-- AddBody("Standard math library<br>");
 
-
-
-
+/* alias for Load() that can be redefined */
+IncludeFile(x) := Load(x);

@@ -5,12 +5,17 @@ EXTRA_DIST = \
 	manualmaker styleplain \
 	in/all in/arith.chapt in/built.chapt in/calc.chapt \
 	in/coding.book in/const.chapt in/functional.chapt  \
-	in/intro.book in/io.chapt in/linalg.chapt in/dummies  \
+	in/intro.book.txt in/io.chapt in/linalg.chapt in/dummies  \
 	in/lists.chapt in/preds.chapt in/prog.chapt        \
         in/refprog.book in/controlflow.chapt newhelp in/plugins.chapt   \
 	in/ref.book in/univar.chapt in/vars.chapt yacasinit.ys in/generic.chapt \
 	in/intromaker in/refmaker in/refprogmaker in/codingmaker in/logic.chapt \
         in/config.chapt in/strings.chapt 
+
+%.chapt: %.txt
+	perl ../manmake/txt2yacasdoc.pl < $< > $@
+%.book: %.book.txt
+	perl ../manmake/txt2yacasdoc.pl < $< > $@
 
 yacas_helpdir = $(datadir)/yacas/documentation
 

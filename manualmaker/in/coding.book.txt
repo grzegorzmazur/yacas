@@ -1,0 +1,821 @@
+
+				Programming in Yacas
+
+			Yacas Under the Hood
+
+This part of the manual is a somewhat in-depth explanation of the
+Yacas programming language and environment. It assumes that you have worked
+through the introductory tutorial. You should consult the function reference about how to use the various Yacas functions mentioned here.
+
+		The Yacas Architecture
+
+Yacas is designed as a small core engine that interprets a library
+of scripts. The core engine provides the syntax parser and a number of
+hard-wired functions, such as {Set()} or
+{MathExp()} which cannot be redefined by the user. The script
+library resides in the scripts directory "{scripts}" and
+contains higher-level definitions of functions and constants. The library
+scripts are on equal footing with any code the user executes interactively
+or any files the user loads.
+
+Generally, all core functions have plain names and almost all are not
+'bodied' or infix operators. The file "src/yacasapi.cc" in the source
+tree lists declarations of all kernel functions; consult it for reference.
+For many of the core functions, the script library already provides
+convenient aliases. For instance, the addition operator "+" is defined in
+the script {scripts/standard} while the actual addition of
+numbers is performed through the built-in function
+{MathAdd}.
+
+		Startup and the .def files
+
+When Yacas is first started or restarted, it executes the script
+"yacasinit" in the scripts directory. This script may load some other
+scripts. In order to start up quickly, Yacas does not execute all other
+library scripts at first run or at restart. It only executes the file
+{yacasinit} and all .def files in the scripts and addons
+directories. These .def files tell the system where it can find definitions
+for various functions. For example, the function {ArcTan} is
+mentioned in the file "stdfuncs.def", therefore Yacas will load the file
+"stdfuncs" when the user invokes {ArcTan}. This way Yacas
+knows where to look for any given function without actually loading the
+file where the function is defined.
+
+		Object types
+
+Yacas supports two basic kinds of objects: atoms and compounds. Atoms are (integer or real, arbitrary-precision) numbers such as {2.71828}, symbolic variables such as {A3} and character strings. Compounds include functions and expressions, e.g. {Cos(a-b)} and lists, e.g. {{1+a,2+b,3+c}}.
+
+The type of an object is returned by the built-in function {Type}, for example:
+
+	In> Type(a);
+	Out> "";
+	In> Type(F(x));
+	Out> "F";
+	In> Type(x+y);
+	Out> "+";
+	In> Type({1,2,3});
+	Out> "List";
+
+Internally, atoms are stored as strings and compounds as lists. (The Yacas
+lexical analyzer is case-sensitive, so {List} and
+{list} are different atoms.) The functions
+{String()} and {Atom()} convert between atoms and
+strings. A Yacas list {{1,2,3}} is internally a list
+{(List 1 2 3)} which is the same as a function call
+{List(1,2,3)} and for this reason the "type" of a list is the
+string {"List"}. During evaluation, atoms can be interpreted as
+numbers, or as variables that may be bound to some value, while compounds are
+interpreted as function calls.
+
+Note that atoms that result from an {Atom()} call may be
+invalid and never evaluate to anything. For example,
+{Atom(3X)} is an atom with string representation "3X" but
+with no other properties.
+
+Currently, no other lowest-level objects besides strings and lists are provided by the core engine. There is however a possibility to link externally compiled code that will provide additional types of objects. Those will be available in Yacas as "generic objects."
+
+		Evaluation Scheme
+
+Evaluation of an object is performed either explicitly by the built-in command {Eval()} or implicitly when assigning variables or calling functions with the object as argument (except when a function does not evaluate that argument). Evaluation of an object can be explicitly inhibited using {Hold()}. To make a function not evaluate one of its arguments, a {HoldArg(funcname, argname)} must be declared for that function.
+
+Evaluation when performed on an atom goes as follows: if the atom
+is bound locally as a variable, the object it is bound to is returned,
+otherwise, if it is bound as a global variable that is returned. Otherwise,
+the atom is returned unevaluated.
+
+Lists of atoms are generally interpreted in the following way: the first
+atom of the list is some command, and the atoms following in the list are
+considered the arguments. The engine first tries to find out if it is a
+built-in command (core function). In that case, the function is executed.
+Otherwise, it could be a user-defined function (with a "rule database"),
+and in that case the rules from the database are applied to it. If none of
+the rules are applicable, or if no rules are defined for it, the object is
+returned unevaluated.
+
+The main properties of this scheme are the following. When objects are
+assigned to variables, they generally are evaluated (except if you are
+using the {Hold()} function) because assignment
+{var := value} is really a function call to
+{Set(var, value)} and this function evaluates its second
+argument (but not its first argument). When referencing that variable
+again, the object which is its value will not be re-evaluated. Also, the
+default behaviour of the engine is to return the original expression if it
+couldn't be evaluated. This is a desired behaviour if evaluation is used
+for simplifying expressions.
+
+One major design flaw in Yacas (one that other functional languages like
+LISP also have) is that when some expression is re-evaluated in another
+environment, the local variables contained in the expression to be
+evaluated might have a different meaning. In this case it might be useful
+to use the functions {LocalSymbols} and
+{TemplateFunction}. Calling
+
+	LocalSymbols(a,b)
+	a+b;
+
+results in "a" and "b" in the addition being substituted with
+unique symbols that can not clash with other variables being used
+elsewhere. Use {TemplateFunction} instead of
+{Function} to define a function whose parameters should be
+treaded as unique symbols also.
+
+		Rules
+
+<i>Rules</i> are special properties of functions that
+are applied when the function object is being evaluated. A function could
+have just one rule bound to it; this is similar to having a "function
+body" in normal procedural languages. However, Yacas function objects can
+also have several rules bound to them. This is analogous of having several
+alternative "function bodies" that are executed under different
+circumstances. This design is more suitable for symbolic manipulations.
+
+A function is identified by its name as returned by {Type}
+and the number of arguments, or "arity". The same name can be used with
+different arities to define different functions: {f(x)} is
+said to 'have arity 1' and {f(x,y)} has arity 2. Each of
+these functions may possess its own set of specific rules, which we shall
+call a "rule database" of a function.
+
+Each function should be first declared with the built-in command
+{RuleBase} as follows:
+
+	RuleBase("FunctionName",{argument list});
+
+So, a new (and empty) rule database for {f(x,y)} could be
+created by typing {RuleBase("f",{x,y});} The names for the
+arguments "x" and "y" here are arbitrary, but they will be globally stored
+and must be later used in descriptions of particular rules for the function
+"f". After the new rulebase declaration, the evaluation engine of Yacas
+will begin to really recognize "f" as a function, even though no function
+body or equivalently no rules have been defined for it yet.
+
+The shorthand operator {:=} for creating user functions that
+we illustrated in the tutorial is actually defined in the scripts and it
+makes the requisite call to the {RuleBase} function.
+After a {RuleBase} call you can specify parsing
+properties for the function if you like; for example, you could make it an
+infix or bodied operator.
+
+Now we can add some rules to the rule database for a function. A rule
+simply states that if a specific function object with a specific arity is
+encountered in  an expression and if a certain predicate is true, then
+Yacas should replace this function with some other expression. To tell Yacas about a new rule you can use the built-in {Rule} command. This command is what does the real work for the somewhat more aesthetically pleasing {... # ... <-- ... ;} construct we have seen in the tutorial. Incidentally, you do not have to call {RuleBase} explicitly if you use that construct.
+
+Here is the general syntax for a {Rule} call:
+
+	Rule("foo", arity, precedence, predicate) body;
+
+This specifies that for function {foo} with given
+{arity} ({foo(a,b)} has arity 2), there is a
+rule that if {predicate} is true, then {body}
+should be evaluated, and the original expression replaced by the result.
+Predicate and body can use the symbolic names of arguments that were
+declared in the {RuleBase} call.
+
+All rules for a given function can be erased with a call to {Retract(funcname, arity)}. This is useful, for instance, when too many rules have been entered in the interactive mode. This call undefines the function and also invalidates the {RuleBase} declaration.
+
+You can specify that function arguments are not evaluated before they are
+bound to the parameter: {HoldArg("foo",a);} would then
+declare that the a arguments in both {foo(a)} and {foo(a,b)} should not be evaluated before bound to "a". Here
+the argument name "a" should be the same as that used in the {RuleBase} call when declaring these functions.
+Inhibiting evaluation of certain arguments is useful for procedures
+performing actions based partly on a variable in the expression, like
+integration, differentiation, looping, etc., and will be typically used for
+functions that are algorithmic and procedural by
+nature.
+
+Rule-based programming normally makes heavy use of recursion and it is
+important to control the order in which replacement rules are to be
+applied. For this purpose, each rule is given a {precedence}.
+Precedences go from low to high, so all rules with precedence 0 will be
+tried before any rule with precedence 1.
+
+You can assign several rules to one and the same function, as long as some of the predicates differ. If none of the predicates is true,
+the function with its arguments evaluated is returned.
+
+This scheme is slightly slower for ordinary functions that just have one
+rule (with the predicate {True}), but it is a desired
+behaviour for symbolic manipulation. You can slowly build up your own functions, incrementally testing their properties.
+
+		Examples of using rules
+
+As a simple example, here are the actual {RuleBase}
+and {Rule} calls needed to define the factorial function:
+
+	In> RuleBase("f",{n});
+	Out> True;
+	In> Rule("f", 1, 10, n=0) 1;
+	Out> True;
+	In> Rule("f", 1, 20, IsInteger(n) And n>0) n*f(n-1);
+	Out> True;
+
+This definition is entirely equivalent to the one we gave in the tutorial. {f(4)} should now return 24, while {f(a)} should return just {f(a)} if "a" is not bound to any value.
+
+The {Rule} commands in this example specified two rules for function "f"
+with arity 1: one rule with precedence 10 and predicate {n=0}, and another with precedence 20 and the predicate that returns {True} only
+if "n" is a positive integer. Rules with lowest precedence get evaluated
+first, so the rule with precedence 10 will be tried before the rule with
+precedence 20. Note that the predicates and the body use the name "n"
+declared by the {RuleBase} call.
+
+After declaring {RuleBase} for a function, you could
+tell the parser to treat this function as a postfix operator:
+
+	In> Postfix("f");
+	Out> True;
+	In> 4 f;
+	Out> 24;
+
+There is already a function {Function} defined in the
+standard scripts that allows you to construct simple functions. An example
+would be
+
+	Function ("FirstOf", {list})  list[ 1 ] ;
+
+which simply returns the first element of a list. This could also have
+been written as
+
+	Function("FirstOf", {list})
+	[
+	  list[1] ;
+	];
+
+As mentioned before, the [ and ] brackets are also used to combine multiple
+operations to be performed one after the other. The result of the last
+performed action is returned.
+
+Finally, the function {FirstOf} could also have been
+defined by typing
+
+	FirstOf(list):=list[1] ;
+
+		Structured programming
+
+Some functions useful for control flow are already defined in Yacas's standard library. Let's look at a possible definition of a looping function {ForEach}. We shall here consider a somewhat simple-minded definition, while the actual {ForEach} as defined in the standard script "controlflow" is a little more sophisticated.
+
+	Function("ForEach",{foreachitem,foreachlist,foreachbody})
+	[
+	   Local(foreachi,foreachlen);
+	   foreachlen:=Length(foreachlist);
+	   foreachi:=0;
+	   While (foreachi < foreachlen)
+	   [
+	     foreachi++;
+	     MacroLocal(foreachitem);
+	     MacroSet(foreachitem,foreachlist[foreachi]);
+	     Eval(foreachbody);
+	   ];
+	];
+	
+	Bodied("ForEach");
+	UnFence("ForEach",3);
+	HoldArg("ForEach",foreachitem);
+	HoldArg("ForEach",foreachbody);
+
+Functions like this should probably be defined in a separate file. You can
+load such a file with the command {Load("file")}. This is an example of a macro-like function.  Let's look at the last few
+lines first. There is a {Bodied(...)} , which states that a
+for command is to be entered as {ForEach(item,{list}) body;}
+-- that is, the last argument to the command ForEach should be outside its
+brackets.{UnFence(...)} states that this function can use the local
+variables of the calling function. This is necessary, since the body to be
+evaluated for each item will probably use some local variables from that
+surrounding.
+
+Finally, {HoldArg("function",argument)} specifies that
+the argument {argument} should not be evaluated before being
+bound to that variable. This holds for {foreachitem} and
+{foreachbody} , since {foreachitem} specifies
+a variable to be set to that value, and {foreachbody} is the
+expression that should be evaluated <i>after</i> that variable
+is set.
+
+Inside the body of the function definition there are calls to {Local(...)}. 'Local' declares some local variable that will
+only be visible within a block [ ... ]. The command MacroLocal works almost
+the same. The difference is that it evaluates its arguments before
+performing the action on it. This is needed in this case, because the
+variable foreachitem is bound to the variable to be used, and it is
+<i>the variable it is bound to</i> we want to make local, not
+"foreachitem" itself. MacroSet works similarly, it does the same as Set,
+except that it also first evaluates the first argument, thus setting the
+variable requested by the user of this function. The Macro... functions in
+the built-in functions generally perform the same action as their non-macro
+versions, apart from evaluating an argument it would otherwise not
+evaluate.
+
+To see the function in action, you could type:
+
+	ForEach(i,{1,2,3}) [Write(i);NewLine();];
+
+This should obviously write 1, 2 and 3, each on a new line.
+
+Note: the variable names "foreach..." have been chosen so they won't get
+confused with normal variables you use. This is a major design flaw in this
+language. Suppose there was a local variable foreachitem, defined in the
+calling function, and used in foreachbody. These two would collide, and the
+interpreter would use only the last defined version. In general, when
+writing a function that calls {Eval} , it is a good idea to
+use variable names that can not easily be mistaken. This is generally the
+single largest cause of bugs when writing programs in Yacas. This issue
+should be addressed in the future.
+
+		Additional Syntactic Sugar
+
+The parser is extended slightly to allow for fancier constructs.
+
+*	Lists, like for example {{a,b}}. This then
+gets parsed into the internal notation {(List a b)} , but
+will be printed again as {{a,b};}
+*	Statement blocks like
+{[statement1(); statement2();]} , which
+get parsed into {(Prog (statement1) (statement2))} , and printed out again in the proper form.
+*	 Object argument accessors in the form of
+{expr[ index ]} . These
+are mapped internally to {Nth(expr,index)} . index 0 returns the
+operator of the object, index 1 the first argument, etc. So,
+if expr is {foo(bar)} , then
+{expr[0]} returns foo, and
+{expr[1]} returns bar. Since Lists of the form
+{{...}} are essentially the same as
+{List(...)} , the same accessors
+can be used on lists.
+
+*	Function blocks like
+	While (i < 10)
+	  [
+		Write(i);
+		i:=i+1;
+	  ];
+The expression directly following the {While(...)} block is added as a last argument to the {While(...)} call. So {While(a)b;} is parsed to the internal form {(While a b).}
+
+This scheme allows coding the algorithms in an almost C-like syntax.
+
+Strings are generally represented with quotes around them, like
+"this is a string" .  {\} in a string will unconditionally add the
+next character to the string, so a quote can be added with {\"} (a backslash-quote sequence).
+
+		Scope Of Variable Bindings
+
+When setting variables or retrieving variable values, variables are
+automatically bound global by default. You can explicitly specify variables to
+be local to a block such as a function body; this will make them invisible
+outside the block. Blocks have the form {[statement1(); statement2(); ]} and local variables are declared by the
+{Local()} function.
+
+When entering a block, a new stack frame is pushed for the local variables; it
+means that the code inside a block doesn't see the local variables of the <i>caller</i> either!
+You can tell the interpreter that a function should see local variables of the
+calling environment; to do this, declare {UnFence(funcname, arity)} on the specified function.
+
+			Coding style
+
+		Introduction
+
+This chapter intends to desribe the coding style and conventions
+applied in Yacas in order to make sure the engine always returns
+the correct result. This is an attempt at fending off such errors
+by combining rule-based programming with a clear coding style
+which should make these mistakes impossible.
+
+		Interactions of rules and types
+
+One unfortunate disadvantage of rulebased programming is that rules
+can sometimes cooperate in unwanted ways.
+
+One example of how rules can produce unwanted results is the rule {a*0=0.} This would always seem to be true. However, when a is a
+vector, like {a:={b,c,d}} , then {a*0} should actually return {{0,0,0}} , that is, a null vector. The rule {a*0 -> 0} actually changes the type of the expression from a vector to a
+integer! This can have
+severe consequences when other functions using this expressions
+as an argument expect a vector, or even worse, have a definition
+of how to work on vectors, and a different one for working on
+numbers.
+
+When writing rules for an operator, it is assumed that the operator
+working on arguments, like Sin or *, will always have the same properties
+regardless of the arguments. The Taylor series expansion of Sin(a) will be
+the same regardless of whether a is a real number, complex number or even a
+matrix. The same trigonometric identities should hold for Sin, regardless
+of the type of a, too.
+
+If a function is defined which does not adhere to these rules when applied
+to another type, a different function should be defined.
+
+By default, if a variable has not been bound yet, it is assumed to
+be a number. If it is in fact a more complex object, like a vector,
+then you can declare a to be an 'incomplete type' vector, using
+Object("IsVector",a). This subexpression will evaluate to a if and
+only if a is a vector at that moment of evaluation. Otherwise
+it returns unevaluated, and thus stays an incomplete type.
+
+So this means the type of a variable is numeric unless otherwise
+stated by the user, using the "Object" command. No rules should
+ever work on incomplete types. It is just meant for delayed
+simplification.
+
+The topic of implicit type of an object is important, since many rules
+often implicitly need to be able to assume something is a number.
+
+		Ordering of rules
+
+The implementor of a rule set can specify the order in which rules should be
+tried. This can be used to let the engine try more specific rules (those
+involving more elements in the pattern) before trying less specific rules.
+Ordering of rules can be also explicitly given by precedence numbers. The Yacas
+engine will split the expression into subexpressions, and will try to apply all
+matching rules to a given subexpression in order of precedence.
+
+A rule with precedence 100 is defined by the syntax such as
+
+	100 # f(_x + _y) <-- f(x) + f(y);
+
+The problem mentioned above with a rule for vectors and scalars could be solved by making two rules:
+
+a*b (b a vector) -> return vector of each component multiplied by a.
+
+a*0 -> 0
+
+So vector multiplication would be tried first.
+
+The ordering of the precedence of the rules in the standard math
+scripts is currently:
+
+*	0. 50-60: Args are numbers: directly calculate. These are put in the beginning, so they are tried first. This is useful for quickly obtaining numeric results if all the arguments are numeric already, and symbolic transformations are not necessary.
+*	0. 100-199: tautologies. Transformations that do not change the type of the argument, and are always true.
+*	0. 200-399: type-specific transformations. Transformations for specific types of objects.
+*	0. 400-599: transformarions on scalars (variables are assumed to be scalars). Meaning transformations that can potentially change the type of an argument.
+
+*INCLUDE ../../essays/ABIN-grammar.chapt
+
+			Advanced example 1: parsing expressions (CForm)
+
+In this chapter we show how Yacas represents expressions and how we
+can build functions that work on all expressions. Our specific example will
+be "CForm()", a standard library function that converts Yacas expressions
+into C or C++ code. (Although the input format of Yacas expressions is
+already very close to C and perhaps could be converted to C by means of an
+external text filter, it is instructive to understand how to define Yacas
+functions that produce C code.) Here we shall only design the core mechanism of
+"CForm()" and build a limited version that handles only expressions using
+the four arithmetic actions.
+
+		Recursive parsing of expression trees
+
+As we have seen in the tutorial, Yacas represents all expressions as trees, or equivalently, as lists of lists. For example, the expression "{a+b+c+d+e}" is for Yacas a tree of depth 4 that could be visualized as
+
+	     "+"
+	   a    "+"
+	       b   "+"
+	          c   "+"
+	              d  e
+
+Complicated expressions are thus built from simple ones in a general and flexible way. If we want a function that acts on sums of any number of terms, we only need to define this function on a single atom and on a sum of two terms, and the Yacas engine will recursively perform the action on the entire tree.
+
+So our first try is to define rules for transforming an atom and for transforming sums and products. The result of CForm() will always be a string and we can use recursion like this:
+
+	In> 100 # CForm(a_IsAtom) <-- String(a);
+	Out> True;
+	In> 100 # CForm(_a + _b) <-- CForm(a) : " + " : CForm(b);
+	Out> True;
+	In> 100 # CForm(_a * _b) <-- CForm(a) : " * " : CForm(b);
+	Out> True;
+
+We used the string concatenation operator "{:}" and we
+added spaces around the binary operators for clarity. All rules have the
+same precedence 100 because there are no conflicts in rule ordering so far:
+these rules apply in mutually exclusive cases. Let's try converting some
+simple expressions now:
+
+	In> CForm(a+b*c);
+	Out> "a + b * c";
+	In> CForm(a+b*c*d+e+1+f);
+	Out> "a + b * c * d + e + 1 + f";
+
+After just three rules, we were able to process even some complicated expressions. How did it work? We could illustrate the steps Yacas went through when simplifying {CForm(a+b*c)} roughly like this:
+
+	CForm(a+b*c)
+	    ... apply 2nd rule
+	CForm(a) : " + " : Cform(b*c)
+	    ... apply 1st rule and 3rd rule
+	"a" : " + " : Cform(b) : " * " : Cform(c)
+	    ... apply 1st rule
+	"a" : " + " : "b" : " * " : "c"
+	    ... concatenate strings
+	"a + b * c"
+
+		Handling precedence of infix operations
+
+It seems that recursion will do all the work for us. The power of recursion is indeed great and heavy use of recursion is built in the design of Yacas. We just need to add rules for more operators, for example, the unary addition, subtraction and division:
+
+	100 # CForm(+ _a) <-- "+ " : CForm(a);
+	100 # CForm(- _a) <-- "- " : CForm(a);
+	100 # CForm(_a - _b) <-- CForm(a) : " - " : CForm(b);
+	100 # CForm(_a / _b) <-- CForm(a) : " / " : CForm(b);
+
+However, soon enough we find that we forgot about operator precedence. Our simple-minded "CForm()" gives wrong C code for expressions like this:
+
+	In> CForm( (a+b) * c );
+	Out> "a + b * c";
+
+We need to get something like "(a+b)*c" in this case. How would we add a rule to insert parentheses around subexpressions? We could just insert them at every subexpression, replacing our rules by something like
+
+	100 # CForm(_a + _b) <-- "(" : CForm(a) : " + " : CForm(b) : ")";
+	100 # CForm(- _a) <-- "(- " : CForm(a) : ")";
+
+and so on. This will always produce correct C code, e.g. in our case "((a+b)*c)", but generally the output will be full of unnecessary parentheses.
+
+We could improve the situation by inserting parentheses only if the higher-order expression requires them; for this to work, we need to make a call such as "CForm(a+b)" aware that the enveloping expression has a multiplication by "c" in it. This can be implemented by passing an extra argument to "CForm()" that will indicate the precedence of the enveloping operation. A compound expression that uses an infix operator must be bracketed if the precedence of that infix operator is higher than the precedence of the enveloping infix operation.
+
+We shall define an auxiliary function that we shall also call "CForm" but with a second argument, the precedence of the enveloping infix operation. If there is no enveloping operation, we shall set the precedence to a large number, e.g. 60000, so that no parentheses will be inserted around the whole expression. The new "CForm(expr, precedence)" will handle two cases: either parentheses are necessary, or unnecessary. For clarity we shall implement these cases in two separate rules. The initial call to "CForm(expr)" will be delegated to "CForm(expr, precedence)". The precedence values of infix operators such as +" and "*" are defined in the Yacas library and may change in a future version; so we shall not hard-code these precedence values but instead use the function {OpPrecedence()} to determine them. The new rules could look like this:
+
+	PlusPrec := OpPrecedence("+");
+	100 # CForm(_expr) <-- CForm(expr, 60000);
+	100 # CForm(_a + _b, _prec)_(PlusPrec>prec) <--
+	    "(" : CForm(a, PlusPrec) : " + " : CForm(b, PlusPrec) : ")";
+	120 # CForm(_a + _b, _prec) <--
+	    CForm(a, PlusPrec) : " + " : CForm(b, PlusPrec);
+
+and so on. We omitted the predicate for the last rule because it has a later precedence than the preceding rule. The way we wrote these rules is unnecessarily repetitive but straightforward and it illustrates the central ideas of expression processing in Yacas. The standard library implements "CForm()" essentially in this way. In addition the library implementation supports standard mathematical functions, arrays and so on, and is better organized to allow easier extensions and avoid repetition of code.
+
+			Debugging in Yacas
+
+		Introduction
+
+When writing a code segment, it is generally a good idea to separate the
+problem into many small functions. Not only can you then reuse these
+functions on other problems, but it makes debugging easier too.
+
+The options you have for debugging a faulty function are
+
+*	0. Invoke the function from the command line, passing in different   arguments, to see how it behaves.
+*	0. Trace
+
+		The trace facilities
+
+There are two trace facilities:
+
+*	0. TraceExp : TraceExp traces the full   expression, showing all calls to user- or system-defined functions,   their arguments, and the return values. For complex functions this   can become a long list of function calls.
+*	0. TraceRule : TraceRule traces one single user-defined function.   It shows each invokation, the arguments passed in, and the return   values. This is useful for tracking the behaviour of that function   in the environment it is intended to be used in.
+
+An example invocation of TraceRule is
+
+	In> TraceRule(x+y)2+3*5+4;
+
+Which should then show something to the effect of
+
+	    TrEnter(2+3*5+4);
+	      TrEnter(2+3*5);
+	          TrArg(2,2);
+	          TrArg(3*5,15);
+	      TrLeave(2+3*5,17);
+	        TrArg(2+3*5,17);
+	        TrArg(4,4);
+	    TrLeave(2+3*5+4,21);
+	Out> 21;
+
+			Advanced example 2: implementing a non-commutative algebra
+
+We need to understand how to work with expressions in Yacas, and the best way is to try writing our own algebraic expression handler. In this chapter we'll consider a simple implementation of a particular non-commutative algebra called the Heisenberg algebra. This algebra was introduced by Dirac to develop quantum field theory. We won't explain any physics here, but instead we shall to delve somewhat deeper into the workings of Yacas.
+
+		The problem
+
+Suppose we want to define special symbols A(k) and B(k) that we can
+multiply with each other or by a number, or add to each other, but not
+commute with each other, i.e. {A(k)*B(k) != B(k)*A(k)}. Here
+"k" is merely a label, so A(1) and A(2) must be two different objects.
+(In physics, these are called "creation" (B) and "annihilation" (A)
+operators for "bosonic quantum fields".) Yacas already assumes that the
+usual multiplication operator "*" is commutative. Therefore we shall
+introduce a special multiplication sign "{**}" that we
+shall use with the objects A(k) and B(k), but not between usual numbers.
+The symbols A(k), B(k) will never be evaluated to numbers, so an expression
+such as {2 ** A(k1) ** B(k2) ** A(k3)} is just going to
+remain like that. (In physics, the usual, commuting numbers are called
+"classical quantities" or "c-numbers" while non-commuting objects made
+up of A(k) and B(k) are called "quantum quantities".) There are some
+commutation relations for these symbols: the A's commute between
+themselves, {A(k)**A(l) = A(l)**A(k)}, and also the B's,
+{B(k)**B(l) = B(l)**B(k)}. However, the A's don't commute
+with the B's: {A(k)**B(l) - B(l)**A(k) = Delta(k-l)}. Here
+the "Delta" is a "classical" function (called the "Dirac
+delta-function") but we aren't going to do anything about it, just leave
+it symbolic like that.
+
+Now we would like to manipulate such expressions, expanding brackets,
+collecting similar terms and so on, while taking care to always keep the
+non-commuting terms in the correct order. For example, we want Yacas to
+automatically simplify {2**B(k1)**3**A(k2)} to
+{6**B(k1)**A(k2)}. Our goal is not to implement a general
+package to tackle complicated non-commutative operations; we merely want to
+teach Yacas about the two kinds of "quantum objects" called A(k) and
+B(k), and we shall define one functions that a physicist needs from these
+objects. The function will compute something called a "vacuum expectation
+value" or "VEV" of any given expression containing A's and B's. This
+function has "classical" values and is defined as follows: VEV of a
+commuting number is just that number, e.g. VEV(4) = 4, VEV(Delta(k-l)) =
+Delta(k-l); and VEV(X**A(k)) = 0, VEV(B(k)**X) = 0 where X is any
+expression, commutative or not. It is straightforward to compute VEV of
+something that contains A's and B's: we just use the commutation relations
+to move all B's to the left of all A's, and then apply the definition of
+VEV.
+
+		First steps
+
+The first thing that comes to mind when we start implementing this in Yacas is to write a rule such as
+
+	10 # A(_k)**B(_l) <-- B(l)**A(k) + Delta(k-l);
+
+However, this is not going to work right away. In fact this will
+immediately give a syntax error because Yacas doesn't know yet about the
+new multiplication {**}. Let's mend that: we shall define a
+new infix operator with the same precedence as multiplication.
+
+	RuleBase("**", {x,y});
+	Infix("**", OpPrecedence("*"));
+
+Now we can use this new multiplication operator in expressions, and it doesn't evaluate to anything -- exactly what we need. But we find that things don't quite work:
+
+	In> A(_k)**B(_l) <-- B(l)**A(k)+Delta(k-l);
+	Out> True;
+	In> A(x)**B(y)
+	Out> B(l)**A(k)+Delta(k-l);
+
+Yacas doesn't grok that Delta(k), A(k) and B(k) are functions. This can be fixed by declaring
+
+	RuleBase("A", {k});
+	RuleBase("B", {k});
+	RuleBase("Delta", {k});
+
+Now things work as intended:
+
+	In> A(y)**B(z)*2
+	Out> 2*(B(z)**A(y)+Delta(y-z));
+
+		Structure of expressions
+
+Are we done yet? Let's try to calculate more things with our A's and B's:
+
+	In> A(k)*2**B(l)
+	Out> 2*A(k)**B(l);
+	In> A(x)**A(y)**B(z)
+	Out> A(x)**A(y)**B(z);
+	In> (A(x)+B(x))**B(y)*3
+	Out> 3*(A(x)+B(x))**B(y);
+
+After we gave it slightly more complicated input, Yacas didn't fully
+evaluate expressions containing the new multiplication operation: it didn't
+move constants together, didn't expand brackets, and, somewhat
+mysteriously, it didn't apply the rule in the first line above -- although
+it seems like it should have. Before we hurry to fix these things, let's
+think some more about how Yacas represents our new expressions. Let's start
+with the first line above:
+
+	In> FullForm( A(k)*2**B(l) )
+	(** (* 2 (A k ))(B l ))
+	Out> 2*A(k)**B(l);
+
+What looks like {2*A(k)**B(l)} on the screen is really {(2*A(k)) ** B(l)} inside Yacas. In other words, the commutation rule didn't apply because there is no subexpression of the form {A(...)**B(...)} in this expression. It seems that we would need many rules to exhaust all ways in which the adjacent factors A(k) and B(l) might be divided between subexpressions. We run into this difficulty because Yacas represents all expressions as trees of functions and leaves the semantics to us. To Yacas, the "*" operator is fundamentally no different from any other function, and "(a*b)*c" and "a*(b*c)" are two basically different expressions. It would take a considerable amount of work to teach Yacas to recognize all such cases as identical. This is a design choice and it was made by the author of Yacas to achieve greater flexibility and extensibility.
+
+A solution for this problem is not to write rules for all possible cases (there are infinitely many cases) but to systematically reduce expressions to a <i>canonical form</i>. "Experience has shown that" (a phrase used when we can't come up with specific arguments) symbolic manipulation of unevaluated trees is not efficient unless these trees are forced to a pattern that reflects their semantics.
+
+We should choose a canonical form for all such expressions in a way that makes our calculations -- namely, the VEV() function -- easier. In our case, our expressions contain two kinds of ingredients: normal, commutative numbers and maybe a number of "quantum" symbols A(k) and B(k) multiplied together with the "**" operator. It will not be possible to divide anything by A(k) or B(k).
+
+A possible canonical form for expressions with A's and B's is the
+following. All commutative numbers are moved to the left of the expression
+and grouped together as one factor; all non-commutative products are
+simplified to a single chain, all brackets expanded. A canonical expression
+should not contain any extra brackets in its non-commutative part. For
+example, (A(x)+B(x)*x)**B(y)*y**A(z) should be regrouped as a sum of two
+terms, (y)**(A(x)**(B(y))**A(z)) and (x*y)**(B(x)**(B(y))**A(z)). Here we
+wrote out all parentheses to show explicitly which operations are grouped.
+(We have chosen the grouping of non-commutative factors to go from left to
+right, however this does not seem to be an important choice.) On the screen
+this will look simply {y ** A(x) ** B(y)} and
+{x*y** B(x) ** B(y) ** A(z)} because we have defined the
+precedence of the "**" operator to be the same as that of the normal
+multiplication, so Yacas won't insert any more
+parentheses.
+
+This canonical form will allow Yacas to apply all the usual rules on the commutative factor while cleanly separating all non-commutative parts for special treatment. Note that a commutative factor such as {x*y} will be multiplied by a single non-commutative piece with "{**}".
+
+The basic idea behind the "canonical form" is this: we should define our evaluation rules in such a way that any expression containing A(k) and B(k) will be always automatically reduced to the canonical form after one full evaluation. All functions on our new objects will assume that the object is already in the canonical form and should return objects in the same canonical form.
+
+		Implementing the canonical form
+
+Now that we have a design, let's look at some implementation
+issues. We would like to write evaluation rules involving the new operator
+"{**}" as well as the ordinary multiplications and
+additions involving usual numbers, so that all "classical" numbers and all
+"quantum" objects are grouped together separately. This should be
+accomplished with rules that expand brackets, exchange the bracketing order
+of expressions and move commuting factors to the left. For now, we shall not concern ourselves with divisions and subtractions.
+
+First, we need to distinguish "classical" terms from "quantum" ones. For this, we shall define a predicate "IsQuantum()" recursively, as follows:
+
+	  /* Predicate IsQuantum(): will return True if the expression
+		contains A(k) or B(k) and False otherwise */
+	10 # IsQuantum(A(_x)) <-- True;
+	10 # IsQuantum(B(_x)) <-- True;
+	    /* Result of a binary operation may be Quantum */
+	20 # IsQuantum(_x + _y) <-- IsQuantum(x) Or IsQuantum(y);
+	20 # IsQuantum(+ _y) <-- IsQuantum(y);
+	20 # IsQuantum(_x * _y) <-- IsQuantum(x) Or IsQuantum(y);
+	20 # IsQuantum(_x ** _y) <-- IsQuantum(x) Or IsQuantum(y);
+	    /* If none of the rules apply, the object is not Quantum */
+	30 # IsQuantum(_x) <-- False;
+
+Now we shall construct rules that implement reduction to the canonical form. The rules will be given precedences, so that the reduction proceeds by clearly defined steps. All rules at precedence X will benefit from all simplifications at earlier precedences.
+
+	   /* First, replace * by ** if one of the factors is Quantum
+	   to guard against user error */
+	10 # (_x * _y)_(IsQuantum(x) Or IsQuantum(y)) <-- x ** y;
+	    /* Replace ** by * if neither of the factors is Quantum */
+	10 # (_x ** _y)_(Not(IsQuantum(x) Or IsQuantum(y))) <-- x * y;
+	    /* Now we are guaranteed that ** is used between Quantum values */
+	    /* Expand all brackets involving Quantum values */
+	15 # (_x + _y) ** _z <-- x ** z + y ** z;
+	15 # _z ** (_x + _y) <-- z ** x + z ** y;
+	    /* Now we are guaranteed that there are no brackets next to ** */
+	    /* Regroup the ** multiplications toward the right */
+	20 # (_x ** _y) ** _z <-- x ** (y ** z);
+	    /* Move classical factors to the left: first, inside brackets */
+	30 # (x_IsQuantum ** _y)_(Not(IsQuantum(y))) <-- y ** x;
+	    /* Then, move across brackets: y and z are already ordered
+	    by the previous rule */
+	    /* First, if we have Q ** (C ** Q) */
+	35 # (x_IsQuantum ** (_y ** _z))_(Not(IsQuantum(y))) <-- y ** (x ** z);
+	    /* Second, if we have C ** (C ** Q) */
+	35 # (_x ** (_y ** _z))_(Not(IsQuantum(x) Or IsQuantum(y))) <-- (x*y) ** z;
+
+After we execute this in Yacas, all expressions involving additions and multiplications are automatically reduced to the canonical form. Extending these rules to subtractions and divisions is straightforward.
+
+		Implementing commutation rules
+
+But we still haven't implemented the commutation rules. It is perhaps not necessary to have commutation rules automatically applied at each evaluation. We shall define the function "OrderBA()" that will bring all B's to the left of all A's by using the commutation relation. Again, our definition will be recursive. We shall assign it a later precedence than our quantum evaluation rules, so that our objects will always be in canonical form. We need a few more rules to implement the commutation relation and to propagate the ordering operation down the expression tree:
+
+	  /* Commutation relation */
+	40 # OrderBA(A(_k) ** B(_l)) <-- B(l)**A(k) + Delta(k-l);
+	40 # OrderBA(A(_k) ** (B(_l) ** _x)) <-- OrderBA(OrderBA(A(k)**B(l)) ** x);
+	    /* Ordering simple terms */
+	40 # OrderBA(_x)_(Not(IsQuantum(x))) <-- x;
+	40 # OrderBA(A(_k)) <-- A(k);
+	40 # OrderBA(B(_k)) <-- B(k);
+	    /* Sums of terms */
+	40 # OrderBA(_x + _y) <-- OrderBA(x) + OrderBA(y);
+	    /* Product of a classical and a quantum value */
+	40 # OrderBA(_x ** _y)_(Not(IsQuantum(x))) <-- x ** OrderBA(y);
+	    /* B() ** X : B is already at left, no need to order it */
+	50 # OrderBA(B(_k) ** _x) <-- B(k)**OrderBA(x);
+	    /* A() ** X : need to order X first */
+	50 # OrderBA(A(_k) ** _x) <-- OrderBA(A(k)**OrderBA(x));
+
+These rules seem to be enough for our purposes. Note that the commutation relation is implemented by the first two rules; the first one is used by the second one which applies when interchanging factors A and B separated by brackets. This inconvenience of having to define several rules for what seems to be "one thing to do" is a consequence of tree-like structure of expressions in Yacas. It is perhaps the price we have to pay for conceptual simplicity of the design.
+
+		Avoiding infinite recursion
+
+However we quickly discover that our definitions don't work. Actually we have run into a difficulty typical of rule-based programming:
+
+	In> OrderBA(A(k)**A(l))
+	Error on line 1 in file [CommandLine]
+	Line error occurred on:
+	>>>
+	Max evaluation stack depth reached.
+	Please use MaxEvalDepth to increase the stack size as needed.
+
+This error message means that we have created an infinite recursion. It is easy to see that the last rule is at fault: it never stops applying itself when it operates on a term containing only A's and no B's. When encountering a term such as "A() ** X", the routine cannot determine whether "X" has already been ordered or not, and it unnecessarily keeps ordering it again and again. We can circumvent this difficulty by using an auxiliary ordering function that we shall call "OrderBAlate". This function will operate only on terms of the form "A() ** X" and only after "X" has been ordered. It will not perform any extra simplifications but instead delegate all work to "OrderBA".
+
+	50 # OrderBA(A(_k) ** _x) <-- OrderBAlate(A(k)**OrderBA(x));
+	55 # OrderBAlate(_x + _y) <-- OrderBAlate(x) + OrderBAlate(y);
+	55 # OrderBAlate(A(_k) ** B(_l)) <-- OrderBA(A(k)**B(l));
+	55 # OrderBAlate(A(_k) ** (B(_l) ** _x)) <-- OrderBA(A(k)**(B(l)**x));
+	60 # OrderBAlate(A(_k) ** _x) <-- A(k)**x;
+	65 # OrderBAlate(_x) <-- OrderBA(x);
+
+Now "OrderBA()" works as desired.
+
+		Implementing VEV()
+
+Now it is easy to define the function "VEV()". This function should first order all A's and B's so that B's are always to the left of A's. After the resulting expression is evaluated, all its "quantum" terms will either end with an A(k) or begin with a B(k), so that "VEV()" of those terms will return 0. The value of "VEV()" of a classical term is just that term. The implementation could look like this:
+
+	100 # VEV(_x) <-- VEVOrd(OrderBA(x));
+	    /* Everything is expanded now, deal term by term */
+	100 # VEVOrd(_x + _y) <-- VEVOrd(x) + VEVOrd(y);
+	    /* Now cancel all quantum terms */
+	110 # VEVOrd(x_IsQuantum) <-- 0;
+	    /* Classical terms are left */
+	120 # VEVOrd(_x) <-- x;
+
+To avoid infinite recursion in calling "OrderBA()", we had to introduce an auxiliary function "VEVOrd()" that assumes its argument to be ordered.
+
+Finally, we try some example calculations to test our rules.
+
+	In> OrderBA(A(x)*B(y))
+	Out> B(y)**A(x)+Delta(x-y);
+	In> OrderBA(A(x)*B(y)*B(z))
+	Out> B(y)**B(z)**A(x)+Delta(x-z)**B(y)+Delta(x-y)**B(z);
+	In> VEV(A(k)*B(l))
+	Out> Delta(k-l);
+	In> VEV(A(k)*B(l)*A(x)*B(y))
+	Out> Delta(k-l)*Delta(x-y);
+	In> VEV(A(k)*A(l)*B(x)*B(y))
+	Out> Delta(l-y)*Delta(k-x)+Delta(l-x)*Delta(k-y);
+

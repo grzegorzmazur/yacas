@@ -1,6 +1,6 @@
 
 
-EXTRA_DIST = ABIN-grammar.txt ABIN.ys all.ys makefile.essays yacasinit.ys MaintenanceHowto.txt
+EXTRA_DIST = ABIN-grammar.txt ABIN.ys all.ys makefile.essays yacasinit.ys MaintenanceHowto.txt Plugin_factory.txt funcplug.ys txt2yacasdoc.txt
 
 all: essays
 
