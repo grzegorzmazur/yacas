@@ -7,8 +7,10 @@
 #include <string.h>
 #include <ctype.h>
 #include <signal.h>
-#include <unistd.h>
-#include <termios.h>
+#ifndef WIN32
+#   include <unistd.h>
+#   include <termios.h>
+#endif
 #include <time.h>
 
 #include "commandline.h"
