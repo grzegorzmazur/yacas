@@ -693,16 +693,15 @@ specified. Output can be directed to a plotting program (default is to use
 {gnuplot}), to a data file, or to a list of values.
 
 The function parameter {f(x)} must be an unevaluated expression containing
-a variable (not necessarily called {x}).
+a variable (not necessarily called {x}). Several functions may be specified as a list and they do not have to depend on the same variable, for example, {{f(x), g(y)}}.
 
-Data files are created in a temporary directory {plot.tmp/}. File names
+Data files are created in a temporary directory {/tmp/plot.tmp/}. File names
 and other information is printed if the {Verbose} option is switched on using {V()}.
 
-The current simple algorithm uses Simpson and Newton-Cotes quadratures.
+The current algorithm uses Newton-Cotes quadratures and some heuristics (see the essay chapter on adaptive plotting).
 Grid is refined between any grid points $a$, $b$ where the integral
 $Integrate(x,a,b)f(x)$ is not approximated within given precision by
-the existing grid. (Warning: this algorithm does not work too well with
-very rapidly oscillating functions such as $Sin(Exp(x))$.)
+the existing grid.
 
 Default plotting range is {-5:5}. Range can also be specified by {x=-5:5};
 currently the variable name {x} is ignored. Note that the current
@@ -737,28 +736,30 @@ accept an undefined variable, {Plot2D()} will fail to plot it. Use
 
 
 *E.G.
+	In> Plot2D({(2+x)/(2-x),Exp(y)},-1.8:1.5)
+	Out> True;
 	In> V(Plot2D(Sin(1/x),1/100:1, { depth=4, \
 	In>   precision=1/10^3, output=gnuplot}))
-	Plot2D: using 57 points for function Sin(1/x)
-	Plot2D'gnuplot: created file 'plot.tmp/data1'
+	Plot2D: using 65 points for function Sin(1/x)
+	Plot2D'datafile: created file '/tmp/plot.tmp/data1'
 	Out> True;
 
 If a function takes a long time to evaluate, one can use
-{MakeFunctionPlugin()} under Unix to speed up plotting:
+{MakeFunctionPlugin} under Unix to speed up plotting:
 
-	In> f(x) := Cos(( Abs(Pi/x))^1.5)
+	In> f(x) := Cos( (Abs(Pi/x))^1.5 )
 	Out> True;
 	In> MakeFunctionPlugin("f1", f(x))
 	Function f1(x) loaded from plugins.tmp/
 	  libf1_plugin_cc.so
 	Out> True;
-	In> Time(Plot2D(f1(x),1/100:1))
+	In> Time( Plot2D(f1(x),1/100:1) )
 	6.97 seconds taken
 	Out> True;
 
 Plotting without compilation takes much longer:
 
-	In> Time(Plot2D(f(x),1/100:1))
+	In> Time( Plot2D(f(x),1/100:1) )
 	94.93 seconds taken
 	Out> True;
 
