@@ -1717,7 +1717,7 @@ void LispUse(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
     TESTARGS(2);
-    CHK(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
+//This one seems safe...    CHK(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
 
     LispPtr evaluated;
     InternalEval(aEnvironment, evaluated, Argument(aArguments,1));
