@@ -79,10 +79,15 @@
 /// \param aArgNr the index of the argument to be converted
 void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
+    /*??? */
+    x = ARGUMENT(aArgNr).Get()->Number(aEnvironment.Precision());
+    CHK_ARG_CORE(x.Ptr() != NULL,aArgNr);
+/*TODO remove old?
     RefPtr<BigNumber> num; 
     num = ARGUMENT(aArgNr).Get()->Number(aEnvironment.Precision());
     CHK_ARG_CORE(num.Ptr() != NULL,aArgNr);
     x = num;
+*/
 }
 #endif // USE_BIGFLOAT
 
@@ -277,8 +282,8 @@ void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
       RefPtr<BigNumber> x; \
       GetNumber(x,aEnvironment, aStackTop, 1); \
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision()); \
-      z->BigNumName(*x.Ptr()); \
+      BigNumber *z = NEW BigNumber( /*???*/ *x.Ptr() /*TODO remove? aEnvironment.BinaryPrecision()*/); \
+      z->BigNumName(/*???*/ *z /*TODO remove? *x.Ptr() */); \
       RESULT.Set(NEW LispNumber(z)); \
 }
 #define BINARYFUNCTION(LispName, BigNumName, OldName) \
