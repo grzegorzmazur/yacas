@@ -72,6 +72,8 @@ void BaseShiftLeft(ANumber& a, LispInt aNrBits);
 void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2);
 void Sqrt(ANumber& aResult, ANumber& N);
 
+void PrintNumber(char* prefix,ANumber& aNumber);
+
 
 #include "anumber.inl"
 

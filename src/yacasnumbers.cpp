@@ -1228,24 +1228,7 @@ void BigNumber::DumpDebugInfo()
   }
   else
   {
-    printf("%d words, %d of them decimals\n",iNumber->NrItems(),iNumber->iExp);
-    int i;
-    for (i=iNumber->NrItems()-1;i>=0;i--)
-    {
-      if (iNumber->iExp == i+1) printf(".\n");
-      PlatWord w = (*iNumber)[i];
-      PlatWord bit = (WordBase)>>1;
-      int k=0;
-      while (bit)
-      {
-        if ((k&3)==0) printf(" ");
-        k++;
-        if (w&bit) printf("1");
-        else printf("0");
-        bit>>=1;
-      }
-      printf("\n");
-    }
+    PrintNumber("Number:",*iNumber);
   }
 #else
 #endif
