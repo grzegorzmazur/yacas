@@ -633,3 +633,105 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 
 //////
 //////
+10 # MatrixSolve(matrix_IsDiagonal,b_IsVector) <--
+[
+	Local(rowsm,rowsb,x);
+        rowsm:=Length(matrix);
+	rowsb:=Length(b);
+	Check(rowsm=rowsb,"MatrixSolve: Matrix and vector must have same number of rows");
+	x:=ZeroVector(rowsb);
+	ForEach(i,1 .. rowsb)
+		x[i]:=b[i]/matrix[i][i];
+	x;
+];
+
+// Backward Substitution
+15 # MatrixSolve(matrix_IsUpperTriangular,b_IsVector) <--
+[
+        Local(rowsm,rowsb,x,s);
+        rowsm:=Length(matrix);
+        rowsb:=Length(b);
+        Check(rowsm=rowsb,"MatrixSolve: Matrix and vector must have same number of rows");
+        x:=ZeroVector(rowsb);
+
+	x[rowsb]:=b[rowsb]/matrix[rowsb][rowsb];
+	If(Verbose,Echo({"set x[",rowsb,"] = ",b[rowsb]/matrix[rowsb][rowsb]}));
+
+	ForEach(i,(rowsb-1) .. 1 )[
+		s:=b[i];
+		ForEach(j,i+1 .. rowsb )[
+			s:= s - matrix[i][j]*x[j];
+		];
+		x[i]:= s/matrix[i][i];
+		If(Verbose,Echo({"set x[",i,"] = ",s/matrix[i][i]}));
+	];
+        x;
+];
+
+// Forward Substitution
+15 # MatrixSolve(matrix_IsLowerTriangular,b_IsVector) <--
+[
+	Local(rowsm,rowsb,x,s);
+	rowsm:=Length(matrix);
+	rowsb:=Length(b);
+	Check(rowsm=rowsb,"MatrixSolve: Matrix and vector must have same number of rows");
+	x:=ZeroVector(rowsb);
+
+	x[1]:=b[1]/matrix[1][1];
+	If(Verbose,Echo({"set x[1] = ",b[1]/matrix[1][1]}));
+
+	ForEach(i,2 .. rowsb )[
+		s:=b[i];
+		ForEach(j,1 .. (i-1) )[
+			s:= s - matrix[i][j]*x[j];
+		];
+		x[i]:= s/matrix[i][i];
+		If(Verbose,Echo({"set x[",i,"] = ",s/matrix[i][i]}));
+	];
+	x;
+];
+// Gaussian Elimination and Back Substitution
+// pivoting not implemented yet
+20 # MatrixSolve(matrix_IsMatrix,b_IsVector) <-- 
+[
+	Local(aug,rowsm,rowsb,x,s);
+        rowsm:=Length(matrix);
+        rowsb:=Length(b);
+        Check(rowsm=rowsb,"MatrixSolve: Matrix and vector must have same number of rows");
+        aug:=ZeroMatrix(rowsb,rowsb+1);
+	x:=ZeroVector(rowsb);
+
+	// create augmented matrix
+	ForEach(i, 1 .. rowsb )
+		ForEach(j, 1 .. rowsb )
+			aug[i][j] := matrix[i][j];
+	ForEach(i, 1 .. rowsb )
+		aug[i][rowsb+1] := b[i];
+
+	// gaussian elimination
+	ForEach(i, 1 .. (rowsb-1) )
+		ForEach(k, (i+1) .. rowsb )[
+			s:=aug[k][i];
+			ForEach(j, i .. (rowsb+1) )[
+				If( aug[i][i] = 0 )[
+				aug[k][j] := aug[k][j] - (s/aug[i][i])*aug[i][j];
+				//Echo({"aug[",k,"][",j,"] =", aug[k][j]," - ", 
+				//	aug[k][i],"/",aug[i][i],"*",aug[i][j]," k i =", k,i  });
+			];
+		];
+
+	//PrettyForm(aug);
+	x[rowsb]:=aug[rowsb][rowsb+1]/aug[rowsb][rowsb];
+	If(Verbose,Echo({"set x[",rowsb,"] = ",x[rowsb] }));
+
+	ForEach(i,(rowsb-1) .. 1 )[
+		s:=aug[i][rowsb+1];
+		ForEach(j,i+1 .. rowsb)[
+			s := s - aug[i][j]*x[j];
+		];
+		x[i]:=s/aug[i][i];
+		If(Verbose,Echo({"set x[",i,"] = ",x[i] }));
+	];
+	x;
+
+];

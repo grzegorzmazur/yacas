@@ -43,4 +43,5 @@ Dot
 MatrixPower
 Diagonal
 Sparsity
+MatrixSolve
 }
