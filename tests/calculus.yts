@@ -16,11 +16,8 @@ Verify( Limit(x,Infinity) Abs(x), Infinity );
 Verify( Limit(x,Infinity) x!, Infinity);
 
 Verify( Sin(x)/Cos(x), Tan(x) );
-// Jonathan, are you sure you want the expression below to 
-// flag as a known failure?
-//KnownFailure(Verify( Sin(x)^2 + Cos(x)^2, 1 ));
 Verify( TrigSimpCombine(Sin(x)^2 + Cos(x)^2), 1 );
-//Verify( Cos(x)/Sin(x), Cot(x) );	// we don't want Cot() to appear
+
 Verify( Sinh(x)-Cosh(x), Exp(-x));
 Verify( Sinh(x)+Cosh(x), Exp(x) );
 Verify( Sinh(x)/Cosh(x), Tanh(x) );
@@ -28,15 +25,10 @@ Verify( Sinh(Infinity), Infinity);
 Verify( Sinh(x)*Csch(x), 1);
 Verify( 1/Coth(x), Tanh(x) );
 
-/// these two aren't correct: what if n itself is negative or zero?
-//KnownFailure(Verify(Exp(-n*Infinity), 0 ));
-//KnownFailure(Verify(Exp(n*Infinity), Infinity));
-
-
-
 Verify(2+I*3,Complex(2,3));
 Verify(Re(2+I*3),2);
 Verify(Im(2+I*3),3);
+// Shouldn't these be in linalg.yts?
 Verify(ZeroVector(3),{0,0,0});
 Verify(BaseVector(2,3),{0,1,0});
 Verify(Identity(3),{{1,0,0},{0,1,0},{0,0,1}});
@@ -47,6 +39,11 @@ Verify(D(x) x,1);
 Verify(D(x) x+x,2);
 Verify(D(x) x*x,2*x);
 Verify(D(x) D(x) Sin(x),-Sin(x));
+
+// This function satisfies Laplaces eqn: D(x,2)z + D(y,2)z = 0
+z:= ArcTan((2*x*y)/(x^2 - y^2));
+// Hangs
+// Verify(Simplify((D(x,2) z) + D(y,2) z), 0 );
 
 Testing("Pslq");
 Verify(Pslq({ Pi+2*Exp(1) , Pi , Exp(1) },20),{1,-1,-2});
