@@ -10,7 +10,7 @@ CXX		=c++
 INCS =  -I$(YACAS_INCLUDE) -I$(YACAS_INCLUDE)/plat/linux32
 # -Ifl_editor-0.4/
 
-CXXFLAGS	= -O2 -Wno-return-type   
+CXXFLAGS	= -O2 -Wno-return-type -DSYSCONFDIR="\"/etc\""
 
 POSTBUILD       = /Developer/Tools/Rez -t APPL -o proteus /usr/local/include/FL/mac.r
 
