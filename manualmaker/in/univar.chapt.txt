@@ -320,11 +320,11 @@ var - a variable
 This command turns the polynomial "expr", considered as a univariate
 polynomial in "var", into Horner form. A polynomial in normal form
 is an expression such as
-$$c[0] + c[1]*x + ... + c[n]*x^n$$
+$$c[0] + c[1]*x + ... + c[n]*x^n$$.
 
 If one converts this polynomial into Horner form, one gets the
 equivalent expression
-$$(...( c[n] * x + c[n-1] ) * x + ...  + c[1] ) * x + c[0]$$
+$$(...( c[n] * x + c[n-1] ) * x + ...  + c[1] ) * x + c[0]$$.
 
 Both expression are equal, but the latter form gives a more
 efficient way to evaluate the polynomial as  the powers have
@@ -629,10 +629,10 @@ for $n > 1$, with
 	U(1,x) = 2 x.
 
 Tschebyscheff polynomials are evaluated using fast (but numerically unstable) recurrence relations,
-$$T(2*n,x) = 2*T(n,x)^2-1$$
-$$T(2*n+1,x) = 2*T(n+1,x)*T(n,x)-x$$
-$$U(2*n,x) = 2*T(n,x)*U(n,x)-1$$
-$$U(2*n+1,x) = 2*T(n+1,x)*U(n,x)$$
+$$T(2*n,x) = 2*T(n,x)^2-1$$,
+$$T(2*n+1,x) = 2*T(n+1,x)*T(n,x)-x$$,
+$$U(2*n,x) = 2*T(n,x)*U(n,x)-1$$,
+$$U(2*n+1,x) = 2*T(n+1,x)*U(n,x)$$.
 This allows to
 compute $T(n,x)$ and $U(n,x)$ in time logarithmic in $n$. Note that the functions return the polynomials in a sparse unexpanded form.
 

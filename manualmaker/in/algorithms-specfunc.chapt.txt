@@ -2,14 +2,14 @@
 
 Euler's Gamma function $Gamma(z)$ is defined for complex $z$ such that
 $Re(z)>0$ by the integral
-$$Gamma(z):=Integrate(z, 0, Infinity) Exp(-t)*t^(z-1)$$
+$$Gamma(z):=Integrate(z, 0, Infinity) Exp(-t)*t^(z-1)$$.
 The Gamma function satisfies several identities that can be proved by
 rearranging this integral; for example, $Gamma(z+1)=z*Gamma(z)$. This identity
 defines $Gamma(z)$ for all complex $z$. The Gamma function is regular
 everywhere except nonpositive integers (0, -1, -2, ...) where it diverges.
 
 For real integers $n>0$, the Gamma function is the same as the factorial, 
-$$ Gamma(n+1) := n! $$
+$$ Gamma(n+1) := n! $$,
 so the factorial notation can be used for the Gamma function too. Some formulae
 become a little simpler when written in factorials.
 
@@ -17,8 +17,8 @@ The Gamma function is implemented as {Gamma(x)}. At integer values {n} of the
 argument, {Gamma(n)} is computed exactly. For half-integer values it is
 also computed exactly, using the following identities (here $n$ is a
 nonnegative integer):
-$$ (+(2*n+1)/2)! = Sqrt(Pi)*(2*n+1)! / (2^(2*n+1)*n!) $$
-$$ (-(2*n+1)/2)! = (-1)^n*Sqrt(Pi) * (2^(2*n)*n!) / (2*n)! $$
+$$ (+(2*n+1)/2)! = Sqrt(Pi)*(2*n+1)! / (2^(2*n+1)*n!) $$,
+$$ (-(2*n+1)/2)! = (-1)^n*Sqrt(Pi) * (2^(2*n)*n!) / (2*n)! $$.
 For efficiency, "staggered factorials" are used in this calculation.
 
 For arbitrary complex arguments with nonnegative real part, the library
@@ -30,20 +30,20 @@ Anal., vol. 31, 931 (1994). See also: Paul Godfrey 2001 (unpublished):
 method.  The method gives the $Gamma$-function only for arguments with positive
 real part; at negative values of the real part of the argument, the
 $Gamma$-function is computed via the identity
-$$Gamma(x)*Gamma(1-x) = Pi/Sin(Pi*x)$$
+$$Gamma(x)*Gamma(1-x) = Pi/Sin(Pi*x)$$.
 
 The approximation formula used in Yacas depends on a parameter $a$,
-$$Gamma(z) = (Sqrt(2*Pi)*(z+a)^(z-1/2)) / (z*e^(z+a)) * (1+e^(a-1)/Sqrt(2*Pi) * Sum(k, 1, N, c[k]/(z+k)))$$
+$$Gamma(z) = (Sqrt(2*Pi)*(z+a)^(z-1/2)) / (z*e^(z+a)) * (1+e^(a-1)/Sqrt(2*Pi) * Sum(k, 1, N, c[k]/(z+k)))$$,
 with $N := Ceil(a)-1$. The coefficients $c[k]$ are defined by
-$$ c[k] = (-1)^(k-1)*(a-k)^(k-1/2)/(e^(k-1)*(k-1)!) $$
+$$ c[k] = (-1)^(k-1)*(a-k)^(k-1/2)/(e^(k-1)*(k-1)!) $$.
 The parameter $a$ is a free parameter of the approximation that determines also
 the number of terms in the sum. Some choices of $a$ may lead to a slightly more
 precise approximation, but larger $a$ is always better. The number of terms $N$
 must be large enough to produce the required precision. The error estimate for
 this formula is valid for all $z$ such that $Re(z)>0$ and is
-$$error < (2*Pi)^(-a)/Sqrt(2*Pi*a)*(a/(a+z))$$
+$$error < (2*Pi)^(-a)/Sqrt(2*Pi*a)*(a/(a+z))$$.
 The lowest value of $a$ to produce $P$ correct digits is estimated as
-$$a = 0.9 * P*Ln(10)/Ln(2*Pi)$$
+$$a = 0.9 * P*Ln(10)/Ln(2*Pi)$$.
 
 The choice of coefficients $c[k]$ and of the parameter $a$ can be made to
 achieve a greater precision of the approximation formula. However, the recipe
@@ -72,13 +72,13 @@ This method is currently not implemented in Yacas.
 		Riemann's Zeta function
 
 Riemann's Zeta function $zeta(s)$ is defined for complex $s$ such that $Re(s)>0$ as a sum of inverse powers of integers:
-$$zeta(s) := Sum(n,0,Infinity, 1/n^s)$$
+$$zeta(s) := Sum(n,0,Infinity, 1/n^s)$$.
 This function can be analytically continued to the entire complex plane except
 the point $s=1$ where it diverges. It satisfies several identities, for
 example, a formula useful for negative $Re(s)$,
-$$zeta(1-s) = (2*Gamma(s))/(2*Pi)^s*Cos((Pi*s)/2)*zeta(s)$$
+$$zeta(1-s) = (2*Gamma(s))/(2*Pi)^s*Cos((Pi*s)/2)*zeta(s)$$,
 and a formula for even integers that helps in numerical testing,
-$$zeta(2*n) = ((-1)^(n+1)*(2*Pi)^(2*n))/(2*(2*n)!)*B[2*n]$$
+$$zeta(2*n) = ((-1)^(n+1)*(2*Pi)^(2*n))/(2*(2*n)!)*B[2*n]$$,
 where $B[n]$ are Bernoulli numbers.
 
 The classic book of Bateman and Erdelyi, <i>Higher Transcendental Functions</i>,
@@ -97,9 +97,9 @@ CECM-98-118, 1999, for a review of methods.
 
 It is the "third" algorithm (the simplest one) from P. Borwein's paper which is implemented in
 Yacas. The approximation formula valid for $Re(s) > -(n-1)$ is
-$$ zeta(s) = 1/(2^n*(1-2^(1-s)))*Sum(j,0,2*n-1, e[j]/(j+1)^s) $$
+$$ zeta(s) = 1/(2^n*(1-2^(1-s)))*Sum(j,0,2*n-1, e[j]/(j+1)^s) $$,
 where the coefficients $e[j]$ for $j=0$, ..., $2*n-1$ are defined by
-$$ e[j] := (-1)^(j-1)*(Sum(k,0,j-n, n! /(k! *(n-k)!))-2^n) $$
+$$ e[j] := (-1)^(j-1)*(Sum(k,0,j-n, n! /(k! *(n-k)!))-2^n) $$,
 and the empty sum (for $j<n$) is taken to be zero. The parameter $n$ must be
 chosen high enough to achieve the desired precision. The error estimate for this
 formula is approximately
@@ -111,11 +111,11 @@ The function {Zeta(s)} calls {ZetaNum(s)} to compute this approximation formula
 for $Re(s)>1/2$ and uses the identity above to get the value for other $s$.
 
 For very large values of $s$, it is faster to use another method implemented in the routine {ZetaNum1(s, N)}. If the required precision is $P$ digits and
-$$s > 1 + (P*Ln(10))/(Ln(P)+Ln(Ln(10)/Ln(8)))$$
+$$s > 1 + (P*Ln(10))/(Ln(P)+Ln(Ln(10)/Ln(8)))$$,
 then it is enough to compute the defining series for $zeta(n)$,
-$$zeta(n) <=> Sum(k,1,N, 1/k^n)$$
+$$zeta(n) <=> Sum(k,1,N, 1/k^n)$$,
 up to a certain number of terms $N$.
-The required number of terms $N$ is given by $$N = 10^(P/(s-1))$$
+The required number of terms $N$ is given by $$N = 10^(P/(s-1))$$.
 For example, at 100 digits of precision it is advisable to use
 {ZetaNum1(s)} only for $s>50$, since it would require $N<110$ terms in
 the series, whereas the expression used in {ZetaNum(s)} uses
@@ -125,15 +125,15 @@ $$n=Ln(10)/Ln(8)*P$$ terms (of a different series).
 
 The Bernoulli numbers $B[n]$ come from a sequence of rational numbers defined
 by the series expansion of the following generating function,
-$$z/(e^z-1) = Sum(n, 0, Infinity, B[n]*z^n/n!)$$
+$$z/(e^z-1) = Sum(n, 0, Infinity, B[n]*z^n/n!)$$.
 The Bernoulli polynomials $B(x)[n]$ are defined similarly by
-$$(z*Exp(z*x))/(e^z-1) = Sum(n, 0, Infinity, B(x)[n]*z^n/n!)$$
+$$(z*Exp(z*x))/(e^z-1) = Sum(n, 0, Infinity, B(x)[n]*z^n/n!)$$.
 The Bernoulli polynomials are related to Bernoulli numbers by
-$$B(x)[n] = Sum(k,0,n,x^k*B[n-k]*Bin(n,k))$$
+$$B(x)[n] = Sum(k,0,n,x^k*B[n-k]*Bin(n,k))$$,
 where $Bin(n,k)$ are binomial coefficients.
 
 Bernoulli numbers and polynomials are used in various Taylor series expansions, in the Euler-Maclauren series resummation formula, in Riemann's Zeta function and so on. For example, the sum of (integer) $p$-th powers of consecutive integers is given by
-$$Sum(k, 0, n-1, k^p) = (B(n)[p+1] - B[p+1])/(p+1)$$
+$$Sum(k, 0, n-1, k^p) = (B(n)[p+1] - B[p+1])/(p+1)$$.
 
 The Bernoulli polynomials $B(x)[n]$ can be found by first computing an array of Bernoulli numbers up to $B[n]$ and then applying the above formula for the coefficients.
 
@@ -150,7 +150,7 @@ is, different algorithms need to be used in these cases.
 
 In the {Bernoulli()} routine,
 Bernoulli numbers are evaluated exactly (as rational numbers) via one of the two algorithms. The first, simpler algorithm ({BernoullliArray()}) uses the recursion relation,
-$$B[n] = -1/(n+1)*Sum(k,0,n-1,B[k]*Bin(n+1,k))$$
+$$B[n] = -1/(n+1)*Sum(k,0,n-1,B[k]*Bin(n+1,k))$$.
 This formula requires to know the entire set of $B[k]$ with $k$ up to a given
 $n$ to compute $B[n]$. Therefore at large $n$ this algorithm becomes very slow.
 
@@ -182,20 +182,20 @@ the integer part of the Bernoulli number is determined. The required precision
 is found by estimating the Bernoulli number using the same identity in which
 one approximates $zeta(n)=1$ and uses Stirling's asymptotic formula for the
 factorial of large numbers,
-$$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)$$
+$$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)$$.
 
-At such
+At such 
 large values of the argument $n$, it is feasible to compute the defining series
 for $zeta(n)$,
-$$zeta(n) <=> Sum(k,1,N, 1/k^n)$$
+$$zeta(n) <=> Sum(k,1,N, 1/k^n)$$.
 This sum is calculated by the routine {ZetaNum1(n, N)}. The remainder of the
 sum is of order $N^(-n)$. By simple algebra one obtains a lower bound on $N$,
-$$N > n/(2*Pi*e)$$
+$$N > n/(2*Pi*e)$$,
 for this sum to give enough precision to compute the integer part of the
 Bernoulli number $B[n]$.
 
 Alternatively, one can use the infinite product over prime numbers $p[i]$
-$$1/zeta(n) <=> Factorize(k,1,N,(1-1/p[k]^s))$$
+$$1/zeta(n) <=> Factorize(k,1,N,(1-1/p[k]^s))$$,
 where $k$ must be chosen such that the $k$-th prime number $p[k]>N$ and $N$ is chosen as above, i.e. $N > n/(2*Pi*e)$. This formula is realized  by the routine {ZetaNum2(n, N)}. Since only prime numbers $p[i]$ are used, this formula is asymptotically faster than {ZetaNum1(n, N)}. The number of primes up to $N$ is asymptotically
 $pi(N) <> N/Ln(N)$ and therefore this procedure is faster by a factor $O(Ln(N)) <> O(Ln(n))$. However, for $n<250$ it is faster (with Yacas internal math) to use the {ZetaNum1(n, N)} because it involves fewer multiplications.
 
@@ -205,10 +205,10 @@ For example, let us compute $B[20]$ using this method.
 	Out> 371/330;
 This number has fractional part equal to 41/330 and it's the same as the fractional part of $-B[20]$. Since $B[20]$ must be negative,
 this means that $B[20]$ is of the form $-(X+41/330)$ where $X$ is some positive integer which we now have to find.
-*	2. We estimate the magnitude of $Abs(B[20])$ to find the required precision to compute its integer part. We use the identity,
+*	2. We estimate the magnitude of $Abs(B[20])$ to find the required precision to compute its integer part. We use the identity
 $$Abs(B[20])=2*20! /(2*Pi)^20*zeta(20)$$
 and the Stirling formula
-$$Ln(20!) = (Ln(2*Pi)+Ln(20))/2+20*Ln(20/e) <=> 42.3$$
+$$Ln(20!) = (Ln(2*Pi)+Ln(20))/2+20*Ln(20/e) <=> 42.3$$,
 and also the fact that $zeta(20)=1+2^(-20)+...$ is approximately equal to 1.
 We find that the number $B[20]$ has approximately
 $$ 1+Ln(Abs(B[20]))/Ln(10) = 1+(Ln(2)+Ln(20!)-20*Ln(2*Pi))/Ln(10) <=> 3.72$$
@@ -241,17 +241,17 @@ If Bernoulli numbers do not have to be found exactly but only to a certain float
 
 However, the recurrence relation used in {BernoulliArray} turns out to be numerically unstable and needs to be replaced by another (R. P. Brent, "A FORTRAN multiple-precision arithmetic package", ACM TOMS vol. 4, no. 1 (1978), p. 57). Brent's algorithm computes the Bernoulli numbers divided by factorials, $C[n]:=B[2*n]/(2*n)!$ using a (numerically stable) recurrence relation
 
-$$2*C[k]*(1-4^(-k)) = (2*k-1)/(4^k*(2*k)!) - Sum(j, 1, k-1, C[k-j]/(4^j*(2*j)!))$$
+$$2*C[k]*(1-4^(-k)) = (2*k-1)/(4^k*(2*k)!) - Sum(j, 1, k-1, C[k-j]/(4^j*(2*j)!))$$.
 
 The numerical instability of the usual recurrence relation
 $$ Sum(j,0,k-1,C[k-j]/((2*j+1)!)) = (k-1/2)/((2*k+1)!) $$
 and the numerical stability of Brent's recurrence are not obvious. Here is one way to demonstrate them.
 Consider the usual recurrence (above). For large $k$, the number $C[k]$ is approximately $C[k] <=> 2*(-1)^k*(2*Pi)^(-2*k)$. Suppose we use this recurrence to compute $C[k]$ from previously found values $C[k-1]$, $C[k-2]$, etc. and suppose that we have small relative errors $e[k]$ of finding $C[k]$. Then instead of the correct $C[k]$ we use $C[k]*(1+e[k])$ in the recurrence. Now we can derive a relation for the error sequence $e[k]$ using the approximate values of $C[k]$. It will be a linear recurrence of the form
-$$ Sum(j,0,k-1,(-1)^(k-j)*e[k-j]*((2*Pi)^(2*j)/((2*j+1)!)) ) = (k-1/2)/((2*k+1)!) * (2*Pi)^(-2*k) $$
+$$ Sum(j,0,k-1,(-1)^(k-j)*e[k-j]*((2*Pi)^(2*j)/((2*j+1)!)) ) = (k-1/2)/((2*k+1)!) * (2*Pi)^(-2*k) $$.
 Note that the coefficients for $j>5$ are very small but the coefficients for $0<=j<=5$ are of order 1. This means that we have a cancellation in the first 5 or so terms that produces a very small number $C[k]$ and this may lead to a loss of numerical precision. To investigate this loss, we find eigenvalues of the sequence $e[k]$, i.e. we assume that $e[k] = lambda^k$ and find $lambda$. If $Abs(lambda)>1$, then a small initial error $e[1]$ will grow by a power of $lambda$ on each iteration and it would indicate a numerical instability.
 
 The eigenvalue of the sequence $e[k]$ can be found approximately for large $k$ if we notice that the recurrence relation for $e[k]$ is similar to the truncated Taylor series for $Sin(x)$. Substituting $e[k] = lambda^k$ into it and disregarding a very small number $(2*Pi)^(-2*k)$ on the right hand side, we find 
-$$ Sum(j,0,k-1,(-lambda)^(k-j)*((2*Pi)^(2*j)/((2*j+1)!)) ) <=> lambda^k*Sin((2*Pi)/Sqrt(lambda)) <=> 0 $$
+$$ Sum(j,0,k-1,(-lambda)^(k-j)*((2*Pi)^(2*j)/((2*j+1)!)) ) <=> lambda^k*Sin((2*Pi)/Sqrt(lambda)) <=> 0 $$,
 which means that $lambda=4$ is a solution. Therefore the recurrence is unstable.
 
 By a very similar calculation one finds that the inverse powers of $4$ in Brent's recurrence make the largest eigenvalue of the error sequence $e[k]$ almost equal to $1$ and therefore the recurrence is stable. Brent gives the relative error in the computed $C[k]$ as $O(k^2)$ times the roundoff error in the last digit of precision.

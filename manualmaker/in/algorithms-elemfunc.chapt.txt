@@ -1,35 +1,34 @@
-		Calculation of $Pi$
+		Newton's method and its improvements
 
-In Yacas, the constant $pi$ is computed by the library routine {Pi()} which uses the internal routine {MathPi()} to compute the value to current precision {Precision()}. The result is stored in the global variable {PiCache} which is a list of the form {{precision, value}} where {precision} is the number of digits of $pi$ that have already been found and {value} is the multiple-precision value. This is done to avoid recalculating $pi$ if a precise enough value for it has already been found.
+The Newton-Raphson method of numerical solution of algebraic equations can be used to obtain multiple-precision values of several elementary functions.
 
-Efficient iterative algorithms for computing $pi$ with arbitrary precision have been recently developed by Brent, Salamin, Borwein and others. However, limitations of the current multiple-precision implementation in Yacas (compiled with the "internal" math option) make these advanced algorithms run slower because they require many more arbitrary-precision multiplications at each iteration.
+The basic formula is widely known: If $f(x)=0$ must be solved, one starts with a value of $x$ that is close to some root and iterates $$x'=x-f(x)*(D(x)f(x))^(-1)$$.
+This formula is based on the approximation of the function $f(x)$ by a tangent line at some point $x$. A Taylor expansion in the neighborhood of the root shows that (for an initial value $x[0]$ sufficiently close to the root) each iteration gives at least twice as many correct digits of the root as the previous one ("quadratic convergence"). Therefore the complexity of this algorithm is proportional to a logarithm of the required precision and to the time it takes to evaluate the function and its derivative. Generalizations of this method require computation of higher derivatives of the function $f(x)$ but successive approximations to the root converge several times faster (the complexity is still logarithmic).
 
-The example file {examples/pi.ys} implements five different algorithms that
-duplicate the functionality of {Pi()}. See
-<*http://numbers.computation.free.fr/Constants/*> for details of computations of $pi$ and
-generalizations of Newton-Raphson iteration.
+Newton's method is particularly convenient for multiple precision calculations because of its insensitivity to accumulated errors: if at some iteration $x[k]$ is found with a small error, the error will be corrected at the next iteration. Therefore it is not necessary to compute all iterations with the full required precision; each iteration needs to be performed at the precision of the root expected from that iteration. For example, if we know that the initial approximation is accurate to 3 digits, then (assuming quadratic convergence) it is enough to perform the first iteration to 6 digits, the second iteration to 12 digits and so on. In this way, calculations are enormously speeded up.
 
-{PiMethod0()}, {PiMethod1()}, {PiMethod2()} are all based on a generalized Newton-Raphson method of solving equations. The basic method is widely known: If $f(x)=0$ must be solved, one starts with a value of $x$ that is close to some root and iterates $$x'=x-f(x)*(D(x)f(x))^(-1)$$
-For initial value of $x$ sufficiently close to the root, each iteration gives at least twice as many correct digits of the root as the previous one.
-Therefore the complexity of this algorithm is proportional to a logarithm of the required precision and to the time it takes to evaluate the function and its derivative. Generalizations of this method require computation of higher derivatives of the function $f(x)$ but successive approximations to the root converge several times faster (but the complexity is still logarithmic).
+However, Newton's method suffers from sensitivity to the initial guess. If the initial value $x[0]$ is not chosen sufficiently close to the root, the iterations may converge very slowly or not converge at all. To remedy this, one can combine Newton's iteration with simple bisection. Once the root is bracketed inside an interval ($a$, $b$), one checks whether $(a+b)/2$ is a better approximation for the root than that obtained from Newton's iteration. This guarantees at least linear convergence in the worst case.
 
-Since $pi$ is a solution of $Sin(x)=0$, one may start sufficiently close, e.g. at $x0 = 3.14159265$ and iterate $x'=x-Tan(x)$. In fact it is faster to iterate
-$x'=x+Sin(x)$ which solves a different equation for $pi$. {PiMethod0()} is the straightforward implementation of the latter iteration. A significant speed improvement is achieved by doing calculations at each iteration only with the precision of the root that we expect to get from that iteration. Any imprecision introduced by round-off will be automatically corrected at the next iteration.
+For some equations $f(x)=0$, Newton's method converges faster; for example, solving $Sin(x)=0$ in the neighborhood of $x=3.14159$ gives "cubic" convergence, i.e. the number of correct digits is tripled at each step. This happens because $Sin(x)$ near its root $x=Pi$ has vanishing second derivative and thus the function is particularly well approximated by a straight line.
 
-If at some iteration $x=pi+epsilon$ for small $epsilon$, then from the Taylor expansion of $Sin(x)$ it follows that the value $x'$ at the next iteration will differ from $pi$ by $O(epsilon^3)$. Therefore, the number of correct digits triples at each iteration. If we know the number of correct digits of $pi$ in the initial approximation, we can decide in advance how many iterations to compute and what precision to use at each iteration.
+<i>Halley's method</i> is an improvement to Newton's method that makes each equation well approximated by a straight line near the root. Edmund Halley computed fractional powers, $x=a^(1/n)$, by the iteration
+$$ x'=x*((n-1)*x^n+(n+1)*a)/((n+1)*x^n+(n-1)*a) $$.
+This formula is equivalent to Newton's method applied to the equation
+$x^(n-q) = a*x^(-q)$ with $q=(n-1)/2$. This iteration has a cubic convergence rate. This is the fastest method to compute $n$-th roots with multiple precision. Iterations with higher order of convergence, for example, the method with quintic convergence rate
+$$ x' = x* ( (n-1)/(n+1)*(2*n-1)/(2*n+1) *x^(2*n) + 2*(2*n-1)/(n+1)*x^n*a + a^2) / (x^(2*n)+2*(2*n-1)/(n+1)*x^n*a+(n-1)/(n+1)*(2*n-1)/(2*n+1)*a^2) $$,
+require more arithmetic operations per step and are in fact less efficient at high precision.
 
-The final speed-up in {PiMethod0()} is to avoid computing at unnecessarily high precision. This may happen if, for example, we need to evaluate 200 digits of $pi$ starting with 20 correct digits. After 2 iterations we would be calculating with 180 digits; the next iteration would have given us 540 digits but we only need 200, so the third iteration would be wasteful. This can be avoided by first computing $pi$ to just over 1/3 of the required precision, i.e. to 67 digits, and then executing the last iteration at full 200 digits. There is still a wasteful step when we would go from 60 digits to 67, but much less time would be wasted than in the calculation with 200 digits of precision.
+Halley's method can be generalized to any function $f(x)$. A cubically convergent iteration is obtained if we replace the equation $f(x)=0$ by an equivalent equation
+$$ g(x):=f(x)/Sqrt(Abs(D(x)f(x))) = 0 $$.
+Here the function $g(x)$ was chosen so that its second derivative vanishes ($D(x,2)g(x)=0$) at the root of the equation $f(x)=0$, independently of where this root is. The Newton iteration for the equation $g(x)=0$ can be written as
+$$ x'=x-(2*f(x)*D(x)f(x))/(2*(D(x)f(x))^2-f(x)*D(x,2)f(x)) $$.
+It is sometimes simpler to apply Newton's iteration directly to the modified equation $g(x)=0$.
 
-Newton's method is based on approximating the function $f(x)$ by a straight line. One can achieve better approximation and therefore faster convergence to the root if one approximates the function with a polynomial curve of higher order. The routine {PiMethod1()} uses the iteration 
-$$ x'=x+Sin(x)+1/6*Sin(x)^3 + 3/40*Sin(x)^5 + 5/112*Sin(x)^7$$
-which has a faster convergence, giving 9 times as many digits at every iteration. (The series is the Taylor series for $ArcSin(y)$ cut at $O(y^9)$.) The same speed-up tricks are used as in {PiMethod0()}. In addition, the last iteration, which must be done at full precision, is performed with the simpler iteration $x'=x+Sin(x)$ to reduce the number of high-precision multiplications.
+Halley's iteration, despite its faster convergence rate, may be more cumbersome to evaluate than Newton's iteration and so it may not provide a more efficient numerical method for some functions. Only in some special cases is Halley's iteration just as simple to compute as Newton's iteration. But Halley's method has another advantage: it is generally less sensitive to the choice of the initial point $x[0]$. An extreme example of sensitivity to the initial point is the equation $x^(-2)= 12$ for which Newton's iteration $x'=3*x/2-6*x^3$ converges to the root only from initial points $0<x[0] <0.5$ and wildly diverges otherwise, while Halley's iteration converges to the root from any $x[0]>0$.
 
-Both {PiMethod0()} and {PiMethod1()} require a computation of $Sin(x)$ at every iteration. An industrial-strength arbitrary precision library such as {gmp} can multiply numbers much faster than it can evaluate a trigonometric function. Therefore, it would be good to have a method which does not require trigonometrics. {PiMethod2()} is a simple attempt to remedy the problem. It computes the Taylor series for $ArcTan(x)$,
-$$ ArcTan(x) = x - x^3/3 + x^5/5 - x^7/7 + ... $$
-for the value of $x$ obtained as the tangent of the initial guess for $pi$; in other words, if $x=pi+epsilon$ where $epsilon$ is small, then $Tan(x)=Tan(epsilon)$, therefore $epsilon = ArcTan(Tan(x))$ and $pi$ is found as $pi = x - epsilon$. If the initial guess is good (i.e. $epsilon$ is very small), then the Taylor series for $ArcTan(x)$ converges very quickly (although linearly, i.e. it gives a fixed number of digits of $pi$ per term). Only a single full-precision evaluation of $Tan(x)$ is necessary at the beginning of the algorithm.
-The complexity of this algorithm is proportional to the number of digits and to the time of a long multiplication.
+It is at any rate not true that Halley's method always converges. For instance, it diverges on the equation $2*Cos(x)=x$ unless started at $x[0]$ within the interval ($-1/6*Pi$,$7/6*Pi$).
 
-The routines {PiBrentSalamin()} and {PiBorwein()} are based on much more advanced mathematics. (See papers of P. Borwein for review and explanations of the methods.) They do not require evaluations of trigonometric functions, but they do require taking a few square roots at each iteration, and all calculations must be done using full precision. Using modern algorithms, one can compute a square root roughly in the same time as a division; but Yacas's internal math is not yet up to it. Therefore, these two routines perform poorly compared to the more simple-minded {PiMethod0()}.
+When it converges, Halley's iteration can still converge very slowly for certain functions $f(x)$, for example, for $f(x)=x^n-a$ if $n^n>a$. For such functions that have very large and rapidly changing derivatives, no general method can converge faster than linearly. In other words, a simple bisection will generally do just as well as any sophisticated iteration, until the root is approximated relatively precisely. Halley's iteration combined with bisection seems to be a good choice for such problems.
 
 		Elementary functions
 
@@ -40,14 +39,13 @@ Integer powers are computed by a fast algorithm with repeated squarings.
 Inverse powers (square roots, cubic roots etc.) are computed by the Newton iteration.
 
 A separate function {IntNthRoot} is provided to compute integer part of $n^(1/s)$ for integer $n$ and $s$.
-For a given $s$, it evaluates the integer part of $n^(1/s)$ using only integer arithmetic with integers of size $n^(1+1/s)$. This can be done by Newton's method by solving the equation $x^s=n$. Actually, it is numerically better to solve the equivalent equation $f(x):=x^(s-q)-n*x^(-q)=0$, where $q$ is chosen to be $(s-1)/2$. (This value of $q$ is chosen because then the function $f(x)$ has vanishing second derivative at point $x=n^(1/q)$ which makes convergence better and guarantees that the iteration sequence is monotonic.)
-The initial guess for Newton's iteration is obtained by bit counting using the integer logarithm function, $x[0]=2^(b(n)/s)$ where $b(n)$ is the number of bits in $n$. It is clear that the initial guess is accurate to within a factor of 2. Since the relative error is squared at every iteration, we need as many iteration steps as bits in $n^(1/s)$.
-The Newton iteration step is
-$$ x[k+1] = x[k] * ((s-q-1)*x[k]^s+(q+1)*n) / ((s-q)*x[k]^s+q*n) $$
-Since we only need the integer part of the root, it is enough to use integer division in the above iteration. The sequence $x[k]$ will monotonically approximate the number $n^(1/s)$ from below if we start from an initial guess that is less than the exact value. (This is guaranteed with our choice of $q$. We start from below so that we have to deal with smaller integers rather than with larger integers.) If $n=p^s$, then after enough iterations the floating-point value of $x[k]$ would be slightly less than $p$; our value is the integer part of $x[k]$. Therefore, at each step we check whether $1+x[k]$ is a solution of $x^s=n$, in which case we are done; and we also check whether $(1+x[k])^s>n$, in which case the integer part of the root is $x[k]$.
-To speed up the Newton iteration in the worst case when $s>x$, it is combined with bisection. The root bracket interval $x1<x<x2$ is maintained and the next iteration $x[k+1]$ is assigned to the midpoint of the interval if the Newton formula does not give sufficiently rapid convergence.
+For a given $s$, it evaluates the integer part of $n^(1/s)$ using only integer arithmetic with integers of size $n^(1+1/s)$. This can be done by Halley's iteration method by solving the equation $x^s=n$. For this function, the Halley iteration sequence is monotonic.
+The initial guess is obtained by bit counting using the integer logarithm function, $x[0]=2^(b(n)/s)$ where $b(n)$ is the number of bits in $n$. It is clear that the initial guess is accurate to within a factor of 2. Since the relative error is squared at every iteration, we need as many iteration steps as bits in $n^(1/s)$.
 
-Powers of real numbers are computed by using the exponential and logarithm functions, $a^b = Exp(b*Ln(a))$.
+Since we only need the integer part of the root, it is enough to use integer division in the Halley iteration. The sequence $x[k]$ will monotonically approximate the number $n^(1/s)$ from below if we start from an initial guess that is less than the exact value. (We start from below so that we have to deal with smaller integers rather than with larger integers.) If $n=p^s$, then after enough iterations the floating-point value of $x[k]$ would be slightly less than $p$; our value is the integer part of $x[k]$. Therefore, at each step we check whether $1+x[k]$ is a solution of $x^s=n$, in which case we are done; and we also check whether $(1+x[k])^s>n$, in which case the integer part of the root is $x[k]$.
+To speed up the Halley iteration in the worst case when $s^s>n$, it is combined with bisection. The root bracket interval $x1<x<x2$ is maintained and the next iteration $x[k+1]$ is assigned to the midpoint of the interval if the Newton formula does not give sufficiently rapid convergence.
+
+Real powers (as opposed to integer powers) are computed by using the exponential and logarithm functions, $a^b = Exp(b*Ln(a))$.
 
 	    Logarithm
 
@@ -62,7 +60,7 @@ The "integer logarithm" {IntLog(x, base)} is defined as the integer part of $$Ln
 The exponential function is computed using its Taylor series,
 $$ Exp(x) = 1 + x + x^2/2! + ...$$
 This series converges for all (complex) $x$, but if $Abs(x)$ is large, it converges slowly. A speed-up trick used for large $x$ is to divide the argument by some power of 2 and then square the result several times, i.e.
-$$Exp(x) = (Exp(2^(-k)*x))^(2^k)$$
+$$Exp(x) = (Exp(2^(-k)*x))^(2^k)$$,
 where $k$ is chosen sufficiently large so that the Taylor series converges quickly at $2^(-k)*x$. The threshold value for $x$ is in the variable {MathExpThreshold} in {stdfuncs}. If $x$ is large and negative, then it is easier to compute 1/$Exp(-x)$.
 
 	    Trigonometric
@@ -71,9 +69,9 @@ Trigonometric functions $Sin(x)$, $Cos(x)$ are computed by subtracting $2*Pi$ fr
 Tangent is computed by dividing $Sin(x)/Cos(x)$.
 
 Inverse trigonometric functions are computed by Newton's method (for {ArcSin}) or by continued fraction expansion (for {ArcTan}),
-$$ArcTan(x) = x/(1+x^2/(3+(2*x)^2/(5+(3*x)^2/(7+...))))$$
+$$ArcTan(x) = x/(1+x^2/(3+(2*x)^2/(5+(3*x)^2/(7+...))))$$.
 The convergence of this expansion for large $Abs(x)$ is improved by using the identity
-$$ArcTan(x) = Pi/2*Sign(x) - ArcTan(1/x)$$
+$$ArcTan(x) = Pi/2*Sign(x) - ArcTan(1/x)$$.
 This is implemented in the standard library scripts.
 
 The idea to use continued fraction expansions for {ArcTan} comes from the book:
@@ -113,11 +111,42 @@ By the identity $ArcCos(x) := Pi/2 - ArcSin(x)$, the inverse cosine is reduced t
 
 Hyperbolic and inverse hyperbolic functions are reduced to exponentials and logarithms.
 
+		Calculation of $Pi$
+
+In Yacas, the constant $pi$ is computed by the library routine {Pi()} which uses the internal routine {MathPi()} to compute the value to current precision {Precision()}. The result is stored in the global variable {PiCache} which is a list of the form {{precision, value}} where {precision} is the number of digits of $pi$ that have already been found and {value} is the multiple-precision value. This is done to avoid recalculating $pi$ if a precise enough value for it has already been found.
+
+Efficient iterative algorithms for computing $pi$ with arbitrary precision have been recently developed by Brent, Salamin, Borwein and others. However, limitations of the current multiple-precision implementation in Yacas (compiled with the "internal" math option) make these advanced algorithms run slower because they require many more arbitrary-precision multiplications at each iteration.
+
+The example file {examples/pi.ys} implements five different algorithms that
+duplicate the functionality of {Pi()}. See
+<*http://numbers.computation.free.fr/Constants/*> for details of computations of $pi$ and
+generalizations of Newton-Raphson iteration.
+
+{PiMethod0()}, {PiMethod1()}, {PiMethod2()} are all based on a generalized Newton-Raphson method of solving equations.
+
+Since $pi$ is a solution of $Sin(x)=0$, one may start sufficiently close, e.g. at $x0 = 3.14159265$ and iterate $x'=x-Tan(x)$. In fact it is faster to iterate
+$x'=x+Sin(x)$ which solves a different equation for $pi$. {PiMethod0()} is the straightforward implementation of the latter iteration. A significant speed improvement is achieved by doing calculations at each iteration only with the precision of the root that we expect to get from that iteration. Any imprecision introduced by round-off will be automatically corrected at the next iteration.
+
+If at some iteration $x=pi+epsilon$ for small $epsilon$, then from the Taylor expansion of $Sin(x)$ it follows that the value $x'$ at the next iteration will differ from $pi$ by $O(epsilon^3)$. Therefore, the number of correct digits triples at each iteration. If we know the number of correct digits of $pi$ in the initial approximation, we can decide in advance how many iterations to compute and what precision to use at each iteration.
+
+The final speed-up in {PiMethod0()} is to avoid computing at unnecessarily high precision. This may happen if, for example, we need to evaluate 200 digits of $pi$ starting with 20 correct digits. After 2 iterations we would be calculating with 180 digits; the next iteration would have given us 540 digits but we only need 200, so the third iteration would be wasteful. This can be avoided by first computing $pi$ to just over 1/3 of the required precision, i.e. to 67 digits, and then executing the last iteration at full 200 digits. There is still a wasteful step when we would go from 60 digits to 67, but much less time would be wasted than in the calculation with 200 digits of precision.
+
+Newton's method is based on approximating the function $f(x)$ by a straight line. One can achieve better approximation and therefore faster convergence to the root if one approximates the function with a polynomial curve of higher order. The routine {PiMethod1()} uses the iteration 
+$$ x'=x+Sin(x)+1/6*Sin(x)^3 + 3/40*Sin(x)^5 + 5/112*Sin(x)^7$$
+which has a faster convergence, giving 9 times as many digits at every iteration. (The series is the Taylor series for $ArcSin(y)$ cut at $O(y^9)$.) The same speed-up tricks are used as in {PiMethod0()}. In addition, the last iteration, which must be done at full precision, is performed with the simpler iteration $x'=x+Sin(x)$ to reduce the number of high-precision multiplications.
+
+Both {PiMethod0()} and {PiMethod1()} require a computation of $Sin(x)$ at every iteration. An industrial-strength arbitrary precision library such as {gmp} can multiply numbers much faster than it can evaluate a trigonometric function. Therefore, it would be good to have a method which does not require trigonometrics. {PiMethod2()} is a simple attempt to remedy the problem. It computes the Taylor series for $ArcTan(x)$,
+$$ ArcTan(x) = x - x^3/3 + x^5/5 - x^7/7 + ... $$,
+for the value of $x$ obtained as the tangent of the initial guess for $pi$; in other words, if $x=pi+epsilon$ where $epsilon$ is small, then $Tan(x)=Tan(epsilon)$, therefore $epsilon = ArcTan(Tan(x))$ and $pi$ is found as $pi = x - epsilon$. If the initial guess is good (i.e. $epsilon$ is very small), then the Taylor series for $ArcTan(x)$ converges very quickly (although linearly, i.e. it gives a fixed number of digits of $pi$ per term). Only a single full-precision evaluation of $Tan(x)$ is necessary at the beginning of the algorithm.
+The complexity of this algorithm is proportional to the number of digits and to the time of a long multiplication.
+
+The routines {PiBrentSalamin()} and {PiBorwein()} are based on much more advanced mathematics. (See papers of P. Borwein for review and explanations of the methods.) They do not require evaluations of trigonometric functions, but they do require taking a few square roots at each iteration, and all calculations must be done using full precision. Using modern algorithms, one can compute a square root roughly in the same time as a division; but Yacas's internal math is not yet up to it. Therefore, these two routines perform poorly compared to the more simple-minded {PiMethod0()}.
+
 		Continued fractions
 
 The function {ContFracList} converts a (rational) number $r$ into a regular
 continued fraction,
-$$ r = n[0] + 1/(n[1] + 1/(n[2]+...)) $$
+$$ r = n[0] + 1/(n[1] + 1/(n[2]+...)) $$.
 Here all numbers $n[i]$ are integers and all except $n[0]$ must be positive.
 (Continued fractions may not converge unless their terms are positive and
 bounded from below.)
@@ -187,7 +216,7 @@ The HAKMEM text (M. Beeler, R. W. Gosper, and R. Schroeppel: Memo No. 239, MIT A
 		Factorials and binomial coefficients
 
 The factorial is defined by $n! := n*(n-1)*...*1$ for integer $n$ and the binomial coefficient is defined as
-$$Bin(n,m) := n! / (m! * (n-m)!)$$
+$$Bin(n,m) := n! / (m! * (n-m)!)$$.
 A "staggered factorial" $n!! := n*(n-2)*(n-4)*...$ is also useful for some calculations.
 
 There are two tasks related to the factorial: the exact integer calculation and an approximate calculation to some floating-point precision. Factorial of $n$ has approximately $n*Ln(n)/Ln(10)$ decimal digits, so an exact calculation is practical only for relatively small $n$. In the current implementation, exact factorials for $n>65535$ are not computed but print an error message advising the user to avoid exact computations. For example, {LnGammaNum(n+1)} is able to compute $Ln(n!)$ for very large $n$ to the desired floating-point precision.
@@ -209,7 +238,7 @@ Therefore, the tree method wins over the simple method if the cost of multiplica
 
 The tree method can also be used to compute "staggered factorials" ($n!!$). This is faster than to use the identities
 $(2*n)!! = 2^n*n! $ and
-$$ (2*n-1)!! = (2*n)! / (2^n*n!)$$
+$$ (2*n-1)!! = (2*n)! / (2^n*n!)$$.
 Staggered factorials are used in the exact calculation of the Gamma function of half-integer argument.
 
 Binomial coefficients $Bin(n,m)$ are found by first selecting the smaller of $m$, $n-m$ and using the identity $Bin(n,m) = Bin(n,n-m)$. Then a partial factorial is used to compute $Bin(n,m)= ((n-m+1)***n) / m!$. This is always much faster than computing the three factorials in the definition of $Bin(n,m)$.

@@ -156,7 +156,9 @@ notation) and surrounded by dollar signs. Both delimiting dollar signs
 {x^2 + y^2 != z^2 $}
 produces $x^2+y^2 != z^2$. Double dollar signs will denote a displayed
 equation, like in $TeX$; both pairs of dollar signs should still be within one
-line. As a special exception, one can enter the symbols "$TeX$" and "$LaTeX$"
+line. Any punctuation immediately following the second pair of dollar signs will be displayed on the same line. (This is used to get around the limitation of mathematical expressions that cannot end with a comma or a period or with another punctuation mark.) For example, the formula "{$}{$}{x^2/2}{$}{$,}" will produce $$x^2/2$$, with the comma on the same line.
+
+As a special exception, one can enter the symbols "$TeX$" and "$LaTeX$"
 as if they are Yacas symbols, i.e. "{$T}{eX$}" produces "$TeX$".
 
 Mathematical expressions <i>must</i> be valid Yacas expressions, with balanced

@@ -126,7 +126,7 @@ As an example:
 	  1,1,(num/(a*Sqrt(b/a)))*
 	  ArcTan(var/Sqrt(b/a)));
 declares that the anti-derivative of $ c/(a*x^2+b) $ is
-$$ (c/(a*Sqrt(b/a)))*ArcTan(x/Sqrt(b/a)) $$
+$$ (c/(a*Sqrt(b/a)))*ArcTan(x/Sqrt(b/a)) $$,
 if both $ a $ and $ b $ are positive numbers.
 
 

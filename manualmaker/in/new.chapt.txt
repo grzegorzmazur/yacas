@@ -216,7 +216,7 @@ If the value of x is needed, the right hand side is more desirable.
 Viewed in this way, the responsibility of a {Solve} function could
 be to manipulate a set of equations in such a way that a certain
 piece of information can be pried from it (in this case the value
-of $ x == x(a,b,c) $ .
+of $ x == x(a,b,c) $.
 
 A next step is to be able to use the result returned by a {Solve}
 operation. 

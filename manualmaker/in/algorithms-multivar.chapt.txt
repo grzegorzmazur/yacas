@@ -125,7 +125,7 @@ The following definitions define multivariate polynomials,
 and the functions defined on them that are of interest
 for using such multivariates.
 
-A {term} is an object which can be written as 
+A <i>term</i> is an object which can be written as 
 
 $$ c*x[1]^n[1]*x[2]^n[2]* ... *x[m]^n[m] $$
 for $ m $ variables ($ x[1] $, ..., $ x[m] $). The numbers $ n[m] $
@@ -203,8 +203,7 @@ multiplication rules hold:
 	a*(b+c) := (a*b)+(a*c)
 
 These are supported in the Yacas system through a multiply-add operation:
-
-$$ muadd(f,t,g) := f+t*g $$ 
+$$ muadd(f,t,g) := f+t*g $$.
 This allows for both adding two polynomials ($ t:=1 $), or multiplication
 of two polynomials by scanning one polynomial, and multiplying each term
 of the scanned polynomial with the other polynomial, and adding the result
