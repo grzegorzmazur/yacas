@@ -20,7 +20,7 @@ PROTEUS_OBJS = tabs.o editor.o HelpView.o FltkConsole.o grapher.o FltkHintWindow
 
 proteus   : $(PROTEUS_OBJS)  
 	$(CXX) $(PROTEUS_OBJS) -o proteus $(CXXFLAGS) $(LIBS) 
-	$(POSTBUILD) $@ /usr/local/include/FL/mac.r
+	$(POSTBUILD) 
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCS) -c $*.cpp -o $*.o

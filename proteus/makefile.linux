@@ -16,7 +16,7 @@ YACASLIBS       = -L$(INSTALL_DIR)/local/lib/ -lyacas -lyacasplatform -lyacasnum
 
 LIBS = $(LDLIBS) $(FLTKLIBS) $(YACASLIBS)
 
-POSTBUILD       = ls
+POSTBUILD       = ls -l proteus
 
 all-inclusive: yacdefines.h proteus  hints
 

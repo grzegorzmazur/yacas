@@ -671,14 +671,14 @@ int main(int argc, char **argv)
         }
         {
           char helpfile[128];
-#ifdef WIN32
-          sprintf(helpfile,"proteusbooks.html");
-#else
+//#ifdef WIN32
+//          sprintf(helpfile,"proteusbooks.html");
+//#else
           if (release_structure)
             sprintf(helpfile,"%sdocumentation/%s",defdir,YACAS_DOC);
           else
             sprintf(helpfile,"%smanmake/%s",defdir,YACAS_DOC);
-#endif
+//#endif
           helpview_->load(helpfile);
         }
         o->end();
