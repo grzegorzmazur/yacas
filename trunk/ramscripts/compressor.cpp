@@ -287,7 +287,7 @@ int main(int argc, char** argv)
         makeindex(indexbuf,indptr,0);
         int indexlength = indptr-indexbuf;
         makeindex(indexbuf,indptr,2*sizeof(int)+indexlength);
-        
+	printf("%d bytes uncompressed index\n",2*sizeof(int)+indexlength);
         putint(fout,totalfiles);
         putint(fout,indexlength);
         fwrite(indexbuf,1,indexlength,fout);
