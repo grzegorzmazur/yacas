@@ -462,6 +462,7 @@ int main(void)
 //////////////////////////////////////////////////
 ///// BigNumber comprehensive test suite
 //////////////////////////////////////////////////
+	printf("SizeOf(BigNumber)=%d\n", sizeof(BigNumber));
 
 	Next("library name");	
 	printf("\tTesting numeric library: '%s'.\n", BigNumber::NumericLibraryName());
@@ -1075,6 +1076,20 @@ int main(void)
 	    y.SetTo(-1);
 	    x.Add(x,y,prec);	// now should be 0
 	    CheckStringValue(x, "0.", 10, 10, "x=0 now due to roundoff");
+	}
+	Next("a calculation from arithmetic.yts");
+	{// compute 10e3*1.2e-4 - 1.2, must get zero
+		BigNumber x("10e3", 10), y("1.2e-4", 10), z("1.2", 10);
+		z.Negate(z);
+		CheckValues(z.GetPrecision(), 36, "z has correct precision");
+		//z.MultiplyAdd(x,y,10);
+		x.Multiply(x,y,10);
+		CheckValues(z.GetPrecision(), 36, "z has correct precision");
+		z.Add(z,x,10);
+		CheckValues(z.GetPrecision(), 32, "z has correct precision");
+		CheckValues(z.Sign(),0,"z has correct sign");
+		CheckStringValue(z, "0.", 10, 10, "z is equal to 0.");
+		
 	}
 /* not yet implemented
 	Next("precision control for Equals()");

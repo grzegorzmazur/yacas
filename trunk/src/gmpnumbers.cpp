@@ -2301,7 +2301,7 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
 		  // check for underflow again
 		  if (Sign()!=0 && p < 0)
 		  {	// underflow, set float_ to zero and reset precision
-			  p = p-BitCount();
+			  p = p-B_z;
 			  mpf_set_d(result, 0);
 		  }
 		  // check for minimum roundoff (when both arguments are of the same sign)
