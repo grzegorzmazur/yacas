@@ -3,6 +3,32 @@
 #include "yacasprivate.h"
 #include "stdfileio.h"
 
+#ifdef WIN32
+#define MAP_TO_WIN32_PATH_SEPARATOR
+#endif // WIN32
+
+//#define MAP_TO_WIN32_PATH_SEPARATOR
+
+static void MapPathSeparators(char* filename)
+{
+//  printf("File name [%s]",filename);
+//  char* ptr = filename;
+#ifdef MAP_TO_WIN32_PATH_SEPARATOR
+  while (*filename)
+  {
+    switch (*filename)
+    {
+      case '/': *filename = '\\';
+      default: filename++;
+    }
+  }
+#endif // MAP_TO_WIN32_PATH_SEPARATOR
+//  printf("-> [%s]\n",ptr);
+}
+
+
+
+
 // For lack of better place to put it...
 InputStatus::~InputStatus()
 {
@@ -151,12 +177,16 @@ void InternalFindFile(LispCharPtr aFileName, InputDirectories& aInputDirectories
                      LispCharPtr aFoundFile)
 {
     strcpy(aFoundFile,aFileName);
-    FILE* file = fopen(aFileName,"rb");
+
+    MapPathSeparators(aFoundFile);
+
+    FILE* file = fopen(aFoundFile,"rb");
     LispInt i=0;
     while (file == NULL && i<aInputDirectories.NrItems())
     {
         strcpy(aFoundFile,aInputDirectories[i]->String());
         strcat(aFoundFile,aFileName);
+        MapPathSeparators(aFoundFile);
         file = fopen(aFoundFile,"rb");
         i++;
     }
@@ -175,22 +205,29 @@ LispLocalFile::LispLocalFile(LispEnvironment& aEnvironment,
                              InputDirectories& aInputDirectories)
 : iEnvironment(aEnvironment)
 {
+    LispChar othername[1024];//TODO
     if (aRead)
     {
-        LispChar othername[1024];//TODO
         strcpy(othername,aFileName);
-        iFile = fopen(aFileName,"rb");
+        MapPathSeparators(othername);
+
+        iFile = fopen(othername,"rb");
         LispInt i=0;
         while (iFile == NULL && i<aInputDirectories.NrItems())
         {
             strcpy(othername,aInputDirectories[i]->String());
             strcat(othername,aFileName);
+            MapPathSeparators(othername);
             iFile = fopen(othername,"rb");
             i++;
         }
     }
     else
-        iFile = fopen(aFileName,"w");
+    {
+      strcpy(othername,aFileName);
+      MapPathSeparators(othername);
+      iFile = fopen(othername,"w");
+    }
 
     if (iFile == NULL)
         iOpened=0;

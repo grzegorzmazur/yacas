@@ -42,13 +42,17 @@
 #include <signal.h>
 #endif
 
+/*This is not the right place to define path separators. Better to define "/" as the Yacas path separator,
+  and then to handle the actual mapping at the lowest level.
+  TODO remove as soon as I get this working under Windows
 #ifdef WIN32
   #define PATH_SEPARATOR   '\\' 
   #define PATH_SEPARATOR_2 "\\\\" // Yes, four! Escaped once by C, then in Yacas.
 #else
+*/
   #define PATH_SEPARATOR   '/'
   #define PATH_SEPARATOR_2 "/"
-#endif
+//#endif
 
 #include "yacas.h"
 
