@@ -202,7 +202,7 @@ void parseCommandLine(int argc, char *argv[])
 {
 	bool needtoexit = false;
 
-	for (int i = 1; i <= argc; i++) {
+	for (int i = 1; i < argc; i++) {
 		if (!strcmp(argv[i],"-d") || !strcmp(argv[i],"--scriptdir")) {
 			loadYacasScriptDir();
 			printf("%s\n",scriptdir);
@@ -246,6 +246,7 @@ void parseCommandLine(int argc, char *argv[])
             i++;
             loadYacasScriptDir();
             const char* inpline = argv[i];
+            printf("In> %s \n", inpline);
             yacas->Evaluate(inpline);
             ShowResult("Out> ");
             
