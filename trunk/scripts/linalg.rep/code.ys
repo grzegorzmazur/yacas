@@ -100,6 +100,23 @@ Function("CrossProduct",{aLeft,aRight})
 ];
 
 
+_x o _y <-- Outer(x,y);
+
+// outer product of vectors
+Outer(t1_IsVector, t2_IsVector) <--
+[
+   Local(i,j,n,m,result);
+   n:=Length(t1);
+   m:=Length(t2);
+   result:=ZeroMatrix(n,m);
+   For(i:=1,i<=n,i++)
+      For(j:=1,j<=m,j++)
+	 result[i][j]:=t1[i]*t2[j];
+   result;
+];
+
+
+
 Function("ZeroVector",{n})
 [
     Local(i,result);

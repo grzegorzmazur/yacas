@@ -90,7 +90,7 @@ vectors need to have the same size.
 
 *DESC
 
-The outer product (also called the cross product) of the vectors "a"
+The cross product of the vectors "a"
 and "b" is returned. The result is perpendicular to both "a" and
 "b" and its length is the product of the lengths of the vectors.
 Both "a" and "b" have to be three-dimensional.
@@ -101,6 +101,48 @@ Both "a" and "b" have to be three-dimensional.
 	Out> {b*f-c*e,c*d-a*f,a*e-b*d};
 
 *SEE InProduct
+
+
+
+
+
+*CMD Outer, "o"-Operator --- get outer tensor product
+*STD
+*CALL
+	Outer(t1,t2)
+	t1 o t2
+
+*PARMS
+
+{t1,t2} -- tensor lists (currently only vectors are supported)
+
+*DESC
+
+{Outer} returns the outer product of two tensors t1 and t2. Currently
+{Outer} work works only for vectors, i.e. tensors of rank 1. The outer
+product of two vectors yields a matrix.
+
+*E.G.
+
+	In> Outer({1,2},{3,4,5})
+	Out> {{3,4,5},{6,8,10}};
+	In> Outer({a,b},{c,d})
+	Out> {{a*c,a*d},{b*c,b*d}};
+
+	Or, using the "o"-Operator:
+
+	In> {1,2} o {3,4,5}
+	Out> {{3,4,5},{6,8,10}};
+	In> {a,b} o {c,d}
+	Out> {{a*c,a*d},{b*c,b*d}};
+
+
+*SEE Dot, Cross
+
+
+
+
+
 
 *CMD ZeroVector --- create a vector with all zeroes
 *STD

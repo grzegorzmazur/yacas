@@ -22,6 +22,9 @@ Function("IsMatrix",{aLeft})
  */
 Function("IsMatrix",{x}) If(IsList(x),Length(Dimensions(x))=2,False);
 
+Function("IsVector",{x}) If(IsList(x),Length(Dimensions(x))=1,False);
+
+
 IsSquareMatrix(_x) <--
 [
    Local(d);

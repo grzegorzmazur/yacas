@@ -1,4 +1,39 @@
 
+   LocalSymbols(p) 
+   [
+   10 # Foo(_x,_y)_([p:=x+y; p>0;]) <-- Bar(p);
+   20 # Foo(_x,_y) <-- NoBar(p);
+   ];
+
+
+EndOfFile;
+
+   Foo(_x,_y) <-- Foo(x,y,x+y);
+   10 # Foo(_x,_y,_p)_(p>0) <-- Bar(p);
+   20 # Foo(_x,_y,_p) <-- NoBar(p);   
+
+
+   Foo(_x,_y) <-- Foo(x,y,0);
+   Function()Foo(x,y,p);
+   10 # Foo(_x,_y,_dummy)_([p:=x+y; p>0;]) <-- Bar(p);
+   20 # Foo(_x,_y,_dummy) <-- NoBar(p);   
+
+
+   Foo(_x,_y) <-- [ Local(p); Foo2(x,y); ];
+   10 # Foo2(_x,_y)_([p:=x+y; p>0;]) <-- Bar(p);
+   20 # Foo2(_x,_y) <-- NoBar(p);   
+   UnFence(Foo2,2);
+
+
+   Foo(_x,_y)_([Local(p);p:=...;...;]) <--
+   [
+	Local(q);
+	q:=Bar(p);
+	...
+   ];
+
+
+
 
 EndOfFile;
 EndOfFile;

@@ -39,6 +39,7 @@ Bodied("D",60000);
 Bodied("Deriv",60000);
 Infix("X",3);
 Infix(".",3);
+Infix("o",3);
 Postfix("!", 3);
 Postfix("!!", 3);
 Infix("***", 5);
