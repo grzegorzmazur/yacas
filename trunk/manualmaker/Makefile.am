@@ -2,7 +2,7 @@
 
 # $(srcdir) is the manualmaker/ directory and $(top_srcdir) is the Yacas tree
 # so this file should work even if we are building Yacas in a different directory
-# (TeX works but HTML docs still fail in that case b/c of dependencies on in/all, manualmaker, styleplain etc.)
+# (TeX works but HTML docs still fail in that case b/c of dependencies on manualmaker, styleplain etc.)
 
 # newly compiled version of yacas in ../src (not necessarily under $(srcdir))
 ouryacas = ../src/yacas --rootdir $(top_srcdir)/scripts/:../scripts/
@@ -63,9 +63,7 @@ CODESNIPPETS = wester-1994.ys
 check_SCRIPTS = wester-1994.ys
 
 EXTRA_DIST = \
-	manualmaker indexmaker styleplain in/all \
-	in/intromaker in/codingmaker in/refmaker in/refprogmaker in/essaysmaker \
-	in/LispProgrammingmaker \
+	manualmaker indexmaker styleplain \
 	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) $(INTROSOURCES) \
 	$(REFPROGSOURCES) $(ALGOSOURCES) $(LISPPROGRAMMINGSOURCES) \
 	in/dummies .cvsignore

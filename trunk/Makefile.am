@@ -19,7 +19,7 @@ bin_SCRIPTS = yacas_client
 ## EXTRA_DIST contains the files automake does not know about, that need to go
 ## in the distribution. Note that scripts are not distributed by default.
 
-EXTRA_DIST = yacas.sgml yacas.spec yacas.spec.in makemake mkhomepage mkmanual \
+EXTRA_DIST = yacas.sgml yacas.spec yacas.spec.in makemake mkhomepage \
 	yacas.sh doxy_yacas README.beos README.Win32 ltmain.sh \
 	workinprogress.ys upload.txt readme.bin.win32.txt $(bin_SCRIPTS)
 

@@ -32,6 +32,14 @@ R. P. Brent,
 <i>Multiple-precision zero-finding methods and the complexity of elementary function evaluation</i>, in
 <i>Analytic Computational Complexity</i>, ed. by J. F. Traub, Academic Press, 1975, p. 151; also available online from Oxford Computing Laboratory, as the paper {rpb028}.
 
+[Brent 1976]
+R. P. Brent,
+<i>The complexity of multiple-precision arithmetic</i>,
+Complexity of Computation Problem Solving, 1976.
+R. P. Brent, 
+<i>Fast multiple-precision evaluation of elementary functions</i>,
+Journal of the ACM 23 (1976), p. 242.
+
 [Brent 1978]
 R. P. Brent, 
 <i>A Fortran Multiple-Precision Arithmetic Package</i>,
@@ -80,6 +88,11 @@ LNCS 1423 (Springer, 1998), p. 338.
 S. Kanemitsu, Y. Tanigawa, and M. Yoshimoto,
 <i>On the values of the Riemann zeta-function at rational arguments</i>,
 The Hardy-Ramanujan Journal 24 (2001), p. 11.
+
+[Karp <i>et al.</i> 1997]
+A. H. Karp and P. Markstein,
+<i>High-precision division and square root</i>,
+ACM TOMS, vol. 23 (1997), p. 561.
 
 [Knuth 1973]
 D. E. Knuth,

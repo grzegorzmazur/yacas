@@ -1,9 +1,0 @@
-#! /bin/sh
-
-cd manualmaker
-yacas in/all
-
-if [ -d /usr/local/share/yacas/documentation/ ] ; then : ; else  mkdir /usr/local/share/yacas/documentation/ ; fi; 
-mv *.html /usr/local/share/yacas/documentation/
-
-
