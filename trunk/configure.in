@@ -94,6 +94,16 @@ fi
 AC_CANONICAL_HOST
 AC_DEFINE_UNQUOTED(PLATFORM_OS, "$host_os", [Operating system])
 
+# specifically for macosx
+case "$host_os" in
+     darwin*) 
+     AC_DEFINE(MACOSX, 1, [Define if workarounds are needed for MacOS X])
+     MACOSX="yes"
+     ;;
+esac
+AM_CONDITIONAL(MACOS_REZ, test -n "$MACOSX")
+
+
 # Check for the existence of the Gnu Scientific Library on this machine
 AM_PATH_GSL(0.0, HAVE_GSL=yes, HAVE_GSL=no)
 # The first argument of AM_PATH_GSL is the minimum version we require
