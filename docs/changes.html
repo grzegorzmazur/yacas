@@ -8,7 +8,7 @@
 
 <FONT face="Helvetica" size="3">
 
-<h1>Release of version 1.0.49 (??? 2001)</h1>
+<h1>Release of version 1.0.49 (??? 2002)</h1>
 <ul>
   <li> Added initial version of a compiler to convert Yacas
        script code to c++
@@ -17,7 +17,7 @@
   <li> Small fix to InverseTaylor which could return wrong
        results when taking the inverse of a function at
        x0 != 0
-  <li> Small extension to CForm, converting "Exp" to "exp".
+  <li> Small bugfixes to CForm and TeXForm.
   <li> Small bug fix:
         In> Integrate(x,0,1)1-x^a;
 	Out> 1-1/(a+1)+0^(a+1)/(a+1);
@@ -27,10 +27,10 @@
   <li> Bug fix: Div(x,y)*y+Rem(x,y) did not always evaluate to x,
        when either x or y was negative.
   <li> Bug fix: Mod(x,y) is now undefined if y is less than zero.
-  <li> Added txt2yacasdoc.pl supplied by Serge
+  <li> Serge: added txt2yacasdoc.pl - converts plain text to Yacas doc files
   <li> Introduced an "essays" directory meant as repository for
-       essays on using Yacas.
-  <li> Added maintenance howto essay
+       essays on using Yacas
+  <li> Added essays on: Yacas maintenance howto, formatting documentation, writing plugins
   <li> Added part to installation: yacas header files are now
        also installed in /usr/local/share/yacas/include for use
        by the outside world.
@@ -43,7 +43,7 @@
 </ul>
 
 
-<h1>Release of version 1.0.48 (??? 2001)</h1>
+<h1>Release of version 1.0.48 (Dec 2001)</h1>
 <ul>
   <li> small improvement to Arg(...) working on real numbers.
   <li> improved 'make test', no need to install before test any more.
