@@ -337,7 +337,7 @@ Make sure that the arguments of {Macro}... commands evaluate to expressions that
 
 *PARMS
 
-{expression} - expression containing {@var} pairs to substitute the value of variable {var}
+{expression} -- expression containing {@var} pairs to substitute the value of variable {var}
 
 *DESC
 
@@ -392,9 +392,9 @@ The above example assigns {func(value)} to variable {var}.
 
 *PARMS
 
-{expr} - any expression
+{expr} -- any expression
 
-{tag} - tag information (any other expression)
+{tag} -- tag information (any other expression)
 
 *DESC
 
@@ -513,7 +513,7 @@ to see how far the interpreter reaches before an error occurs.
 
 *PARMS
 
-function - string, the name of a function
+{function} -- string, the name of a function
 
 *DESC
 
@@ -587,6 +587,7 @@ to "True", and vice versa.
 *CALL
 	MathAnd(...)
 
+*DESC
 Lazy logical {And}: returns {True} if all args evaluate to
 {True}, and does this by looking at first, and then at the
 second argument, until one is {False}.
@@ -627,13 +628,22 @@ Compares evaluated {a} and {b} recursively
 "True" if the expressions would be printed exactly
 the same, and "False" otherwise.
 
-*CMD GreaterThan, LessThan --- arithmetic predicates
+*CMD GreaterThan, LessThan --- comparison predicates
 *CORE
 *CALL
 	LessThan(a,b), GreaterThan(a,b)
 
+*PARMS
+{a}, {b} -- numbers or strings
 *DESC
-Comparing numbers.
+Comparing numbers or strings (lexicographically).
+
+*EG
+	In> LessThan(1,1)
+	Out> False;
+	In> LessThan("a","b")
+	Out> True;
+
 
 *CMD Math... --- arbitrary-precision math functions
 *CORE
@@ -735,7 +745,7 @@ This chapter assumes the reader is comfortable programming in C++.
 	DllEnumerate()
 
 *PARMS
-{file} - file name of the plugin
+{file} -- file name of the plugin
 
 *DESC
 
@@ -752,7 +762,7 @@ to exactly match, and return silently if it didn't find the dll.
 
 {DllEnumerate()} returns a list with all loaded dynamic link libraries.
 
-*E.G.
+*EG
 
 	In> DllLoad("./libopengl.so");
 	Out> True;
@@ -780,9 +790,9 @@ a stub C++ file.
 
 *PARMS
 
-{const} - string representing the global variable to be bound runtime
+{const} -- string representing the global variable to be bound runtime
 
-{value} - integer value the global should be bound to
+{value} -- integer value the global should be bound to
 
 *DESC
 
@@ -807,7 +817,7 @@ the library header file.
 
 *PARMS
 
-{file} - file to include from the library the plugin is based on
+{file} -- file to include from the library the plugin is based on
 
 *DESC
 
@@ -829,24 +839,24 @@ and for user include file:
 
 *PARMS
 
-returntype - return type of library function
+{returntype} -- return type of new function
 
-fname - function of built-in function
+{fname} -- function of built-in function
 
-fname2 - (optional) function name to be used from within Yacas
+{fname2} -- (optional) function name to be used from within Yacas
 
-args - list of arguments to the function
+{args} -- list of arguments to the function
 
 *DESC
 
-This function declares a library function, along with its
-calling sequence. cstubgen will then generate the C++ code
+This function declares a new library function, along with its
+calling sequence. {cstubgen} will then generate the C++ code
 required to call this function.
 
 Return type, function name, and list of arguments should be
 literal strings (surrounded by quotes).
 
-If fname2 is not supplied, it will be assumed to be the same as fname.
+If {fname2} is not supplied, it will be assumed to be the same as fname.
 
 The return types currently supported are "{int}", "{double}" and "{void}".
 
@@ -876,7 +886,7 @@ doubles and returns void:
 
 *PARMS
 
-{string} - comment string to be added to the documentation
+{string} -- comment string to be added to the documentation
 
 *DESC
 
@@ -895,7 +905,7 @@ on that function.
 
 *PARMS
 
-{func} - name of the function to call to set the environment variable
+{func} -- name of the function to call to set the environment variable
 
 *DESC
 
@@ -928,7 +938,7 @@ in the plugin will then have access to the Yacas environment.
 
 *PARMS
 
-{basename} - name for the generation of the stub file
+{basename} -- name for the generation of the stub file
 
 *DESC
 
@@ -946,9 +956,9 @@ generated while adding functions and constants to the stub.
 
 *PARMS
 
-{name} - name of structure
+{name} -- name of structure
 
-{freefunction} - function that can be called to clean up the object
+{freefunction} -- function that can be called to clean up the object
 
 *DESC
 
@@ -1095,9 +1105,9 @@ meant to be used in test scripts.
 
 *PARMS
 
-{question} - expression to check for
+{question} -- expression to check for
 
-{answer} - expected result after evaluation
+{answer} -- expected result after evaluation
 
 *DESC
 
@@ -1118,13 +1128,13 @@ this problem by having domain-specific comparisons.
 
 The comparison commands do the following comparison types:
 
-*	{Verify} - verify for literal equality. 
+*	{Verify} -- verify for literal equality. 
 This is the fastest and simplest comparison, and can be 
 used for testing that an expression simplifies to for instance $ 2 $.
-*	{TestYacas} - compare two expressions after simplification for 
+*	{TestYacas} -- compare two expressions after simplification for 
 multivariate polynomials. If the two arguments are equivalent
 multivariate polynomials, this test succeeds. {TestYacas} uses {Simplify()}.
-*	{LogicVerify} - Perform a test by using {CanProve} to verify that from 
+*	{LogicVerify} -- Perform a test by using {CanProve} to verify that from 
 {question} the expression {answer} follows. This test command is 
 used for testing the logic theorem prover in Yacas.
 
@@ -1161,7 +1171,7 @@ used for testing the logic theorem prover in Yacas.
 
 *PARMS
 
-{test} - expression that should return False on failure
+{test} -- expression that should return False on failure
 
 *DESC
 
@@ -1194,9 +1204,9 @@ Yacas and type {make test}.
 
 *PARMS
 
-{number} - number to round off
+{number} -- number to round off
 
-{precision} - precision to use for round-off
+{precision} -- precision to use for round-off
 
 *DESC
 
@@ -1224,7 +1234,7 @@ using the {Verify} command.
 
 *PARMS
 
-{x}, {n}, {m}, {u}, {v} - integer arguments
+{x}, {n}, {m}, {u}, {v} -- integer arguments
 
 *DESC
 
@@ -1241,10 +1251,10 @@ $$ (x^n-1)*(x^m-1) = x^(n+m)-(x^n)-(x^m)+1 $$
 The left and right side represent two ways to arrive at the
 same result, and so an arithmetic module actually doing the
 calculation does the calculation in two different ways. 
-The result should be exactly equal.
+The results should be exactly equal.
 
-{RandVerifyArithmetic(n)} calls {VerifyArithmetic()} {n} times, with
-random values.
+{RandVerifyArithmetic(n)} calls {VerifyArithmetic()} with
+random values, {n} times.
 
 {VerifyDiv(u,v)} checks that 
 
