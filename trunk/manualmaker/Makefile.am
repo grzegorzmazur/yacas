@@ -36,9 +36,9 @@ REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt \
 	in/strings.chapt.txt in/probability-and-statistics.chapt.txt \
 	in/addons.chapt.txt in/FDL.chapt.txt
 
-REFPROGCHAPTERS = yacasapi.chapt FDL.chapt cl-options.chapt
-# yacasapi.chapt has no .txt source
-REFPROGSOURCES = in/FDL.chapt.txt in/cl-options.chapt.txt
+REFPROGCHAPTERS = yacasapi.chapt FDL.chapt cl-options.chapt glossary.chapt GPL.chapt
+# yacasapi.chapt and GPL.chapt have no .txt source
+REFPROGSOURCES = in/FDL.chapt.txt in/cl-options.chapt.txt in/glossary.chapt.txt
 
 CODINGCHAPTERS = YacasDebugger.chapt FDL.chapt
 CODINGSOURCES = in/YacasDebugger.chapt.txt in/FDL.chapt.txt
@@ -63,7 +63,7 @@ CODESNIPPETS = wester-1994.ys
 check_SCRIPTS = wester-1994.ys
 
 EXTRA_DIST = \
-	manualmaker styleplain in/all \
+	manualmaker indexmaker styleplain in/all \
 	in/intromaker in/codingmaker in/refmaker in/refprogmaker in/essaysmaker \
 	in/LispProgrammingmaker \
 	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) $(INTROSOURCES) \
@@ -118,6 +118,10 @@ yacasapi.chapt.txt: $(top_srcdir)/src/yacasapi.cpp
 yacasapi.chapt: yacasapi.chapt.txt
 	perl $(top_srcdir)/manmake/txt2yacasdoc.pl < yacasapi.chapt.txt > $@
 
+# special chapter copied from the GPL (need to replace "<" and ">")
+GPL.chapt: $(top_srcdir)/COPYING
+	cat $< | sed -e 's,<,{<},g;s,>,{>},g;' | perl $(top_srcdir)/manmake/txt2yacasdoc.pl > $@
+
 PS_DOCS = intro.book.ps coding.book.ps essays.book.ps ref.book.ps refprog.book.ps Algo.book.ps LispProgramming.book.ps
 
 ps-docs: $(PS_DOCS)
@@ -133,37 +137,38 @@ clean:
 # Newly-built version of yacas with an extended search path
 ouryacas2 = ../src/yacas --rootdir $(top_srcdir)/scripts/:../scripts/:$(srcdir)/:$(srcdir)/in/
 
-books.html:  $(BOOKS) $(REFCHAPTERS) $(ESSAYCHAPTERS) \
-   $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(ALGOCHAPTERS) \
-   $(LISPPROGRAMMINGCHAPTERS)
-	-$(ouryacas2) $(srcdir)/in/all
-	echo "done" > books.html.c
+# refprog.html is not listed because it is generated together with ref.html
+HTMLBOOKS = intro.html coding.html essays.html LispProgramming.html Algo.html ref.html
+
+# the dependence on $(HTMLBOOKS) is only to make sure that all HTML docs
+# are built - maybe there is a better way to organize this.
+# (books.html doesn't really depend on other HTML documents.)
+books.html:  $(BOOKS) $(HTMLBOOKS)
+# this is the old command:
+#	-$(ouryacas2) $(srcdir)/in/all
+	-echo '[Use("indexmaker"); GenerateIndex();];' | $(ouryacas2) -f
+	@echo "done" > books.html.c
 
 intro.html : intro.book $(INTROCHAPTERS)
-	-$(ouryacas) in/intromaker 
-	touch books.html
+	-@echo '[Use("manualmaker"); GenerateBook("intro");];' | $(ouryacas2) -f
 
 coding.html : coding.book $(CODINGCHAPTERS)
-	-$(ouryacas) in/codingmaker
-	touch books.html
+	-@echo '[Use("manualmaker"); GenerateBook("coding");];' | $(ouryacas2) -f
 
 essays.html : essays.book $(ESSAYCHAPTERS)
-	-$(ouryacas) in/essaysmaker
-	touch books.html
+	-@echo '[Use("manualmaker"); GenerateBook("essays");];' | $(ouryacas2) -f
 
-ref.html : ref.book $(REFCHAPTERS)
-	-$(ouryacas) in/refmaker
-	touch books.html
+ref.html : ref.book $(REFCHAPTERS) refprog.book $(REFPROGCHAPTERS)
+	-@echo '[Use("manualmaker"); GenerateTwoBooks("ref","refprog");];' | $(ouryacas2) -f
 
-refprog.html : refprog.book $(REFPROGCHAPTERS)
-	-$(ouryacas) in/refprogmaker
-	touch books.html
+LispProgramming.html : LispProgramming.book $(LISPPROGRAMMINGCHAPTERS)
+	-@echo '[Use("manualmaker"); GenerateBook("LispProgramming");];' | $(ouryacas2) -f
 
-LispProgramming.html : LispProgramming.book $(REFPROGCHAPTERS)
-	-$(ouryacas) in/LispProgrammingmaker
-	touch books.html
+Algo.html : Algo.book $(ALGOCHAPTERS)
+	-@echo '[Use("manualmaker"); GenerateBook("Algo");];' | $(ouryacas2) -f
 
-noindex: intro.html ref.html coding.html essays.html refprog.html
+# do we need this?
+#noindex: intro.html ref.html coding.html essays.html refprog.html
 
 ## Hook to install documentation
 install-data-local: @INSTALL_HTML@ @INSTALL_PS@

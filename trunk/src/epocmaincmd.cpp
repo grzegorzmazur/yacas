@@ -24,6 +24,7 @@
 #include "standard.h"
 #include "ramdisk.h" //TODO keep this?
 
+#include "GPL_stuff.h"
 
 CYacas* yacas=NULL;
 
@@ -297,6 +298,10 @@ REDO:
 
     yacas->Evaluate("Load(\"yacasinit.ys\");");
     ShowResult("");
+
+// do we have a VERSION define on epoc?
+//  console->Write(_L("This is Yacas version '" VERSION "'.\n"));
+  console->Write(_L(GPL_blurb_nohelp));
 
   console->Write(_L("To exit Yacas, enter  Exit(); Type 'restart' to restart Yacas.\r\n"));
   console->Write(_L("To see example commands, keep typing Example();\r\n"));
