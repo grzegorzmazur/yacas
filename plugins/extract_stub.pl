@@ -33,11 +33,16 @@ while(<STDIN>)
 		$arg_list =~ s/  +/ /g;
 		# add }{ between arguments and separate them from the types
 		$arg_list =~ s/ ([^ ]+), */", "$1"}, {"/g;
-		# remove "const" from all types - do we need this?
-		#$arg_list =~ s/const +//g;
+		# remove "const" from all types b/c not supported by Yacas
+		$arg_list =~ s/const +//g;
+		# replace "long" by "int"
+		$arg_list =~ s/([ \"])long\"/$1int\"/g;
+		# remove "unsigned" - this is just for testing, should not do this!
+		$arg_list =~ s/\"unsigned /\"/g;
+		$arg_list =~ s/^unsigned //;
 		# separate the last argument
 		$arg_list =~ s/ ([^ ]+)$/", "$1/;
-		printf "StubAPICFunction(\"%s\", \"%s\", \"%s\", {{\"%s\"}});\n", $return_type, $func_name, $yacas_name, $arg_list;
+		printf "StubApiCFunction(\"%s\", \"%s\", \"%s\", {{\"%s\"}});\n", $return_type, $func_name, $yacas_name, $arg_list;
 	}
 };
 
