@@ -40,4 +40,5 @@ OrthonormalBasis
 Dimensions
 Dot
 MatrixPower
+Diagonal
 }

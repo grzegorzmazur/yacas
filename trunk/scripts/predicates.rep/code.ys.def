@@ -29,6 +29,7 @@ IsIdempotent
 IsOrthogonal
 IsUnitary
 IsVariable
+IsDiagonal
 IsNumericList
 HasExpr
 HasFunc
