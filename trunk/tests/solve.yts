@@ -1,0 +1,5 @@
+
+Testing("Solve");
+Verify(Solve(a+x*y==z,x),(z-a)/y);
+/*TODO PSolve, MatrixSolve*/
+

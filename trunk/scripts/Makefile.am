@@ -30,3 +30,21 @@ EXTRA_DIST = $(SCRIPTFILES) \
         addons/README addons/editvi.ys addons/editvi.ys.def addons/gnuplot.ys \
         addons/gnuplot.ys.def
 
+test:
+	yacas -pc ../tests/arithmetic.yts
+	yacas -pc ../tests/calculus.yts
+	yacas -pc ../tests/canprove.yts
+	yacas -pc ../tests/comments.yts
+	yacas -pc ../tests/linalg.yts
+	yacas -pc ../tests/lists.yts
+	yacas -pc ../tests/logic_simplify_test.yts
+	yacas -pc ../tests/poly.yts
+	yacas -pc ../tests/predicates.yts
+	yacas -pc ../tests/programming.yts
+	yacas -pc ../tests/radsimp.yts
+	yacas -pc ../tests/regress.yts
+	yacas -pc ../tests/simplify.yts
+	yacas -pc ../tests/solve.yts
+	yacas -pc ../tests/sums.yts
+	yacas -pc ../tests/tensors.yts
+

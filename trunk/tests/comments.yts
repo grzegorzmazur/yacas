@@ -1,4 +1,6 @@
 
+NextTest("Checking comment syntax supported");
+
 /* something here */
 a:= 3;
 // test 1

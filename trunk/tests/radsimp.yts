@@ -1,0 +1,6 @@
+
+NextTest("Testing simplifying nested radicals");
+TestYacas(RadSimp(Sqrt(9+4*Sqrt(2))), 1+Sqrt(8));
+TestYacas(RadSimp(Sqrt(5+2*Sqrt(6))+Sqrt(5-2*Sqrt(6))),Sqrt(12));
+TestYacas(RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2)))))), 3+Sqrt(2));
+

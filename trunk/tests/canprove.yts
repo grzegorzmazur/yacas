@@ -1,0 +1,9 @@
+
+NextTest("Propositional logic theorem prover");
+Verify(CanProve(( (a=>b) And (b=>c)=>(a=>c) )),True);
+Verify(CanProve(a Or Not a)                   ,True);
+Verify(CanProve(True Or a)                 ,True);
+Verify(CanProve(False Or a)                ,a   );
+Verify(CanProve(a And Not a)                   ,False);
+Verify(CanProve(a Or b Or (a And b))               ,a Or b  );
+

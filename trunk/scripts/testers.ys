@@ -4,24 +4,30 @@
 
 
 /* Logging functions */
-curline:=0;
+// curline:=0;
 
+/*
 Function("StartTests",{})
 [
   curline:=0;
 ];
+*/
+/*
 Function("NextTest",{aLeft})
 [
- curline++;
+// curline++;
 WriteString("
-":String(curline):". ":aLeft:" : "
+Test suite for ":aLeft:" : "
            );
   NewLine();
 ];
+*/
+/*
 Function("Testing",{aLeft})
 [
  WriteString(aLeft); NewLine();
 ];
+*/
 
 
 Function("Verify",{aLeft,aRight})
@@ -48,10 +54,12 @@ f2(x,n,m):=x^(n+m)-(x^n)-(x^m)+1;
 
 VerifyArithmetic(x,n,m):=
 [
+/*
   WriteString("Checking arithmetic with ");
   Write(x);Space();
   Write(n);Space();
   Write(m);NewLine();
+*/
   Verify(f1(x,n,m),f2(x,n,m));
 ];
 RandVerifyArithmetic(_n)<--

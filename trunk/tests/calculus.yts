@@ -1,0 +1,27 @@
+
+Testing("UnaryFunctionInverses");
+Verify(Sin(ArcSin(a)),a);
+Verify(Cos(ArcCos(a)),a);
+Verify(Tan(ArcTan(a)),a);
+Verify(ArcSin(Sin(a)),a);
+Verify(ArcCos(Cos(a)),a);
+Verify(ArcTan(Tan(a)),a);
+
+Verify(2+I*3,Complex(2,3));
+Verify(Re(2+I*3),2);
+Verify(Im(2+I*3),3);
+Verify(ZeroVector(3),{0,0,0});
+Verify(BaseVector(2,3),{0,1,0});
+Verify(Identity(3),{{1,0,0},{0,1,0},{0,0,1}});
+
+Testing("Derivatives");
+Verify(D(x) a,0);
+Verify(D(x) x,1);
+Verify(D(x) x+x,2);
+Verify(D(x) x*x,2*x);
+Verify(D(x) D(x) Sin(x),-Sin(x));
+
+Testing("Pslq");
+Verify(Pslq({ Pi+2*Exp(1) , Pi , Exp(1) },20),{1,-1,-2});
+Verify(Pslq({ 2*Pi+3*Exp(1) , Pi , Exp(1) },20),{1,-2,-3});
+
