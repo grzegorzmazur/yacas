@@ -1,4 +1,54 @@
 
+
+RuleBase("Held",{expr});
+HoldArg("Held",expr);
+RuleBase("MakeHeld",{expr});
+MakeHeld(_expr) <-- UnList({Held,expr});
+MakeHeldList(list_IsList) <--
+[
+  Local(i,nr);
+  nr:=Length(list);
+  For(i:=1,i<=nr,i++)
+  [
+    list[i] := MakeHeld(list[i]);
+  ];
+  list;
+];
+
+UnHold(Held(_x)) <-- x;
+
+UniqueConstant() <--
+[
+  Local(result);
+  result := String(LocalSymbols(c)(c));
+
+  Atom(StringMid(2,Length(result)-1,result));
+];
+
+10 # Variab2(Held(x_IsNumber)) <-- MakeHeld(x);
+20 # Variab2(Held(x_IsAtom)) <-- MakeHeld(UniqueConstant()*x);
+
+40 # Variab2(Held(f_IsFunction)) <--
+[
+  Local(lst,args);
+  lst := Listify(f);
+  args:=Tail(lst);
+  args:=MakeHeldList(args);
+  args:=MapSingle("Variab2",args);
+  args:=MapSingle("UnHold",args);
+  MakeHeld(UnList(Head(lst):args));
+];
+
+Function("Variab",{expr})
+[
+  UnHold(Variab2(MakeHeld(expr)));
+];
+HoldArg("Variab",expr);
+
+
+EndOfFile;
+
+
 Given
   f(x):=a*x^2+x^4;
 
