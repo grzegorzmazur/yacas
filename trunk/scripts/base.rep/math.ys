@@ -156,14 +156,24 @@ Defun("MathExp", {x})
 	)));
 
 // power function for non-integer argument y -- use MathExp and MathLog
+/* Serge, I disabled this one for now, until we get a compiled version of MathLog that does not hang in 
+   an infinite loop. The C++ version of MathLog never terminates, so I mapped MathLog to your LnNum
+   which of course does a much better job of it. Corollary is that this function can be defined when we also
+   have LnNum in this file.
 Defun("MathFloatPower", {x,y})
 	If(IsInteger(y), False, MathExp(MathMultiply(y,MathLog(x))));
+*/
 
 // power function that works for all real x, y
 /// FIXME: No precision tracking yet.
 
+/* Serge, as MathFloatPower cannot be defined yet, I made the "avoid MathPower(num,float) explicit :-)
+*/
 Defun("MathPower", {x,y})
 // avoid MathPower(0,float)
 	If(Equals(x,0),0, If(Equals(x,1),1, 
-	  If(IsInteger(y), MathIntPower(x,y), MathFloatPower(x,y))
+	  If(IsInteger(y), MathIntPower(x,y), False/*MathFloatPower(x,y)*/)
 	));
+
+
+

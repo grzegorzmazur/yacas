@@ -67,7 +67,7 @@ DigitsToBits(n, base) := MathFloor(0.51+n*N(Ln(base)/Ln(2),10));
 // integer powers:
 10 # MathPower(_x, y_IsInteger) <-- IntPowerNum(x, y, MathMultiply, 1);
 // real powers: this needs precision tracking.
-20 # MathPower(_x, _y) <-- MathExp(MathMultiply(y,MathLn(x)));
+20 # MathPower(_x, _y) <-- MathExp(MathMultiply(y,MathLog(x)));
 */
 
 /// MathSqrt(x).

@@ -102,6 +102,11 @@ char* yacas_output()
     return NULL;
 }
 
+void yacas_secure()
+{
+  if (yacas)
+    (*yacas)()().iSecure = LispTrue;
+}
 void yacas_interrupt()
 {
   if (yacas)

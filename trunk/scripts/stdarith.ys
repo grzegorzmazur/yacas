@@ -328,8 +328,8 @@ LocalSymbols(x,y,xarg,yarg)
 //61 # x_IsPositiveNumber ^ y_IsPositiveNumber <-- MathPower(x,y);
 //61 # x_IsPositiveNumber ^ y_IsNegativeNumber <-- (1/MathPower(x,-y));
 // integer powers are very fast
-61 # x_IsPositiveNumber ^ y_IsPositiveInteger <-- MathPower(x,y);
-61 # x_IsPositiveNumber ^ y_IsNegativeInteger <-- 1/MathPower(x,-y);
+61 # x_IsPositiveNumber ^ y_IsPositiveInteger <-- MathIntPower(x,y);
+61 # x_IsPositiveNumber ^ y_IsNegativeInteger <-- 1/MathIntPower(x,-y);
 65 # (x_IsPositiveNumber ^ y_IsNumber)_Numeric <-- Exp(y*Ln(x));
 
 90 # (-_x)^m_IsEven <-- x^m;
@@ -350,7 +350,7 @@ LocalSymbols(x,y,xarg,yarg)
 100  # ((_x ^ _m)*(_x)) <-- x^(m+1);
 100  # ((_x ^ _n)*(_x ^ _m)) <-- x^(m+n);
 
-100  # ((x_IsNumber)^(n_IsNumber/(_m)))_(n>1) <-- MathPower(x,n)^(1/m);
+100  # ((x_IsNumber)^(n_IsInteger/(_m)))_(n>1) <-- MathIntPower(x,n)^(1/m);
 
 100 # Sqrt(_n)^(m_IsEven) <-- n^(m/2);
 

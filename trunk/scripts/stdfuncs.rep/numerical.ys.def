@@ -5,6 +5,7 @@ TanNum
 ArcSinNum
 ArcTanNum
 ExpNum
+MathLog
 LnNum
 BrentLn
 Ln2

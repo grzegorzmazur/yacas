@@ -80,6 +80,9 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 /// Natural logarithm
 //////////////////////////////////////////////////
 
+//  MathLog in the original C++ code hangs! Scripted implementation is much better
+MathLog(x) := LnNum(x);
+
 // natural logarithm: this should be called only for real x>1
 //LnNum(x) := MathLog(x);
 // right now the fastest algorithm is Halley's method for Exp(x)=a
