@@ -30,6 +30,7 @@ $in_htmlcommand = 0;
 %intro_labels = (
 	"BLURB" => "Blurb()",
 	"INTRO" => "ChapterIntro()",
+	"REM" => "DocumentationComment()",
 );
 
 while (<STDIN>) {
@@ -171,7 +172,7 @@ while (<STDIN>) {
 			}
 		}
 		print "CmdDescription(\"" . $names . "\", \"" . &escape_term($title) . "\");\n";
-	} elsif (/^\*(INTRO|BLURB)\s*(.*)$/) {	# ChapterIntro() and Blurb()
+	} elsif (/^\*(INTRO|BLURB|REM)\s*(.*)$/) {	# ChapterIntro(), Blurb(), DocComment()
 		$label = $1;
 		$text = $2;
 		&finish_text_close_quote();
