@@ -4,11 +4,12 @@
 
 /* Changelog
 	0.1	CForm() derived from TeXForm() v0.4. Have basic functionality. Do not allow list manipulation, unevaluated derivatives, set operations, limits, integrals, Infinity, explicit matrices. Complex numbers and expressions are handled just like real ones. Indexed symbols are assumed to be arrays and handled literally. No declarations or prototypes are supplied. Function definitions are not handled. Sum() is left as is (can be defined as a C function).
+	0.2 Fix for extra parens in Sin() and other functions; fixes for Exp(), Abs() and inverse trig functions
 */
 
 /* To do:
 	0. Find and fix bugs.
-	1. Chop strings that are longer than 80 chars
+	1. Chop strings that are longer than 80 chars?
 	2. Optimization of C code?
 */
 
@@ -81,16 +82,15 @@ CFormMathFunctions :=
     {"Tanh","tanh"},
     {"Exp","exp"},
     {"Ln","log"},
-    {"ArcCos","arccos"},
-    {"ArcCos","arccos"},
-    {"ArcSin","arcsin"},
-    {"ArcTan","arctan"},
-    {"ArcCosh","arccosh"},
-    {"ArcSinh","arcinh"},
-    {"ArcTanh","arctanh"},
+    {"ArcCos","acos"},
+    {"ArcSin","asin"},
+    {"ArcTan","atan"},
+    {"ArcCosh","acosh"},
+    {"ArcSinh","asinh"},
+    {"ArcTanh","atanh"},
     {"Max","max"},
     {"Min","min"},
-    {"Abs","abs"}
+    {"Abs","fabs"}
   };
 
 /* Precedence of 120 because we'd like to process some special functions like pow() first */
@@ -99,9 +99,12 @@ CFormMathFunctions :=
 120 # CForm(expr_IsFunction, _p)_(NrArgs(expr)=2 And Contains(AssocIndices(CFormRegularOps), Type(expr)) ) <--
       CFormBracketIf(p<OpPrecedence(Type(expr)), ConcatStrings(CForm(Listify(expr)[2], OpLeftPrecedence(Type(expr))), CFormRegularOps[Type(expr)], CForm(Listify(expr)[3], OpRightPrecedence(Type(expr))) ) );
 
+
+/* Sin, Cos, etc. and their argument is always bracketed */
+
 120 # CForm(expr_IsFunction, _p) _
       (NrArgs(expr)=1 And Contains(AssocIndices(CFormMathFunctions), Type(expr)) ) <--
-      ConcatStrings(CFormMathFunctions[Type(expr)], "(", CForm( Listify(expr)[2], -TeXFormMaxPrec),")" );
+      ConcatStrings(CFormMathFunctions[Type(expr)], "(", CForm( Listify(expr)[2], TeXFormMaxPrec),")" );
 
 /* functions */
 
@@ -125,10 +128,6 @@ CFormArgs(list_IsList) <--
 [
   ConcatStrings(Type(x), "(", CFormArgs(Tail(Listify(x))),")" );
 ];
-
-/* Sin, Cos, etc. and their argument is always bracketed */
-
-
 
 /* Complex numbers */
 100 # CForm(Complex(0, 1), _p) <-- "I";

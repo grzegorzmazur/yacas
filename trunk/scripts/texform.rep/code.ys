@@ -108,7 +108,7 @@ Function ("TeXFormTextify", {string})
 
 /* Sin, Cos, etc. and their argument is bracketed when it's a sum or product but not bracketed when it's a power. */
 
-TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, {"Cosh","\\cosh "}, {"Sinh","\\sinh "}, {"Tanh","\\tanh "}, {"Ln","\\ln "}, {"ArcCos","\\arccos "}, {"ArcSin","\\arcsin "}, {"ArcTan","\\arctan "}, {"ArcCosh","\\arccosh "}, {"ArcSinh","\\arcinh "}, {"ArcTanh","\\arctanh "}, {"Max","\\max "}, {"Min","\\min "} };
+TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, {"Cosh","\\cosh "}, {"Sinh","\\sinh "}, {"Tanh","\\tanh "}, {"Ln","\\ln "}, {"ArcCos","\\arccos "}, {"ArcSin","\\arcsin "}, {"ArcTan","\\arctan "}, {"ArcCosh","\\arccosh "}, {"ArcSinh","\\arcsinh "}, {"ArcTanh","\\arctanh "}, {"Max","\\max "}, {"Min","\\min "} };
 
 /* Precedence of 120 because we'd like to process other functions like sqrt or exp first */
 
