@@ -170,7 +170,9 @@ needed. Also, it provides no error estimate.
 *A continued fraction approximation!top-down computation
 
 The "top-down" method is slower but provides an error estimate and
-allows to compute the fraction in the forward direction. The idea is to
+allows to compute the fraction in the forward direction. The idea
+*FOOT This is a known result in the theory of continued fractions. We give an elementary derivation.
+is to
 replace the continued fraction $F[0][n]$ with a sum of a certain series, i.e.
 $$ a[0]+b[0]/(a[1]+b[1]/(...+b[n-1]/a[n])) = Sum(k,0,n,f[k]) $$.
 Here
@@ -201,7 +203,9 @@ and one division.
 
 Note that typically all terms $a[i]$, $b[i]$ are positive, so the
 series we obtained will have terms $f[k]$ of alternating signs. To
-reduce the round-off error, we can convert this series into a series
+reduce the round-off error,
+*FOOT This method is used in H. C. Thacher, Jr., <i>Algorithm 180</i>, which refers to a suggestion by Hans Maehly.
+we can convert this series into a series
 with constant sign by adding together two adjacent elements, say
 $f[2*k]+f[2*k+1]$. The relevant formulae can be derived from the
 definition of $f[k]$ using the recurrence relations for $P[k]$, $Q[k]$:
