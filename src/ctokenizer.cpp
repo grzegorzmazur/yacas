@@ -43,7 +43,7 @@ REDO:
     else if (c == '\\')
     {
         while (aInput.Next() != '\n' && !aInput.EndOfStream());
-        goto REDO;
+//        goto REDO;
 //        if (iPreProcessLine)
 //        {
 //        }
