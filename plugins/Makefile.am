@@ -30,10 +30,16 @@ EXTRA_DIST = doc.txt   README   makefile.plugin \
 # Why doesn't this work?
 #
 
-#INCLUDES = -I../src -I../src/plat/linux32/
-#noinst_LTLIBRARIES = libexample.la
-#libexample_la_SOURCES = example/barepluginapi.cc example/bareplugin.cc
-#libexample_la_LDFLAGS = -module -avoid-version -export-dynamic
+INCLUDES = -I../src -I../src/plat/linux32/
+noinst_LTLIBRARIES = libexample.la
+libexample_la_SOURCES = example/barepluginapi.cc example/bareplugin.cc
+libexample_la_LDFLAGS = -module
+
+libexample.dylib: bareplugin.lo barepluginapi.lo
+	c++ -module -dynamic -undefined suppress -flat_namespace -dynamiclib -o $@ bareplugin.lo barepluginapi.lo
+
+
+# -avoid-version -export-dynamic
 
 
 

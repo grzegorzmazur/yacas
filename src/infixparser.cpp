@@ -120,7 +120,7 @@ void ParsedObject::Combine(LispInt aNrArgsToCombine)
 {
     LispPtr subList;
     subList.Set(LispSubList::New(iResult.Get()));
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
     subList.Get()->SetFileAndLine(
                               iParser.iInput.Status().FileName(),
                               iParser.iInput.Status().LineNumber()
@@ -164,7 +164,7 @@ void ParsedObject::InsertAtom(LispStringPtr aString)
 {
     LispPtr ptr;
     ptr.Set(LispAtom::New(aString));
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
     ptr.Get()->SetFileAndLine(
                               iParser.iInput.Status().FileName(),
                               iParser.iInput.Status().LineNumber()

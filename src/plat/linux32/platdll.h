@@ -4,11 +4,11 @@
 
 #include "../../lispplugin.h"
 
-class LtDll : public LispDllBase
+class ElfDll : public LispDllBase
 {
 public:
-    LtDll() : handle(NULL) {}
-    virtual ~LtDll();
+    ElfDll() : handle(NULL) {}
+    virtual ~ElfDll();
     virtual LispInt Open(LispCharPtr aDllFile, LispEnvironment& aEnvironment);
     virtual LispInt Close(LispEnvironment& aEnvironment);
     virtual LispPluginBase* GetPlugin(void);

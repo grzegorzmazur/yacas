@@ -23,7 +23,7 @@
   void PlatObFree(void *p);
   void *PlatObReAlloc(void *p, size_t nbytes);
 
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
 #include "debugmem.h"
   #define PlatAlloc(nr)        (LispCharPtr)YacasMallocPrivate((size_t)nr,__FILE__,__LINE__)
   #define PlatReAlloc(orig,nr) (LispCharPtr)YacasReAllocPrivate((void*)orig,(size_t)nr,__FILE__,__LINE__)
@@ -47,7 +47,7 @@ inline void* operator new(size_t size)
 {
     int* ptr = NULL;
     printf("WARNING! Global new called\n");
-#ifndef DEBUG_MODE
+#ifndef YACAS_DEBUG
     *ptr = 1;
 #endif
     return PlatAlloc(size);
@@ -56,7 +56,7 @@ inline void* operator new[](size_t size)
 {
     int* ptr = NULL;
     printf("WARNING! Global new called\n");
-#ifndef DEBUG_MODE
+#ifndef YACAS_DEBUG
     *ptr = 1;
 #endif
     return PlatAlloc(size);
@@ -65,7 +65,7 @@ inline void operator delete(void* object)
 {
     int* ptr = NULL;
     printf("WARNING! Global delete called\n");
-#ifndef DEBUG_MODE
+#ifndef YACAS_DEBUG
     *ptr = 1;
 #endif
     PlatFree((LispCharPtr)object);
@@ -74,7 +74,7 @@ inline void operator delete[](void* object)
 {
     int* ptr = NULL;
     printf("WARNING! Global delete called\n");
-#ifndef DEBUG_MODE
+#ifndef YACAS_DEBUG
     *ptr = 1;
 #endif
     PlatFree((LispCharPtr)object);

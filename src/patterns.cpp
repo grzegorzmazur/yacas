@@ -190,7 +190,7 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
 //                        third.Get()->Next().Set(LispAtom::New(aEnvironment.HashTable().LookUp(str)));
                         LispPtr *pred = NEW LispPtr;
                         pred->Set(LispSubList::New(third.Get()));
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
                         third.Get()->Next().Get()->SetFileAndLine(second->iFileName,second->iLine);
                         pred->Get()->SetFileAndLine(head->iFileName,head->iLine);
 #endif

@@ -4,7 +4,7 @@
 #define __debugmem_h__
 
 
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
 
 #ifdef NO_GLOBALS
 #error "Memory heap checking only possible with global variables!"

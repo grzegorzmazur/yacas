@@ -11,18 +11,18 @@
 LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
 {
     iDllFileName = aDllFile;
-//printf("Trying to open [%s]\n",aDllFile);
+printf("Trying to open [%s]\n",aDllFile);
     lt_dlinit();
     handle = lt_dlopen(aDllFile/*,RTLD_LAZY*/);
     if (handle)
     {
-//printf("handle opened\n");
+printf("handle opened\n");
 
         iPlugin = GetPlugin();
         if (iPlugin)
         {
 
-//printf("plugin found\n");
+printf("plugin found\n");
             iPlugin->Add(aEnvironment);
         }
     }

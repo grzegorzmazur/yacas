@@ -264,10 +264,10 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
             if (iSubLine.NrItems()>1)
             {
                 NewLine();
-                LispStringPtr ptr = NEW LispString();
-                *ptr = iSubLine.String();
                 if (!iHistoryUnchanged)
                 {
+                  LispStringPtr ptr = NEW LispString();
+                  *ptr = iSubLine.String();
                   iHistory.Append(ptr);
                 }
                 else

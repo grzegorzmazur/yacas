@@ -36,7 +36,7 @@ LispStringPtr LispAtom::String() const
 LispObject* LispAtom::Copy(LispInt aRecursed)
 {
     LispObject *copied = NEW LispAtom(iString);
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
     copied->SetFileAndLine(iFileName, iLine);
 #endif
     return copied;
@@ -88,7 +88,7 @@ LispObject* LispSubList::Copy(LispInt aRecursed)
     //TODO recursed copy needs to be implemented still
     LISPASSERT(aRecursed == 0);
     LispObject *copied = NEW LispSubList(iSubList.Get());
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
     copied->SetFileAndLine(iFileName, iLine);
 #endif
     return copied;
@@ -174,7 +174,7 @@ LispObject* LispGenericClass::Copy(LispInt aRecursed)
 {
     //TODO real copy!
     LispObject *copied = NEW LispGenericClass(iClass);
-#ifdef DEBUG_MODE
+#ifdef YACAS_DEBUG
     copied->SetFileAndLine(iFileName, iLine);
 #endif
     return copied;
