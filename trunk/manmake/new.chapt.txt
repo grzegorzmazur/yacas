@@ -1192,8 +1192,9 @@ atom. In such a case an object of type {LispNumber} is created instead
 of the {LispAtom}. The {LispNumber} constructor stores
 the string representation but does not yet create
 an object of type {BigNumber} from the string representation.
-[The {BigNumber} object is automatically created from the string representation
-by the {Number(precision)} method the first time it is requested.]
+The {BigNumber} object is later automatically created from the string representation.
+This is done by the {Number(precision)} method the first time it is requested.
+String conversion is deferred to save time when reading scripts.
 *	1. Suppose the {Number} method is called; then a {BigNumber} object will be created from the string representation, using the current precision.
 This is where the string conversion takes place.
 If later the precision is increased, the string conversion will be performed again.
@@ -1274,7 +1275,7 @@ That {BigNumber} object will have 28 bits to cover the 9 significant digits of t
 But the result of an arithmetic calculation is not computed with more than 6 decimal digits.
 Later when {x} needs to be printed, the full string representation is available so it is printed.
 
-If now we increase precisionto 20 digits, the object {x} will be interpreted as 1.23456789 with 12 zeros at the end.
+If now we increase precision to 20 digits, the object {x} will be interpreted as 1.23456789 with 12 zeros at the end.
 
 	In> Precision(20)
 	Out> True;
