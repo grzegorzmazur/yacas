@@ -12,17 +12,20 @@ ouryacas = ../src/yacas --rootdir $(top_srcdir)/scripts/:../scripts/
 ## PDF_DOCS   is either "pdf-docs" or empty
 all-am: @BOOKS_HTML@ @PS_DOCS@ @PDF_DOCS@ hints
 
-noinst_PROGRAMS = manripper
+noinst_PROGRAMS = manripper removeduplicates
 
 manripper_SOURCES = manripper.cpp 
 
-hints: manripper $(REFSOURCES) $(REFPROGSOURCES) ref.book.txt refprog.book.txt
+removeduplicates_SOURCES = removeduplicates.cpp
+
+hints: manripper removeduplicates $(REFSOURCES) $(REFPROGSOURCES) ref.book.txt refprog.book.txt
 	rm -f hints.unsorted
 	for file in ref.book.txt $(REFSOURCES) refprog.book.txt $(REFPROGSOURCES); do \
 	./manripper $(srcdir)/"$$file" >> hints.unsorted ; done
 	sort -t ":" hints.unsorted > hints.sorted
+	./removeduplicates hints.sorted hints.singlesorted
 	echo "::::" > tail.txt
-	cat hints.sorted tail.txt > hints
+	cat hints.singlesorted tail.txt > hints
 
 ## ytxt2tex is to be installed in $(bindir). 
 bin_SCRIPTS = ytxt2tex
