@@ -24,4 +24,5 @@ MatrixColumn
 GenMatrix
 RandomIntegerVector
 JacobianMatrix
+HessianMatrix
 }

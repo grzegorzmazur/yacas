@@ -350,37 +350,8 @@ Function("GenMatrix",{func,m,n})
 HoldArg("GenMatrix",func);
 UnFence("GenMatrix",3);
 
-Function("JacobianMatrix",{func,vec})
-[
-  Local(i,j,len,result);
-  len:=Length(func);
-  result:=ZeroMatrix(len,len);
+// this takes N funcs in N vars
+JacobianMatrix(f,v):=GenMatrix({{i,j},Deriv(v[j])f[i]},Length(f),Length(f));
 
-  For(i:=1,i<=len,i++)
-    For(j:=1,j<=len,j++)[
-		result[i][j]:= Deriv(Eval(vec[j])) func[i];
-	];
-
-  result;
-];
-HoldArg("JacobianMatrix",func);
-
-/*
-Function("JacobianMatrix",{funcs,vars})[
-	Local(len,i,j,result);
-	len:=Length(funcs);
-	
-	Check( len = Length(vars),
-		"JacobianMatrix: number of functions and variables must be the same" );
-	Check( len > 0, "JacobianMatrix: Must have > 0 functions " );
-
-	result:=ZeroMatrix(n,n);
-
-	For(i:=1,i<=len,i++)[
-		For(j:=1,j<=len,j++)[
-			result[i][j]:= {6};
-		];
-	];
-	result;
-];
-*/
+// this takes 1 func in N vars
+HessianMatrix(f,v):=GenMatrix({{i,j}, Deriv(v[i]) Deriv(v[j]) f},Length(v),Length(v));
