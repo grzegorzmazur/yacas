@@ -162,7 +162,8 @@ while (<STDIN>) {
 		&finish_text();
 		$have_par = ($text =~ /^\s*$/) ? 1 : 0;
 		print "ChapterIntro()\"" . $text . "\n";
-		$in_text = 1;		
+		$in_text = 1;
+		$have_Text = 1;
 	} else {
 	#############################################################
 	# plain text - process it last, after every other markup is done

@@ -4,7 +4,7 @@ Text(x) := WriteString(Nl() : x : Nl());
 Book(x) := WriteString(Nl() : "				" : x : Nl());
 Chapter(x) := WriteString(Nl() : "			" : x : Nl());
 Section(x) := WriteString(Nl() : "		" : x : Nl());
-SubSection(x) := WriteString(Nl() : "	*	    " : x : Nl());
+SubSection(x) := WriteString(Nl() : "	    " : x : Nl());
 
 Itemize(x) := Nl() : LineByLineMarkup(x, "*	") : Nl();
 Enumerate(x) := Nl() : LineByLineMarkup(x, "*	0. ") : Nl();
@@ -47,27 +47,30 @@ HtmlEmphasis(x) := "<i>" : StripNl(x) : "</i>";
 HtmlTerm(x) := "{" : StripNl(x) : "}";
 HtmlBreak() := Nl();
 
-HtmlAnchor(string) := "*A " : string : Nl();
+HtmlAnchor(string) := "";// "*A " : string : Nl();
 Bodied("HtmlAnchor", 60000);
 AddBody(string) := WriteString(string);
 SeeAlso(list) := WriteString(
-Nl() : "*SEE " : PrintList(list) : Nl()
+Nl() : "*SEE " : PrintList(list) : Nl() : Nl()
 );
 
-ChapterIntro(string) := WriteString(
-"*INTRO " : string : "
+ChapterIntro(string) := WriteString("
+*INTRO " : string : "
+
 ");
 
 TopicalStrings := {
-	{"Calling Sequence", "CALL"},
-	{"Parameters", "PARMS"},
-	{"Description", "DESC"},
-	{"Examples", "E.G."},
+	{"Calling Sequence", "*CALL"},
+	{"Calling sequence", "*CALL"},
+	{"See Also", ""},
+	{"Parameters", "*PARMS"},
+	{"Description", "*DESC"},
+	{"Examples", "*E.G."},
 };
 
 Topical(string) := WriteString(
-Nl() : "*" : If(Contains(AssocIndices(TopicalStrings), string),
-	TopicalStrings[string], "HEAD" : string)
+Nl() : If(Contains(AssocIndices(TopicalStrings), string),
+	TopicalStrings[string], "*HEAD " : string)
 : Nl()
 );
 
@@ -94,6 +97,11 @@ BuiltIn() := WriteString("
 *CORE
 ");
 
-CmdDescription(cmd, desc) := WriteString(
-"*CMD" : cmd : " --- " : desc : Nl()
+CmdDescription(cmd, desc) := WriteString("
+*CMD " : cmd : " --- " : desc : Nl()
 );
+
+Gt() := "\\>";
+Lt() := "\\<";
+
+AddAnchor(string) := AddBody(HtmlAnchor() string);

@@ -2,13 +2,13 @@
 
 Book()"Yacas programmers function reference";
 
-Load("prog.chapt");
-  GarbageCollect();
-Load("built.chapt");
-  GarbageCollect();
-Load("plugins.chapt");
-  GarbageCollect();
-Load("generic.chapt");
-  GarbageCollect();
+IncludeFile("prog.chapt");
+
+IncludeFile("built.chapt");
+
+IncludeFile("plugins.chapt");
+
+IncludeFile("generic.chapt");
+
 
 

@@ -119,11 +119,18 @@ The additional elements all start with an asterisk "{*}" in the first position o
 	*SEE Write, WriteString
 Compare this with the reference manual section on the function {PrintList} to see how this plain text markup is rendered in the finished documentation.
 
+Notes:
+*	some labels have parameters and some other labels do not; labels that do not have parameters must be put alone on a line
+*	TAB characters are not necessary between "{*LABEL}" and the following text; ordinary spaces work too, but there must be some whitespace separating them.
+*	the comma and space combination "{, }" is mandatory in lists (but can have several spaces after a comma). Lists of commands are used by the {*CMD} and {*SEE} labels.
+*	Characters {<} and {>} are of special significance to both HTML and TeX and should be escaped.
+
+
 In a subsection there may be either one function documented or several at once: for example, it may make sense to document {Sin}, {Cos} and {Tan} together. In this case, all function names should be simply listed in the {*CMD} header, for example:
 
 	*CMD Sin, Cos, Tan --- trigonometric functions
 
-In addition, there is a tag {*A} which creates an HTML link to a manual section and a tag {*HEAD} which creates a small heading. For instance,
+In addition, there is a tag {*INTRO} to denote a "reference chapter introduction" corresponding to the {ChapterIntro()} function, {*A} which creates an HTML link to a manual section corresponding to {AddBody(HtmlAnchor()...)}, and a tag {*HEAD} which creates a small heading ({Topical()}). For instance,
 
 	*PARMS
 is currently implemented in the same way as
@@ -159,20 +166,31 @@ This requires that the Yacas script {book2txt.ys} is available in the current di
 
 Of course, it is possible that some features of Yacas documentation were not implemented in the script and in that case the resulting file must be edited by hand. But the purpose of the {book2txt} script is exactly this: to make a plain text source file to be edited and maintained.
 
+Several files can be converted at once, for example:
+
+	book2txt.sh file1.chapt file2.chapt file3.book
+
+Each file is processed by an independent Yacas session. Any errors of processing are printed on the screen.
+
 	    {book2TeX}: preparing typeset documentation
 
-The script {book2TeX.sh} prepares a $TeX$ file out of a Yacas-language documentation book. Usage is similar to {book2txt.sh}, for example:
-	book2TeX.sh intro.book
-will create a $TeX$-formatted version introductory guide. It can be processed with standard tools, for example
-
+The script {book2TeX.sh} prepares a $TeX$ file out of a Yacas-language documentation book. Usage is similar to {book2txt.sh}, except that only one file is processed at a time. For example:
+	book2TeX.sh intro.book intro.book.tex
+will create a $TeX$-formatted version of the introductory tutorial. It can be processed with standard tools, for example
 	latex intro.book.tex
 	latex intro.book.tex
 	dvips -o intro.book.ps intro.book dvi
 will prepare a Postscript version, while
-
 	latex intro.book.tex
 	pdflatex intro.book.tex
 will prepare a PDF version.
+
+The shell commands in {book2txt.sh} execute the following Yacas command,
+
+	In> [ Use("book2TeX.ys"); ToFile("file.chapt.tex") Load("file.chapt"); ];
+	Out> True;
+
+This requires that the Yacas script {book2TeX.ys} is available in the current directory. The shell script {book2TeX.sh} assumes that {book2TeX.ys} is stored in the same directory as {book2TeX.sh}.
 
 Not all features of Yacas documentation are compatible with $TeX$ typesetting. To prevent errors, documentation should avoid certain things. In general, it is a good idea to check the typeset appearance of documentation, since it helps detect errors.
 

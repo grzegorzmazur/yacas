@@ -1,44 +1,31 @@
+	Book()"Yacas users function reference";
 
-Book()"Yacas users function reference";
+IncludeFile("config.chapt");
 
-Load("config.chapt"); GarbageCollect();  
-Load("arith.chapt");  GarbageCollect();  
-Load("calc.chapt");  GarbageCollect();
-Load("linalg.chapt");  GarbageCollect();
-Load("univar.chapt");  GarbageCollect();
-Load("lists.chapt");  GarbageCollect();
-Load("functional.chapt");  GarbageCollect();
-Load("controlflow.chapt");  GarbageCollect();
-Load("preds.chapt");  GarbageCollect();
-Load("logic.chapt");  GarbageCollect();
-Load("const.chapt");  GarbageCollect();
-Load("vars.chapt");  GarbageCollect();
-Load("io.chapt");  GarbageCollect(); 
-Load("strings.chapt");  GarbageCollect(); 
+IncludeFile("arith.chapt");
 
-/*
-  GarbageCollect();
-  GarbageCollect();
-  GarbageCollect();
-  GarbageCollect();
-  GarbageCollect();
-  GarbageCollect();
-  GarbageCollect();
-  GarbageCollect();
-  GarbageCollect();
-  GarbageCollect();
-  GarbageCollect();
-  GarbageCollect();
-  GarbageCollect();
-  GarbageCollect();
-*/
+IncludeFile("calc.chapt");
 
+IncludeFile("linalg.chapt");
 
+IncludeFile("univar.chapt");
 
+IncludeFile("lists.chapt");
 
-/*
-*/
+IncludeFile("functional.chapt");
 
-/*
-*/
+IncludeFile("controlflow.chapt");
+
+IncludeFile("preds.chapt");
+
+IncludeFile("logic.chapt");
+
+IncludeFile("const.chapt");
+
+IncludeFile("vars.chapt");
+
+IncludeFile("io.chapt");
+
+IncludeFile("strings.chapt");
+
 

@@ -6,7 +6,7 @@ TexCharsToEscape := { "{", "}", "#", "_", "&", "\\", "^", "%", "$"};
 
 Book(x) := [	/* this is the first declaration in a file */
 	WriteString("
-\\documentclass[11pt]{report}
+\\documentclass[twocolumn,10pt]{report}
 
 \\setlength{\\topmargin}{-1.2in}
 \\setlength{\\oddsidemargin}{-0.5in}
@@ -31,7 +31,7 @@ Section(x) := WriteString(
 "\\section{" : x : "}
 ");
 SubSection(x) := WriteString(
-"\\subsection{" : x : "}
+"\\subsection*{" : x : "}
 ");
 
 Itemize(body) :=
@@ -68,6 +68,11 @@ HtmlTerm(x) := [
 	If (HasTexChars(x),
 	"\\verb|" : x : "|",
 	"\\texttt{" : x : "}");
+];
+
+/* this will escape TeX symbols so that the result can be put into a section heading, i.e. no \verb|| */
+HtmlTermHeading(x) := [
+	HtmlTerm(x);	// for now
 ];
 
 HtmlBreak() := "
@@ -114,12 +119,14 @@ ChapterIntro(string) := WriteString("
 ");
 Bodied("ChapterIntro", 60000);
 
-CmdDescription(cmd, desc) := WriteString(
-HtmlTerm(cmd) : " --- " : desc : Nl()
-);
+CmdDescription(cmd, desc) := WriteString("
+\\section*{" : HtmlTermHeading(cmd) : " --- " : desc : "}
+");
 
 StandardLib() := WriteString("
-\\raggedleft {\\small Standard library}
+
+\\begin{flushright} \\small Standard library \\end{flushright}
+
 ");
 
 BuiltIn() := WriteString("
@@ -131,8 +138,8 @@ AddBody(string) := WriteString(string);
 SeeAlso(list) := WriteString(
 Nl() : PrintList(MapSingle("HtmlTerm", list), ", ") : Nl()
 );
-HtmlAnchor(string) := "
-";
+
+HtmlAnchor(string) := "";
 
 Bodied("HtmlAnchor", 60000);
 Topical(string) := WriteString(
