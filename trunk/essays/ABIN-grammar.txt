@@ -42,9 +42,12 @@ necessary also to have predicates for {B}-expressions, {N}-expressions and
 {A}-expressions, as well as for axioms and theorems. We might implement
 expressions by lists of symbols, e.g. {{"B", "I"}} and begin to code by
 
-	IsExpr(x_IsList) <-- IsBExpr(x) Or IsNExpr(x) Or IsAExpr(x);
-	IsProvable(x_IsList) <-- IsAxiom(x) Or IsTheorem(x);
-	IsAxiom(x_IsList) <-- IsNExpr(x) And IsBExpr(Tail(x));
+	IsExpr(x_IsList) <-- IsBExpr(x) Or
+	  IsNExpr(x) Or IsAExpr(x);
+	IsProvable(x_IsList) <-- IsAxiom(x) Or
+	  IsTheorem(x);
+	IsAxiom(x_IsList) <-- IsNExpr(x) And
+	  IsBExpr(Tail(x));
 
 The definitions of {IsBExpr(x)} and {IsNExpr(x)} are simple recursion to
 express the rules 1 and 2 of the ABIN grammar. Note the use of {Take} to create
@@ -53,11 +56,12 @@ rule).
 
 	10 # IsBExpr({}) <-- False;
 	10 # IsBExpr({"B"}) <-- True;
-	20 # IsBExpr(x_IsList) <-- x[Length(x)]="I" And
-	  IsBExpr(Take(x, {1, Length(x)-1}));
+	20 # IsBExpr(x_IsList) <-- x[Length(x)]="I"
+	  And IsBExpr(Take(x, {1, Length(x)-1}));
 	
 	10 # IsNExpr({}) <-- False;
-	20 # IsNExpr(x_IsList) <-- x[1] = "N" And IsExpr(Tail(x));
+	20 # IsNExpr(x_IsList) <-- x[1] = "N" And
+	  IsExpr(Tail(x));
 
 The predicate {IsAExpr(x)} is a little bit more complicated because our rule 3
 requires to find two well-formed expressions that follow {A}. Also, for proving
@@ -71,37 +75,42 @@ being of length 3. We shall use a {For} loop for this function:
 	FindTwoExprs(x_IsList) <-- [
 	 Local(iter, result);
 	 For( [ iter:=1; result:=False; ],
-	  iter < Length(x) And Not result, iter:=iter+1 )
+	  iter < Length(x) And Not result,
+	    iter:=iter+1 )
 	   [
 	    result := IsExpr(Take(x, iter))
-	     And IsExpr(Take(x, {iter+1, Length(x)}));
+	     And IsExpr(Take(x, {iter+1,
+		   Length(x)}));
 	   ];
 	 {result, iter-1};
 	];
 
 Now we can define the remaining predicates:
 
-	10 # IsAExpr(x_IsList)_(Length(x) <= 1) <-- False;
-	20 # IsAExpr(x_IsList) <-- x[1] = "A" And FindTwoExprs(Tail(x))[1];
+	10 # IsAExpr(x_IsList)_(Length(x) <= 1)
+	  <-- False;
+	20 # IsAExpr(x_IsList) <-- x[1] = "A" And
+	  FindTwoExprs(Tail(x))[1];
 	
-	IsTheorem(x_IsList) <-- If(IsNExpr(x) And IsAExpr(Tail(x)) And
-	  IsProvable(Concat({"N"}, Take(Tail(Tail(x)),
+	IsTheorem(x_IsList) <-- If(IsNExpr(x) And
+	  IsAExpr(Tail(x)) And IsProvable(
+	    Concat({"N"}, Take(Tail(Tail(x)),
 	   FindTwoExprs(Tail(Tail(x)))[2]) ));
 
 
 The ABIN language is now complete. Let us try some simple examples:
 
-	In> IsExpr({"A", "B"});
+	In> IsExpr({"A","B"});
 	Out> False;
-	In> IsExpr({"N", "B", "I"});
+	In> IsExpr({"N","B","I"});
 	Out> True;
-	In> IsAxiom({"N", "B", "I"});
+	In> IsAxiom({"N","B","I"});
 	Out> True;
-	In> IsTheorem({"N", "B", "I"});
+	In> IsTheorem({"N","B","I"});
 	Out> False;
-	In> IsProvable({"N", "B", "I"});
+	In> IsProvable({"N","B","I"});
 	Out> True;
-	In> IsProvable({"N", "A", "B", "I", "B"});
+	In> IsProvable({"N","A","B","I","B"});
 	Out> True;
 
 It is somewhat inconvenient to type long lists of characters. So we can create
@@ -112,9 +121,11 @@ replace {IsProvable}.
 
 	AtomToCharList(x_IsAtom) <-- [
 	  Local(index, result);
-	  For( [ index:=Length(String(x)); result:={}; ],
+	  For( [ index:=Length(String(x));
+	     result:={}; ],
 	   index > 0, index:=index-1 )
-	   Push(result, StringMid(index, 1, String(x)));
+	   Push(result, StringMid(index, 1,
+	     String(x)));
 	  result;
 	];
 	Holdarg(AtomToCharList, 1);
