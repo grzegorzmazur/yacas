@@ -21,6 +21,7 @@ if [ -d homepage ] ; then : ; else  mkdir homepage ; fi;
 cd homepage
 
 cp ../manualmaker/*.html .
+cp ../docs/yacaslogo.gif .
 tar -zcvf manual.html.tar.gz *
 cp ../manualmaker/*.ps .
 cp ../manualmaker/*.pdf .

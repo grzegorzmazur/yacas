@@ -60,8 +60,9 @@ Function("Verify",{aLeft,aRight})
     True
   );
 ];
-/*
 HoldArg("Verify",aLeft);
+UnFence("Verify",2);
+/*
 HoldArg("Verify",aRight);
 */
 

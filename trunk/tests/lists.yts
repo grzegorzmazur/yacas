@@ -62,7 +62,7 @@ Verify({a,b,c}[2],b);
 
 Testing("Concat");
 Verify(Concat({a,b},{c,d}),{a,b,c,d});
-Verify(Hold(Concat({a,b},{c,d})),Concat({a,b},{c,d}));
+//This is simply not true!!! Verify(Hold(Concat({a,b},{c,d})),Concat({a,b},{c,d}));
 
 
 Testing("Binary searching");
