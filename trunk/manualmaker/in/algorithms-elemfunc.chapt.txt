@@ -5,14 +5,14 @@ The Newton-Raphson method of numerical solution of algebraic equations can be us
 The basic formula is widely known: If $f(x)=0$ must be solved, one starts with a value of $x$ that is close to some root and iterates $$x'=x-f(x)*(D(x)f(x))^(-1)$$.
 This formula is based on the approximation of the function $f(x)$ by a tangent line at some point $x$. A Taylor expansion in the neighborhood of the root shows that (for an initial value $x[0]$ sufficiently close to the root) each iteration gives at least twice as many correct digits of the root as the previous one ("quadratic convergence"). Therefore the complexity of this algorithm is proportional to a logarithm of the required precision and to the time it takes to evaluate the function and its derivative. Generalizations of this method require computation of higher derivatives of the function $f(x)$ but successive approximations to the root converge several times faster (the complexity is still logarithmic).
 
-Newton's method is particularly convenient for multiple precision calculations because of its insensitivity to accumulated errors: if at some iteration $x[k]$ is found with a small error, the error will be corrected at the next iteration. Therefore it is not necessary to compute all iterations with the full required precision; each iteration needs to be performed at the precision of the root expected from that iteration. For example, if we know that the initial approximation is accurate to 3 digits, then (assuming quadratic convergence) it is enough to perform the first iteration to 6 digits, the second iteration to 12 digits and so on. In this way, calculations are enormously speeded up.
+Newton's method is particularly convenient for multiple precision calculations because of its insensitivity to accumulated errors: if $x[k]$ at some iteration is found with a small error, the error will be corrected at the next iteration. Therefore it is not necessary to compute all iterations with the full required precision; each iteration needs to be performed at the precision of the root expected from that iteration. For example, if we know that the initial approximation is accurate to 3 digits, then (assuming quadratic convergence) it is enough to perform the first iteration to 6 digits, the second iteration to 12 digits and so on. In this way, multiple precision calculations are enormously speeded up.
 
 However, Newton's method suffers from sensitivity to the initial guess. If the initial value $x[0]$ is not chosen sufficiently close to the root, the iterations may converge very slowly or not converge at all. To remedy this, one can combine Newton's iteration with simple bisection. Once the root is bracketed inside an interval ($a$, $b$), one checks whether $(a+b)/2$ is a better approximation for the root than that obtained from Newton's iteration. This guarantees at least linear convergence in the worst case.
 
 For some equations $f(x)=0$, Newton's method converges faster; for example, solving $Sin(x)=0$ in the neighborhood of $x=3.14159$ gives "cubic" convergence, i.e. the number of correct digits is tripled at each step. This happens because $Sin(x)$ near its root $x=Pi$ has vanishing second derivative and thus the function is particularly well approximated by a straight line.
 
 <i>Halley's method</i> is an improvement to Newton's method that makes each equation well approximated by a straight line near the root. Edmund Halley computed fractional powers, $x=a^(1/n)$, by the iteration
-$$ x'=x*((n-1)*x^n+(n+1)*a)/((n+1)*x^n+(n-1)*a) $$.
+$$ x'=x*(n*(a+x^n)+(a-x^n))/(n*(a+x^n)-(a-x^n)) $$.
 This formula is equivalent to Newton's method applied to the equation
 $x^(n-q) = a*x^(-q)$ with $q=(n-1)/2$. This iteration has a cubic convergence rate. This is the fastest method to compute $n$-th roots with multiple precision. Iterations with higher order of convergence, for example, the method with quintic convergence rate
 $$ x' = x* ( (n-1)/(n+1)*(2*n-1)/(2*n+1) *x^(2*n) + 2*(2*n-1)/(n+1)*x^n*a + a^2) / (x^(2*n)+2*(2*n-1)/(n+1)*x^n*a+(n-1)/(n+1)*(2*n-1)/(2*n+1)*a^2) $$,
@@ -26,9 +26,30 @@ It is sometimes simpler to apply Newton's iteration directly to the modified equ
 
 Halley's iteration, despite its faster convergence rate, may be more cumbersome to evaluate than Newton's iteration and so it may not provide a more efficient numerical method for some functions. Only in some special cases is Halley's iteration just as simple to compute as Newton's iteration. But Halley's method has another advantage: it is generally less sensitive to the choice of the initial point $x[0]$. An extreme example of sensitivity to the initial point is the equation $x^(-2)= 12$ for which Newton's iteration $x'=3*x/2-6*x^3$ converges to the root only from initial points $0<x[0] <0.5$ and wildly diverges otherwise, while Halley's iteration converges to the root from any $x[0]>0$.
 
-It is at any rate not true that Halley's method always converges. For instance, it diverges on the equation $2*Cos(x)=x$ unless started at $x[0]$ within the interval ($-1/6*Pi$,$7/6*Pi$).
+It is at any rate not true that Halley's method always converges better than Newton's method. For instance, it diverges on the equation $2*Cos(x)=x$ unless started at $x[0]$ within the interval ($-1/6*Pi$,$7/6*Pi$). Another example is the equation $Ln(x)=a$. This equation allows to compute $x=Exp(a)$ if a fast method for computing $Ln(x)$ is available (e.g. the AGM-based method). For this equation, Newton's iteration
+$$ x' = x*(1+a-Ln(x)) $$
+converges for any $0<x<Exp(a+1)$, while Halley's iteration
+converges only for $Exp(a-2)<x<Exp(a+2)$.
+
 
 When it converges, Halley's iteration can still converge very slowly for certain functions $f(x)$, for example, for $f(x)=x^n-a$ if $n^n>a$. For such functions that have very large and rapidly changing derivatives, no general method can converge faster than linearly. In other words, a simple bisection will generally do just as well as any sophisticated iteration, until the root is approximated relatively precisely. Halley's iteration combined with bisection seems to be a good choice for such problems.
+
+
+		The AGM sequence algorithms
+
+Several algorithms are based on the arithmetic-geometric mean (AGM) sequence. If one takes two numbers and computes their arithmetic mean and their geometric mean, the two means are generally much closer to each other than the original numbers. Repeating this process creates a rapidly converging sequence.
+
+More formally, one can define the (complex) function of two (complex) numbers $AGM(x,y)$ as the limit of the sequence $a[k]$ where $a[k+1]=1/2*(a[k]+b[k])$, $b[k+1]=Sqrt(a[k]*b[k])$, and the initial values are $a[0]=x$, $b[0]=y$.
+This function is obviously linear, $AGM(k*x, k*y)=k*AGM(x,y)$, so in principle it is enough to compute $AGM(1,x)$ or arbitrarily select $k$ for convenience.
+
+The limit of the AGM sequence is related to the complete elliptic integral by
+$$ Pi/2*1/AGM(a,Sqrt(a^2-b^2)) = Integrate(x,0,Pi/2)1/Sqrt(a^2-b^2*Sin(x)^2) $$.
+
+The definition of the AGM sequence for complex values requires to take a square root $Sqrt(a*b)$, which needs a branch cut to be well-defined. Selecting the natural cut along the negative real semiaxis ($Re(x)<0$, $Im(x)=0$), we obtain a AGM sequence that converges for any initial values $x$, $y$ with positive real part. If the numbers $x$ and $y$ are very different (one is much larger than another), then the numbers $a[k]$, $b[k]$ become approximately equal after about $k=1/Ln(2)*Ln(Abs(Ln(x/y)))$ iterations (note: Brent's paper mistypes this as $1/Ln(2)*Abs(Ln(x/y))$). Then one needs about $Ln(n)/Ln(2)$ more iterations to make the first $n$ decimal digits of $a[k]$ and $b[k]$ coincide, because the relative error $epsilon=1-b/a$ decays approximately as $epsilon[k]=1/8*Exp(-2^k)$.
+
+Unlike the Newton iteration, the AGM sequence does not correct errors and all elements need to be computed with full precision. Actually, slightly more precision is needed to compensate for accumulated roundoff error. Brent (paper {rpb028}, see below) says that $O(Ln(Ln(n)))$ bits of accuracy are lost to roundoff error if there are total of $n$ iterations.
+
+The AGM sequence can be used for fast computations of $Pi$, $Ln(x)$ and $ArcTan(x)$.
 
 		Elementary functions
 
@@ -36,24 +57,37 @@ When it converges, Halley's iteration can still converge very slowly for certain
 
 Integer powers are computed by a fast algorithm with repeated squarings.
 
-Inverse powers (square roots, cubic roots etc.) are computed by the Newton iteration.
+The square root is computed by the Newton iteration.
 
 A separate function {IntNthRoot} is provided to compute integer part of $n^(1/s)$ for integer $n$ and $s$.
-For a given $s$, it evaluates the integer part of $n^(1/s)$ using only integer arithmetic with integers of size $n^(1+1/s)$. This can be done by Halley's iteration method by solving the equation $x^s=n$. For this function, the Halley iteration sequence is monotonic.
+For a given $s$, it evaluates the integer part of $n^(1/s)$ using only integer arithmetic with integers of size $n^(1+1/s)$. This can be done by Halley's iteration method, solving the equation $x^s=n$. For this function, the Halley iteration sequence is monotonic.
 The initial guess is obtained by bit counting using the integer logarithm function, $x[0]=2^(b(n)/s)$ where $b(n)$ is the number of bits in $n$. It is clear that the initial guess is accurate to within a factor of 2. Since the relative error is squared at every iteration, we need as many iteration steps as bits in $n^(1/s)$.
 
 Since we only need the integer part of the root, it is enough to use integer division in the Halley iteration. The sequence $x[k]$ will monotonically approximate the number $n^(1/s)$ from below if we start from an initial guess that is less than the exact value. (We start from below so that we have to deal with smaller integers rather than with larger integers.) If $n=p^s$, then after enough iterations the floating-point value of $x[k]$ would be slightly less than $p$; our value is the integer part of $x[k]$. Therefore, at each step we check whether $1+x[k]$ is a solution of $x^s=n$, in which case we are done; and we also check whether $(1+x[k])^s>n$, in which case the integer part of the root is $x[k]$.
-To speed up the Halley iteration in the worst case when $s^s>n$, it is combined with bisection. The root bracket interval $x1<x<x2$ is maintained and the next iteration $x[k+1]$ is assigned to the midpoint of the interval if the Newton formula does not give sufficiently rapid convergence.
+To speed up the Halley iteration in the worst case when $s^s>n$, it is combined with bisection. The root bracket interval $x1<x<x2$ is maintained and the next iteration $x[k+1]$ is assigned to the midpoint of the interval if the Newton formula does not give sufficiently rapid convergence. The initial root bracket interval can be taken as $x[0]$, $2*x[0]$.
 
-Real powers (as opposed to integer powers) are computed by using the exponential and logarithm functions, $a^b = Exp(b*Ln(a))$.
+Real powers (as opposed to integer powers and roots) are computed by using the exponential and logarithm functions, $a^b = Exp(b*Ln(a))$.
 
 	    Logarithm
 
-The (real) logarithm function {Ln(x)} is computed using its Taylor series,
+
+The "integer logarithm", defined as the integer part of $Ln(x)/Ln(b)$, is computed using a special routine {IntLog(x, b)} with purely integer math. This is much faster than evaluating the full logarithm when both arguments are integers and only the integer part of the logarithm is needed. The algorithm consists of (integer) dividing $x$ by $b$ repeatedly until $x$ becomes 0 and counting the number of divisions. A speed-up for large $x$ is achieved by first comparing $x$ with $b$, then with $b^2$, $b^4$, etc., until the factor $b^(2^n)$ is larger than $x$. At this point, $x$ is divided by that power of $b$ and the remaining value is iteratively compared with and divided by successively smaller powers of $b$.
+
+The logarithm function $Ln(x)$ for general (complex) $x$ can be computed using its Taylor series,
 $$Ln(1+x) = x - x/2 + x^2/3 -...$$
 This series converges only for $Abs(x)<1$, so for all other values of $x$ one first needs to bring the argument into this range by taking several square roots and then using the identity $Ln(x) = 2^k*Ln(x^(2^(-k)))$. This is implemented in the Yacas core.
 
-The "integer logarithm" {IntLog(x, base)} is defined as the integer part of $$Ln(x)/Ln(base)$$ and is computed using a special routine with purely integer math. The algorithm consists of dividing $x$ by $base$ repeatedly until $x$ becomes 0 and counting the number of divisions. A speed-up for large $x$ is achieved by first comparing $x$ with $base$, then with $base^2$, $base^4$, etc., until the factor $base^(2^n)$ is larger than $x$. At this point, $x$ is divided by that power of $base$ and the remaining value is iteratively compared with and divided by successively smaller powers of $base$.
+A much faster algorithm based on the AGM sequence was given by Salamin (see R. P. Brent: <i>Multiple-precision zero-finding methods and the complexity of elementary function evaluation</i>, in <i>Analytic Computational Complexity</i>, ed. by J. F. Traub, Academic Press, NY, 1975, p. 151; also online from Oxford Computing Laboratory, as paper {rpb028}). The algorithm works well for very large values of $x$, unlike the Taylor series which is good for $x$ close to 1.
+The formula is based on an asymptotic relation,
+$$Ln(x)=Pi*x*(1+4*x^(-2)*(1-1/Ln(x))+O(x^(-4)))/(2*AGM(x,4))$$.
+If $x$ is large enough, the numerator is very close to 1 and can be disregarded.
+"Large enough" for a precision of $P$ decimal digits means that $4*x^(-2)<10^(-P)$. The required number of AGM iterations is approximately $2*Ln(P)/Ln(2)$. For smaller values of $x$ (but $x>1$), one can either raise $x$ to a large integer power $s$ (this is quick only if $x$ is an integer) and compute $1/r*Ln(x^r)$, or multiply $x$ by a large integer power of 2 (this is better for non-integer $x$) and compute $Ln(2^s*x)-s*Ln(2)$. Here the required powers are
+$$r=Ln(10^P*4)/(2*Ln(x))$$, $$s=P*Ln(10)/(2*Ln(2))+1-Ln(x)/Ln(2)$$. 
+These parameters can be found quickly by using the integer logarithm procedure {IntLog}, while constant values such as $Ln(10)/Ln(2)$ can be simply approximated by rational numbers because $r$ and $s$ do not need to be very precise (but they do need to be large enough). For the second calculation, $Ln(2)$ must be precomputed to the same precision $P$. Also, the subtraction of a large number $s*Ln(2)$ leads to a certain loss of precision, namely, about $Ln(s)/Ln(10)$ decimal digits are lost, therefore the operating precision must be increased by this number of digits. (The quantity $Ln(s)/Ln(10)$ is computed, of course, by the integer logarithm procedure.)
+
+If $x<1$, then ($-Ln(x^(-1))$) is computed. Finally, there is a special case when $x$ is very close to 1, where the Taylor series converges quickly but the AGM algorithm would require to multiply $x$ by a large power of 2 and then subtract two almost equal numbers, leading to a great loss of precision. Suppose $1<x<1+2^(-M)$ where $M$ is large; then, if the geometric mean $Sqrt(a*b)$ takes an equivalent of $c$ multiplications (say $c=6$), then the AGM sequence requires $2*c*Ln(P)/Ln(2)$ multiplications, while the Taylor series for $x$ would take $(P*Ln(10))/(M*Ln(2))$ multiplications. Therefore the Taylor series is more efficient for
+$$M > 1/(2*c)*(P*Ln(10))/Ln(P)$$.
+For larger $x$, it is necessary to increase the required precision to $P+M*Ln(2)/Ln(10)$.
 
 	    Exponential
 
@@ -62,6 +96,12 @@ $$ Exp(x) = 1 + x + x^2/2! + ...$$
 This series converges for all (complex) $x$, but if $Abs(x)$ is large, it converges slowly. A speed-up trick used for large $x$ is to divide the argument by some power of 2 and then square the result several times, i.e.
 $$Exp(x) = (Exp(2^(-k)*x))^(2^k)$$,
 where $k$ is chosen sufficiently large so that the Taylor series converges quickly at $2^(-k)*x$. The threshold value for $x$ is in the variable {MathExpThreshold} in {stdfuncs}. If $x$ is large and negative, then it is easier to compute 1/$Exp(-x)$.
+
+An alternative way to compute $x=Exp(a)$ at large precision would be to solve the equation $Ln(x)=a$. A cubically convergent iteration is obtained if we replace $Ln(x)=a$ by an equivalent equation
+$$ (Ln(x)-a)/(Ln(x)-a-2) = 0$$.
+For this equation, Newton's method gives the iteration
+$$ x' = x*(1+(a+1-Ln(x))^2)/2 $$.
+This iteration converges for initial values $0<x<Exp(a+2)$ with a cubic convergence rate. A good initial guess can be found by raising 2 to the integer part of $a/Ln(2)$.
 
 	    Trigonometric
 
@@ -75,9 +115,21 @@ $$ArcTan(x) = Pi/2*Sign(x) - ArcTan(1/x)$$,
 $$ ArcTan(x) = 2*ArcTan(x/(1+Sqrt(1+x^2))) $$.
 Thus, any value of $x$ is reduced to $Abs(x)<0.42$. This is implemented in the standard library scripts.
 
-By the identity $ArcCos(x) := Pi/2 - ArcSin(x)$, the inverse cosine is reduced to the inverse sine. Newton's method for $ArcSin(x)$ consists of solving the equation $Sin(y)=x$ for $y$. Implementation is similar to the calculation of $pi$ in {PiMethod0()}.
+By the identity $ArcCos(x) := Pi/2 - ArcSin(x)$, the inverse cosine is reduced to the inverse sine. Newton's method for $ArcSin(x)$ consists of solving the equation $Sin(y)=x$ for $y$. Implementation is similar to the calculation of $pi$ in {PiMethod0()}. 
 
-Hyperbolic and inverse hyperbolic functions are reduced to exponentials and logarithms.
+For $x$ close to 1, Newton's method for $ArcSin(x)$ converges very slowly. An identity $$ArcSin(x)=Sign(x)*(Pi/2-ArcSin(Sqrt(1-x^2)))$$ can be used in this case. Another potentially useful identity is
+$$ ArcSin(x) = 2*ArcSin(x/(Sqrt(2)*Sqrt(1+Sqrt(1-x^2)))) $$.
+
+Inverse tangent can also be related to inverse sine by
+$$ ArcTan(x) = ArcSin(x/Sqrt(1+x^2))$$,
+$$ ArcTan(1/x) = ArcSin(1/Sqrt(1+x^2))$$.
+
+Hyperbolic and inverse hyperbolic functions are reduced to exponentials and logarithms:
+$Cosh(x) = 1/2*(Exp(x)+Exp(-x))$, $Sinh(x) = 1/2*(Exp(x)-Exp(-x))$, $Tanh(x) = Sinh(x)/Cosh(x)$,
+$$ArcCosh(x) = Ln(x+Sqrt(x^2+1))$$,
+$$ArcSinh(x) = Ln(x+Sqrt(x^2-1))$$,
+$$ArcTanh(x) = 1/2*Ln((1+x)/(1-x))$$.
+
 
 The idea to use continued fraction expansions for {ArcTan} comes from the book by
 Jack W. Crenshaw,
@@ -89,15 +141,6 @@ then converges rapidly. He then proceeds to show that in the case of
 $ArcTan(x)$, this is true in a big way. Now, it might not be true for all
 slowly converging series. No articles or books have been found yet that prove
 this. The above book  shows it empirically. 
-
-The book <i>Modern Computer Algebra</i> by Joachim von zur Gathen and Jurgen Gerhard
-(1999, Cambridge University Press)
-does discuss Cauchy interpolation and Pade approximation,
-both trying to approximate functions using rational functions f/g instead of 
-a simple polynomial f, and mentions that "it was observed empirically that 
-sometimes rational functions yield a much smaller approximation error".
-
-Since the continued fraction expansion yields a rational function after simplification, the two approaches are similar.
 
 One disadvantage of both continued fraction expansions and approximation by 
 rational functions, compared to a simple series, is that it is in general not
