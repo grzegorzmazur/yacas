@@ -1,4 +1,6 @@
 IsPrime
 IsPrimePower
 GetPrimeFactors
+NextPrime
+NextPseudoPrime
 }

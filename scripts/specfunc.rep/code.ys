@@ -134,22 +134,6 @@ ZetaNum2(s, limit) :=
 	1/prod;
 ];
 
-/// obtain the next prime number
-1# NextPrime(i_IsInteger)_(i<=1) <-- 2;
-1# NextPrime(3) <-- 5;
-// this works only for odd i>=5
-2# NextPrime(i_IsOdd) <--
-[
-	Until(IsPrime(i)) i:= i + 2*Mod(-i, 3);
-	i;
-];
-// this works only for even i>=2
-3# NextPrime(i_IsEven) <--
-[
-	i := i + 1;
-	If(IsPrime(i), i, NextPrime(i));
-];
-
 /// Compute coefficients e[j] (see Borwein -- excluding (-1)^j )
 ZetaNumCoeffEj(j,n) := [
 	Local(k);
