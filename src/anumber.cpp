@@ -205,15 +205,16 @@ void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
 
         // Map to a char base number
         LispInt nr = fraction.NrItems()-1; //Excluding the zero terminator
+        typename LispString::ElementTypePtr fractionPtr = &fraction[0];
 
         for (i=0;i<nr>>1;i++)
         {
-            LispChar c = fraction[i];
-            fraction[i] = DigitIndex(fraction[nr-i-1]);
-            fraction[nr-i-1] = DigitIndex(c);
+            LispChar c = fractionPtr[i];
+            fractionPtr[i] = DigitIndex(fractionPtr[nr-i-1]);
+            fractionPtr[nr-i-1] = DigitIndex(c);
         }
         if (nr&1)
-            fraction[nr>>1] = DigitIndex(fraction[nr>>1]);
+            fractionPtr[nr>>1] = DigitIndex(fractionPtr[nr>>1]);
             
         LispString base;
         IntToBaseString(base,WordBase,aBase);
@@ -230,17 +231,25 @@ void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
                 LispInt nrc=fraction.NrItems();
                 copied.GrowTo(nrc);
                 copied.SetNrItems(nrc);
-                for (j=0;j<nrc;j++)
-                    copied[j]=fraction[j];
+                /*TODO remove?
+                typename LispString::ElementTypePtr fractionPtr = &fraction[0];
+                typename LispString::ElementTypePtr copiedPtr = &copied[0];
+                */
+                PlatMemCopy(&copied[0],  &fraction[0], nrc*sizeof(LispString::ElementType));
+                /*TODO remove?
+                 for (j=0;j<nrc;j++)
+                     copiedPtr[j]=fractionPtr[j];
+                 */
             }
             BaseMultiply(fraction, copied, base, aBase);
 
             {
                 LispInt nrc=fraction.NrItems();
+                typename LispString::ElementTypePtr fractionPtr = &fraction[0];
                 PlatDoubleWord factor=1;
                 for (j=nr;j<nrc;j++)
                 {
-                    word = word + (PlatWord)(fraction[j]*factor);
+                    word = word + (PlatWord)(fractionPtr[j]*factor);
                     factor = factor*aBase;
                 }
             }
@@ -540,7 +549,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase)
                 rptr[nr-i-1] = Digit(c);
             }
             if (nr&1)
-                aResult[nr>>1] = Digit(aResult[nr>>1]);
+                rptr[nr>>1] = Digit(rptr[nr>>1]);
         }
 
         if (aNumber.iNegative)
@@ -851,15 +860,17 @@ void BaseShiftRight(ANumber& a, LispInt aNrBits)
 
     LispInt nr = a.NrItems();
 
+    typename ANumber::ElementTypePtr ptr = &a[0];
+
     for (i=0;i<nr-wordsShifted;i++)
     {
         PlatDoubleWord newCarry =
-            (((PlatDoubleWord)a[i+wordsShifted]) & bitMask)<<otherSideBits;
+            (((PlatDoubleWord)ptr[i+wordsShifted]) & bitMask)<<otherSideBits;
 
-        a[i] = (a[i+wordsShifted]>>residue);
+        ptr[i] = (ptr[i+wordsShifted]>>residue);
 
         if (i > 0)
-            a[i-1] |= newCarry;
+            ptr[i-1] |= newCarry;
     }
 
     int start=nr-wordsShifted;
@@ -867,7 +878,7 @@ void BaseShiftRight(ANumber& a, LispInt aNrBits)
         start=0;
     for (i=start;i<nr;i++)
     {
-        a[i] = 0;
+        ptr[i] = 0;
     }
 }
 
@@ -902,19 +913,21 @@ void BaseShiftLeft(ANumber& a, LispInt aNrBits)
     {
         a.Append(0);
     }
+
+    typename ANumber::ElementTypePtr ptr = &a[0];
     
     for (i=nr+wordsShifted;i>=wordsShifted;i--)
     {
         PlatDoubleWord newCarry =
-            (((PlatDoubleWord)a[i-wordsShifted]) & bitMask)>>otherSideBits;
-        a[i] = (a[i-wordsShifted]<<residue);
+            (((PlatDoubleWord)ptr[i-wordsShifted]) & bitMask)>>otherSideBits;
+        ptr[i] = (ptr[i-wordsShifted]<<residue);
 
         if (i < nr+wordsShifted)
-            a[i+1] |= newCarry;
+            ptr[i+1] |= newCarry;
     }
     for (i=wordsShifted-1;i>=0;i--)
     {
-        a[i] = 0;
+        ptr[i] = 0;
     }
 }
 

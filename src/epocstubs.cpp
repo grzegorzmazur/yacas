@@ -22,4 +22,3 @@ void PlatFree(LispCharPtr aOrig)
   User::Free(aOrig);
 }
 
-

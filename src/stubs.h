@@ -11,8 +11,17 @@ LispCharPtr PlatAlloc(LispInt aNrBytes);
 LispCharPtr PlatReAlloc(LispCharPtr aOrig, LispInt aNrBytes);
 void PlatFree(LispCharPtr aOrig);
 
-inline void* operator new(unsigned long size){return PlatAlloc(size);}
-inline void operator delete(void* object){return PlatFree((LispCharPtr)object);}
+void* operator new(unsigned long size);
+void operator delete(void* object);
+
+inline void* operator new(unsigned long size)
+{
+    return PlatAlloc(size);
+}
+inline void operator delete(void* object)
+{
+    return PlatFree((LispCharPtr)object);
+}
 
 #include "stubs.inl"
 
