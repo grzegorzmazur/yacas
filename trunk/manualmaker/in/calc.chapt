@@ -1,463 +1,940 @@
 
 Chapter()"Calculus";
 
+ChapterIntro("In this chapter, some functions for doing calculus are
+described. These include functions implementing differentiation,
+integration, standard mathematical functions, and the solving of
+equations.");
 
-AddAnchor("Sin");
-AddAnchor("Cos");
-AddAnchor("Tan");
-AddAnchor("ArcSin");
-AddAnchor("ArcCos");
-AddAnchor("ArcTan");
-SubSection()"Trigonometric functions";
+
+
+AddBody(HtmlAnchor() "Sin");
+AddBody(HtmlAnchor() "Cos");
+AddBody(HtmlAnchor() "Tan");
+CmdDescription("Sin, Cos, Tan", "Trigonometric functions");
 StandardLib();
-Topical()"Calling Sequence";
-Text()
-"Sin(x)<br>
-Cos(x)<br>
-Tan(x)<br>
-ArcSin(x)<br>
-ArcCos(x)<br>
-ArcTan(x)<br>
-";
 
-Topical()"Parameters";
-Text()"x - some number";
+Topical() "Calling Sequence";
+Text() "
+Sin(x) <br>
+Cos(x) <br>
+Tan(x)";
 
-Topical()"Description";
-Text()"These functions represent the trigonometric functions and their
-inverses. Yacas leaves them alone even if x is a number, trying to keep
-the result as exact as possible. The floating point approximations of
-these functions can be forced by using the N(...) functions. <p>  </p>
+Topical() "Parameters";
+Text() "x - argument to the function, in radians";
 
+Topical() "Description";
+Text()"
+These functions represent the trigonometric functions sine, cosine,
+and tangent respectively. Yacas leaves them alone even if x is a
+number, trying to keep the result as exact as possible. The floating
+point approximations of these functions can be forced by using the " :
+HtmlTerm("N") : " function. 
+<p>  </p>
 Yacas knows some trigonometric identities, so it can simplify to exact
-results even if N is not used. This is the case when the arguments are
-of the form Pi, Pi/2 etcetera.
-";
+results even if " : HtmlTerm("N") : " is not used. This is the case
+when the arguments are multiples of Pi/6 or Pi/4.
+<p> </p>
+These functions are threaded, meaning that if the argument \"x\" is a
+list, the function is applied to all the entries in the list.";
 
-Topical()"Examples";
-Text()
-HtmlCommand(
-"In> Sin(1)
+Topical() "Examples";
+Text() HtmlCommand("
+In> Sin(1)
 Out> Sin(1);
 In> N(Sin(1),20)
 Out> 0.84147098480789650665;
 In> Sin(Pi/4)
-Out> Sqrt(2)/2;
-");
+Out> Sqrt(2)/2;");
 
 Topical()"See Also"; 
-SeeAlso({"N","Pi"});
+SeeAlso({"ArcSin, ArcCos, ArcTan", "N", "Pi"});
 
 
 
-AddAnchor("Exp");
-AddAnchor("Ln");
-SubSection()"Exp(x), Ln(x)";
+AddBody(HtmlAnchor() "ArcSin");
+AddBody(HtmlAnchor() "ArcCos");
+AddBody(HtmlAnchor() "ArcTan");
+CmdDescription("ArcSin, ArcCos, ArcTan", "Inverse trigonometric functions");
 StandardLib();
-Topical()"Calling Sequence";
-Text()"Exp(x) <br> Ln(x)";
 
-Topical()"Parameters";
-Text()"x - a number";
+Topical() "Calling Sequence";
+Text() "
+ArcSin(x) <br>
+ArcCos(x) <br>
+ArcTan(x)";
+
+Topical() "Parameters";
+Text() "x - argument to the function";
 
 Topical()"Description";
-Text()
-"Calculate e^x, or its inverse, ln(x), respectively.";
+Text()"
+These functions represent the inverse trigonometric functions. For
+instance, the value of \"ArcSin(x)\" is the number \"y\" such that
+\"Sin(y)\" equals \"x\". 
+<p> </p>
+Note that the number \"y\" is not unique. For instance, \"Sin(0)\" and
+\"Sin(Pi)\" both equal 0, so what should \"ArcSin(0)\" be? In Yacas,
+it is agreed that the value of \"ArcSin(x)\" should be in the interval
+[-Pi/2,Pi/2]. The same goes for \"ArcTan(x)\". However, \"ArcCos(x)\"
+is in the interval [0,Pi].
+<p> </p>
+Usually, Yacas leaves these functions alone unless it is forced to do
+a numerical evaluation by the " : HtmlTerm("N") : " function. If the
+argument is -1. 0, or 1 however, Yacas will simplify the
+expression. If the argument is complex,  the expression will be
+rewritten as a " : HtmlTerm("Ln") : " function.
+<p> </p>
+These functions are threaded, meaning that if the argument \"x\" is a
+list, the function is applied to all the entries in the list.";
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"
-In> Exp(2)
-Out> Exp(2);
-In> Ln(%)
-Out> 2;
-");
+Text() HtmlCommand("
+In> ArcSin(1)
+Out> Pi/2;
+
+In> ArcSin(1/3)
+Out> ArcSin(1/3);
+In> Sin(ArcSin(1/3))
+Out> 1/3;
+
+In> N(ArcSin(0.75))
+Out> 0.848062;
+In> N(Sin(%))
+Out> 0.7499999477;");
+
+Topical()"See Also"; 
+SeeAlso({"Sin, Cos, Tan", "N", "Pi", "Ln"});
 
 
-AddAnchor("Sqrt");
-SubSection()"Sqrt";
+
+CmdDescription("Exp", "Exponential function");
 StandardLib();
-Topical()"Calling Sequence";
-Text()"Sqrt(x)";
 
-Topical()"Parameters";
-Text()"x - anumber";
+Topical() "Calling Sequence";
+Text() "Exp(x)";
 
-Topical()"Description";
-Text()
-"Calculate the square root of x.";
+Topical() "Parameters";
+Text() "x - argument to the function";
 
-Topical()"Examples";
-Text()
-HtmlCommand(
-"
+Topical() "Description";
+Text() "
+This function calculates e raised to the power \"x\", where e is the
+mathematic constant 2.71828... One can use " : HtmlTerm("Exp(1)") : "
+to represent e.
+<p> </p>
+This function is threaded, meaning that if the argument \"x\" is a
+list, the function is applied to all the entries in the list."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Exp(0)
+Out> 1;
+In> Exp(I*Pi)
+Out> -1;
+In> N(Exp(1))
+Out> 2.7182818284;");
+
+Topical() "See Also";
+SeeAlso({"Ln", "Sin, Cos, Tan", "N"});
+
+
+
+CmdDescription("Ln", "Natural logarithm");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Ln(x)";
+
+Topical() "Parameters";
+Text() "x - argument to the function";
+
+Topical() "Description";
+Text() "
+This function calculates the natural logarithm of \"x\". This is the
+inverse function of the exponential function, " : HtmlTerm("Exp") :
+", ie. \"Ln(x) = y\" implies that \"Exp(y) = x\". For complex
+arguments, the imaginary part of the logarithm is in the interval
+(-Pi,Pi]. This is compatible with the branch cut of " :
+HtmlTerm("Arg") : ". 
+<p> </p>
+This function is threaded, meaning that if the argument \"x\" is a
+list, the function is applied to all the entries in the list."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Ln(1)
+Out> 0;
+In> Ln(Exp(x))
+Out> x;
+In> D(x) Ln(x)
+Out> 1/x;");
+
+Topical() "See Also";
+SeeAlso({"Exp", "Arg"});
+
+
+
+CmdDescription("Sqrt", "Square root");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Sqrt(x)";
+
+Topical() "Parameters";
+Text() "x - argument to the function";
+
+Topical() "Description";
+Text() "
+This function calculates the square root of \"x\". If the result is
+not rational, the call is returned unevaluated unless a numerical
+approximation is forced with the " : HtmlTerm("N") : " function. This
+function can also handle negative and complex arguments.
+<p> </p>
+This function is threaded, meaning that if the argument \"x\" is a
+list, the function is applied to all the entries in the list."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
 In> Sqrt(16)
 Out> 4;
 In> Sqrt(15)
 Out> Sqrt(15);
 In> N(Sqrt(15))
 Out> 3.8729833462;
-");
+In> Sqrt(4/9)
+Out> 2/3;
+In> Sqrt(-1)
+Out> Complex(0,1);");
+
+SeeAlso({"Exp", "^", "N"});
 
 
 
-AddAnchor("Abs");
-AddAnchor("Sign");
-SubSection()"Abs, Sign";
+CmdDescription("Abs", "Absolute value or modulus");
 StandardLib();
-Topical()"Calling Sequence";
-Text()
-"Abs(x) <BR>
-Sign(x)
-";
 
-Topical()"Parameters";
-Text()"x - a number";
+Topical() "Calling Sequence";
+Text() "Abs(x)";
 
-Topical()"Description";
-Text()
-"Abs(x) returns the absolute value of a number.
-Abs(x)*Sign(x) should always be equal to x. Sign(x) returns 1
-if the number is positive or zero, -1 otherwise.";
+Topical() "Parameters";
+Text() "x - argument to the function";
 
-Topical()"Examples";
-Text()
-HtmlCommand(
-"In> Abs(-2)
+Topical() "Description";
+Text() "
+This function returns the absolute value (also called the modulus) of
+\"x\". If \"x\" is positive, the absolute value is \"x\" itself; if
+\"x\" is negative, the absolute value is \"-x\". For complex \"x\",
+the modulus is the \"r\" in the polar decomposition \"x = r *
+Exp(I*phi)\". 
+<p> </p>
+This function is connected to the " : HtmlTerm("Sign") : " function by
+the identity \"Abs(x) * Sign(x) = x\" for real \"x\".
+<p> </p>
+This function is threaded, meaning that if the argument \"x\" is a
+list, the function is applied to all the entries in the list.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Abs(2);
 Out> 2;
-In> Sign(-2)
+In> Abs(-1/2);
+Out> -1/2;
+In> Abs(3+4*I);
+Out> 5;");
+
+Topical() "See Also";
+SeeAlso({"Sign", "Arg"});
+
+
+
+CmdDescription("Sign", "Sign of a number");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Sign(x)";
+
+Topical() "Parameters";
+Text() "x - argument to the function";
+
+Topical() "Description";
+Text() "
+This function returns the sign of the real number \"x\". It is \"1\"
+for positive numbers and \"-1\" for negative numbers. Somewhat
+arbitrarily, " : HtmlTerm("Sign(0)") : " is defined to be 1.
+<p> </p>
+This function is connected to the " : HtmlTerm("Abs") : " function by
+the identity \"Abs(x) * Sign(x) = x\" for real \"x\".
+<p> </p>
+This function is threaded, meaning that if the argument \"x\" is a
+list, the function is applied to all the entries in the list.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Sign(2)
+Out> 1;
+In> Sign(-3)
 Out> -1;
-");
+In> Sign(0)
+Out> 1;
+In> Sign(-3) * Abs(-3)
+Out> -3;");
 
-AddAnchor("Complex");
-AddAnchor("Re");
-AddAnchor("Im");
-AddAnchor("I");
-AddAnchor("Conjugate");
-AddAnchor("Arg");
-SubSection()"Complex numbers";
+Topical() "See Also";
+SeeAlso({"Arg", "Abs"});
+
+
+
+CmdDescription("Complex", "Construct a complex number");
 StandardLib();
-Topical()"Calling Sequence";
-Text()"Complex(x,y) <br>
-Re(z) <br>
-Im(z) <br>
-I <br>
-Conjugate(expression) <br>
-Arg(z)
-";
 
-Topical()"Parameters";
-Text()
-"x - a real number <br>
-y - a real number  <br>
-z - a real or complex number <br>
-expression - an expression containing complex numbers
-";
+Topical() "Calling sequence";
+Text() "Complex(r, c)";
 
-Topical()"Description";
-Text()
-"Complex(x,y) represents a complex number x+I*y, where I is a pure
-imaginary number, I = Sqrt(-1). Re(z) returns the real part of a
-complex number, and Im(z) returns the imaginary part. Conjugate
-returns the complex conjugate of an expression. It does this
-by replacing all occurrences of Complex(a,b) in the expression with
-Complex(a,-b). This operation assumes all unbound variables are
-real-valued.":
-HtmlNewParagraph():
-"
-Complex(x,y) is the internal representation of a complex number
-in Yacas.":
-HtmlNewParagraph():
-"Arg returns the angle a for which the complex number is
-amp*(Cos(angle) + I*Sin(angle)). As such it returns an angle
-from -Pi to +Pi.
-";
+Topical() "Parameters";
+Text() "
+r - real part <br>
+c - imaginary part";
 
-Topical()"Examples";
-Text()
-HtmlCommand(
-"
-In> z := 2+3*I
-Out> Complex(2,3);
-In> Re(z)
+Topical() "Description";
+Text() "
+This function represents the complex number \"r + I*c\", where \"I\"
+is the imaginary unit. It is the standard representation used in Yacas
+to represent complex numbers. Both \"r\" and \"c\" are supposed to be
+real. 
+<p> </p>
+Note that, at the moment, many functions in Yacas assume that all
+numbers are real unless it is obvious that it is a complex
+number. Hence " : HtmlTerm("Im(Sqrt(x))") : " evaluates to " :
+HtmlTerm("0") : " which is only true for nonnegative \"x\".";  
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> I
+Out> Complex(0,1);
+In> 3+4*I
+Out> Complex(3,4);
+In> Complex(-2,0)
+Out> -2;");
+
+Topical() "See Also";
+SeeAlso({"Re", "Im", "I", "Abs", "Arg"});
+
+
+
+CmdDescription("Re", "Real part of a complex number");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "Re(x)";
+
+Topical() "Parameters";
+Text() "x - argument to the function";
+
+Topical() "Description";
+Text() "
+This function returns the real part of the complex number \"x\"."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Re(5)
+Out> 5;
+In> Re(I)
+Out> 0;
+In> Re(Complex(3,4))
+Out> 3;");
+
+Topical() "See Also";
+SeeAlso({"Complex", "Im"});
+
+
+
+CmdDescription("Im", "Imaginary part of a complex number");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "Im(x)";
+
+Topical() "Parameters";
+Text() "x - argument to the function";
+
+Topical() "Description";
+Text() "
+This function returns the imaginary part of the complex number \"x\"."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Im(5)
+Out> 0;
+In> Im(I)
+Out> 1;
+In> Im(Complex(3,4))
+Out> 4;");
+
+Topical() "See Also";
+SeeAlso({"Complex", "Re"});
+
+
+
+CmdDescription("I", "Imaginary unit");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "I";
+
+Topical() "Parameters";
+Text() "none";
+
+Topical() "Description";
+Text() "
+This symbol represents the imaginary unit, which equals the square
+root of -1. It evaluates immediately to " : HtmlTerm("Complex(0,1)") :
+"."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> I
+Out> Complex(0,1);
+In> I = Sqrt(-1)
+Out> True;");
+
+Topical() "See Also";
+SeeAlso({"Complex"});
+
+
+
+CmdDescription("Conjugate", "Complex conjugate");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "Conjugate(x)";
+
+Topical() "Parameters";
+Text() "x - argument to the function";
+
+Topical() "Description";
+Text() "
+This function returns the complex conjugate of \"x\". The complex
+conjugate of \"a + I*b\" is \"a - I*b\". This function assumes that all
+unbound variables are real."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Conjugate(2)
 Out> 2;
-In> Im(z)
-Out> 3;
-In> Arg(Exp(I*Pi/3))
-Out> Pi/3;
-");
+In> Conjugate(Complex(a,b))
+Out> Complex(a,-b);");
 
-AddAnchor("!");
-AddAnchor("Bin");
-SubSection()"Factorial and binomial numbers";
+Topical() "See Also";
+SeeAlso({"Complex", "Re", "Im"});
+
+
+
+CmdDescription("Arg", "Argument of a complex number");
 StandardLib();
-Topical()"Calling Sequence";
-Text()"n!, Bin(n,m)";
 
-Topical()"Parameters";
-Text()
-"n - a positive integer <br>
-m - a positive integer";
+Topical() "Calling sequence";
+Text() "Arg(x)";
 
-Topical()"Description";
-Text()
-"n! evaluates to n*(n-1)*(n-2)*....*1. Bin(n,m) evaluates to n!/(n!*(n-m)!).
-";
+Topical() "Parameters";
+Text() "x - argument to the function";
 
-Topical()"Examples";
-Text()
-HtmlCommand(
-"
-In> 10!
-Out> 3628800;
-In> Bin(10,4)
-Out> 210;
-In> (10!)/((6!)*(4!))
-Out> 210;
-In> (3/2)!
-Out> (3*Sqrt(Pi))/4;
-");
+Topical() "Description";
+Text() "
+This function returns the argument of \"x\". The argument is the angle
+with the positive real axis in the Argand diagram, or the angle
+\"phi\" in the polar representation \"r * Exp(I*phi)\" of \"x\". The
+result lies between -Pi and Pi, excluding -Pi but including Pi. The
+argument of 0 is " : HtmlTerm("Undefined") :"."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Arg(2)
+Out> 0;
+In> Arg(-1)
+Out> Pi;
+In> Arg(1+I)
+Out> Pi/4;");
+
+Topical() "See Also";
+SeeAlso({"Abs", "Sign"});
 
 
-AddAnchor("Sum");
-AddAnchor("Average");
-AddAnchor("Factorize");
-SubSection()"Sums and products.";
+
+CmdDescription("!", "Factorial");
 StandardLib();
-Topical()"Calling Sequence";
-Text()
-"Sum(var,from,to,body) <br>
-Sum(list)              <br>
-Average(list)          <br>
-Factorize(var,from,to,body) <br>
-Factorize(list)
-";
 
-Topical()"Parameters";
-Text()
-"var - a variable to iterate over <br>
+Topical() "Calling sequence";
+Text() "n!";
+
+Topical() "Parameters";
+Text() "n - argument to the function";
+
+Topical() "Description";
+Text() "
+This function calculate \"n\" factorial. For nonnegative integers, n!
+equals \"n*(n-1)*(n-2)*...*1\". The factorial of half-integers,
+defined via the gamma function, is also implemented.
+<p> </p>
+This function is threaded, meaning that if the argument \"x\" is a
+list, the function is applied to all the entries in the list.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> 5!
+Out> 120;
+In> 1 * 2 * 3 * 4 * 5
+Out> 120;
+In> (1/2)!
+Out> Sqrt(Pi)/2;");
+
+Topical() "See Also";
+SeeAlso({"Bin", "Factorize"});
+
+
+
+CmdDescription("Bin", "Binomial coefficient");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "Bin(n, m)";
+
+Topical() "Parameters";
+Text() "n, m - integers";
+
+Topical() "Description";
+Text() "
+This function calculates the binomial coefficient \"n\" above
+\"m\", which equals \"n! / (n! * (n-m)!)\". This is the number of ways
+to choose \"m\" objects out of a total of \"n\" objects if order is
+not taken into account. The binomial coefficient is defined to be zero
+if \"m\" is negative or greater than \"n\"."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Bin(10, 4)
+Out> 210;
+In> 10! / (4! * 6!)
+Out> 210;");
+
+Topical() "See Also";
+SeeAlso({"!"});
+
+
+
+CmdDescription("Sum", "Sum of a list of values");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "
+Sum(list) <br>
+Sum(var, from, to, body)";
+
+Topical() "Parameters";
+Text() "
+list - list of values to sum <br>
+var - variable to iterate over <br>
 from - integer value to iterate from <br>
-to - integer value to iterate upto   <br>
-body - expression to evaluate for each iteration <br>
-list - list of values to iterate over";
+to - integer value to iterate upto <br>
+body - expression to evaluate for each iteration";
 
-Topical()"Description";
-Text()
-"Sum returns the sum of a list of values. Factorize returns
-the product of a list of values. Average returns the average
-of a list of values.":
-HtmlNewParagraph():
-"
-Iteration can either proceed over the elements of a list passed in,
-or by evaluating \'body\' by iterating variable \'var\' from value
-\'from\' upto \'to\'. 'to' should be greater than or equal to from.
-";
+Topical() "Description";
+Text() "
+The first form of the " : HtmlTerm("Sum") : " command simply adds all
+the entries in \"list\" and returns their sum.
+<p> </p>
+If the second calling sequence is used, the expression \"body\" is
+evaluated while the variable \"var\" ranges over all integers from
+\"from\" upto \"to\", and the sum of all the results is
+returned. Obviously, \"to\" should be greater than or equal to
+\"from\".";  
 
-Topical()"Examples";
-Text()
-HtmlCommand(
-"
-In> Sum(i,1,3,i)
-Out> 6;
-In> Sum({1,2,3})
-Out> 6;
-In> Sum(1 .. 3)
-Out> 6;
-In> Average(1 .. 3)
-Out> 2;
-In> Factorize(i,1,3,i)
-Out> 6;
-In> Factorize({1,2,3})
-Out> 6;
-In> Factorize(1 .. 3)
-Out> 6;
-");
+Topical() "Examples";
+Text() HtmlCommand("
+In> Sum({1,4,9});
+Out> 14;
+In> Sum(i, 1, 3, i^2);
+Out> 14;");
 
-Topical()"See Also"; 
-SeeAlso({"Max","Min"});
+Topical() "See Also";
+SeeAlso({"Average", "Factorize", "Apply"});
 
 
 
-AddAnchor("Min");
-AddAnchor("Max");
-SubSection()"Minimum and maximum values";
+CmdDescription("Average", "Average of a list of values");
 StandardLib();
-Topical()"Calling Sequence";
-Text()
-"Min(x,y) <br>
-Min(list) <br>
+
+Topical() "Calling sequence";
+Text() "Average(list)";
+
+Topical() "Parameters";
+Text() "list - list of values to average";
+
+Topical() "Description";
+Text() "
+This command calculates the (arithmetical) average of all the entries in
+\"list\", which is the sum of all entries divided by the number of
+entries."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Average({1,2,3,4,5});
+Out> 3;
+In> Average({2,6,7});
+Out> 5;");
+
+Topical() "See Also";
+SeeAlso({"Sum"});
+
+
+
+CmdDescription("Factorize", "Product of a list of values");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "
+Factorize(list) <br>
+Factorize(var, from, to, body)";
+
+Topical() "Parameters";
+Text() "
+list - list of values to multiply <br>
+var - variable to iterate over <br>
+from - integer value to iterate from <br>
+to - integer value to iterate upto <br>
+body - expression to evaluate for each iteration";
+
+Topical() "Description";
+Text() "
+The first form of the " : HtmlTerm("Factorize") : " command simply
+multiplies all the entries in \"list\" and returns their product.
+<p> </p>
+If the second calling sequence is used, the expression \"body\" is
+evaluated while the variable \"var\" ranges over all integers from
+\"from\" upto \"to\", and the product of all the results is
+returned. Obviously, \"to\" should be greater than or equal to
+\"from\".";  
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Factorize({1,2,3,4});
+Out> 24;
+In> Factorize(i, 1, 4, i);
+Out> 24;");
+
+Topical() "See Also";
+SeeAlso({"Sum", "Apply"});
+
+
+
+CmdDescription("Min", "Minimum of a number of values");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "
+Min(x,y)  <br>
+Min(list)";
+
+Topical() "Parameters";
+Text() "
+x, y - pair of values to determine the minimum of <br>
+list - list of values from which the minimum is sought";
+
+Topical() "Description";
+Text() "
+This function returns the minimum value of its argument(s). If the
+first calling sequence is used, the smaller of \"x\" and \"y\" is
+returned. If one uses the second form, the smallest of the entries in
+\"list\" is returned. In both cases, this function can only be used
+with numerical values and not with symbolic arguments."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Min(2,3);
+Out> 2;
+In> Min({5,8,4});
+Out> 4;");
+
+Topical() "See Also";
+SeeAlso({"Max", "Sum", "Average"});
+
+
+
+CmdDescription("Max", "Maximum of a number of values");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "
 Max(x,y)  <br>
 Max(list)";
 
-Topical()"Parameters";
-Text()
-"x - a number <br>
-y - a number  <br>
-list - a list of numbers";
+Topical() "Parameters";
+Text() "
+x, y - pair of values to determine the maximum of <br>
+list - list of values from which the maximum is sought";
 
-Topical()"Description";
-Text()
-"Min and Max return the minimum and maximum value of their
-arguments respectively. Min and max can either be called with
-two numbers as arguments, or with a list of numbers.";
+Topical() "Description";
+Text() "
+This function returns the maximum value of its argument(s). If the
+first calling sequence is used, the larger of \"x\" and \"y\" is
+returned. If one uses the second form, the largest of the entries in
+\"list\" is returned. In both cases, this function can only be used
+with numerical values and not with symbolic arguments."; 
 
-Topical()"Examples";
-Text()
-HtmlCommand(
-"
-In> Min(2,3)
-Out> 2;
-In> Max(2,3)
+Topical() "Examples";
+Text() HtmlCommand("
+In> Max(2,3);
 Out> 3;
-In> Min(5 .. 15)
-Out> 5;
-In> Max(5 .. 15)
-Out> 15;
-");
+In> Max({5,8,4});
+Out> 8;");
 
-Topical()"See Also"; 
-SeeAlso({"Sum","Average"});
-
-
-AddAnchor("IsZero");
-SubSection()"IsZero(x)";
-Text()"IsZero(x) : Returns wether x is zero or not.";
+Topical() "See Also";
+SeeAlso({"Min", "Sum", "Average"});
 
 
 
-AddAnchor("IsRational");
-AddAnchor("Numer");
-AddAnchor("Denom");
-SubSection()"Rational numbers";
+CmdDescription("IsZero", "Test whether argument is zero");
 StandardLib();
-Topical()"Calling Sequence";
-Text()
-"IsRational(r) <br>
-Numer(r) <br>
-Denom(r)";
 
-Topical()"Parameters";
-Text()"r - a rational number or expression";
+Topical() "Calling Sequence";
+Text() "IsZero(n)";
 
-Topical()"Description";
-Text()
-"Rational numbers are anything like a/b, or 2/5. IsRational returns
-True if the argument is a rational expression, and False otherwise.
-Numer and Denom return the numerator and denominator of a rational
-expression, respectively.";
+Topical() "Parameters";
+Text() "n - number to test";
 
-Topical()"Examples";
-Text()
-HtmlCommand(
-"
-In> IsRational(a)
+Topical() "Description";
+Text() 
+HtmlTerm("IsZero(n)") : " evaluates to " : HtmlTerm("True") : " if
+\"n\" is zero. In case \"n\" is not a number, the function returns
+" : HtmlTerm("False") : "."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> IsZero(3.25)
 Out> False;
+In> IsZero(0)
+Out> True;
+In> IsZero(x)
+Out> False;");
+
+Topical() "See Also";
+SeeAlso({"IsNumber", "IsNotZero"}); 
+
+
+
+CmdDescription("IsRational", "Test whether argument is a rational");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "IsRational(expr)";
+
+Topical() "Parameters";
+Text() "expr - expression to test";
+
+Topical() "Description";
+Text() "
+This commands tests whether the expression \"expr\" is a rational
+number. This is the case if the top-level operator of \"expr\" is " :
+HtmlTerm("/") : "."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> IsRational(5)
+Out> False;
+In> IsRational(2/7)
+Out> True;
 In> IsRational(a/b)
 Out> True;
-In> Numer(a/b)
+In> IsRational(x + 1/x)
+Out> False;");
+
+Topical() "See Also";
+SeeAlso({"Numer", "Denom"});
+
+
+
+CmdDescription("Numer", "Numerator of an expression");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "Numer(expr)";
+
+Topical() "Parameters";
+Text() "expr - expression to determine numerator of";
+
+Topical() "Description";
+Text() "
+This function determines the numerator of the rational expression
+\"expr\" and returns it. As a special case, if its argument is numeric
+but not rational, it returns this number. If \"expr\" is neither
+rational nor numeric, the function returns unevaluated."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Numer(2/7)
+Out> 2;
+In> Numer(a / x^2)
 Out> a;
-In> Denom(a/b)
-Out> b;
-");
+In> Numer(5)
+Out> 5;");
+
+Topical() "See Also";
+SeeAlso({"Denom", "IsRational", "IsNumber"});
 
 
-AddAnchor("Commutator");
-SubSection()"Commutator";
-BuiltIn()/StandardLib();
-Topical()"Calling Sequence";
-Text()"Commutator(a,b)";
 
-Topical()"Parameters";
-Text()
-"a - a mathematical object <br>
-b - a mathematical object";
+CmdDescription("Denom", "Denominator of an expression");
+StandardLib();
 
-Topical()"Description";
-Text()
-"Return \"a b - b a\". For numbers and such this is
-zero, for matrices in general it isn't.";
+Topical() "Calling sequence";
+Text() "Denom(expr)";
 
-Topical()"Examples";
-Text()
-HtmlCommand(
-"
+Topical() "Parameters";
+Text() "expr - expression to determine denominator of";
+
+Topical() "Description";
+Text() "
+This function determines the denominator of the rational expression
+\"expr\" and returns it. As a special case, if its argument is numeric
+but not rational, it returns " : HtmlTerm("1") : ". If \"expr\" is
+neither rational nor numeric, the function returns unevaluated."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Denom(2/7)
+Out> 7;
+In> Denom(a / x^2)
+Out> x^2;
+In> Denom(5)
+Out> 1;");
+
+Topical() "See Also";
+SeeAlso({"Numer", "IsRational", "IsNumber"});
+
+
+
+CmdDescription("Commutator", "Commutator of two objects");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "Commutator(a, b)";
+
+Topical() "Parameters";
+Text() "a, b - two objects whose commutator should be computed";
+
+Topical() "Description";
+Text() "
+This command computes the commutator of \'a\" and \"b\", ie. the
+expression \"a b - b a\". For numbers and other objects for which
+multiplication is commutative, the commutator is zero. But this is not
+necessarily the case for matrices."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
 In> Commutator(2,3)
 Out> 0;
-In> m1:=Identity(3)
-Out> {{1,0,0},{0,1,0},{0,0,1}};
-In> m1[1][2] := a
-Out> True;
-In> m2:=Identity(3)
-Out> {{1,0,0},{0,1,0},{0,0,1}};
-In> m2[2][2] := a
-Out> True;
-In> Commutator(m1,m2)
-Out> {{0,a^2-a,0},{0,0,0},{0,0,0}};
-");
+In> PrettyPrinter(\"PrettyForm\");
 
-AddAnchor("Taylor");
-SubSection()"Taylor";
+True
+
+Out> 
+In> A := { {0,x}, {0,0} }
+
+/              \\
+| ( 0 ) ( x )  |
+|              |
+| ( 0 ) ( 0 )  |
+\\              /
+
+Out> 
+In> B := { {y,0}, {0,z} }
+
+/              \\
+| ( y ) ( 0 )  |
+|              |
+| ( 0 ) ( z )  |
+\\              /
+
+Out> 
+In> Commutator(A,B)
+
+/                          \\
+| ( 0 ) ( x * z - y * x )  |
+|                          |
+| ( 0 ) ( 0 )              |
+\\                          /
+
+Out> ");
+
+
+
+CmdDescription("Taylor", "Univariate Taylor series expansion");
 StandardLib();
+
 Topical()"Calling Sequence";
-Text()"Taylor(var,at,order)expression";
+Text()"Taylor(var, at, order) expr";
 
 Topical()"Parameters";
 Text()
 "var - variable <br>
-at - point to get taylor series around <br>
+at - point to get Taylor series around <br>
 order - order of approximation <br>
-expression - expression to get taylor series for";
+expr - expression to get Taylor series for";
 
 Topical()"Description";
-Text()
-"Return the Taylor series expansion of function \"expression\", with
-respect to variable \"var\", around \"var=at\", upto order \"order\".
-";
+Text() "
+This function returns the Taylor series expansion of the expression
+\"expr\" with respect to the variable \"var\" around \"at\" upto order
+\"order\". This is a polynomial which agrees with \"expr\" at the
+point \"var = at\", and furthermore the first \"order\" derivatives of
+the polynomial at this point agree with \"expr\". Taylor expansions
+around removable singularities are correctly handled by taking the
+limit as \"var\" approaches \"at\".";
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"
-In> Taylor(x,0,9)Sin(x)
+Text() HtmlCommand("
+In> PrettyForm(Taylor(x,0,9) Sin(x))
 
      3    5      7       9  
     x    x      x       x   
 x - -- + --- - ---- + ------
     6    120   5040   362880
 
-Out> 
-");
+Out> True;");
 
 Topical()"See Also"; 
-SeeAlso({"InverseTaylor","ReversePoly","BigOh"});
+SeeAlso({"D","InverseTaylor","ReversePoly","BigOh"});
 
 
-AddAnchor("InverseTaylor");
-SubSection()"InverseTaylor";
+
+CmdDescription("InverseTaylor", "Taylor expansion of inverse");
 StandardLib();
+
 Topical()"Calling Sequence";
-Text()"InverseTaylor(var,at,degree) expression";
+Text()"InverseTaylor(var, at, order) expr";
 
 Topical()"Parameters";
 Text()
 "var - variable <br>
-at - point to get inverse taylor series around <br>
+at - point to get inverse Taylor series around <br>
 order - order of approximation <br>
-expression - expression to get inverse taylor series for";
+expr - expression to get inverse Taylor series for";
 
 Topical()"Description";
-Text()
-"InverseTaylor builds a taylor series expansion
-of the inverse of function func, with respect to variable var around value, upto
-degree. InverseTaylor uses the function ReversePoly to perform the
-task.";
+Text() "
+This function builds the Taylor series expansion of the inverse of the
+expression \"expr\" with respect to the variable \"var\" around \"at\"
+upto order \"order\". It uses the function " : HtmlTerm("ReversePoly")
+: " to perform the task."; 
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"
-In> exp1 := Taylor(x,0,7)Sin(x)
+Text() HtmlCommand("
+In> PrettyPrinter(\"PrettyForm\")
+
+True
+
+Out> 
+In> exp1 := Taylor(x,0,7) Sin(x)
 
      3    5      7 
     x    x      x  
@@ -465,7 +942,7 @@ x - -- + --- - ----
     6    120   5040
 
 Out> 
-In> exp2 := InverseTaylor(x,0,8)ArcSin(x)
+In> exp2 := InverseTaylor(x,0,7) ArcSin(x)
 
  5      7     3    
 x      x     x     
@@ -477,41 +954,37 @@ In> Simplify(exp1-exp2)
 
 0
 
-Out> 
-");
+Out> ");
 
 Topical()"See Also"; 
 SeeAlso({"ReversePoly","Taylor","BigOh"});
 
 
-AddAnchor("ReversePoly");
-SubSection()"ReversePoly";
+
+CmdDescription("ReversePoly", "Solve \"h(f(x)) = g(x) + O(x^n)\" for h");
 StandardLib();
 Topical()"Calling Sequence";
-Text()"ReversePoly(f,g,var,newvar,degree)";
+Text()"ReversePoly(f, g, var, newvar, degree)";
 
 Topical()"Parameters";
 Text()
-"f - a function of one free variable 'var'<br>
-g - a function of one free variable 'var'<br>
+"f, g - expressions in \"var\" <br>
 var - a variable<br>
 newvar - a new variable to express the result in<br>
-degree - The degree of the required solution
+degree - the degree of the required solution
 ";
 
 Topical()"Description";
-Text()
-"Given polynomials f(var) and g(var), determine a polynomial
-h(newvar) for which h(f(var)) = g(var). The resulting polynomial
-will be of degree degree. The only requirement is that the
-first derivative of f should not be zero.
-":
-HtmlNewParagraph():
-"
-This function is used to determine the taylor series expansion of
-a function: if g(var)=var, then h(f(var))=var, so h will be the
-inverse of f.
-";
+Text() "
+This function returns a polynomial in \"newvar\", say \"h(newvar)\",
+with the property that \"h(f(var))\" equals \"g(var)\" upto order
+\"degree\". The degree of the result will be at most \"degree-1\". The
+only requirement is that the first derivative of \"f\" should not be zero.
+<p> </p>
+This function is used to determine the Taylor series expansion of the
+inverse of a function \"f\": if we take \"g(var)=var\", then
+\"h(f(var))=var\" (upto order \"degree\"), so \"h\" will be the
+inverse of \"f\".";
 
 Topical()"Examples";
 Text()
@@ -526,17 +999,19 @@ Out> True;
 In> BigOh(h(f(x)),x,8)
 Out> x^2;
 In> h(x)
-Out> (-2695*(x-1)^7)/131072+(791*(x-1)^6)/32768+(-119*(x-1)^5)/4096+(37*(x-1)^4)/1024+(-3*(x-1)^3)/64+(x-1)^2/16;
+Out> (-2695*(x-1)^7)/131072+(791*(x-1)^6)/32768+(-119*(x-1)^5)/4096+(37*(x-1)^4)
+/1024+(-3*(x-1)^3)/64+(x-1)^2/16;
 ");
 
 Topical()"See Also"; 
 SeeAlso({"InverseTaylor","Taylor","BigOh"});
 
-AddAnchor("BigOh");
-SubSection()"BigOh";
+
+
+CmdDescription("BigOh", "Drop all terms of a certain order in a polynomial");
 StandardLib();
 Topical()"Calling Sequence";
-Text()"BigOh(poly,var,degree)";
+Text()"BigOh(poly, var, degree)";
 
 Topical()"Parameters";
 Text()
@@ -546,9 +1021,8 @@ degree - positive integer";
 
 Topical()"Description";
 Text()
-"BigOh drops all terms of order degree or higher in a 
-given polynomial poly in variable var.
-.";
+"This function drops all terms of order \"degree\" or higher in
+\"poly\", which is a polynomial in the variable \"var\".";
 
 Topical()"Examples";
 Text()
@@ -562,27 +1036,29 @@ SeeAlso({"Taylor","InverseTaylor"});
 
 
 
-
-AddAnchor("Newton");
-SubSection()"Newton";
+CmdDescription("Newton", "Solve an equation numerically with Newton's method");
 StandardLib();
 Topical()"Calling Sequence";
-Text()"Newton(expression,variable,initial,accuracy)";
+Text()"Newton(expr, var, initial, accuracy)";
 
 Topical()"Parameters";
 Text()"
-expression - an expression to find a zero for <br>
-variable - free variable to adjust to find a zero <br>
-initial - initial value to use in the search      <br>
+expr - an expression to find a zero for <br>
+var - free variable to adjust to find a zero <br>
+initial - initial value for \"var\" to use in the search      <br>
 accuracy - minimum required accuracy of the result
 ";
 
 Topical()"Description";
-Text()
-"Find a zero of \"expression\", as a function of \"variable\",
-starting around value \"initial\", and continuing until
-the value for \"variable\" is maximally \"accuracy\" away
-from the correct value.";
+Text()"
+This function tries to numerically find a zero of the expression
+\"expr\", which should depend only on the variable \"var\". It uses
+the value \"initial\" as an initial guess. 
+<p> </p>
+The function will iterate using Newton's method until it estimates
+that it has come within a distance \"accuracy\" of the correct
+solution, and then it will return its best guess. In particular, it
+may loop forever if the algorithm does not converge.";
 
 Topical()"Examples";
 Text()
@@ -592,34 +1068,44 @@ In> Newton(Sin(x),x,3,0.0001)
 Out> 3.1415926535;
 ");
 
+Topical()"See Also"; 
+SeeAlso({"Solve"});
 
 
 
-AddAnchor("D");
-SubSection()"Derivatives";
+CmdDescription("D", "Differentiation");
 StandardLib();
 Topical()"Calling Sequence";
 Text()
-"D(var)expression <br>
-D(list)expression <br>
-D(var,n)expression
+"D(var) expr <br>
+D(list) expr <br>
+D(var,n) expr
 ";
 
 Topical()"Parameters";
 Text()
 "var - variable <br>
 list - a list of variables <br>
-expression - expression to take derivative of <br>
+expr - expression to take derivative of <br>
 n - order of derivative
 ";
 
 Topical()"Description";
-Text()
-"Calculate analytic derivative of an expression.
-The D operator is threaded.
-Alternatively, D can be invoked with \"D(variable,n)expression\".
-In that case the n-th derivative will be taken.
-";
+Text() "
+This function calculates the derivative of the expression \"expr\" with
+respect to the variable \"var\" and returns it. If the third calling
+sequence is used, the \"n\"-th derivative is determined. Yacas knows
+how the differentiate standard functions like " : HtmlTerm("Ln") : "
+and " : HtmlTerm("Sin") : ".
+<p> </p>
+The " : HtmlTerm("D") : " operator is threaded in both \"var\" and
+\"expr\". This means that if either of them is a list, the function is
+applied to each entry in the list. The results are collected in
+another list which is returned. If both \"var\" and \"expr\" are a
+list, their lengths should be equal. In this case, the first entry in
+the list \"expr\" is differentiated with respect to the first entry in
+the list \"var\", the second entry in \"expr\" is differentiated with
+respect to the second entry in \"var\", and so on.";
 
 Topical()"Examples";
 Text()
@@ -636,180 +1122,232 @@ Out> {Cos(x),-Sin(x)};
 ");
 
 Topical()"See Also"; 
-SeeAlso({"Integrate","Taylor"});
+SeeAlso({"Integrate","Taylor", "Diverge", "Curl"});
 
-AddAnchor("Diverge");
-AddAnchor("Curl");
-SubSection()"Diverge and Curl";
+
+
+CmdDescription("Curl", "Curl of a vector field");
 StandardLib();
-Topical()"Calling Sequence";
-Text()
-"Diverge(vector, basis) <br>
-Curl(vector, basis) 
-";
 
-Topical()"Parameters";
-Text()
-"vector - a vector <br>
-basis - a list of variables";
+Topical() "Calling sequence";
+Text() "Curl(vector, basis)";
 
-Topical()"Description";
-Text()
-"Diverge(vector, basis) will calculate the divergence of a vector.
-Curl(vector, basis) calculate the curl of a vector.
-";
+Topical() "Parameters";
+Text() "
+vector - vector field to take the curl of <br>
+basis - list of variables forming the basis";
 
-Topical()"Examples";
-Text()
-HtmlCommand(
-"
-In> Diverge({x*y,x*y,x*y},{x,y,z})
-Out> {y,x,0};
+Topical() "Description";
+Text() "
+This function takes the curl of the vector field \"vector\" with
+respect to the variables \"basis\". The curl is defined as
+<p> </p> " :
+HtmlTerm("Curl(f,x) = { D(x[2]) f[3] - D(x[3]) f[2], D(x[3]) f[1] -
+D(x[1]) f[3], D(x[1]) f[2] - D(x[2]) f[1] }") : "
+<p> </p>
+Both \"vector\" and \"basis\" should be lists of length 3."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
 In> Curl({x*y,x*y,x*y},{x,y,z})
-Out> {x,-y,y-x};
-");
+Out> {x,-y,y-x};");
 
-Topical()"See Also"; 
-SeeAlso({"D"});
+Topical() "See Also";
+SeeAlso({"D", "Diverge"});
 
 
-AddAnchor("Integrate");
-SubSection()"Integrate";
+
+CmdDescription("Diverge", "Divergence of a vector field");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "Diverge(vector, basis)";
+
+Topical() "Parameters";
+Text() "
+vector - vector field to calculate the divergence of <br>
+basis - list of variables forming the basis";
+
+Topical() "Description";
+Text() "
+This function calculates the divergence of the vector field \"vector\"
+with respect to the variables \"basis\". The divergence is defined as
+<p> </p> " :
+HtmlTerm("Diverge(f,x) = D(x[1]) f[1] + ... + D(x[n]) f[n]") : ",
+<p> </p>
+where " : HtmlTerm("n") : " is the length of the lists \"vector\" and
+\"basis\". These lists should have equal length."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Diverge({x*y,x*y,x*y},{x,y,z})
+Out> y+x;");
+
+Topical() "See Also";
+SeeAlso({"D", "Curl"});
+
+
+
+CmdDescription("Integrate", "Integration");
 StandardLib();
 Topical()"Calling Sequence";
 Text()
-"Integrate(var,from,to) expression <br>
-Integrate(var) expression
+"Integrate(var, from, to) expr <br>
+Integrate(var) expr
 ";
 
 Topical()"Parameters";
 Text()
 "var - variable to integrate over <br>
-from - value to integrate from <br>
-to - value to integrate upto <br>
-expression - expression to integrate over
+from - begin of interval to integrate over <br>
+to - end of interval to integrate over <br>
+expression - expression to integrate 
 ";
 
 Topical()"Description";
-Text()
-"Integrate an expression over variable var=from
-to var=to. Some simple integration rules have currently been implemented.
-Transcendental functions, polynomials, products of transcendental functions
-and polynomials, and rational functions.";
+Text()"
+This function integrates the expression \"expr\" with respect to the
+variable \"var\". The first calling sequence is used to perform
+definite integration: the integration is carried out from \"var=form\"
+to \"var=to\". The second form signifies indefinite integration. In
+this case, the function " : HtmlTerm("UniqueConstant") : " is called
+to get a variable of the form " : HtmlTerm("C") : "n (where \"n\" is
+an integer) which represent the integration constant.
+<p> </p>
+Some simple integration rules have currently been
+implemented. Polynomials, quotients of polynomials, the transcendental
+functions " : HtmlTerm("Sin") : ", " : HtmlTerm("Cos") : ", " :
+HtmlTerm("Exp") : ", and " : HtmlTerm("Ln") : ", and products of these
+functions with polynomials can all be integrated.";
 
 Topical()"Examples";
 Text()
 HtmlCommand(
 "
-In> Integrate(x,a,b)Cos(x)
+In> Integrate(x,a,b) Cos(x)
 Out> Sin(b)-Sin(a);
-In> Integrate(x)Cos(x)
+In> Integrate(x) Cos(x)
 Out> Sin(x)+C9;
 ");
 
 Topical()"See Also"; 
-SeeAlso({"D"});
+SeeAlso({"D", "UniqueConstant"});
 
 
-AddAnchor("Simplify");
-SubSection()"Simplify";
-BuiltIn()/StandardLib();
+
+CmdDescription("Simplify", "Try to simplify an expression");
+StandardLib();
+
 Topical()"Calling Sequence";
-Text()"Simplify(expression)";
+Text()"Simplify(expr)";
 
 Topical()"Parameters";
-Text()"expression - an expression";
+Text()"expression - expression to simplify";
 
 Topical()"Description";
-Text()
-"Simplify tries to simplify an expression as much
+Text() "
+This function tries to simplify the expression \"expr\" as much
 as possible. It does this by grouping powers within terms, and then
-grouping like terms.
-";
+grouping like terms.";
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"
+Text() HtmlCommand("
 In> a*b*a^2/b-a^3
 Out> (b*a^3)/b-a^3;
 In> Simplify(a*b*a^2/b-a^3)
-Out> 0;
-");
+Out> 0;");
 
 Topical()"See Also"; 
 SeeAlso({"TrigSimpCombine","RadSimp"});
 
 
-AddAnchor("RadSimp");
-SubSection()"RadSimp";
+
+CmdDescription("RadSimp", "Simplify expression with nested radicals");
 StandardLib();
+
 Topical()"Calling Sequence";
-Text()"RadSimp(expression)";
+Text()"RadSimp(expr)";
 
 Topical()"Parameters";
-Text()"expression - an expression containing nested radicals";
+Text()"expr - an expression containing nested radicals";
 
 Topical()"Description";
-Text()
-"RadSimp tries to unnest nested radicals. It does this using
-a simple brute force method, and tries to write it out as an
-expression of the form Sqrt(e1) + Sqrt(e2) + ... .
-";
+Text() "
+This function tries to write the expression \"expr\" as a sum of roots
+of integers: \"Sqrt(e1) + Sqrt(e2) + ...\", where \"e1\", \"e2\" and
+so on are natural numbers. The expression \"expr\" may not contain
+free variables.
+<p> </p>
+It does this by trying all possible combinations for \"e1\", \"e2\",
+etcetera. Every possibility is numerically evaluated using " :
+HtmlTerm("N") : " and compared with the numerical evaluation of
+\"expr\". If the approximations are equal (upto a certain margin),
+this possibility is returned. Otherwise, the expression is returned
+unevaluated.
+<p> </p>
+Note that due to the use of numerical approximations, there is a small
+chance that the expression returned by " : HtmlTerm("RadSimp") : " is
+close but not equal to \"expr\". The last example underneath
+illustrates this problem. Furthermore, if the numerical value of
+\"expr\" is large, the number of possibilities becomes exorbitantly
+big so the evaluation may take very long."; 
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"In> RadSimp(Sqrt(9+4*Sqrt(2)))
-Out> 1+Sqrt(8);
+Text() HtmlCommand("
+In> RadSimp(Sqrt(9+4*Sqrt(2)))
+Out> Sqrt(8)+1;
 In> RadSimp(Sqrt(5+2*Sqrt(6))+Sqrt(5-2*Sqrt(6)))
 Out> Sqrt(12);
 In> RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2)))))) 
-Out> 3+Sqrt(2);
-");
+Out> Sqrt(2)+3;") : "
+<p> </p>
+But this command may yield incorrect results: 
+" : HtmlCommand("
+In> RadSimp(Sqrt(1+10^(-6)))
+Out> 1;");
 
 Topical()"See Also"; 
-SeeAlso({"Simplify"});
+SeeAlso({"Simplify", "N"});
 
 
 
 
-AddAnchor("Rationalize");
-SubSection()"Rationalize";
+CmdDescription("Rationalize", "Convert floating point numbers to fractions");
 StandardLib();
+
 Topical()"Calling Sequence";
-Text()"Rationalize(expression)";
+Text()"Rationalize(expr)";
 
 Topical()"Parameters";
-Text()"expression - an expression containing real numbers";
+Text()"expr - an expression containing real numbers";
 
 Topical()"Description";
-Text()
-"Convert every real number in expr into a rational number.
-This is useful when a calculation needs to be done on
-floating point numbers and the algorithm is unstable.
-Converting the floating point numbers to rational numbers
-will force calculations to be done with infinite precision
-(by using rational numbers as representations).";
+Text() "
+This command converts every real number in the expression \"expr\"
+into a rational number. This is useful when a calculation needs to be
+done on floating point numbers and the algorithm is unstable.
+Converting the floating point numbers to rational numbers will force
+calculations to be done with infinite precision (by using rational
+numbers as representations).";
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"
+Text() HtmlCommand("
 In> {1.2,3.123,4.5}
 Out> {1.2,3.123,4.5};
 In> Rationalize(%)
-Out> {6/5,3123/1000,9/2};
-");
+Out> {6/5,3123/1000,9/2};");
+
+Topical()"See Also"; 
+SeeAlso({"IsRational"});
 
 
-AddAnchor("Solve");
-SubSection()"Solve";
-BuiltIn()/StandardLib();
+
+CmdDescription("Solve", "Solve one or more algebraic equations");
+StandardLib();
 Topical()"Calling Sequence";
 Text()
-"Solve(eq,var) <br>
- Solve(eqlist,varlist)
+"Solve(eq, var) <br>
+ Solve(eqlist, varlist)
 ";
 
 Topical()"Parameters";
@@ -820,131 +1358,140 @@ eqlist - list of identity equations <br>
 varlist - list of variables";
 
 Topical()"Description";
-Text()
-"Solve tries to solve (a set of) equations for (a set of) variables.
-
-Pass the equations in a list,
-as well as the variables to be solved for. The solver will then use
-SuchThat, in combination with Eliminate, to simplify the equations.
-This suffices for all linear equations and a large group of simple
-non-linear equations.
-
-When the variable argument receives a list of variables to solve for,
-Solve returns a list of results, with each result being a solution
-to the set of equations.
-";
+Text() "
+This command tries to solve one or more equations. Use the first form
+to solve a single equation and the second one for systems of
+equations.
+<p> </p>
+The first calling sequence solves the equation \"eq\" for the variable
+\"var\". Use the " : HtmlTerm("==") : " operator to form the equation. 
+The value of \"var\" which satisfies the equation, is returned. Note
+that only one solution is found and returned.
+<p> </p>
+To solve a system of equations, the second form should be used. It
+solves the system of equations contained in the list \"eqlist\" for
+the variables appearing in the list \"varlist\". A list of results is
+returned, and each result is a list containing the values of the
+variables in \"varlist\". Again, at most a single solution is
+returned.
+<p> </p>
+The task of solving a single equation is simply delegated to " :
+HtmlTerm("SuchThat") : ". Multiple equations are solved recursively:
+firstly, an equation is sought in which one of the variables occurs
+exactly once; then this equation is solved with " :
+HtmlTerm("SuchThat") : "; and finally the solution is substituted in the
+other equations by " : HtmlTerm("Eliminate") : " decreasing the number
+of equations by one. This suffices for all linear equations and a
+large group of simple nonlinear equations."; 
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"
+Text() HtmlCommand("
 In> Solve(a+x*y==z,x)
 Out> (z-a)/y;
 In> Solve({a*x+y==0,x+z==0},{x,y})
-Out> {{-z,z*a}};
-");
+Out> {{-z,z*a}};") : "
+This means that \"x = (z-a)/y\" is a solution of the first equation
+and that \"x = -z\", \"y = z*a\" is a solution of the systems of
+equations in the second command.
+<p> </p>
+An example which " : HtmlTerm("Solve") : " cannot solve:" 
+: HtmlCommand("
+In> Solve({x^2-x == y^2-y, x^2-x == y^3+y}, {x,y});
+Out> {};");
 
 Topical()"See Also"; 
-SeeAlso({"SuchThat","Subst","Eliminate"});
+SeeAlso({"SuchThat", "Eliminate", "PSolve", "=="});
 
 
-AddAnchor("SuchThat");
-SubSection()"SuchThat";
+
+CmdDescription("SuchThat", "Find a value which makes some expression zero");
 StandardLib();
 Topical()"Calling Sequence";
-Text()"SuchThat(expression,variable)";
+Text()"SuchThat(expr, var)";
 
 Topical()"Parameters";
-Text()"expression - an expression to solve for <br>
-variable - subexpression to look for";
+Text()
+"expr - expression to make zero <br>
+var - variable (or subexpression) to solve for";
 
 Topical()"Description";
-Text()
-"SuchThat(expression,var) : try to find a simple expression for variable var,
-given the equality expression=0. This function basically only handles
-expressions where the variable only occurs once. It does its work
-by applying the inverse of the top function, until the variable is
-reached. Variable can also refer to an expression, in which case it
-will try to eliminate for that expression.
-";
+Text() "
+This functions tries to find a value of the variable \"var\" which
+makes the expression \"expr\" zero. It is also possible to pass a
+subexpression as \"var\", in which case " : HtmlTerm("SuchThat") : "
+will try to eliminate for that subexpression.
+<p> </p>
+Basically, only expressions in which \"var\" occurs only once are
+handled; and in fact, " : HtmlTerm("SuchThat") : " may even give wrong
+results if the variables occurs more than once. This is a consequence
+of the implementation, which repeatedly applies the inverse of the top
+function until the variable \"var\" is reached.";
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"In> SuchThat(a+b*x,x)
+Text() HtmlCommand("
+In> SuchThat(a+b*x, x)
 Out> (-a)/b;
-In> SuchThat(Cos(a)+Cos(b)^2,Cos(b))
-Out> (-Cos(a))^(1/2);
-In> Expand(a*x+b*x+c,x)
-Out> c+(a+b)*x;
-In> SuchThat(%,x)
-Out> (-c)/(a+b);
-");
+In> SuchThat(Cos(a)+Cos(b)^2, Cos(b))
+Out> Cos(a)^(1/2);
+In> Expand(a*x+b*x+c, x)
+Out> (a+b)*x+c;
+In> SuchThat(%, x)
+Out> (-c)/(a+b);");
 
 Topical()"See Also"; 
 SeeAlso({"Solve","Subst","Simplify"});
 
 
-AddAnchor("Eliminate");
-SubSection()"Eliminate";
+
+CmdDescription("Eliminate", "Substitute and simplify");
 StandardLib();
 Topical()"Calling Sequence";
-Text()"Eliminate(original,replace,expression)";
+Text()"Eliminate(var, value, expr)";
 
 Topical()"Parameters";
-Text()
-"original - expression <br>
-replace -  expression <br>
-expression - expression 
-";
+Text() "
+var - variable (or subexpression) to substitute <br>
+value - new value of \"var\" <br>
+expr - expression in which the substitution should take place";
 
 Topical()"Description";
-Text()
-"Replace all instances of
-":HtmlTerm("original"):" in ":HtmlTerm("expression"):" with ":HtmlTerm("replace"):"
-and call Simplify on the resulting expression.";
+Text() "
+This function uses " : HtmlTerm("Subst") : " to replace all instances
+of the variable (or subexpression) \"var\" in the expression \"expr\"
+with \"value\", calls " : HtmlTerm("Simplify") : " to simplify the
+resulting expression, and returns the result.";
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"
-In> Subst(Cos(b),c)(Sin(a)+Cos(b)^2/c)
-
-            2
-           c 
-Sin( a ) + --
-           c 
-
-Out> 
-In> Eliminate(Cos(b),c,Sin(a)+Cos(b)^2/c)
-
-Sin( a ) + c
-
-Out> 
-");
+Text() HtmlCommand("
+In> Subst(Cos(b), c) (Sin(a)+Cos(b)^2/c)
+Out> Sin(a)+c^2/c;
+In> Eliminate(Cos(b), c, Sin(a)+Cos(b)^2/c)
+Out> Sin(a)+c;");
 
 Topical()"See Also"; 
-SeeAlso({"SuchThat","Subst"});
+SeeAlso({"SuchThat", "Subst", "Simplify"});
 
 
 
-
-
-AddAnchor("PSolve");
-SubSection()"PSolve";
+CmdDescription("PSolve", "Solve a polynomial equation");
 StandardLib();
+
 Topical()"Calling Sequence";
-Text()"PSolve(expr,var)";
+Text()"PSolve(poly, var)";
 
 Topical()"Parameters";
-Text()
-"expr - an expression <br>
+Text() "
+poly - a polynomial in \"var\" <br>
 var - a variable";
 
 Topical()"Description";
-Text()
-"solve expr=0 with respect to variable var, treating
-it expr as a polynomial. It currently solves upto degree 3.";
+Text() "
+This commands returns a list containing the roots of \"poly\",
+considered as a polynomial in the variable \"var\". If there is only
+one root, it is not returned as a one-entry list but just by
+itself. A double root occurs twice in the result, and similarly for
+roots of higher multiplicity. All polynomials of degree upto 4 are
+handled.";
 
 Topical()"Examples";
 Text()
@@ -960,18 +1507,25 @@ Topical()"See Also";
 SeeAlso({"Solve","Factor"});
 
 
-SubSection()"Pi";
+
+CmdDescription("Pi", "Numerical approximation of pi");
 BuiltIn();
+
 Topical()"Calling Sequence";
 Text()"Pi()";
 
+Topical() "Parameters";
+Text() "none";
+
 Topical()"Description";
-Text()
-"Returns pi to the current precision. Usually this function will
-not be called directly. The constant 'Pi' can (and should) be used to
-represent pi, so simplification rules can do work. Then when the
-function N is invoked Pi will be replaced with the value returned
-by Pi().";
+Text() "
+This commands returns the mathematical constant pi to the current
+precision, as set by " : HtmlTerm("Precision") : ". Usually this
+function will not be called directly. The constant " : HtmlTerm("Pi")
+: " can (and should) be used to represent pi, as it is recognized by
+the simplification rules. Then when the function " : HtmlTerm("N") : "
+is invoked, " : HtmlTerm("Pi") : " will be replaced with the value
+returned by " : HtmlTerm("Pi()") : ".";
 
 Topical()"Examples";
 Text()
@@ -986,33 +1540,43 @@ Out> 3.1415926535897932384626433832795028841971;
 ");
 
 Topical()"See Also"; 
-SeeAlso({"N","Pi"});
+SeeAlso({"N","Pi","Precision"});
 
 
-AddAnchor("Random");
-SubSection()"Random";
+
+CmdDescription("Random", "Random number between 0 and 1");
 StandardLib();
+
 Topical()"Calling Sequence";
 Text()"Random()";
 
+Topical() "Parameters";
+Text() "none";
+
 Topical()"Description";
-Text()
-"Returns a random number between 0 and 1.";
+Text() "
+This function returns a random number, uniformly distributed in the
+interval between 0 and 1. The same sequence of random numbers is
+generated in every Yacas session.";
+
+Topical() "See Also";
+SeeAlso({"RandomInteger", "RandomPoly"});
 
 
-AddAnchor("VarList");
-SubSection()"VarList";
+
+CmdDescription("VarList", "List of variables appearing in some expression");
 StandardLib();
+
 Topical()"Calling Sequence";
-Text()"VarList(expression)";
+Text()"VarList(expr)";
 
 Topical()"Parameters";
-Text()"expression - an expression";
+Text()"expr - an expression";
 
 Topical()"Description";
-Text()
-"Returns a list with all the variables
-\"expression\" depends on.";
+Text() "
+This command returns a list of all the variables that appear in the
+expression \"expr\".";
 
 Topical()"Examples";
 Text()
@@ -1025,35 +1589,38 @@ Out> {x,a,y};
 ");
 
 Topical()"See Also"; 
-SeeAlso({"IsFreeOf"});
+SeeAlso({"IsFreeOf", "IsVariable"});
 
 
-AddAnchor("Limit");
-SubSection()"Limit";
+
+CmdDescription("Limit", "Limit of an expression");
 StandardLib();
+
 Topical()"Calling Sequence";
 Text()"
-Limit(variable,value) expression <br>
-Limit(variable,value,direction) expression
-";
+Limit(var, val) expr <br>
+Limit(var, val, dir) expr";
 
 Topical()"Parameters";
 Text()
-"variable - a variable <br>
-value - a number <br>
-direction - a direction (Left or Right) <br>
-expression - an expression";
+"var - a variable <br>
+val - a number <br>
+dir - a direction (" : HtmlTerm("Left") : " or " : HtmlTerm("Right") : ") <br>
+expr - an expression";
 
 Topical()"Description";
-Text()
-"Determine the
-value \"expression\" converges to when \"variable\"
-goes to \"value\". <p>
-
-You can also specify a direction for the limit, Left or Right.
-Specifying Right will take the limit from positive Infinity, and
-Left will take the limit from -Infinity.
-";
+Text() "
+This command tries to determine the value that the expression \"expr\"
+converges to when the variable \"var\" approaches \"val\". One may use
+" : HtmlTerm("Infinity") : " or " : HtmlTerm("-Infinity") : " for
+\"val\". The result of " : HtmlTerm("Limit") : " may be one of the
+symbols " : HtmlTerm("Undefined") : " (meaning that the limit does not
+exist), " : HtmlTerm("Infinity") : ", or " : HtmlTerm("-Infinity") : ".
+<p> </p>
+The second calling sequence is used for unidirectional limits. If one
+gives \"dir\" the value " : HtmlTerm("Left") : ", the limit is taken as
+\"var\" approaches \"val\" from the positive infinity; and " :
+HtmlTerm("Right") : " will take the limit from the negative infinity.";
 
 Topical()"Examples";
 Text()
@@ -1062,42 +1629,46 @@ HtmlCommand(
 Out> 1;
 In> Limit(x,0) (Sin(x)-Tan(x))/(x^3)
 Out> -1/2;
-In> Limit(x,0)1/x
+In> Limit(x,0) 1/x
 Out> Undefined;
-In> Limit(x,0,Left)1/x
+In> Limit(x,0,Left) 1/x
 Out> -Infinity;
-In> Limit(x,0,Right)1/x
+In> Limit(x,0,Right) 1/x
 Out> Infinity;
 ");
 
 
 
-AddAnchor("TrigSimpCombine");
-SubSection()"TrigSimpCombine";
+CmdDescription("TrigSimpCombine", 
+               "Combine products of trigonometric functions");
 StandardLib();
+
 Topical()"Calling Sequence";
-Text()"TrigSimpCombine(expression)";
+Text()"TrigSimpCombine(expr)";
 
 Topical()"Parameters";
-Text()"expression - an expression";
+Text()"expr - expression to simplify";
 
 Topical()"Description";
-Text()
-"This is the module that does the trigonometric simplification:
-Cos(...)*Sin(...) -> Cos(...)+Sin(...)
-<P>
-It also tries to simplify the resulting expression as much as possible,
-trying to combine all like terms.":
-HtmlNewParagraph():
-"
-This function is used in for instance Integrate, to bring down
-the expression into a simpler form that can be integrated easily.
-";
+Text() "
+This function applies the product rules of trigonometry, like " :
+HtmlTerm("Cos(u)*Sin(v) = (Sin(v-u) + Sin(v+u)) / 2") : ". As a
+result, all products of the trigonometric functions " :
+HtmlTerm("Cos") : " and " : HtmlTerm("Sin") : " disappear. The
+function also tries to simplify the resulting expression as much as
+possible by combining all like terms.
+<p> </p>
+This function is used in for instance " : HtmlTerm("Integrate") : ",
+to bring down the expression into a simpler form that hopefully can be
+integrated easily.";
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"
+Text() HtmlCommand("
+In> PrettyPrinter(\"PrettyForm\");
+
+True
+
+Out> 
 In> TrigSimpCombine(Cos(a)^2+Sin(a)^2)
 
 1
@@ -1105,7 +1676,7 @@ In> TrigSimpCombine(Cos(a)^2+Sin(a)^2)
 Out> 
 In> TrigSimpCombine(Cos(a)^2-Sin(a)^2)
 
-Cos( 2 * a )
+Cos( -2 * a )
 
 Out> 
 In> TrigSimpCombine(Cos(a)^2*Sin(b))
@@ -1114,45 +1685,57 @@ Sin( b )   Sin( -2 * a + b )   Sin( -2 * a - b )
 -------- + ----------------- - -----------------
    2               4                   4        
 
-Out> 
-");
+Out> ");
 
 Topical()"See Also"; 
-SeeAlso({"Simplify","Integrate"});
+SeeAlso({"Simplify", "Integrate", "Expand", "Sin, Cos, Tan"});
 
 
 
-
-AddAnchor("LagrangeInterpolant");
-SubSection()"LagrangeInterpolant";
+CmdDescription("LagrangeInterpolant", "Polynomial interpolation");
 StandardLib();
+
 Topical()"Calling Sequence";
-Text()"LagrangeInterpolant(xlist,ylist,var)";
+Text()"LagrangeInterpolant(xlist, ylist, var)";
 
 Topical()"Parameters";
 Text()
-"xlist - list of values <br>
-ylist - list f values <br>
+"xlist - list of argument values <br>
+ylist - list of function values <br>
 var - free variable for resulting polynomial";
 
 Topical()"Description";
-Text()
-"Given a set of points (x_i,y_i) with all nonzero y_i, find the
-polynomial that goes through these points. The first argument
-passed to the function should be the list of x_i values, the
-second one should be the list of y_i values, and the third
-argument should be the variable used to build up the polynomial.
-
-":HtmlNewParagraph():"
-
+Text() "
+This function returns a polynomial in the variable \"var\" which
+interpolates the points \"(xlist, ylist)\". Specifically, the value of
+the resulting polynomial at \"xlist[1]\" is \"ylist[1]\", the value at
+\"xlist[2]\" is \"ylist[2]\", etc. The degree of the polynomial is not
+greater than the length of \"xlist\". 
+<p> </p>
+The lists \"xlist\" and \"ylist\" should be of equal
+length. Furthermore, the entries of \"xlist\" should be all distinct
+to ensure that there is one and only one solution.
+<p> </p>
 This routine uses the Lagrange interpolant formula to build up the
 polynomial.";
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"
-In> LagrangeInterpolant({x1,x2,x3},{y1,y2,y3},x)
+Text() HtmlCommand("
+In> f := LagrangeInterpolant({0,1,2}, {0,1,1}, x);
+Out> (x*(x-1))/2-x*(x-2);
+In> Eval(Subst(x,0) f);
+Out> 0;
+In> Eval(Subst(x,1) f);
+Out> 1;
+In> Eval(Subst(x,2) f);
+Out> 1;
+
+In> PrettyPrinter(\"PrettyForm\");
+
+True
+
+Out> 
+In> LagrangeInterpolant({x1,x2,x3}, {y1,y2,y3}, x)
 
 y1 * ( x - x2 ) * ( x - x3 )   y2 * ( x - x1 ) * ( x - x3 ) 
 ---------------------------- + ---------------------------- 
@@ -1162,14 +1745,16 @@ y1 * ( x - x2 ) * ( x - x3 )   y2 * ( x - x1 ) * ( x - x3 )
 + ----------------------------
    ( x3 - x1 ) * ( x3 - x2 )  
 
-Out> 
-");
+Out> ");
+
+Topical() "See Also";
+SeeAlso({"Subst"});
 
 
 
-AddAnchor("Fibonacci");
-SubSection()"Fibonacci";
+CmdDescription("Fibonacci", "Fibonacci sequence");
 StandardLib();
+
 Topical()"Calling Sequence";
 Text()"Fibonacci(n)";
 
@@ -1177,17 +1762,21 @@ Topical()"Parameters";
 Text()"n - an integer";
 
 Topical()"Description";
-Text()
-"Calculate Fibonacci number \"n\".";
+Text() "
+This command calculates and returns the \"n\"-th Fibonacci number. 
+<p> </p>
+The Fibonacci sequence is 1, 1, 2, 3, 5, 8, 13, 21, ..., where every
+number is the sum of the two preceding numbers. Formally, it is
+defined by F(1) = 1, F(2) = 1, and F(n+1) = F(n) + F(n-1), where F(n)
+denotes the n-th Fibonacci number.";
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"
+Text() HtmlCommand("
 In> Fibonacci(4)
 Out> 3;
 In> Fibonacci(8)
 Out> 21;
-");
+In> Table(Fibonacci(i), i, 1, 10, 1)
+Out> {1,1,2,3,5,8,13,21,34,55};");
 
 
