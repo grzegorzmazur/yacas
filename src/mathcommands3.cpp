@@ -73,7 +73,7 @@
 void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
     RefPtr<BigNumber> num; 
-    num = ARGUMENT(aArgNr).Get()->Number(aEnvironment.BinaryPrecision());
+    num = ARGUMENT(aArgNr).Get()->Number(aEnvironment.Precision());
     CHK_ARG_CORE(num.Ptr() != NULL,aArgNr);
     x = num;
 }
@@ -108,7 +108,7 @@ void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
     CHK_ARG_CORE(IsNumber(str1->String(),LispTrue),1);
     RESULT.Set(LispAtom::New(aEnvironment,func(str1->String(),
                                    aEnvironment.HashTable(),
-                                   aEnvironment.Precision()))); // Serge, you probably want this to be BinaryPrecision() (or we move to hte scripts of course)
+                                   aEnvironment.Precision()))); 
 }
 
 
@@ -139,7 +139,7 @@ void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
 
     RESULT.Set(LispAtom::New(aEnvironment,func(str1->String(),str2->String(),
                                    aEnvironment.HashTable(),
-                                   aEnvironment.Precision()))); // Serge, you probably want this to be BinaryPrecision() (or we move to hte scripts of course)
+                                   aEnvironment.Precision()))); 
 }
 
 

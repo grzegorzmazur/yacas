@@ -902,10 +902,10 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
 #ifndef USE_NATIVE
 
 
-BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+BigNumber::BigNumber(const LispCharPtr aString,LispInt aBasePrecision,LispInt aBase)
 {
   iNumber = NULL;
-  SetTo(aString, aPrecision, aBase);
+  SetTo(aString, aBasePrecision, aBase);
 }
 BigNumber::BigNumber(const BigNumber& aOther)
 {
@@ -934,9 +934,9 @@ void BigNumber::SetTo(const BigNumber& aOther)
 
 /// Export a number to a string in given base to given base digits
 // FIXME API breach: aPrecision is supposed to be in digits, not bits
-void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase) const
+void BigNumber::ToString(LispString& aResult, LispInt aBasePrecision, LispInt aBase) const
 {
-  ANumber num(BITS_TO_DIGITS(aPrecision,aBase));
+  ANumber num(aBasePrecision);
   num.CopyFrom(*iNumber);
   
   //TODO this round-off code is not correct yet, but will work in most cases
@@ -944,12 +944,12 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
   // even. When precision drops one digit, it rounds off the last ten digits.
   // So the following code is probably only correct if aPrecision>=num.iPrecision
   // or if aPrecision < num.iPrecision-10
-  if (aPrecision<num.iPrecision)
+  if (aBasePrecision<num.iPrecision)
   {
     if (num.iExp > 1)
       num.RoundBits();
   }
-  num.ChangePrecision(BITS_TO_DIGITS(aPrecision,aBase));
+  num.ChangePrecision(aBasePrecision);
 
 #define ENABLE_SCI_NOTATION
 #ifdef ENABLE_SCI_NOTATION
@@ -1346,23 +1346,7 @@ void BigNumber::Precision(LispInt aPrecision)
 //basic object manipulation
 LispBoolean BigNumber::Equals(const BigNumber& aOther) const
 {
-/*Not working yet? Not good rounding...
-  LispInt lowest = iNumber->iPrecision;
-  if (aOther.iNumber->iPrecision<lowest)
-    lowest = aOther.iNumber->iPrecision;
-  ANumber a1(lowest);
-  a1.CopyFrom(*iNumber);
-  ANumber a2(lowest);
-  a2.CopyFrom(*aOther.iNumber);
-  a1.ChangePrecision(lowest);
-  a2.ChangePrecision(lowest);
-  ANumber diff(lowest);
-  ANumber otherNeg(lowest);
-  ::Negate(a2);
-	::Add(diff, a1, a2);
-  return !Significant(diff);
- */
-/*TODO remove, old? */
+//  return iNumber->ExactlyEqual(*aOther.iNumber);
 
   BigNumber diff;
   BigNumber otherNeg;
@@ -1370,10 +1354,7 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
   LispInt precision = GetPrecision();
   if (precision<aOther.GetPrecision()) precision = aOther.GetPrecision();
   diff.Add(*this,otherNeg,BITS_TO_DIGITS(precision,10));
-//  diff.iNumber->ChangePrecision(BITS_TO_DIGITS(iPrecision,10));
-
   return !Significant(*diff.iNumber);
-/* */
 }
 
 
@@ -1497,10 +1478,10 @@ void BigNumber::SetTo(double aValue)
 
 // assign from string at given precision (the API says in base digits)
 // FIXME: API breach: aPrecision is passed in digits but used as if it were bits
-void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+void BigNumber::SetTo(const LispCharPtr aString,LispInt aBasePrecision,LispInt aBase)
 {//FIXME -- what?
-  iPrecision = aPrecision;
-  LispInt digits = BITS_TO_DIGITS(aPrecision,aBase);
+  iPrecision = digits_to_bits(aBasePrecision,BASE10);
+  LispInt digits = aBasePrecision;
   LispBoolean isFloat = 0;
   const LispCharPtr ptr = aString;
   while (*ptr && *ptr != '.') ptr++;

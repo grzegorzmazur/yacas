@@ -356,6 +356,30 @@ void ANumber::CopyFrom(const ANumber& aOther)
 }
 
 
+
+LispBoolean ANumber::ExactlyEqual(const ANumber& aOther)
+{
+  if (iExp       != aOther.iExp) return LispFalse;
+  if (iTensExp   != aOther.iTensExp) return LispFalse;
+  if (iNegative  != aOther.iNegative) return LispFalse;
+//  if (iPrecision != aOther.iPrecision) return LispFalse;
+
+  //TODO there HAS to be a faster way to copy...
+  LispInt nr = NrItems();
+  if (nr)
+  {
+    ANumber::ElementTypePtr sptr = &( aOther[0]);
+    ANumber::ElementTypePtr tptr = &((*this)[0]);
+    while (nr--)
+    {
+      if (*tptr++ != *sptr++) return LispFalse;
+    }
+  }
+  return LispTrue;
+}
+
+
+
 /* Negate negates a number. */
 void Negate(ANumber& aNumber)
 {

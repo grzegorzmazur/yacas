@@ -30,6 +30,7 @@ public:
     inline ANumber(ANumber& aOther) {CopyFrom(aOther);}
     ~ANumber();
     void CopyFrom(const ANumber& aOther);
+    LispBoolean ExactlyEqual(const ANumber& aOther);
     void SetTo(const LispCharPtr aString,LispInt aBase=10);
     inline void SetPrecision(LispInt aPrecision) {iPrecision = aPrecision;}
     void ChangePrecision(LispInt aPrecision);

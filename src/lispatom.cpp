@@ -18,7 +18,7 @@ LispObject* LispAtom::New(LispEnvironment& aEnvironment, LispStringPtr aString)
   if (IsNumber(aString->String(),LispTrue))	// check if aString is a number (int or float)
   {
     /// construct a number from a decimal string representation (also create a number object)
-    self = NEW LispNumber(aEnvironment.HashTable(), aString, aEnvironment.BinaryPrecision());
+    self = NEW LispNumber(aEnvironment.HashTable(), aString, aEnvironment.Precision());
   }
   else
 #endif
@@ -219,14 +219,14 @@ LispNumber::LispNumber(LispHashTable& aHashTable, BigNumber* aNumber)
   iNumber =aNumber;
 }
 
-    /// construct from a decimal string representation (also create a number object) and use aPrecision bits (not decimal digits!) 
-LispNumber::LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt aPrecision)
+    /// construct from a decimal string representation (also create a number object) and use aPrecision bits  
+LispNumber::LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt aBasePrecision)
   : iHashTable(&aHashTable)
 {
   iString = aString;
   iNumber = NULL;	// purge whatever it was
-  // create a new BigNumber object out of iString, set its precision in bits
-  Number(aPrecision);
+  // create a new BigNumber object out of iString, set its precision in digits
+  Number(aBasePrecision);
 }
 
     /// return a string representation in decimal (always in decimal!)
@@ -239,7 +239,8 @@ LispStringPtr LispNumber::String()
     // export the current number to string and store it as LispNumber::iString
     // FIXME API breach: precision must be in digits, not in bits here!
 	// must be replaced with bits_to_digits(iNumber->GetPrecision(), BASE10)
-    iNumber->ToString(*str, iNumber->GetPrecision(), BASE10);
+  //AYAL: fixed?
+    iNumber->ToString(*str, bits_to_digits(iNumber->GetPrecision(),BASE10), BASE10);
     // register the string with the hash table - trying to avoid this now
 //    LISPASSERT(iHashTable != NULL);
 //    iString = iHashTable->LookUp(str);
