@@ -430,9 +430,9 @@ LocalSymbols(x)
 
 249  # 0 * Infinity <-- Undefined;
 250  # x_IsNumber * y_IsInfinity <-- Sign(x)*y;
-250  # x_IsComplex * y_IsInfinity <-- Infinity;
+250  # x_IsComplex * y_IsInfinity <-- Sign(Re(x))*Infinity;
 250  # x_IsInfinity * y_IsNumber <-- Sign(y)*x;
-250  # x_IsInfinity * y_IsComplex <-- Infinity;
+250  # x_IsInfinity * y_IsComplex <-- Sign(Re(y))*Infinity;
 
 250  # _x * Undefined <-- Undefined;
 250  # Undefined * _y <-- Undefined;
