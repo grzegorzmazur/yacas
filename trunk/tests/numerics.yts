@@ -7,7 +7,7 @@ f():=[];//Echo(CurrentLine());
 
 Precision(10);
 
-Verify(N(Sqrt(2),5), 1.41421);		// no idea where the problem is
+NumericEqual(N(Sqrt(2),5), 1.41421,5);		// no idea where the problem is
 KnownFailure(N(N(1+Pi)-Pi,20) = 1);		// "N" should have "HoldArg" in some way, so inner "N" is evaluated with outer precision 20
 
 /* Got the first digits of Pi from the following page:
@@ -17,15 +17,15 @@ KnownFailure(N(N(1+Pi)-Pi,20) = 1);		// "N" should have "HoldArg" in some way, s
 NumericEqual(N(Pi,70),3.1415926535897932384626433832795028841971693993751058209749445923078164062862,70);
 
 Verify( RoundTo(N(Sec(2)), 9), -2.402997962);
-Verify( RoundTo(N(Csc(2)), 9),  1.09975017);
+NumericEqual( RoundTo(N(Csc(2)), 9),  1.09975017,9);
 Verify( RoundTo(N(Cot(2)), 9), -0.457657554);
-Verify( RoundTo(N(Sinh(2)), 9), 3.626860408);
+NumericEqual( RoundTo(N(Sinh(2)), 9), 3.626860408,9);
 
 Verify( RoundTo(N(ArcSin(2)), 9), Complex(1.570796327,1.316957897));
 Verify( RoundTo(N(ArcCos(2)), 9), Complex(0,-1.316957897));
 Verify( RoundTo(N(ArcTan(2*I)), 9), Complex(1.570796327,0.549306144));
-Verify( RoundTo(N(ArcSinh(2)), 9), 1.443635475);
-Verify( RoundTo(N(ArcCosh(2)), 9), 1.316957897);
+NumericEqual( RoundTo(N(ArcSinh(2)), 9), 1.443635475,9);
+NumericEqual( RoundTo(N(ArcCosh(2)), 9), 1.316957897,9);
 TestYacas( RoundTo(N(ArcCosh(-2)), 8), Complex(-1.3169579,3.14159265));
 Verify( RoundTo(N(ArcTanh(2)), 9), Complex(0.549306144,1.570796327));
 
@@ -37,20 +37,20 @@ RoundTo(N(Pi), 50)
 , 3.14159265358979323846264338327950288419716939937511
 );
 
-Verify(
+NumericEqual(
 RoundTo(N(Sin(2.0)), 49)
 , 0.9092974268256816953960198659117448427022549714479
-);
+,49);
 
-Verify(
+NumericEqual(
 RoundTo(N(Sin(2.0)), 50)
 , 0.90929742682568169539601986591174484270225497144789
-);
+,50);
 
-Verify(
+NumericEqual(
 RoundTo(N(Sin(2.0)), 51)
 , 0.90929742682568169539601986591174484270225497144789
-);
+,51);
 
 Verify(
 RoundTo(N(Cos(20.0)), 49)

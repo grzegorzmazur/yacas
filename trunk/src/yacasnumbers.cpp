@@ -753,14 +753,30 @@ const LispCharPtr BigNumber::NumericLibraryName()
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
   SetIsInteger(aX.IsInt() && aY.IsInt());
+
+
 
   if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
   if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
 
   iNumber->ChangePrecision(BITS_TO_DIGITS(aPrecision,10));
+
 
   if (iNumber == aX.iNumber || iNumber == aY.iNumber)
   {
@@ -815,15 +831,79 @@ void BigNumber::Negate(const BigNumber& aX)
   ::Negate(*iNumber);
   SetIsInteger(aX.IsInt());
 }
+
+
+/*
+LispInt DividePrecision(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
+{
+  LispInt p=1;
+  if (aY.Sign()==0)
+  {	// zero division, report and do nothing
+  	RaiseError("BigNumber::Divide: zero division request ignored\n");
+    p=0;
+  }
+  if (aX.IsInt())
+  {
+    // check for zero
+    if (aX.Sign()==0)
+    {	// divide 0 by something, set result to integer 0
+      p = 1;
+    }
+    else if (aY.IsInt())
+    {
+    }
+    else
+    {	// divide nonzero integer by nonzero float, precision is unmodified
+      p = MIN(aPrecision, aY.GetPrecision());
+    }
+  }
+  else	// aX is a float, aY is nonzero
+  {
+	// check for a floating zero
+	if (aX.Sign()==0)
+	{
+		// result is 0. with precision m-B(y)+1
+		p = aX.GetPrecision()-aY.BitCount()+1;
+	}
+    else if (aY.IsInt())
+    {	// aY is integer, must be promoted to float
+      p = (MIN(aPrecision, aX.GetPrecision()));
+    }
+    else
+    {	// both aX and aY are nonzero floats
+      p = MIN(aX.GetPrecision(), aY.GetPrecision()) - DIST(aX.GetPrecision(), aY.GetPrecision());
+      p = MIN((LispInt)aPrecision, p);
+
+      if (p<=0) p=1;
+
+      if (p<=0)
+        RaiseError("BigNumber::Divide: loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());
+      return p;
+    }
+  }
+  return p;
+}
+*/
+
+
 void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
 
+
+/*
+  iPrecision = DividePrecision(aX, aY, aPrecision);
+  LispInt digitPrecision = BITS_TO_DIGITS(iPrecision,10);
+  iNumber->iPrecision = digitPrecision;
+*/
+
+/* */
   if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
   if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
 
   LispInt digitPrecision = BITS_TO_DIGITS(aPrecision,10);
   iPrecision = aPrecision;
   iNumber->iPrecision = digitPrecision;
+/* */
 
   ANumber a1(*aX.iNumber);
 //  a1.CopyFrom(*aX.iNumber);
@@ -951,7 +1031,7 @@ void BigNumber::BitNot(const BigNumber& aX)
 // give BitCount as platform integer
 signed long BigNumber::BitCount() const
 {
-  if (IsZero(*iNumber)) return -(1L<<30);
+  if (IsZero(*iNumber)) return 0;//-(1L<<30);
   ANumber num(*iNumber);
 //  num.CopyFrom(*iNumber);
   while (num.iTensExp < 0)
@@ -1221,6 +1301,9 @@ LispBoolean BigNumber::LessThan(const BigNumber& aOther) const
 	return ::LessThan(a1, a2);
 }
 
+
+
+
 // assign from a platform type
 void BigNumber::SetTo(long aValue)
 {
@@ -1265,20 +1348,113 @@ void BigNumber::SetTo(double aValue)
 #endif
 }
 
+LispInt CalculatePrecision(const LispCharPtr aString,LispInt aBasePrecision,LispInt aBase, LispBoolean& aIsFloat)
+{
+  const LispCharPtr ptr = aString;
+  while (*ptr)
+  {
+    switch (*ptr)
+    {
+      case '.': goto FOUND_FLOAT_INDICATOR;
+      case 'e':
+      case 'E':
+      case '@':
+        if (aBase<=10) goto FOUND_FLOAT_INDICATOR;
+        break;
+    }
+    ptr++;
+  }  
+FOUND_FLOAT_INDICATOR:
+	// decide whether the string is an integer or a float
+  if (*ptr)
+  {	
+    // converting to a float
+    // estimate the number of bits we need to have
+	  // find the first significant digit:
+    // initial zeros are not significant
+    ptr = aString;
+    while (*ptr == '.' || *ptr == '-' || *ptr == '0') ptr++;
+	  LispInt digit1 = ptr-aString;
+    // find the number of significant base digits (sig_digits)
+    // trailing zeros and . *are* significant, do not include them in the sets
+	  LispInt sig_digits;// = strcspn(aString+digit1, (aBase<=10) ? "-eE@" : "-@"); 
+
+      while (*ptr)
+      {
+        switch (*ptr)
+        {
+          case '@': case '-':
+            goto FND_1;
+          case 'e': case 'E': 
+            if (aBase<=10) goto FND_1;
+        }
+        ptr++;
+      }
+FND_1:
+      sig_digits = ptr - (aString+digit1);
+
+
+
+	  if (sig_digits<=0)
+	  {	// this is when we have "0." in various forms
+		  // the number of digits is the number of trailing 0s after .
+
+      // the string cannot consist of only 0 and -, it must contain at least one of ".eE@"
+		  // for example, -0000000.000e10 has 4 significant digits
+		  // counting . as one of the digits, so that "0" will have 1 digit
+      ptr = aString;
+      while (*ptr == '-' || *ptr == '0') ptr++;
+      sig_digits = ptr-aString;
+
+      while (*ptr)
+      {
+        switch (*ptr)
+        {
+          case 'e': case 'E': case '@':
+            goto FND_2;
+        }
+        ptr++;
+      }
+FND_2:
+      sig_digits = ptr - (aString+sig_digits);
+
+//		  sig_digits = strcspn(aString+sig_digits, "eE@");
+	  }
+	  else
+	  {	// our number is nonzero
+      ptr = aString+digit1;
+      while (*ptr && *ptr != '.') ptr++;
+		  if (*ptr == '.')
+			  -- sig_digits;	// this is when we have "1.000001" where "." is not a digit, so need to decrement
+	  }
+	  // ok, so we need to represent MAX(aPrecision,sig_digits) digits in base aBase
+    aIsFloat = LispTrue;
+	  return (LispInt) digits_to_bits(MAX(aBasePrecision,sig_digits), aBase);
+  }
+  else
+  {
+    aIsFloat = LispFalse;
+    return 0;
+  }
+}
 
 // assign from string at given precision (the API says in base digits)
 // FIXME: API breach: aPrecision is passed in digits but used as if it were bits
 void BigNumber::SetTo(const LispCharPtr aString,LispInt aBasePrecision,LispInt aBase)
 {//FIXME -- what?
-  iPrecision = digits_to_bits(aBasePrecision,BASE10);
-  LispInt digits = aBasePrecision;
+//  iPrecision = digits_to_bits(aBasePrecision,BASE10);
   LispBoolean isFloat = 0;
+  LispInt digits = aBasePrecision;
+  iPrecision = CalculatePrecision(aString,aBasePrecision,aBase, isFloat);
+
+/*
   const LispCharPtr ptr = aString;
   while (*ptr && *ptr != '.') ptr++;
   if (*ptr == '.')
   {
     isFloat = 1;
   }
+*/
   if (iNumber == NULL)   iNumber = NEW ANumber(digits);
   iNumber->SetPrecision(digits);
   iNumber->SetTo(aString,aBase);
