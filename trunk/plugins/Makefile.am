@@ -2,7 +2,7 @@
 
 SUBDIRS =  example forth opengl yacas_gsl
 
-EXTRA_DIST = doc.txt   README    
+EXTRA_DIST = doc.txt extract_stub.pl README    
 
 macosx:
 	cd example ; make example.dylib
