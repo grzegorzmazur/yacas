@@ -257,3 +257,14 @@ Rule("Fibonacci",1,1, IsInteger(n) And n > 2)
    ((z << 1)+t)/5;
 ];
 
+// Closed form, but insanely slow due to RadSimp
+// Maybe use N() instead and call it FibonacciApprox ?
+/*
+10 # Fibonacci(n_IsPositiveInteger) <-- 
+[	Local(a,b);
+	a:= ((1+Sqrt(5))/2)^n;
+	b:= ((1-Sqrt(5))/2)^n;
+
+	RadSimp( (a-b)/Sqrt(5) );
+];
+*/
