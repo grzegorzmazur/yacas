@@ -113,20 +113,3 @@ Plot2D'datafile(values_IsList, _options'hash) <--
 	];
 	filename'list;
 ];
-
-/// service function. WriteDataItem({1,2,3}, {}) will output "1 2 3" on a separate line.
-/// Writes data points to the current output stream, omits non-numeric values.
-WriteDataItem(tuple_IsList, _options'hash) <--
-[
-  Local(item);
-  If(	// do not write anything if one of the items is not a number
-  	IsNumericList(tuple),
-	ForEach(item,tuple)
-	[
-		Write(item);
-		Space();
-	]
-  );
-  NewLine();
-];
-

@@ -1,0 +1,13 @@
+
+// some tests to verify that plotting works
+
+Verify(Plot2D(a,-1:1,output=data,points=4,depth=0), {{{-1,-1},{-0.5,-0.5},{0,0},{0.5,0.5},{1,1}}});
+Verify(Plot2D(b,b= -1:1,output=data,points=4), {{{-1,-1},{-0.5,-0.5},{0,0},{0.5,0.5},{1,1}}});
+Verify(Plot2D({1,y},-1:1,output=datafile), {"output.data1", "output.data2"});
+
+result:={{{-1,-1,-1},{-1,0,-1},{-1,1,-1},{0,-1,0},{0,0,0},{0,1,0},{1,-1,1},{1,0,1},{1,1,1}}};
+Verify(Plot3DS(a,-1:1,-1:1,output=data,points=2), result);
+Verify(Plot3DS(x1,x1 = -1:1,x2 = -1:1,output=data,points=2), result);
+Verify(Plot3DS({y,z},-1:1,-1:1,output=datafile,points=2,filename=test), {"test1", "test2"});
+
+
