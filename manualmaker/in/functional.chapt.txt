@@ -161,7 +161,7 @@ Then, we can use {NFunction()} to define a wrapper {t1(x)} around {t(x)} which w
 	Out> 0.4;
 Now we can plot the function.
 
-	In> GnuPlot(-0.1, 1.1, 30, t1(x))
+	In> Plot2D(t1(x), -0.1: 1.1)
 	Out> True;
 
 *SEE MacroRule

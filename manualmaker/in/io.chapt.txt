@@ -737,7 +737,8 @@ the plot on the screen (requires the {gnuplot} program). The {plotutils}
 value requires the GNU {plotutils} suite and the {graph} program (under X Window).The {datafile} value will write the data to a text file with specified name. The {data} value will return the data as a list of pairs such as {{{x1,y1}, {x2,y2}, ...}}
 *	{filename}: specify name of the output file (currently used only by the {datafile} output option). For example: {filename="data1.txt"}. Default is the name {"output.data"}.
 
-Other options may be supported in the future.
+Other options may be supported in the future. Note that currently the
+support for {gnuplot} and GNU {plotutils} is Unix-specific.
 
 A frequently encountered problem: the {f(x)} parameter <i>must</i>
 evaluate to an expression that contains a variable. Test your function for
@@ -772,4 +773,4 @@ Plotting without compilation takes much longer:
 	94.93 seconds taken
 	Out> True;
 
-*SEE V, GnuPlot, NFunction, MakeFunctionPlugin
+*SEE V, NFunction, MakeFunctionPlugin
