@@ -1,19 +1,18 @@
 
 Chapter()"Input/Output";
 
-Text() "
+ChapterIntro("
 This chapter contains command to use for input and output. All output
 commands write to the same destination, called the \"current
 output\". This is initially the screen, but the current output is
 redirected by some commands. Similarly, most input commands
 read from the \"current input\", which can also be redirected. The
 exception to this rule are the commands for reading in script files,
-which simply read  the specified file.";
+which simply read  the specified file.");
 
 
 
-AddAnchor("FullForm");
-SubSection() "FullForm";
+CmdDescription("FullForm", "Print an expression in LISP-format");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -52,8 +51,7 @@ SeeAlso({"LispRead", "Listify", "Unlist"});
 
 
 /* Pending my bug report */
-AddAnchor("Echo");
-SubSection() "Echo";
+CmdDescription("Echo", "High-level printing routine");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -100,8 +98,7 @@ SeeAlso({"PrettyForm", "Write", "WriteString"});
 
 
 
-AddAnchor("PrettyForm");
-SubSection()"PrettyForm";
+CmdDescription("PrettyForm", "Print an expression nicely with ASCII art");
 StandardLib();
 
 Topical()"Calling Sequence";
@@ -137,8 +134,7 @@ SeeAlso({"EvalFormula","PrettyPrinter"});
 
 
 
-AddAnchor("EvalFormula");
-SubSection()"EvalFormula";
+CmdDescription("EvalFormula", "Print an evaluation nicely with ASCII art");
 StandardLib();
 
 Topical()"Calling Sequence";
@@ -169,8 +165,8 @@ Topical()"See Also";
 SeeAlso({"PrettyForm"});
 
 
-AddAnchor("Write");
-SubSection() "Write";
+
+CmdDescription("Write", "Low-level printing routine");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -200,8 +196,7 @@ SeeAlso({"Echo", "WriteString"});
 
 
 
-AddAnchor("WriteString");
-SubSection() "WriteString";
+CmdDescription("WriteString", "Low-level printing routine for strings");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -232,8 +227,7 @@ SeeAlso({"Echo", "Write"});
 
 
 
-AddAnchor("Space");
-SubSection() "Space";
+CmdDescription("Space", "Print one or more spaces");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -261,8 +255,7 @@ SeeAlso({"Echo", "Write", "NewLine"});
 
 
 
-AddAnchor("NewLine");
-SubSection() "NewLine";
+CmdDescription("NewLine", "Print one or more newline characters");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -290,8 +283,8 @@ Topical() "See Also";
 SeeAlso({"Echo", "Write", "Space"});
 
 
-AddAnchor("FromFile");
-SubSection() "FromFile";
+
+CmdDescription("FromFile", "Connect current input to a file");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -327,8 +320,7 @@ SeeAlso({"ToFile", "FromString", "Read", "ReadToken"});
 
 
 
-AddAnchor("FromString");
-SubSection() "FromString";
+CmdDescription("FromString", "Connect current input to a string");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -358,8 +350,7 @@ SeeAlso({"ToString", "FromFile", "Read", "ReadToken"});
 
 
 
-AddAnchor("ToFile");
-SubSection() "ToFile";
+CmdDescription("ToFile", "Connect current output to a file");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -412,8 +403,7 @@ SeeAlso({"FromFile", "ToString", "Echo", "Write", "WriteString",
 
 
 
-AddAnchor("ToString");
-SubSection() "ToString";
+CmdDescription("ToString", "Connect current output to a string");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -440,8 +430,7 @@ SeeAlso({"FromFile", "ToString", "Echo", "Write", "WriteString"});
 
 
 
-AddAnchor("Read");
-SubSection() "Read";
+CmdDescription("Read", "Read an expression from current input");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -469,8 +458,7 @@ SeeAlso({"FromFile", "FromString", "LispRead", "ReadToken", "Write"});
 
 
 
-AddAnchor("LispRead");
-SubSection() "LispRead";
+CmdDescription("LispRead", "Read an expression in LISP-syntax");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -503,8 +491,7 @@ SeeAlso({"FromFile", "FromString", "Read", "ReadToken", "FullForm"});
 
 
 
-AddAnchor("ReadToken");
-SubSection() "ReadToken";
+CmdDescription("ReadToken", "Read an token from current input");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -543,8 +530,7 @@ SeeAlso({"FromFile", "FromString", "Read", "LispRead"});
 
 
 
-AddAnchor("Load");
-SubSection() "Load";
+CmdDescription("Load", "Evaluate all expressions in a file");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -564,8 +550,7 @@ SeeAlso({"Use", "DefLoad", "DefaultDirectory", "FindFile"});
 
 
 
-AddAnchor("Use");
-SubSection() "Use";
+CmdDescription("Use", "Load a file, but not twice");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -590,8 +575,7 @@ SeeAlso({"Load", "DefLoad", "DefaultDirectory"});
 
 
 
-AddAnchor("DefLoad");
-SubSection() "DefLoad";
+CmdDescription("DefLoad", "Load a .def file");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -616,8 +600,7 @@ SeeAlso({"Load", "Use", "DefaultDirectory"});
 
 
 
-AddAnchor("FindFile");
-SubSection() "FindFile";
+CmdDescription("FindFile", "Find a file in the current path");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -639,8 +622,7 @@ SeeAlso({"Load", "DefaultDirectory"});
 
 
 
-AddAnchor("PatchLoad");
-SubSection()"PatchLoad";
+CmdDescription("PatchLoad", "Execute commands between &lt? and ?&gt in file");
 BuiltIn();
 
 Topical()"Calling Sequence";
@@ -667,8 +649,7 @@ SeeAlso({"PatchString","Load"});
 
 
 
-AddAnchor("Nl");
-SubSection()"Nl";
+CmdDescription("Nl", "A newline character");
 StandardLib();
 
 Topical()"Calling Sequence";

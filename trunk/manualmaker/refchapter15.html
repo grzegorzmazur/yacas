@@ -1,4 +1,7 @@
 <HTML>
+<HEAD><TITLE>String manipulation</TITLE></HEAD>
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
 <A NAME="c15">
 
 </A>
@@ -8,11 +11,8 @@ SetStringMid
 , <A HREF="refchapter15.html#StringMid" TARGET="Chapters">
 StringMid
 </A>
-, <A HREF="refchapter15.html#String" TARGET="Chapters">
-String
-</A>
-, <A HREF="refchapter15.html#Atom" TARGET="Chapters">
-Atom
+, <A HREF="refchapter15.html#String, Atom" TARGET="Chapters">
+String, Atom
 </A>
 , <A HREF="refchapter15.html#ConcatStrings" TARGET="Chapters">
 ConcatStrings
@@ -23,16 +23,60 @@ LocalSymbols
 , <A HREF="refchapter15.html#PatchString" TARGET="Chapters">
 PatchString
 </A>
-, <HEAD><TITLE>String manipulation</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
-<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+.
 <H1>
 String manipulation
 </H1>
+<p> </p>
+<CENTER><TABLE>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter15.html#SetStringMid" TARGET="Chapters">
+SetStringMid
+</A>
+</TD>
+<TD>Change a substring</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter15.html#StringMid" TARGET="Chapters">
+StringMid
+</A>
+</TD>
+<TD>Retrieve a substring</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter15.html#String, Atom" TARGET="Chapters">
+String, Atom
+</A>
+</TD>
+<TD>Convert atom to string and vice versa</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter15.html#ConcatStrings" TARGET="Chapters">
+ConcatStrings
+</A>
+</TD>
+<TD>Concatenate strings</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter15.html#LocalSymbols" TARGET="Chapters">
+LocalSymbols
+</A>
+</TD>
+<TD>Create unique local symbols with given prefix</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter15.html#PatchString" TARGET="Chapters">
+PatchString
+</A>
+</TD>
+<TD>Execute commands between &lt? and ?&gt in string</TD>
+</TR>
+</TABLE></CENTER>
 <A NAME="SetStringMid">
 
 </A>
 <H3>
-<HR>SetStringMid
+<HR>SetStringMid -- Change a substring
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -68,11 +112,11 @@ StringMid
 , <A HREF="ref.html#Length" TARGET="Chapters">
 Length
 </A>
-, <A NAME="StringMid">
+.<A NAME="StringMid">
 
 </A>
 <H3>
-<HR>StringMid
+<HR>StringMid -- Retrieve a substring
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -110,14 +154,17 @@ SetStringMid
 , <A HREF="ref.html#Length" TARGET="Chapters">
 Length
 </A>
-, <A NAME="String">
+.<A NAME="String">
 
 </A>
 <A NAME="Atom">
 
 </A>
+<A NAME="String, Atom">
+
+</A>
 <H3>
-<HR>Converting atoms to strings and vice versa
+<HR>String, Atom -- Convert atom to string and vice versa
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -159,7 +206,7 @@ Out> a;
 
 </A>
 <H3>
-<HR>ConcatStrings
+<HR>ConcatStrings -- Concatenate strings
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -191,11 +238,11 @@ See Also:
 <A HREF="ref.html#:" TARGET="Chapters">
 :
 </A>
-, <A NAME="LocalSymbols">
+.<A NAME="LocalSymbols">
 
 </A>
 <H3>
-<HR>LocalSymbols
+<HR>LocalSymbols -- Create unique local symbols with given prefix
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -237,11 +284,11 @@ See Also:
 <A HREF="ref.html#UniqueConstant" TARGET="Chapters">
 UniqueConstant
 </A>
-, <A NAME="PatchString">
+.<A NAME="PatchString">
 
 </A>
 <H3>
-<HR>PatchString
+<HR>PatchString -- Execute commands between &lt? and ?&gt in string
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -273,9 +320,9 @@ See Also:
 <A HREF="ref.html#PatchLoad" TARGET="Chapters">
 PatchLoad
 </A>
-, 
-</BODY>
-
+.
 </FONT>
+
+</BODY>
 
 </HTML>

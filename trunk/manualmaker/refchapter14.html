@@ -1,4 +1,7 @@
 <HTML>
+<HEAD><TITLE>Input/Output</TITLE></HEAD>
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
 <A NAME="c14">
 
 </A>
@@ -65,8 +68,7 @@ PatchLoad
 , <A HREF="refchapter14.html#Nl" TARGET="Chapters">
 Nl
 </A>
-, <HEAD><TITLE>Input/Output</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
-<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+.
 <H1>
 Input/Output
 </H1>
@@ -78,11 +80,161 @@ redirected by some commands. Similarly, most input commands
 read from the "current input", which can also be redirected. The
 exception to this rule are the commands for reading in script files,
 which simply read  the specified file.
+<p> </p>
+<CENTER><TABLE>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#FullForm" TARGET="Chapters">
+FullForm
+</A>
+</TD>
+<TD>Print an expression in LISP-format</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#Echo" TARGET="Chapters">
+Echo
+</A>
+</TD>
+<TD>High-level printing routine</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#PrettyForm" TARGET="Chapters">
+PrettyForm
+</A>
+</TD>
+<TD>Print an expression nicely with ASCII art</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#EvalFormula" TARGET="Chapters">
+EvalFormula
+</A>
+</TD>
+<TD>Print an evaluation nicely with ASCII art</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#Write" TARGET="Chapters">
+Write
+</A>
+</TD>
+<TD>Low-level printing routine</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#WriteString" TARGET="Chapters">
+WriteString
+</A>
+</TD>
+<TD>Low-level printing routine for strings</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#Space" TARGET="Chapters">
+Space
+</A>
+</TD>
+<TD>Print one or more spaces</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#NewLine" TARGET="Chapters">
+NewLine
+</A>
+</TD>
+<TD>Print one or more newline characters</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#FromFile" TARGET="Chapters">
+FromFile
+</A>
+</TD>
+<TD>Connect current input to a file</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#FromString" TARGET="Chapters">
+FromString
+</A>
+</TD>
+<TD>Connect current input to a string</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#ToFile" TARGET="Chapters">
+ToFile
+</A>
+</TD>
+<TD>Connect current output to a file</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#ToString" TARGET="Chapters">
+ToString
+</A>
+</TD>
+<TD>Connect current output to a string</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#Read" TARGET="Chapters">
+Read
+</A>
+</TD>
+<TD>Read an expression from current input</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#LispRead" TARGET="Chapters">
+LispRead
+</A>
+</TD>
+<TD>Read an expression in LISP-syntax</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#ReadToken" TARGET="Chapters">
+ReadToken
+</A>
+</TD>
+<TD>Read an token from current input</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#Load" TARGET="Chapters">
+Load
+</A>
+</TD>
+<TD>Evaluate all expressions in a file</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#Use" TARGET="Chapters">
+Use
+</A>
+</TD>
+<TD>Load a file, but not twice</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#DefLoad" TARGET="Chapters">
+DefLoad
+</A>
+</TD>
+<TD>Load a .def file</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#FindFile" TARGET="Chapters">
+FindFile
+</A>
+</TD>
+<TD>Find a file in the current path</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#PatchLoad" TARGET="Chapters">
+PatchLoad
+</A>
+</TD>
+<TD>Execute commands between &lt? and ?&gt in file</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter14.html#Nl" TARGET="Chapters">
+Nl
+</A>
+</TD>
+<TD>A newline character</TD>
+</TR>
+</TABLE></CENTER>
 <A NAME="FullForm">
 
 </A>
 <H3>
-<HR>FullForm
+<HR>FullForm -- Print an expression in LISP-format
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -130,11 +282,11 @@ Listify
 , <A HREF="ref.html#Unlist" TARGET="Chapters">
 Unlist
 </A>
-, <A NAME="Echo">
+.<A NAME="Echo">
 
 </A>
 <H3>
-<HR>Echo
+<HR>Echo -- High-level printing routine
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -191,11 +343,11 @@ Write
 , <A HREF="ref.html#WriteString" TARGET="Chapters">
 WriteString
 </A>
-, <A NAME="PrettyForm">
+.<A NAME="PrettyForm">
 
 </A>
 <H3>
-<HR>PrettyForm
+<HR>PrettyForm -- Print an expression nicely with ASCII art
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -238,11 +390,11 @@ EvalFormula
 , <A HREF="ref.html#PrettyPrinter" TARGET="Chapters">
 PrettyPrinter
 </A>
-, <A NAME="EvalFormula">
+.<A NAME="EvalFormula">
 
 </A>
 <H3>
-<HR>EvalFormula
+<HR>EvalFormula -- Print an evaluation nicely with ASCII art
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -279,11 +431,11 @@ See Also:
 <A HREF="ref.html#PrettyForm" TARGET="Chapters">
 PrettyForm
 </A>
-, <A NAME="Write">
+.<A NAME="Write">
 
 </A>
 <H3>
-<HR>Write
+<HR>Write -- Low-level printing routine
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -323,11 +475,11 @@ Echo
 , <A HREF="ref.html#WriteString" TARGET="Chapters">
 WriteString
 </A>
-, <A NAME="WriteString">
+.<A NAME="WriteString">
 
 </A>
 <H3>
-<HR>WriteString
+<HR>WriteString -- Low-level printing routine for strings
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -368,11 +520,11 @@ Echo
 , <A HREF="ref.html#Write" TARGET="Chapters">
 Write
 </A>
-, <A NAME="Space">
+.<A NAME="Space">
 
 </A>
 <H3>
-<HR>Space
+<HR>Space -- Print one or more spaces
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -413,11 +565,11 @@ Write
 , <A HREF="ref.html#NewLine" TARGET="Chapters">
 NewLine
 </A>
-, <A NAME="NewLine">
+.<A NAME="NewLine">
 
 </A>
 <H3>
-<HR>NewLine
+<HR>NewLine -- Print one or more newline characters
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -459,11 +611,11 @@ Write
 , <A HREF="ref.html#Space" TARGET="Chapters">
 Space
 </A>
-, <A NAME="FromFile">
+.<A NAME="FromFile">
 
 </A>
 <H3>
-<HR>FromFile
+<HR>FromFile -- Connect current input to a file
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -517,11 +669,11 @@ Read
 , <A HREF="ref.html#ReadToken" TARGET="Chapters">
 ReadToken
 </A>
-, <A NAME="FromString">
+.<A NAME="FromString">
 
 </A>
 <H3>
-<HR>FromString
+<HR>FromString -- Connect current input to a string
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -567,11 +719,11 @@ Read
 , <A HREF="ref.html#ReadToken" TARGET="Chapters">
 ReadToken
 </A>
-, <A NAME="ToFile">
+.<A NAME="ToFile">
 
 </A>
 <H3>
-<HR>ToFile
+<HR>ToFile -- Connect current output to a file
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -653,11 +805,11 @@ PrettyForm
 , <A HREF="ref.html#Taylor" TARGET="Chapters">
 Taylor
 </A>
-, <A NAME="ToString">
+.<A NAME="ToString">
 
 </A>
 <H3>
-<HR>ToString
+<HR>ToString -- Connect current output to a string
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -703,11 +855,11 @@ Write
 , <A HREF="ref.html#WriteString" TARGET="Chapters">
 WriteString
 </A>
-, <A NAME="Read">
+.<A NAME="Read">
 
 </A>
 <H3>
-<HR>Read
+<HR>Read -- Read an expression from current input
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -753,11 +905,11 @@ ReadToken
 , <A HREF="ref.html#Write" TARGET="Chapters">
 Write
 </A>
-, <A NAME="LispRead">
+.<A NAME="LispRead">
 
 </A>
 <H3>
-<HR>LispRead
+<HR>LispRead -- Read an expression in LISP-syntax
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -808,11 +960,11 @@ ReadToken
 , <A HREF="ref.html#FullForm" TARGET="Chapters">
 FullForm
 </A>
-, <A NAME="ReadToken">
+.<A NAME="ReadToken">
 
 </A>
 <H3>
-<HR>ReadToken
+<HR>ReadToken -- Read an token from current input
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -864,11 +1016,11 @@ Read
 , <A HREF="ref.html#LispRead" TARGET="Chapters">
 LispRead
 </A>
-, <A NAME="Load">
+.<A NAME="Load">
 
 </A>
 <H3>
-<HR>Load
+<HR>Load -- Evaluate all expressions in a file
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -899,11 +1051,11 @@ DefaultDirectory
 , <A HREF="ref.html#FindFile" TARGET="Chapters">
 FindFile
 </A>
-, <A NAME="Use">
+.<A NAME="Use">
 
 </A>
 <H3>
-<HR>Use
+<HR>Use -- Load a file, but not twice
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -936,11 +1088,11 @@ DefLoad
 , <A HREF="ref.html#DefaultDirectory" TARGET="Chapters">
 DefaultDirectory
 </A>
-, <A NAME="DefLoad">
+.<A NAME="DefLoad">
 
 </A>
 <H3>
-<HR>DefLoad
+<HR>DefLoad -- Load a .def file
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -974,11 +1126,11 @@ Use
 , <A HREF="ref.html#DefaultDirectory" TARGET="Chapters">
 DefaultDirectory
 </A>
-, <A NAME="FindFile">
+.<A NAME="FindFile">
 
 </A>
 <H3>
-<HR>FindFile
+<HR>FindFile -- Find a file in the current path
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -1005,11 +1157,11 @@ Load
 , <A HREF="ref.html#DefaultDirectory" TARGET="Chapters">
 DefaultDirectory
 </A>
-, <A NAME="PatchLoad">
+.<A NAME="PatchLoad">
 
 </A>
 <H3>
-<HR>PatchLoad
+<HR>PatchLoad -- Execute commands between &lt? and ?&gt in file
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -1041,11 +1193,11 @@ PatchString
 , <A HREF="ref.html#Load" TARGET="Chapters">
 Load
 </A>
-, <A NAME="Nl">
+.<A NAME="Nl">
 
 </A>
 <H3>
-<HR>Nl
+<HR>Nl -- A newline character
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1078,9 +1230,9 @@ See also:
 <A HREF="ref.html#NewLine" TARGET="Chapters">
 NewLine
 </A>
-, 
-</BODY>
-
+.
 </FONT>
+
+</BODY>
 
 </HTML>

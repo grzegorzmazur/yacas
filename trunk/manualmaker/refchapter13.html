@@ -1,4 +1,7 @@
 <HTML>
+<HEAD><TITLE>Variables</TITLE></HEAD>
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
 <A NAME="c13">
 
 </A>
@@ -11,14 +14,11 @@ Set
 , <A HREF="refchapter13.html#Clear" TARGET="Chapters">
 Clear
 </A>
-, <A HREF="refchapter13.html#Local" TARGET="Chapters">
-Local
-</A>
 , <A HREF="refchapter13.html#++" TARGET="Chapters">
 ++
 </A>
-, <A HREF="refchapter13.html#--" TARGET="Chapters">
---
+, <A HREF="refchapter13.html#++" TARGET="Chapters">
+++
 </A>
 , <A HREF="refchapter13.html#Object" TARGET="Chapters">
 Object
@@ -29,16 +29,74 @@ LazyGlobal
 , <A HREF="refchapter13.html#UniqueConstant" TARGET="Chapters">
 UniqueConstant
 </A>
-, <HEAD><TITLE>Variables</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
-<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+.
 <H1>
 Variables
 </H1>
+<p> </p>
+<CENTER><TABLE>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter13.html#:=" TARGET="Chapters">
+:=
+</A>
+</TD>
+<TD>Assignment</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter13.html#Set" TARGET="Chapters">
+Set
+</A>
+</TD>
+<TD>Assignment</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter13.html#Clear" TARGET="Chapters">
+Clear
+</A>
+</TD>
+<TD>Undo an assignment</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter13.html#++" TARGET="Chapters">
+++
+</A>
+</TD>
+<TD>Increment variable</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter13.html#++" TARGET="Chapters">
+++
+</A>
+</TD>
+<TD>Decrement variable</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter13.html#Object" TARGET="Chapters">
+Object
+</A>
+</TD>
+<TD>Create an incomplete type</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter13.html#LazyGlobal" TARGET="Chapters">
+LazyGlobal
+</A>
+</TD>
+<TD>Global variable is to be evaluated lazily</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter13.html#UniqueConstant" TARGET="Chapters">
+UniqueConstant
+</A>
+</TD>
+<TD>Create a unique identifier</TD>
+</TR>
+</TABLE></CENTER>
 <A NAME=":=">
 
 </A>
 <H3>
-<HR>:=
+<HR>:= -- Assignment
 </H3>
 Standard math library<br><H5>
 Calling sequence:
@@ -212,11 +270,11 @@ Infix
 , <A HREF="ref.html#Eval" TARGET="Chapters">
 Eval
 </A>
-, <A NAME="Set">
+.<A NAME="Set">
 
 </A>
 <H3>
-<HR>Set
+<HR>Set -- Assignment
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -258,11 +316,11 @@ Clear
 , <A HREF="ref.html#:=" TARGET="Chapters">
 :=
 </A>
-, <A NAME="Clear">
+.<A NAME="Clear">
 
 </A>
 <H3>
-<HR>Clear
+<HR>Clear -- Undo an assignment
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -305,13 +363,7 @@ Set
 , <A HREF="ref.html#:=" TARGET="Chapters">
 :=
 </A>
-, <A NAME="Local">
-
-</A>
-<H3>
-<HR>Local
-</H3>
-Internal function<br><H5>
+.Internal function<br><H5>
 Calling Sequence:
 </H5>
 Local(var, ...)
@@ -377,11 +429,11 @@ Prog
 , <A HREF="ref.html#UnFence" TARGET="Chapters">
 UnFence
 </A>
-, <A NAME="++">
+.<A NAME="++">
 
 </A>
 <H3>
-<HR>++
+<HR>++ -- Increment variable
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -422,11 +474,11 @@ See Also:
 , <A HREF="ref.html#:=" TARGET="Chapters">
 :=
 </A>
-, <A NAME="--">
+.<A NAME="++">
 
 </A>
 <H3>
-<HR>--
+<HR>++ -- Decrement variable
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -469,11 +521,11 @@ See Also:
 , <A HREF="ref.html#:=" TARGET="Chapters">
 :=
 </A>
-, <A NAME="Object">
+.<A NAME="Object">
 
 </A>
 <H3>
-<HR>Object
+<HR>Object -- Create an incomplete type
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -512,11 +564,11 @@ See Also:
 <A HREF="ref.html#IsNonObject" TARGET="Chapters">
 IsNonObject
 </A>
-, <A NAME="LazyGlobal">
+.<A NAME="LazyGlobal">
 
 </A>
 <H3>
-<HR>LazyGlobal
+<HR>LazyGlobal -- Global variable is to be evaluated lazily
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -585,11 +637,11 @@ Local
 , <A HREF="ref.html#I" TARGET="Chapters">
 I
 </A>
-, <A NAME="UniqueConstant">
+.<A NAME="UniqueConstant">
 
 </A>
 <H3>
-<HR>UniqueConstant
+<HR>UniqueConstant -- Create a unique identifier
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -622,9 +674,9 @@ See Also:
 <A HREF="ref.html#LocalSymbols" TARGET="Chapters">
 LocalSymbols
 </A>
-, 
-</BODY>
-
+.
 </FONT>
+
+</BODY>
 
 </HTML>
