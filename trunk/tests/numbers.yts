@@ -89,6 +89,26 @@ Verify( IsCoprime({9,40}), True );
 Verify( IsCarmichaelNumber( {561,1105,1729,2465,2821,6601,8911} ),{True,True,True,True,True,True,True} );
 Verify( IsCarmichaelNumber( {0,1,2,1727,2463,2823,6603} ),{False,False,False,False,False,False,False} );
 
+Verify(IsSmallPrime(137),True);
+Verify(IsSmallPrime(138),False);
+Verify(IsSmallPrime(65537),True);
+Verify(IsSmallPrime(65539),False);
+Verify(IsPrime(65539),True);
+Verify(RabinMiller(1037),False);
+Verify(RabinMiller(1038),False);
+Verify(RabinMiller(1039),True);
+Verify(NextPrime(65537), 65539);
+Verify(NextPrime(97192831),97192841);
+Verify(NextPrime(14987234876128361),14987234876128369);
+Verify(IsPrime(0),False);
+Verify(IsPrime(-1),False);
+Verify(IsPrime(1),False);
+Verify(IsPrime(2),True);
+Verify(IsPrime(3),True);
+Verify(IsPrime(4),False);
+Verify(IsPrime(5),True);
+Verify(IsPrime(6),False);
+Verify(IsPrime(7),True);
 
 
 Testing("Random numbers");
