@@ -63,6 +63,7 @@ int use_plain = 0;
 int show_prompt = 1;
 int trace_history = 0;
 int use_texmacs_out = 0;
+int patchload=0;
 
 void ReportNrCurrent()
 {
@@ -499,44 +500,51 @@ int main(int argc, char** argv)
                 trace_history=1;
                 use_plain = 1;
             }
-            if (strchr(argv[fileind],'f'))
+            else if (!strcmp(argv[fileind],"--patchload"))
             {
-                use_stdin = 1;
+                patchload=1;
             }
-            if (strchr(argv[fileind],'p'))
+            else
             {
-                use_plain = 1;
-            }
-            if (strchr(argv[fileind],'c'))
-            {
-                show_prompt=0;
-            }
-            if (strchr(argv[fileind],'t'))
-            {
-                trace_history=1;
-            }
-            if (strchr(argv[fileind],'d'))
-            {
-                printf("%s\n",SCRIPT_DIR);
-                return 0;
-            }
+                if (strchr(argv[fileind],'f'))
+                {
+                    use_stdin = 1;
+                }
+                if (strchr(argv[fileind],'p'))
+                {
+                    use_plain = 1;
+                }
+                if (strchr(argv[fileind],'c'))
+                {
+                    show_prompt=0;
+                }
+                if (strchr(argv[fileind],'t'))
+                {
+                    trace_history=1;
+                }
+                if (strchr(argv[fileind],'d'))
+                {
+                    printf("%s\n",SCRIPT_DIR);
+                    return 0;
+                }
+                
 #ifdef HAVE_CONFIG_H
-            if (strchr(argv[1],'v'))
-            {
-                printf("%s\n",VERSION);
-                return 0;
-            }
+                if (strchr(argv[1],'v'))
+                {
+                    printf("%s\n",VERSION);
+                    return 0;
+                }
 #endif
 
 #ifndef NO_GLOBALS
-            if (strchr(argv[1],'m'))
-            {
-                extern void
-                    Malloc_SetHooks( void *(*malloc_func)(size_t),
-                                     void *(*calloc_func)(size_t, size_t),
-                                     void *(*realloc_func)(void *, size_t),
-                                     void (*free_func)(void *) );
-                
+                if (strchr(argv[1],'m'))
+                {
+                    extern void
+                        Malloc_SetHooks( void *(*malloc_func)(size_t),
+                                         void *(*calloc_func)(size_t, size_t),
+                                         void *(*realloc_func)(void *, size_t),
+                                         void (*free_func)(void *) );
+
                     Malloc_SetHooks( malloc,
                                      calloc,
                                      realloc,
@@ -544,9 +552,9 @@ int main(int argc, char** argv)
 
 
 
-            }
+                }
 #endif
-            
+            }
             fileind++;
         }
         if (fileind<argc)
@@ -593,7 +601,14 @@ int main(int argc, char** argv)
         while (fileind<argc)
         {
             char s[200];
-            sprintf(s,"Load(\"%s\");",argv[fileind]);
+            if (patchload)
+            {
+                sprintf(s,"PatchLoad(\"%s\");",argv[fileind]);
+            }
+            else
+            {
+                sprintf(s,"Load(\"%s\");",argv[fileind]);
+            }
             yacas->Evaluate(s);
 
             if (yacas->Error()[0] != '\0')
