@@ -109,7 +109,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 
 CLEANFILES = fastprimes.c
 
-platmath.cpp: fastprimes.c
+$(srcdir)/platmath.cpp: fastprimes.c
 
 fastprimes.c: mkfastprimes
 	./mkfastprimes > fastprimes.c
