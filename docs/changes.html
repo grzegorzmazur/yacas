@@ -57,6 +57,12 @@
   <li> Fixed Op{,Right,Left}Precedence() for prefix/postfix operators
   <li> Fixed broken Windows version, was due to command line support
        trying to use WinNT-native command line.
+  <li> All documentation is now maintained in plain text format and exported
+       to HTML and optionally to LaTeX.
+  <li> Fixed the ArcSin, ArcCos, ArcTan functions to work correctly with
+       multiple-precision numbers (when using internal math).
+  <li> 30% speedup of numerical calculations by caching previously found
+       multiple-precision value of Pi.
 </ul>
 
 

@@ -61,11 +61,9 @@ This is a todo list of things I want to get out of the way before version
     </ul>
   <li> Need to improve debugging facilities and tracing facilities. Would be
        good to see how yacas is stepping through rule applications.
-  <li> Sin(Pi/6) etc.
   <li> Allow TSimplify() on TSum()..-TSum()..
   <li> Sin(Pi/5) = Sqrt(5-Sqrt(5))/Sqrt(8)
   <li> Fix the Debian package to not require the new gmp.
-  <li> External function API, and plugin interface (dynamic link libraries).
 <li>
 
 
@@ -81,9 +79,10 @@ This is a todo list of things I want to get out of the way before version
   <li> BUG: InverseTaylor not working correctly for Sin and Tan???
   <li> BUG: complex^float.
 
-   <li> Mod(a,b) generates an error "Argument is not a list" if a or b or
-	both are undefined (I expected it to return unevaluated). 
-	Mod(-4,-3) generates 1 but Mod(-4,-3) generates -1. I'm not sure what
+   <li> Mod(a,b) generates some "UniVariate()" calls if a and b
+	are undefined (I expected it to return unevaluated). If one of them
+	is defined, and the other undefined, Mod() returns some numbers.
+	Mod(x,-3) returns unevaluated. I'm not sure what
 	the "correct" meaning of Mod is for negative moduli bases, but the
 	answer should in any case be non-negative. Mod(a,b) is defined as the
 	smallest non-negative number c such that a-c is divisible by b.
@@ -110,8 +109,6 @@ is needed.
   <LI> Allow for type convertors in pattern matchers. For instance: IsUniVar, 
        should be combined with CanBeUni and NormalForm to get the correct
 	   one back.
-  <LI> A plugin interface for yacas, so it can be extended with external
-       libraries (fast numerical algorithms for instance).
   <li> A RuleBaseDefined-like function that returns a list of defined
        arities.
   <li> HoldEvaluation(function-list)body that holds evaluation of
@@ -159,7 +156,7 @@ The documentation can be improved.
 <li> document the algorithms used, and expand on all of the functions
      currently implemented.
 <li> separate manual chapter on tensors. (Serge? Is it going to change?). TSimplify and TExplicitSum, TD, X
-<li> chapter on unix tools. yacas_client, Vi, GnuPlot
+<li> chapter on unix tools. yacas_client, Vi, GnuPlot, TeXShowPS
 <li> document the source code.
 <li> mention  the use of lists for passing multiple arguments.
 <li> document HoldArg in combination with <--
@@ -192,12 +189,11 @@ The documentation can be improved.
        FindIsq returns the insertion point.
   <li>   MultiDivide, MultiGcd, Groebner
   <li> CurrentFile, CurrentLine
+  <li> DllEnumerate, --patchload, RoundTo, TestYacas
   <li> Implemented backquote mechanism: `(...) will substitute
        every @a with the evaluation of a (and if a is a function
        the function name is replaced). The end result is evaluated.
        see substitute.cpp for more details
-  <li> IsBodied
-  <li> OpPrecedence works on all types of operator now.
 
 
   </UL>
