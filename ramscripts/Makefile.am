@@ -8,7 +8,7 @@ EXTRA_DIST = README ramscripts-win32.cpp \
 
 if GENERATE_ARCHIVE
 
-AM_CPPFLAGS = -D_GCC_BUILD_
+AM_CPPFLAGS = 
 noinst_DATA = scripts.dat
 checkTARGETS = check-archive
 noinst_PROGRAMS = compressor

@@ -5,10 +5,10 @@
 #define PACKAGE "yacas"
 #define VERSION "1.0.53rev3"
 
-#define ACCEPT_TYPE_ARG1 int
-#define ACCEPT_TYPE_ARG2 struct sockaddr *
-#define ACCEPT_TYPE_ARG3 int *
-#define socklen_t int
+/* #undef ACCEPT_TYPE_ARG1 */
+/* #undef ACCEPT_TYPE_ARG2 */
+/* #undef ACCEPT_TYPE_ARG3 */
+/* #undef socklen_t */
 
 #define LTDL_OBJDIR "../src"
 
@@ -17,6 +17,9 @@
 
 /* Define to 1 if you have the <ctype.h> header file. */
 #define HAVE_CTYPE_H 1
+
+/* Define to 1 if you have the <dirent.h> header file. */
+#define HAVE_DIRENT_H 1
 
 /* Define to 1 if you have the <dld.h> header file. */
 /* #undef HAVE_DLD_H */
