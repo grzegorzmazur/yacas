@@ -18,8 +18,9 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 *	4. (OK) Evaluate $e^(Pi*Sqrt(163))$ to 50 decimal digits
 	Verify(N(1000000000000*(-262537412640768744 +
 	  Exp(Pi*Sqrt(163))), 50)> -0.75, True);
-*	5. (NO) Evaluate the Bessel function $J[2]$ numerically at $z=1+I$.
-	N(BesselJ(1+I));
+*	5. (OK) Evaluate the Bessel function $J[2]$ numerically at $z=1+I$.
+	Verify(N(BesselJ(2, 1+I)),
+	  0.0415798869+I*0.2473976415);
 *	6. (OK) Obtain period of decimal fraction 1/7=0.(142857).
 	Verify(Decimal(1/7), {0,{1,4,2,8,5,7}});
 *	7. Continued fraction of 3.1415926535.
