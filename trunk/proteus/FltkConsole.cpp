@@ -47,6 +47,7 @@ x- no resetting the cursor back to 0 when staying on the same line?
 #include <FL/Fl.H>
 #include <FL/fl_draw.H>
 #include <FL/Fl_Tabs.H>
+#include "yacasprivate.h"
 #include "FltkConsole.h"
 #include "FltkHintWindow.h"
 #include "HelpView.h"

@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "yacasprivate.h"
 #include "debugclass.h"
 
 ProteusDebugger::ProteusDebugger(LispCharPtr aTempDir)
