@@ -882,6 +882,25 @@ equivalently Inverse($A$) = Transpose($A$).
 	In> IsOrthogonal(A/3)
 	Out> True;
 
+*CMD IsDiagonal --- test for a diagonal matrix
+*STD
+*CALL
+	IsDiagonal(A)
+
+*PARMS
+
+{A} -- a matrix
+
+*DESC
+
+{IsDiagonal(A)} returns {True} if {A} is diagonal and {False} otherwise.
+
+*E.G.
+	In> IsDiagonal(Identity(5))
+	Out> True;
+	In> IsDiagonal(HilbertMatrix(5))
+	Out> False;
+
 
 *CMD IsSymmetric --- test for a symmetric matrix
 *STD
