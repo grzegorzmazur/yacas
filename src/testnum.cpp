@@ -38,18 +38,17 @@ void Check(bool test_condition, const char* test_description)
 	}
 }
 
-void Next()
+void Next(const char* description)
 {
     static int i=0;
     i++;
-    printf("Test group [%d]\n",i);
+    printf("Test group %d: %s\n",i, description);
     fflush(stdout);
 }
 
 void Finish()
 {
-
-	printf("Passed %d, failed %d tests.\n", passed, failed);
+    printf("Passed %d, failed %d tests.\n", passed, failed);
     fflush(stdout);
 }
 
@@ -118,14 +117,16 @@ void TestTypes1(double value)
 }
 
 // test big numbers
-void TestTypes2(const char* float_string, const char* int_string, double double_value, LispInt base)
+void TestTypes2(const char* float_string, const char* int_string, double double_value)
 {
+	const LispInt base = 10;
 	int sign = (double_value>0)?1:((double_value<0)?-1:0);
 	
 // test constructors from strings
-	BigNumber x(float_string, base);
+	BigNumber x(float_string, 3*strlen(float_string), base);
 	BigNumber y;
-	y.SetTo(int_string, base);
+	y.SetTo(int_string, 3*strlen(int_string), base);
+	y.BecomeInt();	// FIXME: this would be unnecessary if the type were automatically decided based on the string.
 
 	Check(!x.IsSmall(), "x is a big number");
 	Check(!y.IsSmall(), "y is a big number");
@@ -268,24 +269,29 @@ int main(void)
 ///// BigNumber comprehensive test suite
 //////////////////////////////////////////////////
 
-	Next();	
+	Next("library name");	
 	printf("Testing numeric library: '%s'.\n", BigNumber::NumericLibraryName());
 	
-	Next();
+	Next("constructor");
 	BigNumber x;	// default constructor
-	Next();
+	Next("call some functions on object with undefined value");
+	x.IsInt();
 	x.Double();	// value is undefined
-	Next();
-	BigNumber y("0", 10);	// construct with automatic precision
+	Next("construct 0 from string");
+	BigNumber y("0", 10);	// construct
 	Check(y.Double()==0, "value of 0");
 
-	Next();
+	Next("read binary string");
 	y.SetTo("-101010", 50, 2);	// construct with given precision
 	Check(y.Double()==-42, "value is correct");
-	Check(y.IsInt() && y.IsIntValue(), "value is integer");
+	Check(!y.IsInt(), "has float type");
+	Check(y.IsIntValue(), "value is integer");
+	Check(y.IsSmall(), "value is small");
+	y.BecomeInt();
+	Check(y.IsInt(), "has integer type");
+	Check(y.IsSmall(), "value is small");
 
-	Next();
-	// test small integers and floats
+	Next("test small integers and floats");
 	TestTypes1(0);
 	TestTypes1(1);
 	TestTypes1(-1);
@@ -298,9 +304,9 @@ int main(void)
 	TestTypes1(-100000.1);
 	TestTypes1(15416.563);
 
-	Next();
-	// test big integers and floats - values must be out of range for platform numbers. Use:
-	// TestTypes("float value", "equivalent integer value", double_value, base);
+	Next("test big integers and floats");
+	// values must be out of range for platform numbers. Usage:
+	// TestTypes2("float value", "equivalent integer value", double_value, base);
 	const char* num1_float = "3.00000000000000000000000000000000000000099999999999992";
 	const char* num1_int = "3";
 	const double num1_double = 3;
@@ -314,12 +320,12 @@ int main(void)
 	const char* num4_int = "123";
 	const double num4_double = 123.332332332332332332323333333333;
 
-	TestTypes2(num1_float, num1_int, num1_double, 10);
-	TestTypes2(num2_float, num2_int, num2_double, 10);
-	TestTypes2(num3_float, num3_int, num3_double, 10);
-	TestTypes2(num4_float, num4_int, num4_double, 10);
+	TestTypes2(num1_float, num1_int, num1_double);
+	TestTypes2(num2_float, num2_int, num2_double);
+	TestTypes2(num3_float, num3_int, num3_double);
+	TestTypes2(num4_float, num4_int, num4_double);
 	
-	Next();
+	Next("test copy constructor");
 	y.SetTo(-15416.0);
 	Check(!y.IsInt(), "y is of float type");
 	Check(y.IsIntValue(), "y has integer value");
@@ -328,14 +334,14 @@ int main(void)
 	Check(z.Double()==-15416, "value is still -15416");
 	Check(z.IsSmall(), "value is small");
 	
-	Next();
+	Next("test integer conversion");
 	z.BecomeInt();
 	x.SetTo(z);	// copy assignment
 	Check(x.IsInt(), "is of integer type");
 	Check(x.Double()==-15416, "value is still -15416");
 	Check(x.IsSmall(), "value is small");
 
-	Next();
+	Next("equality");
 
 	Check(x.Equals(x), "x=x");
 	Check(y.Equals(y), "y=y");
@@ -350,14 +356,14 @@ int main(void)
 	Check(!z.Equals(x), "z!=-x");
 	Check(!y.Equals(x), "y!=-x");
 	
-	Next();
+	Next("comparisons");
 	Check(!x.LessThan(x), "x<x is false");
 	Check(!x.LessThan(y), "y<y is false");
 	Check(y.LessThan(x), "y<x is true");
 	Check(!z.LessThan(y), "z<y is false");
 	Check(z.LessThan(x), "z<x is true");
 	
-	Next();
+	Next("simple arithmetic");
 	TestArith1(num1_int, 10, 15, -25);
 	TestArith1(num1_float, 10, -15, 0.19e-8);
 	TestArith1(num2_int, 10, -15, -2500000);
@@ -367,11 +373,11 @@ int main(void)
 	TestArith1(num4_int, 10, 1500, 29);
 	TestArith1(num4_float, 10,  -50000, 99999.99999);
 	
-	Next();
-	for (int i=0; i<=100; ++i) x.SetTo(y);
-	Check(x.Equals(y), "x=y after 100 times");
+	Next("try to leak memory");
+	for (int i=0; i<=10000; ++i) x.SetTo(y);
+	Check(x.Equals(y), "x=y after 10000 times");
 
-	Next();
+	Next("use big numbers in a loop");
 	y.SetTo(100);
 	z.SetTo(1);
 	BigNumber t;
@@ -382,7 +388,7 @@ int main(void)
 	}
 	Check(t.Double()==4950, "correct sum of n from 0 to 99");
 	
-	Next();
+	Next("bit counts");
 	x.SetTo(65537);
 	x.BitCount(x);
 	Check(x.IsInt(), "bit count is integer");
@@ -397,7 +403,7 @@ int main(void)
 	Check(x.Double()!=-21, "bit count of 2^(-20) is not -21");
 	Check(x.Double()!=-19, "bit count of 2^(-20) is not -19");
 	
-	Next();
+	Next("arithmetic with large powers");
 	// compute 15^(large number) and check that it divides both 3^(that number) and 5^(that number)
 	x.SetTo(15);
 	for(int i=0; i<10; ++i) x.Multiply(x,x,10);
@@ -454,7 +460,7 @@ int main(void)
         sprintf(ss,"%lx",0xff0000-15L);
         Check(str,ss);
     }
-    Next(); //2
+    Next(""); //2
 
     n1.SetTo("5a5a5a5a5a5a5a5a5a5a5a5a",16);
     BaseShiftRight(n1,1);
@@ -473,7 +479,7 @@ int main(void)
     ANumberToString(str, n1, 16);
     Check(str,"5a5a5a5a5a5a5a5a5a500000");
 
-    Next();  //3
+    Next("");  //3
 
     n1.SetTo("550000000");
     n2.SetTo("100000000");
@@ -490,7 +496,7 @@ int main(void)
     ANumberToString(str, res1, 16);
     Check(str, "ef0000");
 
-    Next();     //4
+    Next("");     //4
 
     n1.SetTo("10000");
     n2.SetTo("1234");

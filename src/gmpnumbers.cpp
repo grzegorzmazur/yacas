@@ -1243,7 +1243,7 @@ void BigNumber::init()
 {
 	turn_int();	// by default all numbers are created integer
 	mpz_init2(int_, 32);	// default precision
-	mpf_init2(float_, 53);
+	mpf_init2(float_, 32);
 	mpz_init2(exponent_, 32);
 }
 
@@ -1291,9 +1291,15 @@ void BigNumber::SetTo(const BigNumber& aOther)
 // assign from string, result is always a float type
 void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10)
 {
-  turn_float();
-  mpf_set_str(float_, aString, aBase);
-  Precision(aPrecision);
+  Precision(aPrecision);	// FIXME: precision is set by hand here, instead of setting it from the string automatically... not sure whether to change the API about this.
+  if (mpf_set_str(float_, aString, aBase)==0)
+  {	// FIXME: we convert the string always to a float, while we could in principle decide whether to convert it to an integer or to a float
+	turn_float();
+  }
+  else
+  {// FIXME: this clause is executed when there is an error in the string. Need to signal the error somehow.
+  
+  }
 }
 
 
@@ -1412,7 +1418,7 @@ bool BigNumber::IsInt() const
 
 bool BigNumber::IsExpFloat() const
 {
-	return (type_ & KExpFloat)!=0;
+	return (type_ & KExpFloat)==KExpFloat;
 }
 
 bool BigNumber::IsIntValue() const
@@ -1433,8 +1439,8 @@ bool BigNumber::IsSmall() const
   {
 	long exp_small;
 	(void) mpf_get_d_2exp(&exp_small, float_);
-	return (!IsExpFloat() && mpf_get_prec(float_)<=50 && fabs(exp_small)<1021);
-	// standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021.
+	return (!IsExpFloat() && mpf_get_prec(float_)<=64 && fabs(exp_small)<1021);
+	// standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021. But GMP sets the precision rather arbitrarily. Let's see how well this "64" works.
   }
 
 }
@@ -1672,10 +1678,7 @@ void BigNumber::Floor(const BigNumber& aX)
 
   if (!aX.IsInt() && !aX.IsExpFloat())
   {	// aX is float for which we can evaluate Floor()
-    if (IsInt())
-    {	// we are integer and we need to become float
-    	turn_float();	// can erase our values because aX != *this
-    }
+    turn_float();	// just in case we are integer
     // we are float now
     mpf_floor(float_, aX.float_);
   }
@@ -1850,22 +1853,22 @@ void BigNumber::turn_int()
 }
 
 // copy from gmp objects
-BigNumber::import_gmp(mpz_t gmp_int)
+void BigNumber::import_gmp(mpz_t gmp_int)
 {
 	turn_int();
 	mpz_set(int_, gmp_int);
 }
-BigNumber::import_gmp(mpf_t gmp_float)
+void BigNumber::import_gmp(mpf_t gmp_float)
 {
 	turn_float();
 	mpf_set(float_, gmp_float);
 }
 // copy to gmp objects
-export_gmp(mpz_t gmp_int) const
+void BigNumber::export_gmp(mpz_t gmp_int) const
 {
 	mpz_set(gmp_int, int_);
 }
-export_gmp(mpf_t gmp_float) const
+void BigNumber::export_gmp(mpf_t gmp_float) const
 {
 	mpf_set(gmp_float, float_);
 }
