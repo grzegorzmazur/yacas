@@ -1,0 +1,75 @@
+<HTML>
+<A NAME="c8">
+
+</A>
+<A HREF="refchapter8.html#:" TARGET="Chapters">
+:
+</A>
+, <A HREF="refchapter8.html#@" TARGET="Chapters">
+@
+</A>
+, <A HREF="refchapter8.html#/@" TARGET="Chapters">
+/@
+</A>
+, <A HREF="refchapter8.html#.." TARGET="Chapters">
+..
+</A>
+, <HEAD><TITLE>Functional operators</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+Functional operators
+</H1>
+<A NAME=":">
+
+</A>
+<H3>
+<HR>item:list
+</H3>
+
+prepends an item to a list, or a string. 
+Examples:
+ a:b:c:{}       ->  {a,b,c} <BR>
+ "hello":" ":"world" -> "hello world"
+
+<A NAME="@">
+
+</A>
+<H3>
+<HR>"oper" @ arg
+</H3>
+
+Applies an operator to arguments.
+Examples:
+ "Sin" @ a      ->   Sin(a)
+ "Sin" @ {a,b}  ->   Sin(a,b)
+
+
+<A NAME="/@">
+
+</A>
+<H3>
+<HR>oper /@ arglist
+</H3>
+
+Applies an operator to arguments in a list, in a threaded manner.
+Example:
+ "Sin" /@ {a,b} ->   {Sin(a),Sin(b)}
+
+
+<A NAME="..">
+
+</A>
+<H3>
+<HR>n .. m
+</H3>
+
+returns a list of numbers from n upto m.
+Example:
+ 1 .. 4         ->   {1,2,3,4}
+
+
+</BODY>
+
+</FONT>
+
+</HTML>

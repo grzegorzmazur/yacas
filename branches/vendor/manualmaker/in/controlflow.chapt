@@ -1,0 +1,308 @@
+
+
+Chapter()"Control flow functions";
+
+AddAnchor("MaxEvalDepth");
+SubSection()"MaxEvalDepth(n)";  Text()"
+
+Use this command to set the maximum evaluation depth. This will
+catch any infinite recursion. For example, f(x):=f(x); and then
+f(x) would keep on calling f(x), which would call f(x), which
+would call f(x)... etcetera. The interpreter will halt if
+the call is n deep. The default value is 100000.
+";
+
+AddAnchor("Hold");
+SubSection()"Hold(expression)";  Text()"
+Hold(expression) : returns expression unevaluated.
+
+";
+
+AddAnchor("Eval");
+SubSection()"Eval(expression)";  Text()"
+Eval(expression) : Re-evaluates expression.
+";
+
+AddAnchor("While");
+SubSection()"While(predicate) body";  Text()"
+While(predicate) body : 
+Keep on evaluating \"body\" while \"predicate\"
+evaluates to \"True\". \"predicate\" is tested
+before evaluating the body. While returns \"True\".
+";
+
+AddAnchor("Until");
+SubSection()"Until(predicate) body";  Text()"
+Until repeats a statement until a predicate becomes
+true. A difference with While is that the statement is evaluated
+at least once, as opposed to While where the body statement is
+evaluated zero or more times.
+";
+
+AddAnchor("If");
+SubSection()"If(predicate,then,else)";  Text()"
+If(predicate,then,else) : 
+If statement. If \"predicate\" evaluates to
+\"True\", return result of evaluating the
+\"then\" body, else if there is a \"else\" body,
+return that result, otherwise return \"False\".
+";
+
+AddAnchor("SystemCall");
+SubSection()"SystemCall(string)";  Text()"
+SystemCall(string) : 
+This will call a command in the surrounding shell Yacas was invoked
+from. SystemCall can be used to pass commands to other programs
+or the operating system. 
+
+";
+
+
+AddAnchor("PatchString");
+SubSection()"PatchString";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()"PatchString(string)";
+
+Topical()"Parameters";
+Text()"string - a string to patch";
+
+Topical()"Description";
+Text()
+"This function does the same as PatchLoad, but it works on a string
+in stead of on the contents of a text file. See PatchLoad for more
+details.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> PatchString(\"Two plus three is &lt? Write(2+3); ?&gt \");
+Out> \"Two plus three is 5 \";
+");
+
+Topical()"See Also"; 
+SeeAlso({"PatchLoad"});
+
+
+
+AddAnchor("Function");
+SubSection()"Function(\"operator\",{arguments} ) body";  Text()"
+Function(\"operator\",{arguments} ) body : 
+Use this to declare a simple function, one that doesn't need an entire
+rules data base.
+
+";
+
+AddAnchor("Use");
+SubSection()"Use(\"file\")";  Text()"
+Use(\"file\") : 
+This function loads a file if it was not already loaded with Use.
+";
+
+AddAnchor("For");
+SubSection()"For(start,predicate,increment) body";  Text()"
+For(start,predicate,increment) body : 
+Looping in a C style. \"start\" gets called, and then \"body\" as
+long as \"predicate\" evaluates to True\", evaluating
+\"increment\" each time after body was evaluated. Returns \"True\".
+
+
+";
+
+AddAnchor("ForEach");
+SubSection()"ForEach(item,{list}) body";  Text()"
+ForEach(item,{list}) body : 
+This function loops over each element in {list}, assigning it to
+the variable \"item\", and calling \"body\". Returns \"True\".
+
+";
+
+AddAnchor("Apply");
+SubSection()"Apply(\"oper\",{list})";  Text()"
+Apply(\"oper\",{list}) : 
+This function applies a operator to the arguments mentioned in the list.
+Eg. \"Apply(\"+\",{2,3});\" would evaluate to \"5\".
+
+You can also apply pure functions, declared using the form {varlist,body}.
+Example: \"Apply( {{x,y},x+y} , {2,3} );\" would also evaluate to 5.
+
+";
+
+
+
+AddAnchor("LocalSymbols");
+SubSection()"LocalSymbols(...)body";
+Text()"
+Given the symbols passed as the first arguments to LocalSymbols
+a set of local symbols will be created, and creates unique ones
+for them, typically of the form $<symbol><number>, where
+symbol was the symbol entered by the user, and number is a unique
+number. This scheme was used
+to such a generated symbol can not accientally be entered by a user.
+Example:
+
+":HtmlCommand(
+"In> LocalSymbols(a,b)a+b
+Out> $a6+ $b6;"):"
+
+This is useful in cases where a guaranteed free variable is needed,
+like in the macro-like functions (For, While, etc.).
+
+";
+
+
+AddAnchor("Subst");
+SubSection()"Subst(from,to)body"; Text()"
+
+Subst replaces any occurrence of from in body with to. <BR>
+
+Example:
+  Subst(x,Sin(y)) x+x -> Sin(y)+Sin(y)
+";
+
+AddAnchor("WithValue");
+SubSection()"WithValue(variable,value,expression)";
+Text()"
+WithValue(variable,value,expression) : evaluate expression, with
+variable set to value. variable and value can be lists of
+variables and values.
+";
+
+
+AddAnchor("SetHelpBrowser");
+SubSection()"SetHelpBrowser";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"SetHelpBrowser(helpbrowser)";
+
+Topical()"Parameters";
+Text()"helpbrowser - string containing a html browser to use for help";
+
+Topical()"Description";
+Text()
+"This function sets the help browser you want to use to
+browse the help online. It calls helpbrowser with the html
+page as first argument. The default is lynx. If you want to
+use a different browser by default it suffices to create a
+file ~/.yacasrc. and add a line to set the browser in there.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> SetHelpBrowser(\"netscape\")
+Out> \"netscape\";
+In> ??
+");
+
+Topical()"See Also"; 
+SeeAlso({});
+
+
+
+
+AddAnchor("TraceStack");
+SubSection()"TraceStack";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()"TraceStack(expression)";
+
+Topical()"Parameters";
+Text()"expression - an expression to evaluate";
+
+Topical()"Description";
+Text()
+"TraceStack shows the calling stack after an error occurred.
+It shows the last few items on the stack, not to flood the screen.
+These are usually the only items of interest on the stack.
+This is probably by far the most useful debugging function in
+Yacas. It shows the last few things it did just after an error
+was generated somewhere.
+<P>
+For each stack frame, it shows if the function evaluated was a
+built-in function or a user-defined function, and for the user-defined
+function, the number of the rule it is trying whether it was evaluating
+the pattern matcher of the rule, or the body code of the rule.
+<P>
+This functionality is not offered by default because it slows
+down the evaluation code.
+
+";
+
+Topical()"Examples";
+Text()
+"Here is an example of a function calling itself recursively,
+causing Yacas to flood its stack:":
+HtmlCommand(
+"In> f(x):=f(Sin(x))
+Out> True;
+In> TraceStack(f(2))
+Debug> 982 :  f (Rule # 0 in body)
+Debug> 983 :  f (Rule # 0 in body)
+Debug> 984 :  f (Rule # 0 in body)
+Debug> 985 :  f (Rule # 0 in body)
+Debug> 986 :  f (Rule # 0 in body)
+Debug> 987 :  f (Rule # 0 in body)
+Debug> 988 :  f (Rule # 0 in body)
+Debug> 989 :  f (Rule # 0 in body)
+Debug> 990 :  f (Rule # 0 in body)
+Debug> 991 :  f (Rule # 0 in body)
+Debug> 992 :  f (Rule # 0 in body)
+Debug> 993 :  f (Rule # 0 in body)
+Debug> 994 :  f (Rule # 0 in body)
+Debug> 995 :  f (User function)
+Debug> 996 :  Sin (Rule # 0 in pattern)
+Debug> 997 :  IsList (Internal function)
+Error on line 1 in file [CommandLine]
+Max evaluation stack depth reached.
+Please use MaxEvalDepth to increase the stack size as needed.
+");
+
+Topical()"See Also"; 
+SeeAlso({"TraceExp","TraceRule"});
+
+
+
+AddAnchor("TraceExp");
+SubSection()"TraceExp(expression)";  Text()"
+TraceExp(expression) : turn on tracing facility, and evaluate
+expression. This is useful for tracing the evaluation of small
+routines interactively from the command line.
+";
+
+AddAnchor("TraceRule");
+SubSection()"TraceRule(template)expression";  Text()"
+Tracerule(template)expression : turn on tracing facility given
+the template, and evaluate expression. the template is an example
+of the function to trace on. template=x+y would trace all additions,
+showing the arguments passed in, and the result of the addition.
+Only user-defined functions can be traced.
+<P>
+This is useful for tracing a function that is called from within
+another function. This way you can see how your function behaves
+in the environment it is used in.
+<P>
+An example invocation of TraceRule is" :
+
+HtmlCommand(
+"In( 1 ) = TraceRule(x+y)2+3*5+4;":HtmlBreak()
+) :
+"Which should then show something to the effect of ":
+
+HtmlCommand(
+"    ENTER:2+3*5+4":HtmlBreak():
+"      ENTER:2+3*5":HtmlBreak():
+"          ARG:2 <- 2":HtmlBreak():
+"          ARG:3*5 <- 15":HtmlBreak():
+"      LEAVE:2+3*5 -> 17":HtmlBreak():
+"        ARG:2+3*5 <- 17":HtmlBreak():
+"        ARG:4 <- 4":HtmlBreak():
+"    LEAVE:2+3*5+4 -> 21":HtmlBreak():
+"Out( 0 ) = 21;")
+
+;
+
+
+
+

@@ -1,0 +1,12 @@
+#! /bin/bash
+
+
+if [ -d homepage ] ; then : ; else  mkdir homepage ; fi; 
+cd homepage
+cp ../manualmaker/*.html .
+cp ../docs/*.gif ../docs/*.html .
+mv ../yacas-*.tar.gz yacas-latest.tar.gz
+tar -zcvf ../homepage.tgz *
+cd ..
+rm -rf homepage/
+

@@ -1,0 +1,64 @@
+
+
+Chapter()"Generic objects";
+
+Text()"
+Generic objects are objects that are implemented in c++, but
+can be accessed through the Yacas interpreter.
+";
+
+AddAnchor("IsGeneric");
+SubSection()"IsGeneric(object)"; Text()"
+IsGeneric(object) : returns whether an object is a generic object
+type.
+";
+
+AddAnchor("GenericTypeName");
+SubSection()"GenericTypeName(object)"; Text()"
+GenericTypeName(object) : returns a string representation of
+the name of a generic object. <BR>
+
+Example: GenericTypeName(ArrayCreate(10,1)) sould return \"Array\".
+";
+
+AddAnchor("ArrayCreate");
+SubSection()"ArrayCreate(size,init)"; Text()"
+Create an array the with size elements, all initialized to the
+value init.
+";
+
+AddAnchor("ArraySize");
+SubSection()"ArraySize(array)"; Text()"
+Return the size of an array (number of elements in the array).
+";
+
+AddAnchor("ArrayGet");
+SubSection()"ArrayGet(array,index)"; Text()"
+Get the element at position index in the array passed. Arrays are treated
+as base-one, so index set to 1 would return the first element. <BR>
+
+Arrays can also be accessed through the [] operators. So
+array[index] would return the same as ArrayGet(array,index).
+";
+
+AddAnchor("ArraySet");
+SubSection()"ArraySet(array,index,element)"; Text()"
+Set the element at position index in the array passed to the value
+passed in as argument to element. Arrays are treated
+as base-one, so index set to 1 would set first element. <BR>
+
+Arrays can also be accessed through the [] operators. So
+array[index]:=element would do the same as ArraySet(array,index,element).
+";
+
+AddAnchor("ArrayCreateFromList");
+SubSection()"ArrayCreateFromList(list)"; Text()"
+Creates an array from the contents of the list passed in.
+";
+
+AddAnchor("ListFromArray");
+SubSection()"ListFromArray(array)"; Text()"
+Creates a list from the contents of the array passed in.
+";
+
+

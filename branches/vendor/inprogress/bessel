@@ -1,0 +1,34 @@
+
+/*
+
+In[1]:= D[BesselI[n,z],n]
+
+               (1,0)
+ Out[1]= BesselI     [n, z]
+
+He is saying here that he can't reduce it, and that it is
+expressed as the derivative wrt the first argument.
+
+This is what I want to be able to do with yacas,
+In[2]:= D[BesselI[n[x],z[x],x]
+
+       (BesselI[-1 + n[x], z[x] + BesselI[1 + n[x], z[x]) z'[x]
+Out[2]= ---------------------------------------------------------- +
+                                            2
+
+                  (1,0)
+>    n'[x] BesselI     [n[x], z[x]
+*/
+
+
+
+RuleBase("BesselI",{n,z});
+
+Rule("Deriv",2,3,Type(aFunc) = "BesselI" And aVar != aFunc[1])
+    ( -BesselI(aFunc[1]-1,aFunc[2]) +  BesselI(aFunc[1]+1,aFunc[2]) )
+/2
+      * (Deriv(aVar) aFunc[2] ) +
+      (Deriv(aFunc[1]) BesselI(aFunc[1],aFunc[2])) * Deriv(aVar) aFunc[1];
+
+
+

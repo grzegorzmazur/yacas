@@ -1,0 +1,345 @@
+
+
+/* Binomials */
+RuleBase("Bin",{n,m});
+Rule("Bin",2,0,True) n! /(m! *(n-m)!);
+
+/* Levi-civita symbol */
+Function("LeviCivita",{indices})
+[
+  Local(i,j,length,left,right,factor);
+  length:=Length(indices);
+  factor:=1;
+
+  For (j:=length,j>1,j--)
+  [
+    For(i:=1,i<j,i++)
+    [
+      left:=indices[i];
+      right:=indices[i+1];
+
+      If (Equals(left,right),
+      [ factor := 0 ; ],
+      [
+        If(Not(Apply("<",{left,right})),
+        [
+/*
+          Swap(indices,i,i+1);
+*/
+          indices:=Insert(Delete(indices,i),i+1,left);
+          factor:= -factor;
+        ]);
+      ]);
+    ];
+  ];
+  factor;
+];
+
+Function("Permutations",{result,list})
+[
+  If (Length(list) = 0,
+  [
+    result;
+  ],
+  [
+    Local(head);
+    Local(newresult);
+    Local(i);
+    head:=list[1];
+    newresult:={};
+    ForEach(item,result)
+    [
+      For(i:=Length(item)+1,i>0,i--)
+      [
+        DestructiveInsert(newresult,1,Insert(item,i,head));
+      ];
+    ];
+    newresult:=DestructiveReverse(newresult);
+    Permutations(newresult,Tail(list));
+  ]);
+];
+
+
+Function("Permutations",{list})
+[
+  Permutations({{}},list);
+];
+
+Function("InProduct",{aLeft,aRight})
+[
+  Local(length);
+  length:=Length(aLeft);
+  Check(length = Length(aRight),"InProduct: error, vectors not of the same dimension");
+
+  Local(result);
+  result:=0;
+  Local(i);
+  For(i:=1,i<=length,i++)
+  [
+    result := result + aLeft[i] * aRight[i];
+  ];
+  result;
+];
+
+
+Function("CrossProduct",{aLeft,aRight})
+[
+  Local(length);
+  length:=Length(aLeft);
+  Check(length = 3,"OutProduct: error, vectors not of dimension 3");
+  Check(length = Length(aRight),"OutProduct: error, vectors not of the same dimension");
+
+  Local(perms);
+  perms := Permutations({1,2,3});
+
+  Local(result);
+  result:=ZeroVector(3);
+
+  Local(term);
+  ForEach(term,perms)
+  [
+    result[ term[1] ] := result[ term[1] ] +
+      LeviCivita(term) * aLeft[ term[2] ] * aRight[ term[3] ] ;
+  ];
+  result;
+];
+
+
+Function("ZeroVector",{n})
+[
+    Local(i,result);
+    result:={};
+    For(i:=1,i<=n,i++)
+    [
+      DestructiveInsert(result,1,0);
+    ];
+    result;
+];
+
+
+Function("BaseVector",{row,n})
+[
+    Local(i,result);
+    result:=ZeroVector(n);
+    result[row] := 1;
+    result;
+];
+
+RandomIntegerVector(_count,_coefmin,_coefmax) <--
+  Table(MathFloor(coefmin+Random()*(coefmax+1-coefmin)),i,1,count,1);
+
+
+Function("Identity",{n})
+[
+    Local(i,result);
+    result:={};
+    For(i:=1,i<=n,i++)
+    [
+      DestructiveAppend(result,BaseVector(i,n));
+    ];
+    result;
+];
+
+
+
+
+Function("DiagonalMatrix",{list})
+[
+  Local(result,i,n);
+  n:=Length(list);
+  result:=Identity(n);
+  For(i:=1,i<=n,i++)
+  [
+    result[i][i] := list[i];
+  ];
+  result;
+];
+
+Function("Normalize",{vector})
+[
+  Local(norm);
+  norm:=0;
+  ForEach(item,vector)
+  [
+    norm:=norm+item*item;
+  ];
+  (1/(norm^(1/2)))*vector;
+];
+
+Function("ZeroMatrix",{n,m})
+[
+  Local(i,result);
+  result:={};
+  For(i:=1,i<=n,i++)
+    DestructiveInsert(result,i,ZeroVector(m));
+  result;
+];
+
+
+Function("Transpose",{matrix})
+[
+  Local(i,j,result);
+  result:=ZeroMatrix(Length(matrix[1]),Length(matrix));
+  For(i:=1,i<=Length(matrix),i++)
+    For(j:=1,j<=Length(matrix[1]),j++)
+      result[j][i]:=matrix[i][j];
+  result;
+];
+
+
+
+/* Cramer-like matrix operations */
+Function("Determinant",{matrix})
+[
+  Local(perms,indices,result);
+  indices:=Table(i,i,1,Length(matrix),1);
+  perms:=Permutations(indices);
+  result:=0;
+  ForEach(item,perms)
+     result:=result+Factorize(i,1,Length(matrix),matrix[i][item[i] ])*
+                    LeviCivita(item);
+  result;
+];
+
+Function("CoFactor",{matrix,ii,jj})
+[
+  Local(perms,indices,result);
+  indices:=Table(i,i,1,Length(matrix),1);
+  perms:=Permutations(indices);
+  result:=0;
+  ForEach(item,perms)
+     If(item[ii] = jj,
+       result:=result+
+         Factorize(i,1,Length(matrix),
+         If(ii=i,1,matrix[i][item[i] ])
+                  )*LeviCivita(item));
+  result;
+];
+
+
+
+Minor(matrix,i,j) := CoFactor(matrix,i,j)/(-1^(i+j));
+
+Function("Inverse",{matrix})
+[
+  Local(perms,indices,inv,det,n);
+  n:=Length(matrix);
+  indices:=Table(i,i,1,n,1);
+  perms:=Permutations(indices);
+  inv:=ZeroMatrix(n,n);
+  det:=0;
+  ForEach(item,perms)
+  [
+    Local(i,lc);
+    lc := LeviCivita(item);
+    det:=det+Factorize(i,1,n,matrix[i][item[i] ])* lc;
+    For(i:=1,i<=n,i++)
+        [
+         inv[item[i] ][i] := inv[item[i] ][i]+
+           Factorize(j,1,n,
+             If(j=i,1,matrix[j][item[j] ]))*lc;
+        ];
+  ];
+  Check(det != 0, "Zero determinant");
+  (1/det)*inv;
+];
+
+Function("Trace",{matrix})
+[
+  Local(i,result);
+  result:=0;
+  For(i:=1,i<=Length(matrix),i++)
+    result:=result+matrix[i][i];
+  result;
+];
+
+x X y := CrossProduct(x,y);
+x . y := InProduct(x,y);
+Commutator(x,y):=x*y-y*x;
+
+
+/* SylvesterMatrix */
+
+Function("SylvesterMatrix",{poly1, poly2, var})
+[
+  Local(i,m,p,q,y,z,result);
+  y:=Degree(poly1,var);
+  z:=Degree(poly2,var);
+  m:=y+z;
+  p:={};
+  q:={};
+  result:=ZeroMatrix(m,m);
+
+  For(i:=y,i>=0,i--)
+    DestructiveAppend(p,Coef(poly1,var,i));
+  For(i:=z,i>=0,i--)
+    DestructiveAppend(q,Coef(poly2,var,i));
+
+  For(i:=1,i<=z,i++)
+  [
+    Local(j,k);
+        k:=1;
+    For(j:=i,k<=Length(p),j++)
+        [
+          result[i][j]:=p[k];
+          k++;
+        ];
+  ];
+
+  For(i:=1,i<=y,i++)
+  [
+    Local(j,k);
+        k:=1;
+    For(j:=i,k<=Length(q),j++)
+        [
+          result[i+z][j]:=q[k];
+          k++;
+        ];
+  ];
+  result;
+];
+
+
+
+Function("MatrixRow",{matrix,row})
+[
+  Check(row > 0, "MatrixRow: row index out of range");
+  Check(row <= Length(matrix), "MatrixRow: row index out of range");
+
+  Local(result);
+  result:=matrix[row];
+
+  result;
+];
+
+Function("MatrixColumn",{matrix,col})
+[
+  Local(m);
+  m:=matrix[1];
+
+  Check(col > 0, "MatrixColumn: column index out of range");
+  Check(col <= Length(m), "MatrixColumn: column index out of range");
+
+  Local(i,result);
+  result:={};
+  For(i:=1,i<=Length(matrix),i++)
+    DestructiveAppend(result,matrix[i][col]);
+
+  result;
+];
+
+Function("GenMatrix",{func,m,n})
+[
+  Local(i,j,result);
+  result:=ZeroMatrix(m,n);
+
+  For(i:=1,i<=m,i++)
+    For(j:=1,j<=n,j++)
+          result[i][j]:=Apply(func,{i,j});
+  
+  result;
+];
+HoldArg("GenMatrix",func);
+
+
+

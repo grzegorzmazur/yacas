@@ -1,0 +1,109 @@
+
+/* Converting from mixed associative expressions to pure left-associative
+ expressions. Eg. transforming from a+(b+c) to (a+b)+c. The same for
+ multiplication.
+ */
+
+/*
+ Examples:
+In> FullForm(Norm(b &+ (a &+ c)))
+(&+ (&+ a b )c )
+Out> a&+b&+c;
+
+In> FullForm(Norm(b &/ (c &* a)))
+(&/ (&/ b a )c )
+Out> b&/a&/c;
+
+In> FullForm(Norm(b &- (c &+ a)))
+(&- (&- b a )c )
+Out> b&-a&-c;
+
+In> FullForm(Norm(c &+ (2 &+ (a &+ 3))))
+(&+ (&+ 5 c )a )
+Out> 5&+c&+a;
+
+ */
+
+/* For now, the &... operators take on the role of the respective ...
+   operators. This is because
+   otherwise it collides with some of the standard rules. */
+Infix("&/",3);
+RuleBase("&/",{x,y});
+Infix("&*",4);
+x_IsNumber &* y_IsNumber <-- x*y;
+Infix("&+",7);
+x_IsNumber &+ y_IsNumber <-- x+y;
+Infix("&-",6);
+x_IsNumber &- y_IsNumber <-- x-y;
+Prefix("&-",5);
+RuleBase("&-",{x});
+
+
+/* Addition */
+10  # Norm((_a &+ _b) &+ (_c &+ _d)) <-- Norm(((a&+b)&+c)&+d);
+11  # Norm( _a       &+ (_b &+ _c)) <-- Norm((a&+b)&+c);
+
+/* Multiplication */
+10  # Norm((_a &* _b) &* (_c &* _d)) <-- Norm(((a&*b)&*c)&*d);
+11  # Norm( _a       &* (_b &* _c)) <-- Norm((a&*b)&*c);
+
+/* Deal with the minus sign */
+10  # Norm((_a &+ _b) &+ (_c &- _d)) <-- Norm(((a&+b)&+c)&-d);
+10  # Norm((_a &+ _b) &- (_c &+ _d)) <-- Norm(((a&+b)&-c)&-d);
+10  # Norm((_a &+ _b) &- (_c &- _d)) <-- Norm(((a&+b)&+d)&-c);
+10  # Norm((_a &- _b) &+ (_c &+ _d)) <-- Norm(((a&+d)&+c)&-b);
+10  # Norm((_a &- _b) &+ (_c &- _d)) <-- Norm(((a&+c)&-b)&-d);
+10  # Norm((_a &- _b) &- (_c &+ _d)) <-- Norm(((a&-b)&-c)&-d);
+10  # Norm((_a &- _b) &- (_c &- _d)) <-- Norm(((a&+d)&-b)&-c);
+15  # Norm((_a &- _b) &+ _c) <-- Norm((a&+c)&-b);
+16  # Norm((   &- _a) &+ _b) <-- Norm(b&-a);
+17  # Norm(_a &- (_b &+ _c)) <-- Norm((a&-b)&-c);
+17  # Norm(_a &+ (_b &- _c)) <-- Norm((a&+b)&-c);
+17  # Norm(_a &- (_b &- _c)) <-- Norm((a&+c)&-b);
+
+/* Deal with division */
+10  # Norm((_a &* _b) &* (_c &/ _d)) <-- Norm(((a&*b)&*c)&/d);
+10  # Norm((_a &* _b) &/ (_c &* _d)) <-- Norm(((a&*b)&/c)&/d);
+10  # Norm((_a &* _b) &/ (_c &/ _d)) <-- Norm(((a&*b)&*d)&/c);
+10  # Norm((_a &/ _b) &* (_c &* _d)) <-- Norm(((a&*d)&*c)&/b);
+10  # Norm((_a &/ _b) &* (_c &/ _d)) <-- Norm(((a&*c)&/b)&/d);
+10  # Norm((_a &/ _b) &/ (_c &* _d)) <-- Norm(((a&/b)&/c)&/d);
+10  # Norm((_a &/ _b) &/ (_c &/ _d)) <-- Norm(((a&*d)&/b)&/c);
+15  # Norm((_a &/ _b) &* _c) <-- Norm((a&*c)&/b);
+
+17  # Norm(_a &/ (_b &* _c)) <--
+      Norm((a&/b)&/c);
+
+17  # Norm(_a &* (_b &/ _c)) <-- Norm((a&*b)&/c);
+17  # Norm(_a &/ (_b &/ _c)) <-- Norm((a&*c)&/b);
+
+
+/* Sorting (bubblesort using patterns) */
+/* Addition */
+20  # Norm((_a &+ _b) &+ _c)_(GT(b,c)) <-- Norm(Norm(a&+c)&+b);
+21  # Norm((_a &+ _b) &+ _c)_(GT(a,b)) <-- Norm(Norm(b&+a)&+c);
+22  # Norm(_a &+ _b)       _(GT(a,b)) <-- Norm(b&+a);
+/* Multiplication */
+20  # Norm((_a &* _b) &* _c)_(GT(b,c)) <-- Norm(Norm(a&*c)&*b);
+21  # Norm((_a &* _b) &* _c)_(GT(a,b)) <-- Norm(Norm(b&*a)&*c);
+22  # Norm(_a &* _b)       _(GT(a,b)) <-- Norm(b&*a);
+/* Subtraction */
+20  # Norm((_a &- _b) &- _c)_(GT(b,c)) <-- Norm(Norm(a&-c)&-b);
+/* Division */
+20  # Norm((_a &/ _b) &/ _c)_(GT(b,c)) <-- Norm(Norm(a&/c)&/b);
+
+/* Termination */
+30  # Norm(_a &+ _b) <-- Norm(a) &+ Norm(b);
+30  # Norm(_a &* _b) <-- Norm(a) &* Norm(b);
+30  # Norm(_a &- _b) <-- Norm(a) &- Norm(b);
+30  # Norm(_a &/ _b) <-- Norm(a) &/ Norm(b);
+
+/* Comparison between objects */
+10  # GT(a_IsAtom,b_IsAtom) <-- GreaterThan(a,b);
+11  # GT(a_IsAtom,b_IsFunction) <-- True;
+12  # GT(a_IsFunction,b_IsAtom) <-- False;
+20  # GT(a_IsFunction,b_IsIsFunction) <-- False;
+
+/* Accept all */
+100 # Norm(_a) <-- a;
+

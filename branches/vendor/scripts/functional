@@ -1,0 +1,26 @@
+
+/* Operators for functional programming.
+ * Examples:
+ *  a:b:c:{}       ->  {a,b,c}
+ *  "Sin" @ a      ->   Sin(a)
+ *  "Sin" @ {a,b}  ->   Sin(a,b)
+ *  "Sin" /@ {a,b} ->   {Sin(a),Sin(b)}
+ *  1 .. 4         ->   {1,2,3,4}
+ */
+
+
+RuleBase(":",{head,tail});
+Rule(":",2,1,IsList(tail)  ) Concat({head},tail);
+Rule(":",2,1,IsString(tail)) ConcatStrings(head,tail);
+UnFence(":",2);
+
+
+RuleBase("@",{func,arg});
+Rule("@",2,1,IsList(arg)) Apply(func,arg);
+Rule("@",2,2,True       ) Apply(func,{arg});
+
+Function("/@",{func,lst}) Apply("MapSingle",{func,lst});
+
+Function("..",{from,to}) Table(i,i,from,to,1);
+
+

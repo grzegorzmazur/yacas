@@ -1,0 +1,145 @@
+
+
+/* TruncRadian truncates the radian r so it is between 0 and 2*Pi.
+ * It calculates r mod 2*Pi using the required precision.
+ */
+TruncRadian(_r) <--
+[
+  Local(twopi);
+  r:=N(Eval(r),2*GetPrecision());
+  twopi:=N(2*Pi,2*GetPrecision());
+  N(r-MathFloor(r/twopi)*twopi);
+];
+HoldArg("TruncRadian",r);
+
+
+
+/* Standard analytic functions */
+2 # Sin(x_IsNumber)_(Numeric) <--
+[
+  If(x<0 Or x>7, x:=TruncRadian(x));
+  MathSin(x);
+];
+4 # Sin(ArcSin(_x))           <-- x;
+5 # Sin(- _x)                 <-- -Sin(x);
+5 # Sin(x_IsNegativeNumber * _y)   <-- -Sin((-x)*y);
+5 # Sin(_y * x_IsNegativeNumber)   <-- -Sin(y*(-x));
+110 # Sin(Complex(_r,_i)) <--
+    (Exp(I*Complex(r,i)) - Exp(- I*Complex(r,i))) / (I*2) ;
+200 # Sin(0) <-- 0;
+200 # Sin(Pi) <-- 0;
+200 # Sin(n_IsInteger * Pi) <-- 0;
+
+200 # Sin(((n_IsPositiveInteger * Pi)/2))_IsEven(Div(n,2)) <-- 1;
+200 # Sin(((n_IsPositiveInteger * Pi)/2))_IsOdd(Div(n,2)) <-- -1;
+
+200 # Sin(( Pi)/2) <--  1;
+200 # Sin((-Pi)/2) <-- -1;
+
+200 # Sin(((n_IsNegativeInteger * Pi)/2)) <-- -Sin(Pi*((-n)/2));
+200 # Sin(((n_IsNegativeInteger * Pi)/2)) <-- -Sin(Pi*((-n)/2));
+
+/* TODO very ugly! */
+200 # Sin((Pi)/4) <--  Sqrt(2)/2;
+200 # Cos((Pi)/4) <--  Sqrt(2)/2;
+
+2 # Cos(x_IsNumber)_(Numeric) <--
+[
+  If(x<0 Or x>7, x:=TruncRadian(x));
+  MathCos(x);
+];
+4 # Cos(ArcCos(_x))           <-- x;
+5 # Cos(- _x)                 <-- Cos(x);
+5 # Cos(x_IsNegativeNumber * _y)   <-- Cos((-x)*y);
+5 # Cos(_y * x_IsNegativeNumber)   <-- Cos(y*(-x));
+110 # Cos(Complex(_r,_i)) <--
+    (Exp(I*Complex(r,i)) + Exp(- I*Complex(r,i))) / (2) ;
+200 # Cos(0)  <-- 1;
+200 # Cos(Pi) <-- -1;
+200 # Cos(n_IsEven * Pi) <-- 1;
+200 # Cos(n_IsOdd * Pi) <-- -1;
+200 # Cos((n_IsInteger*Pi) / 2)  <-- 0;
+200 # Cos(Pi / 2)  <-- 0;
+200 # Cos(-Pi / 2)  <-- 0;
+
+
+100 # Sin(_x)/Tan(_x) <-- Cos(x);
+100 # Tan(_x)/Sin(_x) <-- (1/Cos(x));
+100 # Tan(_x)*Cos(_x) <-- Sin(x);
+100 # Cos(_x)*Tan(_x) <-- Sin(x);
+100 # Sin(_x)/Cos(_x) <-- Tan(x);
+
+2 # Exp(x_IsNumber)_(Numeric) <-- MathExp(x);
+4 # Exp(Ln(_x))           <-- x;
+110 # Exp(Complex(_r,_i)) <--  Exp(r)*(Cos(i) + I*Sin(i));
+200 # Exp(0) <-- 1;
+200 # Exp(-Infinity) <-- 0;
+200 # Exp(Infinity) <-- Infinity;
+
+2 # Tan(x_IsNumber)_(Numeric) <--
+[
+  If(x<0 Or x>7, x:=TruncRadian(x));
+  MathTan(x);
+];
+
+4 # Tan(ArcTan(_x))           <-- x;
+110 # Tan(Complex(_r,_i))       <-- Sin(Complex(r,i))/Cos(Complex(r,i));
+
+200 # Tan(0)                  <-- 0;
+200 # Tan(n_IsInteger*Pi)     <-- 0;
+200 # Tan(Pi*n_IsInteger)     <-- 0;
+200 # Tan((n_IsInteger/2)*Pi) <-- Infinity;
+200 # Tan((n_IsInteger/2)*Pi) <-- Infinity;
+200 # Tan(Pi*(n_IsInteger/2)) <-- Infinity;
+200 # Tan(Pi*(n_IsInteger/2)) <-- Infinity;
+
+2 # Ln(0)                    <-- -Infinity;
+2 # Ln(1)                    <-- 0;
+2 # Ln(Infinity)                    <-- Infinity;
+2 # Ln(-Infinity)                    <-- 0;
+3 # Ln(x_IsNumber)_(Numeric) <-- MathLog(x);
+4 # Ln(Exp(_x))              <-- x;
+3 # Ln(Complex(_r,_i)) <-- Complex( (1/2)*Ln(r^2 + i^2) , ArcTan(  i / r) );
+
+2 # ArcSin(x_IsNumber)_(Numeric) <-- MathArcSin(x);
+4 # ArcSin(Sin(_x))           <-- x;
+110 # ArcSin(Complex(_r,_i)) <--
+    (- I) * Ln((I*Complex(r,i)) + ((1-(Complex(r,i)^2))^(1/2)));
+200 # ArcSin(0) <-- 0;
+200 # ArcSin(1) <-- (1/2)*Pi;
+200 # ArcSin(-1) <-- (-1/2)*Pi;
+
+2 # ArcCos(x_IsNumber)_(Numeric) <-- MathArcCos(x);
+4 # ArcCos(Cos(_x))           <-- x;
+110 # ArcCos(Complex(_r,_i)) <--
+    (- I)*Ln(Complex(r,i) + (Complex(r,i)^2 - 1)^(1/2));
+   /* TODO check! */
+200 # ArcCos(0) <-- (1/2)*Pi;
+200 # ArcCos(1) <-- 0;
+200 # ArcCos(_n)_(n = -1) <-- Pi;
+
+2 # ArcTan(x_IsNumber)_(Numeric) <-- MathArcTan(x);
+4 # ArcTan(Tan(_x))           <-- x;
+110 # ArcTan(Complex(_r,_i)) <--
+     (- I*0.5)*Ln(Complex(1,Complex(r,i))/ Complex(1, - Complex(r,i)));
+
+200 # ArcTan(1) <-- Pi/4;
+200 # ArcTan(0) <-- 0;
+200 # ArcTan(_n)_(n = -1) <-- -Pi/4;
+200 # ArcTan(Infinity) <-- Pi/2;
+200 # ArcTan(-Infinity) <-- -Pi/2;
+
+/* Threading of standard analytic functions */
+Sin(xlist_IsList) <-- MapSingle("Sin",xlist);
+Cos(xlist_IsList) <-- MapSingle("Cos",xlist);
+Tan(xlist_IsList) <-- MapSingle("Tan",xlist);
+
+ArcSin(xlist_IsList) <-- MapSingle("ArcSin",xlist);
+ArcCos(xlist_IsList) <-- MapSingle("ArcCos",xlist);
+ArcTan(xlist_IsList) <-- MapSingle("ArcTan",xlist);
+
+Exp(xlist_IsList) <-- MapSingle("Exp",xlist);
+Ln(xlist_IsList) <-- MapSingle("Ln",xlist);
+
+
+

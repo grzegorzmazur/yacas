@@ -1,0 +1,4 @@
+#! /bin/sh
+autoconf
+automake --gnu --include-deps
+./configure

@@ -1,0 +1,61 @@
+<HTML>
+<HEAD><TITLE>Predicates</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<A NAME="c9">
+
+</A>
+
+<A NAME="IsBoolean">
+
+</A>
+<H3>
+<HR>IsBoolean(expression)
+</H3>
+<H5>
+Calling Sequence:
+</H5>
+IsBoolean(expression)
+<H5>
+Parameters:
+</H5>
+expression - an expression
+<H5>
+Description:
+</H5>
+IsBoolean returns True if the argument is of a boolean type.
+This means it has to be either True, False, or an expression involving
+functions that return a boolean result, like
+=, &gt, &lt, &gt=, &lt=, !=, And, Not, Or.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> IsBoolean(a)
+Out> False;
+In> IsBoolean(True)
+Out> True;
+In> IsBoolean(a And b)
+Out> True;
+
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#True" TARGET="Chapters">
+True
+</A>
+, <A HREF="ref.html#False" TARGET="Chapters">
+False
+</A>
+, <A NAME="c9s1">
+
+</A>
+, 
+</BODY>
+
+</FONT>
+
+</HTML>

@@ -1,0 +1,557 @@
+
+Chapter()"Arithmetic";
+
+AddAnchor("+");
+AddAnchor("-");
+AddAnchor("*");
+AddAnchor("/");
+AddAnchor("^");
+SubSection()"Arithmetic operations";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"x+y (precedence 6)  <br>
++x                   <br>
+x-y (precedence 5)   <br>
+-x                   <br>
+x*y (precedence 3)   <br>
+x/y (precedence 3)   <br>
+x^y (precedence 2)   
+";
+
+Topical()"Parameters";
+Text()"x and y - some objects for which arithmetic operations are defined.";
+
+Topical()"Description";
+Text()"These are the basic arithmetic operations. They can work on integers,
+rational numbers, complex numbers, vectors, matrices and lists. <br>
+These operators are implemented in the standard math library (as opposed
+to being built-in). This means that they can be extended by the user.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> 2+3
+Out> 5;
+In> 2*3
+Out> 6;
+");
+
+Topical()"See Also"; 
+SeeAlso({});
+
+
+
+
+Chapter()"Other operations on numbers";
+
+
+AddAnchor("Div");
+AddAnchor("Mod");
+SubSection()"Div and Mod";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"Div(x,y) <br>
+Mod(x,y)
+";
+
+Topical()"Parameters";
+Text()"x and y - integers";
+
+Topical()"Description";
+Text()"Div performs integer division and Mod returns the remainder
+after division. Div and Mod are also defined for polynomials.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Div(5,3)
+Out> 1;
+In> Mod(5,3)
+Out> 2;
+");
+
+Topical()"See Also"; 
+SeeAlso({});
+
+
+
+AddAnchor("Gcd");
+SubSection()"Gcd";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"Gcd(n,m)   <br>
+Gcd(list)";
+
+Topical()"Parameters";
+Text()"
+n,m - integers or univariate polynomials <br>
+list - a list of all integers or all univariate polynomials
+";
+
+Topical()"Description";
+Text()
+"Gcd(n,m) returns the greatest common divisor of n and m.
+The gcd is the largest number that divides n and m.
+The library code calls MathGcd, which is an internal function.
+This function implements the binary Euclidean algorithm for
+determining the greatest common divisor:
+
+
+":HtmlCommand(
+"Routine for calculating Gcd(n,m)
+
+1) if n = m then return n
+2) if both n and m are even then return 2*Gcd(n/2,m/2)
+3) if exactly one of n or m (say n) is even then return Gcd(n/2,m)
+4) if both n and m are odd and, say, n>m then return Gcd( (n-m)/2,m)
+"):
+"This is a rather fast algorithm on computers that can efficiently shift
+integers. <br>
+
+Gcd(list), with list a list of arbitrary length
+of integers, will return the greatest common divisor of all the integers
+listed.
+For lists Gcd uses the identity
+
+
+":HtmlCommand(
+"Gcd({a,b,c}) = Gcd(Gcd(a,b),c)
+"):"
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Gcd(55,10)
+Out> 5;
+In> Gcd({60,24,120})
+Out> 12;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Lcm"});
+
+
+
+
+
+AddAnchor("Lcm");
+SubSection()"Lcm";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Lcm(n,m)";
+
+Topical()"Parameters";
+Text()"n,m - integers";
+
+Topical()"Description";
+Text()
+"Lcm(n,m) : returns the least common multiple of a and b.
+The least common multiple L of two numbers n,m is the number L=Lcm(n,m)
+for which there are two integers p,q so such that p*n=q*m=L.
+This is calculated with the formula:
+":HtmlCommand(
+"Lcm(n,m) = Div(n*m,Gcd(n,m))
+"):"
+This means it also works
+on polynomials, since Div, Gcd and multiplication are also defined
+for them.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Lcm(60,24)
+Out> 120;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Gcd"});
+
+
+
+
+AddAnchor(Lt():Lt());
+AddAnchor(Gt():Gt());
+SubSection() Lt():Lt(): " and ":Gt():Gt();
+StandardLib();
+Topical()"Calling Sequence";
+Text()"n":Lt():Lt():"m and n":Gt():Gt():"m";
+
+Topical()"Parameters";
+Text()"n,m - integers";
+
+Topical()"Description";
+Text()"These operators shift integers to the left or to the right.
+They are similar to the c shift operators. These are sign-extended
+shifts, so they act like multiplication or division by powers of 2.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"Examples:
+1":Lt():Lt():"10; should evaluate to 1024
+-1024":Gt():Gt():"10; should evaluate to -1
+");
+
+
+
+AddAnchor("FromBase");
+AddAnchor("ToBase");
+SubSection()"FromBase and ToBase";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()
+"FromBase(base,number) <br>
+ToBase(base,number)
+";
+
+Topical()"Parameters";
+Text()
+"base - a base to write the numbers in <br>
+number - a number to write out in the base representation";
+
+Topical()"Description";
+Text()
+"Conversion of numbers to and from base 10 numbers.<p>
+
+These functions use the p-adic expansion capabilities of the built-in
+arbitrary precision math libraries.  
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> FromBase(2,111111)
+Out> 63;
+In> ToBase(16,255)
+Out> ff;
+");
+
+Topical()"See Also"; 
+SeeAlso({});
+
+
+AddAnchor("Precision");
+AddAnchor("GetPrecision");
+SubSection()"Precision and GetPrecision";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()
+"Precision(n) <br>
+GetPrecision()";
+
+Topical()"Parameters";
+Text()"n - required number of digits precision
+           required for following calculations, in base 10.";
+
+Topical()"Description";
+Text()"Precision and GetPrecision can be used to get and set the
+required number of digits of precision in base 10 in the environment.
+All subsequent floating point operations will allow for at least n
+digits after the decimal point.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Precision(10)
+Out> True;
+In> N(Sin(1))
+Out> 0.8414709848;
+In> Precision(20)
+Out> True;
+In> N(Sin(1))
+Out> 0.84147098480789650665;
+In> GetPrecision()
+Out> 20;
+");
+
+Topical()"See Also"; 
+SeeAlso({"N"});
+
+
+
+
+
+AddAnchor("N");
+SubSection()"N";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"N(expression) <br>
+N(expression,precision)";
+
+Topical()"Parameters";
+Text()
+"expression - expression to evaluate <br>
+precision - precision to use";
+
+Topical()"Description";
+Text()"Normally numeric values are left as-is as long
+as possible in calculations using division, or trigonometric functions
+like Sin, Cos, etcetera.
+N forces Yacas to calculate floating point representations
+of functions whenever possible, using the current precision or the
+specified precision. <p>
+
+In addition, the variable Pi is bound to the value of pi up to the
+required precision.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> 1/2
+Out> 1/2;
+In> N(1/2)
+Out> 0.5;
+In> Sin(1)
+Out> Sin(1);
+In> N(Sin(1),10)
+Out> 0.8414709848;
+In> Pi
+Out> Pi;
+In> N(Pi,20)
+Out> 3.14159265358979323846;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Precision","GetPrecision"});
+
+
+
+
+
+AddAnchor("Rationalize");
+SubSection()"Rationalize";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Rationalize(expression)";
+
+Topical()"Parameters";
+Text()"expression - expression to rationalize";
+
+Topical()"Description";
+Text()"Rationalize scans the entire expression replacing all floating
+point values into rational representations p/q for some integers p and
+q, such that the division of p by q gives the original floating point
+value up to the number of digits of the original floating point value. <p>
+
+It does this by finding the smallest integer n such that
+multiplying the number with 10^n is an integer. Then it divides by 10^n
+again, depending on the internal gcd calculation to reduce the resulting
+division of integers.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Sin(1.234)
+Out> Sin(1.234);
+In> Rationalize(%)
+Out> Sin(617/500);
+");
+
+Topical()"See Also"; 
+SeeAlso({"N","Precision","GetPrecision"});
+
+
+
+
+
+
+AddAnchor("IsPrime");
+SubSection()"IsPrime(n)";
+Text()"IsPrime(n) : returns True if n is prime, False otherwise.";
+
+AddAnchor("IsPrimePower");
+SubSection()"IsPrimePower(n)";
+Text()"IsPrimePower(n) : returns True if there is a prime p such that
+p^m = n.";
+
+
+
+AddAnchor("Factors");
+AddAnchor("Factor");
+SubSection()"Factor and Factors";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"Factor(x) <br>
+Factors(x)";
+
+Topical()"Parameters";
+Text()"x - an integer number or univariate polynomial to factor";
+
+Topical()"Description";
+Text()"Factors decomposes integer numbers or univariate polynomials
+into a product of primes or irreducible polynomials. <p>
+
+The result of Factors is a list of lists of the form {p,n}, where each
+p^n divides the original x. <p>
+
+Factor shows the result of Factors in a nicer human readable format.
+";
+
+/* TODO add a description on the algorithms used here! */
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Factors(12)
+Out> {{2,2},{3,1}};
+In> PrettyForm(Factor(12))
+
+ 2    
+2  * 3
+
+");
+
+Topical()"See Also"; 
+/*TODO add references to the functions used! */
+SeeAlso({});
+
+
+
+
+
+
+AddAnchor("PAdicExpand");
+SubSection()"PAdicExpand(n,p)";
+Text()"
+PAdicExpand returns the p-adic expansion of n:
+":HtmlNewParagraph():"
+
+n = a0 +a1*p +a2*p^2+...
+":HtmlNewParagraph():"
+
+So for instance
+
+":HtmlCommand(
+"In> PrettyForm(PAdicExpand(1234,10))
+
+                   2     3
+4 + 3 * 10 + 2 * 10  + 10 
+
+Out> True;"):
+
+"
+This function should also work on polynomials.
+";
+
+
+
+AddAnchor("ContFrac");
+SubSection()"ContFrac(x) or ContFrac(x,maxdepth)";
+Text()"
+Return the continued fraction expansion of a floating point
+number. Example:
+
+":HtmlCommand(
+"In> PrettyForm(ContFrac(N(Pi)))
+
+                 1             
+3 + ---------------------------
+                   1           
+    7 + -----------------------
+                     1         
+        15 + ------------------
+                       1       
+             1 + --------------
+                          1    
+                 292 + --------
+                       1 + rest
+"):"
+
+
+";
+
+
+
+AddAnchor("Decimal");
+SubSection()"Decimal(frac)";
+Text()"
+Decimal(frac) : return the infinite decimal representation
+of a number. This function returns a list, with the first
+element being the number before the decimal point and the
+last element the sequence of digits that will repeat
+forever. All the intermediate list elements are the initial
+digits.
+"
+:HtmlNewParagraph():
+"
+Example:
+
+":HtmlCommand(
+"In> Decimal(1/22)
+Out> {0,0,{4,5}};
+In> N(1/22,30)
+Out> 0.045454545454545454545454545454;"):"
+
+";
+
+
+AddAnchor("TruncRadian");
+SubSection()"TruncRadian";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"TruncRadian(r)";
+
+Topical()"Parameters";
+Text()"r - a radian";
+
+Topical()"Description";
+Text()"TruncRadian calculates r mod 2*Pi, returning a value
+between 0 and 2*Pi. This function is used in the trigonometry
+functions, just before doing the numerical calculation. It
+greatly speeds up the calculation if the value passed is a big
+number. <p>
+The library uses the formula
+
+":HtmlCommand(
+"
+
+             /   r    \\         
+r - MathFloor| ------ | * 2 * Pi
+             \\ 2 * Pi /         
+
+
+"):"
+
+where r and 2*Pi are calculated with twice the precision used in the
+environment to make sure there is no rounding error in the significant
+digits.
+
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> 2*Pi()
+Out> 6.283185307;
+In> TruncRadian(6.28)
+Out> 6.28;
+In> TruncRadian(6.29)
+Out> 0.0068146929;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Sin","Cos","Tan"});
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+*/
