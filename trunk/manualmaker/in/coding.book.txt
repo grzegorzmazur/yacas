@@ -80,12 +80,17 @@ Currently, no other lowest-level objects are provided by the core engine, beside
 
 Evaluation of an object is performed either explicitly by the built-in command {Eval()} or implicitly when assigning variables or calling functions with the object as argument (except when a function does not evaluate that argument). Evaluation of an object can be explicitly inhibited using {Hold()}. To make a function not evaluate one of its arguments, a {HoldArg(funcname, argname)} must be declared for that function.
 
-Evaluation when performed on an atom goes as follows: if the atom
-is bound locally as a variable, the object it is bound to is returned,
-otherwise, if it is bound as a global variable that is returned. Otherwise,
-the atom is returned unevaluated.
+Internally, all expressions are either atoms or lists (perhaps nested). Use
+{FullForm()} to see the internal form of an expression. A Yacas list expression
+written as {{a, b}} is represented internally as {(List a b)}, equivalently to
+a function call {List(a,b)}.
 
-Lists of atoms are generally interpreted in the following way: the first
+Evaluation of an atom goes as follows: if the atom is bound locally as a
+variable, the object it is bound to is returned, otherwise, if it is bound as a
+global variable then that is returned. Otherwise, the atom is returned
+unevaluated.
+
+Internal lists of atoms are generally interpreted in the following way: the first
 atom of the list is some command, and the atoms following in the list are
 considered the arguments. The engine first tries to find out if it is a
 built-in command (core function). In that case, the function is executed.
@@ -93,6 +98,13 @@ Otherwise, it could be a user-defined function (with a "rule database"),
 and in that case the rules from the database are applied to it. If none of
 the rules are applicable, or if no rules are defined for it, the object is
 returned unevaluated.
+
+Application of a rule to an expression transforms it into a different
+expression to which other rules may be applicable. Transformation by matching
+rules continues until no more rules are applicable, or until a "terminating"
+rule is encountered. A "terminating" rule is one that returns {Hold()} or
+{UnList()} of some expression. Calling these functions gives an unevaluated
+expression because it terminates the process of evaluation itself.
 
 The main properties of this scheme are the following. When objects are
 assigned to variables, they generally are evaluated (except if you are
@@ -102,7 +114,7 @@ using the {Hold()} function) because assignment
 argument (but not its first argument). When referencing that variable
 again, the object which is its value will not be re-evaluated. Also, the
 default behaviour of the engine is to return the original expression if it
-couldn't be evaluated. This is a desired behaviour if evaluation is used
+could not be evaluated. This is a desired behaviour if evaluation is used
 for simplifying expressions.
 
 One major design flaw in Yacas (one that other functional languages like
@@ -123,9 +135,9 @@ treated as unique symbols.
 		Rules
 
 <i>Rules</i> are special properties of functions that
-are applied when the function object is being evaluated. A function could
-have just one rule bound to it; this is similar to having a "function
-body" in normal procedural languages. However, Yacas function objects can
+are applied when the function object is being evaluated. A function object could
+have just one rule bound to it; this is similar to a "subroutine" having a "function
+body" in usual procedural languages. However, Yacas function objects can
 also have several rules bound to them. This is analogous of having several
 alternative "function bodies" that are executed under different
 circumstances. This design is more suitable for symbolic manipulations.

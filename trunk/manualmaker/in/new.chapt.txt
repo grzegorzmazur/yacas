@@ -173,9 +173,9 @@ it is best to keep this in mind and keep the code passed to
 
 
 
-			YACAS: yet another computer algebra system
+			A do-it-yourself symbolic algebra environment (YACAS)
 
-*HEAD Ayal Zwi Pinkus and Serge Winitzki
+*HEAD by Ayal Zwi Pinkus and Serge Winitzki
 
 	    Abstract
 
@@ -183,11 +183,11 @@ We describe the design and implementation of YACAS, a free computer
 algebra system currently under development.  The system consists of a small
 core interpreter and a library of scripts that implement computer algebra
 functionality.  The interpreter provides a high-level weakly typed functional
-language ("Yacas script" language) which is designed to allow users to quickly
+language (the Yacas script" language) which is designed to allow users to quickly
 prototype computer algebra algorithms but is applicable more widely to all
 kinds of symbolic manipulation.  The language supports recursive evaluation,
 conditional term rewriting of symbolic expression trees, closures (pure
-functions) and delayed evaluation, dynamic creation of rewriting rules,
+functions) and delayed evaluation, dynamic creation of transformation rules,
 arbitrary-precision numerical calculations, and flexible user-defined syntax
 using infix notation.  The library of scripts is in development and currently
 provides basic computer algebra functionality: real and complex polynomials and
@@ -201,17 +201,17 @@ easy-to-use programming language with a comfortable and adjustable syntax; and e
 
 Yacas is a small CAS which has been in development since the beginning of 1999.
 The goal was to make a small system that allows to easily prototype and
-research symbolic mathematics algorithms. Yacas offers a flexible scripting
-language that allows a concise description of symbolic manipulation algorithms.
+research symbolic mathematics algorithms. A secondary future goal is to evolve
+acas into a full-blown general purpose computer algebra system.
 
-A secondary future goal is to evolve Yacas into a full-blown
-general purpose computer algebra system.
+The main advantage of Yacas is its rich and  flexible scripting language
+adapted to prototyping of symbolic manipulation algorithms.
 
-		Design
+		Basic design
 
-Yacas consists of a "core", an interpreter for the Yacas scripting language,
-and a library of script code. The Yacas interpreter has been implemented in
-standard C++.
+Yacas consists of a "core engine", an interpreter for the Yacas scripting
+language, and a library of script code. The Yacas interpreter has been
+implemented in standard C++.
 
 The design goals for Yacas are: portability, self-containment, ease of use,
 code transparency, and flexibility of the core engine (lack of predefined "policies"). The system falls into the "prototype/hacker" rather than into the "axiom-algebraic" category, according to the classification of Fateman [F90].
@@ -252,120 +252,58 @@ of external libraries on "production" platforms.
 
 Yacas is used mainly by executing programs written in the Yacas script
 language. A design goal is to create a high-level language that allows the user
-to conveniently express symbolic algorithms. A few lines of code should go a
-long way.
+to conveniently express symbolic algorithms. A few lines of user code should go
+a long way.
 
-Although Yacas works internally as a LISP-style interpreter, all user
-interaction is through the Yacas script language which has a flexible infix
-grammar. This means that the user does not have to see any LISP style syntax
-and can define such syntactic conventions as are best suitable for a given
-problem. An algebraic expression is easy to enter in the familiar infix form
-such as
-	(x+1)^2 - (y-2)/(y+3) + Sin(x*Pi/2)
+One major advantage of Yacas is the flexibility of its syntax. Although Yacas
+works internally as a LISP-style interpreter, all user interaction is through
+the Yacas script language which has a flexible infix grammar. Infix operators
+are defined by the user and may contain non-alphabetic characters such as "{+}"
+or "{#}". This means that the user interacts in a comfortable infix syntax,
+rather than in LISP-style syntax. The user can also define such syntactic
+conventions as are most convenient for a given problem.
 
-Transformation rules allow definition of simple local transformations.
-Suppose, for instance, the natural logarithm was not defined. It could
-be explained to Yacas with the following lines:
+For example, the Yacas script library defines infix operators "{+}", "{*}" and so
+on with conventional precedence, so that an algebraic expression can be entered
+in the familiar infix form such as
 
-	log(_x*_y) <-- log(x)+log(y);
-	log(_x^_n) <-- n*log(x);
+	(x+1)^2 - (y-2*z)/(y+3) + Sin(x*Pi/2)
 
-This would allow for the following interaction on the command line:
+Once such infix operators are defined, it is possible to describe new
+transformation rules directly using the new syntax. This makes it easy to
+develop simplification or evaluation procedures adapted to a particular
+problem.
 
-	In> log(a*x^2)
-	
-	log( a ) + 2 * log( x )
-	
-	Out> 
-
-If, in addition, integration were defined as:
-
-	AntiDeriv(log(_x),_x) <-- x*log(x)-x;
-
-Yacas could do integrations involving the newly defined {log}
-function:
-
-
-	In> Integrate(x)log(a*x^n)
-	
-	log( a ) * x + n * ( x * log( x ) - x ) + C18
-	
-	Out> 
-	In> Integrate(x,B,C)log(a*x^n)
-	
-	log( a ) * C + n * ( C * log( C ) - C ) - ( log( a ) * B + 
-	
-	n * ( B * log( B ) - B ) )
-	
-	Out> 
-
-Users can define new prefix, infix or postfix operators with short names such
-as "{^^}" or "{@+}" and specify simplification rules for expressions involving
-these operators. For example, it takes about 20 lines of Yacas script code to
-define an infix operation {**} to express non-commutative multiplication with a
-commutation relation appropriate for creation and annihilation operators of
-quantum field theory, and to automatically "normal-order" all expressions
-involving these symbols and other (commutative) factors. The rules that express
-distributivity of the operation {**} with respect to addition may look like
-this:
-
+Suppose the user needs to normal-order expressions containing creation and
+annihilation operators of quantum field theory. It takes about 20 lines of
+Yacas script code to define an infix operation "{**}" to express non-commutative
+multiplication with the appropriate commutation relations and to automatically
+"normal-order" all expressions involving these symbols and other (commutative)
+factors. Once the operator {**} is defined (with precedence 4),
+	Infix("**", 4);
+rules that express distributivity of the operation {**} with
+respect to addition may look like this:
 	15 # (_x + _y) ** _z <-- x ** z + y ** z;
 	15 # _z ** (_x + _y) <-- z ** x + z ** y;
 Here, {15 #} is a specification of rule precedence, {_x} denotes a
 pattern-matching variable {x} and the expression to the right of {<--} is to be
 substituted instead of a matched expression on the left hand side. Since all
-rewriting rules are applied recursively, these two lines of code are enough for
-the Yacas engine to expand all brackets in any expression containing the infix
-operators {**} and {+}.
+transformation rules are applied recursively and there are no terminating
+functions such as {Hold()}, these two lines of code are enough for the Yacas
+engine to expand all brackets in any expression containing the infix operators
+{**} and {+}.
 
-Rule-based programming is not the only syntax that can be used in Yacas
-scripts. There are alternatives that may be more useful in some situations. For
-example, the standard {if} / {else}, {While}, {For} loops of C are supported,
-as well as the familiar procedural programming patterns such as defining
-functions that return values with code blocks and temporary local variables.
-Users may freely combine rules with C-like procedures or LISP-like recursive list
-processing primitives such as {Head}, {Tail}, for example
+Rule-based programming is not the only tool that can be used in Yacas scripts.
+There are alternatives that may be more useful in some situations. For example,
+the familiar {if} / {else} constructs, {While}, {For}, {ForEach} loops are
+defined in the script library for the convenience of users.
 
-	powermod(x_IsPositiveInteger,n_IsPositiveInteger,
-	         m_IsPositiveInteger) <--
-	[
-	  Local(result);
-	  result:=1;
-	  x:=Mod(x,m);
-	  While(n != 0)
-	  [
-	     if ((n&1) = 1) [ result := Mod(result*x,m); ];
-	     x := Mod(x*x,m);
-	     n := n>>1;
-	  ];
-	  result;
-	];
-
-defines a function $ powermod(x,n,m) $ which calculates $ Mod(x^n,m) $
-efficiently:
-
-	In> powermod(2,10,100)
-	Out> 24;
-	In> Mod(2^10,100)
-	Out> 24;
-	In> powermod(23234234,2342424234,232423424)
-	Out> 210599936;
-
-
-@@@ todo finish example below?
-
-	_x ** y_IsList <--
-	[
-	  Local(i, A, B);
-	  For(i:=1, i<=Length(y), i++)
-	  [
-	  	... // some code
-		x ** Tail(y); // may contain recursion
-	  ];
-	  A; // return resulting value
-	];
-
-@@@more examples?
+Standard procedural programming patterns, such as defining functions that
+return values, with code blocks and temporary local variables, are also
+available. (A "function" is implemented as a new "ground term" with a single
+rule defined for it.) As a result, users may freely combine rules with C-like
+procedures or LISP-like recursive list processing primitives such as {Head},
+{Tail}.
 
 	    Code clarity vs. speed
 
@@ -398,86 +336,183 @@ system. While most of the features are syntactic sugar on top of a LISP
 interpreter, some features not commonly found in LISP systems were  added, such
 as the system of transformation rules.
 
-The script library contains declarations of rewriting rules and function
+The script library contains declarations of transformation rules and function
 syntax. The intention is that all symbolic manipulation algorithms, definitions
 of mathematical functions and so on should be held in the script library. The
 only exception so far is for a very small number of mathematical or utility
 functions that are frequently used; they are compiled into the core for speed.
 
-For example, the mathematical operator {+} is an infix operator defined in the
+For example, the mathematical operator "{+}" is an infix operator defined in the
 library scripts. To the kernel, this operator is on the same footing as any
 other function defined by the user and can be redefined. The Yacas kernel
 itself does not store any properties for this operator. Instead it relies
-entirely on the script library to provide rewriting rules for manipulating
-expressions involving the {+} operator. In this way, the kernel does not need
-to anticipate all possible meanings of the operator {+} that users might need
+entirely on the script library to provide transformation rules for manipulating
+expressions involving the operator "{+}". In this way, the kernel does not need
+to anticipate all possible meanings of the operator "{+}" that users might need
 in their calculations.
 
 This policy-free scheme means that Yacas is highly configurable through its
 scripting language. It is possible to create an entirely different symbolic
 manipulation engine based on the same C++ kernel, with different syntax and
 different naming  conventions, by simply using another script library instead
-of the current library scripts. As an example of the flexibility of the Yacas
-syntax, a sample script {wordproblems.ys} comes with the system that makes
-Yacas recognize simple English sentences such as "Tom has 3 apples" or "Jane
-gave an apple to Tom" as valid Yacas expressions and evaluates them to {True} or
-{False}.
+of the current library scripts. An example of the flexibility of the Yacas
+system is a sample script {wordproblems.ys}. It contains a set of rule
+definitions that make Yacas recognize simple English sentences, such as "Tom
+has 3 apples" or "Jane gave an apple to Tom", as valid Yacas expressions. Yacas
+can then "evaluate" these sentences to {True} or {False} according to
+the semantics of the situation described in these sentences.
 
 The "policy-free" concept extends to typing: strong typing is not required by
-the kernel, but can be easily enforced by the  scripts if necessary for a
+the kernel, but can be easily enforced by the  scripts if needed for a
 particular problem. The language offers features, but does not enforce their
 use.
 
-	    The Yacas kernel functionality
+		The Yacas kernel functionality
 
-Yacas script is a functional language based on various ideas that seemed
-useful for an implementation of CAS: list-based data structures, object properties, and recursive
-functional programming (a la LISP); term rewriting [BN98] with pattern
-matching somewhat along the lines of Mathematica; user-defined infix operators
-a la PROLOG; and delayed evaluation of expressions.  Garbage collection and
+Yacas script is a functional language based on various ideas that seemed useful
+for an implementation of CAS: list-based data structures, object properties,
+and recursive functional programming (a la LISP); term rewriting [BN98] with
+pattern matching somewhat along the lines of Mathematica; user-defined infix
+operators a la PROLOG; delayed evaluation of expressions; and
+arbitrary-precision arithmetic.  Garbage collection, reference counting and
 memory management are automatic.
 
-The kernel provides three basic data types: arbitrary-precision numbers, strings, and atoms, and two container types: list and static array (for speed). Atoms are implemented as strings that can be assigned values and evaluated. Association (hash) tables, stacks, and closures (pure functions) are implemented using nested lists. In addition, more data types might be provided by plugins.
+The kernel provides three basic data types: numbers,
+strings, and atoms, and two container types: list and static array (for speed).
+Atoms are implemented as strings that can be assigned values and evaluated.
+Boolean values are simply atoms {True} and {False}. Association (hash) tables,
+stacks, and closures (pure functions) are implemented using nested lists. In
+addition, more data types might be provided by plugins. Kernel primitives are
+available for arbitrary-precision arithmetic, string manipulation, array and
+list access and manipulation, for basic control flow, and for defining rules.
 
 The interpreter engine recursively evaluates expression trees according to
-user-defined rewriting rules from the script library. This is the only
-evaluation scheme. However, the language is much more flexible than a
-traditional rewriting system based on a fixed set of rules.
+user-defined transformation rules from the script library. This is the only
+evaluation scheme. (A {Hold()} function is also provided to stop the recursive
+application of rules at a certain point and obtain an unevaluated expression.)
+However, the language offers a more flexible rewriting system than one based on
+a fixed set of rules.
 
-Firstly, rewriting rules in Yacas have predicates that control whether a rule
-should be applied to an expression. Predicates can be any Yacas expressions
-that evaluate to the atoms {True} or {False} and are functions of the matching
-context (i.e. parts of the expression being matched by the rule).
+Firstly, transformation rules in Yacas have predicates that control whether a
+rule should be applied to an expression. Predicates can be any Yacas
+expressions that evaluate to the atoms {True} or {False} and are functions of
+the matching context (i.e. parts of the expression being matched by the rule).
 
 Secondly, rules are assigned a precedence value (a positive integer) that
-controls the order of rules to be attempted. 
+controls the order of rules to be attempted. Rules with smaller precedence are
+attempted before rules with higher precedence. In the current evaluation
+scheme, rules with fewer elements in the pattern are always attempted earlier
+than rules with longer patters. (Thus Yacas provides somewhat better control
+over the automatic recursion than the pattern-matching system of Mathematica
+which does not allow for rule precedence.)
 
-Thirdly, new rules can be defined dynamically, which means that there is no
-predefined "ranking alphabet" of "ground terms" (in the terminology of
-[TATA99]). It is also possible to define a "rule closure" that defines rules
-depending on its arguments, or to erase rules. Thus, the Yacas script library
-does not necessarily represent a fixed tree rewriting automaton. An
-implementation of machine learning is possible in Yacas (among other things).
-For example, when the module {wordproblems.ys} "learns" from the user input
-that "apple" is a countable object, it defines a new postfix operator {apples},
-so that the expression {3 apples} is parsed as a function {apples(3)} and
-evaluated according to a newly defined rule.
+Thirdly, new rules can be defined dynamically as a side-effect of evaluation.
+This means that there is no predefined "ranking alphabet" of "ground terms" (in
+the terminology of [TATA99]), in other words, no fixed set of functions with
+predefined arities. It is also possible to define a "rule closure" that defines
+rules depending on its arguments, or to erase rules. Thus, a Yacas script
+library (although it is read-only) does not represent a fixed tree rewriting
+automaton. An implementation of machine learning is possible in Yacas (among
+other things). For example, when the module {wordproblems.ys} "learns" from the
+user input that "apple" is a countable object, it defines a new postfix
+operator {apples}, so that the expression {3 apples} is later parsed as a
+function {apples(3)} and evaluated according to a newly defined rule.
+
+Fourthly, Yacas expressions can be "tagged" (assigned a "property object") and
+tags can be checked by predicates in rules or used in the evaluation.
 
 		The Yacas scripting language
 
-Convenience functions are defined in the script library to allow a more
-straightforward procedural programming a la C and a more convenient syntax to
-define new rewriting rules. The interpreter is sufficiently flexible so that
-the functions {While}, {For}, {ForEach}, {if}, {else} etc. can be defined in
-the script library itself rather than in the kernel.
+The Yacas interpreter is sufficiently powerful so that the functions {While},
+{For}, {ForEach}, {if}, {else} etc., as well as convenient shorthand
+"...{<--}..." for defining new rules, can be defined in the script library
+itself rather than in the kernel. This power is fully given to the user, since
+the library scrips are on the same footing as any user-defined code. Some
+library functions are intended mainly as tools available to a Yacas user to
+make algorithm implementation more comfortable.
 
-		Mathematical operations currently supported
+Simple transformations on expressions can be achieved using transformation
+rules. For instance, if we need to expand natural logarithm, we could use the
+following two rules:
 
-Yacas comes with a base of mathematical capabilities implemented
-in Yacas script. The functionality offered is growing every day
-as new transformation rules are added. The following section
-demonstrates a few facilities already offered in the current 
-system.
+	log(_x * _y) <-- log(x) + log(y);
+	log(_x ^ _n) <-- n * log(x);
+This would define a new symbolic function {log}, which will not be evaluated
+but only transformed if one of these two rules are applicable. The symbol {_}
+indicates a pattern variable that matches subexpressions.
+
+After these two rules, the following interactive session is possible:
+
+	In> log(a*x^2)
+	
+	log( a ) + 2 * log( x )
+	
+	Out> 
+
+Integration of the new function {log} can be defined by adding a rule for the
+{AntiDeriv} function,
+
+	AntiDeriv(log(_x),_x) <-- x*log(x)-x;
+Now Yacas can do integrations involving the newly defined {log} function, for example:
+
+	In> Integrate(x)log(a*x^n)
+	
+	log( a ) * x + n * ( x * log( x ) - x ) + C18
+	
+	Out> 
+	In> Integrate(x,B,C)log(a*x^n)
+	
+	log( a ) * C + n * ( C * log( C ) - C ) -
+	
+	( log( a ) * B + n * ( B * log( B ) - B ) )
+	
+	Out> 
+
+
+Rules are applied when their associated patterns match and when their
+predicates return {True}. Rules also have <i>precedence</i>, an integer value
+to indicate which rules need to be applied first. Using these features, a
+recursive implementation of the integer factorial function may look like this
+in Yacas script,
+
+	1 # Factorial(_n) _ (n=0) <-- 1;
+	2 # Factorial(n_IsInteger) _ (n>0) <-- n*Factorial(n-1);
+
+Rule-based programming can be freely combined with procedural programming when
+the latter is a more appropriate method. For example, here is a function that
+computes $ Mod(x^n,m) $ efficiently:
+
+	powermod(x_IsPositiveInteger,n_IsPositiveInteger,
+	         m_IsPositiveInteger) <--
+	[
+	  Local(result);
+	  result:=1;
+	  x:=Mod(x,m);
+	  While(n != 0)
+	  [
+	     if ((n&1) = 1) [
+		   result := Mod(result*x,m);
+		 ];
+	     x := Mod(x*x,m);
+	     n := n>>1;
+	  ];
+	  result;
+	];
+
+Interaction with the function {powermod(x,n,m)} would then look like this:
+
+	In> powermod(2,10,100)
+	Out> 24;
+	In> Mod(2^10,100)
+	Out> 24;
+	In> powermod(23234234,2342424234,232423424)
+	Out> 210599936;
+
+		Currently supported CAS features
+
+Yacas comes with a base of mathematical capabilities implemented in the script
+library which is currently under active development. The following section
+demonstrates a few facilities already offered in the current system.
 
 Basic calculus operations have been implemented:
 
@@ -534,20 +569,12 @@ Basic calculus operations have been implemented:
 	
 	Out> 
 
-Solving has been implemented using a generalized Gaussian elimination
-scheme:
+Solving systems of equations has been implemented using a generalized Gaussian
+elimination scheme:
 
-	In> Solve({x+y+z==6,2*x+y+2*z==10,x+3*y+z==10},{x,y,z})[1]
-	
-	/       \
-	| 4 - z |
-	|       |
-	| 2     |
-	|       |
-	| z     |
-	\       /
-	
-	Out> 
+	In> Solve({x+y+z==6,2*x+y+2*z==10,x+3*y+z==10}, \
+	In>  {x,y,z})[1]
+	Out> {4-z,2,z};
 
 
 A small theorem prover using a resolution principle is offered:
@@ -564,12 +591,16 @@ A small theorem prover using a resolution principle is offered:
 	
 	Out> 
 
-Various numeric algorithms have been implemented:
+Various exact and arbitrary-precision numerical algorithms have been
+implemented:
 
-	In> N(1/7,40)
+	In> N(1/7,40)	// evaluate to 40 digits
 	Out> 0.1428571428571428571428571428571428571428;
-	In> Decimal(1/7)
+	In> Decimal(1/7)	// obtain decimal period
 	Out> {0,{1,4,2,8,5,7}};
+	In> N(LnGamma(1.234+2.345*I))	// gamma-function
+	Out> Complex(-2.13255691127918,0.70978922847121);
+
 
 Various domain-specific expression simplifiers can be called upon:
 
@@ -631,7 +662,7 @@ and multivariate polynomials in a sparse representation:
 	Out> 
 
 
-Various syntactic sugar features are available to easily enter
+Various "syntactic sugar" features are available to more easily enter
 problems to be solved:
 
 	In> Ln(x*y) /: { Ln(_a*_b) <- Ln(a) + Ln(b) }
@@ -645,25 +676,11 @@ problems to be solved:
 	x + x  + x  + x  + x 
 	
 	Out> 
-	In> Select("IsPrime",1 .. 15)
 	
-	/    \
-	| 2  |
-	|    |
-	| 3  |
-	|    |
-	| 5  |
-	|    |
-	| 7  |
-	|    |
-	| 11 |
-	|    |
-	| 13 |
-	\    /
+	In> Select("IsPrime", 1 .. 15)
+	Out> {2,3,5,7,11,13};
 	
-	Out> 
-	
-Groebner bases have been implemented also:
+Groebner bases have been implemented:
 
 	In> Groebner({x*(y-1),y*(x-1)})
 	
@@ -679,9 +696,8 @@ Groebner bases have been implemented also:
 	\           /
 	
 	Out> 
-
-
-(from which follows that $ x = y $, and $ x^2 = x $ so $ x $ is $ 0 $ or $ 1 $ ).
+(From this it  follows that $ x = y $, and $ x^2 = x $ so $ x $ is $ 0 $ or $ 1
+$.)
 
 Symbolic inverses of matrices:
 
@@ -699,8 +715,7 @@ Symbolic inverses of matrices:
 	
 	Out> 
 
-This list is far from exhaustive. 
-
+This list of features is not exhaustive.
 
 
 		Documentation
@@ -712,7 +727,7 @@ advanced features in detail, and a full reference manual.
 
 Yacas currently comes with its own document formatting conventions for writing
 documentation in plain text format with a minimal markup. This text format is
-automatically converted to HTML, LaTeX, PostScript and PDF formats. The HTML
+automatically converted to HTML, $LaTeX$, PostScript and PDF formats. The HTML
 version of the documentation is hyperlinked and is used as online help
 available from the Yacas prompt.
 
