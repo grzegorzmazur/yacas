@@ -384,6 +384,32 @@ large numbers.
 
 *SEE IsPrime, Factors
 
+*CMD NextPrime --- generate a prime following a number
+*STD
+*CALL
+	NextPrime(i)
+
+*PARMS
+
+{i} -- integer value
+
+*DESC
+
+The function finds the smallest prime number that is greater than the given
+integer value.
+
+The routine generates "candidate numbers" using the formula $n+2*Mod(-n,3)$
+where $n$ is an odd number (this generates the sequence 5, 7, 11, 13, 17,
+19, ...) and {IsPrime()} to test whether the next candidate number is in
+fact prime.
+
+*EG
+	In> NextPrime(5)
+	Out> 7;
+
+*SEE IsPrime
+
+
 *CMD Factors --- Factorization
 *STD
 *CALL
