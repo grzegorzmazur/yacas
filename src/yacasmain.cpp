@@ -76,6 +76,8 @@
 #include <time.h>
 #include "errors.h"
 
+//#include "anumber.h"
+
 
 #ifndef VERSION
 //#define VERSION "Windows latest"
@@ -1160,10 +1162,13 @@ int main(int argc, char** argv)
     SHOWSIZE(LispPtr);
     SHOWSIZE(LispString);
     SHOWSIZE(LispAtom);
+    SHOWSIZE(LispNumber);
     SHOWSIZE(LispHashTable);
     SHOWSIZE(LispEnvironment);
     SHOWSIZE(CYacas);
     SHOWSIZE(LispStringSmartPtr);
+    SHOWSIZE(BigNumber);
+//    SHOWSIZE(ANumber);
   }
 #endif
 
