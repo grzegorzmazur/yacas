@@ -1872,6 +1872,34 @@ An auxiliary function {BernoulliArray(n)} might be useful too: it returns an arr
 
 *SEE Gamma, Zeta
 
+*CMD Euler --- Euler numbers and polynomials
+*STD
+*CALL
+	Euler(index)
+	Euler(index,x)
+
+*PARMS
+
+{x} -- expression that will be the variable in the polynomial
+
+{index} -- expression that can be evaluated to an integer
+
+*DESC
+
+{Euler(n)} evaluates the $n$-th Euler number. {Euler(n,x)} returns the $n$-th Euler polynomial in the variable $x$.
+
+*E.G.
+
+	In> Euler(6)
+	Out> -61;
+	In> Euler(5,x)
+	Out> (x-1/2)^5+(-10*(x-1/2)^3)/4+(25*(x-1/2))/16;
+	In> Simplify(%)
+	Out> (2*x^5-5*x^4+5*x^2-1)/2;
+
+*SEE Bin
+
+
 *CMD LambertW, LambertWNum --- Lambert's $W$ function
 *STD
 *CALL
