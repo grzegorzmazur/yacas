@@ -201,3 +201,10 @@ Verify(
 ContFracList(-355/113)
 , {-4,1,6,16}
 );
+
+Precision(7);
+
+Verify(
+GuessRational(N(Pi))
+, 355/113
+);
