@@ -1,3 +1,5 @@
+/// special functions coded for Yacas by Serge Winitzki
+
 /////////////////////////////////////////////////
 /// Euler's Gamma function
 /////////////////////////////////////////////////
@@ -94,6 +96,7 @@ GammaNum(z,a) := N(Exp(LnGammaNum(z,a)));	/// should not be used by applications
 /// Also $s$ must satisfy $Re(s)+n+1 > 0$
 ZetaNum(_s, n_IsInteger) <-- [
 	Local(result, j, sign);
+	If (Verbose, Echo({"ZetaNum: Borwein's method, precision ", GetPrecision(), ", n = ", n}));
 	result := 0;
 	sign := 1;	// flipping sign
 	For(j:=0, j<=2*n-1, j++)
@@ -107,11 +110,35 @@ ZetaNum(_s, n_IsInteger) <-- [
 /// direct method -- only good for large s
 ZetaNum1(s, limit) := [
 	Local(i, sum);
+	If (Verbose, Echo({"ZetaNum: direct method (sum), precision ", GetPrecision(), ", N = ", limit}));
 	sum := 0;
 	limit := Ceil(N(limit));
 	For(i:=2, i<=limit, i++) sum := sum+N(1/MathPower(i, s));
 //	sum := sum + ( N( 1/MathPower(limit, s-1)) + N(1/MathPower(limit+1, s-1)) )/2/(s-1); 	 // these extra terms don't seem to help much
 	sum+1;	// add small terms together and then add 1
+];
+/// direct method -- using infinite product. For internal math, ZetaNum2 is faster for Bernoulli numbers > 250 or so.
+ZetaNum2(s, limit) := 
+[
+	Local(i, prod);
+	If (Verbose, Echo({"ZetaNum: direct method (product), precision ", GetPrecision(), ", N = ", limit}));
+	prod := N( (1-1/MathPower(2, s))*(1-1/MathPower(3,s)) );
+	limit := Ceil(N(limit));
+	For(i:=5, i<=limit, i:= NextPrime(i))
+		prod := prod*N(1-1/MathPower(i, s));
+	1/prod;
+];
+
+/// obtain the next prime number
+NextPrime(i_IsOdd) <--
+[
+	Until(IsPrime(i)) i:= i + 2*Mod(-i, 3);
+	i;
+];
+NextPrime(i_IsEven) <--
+[
+	i := i + 1;
+	If(IsPrime(i), i, NextPrime(i));
 ];
 
 /// Compute coefficients e[j] (see Borwein -- excluding (-1)^j )
@@ -140,13 +167,11 @@ ZetaNumCoeffEj(j,n) := [
 		If (N(Re(s)) > N(1+(prec*Ln(10))/(Ln(prec)+0.1), 6),
 			[	// use direct summation
 				n:= N(10^(prec/(s-1)), 6)+2;	// 2 guard terms
-				If (Verbose, Echo({"ZetaNum: direct method, precision ", prec, ", n = ", n}));
 				Precision(prec+2);	// 2 guard digits
 				result := ZetaNum1(s, n);
 			],
 			[	// use ZetaNum(s, n)
 				n := Ceil( N( prec*Ln(10)/Ln(8) + 2, 6 ) );	// add 2 digits just in case
-				If (Verbose, Echo({"ZetaNum: Borwein's method, precision ", prec, ", n = ", n}));
 				Precision(prec+2);	// 2 guard digits
 				result := ZetaNum(s, n);
 			]
@@ -238,8 +263,8 @@ BernoulliFracPart(n_IsEven)_(n>=2) <-- [
 	If(IsPrime(n/2+1), sum := sum+1/(n/2+1));
 	// sum over all primes p such that n / p-1 is integer
 	// enough to check up to n/3 now
-	For(p:=5, p<=n/3+1, p:=p+2*Mod(-p,3))
-		If(IsPrime(p) And Mod(n, p-1)=0, sum := sum + 1/p);
+	For(p:=5, p<=n/3+1, p:=NextPrime(p))
+		If(Mod(n, p-1)=0, sum := sum + 1/p);
 	// for negative Bernoulli numbers, let's change sign
 	// Mod(n/2, 2) is 0 for negative Bernoulli numbers and 1 for positive ones
 	Div(Numer(sum), Denom(sum)) - sum
@@ -259,9 +284,17 @@ Bernoulli1(n_IsEven)_(n>=2) <-- [
 		Ceil(N((1/2*Ln(8*Pi*n)-n+n*Ln(n/2/Pi))/Ln(10)))+3	// 3 guard digits
 	);
 	If (Verbose, Echo({"Bernoulli: using zeta funcion, precision ", GetPrecision(), ", n = ", n}));
-	B := Floor(N(ZetaNum1(n, n/17+1)*N(2*n! /(2*Pi)^n)))
+	B := Floor(N(	// compute integer part of B
+		If(	// use different methods to compute Zeta function
+			n>250,	// threshold is roughly right for internal math
+			ZetaNum2(n, n/17+1),	// with this method, a single Bernoulli number n is computed in O(n*M(t)) operations where t = O(n*Ln(n)) is the required precision
+			// Brent's method requires n^2*t+n*M(t)
+			// simple array method requires 
+			ZetaNum1(n, n/17+1)	// this gives O(n*Ln(n)*M(t))
+		)
+		*N(2*n! /(2*Pi)^n)))
 		// 2*Pi*e is approx. 17, add 1 to guard precision
-		* (2*Mod(n/2,2)-1)	// sign of the Bernoulli number
+		* (2*Mod(n/2,2)-1)	// sign of B
 		+ BernoulliFracPart(n);	// this already has the right sign
 	Precision(prec);	// restore old precision
 	B;

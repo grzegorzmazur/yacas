@@ -361,7 +361,13 @@ TRun(2+t/2-t^2,10);
 /// compute list of given length
 10 # ContFracList(_n, _depth)_(depth <= 0) <-- {};
 20 # ContFracList(n_IsInteger, _depth) <-- {n};
-30 # ContFracList(n_IsNumber, _depth) <-- ContFracList(Rationalize(n), depth);
+// prevent infinite loop when in numeric mode
+30 # ContFracList(n_IsNumber, _depth) _Numeric <--
+[
+	Numeric := False;
+	{ContFracList(Rationalize(n), depth), Numeric := True}[1];
+];
+40 # ContFracList(n_IsNumber, _depth) <-- ContFracList(Rationalize(n), depth);
 
 /* n/m = Div(n,m) + 1/( m/Mod(n,m) ) */
 35 # ContFracList((n_IsNegativeInteger) / (m_IsInteger), _depth) <-- Push( ContFracList(m/Mod(n,m), depth-1) , Div(n,m)-1);
@@ -381,7 +387,7 @@ ContFracEval(list_IsList) <-- ContFracEval(list, 0);
 
 /// find rational number with smallest num./denom. near a given number x
 /// See: HAKMEM, MIT AI Memo 239, 02/29/1972, Item 101C
-NearRational(_x) <-- NearRational(x, Floor(1/2*GetPrecision()));
+NearRational(_x) <-- NearRational(x, Floor(N(1/2*GetPrecision())));
 NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 	Local(x1, x2, i,  old'prec);
 	old'prec := GetPrecision();
@@ -413,7 +419,7 @@ NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 
 /// guess the rational number behind an imprecise number
 /// prec parameter is the max number of digits you can have in the denominator
-GuessRational(_x) <-- GuessRational(x, Floor(1/2*GetPrecision()));
+GuessRational(_x) <-- GuessRational(x, Floor(N(1/2*GetPrecision())));
 GuessRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 	Local(denom'estimate, cf, i);
 	denom'estimate := 1;
