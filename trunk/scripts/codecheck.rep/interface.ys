@@ -117,6 +117,19 @@ UnFence(ProcessGlobalVar,1);
 //TODO arity handling    
       RegisterFunc(Type(f),NrArgs(f),True);
     ];
+
+
+
+10  # FindDefFuncs(Macro(fname_IsString,_args)(_body))
+    <-- RegisterFunc(fname,Length(args),True);
+11  # FindDefFuncs(Macro(fname_IsAtom,_args)(_body))
+    <-- RegisterFunc(String(fname),Length(args),True);
+10  # FindDefFuncs(Macro()(f_IsFunction))
+    <-- RegisterFunc(Type(f),NrArgs(f),True);
+
+
+
+
 10  # FindDefFuncs(_n # (f_IsFunction)_(_post) <-- _body)
     <-- RegisterFunc(Type(f),NrArgs(f),False);
 11  # FindDefFuncs(     (f_IsFunction)_(_post) <-- _body)

@@ -1,5 +1,5 @@
 
-
+LocalSymbols(TraceStart,TraceEnter,TraceLeave,DebugStart,DebugEnter,DebugLeave,ProfileStart,ProfileEnter) [
 
 TraceStart() := [indent := 0;];
 TraceEnter() :=
@@ -31,7 +31,7 @@ DebugStart():=
    debugcallstack:={};
    breakpredicate:=False;
 ];
-DebugRun():= [debugging:=False;];
+DebugRun():= [debugging:=False;True;];
 DebugStep():=[debugging:=False;nextdebugging:=True;];
 DebugStop():=[debugging:=False;debugstopped:=True;CustomEval'Stop();];
 DebugVerbose(verbose):=[debugverbose:=verbose;];
@@ -124,3 +124,6 @@ Macro(Profile,{expression})
       Echo("Function ",item[1]," called ",item[2]," times");
 ];
 
+
+
+]; //LocalSymbols
