@@ -1,10 +1,11 @@
 /* CForm: convert Yacas objects to C/C++ code. */
 
-/* version 0.1 */
+/* version 0.3 */
 
 /* Changelog
 	0.1	CForm() derived from TeXForm() v0.4. Have basic functionality. Do not allow list manipulation, unevaluated derivatives, set operations, limits, integrals, Infinity, explicit matrices. Complex numbers and expressions are handled just like real ones. Indexed symbols are assumed to be arrays and handled literally. No declarations or prototypes are supplied. Function definitions are not handled. Sum() is left as is (can be defined as a C function).
 	0.2 Fix for extra parens in Sin() and other functions; fixes for Exp(), Abs() and inverse trig functions
+	0.3 Fix for indexed expressions: support a[2][3][4]
 */
 
 /* To do:
@@ -141,9 +142,10 @@ CFormArgs(list_IsList) <--
 100 # CForm(Mod(_x, _y), _p) <-- CFormBracketIf(p<OpPrecedence("/"), ConcatStrings(CForm(x, OpPrecedence("/")), " % ", CForm(y, OpPrecedence("/")) ) )
 ;
 
-/* Indexed expressions */
-
-100 # CForm(_x [ _i ], _p) <-- ConcatStrings(CForm(x, TeXFormMaxPrec), "[", CForm(i, TeXFormMaxPrec), "]");
+/* Indexed expressions are never bracketed */
+// the rule with [ ] seems to have no effect?
+//100 # CForm(_x [ _i ], _p) <-- ConcatStrings(CForm(x, TeXFormMaxPrec), "[", CForm(i, TeXFormMaxPrec), "]");
+100 # CForm(Nth(_x, _i), _p) <-- ConcatStrings(CForm(x, TeXFormMaxPrec), "[", CForm(i, TeXFormMaxPrec), "]");
 
 cindent:=1;
 
@@ -172,7 +174,7 @@ CUndent() :=
 ];
 
 
-CFormStatement(_x) <-- CForm(x):";":NlIndented();
+CFormStatement(_x) <-- CForm(x) : ";" : NlIndented();
 
 120 # CForm(_x,_p)_(Type(x) = "Prog") <--
 [
@@ -187,7 +189,11 @@ CFormStatement(_x) <-- CForm(x):";":NlIndented();
 ];
 
 120 # CForm(For(_from,_to,_step)_body,_p) <--
-    "for(":CForm(from,TeXFormMaxPrec):";":CForm(to,TeXFormMaxPrec):";":CForm(step,TeXFormMaxPrec):")":CIndent():NlIndented():CFormStatement(body):CUndent();
+  "for(" : CForm(from,TeXFormMaxPrec) : ";"
+	: CForm(to,TeXFormMaxPrec) : ";"
+	: CForm(step,TeXFormMaxPrec) : ")"
+	: CIndent() : NlIndented()
+	: CFormStatement(body) : CUndent();
 
 /*TODO test
 test:=Hold(
