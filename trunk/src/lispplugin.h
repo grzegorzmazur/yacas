@@ -32,6 +32,7 @@ public:
      *  variables (constants for the plugin).
      */
     virtual void Add(LispEnvironment& aEnvironment) = 0;
+    virtual ~LispPluginBase(){};
 };
 
 /** \class LispDllBase defines the features a class that can load a dll

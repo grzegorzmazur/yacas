@@ -13,6 +13,7 @@ class EvalFuncBase : public YacasBase
 public:
     virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
                   LispPtr& aArguments)=0;
+    virtual ~EvalFuncBase(){}
 };
 
 #endif

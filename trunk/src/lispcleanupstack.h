@@ -29,6 +29,7 @@ class LispBase : public YacasBase
 {
 public:
     virtual void Delete()=0;
+    virtual ~LispBase(){};
 };
 
 /** Clean up stack that doesn't actually delete objects itself.
