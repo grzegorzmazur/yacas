@@ -4,6 +4,7 @@
 //#include "yacasprivate.h"
 #include "numbers.h"
 #include <stdio.h>
+#include <math.h>
 
 #define ENABLE_TESTS 1
 
