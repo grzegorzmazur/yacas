@@ -21,6 +21,7 @@ UnFence("IntegrateMultiplicative",4);
                          FillList(from,Length(expr)),
 			 FillList(to,Length(expr)),
                          expr});
+
 20 # (Integrate(_var,_from,_to)(_expr))
     <-- indefIntegrate(var,from,to,expr,a,b);
 
@@ -30,6 +31,11 @@ UnFence("IntegrateMultiplicative",4);
 // to indefIntegrate
 //
 ////////////////////////////////////////////////
+
+10 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(from = -to And IsOddFunction(expr,var)) <-- 0;
+10 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(from = -to And IsEvenFunction(expr,var)) <--
+     2*indefIntegrate(var,0,to,expr,a,b);
+
 100 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(Type(AntiDeriv(var,IntClean(var,expr))) != "AntiDeriv") 
     <--
     IntegrateRange(var,expr,from,to,AntiDeriv(var,IntClean(var,expr)));

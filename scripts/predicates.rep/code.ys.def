@@ -16,6 +16,8 @@ IsNegativeInteger
 IsNonNegativeInteger
 IsEven
 IsOdd
+IsEvenFunction
+IsOddFunction
 IsInfinity
 IsConstant
 IsBoolean

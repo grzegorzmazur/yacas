@@ -377,7 +377,7 @@ Verify((0.0000000000000000000000000000000000000000000000001 = 0), False);
 /* Bug #2 */
 KnownFailure((Limit(x,Infinity) x^n/Ln(x)) = Infinity);
 KnownFailure((Limit(x,0,Right) x^(Ln(a)/(1+Ln(x)))) = a);
-KnownFailure((Limit(x,0) (x+1)^(Ln(a)/x)) = a);
+Verify((Limit(x,0) (x+1)^(Ln(a)/x)), a);
 /* Note paren's around bodied operators like Limit, D, Integrate;
    otherwise it's parsed as Limit (... = ...) */
 
@@ -405,8 +405,8 @@ Verify(Im(3+I*Infinity), Infinity); /* resolved */
 Verify(Im(3+I*Undefined), Undefined);
 
 /* Bug #9 */
-KnownFailure((Integrate(x,-1,1) 1/x) = 0); /* or maybe Undefined? */
-KnownFailure((Integrate(x,-1,1) 1/x^2) = Infinity);
+Verify((Integrate(x,-1,1) 1/x), 0); /* or maybe Undefined? */
+Verify((Integrate(x,-1,1) 1/x^2), Infinity);
 
 /* Bug #10 */
 KnownFailure(Simplify(x^(-2)/(1-x)^3) != 0);
@@ -422,7 +422,7 @@ KnownFailure((Limit(n, Infinity) n^5/2^n) = 0);
 /* Cannot test; TrigSimpCombine(x^500) floods stack */
 
 /* Bug #14 */
-KnownFailure((Limit(x,Infinity) Zeta(x)) = 1);
+Verify((Limit(x,Infinity) Zeta(x)), 1);
 // Actually, I changed the Factorial(x) to (x!)
 Verify((Limit(x,Infinity) (x!)), Infinity);
 

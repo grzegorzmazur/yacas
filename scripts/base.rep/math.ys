@@ -22,6 +22,7 @@ Defun("Trigonometry",{x,i,sum,term})
 
 Defun("MySin",{x})Trigonometry(x,1.0,x,x);
 Defun("MyCos",{x})Trigonometry(x,0.0,1.0,1.0);
+Defun("MyTan",{x})MathDivide(MySin(x),MyCos(x));
 
 Defun("MyArcSin",{int1})
 [
@@ -38,4 +39,34 @@ Defun("MyArcSin",{int1})
   ];
   result;
 ];
+
+
+
+Defun("MyExp",{x})
+[
+  Local(i,aResult,term,eps);
+  // Exp(x)=Sum(i=0 to Inf)  x^(i) /(i)!
+  // Which incrementally becomes the algorithm:
+  //
+  // i <- 0
+  Set(i,0);
+  // sum <- 1
+  Set(aResult,1.0);
+  // term <- 1
+  Set(term,1.0);
+  Set(eps,MathPower(10,MathSubtract(0,GetPrecision())));
+  // While (term>epsilon)
+  While(GreaterThan(MathAbs(term),eps))
+  [
+    //   i <- i+1
+    Set(i,MathAdd(i,1));
+    //   term <- term*x/(i)
+    Set(term,MathDivide(MathMultiply(term,x),i));
+    //   sum <- sum+term
+    Set(aResult,MathAdd(aResult,term));
+  ];
+  aResult;
+];
+
+
 

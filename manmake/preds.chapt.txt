@@ -435,6 +435,73 @@ odd if it is not divisible by two. Hence the odd numbers are 1, 3, 5,
 
 *SEE IsEven, IsInteger
 
+
+
+
+*CMD IsEvenFunction --- Return true if function is an even function, False otherwise
+*CMD IsOddFunction --- Return true if function is an odd function, False otherwise
+
+*STD
+*CALL
+	IsEvenFunction(expression,variable)
+	IsOddFunction(expression,variable)
+
+*PARMS
+
+{expression} -- mathematical expression
+{variable} -- variable
+
+*DESC
+
+These functions return True if Yacas can determine that the
+function is even or odd respectively. Even functions are
+defined to be functions that have the property:
+
+$$ f(x) = f(-x) $$
+
+And odd functions have the property:
+
+$$ f(x) = -f(-x) $$
+
+{Sin(x)} is an example of an odd function, and {Cos(x)}
+is an example of an even function.
+
+As a side note, one can decompose a function into an
+even and an odd part:
+
+$$ f(x) = f_even(x) + f_odd(x) $$
+
+Where 
+
+$$ f_even(x) = (f(x)+f(-x))/2 $$
+
+and
+
+$$ f_odd(x) = (f(x)-f(-x))/2 $$
+
+*EG
+
+	In> IsEvenFunction(Cos(b*x),x)
+	Out> True
+	In> IsOddFunction(Cos(b*x),x)
+	Out> False
+	In> IsOddFunction(Sin(b*x),x)
+	Out> True
+	In> IsEvenFunction(Sin(b*x),x)
+	Out> False
+	In> IsEvenFunction(1/x^2,x)
+	Out> True
+	In> IsEvenFunction(1/x,x)
+	Out> False
+	In> IsOddFunction(1/x,x)
+	Out> True
+	In> IsOddFunction(1/x^2,x)
+	Out> False
+
+*SEE Sin, Cos
+
+
+
 *CMD IsFunction --- test for a composite object
 *CORE
 *CALL
