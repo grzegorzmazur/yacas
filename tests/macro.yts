@@ -1,0 +1,59 @@
+
+[
+  Local(a,b,c,d);
+  DefMacroRuleBase(foo,{a,b});
+
+  // Simple check
+  foo(_c,_d) <-- {@c,@d};
+  Verify(foo(2,3),Hold({2,3}));
+
+  Macro("foo",{a}) {@a,a};
+  a:=A; 
+  Verify(foo(B),{B,A});
+  Retract(foo,1);
+  Retract(foo,2);
+  Verify(foo(2,3),foo(2,3));
+  Verify(foo(B),foo(B));
+];
+
+[
+  Local(a,i,tot);
+  a:=100;
+  Macro(forloop,{init,pred,inc,body}) 
+  [
+    @init;
+    While(@pred)
+    [
+      @body;
+      @inc;
+    ];
+    True;
+  ];
+  tot:=0;
+  forloop(i:=1,i<=10,i++,tot:=tot+a*i);
+  Verify(i,11);
+  Verify(tot,5500);
+];
+
+[
+  Macro("bar",{list,...}) Length(@list);
+  Verify(bar(a,b,list,bar,list),5);
+];
+
+[
+  Local(x,y,z);
+  y:=x;
+  Verify(`{@x,@y},{x,x});
+  z:=u;
+  y:={@z,@z};
+  Verify(`{@x,@y},{x,{@z,@z}});
+  Verify(`{@x,`(@y)},{x,{u,u}});
+  y:=Hold(`{@z,@z});
+
+  Verify(`{@x,@y},{x,{u,u}});
+  Verify(`{@x,`(@y)},{x,{u,u}});
+
+];
+
+
+
