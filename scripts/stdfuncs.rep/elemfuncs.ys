@@ -5,7 +5,14 @@
  *
  *  If a better optimized version of these functions is available through the kernel,
  *  then the kernel version will automatically shadow these functions.
+ *  These implementations are not necessarily the best optimized versions.
  */
+
+/// MathMul2Exp(x,n): multiply x by 2^n.
+10 # MathMul2Exp(_x,0) <-- x;
+20 # MathMul2Exp(_x,_n)_(n>0) <-- MathMultiply(x, MathPower(2,n));
+30 # MathMul2Exp(_x,_n)_(n<0) <-- MathDivide(x, MathPower(2,-n));
+
 
 /*: Count number of bits in an integer or a float number. MathBitCount(0)=1. */
 10 # MathBitCount(0) <-- 1;
@@ -55,11 +62,6 @@ Verify(MathBitCount(0.3),-1);
 10 # MathPower(_x, y_IsInteger) <-- IntPowerNum(x, y, MathMultiply, 1);
 // real powers:
 20 # MathPower(_x, _y) <-- MathExp(MathMultiply(y,MathLn(x)));
-
-/// MathPower(x,y,op): cost functions.
-10 # MathPower(_x, y_IsInteger, "+") <-- 2*MathBitCount(y);
-10 # MathPower(_x, y_IsInteger, "1") <-- 8*MathBitCount(y);
-20 # MathPower(_x, _y, _op) <-- 0;
 
 
 /// MathSqrt(x).
@@ -148,11 +150,6 @@ Verify(MathBitCount(0.3),-1);
 	x;
 ];
 
-/// MathMul2Exp(x,n): multiply x by 2^n.
-10 # MathMul2Exp(_x,0) <-- x;
-20 # MathMul2Exp(_x,_n)_(n>0) <-- MathMultiply(x, MathPower(2,n));
-30 # MathMul2Exp(_x,_n)_(n<0) <-- MathDivide(x, MathPower(2,n));
-
 /// MathExp(x). Use the shifted squaring argument reduction and Taylor series.
 /// FIXME: No precision tracking yet.
 
@@ -180,12 +177,94 @@ Verify(MathBitCount(0.3),-1);
 	RoundTo(1+result, prec);
 ];
 
-/// Straightforward Taylor series, compute Exp(x)-1.
+/// Straightforward Taylor series, compute (Exp(x)-1)/x.
 MathExp'Taylor1(x) :=
 [
-	Local(num'terms, prec);
+	Local(num'terms, prec, Bx);
+	prec := MathDiv(GetPrecision()*3919, 1702); // P*Ln(10)
+	Bx := -MathDiv(MathBitCount(x)*1143, 1649)-2; // -Ln(x)-2
+	num'terms := MathDiv( prec-1, MathDiv( MathBitCount( prec-1)*1588, 2291)+Bx)+1;
+	// (P*Ln(10)-1)/(Ln(P*Ln(10)-1)-Ln(x)-2); use Ln(x)<=B(x)*Ln(2)
+	x*SumTaylorNum(x, 1, {{k}, 1/(k+1)}, num'terms);
+];
+
+/// Sin(x), Taylor series for Sin(x)/x
+MathSin'Taylor(x) :=
+[
+	Local(num'terms, prec, Bx);
+	prec := MathDiv(GetPrecision()*3919, 1702); // P*Ln(10)
+	Bx := -MathDiv(MathBitCount(x)*1143, 1649)-2; // -Ln(x)-2
+	num'terms := MathDiv( MathDiv( prec+Bx, MathDiv( MathBitCount( prec+Bx)*1588, 2291)+Bx)+1, 2)+1;
+	// (P*Ln(10)-Ln(x)-2)/(Ln(P*Ln(10)-Ln(x)-2)-Ln(x)-2); use Ln(x)<=B(x)*Ln(2)
+	x*SumTaylorNum(MathMultiply(x,x), 1, {{k}, -1/(2*k*(2*k+1))}, num'terms);
+];
+
+/// Cos(x), Taylor series
+MathCos'Taylor(x) :=
+[
+	Local(num'terms, prec, Bx);
+	prec := MathDiv(GetPrecision()*3919, 1702); // P*Ln(10)
+	Bx := -MathDiv(MathBitCount(x)*1143, 1649)-2; // -Ln(x)-2
+	num'terms := MathDiv( MathDiv( prec-1, MathDiv( MathBitCount( prec-1)*1588, 2291)+Bx), 2)+1;
+	// (P*Ln(10)-1)/(Ln(P*Ln(10)-1)-Ln(x)-2); use Ln(x)<=B(x)*Ln(2)
+	SumTaylorNum(MathMultiply(x,x), 1, {{k}, -1/(2*k*(2*k-1))}, num'terms);
+];
+
+/// Ln(x), Taylor series for Ln(1+y)/y, use only with 1/2<x<3/2
+MathLn'Taylor(x) :=
+[
+	Local(num'terms, y);
+	y := x-1;
+	num'terms := MathDiv(GetPrecision()*2136, -643*MathBitCount(y))+1;
+	// (P*Ln(10))/(-Ln(y)); use Ln(y)<=B(y)*Ln(2), only good for |y|<1/2
+	// here -Ln(y) must be positive
+	y*SumTaylorNum(-y, {{k}, 1/(k+1)}, num'terms);
+];
+
+/// ArcTan(x), Taylor series for ArcTan(x)/x, use only with -1/2<x<1/2
+MathArcTan'Taylor(x) :=
+[
+	Local(num'terms);
+	num'terms := MathDiv(GetPrecision()*1068, -643*MathBitCount(x))+1;
+	// (P*Ln(10))/(-2*Ln(x)); use Ln(x)<=B(x)*Ln(2), only good for |x|<1/2
+	// here -Ln(x) must be positive
+	x*SumTaylorNum(-MathMultiply(x,x), {{k}, 1/(2*k+1)}, num'terms);
+];
+
+/// The constant Pi. Using a simple method, solve Cos(x)=0.
+// iterate x := x + Cos(x) + 1/6 *Cos(x)^3 + ... to converge to x=Pi/2
+MathPi() :=
+[
+	Local(result, delta, deltasq, k, order, prec, curprec);
+	order := 13;	// order of approximation
 	prec := GetPrecision();
-	num'terms := MathDiv(prec*2291,MathBitCount(prec)*1588)+1;	// P/Ln(P)
-	x*SumTaylorNum(x, 1, {{k},1/(k+1)}, num'terms);
+	GlobalPush(Numeric);
+	Numeric := True;
+	/* initial approximation */
+	curprec := 20;
+	Precision(curprec);
+	result := 3.14159265358979323846*0.5;
+	// find optimal initial precision
+	For(k:=prec, k>=curprec, k:=Div(k,order)+2) True;
+	If(k<5, curprec:=5, curprec:=k);
+//	Echo("initial precision", curprec);
+	// now k is the iteration counter
+	For(k:=0, curprec < prec, k := k+1) [
+	// at this iteration we know the result to curprec digits
+		curprec := Min(prec, curprec * order-2);	// 2 guard digits
+		Precision(curprec+2);
+		Echo("Iteration ", k, " setting precision to ", GetPrecision());
+//		Echo("old result=", MathCos(result));
+		Time([
+		delta := MathCos(result);
+		]);
+		Time([
+		deltasq := MathMultiply(delta,delta);
+		]);
+		result := Time(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*(5/112 + deltasq*(35/1152 + (deltasq*63)/2816))))));
+	];
+	Echo({"Method 3, using Pi/2 and order", order, ":", k, "iterations"});
+	Numeric := GlobalPop();
+	result*2;
 ];
 
