@@ -1,14 +1,18 @@
 
 
 #include "cyacas.h"
+#include "lispstring.h"
+#include "stringio.h"
 #include "yacas.h"
 
 static CYacas *yacas = NULL;
-
-StringOutput output;
+LispString *stringout = NULL;
+StringOutput *output = NULL;
 void yacas_init()
 {
-    yacas = CYacas::NewL(&output);
+    stringout = new LispString();
+    output = new StringOutput(*stringout);
+    yacas = CYacas::NewL(output);
     yacas->Evaluate("DefaultDirectory(\"" SCRIPT_DIR "\");");
     yacas->Evaluate("Load(\"yacasinit.ys\");");
 
@@ -17,8 +21,8 @@ void yacas_eval(char* expression)
 {
     if (yacas)
     {
-        output.SetLength(0);
-        output.Append('\0');
+        stringout->SetNrItems(0);
+        stringout->Append('\0');
         yacas->Evaluate(expression);
     }
     else
@@ -37,6 +41,13 @@ char* yacas_result()
 {
     if (yacas)
         return yacas->Result();
+    return NULL;
+}
+char* yacas_output()
+{
+    if (yacas)
+        if (stringout)
+            return stringout->String();
     return NULL;
 }
 
