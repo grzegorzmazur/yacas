@@ -197,6 +197,8 @@ void ParsedObject::InsertAtom(LispStringPtr aString)
     iResult.Set(ptr.Get());
 }
 
+
+
 //#include <stdio.h>
 
 void ParsedObject::ReadExpression(LispInt depth)
@@ -342,6 +344,15 @@ void ParsedObject::ReadAtom()
     else if (iLookAhead == iParser.iEnvironment.iProgOpen->String())
     {
         LispInt nrargs=0;
+#ifdef YACAS_DEBUG
+        // For prog bodies at lease, I'd prefer the line it points to to be the line of the opening bracket.
+        // Maybe we should change this for all expressions: the line number referring to the first atom in
+        // the expression in stead of the last.
+        // Ayal
+        LispInt startLine = iParser.iInput.Status().LineNumber();
+#endif
+
+
         MatchToken(iLookAhead);
         while (iLookAhead != iParser.iEnvironment.iProgClose->String())
         {
@@ -361,7 +372,15 @@ void ParsedObject::ReadAtom()
         MatchToken(iLookAhead);
         LispStringPtr theOperator = iParser.iEnvironment.iProg->String();
         InsertAtom(theOperator);
+
         Combine(nrargs);
+#ifdef YACAS_DEBUG
+        // Set the line to the beginning of the prog
+        iResult.Get()->SetFileAndLine(
+                                  iParser.iInput.Status().FileName(),
+                                  startLine
+                                );
+#endif
     }
     // Else we have an atom.
     else

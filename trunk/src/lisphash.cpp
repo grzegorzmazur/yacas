@@ -12,20 +12,28 @@
 LispHashTable::~LispHashTable()
 {
     int bin;
+#ifdef YACAS_DEBUG
+    for (bin=0;bin<KSymTableSize;bin++)
+    {
+      LispInt i,nr;
+      nr = iHashTable[bin].NrItems();
+      for (i=0;i<nr;i++)
+      {
+        if (iHashTable[bin][i]()->ReferenceCount()!=1)
+        {
+          printf("ERROR: string objects with invalid reference counts during destruction of the hashtable!\n");
+          printf("%d:%s\n",iHashTable[bin][i]()->ReferenceCount(),
+                iHashTable[bin][i]()->String());
+        }
+      }
+    }
+#endif // YACAS_DEBUG
     for (bin=0;bin<KSymTableSize;bin++)
     {
         LispInt i,nr;
         nr = iHashTable[bin].NrItems();
         for (i=0;i<nr;i++)
         {
-#ifdef YACAS_DEBUG
-            if (iHashTable[bin][i]()->ReferenceCount()!=1)
-            {
-                printf("ERROR: string objects with invalid reference counts during destruction of the hashtable!\n");
-                printf("%d:%s",iHashTable[bin][i]()->ReferenceCount(),
-                      iHashTable[bin][i]()->String());
-            }
-#endif
             LISPASSERT(iHashTable[bin][i]()->ReferenceCount()==1);
             iHashTable[bin][i].Set(NULL);
         }

@@ -84,9 +84,16 @@ LispEnvironment::~LispEnvironment()
     PopLocalFrame();
 
     {
+
         LispInt i,nr=iDlls.NrItems();
+#ifdef YACAS_DEBUG
+      printf("Entered environment destructor, %d DLLs loaded\n",nr);
+#endif// YACAS_DEBUG
         for (i=0;i<nr;i++)
         {
+#ifdef YACAS_DEBUG
+          printf("Closing DLL \"%s\"\n",iDlls[i]->DllFileName());
+#endif // YACAS_DEBUG
             iDlls[i]->Close(*this);
             delete iDlls[i];
             iDlls[i] = NULL;

@@ -561,7 +561,13 @@ void <?WriteString(\"Plugin_\":pluginName);?>::Remove(LispEnvironment& aEnvironm
 }
 
 extern \"C\" {
-// #ifdef EXE_DLL_PLUGINS
+//#ifdef EXE_DLL_PLUGINS
+LispPluginBase* <?WriteString(\"make_\":pluginName);?>(void);
+//#else
+//LispPluginBase* maker(void);
+//#endif
+};
+//#ifdef EXE_DLL_PLUGINS
 LispPluginBase* <?WriteString(\"make_\":pluginName);?>(void)
 //#else
 //LispPluginBase* maker(void)
@@ -569,7 +575,6 @@ LispPluginBase* <?WriteString(\"make_\":pluginName);?>(void)
 {
     return NEW <?WriteString(\"Plugin_\":pluginName);?>;
 }
-};
 
 
 
