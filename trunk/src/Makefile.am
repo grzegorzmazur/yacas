@@ -39,7 +39,7 @@ testnum_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS
 testnum_LDFLAGS = -export-dynamic
 testnum_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la
 
-mkfastprimes_SOURCES = mkfastprimes.cc 
+mkfastprimes_SOURCES = mkfastprimes.cpp 
 
 
 libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
@@ -100,7 +100,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	plat/win32/yacas_exe.dsp        \
 	plat/win32/yacasmain-win32.cpp makefile.debug Makefile.win32 \
 	makefile.agenda yacas.dsp yacas.dsw \
-  debugmem.h \
+  debugmem.h mkfastprimes.dsp \
 	win32dllresource.h win32yacasdll.h win32yacasdll.cpp \
 	win32yacasdllresource.h yacasdll.dsp yacasdll.dsw yacasdll.rc \
 	setup.py yacasc.i yacas.py \
