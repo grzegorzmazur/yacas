@@ -778,16 +778,18 @@ void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrec
   iNumber->ChangePrecision(BITS_TO_DIGITS(aPrecision,10));
 
 
-  if (iNumber == aX.iNumber || iNumber == aY.iNumber)
+//  if (iNumber == aX.iNumber || iNumber == aY.iNumber)
   {
     ANumber a1(*aX.iNumber);
     ANumber a2(*aY.iNumber);
     :: Multiply(*iNumber,a1,a2);
   }
+/*TODO I don't like that multiply is destructive, but alas... x=pi;x*0.5 demonstrates this. FIXME
   else
   {
     :: Multiply(*iNumber,*aX.iNumber,*aY.iNumber);
   }
+*/
 /*TODO remove old? 
   ANumber a1(*aX.iNumber);
   ANumber a2(*aY.iNumber);
@@ -1231,12 +1233,20 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
       return LispTrue;
     if (IsInt())
       return LispFalse;
+    if (aOther.iNumber->iNegative != iNumber->iNegative)
+      return LispFalse;
     }
 
   {
     //TODO optimize!!!!
     LispInt precision = GetPrecision();
     if (precision<aOther.GetPrecision()) precision = aOther.GetPrecision();
+/*For tiny numbers like 1e-600, the following seemed necessary to compare it with zero.
+    if (precision< (35*-iNumber->iTensExp)/10)
+      precision =  (35*-iNumber->iTensExp)/10;
+    if (precision< (35*-aOther.iNumber->iTensExp)/10)
+      precision =  (35*-aOther.iNumber->iTensExp)/10;
+*/
     BigNumber diff;
     BigNumber otherNeg;
     otherNeg.Negate(aOther);

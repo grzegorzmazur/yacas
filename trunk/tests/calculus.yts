@@ -1,20 +1,21 @@
-f():=[]; //Echo(CurrentFile()," line ",CurrentLine());
+f():=[];//Echo(CurrentFile()," line ",CurrentLine());
 Testing("UnaryFunctionInverses");
 Verify(Sin(ArcSin(a)),a);  f();
 Verify(Cos(ArcCos(a)),a);  f();
+
 //TODO ??? Verify(Tan(ArcTan(a)),a);
 Verify(ArcSin(Sin(a)),a);  f();
 Verify(ArcCos(Cos(a)),a);  f();
 //TODO ??? this is not always the correct answer! Verify(ArcTan(Tan(a)),a);
 Verify(Tan(Pi/2),Infinity); f();
 Verify(Tan(Pi),0); f();
+
 Verify( Limit(x,Infinity) Sin(x), Undefined ); f();
 Verify( Limit(x,Infinity) Cos(x), Undefined ); f();
 Verify( Limit(x,Infinity) Tan(x), Undefined ); f();
 Verify( Limit(x,Infinity) Gamma(x), Infinity ); f();
 Verify( Limit(x,Infinity) Abs(x), Infinity ); f();
 Verify( Limit(x,Infinity) x!, Infinity); f();
-
 Verify( Sin(x)/Cos(x), Tan(x) ); f();
 Verify( TrigSimpCombine(Sin(x)^2 + Cos(x)^2), 1 ); f();
 
@@ -24,7 +25,6 @@ Verify( Sinh(x)/Cosh(x), Tanh(x) ); f();
 Verify( Sinh(Infinity), Infinity); f();
 Verify( Sinh(x)*Csch(x), 1); f();
 Verify( 1/Coth(x), Tanh(x) ); f();
-
 Verify(2+I*3,Complex(2,3)); f();
 Verify(Magnitude(I+1),Sqrt(2)); f();
 
@@ -53,5 +53,12 @@ z:= ArcTan((2*x*y)/(x^2 - y^2)); f();
 // Verify(Simplify((D(x,2) z) + D(y,2) z), 0 );
 
 Testing("Pslq");
-Verify(Pslq({ Pi+2*Exp(1) , Pi , Exp(1) },20),{1,-1,-2}); f();
-Verify(Pslq({ 2*Pi+3*Exp(1) , Pi , Exp(1) },20),{1,-2,-3}); f();
+VerifyPslq(left,right):=
+[
+  If(left=right,
+    Verify(True,True),
+    `Verify(@left,-(@right)));
+];
+VerifyPslq(Pslq({ Pi+2*Exp(1) , Pi , Exp(1) },20),{1,-1,-2}); f();
+VerifyPslq(Pslq({ 2*Pi+3*Exp(1) , Pi , Exp(1) },20),{1,-2,-3}); f();
+

@@ -71,7 +71,7 @@ Function("NrArgs",{aLeft}) Length(Listify(aLeft))-1;
 
 Set(Numeric,False);
 
-N(_expr) <--
+Function("N",{expr})
 [ // we were in non-numeric mode
     Local(prev'Numeric,numeric'result);
     Set(prev'Numeric,Numeric);
@@ -86,11 +86,10 @@ N(_expr) <--
     ]);
     numeric'result;
 ];
-
 UnFence("N",1);
 
 // evaluate numerically with given precision
-N(_expr, _digits) <--
+Function("N",{expr,digits})
 [ // we were in non-numeric mode
     Local(prev'Numeric, prev'digits, numeric'result);
     Set(prev'digits, GetPrecision());
@@ -107,9 +106,8 @@ N(_expr, _digits) <--
     Precision(prev'digits);
     numeric'result;
 ];
-
 UnFence("N",2);
-
+//HoldArg("N",expr); // I would like N to hold its first argument, but then a lot of tests fail infortunately.
 
 Set(Verbose,False);
 Function("V",{aNumberBody})

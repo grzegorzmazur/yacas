@@ -37,7 +37,7 @@ Pslq(x, precision) :=
 	 t0, t1, t2, t3, t4, mini, Confidence, norme,result);
   n:=Length(x);
   ndigits:=GetPrecision();
-  Precision(precision+2);
+  Precision(precision+10); // 10 is chosen arbitrarily, but should always be enough. Perhaps we can optimize by lowering this number
   Confidence:=10^(-MathFloor(N(Eval(precision/3))));
 //Echo("Confidence is ",Confidence);
 
@@ -99,6 +99,7 @@ Echo("************** tmp = ",tmp);
     y[k]:=N(Eval(x[k]/tmp));
     s[k]:=N(Eval(s[k]/tmp));
 
+//Echo("1..."," ",y[k]," ",s[k]);
 /*If(Not IsNumber(y[k]),
 [
 Echo("************** y[k] = ",y[k]);
@@ -143,6 +144,7 @@ Echo("************** H[i][j] = ",H[i][j]);
       t:=Round(H[i][j]/H[j][j]);
 //Echo("5.2...");
       y[j]:=y[j] + t*y[i];
+//Echo("2..."," ",y[j]);
       For (k:=1,k<=j,k++) [ H[i][k]:=H[i][k]-t*H[j][k]; ];
       For (k:=1,k<=n,k++)
       [
@@ -159,9 +161,9 @@ Echo("************** H[i][j] = ",H[i][j]);
   While (Not(found))
   [
     m:=1;
-//Echo("1...");
+//Echo("maxi 1...",maxi);
     maxi:=N(gam*Abs(H[1][1]));
-//Echo("2...",maxi);
+//Echo("maxi 2...",maxi);
     gami:=gam;
 //Echo("3...");
     For (i:= 2,i<= n-1,i++)
@@ -171,6 +173,7 @@ Echo("************** H[i][j] = ",H[i][j]);
       if (maxi < tmp)
       [
         maxi:=tmp;
+//Echo("maxi 3...",maxi);
         m:=i;
       ];
     ];
@@ -178,6 +181,7 @@ Echo("************** H[i][j] = ",H[i][j]);
     tmp:=y[m + 1];
     y[m + 1]:=y[m];
     y[m]:=tmp;
+//Echo("3..."," ",y[m]);
 //Echo("5...");
     For (i:= 1,i<=n,i++)
     [
@@ -188,7 +192,6 @@ Echo("************** H[i][j] = ",H[i][j]);
       B[i][ m + 1]:=B[i][ m];
       B[i][ m]:=tmp;
     ];
-//Echo("6...");
     For (i:=1,i<=n-1,i++)
     [
       tmp:=H[m + 1][ i];
@@ -203,6 +206,17 @@ Echo("************** H[i][j] = ",H[i][j]);
 
       t1:=H[m][ m]/t0;
       t2:=H[m][ m + 1]/t0;
+
+//      If(IsZero(t0),t0:=N(Confidence));
+//Echo("");
+//Echo("H[m][ m] = ",N(H[m][ m]));
+//Echo("H[m][ m+1] = ",N(H[m][ m+1]));
+
+//If(IsZero(t0),[t1:=Infinity;t2:=Infinity;]);
+//Echo("t0=",N(t0));
+//Echo("t1=",N(t1));
+//Echo("t2=",N(t2));
+
       For (i:=m,i<=n,i++)
       [
         t3:=H[i][ m];
@@ -223,7 +237,10 @@ Echo("************** H[i][j] = ",H[i][j]);
       For (j := Min(i-1, m + 1),j>= 1,j--)
       [
         t:=Round(H[i][ j]/H[j][ j]);
+//Echo("MATRIX",H[i][ j]," ",H[j][ j]);
+//Echo("5... before"," ",y[j]," ",t," ",y[i]);
         y[j]:=y[j] + t*y[i];
+//Echo("5... after"," ",y[j]);
         For (k:=1,k<=j,k++) H[i][ k]:=H[i][ k]-t*H[j][ k];
         For (k:= 1,k<=n,k++)
         [
@@ -235,7 +252,12 @@ Echo("************** H[i][j] = ",H[i][j]);
 //Echo("9...",N(H[1],10));
 
     /* Precision(10);*/ /*low precision*/
-    maxi := N(H[1] .  H[1],10);
+//    maxi := N(H[1] .  H[1],10);
+    maxi := N(H[1] .  H[1]);
+//Echo("H[1] = ",H[1]);
+//Echo("N(H[1]) = ",N(H[1]));
+//Echo("N(H[1] . H[1]) = ",N(H[1] . H[1]));
+//Echo("maxi 4...",maxi);
 
 //Echo("9... maxi = ",maxi);
 
@@ -245,13 +267,17 @@ Echo("************** H[i][j] = ",H[i][j]);
       tmp:=N(H[j] . H[j],10);
 //Echo("9.2...");
       if (maxi < tmp) [ maxi:=tmp; ];
+//Echo("maxi 5...",maxi);
 //Echo("9.3...");
     ];
 //Echo("10...");
     norme:=N(Eval(1/Sqrt(maxi)));
     m:=1;
     mini:=N(Eval(Abs(y[1])));
+//Echo("y[1] = ",y[1]," mini = ",mini);
     maxi:=mini;
+
+//Echo("maxi 6...",maxi);
 //Echo("11...");
     For (j:=2,j<=n,j++)
     [
@@ -262,6 +288,7 @@ Echo("************** H[i][j] = ",H[i][j]);
         m:=j;
       ];
       if (tmp > maxi) [ maxi:=tmp; ];
+//Echo("maxi 7...",maxi);
     ];
     /* following line may be commented */
 //Echo({"Norm bound:",norme," Min=",mini," Conf=",mini/maxi," required ",Confidence}); 

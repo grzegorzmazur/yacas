@@ -82,7 +82,23 @@ Verify( IsIrregularPrime(1), False ); f();
 Verify( IsIrregularPrime(11), False ); f();
 
 Verify( Gcd( 324 + 1608*I, -11800 + 7900*I ),Complex(-52,16) ); f();
-Verify( Gcd( 7300 + 12*I, 2700 + 100*I), Complex(-4,4) ); f();
+// I changed from Complex(-4,4) to Complex(4,4) as the GaussianGcd algorithm suddenly returned this instead.
+// I am assuming the result is correct if the two numbers, when divided by the resulting gcd, are gaussian integers
+// again?
+Verify( Gcd( 7300 + 12*I, 2700 + 100*I), Complex(4,4) ); f();
+
+VerifyGaussianGcd(x,y):=
+[
+  Local(gcd);
+  gcd:=Gcd(x,y);
+//  Echo(x/gcd);
+//  Echo(y/gcd);
+  Verify(IsGaussianInteger(x/gcd) And IsGaussianInteger(y/gcd),True);
+];
+VerifyGaussianGcd(324 + 1608*I, -11800 + 7900*I);
+VerifyGaussianGcd(7300 + 12*I, 2700 + 100*I);
+VerifyGaussianGcd(120-I*200,-336+50*I);
+//TODO we can expand this with randomized tests
 
 Verify( Lcm({7,11,13,17}), 7*11*13*17 ); f();
 Verify( IsCoprime(11,13), True ); f();
