@@ -2,8 +2,9 @@
 Use("cstubgen.rep/code.ys");
 
 StubApiCStart("Fltkgraph");
+StubApiCPrettyName("fltkgraph");
 
-
+// Font types
 StubApiCShortIntegerConstant("FlHelvetica","FL_HELVETICA");
 StubApiCShortIntegerConstant("FlHelveticaBold","FL_HELVETICA_BOLD");
 StubApiCShortIntegerConstant("FlHelveticaItalic","FL_HELVETICA_ITALIC");
@@ -21,6 +22,29 @@ StubApiCShortIntegerConstant("FlScreen","FL_SCREEN");
 StubApiCShortIntegerConstant("FlScreenBold","FL_SCREEN_BOLD");
 StubApiCShortIntegerConstant("FlZapfDingbats","FL_ZAPF_DINGBATS");
 
+// Colors enumerated
+StubApiCShortIntegerConstant("FlColorGray0","FL_GRAY0");
+StubApiCShortIntegerConstant("FlColorGray1","FL_DARK3");
+StubApiCShortIntegerConstant("FlColorGray2","FL_DARK2");
+StubApiCShortIntegerConstant("FlColorGray3","FL_DARK1");
+StubApiCShortIntegerConstant("FlColorGray4","FL_BACKGROUND_COLOR");
+StubApiCShortIntegerConstant("FlColorGray5","FL_LIGHT1");
+StubApiCShortIntegerConstant("FlColorGray6","FL_LIGHT2");
+StubApiCShortIntegerConstant("FlColorGray7","FL_LIGHT3");
+StubApiCShortIntegerConstant("FlColorBlack","FL_BLACK");
+StubApiCShortIntegerConstant("FlColorRed","FL_RED");
+StubApiCShortIntegerConstant("FlColorGreen","FL_GREEN");
+StubApiCShortIntegerConstant("FlColorYellow","FL_YELLOW");
+StubApiCShortIntegerConstant("FlColorBlue","FL_BLUE");
+StubApiCShortIntegerConstant("FlColorMagenta","FL_MAGENTA");
+StubApiCShortIntegerConstant("FlColorCyan","FL_CYAN");
+StubApiCShortIntegerConstant("FlColorDarkRed","FL_DARK_RED");
+StubApiCShortIntegerConstant("FlColorDarkGreen","FL_DARK_GREEN");
+StubApiCShortIntegerConstant("FlColorDarkYellow","FL_DARK_YELLOW");
+StubApiCShortIntegerConstant("FlColorDarkBlue","FL_DARK_BLUE");
+StubApiCShortIntegerConstant("FlColorDarkMagenta","FL_DARK_MAGENTA");
+StubApiCShortIntegerConstant("FlColorDarkCyan","FL_DARK_CYAN");
+StubApiCShortIntegerConstant("FlColorDarkWhite","FL_WHITE");
 
 
 

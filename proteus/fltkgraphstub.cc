@@ -297,6 +297,28 @@ void FltkgraphPlugin::Add(LispEnvironment& aEnvironment)
   SetShortIntegerConstant(aEnvironment, "FlScreen", FL_SCREEN);
   SetShortIntegerConstant(aEnvironment, "FlScreenBold", FL_SCREEN_BOLD);
   SetShortIntegerConstant(aEnvironment, "FlZapfDingbats", FL_ZAPF_DINGBATS);
+  SetShortIntegerConstant(aEnvironment, "FlColorGray0", FL_GRAY0);
+  SetShortIntegerConstant(aEnvironment, "FlColorGray1", FL_DARK3);
+  SetShortIntegerConstant(aEnvironment, "FlColorGray2", FL_DARK2);
+  SetShortIntegerConstant(aEnvironment, "FlColorGray3", FL_DARK1);
+  SetShortIntegerConstant(aEnvironment, "FlColorGray4", FL_BACKGROUND_COLOR);
+  SetShortIntegerConstant(aEnvironment, "FlColorGray5", FL_LIGHT1);
+  SetShortIntegerConstant(aEnvironment, "FlColorGray6", FL_LIGHT2);
+  SetShortIntegerConstant(aEnvironment, "FlColorGray7", FL_LIGHT3);
+  SetShortIntegerConstant(aEnvironment, "FlColorBlack", FL_BLACK);
+  SetShortIntegerConstant(aEnvironment, "FlColorRed", FL_RED);
+  SetShortIntegerConstant(aEnvironment, "FlColorGreen", FL_GREEN);
+  SetShortIntegerConstant(aEnvironment, "FlColorYellow", FL_YELLOW);
+  SetShortIntegerConstant(aEnvironment, "FlColorBlue", FL_BLUE);
+  SetShortIntegerConstant(aEnvironment, "FlColorMagenta", FL_MAGENTA);
+  SetShortIntegerConstant(aEnvironment, "FlColorCyan", FL_CYAN);
+  SetShortIntegerConstant(aEnvironment, "FlColorDarkRed", FL_DARK_RED);
+  SetShortIntegerConstant(aEnvironment, "FlColorDarkGreen", FL_DARK_GREEN);
+  SetShortIntegerConstant(aEnvironment, "FlColorDarkYellow", FL_DARK_YELLOW);
+  SetShortIntegerConstant(aEnvironment, "FlColorDarkBlue", FL_DARK_BLUE);
+  SetShortIntegerConstant(aEnvironment, "FlColorDarkMagenta", FL_DARK_MAGENTA);
+  SetShortIntegerConstant(aEnvironment, "FlColorDarkCyan", FL_DARK_CYAN);
+  SetShortIntegerConstant(aEnvironment, "FlColorDarkWhite", FL_WHITE);
 
   aEnvironment.SetCommand(base_fl_color, "FlColor",3,YacasEvaluator::Function | YacasEvaluator::Fixed);
   aEnvironment.SetCommand(base_fl_font, "FlFont",2,YacasEvaluator::Function | YacasEvaluator::Fixed);

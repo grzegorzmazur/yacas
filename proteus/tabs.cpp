@@ -22,6 +22,7 @@
 #include "yacdefines.h"
 #include "grapher.h"
 #include "stringio.h"
+#include "arggetter.h"
 
 #include "standard.h"
 #include "errors.h"
@@ -353,6 +354,10 @@ void LispNotepad(LispEnvironment& aEnvironment,LispInt aStackTop)
     InternalTrue(aEnvironment,RESULT);
 }
 
+extern int currentNotepadFontSize;
+extern int currentNotepadFontColor;
+extern int currentNotepadFontType;
+
 void LispNotepadAddCommand(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
   CHK_ARG_CORE(ARGUMENT(1).Get() != NULL, 1);
@@ -361,22 +366,22 @@ void LispNotepadAddCommand(LispEnvironment& aEnvironment,LispInt aStackTop)
   LispString oper;
   InternalUnstringify(oper, orig);
   console->AddGroup(1, 1);
-  console->AddText(&oper[0], FL_BLACK,"In> ",FL_HELVETICA,console->iDefaultFontSize);
+  console->AddText(&oper[0], currentNotepadFontColor,"In> ",currentNotepadFontType,currentNotepadFontSize);
   extern CYacas* yacas;
   yacas->Evaluate(&oper[0]);
 //  if (!internal)
   {
     if (the_out[0])
     {
-      console->AddText(the_out.String(), FL_RED,"  ",FL_COURIER,console->iDefaultFontSize);
+      console->AddText(the_out.String(), FL_RED,"  ",FL_COURIER,currentNotepadFontSize);
     }
     if (yacas->Error()[0] != '\0')
     {
-      console->AddText(yacas->Error(), FL_RED,"Error> ",FL_HELVETICA,console->iDefaultFontSize);
+      console->AddText(yacas->Error(), FL_RED,"Error> ",currentNotepadFontType,currentNotepadFontSize);
     }
     else
     {
-      console->AddText(yacas->Result(), FL_BLUE,"Out> ",FL_HELVETICA,console->iDefaultFontSize);
+      console->AddText(yacas->Result(), FL_BLUE,"Out> ",currentNotepadFontType,currentNotepadFontSize);
     }
   }
   extern LispString the_out;
@@ -403,7 +408,7 @@ void LispNotepadAddLink(LispEnvironment& aEnvironment,LispInt aStackTop)
   LispInt enableinput = IsTrue(aEnvironment, ARGUMENT(4));
 
   console->AddGroup(showinput, enableinput);
-  console->AddText(&oper[0], FL_BLACK,"",FL_HELVETICA,console->iDefaultFontSize);
+  console->AddText(&oper[0], currentNotepadFontColor,"",currentNotepadFontType,currentNotepadFontSize);
 
   char* buf = (char*)malloc(text.NrItems()+1); //TODO check for null pointer
   strcpy(buf,&text[0]);
@@ -412,11 +417,15 @@ void LispNotepadAddLink(LispEnvironment& aEnvironment,LispInt aStackTop)
   int last = 0;
 NEXTLINE:
   end = start;
-  while (*end != '\n' && *end != '\0') end++;
+  while (*end != '\n' && *end != '\0')
+  {
+    if (*end == '\r') *end = ' ';
+    end++;
+  }
   if (*end == '\0') last=1;
   *end=0;
   {
-    console->AddText(start, FL_BLACK,"",FL_HELVETICA_BOLD,console->iDefaultFontSize);
+    console->AddText(start, currentNotepadFontColor,"",currentNotepadFontType,currentNotepadFontSize);
     start=end+1;
     if (!last)
       goto NEXTLINE;
@@ -426,6 +435,28 @@ NEXTLINE:
 }
 //	Proteus'AddLink(CommandString,LinkText);
 //
+
+
+void LispNotepadFontType(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+  ShortIntegerArgument(arg1,  1 );
+  currentNotepadFontType = arg1;
+  InternalTrue(aEnvironment,RESULT);
+}
+
+void LispNotepadFontSize(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+  ShortIntegerArgument(arg1,  1 );
+  currentNotepadFontSize = arg1;
+  InternalTrue(aEnvironment,RESULT);
+}
+void LispNotepadFontColor(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+  ShortIntegerArgument(arg1,  1 );
+  currentNotepadFontColor = arg1;
+  InternalTrue(aEnvironment,RESULT);
+}
+
 
 char defdir[128];
 void GetProteusConfiguration()
@@ -468,6 +499,9 @@ CORE_KERNEL_FUNCTION("Exit",LispExit,0,YacasEvaluator::Function | YacasEvaluator
 CORE_KERNEL_FUNCTION("Proteus'AddCommand",LispNotepadAddCommand,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("Proteus'AddLink",LispNotepadAddLink,4,YacasEvaluator::Function | YacasEvaluator::Fixed);
 
+CORE_KERNEL_FUNCTION("Proteus'FontType",LispNotepadFontType,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("Proteus'FontSize",LispNotepadFontSize,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("Proteus'FontColor",LispNotepadFontColor,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 
 #undef CORE_KERNEL_FUNCTION
 

@@ -1,3 +1,36 @@
+Load("flplot");
+Clear(x);
+
+Proteus'FontType(FlHelveticaBold);
+
+Proteus'FontSize(26);
+Proteus'AddLink("True","Plotting a graph of a function",False,False);
+
+Proteus'FontSize(18);
+Proteus'AddLink("True",
+"Simple graph plotter.
+plot the function",False,False);
+
+Proteus'FontSize(15);
+Proteus'AddCommand("f(x):=Sin(x);");
+Proteus'FontSize(18);
+Proteus'AddLink("True","From",False,True);
+Proteus'FontSize(15);
+Proteus'AddCommand("from:=-2");
+Proteus'FontSize(18);
+Proteus'AddLink("True","To",False,False);
+Proteus'FontSize(15);
+Proteus'AddCommand("to:=2");
+Proteus'FontSize(18);
+Proteus'AddLink("True","number of steps",False,False);
+Proteus'FontSize(15);
+Proteus'AddCommand("nr:=10");
+Proteus'FontColor(FlColorGreen);
+Proteus'AddLink("FlPlot(f(x),from,to,nr);","Plot graph of f(x)",False,True);
+Proteus'AddLink("Notepad(FindFile(\"index\"));","Back to index",False,True);
+
+
+/*TODO remove old
 :n:Load("flplot");
 :n:Clear(x);
 :iel:True
@@ -20,3 +53,4 @@ nr:=10
 :h:FlPlot(f(x),from,to,nr);
 :il:Notepad(FindFile("index"));
 Back to index
+*/
