@@ -64,3 +64,26 @@ on a function.
 
 *SEE OdeSolve
 
+*CMD OdeOrder --- return order of an ODE
+*STD
+*CALL
+	OdeOrder(eqn)
+*PARMS
+
+{eqn} -- equation 
+
+*DESC
+
+This function returns the order of the differential equation, which is
+order of the highest derivative. If no derivative appear, zero is returned.
+
+*E.G.
+
+	In> OdeOrder(y'' + 2*y' == 0)
+	Out> 2;
+	In> OdeOrder(Sin(x)*y(5) + 2*y' == 0)
+	Out> 5;
+	In> OdeOrder(2*y + Sin(y) == 0)
+	Out> 0;
+
+*SEE OdeSolve

@@ -31,7 +31,7 @@ use it. The user is greeted with an intimidating flashing
 cursor, waiting for the user to enter a command. The user
 needs to know which commands are available, and when to use
 those commands. In short, the user, whether it is a new
-of experienced user, can be greatly helped with information
+or experienced user, can be greatly helped with information
 that is more readily available.
 
 		Use case scenarios
