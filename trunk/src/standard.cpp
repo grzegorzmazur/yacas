@@ -239,19 +239,10 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
         return LispTrue;
     }
 
-    //Pointers to strings should be the same
-    if (aExpression1.Get()->String() != aExpression2.Get()->String())
-    {
-        return LispFalse;
-    }
-
-    // Handle same sublists, or NULL
-    if (aExpression1.Get()->SubList() == aExpression2.Get()->SubList())
-    {
-        return LispTrue;
-    }
 
 #ifndef NO_USE_BIGFLOAT
+/*This code would be better, if BigNumber::Equals works
+
     BigNumber *n1 = aExpression1.Get()->Number(aEnvironment.Precision());
     BigNumber *n2 = aExpression2.Get()->Number(aEnvironment.Precision());
     if (!(n1 == NULL && n2 == NULL) )
@@ -263,8 +254,23 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
         if (n1 == NULL) return LispFalse;
         if (n2 == NULL) return LispFalse;
         if (!n1->Equals(*n2)) return LispFalse;
+//this should be enabled        return LispTrue;
+*/
     }
+
 #endif
+
+    //Pointers to strings should be the same
+    if (aExpression1.Get()->String() != aExpression2.Get()->String())
+    {
+        return LispFalse;
+    }
+
+    // Handle same sublists, or NULL
+    if (aExpression1.Get()->SubList() == aExpression2.Get()->SubList())
+    {
+        return LispTrue;
+    }
 
     // Now check the sublists
     if (aExpression1.Get()->SubList())

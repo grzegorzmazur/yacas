@@ -159,7 +159,7 @@ BoundRealRoots(_p,_Mmin,_Mmax) <--
       c:=(a+b)/2;
 //Echo(a,b,c);
       Vc := SturmVariations(S,c);
-      if ((p Where x == c) = 0)
+      if (IsZero(p Where x == c))
       [
         Local(M,Vcmin,Vcplus,pnew);
         pnew := Simplify((p Where x == x+c)/x);
@@ -229,6 +229,7 @@ FindRealRoots(_p,_Mmin,_Mmax) <--
   [
     Local(a,b,c,r,prec);
     prec:=10^-(GetPrecision());
+    Precision(GetPrecision()+2);
     {a,b} := bounds[i];
     c:=N((a+b)/2);
 //Echo(a,b,c);
@@ -265,7 +266,8 @@ FindRealRoots(_p,_Mmin,_Mmax) <--
       ];
       r:=c;
     ];
-    result[i] := r;
+    Precision(GetPrecision()-2);
+    result[i] := r*1.0;
   ];
   result;
 ];

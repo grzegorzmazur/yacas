@@ -281,7 +281,14 @@ BigNumber* LispNumber::Number(LispInt aPrecision)
   }
   else if (iNumber->GetPrecision() < aPrecision && !iNumber->IsInt())
   {
-    iNumber->Precision(aPrecision);
+    if (iString.Ptr())
+    {
+      iNumber->SetTo(iString.Ptr()->String(),aPrecision);
+    }
+    else
+    {
+      iNumber->Precision(aPrecision);
+    }
 /*
     LISPASSERT(iHashTable != NULL);
     {
