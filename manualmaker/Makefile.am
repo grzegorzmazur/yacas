@@ -35,7 +35,8 @@ ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
 	new.chapt paper.chapt Algorithms.chapt wordproblems.chapt \
 	algorithms-specfunc.chapt algorithms-elemfunc.chapt \
 	algorithms-integration.chapt algorithms-multivar.chapt \
-	SturmSequences.chapt FDL.chapt
+	SturmSequences.chapt FDL.chapt \
+	algorithms-numtheory.chapt
 
 ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt \
@@ -43,7 +44,8 @@ ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 		in/Algorithms.chapt.txt in/wordproblems.chapt.txt \
 	in/algorithms-specfunc.chapt.txt in/algorithms-elemfunc.chapt.txt \
 	in/algorithms-integration.chapt.txt in/algorithms-multivar.chapt.txt \
-	in/SturmSequences.chapt.txt in/FDL.chapt.txt
+	in/SturmSequences.chapt.txt in/FDL.chapt.txt \
+	in/algorithms-numtheory.chapt.txt
 
 # Yacas code extracted from the docs
 CODESNIPPETS = wester-1994.ys
