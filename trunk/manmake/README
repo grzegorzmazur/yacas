@@ -9,10 +9,31 @@ This then gets converted to ManP(section,text) with text
 enclosed in quotes. All text outside such special sections
 are part of the section named 'text'.
 
-txt2yacasdoc.pl: a Perl script to convert plain-text documentation to Yacas language.
+		Tools for the new documentation format
 
-book2txt.sh: a shell/perl/Yacas script to convert Yacas-language documentation back to plain text (does not work on all docs)
+txt2yacasdoc.pl: a Perl script to convert plaintext documentation to Yacas
+language. (See the essays book for documentation on the plaintext format.)
 
-book2TeX.sh: a shell/perl/Yacas script to convert Yacas-language documentation to TeX (does not work on all docs)
+book2txt.sh: a shell/perl/Yacas script to convert Yacas-language documentation
+back to plain text (does not work on all docs and is not used any more)
 
-book2ys.sh: a shell/Yacas script to extract Yacas source code from examples in Yacas-language documentation.
+book2TeX.sh: a shell/perl/Yacas script to convert Yacas-language documentation
+to TeX (does not work on all docs)
+
+book2ys.sh: a shell/Yacas script to extract Yacas source code from examples in
+Yacas-language documentation. ("Literate programming")
+
+book2xml.sh: a shell/Yacas script to convert Yacas-language documentation to XML.
+
+api2txt.pl: a perl script to convert src/yacasapi.cpp into plain text
+documentation (the list of kernel functions to be included into the reference
+manual). This script depends on a particular syntax of the src/yacasapi.cpp
+file.
+
+ys2book.pl: a perl script to extract comments from Yacas source code and make a
+separate file out of them. ("Literate programming")
+
+ytxt2tex: a standalone shell script to convert plaintext documentation to TeX.
+(Requires book2TeX and txt2yacasdoc)
+
+
