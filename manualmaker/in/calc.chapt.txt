@@ -449,7 +449,7 @@ The factorial function {n!} calculates the factorial of integer or half-integer 
 nonnegative integers, $n! := n*(n-1)*(n-2)*...*1$. The factorial of
 half-integers is defined via Euler's Gamma function, $z! := Gamma(z+1)$. If $n=0$ the function returns $1$.
 
-The "staggered factorial" function {n!!} calculates $n*(n-2)*(n-4)*...$. This product terminates either with $1$ or with $2$ depending on whether $n$ is odd or even. If $n=0$ the function returns $1$.
+The "double factorial" function {n!!} calculates $n*(n-2)*(n-4)*...$. This product terminates either with $1$ or with $2$ depending on whether $n$ is odd or even. If $n=0$ the function returns $1$.
 
 The "partial factorial" function {a *** b} calculates the product $a*(a+1)*...$ which is terminated at the least integer not greater than $b$. The arguments $a$ and $b$ do not have to be integers; for integer arguments, {a *** b} = $b! / (a-1)!$. This function is sometimes a lot faster than evaluating the two factorials, especially if $a$ and $b$ are close together. If $a>b$ the function returns $1$.
 
@@ -1482,18 +1482,95 @@ returned by {Pi()}.
 
 *SEE N, Pi, Precision
 
-*CMD Random --- random number between 0 and 1
+*CMD Random, RandomSeed --- (pseudo-)random number generator
 *STD
 *CALL
 	Random()
+	RandomSeed(init)
+
+*PARAMS
+{init} -- positive integer, initial random seed
 
 *DESC
 
-This function returns a random number, uniformly distributed in the
+The function {Random} returns a random number, uniformly distributed in the
 interval between 0 and 1. The same sequence of random numbers is
 generated in every Yacas session.
 
-*SEE RandomInteger, RandomPoly
+The random number generator can be initialized by calling {RandomSeed} with an integer value.
+Each seed value will result in the same sequence of pseudo-random numbers.
+
+*SEE RandomInteger, RandomPoly, Rng
+
+
+*CMD RngCreate, RngSeed, Rng --- manipulate random number generators as objects
+*STD
+*CALL
+	RngCreate()
+	RngCreate(init)
+	RngCreate(option=value,...)
+	RngSeed(r, init)
+	Rng(r)
+	
+*PARMS
+{init} -- integer, initial seed value
+
+{option} -- atom, option name
+
+{value} -- atom, option value
+
+{r} -- a list, RNG object
+
+*DESC
+These commands are an object-oriented interface to (pseudo-)random number generators (RNGs).
+
+{RngCreate} returns a list which is a well-formed RNG object.
+Its value should be saved in a variable and used to call {Rng} and {RngSeed}.
+
+{Rng(r)} returns a floating-point random number between 0 and 1 and updates the RNG object {r}.
+(Currently, the Gaussian option makes a RNG return a <i>complex</i> random number instead of a real random number.)
+
+{RngSeed(r,init)} re-initializes the RNG object {r} with the seed value {init}.
+The seed value should be a positive integer.
+
+The {RngCreate} function accepts several options as arguments.
+Currently the following options are available:
+
+*	{seed} -- specify initial seed value, must be a positive integer
+*	{dist} -- specify the distribution of the random number; currently {flat} and {gauss} are implemented, and the default is the flat (uniform) distribution
+*	{engine} -- specify the RNG engine; currently {default} and {advanced} are available ("advanced" is slower but has much longer period)
+
+If the initial seed is not specified, the value of 76544321 will be used.
+
+The {gauss} option will create a RNG object that generates pairs of Gaussian distributed random numbers as a complex random number.
+The real and the imaginary parts of this number are independent random numbers taken from a Gaussian (i.e. "normal") distribution with unit variance.
+
+Note that unlike the global {Random} function, the RNG objects created with {RngCreate} are independent RNGs and do not affect each other.
+They generate independent streams of pseudo-random numbers.
+However, the {Random} function is slightly faster.
+
+*E.G.
+
+	In> r1:=RngCreate(seed=1,dist=gauss)
+	Out> {"GaussianRNGDist","RNGEngine'LCG'2",{1}}
+	In> Rng(r1)
+	Out> Complex(-1.6668466417,0.228904004);
+	In> Rng(r1);
+	Out> Complex(0.0279296109,-0.5382405341);
+The second RNG gives a uniform distribution (default option) but uses a more complicated algorithm:
+	In> [r2:=RngCreate(engine=advanced);Rng(r2);]
+	Out> 0.3653615377;
+The generator {r1} can be re-initialized with seed 1 again to obtain the same sequence:
+	In> RngSeed(r1, 1)
+	Out> True;
+	In> Rng(r1)
+	Out> Complex(-1.6668466417,0.228904004);
+	
+	
+
+
+*SEE Random
+
 
 *CMD Limit --- limit of an expression
 *STD
