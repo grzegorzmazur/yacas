@@ -1144,6 +1144,7 @@ void BigNumber::Floor(const BigNumber& aX)
 {
 //TODO FIXME slow code! But correct
     LispString str;
+//    iNumber->CopyFrom(*aX.iNumber);
     aX.ToString(str,aX.GetPrecision());
     iNumber->SetTo(str.String());
 
@@ -1164,7 +1165,7 @@ void BigNumber::Floor(const BigNumber& aX)
         iNumber->iTensExp++;
       }
     }
-    
+//    iNumber->ChangePrecision(iNumber->iPrecision);
     LispInt i=0;
     LispInt fraciszero=LispTrue;
     while (i<iNumber->iExp && fraciszero)
@@ -1176,6 +1177,7 @@ void BigNumber::Floor(const BigNumber& aX)
     }
     iNumber->Delete(0,iNumber->iExp);
     iNumber->iExp=0;
+
     if (iNumber->iNegative && !fraciszero)
     {
         ANumber orig(iPrecision);
@@ -1204,6 +1206,24 @@ void BigNumber::Precision(LispInt aPrecision)
 //basic object manipulation
 LispBoolean BigNumber::Equals(const BigNumber& aOther) const
 {
+/*Not working yet? Not good rounding...
+  LispInt lowest = iNumber->iPrecision;
+  if (aOther.iNumber->iPrecision<lowest)
+    lowest = aOther.iNumber->iPrecision;
+  ANumber a1(lowest);
+  a1.CopyFrom(*iNumber);
+  ANumber a2(lowest);
+  a2.CopyFrom(*aOther.iNumber);
+  a1.ChangePrecision(lowest);
+  a2.ChangePrecision(lowest);
+  ANumber diff(lowest);
+  ANumber otherNeg(lowest);
+  ::Negate(a2);
+	::Add(diff, a1, a2);
+  return !Significant(diff);
+ */
+/*TODO remove, old? */
+
   BigNumber diff;
   BigNumber otherNeg;
   otherNeg.Negate(aOther);
@@ -1211,6 +1231,7 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
   diff.iNumber->ChangePrecision(iPrecision);
 
   return !Significant(*diff.iNumber);
+/* */
 }
 
 
@@ -1221,8 +1242,10 @@ LispBoolean BigNumber::IsInt() const
 
 
 LispBoolean BigNumber::IsIntValue() const
-{//FIXME ???
-  return (iType == KInt);
+{
+//FIXME I need to round first to get more reliable results.
+  if (IsInt()) return LispTrue;
+  return (iNumber->iExp == 0 && iNumber->iTensExp == 0);
 }
 
 
@@ -1252,6 +1275,7 @@ LispBoolean BigNumber::IsSmall() const
 
 void BigNumber::BecomeInt()
 {
+  iNumber->ChangePrecision(0);
   SetIsInteger(LispTrue);
 }
 
@@ -1279,6 +1303,7 @@ void BigNumber::SetTo(LispInt aValue)
   //FIXME platform code
   sprintf(dummy,"%d",aValue);
   SetTo(dummy,iPrecision,10);
+  SetIsInteger(LispTrue);
 #else
   //FIXME
   LISPASSERT(0);
@@ -1289,10 +1314,14 @@ void BigNumber::SetTo(LispInt aValue)
 void BigNumber::SetTo(double aValue)
 {
 #ifdef HAVE_STDIO_H
+  iPrecision = 53;	// standard double has 53 bits
   char dummy[150];
   //FIXME platform code
-  sprintf(dummy,"%g",aValue);
+  char format[20];
+  sprintf(format,"%%.%dg",iPrecision);
+  sprintf(dummy,format,aValue);
   SetTo(dummy,iPrecision,10);
+  SetIsInteger(LispFalse);
 #else
   //FIXME
   LISPASSERT(0);

@@ -254,8 +254,8 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
         if (n1 == NULL) return LispFalse;
         if (n2 == NULL) return LispFalse;
         if (n1->Equals(*n2)) return LispTrue;
-//this should be enabled        return LispFalse;
-
+//this should be enabled
+//        return LispFalse;
     }
 
 #endif
