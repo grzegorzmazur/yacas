@@ -57,7 +57,7 @@ In other words, the code in {N()} does the equivalent of
 	LazyGlobal(gamma);
 After this, evaluating an expression such as {1/2+gamma} will call the function {gamma()} but not the function {Pi()}.
 
-*EG
+*EG notest
 
 	In> CachedConstant( my'cache, Ln2, LnNum(2) )
 	Out> 0.6931471806;
@@ -323,12 +323,14 @@ and the function {MathSetExactBits} returns the unmodified integer {x}.
 The default precision of 10 decimals corresponds to 33 bits:
 	In> MathGetExactBits(1000.123)
 	Out> 33;
-	In> MathSetExactBits(10., 20)
+	In> x:=MathSetExactBits(10., 20)
 	Out> 10.;
-	In> MathGetExactBits(%)
+	In> MathGetExactBits(x)
 	Out> 20;
 Prepare a "floating zero" representing an interval [-4, 4]:
 	In> x:=MathSetExactBits(0., -2)
 	Out> 0.;
+	In> x=0
+	Out> True;
 
 *SEE Precision, GetPrecision
