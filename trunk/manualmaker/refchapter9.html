@@ -74,149 +74,628 @@ Control flow functions
 
 </A>
 <H3>
-<HR>MaxEvalDepth(n)
+<HR>MaxEvalDepth
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+MaxEvalDepth(n)
+<H5>
+Parameters:
+</H5>
+n - new maximum evalution depth
+<H5>
+Description:
+</H5>
 
+Use this command to set the maximum evaluation depth to the integer
+"n". The default value is 1000. The function <B><TT>MaxEvalDepth</TT></B> returns <B><TT>True</TT></B>.
+<p> </p>
+The point of having a maximum evaluation depth is to catch any
+infinite recursion. For example, after the definition <B><TT>f(x) := f(x)</TT></B>, evaluating the expression <B><TT>f(x)</TT></B> would call <B><TT>f(x)</TT></B>, which would
+call <B><TT>f(x)</TT></B>, etcetera. The interpreter will halt if
+the maximum evaluation depth is reached. Also indirect recursion, like
+the pair of definitions <B><TT>f(x) := g(x)</TT></B> and <B><TT>g(x) := f(x)</TT></B>, will be caught.
+<H5>
+Examples:
+</H5>
 
-Use this command to set the maximum evaluation depth. This will
-catch any infinite recursion. For example, f(x):=f(x); and then
-f(x) would keep on calling f(x), which would call f(x), which
-would call f(x)... etcetera. The interpreter will halt if
-the call is n deep. The default value is 100000.
+An example of an infinite recursion, caught because the maximum
+evaluation depth is reached.<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> f(x) := f(x)
+Out> True;
+In> f(x)
+Error on line 1 in file [CommandLine]
+Max evaluation stack depth reached.
+Please use MaxEvalDepth to increase the stack size as needed.</PRE></TR>
+</TABLE>
+<p> </p>
+However, a long calculation may cause the maximum evaluation depth to
+be reached without the presence of infinite recursion. The function <B><TT>MaxEvalDepth</TT></B> is meant for these cases. <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> 10 # g(0) <-- 1;
+Out> True;
+In> 20 # g(n_IsPositiveInteger) <-- 2 * g(n-1);
+Out> True;
+In> g(1001);
+Error on line 1 in file [CommandLine]
+Max evaluation stack depth reached.
+Please use MaxEvalDepth to increase the stack size as needed.
+
+In> MaxEvalDepth(10000);
+Out> True;
+In> g(1001);
+Out> 214301721437253464189685009812000362112280962341106721488750077674070210224
+98722449863967576313917162551893458351062936503742905713846280871969155149397149
+60786913554964846197084214921012474228375590836430609294996716388253479753511833
+1087892154125829142392955373084335320859663305248773674411336138752;</PRE></TR>
+</TABLE>
 
 <A NAME="Hold">
 
 </A>
 <H3>
-<HR>Hold(expression)
+<HR>Hold
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Hold(expr)
+<H5>
+Parameters:
+</H5>
+expr - expression to hold
+<H5>
+Description:
+</H5>
 
-Hold(expression) : returns expression unevaluated.
+The expression "expr" is returned unevaluated. This is useful to
+prevent the evaluation of a certain expression in a context in which
+evaluation normally takes place.
+<H5>
+Example:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Echo({ Hold(1+1), "=", 1+1 });
+ 1+1 = 2 
+Out> True;</PRE></TR>
+</TABLE>
 
-
-<A NAME="Eval">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Eval" TARGET="Chapters">
+Eval
+</A>
+, <A HREF="ref.html#HoldArg" TARGET="Chapters">
+HoldArg
+</A>
+, <A NAME="Eval">
 
 </A>
 <H3>
-<HR>Eval(expression)
+<HR>Eval
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Eval(expr)
+<H5>
+Parameters:
+</H5>
+expr - expression to evaluate
+<H5>
+Description:
+</H5>
 
-Eval(expression) : Re-evaluates expression.
+This function explicitly requests an evaluation of the expression
+"expr", and returns the result of this evaluation.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> a := x;
+Out> x;
+In> x := 5;
+Out> 5;
+In> a;
+Out> x;
+In> Eval(a);
+Out> 5;</PRE></TR>
+</TABLE>
 
-<A NAME="While">
+The variable <B><TT>a</TT></B> is bound to <B><TT>x</TT></B>,
+and <B><TT>x</TT></B> is bound to 5. Hence evaluating <B><TT>a</TT></B> will give <B><TT>x</TT></B>. Only when an extra
+evaluation of <B><TT>a</TT></B> is requested, the value 5 is
+returned.
+<p> </p>
+Note that the behaviour would be different if we had exchanged the
+assignments. If the assignment <B><TT>a := x</TT></B> were given
+while <B><TT>x</TT></B> had the value 5, the variable <B><TT>a</TT></B> would also get the value 5 because the assignment
+operator <B><TT>:=</TT></B> evaluates the right-hand side.
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Hold" TARGET="Chapters">
+Hold
+</A>
+, <A HREF="ref.html#HoldArg" TARGET="Chapters">
+HoldArg
+</A>
+, <A HREF="ref.html#:=" TARGET="Chapters">
+:=
+</A>
+, <A NAME="While">
 
 </A>
 <H3>
-<HR>While(predicate) body
+<HR>While
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+While(pred) body
+<H5>
+Parameters:
+</H5>
 
-While(predicate) body : 
-Keep on evaluating "body" while "predicate"
-evaluates to "True". "predicate" is tested
-before evaluating the body. While returns "True".
+pred - predicate deciding whether to keep on looping <br>
+body - expression to loop over
+<H5>
+Description:
+</H5>
 
-<A NAME="Until">
+Keep on evaluating "body" while "pred" evaluates to <B><TT>True</TT></B>. More precisely, <B><TT>While</TT></B>
+evaluates the predicate "pred", which should evaluate to either <B><TT>True</TT></B> or <B><TT>False</TT></B>. If the result is <B><TT>True</TT></B>, the expression "body" is evaluated and then
+the predicate "pred" is again evaluated. If it is still <B><TT>True</TT></B>, the expressions "body" and "pred" are again
+evaluated and so on until "pred" evaluates to <B><TT>False</TT></B>. At that point, the loop terminates and <B><TT>While</TT></B>
+returns <B><TT>True</TT></B>.
+<p> </p>
+In particular, if "pred" immediately evaluates to <B><TT>False</TT></B>, the body is never executed. <B><TT>While</TT></B> is the fundamental looping construct on which
+all other loop commands are based. It is equivalent to the <B><TT>while</TT></B> command in the programming language C.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> x := 0;
+Out> 0;
+In> While (x! < 10^6) [ Echo({x, x!}); x++; ];
+ 0  1 
+ 1  1 
+ 2  2 
+ 3  6 
+ 4  24 
+ 5  120 
+ 6  720 
+ 7  5040 
+ 8  40320 
+ 9  362880 
+Out> True;</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Until" TARGET="Chapters">
+Until
+</A>
+, <A HREF="ref.html#For" TARGET="Chapters">
+For
+</A>
+, <A NAME="Until">
 
 </A>
 <H3>
-<HR>Until(predicate) body
+<HR>Until
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Until(pred) body
+<H5>
+Parameters:
+</H5>
 
-Until repeats a statement until a predicate becomes
-true. A difference with While is that the statement is evaluated
-at least once, as opposed to While where the body statement is
-evaluated zero or more times.
+pred - predicate deciding whether to stop <br>
+body - expression to loop over
+<H5>
+Description:
+</H5>
 
-<A NAME="If">
+Keep on evaluating "body" until "pred" becomes <B><TT>True</TT></B>. More precisely, <B><TT>Until</TT></B> first
+evaluates the expression "body". Then the predicate "pred" is
+evaluated, which should yield either <B><TT>True</TT></B> or <B><TT>False</TT></B>. In the latter case, the expressions "body"
+and "pred" are again evaluated and this continues as long as
+"pred" is <B><TT>False</TT></B>. As soon as "pred" yields <B><TT>True</TT></B>, the loop terminates and <B><TT>Until</TT></B> returns <B><TT>True</TT></B>.
+<p> </p>
+The main difference with <B><TT>While</TT></B> is that <B><TT>Until</TT></B> always evaluates the body at least once, but <B><TT>While</TT></B> may not evaluate the body at all. Besides, the
+meaning of the predicate is reversed: <B><TT>While</TT></B> stops
+if "pred" is <B><TT>False</TT></B> while <B><TT>Until</TT></B> stops if "pred" is <B><TT>True</TT></B>.  <p> </p> The command
+<B><TT>Until(pred) body;</TT></B> is equivalent to <B><TT>pred; While(Not pred) body;</TT></B>. In fact, the
+implementation of <B><TT>Until</TT></B> is based on the internal
+command <B><TT>While</TT></B>. The <B><TT>Until</TT></B>
+command can be compared to the <B><TT>do ... while</TT></B>
+construct in the programming language C.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> x := 0;
+Out> 0;
+In> Until (x! > 10^6) [ Echo({x, x!}); x++; ];
+ 0  1 
+ 1  1 
+ 2  2 
+ 3  6 
+ 4  24 
+ 5  120 
+ 6  720 
+ 7  5040 
+ 8  40320 
+ 9  362880 
+Out> True;</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#While" TARGET="Chapters">
+While
+</A>
+, <A HREF="ref.html#For" TARGET="Chapters">
+For
+</A>
+, <A NAME="If">
 
 </A>
 <H3>
-<HR>If(predicate,then,else)
+<HR>If
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
 
-If(predicate,then,else) : 
-If statement. If "predicate" evaluates to
-"True", return result of evaluating the
-"then" body, else if there is a "else" body,
-return that result, otherwise return "False".
+If(pred, then) <br>
+If(pred, then, else)
+<H5>
+Parameters:
+</H5>
+
+pred - predicate to test <br>
+then - expression to evaluate if "pred" is True <br>
+else - expression to evaluate if "pred" is False
+<H5>
+Description:
+</H5>
+
+This command implements a branch point. The predicate "pred" is
+evaluated, which should result in either <B><TT>True</TT></B> or <B><TT>False</TT></B>. In the first case, the expression "then" is
+evaluated and returned. If the predicate yields <B><TT>False</TT></B>, the expression "else" (if present) is evaluated and
+returned. If there is no "else" branch (ie. if the first calling
+sequence is used), the <B><TT>If</TT></B> expression returns <B><TT>False</TT></B>.
+<H5>
+Examples:
+</H5>
+
+The sign function is defined to be 1 if its argument is positive and
+-1 if its argument is negative. A possible implementation is <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> mysign(x) := If (IsPositiveReal(x), 1, -1); 
+Out> True;
+In> mysign(Pi);
+Out> 1;
+In> mysign(-2.5);
+Out> -1;</PRE></TR>
+</TABLE>
+
+Note that this will give incorrect results, if "x" cannot be
+numerically approximated.<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> mysign(a);
+Out> -1;</PRE></TR>
+</TABLE>
+
+Hence a better implementation would be<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> mysign(_x)_IsNumber(N(x)) <-- If (IsPositiveReal(x), 1, -1);
+Out> True;</PRE></TR>
+</TABLE>
 
 <A NAME="SystemCall">
 
 </A>
 <H3>
-<HR>SystemCall(string)
+<HR>SystemCall
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+SystemCall(str)
+<H5>
+Parameters:
+</H5>
+str - string containing the command to call
+<H5>
+Description:
+</H5>
 
-SystemCall(string) : 
-This will call a command in the surrounding shell Yacas was invoked
-from. SystemCall can be used to pass commands to other programs
-or the operating system. 
+The command contained in the string "str" is executed by the
+underlying Operating System. The return value of <B><TT>SystemCall</TT></B> is <B><TT>True</TT></B>.
+<p> </p>
+This command is not allowed in the body of the <B><TT>Secure</TT></B> command and will lead to an error.
+<H5>
+Examples:
+</H5>
 
-
-<A NAME="Function">
+In a UNIX environment, the command <B><TT>SystemCall("ls")</TT></B> would list the contents of the current directory.
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Secure" TARGET="Chapters">
+Secure
+</A>
+, <A NAME="Function">
 
 </A>
 <H3>
-<HR>Function("operator",{arguments} ) body
+<HR>Function
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Function("op", {arg,...}) body
+<H5>
+Parameters:
+</H5>
 
-Function("operator",{arguments} ) body : 
-Use this to declare a simple function, one that doesn't need an entire
-rules data base.
+op - name of the function <br>
+arg - formal argument to the function <br>
+body - expression compromising the body of the function
+<H5>
+Description:
+</H5>
 
+This command can be used to declare a simple function. It is
+equivalent to the rule <B><TT>op(_arg, ...) <-- body</TT></B>. Any
+previous rules associated with "op" (with the same arity) will be
+discarded. More complicated function can be defined using a rule
+database.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Function("FirstOf", {list})  list[1];
+Out> True;
+In> FirstOf({a,b,c});
+Out> a;</PRE></TR>
+</TABLE>
 
-<A NAME="Use">
+This defines a function <B><TT>FirstOf</TT></B> which returns the
+first element of a list. Equivalent definitions would be <B><TT>FirstOf(_list) <-- list[1]</TT></B> or <B><TT>FirstOf(list) := list[1]</TT></B>.
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#TemplateFunction" TARGET="Chapters">
+TemplateFunction
+</A>
+, <A HREF="ref.html#Rule" TARGET="Chapters">
+Rule
+</A>
+, <A HREF="ref.html#RuleBase" TARGET="Chapters">
+RuleBase
+</A>
+, <A HREF="ref.html#:=" TARGET="Chapters">
+:=
+</A>
+, <A NAME="Use">
 
 </A>
 <H3>
-<HR>Use("file")
+<HR>Use
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Use(name)
+<H5>
+Parameters:
+</H5>
+name - name of the file to load
+<H5>
+Description:
+</H5>
 
-Use("file") : 
-This function loads a file if it was not already loaded with Use.
-
-<A NAME="For">
+If the file "name" has been loaded before, either by an earlier call
+to <B><TT>Use</TT></B> or via the <B><TT>DefLoad</TT></B>
+mechanism, nothing happens. Otherwise all expressions in the file are
+read and evaluated. <B><TT>Use</TT></B> always returns <B><TT>True</TT></B>.
+<P> </P>
+The purpose of this function is to make sure that the file will at
+least have been loaded, but is not loaded twice.
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Load" TARGET="Chapters">
+Load
+</A>
+, <A HREF="ref.html#DefLoad" TARGET="Chapters">
+DefLoad
+</A>
+, <A HREF="ref.html#DefaultDirectory" TARGET="Chapters">
+DefaultDirectory
+</A>
+, <A NAME="For">
 
 </A>
 <H3>
-<HR>For(start,predicate,increment) body
+<HR>For
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+For(init, pred, incr) body
+<H5>
+Parameters:
+</H5>
 
-For(start,predicate,increment) body : 
-Looping in a C style. "start" gets called, and then "body" as
-long as "predicate" evaluates to True", evaluating
-"increment" each time after body was evaluated. Returns "True".
+init - expression for performing the initialization <br>
+pred - predicate deciding whether to continue the loop <br>
+incr - expression to increment the counter <br>
+body - expression to loop over
+<H5>
+Description:
+</H5>
 
+This commands implements a C style <B><TT>for</TT></B> loop. First
+of all, the expression "init" is evaluated. Then the predicate
+"pred" is evaluated, which should return <B><TT>True</TT></B> or
+<B><TT>False</TT></B>. Next the loop is executed as long as the
+predicate yields <B><TT>True</TT></B>. One traversion of the loop
+consists of the subsequent evaluations of "body", "incr", and
+"pred". Finally, the value <B><TT>True</TT></B> is returned.
+<p> </p>
+This command is most often used in a form like <B><TT>For(i=1,
+i<=10, i++) body</TT></B>, which evaluates <B><TT>body</TT></B> with
+<B><TT>i</TT></B> subsequently set to 1, 2, 3, 4, 5, 6, 7, 8, 9,
+and 10.
+<p> </p>
+The expression <B><TT>For(init, pred, incr) body</TT></B> is
+equivalent to <B><TT>init; While(pred) [body; incr;]</TT></B>.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> For (i:=1, i<=10, i++) Echo({i, i!});
+ 1  1 
+ 2  2 
+ 3  6 
+ 4  24 
+ 5  120 
+ 6  720 
+ 7  5040 
+ 8  40320 
+ 9  362880 
+ 10  3628800 
+Out> True;</PRE></TR>
+</TABLE>
 
-
-<A NAME="ForEach">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#While" TARGET="Chapters">
+While
+</A>
+, <A HREF="ref.html#Until" TARGET="Chapters">
+Until
+</A>
+, <A HREF="ref.html#ForEach" TARGET="Chapters">
+ForEach
+</A>
+, <A NAME="ForEach">
 
 </A>
 <H3>
-<HR>ForEach(item,{list}) body
+<HR>ForEach
 </H3>
+Standard math library<br><H5>
+Calling sequence:
+</H5>
+ForEach(var, list) body
+<H5>
+Parameters:
+</H5>
 
-ForEach(item,{list}) body : 
-This function loops over each element in {list}, assigning it to
-the variable "item", and calling "body". Returns "True".
+var - looping variable <br>
+list - list of values to assign to "var" <br>
+body - expression to evaluate with different values of "var"
+<H5>
+Description:
+</H5>
 
+The expression "body" is evaluated multiple times. The first time,
+"var" has the value of the first element of "list", then it gets
+the value of the second element and so on. <B><TT>ForEach</TT></B>
+returns <B><TT>True</TT></B>.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+ In> ForEach(i,{2,3,5,7,11}) Echo({i, i!});
+ 2  2 
+ 3  6 
+ 5  120 
+ 7  5040 
+ 11  39916800 
+Out> True;</PRE></TR>
+</TABLE>
 
-<A NAME="Apply">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#For" TARGET="Chapters">
+For
+</A>
+, <A NAME="Apply">
 
 </A>
 <H3>
-<HR>Apply("oper",{list})
+<HR>Apply
 </H3>
+Standard math library<br><H5>
+Calling sequence:
+</H5>
+Apply(fn, arglist)
+<H5>
+Parameters:
+</H5>
 
-Apply("oper",{list}) : 
-This function applies a operator to the arguments mentioned in the list.
-Eg. "Apply("+",{2,3});" would evaluate to "5".
+fn - function to apply <br>
+arglist - list of arguments
+<H5>
+Description:
+</H5>
 
-You can also apply pure functions, declared using the form {varlist,body}.
-Example: "Apply( {{x,y},x+y} , {2,3} );" would also evaluate to 5.
+This function applies the function "fn" to the arguments in
+"arglist" and returns the result. The first parameter "fn" can
+either be a string containing the name of a function  or a pure
+function. Pure functions, modelled after lambda-expressions, have the
+form "{varlist,body}", where "varlist" is the list of formal
+parameters. Upon application, the formal paramaters are assigned the
+values in "arglist" (the second parameter of <B><TT>Apply</TT></B>) and the "body" is evaluated
+<p> </p>
+An shorthand for <B><TT>Apply</TT></B> is provided by the <B><TT>@</TT></B> operator.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Apply("+", {5,9});
+Out> 14;
+In> Apply({{x,y}, x-y^2}, {Cos(a), Sin(a)});
+Out> Cos(a)-Sin(a)^2;</PRE></TR>
+</TABLE>
 
-
-<A NAME="MapArgs">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Map" TARGET="Chapters">
+Map
+</A>
+, <A HREF="ref.html#MapSingle" TARGET="Chapters">
+MapSingle
+</A>
+, <A HREF="ref.html#@" TARGET="Chapters">
+@
+</A>
+, <A NAME="MapArgs">
 
 </A>
 <H3>
@@ -225,24 +704,27 @@ Example: "Apply( {{x,y},x+y} , {2,3} );" would also evaluate to 5.
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-MapArgs(expression,operation)
+MapArgs(expr, fn)
 <H5>
 Parameters:
 </H5>
-expression - an expression to work on <br>
-operation - an operation to perform on each argument
+expr - an expression to work on <br>
+fn - an operation to perform on each argument
 <H5>
 Description:
 </H5>
-MapArgs performs an operation on each argument to a function
-call specified in the expression.
+
+Every top-level argument in "expr" is substituted by the result of
+applying "fn" to this argument. Here "fn" can be either the name
+of a function or a pure function.
 <H5>
 Examples:
 </H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> MapArgs(f(x,y,z),"Sin")
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> MapArgs(f(x,y,z),"Sin");
 Out> f(Sin(x),Sin(y),Sin(z));
-</PRE></TR>
+In> MapArgs({3,4,5,6}, {{x},x^2});
+Out> {9,16,25,36};</PRE></TR>
 </TABLE>
 
 <H5>
@@ -261,27 +743,101 @@ Apply
 
 </A>
 <H3>
-<HR>Subst(from,to)body
+<HR>Subst
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Subst(from, to) expr
+<H5>
+Parameters:
+</H5>
 
+from - expression to be substituted <br>
+to - expression to substitute for "from" <br>
+expr - expression in which the substitution takes place
+<H5>
+Description:
+</H5>
 
-Subst replaces any occurrence of from in body with to. <BR>
+This function substitutes every occurence of "from" in "expr" by
+"to". This is a syntactical substitution: only places where "from"
+occurs as a subexpression are affected.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Subst(x, Sin(y)) x^2+x+1;
+Out> Sin(y)^2+Sin(y)+1;
+In> Subst(a+b, x) a+b+c;
+Out> x+c;
+In> Subst(b+c, x) a+b+c;
+Out> a+b+c;</PRE></TR>
+</TABLE>
 
-Example:
-  Subst(x,Sin(y)) x+x -> Sin(y)+Sin(y)
-
-<A NAME="WithValue">
+The explanation for the last result is that the expression <B><TT>a+b+c</TT></B> is internally stored as <B><TT>(a+b)+c</TT></B>. Hence <B><TT>a+b</TT></B> is a subexpression, but <B><TT>b+c</TT></B> is not.
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#WithValue" TARGET="Chapters">
+WithValue
+</A>
+, <A HREF="ref.html#/:" TARGET="Chapters">
+/:
+</A>
+, <A NAME="WithValue">
 
 </A>
 <H3>
-<HR>WithValue(variable,value,expression)
+<HR>WithValue
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
 
-WithValue(variable,value,expression) : evaluate expression, with
-variable set to value. variable and value can be lists of
-variables and values.
+WithValue(var, val, expr) <br>
+WithValue({var,...}, {val,...}, expr)
+<H5>
+Parameters:
+</H5>
 
-<A NAME="/:">
+var - variable to assign to <br>
+val - value to be assigned to "var" <br>
+expr - expression to evaluate with "var" equal to "val"
+<H5>
+Description:
+</H5>
+
+First, the expression "val" is assigned to the variable
+"var". Then, the expression "expr" is evaluated and
+returned. Finally, the assignment is reversed so that the variable 
+"var" has the same value as it had before <B><TT>WithValue</TT></B> was evaluated.
+<p> </p>
+The second calling sequence assigns the first element in the list of
+values to the first element in the list of variables, the second value
+to the second variable, etcetera.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> WithValue(x, 3, x^2+y^2+1);
+Out> y^2+10;
+In> WithValue({x,y}, {3,2}, x^2+y^2+1);
+Out> 14;</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Subst" TARGET="Chapters">
+Subst
+</A>
+, <A HREF="ref.html#/:" TARGET="Chapters">
+/:
+</A>
+, <A NAME="/:">
 
 </A>
 <A NAME="/::">
@@ -294,8 +850,8 @@ Standard math library<br><H5>
 Calling Sequence:
 </H5>
 
-expression /: patterns <br>
-expressions /:: patterns
+expression /: patterns (prec. 10000) <br>
+expressions /:: patterns (prec. 10000)
 <H5>
 Parameters:
 </H5>
@@ -402,7 +958,10 @@ In> ??
 <H5>
 See Also:
 </H5>
-<A NAME="TraceStack">
+<A HREF="ref.html#Help" TARGET="Chapters">
+Help
+</A>
+, <A NAME="TraceStack">
 
 </A>
 <H3>
@@ -478,38 +1037,130 @@ TraceRule
 
 </A>
 <H3>
-<HR>TraceExp(expression)
+<HR>TraceExp
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+TraceExp(expr)
+<H5>
+Parameters:
+</H5>
+expr - expression to trace
+<H5>
+Description:
+</H5>
 
-TraceExp(expression) : turn on tracing facility, and evaluate
-expression. This is useful for tracing the evaluation of small
-routines interactively from the command line.
+The expression "expr" is evaluated with the tracing facility turned
+on. This means that every subexpression, which is evaluated, is shown
+before and after evaluation. Before evaluation, it is shown in the
+forn <B><TT>TrEnter(x)</TT></B>, where <B><TT>x</TT></B>
+denotes the subexpression being evaluated. After the evaluation the
+line <B><TT>TrLeave(x,y)</TT></B> is printed, where <B><TT>y</TT></B> is the result of the evaluation. The indentation
+shows the nesting level.
+<p> </p>
+Note that this command usually generates huge amounts of output. A
+more specific form of tracing (eg. <B><TT>TraceRule</TT></B>) is
+probably more useful  for all but very simple expressions.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> TraceExp(2+3);
+  TrEnter(2+3);
+    TrEnter(2);
+    TrLeave(2, 2);
+    TrEnter(3);
+    TrLeave(3, 3);
+    TrEnter(IsNumber(x));
+      TrEnter(x);
+      TrLeave(x, 2);
+    TrLeave(IsNumber(x),True);
+    TrEnter(IsNumber(y));
+      TrEnter(y);
+      TrLeave(y, 3);
+    TrLeave(IsNumber(y),True);
+    TrEnter(True);
+    TrLeave(True, True);
+    TrEnter(MathAdd(x,y));
+      TrEnter(x);
+      TrLeave(x, 2);
+      TrEnter(y);
+      TrLeave(y, 3);
+    TrLeave(MathAdd(x,y),5);
+  TrLeave(2+3, 5);
+Out> 5;</PRE></TR>
+</TABLE>
 
-<A NAME="TraceRule">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#TraceStack" TARGET="Chapters">
+TraceStack
+</A>
+, <A HREF="ref.html#TraceRule" TARGET="Chapters">
+TraceRule
+</A>
+, <A NAME="TraceRule">
 
 </A>
 <H3>
-<HR>TraceRule(template)expression
+<HR>TraceRule
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+TraceRule(templ) expr
+<H5>
+Parameters:
+</H5>
 
-Tracerule(template)expression : turn on tracing facility given
-the template, and evaluate expression. the template is an example
-of the function to trace on. template=x+y would trace all additions,
-showing the arguments passed in, and the result of the addition.
-Only user-defined functions can be traced.
+templ - template showing the operator to trace <br>
+expr - expression to evaluate with tracing on
+<H5>
+Description:
+</H5>
+
+The tracing facility is turned on for subexpressions of the form
+"templ", and the expression "expr" is evaluated. The template
+"templ" is an example of the function to trace on. Specifically, all
+subexpressions with the same top-level operator and arity as "templ"
+are showed. The subexpressions are displayed before (indicated with <B><TT>TrEnter</TT></B>) and after (<B><TT>TrLeave</TT></B>)
+evaluation. In between, the arguments are showed before and after
+evaluation (<B><TT>TrArg</TT></B>). Only function defined in
+scripts can be traced.
 <P>  </P>
 This is useful for tracing a function that is called from within
 another function. This way you can see how your function behaves
 in the environment it is used in.
-<P>  </P>
-An example invocation of TraceRule is<TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In( 1 ) = TraceRule(x+y)2+3*5+4;<P>  </P></PRE></TR>
-</TABLE>
-Which should then show something to the effect of <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>    ENTER:2+3*5+4<P>  </P>      ENTER:2+3*5<P>  </P>          ARG:2 <- 2<P>  </P>          ARG:3*5 <- 15<P>  </P>      LEAVE:2+3*5 -> 17<P>  </P>        ARG:2+3*5 <- 17<P>  </P>        ARG:4 <- 4<P>  </P>    LEAVE:2+3*5+4 -> 21<P>  </P>Out( 0 ) = 21;</PRE></TR>
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> TraceRule(x+y) 2+3*5+4;
+    TrEnter(2+3*5+4);
+      TrEnter(2+3*5);
+          TrArg(2, 2);
+          TrArg(3*5, 15);
+      TrLeave(2+3*5, 17);
+        TrArg(2+3*5, 17);
+        TrArg(4, 4);
+    TrLeave(2+3*5+4, 21);
+Out> 21;</PRE></TR>
 </TABLE>
 
-
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#TraceStack" TARGET="Chapters">
+TraceStack
+</A>
+, <A HREF="ref.html#TraceExp" TARGET="Chapters">
+TraceExp
+</A>
+, 
 </BODY>
 
 </FONT>
