@@ -20,8 +20,8 @@
 #include "lispplugin.h"
 #include "ctokenizer.h"
 #include "xmltokenizer.h"
-#include "archiver.h"
 
+class CCompressedArchive; /* defined in archiver.h */
 
 class LispDefFiles;
 class InputDirectories : public CDeletingArrayGrower<LispStringPtr>

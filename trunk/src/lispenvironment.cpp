@@ -9,6 +9,7 @@
 #include "lispuserfunc.h"
 #include "mathuserfunc.h"
 #include "errors.h"
+#include "archiver.h"
 
 // we need this only for digits_to_bits
 #include "numbers.h"
