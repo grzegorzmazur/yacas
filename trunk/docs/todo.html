@@ -70,11 +70,6 @@ This is a list of some expressions that currently go wrong:
        Taylor(x,0,5)Sin(x)/x; 
        seems to keep on going for ever, actually due to Limits:
        Limit(x,0)D(x,2)Sin(x)/x; // never terminates, causing the taylor to never terminate
-  <li> In> Factor(17041024)
-       Out> 19*13*11*2^7*7^2;
-       In> Factor(170410240)
-       never stops: problem in PollardRhoFactorize()? why doesn't it detect
-       just one extra factor of 10?
   <li> In> Limit(n, Infinity) n^5/2^n
        Out> Infinity/(Infinity*Ln(2));
        wrong answer -- L'Hospital's theorem is not always the correct thing to
@@ -94,10 +89,7 @@ This is a list of some expressions that currently go wrong:
   <li> TrigSimpCombine(x^500)
 
   <li> some limits not working correctly when using infinity:
-       Limit(x,Infinity) Sin(x),
-       Limit(x,Infinity) Cos(x),
-       Limit(x,Infinity) Tan(x),
-       Limit(x,Infinity) Gamma(x),
+       Limit(x,Infinity) Zeta(x),
        Limit(x,Infinity) Factorial(x),
        Limit(x,Infinity) Abs(x),
 
@@ -325,7 +317,11 @@ These are nice to haves in the engine.
 <li> FourierTransform?
 <li> LaplaceTransform?
 <li> Singular Value Decomposition.
-
+<li> Factorization of integers is not done until it can factorize
+     49000018970000027 = 70000027 * 700000001
+	 and
+     3000000000000000000000061 = 2380105039001857 * 1260448573
+	 within a reasonable time (say, under 1 hour).
 <li> FortranForm
 <li> Resultants
 <li> some DE algos.

@@ -718,7 +718,7 @@ are needed in the program, strings can be used (e.g. {output="gnuplot"}).
 *	{points}: initial number of points (default 23) -- at least that
 many points will be plotted. The initial grid of this many points will be
 adaptively refined. 
-*	{precision}: graphing precision (default $10^(-5)$). This is interpreted as the relative precision of computing the integral of {f(x)} using the grid points. For a smooth, non-oscillating function this value should be roughly 1/(number of screen pixels in the plot).
+*	{precision}: graphing precision (default $10^(-6)$). This is interpreted as the relative precision of computing the integral of $f(x)-Min(f(x)$ using the grid points. For a smooth, non-oscillating function this value should be roughly 1/(number of screen pixels in the plot).
 *	{depth}: max. refinement depth, logarithmic (default 5) -- means there will be at most $2^depth$ extra points per initial grid point.
 *	{output}: symbolic name of the plotting backend. Supported values:
 {gnuplot} (default), {plotutils}, {datafile}, {data}. The {gnuplot} value will display
