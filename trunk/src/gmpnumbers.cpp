@@ -1778,7 +1778,7 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
 			  sig_digits--;	// this is when we have "1.000001" where "." is not a digit, so need to decrement
 	  }
 	  // ok, so we need to represent MAX(aPrecision,sig_digits) digits in base aBase
-	  iPrecision=(LispInt) (0.5001 + double(MAX(aPrecision,sig_digits)) * log2_table_lookup(unsigned(aBase)));
+	  iPrecision=(LispInt) digits_to_bits(MAX(aPrecision,sig_digits), aBase);
 
 	  turn_float();
 //	mpf_set_d(float_, 1.);	// otherwise gmp doesn't really set the precision? FIXME
@@ -1854,7 +1854,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 		aPrecision = 1;	// refuse to print with 0 or fewer digits
     unsigned long size=(unsigned long)aPrecision;
     // how many base digits to print
-    unsigned long print_prec = (unsigned long) (0.5001 + double(iPrecision) / log2_table_lookup(unsigned(aBase)));
+    unsigned long print_prec = bits_to_digits((unsigned long)iPrecision, aBase);
 	print_prec = MIN(print_prec, (unsigned long)aPrecision);
     // the size needed to print the exponent cannot be more than 200 chars since we refuse to print exp-floats
     size += 200;

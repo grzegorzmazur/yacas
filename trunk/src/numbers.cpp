@@ -111,7 +111,7 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
 			  sig_digits--;	// this is when we have "1.000001" where "." is not a digit, so need to decrement
 	  }
 	  // ok, so we need to represent MAX(aPrecision,sig_digits) digits in base aBase
-	  iPrecision=(LispInt) (0.5001 + double(MAX(aPrecision,sig_digits)) * log2_table_lookup(unsigned(aBase)));
+	  iPrecision=(LispInt) digits_to_bits(MAX(aPrecision,sig_digits), aBase);
 
 	  turn_float();
 	  float_.SetTo(aString, iPrecision+GUARD_BITS, aBase);
@@ -152,7 +152,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
   }
   if (IsInt())
   {	// find how many chars we need
-	LispInt size=(LispInt) (0.5001 + double(int_.BitCount()) / log2_table_lookup(aBase));
+	LispInt size=(LispInt) bits_to_digits(int_.BitCount(), aBase);
 	char* buffer=(char*)malloc(size+2);
 	int_.ToString(buffer, size, aBase);
 	// assign result
@@ -173,8 +173,8 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 		aPrecision = 1;	// refuse to print with 0 or fewer digits
     unsigned long size=(unsigned long)aPrecision;
     // how many precise base digits we have. Print not more than print_prec digits.
-    unsigned long print_prec = (unsigned long) (0.5001 + double(iPrecision) / log2_table_lookup(unsigned(aBase)));
-	print_prec = MIN(print_prec, (unsigned long)aPrecision);
+    unsigned long print_prec = bits_to_digits(iPrecision, aBase);
+    print_prec = MIN(print_prec, (unsigned long)aPrecision);
 	
     // the size needed to print the exponent cannot be more than 200 chars since we refuse to print exp-floats
     size += 200;

@@ -1272,16 +1272,88 @@ int main(void)
 		
 
 	}
+	Next("precision control: Precision(), SetTo(), Negate()");
+	
+	{
+	LispInt prec = 36, prec1 = 10, prec2 = 120;
+		BigNumber x("0.1",10,10);
+		CheckValues(x.GetPrecision(), prec, "x has correct initial precision");
+		x.Negate(x);
+		CheckValues(x.GetPrecision(), prec, "correct precision after Negate()");
+		BigNumber y;
+		y.Negate(x);
+		CheckValues(y.GetPrecision(), prec, "correct copying of precision after y:=x");
+		x.Precision(prec1);
+		x.Negate(x);
+		CheckValues(x.GetPrecision(), prec1, "x has fewer bits now");
+		Check(x.Equals(y), "x=y after decreasing precision");
+		Check(y.Equals(x), "y=x after decreasing precision");
+//		CheckEquals(x, y, prec, 2, "x=y by string comparison at initial precision");
+		x.SetTo(y);
+		CheckValues(x.GetPrecision(), prec, "correct copying of precision after y:=x");
+		x.Precision(prec2);
+		CheckValues(x.GetPrecision(), prec2, "x has more bits now");
+		Check(x.Equals(y), "x=y after increasing precision");
+		Check(y.Equals(x), "y=x after increasing precision");
+//		CheckEquals(x, y, prec2, 2, "x=y by string comparison");
+
+		
+	}
+	Next("precision control for Equals() and LessThan()");
+	{
+		BigNumber x("0.1110100001", 0, 2);
+		BigNumber y("0.1110100000", 0, 2);
+		Check(x.GetPrecision()>=10, "x has precision at least 10");
+		Check(!x.Equals(y), "x!=y");
+		Check(!y.Equals(x), "y!=x");
+		Check(!x.LessThan(y), "!x<y after decreasing precision");
+		Check(y.LessThan(x), "y<x after decreasing precision");
+		x.Negate(x);
+		y.Negate(y);
+		Check(x.LessThan(y), "-x<-y");
+		Check(!y.LessThan(x), "!-y<-x");
+//		CheckEquals(x, y, 12, 2, "x=y by string comparison");
+		
+		// reduce precision to make them equal
+		y.Precision(9);
+		Check(x.Equals(y), "x=y after decreasing precision");
+		Check(y.Equals(x), "y=x after decreasing precision");
+		Check(!x.LessThan(y), "!x<y after decreasing precision");
+		Check(!y.LessThan(x), "!y<x after decreasing precision");
+
+		// another number
+		BigNumber z("-0.1110100001", 10, 2);
+		Check(x.Equals(z), "x=z");
+		// any two zeros are equal
+		z.Negate(z);
+		z.Add(z,x, 20);
+		CheckValues(z.Sign(), 0, "z=0. now");
+		x.SetTo(0);
+		Check(x.Equals(z), "x=z");
+		Check(z.Equals(x), "z=x");
+		x.SetTo(0.);
+		Check(x.Equals(z), "x=z");
+		Check(z.Equals(x), "z=x");
+		x.Precision(5);
+		Check(x.Equals(z), "x=z");
+		Check(z.Equals(x), "z=x");
+		x.Precision(-3);
+		Check(x.Equals(z), "x=z");
+		Check(z.Equals(x), "z=x");
+		x.Precision(15);
+		Check(x.Equals(z), "x=z");
+		
+		// zero is equal to a small number
+		x.SetTo("-.00001", 10, 2);
+		y.SetTo("0.", 5, 2);
+		CheckValues(y.GetPrecision(), 5, "y is 0. with 5 bits");
+	}
 
 /* not yet implemented
-	Next("precision control for Equals()");
-	Next("precision control for LessThan()");
-	Next("precision control for SetTo()");
 	Next("precision control for IsIntValue()");
 	Next("precision control for floating zero");
 	Next("Sign() of floating zero");
 	Next("precision control for addition");
-	Next("precision control for negation");
 	Next("precision control for multiplication");
 	Next("precision control for division");
 	Next("precision control for mixed integer/float arithmetic");
