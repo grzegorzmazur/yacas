@@ -1,0 +1,11 @@
+
+
+ToFile("yacdefines.h")
+[
+/*
+Echo({"#define YACAS_DOC ",String(FindFile("documentation/books.html"))});
+*/
+  Echo({"#define YACAS_DOC ",String("proteusbooks.html")});
+  ToFile("proteusbooks.html")PatchLoad("books.html.in");
+  SystemCall("yacas -d > proteus.conf");
+];

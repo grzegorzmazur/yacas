@@ -1,0 +1,22 @@
+:n:Load("flplot");
+:n:Clear(x);
+:iel:True
+Simple graph plotter.
+plot the function
+:
+f(x):=Sin(x);
+:iel:True
+From
+:
+from:=-2
+:iel:True
+To
+:
+to:=2
+:iel:True
+number of steps
+:
+nr:=10
+:h:FlPlot(f(x),from,to,nr);
+:il:Notepad(FindFile("index"));
+Back to index

@@ -1,0 +1,21 @@
+:Contains:Contains( list, element ):
+:Factorize:Factorize( var, from, to, expression ):
+:Factorize:Factorize( list ):
+:FillList:FillList( item, length ):
+:Find:Find( list, item ):
+:FlPlot:FlPlot( f(x), xfrom, xto, steps ):
+:FlPlot:FlPlot( { f1(x), f2(x), ... }, xfrom, xto, steps):
+:Integrate:Integrate( var, from, to ) expression:
+:Limit:Limit( var, value ) expression:
+:Newton:Newton( expression, var, initial, accuracy ):
+:Select:Select( predicate, list ):
+:Subst:Subst( from, to ) expression:
+:SuchThat:SuchThat( expression, var ):
+:Sum:Sum( var, from, to, expression ):
+:Sum:Sum( list ):
+:Taylor:Taylor( var, at, order ) expression:
+:::
+:::
+:::
+:::
+:::

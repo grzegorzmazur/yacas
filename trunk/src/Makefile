@@ -68,7 +68,7 @@ NUMBERS_LIB = libyacasnumbers.a
 PACKAGE = yacas
 RANLIB = ranlib
 RELEASE = 1
-VERSION = 1.0.44rev4
+VERSION = 1.0.45
 scriptdir = ${prefix}/share/yacas/
 
 DEFS = -DHAVE_CONFIG_H -DSCRIPT_DIR=\"$(scriptdir)\"

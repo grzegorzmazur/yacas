@@ -1,0 +1,24 @@
+:n:Clear(x);
+:n:PrettyPrinter("PrettyForm");
+:iel:True
+This is a test notepad.
+It has some basic calculations to play around with. This is
+experimental playing ground.
+
+Follows: a taylor series expansion
+:
+Taylor(x,0,5)Sin(x);
+:iel:True
+And a derivative
+:
+D(x)Sin(x);
+:iel:True
+And integration
+:
+Integrate(x,a,b)Sin(x)
+:iel:True
+Summation
+:
+Sum(1 .. 10)
+:il:Notepad(FindFile("index"));
+Back to index

@@ -25,6 +25,9 @@ To install, do the following:
    a good starting point to see some example source code.
    You can always type '??', which should launch the help.
 
+To compile and install Proteus, the user interface for Yacas, please go
+into the proteus/ directory and read the readme there.
+
 
 ************************************************************
 

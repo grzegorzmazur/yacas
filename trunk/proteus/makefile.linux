@@ -1,0 +1,40 @@
+
+.SUFFIXES: .cpp
+
+YACAS_DIR = ../src
+
+CXX		=c++
+INCS = -I$(YACAS_DIR) -I$(YACAS_DIR)/plat/linux32 -Ifl_editor-0.4/
+CXXFLAGS	= -O2 -Wall -Wno-return-type   -I/usr/X11R6/include
+
+LDLIBS		=  -L/usr/X11R6/lib -lX11 -lXext  -lm -ldl
+GLDLIBS		=  -L/usr/X11R6/lib  -lGLU -lGL -lX11 -lXext  -lm
+FLTKLIBS        = -lfltk
+
+LIBS = $(LDLIBS) $(FLTKLIBS)
+GLIBS = $(GLDLIBS) $(FLTKLIBS)
+
+
+THISFILE = makefile.linux
+
+all-inclusive: conf
+	make clean      -f $(THISFILE)
+	make calculator -f $(THISFILE)
+	make clean      -f $(THISFILE)
+	make worksheet  -f $(THISFILE)
+
+calculator:
+	make proteus EXENAME=proteuscalculator DEFINES=-DCALCULATOR -f $(THISFILE)
+
+worksheet:
+	make proteus EXENAME=proteusworksheet DEFINES=-DWORKSHEET -f $(THISFILE)
+
+install:
+	cp proteusworksheet proteuscalculator /usr/local/bin/
+	cp proteus.conf /etc/proteus.conf
+	cp hints /usr/local/share/yacas/
+	cp proteusbooks.html /usr/local/share/yacas/documentation/proteusbooks.html
+
+include makeinclude
+
+

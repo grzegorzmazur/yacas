@@ -1,0 +1,54 @@
+<HTML>
+<HEAD><TITLE>Yacas documentation</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<center><H1>Yacas documentation</H1></center><BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+
+<P>
+     <A HREF=<? Write( FindFile("documentation/introchapters.html"));?>
+     
+     TARGET="_top">
+Introduction to Yacas: tutorial and examples
+</A>
+
+     This document gives a short introduction on Yacas.
+Included is a short tutorial on the syntax, and some
+commands to get you started. There are also some examples.
+
+</P>
+<P>
+     <A HREF=<? Write( FindFile("documentation/refchapters.html"));?>
+      
+     TARGET="_top">
+Yacas users function reference
+</A>
+
+     A reference of functions accessible from within Yacas.
+This reference contains all the functions that can be useful from
+the command line
+</P>
+<P>
+     <A HREF=<? Write( FindFile("documentation/refprogchapters.html"));?>
+      
+     TARGET="_top">
+Yacas programmers function reference
+</A>
+
+     A reference of functions accessible from within Yacas.
+This reference contains all the functions that might be useful
+when programming in Yacas.
+</P>
+<P>
+     <A HREF=<? Write( FindFile("documentation/codingchapters.html"));?>
+      
+     TARGET="_top">
+Programming in Yacas
+</A>
+
+     This document should get you started programming in Yacas.</TR>
+</P>
+
+
+</BODY>
+
+</FONT>
+
+</HTML>
