@@ -114,7 +114,6 @@ input(iEnvironment.iInputStatus)
 
     SetCommand(LispIsFunction    ,"IsFunction");
     SetCommand(LispIsAtom        ,"IsAtom");
-    SetCommand(LispIsPromptShown        ,"IsPromptShown");
     SetCommand(LispIsNumber      ,"IsNumber");
     SetCommand(LispIsInteger     ,"IsInteger");
     SetCommand(LispIsList        ,"IsList");
@@ -215,6 +214,7 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispTraceRule,"TraceRule");
     SetCommand(LispTraceStack,"TraceStack");
     SetCommand(LispReadLisp,"LispRead");
+    SetCommand(LispReadLispListed,"LispReadListed");
     SetCommand(LispType,"Type");
 
     SetCommand(LispStringMid,"StringMid");

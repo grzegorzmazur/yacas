@@ -27,6 +27,7 @@ public:
     LispTokenizer& iTokenizer;
     LispInput& iInput;
     LispHashTable& iHashTable;
+    LispInt iListed;
 };
 
 

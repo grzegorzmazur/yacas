@@ -115,3 +115,87 @@ This is implemented in the function {MakeFunctionPlugin()} (see file {unix.ys} i
 Now we can use the function {fFast(x,y)} which is implemented using an external plugin library. The function {MakeFunctionPlugin()} assumes that all arguments and return values of functions are real floating-point numbers. The plugin libraries it creates are always in the {plugins.tmp/} subdirectory of current working directory and are named like {libNNN_plugin_cc.so}.
 
 If {MakeFunctionPlugin()} is called again to create a plugin function with the same name (but different body), the DLL will be unloaded and loaded as necessary.
+
+
+		Embedding Yacas into a {c} or {c++} application
+
+The current version of {Yacas} (1.0.54) has preliminary facilities
+for embedding Yacas into your own programs, through linking with
+a normal library.
+
+The {Yacas} header files are installed in {/usr/local/share/yacas/include},
+and the libraries in {/usr/local/share/yacas/lib}. The main entry library
+is the {cyacas} library, which offers an interface which can be reached
+through a normal {c} or {c++} program. The API it offers is the following:
+
+	void yacas_init();
+Initialize Yacas. This function has to be called before calling the
+other functions. This function establishes a main evaluation environment
+for Yacas expressions to be simplified in.
+	
+	void yacas_eval(char* expression);
+Evaluate an expression. The result (or possible error)
+can be obtained through the {yacas_error} and {yacas_result} functions,
+if so desired.
+
+	char* yacas_error();
+Return a pointer to a string explaining the error
+if an error occurred, or NULL otherwise.
+
+	char* yacas_result();
+Return a string representation of the result of
+evaluating an expression. This function is only meaningful if
+there was no error. In the case of an error, the return value
+of {yacas_result} should be considered undefined.
+
+	void yacas_exit();
+Clean up all things related to the main Yacas
+evaluation environment
+
+The directory {embed/} contains some examples demonstrating calling
+Yacas from your own programs. Use the {makefile.examples} makefile
+to compile the examples (it is in a separate makefile because it is
+not yet guaranteed to work on all platforms, so it might otherwise
+break builds on some platforms).
+
+The simplest (hello world) example is {example2}, which reads:
+
+	#include <stdio.h>
+	#include "cyacas.h"
+	
+	int main(int argc, char** argv)
+	{
+	  yacas_init();
+	  yacas_eval("D(x)Sin(x)");
+	  if (!yacas_error()) printf("%s\n",yacas_result());  
+	  yacas_exit();
+	  return 0;
+	}
+
+And yields on the command line:
+
+	[user@localhost embed]# ./example2
+	Cos(x);
+	[user@localhost embed]# 
+
+
+The example {example1} allows you to pass expressions on the command 
+line:
+
+	[root@localhost embed]# ./example1 "D(x)Sin(x)" "Taylor(x,0,5)Sin(x)"
+	Input> D(x)Sin(x)
+	Output> Cos(x);
+	Input> Taylor(x,0,5)Sin(x)
+	Output> x-x^3/6+x^5/120;
+
+and {example3} shows a piece of code accepting an expression
+in Lisp syntax, the result being printed to the console using {PrettyForm}.
+
+The interface described above will probably not change much in the future,
+but the way to compile and link might. In an ideal world, there would be
+one library {libcyacas.a} and one header file {cyacas.h}, which get
+installed in a place where all programs can find it. Perhaps a dynamic
+link library is even better.
+
+
+
