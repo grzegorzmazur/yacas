@@ -1,5 +1,17 @@
 /* Numerical testers - all confirmed with Matlab 6r12.0 */
+
+Macro(NumericEqual,{left,right,precision})
+[
+  Verify(RoundTo((@left)-(@right),@precision),0);
+];
+
 Precision(10);
+
+/* Got the first digits of Pi from the following page:
+   http://www.cecm.sfu.ca/projects/ISC/dataB/isc/C/pi10000.txt
+  Just checking that Yacas agrees.
+*/
+NumericEqual(N(Pi,70),3.1415926535897932384626433832795028841971693993751058209749445923078164062862,70);
 
 Verify( RoundTo(N(Sec(2)), 9), -2.402997962);
 Verify( RoundTo(N(Csc(2)), 9),  1.09975017);
@@ -157,10 +169,10 @@ Gamma(-7/2)
 , (16*Sqrt(Pi))/105
 );
 
-TestYacas(
+NumericEqual(
 RoundTo(N( GammaNum(10.5) ), 13)
 , 1133278.3889487855673
-);
+,13);
 
 TestYacas(
 RoundTo(N( GammaNum(-11.5) ), 20)
@@ -172,10 +184,10 @@ RoundTo(N( GammaNum(-12.5) ), 20)
 , -0.00000000183660648386
 );
 
-TestYacas(	// lost 2 digits b/c of imprecise arithmetic
+NumericEqual(	// lost 2 digits b/c of imprecise arithmetic
 RoundTo(N( Zeta(-11.5) ), 18)
 , 0.020396978715942792
-);
+,18);
 
 TestYacas(
 Zeta(40)
@@ -192,21 +204,21 @@ Zeta(-12)
 , 0
 );
 
-TestYacas(
+NumericEqual(
 RoundTo(ZetaNum(40), 19)
 , 1.0000000000009094948
-);
+,19);
 
-TestYacas(
+NumericEqual(
 RoundTo(ZetaNum(1.5), 19)
 , 2.6123753486854883433
-);
+,19);
 
 // test correctness of Zeta(3)
-Verify(
+NumericEqual(
 RoundTo(ZetaNum(3)-N(Zeta(3)), 20)
 , 0
-);
+,20);
 
 TestYacas(
 Bernoulli(40)
@@ -253,19 +265,19 @@ RoundTo(N(LambertW(10)),GetPrecision())
 // Bessel Functions
 // These results are from GNU bc, matlab seems to suck.
 Precision(50);
-Verify( N(BesselJ(0,.5)), RoundTo(.93846980724081290422840467359971262556892679709682,50) );
-Verify( N(BesselJ(0,.9)), RoundTo(.80752379812254477730240904228745534863542363027564,50) );
-Verify( N(BesselJ(0,.99999)), RoundTo(.76520208704756659155313775543958045290339472808482,50) );
-Verify( N(BesselJ(10,.75)), RoundTo(.00000000001496217131175968146987124836216828348578,50) );
-Verify( N(BesselJ(5,1)), RoundTo(.00024975773021123443137506554098804519815836777698,50) );
-Verify( N(BesselJ(4,2)), RoundTo(.03399571980756843414575921128853104471483296834631,50) );
-Verify( N(BesselJ(10,3)), RoundTo( .00001292835164571588377753453080258017074342083284,50) );
+NumericEqual( N(BesselJ(0,.5)), RoundTo(.93846980724081290422840467359971262556892679709682,50),50 );
+NumericEqual( N(BesselJ(0,.9)), RoundTo(.80752379812254477730240904228745534863542363027564,50),50 );
+NumericEqual( N(BesselJ(0,.99999)), RoundTo(.76520208704756659155313775543958045290339472808482,50),50 );
+NumericEqual( N(BesselJ(10,.75)), RoundTo(.00000000001496217131175968146987124836216828348578,50),50 );
+NumericEqual( N(BesselJ(5,1)), RoundTo(.00024975773021123443137506554098804519815836777698,50),50 );
+NumericEqual( N(BesselJ(4,2)), RoundTo(.03399571980756843414575921128853104471483296834631,50),50 );
+NumericEqual( N(BesselJ(10,3)), RoundTo( .00001292835164571588377753453080258017074342083284,50),50 );
 
-Verify( N(BesselJ(11,11)), RoundTo( .20101400990926940339478738551009382430831534125484,50) );
-Verify( N(BesselJ(-11,11)), RoundTo( -.20101400990926940339478738551009382430831534125484,50) );
-Verify( RoundTo(N(BesselJ(1,10)),50), RoundTo( .04347274616886143666974876802585928830627286711859, 50) );
-Verify( N(BesselJ(10,10)), RoundTo( .20748610663335885769727872351875342803274461128682, 50 ) );
-Verify( RoundTo(N(BesselJ(1,3.6)),50), RoundTo( .09546554717787640384570674422606098601943275490886, 50 )) ;
+NumericEqual( N(BesselJ(11,11)), RoundTo( .20101400990926940339478738551009382430831534125484,50),50 );
+NumericEqual( N(BesselJ(-11,11)), RoundTo( -.20101400990926940339478738551009382430831534125484,50),50 );
+NumericEqual( RoundTo(N(BesselJ(1,10)),50), RoundTo( .04347274616886143666974876802585928830627286711859, 50),50 );
+NumericEqual( N(BesselJ(10,10)), RoundTo( .20748610663335885769727872351875342803274461128682, 50 ),50 );
+NumericEqual( RoundTo(N(BesselJ(1,3.6)),50), RoundTo( .09546554717787640384570674422606098601943275490886, 50 ),50) ;
 
 Precision(20);
 Verify( RoundTo(N(Erf(Sqrt(0.8)),20),19), // verified with Maple
@@ -281,8 +293,8 @@ Precision(40);
 Verify(gamma()+0, 0.5772156649015328606065120900824024310422);
 Precision(20);
 Verify(gamma,Atom("gamma"));
-Verify(RoundTo(gamma()+0,19), 0.5772156649015328606);
-Verify(RoundTo(N(1/2+gamma+Pi), 19), 4.2188083184913260991);
+NumericEqual(RoundTo(gamma()+0,19), 0.5772156649015328606,19);
+NumericEqual(RoundTo(N(1/2+gamma+Pi), 19), 4.2188083184913260991,19);
 
 // From GSL 1.0
 Verify( RoundTo(N(PolyLog(2,-0.001)),20), -0.00099975011104865108 );
@@ -296,5 +308,5 @@ b:= 33096;
 Precision(40);
 Numeric:=True;
 // this expression gives a wrong answer on any hardware floating-point platform
-Verify( RoundTo(333.75*b^6 + a^2*(11*a^2*b^2-b^6-121*b^4-2)+5.5*b^8 +a/(2*b), 6), -0.827396);
+NumericEqual( RoundTo(333.75*b^6 + a^2*(11*a^2*b^2-b^6-121*b^4-2)+5.5*b^8 +a/(2*b), 6), -0.827396,6);
 

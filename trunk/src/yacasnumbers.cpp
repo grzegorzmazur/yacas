@@ -118,17 +118,17 @@ static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
 
 static void SinFloat(ANumber& aResult, ANumber& x)
 {
-    // Sin(x)=Sum(i=0 to Inf) (-1)^i x^(2i+1) /(2i+1)!
-    // Which incrementally becomes the algorithm:
-    //
-    // i <- 1
-    ANumber i("1",aResult.iPrecision);
-    // sum <- x
-    aResult.CopyFrom(x);
-    // term <- x
-    ANumber term(aResult.iPrecision);
-    term.CopyFrom(x);
-    Trigonometry(x,i,aResult,term);
+  // Sin(x)=Sum(i=0 to Inf) (-1)^i x^(2i+1) /(2i+1)!
+  // Which incrementally becomes the algorithm:
+  //
+  // i <- 1
+  ANumber i("1",aResult.iPrecision);
+  // sum <- x
+  aResult.CopyFrom(x);
+  // term <- x
+  ANumber term(aResult.iPrecision);
+  term.CopyFrom(x);
+  Trigonometry(x,i,aResult,term);
 }
 
 
@@ -137,9 +137,9 @@ static void CosFloat(ANumber& aResult, ANumber& x)
     // i <- 0
     ANumber i("0",aResult.iPrecision);
     // sum <- 1
-    aResult.SetTo("1");
+    aResult.SetTo("1.0");
     // term <- 1
-    ANumber term("1",aResult.iPrecision);
+    ANumber term("1.0",aResult.iPrecision);
     Trigonometry(x,i,aResult,term);
 }
 
@@ -166,42 +166,44 @@ static void CosFloat(ANumber& aResult, LispCharPtr int1)
 LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
 //PrintNumber("Sin input: %s\n",*int1->Number(aPrecision)->iNumber);
-    ANumber sum(aPrecision);
-    ANumber x(*int1->Number(aPrecision)->iNumber);
-
-
-    SinFloat(sum, x);
-    return FloatToString(sum, aEnvironment);
+  ANumber sum(aPrecision);
+  ANumber x(*int1->Number(aPrecision)->iNumber);
+  x.ChangePrecision(aPrecision);
+  SinFloat(sum, x);
+  return FloatToString(sum, aEnvironment);
 }
 
 
 LispObject* CosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    ANumber sum(aPrecision);
-    ANumber x(*int1->Number(aPrecision)->iNumber);
-    CosFloat(sum, x);
-    return FloatToString(sum, aEnvironment);
+  ANumber sum(aPrecision);
+  ANumber x(*int1->Number(aPrecision)->iNumber);
+  x.ChangePrecision(aPrecision);
+  CosFloat(sum, x);
+  return FloatToString(sum, aEnvironment);
 }
 
 LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    // Tan(x) = Sin(x)/Cos(x)
-    ANumber s(aPrecision);
-    {
-      ANumber x(*int1->Number(aPrecision)->iNumber);
-      SinFloat(s, x);
+  // Tan(x) = Sin(x)/Cos(x)
+  ANumber s(aPrecision);
+  {
+    ANumber x(*int1->Number(aPrecision)->iNumber);
+    x.ChangePrecision(aPrecision);
+    SinFloat(s, x);
 //      SinFloat(s,int1->String()->String());
-    }
-    ANumber c(aPrecision);
-    {
-      ANumber x(*int1->Number(aPrecision)->iNumber);
-      CosFloat(c, x);
+  }
+  ANumber c(aPrecision);
+  {
+    ANumber x(*int1->Number(aPrecision)->iNumber);
+    x.ChangePrecision(aPrecision);
+    CosFloat(c, x);
 //      CosFloat(c,int1->String()->String());
-    }
-    ANumber result(aPrecision);
-    ANumber dummy(aPrecision);
-    Divide(result,dummy,s,c);
-    return FloatToString(result, aEnvironment);
+  }
+  ANumber result(aPrecision);
+  ANumber dummy(aPrecision);
+  Divide(result,dummy,s,c);
+  return FloatToString(result, aEnvironment);
 }
 
 
@@ -220,10 +222,24 @@ LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt 
 //PrintNumber("digits ",*int1->Number(aPrecision)->iNumber);
   RefPtr<LispObject> iResult(PlatArcSin(aEnvironment, int1,  0));
 	ANumber result(*iResult->Number(aPrecision)->iNumber);	// hack, hack, hack
+  result.ChangePrecision(aPrecision);
 
 	// how else do I get an ANumber from the result of PlatArcSin()?
   ANumber x(aPrecision);	// dummy variable
-  ANumber q("10", aPrecision);	// initial value must be "significant"
+//  ANumber q("10", aPrecision);	// initial value must be "significant"
+  
+  ANumber q( aPrecision);	// initial value must be "significant"
+  {
+    ANumber x(aPrecision);
+    ANumber s(aPrecision);
+    x.CopyFrom(result);
+    SinFloat(s,x);
+    ANumber orig(aPrecision);
+    orig.CopyFrom(*int1->Number(aPrecision)->iNumber);
+    Negate(orig);
+    Add(q,s,orig);
+  }
+
   ANumber s(aPrecision);
   ANumber c(aPrecision);
 	
