@@ -1,4 +1,61 @@
 
+
+
+LogicTrivials :=
+{
+  (_x  Or  _x)                  <- x,
+  (_x  And  _x)                 <- x,
+  (_x  Or Not (_x))             <- True,
+  (Not (_x)  Or _x)             <- True,
+  (_x  And Not (_x))            <- False,
+  (Not (_x)  And _x)            <- False
+};
+
+
+LogicEqu :=
+{
+  (((_x) == (_y))   Or  ((_x) !== (_y)))   <- True,
+  (((_x) !== (_y))  Or  ((_x) == (_y)))    <- True,
+  (((_x) == (_y))   And ((_x) !== (_y)))   <- False,
+  (((_x) !== (_y))  And ((_x) == (_y)))    <- False,
+
+  (((_x) >= (_y))   And ((_x) < (_y)))     <- False,
+  (((_x) < (_y))    And ((_x) >= (_y)))    <- False,
+  (((_x) >= (_y))   Or  ((_x) < (_y)))     <- True,
+  (((_x) < (_y))    Or  ((_x) >= (_y)))    <- True,
+  ( Not ( Not  (_x)))           <- (x),                           /* eliminate double negation */
+  ((_x)=>(_y))                  <- ((Not x)  Or  y)               /* eliminate implication */
+};
+
+LogicDist :=
+{
+  ( Not ((_x)  And  (_y)))      <- ((Not x) Or (Not y)),                     /* De Morgan's law */
+  ( Not ((_x)  Or  (_y)))       <- (Not x) And (Not y),         /* De Morgan's law */
+  (((_x)  And  (_y))  Or  (_z)) <- (x Or z) And (y Or z),       /* Distribution */
+  ((_x)  Or  ((_y)  And  (_z))) <- (x Or y) And (x Or z)        /* Distribution */
+};
+
+LogicInEq :=
+{
+  ( (_x) < (_y) )              <- Not Simplify(x >=  y),
+  ( (_x) > (_y) )              <- Simplify(x >   y),
+  ( (_x) >= (_y) )             <- Simplify(x >=  y),
+  ( (_x) <= (_y) )             <- Not Simplify(x >  y),
+  ( (_x) == (_y) )             <- Simplify(x ==  y),
+  ( (_x) !== (_y) )            <- Not Simplify(x == y),
+  ( Not((_x) <  (_y)) )        <- Simplify( x >= y ),
+  ( Not((_x) <= (_y)) )        <- Simplify( x > y ),
+  ( Not((_x) !== (_y)) )       <- Simplify( x == y )
+};
+
+LogicPatAll := Concat(LogicTrivials, LogicEqu, LogicDist, LogicInEq);
+AltLogicSimplify(f) := (f /:: LogicPatAll);
+
+
+EndOfFile;
+
+
+
 10 # De(_x + _y) <-- Max(De(x),De(y));
 10 # De(_x - _y) <-- Max(De(x),De(y));
 10 # De(_x * _y) <-- Max(De(x),De(y));
