@@ -435,7 +435,7 @@ Bk(_poly,_prime) <--
 /* New factorization : split between integers and polynomials. */
 10 # Factors(p_IsInteger) <-- FactorizeInt(p);
 20 # Factors(p_CanBeUni)_(Length(VarList(p)) = 1) <--  FactorUniVarSec(p);
-30 # Factors(p_IsGaussianInteger)	<-- FactorGaussianInteger(p);
+30 # Factors(p_IsGaussianInteger)	<-- GaussianFactors(p);
 
 
 
