@@ -303,6 +303,67 @@ magnitude, so as the give them unit length.
 *SEE OrthogonalBasis, InProduct, Normalize
 
 
+*CMD IsScalar --- test for a scalar
+*STD
+*CALL
+
+	IsScalar(expr)
+
+*PARMS
+
+	{expr} -- a mathematical object
+
+*DESC
+
+{IsScalar} returns {True} if {expr} is a scalar, {False} otherwise.
+Something is considered to be a scalar if it's not a list.
+
+*E.G.
+	In> IsScalar(7)
+	Out> True;
+	In> IsScalar(Sin(x)+x)
+	Out> True;
+	In> IsScalar({x,y})
+	Out> False;
+
+*SEE IsList, IsVector, IsMatrix
+
+
+*CMD IsVector --- test for a vector
+*STD
+*CALL
+
+        IsVector(expr)
+
+        IsVector(pred,expr)
+
+*PARMS
+
+{expr} -- expression to test
+
+{pred} -- predicate test (e.g. IsNumber, IsInteger, ...)
+
+*DESC
+
+{IsVector(expr)} returns {True} if {expr} is a vector, {False} otherwise.
+Something is considered to be a vector if it's a list of scalars.
+{IsVector(pred,expr)} returns {True} if {expr} is a vector and if the
+predicate test {pred} returns {True} when applied to every element of
+the vector {expr}, {False} otherwise.
+
+*E.G.
+	In> IsVector({a,b,c})
+	Out> True;
+	In> IsVector({a,{b},c})
+	Out> False;
+	In> IsVector(IsInteger,{1,2,3})
+	Out> True;
+	In> IsVector(IsInteger,{1,2.5,3})
+	Out> False;
+
+*SEE IsList, IsScalar, IsMatrix
+
+
 *CMD IsMatrix --- test for a matrix
 *STD
 *CALL

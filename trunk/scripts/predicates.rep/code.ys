@@ -18,12 +18,33 @@ Function("IsMatrix",{aLeft})
 ];
 */
 
+// test for a scalar
+Function("IsScalar",{x}) Not(IsList(x));
+
 /* IsList is checked first, as it is hoped this greatly speeds up checking if something is a matrix.
  */
 Function("IsMatrix",{x}) If(IsList(x),Length(Dimensions(x))=2,False);
 
-Function("IsVector",{x}) If(IsList(x),Length(Dimensions(x))=1,False);
+// test for a vector
+Function("IsVector",{x})
+   If(IsList(x),
+   Length(Select(IsList,x))=0,
+   False);
 
+// test for a vector w/ element test p
+Function("IsVector",{p,x})
+[
+   Local(i,n,result);
+   n:=Length(x);
+   i:=1;
+   result:=True;
+   While(i<=n And result)
+   [
+      result:=IsScalar(x[i]) And Apply(p,{x[i]});
+      i++;
+   ];
+   result;
+];
 
 IsSquareMatrix(_x) <--
 [
