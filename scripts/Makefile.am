@@ -50,6 +50,7 @@ SCRIPTFILES = 	        										    \
 	statistics.rep/randomtest.ys statistics.rep/statistics.ys 					    \
 	statistics.rep/incompletegamma.ys statistics.rep/regression.ys	 				    \
 	statistics.rep/statistics.ys.def 								    \
+	statistics.rep/distributions.ys statistics.rep/distributions.ys.def                                 \
 	stats.rep/code.ys stats.rep/code.ys.def 							    \
 	stdfuncs.rep/code.ys stdfuncs.rep/code.ys.def stdfuncs.rep/om.ys stdfuncs.rep/numerical.ys 	    \
 	stdfuncs.rep/numerical.ys.def stdfuncs.rep/nummethods.ys stdfuncs.rep/nummethods.ys.def 	    \

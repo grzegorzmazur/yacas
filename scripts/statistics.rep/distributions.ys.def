@@ -1,0 +1,11 @@
+BernoulliDistribution
+BinomialDistribution
+DiscreteUniformDistribution
+PoissonDistribution
+GeometricDistribution
+
+ExponentialDistribution
+NormalDistribution
+ChiSquareDistribution
+tDistribution
+}
