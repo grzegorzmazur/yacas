@@ -1,5 +1,7 @@
 // OS-dependent code (to be replaced or configured at build time)
 
+// this file should load the OS-specific module that handles MakeDir() etc.
+
 // this lists the available OS-specific modules
 SupportedOSes :=
 {
@@ -14,33 +16,17 @@ FilePathSeparators :=
 	{"Win32", "\\"},
 };
 
-// The variable PlatformOS determines which module we should load.
-// It can be set in yacasinit.ys or here,e.g.:
-//PlatformOS:="Win32";
+/** The variable PlatformOS determines which module we should load.
+It can be set in yacasinit.ys or here, to override PlatformOS(), e.g.:
+PlatformOS:="Win32";
+scripts should not use PlatformOS(), instead they should use
+the global constant PlatformOS, because it might have been set differently by the user's yacasinit (in the standard library, both values are the same.)
 
-If(PlatformOS() = "Win32", PlatformOS := "Win32");
-If(PlatformOS() = "Unix", PlatformOS := "Unix");
+Currently the variable PlatformOS is assigned to PlatformOS() in yacasinit, and the only supported variants are "Win32" and "Unix".
 
-If(
-	Not(IsBound(PlatformOS)),
-	[
-// Try to decide this from Version().
-// On Windows, Version() might begin with the letters "Win".
-// Otherwise we assume Unix.
-		PlatformOS := If(StringMid(1,3,Version())="Win", "Win32", "Unix");
-	]
-);
+*/
 
 FilePathSeparator := FilePathSeparators[PlatformOS];
-
-// this function should be called from yacasinit.ys
-LoadOSDependentModule() := Use(
-  ConcatStrings(
-	"osdep.rep/",
-	// FilePathSeparator,
-	SupportedOSes[PlatformOS]
-  )
-);
 
 // definitions of variable-argument functions
 
@@ -84,3 +70,15 @@ SystemCallBg(command) := SystemCall(BackgroundCmd(command));
 	path;
 		
 ];
+
+// this function should be called once when one of the OS-dependent functions is requested
+LoadOSDependentModule() := Use(
+  ConcatStrings(
+	"osdep.rep/",
+// use this file path separator because it works on Windows and on Unix, and for other platforms we can use the archive
+	SupportedOSes[PlatformOS]
+  )
+);
+
+
+LoadOSDependentModule();

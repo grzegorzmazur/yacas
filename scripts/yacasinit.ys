@@ -65,4 +65,5 @@ Rule("Help",0,1,True)
 
 SetHelpBrowser("lynx");
 
-LoadOSDependentModule();
+// LoadOSDependentModule();	// not really needed any more
+PlatformOS := PlatformOS();
