@@ -62,6 +62,7 @@ CntDefLoad("radsimp");
 CntDefLoad("pslq");
 CntDefLoad("odesolver");
 CntDefLoad("c_form");
+CntDefLoad("limit");
 
 /* set the help system. This can be overridden in ~/.yacasrc */
 

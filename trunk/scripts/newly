@@ -54,6 +54,7 @@ TemplateFunction("WithValue",{var,val,expr})
   Eval(expr);
 ];
 
+/*TODO remove
 10 # LimitChange((_xex)/(_yex))_
      ((IsZero(WithValue(var,lim,xex)) And
        IsZero(WithValue(var,lim,yex))) Or
@@ -87,8 +88,8 @@ UnFence("LimitPredicate",1);
      ];
 UnFence("Limit",3);
 
+*/
 
-/* Final rule: no special limit (evaluate func) */
 
 
 Function("CharacteristicEquation",{matrix,var})
