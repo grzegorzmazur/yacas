@@ -77,4 +77,5 @@ IsNegativeReal(_r) <--
 IsHermitean(A_IsMatrix) <-- (Conjugate(Transpose(A))=A);
 IsUnitary(A_IsMatrix) <-- (Transpose(Conjugate(A))*A = Identity(Length(A)));
 
+IsVariable(_expr) <-- (IsAtom(expr) And Not(IsNumber(N(expr))));
 

@@ -418,4 +418,34 @@ LispInt StrCompare(LispCharPtr f1, LispCharPtr f2)
     return 0;
 }
 
+LispObject* operator+(const LispObjectAdder& left, const LispObjectAdder& right)
+{
+  LispObject* trav = left.iPtr;
+  while (trav->Next().Get() != NULL)
+  {
+        trav = trav->Next().Get();
+  }
+  trav->Next().Set(right.iPtr);
+  return left.iPtr;
+}
+
+void ParseExpression(LispPtr& aResult,LispCharPtr aString,LispEnvironment& aEnvironment)
+{
+    LispString full((LispCharPtr)aString);
+    full[full.NrItems()-1] = ';';
+    full.Append('\0');
+    StringInput input(full,aEnvironment.iInputStatus);
+    aEnvironment.iInputStatus.SetTo("String");
+    LispTokenizer tok;
+    InfixParser parser(tok,
+                       input,
+                       aEnvironment.HashTable(),
+                       aEnvironment.PreFix(),
+                       aEnvironment.InFix(),
+                       aEnvironment.PostFix(),
+                       aEnvironment.Bodied());
+    parser.Parse(aResult);
+}
+
+
 
