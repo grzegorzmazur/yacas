@@ -1,6 +1,11 @@
-#! /bin/sh
+#! /bin/sh -v
 
-aclocal \
-&& automake --gnu --add-missing \
-&& autoconf \
-&& (cd libltdl && automake && autoconf)
+aclocal 
+automake --gnu --add-missing 
+autoheader
+autoconf 
+cd libltdl 
+aclocal  
+automake 
+autoheader
+autoconf
