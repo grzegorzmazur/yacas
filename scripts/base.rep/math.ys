@@ -6,9 +6,10 @@
 
 Defun("Trigonometry",{x,i,sum,term})
 [
-  Local(x2,orig);
+  Local(x2,orig,eps);
   Set(x2,MathMultiply(x,x));
-  While(Equals(Equals(term,0),False))
+  Set(eps,MathPower(10,MathSubtract(0,GetPrecision())));
+  While(GreaterThan(MathAbs(term),eps))
   [
     Set(term,MathMultiply(term,x2));
     Set(i,MathAdd(i,1.0));
@@ -20,20 +21,21 @@ Defun("Trigonometry",{x,i,sum,term})
   sum;
 ];
 
-Defun("MySin",{x})Trigonometry(x,1.0,x,x);
-Defun("MyCos",{x})Trigonometry(x,0.0,1.0,1.0);
-Defun("MyTan",{x})MathDivide(MySin(x),MyCos(x));
+Defun("MathSin",{x})Trigonometry(x,1.0,x,x);
+Defun("MathCos",{x})Trigonometry(x,0.0,1.0,1.0);
+Defun("MathTan",{x})MathDivide(MathSin(x),MathCos(x));
 
-Defun("MyArcSin",{int1})
+Defun("MathArcSin",{int1})
 [
-  Local(result);
+  Local(result,eps);
 	Set(result,FastArcSin(int1));
   Local(x,q,s,c);
-  Set(q,MathSubtract(MySin(result),int1));
-  While(Equals(Equals(q,0),False))
+  Set(q,MathSubtract(MathSin(result),int1));
+  Set(eps,MathPower(10,MathSubtract(0,GetPrecision())));
+  While(GreaterThan(MathAbs(q),eps))
   [
-		Set(s,MathSubtract(int1,MySin(result)));
-    Set(c,MyCos(result));
+		Set(s,MathSubtract(int1,MathSin(result)));
+    Set(c,MathCos(result));
     Set(q,MathDivide(s,c));
     Set(result,MathAdd(result,q));
   ];
@@ -42,7 +44,7 @@ Defun("MyArcSin",{int1})
 
 
 
-Defun("MyExp",{x})
+Defun("MathExp",{x})
 [
   Local(i,aResult,term,eps);
   // Exp(x)=Sum(i=0 to Inf)  x^(i) /(i)!

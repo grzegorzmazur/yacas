@@ -249,6 +249,7 @@ void LispDivide(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
+/*TODO remove
 void LispSin(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
     LispArithmetic1(aEnvironment, aStackTop, SinFloat);
@@ -268,6 +269,12 @@ void LispArcSin(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
     LispArithmetic1(aEnvironment, aStackTop, ArcSinFloat);
 }
+
+void LispExp(LispEnvironment& aEnvironment, LispInt aStackTop)
+{//FIXME move to scripts
+    LispArithmetic1(aEnvironment, aStackTop, ExpFloat);
+}
+*/
 
 void LispArcCos(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
@@ -452,10 +459,6 @@ void LispLog(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispArithmetic1(aEnvironment, aStackTop, LnFloat);
 }
 
-void LispExp(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aStackTop, ExpFloat);
-}
 
 void LispPower(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts

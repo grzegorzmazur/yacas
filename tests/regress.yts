@@ -302,7 +302,7 @@ Verify(Undefined <= -4, False);
 
 // Jonathan's bug report
 Precision(10);
-Verify(N(Cos(Pi*.5)), 0);
+NumericEqual(N(Cos(Pi*.5)), 0,GetPrecision());
 
 // Jitse's bug report
 Verify(CForm(4), "4.");
