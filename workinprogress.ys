@@ -131,19 +131,35 @@ public:
 class ExpressionCacher : public GenericClass
 {
 public:
+    ExpressionCacher();
     /** Check if tuple has a cached expression associated with it.
      If so, remember the cached expression.
      */
     LispBoolean IsCached(LispPtr& aExpression);
 
-    /// Get last remembered cached expression.
+    /// Get last remembered cached expression (value).
     void GetLastCached(LispPtr& aResult);
+
+    /// Get last remembered cached expression (matching expression itself).
+    void GetLastMatched(LispPtr& aResult);
 
     /// Append a cached expression, and return value.
     void AddToCached(LispPtr& aExpression,LispPtr& value);
 
     /// Change last remembered cached value, and return value
     void ChangeLastCached(LispPtr& cache,LispPtr& value);
+    /// CacheFirst
+    void CacheFirst();
+    /// CachePrevious
+    void CachePrevious();
+    /// CacheNext
+    void CacheNext();
+    /// CacheResetFetch
+    void CacheResetFetch();
+    /// CacheIsSet
+    LispBoolean CacheIsSet();
+    /// CacheInsert(cache,expression,value);
+    void CacheInsert(LispPtr& aExpression,LispPtr& value);
 
 public: //required
     virtual ~ExpressionCacher();
@@ -154,6 +170,11 @@ private:
     CDeletingArrayGrower<CachedExpression*> iCache;
     LispInt iLastCached;
 };
+
+ExpressionCacher::ExpressionCacher()
+{
+    iLastCached = -1;
+}
 virtual ExpressionCacher::~ExpressionCacher()
 {
 }
@@ -181,7 +202,14 @@ LispBoolean ExpressionCacher::IsCached(LispPtr& aExpression)
 
 void ExpressionCacher::GetLastCached(LispPtr& aResult)
 {
+    Check(iLastCached >= 0 && iLastCached < iCache.NrItems());
     aResult.Set(iCache[iLastCached].iValue.Get());
+}
+
+void ExpressionCacher::GetLastMatched(LispPtr& aResult)
+{
+    Check(iLastCached >= 0 && iLastCached < iCache.NrItems());
+    aResult.Set(iCache[iLastCached].iExpression.Get());
 }
 
 void ExpressionCacher::AddToCached(LispPtr& aExpression,LispPtr& value)
@@ -196,6 +224,44 @@ void ExpressionCacher::ChangeLastCached(LispPtr& cache,LispPtr& value)
 {
     iCache[iLastCached].iValue.Set(value.Get());
 }
+
+
+void ExpressionCacher::CacheFirst()
+{
+    iLastCached = 0;
+}
+
+void ExpressionCacher::CachePrevious()
+{
+    iLastCached--;
+}
+
+void ExpressionCacher::CacheNext()
+{
+    iLastCached++;
+    if (iLastCached>=iCache.NrItems())
+        iLastCached = -1;
+}
+
+void ExpressionCacher::CacheResetFetch()
+{
+    iLastCached = -1;
+}
+
+LispBoolean ExpressionCacher::CacheIsSet()
+{
+    return (iLastCached >= 0 && iLastCached < iCache.NrItems());
+
+}
+
+void ExpressionCacher::CacheInsert(LispPtr& aExpression,LispPtr& value)
+{
+    CachedExpression* c = new CachedExpression;
+    c->iExpression.Set(aExpression.Get());
+    c->iValue.Set(value.Get());
+    iCache.Insert(iLastCached,c,1);
+}
+
 
 
 EndOfFile;

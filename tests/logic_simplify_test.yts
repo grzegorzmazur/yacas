@@ -30,8 +30,8 @@ Verify(CNF(Not (A And B) And A),                (Not A Or Not B) And A);
 Verify(CanProve((A Or B) And Not A),            B And Not A);
 Verify(CanProve((A Or B) And (Not A Or C)),     B Or C);
 Verify(CanProve((B Or A) And (Not A Or C)),     B Or C);
-Verify(CanProve( A And (A Or Or B Or C)),       A);
-Verify(CanProve( A And (Not A Or Or B Or C)),   B Or C);
+Verify(CanProve( A And (A Or B Or C)),       A);
+Verify(CanProve( A And (Not A Or B Or C)),   B Or C);
 
 // this is a test of contradication, A==3 should kick A==2 out as they're contradictory
 Verify(CanProve( A==3 And (A==2 Or B Or C)),    B Or C);
