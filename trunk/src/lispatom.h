@@ -15,6 +15,9 @@
 #include "lispobject.h"
 #include "lispstring.h"
 
+// this is to show that numerical atoms are in decimal
+const unsigned int BASE10 = 10;
+
 // Flags used for atom types. These are not strictly necessary, but
 // do speed up certain evaluations by avoiding a lot of overhead.
 #define KFlagIsNumeric 0x01  // Quoted (after executing the args for

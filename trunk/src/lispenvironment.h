@@ -105,9 +105,10 @@ public:
     LispStringPtr FindCachedFile(LispCharPtr aFileName);
     
 public:
-    inline void SetPrecision(LispInt aPrecision);
-    inline LispInt Precision(void);
-    inline LispInt BinaryPrecision(void);
+    /// set precision to a given number of decimal digits
+    void SetPrecision(LispInt aPrecision);
+    inline LispInt Precision(void) const;
+    inline LispInt BinaryPrecision(void) const;
 public:
     inline void SetPrettyPrinter(LispStringPtr aPrettyPrinter);
     inline LispStringPtr PrettyPrinter(void);
@@ -131,7 +132,9 @@ public:
     LispCharPtr ErrorString(LispInt aError);
     
 protected:
+		/// current precision for user interaction, in decimal and in binary
     LispInt iPrecision;
+	LispInt iBinaryPrecision;
 public:
     InputDirectories iInputDirectories;
     DeletingLispCleanup iCleanup;
@@ -291,23 +294,25 @@ public:
   YacasArgStack iStack;
 };
 
-
+/* this function is now in lispenvironment.cpp
 inline void LispEnvironment::SetPrecision(LispInt aPrecision)
 {
     iPrecision = aPrecision;
+	iBinaryPrecision = digits_to_bits(aPrecision, BASE10);
 }
+*/
 
-inline LispInt LispEnvironment::Precision(void)
+inline LispInt LispEnvironment::Precision(void) const
 {
     return iPrecision;
 }
 
-inline LispInt LispEnvironment::BinaryPrecision(void)
+inline LispInt LispEnvironment::BinaryPrecision(void) const
 {
 //FIXME TODO need the right place for this function definition
-    extern unsigned long digits_to_bits(unsigned long digits, unsigned base);
-
-    return digits_to_bits(iPrecision,10);
+//    extern unsigned long digits_to_bits(unsigned long digits, unsigned base);
+//    return digits_to_bits(iPrecision,10);
+	return iBinaryPrecision;
 }
 
 

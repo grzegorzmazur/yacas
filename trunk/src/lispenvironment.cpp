@@ -10,6 +10,9 @@
 #include "mathuserfunc.h"
 #include "errors.h"
 
+// we need this only for digits_to_bits
+#include "numbers.h"
+
 #define InternalEval iEvaluator->Eval
 
 
@@ -26,7 +29,8 @@ LispEnvironment::LispEnvironment(
                     LispOperators &aBodiedOperators,
                     LispInput*    aCurrentInput)
     : 
-    iPrecision(10),
+    iPrecision(10),	// default user precision of 10 decimal digits
+	iBinaryPrecision(34),	// same as 34 bits
     iEvalDepth(0),
     iMaxEvalDepth(1000),
     iArchive(NULL),
@@ -128,6 +132,12 @@ LispEnvironment::~LispEnvironment()
     delete iEvaluator;
     if (iDebugger) delete iDebugger;
     delete iArchive;
+}
+
+void LispEnvironment::SetPrecision(LispInt aPrecision)
+{
+    iPrecision = aPrecision;	// precision in decimal digits
+	iBinaryPrecision = digits_to_bits(aPrecision, BASE10);	// in bits
 }
 
 LispInt LispEnvironment::GetUniqueId()
