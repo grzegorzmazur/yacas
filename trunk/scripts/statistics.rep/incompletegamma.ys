@@ -1,0 +1,30 @@
+/* IncompletGamma function \int\limits_{0}^xt^{a-1}e^{-t}dt
+
+   Calculation is based on series
+   IncompleteGamma(x,a)=x^a*Sum(k,0,infinity,(-1)^k*x^k/k!/(a+k)
+   (see D.S.Kouznetsov. Special functions. Vysshaia Shkola, Moscow, 1965
+*/
+
+Function("IncompleteGamma",{x, a} )
+[ // Body is copied from ApproxInfSum (v. specfunc.rep/code.ys)
+  Local(term,result,k);
+  Local(prec,eps,tmp,expr);
+  prec:=GetPrecision();
+  Precision(Ceil(prec+1)); // this is a guess
+  eps:=5*10^(-prec);
+
+  expr := (-1)^k*x^k/(k!)/(a+k);
+  term:=1/a;
+  k:=0;
+  result:=0;
+  While( Abs(term) >= eps )[
+	        k:=k+1;
+		result:=result+term;
+                term:=N(-x*(a+k-1)*term/k/(a+k));
+		//Echo({"term is ",term});
+  ];
+  Precision(prec);
+  // This should not round, only truncate
+  // some outputs will be off by one in the last digit
+  RoundTo(x^a*result,prec);
+];

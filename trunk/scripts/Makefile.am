@@ -26,7 +26,12 @@ SCRIPTFILES = \
         specfunc.rep/code.ys specfunc.rep/code.ys.def \
 		specfunc.rep/gamma.ys specfunc.rep/gamma.ys.def specfunc.rep/zeta.ys specfunc.rep/zeta.ys.def \
 		specfunc.rep/bessel.ys specfunc.rep/bessel.ys.def specfunc.rep/bernou.ys specfunc.rep/bernou.ys.def \
-	plots.rep/code.ys plots.rep/code.ys.def plots.rep/backends-2d.ys
+	plots.rep/code.ys plots.rep/code.ys.def plots.rep/backends-2d.ys \
+	statistics.rep/hypothesystest.ys statistics.rep/incompletegamma.ys.def \
+	statistics.rep/regression.ys.def statistics.rep/hypothesystest.ys.def \
+	statistics.rep/randomtest.ys statistics.rep/statistics.ys \
+	statistics.rep/incompletegamma.ys statistics.rep/regression.ys \
+	statistics.rep/statistics.ys.def
 
 script_DATA = # $(SCRIPTFILES)
 
