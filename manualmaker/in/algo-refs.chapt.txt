@@ -72,6 +72,11 @@ Academic Press, 1989.
 J. H. Davenport,
 <i>Primality testing revisited</i>, Proc. ISSAC 1992, p. 123.
 
+[Fee 1990]
+G. Fee,
+<i>Computation of Catalan's constant using Ramanujan's formula</i>,
+Proc. ISSAC 1990, p. 157; ACM, 1990.
+
 [Godfrey 2001]
 P. Godfrey (2001) (unpublished text):
 <*http://winnie.fit.edu/~gabdo/gamma.txt*>.
