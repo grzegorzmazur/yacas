@@ -9,7 +9,7 @@ OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
 	lispuserfunc.o mathcommands.o mathcommands2.o mathcommands3.o  \
 	mathenvironment.o mathuserfunc.o mathutil.o patcher.o          \
 	patternclass.o patterns.o platmath.o standard.o                \
-	stdcommandline.o stdfileio.o stdstubs.o stringio.o             \
+	stdcommandline.o stdfileio.o stdstubs.o obmalloc.o stringio.o             \
 	substitute.o tokenizer.o                                       \
 	yacasapi.o yacasmain.o yacasnumbers.o unipoly.o
 
