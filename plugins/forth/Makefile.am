@@ -5,7 +5,7 @@ INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/
 pkglib_LTLIBRARIES = forth.la
 forth_la_SOURCES = forthplugin.cc forthplugin.h forth.cc forth.h forthpluginapi.stub
 forth_la_LIBADD = forthpluginapi.lo
-forth_la_LDFLAGS = -module -avoid-version -no-undefined
+forth_la_LDFLAGS = -module -avoid-version
 
 CLEANFILES = forthpluginapi.cc forthpluginapi.man.txt
 

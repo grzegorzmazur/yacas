@@ -11,7 +11,7 @@ EXTRA_LTLIBRARIES = yacas_gsl.la
  
 yacas_gsl_la_SOURCES = yacas_gsl.cc yacas_gsl.h yacas_gslapi.stub
 yacas_gsl_la_LIBADD = yacas_gslapi.lo
-yacas_gsl_la_LDFLAGS = $(GSL_LIBS) -module -avoid-version -no-undefined -rpath $(pkglibdir)
+yacas_gsl_la_LDFLAGS = $(GSL_LIBS) -module -avoid-version -rpath $(pkglibdir)
 
 CLEANFILES = yacas_gslapi.cc yacas_gslapi.man.txt gsl_auto.stub
 

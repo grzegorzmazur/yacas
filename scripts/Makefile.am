@@ -162,7 +162,7 @@ $(srcdir)/packages.ys: $(srcdir)/Makefile.am
 	@echo "});"                                            >> $@
 
 $(srcdir)/corefunctions.ys: $(top_srcdir)/src/corefunctions.h $(top_srcdir)/src/yacasmain.cpp
-	(cd ../src && make gencorefunctions)
+	(cd ../src && make gencorefunctions$(EXEEXT))
 	../src/gencorefunctions > $(srcdir)/corefunctions.ys
 
 

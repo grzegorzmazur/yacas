@@ -29,7 +29,7 @@ INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/
 pkglib_LTLIBRARIES = pcre.la
 pcre_la_SOURCES = study.c pcre.c maketables.c pcreposix.c get.c plugin.cc
 
-pcre_la_LDFLAGS = -module -avoid-version -no-undefined 
+pcre_la_LDFLAGS = -module -avoid-version
 
 CLEANFILES = chartables.c 
 
