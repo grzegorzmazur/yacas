@@ -27,7 +27,7 @@ Topical()"Description";
 Text()"These functions represent the trigonometric functions and their
 inverses. Yacas leaves them alone even if x is a number, trying to keep
 the result as exact as possible. The floating point approximations of
-these functions can be forced by using the N(...) functions. <p>
+these functions can be forced by using the N(...) functions. <p>  </p>
 
 Yacas knows some trigonometric identities, so it can simplify to exact
 results even if N is not used. This is the case when the arguments are

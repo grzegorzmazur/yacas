@@ -33,7 +33,7 @@ There are two trace facilities: <UL><LI>TraceExp : TraceExp traces the full
   It shows each invokation, the arguments passed in, and the return
   values. This is useful for tracking the behaviour of that function
   in the environment it is intended to be used in.An example invocation of TraceRule is<TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> TraceRule(x+y)2+3*5+4;<P></PRE>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> TraceRule(x+y)2+3*5+4;<P>  </P></PRE></TR>
 </TABLE>
 Which should then show something to the effect of <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>    TrEnter(2+3*5+4);
@@ -45,7 +45,7 @@ Which should then show something to the effect of <TABLE CELLPADDING="3" WIDTH="
         TrArg(4,4);
     TrLeave(2+3*5+4,21);
 Out> 21;
-</PRE>
+</PRE></TR>
 </TABLE>
 </UL>
 

@@ -216,7 +216,7 @@ number - a number to write out in the base representation";
 
 Topical()"Description";
 Text()
-"Conversion of numbers to and from base 10 numbers.<p>
+"Conversion of numbers to and from base 10 numbers.<p>  </p>
 
 These functions use the p-adic expansion capabilities of the built-in
 arbitrary precision math libraries.  
@@ -296,7 +296,7 @@ as possible in calculations using division, or trigonometric functions
 like Sin, Cos, etcetera.
 N forces Yacas to calculate floating point representations
 of functions whenever possible, using the current precision or the
-specified precision. <p>
+specified precision. <p>  </p>
 
 In addition, the variable Pi is bound to the value of pi up to the
 required precision.
@@ -339,7 +339,7 @@ Topical()"Description";
 Text()"Rationalize scans the entire expression replacing all floating
 point values into rational representations p/q for some integers p and
 q, such that the division of p by q gives the original floating point
-value up to the number of digits of the original floating point value. <p>
+value up to the number of digits of the original floating point value. <p>  </p>
 
 It does this by finding the smallest integer n such that
 multiplying the number with 10^n is an integer. Then it divides by 10^n
@@ -389,10 +389,10 @@ Text()"x - an integer number or univariate polynomial to factor";
 
 Topical()"Description";
 Text()"Factors decomposes integer numbers or univariate polynomials
-into a product of primes or irreducible polynomials. <p>
+into a product of primes or irreducible polynomials. <p>  </p>
 
 The result of Factors is a list of lists of the form {p,n}, where each
-p^n divides the original x. <p>
+p^n divides the original x. <p>  </p>
 
 Factor shows the result of Factors in a nicer human readable format.
 ";
@@ -526,7 +526,7 @@ Text()"TruncRadian calculates r mod 2*Pi, returning a value
 between 0 and 2*Pi. This function is used in the trigonometry
 functions, just before doing the numerical calculation. It
 greatly speeds up the calculation if the value passed is a big
-number. <p>
+number. <p>  </p>
 The library uses the formula
 
 ":HtmlCommand(

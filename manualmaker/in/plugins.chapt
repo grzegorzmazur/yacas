@@ -6,14 +6,14 @@ it to interface with other libraries that support additional
 functionality. For example, there could be a plugin enabling
 the user to script a user interface from within Yacas, or a
 specific powerful library to do numeric calculations.
-<p>
+<P>  </P>
 The plugin feature is currently in an experimental stage. There
 are some examples in the plugins/ directory. These are not built
 by default because they cannot be guaranteed to compile on every
 platform (yet). The plugins need to be compiled after Yacas itself
 has been compiled and installed successfully. The plugins/ directory
 contains a README file with more details on compilation. 
-<p>
+<P>  </P>
 In addition to the plugin structure in the Yacas engine, there is
 a 'cstubgen' module (currently still in development) that allows
 rapid scripting of a plugin. Essentially all that is required is
@@ -26,15 +26,15 @@ Yacas code. There are a few examples in the plugins/
 directory (the files ending with api.stub). The make file
 makefile.plugin is configured to automatically convert these to
 the required c++ files.
-<p>
+<P>  </P>
 In addition to the c++ stub file cstubgen also automatically generates
 some documentation on the functions included in the stub. This
 documentation is put in a file with extension 'description'.
-<p>
+<P>  </P>
 The plugin facility is not supported for each platform yet. Specifically,
 it is only supported on platforms that support the elf binary format.
 (loading DLLs is platform-dependent).
-<p>
+<P>  </P>
 This chapter assumes the reader is comfortable programming in c++.
 ";
 
@@ -174,12 +174,12 @@ Text()
 "This function declares a library function, along with its
 calling sequence. cstubgen will then generate the c++ code
 required to call this function.
-<p>
+<P>  </P>
 Return type, function name, and list of arguments should be
 literal strings (surrounded by quotes).
-<p>
+<P>  </P>
 If fname2 is not supplied, it will be assumed to be the same as fname.
-<p>
+<P>  </P>
 The return types currently supported are \"int\", \"double\" and \"void\".
 
 The argument values that are currently supported
@@ -252,7 +252,7 @@ the environment class (which is needed for almost any thing to do with
 Yacas), somewhere in a global variable. aEnvironment can then be used
 from within a callback function in the plugin that doesn't take the
 extra argument by design.
-<p>
+<P>  </P>
 There needs to ba a function in the plugin somewhere of the form 
 
 ":HtmlCommand(
@@ -333,7 +333,7 @@ Text()
 should be followed by an asterisk (clearly showing it is a pointer).
 After that, in the stub api definition, this type can be used as
 argument or return type to functions to the library.
-<p>
+<P>  </P>
 By default the struct will be deleted from memory with a normal
 call to free(...). This can be overriden with a function given
 as second argument, freefunction. This is needed in the case where

@@ -22,6 +22,7 @@ Max(list_IsList) <--
 
 10 # 0! <-- 1;
 20 # ((n_IsInteger)!)_(n>0) <-- MathFac(n);
+30 # ((n_IsList)!) <-- MapSingle("!",n);
 
 /* formulae for half-integer factorials:
 
@@ -40,9 +41,8 @@ Max(list_IsList) <--
 30 # (n_IsNumber)! _(IsInteger(N(n*2))) <-- (N(n*2)/2)!;
 
 
-
-
-Function("Sum",{sumvar,sumfrom,sumto,sumbody})
+RuleBase("Sum",{sumvar,sumfrom,sumto,sumbody}); 
+Sum(_sumvar,sumfrom_IsNumber,sumto_IsNumber,_sumbody) <--
 [
    Local(sumi,sumsum);
    sumsum:=0;

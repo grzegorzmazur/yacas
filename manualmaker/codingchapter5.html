@@ -62,7 +62,7 @@ VEV.
 </H2>
 The first thing that comes to mind when we start implementing this in Yacas is to write a rule such as <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
-10 # A(_k)**B(_l) <-- B(l)**A(k) + Delta(k-l);</PRE>
+10 # A(_k)**B(_l) <-- B(l)**A(k) + Delta(k-l);</PRE></TR>
 </TABLE>
 However, this is not going to work right away. In fact this will
 immediately give a syntax error because Yacas doesn't know yet about the
@@ -72,7 +72,7 @@ new infix operator with the same precedence as multiplication.
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 RuleBase("**", {x,y});
 Infix("**", OpPrecedence("*"));
-</PRE>
+</PRE></TR>
 </TABLE>
 Now we can use this new multiplication operator in expressions, and it doesn't evaluate to anything -- exactly what we need. But we find that things don't quite work: <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
@@ -80,20 +80,20 @@ In> A(_k)**B(_l) <-- B(l)**A(k)+Delta(k-l);
 Out> True;
 In> A(x)**B(y)
 Out> B(l)**A(k)+Delta(k-l);
-</PRE>
+</PRE></TR>
 </TABLE>
 Yacas doesn't grok that Delta(k), A(k) and B(k) are functions. This can be fixed by declaring <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 RuleBase("A", {k});
 RuleBase("B", {k});
 RuleBase("Delta", {k});
-</PRE>
+</PRE></TR>
 </TABLE>
 Now things work as intended:<TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 In> A(y)**B(z)*2
 Out> 2*(B(z)**A(y)+Delta(y-z));
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <A NAME="c5s3">
@@ -110,7 +110,7 @@ In> A(x)**A(y)**B(z)
 Out> A(x)**A(y)**B(z);
 In> (A(x)+B(x))**B(y)*3
 Out> 3*(A(x)+B(x))**B(y);
-</PRE>
+</PRE></TR>
 </TABLE>
 After we gave it slightly more complicated input, Yacas didn't fully
 evaluate expressions containing the new multiplication operation: it didn't
@@ -123,7 +123,7 @@ with the first line above: <TABLE CELLPADDING="3" WIDTH="90%">
 In> FullForm( A(k)*2**B(l) )
 (** (* 2 (A k ))(B l ))
 Out> 2*A(k)**B(l);
-</PRE>
+</PRE></TR>
 </TABLE>
 What looks like <B><TT>2*A(k)**B(l)</TT></B> on the screen is really <B><TT>(2*A(k)) ** B(l)</TT></B> inside Yacas. In other words, the commutation rule didn't apply because there is no subexpression of the form <B><TT>A(...)**B(...)</TT></B> in this expression. It seems that we would need many rules to exhaust all ways in which the adjacent factors A(k) and B(l) might be divided between subexpressions. We run into this difficulty because Yacas represents all expressions as trees of functions and leaves the semantics to us. To Yacas, the "*" operator is fundamentally no different from any other function, and "(a*b)*c" and "a*(b*c)" are two basically different expressions. It would take a considerable amount of work to teach Yacas to recognize all such cases as identical. This is a design choice and it was made by the author of Yacas to achieve greater flexibility and extensibility.
 <P>
@@ -178,7 +178,7 @@ First, we need to distinguish "classical" terms from "quantum" ones. For this, w
 20 # IsQuantum(_x ** _y) <-- IsQuantum(x) Or IsQuantum(y);
     /* If none of the rules apply, the object is not Quantum */
 30 # IsQuantum(_x) <-- False;
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <P>
@@ -204,7 +204,7 @@ Now we shall construct rules that implement reduction to the canonical form. The
 35 # (x_IsQuantum ** (_y ** _z))_(Not(IsQuantum(y))) <-- y ** (x ** z);
     /* Second, if we have C ** (C ** Q) */
 35 # (_x ** (_y ** _z))_(Not(IsQuantum(x) Or IsQuantum(y))) <-- (x*y) ** z;
-</PRE>
+</PRE></TR>
 </TABLE>
 After we execute this in Yacas, all expressions involving additions and multiplications are automatically reduced to the canonical form. Extending these rules to subtractions and divisions is straightforward.
 <A NAME="c5s5">
@@ -230,7 +230,7 @@ But we still haven't implemented the commutation rules. It is perhaps not necess
 50 # OrderBA(B(_k) ** _x) <-- B(k)**OrderBA(x);
     /* A() ** X : need to order X first */
 50 # OrderBA(A(_k) ** _x) <-- OrderBA(A(k)**OrderBA(x));
-</PRE>
+</PRE></TR>
 </TABLE>
 These rules seem to be enough for our purposes. Note that the commutation relation is implemented by the first two rules; the first one is used by the second one which applies when interchanging factors A and B separated by brackets. This inconvenience of having to define several rules for what seems to be "one thing to do" is a consequence of tree-like structure of expressions in Yacas. It is perhaps the price we have to pay for conceptual simplicity of the design.
 <A NAME="c5s6">
@@ -247,7 +247,7 @@ Line error occurred on:
 >>>
 Max evaluation stack depth reached.
 Please use MaxEvalDepth to increase the stack size as needed.
-</PRE>
+</PRE></TR>
 </TABLE>
 This error message means that we have created an infinite recursion. It is easy to see that the last rule is at fault: it never stops applying itself when it operates on a term containing only A's and no B's. When encountering a term such as "A() ** X", the routine cannot determine whether "X" has already been ordered or not, and it unnecessarily keeps ordering it again and again. We can circumvent this difficulty by using an auxiliary ordering function that we shall call "OrderBAlate". This function will operate only on terms of the form "A() ** X" and only after "X" has been ordered. It will not perform any extra simplifications but instead delegate all work to "OrderBA". <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
@@ -257,7 +257,7 @@ This error message means that we have created an infinite recursion. It is easy 
 55 # OrderBAlate(A(_k) ** (B(_l) ** _x)) <-- OrderBA(A(k)**(B(l)**x));
 60 # OrderBAlate(A(_k) ** _x) <-- A(k)**x;
 65 # OrderBAlate(_x) <-- OrderBA(x);
-</PRE>
+</PRE></TR>
 </TABLE>
 Now "OrderBA()" works as desired.
 <A NAME="c5s7">
@@ -275,7 +275,7 @@ Now it is easy to define the function "VEV()". This function should first order 
 110 # VEVOrd(x_IsQuantum) <-- 0;
     /* Classical terms are left */
 120 # VEVOrd(_x) <-- x;
-</PRE>
+</PRE></TR>
 </TABLE>
 To avoid infinite recursion in calling "OrderBA()", we had to introduce an auxiliary function "VEVOrd()" that assumes its argument to be ordered. 
 <P>
@@ -291,7 +291,7 @@ In> VEV(A(k)*B(l)*A(x)*B(y))
 Out> Delta(k-l)*Delta(x-y);
 In> VEV(A(k)*A(l)*B(x)*B(y))
 Out> Delta(l-y)*Delta(k-x)+Delta(l-x)*Delta(k-y);
-</PRE>
+</PRE></TR>
 </TABLE>
 
 

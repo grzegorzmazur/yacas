@@ -33,7 +33,7 @@ IsNegativeInteger(x):= IsInteger(x) And x < 0;
 IsPositiveInteger(x):= IsInteger(x) And x > 0;
 
 10 # IsZero(x_IsNumber) <-- ( (x+0.5)-0.5  = 0);
-10 # IsNotZero(x)       <-- ( (x+0.5)-0.5 != 0);
+10 # IsNotZero(x_IsNumber)       <-- ( (x+0.5)-0.5 != 0);
 1000 # IsZero(_n) <-- False;
 1000 # IsNotZero(_n) <-- False;
 

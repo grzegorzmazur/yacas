@@ -14,6 +14,7 @@ long theNrDefinedUser=0;
 
 DefaultYacasEnvironment::~DefaultYacasEnvironment()
 {
+    delete output;
 }
 
 
@@ -23,13 +24,13 @@ void DefaultYacasEnvironment::SetCommand(LispEvalCaller aEvaluatorFunc,
     iEnvironment.SetCommand(aEvaluatorFunc, aString);
 }
 
-DefaultYacasEnvironment::DefaultYacasEnvironment()
-:infixprinter(prefixoperators,
+DefaultYacasEnvironment::DefaultYacasEnvironment(LispOutput* aOutput)
+:output(aOutput),infixprinter(prefixoperators,
              infixoperators,
              postfixoperators,
               bodiedoperators),
 iEnvironment(commands,userFunctions,
-                 globals,hash,&output,infixprinter,
+                 globals,hash,output,infixprinter,
                  prefixoperators,infixoperators,
                  postfixoperators,bodiedoperators,&input),
 input(iEnvironment.iInputStatus)
@@ -260,7 +261,12 @@ input(iEnvironment.iInputStatus)
 
 LISPEXPORT CYacas* CYacas::NewL()
 {
-  CYacas* self = new CYacas;
+  CYacas* self = new CYacas(new StdUserOutput());
+  return self;
+}
+LISPEXPORT CYacas* CYacas::NewL(LispOutput* aOutput)
+{
+  CYacas* self = new CYacas(aOutput);
   return self;
 }
 
@@ -269,8 +275,8 @@ LISPEXPORT CYacas::~CYacas()
 }
 
 
-CYacas::CYacas()
-: iResultOutput(iResult)
+CYacas::CYacas(LispOutput* aOutput)
+: environment(aOutput),iResultOutput(iResult)
 {
 }
 

@@ -133,9 +133,9 @@ Description:
 LazyGlobal enforces that a global variable will re-evaluate
 when used. The global variable needs to exist for this function
 to work. Also, this functionality doesn't survive if Clear(var)
-is called afterwards. <p>
+is called afterwards. <P>  </P>
 
-Places where this is used include the global variables % and I.<p>
+Places where this is used include the global variables % and I.<P>  </P>
 
 The use of lazy in the name stems from the concept of lazy evaluation.
 The object the global variable is bound to will only be evaluated when
@@ -146,7 +146,7 @@ of evaluation is stored in the global variable, and it won't be reevaluated agai
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> a:=Hold(Taylor(x,0,30)Sin(x))
 Out> Taylor(x,0,30)Sin(x);
 In> LazyGlobal(a)
-</PRE>
+</PRE></TR>
 </TABLE>
 
 
@@ -168,7 +168,7 @@ Out> True;
 In> a
 Out> 5;
 
-</PRE>
+</PRE></TR>
 </TABLE>
 
 <H5>

@@ -140,6 +140,7 @@ HoldArg("TruncRadian",r);
 2 # Ln(1)                    <-- 0;
 2 # Ln(Infinity)                    <-- Infinity;
 /* 2 # Ln(-Infinity)                    <-- 0; */
+2 # Ln(x_IsNegativeNumber)_(Numeric) <-- Complex(MathLog(-x), Pi);
 3 # Ln(x_IsNumber)_(Numeric) <-- MathLog(x);
 4 # Ln(Exp(_x))              <-- x;
 3 # Ln(Complex(_r,_i)) <-- Complex( (1/2)*Ln(r^2 + i^2) , ArcTan(  i / r) );

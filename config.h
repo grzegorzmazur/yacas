@@ -46,5 +46,5 @@
 #define PACKAGE "yacas"
 
 /* Version number of package */
-#define VERSION "1.0.44"
+#define VERSION "1.0.44rev2"
 
