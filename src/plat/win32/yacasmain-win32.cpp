@@ -109,14 +109,13 @@ int main(int argc, char *argv[]){
     printf("Or type ?function for help on a function.\n");
     printf("To see example commands, keep typing Example();\n");
     while (Busy()) {
+        commandline.iLine = "";
         commandline.ReadLine("In> ");
         char *inpline = commandline.iLine.String();
-        if (inpline) {
-            if(*inpline) {
-                yacas->Evaluate(inpline);
-                ShowResult("Out> ");
-                line++;
-            }
+        if (inpline && *inpline) {
+            yacas->Evaluate(inpline);
+            ShowResult("Out> ");
+            line++;
         }
     }
 
@@ -217,6 +216,7 @@ void parseCommandLine(int argc, char *argv[])
 			printf("\t-f  --runfile\t\tLoad and evaluate the file provided\n");
 			printf("\t-h  --help\t\tPrints this message.\n");
 			printf("\t-t  --test\t\tRuns the test script.\n");
+            printf("\t-e  --eval\t\tEvaluate the expression passed in the command line.\n");
 			printf("\t-v  --version\t\tPrints version of yacas this client uses.\n");
 			exit(0);
 		}
@@ -241,6 +241,16 @@ void parseCommandLine(int argc, char *argv[])
 				exit(1);
 			}
 		}
+        
+        if(!strcmp(argv[i],"-e") || !strcmp(argv[i],"--eval")) {
+            i++;
+            loadYacasScriptDir();
+            const char* inpline = argv[i];
+            yacas->Evaluate(inpline);
+            ShowResult("Out> ");
+            
+            needtoexit = true;
+        }
 	}
 	if (needtoexit)
 		exit(0);
