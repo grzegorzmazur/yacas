@@ -222,7 +222,7 @@ $ C=Pi*Sqrt(2/3) $
 
 $ lambda=Sqrt(m - 1/24) $
 
-$ PartitionsP(n) = A(n,k)*Sum(k,1,Infinity,(Sqrt(k)*(Deriv(m) Sinh(C*lambda)/lambda) Where m==n))/(Pi*Sqrt(2)) $
+$ PartitionsP(n) = Sum(k,1,Infinity,A(n,k)*(Sqrt(k)*(Deriv(m) Sinh(C*lambda)/lambda) Where m==n))/(Pi*Sqrt(2)) $
 
 $ A(n,k) = Sum(h,1,k-1, If( Gcd(h,k)=1, Exp(I*Pi*Sum(j,1,k-1,(j/k)*((h*j)/k - Floor((h*j)/k) -1/2)) - 2*Pi*I*h*n/k ), 0 ) ) $
 
