@@ -7,4 +7,5 @@ Function("DefaultPrint", {x})
 	WriteString(";
 ");
 ];
+HoldArg("DefaultPrint", x);
 //PrettyPrinter("DefaultPrint");
