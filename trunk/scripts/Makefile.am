@@ -50,7 +50,8 @@ yacastest = ../src/yacas -pc --rootdir $(testscriptdir)
 testtarget = test
 
 # wester.yts is generated automatically
-../tests/wester.yts: ../manualmaker/wester-1994.ys
+../tests/wester.yts: ../manualmaker/in/wester-1994.chapt.txt
+	cd ../manualmaker/; make wester-1994.ys
 	cp ../manualmaker/wester-1994.ys ../tests/wester.yts
 	touch ../tests/wester.yts
 
