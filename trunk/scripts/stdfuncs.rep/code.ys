@@ -102,10 +102,10 @@ HoldArg("TruncRadian",r);
 100 # Cos(_x)*Tan(_x) <-- Sin(x);
 100 # Sin(_x)/Cos(_x) <-- Tan(x);
 100 # Cos(_x)/Sin(_x) <-- Cot(x);
-100 # 1/Cos(_x)		<-- Sec(x);
-100 # 1/Sin(_x)		<-- Csc(x);
+//100 # 1/Cos(_x)		<-- Sec(x);
+//100 # 1/Sin(_x)		<-- Csc(x);
 100 # 1/Cot(_x)		<-- Tan(x);
-100 # 1/Tan(_x)		<-- Cot(x);
+//100 # 1/Tan(_x)		<-- Cot(x);
 100 # 1/Sec(_x)		<-- Cos(x);
 100 # 1/Csc(_x)		<-- Sin(x);
 
@@ -214,23 +214,23 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 2   # Sec(x_IsNumber)_(Numeric) <-- N(1/Cos(x));
 2   # Csc(x_IsNumber)_(Numeric) <-- N(1/Sin(x));
 2   # Cot(x_IsNumber)_(Numeric) <-- N(1/Tan(x));
-2   # SinH(_x_IsNumber)_(Numeric) <-- N(Exp(x)-Exp(-x)/2);
-2   # CosH(_x_IsNumber)_(Numeric) <-- N((Exp(x)+Exp(-x))/2);
-2   # TanH(_x_IsNumber)_(Numeric) <-- N(SinH(x)/CosH(x));
-2   # CotH(_x_IsNumber)_(Numeric) <-- N(CosH(x)/SinH(x));
-2   # SecH(_x_IsNumber)_(Numeric) <-- N(1/CosH(x));
-2   # CscH(_x_IsNumber)_(Numeric) <-- N(1/SinH(x));
+2   # SinH(x_IsNumber)_(Numeric) <-- N((Exp(x)-Exp(-x))/2);
+2   # CosH(x_IsNumber)_(Numeric) <-- N((Exp(x)+Exp(-x))/2);
+2   # TanH(x_IsNumber)_(Numeric) <-- N(SinH(x)/CosH(x));
+2   # CotH(x_IsNumber)_(Numeric) <-- N(CosH(x)/SinH(x));
+2   # SecH(x_IsNumber)_(Numeric) <-- N(1/CosH(x));
+2   # CscH(x_IsNumber)_(Numeric) <-- N(1/SinH(x));
 
 
 /* Hyperbolic stuff */
 100 # 1/CotH(_x)	<-- TanH(x);
 100 # 1/SecH(_x)	<-- CosH(x);
 100 # 1/CscH(_x)	<-- SinH(x);
-100 # 1/TanH(_x)	<-- CotH(x);
-100 # 1/SinH(_x)	<-- CscH(x);
-100 # 1/CosH(_x)	<-- SecH(x);
+//100 # 1/TanH(_x)	<-- CotH(x);
+//100 # 1/SinH(_x)	<-- CscH(x);
+//100 # 1/CosH(_x)	<-- SecH(x);
 
-5   # Cosh(- _x)	<-- CosH(x);
+5   # CosH(- _x)	<-- CosH(x);
 5   # SinH(- _x)	<-- -SinH(x);
 
 100 # SinH(_x)^2-CosH(_x)^2 	<-- 1;
@@ -271,7 +271,7 @@ Exp(xlist_IsList) <-- MapSingle("Exp",xlist);
 Ln(xlist_IsList) <-- MapSingle("Ln",xlist);
 
 
-
+/// numerical evaluation of arctan using continued fractions
 10 # ContArcTan(_x,_n,_n) <-- (2*n-1);
 20 # ContArcTan(_x,_n,_m) <--
 [

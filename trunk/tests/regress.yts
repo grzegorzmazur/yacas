@@ -153,7 +153,7 @@ Verify(Identity(-2),Identity(-2));
 //Verify(Inverse(-2),Inverse(-2));
 //Verify(Trace(-2),Trace(-2));
 //Verify(SylvesterMatrix(-2,-2,-2),SylvesterMatrix(-2,-2,-2));
-KnownFailure(Verify(ZeroVector(-2),ZeroVector(-2)));
+Verify(ZeroVector(-2),ZeroVector(-2));
 
 
 
