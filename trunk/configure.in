@@ -60,7 +60,7 @@ if test "$enable_gmp" = "yes" ; then
 	fi
 	NUMBERS_LIB="libgmpnumbers.la"
 	NUMBERS_LDFLAGS="-lgmp -lm"
-	NUMBERS_CFLAGS="-DENABLE_GMP"
+	NUMBERS_CFLAGS="-DUSE_GMP"
 else
 	NUMBERS_LIB="libyacasnumbers.la"
 	NUMBERS_LDFLAGS="-lm"
