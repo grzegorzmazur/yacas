@@ -484,13 +484,15 @@ void InterruptHandler(int errupt)
         exit(0);
 }
 
-
-
+#define SHOWSIZE(a)    printf("sizeof(" #a ") = %d\n",sizeof(a));
 int main(int argc, char** argv)
 {
     unsigned char first_stack_var=0;
     the_first_stack_var = &first_stack_var;
 
+#ifdef DEBUG_MODE
+    SHOWSIZE(LispStringSmartPtr);
+#endif
 
     
 #ifdef DEBUG_MODE

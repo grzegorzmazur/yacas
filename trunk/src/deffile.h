@@ -16,12 +16,13 @@ class LispDefFile : public YacasBase
 {
 public:
     LispDefFile(LispStringPtr aFile);
+    LispDefFile(const LispDefFile& aOther);
     ~LispDefFile();
     void SetLoaded();
     inline LispBoolean IsLoaded();
     inline LispStringPtr FileName();
 
-    LispStringPtr iFileName;
+    LispStringSmartPtr iFileName;
     LispBoolean   iIsLoaded;
 };
 

@@ -6,6 +6,6 @@ inline LispBoolean LispDefFile::IsLoaded()
 
 inline LispStringPtr LispDefFile::FileName()
 {
-    return iFileName;
+    return iFileName();
 }
 

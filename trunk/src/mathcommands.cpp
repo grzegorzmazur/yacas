@@ -445,12 +445,12 @@ void LispConcatenate(LispEnvironment& aEnvironment, LispPtr& aResult,
 }
 
 
-static LispStringPtr ConcatenateStrings(LispEnvironment& aEnvironment, LispPtr& aResult,
+static void ConcatenateStrings(LispStringSmartPtr& aSmartPtr, LispEnvironment& aEnvironment, LispPtr& aResult,
               LispPtr& aArguments)
 {
-    LispString *str = NEW LispString;
-    str->SetNrItems(0);
-    str->Append('\"');
+    LISPASSERT(aSmartPtr());
+    aSmartPtr()->SetNrItems(0);
+    aSmartPtr()->Append('\"');
     LispInt arg=1;
     
     LispIterator iter = Argument(aArguments,1);
@@ -463,22 +463,24 @@ static LispStringPtr ConcatenateStrings(LispEnvironment& aEnvironment, LispPtr& 
         LispInt length = evaluated.Get()->String()->NrItems()-2;
         LispCharPtr ptr=evaluated.Get()->String()->String();
         
-        LispInt curlen = str->NrItems();
-        str->GrowTo(curlen+length-1);
-        LispCharPtr put = &(*str)[curlen-1];
+        LispInt curlen = aSmartPtr()->NrItems();
+        aSmartPtr()->GrowTo(curlen+length-1);
+        LispCharPtr put = &(*aSmartPtr())[curlen-1];
         PlatMemCopy(put+1,ptr+1,length-1);
         iter.GoNext();
         arg++;
     }
     
-    str->Append('\"');
-    str->Append('\0');
-    return str;
+    aSmartPtr()->Append('\"');
+    aSmartPtr()->Append('\0');
 }
 void LispConcatenateStrings(LispEnvironment& aEnvironment, LispPtr& aResult,
               LispPtr& aArguments)
 {
-    LispString *str = ConcatenateStrings(aEnvironment, aResult, aArguments);
+    LispString *str = NEW LispString;
+    LispStringSmartPtr smartptr;
+    smartptr.Set(str);
+    ConcatenateStrings(smartptr,aEnvironment, aResult, aArguments);
     aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(str)));
 }
 
@@ -2236,7 +2238,7 @@ void LispFindFunction(LispEnvironment& aEnvironment,LispPtr& aResult,
         LispDefFile* def = multiUserFunc->iFileToOpen;
         if (def != NULL)
         {
-            aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(def->iFileName->String())));
+            aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(def->iFileName()->String())));
             return;
         }
     }

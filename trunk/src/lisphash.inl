@@ -10,7 +10,7 @@ class LAssoc : public YacasBase
 public:
     inline LAssoc(LispStringPtr aString,const T& aData);
     inline ~LAssoc();
-    LispStringPtr iString;
+    LispStringSmartPtr iString;
     T iData;
 private: //Functions no one is allowed to use
     inline LAssoc(const LAssoc& aOther);
@@ -18,28 +18,30 @@ private: //Functions no one is allowed to use
 };
 template<class T>
 inline LAssoc<T>::LAssoc(LispStringPtr aString,const T& aData)
-: iString(aString), iData(aData)
+: iData(aData)
 {
     LISPASSERT(aString != NULL);
-    aString->IncreaseRefCount();
+    iString.Set(aString);
+//TODO remove!    aString->IncreaseRefCount();
 }
 
 /*
 template<class T>
 inline LAssoc<T>::LAssoc(const LAssoc<T>& aOther)
-: iString(aOther.iString), iData(aOther.iData)
+: iData(aOther.iData)
 {
 //    printf("LAssoc copyconstruct\n");
-    iString->IncreaseRefCount();
+    iString.Set(aOther.aString);
+//TODO remove!    iString->IncreaseRefCount();
 }
 
 template<class T>
 inline LAssoc<T>::operator=(const LAssoc<T>& aOther)
 {
 //    printf("LAssoc assignment\n");
-    iString->DecreaseRefCount();
-    iString=aOther.iString;
-    iString->IncreaseRefCount();
+//TODO remove!    iString->DecreaseRefCount();
+    iString.Set(aOther.iString);
+//TODO remove!    iString->IncreaseRefCount();
     iData=aOther.iData;
 }
 */
@@ -47,8 +49,9 @@ inline LAssoc<T>::operator=(const LAssoc<T>& aOther)
 template<class T>
 inline LAssoc<T>::~LAssoc()
 {
+   iString.Set(NULL);
 //printf(" %d ",iString->ReferenceCount());
-    iString->DecreaseRefCount();
+//TODO remove!    iString->DecreaseRefCount();
 //printf("lassoc2\n");
 }
 
@@ -64,7 +67,7 @@ inline T* LispAssociatedHash<T>::LookUp(LispStringPtr aString)
     // Find existing version of string
     for (i = iHashTable[bin].NrItems()-1 ; i >= 0 ; i --)
     {
-        if (((LAssoc<T>*)iHashTable[bin][i])->iString == aString)
+        if (((LAssoc<T>*)iHashTable[bin][i])->iString() == aString)
         {
             return &((LAssoc<T>*)iHashTable[bin][i])->iData;
         }
@@ -81,7 +84,7 @@ inline void LispAssociatedHash<T>::SetAssociation(const T& aData, LispStringPtr 
     // Find existing version of string
     for (i=0;i<iHashTable[bin].NrItems();i++)
     {
-        if (((LAssoc<T>*)iHashTable[bin][i])->iString == aString)
+        if (((LAssoc<T>*)iHashTable[bin][i])->iString() == aString)
         {
             //change existing version of association
             ((LAssoc<T>*)iHashTable[bin][i])->iData = aData;
@@ -103,7 +106,7 @@ inline void LispAssociatedHash<T>::Release(LispStringPtr aString)
     // Find existing version of string
     for (i=0;i<iHashTable[bin].NrItems();i++)
     {
-        if (((LAssoc<T>*)iHashTable[bin][i])->iString == aString)
+        if (((LAssoc<T>*)iHashTable[bin][i])->iString() == aString)
         {
             //change existing version of association
             delete ((LAssoc<T>*)iHashTable[bin][i]);

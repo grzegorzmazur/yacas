@@ -33,13 +33,13 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
 //            CHECKPTR(def);
 #ifdef YACAS_DEBUG
             /*Show loading... */
-            printf("Debug> Loading file %s for function %s\n",def->iFileName->String(),head->String()->String());
+            printf("Debug> Loading file %s for function %s\n",def->iFileName()->String(),head->String()->String());
 #endif
             multiUserFunc->iFileToOpen=NULL;
-            InternalUse(aEnvironment,def->iFileName);
+            InternalUse(aEnvironment,def->iFileName());
 
 #ifdef YACAS_DEBUG
-            printf("Debug> Finished loading file %s\n",def->iFileName->String());
+            printf("Debug> Finished loading file %s\n",def->iFileName()->String());
 #endif
             userFunc = aEnvironment.UserFunction(*subList);
         }

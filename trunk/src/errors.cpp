@@ -100,26 +100,26 @@ void CheckArgType(LispInt aPredicate, LispInt aArgNr, LispPtr& aArguments,LispEn
         aEnvironment.iErrorOutput.Write(str);
         aEnvironment.iErrorOutput.Write(" (counting from 1)\n");
 
-        LispPtr& arg = Argument(aArguments,aArgNr);
-
-        LispString strout;
-        aEnvironment.iErrorOutput.Write("Argument ");
 #define LIM_AL 60
+        LispPtr& arg = Argument(aArguments,aArgNr);
+        LispString strout;
+
+        aEnvironment.iErrorOutput.Write("The offending argument was ");
+        PrintExpression(strout, arg, aEnvironment, LIM_AL);
+        aEnvironment.iErrorOutput.Write(strout.String());
+        aEnvironment.iErrorOutput.Write("\n");
+
+        aEnvironment.iErrorOutput.Write("Argument ");
         PrintExpression(strout, arg, aEnvironment, LIM_AL);
         aEnvironment.iErrorOutput.Write(strout.String());
 
         LispPtr eval;
         InternalEval(aEnvironment, eval, arg);
         aEnvironment.iErrorOutput.Write(" evaluated to ");
-        PrintExpression(strout, arg, aEnvironment, LIM_AL);
+        PrintExpression(strout, eval, aEnvironment, LIM_AL);
         aEnvironment.iErrorOutput.Write(strout.String());
         aEnvironment.iErrorOutput.Write("\n");
 
-        ReturnUnEvaluated(eval, aArguments, aEnvironment);
-        aEnvironment.iErrorOutput.Write("In function call ");
-        PrintExpression(strout, arg, aEnvironment, LIM_AL);
-        aEnvironment.iErrorOutput.Write(strout.String());
-        aEnvironment.iErrorOutput.Write("\n");
 #ifdef DEBUG_MODE
         printf("Problem occurred at %s(%d)\n",
                aArguments.Get()->iFileName,
