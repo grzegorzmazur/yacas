@@ -26,7 +26,7 @@ EXTRA_DIST = yacas.sgml yacas.spec yacas.spec.in makemake mkhomepage mkmanual \
 test: check
 
 # the "distcheck" target does "make dvi", we want it to build the texdocs
-distcheck: texdocs
+dvi: texdocs
 
 texdocs:
 	cd manualmaker ; make texdocs
