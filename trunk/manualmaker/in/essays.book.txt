@@ -24,3 +24,7 @@ to general issues related to the Yacas system development.
 
 *INCLUDE Algorithms.chapt
 
+			Work in progress, specifications
+
+*INCLUDE new.chapt
+
