@@ -65,6 +65,11 @@ X. Gourdon and P. Sebah,
 <i>The Gamma Function</i>;
 and other essays, online at <*http://numbers.computation.free.fr/Constants/*> (2001).
 
+[Haible <i>et al.</i> 1998]
+B. Haible and T. Papanikolaou,
+<i>Fast Multiprecision Evaluation of Series of Rational Numbers</i>,
+LNCS 1423 (Springer, 1998), p. 338.
+
 [Kanemitsu <i>et al.</i> 2001]
 S. Kanemitsu, Y. Tanigawa, and M. Yoshimoto,
 <i>On the values of the Riemann zeta-function at rational arguments</i>,
