@@ -1,13 +1,13 @@
 
 				Programming in Yacas
 
-			Yacas Under the Hood
+			Yacas under the hood
 
 This part of the manual is a somewhat in-depth explanation of the
 Yacas programming language and environment. It assumes that you have worked
 through the introductory tutorial. You should consult the function reference about how to use the various Yacas functions mentioned here.
 
-		The Yacas Architecture
+		The Yacas architecture
 
 Yacas is designed as a small core engine that interprets a library
 of scripts. The core engine provides the syntax parser and a number of
@@ -74,7 +74,7 @@ with no other properties.
 
 Currently, no other lowest-level objects besides strings and lists are provided by the core engine. There is however a possibility to link externally compiled code that will provide additional types of objects. Those will be available in Yacas as "generic objects."
 
-		Evaluation Scheme
+		Yacas evaluation scheme
 
 Evaluation of an object is performed either explicitly by the built-in command {Eval()} or implicitly when assigning variables or calling functions with the object as argument (except when a function does not evaluate that argument). Evaluation of an object can be explicitly inhibited using {Hold()}. To make a function not evaluate one of its arguments, a {HoldArg(funcname, argname)} must be declared for that function.
 
@@ -249,7 +249,7 @@ defined by typing
 
 	FirstOf(list):=list[1] ;
 
-		Structured programming
+		Structured programming and control flow
 
 Some functions useful for control flow are already defined in Yacas's standard library. Let's look at a possible definition of a looping function {ForEach}. We shall here consider a somewhat simple-minded definition, while the actual {ForEach} as defined in the standard script "controlflow" is a little more sophisticated.
 
@@ -319,7 +319,7 @@ use variable names that can not easily be mistaken. This is generally the
 single largest cause of bugs when writing programs in Yacas. This issue
 should be addressed in the future.
 
-		Additional Syntactic Sugar
+		Additional syntactic sugar
 
 The parser is extended slightly to allow for fancier constructs.
 
@@ -354,7 +354,7 @@ Strings are generally represented with quotes around them, like
 "this is a string" .  {\} in a string will unconditionally add the
 next character to the string, so a quote can be added with {\"} (a backslash-quote sequence).
 
-		Scope Of Variable Bindings
+		Scope of variable bindings
 
 When setting variables or retrieving variable values, variables are
 automatically bound global by default. You can explicitly specify variables to
@@ -444,8 +444,6 @@ scripts is currently:
 *	0. 200-399: type-specific transformations. Transformations for specific types of objects.
 *	0. 400-599: transformarions on scalars (variables are assumed to be scalars). Meaning transformations that can potentially change the type of an argument.
 
-*INCLUDE ../../essays/ABIN-grammar.chapt
-
 			Advanced example 1: parsing expressions (CForm)
 
 In this chapter we show how Yacas represents expressions and how we
@@ -462,12 +460,11 @@ the four arithmetic actions.
 
 As we have seen in the tutorial, Yacas represents all expressions as trees, or equivalently, as lists of lists. For example, the expression "{a+b+c+d+e}" is for Yacas a tree of depth 4 that could be visualized as
 
-	   "+"
-	 a   "+"
-	    b  "+"
-	      c  "+"
-	        d   e
-
+	  "+"
+	 a  "+"
+	   b  "+"
+	     c  "+"
+	       d   e
 or as a nested list {("+" a ("+" b ("+" c ("+" d e))))}. 
 
 Complicated expressions are thus built from simple ones in a general and flexible way. If we want a function that acts on sums of any number of terms, we only need to define this function on a single atom and on a sum of two terms, and the Yacas engine will recursively perform the action on the entire tree.
@@ -549,14 +546,14 @@ functions on other problems, but it makes debugging easier too.
 The options you have for debugging a faulty function are
 
 *	0. Invoke the function from the command line, passing in different   arguments, to see how it behaves.
-*	0. Trace
+*	0. Trace applications of rules during execution of the function
 
 		The trace facilities
 
-There are two trace facilities:
+The trace facilities are:
 
-*	0. TraceExp : TraceExp traces the full   expression, showing all calls to user- or system-defined functions,   their arguments, and the return values. For complex functions this   can become a long list of function calls.
-*	0. TraceRule : TraceRule traces one single user-defined function.   It shows each invokation, the arguments passed in, and the return   values. This is useful for tracking the behaviour of that function   in the environment it is intended to be used in.
+*	0. {TraceExp} : traces the full   expression, showing all calls to user- or system-defined functions,   their arguments, and the return values. For complex functions this   can become a long list of function calls.
+*	0. {TraceRule} : traces one single user-defined function (rule).   It shows each invokation, the arguments passed in, and the return   values. This is useful for tracking the behaviour of that function   in the environment it is intended to be used in.
 
 An example invocation of TraceRule is
 
@@ -564,11 +561,11 @@ An example invocation of TraceRule is
 
 Which should then show something to the effect of
 
-	    TrEnter(2+3*5+4);
-	      TrEnter(2+3*5);
-	          TrArg(2,2);
+	  TrEnter(2+3*5+4);
+	    TrEnter(2+3*5);
+	       TrArg(2,2);
 	          TrArg(3*5,15);
-	      TrLeave(2+3*5,17);
+	       TrLeave(2+3*5,17);
 	        TrArg(2+3*5,17);
 	        TrArg(4,4);
 	    TrLeave(2+3*5+4,21);

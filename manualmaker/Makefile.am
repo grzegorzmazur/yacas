@@ -1,5 +1,5 @@
 
-noinst_PROGRAMS = books.html 
+noinst_PROGRAMS = books.html
 
 EXTRA_DIST = \
 	manualmaker styleplain \
@@ -12,11 +12,34 @@ EXTRA_DIST = \
 	in/intromaker in/refmaker in/refprogmaker in/codingmaker in/logic.chapt \
         in/config.chapt in/strings.chapt .cvsignore
 
+# Stuff for automatic generation of Yacas books
 %.chapt: %.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
 %.book: %.book.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
 
+%.book.tex: in/%.book
+	../manmake/book2TeX.sh $< $@
+
+%.dvi: %.tex
+	latex $<
+	latex $<
+
+%.pdf: %.dvi
+#	dvipdf $<
+	pdflatex $*
+
+%.ps: %.dvi
+	dvips -o $@ $<
+
+# TeX/PS/PDF top target
+texdocs: coding.book.ps coding.book.pdf intro.book.ps intro.book.pdf
+	echo "done" > texdocs.c
+
+clean:
+	rm -f books.html.c *.tex *.dvi *.aux *.toc *.log *.ps *.pdf \
+	coding*html intro*html ref*html .o core *~ texdocs.c \
+	in/coding.book in/intro.book
 
 yacas_helpdir = $(datadir)/yacas/documentation
 

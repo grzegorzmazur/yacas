@@ -1,5 +1,9 @@
 /* book2TeX - convert Yacas docs back to TeX format (Serge Winitzki)
 	version 0.2 */
+
+/* If one of these occurs inside an HtmlTerm block, it must be made \\verb| |*/
+TexCharsToEscape := {"{", "}", "#", "_", "&", "\\", "^", "%"};
+
 Book(x) := [	/* this is the first declaration in a file */
 	WriteString("
 \\documentclass[11pt]{report}
@@ -54,7 +58,7 @@ HtmlEmphasis(x) := "\\emph{" : x : "}";
 /* decide whether to use "verb" or "texttt" based on whether the string contains any of the special characters #, _, \, &, {, } */
 HtmlTerm(x) := [
 	Local(i);
-	For (i:=1, i<=Length(x) And Not Contains({"{", "}", "#", "_", "&", "\\"}, x[i]), i:=i+1) [];
+	For (i:=1, i<=Length(x) And Not Contains(TexCharsToEscape, x[i]), i:=i+1) [];
 	If (i<=Length(x),
 	"\\verb|" : x : "|",
 	"\\texttt{" : x : "}");

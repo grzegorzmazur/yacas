@@ -10,6 +10,7 @@ test:
 
 texdocs:
 	cd manualmaker ; make texdocs
+	cd essays ; make texdocs
 
 backup:
 	-rm yacas-*.tar.gz

@@ -18,7 +18,7 @@ clean:
 texdocs: essays.book.pdf essays.book.ps
 
 %.book.tex: %.book $(CHAPTERS)
-	../manmake/book2TeX.sh $<
+	../manmake/book2TeX.sh $< $@
 
 %.dvi: %.tex
 	latex $<
