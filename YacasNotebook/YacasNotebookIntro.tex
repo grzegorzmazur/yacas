@@ -127,6 +127,21 @@ D(x)Sin(x^2);
 2 * x * Cos\ x  /
 \endyacas
 
+(If the delimiting lines are not desired, they can be turned off with
+the command\\
+\verb+\yacaslinesfalse+\\
+The above output will then look like
+\yacaslinesfalse
+\yacas
+D(x)Sin(x^2);
+\output
+           /  2 \
+2 * x * Cos\ x  /
+\endyacas
+\yacaslinestrue
+The delimiting lines can be turned back on with the command \\
+\verb+\yacaslinestrue+)
+
 \yn\ can take advantage of the fact that \ys\ can give its output
 in \TeX\ form.  The command \texttt{C-c C-c U (yacas-tex-update)}
 works the same as \texttt{C-c C-c u}, except now the output is in

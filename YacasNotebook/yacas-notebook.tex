@@ -8,6 +8,10 @@
 \def\Yacas{{\sffamily yacas\/}}
 \def\yacasheadersize{\tiny}
 
+%% An if to allow the lines to be turned on and off
+\newif\ifyacaslines
+\yacaslinestrue
+
 %% Let's use some local macros
 
 \catcode`\@=11\relax
@@ -186,7 +190,7 @@
         \baselineskip = \yacasoutputbaselineskip
         \setupyac@sverbatim\doyac@sverbatim}      
 {\catcode`\|=0 \catcode`\\=12 %
- |obeylines|gdef|doyac@sverbatim^^M#1\endyacas{#1|endgroup|yac@sbottom|par|vskip 1.5ex|par|endgroup}}
+ |obeylines|gdef|doyac@sverbatim^^M#1\endyacas{#1|endgroup|ifyacaslines|yac@sbottom|fi|par|vskip 1.5ex|par|endgroup}}
 
 %% Now we need to set up the actual environments.
 %% We will need some "if"s to tell us where we are
@@ -240,7 +244,7 @@
      \par
      \vskip 1.5ex
      \par
-     \yac@sinittop
+     \ifyacaslines\yac@sinittop\fi
      \sm@llsk
      \yac@sinputverbatim
 }
@@ -250,7 +254,7 @@
      \par
      \vskip 1.5ex
      \par
-     \yac@stop
+     \ifyacaslines\yac@stop\fi
      \sm@llsk
      \yac@sinputverbatim
 }
@@ -266,7 +270,7 @@
      \else
          \def\yac@sparttext{<#1:#2>}
      \fi
-     \yac@sparttop\yac@sparttext
+     \ifyacaslines\yac@sparttop\yac@sparttext\fi
      \futurelet\nextchar\yac@sp@rt
 }
 
@@ -286,7 +290,7 @@
      \else
          \def\yac@sparttext{<#1:#2>}
      \fi
-     \yac@sinitparttop\yac@sparttext
+     \ifyacaslines\yac@sinitparttop\yac@sparttext\fi
      \futurelet\nextchar\yac@sp@rt
 }
 
@@ -298,7 +302,7 @@
      \sm@llsk
      \yac@sinputfalse
      \yac@soutputtrue
-     \yac@soutput
+     \ifyacaslines\yac@soutput\fi
 %     \sm@llsk
      \yac@soutputverbatim
 }      
@@ -308,7 +312,7 @@
      \sm@llsk
      \yac@sinputfalse
      \yac@stexoutputtrue
-     \yac@stexoutput
+     \ifyacaslines\yac@stexoutput\fi
      \sm@llsk
      \begingroup
      \def\par{}
@@ -337,7 +341,7 @@
         \input epsf.tex
         \nogr@phicsfalse
     \fi
-    \yac@sgraphicsoutput    
+    \ifyacaslines\yac@sgraphicsoutput\fi    
     \sm@llsk
 }
 
@@ -364,7 +368,7 @@
          \fi
      \fi
      \sm@llsk
-     \yac@sbottom
+     \ifyacaslines\yac@sbottom\fi
      \par
      \vskip 1.5 ex
      \par
