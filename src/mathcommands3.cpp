@@ -22,6 +22,14 @@
 #include "platdll.h"
 #include "unipoly.h"
 
+#ifdef HAVE_CONFIG_H
+#include "../config.h"
+#endif
+#ifndef VERSION
+//#define VERSION "Windows latest"
+#include "version.h"
+#endif  //VERSION
+
 
 /*TODO
 
@@ -878,4 +886,12 @@ void LispBackQuote(LispEnvironment& aEnvironment, LispPtr& aResult,
     InternalSubstitute(result, Argument(aArguments, 1), behaviour);
     InternalEval(aEnvironment, aResult, result);
 }
+
+// this function is declared in yacasapi.cpp
+void LispVersion(LispEnvironment& aEnvironment, LispPtr& aResult,
+                 LispPtr& aArguments)
+{
+    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp("\"" VERSION "\"")));
+}
+
 

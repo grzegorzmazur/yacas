@@ -1,7 +1,6 @@
 AM_CXXFLAGS = -DSCRIPT_DIR=\"$(scriptdir)\"
 AM_CPPFLAGS = -I$(srcdir)/plat/linux32
 
-
 bin_PROGRAMS = yacas
 noinst_PROGRAMS = testnum
 noinst_LIBRARIES = libyacas.a @NUMBERS_LIB@
@@ -55,6 +54,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	lispstring.inl standard.inl \
 	win32dll.cpp win32dll.h \
 	depend.dep makefile.beos \
+	version.h \
 	convertcctocpp.bat \
 	plat/linux32/lisptype.h \
 	plat/linux32/stubs.inl \
@@ -113,6 +113,10 @@ install-data-local: yacas.h
 	basefile=`basename $$file`; \
 	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/plat/linux32/$$basefile; \
 	done
+
+versionstamper:
+	echo "#define VERSION \"$(VERSION)\"" > version.h 
+
 
 # 
 # depend.dep contains a list of dependencies. gcc can generate this

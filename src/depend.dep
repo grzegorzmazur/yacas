@@ -268,7 +268,8 @@ mathcommands3.o: mathcommands3.cpp yacasbase.h yacasprivate.h \
  plat/linux32/platfileio.h infixparser.h lispuserfunc.h mathuserfunc.h \
  platmath.h anumber.h anumber.inl arrayclass.h arrayclass.inl \
  patternclass.h patterns.h substitute.h errors.h patcher.h \
- plat/linux32/platdll.h plat/linux32/../../lispplugin.h unipoly.h
+ plat/linux32/platdll.h plat/linux32/../../lispplugin.h unipoly.h \
+ version.h
 mathenvironment.o: mathenvironment.cpp yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl mathenvironment.h yacasbase.h \
@@ -436,7 +437,7 @@ yacasmain.o: yacasmain.cpp yacas.h yacasbase.h yacasprivate.h \
  xmltokenizer.h archiver.h ../ramscripts/compressedfiles.h \
  plat/linux32/platfileio.h lispatom.h lispeval.h mathenvironment.h \
  lispuserfunc.h unixcommandline.h commandline.h stdcommandline.h \
- standard.h numbers.h standard.inl arggetter.h errors.h
+ standard.h numbers.h standard.inl arggetter.h errors.h version.h
 yacasmain.old.o: yacasmain.old.cpp yacas.h yacasbase.h yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl lispstring.h grower.h grower.inl lispassert.h \

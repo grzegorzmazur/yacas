@@ -955,17 +955,6 @@ a class with methods and properties, with a one-on-one relation
 between the functions, global variables defined in the module,
 and the properties and methods defined in the compiled class.
 
-Modules have access to the following functions and macros
-by default:
-
-{quote, if, cond, setf, while, progn,
-defun, defmacro, assoc, eval, first,
-rest, cons, atom, listp, list, equal,
-namespace, import, makeenv.
-
-All other commands (including arithmetic commands) can be 
-accessed through other modules.
-
 When well-thought out, packages can greatly aid in making
 a system modular, built from small sub-modules which can be added or
 removed.
@@ -974,8 +963,8 @@ removed.
 	    Functions supporting modularization
 
 The essential functions for modularization are {namespace},
-{import} and {makeenv}. These three functions will be described
-in this section.
+{import}, {makeenv} and {functionp}. These functions 
+will be described in this section.
 
 An environment can be built up with {makeenv}, and defining 
 the functions and global variables contained therein:
@@ -997,7 +986,7 @@ the compiler can generate a static link to it. A function in an
 environment is no more than a method in such a singleton class.
 
 The arithmetic operations like {+} are actually defined in the 
-module {intarith} for the reference implementation of the Lisp
+module {INTEGER} for the reference implementation of the Lisp
 interpreter described in this book. This means that from start up,
 the {+} operator is not directly accessible. One way to access
 a function in a module is to pass the name of the module as an argument
@@ -1006,14 +995,14 @@ to the operator {namespace}:
 	In> (+ 2 3)
 	ERROR: function not defined : +
 	Out> nil
-	In> (namespace 'intarith '+ 2 3)
+	In> (namespace 'INTEGER '+ 2 3)
 	Out> 5
 
 This is obviously not the most convenient syntax. One way to
 encapsulate a call to a function in a module is to define a
 function for it:
 
-	In> (defun +(a b) (namespace 'intarith '+ a b))
+	In> (defun +(a b) (namespace 'INTEGER '+ a b))
 	Out> +
 	In> (+ 2 3)
 	Out> 5
@@ -1024,7 +1013,7 @@ this function. For this the function {import} was defined, which
 makes importing a function from another module into a module a little
 bit easier:
 
-	In> (import intarith +)
+	In> (import INTEGER +)
 	Out> t
 	In> (+ 2 3)
 	Out> 5
@@ -1041,7 +1030,7 @@ to the function call are evaluated before the function defined
 in the module is called, thus they are evaluated in the calling
 environment.
 
-Finally, to define a module, {makeenv} can be used. {makeenv}
+To define a module, {makeenv} can be used. {makeenv}
 takes two arguments, a module name and the body to execute to
 define globals and functions inside it. For example, we can define 
 a function {bar} in the module {foo} as follows:
@@ -1057,6 +1046,40 @@ a function {bar} in the module {foo} as follows:
 	Out> (head 2 3 )
 	In> (namespace 'foo 'bar 2 3)
 	Out> (head 2 3 )
+
+The function {functionp} allows one to check that a function
+is defined in a package. This is useful for checking that
+a package name that is passed as an argument is a valid
+package (has the correct functions implemented). The 
+syntax is {(functionp <namespace> <functionname>)}:
+
+	In> (functionp 'std '+)
+	Out> nil
+	In> (functionp 'INTEGER '+)
+	Out> t
+	In> (import INTEGER +)
+	Out> t
+	In> (functionp 'std '+)
+	Out> t
+
+The default environment (module) the application starts in, the one
+the user can access, is the name space {std}. Other name spaces are
+{INTEGER}, 
+
+*REM @@@
+
+Note that {INTEGER} is both the name of a name space and of a type.
+This has powerful consequences: of we define a vector to be a
+vector of integers, as some structure with {VECTOR INTEGER}
+in it, the code to add two vectors knows that the components
+of the vector can be added by using the addition operation from
+the {INTEGER} module directly, resulting in speedier code than
+code that would accept the components as being of type {OBJECT},
+and figuring out for each component that it was an integer.
+
+The system can even go as far as checking that a parametric type 
+can be made by checking that certain operations are defined for
+it, through the {functionp} call.
 
 	    The bigger picture
 
@@ -1081,6 +1104,44 @@ able to determine where to find the information at compile time.
 The reference to the function or variable needs to be hard-coded
 at compile time. Having to look up the symbol at run-time would
 simply be an unnecessary performance penalty.
+
+		Default modules defined in the Lisp environment
+
+All modules have access to the following functions and macros
+by default:
+
+{quote, if, cond, setf, while, progn,
+defun, defmacro, assoc, eval, first,
+rest, cons, atom, listp, list, equal,
+namespace, import, makeenv, functionp}.
+
+All other commands (including arithmetic commands) can be 
+accessed through other modules.
+
+For modules representing some type, usually there should at
+least be a {type} function which returns {t} if an object is
+of that type, {nil} otherwise, and a function {make} which
+makes such an object given some arguments (if applicable).
+
+	    The {INTEGER} module
+
+The {INTEGER} module is one of the few that should be implemented 
+in the interpreter, as it is probably most efficiently implemented
+through some library. It supports the following commands:
+
+*	0. {(+ n m)} - addition of integers, returns integer
+*	0. {(- n)} - negation of an integer, returns integer
+*	0. {(* n m)} - multiplication of integers, returns integer
+*	0. {(div n m)} - division of integers, returns integer {q} for 
+which $ n = q*m+r $, $0 <= r < m $
+*	0. {(mod n m)} - remainder after division of integers, returns 
+integer {r} for which $ n = q*m+r $, $0 <= r < m $
+*	0. {(gcd n m)} - greatest common divisor of two integers
+*	0. {(< n m)} - 'less than' operator for integers, returns boolean
+*	0. {(integerp n)} - returns {t} if n is an integer, {nil} otherwise
+*	0. {(type n)} - returns {t} if n is an integer, {nil} otherwise.
+
+*REM (namespace matrix make POLY '((1 0 0)(0 1 0)(0 0 1)))
 
 		Error handling
 
