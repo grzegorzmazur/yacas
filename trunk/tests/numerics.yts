@@ -200,6 +200,12 @@ RoundTo(ZetaNum(1.5), 19)
 , 2.6123753486854883433
 );
 
+// test correctness of Zeta(3)
+Verify(
+RoundTo(ZetaNum(3)-Zeta(3), 20)
+, 0
+);
+
 TestYacas(
 Bernoulli(40)
 , -261082718496449122051/13530
