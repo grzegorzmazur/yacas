@@ -58,7 +58,7 @@ public:
     LISPIMPORT static CYacas* NewL(LispOutput* aOutput);
     LISPIMPORT virtual ~CYacas();
     inline DefaultYacasEnvironment& operator()() {return environment;}
-    virtual void Evaluate(LispCharPtr aExpression);
+    virtual void Evaluate(const LispCharPtr aExpression);
     virtual LispCharPtr Result();
     virtual LispCharPtr Error();
 private:
