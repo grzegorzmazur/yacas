@@ -152,8 +152,9 @@ while (<STDIN>) {
 		#$have_par = 1;
 		$anchor = $1;
 		# if the first word is {...}, then we need to use the @ stuff
+		# the "@\relax " is needed so that the Makefile script will not escape this @
 		$anchor = &escape_term($anchor) unless ($anchor =~
-			s/^(.*)\{([^{}]+)\}(.*)$/"$1$2$3" . "\@"
+			s/^(.*)\{([^{}]+)\}(.*)$/"$1$2$3" . "\@\\\\relax "
 			. &escape_term("$1" . "{$2}$3")/e);
 		print "AddBody(AddAnchor(\"" . $anchor . "\"));\n";
 	} elsif (/^\*SEE\s\s*(.*)$/) {	# SeeAlso()
