@@ -161,30 +161,35 @@ Function("BubbleSort",{list,compare})
 
 
 /* VarList: return the variables this expression depends on. */
-Function("VarList",{expr})  RemoveDuplicates(VarListAll(expr));
+VarList(_expr) <-- VarList(expr,"IsVariable");
+
+Function("VarList",{expr,filter})
+[
+  RemoveDuplicates(VarListAll(expr,filter));
+];
 
 /*
  * RuleBase for VarListAll: recursively traverse an expression looking
  * up all variables the expression depends on.
  */
-RuleBase("VarListAll",{expr});
-
 /* Accept any variable. */
-Rule("VarListAll",1,0,IsAtom(expr) And Not(IsNumber(N(expr)))) {expr};
+10 # VarListAll(_expr,_filter)_(Apply(filter,{expr}) = True) <--
+     {expr};
 
 /* Otherwise check all leafs of a function. */
-Rule("VarListAll",1,1,IsFunction(expr))
+20 # VarListAll(expr_IsFunction,_filter) <--
 [
   Local(item,result, flatlist);
   Set(flatlist,Tail(Listify(expr)));
   Set(result,{});
   ForEach(item,flatlist)
-    Set(result,Concat(result,VarListAll(item)));
+    Set(result,Concat(result,VarListAll(item,filter)));
   result;
 ];
 
 /* Else it doesn't depend on any variable. */
-Rule("VarListAll",1,2,True) {};
+30 # VarListAll(_expr,_filter) <-- {};
+
 
 
 

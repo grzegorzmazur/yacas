@@ -644,38 +644,20 @@ void LispBerlekamp(LispEnvironment& aEnvironment, LispPtr& aResult,
     Berlekamp(result, poly, prime);
 
     LispInt i;
-    LispPtr head;
-    LispPtr list;
+    LispObject *res = NULL;
     for (i=result.NrItems()-1;i>=0;i--)
     {
-        LispPtr newfactor;
         LispInt j;
+        LispObject *sub = NULL;
         for (j=result[i]->Degree();j>=0;j--)
         {
             LispChar s[20];
             InternalIntToAscii(s,(*result[i])[j]);
-            LispPtr add;
-            add.Set(LispAtom::New(aEnvironment.HashTable().LookUp(s)));
-            add.Get()->Next().Set(newfactor.Get());
-            LispPtr hold;
-            hold.Set(add.Get());
-            newfactor.Set(add.Get());
+            sub = LA(ATOML(s)) + LA(sub);
         }
-
-
-        head.Set(LispAtom::New(aEnvironment.HashTable().LookUp("List")));
-        head.Get()->Next().Set(newfactor.Get());
-
-        LispPtr newItem;
-        newItem.Set(LispSubList::New(head.Get()));
-        LispPtr hold;
-        hold.Set(newItem.Get());
-        newItem.Get()->Next().Set(list.Get());
-        list.Set(newItem.Get());
+        res = LIST(LA(ATOML("List")) + LA(sub)) + LA(res);
     }
-    head.Set(LispAtom::New(aEnvironment.HashTable().LookUp("List")));
-    head.Get()->Next().Set(list.Get());
-    aResult.Set(LispSubList::New(head.Get()));
+    aResult.Set(LIST(LA(ATOML("List")) + LA(res)));
 }
 
 

@@ -66,4 +66,10 @@ Verify(IsUnitary({{0,I},{-I,0}}),True);
 Verify(IsUnitary({{0,I},{-I,1}}),False);
 Verify(IsUnitary({{0,I},{-2*I,0}}),False);
 
+Verify(IsVariable(a),True);
+Verify(IsVariable(Sin(a)),False);
+Verify(IsVariable(2),False);
+Verify(IsVariable(-2),False);
+Verify(IsVariable(2.1),False);
+
 

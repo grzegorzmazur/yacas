@@ -20,4 +20,5 @@ IsPositiveReal
 IsNegativeReal
 IsHermitean
 IsUnitary
+IsVariable
 }

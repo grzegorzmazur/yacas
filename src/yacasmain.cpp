@@ -124,6 +124,53 @@ void LispVersion(LispEnvironment& aEnvironment, LispPtr& aResult,
     aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp("\"" VERSION "\"")));
 }
 
+//#define _TESTCODE_
+#ifdef  _TESTCODE_
+#include "errors.h"
+#define InternalEval aEnvironment.iEvaluator->Eval
+void DummyTestFunction(LispEnvironment& aEnvironment, LispPtr& aResult,
+              LispPtr& aArguments)
+{
+    // Check that we have one argument.
+    TESTARGS(2);
+
+    // Evaluate the first argument
+    LispPtr list;
+    InternalEval(aEnvironment, list , Argument(aArguments,1));
+
+    //Check that it is a compound object
+    CHK_ARG(list.Get()->SubList() != NULL, 1);
+    LispObject *walker = list.Get()->SubList()->Get();
+    walker = walker->Next().Get();
+    
+    LispObject* result = ATOML("List");
+    while (walker != NULL)
+    {
+        char buf[200];
+        CHK_ARG(walker->SubList() != NULL, 1);
+        LispObject* var = walker->SubList()->Get();
+        CHK_ARG(var != NULL, 1);
+        CHK_ARG(var->String() != NULL, 1);
+        CHK_ARG(!strcmp(var->String()->String(),"_"), 1);
+        var = var->Next().Get();
+        CHK_ARG(var != NULL, 1);
+        CHK_ARG(var->String() != NULL, 1);
+        strcpy(buf,var->String()->String());
+        var = var->Next().Get();
+        CHK_ARG(var != NULL, 1);
+        CHK_ARG(var->String() != NULL, 1);
+        strcat(buf,var->String()->String());
+        result = LA(result) + LA(ATOML(buf));
+        walker = walker->Next().Get();
+    }
+
+    LispPtr extra;
+    PARSE(extra,"p_100 And Not p_101");
+    result = LA(result) + LA(extra.Get());
+    aResult.Set(LIST(result));
+}
+#endif
+
 
 void my_exit(void)
 {
@@ -177,7 +224,10 @@ void LoadYacas()
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispStackSize),
                                            (*yacas)()().HashTable().LookUp("StaSiz"));
 
-
+#ifdef _TESTCODE_
+    (*yacas)()().Commands().SetAssociation(LispEvaluator(DummyTestFunction),
+                                           (*yacas)()().HashTable().LookUp("DummyTestFunction"));
+#endif
 
 
     //TODO #include "../ramscripts/some.inc"

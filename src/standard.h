@@ -54,6 +54,21 @@ void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 LispInt StrCompare(LispCharPtr f1, LispCharPtr f2);
 
+#define ATOML(_s) LispAtom::New(aEnvironment.HashTable().LookUp(_s))
+#define LIST(_c) LispSubList::New(_c)
+class LispObjectAdder
+{
+public:
+    LispObjectAdder(LispObject* aPtr)
+        : iPtr(aPtr) {};
+   LispObject* iPtr;
+};
+#define LA(_o) LispObjectAdder(_o)
+
+LispObject* operator+(const LispObjectAdder& left, const LispObjectAdder& right);
+
+#define PARSE(_r,_s) ParseExpression(_r,_s,aEnvironment)
+void ParseExpression(LispPtr& aResult,LispCharPtr aString,LispEnvironment& aEnvironment);
 
 #include "standard.inl"
 
