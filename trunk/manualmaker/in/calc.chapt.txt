@@ -1,7 +1,7 @@
 
-			Calculus
+			Calculus and elementary functions
 
-*INTRO In this chapter, some functions for doing calculus are
+*INTRO In this chapter, some facilities for doing calculus are
 described. These include functions implementing differentiation,
 integration, standard mathematical functions, and solving of
 equations.
@@ -1664,3 +1664,97 @@ denotes the n-th Fibonacci number.
 	In> Table(Fibonacci(i), i, 1, 10, 1)
 	Out> {1,1,2,3,5,8,13,21,34,55};
 
+			Special functions
+
+*INTRO In this chapter, special and transcendental mathematical functions are described.
+
+*CMD Gamma, GammaNum --- Euler's Gamma function
+*STD
+*CALL
+	Gamma(x)
+	GammaNum(number)
+
+*PARMS
+
+{x} -- expression
+
+{number} -- expression that can be evaluated to a number
+
+*DESC
+
+{Gamma(x)} is an interface to Euler's Gamma function $Gamma(x)$. It returns exact values on integer and half-integer arguments. {GammaNum(x)} or equivalently {N(Gamma(x)} takes a numeric parameter and always returns a floating-point number in the current precision.
+
+*E.G.
+
+	In> Precision(30)
+	Out> True;
+	In> Gamma(1.3)
+	Out> Gamma(1.3);
+	In> N(%)
+	Out> 0.897470696306277188493754954771;
+	In> Gamma(1.5)
+	Out> Sqrt(Pi)/2;
+	In> GammaNum(1.5);
+	Out> 0.88622692545275801364908374167;
+
+*SEE !, N
+
+*CMD Zeta, ZetaNum --- Riemann's Zeta function
+*STD
+*CALL
+	Zeta(x)
+	ZetaNum(number)
+
+*PARMS
+
+{x} -- expression
+
+{number} -- expression that can be evaluated to a number
+
+*DESC
+
+{Gamma(x)} is an interface to Riemann's Zeta function $zeta(s)$. It returns exact values on integer and half-integer arguments. {ZetaNum(x)} or equivalently {N(Zeta(x)} takes a numeric parameter and always returns a floating-point number in the current precision.
+
+*E.G.
+
+	In> Precision(30)
+	Out> True;
+	In> Zeta(1.3)
+	Out> Zeta(1.3);
+	In> N(%)
+	Out> 3.93194921180954422697490751058798;
+	In> Zeta(2)
+	Out> Pi^2/6;
+	In> ZetaNum(2);
+	Out> 1.64493406684822643647241516664602;
+
+*SEE !, N
+
+
+*CMD Bernoulli, BernoulliArray --- Bernoulli numbers and polynomials
+*STD
+*CALL
+	Bernoulli(index)
+	BernoulliArray(index)
+	Bernoulli(index, x)
+
+*PARMS
+
+{x} -- expression that will be the variable in the polynomial
+
+{index} -- expression that can be evaluated to an integer
+
+*DESC
+
+{Bernoulli(n)} evaluates the $n$-th Bernoulli number. {Bernoulli(n, x)} returns the $n$-th Bernoulli polynomial in the variable $x$. The polynomial is returned in the Horner form.
+
+An auxiliary function {BernoulliArray(n)} might be useful too: it returns an array (of type {GenericArray}) of Bernoulli numbers up to $n$. The array is 1-based, so that the $n$-th Bernoulli number is {BernoulliArray(n)[n+1]}.
+
+*EG
+
+	In> Bernoulli(20);
+	Out> -174611/330;
+	In> Bernoulli(4, x);
+	Out> ((x-2)*x+1)*x^2-1/30;
+
+*SEE Gamma, Zeta
