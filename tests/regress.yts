@@ -158,4 +158,8 @@ Verify(ZeroVector(-2),ZeroVector(-2));
 Verify(Sech(x),1/Cosh(x));
 Verify(Cot(x),1/Tan(x));
 
+// Matrix operations failed: a^2 performed the squaring on each element
+Verify({{1,2},{3,4}}^2,{{7,10},{15,22}});
+// And check that raising powers still works on lists/vectors (dotproduct?) correctly
+Verify({2,3}^2,{4,9});
 
