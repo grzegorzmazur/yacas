@@ -19,6 +19,10 @@ Verify(Integrate(x) 1/x,Ln(x) );
 Verify(Integrate(x) 1/x^2, -x^ -1 );
 Verify(Integrate(x) Ln(x), x*Ln(x)-x );
 Verify(Integrate(x) x^5000, x^5001/5001 );
+Verify(Integrate(x) 1/Tan(x), Ln(Sin(x)) );
+Verify(Integrate(x) 1/Cosh(x)^2, Tanh(x) );
+Verify(Integrate(x) 1/Sqrt(3-x^2), ArcSin(x/Sqrt(3)) );
+Verify(Integrate(x) Erf(x), x*Erf(x)+1/(Exp(x^2)*Sqrt(Pi)) );
 
 TestNonIntegrable(Integrate(x) x^(1/x));
 TestNonIntegrable(Integrate(x) x^(Sin(x)));
