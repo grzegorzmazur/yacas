@@ -223,6 +223,7 @@ test:
 	../src/yacas -pc ../tests/solve.yts
 	../src/yacas -pc ../tests/sums.yts
 	../src/yacas -pc ../tests/tensors.yts
+	../src/yacas -pc ../tests/orthopoly.yts
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
