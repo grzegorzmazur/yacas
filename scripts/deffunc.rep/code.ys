@@ -7,7 +7,7 @@ Bodied("Function",60000);
 HoldArg("Function",oper);
 HoldArg("Function",args);
 HoldArg("Function",body);
-Rule("Function",3,0,True)
+Rule("Function",3,1025,True)
 [
   Retract(oper,Length(args)); 
   MacroRuleBase(oper,args);
@@ -19,7 +19,7 @@ Bodied("TemplateFunction",60000);
 HoldArg("TemplateFunction",oper);
 HoldArg("TemplateFunction",args);
 HoldArg("TemplateFunction",body);
-Rule("TemplateFunction",3,0,True)
+Rule("TemplateFunction",3,1025,True)
 [
   Retract(oper,Length(args)); 
   Local(arglist);
@@ -115,7 +115,7 @@ Rule(":=",2,20,IsFunction(aLeftAssign) And aLeftAssign[0] != Atom(":="))
   Retract(oper,arity); 
   MacroRuleBase(oper, args);
   UnHoldable(aRightAssign);
-  MacroRule(oper,arity,0,True) aRightAssign;
+  MacroRule(oper,arity,1025,True) aRightAssign;
 ];
 
 RuleBase("UnHoldable",{var});
