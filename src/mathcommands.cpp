@@ -523,7 +523,9 @@ static void InternalReplace(LispEnvironment& aEnvironment, LispInt aStackTop, Li
     //TESTARGS(4);
     LispPtr evaluated;
     evaluated.Set(ARGUMENT(1).Get());
-    CHK_ISLIST_CORE(evaluated,1);
+//    CHK_ISLIST_CORE(evaluated,1);
+    // Ok, so lets not check if it is a list, but it needs to be at least a 'function'
+    CHK_ARG_CORE(evaluated.Get()->SubList() != NULL, 1);
 
     LispPtr index;
     index.Set(ARGUMENT(2).Get());
