@@ -109,11 +109,13 @@ void LispClearVar(LispEnvironment& aEnvironment,LispInt aStackTop)
 /* StrCompare returns f1-f2: if f1 < f2 it returns -1, if f1=f2 it
  returns 0, and it returns 1 if f1>f2
  */
+// the aPrecision argument is ignored here
 static LispBoolean LexLessThan(LispCharPtr f1, LispCharPtr f2, LispHashTable& aHashTable,LispInt aPrecision)
 {
     return (StrCompare(f1, f2)<0);
 }
 
+// the aPrecision argument is ignored here
 static LispBoolean LexGreaterThan(LispCharPtr f1, LispCharPtr f2, LispHashTable& aHashTable,LispInt aPrecision)
 {
     return (StrCompare(f1, f2)>0);
@@ -122,11 +124,12 @@ static LispBoolean LexGreaterThan(LispCharPtr f1, LispCharPtr f2, LispHashTable&
 #ifndef NO_USE_BIGFLOAT
 static LispBoolean BigLessThan(BigNumber& n1, BigNumber& n2)
 {
-LispString str;
-n1.ToString(str,10,10);
-n2.ToString(str,10,10);
+// TODO REMOVE
+//LispString str;
+//n1.ToString(str,10,10);
+//n2.ToString(str,10,10);
 
-  return n1.LessThan(n2);
+  return n1.LessThan(n2) && !n1.Equals(n2);
 }
 static LispBoolean BigGreaterThan(BigNumber& n1, BigNumber& n2)
 {
@@ -200,6 +203,7 @@ void LispLexCompare2(LispEnvironment& aEnvironment, LispInt aStackTop,
       CHK_ARG_CORE(str1 != NULL ,1);
       CHK_ARG_CORE(str2 != NULL, 2);
 #endif
+	  // the precision argument is ignored in "lex" functions
       cmp =lexfunc(str1->String(),str2->String(),
                             aEnvironment.HashTable(),
                             aEnvironment.Precision());
@@ -208,6 +212,7 @@ void LispLexCompare2(LispEnvironment& aEnvironment, LispInt aStackTop,
     InternalBoolean(aEnvironment,RESULT, cmp);
 }
 
+// this function will eventually be moved to scripts
 void LispPi(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     //TESTARGS(1);
@@ -1545,7 +1550,7 @@ void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 
 
-
+// this function will eventually be removed
 void LispFastPi(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     //TESTARGS(1);
@@ -1819,6 +1824,7 @@ void LispGetPrecision(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     //TESTARGS(1);
     LispChar buf[30];
+	// decimal precision
     InternalIntToAscii(buf, aEnvironment.Precision());
     RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
 }

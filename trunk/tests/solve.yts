@@ -132,7 +132,7 @@ Verify(IsError(), False);
 /* This command is clearly nonsense, but it used to send Yacas in an
  * infinite recursion, which should never happen.  Note that 'D(y)x == 0'
  * is parsed as 'D(y)(x==0)'. */
-VerifySolve(Solve(D(y)x == 0, x),  { });
+VerifySolve(Solve(D(y)(x == 0), x),  { });
 Verify(ClearError("Solve'Fails"), True);
 Verify(IsError(), False);
 

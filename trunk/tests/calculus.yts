@@ -38,8 +38,8 @@ Verify(Identity(3),{{1,0,0},{0,1,0},{0,0,1}});
 Testing("Derivatives");
 Verify(D(x) a,0);
 Verify(D(x) x,1);
-Verify(D(x) x+x,2);
-Verify(D(x) x*x,2*x);
+Verify(D(x) (x+x),2);
+Verify(D(x) (x*x),2*x);
 Verify(D(x) D(x) Sin(x),-Sin(x));
 
 
