@@ -151,15 +151,20 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     UserStackInformation &st = aEnvironment.iEvaluator->StackInformation();
     for (i=0;i<nrRules;i++)
     {
-        LISPASSERT(iRules[i] != NULL);
-        st.iRulePrecedence = iRules[i]->Precedence();
-        LispBoolean matches = iRules[i]->Matches(aEnvironment, arguments);
+        BranchRuleBase* thisRule = iRules[i];
+        LISPASSERT(thisRule != NULL);
+
+        st.iRulePrecedence = thisRule->Precedence();
+        LispBoolean matches = thisRule->Matches(aEnvironment, arguments);
         if (matches)
         {
             st.iSide = 1;
-            InternalEval(aEnvironment, aResult, iRules[i]->Body());
+            InternalEval(aEnvironment, aResult, thisRule->Body());
             goto FINISH;
         }
+
+        // If rules got inserted, walk back
+        while (thisRule != iRules[i] && i>0) i--;
     }
     
     // No predicate was LispTrue: return a new expression with the evaluated
