@@ -23,10 +23,13 @@ debug:
 	cd src; make -f makefile.debug
 
 # these targets will help "make checkdist" do the right thing
+dvi: texdocs
+installcheck: test
 
 # This target untars the dist file and tries a VPATH configuration.  Then
 # it guarantees that the distribution is self-contained by making another
 # tarfile.
+# Note that this is currently a cludge and conflicts with automatically generated "distcheck" target, but I don't know how to fix this.
 distcheck: dist
 	-rm -rf $(distdir)
 	GZIP=$(GZIP_ENV) $(TAR) zxf $(distdir).tar.gz
@@ -35,8 +38,8 @@ distcheck: dist
 	cd $(distdir) \
 	  && ../configure --srcdir=. --prefix=$$dc_install_base \
 	  && $(MAKE) $(AM_MAKEFLAGS) \
-	  && $(MAKE) $(AM_MAKEFLAGS) texdocs \
 	  && $(MAKE) $(AM_MAKEFLAGS) test \
+	  && $(MAKE) $(AM_MAKEFLAGS) texdocs \
 	  && $(MAKE) $(AM_MAKEFLAGS) install \
 	  && $(MAKE) $(AM_MAKEFLAGS) installcheck \
 	  && $(MAKE) $(AM_MAKEFLAGS) dist

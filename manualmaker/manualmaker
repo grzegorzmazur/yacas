@@ -476,18 +476,18 @@ StandardLib() <-- AddBody("<h5 align=right>Standard library</h5>");
 /* alias for Load() that can be redefined */
 IncludeFile(x) := [ Load(x); GarbageCollect(); ];
 
+/* mathematical expressions */
 RuleBase("TeXMath", {x});
 RuleBase("TeXMathD", {x});
 RuleBase("TeXMathD", {x,y});
 
-/* mathematical expressions */
 TeXMath(x) := "<b>" : EscapeLtGt(ToString() Write(x)) : "</b>";
-TeXMathD(x) := "
-<p><center><b> " : EscapeLtGt(ToString() Write(x)) : " </b></center></p>
+TeXMathD(_x) <-- "
+<p><center><b>" : EscapeLtGt(ToString() Write(x)) : " </b></center></p>
 ";
 // special form: punctuation at the end of a displayed equation
 TeXMathD(_x, _string) <-- "
-<p><center><b> " : EscapeLtGt(ToString() Write(x)) : string : " </b></center></p>
+<p><center><b>" : EscapeLtGt(ToString() Write(x)) : string : "</b></center></p>
 ";
 
 HoldArg("TeXMath",x);
@@ -571,6 +571,7 @@ ToLowerCase(string) :=
 
 // inline Yacas code
 DocEval(x) :=
+AddBody(ToString()
 [
 	Local(result);
 	result:=Eval(x);	// this already prints anything that x printed
@@ -586,6 +587,7 @@ DocEval(x) :=
 		)
 	);
 	NewLine();
-];
+]
+);
 
 HoldArgNr("DocEval", 1);
