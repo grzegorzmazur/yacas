@@ -19,6 +19,7 @@
 	0.4.10 cosmetic change: insert \cdot between numbers in cases like 2*10^n
 	0.4.11 added DumpErrors() to TexForm for the benefit of TeXmacs notebooks
 	0.4.12 implement the % operation as Mod
+	0.4.13 added Bessel{I,J,K,Y}, Ortho{H,P,T,U}, with a general framework for usual two-argument functions of the form $A_n(x)$; fix for Max, Min
 */
 
 /* To do:
@@ -140,11 +141,13 @@ TeXFormRegularPrefixOps := { {"+"," + "}, {"-"," - "}, {"Not"," \\neg "} };
 TeXFormGreekLetters := {"Gamma", "Delta", "Theta", "Lambda", "Xi", "Pi", "Sigma", "Upsilon", "Phi", "Psi", "Omega", "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu", "nu", "xi", "pi", "rho", "sigma", "tau", "upsilon", "phi", "chi", "psi", "omega", "varpi", "varrho", "varsigma", "varphi", "varepsilon"};
 
 TeXFormSpecialNames := {
-	{"I", "\\imath "},
-	{"Pi", "\\pi "},
+	{"I", "\\imath "},	// this prevents a real uppercase I, use BesselI instead
+	{"Pi", "\\pi "},	// this makes it impossible to have an uppercase Pi... hopefully it's not needed
 	{"Infinity", "\\infty "},
 	{"TeX", "\\textrm{\\TeX\\/}"},
-	{"LaTeX", "\\textrm{\\LaTeX\\/}"}
+	{"LaTeX", "\\textrm{\\LaTeX\\/}"},
+	{"Max", "\\max "},	// this replaces these function names
+	{"Min", "\\min "},
 };
 
 /* this function will take a user-defined variable or function name and output either this name unmodified if it's only 2 characters long, or the name in normal text if it's longer, or a TeX Greek letter code */
@@ -189,14 +192,36 @@ Function ("TeXFormTeXify", {string})
 100 # TeXForm(Exp(_x), _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\exp ", TeXFormBracketIf(True, TeXForm(x, TeXFormMaxPrec)) ) );
 
 /* Sin, Cos, etc. and their argument is bracketed when it's a sum or product but not bracketed when it's a power. */
-
-TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, {"Cosh","\\cosh "}, {"Sinh","\\sinh "}, {"Tanh","\\tanh "}, {"Ln","\\ln "}, {"ArcCos","\\arccos "}, {"ArcSin","\\arcsin "}, {"ArcTan","\\arctan "}, {"ArcCosh","\\mathrm{arccosh}\\, "}, {"ArcSinh","\\mathrm{arcsinh}\\, "}, {"ArcTanh","\\mathrm{arctanh}\\, "}, {"Max","\\max "}, {"Min","\\min "},
+/// supported Yacas functions: "mathematical" functions of one argument which sometimes do not require parentheses (e.g. $\sin x$ )
+TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, {"Cosh","\\cosh "}, {"Sinh","\\sinh "}, {"Tanh","\\tanh "}, {"Ln","\\ln "}, {"ArcCos","\\arccos "}, {"ArcSin","\\arcsin "}, {"ArcTan","\\arctan "}, {"ArcCosh","\\mathrm{arccosh}\\, "}, {"ArcSinh","\\mathrm{arcsinh}\\, "}, {"ArcTanh","\\mathrm{arctanh}\\, "},
 {"Erf", "\\mathrm{erf}\\, "}, {"Erfc", "\\mathrm{erfc}\\, "},
 };
 
+/// supported Yacas functions: functions of two arguments of the form $A_n(x)$
+TeXFormMathFunctions2 := {
+{"BesselI", "I "}, {"BesselJ", "J "},
+{"BesselK", "K "}, {"BesselY", "Y "},
+{"OrthoH", "H "}, {"OrthoP", "P "},
+{"OrthoT", "T "}, {"OrthoU", "U "},
+};
+
+// generic two-argument functions of the form $A(x,y)$ where just the name has to be changed: deal with this using the usual naming conversion scheme, no special list
+
 /* Precedence of 120 because we'd like to process other functions like sqrt or exp first */
 
+// generic math functions of one argument
 120 # TeXForm(expr_IsFunction, _p) _ (NrArgs(expr)=1 And Contains(AssocIndices(TeXFormMathFunctions), Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence("*"), ConcatStrings(TeXFormMathFunctions[Type(expr)], TeXForm( Listify(expr)[2], OpPrecedence("*")) ) );
+
+/// math functions two arguments of the form $A_n(x)$
+120 # TeXForm(expr_IsFunction, _p) _ (NrArgs(expr)=2 And Contains(AssocIndices(TeXFormMathFunctions2), Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence("*"),
+  ConcatStrings(
+	TeXFormMathFunctions2[Type(expr)],
+	"_{",
+	TeXForm( Listify(expr)[2], TeXFormMaxPrec),	// never bracket the subscript
+	"}",
+	TeXFormBracketIf(True, TeXForm(Listify(expr)[3], TeXFormMaxPrec) ) // always bracket the function argument
+  )
+);
 
 /* Complex numbers */
 100 # TeXForm(Complex(0, 1), _p) <-- TeXForm(Hold(I), p);

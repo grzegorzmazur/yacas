@@ -24,6 +24,12 @@ TeXForm(Hold(Cos(A-B)*Sin(a)*f(b,c,d*(e+1))*Sqrt(C+D)-g(a+b)^(c+d)^(c+d)))
 ,"$\\cos \\left( A - B\\right)  \\sin a f\\left( b, c, d \\left( e + 1\\right) \\right)  \\sqrt{C + D} - \\left( g\\left( a + b\\right)  ^{c + d}\\right)  ^{c + d}$"
 );
 
+// testing latest features: \\cdot, %, (a/b)^n, Bin(), BesselI, OrthoH
+Verify(
+TeXForm(3*2^n+Hold(x*10!) + (x/y)^2 + Bin(x,y) + BesselI(n,x) + Max(a,b,c) + OrthoH(n,x))
+, "$3\\cdot 2 ^{n} + x\\cdot 10! + \\left( \\frac{x}{y} \\right)  ^{2} + {x \\choose y} + I _{n}\\left( x\\right)  + \\max \\left( a, b, c\\right)  + H _{n}\\left( x\\right) $"
+);
+
 /* this fails because of a bug that D(x) f(y) does not go to 0 */ /*
 Verify(
 TeXForm(3*D(x)f(x,y,z)*Cos(Omega)*Mod(Sin(a)*4,5/a^b))
