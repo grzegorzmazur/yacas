@@ -5,6 +5,7 @@ $(testtarget):
 	$(yacastest) ../tests/calculus.yts
 	$(yacastest) ../tests/canprove.yts
 	$(yacastest) ../tests/comments.yts
+	$(yacastest) ../tests/deriv.yts
 	$(yacastest) ../tests/integrate.yts
 	$(yacastest) ../tests/linalg.yts
 	$(yacastest) ../tests/lists.yts
