@@ -59,22 +59,29 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+host_alias = 
+host_triplet = powerpc-apple-darwin5.4.2
 
 EXEEXT = 
 OBJEXT = o
 PATH_SEPARATOR = :
 AMTAR = tar
+AS = @AS@
 AWK = awk
 BOOKS_HTML = books.html
 CC = cc
 CPP = cc -E
 CXX = c++
 DEPDIR = .deps
+DLLTOOL = @DLLTOOL@
 INSTALL_HTML = install-html
 INSTALL_PS = 
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
+LIBTOOL = $(SHELL) $(top_builddir)/libtool
+LN_S = ln -s
 NUMBERS_LDFLAGS = -lm
 NUMBERS_LIB = libyacasnumbers.a
+OBJDUMP = @OBJDUMP@
 PACKAGE = yacas
 PDF_DOCS = 
 PS_DOCS = 
@@ -110,6 +117,15 @@ $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	  $(AUTOMAKE) --gnu  embed/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+	-rm -f libtool
 uninstall-info-am:
 tags: TAGS
 TAGS:
@@ -172,11 +188,11 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic mostlyclean-am
+clean-am: clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-am
 
-distclean-am: clean-am distclean-generic
+distclean-am: clean-am distclean-generic distclean-libtool
 
 dvi: dvi-am
 
@@ -202,17 +218,18 @@ maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-am
 
-mostlyclean-am: mostlyclean-generic
+mostlyclean-am: mostlyclean-generic mostlyclean-libtool
 
 uninstall-am: uninstall-info-am
 
-.PHONY: all all-am check check-am clean clean-generic distclean \
-	distclean-generic distdir dvi dvi-am info info-am install \
-	install-am install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic uninstall uninstall-am uninstall-info-am
+.PHONY: all all-am check check-am clean clean-generic clean-libtool \
+	distclean distclean-generic distclean-libtool distdir dvi \
+	dvi-am info info-am install install-am install-data \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-man install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool uninstall uninstall-am uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
