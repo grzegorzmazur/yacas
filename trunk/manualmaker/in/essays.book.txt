@@ -4,6 +4,8 @@ using the Yacas system for specific calculations
 to general issues related to the Yacas system development.
 				Essays on Yacas
 
+*INCLUDE paper.chapt
+
 			On Yacas programming
 
 *INCLUDE ABIN-grammar.chapt
@@ -11,6 +13,8 @@ to general issues related to the Yacas system development.
 *INCLUDE wordproblems.chapt
 
 *INCLUDE Plugins-Howto.chapt
+
+*INCLUDE new.chapt
 
 			For Yacas developers
 
@@ -20,4 +24,3 @@ to general issues related to the Yacas system development.
 
 *INCLUDE Algorithms.chapt
 
-*INCLUDE new.chapt

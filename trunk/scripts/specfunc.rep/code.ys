@@ -287,10 +287,10 @@ Bernoulli1(n_IsEven)_(n>=2) <-- [
 	B := Floor(N(	// compute integer part of B
 		If(	// use different methods to compute Zeta function
 			n>250,	// threshold is roughly right for internal math
-			ZetaNum2(n, n/17+1),	// with this method, a single Bernoulli number n is computed in O(n*M(t)) operations where t = O(n*Ln(n)) is the required precision
-			// Brent's method requires n^2*t+n*M(t)
+			ZetaNum2(n, n/17+1),	// with this method, a single Bernoulli number n is computed in O(n*M(P)) operations where P = O(n*Ln(n)) is the required precision
+			// Brent's method requires n^2*P+n*M(P)
 			// simple array method requires 
-			ZetaNum1(n, n/17+1)	// this gives O(n*Ln(n)*M(t))
+			ZetaNum1(n, n/17+1)	// this gives O(n*Ln(n)*M(P))
 		)
 		*N(2*n! /(2*Pi)^n)))
 		// 2*Pi*e is approx. 17, add 1 to guard precision
@@ -298,4 +298,44 @@ Bernoulli1(n_IsEven)_(n>=2) <-- [
 		+ BernoulliFracPart(n);	// this already has the right sign
 	Precision(prec);	// restore old precision
 	B;
+];
+
+/// Bernoulli numbers; algorithm from: R. P. Brent, "A FORTRAN multiple-precision arithmetic package", ACM TOMS vol. 4, no. 1, p. 57 (1978).
+/// this may be good for floating-point (not exact) evaluation of B[n] at large n
+/// but is not good at all for exact evaluation! (too slow)
+/// Brent claims that the usual recurrence is numerically unstable
+/// but we can't check this because Yacas internal math is fixed-point and Brent's algorithm needs real floating point (C[k] are very small and then multiplied by (2*k)! )
+BernoulliArray1(n_IsEven) _ (n>=2) <--
+[
+	Local(C, f, k, j, denom, sum);
+	C := ArrayCreate(n+1, 0);
+	f := ArrayCreate(n/2, 0);
+	C[1] := 1;
+	C[2] := -1/2;
+	C[3] := 1/12;	// C[2*k+1] = B[2*k]/(2*k)!
+	f[1] := 2;	// f[k] = (2k)!
+	For(k:=2, k<=n/2, k++)	// we could start with k=1 but it would be awkward to compute f[] recursively
+	[
+		// compute f[k]
+		f[k] := f[k-1] * (2*k)*(2*k-1);
+		// compute C[k]
+		C[2*k+1] := 1/(1-4^(-k))/2*(
+			[
+				denom := 4;	// = 4^1
+				sum := 0;
+				For(j:=1, j<=k-1, j++)
+				[
+					sum := sum + C[2*(k-j)+1]/denom/f[j];	// + C[k-j]/(2*j)! /4^j
+					denom := denom * 4;
+				];
+				(2*k-1)/denom/f[k] - sum;
+			]
+		);
+//	Echo({n, k, denom, C[k]});
+	];
+	// multiply C's with factorials to get B's
+	For(k:=1, k<=n/2, k++)
+		C[2*k+1] := C[2*k+1] * f[k];
+	// return array object
+	C;
 ];
