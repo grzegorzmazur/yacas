@@ -10,6 +10,9 @@
 #include "lispeval.h"
 #include "standard.h"
 
+//#include "lispparser.h" //TODO debug only! remove
+
+
 //#define YACAS_LOGGING
 #include "log.h"
 /*
@@ -165,17 +168,36 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
                     if (num>2)
                     {
                         LispPtr third;
-                        third.Set(second->Next().Get()->Copy(LispFalse));
+
+                        LispObject* predicate = second->Next().Get();
+                        if (predicate->SubList() != NULL)
+                        {
+                            InternalFlatCopy(third, *predicate->SubList());
+                        }
+                        else
+                        {
+                            third.Set(second->Next().Get()->Copy(LispFalse));
+                        }
+
                         LispCharPtr str = second->String()->String();
-                        third.Get()->Next().Set(LispAtom::New(aEnvironment.HashTable().LookUp(str)));
-#ifdef DEBUG_MODE
-                        third.Get()->Next().Get()->SetFileAndLine(second->iFileName,second->iLine);
-#endif
+                        LispObject* last = third.Get();
+                        while (last->Next().Get() != NULL)
+                            last = last->Next().Get();
+                        
+                        last->Next().Set(LispAtom::New(aEnvironment.HashTable().LookUp(str)));
+
+//                        third.Get()->Next().Set(LispAtom::New(aEnvironment.HashTable().LookUp(str)));
                         LispPtr *pred = new LispPtr;
                         pred->Set(LispSubList::New(third.Get()));
 #ifdef DEBUG_MODE
+                        third.Get()->Next().Get()->SetFileAndLine(second->iFileName,second->iLine);
                         pred->Get()->SetFileAndLine(head->iFileName,head->iLine);
 #endif
+//LispPtr hold;
+//hold.Set(pred->Get());
+//aEnvironment.CurrentPrinter().Print(*pred,
+//                                    *aEnvironment.CurrentOutput());
+
                         iPredicates.Append(pred);
                     }
 
