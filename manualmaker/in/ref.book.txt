@@ -8,6 +8,8 @@ the command line for ordinary tasks.
 
 *INCLUDE arith.chapt
 
+*INCLUDE numtheory.chapt
+
 *INCLUDE calc.chapt
 
 *INCLUDE linalg.chapt
