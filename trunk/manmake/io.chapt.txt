@@ -1047,3 +1047,109 @@ Same limitations as {Plot2D}.
 
 *SEE V, NFunction, MakeFunctionPlugin, Plot2D
 
+
+
+*CMD DefaultTokenizer --- switch to tokenizer used for parsing regular Yacas syntax
+*CMD XmlTokenizer --- switch to tokenizer used for parsing xml-like syntax
+*CMD CTokenizer --- switch to tokenizer used for parsing C/C++ like syntax
+*CORE
+*CALL
+
+	DefaultTokenizer()
+	XmlTokenizer()
+	XmlExplodeTag(tagstring)
+	CTokenizer()
+
+*PARMS
+
+{tagstring} -- string containing one xml token
+
+*DESC
+
+The Yacas environment currently supports some experimental tokenizers for 
+various syntaxes. {DefaultTokenizer} switches to the tokenizer used for
+default Yacas syntax. Note that this is a global side effect. One needs
+to switch back to the default tokenizer when finished reading. Some
+special care has to be taken when errors are raised. These have to be
+caught with the {TrapError} function. The error handler code should re-instate
+the default tokenizer.
+
+The following subset of xml syntax (tokens) is supported currently:
+
+	<TAG [options]> - an opening tag
+	</TAG [options]> - a closing tag
+	<TAG [options] /> - an open/close tag
+
+The rest is returned as simple text in one token.
+
+The options take on the form {paramname="value"}.
+
+After an xml token has been read in, it can be converted into an
+expression Yacas can deal with (through the pattern-matching 
+transformation rule facilities). One can use XmlExplodeTag for this.
+
+XmlExplodeTag either returns a string, or a structure {XmlTag(name,params,type)}.
+{name} is the (capitalized) tag name, {params} contains an assoc list with
+the options (key fields capitalized), and type can be either "Open", "Close" or "OpenClose".
+
+{CTokenizer} is an implementation of a C/C++ tokenizer. It is still work in progress.
+
+*EG
+
+	In> XmlExplodeTag("<sometag>")
+	Out> XmlTag("SOMETAG",{},"Open");
+	In> XmlExplodeTag("</sometag>")
+	Out> XmlTag("SOMETAG",{},"Close");
+	In> XmlExplodeTag("</sometag paramone=\"value1\" paramtwo=\"value2\"/>")
+	Out> XmlTag("SOMETAG",{{"PARAMTWO","value2"},{"PARAMONE","value1"}},"OpenClose");
+
+*SEE OMParse, TrapError
+
+
+
+*CMD OMForm --- Write OpenMath representation of expression to standard output
+*CMD OMParse --- Read OpenMath representation expression from standard input and return Yacas expression
+
+*STD
+*CALL
+	OMForm(expression)
+	OMParse()
+
+*PARMS
+
+{expression} -- expression to convert
+
+*DESC
+
+{OMForm} prints an OpenMath representation of the input parameter {expression}
+to standard output. {OMParse} reads a OpenMath expression from standard
+input and returns a normal Yacas expression that matches the input OpenMath
+expression.
+
+
+*EG
+
+	In> str:=ToString()OMForm(2+Sin(a*3))
+	Out> "<OMOBJ>
+	  <OMA>
+	    <OMS cd="arith1" name="plus"/>
+	    <OMI>2</OMI>
+	    <OMA>
+	      <OMS cd="transc1" name="sin"/>
+	      <OMA>
+	        <OMS cd="arith1" name="times"/>
+	        <OMV name="a"/>
+	        <OMI>3</OMI>
+	      </OMA>
+	    </OMA>
+	  </OMA>
+	</OMOBJ>
+	";
+	In> FromString(str)OMParse()
+	Out> 2+Sin(a*3);
+
+*SEE XmlTokenizer, XmlExplodeTag
+
+
+
+

@@ -95,6 +95,13 @@ LispBoolean BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
     LispObject* ptr = aElement.Get()->SubList()->Get();
     if (!ptr) return LispFalse;
     if (!ptr->String()) return LispFalse;
+
+    if (StrEqual("`", ptr->String()->String())) 
+    {
+      aResult.Set(aElement.Get());
+      return LispTrue;
+    }
+
     if (!StrEqual("@", ptr->String()->String())) return LispFalse;
     ptr = ptr->Next().Get();
     if (!ptr) return LispFalse;
