@@ -232,6 +232,11 @@ Verify(
 GuessRational(N(Pi))
 , 355/113
 );
+Precision(10);
+Verify(
+NearRational(N(Pi))
+, 355/113
+);
 
 // Bessel Functions
 // These results are from GNU bc, matlab seems to suck.
