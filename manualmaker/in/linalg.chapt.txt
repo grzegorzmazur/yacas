@@ -61,7 +61,6 @@ the original list.
 *STD
 *CALL
         Dot(t1,t2)
-
         t1 . t2
 
 *PARMS
@@ -355,7 +354,7 @@ magnitude, so as the give them unit length.
 
 *PARMS
 
-	{expr} -- a mathematical object
+{expr} -- a mathematical object
 
 *DESC
 
