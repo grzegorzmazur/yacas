@@ -158,3 +158,23 @@ HasExprSome(_expr, _atom, _look'list) _ Equals(expr, atom) <-- True;
 HasExprArith(expr, atom) := HasExprSome(expr, atom, {Atom("+"), Atom("-"), *, /});
 HasFuncArith(expr, atom) := HasFuncSome(expr, atom, {Atom("+"), Atom("-"), *, /});
 
+
+IsGaussianInteger(x_IsComplex)	<-- (IsInteger(Re(x)) And IsInteger(Im(x)));
+Function("IsGaussianPrime",{x})
+[
+	if( IsGaussianInteger(x) )[
+		if( IsZero(Re(x)) )[
+			( Abs(Im(x)) % 4 = 3 And IsPrime(Abs(Im(x))) );	
+		] else if ( IsZero(Im(x)) ) [
+			( Abs(Re(x)) % 4 = 3 And IsPrime(Abs(Re(x))) );	
+		] else [
+			IsPrime(Re(x)^2 + Im(x)^2);
+		];
+	] else [
+		False;
+	];
+
+];
+
+IsCoprime(n_IsInteger,m_IsInteger)      <-- (Gcd(n,m)=1);
+

@@ -91,3 +91,12 @@ Verify(HasFuncArith(a*b+1,Atom("+")),True);
 Verify(HasFuncArith(a+Sin(b*c),*),False);
 Verify(HasFuncArith(a+Sin(b*c),Sin),True);
 Verify(HasFuncArith(a*b+f({b,c}),List),False);
+
+Verify(IsGaussianInteger(3+4*I),True );
+Verify(IsGaussianInteger(5),True);
+Verify(IsGaussianInteger(1.1), False );
+Verify(IsGaussianPrime(5+2*I),True );
+Verify(IsGaussianPrime(13), False );
+Verify(IsGaussianPrime(0), False );
+Verify(IsGaussianPrime(3.5), False );
+Verify(IsGaussianPrime(2+3.1*I), False );
