@@ -7,6 +7,7 @@
 #include <stdlib.h> 
 #include <windows.h> 
 
+#include <assert.h>
 #include "commandline.h"
 
 class CWin32CommandLine : public CCommandLine
