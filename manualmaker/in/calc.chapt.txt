@@ -1206,8 +1206,9 @@ definite integration: the integration is carried out from $var=x1$
 to $var=x2$". The second form is for indefinite integration.
 
 Some simple integration rules have currently been
-implemented. Polynomials, quotients of polynomials, the
-functions {Sin}, {Cos}, {Exp}, and {Ln}, and products of these
+implemented. Polynomials, some quotients of polynomials,
+trigonometric functions and their inverses, hyperbolic functions
+and their inverses, {Exp}, and {Ln}, and products of these
 functions with polynomials can be integrated.
 
 *E.G.
@@ -1215,7 +1216,7 @@ functions with polynomials can be integrated.
 	In> Integrate(x,a,b) Cos(x)
 	Out> Sin(b)-Sin(a);
 	In> Integrate(x) Cos(x)
-	Out> Sin(x)+C9;
+	Out> Sin(x);
 
 *SEE D, UniqueConstant
 
