@@ -103,15 +103,15 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
     }
 
     {
-//##        EvalFuncBase* func = aExpression.Get()->EvalFunc();
+        EvalFuncBase* func = aExpression.Get()->EvalFunc();
         LispPtr* subList = aExpression.Get()->SubList();
 
         /*TODO I have to be REALLY sure about this one... */
-//##        if (func)
-//##        {
-//##            func->Evaluate(aResult, aEnvironment, *subList);
-//##            goto FINISH;
-//##        }
+        if (func)
+        {
+            func->Evaluate(aResult, aEnvironment, *subList);
+            goto FINISH;
+        }
         /* */
         if (subList)
         {
@@ -137,7 +137,7 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
                     userFunc = GetUserFunction(aEnvironment, subList);
                     if (userFunc != NULL)
                     {
-//##                        aExpression.Get()->SetEvalFunc(userFunc);
+                        aExpression.Get()->SetEvalFunc(userFunc);
                         userFunc->Evaluate(aResult,aEnvironment,*subList);
                         goto FINISH;
                     }
