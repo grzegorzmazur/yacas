@@ -21,6 +21,8 @@ Summary:
 13. [Trigonometry] 'TrigSimpCombine(x^500)' returns nothing
 14. [Calculus] Some limits not working correctly when using infinity
 15. [Core] 'MathPower(0,0.5)' locks up
+16. [Build System]  mathcommands3.cpp is compiled twice and libyacas is linked
+    twice
 
 ----------------------------------------------------------------------
 
@@ -215,5 +217,16 @@ Out> Factorial(Infinity)
 Bug #15
 Title: [Core] 'MathPower(0,0.5)' locks up
 Submitted by: Ayal Pinkus
+
+----------------------------------------------------------------------
+
+Bug #16
+Title: [Build System]  mathcommands3.cpp is compiled twice and libyacas is 
+linked twice
+Date: 2003-04-14
+Submitted by: Pablo De Napoli
+
+When building yacas, "make install" recompile mathcommands3.cpp, links
+yacas again and also libyacas is linked twice.
 
 ----------------------------------------------------------------------
