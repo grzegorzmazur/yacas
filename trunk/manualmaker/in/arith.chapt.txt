@@ -515,7 +515,7 @@ A number is prime if and only if it has two divisors, 1 and itself.
 *CMD ProperDivisors --- the number of proper divisors
 *STD
 *CALL
-        ProperDivisors(n)
+	ProperDivisors(n)
 *PARMS
 
 {n}     -- positive integer
@@ -539,14 +539,14 @@ since {n} is not counted.
 *CMD ProperDivisorsSum --- the sum of proper divisors
 *STD 
 *CALL
-        ProperDivisorsSum(n)
+	ProperDivisorsSum(n)
 *PARMS  
 
 {n}     -- positive integer
 
 *DESC
 
-{ProperDivisorsSum} returns the sum of proper divisors, i.e {ProperDivisors(n)-n},
+{ProperDivisorsSum} returns the sum of proper divisors, i.e. {ProperDivisors(n)-n},
 since {n} is not counted.
 {n} is prime if and only if {ProperDivisorsSum(n)==1}.
 
@@ -564,7 +564,7 @@ since {n} is not counted.
 *CMD Moebius --- the Moebius function
 *STD 
 *CALL
-        Moebius(n)
+	Moebius(n)
 *PARMS  
 
 {n}     -- positive integer
@@ -1011,7 +1011,7 @@ the {N} operator is applied on them.
 
 *EG
 
-	In> Pslq({ 2*Pi+3*Exp(1) , Pi , Exp(1) },20)
+	In> Pslq({ 2*Pi+3*Exp(1), Pi, Exp(1) },20)
 	Out> {1,-2,-3};
 
 Note: in this example the system detects correctly that
