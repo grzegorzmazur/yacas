@@ -67,10 +67,10 @@ RuleBase("=>",{a,b});
 20 # LogNot(_x, _y)                   <-- CNF(Not (y));
 
 40 # CNF( Not ( Not  (_x)))           <-- CNF(x);                           // eliminate double negation
-45 # CNF((_x)=>(_y))                  <-- CNF((Not x)  Or  y);              // eliminate implication
+45 # CNF((_x)=>(_y))                  <-- CNF((Not (x))  Or  (y));              // eliminate implication
 
 50 # CNF( Not ((_x)  And  (_y)))      <-- CNF((Not x) Or (Not y));          // De Morgan's law
-60 # CNF( Not ((_x)  Or  (_y)))       <-- CNF(Not x) And CNF(Not y);        // De Morgan's law
+60 # CNF( Not ((_x)  Or  (_y)))       <-- CNF(Not (x)) And CNF(Not (y));        // De Morgan's law
 
 /*
 70 # CNF((_x) And ((_y)  Or  (_z)))   <-- CNF(x And y) Or CNF(x And z);
@@ -99,18 +99,16 @@ RuleBase("=>",{a,b});
 /* Accept as fully simplified, fallthrough case */
 200 # CNF(_x)                         <-- x;
 
+20 # CNFInEq((_xex) == (_yex))        <-- (CNFInEqSimplify(xex-yex) ==  0);
+20 # CNFInEq((_xex) > (_yex))         <-- (CNFInEqSimplify(xex-yex) >   0);
+20 # CNFInEq((_xex) < (_yex))         <-- (CNFInEqSimplify(xex-yex) <   0);
+20 # CNFInEq((_xex) >= (_yex))        <-- (CNFInEqSimplify(xex-yex) >=  0);
+20 # CNFInEq((_xex) <= (_yex))        <-- (CNFInEqSimplify(xex-yex) <=  0);
+20 # CNFInEq((_xex) !== (_yex))       <-- (CNFInEqSimplify(xex-yex) !== 0);
+30 # CNFInEq(_exp)                    <-- (CNFInEqSimplify(exp));
 
-
-20 # CNFInEq((_xex) == (_yex)) <-- (Apply(CNFInEqSimplify,{xex-yex}) == 0);
-20 # CNFInEq((_xex) > (_yex)) <-- (Apply(CNFInEqSimplify,{xex-yex}) > 0);
-20 # CNFInEq((_xex) < (_yex)) <-- (Apply(CNFInEqSimplify,{xex-yex}) < 0);
-20 # CNFInEq((_xex) >= (_yex)) <-- (Apply(CNFInEqSimplify,{xex-yex}) >= 0);
-20 # CNFInEq((_xex) <= (_yex)) <-- (Apply(CNFInEqSimplify,{xex-yex}) <= 0);
-20 # CNFInEq((_xex) !== (_yex)) <-- (Apply(CNFInEqSimplify,{xex-yex}) !== 0);
-30 # CNFInEq(_exp) <-- Apply(CNFInEqSimplify,{exp});
-
-CNFInEqSimplify := {{x},x}; // "Simplify";
-
+10 # CNFInEqSimplify((_x) - (_x))     <-- 0;        // strictly speaking, this is not always valid, i.e. 1/0 - 1/0 != 0...
+100# CNFInEqSimplify(_x)              <-- x;        // former "Simplify";
 
 // Some shortcuts to match prev interface
 CanProveAux(_proposition)                           <-- LogicSimplify(proposition, 3);
@@ -188,7 +186,7 @@ care of duplicates in one pass */
 //  {} means False
 LogicRemoveTautologies(_e) <--
 [
-  Local(i, len, negationfound); len := Length(e);
+  Local(i, len, negationfound); Set(len, Length(e));
   Set(negationfound, False);
 
   For(Set(i, 1), (i <= len) And (Not negationfound), i++)
@@ -234,17 +232,17 @@ LogicRemoveTautologies(_e) <--
 LogicFindWith(_list, _i, _n) <--
 [
   Local(result, index, j);
-  result := -1; index := -1;
+  Set(result, -1); Set(index, -1);
 
   For(j := i+1, (result<0) And (j <= Length(list)), j++)
   [
-    Local(k, len); len := Length(list[j]);
+    Local(k, len); Set(len, Length(list[j]));
     For(k := 1, (result<0) And (k<=len), k++)
     [
-      Local(el); el := list[j][k];
+      Local(el); Set(el, list[j][k]);
 
       If(Contradict(n, el),
-        [result := j; index := k;]);
+        [Set(result, j); Set(index, k);]);
     ];
   ];
   {result, index};
@@ -266,10 +264,9 @@ LogicCombine(_list) <--
 
     For(j := 1, Not(redo) And (j<=Length(list[i])), j++)
     [
-      Local(tocombine, n);
+      Local(tocombine, n, k);
       Set(n, list[i][j]);
 
-      Local(k);
       {tocombine, k} := LogicFindWith(list, i, n);// search forward for n, tocombine is the list we
                                                   // will combine the current one with
       If(tocombine != -1,
@@ -280,18 +277,18 @@ LogicCombine(_list) <--
         DestructiveDelete(list[i], j);
         DestructiveDelete(list[tocombine], k);
 
-        combination := LogicRemoveTautologies(Concat(list[i], list[tocombine]));
+        Set(combination, LogicRemoveTautologies(Concat(list[i], list[tocombine])));
         DestructiveDelete(list, tocombine);       // delete tocombine from the list, it's represented
                                                   // by combination, which will be list[i]
-        list[i] := combination;
+        DestructiveReplace(list, i, combination);
 
         If(combination = {False},                 // false is represented as {}
-          list[i]:={});
+            DestructiveReplace(list, i, combination));
 
         If(combination = {},                      // the combined clause is false, so the whole thing is false
-          [list:={{}}; i := Length(list)+1;], i:=0);
+          [Set(list, {{}}); Set(i, Length(list)+1);], [Set(i, 0);]);
 
-        redo := True;                             // this signals that we should break out of the inner loop
+        Set(redo, True);                          // this signals that we should break out of the inner loop
       ]);
     ];
   ];
@@ -299,6 +296,12 @@ LogicCombine(_list) <--
 ];
 
 10 # Subsumes((_x) - (_y) == 0, Not ((_x) - (_z)==0))_(y!=z)    <-- True;
+// suif_tmp0_127_1-72==0 And 78-suif_tmp0_127_1>=0
+20 # Subsumes((_x) - (_y) == 0, (_z) - (_x) >= 0)_(z>=y)        <-- True;
+20 # Subsumes((_x) - (_y) == 0, (_z) - (_x) >  0)_(z>y)         <-- True;
+// suif_tmp0_127_1-72==0 And suif_tmp0_127_1-63>=0
+30 # Subsumes((_x) - (_y) == 0, (_x) - (_z) >= 0)_(y>=z)        <-- True;
+30 # Subsumes((_x) - (_y) == 0, (_x) - (_z) > 0)_(y>z)          <-- True;
 
 90 # Subsumes((_x), (_x))                                       <-- True;
 
@@ -310,49 +313,49 @@ LogicCombine(_list) <--
 DoUnitSubsumptionAndResolution(_list) <--
 [
     Local(i, isFalse, isTrue, changed);
-    isFalse := False;
-    isTrue  := False;
-    changed := True;
+    Set(isFalse, False);
+    Set(isTrue,  False);
+    Set(changed, True);
 
     //Echo({"In DoUnitSubsumptionAndResolution", Nl()});
 
     While(changed) [
-      changed := False;
+      Set(changed, False);
 
       For(i:=1, (Not isFalse And Not isTrue) And i <= Length(list), i++)
       [
         If(Length(list[i]) = 1, [
-          Local(x); x := list[i][1]; //n := SimpleNegate(x);
+          Local(x); Set(x, list[i][1]); //n := SimpleNegate(x);
           //Echo({"Unit clause ", x, Nl()});
 
           // found a unit clause, {x}, not use it to modify other clauses
           For(j:=1, (Not isFalse And Not isTrue) And j <= Length(list), j++)
           [
               If(i !=j, [
-                Local(deletedClause); deletedClause := False;
+                Local(deletedClause); Set(deletedClause, False);
                 For(k:=1, (Not isFalse And Not isTrue And Not deletedClause) And k <= Length(list[j]),  k++)
                 [
                     // In both of these, if a clause becomes empty, the whole thing is False
 
+                    //Echo({"   ", x, " subsumes ", list[j][k], i,j, Subsumes(x, list[j][k]), Nl()});
+
                     // unit subsumption -- this kills clause j
                     If(Subsumes(x, list[j][k]), [
-                        //Echo({x, " subsumes ", list[j][k], i,j,Nl()});
-
                         // delete this clause
                         DestructiveDelete(list, j);
                         j--;
                         If(i>j, i--);   // i also needs to be decremented
-                        deletedClause := True;
-                        changed := True;
-                        If(Length(list) = 0, [isTrue := True;]);
+                        Set(deletedClause, True);
+                        Set(changed, True);
+                        If(Length(list) = 0, [Set(isTrue, True);]);
                     ],
                       // else, try unit resolution
                     If(Contradict(x, list[j][k]), [
                         //Echo({x, " contradicts", list[j][k], Nl()});
                         DestructiveDelete(list[j], k);
                         k--;
-                        changed := True;
-                        If(Length(list[j]) = 0, [isFalse := True;]);
+                        Set(changed, True);
+                        If(Length(list[j]) = 0, [Set(isFalse, True);]);
                     ])
                     );
                 ];
