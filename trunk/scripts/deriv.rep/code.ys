@@ -85,12 +85,26 @@ HoldArg("D",aFunc);
 2 # (Deriv(_var)Complex(_r,_i)) <-- Complex(Deriv(var)r,Deriv(var)i);
 
 
+/*TODO remove
 LocalSymbols(var,var2,a,b,y)[
   2 # (Deriv(_var)Integrate(_var)(_y)) <-- y;
   2 # (Deriv(_var)Integrate(_var2,_a,_b)(_y)) <-- 
         (Deriv(var)b)*(y Where var2 == b) -
         (Deriv(var)a)*(y Where var2 == a);
 ];
+*/
+LocalSymbols(var,var2,a,b,y)[
+   2 # (Deriv(_var)Integrate(_var)(_y)) <-- y;
+   2 # (Deriv(_var)Integrate(_var2,_a,_b)(y_IsFreeOf(var))) <-- 
+         (Deriv(var)b)*(y Where var2 == b) -
+         (Deriv(var)a)*(y Where var2 == a);
+   3 # (Deriv(_var)Integrate(_var2,_a,_b)(_y)) <-- 
+         (Deriv(var)b)*(y Where var2 == b) -
+         (Deriv(var)a)*(y Where var2 == a) +
+ 	Integrate(var2,a,b) Deriv(var) y;
+ ];
+
+
 
 2 # (Deriv(_var)func_IsList)_(Not(IsList(var))) <--
     Map("Deriv",{FillList(var,Length(func)),func});
