@@ -236,6 +236,15 @@ Out> Zeta(Infinity)
 In> Limit(x,Infinity) Factorial(x)
 Out> Factorial(Infinity)
 
+COMMENT: I don't know what I was thinking when I entered this bug report!
+Of course, the Factorial function isn't even defined! 
+
+  In> Limit(x,Infinity)(x!)
+  Out> Infinity
+
+Which is the intended behaviour right?
+
+
 ----------------------------------------------------------------------
 
 Bug #15
