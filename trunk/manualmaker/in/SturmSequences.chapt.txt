@@ -1,6 +1,8 @@
 
 			Finding Real Roots of Polynomials
 
+*A Real Roots
+
 This section deals with finding roots of polynoms in the field 
 of real numbers:
 
@@ -17,6 +19,8 @@ $$ p = p[1]^n[1]* ... * p[m]^n[m] $$
 
 for the $ m $ distinct irreducible polynomials $ p[i] $ of a polynomial, and 
 its multiplicities $ n[i] $.
+
+*A Real Roots!Square free decomposition
 
 For the case of finding the real roots, it is useful to first remove the
 multiplicities, eg. convert the polynom to one with multiplicity 1
@@ -56,6 +60,8 @@ where $ p = SquareFree(Rationalize(p)) $:
 
 	    Sturm Sequences
 
+*A Real Roots!Sturm sequences
+
 For a polynomial $ p(x) $ of degree $ n $, the Sturm sequence
 $ p[0] $, $ p[1] $, ... $ p[n] $ is defined by the following
 equations (following Davenport, <i>Computer Algrbra</i>):
@@ -74,6 +80,8 @@ Euclid's algorithm (to within a minus sign) for the calculation of a
 greatest common divisor for $ p $ and $ D(x)p $, so the last 
 polynom, $p[n] $ will be a constant.
 
+*A Real Roots!Variations in Sturm sequences
+
 Given a Sturm sequence $ S = SturmSequence(p) $ of a polynom $ p $, 
 The <I>variation</I> in the Sturm sequence, $ V(S,y) $ is the number
 of sign changes in the sequence $ p[0] $, $ p[1] $ , ... , $ p[n] $,
@@ -90,6 +98,8 @@ of sign changes between the leading coefficients of the elements
 of the Sturm sequence, and $ V(S,-Infinity) $ the same, but with
 a minus sign for the leading coefficients for which the degree is
 odd.
+
+*A Real Roots!Number of
 
 Thus, the number of real roots of a polynomial is 
 $ V(S,-Infinity) - V(S,Infinity) $. The function call
@@ -121,6 +131,8 @@ the elements in the Sturm sequence $ S $, at point $ x = y $:
 	Out> 0;
 
 	    Bounding the Real Roots
+
+*A Real Roots!Bounds on
 
 Armed with the variations in the Sturm sequence given in the
 previous section, we can now find the number of real roots
@@ -190,6 +202,8 @@ important, as the roots can be very unstable for small variations
 in the coefficients of the polynom in question (see Davenport).
 
 	    Finding Real Roots Given the Bounds on the Roots
+
+*A Real Roots!Finding
 
 Given the bounds on the real roots as determined in the previous section,
 two methods for finding roots are available: the secant method (also
