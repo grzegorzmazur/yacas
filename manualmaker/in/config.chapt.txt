@@ -3,27 +3,25 @@
 
 *INTRO
 Yacas allows you to configure a few things at startup. The file
-{~/.yacasrc} will be executed when Yacas is run. The
-following functions can be useful when used in the {~/.yacasrc} file.
+{~/.yacasrc} is written in the Yacas language and
+will be executed when Yacas is run. The
+following functions can be useful in the {~/.yacasrc} file.
 
 *CMD DefaultDirectory --- Add directory to path for Yacas scripts
-
 *CORE
-
 *CALL
-
-DefaultDirectory(path)
+	DefaultDirectory(path)
 
 *PARMS
 
-path - a string containing a full path where yacas script files reside
+{path} -- a string containing a full path where yacas script files reside
 
 *DESC
 
 When loading files, yacas is also allowed to
-look in the folder "path". path will be prepended
+look in the folder "path". {path} will be prepended
 to the file name before trying to load the file.
-This means that "path" should end with a forward slash (under unix-like
+This means that "path" should end with a forward slash (under Unix-like
 operating systems).
 
 Yacas first tries to load a file from the current
@@ -106,8 +104,10 @@ were installed in. So the help files can be found using {FindFile}.
 
 To use netscape for browsing help, enter the following commands:
 
-	Help(_f) <-- SystemCall("netscape ":FindFile("documentation/ref.html"):"#":f);
-	Help() := SystemCall("netscape ":FindFile("documentation/books.html"));
+	Help(_f) <-- SystemCall("netscape " :
+	  FindFile("documentation/ref.html"):"#":f);
+	Help() := SystemCall("netscape " :
+	  FindFile("documentation/books.html"));
 
 *SEE SystemCall, FindFile
 
