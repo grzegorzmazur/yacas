@@ -181,7 +181,9 @@ CheckIntPower(n, limit) :=
 ];
 
 /// Compute integer part of s-th root of (positive) integer n.
-IntNthRoot(_n, s_IsInteger) <--
+// algorithm using floating-point math
+10 # IntNthRoot(_n, 2) <-- Floor(MathSqrt(n));
+20 # IntNthRoot(_n, s_IsInteger) <--
 [
 	Local(result, k);
 	GlobalPush(GetPrecision());
@@ -260,4 +262,17 @@ CatalanNumber(_n) <--
 	Bin(2*n,n)/(n+1);
 ];
 
+/// Product of small primes <= 257. Computed only once.
+LocalSymbols(p, q)
+[
+	// p:= 1;
+	ProductPrimesTo257() := 2*3*[
+		If(
+			IsInteger(p),
+			p,
+			p := Factorize(Select({{q}, Mod(q^2,24)=1 And RabinMiller(q)}, 5 .. 257))
+		);
+//		p;
+	];
+];
 

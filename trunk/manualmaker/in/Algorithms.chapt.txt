@@ -22,24 +22,48 @@ Warning: calculations with internal math with precision exceeding 10,000 digits 
 
 In some algorithms it is necessary to compute the integer parts of expressions such as $a*Ln(b)/Ln(10)$ or $a*Ln(10)/Ln(2)$ where $a$, $b$ are short integers of order $O(P)$. Such expressions are frequently needed to estimate the number of terms in the Taylor series or similar parameters of the algorithms. In these cases, it is important that the result is not underestimated but it would be wasteful to compute $Ln(10)/Ln(2)$ in floating point only to discard most of that information by taking the integer part of say $1000*Ln(10)/Ln(2)$. It is more efficient to approximate such constants from above by short rational numbers, for example, $Ln(10)/Ln(2) < 28738/8651$ and $Ln(2) < 7050/10171$. The error of such an approximation will be small enough for practical purposes. The function {NearRational} can be used to find optimal rational approximations. The function {IntLog} (see below) efficiently computes the integer part of a logarithm in integer base. If more precision is desired in calculating $Ln(a)/Ln(b)$ for integer $a$, $b$, one can compute $IntLog(a^k,b)$ for some integer $k$ and then divide by $k$.
 
-		Prime numbers
+		Prime numbers: the Miller-Rabin algorithm and its improvements
 
-Primality is tested using the function {IsPrime} that implements the
-Miller-Rabin algorithm (implementation and documentation supplied by Christian
-Obrecht). This algorithm is deterministic for "small" numbers and probabilistic
-for large numbers. In other words, it could sometimes flag a number as prime
-when in fact the number is composite; but the probability for this to happen is
-extremely small.
+Primality is tested by the function {IsPrime} that implements the
+Miller-Rabin algorithm (initial implementation and documentation
+supplied by Christian Obrecht). This algorithm is deterministic for
+"small" numbers and probabilistic for large numbers. In other words, it
+could sometimes flag a number as prime when in fact the number is
+composite; but the probability for this to happen can be made extremely
+small. The basic reference is M. O. Rabin, 
+<i>Probabilistic algorithm for testing primality</i>,
+J. Number Theory 12 (1980), 128.
+We also implemented some improvements suggested by J. H. Davenport,
+<i>Primality testing revisited</i>, Proc. ISSAC 1992, p. 123.
 
-An odd integer n is called <i>strongly-probably-prime</i> for base $b$ if
+The idea of the Miller-Rabin algorithm is to improve the Fermat primality test. If $n$ is prime, then for any $x$ we have $Gcd(n,x)=1$. Then by Fermat's "little theorem", $Mod(x^(n-1),n)=1$. Therefore we pick some integers $x$ and compute $x^(n-1)$ modulo $n$; this is a quick computation even if $n$ is large. If this value is not equal to $1$ for some $x$, then $n$ is definitely not prime. However, we cannot test <i>every</i> $x<n$ so it may happen that we miss the right values of $x$. So Fermat's test sometimes fails, i.e. says that $n$ is prime when it is in fact not a prime.
+
+The Miller-Rabin algorithm improves on this by using the property that if $n$ is prime, there are no nontrivial square roots of unity in the ring of integers modulo $n$ (this is Lagrange's theorem). In other words, if $Mod(x^2,n)=1$ for some $x$, then $x$ must be equal to $1$ or $-1$ modulo $n$. (Note that $n-1$ is equal to $-1$ modulo $n$, so $n-1$ is a trivial square root of unity modulo $n$.) In fact, if $n$ is prime, there must be no divisors of $1$ at all, i.e. no numbers $x$ and $y$, not equal to $1$ or $-1$ modulo $n$, such that $Mod(x*y,n)=1$. If we find such $x$, $y$, then $Gcd(x,n)>1$ or $Gcd(y,n)>1$ and $n$ is not prime.
+
+We can check that $n$ is odd before applying any primality test. (A quick test $Mod(n^2,24)=1$ guarantees that $n$ is not divisible by $2$ or $3$.) Then we note that in Fermat's test, the power $n-1$ is certainly a composite number because $n-1$ is even. Therefore if we first find the largest power of $2$ in $n-1$ and decompose $n-1=2^r*q$ with $q$ odd, then $Mod(x^(n-1),n)=Mod(a^(2^r),n)$ where $a=Mod(x^q,n)$. (Here $r>=1$ since $n$ is odd.) In other words, the number $Mod(x^(n-1),n)$ is obtained by repeated squaring of the number $a$ that we can easily find. We get a sequence of $r$ repeated squares: $a$, $a^2$, ..., $a^(2^r)$. 
+The last element of this sequence must be $1$ if $n$ passes the Fermat test. Therefore the previous element is a square root of unity modulo $n$. We can check whether this square root is non-trivial (i.e. not equal to $1$ or $-1$ modulo $n$). If it is non-trivial, then $n$ definitely cannot be a prime. If it is trivial and equal to $1$, we can check the preceding element, and so on. If an element is equal to $-1$, we cannot say anything, i.e. the test passes ($n$ is "probably a prime").
+ 
+This procedure can be summarized like this:
+
+*	1. Find the largest power of $2$ in $n-1$ and an odd number $q$ such that $n-1=2^r*q$.
+*	2. Select the "base number" $x<n$. Compute the sequence $a:=Mod(x^q,n)$, $a^2$, $a^4$, ..., $a^(2^r)$ by repeated squaring modulo $n$. This sequence contains at least two elements since $r>=1$.
+*	3. If $a=1$ or $a=n-1$, the test passes on the base number $x$. Otherwise, the test passes if at least one of the elements of the sequence is equal to $n-1$ and fails if none of them are equal to $n-1$. 
+This simplified procedure works because the first element that is equal to $1$ <i>must</i> be preceded by a $-1$, or else we'd found a root of unity.
+
+A practical application of this procedure needs to select base numbers. 
+It is advantageous (according to Pomerance et al., Math. Comp. 35 (1980), 1003) to choose <i>prime</i> numbers $b$ as bases, because for a composite base $b=p*q$, if $n$ is a strong pseudoprime for both $p$ and $q$, then it is very probable that $n$ is a strong pseudoprime also for $b$, so composite bases rarely give new information.
+
+Here are some more formal definitions. An odd integer $n$ is called <i>strongly-probably-prime</i> for base $b$ if
 $Mod(b^q,n) = 1$
 or
 $Mod(b^(q*2^i),n) = n-1$ for some $i$ such that $0 <= i < r$,
 where $q$ and $r$ are such that $q$ is odd and $n-1 = q*2^r$.
 
+An additional check suggested by Davenport is activated if $r>2$ (i.e. if $Mod(n-1,4)=1$ which is true for only about 1/2 of all numbers). If $i>=1$ is found such that $Mod(b^(q*2^i),n) = n-1$, then $b^(q*2^(i-1))$ is a square root of $-1$ modulo $n$. If $n$ is prime, there may be only two different square roots of $-1$. Therefore we should store the set of found values of roots; if there are more than two such roots, then we have found roots $s1$, $s2$ of $-1$ such that $Mod(s1+s2+1,n)!=0$. Then $Mod(s1^2-s2^2,n)=0$ and $n$ is definitely composite because e.g. $Gcd(s1+s2,n)>1$. This check costs very little computational effort but guards against some strong pseudoprimes.
+
 If an integer is not "strongly-probably-prime" for a given base $b$, then it is
 a composite number. However, the reciprocal is false, i.e. "strongly-probably-prime" numbers can actually be composite. Composite strongly-probably-prime numbers for
-base $b$ are called <i>strong pseudoprimes</i> for base $b$. If $n$ is
+base $b$ are called <i>strong pseudoprimes</i> for base $b$. There is a theorem that if $n$ is
 composite, then among all numbers $b$ such that $1 < b < n$, at most one fourth
 are such that $n$ is a strong pseudoprime for base $b$.
 
@@ -47,22 +71,44 @@ For numbers less than $B=34155071728321$, exhaustive computations have shown
 that there are no strong pseudoprimes simultaneously for bases 2, 3, 5, 7, 11, 13
 and 17. This leads to a very simple and quick way to check whether a number is
 prime, provided it is smaller than $B$.
-
 If $n >= B$, the Rabin-Miller method consists in checking if $n$ is
-strongly-probably-prime for $k$ randomly chosen numbers $b$ such that $1 < b < n$.
-The probability for a composite number to pass the test is less than
-$p = Ln(n)/4^k$. In the implemented routine, the number of tests $k$ is chosen to
-make the probability of failure $p < 10^(-25)$.
+strongly-probably-prime for $k$ base numbers $b$.
+The base numbers are chosen to be consecutive "weak pseudoprimes" that are easy to generate (see below the function {NextPseudoPrime}).
 
+In the implemented routine {RabinMiller}, the number of bases $k$ is chosen to
+make the probability of erroneously passing the test $p < 10^(-25)$. (Note that
+this is <i>not</i> the same as the probability to give an incorrect answer,
+because all numbers that do not pass the test are definitely composite.) The
+probability for the test to pass mistakenly on a given number is found as
+follows. Suppose the number of bases $k$ is fixed. Then the probability for a
+given composite number to pass the test is less than $p[f]=4^(-k)$. The
+probability for a given number $n$ to be prime is roughly $p[p]=1/Ln(n)$ and to
+be composite $p[c]=1-1/Ln(n)$. Prime numbers never fail the test. Therefore, the probability for the test to pass is $p[f]*p[c]+p[p]$ and the probability for pass erroneously is
+$$ p = (p[f]*p[c])/(p[f]*p[c]+p[p]) < Ln(n)*4^(-k) $$.
+To make $p<epsilon$, it is enough to select $k=1/Ln(4)*(Ln(n)-Ln(epsilon))$.
 
-There are also a function {NextPrime(n)} that returns the smallest prime number larger than {n}. This function uses a sequence 5,7,11,13,... generated by the function {NextPseudoPrime} that contains numbers not divisible by 2 or 3 (but perhaps divisible by 5,7,...). {NextPseudoPrime} is very fast because it does not test for prime numbers.
+Before calling {MillerRabin}, the function {IsPrime} performs two quick
+checks: first, for $n>=4$ it checks that $Mod(n^2-1,24)=0$ (all primes larger than 4 must satisfy this); second, for $n>257$, it
+checks that $n$ does not contain small prime factors $p<=257$. This is
+checked by evaluating the GCD of $n$ with the product of all primes up
+to 257. The computation of GCD is very quick and saves time in case a
+small prime factor is present.
+
+There are also a function {NextPrime(n)} that returns the smallest prime number larger than {n}. This function uses a sequence 5,7,11,13,... generated by the function {NextPseudoPrime} that contains numbers not divisible by 2 or 3 (but perhaps divisible by 5,7,...). {NextPseudoPrime} is very fast because it does not perform a full primality test.
 
 		Factorization of integers
 
 Factorization of integers is implemented by functions {Factor} and {Factors}. Both functions try to find all prime factors of a given integer $n$. (Before doing this, the primality checking algorithm is used to detect whether $n$ is a prime number.)
 Factorization consists of repeatedly finding a factor, i.e. an integer $f$ such that $Mod(n, f)=0$, and dividing $n$ by $f$.
 
-For small prime factors the trial division algorithm is used: $n$ is divided by all prime numbers $p<=257$ until a factor is found. {NextPseudoPrime} is used to generate the sequence of candidate divisors $p$.
+First we determine whether the number $n$ contains "small" prime
+factors $p<=257$. A quick test is to find the GCD of $n$ and the
+product of all primes up to $257$: if the GCD is greater than 1, then
+$n$ has at least one small prime factor. (The product of primes is
+precomputed.) If this is the case, the trial division algorithm is
+used: $n$ is divided by all prime numbers $p<=257$ until a factor is
+found. {NextPseudoPrime} is used to generate the sequence of candidate
+divisors $p$.
 
 After separating small prime factors, we test whether the number $n$ is an integer power of a prime number, i.e. whether $n=p^s$ for some prime number $p$ and an integer $s>=1$. This is tested by the following algorithm. We already know that $n$ is not prime and that $n$ does not contain any small prime factors up to 257. Therefore if $n=p^s$, then $p>257$ and $2<=s<s[0]=Ln(n)/Ln(257)$. In other words, we only need to look for powers not greater than $s[0]$. This number can be approximated by the "integer logarithm" of $n$ in base 257 (routine {IntLog (n, 257)}).
 
@@ -72,9 +118,54 @@ The testing is performed using the integer square root function {IntNthRoot} whi
 If the number $n$ is not a prime power, the Pollard "rho" algorithm is applied (J. Pollard, <i>Monte Carlo methods for index computation mod p</i>, Mathematics of Computation, volume 32, pages
 918-924, 1978). The Pollard "rho" algorithm takes an irreducible polynomial, e.g. $p(x)=x^2+1$ and builds a sequence of integers $x[k+1]:=Mod(p(x[k]),n)$, starting from $x[0]=2$. For each $k$, the value $x[2*k]-x[k]$ is attempted as possibly containing a common factor with $n$. The GCD of $x[2*k]-x[k]$ with $n$ is computed, and if $Gcd(x[2*k]-x[k],n)>1$, then that GCD value divides $n$.
 
-The Pollard "rho" algorithm may enter an infinite loop when the sequence $x[k]$ repeats itself without giving any factors of $n$. For example, the unmodified "rho" algorithm loops on the number 703. The loop is detected by comparing $x[2*k]$ and $x[k]$. When these two quantities become equal to each other for the first time, the loop may not yet have occurred so the value of GCD is set to 1 and the sequence is continued. But when the equality of $x[2*k]$ and $x[k]$ occurs many times, it indicates that the algorithm has entered a loop. A solution is to randomly choose a different starting number $x[0]$ when a loop occurs and try factoring again, and keep trying new random starting numbers between 1 and $n$ until a non-looping sequence is found. The current implementation stops after 100 restart attempts and prints an error message, "failed to factorize number".
+The idea behind the "rho" algorithm is to generate an effectively
+random sequence of trial numbers $t[k]$ that may have a common factor
+with $n$. The efficiency of this algorithm is determined by the size of
+the smallest factor $p$ of $n$. Suppose $p$ is the smallest prime
+factor of $n$ and suppose we generate a random sequence of integers
+$t[k]$ such that $1<=t[k]<n$. It is clear that, on the average, a
+fraction $1/p$ of these integers will be divisible by $p$. Therefore
+(if $t[k]$ are truly random) we should need on the average $p$ tries
+until we find $t[k]$ which is accidentally divisible by $p$. In
+practice, of course, we do not use a truly random sequence and the
+number of tries before we find a factor $p$ may be significantly
+different from $p$. The quadratic polynomial seems to help reduce the
+number of tries in most cases.
+
+But the Pollard "rho" algorithm may actually enter an infinite loop
+when the sequence $x[k]$ repeats itself without giving any factors of
+$n$. For example, the unmodified "rho" algorithm starting from $x[0]=2$
+loops on the number 703. The loop is detected by comparing $x[2*k]$ and
+$x[k]$. When these two quantities become equal to each other for the
+first time, the loop may not yet have occurred so the value of GCD is
+set to 1 and the sequence is continued. But when the equality of
+$x[2*k]$ and $x[k]$ occurs many times, it indicates that the algorithm
+has entered a loop. A solution is to randomly choose a different
+starting number $x[0]$ when a loop occurs and try factoring again, and
+keep trying new random starting numbers between 1 and $n$ until a
+non-looping sequence is found. The current implementation stops after
+100 restart attempts and prints an error message, "failed to factorize
+number".
 
 A better (and faster) integer factoring algorithm is needed.
+
+Modern factoring algorithms are all probabilistic (i.e. they do not
+guarantee a particular finishing time) and fall into three categories:
+*	1. Methods that work well (i.e. quickly) if there is a relatively
+small factor $p$ (even if $n$ itself is large). Pollard's "rho"
+algorithm belongs to this category. The fastest in this category is
+Lenstra's elliptic curves method (ECM).
+*	2. Methods that work equally well regardless of the size of factors
+(but slower with larger $n$). These are the continued fractions method
+and the various "sieve" methods. The best is the "General Number Field
+Sieve" (GNFS) but it is quite a complicated algorithm requiring
+operations with high-order algebraic numbers. The next best one is the
+"Multiple Polynomial Quadratic Sieve" (MPQS).
+*	3. Methods that are suitable only for numbers of special
+"interesting" form, e.g. Fermat numbers $2^(2^k)-1$ or generally
+numbers of the form $r^s+a$ where $s$ is large but $r$ and $a$ are very
+small integers. The best method seems to be again the Special Number
+Field Sieve.
 
 		Adaptive plotting
 
