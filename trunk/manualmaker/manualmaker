@@ -46,7 +46,9 @@ ChapterIntro(text) :=
 
 Bodied("ChapterIntro", 60000);
 
-AddAnchor(aAnchor):= "";	// do nothing, since anchors are not very useful in HTML. HtmlAnchor() will be used on anchors that are important for HTML.
+// we need this so that *A inserts and anchor into HTML
+AddAnchor(aAnchor) := (HtmlAnchor()aAnchor);
+// but we don't need to enter the *A stuff into tables of contents
 /*[
   AddBody(HtmlAnchor()aAnchor);
   plain["Chapters"][currentChapter]["Commands"] :=
