@@ -194,3 +194,44 @@ Function("ApproxInfSum",{expr,start,x,c})
 40 # FresnelSin(x_IsNumber)_(Abs(x) <= 1) <-- N(Sqrt(2/Pi)*ApproxInfSum((-1)^(k+1)*x^(2*k+1)/(k! * (2*k+1)),1,x));
 40 # FresnelCos(x_IsNumber)_(Abs(x) <= 1) <-- N(Sqrt(2/Pi)*ApproxInfSum((-1)^(k+1)*x^(4*k-3)/((4*k-3) * (2*k-2)! ),1,x));
 
+/////////////////////////////////////////////////
+/// Lambert's $W$ function.
+/////////////////////////////////////////////////
+
+10 # LambertW(0) <-- 0;
+10 # LambertW(Infinity) <-- Infinity;
+10 # LambertW(Undefined) <-- Undefined;
+10 # LambertW(-Infinity) <-- Infinity + I*Pi;
+10 # LambertW(-Exp(-1)) <-- -1;
+20 # LambertW(_x * Ln(_x)) <-- Ln(x);
+20 # LambertW(Ln(_x) * _x) <-- Ln(x);
+
+30 # LambertW(x_IsConstant) _ Numeric <-- LambertWNum(Eval(x));
+
+/* {LambertWNum} computes a numeric approximation of Lambert's $W$ function
+to the current precision. It uses a Halley iteration
+$$ W'=W-(W-x*Exp(-W))/(W+1-(W+2)/(W+1)*(W-x*Exp(-W))/2) $$.
+The function has real values for real $x >= -Exp(-1)$. (This point is a logarithmic branching point.)
+*/
+10 # LambertWNum(x_IsNumber)_(x < -MathExp(-1)) <-- Undefined;
+20 # LambertWNum(x_IsNumber) <--
+[
+	NewtonNum(
+	  `Hold(
+	  {
+	  {W},
+	  [
+	  	Local(a);
+		a:=W- @x*MathExp(-W);
+		W-a/(W+1-(W+2)/(W+1)*a/2.);
+	  ]}),
+	// initial approximation is the two-point generalized Pade:
+	  If(
+		x<0,
+		x*MathExp(1) / (1+1 / (1 / MathSqrt(2*(x*MathExp(1)+1)) - 1 / MathSqrt(2) + 1/(MathExp(1)-1))),
+		LnNum(1+x)*(1-LnNum(1+LnNum(1+x))/(2+LnNum(1+x)))
+	  ),
+	  10,	// initial approximation is good to about 3 digits
+	  3	// 3rd order scheme
+	);
+];

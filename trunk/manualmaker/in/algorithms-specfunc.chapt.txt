@@ -121,6 +121,38 @@ For example, at 100 digits of precision it is advisable to use
 the series, whereas the expression used in {ZetaNum(s)} uses
 $n=Ln(10)/Ln(8)*P$ terms (of a different series).
 
+		Lambert's $W$ function
+
+Lambert's $W$ function is (a multiple-valued, complex function) defined for any (complex) $z$ by
+$ W(z) * Exp(W(z)) = z$.
+This function is sometimes useful to represent solutions of transcendental equations or integrals.
+
+
+Asymptotics of Lambert's $W$ function are, as usual, not precise enough for actual calculations:
+$$W((z^2-2)/2/Exp(1)) = -1 + z - z^3/3 + 11/72*z^4 - ...$$ (this is only good really close to z=0);
+$W(x) = x-x^2+3/2*x^3-...$ (this is good very near x=0);
+$$W(x) = Ln(x) - Ln(Ln(x)) + Ln(Ln(x))/Ln(x) + 1/2*(Ln(Ln(x))/Ln(x))^2 + ...$$ (good for very large $x$ but it is not clear how to form higher terms!).
+
+Fortunately, one can use uniform rational approximations:
+$$W(x) <=> Ln(1+x)*(1-Ln(1+Ln(1+x))/(2+Ln(1+x)))$$ (uniformly good for $x>0$, relative error not more than $10^(-2)$); and
+$$W(x) <=> (x*Exp(1)) / (1+( (2*(x*Exp(1)+1))^(-1/2) -1/Sqrt(2) +1/(Exp(1)-1))^(-1) )$$
+(uniformly good for $-Exp(-1)<x<0$, relative error not more than $10^(-3)$).
+
+There is also a uniform approximation of the form
+$$ W(x) <=> (a+l)*(f-Ln(1+c*Ln(1+d*y))+2*l)/(a+1/2+l) $$,
+where $a$, $b$, $c$, $d$, $f$ are certain constants, $y:=Sqrt(2*x*Exp(1)+2)$ and $l:=Ln(1+b*y)$.
+This approximation miraculously works over the whole complex plane within relative error at most $0.008$.
+However, the coefficients $a$, ..., $f$ are not elementary constants; they have
+to be found numerically by matching to the asymptotics at three points
+$x= -Exp(-1)$, $x=0$, $x=Infinity$.
+
+
+The numerical procedure uses the Newton-Halley iteration and the first two uniform rational approximation of $W(x)$ for the initial value of $x$.
+
+The Halley iteration for the equation $W*Exp(W)=x$ can be written as
+$$ W'=W-(W-x*Exp(-W))/(W+1-(W+2)/(W+1)*(W-x*Exp(-W))/2) $$. It has cubic convergence for any initial value $W> -Exp(-1)$.
+
+
 		Bessel functions
 
 
