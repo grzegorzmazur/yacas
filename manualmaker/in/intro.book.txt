@@ -128,9 +128,9 @@ When dealing with floating point numbers, the command {Precision(n);} can be use
 
 	In> Precision(30);
 	Out> True;
-	In> 1.0/243;
+	In> N(1/243);
 	Out> 0.004115226337448559670781893004;
-Note that we need to enter {1.0} as a floating-point constant to force the approximate calculation, otherwise the fraction would have been left unevaluated. The value {True} is a boolean constant.
+Note that we need to enter {N()} to force the approximate calculation, otherwise the fraction would have been left unevaluated. The value {True} is a boolean constant.
 
 Analytic derivatives of functions can be evaluated:
 
