@@ -9,10 +9,15 @@
 #endif
 
 #include <sys/stat.h>
-#ifdef _GCC_BUILD_
+
+#ifdef HAVE_CONFIG_H
+#include "../config.h"
+#endif
+#ifdef HAVE_DIRENT_H
+#define _GCC_BUILD_
 #include <dirent.h>
 #define DIRSEP "/"
-#endif
+#endif //HAVE_DIRENT_H
 
 #include <string.h>
 
