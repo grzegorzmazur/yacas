@@ -44,9 +44,9 @@ If we do not know in advance how many terms of the Taylor series we need, we can
 
 Suppose we need to evaluate $Sum(k,0,N, a[k]*x^k)$ and we know that $N$ terms are enough for $P$ decimal digits. Typically $N$ will be $O(P)$. Suppose also that the coefficients $a[k]$ are rational numbers with small numerators and denominators, so a  multiplication $a[k]*x$ is not a long multiplication (usually, either $a[k]$ or the ratio $a[k]$/$a[k-1]$ is a short rational number). Then we can organize the calculation in a rectangular array with $c$ columns and $r$ rows like this,
 $$ a[0]+a[r]*x^r+...+a[(c-1)*r]*x^((c-1)*r) $$+
-$$ x*(a[1]+a[r+1]*x^r+... $$+
+$$ x*(a[1]+a[r+1]*x^r+...) $$+
 $$ ... $$+
-$$ x^(r-1)*(a[r-1]+a[2*r+1]*x^r+... $$.
+$$ x^(r-1)*(a[r-1]+a[2*r+1]*x^r+...) $$.
 To evaluate this rectangle, we first to compute $x^r$ (which, if done by the fast binary algorithm, requires $O(Ln(r))$ long multiplications), and then we compute the $c-1$ successive powers of $x^r$, namely
 $x^(2*r)$, $x^(3*r)$, ..., $x^((c-1)*r)$ in $c-1$ long
 multiplications. The partial sums in the $r$ rows are evaluated column by column as more powers of $x^r$ become available. This requires storage of $r$ intermediate results and no long multiplications, assuming that the coefficients $a[k]$ can be multiplied by the power of $x^r$ using short multiplications only. If a simple formula relating the coefficients $a[k]$ and $a[k-1]$ is available, then a column can be computed and added to the accumulated row values using only short operations, e.g. $a[r+1]*x^r$ can be computed from $a[r]*x^r$ (note that each column contains some consecutive terms of the series). After this, we need $r-1$ more
