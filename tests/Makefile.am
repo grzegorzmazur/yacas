@@ -20,7 +20,7 @@ NORMAL_TESTFILES = \
 	programming.yts regress.yts simplify.yts solve.yts sums.yts \
 	transforms.yts radsimp.yts linalg.yts orthopoly.yts poly.yts numerics.yts \
 	scopestack.yts plots.yts plugin.yts GaussianIntegers.yts nummethods.yts sturm.yts \
-        cyclotomic.yts 
+        cyclotomic.yts binaryfactors.yts 
 
 SPECIAL_TESTFILES = ../manmake/wester-1994.ys
 
