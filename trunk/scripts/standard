@@ -106,21 +106,6 @@ Function("N",{aNumberBody,aDigits})
 ];
 UnFence("N",2);
 
-/*TODO
-Set(PreNumeric,False);
-Function("NN",{aNumberBody})
-[
-  Local(prevNumeric,result);
-  Set(prevNumeric,Numeric);
-  Set(Numeric,False);
-  Set(PreNumeric, True);
-  Set(result,Eval(aNumberBody));
-  Set(PreNumeric,False);
-  Set(Numeric,prevNumeric);
-  result;
-];
-UnFence("NN",1);
-*/
 
 Set(Verbose,False);
 Function("V",{aNumberBody})
@@ -425,17 +410,16 @@ SumListSide(_x, y_IsList) <--
 61 # x_IsPositiveNumber ^ y_IsPositiveNumber <-- MathPower(x,y);
 61 # x_IsPositiveNumber ^ y_IsNegativeNumber <-- (1/MathPower(x,-y));
 
-/*TODO 90 # (_x ^ (_m / p_IsOdd))_(PreNumeric And Not(IsNumber(x))) <-- N(x)^(m/p); */
 /*91 # (- _x) ^ (_m / p_IsOdd) <-- -((x)^(m/p));*/
 /*91 # (- _x) ^ (_m / p_IsEven) <-- Complex(0,(x)^(m/p));*/
 /*91 # x_IsNegativeNumber ^ (_m / p_IsOdd) <-- -((-x)^(m/p));*/
 /*91 # x_IsNegativeNumber ^ (_m / p_IsEven) <-- Complex(0,(-x)^(m/p));*/
-91 # (x_IsConstant ^ (_m / p_IsOdd))_(IsNegativeNumber(N(x))) <--
+91 # (x_IsConstant ^ (_m / p_IsOdd))_(IsNegativeNumber(Re(N(x)))) <--
      -((-x)^(m/p));
-91 # (x_IsConstant ^ (_m / p_IsEven))_(IsNegativeNumber(N(x))) <--
+/*91 # (x_IsConstant ^ (_m / p_IsEven))_(IsNegativeNumber(N(x))) <--
      Complex(0,(-x)^(m/p));
 91 # (Sqrt(x_IsConstant))_(IsNegativeNumber(N(x))) <--
-     Complex(0,Sqrt(-x));
+     Complex(0,Sqrt(-x));*/
 92 # (x_IsNegativeNumber ^ y_IsNumber)_Numeric <-- Exp(y*Ln(x));
 
 
