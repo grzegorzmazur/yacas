@@ -238,4 +238,5 @@ DocEval(x) :=
 
 HoldArgNr("DocEval", 1, 1);
 
-DocFootnote(x) := "\\footnote{":x:"}";
+DocFootnote(x) := "\\footnote{":x:"}
+";
