@@ -2,23 +2,18 @@
 			Constants
 
 *CMD % --- Previous result
-
 *CORE
-
 *CALL
-
-%
-
-*PARMS
+	%
 
 *DESC
 
-% evaluates to the previous result on the command line. % is a global
+{%} evaluates to the previous result on the command line. {%} is a global
 variable that is bound to the previous result from the command line.
-Using % will evaluate the previous result (This uses the functionality
-offered by the LazyGlobal command).
+Using {%} will evaluate the previous result. (This uses the functionality
+offered by the {LazyGlobal} command).
 
-Typical examples are {Simplify(%)} and {PrettyForm(%)}to simplify and show the result in a nice
+Typical examples are {Simplify(%)} and {PrettyForm(%)} to simplify and show the result in a nice
 form respectively.
 
 *E.G.
@@ -36,31 +31,21 @@ form respectively.
 
 *SEE LazyGlobal
 
-*A True
-
-*A False
-
 *CMD True, False --- Boolean constants
-
 *CORE
-
 *CALL
-
-True
-
-False
+	True
+	False
 
 *DESC
 
-{True} and {False} are typically the result
+{True} and {False} are typically a result
 of boolean expressions like {2 < 3} and {True And False}.
 
 *SEE And, Or, Not
 
 *CMD EndOfFile --- End-of-file marker
-
 *CORE
-
 *CALL
 
 EndOfFile
@@ -72,20 +57,17 @@ contains the expression {EndOfFile;} the
 operation will stop reading the file at that point.
 
 *CMD Infinity --- Constant representing mathematical infinity
-
 *STD
-
 *CALL
-
-Infinity
+	Infinity
 
 *DESC
 
-Infinity represents infinity. It can be the result of certain
+Infinity represents infinitely large values. It can be the result of certain
 calculations.
 
-Note that for most analytic functions Yacas understands Infinity.
-Thus {Infinity*2} will return Infinity, and {a < Infinity} will evaluate to True.
+Note that for most analytic functions Yacas understands {Infinity} as a positive number.
+Thus {Infinity*2} will return {Infinity}, and {a < Infinity} will evaluate to {True}.
 
 *E.G.
 
@@ -94,19 +76,17 @@ Thus {Infinity*2} will return Infinity, and {a < Infinity} will evaluate to True
 	In> 2<Infinity
 	Out> True;
 
-*CMD Pi --- Mathematical constant, 3.14159...
-
+*CMD Pi --- Mathematical constant, $pi$
 *STD
-
 *CALL
-
-Pi
+	Pi
+	Pi()
 
 *DESC
 
-Pi represents the value of pi. When the N(..) function is used,
-Pi is set to the correct value. It is probably better to use
-Pi than Pi(), for simplification purposes.
+Pi represents the value of $pi$. When the {N()} function is used,
+{Pi} is set to the correct numerical value according to current precision. The function {Pi()} always returns the numerical value. It is probably better to use
+{Pi} than {Pi()}, for simplification purposes.
 
 *E.G.
 
@@ -117,20 +97,17 @@ Pi than Pi(), for simplification purposes.
 	In> N(Pi)
 	Out> 3.1415926535;
 
-*SEE Sin, Cos
+*SEE Sin, Cos, Precision, N
 
 *CMD Undefined --- Constant signifying an undefined result
-
 *STD
-
 *CALL
-
-Undefined
+	Undefined
 
 *DESC
 
-Undefined is a token that can be returned by a function when it considers
-its input to be invalid. The resulting output is then undefined.
+{Undefined} is a token that can be returned by a function when it considers
+its input to be invalid. The resulting output is then "undefined".
 
 *E.G.
 

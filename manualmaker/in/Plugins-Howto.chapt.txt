@@ -105,8 +105,7 @@ Now it is clear that all the steps needed to compile, link, and load a plugin th
 
 This is implemented in the function {MakeFunctionPlugin()} (see file {unix.ys} in the {addons/} subdirectory). To use it, we might first define a function such as {f(x,y)} above and then call
 
-	In> MakeFunctionPlugin("fFast", {x,y}, \
-	  f(x,y));
+	In> MakeFunctionPlugin("fFast", f(x,y));
 	Function fFast(x,y) loaded from
 	  ./plugins.tmp/libfFast_plugin_cc.so
 	Out> True;

@@ -2,12 +2,9 @@
 			String manipulation
 
 *CMD SetStringMid --- Change a substring
-
 *CORE
-
 *CALL
-
-SetStringMid(index,substring,string)
+	SetStringMid(index,substring,string)
 
 *PARMS
 
@@ -30,12 +27,9 @@ a new changed copy.
 *SEE StringMid, Length
 
 *CMD StringMid --- Retrieve a substring
-
 *CORE
-
 *CALL
-
-StringMid(index,length,string)
+	StringMid(index,length,string)
 
 *PARMS
 
@@ -47,8 +41,8 @@ string - string to get substring from
 
 *DESC
 
-StringMid returns a part of a string. Substrings can also be
-accessed using the [] operator.
+{StringMid} returns a part of a string. Substrings can also be
+accessed using the {[]} operator.
 
 *E.G.
 
@@ -59,34 +53,25 @@ accessed using the [] operator.
 
 *SEE SetStringMid, Length
 
-*A String
-
-*A Atom
-
 *CMD String, Atom --- Convert atom to string and vice versa
-
 *CORE
-
 *CALL
-
-Atom(string)
-
-String(atom)
+	Atom("string")
+	String(atom)
 
 *PARMS
 
 atom - an atom
 
-string - a string
+"string" - a string
 
 *DESC
 
-Atom(string) :
 Returns an atom with the string representation given
-as the evaluated argument. Example: "Atom("foo");" returns
-foo.
+as the evaluated argument. Example: {Atom("foo");} returns
+{foo}.
 
-String is the inverse of Atom: turns atom into "atom".
+{String} is the inverse of {Atom}: turns {atom} into {"atom"}.
 
 *E.G.
 
@@ -96,12 +81,9 @@ String is the inverse of Atom: turns atom into "atom".
 	Out> a;
 
 *CMD ConcatStrings --- Concatenate strings
-
 *CORE
-
 *CALL
-
-ConcatStrings(strings)
+	ConcatStrings(strings)
 
 *PARMS
 
@@ -109,8 +91,7 @@ strings - one or more strings
 
 *DESC
 
-ConcatStrings concatenates strings. Example:
-"ConcatStrings("a","b","c");" will return "abc".
+Concatenates strings.
 
 *E.G.
 
@@ -120,12 +101,9 @@ ConcatStrings concatenates strings. Example:
 *SEE :
 
 *CMD LocalSymbols --- Create unique local symbols with given prefix
-
 *STD
-
 *CALL
-
-LocalSymbols(...)body
+	LocalSymbols(...)body
 
 *PARMS
 
@@ -135,15 +113,14 @@ body - expression to execute
 
 *DESC
 
-Given the symbols passed as the first arguments to LocalSymbols
-a set of local symbols will be created, and creates unique ones
-for them, typically of the form {$<symbol><number>}, where
-symbol was the symbol entered by the user, and number is a unique
-number. This scheme was used
-to such a generated symbol can not accidentally be entered by a user.
+Given the symbols passed as the first arguments to LocalSymbols a set of local
+symbols will be created, and creates unique ones for them, typically of the
+form {$<symbol><number>}, where {symbol} was the symbol entered by the user,
+and {number} is a unique number. This scheme was used to ensure that a generated
+symbol can not accidentally be entered by a user.
 
 This is useful in cases where a guaranteed free variable is needed,
-like in the macro-like functions (For, While, etc.).
+for example, in the macro-like functions ({For}, {While}, etc.).
 
 *E.G.
 
@@ -153,12 +130,9 @@ like in the macro-like functions (For, While, etc.).
 *SEE UniqueConstant
 
 *CMD PatchString --- Execute commands between {<?} and {?>} in strings
-
 *CORE
-
 *CALL
-
-PatchString(string)
+	PatchString(string)
 
 *PARMS
 
@@ -172,7 +146,8 @@ details.
 
 *E.G.
 
-	In> PatchString("Two plus three is &lt? Write(2+3); ?&gt ");
+	In> PatchString("Two plus three \
+	  is <? Write(2+3); ?> ");
 	Out> "Two plus three is 5 ";
 
 *SEE PatchLoad

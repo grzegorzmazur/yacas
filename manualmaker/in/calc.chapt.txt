@@ -3,24 +3,19 @@
 
 *INTRO In this chapter, some functions for doing calculus are
 described. These include functions implementing differentiation,
-integration, standard mathematical functions, and the solving of
+integration, standard mathematical functions, and solving of
 equations.
 
 *CMD Sin, Cos, Tan --- Trigonometric functions
-
 *STD
-
 *CALL
-
-Sin(x)
-
-Cos(x)
-
-Tan(x)
+	Sin(x)
+	Cos(x)
+	Tan(x)
 
 *PARMS
 
-x - argument to the function, in radians
+{x} -- argument to the function, in radians
 
 *DESC
 
@@ -30,8 +25,8 @@ number, trying to keep the result as exact as possible. The floating
 point approximations of these functions can be forced by using the {N} function.
 
 Yacas knows some trigonometric identities, so it can simplify to exact
-results even if {N} is not used. This is the case
-when the arguments are multiples of Pi/6 or Pi/4.
+results even if {N} is not used. This is the case, for instance,
+when the argument is a multiple of $Pi$/6 or $Pi$/4.
 
 These functions are threaded, meaning that if the argument "x" is a
 list, the function is applied to all the entries in the list.
@@ -48,9 +43,7 @@ list, the function is applied to all the entries in the list.
 *SEE ArcSin, ArcCos, ArcTan, N, Pi
 
 *CMD ArcSin, ArcCos, ArcTan --- Inverse trigonometric functions
-
 *STD
-
 *CALL
 
 ArcSin(x)
@@ -102,12 +95,9 @@ list, the function is applied to all the entries in the list.
 *SEE Sin, Cos, Tan, N, Pi, Ln
 
 *CMD Exp --- Exponential function
-
 *STD
-
 *CALL
-
-Exp(x)
+	Exp(x)
 
 *PARMS
 
@@ -115,9 +105,9 @@ x - argument to the function
 
 *DESC
 
-This function calculates e raised to the power "x", where e is the
+This function calculates $e$ raised to the power "x", where $e$ is the
 mathematic constant 2.71828... One can use {Exp(1)}
-to represent e.
+to represent $e$.
 
 This function is threaded, meaning that if the argument "x" is a
 list, the function is applied to all the entries in the list.
@@ -134,12 +124,9 @@ list, the function is applied to all the entries in the list.
 *SEE Ln, Sin, Cos, Tan, N
 
 *CMD Ln --- Natural logarithm
-
 *STD
-
 *CALL
-
-Ln(x)
+	Ln(x)
 
 *PARMS
 
@@ -150,7 +137,7 @@ x - argument to the function
 This function calculates the natural logarithm of "x". This is the
 inverse function of the exponential function, {Exp}, ie. "Ln(x) = y" implies that "Exp(y) = x". For complex
 arguments, the imaginary part of the logarithm is in the interval
-(-Pi,Pi]. This is compatible with the branch cut of {Arg}.
+(-$Pi$,$Pi$]. This is compatible with the branch cut of {Arg}.
 
 This function is threaded, meaning that if the argument "x" is a
 list, the function is applied to all the entries in the list.
@@ -167,12 +154,9 @@ list, the function is applied to all the entries in the list.
 *SEE Exp, Arg
 
 *CMD Sqrt --- Square root
-
 *STD
-
 *CALL
-
-Sqrt(x)
+	Sqrt(x)
 
 *PARMS
 
@@ -204,12 +188,9 @@ list, the function is applied to all the entries in the list.
 *SEE Exp, ^, N
 
 *CMD Abs --- Absolute value or modulus
-
 *STD
-
 *CALL
-
-Abs(x)
+	Abs(x)
 
 *PARMS
 
@@ -220,8 +201,8 @@ x - argument to the function
 This function returns the absolute value (also called the modulus) of
 "x". If "x" is positive, the absolute value is "x" itself; if
 "x" is negative, the absolute value is "-x". For complex "x",
-the modulus is the "r" in the polar decomposition "x = r *
-Exp(I*phi)".
+the modulus is the "r" in the polar decomposition
+$x = r *Exp(I*phi)$.
 
 This function is connected to the {Sign} function by
 the identity "Abs(x) * Sign(x) = x" for real "x".
@@ -241,9 +222,7 @@ list, the function is applied to all the entries in the list.
 *SEE Sign, Arg
 
 *CMD Sign --- Sign of a number
-
 *STD
-
 *CALL
 
 Sign(x)
@@ -278,12 +257,9 @@ list, the function is applied to all the entries in the list.
 *SEE Arg, Abs
 
 *CMD Complex --- Construct a complex number
-
 *STD
-
 *CALL
-
-Complex(r, c)
+	Complex(r, c)
 
 *PARMS
 
@@ -314,9 +290,7 @@ number. Hence {Im(Sqrt(x))} evaluates to {0} which is only true for nonnegative 
 *SEE Re, Im, I, Abs, Arg
 
 *CMD Re --- Real part of a complex number
-
 *STD
-
 *CALL
 
 Re(x)
@@ -341,9 +315,7 @@ This function returns the real part of the complex number "x".
 *SEE Complex, Im
 
 *CMD Im --- Imaginary part of a complex number
-
 *STD
-
 *CALL
 
 Im(x)
@@ -368,21 +340,14 @@ This function returns the imaginary part of the complex number "x".
 *SEE Complex, Re
 
 *CMD I --- Imaginary unit
-
 *STD
-
 *CALL
-
-I
-
-*PARMS
-
-none
+	I
 
 *DESC
 
 This symbol represents the imaginary unit, which equals the square
-root of -1. It evaluates immediately to {Complex(0,1)}.
+root of -1. It evaluates to {Complex(0,1)}.
 
 *E.G.
 
@@ -394,12 +359,9 @@ root of -1. It evaluates immediately to {Complex(0,1)}.
 *SEE Complex
 
 *CMD Conjugate --- Complex conjugate
-
 *STD
-
 *CALL
-
-Conjugate(x)
+	Conjugate(x)
 
 *PARMS
 
@@ -408,7 +370,7 @@ x - argument to the function
 *DESC
 
 This function returns the complex conjugate of "x". The complex
-conjugate of "a + I*b" is "a - I*b". This function assumes that all
+conjugate of $a + I*b$ is $a - I*b$. This function assumes that all
 unbound variables are real.
 
 *E.G.
@@ -421,9 +383,7 @@ unbound variables are real.
 *SEE Complex, Re, Im
 
 *CMD Arg --- Argument of a complex number
-
 *STD
-
 *CALL
 
 Arg(x)
@@ -436,8 +396,8 @@ x - argument to the function
 
 This function returns the argument of "x". The argument is the angle
 with the positive real axis in the Argand diagram, or the angle
-"phi" in the polar representation "r * Exp(I*phi)" of "x". The
-result lies between -Pi and Pi, excluding -Pi but including Pi. The
+"phi" in the polar representation $r * Exp(I*phi)$ of "x". The
+result is in the range ($-Pi$, $Pi$], that is, excluding $-Pi$ but including $Pi$. The
 argument of 0 is {Undefined}.
 
 *E.G.
@@ -452,9 +412,7 @@ argument of 0 is {Undefined}.
 *SEE Abs, Sign
 
 *CMD ! --- Factorial
-
 *STD
-
 *CALL
 
 n!
@@ -466,8 +424,8 @@ n - argument to the function
 *DESC
 
 This function calculate "n" factorial. For nonnegative integers, n!
-equals "n*(n-1)*(n-2)*...*1". The factorial of half-integers,
-defined via the gamma function, is also implemented.
+equals $n*(n-1)*(n-2)*...*1$. The factorial of half-integers,
+defined via the gamma function, is also evaluated.
 
 This function is threaded, meaning that if the argument "x" is a
 list, the function is applied to all the entries in the list.
@@ -483,10 +441,8 @@ list, the function is applied to all the entries in the list.
 
 *SEE Bin, Factorize
 
-*CMD Bin --- Binomial coefficient
-
+*CMD Bin --- Binomial coefficients
 *STD
-
 *CALL
 
 Bin(n, m)
@@ -498,7 +454,9 @@ n, m - integers
 *DESC
 
 This function calculates the binomial coefficient "n" above
-"m", which equals "n! / (n! * (n-m)!)". This is the number of ways
+"m", which equals $$n! / (n! * (n-m)!)$$
+
+This is equal to the number of ways
 to choose "m" objects out of a total of "n" objects if order is
 not taken into account. The binomial coefficient is defined to be zero
 if "m" is negative or greater than "n".
@@ -513,9 +471,7 @@ if "m" is negative or greater than "n".
 *SEE !
 
 *CMD Sum --- Sum of a list of values
-
 *STD
-
 *CALL
 
 Sum(list)
@@ -530,7 +486,7 @@ var - variable to iterate over
 
 from - integer value to iterate from
 
-to - integer value to iterate upto
+to - integer value to iterate up to
 
 body - expression to evaluate for each iteration
 
@@ -541,7 +497,7 @@ the entries in "list" and returns their sum.
 
 If the second calling sequence is used, the expression "body" is
 evaluated while the variable "var" ranges over all integers from
-"from" upto "to", and the sum of all the results is
+"from" up to "to", and the sum of all the results is
 returned. Obviously, "to" should be greater than or equal to
 "from".
 
@@ -555,9 +511,7 @@ returned. Obviously, "to" should be greater than or equal to
 *SEE Average, Factorize, Apply
 
 *CMD Average --- Average of a list of values
-
 *STD
-
 *CALL
 
 Average(list)
@@ -582,9 +536,7 @@ entries.
 *SEE Sum
 
 *CMD Factorize --- Product of a list of values
-
 *STD
-
 *CALL
 
 Factorize(list)
@@ -599,7 +551,7 @@ var - variable to iterate over
 
 from - integer value to iterate from
 
-to - integer value to iterate upto
+to - integer value to iterate up to
 
 body - expression to evaluate for each iteration
 
@@ -610,7 +562,7 @@ multiplies all the entries in "list" and returns their product.
 
 If the second calling sequence is used, the expression "body" is
 evaluated while the variable "var" ranges over all integers from
-"from" upto "to", and the product of all the results is
+"from" up to "to", and the product of all the results is
 returned. Obviously, "to" should be greater than or equal to
 "from".
 
@@ -624,9 +576,7 @@ returned. Obviously, "to" should be greater than or equal to
 *SEE Sum, Apply
 
 *CMD Min --- Minimum of a number of values
-
 *STD
-
 *CALL
 
 Min(x,y)
@@ -657,9 +607,7 @@ with numerical values and not with symbolic arguments.
 *SEE Max, Sum, Average
 
 *CMD Max --- Maximum of a number of values
-
 *STD
-
 *CALL
 
 Max(x,y)
@@ -690,9 +638,7 @@ with numerical values and not with symbolic arguments.
 *SEE Min, Sum, Average
 
 *CMD IsZero --- Test whether argument is zero
-
 *STD
-
 *CALL
 
 IsZero(n)
@@ -719,9 +665,7 @@ n - number to test
 *SEE IsNumber, IsNotZero
 
 *CMD IsRational --- Test whether argument is a rational
-
 *STD
-
 *CALL
 
 IsRational(expr)
@@ -749,9 +693,7 @@ number. This is the case if the top-level operator of "expr" is {/}.
 *SEE Numer, Denom
 
 *CMD Numer --- Numerator of an expression
-
 *STD
-
 *CALL
 
 Numer(expr)
@@ -779,9 +721,7 @@ rational nor numeric, the function returns unevaluated.
 *SEE Denom, IsRational, IsNumber
 
 *CMD Denom --- Denominator of an expression
-
 *STD
-
 *CALL
 
 Denom(expr)
@@ -809,9 +749,7 @@ neither rational nor numeric, the function returns unevaluated.
 *SEE Numer, IsRational, IsNumber
 
 *CMD Commutator --- Commutator of two objects
-
 *STD
-
 *CALL
 
 Commutator(a, b)
@@ -865,9 +803,7 @@ necessarily the case for matrices.
 	Out>
 
 *CMD Taylor --- Univariate Taylor series expansion
-
 *STD
-
 *CALL
 
 Taylor(var, at, order) expr
@@ -885,7 +821,7 @@ expr - expression to get Taylor series for
 *DESC
 
 This function returns the Taylor series expansion of the expression
-"expr" with respect to the variable "var" around "at" upto order
+"expr" with respect to the variable "var" around "at" up to order
 "order". This is a polynomial which agrees with "expr" at the
 point "var = at", and furthermore the first "order" derivatives of
 the polynomial at this point agree with "expr". Taylor expansions
@@ -906,9 +842,7 @@ limit as "var" approaches "at".
 *SEE D, InverseTaylor, ReversePoly, BigOh
 
 *CMD InverseTaylor --- Taylor expansion of inverse
-
 *STD
-
 *CALL
 
 InverseTaylor(var, at, order) expr
@@ -927,7 +861,7 @@ expr - expression to get inverse Taylor series for
 
 This function builds the Taylor series expansion of the inverse of the
 expression "expr" with respect to the variable "var" around "at"
-upto order "order". It uses the function {ReversePoly} to perform the task.
+up to order "order". It uses the function {ReversePoly} to perform the task.
 
 *E.G.
 
@@ -961,9 +895,7 @@ upto order "order". It uses the function {ReversePoly} to perform the task.
 *SEE ReversePoly, Taylor, BigOh
 
 *CMD ReversePoly --- Solve $h(f(x)) = g(x) + O(x^n)$ for $h$
-
 *STD
-
 *CALL
 
 ReversePoly(f, g, var, newvar, degree)
@@ -981,13 +913,13 @@ degree - the degree of the required solution
 *DESC
 
 This function returns a polynomial in "newvar", say "h(newvar)",
-with the property that "h(f(var))" equals "g(var)" upto order
+with the property that "h(f(var))" equals "g(var)" up to order
 "degree". The degree of the result will be at most "degree-1". The
 only requirement is that the first derivative of "f" should not be zero.
 
 This function is used to determine the Taylor series expansion of the
 inverse of a function "f": if we take "g(var)=var", then
-"h(f(var))=var" (upto order "degree"), so "h" will be the
+"h(f(var))=var" (up to order "degree"), so "h" will be the
 inverse of "f".
 
 *E.G.
@@ -1008,9 +940,7 @@ inverse of "f".
 *SEE InverseTaylor, Taylor, BigOh
 
 *CMD BigOh --- Drop all terms of a certain order in a polynomial
-
 *STD
-
 *CALL
 
 BigOh(poly, var, degree)
@@ -1036,9 +966,7 @@ This function drops all terms of order "degree" or higher in
 *SEE Taylor, InverseTaylor
 
 *CMD Newton --- Solve an equation numerically with Newton's method
-
 *STD
-
 *CALL
 
 Newton(expr, var, initial, accuracy)
@@ -1072,9 +1000,7 @@ may loop forever if the algorithm does not converge.
 *SEE Solve
 
 *CMD D --- Differentiation
-
 *STD
-
 *CALL
 
 D(var) expr
@@ -1124,9 +1050,7 @@ respect to the second entry in "var", and so on.
 *SEE Integrate, Taylor, Diverge, Curl
 
 *CMD Curl --- Curl of a vector field
-
 *STD
-
 *CALL
 
 Curl(vector, basis)
@@ -1140,13 +1064,16 @@ basis - list of variables forming the basis
 *DESC
 
 This function takes the curl of the vector field "vector" with
-respect to the variables "basis". The curl is defined as
+respect to the variables "basis". The curl is defined in the usual way,
 
-  {Curl(f,x) = { D(x[2]) f[3] - D(x[3]) f[2], D(x[3]) f[1] - D(x[1]) f[3], D(x[1]) f[2] - D(x[2]) f[1] }}
-
+	Curl(f,x) = {
+	    D(x[2]) f[3] - D(x[3]) f[2],
+	    D(x[3]) f[1] - D(x[1]) f[3],
+	    D(x[1]) f[2] - D(x[2]) f[1]
+	}
 Both "vector" and "basis" should be lists of length 3.
 
-*E.G.
+*EG
 
 	In> Curl({x*y,x*y,x*y},{x,y,z})
 	Out> {x,-y,y-x};
@@ -1154,9 +1081,7 @@ Both "vector" and "basis" should be lists of length 3.
 *SEE D, Diverge
 
 *CMD Diverge --- Divergence of a vector field
-
 *STD
-
 *CALL
 
 Diverge(vector, basis)
@@ -1172,12 +1097,12 @@ basis - list of variables forming the basis
 This function calculates the divergence of the vector field "vector"
 with respect to the variables "basis". The divergence is defined as
 
-  {Diverge(f,x) = D(x[1]) f[1] + ... + D(x[n]) f[n]},
-
+	Diverge(f,x) = D(x[1]) f[1] + ...
+	    + D(x[n]) f[n],
 where {n} is the length of the lists "vector" and
 "basis". These lists should have equal length.
 
-*E.G.
+*EG
 
 	In> Diverge({x*y,x*y,x*y},{x,y,z})
 	Out> y+x;
@@ -1185,9 +1110,7 @@ where {n} is the length of the lists "vector" and
 *SEE D, Curl
 
 *CMD Integrate --- Integration
-
 *STD
-
 *CALL
 
 Integrate(var, from, to) expr
@@ -1229,9 +1152,7 @@ functions with polynomials can all be integrated.
 *SEE D, UniqueConstant
 
 *CMD Simplify --- Try to simplify an expression
-
 *STD
-
 *CALL
 
 Simplify(expr)
@@ -1256,9 +1177,7 @@ grouping like terms.
 *SEE TrigSimpCombine, RadSimp
 
 *CMD RadSimp --- Simplify expression with nested radicals
-
 *STD
-
 *CALL
 
 RadSimp(expr)
@@ -1270,13 +1189,13 @@ expr - an expression containing nested radicals
 *DESC
 
 This function tries to write the expression "expr" as a sum of roots
-of integers: "Sqrt(e1) + Sqrt(e2) + ...", where "e1", "e2" and
+of integers: $Sqrt(e1) + Sqrt(e2) + ...$, where $e1$, $e2$ and
 so on are natural numbers. The expression "expr" may not contain
 free variables.
 
-It does this by trying all possible combinations for "e1", "e2",
-etcetera. Every possibility is numerically evaluated using {N} and compared with the numerical evaluation of
-"expr". If the approximations are equal (upto a certain margin),
+It does this by trying all possible combinations for $e1$, $e2$, ...
+Every possibility is numerically evaluated using {N} and compared with the numerical evaluation of
+"expr". If the approximations are equal (up to a certain margin),
 this possibility is returned. Otherwise, the expression is returned
 unevaluated.
 
@@ -1291,9 +1210,11 @@ big so the evaluation may take very long.
 
 	In> RadSimp(Sqrt(9+4*Sqrt(2)))
 	Out> Sqrt(8)+1;
-	In> RadSimp(Sqrt(5+2*Sqrt(6))+Sqrt(5-2*Sqrt(6)))
+	In> RadSimp(Sqrt(5+2*Sqrt(6)) \
+	  +Sqrt(5-2*Sqrt(6)))
 	Out> Sqrt(12);
-	In> RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2))))))
+	In> RadSimp(Sqrt(14+3*Sqrt(3+2
+	*Sqrt(5-12*Sqrt(3-2*Sqrt(2))))))
 	Out> Sqrt(2)+3;
 
 But this command may yield incorrect results:
@@ -1304,9 +1225,7 @@ But this command may yield incorrect results:
 *SEE Simplify, N
 
 *CMD Rationalize --- Convert floating point numbers to fractions
-
 *STD
-
 *CALL
 
 Rationalize(expr)
@@ -1339,9 +1258,7 @@ division of integers.
 *SEE IsRational
 
 *CMD Solve --- Solve one or more algebraic equations
-
 *STD
-
 *CALL
 
 Solve(eq, var)
@@ -1396,15 +1313,14 @@ equations in the second command.
 
 An example which {Solve} cannot solve:
 
-	In> Solve({x^2-x == y^2-y, x^2-x == y^3+y}, {x,y});
+	In> Solve({x^2-x == y^2-y, x^2-x == y^3+y}, \
+	  {x,y});
 	Out> {};
 
 *SEE SuchThat, Eliminate, PSolve, ==
 
 *CMD SuchThat --- Find a value which makes some expression zero
-
 *STD
-
 *CALL
 
 SuchThat(expr, var)
@@ -1442,9 +1358,7 @@ function until the variable "var" is reached.
 *SEE Solve, Subst, Simplify
 
 *CMD Eliminate --- Substitute and simplify
-
 *STD
-
 *CALL
 
 Eliminate(var, value, expr)
@@ -1474,9 +1388,7 @@ resulting expression, and returns the result.
 *SEE SuchThat, Subst, Simplify
 
 *CMD PSolve --- Solve a polynomial equation
-
 *STD
-
 *CALL
 
 PSolve(poly, var)
@@ -1493,7 +1405,7 @@ This commands returns a list containing the roots of "poly",
 considered as a polynomial in the variable "var". If there is only
 one root, it is not returned as a one-entry list but just by
 itself. A double root occurs twice in the result, and similarly for
-roots of higher multiplicity. All polynomials of degree upto 4 are
+roots of higher multiplicity. All polynomials of degree up to 4 are
 handled.
 
 *E.G.
@@ -1501,14 +1413,13 @@ handled.
 	In> PSolve(b*x+a,x)
 	Out> -a/b;
 	In> PSolve(c*x^2+b*x+a,x)
-	Out> {(Sqrt(b^2-4*c*a)-b)/(2*c),(-(b+Sqrt(b^2-4*c*a)))/(2*c)};
+	Out> {(Sqrt(b^2-4*c*a)-b)/(2*c),(-(b+
+	Sqrt(b^2-4*c*a)))/(2*c)};
 
 *SEE Solve, Factor
 
-*CMD Pi --- Numerical approximation of pi
-
+*CMD Pi --- Numerical approximation of $Pi$
 *CORE
-
 *CALL
 
 Pi()
@@ -1519,9 +1430,9 @@ none
 
 *DESC
 
-This commands returns the mathematical constant pi to the current
+This commands returns the mathematical constant $pi$ to the current
 precision, as set by {Precision}. Usually this
-function will not be called directly. The constant {Pi} can (and should) be used to represent pi, as it is recognized by
+function will not be called directly. The constant {Pi} can (and should) be used to represent $pi$, as it is recognized by
 the simplification rules. Then when the function {N}
 is invoked, {Pi} will be replaced with the value
 returned by {Pi()}.
@@ -1530,17 +1441,15 @@ returned by {Pi()}.
 
 	In> Pi()
 	Out> 3.14159265358979323846;
-	In> Precision(40)
+	In> Precision(35)
 	Out> True;
 	In> Pi()
-	Out> 3.1415926535897932384626433832795028841971;
+	Out> 3.14159265358979323846264338327950288;
 
 *SEE N, Pi, Precision
 
 *CMD Random --- Random number between 0 and 1
-
 *STD
-
 *CALL
 
 Random()
@@ -1558,9 +1467,7 @@ generated in every Yacas session.
 *SEE RandomInteger, RandomPoly
 
 *CMD VarList --- List of variables appearing in some expression
-
 *STD
-
 *CALL
 
 VarList(expr)
@@ -1584,9 +1491,7 @@ expression "expr".
 *SEE IsFreeOf, IsVariable
 
 *CMD Limit --- Limit of an expression
-
 *STD
-
 *CALL
 
 Limit(var, val) expr
@@ -1630,9 +1535,7 @@ gives "dir" the value {Left}, the limit is taken as
 	Out> Infinity;
 
 *CMD TrigSimpCombine --- Combine products of trigonometric functions
-
 *STD
-
 *CALL
 
 TrigSimpCombine(expr)
@@ -1643,7 +1546,8 @@ expr - expression to simplify
 
 *DESC
 
-This function applies the product rules of trigonometry, like {Cos(u)*Sin(v) = (Sin(v-u) + Sin(v+u)) / 2}. As a
+This function applies the product rules of trigonometry, like
+$Cos(u)*Sin(v) = (1/2)*(Sin(v-u) + Sin(v+u))$. As a
 result, all products of the trigonometric functions {Cos} and {Sin} disappear. The
 function also tries to simplify the resulting expression as much as
 possible by combining all like terms.
@@ -1671,18 +1575,20 @@ integrated easily.
 	Out>
 	In> TrigSimpCombine(Cos(a)^2*Sin(b))
 	
-	Sin( b )   Sin( -2 * a + b )   Sin( -2 * a - b )
-	-------- + ----------------- - -----------------
-	   2               4                   4
+	Sin( b )   Sin( -2 * a + b ) 
+	-------- + ----------------- 
+	   2               4         
+	
+	    Sin( -2 * a - b )
+	  - -----------------
+	            4
 	
 	Out>
 
 *SEE Simplify, Integrate, Expand, Sin, Cos, Tan
 
 *CMD LagrangeInterpolant --- Polynomial interpolation
-
 *STD
-
 *CALL
 
 LagrangeInterpolant(xlist, ylist, var)
@@ -1712,7 +1618,8 @@ polynomial.
 
 *E.G.
 
-	In> f := LagrangeInterpolant({0,1,2}, {0,1,1}, x);
+	In> f := LagrangeInterpolant({0,1,2}, \
+	  {0,1,1}, x);
 	Out> (x*(x-1))/2-x*(x-2);
 	In> Eval(Subst(x,0) f);
 	Out> 0;
@@ -1728,9 +1635,13 @@ polynomial.
 	Out>
 	In> LagrangeInterpolant({x1,x2,x3}, {y1,y2,y3}, x)
 	
-	y1 * ( x - x2 ) * ( x - x3 )   y2 * ( x - x1 ) * ( x - x3 )
-	---------------------------- + ----------------------------
-	 ( x1 - x2 ) * ( x1 - x3 )      ( x2 - x1 ) * ( x2 - x3 )
+	y1 * ( x - x2 ) * ( x - x3 ) 
+	---------------------------- 
+	 ( x1 - x2 ) * ( x1 - x3 )   
+	
+	  y2 * ( x - x1 ) * ( x - x3 )
+	+ ----------------------------
+       ( x2 - x1 ) * ( x2 - x3 )
 	
 	  y3 * ( x - x1 ) * ( x - x2 )
 	+ ----------------------------
@@ -1741,9 +1652,7 @@ polynomial.
 *SEE Subst
 
 *CMD Fibonacci --- Fibonacci sequence
-
 *STD
-
 *CALL
 
 Fibonacci(n)

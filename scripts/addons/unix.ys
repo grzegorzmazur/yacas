@@ -18,10 +18,11 @@ MakeFunctionPrototype(name, argList) := [
 	"double " : name : "(" : MakeArgumentList(argList, "double ") : ")";
 ];
 
-MakeFunctionPlugin(extName, argList, fBody) := [
-	Local(dirBase, fileBase, intName, exportName, includeDir, dllName, dllPath, commandLine);
+MakeFunctionPlugin(extName, fBody) := [
+	Local(dirBase, fileBase, intName, exportName, includeDir, dllName, dllPath, commandLine, argList);
 	/* check argument type */
-	Check(IsString(extName) And IsList(argList) And Length(argList) > 0,
+	argList := VarList(fBody);
+	Check(IsString(extName) And Length(argList) > 0,
 	  "Error in MakeFunctionPlugin: " : extName
 	  : " must be a string and " : argList : " a nonempty list.");
 	includeDir := FindFile("include/");

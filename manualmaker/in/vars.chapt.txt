@@ -2,18 +2,14 @@
 			Variables
 
 *CMD := --- Assignment
-
 *STD
-
 *CALL
+	var := exp
+	{var1, var2, ...} := {exp1, exp2, ...}
+	var[i] := exp
+	fn(param, ...) := exp 
 
-var := exp
-
-{var, ...} := {exp, ...}
-
-var[i] := exp
-
-fn(param, ...) := exp   (all prec. 1000)
+(all are of precedence 1000)
 
 *PARMS
 
@@ -128,13 +124,19 @@ expansion. This has to be done every time the function {f} is called.
 	In> f(a) := Taylor(x,0,25) Sin(x);
 	Out> True;
 	In> f(1);
-	Out> x-x^3/6+x^5/120-x^7/5040+x^9/362880-x^11/39916800+x^13/6227020800-x^15/1307
-	674368000+x^17/355687428096000-x^19/121645100408832000+x^21/51090942171709440000
-	-x^23/25852016738884976640000+x^25/15511210043330985984000000;
+	Out> x-x^3/6+x^5/120-x^7/5040+x^9/362880-
+	x^11/39916800+x^13/6227020800-x^15/
+	1307674368000+x^17/355687428096000-x^19/
+	121645100408832000+x^21/51090942171709440000
+	-x^23/25852016738884976640000+x^25
+	/15511210043330985984000000;
 	In> f(2);
-	Out> x-x^3/6+x^5/120-x^7/5040+x^9/362880-x^11/39916800+x^13/6227020800-x^15/1307
-	674368000+x^17/355687428096000-x^19/121645100408832000+x^21/51090942171709440000
-	-x^23/25852016738884976640000+x^25/15511210043330985984000000;
+	Out> x-x^3/6+x^5/120-x^7/5040+x^9/362880-
+	x^11/39916800+x^13/6227020800-x^15
+	/1307674368000+x^17/355687428096000-x^19/
+	121645100408832000+x^21/51090942171709440000
+	-x^23/25852016738884976640000+x^25/
+	15511210043330985984000000;
 
 The remedy is to evaluate the Taylor expansion immediately. Now the
 expansion is computed only once.
@@ -142,23 +144,26 @@ expansion is computed only once.
 	In> f(a) := Eval(Taylor(x,0,25) Sin(x));
 	Out> True;
 	In> f(1);
-	Out> x-x^3/6+x^5/120-x^7/5040+x^9/362880-x^11/39916800+x^13/6227020800-x^15/1307
-	674368000+x^17/355687428096000-x^19/121645100408832000+x^21/51090942171709440000
-	-x^23/25852016738884976640000+x^25/15511210043330985984000000;
+	Out> x-x^3/6+x^5/120-x^7/5040+x^9/362880-
+	x^11/39916800+x^13/6227020800-x^15/
+	1307674368000+x^17/355687428096000-x^19/
+	121645100408832000+x^21/51090942171709440000
+	-x^23/25852016738884976640000+x^25
+	/15511210043330985984000000;
 	In> f(2);
-	Out> x-x^3/6+x^5/120-x^7/5040+x^9/362880-x^11/39916800+x^13/6227020800-x^15/1307
-	674368000+x^17/355687428096000-x^19/121645100408832000+x^21/51090942171709440000
-	-x^23/25852016738884976640000+x^25/15511210043330985984000000;
+	Out> x-x^3/6+x^5/120-x^7/5040+x^9/362880-
+	x^11/39916800+x^13/6227020800-x^15
+	/1307674368000+x^17/355687428096000-x^19/
+	121645100408832000+x^21/51090942171709440000
+	-x^23/25852016738884976640000+x^25/
+	15511210043330985984000000;
 
 *SEE Set, Clear, [], Rule, Infix, Eval
 
 *CMD Set --- Assignment
-
 *CORE
-
 *CALL
-
-Set(var, exp)
+	Set(var, exp)
 
 *PARMS
 
@@ -185,12 +190,9 @@ has more uses like changing individual entries in a list.
 *SEE Clear, :=
 
 *CMD Clear --- Undo an assignment
-
 *CORE
-
 *CALL
-
-Clear(var, ...)
+	Clear(var, ...)
 
 *PARMS
 
@@ -216,12 +218,9 @@ True.
 	Out> a^2;
 
 *SEE Set, :=
-
 *CORE
-
 *CALL
-
-Local(var, ...)
+	Local(var, ...)
 
 *PARMS
 
@@ -269,12 +268,9 @@ the block.
 *SEE LocalSymbols, Prog, [], UnFence
 
 *CMD ++ --- Increment variable
-
 *STD
-
 *CALL
-
-var++
+	var++
 
 *PARMS
 
@@ -300,12 +296,9 @@ programming language C.
 *SEE --, :=
 
 *CMD -- --- Decrement variable
-
 *STD
-
 *CALL
-
-var--
+	var--
 
 *PARMS
 
@@ -333,9 +326,7 @@ in the programming language C.
 *SEE ++, :=
 
 *CMD Object --- Create an incomplete type
-
 *STD
-
 *CALL
 
 Object("pred", exp)
@@ -365,12 +356,9 @@ so-called incomplete types.
 *SEE IsNonObject
 
 *CMD LazyGlobal --- Global variable is to be evaluated lazily
-
 *CORE
-
 *CALL
-
-LazyGlobal(var)
+	LazyGlobal(var)
 
 *PARMS
 
@@ -378,16 +366,16 @@ var - variable (held argument)
 
 *DESC
 
-LazyGlobal enforces that a global variable will re-evaluate
+{LazyGlobal} enforces that a global variable will re-evaluate
 when used. The global variable needs to exist for this function
-to work. Also, this functionality doesn't survive if Clear(var)
+to work. Also, this functionality doesn't survive if {Clear(var)}
 is called afterwards.
 
-Places where this is used include the global variables % and I.
+Places where this is used include the global variables {%} and {I}.
 
 The use of lazy in the name stems from the concept of lazy evaluation.
 The object the global variable is bound to will only be evaluated when
-called. The LazyGlobal property only holds once: after that, the result
+called. The {LazyGlobal} property only holds once: after that, the result
 of evaluation is stored in the global variable, and it won't be
 reevaluated again:
 
@@ -395,9 +383,9 @@ reevaluated again:
 	Out> Taylor(x,0,30)Sin(x);
 	In> LazyGlobal(a)
 
-Then the first time you call a it evaluates Taylor(...) and assigns the result to a. The next time
-you call a it immediately returns the result.
-LazyGlobal is called for "%" each time "%" changes.
+Then the first time you call {a} it evaluates {Taylor(...)} and assigns the result to {a}. The next time
+you call {a} it immediately returns the result.
+{LazyGlobal} is called for {%} each time {%} changes.
 
 *E.G.
 
@@ -413,16 +401,9 @@ LazyGlobal is called for "%" each time "%" changes.
 *SEE Set, Clear, Local, %, I
 
 *CMD UniqueConstant --- Create a unique identifier
-
 *STD
-
 *CALL
-
-UniqueConstant()
-
-*PARMS
-
-none
+	UniqueConstant()
 
 *DESC
 
