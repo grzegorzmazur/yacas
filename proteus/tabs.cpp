@@ -29,7 +29,7 @@
 #define RESULT aEnvironment.iStack.GetElement(aStackTop)
 #define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
 
-//NEWA
+
 #ifdef WIN32
 #  define snprintf _snprintf
 #endif
@@ -285,12 +285,11 @@ void new_cb(Fl_Widget *,void *)
   console->Restart();
 }
 
-void help_intro_cb(Fl_Widget *,void *)
+void help_intro_cb(Fl_Widget *,void *page)
 {
   extern char defdir[128];
   char buf[120];
-//  sprintf(buf,"%s/documentation/ref.html#%s",defdir,&inpline[1]);
-  sprintf(buf,"%s/documentation/intro.html",defdir);
+  sprintf(buf,"%s/%s",defdir,(char*)page);
   HelpGo(buf);
   mainTabs->value(helptab);
 }
@@ -314,7 +313,6 @@ void help_detailed_function_cb(Fl_Widget *,void *)
 void LispExit(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     exit(0);
-//    InternalTrue(aEnvironment, aResult);
 }
 
 void LispShowInput(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -355,6 +353,79 @@ void LispNotepad(LispEnvironment& aEnvironment,LispInt aStackTop)
     InternalTrue(aEnvironment,RESULT);
 }
 
+void LispNotepadAddCommand(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+  CHK_ARG_CORE(ARGUMENT(1).Get() != NULL, 1);
+  LispStringPtr orig = ARGUMENT(1).Get()->String();
+  CHK_ARG_CORE(orig != NULL, 1);
+  LispString oper;
+  InternalUnstringify(oper, orig);
+  console->AddGroup(1, 1);
+  console->AddText(&oper[0], FL_BLACK,"In> ",FL_HELVETICA,console->iDefaultFontSize);
+  extern CYacas* yacas;
+  yacas->Evaluate(&oper[0]);
+//  if (!internal)
+  {
+    if (the_out[0])
+    {
+      console->AddText(the_out.String(), FL_RED,"  ",FL_COURIER,console->iDefaultFontSize);
+    }
+    if (yacas->Error()[0] != '\0')
+    {
+      console->AddText(yacas->Error(), FL_RED,"Error> ",FL_HELVETICA,console->iDefaultFontSize);
+    }
+    else
+    {
+      console->AddText(yacas->Result(), FL_BLUE,"Out> ",FL_HELVETICA,console->iDefaultFontSize);
+    }
+  }
+  extern LispString the_out;
+  the_out.SetNrItems(0);
+  the_out.Append('\0');
+  InternalTrue(aEnvironment,RESULT);
+}
+
+void LispNotepadAddLink(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+  LispStringPtr orig;
+  CHK_ARG_CORE(ARGUMENT(1).Get() != NULL, 1);
+  orig = ARGUMENT(1).Get()->String();
+  CHK_ARG_CORE(orig != NULL, 1);
+  LispString oper;
+  InternalUnstringify(oper, orig);
+  CHK_ARG_CORE(ARGUMENT(2).Get() != NULL, 2);
+  orig = ARGUMENT(2).Get()->String();
+  CHK_ARG_CORE(orig != NULL, 1);
+  LispString text;
+  InternalUnstringify(text, orig);
+
+  LispInt showinput = IsTrue(aEnvironment, ARGUMENT(3));
+  LispInt enableinput = IsTrue(aEnvironment, ARGUMENT(4));
+
+  console->AddGroup(showinput, enableinput);
+  console->AddText(&oper[0], FL_BLACK,"",FL_HELVETICA,console->iDefaultFontSize);
+
+  char* buf = (char*)malloc(text.NrItems()+1); //TODO check for null pointer
+  strcpy(buf,&text[0]);
+  char*start=buf;
+  char*end;
+  int last = 0;
+NEXTLINE:
+  end = start;
+  while (*end != '\n' && *end != '\0') end++;
+  if (*end == '\0') last=1;
+  *end=0;
+  {
+    console->AddText(start, FL_BLACK,"",FL_HELVETICA_BOLD,console->iDefaultFontSize);
+    start=end+1;
+    if (!last)
+      goto NEXTLINE;
+  }
+  free(buf);
+  InternalTrue(aEnvironment,RESULT);
+}
+//	Proteus'AddLink(CommandString,LinkText);
+//
 
 char defdir[128];
 void GetProteusConfiguration()
@@ -393,6 +464,11 @@ CORE_KERNEL_FUNCTION("NoteShowInput",LispShowInput,1,YacasEvaluator::Function | 
 CORE_KERNEL_FUNCTION("NoteEnableInput",LispEnableInput,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("Notepad",LispNotepad,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("Exit",LispExit,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+
+CORE_KERNEL_FUNCTION("Proteus'AddCommand",LispNotepadAddCommand,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("Proteus'AddLink",LispNotepadAddLink,4,YacasEvaluator::Function | YacasEvaluator::Fixed);
+
+
 #undef CORE_KERNEL_FUNCTION
 
 
@@ -435,7 +511,7 @@ int main(int argc, char **argv)
 
   Fl_Window* w;
   {
-    Fl_Window* o = /* foo_window = */ new Fl_Window(640, 320);
+    Fl_Window* o = new Fl_Window(640, 320);
     w = o;
     {
       mainTabs = new Fl_Tabs(5, 1, 630, 315);
