@@ -288,7 +288,7 @@ EOM
   --srcdir) prev=srcdir ;;
   --srcdir=*) srcdir="$optarg" ;;
 
-  --no-verify) verify_host=no ;;
+  --no-verify) verify_host=yes ;;
 
   --output | -o) prev=ofile ;;
   --output=*) ofile="$optarg" ;;
