@@ -6,15 +6,15 @@
 //    Fl::flush();
 
 TODO:
-- proteushints: also add documentation on proteus commands, so you get hints on them
-- dialogs for quickly adding certain types of commands to the note pad.
 - proteus debugger, to step through code:
-  - text editor view
+  - text browser view
   - debugging evaluator for fltk
   - local variables
   - call stack
   - watch
   - custom breakpoints
+- proteushints: also add documentation on proteus commands, so you get hints on them
+- dialogs for quickly adding certain types of commands to the note pad.
 - document the user interface
 - document the files that should be available, and where they should be.
 

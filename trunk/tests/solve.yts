@@ -54,8 +54,17 @@ HoldArgNr("VerifySolve", 2, 1);
 Testing("Solve");
 
 Verify(OldSolve(a+x*y==z,x),(z-a)/y);
-Verify(OldSolve({a+x*y==z},{x}),{{(z-a)/y}});
+Verify(OldSolve({a+x*y==z},{x}),{{x==(z-a)/y}});
 
+// check that solving systems of equations works, at least at the
+// level of simple back-substitutions
+Verify(Solve({a+x*y==z},{x}),{{x==(z-a)/y}});
+[
+  Local(eq,res);
+  eq:={a-b==c,b==c};
+  res:=Solve(eq,{a,b});
+  Verify(eq Where res,{{c==c,c==c}});
+];
 
 VerifySolve(Solve(a+x*y == z, x), { x == (z-a)/y });
 
