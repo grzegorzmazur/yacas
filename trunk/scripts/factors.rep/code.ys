@@ -6,8 +6,6 @@
 1# FactorizeInt(0) <-- {};
 1# FactorizeInt(1) <-- {};
 
-/// Call TrialFactorize() for small numbers and PollardRhoFactorize() for large numbers.
-2# FactorizeInt(n_IsInteger)_(Abs(n)<100000) <-- TrialFactorize(Abs(n));
 3# FactorizeInt(n_IsInteger) <--
 [
   Local(small'powers);
@@ -15,11 +13,8 @@
   small'powers := TrialFactorize(Abs(n), 200);	// value is {n1, {p1,q1}, {p2,q2}, ...} and n1=1 if completely factorized into these factors, and the remainder otherwise
   n := small'powers[1];	// remainder
   If(n=1, Tail(small'powers),
-  // if n!=1, need to factorize the remainder; but first check that it is not a prime power
-	If(IsPrimePower(n), PollardCombineLists(Tail(small'powers), {GetPrimeFactors(n)}),
-  // otherwise proceed with Pollard Rho algorithm
+  // if n!=1, need to factorize the remainder with Pollard Rho algorithm
 	  PollardCombineLists(Tail(small'powers), PollardRhoFactorize(n))
-	)
   );
 ];
 
@@ -111,14 +106,16 @@ PollardRhoPolynomial(_x) <-- x^2+1;
 
     /* Initialize loop */
     gcd:=1; y:=x;
-	repeat := 2;	// allow at most this many repetitions
-//		Echo({"entering gcd loop, n=", n});
+	repeat := 4;	// allow at most this many repetitions
+//		Echo({"debug PollardRho: entering gcd loop, n=", n});
  
     /* loop until failure or success found */
     While(gcd = 1 And repeat>=0)
     [
       x:= Mod( PollardRhoPolynomial(x), n);
-   	  y:= Mod( PollardRhoPolynomial(PollardRhoPolynomial(y)), n);
+   	  y:= Mod( PollardRhoPolynomial(
+	  	Mod( PollardRhoPolynomial(y), n)
+	  ), n);
    	  If(x-y = 0,
        	 [
 		 	gcd := 1;
@@ -126,7 +123,7 @@ PollardRhoPolynomial(_x) <-- x^2+1;
 		 ],
        	 gcd:=Gcd(x-y,n)
        	 );
-//		Echo({"gcd=",gcd," x=", x," y=", y});
+//		Echo({"debug PollardRho: gcd=",gcd," x=", x," y=", y});
    	];
 	Check(repeat>=0, "PollardRhoFactorize: Warning: failed to factorize " : String(n));
   ];
