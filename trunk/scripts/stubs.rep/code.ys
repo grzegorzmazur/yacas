@@ -167,7 +167,7 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 0 # Gcd(0,0) <-- 1;
 1 # Gcd(0,_m) <-- Abs(m);
 1 # Gcd(_n,0) <-- Abs(n);
-1 # Gcd(_m,_m) <-- m;
+1 # Gcd(_m,_m) <-- Abs(m);
 2 # Gcd(_n,1) <-- 1;
 2 # Gcd(1,_m) <-- 1;
 2 # Gcd(n_IsInteger,m_IsInteger) <-- MathGcd(n,m);
@@ -243,11 +243,14 @@ Rule("Gcd",2,100,True)
 10 # Abs(n_IsPositiveNumber/m_IsPositiveNumber) <-- n/m;
 10 # Abs(n_IsNegativeNumber/m_IsPositiveNumber) <-- (-n)/m;
 10 # Abs(n_IsPositiveNumber/m_IsNegativeNumber) <-- n/(-m);
+10 # Abs( Sqrt(_x)) <-- Sqrt(x);
+10 # Abs(-Sqrt(_x)) <-- Sqrt(x);
 10 # Abs(Complex(_r,_i)) <-- Sqrt(r^2 + i^2);
 10 # Abs(n_IsInfinity) <-- Infinity;
 10 # Abs(Undefined) <-- Undefined;
 20 # Abs(n_IsList) <-- MapSingle("Abs",n);
 
+100 # Abs(_a^_n) <-- Abs(a)^n;
 100 # Abs(_a)^n_IsEven <-- a^n;
 100 # Abs(_a)^n_IsOdd <-- Sign(a)*a^n;
 
