@@ -1483,6 +1483,28 @@ void LispCheck(LispEnvironment& aEnvironment,LispInt aStackTop)
 }
 
 
+void LispTrapError(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+  //TESTARGS(3);
+  LispTrap(
+  {
+    InternalEval(aEnvironment, RESULT, ARGUMENT(1));
+  },aEnvironment.iErrorOutput,aEnvironment);
+
+  if (aEnvironment.iError[0])
+  {
+    InternalEval(aEnvironment, RESULT, ARGUMENT(2));
+    aEnvironment.iError.SetNrItems(1);
+    aEnvironment.iError[0]='\0';
+  }
+}
+
+void LispGetCoreError(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+  RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(aEnvironment.iError.String())));
+}
+
+
 
 void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
 {

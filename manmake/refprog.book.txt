@@ -796,15 +796,23 @@ Internet to be evaluated on a remote computer, which is potentially unsafe.
 This chapter contains commands useful for reporting errors to the user.
 
 *CMD Check --- report "hard" errors
+*CMD TrapError --- trap "hard" errors
+*CMD GetCoreError --- get "hard" error string
 *CORE
 *CALL
 	Check(predicate,"error text")
+	TrapError(expression,errorHandler)
+	GetCoreError()
 
 *PARMS
 
 {predicate} -- expression returning {True} or {False}
 
 {"error text"} -- string to print on error
+
+{expression} -- expression to evaluate (causing potential error)
+
+{errorHandler} -- expression to be called to handle error
 
 *DESC
 If {predicate} does not evaluate to {True},
@@ -821,6 +829,15 @@ A "soft" error reporting facility that does not stop the execution is provided b
 	CommandLine(1) : "bad value"
 
 Note that {OK} is not printed.
+
+TrapError evaluates its argument {expression}, returning the
+result of evaluating {expression}. If an error occurs,
+{errorHandler} is evaluated, returning its return value in stead.
+
+GetCoreError returns a string describing the core error.
+TrapError and GetCoreError can be used in combination to write
+a custom error handler. 
+
 
 *SEE Assert
 

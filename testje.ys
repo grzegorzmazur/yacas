@@ -1,5 +1,26 @@
 
 
+OMReadEvalPrint():=
+[
+  Local(input,stringOut,result);
+  While (True)
+  [
+    input := FromString(ReadCmdLineString("Om> "):";")Read();
+    errorString := "";
+    stringOut:="";
+    result:=False;
+    TrapError(stringOut:=ToString()[result:=Eval(input);],errorString:=GetCoreError());
+    if(errorString != "") Echo("<OMOBJ><OME><OMSTR>",errorString,"</OMSTR></OME></OMOBJ>");
+    if(stringOut != "") Echo("<OMOBJ><OME><OMSTR>",stringOut,"</OMSTR></OME></OMOBJ>");
+    Echo(`OMForm(@result));
+  ];
+];
+
+
+
+EndOfFile;
+
+
   f(n):=
   [
     Local(i,result);

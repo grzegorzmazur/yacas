@@ -13,3 +13,14 @@ a:= 3;
 
 // Check parsing
 a==-b; // This would generate a parse error in Yacas versions 1.0.54 and earlier
+
+
+
+[
+  Local(errorString);
+  errorString:="";
+  TrapError(Check(False,"some error"),errorString:=GetCoreError());
+  Verify(IsString(errorString),True);
+  Verify(Length(errorString)>4,True);  
+];
+Verify(errorString,errorString);
