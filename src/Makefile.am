@@ -145,5 +145,5 @@ versionstamper:
 include depend.dep
 
 depend:
-	gcc -MM *.cpp $(AM_CPPFLAGS) > depend.dep
+	cc -MM *.cpp $(AM_CPPFLAGS) > depend.dep
 
