@@ -1,0 +1,416 @@
+
+/* 
+to do list:
+- passing along the locals, and how to access them, in every compile call
+- code to handle local variables
+- code to handle global variables
+- process corefunctions.h so that all these functions are automatically known
+- check number of arguments passed
+- implement the most important macro type functions: Prog, If, While, Local.
+- actually emit compilable code
+- emit system calls to compile to plugin, and load and try
+*/
+
+/* Compile : compile an expression
+ */
+Macro()CompileStatement(expression);
+CompileStatement(f_IsFunction := _body) <--
+[
+  Local(callName,compiledName,args,stack,i,nrArgs);
+  Set(callName,Type(@f));
+  Set(args,Tail(Listify(@f)));
+  Set(compiledName,"Compiled_":Type(@f));
+  Set(nrArgs,NrArgs(@f));  
+//  Echo("CORE_KERNEL_FUNCTION(\"",Type(@f),"\",",compiledName,",",nrArgs,",YacasEvaluator::Function | YacasEvaluator::Fixed)");
+
+  funcDecls := {compiledName,Type(@f),nrArgs} : funcDecls;
+
+  Echo("void ",compiledName,"(LispEnvironment& aEnvironment,LispInt aStackTop)");
+  Echo("{");
+  Set(stack,NewStack());
+  PushStackFrame(stack,fenced);
+  For(i:=1,i<=nrArgs,i++)
+  [
+    AddToStack(stack,String(args[i]));
+    FindOnStack(stack,String(args[i]))["call"] := "ARGUMENT(":String(i):")";
+  ];  
+  CompileBody(Hold(@body),stack);
+  PopStackFrame(stack);
+  Echo("  RESULT.Set(STACK(STACKTOP()-1).Get());");
+  Echo("  POP(1);");
+  Echo("}");
+];
+
+10  # CompileFn("Eval") <-- "LispEval";
+10  # CompileFn("WriteString") <-- "LispWriteString";
+10  # CompileFn("FullForm") <-- "LispFullForm";
+10  # CompileFn("DefaultDirectory") <-- "LispDefaultDirectory";
+10  # CompileFn("Read") <-- "LispRead";
+10  # CompileFn("ReadToken") <-- "LispReadToken";
+10  # CompileFn("Load") <-- "LispLoad";
+10  # CompileFn("Head") <-- "LispHead";
+10  # CompileFn("MathNth") <-- "LispNth";
+10  # CompileFn("Tail") <-- "LispTail";
+10  # CompileFn("DestructiveReverse") <-- "LispDestructiveReverse";
+10  # CompileFn("Length") <-- "LispLength";
+10  # CompileFn("UnList") <-- "LispUnList";
+10  # CompileFn("Listify") <-- "LispListify";
+10  # CompileFn("Delete") <-- "LispDelete";
+10  # CompileFn("DestructiveDelete") <-- "LispDestructiveDelete";
+10  # CompileFn("Insert") <-- "LispInsert";
+10  # CompileFn("DestructiveInsert") <-- "LispDestructiveInsert";
+10  # CompileFn("Replace") <-- "LispReplace";
+10  # CompileFn("DestructiveReplace") <-- "LispDestructiveReplace";
+10  # CompileFn("Atom") <-- "LispAtomize";
+10  # CompileFn("String") <-- "LispStringify";
+10  # CompileFn("FlatCopy") <-- "LispFlatCopy";
+10  # CompileFn("Prefix") <-- "LispPreFix";
+10  # CompileFn("Infix") <-- "LispInFix";
+10  # CompileFn("Postfix") <-- "LispPostFix";
+10  # CompileFn("Bodied") <-- "LispBodied";
+10  # CompileFn("MacroRuleBase") <-- "LispMacroRuleBase";
+10  # CompileFn("MacroRuleBaseListed") <-- "LispMacroRuleBaseListed";
+10  # CompileFn("HoldArg") <-- "LispHoldArg";
+10  # CompileFn("MacroRule") <-- "LispMacroNewRule";
+10  # CompileFn("UnFence") <-- "LispUnFence";
+10  # CompileFn("Retract") <-- "LispRetract";
+10  # CompileFn("MathNot") <-- "LispNot";
+10  # CompileFn("Equals") <-- "LispEquals";
+10  # CompileFn("LessThan") <-- "LispLessThan";
+10  # CompileFn("GreaterThan") <-- "LispGreaterThan";
+10  # CompileFn("IsFunction") <-- "LispIsFunction";
+10  # CompileFn("IsAtom") <-- "LispIsAtom";
+10  # CompileFn("IsNumber") <-- "LispIsNumber";
+10  # CompileFn("IsInteger") <-- "LispIsInteger";
+10  # CompileFn("IsList") <-- "LispIsList";
+10  # CompileFn("IsString") <-- "LispIsString";
+10  # CompileFn("MathMultiply") <-- "LispMultiply";
+10  # CompileFn("MathAdd") <-- "LispAdd";
+10  # CompileFn("MathSubtract") <-- "LispSubtract";
+10  # CompileFn("MathDivide") <-- "LispDivide";
+10  # CompileFn("MathSin") <-- "LispSin";
+10  # CompileFn("MathCos") <-- "LispCos";
+10  # CompileFn("MathTan") <-- "LispTan";
+10  # CompileFn("MathArcSin") <-- "LispArcSin";
+10  # CompileFn("MathArcCos") <-- "LispArcCos";
+10  # CompileFn("MathArcTan") <-- "LispArcTan";
+10  # CompileFn("Precision") <-- "LispPrecision";
+10  # CompileFn("MathGetExactBits") <-- "LispGetExactBits";
+10  # CompileFn("MathSetExactBits") <-- "LispSetExactBits";
+10  # CompileFn("MathSqrt") <-- "LispSqrt";
+10  # CompileFn("MathFloor") <-- "LispFloor";
+10  # CompileFn("MathCeil") <-- "LispCeil";
+10  # CompileFn("MathAbs") <-- "LispAbs";
+10  # CompileFn("MathMod") <-- "LispMod";
+10  # CompileFn("MathDiv") <-- "LispDiv";
+10  # CompileFn("MathLog") <-- "LispLog";
+10  # CompileFn("MathExp") <-- "LispExp";
+10  # CompileFn("MathPower") <-- "LispPower";
+10  # CompileFn("MathPi") <-- "LispPi";
+10  # CompileFn("MathGcd") <-- "LispGcd";
+10  # CompileFn("SystemCall") <-- "LispSystemCall";
+10  # CompileFn("FastSin") <-- "LispFastSin";
+10  # CompileFn("FastCos") <-- "LispFastCos";
+10  # CompileFn("FastTan") <-- "LispFastTan";
+10  # CompileFn("FastArcSin") <-- "LispFastArcSin";
+10  # CompileFn("FastArcCos") <-- "LispFastArcCos";
+10  # CompileFn("FastArcTan") <-- "LispFastArcTan";
+10  # CompileFn("FastExp") <-- "LispFastExp";
+10  # CompileFn("FastLog") <-- "LispFastLog";
+10  # CompileFn("FastPower") <-- "LispFastPower";
+10  # CompileFn("FastSqrt") <-- "LispFastSqrt";
+10  # CompileFn("FastPi") <-- "LispFastPi";
+10  # CompileFn("FastFloor") <-- "LispFastFloor";
+10  # CompileFn("FastCeil") <-- "LispFastCeil";
+10  # CompileFn("FastMod") <-- "LispFastMod";
+10  # CompileFn("FastAbs") <-- "LispFastAbs";
+10  # CompileFn("ShiftLeft") <-- "LispShiftLeft";
+10  # CompileFn("ShiftRight") <-- "LispShiftRight";
+10  # CompileFn("FromBase") <-- "LispFromBase";
+10  # CompileFn("ToBase") <-- "LispToBase";
+10  # CompileFn("MaxEvalDepth") <-- "LispMaxEvalDepth";
+10  # CompileFn("DefLoad") <-- "LispDefLoad";
+10  # CompileFn("Use") <-- "LispUse";
+10  # CompileFn("RightAssociative") <-- "LispRightAssociative";
+10  # CompileFn("LeftPrecedence") <-- "LispLeftPrecedence";
+10  # CompileFn("RightPrecedence") <-- "LispRightPrecedence";
+10  # CompileFn("IsBodied") <-- "LispIsBodied";
+10  # CompileFn("IsInfix") <-- "LispIsInFix";
+10  # CompileFn("IsPrefix") <-- "LispIsPreFix";
+10  # CompileFn("IsPostfix") <-- "LispIsPostFix";
+10  # CompileFn("OpPrecedence") <-- "LispGetPrecedence";
+10  # CompileFn("OpLeftPrecedence") <-- "LispGetLeftPrecedence";
+10  # CompileFn("OpRightPrecedence") <-- "LispGetRightPrecedence";
+10  # CompileFn("GetPrecision") <-- "LispGetPrecision";
+10  # CompileFn("BitAnd") <-- "LispBitAnd";
+10  # CompileFn("BitOr") <-- "LispBitOr";
+10  # CompileFn("BitXor") <-- "LispBitXor";
+10  # CompileFn("FindFile") <-- "LispFindFile";
+10  # CompileFn("FindFunction") <-- "LispFindFunction";
+10  # CompileFn("IsGeneric") <-- "LispIsGeneric";
+10  # CompileFn("GenericTypeName") <-- "LispGenericTypeName";
+10  # CompileFn("ArrayCreate") <-- "GenArrayCreate";
+10  # CompileFn("ArraySize") <-- "GenArraySize";
+10  # CompileFn("ArrayGet") <-- "GenArrayGet";
+10  # CompileFn("ArraySet") <-- "GenArraySet";
+10  # CompileFn("CustomEval'Expression") <-- "LispCustomEvalExpression";
+10  # CompileFn("CustomEval'Result") <-- "LispCustomEvalResult";
+10  # CompileFn("CustomEval'Locals") <-- "LispCustomEvalLocals";
+10  # CompileFn("CustomEval'Stop") <-- "LispCustomEvalStop";
+10  # CompileFn("LispRead") <-- "LispReadLisp";
+10  # CompileFn("LispReadListed") <-- "LispReadLispListed";
+10  # CompileFn("Type") <-- "LispType";
+10  # CompileFn("StringMid") <-- "LispStringMid";
+10  # CompileFn("SetStringMid") <-- "LispSetStringMid";
+10  # CompileFn("PatternCreate") <-- "GenPatternCreate";
+10  # CompileFn("PatternMatches") <-- "GenPatternMatches";
+10  # CompileFn("RuleBaseDefined") <-- "LispRuleBaseDefined";
+10  # CompileFn("DefLoadFunction") <-- "LispDefLoadFunction";
+10  # CompileFn("RuleBaseArgList") <-- "LispRuleBaseArgList";
+10  # CompileFn("MacroRulePattern") <-- "LispMacroNewRulePattern";
+10  # CompileFn("Subst") <-- "LispSubst";
+10  # CompileFn("FastIsPrime") <-- "LispFastIsPrime";
+10  # CompileFn("MathFac") <-- "LispFac";
+10  # CompileFn("ApplyPure") <-- "LispApplyPure";
+10  # CompileFn("GarbageCollect") <-- "LispGarbageCollect";
+10  # CompileFn("PatchLoad") <-- "LispPatchLoad";
+10  # CompileFn("PatchString") <-- "LispPatchString";
+10  # CompileFn("DllLoad") <-- "LispDllLoad";
+10  # CompileFn("DllUnload") <-- "LispDllUnload";
+10  # CompileFn("DllEnumerate") <-- "LispDllEnumerate";
+10  # CompileFn("SetExtraInfo") <-- "LispSetExtraInfo";
+10  # CompileFn("GetExtraInfo") <-- "LispGetExtraInfo";
+10  # CompileFn("Berlekamp") <-- "LispBerlekamp";
+10  # CompileFn("DefaultTokenizer") <-- "LispDefaultTokenizer";
+10  # CompileFn("CommonLispTokenizer") <-- "LispCommonLispTokenizer";
+10  # CompileFn("CTokenizer") <-- "LispCTokenizer";
+10  # CompileFn("XmlTokenizer") <-- "LispXmlTokenizer";
+10  # CompileFn("XmlExplodeTag") <-- "LispExplodeTag";
+10  # CompileFn("FastAssoc") <-- "LispFastAssoc";
+10  # CompileFn("CurrentFile") <-- "LispCurrentFile";
+10  # CompileFn("CurrentLine") <-- "LispCurrentLine";
+10  # CompileFn("MathLibrary") <-- "LispMathLibName";
+10  # CompileFn("Version") <-- "LispVersion";
+100 # CompileFn(_rest) <-- Empty;
+
+
+10 # CompileBody(body_IsNumber,_stack) <--
+[
+  Echo("/* number : ",body," */");
+  Echo("  PUSH(ATOM(",String(String(body)),"));");
+];
+
+10 # CompileBody(body_IsString,_stack) <--
+[
+  Echo("/* string : ",body," */");
+  Echo("  PUSH(ATOM(\"\\\"",body,"\\\"\"));");
+];
+
+11 # CompileBody(body_IsAtom,_stack)_(IsOnStack(stack,String(body))) <--
+[
+  Echo("/* local : ",body," */");
+  Echo("  PUSH(",FindOnStack(stack,String(body))["call"],".Get());");
+];
+
+//TODO handle global variables
+12 # CompileBody(body_IsAtom,_stack) <--
+[
+  Echo("/* atom : ",body," */");
+  Echo("  PUSH(ATOM(",String(String(body)),"));");
+];
+
+20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "Local") <--
+[
+  Echo("/* ",body," */");
+  Set(body,Tail(Listify(body)));
+  Local(i,nr);
+  Set(nr,Length(body));
+  For(i:=1,i<=nr,i++)
+  [
+    //TODO handle initialization
+    Echo("LispPtr ",body[i],"; ",body[i],".Set(ATOM(",String(String(body[i])),"));");
+    AddToStack(stack,String(body[i]));
+    FindOnStack(stack,String(body[i]))["call"] := String(body[i]);
+  ];
+  Echo("  PUSH(ATOM(\"True\"));");
+];
+
+20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "Set") <--
+[
+  Echo("/* ",body," */");
+  Set(body,Tail(Listify(body)));
+  CompileBody(body[2],stack);
+  Echo("  ",FindOnStack(stack,String(body[1]))["call"],".Set(STACK(STACKTOP()-1).Get());");
+];
+
+20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "Prog") <--
+[
+  Set(body,Tail(Listify(body)));
+  PushStackFrame(stack,unfenced);
+  Echo("  PUSH(ATOM(\"True\"));");
+  While(body != {})
+  [
+    Echo("  POP(1);");
+    CompileBody(Head(body),stack);
+    Set(body,Tail(body));
+  ];
+  PopStackFrame();
+];
+
+20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "While") <--
+[
+  Set(body,Tail(Listify(body)));
+  Echo("/* While (",body[1],") */");
+  Echo("   for(;;)");
+  Echo("{");
+  CompileBody(body[1],stack);
+//Echo("printf(\"Got here\\\n\");");
+//Echo("printf(\"atom is [%s]\\n\",STACK(STACKTOP()-1).Get()->String()->String());");
+  Echo("   if (ISFALSE(STACK(STACKTOP()-1))) break;");
+  CompileBody(body[2],stack);
+  Echo("  POP(2);");
+  Echo("}");
+];
+
+90 # CompileBody(body_IsFunction,_stack)_(CompileFn(Type(body)) != Empty) <--
+[
+  Echo("  PUSH(NULL);");
+  Echo("  {");
+
+  Local(i,args,nrArgs,compileFn);
+  Set(compileFn,CompileFn(Type(body)));
+  Set(args,Tail(Listify(body)));
+  Set(nrArgs,NrArgs(body));
+  For(i:=1,i<=nrArgs,i++)
+  [
+    CompileBody(args[i],stack);
+  ];
+  Echo("    ",compileFn,"(aEnvironment,STACKTOP()-",(nrArgs+1),");");
+  Echo("    POP(",nrArgs,");");
+  Echo("  }");
+];
+
+100 # CompileBody(_body,_stack) <-- 
+[
+  Echo("Expression ",body);
+  Check(False,"Unhandled expression type");
+];
+
+
+fileCompileString:=
+"
+<?
+FromFile(file)
+[
+  Local(expression);
+  Set(expression,Read());
+  While(expression != EndOfFile)
+  [
+    `CompileStatement(@expression);
+    Set(expression,Read());
+  ];
+];
+?>
+";
+
+fileBuildString:=
+"
+/* This file was automatically generated with cstubgen.
+*/
+
+#include <stdio.h>
+
+#include \"lisptype.h\"
+#include \"lispenvironment.h\"
+#include \"lispatom.h\"
+#include \"standard.h\"
+#include \"arggetter.h\"
+#include \"lispplugin.h\"
+#include \"platmath.h\"
+#include \"stubs.h\"
+#include \"genericstructs.h\"
+#include \"mathcommands.h\"
+
+
+#define ATOM(_x) LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(_x))
+#define RESULT aEnvironment.iStack.GetElement(aStackTop)
+#define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
+#define PUSH(_x)   aEnvironment.iStack.PushArgOnStack(_x)
+#define POP(_i)    aEnvironment.iStack.PopTo(aEnvironment.iStack.GetStackTop() - _i)
+#define STACKTOP() aEnvironment.iStack.GetStackTop()
+#define STACK(_i)  aEnvironment.iStack.GetElement(_i)
+
+#define ISTRUE(_x) IsTrue(aEnvironment, _x)
+#define ISFALSE(_x) IsFalse(aEnvironment, _x)
+
+<?
+WriteString(funcDefs);
+?>
+
+
+class BarePlugin : public LispPluginBase
+{
+public:
+    virtual void Add(LispEnvironment& aEnvironment);
+    virtual void Remove(LispEnvironment& aEnvironment);
+};
+
+void BarePlugin::Add(LispEnvironment& aEnvironment)
+{
+<?
+[
+  Local(cname,fname,nrargs);
+  ForEach(item,funcDecls)
+  [
+    {cname,fname,nrargs}:=item;   
+Echo(\"  aEnvironment.SetCommand(\",cname,\",\",String(fname),\",\",nrargs,\",YacasEvaluator::Function | YacasEvaluator::Fixed);\");
+  ];
+];
+?>
+}
+void BarePlugin::Remove(LispEnvironment& aEnvironment)
+{
+<?
+[
+  Local(cname,fname,nrargs);
+  ForEach(item,funcDecls)
+  [
+    {cname,fname,nrargs}:=item;   
+    Echo(\"aEnvironment.RemoveCoreCommand(\",String(fname),\");\");
+  ];
+];
+?>
+}
+
+
+extern \"C\" {
+LispPluginBase* maker(void)
+{
+    return NEW BarePlugin;
+}
+};
+";
+//{cname,fname,nrargs}
+
+CompileFile(file_IsString)<--
+[
+  Local(funcDefs);
+  Set(funcDecls,{});
+  Echo("Converting ",file," to C++ code");
+  Set(funcDefs,PatchString(fileCompileString));
+//Echo(funcDefs);
+  Echo("Generating C++ file test.cc");
+  ToFile("test.cc")WriteString(PatchString(fileBuildString));
+//  SystemCall("c++ -DHAVE_CONFIG_H -I. -Isrc -Isrc/plat/linux32/ -O9 -Wall -pedantic -c test.cc -o test.o -fno-common -DPIC");
+//  SystemCall("g++ -module -dynamic -undefined suppress -flat_namespace -dynamiclib  -o test.so  test.o   -lc -install_name  /usr/local/lib/yacas/test.so");
+
+  Echo("Compiling C++ file test.cc into plugin test.so");
+  SystemCall("/bin/sh ./libtool --mode=compile g++ -DHAVE_CONFIG_H  -I. -Isrc -Isrc/plat/linux32/ -O9 -Wall -pedantic -c test.cc -o test.lo");
+  SystemCall("/bin/sh ./libtool --mode=link    g++  -O9 -Wall -pedantic -o test.la -rpath /usr/local/lib/yacas -module -avoid-version -no-undefined  test.lo");
+
+];
+
+
+
+
+

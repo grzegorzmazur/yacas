@@ -9,7 +9,7 @@
 #include "lispglobals.h"
 
 
-#define CORE_FUNCTION(NAME) void NAME(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments);
+//#define CORE_FUNCTION(NAME) void NAME(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments);
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) void fname(LispEnvironment& aEnvironment, LispInt aStackTop);
 #define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) 
