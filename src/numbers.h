@@ -50,7 +50,7 @@ const unsigned GUARD_BITS = 8;	// we leave this many guard bits untruncated in v
 template<class T> inline T MAX(T x, T y) { if (x<y) return y; else return x; }
 template<class T> inline T MIN(T x, T y) { if (x>y) return y; else return x; }
 
-const long DIST_BITS = 3;	// at least this many bits of difference - used in precision tracking
+const long DIST_BITS = 1;	// at least this many bits of difference - used in precision tracking
 
 /// DIST(x, y) returns 1 if abs(x-y) >= DIST_BITS. See documentation for precision tracking.
 template<class T> inline T DIST(T x, T y) { return (x>=y+DIST_BITS || y>=x+DIST_BITS) ? 0 : 1; }

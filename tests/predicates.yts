@@ -57,6 +57,35 @@ Verify(2>.1,True);
 Verify(2>0.1,True);
 Verify(2>.3,True);
 
+Testing("comparisons in exponential notation");
+// some of these failed
+Verify(1e-5 < 1, True);
+Verify(1e-5 < 2e-5, True);
+Verify(1e-1 < 2e-1, True);
+Verify(1e-15 < 2e-15, True);
+Verify(1e-5 < 1e-10, False);
+Verify(1e-5 < 1e-2, True);
+Verify(-1e-5 < 1e-5, True);
+Verify(-1e-5 < 1e-6, True);
+Verify(1e-5 = 2e-5, False);
+Verify(1e-5 = 1e-6, False);
+Verify(1e-15 > 0, True);
+Verify(1e-5 > 0, True);
+Verify(1e-4 > 0, True);
+Verify(1e-3 > 0, True);
+Verify(1e-2 > 0, True);
+Verify(1e-1 > 0, True);
+Verify(1e5 > 0, True);
+
+Verify(1.0000000000000000000000000000111 > 1, True);
+Verify(0.999999999999999999999999999992 < 1, True);
+
+Verify(LessThan(-1e-115, 0), True);
+Verify(LessThan(-1e-15, 0), True);
+Verify(LessThan(-1e-10, 0), True);
+Verify(LessThan(-1e-5, 0), True);
+Verify(LessThan(-1e-1, 0), True);
+
 Testing("Matrix predicates");
 Verify(IsHermitian({{0,I},{-I,0}}),True);
 Verify(IsHermitian({{0,I},{-I,1}}),True);

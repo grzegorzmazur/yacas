@@ -181,12 +181,12 @@ void RaiseError(char* str,...)
 #ifdef HAVE_STDARG_H
   va_list arg;
   va_start (arg, str);
-#ifdef HAVE_VSNPRINTF
+ #ifdef HAVE_VSNPRINTF
   vsnprintf (theGenericErrorBuf, 500, str, arg);
-#else
+ #else
   /* Just cross fingers and hope the buffer is large enough */
   vsprintf (theGenericErrorBuf, str, arg);
-#endif  
+ #endif  
   va_end (arg);
 #else
   PlatMemCopy(theGenericErrorBuf, str, PlatStrLen(str));

@@ -6,14 +6,16 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
+#include <iostream.h>
 
 int verbose_debug=0; //linkage
 
 #define ENABLE_TESTS 1
 
 // whether to print detailed information about passed tests
-const bool show_passed = false;
-//const bool show_passed = true;
+const bool show_passed = 
+		false;
+//		true;
 
 unsigned failed = 0;
 unsigned passed = 0;
@@ -27,11 +29,11 @@ unsigned passed = 0;
 
 char* Message(char* str,...)
 {
-  static char buf[512];
+  static char buf[1024];
   va_list arg;
   va_start (arg, str);
 #ifdef HAVE_VSNPRINTF
-  vsnprintf (buf, 500, str, arg);
+  vsnprintf (buf, 1020, str, arg);
 #else
   /* Just cross fingers and hope the buffer is large enough */
   vsprintf (buf, str, arg);
@@ -446,20 +448,40 @@ void test_int_eq_string(LispInt value, const char* test_string, LispInt precisio
 	test_string2int(value, test_string, precision, base);
 }
 
+// test multiple-precision integer arithmetic
+void test_mul_div_1(const char* str1, const char* str2, const char* str3, int base)
+{
+	// assuming that str3 = str1 * str2, we check this arithmetic
+	BigNumber x(str1, 0, base), y(str2, 0, base), z(str3, 0, base), result;
+	result.Multiply(x,y,0);
+	CheckEquals(result, z, 0, base, "multiplication x*y is correct");
+	result.Divide(result, x, 0);
+	CheckEquals(result, y, 0, base, "division z/x is correct");
+	
+	result.Multiply(result,x,0);
+	CheckEquals(result, z, 0, base, "multiplication y*x is correct");
+	result.Divide(result, y, 0);
+	CheckEquals(result, x, 0, base, "division z/y is correct");	
+	
+}
+
+void test_less_than(const char* str1, const char* str2, int base)
+{
+	// str1 < str2 must be true
+	BigNumber x, y;
+	x.SetTo(str1, 0, base);
+	y.SetTo(str2, 0, base);
+	Check(!x.Equals(y), Message("%s (%d bits) != %s (%d bits)", str1, x.GetPrecision(), str2, y.GetPrecision()));
+	Check(x.LessThan(y), Message("%s (%d bits) < %s (%d bits)", str1, x.GetPrecision(), str2, y.GetPrecision()));
+	Check(!y.LessThan(x), Message("! %s (%d bits) < %s (%d bits)", str2, y.GetPrecision(), str1, x.GetPrecision()));
+}
+
 
 #endif // whether to test numbers
 
 int main(void)
 {
     LispString  str;
-/*
-    ANumber res1("10",100,10);
-    ANumber res2("10",100,10);
-    ANumber res3("10",100,10);
-*/
-//    printf("WordBits = %d\n",WordBits);
-//    printf("WordMask = %ld\n",WordMask);
-//    printf("Starting tests...\n");
 
 #if ENABLE_TESTS
 #if 1
@@ -548,6 +570,7 @@ int main(void)
 	Next("10");
 	x.BecomeFloat();
 	Next("11");
+	//RaiseError("testing error messages");
 	x.Precision(100);
 	CheckValues(x.GetPrecision(),100, "set precision successfully");
 	x.BecomeInt();
@@ -712,7 +735,7 @@ int main(void)
 	Check(!x.IsInt(), "x is a floating-point value");
 	CheckValues(x.Sign(),1, "x is positive");
 	x.SetTo(double(x.BitCount()));
-	Check(x.IsInt(), "bit count is integer");
+	Check(x.IsIntValue(), "bit count has integer value");
 	CheckValues(x.Double(),-20, "bit count of 1./1050000. is (-20)");
 	Check(x.Double()!=-21, "bit count is not -21");
 	Check(x.Double()!=-19, "bit count is not -19");
@@ -722,7 +745,12 @@ int main(void)
 	Check(x.Double()!=-20, "bit count is not -20");
 	Check(x.Double()!=-18, "bit count is not -18");
 
-
+	x.SetTo(0.);
+	Check(!x.IsInt(), "x has float type");
+	CheckValues(x.BitCount(), 0, "bit count of 0. is 0");
+	x.BecomeInt();
+	CheckValues(x.BitCount(), 1, "bit count of 0 is 1");
+	
 	
 	long B_x;
 #define test_bit_count(a) \
@@ -732,11 +760,12 @@ int main(void)
 	CheckValues(x.BitCount(), B_x, "bit count is the same after BecomeFloat()");
 
 	test_bit_count(2)
-	test_bit_count(0)
 	test_bit_count(-1)
 	test_bit_count(1)
 	test_bit_count(12345)
-	
+	test_bit_count(255)
+
+							
 	
 	Next("arithmetic with large powers");
 	// compute 15^(large number) and check that it divides both 3^(that number) and 5^(that number)
@@ -870,23 +899,71 @@ int main(void)
 	z.BitAnd(z,t);	// result of BitNot is negative
 	Check(z.Equals(t), "bit Not operation correct");
 	CheckEquals(z, t, 50, 16, "bit Not operation result printed correctly");
+	
+	// some old tests from Ayal
 
-	Next("precision");	// compute 100/243 to 9 bits, should be 0.411
+    z.SetTo("5a5a5a5a5a5a5a5a5a5a5a5a", 0, 16);
+    z.ShiftRight(z,1);
+	t.SetTo("2d2d2d2d2d2d2d2d2d2d2d2d", 0, 16);
+    CheckEquals(z, t, 0, 16, "shift right is correct");
+    
+    z.ShiftRight(z,19);
+	t.SetTo("5a5a5a5a5a5a5a5a5a5", 0, 16);
+    CheckEquals(z, t, 0, 16, "another shift right is correct");
+
+    z.ShiftLeft(z,1);
+    t.SetTo("b4b4b4b4b4b4b4b4b4a", 0, 16);
+    CheckEquals(z, t, 0, 16, "shift left is correct");
+    
+    z.ShiftLeft(z,19);
+    t.SetTo("5a5a5a5a5a5a5a5a5a500000", 0, 16);
+    CheckEquals(z, t, 0, 16, "another shift left is correct");
+
+
+	Next("adding zero to numbers");	// add integer zero and also floating zero
+	x.SetTo(0);
+	y.SetTo(100.123);
+	x.Add(x,y,40);
+	Check(x.Equals(y) && y.Equals(x), "x=y and y=x");
+	
+	long prec1 = 20;
+	x.SetTo(0.);
+	x.Precision(prec1);
+	x.Add(x,y, prec1*2);
+	Check(x.Equals(y), "x = x + 0.");
+	// the precision of x should be at most prec1+10, this is really implementation-dependent (GUARD_BITS and so on)
+	Check(x.GetPrecision() < prec1+10, "x has correct precision");
+	if (x.GetPrecision() >= prec1 + 10) printf ("x has precision %d\n", x.GetPrecision());
+	
+	Next("simple precision test with 100/243");	// compute 100/243 to 9 bits, should be 0.411
+	prec1 = 10;
 	x.SetTo(100./243.);
-	x.Precision(10);
+	x.Precision(prec1);
 	y.SetTo(1000.);
-	y.Precision(10);
-	x.Multiply(x,y, 10);
+	y.Precision(prec1);
+	Check(y.GetPrecision()==prec1, "y has precision 10");
+	Check(!(x.IsInt() || y.IsInt()), "x and y are of float type");
+	x.Multiply(x,y, prec1);	// now x should be 411.522... but only with 10 float bits of correct mantissa
+	Check(!(x.IsInt()), "x is of float type");
 	y.SetTo(411);
+	Check(y.IsInt() && y.Double() == 411., "y has integer type and equal to 411");
 	Check(x.Equals(y), "x is equal to integer 411");
-	y.BecomeFloat(20);
+	y.BecomeFloat(2*prec1);
+	Check((!y.IsInt()) && y.Double() == 411., "y has float type and equal to 411");
 	Check(x.Equals(y), "x is equal to float 411.");
 	y.SetTo(412.);
-	Check(x.Equals(y), "x is equal to float 412.");
-	CheckStringValue(x, "412.", 20, 10, "imprecise 100./243. is correct");
-	CheckValues(x.GetPrecision(), 9, "x has precision 9");
-// this case is on the borderline between having and not having an integer value.
-	Check(!x.IsIntValue(), "x has float value despite low precision");
+	Check((!y.IsInt()) && y.Double() == 412., "y has float type and equal to 412");
+	Check(x.Equals(y), "x is also equal to float 412.");
+	CheckStringValue(x, "410.", 2*prec1, 10, "imprecise 100./243. is printed correctly to 9 bits");
+	// since both initial numbers had 10 bits of mantissa, the product should have 9 bits
+	CheckValues(x.GetPrecision(), prec1-1, "x has precision 9");
+	CheckValues(x.BitCount(), 9,  "float x has correct BitCount");
+	
+	// promote to 10 bits
+	x.Precision(prec1);
+	CheckStringValue(x, "412.", 2*prec1, 10, "imprecise 100./243. is printed correctly to 10 bits");
+	
+	
 	y.SetTo(1234.5678);
 	y.Precision(10);
 	Check(y.IsIntValue(), "y has integer value due to low precision");
@@ -1104,7 +1181,7 @@ int main(void)
 	    CheckValues(x.Sign(),1, "x is positive");
 	    x.ShiftLeft(x,prec-shift_amount); // x = 2^(150-s)* x
 	    CheckStringValue(x, "1.", 10, 10, "x=1. again");
-	    CheckValues(x.GetPrecision(), shift_amount-1, "x has correct precision");
+	    CheckValues(x.GetPrecision(), shift_amount, "x has correct precision");
 	// compute  (1+10^(-60))-1, this should be 0 with 150 bits
 	    y.SetTo(1.e-60);	// at least 60
 	    y.Precision(prec);
@@ -1178,48 +1255,30 @@ int main(void)
 		x.ToString(str, 0, 10);
 		CheckStringEquals(str, "0.1", "printed 0.1 correctly");
 		CheckEquals(x0, x, 0, 10, "value is consistent");
-
-		x.SetTo("0.1", 0, 10);
-		x.ToString(str, 10, 10);
-		CheckStringEquals(str, "0.1", "printed 0.1 correctly");
-		CheckEquals(x0, x, 0, 10, "value is consistent");
-		
-		x.SetTo("0.1", 0, 10);
-		x.ToString(str, 10, 10);
-		CheckStringEquals(str, "0.1", "printed 0.1 correctly");
-		CheckEquals(x0, x, 10, 10, "value is consistent");
-
-		x.SetTo(0.1);
-		x.ToString(str, 0, 10);
-		CheckStringEquals(str, "0.1", "printed 0.1 correctly");
-		CheckEquals(x0, x, 0, 10, "value is consistent");
-		
-		x.SetTo(0.1);
-		x.ToString(str, 10, 10);
-		CheckStringEquals(str, "0.1", "printed 0.1 correctly");
-		CheckEquals(x0, x, 10, 10, "value is consistent");
 		
 	}
 	
 
-	Next("a calculation from arithmetic.yts");
+	prec1 = 34;	// this is really implementation-dependent, but the following numbers should be related to prec1 because of precision tracking
+
+		Next("a calculation from arithmetic.yts");
 	{// compute 10e3*1.2e-4 - 1.2, must get zero
 		BigNumber x("10e3", 10), y("1.2e-4", 10), z("1.2", 10);
 		z.Negate(z);
-		CheckValues(z.GetPrecision(), 33, "z has correct precision");
+		CheckValues(z.GetPrecision(), prec1, "z has correct precision");
 		//z.MultiplyAdd(x,y,10);
 		x.Multiply(x,y,10);
-		CheckValues(x.GetPrecision(), 32, "x has correct precision");
+		CheckValues(x.GetPrecision(), prec1-1, "x has correct precision");
 		z.Add(z,x,10);
-		CheckValues(z.GetPrecision(), 29, "z has correct precision");
+		CheckValues(z.GetPrecision(), prec1-2, "z has correct precision");
 		CheckValues(z.Sign(),0,"z has correct sign");
 		CheckStringValue(z, "0.", 10, 10, "z is equal to 0.");
 	}
 	{
 		BigNumber z("0.000", 10, 10);
-		CheckValues(z.GetPrecision(), 33, "z has correct precision");
+		CheckValues(z.GetPrecision(), prec1, "z has correct precision");
 		BigNumber y("0.5", 10, 10);
-		CheckValues(y.GetPrecision(), 33, "y has correct precision");
+		CheckValues(y.GetPrecision(), prec1, "y has correct precision");
 		z.Add(z,y,10);
 		
 		CheckValues(z.GetPrecision(), 10, "z has correct precision");
@@ -1233,21 +1292,21 @@ int main(void)
 		BigNumber x("10e3", 10), y("1.2e-4", 10), z0("1.2", 10);
 		BigNumber t1(10);
 		t1.Negate(z0);
-		CheckValues(t1.GetPrecision(), 33, "t1 has correct precision");
+		CheckValues(t1.GetPrecision(), prec1, "t1 has correct precision");
 		BigNumber t2(10);
 		t2.Multiply(x,y,10);
-		CheckValues(t2.GetPrecision(), 32, "t2 has correct precision");
+		CheckValues(t2.GetPrecision(), prec1-1, "t2 has correct precision");
 		BigNumber z(10);
 		z.Add(t2,t1, 10);
-		CheckValues(z.GetPrecision(), 29, "z has correct precision");
+		CheckValues(z.GetPrecision(), prec1-2, "z has correct precision");
 		CheckValues(z.Sign(),0,"z has correct sign");
 		CheckStringValue(z, "0.", 10, 10, "z is equal to 0.");
 	}
 	{
 		BigNumber x("0.000", 10, 10);
-		CheckValues(x.GetPrecision(), 33, "x has correct precision");
+		CheckValues(x.GetPrecision(), prec1, "x has correct precision");
 		BigNumber y("0.5", 10, 10);
-		CheckValues(y.GetPrecision(), 33, "y has correct precision");
+		CheckValues(y.GetPrecision(), prec1, "y has correct precision");
 		BigNumber z(10);
 		z.Add(x,y,10);
 		
@@ -1261,21 +1320,21 @@ int main(void)
 	{
 		BigNumber x("0.10000011", 10, 10);
 		BigNumber y("0.1", 10, 10);	// not necessary to give trailing zeros since we are requesting 10 base digits of precision
-		CheckValues(x.GetPrecision(), 33, Message("x=%10.10f has precision 33 initially", x.Double()));
+		CheckValues(x.GetPrecision(), prec1, Message("x=%10.10f has correct initial precision", x.Double()));
 		y.Negate(y);
-		y.Add(x,y,33);	// y = 0.00000011 now, and has low precision
-		CheckValues(y.GetPrecision(), 11, "y has precision 11");
+		y.Add(x,y,prec1);	// now y = 0.00000011 and has low precision
+		CheckValues(y.GetPrecision(), 13, "y has precision 13");
 		for (int i=0; i<100; i++)
 		{
-			x.Add(x,y,36);
+			x.Add(x,y,prec1);
 		}
-		CheckValues(x.GetPrecision(), 28, Message("x=%10.10f has precision 28", x.Double()));
+		CheckValues(x.GetPrecision(), prec1-2, Message("x=%10.10f has precision %d", x.Double(), prec1-3));
 		y.Negate(y);
 		for (int i=0; i<100; i++)
 		{
-			x.Add(x,y,36);
+			x.Add(x,y,prec1);
 		}
-		CheckValues(x.GetPrecision(), 28, "x has precision 28");
+		CheckValues(x.GetPrecision(), prec1-2, "x has precision prec1-3");
 		CheckStringValue(x, "0.10000011", 10, 10, "x is equal to its old value");
 		
 
@@ -1283,9 +1342,10 @@ int main(void)
 	Next("precision control: Precision(), SetTo(), Negate()");
 	
 	{
-	LispInt prec = 33, prec1 = 10, prec2 = 120;
+	LispInt prec = 34, prec1 = 10, prec2 = 120;
 		BigNumber x("0.1",10,10);
 		CheckValues(x.GetPrecision(), prec, "x has correct initial precision");
+		prec = x.GetPrecision();
 		x.Negate(x);
 		CheckValues(x.GetPrecision(), prec, "correct precision after Negate()");
 		BigNumber y;
@@ -1296,16 +1356,14 @@ int main(void)
 		CheckValues(x.GetPrecision(), prec1, "x has fewer bits now");
 		Check(x.Equals(y), "x=y after decreasing precision");
 		Check(y.Equals(x), "y=x after decreasing precision");
-//		CheckEquals(x, y, prec, 2, "x=y by string comparison at initial precision");
+		CheckEquals(x, y, prec1, 2, "x=y by string comparison at initial precision");
 		x.SetTo(y);
 		CheckValues(x.GetPrecision(), prec, "correct copying of precision after y:=x");
 		x.Precision(prec2);
 		CheckValues(x.GetPrecision(), prec2, "x has more bits now");
 		Check(x.Equals(y), "x=y after increasing precision");
 		Check(y.Equals(x), "y=x after increasing precision");
-//		CheckEquals(x, y, prec2, 2, "x=y by string comparison");
-
-		
+		CheckEquals(x, y, prec, 2, "x=y by string comparison");		
 	}
 	Next("precision control for Equals() and LessThan()");
 	{
@@ -1313,12 +1371,13 @@ int main(void)
 		BigNumber y("0.1110100000", 0, 2);
 		CheckValues(x.GetPrecision(), 10, "x has precision 10");
 		CheckValues(y.GetPrecision(), 10, "y has precision 10");
+		CheckValues(x.BitCount(), 0, "x has bit count 0");
 		BigNumber z1(x);
 		z1.Negate(z1);
-		z1.Add(z1,y,10);
+		z1.Add(z1,y,10);	// now z1 = -0.000000001 and only one digit is correct
 		CheckValues(z1.Sign(),-1,"z1 has correct sign");
 		CheckStringValue(z1, "-0.1e-1000",10,2,"z1 has correct value");
-		CheckValues(z1.GetPrecision(), 0, "z1 has one correct digit");
+		CheckValues(z1.GetPrecision(), 1, "z1 has one correct digit");
 		CheckValues(z1.BitCount(), -8, "z1 has bit count -8");
 		
 		Check(!x.Equals(y), "x!=y");
@@ -1329,10 +1388,10 @@ int main(void)
 		y.Negate(y);
 		Check(x.LessThan(y), "-x<-y");
 		Check(!y.LessThan(x), "!-y<-x");
-//		CheckEquals(x, y, 12, 2, "x=y by string comparison");
+		CheckEquals(x, y, 7, 2, "x=y by string comparison to 7 bits");
 		
 		// reduce precision to make them equal
-		y.Precision(9);
+		y.Precision(8);
 		Check(x.Equals(y), "x=y after decreasing precision");
 		Check(y.Equals(x), "y=x after decreasing precision");
 		Check(!x.LessThan(y), "!x<y after decreasing precision");
@@ -1340,15 +1399,15 @@ int main(void)
 
 		// another number
 		BigNumber z("-0.1110100001", 10, 2);
-		Check(x.Equals(z), "x=z");
+		Check(x.Equals(z), "x=z");	// x should have been the same number
 		// any two zeros are equal
 		z.Negate(z);
-		z.Add(z,x, 20);
+		z.Add(z,x, 20);	// should give 0
 		CheckValues(z.Sign(), 0, "z=0. now");
-		x.SetTo(0);
+		x.SetTo(0);	// integer zero
 		Check(x.Equals(z), "x=z");
 		Check(z.Equals(x), "z=x");
-		x.SetTo(0.);
+		x.SetTo(0.);	// floating zero
 		Check(x.Equals(z), "x=z");
 		Check(z.Equals(x), "z=x");
 		x.Precision(5);
@@ -1373,13 +1432,13 @@ int main(void)
 		CheckValues(y.GetPrecision(), 10, "y has precision 10");
 		BigNumber z1(x);
 		z1.Negate(z1);
-		z1.Add(z1,y,10);
+		z1.Add(z1,y,10);	// now z1 = 0 because the one last digit difference was lost in roundoff error
 		CheckValues(z1.Sign(),0,"z1 has correct sign");
 		BigNumber z2(0);
 		Check(z2.Equals(z1), "z1 is equal to zero");
-		CheckStringValue(z1, "0.",10,2,"z1 prints as '0.'");
-		CheckValues(z1.GetPrecision(), 8, "z1 has correct order");
-		CheckValues(z1.BitCount(), 1, "z1 has bit count 1");
+		CheckStringValue(z1, "0.",30, 2,"z1 prints as '0.'");
+		CheckValues(z1.GetPrecision(), 9, "z1 has correct order of error");
+		CheckValues(z1.BitCount(), 0, "z1 has bit count 0");	// floating 0. has bit count 0
 	}
 	{	// when subtracting these two numbers, there is enough precision to distinguish the result from 0
 		BigNumber x("0.1110100100", 0, 2);
@@ -1390,167 +1449,181 @@ int main(void)
 		z1.Negate(z1);
 		z1.Add(z1,y,10);
 		CheckValues(z1.Sign(),-1,"z1 has correct sign");
-		BigNumber z2(0);
+		BigNumber z2;
+		z2.SetTo(0);
 		Check(!z2.Equals(z1), "z1 is not equal to zero");
 		z2.SetTo(0.);
 		z2.Precision(7);
 		Check(!z2.Equals(z1), "z1 is equal to zero up to 7 digits");
-		CheckValues(z1.GetPrecision(), 1, "z1 has correct precision");
+		CheckValues(z1.GetPrecision(), 2, "z1 has correct precision");
 		CheckValues(z1.BitCount(), -7, "z1 has bit count -7");
+		CheckStringValue(z1, "-0.1e-111",30, 2,"z1 prints as '-0.1e-111'");
 	}
-/* not yet implemented
-	Next("precision control for IsIntValue()");
-	Next("precision control for floating zero");
-	Next("Sign() of floating zero");
-	Next("precision control for addition");
-	Next("precision control for multiplication");
-	Next("precision control for division");
-	Next("precision control for mixed integer/float arithmetic");
-	Next("precision control for floating-point shifts");
-	Next("precision control for Floor()");
-	Next("precision control for BecomeFloat()");
-*/
+	{
+		Next("BecomeFloat preserves digits");
+		// a number that is surely too large for a system type
+		BigNumber x("1023101201074747474747474747200000000000000000000000000007878787878301288888888877777777777777777770312312", 0, 10);
+		BigNumber y(x);
+		Check(x.IsInt() && y.IsInt(), "x and y have integer type");
+		y.BecomeFloat(0);
+		Check(!y.IsInt(), "y is float");
+		Check(y.IsIntValue(), "y has integer value");
+		Check(y.Equals(x), "y = x");
+//		cout << y.GetPrecision() << endl;
+		y.BecomeInt();
+		Check(y.Equals(x), "y = x after BecomeInt");
+		
+		// preserve precision
+		y.SetTo(1.2434);
+		x.SetTo(y);
+		y.Precision(20);
+		y.BecomeFloat();
+		Check(y.Equals(x), "y did not change after BecomeFloat");
+		CheckValues(y.GetPrecision(), 20, "y preserves precision after BecomeFloat");
+	}
+
+
+	{
+		Next("integer multiplication and division");
+		test_mul_div_1("110000000000", "200000000", "22000000000000000000", 10);
+		test_mul_div_1("2", "3", "6", 8);
+		test_mul_div_1("-2", "3", "-6", 8);
+		test_mul_div_1("99999991231239948718238175", "-3888242333132323344455311", "-388824199218168293972222204499935156395306941697425", 10);
+	}
+	{
+		Next("comparison of numbers in exponential notation");
+		// -1e-5 < 0
+		BigNumber x, y;
+		x.SetTo("-1e-5", 34, 10);
+		Check(!x.IsInt(), "x has float type");
+		CheckValues(x.Double(), -1e-5, "x is -1e-5");
+		CheckValues(x.Sign(), -1, "x has correct sign, -1");
+		y.SetTo(0);	// integer 0
+		Check(!x.Equals(y), "x is nonzero");
+		Check(x.LessThan(y), "-1e-5 < 0");
+		
+		// compare zero with various numbers
+		test_less_than("-2e-5", "0", 10);
+		test_less_than("-2e-1", "0", 10);
+		test_less_than("0", "2e-2", 10);
+		test_less_than("0", "1e-5", 10);
+		test_less_than("0", "1e-10", 10);
+		test_less_than("0", "1e-60", 10);
+
+		// compare floating zero with floating nonzero
+		test_less_than("-2.3e-5", "0.00000000", 10);
+		test_less_than("-2e-1", "0.000", 10);
+		test_less_than("0.0000", "2e-2", 10);
+		test_less_than("0.0000000000", "1e-5", 10);
+		test_less_than("0.0000000000000000000000", "1.234e-10", 10);
+		test_less_than("0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "1.234567e-60", 10);
+		
+		// compare floats with integers
+		test_less_than("-1.0000000000000000000000000000001", "-1", 10);
+		test_less_than("0.99999999999999999999999999999999992", "1", 10);
+		
+		test_less_than("-1.00000000000000000000000000000002e3", "-1000", 10);
+		
+		// compare nonzero numbers
+		test_less_than("1e-5", "2e-5", 10);
+		test_less_than("1e-5", "1e-3", 10);
+		test_less_than("1", "1.0000000000000000000001", 10);
+		test_less_than("1e-115", "2e-105", 10);
+		test_less_than("2e-15", "2e-5", 10);
+		test_less_than("2e-1", "1", 10);
+		test_less_than("-2e-2", "-2e-5", 10);
+		test_less_than("2e-5", "2e-2", 10);
+		test_less_than("1e-10", "2e-2", 10);
+		test_less_than("-1e-10", "2e-2", 10);
+		test_less_than("-1e-10", "-1e-20", 10);
+		test_less_than("-1", "-1e-10", 10);
+		test_less_than("-2e-80", "-1e-100", 10);
+
+		test_less_than("213.", "214", 10);
+		test_less_than("213", "214.", 10);
+		test_less_than("-213.", "214", 10);
+		test_less_than("-213", "214.", 10);
+		test_less_than("213", "214", 10);
+		test_less_than("1", "1.0000000000000000000000000000000000000000000000000000003", 10);
+
+	}
+	{
+		Next("precision control for IsIntValue()");
+		BigNumber x, y;
+		x.SetTo(145.0);
+		Check(x.IsIntValue(), "145.0 has integer value");
+		x.SetTo(195.23);
+		y.SetTo(-14.23);
+		CheckValues(x.GetPrecision(), 53, "x has 53 bits");
+		CheckValues(y.GetPrecision(), 53, "y has 53 bits");
+		y.Add(x, y, 60);
+		CheckValues(y.GetPrecision(), 53, "y has 53 bits");
+		Check(y.IsIntValue(), "subtracted to integer value");
+		CheckValues(y.Double(), 181.0, "y has correct value");
+		CheckStringValue(y, "181.", 20, 10, "y prints correctly"); 
+		
+		x.SetTo("101.00010", 0, 2);
+		CheckValues(x.GetPrecision(), 8, "x has 8 bits");
+		Check(!x.IsIntValue(), "x has float value");
+		x.Precision(7);
+		Check(!x.IsIntValue(), "x has float value");
+		x.Precision(6);
+		Check(x.IsIntValue(), "x has int value");
+
+		x.SetTo("101.11110", 0, 2);
+		CheckValues(x.GetPrecision(), 8, "x has 8 bits");
+		Check(!x.IsIntValue(), "x has float value");
+		x.Precision(7);
+		Check(!x.IsIntValue(), "x has float value");
+		x.Precision(6);
+		Check(x.IsIntValue(), "x has int value");
+	}
+	{
+		Next("precision control for floating zero");
+		BigNumber x;
+		x.SetTo(0.);
+		x.Precision(100);
+		Check(x.Sign() == 0, "x = 0");
+		CheckValues(x.BitCount(), 0, "x has 0 bit count");
+		Check(x.GetPrecision() == 100, "x has 100 bits");
+		x.Multiply(x,x,300);
+		CheckValues(x.GetPrecision(), 200, "x has 200 bits");
+		Check(x.Sign() == 0, "x = 0");
+		x.Add(x,x,300);
+		CheckValues(x.GetPrecision(), 199, "x has 199 bits");
+		Check(x.Sign() == 0, "x = 0");
+		
+		// floating zero with explicit digits
+		x.SetTo("-000000000000000.000000", 0, 2);
+		CheckValues(x.Sign(), 0, "x is 0");
+		CheckValues(x.GetPrecision(), 7, "x has 7 bits");
+		x.SetTo("-0.00000e10", 0, 2);
+		CheckValues(x.Sign(), 0, "x is 0");
+		CheckValues(x.GetPrecision(), 6, "x has 6 bits");
+	}
+//	Next("precision control for addition");
+//	Next("precision control for multiplication");
+//	Next("precision control for division");
+//	Next("precision control for mixed integer/float arithmetic");
+
+	{
+		Next("precision control for floating-point shifts");
+		BigNumber x("0.1010101", 0, 2), y;
+		CheckValues(x.GetPrecision(), 7, "x has 7 bits");
+		x.ShiftRight(x, 4);
+		y.SetTo("0.00001010101", 0, 2);
+		CheckEquals(x, y, 12, 2, "x is correct after shift");
+		CheckValues(x.GetPrecision(), 7, "x has 7 bits");
+		x.ShiftLeft(x, 10);
+		CheckValues(x.GetPrecision(), 7, "x has 7 bits");
+	}
+
+//	Next("precision control for Floor()");
 
 }	// end of the comprehensive test suite
-	
-
-/*
-    ANumber n1("65535",100,10);
-    ANumberToString(str, n1, 10);
-    Check(str,"65535");
-    ANumberToString(str, n1, 10);
-    Check(str,"65535");
-    ANumberToString(str, n1, 2);
-    Check(str,"1111111111111111");
-
-    Negate(n1);
-    ANumberToString(str, n1, 2);
-    Check(str,"-1111111111111111");
-    Negate(n1);
-    Add(res1, n1, n1);
-    ANumberToString(str, res1, 16);
-    Check(str,"1fffe");
-*/
-/*    
-    n1.SetTo("ff0000",16);
-    ANumberToString(str, n1, 16);
-    Check(str,"ff0000");
-    ANumber n2("f",100,16);
-    ANumberToString(str, n2, 10);
-    Check(str,"15");
-
-    Subtract(res1, n1, n2);
-    ANumberToString(str, res1, 16);
-    {
-        char ss[20];
-        sprintf(ss,"%lx",0xff0000-15L);
-        Check(str,ss);
-    }
-    Next(""); //2
-
-    n1.SetTo("5a5a5a5a5a5a5a5a5a5a5a5a",16);
-    BaseShiftRight(n1,1);
-    ANumberToString(str, n1, 16);
-    Check(str,"2d2d2d2d2d2d2d2d2d2d2d2d");
-    
-    BaseShiftRight(n1,19);
-    ANumberToString(str, n1, 16);
-    Check(str,"5a5a5a5a5a5a5a5a5a5");
-
-    BaseShiftLeft(n1,1);
-    ANumberToString(str, n1, 16);
-    Check(str,"b4b4b4b4b4b4b4b4b4a");
-    
-    BaseShiftLeft(n1,19);
-    ANumberToString(str, n1, 16);
-    Check(str,"5a5a5a5a5a5a5a5a5a500000");
-
-    Next("");  //3
-
-    n1.SetTo("550000000");
-    n2.SetTo("100000000");
-    Subtract(res1,n1,n2);
-    ANumberToString(str, res1, 10);
-    Check(str,"450000000");
-    BaseGcd(res1, n1, n2);
-    ANumberToString(str, res1, 10);
-    Check(str,  "50000000");
-
-    n1.SetTo("ff0000",16);
-    n2.SetTo("100000",16);
-    Subtract(res1,n1,n2);
-    ANumberToString(str, res1, 16);
-    Check(str, "ef0000");
-
-    Next("");     //4
-
-    n1.SetTo("10000");
-    n2.SetTo("1234");
-    Multiply(res1, n1, n2);
-    ANumberToString(str, res1, 10);
-    Check(str, "12340000");
-
-    Divide(res2, res3, res1, n2);
-    ANumberToString(str, res2, 10);
-    Check(str, "10000");
-    ANumberToString(str, res3, 10);
-    Check(str, "0");
 
 
-//    {
-//        char ss[100];
-//    RED:
-//        printf("numer = ");
-//        fscanf(stdin,"%s",ss);
-//        n1.SetTo(ss);
-//        printf("denom = ");
-//        fscanf(stdin,"%s",ss);
-//        n2.SetTo(ss);
-//        Divide(res2, res3, n1, n2);
-//        ANumberToString(str, res2, 10);
-//        printf("quotient : %s\n",str.String());
-//        ANumberToString(str, res3, 10);
-//        printf("remainder : %s\n",str.String());
-//        goto RED;
-//    }
-
-
-    n1.SetTo("10");
-    n2.SetTo("2");
-    Divide(res2, res3, n1, n2);
-    ANumberToString(str, res2, 10);
-    Check(str, "5");
-    ANumberToString(str, res3, 10);
-    Check(str, "0");
-    
-
-    n1.SetTo("1000000000");
-    n2.SetTo("200");
-    Divide(res2, res3, n1, n2);
-    ANumberToString(str, res2, 10);
-    Check(str, "5000000");
-
-    ANumber fac("1",100);
-    Faculty(fac,5);
-    ANumberToString(str, fac, 10);
-    Check(str, "120");
-
-    n1.SetTo("25");
-    Sqrt(res1, n1);
-    ANumberToString(str, res1, 10);
-    Check(str, "5");
-
-    n1.iPrecision = 10;
-    n1.SetTo("1.50");
-
-    ANumberToString(str, n1, 10);
-    Check(str, "1.5");
-*/    
-/*
-    n1.SetTo("");
-    n2.SetTo("");
-*/
-#endif
+#endif	// if ENABLE_TESTS
     Finish();
     return 0;
 }
