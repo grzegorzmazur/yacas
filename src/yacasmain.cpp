@@ -718,7 +718,6 @@ int runserver(int argc,char** argv)
                     {
                         close(fd);
                         FD_CLR(fd, &readfds);
-                        //LOGTODO                        printf("removing client on fd %d\n", fd);
                     }
                     else
                     {
@@ -738,31 +737,32 @@ int runserver(int argc,char** argv)
                         {
 
                         
-    char* response = cmd.String();
-    LoadYacas();
-    (*yacas)()().iSecure = 1;
-    if (seconds>0)
-    {
-        signal(SIGALRM,exit);
-        alarm(seconds);
-    }
-    yacas->Evaluate(cmd.String());
-    if (seconds>0)
-    {
-        signal(SIGALRM,SIG_IGN);
-    }
-    if (yacas->IsError())
-    {
-        response = yacas->Error();
-    }
-    else
-    {
-      response = yacas->Result();
-    }
+                            char* response = cmd.String();
+                            LoadYacas();
+                            (*yacas)()().iSecure = 1;
+                            if (seconds>0)
+                            {
+                                signal(SIGALRM,exit);
+                                alarm(seconds);
+                            }
+                            yacas->Evaluate(cmd.String());
+                            if (seconds>0)
+                            {
+                                signal(SIGALRM,SIG_IGN);
+                            }
+                            if (yacas->IsError())
+                            {
+                                response = yacas->Error();
+                            }
+                            else
+                            {
+                              response = yacas->Result();
+                            }
 
                             int buflen=strlen(response);
-printf("In> %s",cmd.String());
-printf("Out> %s",response);
+
+                            printf("In> %s\n",cmd.String());
+                            printf("Out> %s\n",response);
 
                             if (response)
                             {
@@ -771,8 +771,8 @@ printf("Out> %s",response);
                             }
                             delete yacas;
                             yacas = NULL;
-                            close(fd);
 
+                            close(fd);
                             FD_CLR(fd, &readfds);
                             exit(0);
                         }
