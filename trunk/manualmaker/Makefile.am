@@ -65,7 +65,8 @@ EXTRA_DIST = \
 %.dvi: %.tex
 	latex $< > /dev/null
 	latex $< > /dev/null
-	@perl -pe 's/verb\|(.*)\|/verb=$$1=/;s/([!()|])/"$$1/g;s/\@([^\\])/"\@$$1/g;' < $*.idx | makeindex -i > $*.ind # black magic
+	@perl -pe 's/(\\verb)\|(.*)\|/$$1=$$2=/g;s/([()|])/"$$1/g;if(/\@/){s/!/"!/g;};s/\@([^\\])/"\@$$1/g;'<$*.idx>$*.1.idx
+	makeindex $*.1.idx -o $*.ind | grep Scanning || true
 	latex $< > /dev/null
 
 %.ps: %.dvi
