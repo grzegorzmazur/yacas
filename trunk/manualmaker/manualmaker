@@ -44,6 +44,8 @@ ChapterIntro(text) :=
      plain["Chapters"][currentChapter]["Intro"] : text : newline;
 ];
 
+Bodied("ChapterIntro", 60000);
+
 AddAnchor(aAnchor):=
 [
   AddBody(HtmlAnchor()aAnchor);
@@ -95,7 +97,7 @@ WriteString(title);NewLine();
 
 Topical(title):=
 [
-  AddBody(HtmlTag(topical,title:":"));
+  AddBody(HtmlTag(topical,title));
 ];
 
 

@@ -1,0 +1,834 @@
+
+			Control flow functions
+
+*CMD MaxEvalDepth --- Set the maximum evaluation depth
+
+*CORE
+
+*CALL
+
+MaxEvalDepth(n)
+
+*PARMS
+
+n - new maximum evalution depth
+
+*DESC
+
+Use this command to set the maximum evaluation depth to the integer
+"n". The default value is 1000. The function {MaxEvalDepth} returns {True}.
+
+The point of having a maximum evaluation depth is to catch any
+infinite recursion. For example, after the definition {f(x) := f(x)}, evaluating the expression {f(x)} would call {f(x)}, which would
+call {f(x)}, etcetera. The interpreter will halt if
+the maximum evaluation depth is reached. Also indirect recursion, like
+the pair of definitions {f(x) := g(x)} and {g(x) := f(x)}, will be caught.
+
+*E.G.
+
+An example of an infinite recursion, caught because the maximum
+evaluation depth is reached.
+
+	In> f(x) := f(x)
+	Out> True;
+	In> f(x)
+	Error on line 1 in file [CommandLine]
+	Max evaluation stack depth reached.
+	Please use MaxEvalDepth to increase the stack size as needed.
+
+However, a long calculation may cause the maximum evaluation depth to
+be reached without the presence of infinite recursion. The function {MaxEvalDepth} is meant for these cases.
+
+	In> 10 # g(0) <-- 1;
+	Out> True;
+	In> 20 # g(n_IsPositiveInteger) <-- 2 * g(n-1);
+	Out> True;
+	In> g(1001);
+	Error on line 1 in file [CommandLine]
+	Max evaluation stack depth reached.
+	Please use MaxEvalDepth to increase the stack size as needed.
+	
+	In> MaxEvalDepth(10000);
+	Out> True;
+	In> g(1001);
+	Out> 214301721437253464189685009812000362112280962341106721488750077674070210224
+	98722449863967576313917162551893458351062936503742905713846280871969155149397149
+	60786913554964846197084214921012474228375590836430609294996716388253479753511833
+	1087892154125829142392955373084335320859663305248773674411336138752;
+
+*CMD Hold --- Do not evaluate the argument
+
+*CORE
+
+*CALL
+
+Hold(expr)
+
+*PARMS
+
+expr - expression to hold
+
+*DESC
+
+The expression "expr" is returned unevaluated. This is useful to
+prevent the evaluation of a certain expression in a context in which
+evaluation normally takes place.
+
+*E.G.
+
+	In> Echo({ Hold(1+1), "=", 1+1 });
+	 1+1 = 2
+	Out> True;
+
+*SEE Eval, HoldArg
+
+*CMD Eval --- Evaluate the argument
+
+*CORE
+
+*CALL
+
+Eval(expr)
+
+*PARMS
+
+expr - expression to evaluate
+
+*DESC
+
+This function explicitly requests an evaluation of the expression
+"expr", and returns the result of this evaluation.
+
+*E.G.
+
+	In> a := x;
+	Out> x;
+	In> x := 5;
+	Out> 5;
+	In> a;
+	Out> x;
+	In> Eval(a);
+	Out> 5;
+
+The variable {a} is bound to {x},
+and {x} is bound to 5. Hence evaluating {a} will give {x}. Only when an extra
+evaluation of {a} is requested, the value 5 is
+returned.
+
+Note that the behaviour would be different if we had exchanged the
+assignments. If the assignment {a := x} were given
+while {x} had the value 5, the variable {a} would also get the value 5 because the assignment
+operator {:=} evaluates the right-hand side.
+
+*SEE Hold, HoldArg, :=
+
+*CMD While --- Loop while a condition is met
+
+*CORE
+
+*CALL
+
+While(pred) body
+
+*PARMS
+
+pred - predicate deciding whether to keep on looping
+
+body - expression to loop over
+
+*DESC
+
+Keep on evaluating "body" while "pred" evaluates to {True}. More precisely, {While}
+evaluates the predicate "pred", which should evaluate to either {True} or {False}. If the result is {True}, the expression "body" is evaluated and then
+the predicate "pred" is again evaluated. If it is still {True}, the expressions "body" and "pred" are again
+evaluated and so on until "pred" evaluates to {False}. At that point, the loop terminates and {While}
+returns {True}.
+
+In particular, if "pred" immediately evaluates to {False}, the body is never executed. {While} is the fundamental looping construct on which
+all other loop commands are based. It is equivalent to the {while} command in the programming language C.
+
+*E.G.
+
+	In> x := 0;
+	Out> 0;
+	In> While (x! < 10^6) [ Echo({x, x!}); x++; ];
+	 0  1
+	 1  1
+	 2  2
+	 3  6
+	 4  24
+	 5  120
+	 6  720
+	 7  5040
+	 8  40320
+	 9  362880
+	Out> True;
+
+*SEE Until, For
+
+*CMD Until --- Loop until a condition is met
+
+*STD
+
+*CALL
+
+Until(pred) body
+
+*PARMS
+
+pred - predicate deciding whether to stop
+
+body - expression to loop over
+
+*DESC
+
+Keep on evaluating "body" until "pred" becomes {True}. More precisely, {Until} first
+evaluates the expression "body". Then the predicate "pred" is
+evaluated, which should yield either {True} or {False}. In the latter case, the expressions "body"
+and "pred" are again evaluated and this continues as long as
+"pred" is {False}. As soon as "pred" yields {True}, the loop terminates and {Until} returns {True}.
+
+The main difference with {While} is that {Until} always evaluates the body at least once, but {While} may not evaluate the body at all. Besides, the
+meaning of the predicate is reversed: {While} stops
+if "pred" is {False} while {Until} stops if "pred" is {True}.
+  The command
+{Until(pred) body;} is equivalent to {pred; While(Not pred) body;}. In fact, the
+implementation of {Until} is based on the internal
+command {While}. The {Until}
+command can be compared to the {do ... while}
+construct in the programming language C.
+
+*E.G.
+
+	In> x := 0;
+	Out> 0;
+	In> Until (x! > 10^6) [ Echo({x, x!}); x++; ];
+	 0  1
+	 1  1
+	 2  2
+	 3  6
+	 4  24
+	 5  120
+	 6  720
+	 7  5040
+	 8  40320
+	 9  362880
+	Out> True;
+
+*SEE While, For
+
+*CMD If --- Branch point
+
+*CORE
+
+*CALL
+
+If(pred, then)
+
+If(pred, then, else)
+
+*PARMS
+
+pred - predicate to test
+
+then - expression to evaluate if "pred" is True
+
+else - expression to evaluate if "pred" is False
+
+*DESC
+
+This command implements a branch point. The predicate "pred" is
+evaluated, which should result in either {True} or {False}. In the first case, the expression "then" is
+evaluated and returned. If the predicate yields {False}, the expression "else" (if present) is evaluated and
+returned. If there is no "else" branch (ie. if the first calling
+sequence is used), the {If} expression returns {False}.
+
+*E.G.
+
+The sign function is defined to be 1 if its argument is positive and
+-1 if its argument is negative. A possible implementation is
+
+	In> mysign(x) := If (IsPositiveReal(x), 1, -1);
+	Out> True;
+	In> mysign(Pi);
+	Out> 1;
+	In> mysign(-2.5);
+	Out> -1;
+
+Note that this will give incorrect results, if "x" cannot be
+numerically approximated.
+
+	In> mysign(a);
+	Out> -1;
+
+Hence a better implementation would be
+
+	In> mysign(_x)_IsNumber(N(x)) <-- If (IsPositiveReal(x), 1, -1);
+	Out> True;
+
+*CMD SystemCall --- Pass a command to the shell
+
+*CORE
+
+*CALL
+
+SystemCall(str)
+
+*PARMS
+
+str - string containing the command to call
+
+*DESC
+
+The command contained in the string "str" is executed by the
+underlying Operating System. The return value of {SystemCall} is {True}.
+
+This command is not allowed in the body of the {Secure} command and will lead to an error.
+
+*E.G.
+
+In a UNIX environment, the command {SystemCall("ls")} would list the contents of the current directory.
+
+*SEE Secure
+
+*CMD Function --- Define a function
+
+*STD
+
+*CALL
+
+Function("op", {arg,...}) body
+
+*PARMS
+
+op - name of the function
+
+arg - formal argument to the function
+
+body - expression compromising the body of the function
+
+*DESC
+
+This command can be used to declare a simple function. It is
+equivalent to the rule {op(_arg, ...) <-- body}. Any
+previous rules associated with "op" (with the same arity) will be
+discarded. More complicated function can be defined using a rule
+database.
+
+*E.G.
+
+	In> Function("FirstOf", {list})  list[1];
+	Out> True;
+	In> FirstOf({a,b,c});
+	Out> a;
+
+This defines a function {FirstOf} which returns the
+first element of a list. Equivalent definitions would be {FirstOf(_list) <-- list[1]} or {FirstOf(list) := list[1]}.
+
+*SEE TemplateFunction, Rule, RuleBase, :=
+
+*CMD Use --- Load a file, but not twice
+
+*CORE
+
+*CALL
+
+Use(name)
+
+*PARMS
+
+name - name of the file to load
+
+*DESC
+
+If the file "name" has been loaded before, either by an earlier call
+to {Use} or via the {DefLoad}
+mechanism, nothing happens. Otherwise all expressions in the file are
+read and evaluated. {Use} always returns {True}.
+
+The purpose of this function is to make sure that the file will at
+least have been loaded, but is not loaded twice.
+
+*SEE Load, DefLoad, DefaultDirectory
+
+*CMD For --- C-style for loop
+
+*STD
+
+*CALL
+
+For(init, pred, incr) body
+
+*PARMS
+
+init - expression for performing the initialization
+
+pred - predicate deciding whether to continue the loop
+
+incr - expression to increment the counter
+
+body - expression to loop over
+
+*DESC
+
+This commands implements a C style {for} loop. First
+of all, the expression "init" is evaluated. Then the predicate
+"pred" is evaluated, which should return {True} or
+{False}. Next the loop is executed as long as the
+predicate yields {True}. One traversion of the loop
+consists of the subsequent evaluations of "body", "incr", and
+"pred". Finally, the value {True} is returned.
+
+This command is most often used in a form like {For(i=1, i<=10, i++) body}, which evaluates {body} with
+{i} subsequently set to 1, 2, 3, 4, 5, 6, 7, 8, 9,
+and 10.
+
+The expression {For(init, pred, incr) body} is
+equivalent to {init; While(pred) [body; incr;]}.
+
+*E.G.
+
+	In> For (i:=1, i<=10, i++) Echo({i, i!});
+	 1  1
+	 2  2
+	 3  6
+	 4  24
+	 5  120
+	 6  720
+	 7  5040
+	 8  40320
+	 9  362880
+	 10  3628800
+	Out> True;
+
+*SEE While, Until, ForEach
+
+*CMD ForEach --- Loop over all entries in list
+
+*STD
+
+*CALL
+
+ForEach(var, list) body
+
+*PARMS
+
+var - looping variable
+
+list - list of values to assign to "var"
+
+body - expression to evaluate with different values of "var"
+
+*DESC
+
+The expression "body" is evaluated multiple times. The first time,
+"var" has the value of the first element of "list", then it gets
+the value of the second element and so on. {ForEach}
+returns {True}.
+
+*E.G.
+
+	 In> ForEach(i,{2,3,5,7,11}) Echo({i, i!});
+	 2  2
+	 3  6
+	 5  120
+	 7  5040
+	 11  39916800
+	Out> True;
+
+*SEE For
+
+*CMD Apply --- Apply a function
+
+*STD
+
+*CALL
+
+Apply(fn, arglist)
+
+*PARMS
+
+fn - function to apply
+
+arglist - list of arguments
+
+*DESC
+
+This function applies the function "fn" to the arguments in
+"arglist" and returns the result. The first parameter "fn" can
+either be a string containing the name of a function  or a pure
+function. Pure functions, modelled after lambda-expressions, have the
+form "{varlist,body}", where "varlist" is the list of formal
+parameters. Upon application, the formal paramaters are assigned the
+values in "arglist" (the second parameter of {Apply}) and the "body" is evaluated
+
+An shorthand for {Apply} is provided by the {@} operator.
+
+*E.G.
+
+	In> Apply("+", {5,9});
+	Out> 14;
+	In> Apply({{x,y}, x-y^2}, {Cos(a), Sin(a)});
+	Out> Cos(a)-Sin(a)^2;
+
+*SEE Map, MapSingle, @
+
+*CMD MapArgs --- Apply a function to all top-level arguments
+
+*STD
+
+*CALL
+
+MapArgs(expr, fn)
+
+*PARMS
+
+expr - an expression to work on
+
+fn - an operation to perform on each argument
+
+*DESC
+
+Every top-level argument in "expr" is substituted by the result of
+applying "fn" to this argument. Here "fn" can be either the name
+of a function or a pure function.
+
+*E.G.
+
+	In> MapArgs(f(x,y,z),"Sin");
+	Out> f(Sin(x),Sin(y),Sin(z));
+	In> MapArgs({3,4,5,6}, {{x},x^2});
+	Out> {9,16,25,36};
+
+*SEE MapSingle, Map, Apply
+
+*CMD Subst --- Perform a substitution
+
+*STD
+
+*CALL
+
+Subst(from, to) expr
+
+*PARMS
+
+from - expression to be substituted
+
+to - expression to substitute for "from"
+
+expr - expression in which the substitution takes place
+
+*DESC
+
+This function substitutes every occurence of "from" in "expr" by
+"to". This is a syntactical substitution: only places where "from"
+occurs as a subexpression are affected.
+
+*E.G.
+
+	In> Subst(x, Sin(y)) x^2+x+1;
+	Out> Sin(y)^2+Sin(y)+1;
+	In> Subst(a+b, x) a+b+c;
+	Out> x+c;
+	In> Subst(b+c, x) a+b+c;
+	Out> a+b+c;
+
+The explanation for the last result is that the expression {a+b+c} is internally stored as {(a+b)+c}. Hence {a+b} is a subexpression, but {b+c} is not.
+
+*SEE WithValue, /:
+
+*CMD WithValue --- Temporary assignment during an evaluation
+
+*STD
+
+*CALL
+
+WithValue(var, val, expr)
+
+WithValue({var,...}, {val,...}, expr)
+
+*PARMS
+
+var - variable to assign to
+
+val - value to be assigned to "var"
+
+expr - expression to evaluate with "var" equal to "val"
+
+*DESC
+
+First, the expression "val" is assigned to the variable
+"var". Then, the expression "expr" is evaluated and
+returned. Finally, the assignment is reversed so that the variable
+"var" has the same value as it had before {WithValue} was evaluated.
+
+The second calling sequence assigns the first element in the list of
+values to the first element in the list of variables, the second value
+to the second variable, etcetera.
+
+*E.G.
+
+	In> WithValue(x, 3, x^2+y^2+1);
+	Out> y^2+10;
+	In> WithValue({x,y}, {3,2}, x^2+y^2+1);
+	Out> 14;
+
+*SEE Subst, /:
+
+*A /:
+
+*A /::
+
+*CMD /:, /:: --- Local simplification rules
+
+*STD
+
+*CALL
+
+expression /: patterns (prec. 10000)
+
+expressions /:: patterns (prec. 10000)
+
+*PARMS
+
+expression - an expression
+
+patterns - a list of patterns
+
+*DESC
+
+Sometimes you have an expression, and you want to use specific
+simplification rules on it that are not done by default. This
+can be done with the /: and the /:: operators. Suppose we have the
+expression containing things like {Ln(a*b)}, and we want
+to change these into {Ln(a)+Ln(b)}, the easiest way
+to do this is using the /: operator, as follows:
+
+	In> Sin(x)*Ln(a*b)
+	Out> Sin(x)*Ln(a*b);
+	In> % /: { Ln(_x*_y) <- Ln(x)+Ln(y) }
+	Out> Sin(x)*(Ln(a)+Ln(b));
+
+A whole list of simplification rules can be built up in the list,
+and they will be applied to the expression on the left hand side
+of /: .
+
+The forms the patterns can have are one of:
+
+pattern <- replacement
+
+{pattern,replacement}
+
+{pattern,postpredicate,replacement}
+
+Note that for these local rules, <- should be used in stead of
+<-- which defines a global rule.
+
+The /: operator traverses an expression much like Subst does: top
+down, trying to apply the rules from the begin of the list of
+rules to the end of the list of rules. If the rules cannot be applied
+to a sub-expression, it will try the sub expressions of the
+expression being analyzed.
+
+It might be necessary sometimes to use the /:: operator, which
+repeatedly applies the /: operator until the result doesn't change
+any more. Caution is required, since rules can contradict eachother,
+and that could result in an infinite loop. To detect this situation,
+just use /: repeatedly on the expression. The repetitive nature
+should become apparent.
+
+*E.G.
+
+	In> Sin(u)*Ln(a*b) /: { Ln(_x*_y) <- Ln(x)+Ln(y) }
+	Out> Sin(u)*(Ln(a)+Ln(b));
+	In> Sin(u)*Ln(a*b) /:: { a <- 2, b <- 3 }
+	Out> Sin(u)*Ln(6);
+
+*SEE Subst
+
+*CMD SetHelpBrowser --- Set the HTML browser to use for help
+
+*STD
+
+*CALL
+
+SetHelpBrowser(helpbrowser)
+
+*PARMS
+
+helpbrowser - string containing a html browser to use for help
+
+*DESC
+
+This function sets the help browser you want to use to
+browse the help online. It calls helpbrowser with the html
+page as first argument. The default is lynx. If you want to
+use a different browser by default it suffices to create a
+file ~/.yacasrc. and add a line to set the browser in there.
+
+*E.G.
+
+	In> SetHelpBrowser("netscape")
+	Out> "netscape";
+	In> ??
+
+*SEE Help
+
+*CMD TraceStack --- Show calling stack after an error occurs
+
+*CORE
+
+*CALL
+
+TraceStack(expression)
+
+*PARMS
+
+expression - an expression to evaluate
+
+*DESC
+
+TraceStack shows the calling stack after an error occurred.
+It shows the last few items on the stack, not to flood the screen.
+These are usually the only items of interest on the stack.
+This is probably by far the most useful debugging function in
+Yacas. It shows the last few things it did just after an error
+was generated somewhere.
+
+For each stack frame, it shows if the function evaluated was a
+built-in function or a user-defined function, and for the user-defined
+function, the number of the rule it is trying whether it was evaluating
+the pattern matcher of the rule, or the body code of the rule.
+
+This functionality is not offered by default because it slows
+down the evaluation code.
+
+*E.G.
+
+Here is an example of a function calling itself recursively,
+causing Yacas to flood its stack:
+
+	In> f(x):=f(Sin(x))
+	Out> True;
+	In> TraceStack(f(2))
+	Debug> 982 :  f (Rule # 0 in body)
+	Debug> 983 :  f (Rule # 0 in body)
+	Debug> 984 :  f (Rule # 0 in body)
+	Debug> 985 :  f (Rule # 0 in body)
+	Debug> 986 :  f (Rule # 0 in body)
+	Debug> 987 :  f (Rule # 0 in body)
+	Debug> 988 :  f (Rule # 0 in body)
+	Debug> 989 :  f (Rule # 0 in body)
+	Debug> 990 :  f (Rule # 0 in body)
+	Debug> 991 :  f (Rule # 0 in body)
+	Debug> 992 :  f (Rule # 0 in body)
+	Debug> 993 :  f (Rule # 0 in body)
+	Debug> 994 :  f (Rule # 0 in body)
+	Debug> 995 :  f (User function)
+	Debug> 996 :  Sin (Rule # 0 in pattern)
+	Debug> 997 :  IsList (Internal function)
+	Error on line 1 in file [CommandLine]
+	Max evaluation stack depth reached.
+	Please use MaxEvalDepth to increase the stack size as needed.
+
+*SEE TraceExp, TraceRule
+
+*CMD TraceExp --- Evaluate with tracing enabled
+
+*CORE
+
+*CALL
+
+TraceExp(expr)
+
+*PARMS
+
+expr - expression to trace
+
+*DESC
+
+The expression "expr" is evaluated with the tracing facility turned
+on. This means that every subexpression, which is evaluated, is shown
+before and after evaluation. Before evaluation, it is shown in the
+forn {TrEnter(x)}, where {x}
+denotes the subexpression being evaluated. After the evaluation the
+line {TrLeave(x,y)} is printed, where {y} is the result of the evaluation. The indentation
+shows the nesting level.
+
+Note that this command usually generates huge amounts of output. A
+more specific form of tracing (eg. {TraceRule}) is
+probably more useful  for all but very simple expressions.
+
+*E.G.
+
+	In> TraceExp(2+3);
+	  TrEnter(2+3);
+	    TrEnter(2);
+	    TrLeave(2, 2);
+	    TrEnter(3);
+	    TrLeave(3, 3);
+	    TrEnter(IsNumber(x));
+	      TrEnter(x);
+	      TrLeave(x, 2);
+	    TrLeave(IsNumber(x),True);
+	    TrEnter(IsNumber(y));
+	      TrEnter(y);
+	      TrLeave(y, 3);
+	    TrLeave(IsNumber(y),True);
+	    TrEnter(True);
+	    TrLeave(True, True);
+	    TrEnter(MathAdd(x,y));
+	      TrEnter(x);
+	      TrLeave(x, 2);
+	      TrEnter(y);
+	      TrLeave(y, 3);
+	    TrLeave(MathAdd(x,y),5);
+	  TrLeave(2+3, 5);
+	Out> 5;
+
+*SEE TraceStack, TraceRule
+
+*CMD TraceRule --- Turn on tracing for a particular function
+
+*CORE
+
+*CALL
+
+TraceRule(templ) expr
+
+*PARMS
+
+templ - template showing the operator to trace
+
+expr - expression to evaluate with tracing on
+
+*DESC
+
+The tracing facility is turned on for subexpressions of the form
+"templ", and the expression "expr" is evaluated. The template
+"templ" is an example of the function to trace on. Specifically, all
+subexpressions with the same top-level operator and arity as "templ"
+are showed. The subexpressions are displayed before (indicated with {TrEnter}) and after ({TrLeave})
+evaluation. In between, the arguments are showed before and after
+evaluation ({TrArg}). Only function defined in
+scripts can be traced.
+
+This is useful for tracing a function that is called from within
+another function. This way you can see how your function behaves
+in the environment it is used in.
+
+*E.G.
+
+	In> TraceRule(x+y) 2+3*5+4;
+	    TrEnter(2+3*5+4);
+	      TrEnter(2+3*5);
+	          TrArg(2, 2);
+	          TrArg(3*5, 15);
+	      TrLeave(2+3*5, 17);
+	        TrArg(2+3*5, 17);
+	        TrArg(4, 4);
+	    TrLeave(2+3*5+4, 21);
+	Out> 21;
+
+*SEE TraceStack, TraceExp
+

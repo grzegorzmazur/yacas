@@ -1,0 +1,658 @@
+
+			Input/Output
+
+*INTRO
+This chapter contains command to use for input and output. All output
+commands write to the same destination, called the "current
+output". This is initially the screen, but the current output is
+redirected by some commands. Similarly, most input commands
+read from the "current input", which can also be redirected. The
+exception to this rule are the commands for reading in script files,
+which simply read  the specified file.
+
+*CMD FullForm --- Print an expression in LISP-format
+
+*CORE
+
+*CALL
+
+FullForm(expr)
+
+*PARMS
+
+expr - The expression to be printed in LISP-format
+
+*DESC
+
+Evaluates "expr", and prints it in LISP-format on the current
+output. It is followed by a newline. The evaluated expression is also
+returned.
+
+This can be useful if you want to study the internal representation of
+a certain expression.
+
+*E.G.
+
+	In> FullForm(a+b+c);
+	(+ (+ a b )c )
+	Out> a+b+c;
+	In> FullForm(2*I*b^2);
+	(* (Complex 0 2 )(^ b 2 ))
+	Out> Complex(0,2)*b^2;
+
+The first example shows how the expression {a+b+c} is
+internally represented. In the second example, {2*I} is
+first evaluated to {Complex(0,2)} before the expression
+is printed.
+
+*SEE LispRead, Listify, Unlist
+
+*CMD Echo --- High-level printing routine
+
+*STD
+
+*CALL
+
+Echo(item)
+
+Echo(list)
+
+*PARMS
+
+item - the item to be printed
+
+list - a list of items to be printed
+
+*DESC
+
+If passed a single item, Echo will evaluate it and print it to the
+current output, followed by a newline. If "item" is a string, it is
+printed without quotation marks.
+
+If the second calling sequence is used, Echo will print all the
+entries in the list subsequently to the current output, followed by a
+newline. Any strings in the list are printed without quotation
+marks. All other entries are followed by a space.
+
+Echo always returns True.
+
+*E.G.
+
+	In> Echo(5+3);
+	 8
+	Out> True;
+	In> Echo({"The square of two is ", 2*2});
+	The square of two is  4
+	Out> True;
+
+Note that one must use the second calling sequence if one wishes to
+print a list:
+
+	In> Echo({a,b,c});
+	a  b  c
+	Out> True;
+	In> Echo({{a,b,c}});
+	{a,b,c}
+	Out> True;
+
+*SEE PrettyForm, Write, WriteString
+
+*CMD PrettyForm --- Print an expression nicely with ASCII art
+
+*STD
+
+*CALL
+
+PrettyForm(expr)
+
+*PARMS
+
+expr - an expression
+
+*DESC
+
+PrettyForm renders an expression in a nicer way, using ascii art.
+This is generally useful when the result of a calculation is more
+complex than a simple number.
+
+*E.G.
+
+	In> Taylor(x,0,9)Sin(x)
+	Out> x-x^3/6+x^5/120-x^7/5040+x^9/362880;
+	In> PrettyForm(%)
+	
+	     3    5      7       9
+	    x    x      x       x
+	x - -- + --- - ---- + ------
+	    6    120   5040   362880
+	
+	Out> True;
+
+*SEE EvalFormula, PrettyPrinter
+
+*CMD EvalFormula --- Print an evaluation nicely with ASCII art
+
+*STD
+
+*CALL
+
+EvalFormula(expr)
+
+*PARMS
+
+expr - an expression
+
+*DESC
+
+Show an evaluation in a nice way, using PrettyPrinter
+to show 'input = output'.
+
+*E.G.
+
+	In&gt EvalFormula(Taylor(x,0,7)Sin(x))
+	
+	                                      3    5      7
+	                                     x    x      x
+	Taylor( x , 0 , 7 , Sin( x ) ) = x - -- + --- - ----
+	                                     6    120   5040
+	
+	Out&gt True
+
+*SEE PrettyForm
+
+*CMD Write --- Low-level printing routine
+
+*CORE
+
+*CALL
+
+Write(expr, ...)
+
+*PARMS
+
+expr - the expression to be printed
+
+*DESC
+
+The expression "expr" is evaluated and written to the current
+output. Note that Write accept an arbitrary number of arguments, all
+of which are written to the current output (see second
+example). Write always returns True.
+
+*E.G.
+
+	In> Write(1);
+	1Out> True;
+	In> Write(1,2);
+	 1 2Out> True;
+
+Write does not write a newline, so the {Out>} prompt
+immediately follows the output of Write.
+
+*SEE Echo, WriteString
+
+*CMD WriteString --- Low-level printing routine for strings
+
+*CORE
+
+*CALL
+
+WriteString(string)
+
+*PARMS
+
+string - the string to be printed
+
+*DESC
+
+The expression "string" is evaluated and written to the current
+output without quotation marks. The argument should be a
+string. WriteString always returns True.
+
+*E.G.
+
+	In> Write("Hello, world!");
+	"Hello, world!"Out> True;
+	In> WriteString("Hello, world!");
+	Hello, world!Out> True;
+
+This example clearly shows the difference between Write and
+WriteString. Note that Write and WriteString do not write a newline,
+so the {Out>} prompt immediately follows the output.
+
+*SEE Echo, Write
+
+*CMD Space --- Print one or more spaces
+
+*STD
+
+*CALL
+
+Space()
+
+Space(nr)
+
+*PARMS
+
+nr - the number of spaces to print
+
+*DESC
+
+The command {Space()} prints one space on the
+current output. The second form prints "nr" spaces on the current
+output. The result is always True.
+
+*E.G.
+
+	In> Space(5);
+	     Out> True;
+
+*SEE Echo, Write, NewLine
+
+*CMD NewLine --- Print one or more newline characters
+
+*STD
+
+*CALL
+
+NewLine()
+
+NewLine(nr)
+
+*PARMS
+
+nr - the number of newlines to print
+
+*DESC
+
+The command {NewLine()} prints one newline character
+on the current output. The second form prints "nr" newlines on the
+current output. The result is always True.
+
+*E.G.
+
+	In> NewLine();
+	
+	Out> True;
+
+*SEE Echo, Write, Space
+
+*CMD FromFile --- Connect current input to a file
+
+*CORE
+
+*CALL
+
+FromFile(name) body
+
+*PARMS
+
+name - the name of the file to read
+
+body - the command to be executed
+
+*DESC
+
+The current input is connected to the file "name". Then the command
+"body" is executed. Everything that the commands in "body" read
+from current input, is now read from the file "name". Finally, the
+file is closed and the result of evaluating "body" is returned.
+
+*E.G.
+
+Suppose that the file {foo} contains
+
+	2 + 5;
+
+Then we can have the following dialogue:
+
+	In> FromFile("foo") res := Read();
+	Out> 2+5;
+	In> FromFile("foo") res := ReadToken();
+	Out> 2;
+
+*SEE ToFile, FromString, Read, ReadToken
+
+*CMD FromString --- Connect current input to a string
+
+*CORE
+
+*CALL
+
+FromString(str) body;
+
+*PARMS
+
+str - a string containing the text to parse
+
+body - the command to be executed
+
+*DESC
+
+The commands in "body" are executed, but everything that is read
+from the current input is now read from the string "str". The
+result of "body" is returned.
+
+*E.G.
+
+	In> FromString("2+5; this is never read") res := Read();
+	Out> 2+5;
+	In> FromString("2+5; this is never read") res := Eval(Read());
+	Out> 7;
+
+*SEE ToString, FromFile, Read, ReadToken
+
+*CMD ToFile --- Connect current output to a file
+
+*CORE
+
+*CALL
+
+ToFile(name) body
+
+*PARMS
+
+name - the name of the file to write the result to
+
+body - the command to be executed
+
+*DESC
+
+The current output is connected to the file "name". Then the command
+"body" is executed. Everything that the commands in "body" print
+to the current output, ends up in the file "name". Finally, the
+file is closed and the result of evaluating "body" is returned.
+
+*E.G.
+
+Take first a look at the following command:
+
+	In> [ Echo("Result:");  PrettyForm(Taylor(x,0,9) Sin(x)); ];
+	Result:
+	
+	     3    5      7       9
+	    x    x      x       x
+	x - -- + --- - ---- + ------
+	    6    120   5040   362880
+	
+	Out> True;
+
+Now suppose one wants to send the output of this command to a
+file. This can be achieved as follows:
+
+	In> ToFile("out") [ Echo("Result:");  PrettyForm(Taylor(x,0,9) Sin(x)); ];
+	Out> True;
+
+After this command the file {out} contains:
+
+	
+	Result:
+	
+	     3    5      7       9
+	    x    x      x       x
+	x - -- + --- - ---- + ------
+	    6    120   5040   362880
+	
+
+*SEE FromFile, ToString, Echo, Write, WriteString, PrettyForm, Taylor
+
+*CMD ToString --- Connect current output to a string
+
+*CORE
+
+*CALL
+
+ToString() body
+
+*PARMS
+
+body - the command to be executed
+
+*DESC
+
+The commands in "body" are executed. Everything that is printed on
+the current output, by {Echo} for instance, is
+collected in a string and this string is returned.
+
+*E.G.
+
+	In> str := ToString() \
+	In>        [ WriteString("The square of 8 is "); Write(8^2); ];
+	Out> "The square of 8 is  64";
+
+*SEE FromFile, ToString, Echo, Write, WriteString
+
+*CMD Read --- Read an expression from current input
+
+*CORE
+
+*CALL
+
+Read()
+
+*PARMS
+
+none
+
+*DESC
+
+Read an expression from the current input, and return it unevaluated. When
+the end of an input file is encountered, the token atom {EndOfFile} is returned.
+
+*E.G.
+
+	In> FromString("2+5;") Read();
+	Out> 2+5;
+	In> FromString("") Read();
+	Out> EndOfFile;
+
+*SEE FromFile, FromString, LispRead, ReadToken, Write
+
+*CMD LispRead --- Read an expression in LISP-syntax
+
+*CORE
+
+*CALL
+
+LispRead()
+
+*PARMS
+
+none
+
+*DESC
+
+Read an expression in LISP syntax from the current input, and return
+it unevaluated. When the end of an input file is encountered, the
+token atom {EndOfFile} is returned.
+
+The expression {a+b} is written in LISP syntax as {(+ a b)}. The advantage of this syntax is that it is
+less ambiguous than the infix operator grammar that Yacas uses by
+default.
+
+*E.G.
+
+	In> FromString("(+ a b)") LispRead();
+	Out> a+b;
+	In> FromString("(List (Sin x) (- (Cos x)))") LispRead();
+	Out> {Sin(x),-Cos(x)};
+
+*SEE FromFile, FromString, Read, ReadToken, FullForm
+
+*CMD ReadToken --- Read an token from current input
+
+*CORE
+
+*CALL
+
+ReadToken()
+
+*PARMS
+
+none
+
+*DESC
+
+Read a token from the current input, and return it unevaluated. When
+the end of an input file is encountered, the token atom {EndOfFile} is returned.
+
+A token is for computer languages what a word is for human languages:
+it is the smallest unit in which a command can be divided, so that the
+semantics (that is the meaning) of the command is in some sense a
+combination of the semantics of the tokens. Hence {a := foo} consists of three tokens, namely {a}, {:=}, and {foo}.
+
+*E.G.
+
+	In> FromString("a := Sin(x)") \
+	In>    While((tok := ReadToken()) != EndOfFile) Echo(tok);
+	a
+	:=
+	Sin
+	(
+	x
+	)
+	Out> True;
+
+*SEE FromFile, FromString, Read, LispRead
+
+*CMD Load --- Evaluate all expressions in a file
+
+*CORE
+
+*CALL
+
+Load(name)
+
+*PARMS
+
+name - name of the file to load
+
+*DESC
+
+The file "name" is opened. All expressions in the file are read and
+evaluated. {Load} always returns {true}.
+
+*SEE Use, DefLoad, DefaultDirectory, FindFile
+
+*CMD Use --- Load a file, but not twice
+
+*CORE
+
+*CALL
+
+Use(name)
+
+*PARMS
+
+name - name of the file to load
+
+*DESC
+
+If the file "name" has been loaded before, either by an earlier call
+to {Use} or via the {DefLoad}
+mechanism, nothing happens. Otherwise all expressions in the file are
+read and evaluated. {Use} always returns {true}.
+
+The purpose of this function is to make sure that the file will at
+least have been loaded, but is not loaded twice.
+
+*SEE Load, DefLoad, DefaultDirectory
+
+*CMD DefLoad --- Load a .def file
+
+*CORE
+
+*CALL
+
+DefLoad(name)
+
+*PARMS
+
+name - name of the file (without {.def} suffix)
+
+*DESC
+
+The suffix {.def} is appended to "name" and the
+file with this name is loaded. It should contain a list of functions,
+terminated by a {}} (end-of-list character). This
+tells the system to load the file "name" as soon as the user calls
+one of the functions named in the file (if not done so already). This
+allows for faster startup times, since not all of the rules databases
+need to be loaded, just the descriptions on which files to load for
+which functions.
+
+*SEE Load, Use, DefaultDirectory
+
+*CMD FindFile --- Find a file in the current path
+
+*CORE
+
+*CALL
+
+FindFile(name)
+
+*PARMS
+
+name - name of the file to find
+
+*DESC
+
+The result of this command is the full path to the file that would be
+opened when the command {Load(name)} would be
+invoked. This means that the input directories are subsequently
+searched for a file called "name". If such a file is not found, {FindFile} returns an empty string.
+
+*SEE Load, DefaultDirectory
+
+*CMD PatchLoad --- Execute commands between &lt? and ?&gt in file
+
+*CORE
+
+*CALL
+
+PatchLoad(name)
+
+*PARMS
+
+name - the file to patch
+
+*DESC
+
+PatchLoad loads in a file and outputs the contents to the current
+output. The file can contain blocks delimited by &lt? and ?&gt
+(meaning Yacas Begin and Yacas End). The piece of text between
+such delimiters is treated as a separate file with Yacas instructions,
+which is then loaded and executed. All output of write statements
+in that block will be written to the same current output.
+
+This is similar to the way php works. You can have a static text file
+with dynamic content generated by Yacas.
+
+*SEE PatchString, Load
+
+*CMD Nl --- A newline character
+
+*STD
+
+*CALL
+
+Nl()
+
+*DESC
+
+This function returns a string with one element in it, namely a newline
+character. This may be useful for building strings to send to some
+output in the end.
+
+Note that the second letter in the name of this command is a lower
+case {L} (from "line").
+
+*E.G.
+
+	In> WriteString("First line" : Nl() : "Second line" : Nl());
+	First line
+	Second line
+	Out> True;
+
+*SEE NewLine
+

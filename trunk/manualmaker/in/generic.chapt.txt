@@ -1,0 +1,68 @@
+
+			Generic objects
+
+Generic objects are objects that are implemented in c++, but
+can be accessed through the Yacas interpreter.
+
+*AA IsGeneric
+
+	    IsGeneric(object)
+
+IsGeneric(object) : returns whether an object is a generic object
+type.
+
+*AA GenericTypeName
+
+	    GenericTypeName(object)
+
+GenericTypeName(object) : returns a string representation of
+the name of a generic object.
+
+Example: GenericTypeName(ArrayCreate(10,1)) sould return "Array".
+
+*AA ArrayCreate
+
+	    ArrayCreate(size,init)
+
+Create an array the with size elements, all initialized to the
+value init.
+
+*AA ArraySize
+
+	    ArraySize(array)
+
+Return the size of an array (number of elements in the array).
+
+*AA ArrayGet
+
+	    ArrayGet(array,index)
+
+Get the element at position index in the array passed. Arrays are treated
+as base-one, so index set to 1 would return the first element.
+
+Arrays can also be accessed through the [] operators. So
+array[index] would return the same as ArrayGet(array,index).
+
+*AA ArraySet
+
+	    ArraySet(array,index,element)
+
+Set the element at position index in the array passed to the value
+passed in as argument to element. Arrays are treated
+as base-one, so index set to 1 would set first element.
+
+Arrays can also be accessed through the [] operators. So
+array[index]:=element would do the same as ArraySet(array,index,element).
+
+*AA ArrayCreateFromList
+
+	    ArrayCreateFromList(list)
+
+Creates an array from the contents of the list passed in.
+
+*AA ListFromArray
+
+	    ListFromArray(array)
+
+Creates a list from the contents of the array passed in.
+

@@ -21,8 +21,8 @@ texdocs: essays.book.pdf essays.book.ps
 	../manmake/book2TeX.sh $< $@
 
 %.dvi: %.tex
-	latex $<
-	latex $<
+	latex $< > /dev/null
+	latex $< > /dev/null
 
 %.ps: %.dvi
 	dvips -o $@ $<
@@ -30,5 +30,5 @@ texdocs: essays.book.pdf essays.book.ps
 
 %.pdf: %.dvi
 #	dvipdf $<
-	pdflatex $*
+	pdflatex $* > /dev/null
 	@echo Documentation created: $*.pdf

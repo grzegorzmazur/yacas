@@ -10,6 +10,8 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
+# newly compiled version of yacas
+
 
 SHELL = @SHELL@
 
@@ -69,9 +71,28 @@ RELEASE = @RELEASE@
 VERSION = @VERSION@
 scriptdir = @scriptdir@
 
+ouryacas = ../src/yacas --rootdir ../scripts/
+
 noinst_PROGRAMS = books.html
 
-EXTRA_DIST =  	manualmaker styleplain 	in/all in/arith.chapt in/built.chapt in/calc.chapt 	in/coding.book.txt in/const.chapt in/functional.chapt  	in/intro.book.txt in/io.chapt in/linalg.chapt in/dummies  	in/lists.chapt in/preds.chapt in/prog.chapt in/refprog.book.txt   	in/controlflow.chapt newhelp in/plugins.chapt   	in/univar.chapt in/vars.chapt yacasinit.ys in/generic.chapt 	in/intromaker in/refmaker in/refprogmaker in/codingmaker in/logic.chapt         in/config.chapt in/strings.chapt .cvsignore in/ref.book.txt
+ALLBOOKS = in/intro.book in/coding.book in/ref.book in/refprog.book
+
+ALLBOOKSOURCES = in/intro.book.txt in/coding.book.txt 	in/ref.book.txt in/refprog.book.txt
+
+
+REFCHAPTERS = in/config.chapt in/arith.chapt in/calc.chapt in/linalg.chapt 	in/univar.chapt in/lists.chapt in/functional.chapt in/controlflow.chapt 	in/preds.chapt in/logic.chapt in/const.chapt in/vars.chapt in/io.chapt 	in/strings.chapt
+
+
+REFPROGCHAPTERS = in/prog.chapt in/built.chapt 	in/plugins.chapt in/generic.chapt
+
+
+REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt in/linalg.chapt.txt 	in/univar.chapt.txt in/lists.chapt.txt in/functional.chapt.txt in/controlflow.chapt.txt 	in/preds.chapt.txt in/logic.chapt.txt in/const.chapt.txt in/vars.chapt.txt in/io.chapt.txt 	in/strings.chapt.txt
+
+
+REFPROGSOURCES = in/prog.chapt.txt in/built.chapt.txt 	in/plugins.chapt.txt in/generic.chapt.txt
+
+
+EXTRA_DIST =  	manualmaker styleplain in/all 	in/intromaker in/codingmaker in/refmaker in/refprogmaker 	$(REFSOURCES) $(REFPROGSOURCES) $(ALLBOOKSOURCES) 	in/dummies newhelp yacasinit.ys .cvsignore
 
 
 yacas_helpdir = $(datadir)/yacas/documentation
@@ -260,7 +281,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Stuff for automatic generation of Yacas books
-%.chapt: %.txt
+%.chapt: %.chapt.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
 %.book: %.book.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
@@ -269,8 +290,8 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 	../manmake/book2TeX.sh $< $@
 
 %.dvi: %.tex
-	latex $<
-	latex $<
+	latex $< > /dev/null
+	latex $< > /dev/null
 
 %.ps: %.dvi
 	dvips -o $@ $<
@@ -278,7 +299,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 %.pdf: %.dvi
 #	dvipdf $<
-	pdflatex $*
+	pdflatex $* > /dev/null
 	@echo Documentation created: $*.pdf
 
 # TeX/PS/PDF top target
@@ -288,33 +309,28 @@ texdocs: coding.book.ps coding.book.pdf intro.book.ps intro.book.pdf
 clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.toc *.log *.ps *.pdf \
 	coding*html intro*html ref*html .o core *~ texdocs.c \
-	in/coding.book in/intro.book in/ref.book in/refprog.book
+	$(REFCHAPTERS) $(REFPROGCHAPTERS) $(ALLBOOKS)
 
-books.html: in/arith.chapt in/built.chapt in/calc.chapt \
-	in/coding.book in/refprog.book in/const.chapt in/functional.chapt  \
-	in/intro.book in/io.chapt in/linalg.chapt in/plugins.chapt \
-	in/lists.chapt in/preds.chapt in/prog.chapt in/controlflow.chapt \
-	in/ref.book in/univar.chapt in/vars.chapt in/generic.chapt in/logic.chapt
-	-../src/yacas in/all
+books.html:  $(ALLBOOKS) $(REFCHAPTERS) $(REFPROGCHAPTERS)
+	-$(ouryacas) in/all
 	echo "done" > books.html.c
 
+# No separate chapters
 intro.html : in/intro.book
-	-../src/yacas in/intromaker 
+	-$(ouryacas) in/intromaker 
 	touch books.html
 
-ref.html : in/ref.book \
-	in/arith.chapt in/calc.chapt in/linalg.chapt in/univar.chapt in/controlflow.chapt \
-	in/lists.chapt in/functional.chapt in/preds.chapt in/const.chapt \
-	in/vars.chapt in/io.chapt in/prog.chapt in/built.chapt in/generic.chapt in/logic.chapt
-	-../src/yacas in/refmaker
-	touch books.html
-
-refprog.html : in/refprog.book 
-	-../src/yacas in/refprogmaker
-	touch books.html
-
+# No separate chapters
 coding.html : in/coding.book
-	-../src/yacas in/codingmaker
+	-$(ouryacas) in/codingmaker
+	touch books.html
+
+ref.html : in/ref.book $(REFCHAPTERS)
+	-$(ouryacas) in/refmaker
+	touch books.html
+
+refprog.html : in/refprog.book $(REFPROGCHAPTERS)
+	-$(ouryacas) in/refprogmaker
 	touch books.html
 
 noindex: intro.html ref.html coding.html
