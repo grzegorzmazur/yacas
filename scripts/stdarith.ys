@@ -240,7 +240,7 @@ LocalSymbols(x,y,xarg,yarg)
 
 52 # x_IsPositiveNumber / 0 <-- Infinity;
 52 # x_IsNegativeNumber / 0 <-- -Infinity;
-55 # _x / 0 <-- Undefined;
+55 # (_x / y_IsNumber)_(IsZero(y)) <-- Undefined;
 55 # 0 / _x <-- 0;
 60 # (x_IsNumber / y_IsNumber)_((Numeric = True) /* Sorry, Serge Or
                                 Not(IsInteger(x) And IsInteger(y)) */ ) <--
