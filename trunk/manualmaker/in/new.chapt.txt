@@ -444,7 +444,7 @@ The library scripts will be able to transform numerical expressions such as {x:=
 
 *A multiple-precision facility!requirements
 
-Here we list the basic arithmetic operations that need to be implemented by the multiple-precision library.
+Here we list the basic arithmetic operations that need to be implemented by a multiple-precision class {BigNumber}.
 The operations are divided into several categories for convenience.
 Equivalent Yacas script code is given, as well as examples of C++ usage.
 
@@ -516,8 +516,10 @@ When subtracting almost equal numbers, a loss of precision will occur.
 
 4. Auxiliary operations (useful for optimization purposes but can be performed using the basic arithmetic).
 All these operations are efficient to implement with a binary-based internal representation of big numbers.
-*	Check whether the number {x} fits (without approximation) into a platform type {long} or {double}. (Optimization of comparison.)
+*	Check whether the number {x} fits into a platform type {long} or {double}. (Optimization of comparison.)
 Sometimes this helps avoid unnecessary calculations with big numbers.
+Note that the semantics of this operation is different for integers and for floats. An integer is "small" only when it fits into a platform {long} integer.
+A float is "small" when it can be approximated by a platform {double} (that is, when its exponent is not too large).
 	x.IsSmall()==true;
 *	Multiply two numbers and add to the third, {x := x+y*z}, at given precision. (Optimization of a frequently used operation.)
 	x.MultiplyAdd(y,z, 300);
