@@ -176,7 +176,10 @@ the beginning of a line, e.g.
 
 Note that the included document must be a Yacas-language file, not a {.txt} file. (This will become the {IncludeFile()} call in the Yacas document -- an alias to {Load()}.)
 
-*	Comments may be introduced by the label {*REM}. The line and the paragraph of text following {*REM} will be omitted from the documentation. An empty line should separate the {*REM} block from other text. For example,
+*	Comments may be introduced by the label {*REM}. The line and the paragraph of text following {*REM} will be omitted from the documentation.
+An empty line should separate the {*REM} block from other text.
+(A mark-up label at the beginning of line will also terminate a {*REM} block.)
+For example,
 	*REM this is
 	a comment
 	
