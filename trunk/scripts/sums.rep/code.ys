@@ -129,15 +129,26 @@ UnFence("Sum",4);
 HoldArg("Sum",sumvar'arg);
 HoldArg("Sum",sumbody'arg);
 
-Function("Sum",{sumlist})
+Function() Add(val, ...);
+
+10 # Add({}) <-- 0;
+20 # Add(values_IsList) <--
 [
-   Local(sumi,sumsum);
-   sumsum:=0;
-   ForEach(sumi,sumlist) sumsum:=sumsum+sumi;
-   sumsum;
+   Local(i, sum);
+   sum:=0;
+   ForEach(i, values) sum := sum + i;
+   sum;
 ];
 
-Average(list):=Sum(list)/Length(list);
+// Add(1) should return 1
+30 # Add(_value) <-- value;
+
+// recursive implementation -- may quickly run out of stack
+//10 # Add({}) <-- 0;
+//20 # Add(list_IsList) <-- Head(list)+Add(Tail(list));
+
+10 # Average({}) <-- Undefined;
+20 # Average(list_IsList) <-- Add(list)/Length(list);
 
 Function("Factorize",{sumvar,sumfrom,sumto,sumbody})
 [
