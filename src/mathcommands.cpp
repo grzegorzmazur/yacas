@@ -1469,25 +1469,28 @@ void LispFromFile(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispStringPtr orig = evaluated.Get()->String();
     CHK_ARG(orig != NULL, 1);
 
+    LispStringPtr contents = aEnvironment.FindCachedFile(orig->String());
     LispStringPtr hashedname = aEnvironment.HashTable().LookUpUnStringify(orig->String());
-    LispRamFile* ramFile=aEnvironment.iRamDisk.LookUp(hashedname);
+//TODO remove?    LispRamFile* ramFile=aEnvironment.iRamDisk.LookUp(hashedname);
 
     InputStatus oldstatus = aEnvironment.iInputStatus;
     aEnvironment.iInputStatus.SetTo(hashedname->String());
 
-    if (ramFile != NULL)
+    //TODO remove?    if (ramFile != NULL)
+    if (contents)
     {
-        StringInput newInput(*(ramFile->Contents()),aEnvironment.iInputStatus);
+        StringInput newInput(*contents,aEnvironment.iInputStatus);
         LispLocalInput localInput(aEnvironment, &newInput);
 
         // Evaluate the body
         InternalEval(aEnvironment, aResult, Argument(aArguments,2));
+        delete contents;
     }
     else
     {
         //TODO make the file api platform independent!!!!
         // Open file
-        LispLocalFile localFP(aEnvironment, hashedname->String(),LispTrue,
+        LispLocalFile localFP(aEnvironment, orig->String(),LispTrue,
                               aEnvironment.iInputDirectories);
         CHK(localFP.iOpened != 0, KLispErrFileNotFound);
         FILEINPUT newInput(localFP,aEnvironment.iInputStatus);

@@ -529,6 +529,39 @@ path that is passed to {DefaultDirectory}, and file names will be simply
 appended to it, so you should make sure to include a forward or backward slash
 (depending on the platform) at the end.
 
+	yacas --archive [file]
+Yacas has an experimental system where files can be compressed into
+one file, and accessed through this command line option. The advantages
+are:
+
+*	0. smaller disk/memory use (useful if Yacas is used on small hand-helds).
+*	0. No problems with directory path separators. path/file will always
+resolve to the right file, no matter what platform (read: Windows) it runs on.
+*	0. The start-up time of the program might improve a little, since 
+a smaller file is loaded from disk (disk access being slow), and then decompressed
+in memory, which might be a lot faster than loading from disk.
+
+An additional savings is due to the fact that the script files are 
+stripped from white spaces and comments, making them smaller, thus
+also load faster.
+
+To try the compressed files out, go into the ramscripts/ directory
+and type
+
+	make -f makefile.compressor
+
+The result should be a file {scripts.dat}, which is the archive file.
+Then launch {Yacas} with the command line option {--archive scripts.dat},
+with the file {scripts.dat} in the current directory.
+
+The reason that the {scripts.dat} file is not built automatically is
+that it is not sure, at this time, that the build process works on all
+platforms.
+
+The currently supported compression schemes are uncompressed, 
+and compressed with {minilzo}. Script file stripping (white spaces
+and comments) is optional too.
+
 		Client/server usage
 
 In addition to the console mode, an experimental persistent session facility is provided through the script {yacas_client}. By means of this script, the user can configure third-party applications to pass commands to a constantly running "Yacas server" and get output. The "Yacas server" is automatically started by {yacas_client}. It may run on a remote computer; in that case the user should have a user account on the remote computer and privileges to execute {yacas_client} there, as well as {rsh} or {ssh} access. The purpose of {yacas_client} is to enable users to pass commands to Yacas within a persistent session while running another application such as a text editor.

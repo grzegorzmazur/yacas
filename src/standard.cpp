@@ -329,16 +329,19 @@ void InternalLoad(LispEnvironment& aEnvironment,LispStringPtr aFileName)
     LispString oper;
     InternalUnstringify(oper, aFileName);
 
+    LispStringPtr contents = aEnvironment.FindCachedFile(oper.String());
     LispStringPtr hashedname = aEnvironment.HashTable().LookUp(oper.String());
-    LispRamFile* ramFile=aEnvironment.iRamDisk.LookUp(hashedname);
+//TODO remove?    LispRamFile* ramFile=aEnvironment.iRamDisk.LookUp(hashedname);
 
     InputStatus oldstatus = aEnvironment.iInputStatus;
     aEnvironment.iInputStatus.SetTo(hashedname->String());
 
-    if (ramFile != NULL)
+    //TODO remove?    if (ramFile != NULL)
+    if (contents)
     {
-        StringInput newInput(*(ramFile->Contents()),aEnvironment.iInputStatus);
+        StringInput newInput(*contents,aEnvironment.iInputStatus);
         DoInternalLoad(aEnvironment,&newInput);
+        delete contents;
     }
     else
     {

@@ -104,17 +104,22 @@ void LoadDefFile(LispEnvironment& aEnvironment, LispStringPtr aFileName)
     flatfile.Append('\0');
 
     LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
+
+    LispStringPtr contents = aEnvironment.FindCachedFile(flatfile.String());
+
     
     LispStringPtr hashedname = aEnvironment.HashTable().LookUp(flatfile.String());
-    LispRamFile* ramFile=aEnvironment.iRamDisk.LookUp(hashedname);
+//TODO remove    LispRamFile* ramFile=aEnvironment.iRamDisk.LookUp(hashedname);
 
     InputStatus oldstatus = aEnvironment.iInputStatus;
     aEnvironment.iInputStatus.SetTo(hashedname->String());
 
-    if (ramFile != NULL)
+    //TODO remove    if (ramFile != NULL)
+    if (contents)
     {
-        StringInput newInput(*(ramFile->Contents()),aEnvironment.iInputStatus);
+        StringInput newInput(*contents,aEnvironment.iInputStatus);
         DoLoadDefFile(aEnvironment, &newInput,def);
+        delete contents;
     }
     else
     {
