@@ -58,10 +58,8 @@
             _o.Write("Error on line ");\
             _o.Write(linenum);\
             _o.Write(" in file [");\
-            _o.Write(_e.iInputStatus.FileName()); \
-			_o.Write("]\nLine error occurred on:\n"); \
-            _o.Write(_e.iInputStatus.Line(_e.iInputDirectories)); \
-			_o.Write("\n\n"); \
+            _o.Write(_e.iInputStatus.FileName());\
+            _o.Write("]\n"); \
         } \
         _e.iCleanup.Delete(); \
         _o.Write(_e.ErrorString(b)); \
