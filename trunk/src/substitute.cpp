@@ -102,9 +102,14 @@ LispBoolean BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
     {
         LispPtr cur;
         cur.Set(ptr);
+/*
         LispPtr result;
         InternalEval(iEnvironment, result, cur);
         InternalSubstitute(aResult, result,*this);
+*/
+
+        InternalEval(iEnvironment, aResult, cur);
+
         return LispTrue;
     }
     else
