@@ -423,7 +423,8 @@ KnownFailure((Limit(n, Infinity) n^5/2^n) = 0);
 
 /* Bug #14 */
 KnownFailure((Limit(x,Infinity) Zeta(x)) = 1);
-KnownFailure((Limit(x,Infinity) Factorial(x)) = Infinity);
+// Actually, I changed the Factorial(x) to (x!)
+KnownFailure((Limit(x,Infinity) (x!)) = Infinity);
 
 /* Bug #15 */
 Verify(TrapError(MathPower(0,0.5), error), error);

@@ -39,10 +39,12 @@ IsComplexII(_c) <-- (ImII(c) != 0);
 
 /*Real parts */
 110 # Re(Complex(_r,_i)) <-- r;
+120 # Re(Undefined) <-- Undefined;
 300 # Re(_x) <-- x;
 
 /* Imaginary parts */
 110 # Im(Complex(_r,_i)) <-- i;
+120 # Im(Undefined) <-- Undefined;
 300 # Im(_x) <-- 0;
 
 /* All things you can request a real and imaginary part for are complex */
