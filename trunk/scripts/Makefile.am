@@ -47,7 +47,8 @@ SCRIPTFILES1 = 	        										    \
 	radsimp.rep/code.ys radsimp.rep/code.ys.def 							    \
 	random.rep/code.ys random.rep/code.ys.def 							    \
 	simplify.rep/code.ys simplify.rep/code.ys.def 							    \
-	solve.rep/code.ys solve.rep/code.ys.def debug.rep/code.ys debug.rep/code.ys.def			    \
+	solve.rep/code.ys solve.rep/code.ys.def solve.rep/jnsolve.ys					    \
+	debug.rep/code.ys debug.rep/code.ys.def			  					    \
 	specfunc.rep/bessel.ys specfunc.rep/bessel.ys.def specfunc.rep/bernou.ys specfunc.rep/bernou.ys.def \
 	specfunc.rep/code.ys specfunc.rep/code.ys.def specfunc.rep/gammaconst.ys specfunc.rep/gammaconst.ys.def \
 	specfunc.rep/gamma.ys specfunc.rep/gamma.ys.def specfunc.rep/zeta.ys specfunc.rep/zeta.ys.def 	    \
