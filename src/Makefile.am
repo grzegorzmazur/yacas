@@ -2,7 +2,6 @@ DEFS = @DEFS@ -DSCRIPT_DIR=\"$(scriptdir)\"
 INCLUDES = -I$(top_builddir) -I$(srcdir)/plat/linux32 -I../..
 
 
-
 bin_PROGRAMS = yacas
 noinst_PROGRAMS = testnum
 noinst_LIBRARIES = libyacas.a @NUMBERS_LIB@
@@ -79,6 +78,19 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp \
 	plat/win32/yacas_exe.dsp        \
 	plat/win32/yacasmain-win32.cpp makefile.debug
 
+
+yacas_include = $(datadir)/yacas/include
+
+install-data-local: yacas.h
+	$(mkinstalldirs) $(yacas_include)/
+	-for file in $(srcdir)/*.h; do \
+	basefile=`basename $$file`; \
+	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/$$basefile; \
+	done
+	-for file in $(srcdir)/*.inl; do \
+	basefile=`basename $$file`; \
+	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/$$basefile; \
+	done
 
 include depend.dep
 
