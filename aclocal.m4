@@ -23,7 +23,7 @@ dnl PARTICULAR PURPOSE.
 # This macro requires AC_CHECK_HEADERS to have already verified the
 # presence or absence of sys/types.h and sys/socket.h.
 #
-# @version $Id: aclocal.m4,v 1.11 2000-11-26 13:54:31 ayalpinkus Exp $
+# @version $Id: aclocal.m4,v 1.12 2000-12-21 13:21:48 ayalpinkus Exp $
 #
 # @author Daniel Richard G. <skunk@mit.edu>
 #
@@ -71,7 +71,7 @@ dnl Check whether sys/socket.h defines type socklen_t. Please note
 dnl that some systems require sys/types.h to be included before
 dnl sys/socket.h can be compiled.
 dnl
-dnl @version $Id: aclocal.m4,v 1.11 2000-11-26 13:54:31 ayalpinkus Exp $
+dnl @version $Id: aclocal.m4,v 1.12 2000-12-21 13:21:48 ayalpinkus Exp $
 dnl @author Lars Brinkhoff <lars@nocrew.org>
 dnl
 AC_DEFUN(TYPE_SOCKLEN_T,

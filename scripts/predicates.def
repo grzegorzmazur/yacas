@@ -15,4 +15,6 @@ IsInfinity
 IsConstant
 IsBoolean
 IsBoolType
+IsHermitean
+IsUnitary
 }

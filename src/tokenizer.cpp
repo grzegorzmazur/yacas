@@ -16,7 +16,7 @@
 
 static LispBoolean IsDigit(LispChar c)
 {
-    return ((c>='0' && c<='9')/*TODO || c == '.' */);
+    return ((c>='0' && c<='9'));
 }
 
 LispBoolean IsAlpha(LispChar c)

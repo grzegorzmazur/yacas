@@ -21,15 +21,6 @@ void DefaultYacasEnvironment::SetCommand(LispEvalCaller aEvaluatorFunc,
                                          LispCharPtr aString)
 {
     iEnvironment.SetCommand(aEvaluatorFunc, aString);
-/*TODO remove
-    //If in debug mode, count this added command.
-#ifdef YACAS_DEBUG
-    theNrDefinedBuiltIn++;
-#endif
-
-    commands.SetAssociation(LispEvaluator(aEvaluatorFunc),
-                            hash.LookUp(aString,LispTrue));
-                            */
 }
 
 DefaultYacasEnvironment::DefaultYacasEnvironment()

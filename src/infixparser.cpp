@@ -246,9 +246,6 @@ void ParsedObject::ReadAtom()
         MatchToken(iLookAhead);
 
         ReadExpression(op->iPrecedence);
-        /*TODO remove?
-         ReadAtom();
-         */
         InsertAtom(theOperator);
         Combine(1);
     }

@@ -77,7 +77,6 @@ void InternalStringify(LispString& aResult, LispStringPtr aOriginal)
 void InternalIntToAscii(LispCharPtr aTrg,LispInt aInt)
 {
     LispInt ind=0;
-//TODO remove???    LISPASSERT(aInt>=0);
     if (aInt < 0)
     {
         *aTrg++ = '-';
@@ -150,33 +149,6 @@ LispBoolean IsNumber(LispCharPtr ptr,LispBoolean aAllowFloat)
     }
     if (ptr[index] != '\0') return LispFalse;
     return LispTrue;
-/*TODO old?
-    LispInt nrDots=0;
-    LispInt nrDigits=0;
-    while (*ptr)
-    {
-        if (*ptr == '.' && aAllowFloat)
-        {
-            if (!aAllowFloat)
-                return LispFalse;
-            nrDots++;
-            if (nrDots>1)
-                return LispFalse;
-        }
-        else if (*ptr == '+' || *ptr == '-')
-        {
-        }
-        else if (!(*ptr>='0' && *ptr<='9'))
-        {
-            return LispFalse;
-        }
-        nrDigits++;
-        ptr++;
-    }
-    if (nrDigits-nrDots>0)
-        return LispTrue;
-    return LispFalse;
-    */
 }
 
 

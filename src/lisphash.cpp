@@ -5,18 +5,6 @@
 
 LispHashTable::~LispHashTable()
 {
-    /*TODO remove???
-     LispInt bin;
-    for (bin=0;bin<KSymTableSize;bin++)
-    {
-        LispInt j;
-        LispInt nritems = iHashTable[bin].NrItems();
-        for (j=0;j<nritems;j++)
-        {
-            delete iHashTable[bin][j];
-        }
-        }
-        */
 }
 
 

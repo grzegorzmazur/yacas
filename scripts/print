@@ -92,6 +92,12 @@
 ];
 
 
+18 # Print(Complex(0,1),_n)   <-- [WriteString("I");];
+19 # Print(Complex(0,_y),_n)  <-- [WriteString("I*");Print(y,4);];
+19 # Print(Complex(_x,1),_n)  <-- [Print(x,7);WriteString("+I");];
+20 # Print(Complex(_x,_y),_n) <-- [Print(x,7);WriteString("+I*");Print(y,4);];
+
+
 /* Tail-recursive printing the body of a compound statement */
 10 # PrintArgProg({}) <-- True;
 20 # PrintArgProg(_list) <--

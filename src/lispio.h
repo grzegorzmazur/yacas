@@ -13,20 +13,16 @@ class InputDirectories;
 class InputStatus
 {
 public:
-    InputStatus() : iFileName("none"), iLineString('\0'), iLineNumber(-1)  {};
+    InputStatus() : iFileName("none") , iLineNumber(-1)  {};
 	~InputStatus();
-
     void SetTo(LispCharPtr aFileName);
     void RestoreFrom(InputStatus& aPreviousStatus);
     inline LispInt LineNumber();
     inline LispCharPtr FileName();
     inline void NextLine();
-
-    LispCharPtr Line(InputDirectories& aInputDirectories);
 private:
     LispCharPtr iFileName;
-    LispCharPtr iLineString;
-    LispInt		iLineNumber;
+    LispInt	iLineNumber;
 };
 
 inline LispInt InputStatus::LineNumber()

@@ -537,20 +537,6 @@ void LispPatchString(LispEnvironment& aEnvironment, LispPtr& aResult,
     PatchLoad(&oper[0], newOutput, aEnvironment);
 
     aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUpStringify(str.String())));
-
-/*TODO remove???
-    TESTARGS(2);
-    LispStringPtr string = Argument(aArguments,1).Get()->String();
-    CHK_ARG(string != NULL, 1);
-    LispString oper;
-    InternalUnstringify(oper, string);
-
-    LispString str;
-    StringOutput strout(str);
-
-    PatchLoad(&oper[0], strout, aEnvironment);
-    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUpStringify(str.String())));
-    */
 }
 
 void LispDllLoad(LispEnvironment& aEnvironment, LispPtr& aResult,

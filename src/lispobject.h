@@ -97,9 +97,6 @@ protected:
     LispObject();
     
 private:
-    /*TODO remove?
-    ReferenceType iReferenceCount;
-    */
     LispPtr   iNext;
 };
 

@@ -202,4 +202,67 @@ Topical()"See Also";
 SeeAlso({"EigenValues","CharacteristicEquation"});
     
 
+AddAnchor("IsHermitean");
+SubSection()"IsHermitean";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"IsHermitean(A)";
+
+Topical()"Parameters";
+Text()"A - square matrix";
+
+Topical()"Description";
+Text()
+"IsHermitean(A) returns True if A is Hermitean and False
+otherwise. A is a Hermitean matrix iff Conjugate(Transpose(A))=A.
+For real matrices A is tested to be symmetric.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> IsHermitean({{0,I},{-I,0}})
+Out> True;
+In> IsHermitean({{0,I},{2,0}})
+Out> False;
+");
+
+Topical()"See Also"; 
+SeeAlso({"IsUnitary"});
+
+
+
+
+AddAnchor("IsUnitary");
+SubSection()"IsUnitary";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"IsUnitary(A)";
+
+Topical()"Parameters";
+Text()"A - square matrix";
+
+Topical()"Description";
+Text()
+"This function tries to find out if A is unitary.
+
+Matrix A is orthogonal iff A^(-1) = Transpose(Conjugate(A)). This is 
+equivalent to the fact that the columns of A build an orthonormal system 
+(in respect to the scalar product defined by InProduct).
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> IsUnitary({{0,I},{-I,0}})
+Out> True;
+In> IsUnitary({{0,I},{2,0}})
+Out> False;
+");
+
+Topical()"See Also"; 
+SeeAlso({"IsHermitean"});
+
+
+
 

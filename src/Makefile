@@ -68,7 +68,7 @@ NUMBERS_LIB = libyacasnumbers.a
 PACKAGE = yacas
 RANLIB = ranlib
 RELEASE = 1
-VERSION = 1.0.43rev1
+VERSION = 1.0.43rev2
 scriptdir = ${prefix}/share/yacas/
 
 DEFS = -DHAVE_CONFIG_H -DSCRIPT_DIR=\"$(scriptdir)\"
@@ -427,16 +427,16 @@ epocfileio.o: epocfileio.cpp stdfileio.h lispio.h \
  lisphash.h lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h stringio.h lispglobals.h lispplugin.h \
  plat/linux32/platfileio.h
-epocmain.o: epocmain.cpp yacas.h lispstring.h plat/linux32/lisptype.h \
- plat/linux32/../../choices.h grower.h stubs.h plat/linux32/stubs.inl \
- grower.inl lispassert.h choices.h refcount.h lispstring.inl \
- stringio.h lispio.h tokenizer.h lisphash.h lisphash.inl \
- lispevalhash.h lispobject.h genericobject.h evalfunc.h lispobject.inl \
- lisperror.h infixparser.h lispparser.h stdfileio.h lispenvironment.h \
- lispcleanupstack.h deffile.h deffile.inl ramdisk.h lispglobals.h \
- lispplugin.h plat/linux32/platfileio.h lispatom.h lispeval.h \
- mathenvironment.h lispuserfunc.h commandline.h standard.h numbers.h \
- standard.inl
+epocmain.o: epocmain.cpp epocyacas.hrh yacas.h lispstring.h \
+ plat/linux32/lisptype.h plat/linux32/../../choices.h grower.h stubs.h \
+ plat/linux32/stubs.inl grower.inl lispassert.h choices.h refcount.h \
+ lispstring.inl stringio.h lispio.h tokenizer.h lisphash.h \
+ lisphash.inl lispevalhash.h lispobject.h genericobject.h evalfunc.h \
+ lispobject.inl lisperror.h infixparser.h lispparser.h stdfileio.h \
+ lispenvironment.h lispcleanupstack.h deffile.h deffile.inl ramdisk.h \
+ lispglobals.h lispplugin.h plat/linux32/platfileio.h lispatom.h \
+ lispeval.h mathenvironment.h lispuserfunc.h commandline.h standard.h \
+ numbers.h standard.inl
 epocstubs.o: epocstubs.cpp lisperror.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h lispstring.h grower.h stubs.h \
  plat/linux32/stubs.inl grower.inl lispassert.h choices.h refcount.h \

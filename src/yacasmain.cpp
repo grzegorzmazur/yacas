@@ -400,22 +400,15 @@ RESTART:
                     if (inpline[1] == '?')
                     {
                         yacas->Evaluate("Help()");
-//TODO remove?                        system("lynx " SCRIPT_DIR "documentation/books.html");
                     }
                     else
                     {
-                        char buf[1000];
-                        // TODO check for buffer overflow!!!
-                        sprintf(buf,"Help(\"%s\")",&inpline[1]);
-                        yacas->Evaluate(buf);
-
-                        /*TODO remove?
-                         char buf[1000];
-                        // TODO check for buffer overflow!!!
-                        strcpy(buf,"lynx "SCRIPT_DIR "documentation/ref.html#");
-                        strcat(buf,&inpline[1]);
-                        system(buf);
-                        */
+                        if (strlen(&inpline[1]) < 100)
+                        {
+                            char buf[120];
+                            sprintf(buf,"Help(\"%s\")",&inpline[1]);
+                            yacas->Evaluate(buf);
+                        }
                     }
                 }
                 else

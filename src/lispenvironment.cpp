@@ -83,22 +83,6 @@ LispPtr *LispEnvironment::FindLocal(LispStringPtr aVariable)
         t = t->iNext;
     }
     return NULL;
-/*TODO remove?
-    Check(iLocals.Get() != NULL,KLispErrInvalidStack);
-    Check(iLocals.Get()->SubList() != NULL,KLispErrInvalidStack);
-
-    LispIterator iter(*iLocals.Get()->SubList());
-    while (iter() != NULL)
-    {
-        LispPtr* sub = iter()->SubList();
-        Check(sub != NULL,KLispErrInvalidStack);
-        if (sub->Get()->String() == aVariable)
-            return iter.Ptr();
-
-        iter.GoNext();
-    }
-    return NULL;
-    */
 }
 
 void LispEnvironment::SetVariable(LispStringPtr aVariable, LispPtr& aValue)
@@ -107,9 +91,6 @@ void LispEnvironment::SetVariable(LispStringPtr aVariable, LispPtr& aValue)
     if (local != NULL)
     {
         local->Set(aValue.Get());
-        /*TODO remove?
-         local->Get()->SubList()->Get()->Next().Set(aValue.Get());
-         */
         return;
     }
 
@@ -123,9 +104,6 @@ void LispEnvironment::GetVariable(LispStringPtr aVariable,LispPtr& aResult)
     if (local != NULL)
     {
         aResult.Set(local->Get());
-        /*TODO remove?
-        aResult.Set(local->Get()->SubList()->Get()->Next().Get());
-        */
         return;
     }
     LispGlobalVariable *l = iGlobals.LookUp(aVariable);
@@ -159,9 +137,6 @@ void LispEnvironment::UnsetVariable(LispStringPtr aString)
     if (local != NULL)
     {
         local->Set(NULL);
-/*TODO remove?
-        local->Get()->SubList()->Get()->Next().Set(NULL);
-        */
         return;
     }
     iGlobals.Release(aString);
@@ -181,53 +156,20 @@ void LispEnvironment::PushLocalFrame(LispBoolean aFenced)
             new LocalVariableFrame(iLocalsList, iLocalsList->iFirst);
         iLocalsList = newFrame;
     }
-    /*TODO remove?
-    if (aFenced)
-    {
-        LispPtr newly;
-        newly.Set(LispSubList::New(NULL));
-        newly.Get()->Next().Set(iLocals.Get());
-        iLocals.Set(newly.Get());
-    }
-    else
-    {
-        LISPASSERT(iLocals.Get()!=NULL);
-        LISPASSERT(iLocals.Get()->SubList()!=NULL);
-        LispPtr newly;
-        newly.Set(LispSubList::New(iLocals.Get()->SubList()->Get()));
-        newly.Get()->Next().Set(iLocals.Get());
-        iLocals.Set(newly.Get());
-    }
-    */
 }
 
 void LispEnvironment::PopLocalFrame()
 {
+    LISPASSERT(iLocalsList != NULL);
     LocalVariableFrame *nextFrame = iLocalsList->iNext;
     delete iLocalsList;
     iLocalsList = nextFrame;
-
-/*TODO remove?
-    LISPASSERT(iLocals.Get() != NULL);
-    LispPtr next;
-    next.Set(iLocals.Get()->Next().Get());
-    iLocals.Set(next.Get());
-    */
 }
 
 void LispEnvironment::NewLocal(LispStringPtr aVariable,LispObject* aValue)
 {
+    LISPASSERT(iLocalsList != NULL);
     iLocalsList->Add(new LispLocalVariable(aVariable, aValue));
-    /*TODO remove?
-    LISPASSERT(iLocals.Get() != NULL);
-    LISPASSERT(iLocals.Get()->SubList() != NULL);
-    LispPtr newly;
-    LispObject* newitem = LispSubList::New(LispAtom::New(aVariable));
-    newitem->SubList()->Get()->Next().Set(aValue);
-    newitem->Next().Set(iLocals.Get()->SubList()->Get());
-    newly.Set(newitem);
-    iLocals.Get()->SubList()->Set(newly.Get());
-    */
 }
 
 LispPrinter& LispEnvironment::CurrentPrinter()
