@@ -314,6 +314,7 @@ Macro(Recognize,{language,grammar,pred,rulebase,string,body})
 
 //Echo(`Hold((@pr) # @rb(@names,@ids) <-- (@bd)));
 
-  `((@pr) # @rb(@names,@ids) <-- (@bd));
+//  `((@pr) # @rb(@names,@ids) <-- (@bd));
+  `((@pr) # (@rb(@names,@ids))_([(@bd);False;]) <-- True);
 ];
 

@@ -21,6 +21,8 @@ Here is a summary of options:
 *	{--server} <i>port</i> (start {Yacas} as a network server on given port)
 *	{--verbose-debug} (turn on showing some additional debugging information on screen)
 *	{--disable-compiled-plugins} (disable loading of compiled plugins, loading the script versions instead)
+*	{--stacksize} <i>size</i> (change size of stack arguments are stored on)
+
 
 Options can be combined, for example
 	yacas -pc filename
@@ -184,4 +186,21 @@ and comments) may be disabled by editing {compressor.cpp} (variable {strip_scrip
 Disable loading of compiled scripts, in favor of scripts themselves.
 This is useful when developing the scripts that need to be compiled
 in the end, or when the scripts have not been compiled yet.
+
+
+	yacas --stacksize <size>
+Yacas maintains an internal stack for arguments. For nested function calls, all arguments currently used are on this stack. The size of this stack is
+50000 be  default. 
+
+For a function that would take 4 arguments and has one return value, there would be 5 places reserved on this stack, and the function could call itself recursively 10000 steps deep.
+
+This differs from the MaxEvalDepth mechanism. The MaxEvalDepth mechanism
+allows one to specify the number of separate stack frames (number of calls, 
+nested), instead of the number of arguments pushed on the stack. MaxEvalDepth
+was introduced to protect the normal {C++} stack.
+
+
+
+
+
 

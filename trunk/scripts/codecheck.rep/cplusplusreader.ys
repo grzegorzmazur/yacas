@@ -86,6 +86,7 @@ DefineGrammar(CPP'varDecl,
    ,{VarDefNonInit, CPP'typeDecl,CPP'annotatedVar}
   });
 
+
 DefineGrammar(CPP'annotatedVar,
   {
     {Pattern1,"varname",AcceptToken(Patterns)},
@@ -101,6 +102,7 @@ DefineGrammar(CPP'annotatedVar,
 
 DefineGrammar(CPP'arrayAugment,
   {
+    {Pattern1,"array",AcceptToken(Patterns)},
     {EmptyArray1,"[","]",CPP'arrayAugment}
    ,{Array1,"[",CPP'expression,"]",CPP'arrayAugment}
    ,{EmptyArray1}
@@ -112,7 +114,21 @@ DefineGrammar(CPP'typeDecl,
     ,{Type1,CPP'storageClass,CPP'plainType,CPP'templateParams}
     ,{StrctType1,CPP'storageClass,"struct",CPP'block}
     ,{StrctType1,CPP'storageClass,"class",CPP'block}
+    ,{EnumType1,CPP'storageClass,"enum",CPP'enumBlock}
 //    ,{StrctType1,"union",CPP'block}
+  });
+
+DefineGrammar(CPP'enumBlock,
+  {
+    {Enum1,CPP'expression},
+    {Enum1,CPP'enumElement,",",CPP'enumBlock},
+    {Enum1,CPP'enumElement},
+    {Enum1}
+  });
+DefineGrammar(CPP'enumElement,
+  {
+    {EnumConst1,CPP'tokenName,"=",CPP'expression},
+    {EnumConst1,CPP'tokenName}
   });
 
 DefineGrammar(CPP'templateParams,
@@ -135,33 +151,40 @@ DefineGrammar(CPP'typePost,
 
 DefineGrammar(CPP'plainType,
   {
-    {PlainType1,AnyOf(CPP'typeList),CPP'plainType2}
+    {PlainType1,CPP'typeList,CPP'plainType2}
    ,{PlainType1,CPP'plainType3}
   });
 
 DefineGrammar(CPP'plainType2,
   {
-    {PlainType2,AnyOf(CPP'typeList),CPP'plainType2}
+    {PlainType2,CPP'typeList,CPP'plainType2}
    ,{PlainType2}
   });
 DefineGrammar(CPP'plainType3,
   {
-    {PlainType2,CPP'tokenName}
+    {PlainType3,CPP'tokenName}
   });
 
 DefineGrammar(CPP'storageClass,
   {
-    {StorageClass1,AnyOf({"inline","virtual","static","register","auto","volatile","const"}),CPP'storageClass}
+    {StorageClass1,CPP'storageClassToken,CPP'storageClass}
    ,{StorageClass1}
   });
 
+DefineGrammar(CPP'storageClassToken,
+  {
+    {StorageClassToken1,AnyOf({"extern","inline","virtual","static","register","auto","volatile","const"})}
+  });
   
-CPP'typeList :=
-  {"signed","unsigned","char","short","int","long","float","void"};
 
+DefineGrammar(CPP'typeList,
+  {
+    {NativeType1,AnyOf({"signed","unsigned","char","short","int","long","float","double","void"})}
+  });
 
 DefineGrammar(CPP'symbolName,
   { 
+    {Pattern1,"symbol",AcceptToken(Patterns)},
     {SymbolnamePointer,"*",CPP'symbolName},
     {SymbolnameNameSpaced,CPP'tokenName,"::","~",CPP'tokenName},
     {SymbolnameNameSpaced,CPP'tokenName,"::",CPP'tokenName},
@@ -308,6 +331,7 @@ DefineGrammar(CPP'exprRest14,
 DefineGrammar(CPP'expr15,
   { 
     {SubExpression,"(",CPP'expression,")"}
+    ,{NameSpaced1,CPP'tokenName,"::",CPP'tokenName}
     ,{SimpleAtom,CPP'tokenName}
   });
 
@@ -340,14 +364,14 @@ DefineGrammar(CPP'statement,
     {LabelStmt,CPP'tokenName,":"},
     {CaseStmt,"case",CPP'tokenName,":"},
     {DefaultStmt,"default",":"}
-   ,{Expression,CPP'expr0,";"}
+   ,{LocalDefinedVariable,CPP'varDecl,";"}
    ,{LocalDefinedFunction, CPP'typeDecl,CPP'annotatedVar,CPP'argList,"=","0",";"}
    ,{LocalDefinedFunction, CPP'typeDecl,CPP'annotatedVar,CPP'argList,":",CPP'initList,CPP'statement}
    ,{LocalDefinedFunction, CPP'typeDecl,CPP'annotatedVar,CPP'argList,CPP'statement}
-   ,{LocalDefinedVariable,CPP'varDecl,";"}
    ,{LocalDefinedFunction, CPP'storageClass,CPP'annotatedVar,CPP'argList,":",CPP'initList,CPP'statement}
    ,{LocalDefinedFunction, CPP'storageClass,CPP'annotatedVar,CPP'argList,CPP'statement}
    ,{StrctType1,CPP'objDef,";"}
+   ,{Expression,CPP'expr0,";"}
 //   ,{StrctType1,"union",CPP'tokenName,CPP'block,";"}
    ,{BlockStmt,CPP'block}
   });
@@ -365,14 +389,18 @@ DefineGrammar(CPP'init,
 
 DefineGrammar(CPP'objDef,
   {
-    {StrctType1,"struct",CPP'tokenName,CPP'block}
-   ,{StrctType1,"class",CPP'tokenName,":",CPP'superList,CPP'block}
-   ,{StrctType1,"class",CPP'tokenName,CPP'block}
+    {StrctType1,"struct",CPP'tokenName,":",CPP'superList,CPP'block}
+   ,{StrctType1,"struct",CPP'tokenName,CPP'block}
+   ,{StrctType1,"class" ,CPP'tokenName,":",CPP'superList,CPP'block}
+   ,{StrctType1,"class" ,CPP'tokenName,CPP'block}
+   ,{EnumType1,"enum",CPP'tokenName,CPP'enumBlock}
+
   });
 
 DefineGrammar(CPP'superList,
   {
-    {SuperList1,CPP'super,",",CPP'superList}
+    {Pattern1,"super",AcceptToken(Patterns)}
+   ,{SuperList1,CPP'super,",",CPP'superList}
    ,{SuperList1,CPP'super}
   });
 
