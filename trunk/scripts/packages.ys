@@ -26,6 +26,7 @@ Set(DefFileList, {
 "multivar.rep/code.ys",
 "multivar.rep/sparsetree.ys",
 "newly.rep/code.ys",
+"numbers.rep/GaussianIntegers.ys",
 "numbers.rep/NumberTheory.ys",
 "numbers.rep/code.ys",
 "numbers.rep/nthroot.ys",
