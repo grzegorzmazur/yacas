@@ -1,5 +1,5 @@
 binary
 cd WWW
 cd backups
-mput yacas-*.tar.gz download.html
+mput yacas-*.tar.gz downloads.html
 quit
