@@ -163,7 +163,7 @@ ZetaNum(s) := [
 	  If(	// use identity if s<1/2 to replace with larger s. Also must be sn!=0 or else we get infinity * zero
 		Re(sn)>= 0.5,
 		ZetaNum(sn),
-		N( 2*Gamma(1-sn)*Sin(Pi*sn/2)/(2*Pi)^(1-sn) ) * ZetaNum(1-sn)
+		N( 2*Gamma(1-sn)*Sin(N(Pi*sn/2))/(2*Pi)^(1-sn) ) * ZetaNum(1-sn)
 	  )
 	 );
 ];

@@ -364,6 +364,7 @@ TRun(2+t/2-t^2,10);
 30 # ContFracList(n_IsNumber, _depth) <-- ContFracList(Rationalize(n), depth);
 
 /* n/m = Div(n,m) + 1/( m/Mod(n,m) ) */
+35 # ContFracList((n_IsNegativeInteger) / (m_IsInteger), _depth) <-- Push( ContFracList(m/Mod(n,m), depth-1) , Div(n,m)-1);
 
 40 # ContFracList((n_IsInteger) / (m_IsInteger), _depth) <-- Push( ContFracList(m/Mod(n,m), depth-1) , Div(n,m));
 

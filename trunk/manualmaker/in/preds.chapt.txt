@@ -607,12 +607,12 @@ functions that return a boolean result, like
 
 *PARMS
 
-n - number to test
+{n} - number to test
 
 *DESC
 
-{IsNegativeNumber(n)} evaluates to {True} if "n" is (strictly) negative, ie. if $n<0$. If "n" is not a
-number, the function returns {False}.
+{IsNegativeNumber(n)} evaluates to {True} if $n$ is (strictly) negative, i.e.
+if $n<0$. If {n} is not a number, the functions return {False}. 
 
 *E.G.
 
@@ -630,13 +630,13 @@ number, the function returns {False}.
 
 *PARMS
 
-n - integer to test
+{n} - integer to test
 
 *DESC
 
-This function tests whether the integer "n" is (strictly)
+This function tests whether the integer {n} is (strictly)
 negative. The negative integers are -1, -2, -3, -4, -5, etcetera. If
-"n" is not a integer, the function returns {False}.
+{n} is not a integer, the function returns {False}.
 
 *E.G.
 
@@ -654,12 +654,12 @@ negative. The negative integers are -1, -2, -3, -4, -5, etcetera. If
 
 *PARMS
 
-n - number to test
+{n} - number to test
 
 *DESC
 
-{IsPositiveNumber(n)} evaluates to {True} if "n" is (strictly) positive, ie. if $n>0$. If "n" is not a
-number the function returns {False}.
+{IsPositiveNumber(n)} evaluates to {True} if $n$ is (strictly) positive, i.e.
+if $n>0$. If {n} is not a number the function returns {False}.
 
 *E.G.
 
@@ -677,13 +677,13 @@ number the function returns {False}.
 
 *PARMS
 
-n - integer to test
+{n} - integer to test
 
 *DESC
 
-This function tests whether the integer "n" is (strictly) positive. The
-positive integers are 1, 2, 3, 4, 5, etcetera. If "n" is not a
-integer the function returns {False}.
+This function tests whether the integer {n} is (strictly) positive. The
+positive integers are 1, 2, 3, 4, 5, etcetera. If {n} is not a integer, the
+function returns {False}.
 
 *E.G.
 
@@ -701,13 +701,12 @@ integer the function returns {False}.
 
 *PARMS
 
-n - number to test
+{n} - number to test
 
 *DESC
 
-{IsNotZero(n)} evaluates to {True} if
-"n" is not zero. In case "n" is not a number, the function returns
-{False}.
+{IsNotZero(n)} evaluates to {True} if {n} is not zero. In case {n} is not a
+number, the function returns {False}.
 
 *E.G.
 
@@ -725,11 +724,11 @@ n - number to test
 
 *PARMS
 
-n - integer to test
+{n} - integer to test
 
 *DESC
 
-This function tests whether the integer "n" is not zero. If "n" is
+This function tests whether the integer {n} is not zero. If {n} is
 not an integer, the result is {False}.
 
 *E.G.
@@ -748,12 +747,12 @@ not an integer, the result is {False}.
 
 *PARMS
 
-expr - expression to test
+{expr} - expression to test
 
 *DESC
 
-This function tests whether "expr" is an infinity. This is only the
-case if "expr" is either {Infinity} or {-Infinity}.
+This function tests whether {expr} is an infinity. This is only the
+case if {expr} is either {Infinity} or {-Infinity}.
 
 *E.G.
 
@@ -771,7 +770,7 @@ case if "expr" is either {Infinity} or {-Infinity}.
 
 *PARMS
 
-expr - expression to test
+{expr} - expression to test
 
 *DESC
 
@@ -801,11 +800,11 @@ Yacas can not determine the sign of this expression.
 
 *PARMS
 
-expr - expression to test
+{expr} - expression to test
 
 *DESC
 
-This function tries to approximate "expr" numerically. It returns {True} if this approximation is negative. In case no
+This function tries to approximate {expr} numerically. It returns {True} if this approximation is negative. In case no
 approximation can be found, the function returns {False}. Note that round-off errors may cause incorrect
 results.
 
@@ -831,14 +830,14 @@ Yacas can not determine the sign of this expression.
 
 *PARMS
 
-expr - some expression
+{expr} - some expression
 
 *DESC
 
 {IsConstant} returns {True} if the
 expression is some constant or a function with constant arguments. It
 does this by checking that no variables are referenced in the
-expression.
+expression. {Pi} is considered a constant.
 
 *E.G.
 
