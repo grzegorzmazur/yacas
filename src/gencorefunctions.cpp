@@ -68,8 +68,8 @@ int main(int number_of_main_args, char**)
   }
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) Emit(iname,#fname,flags, nrargs, (number_of_main_args>1) ? 1 : 0);
-#define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) Emit(iname,#fname,flags, nrargs, (number_of_main_args>1) ? 1 : -1)
-#define OPERATOR(kind,precedence,yacas_name) print_operator_info(#kind,#precedence,#yacas_name, (number_of_main_args>1) ? 1 : -1)
+#define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) Emit(iname,#fname,flags, nrargs, (number_of_main_args>1) ? 1 : -1);
+#define OPERATOR(kind,precedence,yacas_name) print_operator_info(#kind,#precedence,#yacas_name, (number_of_main_args>1) ? 1 : -1);
 
 #include "corefunctions.h"
 
