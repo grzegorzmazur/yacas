@@ -36,8 +36,9 @@ HoldArg("D",aFunc);
 5 # (Deriv(_var,1)_func) <-- Deriv(var)func;
 5 # (Deriv(_var,0)_func) <-- func;
 10 # (Deriv(_var,n_IsPositiveInteger)_func) <-- Deriv(var)Deriv(var,n-1)func;
+10 # (Deriv(_var,n_IsNegativeInteger)_func) <-- Check(0,"Negative derivative");
 
-
+ 
 // Need to clean out Sec(x) and friends
 0 # (Deriv(_var) (_var)) <-- 1;
 1 # (Deriv(_var)func_IsAtom) <-- 0;
