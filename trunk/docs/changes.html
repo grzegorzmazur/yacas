@@ -11,11 +11,13 @@
     in the root directory which builds the entire binary release in the winrel\ directory.
   <li> A better Solve() function. (JN)
   <li> More intelligent parsing: combined operators like ==- and :=-
-       and such are now handled dynamically in the infix parser.
+       and such are now handled dynamically in the infix parser. (AP)
   <li> changed evaluation calling sequence for functions at kernel
        level, so that arguments have to be evaluated *before* they
        are passed to the function (AP).
   <li> improved documentation on kernel-level functions (SW)
+  <li> automatic documentation for plugins (SW,JN)
+  <li> automatic extraction of stubs for plugins, better GSL support (SW)
   <li> support for 2D and 3D plotting with GMT (SW)
   <li> some small changes to plugin structure to make it compile
        on a MacOSX again (AP).
