@@ -10,7 +10,7 @@ algebra system currently under development.  The system consists of a core
 interpreter and a library of scripts that implement symbolic algebra
 functionality.  The interpreter provides a high-level weakly typed functional
 language designed for quick prototyping of computer algebra algorithms, but the
-language is suitable to all kinds of symbolic manipulation. It supports
+language is suitable for all kinds of symbolic manipulation. It supports
 conditional term rewriting of symbolic expression trees, closures (pure
 functions) and delayed evaluation, dynamic creation of transformation rules,
 arbitrary-precision numerical calculations, and flexible user-defined syntax
@@ -157,7 +157,7 @@ engine to expand all brackets in any expression containing the infix operators
 
 Rule-based programming is not the only method that can be used in {Yacas} scripts;
 there are alternatives that may be more useful in some situations. For example,
-the familiar {if} / {else} constructs, {While}, {For}, {ForEach} loops are
+the familiar {if} / {else} constructs, {For}, {ForEach} loops are
 defined in the script library for the convenience of users.
 
 Standard patterns of procedural programming, such as subroutines that
@@ -241,8 +241,8 @@ Garbage collection is implemented through reference counting.
 The kernel provides three basic data types: numbers,
 strings, and atoms, and two container types: list and static array (for speed).
 Atoms are implemented as strings that can be assigned values and evaluated.
-Boolean values are simply atoms {True} and {False}. Association (hash) tables,
-stacks, and closures (pure functions) are implemented using nested lists. In
+Boolean values are simply atoms {True} and {False}. Expression trees, association (hash) tables,
+stacks, and closures (pure functions) are all implemented using nested lists. In
 addition, more data types can be provided by plugins. Kernel primitives are
 available for arbitrary-precision arithmetic, string manipulation, array and
 list access and manipulation, for basic control flow, for assigning variables (atoms) and for defining rules for functions (atoms with a function syntax).
