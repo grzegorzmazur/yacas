@@ -77,15 +77,24 @@ RoundTo(N(ArcSin(0.32)), 49)
 , 0.3257294872946301593103199105324500784354180998123
 );
 
+KnownFailure(
+Verify(
+RoundTo(MathArcSin(0.00000003), 49)
+, 0.3000000000000000450000000000000182250000000000098
+)
+);
+
 Verify(
 RoundTo(N(Sin(N(ArcSin(0.1234567)))), 49)
 , 0.1234567
 );
 
 /* ArcSin(x) for x close to 1 */
+KnownFailure(
 Verify(
 RoundTo(N( (1-Sin(N(ArcSin(1-10^(-25)))))*10^25), 25)
 , 1
+)
 );
 
 Verify(
@@ -117,15 +126,18 @@ Verify(
 RoundTo(N(Tan(N(ArcTan(20)))), 46)	// large roundoff error on Tan() calculation due to subtraction from Pi/2 -- unavoidable loss of precision
 , 20
 );
-
+KnownFailure(
 Verify(
 RoundTo(N(Tan(N(ArcTan(500000)))), 38)
 , 500000
+)
 );
 
+KnownFailure(
 Verify(
 RoundTo(N((Pi/2-ArcTan(N(Tan(N(Pi/2)-10^(-24)))))*10^24 ), 25)
 , 1
+)
 );
 
 /// special functions

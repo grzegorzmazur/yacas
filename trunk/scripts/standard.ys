@@ -191,13 +191,14 @@ Rule("NormalForm",1,1000,True) expression;
 102 # _x + (y_IsNegativeNumber)/(_z) <-- x-((-y)/z);
 102 # (y_IsNegativeNumber)/(_z) + _x  <-- x-((-y)/z);
 102 # (x_IsNegativeNumber) + _y <-- y-(-x);
+// fractions
 150 # _n1 / _d + _n2 / _d <-- (n1+n2)/d;
 
 200 # (x_IsNumber + _y)_Not(IsNumber(y)) <-- y+x;
 200 # ((_y + x_IsNumber) + _z)_Not(IsNumber(y) Or IsNumber(z)) <-- (y+z)+x;
 200 # ((x_IsNumber + _y) + z_IsNumber)_Not(IsNumber(y)) <-- y+(x+z);
 200 # ((_x + y_IsNumber) + z_IsNumber)_Not(IsNumber(x)) <-- x+(y+z);
-
+// fractions
 210 # x_IsNumber + (y_IsNumber / z_IsNumber) <--(x*z+y)/z;
 210 # (y_IsNumber / z_IsNumber) + x_IsNumber <--(x*z+y)/z;
 210 # (x_IsNumber / v_IsNumber) + (y_IsNumber / z_IsNumber) <--(x*z+y*v)/(v*z);
@@ -279,7 +280,7 @@ LocalSymbols(x)
 
 250 # Undefined - _y <-- Undefined;
 250 # _x - Undefined <-- Undefined;
-
+// fractions
 210 # x_IsNumber - (y_IsNumber / z_IsNumber) <--(x*z-y)/z;
 210 # (y_IsNumber / z_IsNumber) - x_IsNumber <--(y-x*z)/z;
 210 # (x_IsNumber / v_IsNumber) - (y_IsNumber / z_IsNumber) <--(x*z-y*v)/(v*z);
@@ -301,6 +302,7 @@ LocalSymbols(x)
 100 # _y * (_x * _y) <-- x * y^2;
 100 # _x * (_x * _y) <-- y * x^2;
 100 # _x * (_y / _z) <-- (x*y)/z;
+// fractions
 100 # (_y / _z) * _x <-- (x*y)/z;
 100 # (_x * y_IsNumber)_Not(IsNumber(x)) <-- y*x;
 
@@ -365,6 +367,7 @@ LocalSymbols(x)
  * matrices, since they are lists also.
  */
 230 # aLeft_IsList * aRight_IsList <-- Map("*",{aLeft,aRight});
+// fractions
 242 # (x_IsInteger / y_IsInteger) * (v_IsInteger / w_IsInteger) <-- (x*v)/(y*w);
 243 #  x_IsInteger * (y_IsInteger / z_IsInteger) <--  (x*y)/z;
 243 #  (y_IsInteger / z_IsInteger) * x_IsInteger <--  (x*y)/z;
@@ -386,10 +389,10 @@ LocalSymbols(x)
                                 Not(IsInteger(x) And IsInteger(y))) <--
     MathDivide(x,y);
 
+// unnecessary rule (see #100 below). TODO: REMOVE
+//55 # x_IsNumber / y_IsNegativeNumber <-- (-x)/(-y);
 
-55 # x_IsNumber / y_IsNegativeNumber <-- (-x)/(-y);
-
-55 # (x_IsNonZeroInteger / y_IsNonZeroInteger)_(MathGcd(x,y) > 1) <--
+56 # (x_IsNonZeroInteger / y_IsNonZeroInteger)_(MathGcd(x,y) > 1) <--
      [
        Local(gcd);
        Set(gcd,MathGcd(x,y));
@@ -408,9 +411,10 @@ LocalSymbols(x)
 100 # _x /  1 <-- x;
 100 # (_x / y_IsNegativeNumber) <-- -x/(-y);
 100 # (_x / - _y) <-- -x/y;
+// fractions
 200 # (_x / _y)/ _z <-- x/(y*z);
-
 230 # _x / (_y / _z) <-- (x*z)/y;
+
 240 # xlist_IsList / ylist_IsList <-- Map("/",{xlist,ylist});
 
 

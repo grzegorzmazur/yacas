@@ -177,7 +177,17 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 3 # Ln(Complex(_r,_i)) <-- Complex(Ln(Abs(Complex(r,i))), Arg(Complex(r,i)));
 4 # Ln(x_IsNegativeNumber) <-- Complex(Ln(-x), Pi);
 
-2 # ArcSin(x_IsNumber)_(Numeric And Abs(x)<=1) <-- MathArcSin(x);
+// need to be careful when |x| close to 1
+2 # ArcSin(x_IsNumber)_(Numeric And Abs(x)<=1) <--
+[
+	If(
+		239*Abs(x) >= 169,	// 169/239 is a good enough approximation of 1/Sqrt(2)
+		// use trigonometric identity to avoid |x| close to 1
+		Sign(x)*(Pi()/2-MathArcSin(Sqrt(1-x^2))),
+		MathArcSin(x)
+	);
+];
+/// complex ArcSin
 3 # ArcSin(x_IsNumber)_(Numeric) <-- Sign(x)*(Pi/2+I*ArcCosh(x));
 4 # ArcSin(Sin(_x))           <-- x;
 110 # ArcSin(Complex(_r,_i)) <--
@@ -186,7 +196,7 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 200 # ArcSin(1) <-- Pi/2;
 200 # ArcSin(_n)_(n = -1) <-- -Pi/2;
 
-2 # ArcCos(x_IsNumber)_(Numeric) <-- Pi/2-ArcSin(x);
+2 # ArcCos(x_IsNumber)_(Numeric) <-- Pi()/2-ArcSin(x);
 4 # ArcCos(Cos(_x))           <-- x;
 5 # (ArcTan(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- -ArcTan(-x);
 110 # ArcCos(Complex(_r,_i)) <--
@@ -287,7 +297,18 @@ ArcTanh(xlist_IsList) <-- MapSingle("ArcTanh",xlist);
 Exp(xlist_IsList) <-- MapSingle("Exp",xlist);
 Ln(xlist_IsList) <-- MapSingle("Ln",xlist);
 
-/// numerical evaluation of ArcTan: top level
+2 # ArcTan(x_IsNumber)_(Numeric) <--
+[
+	// using trigonometric identities is faster for now
+	If(
+		Abs(x)>1,
+		Sign(x)*(Pi()/2-ArcSin(1/Sqrt(x^2+1))),
+		ArcSin(x/Sqrt(x^2+1))
+	);
+];
+
+/* old methods -- slower for now
+/// numerical evaluation of ArcTan using continued fractions: top level
 2 # ArcTan(x_IsNumber)_(Numeric) <--
 Sign(x) *
 // now we need to compute ArcTan of a nonnegative number Abs(x)
@@ -315,8 +336,11 @@ Sign(x) *
 		// MyArcTan(x, nterms)
 	);
 ];
+*/
+/// numerical evaluation of ArcTan using continued fractions: low level
 
-/// numerical evaluation of ArcTan using continued fractions
+// evaluation using recursion -- slightly faster but lose some digits to roundoff errors and needs large recursion depth
+/*
 10 # ContArcTan(_x,_n,_n) <-- (2*n-1);
 20 # ContArcTan(_x,_n,_m) <--
 [
@@ -327,4 +351,26 @@ MyArcTan(x,n) :=
 [
   x/ContArcTan(x,1,n);
 ];
-
+*/
+/*
+/// evaluate n terms of the continued fraction for ArcTan(x) without recursion.
+/// better control of roundoff errors
+MyArcTan(x, n) :=
+[
+	Local(i, p, q, t);
+	// initial numerator and denominator
+	p:=1;
+	q:=1;
+	// start evaluating from the last term upwards
+	For(i:=n, i>=1, i--)
+	[
+		//{p,q} := {p + q*(i*x)^2/(4*i^2-1), p};
+	//	t := p*(2*i-1) + q*(i*x)^2; then have to start with p:=2*n+1
+		t := p + q*(i*x)^2/(4*i^2-1);
+		q := p;
+		p := t;
+	];
+	// answer is x/(p/q)
+	x*q/p;
+];
+*/
