@@ -99,6 +99,17 @@ epocmain.o: epocmain.cpp epocyacas.hrh yacasprivate.h \
  ../ramscripts/compressedfiles.h plat/linux32/platfileio.h lispatom.h \
  lispeval.h mathenvironment.h lispuserfunc.h commandline.h standard.h \
  numbers.h standard.inl
+epocmaincmd.o: epocmaincmd.cpp yacas.h yacasbase.h yacasprivate.h \
+ plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
+ plat/linux32/stubs.inl lispstring.h grower.h grower.inl lispassert.h \
+ choices.h refcount.h lispstring.inl stringio.h lispio.h tokenizer.h \
+ lisphash.h lisphash.inl lispevalhash.h lispobject.h genericobject.h \
+ lispobject.inl lisperror.h evalfunc.h infixparser.h lispparser.h \
+ stdfileio.h lispenvironment.h lispcleanupstack.h deffile.h \
+ deffile.inl ramdisk.h lispglobals.h lispplugin.h ctokenizer.h \
+ xmltokenizer.h archiver.h ../ramscripts/compressedfiles.h \
+ plat/linux32/platfileio.h lispatom.h lispeval.h mathenvironment.h \
+ lispuserfunc.h commandline.h standard.h numbers.h standard.inl
 epocstubs.o: epocstubs.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  lisperror.h lispstring.h yacasbase.h grower.h grower.inl lispassert.h \
@@ -415,6 +426,18 @@ yacasbase.o: yacasbase.cpp yacasbase.h yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl
 yacasmain.o: yacasmain.cpp yacas.h yacasbase.h yacasprivate.h \
+ plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
+ plat/linux32/stubs.inl lispstring.h grower.h grower.inl lispassert.h \
+ choices.h refcount.h lispstring.inl stringio.h lispio.h tokenizer.h \
+ lisphash.h lisphash.inl lispevalhash.h lispobject.h genericobject.h \
+ lispobject.inl lisperror.h evalfunc.h infixparser.h lispparser.h \
+ stdfileio.h lispenvironment.h lispcleanupstack.h deffile.h \
+ deffile.inl ramdisk.h lispglobals.h lispplugin.h ctokenizer.h \
+ xmltokenizer.h archiver.h ../ramscripts/compressedfiles.h \
+ plat/linux32/platfileio.h lispatom.h lispeval.h mathenvironment.h \
+ lispuserfunc.h unixcommandline.h commandline.h stdcommandline.h \
+ standard.h numbers.h standard.inl arggetter.h errors.h
+yacasmain.old.o: yacasmain.old.cpp yacas.h yacasbase.h yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl lispstring.h grower.h grower.inl lispassert.h \
  choices.h refcount.h lispstring.inl stringio.h lispio.h tokenizer.h \
