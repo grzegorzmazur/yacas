@@ -50,6 +50,49 @@ expressions and performing calculations, is just one huge function
 that performs that task, and has one entry point, a function call 
 with one argument as the data to the request.
 
+Of course this is a bit of an oversimplification. We are not just
+interested
+in evaluating and simplifying expressions. When Yacas is embedded inside
+an application that offers a user interface, one would want to have access
+to all the operations allowed, and their arguments. Furthermore, for a
+debugger, information about the internal state of the interpreter is
+needed (values of global variables, etcetera).
+
+At the end of the day we want to arrive at a language where we can
+implement an algorithm in a few lines of code, and have the compiler 
+generate efficient code for it.
+
+Given the strong typed Lisp we are using here, how is it different from
+using c++/Java directly?
+
+The difference is in the syntax. Algorithms for manipulating 
+symbolic expressions are written down much more naturally in
+a language that supports these operations natively. The code
+to perform symbolic manipulation operations can look surprisingly
+complex when written in c++ or Java. Later on, a compiler for
+the Lisp dialect developed here that will try to compile to 
+human-readable source code will be described. Although the 
+results are somewhat readable, they are a lot less readable than
+the original Lisp or Yacas script code they were generated from.
+
+Convenient notation aids the programmer greatly in thinking
+about a problem. It is not unusual in mathematics to devise a new 
+notation scheme to make life easier. For example, the bra ket notation,
+where {<a|b>} stands for the inproduct defined as
+
+	Integrate()a*b
+
+has the added advantage of being able to write down projection
+operators of the form {|b><a|} which would be a lot more cumbersome
+to deal with without this notation.
+
+Flexibility is not lost in a strong typed system; one can define
+a type {EXPRESSION}, which (naturally) represents an expression
+that can be manipulated. This could even be the default type 
+for variables for which types are not specified, to make life
+easier for the programmer. This is not advisable, though, as the
+section describing the compiler will make clear.
+
 This section will first introduce the reader to the basic concepts 
 of Lisp, and then proceed to show how the {yacas} function can be 
 implemented in Lisp in general. Clearness of concepts explained will 
@@ -879,10 +922,65 @@ important feature in a language that hopes to stay modular while
 the software written in it grows to a sizable number of separate
 files.
 
-An environment can be built up with {make-environment}, and defining 
+Packaged environments are similar to the well-known singleton classes
+from c++, which are in turn again similar to global functions and
+variables. The disadvantage of having things global is mainly
+that you can only have one instance of the global state of that module.
+This is not a problem for modules for which there is naturally only one
+instance.
+
+Packaged modules are usually of this form. They can be seen as a name
+space, where certain symbols are defined to have a meaning locally.
+Specific symbols from a module can be exported to another module,
+thus the symbol of another module becomes visible in another name space.
+
+As mentioned above, modules in the Lisp dialect developed here 
+have a very simple structure; they are essentially what is usually
+referred to as a class, but there will be only one instantiation
+of each module, and modules are not 'derived' in any form from
+other modules. Modules can export functions (or more precisely,
+modules can import functions from other modules) when appropriate,
+but this feature should be used with care as this easily results
+in re-introducing name collisions in the name space of a module.
+
+Modules have their own global variables. When a function from a
+module is invoked, it can only see its own globals, even if exported
+to another environment. This has the following advantages:
+
+*	0. It enforces modularity, by disallowing modules to
+modify globals from other modules directly.
+*	0. It facilitates compilation to efficient code when
+in an object-oriented environment; the module just becomes 
+a class with methods and properties, with a one-on-one relation
+between the functions, global variables defined in the module,
+and the properties and methods defined in the compiled class.
+
+Modules have access to the following functions and macros
+by default:
+
+{quote, if, cond, setf, while, progn,
+defun, defmacro, assoc, eval, first,
+rest, cons, atom, listp, list, equal,
+namespace, import, makeenv.
+
+All other commands (including arithmetic commands) can be 
+accessed through other modules.
+
+When well-thought out, packages can greatly aid in making
+a system modular, built from small sub-modules which can be added or
+removed.
+
+
+	    Functions supporting modularization
+
+The essential functions for modularization are {namespace},
+{import} and {makeenv}. These three functions will be described
+in this section.
+
+An environment can be built up with {makeenv}, and defining 
 the functions and global variables contained therein:
 
-	(make-environment arithmetic
+	(makeenv arithmetic
 	   (progn
 	      (defun add (n m) ...)
 	      (setf pi 3.1415926535)
@@ -890,30 +988,7 @@ the functions and global variables contained therein:
 
 An expression can then be evaluated in this environment through:
 
-	(eval <expression> <environment>)
-
-For example, in the little example above, {(eval '(add pi 2) arithmetic)}
-could be called.
-
-Functions within an environment can call all the functions defined
-in the encapsulating environment, but the encapsulating environment
-cannot call all functions in the encapsulated environment. Functions
-within the encapsulated environments can be called by exporting them.
-A macro {export} can be written to support the following:
-
-	(export (add n m) arithmetic)
-
-in the enclosing environment to export that function from the enclosed
-environment.
-
-It is important that a function from the encapsulating environment
-can be called, because an environment still needs access to the
-global environment; operations like {first}, {rest}, {+}, etcetera,
-should still be available. A compiler and an interpreter would still
-know in which environment to evaluate that function. The interpreter
-would have to traverse down the line of environments to find the 
-environment in which the symbol or function is defined, but the
-compiler can decide this at compile time.
+	(namespace <module-name> <function-name> <arguments...>)
 
 The 'environment' can be thought of as a static class, a singleton,
 in object-oriented terms. There is only one of this type of object,
@@ -921,7 +996,81 @@ and one instance of each property in the class, which is why
 the compiler can generate a static link to it. A function in an
 environment is no more than a method in such a singleton class.
 
-A plugin class is no more than a compiled environment that gets loaded.
+The arithmetic operations like {+} are actually defined in the 
+module {intarith} for the reference implementation of the Lisp
+interpreter described in this book. This means that from start up,
+the {+} operator is not directly accessible. One way to access
+a function in a module is to pass the name of the module as an argument
+to the operator {namespace}:
+
+	In> (+ 2 3)
+	ERROR: function not defined : +
+	Out> nil
+	In> (namespace 'intarith '+ 2 3)
+	Out> 5
+
+This is obviously not the most convenient syntax. One way to
+encapsulate a call to a function in a module is to define a
+function for it:
+
+	In> (defun +(a b) (namespace 'intarith '+ a b))
+	Out> +
+	In> (+ 2 3)
+	Out> 5
+
+This way we have back our easy access to the functionality of adding
+two integers. However, we are left with cumbersome syntax for importing
+this function. For this the function {import} was defined, which
+makes importing a function from another module into a module a little
+bit easier:
+
+	In> (import intarith +)
+	Out> t
+	In> (+ 2 3)
+	Out> 5
+
+Note that for this language we chose the construct of {namespace}
+because we don't want access to global variables in the module.
+Another option would have been to allow passing an environment,
+or module name to {eval}, as in {(eval <expression> <module-name>)}.
+This would have allowed the programmer to pass in any expression
+to the environment, effectively making it possible to evaluate
+variables in that module. We want to actively disallow that, by
+only allowing function calls to that environment. The arguments
+to the function call are evaluated before the function defined 
+in the module is called, thus they are evaluated in the calling
+environment.
+
+Finally, to define a module, {makeenv} can be used. {makeenv}
+takes two arguments, a module name and the body to execute to
+define globals and functions inside it. For example, we can define 
+a function {bar} in the module {foo} as follows:
+
+	In>  (makeenv foo (defun bar(n m) (list 'head n m)))
+	Out> bar
+	In> (bar 2 3)
+	ERROR: function not defined : bar
+	Out> nil
+	In> (import foo bar)
+	Out> t
+	In> (bar 2 3)
+	Out> (head 2 3 )
+	In> (namespace 'foo 'bar 2 3)
+	Out> (head 2 3 )
+
+	    The bigger picture
+
+The programming language does not stands on itself. It offers
+a way to execute certain algorithms, through the language
+offered, but also there are interfaces to the environment (usually
+the operating system). As such, from within the programming
+environment, there are functions that are supported that allow
+for operating system dependent operations, like file manipulation
+and using libraries commonly found on systems.
+
+As such, the programming language also offers an interface to
+operating system functionality through modules supporting these
+operations.
 
 	    Static versus dynamic scoping
 
@@ -1203,6 +1352,15 @@ of type {vector<integer>}, but this is already a lot less useful.
 The if statements have already been pulled out of the loop, so
 they will not be performed a billion times for an addition of
 two vectors both with a billion components. 
+
+Parametric types can be supported naturally. A vector could be
+represented as {(vector <type> <components>)}, so that 
+{(vector SMALLFLOAT (1 0 0))} would be a base unit vector in a 
+three-dimensional space, with real-valued vector components.
+Flexibility is not lost, the type can be {EXPRESSION} or {OBJECT}
+or some other generic type. But it can also be {(UNIPOLY INTEGER x)},
+eg. making the vector a vector with univariate polynomials in x 
+over the integers as components.
 
 The above considerably speeds up the operation. The problem is that
 it is more natural to place the if statements in the {add}
@@ -1496,6 +1654,127 @@ clock cycles. Inlining macros allows the compiler to discover that
 an {if} or {cond} statement always executes the same clause, and thus
 the {if} or {cond} statement (which has to be independent of the
 loop index) can be taken outside of the loop. 
+
+
+		Dealing with function calls and macro expansions when compiling Lisp expressions to syntax from other languages
+
+Since we are using a strongly typed Lisp dialect with no implicit
+type conversions, Lisp expressions can be readily converted to
+other syntax quite easily. Most procedural or object-oriented
+languages require a notation of the form {function(arg1,arg2,...)}
+where in Lisp that would be {(function arg1 arg2 ...)}.
+
+One slight problem arises due to the fact that every expression
+in Lisp returns a result, including macro's. Consider the following
+piece of code:
+
+	(while (< i n)
+	  (progn
+	    (print i)
+	    (setf i (+ i 1))
+	) )
+
+This is easy to convert to for instance c++ syntax as:
+
+	while (i<n)
+	{
+	  printf("%d\n",i);
+	  i=i+1;
+	}
+
+Now a slightly more advanced example shows the problem:
+
+	(while (progn (print i) (< i n))
+	  (progn
+	    (setf i (+ i 1))
+	) )
+
+This is valid Lisp code. {progn} returns the result of
+evaluating the last expression. A naive translation to c++ would
+yield:
+
+	while ({printf("%d\n",i); i<n;})
+	{
+	  i=i+1;
+	}
+
+which is obviously invalid c++ code. One way around this
+in this case could be:
+
+	{
+	  printf("%d\n",i);
+	  pred = i<n;
+	}
+	while (pred)
+	{
+	  i=i+1;
+	  {
+	    printf("%d\n",i);
+	    pred = i<n;
+	  }
+	}
+
+However, in this case, if the {progn} statement is large,
+it could result in a doubling of a large bit of code.
+It would however be efficient.
+
+The other alternative would be to encapsulate the {progn}
+in a separate function that can be inlined by the compiler,
+as:
+
+	inline int pred(int i, int n)
+	{
+	  printf("%d\n",i);
+	  return (i<n);
+	}
+	
+	...
+	
+	while (pred(i,n))
+	{
+	  i=i+1;
+	}
+
+One more sophisticated example:
+
+	(f a (progn b c))
+
+would at first erroneously yield:
+
+	f(a,{b; c;});
+
+Also here the choice can be to either call the {progn}
+statement beforehand:
+
+	  aarg=a;
+	  {
+	    b;
+	    barg = b;
+	  }
+	  f(aarg,barg);
+
+This can become expansive when there are nested macro-like calls.
+Or, encapsulation can be performed, leading (again) to a slightly
+less efficient version due to function call overhead:
+
+	inline int ftemp()
+	{
+	  b;
+	  return c;
+	}
+	f(a,ftemp());
+
+
+In the compiler, the choice has to be made to either inline
+the code directly, or to allow the c++/Java compiler to inline
+the code. The above suggests that when generating code for
+a function body, the algorithm should first try to expand macro
+bodies, until it encounters a function call, and then
+expand the function calls as arguments to function calls. When
+it cannot expand a function argument because it is actually a
+macro expansion, it can either inline it itself, or generate
+an inlined method for it to allow the c++/Java compiler to inline
+the code at hand.
 
 
 		The concept of bootstrapping
