@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -46,10 +46,9 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -70,7 +69,7 @@ RELEASE = @RELEASE@
 VERSION = @VERSION@
 scriptdir = @scriptdir@
 
-noinst_PROGRAMS = books.html 
+noinst_PROGRAMS = books.html
 
 EXTRA_DIST =  	manualmaker styleplain 	in/all in/arith.chapt in/built.chapt in/calc.chapt 	in/coding.book.txt in/const.chapt in/functional.chapt  	in/intro.book.txt in/io.chapt in/linalg.chapt in/dummies  	in/lists.chapt in/preds.chapt in/prog.chapt                in/refprog.book in/controlflow.chapt newhelp in/plugins.chapt   	in/ref.book in/univar.chapt in/vars.chapt yacasinit.ys in/generic.chapt 	in/intromaker in/refmaker in/refprogmaker in/codingmaker in/logic.chapt         in/config.chapt in/strings.chapt .cvsignore
 
@@ -100,7 +99,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = books.html.c
 OBJECTS = books.html.o
@@ -212,7 +211,7 @@ uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS)
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 
 
@@ -260,10 +259,34 @@ mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
+# Stuff for automatic generation of Yacas books
 %.chapt: %.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
 %.book: %.book.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
+
+%.book.tex: in/%.book
+	../manmake/book2TeX.sh $< $@
+
+%.dvi: %.tex
+	latex $<
+	latex $<
+
+%.pdf: %.dvi
+#	dvipdf $<
+	pdflatex $*
+
+%.ps: %.dvi
+	dvips -o $@ $<
+
+# TeX/PS/PDF top target
+texdocs: coding.book.ps coding.book.pdf intro.book.ps intro.book.pdf
+	echo "done" > texdocs.c
+
+clean:
+	rm -f books.html.c *.tex *.dvi *.aux *.toc *.log *.ps *.pdf \
+	coding*html intro*html ref*html .o core *~ texdocs.c \
+	in/coding.book in/intro.book
 
 books.html: in/arith.chapt in/built.chapt in/calc.chapt \
 	in/coding.book in/const.chapt in/functional.chapt  \

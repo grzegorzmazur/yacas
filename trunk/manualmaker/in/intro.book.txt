@@ -44,8 +44,8 @@ and Yacas's answers appear after the prompt
 	Out>
 
 A Yacas session may be terminated by typing {Exit()} or
-{quit}. Pressing ^C will also quit Yacas;
-however, pressing ^C while Yacas is busy with a calculation will stop
+{quit}. Pressing {^C} will also quit Yacas;
+however, pressing {^C} while Yacas is busy with a calculation will stop
 just that calculation.
 A session can be restarted (forgetting all previous
 definitions and results) by typing {restart}
@@ -483,9 +483,9 @@ After this you should see a window with a plot.
 
 			Let's learn some more
 
-		Command-line options and yacas_client
+		Command-line options
 
-The default operation of Yacas is to run in the interactive console mode. Yacas accepts several options that modify its operation. Options can be combined, for example, :
+The default operation of Yacas is to run in the interactive console mode. Yacas accepts several options that modify its operation. Options can be combined, for example, {yacas -pc} {filename} will execute a file non-interactively. Here is a summary of options:
 
 	yacas -c
 Inhibit printing of prompts "In>" and "Out>". Useful for non-interactive sessions.
@@ -499,14 +499,16 @@ Does not use terminal capabilities, no fancy editing on the command line and no 
 	yacas -t
 Enable some extra history recall functionality in console mode: after executing a command from the history list, the next unmodified command from the history list will be automatically entered on the command line.
 
-	yacas {filename}
-Reads and executes commands in the filename and exits. Equivalent to "Load()".
+	yacas [options] {filename}
+Reads and executes commands in the filename and exits. Equivalent to {Load()}.
 
 	yacas -v
 Prints version information and exits.
 
 	yacas -d
 Prints the path to the Yacas library directory and exits.
+
+		Client/server usage
 
 In addition to the console mode, an experimental persistent session facility is provided through the script {yacas_client}. By means of this script, the user can configure third-party applications to pass commands to a constantly running "Yacas server" and get output. The "Yacas server" is automatically started by {yacas_client}. It may run on a remote computer; in that case the user should have a user account on the remote computer and privileges to execute {yacas_client} there, as well as {rsh} or {ssh} access. The purpose of {yacas_client} is to enable users to pass commands to Yacas within a persistent session while running another application such as a text editor.
 
@@ -544,7 +546,7 @@ On a given host computer running the "Yacas server", each user currently may hav
 		Compound statements
 
 Multiple statements can be grouped together using the [ and ] brackets.
-The compound {[a;b;c;];} evaluates a, then b, then c, and returns the result
+The compound {[a; b; c;];} evaluates a, then b, then c, and returns the result
 of evaluating c.
 
 A variable can be declared
@@ -552,7 +554,7 @@ local to a compound statement block by the function {Local(var1, var2,...)}.
 
 		"Threading" of functions
 
-Some functions in Yacas can be <i>threaded</i>. This means that calling the function
+Some functions in Yacas can be "threaded". This means that calling the function
 with a list as argument will result in a list with that function being
 called on each item in the list. E.g.
 
@@ -610,7 +612,7 @@ would become somewhat cleaner: "{A x;}"
 However, regardess of presentation, internally all functions and operators
 are equal and merely take a certain number of arguments. The user may
 define or redefine any operators with either "normal" names such as "A"
-or names made of one or more of the special symbols {+ - * / = `~ : ! @ # $ ^ & * _ | < >} and declare them to be infix, postfix, or
+or names made of one or more of the special symbols {+ - * /} {= ` ~ :} {! @ # $} {^ & * _} {| < >} and declare them to be infix, postfix, or
 prefix operators, as well as normal or bodied functions. (The symbol {%} is reserved for the result of the previous expression.)
 Some of these operators and combinations are already defined in Yacas's
 script library, for instance the "syntactic sugar" operators such as
@@ -661,7 +663,7 @@ function and also define it as a mathematical operator
 	In> ##(1) 3 + 2;
 	Out> 16/3;
 
-We have used the name "##" but we
+We have used the name {##} but we
 could have used any other name such as {xx} or {F} or even {_-+@+-_}.
 Apart from possibly confusing yourself, it doesn't matter what you call the
 functions you define. There is currently one limitation in Yacas: once a
@@ -684,7 +686,7 @@ functions.) As an example, let's define a function "f" that will evaluate
 factorials of non-negative integers. We'll first define a predicate to
 check whether our argument is indeed a non-negative integer, and we'll use
 this predicate and the obvious recursion f(n)=n*f(n-1) to evaluate the
-factorial. Tll this is accomplished by the following three lines:
+factorial. All this is accomplished by the following three lines:
 
 	IsIntegerGreaterThanZero(_n) <-- IsInteger(n) And n>0;
 	10 # f(0) <-- 1;
@@ -748,16 +750,18 @@ Where the first rule specifies that if n is an integer, and greater than
 zero, the predicate is true, and the second rule states that the
 predicate is false otherwise.
 
+In the above example, the {(n>0)} clause is added after the pattern and allows the pattern to match only if this predicate return {True}. This is a useful syntax for defining rules with complicated predicates. There is no difference between the rules {F(n_IsPositiveInteger)<--...} and {F(_n)_(IsPositiveInteger(n)) <-- ...} except that the first syntax is a little more concise.
+
 The left hand side of a rule has the form
 
-"pattern _ postpredicate <-- replacement".
+<i>precedence</i> {#} <i>pattern</i> {_} <i>postpredicate</i> {<--} <i>replacement</i>.
 
-The {(n>0)} clause is added after the pattern and allows the pattern to match only if this predicate return {True}. This is a useful syntax for defining rules with complicated predicates. There is no difference between the rules {F(n_IsPositiveInteger)<--...} and {F(_n)_(IsPositiveInteger(n)) <-- ...} except that the first syntax is a little more concise.
+The optional <i>precedence</i> must be a positive integer.
 
 Some more examples of rules:
 
-	_x + 0 <-- x;
-	_x - _x <-- 0;
+	10 # _x + 0 <-- x;
+	20 # _x - _x <-- 0;
 	ArcSin(Sin(_x)) <-- x;
 
 Yacas will first try to match the pattern like a template. Names preceded

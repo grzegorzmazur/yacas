@@ -33,7 +33,7 @@ while (<STDIN>) {
 		&finish_text();
 		print "\tSubSection()\"", &escape_term($1), "\";\n\n";
 		$have_par = 1;
-	} elsif ((not $in_htmlcommand and /^\t([^ \t].*)$/) or ($in_htmlcommand and /^\t(.*)$/)) {	# Sample code; cannot start with empty line
+	} elsif ((not $in_htmlcommand and /^\t( {0,2}[^ \t].*)$/) or ($in_htmlcommand and /^\t(.*)$/)) {	# Sample code (HtmlCommand); cannot start with empty line
 		&start_text();
 		if (not $in_htmlcommand) {
 			&close_quote();
