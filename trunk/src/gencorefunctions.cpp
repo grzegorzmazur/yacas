@@ -59,6 +59,10 @@ int main(int number_of_main_args, char**)
 #define OPERATOR(kind,precedence,yacas_name) print_operator_info(#kind,#precedence,#yacas_name, (number_of_main_args>1) ? 1 : -1)
 
 #include "corefunctions.h"
+
+	// this file is generated from core_yacasmain.h
+#include "core_yacasmain.h"
+
 #undef CORE_KERNEL_FUNCTION
 #undef CORE_KERNEL_FUNCTION_ALIAS
   return 0;
