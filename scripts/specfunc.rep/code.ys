@@ -240,9 +240,6 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 
 Function("Beta",{n,m})
 [
-	Check(  (IsVariable(m) And IsVariable(n)) Or
-		(IsRationalOrNumber(n) Or IsComplex(n)) And
-	        (IsRationalOrNumber(m) Or IsComplex(m)), "Beta: argument must be a number or variable" );
 	Gamma(m)*Gamma(n)/Gamma(m+n);
 ];
 
