@@ -2,7 +2,8 @@
 Chapter()"Polynomials";
 
 ChapterIntro("This chapter contains commands to manipulate
-polynomials.");
+polynomials. This includes function for constructing and evaluating
+orthogonal polynomials.");
 
 
 
@@ -406,4 +407,365 @@ Topical()"See Also";
 SeeAlso({"Expand"});
 
 
+
+CmdDescription("OrthoP", "Legendre and Jacobi orthogonal polynomials");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "
+OrthoP(n, x); <br>
+OrthoP(n, a, b, x);";
+
+Topical() "Parameters";
+Text() "
+n - degree of polynomial <br>
+x - point to evaluate polynomial at <br>
+a, b - parameters for Jacobi polynomial";
+
+Topical() "Description";
+Text() "
+The first calling sequence evaluates the Legendre polynomial of degree
+\"n\" at the point \"x\". The second form does the same for the Jacobi
+polynomial with parameters \"a\" and \"b\", which should be greater
+than -1. 
+<p> </p>
+The Jacobi polynomials are orthogonal with respect to the weight
+function (1-x)^a (1+x)^b on the interval [-1,1]. They satisfy the
+recurrence relations: " :
+HtmlCommand("
+P(0,a,b,x) = 1
+
+             a - b     /     a + b \\
+P(1,a,b,x) = ----- + x | 1 + ----- |
+               2       \\       2   /
+
+                                 2   2
+                                a - b + x (2n+a+b-2) (n+a+b)
+P(n,a,b,x) = (2n + a + b - 1) * ---------------------------- P(n-1,a,b,x)
+                                   2n (2n+a+b-2) (n+a+b)
+
+
+                (n+a-1) (n+b-1) (2n+a+b)
+             -  ------------------------ P(n-2,a,b,x),         for n > 1.
+                  n (n+a+b) (2n+a+b-2)
+") : "
+<p> </p>
+Legendre polynomials are a special case of Jacobi polynomials with the
+specific parameter values a = b = 0. So they form an orthogonal system
+with respect to the weight function identically equal to one on the
+interval [-1,1], and they satisfy the recurrence relations: " :
+HtmlCommand("
+P(0,x) = 1
+
+P(1,x) = x
+        
+         (2n - 1) x            n - 1
+P(n,x) = ---------- P(n-1,x) - ----- P(n-2,x),     for n > 1.
+             2n                  n
+") : "
+<p> </p>
+Most of the work is performed by the internal function " :
+HtmlTerm("OrthoPoly") : ".";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> PrettyPrinter(\"PrettyForm\");
+
+True
+
+Out> 
+In> OrthoP(3, x);
+
+    /      2     \\
+    | 5 * x    3 |
+x * | ------ - - |
+    \\   2      2 /
+
+Out> 
+In> OrthoP(3, 1, 2, x);
+
+1       /     / 21 * x   7 \\   7 \\
+- + x * | x * | ------ - - | - - |
+2       \\     \\   2      2 /   2 /
+
+Out> 
+In> Expand(%)
+
+      3        2            
+21 * x  - 7 * x  - 7 * x + 1
+----------------------------
+             2              
+
+Out> 
+In> OrthoP(3, 1, 2, 0.5);
+
+-0.8124999999
+
+Out> ");
+
+Topical() "See Also";
+SeeAlso({"OrthoG", "OrthoPoly"});
+
+
+
+CmdDescription("OrthoH", "Hermite orthogonal polynomials");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "OrthoH(n, x);";
+
+Topical() "Parameters";
+Text() "
+n - degree of polynomial <br>
+x - point to evaluate polynomial at";
+
+Topical() "Description";
+Text() "
+This function evaluates the Hermite polynomial of degree \"n\" at the
+point \"x\".
+<p> </p>
+The Hermite polynomials are orthogonal with respect to the weight
+function e^(-x^2/2) on the entire real axis. They satisfy the
+recurrence relations: " :
+HtmlCommand("
+H(0,x) = 1
+
+H(1,x) = 2x
+
+H(n,x) = 2x H(n-1,x) - 2(n-1) H(n-2,x),     for n > 1.") : "
+<p> </p>
+Most of the work is performed by the internal function " :
+HtmlTerm("OrthoPoly") : ".";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> OrthoH(3, x);
+Out> x*(8*x^2-12);
+In> OrthoH(6, 0.5);
+Out> 31;");
+
+Topical() "See Also";
+SeeAlso({"OrthoPoly"});
+
+
+
+CmdDescription("OrthoG", "Gegenbauer orthogonal polynomials");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "OrthoG(n, a, x);";
+
+Topical() "Parameters";
+Text() "
+n - degree of polynomial <br>
+a - parameter <br>
+x - point to evaluate polynomial at";
+
+Topical() "Description";
+Text() "
+This function evaluates the Gegenbauer (or ultraspherical) polynomial
+with parameter \"a\" and degree \"n\" at the point \"x\". The
+parameter \"a\" should be greater than -1/2.
+<p> </p>
+The Gegenbauer polynomials are orthogonal with respect to the weight
+function (1-x^2)^(a-1/2) on the interval [-1,1]. Hence they are
+connected to the Jacobi polynomials via G(n, a, x) =
+P(n, a-1/2, a-1/2, x). They satisfy the recurrence relations: " :
+HtmlCommand("
+G(0,a,x) = 1
+
+G(1,a,x) = 2x
+
+             /     a - 1 \\                /     2 (a-2) \\
+G(n,a,x) = 2 | 1 + ----- | x G(n-1,a,x) - | 1 + ------- | G(n-2,a,x), for n>1.
+             \\       n   /                \\        n    /
+") : "
+<p> </p>
+Most of the work is performed by the internal function " :
+HtmlTerm("OrthoPoly") : ".";
+
+Topical() "Examples";
+Text() HtmlCommand("
+IIn> OrthoG(5, 1, x);
+Out> x*((32*x^2-32)*x^2+6);
+In> OrthoG(5, 2, -0.5);
+Out> 2;");
+
+Topical() "See Also";
+SeeAlso({"OrthoP", "OrthoT", "OrthoU", "OrthoPoly"});
+
+
+
+CmdDescription("OrthoL", "Laguerre orthogonal polynomials");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "OrthoL(n, a, x);";
+
+Topical() "Parameters";
+Text() "
+n - degree of polynomial <br>
+a - parameter <br>
+x - point to evaluate polynomial at";
+
+Topical() "Description";
+Text() "
+This function evaluates the Laguerre polynomial with parameter \"a\"
+and degree \"n\" at the point \"x\". The parameter \"a\" should be
+greater than -1.
+<p> </p>
+The Laguerre polynomials are orthogonal with respect to the weight
+function x^a * e^(-x) on the positive real axis. They satisfy the
+recurrence relations: " :  
+HtmlCommand("
+L(0,a,x) = 1
+
+L(1,a,x) = a + 1 - x
+
+           /     a - 1 - x \\              /     a - 1 \\
+L(n,a,x) = | 2 + --------- | L(n-1,a,x) - | 1 + ----- | L(n-2,a,x), for n>1.
+           \\         n     /              \\       n   /
+") : "
+<p> </p>
+Most of the work is performed by the internal function " :
+HtmlTerm("OrthoPoly") : ".";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> OrthoL(3, 1, x);
+Out> x*(x*(2-x/6)-6)+4;
+In> OrthoL(3, 1/2, 0.25);
+Out> 1.2005208334;");
+
+Topical() "See Also";
+SeeAlso({"OrthoPoly"});
+
+
+
+CmdDescription("OrthoT", "Tshebyscheff polynomials of the first kind");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "OrthoT(n, x);";
+
+Topical() "Parameters";
+Text() "
+n - degree of polynomial <br>
+x - point to evaluate polynomial at";
+
+Topical() "Description";
+Text() "
+This function evaluates the Tschebyscheff polynomial of the first kind
+of degree \"n\" at the point \"x\". The name is also spelled Chebyshev.
+<p> </p>
+The Tschebyscheff polynomials of the first kind are orthogonal with
+respect to the weight function (1-x^2)^(-1/2). Hence they are a
+special case of the Gegenbauer polynomials, with a=0. They satisfy the
+recurrence relations: " :
+HtmlCommand("
+T(0,x) = 1
+
+T(1,x) = x
+
+T(n,x) = 2x T(n-1,x) - T(n-2,x),     for n > 1.") : "
+<p> </p>
+Most of the work is performed by the internal function " :
+HtmlTerm("OrthoPoly") : ".";
+
+Topical() "Examples";
+Text() HtmlCommand("
+IIn> OrthoT(3, x);
+Out> x*(4*x^2-3);
+In> OrthoT(10, 0.9);
+Out> -0.2007474688;");
+
+Topical() "See Also";
+SeeAlso({"OrthoG", "OrthoU", "OrthoPoly"});
+
+
+
+CmdDescription("OrthoU", "Tshebyscheff polynomials of the second kind");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "OrthoU(n, x);";
+
+Topical() "Parameters";
+Text() "
+n - degree of polynomial <br>
+x - point to evaluate polynomial at";
+
+Topical() "Description";
+Text() "
+This function evaluates the Tschebyscheff polynomial of the second kind
+of degree \"n\" at the point \"x\". The name is also spelled Chebyshev.
+<p> </p>
+The Tschebyscheff polynomials of the second kind are orthogonal with
+respect to the weight function (1-x^2)^(1/2). Hence they are a
+special case of the Gegenbauer polynomials, with a=1. They satisfy the
+recurrence relations: " :
+HtmlCommand("
+U(0,x) = 1
+
+U(1,x) = 2x
+
+U(n,x) = 2x U(n-1,x) - u(n-2,x),     for n > 1.") : "
+<p> </p>
+Most of the work is performed by the internal function " :
+HtmlTerm("OrthoPoly") : ".";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> OrthoU(3, x);
+Out> x*(8*x^2-4);
+In> OrthoU(10, 0.9);
+Out> -2.2234571776;");
+
+Topical() "See Also";
+SeeAlso({"OrthoG", "OrthoT", "OrthoPoly"});
+
+
+
+CmdDescription("OrthoPoly", 
+               "Internal function for constructing orthogonal polynomials");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "OrthoPoly(name, n, par, x)";
+
+Topical() "Parameters";
+Text() "
+name - string containing name of orthogonal family <br>
+n - degree of the polynomial <br>
+par - list of values for the parameters <br>
+x - point to evaluate at";
+
+Topical() "Description";
+Text() "
+This function is used internally to construct orthogonal
+polynomials. It returns the \"n\"-th polynomial from the family
+\"name\" with parameters \"par\" at the point \"x\".
+<p> </p>
+All known families are stored in the association list " :
+HtmlTerm("KnownOrthoPoly") : ". The name serves as key. At the moment
+the following names are known to Yacas: " : HtmlTerm("\"Jacobi\"") :
+", " : HtmlTerm("\"Gegenbauer\"") : ", " : HtmlTerm("\"Laguerre\"") :
+", " : HtmlTerm("\"Hermite\"") : ", " : HtmlTerm("\"Tscheb1\"") : ",
+and " : HtmlTerm("\"Tscheb2\"") : ". The value associated to the key
+is a pure function that takes two arguments: the order \"n\" and the
+extra parameters \"p\", and returns a list of two lists: the first list
+contains the coefficients {A,B} of the n=1 polynomial, i.e. \"A+B*x\";
+the second list contains the coefficients {A,B,C} in the recurrence
+relation, i.e. \"P_n = (A+B*x)*P_{n-1}+C*P_{n-2}\". (So far there are
+only 3 coefficients in the second list, i.e. no \"C+D*x\", but we don't
+want to be limited.)
+<p> </p>
+If the argument \"x\" is numeric, the function " :
+HtmlTerm("OrthoPolyNumeric") : " is called. Otherwise, the function "
+: HtmlTerm("OrthoPolyCoeffs") : " computes a list of coefficients, and
+" : HtmlTerm("EvaluateHornerScheme") : " converts this lists into a
+polynomial.";
+
+Topical() "See Also";
+SeeAlso({"OrthoP", "OrthoG", "OrthoH", "OrthoL", "OrthoT", "OrthoU"});
 
