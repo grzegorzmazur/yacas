@@ -663,7 +663,7 @@ Function("CanBeUni",{expression}) CanBeUni(expression,VarList(expression));
 40 # CanBeUni(_x * _y,_var) <-- CanBeUni(x,var) And CanBeUni(y,var);
 40 # CanBeUni(_x / _y,_var) <-- CanBeUni(x,var) And IsFreeOf(y,var);
 /* Special case again: raising powers */
-40 # CanBeUni(_x ^ y_IsInteger,_var)_CanBeUni(x,var) <-- True;
+40 # CanBeUni(_x ^ y_IsInteger,_var)_(y >= 0 And CanBeUni(x,var)) <-- True;
 41 # CanBeUni(_x ^ _y,_var)_(IsFreeOf(x,var) And IsFreeOf(y,var)) <-- True;
 50 # CanBeUni(UniVariate(_var,_first,_coefs),_var) <-- True;
 1000 # CanBeUni(_f,_var)_(Not(IsFreeOf(f,var))) <-- False;

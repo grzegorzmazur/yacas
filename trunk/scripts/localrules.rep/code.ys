@@ -136,3 +136,50 @@ CompilePatterns(patterns) := LocPatterns(LocProcess(patterns));
 ];
 
 
+RuleBase("Where",{left,right});
+//HoldArg("Where",left);
+//HoldArg("Where",right);
+UnFence("Where",2);
+10 # (_body Where _var == _value)
+     <-- `[Local(@var);@var := @value;@body;];
+20 # (_body Where (_a And _b))
+     <--
+[
+  Set(body,`(@body Where @a));
+  `(@body Where @b);
+];
+
+30 # (_body Where {}) <-- {};
+40 # (_body Where list_IsList)
+     <--
+     [
+       Local(head,rest);
+       head:=Head(list);
+       rest:=Tail(list);
+       rest:= `(@body Where @rest);
+       `(@body Where @head) : rest;
+     ];
+
+// (a or b) and (c or d) -> (a and c) or (a and d) or (b and c) or (b and d)
+20 # (list_IsList AddTo _rest) <--
+[
+  Local(res);
+  res:={};
+  ForEach(item,list)
+  [
+    res := Concat(res,item AddTo rest);
+  ];
+  res;
+];
+30 # (_a'item AddTo list_IsList) <--
+[
+  MapSingle({{orig},a'item And orig},list);
+];
+40 # (_a'item AddTo _b) <-- a'item And b;
+
+
+
+
+
+
+
