@@ -441,6 +441,16 @@ Note that we used {Atom("@")} rather than just the bare atom {@} because {@} is
 a prefix operator and prefix operator names as bare atoms do not parse (they
 would be confused with applications of a prefix operator to what follows).
 
+Finally, there is a more concise (but less general) way of defining
+{NFunction()} for functions with known number of arguments, using the
+backquoting mechanism. The backquote operation will first substitute variables
+in an expression, without evaluating anything else, and then will evaluate the
+resulting expression a second time. The code for functions of just one variable may look like this:
+
+	N1Function(new'name, old'name) :=
+		`( @new'name(x_IsNumber) <-- @old'name(x) );
+This executes a little slower than the above version, because the backquote
+needs to traverse the expression twice, but makes for much more readable code.
 
 		Scope of variable bindings
 
