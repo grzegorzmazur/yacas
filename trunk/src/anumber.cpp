@@ -356,6 +356,7 @@ LispBoolean ANumber::ExactlyEqual(const ANumber& aOther)
   if (iTensExp   != aOther.iTensExp) return LispFalse;
   if (iNegative  != aOther.iNegative) return LispFalse;
 //  if (iPrecision != aOther.iPrecision) return LispFalse;
+  if (NrItems()  != aOther.NrItems()) return LispFalse;
 
   //TODO there HAS to be a faster way to copy...
   LispInt nr = NrItems();
@@ -517,7 +518,7 @@ void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
         }
         else
         {
-            ANumber zero("0",aResult.iPrecision);
+            ANumber zero(/*???"0",*/aResult.iPrecision);
             aResult.CopyFrom(zero);
         }
     }
@@ -538,7 +539,7 @@ void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
         }
         else
         {
-            ANumber zero("0",aResult.iPrecision);
+            ANumber zero(/*???"0",*/aResult.iPrecision);
             aResult.CopyFrom(zero);
         }
     }
@@ -575,7 +576,7 @@ void Subtract(ANumber& aResult, ANumber& a1, ANumber& a2)
         }
         else
         {
-            ANumber zero("0",aResult.iPrecision);
+            ANumber zero(/*???"0",*/aResult.iPrecision);
             aResult.CopyFrom(zero);
         }
     }
@@ -596,7 +597,7 @@ void Subtract(ANumber& aResult, ANumber& a1, ANumber& a2)
         }
         else
         {
-            ANumber zero("0",aResult.iPrecision);
+            ANumber zero(/*???"0",*/aResult.iPrecision);
             aResult.CopyFrom(zero);
         }
     }
@@ -1050,9 +1051,9 @@ void BaseShiftLeft(ANumber& a, LispInt aNrBits)
 /* Binary Greatest common divisor algorithm. */
 void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
 {
-    ANumber zero("0",Precision(aResult),10);
-    ANumber u("0",Precision(aResult));
-    ANumber v("0",Precision(aResult));
+    ANumber zero(/*???"0",*/Precision(aResult)/*???,10*/);
+    ANumber u(/*???"0",*/Precision(aResult));
+    ANumber v(/*???"0",*/Precision(aResult));
     u.CopyFrom(a1);
     v.CopyFrom(a2);
     u.iNegative = v.iNegative = LispFalse;
@@ -1073,7 +1074,7 @@ void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
       BaseShiftRight(u,k);
       BaseShiftRight(v,k);
     }
-    ANumber t("0",10);
+    ANumber t(/*???"0",*/10);
 
     if (IsOdd(u))
     {

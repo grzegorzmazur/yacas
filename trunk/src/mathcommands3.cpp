@@ -204,8 +204,8 @@ void LispSubtract(LispEnvironment& aEnvironment, LispInt aStackTop)
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aStackTop, 1);
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
-      z->Negate(*x.Ptr());
+      BigNumber *z = NEW BigNumber(*x.Ptr()/*aEnvironment.BinaryPrecision()*/);
+      z->Negate(*z /* *x.Ptr() */);
       RESULT.Set(NEW LispNumber(z));
       return;
 #endif
@@ -217,8 +217,8 @@ void LispSubtract(LispEnvironment& aEnvironment, LispInt aStackTop)
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aStackTop, 1);
       GetNumber(y,aEnvironment, aStackTop, 2);
-      BigNumber yneg;
-      yneg.Negate(*y.Ptr());
+      BigNumber yneg(*y.Ptr());
+      yneg.Negate(yneg);
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->Add(*x.Ptr(),yneg,aEnvironment.BinaryPrecision());
       RESULT.Set(NEW LispNumber(z));
