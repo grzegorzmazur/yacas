@@ -46,8 +46,6 @@ LispBoolean IsSymbolic(LispChar c)
     return 0;
 }
 
-
-
 LispStringPtr LispTokenizer::NextToken(LispInput& aInput,
                                        LispHashTable& aHashTable)
 {
@@ -123,17 +121,9 @@ REDO:
         return aHashTable.LookUp(aResult.String());
     }
     //parse atoms
-    else if (IsAlpha(c)
-#ifdef HACKED_PARSER
-        || c == '_'                                 // could start with _
-#endif
-            )
+    else if (IsAlpha(c))
     {
-        while (IsAlNum( aInput.Peek())
-#ifdef HACKED_PARSER
-        || aInput.Peek() == '_'                     // can contain _
-#endif
-                )
+        while (IsAlNum( aInput.Peek()))
         {
             aInput.Next();
         }
@@ -146,7 +136,6 @@ REDO:
             aInput.Next();
         }
     }
-#ifndef HACKED_PARSER
     else if (c == '_')
     {
         while (aInput.Peek() == '_')
@@ -154,7 +143,6 @@ REDO:
             aInput.Next();
         }
     }
-#endif
     else if (IsDigit(c) || c == '.')
     {
         while (IsDigit( aInput.Peek())) aInput.Next();
