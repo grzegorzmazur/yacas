@@ -1,4 +1,14 @@
 
+/*
+Documentation for the applet, starting it here, but has to move to main docs:
+just random thoughts for now.
+
+1) typing 'restart' on the command line restarts the system
+2) You can perform initialization calls by adding parameters "initN" in the html
+   code, where N is a number from 1 upwards, which have to be in consecutive order.
+
+*/
+
 
 import java.awt.*;
 import java.awt.event.*;
@@ -37,17 +47,10 @@ public class ConsoleApplet extends Applet implements KeyListener
   public void start()
   {  
     ResetInput();
-    try
-    {
-      client = new Socket(serverAddress,serverPort);
-    }
-    catch (Exception e)
-    {
-      out.println(e);
-    }
     out.println("");
     out.println("Welcome to the Yacas console applet!");
-    out.println("");
+    out.println("You can type 'restart' to restart the engine, ");
+    out.println("or type 'Example()' to see some examples");
     out.println("Connecting to the server at address "+serverAddress+" on port "+serverPort);
     try
     {
@@ -58,6 +61,19 @@ public class ConsoleApplet extends Applet implements KeyListener
     {
       out.println(e);
     } 
+
+    int i;
+    i=1;
+    while (true)
+    {
+      String argn = "init"+i;
+      String s = getParameter(argn);
+      if (s == null) break;
+      s = unescape(s);
+      PerformRequest("Init>",s);
+      i++;
+    }
+
   }
   public void stop()
   {
@@ -69,6 +85,26 @@ public class ConsoleApplet extends Applet implements KeyListener
       {
       }
       client = null;
+  }
+
+
+  private String unescape(String s)
+  {
+    StringBuffer buf = new StringBuffer();
+    int i,nr=s.length();
+    for(i=0;i<nr;i++)
+    {
+      if (s.charAt(i) == '\'' && s.charAt(i+1) == '\'')
+      {
+        buf.append('\"');
+        i++;
+      }
+      else
+      {
+        buf.append(s.charAt(i));
+      }
+    }
+    return buf.toString();
   }
 
   private void ResetInput()
@@ -179,7 +215,7 @@ public class ConsoleApplet extends Applet implements KeyListener
         currentHistoryLine++;
         AddLine(inputPrompt+inputLine);
 
-        PerformRequest(outputPrompt,inputLine);
+        PerformRequest("Out> ",inputLine);
         repaint(0);
         ResetInput();
       }
@@ -195,6 +231,35 @@ public class ConsoleApplet extends Applet implements KeyListener
   static void PerformRequest(String outputPrompt,String inputLine)
   {
     boolean succeed = false;
+    if (inputLine.startsWith("restart"))
+    {
+      if (client != null) 
+      {
+        try { client.close(); } catch(Exception e){out.println(e);}
+      }
+      client = null;
+      out.println("Restarting");
+      return;
+    }
+
+    if (client == null)
+    {
+      try
+      {
+        client = new Socket(serverAddress,serverPort);
+      }
+      catch (Exception e)
+      {
+        out.println(e);
+      }
+    }
+    if (client == null)
+    {
+      out.println("Not connected to the server");
+      return;
+    }
+
+
     try
     {
       BufferedOutputStream buffered = new BufferedOutputStream(client.getOutputStream());
@@ -205,11 +270,18 @@ public class ConsoleApplet extends Applet implements KeyListener
       String responseLine;
       while ((responseLine = inbound.readLine()) != null)
       {
-        AddLineStatic(outputPrompt+responseLine);
-        break;
+        if (responseLine.length()>0)
+          if (responseLine.charAt(0) == ']') break;
+        AddLineStatic(responseLine);
       }
-//      outbound.close();
-//      inbound.close();
+
+      while ((responseLine = inbound.readLine()) != null)
+      {
+        if (responseLine.length()>0)
+          if (responseLine.charAt(0) == ']') break;
+        AddLineStatic(outputPrompt+responseLine);
+      }
+
       succeed = true;
     }
     catch (IOException ex)
@@ -222,7 +294,19 @@ public class ConsoleApplet extends Applet implements KeyListener
     }
     finally
     {
-      if (!succeed) out.println("Request failed");
+      if (!succeed) 
+      {
+        try
+        {
+          client.close();
+        }
+        catch (Exception e)
+        {
+          out.println(e);
+        }
+        client=null;
+        out.println("Request failed");
+      }
     }
   }
 
