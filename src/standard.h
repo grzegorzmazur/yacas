@@ -55,8 +55,6 @@ void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnviron
 void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
                         LispCharPtr aString);
 
-//TODO remove? LispInt PlatStrCompare(LispCharPtr f1, LispCharPtr f2);
-
 #define ATOML(_s) LispAtom::New(aEnvironment,_s)
 #define LIST(_c) LispSubList::New(_c)
 class LispObjectAdder : public YacasBase

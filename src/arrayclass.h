@@ -20,10 +20,6 @@ public: //array-specific
 
 private:
     LispPtrArray iArray;
-/*TODO remove
-    LispInt iSize;
-    LispPtr* iArray;
-*/
 };
 
 #include "arrayclass.inl"

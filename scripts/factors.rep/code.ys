@@ -421,6 +421,7 @@ Bk(_poly,_prime) <--
 //Echo("to ",coefs);
 //Echo(coefs,prime);
     result := Berlekamp(coefs,prime);
+//Echo(result);
     Local(i);
     For(i:=1,i<=Length(result),i++)
     [

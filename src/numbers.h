@@ -43,15 +43,6 @@ LispObject* ShiftRight( LispObject* int1, LispObject* int2, LispEnvironment& aEn
 LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
 
 
-/*TODO remove
-LispObject* BitAnd(LispObject* int1, LispObject* int2,
-                     LispEnvironment& aEnvironment,LispInt aPrecision);
-LispObject* BitOr(LispObject* int1, LispObject* int2,
-                     LispEnvironment& aEnvironment,LispInt aPrecision);
-LispObject* BitXor(LispObject* int1, LispObject* int2,
-                     LispEnvironment& aEnvironment,LispInt aPrecision);
-*/
-
 
 // methods generally useful for all numeric libraries
 const unsigned GUARD_BITS = 8;	// we leave this many guard bits untruncated in various situations when we need to truncate precision by hand

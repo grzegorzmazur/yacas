@@ -365,8 +365,8 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
 
                 if (res->Degree() > 0)
                 {
-//                    printf("s = %d, degree=%d\n",s,res->Degree());
-//                    PrintPoly(*res);
+//printf("s = %d, degree=%d\n",s,res->Degree());
+//PrintPoly(*res);
                     newtoadd.Append(res);
                 }
                 else
@@ -394,6 +394,7 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
     }
 }
 
+#if 0 //deprecated
 #ifdef TEST
 
  int main(void)
@@ -424,5 +425,6 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
     }
 #endif
 
+#endif
 
 

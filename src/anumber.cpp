@@ -284,15 +284,7 @@ void ANumber::SetTo(const LispCharPtr aString,LispInt aBase)
                 LispInt nrc=fraction.NrItems();
                 copied.GrowTo(nrc);
                 copied.SetNrItems(nrc);
-                /*TODO remove?
-                typename LispString::ElementTypePtr fractionPtr = &fraction[0];
-                typename LispString::ElementTypePtr copiedPtr = &copied[0];
-                */
                 PlatMemCopy(&copied[0],  &fraction[0], nrc*sizeof(LispString::ElementType));
-                /*TODO remove?
-                 for (j=0;j<nrc;j++)
-                     copiedPtr[j]=fractionPtr[j];
-                 */
             }
             BaseMultiply(fraction, copied, base, aBase);
 
@@ -395,31 +387,7 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
     // Truncate zeroes (the multiplication is heavy enough as it is...)
     a1.DropTrailZeroes();
     a2.DropTrailZeroes();
-/*TODO remove, superseded by a better version?
-    LispInt todel;
 
-    todel=0;
-    while (todel<a1.iExp && a1[todel] == 0)
-    {
-        todel++;
-    }
-    if (todel)
-    {
-        a1.iExp-=todel;
-        a1.Delete(0,todel);
-    }
-
-    todel=0;
-    while (todel<a2.iExp && a2[todel] == 0)
-    {
-        todel++;
-    }
-    if (todel)
-    {
-        a2.iExp-=todel;
-        a2.Delete(0,todel);
-    }
-*/    
     // this does some additional removing, as for the multiplication we don't need
     // any trailing zeroes at all, regardless of the value of iExp
     LispInt end;
@@ -497,38 +465,21 @@ static void BalanceFractions(ANumber& a1, ANumber& a2)
     //TODO this is not the fastest way to multiply by 10^exp
     if (a1.iTensExp < a2.iTensExp)
     {
-//      ANumber ten("10",a2.iPrecision);
-
-//PrintNumber("ten",ten);
-//PrintNumber("a2 init ",a2);
-
       LispInt diff = a2.iTensExp - a1.iTensExp;
       a2.iTensExp = a1.iTensExp;
       while (diff > 0)
       {
         WordBaseTimesInt(a2,10);
-
-/*
-        ANumber temp(a2.iPrecision);
-        temp.CopyFrom(a2);
-        BaseMultiplyFull(a2,temp,ten);
-*/
         diff--;
       }
     }
     else if (a2.iTensExp < a1.iTensExp)
     {
-//      ANumber ten("10",a2.iPrecision);
       LispInt diff = a1.iTensExp - a2.iTensExp;
       a1.iTensExp = a2.iTensExp;
       while (diff > 0)
       {
         WordBaseTimesInt(a1,10);
-/*
-        ANumber temp(a1.iPrecision);
-        temp.CopyFrom(a1);
-        BaseMultiplyFull(a1,temp,ten);
-*/
         diff--;
       }
     }
@@ -1122,15 +1073,6 @@ void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
       BaseShiftRight(u,k);
       BaseShiftRight(v,k);
     }
-    
-/*TODO remove, replaced with the better single shift, see code above
-    while (IsEven(u) && IsEven(v))
-    {
-        BaseShiftRight(u,1);
-        BaseShiftRight(v,1);
-        k++;
-    }
-*/
     ANumber t("0",10);
 
     if (IsOdd(u))
@@ -1157,14 +1099,6 @@ void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
           }
           BaseShiftRight(t,k);
         }
-  
-
-/*TODO remove, replaced with the better single shift, see code above
-        while (IsEven(t))
-        {
-            BaseShiftRight(t,1);
-        }
-*/
         if (GreaterThan(t,zero))
         {
             u.CopyFrom(t);

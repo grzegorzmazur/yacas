@@ -26,14 +26,12 @@ public:
     DefaultYacasEnvironment(LispOutput* aOutput);
     virtual ~DefaultYacasEnvironment();
     LispEnvironment& operator() () {return iEnvironment;}
-//TODO remove    void SetCommand(LispEvalCaller aEvaluatorFunc,LispCharPtr aString);
     
 private:
     LispOutput* output;
     LispHashTable hash;
     LispPrinter printer;
 
-//TODO remove    LispCommands commands;
     YacasCoreCommands coreCommands;
     LispGlobal globals;
 

@@ -124,11 +124,6 @@ static LispBoolean LexGreaterThan(LispCharPtr f1, LispCharPtr f2, LispHashTable&
 #ifndef NO_USE_BIGFLOAT
 static LispBoolean BigLessThan(BigNumber& n1, BigNumber& n2)
 {
-// TODO REMOVE
-//LispString str;
-//n1.ToString(str,10,10);
-//n2.ToString(str,10,10);
-
   return n1.LessThan(n2) && !n1.Equals(n2);
 }
 static LispBoolean BigGreaterThan(BigNumber& n1, BigNumber& n2)
@@ -335,7 +330,6 @@ void LispList(LispEnvironment& aEnvironment, LispInt aStackTop)
   {
     LispPtr evaluated;
     InternalEval(aEnvironment,evaluated,*iter.Ptr());
-//TODO remove    evaluated.Set(iter());
     tail.Ptr()->Set(evaluated.Get());
     tail.GoNext();
     iter.GoNext();
