@@ -5,10 +5,9 @@
 Yacas defines some more advanced operations on
 numbers. Many of them also work on polynomials.
 
-*CMD +, -, *, /, ^ --- Arithmetic operations
+*CMD +, -, *, /, ^ --- arithmetic operations
 *STD
 *CALL
-
 	x+y  (precedence 6)
 	+x
 	x-y  (precedence 5)
@@ -36,7 +35,7 @@ to being built-in). This means that they can be extended by the user.
 	In> 2*3
 	Out> 6;
 
-*CMD Div, Mod --- Division with remainder
+*CMD Div, Mod --- division with remainder
 *STD
 *CALL
 	Div(x,y)
@@ -62,7 +61,7 @@ If {Div(x,y)} returns "a" and {Mod(x,y)} equals "b", then these numbers satisfy 
 
 *SEE Gcd, Lcm
 
-*CMD Gcd --- Greatest common divisor
+*CMD Gcd --- greatest common divisor
 *STD
 *CALL
 	Gcd(n,m)
@@ -107,7 +106,7 @@ $$Gcd(a,b,c) = Gcd(Gcd(a,b),c)$$
 
 *SEE Lcm
 
-*CMD Lcm --- Least common multiple
+*CMD Lcm --- least common multiple
 *STD
 *CALL
 	Lcm(n,m)
@@ -135,7 +134,7 @@ them.
 
 *SEE Gcd
 
-*CMD <<, >> --- Shift operators
+*CMD <<, >> --- shift operators
 *STD
 *CALL
 	n<<m
@@ -149,7 +148,7 @@ them.
 
 These operators shift integers to the left or to the right.
 They are similar to the C shift operators. These are sign-extended
-shifts, so they act like multiplication or division by powers of 2.
+shifts, so they act as multiplication or division by powers of 2.
 
 *E.G.
 
@@ -158,7 +157,7 @@ shifts, so they act like multiplication or division by powers of 2.
 	In> -1024 >> 10
 	Out> -1;
 
-*CMD FromBase, ToBase --- Conversion from/to non-decimal base
+*CMD FromBase, ToBase --- conversion from/to non-decimal base
 *CORE
 *CALL
 	FromBase(base,number)
@@ -449,7 +448,7 @@ x - integer or univariate polynomial
 
 *DESC
 
-This function factorizes "x", like {Factors}, but
+This function factorizes "x", similarly to {Factors}, but
 it shows the result in a nicer human readable format.
 
 *E.G.
@@ -684,7 +683,7 @@ rule of thumb is that the floating-point number should have at least as
 many digits as the combined number of digits in the numerator and the
 denominator of the correct rational number.
 
-The function {NearRational(x)} is useful if you would like to simply
+The function {NearRational(x)} is useful if one needs to
 approximate a given value, i.e. to find an "optimal" rational number
 that lies in a certain small interval around a certain value {x}. This
 function takes an optional second parameter {digits} which has slightly
@@ -775,7 +774,7 @@ digits.
 
 *SEE Sin, Cos, Tan
 
-*CMD Floor --- Round a number downwards
+*CMD Floor --- round a number downwards
 *STD
 *CALL
 	Floor(x)
@@ -797,7 +796,7 @@ This function returns the largest integer smaller than "x".
 
 *SEE Ceil, Round
 
-*CMD Ceil --- Round a number upwards
+*CMD Ceil --- round a number upwards
 *STD
 *CALL
 	Ceil(x)
@@ -819,7 +818,7 @@ This function returns the smallest integer larger than "x".
 
 *SEE Floor, Round
 
-*CMD Round --- Round a number to the nearest integer
+*CMD Round --- round a number to the nearest integer
 *STD
 *CALL
 	Round(x)
@@ -847,7 +846,7 @@ rounded upwards.
 
 *SEE Floor, Ceil
 
-*CMD Pslq --- Search for integer relations between reals
+*CMD Pslq --- search for integer relations between reals
 *STD
 *CALL
 	Pslq(xlist,precision)

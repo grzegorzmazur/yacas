@@ -1,7 +1,7 @@
 
 			Constants
 
-*CMD % --- Previous result
+*CMD % --- previous result
 *CORE
 *CALL
 	%
@@ -31,7 +31,7 @@ form respectively.
 
 *SEE LazyGlobal
 
-*CMD True, False --- Boolean constants
+*CMD True, False --- boolean constants
 *CORE
 *CALL
 	True
@@ -40,15 +40,14 @@ form respectively.
 *DESC
 
 {True} and {False} are typically a result
-of boolean expressions like {2 < 3} and {True And False}.
+of boolean expressions such as {2 < 3} or {True And False}.
 
 *SEE And, Or, Not
 
-*CMD EndOfFile --- End-of-file marker
+*CMD EndOfFile --- end-of-file marker
 *CORE
 *CALL
-
-EndOfFile
+	EndOfFile
 
 *DESC
 
@@ -56,7 +55,7 @@ End of file marker when reading from file. If a file
 contains the expression {EndOfFile;} the
 operation will stop reading the file at that point.
 
-*CMD Infinity --- Constant representing mathematical infinity
+*CMD Infinity --- constant representing mathematical infinity
 *STD
 *CALL
 	Infinity
@@ -76,7 +75,7 @@ Thus {Infinity*2} will return {Infinity}, and {a < Infinity} will evaluate to {T
 	In> 2<Infinity
 	Out> True;
 
-*CMD Pi --- Mathematical constant, $pi$
+*CMD Pi --- mathematical constant, $pi$
 *STD
 *CALL
 	Pi
@@ -102,7 +101,7 @@ simplification will be possible.
 
 *SEE Sin, Cos, Precision, N, Pi()
 
-*CMD Undefined --- Constant signifying an undefined result
+*CMD Undefined --- constant signifying an undefined result
 *STD
 *CALL
 	Undefined

@@ -3,9 +3,9 @@
 
 *INTRO
 These operators can help the user to program in the style of
-functional programming languages like Miranda and Haskell.
+functional programming languages such as Miranda or Haskell.
 
-*CMD : --- Prepend item to list, or concatenate strings
+*CMD : --- prepend item to list, or concatenate strings
 *STD
 *CALL
 	item : list (prec. 7)
@@ -35,7 +35,7 @@ The first form prepends "item" as the first entry to the list
 
 *SEE Concat, ConcatStrings
 
-*CMD @ --- Apply a function
+*CMD @ --- apply a function
 *STD
 *CALL
 	fn @ arglist (prec. 60)
@@ -64,11 +64,10 @@ the name of a function or a pure function.
 
 *SEE Apply
 
-*CMD /@ --- Apply a function to all entries in a list
+*CMD /@ --- apply a function to all entries in a list
 *STD
 *CALL
-
-fn /@ list (prec. 60)
+	fn /@ list (prec. 60)
 
 *PARMS
 
@@ -92,12 +91,11 @@ function.
 
 *SEE MapSingle, Map, MapArgs
 
-*CMD .. --- Construct a list of consecutive integers
+*CMD .. --- construct a list of consecutive integers
 
 *STD
 
 *CALL
-
 	n .. m (prec. 60)
 
 *PARMS
@@ -168,7 +166,7 @@ Now we can plot the function.
 
 
 
-*CMD Where --- Substitute result into expression
+*CMD Where --- substitute result into expression
 *STD
 *CALL
 	expr Where x==v
@@ -213,7 +211,7 @@ These values might be obtained through {Solve}.
 *SEE Solve, AddTo
 
 
-*CMD Addto --- Add an equation to a set of equations or set of set of equations
+*CMD Addto --- add an equation to a set of equations or set of set of equations
 *STD
 *CALL
 	eq1 AddTo eq2

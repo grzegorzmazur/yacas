@@ -6,7 +6,7 @@ described. These include functions implementing differentiation,
 integration, standard mathematical functions, and solving of
 equations.
 
-*CMD Sin, Cos, Tan --- Trigonometric functions
+*CMD Sin, Cos, Tan --- trigonometric functions
 *STD
 *CALL
 	Sin(x)
@@ -42,7 +42,7 @@ list, the function is applied to all the entries in the list.
 
 *SEE ArcSin, ArcCos, ArcTan, N, Pi
 
-*CMD ArcSin, ArcCos, ArcTan --- Inverse trigonometric functions
+*CMD ArcSin, ArcCos, ArcTan --- inverse trigonometric functions
 *STD
 *CALL
 	ArcSin(x)
@@ -91,7 +91,7 @@ list, the function is applied to all the entries in the list.
 
 *SEE Sin, Cos, Tan, N, Pi, Ln
 
-*CMD Exp --- Exponential function
+*CMD Exp --- exponential function
 *STD
 *CALL
 	Exp(x)
@@ -120,7 +120,7 @@ list, the function is applied to all the entries in the list.
 
 *SEE Ln, Sin, Cos, Tan, N
 
-*CMD Ln --- Natural logarithm
+*CMD Ln --- natural logarithm
 *STD
 *CALL
 	Ln(x)
@@ -150,7 +150,7 @@ list, the function is applied to all the entries in the list.
 
 *SEE Exp, Arg
 
-*CMD Sqrt --- Square root
+*CMD Sqrt --- square root
 *STD
 *CALL
 	Sqrt(x)
@@ -184,7 +184,7 @@ list, the function is applied to all the entries in the list.
 
 *SEE Exp, ^, N
 
-*CMD Abs --- Absolute value or modulus
+*CMD Abs --- absolute value or modulus
 *STD
 *CALL
 	Abs(x)
@@ -218,7 +218,7 @@ list, the function is applied to all the entries in the list.
 
 *SEE Sign, Arg
 
-*CMD Sign --- Sign of a number
+*CMD Sign --- sign of a number
 *STD
 *CALL
 	Sign(x)
@@ -252,7 +252,7 @@ list, the function is applied to all the entries in the list.
 
 *SEE Arg, Abs
 
-*CMD Complex --- Construct a complex number
+*CMD Complex --- construct a complex number
 *STD
 *CALL
 	Complex(r, c)
@@ -285,7 +285,7 @@ number. Hence {Im(Sqrt(x))} evaluates to {0} which is only true for nonnegative 
 
 *SEE Re, Im, I, Abs, Arg
 
-*CMD Re --- Real part of a complex number
+*CMD Re --- real part of a complex number
 *STD
 *CALL
 	Re(x)
@@ -309,7 +309,7 @@ This function returns the real part of the complex number "x".
 
 *SEE Complex, Im
 
-*CMD Im --- Imaginary part of a complex number
+*CMD Im --- imaginary part of a complex number
 *STD
 *CALL
 	Im(x)
@@ -333,7 +333,7 @@ This function returns the imaginary part of the complex number "x".
 
 *SEE Complex, Re
 
-*CMD I --- Imaginary unit
+*CMD I --- imaginary unit
 *STD
 *CALL
 	I
@@ -352,7 +352,7 @@ root of -1. It evaluates to {Complex(0,1)}.
 
 *SEE Complex
 
-*CMD Conjugate --- Complex conjugate
+*CMD Conjugate --- complex conjugate
 *STD
 *CALL
 	Conjugate(x)
@@ -376,7 +376,7 @@ unbound variables are real.
 
 *SEE Complex, Re, Im
 
-*CMD Arg --- Argument of a complex number
+*CMD Arg --- argument of a complex number
 *STD
 *CALL
 	Arg(x)
@@ -450,7 +450,7 @@ The factorial functions terminate and print an error message if the arguments ar
 
 *SEE Bin, Factorize, Gamma, !!, ***
 
-*CMD Bin --- Binomial coefficients
+*CMD Bin --- binomial coefficients
 *STD
 *CALL
 	Bin(n, m)
@@ -478,7 +478,7 @@ if "m" is negative or greater than "n"; {Bin(0,0)}=1.
 
 *SEE !
 
-*CMD Sum --- Sum of a list of values
+*CMD Sum --- sum of a list of values
 *STD
 *CALL
 	Sum(list)
@@ -516,11 +516,10 @@ returned. Obviously, "to" should be greater than or equal to
 
 *SEE Average, Factorize, Apply
 
-*CMD Average --- Average of a list of values
+*CMD Average --- average of a list of values
 *STD
 *CALL
-
-Average(list)
+	Average(list)
 
 *PARMS
 
@@ -541,7 +540,7 @@ entries.
 
 *SEE Sum
 
-*CMD Factorize --- Product of a list of values
+*CMD Factorize --- product of a list of values
 *STD
 *CALL
 	Factorize(list)
@@ -579,7 +578,7 @@ returned. Obviously, "to" should be greater than or equal to
 
 *SEE Sum, Apply
 
-*CMD Min --- Minimum of a number of values
+*CMD Min --- minimum of a number of values
 *STD
 *CALL
 	Min(x,y)
@@ -608,7 +607,7 @@ with numerical values and not with symbolic arguments.
 
 *SEE Max, Sum, Average
 
-*CMD Max --- Maximum of a number of values
+*CMD Max --- maximum of a number of values
 *STD
 *CALL
 	Max(x,y)
@@ -637,7 +636,7 @@ with numerical values and not with symbolic arguments.
 
 *SEE Min, Sum, Average
 
-*CMD IsZero --- Test whether argument is zero
+*CMD IsZero --- test whether argument is zero
 *STD
 *CALL
 	IsZero(n)
@@ -663,7 +662,7 @@ n - number to test
 
 *SEE IsNumber, IsNotZero
 
-*CMD IsRational --- Test whether argument is a rational
+*CMD IsRational --- test whether argument is a rational
 *STD
 *CALL
 	IsRational(expr)
@@ -690,11 +689,10 @@ number. This is the case if the top-level operator of "expr" is {/}.
 
 *SEE Numer, Denom
 
-*CMD Numer --- Numerator of an expression
+*CMD Numer --- numerator of an expression
 *STD
 *CALL
-
-Numer(expr)
+	Numer(expr)
 
 *PARMS
 
@@ -718,11 +716,10 @@ rational nor numeric, the function returns unevaluated.
 
 *SEE Denom, IsRational, IsNumber
 
-*CMD Denom --- Denominator of an expression
+*CMD Denom --- denominator of an expression
 *STD
 *CALL
-
-Denom(expr)
+	Denom(expr)
 
 *PARMS
 
@@ -746,11 +743,10 @@ neither rational nor numeric, the function returns unevaluated.
 
 *SEE Numer, IsRational, IsNumber
 
-*CMD Commutator --- Commutator of two objects
+*CMD Commutator --- commutator of two objects
 *STD
 *CALL
-
-Commutator(a, b)
+	Commutator(a, b)
 
 *PARMS
 
@@ -800,11 +796,10 @@ necessarily the case for matrices.
 	
 	Out>
 
-*CMD Taylor --- Univariate Taylor series expansion
+*CMD Taylor --- univariate Taylor series expansion
 *STD
 *CALL
-
-Taylor(var, at, order) expr
+	Taylor(var, at, order) expr
 
 *PARMS
 
@@ -842,8 +837,7 @@ limit as "var" approaches "at".
 *CMD InverseTaylor --- Taylor expansion of inverse
 *STD
 *CALL
-
-InverseTaylor(var, at, order) expr
+	InverseTaylor(var, at, order) expr
 
 *PARMS
 
@@ -892,11 +886,10 @@ up to order "order". It uses the function {ReversePoly} to perform the task.
 
 *SEE ReversePoly, Taylor, BigOh
 
-*CMD ReversePoly --- Solve $h(f(x)) = g(x) + O(x^n)$ for $h$
+*CMD ReversePoly --- solve $h(f(x)) = g(x) + O(x^n)$ for $h$
 *STD
 *CALL
-
-ReversePoly(f, g, var, newvar, degree)
+	ReversePoly(f, g, var, newvar, degree)
 
 *PARMS
 
@@ -937,11 +930,10 @@ inverse of "f".
 
 *SEE InverseTaylor, Taylor, BigOh
 
-*CMD BigOh --- Drop all terms of a certain order in a polynomial
+*CMD BigOh --- drop all terms of a certain order in a polynomial
 *STD
 *CALL
-
-BigOh(poly, var, degree)
+	BigOh(poly, var, degree)
 
 *PARMS
 
@@ -963,11 +955,10 @@ This function drops all terms of order "degree" or higher in
 
 *SEE Taylor, InverseTaylor
 
-*CMD Newton --- Solve an equation numerically with Newton's method
+*CMD Newton --- solve an equation numerically with Newton's method
 *STD
 *CALL
-
-Newton(expr, var, initial, accuracy)
+	Newton(expr, var, initial, accuracy)
 
 *PARMS
 
@@ -997,15 +988,12 @@ may loop forever if the algorithm does not converge.
 
 *SEE Solve
 
-*CMD D --- Differentiation
+*CMD D --- differentiation
 *STD
 *CALL
-
-D(var) expr
-
-D(list) expr
-
-D(var,n) expr
+	D(var) expr
+	D(list) expr
+	D(var,n) expr
 
 *PARMS
 
@@ -1022,7 +1010,7 @@ n - order of derivative
 This function calculates the derivative of the expression "expr" with
 respect to the variable "var" and returns it. If the third calling
 sequence is used, the "n"-th derivative is determined. Yacas knows
-how the differentiate standard functions like {Ln}
+how the differentiate standard functions such as {Ln}
 and {Sin}.
 
 The {D} operator is threaded in both "var" and
@@ -1050,11 +1038,10 @@ mathematical idiom that simplifies many formulas.
 
 *SEE Integrate, Taylor, Diverge, Curl
 
-*CMD Curl --- Curl of a vector field
+*CMD Curl --- curl of a vector field
 *STD
 *CALL
-
-Curl(vector, basis)
+	Curl(vector, basis)
 
 *PARMS
 
@@ -1081,11 +1068,10 @@ Both "vector" and "basis" should be lists of length 3.
 
 *SEE D, Diverge
 
-*CMD Diverge --- Divergence of a vector field
+*CMD Diverge --- divergence of a vector field
 *STD
 *CALL
-
-Diverge(vector, basis)
+	Diverge(vector, basis)
 
 *PARMS
 
@@ -1110,13 +1096,11 @@ where {n} is the length of the lists "vector" and
 
 *SEE D, Curl
 
-*CMD Integrate --- Integration
+*CMD Integrate --- integration
 *STD
 *CALL
-
-Integrate(var, from, to) expr
-
-Integrate(var) expr
+	Integrate(var, from, to) expr
+	Integrate(var) expr
 
 *PARMS
 
@@ -1152,11 +1136,10 @@ functions with polynomials can all be integrated.
 
 *SEE D, UniqueConstant
 
-*CMD Simplify --- Try to simplify an expression
+*CMD Simplify --- try to simplify an expression
 *STD
 *CALL
-
-Simplify(expr)
+	Simplify(expr)
 
 *PARMS
 
@@ -1166,7 +1149,7 @@ expression - expression to simplify
 
 This function tries to simplify the expression "expr" as much
 as possible. It does this by grouping powers within terms, and then
-grouping like terms.
+grouping similar terms.
 
 *E.G.
 
@@ -1177,11 +1160,10 @@ grouping like terms.
 
 *SEE TrigSimpCombine, RadSimp
 
-*CMD RadSimp --- Simplify expression with nested radicals
+*CMD RadSimp --- simplify expression with nested radicals
 *STD
 *CALL
-
-RadSimp(expr)
+	RadSimp(expr)
 
 *PARMS
 
@@ -1225,11 +1207,10 @@ But this command may yield incorrect results:
 
 *SEE Simplify, N
 
-*CMD Rationalize --- Convert floating point numbers to fractions
+*CMD Rationalize --- convert floating point numbers to fractions
 *STD
 *CALL
-
-Rationalize(expr)
+	Rationalize(expr)
 
 *PARMS
 
@@ -1258,13 +1239,11 @@ division of integers.
 
 *SEE IsRational
 
-*CMD Solve --- Solve one or more algebraic equations
+*CMD Solve --- solve one or more algebraic equations
 *STD
 *CALL
-
-Solve(eq, var)
-
-Solve(eqlist, varlist)
+	Solve(eq, var)
+	Solve(eqlist, varlist)
 
 *PARMS
 
@@ -1319,7 +1298,7 @@ An example which {Solve} cannot solve:
 
 *SEE SuchThat, Eliminate, PSolve, ==
 
-*CMD SuchThat --- Find a value which makes some expression zero
+*CMD SuchThat --- find a value which makes some expression zero
 *STD
 *CALL
 	SuchThat(expr, var)
@@ -1356,7 +1335,7 @@ function until the variable "var" is reached.
 
 *SEE Solve, Subst, Simplify
 
-*CMD Eliminate --- Substitute and simplify
+*CMD Eliminate --- substitute and simplify
 *STD
 *CALL
 	Eliminate(var, value, expr)
@@ -1385,7 +1364,7 @@ resulting expression, and returns the result.
 
 *SEE SuchThat, Subst, Simplify
 
-*CMD PSolve --- Solve a polynomial equation
+*CMD PSolve --- solve a polynomial equation
 *STD
 *CALL
 	PSolve(poly, var)
@@ -1415,7 +1394,7 @@ handled.
 
 *SEE Solve, Factor
 
-*CMD Pi() --- Numerical approximation of $Pi$
+*CMD Pi() --- numerical approximation of $Pi$
 *CORE
 *CALL
 	Pi()
@@ -1444,7 +1423,7 @@ returned by {Pi()}.
 
 *SEE N, Pi, Precision
 
-*CMD Random --- Random number between 0 and 1
+*CMD Random --- random number between 0 and 1
 *STD
 *CALL
 	Random()
@@ -1457,7 +1436,7 @@ generated in every Yacas session.
 
 *SEE RandomInteger, RandomPoly
 
-*CMD VarList --- List of variables appearing in some expression
+*CMD VarList --- list of variables appearing in some expression
 *STD
 *CALL
 	VarList(expr)
@@ -1480,7 +1459,7 @@ expression "expr".
 
 *SEE IsFreeOf, IsVariable
 
-*CMD Limit --- Limit of an expression
+*CMD Limit --- limit of an expression
 *STD
 *CALL
 	Limit(var, val) expr
@@ -1522,11 +1501,10 @@ gives "dir" the value {Left}, the limit is taken as
 	In> Limit(x,0,Right) 1/x
 	Out> Infinity;
 
-*CMD TrigSimpCombine --- Combine products of trigonometric functions
+*CMD TrigSimpCombine --- combine products of trigonometric functions
 *STD
 *CALL
-
-TrigSimpCombine(expr)
+	TrigSimpCombine(expr)
 
 *PARMS
 
@@ -1534,10 +1512,10 @@ expr - expression to simplify
 
 *DESC
 
-This function applies the product rules of trigonometry, like
+This function applies the product rules of trigonometry, e.g.
 $Cos(u)*Sin(v) = (1/2)*(Sin(v-u) + Sin(v+u))$. As a
 result, all products of the trigonometric functions {Cos} and {Sin} disappear. The function also tries to simplify the resulting expression as much as
-possible by combining all like terms.
+possible by combining all similar terms.
 
 This function is used in for instance {Integrate},
 to bring down the expression into a simpler form that hopefully can be
@@ -1574,11 +1552,10 @@ integrated easily.
 
 *SEE Simplify, Integrate, Expand, Sin, Cos, Tan
 
-*CMD LagrangeInterpolant --- Polynomial interpolation
+*CMD LagrangeInterpolant --- polynomial interpolation
 *STD
 *CALL
-
-LagrangeInterpolant(xlist, ylist, var)
+	LagrangeInterpolant(xlist, ylist, var)
 
 *PARMS
 

@@ -98,7 +98,7 @@ If you call {MakeFunctionPlugin()} repeatedly to define a function with the same
 
 *SEE DllLoad, DllUnload, DllEnumerate, CForm
 
-*CMD Version --- Show version of Yacas
+*CMD Version --- show version of Yacas
 *CORE
 *CALL
 	Version()
@@ -124,7 +124,7 @@ in the form {d.d.dd} as above.
 *SEE LessThan, GreaterThan
 
 
-*CMD Vi --- Edit a file or function
+*CMD Vi --- edit a file or function
 *UNIX
 *CALL
 	Vi(filename);
