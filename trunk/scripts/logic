@@ -34,23 +34,27 @@ RuleBase("=>",{a,b});
 5  # LogicSimplify(_x  Or  True )               <-- True;
 5  # LogicSimplify(_x  Or  False)               <-- LogicSimplify(x);
 
+6  # LogicSimplify(_x  Or  _x)                  <-- LogicSimplify(x);
+6  # LogicSimplify(_x  And  _x)                 <-- LogicSimplify(x);
+6  # LogicSimplify(_x  Or Not (_x))             <-- True;
+6  # LogicSimplify(Not (_x)  Or _x)             <-- True;
+6  # LogicSimplify(_x  And Not (_x))            <-- False;
+6  # LogicSimplify(Not (_x)  And _x)            <-- False;
+
+7  # LogicSimplify((_x)  Or  (_y))_(x!= LogicSimplify(x) Or y!=LogicSimplify(y))                /* Transform subexpression */
+                                                <-- LogicSimplify(LogicSimplify(x) Or LogicSimplify(y));
+7  # LogicSimplify( Not  (_x))_(x != LogicSimplify(x))
+                                                <-- LogicSimplify(Not LogicSimplify(x));        /* Transform subexpression */
 
 10 # LogicSimplify( Not ( Not  (_x)))           <-- LogicSimplify(x);                           /* eliminate double negation */
 20 # LogicSimplify((_x)=>(_y))                  <-- LogicSimplify( Not x  Or  y);               /* eliminate implication */
-30 # LogicSimplify( Not ((_x)  And  (_y)))      <-- LogicSimplify( Not x  Or   Not y);          /* De Morgan's law */
-40 # LogicSimplify( Not ((_x)  Or  (_y)))       <-- LogicSimplify( Not x  And   Not y);         /* De Morgan's law */
-50 # LogicSimplify(((_x)  And  (_y))  Or  (_z)) <-- LogicSimplify((x Or z) And (y Or z));       /* Distribution */
-60 # LogicSimplify((_x)  Or  ((_y)  And  (_z))) <-- LogicSimplify((x Or y) And (x Or z));       /* Distribution */
 
+30 # LogicSimplify( Not ((_x)  And  (_y)))      <-- LogicSimplify( Not x Or Not y );            /* De Morgan's law */
+40 # LogicSimplify( Not ((_x)  Or  (_y)))       <-- LogicSimplify(Not x) And LogicSimplify(Not y); /* De Morgan's law */
 
-70 # LogicSimplify((_x)  Or  (_y))_(x!= LogicSimplify(x) Or y!=LogicSimplify(y))                /* Transform subexpression */
-                                                <-- LogicSimplify(LogicSimplify(x) Or LogicSimplify(y));
-70 # LogicSimplify( Not  (_x))_(x != LogicSimplify(x))
-                                                <-- LogicSimplify( Not LogicSimplify(x));       /* Transform subexpression */
+50 # LogicSimplify(((_x)  And  (_y))  Or  (_z)) <-- LogicSimplify(x Or z) And LogicSimplify(y Or z);       /* Distribution */
+60 # LogicSimplify((_x)  Or  ((_y)  And  (_z))) <-- LogicSimplify(x Or y) And LogicSimplify(x Or z);       /* Distribution */
 
-
-80 # LogicSimplify((_x)  Or  (_y))              <-- LogicSimplify(x) Or LogicSimplify(y);       /* Transform subexpression */
-80 # LogicSimplify( Not  (_x))                  <-- Not LogicSimplify(x);                       /* Transform subexpression */
 80 # LogicSimplify((_x)  And  (_y))             <-- LogicSimplify(x) And LogicSimplify(y);      /* Transform subexpression */
 
 85 # LogicSimplify( (_x) < (_y) )               <-- Simplify(x <   y);
@@ -185,3 +189,4 @@ LogicCombine(_list) <--
   ];
   list;
 ];
+
