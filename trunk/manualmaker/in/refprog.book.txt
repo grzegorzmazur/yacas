@@ -1199,12 +1199,6 @@ should then at least be faster than the arbitrary precision versions.
 Shift bits to the left or to the right.
 
 
-*CMD IsUnix --- check if running under Unix
-*CORE
-*CALL
-	IsUnix()
-*DESC
-Returns {True} if Yacas has been compiled under a Unix-like environment, and {False} otherwise (i.e. Windows).
 
 *CMD IsPromptShown --- test for the Yacas prompt option
 *CORE
