@@ -20,6 +20,9 @@
 #include "standard.h"
 #include "platmath.h"
 
+// we still need some of these functions but it will eventually all be removed
+//#ifdef NO_USE_BIGFLOAT
+
 struct GMPNumber {
   mpz_t man;
   long exp;
@@ -1225,6 +1228,8 @@ LispStringPtr BitXor(LispCharPtr int1, LispCharPtr int2,
     return result;*/
 }
 
+//#endif // NO_USE_BIGFLOAT
+
 //////////////////////////////////////////////////
 ///// BigNumber implementation by wrapping GMP
 ///// (coded by Serge Winitzki)
@@ -1233,7 +1238,8 @@ LispStringPtr BitXor(LispCharPtr int1, LispCharPtr int2,
 /// The number class describes either integers or floats, depending on the type_ flag. However, both the float part (float_, exponent_) and the integer part (int_) are always initialized for the life of the BigNumber object.
 /// Wrapping of the GMP library is done using its mpz_t / mpf_t pointer types.
 /// A special mode is that of "exp-float" number. Then the type_ flag has the value KExpFloat. The number is equal to float_ * 2^exponent_ where exponent_ is a big integer and float_ is a normal GMP float value. Otherwise the value of the exponent_ stays zero (actually it is ignored).
-/// The exp-float mode is to be used only for really large or really small exponents.
+/// The exp-float mode is to be used only for really large or really small exponents. (not yet fully implemented)
+/// A BigFloat object contains valid, initialized GMP objects at all times. It contains a GMP integer and a GMP floating-point number. Only one of them is used at any time, depending on the current type of the number.
 
 // TO DO:
 // no need to call _ui / _si functions, as gmp tells us not to worry.
@@ -1385,8 +1391,9 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
     }
     char* offset = buffer;
     if (Sign()==0)
-    {    // print zero - note that gmp does not print "0."
-	    strcpy(offset, "0."); // end of string
+    {    // print zero - note that gmp does not print "0.", it prints nothing at all.
+    // according to the latest revelations, the floating-point zero must be printed as "0"
+	    strcpy(offset, "0."); // end of string is here too
     }
     else
     {
@@ -1702,7 +1709,7 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
     else	// int + float, need to promote to float
     {
       BigNumber temp(aX);
-      temp.BecomeFloat();
+      temp.BecomeFloat();	// need to take care of precision somehow!!! FIXME
       Add(temp, aY, aPrecision);
     }
   else

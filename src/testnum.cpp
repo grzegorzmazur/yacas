@@ -77,7 +77,7 @@ void Next(const char* description)
 
 void Finish()
 {
-    printf("Passed %d, failed %d tests.\n", passed, failed);
+    printf("\n\t\t\tPassed %d, failed %d tests.\n", passed, failed);
     fflush(stdout);
 }
 
@@ -311,6 +311,14 @@ void TestArith2(double a, double b)
 	CheckEquals(z,t,50,10,"correct arithmetic at high precision");
 }
 
+void TestStringIO2(double value, const char* test_string, LispInt precision, LispInt base)
+{
+	BigNumber x;
+	x.SetTo(value);
+	BigNumber y(test_string, precision, base);
+	CheckEquals(x,y,precision,base,"value read from string matches");
+}
+
 void TestStringIO(double value, const char* test_string, LispInt precision, LispInt base)
 {	
 	BigNumber x;
@@ -319,12 +327,14 @@ void TestStringIO(double value, const char* test_string, LispInt precision, Lisp
 	LispString str;
 	x.ToString(str, precision, base);
 	Check(str, test_string, "printed string value matches");
+	TestStringIO2(value,test_string, precision,base);
 }
-void TestStringIO(int value, const char* test_string, LispInt precision, LispInt base)
+
+void TestStringIO_int(int value, const char* test_string, LispInt precision, LispInt base)
 {	
 	BigNumber x;
 	x.SetTo(value);
-	Check(x.IsInt(), "have an int value");
+	Check(x.IsInt(), "have an integer value");
 	LispString str;
 	x.ToString(str, precision, base);
 	Check(str, test_string, "printed string value matches");
@@ -428,7 +438,14 @@ int main(void)
 	
 	Next("construct 0 from string");
 	BigNumber y("0", 10);	// construct
-	Check(y.Double()==0, "value of 0");
+	Check(y.Double()==0, "value of 0 is correct");
+	Check(y.IsInt(), "0 is of integer type");
+	Check(y.IsIntValue(), "value of 0 is integer");
+
+	y.SetTo("0.", 10);	// construct
+	Check(y.Double()==0, "value of 0. is correct");
+	Check(!y.IsInt(), "0. is of float type");
+	Check(y.IsIntValue(), "value of 0. is integer");
 
 	Next("read binary string");
 	y.SetTo("-101010", 50, 2);	// construct with given precision
@@ -598,37 +615,69 @@ int main(void)
 	Check(x.Equals(y), "15^N = 3^N*5^N");
 	
 	Next("string input/output");
-	TestStringIO(0, "0", 10, 10);
+	// TestStringIO tests that the string representation and the numerical representation are equivalent;
+	// TestStringIO_int does this for integers.
+	// TestStringIO_2 does not compare the printed string to the given string (used to test capital E exponents)
+	TestStringIO_int(0, "0", 10, 10);
 	TestStringIO(0., "0.", 10, 10);
-	TestStringIO(1, "1", 10, 10);
+	TestStringIO2(0., "-0.", 10, 10);
+	TestStringIO_int(1, "1", 10, 10);
 	TestStringIO(1., "1.", 10, 10);
-	TestStringIO(-1, "-1", 10, 10);
+	TestStringIO_int(-1, "-1", 10, 10);
 	TestStringIO(-1., "-1.", 10, 2);
-	TestStringIO(-1, "-1", 10, 3);
-	TestStringIO(-13, "-111", 10, 3);
+	TestStringIO_int(-1, "-1", 10, 3);
+	TestStringIO_int(-13, "-111", 10, 3);
 	TestStringIO(-13., "-111.", 10, 3);
-	TestStringIO(-13, "-1101", 10, 2);
-	TestStringIO(13, "13", 10, 10);
-	TestStringIO(1000000000, "1000000000", 10, 10);
+	TestStringIO_int(-13, "-1101", 10, 2);
+	TestStringIO_int(13, "13", 10, 10);
+	TestStringIO_int(1000000000, "1000000000", 10, 10);
 	TestStringIO(1000000000., "0.1e10", 10, 10);
-	TestStringIO(-13, "-d", 10, 16);
+	TestStringIO_int(-13, "-d", 10, 16);
 	TestStringIO(-13.0, "-d.", 10, 16);
-	TestStringIO(-13.0e-15, "-0.13e-13", 10, 10);
 	TestStringIO(13.1245e-15, "0.131245e-13", 10, 10);
 	TestStringIO(13.1245e-15, "0.131e-13", 3, 10);
 	TestStringIO(13.1245e-15, "0.131245e-13", 6, 10);
 	TestStringIO(-13.1245e-15, "-0.131e-13", 3, 10);
 	TestStringIO(-13.1245e-15, "-0.131245e-13", 6, 10);
+
+// lowercase e
 	TestStringIO(13.0e15, "0.13e17", 10, 10);
-	TestStringIO(13.0e15, "0.13e17", 10, 10);
+	TestStringIO(13.e15, "0.13e17", 10, 10);
+	TestStringIO(13e15, "0.13e17", 10, 10);
+	TestStringIO(-13.0e15, "-0.13e17", 10, 10);
+	TestStringIO(-13.e15, "-0.13e17", 10, 10);
+	TestStringIO(-13e15, "-0.13e17", 10, 10);
+
+	TestStringIO(13.0e-15, "0.13e-13", 10, 10);
+	TestStringIO(13.e-15, "0.13e-13", 10, 10);
+	TestStringIO(13e-15, "0.13e-13", 10, 10);
+	TestStringIO(-13.0e-15, "-0.13e-13", 10, 10);
+	TestStringIO(-13.e-15, "-0.13e-13", 10, 10);
+	TestStringIO(-13e-15, "-0.13e-13", 10, 10);
+
+// uppercase e
+	TestStringIO2(13.0e15, "0.13E17", 10, 10);
+	TestStringIO2(13.e15, "0.13E17", 10, 10);
+	TestStringIO2(13e15, "0.13E17", 10, 10);
+	TestStringIO2(-13.0e15, "-0.13E17", 10, 10);
+	TestStringIO2(-13.e15, "-0.13E17", 10, 10);
+	TestStringIO2(-13e15, "-0.13E17", 10, 10);
+
+	TestStringIO2(13.0e-15, "0.13E-13", 10, 10);
+	TestStringIO2(13.e-15, "0.13E-13", 10, 10);
+	TestStringIO2(13e-15, "0.13E-13", 10, 10);
+	TestStringIO2(-13.0e-15, "-0.13E-13", 10, 10);
+	TestStringIO2(-13.e-15, "-0.13E-13", 10, 10);
+	TestStringIO2(-13e-15, "-0.13E-13", 10, 10);
+
 	TestStringIO(0.0011, "0.0011", 10, 10);
 	TestStringIO(0.01, "0.01", 10, 10);
 	TestStringIO(0.001, "0.001", 10, 10);
 	TestStringIO(0.1, "0.1", 10, 10);
 	TestStringIO(-0.001, "-0.001", 10, 10);
-	TestStringIO(1234, "1234", 10, 10);
-	TestStringIO(12345, "12345", 10, 10);
-	TestStringIO(123456, "123456", 10, 10);
+	TestStringIO_int(1234, "1234", 10, 10);
+	TestStringIO_int(12345, "12345", 10, 10);
+	TestStringIO_int(123456, "123456", 10, 10);
 	
 	Next("determine types from string");
 	x.SetTo("1234",0,10);
