@@ -1,0 +1,30 @@
+
+.SUFFIXES: .cpp
+
+YACAS_DIR = ../src
+
+CXX		=c++
+INCS = -I$(YACAS_DIR) -I$(YACAS_DIR)/plat/linux32 -Ifl_editor-0.4/
+CXXFLAGS	= -O2 -Wno-return-type   -I/usr/X11R6/include
+
+LDLIBS		=  -L/usr/X11R6/lib -lX11 -lXext  -lm -ldl
+GLDLIBS		=  -L/usr/X11R6/lib  -lGLU -lGL -lX11 -lXext  -lm
+FLTKLIBS        = -lfltk
+
+LIBS = $(LDLIBS) $(FLTKLIBS)
+GLIBS = $(GLDLIBS) $(FLTKLIBS)
+DEFINES = -DDEBUG_MODE
+
+TRACER_OBJS = tracer.o editor.o fl_adjustable_file_chooser.o
+
+proteustracer: $(TRACER_OBJS)
+	$(CXX) $(TRACER_OBJS) ../src/libyacasdebug.a -o proteustracer $(CXXFLAGS) $(LIBS) -lm
+
+
+.cpp.o:
+	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCS) -c $*.cpp -o $*.o
+
+.cxx.o:
+	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCS) -c $*.cxx -o $*.o
+
+

@@ -222,14 +222,8 @@ void TraceShowArg(LispEnvironment& aEnvironment,LispPtr& aParam,
         aEnvironment.CurrentOutput()->Write("  ");
     aEnvironment.CurrentOutput()->Write("TrArg(\"");
     TraceShowExpression(aEnvironment, aParam);
-/*TODO remove?
-    infixprinter.Print(aParam,*aEnvironment.CurrentOutput());
-    */
     aEnvironment.CurrentOutput()->Write("\",\"");
     TraceShowExpression(aEnvironment, aValue);
-/*TODO remove?
-    infixprinter.Print(aValue,*aEnvironment.CurrentOutput());
-    */
     aEnvironment.CurrentOutput()->Write("\");\n");
 }
 
@@ -241,32 +235,40 @@ void TraceShowEnter(LispEnvironment& aEnvironment,
     for (i=0;i<aEnvironment.iEvalDepth;i++)
         aEnvironment.CurrentOutput()->Write("  ");
     aEnvironment.CurrentOutput()->Write("TrEnter(\"");
-
-    TraceShowExpression(aEnvironment, aExpression);
-/*TODO remove?
-    InfixPrinter infixprinter(aEnvironment.PreFix(),
-                              aEnvironment.InFix(),
-                              aEnvironment.PostFix(),
-                              aEnvironment.Bodied());
-    // Print out the current expression
-    LispString outString;
-    StringOutput stream(outString);
-    infixprinter.Print(aExpression, stream);
-
-    // Escape quotes
-    LispInt i;
-    for (i=outString.NrItems()-1;i>=0;--i)
     {
-        switch(outString[i])
+        LispCharPtr function = "";
+        if (aExpression.Get()->SubList() != NULL)
         {
-        case '\"':
-            outString.Insert(i,'\\');
+            LispPtr *sub = aExpression.Get()->SubList();
+            if (sub->Get()->String() != NULL)
+                function = sub->Get()->String()->String();
         }
+        aEnvironment.CurrentOutput()->Write(function);
     }
-    aEnvironment.CurrentOutput()->Write(&outString[0]);
-*/
-//    infixprinter.Print(aExpression, *aEnvironment.CurrentOutput());
-    aEnvironment.CurrentOutput()->Write("\");\n");
+    aEnvironment.CurrentOutput()->Write("\",\"");
+    TraceShowExpression(aEnvironment, aExpression);
+    aEnvironment.CurrentOutput()->Write("\",\"");
+
+#ifdef DEBUG_MODE
+    if (aExpression.Get()->iFileName)
+        aEnvironment.CurrentOutput()->Write(aExpression.Get()->iFileName); //file
+    else
+        aEnvironment.CurrentOutput()->Write(""); //file
+#else
+    aEnvironment.CurrentOutput()->Write(""); //file
+#endif
+    aEnvironment.CurrentOutput()->Write("\",");
+#ifdef DEBUG_MODE
+    {
+        LispChar buf[30];
+        InternalIntToAscii(buf,aExpression.Get()->iLine);
+        aEnvironment.CurrentOutput()->Write(buf); //line
+    }
+#else
+    aEnvironment.CurrentOutput()->Write("0"); //line
+#endif
+
+    aEnvironment.CurrentOutput()->Write(");\n");
 }
 
 
@@ -283,17 +285,6 @@ void TraceShowLeave(LispEnvironment& aEnvironment, LispPtr& aResult,
     TraceShowExpression(aEnvironment, aExpression);
     aEnvironment.CurrentOutput()->Write("\",\"");
     TraceShowExpression(aEnvironment, aResult);
-/*TODO remove?
-
-    InfixPrinter infixprinter(aEnvironment.PreFix(),
-                              aEnvironment.InFix(),
-                              aEnvironment.PostFix(),
-                              aEnvironment.Bodied());
-
-    infixprinter.Print(aExpression, *aEnvironment.CurrentOutput());
-    aEnvironment.CurrentOutput()->Write(",");
-    infixprinter.Print(aResult, *aEnvironment.CurrentOutput());
-    */
     aEnvironment.CurrentOutput()->Write("\");\n");
 }
 

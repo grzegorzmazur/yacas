@@ -296,7 +296,7 @@ SeeAlso({"--", ":="});
 
 
 
-CmdDescription("++", "Decrement variable");
+CmdDescription("--", "Decrement variable");
 StandardLib();
 
 Topical() "Calling Sequence";

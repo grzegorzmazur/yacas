@@ -108,6 +108,9 @@ LispObject* LispAnnotatedObject<T>::Copy(LispInt aRecursed)
     LispObject *result = new LispAnnotatedObject<T>(copied.Get());
     copied.Set(iAdditionalInfo.Get()->Copy(aRecursed));
     result->SetExtraInfo(copied);
+#ifdef DEBUG_MODE
+    result->SetFileAndLine(iFileName, iLine);
+#endif
     return result;
 }
 

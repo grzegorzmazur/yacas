@@ -22,16 +22,12 @@ all-inclusive: conf
 	make calculator -f $(THISFILE)
 	make clean      -f $(THISFILE)
 	make worksheet  -f $(THISFILE)
-	make tracer     -f $(THISFILE)
 
 calculator:
 	make proteus EXENAME=proteuscalculator DEFINES=-DCALCULATOR -f $(THISFILE)
 
 worksheet:
 	make proteus EXENAME=proteusworksheet DEFINES=-DWORKSHEET -f $(THISFILE)
-
-tracer:
-	make proteustracer EXENAME=proteustracer -f $(THISFILE)
 
 install:
 	cp proteusworksheet proteuscalculator /usr/local/bin/
