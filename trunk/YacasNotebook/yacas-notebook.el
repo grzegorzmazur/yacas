@@ -323,8 +323,9 @@ If TEX is non-nil, then insert \\outputtex instead of \\output."
                 (forward-line 1)
                 (if (and ask (not (y-or-n-p "Update this cell? ")))
                     t
-                  (ynb-update-type-cell tex)
-))
+                  (if tex
+                      (ynb-tex-update-cell)
+                    (ynb-update-cell))))
             (widen) ; If user aborts evaluation at prompt
             ) ; unwind-protect
           ) ; if in a valid cell
@@ -1201,9 +1202,8 @@ Return nil if no name or error in name."
 
 ;;; @@ Yacas-Notebook functions for "yacas" cells
 
-(defun ynb-send-cell (&optional tex)
-  "Send input to process. Point must be in a cell."
-  (interactive)
+(defun ynb-get-cell-contents ()
+  "Get the contents of the Yacas cell"
   (if (not (ynb-cell-p))
       (error "Not in Yacas cell"))
   (let ((home-buffer (current-buffer))
@@ -1238,7 +1238,12 @@ Return nil if no name or error in name."
           (set-buffer (find-file-noselect assembled-file))
           (setq cell (buffer-substring-no-properties (point-min) (point-max))))
       (setq cell (buffer-substring-no-properties start end)))
-    (ynb-send-block cell tex)))
+    cell))
+  
+(defun ynb-send-cell (&optional tex)
+  "Send input to process. Point must be in a cell."
+  (interactive)
+  (ynb-send-block (ynb-get-cell-contents) tex))
 
 (defun ynb-single-command-get-output (string tex)
   "Send a command to the Yacas process."
@@ -1297,53 +1302,88 @@ Return nil if no name or error in name."
     (ynb-single-command-get-output (substring stuff 0 end) tex)
     (setq stuff (substring stuff end))))
 
-(defun ynb-get-output (tex)
-  "Insert last output from Yacas.
-Assumes point in cell.  Output inserted at end of cell."
-  (goto-char (ynb-cell-end))
-  (forward-line 1)		 ; Insert marker before output
-  (open-line 1)
-  (if tex
-      (insert "\\outputtex")					; ..
-    (insert "\\output"))
-  (forward-line 1)		 ; ..
-  (save-excursion
-    (insert ynb-cell-output)
-    (if tex
-	(insert "\n"))))
-
-(defun ynb-replace (tex)
-  "Replace output (if any) with last Yacas result. Point must be in a cell.
-Output assumed to follow input, separated by a ynb-output-marker 
-line."
-  (if (not (ynb-cell-p))
-      (error "Not in Yacas cell"))
-  (save-excursion
-    (ynb-delete-output)
-    (ynb-get-output tex)))
-
-(defun ynb-update-type-cell (tex)
-  "Send input to Yacas and replace output with result.
-Point must be in cell.  Output assumed to follow input,
-separated by a ynb-output-marker line."
-  (if (not (ynb-cell-p))
-      (error "Not in Yacas cell"))
-  (ynb-send-cell tex)
-  (ynb-replace tex))
+(defun ynb-massage-input (string)
+  "Puts the input into a nice form"
+  (let* ((tmpfile (make-temp-name "#ys"))
+         (tmpbuf (get-buffer-create tmpfile))
+         (out))
+    (save-excursion
+      (set-buffer tmpbuf)
+      (make-local-hook 'kill-buffer-hook)
+      (setq kill-buffer-hook nil)
+      (insert string)
+      ;; First, replace the \s with " "s
+      (goto-char (point-min))
+      (replace-regexp  "\\\\[ \n\t]*" " ")
+      (goto-char (point-min))
+      ;; Next, replace the \n's without ;s with ;s
+      (while (re-search-forward "\n" nil t)
+        (forward-char -1)
+        (while (looking-at "[ \t\n]")
+          (delete-char 1)
+          (forward-char -1))
+        (unless (looking-at ";")
+          (forward-char 1)
+          (insert ";")))
+      ;; Finally, make sure there's a ; at the end
+      (goto-char (point-max))
+      (forward-char -1)
+      (while (looking-at "[ \t\n]")
+        (delete-char 1)
+        (forward-char -1))
+      (unless (looking-at ";")
+        (forward-char 1)
+        (insert ";"))
+      (setq out (buffer-substring-no-properties (point-min) (point-max))))
+    (kill-buffer tmpbuf)
+    out))
 
 (defun ynb-update-cell ()
   "Send input to Yacas and replace output with result.
 Point must be in cell.  Output assumed to follow input,
 separated by a ynb-output-marker line."
   (interactive)
-  (ynb-update-type-cell nil))
+  (let ((cell)
+        (pt))
+    (ynb-delete-output)
+    (setq pt (point))
+    (setq cell (ynb-get-cell-contents))
+    (setq cell (ynb-massage-input cell))
+    (goto-char (ynb-cell-end))
+    (forward-line 1)		 ; Insert marker before output
+    (open-line 1)
+    (insert "\\output")
+    (forward-line 1)		 ; ..
+    (while (string-match "[^ \t\n]" cell)
+      (setq end (yacas-find-command-end-string cell))
+      (yacas-single-command (substring cell 0 end))
+      (setq cell (substring cell end))
+      (insert (replace-regexp-in-string "Out>" "    " (yacas-output))))
+    (goto-char pt)))
 
 (defun ynb-tex-update-cell ()
-  "Send input to yacas and replace output with the result in TeX form.
+  "Send input to Yacas and replace output with result in TeX form.
 Point must be in cell.  Output assumed to follow input,
 separated by a ynb-output-marker line."
   (interactive)
-  (ynb-update-type-cell t))
+  (let ((cell)
+        (pt))
+    (ynb-delete-output)
+    (setq pt (point))
+    (setq cell (ynb-get-cell-contents))
+    (setq cell (ynb-massage-input cell))
+    (goto-char (ynb-cell-end))
+    (forward-line 1)		 ; Insert marker before output
+    (open-line 1)
+    (insert "\\outputtex")
+    (forward-line 1)		 ; ..
+    (while (string-match "[^ \t\n]" cell)
+      (setq end (yacas-find-command-end-string cell))
+      (yacas-single-command (substring cell 0 end))
+      (yacas-single-command ynb-tex-string)
+      (setq cell (substring cell end))
+      (insert "\\ys " (yacas-tex-output) "\\\\\n"))
+    (goto-char pt)))
 
 (defun ynb-replace-line-with-tex ()
   "Sends the current line to Yacas, and then replaces it with the Yacas
