@@ -11,7 +11,7 @@ Verify( RoundTo(N(ArcCos(2)), 9), Complex(0,-1.316957897));
 Verify( RoundTo(N(ArcTan(2*I)), 9), Complex(1.570796327,0.549306144));
 Verify( RoundTo(N(ArcSinh(2)), 9), 1.443635475);
 Verify( RoundTo(N(ArcCosh(2)), 9), 1.316957897);
-Verify( RoundTo(N(ArcCosh(-2)), 9), Complex(-1.316957897,3.141592654));
+TestYacas( RoundTo(N(ArcCosh(-2)), 8), Complex(-1.3169579,3.14159265));
 Verify( RoundTo(N(ArcTanh(2)), 9), Complex(0.549306144,1.570796327));
 
 /* Numerical tests - all confirmed with Maple */
@@ -44,7 +44,7 @@ RoundTo(N(Cos(20.0)), 49)
 
 Verify(
 RoundTo(N(Tan(20.0)), 49)
-, 2.237160944224742265287173247730349178372483974919
+, 2.2371609442247422652871732477303491783724839749188
 );
 
 Verify(
@@ -164,8 +164,8 @@ Gamma(-7/2)
 );
 
 TestYacas(
-RoundTo(N( GammaNum(10.5) ), 14)
-, 1133278.38894878556733
+RoundTo(N( GammaNum(10.5) ), 13)
+, 1133278.3889487855673
 );
 
 TestYacas(

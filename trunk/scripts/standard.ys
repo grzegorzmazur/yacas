@@ -73,11 +73,12 @@ Function("NrArgs",{aLeft}) Length(Listify(aLeft))-1;
 
 /* Cache the most recently computed value of Pi and its precision
   This helps because right now every N() requires a new evaluation of Pi
- */
-Set(PiCache, {40, 3.1415926535897932384626433832795028841971694});
+REMOVE */
+//Set(PiCache, {40, 3.1415926535897932384626433832795028841971694});
 	/* return numerical value recalculated only if necessary
 	  we could get more speed if we also passed the previous value of pi
 	  to MathPi() as its initial guess but that can wait for now */
+/*
 Function("Pi", {})
 [
 	Local(new'prec, new'pi);
@@ -91,19 +92,92 @@ Function("Pi", {})
 	MathNth(PiCache,2)
 	);
 ];
+*/
+/* Cache the most recently computed value of a constant and its precision
+ */
+
+Set(CacheOfConstants, {});	// format: { {"Pi", 7, 3.1415926}, ...}
+
+/// declare a new cached constant C'atom and its associated function C'atom().
+/// C'atom() will call C'func() at current precision to evaluate C'atom if it has not yet been cached at that precision. (note: any arguments to C'func() must be included)
+RuleBase("CachedConstant", {C'atom, C'func});
+UnFence("CachedConstant", 2);	// not sure if this is useful
+HoldArgNr("CachedConstant", 2, 2);
+// check syntax: must be called on an atom and a function
+Rule("CachedConstant", 2, 10, MathAnd(IsAtom(C'atom), IsFunction(C'func)))
+[
+ 	Local(C'name);
+	Set(C'name, String(C'atom));
+	// declare it if it does not already exist
+	If(
+	  Equals(FastAssoc(C'name, CacheOfConstants), Empty),	// not already defined
+	  [
+		MacroClear(C'atom);
+		DestructiveInsert(CacheOfConstants, 1, {C'name, 0, 0});
+		// define the new function C'atom()
+		MacroRuleBase(C'name, {});
+		`( Rule(@C'name, 0, 1024, True)
+		[
+			Local(new'prec, new'C, cached'C);
+//			Clear(@C'atom);
+			Set(new'prec, GetPrecision());
+			Set(cached'C, FastAssoc(@C'name, CacheOfConstants));
+			If(
+			  LessThan(MathNth(cached'C, 2), new'prec),
+			  [	// need to recalculate at current precision
+				Set(new'C, Eval(@C'func));
+				If(Equals(Verbose,True), Echo("CachedConstant: Info: constant", @C'name, "is being recalculated at precision ", new'prec));
+				DestructiveReplace(cached'C, 2, new'prec);
+				DestructiveReplace(cached'C, 3, new'C);
+				new'C;
+			  ],
+			  // return cached value of C'atom
+			  MathNth(cached'C, 3)
+			);
+		]);
+		// calculate C'atom at current precision for the first time
+		Eval(UnList({C'atom}));	//C'name @ {};
+	  ],
+	  Echo("CachedConstant: Warning: constant ", C'atom, " already defined")		
+	);
+];
+
+Rule("CachedConstant", 2, 20, True)
+	Echo("CachedConstant: Error: ", C'atom, " must be an atom and ", C'func, " must be a function.");
+
+/// declare some constants now
+CachedConstant(Pi, MathPi());
+//CachedConstant(Ln2, BrentLn(2));
+
+/// assign numerical values to all cached constants
+Function("AssignCachedConstants", {})
+[
+	Local(var);
+	ForEach(var, AssocIndices(CacheOfConstants))
+		MacroSet(Atom(var), Eval(UnList({Atom(var)})));
+];
+UnFence("AssignCachedConstants", 0);
+
+/// clear values from all cached constants
+Function("ClearCachedConstants", {})
+[
+	Local(var);
+	ForEach(var, AssocIndices(CacheOfConstants))
+		MacroClear(Atom(var));
+];
+UnFence("ClearCachedConstants", 0);
 
 Set(Numeric,False);
-Clear(Pi);
+
 Function("N",{aNumberBody})
 [
   Local(prevNumeric,prevPi,numericresult);
   Set(prevNumeric,Numeric);
-  Set(prevPi,Pi);
-  Set(Pi,Pi());
+  AssignCachedConstants();
   Set(Numeric,True);
   Set(numericresult,Eval(aNumberBody));
   Set(Numeric,prevNumeric);
-  Set(Pi,prevPi);
+  ClearCachedConstants();
   numericresult;
 ];
 UnFence("N",1);
@@ -112,14 +186,13 @@ Function("N",{aNumberBody,aDigits})
 [
   Local(prevNumeric,prevPi,numericresult);
   Set(prevNumeric,Numeric);
-  Set(prevPi,Pi);
   Set(prevdigits,GetPrecision());
   Precision(aDigits);
-  Set(Pi,Pi());
+  AssignCachedConstants();
   Set(Numeric,True);
   Set(numericresult,Eval(aNumberBody));
   Set(Numeric,prevNumeric);
-  Set(Pi,prevPi);
+  ClearCachedConstants();
   Precision(prevdigits);
   numericresult;
 ];
