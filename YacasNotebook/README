@@ -1,146 +1,27 @@
-INTRODUCTION
-============
-`Yacas-Notebook' is a major mode for Emacs that allows the user to
-write documents while interacting with _Yacas_.
-yacas-mode is a mode intended to support program development in
-_Yacas_ by inserting control constructs in the buffer, help in
-formatting the code (for example, a <RET> will start a new line
-indented the correct amount)(1), and interacting with a _Yacas_
-process. 
-yacas.el will also allow Yacas to be run interactively within Emacs in
-a shell buffer.
+README
+======
+This directory contains Emacs lisp files to aid in interacting with 
+Yacas from within Emacs.
+It contains the files
+  yacas.el   
+  yacas-names.el
+  yacas-functions.el
+  yacas-notebook.el
+  yacas-notebook.sty
+  yacas-doc.el
 
-INSTALLATION
-============
-Yacas-Notebook:
-The `Yacas-Notebook' package consists of the files `yacas.el',
-`yacas-notebook.el', `yacas-notebook.sty' and `yacas-notebook.info'.
-To install, place `yacas-notebook.el' and `yacas.el' somewhere in the
-load path for Emacs. Put `yacas-notebook.info' in the info directory
-(this usually `/usr/info/') or set the variable `ynb-info-dir' to the
-directory where you put the file, including the trailing `/'.  Finally,
-if you want to run LaTeX on the resulting document, put
-`yacas-notebook.sty' somewhere in the TeX inputs path.
-   To make sure that `yacas-notebook.el' is loaded when necessary, the
-line
-     (autoload 'yacas-notebook-mode "yacas-notebook" "Yacas-Notebook" t)
-can be inserted into your `.emacs' file.  Then typing `M-x
-yacas-notebook-mode' will start `Yacas-Notebook' mode.  The command
-`M-x ynb-mark-file-as-yacas-notebook' will put the line
-     %-*-Yacas-Notebook-*-
-at the beginning of the file, if it isn't there already, and will ensure
-that the next time the file is opened, it will be in
-`yacas-notebook-mode'.  This can be done automatically everytime a file
-is put in `yacas-notebook-mode' by putting the line
-     (add-hook 'yacas-notebook-mode-hook 'ynb-mark-file-as-yacas-notebook)
-somewhere in your `.emacs' file.
-   The variable `yacas-documentation-directory' is where
-`Yacas-Notebook' expects to find the _Yacas_ documentation, by default
-it is `"/usr/share/yacas/documentation."'.
+yacas.el provides a mode for writing Yacas code, as well as a 
+  mode for interacting with Yacas inside an Emacs buffer.
+  It requires yacas-names.el and yacas-functions.el
 
-yacas-mode:
-yacas-mode can be installed (independently of `yacas-notebook-mode')
-by inserting `yacas.el' somewhere in the load path for Emacs, and
-`yacas-notebook.info' in the info directory (this is usually
-`/usr/info/', alternatively, the variable `yacas-info-dir' can be set
-the the directory containing `yacas-notebook.info'.  `yacas-info-dir'
-must contain the ending `/'.)  To make sure that `yacas.el' is loaded
-when necessary, put the line
-     (autoload 'yacas-mode "yacas" "Yacas mode" t)
-in your `.emacs' file.
-   The variable `yacas-documentation-directory' is where
-`Yacas-Notebook' expects to find the _Yacas_ documentation, by default
-it is `"/usr/share/yacas/documentation."'.
+yacas-notebook.el provides a notebook interface for Yacas from
+  within Emacs.  It requires yacas.el (and so yacas-names.el 
+  and yacas-functions.el) and yacas-notebook.sty
 
-Interactive yacas:
-To be able to run Yacas interactively, put the line
-     (autoload 'yacas "yacas" "Running Yacas" t)
-in your `.emacs' file.  Then the command `M-x yacas' will open a buffer
-running a Yacas process.
+yacas-doc.el provides a mode for writing Yacas documentation
+  in Emacs.
 
-DESCRIPTION
-===========
-Yacas-Notebook:
-This is a mode intended to allow the user to write documents that
-include Yacas code.  The file can be LaTeXed to produce nice 
-looking output (although that isn't necessary, of course), and so the
-mode is an extension of TeX-mode (AucTeX, if you use that) that also
-includes all the functionality of yacas-mode.
-The units of Yacas code that are worked with are "cells", which are 
-delimited by "\yacas" and "\endyacas". The cells can be evaluated 
-individually, as a group, and the output can be returned as Yacas output 
-or in TeX form.  Evaluating a cell and returning the output is called 
-"updating" the cell.  This mode also supports some literate programming 
-constructs.  (See the file "Yacas-NotebookIntro.tex" for more 
-information.)
-The commands for working with cells are:
- C-c C-o  create a cell         
- C-c C-v a update all the cells 
- C-c C-v A update all the cells in TeX form 
- C-c + go to the next cell 
- C-c - go to the previous cell
- C-c C-v q evaluate all  initialization cells
- C-c C-v i update all the initialization cells
- C-c C-v I update all the initialization cells in TeX form
+A quick introduction to these modes is provided at the beginning of
+each file.
 
-(With a prefix, C-u C-c C-v a and C-u C-c C-v A will update the cells 
-without prompting)
-Since the Yacas output can be returned to the Yacas-Notebook buffer, by default
-the buffer which runs the Yacas process is not shown.  This can be changed.
- C-c C-y show the Yacas buffer
- C-u C-c C-y don't show the Yacas buffer.
-Single lines can be evaluated:
- C-c C-v l replace the current line with Yacas output
- C-c C-v L replace the current line with Yacas output 
-in TeX form.
 
-Within a cell, the following commands are available:
- C-c C-d  delete the cell's output
- C-c C-v c  update a cell 
- C-c C-v C update a cell in TeX form
- C-c C-q toggle initialization cells
- C-c @  assemble a cell which defines a package
- C-u C-c @  assemble a cell with references
-
-Finally, the command M-x ynb-mark-file-as-yacas-notebook will 
-insert a 
-%-*-Yacas-Notebook-*- at the beginning
-of the file (if there isn't one there already) so the file will begin in
-yacas-notebook-mode next time it's opened.
-
-yacas-mode:
-This is a mode intended to support program development in Yacas.
-The following control constructs can be entered automatically.
-
- C-c C-p Start a function (procedure)    
- C-c C-l Local
- C-c TAB If
- C-c C-e Else
- C-c C-f For
- C-c C-w While
- C-c C-a ForEach
- C-c C-u Until
-
-The Local command is used to add new local variables in a procedure.
-The If, While and Until commands will prompt for a predicate.
-The For command will prompt for start, predicate and increment,
-the ForEach command will prompt for an item and a list.
-
-C-c < and C-c > 
-move backward and forward respectively to the next line having the same 
-(or lesser) level of indentation.
-The variable yacas-indent controls the number of spaces for each indentation.
-C-c / will comment out a region, and 
-C-c \ will un-comment it out.
-C-c ] will indent a region to the level of the line before the region.
-C-c # will add an inline comment, and
-C-c * will add an environment for a longer comment.
-
-Use C-M-r to run Yacas on the current region under
-a special subshell.  C-M-b does the whole buffer, and
-C-M-l just does the current line.  C-M-k can
-be used to kill the yacas process.
-
-In the Yacas subshell buffer, the command C-c C-n will move to the next 
-prompt, and C-c C-p will move to the previous prompt.  C-up and C-down 
-can be used to scroll through the input history.
