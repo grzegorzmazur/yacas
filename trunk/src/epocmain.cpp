@@ -194,7 +194,7 @@ void CConsoleControl::ConstructYacas()
     buf2.ZeroTerminate();
    
     iYacas->Evaluate((char*)buf2.Ptr());
-    iYacas->Evaluate("Load(\"yacasinit\");");
+    iYacas->Evaluate("Load(\"yacasinit.ys\");");
     ShowResult("");
 #endif
 
