@@ -218,6 +218,7 @@ Rule("Gcd",2,100,True)
 10 # Abs(n_IsPositiveNumber/m_IsNegativeNumber) <-- n/(-m);
 10 # Abs(Complex(_r,_i)) <-- Sqrt(r^2 + i^2);
 10 # Abs(n_IsInfinity) <-- Infinity;
+10 # Abs(Undefined) <-- Undefined;
 20 # Abs(n_IsList) <-- MapSingle("Abs",n);
 
 100 # Abs(_a)^n_IsEven <-- a^n;
