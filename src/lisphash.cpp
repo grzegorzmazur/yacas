@@ -75,7 +75,7 @@ LispInt  LispHashUnStringify( char *s )
 
 LispInt LispHashPtr(LispStringPtr aString)
 {
-    LispCharPtr p = (LispCharPtr)aString;
+    LispCharPtr p = (LispCharPtr)(&aString);
     LispUnsLong h=0;
 
     switch (sizeof(LispStringPtr))
