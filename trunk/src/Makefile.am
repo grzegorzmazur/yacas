@@ -85,7 +85,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	epocyacas.hrh epocyacas.mmp epocyacasconsole.mmp \
 	epocstubs.cpp grower.inl lisphash.inl lispobject.inl \
 	lispstring.inl standard.inl \
-	win32dll.cpp win32dll.h \
+	win32dll.cpp win32dll.h compilescript.sh \
 	depend.dep makefile.beos makefile.genericstatic \
 	version.h \
 	convertcctocpp.bat \
