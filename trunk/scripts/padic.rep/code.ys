@@ -247,9 +247,9 @@ PartFracExpand(_g,_f) <--
 ];
 
 
-10 # RationalForm((g_CanBeUni)/(f_CanBeUni),_var)
+10 # RationalForm((g_CanBeUni(var))/(f_CanBeUni(var)),_var)
      <-- { MakeUni(g,var),MakeUni(f,var)};
-20 # RationalForm(f_CanBeUni,_var)
+20 # RationalForm(f_CanBeUni(var),_var)
      <-- { MakeUni(f,var),MakeUni(1,var)};
 
 Apart(_f) <-- Apart(f,x);

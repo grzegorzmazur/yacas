@@ -215,15 +215,21 @@ LocalSymbols(x,n,vars)  [
 LocalSymbols(x,n,vars)  [
   40 #  MakeMultiNomial(_x ^ n_IsPositiveInteger,vars_IsList) <--
 	[
+//Echo({"hello!"});
           Local(mult,result);
           Set(mult,MakeMultiNomial(x,vars));
           Set(result,MakeMultiNomial(1,vars));
 	  While(n>0)
           [
+//Echo({"1...",n});
             If(n&1 != 0, Set(result, MultiNomialMultiply(result,mult)));
+//Echo({"2...",n});
             Set(n,n>>1);
+//Echo({"3...",n});
             Set(mult,MultiNomialMultiply(mult,mult));
+//Echo({"4...",n});
           ];
+//Echo({"end"});
           result;
         ];
   50 #  MakeMultiNomial(_x ^ (_n),vars_IsList)_(Contains(vars,x)) <--

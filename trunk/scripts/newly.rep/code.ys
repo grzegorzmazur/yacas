@@ -24,20 +24,20 @@ UniqueConstant() <--
 ];
 
 
-1 # IsFreeOf(_expr,{}) <-- True;
-2 # IsFreeOf(_expr,var_IsList) <-- MathAnd(IsFreeOf(expr,Head(var)), IsFreeOf(expr,Tail(var)));
+1 # IsFreeOf({},_expr) <-- True;
+2 # IsFreeOf(var_IsList, _expr) <-- MathAnd(IsFreeOf(Head(var),expr), IsFreeOf(Tail(var),expr));
 
-4 # IsFreeOf({},_var) <-- True;
-5 # IsFreeOf(expr_IsList,_var) <-- MathAnd(IsFreeOf(Head(expr),var), IsFreeOf(Tail(expr),var));
+4 # IsFreeOf(_var,{}) <-- True;
+5 # IsFreeOf(_var,expr_IsList) <-- MathAnd(IsFreeOf(var,Head(expr)), IsFreeOf(var,Tail(expr)));
 
 /* Accept any variable. */
 10 # IsFreeOf(_expr,_expr) <-- False;
 
 /* Otherwise check all leafs of a function. */
-11 # IsFreeOf(expr_IsFunction,_var) <-- IsFreeOf(Tail(Listify(expr)),var);
+11 # IsFreeOf(_var,expr_IsFunction) <-- IsFreeOf(var,Tail(Listify(expr)));
 
 /* Else it doesn't depend on any variable. */
-12 # IsFreeOf(_expr,_var) <-- True;
+12 # IsFreeOf(_var,_expr) <-- True;
 
 
 Function("IsZeroVector",{aList}) aList = ZeroVector(Length(aList));
@@ -439,7 +439,7 @@ GuessRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 
 /** MatchLinear(variable,expression)
  */
-10 # MatchLinear(var_IsAtom,_expr)_CanBeUni(expr,var) <--
+10 # MatchLinear(var_IsAtom,expr_CanBeUni(var)) <--
 [
   Set(expr,MakeUni(expr,var));
   MatchLinear(expr);

@@ -215,7 +215,7 @@ CofESolve(_extra)<--
   list:=CofListed(cofeq);
   For(i:=1,i<=Length(list),i++)
   [
-    If(Not(IsFreeOf(list[i],E)),
+    If(Not(IsFreeOf(E,list[i])),
       list[i]:=E-SuchThat(list[i],E)
       );
   ];

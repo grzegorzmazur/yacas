@@ -286,8 +286,8 @@ arguments that didn't evaluate to {True} or {False} yet.
 *CMD IsFreeOf --- Test whether expression depends on variable
 *STD
 *CALL
-	IsFreeOf(expr, var)
-	IsFreeOf(expr, {var, ...})
+	IsFreeOf(var, expr)
+	IsFreeOf({var, ...}, expr)
 
 *PARMS
 
@@ -306,13 +306,13 @@ the variables named in the list. The result is {True} if none of the variables a
 
 *E.G.
 
-	In> IsFreeOf(Sin(x), x);
+	In> IsFreeOf(x, Sin(x));
 	Out> False;
-	In> IsFreeOf(Sin(x), y);
+	In> IsFreeOf(y, Sin(x));
 	Out> True;
-	In> IsFreeOf(D(x) a*x+b, x);
+	In> IsFreeOf(x, D(x) a*x+b);
 	Out> True;
-	In> IsFreeOf(Sin(x), {x,y});
+	In> IsFreeOf({x,y}, Sin(x));
 	Out> False;
 
 The third command returns {True} because the

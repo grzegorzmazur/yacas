@@ -12,7 +12,7 @@ TrySolution(dimension,potential,function,particles,masses):=
   PrettyForm(tl);
   tm:=Extract(tl,function);
   PrettyForm(tm);
-  Write(IsFreeOf(tm,Flatten(particles,"List")));
+  Write(IsFreeOf(Flatten(particles,"List"),tm));
   NewLine();
 ];
 
@@ -39,7 +39,7 @@ TrySolution2(dimension,potential,fff,particles,masses):=
   tm:=Extract(fff);
   PrettyForm(tm);
   */
-  Write(IsFreeOf(tm,Flatten(particles,"List")));
+  Write(IsFreeOf(Flatten(particles,"List"),tm));
   NewLine();
 ];
 
@@ -71,7 +71,7 @@ TrySolution(3,0,Exp(I*(k . r)),{r},{m});
   PrettyForm(l);
   m:=Extract(l,function);
   PrettyForm(m);
-  Write(IsFreeOf(m,r));
+  Write(IsFreeOf(r,m));
   NewLine();
 ];
 [
