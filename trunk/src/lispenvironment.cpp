@@ -505,6 +505,8 @@ LispCharPtr LispEnvironment::ErrorString(LispInt aError)
         if (theUserError != NULL) //TODO should always be true!
             return theUserError;
         break;
+    case KLispErrNonBooleanPredicateInPattern:
+        return "Predicate doesn't evaluate to a boolean in pattern";
     }
     return "Unspecified Error";
 }

@@ -20,6 +20,8 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = libyacas.a libyacasplatform.a @NUMBERS_LIB@ @NUMBERS_LDFLAGS@ 
 
+yacas_DEPENDENCIES = libyacas.a libyacasplatform.a  @NUMBERS_LIB@
+
 #
 # some one who understands autoconf/automake: how do I detect if a platform
 # supports elf binaries?

@@ -332,7 +332,9 @@ LispBoolean YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnviron
         {
             return LispFalse;
         }
+        Check(IsTrue(aEnvironment, pred), KLispErrNonBooleanPredicateInPattern);
     }
+    //hier
     return LispTrue;
 }
                                                 
