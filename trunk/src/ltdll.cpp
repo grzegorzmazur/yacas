@@ -25,7 +25,8 @@ LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
           RaiseError("LtDll::Open: lt_dlinit says %s\n",err);
         }
     }
-    handle = lt_dlopen(aDllFile/*,RTLD_LAZY*/);
+    lt_dlsetsearchpath(PLUGIN_DIR);
+    handle = lt_dlopenext(aDllFile);
     if (handle)
     {
 #ifdef YACAS_DEBUG
