@@ -113,12 +113,12 @@ to use the functions {LocalSymbols} and
 {TemplateFunction}. Calling
 
 	LocalSymbols(a,b)
-	a+b;
-results in "a" and "b" in the addition being substituted with
-unique symbols that can not clash with other variables being used
+	a*b;
+results in "{a}" and "{b}" in the multiplication being substituted with
+unique symbols that can not clash with other variables that may be used
 elsewhere. Use {TemplateFunction} instead of
 {Function} to define a function whose parameters should be
-treaded as unique symbols also.
+treated as unique symbols.
 
 		Rules
 
@@ -210,7 +210,9 @@ and {Rule()} calls needed to define the factorial function:
 	  And n>0) n*f(n-1);
 	Out> True;
 
-This definition is entirely equivalent to the one we gave in the tutorial. {f(4)} should now return 24, while {f(a)} should return just {f(a)} if {a} is not bound to any value.
+This definition is entirely equivalent to the one in the tutorial. {f(4)}
+should now return 24, while {f(a)} should return just {f(a)} if {a} is not
+bound to any value.
 
 The {Rule} commands in this example specified two rules for function {f}
 with arity 1: one rule with precedence 10 and predicate {n=0}, and another with precedence 20 and the predicate that returns {True} only
@@ -307,7 +309,7 @@ it would otherwise not evaluate.
 
 To see the function in action, you could type:
 
-	ForEach(i,{1,2,3}) [Write(i);NewLine();];
+	ForEach(i,{1,2,3}) [Write(i); NewLine();];
 This should print 1, 2 and 3, each on a new line.
 
 Note: the variable names "foreach..." have been chosen so they won't get
@@ -354,6 +356,91 @@ This scheme allows coding the algorithms in an almost C-like syntax.
 Strings are generally represented with quotes around them, like
 "this is a string". Backslash {\} in a string will unconditionally add the
 next character to the string, so a quote can be added with {\"} (a backslash-quote sequence).
+
+		Using "Macro rules" (e.g. {NFunction})
+
+The Yacas language allows to have rules whose definitions are generated at
+runtime. In other words, it is possible to write rules (or "functions") that,
+as a side-effect, will define other rules, and those other rules will depend on
+some parts of the expression the original function was applied to.
+
+This is accomplished using functions {MacroRuleBase}, {MacroRule}, {MacroRulePattern}. These functions evaluate their arguments (including the rule name, predicate and body) and define the rule that results from this evaluation.
+
+Normal, "non-Macro" calls such as {Rule()} will not evaluate their arguments and this is a desired feature. For example, suppose we defined a new predicate like this,
+	RuleBase("IsIntegerOrString, {x});
+	Rule("IsIntegerOrString", 1, 1, True)
+		IsInteger(x) And IsString(x);
+If the {Rule()} call were to evaluate its arguments, then the "body" argument,
+{IsInteger(x) And IsString(x)}, would be evaluated to {False} since {x} is an
+atom, so we would have defined the predicate to be always {False}, which is not
+at all what we meant to do. For this reason, the {Rule} calls do not evaluate
+their arguments.
+
+Consider however the following situation. Suppose we have a function
+{f(arglist)} where {arglist} is its list of arguments, and suppose we want to
+define a function {Nf(arglist)} with the same arguments which will evaluate
+{f(arglist)} and return only when all arguments from {arglist} are numbers, and
+return unevaluated {Nf(arglist)} otherwise. This can of course be done by a usual rule such as
+	Rule("Nf", 3, 0, IsNumericList({x,y,z}))
+	  <-- "f" @ {x,y,z};
+Here {IsNumericList} is a predicate that checks whether all elements of a given
+list are numbers. (We deliberately used a {Rule} call instead of an
+easier-to-read {<--} operator to make it easier to compare with what follows.)
+
+However, this will have to be done for every function {f} separately. We would
+like to define a procedure that will define {Nf}, given <i>any</i> function
+{f}. We would like to use it like this:
+	NFunction("Nf", "f", {x,y,z});
+After this function call we expect to be able to use the function {Nf}.
+
+Here is how we could naively try to implement {NFunction} (and fail):
+
+	NFunction(new'name, old'name, arg'list) := [
+	  MacroRuleBase(new'name, arg'list);
+	  MacroRule(new'name, Length(arg'list), 0,
+	    IsNumericList(arg'list)
+	    )
+	  new'name @ arg'list;
+	];
+
+Now, this just does not do anything remotely right. {MacroRule} evaluates its 
+arguments. So {IsNumericList(arg'list)} will evaluate to {False} and the new
+rule will be defined with a predicate that is always {False}, i.e. it will be
+never applied.
+
+The right way to figure this out is to realize that the {MacroRule} call
+evaluates all its arguments and passes the results to a {Rule} call. So we need
+to see exactly what {Rule()} call we need to produce and then we need to
+prepare the arguments of {MacroRule} so that they evaluate to the right values.
+The {Rule()} call we need is something like this:
+
+	Rule("actual new name", <actual # of args>, 0,
+	  IsNumericList({actual arg list})
+	)  "actual new name" @ {actual arg list};
+
+Note that we need to produce expressions such as {"new name" @ arg'list} and not <i>results</i> of evaluation of these expressions. We can produce these expressions by using {UnList()}, e.g.
+	UnList({Atom("@"), "Sin", {x}})
+produces
+	"Sin" @ {x};
+but not {Sin(x)}, and
+	UnList({IsNumericList, {1,2,x}})
+produces the expression
+	IsNumericList({1,2,x});
+which is not further evaluated.
+
+Here is a second version of {NFunction()} that works:
+
+	NFunction(new'name, old'name, arg'list) := [
+	  MacroRuleBase(new'name, arg'list);
+	  MacroRule(new'name, Length(arg'list), 0,
+	    UnList({IsNumericList, arg'list})
+	  )
+	    UnList({Atom("@"), old'name, arg'list});
+	];
+Note that we used {Atom("@")} rather than just the bare atom {@} because {@} is
+a prefix operator and prefix operator names as bare atoms do not parse (they
+would be confused with applications of a prefix operator to what follows).
+
 
 		Scope of variable bindings
 
