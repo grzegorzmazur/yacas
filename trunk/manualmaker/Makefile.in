@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4a from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -46,9 +46,10 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -69,9 +70,9 @@ RELEASE = @RELEASE@
 VERSION = @VERSION@
 scriptdir = @scriptdir@
 
-noinst_PROGRAMS = books.html
+noinst_PROGRAMS = books.html texdocs
 
-EXTRA_DIST =  	manualmaker styleplain 	in/all in/arith.chapt in/built.chapt in/calc.chapt 	in/coding.book.txt in/const.chapt in/functional.chapt  	in/intro.book.txt in/io.chapt in/linalg.chapt in/dummies  	in/lists.chapt in/preds.chapt in/prog.chapt                in/refprog.book in/controlflow.chapt newhelp in/plugins.chapt   	in/ref.book in/univar.chapt in/vars.chapt yacasinit.ys in/generic.chapt 	in/intromaker in/refmaker in/refprogmaker in/codingmaker in/logic.chapt         in/config.chapt in/strings.chapt 
+EXTRA_DIST =  	manualmaker styleplain 	in/all in/arith.chapt in/built.chapt in/calc.chapt 	in/coding.book.txt in/const.chapt in/functional.chapt  	in/intro.book.txt in/io.chapt in/linalg.chapt in/dummies  	in/lists.chapt in/preds.chapt in/prog.chapt                in/refprog.book in/controlflow.chapt newhelp in/plugins.chapt   	in/ref.book in/univar.chapt in/vars.chapt yacasinit.ys in/generic.chapt 	in/intromaker in/refmaker in/refprogmaker in/codingmaker in/logic.chapt         in/config.chapt in/strings.chapt .cvsignore
 
 
 yacas_helpdir = $(datadir)/yacas/documentation
@@ -90,6 +91,11 @@ books_html_OBJECTS =  books.html.o
 books_html_LDADD = $(LDADD)
 books_html_DEPENDENCIES = 
 books_html_LDFLAGS = 
+texdocs_SOURCES = texdocs.c
+texdocs_OBJECTS =  texdocs.o
+texdocs_LDADD = $(LDADD)
+texdocs_DEPENDENCIES = 
+texdocs_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -99,10 +105,10 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
-SOURCES = books.html.c
-OBJECTS = books.html.o
+SOURCES = books.html.c texdocs.c
+OBJECTS = books.html.o texdocs.o
 
 all: all-redirect
 .SUFFIXES:
@@ -211,7 +217,7 @@ uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS)
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs:
 
 
@@ -263,6 +269,9 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
 %.book: %.book.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
+
+texdocs:
+	echo "done" > texdocs.c
 
 books.html: in/arith.chapt in/built.chapt in/calc.chapt \
 	in/coding.book in/const.chapt in/functional.chapt  \

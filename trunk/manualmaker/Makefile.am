@@ -1,5 +1,5 @@
 
-noinst_PROGRAMS = books.html
+noinst_PROGRAMS = books.html texdocs
 
 EXTRA_DIST = \
 	manualmaker styleplain \
@@ -16,6 +16,9 @@ EXTRA_DIST = \
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
 %.book: %.book.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
+
+texdocs:
+	echo "done" > texdocs.c
 
 yacas_helpdir = $(datadir)/yacas/documentation
 
