@@ -44,8 +44,8 @@ IsPositiveInteger(x):= IsInteger(x) And x > 0;
 
 IsNonZeroInteger(x) := (IsInteger(x) And x != 0);
 
-10 # IsEven(n_IsInteger) <--  ( BitAnd(n,1)  = 0 );
-10 # IsOdd(n_IsInteger) <--   ( BitAnd(n,1)  = 1 );
+IsEven(n) := IsInteger(n) And ( BitAnd(n,1)  = 0 );
+IsOdd(n)  := IsInteger(n) And ( BitAnd(n,1)  = 1 );
 
 
 10 # IsInfinity(Infinity) <-- True;

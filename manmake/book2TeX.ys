@@ -107,10 +107,10 @@ IncludeFile(x) := Load(x);
 
 HtmlLink(text, url, param1, param2) :=
   If (text = url,
-	"\\verb|" : text : "|",
-	text : " (Web URL: \\verb|" : url :
+	"{\\small \\verb|" : text : "|}",
+	text : " (Web URL: {\\small \\verb|" : url :
 	  If(param1 != "", "#" : param1, "" )
-	: "|)"
+	: "|})"
 );
 
 RuleBase("TeXMath", {x});

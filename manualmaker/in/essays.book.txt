@@ -15,4 +15,6 @@
 
 *INCLUDE YacasDebugger.chapt
 
+*INCLUDE Algorithms.chapt
+
 *INCLUDE new.chapt

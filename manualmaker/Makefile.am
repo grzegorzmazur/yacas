@@ -22,7 +22,8 @@ REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt \
 	in/strings.chapt.txt in/addons.chapt.txt 
 
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
-	CVS-Howto.chapt YacasDocs.chapt YacasDebugger.chapt new.chapt
+	CVS-Howto.chapt YacasDocs.chapt YacasDebugger.chapt \
+	new.chapt Algorithms.chapt
 
 
 ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
