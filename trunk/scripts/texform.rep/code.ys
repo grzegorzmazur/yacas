@@ -21,11 +21,12 @@
 	0.4.12 implement the % operation as Mod
 	0.4.13 added Bessel{I,J,K,Y}, Ortho{H,P,T,U}, with a general framework for usual two-argument functions of the form $A_n(x)$; fix for Max, Min
 	0.4.14 added mathematical notation for Floor(), Ceil()
+	0.4.15 added Prog() represented by ( )
 */
 
 /* To do:
 	0. Find and fix bugs.
-	1. The current bracketing approach has limitations: can't omit extra brackets sometimes. " sin a b" is ambiguous, so need to do either "sin a sin b" or "(sin a) b" Hold((a*b)*Sqrt(x)). The current approach is *not* to bracket functions unless the enveloping operation is more binding than multiplication. This produces "sin a b" for both Sin(a*b) and Sin(a)*b but is the current mathematical practice.
+	1. The current bracketing approach has limitations: can't omit extra brackets sometimes. " sin a b" is ambiguous, so need to do either "sin a sin b" or "(sin a) b" Hold((a*b)*Sqrt(x)). The current approach is *not* to bracket functions unless the enveloping operation is more binding than multiplication. This produces "sin a b" for both Sin(a*b) and Sin(a)*b but this is the current mathematical practice.
 	2. Need to figure out how to deal with variable names such as "alpha3"
 */
 
@@ -149,6 +150,7 @@ TeXFormSpecialNames := {
 	{"LaTeX", "\\textrm{\\LaTeX\\/}"},
 	{"Max", "\\max "},	// this replaces these function names
 	{"Min", "\\min "},
+	{"Prog", " "},
 };
 
 /* this function will take a user-defined variable or function name and output either this name unmodified if it's only 2 characters long, or the name in normal text if it's longer, or a TeX Greek letter code */
