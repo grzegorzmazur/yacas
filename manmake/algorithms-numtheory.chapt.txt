@@ -485,9 +485,7 @@ regarding arithmetic modulo an integer.
 Arithmetic modulo an integer $p$  requires performing the
 arithmetic operation and afterwards determining that
 integer modulo $p$. A number $x$ can be written as 
-
 $$x=q*p+r$$
-
 where $q$ is called the quotient, and $r$ remainder.
 There is some liberty in the range one chooses $r$
 to be in. If $r$ is an integer in the range ${0,1, ... ,(p-1)}$
@@ -500,28 +498,26 @@ an integer $p$ in that case.
 For calculations modulo some $p$ the following rules
 hold:
 
-If $Mod(a=b,p)$ and $Mod(x=y,p)$, then
-$Mod(a*x=b*y,p)$, $Mod(a+x=b+y,p)$, $Mod(a-x=b-y,p)$.
+*	If $Mod(a=b,p)$ and $Mod(x=y,p)$, then
+$Mod(a*x=b*y,p)$, $Mod(a+x=b+y,p)$, and $Mod(a-x=b-y,p)$.
 This means that for instance also $Mod(x^n,p) = Mod(Mod(x,p)^n,p)$
 
-Two numbers $x$ and $y$ are <i>relatively prime</i> if they don't 
+*	Two numbers $x$ and $y$ are <i>relatively prime</i> if they don't 
 share a common factor, that is, if their greatest common denominator 
 is one, $Gcd(x,y)=1$.
 
-If $Mod(a*x=b*y,p)$ and if $Mod(a=b,p)$, and if a and if $a$ and
+*	If $Mod(a*x=b*y,p)$ and if $Mod(a=b,p)$, and if a and if $a$ and
 $p$ are relatively prime, then $Mod(x=y,p)$.
 This is useful for dividing out common factors.
 
-$Mod(a=b,p)$ if and only if $Mod(a*n=b*n,n*p)$ when $n != 0$.
+*	$Mod(a=b,p)$ if and only if $Mod(a*n=b*n,n*p)$ when $n != 0$.
 Also, if $r$ and $s$ are relatively prime, then $Mod(a=b,r*s)$ only if
 $Mod(a=b,r)$ and $Mod(a=b,s)$.
 These rules are useful when the modulus is changed.
 
 For polynomials $v_1(x)$ and $v_2(x)$ it further holds
 that 
-
 $$ Mod((v_1(x)+v_2(x))^p = v_1(x)^p + v_2(x)^p,p) $$
-
 This follows by writing out the expression, noting that
 the binomial coefficients that result are multiples of $p$,
 and thus their value modulo $p$ is zero ($p$ divides these
@@ -533,15 +529,11 @@ remain.
 One corollary of the rules for calculations modulo an integer
 is <i>Fermat's theorem, 1640</i> : if $p$ is a prime number
 then 
-
 $$Mod(a^p=a,p)$$
-
 for all integers $a$ (for a proof, see Knuth).
 
 An interesting corollary to this is that
-
 $$ Mod(v(x)^p = v(x^p),p) $$.
-
 This follows from writing it out and using Fermat's theorem
 to replace $a^p$ with $a$ where appropriate (the coefficients
 to the polynomial when written out, on the left hand side).
