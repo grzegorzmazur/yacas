@@ -563,3 +563,22 @@ Function("CanBeUni",{expression}) CanBeUni(expression,VarList(expression));
     ];
 20 # BigOh(_uv,_var,_degree)_CanBeUni(uv,var) <-- NormalForm(BigOh(MakeUni(uv,var),var,degree));
 
+
+
+Horner(_e,_v) <--
+[
+  Local(uni,coefs,result);
+  uni := MakeUni(e,v);
+  coefs:=DestructiveReverse(uni[3]);
+  result:=0;
+
+  While(coefs != {})
+  [
+    result := result*v;
+    result := result+Head(coefs);
+    coefs  := Tail(coefs);
+  ];
+  result:=result*v^uni[2];
+  result;
+];
+

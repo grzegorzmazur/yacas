@@ -52,4 +52,8 @@ IsConstant(_n) <-- (VarList(n) = {});
 Function ("IsBoolean", {x})
 	(x=True) Or (x=False) Or IsFunction(x) And Contains({"=", ">", "<", ">=", "<=", "!=", "And", "Not", "Or"}, Type(x));
 
+0 # IsBoolType(True) <-- True;
+0 # IsBoolType(False) <-- True;
+1 # IsBoolType(_anythingelse) <-- False;
+
 
