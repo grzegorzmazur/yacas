@@ -1,6 +1,7 @@
 IsPrime
 IsPrimePower
-GetPrimeFactors
+GetPrimePower
 NextPrime
 NextPseudoPrime
+IntNthRoot
 }

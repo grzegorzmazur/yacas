@@ -4,104 +4,22 @@ CountBits(value) :=
 [
   Local(nbits);
   nbits:=0;
-  Check(value>=0,"Value should be positive integer");
+  Check(value>=0,"CountBits: Error: argument " : (ToString()Write(value))
+    : ", should be a positive integer");
   While(value != 0)
   [
     nbits++;
     value := value >> 1;
   ];
-  If(IsZero(nbits),nbits:=1);
-  nbits;
+  If(
+  	IsZero(nbits),
+	1,
+	nbits
+  );
 ];
 
 
-/* this uses code borrowed from Bernhard Oemer, borrowed from OpenQuBit
- * project.
- */
-/* Returns whether n is a prime */
-
-/* Fast prime testing: if n is a prime, then 24 divides (n^2-1) */
-5 # IsPrime(n_IsPositiveInteger)_(n > 4 And Mod(n^2-1,24)!=0) <-- False;
-
-/* Determine if a number is prime, using Rabin Miller primality
-   testing. Code submitted by Christian Obrecht
- */
-10 # IsPrime(n_IsPositiveInteger) <-- RabinMiller(n);
-
-/*TODO remove?
-10 # IsPrime(n_IsPositiveInteger) <--
-[
-  Local(result);
-  result:=True;
-  If (n<=1,result:=False);
-  Local(i,m);
-  m:=MathFloor(MathSqrt(n));
-  For(i:=2,i <= m And result = True,i++)
-      If(Mod(n,i) = 0, result:=False);
-  result;
-];
-20 # IsPrime(_n) <-- False;
-*/
-
-/*code by Bernhard Oemer, borrowed from OpenQuBit
- * project.
- */
-/* Returns whether n is a prime^m. */
-10 # IsPrimePower(n_IsPrime) <-- True;
-10 # IsPrimePower(0) <-- False;
-10 # IsPrimePower(1) <-- False;
-20 # IsPrimePower(n_IsPositiveInteger) <--
-[
-  Local(i,f,m,result);
-  i:=2;
-  f:=0;
-  m:=MathFloor(MathSqrt(n));
-  result:=False;
-
-   While( (i<=m) And f=0)
-      [
-       If(((Mod(n,i))=0), f:=i);
-       i++;
-      ];
-
-
-  m:=MathFloor(0.000001+N((CountBits(n)-1)/(CountBits(f)-1)));
-  For(i:=2, (i<=m) And (result = False), i++)
-      [
-        If(f^i = n, result:=True);
-      ];
-
-  result;
-];
-30 # IsPrimePower(_n) <-- False;
-
-10 # GetPrimeFactors(n_IsPrime) <-- {n,1};
-
-20 # GetPrimeFactors(n_IsPrimePower) <--
-[
-  Local(i,f,m,result);
-  i:=2;
-  f:=0;
-  m:=MathFloor(MathSqrt(n));
-  result:=False;
-
-   While( (i<=m) And f=0)
-      [
-       If(((Mod(n,i))=0), f:=i);
-       i++;
-      ];
-
-
-  m:=MathFloor(0.000001+N((CountBits(n)-1)/(CountBits(f)-1)));
-  For(i:=2, (i<=m) And (result = False), i++)
-      [
-        If(f^i = n, result:={f,i});
-      ];
-
-  result;
-];
-
-/// obtain next number that has good chances of being prime (not divisible by 2,3,5)
+/// obtain next number that has good chances of being prime (not divisible by 2,3)
 1# NextPseudoPrime(i_IsInteger)_(i<=1) <-- 2;
 2# NextPseudoPrime(2) <-- 3;
 2# NextPseudoPrime(3) <-- 5;
@@ -126,10 +44,116 @@ CountBits(value) :=
 // this works only for even i>=4
 4# NextPseudoPrime(i_IsEven) <-- NextPseudoPrime(i-1);
 
-/// obtain the real next prime number
-NextPrime(_i) <--
+/// obtain the real next prime number -- use primality testing
+1# NextPrime(_i) <--
 [
 	Until(IsPrime(i)) i := NextPseudoPrime(i);
 	i;
 ];
 
+/* Returns whether n is a prime */
+
+/* Fast pseudoprime testing: if n is a prime, then 24 divides (n^2-1) */
+5 # IsPrime(n_IsPositiveInteger)_(n > 4 And Mod(n^2-1,24)!=0) <-- False;
+
+/* Determine if a number is prime, using Rabin-Miller primality
+   testing. Code submitted by Christian Obrecht
+ */
+10 # IsPrime(n_IsPositiveInteger) <-- RabinMiller(n);
+
+/* Returns whether n is a prime^m. */
+10 # IsPrimePower(n_IsPrime) <-- True;
+10 # IsPrimePower(0) <-- False;
+10 # IsPrimePower(1) <-- False;
+20 # IsPrimePower(n_IsPositiveInteger) <-- (GetPrimePower(n)[2] > 1);
+
+/// Check whether n is a power of some prime integer and return that integer and the power.
+/// This routine uses only integer arithmetic.
+/// Returns {p, s} where p is a prime and n=p^s.
+/// If no powers found, returns {n, 1}. Primality testing of n is not done.
+20 # GetPrimePower(n_IsPositiveInteger) <--
+[
+	Local(s, factors, new'factors);
+	// first, separate any small prime factors
+	factors := TrialFactorize(n, 257);	// "factors" = {n1, {p1,s1},{p2,s2},...} or just {n} if no factors found
+	If(
+		Length(factors) > 1,	// factorized into something
+		// now we return {n, 1} either if we haven't completely factorized, or if we factorized into more than one prime factor; otherwise we return the information about prime factors
+		If(
+			factors[1] = 1 And Length(factors) = 2,	// factors = {1, {p, s}}, so we have a prime power n=p^s
+			factors[2],
+			{n, 1}
+		),
+		// not factorizable into small prime factors -- use main algorithm
+		[
+			factors := CheckIntPower(n, 257);	// now factors = {p, s} with n=p^s
+			If(
+				factors[2] > 1,	// factorized into something
+				// now need to check whether p is a prime or a prime power and recalculate "s"
+				If(
+					IsPrime(factors[1]),
+					factors,	// ok, prime power, return information
+					[	// not prime, need to check if it's a prime power
+						new'factors := GetPrimePower(factors[1]);	// recursive call; now new'factors = {p1, s1} where n = (p1^s1)^s; we need to check that s1>1
+						If(
+							new'factors[2] > 1,
+							{new'factors[1], new'factors[2]*factors[2]},	// recalculate and return prime power information
+							{n, 1}	// not a prime power
+						);
+					]
+				),
+				// not factorizable -- return {n, 1}
+				{n, 1}
+			);
+		]
+	);
+];
+
+/// Check whether n is a power of some integer, assuming that it has no prime factors <= limit.
+/// This routine uses only integer arithmetic.
+/// Returns {p, s} where s is the smallest prime integer such that n=p^s. (p is not necessarily a prime!)
+/// If no powers found, returns {n, 1}. Primality testing of n is not done.
+CheckIntPower(n, limit) :=
+[
+	Local(s0, s, root);
+	If(limit<=1, limit:=2);	// guard against too low value of limit
+	// compute the bound on power s
+	s0 := Div(CountBits(n), CountBits(limit)-1);
+	// loop: check whether n^(1/s) is integer for all prime s up to s0
+	root := 0;
+	s := 0;
+	While(root = 0 And NextPseudoPrime(s)<=s0)	// root=0 while no root is found
+	[
+		s := NextPseudoPrime(s);
+		root := IntNthRoot(n, s);
+		If(
+			root^s = n,	// found root
+			True,
+			root := 0
+		);
+	];
+	// return result
+	If(
+		root=0,
+		{n, 1},
+		{root, s}
+	);
+];
+
+/// Compute integer part of s-th root of (positive) integer n. Use only integer arithmetic.
+IntNthRoot(_n, s_IsInteger) <--
+[
+	Local(x, y, q);
+	// initial guess should always undershoot, so we subtract 1
+	x:= 2 ^ Div(CountBits(n)-1, s);
+	y := x^s;	// y is always x^s
+	// choose q
+	q:=Div(s, 2);
+	// Newton iteration. Works well unless "s" is very large (>50)
+	While(y < n)
+	[
+		x := Div(x*((s-q-1)*y+(q+1)*n), (s-q)*y+q*n) + 1;	// add 1 because the floating-point value undershoots
+		y := x^s;
+	];
+	If(y=n, x, x-1);	// subtract 1 if we undershot
+];
