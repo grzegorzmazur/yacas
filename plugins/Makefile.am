@@ -1,12 +1,8 @@
 
+
+SUBDIRS =  example forth opengl
+
 EXTRA_DIST = doc.txt   README   makefile.plugin \
-	\
-	example/bareplugin.h               \
-	example/barepluginapi.stub         \
-  example/bareplugin.cc              \
-	example/depend.dep                 \
-	example/makefile.plugin            \
-	example/testload.cc                \
         \
 	opengl/glutcode.cc            \
 	opengl/glutcode.h             \
@@ -14,29 +10,17 @@ EXTRA_DIST = doc.txt   README   makefile.plugin \
 	opengl/new                    \
 	opengl/openglapi.stub         \
 	opengl/testscript             \
-        opengl/glututils              \
-        \
-	forth/depend.dep  forth/forthplugin.cc    \
-	forth/forthpluginapi.stub                 \
-	forth/forth.cc    forth/forthplugin.h     \
-	forth/makefile.plugin                     \
-	forth/forth.h                             \
-        \
+  opengl/glututils              \
 	opengl/depend.dep
 
-
+macosx:
+	cd example ; make libexample.dylib
+	cd forth ; make libforth.dylib
 
 #
 # Why doesn't this work?
 #
 
-INCLUDES = -I../src -I../src/plat/linux32/
-noinst_LTLIBRARIES = libexample.la
-libexample_la_SOURCES = example/barepluginapi.cc example/bareplugin.cc
-libexample_la_LDFLAGS = -module
-
-libexample.dylib: bareplugin.lo barepluginapi.lo
-	c++ -module -dynamic -undefined suppress -flat_namespace -dynamiclib -o $@ bareplugin.lo barepluginapi.lo
 
 
 # -avoid-version -export-dynamic

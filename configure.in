@@ -193,6 +193,9 @@ AC_OUTPUT(yacas.spec
 	essays/Makefile
 	manualmaker/Makefile
 	plugins/Makefile
+	plugins/example/Makefile
+	plugins/forth/Makefile
+	plugins/opengl/Makefile
 	scripts/Makefile
 	colorcode/Makefile
 	ramscripts/Makefile

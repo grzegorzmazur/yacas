@@ -10,6 +10,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+#ifdef HAVE_CONFIG_H
+#include "../../../config.h"
+#endif
+
+
+//#define HAVE_GLUT_H
+#ifdef HAVE_GLUT_H
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
@@ -133,3 +141,6 @@ void GlutMainLoop(char* title, int initWidth, int initHeight)
 
     glutMainLoop();
 }
+
+
+#endif //HAVE_GLUT_H

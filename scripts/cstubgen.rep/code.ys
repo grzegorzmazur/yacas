@@ -14,10 +14,13 @@ StubApiCStart():=
   cremovers := "";
   cincludes:="";
   cremarks:="";
+  prelog := "";
+  postlog:="";
   cstructs:={};
 ];
 
-
+StubApiCPrelog(s_IsString) <-- [prelog := prelog:s;];
+StubApiCPostlog(s_IsString) <-- [postlog := postlog:s;];
 
 StubApiCStruct(name) := StubApiCStruct(name,"PlatFree");
 StubApiCStruct(name,free):=
@@ -201,6 +204,10 @@ fileapi:=
 #include \"genericstructs.h\"
 
 <?
+WriteString(prelog);
+?>
+
+<?
 WriteString(cincludes);
 ?>
 <?
@@ -237,6 +244,11 @@ LispPluginBase* maker(void)
 }
 
 };
+
+<?
+WriteString(postlog);
+?>
+
 
 ";
 
