@@ -36,7 +36,7 @@ void PrintNumber(char* prefix,ANumber& aNumber)
 {
 #ifdef HAVE_STDIO_H 
   printf("%s\n",prefix);
-  printf("%d words, %d of them decimals\n",aNumber.NrItems(),aNumber.iExp);
+  printf("%d words, %d after point, 10-prec. %d\n",aNumber.NrItems(),aNumber.iExp, aNumber.iPrecision);
   int i;
   for (i=aNumber.NrItems()-1;i>=0;i--)
   {
