@@ -23,7 +23,7 @@ Summary:
 15. [Core] 'MathPower(0,0.5)' locks up
 16. [Build System]  mathcommands3.cpp is compiled twice and libyacas is linked
     twice
-
+17. [Polynomials] Factor(x^6-1) gives wrong result
 ----------------------------------------------------------------------
 
 Bug #1
@@ -228,5 +228,18 @@ Submitted by: Pablo De Napoli
 
 When building yacas, "make install" recompile mathcommands3.cpp, links
 yacas again and also libyacas is linked twice.
+
+----------------------------------------------------------------------
+
+Bug #17
+Title: [Polynomials] Factor(x^6-1) gives wrong result 
+Submittedd by: Pablo De Napoli
+Date: 2003-04-14
+Submitted by: Pablo De Napoli
+
+In>Factor(x^6-1)
+Out>(x^4+2*x^3+3*x^2+4*x+5)*(x-1)^2 
+
+1 is not a double root of x^6-1!
 
 ----------------------------------------------------------------------
