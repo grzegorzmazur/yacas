@@ -368,7 +368,9 @@ Double factorials are used in the exact calculation of the Gamma function of hal
 
 *A binomial coefficients
 
-Binomial coefficients $Bin(n,m)$ are found by first selecting the smaller of $m$, $n-m$ and using the identity $Bin(n,m) = Bin(n,n-m)$. Then a partial factorial is used to compute $Bin(n,m)= ((n-m+1)***n) / m!$. This is always much faster than computing the three factorials in the definition of $Bin(n,m)$.
+Binomial coefficients $Bin(n,m)$ are found by first selecting the smaller of $m$, $n-m$ and using the identity $Bin(n,m) = Bin(n,n-m)$. Then a partial factorial is used to compute
+$$ Bin(n,m)= ((n-m+1)***n) / m! $$.
+This is always much faster than computing the three factorials in the definition of $Bin(n,m)$.
 
 	    Approximate factorials
 
@@ -377,4 +379,156 @@ Binomial coefficients $Bin(n,m)$ are found by first selecting the smaller of $m$
 A floating-point computation of the factorial may proceed either via Euler's Gamma function, $n! = Gamma(n+1)$,
 or by a direct method (multiplying the integers and maintaining a certain floating-point precision).
 If the required precision is much less than the number of digits in the exact factorial, then almost all multiplications will be truncated to the precision $P$ and the tree method $O(n*M(P))$ is always slower than the simple method $O(n*P)$.
+
+		Classical orthogonal polynomials
+
+*A orthogonal polynomials
+
+A family of orthogonal polynomials is a sequence of polynomials $q_n(x)$, $n=0$, 1, ... that satisfy the orthogonality condition on some interval [$a$, $b$] with respect to some weight function $rho(x)$:
+$$ (Integrate(x,a,b) q_m(x)*q_n(x)*rho(x) ) = 0 $$.
+The interval can be finite or infinite and the weight function must be real and non-negative on this interval.
+
+In principle, one could choose any (non-negative) weight function $rho(x)$ and any interval [$a$, $b$] and construct the corresponding family of orthogonal polynomials $q_n(x)$.
+For example, take $q_0=1$, then take $q_1=x+c$ with unknown $c$ and find $c$ such that $q_0$ and $q_1$ satisfy the orthogonality condition;
+this requires solving a linear equation.
+Then we can similarly find two unknown coefficients of $q_2$ and so on.
+(This is called the Gramm-Schmidt orthogonalization procedure.)
+
+But of course not all weight functions $rho(x)$ and not all intervals [$a$, $b$] are equally interesting.
+There are several "classical" families of orthogonal polynomials that have been of use to theoretical and applied science.
+The "classical" polynomials are always solutions of a simple second-order differential equation and are always a specific case of some hypergeometric function.
+
+The construction of "classical" polynomials always follows the same scheme.
+The function $rho(x)$ must satisfy the so-called Pearson's equation,
+$$ 1/rho(x)*(D(x)rho(x)) = alpha(x)/beta(x) $$,
+where the functions $alpha$, $beta$ are simple:
+$$ alpha(x)=alpha_0+alpha_1*x $$, 
+$$ beta(x)=beta_0+beta_1*x+beta_2*x^2 $$.
+Also, the following boundary conditions must be satisfied on both ends $a$, $b$ of the interval,
+$$ rho(a)*beta(a)=rho(b)*beta(b)=0 $$.
+
+*A orthogonal polynomials!Rodrigues formula
+
+If the function $rho(x)$ and the interval [$a$, $b$] is chosen in this way, then the corresponding orthogonal polynomials $q_n(x)$ are solutions of the differential equation
+$$ (Deriv(x)(beta(x)*rho(x)*(Deriv(x)q_n(x))))-n*(alpha_1+(n+1)*beta_2)*q[n]=0 $$.
+The polynomials $q_n(x)$ are also given by the Rodrigues formula,
+$$ q_n(x) = A[n]/rho(x)*D(x,n)rho(x)*beta(x)^n $$,
+where $A[n]$ is a normalization constant.
+It is usual practice to normalize the polynomials so that
+$$ (Integrate(x,a,b)(q_n(x))^2*rho(x))=1 $$.
+So the normalization constant can be chosen accordingly.
+
+*A orthogonal polynomials!generating function
+
+
+Finally, there is a formula for the generating function of the polynomials,
+$$ G(x,w) = 1/rho(x)*rho(t(x,w))/Abs(1-w*(beta_1+2*beta_2*t(x,w))) $$,
+where $t(x,w)$ is the root of $t-x-w*beta(t)=0$ which is nearest to $t=x$ at small $w$.
+This function $G(x,w)$ gives the non-normalized polynomials,
+$$ G(x,w) = Sum(n,0,Infinity, q_n(x)/n! *w^n) $$,
+where
+$$ q_n(x) = 1/rho(x)*D(x,n)rho(x)*beta(x)^n $$.
+
+The classical families of (normalized) orthogonal polynomials are obtained in this framework with the following definitions:
+
+*A orthogonal polynomials!classical polynomials
+
+*	The Legendre polynomials $OrthoP(n,x)$:
+$ a= -1 $, $b= 1$, $rho(x)=1$,
+$ alpha(x) = 0 $,
+$ beta(x) = 1-x^2 $,
+$ A[n] = (-1)^n/(2^n*n!) $.
+
+*	The Laguerre polynomials $(L^m)_n(x)$:
+$ a= 0 $, $b= +Infinity$, $rho(x)=x^m*Exp(-x)$, (here $m> -1$ or else the weight function is not integrable on the interval),
+$ alpha(x) = m-x $,
+$ beta(x) = x $,
+$ A[n] = 1 $.
+
+*	The Hermite polynomials $OrthoH(n,x)$:
+$ a= -Infinity $, $b= +Infinity$, $rho(x)=Exp(-x^2)$,
+$ alpha(x) = -2*x $,
+$ beta(x) = 1 $,
+$ A[n] = (-1)^n $.
+
+*	The Chebyshev polynomials of the first kind $OrthoT(n,x)$:
+$ a= -1 $, $b= 1$, $rho(x)=1/Sqrt(1-x^2)$,
+$ alpha(x) = x $,
+$ beta(x) = 1-x^2 $,
+$ A[n] = (-1)^n/(2*n)!! $.
+
+
+The Rodrigues formula or the generating function are not efficient ways to calculate the polynomials.
+A better way is to use linear recurrence relations connecting $q[n+1]$ with $q[n]$ and $q[n-1]$.
+(These recurrence relations can also be written out in full generality through $alpha(x)$ and $beta(x)$ but we shall save the space.)
+
+There are three computational tasks related to orthogonal polynomials:
+*	1. Compute the coefficients of a given polynomial $q_n(x)$ exactly.
+The coefficients are usually rational numbers, but the numerators and denominators usually grow exponentially quickly with $n$, so that $n$-th polynomial has at least some coefficients as $n$-digit numbers.
+The array of coefficients can be obtained using recurrence relations $n$ times.
+The required number of operations is proportional to $n^2$
+(because of $n$ coefficients, $n$ recurrence relations for each of them)
+and to the multiplication time of $n$-digit integers, i.e. $O(n^2*M(n))$.
+Sometimes an exact formula for the coefficients is available (this is the case for the four "classical" families of polynomials above).
+Then the computation time dramatically drops down to $O(n^2)$ because no recurrences are needed.
+*	2. Compute the numerical value of a given polynomial $q_n(x)$ at given $x$, either exactly (at rational $x$) or approximately in floating point.
+This requires only $O(n*M(n))$ operations for exact computation and $O(n*P)$ operations in $P$-digit floating point.
+*	3. Compute a series of orthogonal polynomials with given coefficients $f[n]$, i.e. $f(x):=Sum(n,0,N, f[n]*q_n(x))$, at a given $x$.
+This task does not actually require computing the polynomials first,
+if we use the so-called Clenshaw-Smith procedure
+which gives the value of $f(x)$ directly in $n$ iterations.
+(See the next section for more explanations.)
+The number of operations is again $O(n*P)$ because only "short" multiplications and divisions are needed.
+
+		Series of orthogonal polynomials
+
+*A orthogonal polynomials!Clenshaw-Smith recurrence
+
+If we need to compute a series of orthogonal polynomials with given coefficients $f[n]$, i.e.
+$$ f(x):=Sum(n,0,N, f[n]*q_n(x)) $$
+at a given $x$, we do not need to compute the orthogonal polynomials separately.
+The Clenshaw-Smith recurrence procedure allows to compute the value of the sum directly.
+
+Suppose a family of functions $q_n(x)$,
+$n=0$, 1, ... satisfies known recurrence relations of the form
+$$ q[n]=A_n(x)* q[n-1]+B_n(x)* q[n-2] $$,
+where $A_n(x)$  and $B_n(x)$  are some known functions and $q_0(x)$ and
+$q_1(x)$ are known.
+
+The procedure goes as follows.
+*FOOT This is from the book by Yudell L. Luke, <i>Mathematical functions and their approximations</i>, Academic Press, N. Y., 1975.
+First, for convenience, we define $q[-1]:= 0$ and the coefficient $A_1(x)$  so
+that $q[1]=A[1]*q[0]$.
+This allows us to use the above recurrence relation formally also at $n=1$. 
+Then, we take the array of coefficients $f[n]$ and define a backward recurrence
+relation
+$$ X[N+1]=X[N+2]=0 $$,
+$$ X[n]=A[n+1]*X[n+1]+B[n+2]*X[n+2]+f[n] $$,
+where $n=N$, $N-1$, ..., 0.
+(Note that here we have used the artificially defined coefficient $A[1]$.)
+Magically, the value we are looking for is given by 
+$$ f(x) = X[0]*q[0] $$.
+This happens because we can express
+$$ f[n]=X[n]-A[n+1]*X[n+1]-B[n+2]*X[n+2] $$,
+for $n=0$, 1, ..., $N$, and
+regroup terms in the sum 
+$$ f(x) := Sum(n,0,N, f[n]*q_n(x)) $$
+to collect $X[n]$ and obtain
+$$ f(x) = Sum(n,0, N, X[n]*q[n]) - Sum(n,1,N, X[n]*A[n]*q[n-1]) -Sum(n,2,N, X[n]*B[n]*q[n-2]) $$,
+and finally
+$$ f(x) = X[0]*q[0]+X[1]*(q[1]-A[1]*q[1]) $$
+$$ +Sum(n,2,N, X[n]*(q[n]-A[n]*q[n-1]-B[n]*q[n-2])) =X[0]*q[0] $$.
+
+Luke's book warns that the recurrence relation for $X[n]$ is not always numerically stable.
+
+Note that in the book there seems to be some confusion as 
+to how the coefficient $A[1]$ is defined.
+(It is not defined explicitly there.)
+Our final formula differs from the book for this reason.
+
+The Clenshaw-Smith procedure is analogous to the Horner scheme of calculating polynomials.
+This procedure can also be generalized for linear recurrence relations having
+more than two terms.
+The functions $q_0(x)$, $q_1(x)$, $A_n(x)$, and $B_n(x)$
+do not actually have to be polynomials for this to work.
 
