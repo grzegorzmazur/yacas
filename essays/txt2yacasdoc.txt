@@ -17,13 +17,15 @@ further editing.
 
 The script acts as a stream filter:
 
-	perl txt2yacasdoc.pl < file.txt > file.chapt
+	perl txt2yacasdoc.pl < file.txt \
+	  > file.chapt
 
 In this example, {file.txt} contains some formatted plain text (source text) and the resulting file {file.chapt} will be produced in Yacas-language documentation format.
 
 There is a single option for {txt2yacasdoc}:
 
-	perl txt2yacasdoc.pl -debug < file.txt > file.chapt
+	perl txt2yacasdoc.pl -debug < file.txt \
+	  > file.chapt
 This option is to be used for debugging, i.e. when the resulting file does not compile in Yacas. The effect of this option is to introduce many more breaks between text strings in the generated file, so that the {Text()} function is called more often. It is then easier to locate the source of the problem in the Yacas-language file.
 
 	    Formatting of source text files
@@ -35,7 +37,7 @@ Currently the following markup is implemented:
 *	Paragraphs are separated by blank lines. Several blank lines next to each other are equivalent to one.
 *	Book heading is quadruple TAB indented. Chapter heading is triple TAB indented. Section heading is double TAB indented. Subsection heading is indented by a TAB and 4 spaces. Chapter and section headings should be in one line (but that line can be as long as needed).
 
-*	Sample code is single Tab indented, for example:
+*	Sample code is single TAB indented, for example:
 
 	In> 1+2;
 	
@@ -77,9 +79,9 @@ Note that item text continues until the next itemized line is given or until end
 *	Web hyperlinks are surrounded by {<*}
 {*>}. Text of the link must begin with {http://} or {ftp://}. Alternatively, a hyperlink with anchored text is made by the markup {<*}
 <i>anchored text</i>{|}<i>Web URL</i>{*>}. For example:
-
-	<*http://nowhere.host.net/directory/file.html#anchor*>
-	<*this text will be underlined|somewebpage.html*>
+	<*http://host.net/file.html#anchor*>
+or
+	<*click here|somewebpage.html*>
 
 *	Mathematical expressions should be typed in Yacas notation and surrounded by dollar signs (within one line of text). For example: {$}
 {x^2 + y^2 != z^2 $}
@@ -128,7 +130,7 @@ Notes:
 
 In a subsection there may be either one function documented or several at once: for example, it may make sense to document {Sin}, {Cos} and {Tan} together. In this case, all function names should be simply listed in the {*CMD} header, for example:
 
-	*CMD Sin, Cos, Tan --- trigonometric functions
+	*CMD Sin, Cos, Tan --- Trigonometric ...
 
 In addition, there is a tag {*INTRO} to denote a "reference chapter introduction" corresponding to the {ChapterIntro()} function, {*A} which creates an HTML link to a manual section corresponding to {AddBody(HtmlAnchor()...)}, and a tag {*HEAD} which creates a small heading ({Topical()}). For instance,
 
@@ -143,33 +145,30 @@ This markup should be sufficient for creating reference documentation in plainte
 Currently, not all of the Yacas documentation markup functionality is implemented in the simple plaintext filter; also, documentation includes some extra HTML files. However, most of the markup needed to write documentation is present. Therefore it is possible to maintain most of the documentation in the plain text format described above. To convert existing Yacas documentation back to the plain text format, a script {book2txt.ys}/{book2txt.sh} can be used.
 
 By using a command such as
-
 	book2txt.sh file.chapt
+one can create a source text file {file.chapt.txt} corresponding to the Yacas documentation file {file.chapt}. For example:
 
-one can create a source text file {file.chapt.txt} corresponding to the Yacas documentation file {file.chapt}. 
-For example:
-
-	12:51pm scriabin:manmake> book2txt.sh ../manualmaker/in/intro.book
+	12:51pm scriabin> book2txt.sh intro.book
 	[editvi.ys] [gnuplot.ys] 
 	True;
 	Out> True;
 	Quitting...
-	File '../manualmaker/in/intro.book.txt' was created.
-	12:51pm scriabin:manmake>
+	File 'intro.book.txt' was created.
+	12:51pm scriabin>
 
-In the above example, the shell commands in {book2txt.sh} executed the following Yacas command,
+In the above example, the shell commands in {book2txt.sh} executed the following Yacas commands,
 
-	In> [ Use("book2txt.ys"); ToFile("file.chapt.txt") Load("file.chapt"); ];
-	Out> True;
+	Use("book2txt.ys");
+	ToFile("file.chapt.txt")
+	  Load("file.chapt");
 
-This requires that the Yacas script {book2txt.ys} is available in the current directory. The shell script {book2txt.sh} assumes that {book2txt.ys} is stored in the same directory as {book2txt.sh}.
+This requires that the Yacas script {book2txt.ys} be available in the current directory. The shell script {book2txt.sh} assumes that {book2txt.ys} is stored in the same directory as {book2txt.sh}.
 
 Of course, it is possible that some features of Yacas documentation were not implemented in the script and in that case the resulting file must be edited by hand. But the purpose of the {book2txt} script is exactly this: to make a plain text source file to be edited and maintained.
 
 Several files can be converted at once, for example:
 
-	book2txt.sh file1.chapt file2.chapt file3.book
-
+	book2txt.sh f1.chapt f2.chapt file3.book
 Each file is processed by an independent Yacas session. Any errors of processing are printed on the screen.
 
 	    {book2TeX}: preparing typeset documentation
@@ -185,17 +184,20 @@ will prepare a Postscript version, while
 	pdflatex intro.book.tex
 will prepare a PDF version.
 
-The shell commands in {book2txt.sh} execute the following Yacas command,
+The shell commands in {book2txt.sh} execute the following Yacas commands:
 
-	In> [ Use("book2TeX.ys"); ToFile("file.chapt.tex") Load("file.chapt"); ];
-	Out> True;
+	Use("book2TeX.ys");
+	ToFile("file.chapt.tex")
+	  Load("file.chapt");
 
-This requires that the Yacas script {book2TeX.ys} is available in the current directory. The shell script {book2TeX.sh} assumes that {book2TeX.ys} is stored in the same directory as {book2TeX.sh}.
+This requires that the Yacas script {book2TeX.ys} be available in the current directory. The shell script {book2TeX.sh} assumes that {book2TeX.ys} is stored in the same directory as {book2TeX.sh}.
 
 Not all features of Yacas documentation are compatible with $TeX$ typesetting. To prevent errors, documentation should avoid certain things. In general, it is a good idea to check the typeset appearance of documentation, since it helps detect errors.
 
 For example, the symbols {%}, {{ }}, {< >}, {#}, {\}, {_} and {&} are special to $TeX$. They should not normally be used in plain text; it is okay to use them in "typerwriter" text or code samples -- but <i>not</i> in section or chapter heads, because it makes it difficult to export to $TeX$ correctly. $TeX$ commands may be entered but will not be correctly rendered in HTML online documentation. Sometimes fixed-font text will hang over the right edge; a workaround is to break the fixed-font text into shorter fragments or to rephrase the text.
 
-The current implementation uses a "report" style which allows chapters, sections, subsections and includes an automatically generated table of contents. ($LaTeX$ is automatically run twice to produce it, when executing {make texdocs}.)
+Another concern is that code examples are typeset in a fixed-width font and may not fit into the width of the page and will be hanging over it. To avoid this, the code in the code examples should not be longer than about 44 characters.
+
+The current implementation uses a "report" style which allows chapters, sections, subsections and includes an automatically generated table of contents. ($LaTeX$ is automatically run twice to produce the TOC when executing {make texdocs}.)
 
 Some complicated mathematical expressions may not correctly render in $TeX$. This is because Yacas uses its internal function {TeXForm()} to transform Yacas expressions to $TeX$. Mathematical expressions are entered in the plain text documentation source using Yacas syntax, then transformed to a special non-evaluating call {TeXMath()} in the Yacas-language documentation, which formats into HTML using a {Write()} call or into $TeX$ using a {TeXForm()} call, as necessary. Testing should be performed on documentation before releasing it.

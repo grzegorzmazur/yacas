@@ -204,7 +204,8 @@ and {Rule()} calls needed to define the factorial function:
 	Out> True;
 	In> Rule("f", 1, 10, n=0) 1;
 	Out> True;
-	In> Rule("f", 1, 20, IsInteger(n) And n>0) n*f(n-1);
+	In> Rule("f", 1, 20, IsInteger(n) \
+	  And n>0) n*f(n-1);
 	Out> True;
 
 This definition is entirely equivalent to the one we gave in the tutorial. {f(4)} should now return 24, while {f(a)} should return just {f(a)} if {a} is not bound to any value.
@@ -251,7 +252,8 @@ defined by typing
 
 Some functions useful for control flow are already defined in Yacas's standard library. Let's look at a possible definition of a looping function {ForEach}. We shall here consider a somewhat simple-minded definition, while the actual {ForEach} as defined in the standard script "controlflow" is a little more sophisticated.
 
-	Function("ForEach",{foreachitem,foreachlist,foreachbody})
+	Function("ForEach",{foreachitem,
+	  foreachlist,foreachbody})
 	[
 	   Local(foreachi,foreachlen);
 	   foreachlen:=Length(foreachlist);
@@ -260,7 +262,8 @@ Some functions useful for control flow are already defined in Yacas's standard l
 	   [
 	     foreachi++;
 	     MacroLocal(foreachitem);
-	     MacroSet(foreachitem,foreachlist[foreachi]);
+	     MacroSet(foreachitem,
+		   foreachlist[foreachi]);
 	     Eval(foreachbody);
 	   ];
 	];
@@ -287,18 +290,18 @@ a variable to be set to that value, and {foreachbody} is the
 expression that should be evaluated <i>after</i> that variable
 is set.
 
-Inside the body of the function definition there are calls to {Local(...)}. {Local()} declares some local variable that will
-only be visible within a block {[ ... ]}. The command {MacroLocal()} works almost
-the same. The difference is that it evaluates its arguments before
-performing the action on it. This is needed in this case, because the
-variable {foreachitem} is bound to a variable to be used as the loop iterator, and it is
-<i>the variable it is bound to</i> that we want to make local, not
-{foreachitem} itself. {MacroSet()} works similarly: it does the same as {Set()}
-except that it also first evaluates the first argument, thus setting the
-variable requested by the user of this function. The {Macro}... functions in
-the built-in functions generally perform the same action as their non-macro
-versions, apart from evaluating an argument it would otherwise not
-evaluate.
+Inside the body of the function definition there are calls to {Local(...)}.
+{Local()} declares some local variable that will only be visible within a block
+{[ ... ]}. The command {MacroLocal()} works almost the same. The difference is
+that it evaluates its arguments before performing the action on it. This is
+needed in this case, because the variable {foreachitem} is bound to a variable
+to be used as the loop iterator, and it is <i>the variable it is bound to</i>
+that we want to make local, not {foreachitem} itself. {MacroSet()} works
+similarly: it does the same as {Set()} except that it also first evaluates the
+first argument, thus setting the variable requested by the user of this
+function. The {Macro}... functions in the built-in functions generally perform
+the same action as their non-macro versions, apart from evaluating an argument
+it would otherwise not evaluate.
 
 To see the function in action, you could type:
 
@@ -320,11 +323,11 @@ future.
 The parser is extended slightly to allow for fancier constructs.
 
 *	Lists, like for example {{a,b}}. This then
-gets parsed into the internal notation {(List a b)} , but
+is parsed into the internal notation {(List a b)} , but
 will be printed again as {{a,b};}
 *	Statement blocks like
-{[statement1(); statement2();]} , which
-get parsed into {(Prog (statement1) (statement2))} , and printed out again in the proper form.
+{[ }statement1{; } statement2{; ];} . This
+is parsed into a Lisp object {(Prog (}statement1 {) (}statement2 {))} , and printed out again in the proper form.
 *	 Object argument accessors in the form of
 {expr[ index ]} . These
 are mapped internally to {Nth(expr,index)}. The value of {index}=0 returns the
@@ -361,7 +364,9 @@ outside the block. Blocks have the form {[statement1(); statement2(); ]} and loc
 When entering a block, a new stack frame is pushed for the local variables; it
 means that the code inside a block doesn't see the local variables of the <i>caller</i> either!
 You can tell the interpreter that a function should see local variables of the
-calling environment; to do this, declare {UnFence(funcname, arity)} on that function.
+calling environment; to do this, declare
+	UnFence(funcname, arity)
+on that function.
 
 			Coding style
 
@@ -378,18 +383,21 @@ which should make help avoid these mistakes.
 One unfortunate disadvantage of rule-based programming is that rules
 can sometimes cooperate in unwanted ways.
 
-One example of how rules can produce unwanted results is the rule {a*0 <-- 0}. This would always seem to be true. However, when a is a
-vector, like {a:={b,c,d}} , then {a*0} should actually return {{0,0,0}}, that is, a zero vector. The rule {a*0 <-- 0} actually changes the type of the expression from a vector to an integer! This can have
-severe consequences when other functions using this expressions
-as an argument expect a vector, or even worse, have a definition
-of how to work on vectors, and a different one for working on
+One example of how rules can produce unwanted results is the rule {a*0 <-- 0}.
+This would always seem to be true. However, when a is a vector, like
+{a:={b,c,d}} , then {a*0} should actually return {{0,0,0}}, that is, a zero
+vector. The rule {a*0 <-- 0} actually changes the type of the expression from a
+vector to an integer! This can have severe consequences when other functions
+using this expressions as an argument expect a vector, or even worse, have a
+definition of how to work on vectors, and a different one for working on
 numbers.
 
-When writing rules for an operator, it is assumed that the operator
-working on arguments, like {Cos} or {*}, will always have the same properties
-regardless of the arguments. The Taylor series expansion of $Cos(a)$ will be
-the same regardless of whether $a$ is a real number, complex number or even a
-matrix. Certain trigonometric identities should hold for the {Cos} function, regardless of the type of its argument.
+When writing rules for an operator, it is assumed that the operator working on
+arguments, like {Cos} or {*}, will always have the same properties regardless
+of the arguments. The Taylor series expansion of $Cos(a)$ is the same
+regardless of whether $a$ is a real number, complex number or even a matrix.
+Certain trigonometric identities should hold for the {Cos} function, regardless
+of the type of its argument.
 
 If a function is defined which does not adhere to these rules when applied
 to another type, a different function name should be used, to avoid confusion.
@@ -424,7 +432,7 @@ A rule with precedence 100 is defined by the syntax such as
 
 The problem mentioned above with a rule for vectors and scalars could be solved by making two rules:
 
-*	1. $a*b$ ($b$ is a vector) {<--} return vector of each component multiplied by $a$.
+*	1. $a*b$ (if $b$ is a vector and $a$ is a number) {<--} return vector of each component multiplied by $a$.
 *	1. $a*0$ {<--} $0$
 
 So vector multiplication would be tried first.
@@ -467,9 +475,11 @@ So our first try is to define rules for transforming an atom and for transformin
 
 	In> 100 # CForm(a_IsAtom) <-- String(a);
 	Out> True;
-	In> 100 # CForm(_a + _b) <-- CForm(a) : " + " : CForm(b);
+	In> 100 # CForm(_a + _b) <-- CForm(a) : \
+	  " + " : CForm(b);
 	Out> True;
-	In> 100 # CForm(_a * _b) <-- CForm(a) : " * " : CForm(b);
+	In> 100 # CForm(_a * _b) <-- CForm(a) : \
+	  " * " : CForm(b);
 	Out> True;
 
 We used the string concatenation operator "{:}" and we
@@ -501,8 +511,10 @@ It seems that recursion will do all the work for us. The power of recursion is i
 
 	100 # CForm(+ _a) <-- "+ " : CForm(a);
 	100 # CForm(- _a) <-- "- " : CForm(a);
-	100 # CForm(_a - _b) <-- CForm(a) : " - " : CForm(b);
-	100 # CForm(_a / _b) <-- CForm(a) : " / " : CForm(b);
+	100 # CForm(_a - _b) <-- CForm(a) : " - "
+	  : CForm(b);
+	100 # CForm(_a / _b) <-- CForm(a) : " / "
+	  : CForm(b);
 
 However, soon we find that we forgot about operator precedence. Our simple-minded {CForm()} gives wrong C code for expressions like this:
 
@@ -511,8 +523,10 @@ However, soon we find that we forgot about operator precedence. Our simple-minde
 
 We need to get something like "(a+b)*c" in this case. How would we add a rule to insert parentheses around subexpressions? A simple way out would be to put parentheses around every subexpression, replacing our rules by something like
 
-	100 # CForm(_a + _b) <-- "(" : CForm(a) : " + " : CForm(b) : ")";
-	100 # CForm(- _a) <-- "(- " : CForm(a) : ")";
+	100 # CForm(_a + _b) <-- "(" : CForm(a)
+	  : " + " : CForm(b) : ")";
+	100 # CForm(- _a) <-- "(- " : CForm(a)
+	  : ")";
 and so on. This will always produce correct C code, e.g. in our case "((a+b)*c)", but generally the output will be full of unnecessary parentheses. It is instructive to find a better solution.
 
 We could improve the situation by inserting parentheses only if the higher-order expression requires them; for this to work, we need to make a call such as {CForm(a+b)} aware that the enveloping expression has a multiplication by {c} around the addition {a+b}. This can be implemented by passing an extra argument to {CForm()} that will indicate the precedence of the enveloping operation. A compound expression that uses an infix operator must be bracketed if the precedence of that infix operator is higher than the precedence of the enveloping infix operation.
@@ -523,10 +537,12 @@ The precedence values of infix operators such as "{+}" and "{*}" are defined in 
 
 	PlusPrec := OpPrecedence("+");
 	100 # CForm(_expr) <-- CForm(expr, 60000);
-	100 # CForm(_a + _b, _prec)_(PlusPrec>prec) <--
-	    "(" : CForm(a, PlusPrec) : " + " : CForm(b, PlusPrec) : ")";
+	100 # CForm(_a + _b, _prec)_(PlusPrec>prec)
+	  <-- "(" : CForm(a, PlusPrec) : " + "
+	  : CForm(b, PlusPrec) : ")";
 	120 # CForm(_a + _b, _prec) <--
-	    CForm(a, PlusPrec) : " + " : CForm(b, PlusPrec);
+	    CForm(a, PlusPrec) : " + "
+		: CForm(b, PlusPrec);
 and so on. We omitted the predicate for the last rule because it has a later precedence than the preceding rule.
 
 The way we wrote these rules is unnecessarily repetitive but straightforward and it illustrates the central ideas of expression processing in Yacas. The standard library implements {CForm()} essentially in this way. In addition the library implementation supports standard mathematical functions, arrays and so on, and is somewhat better organized to allow easier extensions and avoid repetition of code.
@@ -701,40 +717,60 @@ of expressions and move commuting factors to the left. For now, we shall not con
 
 First, we need to distinguish "classical" terms from "quantum" ones. For this, we shall define a predicate {IsQuantum()} recursively, as follows:
 
-	  /* Predicate IsQuantum(): will return True if the expression
-		contains A(k) or B(k) and False otherwise */
+	*
+	    /* Predicate IsQuantum(): will return
+		  True if the expression contains A(k)
+		  or B(k) and False otherwise */
 	10 # IsQuantum(A(_x)) <-- True;
 	10 # IsQuantum(B(_x)) <-- True;
-	    /* Result of a binary operation may be Quantum */
-	20 # IsQuantum(_x + _y) <-- IsQuantum(x) Or IsQuantum(y);
+	    /* Result of a binary operation may
+		  be Quantum */
+	20 # IsQuantum(_x + _y) <-- IsQuantum(x)
+	  Or IsQuantum(y);
 	20 # IsQuantum(+ _y) <-- IsQuantum(y);
-	20 # IsQuantum(_x * _y) <-- IsQuantum(x) Or IsQuantum(y);
-	20 # IsQuantum(_x ** _y) <-- IsQuantum(x) Or IsQuantum(y);
-	    /* If none of the rules apply, the object is not Quantum */
+	20 # IsQuantum(_x * _y) <-- IsQuantum(x)
+	  Or IsQuantum(y);
+	20 # IsQuantum(_x ** _y) <-- IsQuantum(x)
+	  Or IsQuantum(y);
+	    /* If none of the rules apply, the
+		  object is not Quantum */
 	30 # IsQuantum(_x) <-- False;
 
 Now we shall construct rules that implement reduction to the canonical form. The rules will be given precedences, so that the reduction proceeds by clearly defined steps. All rules at a given precedence benefit from all simplifications at earlier precedences.
 
-	  /* First, replace * by ** if one of the factors is Quantum
-	     to guard against user error */
-	10 # (_x * _y)_(IsQuantum(x) Or IsQuantum(y)) <-- x ** y;
-	    /* Replace ** by * if neither of the factors is Quantum */
-	10 # (_x ** _y)_(Not(IsQuantum(x) Or IsQuantum(y))) <-- x * y;
-	    /* Now we are guaranteed that ** is used between Quantum values */
-	    /* Expand all brackets involving Quantum values */
+	  /* First, replace * by ** if one of the
+	    factors is Quantum to guard against
+		user error */
+	10 # (_x * _y)_(IsQuantum(x) Or
+	  IsQuantum(y)) <-- x ** y;
+	    /* Replace ** by * if neither of the
+		  factors is Quantum */
+	10 # (_x ** _y)_(Not(IsQuantum(x) Or
+	 IsQuantum(y))) <-- x * y;
+	    /* Now we are guaranteed that ** is
+		  used between Quantum values */
+	    /* Expand all brackets involving
+		  Quantum values */
 	15 # (_x + _y) ** _z <-- x ** z + y ** z;
 	15 # _z ** (_x + _y) <-- z ** x + z ** y;
-	    /* Now we are guaranteed that there are no brackets next to ** */
-	    /* Regroup the ** multiplications toward the right */
+	    /* Now we are guaranteed that there are
+		  no brackets next to "**" */
+	    /* Regroup the ** multiplications
+		  toward the right */
 	20 # (_x ** _y) ** _z <-- x ** (y ** z);
-	    /* Move classical factors to the left: first, inside brackets */
-	30 # (x_IsQuantum ** _y)_(Not(IsQuantum(y))) <-- y ** x;
-	    /* Then, move across brackets: y and z are already ordered
-	    by the previous rule */
+	    /* Move classical factors to the left:
+		  first, inside brackets */
+	30 # (x_IsQuantum ** _y)_(Not(IsQuantum(y)))
+	  <-- y ** x;
+	    /* Then, move across brackets:
+		  y and z are already ordered
+	      by the previous rule */
 	    /* First, if we have Q ** (C ** Q) */
-	35 # (x_IsQuantum ** (_y ** _z))_(Not(IsQuantum(y))) <-- y ** (x ** z);
+	35 # (x_IsQuantum ** (_y ** _z))
+	  _(Not(IsQuantum(y))) <-- y ** (x ** z);
 	    /* Second, if we have C ** (C ** Q) */
-	35 # (_x ** (_y ** _z))_(Not(IsQuantum(x) Or IsQuantum(y))) <-- (x*y) ** z;
+	35 # (_x ** (_y ** _z))_(Not(IsQuantum(x)
+	  Or IsQuantum(y))) <-- (x*y) ** z;
 
 After we execute this in Yacas, all expressions involving additions and multiplications are automatically reduced to the canonical form. Extending these rules to subtractions and divisions is straightforward.
 
@@ -743,20 +779,28 @@ After we execute this in Yacas, all expressions involving additions and multipli
 But we still haven't implemented the commutation relations. It is perhaps not necessary to have commutation rules automatically applied at each evaluation. We shall define the function {OrderBA()} that will bring all $B$'s to the left of all $A$'s by using the commutation relation. (In physics, this is called "normal-ordering".) Again, our definition will be recursive. We shall assign it a later precedence than our quantum evaluation rules, so that our objects will always be in canonical form. We need a few more rules to implement the commutation relation and to propagate the ordering operation down the expression tree:
 
 	  /* Commutation relation */
-	40 # OrderBA(A(_k) ** B(_l)) <-- B(l)**A(k) + delta(k-l);
-	40 # OrderBA(A(_k) ** (B(_l) ** _x)) <-- OrderBA(OrderBA(A(k)**B(l)) ** x);
+	40 # OrderBA(A(_k) ** B(_l))
+	  <-- B(l)**A(k) + delta(k-l);
+	40 # OrderBA(A(_k) ** (B(_l) ** _x))
+	  <-- OrderBA(OrderBA(A(k)**B(l)) ** x);
 	    /* Ordering simple terms */
 	40 # OrderBA(_x)_(Not(IsQuantum(x))) <-- x;
 	40 # OrderBA(A(_k)) <-- A(k);
 	40 # OrderBA(B(_k)) <-- B(k);
 	    /* Sums of terms */
-	40 # OrderBA(_x + _y) <-- OrderBA(x) + OrderBA(y);
-	    /* Product of a classical and a quantum value */
-	40 # OrderBA(_x ** _y)_(Not(IsQuantum(x))) <-- x ** OrderBA(y);
-	    /* B() ** X : B is already at left, no need to order it */
-	50 # OrderBA(B(_k) ** _x) <-- B(k)**OrderBA(x);
+	40 # OrderBA(_x + _y) <-- OrderBA(x)
+	  + OrderBA(y);
+	    /* Product of a classical and
+		  a quantum value */
+	40 # OrderBA(_x ** _y)_(Not(IsQuantum(x)))
+	  <-- x ** OrderBA(y);
+	    /* B() ** X : B is already at left,
+		  no need to order it */
+	50 # OrderBA(B(_k) ** _x)<-- B(k)
+	  ** OrderBA(x);
 	    /* A() ** X : need to order X first */
-	50 # OrderBA(A(_k) ** _x) <-- OrderBA(A(k)**OrderBA(x));
+	50 # OrderBA(A(_k) ** _x) <-- OrderBA(A(k)
+	  ** OrderBA(x));
 
 These rules seem to be enough for our purposes. Note that the commutation relation is implemented by the first two rules; the first one is used by the second one which applies when interchanging factors A and B separated by brackets. This inconvenience of having to define several rules for what seems to be "one thing to do" is a consequence of tree-like structure of expressions in Yacas. It is perhaps the price we have to pay for conceptual simplicity of the design.
 
@@ -781,10 +825,14 @@ operate only on terms of the form {A()**X} and only after {X} has been ordered.
 It will not perform any extra simplifications but instead delegate all work to
 {OrderBA()}.
 
-	50 # OrderBA(A(_k) ** _x) <-- OrderBAlate(A(k)**OrderBA(x));
-	55 # OrderBAlate(_x + _y) <-- OrderBAlate(x) + OrderBAlate(y);
-	55 # OrderBAlate(A(_k) ** B(_l)) <-- OrderBA(A(k)**B(l));
-	55 # OrderBAlate(A(_k) ** (B(_l) ** _x)) <-- OrderBA(A(k)**(B(l)**x));
+	50 # OrderBA(A(_k) ** _x) <-- OrderBAlate(
+	  A(k) ** OrderBA(x));
+	55 # OrderBAlate(_x + _y) <-- OrderBAlate(
+	  x) + OrderBAlate(y);
+	55 # OrderBAlate(A(_k) ** B(_l)) <--
+	  OrderBA(A(k)**B(l));
+	55 # OrderBAlate(A(_k) ** (B(_l) ** _x))
+	  <-- OrderBA(A(k)**(B(l)**x));
 	60 # OrderBAlate(A(_k) ** _x) <-- A(k)**x;
 	65 # OrderBAlate(_x) <-- OrderBA(x);
 Now "OrderBA()" works as desired.
@@ -795,8 +843,10 @@ Now "OrderBA()" works as desired.
 Now it is easy to define the function {VEV()}. This function should first execute the normal-ordering operation, so that all $B$'s move to the left of $A$'s. After an expression is normal-ordered, all of its "quantum" terms will either end with an $A(k)$ or begin with a $B(k)$, or both, and {VEV()} of those terms will return $0$. The value of {VEV()} of a non-quantum term is just that term. The implementation could look like this:
 
 	100 # VEV(_x) <-- VEVOrd(OrderBA(x));
-	    /* Everything is expanded now, deal term by term */
-	100 # VEVOrd(_x + _y) <-- VEVOrd(x) + VEVOrd(y);
+	    /* Everything is expanded now,
+		  deal term by term */
+	100 # VEVOrd(_x + _y) <-- VEVOrd(x)
+	  + VEVOrd(y);
 	    /* Now cancel all quantum terms */
 	110 # VEVOrd(x_IsQuantum) <-- 0;
 	    /* Classical terms are left */
@@ -808,11 +858,13 @@ Finally, we try some example calculations to test our rules:
 	In> OrderBA(A(x)*B(y))
 	Out> B(y)**A(x)+delta(x-y);
 	In> OrderBA(A(x)*B(y)*B(z))
-	Out> B(y)**B(z)**A(x)+delta(x-z)**B(y)+delta(x-y)**B(z);
+	Out> B(y)**B(z)**A(x)+delta(x-z)**B(y)
+	  +delta(x-y)**B(z);
 	In> VEV(A(k)*B(l))
 	Out> delta(k-l);
 	In> VEV(A(k)*B(l)*A(x)*B(y))
 	Out> delta(k-l)*delta(x-y);
 	In> VEV(A(k)*A(l)*B(x)*B(y))
-	Out> delta(l-y)*delta(k-x)+delta(l-x)*delta(k-y);
+	Out> delta(l-y)*delta(k-x)+delta(l-x)
+	  *delta(k-y);
 Things now work as expected. Yacas's {Simplify()} facilities can be used on the result of {VEV()} if it needs simplification.

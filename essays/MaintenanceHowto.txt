@@ -77,8 +77,10 @@ find this at http://www.ssh.org/download.html.
 
 To check out Yacas as anonymous user, type:
 
-	cvs -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas login
-	cvs -z3 -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas co yacas
+	cvs -d:pserver:anonymous@cvs.yacas.
+	  sourceforge.net:/cvsroot/yacas login
+	cvs -z3 -d:pserver:anonymous@cvs.yacas.
+	  sourceforge.net:/cvsroot/yacas co yacas
 
 To check out as a maintainer, type:
 
@@ -86,7 +88,8 @@ To check out as a maintainer, type:
 
 This will tell CVS to use ssh1 for communication. Then, in order to get yacas, type
 
-	cvs -d:ext:loginname@cvs.yacas.sourceforge.net:/cvsroot/yacas co yacas
+	cvs -d:ext:loginname@cvs.yacas.sourceforge.
+	  net:/cvsroot/yacas co yacas
 
 where {loginname} is your name on the sourceforge system.
 This then creates a directory {yacas/} with the full most recent distribution.
@@ -126,13 +129,13 @@ after playing with the code you wrote, and if you think you are
 finished with it, you decide you like to add it to the cvs repository.
 First, you added a few files, which you need to add:
 
-	cvs add [list of file names of ascii text files]
+{cvs add } [list of file names of ascii text files]
 
 which adds ascii text files. If you added binary files (GIF images
 in the documentation directory, or something like that), you can 
 add it with 
 
-	cvs add -kb [list of file names of binary files]
+{cvs add -kb } [list of file names of binary files]
 
 In case files need to be removed, there are two options:
 
@@ -159,9 +162,9 @@ them. They have a collision. You can go into the file, and see the
 collision, which the cvs system conveniently marks as:
 
 	<<<<<<
-	one version
+	old version
 	===========
-	other version
+	new version
 	>>>>>>
 
 You can edit the file by merging the two versions by hand. This
