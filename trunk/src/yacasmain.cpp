@@ -89,6 +89,8 @@ char* root_dir    = SCRIPT_DIR;
 #endif
 char* init_script = "yacasinit.ys";
 
+int compressed_archive = 1;
+  
 void ReportNrCurrent()
 {
 #ifdef YACAS_DEBUG
@@ -415,7 +417,7 @@ void LoadYacas()
             {
                 fread(fullbuf,1,fullsize,fin);
                 CCompressedArchive *a =
-                    NEW CCompressedArchive(fullbuf, fullsize, 1);
+                    NEW CCompressedArchive(fullbuf, fullsize, compressed_archive);
                 if (a->iFiles.IsValid())
                 {
                     (*yacas)()().iArchive = a;
@@ -635,6 +637,16 @@ int main(int argc, char** argv)
             {
                 fileind++;
                 archive = argv[fileind];
+            }
+            else if (!strcmp(argv[fileind],"--uncompressed-archive"))
+            {
+                // This is just test code, to see if the engine
+                // can handle uncompressed files. Uncompressed
+                // files will not be used in general, except for
+                // platforms where minilzo.c doesn't compile.
+                fileind++;
+                archive = argv[fileind];
+                compressed_archive = 0;
             }
             else
             {
