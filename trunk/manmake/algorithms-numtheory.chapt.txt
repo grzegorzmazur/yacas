@@ -463,12 +463,21 @@ the factors of $N(z)$ in the decomposition of $z$.
 
 
 
-
-		Factoring polynomials
+			A simple factorization algorithm for univariate polynomials
 
 This section discusses factoring polynomials using
 arithmetic modulo prime numbers. Information was
-used from D. Knuth, <I>The Art of Computer Programming, Volume 2, Seminumerical Algorithms </I>. 
+used from D. Knuth, <I>The Art of Computer Programming, Volume 2, Seminumerical Algorithms </I>
+and J.H. Davenport et. al., <I>Computer Algebra, SYSTEMS AND ALGORITHMS FOR ALGEBRAIC COMPUTATION</I>.
+
+A simple factorization algorithm is developed
+for univariate polynomials. This algorithm is implemented
+as the function {BinaryFactors}. The algorithm was named
+the binary factoring algorithm since it determines 
+factors to a polynomial modulo $2^n$ for successive 
+values of $n$, effectively adding one binary digit to
+the solution in each iteration. No reference to this
+algorithm has been found so far in literature.
 
 Berlekamp showed that polynomials can be efficiently factored
 when arithmetic is done modulo a prime. The Berlekamp
@@ -476,7 +485,31 @@ algorithm is only efficient for small primes, but after that
 Hensel lifting can be used to determine the factors modulo
 larger numbers.
 
-	    Modulo arithmetic
+The algorithm presented here is similar in approach to applying
+the Berlekamp algorithm to factor modulo a small prime, and then
+factoring modulo powers of this prime (using the solutions found modulo
+the small prime by the Berlekamp algorithm) by applying Hensel lifting.
+However it is simpler in set up. It factors modulo 2, by trying
+all possible factors modulo 2 (two possibilities, if the polynomial
+is monic). This performs the same action usually left to the 
+Berlekamp step. After that, given a solution modulo $2^n$, it will
+test for a solution $f_i$ modulo $2^n$ if $f_i$ or $f_i + 2^n$ 
+are a solution modulo $2^(n+1)$.
+
+This scheme raises the precision of the solution with one 
+digit in binary representation. This is similar to the linear
+Hensel lifting algorithm, which factors modulo $p^n$ for some prime $p$, where
+$n$ increases by one after each iteration. There is also a 
+quadratic version of Hensel lifting which factors modulo $p^2^n$,
+in effect doubling the number of digits (in p-adic expansion) of the solution after
+each iteration. However, according to "Davenport", the quadratic
+algorithm is not necessarily faster.
+
+The algorithm here thus should be equivalent in complexity
+to Hensel lifting linear version. This has not been verified yet.
+
+
+		Modular arithmetic
 
 This section copies some definitions and rules from
 <I>The Art of Computer Programming, Volume 1, Fundamental Algorithms </I>
@@ -506,7 +539,7 @@ This means that for instance also $Mod(x^n,p) = Mod(Mod(x,p)^n,p)$
 share a common factor, that is, if their greatest common denominator 
 is one, $Gcd(x,y)=1$.
 
-*	If $Mod(a*x=b*y,p)$ and if $Mod(a=b,p)$, and if a and if $a$ and
+*	If $Mod(a*x=b*y,p)$ and if $Mod(a=b,p)$, and if $a$ and
 $p$ are relatively prime, then $Mod(x=y,p)$.
 This is useful for dividing out common factors.
 
@@ -540,154 +573,282 @@ to replace $a^p$ with $a$ where appropriate (the coefficients
 to the polynomial when written out, on the left hand side).
 
 
-		A simple factorization algorithm
+		Factoring using modular arithmetic
 
-This section describes a simple algorithm for factoring
-monic polynomials (polynomials where the leading coefficient
-is one). in such cases the factors of degree one will
-look like $(x-a_i)$ for roots $a_i$. It is not as good as Berlekamp or
-similar schemes, performance-wise, as these algorithms
-perform in polynomial time, whereas the algorithm presented
-here can in certain pathological cases take exponential
-time. It will in general take polynomial time for most
-polynomials one throws at it, but it will perform badly
-when there are a lot of distinct roots that share 
-common factors. For example polynomials that have
-roots $a$, $2*a$, $3*a$, $4*a$ etcetera will take longer,
-especially when $a$ is large.
+The task is to factor a polynomial 
 
-The algorithm is based on the fact that if $(x-a)$ divides
-some polynomial $v(x)$, then it also divides the polynomial
-modulo some integer. 
+$$ p(x) = a_n*x^n + ... + a_0 $$
 
-First, the calculation is done modulo
-$p=2$, so the only factors that need to be considered are
-$(x-0)$ and $(x-1)$.
+into a form 
 
-Then the algorithm enters a loop, determining if the list of
-roots $a_i$ that were determined for calculations modulo $p$ 
-actually divide the polynomial. If so, the root is added
-to the final list of resulting roots, and the factor 
-$(x-a_i)$ is divided out of the polynomial.
+$$ p(x) = C*g(x)*f_1(x)^p_1*f_2(x)^p_2 * ... * f_m(x)^p_m $$
 
-After that, for each current root $a_i$ modulo $p$,
-the algorithm proceeds to determine if $a_i$ and
-$a_i+p$ divide the polynomial, modulo $2*p$. The precision
-of the solution is effectively doubled, adding one extra
-binary bit to the roots found so far. A new list results
-with roots for the polynomial, modulo $2*p$, and the loop
-is repeated. This loop terminates when there are enough
-roots ($deg(v(x))-1$ roots), or if the list of candidates 
-is empty.
+Where $f_i(x)$ are irreducible polynomials of the form:
 
-As this algorithm performs poorly when there are many roots
-that share common factors, it is wise to first make the
-polynomial <i>square-free</i>. If the polynomial has multiple
-identical factors, it is easy to divide these out.
+$$ f_i(x) = x+c_i $$
 
-If a polynomial v(x) contains multiple identical factors, for instance
+The part that could not be factorized is returned as $g(x)$,
+with a possible constant factor $C$.
+
+The factors $f_i(x)$ and $g(x)$ are determined uniquely by requiring
+them to be monic. The constant $C$ accounts for a common factor.
+
+The $c_i$ constants in the resulting solutions $f_i(x)$ can be 
+rational numbers (or even complex numbers, if Gaussian integers
+are used).
+
+		Preparing the polynomial for factorization
+
+The final factoring algorithm needs the input polynomial to
+be monic with integer coefficients (a polynomial is monic if
+its leading coefficient is one). Given a non-monic 
+polynomial with rational coefficients, the following steps
+are performed:
+
+	    Convert polynomial with rational coefficients to polynomial with integer coefficients
+
+First the least common multiple $lcm$ of the denominators of the
+coefficients $p(x)$ has to be found, and the polynomial is multiplied by this number. 
+Afterwards, the $C$ constant in the result should have a factor
+$1/lcm$.
+
+The polynomial now only has integer coefficients.
 
 
-$$ v(x) = w(x)^2*u(x)$$
+	    Convert polynomial to a monic polynomial
 
-then
+The next step is to convert the polynomial to one where the leading
+coefficient is one. In order to do so, following "Davenport",
+the following steps have to be taken:
 
-$$Gcd(v(x),D(x)v(x)) != 1 $$
+*	1. Multiply the polynomial by $a_n^(n-1)$
+*	2. Perform the substitution $x=(y/a_n)$
 
-And $v(x)/Gcd(v(x),D(x)v(x))$ will be squarefree, 
-$w(x)*u(x)$ in the above example. This follows from
-simplfy writing it out. The algorithm will work when
-the polynomial is not square-free, but it will be a lot
-slower.
+The polynomial is now a monic polynomial in $y$.
 
+After factoring, the irreducible factors of $p(x)$
+can be obtained by multiplying $C$ with $1/(a_n^(n-1))$,
+and replacing $y$ with $a_n*x$. The irreducible 
+solutions $a_n*x+c_i$ can be replaced by $x+c_i/a_i$
+after multiplying $C$ by $a_n$, converting the factors
+to monic factors.
 
-
-	Function BinaryFactors(poly)
-	   // testpoly is the square-free version of the 
-	   // polynomial, used for finding the factors. 
-	   // The original polynomials 
-	   // is kept around to find the
-	   // multiplicity of the factor.
-	   testpoly := polynomial/Gcd(poly,D(x)poly)
-	   // resulting factors will be stored here
-	   result:={};
-	   list:={};
-	   // Start off with the seeds for factoring
-	   if ((x-0) divides testpoly modulo 2) 
-	      list := 0:list;
-	   if ((x-1) divides testpoly modulo 2) 
-	      list := 1:list;
-	   p:=2;
-	   nrroots:=Length(poly)-1;
-	   While(nrroots>0 And Length(list)>0)
-	     // check if any of the factors already divides 
-	     // the original polynomial
-	     For(i:=1,i<=Length(list),i++)
-	        Local(lst1);
-	        TryFact(-list[i]);
-	        TryFact(-p+list[i]);
-	        TryFact(list[i]);
-	        TryFact(p-list[i]);
-	     // Given the partial solutions so far 
-	     // (potential roots modulo p), determine 
-	     // new roots up to modulo 2*p. This step 
-	     // essentially adds one binary bit to the 
-	     // potential solutions and 
-	     // checks if they are still a solution.
-	     newlist:={};
-	     For(i:=1,i<=Length(list),i++)
-	       if ((x-(list[i]  ) divides testpoly mod 2*p)
-	         newlist:=(list[i]):newlist);
-	       if ((x-(list[i]+p) divides testpoly mod 2*p)
-	         newlist:=(list[i]+p):newlist);
-	     // We now have a new set of potential 
-	     // roots, modulo 2*p
-	     list:=newlist;
-	     p:=2*p;
-	   ]; 
-	   // If the polynom is not one, it is a polynomial 
-	   // which is not reducible any further with this 
-	   // algorithm, return as is.
-	   If(deg(poly)>0 ,result:={poly,1}:result);
-	   return result;  
+After the steps described here the polynomial is now monic with integer coefficients,
+and the factorization of this polynomial can be used to 
+determine the factors of the original polynomial $p(x)$.
 
 
-The {TryFact} macro called from this function does the bookkeeping
-of determining if the root passed in is in fact a root, dividing
-it out of {testpoly} and {poly} if so, and determining how often
-it could be divided out of {poly}, and reducing {nrroots} so the
-loop can terminate when enough roots were found.
+		Definition of division of polynomials
 
-The pseudo-code for {TryFact} reads:
+To factor a polynomial a division operation for polynomials
+modulo some integer is needed. This algorithm needs to return
+a quotient $q(x)$ and remainder $r(x)$ such that:
 
-	Macro TryFact(root)
-	   If ((x-root) divides testpoly)
-	       testpoly:=Div(testpoly,(x-root));
-	       count:=0;
-	       While((x-root) divides poly)
-	         count++;
-	         poly:=Div(poly,x-root);
-	         nrroots--;
-	       result:={x-(root),count}:result;
+$$ Mod(p(x) = q(r)*d(x) + r(x),p) $$
+
+for some polymomial $d(x)$ to be divided by, modulo 
+some integer p. $d(x)$ is
+said to divide $p(x)$ (modulo $p$) if $r(x)$ is zero.
+It is then a factor modulo $p$.
+
+For binary factoring algorithm it is important
+that if some monic $d(x)$ divides $p(x)$, then it also
+divides $p(x)$ modulo some integer $p$.
+
+Define $deg(f(x))$ to be the degree of $f(x)$ and $lc(f(x))$
+to be the leading coefficient of $f(x)$. Then, if 
+$deg(p(x)) >= deg(d(x))$, one can compute an integer $s$
+such that
+
+$$ Mod(lc(d(x))*s = lc(p(x)),p) $$
+
+If $p$ is prime, then 
+
+$$s = Mod(lc(p(x))*lc(d(x))^(p-2),p) $$
+
+Because $Mod(a^(p-1) = 1,p)$ for any $a$. If $p$ is not prime
+but $d(x)$ is monic (and thus $lc(d(x)) = 1$),
+
+$$s = lc(p(x)) $$
+
+This identity can also be used when dividing in 
+general (not modulo some integer), since the 
+divisor is monic.
+
+The quotient can then be updated by adding 
+a term:
+
+$term = s*x^(deg(p(x))-deg(d(x)))$
+
+and updating the polynomial to be divided, $p(x)$,
+by subtracting $d(x)*term$. The resulting polynomial
+to be divided now has a degree one smaller than the
+previous.
+
+When the degree of $p(x)$ is less than the degree
+of $d(x)$ it is returned as the remainder.
+
+A full division algorithm for arbitrary integer $p>1$
+with $lc(d(x)) = 1$ would thus look like:
+
+	divide(p(x),d(x),p)
+	   q(x) = 0
+	   r(x) = p(x)
+	   while (deg(r(x)) >= deg(d(x)))
+	      s = lc(r(x))
+	      term = s*x^(deg(r(x))-deg(d(x)))
+	      q(x) = q(x) + term
+	      r(x) = r(x) - term*d(x) mod p
+	   return {q(x),r(x)}
+
+The reason we can get away with factoring modulo $2^n$
+as opposed to factoring modulo some prime $p$ in later
+sections is that the divisor $d(x)$ is monic. Its leading 
+coefficient is thus one and thus $q(x)$ and $r(x)$ can be 
+uniquely determined. If $p$ is not prime and $lc(d(x))$
+is not equal to one, there might be multiple combinations
+for which $p(x) = q(x)*d(x)+r(x)$, and we are interested
+in the combinations where $r(x)$ is zero. This can be
+costly to determine unless {q(x),r(x)} is unique.
+This is the case here because we are factoring
+a monic polynomial, and are thus only interested in cases
+where $lc(d(x)) = 1$.
+
+
+		Determining possible factors modulo 2
+
+We start with a polynomial $p(x)$ which is monic and
+has integer coefficients.
+
+It will be factored into a form:
+
+$$ p(x) = g(x)*f_1(x)^p_1*f_2(x)^p_2 * ... * f_m(x)^p_m $$
+
+where all factors $f_i(x)$ are monic also.
+
+The algorithm starts by setting up a test polynomial,
+$p_test(x)$ which divides $p(x)$, but has the property
+that
+
+$$ p_test(x) = g(x)*f_1(x)*f_2(x) * ... * f_m(x) $$
+
+Such a polynomial is said to be <i>square-free</i>. 
+It has the same factors as the original polynomial, but
+the original might have multiple of each factor, 
+where $p_test(x)$ does not.
+
+The square-free part of a polynomial can be obtained
+as follows:
+
+$$ p_test(x) = p(x)/Gcd(p(x),D(x)p(x)) $$
+
+It can be seen by simply writing this out that 
+$p(x)$ and $D(x)p(x)$ will have factors $f_i(x)^(p_i-1)$ in 
+common. these can thus be divided out.
+
+It is not a requirement of the algorithm that the
+algorithm being worked with is square-free, but it
+speeds up computations to work with the square-free
+part of the polynomial if the only thing sought after
+is the set of factors. The multiplicity of the factors
+can be determined using the original $p(x)$.
+
+
+Binary factoring then proceeds by trying to find potential solutions
+modulo $p=2$ first. There can only be two such
+solutions: $x+0$ and $x+1$. 
+
+A list of possible solutions $L$ is set up with potential solutions.
+
+
+		Determining factors modulo $2^n$ given a factorization modulo 2
+
+At this point there is a list $L$ with solutions modulo
+$2^n$ for some $n$. The solutions will be of the form:
+$x+a$. The first step is to determine if any of the
+elements in $L$ divides $p(x)$ (not modulo any integer).
+Since $x+a$ divides $p_test(x)$ modulo $2^n$, 
+both $x+a$ and $x+a-2^n$ have to be checked.
+
+If an element in $L$ divides $p_test(x)$, $p_test(x)$
+is divided by it, and a loop is entered to test how often
+it divides $p(x)$ to determine the multiplicity $p_i$ of the
+factor. The found factor $f_i(x) = x+c_i$ is added 
+as a combination ($x+c_i$, $p_i$). $p(x)$ is divided by $f_i(x)^p_i$.
+
+At this point there is a list $L$ of factors that divide
+$p_test(x)$ modulo $2^n$. This implies that for each
+of the elements $u$ in $L$, either $u$ or $u+2^n$ should
+divide $p_test(x)$ modulo $2^(n+1)$.
+The following step is thus to set up a new list with new
+elements that divide $p_test(x)$ modulo $2^(n+1)$.
+
+The loop is re-entered, this time doing the calculation
+modulo $2^(n+1)$ instead of modulo $2^n$.
+
+The loop is terminated if the number of factors found
+equals $deg(p_test(x))$, or if $2^n$ is larger than
+the smallest non-zero coefficient of $p_test(x)$ as this 
+smallest non-zero coefficient is the product of all the 
+smallest non-zero coefficients of the factors, or if 
+the list of potential factors is zero.
+
+The polynomial $p(x)$ can not be factored any further,
+and is added as a factor ($p(x)$, $1$).
 
 The function {BinaryFactors}, when implemented, yields
 the following interaction in Yacas:
 
 	In> BinaryFactors((x+1)^4*(x-3)^2)
-	Out> {{x-3,2},{x+1,4}};
+	Out> {{x-3,2},{x+1,4}}
+	In> BinaryFactors((x-1/5)*(2*x+1/3))
+	Out> {{2,1},{x-1/5,1},{x+1/6,1}}
+	In> BinaryFactors((x-1123125)*(2*x+123233))
+	Out> {{2,1},{x-1123125,1},{x+123233/2,1}}
 
-The above algorithm starts with a factorization modulo 2,
+
+The binary factoring algorithm starts with a factorization modulo 2,
 and then each time tries to guess the next bit of the 
 solution, maintaining a list of potential solutions.
 This list can grow exponentially in certain instances.
 For instance, factoring $(x-a)*(x-2*a)*(x-3*a)* ... $
-implies a that the roots have common factors. The number
+implies a that the roots have common factors. There
+are examples where the number
 of potential solutions doubles with each iteration, and thus
-the algorithm becomes exponential. One solution would be
-to find a way, a priori, to discard elements in the list,
-such that the number of elements in the list of potential
-solutions stays constant between iterations (or at least
-doesn't grow exponentially).
+the algorithm becomes exponential.
+
+
+		Extending the algorithm
+
+Only univariate polynomials with rational coefficients
+have been considered so far. This could be extended to
+allow for roots that are complex numbers $a+I*b$ where 
+both $a$ and $b$ are rational numbers.
+
+For this to work the division algorithm would have to 
+be extended to handle complex numbers with integer
+$a$ and $b$ modulo some integer, and the initial
+setup of the potential solutions would have to be
+extended to try $x+1+I$ and $x+I$ also. The step where
+new potential solutions modulo $2^(n+1)$ are determined
+should then also test for $x+I*2^n$ and $x+2^n+I*2^n$.
+
+The same extension could be made for multivariate polynomials,
+although setting up the initial irreducible polynomials
+that divide $p_test(x)$ modulo 2 might become expensive
+if done on a polynomial with many variables ($2^(2^m-1)$ trials
+for $m$ variables).
+
+Lastly, polynomials with real-valued coefficients <i>could</i>
+be factored, if the coefficients were first converted to
+rational numbers. However, for real-valued coefficients
+there exist other methods (Sturm sequences).
+
+
+
+
+
+		Newton iteration
 
 What the {BinaryFactor} algorithm effectively does is 
 finding a set of potential solutions modulo $2^(n+1)$ when
@@ -696,10 +857,6 @@ There is a better algorithm that does something similar:
 Hensel lifting. Hensel lifting is a generalized form of
 Newton iteration, where given a factorization modulo 
 $p$, each iteration returns a factorization modulo $p^2$.
-
-
-
-		Intermezzo: Newton iteration
 
 Newton iteration is based on the following idea: when one
 takes a Taylor series expansion of a function:
@@ -935,25 +1092,25 @@ This expression is 1 modulo $x^8$, as can easily be shown:
 
 
 
-		The Berlekamp algorithm (small-prime factorization of polynomials)
+*REM TODO REMOVE?		The Berlekamp algorithm (small-prime factorization of polynomials)
 
-TODO
+*REM TODO REMOVE? TODO
 
-	    Hensel lifting
+*REM TODO REMOVE? 	    Hensel lifting
 
-TODO
+*REM TODO REMOVE? TODO
 
-	    Factoring non-monic polynomials
+*REM TODO REMOVE? 	    Factoring non-monic polynomials
 
-TODO
+*REM TODO REMOVE? TODO
 
-	    Factoring multivariate polynomials
+*REM TODO REMOVE? 	    Factoring multivariate polynomials
 
-TODO
+*REM TODO REMOVE? TODO
 
-	    The Yacas implementation of Berlekamp factoring
+*REM TODO REMOVE? 	    The Yacas implementation of Berlekamp factoring
 
-TODO
+*REM TODO REMOVE? TODO
 
 
 
