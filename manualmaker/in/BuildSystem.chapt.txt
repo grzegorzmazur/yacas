@@ -239,7 +239,8 @@ want to build and install a library from the source file
 {hello.c}. The following commands do the trick, on <i>any</i> system:
 
 	libtool gcc -c hello.c
-	libtool gcc -rpath /usr/local/lib -o libhello.la hello.lo
+	libtool gcc -rpath /usr/local/lib -o \
+	  libhello.la hello.lo
 	libtool cp libtrim.la /usr/local/lib
 
 The first command builds a <i>libtool object</i> with the name
