@@ -113,7 +113,7 @@ LispStringPtr PlatAbs(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPreci
 
 NativeNumber::NativeNumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {
-  if (strchr(aString,'.'))
+  if (strchr(aString,'.') || strchr(aString,'e') || strchr(aString,'E'))
   {
     type  = KDouble;
     value.d = GetDouble(aString);
@@ -124,7 +124,7 @@ NativeNumber::NativeNumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase)
     value.i = atoi(aString);
   }
 }
-void NativeNumber::ToString(LispString& aResult, LispInt aBase) 
+void NativeNumber::ToString(LispString& aResult, LispInt aBase) const 
 {
   char dummy[150];
   dummy[0] = '\0';
@@ -139,7 +139,7 @@ void NativeNumber::ToString(LispString& aResult, LispInt aBase)
   }
   aResult.SetStringCounted(dummy,PlatStrLen(dummy));
 }
-const LispCharPtr NativeNumber::NumericLibraryName() 
+const LispCharPtr NativeNumber::NumericLibraryName() const
 {
   return "Native types";
 }
@@ -251,4 +251,69 @@ void NativeNumber::BitXor(const NumberBase& aX, const NumberBase& aY)
 }
 
 
+double NativeNumber::Double() const
+{
+  LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
+  if (type == KInteger)
+    return double(value.i);
+  else//if (type == KDouble)
+    return value.d;
+}
+
+LispInt NativeNumber::BitCount() const
+{
+  LispInt result = 0;
+  if (type == KInteger)
+  {
+  // prepare the absolute value of the integer for shifting
+    long temp = (value.i < 0) ? -value.i : value.i;
+    while (temp>0)
+    {
+      temp >>= 1;
+      ++result;
+    }
+  }
+  else	// KDouble, return the binary exponent
+  {
+  // prepare the absolute value of the number
+    double temp = (value.d < 0) ? -value.d : value.d;
+    if (temp<1)
+    {
+      while (temp<1)
+      {
+        temp *= 2;
+	++result;
+      }
+    }
+    else if (temp>1)
+    {
+      while (temp>1)
+      {
+        temp /= 2;
+	++result;
+      }
+    }
+  }
+  return result;
+}
+
+LispInt NativeNumber::Sign() const
+{
+  if (type == KInteger)
+  {
+    return ( (value.i > 0) ? 1 : ((value.i < 0) ? -1 : 0) );
+  }
+  else
+  {
+    return ( (value.d > 0) ? 1 : ((value.d < 0) ? -1 : 0) );
+  }
+}
+
+
+void NativeNumber::SetTo(const NumberBase& aX)
+{
+  LISPASSERT(!StrCompare(aX.NumericLibraryName(), NumericLibraryName())); 
+  type = ((NativeNumber*)(&aX))->type;
+  value = ((NativeNumber*)(&aX))->value;
+}
 
