@@ -2,7 +2,6 @@
 This book contains some design documents that are in progress,
 for new features or features or implementation details that
 need to be changed and improved.
-
 				Design documents for new features
 
 			Introduction
