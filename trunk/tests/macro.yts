@@ -52,7 +52,18 @@
 
   Verify(`{@x,@y},{x,{u,u}});
   Verify(`{@x,`(@y)},{x,{u,u}});
+];
 
+// check that a macro can reach a local from the calling environment.
+[
+  Macro(foo,{x}) a*(@x);
+  Function(bar,{x})
+  [
+    Local(a);
+    a:=2;
+    foo(x);
+  ];
+  Verify(bar(3),6);
 ];
 
 
