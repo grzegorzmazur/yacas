@@ -1,8 +1,8 @@
-AM_CXXFLAGS = -DSCRIPT_DIR=\"$(scriptdir)\" $(NUMBERS_CFLAGS) $(DEBUG_FLAGS)
-AM_CPPFLAGS = -I$(srcdir)/plat/linux32 $(NUMBERS_CFLAGS) $(DEBUG_FLAGS)
+AM_CXXFLAGS = -DSCRIPT_DIR=\"$(scriptdir)\" $(NUMBERS_CFLAGS) $(DEBUG_FLAGS) $(SERVER_FLAGS)
+AM_CPPFLAGS = -I$(srcdir)/plat/linux32 $(NUMBERS_CFLAGS) $(DEBUG_FLAGS) $(SERVER_FLAGS)
 
-bin_PROGRAMS = yacas
-noinst_PROGRAMS = testnum
+bin_PROGRAMS =  yacas
+noinst_PROGRAMS = testnum 
 noinst_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la libltdl.la @NUMBERS_LIB@ 
 EXTRA_LTLIBRARIES = libgmpnumbers.la libyacasnumbers.la 
 
@@ -21,6 +21,8 @@ yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline
 yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la libltdl.la @NUMBERS_LDFLAGS@
 yacas_LDFLAGS = -export-dynamic
 yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la
+
+
 
 # order of libraries is important, @NUMBERS_LIB@ before libyacas.la and that is before libyacasplatform.la
 

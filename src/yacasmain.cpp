@@ -78,6 +78,23 @@
 
 //#define PROMPT_SHOW_FREE_MEMORY
 
+#ifdef SUPPORT_SERVER
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#define SOCKLEN_T unsigned int //socklen_t
+  #define MY_SL_TYPE /*unsigned*/ int
+#endif
+
+
 
 CYacas* yacas=NULL;
 CCommandLine *commandline = NULL;
@@ -98,6 +115,10 @@ char* init_script = "yacasinit.ys";
 static int readmode = 0;
 
 int compressed_archive = 1;
+
+int server_mode = 0;
+int server_port = 9734;
+
   
 void ReportNrCurrent()
 {
@@ -604,6 +625,167 @@ void InterruptHandler(int errupt)
 }
 
 
+
+#ifdef SUPPORT_SERVER
+int runserver(int argc,char** argv)
+{
+    int server_sockfd, client_sockfd;
+    SOCKLEN_T server_len, client_len;
+    struct sockaddr_in server_address;
+    struct sockaddr_in client_address;
+    int result;
+    int maxConnections;
+    int process;
+    fd_set readfds, testfds;
+    int serverbusy;
+
+    int seconds = 30; // give each calculation only so many calculations
+
+    serverbusy=1;
+    maxConnections=10;
+    process=0;
+
+
+    signal(SIGPIPE,SIG_IGN);
+
+    server_sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    {
+        int rsp;
+        if (setsockopt(server_sockfd,SOL_SOCKET,SO_REUSEADDR,(void*)&rsp,sizeof(int)))
+        {
+            perror("YacasServer Could not set socket options\n");
+            exit(1);
+        }
+    }
+
+    server_address.sin_family = AF_INET;
+    server_address.sin_addr.s_addr = htonl(INADDR_ANY);
+    server_address.sin_port = htons(server_port);
+    server_len = sizeof(server_address);
+
+    printf("Accepting requests from port %d\n",server_port);
+
+    if (bind(server_sockfd, (struct sockaddr *)&server_address, server_len))
+    {
+        perror("YacasServer Could not bind to the socket\n");
+        exit(1);
+    }
+    if (listen(server_sockfd, maxConnections))
+    {
+        perror("YacasServer Could not listen to the socket\n");
+        exit(1);
+    }
+
+    FD_ZERO(&readfds);
+    FD_SET(server_sockfd, &readfds);
+    while(serverbusy)
+    {
+        int fd;
+        int nread;
+        testfds = readfds;
+
+        result = select(FD_SETSIZE, &testfds, (fd_set *)0, 
+                        (fd_set *)0, (struct timeval *) 0);
+
+        if(result < 1)
+        {
+            perror("server5");
+            exit(1);
+        }
+        for(fd = 0; fd < FD_SETSIZE; fd++)
+        {
+            while(waitpid(-1,NULL,WNOHANG) > 0); /* clean up child processes */
+            if(FD_ISSET(fd,&testfds))
+            {
+                if(fd == server_sockfd)
+                {
+                    client_len = sizeof(client_address);
+                    client_sockfd = accept(server_sockfd, 
+                        (struct sockaddr *)&client_address, (MY_SL_TYPE*)&client_len);
+#ifdef __CYGWIN__
+                    if (client_sockfd != 0xffffffff)
+#endif
+                    {
+                        FD_SET(client_sockfd, &readfds);
+                        //LOGTODO                    printf("adding client on fd %d\n", client_sockfd);
+                    }
+
+                }
+                else
+                {
+                    ioctl(fd, FIONREAD, &nread);
+
+                    if(nread == 0)
+                    {
+                        close(fd);
+                        FD_CLR(fd, &readfds);
+                        //LOGTODO                        printf("removing client on fd %d\n", fd);
+                    }
+                    else
+                    {
+                        process++;
+
+                        char* buffer = (char*)malloc(nread+1);
+      
+                        read(fd, buffer, nread);
+                        buffer[nread]='\0';
+                        
+                        if (fork() == 0)
+                        {
+                        
+    char* response = buffer;
+    LoadYacas();
+    (*yacas)()().iSecure = 1;
+    if (seconds>0)
+    {
+        signal(SIGALRM,exit);
+        alarm(seconds);
+    }
+    yacas->Evaluate(buffer);
+    if (seconds>0)
+    {
+        signal(SIGALRM,SIG_IGN);
+    }
+    if (yacas->IsError())
+    {
+        response = yacas->Error();
+    }
+    else
+    {
+      response = yacas->Result();
+    }
+
+                            int buflen=strlen(response);
+printf("In> %s",buffer);
+printf("Out> %s",response);
+
+                            if (response)
+                            {
+                                if (buflen>0)
+                                    write(fd, response, buflen);
+                            }
+                            free(buffer);
+                            delete yacas;
+                            yacas = NULL;
+                            close(fd);
+
+                            FD_CLR(fd, &readfds);
+                            exit(0);
+                        }
+                        else
+                        {
+                            close(fd);
+                            FD_CLR(fd, &readfds);
+                        }
+                        
+                    }
+                }
+            }
+        }
+    }
+}
+#endif
+
 #include "platmath.h"
 void TestNum()
 {//numeric test code
@@ -684,6 +866,16 @@ int main(int argc, char** argv)
                 fileind++;
                 archive = argv[fileind];
             }
+            else if (!strcmp(argv[fileind],"--server"))
+            {
+                fileind++;
+                if (fileind<argc)
+                {
+                  server_mode=1;
+                  server_port = atoi(argv[fileind]);
+                }
+            }
+
             else if (!strcmp(argv[fileind],"--uncompressed-archive"))
             {
                 // This is just test code, to see if the engine
@@ -717,7 +909,7 @@ int main(int argc, char** argv)
                     printf("%s\n",SCRIPT_DIR);
                     return 0;
                 }
-                
+              
 #ifdef HAVE_CONFIG_H
                 if (strchr(argv[1],'v'))
                 {
@@ -758,6 +950,15 @@ int main(int argc, char** argv)
 
     }
     */
+
+
+#ifdef SUPPORT_SERVER
+    if (server_mode)
+    {
+      runserver(argc,argv);
+      return 0;
+    }
+#endif
 
     atexit(my_exit);
 
