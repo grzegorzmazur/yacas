@@ -882,7 +882,29 @@ integer if and only if {a} and {b} are integers.
 	In> IsGaussianInteger(1+2.5*I)
 	Out> False;
 
-*SEE  IsGaussianPrime
+*SEE  IsGaussianUnit, IsGaussianPrime
+
+*CMD IsGaussianUnit ---  test for a Gaussian unit
+*STD
+*CALL
+	IsGaussianUnit(z)
+*PARMS
+
+{z} -- a Gaussian integer	
+
+*DESC
+
+This function returns a boolean value depending on whether or not
+the argument is a unit in the Gaussian integers (i.e.: 1,-1,I or -I). 
+	
+*E.G.
+	In> IsGaussianInteger(I)
+	Out> True;
+	In> IsGaussianUnit(5+6*I)
+	Out> False;
+
+*SEE  IsGaussianInteger, IsGausianPrime, GaussianNorm
+
 
 *CMD IsGaussianPrime ---  test for a Gaussian prime
 *STD
@@ -912,8 +934,7 @@ if and only if $Re(z)$ is an ordinary prime and $Re(z):=Mod(3,4)$.
 	In> IsGaussianPrime(3)
 	Out> True;
 
-*SEE  IsGaussianInteger
-
+*SEE  IsGaussianInteger, GaussianFactors
 
 
 *CMD MatchLinear --- match an expression to a polynomial of degree one in a variable

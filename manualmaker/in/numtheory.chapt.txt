@@ -827,9 +827,31 @@ is returned as {{{p1,n1}, ..., {p9,n9}}}.
 
 *E.G.
 
-	In> GaussianFactors(5);
+	In> GaussianFactors(5)
 	Out> {{Complex(2,1),1},{Complex(2,-1),1}};
-	In> GaussianFactors(3+I);
+	In> GaussianFactors(3+I)
 	Out> {{Complex(1,1),1},{Complex(2,-1},1}};
 
 *SEE Factors, IsGaussianPrime
+
+*CMD GaussianNorm --- norm of a Gaussian Integer
+*STD
+*CALL
+	GaussianNorm(z)
+
+*PARMS
+
+{z} -- Gaussian integer
+
+*DESC
+
+This function returns the norm of a Guassian integer z=a+b*I, i.e.
+a^2+b^2
+
+*E.G.
+
+	In> GaussianNorm(2+I)
+	Out> 5; 
+
+*SEE IsGaussianInteger
+
