@@ -148,7 +148,7 @@ unsigned primes_table_check(unsigned p)
 	{
 		unsigned i;
 		printf("Primes up to %d:\n", primes_table_limit);
-		for (i=0; i<=$table_limit; i++)
+		for (i=0; i<=primes_table_limit; i++)
 			if (primes_table_check(i)) printf("%d\n", i); 
 	}
 */

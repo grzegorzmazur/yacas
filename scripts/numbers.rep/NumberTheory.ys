@@ -147,3 +147,44 @@ k-th primitive roots of the identity */
   s:=s+d*Moebius(k/d);
  s;
 ];
+
+
+/** Compute the Jacobi symbol JS(m/n) - n must be odd, both positive.
+  The method uses the following identities:
+  0. JS(a/1) = 1
+  1. JS(2/b) = (-1)^((b^2-1)/8)
+  2. JS(a*b/c) = JS(a/c)*JS(b/c)
+  3. If Mod(a,c)=Mod(b,c), then JS(a/c)=JS(b/c)
+  4. If a,b are both odd, then JS(a/b)=JS(b/a) * (-1)^((a-1)*(b-1)/4)
+
+  The Jacobi symbol JS(a,b) is computed by the following algorithm:
+  0. Check that b is an odd positive integer.
+  1. If b=1, return 1 and stop. Otherwise, replace JS(a,b) by JS(Mod(a,b),b) (identity 3)
+  2. Find the largest power of 2 within b. Say, b=2^s*c where c is odd.
+  Replace JS(a,b) by JS(c,b)*(-1)^(s*(b^2-1)/8). (identities 1 and 2)
+  3. Replace JS(c,b) by JS(b,c)*(-1)^((b-1)*(c-1)/4) (identity 4)
+  4. Continue to step 1.
+
+Note that the arguments of JS() may be very large and we should avoid performing multiplications of these numbers.
+For example, we can compute $(-1)^((b-1)*(c-1)/4)$ without multiplications. This expression is equal to 1 if either $b$ or $c$ is 1 mod 4 and equal to -1 only if both $b$ and $c$ are 3 mod 4.
+Also, (-1)^((b^2-1)/8) is equal to 1 if b=1 or b=7 mod 8 and is equal to -1 if b=3 or b=5 mod 8. If s is even, none of this needs to be computed.
+
+Recursion is quick because there are at most Ln(b)/Ln(2) recursion levels to compute JS(a,b).
+
+*/
+
+10 # JacobiSymbol(_a, 1) <-- 1;
+15 # JacobiSymbol(0, _b) <-- 0;
+18 # JacobiSymbol(_a, _b) _ (Gcd(a,b)>1) <-- 0;
+20 # JacobiSymbol(_a, b_IsOdd)_(a>=Abs(b) Or a<0) <-- JacobiSymbol(Mod(a,Abs(b)),Abs(b));
+30 # JacobiSymbol(a_IsEven, b_IsOdd) <--
+[
+	Local(c, s);
+	// compute c,s where a=c*2^s and c is odd
+	{c,s}:=FindPrimeFactorSimple(a, 2);	// use the "Simple" function because we don't expect a worst case here
+	If(Mod(s,2)=1 And Abs(Mod(b,8)-4)=1, -1, 1) * JacobiSymbol(c,b);
+];
+40 # JacobiSymbol(a_IsOdd, b_IsOdd) <-- If(Mod(a,4)=3 And Mod(b,4)=3, -1, 1) * JacobiSymbol(b,a);
+
+/* */
+
