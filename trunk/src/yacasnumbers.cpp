@@ -464,6 +464,7 @@ LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aP
 {
     ANumber i1(*int1->Number(aPrecision)->iNumber);
     ANumber res(aPrecision);
+    i1.ChangePrecision(aPrecision);
     Sqrt(res,i1);
     return FloatToString(res, aEnvironment);
 }

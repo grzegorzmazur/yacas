@@ -39,6 +39,37 @@ The function {FlPlot} is provided to draw a simple
 
 			Proteus-specific commands
 
+		Command line flags
+
+When proteus is started, command line flags can be
+passed to it.
+
+The general structure looks like:
+
+	proteus [--rootdir path] [--srcdir-structure] [notepad]
+
+with {--rootdir} the path Proteus looks in for files
+can be changed. With {--srcdir-structure} Proteus
+is told that the root directory is the Yacas root source
+directory. So it will use the directory {$(path)scripts/}
+in stead of the path {$(path)}, for instance.
+This is useful for developers, who need to modify the
+original source scripts regularly. End user will typically
+not use {--rootdir} and {--srcdir-structure}.
+
+For example, if the Yacas sources are in {/home/johndoe/yacas/},
+then a developer could call Proteus with:
+
+	proteus --rootdir /home/johndoe/yacas/ --srcdir-structure
+
+A typical development stage involves changing some script
+and then typing {restart} in the notepad, to load the 
+changed scripts.
+
+
+		Commands supported in Proteus
+
+
 	FlPlot(f(x),from,to,nr)
 	FlPlot({f1(x),f2(x),...,fn(x)},from,to,nr)
 

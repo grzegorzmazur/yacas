@@ -6,8 +6,7 @@
 //    Fl::flush();
 
 TODO:
-x not all functions get ripped correctly, see output from manripper
-x delete should do new hints too.
+- proteushints: also add
 - document the user interface
 - document the files that should be available, and where they should be.
 
@@ -21,6 +20,8 @@ x delete should do new hints too.
 - fill out the help panes
 - Function finder dialog
 
+x not all functions get ripped correctly, see output from manripper
+x delete should do new hints too.
 x warnings for descriptions that don't have a calling convention (descriptions left in the map).
 x backup pixmap rendering.
 x manripper moved: also move in cvs
