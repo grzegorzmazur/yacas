@@ -459,7 +459,7 @@ LispCharPtr LispEnvironment::ErrorString(LispInt aError)
     switch (aError)
     {
     case KLispErrNone:
-        return "No Error";
+        return "No error";
     case KLispErrInvalidArg:
         return "Invalid argument";
     case KLispErrWrongNumberOfArgs:
@@ -473,7 +473,7 @@ LispCharPtr LispEnvironment::ErrorString(LispInt aError)
     case KQuitting:
         return "Quitting...";
     case KLispErrNotEnoughMemory:
-        return "Not Enough Memory";
+        return "Not enough memory";
     case KInvalidToken:
         return "Empty token during parsing";
     case KLispErrInvalidExpression:
@@ -481,21 +481,21 @@ LispCharPtr LispEnvironment::ErrorString(LispInt aError)
     case KLispErrUnprintableToken:
         return "Unprintable atom";
     case KLispErrFileNotFound:
-        return "File Not Found";
+        return "File not found";
     case KLispErrReadingFile:
         return "Error reading file";
     case KLispErrCreatingUserFunction:
-        return "Could Not Create User Function";
+        return "Could not create user function";
     case KLispErrCreatingRule:
-        return "Could Not Create Rule";
+        return "Could not create rule";
     case KLispErrArityAlreadyDefined:
-        return "Rule Base With This Arity Already Defined";
+        return "Rule base with this arity already defined";
     case KLispErrCommentToEndOfFile:
         return "Reaching end of file within a comment block";
     case KLispErrNotString:
-        return "Argument Is Not A String";
+        return "Argument is not a string";
     case KLispErrNotInteger:
-        return "Argument Is Not A Integer";
+        return "Argument is not an integer";
     case KLispErrParsingInput:
         return "Error while parsing input";
     case KLispErrMaxRecurseDepthReached:
