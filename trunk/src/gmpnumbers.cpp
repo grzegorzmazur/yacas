@@ -1237,7 +1237,7 @@ LispStringPtr BitXor(LispCharPtr int1, LispCharPtr int2,
 
 /// The number class describes either integers or floats, depending on the type_ flag. However, both the float part (float_, exponent_) and the integer part (int_) are always initialized for the life of the BigNumber object.
 /// Wrapping of the GMP library is done using its mpz_t / mpf_t pointer types.
-/// A special mode is that of "exp-float" number. Then the type_ flag has the value KExpFloat. The number is equal to float_ * 2^exponent_ where exponent_ is a big integer and float_ is a normal GMP float value. Otherwise the value of the exponent_ stays zero (actually it is ignored).
+/// A special mode is that of "exp-float" number. Then the type_ flag has the value KExpFloat. The number is equal to float_ * 2^exponent_ where exponent_ is a big integer and float_ is a normal GMP float value with a normal exponent. Otherwise the value of the exponent_ stays zero (actually it is ignored).
 /// The exp-float mode is to be used only for really large or really small exponents. (not yet fully implemented)
 /// A BigFloat object contains valid, initialized GMP objects at all times. It contains a GMP integer and a GMP floating-point number. Only one of them is used at any time, depending on the current type of the number.
 
@@ -1275,7 +1275,7 @@ BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 /// copy constructor
 BigNumber::BigNumber(const BigNumber& aOther)
 {
-	iPrecision = aOther.GetPrecision();
+//	iPrecision = aOther.GetPrecision();
 	init();
 	SetTo(aOther);
 }
@@ -1306,26 +1306,36 @@ void BigNumber::SetTo(const BigNumber& aOther)
   type_ = aOther.type_;
 }
 
+template<class T> inline T MAX(T x, T y) { if (x<y) return y; else return x; }
 
 // assign from string, result is always a float type
 void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {// FIXME: we use gmp to read into float_, so we cannot read expfloats, e.g. 1.3e123412341234123412341234, which should be possible.
 	//FIXME: need to check that aBase is between 2 and 32
-	// estimate the number of bits we need to have
-	iPrecision = (LispInt) (1+double(aPrecision) * log2_table_lookup(unsigned(aBase)));
 	// decide whether the string is an integer or a float
-  if (strchr(aString, '.') || aBase<10 && (strchr(aString, 'e') || strchr(aString,'E')) || strchr(aString, '@'))
+	char* pos = aString;
+  if (strchr(aString, '.') || aBase<=10 && ((pos=strchr(aString, 'e')) || (pos=strchr(aString,'E'))) || (pos=strchr(aString, '@')))
   {	// converting to a float
-	turn_float();
-	mpf_set_d(float_, 1.);	// otherwise gmp doesn't really set the precision
-	// FIXME?: precision is set by hand here, instead of setting it from the string automatically... not sure whether to change the API about this.
-	//Precision(aPrecision);
-	mpf_set_prec(float_, aPrecision);// this is all we need right now (fix later?)
+	// estimate the number of bits we need to have
+	  // pos points to the position of exponent or to beginning of string if we don't have any exponent
+	  if (pos==aString) pos=aString+strlen(aString);
+	 // now pos points to the end of the interesting part of the string
+	 // no exponent, so we find the first and the last nonzero digits
+	  LispInt digit1 = strspn(aString, ".-0");
+	  LispInt digit2 = strcspn(aString+digit1, (aBase<=10) ? ".-0eE@" : ".-0@");
+	  if (digit2<=0) digit2=1;
+	  // ok, so we need to represent MAX(aPrecision,digit2) digits in base aBase
+	  iPrecision=(LispInt) (1+double(MAX(aPrecision,digit2)) * log2_table_lookup(unsigned(aBase)));
+	  turn_float();
+//	mpf_set_d(float_, 1.);	// otherwise gmp doesn't really set the precision?
+	  // GMP does NOT read all digits from the string unless the precision is preset to the right number of bits.
+	  mpf_set_prec(float_, iPrecision);
 	
 	if (mpf_set_str(float_, aString, aBase)!=0)
-	{// FIXME: this clause is executed when there is an error in the string. Need to signal the error somehow.
+	{// FIXME: this clause is executed when there is an error in the string (GMP couldn't read it). Need to signal the error somehow.
 	    fprintf(stderr, "BigNumber::SetTo: Error reading a float from string '%s'\n", aString);
 	    SetTo(0.);
+		iPrecision = 0;
 	}
   }
   else
@@ -1486,8 +1496,13 @@ double BigNumber::Double() const
 {
   if(IsInt())
 	return mpz_get_d(int_);
+  else if (IsExpFloat())
+  {
+	  fprintf(stderr, "BigNumber::Double: error: cannot convert an ExpFloat to double\n");
+	  return 0;
+  }
   else
-	return mpf_get_d(float_); // FIXME: this will not work with KExpFloat
+	return mpf_get_d(float_);
 }
 
 /// get library name
@@ -1580,15 +1595,18 @@ void BigNumber::BecomeInt()
 }
 
 
-void BigNumber::BecomeFloat()
+/// Transform integer to float, setting a given bit precision.
+/// Note that aPrecision=0 means automatic setting (just enough digits to represent the integer).
+void BigNumber::BecomeFloat(LispInt aPrecision)
 {
   if (IsInt())
-  {	// the precision of the resulting float is the number of bits in the int_, i.e. its bit count
-	  long int exponent;
+  {	// the precision of the resulting float is at least the number of bits in the int_, i.e. its bit count
+	long int exponent;	// GMP wants a long int * here
 	(void) mpz_get_d_2exp(&exponent, int_);
-	iPrecision = (LispInt)exponent;
+	iPrecision = MAX((LispInt)exponent, aPrecision);
+	mpf_set_prec(float_, iPrecision);
   	turn_float();
-	mpf_set_z(float_, int_);
+	mpf_set_z(float_, int_);	// FIXME need to test that all digits are preserved after this
   }
 }
 
