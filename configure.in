@@ -24,6 +24,11 @@ AC_CHECK_PROG(have_pdflatex, pdflatex, yes, no)
 AC_CHECK_PROG(have_dvips, dvips, yes, no)
 AC_CHECK_PROG(have_gzip, gzip, yes, no)
 
+# libtool support
+#AC_LIBTOOL_DLOPEN
+#AC_PROG_LIBTOOL
+
+
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(unistd.h sys/ioctl.h sys/socket.h sys/time.h sys/types.h)
