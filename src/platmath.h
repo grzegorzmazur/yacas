@@ -32,15 +32,6 @@ LispStringPtr PlatIsPrime(LispCharPtr int1, LispHashTable& aHashTable,LispInt aP
 unsigned primes_table_check(unsigned long p);
 unsigned primes_table_range();
 
-// lookup table for Ln(n)/Ln(2). This works whether or not we have math.h.
-// table range is from 2 to this value:
-unsigned log2_table_range();
-// convert the number of digits in given base to the number of bits, and back.
-// need to round the number of digits.
-// These functions only work for aBase inside the allowed table range.
-unsigned long digits_to_bits(unsigned long aDigits, unsigned aBase);
-unsigned long bits_to_digits(unsigned long abits, unsigned aBase);
-
 
 
 /*
