@@ -104,14 +104,14 @@ void CheckArgType(LispInt aPredicate, LispInt aArgNr, LispPtr& aArguments,LispEn
         LispPtr& arg = Argument(aArguments,aArgNr);
         LispString strout;
 
-        aEnvironment.iErrorOutput.Write("The offending argument was ");
+        aEnvironment.iErrorOutput.Write("The offending argument ");
         PrintExpression(strout, arg, aEnvironment, LIM_AL);
         aEnvironment.iErrorOutput.Write(strout.String());
-        aEnvironment.iErrorOutput.Write("\n");
+//        aEnvironment.iErrorOutput.Write("\n");
 
-        aEnvironment.iErrorOutput.Write("Argument ");
-        PrintExpression(strout, arg, aEnvironment, LIM_AL);
-        aEnvironment.iErrorOutput.Write(strout.String());
+//        aEnvironment.iErrorOutput.Write("Argument ");
+//        PrintExpression(strout, arg, aEnvironment, LIM_AL);
+//        aEnvironment.iErrorOutput.Write(strout.String());
 
         LispPtr eval;
         InternalEval(aEnvironment, eval, arg);
