@@ -558,6 +558,14 @@ The reason that the {scripts.dat} file is not built automatically is
 that it is not sure, at this time, that the build process works on all
 platforms.
 
+When an archive is present, it will be tried before trying to load from disk.
+Typing 
+
+	make archivetest -f makefile.compressor
+
+in the ramscripts/ directory runs all the test scripts using the archived
+files.
+
 The currently supported compression schemes are uncompressed, 
 and compressed with {minilzo}. Script file stripping (white spaces
 and comments) is optional too.
