@@ -1440,6 +1440,13 @@ int main(void)
 		CheckValues(z1.GetPrecision(), 9, "z1 has correct order of error");
 		CheckValues(z1.BitCount(), 0, "z1 has bit count 0");	// floating 0. has bit count 0
 	}
+	{
+		Next("subtracting in exponential notation");
+		BigNumber x("0.3e20", 20, 10), z("-0.3e20", 20, 10), y;
+		y.Add(x, z, 20);
+		CheckValues(y.Sign(), 0, "y == 0");
+		CheckStringValue(y, "0.", 20, 10, "y prints correctly");
+	}
 	{	// when subtracting these two numbers, there is enough precision to distinguish the result from 0
 		BigNumber x("0.1110100100", 0, 2);
 		BigNumber y("0.1110100000", 0, 2);

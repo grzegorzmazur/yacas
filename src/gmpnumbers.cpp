@@ -1861,7 +1861,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
     char* buffer=(char*)malloc(size);
     if (!buffer)
     {
-	    RaiseError("BigNumber::ToString: out of memory, need %ld chars\n", size);
+	    RaiseError("BigNumber::ToString: out of memory printing %e (prec. %d) to %d digits, need %ld chars", this->Double(), this->GetPrecision(), aPrecision, size);
 	    return;
     }
     char* offset = buffer;
@@ -2221,8 +2221,12 @@ void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrec
 		// this will be the precision of the resulting number
 		iPrecision = MIN(xy_prec, (long)aPrecision);
 		if (iPrecision<=0)
-			RaiseError("BigNumber::Multiply: loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());
-
+		{
+			// this is a critical loss of precision such that we don't know even a single correct digit of the result. May happen e.g. if we square a float number n times with n > that number.GetPrecision().
+			// we should at least set ourselves to zero and maybe signal error
+			mpf_set_d(float_, 0);
+	//		RaiseError("BigNumber::Multiply: loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());
+		}
 	  }
     }
 }
