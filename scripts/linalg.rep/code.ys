@@ -247,8 +247,7 @@ FrobeniusNorm(matrix_IsMatrix) <--
 
 ];
 
-/* Sucky
-20 # Determinant(_matrix) <-- 
+20 # SymbolicDeterminant(_matrix) <-- 
 [
   Local(perms,indices,result);
   Check((IsMatrix(matrix)),"Determinant: Argument must be a matrix");
@@ -260,7 +259,7 @@ FrobeniusNorm(matrix_IsMatrix) <--
                     LeviCivita(item);
   result;
 ];
-*/
+
 
 10 # Determinant(_matrix)_(IsUpperTriangular(matrix) Or IsLowerTriangular(matrix)) <--
 [ 
