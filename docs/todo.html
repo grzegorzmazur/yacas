@@ -76,12 +76,6 @@ This is a list of some expressions that currently go wrong:
        do... but it's not easy to decide the growth of exp-log and powers.
        There is a paper by Richardson, Salvy et al "Asymptotic expansions of
        exp-log functions" that may be helpful.
-  <li> In> Limit(n, Infinity) (n+1)/(2*n+3)*I
-       Out> 0;
-       apparently, it doesn't work with complex numbers although it works with
-       reals. Probably a trivial bug.
-  <li> In> Limit(x, Infinity) x*I
-       Out> Infinity*Complex(0,1);
   <li> In> Simplify(2*x/4.5)
        never stops
   <li> In> Integrate(x) x^(-1) should return Ln(x)
