@@ -35,26 +35,23 @@ RuleBase("=>",{a,b});
 19  # LogicSimplify((_x)  Or  False)             <-- LogicSimplify(x);
 
 /*Still not fully sure about these, but...  */
-21  # LogicSimplify((_x)  Or  (_x))              <-- LogicSimplify(x);
-22  # LogicSimplify((_x)  And  (_x))             <-- LogicSimplify(x);
-23  # LogicSimplify((_x)  Or Not (_x))           <-- True;
-23  # LogicSimplify(Not (_x)  Or _x)             <-- True;
-24  # LogicSimplify((_x)  And Not (_x))          <-- False;
-24  # LogicSimplify(Not (_x)  And (_x))          <-- False;
+21  # LogicSimplify(_x  Or  _x)                  <-- LogicSimplify(x);
+22  # LogicSimplify(_x  And  _x)                 <-- LogicSimplify(x);
+23  # LogicSimplify(_x  Or Not (_x))             <-- True;
+14  # LogicSimplify(Not (_x)  Or _x)             <-- True;
+25  # LogicSimplify(_x  And Not (_x))            <-- False;
+26  # LogicSimplify(Not (_x)  And _x)            <-- False;
 
-25  # LogicSimplify(((_x) == (_y)) Or ((_x) !== (_y)))   <-- True;
-25  # LogicSimplify(((_x) !== (_y)) Or ((_x) == (_y)))   <-- True;
-26  # LogicSimplify(((_x) == (_y)) And ((_x) !== (_y)))  <-- False;
-26  # LogicSimplify(((_x) !== (_y)) And ((_x) == (_y)))  <-- False;
-27  # LogicSimplify(((_x) >= (_y)) And ((_x) < (_y)))    <-- False;
-27  # LogicSimplify(((_x) < (_y)) And ((_x) >= (_y)))    <-- False;
-28  # LogicSimplify(((_x) >= (_y)) Or ((_x) < (_y)))     <-- True;
-28  # LogicSimplify(((_x) < (_y)) Or ((_x) >= (_y)))     <-- True
 
-29  # LogicSimplify(((_x) > (_y)) And ((_x) <= (_y)))    <-- False;
-29  # LogicSimplify(((_x) <= (_y)) And ((_x) > (_y)))    <-- False;
-30  # LogicSimplify(((_x) > (_y)) Or ((_x) <= (_y)))     <-- True;
-30  # LogicSimplify(((_x) <= (_y)) Or ((_x) > (_y)))     <-- True
+25  # LogicSimplify(((_x) == (_y))   Or  ((_x) !== (_y)))   <-- True;
+25  # LogicSimplify(((_x) !== (_y))  Or  ((_x) == (_y)))    <-- True;
+26  # LogicSimplify(((_x) == (_y))   And ((_x) !== (_y)))   <-- False;
+26  # LogicSimplify(((_x) !== (_y))  And ((_x) == (_y)))    <-- False;
+
+27  # LogicSimplify(((_x) >= (_y))   And ((_x) < (_y)))     <-- False;
+27  # LogicSimplify(((_x) < (_y))    And ((_x) >= (_y)))    <-- False;
+28  # LogicSimplify(((_x) >= (_y))   Or  ((_x) < (_y)))     <-- True;
+28  # LogicSimplify(((_x) < (_y))    Or  ((_x) >= (_y)))    <-- True;
 
 31  # LogicSimplify((_x)  Or  (_y))_(x!= LogicSimplify(x) Or y!=LogicSimplify(y))               /* Transform subexpression */
                                                 <-- LogicSimplify(LogicSimplify(x) Or LogicSimplify(y));
