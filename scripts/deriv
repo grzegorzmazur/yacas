@@ -6,13 +6,23 @@ RuleBase("D",{aVar,aCount,aFunc});
 
 Rule("D",2,1,IsList(aVar) And Not(IsList(aFunc)))
 	Map("D",{aVar,FillList(aFunc, Length(aVar))});
-
+Rule("D",2,1,IsList(aVar) And IsList(aFunc))
+	Map("D",{aVar,aFunc});
 
 Rule("D",2,3,True)
 [
   MacroLocal(aVar);
   Apply("Deriv",{aVar,1,aFunc});
 ];
+
+Rule("D",3,1,IsList(aVar) And Not(IsList(aFunc)))
+	Map("D",{aVar,
+                 FillList(aCount, Length(aVar)),
+                 FillList(aFunc, Length(aVar))});
+Rule("D",3,1,IsList(aVar) And IsList(aFunc))
+	Map("D",{aVar,
+                 FillList(aCount, Length(aVar)),
+                 aFunc});
 Rule("D",3,3,True)
 [
   MacroLocal(aVar);
@@ -75,9 +85,16 @@ HoldArg("D",aFunc);
   UniVariate(var,first-1,result);
 ];
 
+/*
+Diverge(_f,_b) <-- D(b)f;
+Curl2(_f,_b) <--
+      (D({b[2],b[3],b[1]}){f[3],f[1],f[2]}) -
+      (D({b[3],b[1],b[2]}){f[2],f[3],f[1]});
+*/
 
+/*TODO remove?
+*/
 RuleBase("Diverge", {aFunc, aBasis});
-
 Rule("Diverge", 2, 1, IsList(aBasis) And IsList(aFunc) And Length(aBasis) = Length(aFunc))
 	Map("D", {aBasis,aFunc});
 
