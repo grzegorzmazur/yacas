@@ -34,7 +34,7 @@ LispObject::~LispObject()
 {
 }
 
-LispStringPtr LispObject::String() const
+LispStringPtr LispObject::String()
 {
     return NULL;
 }

@@ -69,7 +69,7 @@ void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispPtr& aAr
 {
     LispPtr result;
     InternalEval(aEnvironment, result, Argument(aArguments,aArgNr));
-    RefPtr<BigNumber> num = result.Get()->Number(aEnvironment.Precision());
+    RefPtr<BigNumber> num; num = result.Get()->Number(aEnvironment.Precision());
     CHK_ARG(num.Ptr() != NULL,aArgNr);
     x = num;
 }

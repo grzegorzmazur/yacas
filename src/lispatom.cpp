@@ -40,7 +40,7 @@ LispAtom::~LispAtom()
 }
 
 
-LispStringPtr LispAtom::String() const
+LispStringPtr LispAtom::String() 
 {
     CHECKPTR(iString);
     return iString;
@@ -206,8 +206,8 @@ LispObject* LispGenericClass::SetExtraInfo(LispPtr& aData)
 LispNumber::LispNumber(LispHashTable* aHashTable, BigNumber* aNumber,LispStringPtr aString)
   : iHashTable(aHashTable)
 {
-  iNumber = aNumber;
   iString = aString;
+  iNumber = aNumber;
 }
 
 
@@ -224,21 +224,24 @@ LispNumber::LispNumber(LispStringPtr aString)
   iNumber = NULL;
   Number(10);
 }
-LispStringPtr LispNumber::String() const
+LispStringPtr LispNumber::String() 
 {
-  if (iString == NULL)
+  if (iString.Ptr() != NULL) return iString.Ptr();
+  if (iString.Ptr() == NULL)
   {
     LISPASSERT(iNumber.Ptr() != NULL);
     LISPASSERT(iHashTable != NULL);
-    LispStringPtr str = NEW LispString;
+    LispString *str = NEW LispString;
     iNumber->ToString(*str,iNumber->GetPrecision());
-    ((LispNumber*)this)->iString = iHashTable->LookUp(str);
+    LISPASSERT(iHashTable != NULL);
+//    return iHashTable->LookUp(str.String());
+    iString = iHashTable->LookUp(str);
 
 #ifdef YACAS_DEBUG
-printf("Converting to string representation %s\n",iString->String()); //DEBUG
+//printf("Converting to string representation %s\n",iString->String()); //DEBUG
 #endif
   }
-  return iString;
+  return iString.Ptr();
 }
 
 LispNumber::~LispNumber()
@@ -249,7 +252,7 @@ LispNumber::~LispNumber()
 LispObject* LispNumber::Copy(LispInt aRecursed)
 {
     LispObject *copied;
-    copied = NEW LispNumber(iHashTable, iNumber.Ptr(), iString);
+    copied = NEW LispNumber(iHashTable, iNumber.Ptr(), iString.Ptr());
 
 #ifdef YACAS_DEBUG
     copied->SetFileAndLine(iFileName, iLine);
@@ -260,15 +263,17 @@ BigNumber* LispNumber::Number(LispInt aPrecision)
 {
   if (iNumber.Ptr() == NULL)
   {
-    LISPASSERT(iString != NULL);
+    LISPASSERT(iString.Ptr() != NULL);
 #ifdef YACAS_DEBUG
-printf("Converting from string representation %s\n",iString->String()); //DEBUG
+//printf("Converting from string representation %s\n",iString->String()); //DEBUG
 #endif
-    iNumber = NEW BigNumber(iString->String(),aPrecision);
+    RefPtr<LispString> str; str = iString.Ptr();
+    iNumber = NEW BigNumber(str->String(),aPrecision);
   }
   else if (iNumber->GetPrecision() < aPrecision)
   {
-    iNumber = NEW BigNumber(iString->String(),aPrecision);
+    RefPtr<LispString> str; str = iString.Ptr();
+    iNumber = NEW BigNumber(str->String(),aPrecision);
   }
   return iNumber.Ptr();
 }

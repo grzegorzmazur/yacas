@@ -253,8 +253,8 @@ void LispLexCompare2(LispEnvironment& aEnvironment, LispPtr& aResult,
     InternalEval(aEnvironment, result2, Argument(aArguments,2));
     LispBoolean cmp;
 #ifndef NO_USE_BIGFLOAT
-    RefPtr<BigNumber> n1 = result1.Get()->Number(aEnvironment.Precision());
-    RefPtr<BigNumber> n2 = result2.Get()->Number(aEnvironment.Precision());
+    RefPtr<BigNumber> n1; n1 = result1.Get()->Number(aEnvironment.Precision());
+    RefPtr<BigNumber> n2; n2 = result2.Get()->Number(aEnvironment.Precision());
     if (n1.Ptr() != NULL && n2.Ptr() != NULL)
     {
       cmp =numfunc(*n1.Ptr(),*n2.Ptr());

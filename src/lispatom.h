@@ -25,7 +25,7 @@ class LispAtom : public LispObject
 public:
     static LispObject* New(LispStringPtr aString);
     virtual ~LispAtom();
-    virtual LispStringPtr String() const;
+    virtual LispStringPtr String();
     virtual LispObject* Copy(LispInt aRecursed);
 public:
     virtual LispObject* SetExtraInfo(LispPtr& aData);
@@ -169,12 +169,12 @@ public:
     LispNumber(LispStringPtr aString);
     virtual ~LispNumber();
     virtual LispObject* Copy(LispInt aRecursed);
-    virtual LispStringPtr String() const;
+    virtual LispStringPtr String();
     virtual BigNumber* Number(LispInt aPrecision);
     LispObject* SetExtraInfo(LispPtr& aData);
 private:
     RefPtr<BigNumber> iNumber;
-    LispStringPtr iString;
+    RefPtr<LispString> iString;
     LispHashTable* iHashTable;
 };
 
