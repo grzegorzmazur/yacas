@@ -1174,43 +1174,52 @@ arbitrary precision arithmetic library.
 
 Higher up, Yacas only knows about objects derived from {LispObject}.
 Specifically, there are objects of class {LispAtom} which represent
-an atom. They are uniquely represented by the result returned by
-the {String()} method. 
+an atom. 
 
-For numbers, there is a separate class, {LispNumber}. Objects
+Symbolic and string atoms are uniquely represented by the result returned by
+the {String()} method. 
+For number atoms, there is a separate class, {LispNumber}. Objects
 of class {LispNumber} also have a {String()} method in case
 a string representation of a number is needed, but the main 
 uniquely identifying piece of information is the object of
 class {BigNumber} stored inside a {LispNumber} object.
+This object is accessed using the {Number()} method of class {LispNumber}.
 
 The life cycle of a {LispNumber} is as follows:
 
 *	1. A {LispNumber} can be born when the parser reads in a numeric
 atom. In such a case an object of type {LispNumber} is created instead
 of the {LispAtom}. The {LispNumber} constructor stores
-the string representation and proceeds to create
-an object of type {BigNumber} in response.
+the string representation but does not yet create
+an object of type {BigNumber} from the string representation.
 [The {BigNumber} object is automatically created from the string representation
-by the {Number(precision)} method.]
-*	1. For a calculation, say addition, two arguments are passed in,
-and their internal object should be of class {LispNumber}, so that the
-function doing the multiplication can get at the {BigNumber} objects
+by the {Number(precision)} method the first time it is requested.]
+*	1. Suppose the {Number} method is called; then a {BigNumber} object will be created from the string representation, using the current precision.
+This is where the string conversion takes place.
+If later the precision is increased, the string conversion will be performed again.
+This allows to hold a number such as {1.23} and interpret it effectively as an exact rational {123/100}.
+*	1. For an arithmetic calculation, say addition, two arguments are passed in,
+and their internal objects should be of class {LispNumber}, so that the
+function doing the addition can get at the {BigNumber} objects
 by calling the {Number()} method.
 [This method will not attempt to create a number from the string representation
 if a numerical representation is already available.]
-The function doing the multiplying
-then creates a new {BigNumber}, stores the result of the multiplication
-in it, and again creates a {LispNumber} by constructing it with the
-resulting {BigNumber}. Note no conversion to string representation is needed,
-and thus not made. The result is a {LispNumber} with just a {BigNumber}
-inside it. Other operations can proceed to use this {BigNumber}
+The function that performs the arithmetic
+then creates a new {BigNumber}, stores the result of the calculation
+in it, and creates a new {LispNumber} by constructing it with the
+new {BigNumber}.
+The result is a {LispNumber} with a {BigNumber}
+inside it but without any string representation.
+Other operations can proceed to use this {BigNumber}
 stored inside the {LispNumber}. This is in effect the second way a
 {LispNumber} can be born.
+Since the string representation is not available in this case, no string conversions are performed any more.
+If precision is increased, there is no way to obtain any more digits of the number.
 *	1. Right at the end, when a result needs to be printed to screen,
 the printer will call the {String()} method of the {LispNumber} object
-to get a (decimal) string representation. The string representation is also
-stored in the {LispNumber}. This is not expensive since it is just a pointer
-to a string in the string container (hash table).
+to get a string representation.
+The obtained (decimal) string representation of the number is also
+stored in the {LispNumber}, to avoid repeated conversions.
 
 In order to fully support the {LispNumber} object, the function in the
 kernel that determines if two objects are the same needs to know about
@@ -1233,30 +1242,44 @@ a string representation, but it will be less efficient.
 There are various subtle details when dealing with precision.
 A number gets constructed with a certain precision, but a
 higher precision might be needed later on. That is the reason there
-is a {aPrecision} argument to the {Number()} method. 
+is the {aPrecision} argument to the {Number()} method. 
 
-A {BigNumber} gets constructed with a minimum lower bound on the 
-precision, but the actual internal representation the underlying
-numeric library uses might actually store the number with even
-higher precision. This is needed because at a certain stage 
-the actual digits it was constructed with need to be reproduced
-to higher precision than when the object was created. The string
-representation has to match the one the {BigNumber} was created with.
+When a {BigNumber} is constructed from a decimal string, one has to specify a desired precision (in decimal digits).
+Internally, {BigNumber} objects store numbers in binary and will allocate enough bits to cover the desired precision.
+However, if the given string has more digits than the given precision, the {BigNumber} object will not truncate it but will allocate more bits so that
+the information given in the decimal string is not lost.
+If later the string
+representation of the {BigNumber} object is requested, the produced string will match the string from which the {BigNumber} object was created.
 
-There are thus actually two precisions in the {BigNumber}. One is
-the precision it was constructed with, the value passed in by the system.
-This is the lower bound, the minimum precision the user requires.
-Above that, the representation inside {BigNumber} has the actual
-precision, the precision it needs to perform to specifications.
-It has to reproduce the string representation it was constructed
-with, so it might decide to use a higher precision than the system passed
-to it.
+Internally, the {BigNumber} object knows how many precise bits it has.
+The number of precise digits might be greater than the currently requested precision.
+But a truncation of precision will only occur when performing arithmetic operations.
+This behavior is desired, for example:
 
+	In> Precision(6)
+	Out> True;
+	In> x:=1.23456789
+	Out> 1.23456789;
+	In> x+1.111
+	Out> 2.345567;
+	In> x
+	Out> 1.23456789;
+In this example, we would like to keep all information we have about {x} and not truncate it to 6 digits.
+But when we add a number to {x}, the result is only precise to 6 digits.
 
+This behavior is implemented by storing the string representation {"1.23456789"} in the {LispNumber} object {x}.
+When an arithmetic calculation such as {x+1.111} is requested, the {Number} method is called on {x}.
+This method, when called for the first time, converts the string representation into a {BigNumber} object.
+That {BigNumber} object will have 28 bits to cover the 9 significant digits of the number, not the 19 bits normally required for 6 decimal digits of precision.
+But the result of an arithmetic calculation is not computed with more than 6 decimal digits.
+Later when {x} needs to be printed, the full string representation is available so it is printed.
 
+If now we increase precisionto 20 digits, the object {x} will be interpreted as 1.23456789 with 12 zeros at the end.
 
-
-
-
+	In> Precision(20)
+	Out> True;
+	In> x+0.000000000001
+	Out> 1.234567890001;
+This behavior is more intuitive to people who are used to decimal fractions.
 
 
