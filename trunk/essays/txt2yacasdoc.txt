@@ -41,7 +41,7 @@ linebreaks
 inside
 a
 paragraph
-are of no significance to the resulting documentation.
+are of no significance to the resulting documentation. The first symbol on a line should not be an asterisk ({*}) because it is reserved for markup purposes.
 
 *	Itemized text is marked by "*" in the first position, followed by TAB. For example:
 
@@ -65,6 +65,12 @@ Note that item text continues until the next itemized line is given or until end
 <i>anchored text</i>{|}<i>Web URL</i>{*>}. For example:
 
 	<*this text will be underlined|somewebpage.html*>
+
+*	To include contents of another document, use the {*INCLUDE} directive at the beginning of a line, e.g.
+
+	*INCLUDE ../essays/howto.chapt
+
+Note that the included document must be a Yacas-language file. (This will become a {Load()} call in the Yacas document.)
 
 		{book2txt}: Conversion of existing documentation to plain text
 
