@@ -132,7 +132,10 @@ Gamma(9/2)
 , (105*Sqrt(Pi))/16
 );
 
-KnownFailure(TestYacas(Gamma(-10.5), (-2048*Sqrt(Pi))/13749310575));
+TestYacas(
+Gamma(-10.5)
+, (-2048*Sqrt(Pi))/13749310575
+);
 
 TestYacas(
 Gamma(-7/2)
