@@ -49,8 +49,8 @@ libyacasplatform_a_LIBADD = @NUMBERS_LIB@
 libyacasnumbers_a_SOURCES = anumber.cpp yacasnumbers.cpp 
 libgmpnumbers_a_SOURCES = gmpnumbers.cpp 
 
-EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp \
-	epocyacas.hrh epocyacas.rss epocyacas.mmp \
+EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp \
+	epocyacas.hrh epocyacas.rss epocyacas.mmp epocyacasconsole.mmp \
 	epocstubs.cpp grower.inl lisphash.inl lispobject.inl \
 	lispstring.inl standard.inl \
 	win32dll.cpp win32dll.h \

@@ -5,6 +5,10 @@
 #include "standard.h"
 #include "lispeval.h"
 
+SubstBehaviourBase::~SubstBehaviourBase()
+{
+}
+
 
 //Subst, Substitute, FullSubstitute
 void InternalSubstitute(LispPtr& aTarget, LispPtr& aSource,

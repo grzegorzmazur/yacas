@@ -7,6 +7,12 @@
 #define __lisptype_h__
 
 
+#ifndef SIZE_T
+#define SIZE_T unsigned int
+#endif
+
+
+
 // Type definitions for the base types
 #define LispChar  char
 #define LispInt   int
@@ -22,7 +28,7 @@
 #define BITS_PER_LONG 32
 
 // this is the only platform where we cannot have globals...
-#define NO_GLOBALS
+#define noNO_GLOBALS
     
     
 // Number of bits to use for reference-counting. This can actually
@@ -67,7 +73,7 @@
 
 #define SAFEPOP(_env)  _env.iCleanup.Pop()
 
-#define SystemCall system
+#define SystemCall // system
 
     
     

@@ -4,21 +4,29 @@
 #include "stubs.h"
 
 
+#ifndef SIZE_T
+#define SIZE_T unsigned int
+#endif
 
-LispCharPtr PlatAlloc(LispInt aNrBytes)
+void* PlatStubAlloc(SIZE_T aNrBytes);
+void *PlatStubReAlloc(void *aOrig, SIZE_T aNrBytes);
+void PlatStubFree(void *aOrig);
+
+
+void* PlatStubAlloc(SIZE_T aNrBytes)
 {
     LispCharPtr result = (LispCharPtr)User::Alloc(aNrBytes);
     Check(result!=NULL,KLispErrNotEnoughMemory);
     return result;
 }
 
-LispCharPtr PlatReAlloc(LispCharPtr aOrig, LispInt aNrBytes)
+void *PlatStubReAlloc(void *aOrig, SIZE_T aNrBytes)
 {
     LispCharPtr result = (LispCharPtr)User::ReAlloc(aOrig, aNrBytes);
     Check(result!=NULL,KLispErrNotEnoughMemory);
     return result;
 }
-void PlatFree(LispCharPtr aOrig)
+void PlatStubFree(void *aOrig)
 {
   User::Free(aOrig);
 }

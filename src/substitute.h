@@ -12,6 +12,7 @@
 class SubstBehaviourBase : public YacasBase
 {
 public:
+    virtual ~SubstBehaviourBase();
     virtual LispBoolean Matches(LispPtr& aResult, LispPtr& aElement) = 0;
 };
 

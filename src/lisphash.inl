@@ -67,7 +67,9 @@ inline T* LispAssociatedHash<T>::LookUp(LispStringPtr aString)
     // Find existing version of string
     for (i = iHashTable[bin].NrItems()-1 ; i >= 0 ; i --)
     {
-        if (((LAssoc<T>*)iHashTable[bin][i])->iString() == aString)
+        LispStringSmartPtr &ptr = (((LAssoc<T>*)iHashTable[bin][i])->iString);
+        if (ptr() == aString)
+//TODO remove?        if (((LAssoc<T>*)iHashTable[bin][i])->iString() == aString)
         {
             return &((LAssoc<T>*)iHashTable[bin][i])->iData;
         }
@@ -84,7 +86,9 @@ inline void LispAssociatedHash<T>::SetAssociation(const T& aData, LispStringPtr 
     // Find existing version of string
     for (i=0;i<iHashTable[bin].NrItems();i++)
     {
-        if (((LAssoc<T>*)iHashTable[bin][i])->iString() == aString)
+        LispStringSmartPtr &ptr = (((LAssoc<T>*)iHashTable[bin][i])->iString);
+        if (ptr() == aString)
+//TODO remove?        if (((LAssoc<T>*)iHashTable[bin][i])->iString() == aString)
         {
             //change existing version of association
             ((LAssoc<T>*)iHashTable[bin][i])->iData = aData;
@@ -106,7 +110,9 @@ inline void LispAssociatedHash<T>::Release(LispStringPtr aString)
     // Find existing version of string
     for (i=0;i<iHashTable[bin].NrItems();i++)
     {
-        if (((LAssoc<T>*)iHashTable[bin][i])->iString() == aString)
+        LispStringSmartPtr &ptr = (((LAssoc<T>*)iHashTable[bin][i])->iString);
+        if (ptr() == aString)
+//TODO remove?        if (((LAssoc<T>*)iHashTable[bin][i])->iString() == aString)
         {
             //change existing version of association
             delete ((LAssoc<T>*)iHashTable[bin][i]);
