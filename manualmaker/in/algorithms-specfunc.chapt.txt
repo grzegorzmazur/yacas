@@ -348,3 +348,69 @@ If only one Bernoulli number is required, then {Bernoulli1} is always faster. If
 
 Currently Brent's recurrence is implemented as {BernoulliArray1()} but it is not used by {Bernoulli} because the internal arithmetic is not yet able to correctly compute with floating-point precision.
 
+		Error function $Erf(x)$ and related functions
+
+The error function $Erf(z)$ is defined for any (complex) $z$ by
+$$ Erf(z) := (2/Sqrt(Pi))*Integrate(t,0,z)Exp(-t^2) $$.
+
+The complementary error function $Erfc(x)$ is defined for real $x$ as
+$$ Erfc(x) := (2/Sqrt(Pi))*Integrate(t,x,Infinity)Exp(-t^2) = 1-Erf(x) $$.
+
+Numerical computation of the error function $Erf(z)$ needs to be performed by
+different methods depending on the value of $z$ and its position in the complex
+plane, and on the required precision.  We follow the book: Sh. E. Tsimring,
+<i>Special functions: algorithms and programs</i>
+(in Russian), and the paper: 
+<i>Algorithm ..., Error function for large real argument</i>,
+ACM TOMS ... 197?. (These texts do not consider methods for arbitrary-precision computations.)
+
+
+The function $Erf(z)$ has the following approximations that are useful for its
+numerical computation:
+
+*	1. The Taylor series at $z=0$,
+$$ (Sqrt(Pi)/(2*z))*Erf(z) = 1-z^2/3+z^4/(2! *5)- ... + (-z^2)^n/((2*n+1)*n!)+O(z^(2*n+1))$$
+*	2. The Taylor series for a slightly modified function,
+$$ (Sqrt(Pi)/2)*(e^(z^2)/z)*Erf(z) = 1+(2*z^2)/3+... + (2*z^2)^n/(2*n+1)!! + O(z^(2*n+1))$$.
+*	3. Asymptotic expansion at $z=Infinity$:
+$$ Erf(z) = 1 - e^(-z^2)/(z*Sqrt(Pi))*(1-1/(2*z^2) + ... + (2*n-1)!! /(-2*z^2)^n+...) $$.
+*	4. Continued fraction due to ...:
+$$ Erf(z) = ... $$
+*	5. Continued fraction due to ...:
+$$ Erf(z) = ... $$.
+
+*REM FIXME to be filled in
+
+Here we shall analyze the convergence and precision of these methods and show
+which one has to be chosen to compute $Erf(z)$ with (relative) precision $P$
+decimal digits for a given (complex) number $z$, and obtain estimates for the
+necessary number of terms to take.
+
+Both Taylor series converge absolutely for all $z$, but they do not converge uniformly fast; in fact these series are not very useful for large $z$ because a very large number of slowly decreasing terms gives a significant contribution to the result, and the roundoff error (especially for the first series with the alternating signs) becomes too high. Both series converge well for $Abs(z)<1$.
+
+Consider method 1 (the first Taylor series). We shall use the method 1 only for $Abs(z)<=1$. If the absolute error of the truncated Taylor series is estimated as the first discarded term, the precision after taking all terms up to and including $z^(2*n)$ is approximately $z^(2*n+2)/(n+2)!$. The factorial can be approximated by Stirling's formula,
+$ n! <=> n^n * e^(-n)$. The value of $Erf(z)$ at small $z$ is of order 1, so we can take the absolute error to be equal to the relative error of the series that starts with $1$. Therefore, to obtain $P$ decimal digits of precision, we need the number of terms $n$ that satisfies the inequality
+$$ Abs(e*z^2/(n+1))^(n+1) < 10^(-P)$$.
+(We have substituted $n+1$ instead of $n+2$ which made the inequality stronger.)
+The error will be greatest when $Abs(z)=1$. For these values of $z$, the above inequality is satisfied when $n>1+Exp(1+W(P*Ln(10)/e))$ where $W$ is Lambert's $W$ function.
+
+Consider method 3 (the asymptotic series). We shall use the method 3 only for
+large enough values of $z$ and small enough precision. The asymptotic series
+does not actually converge for any $z$; if we select a large value of $z$, the
+terms of the series decrease at first but then start to grow. The way to use an
+asymptotic series for a numerical calculation is to truncate the series
+<i>well</i> <i>before</i> the terms start to grow. The error of this
+approximation is usually not greater than the first discarded term.
+
+The inherent limitation of the method of asymptotic series is that for a given
+$z$, there will be a certain place in the series where the term has the minimum
+absolute value (after that, the series is unusable), and the error of the
+approximation cannot be smaller than that term. This means that for a given
+finite $z$, no matter how large, there is a maximum number of digits of
+precision that can be achieved with the asymptotic series; getting more
+precision requires a different method.
+
+There are two important cases when calculating $Erf(z)$ for large (complex) $z$: the case of $z^2>0$ and the case of $z^2<0$. In the first case (e.g. a real $z$), the function $Erf(z)$ is approximately $1$ for large $Abs(z)$ (if $Re(z)>0$, and approximately $-1$ if $Re(z)<0$). In the second case (e.g. pure imaginary $z=I*t$) the function $Erf(z)$ rapidly grows as $Exp(-z^2)/z$ at large $Abs(z)$.
+
+
+*REM FIXME need to fill in on the details
