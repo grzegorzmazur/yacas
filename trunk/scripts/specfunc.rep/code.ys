@@ -226,7 +226,7 @@ LocalSymbols(n'max, k)
 10 # Erfi(_x)		<-- -I*Erf(x*I);
 
 /////////////////////////////////////////////////
-/// aaxresnel integrals
+/// Fresnel integrals
 /////////////////////////////////////////////////
 
 10 # FresnelSin(0)		<-- 0;
@@ -394,29 +394,40 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 	RoundTo(result,prec);
 ];
 
-/* geometric convergence as 2^(-n) */
+/////////////////////////////////////////////////
+/// Catalan's constant, various algorithms for comparison. (SW)
+/////////////////////////////////////////////////
+
+/* Brent-Fee's method based on Ramanujan's identity and Brent's trick.
+ * Geometric convergence as 2^(-n). */
 CatalanConstNum1() := 
 [
-        Local(prec,term,nterms,result,n,harmonic'sum);
+        Local(prec,Aterm,Bterm,nterms,result,n);
         prec:=GetPrecision();
 		Precision(10);
 		// estimate the number of terms from above
 		nterms := 1+Floor(N((prec*Ln(10)+Ln(prec*Ln(10)/Ln(2)))/Ln(2)));
         Precision(prec+5);
-        result:=0.5;
-        term:=0.5;
-		harmonic'sum := 1;
+		Aterm:=N(1/2);
+        result:= Aterm;
+        Bterm:=Aterm;
         For(n:=1, n<=nterms, n++ )
 		[
-			harmonic'sum := harmonic'sum + N(1/(2*n+1));	// harmonic'sum = Sum(k,0,n,1/(2*k+1))
-			term:=N(term*n/(2*n+1));	// term = (k!)^2*2^(k-1)/(2*k+1)!
-			result:=result+N(term*harmonic'sum);
+/*
+			Bterm := MultiplyNum(Bterm, n/(2*n+1));
+			Aterm:= MathDivide(MultiplyNum(Aterm,n)+Bterm, 2*n+1);
+/* this is faster: */
+			Bterm:=MathDivide(MathMultiply(Bterm,n), 2*n+1); // Bterm = (k!)^2*2^(k-1)/(2*k+1)!
+			Aterm:=MathDivide(MathMultiply(Aterm,n)+Bterm, 2*n+1); // Aterm = Bterm * Sum(k,0,n,1/(2*k+1))
+/**/
+			result := result + Aterm;
         ];
         Precision(prec);
-	RoundTo(result,prec);	
+        RoundTo(result,prec);	
 ];
 
-/* geometric convergence as 4^(-n) */
+/* Bailey 1997's method.
+ * Geometric convergence as 4^(-n). */
 
 CatalanConstNum() :=
 [
@@ -430,7 +441,11 @@ CatalanConstNum() :=
 	result := N(1/(2*n+1));
 	While(n>0)
 	[
+/*
 		result := MultiplyNum(result, n/(4*n+2))+N(1/(2*n-1));
+/* this is faster: */
+		result := MathDivide(MathMultiply(result, n), 4*n+2)+MathDivide(1,2*n-1);
+/**/
 		n := n-1;
 	];
 	result := MultiplyNum(result, 3/8) + N(Pi/8*Ln(2+Sqrt(3)));
@@ -438,7 +453,8 @@ CatalanConstNum() :=
 	RoundTo(result,prec);
 ];
 
-/* geometric convergence as 16^(-n) */
+/* Broadhurst's series.
+ * Geometric convergence as 16^(-n). */
 
 CatalanConstNum2() :=
 [
