@@ -91,7 +91,6 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #define SOCKLEN_T unsigned int //socklen_t
-  #define MY_SL_TYPE /*unsigned*/ int
 #endif
 
 
@@ -701,7 +700,7 @@ int runserver(int argc,char** argv)
                 {
                     client_len = sizeof(client_address);
                     client_sockfd = accept(server_sockfd, 
-                        (struct sockaddr *)&client_address, (MY_SL_TYPE*)&client_len);
+                        (struct sockaddr *)&client_address, (ACCEPT_TYPE_ARG3)&client_len);
 #ifdef __CYGWIN__
                     if (client_sockfd != 0xffffffff)
 #endif
