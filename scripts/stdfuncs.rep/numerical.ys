@@ -1,0 +1,142 @@
+/// low-level numerical calculations of elementary functions.
+/// These are only called if Numeric=True
+
+/* TruncRadian truncates the radian r so it is between 0 and 2*Pi.
+ * It calculates r mod 2*Pi using the required precision.
+ */
+TruncRadian(_r) <--
+[
+  Local(twopi);
+  r:=N(Eval(r),2*GetPrecision());
+  twopi:=N(2*Pi,2*GetPrecision());
+  N(r-MathFloor(r/twopi)*twopi);
+];
+HoldArg("TruncRadian",r);
+
+SinNum(x) :=
+[
+  If(x<0 Or x>6.2832, x:=TruncRadian(x));
+  MathSin(x);
+];
+CosNum(x) :=
+[
+  If(x<0 Or x>6.2832, x:=TruncRadian(x));
+  MathCos(x);
+];
+TanNum(x) :=
+[
+  If(x<0 Or x>6.2832, x:=TruncRadian(x));
+  MathTan(x);
+];
+
+ArcSinNum(x) :=
+[
+	// need to be careful when |x| close to 1
+	If(
+		239*Abs(x) >= 169,	// 169/239 is a good enough approximation of 1/Sqrt(2)
+		// use trigonometric identity to avoid |x| close to 1
+		Sign(x)*(Pi()/2-MathArcSin(Sqrt(1-x^2))),
+		MathArcSin(x)
+	);
+];
+
+ArcTanNum(x) :=
+[
+	// using trigonometric identities is faster for now
+	If(
+		Abs(x)>1,
+		Sign(x)*(Pi()/2-ArcSin(1/Sqrt(x^2+1))),
+		ArcSin(x/Sqrt(x^2+1))
+	);
+];
+
+
+// improve convergence of Exp(x) for large x
+MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
+
+// large positive x
+10 # ExpNum(_x) _ (x > MathExpThreshold) <-- [
+	Local(i, y);
+	i:=0;
+	For(i:=0, x > MathExpThreshold, i++)
+		x := N(x/2);
+	For(y:= MathExp(x), i>0, i--)
+		y := N(y*y);
+	y;
+	
+];
+// large negative x
+20 # ExpNum(_x) _ (x < N(-MathExpThreshold/2)) <-- N(1/ExpNum(-x));
+// other values of x
+30 # ExpNum(_x) <-- MathExp(x);
+
+// natural logarithm
+LnNum(x) := MathLog(x);
+
+/* old methods -- slower for now
+/// numerical evaluation of ArcTan using continued fractions: top level
+2 # ArcTan(x_IsNumber)_(Numeric) <--
+Sign(x) *
+// now we need to compute ArcTan of a nonnegative number Abs(x)
+[
+	Local(nterms, y);
+	y := Abs(x);
+	// use identities to improve convergence -- see essays book
+	If(
+		y>1,
+		y:=1/y	// now y <= 1
+	// we shall know that the first identity was used because Abs(x) > 1 still
+	);
+	// use the second identity 
+	y := y/(1+Sqrt(1+y^2));	// now y <= Sqrt(2)-1
+	// find the required number of terms in the continued fraction
+	nterms := 1/y;	// this needs to be calculated at full precision
+	// see essays book on the choice of the number of terms (added 2 "guard terms").
+	// we need Hold() because otherwise, if Numeric=True, N(..., 5) will not avoid the full precision calculation of Ln().
+	// the value of x should not be greater than 1 here!
+	nterms := 2 + Ceil( N(Hold(Ln(10)/(Ln(4)+2*Ln(nterms))), 5) * GetPrecision() );
+	If(	// call the actual routine
+		Abs(x)>1,
+		Pi/2-2*MyArcTan(y, nterms),	// this is for |x|>1
+		2*MyArcTan(y, nterms)
+		// MyArcTan(x, nterms)
+	);
+];
+*/
+/// numerical evaluation of ArcTan using continued fractions: low level
+
+// evaluation using recursion -- slightly faster but lose some digits to roundoff errors and needs large recursion depth
+/*
+10 # ContArcTan(_x,_n,_n) <-- (2*n-1);
+20 # ContArcTan(_x,_n,_m) <--
+[
+  (2*n-1) + (n*x)^2/ContArcTan(x,n+1,m);
+];
+
+MyArcTan(x,n) :=
+[
+  x/ContArcTan(x,1,n);
+];
+*/
+/*
+/// evaluate n terms of the continued fraction for ArcTan(x) without recursion.
+/// better control of roundoff errors
+MyArcTan(x, n) :=
+[
+	Local(i, p, q, t);
+	// initial numerator and denominator
+	p:=1;
+	q:=1;
+	// start evaluating from the last term upwards
+	For(i:=n, i>=1, i--)
+	[
+		//{p,q} := {p + q*(i*x)^2/(4*i^2-1), p};
+	//	t := p*(2*i-1) + q*(i*x)^2; then have to start with p:=2*n+1
+		t := p + q*(i*x)^2/(4*i^2-1);
+		q := p;
+		p := t;
+	];
+	// answer is x/(p/q)
+	x*q/p;
+];
+*/
