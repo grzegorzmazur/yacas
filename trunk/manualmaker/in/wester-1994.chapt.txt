@@ -118,7 +118,7 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 *	79. (OK) Integrate $Abs(x)$, piecewise defined.
 	Verify(Simplify(Integrate(x)
 	  if(x<0) (-x) else x),
-	  if(x<0) (-x^2/2) else x^2/2);
+	  Simplify(if(x<0) (-x^2/2) else x^2/2));
 *	91. (OK) Taylor series of $1/Sqrt(1-v^2/c^2)$ at $v=0$.
 	S := Taylor(v,0,4) 1/Sqrt(1-v^2/c^2);
 	TestYacas(S, 1+v^2/(2*c^2)+3/8*v^4/c^4);
