@@ -27,6 +27,7 @@
 30 # n_IsNumber > -Infinity <-- True;
 30 # -Infinity > n_IsNumber <-- False;
 
+10 # n_IsNumber == m_IsNumber <-- n=m;
 
 10 # n_IsNumber <= m_IsNumber <-- MathOr(Equals(n,m), LessThan(n,m));
 20 # (n1_IsNumber/n2_IsNumber) <= (m1_IsNumber/m2_IsNumber) <--
@@ -206,7 +207,6 @@ Rule("Gcd",2,100,True)
 10 # Floor(x_IsNumber) <-- MathFloor(x);
 10 # Ceil (x_IsNumber) <-- MathCeil (x);
 10 # Round(x_IsNumber) <-- MathFloor(x+0.5);
-
 
 
 
