@@ -66,4 +66,9 @@ Rule("Help",0,1,True)
 SetHelpBrowser("lynx");
 
 // LoadOSDependentModule();	// not really needed any more
-PlatformOS := PlatformOS();
+PlatformOS := 
+   If(StringMid(1,5,PlatformOS()) = "linux",   "Unix", 
+   If(StringMid(1,7,PlatformOS()) = "solaris", "Unix",
+   If(PlatformOS() = "Win32",                  "Win32", 
+   /* otherwise */                             "Unknown")));
+              
