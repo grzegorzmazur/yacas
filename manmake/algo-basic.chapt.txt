@@ -116,7 +116,7 @@ $$ (Integrate(x,0,2)f(x))<=> (f(0)+f(2))/3+4/3*f(1) $$.
 In the same way it is possible to find quadratures for the integral over a subinterval rather than over the whole interval of $x$. In the current implementation of the adaptive plotting algorithm, two quadratures are used: the 3-point quadrature ($n=2$) and the 4-point quadrature ($n=3$) for the integral over the first subinterval, $Integrate(x,a[0],a[1]) f(x)$. Their coefficients are ($5/12$, $2/3$, $-1/12$) and ($3/8$, $19/24$, $-5/24$, $1/24$).
 An example of using the first of these subinterval quadratures would be the approximation
 $$(Integrate(x,0,1) f(x)) <=> 5/12*f(0)+2/3*f(1)-1/12*f(2)$$.
-These quadratures are intentionally chosen to be asymmetric to avoid an accidental cancellation whent he function $f(x)$ itself is symmetric.
+These quadratures are intentionally chosen to be asymmetric to avoid an accidental cancellation when the function $f(x)$ itself is symmetric.
 (Otherwise the error estimate could accidentally become exactly zero.)
 
 		Surface plotting
@@ -533,7 +533,7 @@ It is unlikely that such numbers will arise from sums or products of reasonably-
 *FOOT A factorial function can produce rapidly growing results, but exact factorials $n!$ for large $n$ are well represented by the Stirling formula which involves powers and exponentials.
 For example, suppose a program operates with numbers $x$ of size $N$ or smaller;
 a number such as $10^N$ can be obtained only by multiplying $O(N)$ numbers $x$ together.
-But since $N$ is the largest representable number, it is certainly unfeasible to perform $O(N)$ sequential operations on a computer.
+But since $N$ is the largest representable number, it is certainly not feasible to perform $O(N)$ sequential operations on a computer.
 However, it is feasible to obtain $N$-th power of a small number, since it requires only $O(Ln(N))$ operations.
 
 *A exponentially large numbers
@@ -588,7 +588,7 @@ In other words, $Exp(-M*10^E)$ is exp-small, while $Exp(-Exp(M*10^E))$ is 2-exp-
 The practical significance of exp-numbers is rather limited. 
 We cannot obtain even a single significant digit of an exp-number.
 A "computation" with exp-numbers is essentially a floating-point computation with logarithms of these exp-numbers.
-A practical problem that needs numbers of this magnitute can probably be restated in terms of more manageable logarithms of such numbers.
+A practical problem that needs numbers of this magnitude can probably be restated in terms of more manageable logarithms of such numbers.
 In practice, exp-numbers could be useful not as a means to get a numerical answer,
 but as a warning sign of critical overflow or underflow.
 *FOOT Yacas currently does not implement exp-numbers or any other guards against overflow and underflow.

@@ -174,7 +174,7 @@ Currently plugins have to be written in C++.
 Precedence is a property of the syntax of a given operator that specifies how this function is parsed.
 Only operators, i.e. functions with special syntax, can have precedence.
 Precedence values are nonnegative integers: 0, 1, ...
-The lowest numbers bind the most tighly.
+Lower numbers bind more tightly.
 
 For example, the operator "{+}" binds less tightly (i.e. has a higher precedence <i>value</i>) than the operator "{*}" and so the expression {a+b*c} is parsed as {a+(b*c)}, as one would expect.
 

@@ -240,7 +240,7 @@ For example,
 will insert the string `
 *EVAL "Yacas version: " : Version()
 ' into the manual. Note the spaces around the version string---these additional spaces are currently unavoidable.
-*FOOT If the absense of spaces is critically important, you can create the required text in a Yacas expression.
+*FOOT If the absence of spaces is critically important, you can create the required text in a Yacas expression.
 
 	    Formatting text for the reference manual
 
@@ -501,7 +501,7 @@ Note that the entire Yacas command line is given in quotes.
 *A documentation!$TeX$ problems
 Not all features of the Yacas documentation-generating scripts are compatible with $TeX$ typesetting. To prevent errors, documentation source should avoid certain things. In general, it is a good idea to check the typeset appearance of documentation, since it helps detect errors.
 
-For example, the symbols {%}, {{ }}, {< >}, {#}, {\}, {_} and {&} are special to $TeX$. They should not normally be used in plain text; it is okay to use them in "typerwriter" text (within braces {{}}) or code samples -- but <i>not</i> in section or chapter heads, because it makes it difficult to export to $TeX$ correctly. $TeX$ commands may be entered but will not be correctly rendered in HTML online documentation.
+For example, the symbols {%}, {{ }}, {< >}, {#}, {\}, {_} and {&} are special to $TeX$. They should not normally be used in plain text; it is okay to use them in "typewriter" text (within braces {{}}) or code samples -- but <i>not</i> in section or chapter heads, because it makes it difficult to export to $TeX$ correctly. $TeX$ commands may be entered but will not be correctly rendered in HTML online documentation.
 
 *A documentation!lines too wide
 Sometimes fixed-font text will hang over the right edge of the printed

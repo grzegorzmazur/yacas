@@ -157,7 +157,7 @@ reduce the round-off error.
 
 *A continued fraction approximation!bottom-up computation!improving precision
 
-There is an improvement to the bottom-up method that can sometimes increase the achieved
+There is an improvement over the bottom-up method that can sometimes increase the achieved
 precision without computing more terms (this is suggested in [Tsimring
 1988], sec. 2.4).
 Namely, for the starting value of the recurrence we should choose not
@@ -276,7 +276,7 @@ Thus we have converted the continued fraction into a series, i.e. $F[0][n]=Sum(k
 *A continued fraction approximation!convergence rate
 
 Suppose we are given the terms $a[k]$, $b[k]$ that define an infinite continued
-fraction, and we are interested to estimate its rate of convergence. 
+fraction, and we would like to estimate its rate of convergence. 
 We need to find the number of terms $n$ for which the error of approximation is
 less than a given $epsilon$. In our notation, we need to solve
 $$ Abs(f[n+1]) < epsilon $$
@@ -434,7 +434,7 @@ Some systems of "exact arithmetic" even use continued fractions as a primary int
 This has its advantages (no round-off errors, lazy "exact" computations) and disadvantages (it is slow, especially with some operations).
 Here we consider the application of continued fractions to a traditional implementation of arithmetic (floating-point numbers with variable precision).
 
-Usually, a continued fraction representation to a function will converge geometrically, i.e. $O(P)$ terms are needed for a precision of $P$ digits.
+Usually, a continued fraction representation of a function will converge geometrically, i.e. $O(P)$ terms are needed for a precision of $P$ digits.
 If a geometrically convergent Taylor series representation is also available, the continued fraction method will always be slower because it requires at least as many or more long multiplications per term, and because the Taylor series in most cases can be summed efficiently using the rectangular scheme.
 
 However, there are some functions for which a Taylor series is not easily computable but a simple continued fraction is available.
@@ -465,7 +465,8 @@ For some equations $f(x)=0$, Newton's method converges faster; for example, solv
 
 *A Halley's method
 
-<i>Halley's method</i> is an improvement to Newton's method that makes each equation well approximated by a straight line near the root. Edmund Halley computed fractional powers, $x=a^(1/n)$, by the iteration
+<i>Halley's method</i> is an improvement over Newton's method that makes each equation well approximated by a straight line near the root.
+Edmund Halley computed fractional powers, $x=a^(1/n)$, by the iteration
 $$ x'=x*(n*(a+x^n)+(a-x^n))/(n*(a+x^n)-(a-x^n)) $$.
 This formula is equivalent to Newton's method applied to the equation
 $x^(n-q) = a*x^(-q)$ with $q=(n-1)/2$. This iteration has a cubic convergence rate. This is the fastest method to compute $n$-th roots ($n>=3$) with multiple precision. Iterations with higher order of convergence, for example, the method with quintic convergence rate

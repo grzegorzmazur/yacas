@@ -361,8 +361,8 @@ is "expr2", and so on. This command is equivalent to the expression
 *DESC
 
 This command converts a list to a function application. The first
-entry of "list" is treated as a function, and the following entries
-are the arguments to this function. So the function refered to in the
+entry of "list" is treated as a function atom, and the following entries
+are the arguments to this function. So the function referred to in the
 first element of "list" is applied to the other elements.
 
 Note that "list" is evaluated before the function application is
@@ -688,7 +688,7 @@ This command tests whether "list" contains the expression "expr"
 as an entry. It returns {True} if it does and
 {False} otherwise. Only the top level of "list" is
 examined. The parameter "list" may also be a general expression, in
-that case the top-level operands are tested for the occurence of
+that case the top-level operands are tested for the occurrence of
 "expr".
 
 *E.G.
@@ -809,9 +809,10 @@ because the latter copy the list before they alter it.
 
 *DESC
 
-This command returns "list" after all duplicates are removed. To be
-precise, the second occurence of any entry is deleted, as are the
-third, the fourth, etcetera.
+This command removes all duplicate elements from a given list and returns the resulting list.
+To be
+precise, the second occurrence of any entry is deleted, as are the
+third, the fourth, etc.
 
 *E.G.
 
@@ -1203,7 +1204,7 @@ number "m" and ending with the "n"-th entry.
 This command partitions "list" into non-overlapping sublists of
 length "n" and returns a list of these sublists. The first "n"
 entries in "list" form the first partition, the entries from
-position "n+1" upto "2n" form the second partition, and so on. If
+position "n+1" up to "2n" form the second partition, and so on. If
 "n" does not divide the length of "list", the remaining entries
 will be thrown away. If "n" equals zero, an empty list is
 returned.
@@ -1480,7 +1481,7 @@ For example, {VarListSome(a + Sin(b-c))} will return {{a, b, c}}, but {VarListSo
 
 The command {VarListArith} returns a list of all variables that appear
 arithmetically in the expression {expr}. This is implemented through
-{VarListSome} by resticting to the arithmetic functions {+}, {-}, {*}, {/}.
+{VarListSome} by restricting to the arithmetic functions {+}, {-}, {*}, {/}.
 Arguments of other functions are not checked.
 
 Note that since the operators "{+}" and "{-}" are prefix as well as infix operators, it is currently required to use {Atom("+")} to obtain the unevaluated atom "{+}".
@@ -1617,7 +1618,7 @@ Prints {list} and inserts the {padding} string between each pair of items of the
 *DESC
 
 This command generates a list of values from "body", by assigning
-variable "var" values from "from" upto "to", incrementing
+variable "var" values from "from" up to "to", incrementing
 "step" each time. So, the variable "var" first gets the value
 "from", and the expression "body" is evaluated. Then the value
 "from"+"step" is assigned to "var" and the expression "body"

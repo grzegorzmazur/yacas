@@ -8,7 +8,7 @@
 
 *PARMS
 
-{n} -- new maximum evalution depth
+{n} -- new maximum evaluation depth
 
 *DESC
 
@@ -17,7 +17,7 @@ Use this command to set the maximum evaluation depth to the integer
 
 The point of having a maximum evaluation depth is to catch any
 infinite recursion. For example, after the definition {f(x) := f(x)}, evaluating the expression {f(x)} would call {f(x)}, which would
-call {f(x)}, etcetera. The interpreter will halt if
+call {f(x)}, etc. The interpreter will halt if
 the maximum evaluation depth is reached. Also indirect recursion, e.g.
 the pair of definitions {f(x) := g(x)} and {g(x) := f(x)}, will be caught.
 
@@ -113,7 +113,7 @@ and {x} is bound to 5. Hence evaluating {a} will give {x}. Only when an extra
 evaluation of {a} is requested, the value 5 is
 returned.
 
-Note that the behaviour would be different if we had exchanged the
+Note that the behavior would be different if we had exchanged the
 assignments. If the assignment {a := x} were given
 while {x} had the value 5, the variable {a} would also get the value 5 because the assignment
 operator {:=} evaluates the right-hand side.
@@ -230,7 +230,7 @@ construct in the programming language C.
 This command implements a branch point. The predicate "pred" is
 evaluated, which should result in either {True} or {False}. In the first case, the expression "then" is
 evaluated and returned. If the predicate yields {False}, the expression "else" (if present) is evaluated and
-returned. If there is no "else" branch (ie. if the first calling
+returned. If there is no "else" branch (i.e. if the first calling
 sequence is used), the {If} expression returns {False}.
 
 *E.G.
@@ -462,7 +462,7 @@ This commands implements a C style {for} loop. First
 of all, the expression "init" is evaluated. Then the predicate
 "pred" is evaluated, which should return {True} or
 {False}. Next the loop is executed as long as the
-predicate yields {True}. One traversion of the loop
+predicate yields {True}. One traversal of the loop
 consists of the subsequent evaluations of "body", "incr", and
 "pred". Finally, the value {True} is returned.
 
@@ -538,9 +538,9 @@ returns {True}.
 This function applies the function "fn" to the arguments in
 "arglist" and returns the result. The first parameter "fn" can
 either be a string containing the name of a function  or a pure
-function. Pure functions, modelled after lambda-expressions, have the
+function. Pure functions, modeled after lambda-expressions, have the
 form "{varlist,body}", where "varlist" is the list of formal
-parameters. Upon application, the formal paramaters are assigned the
+parameters. Upon application, the formal parameters are assigned the
 values in "arglist" (the second parameter of {Apply}) and the "body" is evaluated
 
 An shorthand for {Apply} is provided by the {@} operator.
@@ -595,7 +595,7 @@ of a function or a pure function.
 
 *DESC
 
-This function substitutes every occurence of "from" in "expr" by
+This function substitutes every occurrence of "from" in "expr" by
 "to". This is a syntactical substitution: only places where "from"
 occurs as a subexpression are affected.
 
@@ -635,7 +635,7 @@ returned. Finally, the assignment is reversed so that the variable
 
 The second calling sequence assigns the first element in the list of
 values to the first element in the list of variables, the second value
-to the second variable, etcetera.
+to the second variable, etc.
 
 *E.G.
 
@@ -687,7 +687,7 @@ Note that for these local rules, {<-} should be used instead of
 {<--} which would be used in a global rule.
 
 The {/:} operator traverses an expression much as {Subst} does, that is, top
-down, trying to apply the rules from the begining of the list of
+down, trying to apply the rules from the beginning of the list of
 rules to the end of the list of rules. If the rules cannot be applied
 to an expression, it will try subexpressions of that
 expression and so on.

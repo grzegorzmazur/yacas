@@ -99,7 +99,7 @@ contains the following line
 This is an example of the {PROGRAMS} primary, and says that the
 directory contains a program called {yacas}. Hence it will be built if
 the {make all} command is executed, it will be installed at 
-{make install}, etcetera. Other useful primaries are {SCRIPTS} for
+{make install}, etc. Other useful primaries are {SCRIPTS} for
 executable scripts, {HEADERS} for header files, {LIBRARIES} for static
 libraries, {LTLIBRARIES} for libtool libraries, and {DATA} for all
 files which are just copied verbatim at installation time (this
@@ -142,7 +142,7 @@ these files. To specify which files should be included in the distribution, the
 {EXTRA_DIST} variable can  be used. The developer should list all files
 to be included in the distribution that {automake} does not know about
 here. If we want to run some commands at build or installation time, we
-can specifiy them by {Makefile} rules in the traditional ways. Just
+can specify them by {Makefile} rules in the traditional ways. Just
 write the rules in {Makefile.am} and they will be copied verbatim in the
 generated {Makefile}. Please keep in mind that the rules should work on
 a wide variety of platforms in order to retain portability. In
@@ -372,7 +372,7 @@ are installed.
 documentation. This defaults to the same directory as for the
 documentation in HTML format.
 
-Furthermore, the opposites of the above options (eg. {disable-gmp})
+Furthermore, the opposites of the above options (eg. {disable-server})
 are also recognized.
 
 
@@ -420,9 +420,10 @@ put in the {DISTCHECK_CONFIGURE_FLAGS} environment variable.
 The main executable is called {yacas} and resides in the {src}
 directory. The build process is pretty straightforward. Three static
 libraries are used: {libyacas}, {libyacasplatform}, and a library for
-arbitrary precision arithmetics. For the last library, the user can
-choose between the GNU MP library or a library distributed with Yacas
-using the {enable-gmp} option of the {configure} script.
+arbitrary precision arithmetics.
+For the latter library, the user can
+specify a choice of {gmp} (GNU MP library) or {native} (the library distributed with Yacas)
+with the {with-numlib} option of the {configure} script.
 
 The {src} directory contains furthermore the source for the
 {libcyacas} library (see <*yacasdoc://essays/3/4/*>)
@@ -467,7 +468,7 @@ are converted to Yacas code by the {txt2yacasdoc.pl} script.
 The result is a set of Yacas source files containing the text of the documentation.
 These Yacas source files are not well suited for human reading and must be further processed to obtain the books in HTML and PS/PDF formats.
 
-To generate the books in HTML format, the Yacas source files areprocessed by the Yacas interpreter using the scripts {manualmaker} and {indexmaker}.
+To generate the books in HTML format, the Yacas source files are processed by the Yacas interpreter using the scripts {manualmaker} and {indexmaker}.
 The script {indexmaker} creates the file {books.html} with the top-level index to all HTML documentation books.
 The script {manualmaker} creates the HTML files with the book text (both the framed and the non-framed versions are written out).
 It is also possible to generate more than one HTML book at once.

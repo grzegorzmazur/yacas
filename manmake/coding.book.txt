@@ -81,7 +81,9 @@ invalid and never evaluate to anything. For example,
 {Atom(3X)} is an atom with string representation "3X" but
 with no other properties.
 
-Currently, no other lowest-level objects are provided by the core engine, besides numbers, atomes, strings, and lists. There is, however, a possibility to link externally compiled code that will provide additional types of objects. Those will be available in Yacas as "generic objects."
+Currently, no other lowest-level objects are provided by the core engine besides numbers, atoms, strings, and lists. There is, however, a possibility to link some externally compiled code that will provide additional types of objects.
+Those will be available in Yacas as "generic objects."
+For example, fixed-size arrays are implemented in this way.
 
 		Yacas evaluation scheme
 
@@ -126,8 +128,8 @@ using the {Hold()} function) because assignment
 {Set(var, value)} and this function evaluates its second
 argument (but not its first argument). When referencing that variable
 again, the object which is its value will not be re-evaluated. Also, the
-default behaviour of the engine is to return the original expression if it
-could not be evaluated. This is a desired behaviour if evaluation is used
+default behavior of the engine is to return the original expression if it
+could not be evaluated. This is a desired behavior if evaluation is used
 for simplifying expressions.
 
 One major design flaw in Yacas (one that other functional languages like
@@ -220,7 +222,7 @@ the function is returned with its arguments evaluated.
 
 This scheme is slightly slower for ordinary functions that just have one
 rule (with the predicate {True}), but it is a desired
-behaviour for symbolic manipulation. You can gradually build up your own functions, incrementally testing their properties.
+behavior for symbolic manipulation. You can gradually build up your own functions, incrementally testing their properties.
 
 		Examples of using rules
 
@@ -646,7 +648,7 @@ is 10:
 Note that in {Yacas}, the script language does not define a "{+}" function
 in the core. This and other functions are all implemented in the script library.
 The feature "when the arguments to "{+}" are numeric, perform the numeric
-addition" is concidered to be a "policy" which should be configurable.
+addition" is considered to be a "policy" which should be configurable.
 It should not be a part of the core language.
 
 It is surprisingly difficult to keep in mind that evaluation is 
@@ -814,7 +816,7 @@ modifying the original source code:
 	Out> Ln(x)+Ln(y);
 
 This is generally not advisable, due to the fact that it alters
-the behaviour of the entire system. But it can be useful in some
+the behavior of the entire system. But it can be useful in some
 instances. For instance, when introducing a new function {f(x)},
 one can decide to define a derivative explicitly, and a way
 to simplify it numerically:
@@ -838,7 +840,8 @@ to simplify it numerically:
 	    The "Evaluation is Simplification" hack
 
 One of the ideas behind the {Yacas} scripting language is that evaluation
-is used for simplifying expressions. One corrollary to this is that
+is used for simplifying expressions.
+One consequence of this is that
 objects can be returned unevaluated when they can not be simplified
 further. This happens to variables that are not assigned, functions that
 are not defined, or function invocations where the arguments passed
@@ -921,9 +924,9 @@ We have modified the first element of {x2}, and {x1} is also modified.
 
 A programmer should always be cautious when dealing with 
 destructive operations. Sometimes it is not desirable to 
-change the original expression. The language deals with it
-this way because of performance conciderations. Operations
-can be made non-destructive by using {FlatCopy}:
+change the original expression.
+The language deals with it this way because of performance considerations.
+Operations can be made non-destructive by using {FlatCopy}:
 
 	In> x1:={a,b,c}
 	Out> {a,b,c};
@@ -973,7 +976,7 @@ A workaround for this is to use {Subst} to copy the entire tree:
 
 		Introduction
 
-This chapter intends to desribe the coding style and conventions
+This chapter intends to describe the coding style and conventions
 applied in Yacas in order to make sure the engine always returns
 the correct result. This is an attempt at fending off such errors
 by combining rule-based programming with a clear coding style
@@ -1044,7 +1047,7 @@ scripts is currently:
 *	50-60: Args are numbers: directly calculate. These are put in the beginning, so they are tried first. This is useful for quickly obtaining numeric results if all the arguments are numeric already, and symbolic transformations are not necessary.
 *	100-199: tautologies. Transformations that do not change the type of the argument, and are always true.
 *	200-399: type-specific transformations. Transformations for specific types of objects.
-*	400-599: transformarions on scalars (variables are assumed to be scalars). Meaning transformations that can potentially change the type of an argument.
+*	400-599: transformations on scalars (variables are assumed to be scalars). Meaning transformations that can potentially change the type of an argument.
 
 		Writing new library functions
 
@@ -1750,10 +1753,10 @@ after it has fired the first time.
 The trace facilities are:
 
 *	0. {TraceExp} : traces the full expression, showing all calls to user- or system-defined functions, their arguments, and the return values. For complex functions this can become a long list of function calls.
-*	0. {TraceRule} : traces one single user-defined function (rule). It shows each invocation, the arguments passed in, and the returned values. This is useful for tracking the behaviour of that function in the environment it is intended to be used in.
+*	0. {TraceRule} : traces one single user-defined function (rule). It shows each invocation, the arguments passed in, and the returned values. This is useful for tracking the behavior of that function in the environment it is intended to be used in.
 *	0. {TraceStack} : shows a few last function calls before an error has occurred.
 *	0. {Profile} : report on statistics (number of times functions
-were called, etcetera). Useful for performance analysis.
+were called, etc.). Useful for performance analysis.
 
 The online manual pages (e.g. {?TraceStack}) have more information about the use of these functions.
 
@@ -1805,7 +1808,7 @@ The {error} expression is evaluated when an error occurred. If an error
 occurs, this is caught high up, the {error} expression is called, and 
 the debugger goes back to evaluating {enter} again so the situation can
 be examined. When the debugger needs to stop, the {error} expression
-is the place to call {CustomEval'Stop()} (see explantation below).
+is the place to call {CustomEval'Stop()} (see explanation below).
 
 The {CustomEval} function can be used to write custom debugging
 tools. Examples are: 
@@ -2018,7 +2021,7 @@ The arguments to {MathAdd} can now be examined, or execution continued.
 One great advantage of defining much of the debugger in script code can
 be seen in the {DebugEnter} function, where the breakpoints are checked,
 and execution halts when a breakpoint is reached. In this case the condition
-for stopping evaluation is rather simple: when entering a speficic function,
+for stopping evaluation is rather simple: when entering a specific function,
 stop. However, nothing stops a programmer from writing a custom debugger
 that could stop on any condition, halting at e very special case.
 

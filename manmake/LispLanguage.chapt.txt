@@ -56,7 +56,7 @@ in evaluating and simplifying expressions. When Yacas is embedded inside
 an application that offers a user interface, one would want to have access
 to all the operations allowed, and their arguments. Furthermore, for a
 debugger, information about the internal state of the interpreter is
-needed (values of global variables, etcetera).
+needed (values of global variables, etc.).
 
 At the end of the day we want to arrive at a language where we can
 implement an algorithm in a few lines of code, and have the compiler 
@@ -96,7 +96,7 @@ section describing the compiler will make clear.
 This section will first introduce the reader to the basic concepts 
 of Lisp, and then proceed to show how the {yacas} function can be 
 implemented in Lisp in general. Clearness of concepts explained will 
-be favoured over efficiency and performance. A small subset of Lisp 
+be favored over efficiency and performance. A small subset of Lisp 
 will be used, so it should be easy to take the code along to various 
 different Lisp dialects, or to write a little Lisp implementation to 
 implement the {yacas} function.
@@ -147,8 +147,7 @@ to Lisp.
 There are various sources on the internet describing the early history
 of Lisp.
 
-*REM should we put up a list here? Or have our own short history? Mention
-*REM McCarthy etcetera?
+*REM should we put up a list here? Or have our own short history? Mention McCarthy etc.?
 
 		The Lisp interactive command line interface
 
@@ -277,7 +276,7 @@ most efficient way to execute the algorithm on a real computer.
 Methods to make execution more efficient break down in two steps:
 
 *	0. encapsulating a specific algorithm in a function call, and
-make define an efficient implementation of the function in the enviroment
+make define an efficient implementation of the function in the environment
 the Lisp interpreter is executing in
 *	0. writing a compiler that converts algorithms stated in 
 Lisp code to a version that is more efficient, more close to the
@@ -633,7 +632,7 @@ a number:
 Together with a predicate to determine that something is an
 integer ({integerp}), and an ordering operator <i>less than</i>
 denoted {<}, other arithmetic operations like multiplication,
-division, exponentiation etcetera can be built.
+division, exponentiation etc. can be built.
 
 Some examples using {<} and {integerp}.
 
@@ -724,7 +723,7 @@ length of a list:
 	Out> 0
 
 In addition to the already defined function {first}, we can define 
-the functions {second}, {third}, etcetera to print code
+the functions {second}, {third}, etc. to print code
 that is easier to read:
 
 	In> (defun second (list) (first (rest list) ) )
@@ -847,7 +846,7 @@ opposite, where it is easy to do something wrong, but hard to do
 it right. The functions {gets} and {fgets} are examples.
 
 From the other side, exceptions in Java for instance, can not
-be ignored. A routine has to handle it, or promiss to pass off the
+be ignored. A routine has to handle it, or promise to pass off the
 exception to the calling environment. But then all the functions
 calling the function must handle the exception, resulting in much
 more typing work. 
@@ -1156,7 +1155,7 @@ code cannot be expected to treat correctly.
 
 Exceptions halt execution immediately. The {preEval} catches it,
 and the user interface can continue where it left off. 
-This is defendable behaviour. The system is only expected to
+This is defendable behavior. The system is only expected to
 do on-line commands typed in by the user, or fail. The story
 would be different if {Yacas} were used to control some system,
 and it needs to keep running after failure, but it was not designed 
@@ -1215,7 +1214,7 @@ a special case of a complex number, for instance. So when adding
 an integer to a complex number, one only needs to convert from 
 the integer to complex. This can be done in steps, so for {n} types
 only {n-1} convertors are needed; {IntegerToRational}, {RationalToReal},
-etcetera.
+etc.
 
 Typing systems are not always this simple. For example, a diagonal
 matrix is a sub-type of the generic set of all matrices, but 
@@ -1238,11 +1237,11 @@ what type to take.
 Types can be down-cast to sub-types too, if possible. This is sometimes
 necessary. Suppose one has two objects of type {OBJECT}, as entered
 by the user. The user wants to perform a division operation. The
-system can try to drop the obect to the lowest possible type, by
+system can try to drop the object to the lowest possible type, by
 first trying to convert to integer, and if this doesn't work,
 see if the objects can be converted to objects of 
 type univariate polynomial, and otherwise multivariate polynomial,
-etcetera. The trick is to have a routine that accepts univariate
+etc. The trick is to have a routine that accepts univariate
 polynomials in internal representation, performs the operation, and
 returns the result of the operation in internal representation.
 When the operation is called with generic objects as arguments,
@@ -1250,7 +1249,7 @@ if they can be converted to internal representation for univariate
 polynomials first, this can be done, and the result of the operation
 converted back to generic object type (a form the user could have
 typed in). The advantage of this is an object is converted once,
-when passed to a function. The result of consequtive function
+when passed to a function. The result of consecutive function
 calls can then use the object in the type it is already in, without
 having to convert types each time, and the final result is converted
 back. This way types are only converted twice; at the beginning
@@ -1276,7 +1275,7 @@ number {z}, the following should always be true:
 
 Data structures are a powerful way to abstract types away.
 A data structure can be defined for for instance rational numbers,
-matrices, etcetera. Also {cons}, {first} and {rest} are such
+matrices, etc. Also {cons}, {first} and {rest} are such
 a combination, where {cons} is the constructor, and {first} and
 {rest} are the selectors. The result of evaluating {(cons a b)}
 is an object for which {first} returns {a}, and {rest} returns {b}.
@@ -1328,7 +1327,7 @@ has powerful consequences: it means that a complex object can
 have components of arbitrary type, as long as there is an addition
 operation defined for it in the {add} function. The complex
 data object is in effect a parametric type: {(complex <type> <type>)},
-where {<type>} can be anything, integers, matrices, etcetera.
+where {<type>} can be anything, integers, matrices, etc.
 {<type>} is a type parameter for this complex data type.
 
 Types in general aid in two ways: to check for correctness of code,
@@ -1423,7 +1422,7 @@ over the integers as components.
 The above considerably speeds up the operation. The problem is that
 it is more natural to place the if statements in the {add}
 function, so it can be used in many places, when adding complex
-numbers, matrices, etcetera. But inlining it allows the compiler
+numbers, matrices, etc. But inlining it allows the compiler
 to optimize the if statements away by pulling them outside of the
 loop. In most cases, even if not in a loop, the compiler can 
 optimize code away if inlined, by using typing information.
@@ -1476,7 +1475,7 @@ be expected to run a lot more efficient when not interpreted.
 The first concern will be to convert the Lisp code to source
 code for the target platform; when the Lisp interpreter is 
 written in {Java} we want the Lisp code compiled to {Java},
-etcetera. 
+etc. 
 
 The disadvantage is the compiler then needs to be
 around for compilation to be able to take place. Programs thus get
@@ -1672,7 +1671,7 @@ need for the overhead of a call.
 A further optimization could be a conversion to native numeric types.
 If the compiler knows that the result of some computation is an 
 integer, and it fits in a native integer (for instance a 32-bit
-integer), tha above code could become:
+integer), the above code could become:
 
 	return recSymbol(Foo.evalTypedNative(2,3)+5);
 
@@ -1837,7 +1836,7 @@ the code at hand.
 
 		The concept of bootstrapping
 
-To support a compuer algebra system like Yacas, it suffices to
+To support a computer algebra system like Yacas, it suffices to
 implement the small interpreter discussed in the beginning
 of this section. The interpreter will however be slow, as a lot
 of the functions required will have to e written in Lisp code
@@ -1967,7 +1966,7 @@ type. For instance, if the type of some expression is not explicitly
 set to {INTEGER}, and it is used in addition, then a call to
 {object-to-int}
 is required every time the object is treated as an integer. Next to it
-being a nuissance for the programmer, it also makes the code less
+being a nuisance for the programmer, it also makes the code less
 efficient.
 
 The compiler is of course free to ignore types when it comes to
@@ -2086,7 +2085,7 @@ of Lisp, to offer functionality required for executing {Yacas} script
 at run time. Pattern matching functionality for instance can be implemented
 easily in Lisp code itself.
 *	0. if necessary, a custom eval operation to alter the default
-evaluation behaviour. For instance, in Common Lisp, when a function 
+evaluation behavior. For instance, in Common Lisp, when a function 
 or variable is not bound, the system raises an error, whereas {Yacas}
 returns the expression unevaluated.
 

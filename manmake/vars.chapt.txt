@@ -35,9 +35,9 @@ expression is also returned.
 
 The second form is a small extension, which allows one to do multiple
 assignments. The first entry in the list on the right-hand side is
-assigned to the first variable mentionedon the left-hand side, the
+assigned to the first variable mentioned in the left-hand side, the
 second entry on the right-hand side to the second variable on the
-left-hand side, etcetera. The list on the right-hand side must have at
+left-hand side, etc. The list on the right-hand side must have at
 least as many entries as the list on the left-hand side. Any excess
 entries are silently ignored. The result of the expression is the list
 of values that have been assigned.
@@ -48,14 +48,14 @@ expression on the right-hand side. It is assumed that the length of
 the list is at least "i". If the index "i" is a string, then
 "var" is considered to be an associative list (sometimes called hash
 table), and the key "i" is paired with the value "exp". In both
-cases, the right-hand side is evaluated before the assigment and the
+cases, the right-hand side is evaluated before the assignment and the
 result of the assignment is {True}.
 
 The last form defines a function. For example, the assignment {fn(x) := x^2} removes any rules previously associated with {fn(x)} and defines the rule {fn(_x) <-- x^2}. Note that the left-hand side may take a different form if
 {fn} is defined to be a prefix, infix or bodied function. This case
 is special since the right-hand side is not evaluated
 immediately, but only when the function {fn} is used. If this takes
-time, it may be better to force an immediate evaluation with {Eval} (see the last example). If the expression on the right hand side begins with {Eval()}, then it <i>will</i> be evaluated before definining the new function.
+time, it may be better to force an immediate evaluation with {Eval} (see the last example). If the expression on the right hand side begins with {Eval()}, then it <i>will</i> be evaluated before defining the new function.
 
 A variant of the function definition can be used to make a function accepting a variable number of arguments. The last argument
 

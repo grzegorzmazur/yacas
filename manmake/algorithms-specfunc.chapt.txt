@@ -597,7 +597,7 @@ the number of times the recurrence identity is used.
 
 We see from the definition that when $Abs(x)<=2*Gamma(n)$, the absolute value
 of each term is always decreasing (which is called absolutely monotonely
-decreasing.) From this we know that if we stop after $i$ iterations, the error
+decreasing). From this we know that if we stop after $i$ iterations, the error
 will be bounded by the absolute value of the next term. So given a set
 precision, turn this into a value $epsilon$, so that we can check if the current
 term will contribute to the sum at the prescribed precision. Before doing this,

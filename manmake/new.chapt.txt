@@ -132,7 +132,7 @@ The {LocalSymbols} should ideally be used for every global variable,
 for functions that can only be useful within the module and thus
 should not be used by other parts of the system, 
 and for local variables that run the risk of being passed into 
-functions like {Eval}, {Apply}, {Map}, etcetera (functions that
+functions like {Eval}, {Apply}, {Map}, etc. (functions that
 re-evaluate expressions).
 
 A rigorous solution to this is to make all parameters to functions
@@ -901,7 +901,7 @@ So it seems that the second interpretation of {Precision()}, namely:
 "please use that many digits in all calculations now", is a little more
 sensible as a general-purpose prescription.
 
-But let's look at a particular case (for simplicify I am talking about
+But let's look at a particular case (for simplicity I am talking about
 decimal digits but in the implementation they will be binary digits).
 Suppose we have {x} precise to 10 digits and {y} precise to 20 digits, and
 the user says {Precision(50)} and {z:=x*y+1.4}. What happens now in this
@@ -1364,8 +1364,8 @@ stored inside the {LispNumber}. This is in effect the second way a
 {LispNumber} can be born.
 *	1. Right at the end, when a result needs to be printed to screen,
 the printer will call the {String()} method of the {LispNumber} object,
-to get a string representation to print. The string representation is also
-stored in the {LispNumber} This is not expensive, as it is just a pointer
+to get a string representation. The string representation is also
+stored in the {LispNumber}. This is not expensive since it is just a pointer
 to a string in the string container (hash table).
 
 In order to fully support the {LispNumber} object, the function in the
