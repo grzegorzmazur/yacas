@@ -14,8 +14,6 @@ to general issues related to the Yacas system development.
 
 *INCLUDE Plugins-Howto.chapt
 
-*INCLUDE new.chapt
-
 			For Yacas developers
 
 *INCLUDE CVS-Howto.chapt
