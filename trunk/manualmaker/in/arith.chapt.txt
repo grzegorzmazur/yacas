@@ -1,10 +1,12 @@
 
-			Arithmetic
+			Arithmetic and other operations on numbers
+
+*INTRO Besides the usual arithmetical operations,
+Yacas defines some more advanced operations on
+numbers. Many of them also work on polynomials.
 
 *CMD +, -, *, /, ^ --- Arithmetic operations
-
 *STD
-
 *CALL
 
 	x+y  (precedence 6)
@@ -17,7 +19,7 @@
 
 *PARMS
 
-x and y - some objects for which arithmetic operations are defined.
+{x} and {y} - objects for which arithmetic operations are defined
 
 *DESC
 
@@ -34,29 +36,15 @@ to being built-in). This means that they can be extended by the user.
 	In> 2*3
 	Out> 6;
 
-			Other operations on numbers
-
-*INTRO Besides the arithmetical operations defined in the
-previous chapter, one can also use the following operations on
-numbers. Many of these also work on polynomials.
-
-*A Div
-
-*A Mod
-
 *CMD Div, Mod --- Division with remainder
-
 *STD
-
 *CALL
-
-Div(x,y)
-
-Mod(x,y)
+	Div(x,y)
+	Mod(x,y)
 
 *PARMS
 
-x, y - integers, or univariate polynomials
+{x}, {y} - integers or univariate polynomials
 
 *DESC
 
@@ -75,20 +63,16 @@ If {Div(x,y)} returns "a" and {Mod(x,y)} equals "b", then these numbers satisfy 
 *SEE Gcd, Lcm
 
 *CMD Gcd --- Greatest common divisor
-
 *STD
-
 *CALL
-
-Gcd(n,m)
-
-Gcd(list)
+	Gcd(n,m)
+	Gcd(list)
 
 *PARMS
 
-n,m - integers or univariate polynomials
+{n}, {m} - integers or univariate polynomials
 
-list - a list of all integers or all univariate polynomials
+{list} - a list of all integers or all univariate polynomials
 
 *DESC
 
@@ -96,15 +80,15 @@ This function returns the greatest common divisor of "n" and "m".
 The gcd is the largest number that divides "n" and "m".  It is
 also known as the highest common factor (hcf).  The library code calls
 {MathGcd}, which is an internal function.  This
-function implements the binary Euclidean algorithm for determining the
+function implements the "binary Euclidean algorithm" for determining the
 greatest common divisor:
 
-	Routine for calculating Gcd(n,m)
+*HEAD	Routine for calculating {Gcd(n,m)}
 	
-	1) if n = m then return n
-	2) if both n and m are even then return 2*Gcd(n/2,m/2)
-	3) if exactly one of n or m (say n) is even then return Gcd(n/2,m)
-	4) if both n and m are odd and, say, n>m then return Gcd( (n-m)/2,m)
+*	1. if n = m then return n
+*	2. if both n and m are even then return 2*Gcd(n/2,m/2)
+*	3. if exactly one of n or m (say n) is even then return Gcd(n/2,m)
+*	4. if both n and m are odd and, say, n>m then return Gcd((n-m)/2,m)
 
 This is a rather fast algorithm on computers that can efficiently shift
 integers.
@@ -125,16 +109,13 @@ in "list". It uses the identity
 *SEE Lcm
 
 *CMD Lcm --- Least common multiple
-
 *STD
-
 *CALL
-
-Lcm(n,m)
+	Lcm(n,m)
 
 *PARMS
 
-n, m - integers, or univariate polynomials
+{n}, {m} -- integers or univariate polynomials
 
 *DESC
 
@@ -156,16 +137,14 @@ them.
 *SEE Gcd
 
 *CMD <<, >> --- Shift operators
-
 *STD
-
 *CALL
 	n<<m
 	n>>m
 
 *PARMS
 
-n,m - integers
+n, m - integers
 
 *DESC
 
@@ -175,9 +154,9 @@ shifts, so they act like multiplication or division by powers of 2.
 
 *E.G.
 
-	In> 1 \<\< 10
+	In> 1 << 10
 	Out> 1024;
-	In> -1024 \>\> 10
+	In> -1024 >> 10
 	Out> -1;
 
 *A FromBase
@@ -185,9 +164,7 @@ shifts, so they act like multiplication or division by powers of 2.
 *A ToBase
 
 *CMD FromBase, ToBase --- Conversion from/to non-decimal base
-
 *CORE
-
 *CALL
 
 FromBase(base,number)
@@ -223,9 +200,7 @@ in decimal base. The second command converts {255}
 *SEE PAdicExpand
 
 *CMD Precision --- Sets the precision
-
 *CORE
-
 *CALL
 
 Precision(n)
@@ -256,9 +231,7 @@ at least "n" digits after the decimal point.
 *SEE GetPrecision, N
 
 *CMD GetPrecision --- Returns the current precision
-
 *CORE
-
 *CALL
 
 GetPrecision()
@@ -283,9 +256,7 @@ This command returns the current precision, as set by {Precision}.
 *SEE Precision, N
 
 *CMD N --- Numerical approximation
-
 *STD
-
 *CALL
 
 N(expr)
@@ -328,9 +299,7 @@ the value of pi up to the required precision.
 *SEE Precision, GetPrecision, Pi
 
 *CMD Rationalize --- Convert floating point numbers to fractions
-
 *STD
-
 *CALL
 
 Rationalize(expr)
@@ -363,9 +332,7 @@ division of integers.
 *SEE IsRational
 
 *CMD IsPrime --- Test whether argument is a prime number
-
 *STD
-
 *CALL
 
 IsPrime(n)
@@ -400,9 +367,7 @@ long time for large numbers.
 *SEE IsPrimePower, Factors
 
 *CMD IsPrimePower --- Test whether argument is a prime power
-
 *STD
-
 *CALL
 
 IsPrime(n)
@@ -434,9 +399,7 @@ large numbers.
 *SEE IsPrime, Factors
 
 *CMD Factors --- Factorization
-
 *STD
-
 *CALL
 
 Factors(x)
@@ -467,9 +430,7 @@ is returned as {{{p1,n1}, ..., {p9,n9}}}.
 *SEE Factor, IsPrime
 
 *CMD Factor --- Factorization, in pretty form
-
 *STD
-
 *CALL
 
 Factors(x)
@@ -502,9 +463,7 @@ it shows the result in a nicer human readable format.
 *SEE Factors, IsPrime, PrettyForm
 
 *CMD PAdicExpand --- p-adic expansion
-
 *STD
-
 *CALL
 
 PAdicExpand(n, p)
@@ -540,9 +499,7 @@ same type.
 *SEE Mod, ContFrac, FromBase, ToBase
 
 *CMD ContFrac --- Continued fraction expansion
-
 *STD
-
 *CALL
 
 ContFrac(x)
@@ -581,7 +538,7 @@ calculated using a continued fraction expansion.
 	   1
 	-------- + 292
 	rest + 1
-	
+
 	Out> True;
 	In> PrettyForm(ContFrac(x^2+x+1, 3))
 	
@@ -598,9 +555,7 @@ calculated using a continued fraction expansion.
 *SEE PAdicExpand, N
 
 *CMD Decimal --- Decimal representation of a rational
-
 *STD
-
 *CALL
 
 Decimal(frac)
@@ -626,10 +581,8 @@ elements are the initial digits.
 
 *SEE N
 
-*CMD TruncRadian --- Remainder modulo 2*Pi
-
+*CMD TruncRadian --- Remainder modulo $2*Pi$
 *STD
-
 *CALL
 
 TruncRadian(r)
@@ -640,22 +593,22 @@ r - a radian
 
 *DESC
 
-TruncRadian calculates r mod 2*Pi, returning a value
-between 0 and 2*Pi. This function is used in the trigonometry
+TruncRadian calculates r mod $2*Pi$, returning a value
+between 0 and $2*Pi$. This function is used in the trigonometry
 functions, just before doing the numerical calculation. It
 greatly speeds up the calculation if the value passed is a big
 number.
 
 The library uses the formula
 
-	
+	*
 	             /   r    \
 	r - MathFloor| ------ | * 2 * Pi
 	             \ 2 * Pi /
 	
 	
 
-where r and 2*Pi are calculated with twice the precision used in the
+where r and $2*Pi$ are calculated with twice the precision used in the
 environment to make sure there is no rounding error in the significant
 digits.
 
@@ -671,9 +624,7 @@ digits.
 *SEE Sin, Cos, Tan
 
 *CMD Floor --- Round a number downwards
-
 *STD
-
 *CALL
 
 Floor(x)
@@ -696,9 +647,7 @@ This function returns the largest integer smaller than "x".
 *SEE Ceil, Round
 
 *CMD Ceil --- Round a number upwards
-
 *STD
-
 *CALL
 
 Ceil(x)
@@ -721,9 +670,7 @@ This function returns the smallest integer larger than "x".
 *SEE Floor, Round
 
 *CMD Round --- Round a number to the nearest integer
-
 *STD
-
 *CALL
 
 Round(x)
@@ -752,9 +699,7 @@ rounded upwards.
 *SEE Floor, Ceil
 
 *CMD Pslq --- Search for integer relations between reals
-
 *STD
-
 *CALL
 
 Pslq(xlist,precision)
