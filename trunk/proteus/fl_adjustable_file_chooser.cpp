@@ -1,5 +1,5 @@
 //
-// "$Id: fl_adjustable_file_chooser.cpp,v 1.2 2001-05-06 21:19:47 ayalpinkus Exp $"
+// "$Id: fl_adjustable_file_chooser.cpp,v 1.3 2001-12-01 20:25:24 ayalpinkus Exp $"
 //
 // File chooser widget for the Fast Light Tool Kit (FLTK).
 //
@@ -200,7 +200,7 @@ void FCBadjust::item_draw(void* v, int x, int y, int, int h) const {
   const dirent* p = *(const dirent**)v;
   const char* e = end_of_name(p);
   if (checkdir(p, (char*)e)) e++;
-  if (v == selection()) fl_color(contrast(textcolor(), selection_color()));
+  if (v == selection()) fl_color(fl_contrast(textcolor(), selection_color()));
   else fl_color(textcolor());
   fl_font(textfont(), textsize());
   fl_draw(p->d_name, e-p->d_name, x+4, y+h-3);
@@ -680,5 +680,5 @@ char* fl_adjustable_file_chooser(const char* message, const char* pat, const cha
 }
 
 //
-// End of "$Id: fl_adjustable_file_chooser.cpp,v 1.2 2001-05-06 21:19:47 ayalpinkus Exp $".
+// End of "$Id: fl_adjustable_file_chooser.cpp,v 1.3 2001-12-01 20:25:24 ayalpinkus Exp $".
 //
