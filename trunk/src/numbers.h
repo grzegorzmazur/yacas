@@ -192,9 +192,11 @@ private:
 
 #else 
   #ifdef USE_GMP
+  private:
   // auxiliary internal private functions
   bool IsExpFloat() const;
   // convert types to int and float and initialize
+  void init();
   void turn_float();
   void turn_int();
   
