@@ -5,6 +5,10 @@ calculations in high precision. However, the algorithm is able to
 approximate the function arbitrarily well (except for some particularly
 ill-behaved examples).
 
+*A adaptive plotting
+
+*A {Plot2D'adaptive}
+
 The adaptive plotting routine {Plot2D'adaptive} uses a simple algorithm
 to select the optimal grid to approximate a function $f(x)$. The same algorithm
 for adaptive grid refinement could be used for numerical integration. The
@@ -71,8 +75,9 @@ parameter are large enough.
 
 Singularities in the function are handled by the step 3. Namely, the algorithm checks whether the function returns a non-number (e.g. {Infinity}) and if so, the sign change is always considered to be "too rapid". Thus, the intervals immediately adjacent to the singularity will be plotted at the highest allowed refinement level. When plotting the resulting data, the singular points are simply not printed to the data file and the plotting programs do not have any problems.
 
-The meaning of Newton-Cotes quadrature coefficients is that an integral is approximated as
+*A Newton-Cotes quadratures
 
+The meaning of Newton-Cotes quadrature coefficients is that an integral is approximated as
 $$(Integrate(x,a[0],a[n]) f(x)) <=> h*Sum(k,0,n,c[k]*f(a[k]))$$,
 where $h:=a[1]-a[0]$ is the grid step, $a[k]$ are the grid points, and
 $c[k]$ are the quadrature coefficients. These coefficients $c[k]$ are independent
@@ -86,6 +91,8 @@ for $p=0$, 1, ..., $n$. This system of equations means that the quadrature corre
 
 The solution of this system always exists and gives quadrature coefficients as rational numbers. For example, the Simpson quadrature $c[0]=1/6$, $c[1]=2/3$, $c[2]=1/6$ is obtained with $n=2$.
 
+*A Newton-Cotes quadrature!for partial intervals
+
 In the same way it is possible to find quadratures for the integral over a subinterval rather than over the whole interval of $x$. In the current implementation of the adaptive plotting algorithm, two quadratures are used: the 3-point quadrature ($n=2$) and the 4-point quadrature ($n=3$) for the integral over the first subinterval, $Integrate(x,a[0],a[1]) f(x)$. Their coefficients are ($5/12$, $2/3$, $-1/12$) and ($3/8$, $19/24$, $-5/24$, $1/24$). 
 
 		Cost of arbitrary-precision computations
@@ -96,6 +103,8 @@ capability, many symbolic computations (such as exact GCD of
 polynomials or exact solution of polynomial equations) would be
 impossible.
 
+*A arbitrary-precision computation
+
 A different question is whether a CAS really needs to be able to
 evaluate, say, 10,000 digits of the value of a Bessel function of some
 complex argument. It is almost certain that no applied problem of
@@ -105,7 +114,7 @@ computations are certainly useful in some mathematical applications;
 e.g. some numerical identities can be first guessed by a floating-point
 computation with many digits and then proved (by hand).
 
-Very high precision computations <i>might</i> be useful in the future.
+Very high precision computations of special functions <i>might</i> be useful in the future.
 It is however quite clear that computations with moderately high
 precision (50 or 100 digits) are useful for applied problems.
 Implementing an efficient algorithm that computes 100 digits of
@@ -115,14 +124,15 @@ Modern algorithms allow evaluations of all elementary functions in time
 that is asymptotically logarithmic in the number of digits $P$ and
 linear in the cost of long multiplication (usually denoted $M(P)$).
 All special functions can be evaluated in time that is linear in $P$
-and in $M(P)$. There is, however, no wide-spread free implementation of
-these algorithms.
+and in $M(P)$.
 
 Therefore Yacas strives to implement all of its numerical functions in
 arbitrary precision. All integer or rational functions return exact
 results, and all floating-point functions return their value with $P$
 correct decimal digits. The current value of $P$ is accessed as
 {GetPrecision()} and may be changed by {Precision(...)}.
+
+*A arbitrary-precision computation!requirements
 
 Implementing an arbitrary-precision floating-point computation of a
 function $f(x)$, such as $f(x)=Exp(x)$, typically needs the following:
@@ -151,12 +161,16 @@ the required precision $P$ and of the cost of long multiplication
 $M(P)$. Typically all operations will fall into the following categories
 (sorted by the increasing cost):
 
+*A arbitrary-precision computation!speed estimates
+
 *	addition, subtraction: linear in $P$;
 *	multiplication, division, integer power, integer root: linear in $M(P)$;
 *	elementary functions: $Exp(x)$, $Ln(x)$, $Sin(x)$, $ArcTan(x)$ etc.: $Ln(P)*M(P)$ or slower by some more factors of $Ln(P)$;
 *	transcendental functions: $Erf(x)$, $Gamma(x)$ etc.: typically $P*M(P)$ or slower.
 
 Some algorithms (e.g. Taylor series summation) also need extra storage space, typically of order $P*Ln(P)$ (i.e. $O(Ln(P))$ temporary $P$-digit numbers).
+
+*A Taylor series!required number of terms
 
 Here is a worked-out example of how we could estimate the required number of terms in the power series
 $$ Exp(x)=1+x+x^2/2! +...+x^n/n! + O(x^(n+1))$$,
@@ -211,6 +225,8 @@ increase into account when estimating the total cost of the method. Of
 course, we should avoid very large roundoff errors; "repeat everything with
 twice as many digits" is not an adequate solution.
 
+*A arbitrary-precision computation!round-off error estimate
+
 Here is a simple estimate of the round-off error in a computation of
 $n$ terms of a power series. Suppose that adding each term requires two
 multiplications and one addition. If all calculations are performed
@@ -235,7 +251,9 @@ algorithms.
 
 		Basic arbitrary-precision arithmetic
 
-Currently, Yacas uses either internal math (the {yacasnumbers} library) or the
+*A arbitrary-precision computation!Yacas internal math
+
+Currently, Yacas can be compiled to use either internal math (the {yacasnumbers} library) or the
 GNU multiple precision library {gmp}. The algorithms for basic arithmetic in
 the internal math mode are currently rather slow compared with {gmp}. If $P$ is
 the number of digits of precision, then multiplication and division take
@@ -246,6 +264,8 @@ estimates of computation cost in this book we shall assume that $M(P)$ is at
 least linear in $P$ and maybe slower.
 
 Warning: calculations with internal Yacas math using precision exceeding 10,000 digits are currently impractically slow.
+
+*A continued fraction approximation!estimating $Ln(2)$
 
 In some algorithms it is necessary to compute the integer parts of expressions such as $a*Ln(b)/Ln(10)$ or $a*Ln(10)/Ln(2)$ where $a$, $b$ are short integers of order $O(P)$. Such expressions are frequently needed to estimate the number of terms in the Taylor series or similar parameters of the algorithms. In these cases, it is important that the result is not underestimated but it would be wasteful to compute $Ln(10)/Ln(2)$ in floating point only to discard most of that information by taking the integer part of say $1000*Ln(10)/Ln(2)$. It is more efficient to approximate such constants from above by short rational numbers, for example, $Ln(10)/Ln(2) < 28738/8651$ and $Ln(2) < 7050/10171$. The error of such an approximation will be small enough for practical purposes. The function {NearRational} can be used to find optimal rational approximations. The function {IntLog} (see below) efficiently computes the integer part of a logarithm (for an integer base, not a natural logarithm). If more precision is desired in calculating $Ln(a)/Ln(b)$ for integer $a$, $b$, one can compute $IntLog(a^k,b)$ for some integer $k$ and then divide by $k$.
 

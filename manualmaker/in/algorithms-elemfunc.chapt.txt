@@ -1,6 +1,8 @@
 		Powers
 
-Integer powers $x^n$ are computed by a fast algorithm of "binary squaring", as 
+*A repeated squaring algorithm
+
+Integer powers $x^n$ are computed by a fast algorithm of "repeated squaring", as 
 described in Knuth's book, <i>The art of computer programming</i>. The
 algorithm is based on the following trick: if $n$ is even, $n=2*k$, then
 $x^n=(x^k)^2$; and if $n$ is odd, $n=2*k+1$, then $x^n=x*(x^k)^2$. Thus we can
@@ -37,6 +39,8 @@ the execution time is linear in the number of
 digits of $n$, i.e. logarithmic in $n$.
 
 		Roots
+
+*A bisection algorithm for roots
 
 The square root is computed by using the bisection method, which
 works well for integers. The general approach is to scan
@@ -132,6 +136,7 @@ Below is some {Yacas} script code to perform the calculation for integers.
 	];
 {BisectSqrt(N)} computes the integer part of $ Sqrt(N) $ for integer $N$.
 
+*A {IntNthRoot}
 
 A separate function {IntNthRoot} is provided to compute the integer part of $n^(1/s)$ for integer $n$ and $s$.
 For a given $s$, it evaluates the integer part of $n^(1/s)$ using only integer arithmetic with integers of size $n^(1+1/s)$. This can be done by Halley's iteration method, solving the equation $x^s=n$. For this function, the Halley iteration sequence is monotonic.
@@ -141,13 +146,18 @@ Since we only need the integer part of the root, it is enough to use integer div
 To speed up the Halley iteration in the worst case when $s^s>n$, it is combined with bisection. The root bracket interval $x1<x<x2$ is maintained and the next iteration $x[k+1]$ is assigned to the midpoint of the interval if the Newton formula does not give sufficiently rapid convergence. The initial root bracket interval can be taken as $x[0]$, $2*x[0]$.
 
 Real powers (as opposed to integer powers and roots) are computed by using the exponential and logarithm functions, $a^b = Exp(b*Ln(a))$.
+This is also faster on integers than the integer root algorithm if $b$ is very large.
 
 		Logarithm
 
 There are two functions for the logarithm: one for the integer argument and one for the real argument.
 
+*A logarithm!on integers
+
 The "integer logarithm", defined as the integer part of $Ln(x)/Ln(b)$, where $x$ and $b$ are integers, is computed using a special routine {IntLog(x, b)} with purely integer math.
 This is much faster than evaluating the full logarithm when both arguments are integers and only the integer part of the logarithm is needed. The algorithm consists of (integer) dividing $x$ by $b$ repeatedly until $x$ becomes 0 and counting the number of divisions. A speed-up for large $x$ is achieved by first comparing $x$ with $b$, then with $b^2$, $b^4$, etc., until the factor $b^(2^n)$ is larger than $x$. At this point, $x$ is divided by that power of $b$ and the remaining value is iteratively compared with and divided by successively smaller powers of $b$.
+
+*A logarithm!square root speed-up
 
 The logarithm function $Ln(x)$ for general (complex) $x$ can be computed using its Taylor series,
 $$Ln(1+x) = x - x/2 + x^2/3 -...$$
@@ -156,6 +166,8 @@ This series converges only for $Abs(x)<1$, so for all other values of $x$ one fi
 Currently the routine {LnNum} uses the Halley method for the equation $Exp(x)=a$ to find $x=Ln(a)$,
 $$ x' = x - 2*(Exp(x)-a)/(Exp(x)+a) $$.
 This is currently quicker than other methods (with internal math).
+
+*A logarithm!by AGM sequence
 
 A much faster algorithm based on the AGM sequence was given by Salamin (see R. P. Brent: <i>Multiple-precision zero-finding methods and the complexity of elementary function evaluation</i>, in <i>Analytic Computational Complexity</i>, ed. by J. F. Traub, Academic Press, 1975, p. 151; also available online from Oxford Computing Laboratory, as the paper {rpb028}).
 The formula is based on an asymptotic relation,
@@ -172,7 +184,10 @@ Here the required powers are
 $$r=Ln(10^P*4)/(2*Ln(x))$$, $$s=P*Ln(10)/(2*Ln(2))+1-Ln(x)/Ln(2)$$. 
 These parameters can be found quickly by using the integer logarithm procedure {IntLog}, while constant values such as $Ln(10)/Ln(2)$ can be simply approximated by rational numbers because $r$ and $s$ do not need to be very precise (but they do need to be large enough). For the second calculation, $Ln(2^s*x)-s*Ln(2)$, we must precompute $Ln(2)$ to the same precision. Also, the subtraction of a large number $s*Ln(2)$ leads to a certain loss of precision, namely, about $Ln(s)/Ln(10)$ decimal digits are lost, therefore the operating precision must be increased by this number of digits. (The quantity $Ln(s)/Ln(10)$ is computed, of course, by the integer logarithm procedure.)
 
-If $x<1$, then ($-Ln(1/x)$) is computed. Finally, there is a special case when $x$ is very close to 1, where the Taylor series converges quickly but the AGM algorithm requires to multiply $x$ by a large power of 2 and then subtract two almost equal numbers, leading to a great loss of precision. Suppose $1<x<1+10^(-M)$, where $M$ is large (say of order $P$). The Taylor series for $Ln(1+epsilon)$ needs about $N= -P*Ln(10)/Ln(epsilon)$=$P/M$ terms.
+*A logarithm!choice of AGM vs. Taylor
+
+If $x<1$, then ($-Ln(1/x)$) is computed.
+Finally, there is a special case when $x$ is very close to 1, where the Taylor series converges quickly but the AGM algorithm requires to multiply $x$ by a large power of 2 and then subtract two almost equal numbers, leading to a great loss of precision. Suppose $1<x<1+10^(-M)$, where $M$ is large (say of order $P$). The Taylor series for $Ln(1+epsilon)$ needs about $N= -P*Ln(10)/Ln(epsilon)$=$P/M$ terms.
 If we evaluate the Taylor series using the rectangular scheme, we need
 $2*Sqrt(N)$ multiplications and $Sqrt(N)$ units of storage. On the other
 hand, the main slow operation for the AGM sequence is the geometric mean $Sqrt(a*b)$. If $Sqrt(a*b)$ takes an equivalent of $c$ multiplications (Brent's estimate is $c=13/2$ but it may be more in practice), then the AGM sequence requires $2*c*Ln(P)/Ln(2)$ multiplications. Therefore the Taylor series method is more efficient for
@@ -183,11 +198,15 @@ For larger $x>1+10^(-M)$, the AGM method is more efficient. It is necessary to i
 
 		Exponential
 
+*A exponential function $Exp(x)$!squaring speed-up
+
 The exponential function is computed using its Taylor series,
 $$ Exp(x) = 1 + x + x^2/2! + ...$$
 This series converges for all (complex) $x$, but if $Abs(x)$ is large, it converges slowly. A speed-up trick used for large $x$ is to divide the argument by some power of 2 and then square the result several times, i.e.
 $$Exp(x) = (Exp(2^(-k)*x))^(2^k)$$,
 where $k$ is chosen sufficiently large so that the Taylor series converges quickly at $2^(-k)*x$. The threshold value for $x$ is in the variable {MathExpThreshold} in {stdfuncs}. If $x$ is large and negative, then it is easier to compute 1/$Exp(-x)$. If $x$ is sufficiently small, e.g. $Abs(x)<10^(-M)$ and $M>Ln(P)/Ln(10)$, then it is enough to take about $P/M$ terms in the Taylor series. If $x$ is of order 1, one needs about $P*Ln(10)/Ln(P)$ terms.
+
+*A exponential function $Exp(x)$!by Newton's method
 
 An alternative way to compute $x=Exp(a)$ at large precision would be to solve the equation $Ln(x)=a$ using a fast logarithm routine. A cubically convergent formula is obtained if we replace $Ln(x)=a$ by an equivalent equation
 $$ (Ln(x)-a)/(Ln(x)-a-2) = 0$$.
@@ -197,15 +216,19 @@ This iteration converges for initial values $0<x<Exp(a+2)$ with a cubic converge
 
 		Calculation of $Pi$
 
+*A computation of $pi$
+
 In Yacas, the constant $pi$ is computed by the library routine {Pi()} which
 uses the internal routine {MathPi} to compute the value to current
-precision {Precision()}. The result is stored in the global variable as a
+precision {Precision()}. The result is stored in a global variable as a
 list of the form {{precision, value}} where {precision} is the number of
 digits of $pi$ that have already been found and {value} is the
 multiple-precision value. This is done to avoid recalculating $pi$ if a
 precise enough value for it has already been found.
 
 Efficient iterative algorithms for computing $pi$ with arbitrary precision have been recently developed by Brent, Salamin, Borwein and others. However, limitations of the current multiple-precision implementation in Yacas (compiled with the "internal" math option) make these advanced algorithms run slower because they require many more arbitrary-precision multiplications at each iteration.
+
+*A computation of $pi$!by Newton's method
 
 The file {examples/pi.ys} implements five different algorithms that
 duplicate the functionality of {Pi()}. See
@@ -237,6 +260,8 @@ The routines {PiBrentSalamin()} and {PiBorwein()} are based on much more advance
 Trigonometric functions $Sin(x)$, $Cos(x)$ are computed by subtracting $2*Pi$ from $x$ until it is in the range $0<x<2*Pi$ and then using Taylor series.
 Tangent is computed by dividing $Sin(x)/Cos(x)$.
 
+*A computation of $ArcTan(x)$!by Taylor series
+
 Inverse trigonometric functions are computed by Newton's method (for {ArcSin}) or by continued fraction expansion (for {ArcTan}),
 $$ArcTan(x) = x/(1+x^2/(3+(2*x)^2/(5+(3*x)^2/(7+...))))$$.
 The convergence of this expansion for large $Abs(x)$ is improved by using the identities
@@ -259,6 +284,7 @@ $$ArcCosh(x) = Ln(x+Sqrt(x^2+1))$$,
 $$ArcSinh(x) = Ln(x+Sqrt(x^2-1))$$,
 $$ArcTanh(x) = 1/2*Ln((1+x)/(1-x))$$.
 
+*A computation of $ArcTan(x)$!by continued fraction
 
 The idea to use continued fraction expansions for {ArcTan} comes from the book by
 Jack W. Crenshaw,
@@ -283,6 +309,8 @@ can be terminated when sufficient accuracy is achieved.
 
 The convergence of the continued fraction expansion of $ArcTan(x)$ is indeed better than convergence of the Taylor series. Namely, the Taylor series converges only for $Abs(x)<1$ while the continued fraction converges for all $x$. However, the speed of its convergence is not uniform in $x$; the larger the value of $x$, the slower the convergence. The necessary number of terms of the continued fraction is in any case proportional to the required number of digits of precision, but the constant of proportionality depends on $x$.
 
+*A computation of $ArcTan(x)$!by continued fraction!convergence rate
+
 This can be understood by the following elementary argument. The difference between two partial continued fractions that differ only by one extra last term can be estimated by
 $$ Abs(delta) := Abs(b[0]/(a[1]+b[1]/(...+b[n-1]/a[n])) - b[0]/(a[1]+b[1]/(...+b[n]/a[n+1])) ) < (b[0]*b[1]*...*b[n])/ ((a[1]*...*a[n])^2 * a[n+1]) $$.
 (This is a conservative estimate that could be slightly improved with more careful analysis. See also the section on numerical continued fractions.) For the above continued fraction for $ArcTan(x)$, this directly gives the following estimate,
@@ -290,6 +318,10 @@ $$ Abs(delta) < (x^(2*n+1)*(n!)^2)/((2*n+1)*((2*n-1)!!)^2) <> x*(x/2)^(2*n) $$.
 This formula only gives a meaningful bound if $x<2$, but it is clear that the precision generally becomes worse when $x$ grows. If we need $P$ digits of precision, then, for a given $x$, the number of terms $n$ has to be large enough so that the relative precision is sufficient, i.e. $$delta/ArcTan(x) < 10^(-P)$$. This gives $n > P*Ln(10)/(Ln(4)-2*Ln(x))$ and for $x=1$, $n>3/2*P$. This estimate is very close for small $x$ and only slightly suboptimal for larger $x$: numerical experimentation shows that for $x<=1$, the required number of terms for $P$ decimal digits is only about $4/3*P$, and for $x<=0.42$, $n$ must be $3/4*P$. If $x<1$ is very small then one needs a much smaller number of terms $n > P*Ln(10)/(Ln(4)-2*Ln(x))$. The number of terms is set equal to this number (computed at low precision) in the routine {ContArcTan}. Roundoff errors may actually make the result less precise if a larger number of terms is used.
 
 		Factorials and binomial coefficients
+
+*A factorial
+
+*A staggered factorial $n!!$
 
 The factorial is defined by $n! := n*(n-1)*...*1$ for integer $n$ and the binomial coefficient is defined as
 $$Bin(n,m) := n! / (m! * (n-m)!)$$.
@@ -307,6 +339,8 @@ This factorial routine is implemented in the Yacas core with a small speedup:
 consecutive pairs of integers are first multiplied together using platform math
 and then multiplied by the accumulator product.
 
+*A factorial!by bisection method
+
 A second method uses a binary tree arrangement of the numbers $1$, $2$, ..., $n$ similar to the recursive sorting routine ("merge-sort"). If we denote by {a *** b} the "partial factorial" product $a*(a+1)*...(b-1)*b$, then the tree-factorial algorithm consists of replacing $n!$ by $1 *** n$ and recursively evaluating
 $(1 *** m) * ((m+1) *** n)$ for some integer $m$ near $n/2$. The partial factorials of nearby numbers such as $m***(m+2)$ are evaluated explicitly. The binary tree algorithm requires one multiplication of $P/2$ digit integers at the last step, two $P/4$ digit multiplications at the last-but-one step and so on. There are $O(Ln(n))$ total steps of the recursion. If the cost of multiplication is $M(P) = P^(1+a)*Ln(P)^b$, then one can show that the total cost of the binary tree algorithm is $O(M(P))$ if $a>0$ and $O(M(P)*Ln(n))$ if $a=0$ (which is the best asymptotic multiplication algorithm).
 
@@ -317,9 +351,15 @@ $(2*n)!! = 2^n*n! $ and
 $$ (2*n-1)!! = (2*n)! / (2^n*n!)$$.
 Staggered factorials are used in the exact calculation of the Gamma function of half-integer argument.
 
+*A binomial coefficients
+
 Binomial coefficients $Bin(n,m)$ are found by first selecting the smaller of $m$, $n-m$ and using the identity $Bin(n,m) = Bin(n,n-m)$. Then a partial factorial is used to compute $Bin(n,m)= ((n-m+1)***n) / m!$. This is always much faster than computing the three factorials in the definition of $Bin(n,m)$.
 
 	    Approximate factorials
 
-A floating-point computation of the factorial may proceed either via Euler's Gamma function or by a direct method (multiplying the integers). If the required precision is much less than the number of digits in the exact factorial, then almost all multiplications will be truncated to the precision $P$ and the tree method $O(n*M(P))$ is always slower than the simple method $O(n*P)$.
+*A Gamma function
+
+A floating-point computation of the factorial may proceed either via Euler's Gamma function, $n! = Gamma(n+1)$,
+or by a direct method (multiplying the integers and maintaining a certain floating-point precision).
+If the required precision is much less than the number of digits in the exact factorial, then almost all multiplications will be truncated to the precision $P$ and the tree method $O(n*M(P))$ is always slower than the simple method $O(n*P)$.
 
