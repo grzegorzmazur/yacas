@@ -4,11 +4,11 @@
 #include "stringio.h"
 
 
-StringInput::StringInput(const LispString aString,InputStatus& aStatus)
-    : LispInput(aStatus)
+StringInput::StringInput(LispString& aString,InputStatus& aStatus)
+    : LispInput(aStatus),
+      iString(aString.String(),LispFalse)
 {
-    iString = aString.String();
-    iCurrent = 0;
+  iCurrent = 0;
 }
 
 LispChar StringInput::Next()

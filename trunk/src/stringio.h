@@ -13,7 +13,7 @@
 class StringInput : public LispInput
 {
 public:
-    StringInput(const LispString aString,InputStatus& aStatus);
+    StringInput(LispString& aString,InputStatus& aStatus);
     virtual LispChar Next();
     virtual LispChar Peek();
     virtual LispBoolean EndOfStream();

@@ -1,4 +1,4 @@
-# yacas.spec.  Generated from yacas.spec.in by configure.
+# Generated automatically from yacas.spec.in by configure.
 
 %define prefix /usr
 
