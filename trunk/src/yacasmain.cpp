@@ -690,6 +690,10 @@ RESTART:
 
     while (Busy())
     {
+#ifdef DEBUG_MODE
+        LispLocalEvaluator local((*yacas)()(),NEW TracedStackEvaluator);
+#endif
+        
 #ifdef PROMPT_SHOW_FREE_MEMORY
         char full_prompt[30];
         if (show_prompt)
