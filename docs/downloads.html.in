@@ -9,14 +9,14 @@
 From this page you can download various parts of the latest
 version of Yacas, version <?WriteString(Version());?>.
 
-<H2>Downloading the Yacas source code</H1>
+<H2>Downloading the Yacas source code</H2>
 The source code is offered in a .tar.gz file, with all
 the source to generate everything relating to Yacas.
 <br>
 The latest version of Yacas is
 <a href="backups/yacas-<?WriteString(Version());?>.tar.gz">yacas-<?WriteString(Version());?>.tar.gz</a>.
 
-<H2>Download the documentation</H1>
+<H2>Download the documentation</H2>
 The online <A href="books.html">online documentation</a> in html
 format can also be downloaded as one tar.gz file,
 <A href="backups/manual.html.tar.gz">manual.html.tar.gz</a>.
@@ -45,7 +45,7 @@ can be found
 <p>
 
 
-<H2>Browse the backups directory for older versions</H1>
+<H2>Browse the backups directory for older versions</H2>
 Older versions, and versions for other platforms, like Windows,
 can be found <A href="http://www.xs4all.nl/~apinkus/backups/">here</a>.
 
