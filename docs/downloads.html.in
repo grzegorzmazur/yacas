@@ -26,6 +26,17 @@ In addition, there is the postscript version,
 and the pdf version <A href="backups/manual.pdf.tar.gz">manual.pdf.tar.gz</a>
 of the manual.
 
+<H2>Other downloads</H2>
+A windows version can be downloaded
+<A href="backups/proteus-yacas-windows-1.0.46rev4.zip">here</a>.
+A version that runs on Psion Series 5 PDAs (ER5) can be found
+<A href="backups/EpocYacas-1.0.43.zip">here</a>. A readme for
+the Epoc release can be found
+<A href="backups/EpocYacas.readme">here</a>. 
+German translations (kindly supplied by Klaus-Dieter Möller)
+can be found 
+<A href="backups/yacas-doku.zip">here</a>.
+
 <H2>Browse the backups directory for older versions</H1>
 Older versions, and versions for other platforms, like Windows,
 can be found <A href="backups/">here</a>.
