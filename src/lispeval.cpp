@@ -17,15 +17,25 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
 {
     LispObject* head = subList->Get();
     LispUserFunction* userFunc = NULL;
-    /*
+    /**/
      userFunc = aEnvironment.UserFunction(*subList);
     CHECKPTR(userFunc);
     if (userFunc != NULL)
     {
+    /*this doesn't work yet...
+        LispMultiUserFunction* multiUserFunc =
+            aEnvironment.MultiUserFunction(head->String());
+        if (multiUserFunc->iFileToOpen!=NULL)
+            if (!multiUserFunc->iFileToOpen->IsLoaded())
+            {
+                printf("Function %s\n",head->String()->String());
+                LISPASSERT(multiUserFunc->iFileToOpen==NULL);
+            }
+            */
         return userFunc;
     }
     else
-    */
+    /**/
     if (head->String()!=NULL)
     {
         LispMultiUserFunction* multiUserFunc =
