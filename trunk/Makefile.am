@@ -5,9 +5,9 @@
 
 ## Interdependency: to get a working "yacas", the source in "src" need to be
 ## compiled, and "packages.ys" in "scripts" need to be generated. We need a
-## working "yacas" to make the manual in "manualmaker", and to run the test
+## working "yacas" to make the manual in "manmake", and to run the test
 ## suite in "tests". In addition, one of the tests to be run is generated in
-## "manualmaker".
+## "manmake".
 
 SUBDIRS = . docs inprogress YacasNotebook scripts libltdl src ramscripts \
 	essays colorcode plugins proteus manmake tests compile embed \
