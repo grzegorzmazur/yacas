@@ -1,0 +1,10 @@
+
+/* something here */
+a:= 3;
+// test 1
+
+// /* test2 */
+
+/* // test3 */
+
+//Echo({a, Nl()});
