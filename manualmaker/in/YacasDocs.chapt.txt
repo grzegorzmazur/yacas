@@ -125,9 +125,9 @@ This will produce:
 *	0. First item
 *	0. Second item
 
-Note that item text continues until the next itemized line is given or until end of paragraph.
+Note that the text of an item continues until the next itemized line is given or until end of paragraph (does not have to be all in one line).
 
-Nesting of enumerated or itemized environments is not yet supported, except for a fringe case of nesting just one itemized list at the very end of an enumerated list or vice versa.
+Nesting of enumerated or itemized environments is not supported, except for a fringe case of nesting just one itemized list at the very end of an enumerated list or vice versa.
 
 Enumerated environment is currently only implemented in $LaTeX$ docs; HTML docs render them as itemized.
 
@@ -157,8 +157,7 @@ notation) and surrounded by dollar signs. Both delimiting dollar signs
 produces $x^2+y^2 != z^2$. Double dollar signs will denote a displayed
 equation, like in $TeX$; both pairs of dollar signs should still be within one
 line. As a special exception, one can enter the symbols "$TeX$" and "$LaTeX$"
-as if they are Yacas symbols, i.e. "{$T}
-{eX$}" produces "$TeX$".
+as if they are Yacas symbols, i.e. "{$T}{eX$}" produces "$TeX$".
 
 Mathematical expressions <i>must</i> be valid Yacas expressions, with balanced
 parentheses, no hanging periods and so on, or else the Yacas script that
@@ -214,12 +213,12 @@ The additional elements all start with an asterisk "{*}" in the first position o
 Compare this with the reference manual section on the function {PrintList} to see how this plain text markup is rendered in the finished documentation.
 
 Notes:
-*	Some labels have parameters and some other labels do not; labels that do not have parameters must be put alone on a line
+*	Some labels have parameters and some other labels do not; labels that do not have parameters must be put alone on a line.
 *	The {*STDLIB} label is for functions defined in the standard library and the {*CORE} label is for built-in functions defined in the Yacas core engine. In addition, {*UNIX}, {*MSWIN} and {*MAC} can be used to label Unix, MS Windows and Macintosh-specific add-on functions.
 *	Use of TAB characters is not mandatory between "{*LABEL}" and the following text; ordinary spaces work as well. There must be <i>some</i> whitespace separating the label and the text, however.
-*	The comma-space combination "{, }" is mandatory in lists (but can have several spaces after a comma). Lists of commands are used by the {*CMD} and {*SEE} labels.
-*	Characters {<} and {>} are of special significance to both HTML and TeX and should be always escaped by braces {{}} or by dollar signs.
-*	In the "example" section, there may be just one example, in which case the label could be made {*EG} instead of {*E.G.} This would generate the word "Example:" instead of "Examples:" in the documentation.
+*	The comma-space combination "{, }" is mandatory in label argument lists (but can have several spaces after a comma). Lists of commands are used by the {*CMD} and {*SEE} labels.
+*	Characters {<} and {>} are of special significance to both HTML and $TeX$ and should be always escaped by braces {{}} or by dollar signs.
+*	In the "examples" section, there may be just one example, in which case the "{*EG}" could be used instead of "{*E.G.}". This would generate the word "Example:" instead of "Examples:" in the documentation.
 
 In a subsection there may be either one function documented or several at once: for example, it may make sense to document {Sin}, {Cos} and {Tan} together. In this case, all function names should be simply listed in the {*CMD} header, for example:
 
@@ -247,11 +246,14 @@ This markup should be sufficient for creating reference documentation in plain t
 
 If a manual book does not compile after you made some changes, examine the
 Yacas-language files ({*.chapt}, {*.book}), find the line at which an error
-occurred, and try to see what happened. Most probable cause of error is
-unbalanced brackets, parentheses, or dollar signs; or expressions which should
-not be split between lines were accidentally split after reformatting the text. Mathematical expressions cannot contain a trailing period (e.g. you cannot say {$}{x+a.$} -- the period should go outside dollar signs.
+occurred, and try to see what happened. Most probable causes of error are:
+*	unbalanced brackets, parentheses, or dollar signs;
+*	expressions which should not be split between lines but were accidentally split after reformatting paragraphs;
+*	mathematical expressions containing an invalid Yacas operation, for example, a trailing period; e.g. you cannot say {$}{x+a.$} -- the period should go outside dollar signs.
 
 	    {book2txt}: Conversion of existing documentation to plain text
+
+(Note: as of version 1.0.49, all Yacas documentation is converted to plaintext format. This section is left for reference only.)
 
 Currently, most but not all of the Yacas documentation markup functionality is
 implemented in the simple plaintext filter; also, documentation includes some
@@ -260,8 +262,6 @@ documentation is present. Therefore it is possible to maintain most of the
 documentation in the plain text format described above. To convert existing
 Yacas documentation back to the plain text format, a script
 {book2txt.ys}/{book2txt.sh} can be used.
-
-(Note: as of version 1.0.49, all Yacas documentation is converted to plaintext format. This section is left for reference only.)
 
 By using a command such as
 	book2txt.sh file.chapt

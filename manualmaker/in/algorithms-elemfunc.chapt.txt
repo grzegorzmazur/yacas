@@ -158,8 +158,8 @@ $(1 *** m) * ((m+1) *** n)$ for some integer $m$ near $n/2$. The partial factori
 
 Therefore, the tree method wins over the simple method if the cost of multiplication is lower than quadratic.
 
-The tree method can also be used to compute "staggered factorials" $n!!$. This is faster than to use the identities
-$(2*n)!! = 2^n*n! $
+The tree method can also be used to compute "staggered factorials" ($n!!$). This is faster than to use the identities
+$(2*n)!! = 2^n*n! $ and
 $$ (2*n-1)!! = (2*n)! / (2^n*n!)$$
 Staggered factorials are used in the exact calculation of the Gamma function of half-integer argument.
 
