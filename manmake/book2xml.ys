@@ -6,7 +6,7 @@ CharsToEscape := { "<", ">", "/"};
 
 Book(x) := [	/* this is the first declaration in a file */
 	AddBody("
-<XML title=\"I have no idea how to start a `valid' XML document.\">
+<?XML title=\"I have no idea how to start a `valid' XML document.\">
 ":OpenDiv("book"):"
 <BOOKTITLE>" : x : "</BOOKTITLE>
 <BOOKAUTHOR>by the <FONT FAMILY=\"csc\">Yacas<\FONT> team</BOOKAUTHOR>
@@ -55,11 +55,11 @@ divtags:={
 	{"section",       "SECTION"},
 	{"subsection",    "SUBSECTION"},
 	{"subsubsection", "SUBSUBSECTION"},
-        {"item",          "ITEM"},
-        {"paragraph",     "P"},
+	{"item",          "ITEM"},
+	{"paragraph",     "P"},
 	{"footnote",      "FOOTNOTE"},
-        {"enumerate",     "ENUMERATE"},
-        {"itemize",       "ITEMIZE"},
+	{"enumerate",     "ENUMERATE"},
+	{"itemize",       "ITEMIZE"},
 };
 
 OpenTag(tag) := "<" : divtags[tag] : ">";
@@ -144,7 +144,7 @@ HtmlNewParagraph() := CloseDiv("paragraph","item","enumerate","itemize", "chapte
 
 // each line in its own tag
 HtmlCommand(x) := "<CODESAMPLE>
-<CODESAMLELINE text=\"" : 
+<CODESAMLELINE>" : 
 [
 	Local(result, index, previndex);
 	result := {};
@@ -160,9 +160,9 @@ HtmlCommand(x) := "<CODESAMPLE>
 		If(index > 1, DestructiveAppend(result, StringMid(previndex, index-previndex, x)));
 		previndex := index+1;
 	];
-	PrintList(result, "\" />
-<CODESAMPLELINE text=\"");
-] : "\" />
+	PrintList(result, "</CODESAMPLELINE>
+<CODESAMPLELINE");
+] : "</CODESAMPLELINE>
 </CODESAMPLE>
 ";
 
@@ -191,9 +191,7 @@ Bodied("DocumentationComment",60000);
 Bodied("Itemize",2);
 Bodied("Enumerate",2);
 
-XMLFinishUp() := AddBody(CloseDiv("chapterintro", "paragraph", "item", "itemize", "enumerate", "subsubsection", "subsection", "section", "chapter", "book") : "
-</XML>
-");
+XMLFinishUp() := AddBody(CloseDiv("paragraph", "item", "itemize", "enumerate", "subsubsection", "chapterintro", "subsection", "section", "chapter", "book"));
 
 IncludeFile(x) := Load(x);
 
@@ -285,8 +283,8 @@ Blurb(string) :=
 
 Bodied("Blurb",60000);
 // special escapes
-Gt() := "\\>";
-Lt() := "\\<";
+Gt() := "&gt;";
+Lt() := "&lt;";
 
 // inline Yacas code
 DocEval(x) :=
@@ -309,8 +307,7 @@ DocEval(x) :=
 
 HoldArgNr("DocEval", 1, 1);
 
-DocFootnote(x) := "<FOOTNOTE>":x:"</FOOTNOTE>
-";
+DocFootnote(x) := "<FOOTNOTE>":x:"</FOOTNOTE>";
 
 // TeX representation of a Yacasdoc reference
 YacasDocLink(bookname, text, url) :=
