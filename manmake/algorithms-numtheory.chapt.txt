@@ -539,7 +539,142 @@ This follows from writing it out and using Fermat's theorem
 to replace $a^p$ with $a$ where appropriate (the coefficients
 to the polynomial when written out, on the left hand side).
 
-	    The Berlekamp algorithm (small-prime factorization of polynomials)
+
+		A simple factorization algorithm
+
+This section describes a simple algorithm for factoring
+monic polynomials (polynomials where the leading coefficient
+is one). in such cases the factors of degree one will
+look like $(x-a_i)$ for roots $a_i$. It is not as good as Berlekamp or
+similar schemes, performance-wise, as these algorithms
+perform in polynomial time, whereas the algorithm presented
+here can in certain pathological cases take exponential
+time. It will in general take polynomial time for most
+polynomials one throws at it, but it will perform badly
+when there are a lot of distinct roots that share 
+common factors. For example polynomials that have
+roots $a$, $2*a$, $3*a$, $4*a$ etcetera will take longer,
+especially when $a$ is large.
+
+The algorithm is based on the fact that if $(x-a)$ divides
+some polynomial $v(x)$, then it also divides the polynomial
+modulo some integer. 
+
+First, the calculation is done modulo
+$p=2$, so the only factors that need to be considered are
+$(x-0)$ and $(x-1)$.
+
+Then the algorithm enters a loop, determining if the list of
+roots $a_i$ that were determined for calculations modulo $p$ 
+actually divide the polynomial. If so, the root is added
+to the final list of resulting roots, and the factor 
+$(x-a_i)$ is divided out of the polynomial.
+
+After that, for each current root $a_i$ modulo $p$,
+the algorithm proceeds to determine if $a_i$ and
+$a_i+p$ divide the polynomial, modulo $2*p$. The precision
+of the solution is effectively doubled, adding one extra
+binary bit to the roots found so far. A new list results
+with roots for the polynomial, modulo $2*p$, and the loop
+is repeated. This loop terminates when there are enough
+roots ($deg(v(x))-1$ roots), or if the list of candidates 
+is empty.
+
+As this algorithm performs poorly when there are many roots
+that share common factors, it is wise to first make the
+polynomial <i>square-free</i>. If the polynomial has multiple
+identical factors, it is easy to divide these out.
+
+If a polynomial v(x) contains multiple identical factors, for instance
+
+
+$$ v(x) = w(x)^2*u(x)$$
+
+then
+
+$$Gcd(v(x),D(x)v(x)) != 1 $$
+
+And $v(x)/Gcd(v(x),D(x)v(x))$ will be squarefree, 
+$w(x)*u(x)$ in the above example. This follows from
+simplfy writing it out. The algorithm will work when
+the polynomial is not square-free, but it will be a lot
+slower.
+
+
+
+	Function Factor(poly)
+	   // testpoly is the square-free version of the 
+	   // polynomial, used for finding the factors. 
+	   // The original polynomials 
+	   // is kept around to find the
+	   // multiplicity of the factor.
+	   testpoly := polynomial/Gcd(poly,D(x)poly)
+	   // resulting factors will be stored here
+	   result:={};
+	   list:={};
+	   // Start off with the seeds for factoring
+	   if ((x-0) divides testpoly modulo 2) 
+	      list := 0:list;
+	   if ((x-1) divides testpoly modulo 2) 
+	      list := 1:list;
+	   p:=2;
+	   nrroots:=Length(poly)-1;
+	   While(nrroots>0 And Length(list)>0)
+	     // check if any of the factors already divides 
+	     // the original polynomial
+	     For(i:=1,i<=Length(list),i++)
+	        Local(lst1);
+	        TryFact(-list[i]);
+	        TryFact(-p+list[i]);
+	        TryFact(list[i]);
+	        TryFact(p-list[i]);
+	     // Given the partial solutions so far 
+	     // (potential roots modulo p), determine 
+	     // new roots up to modulo 2*p. This step 
+	     // essentially adds one binary bit to the 
+	     // potential solutions and 
+	     // checks if they are still a solution.
+	     newlist:={};
+	     For(i:=1,i<=Length(list),i++)
+	       if ((x-(list[i]  ) divides testpoly mod 2*p)
+	         newlist:=(list[i]):newlist);
+	       if ((x-(list[i]+p) divides testpoly mod 2*p)
+	         newlist:=(list[i]+p):newlist);
+	     // We now have a new set of potential 
+	     // roots, modulo 2*p
+	     list:=newlist;
+	     p:=2*p;
+	   ]; 
+	   // If the polynom is not one, it is a polynomial 
+	   // which is not reducible any further with this 
+	   // algorithm, return as is.
+	   If(deg(poly)>0 ,result:={poly,1}:result);
+	   return result;  
+
+
+The {TryFact} macro called from this function does the bookkeeping
+of determining if the root passed in is in fact a root, dividing
+it out of {testpoly} and {poly} if so, and determining how often
+it could be divided out of {poly}, and reducing {nrroots} so the
+loop can terminate when enough roots were found.
+
+The pseudo-code for {TryFact} reads:
+
+	Macro TryFact(root)
+	   If ((x-root) divides testpoly)
+	       testpoly:=Div(testpoly,(x-root));
+	       count:=0;
+	       While((x-root) divides poly)
+	         count++;
+	         poly:=Div(poly,x-root);
+	         nrroots--;
+	       result:={x-(root),count}:result;
+
+
+
+
+
+		The Berlekamp algorithm (small-prime factorization of polynomials)
 
 TODO
 
