@@ -198,3 +198,7 @@ Verify(Bin(0,0),1 );
 Verify(0|1, 1);
 Verify(0&1, 0);
 Verify(0%1, 0);
+
+Verify(0.0/Sqrt(2),0);
+Verify(0.0000000000/Sqrt(2),0);
+Verify(0.0000^(24),0);

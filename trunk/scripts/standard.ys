@@ -504,6 +504,12 @@ LocalSymbols(x)
 59 # 1 ^ _n <-- 1;
 59 # 0 ^ 0 <-- Undefined;
 60 # 0 ^ n_IsRationalOrNumber <-- 0;
+// This is to fix:
+// In> 0.0000^2
+// Out> 0.0000^2;
+// In> 0.0^2/2
+// Out> 0.0^2/2;
+60 # (x_IsNumber ^ n_IsRationalOrNumber)_(x+1==1) <-- 0;
 
 59 # _x ^ Undefined <-- Undefined;
 59 # Undefined ^ _x <-- Undefined;
