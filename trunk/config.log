@@ -35,5 +35,6 @@ configure:1535: checking whether time.h and sys/time.h may both be included
 configure:1574: checking for select
 configure:1574: checking for socket
 configure:1574: checking for strtod
-configure:1628: checking types of arguments for accept()
-configure:1694: checking for socklen_t
+configure:1629: checking for dlopen in -ldl
+configure:1670: checking types of arguments for accept()
+configure:1736: checking for socklen_t

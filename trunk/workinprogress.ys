@@ -1,4 +1,58 @@
 
+/*
+1) ExpandBrackets
+2) Flatten("+")
+3) group powers (LoTr below)
+*/
+
+5 # LoTr(_x,_atoms)_(Contains(atoms,x)) <--
+[
+  Local(r);
+  r:=FillList(0,Length(atoms));
+  r[Find(atoms,x)] := 1;
+  {1,r};
+];
+10 # LoTr(_x * _y,_atoms) <--
+[
+  Set(x,LoTr(x,atoms));
+  Set(y,LoTr(y,atoms));
+  {x[1]+y[1],x[2]*y[2]};
+];
+10 # LoTr(_x ^ n_IsIteger,_atoms) <--
+[
+  Set(x,LoTr(x,atoms));
+  {x[1]*n,x[2]^n};
+];
+10 # LoTr(_x / _y,_atoms) <--
+[
+  Set(x,LoTr(x,atoms));
+  Set(y,LoTr(y,atoms));
+  {x[1]-y[1],x[2]/y[2]};
+];
+
+UnLoTr({_powers,_f},_atoms) <--
+[
+  Factorize(f*atoms^powers);
+];
+
+
+/*
+10 # SimpT(_x + _y) <-- Simp(x) + Simp(y);
+10 # SimpT(_x - _y) <-- Simp(x) - Simp(y);
+10 # SimpT(   - _y) <--         - Simp(y);
+
+
+20 # SimpT2(_exp) <--
+[
+  exp := ExpandBrackets(exp);
+  exp := Flatten(exp,"+");
+];
+*/
+
+
+EndOfFile;
+
+
 1 # Fib1(1)  <-- 1;
 2 # Fib1(2)  <-- 1;
 3 # Fib1(_n) <-- Fib1(n-1) + Fib1(n-2);

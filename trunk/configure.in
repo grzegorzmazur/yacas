@@ -30,6 +30,9 @@ AC_HEADER_TIME
 # Checks for library functions.
 AC_CHECK_FUNCS(select socket strtod)
 
+# checks for libraries
+AC_CHECK_LIB(dl,dlopen,LIBS="$LIBS -ldl -rdynamic",,-rdynamic)
+
 AC_FUNC_ACCEPT_ARGTYPES
 TYPE_SOCKLEN_T
 

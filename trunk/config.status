@@ -54,7 +54,7 @@ s%@CXXFLAGS@%-g -O2%g
 s%@FFLAGS@%%g
 s%@DEFS@%-DHAVE_CONFIG_H%g
 s%@LDFLAGS@%%g
-s%@LIBS@%%g
+s%@LIBS@% -ldl -rdynamic%g
 s%@exec_prefix@%${prefix}%g
 s%@prefix@%/usr/local%g
 s%@program_transform_name@%s,x,x,%g
