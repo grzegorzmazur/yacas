@@ -255,17 +255,5 @@ CORE_KERNEL_FUNCTION("`",LispBackQuote,1,YacasEvaluator::Macro | YacasEvaluator:
 //
 // Information functions
 //
-<<<<<<< corefunctions.h
-CORE_KERNEL_FUNCTION("MathLibrary",LispMathLibName,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
-CORE_KERNEL_FUNCTION("Version",LispVersion,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
-
-
-
-
-
-
-
-=======
 CORE_KERNEL_FUNCTION("MathLibrary",LispMathLibName,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("Version",LispVersion,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
->>>>>>> 1.2
