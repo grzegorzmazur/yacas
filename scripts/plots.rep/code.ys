@@ -1,33 +1,40 @@
+//////////////////////////////////////////////////
 /// Plot2D --- adaptive two-dimensional plotting
-/*
+//////////////////////////////////////////////////
 
+/// definitions of backends
+DefLoad("plots.rep/backends-2d.ys");
+
+/*
 	Plot2D is an interface for various backends (Plot2D'...). It calls
 Plot2D'data to obtain the list of points and values, and then it calls
-Plot2D'(something else) on that data.
+Plot2D'<backend> on that data.
 
 	Algorithm for Plot2D'data: 
 	1) Split the given interval into Div(points+3, 4) subintervals, and split each subinterval into 4 parts.
 	2) For each of the parts: evaluate function values and call Plot2D'adaptive
 	3) concatenate resulting lists and return
-
 */
 
+/// interface routines
 1 # Plot2D(_func) <-- Plot2D(func, -5:5);
 2 # Plot2D(_func, _range) <-- "Plot2D" @ {func, range, {}};
 3 # Plot2D(_func, _range, option_IsFunction) _ (Type(option) = "=") <-- "Plot2D" @ {func, range, {option}};
-4 # Plot2D(_func, _range, options'list_IsList) _ (Length(VarList(func))=1) <-- 
-	LocalSymbols(var, delta, options'hash, i, c, all'values)
+
+/// Plot a single function
+5 # Plot2D(_func, _range, options'list_IsList)_(Not IsList(func)) <-- "Plot2D" @ {{func}, range, options'list};
+
+/// Top-level 2D plotting routine:
+/// plot several functions sharing the same xrange and other options
+4 # Plot2D(func'list_IsList, _range, options'list_IsList) <--
+	LocalSymbols(var, func, delta, options'hash, c, all'values)
 [
-	Local(var, delta, options'hash, i, c, all'values);
-	var := VarList(func);        // variable name in a one-element list
-    Check(IsFunction(func) And Length(var)=1,
-		"Plot2D: Error: expression is not a function of one variable: "
-		: (ToString()Write(func))
-	);
+	Local(var, func, delta, options'hash, c, all'values);
+	all'values := {};
 	options'hash := "ListToHash" @ {options'list};
-	// store variable name and function
-	options'hash["xname"] := String(var[1]);
-	options'hash["yname"] := ToString()Write(func);
+	// store variable name and function representation
+	options'hash["xname"] := String(VarList(func'list[1])[1]);
+	options'hash["yname"] := {};
 	// parse range
 	If (
 		Type(range) = "=",	// variable also specified -- ignore for now, store in options
@@ -55,8 +62,8 @@ Plot2D'(something else) on that data.
 		options'hash["precision"] := 0.000003
 	);
 	If(
-		options'hash["output"] = Empty Or IsString(options'hash["output"]) And Plot2D'outputs[options'hash["output"]] = Empty,
-		options'hash["output"] := Plot2D'outputs["default"]
+		options'hash["output"] = Empty Or IsString(options'hash["output"]) And Plot2D'outputs()[options'hash["output"]] = Empty,
+		options'hash["output"] := Plot2D'outputs()["default"]
 	);
 	// a "filename" parameter is required when using data file
 	If(
@@ -64,9 +71,11 @@ Plot2D'(something else) on that data.
 		options'hash["filename"] := "output.data"
 	);
 	// we will divide each subinterval in 4 parts, so divide number of points by 4 now
-	options'hash["points"] := Div(options'hash["points"]+3, 4);
-	// compute the first point
-	c := range[1]; fc := N(Apply({var, func}, {c}));
+	options'hash["points"] := N(Div(options'hash["points"]+3, 4));
+	// in case it is not a simple number but an unevaluated expression
+	options'hash["precision"] := N(options'hash["precision"]);
+	// store range in options
+	options'hash["xrange"] := {range[1], range[2]};
 	// compute the separation between grid points
 	delta := N( (range[2] - range[1]) / (options'hash["points"]) );
 	// check that the input parameters are valid (all numbers)
@@ -79,36 +88,44 @@ Plot2D'(something else) on that data.
 		:(ToString()Write(options'hash["precision"]))
 		:"' is not numeric"
 	);
-	Check(IsNumber(fc),
-		"Plot2D: Error: cannot evaluate function at point '"
-		:(ToString()Write(c))
-		:"' to a number, instead got '"
-		:(ToString()Write(fc))
-		:"'"
-	);
-	// store range in options
-	options'hash["xrange"] := {range[1], range[2]};
-	// compute all other data points
-	all'values := Plot2D'data(func, var, c, fc, delta, options'hash);
-	If(Verbose, Echo({"Plot2D: using ", Length(all'values), " points"}), True);
-	// select output option
-	Plot2D'outputs[options'hash["output"]] @ {all'values, options'hash};
+	// loop over functions in the list
+	ForEach(func, func'list)
+	[
+		// obtain name of variable
+		var := VarList(func);        // variable name in a one-element list
+    	Check(Length(var)<=1,
+			"Plot2D: Error: expression is not a function of one variable: "
+			:(ToString()Write(func))
+		);
+		// store function name
+		DestructiveAppend(options'hash["yname"], ToString()Write(func));
+		// compute the first point
+		c := range[1];
+		fc := N(Apply({var, func}, {c}));
+		Check(IsNumber(fc),
+			"Plot2D: Error: cannot evaluate function '"
+			:(ToString()Write(func))
+			:"' at point '"
+			:(ToString()Write(c))
+			:"' to a number, instead got '"
+			:(ToString()Write(fc))
+			:"'"
+		);
+		// compute all other data points
+		DestructiveAppend(all'values, Plot2D'data(func, var, c, fc, delta, options'hash));
+		If(Verbose, Echo({"Plot2D: using ", Length(all'values[Length(all'values)]), " points for function ", func}), True);
+	];
+	// call the specified output backend
+	Plot2D'outputs()[options'hash["output"]] @ {all'values, options'hash};
 ];
 
 HoldArgNr("Plot2D", 2, 2);
 HoldArgNr("Plot2D", 3, 2);
 HoldArgNr("Plot2D", 3, 3);
 
-Plot2D'outputs := {
-	{"default", "gnuplot"},
-	{"data", "Plot2D'data"},
-	{"datafile", "Plot2D'datafile"},
-	{"gnuplot", "Plot2D'gnuplot"},
-	{"plotutils", "Plot2D'plotutils"},
-};
-
-/// this is the top-level plotting routine
-/// it generates the initial grid, calls the adaptive routine, and gathers data points
+/// this is the middle-level plotting routine; it generates the initial
+/// grid, calls the adaptive routine, and gathers data points.
+/// func must be just one function (not a list)
 Plot2D'data(_func, _var, _x'init, _y'init, _delta'x, _options'hash) <--
 [
 	Local(i, a, fa, b, fb, c, fc, result);
@@ -125,7 +142,8 @@ Plot2D'data(_func, _var, _x'init, _y'init, _delta'x, _options'hash) <--
 	result;
 ];
 
-/// convert options lists of the form "{key=value, key=value}" into a hash of the same form.
+/// utility function: convert options lists of the form
+/// "{key=value, key=value}" into a hash of the same form.
 /// The argument list is kept unevaluated using "HoldArgNr()".
 /// Note that symbolic values of type atom are automatically converted to strings, e.g. ListToHash(a=b) returns {{"a", "b"}}
 ListToHash(list) :=
@@ -147,8 +165,10 @@ ListToHash(list) :=
 
 HoldArgNr("ListToHash", 1, 1);
 
+//////////////////////////////////////////////////
+/// Plot2D'adaptive --- core routine to collect data
+//////////////////////////////////////////////////
 /*
-
 	Plot2D'adaptive returns a list of pairs of coordinates { {x1,y1}, {x2,y2},...}
 	All arguments except f() and var must be numbers. var is a one-element list containing the independent variable. The "a,b,c" and "fa, fb, fc" arguments are values of the function that are already computed -- we don't want to recompute them once more.
 	See documentation (Algorithms.chapt.txt) for the description of the algorithm.
@@ -181,78 +201,4 @@ smooth'sign'change(x,y,z) := Not (
 	Or
 	x<0 And y>0 And z<0
 ); 
-
-/// service function. Similar to WriteTuple() from GnuPlot
-WriteDataItem(tuple_IsList, _options'hash) <--
-[
-  Local(item);
-  ForEach(item,tuple)
-  [
-	Write(item);
-	Space();
-  ];
-  NewLine();
-];
-
-//////////////////////////////////////////////////
-/// Backends for plotting
-//////////////////////////////////////////////////
-
-/*
-	How backends work:
-	options'hash contains: ["xrange"] - a list of {x1, x2}, ["xname"] - name of the variable to plot, ["yname"] - string representation of the function, and perhaps other options relevant to the particular backend
-	values is a list of pairs {{x1, y1}, {x2, y2}, ...}
-	The backend should prepare the graph of the function. The "datafile" backend Plot2D'datafile(values, options'hash) may be used to output all data to a file, in which case the file name should be the value options'hash["filename"].
-*/
-
-/// backend: display graph using gnuplot
-Plot2D'gnuplot(values_IsList, _options'hash) <--
-[
-  Local(item, dirBase);
-  dirBase := "plot.tmp/";
-  fileName := "data.in";
-  options'hash["filename"] := dirBase : fileName;
-  // create directory if it does not exist
-  SystemCall("test -d " : dirBase : "|| mkdir -p " : dirBase);
-  Plot2D'datafile(values, options'hash);
-  ToFile(dirBase:"gnuplot.in")
-  [
-    WriteString("set xrange [");
-	Write(options'hash["xrange"][1]);
-	WriteString(" : ");
-	Write(options'hash["xrange"][2]);
-	WriteString("]" : Nl());
-	WriteString("plot ":"\"" : dirBase : fileName : "\" title \"" : options'hash["yname"] : "\" with lines");
-  ];
-  SystemCall("gnuplot -persist " : dirBase : "gnuplot.in");
-];
-
-/// backend: use "graph" from GNU plotutils
-Plot2D'plotutils(values_IsList, _options'hash) <--
-[
-  Local(item, dirBase, fileName);
-  dirBase := "plot.tmp/";
-  fileName := "data.in";
-  options'hash["filename"] := dirBase : fileName;
-  // create directory if it does not exist
-  SystemCall("test -d " : dirBase : "|| mkdir -p " : dirBase);
-  Plot2D'datafile(values, options'hash);
-  SystemCall("graph -T X --bitmap-size 640x480 -m 1 -C -h 0.54 -w 0.72 -r 0.15 -u 0.1"
-    : " -x " : (ToString()Write(options'hash["xrange"][1], options'hash["xrange"][2])) 
-    : " -X " : (ToString()Write(options'hash["xname"])) 
-    : " -Y " : (ToString()Write(options'hash["yname"])) 
-	: " " : dirBase : fileName
-  );
-];
-
-/// basic backend: write data into file. Filename must be specified in options
-Plot2D'datafile(values_IsList, _options'hash) <--
-[
-  Local(item);
-  ToFile(options'hash["filename"]) ForEach(item, values) WriteDataItem(item, options'hash);
-  If(Verbose, Echo( "Plot2D'datafile: created file " : options'hash["filename"] ), True);
-];
-
-/// trivial backend: return data list (do not confuse with Plot2D'data() above which is the top-level plotting function)
-Plot2D'data(values_IsList, _options'hash) <-- values;
 

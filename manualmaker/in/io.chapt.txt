@@ -682,10 +682,13 @@ about the work done while doing a calculation when using {V}.
 	Plot2D(f(x), a:b)
 	Plot2D(f(x), a:b, option=value)
 	Plot2D(f(x), a:b, {option=value, ...})
+	Plot2D(list, ...)
 
 *PARMS
 
 {f(x)} -- expression with one variable, function to plot
+
+{list} -- list of functions to plot
 
 {a}, {b} -- numbers, plotting range
 
@@ -694,7 +697,7 @@ about the work done while doing a calculation when using {V}.
 {value} -- atom, number or string, option value
 
 *DESC
-The routine {Plot2D} performs adaptive plotting of a function of one variable in the specified range. Various plotting options can be specified. Output can be directed to a plotting program (default is to use {gnuplot}), to a data file, or to a list of values.
+The routine {Plot2D} performs adaptive plotting of one or several functions of one variable in the specified range. Several functions are specified by giving a list of expressions. Various plotting options can be specified. Output can be directed to a plotting program (default is to use {gnuplot}), to a data file, or to a list of values.
 
 The current simple algorithm uses Simpson and Newton-Cotes quadratures.
 Grid is refined between any grid points $a$, $b$ where the integral
