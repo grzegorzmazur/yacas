@@ -14,7 +14,7 @@ $in_itemized = 0;
 $in_enum = 0;
 $in_htmlcommand = 0;
 
-%star_labels = (
+%star_labels = ( 	# without parameters
 	"CALL" => "Topical() \"Calling format:\";",
 	"PARMS" => "Topical() \"Parameters:\";",
 	"DESC" => "Topical() \"Description:\";",
@@ -131,6 +131,10 @@ while (<STDIN>) {
 		&finish_text_close_quote();
 		$have_par = 0;	# even if we had a paragraph before us, now we don't
 		print "DocEval($expression);\n";	# this will insert inline Yacas code
+	} elsif (/^\*FOOT\s\s*(.*)$/) {	# footnote
+		&finish_text_close_quote();
+		#$have_par = 0;
+		print "AddBody(DocFootnote(\"" . $1 . "\"));\n";
 	}
 	#############################################################
 	# stuff for refman
@@ -143,10 +147,13 @@ while (<STDIN>) {
 		&finish_text_close_quote();
 		$have_par = 1;
 		print "Topical()\"" . &escape_term($1) . "\";\n";
-	} elsif (/^\*(?:A|AA)\s\s*(.*)$/) {	# anchor
+	} elsif (/^\*A\s\s*(.*)$/) {	# anchor
 		&finish_text_close_quote();
-		$have_par = 1;
-		print "AddBody(AddAnchor() \"" . $1 . "\");\n";
+		#$have_par = 1;
+		$anchor = $1;
+		# if the first word is {...}, then we need to use the @ stuff
+		$anchor =~ s/^\{([^{}]+)\}/$1 . "@" . &escape_term($1)/e;
+		print "AddBody(AddAnchor(\"" . $anchor . "\"));\n";
 	} elsif (/^\*SEE\s\s*(.*)$/) {	# SeeAlso()
 		$names = $1;
 		$names =~ s/\s*$//;
