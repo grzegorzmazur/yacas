@@ -6,46 +6,25 @@
 #include <dirent.h>
 #include <string.h>
 
-int main(int argc, char** argv)
+char maindir[500];
+
+
+void ProcessFile(char* filename, char* dir)
 {
-    DIR *dp;
-    struct dirent* entry;
-    struct stat statbuf;
-    char dir[500];
-    strcpy(dir,"../scripts/"); //"/root/myprojects/yacas-latest/ramscripts");
-
-    if (argc>1)
-    {
-        strcpy(dir,argv[1]); //"/root/myprojects/yacas-latest/ramscripts");
-        
-    }
-    
-    if ((dp = opendir(dir)) == NULL)
-        exit(0);
-    chdir(dir);
-    while ((entry = readdir(dp)) != NULL)
-    {
-        stat(entry->d_name,&statbuf);
-        if (S_ISDIR(statbuf.st_mode))
-            continue;
-        if (!memcmp(entry->d_name,"Makefile",8))
-            continue;
-
-        
 printf(
 "      (*yacas)()().iRamDisk.SetAssociation(\n"
 "        LispRamFile(\n");
 
-{
-    char filename[500];
-    char c;
-//    strcpy(filename, dir);
-//    strcat(filename,entry->d_name);
-    strcpy(filename,entry->d_name);
-printf("// %s\n",filename);
+    printf("// %s%s\n",dir,filename);
     FILE* fin=fopen(filename,"r");
 
+    if (!fin)
+    {
+        fprintf(stderr,"Could not open %s%s!\n",dir,filename);
+        return;
+    }
     printf("\"");
+    char c;
     while ((c=fgetc(fin)) != EOF)
     {
         switch (c)
@@ -93,11 +72,81 @@ printf("// %s\n",filename);
     printf("\"\n");
     
     fclose(fin);
+    printf(
+           "),\n"
+           "      (*yacas)()().HashTable().LookUp(\"%s%s\",LispTrue));\n",dir,filename);
 }
-printf(
-"),\n"
-"      (*yacas)()().HashTable().LookUp(\"%s\",LispTrue));\n",entry->d_name);
-//        printf("%s\t",entry->d_name);
+
+
+void ProcessDirectory(char* dir)
+{
+    DIR *dp;
+    struct dirent* entry;
+    struct stat statbuf;
+
+    char fulldir[500];
+    strcpy(fulldir,maindir);
+    strcat(fulldir,dir);
+    fulldir[strlen(fulldir)-1] = '\0';
+    
+    if ((dp = opendir(fulldir)) == NULL)
+    {
+        fprintf(stderr,"Error opening directory!\n");
+        exit(0);
     }
+    chdir(fulldir);
+    while ((entry = readdir(dp)) != NULL)
+    {
+        stat(entry->d_name,&statbuf);
+        if (!strcmp(entry->d_name,"CVS"))
+        {
+            fprintf(stderr,"Skipping [%s]...\n",entry->d_name);
+            continue;
+        }
+        if (!strcmp(entry->d_name,"."))
+        {
+            fprintf(stderr,"Skipping [%s]...\n",entry->d_name);
+            continue;
+        }
+        if (!strcmp(entry->d_name,".."))
+        {
+            fprintf(stderr,"Skipping [%s]...\n",entry->d_name);
+            continue;
+        }
+        if (!memcmp(entry->d_name,"Makefile",8))
+        {
+            fprintf(stderr,"Skipping [%s]...\n",entry->d_name);
+            continue;
+        }
+        if (S_ISDIR(statbuf.st_mode))
+        {
+            char dirname[500];
+            strcpy(dirname,dir);
+            strcat(dirname,entry->d_name);
+            strcat(dirname,"/");
+            fprintf(stderr,"Directory %s\n",dirname);
+
+            ProcessDirectory(dirname);
+            chdir(fulldir);
+            continue;
+        }
+
+        fprintf(stderr,"File %s%s\n",dir,entry->d_name);
+        ProcessFile(entry->d_name, dir);
+    }
+
+}
+
+int main(int argc, char** argv)
+{
+    strcpy(maindir,"../scripts/"); //"/root/myprojects/yacas-latest/ramscripts");
+
+    if (argc>1)
+    {
+        strcpy(maindir,argv[1]); //"/root/myprojects/yacas-latest/ramscripts");
+    }
+
+    ProcessDirectory("");
+
     return 0;
 }
