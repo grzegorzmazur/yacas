@@ -245,7 +245,7 @@ There is already a function {Function} defined in the
 standard scripts that allows you to construct simple functions. An example
 would be
 
-	Function ("FirstOf", {list})  list[ 1 ] ;
+	Function ("FirstOf", {list})  list[1] ;
 
 which simply returns the first element of a list. This could also have
 been written as
@@ -292,7 +292,7 @@ Some functions useful for control flow are already defined in Yacas's standard l
 Functions like this should probably be defined in a separate file. You can
 load such a file with the command {Load("file")}. This is an example of a macro-like function.  Let's first look at the last few
 lines. There is a {Bodied(...)} call, which states that the syntax for the function {ForEach()} is {ForEach(item,{list}) body;}
--- that is, the last argument to the command ForEach should be outside its
+-- that is, the last argument to the command {ForEach} should be outside its
 brackets. {UnFence(...)} states that this function can use the local
 variables of the calling function. This is necessary, since the body to be
 evaluated for each item will probably use some local variables from that
@@ -416,7 +416,8 @@ Here is how we could naively try to implement {NFunction} (and fail):
 	];
 
 Now, this just does not do anything remotely right. {MacroRule} evaluates its 
-arguments. So {IsNumericList(arg'list)} will evaluate to {False} and the new
+arguments. Since {arg'list} is an atom and not a list of numbers at the time we are defining this,
+{IsNumericList(arg'list)} will evaluate to {False} and the new
 rule will be defined with a predicate that is always {False}, i.e. it will be
 never applied.
 
@@ -556,17 +557,30 @@ scripts is currently:
 *	200-399: type-specific transformations. Transformations for specific types of objects.
 *	400-599: transformarions on scalars (variables are assumed to be scalars). Meaning transformations that can potentially change the type of an argument.
 
-		Numerical evaluation
+		Writing new library functions
+
+When you implement new library functions, you need to make your new code compatible and consistent with the rest of the library. Here are some relevant considerations.
+
+	    To evaluate or not to evaluate
+
+Currently, a general policy in the library is that functions do nothing
+unless their arguments actually allow something to be evaluated. For
+instance, if the function expects a variable name but instead gets a
+list, or expects a list but instead gets a string, in most cases it
+seems to be a good idea to do nothing and return unevaluated. The
+unevaluated expression will propagate and will be easy to spot. Most
+functions can accomplish this by using type-checking predicates such as
+{IsInteger} in rules.
 
 When dealing with numbers, Yacas tries to maintain exact answers as much as
 possible and evaluate to floating-point only when explicitly told so (using
-{N()}). The general strategy for numerical functions such as {Sin} or {Gamma}
+{N()}). The general evaluation strategy for numerical functions such as {Sin} or {Gamma}
 is the following:
 
 *	1. If {Numeric}={True} and the arguments are numbers (perhaps complex
-numbers), the function should evaluate its result in floating-point;
-*	2. Otherwise, if a function can calculate its result exactly, it should
-evaluate it. E.g. {Sin(Pi/2)} returns {1}.
+numbers), the function should evaluate its result in floating-point to current precision.
+*	2. Otherwise, if the arguments are such that the result can be calculated exactly, it should be
+evaluated and returned. E.g. {Sin(Pi/2)} returns {1}.
 *	3. Otherwise the function should return unevaluated (but usually with its arguments evaluated).
 
 Here are some examples of this behavior:
@@ -587,13 +601,115 @@ Here are some examples of this behavior:
 	Out> Gamma(x+2);
 
 To implement this behavior, {Gamma} and other mathematical functions usually
-have two variants: the "symbolic" one and the "numeric" one. For instance,
+have two variants: the "symbolic" one and the "numerical" one. For instance,
 there are {Sin} and {MathSin}, {Ln} and {LnNum}, {Gamma} and {GammaNum}. (Here
-{MathSin} happens to be a core function but it's not essential.) The numerical
-functions always evaluate to floating-point results. The symbolic function
+{MathSin} happens to be a core function but it's not essential.) The "numerical"
+functions always evaluate to floating-point results. The "symbolic" function
 serves as a front-end; it evaluates when the result can be expressed exactly,
-or calls the numerical function if {Numeric}={True}, and otherwise returns
+or calls the "numerical" function if {Numeric}={True}, and otherwise returns
 unevaluated.
+
+The "symbolic" function usually has multiple rules while the
+"numerical" function is usually just one large block of
+number-crunching code.
+
+
+	    Using {N()} and {Numeric} in scripts
+
+As a rule, {N()} should be avoided in code that implements basic
+numerical algorithms. This is because {N()} itself is implemented in
+the library and it may need to use some of these algorithms.
+Arbitrary-precision math can be handled by core functions such as
+{MathDivide}, {MathSin} and so on, without using {N()}. For example, if
+your code needs to evaluate $Sqrt(Pi)$ to many digits as an
+intermediate result, it is better to write {MathSqrt(Pi())} than
+{N(Sqrt(Pi))} because it makes for faster, more reliable code.
+Alternatively, your code may just explicitly declare {Numeric}={True}
+rather than use {N()} many times.
+
+	    Using {Precision()}
+
+The usual assumption is that numerical functions will evaluate
+floating-point results to the currently set precision. For intermediate
+calculations, a higher working precision is sometimes needed. In this
+case, your function should set the precision back to the original value
+at the end of the calculation and round off the result.
+
+	    Using {Verbose}
+
+For routines using complicated algorithms, or when evaluation takes a
+long time, it is usually helpful to print some diagnostic information,
+so that the user can at least watch some progress. The current
+convention is that if the {Verbose} flag is set, functions may print
+diagnostic information. (But do not print too much!)
+
+	    Procedural programming or rule-based programming?
+
+Two considerations are relevant to this decision. First, whether to use
+multiple rules with predicates or one rule with multiple {If()}s.
+Consider the following sample code for the "staggered factorial"
+function $n!! :=n*(n-2)*...$ written using predicates and rules:
+	1# 0 !! <-- 1;
+	1# 1 !! <-- 1;
+	2# (n_IsEven) !! <-- 2^(n/2)*n!;
+	3# (n_IsOdd) !! <-- n*(n-2)!!;
+and an equivalent code with one rule:
+	n!! := If(n=0 Or n=1, 1,
+	  If(IsEven(n), 2^(n/2)*n!,
+	  If(IsOdd(n), n*(n-2)!!, Hold(n!!)))
+	);
+(Note: This is not the way $n!!$ is implemented in the library.) The first version is a lot more clear. Yacas is very quick in rule matching and evaluation of predicates, so the first version is (marginally) faster. So it seems better to write a few rules with predicates than one rule with multiple {If()} statements.
+
+The second question is whether to use recursion or loops. Recursion
+makes code more elegant but it is slower and limited in depth.
+Currently the default recursion depth of $1000$ is enough for most
+casual calculations and yet catches infinite recursion errors
+relatively quickly. Because of clearer code, it seems better to use
+recursion in situations where the number of list elements will never
+become large. In numerical applications, such as evaluation of Taylor series, recursion usually does not pay off.
+
+		Reporting errors
+
+Errors occurring because of invalid argument types should be reported only if absolutely necessary. (In the future there may be a static type checker implemented that will make explicit checking unnecessary.)
+
+Errors of invalid values, e.g. a negative argument of real logarithm
+function, or a malformed list, mean that a human has probably made a
+mistake, so the errors need to be reported. "Internal errors", i.e.
+program bugs, certainly need to be reported.
+
+There are currently two facilities for reporting errors: a "hard" one and a "soft" one.
+
+The "hard" error reporting facility is the function {Check}. For example, if {x}={-1}, then
+	Check(x>0,"bad x");
+will immediately halt the execution of a Yacas script and print the
+error messsage. This is implemented as a C++ exception. A drawback of
+this mechanism is that the Yacas stack unwinding is not performed by
+the Yacas interpreter, so global variables such as {Numeric},
+{Verbose}, {Precision()} may keep the intermediate values they had been
+assigned just before the error occurred. Also, sometimes it is better
+for the program to be able to catch the error and continue.
+
+The "soft" error reporting is provided by the functions {Assert} and {IsError}, e.g.
+	Assert(x>0, "domain") x;
+	If(IsError(), ...);
+The error will be reported but execution will continue normally until
+some other function "handles" the error (prints the error message or
+does something else appropriate for that error). Here the string
+{"domain"} is the "error type" and {x} will be the information object
+for this error. The error object can be any expression, but it is
+probably a good idea to choose a short and descriptive string for the
+error type.
+
+The global variable {ErrorTableau} is an associative list that
+accumulates all reported error objects. When errors are "handled",
+their objects should be removed from the list. The utility function
+{DumpErrors()} is a simple error handler that prints all errors and
+clears the list.
+
+The "soft" error reporting facility is safer and more flexible than the
+"hard" facility. However, the disadvantage is that errors are not
+reported right away and pointless calculations may continue for a
+while until an error is handled.
 
 			Advanced example 1: parsing expressions ({CForm})
 
