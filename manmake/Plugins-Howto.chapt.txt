@@ -37,7 +37,7 @@ For our simple plugin, we shall only need a few lines of code in the Yacas stub:
 	Use("cstubgen.rep/code.ys");
 	
 	/* Start generating a C++ stub file */
-	StubApiCStart();
+	StubApiCStart("Func1");
 	
 	/* Write some documentation */
 	StubApiCRemark("This function computes

@@ -72,7 +72,7 @@ MakeFunctionPlugin(_extName, _fBody) <--
 	ToFile(fileBase : ".stub") [
 	  WriteString(
 	    "/* GENERATED FILE: " : fileBase : ".stub */" : Nl()
-	    : "Use(\"cstubgen.rep/code.ys\"); StubApiCStart();" : Nl()
+	    : "Use(\"cstubgen.rep/code.ys\"); StubApiCStart(\"" : String(UniqueConstant()) : "\");" : Nl()
 	    : "StubApiCInclude(\"\\\"" : fileBase : ".h\\\"\");" : Nl()
 	    : "StubApiCFunction(\"double\", \"" : intName : "\", \"" : exportName : "\",");
 	  Write(FillList("double", Length(argList)));

@@ -6,7 +6,7 @@ document:
 */
 
 
-StubApiCStart():=
+StubApiCStart(s_IsString) <--
 [
   cconsts := "";
   cfuncs  := "";
@@ -16,6 +16,7 @@ StubApiCStart():=
   cremarks:="";
   prelog := "";
   postlog:="";
+  pluginname := s:"Plugin";
   cstructs:={};
 ];
 
@@ -215,13 +216,13 @@ WriteString(cfuncs);
 ?> 
 
 
-class ThisPlugin : public LispPluginBase
+class <? WriteString(pluginname); ?> : public LispPluginBase
 {
 public:
     virtual void Add(LispEnvironment& aEnvironment);
     virtual void Remove(LispEnvironment& aEnvironment);
 };
-void ThisPlugin::Add(LispEnvironment& aEnvironment)
+void <? WriteString(pluginname); ?>::Add(LispEnvironment& aEnvironment)
 {
 <?
 WriteString(cconsts);
@@ -230,7 +231,7 @@ WriteString(cconsts);
 WriteString(cadders);
 ?>}
 
-void ThisPlugin::Remove(LispEnvironment& aEnvironment)
+void <? WriteString(pluginname); ?>::Remove(LispEnvironment& aEnvironment)
 {
 //printf(\"CLOSED DLL!!!\\n\");
 <?
@@ -240,7 +241,7 @@ WriteString(cremovers);
 extern \"C\" {
 LispPluginBase* maker(void)
 {
-    return NEW ThisPlugin;
+    return NEW <? WriteString(pluginname); ?>;
 }
 
 };
