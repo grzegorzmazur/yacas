@@ -68,7 +68,7 @@ const char* linkPrompt = "Link: ";
 #define INPUT_PROMPT "$ "
 
 
-void LoadHints(char* file);
+int LoadHints(char* file);
 void DisposeHints();
 
 
@@ -88,40 +88,12 @@ iMouseDownX(0),iMouseDownY(0),iMovingOutput(0),
 iOutputHeight(0),iCurrentHighlighted(-1),
 iInputDirty(1),iOutputDirty(1),iShowInput(1),iEnableInput(1)
 {
-
-    extern char defdir[128];
-    char buf[128];
-    
-    sprintf(buf,"%shints",defdir);
-
-//printf("Hints = [%s]\n",buf);
-    
-    LoadHints(buf);
-
-    /*TODO remove?
-     char fname[256];
-    sprintf(fname,"%s/.yacas_history",getenv("HOME"));
-    FILE*f=fopen(fname,"r");
-    if (f)
     {
-        if(f)
-        {
-            char buff[BufSz];
-            while(fgets(buff,BufSz-2,f))
-            {
-                int i;
-                for(i=0;buff[i] && buff[i] != '\n';++i)
-                    ;
-                buff[i++] = '\0';
-                LispStringPtr ptr = new LispString(buff,LispFalse);
-                iHistory.Append(ptr);
-            }
-            fclose(f);
-        }
+        extern char defdir[128];
+        char buf[128];
+        sprintf(buf,"%shints",defdir);
+        LoadHints(buf);
     }
-    history=iHistory.NrItems();
-    iMaxLines = 50;
-    */
     CommandLineStartNew();
 }
 
@@ -741,12 +713,17 @@ void DisposeHints()
     htex = NULL;
 }
 
-void LoadHints(char* file)
+int LoadHints(char* file)
 {
     hintTexts.SetNrItems(0);
     FILE*f = fopen(file,"r");
 
-    if (f)
+    if (!f)
+    {
+        printf("File \"hints\" not found: please type make install -f makefile.linux first\n");
+        exit(0);
+    }
+
     {
         fseek(f,0,SEEK_END);
         int n = ftell(f);
@@ -780,15 +757,19 @@ void LoadHints(char* file)
         int i;
         for (i=0;i<256;i++) hoffsets[i] = -1;
         int nr = hintTexts.NrItems();
-        hoffsets[(unsigned char)hintTexts[0].base[0]] = 0;
-        for (i=1;i<nr;i++)
+        if (nr > 0)
         {
-            if (hintTexts[i].base[0] != hintTexts[i-1].base[0])
+            hoffsets[(unsigned char)hintTexts[0].base[0]] = 0;
+            for (i=1;i<nr;i++)
             {
-                hoffsets[(unsigned char)hintTexts[i].base[0]] = i;
+                if (hintTexts[i].base[0] != hintTexts[i-1].base[0])
+                {
+                    hoffsets[(unsigned char)hintTexts[i].base[0]] = i;
+                }
             }
         }
     }
+    return hintTexts.NrItems();
 }
 
 

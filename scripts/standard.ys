@@ -182,7 +182,10 @@ Function("TableForm",{list})
 210 # (x_IsNumber / v_IsNumber) + (y_IsNumber / z_IsNumber) <--(x*z+y*v)/(v*z);
 
 
-220 # + x_IsList          <-- MapSingle("+",x);
+LocalSymbols(x)
+[
+  220 # + x_IsList          <-- MapSingle("+",x);
+];
 220 # xlist_IsList + ylist_IsList <-- Map("+",{xlist,ylist});
 
 SumListSide(_x, y_IsList) <--
@@ -209,8 +212,10 @@ SumListSide(_x, y_IsList) <--
 55 # (- (x_IsNumber)) <-- MathSubtract(x);
 110 # - (_x - _y) <-- y-x;
 111 # - (x_IsNumber / _y) <-- (-x)/y;
-200 # - (x_IsList) <-- MapSingle("-",x);
-
+LocalSymbols(x)
+[
+  200 # - (x_IsList) <-- MapSingle("-",x);
+];
 
 /* Subtraction arity 2 */
 50  # x_IsNumber - y_IsNumber <-- MathSubtract(x,y);

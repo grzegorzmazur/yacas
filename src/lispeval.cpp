@@ -334,10 +334,11 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
     LispInt i;
     LispInt from=0;
     LispInt upto = objs.NrItems();
-#ifndef DEBUG_MODE
-    if (upto-from > 16)
-        from = upto-16;
-#endif
+    
+//#ifndef DEBUG_MODE
+//    if (upto-from > 16)
+//        from = upto-16;
+//#endif
     for (i=from;i<upto;i++)
     {
         LispChar str[20];

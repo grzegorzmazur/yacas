@@ -1,41 +1,58 @@
-FltkConsole.o: FltkConsole.cpp FltkConsole.h ../src/grower.h \
- ../src/stubs.h ../src/plat/linux32/lisptype.h \
- ../src/plat/linux32/../../choices.h ../src/plat/linux32/stubs.inl \
- ../src/grower.inl ../src/lispassert.h ../src/choices.h \
- ../src/lispstring.h ../src/refcount.h ../src/lispstring.inl \
- FltkHintWindow.h HelpView.h ../src/yacas.h ../src/stringio.h \
- ../src/lispio.h ../src/tokenizer.h ../src/lisphash.h \
- ../src/lisphash.inl ../src/lispevalhash.h ../src/lispobject.h \
- ../src/genericobject.h ../src/evalfunc.h ../src/lispobject.inl \
- ../src/lisperror.h ../src/infixparser.h ../src/lispparser.h \
- ../src/stdfileio.h ../src/lispenvironment.h ../src/lispcleanupstack.h \
- ../src/deffile.h ../src/deffile.inl ../src/ramdisk.h \
- ../src/lispglobals.h ../src/lispplugin.h \
+FltkConsole.o: FltkConsole.cpp ../src/yacasprivate.h \
+ ../src/plat/linux32/lisptype.h ../src/plat/linux32/../../choices.h \
+ ../src/stubs.h ../src/plat/linux32/stubs.inl FltkConsole.h \
+ ../src/grower.h ../src/yacasbase.h ../src/grower.inl \
+ ../src/lispassert.h ../src/choices.h ../src/lispstring.h \
+ ../src/refcount.h ../src/lispstring.inl FltkHintWindow.h HelpView.h \
+ ../src/yacas.h ../src/stringio.h ../src/lispio.h ../src/tokenizer.h \
+ ../src/lisphash.h ../src/lisphash.inl ../src/lispevalhash.h \
+ ../src/lispobject.h ../src/genericobject.h ../src/evalfunc.h \
+ ../src/lispobject.inl ../src/lisperror.h ../src/infixparser.h \
+ ../src/lispparser.h ../src/stdfileio.h ../src/lispenvironment.h \
+ ../src/lispcleanupstack.h ../src/deffile.h ../src/deffile.inl \
+ ../src/ramdisk.h ../src/lispglobals.h ../src/lispplugin.h \
+ ../src/ctokenizer.h ../src/xmltokenizer.h \
  ../src/plat/linux32/platfileio.h ../src/lispatom.h ../src/lispeval.h \
  ../src/mathenvironment.h ../src/lispuserfunc.h
 FltkHintWindow.o: FltkHintWindow.cpp FltkHintWindow.h \
  ../src/plat/linux32/lisptype.h ../src/plat/linux32/../../choices.h
 HelpView.o: HelpView.cpp HelpView.h
+debugclass.o: debugclass.cpp ../src/yacasprivate.h \
+ ../src/plat/linux32/lisptype.h ../src/plat/linux32/../../choices.h \
+ ../src/stubs.h ../src/plat/linux32/stubs.inl debugclass.h \
+ ../src/lispeval.h ../src/yacasbase.h ../src/lispobject.h \
+ ../src/refcount.h ../src/lispassert.h ../src/choices.h \
+ ../src/lispstring.h ../src/grower.h ../src/grower.inl \
+ ../src/lispstring.inl ../src/genericobject.h ../src/evalfunc.h \
+ ../src/lispobject.inl ../src/lisperror.h ../src/lispenvironment.h \
+ ../src/lisphash.h ../src/lisphash.inl ../src/lispevalhash.h \
+ ../src/lispcleanupstack.h ../src/deffile.h ../src/deffile.inl \
+ ../src/ramdisk.h ../src/lispio.h ../src/stringio.h \
+ ../src/lispglobals.h ../src/lispplugin.h ../src/ctokenizer.h \
+ ../src/tokenizer.h ../src/xmltokenizer.h
 editor.o: editor.cpp fl_adjustable_file_chooser.H
 fl_adjustable_file_chooser.o: fl_adjustable_file_chooser.cpp \
  fl_adjustable_file_chooser.H
-grapher.o: grapher.cpp ../src/plat/linux32/lisptype.h \
- ../src/plat/linux32/../../choices.h ../src/lispenvironment.h \
- ../src/lispobject.h ../src/refcount.h ../src/lispassert.h \
- ../src/choices.h ../src/lispstring.h ../src/grower.h ../src/stubs.h \
- ../src/plat/linux32/stubs.inl ../src/grower.inl ../src/lispstring.inl \
+grapher.o: grapher.cpp ../src/yacasprivate.h \
+ ../src/plat/linux32/lisptype.h ../src/plat/linux32/../../choices.h \
+ ../src/stubs.h ../src/plat/linux32/stubs.inl ../src/lispenvironment.h \
+ ../src/yacasbase.h ../src/lispobject.h ../src/refcount.h \
+ ../src/lispassert.h ../src/choices.h ../src/lispstring.h \
+ ../src/grower.h ../src/grower.inl ../src/lispstring.inl \
  ../src/genericobject.h ../src/evalfunc.h ../src/lispobject.inl \
  ../src/lisperror.h ../src/lisphash.h ../src/lisphash.inl \
  ../src/lispevalhash.h ../src/lispcleanupstack.h ../src/deffile.h \
  ../src/deffile.inl ../src/ramdisk.h ../src/lispio.h ../src/stringio.h \
- ../src/lispglobals.h ../src/lispplugin.h ../src/lispatom.h \
+ ../src/lispglobals.h ../src/lispplugin.h ../src/ctokenizer.h \
+ ../src/tokenizer.h ../src/xmltokenizer.h ../src/lispatom.h \
  ../src/standard.h ../src/numbers.h ../src/standard.inl \
  ../src/arggetter.h ../src/platmath.h ../src/genericstructs.h \
  ../src/errors.h fltkgraphstub.cc
 tabs.o: tabs.cpp fl_adjustable_file_chooser.H ../src/yacas.h \
- ../src/lispstring.h ../src/plat/linux32/lisptype.h \
- ../src/plat/linux32/../../choices.h ../src/grower.h ../src/stubs.h \
- ../src/plat/linux32/stubs.inl ../src/grower.inl ../src/lispassert.h \
+ ../src/yacasbase.h ../src/yacasprivate.h \
+ ../src/plat/linux32/lisptype.h ../src/plat/linux32/../../choices.h \
+ ../src/stubs.h ../src/plat/linux32/stubs.inl ../src/lispstring.h \
+ ../src/grower.h ../src/grower.inl ../src/lispassert.h \
  ../src/choices.h ../src/refcount.h ../src/lispstring.inl \
  ../src/stringio.h ../src/lispio.h ../src/tokenizer.h \
  ../src/lisphash.h ../src/lisphash.inl ../src/lispevalhash.h \
@@ -44,7 +61,24 @@ tabs.o: tabs.cpp fl_adjustable_file_chooser.H ../src/yacas.h \
  ../src/lispparser.h ../src/stdfileio.h ../src/lispenvironment.h \
  ../src/lispcleanupstack.h ../src/deffile.h ../src/deffile.inl \
  ../src/ramdisk.h ../src/lispglobals.h ../src/lispplugin.h \
+ ../src/ctokenizer.h ../src/xmltokenizer.h \
  ../src/plat/linux32/platfileio.h ../src/lispatom.h ../src/lispeval.h \
  ../src/mathenvironment.h ../src/lispuserfunc.h editor.h HelpView.h \
  FltkConsole.h yacdefines.h grapher.h ../src/standard.h \
  ../src/numbers.h ../src/standard.inl ../src/errors.h proteusmenu.h
+tracer.o: tracer.cpp editor.h ../src/yacas.h ../src/yacasbase.h \
+ ../src/yacasprivate.h ../src/plat/linux32/lisptype.h \
+ ../src/plat/linux32/../../choices.h ../src/stubs.h \
+ ../src/plat/linux32/stubs.inl ../src/lispstring.h ../src/grower.h \
+ ../src/grower.inl ../src/lispassert.h ../src/choices.h \
+ ../src/refcount.h ../src/lispstring.inl ../src/stringio.h \
+ ../src/lispio.h ../src/tokenizer.h ../src/lisphash.h \
+ ../src/lisphash.inl ../src/lispevalhash.h ../src/lispobject.h \
+ ../src/genericobject.h ../src/evalfunc.h ../src/lispobject.inl \
+ ../src/lisperror.h ../src/infixparser.h ../src/lispparser.h \
+ ../src/stdfileio.h ../src/lispenvironment.h ../src/lispcleanupstack.h \
+ ../src/deffile.h ../src/deffile.inl ../src/ramdisk.h \
+ ../src/lispglobals.h ../src/lispplugin.h ../src/ctokenizer.h \
+ ../src/xmltokenizer.h ../src/plat/linux32/platfileio.h \
+ ../src/lispatom.h ../src/lispeval.h ../src/mathenvironment.h \
+ ../src/lispuserfunc.h debugclass.h
