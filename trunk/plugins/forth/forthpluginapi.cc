@@ -20,12 +20,17 @@ class ThisPlugin : public LispPluginBase
 {
 public:
     virtual void Add(LispEnvironment& aEnvironment);
+    virtual void Remove(LispEnvironment& aEnvironment);
 };
 void ThisPlugin::Add(LispEnvironment& aEnvironment)
 {
 
 }
 
+void ThisPlugin::Remove(LispEnvironment& aEnvironment)
+{
+//printf("CLOSED DLL!!!\n");
+}
 
 extern "C" {
 LispPluginBase* maker(void)

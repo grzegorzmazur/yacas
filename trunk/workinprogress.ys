@@ -4,7 +4,29 @@ TODO:
 - check that the Where and AddTo are correct in the manual
 - add test code for Where and Addto
 - Add MatchLinear to the distro, in a proper place.
-- Finish integration: rational functions, poly*f(x).
+- Finish integration: rational functions, poly*f(x), Abs(f(x)),
+  if(...)... etcetera
+- add a more complete table of integrals
+- document the workings of integrate, showing some nice integration
+  examples if possible.
+- make lots of tests on integration.
+- numerically test integration.
+- improve Solve like I intended.
+
+14 # AntiDeriv(Tan(_exx),_var)_
+    (CanBeUni(exx,var) And Length(MakeUni(exx,var)[3]) <= 2) <--
+[
+  Ln(Abs(Sec(exx)));
+];
+
+14 # AntiDeriv(Cot(_exx),_var)_
+    (CanBeUni(exx,var) And Length(MakeUni(exx,var)[3]) <= 2) <--
+[
+  Ln(Abs(Sin(exx)));
+];
+
+
+
 */
 
 // Declare 
