@@ -23,17 +23,17 @@ REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt \
 
 REFPROGCHAPTERS = yacasapi.chapt
 
+CODINGCHAPTERS = YacasDebugger.chapt
+CODINGSOURCES = in/YacasDebugger.chapt.txt
+
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
 	CVS-Howto.chapt YacasDocs.chapt \
-	new.chapt Algorithms.chapt
-
-CODINGCHAPTERS = YacasDebugger.chapt
-CODINGSOURCES = in/YacasDebugger.chapt.txt 
+	new.chapt Algorithms.chapt wordproblems.chapt
 
 ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt \
         in/new.chapt.txt \
-		in/Algorithms.chapt.txt
+		in/Algorithms.chapt.txt in/wordproblems.chapt.txt
 
 EXTRA_DIST = \
 	manualmaker styleplain in/all \

@@ -8,6 +8,8 @@ to general issues related to the Yacas system development.
 
 *INCLUDE ABIN-grammar.chapt
 
+*INCLUDE wordproblems.chapt
+
 *INCLUDE Plugins-Howto.chapt
 
 			For Yacas developers
