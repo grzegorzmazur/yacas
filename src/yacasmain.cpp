@@ -1237,6 +1237,7 @@ int main(int argc, char** argv)
             }
             else if (!strcmp(argv[fileind],"--rootdir"))
             {
+                archive = NULL; 
                 fileind++;
                 if (fileind<argc)
                   root_dir = argv[fileind];

@@ -471,3 +471,6 @@ NumericEqual(N(Sqrt(0.5),20),N(Sqrt(N(1/2)),20),20);
 // The last digit is suddenly rounded down (it used to be 4, correctly, and then gets rounded down to 3).
 KnownFailure(RoundTo(RoundTo(N(Cot(2),9),9),N(Cot(2),9),9)=0);
 
+// MathLog used to hang on *all* input
+Verify(MathLog(2)!=0,True);
+

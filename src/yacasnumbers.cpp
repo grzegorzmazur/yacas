@@ -332,7 +332,7 @@ LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPr
     return FloatToString(sum, aEnvironment);
 }
 
-
+/*TODO remove
 static void LnFloat(ANumber& aResult, ANumber& int1)
 {
     // Optimization for convergence: the following taylor
@@ -410,7 +410,7 @@ LispObject* LnFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPre
     LnFloat(sum, x);
     return FloatToString(sum, aEnvironment);
 }
-
+*/
 LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     // If is integer
@@ -461,7 +461,9 @@ LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnv
         // result
         return FloatToString(result, aEnvironment);
     }
+    Check(LispFalse, KLispErrNotInteger);
 
+/*TODO remove
     ANumber lnn(aPrecision);
     {
       ANumber x(*int1->Number(aPrecision)->iNumber);
@@ -474,6 +476,7 @@ LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnv
     ANumber result(aPrecision);
     ExpFloat(result, x);
     return FloatToString(result, aEnvironment);
+*/
 }
 
 

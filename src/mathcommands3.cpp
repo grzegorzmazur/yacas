@@ -487,12 +487,12 @@ void LispDiv(LispEnvironment& aEnvironment, LispInt aStackTop)
 	  
 #endif // USE_BIGFLOAT
 }
-
+/*TODO remove
 void LispLog(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
     LispArithmetic1(aEnvironment, aStackTop, LnFloat);
 }
-
+*/
 
 void LispPower(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts

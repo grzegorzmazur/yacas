@@ -56,6 +56,10 @@ YACASDLL_API char* yacas_output();
  */
 YACASDLL_API void yacas_exit();
 
+/** yacas_secure : assume secure calculations required.
+ */
+YACASDLL_API void yacas_secure();
+
 /** yacas_interrupt : interrupt a calculation.
  */
 YACASDLL_API void yacas_interrupt();
