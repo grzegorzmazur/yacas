@@ -19,7 +19,7 @@ OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
 .SUFFIXES: .cpp 
 
 .cpp.o:
-	$(CXX) -s -O2 $(INC) -c $< -o $@
+	$(CXX) -O2 $(INC) -c $< -o $@
 
 
 all: yacas.exe
@@ -27,7 +27,8 @@ all: yacas.exe
 INC = -I.\$(PLATDIR) -I. -DSCRIPT_DIR="C:\yacas\\" -DVERSION="Win32"
 
 yacas.exe : $(OBJS)
-	$(CXX) -s $(OBJS) -o yacas.exe
+	$(CXX) $(OBJS) -o yacas.exe
+	strip yacas.exe
 
 clean :
 	del *.o
