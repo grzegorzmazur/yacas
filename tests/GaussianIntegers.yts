@@ -1,7 +1,10 @@
 
 NextTest("Gaussian Integers");
 
-/* TestGaussianFactors: test if Gaussian Factors Really works! */
+/* TestGaussianFactors: test if Gaussian Factors Really works!
+Computes in r the product of the factors, and checks if each
+one is a Gaussian prime and if r is associated to z (i.e. if r/z
+is a Gaussian Unit */
 TestGaussianFactors(z_IsGaussianInteger) <--
 [
  Local(r,gfactors,Ok);
@@ -17,7 +20,7 @@ TestGaussianFactors(z_IsGaussianInteger) <--
  ];
  Echo(r);
  Ok := Ok And IsGaussianUnit(r/z);
- If(Ok,Echo("passed!","FAILED"));
+ If(Ok,Echo("passed!"),Echo("FAILED"));
 ];
 
 TestGaussianFactors((9!)+1);
