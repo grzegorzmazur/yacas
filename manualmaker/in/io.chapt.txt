@@ -174,7 +174,7 @@ to show 'input = output'.
 
 *SEE PrettyForm, CForm, ShowPS
 
-*CMD CForm --- export expression to C code
+*CMD CForm --- export expression to C++ code
 *STD
 *CALL
 	CForm(expr)
@@ -185,14 +185,55 @@ to show 'input = output'.
 
 *DESC
 
-{CForm} returns a string containing a C/C++ code implementing the Yacas expression {expr}. Currently the exporter handles most expression types but not all.
+{CForm} returns a string containing C++ code that attempts to implement the Yacas expression {expr}. Currently the exporter handles most expression types but not all.
 
 *EG
 
 	In> CForm(Sin(a1)+2*Cos(b1));
 	Out> "sin(a1) + 2 * cos(b1)";
 
-*SEE PrettyForm, TeXForm
+*SEE PrettyForm, TeXForm, IsCFormable
+
+*CMD IsCFormable --- check possibility to export expression to C++ code
+*STD
+*CALL
+	IsCFormable(expr)
+	IsCFormable(expr, funclist)
+	
+*PARMS
+
+{expr} -- expression to be exported (this argument is not evaluated)
+
+{funclist} -- list of "allowed" function atoms
+
+*DESC
+
+{IsCFormable} returns {True} if the Yacas expression {expr} can be exported
+into C++ code. This is a check whether the C++ exporter {CForm} can be safely
+used on the expression.
+
+A Yacas expression is considered exportable if it contains only functions that can be translated into C++ (e.g. {UnList} cannot be exported). All variables and constants are considered exportable.
+
+The verbose option prints names of functions that are not exportable.
+
+The second calling format of {IsCFormable} can be used to "allow" certain function names that will be available in the C++ code.
+
+*E.G.
+
+	In> IsCFormable(Sin(a1)+2*Cos(b1))
+	Out> True;
+	In> V(IsCFormable(1+func123(b1)))
+	IsCFormable: Info: unexportable function(s):
+	  func123
+	Out> False;
+This returned {False} because the function {func123} is not available in C++. We can
+explicitly allow this function and then the expression will be considered
+exportable:
+
+	In> IsCFormable(1+func123(b1), {func123})
+	Out> True;
+
+*SEE CForm, V
 
 *CMD Write --- low-level printing routine
 *CORE
