@@ -49,6 +49,7 @@ CPP'Tokens :=
   {"^[\\<\\=\\>\\^\\|\\*\\+\\-\\/\\&\\%\\~\\!]",Operators},
   {"^\\$.*?\\$",Patterns}, // $ is reserved for pattern definitions
   {"^\\.\\.\\.",Operators},
+  {"^\\:\\:",Operators},
   {"^[\\;\\:\\,\\.]",Delimiters},
   {"^[a-zA-Z_][a-zA-Z0-9_]*",Atoms},
   {"^.+",UnParsed}
@@ -62,10 +63,10 @@ CPP'grammar:=
    ,{TypeDecl1,"typedef",CPP'typeDecl,CPP'annotatedVar,";"}
    ,{GlobalDefinedVariable,CPP'varDecl,";"}
    ,{GlobalDefinedFunction, CPP'typeDecl,CPP'annotatedVar,CPP'argList,CPP'statement}
-   ,{GlobalDefinedFunction, CPP'annotatedVar,CPP'argList,":",CPP'initList,CPP'statement}
-   ,{GlobalDefinedFunction, CPP'annotatedVar,CPP'argList,CPP'statement}
-//   ,{StrctType1,"union",CPP'symbolName,CPP'block,";"}
+   ,{GlobalDefinedFunction, CPP'storageClass,CPP'annotatedVar,CPP'argList,":",CPP'initList,CPP'statement}
+   ,{GlobalDefinedFunction, CPP'storageClass,CPP'annotatedVar,CPP'argList,CPP'statement}
   };
+
 
 CPP'templateDeclList :=
   {
@@ -91,7 +92,9 @@ CPP'annotatedVar :=
     {Pointer1,"*",CPP'annotatedVar}
    ,{Reference1,"&",CPP'annotatedVar}
    ,{Destructor1,"~",CPP'annotatedVar}
+   ,{Operator1,"operator","(",")"}
    ,{Operator1,"operator",CPP'annotatedVar}
+   ,{Operator1,"operator",AcceptToken(Operators)}
    ,{VarName, CPP'symbolName,CPP'arrayAugment}
    ,{SimpleAtom,CPP'tokenName}
   };
@@ -106,10 +109,10 @@ CPP'arrayAugment :=
 CPP'typeDecl:=
   {
     {Pattern1,"typenamed",AcceptToken(Patterns)}
-    ,{Type1,CPP'plainType,"<",CPP'templateTypeList,">"}
-    ,{Type1,CPP'plainType}
-    ,{StrctType1,"struct",CPP'block}
-    ,{StrctType1,"class",CPP'block}
+    ,{Type1,CPP'storageClass,CPP'plainType,"<",CPP'templateTypeList,">"}
+    ,{Type1,CPP'storageClass,CPP'plainType}
+    ,{StrctType1,CPP'storageClass,"struct",CPP'block}
+    ,{StrctType1,CPP'storageClass,"class",CPP'block}
 //    ,{StrctType1,"union",CPP'block}
   };
 
@@ -127,24 +130,40 @@ CPP'typePost :=
 
 CPP'plainType :=
   {
-    {PlainType1,CPP'plainType2,CPP'plainType}
-   ,{PlainType1,CPP'plainType2}
+    {PlainType1,AnyOf(CPP'typeList),CPP'plainType2}
+   ,{PlainType1,CPP'plainType3}
   };
 
 CPP'plainType2 :=
   {
-    {PlainType1,AnyOf(CPP'typeList)}
+    {PlainType2,AnyOf(CPP'typeList),CPP'plainType2}
+   ,{PlainType2}
   };
+CPP'plainType3 :=
+  {
+    {PlainType2,CPP'tokenName}
+  };
+
+CPP'storageClass:=
+  {
+    {StorageClass1,AnyOf({"inline","virtual","static","register","auto","volatile","const"}),CPP'storageClass}
+   ,{StorageClass1}
+  };
+
+  
 CPP'typeList :=
-  {"inline","virtual","static","const","unsigned","char","short","int","long","float","void"};
+  {"signed","unsigned","char","short","int","long","float","void"};
 
 
 CPP'symbolName := 
   { 
     {SymbolnamePointer,"*",CPP'symbolName},
+    {SymbolnameNameSpaced,CPP'tokenName,"::","~",CPP'tokenName},
     {SymbolnameNameSpaced,CPP'tokenName,"::",CPP'tokenName},
     {SimpleAtom,CPP'tokenName}
   };
+
+
 
 // CPP'tokenName can be either a name of some symbol that will end up in the symbol
 // table, or an expression with the $ sign that gets translated into a pattern to be recognized.
@@ -158,11 +177,11 @@ CPP'tokenName :=
 CPP'argList := 
 {
   {Pattern1,"arglist",AcceptToken(Patterns)}
-  ,{NormalArgList1,"(",")"}
-  ,{NormalArgList1,"(",CPP'restargs,")"}
+  ,{NormalArgList1,"(",")",CPP'accessModifier}
+  ,{NormalArgList1,"(",CPP'restargs,")",CPP'accessModifier}
   ,{SimpleAtom,CPP'tokenName}
 };
-//hier
+
 CPP'restargs := 
 {
    {Pattern1,"restargs",AcceptToken(Patterns)}
@@ -170,6 +189,12 @@ CPP'restargs :=
   ,{RestArgList1,CPP'varDecl,",",CPP'restargs}
   ,{RestArgList1,CPP'varDecl}
 };
+
+CPP'accessModifier:=
+  {
+    {Access1,"const"}
+   ,{Access1}
+  };
 
 /*
 Operators:
@@ -315,8 +340,8 @@ CPP'statement:=
    ,{LocalDefinedFunction, CPP'typeDecl,CPP'annotatedVar,CPP'argList,":",CPP'initList,CPP'statement}
    ,{LocalDefinedFunction, CPP'typeDecl,CPP'annotatedVar,CPP'argList,CPP'statement}
    ,{LocalDefinedVariable,CPP'varDecl,";"}
-   ,{LocalDefinedFunction, CPP'annotatedVar,CPP'argList,":",CPP'initList,CPP'statement}
-   ,{LocalDefinedFunction, CPP'annotatedVar,CPP'argList,CPP'statement}
+   ,{LocalDefinedFunction, CPP'storageClass,CPP'annotatedVar,CPP'argList,":",CPP'initList,CPP'statement}
+   ,{LocalDefinedFunction, CPP'storageClass,CPP'annotatedVar,CPP'argList,CPP'statement}
    ,{StrctType1,CPP'objDef,";"}
 //   ,{StrctType1,"union",CPP'tokenName,CPP'block,";"}
    ,{BlockStmt,CPP'block}
