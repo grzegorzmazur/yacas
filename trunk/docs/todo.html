@@ -335,10 +335,11 @@ These plans are possibly further away but (in my opinion) important enough to ke
   <li> MP wrapper class holds big numbers in the internal format and passes them to either "ANumber" or "GMPNumber" backends with hopefully minimal conversion on input and output. MP algorithms such as ArcSin() should not have to be written separately for each MP backend (as it is right now); the algorithms will be written using the MP wrapper class. Plugins can also use the MP wrapper class and not the internal representation of numbers. Ideally, there will be a "GNU multiple precision scientific library" which will provide all functions such as Exp(), Pow(), Sin(), LnGamma(), BesselJ() etc., for high-speed arbitrary precision calculations. This library could be developed separately from Yacas if the number class architecture is done right.
   <li> The backend for MP wrapper class will be selected at compile time. It could be either "yacasnumbers" or "gmp", or perhaps something else. All backends should transparently implement the BigNumber functions.
   <li> The BigNumber class includes basic arithmetic (+ - * / but not Sqrt), modular arithmetic, binary logic, bit shifts, and precision tracking. All other mathematical functions are implemented externally.
-  <li> Almost all MP numerical algorithms should be coded in the script library rather than compiled. (Except for critical ones). Experiments with MathPi() show that keeping the algorithm in the scripts does not really slow things down when the bulk of the calculation is in the numerics.
+  <li> Almost all MP numerical algorithms should be coded in the script library rather than compiled. (Except for critical ones). Experiments with MathPi() show that keeping the algorithm in the scripts does not really slow things down when the bulk of the calculation is numerical.
   </ol>
 
 This should mostly take care of the MP calculations - no need to reimplement Karatsuba multiplication etc., it's all already done in GMP and platforms without GMP are probably not suitable for serious numerics.
+Internal math should be only a fall-back so that things work without external libraries.
 
  <li> Random numbers in arbitrary-precision should be generated if requested.
       Need a better interface to make random arrays?
@@ -360,6 +361,11 @@ This should mostly take care of the MP calculations - no need to reimplement Kar
  <li> Implement iterators over lists, arrays, dictionaries. (Allow iterators to be implemented over generic objects and implement everything as plugins.) This will get rid of many explicit loops in the library and speed up everything. Implement Map()/MapSingle() using iterators.
  <li> Automatic parallelization of "pure functional functions", i.e. functions without side-effects and without local or global static non-constant variables. Suppose we need to evaluate MapSingle() of a pure functional function on some list. Then each element may be computed by a separate thread. This can be easily detected if we are using list iterators. Or suppose we need to sort a list; if we use the recursive sorting algorithm, then each sublist may be sorted by a separate thread. The interpreter should be able to wait for each thread and automatically decide when to generate more threads, depending on how many parallel CPUs we have. This should be completely transparent to the script library; the programmer will only have to keep the functions "purely functional".
  <li> The library should be able to determine which plugins are available. (This can be done using FindFile() and the canonical plugin path DirectoryName() : "/plugins"). It's clear that some plugins will not be available on some platforms; but the library should know about this and print error messages if the user tries to call the unavailable functions.
+ <li> Parser improvements:
+ <ol>
+   <li> The parser should be able to pick up symbol atoms such as "_" or "+" when they are unambiguously used as atoms. For example, one should be able to call a function f() on the atom "+" by f(+). Currently this only works if the atom is not defined as a prefix operator. (E.g. f(*) works.)
+   <li> The parser should read the compound operators such as ":=+" more intelligently. The algorithm should be something like this: a) if ":=+" is defined, use the definition. b) otherwise, find the longest initial substring that is defined (in this case it might be ":=") and split it off as if there was a space after it: ":= +". c) continue parsing after the space in the same way.
+ </ol>
  </ol>
 
 <li> Library improvements
