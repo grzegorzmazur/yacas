@@ -6,6 +6,7 @@
 #ifndef __lisptype_h__
 #define __lisptype_h__
 
+#include <stdlib.h>
 
 #ifndef SIZE_T
 #define SIZE_T unsigned int

@@ -1272,13 +1272,12 @@ void LispMathLibName(LispEnvironment& aEnvironment,LispPtr& aResult,
               LispPtr& aArguments)
 {
 	TESTARGS(1);
-	// can't use NumericLibraryName() inside LookUpStringify() b/c of nonconstant pointer! why is it not a const char* and do I have to write this?
-	const char* library_name_const_ptr = NumericLibraryName();
-	int library_name_length = strlen(library_name_const_ptr);
-	char library_name[library_name_length+1];
-	strcpy(library_name, library_name_const_ptr);
-	// now library_name is a non-constant pointer...
-    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUpStringify(
+        // can't use NumericLibraryName() inside LookUpStringify() b/c of
+        // nonconstant pointer! why is it not a const char* and do I have to
+        // write this?
+        // const_cast removes const-ness... ;-)
+        char* library_name = const_cast<char*>(NumericLibraryName());
+        aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUpStringify(
 		library_name
 	)));
 }

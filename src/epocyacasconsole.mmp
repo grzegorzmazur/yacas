@@ -5,11 +5,13 @@
 
 target          YACAS.exe
 targettype      exe
-UID 0x1000007a
-UNICODEUID 0x1000007a
+UID        0x1000007a   0x10004299
+UNICODEUID 0x1000007a   0x10004300
 
-project         PRJ
-subproject		yacas
+
+// Change the directory project to point to the right one!!!
+project         PRJ\yacas-1.0.52
+subproject		src
 // resource		epocYACAS.RSS
 // lang			SC
 
