@@ -41,3 +41,40 @@ Verify(N(Mod(-1.2,3.4)),2.2);
 Verify(Mod(-12/10,34/10),11/5);
 // just a test to see if Verify still gives correct error Verify(N(Mod(-12/10,34/10)),11/5);
 
+
+// some reports:
+
+LocalSymbols(f,p,a,b,x,n)
+[
+  f(_n) <-- Apply("D",{x,n, x^n});
+  Verify(f(10)-(10!));
+
+  p := a+2-(a+1);
+  Verify(Simplify(x^p),x);
+];
+
+LocalSymbols(f,p,a,b,x,n,simple,u,v)
+[
+  simple := {
+            Exp(_a)*Exp(_b) <- Exp(a+b), 
+            Exp(_a)*_u*Exp(_b) <- u*Exp(a+b),
+            _u*Exp(_a)*Exp(_b) <- u*Exp(a+b),
+            Exp(_a)*Exp(_b)*_u <- u*Exp(a+b),
+            _u*Exp(_a)*_v*Exp(_b) <- u*v*Exp(a+b),
+            Exp(_a)*_u*Exp(_b)*_v <- u*v*Exp(a+b),
+            _u*Exp(_a)*Exp(_b)*_v <- u*v*Exp(a+b),
+            _u*Exp(_a)*_v*Exp(_b)*_w <- u*v*w*Exp(a+b)
+          };
+
+  a := Simplify(Exp(x)*(D(x) x*Exp(-x)));
+  b := Exp(x)*Exp(-x)-Exp(x)*x*Exp(-x);
+
+  a:= (a /: simple);
+  b:= (b /: simple);
+  
+  Verify(Simplify(a-(1-x)),0);
+  Verify(Simplify(b-(1-x)),0);
+
+];
+
+
