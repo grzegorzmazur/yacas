@@ -11,6 +11,7 @@
 	0.4.2 fix for variable names ending on digits "a2" represented as $a_2$
 	0.4.3 bugfixes: complex I, indeterminate integration; relaxed bracketing of Sin()-like functions; implemented $TeX$ and $LaTeX$ correctly now (using \textrm{})
 	0.4.4 use ordinary instead of partial derivative if expression has only one variable
+	0.4.5 fixes for bracketing of Sum(); added <> to render as \sim and <=> to render as \approx; added Bin()
 */
 
 /* To do:
@@ -62,7 +63,10 @@ TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equa
 
 	/* addition, subtraction, multiplication, all comparison and logical operations are "regular" */
 
-TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv "}, {"=="," = "}, {"="," = "}, {"!=","\\neq "}, {"<=","\\leq "}, {">=","\\geq "}, {"<"," < "}, {">"," > "}, {"And"," \\wedge "}, {"Or"," \\vee "} };
+TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv "}, {"=="," = "}, {"="," = "}, {"!=","\\neq "}, {"<=","\\leq "}, {">=","\\geq "}, {"<"," < "}, {">"," > "}, {"And"," \\wedge "}, {"Or"," \\vee "}, {"<>", "\\sim "}, {"<=>", "\\approx "} };
+
+If(Not(IsInfix("<>")), Infix("<>", OpPrecedence("=")) );
+If(Not(IsInfix("<=>")), Infix("<=>", OpPrecedence("=")) );
 
 	/* Template for "regular" binary infix operators:
 100 # TeXForm(_x + _y, _p) <-- TeXFormBracketIf(p<OpPrecedence("+"), ConcatStrings(TeXForm(x, OpLeftPrecedence("+")), " + ", TeXForm(y, OpRightPrecedence("+")) ) );
@@ -186,6 +190,10 @@ TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, 
 /* "Contains" is displayed right to left */
 
 100 # TeXForm(Contains(_x, _y), _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings(TeXForm(y, OpPrecedence("/")), "\\in ", TeXForm(x, OpPrecedence("/")) ) );
+
+/// Binomial coefficients: always bracketed
+100 # TeXForm(Bin(_n, _m), _p) <-- TeXFormBracketIf(False, ConcatStrings("{", TeXForm(n, TeXFormMaxPrec), " \\choose ", TeXForm(m, TeXFormMaxPrec), "}" )
+);
 
 /* Some functions with limits: Lim, Sum, Integrate */
 
