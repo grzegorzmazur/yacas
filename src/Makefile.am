@@ -147,8 +147,8 @@ version.h: ../config.h
 # the dependency list to determine which files to recompile.
 # 
 
-# include depend.dep
-#
-# depend:
-#	cc -MM *.cpp $(AM_CPPFLAGS) > depend.dep
+include depend.dep
+
+depend:
+	cc -MM *.cpp $(AM_CPPFLAGS) > depend.dep
 
