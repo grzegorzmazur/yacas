@@ -678,3 +678,51 @@ void LispCTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 
 
+void LispFastAssoc(LispEnvironment& aEnvironment, LispPtr& aResult,
+                   LispPtr& aArguments)
+{
+    // Check that we have one argument.
+    TESTARGS(3);
+
+    // key to find
+    LispPtr key;
+    InternalEval(aEnvironment, key , Argument(aArguments,1));
+    
+    // assoc-list to find it in
+    LispPtr list;
+    InternalEval(aEnvironment, list , Argument(aArguments,2));
+
+    LispObject* t;
+
+    //Check that it is a compound object
+    CHK_ARG(list.Get()->SubList() != NULL, 2);
+    t = list.Get()->SubList()->Get();
+    CHK_ARG(t != NULL, 2);
+    t = t->Next().Get();
+
+    while (t != NULL)
+    {
+        if (t->SubList())
+        {
+            LispObject* sub = t->SubList()->Get();
+            if (sub)
+            {
+                sub = sub->Next().Get();
+                LispPtr temp;
+                temp.Set(sub);
+                if(InternalEquals(aEnvironment,key,temp))
+                {
+                    aResult.Set(t);
+                    return;
+                }
+                
+            }
+        }
+        t = t->Next().Get();
+    }
+
+    
+    aResult.Set(ATOML("Empty"));
+}
+
+
