@@ -6,6 +6,8 @@ Verify(Tan(ArcTan(a)),a);
 Verify(ArcSin(Sin(a)),a);
 Verify(ArcCos(Cos(a)),a);
 Verify(ArcTan(Tan(a)),a);
+Verify(Tan(Pi/2),Infinity);
+Verify(Tan(Pi),0);
 
 Verify(2+I*3,Complex(2,3));
 Verify(Re(2+I*3),2);
