@@ -2,7 +2,7 @@
 /* Functions that aid in testing */
 
 /* Round to specified number of digits */
-Round(x_IsNumber, prec_IsPositiveInteger) <-- N(Round(x*10^prec)*10^(-prec));
+RoundTo(x_IsNumber, prec_IsPositiveInteger) <-- N(Round(x*10^prec)*10^(-prec));
 
 /* Logging functions */
 // curline:=0;
