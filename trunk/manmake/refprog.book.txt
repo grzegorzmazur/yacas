@@ -1273,14 +1273,18 @@ to exactly match, and return silently if it didn't find the dll.
 *CMD StubApiCStart --- start of C++ plugin API
 *STD
 *CALL
-	StubApiCStart()
+	StubApiCStart(name)
+
+*PARMS
+{name} -- name of the plugin
 
 *DESC
 
 To start up generating a c stub file for linking a c library with
 Yacas. A stub specification file needs to start with this
 function call, to reset the internal state of Yacas for emitting
-a stub C++ file.
+a stub C++ file. The parameter {name} should identify the plugin
+uniquely.
 
 *SEE StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCFile, StubApiCSetEnv
 

@@ -2,7 +2,7 @@
 Use("cstubgen.rep/code.ys");
 
 /* Start generating a c stub file */
-StubApiCStart();
+StubApiCStart("Forth");
 
 StubApiCRemark("This is the forth api.");
 

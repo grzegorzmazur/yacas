@@ -73,5 +73,6 @@ Set(DefFileList, {
 "trigsimp.rep/code.ys",
 "univar.rep/Cyclotomic.ys",
 "univar.rep/code.ys",
+"univar.rep/sparse.ys",
 "univar.rep/sturm.ys",
 });

@@ -2,7 +2,7 @@
 Use("cstubgen.rep/code.ys");
 
 /* Start generating a c stub file */
-StubApiCStart();
+StubApiCStart("Bare");
 
 StubApiCRemark("This is an example mini api.");
 

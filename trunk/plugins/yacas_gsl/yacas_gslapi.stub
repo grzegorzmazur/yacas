@@ -2,7 +2,7 @@
 Use("cstubgen.rep/code.ys");
 
 /* Start generating a c stub file */
-StubApiCStart();
+StubApiCStart("GSL");
 
 StubApiCRemark("This plugin links to the Gnu Scientific Library.");
 
