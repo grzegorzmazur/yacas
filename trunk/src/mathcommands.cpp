@@ -257,27 +257,21 @@ void LispTail(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispUnList(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  if (ARGUMENT(1).Get() != NULL)
-  {
-    LispObject* subList = ARGUMENT(1).Get()->SubList()->Get();
-    if (subList)
-      if (subList->String() == aEnvironment.iList)
-      {
-        InternalTail(RESULT, ARGUMENT(1));
-        return;
-      }
-  }
-  CHK_ARG_CORE(LispFalse, 1);
-  
-//  InternalTail(RESULT, list);
+  CHK_ARG_CORE(ARGUMENT(1).Get(), 1);
+  CHK_ARG_CORE(ARGUMENT(1).Get()->SubList(), 1);
+  LispObject* subList = ARGUMENT(1).Get()->SubList()->Get();
+  CHK_ARG_CORE(subList, 1);
+  CHK_ARG_CORE(subList->String() == aEnvironment.iList,1);
+  InternalTail(RESULT, ARGUMENT(1));
 }
 
 void LispListify(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispPtr head;
-    head.Set(LispAtom::New(aEnvironment,aEnvironment.iList));
-    head.Get()->Next().Set(ARGUMENT(1).Get()->SubList()->Get());
-    RESULT.Set(LispSubList::New(head.Get()));
+  CHK_ARG_CORE(ARGUMENT(1).Get()->SubList(), 1);
+  LispPtr head;
+  head.Set(LispAtom::New(aEnvironment,aEnvironment.iList));
+  head.Get()->Next().Set(ARGUMENT(1).Get()->SubList()->Get());
+  RESULT.Set(LispSubList::New(head.Get()));
 }
 
 

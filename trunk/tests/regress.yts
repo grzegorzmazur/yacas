@@ -329,3 +329,22 @@ Verify( Factor(Sin(x)), Factor(Sin(x)) );
 
 // should return unevaled
 Verify( BesselJ(0,x), BesselJ(0,x) );
+
+
+// Listify and UnList coredumped when their arguments were invalid
+Verify(Listify(Cos(x)),{Cos,x});
+Verify(UnList({Cos,x}),Cos(x));
+[
+  Local(error);
+  error:="";
+  TrapError(Listify(1.2),error:=GetCoreError());
+  Verify(IsString(error) And error != "");
+
+  error:="";
+  TrapError(UnList(1.2),error:=GetCoreError());
+  Verify(IsString(error) And error != "");
+];
+
+// Reported by Serge: xml tokenizer not general enough
+Verify(XmlExplodeTag("<p/>"),   XmlTag("P",{},"OpenClose"));
+Verify(XmlExplodeTag("<p / >"), XmlTag("P",{},"OpenClose"));
