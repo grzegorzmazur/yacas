@@ -166,6 +166,7 @@ Function("TableForm",{list})
 101 # (- _y)/(_z) + _x  <-- x-(y/z);
 101 # (- _x) + _y <-- y-x;
 102 # _x + y_IsNegativeNumber <-- x-(-y);
+102 # _x + y_IsNegativeNumber * _z <-- x-((-y)*z);
 102 # _x + (y_IsNegativeNumber)/(_z) <-- x-((-y)/z);
 102 # (y_IsNegativeNumber)/(_z) + _x  <-- x-((-y)/z);
 102 # (x_IsNegativeNumber) + _y <-- y-(-x);
