@@ -22,8 +22,7 @@ HoldArg("TruncRadian",r);
 ];
 4 # Sin(ArcSin(_x))           <-- x;
 5 # Sin(- _x)                 <-- -Sin(x);
-5 # Sin(x_IsNegativeNumber * _y)   <-- -Sin((-x)*y);
-5 # Sin(_y * x_IsNegativeNumber)   <-- -Sin(y*(-x));
+5 # (Sin(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- -Sin(-x);
 110 # Sin(Complex(_r,_i)) <--
     (Exp(I*Complex(r,i)) - Exp(- I*Complex(r,i))) / (I*2) ;
 
@@ -53,8 +52,7 @@ HoldArg("TruncRadian",r);
 ];
 4 # Cos(ArcCos(_x))           <-- x;
 5 # Cos(- _x)                 <-- Cos(x);
-5 # Cos(x_IsNegativeNumber * _y)   <-- Cos((-x)*y);
-5 # Cos(_y * x_IsNegativeNumber)   <-- Cos(y*(-x));
+5 # (Cos(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- Cos(-x);
 
 
 110 # Cos(Complex(_r,_i)) <--
@@ -144,6 +142,7 @@ HoldArg("TruncRadian",r);
 
 2 # ArcCos(x_IsNumber)_(Numeric) <-- MathArcCos(x);
 4 # ArcCos(Cos(_x))           <-- x;
+5 # (ArcTan(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- -ArcTan(-x);
 110 # ArcCos(Complex(_r,_i)) <--
     (- I)*Ln(Complex(r,i) + (Complex(r,i)^2 - 1)^(1/2));
    /* TODO check! */
