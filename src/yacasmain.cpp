@@ -148,6 +148,9 @@ void LispTime(LispEnvironment& aEnvironment, LispPtr& aResult,
 void ShStack(LispEnvironment& aEnvironment, LispPtr& aResult,
              LispPtr& aArguments)
 {
+#if 0
+    /* gcc 3.0 doesn't allow us to have these classes, since they
+      are declared global */
     LispEnvironment::LocalVariableFrame* fr = aEnvironment.iLocalsList;
     
     LispEnvironment::LispLocalVariable* ptr = fr->iFirst;
@@ -159,6 +162,7 @@ void ShStack(LispEnvironment& aEnvironment, LispPtr& aResult,
         ptr = ptr->iNext;
     }
     printf("nr = %d\n",nr);
+#endif
     InternalTrue(aEnvironment, aResult);
 }
 
