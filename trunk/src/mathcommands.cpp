@@ -1268,6 +1268,44 @@ void LispUnFence(LispEnvironment& aEnvironment, LispPtr& aResult,
 }
 
 
+void LispMathLibName(LispEnvironment& aEnvironment,LispPtr& aResult,
+              LispPtr& aArguments)
+{
+	TESTARGS(1);
+	// can't use NumericLibraryName() inside LookUpStringify() b/c of nonconstant pointer! why is it not a const char* and do I have to write this?
+	const char* library_name_const_ptr = NumericLibraryName();
+	int library_name_length = strlen(library_name_const_ptr);
+	char library_name[library_name_length+1];
+	strcpy(library_name, library_name_const_ptr);
+	// now library_name is a non-constant pointer...
+    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUpStringify(
+		library_name
+	)));
+}
+
+void LispIsPromptShown(LispEnvironment& aEnvironment,LispPtr& aResult,
+              LispPtr& aArguments)
+{
+    TESTARGS(1);
+    InternalBoolean(aEnvironment,aResult, true //FIXME: this must access show_prompt which is a *global* in yacasmain.cpp! argh!
+	);
+}
+
+void LispIsUnix(LispEnvironment& aEnvironment,LispPtr& aResult,
+              LispPtr& aArguments)
+{
+    TESTARGS(1);
+    InternalBoolean(aEnvironment,aResult,
+#ifndef WIN32
+#ifdef HAVE_SYS_SOCKET_H
+		true
+#else
+		false
+#endif
+#endif
+	);
+}
+
 
 void LispIsFunction(LispEnvironment& aEnvironment,LispPtr& aResult,
               LispPtr& aArguments)
