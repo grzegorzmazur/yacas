@@ -8,7 +8,9 @@ epocheapsize 1024000 3145728
 epocstacksize 800000
 
 USERINCLUDE    . .\plat\epoc32
-USERINCLUDE    ..\ramscripts
+//TODO remove
+// We don't need this any more because the files in ramscripts were moved to src/ 
+// USERINCLUDE    ..\ramscripts
 SYSTEMINCLUDE  \epoc32\include \epoc32\include\libc
 
 SOURCE			EPOCSERV.CPP
@@ -30,7 +32,7 @@ SOURCE			arrayclass.cpp patterns.cpp patternclass.cpp
 SOURCE			genericobject.cpp	lispevalhash.cpp mathutil.cpp
 SOURCE			substitute.cpp mathcommands3.cpp
 SOURCE			arggetter.cpp lispplugin.cpp patcher.cpp genericstructs.cpp
-SOURCE			unipoly.cpp archiver.cpp ctokenizer.cpp
+SOURCE			unipoly.cpp archiver.cpp compressedfiles.cpp ctokenizer.cpp
 SOURCE			xmltokenizer.cpp obmalloc.cpp
 
 LIBRARY			euser.lib estlib.lib efsrv.lib cone.lib eikon.lib apparc.lib

@@ -22,7 +22,6 @@
 #include "yacas.h"
 #include "commandline.h"
 #include "standard.h"
-#include "ramdisk.h" //TODO keep this?
 
 #include "GPL_stuff.h"
 
