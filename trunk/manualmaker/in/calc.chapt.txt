@@ -1930,3 +1930,63 @@ Note that Euler's Gamma function $Gamma(x)$ is the capitalized {Gamma} in Yacas.
 	Out> 0.57721566490153286061;
 
 *SEE Gamma, N, CachedConstant
+
+*CMD GoldenRatio --- the Golden Ratio
+*STD
+*CALL
+	N(GoldenRatio)
+	GoldenRatio()
+
+*DESC
+
+These functions compute the Golden Ratio $GoldenRatio <=> 1.6180339887 <=> (1+Sqrt(5))/2 $.
+
+The constant is available symbolically as {GoldenRatio} or numerically as a function {GoldenRatio()}.
+This is a "cached constant" which is recalculated only when precision is increased.
+The numerical value of the constant can also be obtained as {N(GoldenRatio)}.
+
+
+*E.G.
+
+	In> GoldenRatio - 1
+	Out> GoldenRatio-1;
+	In> N(%)
+	Out> 0.6180339887;
+	In> N(1/GoldenRatio)
+	Out> 0.6180339887;
+	In> [Precision(20);V(GoldenRatio());]
+	CachedConstant: Info: constant GoldenRatio is being recalculated at precision 20 
+	Out> 1.6180339887498948482;
+
+
+*SEE N, CachedConstant
+
+
+*CMD Catalan --- Catalan's Constant
+*STD
+*CALL
+	N(Catalan)
+	Catalan()
+
+*DESC
+
+These functions compute Catalan's Constant $Catalan<=>0.9159655941$.
+
+The constant is available symbolically as {Catalan} or numerically as a function {Catalan()}.
+This is a "cached constant" which is recalculated only when precision is increased.
+The numerical value of the constant can also be obtained as {N(Catalan)}.
+The low-level numerical computations are performed by the routine {CatalanConstNum}.
+
+
+*E.G.
+
+	In> N(Catalan)
+	Out> 0.9159655941;
+	In> DirichletBeta(2)
+	Out> Catalan;
+	In> [Precision(20);V(Catalan());]
+	CachedConstant: Info: constant Catalan is being recalculated at precision 20
+	Out> 0.91596559417721901505;
+
+
+*SEE N, CachedConstant
