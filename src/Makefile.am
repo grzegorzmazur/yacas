@@ -3,12 +3,7 @@
 INCLUDES = @INCLTDL@ -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS =  yacas
-
-if GENERATE_ARCHIVE
-  noinst_PROGRAMS = mkfastprimes testnum gencorefunctions compressor
-else
-  noinst_PROGRAMS = mkfastprimes testnum gencorefunctions
-endif
+noinst_PROGRAMS = mkfastprimes testnum gencorefunctions compressor
 
 lib_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
 EXTRA_LTLIBRARIES = libgmpnumbers.la libyacasnumbers.la 
@@ -79,15 +74,12 @@ libmath_la_SOURCES = libmath.cpp
 libmath_la_DEPENDENCIES = yacas gencorefunctions
 
 # assuming the directory below does not have plugins!
-libmath.cpp: yacas ../scripts/base.rep/math.ys gencorefunctions core_yacasmain.h 
-	cd ../scripts ; make packages.ys ; make corefunctions.ys ; cd ../src/
+$(srcdir)/libmath.cpp: yacas $(top_srcdir)/scripts/base.rep/math.ys gencorefunctions core_yacasmain.h 
+	(cd ../scripts && make packages.ys corefunctions.ys)
 	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
 	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
-	./yacas --rootdir ../scripts/ -pc --init compileinit.txt compile.txt
-
-
-
-
+	./yacas --rootdir $(top_srcdir)/scripts/ -pc --init compileinit.txt compile.txt
+	mv libmath.cpp $(srcdir)/libmath.cpp
 
 EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp \
 	epocyacas.hrh epocyacas.mmp epocyacasconsole.mmp \
@@ -153,6 +145,8 @@ clean-compile:
 	test -z "libyacasdebug.a" || rm -rf libyacasdebug.a
 	test -z "yacasdebug" || rm -rf yacasdebug
 
+# 'make install' should also install all header files
+
 install-data-local: yacas.h
 	$(mkinstalldirs) $(yacas_include)/
 	$(mkinstalldirs) $(yacas_lib)/
@@ -178,8 +172,6 @@ install-data-local: yacas.h
 version.h: ../config.h
 	echo "#define VERSION \"$(VERSION)\"" > version.h 
 
-if GENERATE_ARCHIVE
-
 noinst_DATA = scripts.dat
 checkTARGETS = check-archive
 compressor_SOURCES = compressor.cpp filescanner.cpp minilzo.c filescanner.h minilzo.h 
@@ -203,10 +195,6 @@ install-exec-local: scripts.dat
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
 	$(INSTALL_PROGRAM) scripts.dat $(DESTDIR)$(libdir)/`echo scripts.dat|sed '$(transform)'`
-
-endif
-
-
 
 
 # 
