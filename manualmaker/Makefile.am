@@ -49,7 +49,7 @@ EXTRA_DIST = \
 	latex $< > /dev/null
 
 %.ps: %.dvi
-	dvips -o $@ $<
+	dvips -q -o $@ $<
 	@echo Documentation created: $*.ps
 
 %.pdf: %.dvi
