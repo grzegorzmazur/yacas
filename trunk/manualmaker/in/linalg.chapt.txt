@@ -1419,3 +1419,36 @@ be recognized as such and a faster algorithm will be used.
 	In> MatrixSolve(A,b);
 	Out> {1,2,3,4};
 
+*CMD Cholesky --- find the Cholesky Decomposition
+*STD
+*CALL
+	Cholesky(A)
+
+*PARMS
+
+{A} -- a square positive definite matrix
+
+*DESC
+
+{Cholesky} returns a upper triangular matrix {R} such that {Transpose(R)*R = A}.
+The matrix {A} must be positive definite, {Cholesky} will notify the user if the matrix
+is not. Some families of positive definite matrices are all symmetric matrices, diagonal
+matrices with positive elements and Hilbert matrices.
+
+*E.G.
+
+	In> A:={{4,-2,4,2},{-2,10,-2,-7},{4,-2,8,4},{2,-7,4,7}}
+	Out> {{4,-2,4,2},{-2,10,-2,-7},{4,-2,8,4},{2,-7,4,7}};
+	In> R:=Cholesky(A);
+	Out> {{2,-1,2,1},{0,3,0,-2},{0,0,2,1},{0,0,0,1}};
+	In> Transpose(R)*R = A
+	Out> True;
+	In> Cholesky(4*Identity(5))
+	Out> {{2,0,0,0,0},{0,2,0,0,0},{0,0,2,0,0},{0,0,0,2,0},{0,0,0,0,2}};
+	In> Cholesky(HilbertMatrix(3))
+	Out> {{1,1/2,1/3},{0,Sqrt(1/12),Sqrt(1/12)},{0,0,Sqrt(1/180)}};
+	In> Cholesky(ToeplitzMatrix({1,2,3}))
+	In function "Check" :
+	CommandLine(1) : "Cholesky: Matrix is not positive definite"
+
+*SEE IsSymmetric, IsDiagonal, Diagonal
