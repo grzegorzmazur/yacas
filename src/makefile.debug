@@ -19,7 +19,7 @@ OBJS = anumber-d.o arggetter-d.o arrayclass-d.o commandline-d.o \
 	patternclass-d.o patterns-d.o platmath-d.o standard-d.o                \
 	stdcommandline-d.o stdfileio-d.o stdstubs-d.o obmalloc-d.o stringio-d.o             \
 	substitute-d.o tokenizer-d.o  ctokenizer-d.o xmltokenizer-d.o         \
-	yacasapi-d.o $(NUMBER_LIB) unipoly-d.o elfdll-d.o obmalloc-d.o
+	yacasapi-d.o $(NUMBER_LIB) unipoly-d.o elfdll-d.o obmalloc-d.o archiver-d.o 
 
 .SUFFIXES: .cpp 
 
