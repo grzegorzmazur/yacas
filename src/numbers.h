@@ -5,6 +5,12 @@
 #include "lispenvironment.h"
 #include "yacasbase.h"
 
+//TODO FIXME : this define is just temporary, to be able to easily enable/disable new numerics
+//TODO FIXME : code, but still be able to revert back to stable code. But this has to be removed
+//TODO FIXME : at a certain stage.
+#define NO_USE_BIGFLOAT
+
+
 
 /// Create a internal number object from an ascii string.
 void* AsciiToNumber(LispCharPtr aString,LispInt aPrecision);

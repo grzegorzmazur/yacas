@@ -24,11 +24,14 @@
 #define InternalEval aEnvironment.iEvaluator->Eval
 
 
-
 void LispLexCompare2(LispEnvironment& aEnvironment, LispPtr& aResult,
                      LispPtr& aArguments,
                      LispBoolean (*lexfunc)(LispCharPtr f1, LispCharPtr f2, LispHashTable& aHashTable,LispInt aPrecision),
+#ifndef NO_USE_BIGFLOAT
+                     LispBoolean (*numfunc)(BigNumber& n1, BigNumber& n2)
+#else
                      LispBoolean (*numfunc)(LispCharPtr f1, LispCharPtr f2, LispHashTable& aHashTable,LispInt aPrecision)
+#endif
                     );
 
 
@@ -187,7 +190,6 @@ void LispMacroClearVar(LispEnvironment& aEnvironment,
 /* StrCompare returns f1-f2: if f1 < f2 it returns -1, if f1=f2 it
  returns 0, and it returns 1 if f1>f2
  */
-
 static LispBoolean LexLessThan(LispCharPtr f1, LispCharPtr f2, LispHashTable& aHashTable,LispInt aPrecision)
 {
     return (StrCompare(f1, f2)<0);
@@ -198,54 +200,93 @@ static LispBoolean LexGreaterThan(LispCharPtr f1, LispCharPtr f2, LispHashTable&
     return (StrCompare(f1, f2)>0);
 }
 
+#ifndef NO_USE_BIGFLOAT
+static LispBoolean BigLessThan(BigNumber& n1, BigNumber& n2)
+{
+LispString str;
+n1.ToString(str,10,10);
+n2.ToString(str,10,10);
+
+  return n1.LessThan(n2);
+}
+static LispBoolean BigGreaterThan(BigNumber& n1, BigNumber& n2)
+{
+  return !(n1.LessThan(n2) || n1.Equals(n2));
+}
+#endif
 
 void LispLessThan(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
+#ifndef NO_USE_BIGFLOAT
+    LispLexCompare2(aEnvironment, aResult, aArguments, LexLessThan,BigLessThan);
+#else
     LispLexCompare2(aEnvironment, aResult, aArguments, LexLessThan,LessThan);
+#endif
 }
 
 void LispGreaterThan(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
+#ifndef NO_USE_BIGFLOAT
+    LispLexCompare2(aEnvironment, aResult, aArguments, LexGreaterThan, BigGreaterThan);
+#else
     LispLexCompare2(aEnvironment, aResult, aArguments, LexGreaterThan, GreaterThan);
+#endif
 }
 
 
 void LispLexCompare2(LispEnvironment& aEnvironment, LispPtr& aResult,
                      LispPtr& aArguments,
                      LispBoolean (*lexfunc)(LispCharPtr f1, LispCharPtr f2, LispHashTable& aHashTable,LispInt aPrecision),
+#ifndef NO_USE_BIGFLOAT
+                     LispBoolean (*numfunc)(BigNumber& n1, BigNumber& n2)
+#else
                      LispBoolean (*numfunc)(LispCharPtr f1, LispCharPtr f2, LispHashTable& aHashTable,LispInt aPrecision)
+#endif
                     )
 {
     TESTARGS(3);
-
-    LispStringPtr str1;
-    LispStringPtr str2;
-
     LispPtr result1;
     LispPtr result2;
     InternalEval(aEnvironment, result1, Argument(aArguments,1));
     InternalEval(aEnvironment, result2, Argument(aArguments,2));
-
+    LispBoolean cmp;
+#ifndef NO_USE_BIGFLOAT
+    RefPtr<BigNumber> n1 = result1.Get()->Number(aEnvironment.Precision());
+    RefPtr<BigNumber> n2 = result2.Get()->Number(aEnvironment.Precision());
+    if (n1.Ptr() != NULL && n2.Ptr() != NULL)
+    {
+      cmp =numfunc(*n1.Ptr(),*n2.Ptr());
+    }
+#else
+    LispStringPtr str1;
+    LispStringPtr str2;
     str1 = result1.Get()->String();
     str2 = result2.Get()->String();
     CHK_ARG(str1 != NULL ,1);
     CHK_ARG(str2 != NULL, 2);
-
-    LispBoolean cmp;
     if (IsNumber(str1->String(),LispTrue) &&
         IsNumber(str2->String(),LispTrue))
     {
-        cmp =numfunc(str1->String(),str2->String(),
-                             aEnvironment.HashTable(),
-                             aEnvironment.Precision());
+      cmp =numfunc(str1->String(),str2->String(),
+                            aEnvironment.HashTable(),
+                            aEnvironment.Precision());
     }
+#endif
     else
     {
-        cmp =lexfunc(str1->String(),str2->String(),
-                             aEnvironment.HashTable(),
-                             aEnvironment.Precision());
+#ifndef NO_USE_BIGFLOAT
+      LispStringPtr str1;
+      LispStringPtr str2;
+      str1 = result1.Get()->String();
+      str2 = result2.Get()->String();
+      CHK_ARG(str1 != NULL ,1);
+      CHK_ARG(str2 != NULL, 2);
+#endif
+      cmp =lexfunc(str1->String(),str2->String(),
+                            aEnvironment.HashTable(),
+                            aEnvironment.Precision());
     }
     
     InternalBoolean(aEnvironment,aResult, cmp);
@@ -1344,6 +1385,17 @@ void LispIsNumber(LispEnvironment& aEnvironment,LispPtr& aResult,
     TESTARGS(2);
     LispPtr result;
     InternalEval(aEnvironment, result, Argument(aArguments,1));
+
+#ifndef NO_USE_BIGFLOAT
+    if (result.Get()->Number(aEnvironment.Precision()) == NULL)
+    {
+        InternalFalse(aEnvironment,aResult);
+    }
+    else
+    {
+        InternalTrue(aEnvironment,aResult);
+    }
+#else
     if (result.Get()->String() == NULL)
     {
         InternalFalse(aEnvironment,aResult);
@@ -1353,6 +1405,7 @@ void LispIsNumber(LispEnvironment& aEnvironment,LispPtr& aResult,
         InternalBoolean(aEnvironment,aResult,
                         IsNumber(result.Get()->String()->String(),LispTrue));
     }
+#endif
 }
 
 void LispIsInteger(LispEnvironment& aEnvironment,LispPtr& aResult,

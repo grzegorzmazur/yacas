@@ -62,16 +62,15 @@
 
 #define InternalEval aEnvironment.iEvaluator->Eval
 
-#define USE_BIGFLOAT
 
 
-#ifdef USE_BIGFLOAT
+#ifndef NO_USE_BIGFLOAT
 void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispPtr& aArguments, LispInt aArgNr)
 {
     LispPtr result;
     InternalEval(aEnvironment, result, Argument(aArguments,aArgNr));
-    BigNumber *num = result.Get()->Number(aEnvironment.Precision());
-    CHK_ARG(num != NULL,aArgNr);
+    RefPtr<BigNumber> num = result.Get()->Number(aEnvironment.Precision());
+    CHK_ARG(num.Ptr() != NULL,aArgNr);
     x = num;
 }
 #endif // USE_BIGFLOAT
@@ -147,7 +146,7 @@ void LispArithmetic2(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispMultiply(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
-#ifdef USE_BIGFLOAT
+#ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aArguments, 1);
@@ -165,12 +164,18 @@ void LispAdd(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
     LispInt length = InternalListLength(aArguments);
     if (length == 2)
-    {//FIXME
+    {
+#ifndef NO_USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      GetNumber(x,aEnvironment, aArguments, 1);
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),x.Ptr()));
+      return;
+#endif
         LispArithmetic1(aEnvironment, aResult, aArguments, PlusFloat);
     }
     else
     {
-#ifdef USE_BIGFLOAT
+#ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aArguments, 1);
@@ -191,10 +196,30 @@ void LispSubtract(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispInt length = InternalListLength(aArguments);
     if (length == 2)
     {
+#ifndef NO_USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      GetNumber(x,aEnvironment, aArguments, 1);
+      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      z->Negate(*x.Ptr());
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      return;
+#endif
         LispArithmetic1(aEnvironment, aResult, aArguments, NegateFloat);
     }
     else
     {
+#ifndef NO_USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      RefPtr<BigNumber> y;
+      GetNumber(x,aEnvironment, aArguments, 1);
+      GetNumber(y,aEnvironment, aArguments, 2);
+      BigNumber yneg;
+      yneg.Negate(*y.Ptr());
+      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      z->Add(*x.Ptr(),yneg,aEnvironment.Precision());
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      return;
+#endif // USE_BIGFLOAT
         LispArithmetic2(aEnvironment, aResult, aArguments, SubtractFloat);
     }
 }
@@ -203,97 +228,98 @@ void LispSubtract(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispDivide(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
+//FIXME Serge, what was the deal again with divide, floats and integers mixed in the same function?
     LispArithmetic2(aEnvironment, aResult, aArguments, DivideFloat);
 }
 
 
 void LispSin(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME move to scripts
     LispArithmetic1(aEnvironment, aResult, aArguments, SinFloat);
 }
 
 void LispCos(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME move to scripts
     LispArithmetic1(aEnvironment, aResult, aArguments, CosFloat);
 }
 
 void LispTan(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME move to scripts
     LispArithmetic1(aEnvironment, aResult, aArguments, TanFloat);
 }
 
 void LispArcSin(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME move to scripts
     LispArithmetic1(aEnvironment, aResult, aArguments, ArcSinFloat);
 }
 
 void LispArcCos(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME move to scripts
     LispArithmetic1(aEnvironment, aResult, aArguments, ArcCosFloat);
 }
 
 void LispArcTan(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME move to scripts
     LispArithmetic1(aEnvironment, aResult, aArguments, ArcTanFloat);
 }
 
 void LispSqrt(LispEnvironment& aEnvironment, LispPtr& aResult,
               LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, SqrtFloat);
 }
 
 void LispFloor(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, FloorFloat);
 }
 
 void LispCeil(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, CeilFloat);
 }
 
 void LispAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, AbsFloat);
 }
 
 void LispMod(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, ModFloat);
 }
 
 void LispDiv(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, DivFloat);
 }
 
 void LispLog(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, LnFloat);
 }
 
 void LispExp(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, ExpFloat);
 }
 
 void LispPower(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, PowerFloat);
 }
 
@@ -301,14 +327,14 @@ void LispPower(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 void LispFac(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, LispFactorial);
 }
 
 
 void LispFastIsPrime(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatIsPrime);
 }
 
@@ -316,79 +342,79 @@ void LispFastIsPrime(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 void LispFastSin(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatSin);
 }
 
 void LispFastCos(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatCos);
 }
 void LispFastTan(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatTan);
 }
 
 void LispFastArcSin(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatArcSin);
 }
 void LispFastArcCos(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatArcCos);
 }
 void LispFastArcTan(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatArcTan);
 }
 void LispFastExp(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatExp);
 }
 void LispFastLog(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatLn);
 }
 
 void LispFastPower(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, PlatPower);
 }
 
 void LispFastSqrt(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatSqrt);
 }
 
 void LispFastFloor(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatFloor);
 }
 
 void LispFastCeil(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatCeil);
 }
 void LispFastMod(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, PlatMod);
 }
 
 void LispFastAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatAbs);
 }
 
@@ -396,28 +422,28 @@ void LispFastAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 void LispShiftLeft(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, ShiftLeft);
 }
 void LispShiftRight(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, ShiftRight);
 }
 
 void LispBitAnd(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, BitAnd);
 }
 void LispBitOr(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, BitOr);
 }
 void LispBitXor(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, BitXor);
 }
 
@@ -425,12 +451,12 @@ void LispBitXor(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 void LispFromBase(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, FromBase,LispTrue);
 }
 void LispToBase(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{
+{//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, ToBase);
 }
 
