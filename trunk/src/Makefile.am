@@ -7,6 +7,8 @@ noinst_PROGRAMS = mkfastprimes testnum gencorefunctions
 lib_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
 EXTRA_LTLIBRARIES = libgmpnumbers.la libyacasnumbers.la 
 
+pkglib_LTLIBRARIES = libmath.la
+
 noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	infixparser.h lispassert.h lispatom.h lispcleanupstack.h \
 	lispenvironment.h lisperror.h lispeval.h lispevalhash.h \
@@ -66,6 +68,14 @@ libgmpnumbers_la_SOURCES = gmpnumbers.cpp numbers.cpp
 libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 
 
+libmath_la_SOURCES = libmath.cpp
+libmath_la_DEPENDENCIES = yacas
+
+libmath.cpp: ../scripts/base.rep/math.ys
+	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
+	./yacas --rootdir ../scripts/ -pc compile.txt
+
+
 EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp \
 	epocyacas.hrh epocyacas.mmp epocyacasconsole.mmp \
 	epocstubs.cpp grower.inl lisphash.inl lispobject.inl \
@@ -105,7 +115,8 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	win32yacasdllresource.h yacasdll.dsp yacasdll.dsw yacasdll.rc \
 	setup.py yacasc.i yacas.py \
 	epoccli.cpp epoccli.h epoccli.mmp epocclsv.h epocserv.cpp epocserv.h \
-	epocserv.mmp yacas.rss elfdll.cpp
+	epocserv.mmp yacas.rss elfdll.cpp \
+	libmath.cpp
 
 # list some extra generated files
 CLEANFILES = fastprimes.c core_yacasmain.h

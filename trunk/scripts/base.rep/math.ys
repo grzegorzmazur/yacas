@@ -1,0 +1,41 @@
+
+/* This file contains some math functions that can be defined based on the
+  BigNumber API. This file should only use the features supported by the
+  compiler, as it gets compiled to a plugin for speed.
+ */
+
+Defun("Trigonometry",{x,i,sum,term})
+[
+  Local(x2,orig);
+  Set(x2,MathMultiply(x,x));
+  While(Equals(Equals(term,0),False))
+  [
+    Set(term,MathMultiply(term,x2));
+    Set(i,MathAdd(i,1.0));
+    Set(term,MathDivide(term,i));
+    Set(i,MathAdd(i,1.0));
+    Set(term,MathDivide(MathSubtract(0,term),i));
+    Set(sum, MathAdd(sum, term));
+  ];
+  sum;
+];
+
+Defun("MySin",{x})Trigonometry(x,1.0,x,x);
+Defun("MyCos",{x})Trigonometry(x,0.0,1.0,1.0);
+
+Defun("MyArcSin",{int1})
+[
+  Local(result);
+	Set(result,FastArcSin(int1));
+  Local(x,q,s,c);
+  Set(q,MathSubtract(MySin(result),int1));
+  While(Equals(Equals(q,0),False))
+  [
+		Set(s,MathSubtract(int1,MySin(result)));
+    Set(c,MyCos(result));
+    Set(q,MathDivide(s,c));
+    Set(result,MathAdd(result,q));
+  ];
+  result;
+];
+

@@ -2,9 +2,11 @@
 Set(DefFileList, {
 "array.rep/code.ys",
 "assoc.rep/code.ys",
+"base.rep/math.ys",
 "c_form.rep/code.ys",
 "codecheck.rep/interface.ys",
 "codecheck.rep/process.ys",
+"compile.rep/compilecpp.ys",
 "complex.rep/code.ys",
 "constants.rep/code.ys",
 "controlflow.rep/code.ys",

@@ -13,6 +13,27 @@ Set(MultiNomialDriver,"multivar.rep/sparsenomial.ys");
 // syntax must be loaded first
 Use("stdopers.ys");
 
+/* Set of functions to define very simple functions. There are scripts that can
+   be compiled to plugins. So Yacas either loads the plugin, or loads the 
+   scripts at this point. The functions in these plugins need to be defined with 
+   these "Defun" functions.
+ */
+DefMacroRuleBase("Defun",{func,args,body});
+Rule("Defun",3,0,True)
+[
+  Local(nrargs);
+  Set(nrargs,Length(@args));
+  Retract(@func, `(@nrargs));
+  RuleBase(@func,@args);
+  Local(fn,bd);
+  Set(fn,Hold(@func)); Set(bd,Hold(@body));
+  `Rule(@fn, @nrargs, 0,True)(@bd);
+];
+
+// And here is one example plugin call: either load the plugin, or if that fails
+// load the script that is used to compile the plugin instead.
+TrapError(DllLoad("libmath"),Use("base.rep/math.ys"));
+
 Use("patterns.rep/code.ys");
 
 // at this point <-- can be used
