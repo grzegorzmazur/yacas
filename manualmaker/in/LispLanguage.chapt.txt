@@ -956,6 +956,277 @@ and it needs to keep running after failure, but it was not designed
 for that. {Yacas} is a computer algebra system, not a controlling
 system for a Space Shuttle.
 
+		Type systems
+
+Even though the Lisp interpreter discussed so far does not support
+typing, when we discuss compiled Lisp typing is considered, and
+thus the subject warrants some discussion.
+
+The Lisp interpreter described so far is untyped, meaning that
+everything is of one type, {OBJECT}. What happens in fact is
+that the interpreter executes functions, and these functions
+internally do conversions. When calling an arithmetic operator
+like {+}, arguments of type {OBJECT} are converted to {NUMBER},
+the addition is performed, and the result is converted back from
+type {NUMBER} to {OBJECT}. Untyped systems are inefficient this
+way.
+
+The compiled Lisp dialect that will be developed will allow for 
+typed arguments and functions; functions can only accept arguments
+of a certain type, and return a result of a specific type. The
+typed Lisp dialect will still allow for untyped (eg. {OBJECT})
+arguments, for the lazy programmer (but as we shall see later, the 
+lazy programmer is in for a few nasty surprises: slower code and
+more typing required, as a lot of manually coded type conversions
+will need to be made). With the simple typing system we will use, 
+no automatic type conversions will be made. They will have to be 
+done manually.
+
+The system will consist of various packages involving operations
+on objects. For instance, there will be a package that performs
+addition on integers and real numbers, and there will be a package
+that deals with addition of vectors and matrices. The same will
+hold for for instance complex numbers. The addition
+operator in the global environment will then be responsible for
+dispatching an addition operator to the appropriate addition operator
+in the appropriate environment. For instance, there can be 
+an {AddIntegers} operator, and an {AddComplexNumbers} operator,
+and the invoking addition operator can first check argument types
+before invoking the correct operator. This is called data-directed 
+programming. 
+
+Complications arise when two objects of different types are added.
+When adding an integer to a real number, one cannot use the operators
+for adding integers or real numbers themselves. One solution for this
+is to first convert the integer to a real number type, and then invoke
+the addition of real numbers operator. For numeric types, this
+works well. Numbers can be put in what is called a tower of types:
+integers are a sub-type of rational numbers, which are a sub-type of
+real numbers, which are a sub-type of complex numbers. A number
+can always be moved up in the tower of types. An integer is just
+a special case of a complex number, for instance. So when adding
+an integer to a complex number, one only needs to convert from 
+the integer to complex. This can be done in steps, so for {n} types
+only {n-1} convertors are needed; {IntegerToRational}, {RationalToReal},
+etcetera.
+
+Typing systems are not always this simple. For example, a diagonal
+matrix is a sub-type of the generic set of all matrices, but 
+some diagonal matrices are also sub-types of the unitary matrices.
+So a matrix can have more than one super-type. Super-types can
+have multiple sub-types too. In this case, choosing the right
+conversion is not trivial. The choice can be based on some heuristic;
+when doing a specific type of operation, first try to convert the
+matrix to a type for which there is the most efficient algorithm
+for performing that action, otherwise try another type.
+
+It gets worse; for polynomials, $ x^2-y $ can be a multivariate 
+polynomial in {(x,y)} with integer coefficients, or a univariate
+polynomial in {x} with coefficients which are univariate polynomials in {y},
+or a univariate polynomial in {y} with coefficients which are univariate 
+polynomials in {x}. There might be cases where the system can not decide
+which type to take, and the user will have to help the system by telling
+what type to take.
+
+Types can be down-cast to sub-types too, if possible. This is sometimes
+necessary. Suppose one has two objects of type {OBJECT}, as entered
+by the user. The user wants to perform a division operation. The
+system can try to drop the obect to the lowest possible type, by
+first trying to convert to integer, and if this doesn't work,
+see if the objects can be converted to objects of 
+type univariate polynomial, and otherwise multivariate polynomial,
+etcetera. The trick is to have a routine that accepts univariate
+polynomials in internal representation, performs the operation, and
+returns the result of the operation in internal representation.
+When the operation is called with generic objects as arguments,
+if they can be converted to internal representation for univariate
+polynomials first, this can be done, and the result of the operation
+converted back to generic object type (a form the user could have
+typed in). The advantage of this is an object is converted once,
+when passed to a function. The result of consequtive function
+calls can then use the object in the type it is already in, without
+having to convert types each time, and the final result is converted
+back. This way types are only converted twice; at the beginning
+and at the end.
+
+		Data structures as types in Lisp
+
+A nice way to work with data structures is to hide them behind
+what are called <i>constructors</i> and <i>selectors</i>. For example,
+suppose we need a type for complex numbers. We could make a
+function {make-complex}, which is a constructor, and {real-part}
+and {imag-part}. We don't need to discuss the internal representation
+of the complex number, as all we need to know is how to make one,
+and how to obtain all the information there is to know about the
+object.
+
+Interestingly, often when dealing with mathematical objects, there
+are properties that always need to hold for such objects. In the case
+of {make-complex}, {real-part} and {imag-part}, for a complex
+number {z}, the following should always be true:
+
+	(equal z (make-complex (real-part z) (imag-part z)))
+
+Data structures are a powerful way to abstract types away.
+A data structure can be defined for for instance rational numbers,
+matrices, etcetera. Also {cons}, {first} and {rest} are such
+a combination, where {cons} is the constructor, and {first} and
+{rest} are the selectors. The result of evaluating {(cons a b)}
+is an object for which {first} returns {a}, and {rest} returns {b}.
+
+Suppose we decide to represent complex numbers as {(complex real imag)}.
+Then the following routines are constructors and selectors:
+
+	(defun make-complex (r i) 
+	  (list 'complex r i)
+	)
+	(defun real-part (z) (second z))
+	(defun imag-part (z) (third z))
+
+Then this allows for the following interaction:
+
+	In> (setf z (make-complex 2 3))
+	Out> z
+	In> (real-part z)
+	Out> 2
+	In> (imag-part z)
+	Out> 3
+
+We can define a predicate to check if an object is complex as:
+
+	(defun complexp(z) 
+	  (and (listp z)(equal 'complex (first z)))
+	)
+
+And with that a simple addition operation:
+
+	(defun add (x y) 
+	  (cond
+	    ( (integerp x) (+ x y) )
+	    ( (complexp x) 
+	      (make-complex 
+	        (add (real-part x) (real-part y))
+	        (add (imag-part x) (imag-part y))
+	) ) ) )	
+
+which allows for the interaction:
+
+	In> (add (make-complex 2 3) (make-complex 4 5))
+	Out> (complex 6 8 )
+
+This is an example of data-driven programming; invoking different
+routines for different data types. Also note we use the {add}
+operation for the components of the complex data object. This
+has powerful consequences: it means that a complex object can
+have components of arbitrary type, as long as there is an addition
+operation defined for it in the {add} function. The complex
+data object is in effect a parametric type: {(complex <type> <type>)},
+where {<type>} can be anything, integers, matrices, etcetera.
+{<type>} is a type parameter for this complex data type.
+
+Types in general aid in two ways: to check for correctness of code,
+and to give information to the compiler to generate more efficient
+code. This also holds for parametric types. Suppose we have a 
+vector object. Pseudo-code for adding the two vectors could look
+like this:
+
+	vector add-vectors(v1,v2)
+	   vector result = zero-vector
+	   for i from 1 to degree(v1,v2)
+	      result[i] := add(v1[i],v2[i])
+	   return result
+
+Note we use the {add} operation here for adding the components of
+a vector. Suppose the {add} operation was then defined as:
+
+	object add(x,y)
+	  if (object-type(x) = integer)
+	    return add-integers(x,y)
+	  if (object-type(x) = real)
+	    return add-reals(x,y)
+	  if (object-type(x) = complex)
+	    return add-complex(x,y)
+	  if (object-type(x) = vector)
+	    return add-vectors(x,y)
+  
+Now the important thing to notice is that the {add} function is
+called from within the loop of {add-vectors}, and if the vectors
+in question contain a billion items, {add} gets called a billion
+times. However, {add} checks the type of the object to be added
+each time it is called, and it is called from the inner loop!
+The {add-vectors} function can be written with the {add} operation 
+inlined into it:
+
+	vector add-vectors(v1,v2)
+	   vector result = zero-vector
+	   for i from 1 to degree(v1,v2)
+	     if (object-type(v1[i]) = integer)
+	       result[i] = add-integers(v1[i],v2[i])
+	     if (object-type(v1[i]) = real)
+	       result[i] = add-reals(v1[i],v2[i])
+	     if (object-type(v1[i]) = complex)
+	       result[i] = add-complex(v1[i],v2[i])
+	     if (object-type(v1[i]) = vector)
+	       result[i] = add-vectors(v1[i],v2[i])
+	   return result
+
+However, because all the type of all the vector components can
+be expected to be the same, this can be improved by pulling the
+if statements outside of the loop, so the if statements are
+only performed once in stead of a billion times. This is a
+common way to optimize code, and is often done by hand. There
+is no reason, however, why a computer could not do this optimization.
+When the {add} operation is inlined, if the compiler knows that
+the if statements will yield the same results every time, it can
+pull them outside of the loop, as follows:
+
+	vector add-vectors(v1,v2)
+	   vector result = zero-vector
+	   if (object-type(v1[i]) = integer)
+	     for i from 1 to degree(v1,v2)
+	       result[i] = add-integers(v1[i],v2[i])
+	   if (object-type(v1[i]) = real)
+	     for i from 1 to degree(v1,v2)
+	       result[i] = add-reals(v1[i],v2[i])
+	   if (object-type(v1[i]) = complex)
+	     for i from 1 to degree(v1,v2)
+	       result[i] = add-complex(v1[i],v2[i])
+	   if (object-type(v1[i]) = vector)
+	     for i from 1 to degree(v1,v2)
+	       result[i] = add-vectors(v1[i],v2[i])
+	   return result
+
+
+If a compiler knows beforehand that two vectors of type {vector<integer>},
+it can devise a special function that will only work on objects
+of type {vector<integer>}, but this is already a lot less useful.
+The if statements have already been pulled out of the loop, so
+they will not be performed a billion times for an addition of
+two vectors both with a billion components. 
+
+The above considerably speeds up the operation. The problem is that
+it is more natural to place the if statements in the {add}
+function, so it can be used in many places, when adding complex
+numbers, matrices, etcetera. But inlining it allows the compiler
+to optimize the if statements away by pulling them outside of the
+loop. In most cases, even if not in a loop, the compiler can 
+optimize code away if inlined, by using typing information.
+
+		Typing in Yacas
+
+Type conversions are considered to be a 'policy' which is best
+implemented in the final Yacas system, through some strategy
+for conversion. The code that does the final symbolic manipulation
+can take care of converting types, as appropriate. The implementation
+of the simplification algorithm that defines {Yacas} can contain
+the heuristics of type conversion.
+
+Inlining functions as described above is automatically done on
+macros. However, macros are slow to execute in the interpreter,
+so a possible feature of a compiler could be to tell it a function
+can be inlined. The variable scoping rules can still hold; the body
+should not be allowed to access variables in its calling environment.
+
 
 			Compiling Lisp code
 
