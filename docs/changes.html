@@ -12,6 +12,11 @@
   <li> A better Solve() function. (JN)
   <li> More intelligent parsing: combined operators like ==- and :=-
        and such are now handled dynamically in the infix parser.
+  <li> changed evaluation calling sequence for functions ar kernel
+       level, so that arguments have to be evaluated *before* they
+       are passed to the function (AP).
+  <li> some small changes to plugin structure to make it compile
+       on a MacOSX again (AP).
 </ul>
 
 <h1>Release of version 1.0.54 (January 18th, 2003)</h1>

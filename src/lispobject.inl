@@ -5,29 +5,44 @@
 
 inline void LispPtr::DestroyPrevious()
 {
-    if (iNext != NULL)
+  if (iNext != NULL)
+  {
+    if (!iNext->DecreaseRefCount())
     {
-        if (!iNext->DecreaseRefCount())
-	{
-            delete iNext;
+      delete iNext;
 #ifdef YACAS_DEBUG
-            DecNrObjects();
+      DecNrObjects();
 #endif
-        }
     }
+  }
 }
+
 
 inline void LispPtr::DoSet(LispObject* aNext)
 {
-    iNext = aNext;
-    if (iNext != NULL)
-        iNext->IncreaseRefCount();
+  iNext = aNext;
+  if (iNext != NULL)
+    iNext->IncreaseRefCount();
 }
 
 inline void LispPtr::Set(LispObject* aNext)
 {
-    DestroyPrevious();
-    DoSet(aNext);
+  // first increase the reference count of the new object, because if we
+  // are setting a LispPtr to itself, we don't want to prematurely delete
+  // the object.
+  if (aNext != NULL)
+    aNext->IncreaseRefCount();
+  if (iNext != NULL)
+  {
+    if (!iNext->DecreaseRefCount())
+    {
+      delete iNext;
+#ifdef YACAS_DEBUG
+      DecNrObjects();
+#endif
+    }
+  }
+  iNext = aNext;
 }
 
 
@@ -107,5 +122,25 @@ inline void LispIterator::GoSub()
     Check(iPtr->Get() != NULL,KLispErrInvalidArg);
     Check(iPtr->Get()->SubList() != NULL,KLispErrNotList);
     iPtr = iPtr->Get()->SubList();
+}
+
+
+
+
+inline LispInt LispPtrArray::Size()
+{
+    return iSize;
+}
+
+inline LispPtr& LispPtrArray::GetElement(LispInt aItem)
+{
+    LISPASSERT(aItem>=0 && aItem<iSize);
+    return iArray[aItem];
+}
+
+inline void LispPtrArray::SetElement(LispInt aItem,LispObject* aObject)
+{
+    LISPASSERT(aItem>=0 && aItem<iSize);
+    iArray[aItem].Set(aObject);
 }
 

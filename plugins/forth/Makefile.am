@@ -1,7 +1,9 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
 INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/
-pkglib_LTLIBRARIES = forth.la
+
+# noinst_ in stead of pkglib_ because it doesn't currently work on MacOSX 
+noinst_LTLIBRARIES = forth.la
 forth_la_SOURCES = forthplugin.cc forthplugin.h forth.cc forth.h forthpluginapi.stub
 forth_la_LIBADD = forthpluginapi.lo
 forth_la_LDFLAGS = -module -avoid-version -no-undefined

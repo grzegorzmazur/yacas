@@ -36,7 +36,7 @@
 //10 # n_IsNumber == m_IsNumber <-- n=m;
 
 // bug fix: Equals(1, 1.0) returns False and we want 1 <= 1.0 to return True.
-5 # n_IsNumber <= 0 <-- MathNot(GreaterThan(n, 0));
+5 # n_IsNumber <= 0 <-- Not(GreaterThan(n, 0));
 10 # n_IsNumber <= m_IsNumber <-- (MathSubtract(n,m)<=0);
 
 20 # (n1_IsNumber/n2_IsNumber) <= (m1_IsNumber/m2_IsNumber) <--
@@ -55,7 +55,7 @@
 1000 # _n <= _m <-- (n<m) Or (n=m);
 
 // see above for <=
-5 # n_IsNumber >= 0 <-- MathNot(LessThan(n, 0));
+5 # n_IsNumber >= 0 <-- Not(LessThan(n, 0));
 10 # n_IsNumber >= m_IsNumber <-- (MathSubtract(n,m)>=0);
 
 20 # (n1_IsNumber/n2_IsNumber) >= (m1_IsNumber/m2_IsNumber) <--

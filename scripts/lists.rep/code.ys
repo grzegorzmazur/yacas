@@ -4,7 +4,7 @@ Function("Contains",{list,element})
 [
   Local(result);
   Set(result,False);
-  While(MathAnd(Not(result), Not(Equals(list, {}))))
+  While(And(Not(result), Not(Equals(list, {}))))
   [
     If(Equals(Head(list),element),
       Set(result, True),
@@ -19,7 +19,7 @@ Function("Find",{list,element})
   Local(result,count);
   Set(result, -1);
   Set(count, 1);
-  While(MathAnd(result<0, Not(Equals(list, {}))))
+  While(And(result<0, Not(Equals(list, {}))))
   [
     If(Equals(Head(list), element),
       Set(result, count)
@@ -36,7 +36,7 @@ Function("FindPredicate",{list,predicate})
   Local(result,count);
   Set(result, -1);
   Set(count, 1);
-  While(MathAnd(result<0, Not(Equals(list, {}))))
+  While(And(result<0, Not(Equals(list, {}))))
   [
     If(Apply(predicate,{Head(list)}),
       Set(result, count)

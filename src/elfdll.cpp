@@ -1,13 +1,12 @@
 
-#if 1
-
 #ifdef HAVE_CONFIG_H
 #include "../config.h"
 #endif
 
 #if HAVE_DLFCN_H
+
+
 #include <dlfcn.h>
-#endif
 #include <stdio.h>
 
 #include "yacasprivate.h"
@@ -16,7 +15,7 @@
 #include "lispassert.h"
 #include "platdll.h"
 
-LispInt ElfDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
+LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
 {
 #if HAVE_DLFCN_H
     iDllFileName = aDllFile;
@@ -42,7 +41,7 @@ printf("plugin found\n");
 #endif
     return NULL;
 }
-LispInt ElfDll::Close(LispEnvironment& aEnvironment)
+LispInt LtDll::Close(LispEnvironment& aEnvironment)
 {
     if (iPlugin)
     {
@@ -54,7 +53,7 @@ LispInt ElfDll::Close(LispEnvironment& aEnvironment)
     return 0;
 }
 
-ElfDll::~ElfDll()
+LtDll::~LtDll()
 {
     if (handle)
     {
@@ -65,7 +64,7 @@ ElfDll::~ElfDll()
     }
     handle = NULL;
 }
-LispPluginBase* ElfDll::GetPlugin(void)
+LispPluginBase* LtDll::GetPlugin(void)
 {
 #if HAVE_DLFCN_H
     LISPASSERT(handle != NULL);
@@ -76,4 +75,5 @@ LispPluginBase* ElfDll::GetPlugin(void)
     return NULL;
 }
 
-#endif
+#endif //HAVE_DLFCN_H
+

@@ -74,7 +74,7 @@ Rule("Degree",1,0, IsUniVar(expr))
   Set(result, {});
   Set(from, Min(curl,curr));
 
-  While(MathAnd(LessThan(curl,curr),left != {}))
+  While(And(LessThan(curl,curr),left != {}))
   [
     DestructiveAppend(result,Head(left));
     Set(left,Tail(left));
@@ -85,7 +85,7 @@ Rule("Degree",1,0, IsUniVar(expr))
     DestructiveAppend(result,0);
     Set(curl,MathAdd(curl,1));
   ];
-  While(MathAnd(LessThan(curr,curl), right != {}))
+  While(And(LessThan(curr,curl), right != {}))
   [
     DestructiveAppend(result,Head(right));
     Set(right,Tail(right));
@@ -96,7 +96,7 @@ Rule("Degree",1,0, IsUniVar(expr))
     DestructiveAppend(result,0);
     Set(curr,MathAdd(curr,1));
   ];
-  While(MathAnd(left != {}, right != {}))
+  While(And(left != {}, right != {}))
   [
     DestructiveAppend(result,Head(left)+Head(right));
     Set(left, Tail(left));
@@ -208,7 +208,7 @@ Rule("Degree",1,0, IsUniVar(expr))
   While(m>0)
   [
     Set(b,b*b);
-    If (MathNot(Equals(BitAnd(m,n), 0)),Set(b,b*a));
+    If (Not(Equals(BitAnd(m,n), 0)),Set(b,b*a));
     Set(m, ShiftRight(m,1));
   ];
   b;

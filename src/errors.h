@@ -23,15 +23,21 @@ void CheckArgType(LispInt aPredicate, LispInt aArgNr, LispPtr& aArguments,LispEn
 
 #define CHK_ARG(_pred,_argnr) {if (!(int)(_pred)) CheckArgType(0,_argnr,aArguments,aEnvironment);}
 
+#define CHK_ARG_CORE(_pred,_argnr) {if (!(int)(_pred)) CheckArgType(0,_argnr,ARGUMENT(0),aEnvironment);}
+
+
 #define TESTARGS(_n)  CheckNrArgs(_n,aArguments,aEnvironment)
 
 #define CHK(_pred,_err) {if (!(int)(_pred)) CheckFuncGeneric(0,_err,aArguments,aEnvironment);}
+#define CHK_CORE(_pred,_err) {if (!(int)(_pred)) CheckFuncGeneric(0,_err,ARGUMENT(0),aEnvironment);}
 #define CHK2(_pred,_err) {if (!(int)(_pred)) CheckFuncGeneric(0,_err,aEnvironment);}
 
 #define CHK_ISLIST(_pred, _argnr) {if (!InternalIsList(_pred)) CheckArgType(0 ,_argnr, aArguments,aEnvironment,KLispErrNotList);}
+#define CHK_ISLIST_CORE(_pred, _argnr) {if (!InternalIsList(_pred)) CheckArgType(0 ,_argnr, ARGUMENT(0),aEnvironment,KLispErrNotList);}
 
 
 #define CHK_ISSTRING(_pred, _argnr) {if (!InternalIsString((_pred).Get()->String())) CheckArgType(0 ,_argnr, aArguments,aEnvironment,KLispErrNotString);}
+#define CHK_ISSTRING_CORE(_pred, _argnr) {if (!InternalIsString((_pred).Get()->String())) CheckArgType(0 ,_argnr, ARGUMENT(0),aEnvironment,KLispErrNotString);}
 
 
 char *GenericErrorBuf();

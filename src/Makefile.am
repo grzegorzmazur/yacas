@@ -11,7 +11,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	infixparser.h lispassert.h lispatom.h lispcleanupstack.h \
 	lispenvironment.h lisperror.h lispeval.h lispevalhash.h \
 	lispglobals.h lisphash.h lispio.h lispobject.h lispparser.h \
-	lispstring.h lispuserfunc.h mathcommands.h mathenvironment.h patcher.h \
+	lispstring.h lispuserfunc.h corefunctions.h mathcommands.h mathenvironment.h patcher.h \
 	mathuserfunc.h numbers.h platmath.h standard.h patterns.h errors.h arggetter.h \
 	stdfileio.h stringio.h stubs.h tokenizer.h yacas.h ramdisk.h refcount.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
@@ -39,7 +39,7 @@ libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp \
 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp \
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
-        lispplugin.cpp ltdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
+        lispplugin.cpp ltdll.cpp elfdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
         archiver.cpp
 
 libcyacas_la_SOURCES = cyacas.cpp

@@ -18,7 +18,7 @@ Rule("MakeVector",2,1,True)
 
 RuleBase("<--",{patternleft,patternright});
 
-Rule("<--",2,1,Type(patternleft) = "#")
+Rule("<--",2,1,Equals(Type(patternleft),"#"))
 [
   DefinePattern(patternleft[2],patternright,patternleft[1],True);
 ];
@@ -31,7 +31,7 @@ HoldArg("<--",patternright);
 
 RuleBase("DefinePattern",
          {patternleft,patternright,patternprecedence,postpredicate});
-Rule("DefinePattern",4,9,Type(patternleft) = "_")
+Rule("DefinePattern",4,9,Equals(Type(patternleft),"_"))
 [
  DefinePattern(patternleft[1],patternright,
                patternprecedence,patternleft[2]);

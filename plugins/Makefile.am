@@ -5,9 +5,9 @@ SUBDIRS =  example forth opengl yacas_gsl
 EXTRA_DIST = doc.txt   README    
 
 macosx:
-	cd example ; make libexample.dylib
-	cd forth ; make libforth.dylib
-	cd yacas_gsl ; make libyacas_gsl.dylib
+	cd example ; make example.dylib
+	cd forth ; make forth.dylib
+	cd yacas_gsl ; make yacas_gsl.dylib
 
 
 

@@ -22,45 +22,45 @@
 #include "errors.h"
 
 #define InternalEval aEnvironment.iEvaluator->Eval
+#define RESULT aEnvironment.iStack.GetElement(aStackTop)
+#define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
 
 
-void LispSubst(LispEnvironment& aEnvironment, LispPtr& aResult,
-               LispPtr& aArguments)
+void LispSubst(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    TESTARGS(4);
+    //TESTARGS(4);
 
     LispPtr from,to,body;
-    InternalEval(aEnvironment, from, Argument(aArguments,1));
-    InternalEval(aEnvironment, to  , Argument(aArguments,2));
-    InternalEval(aEnvironment, body, Argument(aArguments,3));
+    from.Set(ARGUMENT(1).Get());
+    to  .Set(ARGUMENT(2).Get());
+    body.Set(ARGUMENT(3).Get());
     SubstBehaviour behaviour(aEnvironment,from, to);
-    InternalSubstitute(aResult, body, behaviour);
+    InternalSubstitute(RESULT, body, behaviour);
 }
 
 
-void LispLocalSymbols(LispEnvironment& aEnvironment, LispPtr& aResult,
-                      LispPtr& aArguments)
+void LispLocalSymbols(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispInt nrArguments = InternalListLength(aArguments);
+    LispInt nrArguments = InternalListLength(ARGUMENT(0));
 
     LispInt nrSymbols = nrArguments-2;
 
     LispStringPtr *names = (LispStringPtr *)PlatAlloc(sizeof(LispStringPtr)*nrSymbols);
     LispStringPtr *localnames = (LispStringPtr *)PlatAlloc(sizeof(LispStringPtr)*nrSymbols);
     //TODO names and localnames should be pushed on the cleanup stack!!!
-    CHK(names != NULL,KLispErrNotEnoughMemory);
-    CHK(localnames != NULL,KLispErrNotEnoughMemory);
+    CHK_CORE(names != NULL,KLispErrNotEnoughMemory);
+    CHK_CORE(localnames != NULL,KLispErrNotEnoughMemory);
 
     LispInt uniquenumber = aEnvironment.GetUniqueId();
     LispInt i;
     for (i=0;i<nrSymbols;i++)
     {
-        LispStringPtr atomname = Argument(aArguments, i+1).Get()->String();
-        CHK_ARG(atomname != NULL, i+1);
+        LispStringPtr atomname = Argument(ARGUMENT(0), i+1).Get()->String();
+        CHK_ARG_CORE(atomname != NULL, i+1);
         names[i] = atomname;
 
         LispInt len = atomname->NrItems()-1;
-        CHK_ARG(len<64,i+1);
+        CHK_ARG_CORE(len<64,i+1);
         char newname[100];
         newname[0] = '$';
         PlatMemCopy(&newname[1], atomname->String(), len);
@@ -73,11 +73,11 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispPtr& aResult,
 
     LocalSymbolBehaviour behaviour(aEnvironment,names,localnames,nrSymbols);
     LispPtr result;
-    InternalSubstitute(result, Argument(aArguments, nrArguments-1), behaviour);
+    InternalSubstitute(result, Argument(ARGUMENT(0), nrArguments-1), behaviour);
     PlatFree(names);
     PlatFree(localnames);
 
 
-    InternalEval(aEnvironment, aResult, result);
+    InternalEval(aEnvironment, RESULT, result);
 }
 

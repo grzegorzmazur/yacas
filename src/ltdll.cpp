@@ -1,4 +1,12 @@
 
+
+#ifdef HAVE_CONFIG_H
+#include "../config.h"
+#endif
+
+//DLFCN support better done by elfdll.cpp
+#if !HAVE_DLFCN_H
+
 #include <stdio.h>
 
 #include "yacasprivate.h"
@@ -101,3 +109,4 @@ LispPluginBase* LtDll::GetPlugin(void)
     return maker();
 }
 
+#endif //HAVE_DLFCN_H

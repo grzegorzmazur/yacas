@@ -14,7 +14,7 @@ HoldArg("Macro",body);
 
 // function with variable number of arguments: Function("func",{x,y, ...})body;
 Rule("Function",3,2047,
-	MathAnd(GreaterThan(Length(args), 1), Equals( MathNth(args, Length(args)), Atom("...") ))
+	And(GreaterThan(Length(args), 1), Equals( MathNth(args, Length(args)), Atom("...") ))
 )
 [
   DestructiveDelete(args,Length(args));	// remove trailing "..."
@@ -34,7 +34,7 @@ Rule("Function",3,2048,True)
 
 // macro with variable number of arguments: Macro("func",{x,y, ...})body;
 Rule("Macro",3,2047,
-	MathAnd(GreaterThan(Length(args), 1), Equals( MathNth(args, Length(args)), Atom("...") ))
+	And(GreaterThan(Length(args), 1), Equals( MathNth(args, Length(args)), Atom("...") ))
 )
 [
   DestructiveDelete(args,Length(args));	// remove trailing "..."
@@ -56,7 +56,7 @@ Rule("Macro",3,2048,True)
 RuleBase("Function",{oper});
 // function with variable number of arguments: Function() f(x,y, ...)
 Rule("Function",1,2047,
-	MathAnd(IsFunction(oper), GreaterThan(Length(oper), 1), Equals( MathNth(oper, Length(oper)), Atom("...") ))
+	And(IsFunction(oper), GreaterThan(Length(oper), 1), Equals( MathNth(oper, Length(oper)), Atom("...") ))
 )
 [
 	Local(args);
@@ -69,7 +69,7 @@ Rule("Function",1,2047,
 ];
 // function with a fixed number of arguments
 Rule("Function",1,2048,
-	MathAnd(IsFunction(oper))
+	And(IsFunction(oper))
 )
 [
 	Local(args);
@@ -84,7 +84,7 @@ Rule("Function",1,2048,
 RuleBase("Macro",{oper});
 // macro with variable number of arguments: Macro() f(x,y, ...)
 Rule("Macro",1,2047,
-	MathAnd(IsFunction(oper), GreaterThan(Length(oper), 1), Equals( MathNth(oper, Length(oper)), Atom("...") ))
+	And(IsFunction(oper), GreaterThan(Length(oper), 1), Equals( MathNth(oper, Length(oper)), Atom("...") ))
 )
 [
 	Local(args,name);
@@ -98,7 +98,7 @@ Rule("Macro",1,2047,
 ];
 // macro with a fixed number of arguments
 Rule("Macro",1,2048,
-	MathAnd(IsFunction(oper))
+	And(IsFunction(oper))
 )
 [
 	Local(args,name);
@@ -177,7 +177,7 @@ Rule("AssignArray",3,1,IsString(setlistindex))
 ];
 // assign generic arrays
 Rule("AssignArray",3,1,
-   MathAnd(
+   And(
            Equals(IsGeneric(setlistterm),True),
            Equals(GenericTypeName(setlistterm),"Array")
           )
@@ -209,13 +209,13 @@ Rule(":=",2,10,IsFunction(aLeftAssign) And (Head(Listify(aLeftAssign)) = Nth))
 ];
 
 // f(x):=... defines a new function
-Rule(":=",2,30,IsFunction(aLeftAssign) And aLeftAssign[0] != Atom(":="))
+Rule(":=",2,30,IsFunction(aLeftAssign) And Not(Equals(aLeftAssign[0], Atom(":="))))
 [
   Local(oper,args,arity);
   Set(oper,String(aLeftAssign[0]));
   Set(args,Tail(Listify(aLeftAssign)));
   If(
-	MathAnd(GreaterThan(Length(args), 1), Equals( MathNth(args, Length(args)), Atom("...") )),
+	And(GreaterThan(Length(args), 1), Equals( MathNth(args, Length(args)), Atom("...") )),
 	// function with variable number of arguments
 	[
 	  DestructiveDelete(args,Length(args));	// remove trailing "..."

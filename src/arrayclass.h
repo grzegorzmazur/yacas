@@ -19,8 +19,11 @@ public: //array-specific
     inline void SetElement(LispInt aItem,LispObject* aObject);
 
 private:
+    LispPtrArray iArray;
+/*TODO remove
     LispInt iSize;
     LispPtr* iArray;
+*/
 };
 
 #include "arrayclass.inl"

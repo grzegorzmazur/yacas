@@ -36,6 +36,7 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
 
 
 inline LispPtr& Argument(LispPtr& cur, LispInt n);
+
 inline void InternalTrue(LispEnvironment& aEnvironment, LispPtr& aResult);
 inline void InternalFalse(LispEnvironment& aEnvironment, LispPtr& aResult);
 inline void InternalBoolean(LispEnvironment& aEnvironment, LispPtr& aResult,
