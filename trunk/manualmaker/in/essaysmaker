@@ -1,0 +1,13 @@
+DefaultDirectory("in/");
+
+SetHtmlDirectory("");
+Use("styleplain");  /* style sheet for the documentation */
+Use("manualmaker"); /* engine that renders book to html */
+
+InitBooks();        /* Initialize book building */
+
+InitBook("essays");
+Load("essays.book");
+
+SelectBook("essays");
+EmitHtmlSimple();
