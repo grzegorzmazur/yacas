@@ -4,6 +4,10 @@
  * each time Yacas is started. All the basic files are loaded.
  */
 
+// Set up drivers, configurable in the .yacasrc
+Set(MultiNomialDriver,"multivar.rep/sparsenomial.ys");
+//Set(MultiNomialDriver,"multivar.rep/partialdensenomial.ys");
+
 
 /* The truly required files (Yacas NEEDS to load). */
 Use("stdopers.ys");
