@@ -3,7 +3,7 @@
 INCLUDES = @INCLTDL@ -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS =  yacas
-noinst_PROGRAMS = mkfastprimes testnum 
+noinst_PROGRAMS = mkfastprimes testnum gencorefunctions
 lib_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
 EXTRA_LTLIBRARIES = libgmpnumbers.la libyacasnumbers.la 
 
@@ -28,6 +28,8 @@ yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c 
 testnum_SOURCES = testnum.cpp 
 testnum_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
 testnum_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la
+
+gencorefunctions_SOURCES = gencorefunctions.cpp 
 
 mkfastprimes_SOURCES = mkfastprimes.cpp 
 
