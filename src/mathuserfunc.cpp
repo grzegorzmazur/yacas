@@ -90,7 +90,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
         TraceShowEnter(aEnvironment,tr);
         tr.Set(NULL);
     }
-    
+
     LispIterator iter(aArguments);
     iter.GoNext();
 
