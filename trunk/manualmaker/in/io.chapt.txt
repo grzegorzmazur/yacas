@@ -416,6 +416,9 @@ The current output is connected to the file "name". Then the expression
 to the current output, ends up in the file "name". Finally, the
 file is closed and the result of evaluating "body" is returned.
 
+If the file is opened again, the old contents will be overwritten.
+This is a limitation of {ToFile}: one cannot append to a file that has already been created.
+
 *E.G.
 
 Here is how one can create a file with C code to evaluate an expression:

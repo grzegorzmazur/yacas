@@ -371,7 +371,7 @@ difference with the {check} target is that that one tests the
 the <i>installed</i> version.
 *	{distcheck}. Check whether Yacas is ready for
 distribution. This creates a tar-ball, unpacks it in a different
-directory, compiles Yacas, installs it in a temporary directory, and
+directory, compiles Yacas with default options, installs it in a temporary directory, and
 finally checks that the installed version works correctly. Extra flags
 to be passed to the {configure} script (eg. {--enable-archive}) can be
 put in the {DISTCHECK_CONFIGURE_FLAGS} environment variable.
@@ -426,18 +426,24 @@ The documentation system for Yacas is explained in <*yacasdoc://essays/5/2/*>.
 
 The documentation is generated from plain text source files with the
 {txt} extension in the {manualmaker/in} directory. The source files
-are converted to Yacas code by the {txt2yacasdoc.pl} script. The
-resulting code is processed by the Yacas interpreter, resulting in the
-HTML documentation.
+are converted to Yacas code by the {txt2yacasdoc.pl} script.
+The result is a set of Yacas source files containing the text of the documentation.
+These Yacas source files are not well suited for human reading and must be further processed to obtain the books in HTML and PS/PDF formats.
 
-To generate documents in PostScript and PDF format, the {book2TeX.sh}
-script is included. This script converts the plain text source files
+To generate the books in HTML format, the Yacas source files areprocessed by the Yacas interpreter using the scripts {manualmaker} and {indexmaker}.
+The script {indexmaker} creates the file {books.html} with the top-level index to all HTML documentation books.
+The script {manualmaker} creates the HTML files with the book text (both the framed and the non-framed versions are written out).
+It is also possible to generate more than one HTML book at once.
+The two reference manuals are generated together to produce the full hyperlinked index to all commands.
+
+To generate the books in PostScript and PDF format, the {book2TeX.sh}
+script is used. This script converts the Yacas source files
 to $TeX$ files. They can then be processed by the standard $TeX$
 tools.
 
-By default, only HTML documents are generated. To change this, use the 
-{disable-html-doc}, {enable-ps-doc} and {enable-pdf-doc} options
-accepted by the {configure} script. The {with-html-dir} and
+By default, only the HTML-formatted documents are generated. To change this, use the options
+{disable-html-doc}, {enable-ps-doc} and {enable-pdf-doc}
+in the {configure} script. The {with-html-dir} and
 {with-ps-dir} options can be used to tell where the documentation
 should be installed.
 
@@ -446,16 +452,16 @@ should be installed.
 At the moment, the {Makefile.am} for the documentation is rather
 messy. For this reason, we do not describe it in detail. Instead, we
 just point out some special features:
-*	The Yacas interpreter is needed to generate the documentation.
-*	The section <i>Full listing of core functions</i> in the
-programmer's reference book is generated from the Yacas source by the
-{api2txt.pl} script.
+*	The Yacas interpreter and {perl} are needed to generate the documentation.
+*	The section
+<*"Full listing of core functions"|yacasdoc://refprog/5/1/*>
+is generated from the Yacas source by the perl script {api2txt.pl}.
 *	The Yacas code from the section 
 <i>M. Wester's CAS benchmark and Yacas</i>, built from
 {wester-1994.chapt.txt}, is extracted with the {book2ys.sh}
 script. This code is used for testing (see below).
 *	All the scripts described can be found in the {manmake}
-directory. 
+and {manualmaker} directories.
 
 
 	    The test suite
