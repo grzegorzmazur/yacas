@@ -68,7 +68,7 @@ NUMBERS_LIB = libyacasnumbers.a
 PACKAGE = yacas
 RANLIB = ranlib
 RELEASE = 1
-VERSION = 1.0.42
+VERSION = 1.0.42rev1
 scriptdir = ${prefix}/share/yacas/
 
 DEFS = -DHAVE_CONFIG_H -DSCRIPT_DIR=\"$(scriptdir)\"
@@ -101,7 +101,7 @@ libyacasplatform_a_LIBADD = libyacasnumbers.a
 libyacasnumbers_a_SOURCES = anumber.cpp yacasnumbers.cpp 
 libgmpnumbers_a_SOURCES = gmpnumbers.cpp 
 
-EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp 	epocstubs.cpp grower.inl lisphash.inl lispobject.inl 	lispstring.inl standard.inl 	yacas.mmp win32dll.cpp 	depend.dep 	convertcctocpp.bat 	plat/linux32/lisptype.h 	plat/linux32/stubs.inl 	plat/linux32/platfileio.h 	plat/linux32/platdll.h 	plat/linux64/lisptype.h 	plat/linux64/stubs.inl 	plat/linux64/platfileio.h 	plat/linux64/platdll.h 	plat/epoc32/lisptype.h 	plat/epoc32/stubs.inl 	plat/epoc32/platfileio.h 	plat/win32/lisptype.h 	plat/win32/platdll.h   	plat/win32/platfileio.h 	plat/win32/stubs.inl     	plat/win32/win32commandline.cpp 	plat/win32/win32commandline.h   	plat/win32/yacas.dsp            	plat/win32/yacas_exe.dsp        	plat/win32/yacasmain-win32.cpp
+EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp 	epocstubs.cpp grower.inl lisphash.inl lispobject.inl 	lispstring.inl standard.inl 	yacas.mmp win32dll.cpp 	depend.dep makefile.beos 	convertcctocpp.bat 	plat/linux32/lisptype.h 	plat/linux32/stubs.inl 	plat/linux32/platfileio.h 	plat/linux32/platdll.h 	plat/linux64/lisptype.h 	plat/linux64/stubs.inl 	plat/linux64/platfileio.h 	plat/linux64/platdll.h 	plat/epoc32/lisptype.h 	plat/epoc32/stubs.inl 	plat/epoc32/platfileio.h 	plat/beos/lisptype.h 	plat/beos/stubs.inl 	plat/beos/platfileio.h 	plat/beos/platdll.h 	plat/win32/lisptype.h 	plat/win32/platdll.h   	plat/win32/platfileio.h 	plat/win32/stubs.inl     	plat/win32/win32commandline.cpp 	plat/win32/win32commandline.h   	plat/win32/yacas.dsp            	plat/win32/yacas_exe.dsp        	plat/win32/yacasmain-win32.cpp
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -290,8 +290,9 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = src
 
 distdir: $(DISTFILES)
-	$(mkinstalldirs) $(distdir)/plat/epoc32 $(distdir)/plat/linux32 \
-	   $(distdir)/plat/linux64 $(distdir)/plat/win32
+	$(mkinstalldirs) $(distdir)/plat/beos $(distdir)/plat/epoc32 \
+	   $(distdir)/plat/linux32 $(distdir)/plat/linux64 \
+	   $(distdir)/plat/win32
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
