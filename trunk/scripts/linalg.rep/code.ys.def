@@ -39,4 +39,5 @@ OrthogonalBasis
 OrthonormalBasis
 Dimensions
 Dot
+MatrixPower
 }
