@@ -416,8 +416,21 @@ void LoadYacas()
                                         );
                                         */
     {
-        char buf[1000];
-        sprintf(buf,"DefaultDirectory(\"%s\");",root_dir);
+      /* Split up root_dir in pieces separated by colons, and run 
+	 DefaultDirectory on each of them. */
+        char buf[1000], *ptr1, *ptr2;
+	ptr1 = ptr2 = root_dir;
+	while (*ptr1 != '\0') {
+	  while (*ptr1 != '\0' && *ptr1 != ':') ptr1++;
+	  if (*ptr1 == ':') {
+	    *ptr1 = '\0';
+	    sprintf(buf,"DefaultDirectory(\"%s\");",ptr2);
+	    yacas->Evaluate(buf);
+	    ptr1++;
+	    ptr2 = ptr1;
+	  }
+	}
+        sprintf(buf,"DefaultDirectory(\"%s\");",ptr2);
         yacas->Evaluate(buf);
         sprintf(buf,"Load(\"%s\");",init_script);
         yacas->Evaluate(buf);

@@ -580,7 +580,9 @@ it loads the file {yacasinit.ys} from the scripts directory.
 Tells the system where to find the library scripts. Here, {directory/} is a
 path that is passed to {DefaultDirectory}, and file names will be simply
 appended to it, so you should make sure to include a forward or backward slash
-(depending on the platform) at the end.
+(depending on the platform) at the end. It is also possible to give a
+list of directories, separated by a colon, eg. 
+{yacas --rootdir scripts/:morescripts/}.
 
 	yacas --archive [file]
 Use a compressed archive instead of the script library.

@@ -1,11 +1,13 @@
+## Makefile.am -- Process this file with automake to produce Makefile.in
+
 # $(srcdir) is the manualmaker/ directory and $(top_srcdir) is the Yacas tree
 # so this file should work even if we are building Yacas in a different directory
 # (TeX works but HTML docs still fail in that case b/c of dependencies on in/all, manualmaker, styleplain etc.)
 
 # newly compiled version of yacas in ../src (not necessarily under $(srcdir))
-ouryacas = ../src/yacas --rootdir $(top_srcdir)/scripts/
+ouryacas = ../src/yacas --rootdir $(top_srcdir)/scripts/:../scripts/
 
-noinst_PROGRAMS = books.html
+noinst_DATA = books.html
 
 BOOKS = intro.book coding.book ref.book refprog.book essays.book Algo.book
 
@@ -48,10 +50,13 @@ ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 # Yacas code extracted from the docs
 CODESNIPPETS = wester-1994.ys
 
+## This means: build wester-1994.ys if running tests
+check_SCRIPTS = wester-1994.ys
+
 EXTRA_DIST = \
 	manualmaker styleplain in/all \
 	in/intromaker in/codingmaker in/refmaker in/refprogmaker in/essaysmaker\
-	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) $(INTROSOURCES) $(REFPROGSOURCES) $(ALGOSOURCES) $(CODESNIPPETS) \
+	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) $(INTROSOURCES) $(REFPROGSOURCES) $(ALGOSOURCES) \
 	in/dummies .cvsignore
 
 # Stuff for automatic generation of Yacas books
@@ -96,8 +101,12 @@ intro.book.tex: intro.book $(INTROCHAPTERS)
 Algo.book.tex: Algo.book $(ALGOCHAPTERS)
 
 # special "virtual" chapter built from yacasapi.cpp
-in/yacasapi.chapt.txt : $(top_srcdir)/src/yacasapi.cpp
-	perl $(top_srcdir)/manmake/api2txt.pl < $(top_srcdir)/src/yacasapi.cpp > in/yacasapi.chapt.txt
+yacasapi.chapt.txt : $(top_srcdir)/src/yacasapi.cpp
+	perl $(top_srcdir)/manmake/api2txt.pl < $(top_srcdir)/src/yacasapi.cpp > yacasapi.chapt.txt
+yacasapi.chapt: yacasapi.chapt.txt
+	perl $(top_srcdir)/manmake/txt2yacasdoc.pl < $< > $@
+
+
 
 # TeX/PS/PDF top target
 texdocs: \
@@ -117,9 +126,12 @@ clean:
 
 yacas_helpdir = $(datadir)/yacas/documentation
 
+# Newly-built version of yacas with an extended search path
+ouryacas2 = ../src/yacas --rootdir $(top_srcdir)/scripts/:../scripts/:$(srcdir)/:$(srcdir)/in/
+
 books.html:  $(BOOKS) $(REFCHAPTERS) $(ESSAYCHAPTERS) \
-   $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(ALGOCHAPTERS) $(CODESNIPPETS)
-	-$(ouryacas) $(srcdir)/in/all
+   $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(ALGOCHAPTERS)
+	-$(ouryacas2) $(srcdir)/in/all
 	echo "done" > books.html.c
 
 intro.html : intro.book $(INTROCHAPTERS)
@@ -154,12 +166,12 @@ distcheck-hook:
 	make texdocs
 	make test
 
+## Hook to install documentation
 install-data-local: books.html 
 	$(mkinstalldirs) $(yacas_helpdir)/
-	cp ../docs/yacaslogo.gif $(yacas_helpdir)/
-	-for file in $(srcdir)/*.html; do \
-	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_helpdir)/$$basefile; \
+	cp $(top_srcdir)/docs/yacaslogo.gif $(yacas_helpdir)/
+	-for file in *.html; do \
+	$(INSTALL_DATA) $$file $(yacas_helpdir)/$$file; \
 	done
 
 
