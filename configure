@@ -1908,6 +1908,7 @@ trap 'rm -fr `echo "yacas.spec
 	Makefile
 	docs/Makefile
 	inprogress/Makefile
+	YacasNotebook/Makefile
 	manualmaker/Makefile
 	plugins/Makefile
 	scripts/Makefile
@@ -2009,6 +2010,7 @@ CONFIG_FILES=\${CONFIG_FILES-"yacas.spec
 	Makefile
 	docs/Makefile
 	inprogress/Makefile
+	YacasNotebook/Makefile
 	manualmaker/Makefile
 	plugins/Makefile
 	scripts/Makefile

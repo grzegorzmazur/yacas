@@ -1,0 +1,84 @@
+What follows is a short description of yacas-mode and yacas-notebook-mode
+(taken from Emacs's describe-mode command). 
+To automatically load yacas-mode and yacas-notebook-mode (as
+necessary), insert  
+(autoload 'yacas-mode "yacas" "Yacas editing mode" t)
+(autoload 'yacas-notebook-mode "yacas-notebook" "Yacas-Notebook editing mode" t)
+into your .emacs files.
+To automatically start a file ending in xxx (or whatever) in yacas-mode, 
+insert
+(setq auto-mode-alist (cons '("\\.xxx" . yacas-mode) auto-mode-alist))
+into your .emacs file.
+
+Yacas mode:
+This is a mode intended to support program development in Yacas.
+The following control constructs can be entered automatically.
+
+  C-c C-p  start a function (procedure)    C-c C-v Local
+  C-c C-i  If                              C-c C-e Else
+  C-c C-f  For                             C-c C-w While
+  C-c C-a  ForEach                         C-c C-u Until
+
+The local command is used to add new local variables in a procedure.
+The if, while and until commands will prompt for a predicate.
+The for command will prompt for start, predicate and increment,
+the foreach command will prompt for an item and a list.
+
+C-c < and C-c > move backward and forward respectively to the next line
+having the same (or lesser) level of indentation.
+The variable yacas-indent controls the number of spaces for each indentation.
+C-c C-c will comment out a region, and 
+C-u C-c C-c  will un-comment it out.
+C-c ] will indent a region to the level of the line before the region.
+C-c # will add an inline comment.
+
+Use C-c C-r to run Yacas on the current region under
+a special subshell.  C-c C-b does the whole buffer, and
+C-c C-l just does the current line.  C-c C-k can
+be used to kill the yacas process.
+The last output (after the Out> prompt) can be copied onto the kill-ring
+with C-c C-o, and the last output, from one input prompt to another, 
+can be copied onto the kill-ring with C-c C-s
+
+In the Yacas subshell buffer, the command C-c C-n will move to the next 
+prompt, and C-c C-p will move to the previous prompt.  C-up and C-down 
+can be used to scroll through the input history.
+
+Yacas-Notebook mode:
+This is a mode intended to allow the user to write documents that
+include Yacas code.  The file can be LaTeXed to produce nice 
+looking output (although that isn't necessary, of course), and so the
+mode is an extension of TeX-mode (AucTeX, if you use that) that also
+includes all the functionality of yacas-mode.  ("TeX-command-master", 
+however, has been rebound to "C-cC-cC-c".)
+The units of Yacas code that are worked with are "cells", which are 
+delimited by "\yacas" and "\endyacas". The cells can be evaluated 
+individually, as a group, and the output can be returned as Yacas output 
+or in TeX form.  Evaluating a cell and returning the output is called 
+"updating" the cell.  This mode also supports some literate programming 
+constructs.  (See the file "Yacas-NotebookIntro.tex" for more 
+information.)
+The commands for working with cells are:
+  C-c C-c o  create a cell         C-c C-c d  delete the cell's output
+  C-c C-c u  update a cell's       C-c C-c U  update a cell in TeX form
+  C-c C-c a  update all the cells  C-c C-c A  update all the cells in TeX form
+  C-c C-c +  go to the next cell   C-c C-c -  go to the previous cell
+  C-c C-c q  toggle initialization cells
+  C-c C-c Q  evaluate all  initialization cells
+  C-c C-c v  update all the initialization cells
+  C-c C-c V  update all the initialization cells in TeX form
+  C-c C-c =  assemble a cell with references
+  C-c C-c @  assemble a cell which defines a package
+(With a prefix, C-c C-c a and C-c C-c A will update the cells without
+prompting)
+Since the Yacas output can be returned to the Yacas-Notebook buffer, by default
+the buffer which runs the Yacas process is not shown.  This can be changed.
+  C-c C-c B  show the Yacas buffer
+  C-c C-c b  don't show the Yacas buffer.
+Single lines can be evaluated:
+  C-c C-c n replace the current line with Yacas output
+  C-c C-c N replace the current line with Yacas output in TeX form.
+
+Finally, the command C-c C-c M will insert a %-*-Yacas-Notebook-*- at
+the beginning of the file (if there isn't one there already) so the
+file will begin in yacas-notebook-mode next time it's opened.
