@@ -16,14 +16,16 @@ FilePathSeparators :=
 
 // The variable PlatformOS determines which module we should load.
 // It can be set in yacasinit.ys or here,e.g.:
-
 //PlatformOS:="Win32";
-If(PlatformOS() = "Windows",PlatformOS:="Win32");
+
+If(PlatformOS() = "Win32", PlatformOS := "Win32");
+If(PlatformOS() = "Unix", PlatformOS := "Unix");
+
 If(
 	Not(IsBound(PlatformOS)),
 	[
 // Try to decide this from Version().
-// On Windows, Version() should begin with the letters "Win".
+// On Windows, Version() might begin with the letters "Win".
 // Otherwise we assume Unix.
 		PlatformOS := If(StringMid(1,3,Version())="Win", "Win32", "Unix");
 	]

@@ -53,7 +53,7 @@
   #include "win32commandline.h"
   #define FANCY_COMMAND_LINE CWin32CommandLine
   #define SCRIPT_DIR ""
-  #define PLATFORM_OS "\"Windows\""
+  #define PLATFORM_OS "\"Win32\""
 #endif
 
 
