@@ -4,7 +4,7 @@ README for Windows users
 
 To compile Yacas under 32-bit Windows platforms, you need a C++ compiler. Most probably any C++ compiler will work. You may use a freely available CYGWIN suite for a full Unix layer emulation, including Unix shells. However, it is a very large environment and you may not want to install it. There is a smaller "MIN-GW32" port of GCC-2.95 which only requires about 37 MB of disk space for a full installation; see <*http://www.mingw.org/*>.
 
-After installation of a compiler, you should have GCC available at the command prompt. For Windows compatibility reasons, file names containing "+" signs may be problematic. Therefore, it is assumed that the C++ compiler is invoked by the command "cxx". This can be changed by editing the makefile.
+After installation of a compiler, you should have GCC available at the command prompt. For Windows compatibility reasons, file names containing "+" signs may be problematic. Therefore, it is assumed in the makefile that the C++ compiler is invoked by the command "cxx". This can be changed by editing the makefile.
 
 Unpack the Yacas archive and go to the {src/} subdirectory. Edit {Makefile.win32} and change the name of the compiler from {cxx} to whatever it is on your system.
 
