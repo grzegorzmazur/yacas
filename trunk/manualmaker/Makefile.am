@@ -53,9 +53,6 @@ books.html: in/arith.chapt in/built.chapt in/calc.chapt \
 	-../src/yacas in/all
 	echo "done" > books.html.c
 
-texdocs:
-	echo "done" > texdocs.c
-
 intro.html : in/intro.book
 	-../src/yacas in/intromaker 
 	touch books.html
