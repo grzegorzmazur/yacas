@@ -12,5 +12,5 @@ typedef struct Bla
 Bla* CreateBla(int aa, int ab);
 void BlaSetA(Bla* bla, int a);
 int BlaGetA(Bla* bla);
-void Bla_free(Bla* bla);
+void Bla_free(void* bla);
 

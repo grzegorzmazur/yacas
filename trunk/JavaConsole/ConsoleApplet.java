@@ -44,7 +44,17 @@ public class ConsoleApplet extends Applet implements KeyListener
   {
     out.println(e);
   } 
+  }
 
+  public void start()
+  {  
+    dispatchEvent(
+      new FocusEvent(this, FocusEvent.FOCUS_GAINED));
+    setVisible(true);
+    setEnabled(true);
+  }
+  public void stop()
+  {
   }
 
   private void ResetInput()
