@@ -594,6 +594,114 @@ If $A$ is a real matrix, it must be symmetric to be Hermitian.
 
 *SEE IsUnitary
 
+*CMD IsOrthogonal --- Test whether a matrix is Orthogonal
+*STD
+*CALL
+
+IsOrthogonal(A)
+
+*PARMS
+
+A - square matrix
+
+*DESC
+
+IsOrthogonal(A) returns {True} if {A} is Orthogonal and {False} 
+otherwise. $A$ is Orthogonal iff $A$*Transpose($A$) = Identity, or
+equivalently Inverse($A$) = Transpose($A$).
+
+*E.G.
+
+	In> A := {{1,2,2},{2,1,-2},{-2,2,-1}};
+	Out> {{1,2,2},{2,1,-2},{-2,2,-1}};
+	In> PrettyForm(A/3)
+	/                      \
+	| / 1 \  / 2 \ / 2 \   |
+	| | - |  | - | | - |   |
+	| \ 3 /  \ 3 / \ 3 /   |
+	|                      |
+	| / 2 \  / 1 \ / -2 \  |
+	| | - |  | - | | -- |  |
+	| \ 3 /  \ 3 / \ 3  /  |
+	|                      |
+	| / -2 \ / 2 \ / -1 \  |
+	| | -- | | - | | -- |  |
+	| \ 3  / \ 3 / \ 3  /  |
+	\                      /
+	Out> True;
+	In> IsOrthogonal(A/3)
+	Out> True;
+
+
+*CMD IsSymmetric --- Test whether a matrix is Symmetric
+*STD
+*CALL
+
+IsSymmetric(A)
+
+*PARMS
+
+A - square matrix
+
+*DESC
+
+IsSymmetric returns {True} if {A} is Symmetric and {False} otherwise.
+$A$ is Symmetic iff Transpose $A$ =$A$. All Hermitian matrices are
+symmetric. 
+
+*E.G.
+
+	In> A := {{1,0,0,0,1},{0,2,0,0,0},{0,0,3,0,0},{0,0,0,4,0},{1,0,0,0,5}};
+	Out> {{1,0,0,0,1},{0,2,0,0,0},{0,0,3,0,0},{0,0,0,4,0},{1,0,0,0,5}};
+	In> PrettyForm(%)
+	/                                \
+	| ( 1 ) ( 0 ) ( 0 ) ( 0 ) ( 1 )  |
+	|                                |
+	| ( 0 ) ( 2 ) ( 0 ) ( 0 ) ( 0 )  |
+	|                                |
+	| ( 0 ) ( 0 ) ( 3 ) ( 0 ) ( 0 )  |
+	|                                |
+	| ( 0 ) ( 0 ) ( 0 ) ( 4 ) ( 0 )  |
+	|                                |
+	| ( 1 ) ( 0 ) ( 0 ) ( 0 ) ( 5 )  |
+	\                                /
+	Out> True;
+	In> IsSymmetric(A)
+	Out> True;
+		
+
+*SEE IsHermitian
+
+*CMD IsSkewSymmetric --- Test whether a matrix is SkewSymmetric
+*STD
+*CALL
+
+IsSkewSymmetric(A)
+
+*PARMS
+
+A - square matrix
+
+*DESC
+
+IsSkewSymmetric returns {True} if {A} is Skew Symmetric and {False} otherwise.
+$A$ is Skew Symmetic iff Transpose $A$ =$-A$. 
+
+*E.G.
+
+	In> A := {{0,-1},{1,0}}
+	Out> {{0,-1},{1,0}};
+	In> PrettyForm(%)
+	/               \
+	| ( 0 ) ( -1 )  |
+	|               |
+	| ( 1 ) ( 0 )   |
+	\               /
+	Out> True;
+	In> IsSkewSymmetric(A);
+	Out> True;
+
+ 
 *CMD IsUnitary --- Test whether a matrix is unitary
 *STD
 *CALL
@@ -620,6 +728,29 @@ equivalent to the fact that the columns of $A$ build an orthonormal system
 	Out> False;
 
 *SEE IsHermitian
+
+*CMD IsIdempotent --- Test whether a matrix is Idempotent
+*STD
+*CALL
+
+IsIdempotent(A)
+
+*PARMS
+
+A - square matrix
+
+*DESC
+
+IsIdempotent returns {True} if {A} is Idempotent and {False} otherwise.
+$A$ is Idempotent iff $A^2$ =$A$. Note that this also implies that $A$
+to any power is $A$.
+
+*E.G.
+
+	In> IsIdempotent(ZeroMatrix(10,10));
+	Out> True;
+	In> IsIdempotent(Identity(20))
+	Out> True;
 
 
 *CMD SylvesterMatrix --- calculate the Sylvester matrix of two polynomials
