@@ -366,7 +366,7 @@ Function("TableForm",{list})
 61 # x_IsPositiveNumber ^ y_IsPositiveNumber <-- MathPower(x,y);
 61 # x_IsPositiveNumber ^ y_IsNegativeNumber <-- (1/MathPower(x,-y));
 
-61 # x_IsNegativeNumber ^ y_IsRationalOrNumber <-- Exp(y*Ln(x));
+90 # x_IsNegativeNumber ^ y_IsRationalOrNumber <-- Exp(y*Ln(x));
 
 
 70  # (_x ^ m_IsRationalOrNumber) ^ n_IsRationalOrNumber <-- x^(n*m);

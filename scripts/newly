@@ -126,6 +126,28 @@ Function("Rationalize",{a})
 30 # ContFrac((n_IsInteger) / (m_IsInteger),_depth) <--
      ContFracDo(n,m,depth+1);
 
+
+40 # ContFrac(n_CanBeUni,_depth)_(Length(VarList(n)) = 1) <--
+[
+  ContFracDoPoly(n,depth,VarList(n)[1]);
+];
+
+5  # ContFracDoPoly(_exp,0,_var) <-- rest;
+5  # ContFracDoPoly(0,0,_var) <-- rest;
+10 # ContFracDoPoly(_exp,_depth,_var) <--
+[
+  Local(content,exp2,first,second);
+  first:=Coef(exp,var,0);
+  exp:=exp-first;
+  content:=Content(exp);
+  exp2:=DivPoly(1,PrimitivePart(exp),var,5+3*depth)-1;
+  second:=Coef(exp2,0);
+  exp2 := exp2 - second;
+  first+content/((1+second)+ContFracDoPoly(exp2,depth-1,var));
+];
+
+
+
 /* n/m = 1/ (m/n) = 1/(Div(m,n)+Mod(m,n)/n) */
      
 10 # ContFracDo(0,_m,_depth) <-- rest;
