@@ -74,6 +74,9 @@ GammaNum(z,a) := N(Exp(LnGammaNum(z,a)));	/// should not be used by applications
 
 //Retract("Gamma", 1);	// want to be able to Load() this many times
 /// User visible functions: Gamma(x), LnGamma(x)
+
+5 # Gamma(Infinity)	<-- Infinity;
+
 10 # Gamma(_n)_(IsInteger(n) And n<=0) <-- Infinity;
 10 # LnGamma(_n)_(IsInteger(n) And n<=0) <-- Infinity;
 
@@ -82,6 +85,8 @@ GammaNum(z,a) := N(Exp(LnGammaNum(z,a)));	/// should not be used by applications
 
 30 # Gamma(x_IsConstant)_(Numeric) <-- GammaNum(N(x));
 30 # LnGamma(x_IsConstant)_(Numeric) <-- LnGammaNum(N(x));
+
+
 
 /////////////////////////////////////////////////
 /// Riemann's Zeta function

@@ -21,8 +21,9 @@ HoldArg("TruncRadian",r);
   MathSin(x);
 ];
 4 # Sin(ArcSin(_x))           <-- x;
-5 # Sin(- _x)                 <-- -Sin(x);
-6 # (Sin(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- -Sin(N(-x));
+5 # Sin(- _x)_(Not IsConstant(x))                 <-- -Sin(x);
+6 # (Sin(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- -Sin(-x);
+
 // must prevent it from looping
 6 # Sin(Infinity) 		<-- Undefined;
 
@@ -53,8 +54,8 @@ HoldArg("TruncRadian",r);
   MathCos(x);
 ];
 4 # Cos(ArcCos(_x))           <-- x;
-5 # Cos(- _x)                 <-- Cos(x);
-6 # (Cos(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- Cos(N(-x));
+5 # Cos(- _x)_(Not IsConstant(x))                 <-- Cos(x);
+6 # (Cos(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- Cos(-x);
 // must prevent it from looping
 
 110 # Cos(Complex(_r,_i)) <--
@@ -246,7 +247,6 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 
 
 10 # Abs(Infinity) 	<-- Infinity;
-10 # Gamma(Infinity)	<-- Infinity;
 10 # Factorial(Infinity)<-- Infinity;
 
 /* Threading of standard analytic functions */

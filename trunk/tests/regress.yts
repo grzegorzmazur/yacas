@@ -126,5 +126,34 @@ Verify(Factorize(-1), Factorize(-1));
 Verify(Factorize(Infinity), Factorize(Infinity));
 Verify(Factorize(1 .. 10),3628800);
 
+//
+TestYacas(Sin(Pi-22),-Sin(22-Pi));
+TestYacas(Cos(Pi-22), Cos(22-Pi));
+
+// Verify that some matrix functions accept only positive
+// integer arguments. Regression test for the fact that the functions
+// in linalg.rep/ didn't check their arguments. 
+
+// Note: Jonathan, perhaps some functions could return something
+// useful if the argument passed in is just a number? I'd imagine
+// Inverse(-2) <-- -1/2 would not be inconsistent?
+
+Verify(ZeroMatrix(-2,-2),ZeroMatrix(-2,-2));
+Verify(Identity(-2),Identity(-2));
+//Verify(LeviCivita(2),LeviCivita(2));
+//Verify(Permutations(2),Permutations(2));
+//Verify(InProduct(-2,-2),InProduct(-2,-2));
+//Verify(CrossProduct(-2,-2),CrossProduct(-2,-2));
+//Verify(BaseVector(-2,-2),BaseVector(-2,-2));
+//Verify(DiagonalMatrix(-2),DiagonalMatrix(-2));
+//Verify(Normalize(-2),Normalize(-2));
+//Verify(Transpose(-2),Transpose(-2));
+//Verify(Determinant(-2),Determinant(-2));
+//Verify(CoFactor(-2,-2,-2),CoFactor(-2,-2,-2));
+//Verify(Inverse(-2),Inverse(-2));
+//Verify(Trace(-2),Trace(-2));
+//Verify(SylvesterMatrix(-2,-2,-2),SylvesterMatrix(-2,-2,-2));
+KnownFailure(Verify(ZeroVector(-2),ZeroVector(-2)));
+
 
 
