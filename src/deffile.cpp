@@ -69,7 +69,13 @@ static void DoLoadDefFile(LispEnvironment& aEnvironment, LispInput* aInput,
         {
             LispStringPtr str = token;
             LispMultiUserFunction* multiUser = aEnvironment.MultiUserFunction(str);
-            Check(multiUser->iFileToOpen==NULL,KLispErrDefFileAlreadyChosen);
+            if (multiUser->iFileToOpen!=NULL)
+            {
+                aEnvironment.CurrentOutput()->Write("[");
+                aEnvironment.CurrentOutput()->Write(&(*str)[0]);
+                aEnvironment.CurrentOutput()->Write("]\n");
+                Check(multiUser->iFileToOpen==NULL,KLispErrDefFileAlreadyChosen);
+            }
             multiUser->iFileToOpen = def;
         }
     }
