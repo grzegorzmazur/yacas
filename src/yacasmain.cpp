@@ -31,13 +31,23 @@
 
 
 #include <stdio.h>
+#ifndef WIN32
 #include <dirent.h>
-
-
 #include <sys/stat.h>
+#endif
+
 #include "yacas.h"
 
-#include "unixcommandline.h"
+#ifndef WIN32
+  #include "unixcommandline.h"
+  #define FANCY_COMMAND_LINE CUnixCommandLine
+#else
+  #include "win32commandline.h"
+  #define FANCY_COMMAND_LINE CWin32CommandLine
+  #define SCRIPT_DIR ""
+  #define VERSION "Windows latest"
+#endif
+
 #include "stdcommandline.h"
 #include "standard.h"
 #include "numbers.h"
@@ -65,7 +75,11 @@ int trace_history = 0;
 int use_texmacs_out = 0;
 int patchload=0;
 char* root_dir    = SCRIPT_DIR;
-char* archive     = NULL;
+#ifndef WIN32
+  char* archive     = NULL;
+#else
+  char* archive     = "scripts.dat";
+#endif
 char* init_script = "yacasinit.ys";
 
 void ReportNrCurrent()
@@ -449,6 +463,7 @@ void LoadYacas()
     {
         printf("%cverbatim:",TEXMACS_DATA_BEGIN);
     }
+#ifndef WIN32 //TODO fix, with the file scanner in ramscripts
     {
         DIR *dp;
         struct dirent* entry;
@@ -493,7 +508,7 @@ void LoadYacas()
                 printf("\n");
         }
     }
-
+#endif
     {
         char fname[256];
         sprintf(fname,"%s/.yacasrc",getenv("HOME"));
@@ -658,8 +673,9 @@ int main(int argc, char** argv)
         commandline = NEW CStdCommandLine;
 #ifndef STD_COMMANDLINE
     else
-        commandline = NEW CUnixCommandLine;
+        commandline = NEW FANCY_COMMAND_LINE;
 #endif
+
 
     commandline->iTraceHistory = trace_history;
 
