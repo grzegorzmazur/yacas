@@ -59,7 +59,8 @@ SCRIPTFILES = 	        										    \
 	testers.rep/code.ys testers.rep/code.ys.def 							    \
 	texform.rep/code.ys texform.rep/code.ys.def 							    \
 	trigsimp.rep/code.ys trigsimp.rep/code.ys.def 							    \
-	univar.rep/code.ys univar.rep/code.ys.def univar.rep/sturm.ys univar.rep/sturm.ys.def
+	univar.rep/code.ys univar.rep/code.ys.def univar.rep/sturm.ys univar.rep/sturm.ys.def               \
+	probability.rep/code.ys  probability.rep/code.ys.def
 
 EXAMPLE_SCRIPTFILES = \
 	examples/ABIN.ys examples/pi.ys \

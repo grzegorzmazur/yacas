@@ -32,6 +32,8 @@ the command line for ordinary tasks.
 
 *INCLUDE strings.chapt
 
+*INCLUDE probability-and-statistics.chapt
+
 *INCLUDE addons.chapt
 
 
