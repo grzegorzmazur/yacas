@@ -150,8 +150,8 @@ $(srcdir)/packages.ys: Makefile
 	sed -e 's,.*scripts/,",;s/\.def/",/' >> $@; \
 	echo "});" >> $@;
 
-$(srcdir)/corefunctions.ys: $(srcdir)/../src/corefunctions.h $(srcdir)/../src/core_yacasmain.h
-	$(srcdir)/../src/gencorefunctions > corefunctions.ys
+$(srcdir)/corefunctions.ys: $(srcdir)/../src/corefunctions.h ../src/core_yacasmain.h
+	../src/gencorefunctions > corefunctions.ys
 
 
 
