@@ -7,7 +7,7 @@ take into account:
 *	The autoconf/automake part - makefile maintenance over various systems.
 *	The cvs system - enabling developers to work together.
 *	The back up repository - storage of tar balls with versions of Yacas.
-This can be found at http://www.xs4all.nl/~apinkus/backups/
+This can be found at <http://www.xs4all.nl/~apinkus/backups/>
 
 		The autoconf/automake system
 
@@ -170,7 +170,7 @@ to fix small bugs. You type that in, and your version gets merged
 with the changes others made, and they get your changes, and you 
 backed up your changes at the same time (all with that little command!).
 
-You can find more on cvs at: http://@@@
+You can find more on cvs at <http://cvsbook.red-bean.com/>
 
 
 
