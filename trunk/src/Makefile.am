@@ -16,7 +16,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	stdfileio.h stringio.h stubs.h tokenizer.h yacas.h ramdisk.h refcount.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
-        lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h
+        lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h 
 yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = libyacas.a libyacasplatform.a @NUMBERS_LIB@ @NUMBERS_LDFLAGS@ 
 
@@ -76,7 +76,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp \
 	plat/win32/win32commandline.h   \
 	plat/win32/yacas.dsp            \
 	plat/win32/yacas_exe.dsp        \
-	plat/win32/yacasmain-win32.cpp makefile.debug
+	plat/win32/yacasmain-win32.cpp makefile.debug makefile.win32
 
 
 yacas_include = $(datadir)/yacas/include
