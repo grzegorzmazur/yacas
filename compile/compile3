@@ -1,0 +1,434 @@
+
+/*
+   Compiling a line: expression -> LispPtr.
+   Compile(...) is responsible for leaving one result on
+    top of the stack.
+ */
+
+predefSymbols:={};
+predefFuncs:={};
+
+predefBody:={};
+curBody:={};
+
+initSection:={};
+
+
+PopSection() :=
+[
+  curBody:=Pop(predefBody,1);
+];
+PushSection(section):=
+[
+  Push(predefBody,curBody);
+  curBody:=section;
+];
+AddAsm(code):=
+[
+//Echo({"pushing ",code});
+//Echo({curBody});
+DestructiveAppend(curBody,code);
+];
+
+
+
+//  funcs["func"]["arity"]{"args","props",{"precedence","predicate","body"}}
+
+MakeFunction(_name)_(predefFuncs[String(name)] = Empty)  <--
+[
+  predefFuncs[String(name)] := {};
+];
+
+DeclareSimpleFunction(name,args,body):=
+[
+//Echo({"ENTER ",name,args,body});
+  MakeFunction(name);
+  predefFuncs[String(name)][String(Length(args))] :=
+  {
+    args,
+    {/*props*/},
+    {{0,CompileExpression(True),body}}
+  };
+//  Echo({predefFuncs});
+];
+
+CompileFile(_f)<--
+[
+  Echo({"Converting file [",f,"] to ",DriverCodeType()});
+  PushSection(initSection);
+  AddAsm(PROLOG());
+  AddAsm(ENTERFILE(f));
+  PopSection();
+
+  FromFile(f)
+  [
+    Local(line);
+    While(line != EndOfFile)
+    [
+      Set(line,Read());
+      If(line != EndOfFile,CompileBaseLine(line));
+    ];
+  ];
+
+  PushSection(initSection);
+  AddAsm(EPILOG());
+  PopSection();
+//Echo({initSection});
+  //GarbageCollect();
+];
+
+
+
+10 # SymbolClob(sym_IsString) <--  String(UniqueConstant());
+10 # SymbolClob(sym_IsNumber)_(Not IsInteger(sym)) <--  String(UniqueConstant());
+20 # SymbolClob(sym_IsAtom) <-- "symbol_":String(sym);
+30 # SymbolClob(_sym) <--
+[
+ Check(False,"Error: trying to make \"":(ToString()Write(sym)):"\" into a symbol");
+];
+
+10 # GetSymbol(sym_IsAtom)_(predefSymbols[String(sym)] != Empty) <--
+[
+ (predefSymbols[String(sym)][1]);
+];
+20 # GetSymbol(sym_IsAtom)_(predefSymbols[String(sym)] = Empty) <--
+[
+ predefSymbols[String(sym)] := {SymbolClob(sym),CompileExpression(sym)};
+ GetSymbol(sym);
+];
+
+30 # GetSymbol(_sym) <--
+[
+ Check(False,"Error: trying to make \"":(ToString()Write(sym)):"\" into a symbol");
+];
+
+
+
+10 # Compile(Set(_a,_b)) <--
+[
+CompileFixedAtom(a);
+Compile(b);
+AddAsm(SETVAR(TOP(-1),TOP(0)));
+AddAsm(POP());
+AddAsm(SETTRUE(TOP(0)));
+];
+
+10 # Compile(a_IsAtom := _b) <--
+[
+CompileFixedAtom(a);
+Compile(b);
+AddAsm(SETVAR(TOP(-1),TOP(0)));
+AddAsm(POP());
+AddAsm(SETTRUE(TOP(0)));
+];
+
+
+19 # Compile(a_IsNumber) <-- CompileFixedAtom(a);
+19 # Compile(True)       <-- CompileFixedAtom(True);
+19 # Compile(False)      <-- CompileFixedAtom(False);
+
+20 # CompileFixedAtom(a_IsAtom) <--
+[
+AddAsm(PUSH());
+AddAsm(SET(TOP(0),GetSymbol(a)));
+];
+
+20 # Compile(a_IsAtom) <--
+[
+AddAsm(PUSH());
+AddAsm(SET(TOP(0),CompileExpression(a)));
+AddAsm(EVALUATE(TOP(0),TOP(0)));
+];
+
+
+10 # Compile(_f)_(Type(f) = "Local") <--
+[
+  Local(s);
+  Set(s,Tail(Listify(f)));
+  AddAsm(PUSH());
+  ForEach(item,s)
+    AddAsm(LOCAL(String(item)));
+  AddAsm(SETTRUE(TOP(0)));
+];
+/*
+*/
+
+//native.GetPrecision(aEnvironment,TOPPTR());
+
+
+
+0 # TypeIsDefined(_other)         <-- (predefFuncs[other]!=Empty);
+10 # HasNativeDefined(f_IsFunction) <-- TypeIsDefined(Type(f));
+20 # HasNativeDefined(_other) <-- False;
+10 # Compile(f_HasNativeDefined) <--
+[
+  // place holder for result
+  AddAsm(PUSH()); 
+
+  // Push arguments
+  Local(args);
+  Set(args,Tail(Listify(f)));
+  ForEach(item,args)Compile(item);
+
+  // Call function
+  AddAsm(NATIVEDEFINED(Type(f):"_":String(Length(args))));
+];
+
+
+// TypeIsNative can be expanded upon in the driver
+20 # TypeIsNative(_other)         <-- False;
+10 # HasNative(f_IsFunction) <-- TypeIsNative(Type(f));
+20 # HasNative(_other) <-- False;
+10 # Compile(f_HasNative) <--
+[
+  // place holder for result
+  AddAsm(PUSH()); 
+
+  // Push arguments
+  Local(args);
+  Set(args,Tail(Listify(f)));
+  ForEach(item,args)Compile(item);
+
+  // Call function
+  AddAsm(NATIVE(Type(f):"_":String(Length(args))));
+];
+
+
+10 # Compile(_f)_(Type(f) = "Prog") <--
+[
+  AddAsm(PUSH());
+  AddAsm(PROLOG());
+//  Write(Subst(v,f)Hold(v));
+  Set(f,Tail(Listify(Subst(v,f)Hold(v))));
+//  Write(Subst(v,f)Hold(v));
+
+  While(f != {})
+  [
+    Compile(Head(f));
+    Set(f,Tail(f));
+    If(f!={},AddAsm(POP()));
+  ];
+  AddAsm(COPY(TOP(-1),TOP(0)));
+  AddAsm(POP());
+  AddAsm(EPILOG());
+//  AddAsm(SETTRUE(TOP(0)));
+];
+
+
+100 # Compile(_line) <--
+[
+/*
+  AddAsm(PUSH());
+  AddAsm(PUSH());
+  AddAsm(SET(TOP(0),CompileExpression(line)));
+  AddAsm(EVALUATE(TOP(-1),TOP(0)));
+  AddAsm(POP());
+*/
+  AddAsm(PUSH());
+  AddAsm(SET(TOP(0),CompileExpression(line)));
+  AddAsm(EVALUATE(TOP(0),TOP(0)));
+];
+
+
+10 # CompileBaseLine(f_IsFunction := _body)_(Type(f)!="Nth") <--
+[
+  AddAsm(PUSH());
+
+//  Echo({"Function definition!"});
+  Local(name,args,bd,fn);
+  fn:=Listify(f);
+  name:=fn[1];
+  args:=Tail(fn);
+  bd:={};
+  PushSection(bd);
+//  AddAsm(PROLOG());
+
+
+  // Add the arguments
+  Local(i);
+  Set(i,0);
+  ForEach(var,args)
+  [
+    AddAsm(EVALUATE(TOP(i),TOP(i)));
+    i--;
+  ];
+  ForEach(var,args)
+  [
+    AddAsm(LOCAL(String(var)));
+  ];
+  Set(i,-(Length(args)-1));
+  ForEach(var,args)
+  [
+    AddAsm(SETVARSTR(String(var),TOP(i)));
+    i++;
+  ];
+  ForEach(var,args)
+  [
+    AddAsm(POP());
+  ];
+
+
+/*
+  // Add the arguments
+  Local(i);
+  Set(i,0);
+  ForEach(var,args)
+  [
+    i++;
+    AddAsm(PUSH());
+
+    AddAsm(SET(TOP(0),"Argument(aArguments,":String(i):")"));
+    AddAsm(EVALUATE(TOP(0),TOP(0)));
+    //Compile(var);
+
+    AddAsm(LOCAL(String(var)));
+
+    AddAsm(SETVARSTR(String(var),TOP(0)));
+    AddAsm(POP());
+  ];
+*/
+  // Add the body
+  Compile(body);
+  AddAsm(COPY(TOP(-1),TOP(0)));
+//  AddAsm(COPY(aResult,TOP(0)));
+  AddAsm(POP());
+
+//  AddAsm(EPILOG());
+  PopSection();
+  DeclareSimpleFunction(name,args,bd);
+];
+
+100 # CompileBaseLine(_line) <--
+[
+  PushSection(initSection);
+  Compile(line);
+  AddAsm(POP());
+  PopSection();
+];
+
+/*
+10 # Compile(If(_a,_b)) <--
+[
+  Echo({"if (IsTrue()) Evaluate();"});
+
+];
+*/
+
+
+
+
+//CompileExpression(_expr) <-- (CompileLine(expr)[1]);
+CompileExpression(_expr) <-- (CompileLine(expr));
+
+RuleBase("CompileLineHeld",{arg});
+HoldArg("CompileLineHeld",arg);
+CompileLineHeld(_arg) <--
+[
+  CompileLine(arg);
+];
+
+10 # CompileLine(expr_IsFunction) <--
+[
+  Local(rs);
+//Echo({"1...",rs});
+  Set(rs,Listify(expr));
+//Echo({"2...",rs});
+  Set(rs,MapSingle("CompileLineHeld",rs));
+//Echo({"2..."});
+//  Set(rs,Flatten(rs,"List"));
+
+  [
+//    Echo({rs});
+    Local(n,res);
+    Set(res,"");
+    Set(n,Length(rs)-1);
+    While(n>0)
+    [
+      rs[n] := "AtomAdd(":rs[n]:",":rs[n+1]:")";
+      n--;
+    ];
+    Set(rs,rs[1]);
+//    Echo({rs});
+  ];
+//  Set(rs,Apply("ConcatStrings",rs));
+//  {"MAKELIST(":rs:"LA(NULL))","+"};
+  "MAKELIST(":rs:")";
+];
+
+20 # CompileLine(expr_IsAtom) <--
+[
+//  {"MAKEATOM(\"":CEscape(String(expr)):"\")","+"};
+  "MAKEATOM(\"":CEscape(String(expr)):"\")";
+];
+
+30 # CompileLine(_expr) <-- Check(False,"Expression not handled");
+
+
+
+
+Optimize(list_IsList) <-- ClosePushPops(list);
+
+ClosePeep(POP(), PUSH()) <--
+[
+  DestructiveDelete(list,i);
+  DestructiveDelete(list,i);
+  Set(n,n-2);
+  i--;
+  i--;
+  If(i<1,i:=1);
+];
+ClosePeep(SETTRUE(TOP(0)),POP()) <--
+[
+  DestructiveDelete(list,i);
+  Set(n,n-1);
+  i--;
+
+];
+ClosePeep(SETTRUE(TOP(0)),SET(TOP(0),_a)) <--
+[
+  DestructiveDelete(list,i);
+  Set(n,n-1);
+  i--;
+];
+
+ClosePeep(EVALUATE(TOP(0),TOP(0)),COPY(_a,TOP(0))) <--
+[
+  list[i] := EVALUATE(a,TOP(0));
+  DestructiveDelete(list,i+1);
+  Set(n,n-1);
+  i--;
+];
+
+
+UnFence("ClosePeep",2);
+ClosePushPops(_list) <--
+[
+//Echo({"ENTER"});
+  Local(i,n);
+  Set(n,Length(list));
+//Echo({"lsit = ",list});
+//Echo({"n = ",n});
+  For(i:=1,i<n,i++)
+  [
+    ClosePeep(list[i],list[i+1]);
+/*
+//Echo({i,list[i]});
+    If(list[i] = POP() And list[i+1] = PUSH(),
+    [
+//      Echo({"deleting at ",list[i]});
+//      Echo({"deleting at ",list[i+1]});
+      DestructiveDelete(list,i);
+      DestructiveDelete(list,i);
+      Set(n,n-2);
+      i--;
+      i--;
+      If(i<1,i:=1);
+    ]);
+*/    
+  ];
+//Echo({list});
+  list;
+];
+
+
+

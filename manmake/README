@@ -1,0 +1,13 @@
+
+Little tool that allows for an easier syntax for entering documentation
+etcetera.
+
+You can enter special sections with \section{text} where
+you get to name your own section, and the text is some text.
+
+This then gets converted to ManP(section,text) with text
+enclosed in quotes. All text outside such special sections
+are part of the section named 'text'.
+
+
+
