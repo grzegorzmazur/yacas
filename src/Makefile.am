@@ -28,7 +28,7 @@ yacas_LDADD = libyacas.a libyacasplatform.a @NUMBERS_LIB@ @NUMBERS_LDFLAGS@
 
 yacas_LDFLAGS = $(LIBS)
 
-testnum_SOURCES = anumber.cpp grower.cpp lispstring.cpp stdstubs.cpp \
+testnum_SOURCES = anumber.cpp grower.cpp lispstring.cpp stdstubs.cpp obmalloc.cpp \
 	testnum.cpp mathutil.cpp
 libyacas_a_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \
@@ -39,7 +39,8 @@ libyacas_a_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp \
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
         lispplugin.cpp elfdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp
-libyacasplatform_a_SOURCES = platmath.cpp grower.cpp stdstubs.cpp lisphash.cpp \
+        
+libyacasplatform_a_SOURCES = platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp
 libyacasplatform_a_LIBADD = @NUMBERS_LIB@
 libyacasnumbers_a_SOURCES = anumber.cpp yacasnumbers.cpp 

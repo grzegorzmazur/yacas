@@ -1,4 +1,5 @@
 
+#include "stubs.h"
 #include "lispio.h"
 
 void InputStatus::SetTo(LispCharPtr aFileName)
