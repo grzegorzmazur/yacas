@@ -6,11 +6,29 @@
 //    Fl::flush();
 
 TODO:
-x loading a notepad seems to require the first line to be empty?
-x save note books
-x convert the previous example note pads to the new format.
+- add testnotes/fonts to cvs
+- console drawer is slow: 
+  - render only what is on screen
+  - optimize graph rendering
+- menu bar resizes, i think it shouldn't
+- graphing cell:
+  - Why not load flplot by default?
+  - modify flplot so that all is local, so we can have multiple plots.
+  - if there is a ConsoleOutBase ready to be inserted,
+    insert it instead of the text returned.
+  - just for laughs, a formula pretty printer using the graphing capabilities.
+- rip hint box from manual.
+- hint boxes: show a little help blurb also.
+- function browser at the top, allowing you to insert, but also
+  showing a hint box when you hover over it, with a short description
+  of the command.
+- workspace, with easy access to different note pads, menu to the left or
+something.
+- re-instate the history list.
+- formula rendering/editing sub-cell.
 
-- links should always keep their text, and not change
+
+
 - input cells should maintain their font sizes, also when editing
 - you should be able to set currentFont size and type and color 
   for the command line also.
@@ -71,11 +89,11 @@ does.
 #include <FL/fl_draw.H>
 #include <FL/Fl_Tabs.H>
 #include <FL/Fl_Scroll.H>
+
 #include "yacasprivate.h"
 #include "FltkConsole.h"
 #include "FltkHintWindow.h"
 #include "HelpView.h"
-#include "yacas.h"
 
 #ifdef WIN32
 #  define snprintf _snprintf
@@ -94,6 +112,8 @@ const char* linkPrompt = "Link: ";
 #define SetInputFont() fl_font(FL_HELVETICA,iDefaultFontSize)
 #define INPUT_PROMPT "$ "
 
+
+ConsoleOutBase* cell_to_insert = NULL;
 
 int LoadHints(char* file);
 void DisposeHints();
@@ -384,6 +404,7 @@ void FltkConsole::Restart()
 
 void FltkConsole::DoLine(char* inpline)
 {
+    int addable = 1;
     int font_size = 0;
 
     if(*inpline)
@@ -433,7 +454,7 @@ void FltkConsole::DoLine(char* inpline)
 #ifdef SUPPORT_NOTEPAD
     if (iCurrentHighlighted >= 0)
     {
-        if (iConsoleOut[iCurrentHighlighted]->IsEditable())
+        if (iConsoleOut[iCurrentHighlighted]->InputIsVisible())
         {
             iLast = (ConsoleGrouped*)iConsoleOut[iCurrentHighlighted];
             iOutputHeight -= iLast->height();
@@ -443,7 +464,8 @@ void FltkConsole::DoLine(char* inpline)
         }
         else
         {
-            AddGroup();
+          addable=0;
+//            AddGroup();
         }
     }
     else
@@ -456,7 +478,8 @@ void FltkConsole::DoLine(char* inpline)
 
     if (font_size==0) font_size=iDefaultFontSize;
 
-    AddText(inpline, FL_BLACK,inPrompt,FL_HELVETICA,font_size);
+    if (addable)
+      AddText(inpline, FL_BLACK,inPrompt,FL_HELVETICA,font_size);
     //SetInputDirty();
     SetOutputDirty();
 //    redraw(); //output changed
@@ -468,18 +491,31 @@ void FltkConsole::DoLine(char* inpline)
         extern LispString the_out;
         if (the_out[0])
         {
-            AddText(the_out.String(), FL_RED,printPrompt,FL_COURIER,font_size);
+            if (addable)
+              AddText(the_out.String(), FL_RED,printPrompt,FL_COURIER,font_size);
             the_out.SetNrItems(0);
             the_out.Append('\0');
         }
 
         if (yacas->Error()[0] != '\0')
         {
+          if (addable)
             AddText(yacas->Error(), FL_RED,errorPrompt,FL_HELVETICA,font_size);
         }
         else
         {
+          if (addable)
             AddText(yacas->Result(), FL_BLUE,outPrompt,FL_HELVETICA,font_size);
+        }
+        if (addable)
+        {
+          if (cell_to_insert)
+          {
+            iOutputHeight+=cell_to_insert->height();
+            iLast->Add(cell_to_insert);
+            cell_to_insert = NULL;
+            UpdateHeight(0);
+          }
         }
     }
 
@@ -875,6 +911,12 @@ void FltkConsole::SetCurrentHighlighted(int i)
 
 int FltkConsole::handle(int event)
 {
+    // ALT+key reserved for menu
+    if (Fl::event_alt())
+    {
+      return 0;
+    }
+
     //printf("event %d\n",event);
     switch (event)
     {
@@ -1351,5 +1393,52 @@ int ConsoleOutBase::IsEditable()
 int ConsoleOutBase::InputIsVisible()
 {
     return 0;
+}
+
+
+
+ConsoleDrawer::ConsoleDrawer(LispEnvironment& aEnvironment,LispPtr& aExecute,int aWidth,int aHeight)
+: iEnvironment(aEnvironment),iExecute(aExecute),iWidth(aWidth),iHeight(aHeight)
+{
+}
+void ConsoleDrawer::draw(int x, int y, int width,int draw_input)
+{
+  extern CYacas* yacas;
+  extern LispString the_out;
+  if (iExecute.Get())
+  {
+    char buf[300];
+    sprintf(buf,"FlWindow:={%d,%d,%d,%d};",
+            (int)x,
+            (int)y,
+            (int)iWidth,
+            (int)iHeight);
+    yacas->Evaluate(buf);
+    the_out.SetNrItems(0);
+    the_out.Append('\0');
+    fl_clip(x,y,iWidth,iHeight);
+    LispPtr result;
+    iEnvironment.iEvaluator->Eval(iEnvironment,result,iExecute);
+    fl_pop_clip();
+  }
+}
+
+int ConsoleDrawer::height(int draw_input)
+{
+  return iHeight;
+}
+
+LispCharPtr ConsoleDrawer::input()
+{
+  return " ";
+}
+
+void ConsoleDrawer::Save(FILE* f)
+{
+}
+
+int ConsoleDrawer::Fontsize() const
+{
+  return 12;
 }
 

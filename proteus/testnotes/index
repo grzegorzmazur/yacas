@@ -19,6 +19,10 @@ This is the next line after an empty line.
 
 Proteus'FontColor(FlColorGreen);
 Proteus'FontSize(15);
+
+Proteus'AddLink("Notepad(FindFile(\"fonts\"));",
+  "Some fonts and colors",False,True);
+
 Proteus'AddLink("Notepad(FindFile(\"testnotepad\"));",
   "First test notepad",False,True);
 Proteus'AddLink("Notepad(FindFile(\"testnotepad2\"));",

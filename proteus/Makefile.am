@@ -8,7 +8,7 @@ EXTRA_DIST = COPYING.HelpDialog FltkConsole.cpp FltkConsole.h FltkHintWindow.cpp
 	mkbackup proteus.conf proteus.dsp proteus.dsw proteusbooks.html          \
 	proteusmenu.h readme.txt tabs.cpp tabs.h testnotes/graphtest2            \
 	testnotes/index testnotes/recursetest testnotes/testnotepad              \
-	testnotes/testnotepad2 todo.txt yacasconf yacdefines.h                   \
+	testnotes/testnotepad2 testnotes/fonts todo.txt yacasconf yacdefines.h                   \
         WorksheetBanner tracer.cpp tracer.ys makefile.tracer    \
         debugclass.cpp debugclass.h proteusmanual.book.txt
 

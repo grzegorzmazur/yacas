@@ -7,6 +7,7 @@
 #include <FL/Fl_Widget.H>
 #include "grower.h"
 #include "lispstring.h"
+#include "yacas.h"
 
 
 /// \class ConsoleOutBase can draw one line in the output window
@@ -70,6 +71,31 @@ private:
 };
 
 
+
+
+
+class ConsoleDrawer : public ConsoleOutBase
+{
+public:
+    ConsoleDrawer(LispEnvironment& aEnvironment,LispPtr& aExecute,int aWidth,int aHeight);
+    virtual void draw(int x, int y, int width,int draw_input=1);
+    virtual int height(int draw_input=1);
+    virtual LispCharPtr input();
+    virtual void Save(FILE* f);
+    virtual int Fontsize() const;
+private:
+    LispEnvironment& iEnvironment;
+    LispPtr iExecute;
+    int iWidth;
+    int iHeight;
+};
+
+
+
+
+
+
+
 enum ESpecialChars
 {
     eDelete     = 0x1000,
@@ -129,7 +155,7 @@ private:
     void DrawInputLine(int lowy);
     void DoLine(char* inpline);
     void UpdateHeight(int aDelta);
-private:
+public:
     CDeletingArrayGrower<ConsoleOutBase*> iConsoleOut;
     ConsoleGrouped *iLast;
     

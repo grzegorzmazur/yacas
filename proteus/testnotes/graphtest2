@@ -16,17 +16,20 @@ Proteus'AddCommand("f(x):=Sin(x);");
 Proteus'FontSize(18);
 Proteus'AddLink("True","From",False,True);
 Proteus'FontSize(15);
-Proteus'AddCommand("from:=-2");
+Proteus'AddCommand("from :=-3");
 Proteus'FontSize(18);
 Proteus'AddLink("True","To",False,False);
 Proteus'FontSize(15);
-Proteus'AddCommand("to:=2");
+Proteus'AddCommand("to:=3");
 Proteus'FontSize(18);
 Proteus'AddLink("True","number of steps",False,False);
 Proteus'FontSize(15);
-Proteus'AddCommand("nr:=10");
+Proteus'AddCommand("nr:=20");
 Proteus'FontColor(FlColorGreen);
-Proteus'AddLink("FlPlot(f(x),from,to,nr);","Plot graph of f(x)",False,True);
+//Proteus'AddLink("FlPlot(f(x),from,to,nr);","Plot graph of f(x)",False,True);
+
+Proteus'AddCommand("FlPlot(f(x),from,to,nr);");
+
 Proteus'AddLink("Notepad(FindFile(\"index\"));","Back to index",False,True);
 
 
