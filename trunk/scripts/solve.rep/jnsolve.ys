@@ -1,50 +1,56 @@
 /* Proposed replacement for Solve */
 
+/* Remove retracts when stabilized */ 
 Retract("JNSolve", 2);
 Retract("JNSolve'Poly", 2);
 Retract("JNSolve'Reduce", 2);
 Retract("JNSolve'Context", 2);
 Retract("JNSolve'Simple", 3);
-Retract("JNSolve'Union", 2);
+Retract("JNSolve'System", 2);
 
 /*
  * Strategy for JNSolve(expr, x):
  *
- * 10. Get rid of "==" in 'expr'
- * 20. Special cases
- * 30. If 'expr' is a polynomial in 'x', try to use PSolve
- * 40. If 'expr' is a product, solve for either factor 
- * 50. If 'expr' is a quotient, solve for the denominator
- * 60. If 'expr' is a sum and one of the terms is free of 'x', 
- *     try to use JNSolve'Simple
- * 70. If every occurance of 'x' is in the same context, use this to reduce 
- *     the equation. For example, in 'Cos(x) + Cos(x)^2 == 1', the variable
- *     'x' always occurs in the context 'Cos(x)', and hence we can attack  
- *     the equation by first solving 'y + y^2 == 1', and then 'Cos(x) == y'.
- *     This does not work for 'Exp(x) + Cos(x) == 2'.
- * 80. Apply Simplify to 'expr', and try again.
+ * 10.  Call JNSolve'System for systems of equations.
+ * 20.  Check arguments.
+ * 30.  Get rid of "==" in 'expr'.
+ * 40.  Special cases.
+ * 50.  If 'expr' is a polynomial in 'x', try to use PSolve.
+ * 60.  If 'expr' is a product, solve for either factor.
+ * 70.  If 'expr' is a quotient, solve for the denominator.
+ * 80.  If 'expr' is a sum and one of the terms is free of 'x', 
+ *      try to use JNSolve'Simple.
+ * 90.  If every occurance of 'x' is in the same context, use this to reduce 
+ *      the equation. For example, in 'Cos(x) + Cos(x)^2 == 1', the variable
+ *      'x' always occurs in the context 'Cos(x)', and hence we can attack  
+ *      the equation by first solving 'y + y^2 == 1', and then 'Cos(x) == y'.
+ *      This does not work for 'Exp(x) + Cos(x) == 2'.
+ * 100. Apply Simplify to 'expr', and try again.
+ * 110. Give up.
  */
 
 LocalSymbols(res)
 [
-/*
-  10 # JNSolve(_lhs == _rhs, _var)_(Not HasExpr(rhs,var) And (res := JNSolve'Simple(lhs,rhs,var)) != Failed) <-- res;
-  10 # JNSolve(_lhs == _rhs, _var)_(Not HasExpr(lhs,var) And (res := JNSolve'Simple(rhs,lhs,var)) != Failed) <-- res;
-*/
-  11 # JNSolve(_lhs == _rhs, _var) <-- JNSolve(lhs - rhs, var);
-  20 # JNSolve(0, _var) <-- {var};
-  21 # JNSolve(a_IsConstant, _var) <-- {};
-  /*   JNSolve(_expr, _var)_(Not HasExpr(expr,var)) <-- ???; */
-  30 # JNSolve(_expr, _var)_((res := JNSolve'Poly(expr, var)) != Failed) <-- res;
-  40 # JNSolve(_e1 * _e2, _var) <-- JNSolve'Union(JNSolve(e1,var), JNSolve(e2,var));
-  50 # JNSolve(_e1 / _e2, _var) <-- JNSolve(e1, var);
-  60 # JNSolve(_e1 + _e2, _var)_(Not HasExpr(e2,var) And (res := JNSolve'Simple(e1,-e2,var)) != Failed) <-- res;
-  60 # JNSolve(_e1 + _e2, _var)_(Not HasExpr(e1,var) And (res := JNSolve'Simple(e2,-e1,var)) != Failed) <-- res;
-  60 # JNSolve(_e1 - _e2, _var)_(Not HasExpr(e2,var) And (res := JNSolve'Simple(e1,e2,var)) != Failed) <-- res;
-  60 # JNSolve(_e1 - _e2, _var)_(Not HasExpr(e1,var) And (res := JNSolve'Simple(e2,e1,var)) != Failed) <-- res;
-  65 # JNSolve(_expr, _var)_((res := JNSolve'Simple(expr, 0, var)) != Failed) <-- res;
-  70 # JNSolve(_expr, _var)_((res := JNSolve'Reduce(expr, var)) != Failed) <-- res;
-  80 # JNSolve(_expr, _var)_((res := Simplify(expr)) != expr) <-- JNSolve(res, var);
+  10  # JNSolve(expr_IsList, var_IsList) <-- JNSolve'System(expr, var);
+  20  # JNSolve(_expr, _var)_(Not IsAtom(var) Or IsNumber(var) Or IsString(var)) <-- 
+        [ Assert("JNSolve'TypeError", "Second argument, ":(ToString() Write(var)):", is not the name of a variable") False; {}; ];
+  30  # JNSolve(_lhs == _rhs, _var) <-- JNSolve(lhs - rhs, var);
+  40  # JNSolve(0, _var) <-- {var == var};
+  41  # JNSolve(a_IsConstant, _var) <-- {};
+  42  # JNSolve(_expr, _var)_(Not HasExpr(expr,var)) <--
+        [ Assert("JNSolve", "expression ":(ToString() Write(expr)):" does not depend on ":ToString() Write(var)) False; {}; ];
+  50  # JNSolve(_expr, _var)_((res := JNSolve'Poly(expr, var)) != Failed) <-- res;
+  60  # JNSolve(_e1 * _e2, _var) <-- Union(JNSolve(e1,var), JNSolve(e2,var));
+  70  # JNSolve(_e1 / _e2, _var) <-- JNSolve(e1, var);
+  80  # JNSolve(_e1 + _e2, _var)_(Not HasExpr(e2,var) And (res := JNSolve'Simple(e1,-e2,var)) != Failed) <-- res;
+  80  # JNSolve(_e1 + _e2, _var)_(Not HasExpr(e1,var) And (res := JNSolve'Simple(e2,-e1,var)) != Failed) <-- res;
+  80  # JNSolve(_e1 - _e2, _var)_(Not HasExpr(e2,var) And (res := JNSolve'Simple(e1,e2,var)) != Failed) <-- res;
+  80  # JNSolve(_e1 - _e2, _var)_(Not HasExpr(e1,var) And (res := JNSolve'Simple(e2,e1,var)) != Failed) <-- res;
+  85  # JNSolve(_expr, _var)_((res := JNSolve'Simple(expr, 0, var)) != Failed) <-- res;
+  90  # JNSolve(_expr, _var)_((res := JNSolve'Reduce(expr, var)) != Failed) <-- res;
+  100 # JNSolve(_expr, _var)_((res := Simplify(expr)) != expr) <-- JNSolve(res, var);
+  110 # JNSolve(_expr, _var) <--
+        [ Assert("JNSolve'Fails", "cannot solve equation ":(ToString() Write(expr)):" for ":ToString() Write(var)) False; {}; ];
 ];
 
 /********** JNSolve'Poly **********/
@@ -64,16 +70,15 @@ LocalSymbols(res)
  */
 
 20 # JNSolve'Poly(_expr, _var) <--
+LocalSymbols(x)
 [
   Local(roots);
   roots := PSolve(expr, var); 
-  If(IsAtom(roots), 
-     {roots},           /* Case 1 */
-     If(Head(Listify(roots)) = PSolve, 
-        Failed,         /* Case 3 */
-        If(Head(Listify(roots)) = List,
-           roots,       /* Case 2 */
-           {roots})));  /* Case 1 */
+  If(Type(roots) = "PSolve",
+     Failed,                              /* Case 3 */
+     If(Type(roots) = "List",
+        MapSingle({{x},var==x}, roots),   /* Case 2 */
+        {var == roots}));                 /* Case 1 */
 ];
 
 /********** JNSolve'Reduce **********/
@@ -93,19 +98,25 @@ LocalSymbols(res)
           res := Failed, /* to prevent infinite recursion */
           [
     	    sol2 := JNSolve(expr2, var2);
-    	    If (Head(Listify(sol2)) != List,
-    		res := Failed,
-    		[
-    		  res := {};
-    		  i := 1;
-    		  While(i <= Length(sol2) And res != Failed) [
-    		    sol := JNSolve(context == sol2[i], var);
-    		    If(Head(Listify(sol)) != List,
-    		       res := Failed,
-    		       res := Union(res, sol));
-    		    i++;
-    		  ];
-    		]);
+	    If(IsError("JNSolve'Fails"),
+	       [
+	         ClearError("JNSolve'Fails");
+		 res := Failed;
+               ],
+    	       [
+    		 res := {};
+    		 i := 1;
+    		 While(i <= Length(sol2) And res != Failed) [
+    		   sol := JNSolve(context == (var2 Where sol2[i]), var);
+	           If(IsError("JNSolve'Fails"),
+		      [
+		        ClearError("JNSolve'Fails");
+		        res := Failed;
+                      ],
+    		      res := Union(res, sol));
+    		   i++;
+    		 ];
+    	       ]);
       	   ]);
      ]);
   res;
@@ -157,45 +168,61 @@ LocalSymbols(res)
  * Note: 'rhs' should not contain 'var'.
  */
 
-20 # JNSolve'Simple(_e1 + _e2, _rhs, _var)_(e1 = var And Not HasExpr(e2,var)) <-- { rhs-e2 };
-20 # JNSolve'Simple(_e1 + _e2, _rhs, _var)_(e2 = var And Not HasExpr(e1,var)) <-- { rhs-e1 };
+20 # JNSolve'Simple(_e1 + _e2, _rhs, _var)_(e1 = var And Not HasExpr(e2,var)) <-- { var == rhs-e2 };
+20 # JNSolve'Simple(_e1 + _e2, _rhs, _var)_(e2 = var And Not HasExpr(e1,var)) <-- { var == rhs-e1 };
 
-20 # JNSolve'Simple(_e1 - _e2, _rhs, _var)_(e1 = var And Not HasExpr(e2,var)) <-- { rhs+e2 };
-20 # JNSolve'Simple(_e1 - _e2, _rhs, _var)_(e2 = var And Not HasExpr(e1,var)) <-- { e1-rhs };
+20 # JNSolve'Simple(_e1 - _e2, _rhs, _var)_(e1 = var And Not HasExpr(e2,var)) <-- { var == rhs+e2 };
+20 # JNSolve'Simple(_e1 - _e2, _rhs, _var)_(e2 = var And Not HasExpr(e1,var)) <-- { var == e1-rhs };
+20 # JNSolve'Simple(-(_e1), _rhs, _var)_(e1 = var) <-- { var == -rhs };
 
-/* Note: This may lead to division by zero */
-20 # JNSolve'Simple(_e1 * _e2, _rhs, _var)_(e1 = var And Not HasExpr(e2,var)) <-- { rhs/e2 };
-20 # JNSolve'Simple(_e1 * _e2, _rhs, _var)_(e2 = var And Not HasExpr(e1,var)) <-- { rhs/e1 };
+20 # JNSolve'Simple(_e1 * _e2, _rhs, _var)_(e1 = var And Not HasExpr(e2,var)) <-- { var == rhs/e2 };
+20 # JNSolve'Simple(_e1 * _e2, _rhs, _var)_(e2 = var And Not HasExpr(e1,var)) <-- { var == rhs/e1 };
 
-/* Note: What if e2 is zero */
-20 # JNSolve'Simple(_e1 / _e2, _rhs, _var)_(e1 = var And Not HasExpr(e2,var)) <-- { rhs*e2 };
-20 # JNSolve'Simple(_e1 / _e2, _rhs, _var)_(e2 = var And Not HasExpr(e1,var)) <-- { e1/rhs };
+20 # JNSolve'Simple(_e1 / _e2, _rhs, _var)_(e1 = var And Not HasExpr(e2,var)) <-- { var == rhs*e2 };
+10 # JNSolve'Simple(_e1 / _e2, 0,    _var)_(e2 = var And Not HasExpr(e1,var)) <-- { };
+20 # JNSolve'Simple(_e1 / _e2, _rhs, _var)_(e2 = var And Not HasExpr(e1,var)) <-- { var == e1/rhs };
 
-/* Note: Too simplistic */
-20 # JNSolve'Simple(_e1 ^ _e2, _rhs, _var)_(e1 = var And Not HasExpr(e2,var)) <-- { rhs^(1/e2) };
-20 # JNSolve'Simple(_e1 ^ _e2, _rhs, _var)_(e2 = var And Not HasExpr(e1,var)) <-- { Ln(rhs)/Ln(e1) };
+LocalSymbols(x)
+[
+  20 # JNSolve'Simple(_e1 ^ _n, _rhs, _var)_(e1 = var And IsPositiveInteger(n)) 
+       <-- MapSingle({{x}, var == rhs^(1/n)*x}, RootsOfUnity(n));
+  20 # JNSolve'Simple(_e1 ^ _n, _rhs, _var)_(e1 = var And IsNegativeInteger(n)) 
+       <-- MapSingle({{x}, var == rhs^(1/n)*x}, RootsOfUnity(-n));
+];
 
-/* Note: Misses multiple solutions */
-20 # JNSolve'Simple(Sin(_e1),    _rhs, _var)_(e1 = var) <-- { ArcSin(rhs) };
-20 # JNSolve'Simple(Cos(_e1),    _rhs, _var)_(e1 = var) <-- { ArcCos(rhs) };
-20 # JNSolve'Simple(Tan(_e1),    _rhs, _var)_(e1 = var) <-- { ArcTan(rhs) };
-20 # JNSolve'Simple(ArcSin(_e1), _rhs, _var)_(e1 = var) <-- { Sin(rhs) };
-20 # JNSolve'Simple(ArcCos(_e1), _rhs, _var)_(e1 = var) <-- { Cos(rhs) };
-20 # JNSolve'Simple(ArcTan(_e1), _rhs, _var)_(e1 = var) <-- { Tan(rhs) };
+20 # JNSolve'Simple(_e1 ^ _e2, _rhs, _var)
+     _ (IsPositiveReal(e1) And e1 != 0 And e2 = var And IsPositiveReal(rhs) And rhs != 0)  
+     <-- { var == Ln(rhs)/Ln(e1) };
 
-/* Note: Second rule misses multiple solutions */
-10 # JNSolve'Simple(Exp(_e1),    0,    _var)_(e1 = var) <-- { };
-20 # JNSolve'Simple(Exp(_e1),    _rhs, _var)_(e1 = var) <-- { Ln(rhs) };
-20 # JNSolve'Simple(Ln(_e1),     _rhs, _var)_(e1 = var) <-- { Exp(rhs) };
+/* Note: These rules do not take the periodicity of the trig. functions into account */
+10 # JNSolve'Simple(Sin(_e1), 1,    _var)_(e1 = var) <-- { var == 1/2*Pi };
+10 # JNSolve'Simple(Sin(_e1), _rhs, _var)_(e1 = var And rhs = -1) <-- { var == 3/2*Pi };
+20 # JNSolve'Simple(Sin(_e1), _rhs, _var)_(e1 = var) <-- { var == ArcSin(rhs), var == Pi-ArcSin(rhs) };
+10 # JNSolve'Simple(Cos(_e1), 1,    _var)_(e1 = var) <-- { var == 0 };
+10 # JNSolve'Simple(Cos(_e1), _rhs, _var)_(e1 = var And rhs = -1) <-- { var == Pi };
+20 # JNSolve'Simple(Cos(_e1), _rhs, _var)_(e1 = var) <-- { var == ArcCos(rhs), var == -ArcCos(rhs) };
+20 # JNSolve'Simple(Tan(_e1), _rhs, _var)_(e1 = var) <-- { var == ArcTan(rhs) };
 
-/* Note: Sqrt rule is wrong if rhs is negative */
-20 # JNSolve'Simple(-(_e1),      _rhs, _var)_(e1 = var) <-- { -rhs };
-20 # JNSolve'Simple(Sqrt(_e1),   _rhs, _var)_(e1 = var) <-- { rhs^2 };
+20 # JNSolve'Simple(ArcSin(_e1), _rhs, _var)_(e1 = var) <-- { var == Sin(rhs) };
+20 # JNSolve'Simple(ArcCos(_e1), _rhs, _var)_(e1 = var) <-- { var == Cos(rhs) };
+20 # JNSolve'Simple(ArcTan(_e1), _rhs, _var)_(e1 = var) <-- { var == Tan(rhs) };
+
+/* Note: Second rule neglects (2*I*Pi)-periodicity of Exp() */
+10 # JNSolve'Simple(Exp(_e1), 0,    _var)_(e1 = var) <-- { };
+20 # JNSolve'Simple(Exp(_e1), _rhs, _var)_(e1 = var) <-- { var == Ln(rhs) };
+20 # JNSolve'Simple(Ln(_e1),  _rhs, _var)_(e1 = var) <-- { var == Exp(rhs) };
+
+/* The range of Sqrt is the set of (complex) numbers with either
+ * positive real part, together with the pure imaginary numbers with
+ * nonnegative real part. */
+20 # JNSolve'Simple(Sqrt(_e1), _rhs, _var)_(e1 = var And IsPositiveReal(Re(rhs)) And Re(rhs) != 0) <-- { var == rhs^2 };
+20 # JNSolve'Simple(Sqrt(_e1), _rhs, _var)_(e1 = var And Re(rhs)=0 And IsPositiveReal(Im(rhs))) <-- { var == rhs^2 };
+20 # JNSolve'Simple(Sqrt(_e1), _rhs, _var)_(e1 = var And Re(rhs)=0 And IsNegativeReal(Im(rhs)) And Im(rhs) != 0) <-- { };
+20 # JNSolve'Simple(Sqrt(_e1), _rhs, _var)_(e1 = var And IsNegativeReal(Re(rhs)) And Re(rhs) != 0) <-- { };
 
 30 # JNSolve'Simple(_lhs, _rhs, _var) <-- Failed;
 
-/********** Utility Function **********/
 
-/* Take union, if both arguments are lists */
-10 # JNSolve'Union(e1_IsList, e2_IsList) <-- Union(e1, e2);
+/********** JNSolve'System **********/
 
+JNSolve'System(_eqns, _vars) <-- Check(False, "JNSolve'System: not implemented");
