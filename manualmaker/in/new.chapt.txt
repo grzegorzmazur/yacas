@@ -326,6 +326,34 @@ functions that return values with code blocks and temporary local variables.
 Users may freely combine rules with C-like procedures or LISP-like recursive list
 processing primitives such as {Head}, {Tail}, for example
 
+	powermod(x_IsPositiveInteger,n_IsPositiveInteger,
+	         m_IsPositiveInteger) <--
+	[
+	  Local(result);
+	  result:=1;
+	  x:=Mod(x,m);
+	  While(n != 0)
+	  [
+	     if ((n&1) = 1) [ result := Mod(result*x,m); ];
+	     x := Mod(x*x,m);
+	     n := n>>1;
+	  ];
+	  result;
+	];
+
+defines a function $ powermod(x,n,m) $ which calculates $ Mod(x^n,m) $
+efficiently:
+
+	In> powermod(2,10,100)
+	Out> 24;
+	In> Mod(2^10,100)
+	Out> 24;
+	In> powermod(23234234,2342424234,232423424)
+	Out> 210599936;
+
+
+@@@ todo finish example below?
+
 	_x ** y_IsList <--
 	[
 	  Local(i, A, B);
