@@ -480,6 +480,7 @@ class ThisPlugin : public LispPluginBase
 {
 public:
     virtual void Add(LispEnvironment& aEnvironment);
+    virtual void Remove(LispEnvironment& aEnvironment);
 };
 void ThisPlugin::Add(LispEnvironment& aEnvironment)
 {
@@ -559,6 +560,39 @@ void ThisPlugin::Add(LispEnvironment& aEnvironment)
   GlutSetEnv(aEnvironment);
   }
 
+void ThisPlugin::Remove(LispEnvironment& aEnvironment)
+{
+//printf("CLOSED DLL!!!\n");
+  aEnvironment.RemoveCommand("glBegin");
+  aEnvironment.RemoveCommand("glVertex3d");
+  aEnvironment.RemoveCommand("glEnd");
+  aEnvironment.RemoveCommand("glClearColor");
+  aEnvironment.RemoveCommand("glClear");
+  aEnvironment.RemoveCommand("glColor4d");
+  aEnvironment.RemoveCommand("glFrontFace");
+  aEnvironment.RemoveCommand("glPointSize");
+  aEnvironment.RemoveCommand("glLineWidth");
+  aEnvironment.RemoveCommand("glEnable");
+  aEnvironment.RemoveCommand("glDisable");
+  aEnvironment.RemoveCommand("glPushMatrix");
+  aEnvironment.RemoveCommand("glPopMatrix");
+  aEnvironment.RemoveCommand("glLoadIdentity");
+  aEnvironment.RemoveCommand("glRotated");
+  aEnvironment.RemoveCommand("glScaled");
+  aEnvironment.RemoveCommand("glTranslated");
+  aEnvironment.RemoveCommand("glNormal3d");
+  aEnvironment.RemoveCommand("glMatrixMode");
+  aEnvironment.RemoveCommand("glOrtho");
+  aEnvironment.RemoveCommand("glFrustum");
+  aEnvironment.RemoveCommand("glViewport");
+  aEnvironment.RemoveCommand("GlutMainLoop");
+  aEnvironment.RemoveCommand("GlutViewWidth");
+  aEnvironment.RemoveCommand("GlutViewHeight");
+  aEnvironment.RemoveCommand("GlutEnableAnimation");
+  aEnvironment.RemoveCommand("GlutDisableAnimation");
+  aEnvironment.RemoveCommand("glutPostRedisplay");
+  aEnvironment.RemoveCommand("GlutGetElapsedTime");
+}
 
 extern "C" {
 LispPluginBase* maker(void)

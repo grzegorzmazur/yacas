@@ -99,6 +99,7 @@ class ThisPlugin : public LispPluginBase
 {
 public:
     virtual void Add(LispEnvironment& aEnvironment);
+    virtual void Remove(LispEnvironment& aEnvironment);
 };
 void ThisPlugin::Add(LispEnvironment& aEnvironment)
 {
@@ -110,6 +111,15 @@ void ThisPlugin::Add(LispEnvironment& aEnvironment)
   aEnvironment.SetCommand(base_BlaGetA, "BlaGetA");
 }
 
+void ThisPlugin::Remove(LispEnvironment& aEnvironment)
+{
+//printf("CLOSED DLL!!!\n");
+  aEnvironment.RemoveCommand("AddTwoIntegers");
+  aEnvironment.RemoveCommand("AddTwoDoubles");
+  aEnvironment.RemoveCommand("CreateBla");
+  aEnvironment.RemoveCommand("BlaSetA");
+  aEnvironment.RemoveCommand("BlaGetA");
+}
 
 extern "C" {
 LispPluginBase* maker(void)
