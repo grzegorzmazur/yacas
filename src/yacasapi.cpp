@@ -13,8 +13,8 @@ long theNrDefinedUser=0;
 
 #define InternalEval environment().iEvaluator->Eval
 
-#define OPERATOR(oper_type,prec,name) \
-	oper_type##operators.SetOperator(prec,hash.LookUp(#name))
+#define OPERATOR(kind,prec,name) \
+	kind##operators.SetOperator(prec,hash.LookUp(#name))
 // for example: OPERATOR(bodied,KMaxPrecedence,While) produces:
 //    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("While"));
 
@@ -37,32 +37,17 @@ iEnvironment(coreCommands,userFunctions,
                  postfixoperators,bodiedoperators,&input),
 input(iEnvironment.iInputStatus)
 {
-    // Define the buitl-in functions by tying their string representation
+    // Define the built-in functions by tying their string representation
     // to a kernel callable routine.
 
-#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags);
-#define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags);
+#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags)
+
+#define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags)
+
 #include "corefunctions.h"
 #undef CORE_KERNEL_FUNCTION
 #undef CORE_KERNEL_FUNCTION_ALIAS
-    
-    OPERATOR(bodied,KMaxPrecedence,While);
-    OPERATOR(bodied,KMaxPrecedence,Rule);
-    OPERATOR(bodied,KMaxPrecedence,MacroRule);
-    OPERATOR(bodied,KMaxPrecedence,RulePattern);
-    OPERATOR(bodied,KMaxPrecedence,MacroRulePattern);
-    OPERATOR(bodied,KMaxPrecedence,FromFile);
-    OPERATOR(bodied,KMaxPrecedence,FromString);
-    OPERATOR(bodied,KMaxPrecedence,ToFile);
-    OPERATOR(bodied,KMaxPrecedence,ToString);
-    OPERATOR(bodied,KMaxPrecedence,TraceRule);
-    OPERATOR(bodied,KMaxPrecedence,Subst);
-    OPERATOR(bodied,KMaxPrecedence,LocalSymbols);
-    OPERATOR(bodied,KMaxPrecedence,BackQuote);
-    OPERATOR(prefix,0,`);
-    OPERATOR(prefix,0,@);
-    OPERATOR(prefix,0,_);
-    OPERATOR(infix,0,_);
+#undef OPERATOR
 
 }
 

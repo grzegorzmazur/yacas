@@ -163,9 +163,10 @@ Algo.book.tex: Algo.book $(ALGOCHAPTERS)
 LispProgramming.book.tex: LispProgramming.book $(LISPPROGRAMMINGCHAPTERS)
 NewDesign.book.tex: NewDesign.book $(NEWDESIGNCHAPTERS)
 
-# special "virtual" chapter built from yacasapi.cpp
-yacasapi.chapt.txt: $(top_srcdir)/src/yacasapi.cpp
-	perl $(srcdir)/api2txt.pl < $(top_srcdir)/src/yacasapi.cpp > yacasapi.chapt.txt
+# special "virtual" chapter built from corefunctions.h. This is printed by a special program "gencorefunctions", compiled together with yacas.
+
+yacasapi.chapt.txt: ../src/gencorefunctions
+	../src/gencorefunctions refman | sort > yacasapi.chapt.txt
 
 # special chapter copied from the GPL (need to replace "<" and ">")
 GPL.chapt: $(top_srcdir)/COPYING
