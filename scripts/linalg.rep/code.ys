@@ -244,11 +244,22 @@ FrobeniusNorm(matrix_IsMatrix) <--
 //
 15 # Determinant(_matrix)_(Length(Select("IsZero",Diagonal(matrix))) > 0) <-- SymbolicDeterminant(matrix);
 
-20 # Determinant(_matrix) <-- 
+20 # Determinant(_matrix) <-- GaussianDeterminant(matrix);
+
+GaussianDeterminant(matrix):=
 [
   Local(n,s,result);
   n:=Length(matrix);
 	result:=1;
+
+  [
+    matrix:=FlatCopy(matrix);
+    Local(i);
+    For(i:=1,i<=n,i++)
+    [
+      matrix[i]:=FlatCopy(matrix[i]);
+    ];
+  ];
 
   // gaussian elimination
   ForEach(i, 1 .. (n-1) )
@@ -272,6 +283,27 @@ FrobeniusNorm(matrix_IsMatrix) <--
     result:=result*i;
   result;
 ];
+
+/* Recursive calculation of determinant, provided by Sebastian Ferraro
+ */
+20 # RecursiveDeterminant(_matrix) <--
+[
+  /*
+  Computes a determinant recursively by summing the product of each (nonzero) element on the first row of the matrix
+  by +/- the determinant of the submatrix with the corresponding row and column deleted.
+  */
+  Local(result);
+  If(Equals(Length(matrix),1),matrix[1][1],[
+    result:=0;
+    ForEach(i,1 .. Length(matrix))
+      //Consider only non-zero entries
+      If(Not(Equals(matrix[1][i],0)),
+        //Transpose and Drop eliminate row 1, column i
+        result:=result+matrix[1][i]*(-1)^(i+1)* RecursiveDeterminant(Transpose(Drop(Transpose(Drop(matrix,{1,1})),{i,i}))));
+    result;
+  ]);
+];
+
 
 20 # SymbolicDeterminant(_matrix) <-- 
 [

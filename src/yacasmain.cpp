@@ -333,8 +333,10 @@ void my_exit(void)
   {
     if (show_prompt)
         printf("Quitting...\n");
-    if (yacas) delete yacas; yacas = NULL;
+    // Delete the command line first, so that if in debug mode and some assert fires while
+    // deleting the Yacas environment object, at least we have a saved history
     if (commandline) delete commandline; commandline = NULL;
+    if (yacas) delete yacas; yacas = NULL;
     ReportNrCurrent();
 #ifdef YACAS_DEBUG
     YacasCheckMemory();

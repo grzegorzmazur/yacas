@@ -1,7 +1,9 @@
 
 
-Maintainer:
+Maintainers/copyright holders:
 Ayal Pinkus                  apinkus "AT" xs4all "DOT" nl
+Serge Winitzki               serge "AT" cosmos "DOT" phy "DOT" tufts "DOT" edu
+Jitse Niesen                 jn221 "AT" damtp "DOT" cam "DOT" ac "DOT" uk
 
 Contributors (with last-known email addresses mangled in an obvious way):
 John Lapeyre
@@ -13,7 +15,6 @@ Daniel Richard G.            straker "AT" MIT "DOT" EDU
 Ladislav Zejda
 Fred Bacon                   bacon "AT" aerodyne "DOT" com
 Schneelocke 
-Serge Winitzki               serge "AT" cosmos "DOT" phy "DOT" tufts "DOT" edu
 Jay Belanger                 belanger "AT" truman "DOT" edu
 Vladimir Livshits            livshits "AT" cs "DOT" stanford "DOT" edu
 Eugenia Loli
@@ -22,7 +23,6 @@ Mark Arrasmith               arrasmith "AT" math "DOT" twsu "DOT" edu
 Robert V Schipper            rvs "AT" achilles "DOT" nfia "DOT" org
 Gopal Narayanan              gopal "AT" debian "DOT" org
 Christian Obrecht            christian "DOT" obrecht "AT" wanadoo "DOT" fr
-Jitse Niesen                 jn221 "AT" damtp "DOT" cam "DOT" ac "DOT" uk
 Pablo De Nápoli              pdenapo "AT" yahoo "DOT" com
 Joris van der Hoeven         TeXmacs "AT" math "DOT" u-psud "DOT" fr
 Alberto González Palomo
@@ -32,4 +32,4 @@ Mark Hatsell                 mark "AT" autograph-maths "DOT" com
 Yannick Versley              yannick "AT" versley "DOT" de
 Franz Hack                   franz.hack "AT" web "DOT" de
 Mike Pinna                   mike "AT" autograph-maths "DOT" com
-
+Sebastian Ferraro            sferraro "AT" criba "DOT" edu "DOT" ar

@@ -3,6 +3,9 @@ Debug
 Profile
 DebugRun
 DebugStep
+DebugStepOver
+DebugBreakAt
+DebugRemoveBreakAt
 DebugStop
 DebugVerbose
 DebugAddBreakpoint
@@ -11,4 +14,5 @@ DebugCallstack
 DebugBreakIf
 DebugLocals
 Time
+DebugShowCode
 }
