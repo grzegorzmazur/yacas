@@ -39,8 +39,15 @@ void CArrayGrowerBase::GrowTo(int aNrItems)
     LISPASSERT(!iArrayOwnedExternally);
     if (aNrItems > iNrAllocated)
     {
+        if (iNrAllocated == 0)
+            iNrAllocated = 1;
         while (aNrItems > iNrAllocated)
-            iNrAllocated += iGranularity;
+            iNrAllocated *= 2;
+        
+        /*
+         while (aNrItems > iNrAllocated)
+             iNrAllocated += iGranularity;
+        */
         if (iArray == NULL)
         {
             iArray = (LispChar*)PlatAlloc(iNrAllocated*iItemSize);
