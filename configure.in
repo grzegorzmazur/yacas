@@ -88,6 +88,7 @@ AC_ARG_ENABLE(server, [  --enable-server         build the network server versio
 AC_MSG_CHECKING([checking whether to enable the server mode])
 AC_MSG_RESULT($enable_server)
 if test "$enable_server" = "yes" ; then
+  AC_FUNC_ACCEPT_ARGTYPES
   SERVER_FLAGS="-DSUPPORT_SERVER"
 else
   SERVER_FLAGS=""
