@@ -42,7 +42,7 @@ Expand(x); /* TODO no idea why this is needed! Mod/Div/UniVariate thing :-( */
 [
   Local(coefs);
   coefs:=PAdicExpandInternal(x,y);
-  Subst(p,y)Sum(coefs*(p^(0 .. Length(coefs))));
+  Subst(p,y)Add(coefs*(p^(0 .. Length(coefs))));
 ];
  
 10 # PAdicExpandInternal(0,_y) <-- {};
@@ -235,7 +235,7 @@ PartFracExpand(_g,_f) <--
   divlist:=Map("/",{res,mlist});
 
   If(Length(divlist)<2,
-    Sum(divlist),
+    Add(divlist),
     [
       result:=divlist[1];
       ForEach(item,Tail(divlist))
