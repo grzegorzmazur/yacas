@@ -852,11 +852,76 @@ M-s will bring the next input matching
   (while (not (yacas-new-prompt-p))
     (sit-for 0.100)))
 
+(defun yacas-in-comment-p ()
+  "Non-nil means that the point is in a comment."
+  (let ((ok t) result)
+    (save-excursion
+      (while ok
+	(cond ((search-backward "/" (- (point) 2000) t)
+	       (cond ((looking-at "/\\*")
+		      (setq result t ok nil))
+		     ((bobp) (setq ok nil ))
+		     ((progn (forward-char -1)
+			     (looking-at "\\*/"))
+		      (setq ok nil))))
+	      (t (setq ok nil))))
+      result)))
+
+(defun yacas-find-command-end ()
+  "Return the point that ends the current command"
+  (let ((out)
+        (mtch))
+    (save-excursion
+      (while (looking-at "[ \t\n]")
+        (forward-char 1))
+      (if (= (point) (point-max))
+          (setq out (point))
+        (re-search-forward "\\([[;\n]\\)\\|\\(/\\*\\)" nil t)      
+        (setq mtch (match-string 0))
+        (cond
+         ((string= mtch "/*")
+          (search-forward "*/")
+          (setq out (yacas-find-command-end)))
+         ((string= mtch "[")
+          (forward-char -1)
+          (forward-sexp)
+          (setq out (yacas-find-command-end)))
+         ((string= mtch ";")
+          (setq out (point)))
+         ((string= mtch "\n")
+          (forward-char -2)
+          (while (looking-at " ") (forward-char -1))
+          (if (looking-at "\\\\") 
+              (progn
+                (forward-line 1)
+                (setq out (yacas-find-command-end)))
+            (end-of-line)
+            (setq out (point)))))))
+    out))
+
+(defun yacas-find-command-end-string (string)
+  "return the point that ends the current command"
+  (let* ((tmpfile (make-temp-name "#ys"))
+         (tmpbuf (get-buffer-create tmpfile))
+         (out)
+         (mtch))
+    (save-excursion
+      (set-buffer tmpbuf)
+      (make-local-hook 'kill-buffer-hook)
+      (setq kill-buffer-hook nil)
+      (insert string)
+      (goto-char (point-min))
+      (setq out (yacas-find-command-end)))
+    (kill-buffer tmpbuf)
+;    out))
+    (- out 1)))
+
 (defun yacas-send-block (stuff)
   "Send a block of code to Yacas."
   (yacas-start)
-  (while (string-match ";" stuff)
-    (setq end (1+ (string-match ";" stuff)))
+  (while (not (string= "" stuff))
+    (setq end (yacas-find-command-end-string stuff))
+    ;    (setq end (1+ (string-match ";" stuff)))
     (yacas-single-command (substring stuff 0 end))
     (setq stuff (substring stuff end))))
 
@@ -931,6 +996,36 @@ do not display the yacas buffer."
 	(setq yacas-prettyform nil))
     (yacas-string "PrettyPrinter(\"PrettyForm\");")
     (setq yacas-prettyform t)))
+
+;;; Get the output
+(defun yacas-output ()
+  "Get the most recent output from Yacas."
+  (interactive)
+  (save-excursion
+    (set-buffer (process-buffer inferior-yacas-process))
+    (let ((pmark (progn (goto-char (process-mark inferior-yacas-process))
+                        (forward-line 0)
+                        (point-marker))))
+      (buffer-substring-no-properties comint-last-input-end pmark))))
+
+(defun yacas-tex-output ()
+  "Get the most recent output from Yacas, assuming the output was in TeX form."
+  (interactive)
+  (save-excursion
+    (set-buffer (process-buffer inferior-yacas-process))
+    (let ((pmark (progn (goto-char (process-mark inferior-yacas-process))
+                        (forward-line 0)
+                        (point-marker)))
+          (beg)
+          (end))
+      (goto-char comint-last-input-end)
+      (search-forward "$")
+      (setq beg (point))
+      (goto-char pmark)
+      (search-backward "$")
+      (setq end (point))
+      (buffer-substring-no-properties beg end))))
+
 
 (add-hook 'yacas-start-shell-hooks 'yacas-toggle-prettyform)
 
