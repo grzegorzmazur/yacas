@@ -127,6 +127,10 @@ SOURCE=.\exedll.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\filescanner.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\genericobject.cpp
 # End Source File
 # Begin Source File
@@ -296,6 +300,10 @@ SOURCE=.\tokenizer.cpp
 # Begin Source File
 
 SOURCE=.\unipoly.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\plugins\filescanner\win32_filescanner_plugin.cpp
 # End Source File
 # Begin Source File
 

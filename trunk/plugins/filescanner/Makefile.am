@@ -1,5 +1,5 @@
 
-EXTRA_DIST = 
+EXTRA_DIST = win32_filescanner_plugin.cpp 
 
 
 INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/
