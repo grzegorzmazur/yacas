@@ -65,3 +65,14 @@ Verify(Concat({a,b},{c,d}),{a,b,c,d});
 Verify(Hold(Concat({a,b},{c,d})),Concat({a,b},{c,d}));
 
 
+Testing("Binary searching");
+Verify(BSearch(100,{{n},n^2-15}), -1);
+Verify(BSearch(100,{{n},n^2-16}), 4);
+Verify(BSearch(100,{{n},n^2-100002}), -1);
+Verify(BSearch(100,{{n},n^2-0}), -1);
+Verify(FindIsq(100,{{n},n^2-15}), 3);
+Verify(FindIsq(100,{{n},n^2-16}), 4);
+Verify(FindIsq(100,{{n},n^2-100002}), 100);
+Verify(FindIsq(100,{{n},n^2-0}), 1);
+
+
