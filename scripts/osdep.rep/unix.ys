@@ -2,9 +2,9 @@
 
 /// These functions should return the command line necessary to accomplish tasks.
 
-DeleteFileCmd(filename) := "rm \"" : filename : "\"";
+DeleteFileCmd(filename) := "test -f \"" : filename : "\" && rm \"" : filename : "\"";
 
-DeleteDirCmd(dirname) := "rm -r \"" : dirname : "\"";
+DeleteDirCmd(dirname) := "test -d \"" : dirname : "\" && rm -r \"" : dirname : "\"";
 
 CopyFileCmd(filename1, filename2) := "cp \"" : filename1 : "\" \"" : filename2 : "\"";
 MakeDirCmd(dirname) := "test -d \"" : dirname : "\" || mkdir -p \"" : dirname : "\"";
@@ -26,7 +26,7 @@ NullFileName() := "/dev/null";
 TemporaryFile() :=
 [
 	Local(cludgefile, filename);
-	cludgefile := TemporaryDirectory() : FilePathSeparator[ChosenOS] : "yacas-tmpfile";
+	cludgefile := TemporaryDirectory() : FilePathSeparator : "yacas-tmpfile";
 	SystemCall("echo \\\"" : cludgefile : "-$$\\\" ';' > " : cludgefile);
 	filename := FromFile(cludgefile) Read();
 	SystemCall(DeleteFile(cludgefile));
