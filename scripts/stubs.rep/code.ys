@@ -175,7 +175,7 @@ Lcm(a,b):=Div(a*b,Gcd(a,b));
 10 # Expand(expr_CanBeUni) <-- NormalForm(MakeUni(expr));
 20 # Expand(_expr) <-- expr;
 
-10 # Expand(_expr,_var)_CanBeUni(expr,var) <-- NormalForm(MakeUni(expr,var));
+10 # Expand(expr_CanBeUni(var),_var) <-- NormalForm(MakeUni(expr,var));
 20 # Expand(_expr,_var) <-- expr;
 
 

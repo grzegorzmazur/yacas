@@ -130,7 +130,7 @@ OdeSolve(_e) <--
   Local(h);
   e:=OdeNormalForm(e);
   h:=OdeFlatTerm(OdeCoefList(e));
-  if (IsFreeOf(h, Error))
+  if (IsFreeOf(Error,h))
   [
     OdeSolveLinear(e,h);
   ]

@@ -6,7 +6,6 @@ TODO:
 - Where should also accept the form currently returned by Solve.
 - We should use something like intersection or union in stead of
   AddTo
-- IsFreeOf should have its arguments reversed
 - document the left_right(arg) behaviour
 - Add MatchLinear to the distro, in a proper place.
 - Finish integration:

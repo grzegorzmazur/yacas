@@ -306,7 +306,7 @@ Function("Coef",{expression,var,order})
   uvi:=MakeUni(uv);
   Coef(uvi,Degree(uvi));
 ];
-10 # LeadingCoef(uv_CanBeUni,_var) <--
+10 # LeadingCoef(uv_CanBeUni(var),_var) <--
 [
   Local(uvi);
   uvi:=MakeUni(uv,var);
@@ -362,7 +362,7 @@ RuleBase("MakeUni",{expression,var});
   reslist:={};
   ForEach(item,expression[3])
   [
-    If(IsFreeOf(item,var),
+    If(IsFreeOf(var,item),
       DestructiveAppend(reslist,item),
       DestructiveAppend(reslist,MakeUni(item,var))
       );
@@ -377,7 +377,7 @@ Rule("MakeUni",2,10,Type(expression) = "UniVariate")
   reslist:={};
   ForEach(item,expression[3])
   [
-    If(IsFreeOf(item,var),
+    If(IsFreeOf(var,item),
       DestructiveAppend(reslist,item),
       DestructiveAppend(reslist,MakeUni(item,var))
       );
@@ -387,7 +387,7 @@ Rule("MakeUni",2,10,Type(expression) = "UniVariate")
 */
 LocalSymbols(a,b,var,expression)
 [
-  20 # MakeUni(_expression,_var)_(IsFreeOf(expression,var))
+  20 # MakeUni(expression_IsFreeOf(var),_var)
        <-- UniVariate(var,0,{expression});
   30 # MakeUni(_var,_var) <-- UniVariate(var,1,{1});
   30 # MakeUni(_a + _b,_var) <-- MakeUni(a,var) + MakeUni(b,var);
@@ -395,30 +395,10 @@ LocalSymbols(a,b,var,expression)
   30 # MakeUni(   - _b,_var) <--                - MakeUni(b,var);
   30 # MakeUni(_a * _b,_var) <-- MakeUni(a,var) * MakeUni(b,var);
   1 # MakeUni(_a ^ n_IsInteger,_var) <-- MakeUni(a,var) ^ n;
-  30 # MakeUni(_a / _b,_var)_(IsFreeOf(b,var)) <-- MakeUni(a,var) * (1/b);
+  30 # MakeUni(_a / (b_IsFreeOf(var)),_var) <-- MakeUni(a,var) * (1/b);
 ];
 
-/*TODO remove?
-Rule("MakeUni",2,20,IsFreeOf(expression,var)) UniVariate(var,0,{expression});
 
-Rule("MakeUni",2,30,expression=var)       UniVariate(var,1,{1});
-
-Rule("MakeUni",2,30,Type(expression) = "+")
-  MakeUni(expression[1],var)+MakeUni(expression[2],var);
-Rule("MakeUni",2,30,Type(expression) = "*")
-  MakeUni(expression[1],var)*MakeUni(expression[2],var);
-Rule("MakeUni",2,30,Type(expression) = "^" And IsInteger(expression[2]))
-  MakeUni(expression[1],var)^expression[2];
-Rule("MakeUni",2,30,Type(expression) = "-" And NrArgs(expression) = 1)
-     -(MakeUni(expression[1],var));
-
-Rule("MakeUni",2,30,Type(expression) = "/" And
-     Not(Contains(VarList(expression[2]),var)))
-  MakeUni(expression[1],var)*(1/expression[2]);
-
-Rule("MakeUni",2,30,Type(expression) = "-" And NrArgs(expression) = 2)
-     MakeUni(expression[1],var)-MakeUni(expression[2],var);
-*/
 
 
 0 # Div(n_IsUniVar,m_IsUniVar)_(Degree(n) < Degree(m)) <-- 0;
@@ -638,7 +618,7 @@ RandomPoly(_var,_degree,_coefmin,_coefmax) <--
 /* CanBeUni returns whether the function can be converted to a
  * univariate, with respect to a variable.
  */
-Function("CanBeUni",{expression}) CanBeUni(expression,VarList(expression));
+Function("CanBeUni",{expression}) CanBeUni(VarList(expression),expression);
 
 
 /* Accepting an expression as being convertable to univariate */
@@ -646,28 +626,27 @@ Function("CanBeUni",{expression}) CanBeUni(expression,VarList(expression));
 /* Dealing wiht a list of variables. The poly should be expandable
  * to each of these variables (smells like tail recursion)
  */
-10 # CanBeUni(_expression,{}) <-- True;
-20 # CanBeUni(_expression,var_IsList) <--
-    CanBeUni(expression,Head(var)) And CanBeUni(expression,Tail(var));
+10 # CanBeUni({},_expression) <-- True;
+20 # CanBeUni(var_IsList,_expression) <--
+    CanBeUni(Head(var),expression) And CanBeUni(Tail(var),expression);
 
 /* Atom can always be a polynom to any variable */
-30 # CanBeUni(expression_IsAtom,_var) <-- True;
-35 # CanBeUni(_expression,_var)_IsFreeOf(expression,var) <--
-    True;
+30 # CanBeUni(_var,expression_IsAtom) <-- True;
+35 # CanBeUni(_var,expression_IsFreeOf(var)) <-- True;
 
 /* Other patterns supported. */
-40 # CanBeUni(_x + _y,_var) <-- CanBeUni(x,var) And CanBeUni(y,var);
-40 # CanBeUni(_x - _y,_var) <-- CanBeUni(x,var) And CanBeUni(y,var);
-40 # CanBeUni(   + _y,_var) <-- CanBeUni(y,var);
-40 # CanBeUni(   - _y,_var) <-- CanBeUni(y,var);
-40 # CanBeUni(_x * _y,_var) <-- CanBeUni(x,var) And CanBeUni(y,var);
-40 # CanBeUni(_x / _y,_var) <-- CanBeUni(x,var) And IsFreeOf(y,var);
+40 # CanBeUni(_var,_x + _y) <-- CanBeUni(var,x) And CanBeUni(var,y);
+40 # CanBeUni(_var,_x - _y) <-- CanBeUni(var,x) And CanBeUni(var,y);
+40 # CanBeUni(_var,   + _y) <-- CanBeUni(var,y);
+40 # CanBeUni(_var,   - _y) <-- CanBeUni(var,y);
+40 # CanBeUni(_var,_x * _y) <-- CanBeUni(var,x) And CanBeUni(var,y);
+40 # CanBeUni(_var,_x / _y) <-- CanBeUni(var,x) And IsFreeOf(var,y);
 /* Special case again: raising powers */
-40 # CanBeUni(_x ^ y_IsInteger,_var)_(y >= 0 And CanBeUni(x,var)) <-- True;
-41 # CanBeUni(_x ^ _y,_var)_(IsFreeOf(x,var) And IsFreeOf(y,var)) <-- True;
-50 # CanBeUni(UniVariate(_var,_first,_coefs),_var) <-- True;
-1000 # CanBeUni(_f,_var)_(Not(IsFreeOf(f,var))) <-- False;
-1001 # CanBeUni(_f,_var) <-- True;
+40 # CanBeUni(_var,_x ^ y_IsInteger)_(y >= 0 And CanBeUni(var,x)) <-- True;
+41 # CanBeUni(_var,(x_IsFreeOf(var)) ^ (y_IsFreeOf(var))) <-- True;
+50 # CanBeUni(_var,UniVariate(_var,_first,_coefs)) <-- True;
+1000 # CanBeUni(_var,_f)_(Not(IsFreeOf(var,f))) <-- False;
+1001 # CanBeUni(_var,_f) <-- True;
 
 
 
