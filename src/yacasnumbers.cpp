@@ -685,14 +685,19 @@ LispStringPtr PiFloat( LispHashTable& aHashTable,
     {
         cur_prec *= 3;	// precision triples at each iteration
         if (cur_prec > aPrecision) cur_prec = aPrecision;
+
+        ANumber xtrunc(cur_prec);
+        xtrunc.CopyFrom(result);
+        xtrunc.ChangePrecision(cur_prec);
+
         ANumber x(cur_prec);    // dummy variables need to be created at new precision
         ANumber q(cur_prec);
         ANumber s(cur_prec);
         ANumber c(cur_prec);
         // Get Tan(result)
-        x.CopyFrom(result);
+        x.CopyFrom(xtrunc);
         SinFloat(s, x);
-        x.CopyFrom(result);
+        x.CopyFrom(xtrunc);
         CosFloat(c, x);
         Divide(q,x,s,c);
 

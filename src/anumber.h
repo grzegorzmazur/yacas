@@ -32,6 +32,7 @@ public:
     void CopyFrom(ANumber& aOther);
     void SetTo(LispCharPtr aString,LispInt aBase=10);
     inline void SetPrecision(LispInt aPrecision) {iPrecision = aPrecision;}
+    void ChangePrecision(LispInt aPrecision);
 public:
     LispInt iExp;
     LispInt iNegative;

@@ -315,6 +315,7 @@ class ThisPlugin : public LispPluginBase
 {
 public:
     virtual void Add(LispEnvironment& aEnvironment);
+    virtual void Remove(LispEnvironment& aEnvironment);
 };
 void ThisPlugin::Add(LispEnvironment& aEnvironment)
 {
@@ -357,6 +358,30 @@ void ThisPlugin::Add(LispEnvironment& aEnvironment)
   aEnvironment.SetCommand(base_fl_end_polygon, "FlEndPolygon");
 }
 
+void ThisPlugin::Remove(LispEnvironment& aEnvironment)
+{
+//printf("CLOSED DLL!!!\n");
+  aEnvironment.RemoveCommand("FlColor");
+  aEnvironment.RemoveCommand("FlFont");
+  aEnvironment.RemoveCommand("FlDraw");
+  aEnvironment.RemoveCommand("FlHeight");
+  aEnvironment.RemoveCommand("FlDescent");
+  aEnvironment.RemoveCommand("FlWidth");
+  aEnvironment.RemoveCommand("FlPushMatrix");
+  aEnvironment.RemoveCommand("FlPopMatrix");
+  aEnvironment.RemoveCommand("FlScale");
+  aEnvironment.RemoveCommand("FlTranslate");
+  aEnvironment.RemoveCommand("FlRotate");
+  aEnvironment.RemoveCommand("FlBeginPoints");
+  aEnvironment.RemoveCommand("FlBeginLine");
+  aEnvironment.RemoveCommand("FlBeginLoop");
+  aEnvironment.RemoveCommand("FlBeginPolygon");
+  aEnvironment.RemoveCommand("FlVertex");
+  aEnvironment.RemoveCommand("FlEndPoints");
+  aEnvironment.RemoveCommand("FlEndLine");
+  aEnvironment.RemoveCommand("FlEndLoop");
+  aEnvironment.RemoveCommand("FlEndPolygon");
+}
 
 extern "C" {
 LispPluginBase* maker(void)
