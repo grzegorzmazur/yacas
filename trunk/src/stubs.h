@@ -7,9 +7,19 @@
 
 #include "lisptype.h"
 
+#ifdef NO_GLOBALS
 LispCharPtr PlatAlloc(LispInt aNrBytes);
 LispCharPtr PlatReAlloc(LispCharPtr aOrig, LispInt aNrBytes);
 void PlatFree(LispCharPtr aOrig);
+#else
+void *PlatObAlloc(size_t nbytes);
+void PlatObFree(void *p);
+void *PlatObReAlloc(void *p, size_t nbytes);
+#define PlatAlloc(nr)        (LispCharPtr)PlatObAlloc((size_t)nr)
+#define PlatReAlloc(orig,nr) (LispCharPtr)PlatObReAlloc((void*)orig,(size_t)nr)
+#define PlatFree(orig)       PlatObFree((void*)orig)
+#endif
+
 
 void* operator new(unsigned long size);
 void operator delete(void* object);

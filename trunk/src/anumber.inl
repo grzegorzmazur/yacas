@@ -113,21 +113,24 @@ inline void BaseAdd(T& aTarget, const T& aSource, LispInt aBase)
     
     PlatDoubleWord carry=0;
     LispInt digit;
-    for (digit=0;digit<nr;digit++)
+
+   typename T::ElementTypePtr sourcePtr = &aSource[0];
+   typename T::ElementTypePtr targetPtr = &aTarget[0];
+   for (digit=0;digit<nr;digit++)
     {
         PlatDoubleWord word;
-        word = (PlatDoubleWord)aTarget[digit] +
-            (PlatDoubleWord)aSource[digit] + carry;
+        word = (PlatDoubleWord)targetPtr[digit] +
+            (PlatDoubleWord)sourcePtr[digit] + carry;
          PlatDoubleWord newDigit = (word%aBase);
          PlatDoubleWord newCarry = (word/aBase);
-         aTarget[digit] = (typename T::ElementType)newDigit;
+         targetPtr[digit] = (typename T::ElementType)newDigit;
          carry          = newCarry;
     }
     while (carry != 0)
     {
-        PlatSignedDoubleWord ww = aTarget[nr];
+        PlatSignedDoubleWord ww = targetPtr[nr];
         ww+=carry;
-        aTarget[nr] = ww%aBase;
+        targetPtr[nr] = ww%aBase;
         carry = ww/aBase;
         nr++;
     }
@@ -141,17 +144,22 @@ inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
     LISPASSERT(!IsZero(a2));
     // Initialize result
     LispInt nr = a2.NrItems();
-    while (a2[nr-1] == 0)
+
+    typename T::ElementTypePtr resultPtr = &aResult[0];
+    typename T::ElementTypePtr a2ptr = &a2[0];
+
+    while (a2ptr[nr-1] == 0)
         nr--;
 
     // Subtract on a per-digit basis
     PlatSignedDoubleWord carry=0;
     LispInt digit;
+
     for (digit=0;digit<nr;digit++)
     {
         PlatSignedDoubleWord word;
-        word = ((PlatSignedDoubleWord)aResult[digit+offset]) -
-            ((PlatSignedDoubleWord)a2[digit]) +
+        word = ((PlatSignedDoubleWord)resultPtr[digit+offset]) -
+            ((PlatSignedDoubleWord)a2ptr[digit]) +
             (PlatSignedDoubleWord)carry;
         carry=0;
         while (word<0)
@@ -159,7 +167,7 @@ inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
             word+=WordBase;
             carry--;
         }
-        aResult[digit+offset] = ((PlatWord)(word%WordBase));
+        resultPtr[digit+offset] = ((PlatWord)(word%WordBase));
     }
 
     while (carry != 0)
@@ -167,13 +175,13 @@ inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
         LISPASSERT(nr+offset<aResult.NrItems());
 
         LispInt newCarry = 0;
-        PlatSignedDoubleWord ww = aResult[nr+offset]+carry;
+        PlatSignedDoubleWord ww = resultPtr[nr+offset]+carry;
         while (ww<0)
         {
             ww = ww + WordBase;
             newCarry = newCarry - 1;
         }
-        aResult[nr+offset]=(typename T::ElementType)ww;
+        resultPtr[nr+offset]=(typename T::ElementType)ww;
         carry = newCarry;
         offset++;
     }
