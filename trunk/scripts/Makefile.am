@@ -73,13 +73,15 @@ SCRIPTFILES2 = \
 	tensor.rep/code.ys tensor.rep/code.ys.def 							    \
 	testers.rep/code.ys testers.rep/code.ys.def 							    \
 	texform.rep/code.ys texform.rep/code.ys.def 							    \
+	transforms.rep/code.ys transforms.rep/code.ys.def						    \
 	trigsimp.rep/code.ys trigsimp.rep/code.ys.def 							    \
 	univar.rep/code.ys univar.rep/code.ys.def univar.rep/sturm.ys univar.rep/sturm.ys.def               \
 	univar.rep/Cyclotomic.ys  univar.rep/Cyclotomic.ys.def 						    \
 	univar.rep/sparse.ys  univar.rep/sparse.ys.def 	                                                    \
         probability.rep/code.ys  probability.rep/code.ys.def                                                \
 	numbers.rep/NumberTheory.ys numbers.rep/NumberTheory.ys.def                                         \
-	numbers.rep/GaussianIntegers.ys numbers.rep/GaussianIntegers.ys.def
+	numbers.rep/GaussianIntegers.ys numbers.rep/GaussianIntegers.ys.def				    \
+	transforms.rep/code.ys transforms.rep/code.ys.def
 
 EXAMPLE_SCRIPTFILES = \
 	examples/ABIN.ys examples/pi.ys \
