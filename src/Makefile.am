@@ -84,6 +84,12 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp \
 
 yacas_include = $(datadir)/yacas/include
 
+clean-compile:
+	test -z "libyacasplatform.a" || rm -rf libyacasplatform.a
+	test -z "libyacasdebug.a" || rm -rf libyacasdebug.a
+	test -z "yacasdebug" || rm -rf yacasdebug
+        
+
 install-data-local: yacas.h
 	$(mkinstalldirs) $(yacas_include)/
 	$(mkinstalldirs) $(yacas_include)/plat/

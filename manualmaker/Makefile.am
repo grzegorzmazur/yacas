@@ -124,6 +124,7 @@ distcheck-hook:
 
 install-data-local: books.html 
 	$(mkinstalldirs) $(yacas_helpdir)/
+	cp ../docs/yacaslogo.gif $(yacas_helpdir)/
 	-for file in $(srcdir)/*.html; do \
 	basefile=`basename $$file`; \
 	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_helpdir)/$$basefile; \

@@ -116,7 +116,10 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 ];
 1 # Mod(n_IsPositiveInteger,m_IsPositiveInteger) <-- MathMod(n,m);
 2 # Mod(0,_m) <-- 0;
-3 # Mod(n_IsRationalOrNumber,m_IsRationalOrNumber)_(n>0 And m>0) <--
+3 # Mod(n_IsInteger,m_IsInteger) <-- MathMod(n,m);
+4 # Mod(n_IsNumber,m_IsNumber) <-- Mod(Rationalize(n),Rationalize(m));
+
+5 # Mod(n_IsRationalOrNumber,m_IsRationalOrNumber)/*_(n>0 And m>0)*/ <--
 [
   Local(n1,n2,m1,m2);
   n1:=Numer(n);
