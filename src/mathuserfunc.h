@@ -91,7 +91,8 @@ public:
     virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
                   LispPtr& aArguments);
     virtual void HoldArgument(LispStringPtr aVariable);
-    virtual LispInt Arity() const;
+    virtual LispInt IsArity(LispInt aArity) const;
+    LispInt Arity() const;
     virtual void DeclareRule(LispInt aPrecedence, LispPtr& aPredicate,
                              LispPtr& aBody);
     virtual void DeclareRule(LispInt aPrecedence, LispPtr& aBody);
@@ -99,13 +100,20 @@ public:
                         LispPtr& aBody);
     void InsertRule(LispInt aPrecedence,BranchRuleBase* newRule);
     virtual LispPtr& ArgList();
-    
 private:
     CArrayGrower<BranchParameter> iParameters;
     CDeletingArrayGrower<BranchRuleBase*>     iRules;
     LispPtr iParamList;
 };
 
+class ListedBranchingUserFunction : public BranchingUserFunction
+{
+public:
+    ListedBranchingUserFunction(LispPtr& aParameters);
+    virtual LispInt IsArity(LispInt aArity) const;
+    virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
+                  LispPtr& aArguments);
+};
 
 #endif
 

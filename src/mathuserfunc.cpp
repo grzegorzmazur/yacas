@@ -212,6 +212,11 @@ LispInt BranchingUserFunction::Arity() const
     return iParameters.NrItems();
 }
 
+LispInt BranchingUserFunction::IsArity(LispInt aArity) const
+{
+    return (Arity() == aArity);
+}
+
 void BranchingUserFunction::DeclareRule(LispInt aPrecedence, LispPtr& aPredicate,
                          LispPtr& aBody)
 {
@@ -299,6 +304,51 @@ LispPtr& BranchingUserFunction::ArgList()
 }
 
 
+
+ListedBranchingUserFunction::ListedBranchingUserFunction(LispPtr& aParameters)
+    : BranchingUserFunction(aParameters)
+{
+}
+
+LispInt ListedBranchingUserFunction::IsArity(LispInt aArity) const
+{
+    // nr arguments handled is bound by a minimum: the number of arguments
+    // to this function.
+    return (Arity() <= aArity);
+}
+
+void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
+                                           LispPtr& aArguments)
+{
+    LispPtr newArgs;
+    LispIterator iter(aArguments);
+    LispPtr* ptr =  &newArgs;
+    LispInt arity = Arity();
+    LispInt i=0;
+    while (i < arity && iter() != NULL)
+    {
+        ptr->Set(iter()->Copy(LispFalse));
+        ptr = &(ptr->Get()->Next());
+        i++;
+        iter.GoNext();
+    }
+    if (iter()->Next().Get() == NULL)
+    {
+        ptr->Set(iter()->Copy(LispFalse));
+        ptr = &(ptr->Get()->Next());
+        i++;
+        iter.GoNext();
+        LISPASSERT(iter() == NULL);
+    }
+    else
+    {
+        LispPtr head;
+        head.Set(LispAtom::New(aEnvironment.iList));
+        head.Get()->Next().Set(iter());
+        ptr->Set(LispSubList::New(head.Get()));
+    }
+    BranchingUserFunction::Evaluate(aResult, aEnvironment, newArgs);
+}
 
 
 

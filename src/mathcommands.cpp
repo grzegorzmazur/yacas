@@ -314,7 +314,7 @@ void LispTail(LispEnvironment& aEnvironment, LispPtr& aResult,
     InternalTail(first, list);
     InternalTail(aResult, first);
     LispPtr head;
-    head.Set(LispAtom::New(aEnvironment.HashTable().LookUp("List")));
+    head.Set(LispAtom::New(aEnvironment.iList));
     head.Get()->Next().Set(aResult.Get()->SubList()->Get());
     aResult.Get()->SubList()->Set(head.Get());
 }
@@ -336,7 +336,7 @@ void LispListify(LispEnvironment& aEnvironment, LispPtr& aResult,
     g.Finalize(1);
 
     LispPtr head;
-    head.Set(LispAtom::New(aEnvironment.HashTable().LookUp("List")));
+    head.Set(LispAtom::New(aEnvironment.iList));
     head.Get()->Next().Set(list.Get()->SubList()->Get());
     aResult.Set(LispSubList::New(head.Get()));
 }
@@ -352,7 +352,7 @@ void LispDestructiveReverse(LispEnvironment& aEnvironment, LispPtr& aResult,
     g.Finalize(1);
 
     LispPtr reversed;
-    reversed.Set(LispAtom::New(aEnvironment.HashTable().LookUp("List")));
+    reversed.Set(LispAtom::New(aEnvironment.iList));
     InternalReverseList(reversed.Get()->Next(), list.Get()->SubList()->Get()->Next());
     aResult.Set(LispSubList::New(reversed.Get()));
 }
@@ -401,7 +401,7 @@ void LispList(LispEnvironment& aEnvironment, LispPtr& aResult,
               LispPtr& aArguments)
 {
     LispPtr all;
-    all.Set(LispAtom::New(aEnvironment.HashTable().LookUp("List")));
+    all.Set(LispAtom::New(aEnvironment.iList));
     LispIterator tail(all);
     tail.GoNext();
     LispIterator iter = Argument(aArguments,1);
@@ -422,7 +422,7 @@ void LispConcatenate(LispEnvironment& aEnvironment, LispPtr& aResult,
               LispPtr& aArguments)
 {
     LispPtr all;
-    all.Set(LispAtom::New(aEnvironment.HashTable().LookUp("List")));
+    all.Set(LispAtom::New(aEnvironment.iList));
     LispIterator tail(all);
     tail.GoNext();
     LispInt arg = 1;
@@ -1095,7 +1095,8 @@ void LispLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 
 static void InternalRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
-                             LispPtr& aArguments, LispBoolean aMacroMode)
+                             LispPtr& aArguments, LispBoolean aMacroMode,
+                             LispInt aListed)
 {
     TESTARGS(3);
     
@@ -1124,7 +1125,7 @@ static void InternalRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
 
     // Finally define the rule base
     aEnvironment.DeclareRuleBase(aEnvironment.HashTable().LookUpUnStringify(orig->String()),
-                                 args.Get()->SubList()->Get()->Next());
+                                 args.Get()->SubList()->Get()->Next(),aListed);
     
     // Return LispTrue
     InternalTrue(aEnvironment,aResult);
@@ -1133,14 +1134,24 @@ static void InternalRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
-    InternalRuleBase(aEnvironment, aResult, aArguments, LispFalse);
+    InternalRuleBase(aEnvironment, aResult, aArguments, LispFalse,LispFalse);
 }
 void LispMacroRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
                        LispPtr& aArguments)
 {
-    InternalRuleBase(aEnvironment, aResult, aArguments, LispTrue);
+    InternalRuleBase(aEnvironment, aResult, aArguments, LispTrue,LispFalse);
 }
 
+void LispRuleBaseListed(LispEnvironment& aEnvironment, LispPtr& aResult,
+                  LispPtr& aArguments)
+{
+    InternalRuleBase(aEnvironment, aResult, aArguments, LispFalse,LispTrue);
+}
+void LispMacroRuleBaseListed(LispEnvironment& aEnvironment, LispPtr& aResult,
+                       LispPtr& aArguments)
+{
+    InternalRuleBase(aEnvironment, aResult, aArguments, LispTrue,LispTrue);
+}
 
 
 void LispHoldArg(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -2393,7 +2404,7 @@ void LispRuleBaseArgList(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr
 
     LispPtr& list = userFunc->ArgList();
     LispPtr head;
-    head.Set(LispAtom::New(aEnvironment.HashTable().LookUp("List")));
+    head.Set(LispAtom::New(aEnvironment.iList));
     head.Get()->Next().Set(list.Get());
     aResult.Set(LispSubList::New(head.Get()));
 }

@@ -18,8 +18,9 @@
 #include "refcount.h"
 #include "lispstring.h"
 #include "genericobject.h"
+/*TODO remove?
 #include "evalfunc.h"
-
+*/
 
 #ifdef YACAS_DEBUG
 void IncNrObjects();
@@ -84,8 +85,10 @@ public: //Derivables
      */
     virtual LispPtr* SubList();
     virtual GenericClass* Generic();
+/*TODO remove?
     virtual EvalFuncBase* EvalFunc();
     virtual void SetEvalFunc(EvalFuncBase* aEvalFunc);
+    */
     virtual LispObject* Copy(LispInt aRecursed)=0;
 
     /** Return a pointer to extra info. This allows for annotating

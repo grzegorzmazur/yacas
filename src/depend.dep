@@ -6,8 +6,8 @@ arggetter.o: arggetter.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  lispenvironment.h yacasbase.h lispobject.h refcount.h lispassert.h \
  choices.h lispstring.h grower.h grower.inl lispstring.inl \
- genericobject.h evalfunc.h lispobject.inl lisperror.h lisphash.h \
- lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h deffile.inl \
+ genericobject.h lispobject.inl lisperror.h lisphash.h lisphash.inl \
+ lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h deffile.inl \
  ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h ctokenizer.h \
  tokenizer.h xmltokenizer.h standard.h lispatom.h numbers.h \
  standard.inl errors.h lispeval.h arggetter.h platmath.h \
@@ -16,7 +16,7 @@ arrayclass.o: arrayclass.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  arrayclass.h yacasbase.h lispobject.h refcount.h lispassert.h \
  choices.h lispstring.h grower.h grower.inl lispstring.inl \
- genericobject.h evalfunc.h lispobject.inl lisperror.h arrayclass.inl
+ genericobject.h lispobject.inl lisperror.h arrayclass.inl
 commandline.o: commandline.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  commandline.h lispstring.h yacasbase.h grower.h grower.inl \
@@ -25,12 +25,12 @@ ctokenizer.o: ctokenizer.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl yacas.h \
  yacasbase.h lispstring.h grower.h grower.inl lispassert.h choices.h \
  refcount.h lispstring.inl stringio.h lispio.h tokenizer.h lisphash.h \
- lisphash.inl lispevalhash.h lispobject.h genericobject.h evalfunc.h \
- lispobject.inl lisperror.h infixparser.h lispparser.h stdfileio.h \
- lispenvironment.h lispcleanupstack.h deffile.h deffile.inl ramdisk.h \
- lispglobals.h lispplugin.h ctokenizer.h xmltokenizer.h \
- plat/linux32/platfileio.h lispatom.h lispeval.h mathenvironment.h \
- lispuserfunc.h numbers.h standard.h standard.inl
+ lisphash.inl lispevalhash.h lispobject.h genericobject.h \
+ lispobject.inl lisperror.h evalfunc.h infixparser.h lispparser.h \
+ stdfileio.h lispenvironment.h lispcleanupstack.h deffile.h \
+ deffile.inl ramdisk.h lispglobals.h lispplugin.h ctokenizer.h \
+ xmltokenizer.h plat/linux32/platfileio.h lispatom.h lispeval.h \
+ mathenvironment.h lispuserfunc.h numbers.h standard.h standard.inl
 debugmem.o: debugmem.cpp debugmem.h stubs.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h plat/linux32/stubs.inl lispassert.h \
  choices.h
@@ -38,17 +38,17 @@ deffile.o: deffile.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl deffile.h \
  yacasbase.h lisphash.h grower.h grower.inl lispassert.h choices.h \
  lispstring.h refcount.h lispstring.inl lisphash.inl deffile.inl \
- lispuserfunc.h lispobject.h genericobject.h evalfunc.h lispobject.inl \
- lisperror.h lispenvironment.h lispevalhash.h lispcleanupstack.h \
- ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h ctokenizer.h \
- tokenizer.h xmltokenizer.h standard.h lispatom.h numbers.h \
- standard.inl plat/linux32/platfileio.h
+ lispuserfunc.h lispobject.h genericobject.h lispobject.inl \
+ lisperror.h lispenvironment.h lispevalhash.h evalfunc.h \
+ lispcleanupstack.h ramdisk.h lispio.h stringio.h lispglobals.h \
+ lispplugin.h ctokenizer.h tokenizer.h xmltokenizer.h standard.h \
+ lispatom.h numbers.h standard.inl plat/linux32/platfileio.h
 elfdll.o: elfdll.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  lispenvironment.h yacasbase.h lispobject.h refcount.h lispassert.h \
  choices.h lispstring.h grower.h grower.inl lispstring.inl \
- genericobject.h evalfunc.h lispobject.inl lisperror.h lisphash.h \
- lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h deffile.inl \
+ genericobject.h lispobject.inl lisperror.h lisphash.h lisphash.inl \
+ lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h deffile.inl \
  ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h ctokenizer.h \
  tokenizer.h xmltokenizer.h plat/linux32/platdll.h \
  plat/linux32/../../lispplugin.h
@@ -56,8 +56,8 @@ epocfileio.o: epocfileio.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  stdfileio.h yacasbase.h lispio.h lispenvironment.h lispobject.h \
  refcount.h lispassert.h choices.h lispstring.h grower.h grower.inl \
- lispstring.inl genericobject.h evalfunc.h lispobject.inl lisperror.h \
- lisphash.h lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h \
+ lispstring.inl genericobject.h lispobject.inl lisperror.h lisphash.h \
+ lisphash.inl lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h stringio.h lispglobals.h lispplugin.h \
  ctokenizer.h tokenizer.h xmltokenizer.h plat/linux32/platfileio.h
 epocmain.o: epocmain.cpp epocyacas.hrh yacasprivate.h \
@@ -65,12 +65,12 @@ epocmain.o: epocmain.cpp epocyacas.hrh yacasprivate.h \
  plat/linux32/stubs.inl yacas.h yacasbase.h lispstring.h grower.h \
  grower.inl lispassert.h choices.h refcount.h lispstring.inl \
  stringio.h lispio.h tokenizer.h lisphash.h lisphash.inl \
- lispevalhash.h lispobject.h genericobject.h evalfunc.h lispobject.inl \
- lisperror.h infixparser.h lispparser.h stdfileio.h lispenvironment.h \
- lispcleanupstack.h deffile.h deffile.inl ramdisk.h lispglobals.h \
- lispplugin.h ctokenizer.h xmltokenizer.h plat/linux32/platfileio.h \
- lispatom.h lispeval.h mathenvironment.h lispuserfunc.h commandline.h \
- standard.h numbers.h standard.inl
+ lispevalhash.h lispobject.h genericobject.h lispobject.inl \
+ lisperror.h evalfunc.h infixparser.h lispparser.h stdfileio.h \
+ lispenvironment.h lispcleanupstack.h deffile.h deffile.inl ramdisk.h \
+ lispglobals.h lispplugin.h ctokenizer.h xmltokenizer.h \
+ plat/linux32/platfileio.h lispatom.h lispeval.h mathenvironment.h \
+ lispuserfunc.h commandline.h standard.h numbers.h standard.inl
 epocstubs.o: epocstubs.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  lisperror.h lispstring.h yacasbase.h grower.h grower.inl lispassert.h \
@@ -79,8 +79,8 @@ errors.o: errors.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  lispenvironment.h yacasbase.h lispobject.h refcount.h lispassert.h \
  choices.h lispstring.h grower.h grower.inl lispstring.inl \
- genericobject.h evalfunc.h lispobject.inl lisperror.h lisphash.h \
- lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h deffile.inl \
+ genericobject.h lispobject.inl lisperror.h lisphash.h lisphash.inl \
+ lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h deffile.inl \
  ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h ctokenizer.h \
  tokenizer.h xmltokenizer.h standard.h lispatom.h numbers.h \
  standard.inl lispeval.h errors.h infixparser.h lispparser.h
@@ -94,8 +94,8 @@ gmpnumbers.o: gmpnumbers.cpp plat/linux32/lisptype.h \
  plat/linux32/../../choices.h numbers.h lispenvironment.h yacasbase.h \
  yacasprivate.h stubs.h plat/linux32/stubs.inl lispobject.h refcount.h \
  lispassert.h choices.h lispstring.h grower.h grower.inl \
- lispstring.inl genericobject.h evalfunc.h lispobject.inl lisperror.h \
- lisphash.h lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h \
+ lispstring.inl genericobject.h lispobject.inl lisperror.h lisphash.h \
+ lisphash.inl lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h \
  ctokenizer.h tokenizer.h xmltokenizer.h standard.h lispatom.h \
  standard.inl platmath.h
@@ -106,8 +106,8 @@ infixparser.o: infixparser.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  lispassert.h choices.h infixparser.h yacasbase.h lispparser.h \
  lispobject.h refcount.h lispstring.h grower.h grower.inl \
- lispstring.inl genericobject.h evalfunc.h lispobject.inl lisperror.h \
- tokenizer.h lispio.h lisphash.h lisphash.inl lispatom.h standard.h \
+ lispstring.inl genericobject.h lispobject.inl lisperror.h tokenizer.h \
+ lispio.h lisphash.h lisphash.inl evalfunc.h lispatom.h standard.h \
  lispenvironment.h lispevalhash.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h stringio.h lispglobals.h lispplugin.h \
  ctokenizer.h xmltokenizer.h numbers.h standard.inl
@@ -115,7 +115,7 @@ lispatom.o: lispatom.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  lispatom.h yacasbase.h lispobject.h refcount.h lispassert.h choices.h \
  lispstring.h grower.h grower.inl lispstring.inl genericobject.h \
- evalfunc.h lispobject.inl lisperror.h
+ lispobject.inl lisperror.h
 lispcleanupstack.o: lispcleanupstack.cpp yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl lispcleanupstack.h yacasbase.h grower.h \
@@ -124,8 +124,8 @@ lispenvironment.o: lispenvironment.cpp yacasbase.h yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl choices.h lispenvironment.h lispobject.h \
  refcount.h lispassert.h lispstring.h grower.h grower.inl \
- lispstring.inl genericobject.h evalfunc.h lispobject.inl lisperror.h \
- lisphash.h lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h \
+ lispstring.inl genericobject.h lispobject.inl lisperror.h lisphash.h \
+ lisphash.inl lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h \
  ctokenizer.h tokenizer.h xmltokenizer.h lispeval.h lispatom.h \
  standard.h numbers.h standard.inl lispuserfunc.h mathuserfunc.h
@@ -133,8 +133,8 @@ lispeval.o: lispeval.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  lispeval.h yacasbase.h lispobject.h refcount.h lispassert.h choices.h \
  lispstring.h grower.h grower.inl lispstring.inl genericobject.h \
- evalfunc.h lispobject.inl lisperror.h lispenvironment.h lisphash.h \
- lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h deffile.inl \
+ lispobject.inl lisperror.h lispenvironment.h lisphash.h lisphash.inl \
+ lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h deffile.inl \
  ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h ctokenizer.h \
  tokenizer.h xmltokenizer.h lispuserfunc.h standard.h lispatom.h \
  numbers.h standard.inl plat/linux32/platfileio.h infixparser.h \
@@ -143,8 +143,8 @@ lispevalhash.o: lispevalhash.cpp yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl lispevalhash.h yacasbase.h lispobject.h \
  refcount.h lispassert.h choices.h lispstring.h grower.h grower.inl \
- lispstring.inl genericobject.h evalfunc.h lispobject.inl lisperror.h \
- lisphash.h lisphash.inl
+ lispstring.inl genericobject.h lispobject.inl lisperror.h lisphash.h \
+ lisphash.inl evalfunc.h
 lisphash.o: lisphash.cpp yacasbase.h yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl lisperror.h lispstring.h grower.h grower.inl \
@@ -157,19 +157,19 @@ lispobject.o: lispobject.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  lispobject.h yacasbase.h refcount.h lispassert.h choices.h \
  lispstring.h grower.h grower.inl lispstring.inl genericobject.h \
- evalfunc.h lispobject.inl lisperror.h
+ lispobject.inl lisperror.h
 lispparser.o: lispparser.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  lispparser.h yacasbase.h lispobject.h refcount.h lispassert.h \
  choices.h lispstring.h grower.h grower.inl lispstring.inl \
- genericobject.h evalfunc.h lispobject.inl lisperror.h tokenizer.h \
- lispio.h lisphash.h lisphash.inl lispatom.h
+ genericobject.h lispobject.inl lisperror.h tokenizer.h lispio.h \
+ lisphash.h lisphash.inl evalfunc.h lispatom.h
 lispplugin.o: lispplugin.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  lispenvironment.h yacasbase.h lispobject.h refcount.h lispassert.h \
  choices.h lispstring.h grower.h grower.inl lispstring.inl \
- genericobject.h evalfunc.h lispobject.inl lisperror.h lisphash.h \
- lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h deffile.inl \
+ genericobject.h lispobject.inl lisperror.h lisphash.h lisphash.inl \
+ lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h deffile.inl \
  ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h ctokenizer.h \
  tokenizer.h xmltokenizer.h
 lispstring.o: lispstring.cpp yacasprivate.h plat/linux32/lisptype.h \
@@ -180,8 +180,8 @@ lispuserfunc.o: lispuserfunc.cpp yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl lispuserfunc.h yacasbase.h lispobject.h \
  refcount.h lispassert.h choices.h lispstring.h grower.h grower.inl \
- lispstring.inl genericobject.h evalfunc.h lispobject.inl lisperror.h \
- lispenvironment.h lisphash.h lisphash.inl lispevalhash.h \
+ lispstring.inl genericobject.h lispobject.inl lisperror.h \
+ lispenvironment.h lisphash.h lisphash.inl lispevalhash.h evalfunc.h \
  lispcleanupstack.h deffile.h deffile.inl ramdisk.h lispio.h \
  stringio.h lispglobals.h lispplugin.h ctokenizer.h tokenizer.h \
  xmltokenizer.h standard.h lispatom.h numbers.h standard.inl
@@ -189,8 +189,8 @@ mathcommands.o: mathcommands.cpp yacasbase.h yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl lispenvironment.h lispobject.h refcount.h \
  lispassert.h choices.h lispstring.h grower.h grower.inl \
- lispstring.inl genericobject.h evalfunc.h lispobject.inl lisperror.h \
- lisphash.h lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h \
+ lispstring.inl genericobject.h lispobject.inl lisperror.h lisphash.h \
+ lisphash.inl lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h \
  ctokenizer.h tokenizer.h xmltokenizer.h standard.h lispatom.h \
  numbers.h standard.inl lispeval.h lispparser.h stdfileio.h \
@@ -201,8 +201,8 @@ mathcommands2.o: mathcommands2.cpp yacasbase.h yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl lispenvironment.h lispobject.h refcount.h \
  lispassert.h choices.h lispstring.h grower.h grower.inl \
- lispstring.inl genericobject.h evalfunc.h lispobject.inl lisperror.h \
- lisphash.h lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h \
+ lispstring.inl genericobject.h lispobject.inl lisperror.h lisphash.h \
+ lisphash.inl lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h \
  ctokenizer.h tokenizer.h xmltokenizer.h standard.h lispatom.h \
  numbers.h standard.inl lispeval.h lispparser.h stdfileio.h \
@@ -213,8 +213,8 @@ mathcommands3.o: mathcommands3.cpp yacasbase.h yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl lispenvironment.h lispobject.h refcount.h \
  lispassert.h choices.h lispstring.h grower.h grower.inl \
- lispstring.inl genericobject.h evalfunc.h lispobject.inl lisperror.h \
- lisphash.h lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h \
+ lispstring.inl genericobject.h lispobject.inl lisperror.h lisphash.h \
+ lisphash.inl lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h \
  ctokenizer.h tokenizer.h xmltokenizer.h standard.h lispatom.h \
  numbers.h standard.inl lispeval.h lispparser.h stdfileio.h \
@@ -227,8 +227,8 @@ mathenvironment.o: mathenvironment.cpp yacasprivate.h \
  plat/linux32/stubs.inl mathenvironment.h yacasbase.h \
  lispenvironment.h lispobject.h refcount.h lispassert.h choices.h \
  lispstring.h grower.h grower.inl lispstring.inl genericobject.h \
- evalfunc.h lispobject.inl lisperror.h lisphash.h lisphash.inl \
- lispevalhash.h lispcleanupstack.h deffile.h deffile.inl ramdisk.h \
+ lispobject.inl lisperror.h lisphash.h lisphash.inl lispevalhash.h \
+ evalfunc.h lispcleanupstack.h deffile.h deffile.inl ramdisk.h \
  lispio.h stringio.h lispglobals.h lispplugin.h ctokenizer.h \
  tokenizer.h xmltokenizer.h lispatom.h standard.h numbers.h \
  standard.inl lispuserfunc.h mathuserfunc.h
@@ -236,8 +236,8 @@ mathuserfunc.o: mathuserfunc.cpp yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl mathuserfunc.h yacasbase.h lispuserfunc.h \
  lispobject.h refcount.h lispassert.h choices.h lispstring.h grower.h \
- grower.inl lispstring.inl genericobject.h evalfunc.h lispobject.inl \
- lisperror.h lispenvironment.h lisphash.h lisphash.inl lispevalhash.h \
+ grower.inl lispstring.inl genericobject.h lispobject.inl lisperror.h \
+ lispenvironment.h lisphash.h lisphash.inl lispevalhash.h evalfunc.h \
  lispcleanupstack.h deffile.h deffile.inl ramdisk.h lispio.h \
  stringio.h lispglobals.h lispplugin.h ctokenizer.h tokenizer.h \
  xmltokenizer.h lispeval.h standard.h lispatom.h numbers.h \
@@ -250,8 +250,8 @@ patcher.o: patcher.cpp yacasbase.h yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl lispio.h standard.h lispobject.h refcount.h \
  lispassert.h choices.h lispstring.h grower.h grower.inl \
- lispstring.inl genericobject.h evalfunc.h lispobject.inl lisperror.h \
- lispenvironment.h lisphash.h lisphash.inl lispevalhash.h \
+ lispstring.inl genericobject.h lispobject.inl lisperror.h \
+ lispenvironment.h lisphash.h lisphash.inl lispevalhash.h evalfunc.h \
  lispcleanupstack.h deffile.h deffile.inl ramdisk.h stringio.h \
  lispglobals.h lispplugin.h ctokenizer.h tokenizer.h xmltokenizer.h \
  lispatom.h numbers.h standard.inl
@@ -259,8 +259,8 @@ patternclass.o: patternclass.cpp yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl patternclass.h lispobject.h yacasbase.h \
  refcount.h lispassert.h choices.h lispstring.h grower.h grower.inl \
- lispstring.inl genericobject.h evalfunc.h lispobject.inl lisperror.h \
- patterns.h lispenvironment.h lisphash.h lisphash.inl lispevalhash.h \
+ lispstring.inl genericobject.h lispobject.inl lisperror.h patterns.h \
+ lispenvironment.h lisphash.h lisphash.inl lispevalhash.h evalfunc.h \
  lispcleanupstack.h deffile.h deffile.inl ramdisk.h lispio.h \
  stringio.h lispglobals.h lispplugin.h ctokenizer.h tokenizer.h \
  xmltokenizer.h
@@ -268,8 +268,8 @@ patterns.o: patterns.cpp yacasbase.h yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl patterns.h grower.h grower.inl lispassert.h \
  choices.h lispenvironment.h lispobject.h refcount.h lispstring.h \
- lispstring.inl genericobject.h evalfunc.h lispobject.inl lisperror.h \
- lisphash.h lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h \
+ lispstring.inl genericobject.h lispobject.inl lisperror.h lisphash.h \
+ lisphash.inl lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h \
  ctokenizer.h tokenizer.h xmltokenizer.h standard.h lispatom.h \
  numbers.h standard.inl mathuserfunc.h lispuserfunc.h lispeval.h log.h
@@ -277,16 +277,16 @@ platmath.o: platmath.cpp yacasbase.h yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl lispobject.h refcount.h lispassert.h choices.h \
  lispstring.h grower.h grower.inl lispstring.inl genericobject.h \
- evalfunc.h lispobject.inl lisperror.h lispatom.h lispenvironment.h \
- lisphash.h lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h \
+ lispobject.inl lisperror.h lispatom.h lispenvironment.h lisphash.h \
+ lisphash.inl lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h \
  ctokenizer.h tokenizer.h xmltokenizer.h
 standard.o: standard.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  standard.h yacasbase.h lispobject.h refcount.h lispassert.h choices.h \
  lispstring.h grower.h grower.inl lispstring.inl genericobject.h \
- evalfunc.h lispobject.inl lisperror.h lispenvironment.h lisphash.h \
- lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h deffile.inl \
+ lispobject.inl lisperror.h lispenvironment.h lisphash.h lisphash.inl \
+ lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h deffile.inl \
  ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h ctokenizer.h \
  tokenizer.h xmltokenizer.h lispatom.h numbers.h standard.inl \
  plat/linux32/platfileio.h mathutil.h infixparser.h lispparser.h \
@@ -300,8 +300,8 @@ stdfileio.o: stdfileio.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  stdfileio.h yacasbase.h lispio.h lispenvironment.h lispobject.h \
  refcount.h lispassert.h choices.h lispstring.h grower.h grower.inl \
- lispstring.inl genericobject.h evalfunc.h lispobject.inl lisperror.h \
- lisphash.h lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h \
+ lispstring.inl genericobject.h lispobject.inl lisperror.h lisphash.h \
+ lisphash.inl lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h stringio.h lispglobals.h lispplugin.h \
  ctokenizer.h tokenizer.h xmltokenizer.h plat/linux32/platfileio.h
 stdstubs.o: stdstubs.cpp yacasprivate.h plat/linux32/lisptype.h \
@@ -316,11 +316,11 @@ substitute.o: substitute.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  substitute.h yacasbase.h lispobject.h refcount.h lispassert.h \
  choices.h lispstring.h grower.h grower.inl lispstring.inl \
- genericobject.h evalfunc.h lispobject.inl lisperror.h lispatom.h \
- standard.h lispenvironment.h lisphash.h lisphash.inl lispevalhash.h \
- lispcleanupstack.h deffile.h deffile.inl ramdisk.h lispio.h \
- stringio.h lispglobals.h lispplugin.h ctokenizer.h tokenizer.h \
- xmltokenizer.h numbers.h standard.inl lispeval.h
+ genericobject.h lispobject.inl lisperror.h lispenvironment.h \
+ lisphash.h lisphash.inl lispevalhash.h evalfunc.h lispcleanupstack.h \
+ deffile.h deffile.inl ramdisk.h lispio.h stringio.h lispglobals.h \
+ lispplugin.h ctokenizer.h tokenizer.h xmltokenizer.h lispatom.h \
+ standard.h numbers.h standard.inl lispeval.h
 testnum.o: testnum.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl anumber.h \
  grower.h yacasbase.h grower.inl lispassert.h choices.h lispstring.h \
@@ -330,7 +330,7 @@ tokenizer.o: tokenizer.cpp tokenizer.h yacasbase.h yacasprivate.h \
  plat/linux32/stubs.inl lispstring.h grower.h grower.inl lispassert.h \
  choices.h refcount.h lispstring.inl lispio.h lisphash.h lisphash.inl \
  lisperror.h numbers.h lispenvironment.h lispobject.h genericobject.h \
- evalfunc.h lispobject.inl lispevalhash.h lispcleanupstack.h deffile.h \
+ lispobject.inl lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h stringio.h lispglobals.h lispplugin.h \
  ctokenizer.h xmltokenizer.h
 unipoly.o: unipoly.cpp yacasprivate.h plat/linux32/lisptype.h \
@@ -345,8 +345,8 @@ win32dll.o: win32dll.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl \
  lispenvironment.h yacasbase.h lispobject.h refcount.h lispassert.h \
  choices.h lispstring.h grower.h grower.inl lispstring.inl \
- genericobject.h evalfunc.h lispobject.inl lisperror.h lisphash.h \
- lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h deffile.inl \
+ genericobject.h lispobject.inl lisperror.h lisphash.h lisphash.inl \
+ lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h deffile.inl \
  ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h ctokenizer.h \
  tokenizer.h xmltokenizer.h plat/linux32/platdll.h \
  plat/linux32/../../lispplugin.h
@@ -360,7 +360,7 @@ yacasapi.o: yacasapi.cpp yacasbase.h yacasprivate.h \
  plat/linux32/stubs.inl yacas.h lispstring.h grower.h grower.inl \
  lispassert.h choices.h refcount.h lispstring.inl stringio.h lispio.h \
  tokenizer.h lisphash.h lisphash.inl lispevalhash.h lispobject.h \
- genericobject.h evalfunc.h lispobject.inl lisperror.h infixparser.h \
+ genericobject.h lispobject.inl lisperror.h evalfunc.h infixparser.h \
  lispparser.h stdfileio.h lispenvironment.h lispcleanupstack.h \
  deffile.h deffile.inl ramdisk.h lispglobals.h lispplugin.h \
  ctokenizer.h xmltokenizer.h plat/linux32/platfileio.h lispatom.h \
@@ -374,7 +374,7 @@ yacasmain.o: yacasmain.cpp yacas.h yacasbase.h yacasprivate.h \
  plat/linux32/stubs.inl lispstring.h grower.h grower.inl lispassert.h \
  choices.h refcount.h lispstring.inl stringio.h lispio.h tokenizer.h \
  lisphash.h lisphash.inl lispevalhash.h lispobject.h genericobject.h \
- evalfunc.h lispobject.inl lisperror.h infixparser.h lispparser.h \
+ lispobject.inl lisperror.h evalfunc.h infixparser.h lispparser.h \
  stdfileio.h lispenvironment.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h lispglobals.h lispplugin.h ctokenizer.h \
  xmltokenizer.h plat/linux32/platfileio.h lispatom.h lispeval.h \
@@ -385,8 +385,8 @@ yacasnumbers.o: yacasnumbers.cpp yacasbase.h yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl numbers.h lispenvironment.h lispobject.h \
  refcount.h lispassert.h choices.h lispstring.h grower.h grower.inl \
- lispstring.inl genericobject.h evalfunc.h lispobject.inl lisperror.h \
- lisphash.h lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h \
+ lispstring.inl genericobject.h lispobject.inl lisperror.h lisphash.h \
+ lisphash.inl lispevalhash.h evalfunc.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h \
  ctokenizer.h tokenizer.h xmltokenizer.h standard.h lispatom.h \
  standard.inl anumber.h anumber.inl platmath.h

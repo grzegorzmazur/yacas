@@ -11,6 +11,7 @@
 #include "tokenizer.h"
 #include "lispio.h"
 #include "lisphash.h"
+#include "evalfunc.h"
 class LispParser : public YacasBase
 {
 public:
