@@ -33,7 +33,7 @@ TeXForm(3*D(x)f(x,y,z)*Cos(Omega)*Mod(Sin(a)*4,5/a^b))
 
 Verify(
 TeXForm(Hold(D(x)f(x)))
-,"$\\frac{\\partial}{\\partial x}f\\left( x\\right) $");
+,"$\\frac{d}{d x}f\\left( x\\right) $");
 
 Verify(
 TeXForm(Hold(Not (c<0) And (a+b)*c>= -d^e And (c<=0 Or b+1>0) Or a!=0 And Not (p=q)))
