@@ -1282,14 +1282,6 @@ void LispMathLibName(LispEnvironment& aEnvironment,LispPtr& aResult,
 	)));
 }
 
-void LispIsPromptShown(LispEnvironment& aEnvironment,LispPtr& aResult,
-              LispPtr& aArguments)
-{
-    TESTARGS(1);
-    InternalBoolean(aEnvironment,aResult, true //FIXME: this must access show_prompt which is a *global* in yacasmain.cpp! argh!
-	);
-}
-
 void LispIsFunction(LispEnvironment& aEnvironment,LispPtr& aResult,
               LispPtr& aArguments)
 {
