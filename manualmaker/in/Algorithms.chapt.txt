@@ -58,6 +58,32 @@ By the identity $ArcCos(x) := Pi/2 - ArcSin(x)$, the inverse cosine is reduced t
 
 Hyperbolic and inverse hyperbolic functions are reduced to exponentials and logarithms.
 
+	    Continued fractions
+
+The function {ContFracList} represents a (rational) number $r$ as a continued fraction,
+$$ r = n[0] + 1/(n[1] + 1/(n[2]+...)) $$
+Here all numbers $n[i]$ are integers and all except $n[0]$ must be positive. (Continued fractions may not converge unless their terms are positive and bounded from below.)
+
+The algorithm for converting a rational number $r=n/m$ into a continued fraction is simple. First, we determine the integer part of $r$, which is $Div(n,m)$. If it is negative, we need to subtract one, so that $r=n[0]+x$ and the remainder $x$ is nonnegative and less than $1$. The remainder $x = Mod(n,m)/m$ is then inverted, $r[1] := 1/x = m/Mod(n,m)$ and so we have completed the first step in the decomposition, $r = r[0] + 1/r[1]$. We repeat the same procedure on $r[1]$ and so on, until the remainder $r[n]$ is an integer and there is no more work to do.
+
+The function {GuessRational(x, prec)} attempts to find a rational number with a denominator of at most {prec} digits that is approximately equal to a floating-point number $x$. It works by the following heuristic method. First, $x$ is expanded into a continued fraction. Then the coefficients of that fraction are multiplied together until the resulting number exceeds {prec} digits. At that point, the continued fraction is cut and evaluated, resulting in a rational number with a small denominator close to $x$.
+
+This works because partial continued fractions provide very good rational approximations for the final number, and because the magnitude of the partial fraction coefficients is related to the magnitude of the denominator of the resulting number. Consider the following example. The number 17/3 has a continued fraction expansion {{5,1,2}}. Evaluated as a limited precision floating point number, it becomes something like $17/3+0.00001$. The continued fraction expansion of this is {{5, 1, 2, 11110, 1, 5, 1, 3, 2777, 2}}. Clearly the presence of an unnaturally large term $11110$ signifies the place where the floating-point error was introduced. The heuristic algorithm in {GuessRational()} forms the product of 5, 1, 2 and so on until this product becomes larger than $10^prec$.
+
+The function {NearRational(x, prec)} works somewhat differently. The idea is to find an "optimal" rational number, i.e. with smallest numerator and denominator, that is within the distance $10^(-prec)$ of a given value $x$. The algorithm for this comes from the 1972 HAKMEM memo at the MIT AI Lab, Item 101C. Their description is terse but clear:
+
+	Problem: Given an interval, find in it the
+	rational number with the smallest numerator and
+	denominator.
+	Solution: Express the endpoints as continued
+	fractions.  Find the first term where they differ
+	and add 1 to the lesser term, unless it's last. 
+	Discard the terms to the right.  What's left is
+	the continued fraction for the "smallest"
+	rational in the interval.  (If one fraction
+	terminates but matches the other as far as it
+	goes, append an infinity and proceed as above.)
+
 	    Euler's Gamma function
 
 Euler's Gamma function $Gamma(z)$ is defined for complex $z$ such that $Re(z)>0$ by the integral
