@@ -21,7 +21,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
         lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h \
-        archiver.h elfdll.h cyacas.h GPL_stuff.h
+        archiver.h elfdll.h cyacas.h GPL_stuff.h vm.h
 
 yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
@@ -70,16 +70,16 @@ libyacasnumbers_la_LDFLAGS = -rpath $(libdir)
 libgmpnumbers_la_SOURCES = gmpnumbers.cpp numbers.cpp
 libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 
+libmath_la_SOURCES = 
+libmath_la_LIBADD = libmath.lo
 
-libmath_la_SOURCES = libmath.cpp
-libmath_la_DEPENDENCIES = gencorefunctions # TODO FIXME need correct dependencies!   yacas gencorefunctions
-
-$(srcdir)/libmath.cpp: yacas $(top_srcdir)/scripts/base.rep/math.ys  core_yacasmain.h gencorefunctions
+libmath.cpp: $(top_srcdir)/scripts/base.rep/math.ys
 	(cd ../scripts && make packages.ys corefunctions.ys)
+	make yacas
 	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
 	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
-	./yacas --rootdir  $(srcdir)/../scripts:../scripts -pc --init compileinit.txt compile.txt
-	if [ $(srcdir) != . ]; then mv libmath.cpp $(srcdir)/libmath.cpp; fi
+	./yacas --rootdir  $(top_srcdir)/scripts -pc --init compileinit.txt compile.txt
+
 
 EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp \
 	epocyacas.hrh epocyacas.mmp epocyacasconsole.mmp \
