@@ -183,3 +183,5 @@ Verify( Sign(-Infinity), -1 );
 Verify( Limit(n, Infinity) (n+1)/(2*n+3)*I, Complex(0,1/2) );
 Verify( Limit(x, Infinity) x*I, Infinity );
 
+Verify(Integrate(x) z^100, z^100*x );
+Verify(Integrate(x) x^(-1),Ln(x) );
