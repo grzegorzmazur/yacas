@@ -16,10 +16,13 @@
 #include <Fl/Fl_File_Chooser.H>
 #include <Fl/Fl_Help_Dialog.H>
 #include <stdlib.h>
+#include "FltkConsole.h" 
+// FltkConsole.h should be included before yacas.h, so that #undef Status 
+// hack works
 #include "yacas.h"
 #include "editor.h"
 #include "HelpView.h"
-#include "FltkConsole.h"
+
 #include "yacdefines.h"
 #include "grapher.h"
 #include "stringio.h"
