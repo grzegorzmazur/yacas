@@ -48,7 +48,7 @@ right after the first paragraph of "chapter intro". For the printed (PS/PDF) doc
 
 	    Formatting of source text files
 
-*A documentation!plain text markup
+*A documentation!markup overview
 Formatting of source text files uses TAB symbols; if your editor does not support them and converts them to spaces, you should convert the results back to contain real TAB symbols using the standard Unix {unexpand} utility or a custom perl script.
 
 You may want to examine the source of this file ({manualmaker/} {in/}
@@ -85,6 +85,7 @@ section. For example:
 		Write(x);
 	];
 
+*A documentation!environments
 *	Ordinary text must not be indented at all. Line length is arbitrary and
 linebreaks
 inside
@@ -116,8 +117,9 @@ Note that the text of an item continues until the next itemized line is given or
 
 Nesting of enumerated or itemized environments is not supported, except for fringe cases of nesting just one itemized list at the very end of an enumerated list or vice versa.
 
-Enumerated environment is currently only implemented in $LaTeX$ docs; HTML docs render them as itemized.
+The enumerated environment is currently only implemented in $LaTeX$ docs; HTML docs render them as itemized.
 
+*A documentation!fonts
 *	Emphasized text (<i>italics</i>) should be surrounded by {<i>}
 {</i>}. Note that the whole emphasized fragment of text must be located within a single line, or else it will not be emphasized.
 
@@ -129,17 +131,41 @@ alone without a matching brace. This would be okay for HTML docs but it breaks
 $LaTeX$ docs because braces are special in $TeX$ and because Serge was too lazy
 to implement a real parser.
 
+*A documentation!hyperlinks
 *	Web hyperlinks are surrounded by {<*}
-{*>}. Text of the link must begin with {http://} or {ftp://}. Alternatively, a hyperlink with anchored text is made by the markup {<*}
-<i>anchored text</i>{|}<i>Web URL</i>{*>}. For example:
+{*>}. Text of the link must begin with {http://}, {https://} or {ftp://}. Alternatively, a hyperlink with anchored text is made by the markup {<*}
+<i>anchored text</i> {|}<i>Web URL</i>{*>}. For example:
 	<*http://host.net/file.html#anchor*>
 or
 	<*click here|somewebpage.html*>
+(the latter example will refer to a local HTML file, i.e. a file in the documentation directory).
+
+Note: Currently, only the HTML documentation is hyperlinked, while the printed PS/PDF documentation contains only text.
+
+*	It is also possible to create hyperlinks pointing to other parts of the documentation.
+Such "documentation hyperlinks" are similar to the Web hyperlinks, except they use a special "protocol" named {yacasdoc} and chapters and sections can be referred to as "subdirectories".
+For example, this section can be referred to by the following code:
+	<*yacasdoc://essays/5/2/*>
+A hyperlink with anchored text is made by the markup {<*}
+<i>anchored text</i> {|}yacasdoc://...{*>}. For example:
+	<*this section|yacasdoc://essays/5/2/*>
+will generate a reference to <*this section|yacasdoc://essays/5/2/*> in the documentation.
+There are currently the following ways to create documentation hyperlinks:
+*	0. Hyperlink into an anchor of the same file:
+	<*yacasdoc://#documentation!hyperlinks*>
+The anchor "{#}{documentation}{!}{hyperlinks}" should have been created using the {*A} label.
+*	0. Hyperlinks into an anchor in a different documentation book:
+	<*yacasdoc://Algo/3/#adaptive plotting*>
+Note that one must specify the book name "{Algo}" and the chapter number ({3}) for this to work. Currently supported book names are {Algo}, {coding}, {essays}, {intro}, {Lisp}, {ref}, and {refprog}. A warning message is printed if the book name is not given correctly.
+*	0. Hyperlinks into a given chapter or a given section of a documentation book:
+	<*yacasdoc://Algo/3/1/*>
 
 *A documentation!equations
-*	Mathematical expressions should be typed in Yacas syntax (not in $TeX$
-notation) and surrounded by dollar signs. Both delimiting dollar signs
-<i>must</i> be within one line of text. For example: {$}
+*	Mathematical expressions should be typed in {Yacas} syntax (<i>not</i> in $TeX$
+notation) and surrounded by dollar signs.
+Both delimiting dollar signs
+<i>must</i> be within one line of text.
+For example: {$}
 {x^2 + y^2 != z^2 $}
 produces $x^2+y^2 != z^2$. Double dollar signs will denote a displayed
 equation, like in $TeX$; both pairs of dollar signs should still be within one
@@ -149,19 +175,22 @@ There is a special feature for displayed equations:
 Any punctuation immediately following the second pair of dollar signs will be displayed on the same line. (This is used to get around the limitation of mathematical expressions that cannot end with a comma or a period or with another punctuation mark.) For example, the formula "{$}{$}{x^2/2}{$}{$,}" will produce $$x^2/2$$, with the comma on the same line. A formula such as "{$}x+1;{$}" will generate an error; the semicolon should be moved out of the dollar signs.
 
 As special exceptions, one can enter the symbols "$TeX$" and "$LaTeX$"
-as if they are Yacas symbols, i.e. "{$T}{eX$}" produces "$TeX$". One can also enter the name {Yacas} as "{{Yacas}}".
+as if they are Yacas expressions, i.e. "{$T}{eX$}" produces "$TeX$". One can also create a capitalized form of the name {Yacas} as "{{Yacas}}".
 
-Mathematical expressions <i>must</i> be <i>valid Yacas expressions</i>, with no unbalanced
+Please note: Mathematical expressions <i>must</i> be <i>valid Yacas expressions</i>, with no unbalanced
 parentheses, no undefined infix operators, no hanging periods and so on, or else the Yacas script that
 formats the docs will fail! (This limits the scope of mathematical formulae but
 is hopefully not critical.)
 
-Currently, when creating online HTML documentation,
+Also, please avoid putting equations into documentation as plain text. Expressions such as $a>0$ are not correctly typeset by $TeX$ if included into the plain text without the dollar signs: "a>0". (The HTML documentation is currently not affected.)
+
+Currently, when creating online HTML documentation, all
 mathematics is kept in Yacas notation and set in boldface font. (This may
-change in the future.) Of course, $LaTeX$ typesets printed documentation with
+change in the future.)
+Of course, $LaTeX$ typesets the documentation with
 correct mathematical symbols.
 
-Another feature of the $LaTeX$ exporter is that it will try to show all
+Another feature of the $LaTeX$ exporter is that it will first try to represent all
 functions and infix operators according to their mathematical meaning, and if
 no such meaning is defined in Yacas, then it will show them exactly as they are
 written in Yacas. For infix operators to work, they have to be declared in the
@@ -171,7 +200,7 @@ For
 example, the Yacas operators {=} and {==} are represented in $LaTeX$ by an equals sign
 (=), the operator {:=} becomes "identically equal" ($a:=b$), and the cosmetic
 operators {<>} and {<=>} become $a<>b$ and $a<=>b$. But you cannot use an
-infix operator such as "{:=*}" because it is not defined in the standard library.
+infix operator such as "{:=*}" because it is not defined in the standard library. A Yacas function which is not defined in the standard library, for example "{func(x)}", will appear just like that: $func(x)$.
 
 *	To include contents of another document, use the {*INCLUDE} directive at
 the beginning of a line, e.g.
@@ -189,6 +218,7 @@ For example,
 	
 	(documentation text continues)
 
+*A documentation!footnotes
 *	Footnotes may be entered as a line containing the label {*FOOT}. Footnote text must be within one line (because a footnote does not necessarily break a paragraph).
 
 For example, the text
@@ -320,7 +350,7 @@ But this may sometimes conflict with the topic separator.
 
 	    Summary of mark-up labels
 
-*A documentation!summary of markup
+*A documentation!summary of labels
 
 Mark-up labels <i>must</i> appear as first characters on a line. The following mark-up labels are currently defined:
 
@@ -357,6 +387,21 @@ Special labels without arguments that generate headings for the reference manual
 *	{*DESC} -- "Description"
 *	{*E.G.} -- "Examples"
 *	{*EG} -- "Example"
+
+	    Summary of special markup syntax
+
+*A documentation!summary of syntax
+
+Special syntax entities include:
+*	TAB indented: chapter, section, subsection titles, sample code
+*	asterisk-TAB: enumerated and itemized environments
+*	braces {{}}: inline code samples, Yacas names (monospaced font)
+*	{<i>}
+and {</i>}: italics (for emphasis, not for mathematics)
+*	dollar signs {$}, {$}{$}: inline and displayed mathematical equations
+*	{<*} and
+{*>}: Web hyperlinks and documentation hyperlinks
+*	{!} symbol: nesting of index entries
 
 	    Debugging the manual
 

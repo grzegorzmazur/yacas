@@ -33,6 +33,18 @@ $in_htmlcommand = 0;
 	"REM" => "DocumentationComment()",
 );
 
+
+%yacas_booknames = (
+	"Algo" => "The Yacas book of algorithms",
+	"LispProgramming" => "Lisp as Implementation Language for CAS",
+	"Lisp" => "Lisp as Implementation Language for CAS",
+	"coding" => "Programming in Yacas",
+	"intro" => "Introduction to Yacas",
+	"ref" => "The Yacas User's Function Reference",
+	"refprog" => "The Yacas Programmer's Function Reference",
+	"essays" => "Essays on Yacas",
+);
+
 while (<STDIN>) {
 	chomp;
 	s/\\/\\\\/g;	# escape all backslashes in the source text
@@ -296,11 +308,101 @@ sub escape_term {
 
 sub make_link {
 	my ($text) = @_;
-	if ($text =~ /^((?:ftp|http|file):\/\/.+)$/i) {	# Web URL
+	if ($text =~ /^((?:ftp|http|https):\/\/.+)$/i) {	# Web URL
 		return "\":HtmlLink(\"$1\", \"$1\", \"\", \"\"):\"";
+	} elsif ($text =~ /^yacasdoc:\/\/(.+)$/) {	# pure yacasdoc ref
+		return "\":YacasDocLink(\"" . yacasdoc_bookname($1) . "\", \"" . yacasdoc_bookname($1) . "\", \"" . yacasdoc_localURL($1) . "\"):\"";
+	} elsif ($text =~ /^([^|]+)\|yacasdoc:\/\/([^|]+)$/) {	# yacasdoc ref with anchored text
+		return "\":YacasDocLink(\"" . yacasdoc_bookname($1) . "\", \"$1\", \"" . yacasdoc_localURL($2) . "\"):\"";
 	} elsif ($text =~ /^([^|]+)\|([^|]+)$/) {	# URL with anchored text
 		return "\":HtmlLink(\"$1\", \"$2\", \"\", \"\"):\"";
 	} else {
 		return "\":SeeAlso({\"" . join("\", \"", split(/,[ \t]*/, $text)) . "\"}):\"";
+	}
+}
+
+# A yacasdoc reference may looks like this:
+# <*yacasdoc://#Bessel functions*>  - a ref to an anchor in the same file, book name empty
+# <*yacasdoc://Algo/1/#Bessel functions*>  - a ref to an anchor in a chapter
+# <*yacasdoc://Algo/1/3/#Bessel functions*> - a ref to an anchor in a section in chapter
+# <*yacasdoc://Algo/1/*> - a ref to a chapter
+# <*yacasdoc://Algo/1/3/*> - a ref to a section in chapter
+
+# The three subs below receive the text "Algo/1/3/#Bessel functions"
+
+# initial parse of the yacasdoc ref: separate book name, chapter, section, anchor reference, return array
+sub yacasdoc_parse {
+	my ($text) = shift;
+	if ($text =~ /^#(.+)\/$/)	# shortest form
+	{
+		return ("", 0, 0, $1);
+	}
+	elsif ($text =~ /^([^\/]+)\/([0-9]+)\/$/)	# no section #, no anchor
+	{
+		return ($1, $2, 0, "");
+	}
+	elsif ($text =~ /^([^\/]+)\/([0-9]+)\/#(.+)$/)	# no section #
+	{
+		return ($1, $2, 0, $3);
+	}
+	elsif ($text =~ /^([^\/]+)\/([0-9]+)\/([0-9]+)\/$/)	# no anchor
+	{
+		return ($1, $2, $3, "");
+	}
+	elsif ($text =~ /^([^\/]+)\/([0-9]+)\/([0-9]+)\/#(.+)$/)	# longest form
+	{
+		return ($1, $2, $3, $4);
+	}
+}
+
+# returns a pretty-looking book name for a given yacasdoc reference, eg. "The Yacas book of algorithms, Chapter 1, Section 1.3"
+
+sub yacasdoc_bookname {
+	my ($text) = shift;
+	my (@ref) = yacasdoc_parse($text);
+	my ($section_text) = "";
+	$section_text = ", Section $ref[2]" if ($ref[2] and $ref[2]>0);
+	if ($ref[0] eq "")	# reference in the same file, no book name
+	{
+		return "this book";
+	}
+	elsif (defined($yacas_booknames{$ref[0]}))
+	{
+		return "$yacas_booknames{$ref[0]}, Chapter $ref[1]$section_text";
+	}
+	else
+	{
+		print STDERR "Warning: invalid documentation book name '$ref[0]', link ignored.\n";
+		return "";
+	}
+}
+
+# returns the local URL for a given yacasdoc reference
+sub yacasdoc_localURL {
+	my ($text) = shift;
+	my (@ref) = yacasdoc_parse($text);
+	my ($section_ref) = "";
+	$section_ref="s$ref[2]" if ($ref[2] and $ref[2]>0);
+	my ($anchor_ref) = "";
+	$anchor_ref="#$ref[3]" if ($ref[3] and $ref[3] ne "");
+	if ($ref[0] eq "")	# reference in the same file, no book name
+	{
+		return "$anchor_ref";
+	}
+	elsif (defined($yacas_booknames{$ref[0]}))
+	{
+		if ($anchor_ref ne "")
+		{
+			return "$ref[0]chapter$ref[1].html$anchor_ref";
+		}
+		else
+		{
+			return "$ref[0]chapter$ref[1].html#c$ref[1]$section_ref";
+		}
+	}
+	else
+	{
+		print STDERR "Warning: invalid documentation book name '$ref[0]', link ignored.\n";
+		return "";
 	}
 }

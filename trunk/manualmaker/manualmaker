@@ -598,3 +598,8 @@ AddBody(ToString()
 HoldArgNr("DocEval", 1, 1);
 
 DocFootnote(x) := "<h6>" : x : "</h6>";
+
+// HTML representation of a Yacasdoc reference
+YacasDocLink(bookname, text, url) :=
+  If(bookname = "", "", HtmlLink(text, url, "", ""));
+
