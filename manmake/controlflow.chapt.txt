@@ -646,7 +646,9 @@ to the second variable, etc.
 *CALL
 	expression /: patterns
 	expressions /:: patterns
-(prec. 10000)
+Precedence:
+*EVAL OpPrecedence("/:")
+
 
 *PARMS
 

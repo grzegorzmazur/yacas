@@ -125,9 +125,11 @@ SUFFIXES = .chapt.txt .chapt .book.tex .book.txt .book .tex .dvi .ps .pdf .ys
 .tex.dvi:
 	latex $< > /dev/null
 	latex $< > /dev/null
-# The perl filter is used to help the 'makeindex' command: 1) replace \verb|...| by \verb=...=; 2) escape ()|@! using a preceding quote " .
+# The perl filter is used to help the 'makeindex' command: 
+# 1) replace \verb|...| by \verb=...= 
+# 2) escape ()|@! using a preceding quote "
 # Note that @ and ! are not always escaped because they are sometimes part of the index entry and sometimes control chars. Heuristics are used to guess correctly.
-	@perl -pe 's/(\\verb)\|(.*)\|/$$1=$$2=/g;s/([()|])/"$$1/g;if(/\@/){s/!/"!/g;};s/\@([^\\])/"\@$$1/g;'<$*.idx>$*.1.idx
+	@perl -pe 's/(\\verb)\|([^|]*)\|/$$1=$$2=/g;s/([()|])/"$$1/g;if(/\@/){s/!/"!/g;};s/\@([^\\])/"\@$$1/g;'<$*.idx>$*.1.idx
 	@makeindex $*.1.idx -o $*.ind || echo "***Warning: a problem with 'makeindex'"
 	latex $< > /dev/null
 

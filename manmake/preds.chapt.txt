@@ -10,7 +10,8 @@ positive integer would use a pattern such as {n_IsPositiveInteger}.
 *STD
 *CALL
 	e1 < e2
-(prec. 9)
+Precedence:
+*EVAL OpPrecedence("<")
 
 *PARMS
 
@@ -42,7 +43,9 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 *STD
 *CALL
 	e1 > e2
-(prec. 9)
+Precedence:
+*EVAL OpPrecedence(">")
+
 
 *PARMS
 
@@ -74,7 +77,9 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 *STD
 *CALL
 	e1 <= e2
-(prec. 9)
+Precedence:
+*EVAL OpPrecedence("<=")
+
 
 *PARMS
 
@@ -107,7 +112,9 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 *STD
 *CALL
 	e1 >= e2
-(prec. 9)
+Precedence:
+*EVAL OpPrecedence(">=")
+
 
 *PARMS
 
@@ -140,7 +147,9 @@ quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}).
 *STD
 *CALL
 	e1 != e2
-(prec. 9)
+Precedence:
+*EVAL OpPrecedence("!=")
+
 
 *PARMS
 
@@ -167,7 +176,9 @@ The expression {e1 != e2} is equivalent to {Not(e1 = e2)}.
 *STD
 *CALL
 	e1 = e2
-(prec. 9)
+Precedence:
+*EVAL OpPrecedence("=")
+
 
 *PARMS
 
@@ -230,7 +241,9 @@ expression with evaluated arguments.
 *CORE
 *CALL
 	a1 And a2
-(prec. 100)
+Precedence:
+*EVAL OpPrecedence("And")
+
 	And(a1, a2, a3, ..., aN)
 
 *PARMS
@@ -264,7 +277,8 @@ arguments that didn't evaluate to {True} or {False} yet.
 *CORE
 *CALL
 	a1 Or a2
-(prec. 101)
+Precedence:
+*EVAL OpPrecedence("Or")
 	Or(a1, a2, a3, ..., aN)
 
 *PARMS

@@ -57,11 +57,13 @@ the original list.
 *SEE LeviCivita
 
 
-*CMD Dot, "."-Operator --- get dot product of tensors
+*CMD Dot, . --- get dot product of tensors
 *STD
 *CALL
         Dot(t1,t2)
         t1 . t2
+Precedence:
+*EVAL OpPrecedence(".")
 
 *PARMS
 
@@ -127,7 +129,9 @@ This function is superceded by the {.} operator.
 *STD
 *CALL
 	CrossProduct(a,b)
-	a X b  (prec. 3)
+	a X b
+Precedence:
+*EVAL OpPrecedence("X")
 
 *PARMS
 
@@ -151,11 +155,13 @@ Both "a" and "b" have to be three-dimensional.
 
 
 
-*CMD Outer, "o"-Operator --- get outer tensor product
+*CMD Outer, o --- get outer tensor product
 *STD
 *CALL
 	Outer(t1,t2)
 	t1 o t2
+Precedence:
+*EVAL OpPrecedence("o")
 
 *PARMS
 

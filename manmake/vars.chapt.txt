@@ -8,7 +8,8 @@
 	{var1, var2, ...} := {expr1, expr2, ...}
 	var[i] := expr
 	fn(arg1, arg2, ...) := expr
-(the {:=} operator has precedence 1000)
+Precedence:
+*EVAL OpPrecedence(":=")
 
 *PARMS
 
