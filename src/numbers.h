@@ -206,13 +206,9 @@ private:
 	  KFloat = 2,
 	  KExpFloat = 6,
   };
-  union UValue
-  {
-	  mpz_t int_;
-	  mpf_t float_;
-  };
+  mpz_t int_;
+  mpf_t float_;
   unsigned type_;
-  UValue value_;
   mpz_t exponent_; 	// this is only used for ExpFloats when the exponent is out of range for GMP.
   
   #else
