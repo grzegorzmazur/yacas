@@ -35,7 +35,7 @@ Stand-alone books are free-form, but reference books must be written with a
 certain template that allows online hyperlinking. The file
 {manualmaker/in/dummies} is an example template for a reference manual section.
 
-At the beginning of each book must be a short book description (labeled {*BLURB}) which does not appear in printed documentation but only in the HTML top-level book index.
+At the beginning of each book there <i>must</i> be a book title and a short book description (labeled {*BLURB}) which does not appear in printed documentation but only in the HTML top-level book index.
 
 At the beginning of each chapter there may be a "chapter introduction" labeled
 {*INTRO} which is also a short description of the contents of that chapter. It
@@ -328,3 +328,16 @@ dollar signs should evaluate in Yacas (perhaps to itself) and not cause syntax
 errors. In case of doubt, try whether the expression evaluates without errors
 and then try to use {TeXForm} on that expression and see if that evaluates
 without errors.
+
+	    {book2ys}: extracting Yacas code from books
+
+{book2ys.sh} is a shell script that extracts Yacas code examples from a documentation chapter into a separate file. Usage is similar to {book2TeX.sh}. For example, the benchmarking test code {wester.yts} is automatically extracted from the corresponding essay chapter by the command
+	sh ../manmake/book2ys.sh wester-1994.chapt
+After this command, the file {wester-1994.ys} is created. Note that {wester-1994.chapt} is in Yacas language and is itself a generated file.
+
+Using this script, one can write documentation and code together, a la "literate programming".
+
+To prepare a documentation chapter in such a way that code extraction is possible, one only needs to make sure that all code examples in the chapter will become a correct sequence of Yacas expressions when cut out and written sequentially into a file. So, for instance, semicolons at the end of each statement are required. The script {book2ys} will <i>not</i> export example Yacas session code with "{In>}" and "{Out>}" prompts but it will export all other example code.
+
+See the source file {wester-1994.chapt.txt} to get a feeling of how the source documentation is formatted to allow completely automatic code extraction. Note that the printed documentation will be in twocolumn format, and therefore it is necessary to split lines that are too long.
+
