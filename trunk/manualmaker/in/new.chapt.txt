@@ -351,13 +351,83 @@ SCHEME IS ACTUALLY EASY TO USE.
 *HEAD To be filled in
 
 
+			The Yacas internal numeric library
 
+		Introduction
 
+Although there are quite good free arbitrary precision arithmetic
+libraries out there, {Yacas} comes with its own (default) implementation.
+Other libraries can be used too, but the addition of a native 
+small arithmetic library reduces dependencies on other packages.
 
+This part describes the way the arithmetic library is embedded into
+{Yacas}, and how it can be used to embed other arithmetic libraries.
 
+		The link between the interpreter and the arithmetic library
 
+The interpreter (as of version 1.0.54) has the concept of an atom,
+which has a string representation. As soon as a calculation needs
+to be performed, the string representation is used to construct
+an object representing the number, in an internal representation that
+the arithmetic library can work with.
 
+The basic layout is as follows: there is a base class YacasBigNumber,
+which is a pure abstract class, and thus needs to be sub-classed.
+This class contains the internal representation, and offers simple
+arithmetic operations like addition and multiplication through an interface.
 
+With this class there should be a {c} function which can create such
+a class given a string representation (and in addition a precision
+and number base).
+
+This set up allows for different arithmetic libraries to be used;
+each library has to be hidden behind a sub-class of {YacasBigNumber},
+and have a function to create an object representing the number.
+
+The number object should be able to render itself back to a string,
+which can then be passed back to the interpreter as a result.
+
+		Interface to the objects
+
+The following code demonstrates how to use arithmetic support.
+
+	// Calculate z=x+y where x=10 and y=15
+	YacasBigNumberPtr x(MakeNativeNumber("10",100,10));
+	YacasBigNumberPtr y(MakeNativeNumber("15",100,10));
+	YacasBigNumberPtr z(x->Add(x,y,10));    
+	// cast the result to a string
+	LispString  str;
+	z->ToString(str,10);
+
+This example uses {MakeNativeNumber} to create an object
+that uses the native {double} and {long} as representations
+for real-valued and integer-valued numbers respectively.
+
+Here the {YacasBigNumberPtr} is a smart pointer which 
+automatically cleans up the number after the calculation is
+finished. The functions in the class accept arguments of type
+{YacasBigNumberPtr}, but return a value of the type
+{YacasBigNumber*}. This is done so that function calls can
+be nested; the return values are of type {YacasBigNumber*},
+but because the parameter type is {YacasBigNumberPtr}
+the compiler creates a temporary {YacasBigNumberPtr} with
+the {YacasBigNumber*}, passes it in, and when finished destroys
+the {YacasBigNumberPtr}. This in effect also cleans up the
+original {YacasBigNumber*} if it isn't used any more. 
+
+Call-by-value could have been used, but that is a little bit more
+expensive as copy-constructors then need to be called.
+The smart pointer is small (4 bytes) and all it does is
+increment and decrement a reference count, as opposed to having
+to allocate new memory for the number.
+
+		Interface definition
+
+The basic arithmetic class defines some simple arithmetic functions,
+from which other more elaborate functions can be built. They
+could even be implemented in {Yacas} script, as most time is
+spent doing the arithmetic (and the scripts could still be converted
+to c++ code). 
 
 
 

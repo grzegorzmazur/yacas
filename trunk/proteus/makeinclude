@@ -19,16 +19,16 @@ CALCULATOR_OBJS = tabs.o editor.o HelpView.o FltkConsole.o grapher.o FltkHintWin
 proteuscalculator   : $(CALCULATOR_OBJS) $(YACAS_DIR)/libyacas.a $(YACAS_DIR)/libyacasplatform.a $(YACAS_DIR)/libyacasnumbers.a 
 	$(CXX) $(CALCULATOR_OBJS) $(YACAS_DIR)/libyacas.a $(YACAS_DIR)/libyacasplatform.a $(YACAS_DIR)/libyacasnumbers.a -o proteuscalculator $(CXXFLAGS) $(LIBS) -lm
 
-WORKSHEET_OBJS = tabs.large.o editor.o HelpView.o FltkConsole.o grapher.o FltkHintWindow.o fl_adjustable_file_chooser.o
+WORKSHEET_OBJS = tabs.large.o editor.o HelpView.o FltkConsole.o grapher.o FltkHintWindow.o 
 
-proteusworksheet   : $(WORKSHEET_OBJS) $(YACAS_DIR)/libyacas.a $(YACAS_DIR)/libyacasplatform.a $(YACAS_DIR)/libyacasnumbers.a 
-	$(CXX) $(WORKSHEET_OBJS) $(YACAS_DIR)/libyacas.a $(YACAS_DIR)/libyacasplatform.a $(YACAS_DIR)/libyacasnumbers.a -o proteusworksheet $(CXXFLAGS) $(LIBS) -lm
+proteusworksheet   : $(WORKSHEET_OBJS) $(YACAS_DIR)/libyacas.la $(YACAS_DIR)/libyacasplatform.la $(YACAS_DIR)/libyacasnumbers.la 
+	$(CXX) $(WORKSHEET_OBJS) $(YACAS_DIR)/libyacas.la $(YACAS_DIR)/libyacasplatform.la $(YACAS_DIR)/libyacasnumbers.la -o proteusworksheet $(CXXFLAGS) $(LIBS) -lm
 
 
-PROTEUS_OBJS = tabs.o editor.o HelpView.o FltkConsole.o grapher.o FltkHintWindow.o fl_adjustable_file_chooser.o
+PROTEUS_OBJS = tabs.o editor.o HelpView.o FltkConsole.o grapher.o FltkHintWindow.o 
 
-proteus   : $(PROTEUS_OBJS) $(YACAS_DIR)/libyacas.a $(YACAS_DIR)/libyacasplatform.a $(YACAS_DIR)/libyacasnumbers.a 
-	$(CXX) $(PROTEUS_OBJS) $(YACAS_DIR)/libyacas.a $(YACAS_DIR)/libyacasplatform.a $(YACAS_DIR)/libyacasnumbers.a -o proteus $(CXXFLAGS) $(LIBS) -lm
+proteus   : $(PROTEUS_OBJS) $(YACAS_DIR)/libyacas.la $(YACAS_DIR)/libyacasplatform.la $(YACAS_DIR)/libyacasnumbers.la 
+	$(CXX) $(PROTEUS_OBJS) $(YACAS_DIR)/libyacas.la $(YACAS_DIR)/libyacasplatform.la $(YACAS_DIR)/libyacasnumbers.la -o proteus $(CXXFLAGS) $(LIBS) -lm
 	mv proteus $(EXENAME)
 
 

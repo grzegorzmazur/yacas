@@ -97,7 +97,7 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
  
 // reference-counting through a smart pointer, so we can do automatic clean up on numbers
 class YacasBigNumber;
-typedef RefPtr<YacasBigNumber> YacasBigNumberPtr;
+typedef const RefPtr<YacasBigNumber> YacasBigNumberPtr;
 // pure abstract class representing a number
 class YacasBigNumber : public RefCountedObject
 {
@@ -106,18 +106,10 @@ public: //constructors
   virtual const YacasBigNumber* Copy() const = 0;
   /// ToString : return string representation of number in aResult 
   virtual void ToString(LispString& aResult, LispInt aBase) = 0;
-public: //base conversions
-  virtual YacasBigNumber* FromBase( const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY,  LispInt aPrecision) = 0;
-  virtual YacasBigNumber* ToBase( const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY,  LispInt aPrecision) = 0;
 public: //information retrieval on library used  
-  /// Whether the numeric library supports 1.0E-10 and such.
-  virtual LispInt NumericSupportForMantissa() = 0;
   /// Numeric library name
   virtual const LispCharPtr NumericLibraryName() = 0;
-  
 public://arithmetic
-  /// Calculate GCD of this object with another, and return result in aResult
-  virtual YacasBigNumber* Gcd(YacasBigNumberPtr aX, YacasBigNumberPtr aY) = 0;
   /// Multiply two numbers, and return result in aResult
   virtual YacasBigNumber* Multiply(const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
   /** Multiply two numbers, and add to aResult (this is useful and generally efficient to implement).
@@ -128,13 +120,36 @@ public://arithmetic
                 const YacasBigNumberPtr& aY, 
                 LispInt aPrecision) = 0;
   /// Add two numbers, and return result in aResult
-  virtual YacasBigNumber* Add(const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
+  virtual YacasBigNumber* Add(YacasBigNumberPtr& aX, YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
   /// Negate the current number, and return it
   virtual YacasBigNumber* Negate() = 0;
-  /// Divide, and return result  
-  virtual YacasBigNumber* Divide(const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
+  /// Divide, and return result. Note: if the two arguments are integer, it should return an integer result!
+  virtual YacasBigNumber* Divide(YacasBigNumberPtr& aX, YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
+
+public://bitwise operations  
+  virtual YacasBigNumber* ShiftLeft( YacasBigNumberPtr& aX, LispInt aNrToShift) = 0;
+  virtual YacasBigNumber* ShiftRight( YacasBigNumberPtr& aX, LispInt aNrToShift) = 0;
+  virtual YacasBigNumber* BitAnd(YacasBigNumberPtr& aX, YacasBigNumberPtr& aY) = 0;
+  virtual YacasBigNumber* BitOr(YacasBigNumberPtr& aX, YacasBigNumberPtr& aY) = 0;
+  virtual YacasBigNumber* BitXor(YacasBigNumberPtr& aX, YacasBigNumberPtr& aY) = 0;
+
+protected: // I don't want any one to construct this class any other way!
+  YacasBigNumber(){};
+
+
+};
+
+/*DEPRECATED, TODO remove
+public: //base conversions
+  virtual YacasBigNumber* FromBase( const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY,  LispInt aPrecision) = 0;
+  virtual YacasBigNumber* ToBase( const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY,  LispInt aPrecision) = 0;
+
+  /// Calculate GCD of this object with another, and return result in aResult
+  virtual YacasBigNumber* Gcd(YacasBigNumberPtr aX, YacasBigNumberPtr aY) = 0;
+
   /// Raise power, and return result
   virtual YacasBigNumber* Power(const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY,LispInt aPrecision) = 0;
+
 public: //trigonometric functions
   virtual YacasBigNumber* Sin(const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
   virtual YacasBigNumber* Cos(const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
@@ -148,27 +163,17 @@ public://other functions
   virtual YacasBigNumber* Sqrt(const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
   virtual YacasBigNumber* Abs( const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
   virtual YacasBigNumber* Factorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision) = 0;
-  virtual YacasBigNumber* Floor(const YacasBigNumberPtr& aX, LispInt aPrecision) = 0;
-  virtual YacasBigNumber* Ceil( const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
+  virtual YacasBigNumber* Pi(LispInt aPrecision) = 0;
   virtual YacasBigNumber* Mod( const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
   virtual YacasBigNumber* Div( const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
-  virtual YacasBigNumber* Pi(LispInt aPrecision) = 0;
-public://comparisons  
   virtual LispBoolean GreaterThan(const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
+
+  virtual YacasBigNumber* Floor(const YacasBigNumberPtr& aX, LispInt aPrecision) = 0;
+  virtual YacasBigNumber* Ceil( const YacasBigNumberPtr& aX,LispInt aPrecision) = 0;
+public://comparisons  
   virtual LispBoolean LessThan(const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
 
-public://bitwise operations  
-  virtual YacasBigNumber* ShiftLeft( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHashTable,LispInt aPrecision) = 0;
-  virtual YacasBigNumber* ShiftRight( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHashTable,LispInt aPrecision) = 0;
-  virtual YacasBigNumber* BitAnd(const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
-  virtual YacasBigNumber* BitOr(const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
-  virtual YacasBigNumber* BitXor(const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
-
-protected: // I don't want any one to construct this class any other way!
-  YacasBigNumber(){};
-
-
-};
+*/
 
 
 
