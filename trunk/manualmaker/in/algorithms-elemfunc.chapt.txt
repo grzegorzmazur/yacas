@@ -74,6 +74,44 @@ The convergence of this expansion for large $Abs(x)$ is improved by using the id
 $$ArcTan(x) = Pi/2*Sign(x) - ArcTan(1/x)$$
 This is implemented in the standard library scripts.
 
+The idea to use continued fraction expansions for ArcTan comes from the book
+
+Jack W. Crenshaw,
+<i>MATH Toolkit for REAL-TIME Programming</i> (2000),
+CMP Media Inc.
+
+In that book the author explains how he got the idea to use continued
+fraction expansions to approximate ArcTan, given that the Taylor series converges
+slowly, and having a hunch that in that case the continued fraction expansion
+then converges rapidly. He then proceeds to show that in the case of ArcTan,
+this is true in a big way. Now, it might not be true for all slowly converging
+series. No articles or books have been found yet that prove this. The above book 
+shows it empirically. 
+
+The book
+
+Joachim von zur Gathen and Jurgen Gerhard,
+<i>Modern Computer Algebra</i> (1999),
+Cambridge University Press.
+
+does discuss Cauchy interpolation and Pade approximation,
+both trying to approximate functions using rational functions f/g in stead of 
+a simple polynomial f, and mentions that "it was observed empirically that 
+sometimes rational functions yield a much smaller approximation error".
+
+The continued fraction expansion yields a rational function after simplification, 
+making the two approaches similar.
+
+One disadvantage of both continued fraction expansions and approximation by 
+rational functions, compared to a simple series, is that it is in general not
+easy to do the calculation with one step more precision, due to the nature
+of the form of the expressions, and the way in which they change when expressions
+with one order better precision are considered. The coefficients of the 
+terms in the polynomials defining the numerator and the denominator of the
+rational function change. This contrasts with a Taylor series expansion, where
+each additional term improves the accuracy of the result, and the calculation
+can be terminated when sufficient accuracy is achieved.
+
 By the identity $ArcCos(x) := Pi/2 - ArcSin(x)$, the inverse cosine is reduced to the inverse sine. Newton's method for $ArcSin(x)$ consists of solving the equation $Sin(y)=x$ for $y$. Implementation is similar to the calculation of $pi$ in {PiMethod0()}.
 
 Hyperbolic and inverse hyperbolic functions are reduced to exponentials and logarithms.
