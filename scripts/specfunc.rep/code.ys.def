@@ -6,6 +6,7 @@ Zeta
 ZetaNum
 Bernoulli
 BernoulliArray
+BesselJ
+BesselJN
+BesselJN0
 }
-
-
