@@ -9,7 +9,7 @@ UnFence("IntegrateMultiplicative",4);
 
 10 # IntSub(_var,_expr,Integrate(_var)(_expr2)) <--
      `Hold(Integrate(@var)(@expr));
-20 # IntSub(_var,_expr,_result) <-- result + UniqueConstant();
+20 # IntSub(_var,_expr,_result) <-- result;	// + UniqueConstant();
 
 ////////////////////////////////////////////////
 //
@@ -290,7 +290,7 @@ IntFunc(x,1/Cosh(_x)^2,Tanh(x));
 //IntFunc(x,1/Sech(_x)*Coth(_x),-1/Sinh(x));
 IntFunc(x,1/Tanh(_x),Ln(Sinh(x)));
 
-IntFunc(x,Abs(_x),Abs(x)*x/(2*a));
+IntFunc(x,Abs(_x),Abs(x)*x/2);	// not 2*a
 
 IntFunc(x,ArcTan(_x),x*ArcTan(x) - Ln(x^2 + 1)/2);
 IntFunc(x,ArcSin(_x),(x*ArcSin(x)) + Sqrt(1-x^2) );

@@ -63,7 +63,7 @@ HoldArg("D",aFunc);
     (y* (Deriv(var) x) - x* (Deriv(var) y))/ (y^2);
 
 2 # (Deriv(_var)Ln(_x)) <-- ((Deriv(var) x) / x);
-2 # (Deriv(_var)(_x ^ n_IsRationalOrNumber)) <--
+2 # (Deriv(_var)(_x ^ _n))_(IsRationalOrNumber(n) Or IsFreeOf(var, n)) <--
     n * (Deriv(var) x) * (x ^ (n - 1));
 
 2 # (Deriv(_var)(Abs(_x)))  <-- Sign(x)*(Deriv(var)x);

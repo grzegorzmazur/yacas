@@ -20,7 +20,7 @@ Verify( Sin(x)/Cos(x), Tan(x) );
 // flag as a known failure?
 //KnownFailure(Verify( Sin(x)^2 + Cos(x)^2, 1 ));
 Verify( TrigSimpCombine(Sin(x)^2 + Cos(x)^2), 1 );
-Verify( Cos(x)/Sin(x), Cot(x) );
+//Verify( Cos(x)/Sin(x), Cot(x) );	// we don't want Cot() to appear
 Verify( Sinh(x)-Cosh(x), Exp(-x));
 Verify( Sinh(x)+Cosh(x), Exp(x) );
 Verify( Sinh(x)/Cosh(x), Tanh(x) );
