@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Convert plaintext Yacas-format documentation to TeX files
-# Usage: ytxt2TeX.sh [-o outputfile] file1.txt [file2.txt] ...
+# Usage: ytxt2tex [-o outputfile] file1.txt [file2.txt] ...
 # source files must have extension ".txt"
 # output file is "file1.tex" if the -o option is not given
 # note: if many txt files are given, the first one must *INCLUDE all others without txt extension
