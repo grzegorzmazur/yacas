@@ -418,6 +418,12 @@ void TracedStackEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
                            LispPtr& aExpression)
 {
 
+    if (aEnvironment.iEvalDepth>=aEnvironment.iMaxEvalDepth)
+    {
+        ShowStack(aEnvironment, *aEnvironment.CurrentOutput());
+        CHK2(aEnvironment.iEvalDepth<aEnvironment.iMaxEvalDepth,
+             KLispErrMaxRecurseDepthReached);
+    }
 
     
 
