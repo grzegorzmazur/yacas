@@ -73,3 +73,21 @@ Verify(IsVariable(-2),False);
 Verify(IsVariable(2.1),False);
 
 
+Verify(HasExpr(a*b+1,1),True);
+Verify(HasExpr(a+Sin(b*c),c),True);
+Verify(HasExpr(a*b+1,2),False);
+Verify(HasExpr(a*b+f({b,c}),f),False);
+Verify(HasExprArith(a*b+1,Atom("+")),False);
+Verify(HasExprArith(a*b+1,1),True);
+Verify(HasExprArith(a+Sin(b*c),c),False);
+Verify(HasExprArith(a+Sin(b*c),Sin(b*c)),True);
+Verify(HasExprArith(a*b+f({b,c}),c),False);
+
+Verify(HasFunc(a*b+1,*),True);
+Verify(HasFunc(a+Sin(b*c),*),True);
+Verify(HasFunc(a*b+1,List),False);
+Verify(HasFunc(a*b+f({b,c}),List),True);
+Verify(HasFuncArith(a*b+1,Atom("+")),True);
+Verify(HasFuncArith(a+Sin(b*c),*),False);
+Verify(HasFuncArith(a+Sin(b*c),Sin),True);
+Verify(HasFuncArith(a*b+f({b,c}),List),False);

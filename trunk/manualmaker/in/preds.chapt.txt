@@ -896,3 +896,86 @@ with 'a' and 'b' not depending on 'x' if 'x' is given as the variable.
 *SEE Integrate
 
 
+*CMD HasExpr, HasExprArith, HasExprSome --- check for expression containing a subexpression
+*STD
+*CALL
+	HasExpr(expr, x)
+	HasExprArith(expr, x)
+	HasExprSome(expr, x, list)
+
+*PARMS
+
+{expr} -- an expression
+
+{x} -- a subexpression to be found
+
+{list} -- list of function atoms to be considered "transparent"
+
+*DESC
+
+The command {HasExpr} returns {True} if the expression {expr} contains a literal subexpression {x}. The expression is recursively traversed.
+
+The command {HasExprSome} does the same, except it only looks at arguments of a given {list} of functions. All other functions become "opaque" (as if they do not contain anything).
+
+{HasExprArith} is defined through {HasExprSome} to look only at arithmetic operations {+}, {-}, {*}, {/}.
+
+Note that since the operators "{+}" and "{-}" are prefix as well as infix operators, it is currently required to use {Atom("+")} to obtain the unevaluated atom "{+}".
+
+*E.G.
+
+	In> HasExpr(x+y*Cos(Ln(z)/z), z)
+	Out> True;
+	In> HasExpr(x+y*Cos(Ln(z)/z), Ln(z))
+	Out> True;
+	In> HasExpr(x+y*Cos(Ln(z)/z), z/Ln(z))
+	Out> False;
+	In> HasExprArith(x+y*Cos(Ln(x)/x), z)
+	Out> False;
+	In> HasExprSome({a+b*2,c/d},c/d,{List})
+	Out> True;
+	In> HasExprSome({a+b*2,c/d},c,{List})
+	Out> False;
+
+*SEE FuncList, VarList, HasFunc
+
+*CMD HasFunc, HasFuncArith, HasFuncSome --- check for expression containing a function
+*STD
+*CALL
+	HasFunc(expr, func)
+	HasFuncArith(expr, func)
+	HasFuncSome(expr, func, list)
+
+*PARMS
+
+{expr} -- an expression
+
+{func} -- a function atom to be found
+
+{list} -- list of function atoms to be considered "transparent"
+
+*DESC
+
+The command {HasFunc} returns {True} if the expression {expr} contains a function {func}. The expression is recursively traversed.
+
+The command {HasFuncSome} does the same, except it only looks at arguments of a given {list} of functions. Arguments of all other functions become "opaque" (as if they do not contain anything).
+
+{HasFuncArith} is defined through {HasFuncSome} to look only at arithmetic operations {+}, {-}, {*}, {/}.
+
+Note that since the operators "{+}" and "{-}" are prefix as well as infix operators, it is currently required to use {Atom("+")} to obtain the unevaluated atom "{+}".
+
+*E.G.
+
+	In> HasFunc(x+y*Cos(Ln(z)/z), Ln)
+	Out> True;
+	In> HasFunc(x+y*Cos(Ln(z)/z), Sin)
+	Out> False;
+	In> HasFuncArith(x+y*Cos(Ln(x)/x), Cos)
+	Out> True;
+	In> HasFuncArith(x+y*Cos(Ln(x)/x), Ln)
+	Out> False;
+	In> HasFuncSome({a+b*2,c/d},/,{List})
+	Out> True;
+	In> HasFuncSome({a+b*2,c/d},*,{List})
+	Out> False;
+
+*SEE FuncList, VarList, HasExpr

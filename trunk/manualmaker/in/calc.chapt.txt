@@ -1436,29 +1436,6 @@ generated in every Yacas session.
 
 *SEE RandomInteger, RandomPoly
 
-*CMD VarList --- list of variables appearing in some expression
-*STD
-*CALL
-	VarList(expr)
-
-*PARMS
-
-expr - an expression
-
-*DESC
-
-This command returns a list of all the variables that appear in the
-expression "expr".
-
-*E.G.
-
-	In> VarList(Sin(x))
-	Out> {x};
-	In> VarList(x+a*y)
-	Out> {x,a,y};
-
-*SEE IsFreeOf, IsVariable
-
 *CMD Limit --- limit of an expression
 *STD
 *CALL

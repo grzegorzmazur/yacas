@@ -133,30 +133,6 @@ Function("Rationalize",{a'number})
   Substitute(a'number,{{x},IsNumber(x) And Not(IsInteger(x))},"RationalizeNumber");
 
 
-
-
-40 # ContFrac(n_CanBeUni,_depth)_(Length(VarList(n)) = 1) <--
-[
-  ContFracDoPoly(n,depth,VarList(n)[1]);
-];
-
-5  # ContFracDoPoly(_exp,0,_var) <-- rest;
-5  # ContFracDoPoly(0,0,_var) <-- rest;
-10 # ContFracDoPoly(_exp,_depth,_var) <--
-[
-  Local(content,exp2,first,second);
-  first:=Coef(exp,var,0);
-  exp:=exp-first;
-  content:=Content(exp);
-  exp2:=DivPoly(1,PrimitivePart(exp),var,5+3*depth)-1;
-  second:=Coef(exp2,0);
-  exp2 := exp2 - second;
-  first+content/((1+second)+ContFracDoPoly(exp2,depth-1,var));
-];
-
-
-
-    
 10 # Decimal( n_IsInteger ) <-- {n,{0}};
 10 # Decimal( (n_IsPositiveInteger) / (d_IsPositiveInteger) ) <--
 [
@@ -363,10 +339,8 @@ TRun(2+t/2-t^2,10);
 20 # ContFracList(n_IsInteger, _depth) <-- {n};
 // prevent infinite loop when in numeric mode
 30 # ContFracList(n_IsNumber, _depth) _Numeric <--
-[
-	Numeric := False;
-	{ContFracList(Rationalize(n), depth), Numeric := True}[1];
-];
+{Numeric := False, ContFracList(Rationalize(n), depth), Numeric := True}[2];
+
 40 # ContFracList(n_IsNumber, _depth) <-- ContFracList(Rationalize(n), depth);
 
 /* n/m = Div(n,m) + 1/( m/Mod(n,m) ) */
@@ -374,16 +348,56 @@ TRun(2+t/2-t^2,10);
 
 40 # ContFracList((n_IsInteger) / (m_IsInteger), _depth) <-- Push( ContFracList(m/Mod(n,m), depth-1) , Div(n,m));
 
-/// old interface
+/// main interface
 10 # ContFrac(_n) <-- ContFrac(n, 6);
-20 # ContFrac(_n,_depth) <-- ContFracEval(ContFracList(n, depth), rest);
+50 # ContFrac(_n,_depth) <-- ContFracEval(ContFracList(n, depth), rest);
+
+//////////////////////////////////////////////////
+/// ContFracEval: evaluate continued fraction from the list of coefficients
+//////////////////////////////////////////////////
+/// Each coefficient is either a single expression or a list of 2 expressions, giving the term and the numerator of the current level in the fraction.
+/// ContFracEval({{a0, b0}, {a1, b1}, ...}) = a0+b0/(a1+b1/(...))
+/// ContFracEval({a0, a1, ...}) = a0+1/(a1+1/(...))
 
 10 # ContFracEval({}, _rest) <-- rest;
-10 # ContFracEval({_n}, _rest) <-- n+rest;
-20 # ContFracEval(list_IsList, _rest) <-- Head(list) + 1 / ContFracEval(Tail(list), rest);
+// finish recursion here
+10 # ContFracEval({{_n, _m}}, _rest) <-- n+m+rest;
+15 # ContFracEval({_n}, _rest) <-- n+rest;
+/// Continued fractions with nontrivial numerators
+20 # ContFracEval(list_IsList, _rest)_(IsList(Head(list))) <-- Head(Head(list)) + Tail(Head(list)) / ContFracEval(Tail(list), rest);
+/// Continued fractions with unit numerators
+30 # ContFracEval(list_IsList, _rest) <-- Head(list) + 1 / ContFracEval(Tail(list), rest);
 
-/// evaluate continued fraction given the list of coefficients
+/// evaluate continued fraction: main interface
 ContFracEval(list_IsList) <-- ContFracEval(list, 0);
+
+//////////////////////////////////////////////////
+/// continued fractions for polynomials
+//////////////////////////////////////////////////
+
+40 # ContFrac(n_CanBeUni,_depth)_(Length(VarList(n)) = 1) <--
+[
+  ContFracDoPoly(n,depth,VarList(n)[1]);
+];
+
+5  # ContFracDoPoly(_exp,0,_var) <-- rest;
+5  # ContFracDoPoly(0,0,_var) <-- rest;
+10 # ContFracDoPoly(_exp,_depth,_var) <--
+[
+  Local(content,exp2,first,second);
+  first:=Coef(exp,var,0);
+  exp:=exp-first;
+  content:=Content(exp);
+  exp2:=DivPoly(1,PrimitivePart(exp),var,5+3*depth)-1;
+  second:=Coef(exp2,0);
+  exp2 := exp2 - second;
+  first+content/((1+second)+ContFracDoPoly(exp2,depth-1,var));
+];
+
+
+//////////////////////////////////////////////////
+/// NearRational, GuessRational
+//////////////////////////////////////////////////
 
 /// find rational number with smallest num./denom. near a given number x
 /// See: HAKMEM, MIT AI Memo 239, 02/29/1972, Item 101C
