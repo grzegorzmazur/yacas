@@ -19,4 +19,5 @@ BigOh
 Horner
 DivPoly
 DropEndZeroes
+polyDivide
 }

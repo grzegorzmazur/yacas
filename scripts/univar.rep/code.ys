@@ -723,3 +723,40 @@ DivPoly(_A,_B,_var,_deg) <--
   NormalForm(UniVariate(var,0,c));
 ];
 
+/*
+	polyDivide()
+	A,B -- polynomials
+	var -- variable in polys
+
+	Returns polynomials Q,R such that
+		A = B*Q + R
+
+	This is implemented directly from 
+		Symbolic Integration (1997), M. Bronstein. pp8
+*/
+
+polyDivide(_A,_B,_var) <--
+[
+	Local(Q,R);
+	Check( LeadingCoef(B,var) != 0, "polyDivide: Cannot divide by zero polynomial");
+
+	if( Degree(B) = 0 )[
+		Q:= A/LeadingCoef(B);			
+		R:=MakeUni(0,var);
+	] else [
+		Local(T,delta);
+		Q:=MakeUni(0,var);
+	        R:=MakeUni(A,var);
+		delta:= Degree(R) - Degree(B);
+		While( delta >= 0 ) [
+			T:= (LeadingCoef(R, var)/LeadingCoef(B))*var^(delta); 
+			Q:= Q + T;	
+			R:= R - B*T;
+			delta:= Degree(R) - Degree(B);
+		];
+	];
+	// what format should be returned?
+	Q:=Horner(Q,var);	
+	R:=Horner(R,var);
+	{Q,R};
+];
