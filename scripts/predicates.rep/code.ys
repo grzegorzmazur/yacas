@@ -184,6 +184,26 @@ IsDiagonal(A_IsMatrix) <--
 	];
 	result;
 ];
+IsUpperTriangular(A_IsMatrix) <--
+[
+        Local(i,j,m,n,result);
+        m:=Length(A);
+        n:=Length(A[1]);
+        i:=2; 
+        result:=True;
+        While(i<=m And result)
+        [ 
+                j:=1;
+                While(j<=n And result)
+                [
+                        result:= (i<=j Or A[i][j] = 0);
+                        j++;
+                ];
+                i++;
+        ];
+        result;
+]; 
+IsLowerTriangular(A_IsMatrix) <-- (IsUpperTriangular(Transpose(A)));
 IsSkewSymmetric(A_IsMatrix) <-- (Transpose(A)=(-1*A));
 IsHermitian(A_IsMatrix) <-- (Conjugate(Transpose(A))=A);
 IsSymmetric(A_IsMatrix) <-- (Transpose(A)=A);

@@ -94,7 +94,11 @@ Function("CharacteristicEquation",{matrix,var})
    Determinant(matrix-var*Identity(Length(matrix)));
 HoldArg("CharacteristicEquation",var);
 
-10 # EigenValues(matrix_IsDiagonal) <-- Diagonal(matrix);
+// diagonal matrices will be caught by IsUpperTriangular
+//10 # EigenValues(matrix_IsDiagonal) <-- Diagonal(matrix);
+10 # EigenValues(matrix_IsUpperTriangular) <-- Diagonal(matrix);
+10 # EigenValues(matrix_IsLowerTriangular) <-- Diagonal(matrix);
+
 20 # EigenValues(matrix_IsMatrix) <-- Roots(CharacteristicEquation(matrix,xx));
 
 EigenVectors(_matrix,_eigenvalues) <--
