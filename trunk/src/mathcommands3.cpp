@@ -296,26 +296,81 @@ void LispArcTan(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 void LispSqrt(LispEnvironment& aEnvironment, LispPtr& aResult,
               LispPtr& aArguments)
-{//FIXME
+{//FIXME move to scripts
     LispArithmetic1(aEnvironment, aResult, aArguments, SqrtFloat);
 }
 
+
+#ifndef NO_USE_BIGFLOAT
+#define UNARYFUNCTION(LispName, BigNumName, OldName) \
+void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+{ \
+      RefPtr<BigNumber> x; \
+      GetNumber(x,aEnvironment, aArguments, 1); \
+      BigNumber *z = NEW BigNumber(aEnvironment.Precision()); \
+      z->BigNumName(*x.Ptr()); \
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
+}
+#else
+#define UNARYFUNCTION(LispName, BigNumName, OldName) \
+void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+{ \
+    LispArithmetic1(aEnvironment, aResult, aArguments, OldName); \
+}
+#endif
+
+UNARYFUNCTION(LispFloor, Floor, FloorFloat);
+// these functions are not yet in yacasapi.cpp but should be eventually
+//UNARYFUNCTION(LispBitCount, BitCount, MathBitCount);
+//UNARYFUNCTION(LispSign, Sign, MathSign)
+//UNARYFUNCTION(LispNegate, Negate, MathNegate)
+
+/** this produces the following equivalent code for a unary function:
 void LispFloor(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{//FIXME
+{
+#ifndef NO_USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      GetNumber(x,aEnvironment, aArguments, 1);
+      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      z->Floor(*x.Ptr());
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+#else
     LispArithmetic1(aEnvironment, aResult, aArguments, FloorFloat);
+#endif
 }
+*/
 
 void LispCeil(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{//FIXME
-    LispArithmetic1(aEnvironment, aResult, aArguments, CeilFloat);
+{
+#ifndef NO_USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      GetNumber(x,aEnvironment, aArguments, 1);
+      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      z->Negate(*x.Ptr());
+      z->Floor(*z);
+      z->Negate(*z);
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+#else
+   LispArithmetic1(aEnvironment, aResult, aArguments, CeilFloat);
+#endif
 }
 
 void LispAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{//FIXME
-    LispArithmetic1(aEnvironment, aResult, aArguments, AbsFloat);
+{
+#ifndef NO_USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      GetNumber(x,aEnvironment, aArguments, 1);
+      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      z->SetTo(*x.Ptr());
+      if (x.Ptr()->Sign()<0)
+	      z->Negate(*x.Ptr());
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+#else
+   LispArithmetic1(aEnvironment, aResult, aArguments, AbsFloat);
+#endif
 }
 
 void LispMod(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -341,7 +396,7 @@ void LispDiv(LispEnvironment& aEnvironment, LispPtr& aResult,
 	  }
 	  else
 	  {// FIXME: either need to report error that one or both of the arguments are not integer, or coerce them to integers
-	  	fprintf(stderr, "LispDiv: both arguments must be integer\n");
+	  	fprintf(stderr, "LispDiv: error: both arguments must be integer\n");
 		  return;
 	  }
 	  
@@ -351,19 +406,19 @@ void LispDiv(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 void LispLog(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{//FIXME
+{//FIXME move to scripts
     LispArithmetic1(aEnvironment, aResult, aArguments, LnFloat);
 }
 
 void LispExp(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{//FIXME
+{//FIXME move to scripts
     LispArithmetic1(aEnvironment, aResult, aArguments, ExpFloat);
 }
 
 void LispPower(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{//FIXME
+{//FIXME move to scripts
     LispArithmetic2(aEnvironment, aResult, aArguments, PowerFloat);
 }
 
@@ -371,10 +426,12 @@ void LispPower(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 void LispFac(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{//FIXME
+{//FIXME move to scripts
     LispArithmetic1(aEnvironment, aResult, aArguments, LispFactorial);
 }
 
+
+// platform functions, taking/returning a platform int/float
 
 void LispFastIsPrime(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
