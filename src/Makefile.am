@@ -17,8 +17,8 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	stdfileio.h stringio.h stubs.h tokenizer.h yacas.h ramdisk.h refcount.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
-        lispplugin.h elfdll.h genericstructs.h
-yacas_SOURCES = yacasmain.cc commandline.cc unixcommandline.cc stdcommandline.cc
+        lispplugin.h genericstructs.h
+yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = libyacas.a libyacasplatform.a @NUMBERS_LIB@ @NUMBERS_LDFLAGS@ 
 
 #
@@ -28,35 +28,37 @@ yacas_LDADD = libyacas.a libyacasplatform.a @NUMBERS_LIB@ @NUMBERS_LDFLAGS@
 
 yacas_LDFLAGS = -ldl -rdynamic
 
-testnum_SOURCES = anumber.cc grower.cc lispstring.cc stdstubs.cc \
-	testnum.cc mathutil.cc
-libyacas_a_SOURCES = deffile.cc infixparser.cc lispatom.cc \
-	lispcleanupstack.cc lispenvironment.cc lispeval.cc \
-	lispio.cc lispobject.cc lispparser.cc  \
-	lispuserfunc.cc mathcommands.cc mathenvironment.cc \
-	mathuserfunc.cc standard.cc  stdfileio.cc arggetter.cc \
-	stringio.cc tokenizer.cc yacasapi.cc genericobject.cc \
-	arrayclass.cc lispevalhash.cc patterns.cc patternclass.cc \
-        substitute.cc mathcommands2.cc mathcommands3.cc errors.cc patcher.cc \
-        lispplugin.cc elfdll.cc genericstructs.cc
-libyacasplatform_a_SOURCES = platmath.cc grower.cc stdstubs.cc lisphash.cc \
-	lispstring.cc mathutil.cc
+testnum_SOURCES = anumber.cpp grower.cpp lispstring.cpp stdstubs.cpp \
+	testnum.cpp mathutil.cpp
+libyacas_a_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
+	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \
+	lispio.cpp lispobject.cpp lispparser.cpp  \
+	lispuserfunc.cpp mathcommands.cpp mathenvironment.cpp \
+	mathuserfunc.cpp standard.cpp  stdfileio.cpp arggetter.cpp \
+	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp \
+	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp \
+        substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
+        lispplugin.cpp elfdll.cpp genericstructs.cpp
+libyacasplatform_a_SOURCES = platmath.cpp grower.cpp stdstubs.cpp lisphash.cpp \
+	lispstring.cpp mathutil.cpp
 libyacasplatform_a_LIBADD = @NUMBERS_LIB@
-libyacasnumbers_a_SOURCES = anumber.cc yacasnumbers.cc 
-libgmpnumbers_a_SOURCES = gmpnumbers.cc 
+libyacasnumbers_a_SOURCES = anumber.cpp yacasnumbers.cpp 
+libgmpnumbers_a_SOURCES = gmpnumbers.cpp 
 
 EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp \
-	epocstubs.cc grower.inl lisphash.inl lispobject.inl \
+	epocstubs.cpp grower.inl lisphash.inl lispobject.inl \
 	lispstring.inl standard.inl \
-	yacas.mmp win32dll.h win32dll.cpp \
+	yacas.mmp win32dll.cpp \
 	depend.dep \
 	convertcctocpp.bat \
 	plat/linux32/lisptype.h \
 	plat/linux32/stubs.inl \
 	plat/linux32/platfileio.h \
+	plat/linux32/platdll.h \
 	plat/linux64/lisptype.h \
 	plat/linux64/stubs.inl \
 	plat/linux64/platfileio.h \
+	plat/linux64/platdll.h \
 	plat/epoc32/lisptype.h \
 	plat/epoc32/stubs.inl \
 	plat/epoc32/platfileio.h \
@@ -64,11 +66,12 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp \
 	plat/win32/stubs.inl \
 	plat/win32/List.h \
 	plat/win32/List.inl \
+	plat/win32/platdll.h \
 	plat/win32/lisptype.h
 
 include depend.dep
 
 depend:
-	gcc -MM *.cc $(INCLUDES) > depend.dep
+	gcc -MM *.cpp $(INCLUDES) > depend.dep
 
 

@@ -200,6 +200,7 @@ Simplify(_expr) <--
 15 # Simplify1(Complex(_r,_i)) <-- Complex(Simplify1(r),Simplify1(i));
 
 20 # Simplify1((_xex) == (_yex)) <-- (Simplify1(xex-yex) == 0);
+
 20 # Simplify1((_xex) > (_yex)) <-- (Simplify1(xex-yex) > 0);
 20 # Simplify1((_xex) < (_yex)) <-- (Simplify1(xex-yex) < 0);
 20 # Simplify1((_xex) >= (_yex)) <-- (Simplify1(xex-yex) >= 0);

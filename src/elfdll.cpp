@@ -1,5 +1,6 @@
 
-#include <windows.h>
+#include <dlfcn.h>
+#include <stdio.h>
 
 #include "lisptype.h"
 #include "lispenvironment.h"
@@ -7,24 +8,22 @@
 #include "lispassert.h"
 #include "platdll.h"
 
-LispInt Win32Dll::Open(LispCharPtr aDllFile)
+LispInt ElfDll::Open(LispCharPtr aDllFile)
 {
-    handle = LoadLibrary(aDllFile);
+    handle = dlopen(aDllFile,RTLD_LAZY);
     return (handle != NULL);
 }
 
-Win32Dll::~Win32Dll()
+ElfDll::~ElfDll()
 {
     if (handle)
-        FreeLibrary((HMODULE) handle);
+        dlclose(handle);
     handle = NULL;
 }
-LispPluginBase* Win32Dll::GetPlugin(void)
+LispPluginBase* ElfDll::GetPlugin(void)
 {
     LISPASSERT(handle != NULL);
     LispPluginBase* (*maker)(void);
-    maker = (LispPluginBase*(*)(void))LoadLibrary((HMODULE)
-handle,"maker");
+    maker = (LispPluginBase*(*)(void))dlsym(handle,"maker");
     return maker();
 }
-
