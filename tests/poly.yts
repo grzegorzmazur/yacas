@@ -17,8 +17,16 @@ A:= x^4 - 2*x^3 - 6*x^2 + 12*x + 15;
 B:= x^3 + x^2 -4*x - 4;
 TestYacas(polyGCD(A,B,x),5*x+5);
 
+{C,D,E} := polyGCDExt2(A,B,x);
+//Echo({C,D,E});
+TestYacas( D, x^2 - 6*x + 10 );
+
 //works
-KnownFailure(TestYacas(polyGCDExt(A,B,x),{3-x,(x-6)*x+10,5*x+5}));
+{C,D,E} = polyGCDExt(A,B,x);
+TestYacas(C,3-x);
+TestYacas(D,(x-6)*x+10);
+TestYacas(E,5*x+5);
+//KnownFailure(TestYacas(polyGCDExt(A,B,x),{3-x,(x-6)*x+10,5*x+5}));
 
 
 TestYacas(polyGCD(4*x^2+4*x,4*x+4,x), 4*x+4 );
