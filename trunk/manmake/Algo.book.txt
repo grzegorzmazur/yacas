@@ -24,10 +24,9 @@ of design and implementation of these algorithms.
 
 *INTRO This and subsequent chapters document the numerical algorithms used in
 Yacas for exact integer calculations as well as for multiple precision
-floating-point calculations. We give brief but self-contained descriptions of
-the non-trivial algorithms and estimates of their computational cost. Most of
-the algorithms were taken from referenced literature; the remaining algorithms
-were developed by us.
+floating-point calculations. We give self-contained descriptions of
+the non-trivial algorithms and estimate their computational cost.
+Most of the algorithms were taken from referenced literature; the remaining algorithms were developed by us.
 
 
 *INCLUDE algo-basic.chapt

@@ -139,9 +139,14 @@ M. O. Rabin,
 <i>Probabilistic algorithm for testing primality</i>,
 J. Number Theory 12 (1980), p. 128.
 
-[Smith 1985]
+[Smith 1989]
 D. M. Smith,
-<i>Efficient multiple-precision evaluation of elementary functions</i>, 1985 (available online).
+<i>Efficient multiple-precision evaluation of elementary functions</i>, Math. Comp. 52 (1989), p. 131.
+
+[Smith 2001]
+D. M. Smith, 
+<i>Algorithm 814: Fortran 90 software for floating-point multiple precision arithmetic, Gamma and related functions</i>,
+ACM TOMS 27 (2001), p. 377.
 
 [Spouge 1994]
 J. L. Spouge,

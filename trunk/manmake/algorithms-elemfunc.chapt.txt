@@ -9,6 +9,9 @@ We assume that $x$, $y$, $n$ are "big" numbers with $P$ significant digits.
 
 We also assume that the power is positive, or else we need to perform an additional division to obtain $x^(-y)=1/x^y$.
 
+If $x!=0$ is known to a relative precision $epsilon$, then $x^y$ has the relative precision $epsilon*y$.
+This means a loss of precision if $Abs(y)>1$ and an improvement of precision otherwise.
+
 	    Integer powers
 
 *A powers!by repeated squaring
@@ -126,6 +129,9 @@ So if we square a number $x$, we lose one significant bit of $x$, and when we ta
 Computation of roots $r=x^(1/n)$ is efficient when $n$ is a small integer.
 The basic approach is to numerically solve the equation $r^n=x$.
 
+Note that the relative precision is improved after taking a root with $n>1$.
+
+
 	    Method 1: bisection
 
 *A roots!by bisection algorithm
@@ -226,6 +232,7 @@ Below is some {Yacas} script code to perform the calculation for integers.
 	];
 {BisectSqrt(N)} computes the integer part of $ Sqrt(N) $ for integer $N$.
 (If we need to obtain more digits, we should first multiply $N$ by a suitable power of $2$.)
+The algorithm works for floats as well as for integers.
 
 The bisection algorithm uses only additions and bit shifting operations.
 Suppose the integer $N$ has $P$ decimal digits, then it has $n=P*Ln(10)/Ln(2)$ bits.
@@ -301,7 +308,10 @@ Before using the bisection or Newton's method, we might apply some argument redu
 Suppose we need to find $Sqrt(x)$.
 Choose an integer $n$ such that $1/4<x':=4^(-n)*x<=1$.
 The value of $n$ is easily found from bit counting: if $b$ is the bit count of $x$, then $$n=Floor((b+1)/2)$$.
-We find $$Sqrt(x)=2^n*Sqrt(x')$$.
+We find
+$$Sqrt(x)=2^n*Sqrt(x')$$.
+The precision of $x'$ is the same as that of $x$ since $2^n$ is an exact number.
+
 To compute $Sqrt(x')$, we use Newton's method with the initial value $x'[0]$ obtained by interpolation of the function $Sqrt(x)$ on the interval [$1/4$,$1$].
 A suitable interpolation function might be taken as simply $(2*x+1)/3$ or more precisely
 $$Sqrt(x) <=> 1/90*(-28*x^2+95*x+23)$$.
@@ -465,7 +475,7 @@ The cost of all square roots is $c*(k[1]+k[2])$ long multiplications.
 Now we can use the Taylor series and obtain $Ln(x^(2^(-k[1]-k[2])))$ in $2*Sqrt(P/N)$ multiplications.
 We can choose $N$ to minimize the total cost for a given $L$.
 
-*REM FIXME: estimate the roundoff error resulting from this and the number of operations.
+*REM FIXME: estimate the round-off error resulting from this and the number of operations.
 
 	    Method 3: inverse exponential
 
@@ -725,12 +735,14 @@ A speed-up trick used for large $x$ is to divide the argument by some power of 2
 $$Exp(x) = (Exp(2^(-k)*x))^(2^k)$$,
 where $k$ is chosen sufficiently large so that the Taylor series converges quickly at $2^(-k)*x$ [Smith 1985]. The threshold value for $x$ is in the variable {MathExpThreshold} in {stdfuncs}.
 
-*REM FIXME: roundoff error for squaring. How many times to square. How many terms to take.
+*REM FIXME: round-off error for squaring. How many times to square. How many terms to take.
 
 A modification of the squaring reduction allows to significantly reduce the round-off error [Brent 1978].
 Instead of $Exp(x)=Exp(x/2)^2$, we use the identity
 $$ Exp(x)-1 = (Exp(x/2)-1)*(Exp(x/2)+1) $$
 and reduce $Exp(x)-1$ directly to $Exp(x/2)-1$.
+If $y=Exp(x/2)-1$, then $Exp(x)-1=2*y+y^2$.
+
 
 *REM FIXME: analyze the round-off error and show why this is better
 
@@ -897,7 +909,7 @@ To obtain the value of $Pi$ with $P$ decimal digits, one needs to take
 $$ n <=> P*Ln(10)/(3*Ln(C/12))<479/6793*P $$
 terms of the series.
 
-If this series is evaluated using Horner's scheme (the routine {PiChudnovsky}), then about $Ln(n)/Ln(10)$ extra digits are needed to compensate for roundoff error while adding $n$ terms.
+If this series is evaluated using Horner's scheme (the routine {PiChudnovsky}), then about $Ln(n)/Ln(10)$ extra digits are needed to compensate for round-off error while adding $n$ terms.
 This method does not require any long multiplications and costs $O(P^2)$ operations.
 
 A potentially much faster way to evaluate this series at high precision is by using the binary splitting technique.
@@ -979,7 +991,7 @@ $$ ArcTan(x) = ArcSin(x/Sqrt(1+x^2))$$,
 $$ ArcTan(1/x) = ArcSin(1/Sqrt(1+x^2))$$.
 
 Alternatively, the Taylor series can be used for the inverse sine:
-$$ ArcSin(x) = z+1/2*z^3/3+(1*3)/(2*4)*z^5/5+(1*3*5)/(2*4*6)*z^7/7 +...$$.
+$$ ArcSin(x) = x+1/2*x^3/3+(1*3)/(2*4)*x^5/5+(1*3*5)/(2*4*6)*x^7/7 +...$$.
 
 *A continued fraction approximation!of $Tan(x)$
 
@@ -1113,14 +1125,15 @@ This remains to be seen.
 *A orthogonal polynomials
 
 
-A family of orthogonal polynomials is a sequence of polynomials $q_n(x)$, $n=0$, 1, ... that satisfy the orthogonality condition on some interval [$a$, $b$] with respect to some weight function $rho(x)$:
-$$ (Integrate(x,a,b) q_m(x)*q_n(x)*rho(x) ) = 0 $$.
-The interval can be finite or infinite and the weight function must be real and non-negative on this interval.
+A family of orthogonal polynomials is a sequence of polynomials $q_n(x)$, $n=0$, $1$, ... that satisfy the orthogonality condition on some interval [$a$, $b$] with respect to some weight function $rho(x)$:
+$$ (Integrate(x,a,b) q_m(x)*q_n(x)*rho(x) ) = 0 $$
+for $m!=n$.
+The interval [$a$, $b$] can be finite or infinite and the weight function must be real and non-negative on this interval.
 
 
 
 In principle, one could choose any (non-negative) weight function $rho(x)$ and any interval [$a$, $b$] and construct the corresponding family of orthogonal polynomials $q_n(x)$.
-For example, take $q_0=1$, then take $q_1=x+c$ with unknown $c$ and find $c$ such that $q_0$ and $q_1$ satisfy the orthogonality condition;
+For example, take $q_0=1$, then take $q_1=x+c$ with unknown $c$ and find such $c$ that $q_0$ and $q_1$ satisfy the orthogonality condition;
 this requires solving a linear equation.
 Then we can similarly find two unknown coefficients of $q_2$ and so on.
 (This is called the Gramm-Schmidt orthogonalization procedure.)
@@ -1132,31 +1145,31 @@ The "classical" polynomials are always solutions of a simple second-order differ
 The construction of "classical" polynomials can be described by the following scheme.
 The function $rho(x)$ must satisfy the so-called Pearson's equation,
 $$ 1/rho(x)*(D(x)rho(x)) = alpha(x)/beta(x) $$,
-where the functions $alpha$, $beta$ are simple:
+where the functions $alpha$, $beta$ are of the form
 $$ alpha(x)=alpha_0+alpha_1*x $$, 
 $$ beta(x)=beta_0+beta_1*x+beta_2*x^2 $$.
-Also, the following boundary conditions must be satisfied on both ends $a$, $b$ of the interval,
+Also, the following boundary conditions must be satisfied at both ends $a$, $b$ of the interval,
 $$ rho(a)*beta(a)=rho(b)*beta(b)=0 $$.
 
 
 
 *A orthogonal polynomials!Rodrigues formula
 
-If the function $rho(x)$ and the interval [$a$, $b$] is chosen in this way, then the corresponding orthogonal polynomials $q_n(x)$ are solutions of the differential equation
+If the function $rho(x)$ and the interval [$a$, $b$] are chosen in this way, then the corresponding orthogonal polynomials $q_n(x)$ are solutions of the differential equation
 $$(Deriv(x)(beta(x)*rho(x)*(Deriv(x)q_n(x))))-n*(alpha_1+(n+1)*beta_2)*q[n]=0$$.
 The polynomials $q_n(x)$ are also given by the Rodrigues formula,
 $$q_n(x) = A[n]/rho(x)*D(x,n)rho(x)*beta(x)^n$$,
 where $A[n]$ is a normalization constant.
-It is usual practice to normalize the polynomials so that
+It is usual to normalize the polynomials so that
 $$(Integrate(x,a,b)(q_n(x))^2*rho(x))=1 $$.
-The normalization constant is chosen accordingly.
+The normalization constant $A[n]$ must be chosen accordingly.
 
 *A orthogonal polynomials!generating function
 
 Finally, there is a formula for the generating function of the polynomials,
 $$ G(x,w) = 1/rho(x)*rho(t(x,w))/Abs(1-w*(beta_1+2*beta_2*t(x,w))) $$,
 where $t(x,w)$ is the root of $t-x-w*beta(t)=0$ which is nearest to $t=x$ at small $w$.
-This function $G(x,w)$ gives the non-normalized polynomials,
+This function $G(x,w)$ gives the unnormalized polynomials,
 $$ G(x,w) = Sum(n,0,Infinity, q_n(x)/n! *w^n) $$,
 where
 $$ q_n(x) = 1/rho(x)*D(x,n)rho(x)*beta(x)^n $$.
@@ -1202,7 +1215,7 @@ A better way is to use linear recurrence relations connecting $q[n+1]$ with $q[n
 
 There are three computational tasks related to orthogonal polynomials:
 *	1. Compute all coefficients of a given polynomial $q_n(x)$ exactly.
-The coefficients are rational numbers, but their numerators and denominators usually grow exponentially quickly with $n$, so that $n$-th polynomial has at least some coefficients as $n$-digit numbers.
+The coefficients are rational numbers, but their numerators and denominators usually grow exponentially quickly with $n$, so that at least some coefficients of the $n$-th polynomial are $n$-digit numbers.
 The array of coefficients can be obtained using recurrence relations $n$ times.
 The required number of operations is proportional to $n^2$
 (because we need $n$ coefficients and we have $n$ recurrence relations for each of them)
@@ -1239,7 +1252,7 @@ In the next section we shall give some formulae that allow to calculate particul
 
 *A orthogonal polynomials!by specific formulae
 
-The fastest algorithm available is for Tschebyscheff polynomials $OrthoT(n,x)$, $OrthoU(n,x)$.
+The fastest algorithm available is for Chebyshev (sometimes spelled Tschebyscheff) polynomials $OrthoT(n,x)$, $OrthoU(n,x)$.
 The following recurrence relations can be used:
 $$ OrthoT(2*n,x) = 2*OrthoT(n,x)^2-1 $$,
 $$ OrthoT(2*n+1,x) = 2*OrthoT(n+1,x)*OrthoT(n,x)-x $$,
@@ -1259,22 +1272,27 @@ Similarly we find: $9 <> c(4,5)$.
 Therefore, we can find both $OrthoT(9,x)$ and $OrthoT(10,x)$ if we know $OrthoT(4,x)$ and $OrthoT(5,x)$.
 Eventually we find the following chain of pairs:
 $$ 19 <> c(9,10) <> c(4,5) <> c(2,3) <> c(1,2) <> c(1) $$.
-Therefore, we find that $OrthoT(19,x)$ requires to compute $OrthoT(k,x)$ sequentially for all $k$ that appear in this sequence (1,2,3,4,5,9,10).
+Therefore, we find that $OrthoT(19,x)$ requires to compute $OrthoT(k,x)$ sequentially for all $k$ that appear in this chain (1,2,3,4,5,9,10).
 
 There are about $2*Ln(n)/Ln(2)$ elements in the chain that leads to the number $n$.
 We can generate this chain in a straightforward way by examining the bits in the binary representation of $n$.
 Therefore, we find that this method requires no storage and time logarithmic in $n$.
-A recursive routine would also take logarithmic time and also require logarithmic storage space.
+A recursive routine would also take logarithmic time but require logarithmic storage space.
 
-Note that using these recurrence relations we do not obtain any individual coefficients of the Tschebyscheff polynomials.
+Note that using these recurrence relations we do not obtain any individual coefficients of the Chebyshev polynomials.
 This method does not seem very useful for symbolic calculations (with symbolic $x$), because the resulting expressions are rather complicated combinations of nested products.
 It is difficult to expand such an expression into powers of $x$ or manipulate it in any other way, except compute a numerical value.
 However, these fast recurrences are numerically unstable, so numerical values need to be evaluated with extended working precision.
 Currently this method is not used in Yacas, despite its speed.
 
+An alternative method for very large $n$ would be to use the identities
+$$ OrthoT(n,x)=Cos(n*ArcCos(x))$$,
+$$ OrthoU(n,x)=Sin((n+1)*ArcCos(x))/Sqrt(1-x^2) $$.
+The computation will require an extended-precision evaluation of $ArcCos(x)$.
+
 Coefficients for Legendre, Hermite, Laguerre, Chebyshev polynomials can be obtained by explicit formulae. This is faster than using recurrences if we need the entire polynomial symbolically, but still slower than the recurrences for numerical calculations.
 
-*	Tschebyscheff polynomials of the first and of the second kind:
+*	Chebyshev polynomials of the first and of the second kind:
 If $k=Floor(n/2)$, then
 $$ OrthoT(n,x) = Sum(i,0,k, (-1)^i*(2*x)^(n-2*i)/(n-i)*Bin(n-i,i)) $$,
 $$ OrthoU(n,x) = Sum(i,0,k, (-1)^i*(2*x)^(n-2*i)*Bin(n-i,i)) $$.
@@ -1332,10 +1350,10 @@ Magically, the value we are looking for is given by
 $$ f(x) = X[0]*q[0] $$.
 This happens because we can express
 $$ f[n]=X[n]-A[n+1]*X[n+1]-B[n+2]*X[n+2] $$,
-for $n=0$, 1, ..., $N$, and
-regroup terms in the sum 
+for $n=0$, 1, ..., $N$,
+regroup the terms in the sum 
 $$ f(x) := Sum(n,0,N, f[n]*q_n(x)) $$
-to collect $X[n]$ and obtain
+to collect $X[n]$, obtain
 $$ f(x) = Sum(n,0, N, X[n]*q[n]) - Sum(n,1,N, X[n]*A[n]*q[n-1]) -Sum(n,2,N, X[n]*B[n]*q[n-2]) $$,
 and finally
 $$ f(x) = X[0]*q[0]+X[1]*(q[1]-A[1]*q[1]) $$
