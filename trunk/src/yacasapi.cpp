@@ -81,6 +81,7 @@ CYacas::CYacas(LispOutput* aOutput)
 
 void CYacas::Evaluate(const LispCharPtr aExpression)
 {
+  LispInt stackTop = environment().iStack.GetStackTop();
 
   iResult.SetNrItems(1);
   iResult[0]='\0';
@@ -133,7 +134,7 @@ void CYacas::Evaluate(const LispCharPtr aExpression)
      },environment().iErrorOutput,environment());
      
 //printf("stack top = %d (should be zero)\n",environment().iStack.GetStackTop());
-     environment().iStack.PopTo(0);
+     environment().iStack.PopTo(stackTop);
 //     LISPASSERT(environment().iStack.GetStackTop() == 0);
 }
 
