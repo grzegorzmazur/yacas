@@ -47,6 +47,7 @@ EXTRA_DIST = \
 %.dvi: %.tex
 	latex $< > /dev/null
 	latex $< > /dev/null
+	latex $< > /dev/null
 
 %.ps: %.dvi
 	dvips -q -o $@ $<

@@ -1,68 +1,25 @@
+*CMD CommandName --- command description
+*STD/*CORE
+*CALL
+	CommandName(parameter)
+	CommandName()
 
+*PARMS
 
-AddAnchor("");
-SubSection()"";
-BuiltIn()/StandardLib();
-Topical()"Calling Sequence";
-Text()"";
+{parameter} -- parameter description
 
-Topical()"Parameters";
-Text()"";
+*DESC
 
-Topical()"Description";
-Text()
-"";
+{CommandName()} returns values.
 
-Topical()"Examples";
-Text()
-HtmlCommand(
-"
-");
+Sometimes it does not work. For example, when using $Sin(x)^2+Cos(x)^2$ as its {parameter}.
 
-Topical()"See Also"; 
-SeeAlso({"",""});
+*EG
 
+	In> CommandName();
+	Segmentation fault
 
-
-
-":
-HtmlNewParagraph():
-"
-
-":HtmlTerm(""):"
-
-
-":HtmlCommand(
-"
-"):"
-
-
-AddAnchor("");
-SubSection()"";
-Text()"
-";
-
-
-
-";
-Topical()"";
-Text()"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*SEE OtherCommands, MoreCommands
 
 
 
@@ -74,11 +31,4 @@ Roots
 EigenValues
 Apart
 Together
-
-
-
-
-
-
-
 
