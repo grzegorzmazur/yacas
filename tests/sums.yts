@@ -31,3 +31,267 @@ Verify(Min(1,2,0), 0);
 Verify(Min(5,2,3,4), 2);
 Verify(Min(5,2,0,4), 0);
 
+// ------------------------------------------------------------
+
+Testing("Taylor");
+
+// Black-box testing
+
+Verify(Taylor2(x,0,9) Sin(x), x - x^3/6 + x^5/120 - x^7/5040 + x^9/362880);
+Verify(Taylor2(x,0,6) Cos(x), 1 - x^2/2 + x^4/24 - x^6/720);
+Verify(Taylor2(x,0,6) Exp(x),
+       1 + x + x^2/2 + x^3/6 + x^4/24 + x^5/120 + x^6/720);
+KnownFailure(
+       (Taylor2(x,1,6) 1/x) =
+       1 - (x-1) + (x-1)^2 - (x-1)^3 + (x-1)^4 - (x-1)^5 + (x-1)^6);
+KnownFailure(
+       (Taylor2(x,1,6) Ln(x)) =
+       (x-1) - (x-1)^2/2 + (x-1)^3/3 - (x-1)^4/4 + (x-1)^5/5 - (x-1)^6/6);
+KnownFailure(
+       (Taylor2(x,0,6) x/(Exp(x)-1)) =
+       1 - x/2 + x^2/12 - x^4/720 + x^6/30240);
+Verify(Taylor2(x,0,6) Sin(x)^2+Cos(x)^2, 1);
+KnownFailure(
+       (Taylor2(x,0,14) Sin(Tan(x)) - Tan(Sin(x))) =
+       -1/30*x^7 - 29/756*x^9 - 1913/75600*x^11 - 95/7392*x^13);
+KnownFailure(
+       (Taylor2(t,a+1,2) Exp(c*t)) =
+       Exp(c*a+c) + c*Exp(c*a+c)*(t-a-1) + c^2*Exp(c*a+c)*(t-a-1)^2/2);
+
+// Some examples of power series
+
+p1 := Taylor'LPS(0, {1,1,1/2,1/6}, x, Exp(x));
+p2 := Taylor'LPS(1, {1,0,-1/6,0,1/120,0}, t, Sin(t));
+p3 := Taylor'LPS(0, {a0,a1,a2,a3}, x, foo(x));
+p4 := Taylor'LPS(-2, {1,0,-1/2,0,1/24}, x, Cos(x)/x^2);
+p0 := Taylor'LPS(Infinity, {}, x, 0); // special case: zero
+
+// Taylor'LPS should not evaluate
+
+Verify(p1, Hold(Taylor'LPS(0, {1,1,1/2,1/6}, x, Exp(x))));
+
+// Taylor'LPS'Coeffs can get pre-computed coefficients
+
+Verify(Taylor'LPS'Coeffs(p1, 0, 3), {1,1,1/2,1/6});
+Verify(Taylor'LPS'Coeffs(p2, -1, 3), {0,0,1,0,-1/6});
+Verify(Taylor'LPS'Coeffs(p3, 0, 3), {a0,a1,a2,a3});
+Verify(Taylor'LPS'Coeffs(p4, -1, 1), {0,-1/2,0});
+Verify(Taylor'LPS'Coeffs(p0, 1, 5), {0,0,0,0,0});
+
+// Conversion to power series 
+
+Verify(Taylor'LPS'PowerSeries(p1, 3, x), 1+x+x^2/2+x^3/6);
+Verify(Taylor'LPS'PowerSeries(p2, 4, t), t-t^3/6);
+Verify(Taylor'LPS'PowerSeries(p3, 3, s), a0+a1*s+a2*s^2+a3*s^3);
+Verify({Taylor'LPS'PowerSeries(p4, 2, x), ClearError("singularity")}, 
+       {Undefined, True});
+Verify(Taylor'LPS'PowerSeries(p0, 3, x), 0);
+
+// Construction of new LPS
+
+Verify(Taylor'LPS'Construct(x, 1), Taylor'LPS(Undefined, {}, x, 1));
+
+// Taylor'LPS'Coeffs can compute new coefficients in-place
+
+Verify(Taylor'LPS'Coeffs(p1, 0, 4), {1,1,1/2,1/6,1/24});
+Verify(p1, Taylor'LPS(0, {1,1,1/2,1/6,1/24}, x, Exp(x)));
+p1 := Taylor'LPS(0, {1,1,1/2,1/6}, x, Exp(x));
+
+Verify(Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, 1), 0, 7),
+       {1, 0, 0, 0, 0, 0, 0, 0});
+Verify(Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, 0), 0, 7),
+       {0, 0, 0, 0, 0, 0, 0, 0});
+KnownFailure(
+       Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, 1/x), 0, 7) =
+       {0, 0, 0, 0, 0, 0, 0, 0}); ClearErrors();
+Verify(Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, x^2), 0, 7),
+       {0, 0, 1, 0, 0, 0, 0, 0});
+Verify(Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, Exp(x)), 0, 7),
+       {1, 1, 1/2, 1/6, 1/24, 1/120, 1/720, 1/5040});
+Verify(Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, Ln(1+x)), 0, 7),
+       {0, 1, -1/2, 1/3, -1/4, 1/5, -1/6, 1/7});
+Verify(Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, Sin(x)), 0, 7),
+       {0, 1, 0, -1/6, 0, 1/120, 0, -1/5040});
+Verify(Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, Cos(x)), 0, 7),
+       {1, 0, -1/2, 0, 1/24, 0, -1/720, 0});
+
+// Check order of power series
+
+Verify(Taylor'LPS'GetOrder(p1, 0), 0);
+Verify(Taylor'LPS'GetOrder(p2, 0) >= 0, True);
+Verify(Taylor'LPS'GetOrder(p3, 1), 0);
+Verify(Taylor'LPS'GetOrder(p4, 0), -2);
+Verify(Taylor'LPS'GetOrder(p0, 216) >= 216, True);
+/*
+Verify(Taylor'LPS'GetOrder(Taylor'LPS'Construct(x, 1/x), 0), -1);
+Verify(Taylor'LPS'GetOrder(Taylor'LPS'Construct(x, 1/x), -1), -1);
+Verify(Taylor'LPS'GetOrder(Taylor'LPS'Construct(x, 1/x), -2) >= -2, True);
+*/
+
+// User-defined power series
+
+100 # Taylor'LPS'CompOrder(_x, jn(_x)) <-- 5;
+100 # Taylor'LPS'CompCoeff(_x, jn(_x), _k) <-- Atom("jn":String(k));
+
+pju0 := Taylor'LPS(Undefined, {}, x, jn(x));
+pj40 := Taylor'LPS(5, {}, x, jn(x));
+pj50 := Taylor'LPS(5, {}, x, jn(x));
+pj51 := Taylor'LPS(5, {jn5}, x, jn(x));
+pj52 := Taylor'LPS(5, {jn5,jn6}, x, jn(x));
+pj53 := Taylor'LPS(5, {jn5,jn6,jn7}, x, jn(x));
+pj54 := Taylor'LPS(5, {jn5,jn6,jn7,jn8}, x, jn(x));
+
+pc24 := {0,0,0};
+pc35 := {0,0,jn5};
+pc46 := {0,jn5,jn6};
+pc57 := {jn5,jn6,jn7};
+pc68 := {jn6,jn7,jn8};
+
+tlc(_a,_b,_c) <-- Taylor'LPS'Coeffs(a,b,c);  // abbreviation
+
+pj := FlatCopy(pju0); Verify(tlc(pj,2,4), pc24); Verify(pj, pj50);
+pj := FlatCopy(pju0); Verify(tlc(pj,3,5), pc35); Verify(pj, pj51);
+pj := FlatCopy(pju0); Verify(tlc(pj,4,6), pc46); Verify(pj, pj52);
+pj := FlatCopy(pju0); Verify(tlc(pj,5,7), pc57); Verify(pj, pj53);
+pj := FlatCopy(pju0); Verify(tlc(pj,6,8), pc68); Verify(pj, pj54);
+
+pj := FlatCopy(pj40); Verify(tlc(pj,2,4), pc24); Verify(pj, pj50);
+pj := FlatCopy(pj40); Verify(tlc(pj,3,5), pc35); Verify(pj, pj51);
+pj := FlatCopy(pj40); Verify(tlc(pj,4,6), pc46); Verify(pj, pj52);
+pj := FlatCopy(pj40); Verify(tlc(pj,5,7), pc57); Verify(pj, pj53);
+pj := FlatCopy(pj40); Verify(tlc(pj,6,8), pc68); Verify(pj, pj54);
+
+pj := FlatCopy(pj50); Verify(tlc(pj,2,4), pc24); Verify(pj, pj50);
+pj := FlatCopy(pj50); Verify(tlc(pj,3,5), pc35); Verify(pj, pj51);
+pj := FlatCopy(pj50); Verify(tlc(pj,4,6), pc46); Verify(pj, pj52);
+pj := FlatCopy(pj50); Verify(tlc(pj,5,7), pc57); Verify(pj, pj53);
+pj := FlatCopy(pj50); Verify(tlc(pj,6,8), pc68); Verify(pj, pj54);
+
+pj := FlatCopy(pj51); Verify(tlc(pj,2,4), pc24); Verify(pj, pj51);
+pj := FlatCopy(pj51); Verify(tlc(pj,3,5), pc35); Verify(pj, pj51);
+pj := FlatCopy(pj51); Verify(tlc(pj,4,6), pc46); Verify(pj, pj52);
+pj := FlatCopy(pj51); Verify(tlc(pj,5,7), pc57); Verify(pj, pj53);
+pj := FlatCopy(pj51); Verify(tlc(pj,6,8), pc68); Verify(pj, pj54);
+
+pj := FlatCopy(pj52); Verify(tlc(pj,2,4), pc24); Verify(pj, pj52);
+pj := FlatCopy(pj52); Verify(tlc(pj,3,5), pc35); Verify(pj, pj52);
+pj := FlatCopy(pj52); Verify(tlc(pj,4,6), pc46); Verify(pj, pj52);
+pj := FlatCopy(pj52); Verify(tlc(pj,5,7), pc57); Verify(pj, pj53);
+pj := FlatCopy(pj52); Verify(tlc(pj,6,8), pc68); Verify(pj, pj54);
+
+pj := FlatCopy(pj53); Verify(tlc(pj,2,4), pc24); Verify(pj, pj53);
+pj := FlatCopy(pj53); Verify(tlc(pj,3,5), pc35); Verify(pj, pj53);
+pj := FlatCopy(pj53); Verify(tlc(pj,4,6), pc46); Verify(pj, pj53);
+pj := FlatCopy(pj53); Verify(tlc(pj,5,7), pc57); Verify(pj, pj53);
+pj := FlatCopy(pj53); Verify(tlc(pj,6,8), pc68); Verify(pj, pj54);
+
+pj := FlatCopy(pj54); Verify(tlc(pj,2,4), pc24); Verify(pj, pj54);
+pj := FlatCopy(pj54); Verify(tlc(pj,3,5), pc35); Verify(pj, pj54);
+pj := FlatCopy(pj54); Verify(tlc(pj,4,6), pc46); Verify(pj, pj54);
+pj := FlatCopy(pj54); Verify(tlc(pj,5,7), pc57); Verify(pj, pj54);
+pj := FlatCopy(pj54); Verify(tlc(pj,6,8), pc68); Verify(pj, pj54);
+
+Verify(Taylor2(t,0,8) jn(t), jn5*t^5 + jn6*t^6 + jn7*t^7 + jn8*t^8);
+KnownFailure(
+       (Taylor2(x,0,10) Exp(jn(x))) =
+       1 + jn5/2*x^5 + jn6/2*x^6 + jn7/2*x^7 + jn8/2*x^8 
+         + jn9/2*x^9 + (jn10/2+jn5/6)*x^10);
+
+// Addition
+
+pp := Taylor'LPS(Undefined, {}, x, 
+                 Taylor'LPS'Add(FlatCopy(p1), FlatCopy(p3)));
+Verify(Taylor'LPS'Coeffs(pp, 0, 3), {1+a0,1+a1,1/2+a2,1/6+a3});
+Verify(pp, Taylor'LPS(0, {1+a0,1+a1,1/2+a2,1/6+a3}, x, 
+                      Taylor'LPS'Add(p1,p3)));
+
+pp := Taylor'LPS(0, {1+a0}, x, 
+                 Taylor'LPS'Add(FlatCopy(p1), FlatCopy(p3)));
+Verify(Taylor'LPS'Coeffs(pp, 0, 3), {1+a0,1+a1,1/2+a2,1/6+a3});
+Verify(pp, Taylor'LPS(0, {1+a0,1+a1,1/2+a2,1/6+a3}, x, 
+                      Taylor'LPS'Add(p1,p3)));
+
+pp := Taylor'LPS'Construct(x, 1+Ln(x+1));
+Verify(Taylor'LPS'Coeffs(pp, 0, 4), {1, 1, -1/2, 1/3, -1/4});
+Verify(pp, Taylor'LPS(0, {1,1,-1/2,1/3,-1/4}, x, Taylor'LPS'Add(pp2,pp1))
+           Where {pp1 == Taylor'LPS(0, {1,0,0,0,0}, x, 1),
+                  pp2 == Taylor'LPS(1, {1,-1/2,1/3,-1/4}, x, Ln(x+1))});
+                      
+pp := Taylor'LPS'Construct(a, Exp(a)+jn(a));
+Verify(Taylor'LPS'Coeffs(pp, -1, 5), {0, 1, 1, 1/2, 1/6, 1/24, 1/120+jn5});
+Verify(pp, Taylor'LPS(0, {1, 1, 1/2, 1/6, 1/24, 1/120+jn5}, 
+                      a, Taylor'LPS'Add(pp1,pp2))
+           Where {pp1 == Taylor'LPS(0, {1,1,1/2,1/6,1/24,1/120}, a, Exp(a)),
+                  pp2 == Taylor'LPS(5, {jn5}, a, jn(a))});
+
+TestYacas(Taylor2(x,0,7) (Sin(x)+Cos(x)),
+          (Taylor2(x,0,7) Sin(x)) + (Taylor2(x,0,7) Cos(x)));
+                      
+// Scalar multiplication
+
+pp := Taylor'LPS(Undefined, {}, x, Taylor'LPS'ScalarMult(5, FlatCopy(p1)));
+Verify(Taylor'LPS'Coeffs(pp, 0, 3), {5,5,5/2,5/6});
+Verify(pp, Taylor'LPS(0, {5,5,5/2,5/6}, x, Taylor'LPS'ScalarMult(5,p1)));
+
+pp := Taylor'LPS(0, {5,5}, x, Taylor'LPS'ScalarMult(5, FlatCopy(p1)));
+Verify(Taylor'LPS'Coeffs(pp, 0, 3), {5,5,5/2,5/6});
+Verify(pp, Taylor'LPS(0, {5,5,5/2,5/6}, x, Taylor'LPS'ScalarMult(5,p1)));
+
+pp := Taylor'LPS'Construct(t, (-2)*Sin(t));
+Verify(Taylor'LPS'Coeffs(pp, -1, 4), {0, 0, -2, 0, 1/3, 0});
+Verify(pp, Taylor'LPS(1, {-2,0,1/3,0}, t, Taylor'LPS'ScalarMult(-2, pp1))
+           Where pp1 == Taylor'LPS(1, {1,0,-1/6,0}, t, Sin(t))); 
+
+TestYacas(Taylor2(x,0,7) (a*Sin(x)),
+          a * (Taylor2(x,0,7) Sin(x)));
+
+// Subtraction
+
+pp := Taylor'LPS'Construct(x, Exp(x)-Cos(x)); 
+      // zero order term cancels!
+Verify(Taylor'LPS'Coeffs(pp, 0, 4), {0, 1, 1, 1/6, 0});
+Verify(pp, Taylor'LPS(1, {1,1,1/6,0}, x, Taylor'LPS'Add(pp1, pp2))
+           Where pp1 == Taylor'LPS(0, {1,1,1/2,1/6,1/24}, x, Exp(x))
+           Where pp2 == Taylor'LPS(0, {-1,0,1/2,0,-1/24}, x, 
+                                   Taylor'LPS'ScalarMult(-1, pp3))
+           Where pp3 == Taylor'LPS(0, {1,0,-1/2,0,1/24}, x, Cos(x)));
+           
+TestYacas(Taylor2(x,0,7) (Sin(x)-Cos(x)),
+          (Taylor2(x,0,7) Sin(x)) - (Taylor2(x,0,7) Cos(x)));
+                      
+// Multiplication
+
+pp := Taylor'LPS(Undefined, {}, x, 
+                 Taylor'LPS'Multiply(FlatCopy(p1), FlatCopy(p3)));
+Verify(Taylor'LPS'Coeffs(pp, 0, 2), {a0, a1+a0, a2+a1+1/2*a0});
+Verify(pp, Taylor'LPS(0, {a0, a1+a0, a2+a1+1/2*a0}, x, 
+                      Taylor'LPS'Multiply(p1,p3)));
+
+pp := Taylor'LPS(0, {a0}, x, 
+                 Taylor'LPS'Multiply(FlatCopy(p1), FlatCopy(p3)));
+Verify(Taylor'LPS'Coeffs(pp, 0, 2), {a0, a1+a0, a2+a1+1/2*a0});
+Verify(pp, Taylor'LPS(0, {a0, a1+a0, a2+a1+1/2*a0}, x, 
+                      Taylor'LPS'Multiply(p1,p3)));
+
+pp := Taylor'LPS'Construct(x, x^2*Ln(x+1));
+Verify(Taylor'LPS'Coeffs(pp, 0, 4), {0, 0, 0, 1, -1/2});
+Verify(pp, Taylor'LPS(3, {1,-1/2}, x, Taylor'LPS'Multiply(pp1,pp2))
+           Where {pp1 == Taylor'LPS(2, {1,0}, x, x^2),
+                  pp2 == Taylor'LPS(1, {1,-1/2}, x, Ln(x+1))});
+                      
+TestYacas(Taylor2(x,0,7) (Sin(x)*Cos(x)),
+          Taylor2(x,0,7) ((Taylor2(x,0,7) Sin(x)) * (Taylor2(x,0,7) Cos(x))));
+                      
+// Inversion
+// TBA
+
+// Division
+// TBA
+
+// Raising to a natural power
+
+TestYacas(Taylor2(x,0,7) (Sin(x)^2),
+          Taylor2(x,0,7) ((Taylor2(x,0,7) Sin(x))^2));
+ 
+// Composition
+// TBA
