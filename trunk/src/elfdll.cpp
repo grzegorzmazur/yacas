@@ -23,6 +23,13 @@ LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
 printf("Trying to open [%s]\n",aDllFile);
 #endif
     handle = dlopen(aDllFile,RTLD_LAZY);
+    if (handle == NULL)
+    {
+      char tempbuf[256];
+      sprintf(tempbuf,"%s/%s.so",PLUGIN_DIR,aDllFile);
+      handle = dlopen(tempbuf,RTLD_LAZY);
+    }
+
     if (handle)
     {
 #ifdef YACAS_DEBUG
