@@ -357,8 +357,8 @@ SCHEME IS ACTUALLY EASY TO USE.
 
 Although there are quite good free arbitrary precision arithmetic
 libraries out there, {Yacas} comes with its own (default) implementation.
-Other libraries can be used too, but the addition of a native 
-small arithmetic library reduces dependencies on other packages.
+Other libraries can be used too, but the addition of a small native 
+arithmetic library reduces dependencies on other packages.
 
 This part describes how the arithmetic library is embedded into
 {Yacas}, and how to embed other arithmetic libraries.
@@ -379,50 +379,56 @@ arithmetic operations such as addition and multiplication, through a set of pure
 Integers and floating-point numbers are to be handled by the same class.
 
 An actual number class will be a subclass of {NumberBase} that implements a particular internal representation of numbers and 
-With a subclass of {NumberBase} one should supply a {C++} function which can create such
-a class given a string representation (and in addition a precision
-and number base).
+Yacas will usually be compiled to use one specific number library. This library has to be hidden
+behind the class {BigNumber}, which is derived from {NumberBase}.
+
+Theoretically, it is still possible to offer more than one library, by hiding it behind another
+{NumberBase}-derived class, which dispatches calculation requests to the right library, which
+could be configured at run time (if this were enabled at compile time).
 
 This setup allows different arithmetic libraries to be used;
-each library has to be hidden behind a sub-class of {NumberBase}
-and have a function to create an object representing the number.
+each library has to be hidden behind a sub-class of {NumberBase}.
 
 The number object should be able to render itself back to a string,
-which can then be passed back to the interpreter as a result.
+which can then be passed back to the interpreter as a result, if so needed.
 
 		Interface to the objects
 
 The following code demonstrates how to use the number objects.
 
 	// Calculate z=x+y where x=10 and y=15
-	YacasBigNumberPtr x(MakeNativeNumber("10",100,10));
-	YacasBigNumberPtr y(MakeNativeNumber("15",100,10));
-	YacasBigNumberPtr z(x->Add(x,y,10));    
+	BigNumber x("10",100,10);
+	BigNumber y("15",100,10);
+	BigNumber z;
+	z.Add(x,y,10));    
 	// cast the result to a string
 	LispString  str;
-	z->ToString(str,10);
+	z.ToString(str,10);
 
-This example uses {MakeNativeNumber} to create an object
-that uses the native {double} and {long} as representations
-for real-valued and integer-valued numbers respectively.
+The behaviour is such that in the above example z will contain the result of adding x and
+y, without modifying x or y. One situation might occur where a calculation might modify
+one of its arguments. This might happen when one argument passed in is actually the 
+object performing the calculation itself. For example, if a calculation
 
-Here the {YacasBigNumberPtr} is a smart pointer which 
-automatically cleans up the number after the calculation is
-finished. The functions in the class accept arguments of type
-{YacasBigNumberPtr}, but return a value of the type
-{YacasBigNumber*}. This is done so that function calls can
-be nested; the return values are of type {YacasBigNumber*},
-but because the parameter type is {YacasBigNumberPtr}
-the compiler creates a temporary {YacasBigNumberPtr} with
-the {YacasBigNumber*}, passes it in, and when finished destroys
-the {YacasBigNumberPtr}. This in effect also cleans up the
-original {YacasBigNumber*} if it isn't used any more. 
+	x.Add(x,y);
 
-Call-by-value could have been used instead of pointers, but that is a little bit more
-expensive as copy-constructors then need to be called.
-The smart pointer is small (4 bytes on 32-bit platforms) and all it does is
-increment and decrement a reference count, as opposed to having
-to allocate new memory for the number.
+were issued, the result would be assigned to x, so the old 
+value x contained would be disposed any way. In this case
+the specific implementation might opt to perform the operation
+destructively. Some operations can be done a lot more efficiently
+when destructive operations are allowed. Among them are 
+for example {Negate}, {Add} {ShiftLeft}, {ShiftRight}, etcetera,
+for which efficient implementations might exist if the operation
+can be done in-place. When this is the case, a <i>copy</i>
+operation can be saved.
+
+The destructive operation should however never have side effects
+that differ from an implementation that works by copying 
+objects before performing tasks on them. For instance, if the
+specific object representing the number inside the numeric class
+is shared with other objects, it should not allow the destructive
+operation, as then other objects might start behaving differently.
+
 
 		Interface definition
 
@@ -485,3 +491,4 @@ Intermediate-level arithmetic functions such as {MathAdd}, {MathDiv}, {MathMod} 
 
 The library scripts will be able to transform numerical expressions such as {x:=y+z} into calls of these intermediate-level functions.
 Among the low-level functions, only those that are very useful for optimization will be available to the Yacas scripts.
+
