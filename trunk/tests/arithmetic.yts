@@ -70,8 +70,8 @@ Verify(Round(-1.49),-1);
 Verify(Round(-1.51),-2);
 
 Testing("Bases");
-Verify(ToBase(16,255),ff);
-Verify(FromBase(2,100),4);
+Verify(ToBase(16,255),"ff");
+Verify(FromBase(2,"100"),4);
 
 LocalSymbols(f,ft)
 [
