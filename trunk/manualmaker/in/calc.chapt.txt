@@ -1769,6 +1769,8 @@ denotes the $n$-th Fibonacci number.
 
 {Gamma(x)} is an interface to Euler's Gamma function $Gamma(x)$. It returns exact values on integer and half-integer arguments. {GammaNum(x)} or equivalently {N(Gamma(x)} takes a numeric parameter and always returns a floating-point number in the current precision.
 
+Note that Euler's constant $gamma<=>0.57722$ is the lowercase {gamma} in Yacas.
+
 *E.G.
 
 	In> Precision(30)
@@ -1782,7 +1784,7 @@ denotes the $n$-th Fibonacci number.
 	In> GammaNum(1.5);
 	Out> 0.88622692545275801364908374167;
 
-*SEE !, N
+*SEE !, N, gamma
 
 *CMD Zeta, ZetaNum --- Riemann's Zeta function
 *STD
@@ -1888,6 +1890,8 @@ This is a "cached constant" which is recalculated only when precision is increas
 The numerical value of the constant can also be obtained as {N(gamma)}.
 The low-level numerical computations are performed by the routine {GammaConstNum}.
 
+Note that Euler's Gamma function $Gamma(x)$ is the capitalized {Gamma} in Yacas.
+
 *E.G.
 
 	In> gamma+Pi
@@ -1901,3 +1905,4 @@ The low-level numerical computations are performed by the routine {GammaConstNum
 	  working precision 24 
 	Out> 0.57721566490153286061;
 
+*SEE Gamma, N, CachedConstant
