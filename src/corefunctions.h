@@ -151,7 +151,7 @@ CORE_KERNEL_FUNCTION("MathBitCount",LispBitCount,1,YacasEvaluator::Function | Ya
 CORE_KERNEL_FUNCTION("MathSign",LispMathSign,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathIsSmall",LispMathIsSmall,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathNegate",LispMathNegate,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
-CORE_KERNEL_FUNCTION("MathSqrt",LispSqrt,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
+//CORE_KERNEL_FUNCTION("MathSqrt",LispSqrt,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathFloor",LispFloor,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathCeil",LispCeil,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathAbs",LispAbs,1,YacasEvaluator::Function | YacasEvaluator::Fixed);

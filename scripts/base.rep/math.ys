@@ -139,8 +139,8 @@ Defun("MathExpDoubling", {value, n})
 
 // MathMul2Exp: multiply x by 2^n quickly (for integer n)
 // this should really be implemented in the core as a call to BigNumber::ShiftRight or ShiftLeft
-Defun("MathMul2Exp", {x,n})
-	MathMultiply(x, MathIntPower(2,n));
+Defun("MathMul2Exp", {x,n})	// avoid roundoff by not calculating 1/2^n separately
+	If(GreaterThan(n,0), MathMultiply(x, MathIntPower(2,n)), MathDivide(x, MathIntPower(2,MathNegate(n))));
 // this doesn't work because ShiftLeft/Right don't yet work on floats
 //	If(GreaterThan(n,0), ShiftLeft(x,n), ShiftRight(x,n)
 //	);
