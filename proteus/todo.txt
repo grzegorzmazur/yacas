@@ -10,3 +10,12 @@
 
 
 
+==================================================
+
+in tabs.cpp: the _WINDOWS ifdefs should become 
+//CLACK
+#if defined(WIN32)
+//END CLACK
+
+
+

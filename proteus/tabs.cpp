@@ -318,7 +318,7 @@ void LispNotepad(LispEnvironment& aEnvironment, LispPtr& aResult,
 char defdir[128];
 void GetProteusConfiguration()
 {
-#ifdef _WINDOWS
+#ifdef WIN32
     strcpy(defdir,".\\");
     return;
 #else
@@ -484,7 +484,7 @@ int main(int argc, char **argv)
                 }
                 {
                     char helpfile[128];
-#ifdef _WINDOWS
+#ifdef WIN32
                     sprintf(helpfile,"proteusbooks.html");
 #else
                     sprintf(helpfile,"%sdocumentation/%s",defdir,YACAS_DOC);
