@@ -15,7 +15,7 @@ BOOKS = intro.book coding.book ref.book refprog.book essays.book \
 
 BOOKSOURCES = in/intro.book.txt in/coding.book.txt \
 	in/ref.book.txt in/refprog.book.txt in/essays.book.txt \
-	in/Algo.book.txt LispProgramming.book.txt
+	in/Algo.book.txt in/LispProgramming.book.txt
 
 INTROCHAPTERS = FDL.chapt
 INTROSOURCES = in/FDL.chapt.txt
