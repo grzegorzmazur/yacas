@@ -65,16 +65,23 @@ void CArrayGrowerBase::GrowTo(int aNrItems)
 
 void CArrayGrowerBase::Delete(int aIndex, int aCount)
 {
-    int i;
     LISPASSERT(!iArrayOwnedExternally);
     LISPASSERT(aIndex+aCount<=iNrItems);
 
+    PlatMemMove(&iArray[aIndex*iItemSize],
+                &iArray[(aIndex+aCount)*iItemSize],
+                (iNrItems-aCount-aIndex)*iItemSize
+               );
+
+/*TODO remove, old?
+    int i;
     int high=(iNrItems-aCount)*iItemSize;
     int delta = aCount*iItemSize;
     for (i=aIndex*iItemSize;i<high;i++)
     {
         iArray[i] = iArray[i+delta];
     }
+    */
     SetNrItems(iNrItems-aCount);
 }
 

@@ -109,7 +109,7 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
     }
 
     {
-        EvalFuncBase* func = aExpression.Get()->EvalFunc();
+        EvalFuncBase* func = NULL; //TEST aExpression.Get()->EvalFunc();
         LispPtr* subList = aExpression.Get()->SubList();
 
 //      CHECKPTR(func);
@@ -132,7 +132,7 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
                 // Try to find a built-in command
                 if (evaluator)
                 {
-                aExpression.Get()->SetEvalFunc(evaluator);
+//TEST                 aExpression.Get()->SetEvalFunc(evaluator);
                 evaluator->Evaluate(aResult, aEnvironment, *subList);
                 goto FINISH;
                 }
@@ -146,7 +146,7 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
                     CHECKPTR(userFunc);
                     if (userFunc != NULL)
                     {
-                        aExpression.Get()->SetEvalFunc(userFunc);
+//TEST                         aExpression.Get()->SetEvalFunc(userFunc);
                         userFunc->Evaluate(aResult,aEnvironment,*subList);
                         goto FINISH;
                     }
