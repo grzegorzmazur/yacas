@@ -114,3 +114,16 @@ install-data-local: yacas.h
 	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/plat/linux32/$$basefile; \
 	done
 
+# 
+# depend.dep contains a list of dependencies. gcc can generate this
+# when the flag -MM is given on the command line. It is needed when
+# a *.cpp file includes a new header. Also, when changing classes,
+# eg. adding or removing properties or virtual methods, the build needs
+# the dependency list to determine which files to recompile.
+# 
+
+include depend.dep
+
+depend:
+	gcc -MM *.cpp $(AM_CPPFLAGS) > depend.dep
+

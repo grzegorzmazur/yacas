@@ -67,10 +67,29 @@ void LispParser::ParseList(LispPtr& aResult)
 
 
 LispPrinter::~LispPrinter() {}
+
+
 void LispPrinter::Print(LispPtr& aExpression, LispOutput& aOutput, LispEnvironment& aEnvironment)
 {
-    LispPtr* iter = &aExpression;
+  PrintExpression(aExpression, aOutput, aEnvironment,0);
+}
 
+void LispPrinter::Indent(LispOutput& aOutput, LispInt aDepth)
+{
+  aOutput.Write("\n");
+  LispInt i;
+  for (i=aDepth;i>0;i--)
+  {
+    aOutput.Write("  ");
+  }
+}
+
+void LispPrinter::PrintExpression(LispPtr& aExpression, LispOutput& aOutput, 
+                     LispEnvironment& aEnvironment,
+    	             LispInt aDepth)
+{
+    LispPtr* iter = &aExpression;
+    LispInt item = 0;
     while (iter->Get() != NULL)
     {
         // if String not null pointer: print string
@@ -84,15 +103,21 @@ void LispPrinter::Print(LispPtr& aExpression, LispOutput& aOutput, LispEnvironme
         // else print "(", print sublist, and print ")"
         else if (iter->Get()->SubList() != NULL)
         {
+	    if (item != 0)
+	    {
+	      Indent(aOutput,aDepth+1);
+	    }
             aOutput.Write("(");
-            Print(*(iter->Get()->SubList()),aOutput, aEnvironment);
+            PrintExpression(*(iter->Get()->SubList()),aOutput, aEnvironment,aDepth+1);
             aOutput.Write(")");
+	    item=0;
         }
         else
         {
             aOutput.Write("[GenericObject]");
         }
         iter = &(iter->Get()->Next());
+	item++;
     } // print next element
 }
 
