@@ -497,9 +497,12 @@ C++:
 	x.IsIntValue()==true;
 Yacas: part of the implementation of
 	IsInteger(x)
-*	{BigNumber::BecomeInt}, {BigNumber::BecomeFloat} -- Change the type of a number from integer to float without changing the numerical value. Change the type from float to integer, rounding off if necessary.
+*	{BigNumber::BecomeInt}, {BigNumber::BecomeFloat} -- Change the type of a number from integer to float without changing the numerical value.
+The precision is either set automatically (to enough digits to hold the integer), or explicitly to a given number of bits. (Roundoff might occur.)
+Change the type from float to integer, rounding off if necessary.
 C++:
 	x.BecomeInt(); x.BecomeFloat();
+	x.BecomeFloat(100);
 
 3. Basic arithmetic operations.
 Note that here "precision" always means the number of significant <i>bits</i>, i.e. digits in the base 2, <i>not decimal digits</i>.
@@ -599,7 +602,7 @@ The population count of 4 (binary "100") is 1, and the bit count of 4 is 3.
 For floating-point numbers, {BitCount} should return the binary exponent of the number (with sign), like the integer output of the standard C function {frexp}.
 Result is an integer number (a "big number").
 More formally: if $n=BitCount(x)$, and $x!=0$, then $1/2 <= Abs(x)*2^(-n) < 1$.
-The bit count of 0 is 0.
+The bit count of an integer or a floating $0$ is arbitrarily defined to be 1.
 (Optimization of the binary logarithm.)
 C++:
 	x.BitCount(y);
@@ -676,13 +679,16 @@ If the two numbers $x$ and $y$ have the same number of correct bits, we should d
 But if they don't have the same number of bits, we cannot really estimate the error very well.
 To be on the safe side, we might double the error if the numbers $x$ and $y$ have almost the same number of significant bits, and leave the error constant if the numbers of significant bits of $x$ and $y$ are very different.
 
-The answer expressed as a formula is $p=Min(m,n)$ if $Abs(m-n)>1$ and $p=Min(m,n)-1$ otherwise.
+The answer expressed as a formula is $p=Min(m,n)$ if $Abs(m-n)>2$ and $p=Min(m,n)-1$ otherwise.
+
+If one of the operands is a floating zero $x$={{0.,m}} (see below) and $x$={{x,n}}, then $p=m-BitCount(x)+1$.
+This is formally the same as if the bit count of {{0.,m}} were equal to $1-m$.
 
 *HEAD Division
 
 Division is multiplication by the inverse number.
 When we take the inverse of $x*(1+delta)$, we obtain approximately $1/x*(1-delta)$.
-Therefore the precision does not change when we take the inverse.
+The relative precision does not change when we take the inverse.
 So the handling of precision is exactly the same as for the multiplication.
 
 *HEAD Addition
@@ -698,11 +704,18 @@ and we need to find a bit bound on $r$, i.e. an integer $p$ such that $Abs(r)<2^
 But we cannot estimate $p$ without first computing $x+y$ and analyzing the relative magnitude of $x$ and $y$.
 To perform this estimate, we need to use the bit counts of $x$ and $y$ and on $x+y$.
 Let these bit counts be $a$, $b$ and $c$, so that $Abs(x)<2^(a+1)$, $Abs(y)<2^(b+1)$, and $2^c<=Abs(x+y)<2^(c+1)$.
-(We assume that $x+y!=0$. Otherwise, we obtain an answer $0$ with $0$ correct bits of mantissa, that is, a total loss of precision due to cancellation.)
+(At first we assume that $x!=0$, $y!=0$, and $x+y!=0$.)
 Now we can estimate $r$ as
 $$ r <= Abs((x*2^(-m))/(x+y)) + Abs((y*2^(-n))/(x+y)) <= 2^(a+1-m-c)+2^(b+1-n-c)$$.
 This is formally similar to multiplying two numbers with $a+1-m-c$ and $b+1-m-c$ correct bits.
 As in the case of multiplication, we may take the minimum of the two numbers, or double one of them if they are almost equal.
+
+If one of the operands is a floating zero represented by $x$={{0.,m}} (see below), then the calculation of the error is formally the same as if $x$={{1.,m}}.
+This is as if the bit count of {{0.,m}} were equal to $1$ (unlike the case of multiplication).
+
+Finally, if the sum $x+y$ is a floating zero but $x!=0$ and $y!=0$,
+then it must be that $a=b$.
+In that case we represent $x+y$ as {{0.,p}}, where $p=Min(m,n)-a$.
 
 *HEAD Computations with a given target precision
 
@@ -713,7 +726,7 @@ How can we combine an explicitly specified precision, for example, in the functi
 	x.Add(y,z,100)
 with the automatic precision tracking?
 
-We can truncate one or both of the arguments to a smaller precision before starting the operation.
+We should truncate one or both of the arguments to a smaller precision before starting the operation.
 For the multiplication as well as for the addition, the precision tracking involves a comparison of two binary exponents $2^(-g)$ and $2^(-h)$ to obtain an estimate on $2^(-g)+2^(-h)$.
 Here $g$ and $h$ are some integers that are easy to obtain during the computation.
 For instance, the multiplication involves $g=m$ and $h=n$.
@@ -748,7 +761,7 @@ We can now perform some arithmetic operations on the floating zero.
 Addition and multiplication are handled similarly to the non-zero case, except that we interpret {n} as the absolute error rather than the relative error.
 This does not present any problems.
 For example, the error estimates for addition is the same as if we had a number $1$ with relative error $2^(-n)$ instead of {{0.,n}}.
-With multiplication of {{x,m}} by {{0.,n}}, the result is again a floating zero {{0.,p}}, and the new estimate of <i>absolute</i> precision is $p=n-BitCount(x)$.
+With multiplication of {{x,m}} by {{0.,n}}, the result is again a floating zero {{0.,p}}, and the new estimate of <i>absolute</i> precision is $p=n-BitCount(x)+1$.
 
 The division by the floating zero, negative powers, and the logarithm of the floating zero are not representable in our arithmetic because, interpreted as intervals, they would correspond to infinite ranges.
 The bit count of the floating zero is therefore undefined.
@@ -939,9 +952,9 @@ It follows that if {x=y}, then for any floating zeros {x+0.=y+0.} and {x-y=0.} a
 *	1. {IsInteger(x)} returns {True} if {x} has integer <i>type</i>;
 {IsIntValue(x)} returns {True} if {x} has either integer type or floating type but an integer value within its precision.
 For example,
-	IsInteger(0) = True
-	IsIntValue(1.) =True
-	IsInteger(1.)=False
+	IsInteger(0)  =True
+	IsIntValue(1.)=True
+	IsInteger(1.) =False
 *	1. {Precision(n)} sets a global parameter that controls the precision of
 <i>newly created floats</i>.
 It does not modify previously created floating-point numbers, and it has no effect on integer calculations.
