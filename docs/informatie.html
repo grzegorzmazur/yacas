@@ -14,13 +14,82 @@
   <tr valign="top"> 
 
     <td>
-  <h2><font face="Verdana, Arial, Helvetica, sans-serif" size="2">What is a computer algebra system?</font></h2>
-<font face="Verdana, Arial, Helvetica, sans-serif" size="2">
-A computer algebra system is a program that
+      <a name="info"> </a> 
+      <h2><font face="Verdana, Arial, Helvetica, sans-serif" size="2">General information</font></h2>
+      <ul>
+        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2"> Download 
+          <a href="downloads.html">yacas-latest.tar.gz</a> the 
+          complete source code distribution. </font> 
+        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2"> The distribution 
+          can also be found at <a href="http://sourceforge.net/project/?group_id=2528">Source 
+          Forge</a>. The Windows distribution can also be found here. </font> 
+        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2"> Dan McMahill 
+          made a <a href="ftp://ftp.netbsd.org/pub/NetBSD/packages/pkgsrc/math/yacas/README.html"> 
+          NetBSD distribution for Yacas.</a> </font>
+        <li> <font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="manindex.html" target="_top">View 
+          documentation on-line</a> This documentation is included with the source 
+          code distribution. </font> 
+        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="licence.html">View 
+          licence on-line</a> This license is included with the source code distribution. 
+          </font> 
+        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2">A selection 
+          of calculations from the <a href="essayschapter2.html">Wester benchmark</a>. 
+          </font> 
+        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Some additional 
+          <a href="mybench2.html">example calculations</a> that Yacas can currently 
+          perform can be found here. </font> 
+        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="http://groups.yahoo.com/group/yacas">mailing 
+          list</a> a mailing list for Yacas. </font> 
+        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="http://www.datagrid.com/~eic/">EiC</a>. 
+          The readline.c file was used for the Linux console application. </font> 
+        <li> <font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="http://superficie.sourceforge.net/">Superficie</a> 
+          a 3d graph plotter using OpenGL that looks quite promising! Superficie 
+          sports some Yacas scripts to render parametric surface plots. </font> 
+        <li> <font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="http://www.texmacs.org/">texmacs</a>
+          a nice looking mathematical document editor which supports yacas sessions.</font> 
+        <li> <font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="http://www.oberhumer.com/opensource/lzo/">minilzo</a>
+	     A lovely little and fast compression library that Yacas uses internally,
+             for storing scripts in an archive.
+             </font> 
+      </ul>
+
+  <h2><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Frequently Asked Questions (FAQ)</font></h2>
+  <h3><font face="Verdana, Arial, Helvetica, sans-serif" size="2">What is a computer algebra system?</font></h3><font face="Verdana, Arial, Helvetica, sans-serif" size="2">
+A computer algebra system (CAS) is a program that
 can manipulate mathematical expressions, potentially reducing the
 time it takes to perform cumbersome but trivial calculations. It does
 this symbolically, so a CAS can return a mathematical expression as
 a resulting answer.
+</font> 
+  <h3><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Why cannot
+Yacas solve my homework/integrodifferential matrix operator constraint
+equations/ [<i>insert another problem</i>]?</font></h3><font face="Verdana,
+Arial, Helvetica, sans-serif" size="2">
+Yacas is developed by a small group of volunteers and does not yet perform many of the sophisticated tasks that a modern CAS can theoretically handle.
+Ask the users' mailing list (<a href="#maillist">see links below</a>) if you have a specific problem that is covered in the manual and should be solvable by Yacas.
+Yacas consists of a small kernel and a library of interpreted scripts in the easy-to-use Yacas language; the scripts contain all CAS-related functionality.
+You are encouraged to contribute library code for solving a specific problem.
+</font> 
+  <h3><font face="Verdana, Arial, Helvetica, sans-serif" size="2">I want to use Yacas from inside my own application. What should I do?</font></h3><font face="Verdana,
+Arial, Helvetica, sans-serif" size="2">
+Yacas can be used in several ways:
+<ul>
+<li>as a command-line application that takes text from standard input and prints text to standard output;
+<li>as a server listening on a port (also on remote hosts);
+<li>as a dynamically linked (shared) library.
+</ul>
+The first two options allow you to use the functionality of an installed Yacas application directly from another application without having to link to any Yacas code.
+<p>
+For information on embedding Yacas as a library, see the <tt>embed/</tt> subdirectory of the source tree and the manuals.
+Please note that Yacas is <a href="http://www.fsf.org/philosophy/free-sw.html">Free Software</a> in the sense of the <a href="http://www.fsf.org/">Free Software Foundation</a>, distributed under the GNU <a href="http://www.fsf.org/licenses/gpl.html">General Public License (GPL)</a>. If you embed Yacas or link to its components and distribute the resulting application, you are <b>required to license it under the GPL</b>.
+</font> 
+  <h3><font face="Verdana, Arial, Helvetica, sans-serif" size="2">What platforms are supported?</font></h3><font face="Verdana,
+Arial, Helvetica, sans-serif" size="2">
+Yacas is very portable and runs on many platforms and OSes, including Unix flavors (including GNU/Linux and derivatives), Mac OS X, EPOC32, Ipaq and probably other devices running embedded Linux, and 32-bit Microsoft Windows (TM). The most functional version is the GNU/Linux version (supporting e.g. an on-the-fly compilation of plugins).
+</font> 
+  <h3><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Yacas gives an error message, a wrong answer, etc. What's wrong?</font></h3><font face="Verdana,
+Arial, Helvetica, sans-serif" size="2">
+Most probably it is a bug in Yacas, especially if you expected a correct answer after reading the manuals. Please let us know by posting to the developer's list (<a href="#maillist">see links below</a>).
 </font> 
 
       <a name="status"> </a> 
@@ -71,133 +140,131 @@ a resulting answer.
         <p>
         </font></p>
 
-      <font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a name="info"> 
-      </a> </font> 
-      <h2><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Information</font></h2>
-      <ul>
-        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2"> Download 
-          <a href="downloads.html">yacas-latest.tar.gz</a> the 
-          complete source code distribution. </font> 
-        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2"> The distribution 
-          can also be found at <a href="http://sourceforge.net/project/?group_id=2528">Source 
-          Forge</a>. The Windows distribution can also be found here. </font> 
-        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2"> Dan McMahill 
-          made a <a href="ftp://ftp.netbsd.org/pub/NetBSD/packages/pkgsrc/math/yacas/README.html"> 
-          NetBSD distribution for Yacas.</a> </font>
-        <li> <font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="manindex.html" target="_top">View 
-          documentation on-line</a> This documentation is included with the source 
-          code distribution. </font> 
-        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="licence.html">View 
-          licence on-line</a> This license is included with the source code distribution. 
-          </font> 
-        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2">A selection 
-          of calculations from the <a href="essayschapter2.html">Wester benchmark</a>. 
-          </font> 
-        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Some additional 
-          <a href="mybench2.html">example calculations</a> that Yacas can currently 
-          perform can be found here. </font> 
-        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="http://groups.yahoo.com/group/yacas">mailing 
-          list</a> a mailing list for Yacas. </font> 
-        <li><font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="http://www.datagrid.com/~eic/">EiC</a>. 
-          The readline.c file was used for the Linux console application. </font> 
-        <li> <font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="http://superficie.sourceforge.net/">Superficie</a> 
-          a 3d graph plotter using OpenGL that looks quite promising! Superficie 
-          sports some Yacas scripts to render parametric surface plots. </font> 
-        <li> <font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="http://www.texmacs.org/">texmacs</a>
-          a nice looking mathematical document editor which supports yacas sessions.</font> 
-        <li> <font face="Verdana, Arial, Helvetica, sans-serif" size="2"><a href="http://www.oberhumer.com/opensource/lzo/">minilzo</a>
-	     A lovely little and fast compression library that Yacas uses internally,
-             for storing scripts in an archive.
-             </font> 
-      </ul>
       <font face="Verdana, Arial, Helvetica, sans-serif" size="2">
         <a name="credits"></a>
        </font> 
       <font face="Verdana, Arial, Helvetica, sans-serif" size="2">
       <h2>Credits</h2>
-      <ul>
-        <li> This project was started by Ayal Pinkus</a>. 
-        <li> John Lapeyre made some modifications to the make file, and improved some 
+
+        <dl><b> Ayal Pinkus</b>
+		<dt> This project was started by Ayal Pinkus who remains the main author and the primary maintainer.
+	</dt></dl>
+        <dl><b> John Lapeyre</b>
+		<dt> made some modifications to the make file, and improved some 
           math code. 
-        <li> Juan Pablo reported many bugs, made many suggestions for improvements, and 
+	</dt></dl>
+        <dl><b> Juan Pablo</b>
+		<dt> reported many bugs, made many suggestions for improvements, and 
           supplied improved code (yacas scripts and makefile code).
-        <li> Doreen 
-          Pinkus designed this home page.  
-        <li> Igor 
-          Khavkine added 'Diverge' and 'Curl', and implemented threading for the 
+	</dt></dl>
+        <dl><b> Doreen Pinkus</b>
+		<dt> designed this Web site for Yacas.  
+	</dt></dl>
+        <dl><b> Igor Khavkine</b>
+		<dt> added 'Diverge' and 'Curl', and implemented threading for the 
           derivative operator (the gradient). Fixed GMP code.  
-        <li> Win32 
-          port thanks to James Gilbertson. Also improved error reporting. Added 
+	</dt></dl>
+        <dl><b> James Gilbertson</b>
+		<dt> Win32 
+          port, improved error reporting. Added 
           initial version of Karatsuba multiplication, and added some matrix functions 
           to the math library.  
-        <li> Daniel 
-          Richard G. added autoconf/automake scripts, made Sun/Sgi compilation 
+	</dt></dl>
+        <dl><b> Daniel           Richard G.</b>
+		<dt> added autoconf/automake scripts, made Sun/Sgi compilation 
           possible, created a rpm spec file, many many many changes to clean up 
           the source distribution.  
-        <li> Ladislav 
-          Zejda supplied patches to make Yacas work on Dec Alpha's.  
-        <li> Fred 
-          Bacon fixed some compiler errors on the newer gcc compiles. Reported 
+	</dt></dl>
+        <dl><b> Ladislav  Zejda</b>
+		<dt> supplied patches to make Yacas work on Dec Alpha's.  
+	</dt></dl>
+        <dl><b> Fred   Bacon</b>
+		<dt> fixed some compiler errors on the newer gcc compiles. Reported 
           some important bugs.  
-        <li> Schneelocke 
-          reported an important bug in numeric calculations.  
-        <li> Serge 
-          Winitzki added factorials over rationals, TeXForm, did a major overhaul
+	</dt></dl>
+        <dl><b> Schneelocke </b>
+        <dt>  reported an important bug in numeric calculations.  
+	</dt></dl>
+        <dl><b> Serge           Winitzki</b>
+		<dt> added factorials over rationals, TeXForm, did a major overhaul
           of the introduction manual (actually, he wrote large part of the manual
           as it is), and initiated numerous 
           improvements and test code for Yacas, and implemented yacas_client.
           Actually, Serge has been one of the larger contributors, and the
           main force behind the improved documentation.
-        <li> Jay Belanger
-          reported some bugs, and improved some of the GnuPlot code. He also wrote
+	</dt></dl>
+        <dl><b> Jay Belanger</b>
+        <dt>  reported some bugs, and improved some of the GnuPlot code. He also wrote
           the yacas.el file, which allows you to run yacas from within emacs.
           His most recent version can be found <A href="ftp://vh213601.truman.edu/pub/Yacas/">here</a>  
-        <li> Gopal Narayanan
-             maintains the Debian package for Yacas.
-        <li> Vladimir Livshits
-             set up the initial sourceforge CVS repository, and updated the Windows version
+	</dt></dl>
+        <dl><b> Gopal Narayanan</b>
+        <dt>     maintains the Debian package for Yacas.
+	</dt></dl>
+        <dl><b> Vladimir Livshits</b>
+        <dt>     set up the initial sourceforge CVS repository, and updated the Windows version
              source code. He also greatly improved the logic theorem prover code.
-        <li> Eugenia Loli
-             Helped build the BeOS version of Yacas. It can be found
+	</dt></dl>
+        <dl><b> Eugenia Loli</b>
+        <dt>     Helped build the BeOS version of Yacas. It can be found
              <A HREF="http://www.bebits.com/app/1755">here</a>
-        <li> Saverio Prinz
-             built a fantastic Mac version of Yacas. It can be found
+	</dt></dl>
+        <dl><b> Saverio Prinz</b>
+        <dt>     built a fantastic Mac version of Yacas. It can be found
              <A HREF="http://homepage.mac.com/yacas">here</a>
-        <li> John Fremlin
-      	     Added some code for fast calculation of roots of a cubic polynomial.
-        <li> Mark Arrasmith
-		Helped greatly in setting up the fltk-based graphicaluser interface,
+	</dt></dl>
+        <dl><b> John Fremlin</b>
+      	<dt>     Added some code for fast calculation of roots of a cubic polynomial.
+	</dt></dl>
+        <dl><b> Mark Arrasmith</b>
+		<dt>Helped greatly in setting up the fltk-based graphicaluser interface,
                 and fixed some bugs relating to limits regarding infinity.
-        <li> Robert V Schipper
-		Ironed out a few bugs in Yacas.
-        <li> Gopal Narayanan
-		Debian package maintainer. Made a man page for Yacas.
-        <li> Christian Obrecht
-		Made a much better Limit, and made Yacas behave better at infinity.
-        <li> Jitse Niesen
-		Reported some bugs, helped improve various parts of Yacas, and
+	</dt></dl>
+        <dl><b> Robert V Schipper</b>
+		<dt>Ironed out a few bugs in Yacas.
+	</dt></dl>
+        <dl><b> Gopal Narayanan</b>
+		<dt>Debian package maintainer. Made a man page for Yacas.
+	</dt></dl>
+        <dl><b> Christian Obrecht</b>
+		<dt>Made a much better Limit, and made Yacas behave better at infinity.
+	</dt></dl>
+        <dl><b> Jitse Niesen</b>
+		<dt>Reported some bugs, helped improve various parts of Yacas, and
                 greatly improved the manual for Yacas.
-        <li> Pablo Di Napoli
-                Fixed the configure script so Yacas compiles under cygwin.
-        <li> Joris van der Hoeven
-                Helped with texmacs support.
-        <li> Alberto González Palomo
-                Implemented a console-mode version of Yacas for AgendaVR. Changed the
+	</dt></dl>
+        <dl><b> Pablo Di Napoli</b>
+        <dt>        Fixed the configure script so Yacas compiles under cygwin.
+	</dt></dl>
+        <dl><b> Joris van der Hoeven</b>
+        <dt>        Helped with texmacs support.
+	</dt></dl>
+        <dl><b> Alberto González Palomo</b>
+        <dt>        Implemented a console-mode version of Yacas for AgendaVR. Changed the
                 directory structure for the script files, and implemented initial
                 support for OpenMath.
-        <li> Jonathan Leto
-		Helped improve the integration algorithm, and  helped extend
+	</dt></dl>
+        <dl><b> Jonathan Leto</b>
+		<dt>Helped improve the integration algorithm, and  helped extend
                 the tests used for Yacas (finding numerous bugs).
-        <li> Andrei Zorine
-		Started the body of statistics code.
-	<li> Daniel Rigby
-		Brought a client-server structure to the EPOC32 version of Yacas.
-        <li> Dirk Reusch
-		Added some linear algebra functions, and fixed some predicate functions.
-        <li> Mark Hatsell made the server code work on Windows.
-        <li> Yannick Versley sent some patches regarding bugs relating
+	</dt></dl>
+        <dl><b> Andrei Zorine</b>
+		<dt>Started the body of statistics code.
+	</dt></dl>
+	<dl><b> Daniel Rigby</b>
+	<dt>	Brought a client-server structure to the EPOC32 version of Yacas.
+	</dt></dl>
+        <dl><b> Dirk Reusch</b>
+		<dt>Added some linear algebra functions, and fixed some predicate functions.
+	</dt></dl>
+        <dl><b> Mark Hatsell</b>
+		<dt> made the server code work on Windows.
+	</dt></dl>
+        <dl><b> Yannick Versley</b>
+		<dt> sent some patches regarding bugs relating
              integration and differentiation.
-      </ul>
+	</dt></dl>
+
       </font>
       <p> 
       <hr>
