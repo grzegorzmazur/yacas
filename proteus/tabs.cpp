@@ -339,7 +339,43 @@ void help_detailed_function_cb(Fl_Widget *,void *)
     mainTabs->value(helptab);
   }
 }
-#include "proteusmenu.h"
+
+static Fl_Menu_Item menuitems[] = 
+{
+ {"&File", FL_ALT+'f',  0, 0, FL_SUBMENU},
+   {"&new", 	FL_ALT+'n',	(Fl_Callback *)new_cb },
+   {"&restart",	FL_ALT+'r',	(Fl_Callback *)restart_cb, 0, FL_MENU_DIVIDER },
+   {"l&oad", 	FL_ALT+'o',	(Fl_Callback *)cb_notepad },
+//TODO   {"TODO save", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"s&ave as",	FL_ALT+'a',	(Fl_Callback *)cb_save_notepad },
+   {"TODO about", 0, 0, 0, FL_MENU_DIVIDER },
+   {"&quit", 	FL_ALT+'q',  	(Fl_Callback *)quit_cb },
+   {0},
+/*TODO
+ {"&Edit", FL_ALT+'e',  0, NULL, 64, 0, 0, font_size, 0},
+   {"TODO cut", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"TODO copy", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"TODO paste", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {0},
+ {"&Notepad", FL_ALT+'n',  0, NULL, 64, 0, 0, font_size, 0},
+   {"TODO edit code", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"insert", 0,  0, NULL, 64, 0, 0, font_size, 0},
+     {"TODO section title", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+     {"TODO flat text", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+     {"TODO 2d graph", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+     {"TODO link to other notepad", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+     {"TODO link command", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+     {0},
+   {"TODO edit", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"TODO delete", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {0},
+*/
+ {"&Help", FL_ALT+'h',  0, 0, FL_SUBMENU},
+   {"&contents", FL_ALT+'c',	(Fl_Callback *)help_intro_cb },
+   {"&detailed help on function", FL_ALT+'d',	(Fl_Callback *)help_detailed_function_cb },
+   {0},
+ {0}
+};
 
 
 void LispExit(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -577,6 +613,7 @@ int main(int argc, char **argv)
 {
   GetProteusConfiguration();
   sprintf(notepad_to_load,"%sWorksheetBanner",defdir);
+  Fl::scheme("plastic");
   {
     int i=1;
     while (i<argc)
@@ -607,22 +644,22 @@ int main(int argc, char **argv)
 
   Fl_Window* w;
   {
-    Fl_Window* o = new Fl_Window(640, 320);
+    Fl_Window* o = new Fl_Window(640, 480);
     w = o;
     {
-      mainTabs = new Fl_Tabs(5, 1, 630, 315);
+      mainTabs = new Fl_Tabs(5, 3, 630, 474);
       o->selection_color(15);
       {
 
-        Fl_Group* o = input = new Fl_Group(10, 20, 630, 310, "Input");
+        Fl_Group* o = input = new Fl_Group(10, 24, 625, 452, "Input");
         {
-          menubar = new Fl_Menu_Bar(11,23,618,20);
+          menubar = new Fl_Menu_Bar(11,25,621,15);
           menubar->menu(menuitems);
-          menubar->textfont(10);
-          menubar->textsize(12);
+          //menubar->textfont(10);
+          //menubar->textsize(14);
         }
-        console_scroll = new Fl_Scroll(11,43,619,267);
-        console = new FltkConsole(11,43,2048,267);
+        console_scroll = new Fl_Scroll(11,41,621,435);
+        console = new FltkConsole(11,41,1200,435);
 //        console->resize(console->x(),console->y(),console->w()+1024,console->h()+1024);
 //        console = new FltkConsole(11,43,618,265,12);
         console_scroll->end();
@@ -638,43 +675,43 @@ int main(int argc, char **argv)
         o->end();
       }
 */
-/*TODO editor shouild be separate app, with debugger*/
+/*TODO editor should be separate app, with debugger*/
       {
-        Fl_Group* o = new Fl_Group(10, 20, 630, 310, "Edit");
-         editor_add_items(o,11,23,618, 285);
+        Fl_Group* o = new Fl_Group(10, 25, 625, 452, "Editor");
+         editor_add_items(o, 11, 26, 623, 440);
         o->end();
       }
 /**/
       {
         Fl_Group* helptab;
-        Fl_Group* o = helptab = new Fl_Group(10, 20, 630, 310, "Help");
+        Fl_Group* o = helptab = new Fl_Group(10, 25, 625, 452, "Help");
         {
-          HelpView* o = helpview_ = new HelpView(11, 23, 620, 260);
+          HelpView* o = helpview_ = new HelpView(11, 25, 621, 420);
           o->box(FL_DOWN_BOX);
           o->callback((Fl_Callback*)cb_helpview_);
           o->end();
           Fl_Group::current()->resizable(o);
         }
         {
-          Fl_Button* o = back_ = new Fl_Button(430, 285, 25, 25, "@<");
+          Fl_Button* o = back_ = new Fl_Button(465, 447, 25, 25, "@<");
           o->shortcut(0xff51);
           o->labeltype(FL_SYMBOL_LABEL);
           o->callback((Fl_Callback*)cb_back_);
         }
         {
-          Fl_Button* o = forward_ = new Fl_Button(465, 285, 25, 25, "@>");
+          Fl_Button* o = forward_ = new Fl_Button(500, 447, 25, 25, "@>");
           o->shortcut(0xff53);
           o->labeltype(FL_SYMBOL_LABEL);
           o->callback((Fl_Callback*)cb_forward_);
         }
         {
-          Fl_Button* o = smaller_ = new Fl_Button(360, 285, 25, 25, "F");
+          Fl_Button* o = smaller_ = new Fl_Button(395, 447, 25, 25, "F");
           o->labelfont(1);
           o->labelsize(9);
           o->callback((Fl_Callback*)cb_smaller_);
         }
         {
-          Fl_Button* o = larger_ = new Fl_Button(395, 285, 25, 25, "F");
+          Fl_Button* o = larger_ = new Fl_Button(430, 447, 25, 25, "F");
           o->labelfont(11);
           o->labelsize();
           o->callback((Fl_Callback*)cb_larger_);
@@ -707,7 +744,7 @@ int main(int argc, char **argv)
 
   w->callback(quit_cb);
   w->show(1, argv);
-  w->resize(50,50,800,600);
+  w->resize(50,50,1024,760);
 //  w->fullscreen(); //TODO is this acceptable?
   atexit(myexit);
 
