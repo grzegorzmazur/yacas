@@ -191,7 +191,7 @@ void ShowExpression(LispString& outString, LispEnvironment& aEnvironment,
                               aEnvironment.Bodied());
     // Print out the current expression
     StringOutput stream(outString);
-    infixprinter.Print(aExpression, stream);
+    infixprinter.Print(aExpression, stream,aEnvironment);
 
     // Escape quotes
     LispInt i;
@@ -354,7 +354,7 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
         aEnvironment.CurrentOutput()->Write("Debug> ");
         aEnvironment.CurrentOutput()->Write(str);
         aEnvironment.CurrentOutput()->Write(" : ");
-        aEnvironment.CurrentPrinter().Print(objs[i]->iOperator, *aEnvironment.CurrentOutput());
+        aEnvironment.CurrentPrinter().Print(objs[i]->iOperator, *aEnvironment.CurrentOutput(),aEnvironment);
 
         if (aEnvironment.Commands().LookUp(objs[i]->iOperator.Get()->String()))
         {

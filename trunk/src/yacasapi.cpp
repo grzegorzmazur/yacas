@@ -316,7 +316,7 @@ void CYacas::Evaluate(const LispCharPtr aExpression)
                             environment().InFix(),
                             environment().PostFix(),
                             environment().Bodied());
-         parser.Parse(lispexpr);
+         parser.Parse(lispexpr,environment());
 
          environment().iEvalDepth=0;
          environment().iEvaluator->ResetStack();
@@ -336,7 +336,7 @@ void CYacas::Evaluate(const LispCharPtr aExpression)
                                        environment().PostFix(),
                                        environment().Bodied());
 
-             infixprinter.Print(result, iResultOutput);
+             infixprinter.Print(result, iResultOutput, environment());
              iResultOutput.Write(";");
          }
          LispStringPtr percent = environment().HashTable().LookUp("%");

@@ -61,25 +61,16 @@ public:
                 LispOperators& aBodiedOperators);
     ~InfixParser();
     
-    virtual void Parse(LispPtr& aResult );
+    virtual void Parse(LispPtr& aResult, LispEnvironment& aEnvironment );
+private:
+    void Parse(LispPtr& aResult);
 public:
     LispOperators& iPrefixOperators;
     LispOperators& iInfixOperators;
     LispOperators& iPostfixOperators;
     LispOperators& iBodiedOperators;
 
-    LispStringPtr iEndOfFile;
-    LispStringPtr iEndStatement;
-    LispStringPtr iProgOpen;
-    LispStringPtr iProgClose;
-    LispStringPtr iNth;
-    LispStringPtr iBracketOpen;
-    LispStringPtr iBracketClose;
-    LispStringPtr iListOpen;
-    LispStringPtr iListClose;
-    LispStringPtr iComma;
-    LispStringPtr iList;
-    LispStringPtr iProg;
+    LispEnvironment* iEnvironment;
 };
 
 class ParsedObject : public YacasBase
@@ -124,10 +115,11 @@ public:
           iBodiedOperators(aBodiedOperators),
           iPrevLastChar(0){}
 
-    virtual void Print(LispPtr& aExpression, LispOutput& aOutput);
+    virtual void Print(LispPtr& aExpression, LispOutput& aOutput,
+                       LispEnvironment& aEnvironment);
+private:
     void Print(LispPtr& aExpression, LispOutput& aOutput,
                LispInt iPrecedence);
-private:
     void WriteToken(LispOutput& aOutput,LispCharPtr aString);
 private:
     
@@ -136,6 +128,7 @@ private:
     LispOperators& iPostfixOperators;
     LispOperators& iBodiedOperators;
     LispChar iPrevLastChar;
+    LispEnvironment* iCurrentEnvironment;
 };
 
 

@@ -1,5 +1,5 @@
 
-#include <stdlib.h>
+//#include <stdlib.h>
 #include "lispassert.h"
 
 inline CArrayGrowerBase::CArrayGrowerBase(int aItemSize, int aGranularity) 

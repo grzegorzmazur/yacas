@@ -9,7 +9,7 @@ LispParser::LispParser(LispTokenizer& aTokenizer, LispInput& aInput,
 : iTokenizer(aTokenizer), iInput(aInput),iHashTable(aHashTable) {}
 
 LispParser::~LispParser() {}
-void LispParser::Parse(LispPtr& aResult)
+void LispParser::Parse(LispPtr& aResult, LispEnvironment& aEnvironment)
 {
     aResult.Set(NULL);
 
@@ -67,7 +67,7 @@ void LispParser::ParseList(LispPtr& aResult)
 
 
 LispPrinter::~LispPrinter() {}
-void LispPrinter::Print(LispPtr& aExpression, LispOutput& aOutput)
+void LispPrinter::Print(LispPtr& aExpression, LispOutput& aOutput, LispEnvironment& aEnvironment)
 {
     LispPtr* iter = &aExpression;
 
@@ -85,7 +85,7 @@ void LispPrinter::Print(LispPtr& aExpression, LispOutput& aOutput)
         else if (iter->Get()->SubList() != NULL)
         {
             aOutput.Write("(");
-            Print(*(iter->Get()->SubList()),aOutput);
+            Print(*(iter->Get()->SubList()),aOutput, aEnvironment);
             aOutput.Write(")");
         }
         else

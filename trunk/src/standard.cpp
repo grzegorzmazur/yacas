@@ -306,7 +306,7 @@ void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput)
     {
         LispPtr readIn;
         // Read expression
-        parser.Parse(readIn);
+        parser.Parse(readIn,aEnvironment);
 
         Check(readIn.Get() != NULL, KLispErrReadingFile);
         // Check for end of file
@@ -391,7 +391,7 @@ void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
                        aEnvironment.InFix(),
                        aEnvironment.PostFix(),
                        aEnvironment.Bodied());
-    parser.Parse(lispexpr);
+    parser.Parse(lispexpr,aEnvironment);
 
     InternalEval(aEnvironment, aResult, lispexpr);
 }
@@ -445,7 +445,7 @@ void ParseExpression(LispPtr& aResult,LispCharPtr aString,LispEnvironment& aEnvi
                        aEnvironment.InFix(),
                        aEnvironment.PostFix(),
                        aEnvironment.Bodied());
-    parser.Parse(aResult);
+    parser.Parse(aResult,aEnvironment);
 }
 
 

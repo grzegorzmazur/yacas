@@ -122,6 +122,20 @@ public: // Error information when some error occurs.
 public: // pre-found
     LispStringPtr iTrue;
     LispStringPtr iFalse;
+
+    LispStringPtr iEndOfFile;
+    LispStringPtr iEndStatement;
+    LispStringPtr iProgOpen;
+    LispStringPtr iProgClose;
+    LispStringPtr iNth;
+    LispStringPtr iBracketOpen;
+    LispStringPtr iBracketClose;
+    LispStringPtr iListOpen;
+    LispStringPtr iListClose;
+    LispStringPtr iComma;
+    LispStringPtr iList;
+    LispStringPtr iProg;
+
     LispPtr iTrueAtom;
     LispPtr iFalseAtom;
     LispInt iLastUniqueId;

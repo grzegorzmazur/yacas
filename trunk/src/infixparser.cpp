@@ -20,53 +20,21 @@ InfixParser::InfixParser(LispTokenizer& aTokenizer, LispInput& aInput,
     iPostfixOperators(aPostfixOperators),
     iBodiedOperators(aBodiedOperators)
 {
-    iEndOfFile    = iHashTable.LookUp("EndOfFile");
-    iEndStatement = iHashTable.LookUp(";");
-    iProgOpen     = iHashTable.LookUp("[");
-    iProgClose    = iHashTable.LookUp("]");
-    iNth          = iHashTable.LookUp("Nth");
-    iBracketOpen  = iHashTable.LookUp("(");
-    iBracketClose = iHashTable.LookUp(")");
-    iListOpen     = iHashTable.LookUp("{");
-    iListClose    = iHashTable.LookUp("}");
-    iComma        = iHashTable.LookUp(",");
-    iList         = iHashTable.LookUp("List");
-    iProg         = iHashTable.LookUp("Prog");
-
-    iEndOfFile   ->IncreaseRefCount();
-    iEndStatement->IncreaseRefCount();
-    iProgOpen    ->IncreaseRefCount();
-    iProgClose   ->IncreaseRefCount();
-    iNth         ->IncreaseRefCount();
-    iBracketOpen ->IncreaseRefCount();
-    iBracketClose->IncreaseRefCount();
-    iListOpen    ->IncreaseRefCount();
-    iListClose   ->IncreaseRefCount();
-    iComma       ->IncreaseRefCount();
-    iList        ->IncreaseRefCount();
-    iProg        ->IncreaseRefCount();
 }
 
 InfixParser::~InfixParser()
 {
-    iEndOfFile   ->DecreaseRefCount();
-    iEndStatement->DecreaseRefCount();
-    iProgOpen    ->DecreaseRefCount();
-    iProgClose   ->DecreaseRefCount();
-    iNth         ->DecreaseRefCount();
-    iBracketOpen ->DecreaseRefCount();
-    iBracketClose->DecreaseRefCount();
-    iListOpen    ->DecreaseRefCount();
-    iListClose   ->DecreaseRefCount();
-    iComma       ->DecreaseRefCount();
-    iList        ->DecreaseRefCount();
-    iProg        ->DecreaseRefCount();
-    }
+}
 
 
 
 
-void InfixParser::Parse(LispPtr& aResult )
+void InfixParser::Parse(LispPtr& aResult, LispEnvironment& aEnvironment )
+{
+    iEnvironment = &aEnvironment;
+    Parse(aResult);
+}
+void InfixParser::Parse(LispPtr& aResult)
 {
     ParsedObject object(*this);
     object.Parse();
@@ -124,17 +92,17 @@ void ParsedObject::Parse()
     ReadToken();
     if (iEndOfFile)
     {
-        iResult.Set(LispAtom::New(iParser.iEndOfFile));
+        iResult.Set(LispAtom::New(iParser.iEnvironment->iEndOfFile));
         return;
     }
 
     ReadExpression(KMaxPrecedence);  // least precedence
 
-    if (iLookAhead != iParser.iEndStatement)
+    if (iLookAhead != iParser.iEnvironment->iEndStatement)
         iError = LispTrue;
     if (iError)
     {
-        while ((*iLookAhead)[0] != '\0' && iLookAhead != iParser.iEndStatement)
+        while ((*iLookAhead)[0] != '\0' && iLookAhead != iParser.iEnvironment->iEndStatement)
         {
             ReadToken();
         }
@@ -214,21 +182,21 @@ void ParsedObject::ReadExpression(LispInt depth)
     for(;;)
     {
         //Handle special case: a[b]. a is matched with lowest precedence!!
-        if (iLookAhead == iParser.iProgOpen)
+        if (iLookAhead == iParser.iEnvironment->iProgOpen)
         {
             // Match opening bracket
             MatchToken(iLookAhead);
             // Read "index" argument
             ReadExpression(KMaxPrecedence);
             // Match closing bracket
-            if (iLookAhead != iParser.iProgClose)
+            if (iLookAhead != iParser.iEnvironment->iProgClose)
             {
                 iError = LispTrue;
                 return;
             }
             MatchToken(iLookAhead);
             // Build into Ntn(...)
-            LispStringPtr theOperator = iParser.iNth;
+            LispStringPtr theOperator = iParser.iEnvironment->iNth;
             InsertAtom(theOperator);
             Combine(2);
         }
@@ -298,49 +266,49 @@ void ParsedObject::ReadAtom()
         }
     }
     // Else parse brackets
-    else if (iLookAhead == iParser.iBracketOpen)
+    else if (iLookAhead == iParser.iEnvironment->iBracketOpen)
     {
         MatchToken(iLookAhead);
         ReadExpression(KMaxPrecedence);  // least precedence
-        MatchToken(iParser.iBracketClose);
+        MatchToken(iParser.iEnvironment->iBracketClose);
     }
     //Parse lists
-    else if (iLookAhead == iParser.iListOpen)
+    else if (iLookAhead == iParser.iEnvironment->iListOpen)
     {
         LispInt nrargs=0;
         MatchToken(iLookAhead);
-        while (iLookAhead != iParser.iListClose)
+        while (iLookAhead != iParser.iEnvironment->iListClose)
         {
             ReadExpression(KMaxPrecedence);  // least precedence
             nrargs++;
 
-            if (iLookAhead == iParser.iComma)
+            if (iLookAhead == iParser.iEnvironment->iComma)
             {
                 MatchToken(iLookAhead);
             }
-            else if (iLookAhead != iParser.iListClose)
+            else if (iLookAhead != iParser.iEnvironment->iListClose)
             {
                 iError = LispTrue;
                 return;
             }
         }
         MatchToken(iLookAhead);
-        LispStringPtr theOperator = iParser.iList;
+        LispStringPtr theOperator = iParser.iEnvironment->iList;
         InsertAtom(theOperator);
         Combine(nrargs);
 
     }
     // Parse prog bodies
-    else if (iLookAhead == iParser.iProgOpen)
+    else if (iLookAhead == iParser.iEnvironment->iProgOpen)
     {
         LispInt nrargs=0;
         MatchToken(iLookAhead);
-        while (iLookAhead != iParser.iProgClose)
+        while (iLookAhead != iParser.iEnvironment->iProgClose)
         {
             ReadExpression(KMaxPrecedence);  // least precedence
             nrargs++;
 
-            if (iLookAhead == iParser.iEndStatement)
+            if (iLookAhead == iParser.iEnvironment->iEndStatement)
             {
                 MatchToken(iLookAhead);
             }
@@ -351,7 +319,7 @@ void ParsedObject::ReadAtom()
             }
         }
         MatchToken(iLookAhead);
-        LispStringPtr theOperator = iParser.iProg;
+        LispStringPtr theOperator = iParser.iEnvironment->iProg;
         InsertAtom(theOperator);
         Combine(nrargs);
     }
@@ -362,20 +330,20 @@ void ParsedObject::ReadAtom()
         MatchToken(iLookAhead);
 
         LispInt nrargs=-1;
-        if (iLookAhead == iParser.iBracketOpen)
+        if (iLookAhead == iParser.iEnvironment->iBracketOpen)
         {
             nrargs=0;
             MatchToken(iLookAhead);
-            while (iLookAhead != iParser.iBracketClose)
+            while (iLookAhead != iParser.iEnvironment->iBracketClose)
             {
                 ReadExpression(KMaxPrecedence);  // least precedence
                 nrargs++;
 
-                if (iLookAhead == iParser.iComma)
+                if (iLookAhead == iParser.iEnvironment->iComma)
                 {
                     MatchToken(iLookAhead);
                 }
-                else if (iLookAhead != iParser.iBracketClose)
+                else if (iLookAhead != iParser.iEnvironment->iBracketClose)
                 {
                     iError = LispTrue;
                     return;
@@ -421,8 +389,10 @@ void InfixPrinter::WriteToken(LispOutput& aOutput,LispCharPtr aString)
     iPrevLastChar = aString[PlatStrLen(aString)-1];
 }
 
-void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput)
+void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
+                       LispEnvironment& aEnvironment)
 {
+    iCurrentEnvironment = &aEnvironment;
     Print(aExpression, aOutput, KMaxPrecedence);
 }
 
@@ -511,7 +481,7 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
         else
         {
             LispIterator iter(subList->Get()->Next());
-            if (*string == "List")
+            if (string == iCurrentEnvironment->iList)
             {
                 WriteToken(aOutput,"{");
                 while (iter())
@@ -523,7 +493,7 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                 }
                 WriteToken(aOutput,"}");
             }
-            else if (*string == "Prog")
+            else if (string == iCurrentEnvironment->iProg)
             {
                 WriteToken(aOutput,"[");
                 while (iter())
@@ -534,7 +504,7 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                 }
                 WriteToken(aOutput,"]");
             }
-            else if (*string == "Nth")
+            else if (string == iCurrentEnvironment->iNth)
             {
                 Print(*iter.Ptr(), aOutput, 0);
                 iter.GoNext();
