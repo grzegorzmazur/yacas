@@ -28,6 +28,9 @@ Verify( SinH(Infinity), Infinity);
 Verify( SinH(x)*CscH(x), 1);
 Verify( 1/CotH(x), TanH(x) );
 
+KnownFailure(Verify(Exp(-n*Infinity), 0 ));
+KnownFailure(Verify(Exp(n*Infinity), Infinity));
+
 
 
 Verify(2+I*3,Complex(2,3));
