@@ -417,12 +417,13 @@ static void BalanceFractions(ANumber& a1, ANumber& a2)
       a2.iTensExp = a1.iTensExp;
       while (diff > 0)
       {
+        BaseTimesInt(a2,10, WordBase);
+
+/*
         ANumber temp(a2.iPrecision);
         temp.CopyFrom(a2);
         BaseMultiplyFull(a2,temp,ten);
-
-//PrintNumber("a2  ",a2);
-
+*/
         diff--;
       }
     }
@@ -433,9 +434,12 @@ static void BalanceFractions(ANumber& a1, ANumber& a2)
       a1.iTensExp = a2.iTensExp;
       while (diff > 0)
       {
+        BaseTimesInt(a1,10, WordBase);
+/*
         ANumber temp(a1.iPrecision);
         temp.CopyFrom(a1);
         BaseMultiplyFull(a1,temp,ten);
+*/
         diff--;
       }
     }

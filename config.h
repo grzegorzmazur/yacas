@@ -39,6 +39,9 @@
 /* Define to 1 if you have the <malloc.h> header file. */
 /* #undef HAVE_MALLOC_H */
 
+/* Define to 1 if you have the <math.h> header file. */
+#define HAVE_MATH_H 1
+
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
 

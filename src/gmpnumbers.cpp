@@ -1487,7 +1487,7 @@ const LispCharPtr BigNumber::NumericLibraryName()
 
 
 //basic object manipulation
-bool BigNumber::Equals(const BigNumber& aOther) const
+LispBoolean BigNumber::Equals(const BigNumber& aOther) const
 {
   if (IsInt())
     if (aOther.IsInt())
@@ -1515,27 +1515,27 @@ bool BigNumber::Equals(const BigNumber& aOther) const
 }
 
 
-bool BigNumber::IsInt() const
+LispBoolean BigNumber::IsInt() const
 {
 	return (type_ & KInt)!=0;
 }
 
 
-bool BigNumber::IsExpFloat() const
+LispBoolean BigNumber::IsExpFloat() const
 {
 	return (type_ & KExpFloat)==KExpFloat;
 }
 
-bool BigNumber::IsIntValue() const
+LispBoolean BigNumber::IsIntValue() const
 {
   if (IsInt())
-  	return true;
+  	return LispTrue;
   else
   	return mpf_integer_p(float_);
 }
 
 
-bool BigNumber::IsSmall() const
+LispBoolean BigNumber::IsSmall() const
 {
   if (IsInt())
   	return mpz_fits_slong_p(int_);
@@ -1579,7 +1579,7 @@ void BigNumber::BecomeFloat()
 }
 
 
-bool BigNumber::LessThan(const BigNumber& aOther) const
+LispBoolean BigNumber::LessThan(const BigNumber& aOther) const
 {
   if (IsInt())
     if (aOther.IsInt())

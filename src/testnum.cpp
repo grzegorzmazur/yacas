@@ -398,6 +398,12 @@ int main(void)
 	Next("3");
 	x.Multiply(x,x,100);
 	Next("4");
+	Next("4.a");
+  {
+    BigNumber y;
+  	y.Divide(y,y,100);	// This works
+  }
+	Next("4.b");
 	x.Divide(x,x,100);	// possibly zero division requested since x is undefined
 	Next("5");
 	x.Add(x,x,100);
