@@ -25,9 +25,6 @@ void *PlatObReAlloc(void *p, size_t nbytes);
 #endif
 
 
-void* operator new(unsigned long size);
-void operator delete(void* object);
-
 inline void* operator new(unsigned long size)
 {
     return PlatAlloc(size);
