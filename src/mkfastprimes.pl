@@ -120,7 +120,7 @@ sub print_table
  * and a function to test whether a small number is prime by a table lookup.
  */
 unsigned long primes_table_limit = $table_limit;
-unsigned long primes_table[] = {
+const unsigned long primes_table[] = {
 EOF1
 	for (@table)
 	{
