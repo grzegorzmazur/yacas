@@ -12,7 +12,7 @@ polynomials modulo
 integers.
 */
 
-//LocalSymbols(PowerMod,Mkp,Mkpc,Mkn,Mkc,MkMod,MkDiv,Mkd,MkGcd,MkExtEuclid,MkExtEuclidAux,TryFact)[
+LocalSymbols(PowerMod,Mkp,Mkpc,Mkn,Mkc,MkMod,MkDiv,Mkd,MkGcd,MkExtEuclid,MkExtEuclidAux,TryFact)[
 
 
 PowerMod(x_IsPositiveInteger, 
@@ -105,6 +105,32 @@ Mkd(numer,denom,p):=
 ];
 
 
+// Addition: input coefficients for polys, output coefs 
+Mkadd(x,y):=
+[
+  Local(result,i);
+  Set(result,FillList(0,Max(Length(x),Length(y))));
+  For(i:=1,i<=Length(x),i++) result[i]:=result[i]+x[i];  
+  For(i:=1,i<=Length(y),i++) result[i]:=result[i]+y[i];  
+  DropEndZeroes(result);
+  result;
+];
+
+// Multiplication: input coefficients for polys, output coefs 
+Mkmul(x,y):=
+[
+  Local(result,i,j);
+  Set(result,FillList(0,Length(x)+Length(y)));
+  For(i:=1,i<=Length(x),i++) 
+  [
+    For(j:=1,j<=Length(y),j++) 
+      result[i+j-1]:=result[i+j-1]+x[i]*y[j];  
+  ];
+  DropEndZeroes(result);
+  result;
+];
+
+
 // Greatest common divisor modulo p
 // input coefficients to polys n,m, and integer p
 // output greatest common divisor
@@ -172,7 +198,7 @@ Mkd(numer,denom,p):=
 BinaryFactor(polynom):=FW(BinaryFactors(polynom));
 BinaryFactors(polynom):=
 [
-  Local(list,i,result,p,newlist,poly,nrroots,unrat,leadingcoef);
+  Local(list,i,result,p,newlist,poly,nrroots,unrat,leadingcoef,lowestcoef,an,origdegree);
   Set(result,{});
 
   // Make list of coefficients
@@ -181,8 +207,25 @@ BinaryFactors(polynom):=
   Set(unrat,Lcm(MapSingle("Denom",poly)));
   Set(poly,unrat*poly);
 
-  Set(leadingcoef,poly[Length(poly)]);
+  Set(origdegree,Length(poly)-1);
+  Set(an,poly[Length(poly)]);
+  //Echo("poly = ",poly);
+  Set(poly,poly* (an^((origdegree-1) .. -1)));
+  //Echo("monic poly = ",poly);
+  Set(polynom,Mkpc(poly));
+  Set(andiv,an^(origdegree-1));
 
+  Set(leadingcoef,poly[Length(poly)]);
+  [ 
+    Local(i);
+    Set(i,1);
+    Set(lowestcoef,Abs(poly[i]));
+    While (lowestcoef = 0 And i<=Length(poly))
+    [
+      Set(i,i+1);
+      Set(lowestcoef,Abs(poly[i]));
+    ];
+  ];
   // testpoly is the square-free version of the polynomial, used for finding
   // the factors. the original polynomials is kept around to find the
   // multiplicity of the factor.
@@ -194,8 +237,8 @@ BinaryFactors(polynom):=
     If(testpoly[Length(testpoly)] < 0,Set(gcd, gcd * -1));
     Set(testpoly,testpoly/gcd);
   ];
-  Set(isMonic, True);
-  If(Abs(testpoly[Length(testpoly)]) != 1,Set(isMonic,False));
+//TODO remove?  Set(isMonic, True);
+//TODO remove?  If(Abs(testpoly[Length(testpoly)]) != 1,Set(isMonic,False));
 
 
 //Echo("testpoly = ",testpoly);
@@ -209,7 +252,7 @@ BinaryFactors(polynom):=
   If(IsZeroVector(Mkd(testpoly,{1,0},2)[2]),Set(list,{1,0}:list));
   If(IsZeroVector(Mkd(testpoly,{0,0},2)[2]),Set(list,{0,0}:list));
 
-Echo("initial list = ",list);
+//Echo("initial list = ",list);
 
   Set(p,2);
   Set(nrroots,Length(poly)-1);
@@ -229,11 +272,13 @@ Echo("initial list = ",list);
       TryFact({-p+list[i][1],list[i][2]});
       TryFact({list[i][1],list[i][2]});
 
+/*TODO remove?
       If(Not(isMonic),
       [
         TryFact({-p+list[i][1],p+list[i][2]});
         TryFact({list[i][1],p+list[i][2]});
       ]);
+*/
     ];
 
     // Given the partial solutions so far (potential roots modulo p), determine
@@ -253,24 +298,25 @@ If(p=2 And list[i] = {1,1},
 [
   Echo("GOT ",list[i]," ",p," ",pp," ",Mkd(testpoly,{(list[i][1]),list[i][2]+p},pp));
 ]);
-If(p=4 And list[i] = {1,3},
+If(p=4 And list[i] = {0,1},
 [
-  Echo("GOT ",list[i]," ",p," ",pp," ",Mkd(testpoly,{(list[i][1]+p),list[i][2]},pp));
+  Echo("GOT ",lowestcoef,list[i]," ",p," ",pp," ",Mkd(testpoly,{(list[i][1]+p),list[i][2]},pp));
 ]);
 */
-        If(IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]},pp)[2]),
+        If(p<=lowestcoef And IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]},pp)[2]),
 	  		  Set(newlist,{(list[i][1]+p),list[i][2]}:newlist));
         If(IsZeroVector(Mkd(testpoly,{(list[i][1]),list[i][2]},pp)[2]),
 			    Set(newlist,{(list[i][1]),list[i][2]}:newlist));
       ]);
+/*TODO remove?
       If(Not(isMonic),
       [
-
-        If(IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]+p},pp)[2]),
+        If(p<=lowestcoef And IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]+p},pp)[2]),
           Set(newlist,{(list[i][1]+p),list[i][2]+p}:newlist));
         If(IsZeroVector(Mkd(testpoly,{(list[i][1]),list[i][2]+p},pp)[2]),
           Set(newlist,{(list[i][1]),list[i][2]+p}:newlist));
       ]);
+*/
     ];
 
     Set(newlist,RemoveDuplicates(newlist));
@@ -280,14 +326,17 @@ If(p=4 And list[i] = {1,3},
 
     Set(p,2*p);
 
-Echo("Solutions modulo ",p," with ",Length(list),"potential solutions",list);
+//Echo("Solutions modulo ",p," with ",Length(list),"potential solutions",list);
 //Echo("     with current result ",result);
 //Echo("testpoly is ",testpoly);
   ];
 
   // If the polynom is not one, it is a polynomial which is not reducible any further
   // with this algorithm, return as is.
-  Set(poly,poly/unrat);
+
+//Echo("andiv = ",andiv," an = ",an);
+  Set(poly,poly*an^(0 .. (Length(poly)-1)));
+  Set(poly,poly/(unrat * andiv ));
   If(poly != {1},Set(result,{Mkpc(poly),1}:result));
 
   result;
@@ -323,12 +372,21 @@ Macro(TryFact,{root})
           Set(lst1,Mkd(poly,(@root),Infinity));
           nrroots--;
         ];
-        Set(result,{(@root)[2]*x+(@root)[1],count}:result);
+        Local(lgcd);
+        Set(lgcd,Gcd({andiv,an*(@root)[2],(@root)[1]}));
+        Set(result,{Div(an*(@root)[2],lgcd)*x+Div((@root)[1],lgcd),count}:result);
+        Set(andiv,Div(andiv,lgcd^count));
       ]
     );
   ]);
 ];
 
+Mkmonic(poly):=
+[
+  Local(lc);
+  lc:=poly[Length(poly)];
+  poly*(lc^((Length(poly)-2) .. -1));
+];
 
 nthroot(x,n):=
 [
