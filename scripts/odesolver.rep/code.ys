@@ -1,10 +1,8 @@
-
 /*
  1) implement more sub-solvers
  2) test code
- 3) documentation for OdeSolve and OdeTest
+ 3) Done: documentation for OdeSolve and OdeTest
  */
-
 
 10 # OdeLeftHandSideEq(_l == _r) <-- (l-r);
 20 # OdeLeftHandSideEq(_e) <-- e;
@@ -86,6 +84,7 @@ RuleBase("OdeTerm",{px,list});
 20 # OdeFlatTerm(_a*_b) <-- OdeFlatTerm(OdeFlatTerm(a) * OdeFlatTerm(b));
 20 # OdeFlatTerm(_a^_b) <-- OdeFlatTerm(OdeFlatTerm(a) ^ OdeFlatTerm(b));
 20 # OdeFlatTerm(_a/_b) <-- OdeFlatTerm(OdeFlatTerm(a) / OdeFlatTerm(b));
+
 OdeMakeTerm(xx_IsAtom) <-- OdeTerm(xx,FillList(0,10));
 OdeMakeTerm(yyy(_n)) <-- OdeTerm(0,BaseVector(n+1,10));
 20 # OdeMakeTerm(_xx) <-- xx;
@@ -96,22 +95,33 @@ OdeCoefList(_e) <--
 ];
 OdeTermFail() <-- OdeTerm(Error,FillList(Error,10));
 
+// should check if it is linear...
+OdeAuxiliaryEquation(_e) <--
+[
+	// extra conversion that should be optimized away later
+	e:=OdeNormalForm(e);
+	e:=OdeSubstitute(e,{{n},aaa^n*Exp(aaa*x)});
+	e:=Subst(Exp(aaa*x),1)e;
+	Simplify(Subst(aaa,x)e);
+];
 
-/* Solving a Homogeneous linear differential equation with constant
-   coefficients
- */
+/* Solving a Homogeneous linear differential equation 
+   with real constant coefficients */
 OdeSolveLinearHomogeneousConstantCoefficients(_e) <--
 [
   Local(roots,consts,auxeqn);
 
   /* Try solution Exp(aaa*x), and divide by Exp(aaa*x), which
    * should yield a polynomial in aaa.
-   */
   e:=OdeSubstitute(e,{{n},aaa^n*Exp(aaa*x)});
   e:=Subst(Exp(aaa*x),1)e;
   auxeqn:=Simplify(Subst(aaa,x)e);
   e:=auxeqn;
-  If(Verbose, Echo("OdeSolve: Auxilliary Eqn ",auxeqn) );
+  */
+  e:=OdeAuxiliaryEquation(e);
+  auxeqn:=e;
+
+  If(Verbose, Echo("OdeSolve: Auxiliary Eqn ",auxeqn) );
 
   
   /* Solve the resulting polynomial */
@@ -135,20 +145,19 @@ OdeSolveLinearHomogeneousConstantCoefficients(_e) <--
     // this should probably be incorporated into RootsWithMultiples
     {c,b,a} := Coef(auxeqn,x,0 .. 2);
 
-    // I would like to RadSimp here, but yacas can't
-    // do RadSimp( (-Sqrt(8))/2 ) == Sqrt(2), so there is no point right now
-
-    roots[1] :=  (-b+Sqrt(b^2-4*a*c))/(2*a) ;
-    roots[2] :=  (-b-Sqrt(b^2-4*a*c))/(2*a) ;
-
+    
+    roots := PSolve(a*x^2+b*x+c,x);
     If(Verbose,Echo("OdeSolve: Roots of quadratic:",roots) );
 
     // assuming real coefficients, the roots must come in a complex
     // conjugate pair, so we don't have to check both
     // also, we don't need to check to repeated root case, because
-    // RootsWithMultiples (hopefully) catches those
+    // RootsWithMultiples (hopefully) catches those, except for
+    // the case b,c=0
 
-    if( IsNumber(N(roots[1])) )[
+    if( b=0 And c=0 )[
+	Add(OdeConstantList(2)*{1,x});
+    ] else if( IsNumber(N(roots[1])) )[
 	If(Verbose,Echo("OdeSolve: Real roots"));
 	Add(OdeConstantList(2)*{Exp(roots[1]*x),Exp(roots[2]*x)});
     ] else [
@@ -164,7 +173,48 @@ OdeSolveLinearHomogeneousConstantCoefficients(_e) <--
   ];
 ];
 
-OdeSolve(_e) <--
+// this croaks on Sin(x)*y'' because OdeMakeTerm does
+10 # OdeOrder(_e) <-- [
+	Local(h,i,coefs);
+
+	coefs:=ZeroVector(10); //ugly
+	e:=OdeNormalForm(e);
+
+	If(Verbose,Echo("OdeSolve: Normal form is",e));
+	h:=OdeFlatTerm(OdeCoefList(e));
+	If(Verbose,Echo("OdeSolve: Flatterm is",h));
+
+	// get the list of coefficients of the derivatives
+	// in decreasing order
+	coefs:=Reverse(Listify(h)[3]);
+	While( Head(coefs) = 0 )[
+		coefs:=Tail(coefs);
+	];
+	Length(coefs)-1;
+];
+
+
+10 # OdeSolve(_expr)_(OdeOrder(expr)=0)	    <-- Echo("OdeSolve: Not a differential equation");
+
+// Solve the ever lovable seperable equation
+
+10 # OdeSolve(y'+_a==_expr)_(IsFreeOf(y,a)) <-- OdeSolve(y'==expr-a);
+10 # OdeSolve(y'-_a==_expr)_(IsFreeOf(y,a)) <-- OdeSolve(y'==expr+a);
+10 # OdeSolve(y'/_a==_expr)_(IsFreeOf(y,a)) <-- OdeSolve(y'==expr*a);
+10 # OdeSolve(_a*y'==_expr)_(IsFreeOf(y,a)) <-- OdeSolve(y'==expr/a);
+10 # OdeSolve(y'*_a==_expr)_(IsFreeOf(y,a)) <-- OdeSolve(y'==expr/a);
+10 # OdeSolve(_a/y'==_expr)_(IsFreeOf(y,a)) <-- OdeSolve(y'==a/expr);
+
+// only works for low order equations
+10 # OdeSolve(y'==_expr)_(IsFreeOf({y,y',y''},expr)) <-- 
+[
+	If(Verbose,Echo("OdeSolve: Integral in disguise!"));
+	If(Verbose,Echo("OdeSolve: Attempting to integrate ",expr));
+	
+	(Integrate(x) expr)+UniqueConstant();
+];
+
+50 # OdeSolve(_e) <--
 [
   Local(h);
   e:=OdeNormalForm(e);
