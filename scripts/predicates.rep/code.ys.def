@@ -20,6 +20,10 @@ IsBoolType
 IsPositiveReal
 IsNegativeReal
 IsHermitian
+IsSymmetric
+IsSkewSymmetric
+IsIdempotent
+IsOrthogonal
 IsUnitary
 IsVariable
 IsNumericList

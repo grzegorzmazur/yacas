@@ -79,7 +79,7 @@ IsSkewSymmetric(A_IsMatrix) <-- (Transpose(A)=(-1*A));
 IsHermitian(A_IsMatrix) <-- (Conjugate(Transpose(A))=A);
 IsSymmetric(A_IsMatrix) <-- (Transpose(A)=A);
 IsOrthogonal(A_IsMatrix) <-- (Transpose(A)*A=Identity(Length(A)));
-IsIdempotent(A_IsMatrix) <-- (A^2 = Identity(Length(A)));
+IsIdempotent(A_IsMatrix) <-- (A^2 = A);
 IsUnitary(A_IsMatrix) <-- (Transpose(Conjugate(A))*A = Identity(Length(A)));
 
 IsVariable(_expr) <-- (IsAtom(expr) And Not(IsNumber(N(expr))));
