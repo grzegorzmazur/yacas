@@ -15,8 +15,11 @@ TestNonIntegrable(_expr) <-- Verify(Type(expr) = "Integrate",True);
 TestNonIntegrable(Integrate(x)Sin(Exp(x)));
 Verify(Integrate(x) x^(-1),Ln(x)); // Well done Jonathan! ;-)
 Verify(Integrate(x) 1/x,Ln(x) );
-//Verify(Integrate(x) 1/x^2, -1/x );
+
+Verify(Integrate(x) 1/x^2, -x^ -1 );
 Verify(Integrate(x) Ln(x), x*Ln(x)-x );
+Verify(Integrate(x) x^5000, x^5001/5001 );
+
 TestNonIntegrable(Integrate(x) x^(1/x));
 TestNonIntegrable(Integrate(x) x^(Sin(x)));
 TestNonIntegrable(Integrate(x) Exp(x^2));
