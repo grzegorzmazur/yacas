@@ -80,6 +80,9 @@
    res;
 ];
 
+30 # (Taylor2(_x, _a, _n) _y) 
+   <-- Subst(x,x-a) Taylor2(x,0,n) Subst(x,x+a) y;
+
 /**********************************************************************
  *
  * Parameters 
@@ -207,8 +210,8 @@ Taylor'LPS'Coeffs(_lps, _n1, _n2) <--
 
       If (Not finished And lps[4][0] = Taylor'LPS'Multiply,
       [
-         lps[1] := Min(n2, Taylor'LPS'GetOrder(lps[4][1])[1] 
-                           + Taylor'LPS'GetOrder(lps[4][2])[1]);
+         lps[1] := Taylor'LPS'GetOrder(lps[4][1])[1] 
+                   + Taylor'LPS'GetOrder(lps[4][2])[1];
          If (IsError("dunno"),
          [
             ClearError("dunno");
@@ -261,16 +264,35 @@ Taylor'LPS'Coeffs(_lps, _n1, _n2) <--
                                     lps[4][1][1]+n2-lps[1]);
 	    tmp := lps[2];
 	    If (tmp = {}, tmp := {1/c1[1]});
-            ForEach(k, (Length(lps[2])+2) .. Length(c1))
-            [
-	       n := -Sum(j, 1, k-1, c1[k+1-j]*tmp[j]) / c1[1];
-	       tmp := Append(tmp, n);
-            ];
+	    If (Length(c1)>1, 
+	    [
+               ForEach(k, (Length(tmp)+1) .. Length(c1))
+               [
+	          n := -Sum(j, 1, k-1, c1[k+1-j]*tmp[j]) / c1[1];
+	          tmp := Append(tmp, n);
+               ];
+	    ]);
 	    lps[2] := tmp;
             finished := True;
 	 ]);
       ]);
 	    
+      /* Subcase 3f: Composition */
+
+      If (Not finished And lps[4][0] = Taylor'LPS'Compose,
+      [
+	 j := Taylor'LPS'GetOrder(lps[4][1])[1];
+	 Check(j >= 0, "Expansion of f(g(x)) where f has a"
+                       : "singularity is not implemented");
+	 k := Taylor'LPS'GetOrder(lps[4][2])[1];
+         c1 := {j, Taylor'LPS'Coeffs(lps[4][1], j, n2)};
+         c2 := {k, Taylor'LPS'Coeffs(lps[4][2], k, n2)};
+	 c1 := Taylor'TPS'Compose(c1, c2);
+	 lps[1] := c1[1];
+	 lps[2] := c1[2];
+	 finished := True;
+      ]);
+
       /* Case 3: The end */
 
       If (finished,
@@ -308,11 +330,75 @@ Taylor'LPS'Coeffs(_lps, _n1, _n2) <--
 
 /**********************************************************************
  *
+ * Truncated power series
+ * ~~~~~~~~~~~~~~~~~~~~~~
+ * Here is the start of an implementation of truncated power series.
+ * This should be cleaned up.
+ *
+ * {n, {a0,a1,a2,a3,...}} represents 
+ * a0 x^n + a1 x^(n+1) + a2 x^(n+2) + a3 x^(n+3) + ...
+ *
+ * The function Taylor'TPS'Add(tps1, tps2) adds two of such beasts,
+ * and returns the sum in the same truncated power series form. 
+ * Similar for the other functions.
+ */
+
+10 # Taylor'TPS'GetCoeff({_n,_c}, _k) _ (k < n) <-- 0;
+10 # Taylor'TPS'GetCoeff({_n,_c}, _k) _ (k >= n+Length(c)) <-- Undefined;
+20 # Taylor'TPS'GetCoeff({_n,_c}, _k) <-- c[k-n+1];
+
+
+10 # Taylor'TPS'Add({_n1,_c1}, {_n2,_c2}) <--
+[
+   Local(n, len, c1b, c2b);
+   n := Min(n1,n2);
+   len := Min(n1+Length(c1), n2+Length(c2)) - n;
+   c1b := Take(Concat(FillList(0, n1-n), c1), len);
+   c2b := Take(Concat(FillList(0, n2-n), c2), len);
+   {n, c1b+c2b};
+];
+
+10 # Taylor'TPS'ScalarMult(_a, {_n2,_c2}) <-- {n2, a*c2};
+
+10 # Taylor'TPS'Multiply({_n1,_c1}, {_n2,_c2}) <--
+[
+   Local(j,k,c);
+   c := {};
+   For (k:=1, k<=Min(Length(c1), Length(c2)), k++)
+   [
+      c := c : Sum(j, 1, k, c1[j]*c2[k+1-j]);
+   ];
+   {n1+n2, c};
+];
+
+10 # Taylor'TPS'Compose({_n1,_c1}, {_n2,_c2}) <--
+[
+   Local(res, tps, tps2, k, n);
+   n := Min(n1+Length(c1)-1, n2+Length(c2)-1);   
+   tps := {0, 1 : FillList(0, n)}; // tps = {n2,c2} ^ k
+   res := Taylor'TPS'ScalarMult(Taylor'TPS'GetCoeff({n1,c1}, 0), tps);   
+   For (k:=1, k<=n, k++)
+   [
+      tps := Taylor'TPS'Multiply(tps, {n2,c2});
+      tps2 := Taylor'TPS'ScalarMult(Taylor'TPS'GetCoeff({n1,c1}, k), tps);
+      res := Taylor'TPS'Add(res, tps2);
+   ];
+   res;
+];
+
+
+
+/**********************************************************************
+ *
  * Taylor'LPS'NormalizeExpr(var, expr)
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * Return expr, with "+" replaced by Taylor'LPS'Add, etc. 
  * PRE:  var is a name
  */
+
+5 # Taylor'LPS'NormalizeExpr(_var, _e1)
+  _ [Taylor'LPS'CompOrder(var,e1); Not ClearError("dunno");]
+  <-- e1;
 
 10 # Taylor'LPS'NormalizeExpr(_var, _e1 + _e2)
    <-- Taylor'LPS'Add(Taylor'LPS'Construct(var, e1),
@@ -355,6 +441,53 @@ Taylor'LPS'Coeffs(_lps, _n1, _n2) <--
    <-- Taylor'LPS'Multiply(Taylor'LPS'Construct(var, e1),
                            Taylor'LPS'Construct(var, e1^(n-1)));
 
+10 # Taylor'LPS'NormalizeExpr(_var, Tan(_x)) 
+   <-- (Taylor'LPS'Multiply(Taylor'LPS'Construct(var, Sin(x)),
+                            Taylor'LPS'Construct(var, e3))
+        Where e3 == Taylor'LPS'Inverse(Taylor'LPS'Construct(var, Cos(x))));
+
+LocalSymbols(res) 
+[
+50 # Taylor'LPS'NormalizeExpr(_var, _e1) 
+_[ 
+    Local(c, lps1, lps2, lps3, success);
+    success := True;
+    If (IsAtom(e1), success := False);
+    If (success And Length(e1) != 1, success := False);
+    If (success And IsAtom(e1[1]), success := False);
+    If (success And CanBeUni(var, e1[1]) And Degree(e1[1], var) = 1, 
+    [
+       success := False;
+    ]);
+    If (success,
+    [
+       lps2 := Taylor'LPS'Construct(var, e1[1]);
+       c := Taylor'LPS'Coeffs(lps2, 0, 0)[1];
+       If (IsError(),
+       [
+          ClearErrors();
+	  success := False;
+       ]);
+       If (success And Taylor'LPS'GetOrder(lps2)[1] < 0,
+       [
+          success := False;
+       ],[
+          If (c = 0,
+          [
+             lps1 := Taylor'LPS'Construct(var, Apply(e1[0], {var}));
+             res := Taylor'LPS'Compose(lps1, lps2);
+          ],[
+             lps1 := Taylor'LPS'Construct(var, Apply(e1[0], {var+c}));
+             lps3 := Taylor'LPS'Construct(var, -c);
+	     lps2 := Taylor'LPS'Construct(var, Taylor'LPS'Add(lps2, lps3));
+             res := Taylor'LPS'Compose(lps1, lps2);
+          ]);
+       ]);
+    ]);
+    success;
+ ] <-- res;
+];
+
 60000 # Taylor'LPS'NormalizeExpr(_var, _e1) <-- e1;
 
 
@@ -384,49 +517,72 @@ Taylor'LPS'Coeffs(_lps, _n1, _n2) <--
 
 /* Constant */
 
-10 # Taylor'LPS'CompOrder(_x, e_IsFreeOf(x))     <-- 0;
-10 # Taylor'LPS'CompCoeff(_x, e_IsFreeOf(x), 0)  <-- e;
-20 # Taylor'LPS'CompCoeff(_x, e_IsFreeOf(x), _n) <-- 0;
+20 # Taylor'LPS'CompOrder(_x, e_IsFreeOf(x))     <-- 0;
+20 # Taylor'LPS'CompCoeff(_x, e_IsFreeOf(x), 0)  <-- e;
+21 # Taylor'LPS'CompCoeff(_x, e_IsFreeOf(x), _n) <-- 0;
 
 /* Identity */
 
-10 # Taylor'LPS'CompOrder(_x, _x)     <-- 1;
-10 # Taylor'LPS'CompCoeff(_x, _x, 1)  <-- 1;
-20 # Taylor'LPS'CompCoeff(_x, _x, _n) <-- 0;
+30 # Taylor'LPS'CompOrder(_x, _x)     <-- 1;
+30 # Taylor'LPS'CompCoeff(_x, _x, 1)  <-- 1;
+31 # Taylor'LPS'CompCoeff(_x, _x, _n) <-- 0;
 
 /* Powers */
 
-10 # Taylor'LPS'CompOrder(_x, _x^(k_IsPositiveInteger))     <-- k;
-10 # Taylor'LPS'CompCoeff(_x, _x^(k_IsPositiveInteger), _k) <-- 1;
-20 # Taylor'LPS'CompCoeff(_x, _x^(k_IsPositiveInteger), _n) <-- 0;
+40 # Taylor'LPS'CompOrder(_x, _x^(k_IsPositiveInteger))     <-- k;
+40 # Taylor'LPS'CompCoeff(_x, _x^(k_IsPositiveInteger), _k) <-- 1;
+41 # Taylor'LPS'CompCoeff(_x, _x^(k_IsPositiveInteger), _n) <-- 0;
+
+/* Sqrt */
+
+50 # Taylor'LPS'CompOrder(_x, Sqrt(_y))
+   _ (CanBeUni(x,y) And Degree(y,x) = 1 And Coef(y,x,0) != 0)
+   <-- 0;
+
+50 # Taylor'LPS'CompCoeff(_x, Sqrt(_y), 0)
+   _ (CanBeUni(x,y) And Degree(y,x) = 1 And Coef(y,x,0) != 0) 
+   <-- Sqrt(Coef(y,x,0));
+
+51 # Taylor'LPS'CompCoeff(_x, Sqrt(_y), _n)
+   _ (CanBeUni(x,y) And Degree(y,x) = 1 And Coef(y,x,0) != 0) <-- 
+[ 
+   Local(j); 
+   Coef(y,x,0)^(1/2-n) * Factorize(j,0,n-1,1/2-j) * Coef(y,x,1)^n/n!;
+];
 
 /* Exp */
 
-10 # Taylor'LPS'CompOrder(_x, Exp(_x))     <-- 0;
-10 # Taylor'LPS'CompCoeff(_x, Exp(_x), _n) <-- 1/n!;
+60 # Taylor'LPS'CompOrder(_x, Exp(_x))     <-- 0;
+60 # Taylor'LPS'CompCoeff(_x, Exp(_x), _n) <-- 1/n!;
+
+70 # Taylor'LPS'CompOrder(_x, Exp(_y))_(CanBeUni(x,y) And Degree(y,x) = 1)
+   <-- 0;
+
+70 # Taylor'LPS'CompCoeff(_x, Exp(_y), _n)_(CanBeUni(x,y) And Degree(y,x) = 1)
+   <-- Exp(Coef(y,x,0)) * Coef(y,x,1)^n / n!;
 
 /* Ln */
 
-10 # Taylor'LPS'CompOrder(_x, Ln(_x+1))     <-- 1;
-10 # Taylor'LPS'CompCoeff(_x, Ln(_x+1), _n) <-- (-1)^(n+1)/n;
+80 # Taylor'LPS'CompOrder(_x, Ln(_x+1))     <-- 1;
+80 # Taylor'LPS'CompCoeff(_x, Ln(_x+1), _n) <-- (-1)^(n+1)/n;
 
 /* Sin */
 
-10 # Taylor'LPS'CompOrder(_x, Sin(_x))           <-- 1;
-10 # Taylor'LPS'CompCoeff(_x, Sin(_x), n_IsOdd)  <-- (-1)^((n-1)/2) / n!;
-10 # Taylor'LPS'CompCoeff(_x, Sin(_x), n_IsEven) <-- 0;
+90 # Taylor'LPS'CompOrder(_x, Sin(_x))           <-- 1;
+90 # Taylor'LPS'CompCoeff(_x, Sin(_x), n_IsOdd)  <-- (-1)^((n-1)/2) / n!;
+90 # Taylor'LPS'CompCoeff(_x, Sin(_x), n_IsEven) <-- 0;
 
 /* Cos */
 
-10 # Taylor'LPS'CompOrder(_x, Cos(_x))           <-- 0;
-10 # Taylor'LPS'CompCoeff(_x, Cos(_x), n_IsOdd)  <-- 0;
-10 # Taylor'LPS'CompCoeff(_x, Cos(_x), n_IsEven) <-- (-1)^(n/2) / n!;
+100 # Taylor'LPS'CompOrder(_x, Cos(_x))           <-- 0;
+100 # Taylor'LPS'CompCoeff(_x, Cos(_x), n_IsOdd)  <-- 0;
+100 # Taylor'LPS'CompCoeff(_x, Cos(_x), n_IsEven) <-- (-1)^(n/2) / n!;
 
 /* Inverse (not needed but speeds things up) */
 
-10 # Taylor'LPS'CompOrder(_x, 1/_x)     <-- -1;
-10 # Taylor'LPS'CompCoeff(_x, 1/_x, -1) <-- 1;
-20 # Taylor'LPS'CompCoeff(_x, 1/_x, _n) <-- 0;
+110 # Taylor'LPS'CompOrder(_x, 1/_x)     <-- -1;
+110 # Taylor'LPS'CompCoeff(_x, 1/_x, -1) <-- 1;
+111 # Taylor'LPS'CompCoeff(_x, 1/_x, _n) <-- 0;
 
 /* Default */
 
@@ -500,12 +656,6 @@ Taylor'LPS'Coeffs(_lps, _n1, _n2) <--
       ]);
    ]);
 
-   If (Not computed And lps[4][0] = Taylor'LPS'ScalarMult,
-   [
-      res := Taylor'LPS'GetOrder(lps[4][2]);
-      If (Not ClearError("dunno"), computed := True);
-   ]);
-
    If (Not computed And lps[4][0] = Taylor'LPS'Inverse,
    [
       res := Taylor'LPS'GetOrder(lps[4][1]);
@@ -537,6 +687,20 @@ Taylor'LPS'Coeffs(_lps, _n1, _n2) <--
 	 If (Not computed,
 	 [
 	    res := {-res[1], True};
+	    computed := True;
+	 ]);
+      ]);
+   ]);
+
+   If (Not computed And lps[4][0] = Taylor'LPS'Compose,
+   [
+      res1 := Taylor'LPS'GetOrder(lps[4][1]);
+      If (Not ClearError("dunno"), 
+      [ 
+         res2 := Taylor'LPS'GetOrder(lps[4][2]);
+         If (Not ClearError("dunno"), 
+	 [
+	    res := {res1[1]*res2[1], res1[1] And res2[1]};
 	    computed := True;
 	 ]);
       ]);
