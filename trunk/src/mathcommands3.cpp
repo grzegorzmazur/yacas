@@ -400,7 +400,7 @@ void LispMod(LispEnvironment& aEnvironment, LispPtr& aResult,
 {//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, ModFloat);
 }
-/**/
+/* up to here */
 
 void LispDiv(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
@@ -484,7 +484,7 @@ void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArgumen
 { \
       LispBackupName(aEnvironment, aResult, aArguments); \
 }
-    #define PLATFORM_BINARY(LispName, PlatformName, LispBackupName) \
+    #define PLATFORM_BINARY(LispName, PlatformName, LispBackupName, OldName) \
 void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
 { \
       LispBackupName(aEnvironment, aResult, aArguments); \
