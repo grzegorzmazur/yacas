@@ -20,12 +20,24 @@ become a little simpler when written in factorials.
 *A Gamma function!half-integer arguments
 
 The Gamma function is implemented as {Gamma(x)}. At integer values {n} of the
-argument, {Gamma(n)} is computed exactly. For half-integer arguments it is
+argument, {Gamma(n)} is computed exactly.
+It only makes sense to compute exact integer factorials for small numbers $n$.
+Currently a warning message is printed if a factorial of $n>65535$ is requested.
+
+For half-integer arguments it is
 also computed exactly, using the following identities (here $n$ is a
 nonnegative integer):
 $$ (+(2*n+1)/2)! = Sqrt(Pi)*(2*n+1)! / (2^(2*n+1)*n!) $$,
 $$ (-(2*n+1)/2)! = (-1)^n*Sqrt(Pi) * (2^(2*n)*n!) / (2*n)! $$.
 For efficiency, "double factorials" are used in this calculation.
+
+If the factorial of a large integer or half-integer $n$ needs to be computed not exactly but only with a certain floating-point precision, it is faster (for large enough $Abs(n)$) not to evaluate an exact integer product, but to use the floating-point numerical approximation.
+This method is currently not implemented in Yacas.
+
+*A Stirling's formula
+
+There is also the famous Stirling's asymptotic formula for large factorials,
+$$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)+1/(12*n)-1/(360*n^3)+...$$
 
 *A Gamma function!rational arguments
 
@@ -39,7 +51,7 @@ By choosing $M$ large enough, this can be made small enough to discard that inte
 Then we can evaluate the series using the binary splitting technique.
 This method is currently not implemented in Yacas.
 
-	    General arguments
+	    Method 1: the Lanczos-Spouge formula
 
 *A Gamma function!by Lanczos-Spouge method
 
@@ -72,8 +84,13 @@ for practical calculations in arbitrary precision: the time it would take to
 compute the array of $N$ coefficients $c[k]$ grows as $N^3$. Therefore it is
 better to use less precise but much simpler formulae derived by Spouge.
 
-In the calculation of the sum $Sum(k, 1, N, c[k]*(z+k)^(-1))$, round-off error
-can lead to a serious loss of precision. At version
+
+	    Round-off error in the Lanczos method
+
+In the calculation of the sum $S:=Sum(k, 1, N, c[k]*(z+k)^(-1))$, a certain round-off error results from the changing signs in $c[k]$, and from the fact that some values $c[k]$ are much larger than the final value of the sum.
+This leads to some cancellations and as a result to a certain loss of precision.
+
+At version
 *EVAL Version() : ","
 {Yacas} is limited in
 its internal arbitrary precision facility that does not support
@@ -84,20 +101,31 @@ are implemented. First, a Horner scheme is used to compute the sum; this is some
 faster and leads to smaller roundoff errors. Second, intermediate calculations
 are performed at 40{%} higher precision than requested. This is much slower but
 allows to obtain results at desired precision.
-*FOOT More precisely, the working precision necessary to compensate for the cancellations must be $1.152*P$ digits for $P$ digits of the result.
 
-If the factorial of a large integer or half-integer $n$ needs to be computed not exactly but only with a certain floating-point precision, it is faster (for large enough $Abs(n)$) not to evaluate an exact integer product, but to use the numerical approximation.
-This method is currently not implemented in Yacas.
+If strict floating-point logic is used, the working precision necessary to compensate for the cancellations must be $1.1515*P$ digits for $P$ digits of the result.
+This can be shown as follows.
 
-*A Stirling's formula
-
-There is also the famous Stirling's asymptotic formula for large factorials,
-$$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)+1/(12*n)-1/(360*n^3)+...$$
+The sum converges to a certain value $S$ which is related to the correct value of the Gamma function at $z$.
+After some algebra we find that $S$ is of order $Sqrt(a)$ if $z>a$ and of order $a^(1/2-z)$ if $a>z$.
+Since $a$ is never a very large number, we can consider the value of $S$ to be roughly of order $1$, compared with exponentially large values of some of the terms $c[k]$ of this sum.
+The magnitude of a coefficient $c[k]$ is estimated by Stirling's formula,
+$$ Ln(Abs(c[k]))<=> (k-1)*Ln((a-k)/(k-1)) $$.
+(Here we have put approximately $k-1<=>k-1/2$ since $k$ is not small.)
+This function has a maximum at $k<=>1+0.2178*(a-1)$.
+Then the largest magnitude of a coefficient $c[k]$ at this $k$ is approximately $Exp(0.2785*(a-1))$.
+The constant $0.2785=W(1/e)$ is the solution of $x+Ln(x)+1=0$.
+Here $x=(k-1)/(a-k)$ and $W$ is Lambert's function.
+Now, $a-1<=>P*Ln(10)/Ln(2*Pi)$, so the maximum of $c[k]$ is $10^(0.1515*P)$.
+Therefore we have a certain cancellation in the sum $S$: adding and subtracting some numbers of order $10^(0.1515*P)$ produces an answer of order $1$.
+Therefore we need to have at least 15% more decimal digits to obtain $P$ digits of the final answer.
+(The constant $W(1/e)/Ln(2*Pi)<=>0.1515$ is independent of the base 10.)
 
 
 	    Other methods for the Gamma function
 
 More traditional ways of calculating the Gamma function are the Stirling asymptotic series and the Sweeney-Brent method of combined series.
+
+	    Method 2: Stirling's asymptotic series
 
 *A Gamma function!by asymptotic series
 
@@ -144,27 +172,48 @@ For small $x$ this will be the dominant contribution to the complexity.
 
 On the other hand, if the Bernoulli numbers are not available precomputed, then their calculation dominates the complexity of the algorithm.
 
+	    Method 3: the Sweeney-Brent trick
+
 *A Gamma function!by Sweeney-Brent method
 
-The second method for the Gamma function was used in R. P. Brent's Fortran MP package [Brent 1978].
+The second method for the Gamma function $Gamma(x)$ was used in R. P. Brent's Fortran MP package [Brent 1978].
 Brent refers to [Sweeney 1963] for the origin of this method.
 Therefore, we called this method the "Sweeney-Brent" method.
 
+This method works well when $1<=x<2$ (other values of $x$ need to be reduced first).
 The idea is to represent the Gamma function as a sum of two integrals,
 $$ Gamma(x) = (Integrate(u,0,M) u^(x-1)*Exp(-u)) + (Integrate(u,M,Infinity) u^(x-1)*Exp(-u)) $$.
 The above identity clearly holds for any $M$.
-Both integrals in this equation can be approximated by power series.
-The parameter $M$ and the numbers of terms in the series can be chosen to minimize the computational cost, as we shall see below.
+Both integrals in this equation can be approximated by power series (although we may do without the second integral altogether, for a small increase of computation time).
+The parameter $M$ and the numbers of terms in the series must be chosen appropriately, as we shall see below.
 
 The first integral in this equation can be found as a sum of the Taylor series (expanding $Exp(-u)$ near $u=0$),
 $$ (Integrate(u,0,M) u^(x-1)*Exp(-u)) = M^x*Sum(n,0,Infinity, ((-1)^n*M^n)/((n+x)*n!)) $$.
-This series is an alternating series and its computation requires a 100{%} increase of working precision, but the series absolutely converges for any finite $M$.
-(It is quicker to compute this if $x$ is a small rational number.)
-The second integral can be approximated by an asymptotic series using standard methods of finding the asymptotics of integrals.
+This series absolutely converges for any finite $M$.
+However, the series has alternating signs and incurs a certain round-off error.
+The second integral is smaller than $M^(x-1)*Exp(-M)$ and $M$ can be chosen large enough so that this is smaller than $10^(-P)$.
+This condition gives approximately $M>P*Ln(10)+Ln(P*Ln(10))$.
 
-*REM FIXME -- fill in the details
+Now we can estimate the number of terms in the above series.
+We know that the value of the Gamma function is of order $1$.
+The condition that $n$-th term of the series is smaller than $10^(-P)$ gives $n*Ln(n/e*M)>P*Ln(10)$.
+With the above value for $M$, we obtain $n=P*Ln(10)/W(1/e)$ where $W$ is Lambert's function; $W(1/e)<=>0.2785$.
 
-Calculations are somewhat faster if $M$ is chosen as an integer value.
+The terms of the series are however not monotonic: first the terms grow and then they start to decrease, like in the Taylor series for the exponential function evaluated at a large argument.
+The ratio of the ($k+1$)-th term to the $k$-th term is approximately $M/(k+1)$.
+Therefore the terms with $k<=>M$ will be the largest and will have the magnitude of order $M^M/M! <=>Exp(M)<=>10^P$.
+In other words, we will be adding and subtracting large numbers with $P$ digits before the decimal point, but we need to obtain a result with $P$ digits after the decimal point.
+Therefore to avoid the roundoff error we need to increase the working precision to $2*P$ floating-point decimal digits.
+
+It is quicker to compute this series if $x$ is a small rational number, because then the long multiplications can be avoided, or at high enough precision the binary splitting can be used.
+Calculations are also somewhat faster if $M$ is chosen as an integer value.
+
+If the second integral is approximated by an asymptotic series instead of a constant $Exp(-M)$,
+then it turns out that the smallest error of the series is $Exp(-2*M)$.
+Therefore we can choose a smaller value of $M$ and the roundoff error gets somewhat smaller.
+According to [Brent 1978], we then need only $3/2*P$ digits of working precision, rather than $2*P$, for computing the first series
+(and only $P/2$ digits for computing the second series).
+However, this computational savings may not be significant enough to justify computing a second series.
 
 
 		Euler's constant $gamma$
@@ -272,6 +321,19 @@ The resulting identity in the way it is used here is
 $$ gamma+Ln(n) = (S0(2*n)-K0(2*n))/I0(2*n) $$.
 Since $K0(2*n)$ decays very quickly at large $n$, we obtain the approximation
 $$ gamma <=> S0(2*n)/I0(2*n)-Ln(n)+O(Exp(-4*n)) $$.
+
+		Catalan's constant $G$
+
+Catalan's constant $G$ is defined by
+$$ G = Sum(n,0,Infinity,(-1)^n/(2*n+1)^2) $$.
+A fast series to evaluate this constant is based on Ramanujan's identity:
+$$ G = Pi/8*Ln(2+Sqrt(3)) + 3/8*Sum(n,0,Infinity,(n!)^2/((2*n)! *(2*n+1)^2))$$.
+
+To obtain $P$ decimal digits of relative precision, we need to take at most $P*Ln(10)/Ln(4)$ terms of the series.
+The sum can be efficiently evaluated using Horner's scheme, for example
+$$ 1+1/(2*3)*(1/3+2/(2*5)*(1/5+3/(2*7)*(1/7+ ...) ) ) $$.
+This takes $O(P^2)$ operations because there are $O(P)$ short multiplications and divisions of $P$-digit numbers by small integers.
+At very high precision, the binary splitting technique can be used instead of Horner's scheme to further reduce the computation time to $O(M(P)*Ln(P)^2)$.
 
 		Riemann's Zeta function
 
