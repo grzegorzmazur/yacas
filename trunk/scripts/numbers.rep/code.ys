@@ -544,27 +544,7 @@ Function("FactorGaussianInteger",{x}) [
 
 IsCarmichaelNumber(n_IsList) <-- MapSingle("IsCarmichaelNumber",n);
 
-// approximation to the number of additive partitions of an integer
-// this is the first term in Rademachers explicit infinite series
-// formula
-// Maybe use this for small n?
-/*
-PartitionsP(n_IsPositiveInteger) <--
-[
-	Local(C,lambda,m,pa);
-	C:=Pi*Sqrt(2/3);
-	lambda:=Sqrt(m - 1/24);
-
-	pa:= Deriv(m) Exp(C*lambda)/lambda;
-	GlobalPush(GetPrecision());
-	Precision(80);
-	pa:=Round(N(pa/(2*Pi*Sqrt(2)) Where m==n));
-	Precision(GlobalPop());
-	pa;
-
-];
-*/
-
+/// the number of additive partitions of an integer
 5  # PartitionsP(0)	<-- 1;
 5  # PartitionsP(1)	<-- 1;
 10 # PartitionsP(n_IsPositiveInteger) <--
@@ -582,7 +562,8 @@ PartitionsP(n_IsPositiveInteger) <--
 	// get the leading term approximation P0 - compute once at high precision
 	lambda := N(Sqrt(n - 1/24));
 	mu := N(Pi*lambda*Sqrt(2/3));
-	// the hoops with MathDivide are needed to avoid roundoff error at large n due to fixed precision: Exp(mu)/()
+	// the hoops with MathDivide are needed to avoid roundoff error at large n due to fixed precision:
+	// Exp(mu)/(n) must be computed by dividing by n, not by multiplying by 1/n
 	P0 := N(1-1/mu)*MathDivide(MathExp(mu),(n-MathDivide(1,24))*4*MathSqrt(3));
 	/*
 	the series is now equal to

@@ -239,6 +239,7 @@ Each term of the series is either 0 (when all terms in $A(k,n)$ happen to cancel
 (The series is not actually monotonic.)
 In the current implementation, the series is truncated when $Abs(A(k,n)*S(n)*Sqrt(k))$ becomes smaller than 0.1 for the first time;
 in any case, the maximum number of calculated terms is $5+Sqrt(n)/2$.
+One can show that asymptotically for large $n$, the number of terms is less than $mu/Ln(mu)$, where $mu:=Pi*Sqrt((2*n)/3)$.
 
 The floating-point precision necessary to obtain the integer result must be at least the number of digits in the first term $P0(n)$, i.e.
 $$ Prec > (Pi*Sqrt(2/3*n)-Ln(4*n*Sqrt(3)))/Ln(10) $$.
