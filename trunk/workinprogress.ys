@@ -1,5 +1,27 @@
 
 
+Bodied(MultiSubst,60000);
+(MultiSubst(_from,_to)(_expr)) <--
+[
+  Local(poly,terms); poly:=MM(x);
+  msvars:=MultiExpressionList(expr+from+to);
+Check(NormalForm(MultiLT(MM(from,msvars)) -   MM(from,msvars))=0,"Not a valid \"from\" argument");
+Check(NormalForm(MultiLT(MM(to  ,msvars)) -   MM(to  ,msvars))=0,"Not a valid \"from\" argument");
+Check(MultiLeadingTerm(MM(from,msvars))[2] = 1,"Coefficients need to be unity in transformations");
+Check(MultiLeadingTerm(MM(to,msvars))[2] = 1,"Coefficients need to be unity in transformations");
+  msfrom:=MultiLeadingTerm(MM(from,msvars))[1];
+  msto:=MultiLeadingTerm(MM(to,msvars))[1];
+  terms:=MM(expr,msvars)[2];
+  msres:=0;
+  SparseTreeMap("MultiSubstOp",Length(msvars),terms);
+  msres;
+];
+
+10 # MultiSubstOp(_deg,_coef)_(Select({{n},n<0},deg-msfrom) = {}) <-- MultiSubstOp(deg-msfrom+msto,coef);
+20 # MultiSubstOp(_deg,_coef) <-- [ msres := msres + coef*Factorize(msvars^deg);];
+
+
+EndOfFile;
 
 Function() LocalRules(name,rules);
 HoldArg(LocalRules,rules);
