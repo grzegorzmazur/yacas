@@ -185,7 +185,7 @@ LogicRemoveTautologies(_e) <--
 /*                Echo({"Deleting from ", e, " i=", i, ", j=", j, Nl()}); */
 
                 negationfound := True;
-                Echo({"Removing clause ", i, Nl()});
+/*                Echo({"Removing clause ", i, Nl()}); */
             ],
         If(Equals(y, x),
             [
@@ -224,7 +224,7 @@ LogicCombine(_list) <--
   Local(i, j);
   For(i:=1, i<=Length(list), i++)
   [
-    Echo({"list[", i, "/", Length(list), "]: ", list[i], Nl()});
+/*    Echo({"list[", i, "/", Length(list), "]: ", list[i], Nl()}); */
     Local(redo);
     redo := False;
 

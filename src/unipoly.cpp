@@ -243,7 +243,11 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
     ZZ i,j,k;
     ZZ deg = aPoly.Degree();
     
-    for (i=0;i<=deg;i++) a.Append(0);
+    for (i=0;i<=deg;i++)
+    {
+        aPoly[i] = p.Mod(aPoly[i]);
+        a.Append(0);
+    }
     a[deg-1] = 1;
 
 #ifdef TEST
