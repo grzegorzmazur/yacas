@@ -12,6 +12,7 @@
 
 #define LTDL_OBJDIR "../src"
 
+#define HAVE_LIBGSL 1
 
 /* end acconfig.h */
 

@@ -1,21 +1,13 @@
 
 
-SUBDIRS =  example forth opengl
+SUBDIRS =  example forth opengl yacas_gsl
 
-EXTRA_DIST = doc.txt   README   makefile.plugin \
-        \
-	opengl/glutcode.cc            \
-	opengl/glutcode.h             \
-	opengl/makefile.plugin        \
-	opengl/new                    \
-	opengl/openglapi.stub         \
-	opengl/testscript             \
-  opengl/glututils              \
-	opengl/depend.dep
+EXTRA_DIST = doc.txt   README   makefile.plugin 
 
 macosx:
 	cd example ; make libexample.dylib
 	cd forth ; make libforth.dylib
+	cd yacas_gsl ; make libyacas_gsl.dylib
 
 #
 # Why doesn't this work?
