@@ -1,0 +1,281 @@
+<HTML>
+<A NAME="c15">
+
+</A>
+<A HREF="refchapter15.html#SetStringMid" TARGET="Chapters">
+SetStringMid
+</A>
+, <A HREF="refchapter15.html#StringMid" TARGET="Chapters">
+StringMid
+</A>
+, <A HREF="refchapter15.html#String" TARGET="Chapters">
+String
+</A>
+, <A HREF="refchapter15.html#Atom" TARGET="Chapters">
+Atom
+</A>
+, <A HREF="refchapter15.html#ConcatStrings" TARGET="Chapters">
+ConcatStrings
+</A>
+, <A HREF="refchapter15.html#LocalSymbols" TARGET="Chapters">
+LocalSymbols
+</A>
+, <A HREF="refchapter15.html#PatchString" TARGET="Chapters">
+PatchString
+</A>
+, <HEAD><TITLE>String manipulation</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+String manipulation
+</H1>
+<A NAME="SetStringMid">
+
+</A>
+<H3>
+<HR>SetStringMid
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+SetStringMid(index,substring,string)
+<H5>
+Parameters:
+</H5>
+index - index of substring to get <br>
+substring - substring to store <br>
+string - string to store substring in.
+
+<H5>
+Description:
+</H5>
+Set (change) a part of a string. It leaves the original alone, returning
+a new changed copy.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> SetStringMid(3,"XY","abcdef")
+Out> "abXYef";
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#StringMid" TARGET="Chapters">
+StringMid
+</A>
+, <A HREF="ref.html#Length" TARGET="Chapters">
+Length
+</A>
+, <A NAME="StringMid">
+
+</A>
+<H3>
+<HR>StringMid
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+StringMid(index,length,string)
+<H5>
+Parameters:
+</H5>
+index - index of substring to get <br>
+length - length of substring to get <br>
+string - string to get substring from
+
+<H5>
+Description:
+</H5>
+StringMid returns a part of a string. Substrings can also be
+accessed using the [] operator.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> StringMid(3,2,"abcdef")
+Out> "cd";
+In> "abcdefg"[2 .. 4]
+Out> "bcd";
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#SetStringMid" TARGET="Chapters">
+SetStringMid
+</A>
+, <A HREF="ref.html#Length" TARGET="Chapters">
+Length
+</A>
+, <A NAME="String">
+
+</A>
+<A NAME="Atom">
+
+</A>
+<H3>
+<HR>Converting atoms to strings and vice versa
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Atom(string) <br>
+String(atom)
+
+<H5>
+Parameters:
+</H5>
+atom - an atom <br>
+string - a string
+
+<H5>
+Description:
+</H5>
+
+Atom(string) : 
+Returns an atom with the string representation given
+as the evaluated argument. Example: "Atom("foo");" returns
+foo.
+
+<P>
+
+String is the inverse of Atom: turns atom into "atom".
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> String(a)
+Out> "a";
+In> Atom("a")
+Out> a;
+</PRE></TR>
+</TABLE>
+
+<A NAME="ConcatStrings">
+
+</A>
+<H3>
+<HR>ConcatStrings
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+ConcatStrings(strings)
+<H5>
+Parameters:
+</H5>
+strings - one or more strings
+<H5>
+Description:
+</H5>
+
+ConcatStrings concatenates strings. Example:
+"ConcatStrings("a","b","c");" will return "abc".
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> ConcatStrings("a","b","c")
+Out> "abc";
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#:" TARGET="Chapters">
+:
+</A>
+, <A NAME="LocalSymbols">
+
+</A>
+<H3>
+<HR>LocalSymbols
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+LocalSymbols(...)body
+<H5>
+Parameters:
+</H5>
+... - list of symbols <br>
+body - expression to execute
+
+<H5>
+Description:
+</H5>
+Given the symbols passed as the first arguments to LocalSymbols
+a set of local symbols will be created, and creates unique ones
+for them, typically of the form $<symbol><number>, where
+symbol was the symbol entered by the user, and number is a unique
+number. This scheme was used
+to such a generated symbol can not accientally be entered by a user.
+
+<P>
+
+This is useful in cases where a guaranteed free variable is needed,
+like in the macro-like functions (For, While, etc.).
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> LocalSymbols(a,b)a+b
+Out> $a6+ $b6;
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#UniqueConstant" TARGET="Chapters">
+UniqueConstant
+</A>
+, <A NAME="PatchString">
+
+</A>
+<H3>
+<HR>PatchString
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+PatchString(string)
+<H5>
+Parameters:
+</H5>
+string - a string to patch
+<H5>
+Description:
+</H5>
+This function does the same as PatchLoad, but it works on a string
+in stead of on the contents of a text file. See PatchLoad for more
+details.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> PatchString("Two plus three is &lt? Write(2+3); ?&gt ");
+Out> "Two plus three is 5 ";
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#PatchLoad" TARGET="Chapters">
+PatchLoad
+</A>
+, 
+</BODY>
+
+</FONT>
+
+</HTML>
