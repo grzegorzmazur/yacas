@@ -9,8 +9,8 @@
 3# FactorizeInt(n_IsInteger) <--
 [
   Local(small'powers);
-  // first, find powers of 2, 3, ..., p with p=200 currently -- this speeds up PollardRho and sometimes avoids its worst-case performance
-  small'powers := TrialFactorize(Abs(n), 200);	// value is {n1, {p1,q1}, {p2,q2}, ...} and n1=1 if completely factorized into these factors, and the remainder otherwise
+  // first, find powers of 2, 3, ..., p with p=257 currently -- this speeds up PollardRho and should avoids its worst-case performance
+  small'powers := TrialFactorize(Abs(n), 257);	// value is {n1, {p1,q1}, {p2,q2}, ...} and n1=1 if completely factorized into these factors, and the remainder otherwise
   n := small'powers[1];	// remainder
   If(n=1, Tail(small'powers),
   // if n!=1, need to factorize the remainder with Pollard Rho algorithm
@@ -34,7 +34,7 @@
 ];
 
 /// Auxiliary function. Return the power of a given prime contained in a given integer and remaining integer.
-/// E.g. FindPrimeFactor(42, 3) returns {14, 1} and FindPrimeFactor(42,17) returns {42, 0}
+/// E.g. FindPrimeFactor(63, 3) returns {7, 2} and FindPrimeFactor(42,17) returns {42, 0}
 FindPrimeFactor(n, prime) :=
 [
 	Local(power);
@@ -61,7 +61,7 @@ TrialFactorize(n, limit) :=
 			power>0,
 			DestructiveAppend(result, {prime,power})
 		);
-		prime := NextPrime(prime);
+		prime := NextPseudoPrime(prime);	// faster than NextPrime and we don't need real primes here
 	];
 	// replace the first element which was n by the new n
 	DestructiveReplace(result, 1, n);
@@ -97,12 +97,14 @@ PollardRhoPolynomial(_x) <-- x^2+1;
 2# PollardRhoFactorize(n_IsPrimePower) <-- {GetPrimeFactors(n)};
 3# PollardRhoFactorize(_n) <--
 [
-  Local(x,y,i,gcd,repeat);
-  gcd:=n;
-  While(gcd = n)
+  Local(x,y,restarts,gcd,repeat);
+  gcd:=1;
+  restarts := 100;	// allow at most this many restartings of the algorithm
+  While(gcd = 1 And restarts>=0)	// outer loop: this will be typically executed only once but it is needed to restart the iteration if it "stalls"
   [
-    /* Pick a random value between 0 and n-1 */
-    x:= 1;//RandomInteger(n);	// will start with 2 on first iteration
+  	restarts--;
+    /* Pick a random value between 1 and n-1 */
+    x:= RandomInteger(n-1)+1;
 
     /* Initialize loop */
     gcd:=1; y:=x;
@@ -114,19 +116,20 @@ PollardRhoPolynomial(_x) <-- x^2+1;
     [
       x:= Mod( PollardRhoPolynomial(x), n);
    	  y:= Mod( PollardRhoPolynomial(
-	  	Mod( PollardRhoPolynomial(y), n)
+	  	Mod( PollardRhoPolynomial(y), n)	// this is faster for large numbers
 	  ), n);
    	  If(x-y = 0,
        	 [
 		 	gcd := 1;
-		 	repeat--;	// guard against infinite loop but allow a few repetitions
+		 	repeat--;	// guard against "stalling" in an infinite loop but allow a few repetitions
 		 ],
        	 gcd:=Gcd(x-y,n)
        	 );
 //		Echo({"debug PollardRho: gcd=",gcd," x=", x," y=", y});
    	];
-	Check(repeat>=0, "PollardRhoFactorize: Warning: failed to factorize " : String(n));
+	If(Verbose And repeat<=0, Echo({"PollardRhoFactorize: Warning: stalled while factorizing ", n, "; counters ", x, y}));
   ];
+  Check(restarts>0, "PollardRhoFactorize: Error: failed to factorize " : String(n));
   /* Return result found */
   PollardCombineLists(PollardRhoFactorize(gcd), PollardRhoFactorize(Div(n,gcd)));
 ];
