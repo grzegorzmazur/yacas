@@ -341,6 +341,7 @@ void LispDiv(LispEnvironment& aEnvironment, LispPtr& aResult,
 	  }
 	  else
 	  {// FIXME: either need to report error that one or both of the arguments are not integer, or coerce them to integers
+	  	fprintf(stderr, "LispDiv: both arguments must be integer\n");
 		  return;
 	  }
 	  
