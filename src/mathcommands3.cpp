@@ -810,7 +810,7 @@ void LispPrettyPrinter(LispEnvironment& aEnvironment, LispInt aStackTop)
     {
         CHK_CORE(nrArguments == 2,KLispErrWrongNumberOfArgs);
         LispPtr oper;
-        oper.Set(ARGUMENT(1).Get());
+        oper.Set(Argument(ARGUMENT(0),1).Get());
         CHK_ISSTRING_CORE(oper,1);
         aEnvironment.SetPrettyPrinter(oper.Get()->String());
     }
