@@ -47,7 +47,7 @@ mkfastprimes_SOURCES = mkfastprimes.cpp
 
 libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \
-	lispio.cpp lispobject.cpp lispparser.cpp  \
+	lispio.cpp lispobject.cpp lispparser.cpp vm.cpp \
 	lispuserfunc.cpp mathcommands.cpp mathenvironment.cpp \
 	mathuserfunc.cpp standard.cpp  stdfileio.cpp arggetter.cpp \
 	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp \
