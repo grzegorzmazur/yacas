@@ -1003,12 +1003,29 @@ This function should also work on polynomials.
 
 </A>
 <H3>
-<HR>ContFrac(x) or ContFrac(x,maxdepth)
+<HR>ContFrac
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+ContFrac(x) or ContFrac(x,maxdepth)
+<H5>
+Parameters:
+</H5>
+x - expression to break down<br>
+maxdepth - maximum required depth of result
 
+<H5>
+Description:
+</H5>
 Return the continued fraction expansion of a floating point
-number. Example:
-
+number, or of a polynomial. This is especially useful for
+polynomials, since series expansions that converge slowly
+will typically converge a lot faster if calculated using
+a continued fraction expansion.
+<H5>
+Examples:
+</H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> PrettyForm(ContFrac(N(Pi)))
 
@@ -1023,12 +1040,13 @@ number. Example:
                           1    
                  292 + --------
                        1 + rest
+
 </PRE>
 </TABLE>
 
-
-
-
+<H5>
+See Also:
+</H5>
 <A NAME="Decimal">
 
 </A>
@@ -1729,16 +1747,55 @@ to the set of equations.
 
 </A>
 <H3>
-<HR>SuchThat(function,var)
+<HR>SuchThat
 </H3>
-
-SuchThat(function,var) : try to find a simple expression for variable var,
-given the equality function=0. This function basically only handles
-expressions where the variable var only occurs once. It does its work
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+SuchThat(expression,variable)
+<H5>
+Parameters:
+</H5>
+expression - an expression to solve for <br>
+variable - subexpression to look for
+<H5>
+Description:
+</H5>
+SuchThat(expression,var) : try to find a simple expression for variable var,
+given the equality expression=0. This function basically only handles
+expressions where the variable only occurs once. It does its work
 by applying the inverse of the top function, until the variable is
-reached.
+reached. Variable can also refer to an expression, in which case it
+will try to eliminate for that expression.
 
-<A NAME="Eliminate">
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> SuchThat(a+b*x,x)
+Out> (-a)/b;
+In> SuchThat(Cos(a)+Cos(b)^2,Cos(b))
+Out> (-Cos(a))^(1/2);
+In> Expand(a*x+b*x+c,x)
+Out> c+(a+b)*x;
+In> SuchThat(%,x)
+Out> (-c)/(a+b);
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Solve" TARGET="Chapters">
+Solve
+</A>
+, <A HREF="ref.html#Subst" TARGET="Chapters">
+Subst
+</A>
+, <A HREF="ref.html#Simplify" TARGET="Chapters">
+Simplify
+</A>
+, <A NAME="Eliminate">
 
 </A>
 <H3>

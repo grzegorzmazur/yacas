@@ -121,9 +121,10 @@ CofSetUp({aS0==1,aS1==1,E==1});
 */
 
 
-
+/*
 CofDoHarmonic(12,1);
 CofSetUp({aS0==0,aS1==1,aS3== -1/6});
+*/
 
 
 /*
@@ -136,6 +137,9 @@ CofDoNormal(20,1);
 CofSetUp({aS0==1,aS1==0,E == 0});
 */
 
+CofDoNormal(3,2);
+CofSetUp({});
+
 /*
 CofDoYukawa(5,1);
 CofSetUp({alpha==1,E==0,aS1==1,aS3==1});
@@ -143,8 +147,8 @@ CofSetUp({alpha==1,E==0,aS1==1,aS3==1});
 
 
 
-CofSolve();
 /*
+CofSolve();
 CofPlot();
 */
 

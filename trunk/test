@@ -1,4 +1,62 @@
 
+Load("coeffer");
+IndexedFunction(_fie) <-- UnList(f:IndexedFunctionAux(fie));
+10 # IndexedFunctionAux(a_IsAtom) <-- {};
+20 # IndexedFunctionAux((_a)[_i]) <-- Concat(IndexedFunctionAux(a),{i});
+
+10 # FPred((_a)[_i]) <-- True;
+20 # FPred(_b) <-- False;
+
+
+F(_x) <-- Substitute(x,"FPred","IndexedFunction");
+
+
+/* One-dimensional harmonic */
+
+/*
+10 #f(0) <-- f0;
+10 #f(1) <-- f1;
+20 # f(i_IsInteger) <-- E*f(i-2)/(i*(i-1));
+30 # f({})          <-- {};
+35 # f(list_IsList) <-- f(Head(list)):f(Tail(list)); 
+*/
+
+
+/* Two-dimensional harmonic */
+/*
+ (i+1)*(i+1+1)*f(i+1+1,j)+(j+1)*(j+1+1)*f(i,j+1+1)-E*f(i,j) = 0
+
+ f(i+2,j) = (E*f(i,j) - (j+1)*(j+2)*f(i,j+2))/((i+1)*(i+2))
+ f(i,j+2) = (E*f(i,j) - (i+1)*(i+2)*f(i+2,j))/((j+1)*(j+2))
+
+*/
+/*
+10 # f(_i,_j)_(j>0) <-- 0;
+15 # f(1,0) <-- f1;
+15 # f(0,0) <-- f0;
+20 #  f(_ii,_jj) <--
+ [
+   Local(i,j);
+   i:=i-2;
+   j:=j;
+   (E*f(i,j) - (j+1)*(j+2)*f(i,j+2))/((i+1)*(i+2));
+ ];
+*/
+
+/* Normal distro */
+
+
+RuleBase("f",{i,j});
+10 # f(_i,_j)_(j<i)  <-- -f(j,i);
+ff(_i,_j)<--
+[
+  Local(eq);
+  eq:=Simplify(Eval(F(ApplyCof({i,j},cofeq)[2])));
+  SuchThat(eq,f(i,j));
+];
+
+EndOfFile;
+
 
 fun(x):=(Exp(-a*x*Sign(x))-1)/(x*Sign(x));
 /*

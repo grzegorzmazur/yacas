@@ -348,14 +348,41 @@ to the set of equations.
 ";
 
 AddAnchor("SuchThat");
-SubSection()"SuchThat(function,var)";
-Text()"
-SuchThat(function,var) : try to find a simple expression for variable var,
-given the equality function=0. This function basically only handles
-expressions where the variable var only occurs once. It does its work
+SubSection()"SuchThat";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"SuchThat(expression,variable)";
+
+Topical()"Parameters";
+Text()"expression - an expression to solve for <br>
+variable - subexpression to look for";
+
+Topical()"Description";
+Text()
+"SuchThat(expression,var) : try to find a simple expression for variable var,
+given the equality expression=0. This function basically only handles
+expressions where the variable only occurs once. It does its work
 by applying the inverse of the top function, until the variable is
-reached.
+reached. Variable can also refer to an expression, in which case it
+will try to eliminate for that expression.
 ";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> SuchThat(a+b*x,x)
+Out> (-a)/b;
+In> SuchThat(Cos(a)+Cos(b)^2,Cos(b))
+Out> (-Cos(a))^(1/2);
+In> Expand(a*x+b*x+c,x)
+Out> c+(a+b)*x;
+In> SuchThat(%,x)
+Out> (-c)/(a+b);
+");
+
+Topical()"See Also"; 
+SeeAlso({"Solve","Subst","Simplify"});
+
 
 
 
