@@ -1,5 +1,5 @@
 EXTRA_DIST = COPYING.HelpDialog FltkConsole.cpp FltkConsole.h FltkHintWindow.cpp \
-	FltkHintWindow.h HelpView.cpp HelpView.h                                 \
+	FltkHintWindow.h HelpView.cpp HelpView.h  browse.cpp                     \
 	books.html.in depend.dep editor.cpp editor.h                             \
 	fl_adjustable_file_chooser.H fl_adjustable_file_chooser.cpp              \
 	flplot fltkgraph.stub fltkgraphstub.cc fltkgraphstub.description         \

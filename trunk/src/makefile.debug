@@ -1,7 +1,13 @@
 
 RANLIB = ranlib
 
+# Uncomment these if you want to use gmp for numerics
+# NUMBER_LIB = gmpnumbers-d.o
+# NUMBER_LN  = -lgmp
 
+# Uncomment these if you want to use the yacas internal numerics
+NUMBER_LIB = yacasnumbers-d.o
+NUMBER_LN  = 
 
 OBJS = anumber-d.o arggetter-d.o arrayclass-d.o commandline-d.o \
 	deffile-d.o errors-d.o genericobject-d.o genericstructs-d.o \
@@ -13,7 +19,7 @@ OBJS = anumber-d.o arggetter-d.o arrayclass-d.o commandline-d.o \
 	patternclass-d.o patterns-d.o platmath-d.o standard-d.o                \
 	stdcommandline-d.o stdfileio-d.o stdstubs-d.o obmalloc-d.o stringio-d.o             \
 	substitute-d.o tokenizer-d.o  ctokenizer-d.o xmltokenizer-d.o         \
-	yacasapi-d.o yacasnumbers-d.o unipoly-d.o elfdll-d.o obmalloc-d.o
+	yacasapi-d.o $(NUMBER_LIB) unipoly-d.o elfdll-d.o obmalloc-d.o
 
 .SUFFIXES: .cpp 
 
@@ -30,7 +36,7 @@ libyacasdebug.a : $(OBJS)
 	$(RANLIB) libyacasdebug.a
 
 yacasdebug: yacasmain-d.o elfdll-d.o commandline-d.o unixcommandline-d.o stdcommandline-d.o debugmem-d.o libyacasdebug.a
-	gcc -o yacasdebug yacasmain-d.o elfdll-d.o commandline-d.o unixcommandline-d.o stdcommandline-d.o debugmem-d.o libyacasdebug.a -lm -ldl
+	gcc -o yacasdebug yacasmain-d.o elfdll-d.o commandline-d.o unixcommandline-d.o stdcommandline-d.o debugmem-d.o libyacasdebug.a -lm -ldl $(NUMBER_LN)
 
 #	-rm -f libyacasdebug.a
 
