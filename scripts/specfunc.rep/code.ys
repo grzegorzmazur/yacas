@@ -100,7 +100,7 @@ Bernoulli(n_IsInteger, _x) <-- [
 
 
 // Forward recursion, works great, but really slow when n << x
-30 # BesselJ(_n,_x)_(IsInteger(n) And Abs(x) > 2*Gamma(n)) <-- N((2*(n+1)/x)*BesselJ(n+1,x) - BesselJ(n+2,x));
+30 # BesselJ(_n,_x)_(IsInteger(n) And N(Abs(x) > 2*Gamma(n))) <-- N((2*(n+1)/x)*BesselJ(n+1,x) - BesselJ(n+2,x));
 
 30 # BesselJ(_n,_z)_(n<0 And IsInteger(n) ) <-- (-1)^n*BesselJ(-n,z);
 30 # BesselI(_n,_z)_(n<0 And IsInteger(n) ) <-- BesselI(-n,z);
@@ -112,7 +112,7 @@ Bernoulli(n_IsInteger, _x) <-- [
 
 //40 # BesselJ(_n,x_IsComplex)_(Abs(x)<= 2*Gamma(n) )  <-- N(BesselNsmall(n,x,0));
 //40 # BesselI(_n,x_IsComplex)_(Abs(x)<= 2*Gamma(n) )  <-- N(BesselNsmall(n,x,1));
-40 # BesselJ(_n,x_IsComplex)_(Abs(x)<= 2*Gamma(n) )  <-- 
+40 # BesselJ(_n,x_IsComplex)_(N(Abs(x)<= 2*Gamma(n)) )  <-- 
 [
 ApproxInfSum((-1)^k*(x/2)^(2*k+c[1])/(k! * Gamma(k+c[1]+1) ),0,x,{n} );
 ];
@@ -152,7 +152,7 @@ Function("ApproxInfSum",{expr,start,x,c})
         term:=1;
         k:=start;
         result:=0;
-        While( Abs(term) >= eps )[
+        While( N(Abs(term) >= eps) )[
                 term:=N(expr);
 		//Echo({"term is ",term});
                 k:=k+1;

@@ -255,5 +255,8 @@ Verify( N(BesselJ(1,10)), RoundTo( .04347274616886143666974876802585928830627286
 Verify( N(BesselJ(10,10)), RoundTo( .20748610663335885769727872351875342803274461128682, 50 ) );
 Verify( N(BesselJ(1,3.6)), RoundTo( .09546554717787640384570674422606098601943275490885, 50 )) ;
 
+Precision(10); // Wester Test
+Verify( N(BesselJ(2,1+I)), RoundTo( Complex(0.0415798869,0.2473976415), 10 ) );
+
 Precision(12); // I don't trust matlab past this
 Verify( N(Erf(.4)), RoundTo(0.428392355046,12) );
