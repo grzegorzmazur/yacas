@@ -117,19 +117,21 @@ OdeSolveLinearHomogeneousConstantCoefficients(_e) <--
   roots:=Transpose(e);
 
   /* Generate dummy constants */
-  consts:=
-    MapSingle(Hold({{nn},Sum(OdeConstantList(nn)*(x^(0 .. (nn-1))))}),roots[2]);
+  consts:= MapSingle(Hold({{nn},Add(OdeConstantList(nn)*(x^(0 .. (nn-1))))}),roots[2]);
   roots:=roots[1];
 
   /* Return results */
-  Sum(consts * Exp(roots*x));
+  //Sum(consts * Exp(roots*x));
+  Add( consts * Exp(roots*x) );
 ];
 
 OdeSolve(_e) <--
 [
   Local(h);
   e:=OdeNormalForm(e);
+  Echo("normal form is",e);
   h:=OdeFlatTerm(OdeCoefList(e));
+  Echo("flatterm is",h);
   if (IsFreeOf(Error,h))
   [
     OdeSolveLinear(e,h);
