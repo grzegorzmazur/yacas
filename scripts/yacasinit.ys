@@ -10,82 +10,42 @@ Set(MultiNomialDriver,"multivar.rep/sparsenomial.ys");
 
 
 /* The truly required files (Yacas NEEDS to load). */
+// syntax must be loaded first
 Use("stdopers.ys");
+
 Use("patterns.rep/code.ys");
+
+// at this point <-- can be used
+
 Use("deffunc.rep/code.ys");
+
+// at this point := and Function() can be used
+
 Use("constants.rep/code.ys");
 Use("standard.ys");
 
-/* Maintain an array of deffiles */
-Set(defPackages,{});
-RuleBase("DefPackages",{});
-Rule("DefPackages",0,1,True) defPackages;
-
-RuleBase("CntDefLoad",{file});
-Rule("CntDefLoad",1,1,True)
-[
-  DestructiveInsert(defPackages,1,file);
-  DefLoad(file);
-];
+// at this point arithmetic can be used
 
 /* Load the def files for the other modules. The def files contain lists
  * of functions defined in that file. So, in solve.def you can find the
  * functions defined in the file solve. Each time a function is invoked
  * for which the interpreter can not find a definition, the file is loaded.
  */
-CntDefLoad("solve.rep/code.ys");
-CntDefLoad("deriv.rep/code.ys");
-CntDefLoad("sums.rep/code.ys");
-CntDefLoad("linalg.rep/code.ys");
-CntDefLoad("random.rep/code.ys");
-CntDefLoad("lists.rep/code.ys");
-CntDefLoad("controlflow.rep/code.ys");
-CntDefLoad("complex.rep/code.ys");
-CntDefLoad("stdfuncs.rep/code.ys");
-CntDefLoad("newly.rep/code.ys");
-CntDefLoad("univar.rep/code.ys");
-CntDefLoad("stubs.rep/code.ys");
-CntDefLoad("numbers.rep/code.ys");
-CntDefLoad("integrate.rep/code.ys");
-CntDefLoad("substitute.rep/code.ys");
-CntDefLoad("simplify.rep/code.ys");
-CntDefLoad("functional.rep/code.ys");
-CntDefLoad("assoc.rep/code.ys");
-CntDefLoad("html.rep/code.ys");
-CntDefLoad("fakedb.rep/code.ys");
-CntDefLoad("array.rep/code.ys");
-CntDefLoad("example.rep/code.ys");
-CntDefLoad("trigsimp.rep/code.ys");
-CntDefLoad("formula.rep/code.ys");
-CntDefLoad("predicates.rep/code.ys");
-CntDefLoad("stats.rep/code.ys");
-CntDefLoad("padic.rep/code.ys");
-CntDefLoad("factors.rep/code.ys");
-CntDefLoad("testers.rep/code.ys");
-CntDefLoad("tensor.rep/code.ys");
-CntDefLoad("texform.rep/code.ys");
-CntDefLoad("logic.rep/code.ys");
-CntDefLoad("radsimp.rep/code.ys");
-CntDefLoad("pslq.rep/code.ys");
-CntDefLoad("odesolver.rep/code.ys");
-CntDefLoad("c_form.rep/code.ys");
-CntDefLoad("limit.rep/code.ys");
-CntDefLoad("localrules.rep/code.ys");
-CntDefLoad("rabinmiller.rep/code.ys");
-CntDefLoad("orthopoly.rep/code.ys");
-CntDefLoad("openmath.rep/code.ys");
-CntDefLoad("multivar.rep/code.ys");
-CntDefLoad("multivar.rep/sparsetree.ys");
-CntDefLoad("specfunc.rep/code.ys");
-CntDefLoad("plots.rep/code.ys");
 
-CntDefLoad("stdfuncs.rep/numerical.ys");
-CntDefLoad("stdfuncs.rep/nummethods.ys");
+RuleBase(LoadPackages,{packages});
+Rule(LoadPackages, 1, 1, True)
+[
+	If(Equals(packages,{}), True,
+	[
+		DefLoad(Head(packages));
+		LoadPackages(Tail(packages));
+	]);
+];
+
+Use("packages.ys");
+LoadPackages(DefFileList);
 
 /* set the help system. This can be overridden in ~/.yacasrc */
-
-//Echo({defPackages});
-//ForEach(item,defPackages)Use(item);
 
 RuleBase("SetHelpBrowser",{browser});
 Rule("SetHelpBrowser",1,1,True)
@@ -102,12 +62,5 @@ Rule("Help",0,1,True)
 [
   SystemCall(Browser:" ":FindFile("documentation/books.html"));
 ];
-/*TODO remove this code causes := to get loaded at startup! Bit of a pity
-SetHelpBrowser(browser):=
-[
-  Browser:=browser;
-];
-Help(f):= SystemCall(Browser:" ":FindFile("documentation/ref.html"):"#":f);
-Help() := SystemCall(Browser:" ":FindFile("documentation/books.html"));
-*/
+
 SetHelpBrowser("lynx");

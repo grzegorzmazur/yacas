@@ -7,7 +7,7 @@
 	0.2 Fix for extra parens in Sin() and other functions; fixes for Exp(), Abs() and inverse trig functions
 	0.3 Fix for indexed expressions: support a[2][3][4]
 	0.3.1 Fix for CForm(integer): add a decimal point
-	0.4 Support While()[]. Added IsCFormable.
+	0.4 Support While()[]. Added IsCFormable. Use Concat() instead of Union() on lists.
 */
 
 /* To do:
@@ -231,12 +231,12 @@ IsCFormable(_expr) <-- `IsCFormable(@expr, {});
 IsCFormable(_expr, funclist_IsList) <--
 [
 	Local(bad'functions);
-	bad'functions := Difference(`FuncList(@expr), Union(CFormAllFunctions, funclist));
+	bad'functions := Difference(`FuncList(@expr), Concat(CFormAllFunctions, funclist));
 	If(Length(bad'functions)=0,
 		True,
 		[
 			If(Verbose,
-				Echo(Union({"IsCFormable: Info: unexportable function(s): "}, bad'functions))
+				Echo(Concat({"IsCFormable: Info: unexportable function(s): "}, bad'functions))
 			);
 			False;
 		]
@@ -246,7 +246,7 @@ HoldArgNr("IsCFormable", 1, 1);
 HoldArgNr("IsCFormable", 2, 1);
 
 /// This is a list of all function atoms which CForm can safely handle
-CFormAllFunctions := MapSingle(Atom, Union(Union(AssocIndices(CFormMathFunctions), AssocIndices(CFormRegularOps)),
+CFormAllFunctions := MapSingle(Atom, Concat(AssocIndices(CFormMathFunctions), AssocIndices(CFormRegularOps),
 // list of "other" (non-math) functions supported by CForm: needs to be updated when CForm is extended to handle new functions
 {
 	"For",

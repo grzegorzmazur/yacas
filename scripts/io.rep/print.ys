@@ -10,6 +10,7 @@
 [
   Print(x,60000);
   NewLine();
+  DumpErrors();
 ];
 
 /* Print an argument within an environment of precedence n */

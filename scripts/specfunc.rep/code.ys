@@ -1,12 +1,6 @@
-/// special functions coded for Yacas by Serge Winitzki
+/// special functions coded for Yacas by Serge Winitzki: Gamma, Zeta, Bernoulli, LambertW
 
-DefLoad("specfunc.rep/gamma.ys");
-DefLoad("specfunc.rep/zeta.ys");
-DefLoad("specfunc.rep/bernou.ys");
-
-/// coded by Jonathan Leto
-
-DefLoad("specfunc.rep/bessel.ys");
+/// coded by Jonathan Leto: Bessel*, Erf*, Fresnel*, Beta
 
 /////////////////////////////////////////////////
 /// Euler's Gamma function

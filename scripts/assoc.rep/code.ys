@@ -12,7 +12,38 @@ Rule("Assoc",2,2,list[1][1] = key) list[1];
 Rule("Assoc",2,3,True) Assoc(key,Tail(list));
 */
 
-AssocIndices(associndiceslist):=
+AssocIndices(associndiceslist_IsList) <--
   DestructiveReverse(MapSingle("Head",associndiceslist));
 
+/// Delete an element of an associative list.
+LocalSymbols(hash, key, element, hash'expr)
+[
+
+/// AssocDelete(hash,{"key", value})
+10 # AssocDelete(hash_IsList, element_IsList) <--
+[
+	Local(index);
+	index := Find(hash, element);
+	If(
+		index > 0,
+		DestructiveDelete(hash, index)
+	);
+	index>0;	// return False if nothing found
+
+];
+
+
+/// AssocDelete(hash, "key")
+20 # AssocDelete(hash_IsList, key_IsString) <--
+[
+	AssocDelete(hash, FastAssoc(key, hash));
+];
+
+30 # AssocDelete(hash_IsList, Empty) <-- False;
+
+//HoldArg("AssocDelete", hash);
+//UnFence("AssocDelete", 1);
+//UnFence("AssocDelete", 2);
+
+];	// LocalSymbols(hash, ...)
 

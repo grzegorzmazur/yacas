@@ -1180,7 +1180,7 @@ returned.
 
 *PARMS
 
-{key} -- key under which element is stored
+{key} -- string, key under which element is stored
 
 {alist} -- association list to examine
 
@@ -1212,7 +1212,7 @@ intuitively) be accessed as {alist[key]}.
 	In> Assoc("War and Peace", writer);
 	Out> Empty;
 
-*SEE AssocIndices, [], :=
+*SEE AssocIndices, [], :=, AssocDelete
 
 *CMD AssocIndices --- return the keys in an association list
 *STD
@@ -1241,7 +1241,65 @@ and this list is returned.
 	In> AssocIndices(writer);
 	Out> {"Iliad","Henry IV","Ulysses"};
 
-*SEE Assoc
+*SEE Assoc, AssocDelete
+
+*CMD AssocDelete --- delete an entry in an association list
+*STD
+*CALL
+	AssocDelete(alist, "key")
+	AssocDelete(alist, {key, value})
+
+*PARMS
+
+{alist} -- association list
+
+{"key"} -- string, association key
+
+{value} -- value of the key to be deleted
+
+*DESC
+
+The key {"key"} in the association list {alist} is deleted. (The list itself is modified.) If the key was found and successfully deleted, returns {True}, otherwise if the given key was not found, the function returns {False}.
+
+The second, longer form of the function deletes the entry that has both the
+specified key and the specified value. It can be used for two purposes:
+*	1. to make sure that we are deleting the right value;
+*	2. if several values are stored on the same key, to delete the specified entry (see the last example).
+
+At most one entry is deleted.
+
+*E.G.
+
+	In> writer := {};
+	Out> {};
+	In> writer["Iliad"] := "Homer";
+	Out> True;
+	In> writer["Henry IV"] := "Shakespeare";
+	Out> True;
+	In> writer["Ulysses"] := "James Joyce";
+	Out> True;
+	In> AssocDelete(writer, "Henry IV")
+	Out> True;
+	In> AssocDelete(writer, "Henry XII")
+	Out> False;
+	In> writer
+	Out> {{"Ulysses","James Joyce"},
+	  {"Iliad","Homer"}};
+	In> DestructiveAppend(writer,
+	  {"Ulysses", "Dublin"});
+	Out> {{"Iliad","Homer"},{"Ulysses","James Joyce"},
+	  {"Ulysses","Dublin"}};
+	In> writer["Ulysses"];
+	Out> "James Joyce";
+	In> AssocDelete(writer,{"Ulysses","James Joyce"});
+	Out> True;
+	In> writer
+	Out> {{"Iliad","Homer"},{"Ulysses","Dublin"}};
+
+
+*SEE Assoc, AssocIndices
+
+
 
 *CMD Flatten --- flatten expression w.r.t. some operator
 *STD

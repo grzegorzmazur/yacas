@@ -17,6 +17,7 @@
 	0.4.8 added D(x,n), Deriv(x,n), =>, and fixed errors with ArcSinh, ArcCosh, ArcTanh
 	0.4.9 fixed omission: (fraction)^n was not put in brackets
 	0.4.10 cosmetic change: insert \cdot between numbers in cases like 2*10^n
+	0.4.11 added DumpErrors() for the benefit of TeXmacs notebooks
 */
 
 /* To do:
@@ -46,7 +47,8 @@ Function ("TeXFormBracketIf", {predicate, string})
 
 TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equal to KMaxPrec */
 
-100 # TeXForm(_x) <-- ConcatStrings("$", TeXForm(x, TeXFormMaxPrec), "$");
+/// main front-end
+100 # TeXForm(_x) <-- ConcatStrings("$", TeXForm(x, TeXFormMaxPrec), "$", ToString()DumpErrors());
 
 /* Replace numbers and variables -- never bracketed except explicitly */
 
