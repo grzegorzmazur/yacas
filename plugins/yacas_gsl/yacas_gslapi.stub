@@ -7,7 +7,7 @@ StubApiCStart();
 StubApiCRemark("This plugin links to the Gnu Scientific Library.");
 
 /* define an include file for the stub file */
-StubApiCInclude(\"yacas_gsl.h\");
+StubApiCInclude("\"yacas_gsl.h\"");
 
 StubApiCPrelog(
 "
