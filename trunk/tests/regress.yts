@@ -285,3 +285,9 @@ Verify( Simplify((a^2+b^2)/(2*a)), (a^2+b^2)/(2*a) );
 // This would automatically be caught with type checking.
 // More tests of this ilk are possible: 0*matrix, etcetera.
 Verify(0*{a,b,c},{0,0,0});
+
+// the following broke evaluation (dr)
+Verify(Conjugate({a}),{a});
+
+// not yet fixed (dr)
+Verify(Abs(Undefined),Undefined);
