@@ -11,6 +11,13 @@
 #include "stubs.h"
 #include "genericstructs.h"
 
+
+#ifdef HAVE_CONFIG_H
+#include "../../../config.h"
+#endif
+#ifdef HAVE_GLUT_H
+
+
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
@@ -601,4 +608,16 @@ LispPluginBase* maker(void)
 }
 
 };
+
+
+#else
+extern "C" {
+LispPluginBase* maker(void)
+{
+    return NULL;
+}
+};
+#endif //HAVE_GLUT_H
+
+
 

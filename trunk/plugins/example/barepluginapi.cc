@@ -11,6 +11,8 @@
 #include "stubs.h"
 #include "genericstructs.h"
 
+
+
 #include "bareplugin.h"
 
 
@@ -128,4 +130,7 @@ LispPluginBase* maker(void)
 }
 
 };
+
+
+
 
