@@ -135,7 +135,7 @@ lines.
 *CALL
 	Assert(pred) "str"
 	Assert(pred, "str") expr
-
+(bodied function, precedence 60000)
 *PARMS
 
 {pred} -- predicate to check
@@ -160,9 +160,9 @@ expression {expr}. The string should be used to classify the kind of error that
 has occurred. The association list of error objects is currently the global
 variable {ErrorTableau}.
 
-Errors can be handled using the functions {IsError} and {DumpErrors} or by a
-custom error handler in the function that is able to handle a certain class of
-errors. Normally, all errors posted during evaluation of an expression should
+Errors can be handled by a
+custom error handler in the portion of the code that is able to handle a certain class of
+errors using the functions {IsError}, {GetError} and {ClearError}. Normally, all errors posted during evaluation of an expression should
 be eventually printed to the screen. This is the behavior of prettyprinters
 {PrettyForm} and {TeXForm} which use {DumpErrors}.
 
@@ -172,13 +172,24 @@ be eventually printed to the screen. This is the behavior of prettyprinters
 	Out> False;
 	In> Assert(1=1, "bad value") "must be one"
 	Out> True;
+	In> IsError()
+	Out> True;
+	In> IsError("bad value")
+	Out> True;
+	In> IsError("bad file")
+	Out> False;
+	In> GetError("bad value");
+	Out> "must be zero";
 	In> DumpErrors()
 	Error: value: must be zero
 	Out> True;
+No more errors left:
+	In> IsError()
+	Out> False;
 	In> DumpErrors()
 	Out> True;
 
-*SEE IsError, DumpErrors, Check
+*SEE IsError, DumpErrors, Check, GetError, ClearError, ClearErrors
 
 *CMD DumpErrors, ClearErrors --- custom error handlers
 *STD
@@ -198,9 +209,54 @@ be eventually printed to the screen. This is the behavior of prettyprinters
 *STD
 *CALL
 	IsError()
+	IsError("str")
+
+*PARMS
+
+{"str"} -- string to classify the error
 
 *DESC
 
-This predicate returns {True} if any custom errors have been reported using {Assert}.
+{IsError()} returns {True} if any custom errors have been reported using {Assert}.
+The second form takes a parameter {"str"} that designates the class of the
+error we are interested in. It returns {True} if any errors of the given class
+{"str"} have been reported.
 
-*SEE IsError, Assert, Check
+*SEE GetError, ClearError, Assert, Check
+
+
+*CMD GetError, ClearError --- handle custom errors
+*STD
+*CALL
+	GetError("str")
+	ClearError("str")
+
+*PARMS
+
+{"str"} -- string to classify the error
+
+*DESC
+
+{GetError} returns the error object if a custom error of class {"str"} has been
+reported using {Assert}, or {False} if no errors of this class have been
+reported.
+
+{ClearError("str")} deletes the same error object that is returned by
+{GetError("str")}. It deletes at most one error object. It returns {True} if an
+object was found and deleted, and {False} otherwise.
+
+
+*E.G.
+
+	In> x:=1
+	Out> 1;
+	In> Assert(x=0, "bad value") {x,"must be zero"}
+	Out> False;
+	In> GetError("bad value")
+	Out> {1, "must be zero"};
+	In> ClearError("bad value");
+	Out> True;
+	In> IsError()
+	Out> False;
+
+*SEE IsError, Assert, Check, ClearErrors

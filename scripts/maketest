@@ -1,4 +1,4 @@
-$(testtarget): ../tests/wester.yts
+$(testtarget): ../tests/wester.yts packages_ys
 	$(yacastest) ../tests/arithmetic.yts
 	$(yacastest) ../tests/c_tex_form.yts
 	$(yacastest) ../tests/calculus.yts
@@ -6,6 +6,7 @@ $(testtarget): ../tests/wester.yts
 	$(yacastest) ../tests/comments.yts
 	$(yacastest) ../tests/deriv.yts
 	$(yacastest) ../tests/integrate.yts
+	$(yacastest) ../tests/io.yts
 	$(yacastest) ../tests/linalg.yts
 	$(yacastest) ../tests/lists.yts
 	$(yacastest) ../tests/logic_simplify_test.yts
