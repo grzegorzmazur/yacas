@@ -1,6 +1,10 @@
 This files lists some bugs that are still present in Yacas
 It is maintained by hand, until the developers have agreed on a 
-better alternative.
+better alternative. 
+
+----------------------------------------------------------------------
+
+PART I:  OPEN BUGS
 
 ----------------------------------------------------------------------
 
@@ -8,23 +12,15 @@ Summary:
 
  1. [Calculus] Limit(x,0)D(x,2)Sin(x)/x never terminates
  2. [Calculus] Various limit bugs
- 3. [Number theory] Gcd bugs when arguments are not natural numbers
- 4. (RESOLVED?)[Calculus] 2^Infinity not simplified at startup
+ 3. (RESOLVED?) [Number theory] Gcd bugs when arguments are not natural numbers
  5. [Calculus] Limit(n,Infinity) Sqrt(n+1) - Sqrt(n)
  6. [Complex] D(z) Conjugate(z) returns 1
- 7. (RESOLVED?)[Complex] Im() and Undefined or Infinity
  8. [Linear Algebra] EigenValues() with complex matrix hangs
- 9. (RESOLVED?)[Calculus] Integration through singularities
-10. (RESOLVED?)[Simplify] Simplify(x^(-2)/(1-x)^3) returns 0
 11. [Trigonometry] ArcCos(Cos(beta)) returns beta
 12. [Calculus] 'Limit(n, Infinity) n^5/2^n' uses L'Hopital incorrectly
 13. [Trigonometry] 'TrigSimpCombine(x^500)' returns nothing
-14. (RESOLVED?)[Calculus] Some limits not working correctly when using infinity
 15. (RESOLVED?)[Core] 'MathPower(0,0.5)' locks up
-16. (COULD NOT REPRODUCE)[Build System]  mathcommands3.cpp is compiled twice and libyacas is linked
-    twice
-17. (RESOLVED?)[Polynomials] Factor(x^6-1) gives wrong result
-18. (RESOLVED?)[Integration]Integrating fractional powers
+
 ----------------------------------------------------------------------
 
 Bug #1
@@ -35,6 +31,13 @@ Description:
 
 This expression never terminates, which in turn causes
 Taylor(x,0,5)Sin(x)/x to never terminate.
+
+Update (Jitse, 2004-01-18):
+In fact, Yacas does give the correct answer, but it takes 8 minutes
+on a 3 GHz Pentium 4.
+
+In> Limit(x,0) D(x,2) Sin(x)/x
+Out> (-1)/3
 
 ----------------------------------------------------------------------
 
@@ -53,12 +56,16 @@ Out> 1  // should be a
 In> Limit(x,0) (x+1)^(Ln(a)/x)
 Out> 1  // should be a
 
+Update (Jitse, 2004-01-18):
+The last one now works correctly.
+
 ----------------------------------------------------------------------
 
 Bug #3
 Title: [Number theory] Gcd bugs when arguments are not natural numbers
 Submitted by: Jonathan Leto
 Date: 2002-05-23
+Status: Resolved
 Description:
 
 In> Gcd(10,3.3)
@@ -73,19 +80,8 @@ Out> -10
 // according to "Number Theory", Andrews (1971)
 // Gcd(a,0) = Abs(a)
 
-----------------------------------------------------------------------
-
-Bug #4
-Title: [Calculus] 2^Infinity not simplified at startup
-Submitted by: Jonathan Leto
-Date: 2002-05-24
-Description:
-
-// From startup:
-In> 2^(Infinity)
-Out> 2^Infinity
-In> 2^(Infinity)
-Out> Infinity
+Update:
+The bug with negative number is resolved.
 
 ----------------------------------------------------------------------
 
@@ -99,6 +95,10 @@ The limit is zero, but nothing (?) is returned:
 In> foo := Limit(n,Infinity) Sqrt(n+1) - Sqrt(n)
 In> foo
 Out> foo;
+
+Update:
+This was caused by a bug in the read-eval-print loop.
+Now, it gives the error message 'Max evaluation stack depth reached.'
 
 ----------------------------------------------------------------------
 
@@ -116,42 +116,6 @@ This is related to the fact that 'Conjugate(z)' yields 'z'.
 
 ----------------------------------------------------------------------
 
-Bug #7
-Title: [Complex] Im() and Undefined or Infinity
-Submitted by: Jonathan Leto
-Date: 2002-05-30
-Description:
-
-  In> Im(3+I*Undefined)
-  Out> 0;
-  In> Im(3+I*Infinity)
-  Out> 0;
-
-Actually, 
-
-  In> 3+I*Infinity
-  Out> Infinity
-  In> 3+I*Undefined
-  Out> Undefined
-
-Although in the case of 'Undefined', it might be defendable?
-
-It now works like this:
-
-  In> Im(3+I*Infinity)
-  Out> Infinity
-  In> Re(3+I*Infinity)
-  Out> 3
-
-And it wasn't my mistake! I would never have put rules relating to complex
-numbers in standard.ys!
-
-By the way, before removing these bug reports we should turn them into regression
-tests! Add them as a test to the file regress.yts.
-Ayal
-
-----------------------------------------------------------------------
-
 Bug #8
 Title: [Linear Algebra] EigenValues() with complex matrix hangs
 Submitted by: Jonathan Leto
@@ -163,34 +127,9 @@ Out> {{1,2,3,4},{0,1,2,3},{0,0,1,2},{Complex(0,1),0,Complex(0,1),Complex(0,1)}};
 In> EigenValues(A)
 [ no response ]
 
-----------------------------------------------------------------------
-
-Bug #9
-Title: [Calculus] Integration through singularities
-Submitted by: Jonathan Leto
-Date: 2002-05-30
-Description:
-
-In>  Integrate(x,-1,1) 1/x
-Out> Complex(0,-Pi)
-In>  Integrate(x,-1,1) 1/x^2
-Out> -2
-
-Integrate() should check for singularities.
-
-Note from Ayal: actually these examples above are a lot
-simpler, they involve integration of even and odd
-functions from -a to a.
-
-
-----------------------------------------------------------------------
-
-Bug #10
-Title: [Simplify] Simplify(x^(-2)/(1-x)^3) returns 0
-Submitted by: Jonathan Leto
-Date: 2002-06-30
-
-Fixed 2003-05-20
+Update (Jitse, 2004-01-18):
+Yacas segfaults if you wait long enough (seven minutes on a 3 GHz
+Pentium 4). 
 
 ----------------------------------------------------------------------
 
@@ -231,11 +170,133 @@ In> foo := TrigSimpCombine(x^500)
 In> foo
 Out> foo
 
+Update:
+This was caused by a bug in the read-eval-print loop.
+Now, it gives the error message 'Max evaluation stack depth reached.'
+
+----------------------------------------------------------------------
+
+Bug #15
+Title: [Core] 'MathPower(0,0.5)' locks up
+Submitted by: Ayal Pinkus
+
+Resolved? Right now the behaviour is:
+
+  In> MathPower(0,0.5)
+  CommandLine(1) : MathLog does not handle zero
+  Out> False
+  In> 0^0.5
+  Out> 0
+
+----------------------------------------------------------------------
+
+PART II:  CLOSED BUGS
+
+----------------------------------------------------------------------
+
+Resolved:
+
+ 4. [Calculus] 2^Infinity not simplified at startup
+ 7. [Complex] Im() and Undefined or Infinity
+ 9. [Calculus] Integration through singularities
+10. [Simplify] Simplify(x^(-2)/(1-x)^3) returns 0
+14. [Calculus] Some limits not working correctly when using infinity
+17. [Polynomials] Factor(x^6-1) gives wrong result
+18. [Integration] Integrating fractional powers
+
+Unreproducible:
+
+16. [Build System] mathcommands3.cpp is compiled twice and libyacas is
+    linked twice
+
+----------------------------------------------------------------------
+
+Bug #4
+Title: [Calculus] 2^Infinity not simplified at startup
+Submitted by: Jonathan Leto
+Date: 2002-05-24
+Status: Resolved
+Description:
+
+// From startup:
+In> 2^(Infinity)
+Out> 2^Infinity
+In> 2^(Infinity)
+Out> Infinity
+
+----------------------------------------------------------------------
+
+Bug #7
+Title: [Complex] Im() and Undefined or Infinity
+Submitted by: Jonathan Leto
+Date: 2002-05-30
+State: Resolved
+Description:
+
+  In> Im(3+I*Undefined)
+  Out> 0;
+  In> Im(3+I*Infinity)
+  Out> 0;
+
+Actually, 
+
+  In> 3+I*Infinity
+  Out> Infinity
+  In> 3+I*Undefined
+  Out> Undefined
+
+Although in the case of 'Undefined', it might be defendable?
+
+It now works like this:
+
+  In> Im(3+I*Infinity)
+  Out> Infinity
+  In> Re(3+I*Infinity)
+  Out> 3
+
+And it wasn't my mistake! I would never have put rules relating to complex
+numbers in standard.ys!
+
+By the way, before removing these bug reports we should turn them into regression
+tests! Add them as a test to the file regress.yts.
+Ayal
+
+----------------------------------------------------------------------
+
+Bug #9
+Title: [Calculus] Integration through singularities
+Submitted by: Jonathan Leto
+Date: 2002-05-30
+Status: Resolved
+Description:
+
+In>  Integrate(x,-1,1) 1/x
+Out> Complex(0,-Pi)
+In>  Integrate(x,-1,1) 1/x^2
+Out> -2
+
+Integrate() should check for singularities.
+
+Note from Ayal: actually these examples above are a lot
+simpler, they involve integration of even and odd
+functions from -a to a.
+
+----------------------------------------------------------------------
+
+Bug #10
+Title: [Simplify] Simplify(x^(-2)/(1-x)^3) returns 0
+Submitted by: Jonathan Leto
+Date: 2002-06-30
+Status: Resolved
+
+Fixed 2003-05-20
+
 ----------------------------------------------------------------------
 
 Bug #14
 Title: [Calculus] Some limits not working correctly when using infinity
 Submitted by: Ayal Pinkus
+Status: Resolved
 Description:
 
 In> Limit(x,Infinity) Zeta(x)
@@ -252,22 +313,6 @@ Of course, the Factorial function isn't even defined!
 Which is the intended behaviour right?
 Limit Zeta was trivial, we just tell that Zeta(Infinity)=1
 
-
-----------------------------------------------------------------------
-
-Bug #15
-Title: [Core] 'MathPower(0,0.5)' locks up
-Submitted by: Ayal Pinkus
-
-Resolved? Right now the behaviour is:
-
-  In> MathPower(0,0.5)
-  CommandLine(1) : MathLog does not handle zero
-  Out> False
-  In> 0^0.5
-  Out> 0
-
-
 ----------------------------------------------------------------------
 
 Bug #16
@@ -275,6 +320,8 @@ Title: [Build System]  mathcommands3.cpp is compiled twice and libyacas is
 linked twice
 Date: 2003-04-14
 Submitted by: Pablo De Napoli
+Status: Unreproducible
+Description:
 
 When building yacas, "make install" recompile mathcommands3.cpp, links
 yacas again and also libyacas is linked twice.
@@ -293,9 +340,9 @@ needs to recompile the source file again next time.
 
 Bug #17
 Title: [Polynomials] Factor(x^6-1) gives wrong result 
-Submittedd by: Pablo De Napoli
 Date: 2003-04-14
 Submitted by: Pablo De Napoli
+Status: Resolved
 
 In>Factor(x^6-1)
 Out>(x^4+2*x^3+3*x^2+4*x+5)*(x-1)^2 
@@ -303,10 +350,12 @@ Out>(x^4+2*x^3+3*x^2+4*x+5)*(x-1)^2
 1 is not a double root of x^6-1!
 
 ----------------------------------------------------------------------
+
 Bug #18
-Title: [Integration]Integrating fractional powers
+Title: [Integration] Integrating fractional powers
 Date: 2003-04-14
 Submitted by: Martin Renold
+Status: Resolved
 
 Observed behaviour:
 In> Integrate(x)x^(1/2)
