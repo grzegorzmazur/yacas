@@ -77,6 +77,7 @@ PollardCombineLists(_left,_right) <--
 
 
 /* TODO for Bk:
+   - ModDivide, ModGcd, make an interface for in the scripts.
    - Handling special case (x-a)^n more efficiently
    - (x+2)^5*(x-1) goes wrong: last factorization is missed!
      results in (x+2)^4*(x^2+x-2)
@@ -90,17 +91,24 @@ PollardCombineLists(_left,_right) <--
      is the biggest.
 */
 
-
 10 # FindMod(_poly,_item,_p,_n)_(Degree(Gcd(poly,item)) > 0) <-- Expand(item);
 11 # FindMod(_poly,_item,_p,_n) <-- FindModAux(poly,item,p,n);
 
 11 # FindModAux(_poly,_item,_p,_n)_(Mod(poly,item+n*p) = 0) <-- Expand(item+n*p);
 12 # FindModAux(_poly,_item,_p,_n)_(Mod(poly,item-n*p) = 0) <-- Expand(item-n*p);
-20 # FindModAux(_poly,_item,_p,_n) <--
+
+13 # FindModAux(_poly,_item,_p,_n)_(Mod(poly,(LeadingCoef(poly))*item+n*p) = 0) <-- Expand((LeadingCoef(poly))*item+n*p);
+14 # FindModAux(_poly,_item,_p,_n)_(Mod(poly,(LeadingCoef(poly))*item-n*p) = 0) <-- Expand((LeadingCoef(poly))*item-n*p);
+
+20 # FindModAux(_poly,_item,_p,_n)_(n<10) <--
 [
-/* Echo({item,p,"n = ",n}); */
+/*
+ Echo({item,p,"n = ",n});
+ Echo({(Mod(LeadingCoef(poly),p))*item+n*p});
+*/ 
   FindModAux(poly,item,p,n+1);
 ];
+30 # FindModAux(_poly,_item,_p,_n) <-- 1;
 
 MergeTerm(_f,_i) <-- MergeTerm(f,i,Assoc(i[1],f));
 10 # MergeTerm(_f,_i,Empty) <-- DestructiveAppend(f,i);
@@ -118,19 +126,50 @@ MergeTerm(_f,_i) <-- MergeTerm(f,i,Assoc(i[1],f));
 
 FactorUniVarSec(_poly) <--
 [
-  Local(checked);
+  Local(checked,i);
   checked := Bk(poly);
   Local(pre);
-/*
-Echo(poly);
-Echo(checked);
-*/
   pre:=Div(poly,FW(checked));
+
+  // Rescan the solutions, because there may be some that still
+  // divide the remaining polynomial.
+  For(i:=1,i<=Length(checked),i++)
+  [
+    While (Mod(pre,checked[i][1]) = 0)
+    [
+      checked[i][2] := checked[i][2] + 1;
+      pre := Div(pre, checked[i][1]);
+    ];
+  ];
+
   if (pre != 1)
   [
-    checked := {pre,1}:checked;
+    Local(lc,monic);
+    lc := LeadingCoef(pre);
+    monic := Monic(pre);
+    if (monic != 1) [checked := {monic,1}:checked;];
+    if (lc != 1) [checked := {lc,1}:checked;];
   ];
   checked;
+];
+
+
+MakeInteger(_poly) <--
+[
+  Local(cf,t1,t2);
+  cf := MapSingle("Denom",Abs(Coef(poly,(0 .. Degree(poly)))));
+  cf := Select({{n},Not IsZero(n)},cf);
+
+  While (Length(cf) > 1)
+  [
+    t1:=Head(cf);
+    cf:=Tail(cf);
+    t2:=Head(cf);
+    cf:=Tail(cf);
+    cf := Lcm(t1,t2):cf;
+  ];
+  poly := poly*(cf[1]);
+  poly;
 ];
 
 
@@ -146,28 +185,16 @@ Bk(_poly) <--
 
   // Convert from polynomial containing rational coefficients
   // to one containing integer coefficients
-  [
-    Local(cf,t1,t2);
-    cf := MapSingle("Denom",Abs(Coef(poly,(0 .. Degree(poly)))));
-    cf := Select({{n},Not IsZero(n)},cf);
-
-    While (Length(cf) > 1)
-    [
-      t1:=Head(cf);
-      cf:=Tail(cf);
-      t2:=Head(cf);
-      cf:=Tail(cf);
-      cf := Lcm(t1,t2):cf;
-    ];
-    poly := poly*(cf[1]);
-  ];
+  poly := MakeInteger(poly);
 
   // Trivial factors
   if (poly[2] > 0)
   [
     poly := UniVariate(poly[1],0,poly[3]);
   ];
-
+//  poly := poly*LeadingCoef(poly);
+/*Echo({poly," should have integer coefficients"});*/
+  
   // square-free factorization
   [
     Local(dv,dd);
@@ -176,36 +203,34 @@ Bk(_poly) <--
     if (Degree(dv)>0)
     [
       dv := Monic(dv);
-      poly := Monic(Div(poly,dv));
+      poly := Div(poly,dv);
+      poly := MakeInteger(poly);
+/*Echo({poly," should have integer coefficients"});*/
       MergeFactors(checked, Bk(dv));
+/*Echo({"squarefree: ",checked});      */
     ];
   ];
 
-  p:=Max(1+Abs(Coef(poly,(0 .. Degree(poly)))));
+  p:=Max(1+2*Abs(Coef(poly,(0 .. Degree(poly)))));
   if (p<5) [p := 5;];
   if (p > 100) [ p := 100; ];
   While (Not IsPrime(p)) p++;
 
-/*
-  [
-    Local(pp,lc);
-    pp := 1;
-    lc := LeadingCoef(poly);
-    
-    While(Mod(lc*pp,p) != 1)
-    [
-//      Echo({pp});
-      pp++;
-    ];
-    poly := poly*pp;
-  ];
-*/
-
-
   factored := Bk(poly,p);
+
+  if (Length(factored) < 2)
+  [
+    p++;
+    While (Not IsPrime(p)) p++;
+
+    factored := Bk(poly,p);
+  ];
+  
   ForEach(item,factored)
   [
-    MergeFactors(result,{{FindMod(poly,item[1],p,0),item[2]}});
+    if (Degree(item[1]) = 1)
+      MergeFactors(result,{{Monic(FindMod(poly,item[1],p,0)),item[2]}});
+
   ];
   MergeFactors(checked,result);
   checked;
@@ -224,7 +249,7 @@ Bk(_poly,_prime) <--
     Local(i);
     For(i:=1,i<=Length(result),i++)
     [
-      result[i] := {NormalForm(UniVariate(x,0,result[i])),1};
+      result[i] := {Monic(NormalForm(UniVariate(x,0,result[i]))),1};
     ];
   ];
   result;
@@ -237,82 +262,6 @@ Bk(_poly,_prime) <--
 20 # Factors(p_CanBeUni)_(Length(VarList(p)) = 1) <--  FactorUniVarSec(p);
 
 
-/*
-20 # Factors(p_CanBeUni)_(Length(VarList(p)) > 1) <-- FactorFactors(p);
-
-TryMod(_f,_g,_v) <--
-[
-  Local(result,item);
-  result:=0;
-  ForEach(item,v)
-  [
-    if (NormalForm(Mod(MakeUni(f,item),MakeUni(g,item))) = 0)
-    [
-      ForEach(i2,v)
-      [
-        Local(new);
-        new :=NormalForm(Div(MakeUni(f,i2),MakeUni(g,i2)));
-        if (CanBeUni(new)) (result:=new);
-      ];
-    ];
-  ];
-  result;
-];
-
-FactorFactors(_p) <--
-[
-  Local(vars,nr,result);
-  vars := VarList(p);
-  nr:=Length(vars);
-  result:={};
-  While(Not IsConstant(p))
-  [
-    Local(i,j,found);
-    found:=False;
-    For(i:=1,i<=nr,i++)
-    [
-      For(j:=i+1,j<=nr,j++)
-      [
-        Local(try,trymod);
-        Local(count);
-        try := vars[i]+vars[j];
-
-        count:=0;
-        trymod:=TryMod(p,try,vars);
-        While (trymod != 0)
-        [
-Echo({p});
-          found:=True;
-          count++;
-          p:=trymod;
-          trymod:=TryMod(p,try,vars);
-        ];
-        if (count > 0) DestructiveAppend(result,{try,count});
-
-        try := vars[i]-vars[j];
-        count:=0;
-        trymod:=TryMod(p,try,vars);
-        While (trymod != 0)
-        [
-Echo({p});
-          found:=True;
-          count++;
-          p:=trymod;
-          trymod:=TryMod(p,try,vars);
-        ];
-        if (count > 0) DestructiveAppend(result,{try,count});
-      ];
-    ];
-    if (found = False)
-    [
-      DestructiveAppend(result,{p,1});
-      p := 1;
-    ];
-  ];
-  if (p != 1) DestructiveAppend(result,{p,1});
-  result;
-];
-*/
 
 Factor(_p) <-- FW(Factors(p));
 
