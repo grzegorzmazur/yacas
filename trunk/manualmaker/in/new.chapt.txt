@@ -207,6 +207,21 @@ acas into a full-blown general purpose computer algebra system.
 The main advantage of Yacas is its rich and  flexible scripting language
 adapted to prototyping of symbolic manipulation algorithms.
 
+@@@SERGE added
+Yacas is currently primarily intended to be a research tool to
+easily and quickly explore various algorithms pertaining to 
+automated mathematical calculations using computers. As such, it is
+related to LISP, with additional syntactic and expression transformation 
+(term rewriting) facilities.
+
+In addition to Yacas implementing a language to comfortably specify
+algorithms in, the Yacas system comes with a set of scripts that 
+implement a core set of CAS routines. It is not comparable to 
+industrial-strength systems like {Mathematica} or {Maple} in the
+department of implemented algorithms to simplify mathematic 
+expressions yet. This is one of the future goals.
+@@@SERGE end added
+
 		Basic design
 
 Yacas consists of a "core engine", an interpreter for the Yacas scripting
@@ -350,6 +365,20 @@ entirely on the script library to provide transformation rules for manipulating
 expressions involving the operator "{+}". In this way, the kernel does not need
 to anticipate all possible meanings of the operator "{+}" that users might need
 in their calculations.
+
+@@@SERGE added
+
+An example of a policy that could be implemented in the scripts is:
+
+	61 # x_IsPositiveNumber ^ y_IsPositiveNumber 
+	      <-- MathPower(x,y);
+
+Here expressions of the form $ x^y $ are simplified to a number if and only
+if $ x $ and $ y $ are positive integers (the function {MathPower} is 
+defined in the kernel). A CAS that does not perform such
+simplification by default is conceivable.
+
+@@@SERGE end added
 
 This policy-free scheme means that Yacas is highly configurable through its
 scripting language. It is possible to create an entirely different symbolic
@@ -508,7 +537,90 @@ Interaction with the function {powermod(x,n,m)} would then look like this:
 	In> powermod(23234234,2342424234,232423424)
 	Out> 210599936;
 
+@@@SERGE added
+
+Yacas takes evaluation in a classic LISP sense to mean simplification of the
+S-expression. When invoking a function, the arguments are evaluated first, and 
+then the evaluated arguments are passed on to the function. This means that
+arguments will be evaluated, and thus simplified, first. Evaluation, and thus
+simplification, works bottom-up. 
+
+Evaluation can be controlled a little, as the kernel can be instructed to
+not evaluate arguments before passing them on as parameters to a function. 
+In addition, scoping can be controlled. A function can be allowed to have 
+access to local variables from its calling environment, broadening the scope 
+of the function called. It is also possible to declare the variables within a 
+function local to the function, so that scoping is limited to that function. 
+The scoping is a "policy decision", it could be enforced by the scripts, which 
+control defining functions. This flexibility is by design.
+
+Functions are generalized in that they are internally represented as large
+condition statements, which could be written in pseudocode as:
+
+	value function(arguments)
+	{
+	   //
+	   // try conditional simplification
+	   //
+	   if (condition_1(arguments) = true)
+	   {
+	     return body_1(arguments);
+	   }
+	   else if (condition_2(arguments) = true)
+	   {
+	     return body_2(arguments);
+	   }
+	   ...
+	   ...
+	   ...
+	   else if (condition_n(arguments) = true)
+	   {
+	     return body_n(arguments);
+	   }
+	   //
+	   // else return expression unevaluated
+	   //
+	   return function(arguments evaluated) unevaluated; 
+	}
+
+In this scheme, a simple function could thus be represented as:
+
+	value function(arguments)
+	{
+	   if (true)
+	   {
+	     return body_1(arguments);
+	   }
+	   return function(arguments evaluated) unevaluated; 
+	}
+
+When S-expressions can not be simplified any further they are
+returned unevaluated. For instance, variables that are not initialized to a value
+will return unevaluated. Returning an expression unevaluated is what is 
+meant with simplifying as much as possible. Evaluation is changed to 
+simplification, which is a concept more suited to CAS. The environment 
+evaluating the S-expression can always check if the function was properly 
+simplified or not, and decide to raise an error, if necessary. 
+
+The conditions are tree pattern matchers, that have to match an expression 
+tree. The tree leaves can match to an automatic local variable, and a predicate
+can be specified to verify that this variable has a valid value. A post-predicate
+can also be specified after the pattern has been matched. The automatic
+local variables can be used in the post-predicate.
+
+@@@SERGE end added
+
 		Currently supported CAS features
+
+@@@SERGE added
+
+Yacas consists of approximately 22000 lines of c++ code,  13000 lines of 
+scripting code, with 170 functions defined in the core c++ kernel and 600 defined 
+in the scripting language. These numbers are deceptively small. The program
+is written in clean and simple code to keep it maintainable (optimization
+tends to bloat software and make it less readable).
+
+@@@SERGE end added
 
 Yacas comes with a base of mathematical capabilities implemented in the script
 library which is currently under active development. The following section
@@ -715,8 +827,7 @@ Symbolic inverses of matrices:
 	
 	Out> 
 
-This list of features is not exhaustive.
-
+This list of features is not exhaustive. 
 
 		Documentation
 
