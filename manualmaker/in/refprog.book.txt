@@ -220,7 +220,8 @@ Note that the left and right precedence of an infix operator does not affect the
 
 *DESC
 Define a new rules table entry for a
-function "operator", with {params} as the parameter list.
+function "name", with {params} as the parameter list. Name can be
+either a string or simple atom.
 
 In the context of the transformation rule declaration facilities
 this is a useful function in that it allows the stating of argument
@@ -338,8 +339,11 @@ not be evaluated before used. This will be
 declared for all arities of "operator", at the moment
 this function is called, so it is best called
 after all {RuleBase} calls for this operator.
+"operator" can be a string or atom specifying the 
+function name.
 
-The {parameter} must be an atom from the list of symbolic arguments used when calling {RuleBase}.
+The {parameter} must be an atom from the list of symbolic 
+arguments used when calling {RuleBase}.
 
 *SEE RuleBase, HoldArgNr, RuleBaseArgList
 
