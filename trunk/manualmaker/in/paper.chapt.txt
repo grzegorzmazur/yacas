@@ -579,8 +579,7 @@ Groebner bases [GG99] have been implemented:
 	|  2        |
 	| y  - y    |
 	\           /
-(From this it  follows that $ x = y $, and $ x^2 = x $ so $ x $ is $ 0 $ or $ 1
-$.)
+(From this it  follows that $ x = y $, and $ x^2 = x $ so $ x $ is $ 0 $ or $ 1 $.)
 
 Symbolic inverses of matrices:
 
