@@ -1017,7 +1017,7 @@ For integer $x$, the value $B(x)$ is the number of bits needed to write the bina
 The bit count function can be usually computed in <i>constant</i> time because the usual representation of long numbers is by arrays of platform integers and a binary exponent.
 The length of the array of digits is usually available at no computational cost.
 
-The <i>absolute</i> error in {{x,n}} is at most $Abs(x)*2^(-n)$.
+The <i>absolute</i> error $Delta$ of {{x,n}} is at most $Abs(x)*2^(-n)$.
 Given the bit count of $x$, this can be estimated from above as $Delta<2^(B(x)-n)$.
 So the bit count of $Delta$ is $B(x)-n$.
 
@@ -1030,7 +1030,7 @@ $$ m>=B(x) $$.
 *HEAD {BecomeFloat()}
 
 The function {BecomeFloat(n)} will convert an integer to a float with at least $n$ digits of precision.
-If {x} is the original integer value, then the result is {{x,Max(n,B(x))}}.
+If {x} is the original integer value, then the result is {{x,p}} where $p=Max(n,B(x))$.
 
 *HEAD {Equals()}
 
@@ -1045,19 +1045,21 @@ if $B(x-y)<=Min(B(x)-m,B(y)-n)-1$ then {{x,m}={y,n}}.
 A fast necessary (but not a sufficient) condition is:
 if {{x,m}={y,n}} then $B(x-y)<=Max(B(x)-m,B(y)-n)+1$.
 
-If one of the numbers is an integer, then the above conditions are still avlid if its number of correct bits is formally taken to be infinite.
-If one of the numbers is a floating zero, then the condition is:
-
+If one of the numbers is an integer {x} and the other is a float {{y,n}}, then
+{x={y,n}} if and only if $$ Abs(x-y)<2^(-n)*Abs(y) $$.
+If one of the numbers is a floating zero, then
 {{0.,m}={y,n}} if and only if $Abs(y)<2^(-m)$.
 
 *HEAD Transformation into a floating zero
 
 Note that using the above definition of comparison it might be possible to have a number {{x,n}} with $x!=0$ such that {{0.,m}={x,n}} for some $m$.
 Such $x$ will effectively be "equal to zero", because we do not know enough digits to distinguish it from zero.
-But then from the definition of {{x,n}} it follows that 0 is within the allowed interval for $x$; this is only possible if $n>=1$.
+But then from the definition of {{x,n}} it follows that 0 is within the allowed interval for $x$; this is only possible if $n<= -1$.
 
-We may therefore transform any number {{x,n}} such that $x!=0$ and $n>=1$
-into a floating zero {{0.,p}} where $p= -n-B(x)$.
+We may therefore transform any number {{x,n}} such that $x!=0$ and $n<= -1$
+into a floating zero {{0.,p}} where $p= n-B(x)$.
+This check should be performed at any point where a new precision estimate {n} is obtained for a number {x} and where a cancellation may occur (e.g. after a subtraction).
+
 
 *HEAD {LessThan()}
 
@@ -1067,9 +1069,11 @@ Otherwise it is true if and only if $x<y$ as floats.
 *HEAD {IsIntValue()}
 
 To check whether {{x,n}} has an integer value within its precision, we first need to compute $y:=x-Floor(x)$={x-Floor(x)} as a float value (without precision control).
-If $x$ does not have enough digits to compute {Floor(x)} accurately (see above), then $x$ has an integer value.
+If $x$ does not have enough digits to compute {Floor(x)} accurately (see above), then we conclude that $x$ has an integer value.
 Otherwise if $y$ is exactly zero as a float value, then $x$ also has an integer value.
 Otherwise {{x,n}} has an integer value if and only if $B(y)< -n$.
+
+This procedure is basically the same as comparing {{x,n}} with {Floor(x)}.
 
 *HEAD {Sign()}
 
@@ -1105,7 +1109,7 @@ This is only possible when $B(x)=B(y)$.
 Then the result is {{0.,p}} where $p$ is found as
 $$ p = 1+Min(m,n)-B(x)-Dist(m,n) $$.
 Note that this is the same formula as in the general case, if we define $B(z)=B(0):=1$.
-Therefore one can use this definition of the bit count and use just one formula for the precision of addition.
+Therefore with this definition of the bit count one can use one formula for the precision of addition in all cases.
 
 If the addition needs to be performed with a given maximum precision $P$, and it turns out that $p>P$, then we may truncate the final result to $P$ digits and set its precision to $P$ instead.
 (It is advisable to leave a few bits untruncated as guard bits.)
@@ -1128,7 +1132,7 @@ The result $z=0$ and the resulting precision is
 $$ p = m+n $$.
 
 The last two formulae are the same as the first one if we defined the bit count of {{0.,m}} as $1-m$.
-This differs from the "standard" arbitrary definition of $B(0)=1$.
+This differs from the "standard" definition of $B(0)=1$.
 The "standard" definition is convenient for the handling of addition.
 
 If the multiplication needs to be performed to a given target precision $P$ which is larger than the estimate $p$, then we can save time by truncating both operands to $P$ digits before performing the multiplication.
@@ -1136,15 +1140,24 @@ If the multiplication needs to be performed to a given target precision $P$ whic
 
 *HEAD Division
 
-Division is handled in the same way as multiplication, except that division by either an integer or a floating zero is not permitted.
+Division is handled essentially in the same way as multiplication.
+The relative precision of {x/y} is the same as the relative precision of {x*y} as long as both $x!=0$ and $y!=0$.
+
+When $x=0$ and $y!=0$, the result of division {{0.,m}/{y,n}} is a floating zero {{0.,p}} where $ p= m+B(y)-1$.
+
+Division by an integer zero or by a floating zero is not permitted.
 
 *HEAD {ShiftLeft()}, {ShiftRight()}
 
 These operations efficiently multiply a number by a positive or negative power of $2$.
 Since $2$ is an exact integer, the precision handling is similar to that of multiplication of floats by integers.
 
-If the number {{x,n}} is nonzero, then only $x$ changes by shifting but $n$ does not change.
-If {{x,n}} is a floating zero, then $x$ does not change and $n$ is decremented ({ShiftLeft}) or incremented ({ShiftRight}) by the shift amount.
+If the number {{x,n}} is nonzero, then only $x$ changes by shifting but $n$ does not change;
+if {{x,n}} is a floating zero, then $x$ does not change and $n$ is decremented ({ShiftLeft}) or incremented ({ShiftRight}) by the shift amount:
+	{x, n} << s = {x<<s, n};
+	{0.,n} << s = {0., n-s};
+	{x, n} >> s = {x>>s, n};
+	{0.,n} >> s = {0., n+s};
 
 *HEAD Mixed integer/float arithmetic
 
