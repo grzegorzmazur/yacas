@@ -1,0 +1,144 @@
+
+Chapter()"Polynomials";
+
+AddAnchor("Expand");
+SubSection()"Expand(expr)"; Text()"
+
+Expand(expr) : expands a univariate. Example: Expand((1+x)^2)
+would evaluate to 1+2*x+x^2.
+
+If the expression depends on more than one variable, you can
+specify which variable to expand to using Expand(expr,var);
+Also, you can expand to multiple variables, by specifying the
+order in which to expand, in a list, using Expand(expr,{varlist}).
+
+";
+
+AddAnchor("Degree");
+SubSection()"Degree(expr) or Degree(expression, variable)";
+
+Text()"
+
+Degree(expr) : return the degree of a polynomial. Example: ":
+HtmlTerm("Degree((1+x)^2);"):" evaluates to 2. ":
+
+HtmlNewParagraph():
+"The version accepting an additional variable as an argument can be
+used to get the degree of a multivariate polynomial with respect to
+that variable. Example: ":HtmlTerm("Degree(a+b*x^3,a);"):"returns 1.";
+
+AddAnchor("Coef");
+SubSection()"Coef(expr,var,order)"; Text()"
+
+Coef(expr,var,order) : return the coefficient of order for expression
+expr treated as a univariate with respect to the variable var.
+":
+HtmlNewParagraph():
+"
+The argument to parameter order can also be a list of integers, in
+which case this function returns a list of coefficients.
+
+";
+/*
+"";
+*/
+
+AddAnchor("PSolve");
+SubSection()"PSolve(expr,var)"; Text()"
+
+PSolve(expr,var) : solve expr=0, treating expr as a polynomial in
+the variable var. The result returned is the value var should take
+for expr=0 to be true. This has been implemented for polynomials
+upto degree 2.
+
+";
+
+
+AddAnchor("Div");
+SubSection()"Div(n,m)"; Text()"
+
+Div(n,m) : div is also defined for polynomials.
+
+";
+
+AddAnchor("Mod");
+SubSection()"Mod(n,m)"; Text()"
+
+Mod(n,m) : mod is also defined for polynomials.
+";
+
+AddAnchor("Content");
+SubSection()"Content(poly)"; Text()"
+Content(poly) : determine the content of a univariate polynomial.
+The content is the greatest common divisor of each term in the
+polynomial. The content of 2*x^2+4*x should be 2*x for instance.
+";
+
+AddAnchor("PrimitivePart");
+SubSection()"PrimitivePart(poly)"; Text()"
+PrimitivePart(poly) : determine the primitive part of a univariate polynomial.
+This is defined as PrimitivePart(poly)*Content(poly) = poly, and can
+easily be checked with Expand(PrimitivePart(poly)*Content(poly))
+which should be equal to Expand(poly).
+";
+
+
+AddAnchor("RandomPoly");
+SubSection()"RandomPoly(var,deg,coefmin,coefmax)";
+Text()"
+RandomPoly(var,deg,coefmin,coefmax) :
+generate a random polynomial in variable var, of degree deg,
+with coefficients ranging from coefmin to coefmax (inclusive).
+
+";
+
+
+AddAnchor("LeadingCoef");
+SubSection()"LeadingCoef(poly)";
+Text()"
+LeadingCoef(poly) : get the leading coefficient of the polynomial poly.
+If there are more variables in poly, you can specify which variable
+is the main one, by adding it as an argument:
+
+":HtmlCommand(
+"In> LeadingCoef(a*x^2+2,x)
+Out> a;"):"
+
+";
+
+
+AddAnchor("Monic");
+SubSection()"Monic(poly)";
+Text()"
+Monic(poly) : return the monic part of the polynomial poly.
+This is poly/LeadingCoef(poly). This function also accepts
+a second argument, specifying the variable of the univariate
+polynomial:
+
+":HtmlCommand(
+"
+In> f:=a*x^2+b
+Out> a*x^2+b;
+In> PrettyForm(Monic(f,x))
+
+b    2
+- + x 
+a     
+
+Out> True;
+"):"
+
+";
+
+
+AddAnchor("BigOh");
+SubSection()"BigOh(_uv,_var,_degree)";
+Text()
+"BigOh(poly,var,degree) : Given a polynomial poly in variable var,
+drop all terms of order degree or higher.
+
+";
+
+
+
+

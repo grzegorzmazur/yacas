@@ -1,0 +1,16 @@
+lispatom.h: In method `class LispObject * LispAnnotatedObject<LispGenericClass>::Copy<LispGenericClass>(int)':
+lispatom.cc:170:   instantiated from here
+lispatom.h:107: no matching function for call to `LispAnnotatedObject<LispGenericClass>::LispAnnotatedObject (LispPtr &)'
+lispatom.cc:170: candidates are: LispAnnotatedObject<LispGenericClass>::LispAnnotatedObject(LispAnnotatedObject<LispGenericClass> &)
+lispatom.h:60:                 LispAnnotatedObject<LispGenericClass>::LispAnnotatedObject<LispGenericClass>(LispGenericClass *)
+lispatom.h: In method `class LispObject * LispAnnotatedObject<LispSubList>::Copy<LispSubList>(int)':
+lispatom.cc:170:   instantiated from here
+lispatom.h:107: no matching function for call to `LispAnnotatedObject<LispSubList>::LispAnnotatedObject (LispPtr &)'
+lispatom.cc:88: candidates are: LispAnnotatedObject<LispSubList>::LispAnnotatedObject(LispAnnotatedObject<LispSubList> &)
+lispatom.h:60:                 LispAnnotatedObject<LispSubList>::LispAnnotatedObject<LispSubList>(LispSubList *)
+lispatom.h: In method `class LispObject * LispAnnotatedObject<LispAtom>::Copy<LispAtom>(int)':
+lispatom.cc:170:   instantiated from here
+lispatom.h:107: no matching function for call to `LispAnnotatedObject<LispAtom>::LispAnnotatedObject (LispPtr &)'
+lispatom.cc:42: candidates are: LispAnnotatedObject<LispAtom>::LispAnnotatedObject(LispAnnotatedObject<LispAtom> &)
+lispatom.h:60:                 LispAnnotatedObject<LispAtom>::LispAnnotatedObject<LispAtom>(LispAtom *)
+make: *** [lispatom.o] Error 1

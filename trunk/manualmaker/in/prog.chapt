@@ -1,0 +1,207 @@
+
+Chapter()"Programming";
+
+
+AddAnchor("Atom");
+SubSection()"Atom(\"atom\")";  Text()"
+Atom(\"atom\") : 
+Returns an atom with the string representation given
+as the evaluated argument. Example: \"Atom(\"foo\");\" returns
+\"foo\".
+
+";
+
+AddAnchor("String");
+SubSection()"String(atom)";  Text()"
+String(atom) : Inverse of Atom: turns atom into \"atom\".
+";
+
+AddAnchor("ConcatStrings");
+SubSection()"ConcatStrings(strings)";  Text()"
+ConcatStrings(strings) : 
+Concatenate strings. Example:
+\"ConcatStrings(\"a\",\"b\",\"c\");\" will return \"abc\".
+
+";
+
+SubSection()"/* comment */";  Text()"
+A comment block in a source file.
+
+";
+
+AddAnchor("Prog");
+SubSection()"Prog(...)";  Text()"
+Prog(...) : Evaluate the arguments in order, and return the result of the
+last evaluated expression.
+This is the same as the \"[ ... ]\" constuct, that
+is, \"Prog(a,b);\" is the same as typing \"[a;b;];\" and is
+very useful for writing out function bodies (the \"[...]\" construct
+is converted into \"Prog(...)\" during the parsing stage)
+
+";
+
+AddAnchor("Check");
+SubSection()"Check(predicate,\"error\")";  Text()"
+Check(predicate,\"error\") : 
+If \"predicate\" doesn't evaluate to \"True\",
+then current operation will be stopped, and execution
+will jump right back to the command line, showing
+\"error\". Use this to assure that some condition
+is met during evaluation of expressions (guarding
+against internal errors).
+
+";
+
+
+AddAnchor("Prefix");
+SubSection()"Prefix(\"operator\")";  Text()"
+Prefix(\"operator\") : Defines a new operator for the prefix parser
+to understand. This function can also be called with an additional argument
+for the precedence of the prefix operator.
+";
+
+AddAnchor("Postfix");
+SubSection()"Postfix(\"oper\")";  Text()"
+Postfix(\"oper\") : Defines a new operator for the postfix parser to understand.
+
+";
+
+AddAnchor("Bodied");
+SubSection()"Bodied(\"oper\",precedence)";  Text()"
+Bodied(\"oper\",precedence) : Defines a new operator for the bodied parser to understand.
+
+
+";
+
+AddAnchor("Infix");
+SubSection()"Infix(\"oper\",precedence)";  Text()"
+Infix(\"oper\",precedence) : Defines a new operator for the infix parser to understand.
+\"precedence\" is evaluated.
+
+";
+
+AddAnchor("IsInfix");
+AddAnchor("IsPrefix");
+AddAnchor("IsPostfix");
+SubSection()"IsInfix(\"str\"), IsPrefix(\"str\"), IsPostfix(\"str\")";  Text()"
+Returns wether str is an infix, prefix, or postfix operator.
+IsInfix(\"+\") should return True. IsInfix(\"a\") should return False.
+
+";
+
+AddAnchor("OpPrecedence");
+SubSection()"OpPrecedence(\"str\")";  Text()"
+Returns the precedence of the infix operator str. OpPrecedence(\"+\")
+should return 6.
+
+";
+
+AddAnchor("RightAssociative");
+SubSection()"RightAssociative(\"operator\")";  Text()"
+makes the operator right-associative. Example: RightAssociative(\"*\")
+would make multiplication right-associative. Take care not to abuse
+this function, because the reverse, making an infix operator
+left-associative, is not implemented.
+
+";
+
+AddAnchor("LeftPrecedence");
+AddAnchor("RightPrecedence");
+SubSection()"LeftPrecedence(\"oper\",precedence), RightPrecedence(\"oper\",precedence)";
+Text()"
+
+oper should be an infix operator. This function call tells the
+infix expression printer to bracket the left or right hand side of
+the expression if its precedence is larger than precedence.
+
+This functionality was required in order to display a-(b-c)
+correctly. a+b+c is the same as a+(b+c), but a-(b-c) is not
+the same as a-b-c.
+
+";
+
+
+AddAnchor("RuleBase");
+SubSection()"RuleBase(\"operator\",{params})";  Text()"
+RuleBase(\"operator\",{params}) : Define a new rules table entry for a
+function \"operator\", with {params} as the parameter list.
+
+";
+
+AddAnchor("Rule");
+SubSection()"Rule(\"operator\",arity,precedence,predicate) body";  Text()"
+Rule(\"operator\",arity,precedence,predicate) body : 
+Define a rule for the function \"operator\" with
+\"arity\", \"precedence\", \"predicate\" and
+\"body\". \"precedence\" is checked from low to high.
+The arity for a rules database equals the number of arguments. Different
+rules data bases can be built for functions with the same name but with
+a different number of arguments.
+Rules with a low value will be tried before rules with a high value, so
+a rule with precedence 0 will be tried before a rule with precedence 1.
+
+";
+
+AddAnchor("HoldArg");
+SubSection()"HoldArg(\"operator\",parameter)";  Text()"
+HoldArg(\"operator\",parameter) : 
+Specify that parameter (which should be part of
+a parameter list for a function \"operator\") should
+not be evaluated before used. This will be
+declared for all arities of \"operator\", at the moment
+this function is called, so it is best called
+after all RuleBase calls for this operator.
+
+";
+
+AddAnchor("TryRetract");
+SubSection()"TryRetract(\"operator\",arity)";  Text()"
+TryRetract(\"operator\",arity) : Remove a rulebase with some specific arity,
+if it exists at all.
+
+";
+
+
+AddAnchor("UnFence");
+SubSection()"UnFence(\"operator\",arity)";  Text()"
+UnFence(\"operator\",arity) : When applied to a user function, the bodies
+defined for the rules for \"operator\" with given
+arity can see the local variables from the calling
+function. This is useful for defining macro-like
+procedures (looping and the such). The For and ForEach functions
+defined in the standard packages use this, for instance.
+
+";
+
+AddAnchor("MacroSet");
+AddAnchor("MacroClear");
+AddAnchor("MacroLocal");
+AddAnchor("MacroRuleBase");
+AddAnchor("MacroRule");
+SubSection()"MacroSet, MacroClear,MacroLocal, MacroRuleBase,MacroRule";  Text()"
+
+Same as their non-macro counterparts, except
+that their arguments are evaluated before
+the required action is performed. This is
+useful in macro-like procedures.
+
+";
+
+
+
+
+
+
+AddAnchor("Secure");
+SubSection()"Secure(body)"; Text()"
+Secure evaluates body in a safe environment, where file opening
+and system calls are not allowed. This can protect the system
+when an unsafe evaluation is done (Like a script sent over the
+internet to be evaluated on a computer).
+";
+
+
+
+
+
+

@@ -1,0 +1,133 @@
+<HTML>
+<A NAME="c12">
+
+</A>
+<A HREF="refchapter12.html#%" TARGET="Chapters">
+%
+</A>
+, <A HREF="refchapter12.html#True" TARGET="Chapters">
+True
+</A>
+, <A HREF="refchapter12.html#False" TARGET="Chapters">
+False
+</A>
+, <A HREF="refchapter12.html#EndOfFile" TARGET="Chapters">
+EndOfFile
+</A>
+, <A HREF="refchapter12.html#Infinity" TARGET="Chapters">
+Infinity
+</A>
+, <A HREF="refchapter12.html#Pi" TARGET="Chapters">
+Pi
+</A>
+, <HEAD><TITLE>Constants</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+Constants
+</H1>
+<A NAME="%">
+
+</A>
+<H3>
+<HR>%
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+%
+<H5>
+Parameters:
+</H5>
+
+<H5>
+Description:
+</H5>
+% evaluates to the previous result on the command line. % is a global
+variable that is bound to the previous result from the command line.
+Using % will evaluate the previous result (This uses the functionality
+offered by the LazyGlobal command). <p>
+
+Typical examples are <B><TT>Simplify(%)</TT></B> and <B><TT>PrettyForm(%)</TT></B>to simplify and show the result in a nice
+form respectively.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Taylor(x,0,5)Sin(x)
+Out> x-x^3/6+x^5/120;
+In> PrettyForm(%)
+
+     3    5 
+    x    x  
+x - -- + ---
+    6    120
+
+
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#LazyGlobal" TARGET="Chapters">
+LazyGlobal
+</A>
+, <A NAME="True">
+
+</A>
+<A NAME="False">
+
+</A>
+<H3>
+<HR>True and False
+</H3>
+
+
+<B><TT>True</TT></B> and <B><TT>False</TT></B> are typically the result
+of boolean expressions like <B><TT>2 &lt 3</TT></B> and <B><TT>True And False</TT></B>.
+<A NAME="EndOfFile">
+
+</A>
+<H3>
+<HR>EndOfFile
+</H3>
+
+EndOfFile : End of file marker when reading from file. If a file
+contains the expression <B><TT>EndOfFile;</TT></B> the
+operation will stop reading the file at that point.
+
+<A NAME="Infinity">
+
+</A>
+<H3>
+<HR>Infinity
+</H3>
+
+
+Infinity represents infinity. It can be the result of certain
+calculations.
+<P>
+
+Note that for most analytic functions Yacas understands Infinity.
+Thus <B><TT>Infinity*2</TT></B> will return Infinity, and <B><TT>a &lt Infinity</TT></B> will evaluate to True.
+
+<A NAME="Pi">
+
+</A>
+<H3>
+<HR>Pi
+</H3>
+
+
+Pi represents the value of pi. When the N(..) function is used,
+Pi is set to the correct value. It is probably better to use
+Pi than Pi(), for simplification purposes.
+
+
+
+</BODY>
+
+</FONT>
+
+</HTML>

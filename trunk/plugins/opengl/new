@@ -1,0 +1,1751 @@
+
+
+
+/*
+ *
+ * Enumerations
+ *
+ */
+
+/* Boolean values */
+StubApiCShortIntegerConstant("GL_FALSE");
+StubApiCShortIntegerConstant("GL_TRUE");
+
+/* Data types */
+StubApiCShortIntegerConstant("GL_BYTE");
+StubApiCShortIntegerConstant("GL_UNSIGNED_BYTE");
+StubApiCShortIntegerConstant("GL_SHORT");
+StubApiCShortIntegerConstant("GL_UNSIGNED_SHORT");
+StubApiCShortIntegerConstant("GL_INT");
+StubApiCShortIntegerConstant("GL_UNSIGNED_INT");
+StubApiCShortIntegerConstant("GL_FLOAT");
+StubApiCShortIntegerConstant("GL_DOUBLE");
+StubApiCShortIntegerConstant("GL_2_BYTES");
+StubApiCShortIntegerConstant("GL_3_BYTES");
+StubApiCShortIntegerConstant("GL_4_BYTES");
+
+/* Primitives */
+StubApiCShortIntegerConstant("GL_LINES");
+StubApiCShortIntegerConstant("GL_POINTS");
+StubApiCShortIntegerConstant("GL_LINE_STRIP");
+StubApiCShortIntegerConstant("GL_LINE_LOOP");
+StubApiCShortIntegerConstant("GL_TRIANGLES");
+StubApiCShortIntegerConstant("GL_TRIANGLE_STRIP");
+StubApiCShortIntegerConstant("GL_TRIANGLE_FAN");
+StubApiCShortIntegerConstant("GL_QUADS");
+StubApiCShortIntegerConstant("GL_QUAD_STRIP");
+StubApiCShortIntegerConstant("GL_POLYGON");
+StubApiCShortIntegerConstant("GL_EDGE_FLAG");
+
+/* Vertex Arrays */
+StubApiCShortIntegerConstant("GL_VERTEX_ARRAY");
+StubApiCShortIntegerConstant("GL_NORMAL_ARRAY");
+StubApiCShortIntegerConstant("GL_COLOR_ARRAY");
+StubApiCShortIntegerConstant("GL_INDEX_ARRAY");
+StubApiCShortIntegerConstant("GL_TEXTURE_COORD_ARRAY");
+StubApiCShortIntegerConstant("GL_EDGE_FLAG_ARRAY");
+StubApiCShortIntegerConstant("GL_VERTEX_ARRAY_SIZE");
+StubApiCShortIntegerConstant("GL_VERTEX_ARRAY_TYPE");
+StubApiCShortIntegerConstant("GL_VERTEX_ARRAY_STRIDE");
+StubApiCShortIntegerConstant("GL_NORMAL_ARRAY_TYPE");
+StubApiCShortIntegerConstant("GL_NORMAL_ARRAY_STRIDE");
+StubApiCShortIntegerConstant("GL_COLOR_ARRAY_SIZE");
+StubApiCShortIntegerConstant("GL_COLOR_ARRAY_TYPE");
+StubApiCShortIntegerConstant("GL_COLOR_ARRAY_STRIDE");
+StubApiCShortIntegerConstant("GL_INDEX_ARRAY_TYPE");
+StubApiCShortIntegerConstant("GL_INDEX_ARRAY_STRIDE
+StubApiCShortIntegerConstant("GL_TEXTURE_COORD_ARRAY_SIZE");
+StubApiCShortIntegerConstant("GL_TEXTURE_COORD_ARRAY_TYPE");
+StubApiCShortIntegerConstant("GL_TEXTURE_COORD_ARRAY_STRIDE");
+StubApiCShortIntegerConstant("GL_EDGE_FLAG_ARRAY_STRIDE");
+StubApiCShortIntegerConstant("GL_VERTEX_ARRAY_POINTER");
+StubApiCShortIntegerConstant("GL_NORMAL_ARRAY_POINTER");
+StubApiCShortIntegerConstant("GL_COLOR_ARRAY_POINTER");
+StubApiCShortIntegerConstant("GL_INDEX_ARRAY_POINTER");
+StubApiCShortIntegerConstant("GL_TEXTURE_COORD_ARRAY_POINTER");
+StubApiCShortIntegerConstant("GL_EDGE_FLAG_ARRAY_POINTER");
+StubApiCShortIntegerConstant("GL_V2F");
+StubApiCShortIntegerConstant("GL_V3F");
+StubApiCShortIntegerConstant("GL_C4UB_V2F");
+StubApiCShortIntegerConstant("GL_C4UB_V3F");
+StubApiCShortIntegerConstant("GL_C3F_V3F");
+StubApiCShortIntegerConstant("GL_N3F_V3F");
+StubApiCShortIntegerConstant("GL_C4F_N3F_V3F");
+StubApiCShortIntegerConstant("GL_T2F_V3F");
+StubApiCShortIntegerConstant("GL_T4F_V4F");
+StubApiCShortIntegerConstant("GL_T2F_C4UB_V3F");
+StubApiCShortIntegerConstant("GL_T2F_C3F_V3F");
+StubApiCShortIntegerConstant("GL_T2F_N3F_V3F");
+StubApiCShortIntegerConstant("GL_T2F_C4F_N3F_V3F");
+StubApiCShortIntegerConstant("GL_T4F_C4F_N3F_V4F");
+
+
+/* Points */
+StubApiCShortIntegerConstant("GL_POINT_SMOOTH");
+StubApiCShortIntegerConstant("GL_POINT_SIZE");
+StubApiCShortIntegerConstant("GL_POINT_SIZE_GRANULARITY");
+StubApiCShortIntegerConstant("GL_POINT_SIZE_RANGE");
+
+/* Lines */
+StubApiCShortIntegerConstant("GL_LINE_SMOOTH");
+StubApiCShortIntegerConstant("GL_LINE_STIPPLE");
+StubApiCShortIntegerConstant("GL_LINE_STIPPLE_PATTERN");
+StubApiCShortIntegerConstant("GL_LINE_STIPPLE_REPEAT");
+StubApiCShortIntegerConstant("GL_LINE_WIDTH");
+StubApiCShortIntegerConstant("GL_LINE_WIDTH_GRANULARITY");
+StubApiCShortIntegerConstant("GL_LINE_WIDTH_RANGE");
+
+/* Polygons */
+StubApiCShortIntegerConstant("GL_POINT");
+StubApiCShortIntegerConstant("GL_LINE");
+StubApiCShortIntegerConstant("GL_FILL");
+StubApiCShortIntegerConstant("GL_CCW");
+StubApiCShortIntegerConstant("GL_CW");
+StubApiCShortIntegerConstant("GL_FRONT");
+StubApiCShortIntegerConstant("GL_BACK");
+StubApiCShortIntegerConstant("GL_CULL_FACE");
+StubApiCShortIntegerConstant("GL_CULL_FACE_MODE");
+StubApiCShortIntegerConstant("GL_POLYGON_SMOOTH");
+StubApiCShortIntegerConstant("GL_POLYGON_STIPPLE");
+StubApiCShortIntegerConstant("GL_FRONT_FACE");
+StubApiCShortIntegerConstant("GL_POLYGON_MODE");
+StubApiCShortIntegerConstant("GL_POLYGON_OFFSET_FACTOR");
+StubApiCShortIntegerConstant("GL_POLYGON_OFFSET_UNITS");
+StubApiCShortIntegerConstant("GL_POLYGON_OFFSET_POINT");
+StubApiCShortIntegerConstant("GL_POLYGON_OFFSET_LINE");
+StubApiCShortIntegerConstant("GL_POLYGON_OFFSET_FILL");
+
+/* Display Lists */
+StubApiCShortIntegerConstant("GL_COMPILE");
+StubApiCShortIntegerConstant("GL_COMPILE_AND_EXECUTE");
+StubApiCShortIntegerConstant("GL_LIST_BASE");
+StubApiCShortIntegerConstant("GL_LIST_INDEX");
+StubApiCShortIntegerConstant("GL_LIST_MODE");
+
+/* Depth buffer */
+StubApiCShortIntegerConstant("GL_NEVER");
+StubApiCShortIntegerConstant("GL_LESS");
+StubApiCShortIntegerConstant("GL_GEQUAL");
+StubApiCShortIntegerConstant("GL_LEQUAL");
+StubApiCShortIntegerConstant("GL_GREATER");
+StubApiCShortIntegerConstant("GL_NOTEQUAL");
+StubApiCShortIntegerConstant("GL_EQUAL");
+StubApiCShortIntegerConstant("GL_ALWAYS");
+StubApiCShortIntegerConstant("GL_DEPTH_TEST");
+StubApiCShortIntegerConstant("GL_DEPTH_BITS");
+StubApiCShortIntegerConstant("GL_DEPTH_CLEAR_VALUE");
+StubApiCShortIntegerConstant("GL_DEPTH_FUNC");
+StubApiCShortIntegerConstant("GL_DEPTH_RANGE");
+StubApiCShortIntegerConstant("GL_DEPTH_WRITEMASK");
+StubApiCShortIntegerConstant("GL_DEPTH_COMPONENT");
+
+/* Lighting */
+StubApiCShortIntegerConstant("GL_LIGHTING");
+StubApiCShortIntegerConstant("GL_LIGHT0");
+StubApiCShortIntegerConstant("GL_LIGHT1");
+StubApiCShortIntegerConstant("GL_LIGHT2");
+StubApiCShortIntegerConstant("GL_LIGHT3");
+StubApiCShortIntegerConstant("GL_LIGHT4");
+StubApiCShortIntegerConstant("GL_LIGHT5");
+StubApiCShortIntegerConstant("GL_LIGHT6");
+StubApiCShortIntegerConstant("GL_LIGHT7");
+StubApiCShortIntegerConstant("GL_SPOT_EXPONENT");
+StubApiCShortIntegerConstant("GL_SPOT_CUTOFF");
+StubApiCShortIntegerConstant("GL_CONSTANT_ATTENUATION");
+StubApiCShortIntegerConstant("GL_LINEAR_ATTENUATION");
+StubApiCShortIntegerConstant("GL_QUADRATIC_ATTENUATION");
+StubApiCShortIntegerConstant("GL_AMBIENT");
+StubApiCShortIntegerConstant("GL_DIFFUSE");
+StubApiCShortIntegerConstant("GL_SPECULAR");
+StubApiCShortIntegerConstant("GL_SHININESS");
+StubApiCShortIntegerConstant("GL_EMISSION");
+StubApiCShortIntegerConstant("GL_POSITION");
+StubApiCShortIntegerConstant("GL_SPOT_DIRECTION");
+StubApiCShortIntegerConstant("GL_AMBIENT_AND_DIFFUSE");
+StubApiCShortIntegerConstant("GL_COLOR_INDEXES");
+StubApiCShortIntegerConstant("GL_LIGHT_MODEL_TWO_SIDE");
+StubApiCShortIntegerConstant("GL_LIGHT_MODEL_LOCAL_VIEWER");
+StubApiCShortIntegerConstant("GL_LIGHT_MODEL_AMBIENT");
+StubApiCShortIntegerConstant("GL_FRONT_AND_BACK");
+StubApiCShortIntegerConstant("GL_SHADE_MODEL");
+StubApiCShortIntegerConstant("GL_FLAT");
+StubApiCShortIntegerConstant("GL_SMOOTH");
+StubApiCShortIntegerConstant("GL_COLOR_MATERIAL");
+StubApiCShortIntegerConstant("GL_COLOR_MATERIAL_FACE");
+StubApiCShortIntegerConstant("GL_COLOR_MATERIAL_PARAMETER");
+StubApiCShortIntegerConstant("GL_NORMALIZE");
+
+/* User clipping planes */
+StubApiCShortIntegerConstant("GL_CLIP_PLANE0");
+StubApiCShortIntegerConstant("GL_CLIP_PLANE1");
+StubApiCShortIntegerConstant("GL_CLIP_PLANE2");
+StubApiCShortIntegerConstant("GL_CLIP_PLANE3");
+StubApiCShortIntegerConstant("GL_CLIP_PLANE4");
+StubApiCShortIntegerConstant("GL_CLIP_PLANE5");
+
+/* Accumulation buffer */
+StubApiCShortIntegerConstant("GL_ACCUM_RED_BITS");
+StubApiCShortIntegerConstant("GL_ACCUM_GREEN_BITS");
+StubApiCShortIntegerConstant("GL_ACCUM_BLUE_BITS");
+StubApiCShortIntegerConstant("GL_ACCUM_ALPHA_BITS");
+StubApiCShortIntegerConstant("GL_ACCUM_CLEAR_VALUE");
+StubApiCShortIntegerConstant("GL_ACCUM");
+StubApiCShortIntegerConstant("GL_ADD");
+StubApiCShortIntegerConstant("GL_LOAD");
+StubApiCShortIntegerConstant("GL_MULT");
+StubApiCShortIntegerConstant("GL_RETURN");
+
+/* Alpha testing */
+StubApiCShortIntegerConstant("GL_ALPHA_TEST");
+StubApiCShortIntegerConstant("GL_ALPHA_TEST_REF");
+StubApiCShortIntegerConstant("GL_ALPHA_TEST_FUNC");
+
+/* Blending */
+StubApiCShortIntegerConstant("GL_BLEND");
+StubApiCShortIntegerConstant("GL_BLEND_SRC");
+StubApiCShortIntegerConstant("GL_BLEND_DST");
+StubApiCShortIntegerConstant("GL_ZERO");
+StubApiCShortIntegerConstant("GL_ONE");
+StubApiCShortIntegerConstant("GL_SRC_COLOR");
+StubApiCShortIntegerConstant("GL_ONE_MINUS_SRC_COLOR");
+StubApiCShortIntegerConstant("GL_DST_COLOR");
+StubApiCShortIntegerConstant("GL_ONE_MINUS_DST_COLOR");
+StubApiCShortIntegerConstant("GL_SRC_ALPHA");
+StubApiCShortIntegerConstant("GL_ONE_MINUS_SRC_ALPHA");
+StubApiCShortIntegerConstant("GL_DST_ALPHA");
+StubApiCShortIntegerConstant("GL_ONE_MINUS_DST_ALPHA");
+StubApiCShortIntegerConstant("GL_SRC_ALPHA_SATURATE");
+StubApiCShortIntegerConstant("GL_CONSTANT_COLOR");
+StubApiCShortIntegerConstant("GL_ONE_MINUS_CONSTANT_COLOR");
+StubApiCShortIntegerConstant("GL_CONSTANT_ALPHA");
+StubApiCShortIntegerConstant("GL_ONE_MINUS_CONSTANT_ALPHA");
+
+/* Render Mode */
+StubApiCShortIntegerConstant("GL_FEEDBACK");
+StubApiCShortIntegerConstant("GL_RENDER");
+StubApiCShortIntegerConstant("GL_SELECT");
+
+/* Feedback */
+StubApiCShortIntegerConstant("GL_2D");
+StubApiCShortIntegerConstant("GL_3D");
+StubApiCShortIntegerConstant("GL_3D_COLOR");
+StubApiCShortIntegerConstant("GL_3D_COLOR_TEXTURE");
+StubApiCShortIntegerConstant("GL_4D_COLOR_TEXTURE");
+StubApiCShortIntegerConstant("GL_POINT_TOKEN");
+StubApiCShortIntegerConstant("GL_LINE_TOKEN");
+StubApiCShortIntegerConstant("GL_LINE_RESET_TOKEN");
+StubApiCShortIntegerConstant("GL_POLYGON_TOKEN");
+StubApiCShortIntegerConstant("GL_BITMAP_TOKEN");
+StubApiCShortIntegerConstant("GL_DRAW_PIXEL_TOKEN");
+StubApiCShortIntegerConstant("GL_COPY_PIXEL_TOKEN");
+StubApiCShortIntegerConstant("GL_PASS_THROUGH_TOKEN");
+StubApiCShortIntegerConstant("GL_FEEDBACK_BUFFER_POINTER");
+StubApiCShortIntegerConstant("GL_FEEDBACK_BUFFER_SIZE");
+StubApiCShortIntegerConstant("GL_FEEDBACK_BUFFER_TYPE");
+
+/* Selection */
+StubApiCShortIntegerConstant("GL_SELECTION_BUFFER_POINTER");
+StubApiCShortIntegerConstant("GL_SELECTION_BUFFER_SIZE");
+
+/* Fog */
+StubApiCShortIntegerConstant("GL_FOG");
+StubApiCShortIntegerConstant("GL_FOG_MODE");
+StubApiCShortIntegerConstant("GL_FOG_DENSITY");
+StubApiCShortIntegerConstant("GL_FOG_COLOR");
+StubApiCShortIntegerConstant("GL_FOG_INDEX");
+StubApiCShortIntegerConstant("GL_FOG_START");
+StubApiCShortIntegerConstant("GL_FOG_END");
+StubApiCShortIntegerConstant("GL_LINEAR");
+StubApiCShortIntegerConstant("GL_EXP");
+StubApiCShortIntegerConstant("GL_EXP2");
+
+/* Logic Ops */
+StubApiCShortIntegerConstant("GL_LOGIC_OP");
+StubApiCShortIntegerConstant("GL_INDEX_LOGIC_OP");
+StubApiCShortIntegerConstant("GL_COLOR_LOGIC_OP");
+StubApiCShortIntegerConstant("GL_LOGIC_OP_MODE");
+StubApiCShortIntegerConstant("GL_CLEAR");
+StubApiCShortIntegerConstant("GL_SET");
+StubApiCShortIntegerConstant("GL_COPY");
+StubApiCShortIntegerConstant("GL_COPY_INVERTED");
+StubApiCShortIntegerConstant("GL_NOOP");
+StubApiCShortIntegerConstant("GL_INVERT");
+StubApiCShortIntegerConstant("GL_AND");
+StubApiCShortIntegerConstant("GL_NAND");
+StubApiCShortIntegerConstant("GL_OR");
+StubApiCShortIntegerConstant("GL_NOR");
+StubApiCShortIntegerConstant("GL_XOR");
+StubApiCShortIntegerConstant("GL_EQUIV");
+StubApiCShortIntegerConstant("GL_AND_REVERSE");
+StubApiCShortIntegerConstant("GL_AND_INVERTED");
+StubApiCShortIntegerConstant("GL_OR_REVERSE");
+StubApiCShortIntegerConstant("GL_OR_INVERTED");
+
+/* Stencil */
+StubApiCShortIntegerConstant("GL_STENCIL_TEST");
+StubApiCShortIntegerConstant("GL_STENCIL_WRITEMASK");
+StubApiCShortIntegerConstant("GL_STENCIL_BITS");
+StubApiCShortIntegerConstant("GL_STENCIL_FUNC");
+StubApiCShortIntegerConstant("GL_STENCIL_VALUE_MASK");
+StubApiCShortIntegerConstant("GL_STENCIL_REF");
+StubApiCShortIntegerConstant("GL_STENCIL_FAIL");
+StubApiCShortIntegerConstant("GL_STENCIL_PASS_DEPTH_PASS");
+StubApiCShortIntegerConstant("GL_STENCIL_PASS_DEPTH_FAIL");
+StubApiCShortIntegerConstant("GL_STENCIL_CLEAR_VALUE");
+StubApiCShortIntegerConstant("GL_STENCIL_INDEX");
+StubApiCShortIntegerConstant("GL_KEEP");
+StubApiCShortIntegerConstant("GL_REPLACE");
+StubApiCShortIntegerConstant("GL_INCR");
+StubApiCShortIntegerConstant("GL_DECR");
+
+/* Buffers, Pixel Drawing/Reading */
+StubApiCShortIntegerConstant("GL_NONE");
+StubApiCShortIntegerConstant("GL_LEFT");
+StubApiCShortIntegerConstant("GL_RIGHT");
+StubApiCShortIntegerConstant("GL_FRONT_LEFT");
+StubApiCShortIntegerConstant("GL_FRONT_RIGHT");
+StubApiCShortIntegerConstant("GL_BACK_LEFT");
+StubApiCShortIntegerConstant("GL_BACK_RIGHT");
+StubApiCShortIntegerConstant("GL_AUX0");
+StubApiCShortIntegerConstant("GL_AUX1");
+StubApiCShortIntegerConstant("GL_AUX2");
+StubApiCShortIntegerConstant("GL_AUX3");
+StubApiCShortIntegerConstant("GL_COLOR_INDEX");
+StubApiCShortIntegerConstant("GL_RED");
+StubApiCShortIntegerConstant("GL_GREEN");
+StubApiCShortIntegerConstant("GL_BLUE");
+StubApiCShortIntegerConstant("GL_ALPHA");
+StubApiCShortIntegerConstant("GL_LUMINANCE");
+StubApiCShortIntegerConstant("GL_LUMINANCE_ALPHA");
+StubApiCShortIntegerConstant("GL_ALPHA_BITS");
+StubApiCShortIntegerConstant("GL_RED_BITS");
+StubApiCShortIntegerConstant("GL_GREEN_BITS");
+StubApiCShortIntegerConstant("GL_BLUE_BITS");
+StubApiCShortIntegerConstant("GL_INDEX_BITS");
+StubApiCShortIntegerConstant("GL_SUBPIXEL_BITS");
+StubApiCShortIntegerConstant("GL_AUX_BUFFERS");
+StubApiCShortIntegerConstant("GL_READ_BUFFER");
+StubApiCShortIntegerConstant("GL_DRAW_BUFFER");
+StubApiCShortIntegerConstant("GL_DOUBLEBUFFER");
+StubApiCShortIntegerConstant("GL_STEREO");
+StubApiCShortIntegerConstant("GL_BITMAP");
+StubApiCShortIntegerConstant("GL_COLOR");
+StubApiCShortIntegerConstant("GL_DEPTH");
+StubApiCShortIntegerConstant("GL_STENCIL");
+StubApiCShortIntegerConstant("GL_DITHER");
+StubApiCShortIntegerConstant("GL_RGB");
+StubApiCShortIntegerConstant("GL_RGBA");
+
+/* Implementation limits */
+StubApiCShortIntegerConstant("GL_MAX_LIST_NESTING");
+StubApiCShortIntegerConstant("GL_MAX_ATTRIB_STACK_DEPTH");
+StubApiCShortIntegerConstant("GL_MAX_MODELVIEW_STACK_DEPTH");
+StubApiCShortIntegerConstant("GL_MAX_NAME_STACK_DEPTH");
+StubApiCShortIntegerConstant("GL_MAX_PROJECTION_STACK_DEPTH");
+StubApiCShortIntegerConstant("GL_MAX_TEXTURE_STACK_DEPTH");
+StubApiCShortIntegerConstant("GL_MAX_EVAL_ORDER");
+StubApiCShortIntegerConstant("GL_MAX_LIGHTS");
+StubApiCShortIntegerConstant("GL_MAX_CLIP_PLANES");
+StubApiCShortIntegerConstant("GL_MAX_TEXTURE_SIZE");
+StubApiCShortIntegerConstant("GL_MAX_PIXEL_MAP_TABLE");
+StubApiCShortIntegerConstant("GL_MAX_VIEWPORT_DIMS");
+StubApiCShortIntegerConstant("GL_MAX_CLIENT_ATTRIB_STACK_DEPTH");
+
+/* Gets */
+StubApiCShortIntegerConstant("GL_ATTRIB_STACK_DEPTH");
+StubApiCShortIntegerConstant("GL_CLIENT_ATTRIB_STACK_DEPTH");
+StubApiCShortIntegerConstant("GL_COLOR_CLEAR_VALUE");
+StubApiCShortIntegerConstant("GL_COLOR_WRITEMASK");
+StubApiCShortIntegerConstant("GL_CURRENT_INDEX");
+StubApiCShortIntegerConstant("GL_CURRENT_COLOR");
+StubApiCShortIntegerConstant("GL_CURRENT_NORMAL");
+StubApiCShortIntegerConstant("GL_CURRENT_RASTER_COLOR");
+StubApiCShortIntegerConstant("GL_CURRENT_RASTER_DISTANCE");
+StubApiCShortIntegerConstant("GL_CURRENT_RASTER_INDEX");
+StubApiCShortIntegerConstant("GL_CURRENT_RASTER_POSITION");
+StubApiCShortIntegerConstant("GL_CURRENT_RASTER_TEXTURE_COORDS");
+StubApiCShortIntegerConstant("GL_CURRENT_RASTER_POSITION_VALID");
+StubApiCShortIntegerConstant("GL_CURRENT_TEXTURE_COORDS");
+StubApiCShortIntegerConstant("GL_INDEX_CLEAR_VALUE");
+StubApiCShortIntegerConstant("GL_INDEX_MODE");
+StubApiCShortIntegerConstant("GL_INDEX_WRITEMASK");
+StubApiCShortIntegerConstant("GL_MODELVIEW_MATRIX");
+StubApiCShortIntegerConstant("GL_MODELVIEW_STACK_DEPTH");
+StubApiCShortIntegerConstant("GL_NAME_STACK_DEPTH");
+StubApiCShortIntegerConstant("GL_PROJECTION_MATRIX");
+StubApiCShortIntegerConstant("GL_PROJECTION_STACK_DEPTH");
+StubApiCShortIntegerConstant("GL_RENDER_MODE");
+StubApiCShortIntegerConstant("GL_RGBA_MODE");
+StubApiCShortIntegerConstant("GL_TEXTURE_MATRIX");
+StubApiCShortIntegerConstant("GL_TEXTURE_STACK_DEPTH");
+StubApiCShortIntegerConstant("GL_VIEWPORT");
+
+
+/* Evaluators */
+StubApiCShortIntegerConstant("GL_AUTO_NORMAL");
+StubApiCShortIntegerConstant("GL_MAP1_COLOR_4");
+StubApiCShortIntegerConstant("GL_MAP1_GRID_DOMAIN");
+StubApiCShortIntegerConstant("GL_MAP1_GRID_SEGMENTS");
+StubApiCShortIntegerConstant("GL_MAP1_INDEX");
+StubApiCShortIntegerConstant("GL_MAP1_NORMAL");
+StubApiCShortIntegerConstant("GL_MAP1_TEXTURE_COORD_1");
+StubApiCShortIntegerConstant("GL_MAP1_TEXTURE_COORD_2");
+StubApiCShortIntegerConstant("GL_MAP1_TEXTURE_COORD_3");
+StubApiCShortIntegerConstant("GL_MAP1_TEXTURE_COORD_4");
+StubApiCShortIntegerConstant("GL_MAP1_VERTEX_3");
+StubApiCShortIntegerConstant("GL_MAP1_VERTEX_4");
+StubApiCShortIntegerConstant("GL_MAP2_COLOR_4");
+StubApiCShortIntegerConstant("GL_MAP2_GRID_DOMAIN");
+StubApiCShortIntegerConstant("GL_MAP2_GRID_SEGMENTS");
+StubApiCShortIntegerConstant("GL_MAP2_INDEX");
+StubApiCShortIntegerConstant("GL_MAP2_NORMAL");
+StubApiCShortIntegerConstant("GL_MAP2_TEXTURE_COORD_1");
+StubApiCShortIntegerConstant("GL_MAP2_TEXTURE_COORD_2");
+StubApiCShortIntegerConstant("GL_MAP2_TEXTURE_COORD_3");
+StubApiCShortIntegerConstant("GL_MAP2_TEXTURE_COORD_4");
+StubApiCShortIntegerConstant("GL_MAP2_VERTEX_3");
+StubApiCShortIntegerConstant("GL_MAP2_VERTEX_4");
+StubApiCShortIntegerConstant("GL_COEFF");
+StubApiCShortIntegerConstant("GL_DOMAIN");
+StubApiCShortIntegerConstant("GL_ORDER");
+
+/* Hints */
+StubApiCShortIntegerConstant("GL_FOG_HINT");
+StubApiCShortIntegerConstant("GL_LINE_SMOOTH_HINT");
+StubApiCShortIntegerConstant("GL_PERSPECTIVE_CORRECTION_HINT");
+StubApiCShortIntegerConstant("GL_POINT_SMOOTH_HINT");
+StubApiCShortIntegerConstant("GL_POLYGON_SMOOTH_HINT");
+StubApiCShortIntegerConstant("GL_DONT_CARE");
+StubApiCShortIntegerConstant("GL_FASTEST");
+StubApiCShortIntegerConstant("GL_NICEST");
+
+/* Scissor box */
+StubApiCShortIntegerConstant("GL_SCISSOR_TEST");
+StubApiCShortIntegerConstant("GL_SCISSOR_BOX");
+
+/* Pixel Mode / Transfer */
+StubApiCShortIntegerConstant("GL_MAP_COLOR");
+StubApiCShortIntegerConstant("GL_MAP_STENCIL");
+StubApiCShortIntegerConstant("GL_INDEX_SHIFT");
+StubApiCShortIntegerConstant("GL_INDEX_OFFSET");
+StubApiCShortIntegerConstant("GL_RED_SCALE");
+StubApiCShortIntegerConstant("GL_RED_BIAS");
+StubApiCShortIntegerConstant("GL_GREEN_SCALE");
+StubApiCShortIntegerConstant("GL_GREEN_BIAS");
+StubApiCShortIntegerConstant("GL_BLUE_SCALE");
+StubApiCShortIntegerConstant("GL_BLUE_BIAS");
+StubApiCShortIntegerConstant("GL_ALPHA_SCALE");
+StubApiCShortIntegerConstant("GL_ALPHA_BIAS");
+StubApiCShortIntegerConstant("GL_DEPTH_SCALE");
+StubApiCShortIntegerConstant("GL_DEPTH_BIAS");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_S_TO_S_SIZE");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_I_TO_I_SIZE");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_I_TO_R_SIZE");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_I_TO_G_SIZE");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_I_TO_B_SIZE");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_I_TO_A_SIZE");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_R_TO_R_SIZE");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_G_TO_G_SIZE");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_B_TO_B_SIZE");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_A_TO_A_SIZE");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_S_TO_S");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_I_TO_I");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_I_TO_R");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_I_TO_G");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_I_TO_B");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_I_TO_A");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_R_TO_R");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_G_TO_G");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_B_TO_B");
+StubApiCShortIntegerConstant("GL_PIXEL_MAP_A_TO_A");
+StubApiCShortIntegerConstant("GL_PACK_ALIGNMENT");
+StubApiCShortIntegerConstant("GL_PACK_LSB_FIRST");
+StubApiCShortIntegerConstant("GL_PACK_ROW_LENGTH");
+StubApiCShortIntegerConstant("GL_PACK_SKIP_PIXELS");
+StubApiCShortIntegerConstant("GL_PACK_SKIP_ROWS");
+StubApiCShortIntegerConstant("GL_PACK_SWAP_BYTES");
+StubApiCShortIntegerConstant("GL_UNPACK_ALIGNMENT");
+StubApiCShortIntegerConstant("GL_UNPACK_LSB_FIRST");
+StubApiCShortIntegerConstant("GL_UNPACK_ROW_LENGTH");
+StubApiCShortIntegerConstant("GL_UNPACK_SKIP_PIXELS");
+StubApiCShortIntegerConstant("GL_UNPACK_SKIP_ROWS");
+StubApiCShortIntegerConstant("GL_UNPACK_SWAP_BYTES");
+StubApiCShortIntegerConstant("GL_ZOOM_X");
+StubApiCShortIntegerConstant("GL_ZOOM_Y");
+
+/* Texture mapping */
+StubApiCShortIntegerConstant("GL_TEXTURE_ENV");
+StubApiCShortIntegerConstant("GL_TEXTURE_ENV_MODE");
+StubApiCShortIntegerConstant("GL_TEXTURE_1D");
+StubApiCShortIntegerConstant("GL_TEXTURE_2D");
+StubApiCShortIntegerConstant("GL_TEXTURE_WRAP_S");
+StubApiCShortIntegerConstant("GL_TEXTURE_WRAP_T");
+StubApiCShortIntegerConstant("GL_TEXTURE_MAG_FILTER");
+StubApiCShortIntegerConstant("GL_TEXTURE_MIN_FILTER");
+StubApiCShortIntegerConstant("GL_TEXTURE_ENV_COLOR");
+StubApiCShortIntegerConstant("GL_TEXTURE_GEN_S");
+StubApiCShortIntegerConstant("GL_TEXTURE_GEN_T");
+StubApiCShortIntegerConstant("GL_TEXTURE_GEN_MODE");
+StubApiCShortIntegerConstant("GL_TEXTURE_BORDER_COLOR");
+StubApiCShortIntegerConstant("GL_TEXTURE_WIDTH");
+StubApiCShortIntegerConstant("GL_TEXTURE_HEIGHT");
+StubApiCShortIntegerConstant("GL_TEXTURE_BORDER");
+StubApiCShortIntegerConstant("GL_TEXTURE_COMPONENTS");
+StubApiCShortIntegerConstant("GL_TEXTURE_RED_SIZE");
+StubApiCShortIntegerConstant("GL_TEXTURE_GREEN_SIZE");
+StubApiCShortIntegerConstant("GL_TEXTURE_BLUE_SIZE");
+StubApiCShortIntegerConstant("GL_TEXTURE_ALPHA_SIZE");
+StubApiCShortIntegerConstant("GL_TEXTURE_LUMINANCE_SIZE");
+StubApiCShortIntegerConstant("GL_TEXTURE_INTENSITY_SIZE");
+StubApiCShortIntegerConstant("GL_NEAREST_MIPMAP_NEAREST");
+StubApiCShortIntegerConstant("GL_NEAREST_MIPMAP_LINEAR");
+StubApiCShortIntegerConstant("GL_LINEAR_MIPMAP_NEAREST");
+StubApiCShortIntegerConstant("GL_LINEAR_MIPMAP_LINEAR");
+StubApiCShortIntegerConstant("GL_OBJECT_LINEAR");
+StubApiCShortIntegerConstant("GL_OBJECT_PLANE");
+StubApiCShortIntegerConstant("GL_EYE_LINEAR");
+StubApiCShortIntegerConstant("GL_EYE_PLANE");
+StubApiCShortIntegerConstant("GL_SPHERE_MAP");
+StubApiCShortIntegerConstant("GL_DECAL");
+StubApiCShortIntegerConstant("GL_MODULATE");
+StubApiCShortIntegerConstant("GL_NEAREST");
+StubApiCShortIntegerConstant("GL_REPEAT");
+StubApiCShortIntegerConstant("GL_CLAMP");
+StubApiCShortIntegerConstant("GL_S");
+StubApiCShortIntegerConstant("GL_T");
+StubApiCShortIntegerConstant("GL_R");
+StubApiCShortIntegerConstant("GL_Q");
+StubApiCShortIntegerConstant("GL_TEXTURE_GEN_R");
+StubApiCShortIntegerConstant("GL_TEXTURE_GEN_Q");
+
+/* GL 1.1 texturing */
+StubApiCShortIntegerConstant("GL_PROXY_TEXTURE_1D");
+StubApiCShortIntegerConstant("GL_PROXY_TEXTURE_2D");
+StubApiCShortIntegerConstant("GL_TEXTURE_PRIORITY");
+StubApiCShortIntegerConstant("GL_TEXTURE_RESIDENT");
+StubApiCShortIntegerConstant("GL_TEXTURE_BINDING_1D");
+StubApiCShortIntegerConstant("GL_TEXTURE_BINDING_2D");
+StubApiCShortIntegerConstant("GL_TEXTURE_INTERNAL_FORMAT");
+
+/* GL 1.2 texturing */
+StubApiCShortIntegerConstant("GL_PACK_SKIP_IMAGES");
+StubApiCShortIntegerConstant("GL_PACK_IMAGE_HEIGHT");
+StubApiCShortIntegerConstant("GL_UNPACK_SKIP_IMAGES");
+StubApiCShortIntegerConstant("GL_UNPACK_IMAGE_HEIGHT");
+StubApiCShortIntegerConstant("GL_TEXTURE_3D");
+StubApiCShortIntegerConstant("GL_PROXY_TEXTURE_3D");
+StubApiCShortIntegerConstant("GL_TEXTURE_DEPTH");
+StubApiCShortIntegerConstant("GL_TEXTURE_WRAP_R");
+StubApiCShortIntegerConstant("GL_MAX_3D_TEXTURE_SIZE");
+StubApiCShortIntegerConstant("GL_TEXTURE_BINDING_3D");
+
+/* Internal texture formats (GL 1.1) */
+StubApiCShortIntegerConstant("GL_ALPHA4");
+StubApiCShortIntegerConstant("GL_ALPHA8");
+StubApiCShortIntegerConstant("GL_ALPHA12");
+StubApiCShortIntegerConstant("GL_ALPHA16");
+StubApiCShortIntegerConstant("GL_LUMINANCE4");
+StubApiCShortIntegerConstant("GL_LUMINANCE8");
+StubApiCShortIntegerConstant("GL_LUMINANCE12");
+StubApiCShortIntegerConstant("GL_LUMINANCE16");
+StubApiCShortIntegerConstant("GL_LUMINANCE4_ALPHA4");
+StubApiCShortIntegerConstant("GL_LUMINANCE6_ALPHA2");
+StubApiCShortIntegerConstant("GL_LUMINANCE8_ALPHA8");
+StubApiCShortIntegerConstant("GL_LUMINANCE12_ALPHA4");
+StubApiCShortIntegerConstant("GL_LUMINANCE12_ALPHA12");
+StubApiCShortIntegerConstant("GL_LUMINANCE16_ALPHA16");
+StubApiCShortIntegerConstant("GL_INTENSITY");
+StubApiCShortIntegerConstant("GL_INTENSITY4");
+StubApiCShortIntegerConstant("GL_INTENSITY8");
+StubApiCShortIntegerConstant("GL_INTENSITY12");
+StubApiCShortIntegerConstant("GL_INTENSITY16");
+StubApiCShortIntegerConstant("GL_R3_G3_B2");
+StubApiCShortIntegerConstant("GL_RGB4");
+StubApiCShortIntegerConstant("GL_RGB5");
+StubApiCShortIntegerConstant("GL_RGB8");
+StubApiCShortIntegerConstant("GL_RGB10");
+StubApiCShortIntegerConstant("GL_RGB12");
+StubApiCShortIntegerConstant("GL_RGB16");
+StubApiCShortIntegerConstant("GL_RGBA2");
+StubApiCShortIntegerConstant("GL_RGBA4");
+StubApiCShortIntegerConstant("GL_RGB5_A1");
+StubApiCShortIntegerConstant("GL_RGBA8");
+StubApiCShortIntegerConstant("GL_RGB10_A2");
+StubApiCShortIntegerConstant("GL_RGBA12");
+StubApiCShortIntegerConstant("GL_RGBA16");
+
+/* Utility */
+StubApiCShortIntegerConstant("GL_VENDOR");
+StubApiCShortIntegerConstant("GL_RENDERER");
+StubApiCShortIntegerConstant("GL_VERSION");
+StubApiCShortIntegerConstant("GL_EXTENSIONS");
+
+/* Errors */
+StubApiCShortIntegerConstant("GL_INVALID_VALUE");
+StubApiCShortIntegerConstant("GL_INVALID_ENUM");
+StubApiCShortIntegerConstant("GL_INVALID_OPERATION");
+StubApiCShortIntegerConstant("GL_STACK_OVERFLOW");
+StubApiCShortIntegerConstant("GL_STACK_UNDERFLOW");
+StubApiCShortIntegerConstant("GL_OUT_OF_MEMORY");
+
+/*
+ * Extensions");
+ */
+
+/* GL_EXT_blend_minmax and GL_EXT_blend_color */
+StubApiCShortIntegerConstant("GL_CONSTANT_COLOR_EXT");
+StubApiCShortIntegerConstant("GL_ONE_MINUS_CONSTANT_COLOR_EXT");
+StubApiCShortIntegerConstant("GL_CONSTANT_ALPHA_EXT");
+StubApiCShortIntegerConstant("GL_ONE_MINUS_CONSTANT_ALPHA_EXT");
+StubApiCShortIntegerConstant("GL_BLEND_EQUATION_EXT");
+StubApiCShortIntegerConstant("GL_MIN_EXT");
+StubApiCShortIntegerConstant("GL_MAX_EXT");
+StubApiCShortIntegerConstant("GL_FUNC_ADD_EXT");
+StubApiCShortIntegerConstant("GL_FUNC_SUBTRACT_EXT");
+StubApiCShortIntegerConstant("GL_FUNC_REVERSE_SUBTRACT_EXT");
+StubApiCShortIntegerConstant("GL_BLEND_COLOR_EXT");
+
+/* GL_EXT_polygon_offset */
+StubApiCShortIntegerConstant("GL_POLYGON_OFFSET_EXT");
+StubApiCShortIntegerConstant("GL_POLYGON_OFFSET_FACTOR_EXT");
+StubApiCShortIntegerConstant("GL_POLYGON_OFFSET_BIAS_EXT");
+
+/* GL_EXT_vertex_array */
+StubApiCShortIntegerConstant("GL_VERTEX_ARRAY_EXT");
+StubApiCShortIntegerConstant("GL_NORMAL_ARRAY_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_ARRAY_EXT");
+StubApiCShortIntegerConstant("GL_INDEX_ARRAY_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_COORD_ARRAY_EXT");
+StubApiCShortIntegerConstant("GL_EDGE_FLAG_ARRAY_EXT");
+StubApiCShortIntegerConstant("GL_VERTEX_ARRAY_SIZE_EXT");
+StubApiCShortIntegerConstant("GL_VERTEX_ARRAY_TYPE_EXT");
+StubApiCShortIntegerConstant("GL_VERTEX_ARRAY_STRIDE_EXT");
+StubApiCShortIntegerConstant("GL_VERTEX_ARRAY_COUNT_EXT");
+StubApiCShortIntegerConstant("GL_NORMAL_ARRAY_TYPE_EXT");
+StubApiCShortIntegerConstant("GL_NORMAL_ARRAY_STRIDE_EXT");
+StubApiCShortIntegerConstant("GL_NORMAL_ARRAY_COUNT_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_ARRAY_SIZE_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_ARRAY_TYPE_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_ARRAY_STRIDE_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_ARRAY_COUNT_EXT");
+StubApiCShortIntegerConstant("GL_INDEX_ARRAY_TYPE_EXT");
+StubApiCShortIntegerConstant("GL_INDEX_ARRAY_STRIDE_EXT");
+StubApiCShortIntegerConstant("GL_INDEX_ARRAY_COUNT_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_COORD_ARRAY_SIZE_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_COORD_ARRAY_TYPE_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_COORD_ARRAY_STRIDE_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_COORD_ARRAY_COUNT_EXT");
+StubApiCShortIntegerConstant("GL_EDGE_FLAG_ARRAY_STRIDE_EXT");
+StubApiCShortIntegerConstant("GL_EDGE_FLAG_ARRAY_COUNT_EXT");
+StubApiCShortIntegerConstant("GL_VERTEX_ARRAY_POINTER_EXT");
+StubApiCShortIntegerConstant("GL_NORMAL_ARRAY_POINTER_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_ARRAY_POINTER_EXT");
+StubApiCShortIntegerConstant("GL_INDEX_ARRAY_POINTER_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_COORD_ARRAY_POINTER_EXT");
+StubApiCShortIntegerConstant("GL_EDGE_FLAG_ARRAY_POINTER_EXT");
+
+/* GL_EXT_texture_object */
+StubApiCShortIntegerConstant("GL_TEXTURE_PRIORITY_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_RESIDENT_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_1D_BINDING_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_2D_BINDING_EXT");
+
+/* GL_EXT_texture3D */
+StubApiCShortIntegerConstant("GL_PACK_SKIP_IMAGES_EXT");
+StubApiCShortIntegerConstant("GL_PACK_IMAGE_HEIGHT_EXT");
+StubApiCShortIntegerConstant("GL_UNPACK_SKIP_IMAGES_EXT");
+StubApiCShortIntegerConstant("GL_UNPACK_IMAGE_HEIGHT_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_3D_EXT");
+StubApiCShortIntegerConstant("GL_PROXY_TEXTURE_3D_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_DEPTH_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_WRAP_R_EXT");
+StubApiCShortIntegerConstant("GL_MAX_3D_TEXTURE_SIZE_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_3D_BINDING_EXT");
+
+/* GL_EXT_paletted_texture */
+StubApiCShortIntegerConstant("GL_TABLE_TOO_LARGE_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_TABLE_FORMAT_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_TABLE_WIDTH_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_TABLE_RED_SIZE_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_TABLE_GREEN_SIZE_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_TABLE_BLUE_SIZE_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_TABLE_ALPHA_SIZE_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_TABLE_LUMINANCE_SIZE_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_TABLE_INTENSITY_SIZE_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_INDEX_SIZE_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_INDEX1_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_INDEX2_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_INDEX4_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_INDEX8_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_INDEX12_EXT");
+StubApiCShortIntegerConstant("GL_COLOR_INDEX16_EXT");
+
+/* GL_EXT_shared_texture_palette */
+StubApiCShortIntegerConstant("GL_SHARED_TEXTURE_PALETTE_EXT");
+
+/* GL_EXT_point_parameters */
+StubApiCShortIntegerConstant("GL_POINT_SIZE_MIN_EXT");
+StubApiCShortIntegerConstant("GL_POINT_SIZE_MAX_EXT");
+StubApiCShortIntegerConstant("GL_POINT_FADE_THRESHOLD_SIZE_EXT");
+StubApiCShortIntegerConstant("GL_DISTANCE_ATTENUATION_EXT");
+
+/* GL_EXT_rescale_normal */
+StubApiCShortIntegerConstant("GL_RESCALE_NORMAL_EXT");
+
+/* GL_EXT_abgr */
+StubApiCShortIntegerConstant("GL_ABGR_EXT");
+
+/* GL_SGIS_multitexture */
+StubApiCShortIntegerConstant("GL_SELECTED_TEXTURE_SGIS");
+StubApiCShortIntegerConstant("GL_SELECTED_TEXTURE_COORD_SET_SGIS");
+StubApiCShortIntegerConstant("GL_MAX_TEXTURES_SGIS");
+StubApiCShortIntegerConstant("GL_TEXTURE0_SGIS");
+StubApiCShortIntegerConstant("GL_TEXTURE1_SGIS");
+StubApiCShortIntegerConstant("GL_TEXTURE2_SGIS");
+StubApiCShortIntegerConstant("GL_TEXTURE3_SGIS");
+StubApiCShortIntegerConstant("GL_TEXTURE_COORD_SET_SOURCE_SGIS");
+
+/* GL_EXT_multitexture */
+StubApiCShortIntegerConstant("GL_SELECTED_TEXTURE_EXT");
+StubApiCShortIntegerConstant("GL_SELECTED_TEXTURE_COORD_SET_EXT");
+StubApiCShortIntegerConstant("GL_SELECTED_TEXTURE_TRANSFORM_EXT");
+StubApiCShortIntegerConstant("GL_MAX_TEXTURES_EXT");
+StubApiCShortIntegerConstant("GL_MAX_TEXTURE_COORD_SETS_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE_ENV_COORD_SET_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE0_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE1_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE2_EXT");
+StubApiCShortIntegerConstant("GL_TEXTURE3_EXT");
+
+/* GL_SGIS_texture_edge_clamp */
+StubApiCShortIntegerConstant("GL_CLAMP_TO_EDGE_SGIS");
+
+/* OpenGL 1.2 */
+StubApiCShortIntegerConstant("GL_RESCALE_NORMAL");
+StubApiCShortIntegerConstant("GL_CLAMP_TO_EDGE");
+StubApiCShortIntegerConstant("GL_MAX_ELEMENTS_VERTICES");
+StubApiCShortIntegerConstant("GL_MAX_ELEMENTS_INDICES");
+StubApiCShortIntegerConstant("GL_BGR");
+StubApiCShortIntegerConstant("GL_BGRA");
+StubApiCShortIntegerConstant("GL_UNSIGNED_BYTE_3_3_2");
+StubApiCShortIntegerConstant("GL_UNSIGNED_BYTE_2_3_3_REV");
+StubApiCShortIntegerConstant("GL_UNSIGNED_SHORT_5_6_5");
+StubApiCShortIntegerConstant("GL_UNSIGNED_SHORT_5_6_5_REV");
+StubApiCShortIntegerConstant("GL_UNSIGNED_SHORT_4_4_4_4");
+StubApiCShortIntegerConstant("GL_UNSIGNED_SHORT_4_4_4_4_REV");
+StubApiCShortIntegerConstant("GL_UNSIGNED_SHORT_5_5_5_1");
+StubApiCShortIntegerConstant("GL_UNSIGNED_SHORT_1_5_5_5_REV");
+StubApiCShortIntegerConstant("GL_UNSIGNED_INT_8_8_8_8");
+StubApiCShortIntegerConstant("GL_UNSIGNED_INT_8_8_8_8_REV");
+StubApiCShortIntegerConstant("GL_UNSIGNED_INT_10_10_10_2");
+StubApiCShortIntegerConstant("GL_UNSIGNED_INT_2_10_10_10_REV");
+StubApiCShortIntegerConstant("GL_LIGHT_MODEL_COLOR_CONTROL");
+StubApiCShortIntegerConstant("GL_SINGLE_COLOR");
+StubApiCShortIntegerConstant("GL_SEPARATE_SPECULAR_COLOR");
+StubApiCShortIntegerConstant("GL_TEXTURE_MIN_LOD");
+StubApiCShortIntegerConstant("GL_TEXTURE_MAX_LOD");
+StubApiCShortIntegerConstant("GL_TEXTURE_BASE_LEVEL");
+StubApiCShortIntegerConstant("GL_TEXTURE_MAX_LEVEL");
+
+
+
+/*
+StubApiCFunction("void","
+
+
+
+
+
+
+
+
+
+
+WINGDIAPI GLboolean APIENTRY glIsEnabled",{ { "int","cap" } } );
+
+StubApiCFunction("void","glColorMask",{( GLboolean red, GLboolean green,
+			 GLboolean blue, GLboolean alpha );
+
+StubApiCFunction("void","glAlphaFunc",{( GLenum func, GLclampf ref );
+
+StubApiCFunction("void","glBlendFunc( GLenum sfactor, GLenum dfactor );
+
+StubApiCFunction("void","glLogicOp( GLenum opcode );
+
+StubApiCFunction("void","glCullFace( GLenum mode );
+
+StubApiCFunction("void","glLineStipple( GLint factor, GLushort pattern );
+
+StubApiCFunction("void","glPolygonMode( GLenum face, GLenum mode );
+
+StubApiCFunction("void","glPolygonOffset( GLfloat factor, GLfloat units );
+
+StubApiCFunction("void","glPolygonStipple( const GLubyte *mask );
+
+StubApiCFunction("void","glGetPolygonStipple( GLubyte *mask );
+
+StubApiCFunction("void","glEdgeFlag( GLboolean flag );
+
+StubApiCFunction("void","glEdgeFlagv( const GLboolean *flag );
+
+StubApiCFunction("void","glScissor( GLint x, GLint y,
+                                   GLsizei width, GLsizei height);
+
+StubApiCFunction("void","glClipPlane( GLenum plane, const GLdouble *equation );
+
+StubApiCFunction("void","glGetClipPlane( GLenum plane, GLdouble *equation );
+
+StubApiCFunction("void","glDrawBuffer( GLenum mode );
+
+StubApiCFunction("void","glReadBuffer( GLenum mode );
+
+
+
+StubApiCFunction("void","glEnableClientState( GLenum cap );  // 1.1
+
+StubApiCFunction("void","glDisableClientState( GLenum cap );  // 1.1
+
+
+StubApiCFunction("void","glGetBooleanv( GLenum pname, GLboolean *params );
+
+StubApiCFunction("void","glGetDoublev( GLenum pname, GLdouble *params );
+
+StubApiCFunction("void","glGetFloatv( GLenum pname, GLfloat *params );
+
+StubApiCFunction("void","glGetIntegerv( GLenum pname, GLint *params );
+
+
+StubApiCFunction("void","glPushAttrib( GLbitfield mask );
+
+StubApiCFunction("void","glPopAttrib( void );
+
+
+StubApiCFunction("void","glPushClientAttrib( GLbitfield mask );  // 1.1
+
+StubApiCFunction("void","glPopClientAttrib( void );  // 1.1
+
+
+WINGDIAPI GLint APIENTRY glRenderMode( GLenum mode );
+
+WINGDIAPI GLenum APIENTRY glGetError( void );
+
+WINGDIAPI const GLubyte* APIENTRY glGetString( GLenum name );
+
+StubApiCFunction("void","glFinish( void );
+
+StubApiCFunction("void","glFlush( void );
+
+StubApiCFunction("void","glHint( GLenum target, GLenum mode );
+
+
+
+//
+// Depth Buffer
+//
+
+StubApiCFunction("void","glClearDepth( GLclampd depth );
+
+StubApiCFunction("void","glDepthFunc( GLenum func );
+
+StubApiCFunction("void","glDepthMask( GLboolean flag );
+
+StubApiCFunction("void","glDepthRange( GLclampd near_val, GLclampd far_val );
+
+
+//
+// Accumulation Buffer
+//
+
+StubApiCFunction("void","glClearAccum( GLfloat red, GLfloat green,
+                                      GLfloat blue, GLfloat alpha );
+
+StubApiCFunction("void","glAccum( GLenum op, GLfloat value );
+
+
+
+//
+// Transformation
+//
+
+
+
+StubApiCFunction("void","glLoadMatrixd( const GLdouble *m );
+StubApiCFunction("void","glLoadMatrixf( const GLfloat *m );
+
+StubApiCFunction("void","glMultMatrixd( const GLdouble *m );
+StubApiCFunction("void","glMultMatrixf( const GLfloat *m );
+
+
+
+
+StubApiCFunction("void","glRotatef( GLfloat angle,
+                                   GLfloat x, GLfloat y, GLfloat z );
+
+StubApiCFunction("void","glScalef( GLfloat x, GLfloat y, GLfloat z );
+
+StubApiCFunction("void","glTranslatef( GLfloat x, GLfloat y, GLfloat z );
+
+
+
+//
+// Display Lists
+//
+
+WINGDIAPI GLboolean APIENTRY glIsList( GLuint list );
+
+StubApiCFunction("void","glDeleteLists( GLuint list, GLsizei range );
+
+WINGDIAPI GLuint APIENTRY glGenLists( GLsizei range );
+
+StubApiCFunction("void","glNewList( GLuint list, GLenum mode );
+
+StubApiCFunction("void","glEndList( void );
+
+StubApiCFunction("void","glCallList( GLuint list );
+
+StubApiCFunction("void","glCallLists( GLsizei n, GLenum type,
+                                     const GLvoid *lists );
+
+StubApiCFunction("void","glListBase( GLuint base );
+
+
+
+//
+// Drawing Functions
+//
+
+StubApiCFunction("void","glBegin( GLenum mode );
+
+StubApiCFunction("void","glEnd( void );
+
+
+StubApiCFunction("void","glVertex2d( GLdouble x, GLdouble y );
+StubApiCFunction("void","glVertex2f( GLfloat x, GLfloat y );
+StubApiCFunction("void","glVertex2i( GLint x, GLint y );
+StubApiCFunction("void","glVertex2s( GLshort x, GLshort y );
+
+StubApiCFunction("void","glVertex3d( GLdouble x, GLdouble y, GLdouble z );
+StubApiCFunction("void","glVertex3f( GLfloat x, GLfloat y, GLfloat z );
+StubApiCFunction("void","glVertex3i( GLint x, GLint y, GLint z );
+StubApiCFunction("void","glVertex3s( GLshort x, GLshort y, GLshort z );
+
+StubApiCFunction("void","glVertex4d( GLdouble x, GLdouble y, GLdouble z, GLdouble w );
+StubApiCFunction("void","glVertex4f( GLfloat x, GLfloat y, GLfloat z, GLfloat w );
+StubApiCFunction("void","glVertex4i( GLint x, GLint y, GLint z, GLint w );
+StubApiCFunction("void","glVertex4s( GLshort x, GLshort y, GLshort z, GLshort w );
+
+StubApiCFunction("void","glVertex2dv( const GLdouble *v );
+StubApiCFunction("void","glVertex2fv( const GLfloat *v );
+StubApiCFunction("void","glVertex2iv( const GLint *v );
+StubApiCFunction("void","glVertex2sv( const GLshort *v );
+
+StubApiCFunction("void","glVertex3dv( const GLdouble *v );
+StubApiCFunction("void","glVertex3fv( const GLfloat *v );
+StubApiCFunction("void","glVertex3iv( const GLint *v );
+StubApiCFunction("void","glVertex3sv( const GLshort *v );
+
+StubApiCFunction("void","glVertex4dv( const GLdouble *v );
+StubApiCFunction("void","glVertex4fv( const GLfloat *v );
+StubApiCFunction("void","glVertex4iv( const GLint *v );
+StubApiCFunction("void","glVertex4sv( const GLshort *v );
+
+
+StubApiCFunction("void","glNormal3b( GLbyte nx, GLbyte ny, GLbyte nz );
+StubApiCFunction("void","glNormal3f( GLfloat nx, GLfloat ny, GLfloat nz );
+StubApiCFunction("void","glNormal3i( GLint nx, GLint ny, GLint nz );
+StubApiCFunction("void","glNormal3s( GLshort nx, GLshort ny, GLshort nz );
+
+StubApiCFunction("void","glNormal3bv( const GLbyte *v );
+StubApiCFunction("void","glNormal3dv( const GLdouble *v );
+StubApiCFunction("void","glNormal3fv( const GLfloat *v );
+StubApiCFunction("void","glNormal3iv( const GLint *v );
+StubApiCFunction("void","glNormal3sv( const GLshort *v );
+
+
+StubApiCFunction("void","glIndexd( GLdouble c );
+StubApiCFunction("void","glIndexf( GLfloat c );
+StubApiCFunction("void","glIndexi( GLint c );
+StubApiCFunction("void","glIndexs( GLshort c );
+StubApiCFunction("void","glIndexub( GLubyte c );  // 1.1
+
+StubApiCFunction("void","glIndexdv( const GLdouble *c );
+StubApiCFunction("void","glIndexfv( const GLfloat *c );
+StubApiCFunction("void","glIndexiv( const GLint *c );
+StubApiCFunction("void","glIndexsv( const GLshort *c );
+StubApiCFunction("void","glIndexubv( const GLubyte *c );  // 1.1
+
+StubApiCFunction("void","glColor3b( GLbyte red, GLbyte green, GLbyte blue );
+StubApiCFunction("void","glColor3d( GLdouble red, GLdouble green, GLdouble blue );
+StubApiCFunction("void","glColor3f( GLfloat red, GLfloat green, GLfloat blue );
+StubApiCFunction("void","glColor3i( GLint red, GLint green, GLint blue );
+StubApiCFunction("void","glColor3s( GLshort red, GLshort green, GLshort blue );
+StubApiCFunction("void","glColor3ub( GLubyte red, GLubyte green, GLubyte blue );
+StubApiCFunction("void","glColor3ui( GLuint red, GLuint green, GLuint blue );
+StubApiCFunction("void","glColor3us( GLushort red, GLushort green, GLushort blue );
+
+StubApiCFunction("void","glColor4b( GLbyte red, GLbyte green,
+                                   GLbyte blue, GLbyte alpha );
+StubApiCFunction("void","glColor4d( GLdouble red, GLdouble green,
+                                   GLdouble blue, GLdouble alpha );
+StubApiCFunction("void","glColor4f( GLfloat red, GLfloat green,
+                                   GLfloat blue, GLfloat alpha );
+StubApiCFunction("void","glColor4i( GLint red, GLint green,
+                                   GLint blue, GLint alpha );
+StubApiCFunction("void","glColor4s( GLshort red, GLshort green,
+                                   GLshort blue, GLshort alpha );
+StubApiCFunction("void","glColor4ub( GLubyte red, GLubyte green,
+                                    GLubyte blue, GLubyte alpha );
+StubApiCFunction("void","glColor4ui( GLuint red, GLuint green,
+                                    GLuint blue, GLuint alpha );
+StubApiCFunction("void","glColor4us( GLushort red, GLushort green,
+                                    GLushort blue, GLushort alpha );
+
+
+StubApiCFunction("void","glColor3bv( const GLbyte *v );
+StubApiCFunction("void","glColor3dv( const GLdouble *v );
+StubApiCFunction("void","glColor3fv( const GLfloat *v );
+StubApiCFunction("void","glColor3iv( const GLint *v );
+StubApiCFunction("void","glColor3sv( const GLshort *v );
+StubApiCFunction("void","glColor3ubv( const GLubyte *v );
+StubApiCFunction("void","glColor3uiv( const GLuint *v );
+StubApiCFunction("void","glColor3usv( const GLushort *v );
+
+StubApiCFunction("void","glColor4bv( const GLbyte *v );
+StubApiCFunction("void","glColor4dv( const GLdouble *v );
+StubApiCFunction("void","glColor4fv( const GLfloat *v );
+StubApiCFunction("void","glColor4iv( const GLint *v );
+StubApiCFunction("void","glColor4sv( const GLshort *v );
+StubApiCFunction("void","glColor4ubv( const GLubyte *v );
+StubApiCFunction("void","glColor4uiv( const GLuint *v );
+StubApiCFunction("void","glColor4usv( const GLushort *v );
+
+
+StubApiCFunction("void","glTexCoord1d( GLdouble s );
+StubApiCFunction("void","glTexCoord1f( GLfloat s );
+StubApiCFunction("void","glTexCoord1i( GLint s );
+StubApiCFunction("void","glTexCoord1s( GLshort s );
+
+StubApiCFunction("void","glTexCoord2d( GLdouble s, GLdouble t );
+StubApiCFunction("void","glTexCoord2f( GLfloat s, GLfloat t );
+StubApiCFunction("void","glTexCoord2i( GLint s, GLint t );
+StubApiCFunction("void","glTexCoord2s( GLshort s, GLshort t );
+
+StubApiCFunction("void","glTexCoord3d( GLdouble s, GLdouble t, GLdouble r );
+StubApiCFunction("void","glTexCoord3f( GLfloat s, GLfloat t, GLfloat r );
+StubApiCFunction("void","glTexCoord3i( GLint s, GLint t, GLint r );
+StubApiCFunction("void","glTexCoord3s( GLshort s, GLshort t, GLshort r );
+
+StubApiCFunction("void","glTexCoord4d( GLdouble s, GLdouble t, GLdouble r, GLdouble q );
+StubApiCFunction("void","glTexCoord4f( GLfloat s, GLfloat t, GLfloat r, GLfloat q );
+StubApiCFunction("void","glTexCoord4i( GLint s, GLint t, GLint r, GLint q );
+StubApiCFunction("void","glTexCoord4s( GLshort s, GLshort t, GLshort r, GLshort q );
+
+StubApiCFunction("void","glTexCoord1dv( const GLdouble *v );
+StubApiCFunction("void","glTexCoord1fv( const GLfloat *v );
+StubApiCFunction("void","glTexCoord1iv( const GLint *v );
+StubApiCFunction("void","glTexCoord1sv( const GLshort *v );
+
+StubApiCFunction("void","glTexCoord2dv( const GLdouble *v );
+StubApiCFunction("void","glTexCoord2fv( const GLfloat *v );
+StubApiCFunction("void","glTexCoord2iv( const GLint *v );
+StubApiCFunction("void","glTexCoord2sv( const GLshort *v );
+
+StubApiCFunction("void","glTexCoord3dv( const GLdouble *v );
+StubApiCFunction("void","glTexCoord3fv( const GLfloat *v );
+StubApiCFunction("void","glTexCoord3iv( const GLint *v );
+StubApiCFunction("void","glTexCoord3sv( const GLshort *v );
+
+StubApiCFunction("void","glTexCoord4dv( const GLdouble *v );
+StubApiCFunction("void","glTexCoord4fv( const GLfloat *v );
+StubApiCFunction("void","glTexCoord4iv( const GLint *v );
+StubApiCFunction("void","glTexCoord4sv( const GLshort *v );
+
+
+StubApiCFunction("void","glRasterPos2d( GLdouble x, GLdouble y );
+StubApiCFunction("void","glRasterPos2f( GLfloat x, GLfloat y );
+StubApiCFunction("void","glRasterPos2i( GLint x, GLint y );
+StubApiCFunction("void","glRasterPos2s( GLshort x, GLshort y );
+
+StubApiCFunction("void","glRasterPos3d( GLdouble x, GLdouble y, GLdouble z );
+StubApiCFunction("void","glRasterPos3f( GLfloat x, GLfloat y, GLfloat z );
+StubApiCFunction("void","glRasterPos3i( GLint x, GLint y, GLint z );
+StubApiCFunction("void","glRasterPos3s( GLshort x, GLshort y, GLshort z );
+
+StubApiCFunction("void","glRasterPos4d( GLdouble x, GLdouble y, GLdouble z, GLdouble w );
+StubApiCFunction("void","glRasterPos4f( GLfloat x, GLfloat y, GLfloat z, GLfloat w );
+StubApiCFunction("void","glRasterPos4i( GLint x, GLint y, GLint z, GLint w );
+StubApiCFunction("void","glRasterPos4s( GLshort x, GLshort y, GLshort z, GLshort w );
+
+StubApiCFunction("void","glRasterPos2dv( const GLdouble *v );
+StubApiCFunction("void","glRasterPos2fv( const GLfloat *v );
+StubApiCFunction("void","glRasterPos2iv( const GLint *v );
+StubApiCFunction("void","glRasterPos2sv( const GLshort *v );
+
+StubApiCFunction("void","glRasterPos3dv( const GLdouble *v );
+StubApiCFunction("void","glRasterPos3fv( const GLfloat *v );
+StubApiCFunction("void","glRasterPos3iv( const GLint *v );
+StubApiCFunction("void","glRasterPos3sv( const GLshort *v );
+
+StubApiCFunction("void","glRasterPos4dv( const GLdouble *v );
+StubApiCFunction("void","glRasterPos4fv( const GLfloat *v );
+StubApiCFunction("void","glRasterPos4iv( const GLint *v );
+StubApiCFunction("void","glRasterPos4sv( const GLshort *v );
+
+
+StubApiCFunction("void","glRectd( GLdouble x1, GLdouble y1, GLdouble x2, GLdouble y2 );
+StubApiCFunction("void","glRectf( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 );
+StubApiCFunction("void","glRecti( GLint x1, GLint y1, GLint x2, GLint y2 );
+StubApiCFunction("void","glRects( GLshort x1, GLshort y1, GLshort x2, GLshort y2 );
+
+
+StubApiCFunction("void","glRectdv( const GLdouble *v1, const GLdouble *v2 );
+StubApiCFunction("void","glRectfv( const GLfloat *v1, const GLfloat *v2 );
+StubApiCFunction("void","glRectiv( const GLint *v1, const GLint *v2 );
+StubApiCFunction("void","glRectsv( const GLshort *v1, const GLshort *v2 );
+
+
+
+//
+// Vertex Arrays  (1.1)
+//
+
+StubApiCFunction("void","glVertexPointer( GLint size, GLenum type,
+                                         GLsizei stride, const GLvoid *ptr );
+
+StubApiCFunction("void","glNormalPointer( GLenum type, GLsizei stride,
+                                         const GLvoid *ptr );
+
+StubApiCFunction("void","glColorPointer( GLint size, GLenum type,
+                                        GLsizei stride, const GLvoid *ptr );
+
+StubApiCFunction("void","glIndexPointer( GLenum type, GLsizei stride,
+                                        const GLvoid *ptr );
+
+StubApiCFunction("void","glTexCoordPointer( GLint size, GLenum type,
+                                           GLsizei stride, const GLvoid *ptr );
+
+StubApiCFunction("void","glEdgeFlagPointer( GLsizei stride,
+                                           const GLboolean *ptr );
+
+StubApiCFunction("void","glGetPointerv( GLenum pname, void **params );
+
+StubApiCFunction("void","glArrayElement( GLint i );
+
+StubApiCFunction("void","glDrawArrays( GLenum mode, GLint first,
+                                      GLsizei count );
+
+StubApiCFunction("void","glDrawElements( GLenum mode, GLsizei count,
+                                        GLenum type, const GLvoid *indices );
+
+StubApiCFunction("void","glInterleavedArrays( GLenum format, GLsizei stride,
+                                             const GLvoid *pointer );
+
+
+//
+// Lighting
+//
+
+StubApiCFunction("void","glShadeModel( GLenum mode );
+
+StubApiCFunction("void","glLightf( GLenum light, GLenum pname, GLfloat param );
+StubApiCFunction("void","glLighti( GLenum light, GLenum pname, GLint param );
+StubApiCFunction("void","glLightfv( GLenum light, GLenum pname,
+                                   const GLfloat *params );
+StubApiCFunction("void","glLightiv( GLenum light, GLenum pname,
+                                   const GLint *params );
+
+StubApiCFunction("void","glGetLightfv( GLenum light, GLenum pname,
+                                      GLfloat *params );
+StubApiCFunction("void","glGetLightiv( GLenum light, GLenum pname,
+                                      GLint *params );
+
+StubApiCFunction("void","glLightModelf( GLenum pname, GLfloat param );
+StubApiCFunction("void","glLightModeli( GLenum pname, GLint param );
+StubApiCFunction("void","glLightModelfv( GLenum pname, const GLfloat *params );
+StubApiCFunction("void","glLightModeliv( GLenum pname, const GLint *params );
+
+StubApiCFunction("void","glMaterialf( GLenum face, GLenum pname, GLfloat param );
+StubApiCFunction("void","glMateriali( GLenum face, GLenum pname, GLint param );
+StubApiCFunction("void","glMaterialfv( GLenum face, GLenum pname, const GLfloat *params );
+StubApiCFunction("void","glMaterialiv( GLenum face, GLenum pname, const GLint *params );
+
+StubApiCFunction("void","glGetMaterialfv( GLenum face, GLenum pname, GLfloat *params );
+StubApiCFunction("void","glGetMaterialiv( GLenum face, GLenum pname, GLint *params );
+
+StubApiCFunction("void","glColorMaterial( GLenum face, GLenum mode );
+
+
+
+
+//
+// Raster functions
+//
+
+StubApiCFunction("void","glPixelZoom( GLfloat xfactor, GLfloat yfactor );
+
+StubApiCFunction("void","glPixelStoref( GLenum pname, GLfloat param );
+StubApiCFunction("void","glPixelStorei( GLenum pname, GLint param );
+
+StubApiCFunction("void","glPixelTransferf( GLenum pname, GLfloat param );
+StubApiCFunction("void","glPixelTransferi( GLenum pname, GLint param );
+
+StubApiCFunction("void","glPixelMapfv( GLenum map, GLint mapsize,
+                                      const GLfloat *values );
+StubApiCFunction("void","glPixelMapuiv( GLenum map, GLint mapsize,
+                                       const GLuint *values );
+StubApiCFunction("void","glPixelMapusv( GLenum map, GLint mapsize,
+                                       const GLushort *values );
+
+StubApiCFunction("void","glGetPixelMapfv( GLenum map, GLfloat *values );
+StubApiCFunction("void","glGetPixelMapuiv( GLenum map, GLuint *values );
+StubApiCFunction("void","glGetPixelMapusv( GLenum map, GLushort *values );
+
+StubApiCFunction("void","glBitmap( GLsizei width, GLsizei height,
+                                  GLfloat xorig, GLfloat yorig,
+                                  GLfloat xmove, GLfloat ymove,
+                                  const GLubyte *bitmap );
+
+StubApiCFunction("void","glReadPixels( GLint x, GLint y,
+                                      GLsizei width, GLsizei height,
+                                      GLenum format, GLenum type,
+                                      GLvoid *pixels );
+
+StubApiCFunction("void","glDrawPixels( GLsizei width, GLsizei height,
+                                      GLenum format, GLenum type,
+                                      const GLvoid *pixels );
+
+StubApiCFunction("void","glCopyPixels( GLint x, GLint y,
+                                      GLsizei width, GLsizei height,
+                                      GLenum type );
+
+
+
+//
+// Stenciling
+//
+
+StubApiCFunction("void","glStencilFunc( GLenum func, GLint ref, GLuint mask );
+
+StubApiCFunction("void","glStencilMask( GLuint mask );
+
+StubApiCFunction("void","glStencilOp( GLenum fail, GLenum zfail, GLenum zpass );
+
+StubApiCFunction("void","glClearStencil( GLint s );
+
+
+
+//
+// Texture mapping
+//
+
+StubApiCFunction("void","glTexGend( GLenum coord, GLenum pname, GLdouble param );
+StubApiCFunction("void","glTexGenf( GLenum coord, GLenum pname, GLfloat param );
+StubApiCFunction("void","glTexGeni( GLenum coord, GLenum pname, GLint param );
+
+StubApiCFunction("void","glTexGendv( GLenum coord, GLenum pname, const GLdouble *params );
+StubApiCFunction("void","glTexGenfv( GLenum coord, GLenum pname, const GLfloat *params );
+StubApiCFunction("void","glTexGeniv( GLenum coord, GLenum pname, const GLint *params );
+
+StubApiCFunction("void","glGetTexGendv( GLenum coord, GLenum pname, GLdouble *params );
+StubApiCFunction("void","glGetTexGenfv( GLenum coord, GLenum pname, GLfloat *params );
+StubApiCFunction("void","glGetTexGeniv( GLenum coord, GLenum pname, GLint *params );
+
+
+StubApiCFunction("void","glTexEnvf( GLenum target, GLenum pname, GLfloat param );
+StubApiCFunction("void","glTexEnvi( GLenum target, GLenum pname, GLint param );
+
+StubApiCFunction("void","glTexEnvfv( GLenum target, GLenum pname, const GLfloat *params );
+StubApiCFunction("void","glTexEnviv( GLenum target, GLenum pname, const GLint *params );
+
+StubApiCFunction("void","glGetTexEnvfv( GLenum target, GLenum pname, GLfloat *params );
+StubApiCFunction("void","glGetTexEnviv( GLenum target, GLenum pname, GLint *params );
+
+
+StubApiCFunction("void","glTexParameterf( GLenum target, GLenum pname, GLfloat param );
+StubApiCFunction("void","glTexParameteri( GLenum target, GLenum pname, GLint param );
+
+StubApiCFunction("void","glTexParameterfv( GLenum target, GLenum pname,
+                                          const GLfloat *params );
+StubApiCFunction("void","glTexParameteriv( GLenum target, GLenum pname,
+                                          const GLint *params );
+
+StubApiCFunction("void","glGetTexParameterfv( GLenum target,
+                                             GLenum pname, GLfloat *params);
+StubApiCFunction("void","glGetTexParameteriv( GLenum target,
+                                             GLenum pname, GLint *params );
+
+StubApiCFunction("void","glGetTexLevelParameterfv( GLenum target, GLint level,
+                                                  GLenum pname, GLfloat *params );
+StubApiCFunction("void","glGetTexLevelParameteriv( GLenum target, GLint level,
+                                                  GLenum pname, GLint *params );
+
+
+StubApiCFunction("void","glTexImage1D( GLenum target, GLint level,
+                                      GLint internalFormat,
+                                      GLsizei width, GLint border,
+                                      GLenum format, GLenum type,
+                                      const GLvoid *pixels );
+
+StubApiCFunction("void","glTexImage2D( GLenum target, GLint level,
+                                      GLint internalFormat,
+                                      GLsizei width, GLsizei height,
+                                      GLint border, GLenum format, GLenum type,
+                                      const GLvoid *pixels );
+
+StubApiCFunction("void","glGetTexImage( GLenum target, GLint level,
+                                       GLenum format, GLenum type,
+                                       GLvoid *pixels );
+
+
+
+// 1.1 functions
+
+StubApiCFunction("void","glGenTextures( GLsizei n, GLuint *textures );
+
+StubApiCFunction("void","glDeleteTextures( GLsizei n, const GLuint *textures);
+
+StubApiCFunction("void","glBindTexture( GLenum target, GLuint texture );
+
+StubApiCFunction("void","glPrioritizeTextures( GLsizei n,
+                                              const GLuint *textures,
+                                              const GLclampf *priorities );
+
+WINGDIAPI GLboolean APIENTRY glAreTexturesResident( GLsizei n,
+                                                    const GLuint *textures,
+                                                    GLboolean *residences );
+
+WINGDIAPI GLboolean APIENTRY glIsTexture( GLuint texture );
+
+
+StubApiCFunction("void","glTexSubImage1D( GLenum target, GLint level,
+                                         GLint xoffset,
+                                         GLsizei width, GLenum format,
+                                         GLenum type, const GLvoid *pixels );
+
+
+StubApiCFunction("void","glTexSubImage2D( GLenum target, GLint level,
+                                         GLint xoffset, GLint yoffset,
+                                         GLsizei width, GLsizei height,
+                                         GLenum format, GLenum type,
+                                         const GLvoid *pixels );
+
+
+StubApiCFunction("void","glCopyTexImage1D( GLenum target, GLint level,
+                                          GLenum internalformat,
+                                          GLint x, GLint y,
+                                          GLsizei width, GLint border );
+
+
+StubApiCFunction("void","glCopyTexImage2D( GLenum target, GLint level,
+                                          GLenum internalformat,
+                                          GLint x, GLint y,
+                                          GLsizei width, GLsizei height,
+                                          GLint border );
+
+
+StubApiCFunction("void","glCopyTexSubImage1D( GLenum target, GLint level,
+                                             GLint xoffset, GLint x, GLint y,
+                                             GLsizei width );
+
+
+StubApiCFunction("void","glCopyTexSubImage2D( GLenum target, GLint level,
+                                             GLint xoffset, GLint yoffset,
+                                             GLint x, GLint y,
+                                             GLsizei width, GLsizei height );
+
+
+
+
+//
+// Evaluators
+//
+
+StubApiCFunction("void","glMap1d( GLenum target, GLdouble u1, GLdouble u2,
+                                 GLint stride,
+                                 GLint order, const GLdouble *points );
+StubApiCFunction("void","glMap1f( GLenum target, GLfloat u1, GLfloat u2,
+                                 GLint stride,
+                                 GLint order, const GLfloat *points );
+
+StubApiCFunction("void","glMap2d( GLenum target,
+		     GLdouble u1, GLdouble u2, GLint ustride, GLint uorder,
+		     GLdouble v1, GLdouble v2, GLint vstride, GLint vorder,
+		     const GLdouble *points );
+StubApiCFunction("void","glMap2f( GLenum target,
+		     GLfloat u1, GLfloat u2, GLint ustride, GLint uorder,
+		     GLfloat v1, GLfloat v2, GLint vstride, GLint vorder,
+		     const GLfloat *points );
+
+StubApiCFunction("void","glGetMapdv( GLenum target, GLenum query, GLdouble *v );
+StubApiCFunction("void","glGetMapfv( GLenum target, GLenum query, GLfloat *v );
+StubApiCFunction("void","glGetMapiv( GLenum target, GLenum query, GLint *v );
+
+StubApiCFunction("void","glEvalCoord1d( GLdouble u );
+StubApiCFunction("void","glEvalCoord1f( GLfloat u );
+
+StubApiCFunction("void","glEvalCoord1dv( const GLdouble *u );
+StubApiCFunction("void","glEvalCoord1fv( const GLfloat *u );
+
+StubApiCFunction("void","glEvalCoord2d( GLdouble u, GLdouble v );
+StubApiCFunction("void","glEvalCoord2f( GLfloat u, GLfloat v );
+
+StubApiCFunction("void","glEvalCoord2dv( const GLdouble *u );
+StubApiCFunction("void","glEvalCoord2fv( const GLfloat *u );
+
+StubApiCFunction("void","glMapGrid1d( GLint un, GLdouble u1, GLdouble u2 );
+StubApiCFunction("void","glMapGrid1f( GLint un, GLfloat u1, GLfloat u2 );
+
+StubApiCFunction("void","glMapGrid2d( GLint un, GLdouble u1, GLdouble u2,
+                                     GLint vn, GLdouble v1, GLdouble v2 );
+StubApiCFunction("void","glMapGrid2f( GLint un, GLfloat u1, GLfloat u2,
+                                     GLint vn, GLfloat v1, GLfloat v2 );
+
+StubApiCFunction("void","glEvalPoint1( GLint i );
+
+StubApiCFunction("void","glEvalPoint2( GLint i, GLint j );
+
+StubApiCFunction("void","glEvalMesh1( GLenum mode, GLint i1, GLint i2 );
+
+StubApiCFunction("void","glEvalMesh2( GLenum mode, GLint i1, GLint i2, GLint j1, GLint j2 );
+
+
+
+//
+// Fog
+//
+
+StubApiCFunction("void","glFogf( GLenum pname, GLfloat param );
+
+StubApiCFunction("void","glFogi( GLenum pname, GLint param );
+
+StubApiCFunction("void","glFogfv( GLenum pname, const GLfloat *params );
+
+StubApiCFunction("void","glFogiv( GLenum pname, const GLint *params );
+
+
+
+//
+// Selection and Feedback
+//
+
+StubApiCFunction("void","glFeedbackBuffer( GLsizei size, GLenum type, GLfloat *buffer );
+
+StubApiCFunction("void","glPassThrough( GLfloat token );
+
+StubApiCFunction("void","glSelectBuffer( GLsizei size, GLuint *buffer );
+
+StubApiCFunction("void","glInitNames( void );
+
+StubApiCFunction("void","glLoadName( GLuint name );
+
+StubApiCFunction("void","glPushName( GLuint name );
+
+StubApiCFunction("void","glPopName( void );
+
+
+
+//
+// 1.0 Extensions
+//
+
+// GL_EXT_blend_minmax
+StubApiCFunction("void","glBlendEquationEXT( GLenum mode );
+
+
+
+// GL_EXT_blend_color
+StubApiCFunction("void","glBlendColorEXT( GLclampf red, GLclampf green,
+                                         GLclampf blue, GLclampf alpha );
+
+
+
+// GL_EXT_polygon_offset
+StubApiCFunction("void","glPolygonOffsetEXT( GLfloat factor, GLfloat bias );
+
+
+
+// GL_EXT_vertex_array
+
+StubApiCFunction("void","glVertexPointerEXT( GLint size, GLenum type,
+                                            GLsizei stride,
+                                            GLsizei count, const GLvoid *ptr );
+
+StubApiCFunction("void","glNormalPointerEXT( GLenum type, GLsizei stride,
+                                            GLsizei count, const GLvoid *ptr );
+
+StubApiCFunction("void","glColorPointerEXT( GLint size, GLenum type,
+                                           GLsizei stride,
+                                           GLsizei count, const GLvoid *ptr );
+
+StubApiCFunction("void","glIndexPointerEXT( GLenum type, GLsizei stride,
+                                           GLsizei count, const GLvoid *ptr );
+
+StubApiCFunction("void","glTexCoordPointerEXT( GLint size, GLenum type,
+                                              GLsizei stride, GLsizei count,
+                                              const GLvoid *ptr );
+
+StubApiCFunction("void","glEdgeFlagPointerEXT( GLsizei stride, GLsizei count,
+                                              const GLboolean *ptr );
+
+StubApiCFunction("void","glGetPointervEXT( GLenum pname, void **params );
+
+StubApiCFunction("void","glArrayElementEXT( GLint i );
+
+StubApiCFunction("void","glDrawArraysEXT( GLenum mode, GLint first,
+                                         GLsizei count );
+
+
+
+// GL_EXT_texture_object
+
+StubApiCFunction("void","glGenTexturesEXT( GLsizei n, GLuint *textures );
+
+StubApiCFunction("void","glDeleteTexturesEXT( GLsizei n,
+                                             const GLuint *textures);
+
+StubApiCFunction("void","glBindTextureEXT( GLenum target, GLuint texture );
+
+StubApiCFunction("void","glPrioritizeTexturesEXT( GLsizei n,
+                                                 const GLuint *textures,
+                                                 const GLclampf *priorities );
+
+WINGDIAPI GLboolean APIENTRY glAreTexturesResidentEXT( GLsizei n,
+                                                       const GLuint *textures,
+                                                       GLboolean *residences );
+
+WINGDIAPI GLboolean APIENTRY glIsTextureEXT( GLuint texture );
+
+
+
+// GL_EXT_texture3D
+
+StubApiCFunction("void","glTexImage3DEXT( GLenum target, GLint level,
+                                         GLenum internalFormat,
+                                         GLsizei width, GLsizei height,
+                                         GLsizei depth, GLint border,
+                                         GLenum format, GLenum type,
+                                         const GLvoid *pixels );
+
+StubApiCFunction("void","glTexSubImage3DEXT( GLenum target, GLint level,
+                                            GLint xoffset, GLint yoffset,
+                                            GLint zoffset, GLsizei width,
+                                            GLsizei height, GLsizei depth,
+                                            GLenum format,
+                                            GLenum type, const GLvoid *pixels);
+
+StubApiCFunction("void","glCopyTexSubImage3DEXT( GLenum target, GLint level,
+                                                GLint xoffset, GLint yoffset,
+                                                GLint zoffset, GLint x,
+                                                GLint y, GLsizei width,
+                                                GLsizei height );
+
+
+
+// GL_EXT_color_table
+
+StubApiCFunction("void","glColorTableEXT( GLenum target, GLenum internalformat,
+                                         GLsizei width, GLenum format,
+                                         GLenum type, const GLvoid *table );
+
+StubApiCFunction("void","glColorSubTableEXT( GLenum target,
+                                            GLsizei start, GLsizei count,
+                                            GLenum format, GLenum type,
+                                            const GLvoid *data );
+
+StubApiCFunction("void","glGetColorTableEXT( GLenum target, GLenum format,
+                                            GLenum type, GLvoid *table );
+
+StubApiCFunction("void","glGetColorTableParameterfvEXT( GLenum target,
+                                                       GLenum pname,
+                                                       GLfloat *params );
+
+StubApiCFunction("void","glGetColorTableParameterivEXT( GLenum target,
+                                                       GLenum pname,
+                                                       GLint *params );
+
+
+// GL_SGIS_multitexture
+
+StubApiCFunction("void","glMultiTexCoord1dSGIS(GLenum target, GLdouble s);
+StubApiCFunction("void","glMultiTexCoord1dvSGIS(GLenum target, const GLdouble *v);
+StubApiCFunction("void","glMultiTexCoord1fSGIS(GLenum target, GLfloat s);
+StubApiCFunction("void","glMultiTexCoord1fvSGIS(GLenum target, const GLfloat *v);
+StubApiCFunction("void","glMultiTexCoord1iSGIS(GLenum target, GLint s);
+StubApiCFunction("void","glMultiTexCoord1ivSGIS(GLenum target, const GLint *v);
+StubApiCFunction("void","glMultiTexCoord1sSGIS(GLenum target, GLshort s);
+StubApiCFunction("void","glMultiTexCoord1svSGIS(GLenum target, const GLshort *v);
+StubApiCFunction("void","glMultiTexCoord2dSGIS(GLenum target, GLdouble s, GLdouble t);
+StubApiCFunction("void","glMultiTexCoord2dvSGIS(GLenum target, const GLdouble *v);
+StubApiCFunction("void","glMultiTexCoord2fSGIS(GLenum target, GLfloat s, GLfloat t);
+StubApiCFunction("void","glMultiTexCoord2fvSGIS(GLenum target, const GLfloat *v);
+StubApiCFunction("void","glMultiTexCoord2iSGIS(GLenum target, GLint s, GLint t);
+StubApiCFunction("void","glMultiTexCoord2ivSGIS(GLenum target, const GLint *v);
+StubApiCFunction("void","glMultiTexCoord2sSGIS(GLenum target, GLshort s, GLshort t);
+StubApiCFunction("void","glMultiTexCoord2svSGIS(GLenum target, const GLshort *v);
+StubApiCFunction("void","glMultiTexCoord3dSGIS(GLenum target, GLdouble s, GLdouble t, GLdouble r);
+StubApiCFunction("void","glMultiTexCoord3dvSGIS(GLenum target, const GLdouble *v);
+StubApiCFunction("void","glMultiTexCoord3fSGIS(GLenum target, GLfloat s, GLfloat t, GLfloat r);
+StubApiCFunction("void","glMultiTexCoord3fvSGIS(GLenum target, const GLfloat *v);
+StubApiCFunction("void","glMultiTexCoord3iSGIS(GLenum target, GLint s, GLint t, GLint r);
+StubApiCFunction("void","glMultiTexCoord3ivSGIS(GLenum target, const GLint *v);
+StubApiCFunction("void","glMultiTexCoord3sSGIS(GLenum target, GLshort s, GLshort t, GLshort r);
+StubApiCFunction("void","glMultiTexCoord3svSGIS(GLenum target, const GLshort *v);
+StubApiCFunction("void","glMultiTexCoord4dSGIS(GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q);
+StubApiCFunction("void","glMultiTexCoord4dvSGIS(GLenum target, const GLdouble *v);
+StubApiCFunction("void","glMultiTexCoord4fSGIS(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q);
+StubApiCFunction("void","glMultiTexCoord4fvSGIS(GLenum target, const GLfloat *v);
+StubApiCFunction("void","glMultiTexCoord4iSGIS(GLenum target, GLint s, GLint t, GLint r, GLint q);
+StubApiCFunction("void","glMultiTexCoord4ivSGIS(GLenum target, const GLint *v);
+StubApiCFunction("void","glMultiTexCoord4sSGIS(GLenum target, GLshort s, GLshort t, GLshort r, GLshort q);
+StubApiCFunction("void","glMultiTexCoord4svSGIS(GLenum target, const GLshort *v);
+
+StubApiCFunction("void","glMultiTexCoordPointerSGIS(GLenum target, GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
+
+StubApiCFunction("void","glSelectTextureSGIS(GLenum target);
+
+StubApiCFunction("void","glSelectTextureCoordSetSGIS(GLenum target);
+
+
+// GL_EXT_multitexture
+
+StubApiCFunction("void","glMultiTexCoord1dEXT(GLenum target, GLdouble s);
+StubApiCFunction("void","glMultiTexCoord1dvEXT(GLenum target, const GLdouble *v);
+StubApiCFunction("void","glMultiTexCoord1fEXT(GLenum target, GLfloat s);
+StubApiCFunction("void","glMultiTexCoord1fvEXT(GLenum target, const GLfloat *v);
+StubApiCFunction("void","glMultiTexCoord1iEXT(GLenum target, GLint s);
+StubApiCFunction("void","glMultiTexCoord1ivEXT(GLenum target, const GLint *v);
+StubApiCFunction("void","glMultiTexCoord1sEXT(GLenum target, GLshort s);
+StubApiCFunction("void","glMultiTexCoord1svEXT(GLenum target, const GLshort *v);
+StubApiCFunction("void","glMultiTexCoord2dEXT(GLenum target, GLdouble s, GLdouble t);
+StubApiCFunction("void","glMultiTexCoord2dvEXT(GLenum target, const GLdouble *v);
+StubApiCFunction("void","glMultiTexCoord2fEXT(GLenum target, GLfloat s, GLfloat t);
+StubApiCFunction("void","glMultiTexCoord2fvEXT(GLenum target, const GLfloat *v);
+StubApiCFunction("void","glMultiTexCoord2iEXT(GLenum target, GLint s, GLint t);
+StubApiCFunction("void","glMultiTexCoord2ivEXT(GLenum target, const GLint *v);
+StubApiCFunction("void","glMultiTexCoord2sEXT(GLenum target, GLshort s, GLshort t);
+StubApiCFunction("void","glMultiTexCoord2svEXT(GLenum target, const GLshort *v);
+StubApiCFunction("void","glMultiTexCoord3dEXT(GLenum target, GLdouble s, GLdouble t, GLdouble r);
+StubApiCFunction("void","glMultiTexCoord3dvEXT(GLenum target, const GLdouble *v);
+StubApiCFunction("void","glMultiTexCoord3fEXT(GLenum target, GLfloat s, GLfloat t, GLfloat r);
+StubApiCFunction("void","glMultiTexCoord3fvEXT(GLenum target, const GLfloat *v);
+StubApiCFunction("void","glMultiTexCoord3iEXT(GLenum target, GLint s, GLint t, GLint r);
+StubApiCFunction("void","glMultiTexCoord3ivEXT(GLenum target, const GLint *v);
+StubApiCFunction("void","glMultiTexCoord3sEXT(GLenum target, GLshort s, GLshort t, GLshort r);
+StubApiCFunction("void","glMultiTexCoord3svEXT(GLenum target, const GLshort *v);
+StubApiCFunction("void","glMultiTexCoord4dEXT(GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q);
+StubApiCFunction("void","glMultiTexCoord4dvEXT(GLenum target, const GLdouble *v);
+StubApiCFunction("void","glMultiTexCoord4fEXT(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q);
+StubApiCFunction("void","glMultiTexCoord4fvEXT(GLenum target, const GLfloat *v);
+StubApiCFunction("void","glMultiTexCoord4iEXT(GLenum target, GLint s, GLint t, GLint r, GLint q);
+StubApiCFunction("void","glMultiTexCoord4ivEXT(GLenum target, const GLint *v);
+StubApiCFunction("void","glMultiTexCoord4sEXT(GLenum target, GLshort s, GLshort t, GLshort r, GLshort q);
+StubApiCFunction("void","glMultiTexCoord4svEXT(GLenum target, const GLshort *v);
+
+StubApiCFunction("void","glInterleavedTextureCoordSetsEXT( GLint factor );
+
+StubApiCFunction("void","glSelectTextureEXT( GLenum target );
+
+StubApiCFunction("void","glSelectTextureCoordSetEXT( GLenum target );
+
+StubApiCFunction("void","glSelectTextureTransformEXT( GLenum target );
+
+
+
+
+
+
+// GL_EXT_point_parameters
+StubApiCFunction("void","glPointParameterfEXT( GLenum pname, GLfloat param );
+StubApiCFunction("void","glPointParameterfvEXT( GLenum pname,
+                                               const GLfloat *params );
+
+
+
+// GL_MESA_window_pos
+
+StubApiCFunction("void","glWindowPos2iMESA( GLint x, GLint y );
+StubApiCFunction("void","glWindowPos2sMESA( GLshort x, GLshort y );
+StubApiCFunction("void","glWindowPos2fMESA( GLfloat x, GLfloat y );
+StubApiCFunction("void","glWindowPos2dMESA( GLdouble x, GLdouble y );
+
+StubApiCFunction("void","glWindowPos2ivMESA( const GLint *p );
+StubApiCFunction("void","glWindowPos2svMESA( const GLshort *p );
+StubApiCFunction("void","glWindowPos2fvMESA( const GLfloat *p );
+StubApiCFunction("void","glWindowPos2dvMESA( const GLdouble *p );
+
+StubApiCFunction("void","glWindowPos3iMESA( GLint x, GLint y, GLint z );
+StubApiCFunction("void","glWindowPos3sMESA( GLshort x, GLshort y, GLshort z );
+StubApiCFunction("void","glWindowPos3fMESA( GLfloat x, GLfloat y, GLfloat z );
+StubApiCFunction("void","glWindowPos3dMESA( GLdouble x, GLdouble y, GLdouble z );
+
+StubApiCFunction("void","glWindowPos3ivMESA( const GLint *p );
+StubApiCFunction("void","glWindowPos3svMESA( const GLshort *p );
+StubApiCFunction("void","glWindowPos3fvMESA( const GLfloat *p );
+StubApiCFunction("void","glWindowPos3dvMESA( const GLdouble *p );
+
+StubApiCFunction("void","glWindowPos4iMESA( GLint x, GLint y, GLint z, GLint w );
+StubApiCFunction("void","glWindowPos4sMESA( GLshort x, GLshort y, GLshort z, GLshort w );
+StubApiCFunction("void","glWindowPos4fMESA( GLfloat x, GLfloat y, GLfloat z, GLfloat w );
+StubApiCFunction("void","glWindowPos4dMESA( GLdouble x, GLdouble y, GLdouble z, GLdouble w);
+
+StubApiCFunction("void","glWindowPos4ivMESA( const GLint *p );
+StubApiCFunction("void","glWindowPos4svMESA( const GLshort *p );
+StubApiCFunction("void","glWindowPos4fvMESA( const GLfloat *p );
+StubApiCFunction("void","glWindowPos4dvMESA( const GLdouble *p );
+
+
+// GL_MESA_resize_buffers
+
+StubApiCFunction("void","glResizeBuffersMESA( void );
+
+
+// 1.2 functions
+StubApiCFunction("void","glDrawRangeElements( GLenum mode, GLuint start,
+	GLuint end, GLsizei count, GLenum type, const GLvoid *indices );
+
+StubApiCFunction("void","glTexImage3D( GLenum target, GLint level,
+                                      GLenum internalFormat,
+                                      GLsizei width, GLsizei height,
+                                      GLsizei depth, GLint border,
+                                      GLenum format, GLenum type,
+                                      const GLvoid *pixels );
+
+StubApiCFunction("void","glTexSubImage3D( GLenum target, GLint level,
+                                         GLint xoffset, GLint yoffset,
+                                         GLint zoffset, GLsizei width,
+                                         GLsizei height, GLsizei depth,
+                                         GLenum format,
+                                         GLenum type, const GLvoid *pixels);
+
+StubApiCFunction("void","glCopyTexSubImage3D( GLenum target, GLint level,
+                                             GLint xoffset, GLint yoffset,
+                                             GLint zoffset, GLint x,
+                                             GLint y, GLsizei width,
+                                             GLsizei height );
+
+
+
+
+//
+// Compile-time tests for extensions:
+//
+#define GL_EXT_blend_color		1
+#define GL_EXT_blend_logic_op		1
+#define GL_EXT_blend_minmax		1
+#define GL_EXT_blend_subtract		1
+#define GL_EXT_polygon_offset		1
+#define GL_EXT_vertex_array		1
+#define GL_EXT_texture_object		1
+#define GL_EXT_texture3D		1
+#define GL_EXT_paletted_texture		1
+#define GL_EXT_shared_texture_palette	1
+#define GL_EXT_point_parameters		1
+#define GL_EXT_rescale_normal		1
+#define GL_EXT_abgr			1
+#define GL_EXT_multitexture		1
+#define GL_MESA_window_pos		1
+#define GL_MESA_resize_buffers		1
+#define GL_SGIS_multitexture		1
+#define GL_SGIS_texture_edge_clamp	1
+
+*/

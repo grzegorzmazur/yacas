@@ -1,0 +1,172 @@
+<HTML>
+<A NAME="c2">
+
+</A>
+<HEAD><TITLE>Examples</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+Examples
+</H1>
+This is a small tour of the capabilities Yacas currently offers. Note
+that this list of examples is far from complete. Yacas contains a few
+hundred commands, of which only a few are shown here.
+<P>
+Additional example calculations including the results can be found
+here:
+<UL>
+   <LI> A selection of calculations from the
+        <A HREF="westerbench.html">Wester benchmark</A>.
+   <LI> Some additional <A HREF="mybench2.html">example calculations</A> 
+        that Yacas can currently perform.
+</UL>
+<A NAME="c2s1">
+
+</A>
+<H2>
+<HR>Miscellaneous capabilities
+</H2>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>100!;</PRE>
+</TABLE>
+Compute a large factorial using arbitrary
+precision integers.
+<P>
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>ToBase(16,255);</PRE>
+</TABLE>
+Convert to another number base.
+<P>
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Expand((1+x)^5);</PRE>
+</TABLE>
+Expand the expression into a polynomial.
+<P>
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Apply("+",{2,3});</PRE>
+</TABLE>
+Apply an operator to a list of arguments. This
+example would evaluate to 5.
+<P>
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Apply({{x,y},x+y},{2,3});</PRE>
+</TABLE>
+Apply a pure function to a list of arguments. This
+example would also evaluate to 5.
+<P>
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>D(x)D(x) Sin(x);</PRE>
+</TABLE>
+Take derivatives of a function.
+<P>
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Solve(a+x*y==z,x);</PRE>
+</TABLE>
+Solve an equation for a variable.
+<P>
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Taylor(x,0,5) Sin(x);</PRE>
+</TABLE>
+Calculate the taylor series expansion of a function.
+<P>
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Limit(x,0) Sin(x)/x;</PRE>
+</TABLE>
+Calculate the limit of a function as a variable
+approaches a value.
+<P>
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Newton(Sin(x),x,3,0.0001);</PRE>
+</TABLE>
+Use Newton's method for numerically finding a zero of a function.
+<P>
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>DiagonalMatrix({a,b,c});</PRE>
+</TABLE>
+Create a matrix with the elements specified
+in the vector on the diagonal.
+<P>
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Integrate(x,a,b) x*Sin(x);</PRE>
+</TABLE>
+Integrate a function over variable x, from a to b.
+<P>
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Factors(x^2-1);</PRE>
+</TABLE>
+Factorize a polynomial.
+<P>
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Apart(1/(x^2-1),x);</PRE>
+</TABLE>
+Create a partial fraction expansion of a polynomial.
+<P>
+
+<A NAME="c2s2">
+
+</A>
+<H2>
+<HR>A longer calculation with plotting
+</H2>
+Here is an example of a semi-real numerical calculation using Yacas. The problem is to visualize a particular exact solution of an elliptical differential equation that is represented by an infinite series. We want to evaluate this infinite series numerically and plot it for particular values of the parameters. The series could be represented using Yacas notation as <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+1/(2*Pi)*Sin(q*phi)/Sin(2*q*phi)+ 1/Pi*Sum(n, 0, Infinity,
+  Cos(n*chi) * Sin(Sqrt(q^2-n^2)*phi) / Sin(Sqrt(q^2-n^2)*phi) )
+</PRE>
+</TABLE>
+ Here <B><TT>q</TT></B>, <B><TT>phi</TT></B> and <B><TT>chi</TT></B> are numerical parameters of the problem. We would like to plot this series evaluated at fixed <B><TT>q</TT></B> and <B><TT>phi</TT></B> as function of <B><TT>chi</TT></B> between 0 and <B><TT>2*Pi</TT></B>.
+<P>
+To solve this problem, we prepare a separate file with the following Yacas code: <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+	/* Auxiliary function */
+g1(n, q, phi, chi) := [
+	Local(s);
+	s := q^2-n^2;
+	N(Cos(n*chi) * If(s=0,
+		1/2,	/* Special case of s=0: avoid division by 0 */
+		Sin(Sqrt(s)*phi)/Sin(2*Sqrt(s)*phi)	/* now s != 0 */
+			/* note that Sqrt(s) may be imaginary here */
+		)
+	);
+];
+
+	/* Main function */
+g(q, phi, chi) := [ 
+	Local(M, n);
+	M := 16; /* Exp(-M) will be the precision */
+		/* Use N() to always force evaluation */
+	N(1/2*Sin(q*phi)/Sin(2*q*phi)) +
+		/* Estimate the necessary number of terms in the series */
+	Sum(n, 1, N(1+Sqrt(q^2+M^2/phi^2)), g1(n, q, phi, chi)) ;
+];
+	/* Parameters */
+q:=3.5;
+phi:=2;
+	/* Make a function for plotting: it must have only one argument */
+f(x) := g(q, phi, x);
+	/* Plot from 0 to 2*Pi with 80 points */
+GnuPlot(0, N(2*Pi), 80, f(x));
+</PRE>
+</TABLE>
+Name this file "fun1" and execute this script by typing<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Load("fun1");</PRE>
+</TABLE>
+After this you should see a window with a plot.
+
+</BODY>
+
+</FONT>
+
+</HTML>

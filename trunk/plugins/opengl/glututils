@@ -1,0 +1,76 @@
+
+
+/* reshapeFlat and frustumFlat can be used to to a flat projection,
+   where x and y are actual pixel positions
+ */
+genericReshape(frustum):=
+[
+    glViewport(0, 0, GlutViewWidth(), GlutViewHeight());
+    glMatrixMode(Eval(Atom("GL_PROJECTION")));
+    glLoadIdentity();
+    Eval(frustum);
+    glMatrixMode(Eval(Atom("GL_MODELVIEW")));
+    glLoadIdentity();
+];
+HoldArg("genericReshape",frustum);
+
+frustumFlat() :=
+[
+ glOrtho(0,GlutViewWidth(),0,GlutViewHeight(), -10, 10);
+];
+
+
+frustumDynamic(viewWidth,viewBack,viewFront,perspective):=
+[
+    Local(width,height,halfViewWidth, halfViewHeight);
+    width     := GlutViewWidth();
+    height    := GlutViewHeight();
+
+    If (width <= height,
+    [
+        halfViewWidth:=viewWidth;
+        halfViewHeight:=N(viewWidth*height/width);
+    ],
+    [
+        halfViewWidth:=N(viewWidth*width/height);
+        halfViewHeight:=viewWidth;
+    ]);
+
+    If (perspective,
+    [
+        glFrustum(-halfViewWidth,halfViewWidth,-halfViewHeight,halfViewHeight,
+                  viewBack, viewFront);
+    ],
+    [
+        glOrtho(-halfViewWidth,halfViewWidth,-halfViewHeight,halfViewHeight,
+                viewBack, viewFront);
+    ]);
+    True;
+];
+
+
+DrawQuad(p1,p2,p3,p4):=
+[
+  glBegin(Eval(Atom("GL_QUADS")));
+  glVertex3d(p1[1],p1[2],p1[3]);
+  glVertex3d(p2[1],p2[2],p2[3]);
+  glVertex3d(p3[1],p3[2],p3[3]);
+  glVertex3d(p4[1],p4[2],p4[3]);
+  glEnd();
+];
+
+DrawParal(origin,up,left):=
+[
+  DrawQuad(origin,
+  	   origin+up,
+  	   origin+up+left,
+  	   origin+left);
+];
+
+DrawCubicle(center,lowwidth,lowheight,highwidth,highheight,up):=
+[
+  DrawParal(center-{lowwidth>>1, lowheight>>1,0}, {lowwidth,0,0}, {0,lowheight,0});
+  DrawParal(center+up-{highwidth>>1,highheight>>1,0},{highwidth,0,0},{0,highheight,0});
+];
+
+

@@ -1,0 +1,895 @@
+<HTML>
+<A NAME="c7">
+
+</A>
+<A HREF="refchapter7.html#Head" TARGET="Chapters">
+Head
+</A>
+, <A HREF="refchapter7.html#Tail" TARGET="Chapters">
+Tail
+</A>
+, <A HREF="refchapter7.html#Length" TARGET="Chapters">
+Length
+</A>
+, <A HREF="refchapter7.html#Nth" TARGET="Chapters">
+Nth
+</A>
+, <A HREF="refchapter7.html#DestructiveReverse" TARGET="Chapters">
+DestructiveReverse
+</A>
+, <A HREF="refchapter7.html#List" TARGET="Chapters">
+List
+</A>
+, <A HREF="refchapter7.html#UnList" TARGET="Chapters">
+UnList
+</A>
+, <A HREF="refchapter7.html#Listify" TARGET="Chapters">
+Listify
+</A>
+, <A HREF="refchapter7.html#Concat" TARGET="Chapters">
+Concat
+</A>
+, <A HREF="refchapter7.html#Delete" TARGET="Chapters">
+Delete
+</A>
+, <A HREF="refchapter7.html#Insert" TARGET="Chapters">
+Insert
+</A>
+, <A HREF="refchapter7.html#DestructiveInsert" TARGET="Chapters">
+DestructiveInsert
+</A>
+, <A HREF="refchapter7.html#DestructiveDelete" TARGET="Chapters">
+DestructiveDelete
+</A>
+, <A HREF="refchapter7.html#Replace" TARGET="Chapters">
+Replace
+</A>
+, <A HREF="refchapter7.html#DestructiveReplace" TARGET="Chapters">
+DestructiveReplace
+</A>
+, <A HREF="refchapter7.html#FlatCopy" TARGET="Chapters">
+FlatCopy
+</A>
+, <A HREF="refchapter7.html#Contains" TARGET="Chapters">
+Contains
+</A>
+, <A HREF="refchapter7.html#Find" TARGET="Chapters">
+Find
+</A>
+, <A HREF="refchapter7.html#Append" TARGET="Chapters">
+Append
+</A>
+, <A HREF="refchapter7.html#DestructiveAppend" TARGET="Chapters">
+DestructiveAppend
+</A>
+, <A HREF="refchapter7.html#RemoveDuplicates" TARGET="Chapters">
+RemoveDuplicates
+</A>
+, <A HREF="refchapter7.html#Push" TARGET="Chapters">
+Push
+</A>
+, <A HREF="refchapter7.html#Pop" TARGET="Chapters">
+Pop
+</A>
+, <A HREF="refchapter7.html#PopFront" TARGET="Chapters">
+PopFront
+</A>
+, <A HREF="refchapter7.html#PopBack" TARGET="Chapters">
+PopBack
+</A>
+, <A HREF="refchapter7.html#Swap" TARGET="Chapters">
+Swap
+</A>
+, <A HREF="refchapter7.html#Count" TARGET="Chapters">
+Count
+</A>
+, <A HREF="refchapter7.html#Intersection" TARGET="Chapters">
+Intersection
+</A>
+, <A HREF="refchapter7.html#Union" TARGET="Chapters">
+Union
+</A>
+, <A HREF="refchapter7.html#Difference" TARGET="Chapters">
+Difference
+</A>
+, <A HREF="refchapter7.html#FillList" TARGET="Chapters">
+FillList
+</A>
+, <A HREF="refchapter7.html#Drop" TARGET="Chapters">
+Drop
+</A>
+, <A HREF="refchapter7.html#Take" TARGET="Chapters">
+Take
+</A>
+, <A HREF="refchapter7.html#Partition" TARGET="Chapters">
+Partition
+</A>
+, <A HREF="refchapter7.html#Assoc" TARGET="Chapters">
+Assoc
+</A>
+, <A HREF="refchapter7.html#AssocIndices" TARGET="Chapters">
+AssocIndices
+</A>
+, <A HREF="refchapter7.html#Flatten" TARGET="Chapters">
+Flatten
+</A>
+, <A HREF="refchapter7.html#UnFlatten" TARGET="Chapters">
+UnFlatten
+</A>
+, <A HREF="refchapter7.html#Type" TARGET="Chapters">
+Type
+</A>
+, <A HREF="refchapter7.html#NrArgs" TARGET="Chapters">
+NrArgs
+</A>
+, <A HREF="refchapter7.html#BubbleSort" TARGET="Chapters">
+BubbleSort
+</A>
+, <A HREF="refchapter7.html#Table" TARGET="Chapters">
+Table
+</A>
+, <A HREF="refchapter7.html#TableForm" TARGET="Chapters">
+TableForm
+</A>
+, <A HREF="refchapter7.html#MapSingle" TARGET="Chapters">
+MapSingle
+</A>
+, <A HREF="refchapter7.html#Map" TARGET="Chapters">
+Map
+</A>
+, <A HREF="refchapter7.html#RandomIntegerVector" TARGET="Chapters">
+RandomIntegerVector
+</A>
+, <A HREF="refchapter7.html#MakeVector" TARGET="Chapters">
+MakeVector
+</A>
+, <A HREF="refchapter7.html#Select" TARGET="Chapters">
+Select
+</A>
+, <HEAD><TITLE>List operations</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+List operations
+</H1>
+Most objects that can be of variable size are represented as
+lists (linked lists internally). Yacas does implement arrays, which
+are faster when the number of elements in a collection of objects
+doesn't change. Operations on lists have better support in the current
+system.
+<A NAME="Head">
+
+</A>
+<H3>
+<HR>Head
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Head(list)
+<H5>
+Parameters:
+</H5>
+list - a list
+<H5>
+Description:
+</H5>
+Returns the first element of a list.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Head({a,b,c})
+Out> a;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Tail" TARGET="Chapters">
+Tail
+</A>
+, <A HREF="ref.html#Length" TARGET="Chapters">
+Length
+</A>
+, <A NAME="Tail">
+
+</A>
+<H3>
+<HR>Tail
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Tail(list)
+<H5>
+Parameters:
+</H5>
+list - a list
+<H5>
+Description:
+</H5>
+Returns a list without its first element.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Tail({a,b,c})
+Out> {b,c};
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Head" TARGET="Chapters">
+Head
+</A>
+, <A HREF="ref.html#Length" TARGET="Chapters">
+Length
+</A>
+, <A NAME="Length">
+
+</A>
+<H3>
+<HR>Length
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Length(object)
+<H5>
+Parameters:
+</H5>
+object - a list, array or string
+<H5>
+Description:
+</H5>
+Length returns the length of a list.
+This function also works on strings and arrays.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Length({a,b,c})
+Out> 3;
+In> Length("abcdef");
+Out> 6;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Head" TARGET="Chapters">
+Head
+</A>
+, <A HREF="ref.html#Tail" TARGET="Chapters">
+Tail
+</A>
+, <A HREF="ref.html#Nth" TARGET="Chapters">
+Nth
+</A>
+, <A NAME="Nth">
+
+</A>
+<H3>
+<HR>Nth({list},index)
+</H3>
+
+Nth({list},index) : Returns the element in the list "{list}" at
+position "index", where the first element is 1.
+
+
+<A NAME="DestructiveReverse">
+
+</A>
+<H3>
+<HR>DestructiveReverse({list})
+</H3>
+
+DestructiveReverse({list}) : Returns the list {list} in reverse order.
+The list is reversed in place, so the original is changed into nonsense.
+Use FlatCopy to avoid this.
+
+
+<A NAME="List">
+
+</A>
+<H3>
+<HR>List(...)
+</H3>
+
+List(...) : Returns a list with ... as its elements, after they
+were evaluated. This is the same as entering "{...};".
+
+
+<A NAME="UnList">
+
+</A>
+<H3>
+<HR>UnList({list})
+</H3>
+
+UnList({list}) : 
+Changes the list {list} into an expression specified in the
+elements of the list. This means the first element
+is treated as the command, and the elements following
+are the arguments to that command. "{list}" is evaluated
+before the operation is performed. Example: "UnList({Cos,x});"
+would evaluate to "Cos(x);".
+
+
+<A NAME="Listify">
+
+</A>
+<H3>
+<HR>Listify(expression)
+</H3>
+
+Listify(expression) : 
+Inverse of UnList: it converts the expression "expression" 
+into a list. Eg. "Listify(a(b));" evaluates to "{a,b};".
+
+
+<A NAME="Concat">
+
+</A>
+<H3>
+<HR>Concat(...)
+</H3>
+
+Concat(...) : concatenates the lists in ... after evaluation.
+Eg. "Concat({a,b},{c,d});" returns "{a,b,c,d};".
+
+
+<A NAME="Delete">
+
+</A>
+<H3>
+<HR>Delete({list},index)
+</H3>
+
+Delete({list},index) : 
+Deletes an element at position "index" from the
+list "{list}", and returns that list. "{list}" and
+"index" are evaluated first. The first index in list is 1.
+
+
+<A NAME="Insert">
+
+</A>
+<H3>
+<HR>Insert({list},index,element)
+</H3>
+
+
+Evaluates arguments, and inserts "element"
+in "{list}" at position "index", where position
+1 means insert at the front of the existing list. The result is returned,
+and the original list is left unchanged.
+
+
+<A NAME="DestructiveInsert">
+
+</A>
+<H3>
+<HR>DestructiveInsert({list},index,element)
+</H3>
+
+DestructiveInsert({list},index,element) : 
+The Destructive... versions actually perform the operations
+on the original lists. So, if
+a variable is bound to a list, the list the variable points
+to is actually modified. This is more efficient memory-wise
+and in execution if the same variable is going to be set to
+the result.
+
+
+<A NAME="DestructiveDelete">
+
+</A>
+<H3>
+<HR>DestructiveDelete({list},index)
+</H3>
+
+DestructiveDelete({list},index) : 
+The Destructive... versions actually perform the operations
+on the original lists. So, if
+a variable is bound to a list, the list the variable points
+to is actually modified. This is more efficient memory-wise
+and in execution if the same variable is going to be set to
+the result.
+
+
+<A NAME="Replace">
+
+</A>
+<H3>
+<HR>Replace({list},index,element)
+</H3>
+
+This replaces an element, much like calling Delete and Insert
+in sequence.
+
+
+<A NAME="DestructiveReplace">
+
+</A>
+<H3>
+<HR>DestructiveReplace({list},index,element)
+</H3>
+
+This replaces an element, much like calling DestructiveDelete
+and DestructiveInsert in sequence.
+
+
+<A NAME="FlatCopy">
+
+</A>
+<H3>
+<HR>FlatCopy({list})
+</H3>
+
+FlatCopy({list}) : 
+Copying of the contents of a list. It is not recursed
+into, only the first level is copied. This is useful
+in combination with the destructive commands that actually
+modify lists in place (for efficiency).
+
+
+
+<A NAME="Contains">
+
+</A>
+<H3>
+<HR>Contains({list},element)
+</H3>
+
+Contains({list},element) : 
+Returns whether "{list}" contains element "element".
+
+
+<A NAME="Find">
+
+</A>
+<H3>
+<HR>Find(list,item)
+</H3>
+
+Find(list,item) : returns the index of item in the list.
+Example: Find({a,b,c,d},c) returns 3.
+
+
+<A NAME="Append">
+
+</A>
+<H3>
+<HR>Append({list},element)
+</H3>
+
+Append({list},element) : 
+Append an element {{I:element}} to list {{I:{list} }}.
+
+
+<A NAME="DestructiveAppend">
+
+</A>
+<H3>
+<HR>DestructiveAppend({list},element)
+</H3>
+
+DestructiveAppend({list},element) :
+Append an element {{I:element}} to list {{I:{list} }}.
+
+
+<A NAME="RemoveDuplicates">
+
+</A>
+<H3>
+<HR>RemoveDuplicates({list})
+</H3>
+
+RemoveDuplicates({list}) : 
+Returns a list with exactly one occurrence of each element that is
+also in "{list}".
+
+
+<A NAME="Push">
+
+</A>
+<H3>
+<HR>Push(stack,element)
+</H3>
+
+These implement a stack (represented as a list). "Push" adds an element
+in front of the list. "Pop" then removes and returns any element you
+need from the list. "PopFront" and "PopBack" pop the first and last
+element of the stack respectively.
+
+
+<A NAME="Pop">
+
+</A>
+<H3>
+<HR>Pop(stack,index)
+</H3>
+
+These implement a stack (represented as a list). "Push" adds an element
+in front of the list. "Pop" then removes and returns any element you
+need from the list. "PopFront" and "PopBack" pop the first and last
+element of the stack respectively.
+
+
+<A NAME="PopFront">
+
+</A>
+<H3>
+<HR>PopFront(stack)
+</H3>
+
+These implement a stack (represented as a list). "Push" adds an element
+in front of the list. "Pop" then removes and returns any element you
+need from the list. "PopFront" and "PopBack" pop the first and last
+element of the stack respectively.
+
+
+<A NAME="PopBack">
+
+</A>
+<H3>
+<HR>PopBack(stack)
+</H3>
+
+These implement a stack (represented as a list). "Push" adds an element
+in front of the list. "Pop" then removes and returns any element you
+need from the list. "PopFront" and "PopBack" pop the first and last
+element of the stack respectively.
+
+
+<A NAME="Swap">
+
+</A>
+<H3>
+<HR>Swap({list},i1,i2)
+</H3>
+
+Swap({list},i1,i2) : 
+Swap elements with indices "i1" and "i2" in the list "{list}".
+
+
+<A NAME="Count">
+
+</A>
+<H3>
+<HR>Count({list},element)
+</H3>
+
+Count({list},element) : 
+Returns number of occurrences of "element" in "{list}".
+
+
+<A NAME="Intersection">
+
+</A>
+<H3>
+<HR>Intersection({list1},{list2})
+</H3>
+
+Intersection({list1},{list2}) : 
+returns the intersection of two lists.
+Example : "Intersection({a,b},{b,c});" would evaluate to "{b};".
+
+
+<A NAME="Union">
+
+</A>
+<H3>
+<HR>Union({list1},{list2})
+</H3>
+
+Union({list1},{list2}) : 
+returns the union of two lists.
+Example : "Union({a,b},{b,c});" would evaluate to "{a,b,c};".
+
+
+<A NAME="Difference">
+
+</A>
+<H3>
+<HR>Difference({list1},{list2})
+</H3>
+
+Difference({list1},{list2}) : 
+returns the difference of two lists.
+
+
+<A NAME="FillList">
+
+</A>
+<H3>
+<HR>FillList(aItem, aLength)
+</H3>
+
+FillList(aItem, aLength) : create a list with length aLength,
+filling it with aItem.
+
+Example: "FillList(0,5)" returns {0,0,0,0,0}
+
+<A NAME="Drop">
+
+</A>
+<H3>
+<HR>Drop(list,which)
+</H3>
+
+
+ Drop( list, n ) gives 'list' with its first n elements dropped      <BR>
+ Drop( list, -n ) gives 'list' with its last n elements dropped      <BR>
+ Drop( list, {m,n} ) gives 'list' with elements m through n dropped  
+
+<A NAME="Take">
+
+</A>
+<H3>
+<HR>Take(list,which)
+</H3>
+
+
+ Take( list, n ) gives the first n elements of 'list'   <BR>
+ Take( list, -n ) gives the last n elements of 'list'   <BR>
+ Take( list, {m,n} ) elements m through n of 'list'
+
+
+<A NAME="Partition">
+
+</A>
+<H3>
+<HR>Partition( list, n )
+</H3>
+
+
+  Partition( list, n ) partitions 'list' into non-overlapping sublists of length n
+
+<A NAME="Assoc">
+
+</A>
+<H3>
+<HR>Assoc(key,assoclist)
+</H3>
+
+
+Treat assoclist as a traditional assoc list well known from Lisp, and return
+the element stored with key. This functionality is probably best
+accessed through the [ ] operator.
+
+
+<A NAME="AssocIndices">
+
+</A>
+<H3>
+<HR>AssocIndices(list)
+</H3>
+
+
+Return the list of keys in the associated list assoclist.
+
+
+<A NAME="Flatten">
+
+</A>
+<H3>
+<HR>Flatten
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Flatten(expression,operator)
+<H5>
+Parameters:
+</H5>
+expression - an expression <br>
+ operator - string with the contents of an infix operator.
+
+<H5>
+Description:
+</H5>
+Flatten flattens an expression with respect to a specific
+operator, converting the result into a list.
+This is useful for unnesting an expression. Flatten is typically
+used in simple simplification schemes.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Flatten(a+b*c+d,"+");
+Out> {a,b*c,d};
+In> Flatten({a,{b,c},d},"List");
+Out> {a,b,c,d};
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#UnFlatten" TARGET="Chapters">
+UnFlatten
+</A>
+, <A NAME="UnFlatten">
+
+</A>
+<H3>
+<HR>UnFlatten
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+UnFlatten(list,operator,identity)
+<H5>
+Parameters:
+</H5>
+list - list of objects the operator is to work on
+ operator - infix operator
+ identity - identity of the operator
+
+<H5>
+Description:
+</H5>
+UnFlatten is the inverse operation of Flatten. Given
+a list, it can be turned into an expression representing
+for instance the addition of these elements by calling
+UnFlatten with "+" as argument to operator, and 0 as
+argument to identity (0 is the identity for addition, since
+a+0=a). For multiplication the identity element would be 1.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> UnFlatten({a,b,c},"+",0)
+Out> a+b+c;
+In> UnFlatten({a,b,c},"*",1)
+Out> a*b*c;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Flatten" TARGET="Chapters">
+Flatten
+</A>
+, <A NAME="Type">
+
+</A>
+<H3>
+<HR>Type(expression)
+</H3>
+
+Type(expression) : 
+Returns a string representation of the type of "expression".
+"Type(Cos(x));" would evaluate to "Cos", for instance.
+
+
+<A NAME="NrArgs">
+
+</A>
+<H3>
+<HR>NrArgs(expression)
+</H3>
+
+NrArgs(expression) : 
+Returns number of arguments in top-level function of "expression".
+"NrArgs(Cos(x));" would evaluate to "1".
+
+<A NAME="BubbleSort">
+
+</A>
+<H3>
+<HR>BubbleSort({list},"compare")
+</H3>
+
+BubbleSort({list},"compare") : 
+Sort the list {list}, using "compare" as the operator to compare
+elements. "compare" gives the relation that should be true for
+neighbouring elements in the list after sorting.
+
+
+<A NAME="Table">
+
+</A>
+<H3>
+<HR>Table(body,var,from,to,step)
+</H3>
+
+Table(body,var,from,to,step) : 
+Generate a list of values from "body", by assigning variable "var"
+values from "from" upto "to", incrementing "step" each time.
+
+
+<A NAME="TableForm">
+
+</A>
+<H3>
+<HR>TableForm({list})
+</H3>
+
+Tableform({list}) : 
+TableForm writes out a list in a nicer readable form, eg. one line for
+each element in the list.
+
+
+<A NAME="MapSingle">
+
+</A>
+<H3>
+<HR>MapSingle("operator",{list})
+</H3>
+
+MapSingle("operator",{list}) : 
+MapSingle performs Apply on every item in {list}, returning a
+list of the results.
+
+
+<A NAME="Map">
+
+</A>
+<H3>
+<HR>Map("operator",{lists})
+</H3>
+
+Map("operator",{lists}) : 
+{lists} should be a list of lists each the same size. 
+Map performs Apply on every set of items in {lists}, returning a
+list of the results. Eg. Map("+",{{a,b},{c,d}}) would return {a+c,b+d}.
+
+<A NAME="RandomIntegerVector">
+
+</A>
+<H3>
+<HR>RandomIntegerVector(nr,from,to)
+</H3>
+
+RandomIntegerVector(nr,from,to) : generate a vector of random
+integers p in the range [from,to] (including from and to).
+
+<A NAME="MakeVector">
+
+</A>
+<H3>
+<HR>MakeVector(var,n)
+</H3>
+
+MakeVector(var,n) : return a vector of unique numbered variable names.
+Example:
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> MakeVector(a,3)
+Out> {a1,a2,a3};</PRE>
+</TABLE>
+
+
+
+<A NAME="Select">
+
+</A>
+<H3>
+<HR>Select(predicate,list)
+</H3>
+
+Select(predicate,list) : return a sublist of list, containing all
+elements for which the predicate returned after applying the
+predicate on that list element. Example:
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Select("IsInteger",{a,b,2,c,3,d,4,e,f})
+Out> {2,3,4};</PRE>
+</TABLE>
+
+
+
+
+</BODY>
+
+</FONT>
+
+</HTML>

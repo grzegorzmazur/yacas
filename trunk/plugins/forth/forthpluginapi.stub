@@ -1,0 +1,14 @@
+
+Use("cstubgen");
+
+/* Start generating a c stub file */
+StubApiCStart();
+
+StubApiCRemark("This is the forth api.");
+
+/* define an include file for the stub file */
+StubApiCInclude("\"forthplugin.h\"");
+
+/* export the c file for compilation */
+StubApiCFile("forthpluginapi");
+

@@ -1,0 +1,399 @@
+
+
+
+Book(title) :=
+[
+WriteString("Creating Book ");
+WriteString(title);NewLine();
+
+ plain["Title"] := title;
+];
+
+AddBody(text):=
+[
+  currentBody[2] := currentBody[2]:text;
+/*TODO remove?
+plain["Chapters"][currentChapter]["Body"]:=
+    plain["Chapters"][currentChapter]["Body"] : text;
+*/
+];
+
+Chapter(title):=
+[
+WriteString("  Creating Chapter ");
+WriteString(title);NewLine();
+  currentChapter:=title;
+  currentChapterIndex++;
+  currentSectionIndex:=0;
+  plain["Chapters"][currentChapter]:={};
+  plain["Chapters"][currentChapter]["Sections"]:={};
+  plain["Chapters"][currentChapter]["Body"]:="";
+
+currentBody := Assoc("Body",plain["Chapters"][currentChapter]);
+
+  plain["Chapters"][currentChapter]["Index"]:=currentChapterIndex;
+  plain["Chapters"][currentChapter]["KeyWords"]:=HtmlAnchor()ChapterTag(currentChapterIndex);
+
+/*TODO remove? AddAnchor(ChapterTag(currentChapterIndex)); */
+  AddBody(HtmlTag(chapter,title));
+];
+
+
+AddAnchor(anchor):=
+[
+  plain["Chapters"][currentChapter]["KeyWords"] :=
+    plain["Chapters"][currentChapter]["KeyWords"] :
+    HtmlLink(anchor,
+/*       "ref.html", */
+          plain["BaseName"] : "chapter" : String(currentChapterIndex) : ".html", 
+       anchor,"Chapters"):", ";
+/*
+*/
+
+
+   AddBody(HtmlAnchor()anchor);
+];
+
+SectionTag(chapterIndex,sectionIndex):=
+  "c" : String(chapterIndex) : "s" : String(sectionIndex) ;
+
+ChapterTag(chapterIndex):=
+  "c" : String(chapterIndex) ;
+
+Section(title):=
+[
+WriteString("    Creating Section ");
+WriteString(title);NewLine();
+
+  currentSectionIndex++;
+  plain["Chapters"][currentChapter]["Sections"][title]:=
+    currentSectionIndex;
+  AddBody(HtmlAnchor()SectionTag(currentChapterIndex,currentSectionIndex));
+  AddBody(HtmlTag(section,"<HR>":title));
+];
+
+
+SubSection(title):=
+[
+/*
+WriteString("      Sub section ");
+WriteString(title);NewLine();
+*/
+  AddBody(HtmlTag(subsection,"<HR>":title));
+];
+
+Topical(title):=
+[
+  AddBody(HtmlTag(topical,title:":"));
+];
+
+
+Text(text):=
+[
+  AddBody(text : newline);
+];
+
+
+Blurb(text):=
+[
+  plain["Blurb"]:=text;
+];
+
+HtmlCommand(command):=
+[
+HtmlTable(3,"90%",
+"<TR>" : "<TD WIDTH=100% bgcolor=e0e0e0>" : "<PRE>" : command : "</PRE>"
+         );
+];
+
+HtmlTerm(term):= ("<B><TT>" : term : "</TT></B>");
+
+HtmlEmphasis(word) := ("<I>" : word : "</I>");
+
+HtmlBreak():="<P>";
+
+
+Enumerate(body):=
+[
+  "<UL>" : body : "</UL>";
+];
+Bodied("Enumerate",60000);
+
+Item(body):=
+[
+  "<LI>" : body;
+];
+Bodied("Item",1);
+
+
+
+
+
+Bodied("Book",60000);
+
+Bodied("Title",60000);
+Bodied("Author",60000);
+
+Bodied("Chapter",60000);
+
+Bodied("Section",60000);
+Bodied("SubSection",60000);
+Bodied("Topical",60000);
+Bodied("Text",60000);
+
+Bodied("Blurb",60000);
+
+
+RuleBase("WriteItem",{item});
+Rule("WriteItem",1,1,IsString(item)) WriteString(item);
+Rule("WriteItem",1,2,True) Write(item);
+
+WriteList(list):=
+[
+  ForEach(item,list)
+  [
+    WriteItem(item);
+  ];
+];
+
+
+InitBooks():=
+[
+  site["Books"]:={};
+];
+
+SelectBook(book):=
+[
+  plain:=site["Books"][book];
+];
+
+InitBook(basename):=
+[
+  /* create a new book */
+  site["Books"][basename]:={};
+  SelectBook(basename);
+  plain["BaseName"]:=basename;
+  plain["Chapters"] := {};
+  plain["Body"]:="";
+  plain["Blurb"]:="";
+  currentChapterIndex:=0;
+  currentSectionIndex:=0;
+];
+
+
+
+SimpleSectionsIndex(filename,chapter):=
+[
+  Local(bl,section,sections,index);
+  bl:="";
+  sections:=AssocIndices(plain["Chapters"][chapter]["Sections"]);
+  index:=plain["Chapters"][chapter]["Index"];
+
+  ForEach(section,sections)
+  [
+    bl := bl:HtmlTag(bullet,
+                     HtmlLink(section,filename,SectionTag(index,
+    plain["Chapters"][chapter]["Sections"][section]),""));
+  ];
+  bl;
+];
+
+
+SimpleChapterIndex(filename,chapters):=
+[
+  Local(bl,chapter);
+  bl:="";
+  ForEach(chapter,chapters)
+  [
+    bl := bl:HtmlTag(bullet,
+    HtmlLink(chapter,filename,
+       ChapterTag(plain["Chapters"][chapter]["Index"]),""));
+      );
+    bl:=bl : HtmlTag(bullets,SimpleSectionsIndex(filename,chapter));
+  ];
+  bl;
+];
+
+
+FramedSectionsIndex(filename,chapter):=
+[
+  Local(bl,section,sections,index);
+  bl:="";
+  sections:=AssocIndices(plain["Chapters"][chapter]["Sections"]);
+  index:=plain["Chapters"][chapter]["Index"];
+
+  ForEach(section,sections)
+  [
+    bl := bl:HtmlTag(bullet,
+                     HtmlLink(section,filename,SectionTag(index,
+    plain["Chapters"][chapter]["Sections"][section]),"Chapters"));
+  ];
+  bl;
+];
+
+FramedChapterIndex(chapters):=
+[
+  Local(bl,chapter);
+  bl:="";
+  ForEach(chapter,chapters)
+  [
+    Local(file,index);
+    index:=plain["Chapters"][chapter]["Index"];
+    file:=plain["BaseName"] : "chapter" : String(index) : ".html";
+    bl := bl:HtmlTag(bullet,
+    HtmlLink(chapter,file,
+       ChapterTag(plain["Chapters"][chapter]["Index"]),"Chapters"));
+      );
+    bl:=bl : HtmlTag(bullets,FramedSectionsIndex(file,chapter));
+  ];
+  bl;
+];
+
+
+/* hier */
+
+GroupBooks(first,second):=
+[
+  site["Books"][first]["Chapters"] :=
+    Concat(site["Books"][second]["Chapters"], site["Books"][first]["Chapters"]);
+];
+
+
+EmitHtmlSimple():=
+[
+  Local(filename);
+  filename:=plain["BaseName"] : ".html";
+
+WriteString("Writing ");
+WriteString(filename);
+NewLine();
+
+  ToFile(HtmlFile(filename))
+  [
+    Local(bodytext,chapter,chapters);
+    bodytext:="";
+    chapters:=AssocIndices(plain["Chapters"]);
+    bodytext:=bodytext : HtmlTag(book,plain["Title"]);
+  
+    bodytext:= bodytext : HtmlTag(bullets,SimpleChapterIndex(filename,chapters));
+  
+    ForEach(chapter,chapters)
+    [
+      bodytext:=bodytext :
+                plain["Chapters"][chapter]["KeyWords"] :
+                plain["Chapters"][chapter]["Body"] : "<p><HR>";
+    ];
+
+    WriteString(
+      HtmlTag(html,
+              HtmlTitle(plain["Title"]) :
+              HtmlTag(font,HtmlTag(body,bodytext)) /*hier*/
+             ) );
+  ];
+];
+
+EmitHtmlFramed():=
+[
+  Local(chapter,chapters);
+  chapters:=AssocIndices(plain["Chapters"]);
+
+  ToFile(HtmlFile(plain["BaseName"] : "manual.html"))
+  [
+    WriteString(
+
+    HtmlTag(html,
+        HtmlFrameSetCols("240,*",
+          HtmlFrameSetRows("110,*",
+            HtmlFrame("manicon.html","") : 
+            HtmlFrame(plain["BaseName"] : "chapters.html","")
+                  ) :
+          HtmlFrame(plain["BaseName"] : "chapter1.html","Chapters")
+                )
+           )
+    );
+  ];
+
+
+WriteString("Writing ");
+WriteString(plain["BaseName"]);
+NewLine();
+
+  ToFile(HtmlFile(plain["BaseName"] : "chapters.html"))
+    WriteString(
+      HtmlTag(html,
+      HtmlTag(font,HtmlTag(indexbody,
+                HtmlTag(bullets,FramedChapterIndex(chapters)))
+               ) ) );
+
+  ForEach(chapter,chapters)
+  [
+    Local(file,index);
+    index:=plain["Chapters"][chapter]["Index"];
+    file:=plain["BaseName"] : "chapter" : String(index) : ".html";
+    
+    ToFile(HtmlFile(file))
+      WriteString(
+        HtmlTag(html,
+		plain["Chapters"][chapter]["KeyWords"] :
+                HtmlTitle(chapter) :
+                HtmlTag(font,HtmlTag(body,plain["Chapters"][chapter]["Body"])) /*hier*/
+               ) );
+  ];
+];
+
+BookList():=
+[
+  Local(book,books,bl);
+  bl:="";
+  books:=AssocIndices(site["Books"]);
+  ForEach(book,books)
+  [
+    Local(bookinfo);
+    bookinfo:=site["Books"][book];
+
+    bl:= bl : 
+     "<TR>" : "<TD bgcolor=e0e0e0><FONT face=\"Verdana, Arial, Helvetica, sans-serif\" size=\"3\">
+     " : HtmlLink(bookinfo["Title"],book:"manual.html","","_top") :
+/*     " or " : HtmlLink(" (single file) ",bookinfo["BaseName"]:".html","","_top") : */
+     "<TR>" : "<TD bgcolor=ffffff><FONT face=\"Verdana, Arial, Helvetica, sans-serif\" size=\"3\">
+     " : bookinfo["Blurb"];
+  ];
+  bl;
+];
+
+
+EmitBookIndex():=
+[
+WriteString("Creating book index"); NewLine();
+  ToFile(HtmlFile("books.html"))
+  [
+    WriteString(
+      HtmlTag(html,
+              HtmlTitle("Yacas documentation") :
+              HtmlTag(font,
+              "<center><H1>Yacas documentation</H1></center>":
+              HtmlTag(body,HtmlTable(3,"",
+/*              HtmlCaption("Yacas documentation"): */
+              BookList()))) /*hier*/
+             )
+    );
+  ];
+  True;
+];
+
+
+SeeAlso(_list)<--
+[
+  ForEach(item,list)
+  [
+    AddBody(HtmlLink(item,"ref.html",item,"Chapters"):", ");
+  ];
+];
+
+BuiltIn() <-- AddBody("Internal function<br>");
+
+StandardLib() <-- AddBody("Standard math library<br>");
+
+
+
+

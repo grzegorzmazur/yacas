@@ -1,0 +1,56 @@
+<HTML>
+<A NAME="c4">
+
+</A>
+<HEAD><TITLE>Debugging in Yacas</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+Debugging in Yacas
+</H1>
+<A NAME="c4s1">
+
+</A>
+<H2>
+<HR>Introduction
+</H2>
+
+When writing a code segment, it is generally a good idea to separate the
+problem into many small functions. Not only can you then reuse these
+functions on other problems, but it makes debugging easier too.
+<P>
+The options you have for debugging a faulty function are <UL><LI>Invoke the function from the command line, passing in different
+  arguments, to see how it behaves.<LI>Trace</UL>
+<A NAME="c4s2">
+
+</A>
+<H2>
+<HR>The trace facilities
+</H2>
+There are two trace facilities: <UL><LI>TraceExp : TraceExp traces the full
+  expression, showing all calls to user- or system-defined functions,
+  their arguments, and the return values. For complex functions this
+  can become a long list of function calls.<LI>TraceRule : TraceRule traces one single user-defined function.
+  It shows each invokation, the arguments passed in, and the return
+  values. This is useful for tracking the behaviour of that function
+  in the environment it is intended to be used in.An example invocation of TraceRule is<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> TraceRule(x+y)2+3*5+4;<P></PRE>
+</TABLE>
+Which should then show something to the effect of <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>    TrEnter(2+3*5+4);
+      TrEnter(2+3*5);
+          TrArg(2,2);
+          TrArg(3*5,15);
+      TrLeave(2+3*5,17);
+        TrArg(2+3*5,17);
+        TrArg(4,4);
+    TrLeave(2+3*5+4,21);
+Out> 21;
+</PRE>
+</TABLE>
+</UL>
+
+</BODY>
+
+</FONT>
+
+</HTML>

@@ -1,0 +1,10 @@
+FakeDbCreate
+FakeDbLoad
+FakeDbSave
+FakeDbAddRecord
+FakeDbFetchRecord
+FakeDbReplaceRecord
+FakeDbKeys
+FakeDbDeleteRecord
+}
+
