@@ -113,7 +113,7 @@ static void LispHistorySize(LispEnvironment& aEnvironment, LispPtr& aResult,
     g.Finalize(2);
 
     commandline->MaxHistoryLinesSaved(depth);
-    
+
     /* Return result. */
     InternalTrue(aEnvironment,aResult);
 }
@@ -178,7 +178,7 @@ void LoadYacas()
                                            (*yacas)()().HashTable().LookUp("StaSiz"));
 
 
-    
+
 
     //TODO #include "../ramscripts/some.inc"
 
@@ -191,7 +191,7 @@ void LoadYacas()
 
     yacas->Evaluate("DefaultDirectory(\"" SCRIPT_DIR "\");");
 
-    yacas->Evaluate("Load(\"yacasinit\");");
+    yacas->Evaluate("Load(\"yacasinit.ys\");");
     if (yacas->Error()[0] != '\0')
         ShowResult("");
     if (use_texmacs_out)
@@ -244,7 +244,7 @@ void LoadYacas()
         char cwd[256];
         strcpy(dir,SCRIPT_DIR "addons/");
 
-        
+
         if ((dp = opendir(dir)) != NULL)
         {
             yacas->Evaluate("DefaultDirectory(\"" SCRIPT_DIR "addons/\");");
@@ -285,7 +285,7 @@ void LoadYacas()
         if (test)
         {
             fclose(test);
-            
+
             sprintf(fname,"Load(\"%s/.yacasrc\");",getenv("HOME"));
             yacas->Evaluate(fname);
         }
@@ -359,15 +359,15 @@ int main(int argc, char** argv)
         if (fileind<argc)
             file_to_load=argv[fileind];
     }
-    
+
     /*
      {
         printf("[%d %d]\n",LispHash("\"a\""),
                LispHashStringify( "a" ));
-        
+
     }
     */
-    
+
     atexit(my_exit);
 
     signal(SIGINT, InterruptHandler);
@@ -383,7 +383,7 @@ int main(int argc, char** argv)
 #endif
 
     commandline->iTraceHistory = trace_history;
-    
+
     LoadYacas();
 
 
@@ -520,5 +520,4 @@ RESTART:
     }
     return 0;
 }
-
 

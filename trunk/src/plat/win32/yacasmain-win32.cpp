@@ -101,7 +101,7 @@ int main(int argc, char *argv[]){
 
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispExit),
          (*yacas)()().HashTable().LookUp("Exit"));
-	
+
 	loadYacasScriptDir();
 	CWin32CommandLine commandline;
 
@@ -136,10 +136,10 @@ void loadYacasScriptDir(){
     if(config = fopen(cfg_file_name, "r")) {
 		fgets(scriptdir, 512, config);	// Use the location specified
 
-        sprintf(fullpath, "DefaultDirectory(\"%s\")", scriptdir); 
+        sprintf(fullpath, "DefaultDirectory(\"%s\")", scriptdir);
         printf("Default directory: %s \n", scriptdir);
 		yacas->Evaluate(fullpath);
-	
+
 		if(yacas->Error()[0] != '\0'){
 			fclose(config);
 			goto getdir;
@@ -148,10 +148,10 @@ void loadYacasScriptDir(){
 getdir:
 		config = fopen(cfg_file_name, "w");
 		printf("Directory where the scripts are (use a full path name)\n");
-		printf("Path: ");	
+		printf("Path: ");
 		gets(scriptdir);
 		for(unsigned i = 0; i <= strlen(scriptdir); i++){
-			if(scriptdir[i] == '\\') 
+			if(scriptdir[i] == '\\')
 				scriptdir[i] = '/';
 		}
 
@@ -172,7 +172,7 @@ getdir:
     yacas->Evaluate(fullpath);
 #endif	// USE_RAMSCRIPTS
 
-    yacas->Evaluate("Load(\"yacasinit\");");
+    yacas->Evaluate("Load(\"yacasinit.ys\");");
     ShowResult("");
 
 	scripts = true;
@@ -194,7 +194,7 @@ void runYacasTestScript(void)
 
 	loadYacasScriptDir();
 
-	sprintf(fullpath, "Load(\"%sexamples/tests\");", scriptdir);
+    sprintf(fullpath, "Load(\"%sexamples/tests.ys\");", scriptdir);
 	yacas->Evaluate(fullpath);
 }
 
@@ -236,12 +236,12 @@ void parseCommandLine(int argc, char *argv[])
 				needtoexit = true;
 				runYacasCalculations(argv[++i]);
 			} else {
-				printf("%s: you need to supply a filename for \'%s\'\n", 
+				printf("%s: you need to supply a filename for \'%s\'\n",
 					   argv[0], argv[i]);
 				exit(1);
 			}
 		}
-        
+
         if(!strcmp(argv[i],"-e") || !strcmp(argv[i],"--eval")) {
             i++;
             loadYacasScriptDir();
@@ -249,7 +249,7 @@ void parseCommandLine(int argc, char *argv[])
             printf("In> %s \n", inpline);
             yacas->Evaluate(inpline);
             ShowResult("Out> ");
-            
+
             needtoexit = true;
         }
 	}
