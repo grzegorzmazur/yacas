@@ -1,5 +1,4 @@
-
-$(testtarget):
+$(testtarget): ../tests/wester.yts
 	$(yacastest) ../tests/arithmetic.yts
 	$(yacastest) ../tests/c_tex_form.yts
 	$(yacastest) ../tests/calculus.yts
@@ -21,3 +20,4 @@ $(testtarget):
 	$(yacastest) ../tests/solve.yts
 	$(yacastest) ../tests/sums.yts
 	$(yacastest) ../tests/tensors.yts
+	$(yacastest) ../tests/wester.yts

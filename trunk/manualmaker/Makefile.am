@@ -40,10 +40,13 @@ ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 	in/algorithms-specfunc.chapt.txt in/algorithms-elemfunc.chapt.txt \
 	in/algorithms-integration.chapt.txt
 
+# Yacas code extracted from the docs
+CODESNIPPETS = wester-1994.ys
+
 EXTRA_DIST = \
 	manualmaker styleplain in/all \
 	in/intromaker in/codingmaker in/refmaker in/refprogmaker in/essaysmaker\
-	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) $(REFPROGSOURCES) \
+	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) $(REFPROGSOURCES) $(CODESNIPPETS) \
 	in/dummies .cvsignore
 
 # Stuff for automatic generation of Yacas books
@@ -97,12 +100,12 @@ clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.toc *.log *.ps *.pdf \
 	coding*html intro*html ref*html essays*html .o core *~ texdocs.c \
 	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS) \
-	in/yacasapi.chapt.txt $(BOOKS) manicon.html
+	$(CODESNIPPETS) in/yacasapi.chapt.txt $(BOOKS) manicon.html
 
 yacas_helpdir = $(datadir)/yacas/documentation
 
 books.html:  $(BOOKS) $(REFCHAPTERS) $(ESSAYCHAPTERS) \
-   $(REFPROGCHAPTERS) $(CODINGCHAPTERS)
+   $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(CODESNIPPETS)
 	-$(ouryacas) in/all
 	echo "done" > books.html.c
 
