@@ -12,6 +12,11 @@ long theNrDefinedUser=0;
 
 #define InternalEval environment().iEvaluator->Eval
 
+#define OPERATOR(oper_type,prec,name) \
+	oper_type##operators.SetOperator(prec,hash.LookUp(#name))
+// for example: OPERATOR(bodied,KMaxPrecedence,While) produces:
+//    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("While"));
+
 
 DefaultYacasEnvironment::~DefaultYacasEnvironment()
 {
@@ -272,25 +277,24 @@ input(iEnvironment.iInputStatus)
 
     SetCommand(LispBackQuote ,"`");
     
-    
-    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("While"));
-    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("Rule"));
-    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("MacroRule"));
-    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("RulePattern"));
-    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("MacroRulePattern"));
-    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("FromFile"));
-    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("FromString"));
-    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("ToFile"));
-    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("ToString"));
-    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("TraceRule"));
-    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("Subst"));
-    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("LocalSymbols"));
-    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("BackQuote"));
+    OPERATOR(bodied,KMaxPrecedence,While);
+    OPERATOR(bodied,KMaxPrecedence,Rule);
+    OPERATOR(bodied,KMaxPrecedence,MacroRule);
+    OPERATOR(bodied,KMaxPrecedence,RulePattern);
+    OPERATOR(bodied,KMaxPrecedence,MacroRulePattern);
+    OPERATOR(bodied,KMaxPrecedence,FromFile);
+    OPERATOR(bodied,KMaxPrecedence,FromString);
+    OPERATOR(bodied,KMaxPrecedence,ToFile);
+    OPERATOR(bodied,KMaxPrecedence,ToString);
+    OPERATOR(bodied,KMaxPrecedence,TraceRule);
+    OPERATOR(bodied,KMaxPrecedence,Subst);
+    OPERATOR(bodied,KMaxPrecedence,LocalSymbols);
+    OPERATOR(bodied,KMaxPrecedence,BackQuote);
+    OPERATOR(prefix,0,`);
+    OPERATOR(prefix,0,@);
+    OPERATOR(prefix,0,_);
+    OPERATOR(infix,0,_);
 
-    prefixoperators.SetOperator(0,hash.LookUp("`"));
-    prefixoperators.SetOperator(0,hash.LookUp("@"));
-    prefixoperators.SetOperator(0,hash.LookUp("_"));
-    infixoperators.SetOperator(0,hash.LookUp("_"));
 }
 
 

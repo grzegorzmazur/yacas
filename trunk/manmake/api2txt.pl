@@ -4,7 +4,7 @@
 
 # Usage: api2txt.pl < yacasapi.cpp > yacasapi.txt
 
-%special_syntax = (
+%special_syntax = (	# these are the words that describe the special syntax functions
 	"infix" => "infix",
 	"prefix" => "prefix",
 	"postfix" => "postfix",
@@ -22,10 +22,14 @@ while(<STDIN>) {
 	# SetCommand(LispCommand      ,"Command");
 		# store name and print later
 		$core_functions{$2} = 1;
-	} elsif (/(infix|prefix|postfix|bodied)operators.SetOperator\(([^ \t]+)\s*,hash.LookUp\("([^ "\t]+)"\)/) {
-	# infixoperators.SetOperator(0,hash.LookUp("_"));
+	} elsif (/^\s*OPERATOR\((infix|prefix|postfix|bodied)\s*,([^ \t]+)\s*,([^ "\t]+)\s*\);/) {
+	# matches "OPERATOR(infix,0,_);" and sets $1="infix", $2="0", $3="_"
 	if ($in_addition == 0) {
 		$in_addition = 1;
+	}
+	if (!defined($core_special{$3}))
+	{
+		$core_special{$3} = "";	# avoid uninitialized values
 	}
 	$core_special{$3} .= "\n{" . $3 . "} --- " . $special_syntax{$1} . " (prec. {" . $2 . "}).\n";
 	}
