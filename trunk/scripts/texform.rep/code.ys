@@ -14,6 +14,7 @@
 	0.4.5 fixes for bracketing of Sum(); added <> to render as \sim and <=> to render as \approx; added Bin()
 	0.4.6 moved the <> and <=> operators to stdopers.ys
 	0.4.7 added Factorize() i.e. Product()
+	0.4.8 added Deriv(x,n), =>, and fixed errors with ArcSinh, ArcCosh, ArcTanh
 */
 
 /* To do:
@@ -65,7 +66,7 @@ TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equa
 
 	/* addition, subtraction, multiplication, all comparison and logical operations are "regular" */
 
-TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv "}, {"=="," = "}, {"="," = "}, {"!=","\\neq "}, {"<=","\\leq "}, {">=","\\geq "}, {"<"," < "}, {">"," > "}, {"And"," \\wedge "}, {"Or"," \\vee "}, {"<>", "\\sim "}, {"<=>", "\\approx "} };
+TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv "}, {"=="," = "}, {"="," = "}, {"!=","\\neq "}, {"<=","\\leq "}, {">=","\\geq "}, {"<"," < "}, {">"," > "}, {"And"," \\wedge "}, {"Or"," \\vee "}, {"<>", "\\sim "}, {"<=>", "\\approx "}, {"=>", "\\Rightarrow "} };
 
 	/* Template for "regular" binary infix operators:
 100 # TeXForm(_x + _y, _p) <-- TeXFormBracketIf(p<OpPrecedence("+"), ConcatStrings(TeXForm(x, OpLeftPrecedence("+")), " + ", TeXForm(y, OpRightPrecedence("+")) ) );
@@ -159,7 +160,7 @@ Function ("TeXFormTeXify", {string})
 
 /* Sin, Cos, etc. and their argument is bracketed when it's a sum or product but not bracketed when it's a power. */
 
-TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, {"Cosh","\\cosh "}, {"Sinh","\\sinh "}, {"Tanh","\\tanh "}, {"Ln","\\ln "}, {"ArcCos","\\arccos "}, {"ArcSin","\\arcsin "}, {"ArcTan","\\arctan "}, {"ArcCosh","\\arccosh "}, {"ArcSinh","\\arcsinh "}, {"ArcTanh","\\arctanh "}, {"Max","\\max "}, {"Min","\\min "} };
+TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, {"Cosh","\\cosh "}, {"Sinh","\\sinh "}, {"Tanh","\\tanh "}, {"Ln","\\ln "}, {"ArcCos","\\arccos "}, {"ArcSin","\\arcsin "}, {"ArcTan","\\arctan "}, {"ArcCosh","\\mathrm{arccosh}\\, "}, {"ArcSinh","\\mathrm{arcsinh}\\, "}, {"ArcTanh","\\mathrm{arctanh}\\, "}, {"Max","\\max "}, {"Min","\\min "} };
 
 /* Precedence of 120 because we'd like to process other functions like sqrt or exp first */
 
@@ -218,6 +219,12 @@ TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, 
 	If(Length(VarList(y))>1, "\\frac{\\partial}{\\partial ", "\\frac{d}{d "
 	), TeXForm(x, OpPrecedence("^")), "}", TeXForm(y, OpPrecedence("/")) ) );
 
+100 # TeXForm(Deriv(_x, _n)_y, _p) <-- TeXFormBracketIf(p<OpPrecedence("-"), ConcatStrings(
+	If(
+		Length(VarList(y))>1,
+		"\\frac{\\partial^" : TeXForm(n, TeXFormMaxPrec) : "}{\\partial ",
+		"\\frac{d^" : TeXForm(n, TeXFormMaxPrec) : "}{d "
+	), TeXForm(x, OpPrecedence("^")), " ^", TeXForm(n, TeXFormMaxPrec), "}", TeXForm(y, OpPrecedence("/")) ) );
 100 # TeXForm(D(_x)_y, _p) <-- TeXForm(Deriv(x) y, p);
 
 /* Indexed expressions */
