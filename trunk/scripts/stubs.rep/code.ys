@@ -79,6 +79,8 @@ n_IsInteger >> m_IsInteger <-- ShiftRight(n,m);
 /* Threading  */
 Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 
+90 # (Sqrt(x_IsConstant))_(IsNegativeNumber(N(x))) <-- Complex(0,Sqrt(-x));
+
 400 # x_IsRationalOrNumber * Sqrt(y_IsRationalOrNumber)  <-- Sign(x)*Sqrt(x^2*y);
 400 # Sqrt(y_IsRationalOrNumber) * x_IsRationalOrNumber  <-- Sign(x)*Sqrt(x^2*y);
 400 # x_IsRationalOrNumber / Sqrt(y_IsRationalOrNumber)  <-- Sign(x)*Sqrt(x^2/y);

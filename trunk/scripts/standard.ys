@@ -473,7 +473,6 @@ LocalSymbols(x)
 65 # (x_IsPositiveNumber ^ y_IsNumber)_Numeric <-- Exp(y*Ln(x));
 
 90 # (-_x)^m_IsEven <-- x^m;
-90 # (Sqrt(x_IsConstant))_(IsNegativeNumber(N(x))) <-- Complex(0,Sqrt(-x));
 91 # (x_IsConstant ^ (m_IsOdd / p_IsOdd))_(IsNegativeNumber(Re(N(x)))) <--
      -((-x)^(m/p));
 92 # (x_IsNegativeNumber ^ y_IsNumber)_Numeric <-- Exp(y*Ln(x));
