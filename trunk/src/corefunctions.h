@@ -246,7 +246,7 @@ CORE_KERNEL_FUNCTION("DllUnload",LispDllUnload,1,YacasEvaluator::Function | Yaca
 CORE_KERNEL_FUNCTION("DllEnumerate",LispDllEnumerate,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("SetExtraInfo",LispSetExtraInfo,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("GetExtraInfo",LispGetExtraInfo,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
-CORE_KERNEL_FUNCTION("Berlekamp",LispBerlekamp,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
+//TODO remove CORE_KERNEL_FUNCTION("Berlekamp",LispBerlekamp,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("DefaultTokenizer",LispDefaultTokenizer,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("CommonLispTokenizer",LispCommonLispTokenizer,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("CTokenizer",LispCTokenizer,0,YacasEvaluator::Function | YacasEvaluator::Fixed);

@@ -1,11 +1,9 @@
 
+
+#if 0 
+/*TODO REMOVE DEPRECATED in favor of binary factoring
+
 // unipoly.cpp unipoly.h mkunipoly
-
-/*TODO
- - ModGcd
- - result computation.
- */
-
 
 #include "yacasprivate.h"
 #include "unipoly.h"
@@ -109,7 +107,7 @@ void NullSpaceAlg(ZZPolyList& Q,ZZ deg,ZZPolyList& v,ZZMod& p)
             ZZ ak,ki,ji;
             ak=(*Q[k])[jfound];
 
-            ZZ oneover = p.Div(-1,ak); /* (-1/ak); */
+            ZZ oneover = p.Div(-1,ak); // (-1/ak); 
             for (ki=0;ki<deg;ki++)
                 (*Q[ki])[jfound] = p.Mod((*Q[ki])[jfound] * oneover);
             for(ji=0;ji<deg;ji++)
@@ -155,7 +153,7 @@ void NullSpaceAlg(ZZPolyList& Q,ZZ deg,ZZPolyList& v,ZZMod& p)
 void ModUniDivide(ZZPolyList& result,ZZPoly& u, ZZPoly& v, ZZMod& p)
 {
     ZZ m,n;
-    /*  (m should be >= n) */
+    //  (m should be >= n) 
     m = u.Degree();
     n = v.Degree();
     LISPASSERT(m >= n);
@@ -196,14 +194,14 @@ ZZPoly* ModGcd2(ZZPoly& u,ZZPoly& v,ZZMod& p)
     ModUniDivide(l,u,v,p);
 //printf("AFTER\n");
 
-    /*
-     printf("Degree %d\n",l[1]->Degree());
-PrintPoly(u);
-PrintPoly(v);
-PrintPoly(*(l[0]));
-PrintPoly(*(l[1]));
-getchar();
-*/
+
+//     printf("Degree %d\n",l[1]->Degree());
+//PrintPoly(u);
+//PrintPoly(v);
+//PrintPoly(*(l[0]));
+//PrintPoly(*(l[1]));
+//getchar();
+
     l[1]->Append(0);
     if (l[1]->Degree() == 0 && (*l[1])[0] == 0)
     {
@@ -292,8 +290,6 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
     printf("v matrix:\n");
     PrintPolyList(v);
 #endif
-    /*
-     */
 
     if (v.NrItems()<2)
     {
@@ -307,7 +303,7 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
         aResult.Append(original);
         return;
     }
-    /* aResult.NrItems() should be zero! */
+    // aResult.NrItems() should be zero! 
     LISPASSERT(aResult.NrItems() == 0);
     ZZ s,nr;
     ZZPoly trial;
@@ -403,17 +399,16 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
 
     ZZPolyList result;
     ZZPoly poly;
-    /*
-    poly.Append( 8);   // 8*x^0
-    poly.Append( 2);   // 2*x^1
-    poly.Append( 8);   // 8*x^2
-    poly.Append(10);   //10*x^3
-    poly.Append(10);   //10*x^4
-    poly.Append( 0);   // 0*x^5
-    poly.Append( 1);   // 1*x^6
-    poly.Append( 0);   // 0*x^7
-    poly.Append( 1);   // 1*x^8
-    */
+
+//    poly.Append( 8);   // 8*x^0
+//    poly.Append( 2);   // 2*x^1
+//    poly.Append( 8);   // 8*x^2
+//    poly.Append(10);   //10*x^3
+//    poly.Append(10);   //10*x^4
+//    poly.Append( 0);   // 0*x^5
+//    poly.Append( 1);   // 1*x^6
+//    poly.Append( 0);   // 0*x^7
+//    poly.Append( 1);   // 1*x^8
     poly.Append(1);
     poly.Append(2);
     poly.Append(1);
@@ -427,4 +422,7 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
 
 #endif
 
+
+*/
+#endif
 
