@@ -48,13 +48,16 @@ is printed.
 *STD
 *CALL
 	Echo(item)
+
 	Echo(list)
+
+	Echo(item,item,item,...)
 
 *PARMS
 
-item - the item to be printed
+{item} - the item to be printed
 
-list - a list of items to be printed
+{list} - a list of items to be printed
 
 *DESC
 
@@ -62,10 +65,13 @@ If passed a single item, Echo will evaluate it and print it to the
 current output, followed by a newline. If "item" is a string, it is
 printed without quotation marks.
 
-If the second calling sequence is used, Echo will print all the
+If there is one argument, and it is a list, Echo will print all the
 entries in the list subsequently to the current output, followed by a
 newline. Any strings in the list are printed without quotation
 marks. All other entries are followed by a space.
+
+Echo can be called with a variable number of arguments, they will all
+be printed, followed by a newline.
 
 {Echo} always returns {True}.
 
@@ -76,6 +82,9 @@ marks. All other entries are followed by a space.
 	Out> True;
 	In> Echo({"The square of two is ", 2*2});
 	The square of two is  4
+	Out> True;
+	In> Echo("The square of two is ", 2*2);
+	The square of two is 4 
 	Out> True;
 
 Note that one must use the second calling format if one wishes to
@@ -88,7 +97,7 @@ print a list:
 	{a,b,c}
 	Out> True;
 
-*SEE PrettyForm, Write, WriteString
+*SEE PrettyForm, Write, WriteString, RuleBaseListed
 
 *CMD PrettyForm --- print an expression nicely with ASCII art
 *STD
