@@ -6,9 +6,12 @@
 
 Defun("Trigonometry",{x,i,sum,term})
 [
-  Local(x2,orig,eps);
+  Local(x2,orig,eps,previousPrec,newPrec);
+  Set(previousPrec,GetPrecision());
+  Set(newPrec,MathAdd(GetPrecision(),2));
   Set(x2,MathMultiply(x,x));
-  Set(eps,MathPower(10,MathSubtract(0,GetPrecision())));
+  Precision(newPrec);
+  Set(eps,MathPower(10,MathSubtract(0,previousPrec)));
   While(GreaterThan(MathAbs(term),eps))
   [
     Set(term,MathMultiply(term,x2));
@@ -16,8 +19,11 @@ Defun("Trigonometry",{x,i,sum,term})
     Set(term,MathDivide(term,i));
     Set(i,MathAdd(i,1.0));
     Set(term,MathDivide(MathSubtract(0,term),i));
+    Precision(previousPrec);
     Set(sum, MathAdd(sum, term));
+    Precision(newPrec);
   ];
+  Precision(previousPrec);
   sum;
 ];
 

@@ -132,8 +132,8 @@ IsPositiveInteger(x):= IsInteger(x) And x > 0;
 10 # IsNotZero(x_IsNumber)       <-- ( RoundTo(x,GetPrecision()) != 0);
 */
 
-10 # IsZero(x_IsNumber) <-- ( (x+0.5)-0.5  = 0);
-10 # IsNotZero(x_IsNumber)       <-- ( (x+0.5)-0.5 != 0);
+10 # IsZero(x_IsNumber) <-- ( MathAbs(x)  < MathPower(10, -GetPrecision()));
+10 # IsNotZero(x_IsNumber)       <-- ( MathAbs(x)  > MathPower(10, -GetPrecision()));
 
 10 # IsNotZero(x_IsInfinity) <-- True;
 1000 # IsZero(_n) <-- False;

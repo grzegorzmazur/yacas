@@ -1,53 +1,24 @@
-/*
-TODO
-- move to main scripts dir
-- allow polys with var other than x
+
+/* Implementation of binary factoring algorithm (see documentation).
+   Ayal Pinkus
 */
 
-
-/*
-
-This file is a test ground for algorithms pertaining to factoring
-polynomials modulo
-integers.
-*/
-
-LocalSymbols(PowerMod,Mkp,Mkpc,Mkn,Mkc,MkMod,MkDiv,Mkd,MkGcd,MkExtEuclid,MkExtEuclidAux,TryFact)[
-
-
-PowerMod(x_IsPositiveInteger, 
-    n_IsPositiveInteger,
-    m_IsPositiveInteger) <--
-[
-  Local(result);
-  result:=1;
-  x:=Mod(x,m);
-  While(n != 0)
-  [
-    if ((n&1) = 1)
-  [
-      result := Mod(result*x,m);
-    ];
-    x := Mod(x*x,m);
-    n := n>>1;
-  ];
-  result;
-];
+LocalSymbols(Mkp,Mkpc,Mkn,Mkc,MkMod,MkDiv,Mkd,TryFact)[
 
 // input roots, output poly
 Mkp(roots):= Factorize(x-roots);
 
 // Mkpc: input coefs, output poly
-Mkpc(coefs):= NormalForm(UniVariate(x,0,coefs));
+Mkpc(coefs,var):= NormalForm(UniVariate(var,0,coefs));
 
 // Mkn: input roots, output roots modulo an integer
 Mkn(list,n):= Mod(list,n);
 
 // Mkc: returns list of coefficients of polynomial
 // input poly, output coefficients
-Mkc(poly):=
+Mkc(poly,var):=
 [
-  Set(poly,MakeUni(Expand(poly),x));
+  Set(poly,MakeUni(poly,var));
   Concat(FillList(0,poly[2]),poly[3]);
 ];
 
@@ -80,8 +51,8 @@ Mkd(numer,denom,p):=
   [
     While(Length(numer)>=Length(denom))
     [
-//      Set(nq,MkMod(Div(numer[1],denom[1]),p));
-      Set(nq,MkDiv(numer[1],denom[1],p));
+      Set(nq,numer[1]);
+//      Set(nq,MkDiv(numer[1],denom[1],p));
       q[ln-(Length(numer)-ld)] := nq;
       For(j:=1,j<=Length(denom),j++)
       [
@@ -104,7 +75,154 @@ Mkd(numer,denom,p):=
   {q,r};
 ];
 
+BinaryFactors(polynom):=
+[
+  Local(list,i,result,p,newlist,poly,nrroots,unrat,leadingcoef,lowestcoef,an,origdegree,anmul,andiv,var);
+  Set(result,{});
 
+  // Make list of coefficients
+  Set(var,VarList(polynom));
+  Check(Length(var)=1,"BinaryFactors: Only univariate polynomials supported");
+  Set(var,var[1]);
+  Set(poly,Mkc(polynom,var));
+
+  Set(unrat,Lcm(MapSingle("Denom",poly)));
+  Set(poly,unrat*poly);
+
+  Set(origdegree,Length(poly)-1);
+  Set(an,poly[Length(poly)]);
+  Set(poly,poly* (an^((origdegree-1) .. -1)));
+  Set(polynom,Mkpc(poly,var));
+  Set(andiv,an^(origdegree-1));
+  Set(anmul,1);
+  
+  Set(leadingcoef,poly[Length(poly)]);
+  [ 
+    Local(i);
+    Set(i,1);
+    Set(lowestcoef,Abs(poly[i]));
+    While (lowestcoef = 0 And i<=Length(poly))
+    [
+      Set(i,i+1);
+      Set(lowestcoef,Abs(poly[i]));
+    ];
+  ];
+  // testpoly is the square-free version of the polynomial, used for finding
+  // the factors. the original polynomials is kept around to find the
+  // multiplicity of the factor.
+  Set(testpoly,Mkc(Div(polynom,Monic(Gcd(polynom,Deriv(var)polynom))),var));
+
+  [
+    Local(gcd);
+    Set(gcd,Gcd(testpoly));
+    If(testpoly[Length(testpoly)] < 0,Set(gcd, gcd * -1));
+    Set(testpoly,testpoly/gcd);
+  ];
+
+  // resulting factors will be stored here
+  Set(list,{});
+
+  // Start off with the seeds for factoring
+  If(IsZeroVector(Mkd(testpoly,{0,1},2)[2]),Set(list,{0,1}:list));
+  If(IsZeroVector(Mkd(testpoly,{1,1},2)[2]),Set(list,{1,1}:list));
+  If(IsZeroVector(Mkd(testpoly,{1,0},2)[2]),Set(list,{1,0}:list));
+  If(IsZeroVector(Mkd(testpoly,{0,0},2)[2]),Set(list,{0,0}:list));
+
+  Set(p,2);
+  Set(nrroots,Length(poly)-1);
+
+  While(nrroots>0 And Length(list)>0)
+  [
+    Local(pp);
+    Set(pp,(2*p));
+
+    // check if any of the factors already divides the original polynomial
+    For(i:=1,i<=Length(list),i++)
+    [
+      Local(lst1);
+
+      TryFact({-p+list[i][1],list[i][2]});
+      TryFact({list[i][1],list[i][2]});
+    ];
+
+    // Given the partial solutions so far (potential roots modulo p), determine
+    // new roots up to modulo 2*p. This step essentially adds one binary bit
+    // to the potential solutions and checks if they are still a solution.
+    Set(newlist,{});
+    For(i:=1,i<=Length(list),i++)
+    [
+      If(Not(list[i] = {1,0} And p>leadingcoef),
+      [
+        If(p<=lowestcoef And IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]},pp)[2]),
+	  		  Set(newlist,{(list[i][1]+p),list[i][2]}:newlist));
+        If(IsZeroVector(Mkd(testpoly,{(list[i][1]),list[i][2]},pp)[2]),
+			    Set(newlist,{(list[i][1]),list[i][2]}:newlist));
+      ]);
+    ];
+
+    Set(newlist,RemoveDuplicates(newlist));
+
+    // We now have a new set of potential roots, modulo 2*p
+    Set(list,newlist);
+
+    Set(p,2*p);
+
+//Echo("Solutions modulo ",p," with ",Length(list),"potential solutions",list);
+  ];
+
+  // If the polynom is not one, it is a polynomial which is not reducible any further
+  // with this algorithm, return as is.
+  Set(poly,poly*an^(0 .. (Length(poly)-1)));
+  Set(poly,anmul*poly/(unrat * andiv ));
+  If(poly != {1},Set(result,{Mkpc(poly,var),1}:result));
+
+  result;
+];
+
+
+/* TryFact is an utility macro used in SimpleFactors. For a polynomial
+'poly'
+   for which the square-free part is 'testpoly', it determines if the
+'root'
+   passed in is a root. If so, it is added to the list of results, and the
+   macro determines the multiplicity based on 'poly'. The factor (x-root)
+is
+   then divided out of the polynomials.
+ */
+Macro(TryFact,{root})
+[
+  If((@root)[2] != 0,
+  [
+    Set(lst1,Mkd(testpoly,(@root),Infinity));
+    If(IsZeroVector(lst1[2]),
+      [
+        Set(testpoly,lst1[1]);
+        Set(lst1,Mkd(poly,(@root),Infinity));
+        Local(count);
+        Set(count,0);
+        While(IsZeroVector(lst1[2]))
+        [
+          count++;
+          Set(poly,lst1[1]);
+          Set(lst1,Mkd(poly,(@root),Infinity));
+          nrroots--;
+        ];
+        Local(lgcd,lc);
+        Set(lgcd,Gcd({andiv,an*(@root)[2],(@root)[1]}));
+        Set(lc,Div(an*(@root)[2],lgcd));
+        Set(result,{var+Div((@root)[1],lgcd)/lc,count}:result);
+        Set(andiv,Div(andiv,lgcd^count));
+        Set(anmul,anmul*lc^count);
+      ]
+    );
+  ]);
+];
+
+
+
+];
+
+/*
 // Addition: input coefficients for polys, output coefs 
 Mkadd(x,y):=
 [
@@ -114,6 +232,13 @@ Mkadd(x,y):=
   For(i:=1,i<=Length(y),i++) result[i]:=result[i]+y[i];  
   DropEndZeroes(result);
   result;
+];
+
+Mkmonic(poly):=
+[
+  Local(lc);
+  lc:=poly[Length(poly)];
+  poly*(lc^((Length(poly)-2) .. -1));
 ];
 
 // Multiplication: input coefficients for polys, output coefs 
@@ -129,7 +254,6 @@ Mkmul(x,y):=
   DropEndZeroes(result);
   result;
 ];
-
 
 // Greatest common divisor modulo p
 // input coefficients to polys n,m, and integer p
@@ -180,9 +304,9 @@ Mkmul(x,y):=
 
 
   Set(t,{
-       Mod(Mkc(Mkpc(u[1])-Mkpc(v[1])*Mkpc(q)),p),
-       Mod(Mkc(Mkpc(u[2])-Mkpc(v[2])*Mkpc(q)),p),
-       Mod(Mkc(Mkpc(u[3])-Mkpc(v[3])*Mkpc(q)),p)
+       Mod(Mkc(Mkpc(u[1],x)-Mkpc(v[1],x)*Mkpc(q,x),x),p),
+       Mod(Mkc(Mkpc(u[2],x)-Mkpc(v[2],x)*Mkpc(q,x),x),p),
+       Mod(Mkc(Mkpc(u[3],x)-Mkpc(v[3],x)*Mkpc(q,x),x),p)
      });
    Set(u,v);
    Set(v,t);
@@ -191,206 +315,22 @@ Mkmul(x,y):=
 ];
 
 
-
-
-
-
-BinaryFactor(polynom):=FW(BinaryFactors(polynom));
-BinaryFactors(polynom):=
+PowerMod(x_IsPositiveInteger, n_IsPositiveInteger, m_IsPositiveInteger) <--
 [
-  Local(list,i,result,p,newlist,poly,nrroots,unrat,leadingcoef,lowestcoef,an,origdegree,anmul,andiv);
-  Set(result,{});
-
-  // Make list of coefficients
-  Set(poly,Mkc(polynom));
-
-  Set(unrat,Lcm(MapSingle("Denom",poly)));
-  Set(poly,unrat*poly);
-
-  Set(origdegree,Length(poly)-1);
-  Set(an,poly[Length(poly)]);
-  //Echo("poly = ",poly);
-  Set(poly,poly* (an^((origdegree-1) .. -1)));
-  //Echo("monic poly = ",poly);
-  Set(polynom,Mkpc(poly));
-  Set(andiv,an^(origdegree-1));
-  Set(anmul,1);
-  
-  Set(leadingcoef,poly[Length(poly)]);
-  [ 
-    Local(i);
-    Set(i,1);
-    Set(lowestcoef,Abs(poly[i]));
-    While (lowestcoef = 0 And i<=Length(poly))
-    [
-      Set(i,i+1);
-      Set(lowestcoef,Abs(poly[i]));
-    ];
-  ];
-  // testpoly is the square-free version of the polynomial, used for finding
-  // the factors. the original polynomials is kept around to find the
-  // multiplicity of the factor.
-  Set(testpoly,Mkc(Div(polynom,Monic(Gcd(polynom,Deriv(x)polynom)))));
-
+  Local(result);
+  result:=1;
+  x:=Mod(x,m);
+  While(n != 0)
   [
-    Local(gcd);
-    Set(gcd,Gcd(testpoly));
-    If(testpoly[Length(testpoly)] < 0,Set(gcd, gcd * -1));
-    Set(testpoly,testpoly/gcd);
-  ];
-//TODO remove?  Set(isMonic, True);
-//TODO remove?  If(Abs(testpoly[Length(testpoly)]) != 1,Set(isMonic,False));
-
-
-//Echo("testpoly = ",testpoly);
-
-  // resulting factors will be stored here
-  Set(list,{});
-
-  // Start off with the seeds for factoring
-  If(IsZeroVector(Mkd(testpoly,{0,1},2)[2]),Set(list,{0,1}:list));
-  If(IsZeroVector(Mkd(testpoly,{1,1},2)[2]),Set(list,{1,1}:list));
-  If(IsZeroVector(Mkd(testpoly,{1,0},2)[2]),Set(list,{1,0}:list));
-  If(IsZeroVector(Mkd(testpoly,{0,0},2)[2]),Set(list,{0,0}:list));
-
-//Echo("initial list = ",list);
-
-  Set(p,2);
-  Set(nrroots,Length(poly)-1);
-
-  While(nrroots>0 And Length(list)>0)
+    if ((n&1) = 1)
   [
-    Local(pp);
-    Set(pp,(2*p));
-//    Set(pp,NextPrime(2*p));
-//    Set(pp,NextPrime(p));
-
-    // check if any of the factors already divides the original polynomial
-    For(i:=1,i<=Length(list),i++)
-    [
-      Local(lst1);
-
-      TryFact({-p+list[i][1],list[i][2]});
-      TryFact({list[i][1],list[i][2]});
-
-/*TODO remove?
-      If(Not(isMonic),
-      [
-        TryFact({-p+list[i][1],p+list[i][2]});
-        TryFact({list[i][1],p+list[i][2]});
-      ]);
-*/
+      result := Mod(result*x,m);
     ];
-
-    // Given the partial solutions so far (potential roots modulo p), determine
-    // new roots up to modulo 2*p. This step essentially adds one binary bit
-    // to the potential solutions and checks if they are still a solution.
-    Set(newlist,{});
-
-//Echo("testpoly is ",testpoly);
-
-    For(i:=1,i<=Length(list),i++)
-    [
-      If(Not(list[i] = {1,0} And p>leadingcoef),
-      [
-
-/*
-If(p=2 And list[i] = {1,1},
-[
-  Echo("GOT ",list[i]," ",p," ",pp," ",Mkd(testpoly,{(list[i][1]),list[i][2]+p},pp));
-]);
-If(p=4 And list[i] = {0,1},
-[
-  Echo("GOT ",lowestcoef,list[i]," ",p," ",pp," ",Mkd(testpoly,{(list[i][1]+p),list[i][2]},pp));
-]);
-*/
-        If(p<=lowestcoef And IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]},pp)[2]),
-	  		  Set(newlist,{(list[i][1]+p),list[i][2]}:newlist));
-        If(IsZeroVector(Mkd(testpoly,{(list[i][1]),list[i][2]},pp)[2]),
-			    Set(newlist,{(list[i][1]),list[i][2]}:newlist));
-      ]);
-/*TODO remove?
-      If(Not(isMonic),
-      [
-        If(p<=lowestcoef And IsZeroVector(Mkd(testpoly,{(list[i][1]+p),list[i][2]+p},pp)[2]),
-          Set(newlist,{(list[i][1]+p),list[i][2]+p}:newlist));
-        If(IsZeroVector(Mkd(testpoly,{(list[i][1]),list[i][2]+p},pp)[2]),
-          Set(newlist,{(list[i][1]),list[i][2]+p}:newlist));
-      ]);
-*/
-    ];
-
-    Set(newlist,RemoveDuplicates(newlist));
-
-    // We now have a new set of potential roots, modulo 2*p
-    Set(list,newlist);
-
-    Set(p,2*p);
-
-//Echo("Solutions modulo ",p," with ",Length(list),"potential solutions",list);
-//Echo("     with current result ",result);
-//Echo("testpoly is ",testpoly);
+    x := Mod(x*x,m);
+    n := n>>1;
   ];
-
-  // If the polynom is not one, it is a polynomial which is not reducible any further
-  // with this algorithm, return as is.
-
-//Echo("andiv = ",andiv," an = ",an);
-  Set(poly,poly*an^(0 .. (Length(poly)-1)));
-  Set(poly,anmul*poly/(unrat * andiv ));
-  If(poly != {1},Set(result,{Mkpc(poly),1}:result));
-
   result;
 ];
-
-
-/* TryFact is an utility macro used in SimpleFactors. For a polynomial
-'poly'
-   for which the square-free part is 'testpoly', it determines if the
-'root'
-   passed in is a root. If so, it is added to the list of results, and the
-   macro determines the multiplicity based on 'poly'. The factor (x-root)
-is
-   then divided out of the polynomials.
- */
-Macro(TryFact,{root})
-[
-  If((@root)[2] != 0,
-  [
-    Set(lst1,Mkd(testpoly,(@root),Infinity));
-    If(IsZeroVector(lst1[2]),
-      [
-//Echo("testpoly1 ",testpoly);
-        Set(testpoly,lst1[1]);
-//Echo("testpoly2 ",testpoly);
-        Set(lst1,Mkd(poly,(@root),Infinity));
-        Local(count);
-        Set(count,0);
-        While(IsZeroVector(lst1[2]))
-        [
-          count++;
-          Set(poly,lst1[1]);
-          Set(lst1,Mkd(poly,(@root),Infinity));
-          nrroots--;
-        ];
-        Local(lgcd,lc);
-        Set(lgcd,Gcd({andiv,an*(@root)[2],(@root)[1]}));
-        Set(lc,Div(an*(@root)[2],lgcd));
-        Set(result,{x+Div((@root)[1],lgcd)/lc,count}:result);
-        Set(andiv,Div(andiv,lgcd^count));
-        Set(anmul,anmul*lc^count);
-      ]
-    );
-  ]);
-];
-
-Mkmonic(poly):=
-[
-  Local(lc);
-  lc:=poly[Length(poly)];
-  poly*(lc^((Length(poly)-2) .. -1));
-];
-
 nthroot(x,n):=
 [
   Local(s,t,g,p,l,ln,pp);
@@ -410,8 +350,5 @@ nthroot(x,n):=
   ];
   g;
 ];
-
-
-
-];
+*/
 

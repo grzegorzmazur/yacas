@@ -753,6 +753,7 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
   ANumber a2(BITS_TO_DIGITS(aPrecision,10));
   a2.CopyFrom(*aY.iNumber);
 	::Add(*iNumber, a1, a2);
+  iNumber->SetPrecision(aPrecision);
 }
 void BigNumber::Negate(const BigNumber& aX)
 {
