@@ -372,14 +372,13 @@ numerical computation:
 $$ (Sqrt(Pi)/(2*z))*Erf(z) = 1-z^2/3+z^4/(2! *5)- ... + (-z^2)^n/((2*n+1)*n!)+O(z^(2*n+1))$$
 *	2. The Taylor series for a slightly modified function,
 $$ (Sqrt(Pi)/2)*(e^(z^2)/z)*Erf(z) = 1+(2*z^2)/3+... + (2*z^2)^n/(2*n+1)!! + O(z^(2*n+1))$$.
-*	3. Asymptotic expansion at $z=Infinity$:
-$$ Erf(z) = 1 - e^(-z^2)/(z*Sqrt(Pi))*(1-1/(2*z^2) + ... + (2*n-1)!! /(-2*z^2)^n+...) $$.
-*	4. Continued fraction due to ...:
-$$ Erf(z) = ... $$
-*	5. Continued fraction due to ...:
-$$ Erf(z) = ... $$.
-
-*REM FIXME to be filled in
+*	3. Asymptotic expansion of $Erfc(z)$ at $z=Infinity$:
+$$ Erfc(z) = e^(-z^2)/(z*Sqrt(Pi))*(1-1/(2*z^2) + ... + (2*n-1)!! /(-2*z^2)^n+...) $$.
+*	4. Continued fraction expansion due to Laplace:
+$$ (Sqrt(Pi)/2)*z*e^(z^2)*Erfc(z) = z/(z+1/2/(z+1/(z+3/2/(z+...)))) $$
+The continued fraction on the RHS of the above equation can be rewritten equivalently as
+$$ 1/(1+v/(1+2*v/(1+3*v/(1+...)))) $$
+if we define $v:=(2*z^2)^(-1)$.
 
 Here we shall analyze the convergence and precision of these methods and show
 which one has to be chosen to compute $Erf(z)$ with (relative) precision $P$
