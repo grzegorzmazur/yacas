@@ -492,8 +492,11 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                 left = &subList->Get()->Next();
             }
 
-            if (iPrecedence < op->iPrecedence)
+            if (iPrecedence < op->iPrecedence){
                 WriteToken(aOutput,"(");
+            }else{
+                WriteToken(aOutput," ");
+            }
             if (left)
                 Print(*left, aOutput,op->iLeftPrecedence);
             WriteToken(aOutput,string->String());
