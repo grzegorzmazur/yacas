@@ -86,13 +86,13 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
   	return;
   }
 	// decide whether the string is an integer or a float
-  if (strchr(aString, '.') || aBase<=10 && (strchr(aString, 'e') || strchr(aString,'E')) || strchr(aString, '@'))
+  if (strchr(aString, '.') || aBase<=BASE10 && (strchr(aString, 'e') || strchr(aString,'E')) || strchr(aString, '@'))
   {	// converting to a float
 	// estimate the number of bits we need to have
 	  // find the first significant digit:
 	  LispInt digit1 = strspn(aString, ".-0");	// initial zeros are not significant
 	 // find the number of significant base digits (sig_digits)
-	  LispInt sig_digits = strcspn(aString+digit1, (aBase<=10) ? "-eE@" : "-@"); // trailing zeros and . *are* significant, do not include them in the sets
+	  LispInt sig_digits = strcspn(aString+digit1, (aBase<=BASE10) ? "-eE@" : "-@"); // trailing zeros and . *are* significant, do not include them in the sets
 	  if (sig_digits<=0)
 	  {	// this is when we have "0." in various forms
 		  sig_digits=1;
@@ -254,7 +254,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 		
 		// now print the exponent: either "e" or "@" and then the long integer
 		LispInt mantissa_size = strlen(offset);
-		offset[mantissa_size] = (aBase<=10) ? 'e' : '@';	// one character there, start exponent at offset size+1. Printing as per GMP instructions.
+		offset[mantissa_size] = (aBase<=BASE10) ? 'e' : '@';	// one character there, start exponent at offset size+1. Printing as per GMP instructions.
 		// compute the total exponent
 		BigInt exp_total;
 		exp_total.SetTo((LispInt)exp_small);
@@ -1028,7 +1028,7 @@ const double log2_table[log2_table_size] =
 // table look-up of small integer logarithms, for converting the number of digits to binary and back
 double log2_table_lookup(unsigned n)
 {
-		if (n<=log2_table_size && n>=1)
+		if (n<=log2_table_size && n>=BASE2)
 			return log2_table[n-1];
 		else
 		{
@@ -1072,7 +1072,7 @@ const RationalFrac log2_table_linv[log2_table_size] =
 // need lookup of both Ln(n)/Ln(2) and of Ln(2)/Ln(n)
 const RationalFrac& log2_table_lookup(const RationalFrac* table, unsigned n)
 {
-	if (n<=log2_table_size && n>=2)
+	if (n<=log2_table_size && n>=BASE2)
 		return table[n-1];
 	else
 	{
