@@ -147,6 +147,46 @@ to show 'input = output'.
 
 *SEE PrettyForm
 
+*CMD TeXForm --- export expressions to $LaTeX$
+*STD
+*CALL
+	TeXForm(expr)
+
+*PARMS
+
+expr -- an expression to be exported
+
+*DESC
+
+{TeXForm()} returns a string containing a $LaTeX$ representation of the Yacas expression {expr}. Currently the exporter handles most expression types but not all.
+
+*EG
+
+	In> TeXForm(Sin(a1)+2*Cos(b1))
+	Out> "$\sin a_{1} + 2 \cos b_{1}$";
+
+*SEE PrettyForm, CForm, ShowPS
+
+*CMD CForm --- export expression to C code
+*STD
+*CALL
+	CForm(expr)
+	
+*PARMS
+
+{expr} -- expression to be exported
+
+*DESC
+
+{CForm()} returns a string containing a C/C++ code implementing the Yacas expression {expr}. Currently the exporter handles most expression types but not all.
+
+*EG
+
+	In> CForm(Sin(a1)+2*Cos(b1));
+	Out> "sin(a1) + 2 * cos(b1)";
+
+*SEE PrettyForm, TeXForm
+
 *CMD Write --- Low-level printing routine
 *CORE
 *CALL
