@@ -1,10 +1,7 @@
-
-
 /* Tests on logic */
 
-
 /* Small theorem prover for propositional logic, based on the
- * resolution principle. 
+ * resolution principle.
  * Written by Ayal Pinkus
  * Version 0.1 initial implementation.
  *
@@ -16,8 +13,6 @@ CanProve(True  Or  a)                    <-- True
 CanProve(False  Or  a)                   <-- a
 CanProve(a  And   Not a)                      <-- False
 CanProve(a  Or b Or (a And b))                  <-- a Or b
-
-
  */
 
 RuleBase("=>",{a,b});
@@ -37,6 +32,13 @@ RuleBase("=>",{a,b});
 5  # LogicSimplify(False  Or  _x) <-- LogicSimplify(x);
 5  # LogicSimplify(_x  Or  True ) <-- True;
 5  # LogicSimplify(_x  Or  False) <-- LogicSimplify(x);
+
+6  # LogicSimplify(_x  Or  _x)       <-- LogicSimplify(x);
+6  # LogicSimplify(_x  And  _x)      <-- LogicSimplify(x);
+6  # LogicSimplify(_x  Or Not (_x))  <-- True;
+6  # LogicSimplify(Not (_x)  Or _x)  <-- True;
+6  # LogicSimplify(_x  And Not (_x)) <-- False;
+6  # LogicSimplify(Not (_x)  And _x) <-- False;
 
 10 # LogicSimplify( Not ( Not  (_x))) <-- LogicSimplify(x);        /* eliminate double negation */
 20 # LogicSimplify((_x)=>(_y)) <-- LogicSimplify( Not x  Or  y);      /* eliminate implication */
@@ -101,11 +103,11 @@ CanProveAux(_proposition) <--
   ForEach(item,clauses)
   [
     result:= result And UnFlatten(item,"Or",False);
-  ];      
+  ];
 
   /* Second pass: simplify the resulting expression */
 
-  LogicSimplify(result); 
+  LogicSimplify(result);
 ];
 
 /* CanProve tries to prove that the negation of the negation of
@@ -117,7 +119,7 @@ CanProve(_proposition) <-- CanProveAux( Not CanProveAux( Not proposition));
 /* LogicRemoveTautologies scans a list representing e1 Or e2 Or ... to find
    if there are elements p and  Not p in the list. This signifies p Or   Not p,
    which is always true. These are removed. Another function that is used
-   is RemoveDuplicates, which converts p Or p into p. 
+   is RemoveDuplicates, which converts p Or p into p.
  */
 LogicRemoveTautologies(_e)<--
 [
@@ -183,7 +185,7 @@ If(i>=tocombine,Echo({"WRONG!!!"}));
                list:={{}};
                i:=Length(list)+1;
               ],
-              i:=0); 
+              i:=0);
            redo:=True;
          ]
         );
@@ -191,5 +193,3 @@ If(i>=tocombine,Echo({"WRONG!!!"}));
   ];
   list;
 ];
-
-
