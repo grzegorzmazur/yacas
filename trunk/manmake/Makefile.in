@@ -72,7 +72,7 @@ scriptdir = @scriptdir@
 
 noinst_PROGRAMS = manmake
 manmake_SOURCES = manmake.cc
-EXTRA_DIST = README mangen test.txt
+EXTRA_DIST = README mangen test.txt txt2yacasdoc.pl
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 

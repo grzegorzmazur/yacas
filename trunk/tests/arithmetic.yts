@@ -40,7 +40,7 @@ Verify((4+2)*3,18);
 
 Verify(15/5,3);
 
- Verify(-2+3,1);
+Verify(-2+3,1);
 Verify(-2.01+3.01,1);
 
 Verify(0+a,a);
@@ -67,4 +67,20 @@ Verify(Round(-1.51),-2);
 Testing("Bases");
 Verify(ToBase(16,255),ff);
 Verify(FromBase(2,100),4);
+
+LocalSymbols(f,ft)
+[
+  f(x,y):=(Div(x,y)*y+Rem(x,y)-x);
+  ft(x,y):=
+  [
+    Verify(f(x,y),0);
+    Verify(f(-x,y),0);
+    Verify(f(x,-y),0);
+    Verify(f(-x,-y),0);
+  ];
+  ft(10,4);
+  ft(2.5,1.2);
+];
+
+
 

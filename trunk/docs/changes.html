@@ -22,7 +22,14 @@
         In> Integrate(x,0,1)1-x^a;
 	Out> 1-1/(a+1)+0^(a+1)/(a+1);
 	In> Simplify(%);
-       never halted 
+       never halted
+  <li> Small speed improvements in arithmetic operations
+  <li> Bug fix: Div(x,y)*y+Rem(x,y) did not always evaluate to x,
+       when either x or y was negative.
+  <li> Bug fix: Mod(x,y) is now undefined if y is less than zero.
+  <li> Added txt2yacasdoc.pl supplied by Serge
+  <li> Introduced an "essays" directory meant as repository for
+       essays on using Yacas.
 </ul>
 
 
