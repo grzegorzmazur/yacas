@@ -295,6 +295,14 @@ IntFunc(x,ArcCos(_x),x*ArcCos(x) - Sqrt(1-x^2) );
 IntFunc(x,ArcSec(_x),x*ArcSec(x) - Ln(x + Sqrt(x^2 - 1)) );
 IntFunc(x,ArcCsc(_x),x*ArcCsc(x) + Ln(x + Sqrt(x^2 - 1) ));
 
+IntFunc(x,ArcTanH(_x),x*ArcTanH(x) + Ln(1-x^2)/2 );
+IntFunc(x,ArcSinH(_x),x*ArcSinH(x) - Sqrt(x^2 + 1) );
+IntFunc(x,ArcCosH(_x),x*ArcCosH(x) - Sqrt(x-1)*Sqrt(x+1) );
+IntFunc(x,ArcSecH(_x),x*ArcSecH(x)-ArcTan(Sqrt(1/x-1)*Sqrt(1/x+1) ) );
+IntFunc(x,ArcCscH(_x),x*ArcCscH(x)+Ln(x+x*Sqrt(1+1/x^2)) );
+IntFunc(x,ArcCotH(_x),x*ArcCotH(x)+1/2*Ln(x^2-1) );
+
+
 // n^2 > x^2 
 IntFunc(x,num_IsFreeOf(var)/(-(_x)^2 + n_IsNumber),num*ArcTanH(x/Sqrt(n))/n);
 
