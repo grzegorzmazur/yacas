@@ -33,22 +33,26 @@ EXTRA_DIST = $(SCRIPTFILES) \
         addons/README addons/editvi.ys addons/editvi.ys.def addons/gnuplot.ys \
         addons/gnuplot.ys.def
 
+testscriptdir = ../scripts/
+yacastest = ../src/yacas -pc --rootdir $(testscriptdir)
+
 test:
-	../src/yacas -pc ../tests/arithmetic.yts
-	../src/yacas -pc ../tests/calculus.yts
-	../src/yacas -pc ../tests/canprove.yts
-	../src/yacas -pc ../tests/comments.yts
-	../src/yacas -pc ../tests/linalg.yts
-	../src/yacas -pc ../tests/lists.yts
-	../src/yacas -pc ../tests/logic_simplify_test.yts
-	../src/yacas -pc ../tests/poly.yts
-	../src/yacas -pc ../tests/predicates.yts
-	../src/yacas -pc ../tests/programming.yts
-	../src/yacas -pc ../tests/radsimp.yts
-	../src/yacas -pc ../tests/regress.yts
-	../src/yacas -pc ../tests/simplify.yts
-	../src/yacas -pc ../tests/solve.yts
-	../src/yacas -pc ../tests/sums.yts
-	../src/yacas -pc ../tests/tensors.yts
-	../src/yacas -pc ../tests/c_tex_form.yts
-	../src/yacas -pc ../tests/orthopoly.yts
+	$(yacastest) ../tests/arithmetic.yts
+	$(yacastest) ../tests/calculus.yts
+	$(yacastest) ../tests/canprove.yts
+	$(yacastest) ../tests/comments.yts
+	$(yacastest) ../tests/linalg.yts
+	$(yacastest) ../tests/lists.yts
+	$(yacastest) ../tests/logic_simplify_test.yts
+	$(yacastest) ../tests/poly.yts
+	$(yacastest) ../tests/predicates.yts
+	$(yacastest) ../tests/programming.yts
+	$(yacastest) ../tests/radsimp.yts
+	$(yacastest) ../tests/regress.yts
+	$(yacastest) ../tests/simplify.yts
+	$(yacastest) ../tests/solve.yts
+	$(yacastest) ../tests/sums.yts
+	$(yacastest) ../tests/tensors.yts
+	$(yacastest) ../tests/c_tex_form.yts
+	$(yacastest) ../tests/numerics.yts
+	$(yacastest) ../tests/orthopoly.yts

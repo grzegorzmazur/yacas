@@ -297,7 +297,7 @@ destroyed. This means that any variable bound to \"list\" will now be
 bound to the reversed list. The reversed list is also returned.
 <p> </p>
 Destructive commands are faster than their nondestructive
-counterparts. Stangely, there is no nondestructive command to reverse
+counterparts. Strangely, there is no nondestructive command to reverse
 a list. Use ":HtmlTerm("FlatCopy"):" and
 ":HtmlTerm("DestructiveReverse"):" to achieve this.";
 
@@ -1455,7 +1455,7 @@ Out> \"*\";
 In> Type(123);
 Out> \"\";");
 
-Topical() "See Alsi";
+Topical() "See Also";
 SeeAlso({"IsAtom", "NrArgs"});
 
 
@@ -1520,6 +1520,33 @@ Out> {-2,1,4,7,23,53};
 In> BubbleSort({4,7,23,53,-2,1}, \">\");
 Out> {53,23,7,4,1,-2};");
 
+
+CmdDescription("PrintList", "print list with padding");
+StandardLib();
+Topical()"Calling Sequence";
+Text()"":HtmlTerm("PrintList"):"(list)
+":HtmlNewParagraph()
+
+:"":HtmlTerm("PrintList"):"(list, padding);
+":HtmlNewParagraph()
+
+;Topical()"Parameters";
+Text()"":HtmlTerm("list"):" -- a list to be printed
+":HtmlTerm("padding"):" -- (optional) a string
+":HtmlNewParagraph()
+
+;Topical()"Description";
+Text()"Prints ":HtmlTerm("list"):" and inserts the ":HtmlTerm("padding"):" string between each pair of items of the list. Items of the list which are strings are printed without quotes, unlike ":HtmlTerm("Write()"):". Items of the list which are themselves lists are printed inside braces ":HtmlTerm("{}"):". If padding is not specified, a standard one is used (comma, space).
+":HtmlNewParagraph()
+
+;Topical()"Examples";
+Text()"":HtmlCommand("
+In> PrintList({a,b,{c, d}}, \" .. \")
+Out> \" a ..  b .. { c ..  d}\";
+"):HtmlNewParagraph()
+
+;Topical()"See also";
+SeeAlso({"Write", "WriteString"});
 
 
 CmdDescription("Table", "Evaluate while some variable ranges over interval");

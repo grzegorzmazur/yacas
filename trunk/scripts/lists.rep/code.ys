@@ -367,7 +367,16 @@ Partition(lst, len):=
         	Concat( {Take(lst,len)}, Partition(Drop(lst,len), len) ));
 
 
+/* Print a list using a padding string */
 
-
+10 # PrintList(list_IsList) <-- PrintList(list, ", ");
+10 # PrintList({}, padding_IsString) <-- "";
+20 # PrintList(list_IsList, padding_IsString) <-- ToString() [
+	Local(i);
+	ForEach(i, list) [
+		If(Not(Equals(i, Head(list))), WriteString(padding));
+		If (IsString(i), WriteString(i), If(IsList(i), WriteString("{" : PrintList(i, padding) : "}"), Write(i)));
+	];
+];
 
 

@@ -67,7 +67,7 @@ TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv "}, {
 100 # TeXForm(_x + _y, _p) <-- TeXFormBracketIf(p<OpPrecedence("+"), ConcatStrings(TeXForm(x, OpLeftPrecedence("+")), " + ", TeXForm(y, OpRightPrecedence("+")) ) );
 	*/
 
-	/* almost all binary ops here */
+	/* generic binary ops here */
 120 # TeXForm(expr_IsFunction, _p)_(NrArgs(expr)=2 And IsInfix(Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence(Type(expr)), ConcatStrings(TeXForm(Listify(expr)[2], OpLeftPrecedence(Type(expr))), TeXFormTeXify(Type(expr)), TeXForm(Listify(expr)[3], OpRightPrecedence(Type(expr))) ) );
 
 TeXFormRegularPrefixOps := { {"+"," + "}, {"-"," - "}, {"Not"," \\neg "} };
@@ -76,8 +76,17 @@ TeXFormRegularPrefixOps := { {"+"," + "}, {"-"," - "}, {"Not"," \\neg "} };
 	Note that OpRightPrecedence needs to be defined for prefix ops or else we won't be able to tell combined prefix/infix ops like "-" from strictly prefix ops.
 	*/
 
-	/* almost all unary ops here */
-120 # TeXForm(expr_IsFunction, _p)_(NrArgs(expr)=1 And IsPrefix(Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence(Type(expr)), ConcatStrings(TeXFormTeXify(Type(expr)), TeXForm(Listify(expr)[2], OpRightPrecedence(Type(expr))) ) );
+	/* generic unary ops here */
+	/* prefix */
+120 # TeXForm(expr_IsFunction, _p)_(NrArgs(expr)=1 And IsPrefix(Type(expr))) <-- TeXFormBracketIf(p<OpRightPrecedence(Type(expr)), ConcatStrings(
+	TeXFormTeXify(Type(expr)),
+	TeXForm(Listify(expr)[2], OpRightPrecedence(Type(expr)))
+) );
+	/* postfix */
+120 # TeXForm(expr_IsFunction, _p)_(NrArgs(expr)=1 And IsPostfix(Type(expr))) <-- TeXFormBracketIf(p<OpLeftPrecedence(Type(expr)), ConcatStrings(
+	TeXForm(Listify(expr)[2], OpLeftPrecedence(Type(expr))),
+	TeXFormTeXify(Type(expr))
+) );
 
 	/* division and its operands are never bracketed */
 100 # TeXForm(_x / _y, _p) <-- ConcatStrings("\\frac{", TeXForm(x, TeXFormMaxPrec), "}{", TeXForm(y, TeXFormMaxPrec), "} ");
@@ -89,7 +98,7 @@ TeXFormRegularPrefixOps := { {"+"," + "}, {"-"," - "}, {"Not"," \\neg "} };
 
 /* functions */
 
-	/* Unknown function, precedence 200. Leave as is, never bracket the function itself and bracket the argument(s) automatically since it's a list. Other functions are precedence 100 */
+	/* Unknown function: precedence 200. Leave as is, never bracket the function itself and bracket the argument(s) automatically since it's a list. Other functions are precedence 100 */
 
 TeXFormGreekLetters := {"Gamma", "Delta", "Theta", "Lambda", "Xi", "Pi", "Sigma", "Upsilon", "Phi", "Psi", "Omega", "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu", "nu", "xi", "pi", "rho", "sigma", "tau", "upsilon", "phi", "chi", "psi", "omega", "varpi", "varrho", "varsigma", "varphi", "varepsilon"};
 
@@ -111,16 +120,16 @@ Function ("TeXFormTeXify", {string})
 	If (Contains(AssocIndices(TeXFormRegularOps), string), TeXFormRegularOps[string],
 	If (Contains(AssocIndices(TeXFormRegularPrefixOps), string), TeXFormRegularPrefixOps[string],
 	If (Length(string) >= 2 And IsNumber(Atom(StringMid(2, Length(string)-1, string))), ConcatStrings(StringMid(1,1,string), "_{", StringMid(2, Length(string)-1, string), "}"),
-	If (Length(string) > 2, ConcatStrings("\\mathrm{", string, "}"),
+	If (Length(string) > 2, ConcatStrings("\\mathrm{ ", string, " }"),
 	string
 	))))));
 ];
 
 /* */
 
-/* Unknown bodied function - wait until we have IsBodiedFunction() and OpPrecedence() working on bodied functions */
-/*
-200 # TeXForm(x_IsBodiedFunction, _p) <-- [
+/* Unknown bodied function */
+
+200 # TeXForm(x_IsFunction, _p) _ (IsBodied(Type(x))) <-- [
 	Local(func, args, last'arg);
 	func := Type(x);
 	args := Tail(Listify(x));
@@ -129,7 +138,7 @@ Function ("TeXFormTeXify", {string})
 	  TeXFormTeXify(func), TeXForm(args, TeXFormMaxPrec),  TeXForm(last'arg, OpPrecedence(func))
 	));
 ];
-*/
+
 /* Unknown infix function : already done above
 210 # TeXForm(x_IsFunction, _p)_(IsInfix(Type(x))) <-- ConcatStrings(TeXFormTeXify(Type(x)), TeXForm(Tail(Listify(x)), TeXFormMaxPrec) );
 */
