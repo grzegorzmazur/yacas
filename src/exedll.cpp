@@ -32,7 +32,7 @@ static const ExeDllEntry exeDllentries[] =
 
 ExePluginMaker FindExePlugin(char* aName)
 {
-  LISPASSERT(IsValid());
+
   LispInt low=0, high=sizeof(exeDllentries)/sizeof(ExeDllEntry);
   LispInt mid;
   for(;;)
