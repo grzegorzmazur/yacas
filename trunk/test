@@ -1,4 +1,38 @@
 
+Use("odesolver");
+Use("univar");
+
+OdeTaylorSolve(e,nr,init) := 
+[
+  Local(r,first,ar,len);
+  e:=OdeNormalForm(e);
+  e:=OdeFlatTerm(OdeCoefList(e));
+
+  first := e[1];
+  ar := e[2];
+  DropEndZeroes(ar);
+  len := Length(ar);
+
+  r:=FlatCopy(init);
+  While(Length(r)<len-1+first) DestructiveAppend(r,UniqueConstant());
+  r:= Concat(r,FillList(0,nr-(len-1+first)));
+
+  For(n:=first+len,n<=nr,n++)
+  [
+    Local(fact);
+    fact := 1/(ar[len]);
+    r[n] := 0;
+    For(i:=1,i<len,i++)
+    [
+      fact := fact/(n-i);
+      r[n] := r[n] - ar[len-i]*r[n-i]*fact;
+    ];
+  ];
+  Sum(r*x^(0 .. (nr-1)));
+];
+
+EndOfFile;
+
 
 /* Sparse multinomial representation */
 RuleBase("MultiNomial",{vars,terms});

@@ -1024,19 +1024,28 @@ AddAnchor("Limit");
 SubSection()"Limit";
 StandardLib();
 Topical()"Calling Sequence";
-Text()"Limit(variable,value) expression";
+Text()"
+Limit(variable,value) expression <br>
+Limit(variable,value,direction) expression
+";
 
 Topical()"Parameters";
 Text()
 "variable - a variable <br>
 value - a number <br>
+direction - a direction (Left or Right) <br>
 expression - an expression";
 
 Topical()"Description";
 Text()
 "Determine the
 value \"expression\" converges to when \"variable\"
-goes to \"value\" from positive infinity.";
+goes to \"value\". <p>
+
+You can also specify a direction for the limit, Left or Right.
+Specifying Right will take the limit from positive Infinity, and
+Left will take the limit from -Infinity.
+";
 
 Topical()"Examples";
 Text()
@@ -1045,6 +1054,12 @@ HtmlCommand(
 Out> 1;
 In> Limit(x,0) (Sin(x)-Tan(x))/(x^3)
 Out> -1/2;
+In> Limit(x,0)1/x
+Out> Undefined;
+In> Limit(x,0,Left)1/x
+Out> -Infinity;
+In> Limit(x,0,Right)1/x
+Out> Infinity;
 ");
 
 

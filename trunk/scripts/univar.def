@@ -19,4 +19,5 @@ RandomPoly
 BigOh
 Horner
 DivPoly
+DropEndZeroes
 }
