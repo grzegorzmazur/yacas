@@ -225,7 +225,7 @@ private:
   { /// bit masks: KExpFloat includes KFloat.
 	  KInt = 1,
 	  KFloat = 2,
-	  KExpFloat = 6,
+	  KExpFloat = 6
   };
   mpz_t int_;	// these two are not in a union
   mpf_t float_;	// because we want to avoid excessive memory reallocation.

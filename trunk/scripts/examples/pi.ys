@@ -16,12 +16,13 @@ PiMethod0() := [
 	For(k:=0, curprec < prec1, k:=k+1) [
 		curprec := Min(prec1, curprec * 3);
 		Precision(curprec);
-//		Echo({"Iteration ", k, " setting precision to ", curprec});
-		result := MathAdd(result, MathSin(result));
+		Echo({"Iteration ", k, " setting precision to ", curprec});
+		result := Time(MathAdd(result, MathSin(result)));
 	];
 	// last iteration -- do by hand
 	Precision(prec);	// restore full precision
-	result := MathAdd(result, MathSin(result));
+	Echo("Iteration ", k, " setting precision to ", GetPrecision());
+	result := Time(MathAdd(result, MathSin(result)));
 	Echo({"variable precision Newton's method: ", k, "iterations"}); 
 	result;
 ];
@@ -38,27 +39,29 @@ final result. This makes method1 the fastest for Yacas internal math. */
 PiMethod1() := [
 	Local(result, delta, deltasq, k, Epsilon, prec, curprec);
 	prec := GetPrecision();
-
+	GlobalPush(Numeric);
+	Numeric := True;
 	/* initial approximation */
-	result := 3.14159265358979323846;
 	curprec := 20;
 	Precision(curprec);
+	result := 3.14159265358979323846;
 	/* right now we do all but the last iteration using the 8th order scheme, and the last iteration is done using the 2nd order scheme. However it would be faster to use a very high-order scheme first, then a smaller-order scheme, etc., because it's faster to do multiplications at low precision.
 	*/
 	For(k:=0, curprec*3 < prec, k := k+1) [
-		curprec := Min(Ceil(N(prec/3)), curprec * 9);
+		curprec := Min(Ceil((prec/3)), curprec * 9);
 		Precision(curprec);
-//		Echo({"Iteration ", k, " setting precision to ", curprec});
+		Echo("Iteration ", k, " setting precision to ", GetPrecision());
 		delta := MathSin(result);
-		deltasq := N(delta*delta);
-		result := N(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*5/112))));
+		deltasq := (delta*delta);
+		result := Time(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*5/112))));
 	];
 	// now do the last iteration
 	Precision(prec);
 	k := k+1;
-//	Echo({"last iteration, precision ", prec});
-	result := MathAdd(result, MathSin(result));
+	Echo("Iteration ", k, " setting precision to ", GetPrecision());
+	result := Time(MathAdd(result, MathSin(result)));
 	Echo({"8th order Newton's method: ", k, "iterations"}); 
+	Numeric := GlobalPop();
 	result;
 ];
 
@@ -68,20 +71,25 @@ PiMethod1() := [
 
 PiMethod2() := [
 	Local(result, delta, tansq, k, Epsilon);
-	Epsilon := N(2*10 ^ (-GetPrecision()));
+	GlobalPush(Numeric);
+	Numeric := True;
+	Epsilon := (2*10 ^ (-GetPrecision()));
 
 	/* initial approximation */
 	result := 3.141592653589793;
-	delta := N(-Tan(result));
-	tansq := N(delta^2);
+	delta := (-Tan(result));
+	tansq := (delta^2);
 	k := 0;
 	
 	While(Abs(delta) > Epsilon) [
-		result := N(result + delta/(2*k+1));
-		delta := N(-delta * tansq);
+//		Echo(result);
+		result := (result + delta/(2*k+1));
+//		Echo(delta, k);
+		delta := (-delta * tansq);
 		k := k+1;
 	];
-	Echo({"Brute force method 2: ", k, "iterations"}); 
+	Echo({"Brute force method 2 (ArcTan series): ", k, "iterations"}); 
+	Numeric := GlobalPop();
 	result;
 ];
 
@@ -134,4 +142,51 @@ PiBorwein() := [
 	Echo({"Borwein's quartic algorithm: ", k, "iterations"}); 
 	result;
 ];
+
+// iterate x := x + Cos(x) + 1/6 *Cos(x)^3 + ... to converge to x=Pi/2
+PiMethod3() :=
+[
+	Local(result, delta, deltasq, k, order, prec, curprec);
+	order := 13;	// order of approximation
+	prec := GetPrecision();
+	GlobalPush(Numeric);
+	Numeric := True;
+	/* initial approximation */
+	curprec := 20;
+	Precision(curprec);
+	result := 3.14159265358979323846*0.5;
+	// find optimal initial precision
+	For(k:=prec, k>=curprec, k:=Div(k,order)+2) True;
+	If(k<5, curprec:=5, curprec:=k);
+//	Echo("initial precision", curprec);
+	// now k is the iteration counter
+	For(k:=0, curprec < prec, k := k+1) [
+	// at this iteration we know the result to curprec digits
+		curprec := Min(prec, curprec * order-2);	// 2 guard digits
+		Precision(curprec+2);
+		Echo("Iteration ", k, " setting precision to ", GetPrecision());
+//		Echo("old result=", MathCos(result));
+		Time([
+		delta := MathCos(result);
+		]);
+		Time([
+		deltasq := MathMultiply(delta,delta);
+		]);
+		result := Time(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*(5/112 + deltasq*(35/1152 + (deltasq*63)/2816))))));
+	];
+	Echo({"Method 3, using Pi/2 and order", order, ":", k, "iterations"});
+	Numeric := GlobalPop();
+	result*2;
+];
+
+BenchmarkPi(prec) :=
+[
+	Local(result);
+	GlobalPush(GetPrecision());
+	Precision(prec);
 	
+	result := {Time(MathPi()), Time(PiMethod0()), Time(PiMethod1()), Time(PiMethod2()),  Time(PiMethod3()),  Time(PiMethod4()), Time(PiBrentSalamin()), Time(PiBorwein()),};
+	result := N(Sin(result));
+	Precision(GlobalPop());
+	result;
+];
