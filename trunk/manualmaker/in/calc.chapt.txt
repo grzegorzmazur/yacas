@@ -404,6 +404,32 @@ argument of 0 is {Undefined}.
 
 *SEE Abs, Sign
 
+*CMD RootsOfUnity --- return the $n$ roots of unity (1)
+*STD
+*CALL
+	RootsOfUnity(n)
+
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+This function returns the $n$ roots of unity in an $n$-dimensional vector. The first
+element of this vector is the primitive $n$-th root of unity, and the last element will
+be simply {1}.
+
+*E.G.
+	In> RootsOfUnity(3)
+	Out> {Complex(-1/2,Sqrt(3/4)),Complex(-1/2,-Sqrt(3/4)),1};
+	In> RootsOfUnity(1)
+	Out> {1};
+	In> RootsOfUnity(2)
+	Out> {-1,1};
+
+*SEE I, Complex 
+
+
 *CMD !, !!, ***, Subfactorial  --- factorial and related functions
 *STD
 *CALL
