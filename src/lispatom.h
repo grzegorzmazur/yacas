@@ -143,11 +143,11 @@ class LispNumber : public LispObject
 {
 public:
     /// constructors:
-    /// construct from another number
+    /// construct from another LispNumber
     LispNumber(LispHashTable* aHashTable, BigNumber* aNumber,LispStringPtr aString);
-    /// construct from a BigNumber
+    /// construct from a BigNumber; the string representation will be absent
     LispNumber(LispHashTable& aHashTable, BigNumber* aNumber);
-    /// construct from a decimal string representation (also creates a number object) and assign aPrecision bits (not decimal digits!) 
+    /// construct from a decimal string representation (also create a number object) and use aPrecision bits (not decimal digits!) 
     LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt aPrecision);
     virtual ~LispNumber();
     virtual LispObject* Copy(LispInt aRecursed);
@@ -160,9 +160,9 @@ public:
 private:
     /// number object
     RefPtr<BigNumber> iNumber;
-    /// string representation in decimal?
+    /// string representation in decimal
     RefPtr<LispString> iString;
-    /// hash table pointer (what for?)
+    /// hash table pointer (for saving strings)
     LispHashTable* iHashTable;
 };
 
