@@ -207,3 +207,4 @@ For {Vi()} to be really useful, you need to start Yacas from the {scripts/} dire
 	Out> True;
 
 *SEE FindFunction
+
