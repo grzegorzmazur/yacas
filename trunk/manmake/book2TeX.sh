@@ -21,7 +21,8 @@ if [ -r "$1" ]; then
 	echo 'ToFile("'"$target"'") [ Use("'"$ourdir"'/book2TeX.ys"); Load("'"$1"'"); TeXFinishUp(); ];' | $yacas -f
 	if [ -s "$target" ]; then
 		echo "File '$target' was created."
-		#perl -e 'while(<>) { s/([%])/\\$1/g; print; }' < "$target" > "$target.tmp"
+		# replace right double quotes by left ones where possible
+		#perl -e 'while(<>) { s/ "/ ``/g; s/^"/``/; print; }' < "$target" > "$target.tmp"
 		#mv "$target.tmp" "$target"
 	else
 		echo "book2TeX: Some problem generating file '$target', aborted."
