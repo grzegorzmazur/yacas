@@ -429,7 +429,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
     LispPtr substedBody;
     {
       // declare a new local stack.
-      LispLocalFrame frame(aEnvironment,LispTrue);
+      LispLocalFrame frame(aEnvironment,LispFalse);
   
       // define the local variables.
       for (i=0;i<arity;i++)

@@ -82,9 +82,28 @@ always type '??', which should launch the help.
 To compile and install Proteus, the user interface for Yacas, please go
 into the proteus/ directory and read the readme there.
 
+D. COMPILING UNDER WINDOWS
+--------------------------
 
+To compile under Windows using MS Developer Studion, there is a 
+"compress.bat" batch file, located in the ramscripts\ directory. 
+This batch file creates:
 
-D. EXTRA INFORMATION
+	yacas.exe - the executable.
+	scripts.dat - a file with all the scripts compressed inside
+		it. The executable and is file need to be in the
+		same directory.
+	yacas.dll - a dynamic link library allowing you to embed
+		Yacas inside your own executable. It offers the 
+		interface defined by the src\cyacas.h file.
+		See the manual on the Yacas library.
+
+The Windows version is checked infrequently, so latest development
+releases might accidentally not compile. Please report if this is
+the case, or if you are willing to maintain the Windows (MS Dev)
+release, as it currently has no maintainer.
+
+E. EXTRA INFORMATION
 --------------------
 
 * As a bonus, I rolled a .spec file for Yacas. You can make RPM's! To
