@@ -1,10 +1,762 @@
 
 				Yacas programmer's function reference
 
-*INCLUDE prog.chapt
 
-*INCLUDE built.chapt
+			Programming
 
-*INCLUDE plugins.chapt
+*CMD	/*, */, // --- comments
+*CORE
+*CALL
+	/* comment */
+	// comment
 
-*INCLUDE generic.chapt
+*DESC
+Introduce a comment block in a source file, similar to C++ comments.
+{//} makes everything until the end of the line a comment, while {/*} and {*/} may delimit a multi-line comment.
+
+*E.G.
+	a+b; // get result
+	a + /* add them */ b;
+
+*CMD Prog, [, ] --- block of statements
+*CORE
+*CALL
+	Prog(statement1, statement2, ...)
+	[ statement1; statement2; ... ]
+
+*PARMS
+statement1, statement2 -- expressions
+
+*DESC
+
+The {Prog()} and the {[ ... ]} constuct have the same effect: they evaluate all
+arguments in order and return the result of the last evaluated expression.
+
+{Prog(a,b);} is the same as typing {[a;b;];} and is very useful for writing out
+function bodies. The {[...]} construct is a syntactically nicer version of the
+{Prog()} call; it is converted into {Prog(...)} during the parsing stage.
+
+
+
+*CMD Check --- report errors
+*CORE
+*CALL
+	Check(predicate,"error text")
+
+*PARMS
+predicate -- expression returning {True} o
+
+*DESC
+If {predicate} doesn't evaluate to "True",
+then current operation will be stopped, and execution
+will jump right back to the command line, showing
+{error text}. Use this to assure that some condition
+is met during evaluation of expressions (guarding
+against internal errors).
+
+*CMD Bodied, Infix, Postfix, Prefix --- define function syntax
+*CORE
+*CALL
+	Bodied("op", precedence)
+	Infix("op")
+	Infix("op", precedence)
+	Postfix("op")
+	Prefix("op")
+	Prefix("op", precedence)
+
+*PARMS
+"op" -- string, the name of a function
+precedence -- nonnegative integer (evaluated)
+
+*DESC
+Declares a function for the parser to understand as a bodied, infix, postfix, or prefix operator. Function name can be any string but meaningful usage would require it to be either made up entirely of letters or entirely of non-letter characters (such as "+", ":" etc.). Precedence can be specified (will be 0 by default).
+
+*E.G.
+	In> YY x := x+1;
+	CommandLine(1) : Error parsing expression
+	
+	In> Prefix("YY", 2)
+	Out> True;
+	In> YY x := x+1;
+	Out> True;
+	In> YY YY 2*3
+	Out> 12;
+	In> Infix("##", 5)
+	Out> True;
+	In> a ## b ## c
+	Out> a##b##c;
+
+*SEE IsBodied, OpPrecedence
+
+
+
+*CMD IsBodied, IsInfix, IsPostfix, IsPrefix --- Check for function syntax
+*CORE
+*CALL
+	IsBodied("op")
+	IsInfix("op")
+	IsPostfix("op")
+	IsPrefix("op")
+
+*PARMS
+"op" -- string, the name of a function
+
+*DESC
+Check whether the function with given name "op" has been declared as a "bodied", infix, postfix, or prefix operator, and  return {True} or {False}.
+
+*E.G.
+
+	In> IsInfix("+");
+	Out> True;
+	In> IsBodied("While");
+	Out> True;
+	In> IsBodied("Sin");
+	Out> False;
+
+*SEE Bodied, OpPrecedence
+
+*CMD OpPrecedence, OpLeftPrecedence, OpRightPrecedence --- get operator precedence
+*CORE
+*CALL
+	OpPrecedence("op")
+	OpLeftPrecedence("op")
+	OpRightPrecedence("op")
+
+*PARMS
+"op" -- string, the name of a function
+
+*DESC
+Returns the precedence of the function named "op" which should have been declared as a bodied function or an infix, postfix, or prefix operator. Generates an error message if the string str does not represent a type of function that can have precedence.
+
+For infix operators, right precedence can differ from left precedence. Bodied functions and prefix operators cannot have left precedence, while postfix operators cannot have right precedence; for these operators, there is only one value of precedence.
+
+*E.G.
+	In> OpPrecedence("+")
+	Out> 6;
+	In> OpLeftPrecedence("!")
+	Out> 0;
+
+
+
+*CMD RightAssociative -- declare associativity
+
+*CALL
+	RightAssociative("op")
+*PARMS
+"op" -- string, the name of a function
+
+makes the operator right-associative. Example:
+
+	RightAssociative("*")
+would make multiplication right-associative. Take care not to abuse
+this function, because the reverse, making an infix operator
+left-associative, is not implemented.
+
+*SEE OpPrecedence
+
+
+*CMD LeftPrecedence, RightPrecedence --- set operator precedence
+
+*CALL
+	LeftPrecedence("op",precedence)
+	RightPrecedence("op",precedence)
+
+*PARMS
+"op" -- string, the name of a function
+precedence -- nonnegative integer
+
+*DESC
+oper should be an infix operator. This function call tells the
+infix expression printer to bracket the left or right hand side of
+the expression if its precedence is larger than precedence.
+
+This functionality was required in order to display a-(b-c)
+correctly. a+b+c is the same as a+(b+c), but a-(b-c) is not
+the same as a-b-c.
+
+*CMD RuleBase --- define function name
+
+*CALL
+	RuleBase("operator",{params})
+
+*DESC
+Define a new rules table entry for a
+function "operator", with {params} as the parameter list.
+
+*CMD Rule --- define rule
+
+*CALL
+	Rule("operator", arity,
+	  precedence, predicate) body
+
+*DESC
+Define a rule for the function "operator" with
+"arity", "precedence", "predicate" and
+"body". "precedence" is checked from low to high.
+The arity for a rules database equals the number of arguments. Different
+rules data bases can be built for functions with the same name but with
+a different number of arguments.
+Rules with a low value will be tried before rules with a high value, so
+a rule with precedence 0 will be tried before a rule with precedence 1.
+
+*CMD HoldArg --- ...
+
+*CALL
+HoldArg("operator",parameter)
+
+*DESC
+Specify that parameter (which should be part of
+a parameter list for a function "operator") should
+not be evaluated before used. This will be
+declared for all arities of "operator", at the moment
+this function is called, so it is best called
+after all RuleBase calls for this operator.
+
+*CMD Retract --- ...
+
+*CALL
+Retract("operator",arity)
+
+Retract("operator",arity) : Remove a rulebase with some specific arity,
+if it exists at all.
+
+*CMD UnFence --- ...
+
+*CALL
+UnFence("operator",arity)
+
+*DESC
+UnFence("operator",arity) : When applied to a user function, the bodies
+defined for the rules for "operator" with given
+arity can see the local variables from the calling
+function. This is useful for defining macro-like
+procedures (looping and the such). The standard library functions {For} and {ForEach} use {UnFence()}.
+
+
+
+*CMD MacroSet, MacroClear, MacroLocal, MacroRuleBase, MacroRule --- manipulate symbols
+
+Same as their non-macro counterparts, except
+that their arguments are evaluated before
+the required action is performed. This is
+useful in macro-like procedures.
+
+*CMD Secure --- guard the host OS
+
+*CALL
+Secure(body)
+
+Secure evaluates body in a safe environment, where file opening
+and system calls are not allowed. This can protect the system
+when an unsafe evaluation is done (Like a script sent over the
+internet to be evaluated on a computer).
+
+
+			Built-in functions
+
+*CMD MathNot --- ...
+
+*CALL
+MathNot(expression)
+
+MathNot(expression) :
+Returns "False" if "expression" evaluates
+to "True", and vice versa.
+
+*CMD MathAnd --- ...
+
+*CALL
+MathAnd(...)
+
+MathAnd(...) :
+Lazy and: returns True" if all args evaluate to
+"True", and does this by looking at first, and then at the
+second argument, until one is "False".
+If one is "False" it immediately returns "False" without
+evaluating the rest. This is faster, but also means that none of the
+arguments should cause side effects when they are evaluated.
+
+*CMD MathOr --- ...
+*CORE
+*CALL
+MathOr(...)
+
+MathOr(...) :
+MathOr is the or equivalent of And. It is lazy-evaluated too.
+"And(...)" and "Or(...)" do also exist. You can define
+them as infix operators
+yourself, so you have the choice of precedence. In the standard scripts
+they are in fact declared as infix operators, so you can write
+"expr1 And expr".
+
+*CMD BitAnd, BitOr, BitXor --- bitwise arithmetic
+*CORE
+*CALL
+BitAnd(n,m), BitOr(n,m), BitXor(n,m)
+
+BitAnd(n,m), BitOr(n,m), BitXor(n,m) : return bitwise and, or and xor
+of two numbers.
+
+*CMD Equals --- ...
+*CORE
+*CALL
+Equals(a,b)
+
+Equals(a,b) :
+Compares evaluated a and b recursively
+(stepping into expressions). so "Equals(a,b)" returns
+"True" if the expressions would be printed exactly
+the same, and "False" otherwise.
+
+*CMD GreaterThan, LessThan --- arithmetic predicates
+*CORE
+*CALL
+LessThan(a,b), GreaterThan(a,b)
+
+LessThan(a,b), GreaterThan(a,b) :
+Comparing numbers.
+
+*CMD Math... --- arbitrary-precision math
+
+*CALL
+
+MathGcd(n,m)  (Greatest Common Divisor),
+MathAdd(x,y),
+MathSubtract(x,y),
+MathMultiply(x,y),
+MathDivide(x,y),
+MathSqrt(x)  (square root),
+MathFloor(x), MathCeil(x),
+MathAbs(x), MathMod(x,y),
+MathExp(x), MathLog(x) (natural logarithm),
+MathPower(x,y),
+MathSin(x), MathCos(x), MathTan(x),
+MathArcSin(x), MathArcCos(x), MathArcTan(x),
+MathDiv(x,y), MathMod(x,y)
+
+
+Calculation of sin,cos,tan etc. of x. x HAS to
+be a number. The reason {Math} is prepended to
+the names is you might want to derive equivalent
+non-evaluating functions. The {Math}... versions require the arguments
+to be numbers.
+
+*CMD Fast... --- double-precision math functions
+
+*CALL
+
+FastExp(x), FastLog(x) (Natural logarithm),
+FastPower(x,y),
+FastSin(x), FastCos(x), FastTan(x),
+FastArcSin(x), FastArcCos(x), FastArcTan(x) :
+
+Versions of these functions using the internal c version. These
+should then at least be faster than the arbitrary precision versions.
+
+*CMD ShiftLeft, ShiftRight --- ...
+
+
+*CALL
+ShiftLeft(number,bits), ShiftRight(number,bits)
+
+ShiftLeft(number,bits), ShiftRight(number,bits) :
+Shift number bits to left or right.
+
+
+			The Yacas plugin structure
+
+Yacas supports dynamically loading libraries at runtime. This allows
+it to interface with other libraries that support additional
+functionality. For example, there could be a plugin enabling
+the user to script a user interface from within Yacas, or a
+specific powerful library to do numeric calculations.
+
+The plugin feature is currently in an experimental stage. There
+are some examples in the plugins/ directory. These are not built
+by default because they cannot be guaranteed to compile on every
+platform (yet). The plugins need to be compiled after Yacas itself
+has been compiled and installed successfully. The plugins/ directory
+contains a README file with more details on compilation.
+
+In addition to the plugin structure in the Yacas engine, there is
+a 'cstubgen' module (currently still in development) that allows
+rapid scripting of a plugin. Essentially all that is required is
+to write a file that looks like the header file of the original
+library, but written in Yacas syntax. the 'cstubgen' module is then
+able to write out a c++ file that can be compiled and linked with
+the original library, and then loaded from within Yacas. Including
+a function in the plugin will typically take just one line of
+Yacas code. There are a few examples in the plugins/
+directory (the files ending with api.stub). The make file
+makefile.plugin is configured to automatically convert these to
+the required c++ files.
+
+In addition to the c++ stub file cstubgen also automatically generates
+some documentation on the functions included in the stub. This
+documentation is put in a file with extension 'description'.
+
+The plugin facility is not supported for each platform yet. Specifically,
+it is only supported on platforms that support the elf binary format.
+(loading DLLs is platform-dependent).
+
+This chapter assumes the reader is comfortable programming in c++.
+
+
+*CMD DllLoad, DllUnload, DllEnumerate
+*CORE
+*CALL
+	DllLoad(file)
+	DllUnload(file)
+	DllEnumerate()
+
+*PARMS
+file - file name of the plugin
+
+*DESC
+
+DllLoad forces Yacas to load the dynamic link library (.so file
+under Linux). The full path to the DLL has to be specified,
+or the file needs to be in a path where dlopen can find it.
+
+DllUnload unloads a dynamic link library previously loaded with
+DllLoad. Note the dll file name has to be exactly the same,
+or the system will not be able to determine which dll to unload.
+It will scan all the dll files, and delete the first one found
+to exactly match, and return silently if it didn't find the dll.
+DllUnload always returns True.
+
+DllEnumerate() returns a list with all loaded dynamic link libraries.
+
+*E.G.
+
+	In> DllLoad("./libopengl.so");
+	Out> True;
+
+*SEE
+
+*CMD StubApiCStart --- ...
+
+*STD
+
+*CALL
+
+StubApiCStart()
+
+*PARMS
+
+*DESC
+
+To start up generating a c stub file for linking a c library with
+Yacas. A stub specification file needs to start with this
+function call, to reset the internal state of Yacas for emitting
+a stub c++ file.
+
+*SEE StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCFile, StubApiCSetEnv
+
+*CMD StubApiCShortIntegerConstant --- ...
+
+*STD
+
+*CALL
+
+StubApiCShortIntegerConstant(const,value)
+
+*PARMS
+
+const - string representing the global variable to be bound runtime
+
+       value - integer value the global should be bound to
+
+*DESC
+
+define a constant 'const' to have value 'value'.  The value should
+be short integer constant. This is useful for linking in
+defines and enumerated values into Yacas.
+If the library for instance has a define
+
+#define FOO 10
+
+Then
+
+StubApiCShortIntegerConstant("FOO","FOO")
+
+will bind the global variable FOO to the value for FOO defined in
+the library header file.
+
+*SEE StubApiCStart, StubApiCInclude, StubApiCFunction, StubApiCFile, StubApiCSetEnv
+
+*CMD StubApiCInclude --- ...
+
+
+*STD
+
+*CALL
+
+StubApiCInclude(file)
+
+*PARMS
+
+file - file to include from the library the plugin is based on
+
+*DESC
+
+Declare an include file (a header file for the library, for instance)
+The delimiters need to be specified too. So, for a standard library
+like the one needed for opengl, you need to specify
+
+StubApiCInclude("\<GL/gl.h\>")
+
+and for user include file:
+StubApiCInclude("\"GL/gl.h\"")
+
+*SEE StubApiCStart, StubApiCShortIntegerConstant, StubApiCFunction, StubApiCFile, StubApiCSetEnv
+
+*CMD StubApiCFunction --- ...
+
+*STD
+
+*CALL
+
+StubApiCFunction(returntype,fname,args)
+
+StubApiCFunction(returntype,fname,fname2,args)
+
+*PARMS
+
+returntype - return type of library function
+
+fname - function of built-in function
+
+fname2 - (optional) function name to be used from within Yacas
+
+args - list of arguments to the function
+
+*DESC
+
+This function declares a library function, along with its
+calling sequence. cstubgen will then generate the c++ code
+required to call this function.
+
+Return type, function name, and list of arguments should be
+literal strings (surrounded by quotes).
+
+If fname2 is not supplied, it will be assumed to be the same as fname.
+
+The return types currently supported are "int", "double" and "void".
+
+The argument values that are currently supported
+are "int", "double", and "input_string".
+
+Argument types can be specified simply as a string referring to their
+type, like "int", or they can be lists with an additional element
+stating the name of the variable: {"int","n"}. The variable
+will then show up in the automatically generated documentation as
+having the name n.
+
+*E.G.
+
+To define the opengl function glVertex3d that accepts three
+doubles and returns void:
+
+	StubApiCFunction("void","glVertex3d",{"double","double","double"});
+
+*SEE StubApiCStart, StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFile, StubApiCSetEnv
+
+*CMD StubApiCRemark --- ...
+
+*STD
+
+*CALL
+
+StubApiCRemark(string)
+
+*PARMS
+
+string - remark string to be added to the documentation
+
+*DESC
+
+StubApiCRemark adds a piece of text to the stub documentation
+file that gets generated automatically. The documentation is put in
+a .description file while the input file is being processed, so adding
+a remark on a function just after a function declaration adds a remark
+on that function.
+
+*SEE StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCSetEnv, StubApiCFile
+
+*CMD StubApiCSetEnv --- ...
+
+*STD
+
+*CALL
+
+StubApiCSetEnv(func)
+
+*PARMS
+
+func - function to call to set the environment variable
+
+*DESC
+
+This function forces the plugin to call the function func, with as
+argument LispEnvironment& aEnvironment. This lets the plugin store
+the environment class (which is needed for almost any thing to do with
+Yacas), somewhere in a global variable. aEnvironment can then be used
+from within a callback function in the plugin that doesn't take the
+extra argument by design.
+
+There needs to ba a function in the plugin somewhere of the form
+
+	static LispEnvironment* env = NULL;
+	void GlutSetEnv(LispEnvironment& aEnv)
+	{
+	    env = &aEnv;
+	}
+Then calling
+
+	StubApiCSetEnv("GlutSetEnv");
+will force the plugin to call GlutSetEnv at load time. All functions
+in the plugin will then have access to the Yacas environment.
+
+*SEE StubApiCStart, StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCFile
+
+*CMD StubApiCFile --- ...
+
+*STD
+
+*CALL
+
+StubApiCFile(basename)
+
+*PARMS
+
+basename - basename for the generation of the stub file
+
+*DESC
+
+Generate the c++ stub file, "basename.cc", and a documentation file
+named "basename.description". The descriptions are automatically
+generated while adding functions and constants to the stub.
+
+*SEE StubApiCStart, StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCSetEnv
+
+*CMD StubApiCStruct --- ...
+
+*STD
+
+*CALL
+
+StubApiCStruct(name)
+
+StubApiCStruct(name,freefunction)
+
+*PARMS
+
+name - name of structure
+
+freefunction - function that can be called to clean up the object
+
+*DESC
+
+StubApiCStruct declares a struct in a specific library. The name
+should be followed by an asterisk (clearly showing it is a pointer).
+After that, in the stub api definition, this type can be used as
+argument or return type to functions to the library.
+
+By default the struct will be deleted from memory with a normal
+call to free(...). This can be overriden with a function given
+as second argument, freefunction. This is needed in the case where
+there are additional operations that need to be performed in order
+to delete the object from memory.
+
+*E.G.
+
+in a library header file, define:
+
+	typedef struct SomeStruct
+	{
+	  int a;
+	  int b;
+	} SomeStruct;
+Then in the stub file you can declare this struct by calling:
+
+	StubApiCStruct("SomeStruct*")
+
+*SEE
+
+
+			Generic objects
+
+Generic objects are objects that are implemented in c++, but
+can be accessed through the Yacas interpreter.
+
+*CMD IsGeneric --- check for generic object
+
+*CALL
+IsGeneric(object)
+
+IsGeneric(object) : returns whether an object is a generic object
+type.
+
+*CMD GenericTypeName --- get type name
+
+*CALL
+GenericTypeName(object)
+
+GenericTypeName(object) : returns a string representation of
+the name of a generic object.
+
+Example: GenericTypeName(ArrayCreate(10,1)) sould return "Array".
+
+*CMD ArrayCreate --- create array
+
+*CALL
+ArrayCreate(size,init)
+
+Create an array the with size elements, all initialized to the
+value init.
+
+*CMD ArraySize --- get array size
+
+*CALL
+ArraySize(array)
+
+Return the size of an array (number of elements in the array).
+
+*CMD ArrayGet --- fetch array element
+
+*CALL
+ArrayGet(array,index)
+
+Get the element at position index in the array passed. Arrays are treated
+as base-one, so index set to 1 would return the first element.
+
+Arrays can also be accessed through the [] operators. So
+array[index] would return the same as ArrayGet(array,index).
+
+*CMD ArraySet --- set array element
+
+*CALL
+ArraySet(array,index,element)
+
+Set the element at position index in the array passed to the value
+passed in as argument to element. Arrays are treated
+as base-one, so index set to 1 would set first element.
+
+Arrays can also be accessed through the [] operators. So
+array[index]:=element would do the same as ArraySet(array,index,element).
+
+*CMD ArrayCreateFromList --- convert list to array
+
+*CALL
+ArrayCreateFromList(list)
+
+Creates an array from the contents of the list passed in.
+
+*CMD ListFromArray --- convert array to list
+
+*CALL
+ListFromArray(array)
+
+Creates a list from the contents of the array passed in.
+

@@ -30,10 +30,10 @@ numbers is performed through the built-in function
 		Startup, scripts and {.def} files
 
 When Yacas is first started or restarted, it executes the script
-{yacasinit} in the scripts directory. This script may load some other
+{yacasinit.ys} in the scripts directory. This script may load some other
 scripts. In order to start up quickly, Yacas does not execute all other
 library scripts at first run or at restart. It only executes the file
-{yacasinit} and all {.def} files in the scripts and addons
+{yacasinit.ys} and all {.def} files in the scripts and addons
 directories. The {.def} files tell the system where it can find definitions
 for various library functions. Library is divided into "packages" stored in "repository" directories. For example, the function {ArcTan} is defined in the {stdfuncs} package; the library file is {stdfuncs.rep/}{code.ys} and the {.def} file is {stdfuncs.rep}{/code.ys.def}. The function {ArcTan}
 mentioned in the {.def} file, therefore Yacas will know to load the package
