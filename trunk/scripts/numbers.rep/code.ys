@@ -547,7 +547,9 @@ IsCarmichaelNumber(n_IsList) <-- MapSingle("IsCarmichaelNumber",n);
 // approximation to the number of additive partitions of an integer
 // this is the first term in Rademachers explicit infinite series 
 // formula
-PartitionsNumApprox(n_IsPositiveInteger) <--
+// Maybe use this for small n? 
+/*
+PartitionsP(n_IsPositiveInteger) <--
 [
 	Local(C,lambda,m,pa);
 	C:=Pi*Sqrt(2/3);
@@ -561,6 +563,37 @@ PartitionsNumApprox(n_IsPositiveInteger) <--
 	pa;
 
 ];
+*/
+
+5  # PartitionsP(0)	<-- 1;
+10 # PartitionsP(n_IsPositiveInteger) <--
+[
+        Local(C,A,lambda,m,pa,k,h,term);
+	GlobalPush(GetPrecision());
+	// this is an overshoot, but seems to work up to at least n=4096
+	Precision(10 + Floor(N(Sqrt(n))) );
+	pa:=0;
+        C:=Pi*Sqrt(2/3)/k;
+        lambda:=Sqrt(m - 1/24);
+	term:=1;
+	// this is a heuristic, because the next term error is expensive 
+	// to calculate and the theoretic bounds have arbitrary constants
+	For(k:=1,k<=15 And ( term=0 Or Abs(term)>0.1) ,k++)[
+		A:=0;
+		For(h:=1,h<=k,h++)[
+			if( Gcd(h,k)=1 )[
+				A:=A+Exp(I*Pi*Sum(j,1,k-1,(j/k)*((h*j)/k - Floor((h*j)/k) -1/2)) - 2*Pi*I*h*n/k );	
+			];
+		];	
+		If(A!=0, term:= N(A*Sqrt(k)*(Deriv(m) Sinh(C*lambda)/lambda) Where m==n ),term:=0 );
+		//Echo("Term ",k," is ",term);
+        	pa:=pa+term;
+	];
+	pa:=N(pa/(Pi*Sqrt(2)));
+	Precision(GlobalPop());
+	Round(pa);
+];
+
 
 // the product of all the elements of a list
 Product(list_IsList) <--

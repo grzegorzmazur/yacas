@@ -31,4 +31,5 @@ IsSquareFree
 GaussianGcd
 FactorGaussianInteger
 IsCarmichaelNumber
+PartitionsP
 }
