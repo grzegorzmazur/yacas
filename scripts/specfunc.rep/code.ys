@@ -12,11 +12,15 @@
 /// in the Re z > 0 half-plane; argument z may be symbolic or complex
 /// but current value of precision is used
 /// Note that we return LnGamma(z), not of z+1
-/// This function should not be used by applications
-10 # LnGammaNum(_z, _a)_(N(Re(z))<0) <-- N(Ln(Pi/Sin(Pi*z)) - LnGammaNum(1-z, a));
+/// This function should not be used directly by applications
+10 # LnGammaNum(_z, _a)_(N(Re(z))<0) <-- [
+	If (Verbose, Echo({"LnGammaNum: using 1-z identity"}));
+	N(Ln(Pi/Sin(Pi*z)) - LnGammaNum(1-z, a));
+];
 20 # LnGammaNum(_z, _a) <-- [
 	Local(e, k, tmpcoeff, coeff, result);
 	a := Max(a, 4);	// guard against low values
+	If (Verbose, Echo({"LnGammaNum: precision parameter = ", a}));
 	e := N(Exp(1));
 	k:=Ceil(a);	// prepare k=N+1; the k=N term is probably never significant but we don't win much by excluding it
 	result := 0;	// prepare for last term
@@ -88,7 +92,6 @@ GammaNum(z,a) := N(Exp(LnGammaNum(z,a)));	/// should not be used by applications
 /// Numerical computation of Zeta function using Borwein's "third" algorithm
 /// The value of $n$ must be large enough to ensure required precision
 /// Also $s$ must satisfy $Re(s)+n+1 > 0$
-Retract("ZetaNum", 2);
 ZetaNum(_s, n_IsInteger) <-- [
 	Local(result, j, sign);
 	result := 0;
@@ -99,6 +102,16 @@ ZetaNum(_s, n_IsInteger) <-- [
 		sign := -sign;
 	];
 	N(result/(2^n)/(1-2^(1-s)));
+];
+
+/// direct method -- only good for large s
+ZetaNum1(s, limit) := [
+	Local(i, sum);
+	sum := 0;
+	limit := Ceil(N(limit));
+	For(i:=2, i<=limit, i++) sum := sum+N(1/MathPower(i, s));
+//	sum := sum + ( N( 1/MathPower(limit, s-1)) + N(1/MathPower(limit+1, s-1)) )/2/(s-1); 	 // these extra terms don't seem to help much
+	sum+1;	// add small terms together and then add 1
 ];
 
 /// Compute coefficients e[j] (see Borwein -- excluding (-1)^j )
@@ -114,10 +127,21 @@ ZetaNum(s) := [
 	Local(n, prec, result);
 	prec := GetPrecision();
 	Precision(6);
-	n := Ceil( N( prec*Ln(10)/Ln(8) + 2 ) );	// add 2 digits just in case
-//	Echo({"ZetaNum: precision ", prec, ", using n=", n});
-	Precision(prec+2);	// 2 guard digits
-	result := ZetaNum(s, n);
+	// choose between methods
+	If (N(Re(s)) > N(1+(prec*Ln(10))/(Ln(prec)+0.1) ),
+		[
+			n:= N(10^(prec/(s-1)))+2;	// 2 guard terms
+			If (Verbose, Echo({"ZetaNum: direct method, precision ", prec, ", n = ", n}));
+			Precision(prec+2);	// 2 guard digits
+			result := ZetaNum1(s, n);
+		],
+		[
+			n := Ceil( N( prec*Ln(10)/Ln(8) + 2 ) );	// add 2 digits just in case
+			If (Verbose, Echo({"ZetaNum: Borwein' method, precision ", prec, ", n = ", n}));
+			Precision(prec+2);	// 2 guard digits
+			result := ZetaNum(s, n);
+		]
+	);
 	Precision(prec);
 	result;
 ];
@@ -173,6 +197,7 @@ If(Not IsBound(Bernoulli1Threshold), Bernoulli1Threshold := 20);
 /// Assume n>=2
 20 # BernoulliArray(n_IsInteger) <-- [
 	Local(B, i, k);
+	If (Verbose, Echo({"BernoulliArray: using direct recursion, n = ", n}));
 	B:=ArrayCreate(n+1, 0);	// array of B[k], k=1,2,... where B[1] is the 0th Bernoulli number
 	// it would be better not to store the odd elements but let's optimize this later
 	// we could also maintain a global cache of Bernoulli numbers computed so far, but it won't really speed up things at large n
@@ -229,19 +254,11 @@ Bernoulli1(n_IsEven)_(n>=2) <-- [
 	Precision(
 		Ceil(N((1/2*Ln(8*Pi*n)-n+n*Ln(n/2/Pi))/Ln(10)))+3	// 3 guard digits
 	);
+	If (Verbose, Echo({"Bernoulli: using zeta funcion, precision ", GetPrecision(), ", n = ", n}));
 	B := Floor(N(ZetaNum1(n, n/17+1)*N(2*n! /(2*Pi)^n)))
 		// 2*Pi*e is approx. 17, add 1 to guard precision
 		* (2*Mod(n/2,2)-1)	// sign of the Bernoulli number
 		+ BernoulliFracPart(n);	// this already has the right sign
 	Precision(prec);	// restore old precision
 	B;
-];
-
-ZetaNum1(s, limit) := [
-	Local(i, sum);
-	sum := 0;
-	limit := Ceil(N(limit));
-	For(i:=2, i<=limit, i++) sum := sum+N(1/MathPower(i, s));
-//	sum := sum + ( N( 1/MathPower(limit, s-1)) + N(1/MathPower(limit+1, s-1)) )/2/(s-1); 	 // these extra terms don't seem to help much
-	sum+1;	// add small terms together and then add 1
 ];
