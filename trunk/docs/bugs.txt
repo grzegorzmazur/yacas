@@ -23,8 +23,8 @@ Summary:
 15. (RESOLVED?)[Core] 'MathPower(0,0.5)' locks up
 16. (COULD NOT REPRODUCE)[Build System]  mathcommands3.cpp is compiled twice and libyacas is linked
     twice
-17. [Polynomials] Factor(x^6-1) gives wrong result
-
+17. (RESOLVED?)[Polynomials] Factor(x^6-1) gives wrong result
+18. [Integration]Integrating fractional powers
 ----------------------------------------------------------------------
 
 Bug #1
@@ -300,5 +300,17 @@ In>Factor(x^6-1)
 Out>(x^4+2*x^3+3*x^2+4*x+5)*(x-1)^2 
 
 1 is not a double root of x^6-1!
+
+----------------------------------------------------------------------
+Bug #18
+Title: [Integration]Integrating fractional powers
+Date: 2003-04-14
+Submitted by: Martin Renold
+
+Observed behaviour:
+In> Integrate(x)x^(1/2)
+Out> Integrate(x)x^(1/2)
+
+Expected it to integrate.
 
 ----------------------------------------------------------------------

@@ -10,6 +10,9 @@
 
 Precision(5);
 
+VerifyZero(x) := (Abs(x)<10^ -GetPrecision());
+
+
 sl() := []; //Echo(CurrentFile(),CurrentLine());
 TryRandomPoly(deg,coefmin,coefmax):=
 [
@@ -53,7 +56,7 @@ sl();
 [
   Local(p);
   p := FindRealRoots((x+2)^9*(x-4)^5*(x-1)^4)-{-2.,1.,4.};
-  Verify(p . p,0);
+  Verify(VerifyZero(p . p),True);
 ];
 sl();
 
@@ -74,7 +77,7 @@ Verify(NumRealRoots(x^2+1),0);     sl();
 [
   Local(p);
   p:=FindRealRoots(Expand((x*(x-10)^3*(x+2)^2)))-{0,-2.,10.};
-  Verify(p . p,0);
+  Verify(VerifyZero(p . p),True);
 ];
 Verify(FindRealRoots((x^2+20)*(x^2+10)),{});
 Verify(NumRealRoots((x^2+20)*(x^2+10)),0);
@@ -88,8 +91,11 @@ sl();
 
 // Check the rare case where the bounds finder lands on
 // exactly a root
-Verify(FindRealRoots((x+4)*(x-6),1,7),{-4.,6.});
-
+[
+  Local(p);
+  p:=FindRealRoots((x+4)*(x-6),1,7)-{-4.,6.};
+  Verify(VerifyZero(p . p),True);
+];
 
 
 
@@ -99,7 +105,7 @@ sl();
 
   p:=Expand((x-3.1)*(x+6.23));
   p:=FindRealRoots(p)-{-6.23,3.1};
-  Verify(p . p,0);
+  Verify(VerifyZero(p . p),True);
 ];
 
 sl();
@@ -107,7 +113,7 @@ Verify(GetPrecision(),5);
 [ 
   Local(res);
   res:=FindRealRoots(Expand((x-3.1)*(x+6.23)))-{-6.23,3.1};
-  Verify(res . res , 0);
+  Verify(VerifyZero(res . res) , True);
 ];
 sl();
 

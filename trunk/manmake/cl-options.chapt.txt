@@ -20,6 +20,7 @@ Here is a summary of options:
 *	{--rootdir} <i>directory</i> (specify default directory for scripts)
 *	{--server} <i>port</i> (start {Yacas} as a network server on given port)
 *	{--verbose-debug} (turn on showing some additional debugging information on screen)
+*	{--disable-compiled-plugins} (disable loading of compiled plugins, loading the script versions instead)
 
 Options can be combined, for example
 	yacas -pc filename
@@ -176,3 +177,11 @@ files.
 The currently supported compression schemes are uncompressed
 and compressed with {minilzo}. Script file stripping (removing whitespace
 and comments) may be disabled by editing {compressor.cpp} (variable {strip_script}).
+
+
+	yacas --disable-compiled-plugins
+
+Disable loading of compiled scripts, in favor of scripts themselves.
+This is useful when developing the scripts that need to be compiled
+in the end, or when the scripts have not been compiled yet.
+

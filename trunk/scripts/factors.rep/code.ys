@@ -220,19 +220,7 @@ PollardCombineLists(_left,_right) <--
 ];
 
 
-/* TODO for Bk:
-   - ModDivide, ModGcd, make an interface for in the scripts.
-   - The cases non-monic polynomials and polys with rational
-     coefficients are not handled very well yet. These two
-     are related: if the non-monic goes well then the
-     rational coeffs goes well. Problem is that Knuth describes
-     an order n! algorithm, for the n possible options!
-     This cannot be right... When you have many factors
-     this might go wrong. The algorithm will terminate (a
-     great improvement over the previous) but might not
-     fully factor the polynomial.
-*/
-
+/*TODO remove? Replaced by BinaryFactors if all is well 
 10 # FindMod(_poly,_item,_p,_n)_(Degree(Gcd(poly,item)) > 0) <-- Expand(item);
 11 # FindMod(_poly,_item,_p,_n) <-- FindModAux(poly,item,p,n);
 
@@ -244,11 +232,10 @@ PollardCombineLists(_left,_right) <--
 
 20 # FindModAux(_poly,_item,_p,_n)_(n<10) <--
 [
-/*
- Echo({item,p,"n = ",n});
- Echo({(Mod(LeadingCoef(poly),p))*item+n*p});
-*/ 
-  FindModAux(poly,item,p,n+1);
+
+// Echo({item,p,"n = ",n});
+// Echo({(Mod(LeadingCoef(poly),p))*item+n*p});
+   FindModAux(poly,item,p,n+1);
 ];
 30 # FindModAux(_poly,_item,_p,_n) <-- 1;
 
@@ -299,7 +286,6 @@ FactorUniVarSec(_poly) <--
   checked;
 ];
 
-
 MakeInteger(_poly) <--
 [
   Local(cf,t1,t2);
@@ -343,7 +329,7 @@ Bk(_poly) <--
   ];
 
 //  poly := poly*LeadingCoef(poly);
-/*Echo({poly," should have integer coefficients"});*/
+//Echo({poly," should have integer coefficients"});
   
   // square-free factorization
   [
@@ -357,7 +343,7 @@ Bk(_poly) <--
       dv := Monic(dv);
       poly := Div(poly,dv);
       poly := MakeInteger(poly);
-/*Echo({poly," should have integer coefficients"});*/
+//Echo({poly," should have integer coefficients"});
       new := Bk(dv);
       ForEach(item,new)
       [
@@ -370,7 +356,7 @@ Bk(_poly) <--
       poly := MakeInteger(poly);
 
       MergeFactors(checked, new);
-/*Echo({"squarefree: ",checked});      */
+//Echo({"squarefree: ",checked});      
     ];
   ];
 
@@ -430,12 +416,12 @@ Bk(_poly,_prime) <--
   ];
   result;
 ];
-
+*/
 
 
 /* New factorization : split between integers and polynomials. */
 10 # Factors(p_IsInteger) <-- FactorizeInt(p);
-20 # Factors(p_CanBeUni)_(Length(VarList(p)) = 1) <--  FactorUniVarSec(p);
+20 # Factors(p_CanBeUni)_(Length(VarList(p)) = 1) <--  BinaryFactors(p);
 30 # Factors(p_IsGaussianInteger)	<-- GaussianFactors(p);
 
 
@@ -512,15 +498,6 @@ Bk(_poly,_prime) <--
           result:= Concat({{root[i],item[2]}}, result);
       ]
       );
-/*TODO remove, old code?
-    If(Degree(uni) = 1,
-      [
-        root:= -Coef(uni,0)/Coef(uni,1);
-        For(i:=0,i<item[2],i++)
-          result:= {root,item[2]} : result;
-      ]
-      );
-*/
   ];
   result;
 ];

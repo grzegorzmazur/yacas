@@ -16,6 +16,7 @@ SCRIPTFILES1 = 	        										    \
 	deriv.rep/code.ys deriv.rep/code.ys.def 							    \
 	example.rep/code.ys example.rep/code.ys.def 							    \
 	factors.rep/code.ys factors.rep/code.ys.def 							    \
+	factors.rep/binaryfactors.ys factors.rep/binaryfactors.ys.def 					    \
 	fakedb.rep/code.ys fakedb.rep/code.ys.def 							    \
 	functional.rep/code.ys functional.rep/code.ys.def 						    \
 	html.rep/code.ys html.rep/code.ys.def 								    \

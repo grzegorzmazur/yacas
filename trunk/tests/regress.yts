@@ -433,7 +433,9 @@ Verify(TrapError(MathPower(0,0.5), error), error);
 /* Can't test, bug in build system */
 
 /* Bug #17 */
-KnownFailure(Assoc(x-1, Factors(x^6-1)) = 1);
+Verify(Assoc(x-1, Factors(x^6-1))[2], 1);
 
+/* Bug #18 */
+KnownFailure(Type(Integrate(x)x^(1/2)) != "Integrate");
 
 Verify(a[2]*Sin(x)/:{Sin(_x) <- sin(x)},a[2]*sin(x));

@@ -318,6 +318,7 @@ IntFunc(x,Cos(Ln(_x)),x*Sin(Ln(x))/2 - x*Cos(Ln(x))/2 );
 IntFunc(x,1/((_x)*Ln(_x)),Ln(Ln(x)));
 
 IntFunc(x,(_x)^(-1),Ln(x));
+IntFunc(x,(_x)^(n_IsConstant),x^(n+1)/(n+1));
 
 IntFunc(x,Sinh(_x),Cosh(x));
 IntFunc(x,Sinh(_x)^2,Sinh(2*x)/4 - x/2);

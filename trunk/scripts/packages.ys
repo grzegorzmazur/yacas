@@ -15,6 +15,7 @@ Set(DefFileList, {
 "deffunc.rep/code.ys",
 "deriv.rep/code.ys",
 "example.rep/code.ys",
+"factors.rep/binaryfactors.ys",
 "factors.rep/code.ys",
 "fakedb.rep/code.ys",
 "functional.rep/code.ys",

@@ -113,6 +113,8 @@ int use_plain = 0;
 int show_prompt = 1;
 int trace_history = 0;
 int use_texmacs_out = 0;
+int compiled_plugins = 1;
+
 #ifdef YACAS_DEBUG
   int verbose_debug=0;
 #endif
@@ -552,6 +554,11 @@ CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator
             }
         }
         DeclarePath(ptr2);
+        if (!compiled_plugins)
+        {
+          yacas->Evaluate("Set(LoadPlugIns,False);");
+        }
+        
         char buf[1000];
 #ifdef HAVE_VSNPRINTF
         snprintf(buf,1000,"Load(\"%s\");",init_script);
@@ -1255,6 +1262,10 @@ int main(int argc, char** argv)
                   archive = argv[fileind];
                   compressed_archive = 0;
                 }
+            }
+            else if (!strcmp(argv[fileind],"--disable-compiled-plugins"))
+            {
+              compiled_plugins = 0;
             }
             else
             {
