@@ -1,7 +1,7 @@
 
 EXTRA_DIST = LICENCE  pcreposix.h \
 	chartables.c pcretest.c pcre_config.h internal.h \
-	pcre.h printint.c \
+	pcre.h printint.c plugin.cpp \
 	index.html                              pcre_info.html \
 	pcre.html                               pcre_maketables.html \
 	pcre_compile.html                       pcre_study.html \

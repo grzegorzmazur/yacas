@@ -22,14 +22,14 @@ struct TPattern
 {
   pcre *re;
   pcre_extra *pe;
-  int type;
+  LispPtr type;
 };
 #define KMaxPatterns 256
 TPattern patterns[KMaxPatterns];
 int nrPatterns = 0;
 
 
-void AddPattern(const char* aPattern, int aType)
+void AddPattern(const char* aPattern, LispPtr& aType)
 {
   const char *error;
   int erroffset;
@@ -44,7 +44,7 @@ void AddPattern(const char* aPattern, int aType)
     patterns[nrPatterns].re,             /* result of pcre_compile() */
     0,              /* no options exist */
     &error);        /* set to NULL or points to a message */
-  patterns[nrPatterns].type = aType;
+  patterns[nrPatterns].type.Set(aType.Get());
   nrPatterns++;
 }
 
@@ -55,6 +55,7 @@ void FreePatterns(void)
   {
     free(patterns[i].pe);
     free(patterns[i].re);
+    patterns[i].type.Set(NULL);
   }
   nrPatterns=0;
 }
@@ -77,7 +78,7 @@ static void PcreNextToken(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 //printf("trav is %s\n",trav);
 
-    int count;
+    int count = 0;
     int ovector[10];
     int i;
     for (i=0;i<nrPatterns;i++)
@@ -100,28 +101,12 @@ static void PcreNextToken(LispEnvironment& aEnvironment, LispInt aStackTop)
     char* resultbuf = (char*)malloc(ovector[1]-ovector[0]+3); //TODO use plat allocs!
     char*trg = resultbuf;
     *trg++ = '\"';
-      char* src = &trav[ovector[0]];
-      char* endp= src+ovector[1]-ovector[0];
-      while (src != endp)
-      {
-        switch (*src)
-        {
-        case '\"':
-          *trg++ = '\\';
-        default:
-          *trg++ = *src++;
-          break;
-        }
-      }
-    *trg++ = '\"';
-    *trg++ = '\0';
-
+    memcpy(trg,&trav[ovector[0]],ovector[1]-ovector[0]);
+    trg[ovector[1]-ovector[0]] = '\0';
+    strcat(trg,"\"");
     aEnvironment.CurrentInput()->SetPosition(pos+ovector[1]);
-
     LispObject *res = NULL;
-    char num[30];
-    sprintf(num,"%d",patterns[i].type);
-    res = LA(ATOML(num)) + LA(res);
+    res = LA(patterns[i].type.Get())+LA(res);
     res = LA(ATOML(resultbuf)) + LA(res);
     RESULT.Set(LIST(LA(ATOML("List")) + LA(res)));
     free(resultbuf); //TODO use plat allocs!
@@ -148,12 +133,12 @@ static void PcreLexer(LispEnvironment& aEnvironment, LispInt aStackTop)
             if (sub)
             {
                 sub = sub->Next().Get();
-		LispStringPtr pattern = aEnvironment.HashTable().LookUpUnStringify(sub->String()->String());
-		sub = sub->Next().Get();
-                LispInt type = InternalAsciiToInt(sub->String()->String());
+                LispStringPtr pattern = aEnvironment.HashTable().LookUpUnStringify(sub->String()->String());
+                LispPtr type;
+                type.Set(sub->Next().Get()->Copy(LispFalse));
 
 //printf("Pattern \"%s\" type %d\n",pattern->String(),type);
-		AddPattern(pattern->String(),type);
+                AddPattern(pattern->String(),type);
             }
         }
         t = t->Next().Get();
