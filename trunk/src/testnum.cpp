@@ -554,7 +554,7 @@ int main(void)
 	Next("12");
 	x.BitOr(x,x);
 	Next("13");
-	x.BitCount(x);
+	x.SetTo(double(x.BitCount()));
 	
 	Next("construct 0 from string");
 	BigNumber y("0", 10);	// construct
@@ -704,20 +704,20 @@ int main(void)
 	
 	Next("bit counts");
 	x.SetTo(65537);
-	x.BitCount(x);
-	Check(x.IsInt(), "bit count is integer");
+	x.SetTo(double(x.BitCount()));
 	CheckValues(x.Double(),17, "bit count of 65537 is 17");
 	Check(x.Double()!=16, "bit count of 65537 is not 16");
+
 	x.SetTo(1./1050000.);
 	Check(!x.IsInt(), "x is a floating-point value");
 	CheckValues(x.Sign(),1, "x is positive");
-	x.BitCount(x);
+	x.SetTo(double(x.BitCount()));
 	Check(x.IsInt(), "bit count is integer");
 	CheckValues(x.Double(),-20, "bit count of 1./1050000. is (-20)");
 	Check(x.Double()!=-21, "bit count is not -21");
 	Check(x.Double()!=-19, "bit count is not -19");
 	x.SetTo(1./1048576.);
-	x.BitCount(x);
+	x.SetTo(double(x.BitCount()));
 	CheckValues(x.Double(),-19, "bit count of 1./1048576. is (-19)");
 	Check(x.Double()!=-20, "bit count is not -20");
 	Check(x.Double()!=-18, "bit count is not -18");
@@ -729,7 +729,7 @@ int main(void)
 	x.SetTo(a); \
 	B_x = x.BitCount(); \
 	x.BecomeFloat(); \
-	CheckValues(x.BitCount(), B_x, "bit count is equal after BecomeFloat()");
+	CheckValues(x.BitCount(), B_x, "bit count is the same after BecomeFloat()");
 
 	test_bit_count(2)
 	test_bit_count(0)
@@ -853,18 +853,18 @@ int main(void)
 	Check(z.Equals(t), "bit Or operation correct");
 	z.ShiftRight(x,4);
 	t.SetTo("402040204020402040204020402040204020402", 0, 16);
-	Check(z.Equals(t), "ShiftRight operation correct (small shift)");
+	Check(z.Equals(t), "ShiftRight operation correct");
 	z.ShiftLeft(y,4);
 	t.SetTo("61236123612361236123612361236123612361230", 0, 16);
-	Check(z.Equals(t), "ShiftLeft operation correct (small shift)");
+	Check(z.Equals(t), "ShiftLeft operation correct");
 	t.SetTo(4);
-	z.ShiftRight(x,t);
+	z.ShiftRight(x,4);
 	t.SetTo("402040204020402040204020402040204020402", 0, 16);
-	Check(z.Equals(t), "ShiftRight operation correct (big shift)");
+	Check(z.Equals(t), "ShiftRight operation correct");
 	t.SetTo(4);
-	z.ShiftLeft(y,t);
+	z.ShiftLeft(y,4);
 	t.SetTo("61236123612361236123612361236123612361230", 0, 16);
-	Check(z.Equals(t), "ShiftLeft operation correct (big shift)");
+	Check(z.Equals(t), "ShiftLeft operation correct");
 	z.BitNot(z);
 	t.SetTo("9EDC9EDC9EDC9EDC9EDC9EDC9EDC9EDC9EDC9EDCF", 0, 16);
 	z.BitAnd(z,t);	// result of BitNot is negative

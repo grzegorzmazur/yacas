@@ -131,7 +131,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 # list some extra generated files
 CLEANFILES = fastprimes.c core_yacasmain.h libmath.cpp 
 
-platmath.cpp: fastprimes.c
+$(srcdir)/platmath.cpp: fastprimes.c
 
 fastprimes.c: mkfastprimes
 	./mkfastprimes > fastprimes.c
