@@ -16,7 +16,7 @@ SCRIPTFILES = \
         orthopoly.rep/code.ys orthopoly.rep/code.ys.def openmath.rep/code.ys openmath.rep/code.ys.def \
         multivar.rep/code.ys multivar.rep/code.ys.def \
         multivar.rep/makemulti.ys  \
-        multivar.rep/sparsetree.ys  \
+        multivar.rep/sparsetree.ys multivar.rep/sparsetree.ys.def \
         multivar.rep/sparsenomial.ys \
         specfunc.rep/code.ys specfunc.rep/code.ys.def \
 	plots.rep/code.ys plots.rep/code.ys.def plots.rep/backends-2d.ys
