@@ -382,7 +382,7 @@ LocalSymbols(x)
      ];
     
 
-90 # x_IsInfinity / y_Infinity <-- Undefined;
+90 # x_IsInfinity / y_IsInfinity <-- Undefined;
 91  # x_IsInfinity / y_IsNumber <-- Sign(y)*x;
 
 

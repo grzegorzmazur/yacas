@@ -14,5 +14,6 @@ texdocs:
 backup:
 	-rm yacas-*.tar.gz
 	make dist
+	yacas --patchload -pc docs/downloads.html.in > downloads.html
 	ftp -i ftp.xs4all.nl < upload.txt
 
