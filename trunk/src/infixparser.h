@@ -62,7 +62,7 @@ public:
     ~InfixParser();
     
     virtual void Parse(LispPtr& aResult, LispEnvironment& aEnvironment );
-private:
+//private:
     void Parse(LispPtr& aResult);
 public:
     LispOperators& iPrefixOperators;
