@@ -156,7 +156,6 @@ The documentation can be improved.
 <li> document the algorithms used, and expand on all of the functions
      currently implemented.
 <li> separate manual chapter on tensors. (Serge? Is it going to change?). TSimplify and TExplicitSum, TD, X
-<li> chapter on unix tools. yacas_client, Vi, GnuPlot, TeXShowPS
 <li> document the source code.
 <li> mention  the use of lists for passing multiple arguments.
 <li> document HoldArg in combination with <--
@@ -167,10 +166,10 @@ The documentation can be improved.
   <li> ExpressionDepth, SylvesterMatrix, PAdicExpandInternal, GetPrimeFactors, 
           Rem, Roots, Apart, Together
   <li> UnHoldable, GcdReduce, ApplyPure
-	DestructiveAppendList, PatternMatches, PatternCreate, RuleBaseDefined, RuleBaseArgList,
-	FindFunction, TemplateFunction, HoldArgNr, Lambda (in combination with Apply), 
-	Primes, OpLeftPrecedence, OpRightPrecedence, MapArgs, Substitute, 
-  <li> quit, Version(), GarbageCollect()
+	DestructiveAppendList, PatternMatches, PatternCreate, RuleBaseDefined,
+	FindFunction, TemplateFunction, Lambda (in combination with Apply), 
+	Primes, MapArgs, Substitute, 
+  <li> restart, quit, Version(), GarbageCollect()
   <li>   V, GetExtraInfo, SetExtraInfo
   <li> %, |, &, ^, if, else (else binds to the last if)
   <li> DivPoly, RootsWithMultiples,
@@ -189,7 +188,7 @@ The documentation can be improved.
        FindIsq returns the insertion point.
   <li>   MultiDivide, MultiGcd, Groebner
   <li> CurrentFile, CurrentLine
-  <li> DllEnumerate, --patchload, RoundTo, TestYacas
+  <li> --patchload, RoundTo, TestYacas
   <li> Implemented backquote mechanism: `(...) will substitute
        every @a with the evaluation of a (and if a is a function
        the function name is replaced). The end result is evaluated.
@@ -225,7 +224,7 @@ These are nice to haves in the engine.
      evaluate something within the environment. Together with
      Apply this would allow for packages.
   <li> engine-side apply "op" for speed.
-<li> faster Pi() calculation
+<li> faster Pi() calculation --? seems okay
 <li>  LispCleanupStack: implement LocalLispString and LocalLispPtr.
 <li>  Clean up c++ code a little: Remove ALL TODO's and write javadoc-able-comments in the
       source code.
@@ -235,7 +234,6 @@ These are nice to haves in the engine.
 <li> Try to find all the places that can use the CArrayGrower with the
   iArrayOwnedExternally set.
 <li> it seems I can still optimize InternalEval
-<li> Finish arb. math stuff. (ASin, Acos, ATan)
 </UL>
 
 
