@@ -1,5 +1,11 @@
-/* Numerical testers - all confirmed with Maple */
+/* Numerical testers - all confirmed with Matlab 6r12.0 */
 
+TestYacas( RoundTo(N(Sec(2)), 9), -2.402997962);
+TestYacas( RoundTo(N(Csc(2)), 9), 1.099750170);
+TestYacas( RoundTo(N(Cot(2)), 9), -0.457657554);
+KnownFailure( TestYacas( RoundTo(N(SinH(2)),9), 3.626860408 ));
+
+/* Numerical testers - all confirmed with Maple */
 Precision(50);
 
 TestYacas(
@@ -204,3 +210,4 @@ Verify(
 GuessRational(N(Pi))
 , 355/113
 );
+
