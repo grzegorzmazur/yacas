@@ -8,18 +8,20 @@
    visible when turning show file/line on.
 */
 
-sl() := []; //Echo(CurrentFile(),CurrentLine());
+sl() := []; //;Echo(CurrentFile(),CurrentLine());
 TryRandomPoly(deg,coefmin,coefmax):=
 [
   //GarbageCollect();
   Local(coefs,p,roots,px);
   coefs:=Table(MathFloor(coefmin+Random()*(coefmax-coefmin)),i,1,deg+1,1);
-  p:=Sum(coefs*x^(0 .. deg));
+  p:=Add(coefs*x^(0 .. deg));
   p:=Rationalize(p);
 //Echo("Test polynom ",p);
   Verify(Max(Abs(coefs))<=MaximumBound(p));
   Verify(Min(Abs(coefs))>MinimumBound(p));
+//Echo("bounds ",BoundRealRoots(p));
   roots:=FindRealRoots(p);
+//Echo("roots ",roots);
   px := (p Where x==x);
   Verify(px . px < 0.01);
 ];
