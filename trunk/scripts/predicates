@@ -26,6 +26,10 @@ Function("IsRationalNumeric",{aLeft})
 
 IsRationalOrNumber(_x) <-- (IsNumber(x) Or IsRationalNumeric(x));
 
+10 # IsRationalOrInteger(x_IsInteger) <-- True;
+10 # IsRationalOrInteger(x_IsInteger / y_IsInteger) <-- True;
+20 # IsRationalOrInteger(_x) <-- False;
+
 IsNegativeNumber(x):= IsNumber(x) And x < 0;
 IsPositiveNumber(x):= IsNumber(x) And x > 0;
 

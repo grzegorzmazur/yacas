@@ -2,6 +2,7 @@ IsMatrix
 IsRational
 IsRationalNumeric
 IsRationalOrNumber
+IsRationalOrInteger
 IsNegativeNumber
 IsPositiveNumber
 IsZero
