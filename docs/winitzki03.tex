@@ -21,11 +21,12 @@ Germany}
 
 \maketitle
 \begin{abstract}
-I describe and compare several methods for arbitrary-precision numerical
+I describe and compare the main methods for arbitrary-precision numerical
 computation of Chebyshev polynomials $T_{n}\left(x\right)$, $U_{n}\left(x\right)$
-for complex $x$. I introduce a new algorithm based on Fibonacci-like
-sequences and indicate the asymptotically most efficient methods in
-the limits of large order $n$ and large required precision.
+for complex $x$. I indicate the asymptotically most efficient methods in
+the limits of large order $n$ and large required precision $P$.
+For $n \gg P$ it is better to use trigonometric relations,
+while for $n<P$ the algebraic relation is more efficient.
 \end{abstract}
 
 \section{Introduction}
@@ -69,7 +70,7 @@ of explicit base $10$ logarithms in the formulae.
 
 \section{Available methods}
 
-In the following sections I present several methods for computing
+In the following sections I describe several methods for computing
 the Chebyshev polynomials and compare their asymptotic cost.
 
 The Chebyshev polynomials satisfy the following symmetry property,\[
@@ -100,15 +101,17 @@ U_{n} & =\frac{1}{\sqrt{x^{2}-1}}\sinh\left[\left(n+1\right)\ln\left(x+\sqrt{x^{
 (Since $n$ is integer, all branches of the logarithm give the same
 results.) The expression $z\equiv x+\sqrt{x^{2}-1}$ is real and positive
 only for real $x\geq1$, therefore $\ln z$ has a nonzero imaginary
-part for all other $x$. If $\textrm{Im}\,\ln z\neq0$, the function\[
+part for all other $x$. If $\arg z\neq0$, the function\[
 \cosh\left(n\ln z\right)=\left|z\right|^{n}\cos\left(n\arg z\right)\]
  exhibits periodic behavior and can be computed to $P$ digits only
-if $\arg z$ is found to $P+\log_{10}\left|n\arg z\right|$ digits.
-If $\left|z\right|\neq1$ (this happens for real $\left|x\right|<1$),
+if $\arg z$ is found to 
+$P+\log_{10}\left|n\arg z\right| \approx P+\log_{10}n$ digits.
+(This is too conservative for the case $x\approx1$ considered below.)
+If $\left|z\right|\neq1$,
 we also need to know $\left|z\right|$ to $P+\log_{10}n$ digits.
-For $x$ not close to $1$, $\left|\arg z\right|$ is not small and
-the asymptotic cost of computing $\ln z$ for large $n$ and $P$
-is\begin{equation}
+The asymptotic cost of computing $\ln z$ for large $n$ and $P$
+is therefore
+\begin{equation}
 O\left[M\left(P+\log_{10}n\right)\ln\left(P+\log_{10}n\right)\right].\label{eq:Cost1}\end{equation}
 This is the dominant cost of the computation of $T_{n}\left(x\right)$
 since $\cosh\left(n\ln z\right)$ costs only $O\left(M\left(P\right)\ln P\right)$.
@@ -117,8 +120,7 @@ since $\cosh\left(n\ln z\right)$ costs only $O\left(M\left(P\right)\ln P\right)$
 
 
 The computational cost of $U_{n}\left(x\right)$ is asymptotically
-equivalent to that of $T_{n}\left(x\right)$. The case $x\approx1$
-is considered below.
+equivalent to that of $T_{n}\left(x\right)$.
 
 
 \subsection{Algebraic formulae}
@@ -126,9 +128,10 @@ is considered below.
 One may rewrite Eqs.~(\ref{eq:Tcosh1})-(\ref{eq:Usinh1}) as\begin{align}
 T_{n} & =\frac{1}{2}\left(x+\sqrt{x^{2}-1}\right)^{n}+\frac{1}{2}\left(x+\sqrt{x^{2}-1}\right)^{-n},\label{eq:T0sqrt}\\
 U_{n} & =\frac{1}{2\sqrt{x^{2}-1}}\left[\left(x+\sqrt{x^{2}-1}\right)^{n+1}-\left(x+\sqrt{x^{2}-1}\right)^{-n-1}\right].\label{eq:U0sqrt}\end{align}
-Again we assume that $x$ is not close to $1$ (otherwise there is
-a cancellation in the formula for $U_{n}$). The calculation of the
-$n$-th power can be performed in
+Again the case $x\approx 1$ is special (there is
+a cancellation in the formula for $U_{n}$). 
+For other $x$, the calculation of the
+$n$-th power can be performed on average with
 $\approx\frac{3}{2}\log_{2}n$ multiplications and
 incurs a loss of $\log_{10}n$ digits in roundoff error, so the working
 precision must be increased by this number of digits. The asymptotic
@@ -152,8 +155,8 @@ x^{2}-1=q\cdot10^{-Q}\left(2+q\cdot10^{-Q}\right)\end{equation}
  is small and \begin{equation}
 z\approx1+10^{-Q/2}\sqrt{2q}.\end{equation}
  To find $P+\log_{10}n$ digits of $z$, one needs to know $q$ with
-$P+\log_{10}n-Q/2$ digits (relative accuracy). One computes $\ln z-1$
-to $P+\log_{10}n-Q/2$ digits and then evaluates $\cosh\left(n\ln z\right)$
+$P+\log_{10}n-Q/2$ digits (relative accuracy). One computes $\ln z$ (a small number)
+to $P+\log_{10}n-Q/2$ digits using the Taylor series and then evaluates $\cosh\left(n\ln z\right)$
 to $P$ digits. In this way the loss of precision can be avoided.
 The total cost is \begin{equation}
 O\left[M\left(P\right)\ln P\right]+O\left[M\left(P+\log_{10}n-Q/2\right)\ln\left(P+\log_{10}n-Q/2\right)\right].\end{equation}
@@ -169,7 +172,7 @@ than that given by Eq.~(\ref{eq:Cost1}).
 The Chebyshev polynomials satisfy linear recurrences\begin{equation}
 T_{n+2}\left(x\right)=2xT_{n}\left(x\right)-T_{n-1}\left(x\right).\end{equation}
 A straightforward computation would require $O\left(n\right)$ long
-multiplications. The matrix form of the same relation,\begin{eqnarray}
+multiplications. But the matrix form of the same relation,\begin{eqnarray}
 \left(\begin{array}{c}
 T_{n+1}\\
 T_{n}\end{array}\right) & = & \left[\begin{array}{cc}
@@ -189,25 +192,25 @@ the fast algorithm is used for matrix powers. Each squaring loses
 one bit of precision, therefore the working precision must be increased
 by $\log_{10}n$ digits. The asymptotic cost is given by Eq.~(\ref{eq:Cost2}).
 The actual number of required operations is several times higher than
-that of Eqs.~(\ref{eq:T0sqrt})-(\ref{eq:U0sqrt}) because matrix
-multiplication takes longer than scalar multiplication. Therefore
-the linear recurrence method offers no advantage.
+that in Eqs.~(\ref{eq:T0sqrt})-(\ref{eq:U0sqrt}) because of the matrix
+multiplication overhead. Therefore
+the linear recurrence method offers no practical advantage.
 
 
 \subsection{Quadratic recurrences and Fibonacci sequences}
 
-The following quadratic recurrences can be used \cite{AS64}, \begin{align}
+The following relations can be used \cite{AS64}, \begin{align}
 T_{a+b}\left(x\right) & =2T_{a}\left(x\right)T_{b}\left(x\right)-T_{a-b}\left(x\right),\label{eq:Tquad}\\
 U_{a+b}\left(x\right) & =2U_{a}\left(x\right)T_{b}\left(x\right)-U_{a-b}\left(x\right).\label{eq:Uquad}\end{align}
  These relations recursively reduce the computation of $T_{n}\left(x\right)$,~$U_{n}\left(x\right)$
 to the same computation for smaller numbers $n$ until we reach $T_{n}$,~$U_{n}$
-for $n=1$ or $n=0$ that do not require any computations. 
+for $n=1$ or $n=0$ that do not require any work. 
 
 To avoid recursion, one can build a sequence of indices $k_{1}$,
-$k_{2}$, ..., $n$, such that $T_{k_{i}}\left(x\right)$ for each
+$k_{2}$, ..., $n$ such that the value $T_{k_{i}}\left(x\right)$ for each
 subsequent element $k_{i}$ can be computed using the recurrences
-and the previously found values $T_{k}\left(x\right)$. For example,
-the sequence (1, 2, 3, 5, 10, 15) directs one to compute first $T_{2}\left(x\right)$
+and previously found values $T_{k}\left(x\right)$. For example,
+the sequence (2, 3, 5, 10, 15) directs one to first compute $T_{2}\left(x\right)$
 using the recurrence with $a=b=1$, then $T_{3}\left(x\right)$ using
 $a=2$ and $b=1$, then $T_{5}\left(x\right)$, $T_{10}\left(x\right)$,
 and finally $T_{15}\left(x\right)$. If a sequence has length $L$,
@@ -220,24 +223,26 @@ LM\left(P+\log_{10}n\right).\end{equation}
 
 
 The performance of this method depends on the length of the sequence
-($k_{1}$, ..., $k_{L}=n$). One method to build the sequence was
+($k_{1}=2$, ..., $k_{L}=n$). One method to build the sequence was
 used in Ref.~\cite{Koepf99}. This method employs recurrences only
 with $a=b$ or $a=b+1$. For example, to compute $T_{39}\left(x\right)$
 one divides $39$ by $2$ and uses the recurrence with $a=20$ and
 $b=19$. Then one divides $19$ by $2$ and uses $a=10$ and $b=9$,
-etc. The resulting chain is (1, 2, 3, 4, 5, 9, 10, 19, 20, 39). For
-any $n$ the chain can be generated by examining the bits in the binary
-representation of $n$. The bisection method gives $L\approx2\log_{2}n$
+etc. The resulting chain is (2, 3, 4, 5, 9, 10, 19, 20, 39). For
+a given $n$ the bisection chain can be easily generated by examining the binary
+representation of $n$. The bisection method gives 
+sequences with $L\approx2\log_{2}n$
 elements and the cost is $4/3$ of that given by Eq.~(\ref{eq:Cost2}).
 
 The sequence obtained using bisection is not the most optimal one.
-For example, for $n=39$ there is a shorter sequence (1, 2, 3, 6,
+For example, for $n=39$ there is a shorter sequence (2, 3, 6,
 9, 15, 24, 39) that is reminiscent of the Fibonacci sequence because
 many elements are sums of the two previous elements. Exhaustive search for
 optimal sequences for all $n$ up to $n=4000$ gives on average $L_{\textrm{opt}}\left(n\right)\approx1+\log_{1.58}n$.
-This is approximately the same as the coefficient in Eq.~(\ref{eq:Cost2}).
-Therefore the method of quadratic recurrences does not improve on the
-algebraic method, even when optimal sequences can be found.
+The coefficient $1.58$ is approximately the same as that in Eq.~(\ref{eq:Cost2}).
+Therefore the method of quadratic recurrences does not improve
+on the performance or roundoff error of the
+algebraic method even if optimal sequences are used.
 
 \subsection{Explicit coefficients}
 
@@ -270,7 +275,7 @@ implementations.
 
 \section{Conclusions}
 
-I obtained explicit cost estimates for the described methods of arbitrary-precision
+I obtained explicit cost estimates for all major methods of arbitrary-precision
 computation of the Chebyshev polynomials. The most efficient methods
 fall into two categories: one described by the cost estimate of Eq.~(\ref{eq:Cost1})
 and the other by Eq.~(\ref{eq:Cost2}). It is found by inspection
@@ -281,9 +286,10 @@ determined without considering a particular implementation of the
 methods. The methods of linear and quadratic recurrences have the
 same asymptotic cost {[}Eq.~(\ref{eq:Cost2}){]} 
 but are inferior to the trigonometric and algebraic formulae.
-A choice of the
-best method for given $n$ and $P$ requires system-specific benchmarks
-(see also \cite{Koepf99}). 
+The choice of the
+best method for given $n$ and $P$ requires system-specific benchmarks.
+
+I am grateful to Matthew Parry for helpful discussions.
 
 \begin{thebibliography}{1}
 \bibitem{AS64}M. Abramowitz and I. Stegun, eds., \emph{Handbook of special functions}
