@@ -1,8 +1,7 @@
 
 Chapter()"String manipulation";
 
-AddAnchor("SetStringMid");
-SubSection()"SetStringMid";
+CmdDescription("SetStringMid", "Change a substring");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()"SetStringMid(index,substring,string)";
@@ -31,8 +30,7 @@ SeeAlso({"StringMid","Length"});
 
 
 
-AddAnchor("StringMid");
-SubSection()"StringMid";
+CmdDescription("StringMid", "Retrieve a substring");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()"StringMid(index,length,string)";
@@ -63,9 +61,9 @@ SeeAlso({"SetStringMid","Length"});
 
 
 
-AddAnchor("String");
-AddAnchor("Atom");
-SubSection()"Converting atoms to strings and vice versa";
+AddBody(HtmlAnchor() "String");
+AddBody(HtmlAnchor() "Atom");
+CmdDescription("String, Atom", "Convert atom to string and vice versa");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()
@@ -102,8 +100,8 @@ Out> a;
 ");
 
 
-AddAnchor("ConcatStrings");
-SubSection()"ConcatStrings";
+
+CmdDescription("ConcatStrings", "Concatenate strings");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()"ConcatStrings(strings)";
@@ -129,8 +127,9 @@ Topical()"See Also";
 SeeAlso({":"});
 
 
-AddAnchor("LocalSymbols");
-SubSection()"LocalSymbols";
+
+CmdDescription("LocalSymbols", 
+               "Create unique local symbols with given prefix");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"LocalSymbols(...)body";
@@ -167,8 +166,9 @@ Topical()"See Also";
 SeeAlso({"UniqueConstant"});
 
 
-AddAnchor("PatchString");
-SubSection()"PatchString";
+
+CmdDescription("PatchString", 
+               "Execute commands between &lt? and ?&gt in string");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()"PatchString(string)";

@@ -2,8 +2,7 @@
 Chapter()"Constants";
 
 
-AddAnchor("%");
-SubSection()"%";
+CmdDescription("%", "Previous result");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()"%";
@@ -46,9 +45,9 @@ SeeAlso({"LazyGlobal"});
 
 
 
-AddAnchor("True");
-AddAnchor("False");
-SubSection()"Boolean constants";
+AddBody(HtmlAnchor() "True");
+AddBody(HtmlAnchor() "False");
+CmdDescription("True, False", "Boolean constants");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()
@@ -66,8 +65,8 @@ Topical()"See Also";
 SeeAlso({"And","Or","Not"});
 
 
-AddAnchor("EndOfFile");
-SubSection()"EndOfFile";
+
+CmdDescription("EndOfFile", "End-of-file marker");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()"EndOfFile";
@@ -80,8 +79,8 @@ operation will stop reading the file at that point.
 ";
 
 
-AddAnchor("Infinity");
-SubSection()"Infinity";
+
+CmdDescription("Infinity", "Constant representing mathematical infinity");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Infinity";
@@ -107,8 +106,8 @@ Out> True;
 ");
 
 
-AddAnchor("Pi");
-SubSection()"Pi";
+
+CmdDescription("Pi", "Mathematical constant, 3.14159...");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Pi";
@@ -137,8 +136,7 @@ SeeAlso({"Sin","Cos"});
 
 
 
-AddAnchor("Undefined");
-SubSection()"Undefined";
+CmdDescription("Undefined", "Constant signifying an undefined result");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Undefined";

@@ -1,17 +1,16 @@
 
 Chapter() "Predicates";
 
-Text() "
+ChapterIntro("
 A predicate is a function that returns a boolean value, i.e. " :
 HtmlTerm("True") : " or " : HtmlTerm("False") : ". Predicates are
 often used in patterns, For instance, a rule that only holds for a
 positive integer would use a pattern like " :
-HtmlTerm("n_IsPositiveInteger") : ".";
+HtmlTerm("n_IsPositiveInteger") : ".");
 
 
 
-AddAnchor(Lt());
-SubSection() Lt();
+CmdDescription(Lt(), "Test whether lhs is smaller than rhs");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -48,8 +47,7 @@ SeeAlso({"IsNumber", "IsInfinity", "N"});
 
 
 
-AddAnchor(Gt());
-SubSection() Gt();
+CmdDescription(Gt(), "Test whether lhs is larger than rhs");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -86,8 +84,7 @@ SeeAlso({"IsNumber", "IsInfinity", "N"});
 
 
 
-AddAnchor(Lt():"=");
-SubSection() Lt():"=";
+CmdDescription(Lt():"=", "Test whether lhs is smaller or equal rhs");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -125,8 +122,7 @@ SeeAlso({"IsNumber", "IsInfinity", "N"});
 
 
 
-AddAnchor(Gt():"=");
-SubSection() Gt():"=";
+CmdDescription(Gt():"=", "Test whether lhs is larger or equal rhs");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -164,8 +160,7 @@ SeeAlso({"IsNumber", "IsInfinity", "N"});
 
 
 
-AddAnchor("!=");
-SubSection() "!=";
+CmdDescription("!=", "Test whether two expressions are not equal");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -195,8 +190,7 @@ SeeAlso({"="});
 
 
 
-AddAnchor("=");
-SubSection() "=";
+CmdDescription("=", "Test whether two expressoins are equal");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -234,8 +228,7 @@ SeeAlso({"!=", "Equals"});
 
 
 
-AddAnchor("Not");
-SubSection()"Not";
+CmdDescription("Not", "Logical negation");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()"Not bool";
@@ -265,8 +258,7 @@ SeeAlso({"And","Or"});
 
 
 
-AddAnchor("And");
-SubSection()"And";
+CmdDescription("And", "Logical conjunction");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()
@@ -303,8 +295,7 @@ SeeAlso({"Or","Not"});
 
 
 
-AddAnchor("Or");
-SubSection()"Or";
+CmdDescription("Or", "Logical disjunction");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()"a1 Or a2  (prec. 101) <br>
@@ -337,8 +328,7 @@ SeeAlso({"And","Not"});
 
 
 
-AddAnchor("IsFreeOf");
-SubSection() "IsFreeOf";
+CmdDescription("IsFreeOf", "Test whether expression depends on variable");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -382,8 +372,7 @@ SeeAlso({"Contains"});
 
 
 
-AddAnchor("IsZeroVector");
-SubSection() "IsZeroVector";
+CmdDescription("IsZeroVector", "Test whether list contains only zeroes");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -410,8 +399,7 @@ SeeAlso({"IsList", "ZeroVector"});
 
 
 
-AddAnchor("IsNonObject");
-SubSection() "IsNonObject";
+CmdDescription("IsNonObject", "Test whether argument is not an Object()");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -434,8 +422,7 @@ SeeAlso({"Object"}):
 
 
 
-AddAnchor("IsEven");
-SubSection() "IsEven";
+CmdDescription("IsEven", "Test whether integer is even");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -462,8 +449,7 @@ SeeAlso({"IsOdd", "IsInteger"});
 
 
 
-AddAnchor("IsOdd");
-SubSection() "IsOdd";
+CmdDescription("IsOdd", "Test whether integer is odd");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -490,8 +476,7 @@ SeeAlso({"IsEven", "IsInteger"});
 
 
 
-AddAnchor("IsFunction");
-SubSection() "IsFunction"; 
+CmdDescription("IsFunction", "Test whether argument is a composite object");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -518,8 +503,7 @@ SeeAlso({"IsAtom", "IsList", "Type"});
 
 
 
-Anchor("IsAtom");
-SubSection() "IsAtom"; 
+CmdDescription("IsAtom", "Test whether argument is an atom");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -545,8 +529,7 @@ SeeAlso({"IsFunction", "IsNumber", "IsString"});
 
 
 
-Anchor("IsString");
-SubSection() "IsString"; 
+CmdDescription("IsString", "Test whether argument is an string");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -572,8 +555,7 @@ SeeAlso({"IsAtom", "IsNumber"});
 
 
 
-Anchor("IsNumber");
-SubSection() "IsNumber"; 
+CmdDescription("IsNumber", "Test whether argument is a number");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -607,8 +589,7 @@ SeeAlso({"IsAtom", "IsString", "IsInteger", "IsPositiveNumber",
 
 
 
-Anchor("IsList");
-SubSection() "IsList"; 
+CmdDescription("IsList", "Test whether argument is a list");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -634,8 +615,7 @@ SeeAlso({"IsFunction"});
 
 
 
-AddAnchor("IsBound");
-SubSection() "IsBound";
+CmdDescription("IsBound", "Test whether a variable is bound to a value");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -663,8 +643,7 @@ SeeAlso({"IsAtom"});
 
 
 
-AddAnchor("IsBoolean");
-SubSection()"IsBoolean";
+CmdDescription("IsBoolean", "Test whether argument is a Boolean");
 StandardLib();
 
 Topical()"Calling Sequence";
@@ -695,8 +674,8 @@ SeeAlso({"True","False"});
 
 
 
-AddAnchor("IsNegativeNumber");
-SubSection() "IsNegativeNumber";
+CmdDescription("IsNegativeNumber", 
+               "Test whether argument is a negative number");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -724,8 +703,8 @@ SeeAlso({"IsNumber", "IsPositiveNumber", "IsNotZero",
 
 
 
-AddAnchor("IsNegativeInteger");
-SubSection() "IsNegativeInteger";
+CmdDescription("IsNegativeInteger", 
+               "Test whether argument is a negative integer");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -752,8 +731,8 @@ SeeAlso({"IsPositiveInteger", "IsNonZeroInteger", "IsNegativeNumber"});
 
 
 
-AddAnchor("IsPositiveNumber");
-SubSection() "IsPostiveNumber";
+CmdDescription("IsPositiveNumber", 
+               "Test whether argument is a positive number");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -781,8 +760,8 @@ SeeAlso({"IsNumber", "IsNegativeNumber", "IsNotZero",
 
 
 
-AddAnchor("IsPositiveInteger");
-SubSection() "IsPositiveInteger";
+CmdDescription("IsPositiveInteger", 
+               "Test whether argument is a positive integer");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -809,8 +788,7 @@ SeeAlso({"IsNegativeInteger", "IsNonZeroInteger", "IsPositiveNumber"});
 
 
 
-AddAnchor("IsNotZero");
-SubSection() "IsNotZero";
+CmdDescription("IsNotZero", "Test whether argument is a nonzero number");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -830,7 +808,7 @@ Text() HtmlCommand("
 In> IsNotZero(3.25);
 Out> True;
 In> IsNotZero(0);
-Out> True;");
+Out> False;");
 
 Topical() "See Also";
 SeeAlso({"IsNumber", "IsPositiveNumber", "IsNegativeNumber",
@@ -838,8 +816,8 @@ SeeAlso({"IsNumber", "IsPositiveNumber", "IsNegativeNumber",
 
 
 
-AddAnchor("IsNonZeroInteger");
-SubSection() "IsNonZeroInteger";
+CmdDescription("IsNonZeroInteger", 
+               "Test whether argument is a nonzero integer");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -865,8 +843,7 @@ SeeAlso({"IsPositiveInteger", "IsNegativeInteger", "IsNotZero"});
 
 
 
-AddAnchor("IsInfinity");
-SubSection() "IsInfinity";
+CmdDescription("IsInfinity", "Test whether argument is an infinity");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -893,8 +870,8 @@ SeeAlso({"Integer"});
 
 
 
-AddAnchor("IsPositiveReal");
-SubSection() "IsPositiveReal";
+CmdDescription("IsPositiveReal", 
+               "Test whether argument is numerically positive");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -928,8 +905,8 @@ SeeAlso({"IsNegativeReal", "IsPositiveNumber", "N"});
 
 
 
-AddAnchor("IsNegativeReal");
-SubSection() "IsNegativeReal";
+CmdDescription("IsNegativeReal", 
+               "Test whether argument is numerically negative");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -963,8 +940,7 @@ SeeAlso({"IsPositiveReal", "IsNegativeNumber", "N"});
 
 
 
-AddAnchor("IsConstant");
-SubSection()"IsConstant";
+CmdDescription("IsConstant", "Test whether argument is constant");
 StandardLib();
 
 Topical()"Calling Sequence";

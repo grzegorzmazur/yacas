@@ -1,8 +1,7 @@
 
 Chapter() "Variables";
 
-AddAnchor(":=");
-SubSection() ":=";
+CmdDescription(":=", "Assignment");
 StandardLib();
 
 Topical() "Calling sequence";
@@ -145,8 +144,7 @@ SeeAlso({"Set", "Clear", "[]", "Rule", "Infix", "Eval"});
 
 
 
-AddAnchor("Set");
-SubSection() "Set";
+CmdDescription("Set", "Assignment");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -179,8 +177,7 @@ SeeAlso({"Clear", ":="});
 
 
 
-AddAnchor("Clear");
-SubSection() "Clear";
+CmdDescription("Clear", "Undo an assignment");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -213,8 +210,7 @@ SeeAlso({"Set", ":="});
 
 
 
-AddAnchor("Local");
-SubSection() "Local";
+CmDDescription("Local", "Declare local variables");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -267,8 +263,7 @@ SeeAlso({"LocalSymbols", "Prog", "[]", "UnFence"});
 
 
 
-AddAnchor("++");
-SubSection() "++";
+CmdDescription("++", "Increment variable");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -301,8 +296,7 @@ SeeAlso({"--", ":="});
 
 
 
-AddAnchor("--");
-SubSection() "--";
+CmdDescription("++", "Decrement variable");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -335,8 +329,7 @@ SeeAlso({"++", ":="});
 
 
 
-AddAnchor("Object");
-SubSection() "Object";
+CmdDescription("Object", "Create an incomplete type");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -369,8 +362,7 @@ SeeAlso({"IsNonObject"});
 
 
 
-AddAnchor("LazyGlobal");
-SubSection()"LazyGlobal";
+CmdDescription("LazyGlobal", "Global variable is to be evaluated lazily");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()"LazyGlobal(var)";
@@ -419,8 +411,7 @@ SeeAlso({"Set","Clear","Local","%","I"});
 
 
 
-AddAnchor("UniqueConstant");
-SubSection()"UniqueConstant";
+CmdDescription("UniqueConstant", "Create a unique identifier");
 StandardLib();
 
 Topical()"Calling Sequence";

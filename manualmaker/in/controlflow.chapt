@@ -1,7 +1,6 @@
 Chapter()"Control flow functions";
 
-AddAnchor("MaxEvalDepth");
-SubSection() "MaxEvalDepth";
+CmdDescription("MaxEvalDepth", "Set the maximum evaluation depth");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -59,8 +58,7 @@ Out> 214301721437253464189685009812000362112280962341106721488750077674070210224
 
 
 
-AddAnchor("Hold");
-SubSection() "Hold";
+CmdDescription("Hold", "Do not evaluate the argument");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -86,8 +84,7 @@ SeeAlso({"Eval", "HoldArg"});
 
 
 
-AddAnchor("Eval");
-SubSection() "Eval";
+CmdDescription("Eval", "Evaluate the argument");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -128,8 +125,7 @@ SeeAlso({"Hold", "HoldArg", ":="});
 
 
 
-AddAnchor("While");
-SubSection() "While";
+CmdDescription("While", "Loop while a condition is met");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -180,8 +176,8 @@ Topical() "See Also";
 SeeAlso({"Until", "For"});
 
 
-AddAnchor("Until");
-SubSection() "Until";
+
+CmdDescription("Until", "Loop until a condition is met");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -239,8 +235,7 @@ SeeAlso({"While", "For"});
 
 
 
-AddAnchor("If");
-SubSection() "If";
+CmdDescription("If", "Branch point");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -286,8 +281,7 @@ Out> True;");
 
 
 
-AddAnchor("SystemCall");
-SubSection() "SystemCall";
+CmdDescription("SystemCall", "Pass a command to the shell");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -315,8 +309,7 @@ SeeAlso({"Secure"});
 
 
 
-AddAnchor("Function");
-SubSection() "Function";
+CmdDescription("Function", "Define a function");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -352,8 +345,7 @@ SeeAlso({"TemplateFunction", "Rule", "RuleBase", ":="});
 
 
 
-AddAnchor("Use");
-SubSection() "Use";
+CmdDescription("Use", "Load a file, but not twice");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -378,8 +370,7 @@ SeeAlso({"Load", "DefLoad", "DefaultDirectory"});
 
 
 
-AddAnchor("For");
-SubSection() "For";
+CmdDescription("For", "C-style for loop");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -430,8 +421,7 @@ SeeAlso({"While", "Until", "ForEach"});
 
 
 
-AddAnchor("ForEach");
-SubSection() "ForEach";
+CmdDescription("ForEach", "Loop over all entries in list");
 StandardLib();
 
 Topical() "Calling sequence";
@@ -465,8 +455,7 @@ SeeAlso({"For"});
 
 
 
-AddAnchor("Apply");
-SubSection() "Apply";
+CmdDescription("Apply", "Apply a function");
 StandardLib();
 
 Topical() "Calling sequence";
@@ -503,8 +492,7 @@ SeeAlso({"Map", "MapSingle", "@"});
 
 
 
-AddAnchor("MapArgs");
-SubSection()"MapArgs";
+CmdDescription("MagArgs", "Apply a function to all top-level arguments");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -534,8 +522,7 @@ SeeAlso({"MapSingle","Map", "Apply"});
 
 
 
-AddAnchor("Subst");
-SubSection() "Subst";
+CmdDescription("Subst", "Perform a substitution");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -571,8 +558,7 @@ SeeAlso({"WithValue", "/:"});
 
 
 
-AddAnchor("WithValue");
-SubSection() "WithValue";
+CmdDescription("WithValue", "Temporary assignment during an evaluation");
 StandardLib();
 
 Topical() "Calling Sequence";
@@ -610,9 +596,9 @@ SeeAlso({"Subst", "/:"});
 
 
 
-AddAnchor("/:");
-AddAnchor("/::");
-SubSection()"Local simplification rules";
+AddBody(HtmlAnchor() "/:");
+AddBody(HtmlAnchor() "/::");
+CmdDescription("/:, /::", "Local simplification rules");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"
@@ -681,8 +667,7 @@ SeeAlso({"Subst"});
 
 
 
-AddAnchor("SetHelpBrowser");
-SubSection()"SetHelpBrowser";
+CmdDescription("SetHelpBrowser", "Set the HTML browser to use for help");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"SetHelpBrowser(helpbrowser)";
@@ -712,9 +697,7 @@ SeeAlso({"Help"});
 
 
 
-
-AddAnchor("TraceStack");
-SubSection()"TraceStack";
+CmdDescription("TraceStack", "Show calling stack after an error occurs");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()"TraceStack(expression)";
@@ -775,8 +758,7 @@ SeeAlso({"TraceExp","TraceRule"});
 
 
 
-AddAnchor("TraceExp");
-SubSection() "TraceExp";
+CmdDescription("TraceExp", "Evaluate with tracing enabled");
 BuiltIn();
 
 Topical() "Calling Sequence";
@@ -832,8 +814,7 @@ SeeAlso({"TraceStack", "TraceRule"});
 
 
 
-AddAnchor("TraceRule");
-SubSection() "TraceRule";
+CmdDescription("TraceRule", "Turn on tracing for a particular function");
 BuiltIn();
 
 Topical() "Calling Sequence";

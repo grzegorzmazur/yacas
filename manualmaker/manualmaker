@@ -32,26 +32,24 @@ WriteString(title);NewLine();
 currentBody := Assoc("Body",plain["Chapters"][currentChapter]);
 
   plain["Chapters"][currentChapter]["Index"]:=currentChapterIndex;
-  plain["Chapters"][currentChapter]["KeyWords"]:=HtmlAnchor()ChapterTag(currentChapterIndex);
+  plain["Chapters"][currentChapter]["Intro"]:=HtmlTag(chapter, title);
+  plain["Chapters"][currentChapter]["Commands"]:={};
 
 /*TODO remove? AddAnchor(ChapterTag(currentChapterIndex)); */
-  AddBody(HtmlTag(chapter,title));
 ];
 
-
-AddAnchor(anchor):=
+ChapterIntro(text) :=
 [
-  plain["Chapters"][currentChapter]["KeyWords"] :=
-    plain["Chapters"][currentChapter]["KeyWords"] :
-    HtmlLink(anchor,
-/*       "ref.html", */
-          plain["BaseName"] : "chapter" : String(currentChapterIndex) : ".html", 
-       anchor,"Chapters"):", ";
-/*
-*/
+  plain["Chapters"][currentChapter]["Intro"] :=
+     plain["Chapters"][currentChapter]["Intro"] : text : newline;
+];
 
-
-   AddBody(HtmlAnchor()anchor);
+AddAnchor(aAnchor):=
+[
+  AddBody(HtmlAnchor()aAnchor);
+  plain["Chapters"][currentChapter]["Commands"] :=
+     Concat(plain["Chapters"][currentChapter]["Commands"], 
+            {{ChapterLink(aAnchor), ""}});
 ];
 
 SectionTag(chapterIndex,sectionIndex):=
@@ -72,6 +70,19 @@ WriteString(title);NewLine();
   AddBody(HtmlTag(section,"<HR>":title));
 ];
 
+CmdDescription(cmd, desc) :=
+[
+  AddBody(HtmlAnchor() cmd);
+  SubSection(cmd : " -- " : desc);
+  plain["Chapters"][currentChapter]["Commands"] :=
+     Concat(plain["Chapters"][currentChapter]["Commands"], 
+            {{ChapterLink(cmd), desc}});
+];   
+
+ChapterLink(aLink) := 
+  HtmlLink(aLink, plain["BaseName"] : "chapter" 
+                                    : String(currentChapterIndex) : ".html",
+           aLink, "Chapters");
 
 SubSection(title):=
 [
@@ -278,7 +289,7 @@ NewLine();
 
   ToFile(HtmlFile(filename))
   [
-    Local(bodytext,chapter,chapters);
+    Local(bodytext,chapter,chapters,pcc);
     bodytext:="";
     chapters:=AssocIndices(plain["Chapters"]);
     bodytext:=bodytext : HtmlTag(book,plain["Title"]);
@@ -287,9 +298,10 @@ NewLine();
   
     ForEach(chapter,chapters)
     [
-      bodytext:=bodytext :
-                plain["Chapters"][chapter]["KeyWords"] :
-                plain["Chapters"][chapter]["Body"] : "<p>  </P><HR>";
+      pcc := plain["Chapters"][chapter];	
+      bodytext:=bodytext : (HtmlAnchor() ChapterTag(pcc["Index"]))
+                : ChapterHeader(pcc["Commands"]) : pcc["Intro"] : pcc["Body"] 
+                : "<p>  </P><HR>";
     ];
 
     WriteString(
@@ -335,18 +347,49 @@ NewLine();
 
   ForEach(chapter,chapters)
   [
-    Local(file,index);
-    index:=plain["Chapters"][chapter]["Index"];
-    file:=plain["BaseName"] : "chapter" : String(index) : ".html";
-    
-    ToFile(HtmlFile(file))
-      WriteString(
-        HtmlTag(html,
-		plain["Chapters"][chapter]["KeyWords"] :
-                HtmlTitle(chapter) :
-                HtmlTag(font,HtmlTag(body,plain["Chapters"][chapter]["Body"])) /*hier*/
-               ) );
+    Local(pcc,file,index,str,keyword);
+    pcc := plain["Chapters"][chapter];
+    index := pcc["Index"];
+    file := plain["BaseName"] : "chapter" : String(index) : ".html";
+    str := HtmlAnchor() ChapterTag(index);
+    str := str : ChapterHeader(pcc["Commands"]);
+    str := str : pcc["Intro"] : "<p> </p>" : newline;
+    If (pcc["Commands"] != {}, 
+        str := str : ChapterTOC(pcc["Commands"]));
+    str := str : pcc["Body"];
+    str := HtmlTitle(chapter) : newline : HtmlTag(body, HtmlTag(font, str));
+    ToFile(HtmlFile(file)) WriteString(HtmlTag(html, str));
   ];
+];
+
+10 # ChapterHeader({}) <-- "";
+20 # ChapterHeader(_alist) <--
+[
+  Local(str, keyword);
+  str := Head(alist)[1];
+  ForEach(keyword, Tail(alist))
+    str := str : ", " : keyword[1];
+  str := str : "." : newline;
+];
+
+ChapterTOC(alist) :=
+[
+  Local(str, flag, keyword);
+  flag := True;
+  ForEach(keyword, alist) 
+     flag := flag And (keyword[2] = "");
+  If (flag, 
+      str := "", /* If there are no descriptions, a TOC has no use */
+      [
+        str := "<CENTER><TABLE>";
+       	str := str : newline;	
+       	ForEach(keyword, alist)
+       	  str := str : "<TR BGCOLOR=#E0E0E0>" : newline
+       		     : "<TD>" : keyword[1] : "</TD>" : newline
+       		     : "<TD>" : keyword[2] : "</TD>" : newline
+       		     : "</TR>" : newline;
+       	str := str : "</TABLE></CENTER>" : newline;
+      ]);
 ];
 
 BookList():=
@@ -390,6 +433,18 @@ WriteString("Creating book index"); NewLine();
 ];
 
 
+10 # SeeAlso({}) <-- True;
+20 # SeeAlso(_list) <--
+     [
+	Local(item);
+        AddBody(SeeAlso1(Head(list)));
+	ForEach(item, Tail(list)) AddBody(", " : SeeAlso1(item));
+	AddBody(".");
+     ];
+
+SeeAlso1(_seealso) <-- HtmlLink(seealso, "ref.html", seealso, "Chapters");
+
+/*
 SeeAlso(_list)<--
 [
   ForEach(item,list)
@@ -397,6 +452,7 @@ SeeAlso(_list)<--
     AddBody(HtmlLink(item,"ref.html",item,"Chapters"):", ");
   ];
 ];
+*/
 
 BuiltIn() <-- AddBody("Internal function<br>");
 

@@ -1,4 +1,7 @@
 <HTML>
+<HEAD><TITLE>Predicates</TITLE></HEAD>
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
 <A NAME="c10">
 
 </A>
@@ -47,6 +50,18 @@ IsOdd
 , <A HREF="refchapter10.html#IsFunction" TARGET="Chapters">
 IsFunction
 </A>
+, <A HREF="refchapter10.html#IsAtom" TARGET="Chapters">
+IsAtom
+</A>
+, <A HREF="refchapter10.html#IsString" TARGET="Chapters">
+IsString
+</A>
+, <A HREF="refchapter10.html#IsNumber" TARGET="Chapters">
+IsNumber
+</A>
+, <A HREF="refchapter10.html#IsList" TARGET="Chapters">
+IsList
+</A>
 , <A HREF="refchapter10.html#IsBound" TARGET="Chapters">
 IsBound
 </A>
@@ -83,8 +98,7 @@ IsNegativeReal
 , <A HREF="refchapter10.html#IsConstant" TARGET="Chapters">
 IsConstant
 </A>
-, <HEAD><TITLE>Predicates</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
-<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+.
 <H1>
 Predicates
 </H1>
@@ -92,11 +106,231 @@ Predicates
 A predicate is a function that returns a boolean value, i.e. <B><TT>True</TT></B> or <B><TT>False</TT></B>. Predicates are
 often used in patterns, For instance, a rule that only holds for a
 positive integer would use a pattern like <B><TT>n_IsPositiveInteger</TT></B>.
+<p> </p>
+<CENTER><TABLE>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#&lt;" TARGET="Chapters">
+&lt;
+</A>
+</TD>
+<TD>Test whether lhs is smaller than rhs</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#&gt;" TARGET="Chapters">
+&gt;
+</A>
+</TD>
+<TD>Test whether lhs is larger than rhs</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#&lt;=" TARGET="Chapters">
+&lt;=
+</A>
+</TD>
+<TD>Test whether lhs is smaller or equal rhs</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#&gt;=" TARGET="Chapters">
+&gt;=
+</A>
+</TD>
+<TD>Test whether lhs is larger or equal rhs</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#!=" TARGET="Chapters">
+!=
+</A>
+</TD>
+<TD>Test whether two expressions are not equal</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#=" TARGET="Chapters">
+=
+</A>
+</TD>
+<TD>Test whether two expressoins are equal</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#Not" TARGET="Chapters">
+Not
+</A>
+</TD>
+<TD>Logical negation</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#And" TARGET="Chapters">
+And
+</A>
+</TD>
+<TD>Logical conjunction</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#Or" TARGET="Chapters">
+Or
+</A>
+</TD>
+<TD>Logical disjunction</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsFreeOf" TARGET="Chapters">
+IsFreeOf
+</A>
+</TD>
+<TD>Test whether expression depends on variable</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsZeroVector" TARGET="Chapters">
+IsZeroVector
+</A>
+</TD>
+<TD>Test whether list contains only zeroes</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsNonObject" TARGET="Chapters">
+IsNonObject
+</A>
+</TD>
+<TD>Test whether argument is not an Object()</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsEven" TARGET="Chapters">
+IsEven
+</A>
+</TD>
+<TD>Test whether integer is even</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsOdd" TARGET="Chapters">
+IsOdd
+</A>
+</TD>
+<TD>Test whether integer is odd</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsFunction" TARGET="Chapters">
+IsFunction
+</A>
+</TD>
+<TD>Test whether argument is a composite object</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsAtom" TARGET="Chapters">
+IsAtom
+</A>
+</TD>
+<TD>Test whether argument is an atom</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsString" TARGET="Chapters">
+IsString
+</A>
+</TD>
+<TD>Test whether argument is an string</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsNumber" TARGET="Chapters">
+IsNumber
+</A>
+</TD>
+<TD>Test whether argument is a number</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsList" TARGET="Chapters">
+IsList
+</A>
+</TD>
+<TD>Test whether argument is a list</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsBound" TARGET="Chapters">
+IsBound
+</A>
+</TD>
+<TD>Test whether a variable is bound to a value</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsBoolean" TARGET="Chapters">
+IsBoolean
+</A>
+</TD>
+<TD>Test whether argument is a Boolean</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsNegativeNumber" TARGET="Chapters">
+IsNegativeNumber
+</A>
+</TD>
+<TD>Test whether argument is a negative number</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsNegativeInteger" TARGET="Chapters">
+IsNegativeInteger
+</A>
+</TD>
+<TD>Test whether argument is a negative integer</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsPositiveNumber" TARGET="Chapters">
+IsPositiveNumber
+</A>
+</TD>
+<TD>Test whether argument is a positive number</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsPositiveInteger" TARGET="Chapters">
+IsPositiveInteger
+</A>
+</TD>
+<TD>Test whether argument is a positive integer</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsNotZero" TARGET="Chapters">
+IsNotZero
+</A>
+</TD>
+<TD>Test whether argument is a nonzero number</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsNonZeroInteger" TARGET="Chapters">
+IsNonZeroInteger
+</A>
+</TD>
+<TD>Test whether argument is a nonzero integer</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsInfinity" TARGET="Chapters">
+IsInfinity
+</A>
+</TD>
+<TD>Test whether argument is an infinity</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsPositiveReal" TARGET="Chapters">
+IsPositiveReal
+</A>
+</TD>
+<TD>Test whether argument is numerically positive</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsNegativeReal" TARGET="Chapters">
+IsNegativeReal
+</A>
+</TD>
+<TD>Test whether argument is numerically negative</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter10.html#IsConstant" TARGET="Chapters">
+IsConstant
+</A>
+</TD>
+<TD>Test whether argument is constant</TD>
+</TR>
+</TABLE></CENTER>
 <A NAME="&lt;">
 
 </A>
 <H3>
-<HR>&lt;
+<HR>&lt; -- Test whether lhs is smaller than rhs
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -143,11 +377,11 @@ IsInfinity
 , <A HREF="ref.html#N" TARGET="Chapters">
 N
 </A>
-, <A NAME="&gt;">
+.<A NAME="&gt;">
 
 </A>
 <H3>
-<HR>&gt;
+<HR>&gt; -- Test whether lhs is larger than rhs
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -194,11 +428,11 @@ IsInfinity
 , <A HREF="ref.html#N" TARGET="Chapters">
 N
 </A>
-, <A NAME="&lt;=">
+.<A NAME="&lt;=">
 
 </A>
 <H3>
-<HR>&lt;=
+<HR>&lt;= -- Test whether lhs is smaller or equal rhs
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -246,11 +480,11 @@ IsInfinity
 , <A HREF="ref.html#N" TARGET="Chapters">
 N
 </A>
-, <A NAME="&gt;=">
+.<A NAME="&gt;=">
 
 </A>
 <H3>
-<HR>&gt;=
+<HR>&gt;= -- Test whether lhs is larger or equal rhs
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -298,11 +532,11 @@ IsInfinity
 , <A HREF="ref.html#N" TARGET="Chapters">
 N
 </A>
-, <A NAME="!=">
+.<A NAME="!=">
 
 </A>
 <H3>
-<HR>!=
+<HR>!= -- Test whether two expressions are not equal
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -338,11 +572,11 @@ See Also:
 <A HREF="ref.html#=" TARGET="Chapters">
 =
 </A>
-, <A NAME="=">
+.<A NAME="=">
 
 </A>
 <H3>
-<HR>=
+<HR>= -- Test whether two expressoins are equal
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -387,11 +621,11 @@ Out> True;</PRE></TR>
 , <A HREF="ref.html#Equals" TARGET="Chapters">
 Equals
 </A>
-, <A NAME="Not">
+.<A NAME="Not">
 
 </A>
 <H3>
-<HR>Not
+<HR>Not -- Logical negation
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -430,11 +664,11 @@ And
 , <A HREF="ref.html#Or" TARGET="Chapters">
 Or
 </A>
-, <A NAME="And">
+.<A NAME="And">
 
 </A>
 <H3>
-<HR>And
+<HR>And -- Logical conjunction
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -479,11 +713,11 @@ Or
 , <A HREF="ref.html#Not" TARGET="Chapters">
 Not
 </A>
-, <A NAME="Or">
+.<A NAME="Or">
 
 </A>
 <H3>
-<HR>Or
+<HR>Or -- Logical disjunction
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -525,11 +759,11 @@ And
 , <A HREF="ref.html#Not" TARGET="Chapters">
 Not
 </A>
-, <A NAME="IsFreeOf">
+.<A NAME="IsFreeOf">
 
 </A>
 <H3>
-<HR>IsFreeOf
+<HR>IsFreeOf -- Test whether expression depends on variable
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -576,11 +810,11 @@ See Also:
 <A HREF="ref.html#Contains" TARGET="Chapters">
 Contains
 </A>
-, <A NAME="IsZeroVector">
+.<A NAME="IsZeroVector">
 
 </A>
 <H3>
-<HR>IsZeroVector
+<HR>IsZeroVector -- Test whether list contains only zeroes
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -617,11 +851,11 @@ IsList
 , <A HREF="ref.html#ZeroVector" TARGET="Chapters">
 ZeroVector
 </A>
-, <A NAME="IsNonObject">
+.<A NAME="IsNonObject">
 
 </A>
 <H3>
-<HR>IsNonObject
+<HR>IsNonObject -- Test whether argument is not an Object()
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -648,11 +882,11 @@ See Also:
 <A HREF="ref.html#Object" TARGET="Chapters">
 Object
 </A>
-, <A NAME="IsEven">
+.<A NAME="IsEven">
 
 </A>
 <H3>
-<HR>IsEven
+<HR>IsEven -- Test whether integer is even
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -689,11 +923,11 @@ IsOdd
 , <A HREF="ref.html#IsInteger" TARGET="Chapters">
 IsInteger
 </A>
-, <A NAME="IsOdd">
+.<A NAME="IsOdd">
 
 </A>
 <H3>
-<HR>IsOdd
+<HR>IsOdd -- Test whether integer is odd
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -730,11 +964,11 @@ IsEven
 , <A HREF="ref.html#IsInteger" TARGET="Chapters">
 IsInteger
 </A>
-, <A NAME="IsFunction">
+.<A NAME="IsFunction">
 
 </A>
 <H3>
-<HR>IsFunction
+<HR>IsFunction -- Test whether argument is a composite object
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -773,8 +1007,11 @@ IsList
 , <A HREF="ref.html#Type" TARGET="Chapters">
 Type
 </A>
-, <H3>
-<HR>IsAtom
+.<A NAME="IsAtom">
+
+</A>
+<H3>
+<HR>IsAtom -- Test whether argument is an atom
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -813,8 +1050,11 @@ IsNumber
 , <A HREF="ref.html#IsString" TARGET="Chapters">
 IsString
 </A>
-, <H3>
-<HR>IsString
+.<A NAME="IsString">
+
+</A>
+<H3>
+<HR>IsString -- Test whether argument is an string
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -850,8 +1090,11 @@ IsAtom
 , <A HREF="ref.html#IsNumber" TARGET="Chapters">
 IsNumber
 </A>
-, <H3>
-<HR>IsNumber
+.<A NAME="IsNumber">
+
+</A>
+<H3>
+<HR>IsNumber -- Test whether argument is a number
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -905,8 +1148,11 @@ IsNegativeNumber
 , <A HREF="ref.html#Complex" TARGET="Chapters">
 Complex
 </A>
-, <H3>
-<HR>IsList
+.<A NAME="IsList">
+
+</A>
+<H3>
+<HR>IsList -- Test whether argument is a list
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -939,11 +1185,11 @@ See Also:
 <A HREF="ref.html#IsFunction" TARGET="Chapters">
 IsFunction
 </A>
-, <A NAME="IsBound">
+.<A NAME="IsBound">
 
 </A>
 <H3>
-<HR>IsBound
+<HR>IsBound -- Test whether a variable is bound to a value
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -978,11 +1224,11 @@ See Also:
 <A HREF="ref.html#IsAtom" TARGET="Chapters">
 IsAtom
 </A>
-, <A NAME="IsBoolean">
+.<A NAME="IsBoolean">
 
 </A>
 <H3>
-<HR>IsBoolean
+<HR>IsBoolean -- Test whether argument is a Boolean
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1021,11 +1267,11 @@ True
 , <A HREF="ref.html#False" TARGET="Chapters">
 False
 </A>
-, <A NAME="IsNegativeNumber">
+.<A NAME="IsNegativeNumber">
 
 </A>
 <H3>
-<HR>IsNegativeNumber
+<HR>IsNegativeNumber -- Test whether argument is a negative number
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1069,11 +1315,11 @@ IsNegativeInteger
 , <A HREF="ref.html#IsNegativeReal" TARGET="Chapters">
 IsNegativeReal
 </A>
-, <A NAME="IsNegativeInteger">
+.<A NAME="IsNegativeInteger">
 
 </A>
 <H3>
-<HR>IsNegativeInteger
+<HR>IsNegativeInteger -- Test whether argument is a negative integer
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1113,11 +1359,11 @@ IsNonZeroInteger
 , <A HREF="ref.html#IsNegativeNumber" TARGET="Chapters">
 IsNegativeNumber
 </A>
-, <A NAME="IsPositiveNumber">
+.<A NAME="IsPositiveNumber">
 
 </A>
 <H3>
-<HR>IsPostiveNumber
+<HR>IsPositiveNumber -- Test whether argument is a positive number
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1161,11 +1407,11 @@ IsPositiveInteger
 , <A HREF="ref.html#IsPositiveReal" TARGET="Chapters">
 IsPositiveReal
 </A>
-, <A NAME="IsPositiveInteger">
+.<A NAME="IsPositiveInteger">
 
 </A>
 <H3>
-<HR>IsPositiveInteger
+<HR>IsPositiveInteger -- Test whether argument is a positive integer
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1205,11 +1451,11 @@ IsNonZeroInteger
 , <A HREF="ref.html#IsPositiveNumber" TARGET="Chapters">
 IsPositiveNumber
 </A>
-, <A NAME="IsNotZero">
+.<A NAME="IsNotZero">
 
 </A>
 <H3>
-<HR>IsNotZero
+<HR>IsNotZero -- Test whether argument is a nonzero number
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1233,7 +1479,7 @@ Examples:
 In> IsNotZero(3.25);
 Out> True;
 In> IsNotZero(0);
-Out> True;</PRE></TR>
+Out> False;</PRE></TR>
 </TABLE>
 
 <H5>
@@ -1251,11 +1497,11 @@ IsNegativeNumber
 , <A HREF="ref.html#IsNonZeroInteger" TARGET="Chapters">
 IsNonZeroInteger
 </A>
-, <A NAME="IsNonZeroInteger">
+.<A NAME="IsNonZeroInteger">
 
 </A>
 <H3>
-<HR>IsNonZeroInteger
+<HR>IsNonZeroInteger -- Test whether argument is a nonzero integer
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1294,11 +1540,11 @@ IsNegativeInteger
 , <A HREF="ref.html#IsNotZero" TARGET="Chapters">
 IsNotZero
 </A>
-, <A NAME="IsInfinity">
+.<A NAME="IsInfinity">
 
 </A>
 <H3>
-<HR>IsInfinity
+<HR>IsInfinity -- Test whether argument is an infinity
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1331,11 +1577,11 @@ See Also:
 <A HREF="ref.html#Integer" TARGET="Chapters">
 Integer
 </A>
-, <A NAME="IsPositiveReal">
+.<A NAME="IsPositiveReal">
 
 </A>
 <H3>
-<HR>IsPositiveReal
+<HR>IsPositiveReal -- Test whether argument is numerically positive
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1379,11 +1625,11 @@ IsPositiveNumber
 , <A HREF="ref.html#N" TARGET="Chapters">
 N
 </A>
-, <A NAME="IsNegativeReal">
+.<A NAME="IsNegativeReal">
 
 </A>
 <H3>
-<HR>IsNegativeReal
+<HR>IsNegativeReal -- Test whether argument is numerically negative
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1427,11 +1673,11 @@ IsNegativeNumber
 , <A HREF="ref.html#N" TARGET="Chapters">
 N
 </A>
-, <A NAME="IsConstant">
+.<A NAME="IsConstant">
 
 </A>
 <H3>
-<HR>IsConstant
+<HR>IsConstant -- Test whether argument is constant
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1473,9 +1719,9 @@ IsInteger
 , <A HREF="ref.html#VarList" TARGET="Chapters">
 VarList
 </A>
-, 
-</BODY>
-
+.
 </FONT>
+
+</BODY>
 
 </HTML>

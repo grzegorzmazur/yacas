@@ -1,12 +1,14 @@
 <HTML>
+<HEAD><TITLE>Advanced example 1: parsing expressions (CForm)</TITLE></HEAD>
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
 <A NAME="c3">
 
 </A>
-<HEAD><TITLE>Advanced example 1: parsing expressions (CForm)</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
-<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
 <H1>
 Advanced example 1: parsing expressions (CForm)
 </H1>
+<p> </p>
 In this chapter we show how Yacas represents expressions and how we
 can build functions that work on all expressions. Our specific example will
 be "CForm()", a standard library function that converts Yacas expressions
@@ -111,8 +113,8 @@ PlusPrec := OpPrecedence("+");
 </TABLE>
 and so on. We omitted the predicate for the last rule because it has a later precedence than the preceding rule. The way we wrote these rules is unnecessarily repetitive but straightforward and it illustrates the central ideas of expression processing in Yacas. The standard library implements "CForm()" essentially in this way. In addition the library implementation supports standard mathematical functions, arrays and so on, and is better organized to allow easier extensions and avoid repetition of code.
 
-</BODY>
-
 </FONT>
+
+</BODY>
 
 </HTML>
