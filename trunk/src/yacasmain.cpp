@@ -1467,6 +1467,10 @@ RESTART:
         LispLocalEvaluator local((*yacas)()(),NEW TracedStackEvaluator);
 #endif
         yacas->Evaluate(read_eval_print);
+        if (yacas->IsError())
+        {
+          printf("%s\n",yacas->Error());
+        }
       }
     }
     else
