@@ -1,9 +1,15 @@
-:iel:True
+
+PrettyPrinter("PrettyForm");
+
+Proteus'AddLink("True",
+"a
 Proteus Notepad
 To exit Yacas, enter 'quit'.
 Type ?? for help, or type ?function for help on a function.
 Type 'restart' to restart Yacas.
 To see example commands, keep typing Example();
-:
-:il:Example();
-Examples
+ 
+",False,False);
+Proteus'AddLink("Example()","(press enter on this cell for an example)",False,True);
+
+

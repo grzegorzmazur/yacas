@@ -141,6 +141,13 @@ void FltkConsole::SaveNotePad(LispCharPtr aFile)
 
 void FltkConsole::LoadNotePad(LispCharPtr aFile)
 {
+  DeleteAll();
+  extern CYacas* yacas;
+  char buf[256];//TODO buffer overflow problem
+  snprintf(buf,256,"Load(\"%s\");",aFile);
+  yacas->Evaluate(buf);
+  return;
+
     int prevshow = iShowInput;
     int prevenable = iEnableInput;
 
@@ -183,8 +190,6 @@ void FltkConsole::LoadNotePad(LispCharPtr aFile)
                 }
                 start++;
             }
-            
-
             if (!internal)
             {
                 AddGroup(showinput, enableinput);
@@ -253,38 +258,11 @@ void FltkConsole::LoadNotePad(LispCharPtr aFile)
 void FltkConsole::CommandLineStartNew()
 {
     DeleteHints();
-    /*TODO remove?
-     history=iHistory.NrItems();
-     iHistoryUnchanged = 0;
-*/
     cursor=0;
 }
 
 void FltkConsole::SaveHistory()
 {
-    /*TODO remove?
-     char fname[256];
-    sprintf(fname,"%s/.yacas_history",getenv("HOME"));
-    
-    FILE*f=fopen(fname,"w");
-    if (f)
-    {
-        int i;
-        int from=0;
-        if (iMaxLines>=0)
-        {
-            if (iHistory.NrItems()>iMaxLines)
-            {
-                from = iHistory.NrItems()-iMaxLines;
-            }
-        }
-        for (i=from;i<iHistory.NrItems();i++)
-        {
-            fprintf(f,"%s\n",iHistory[i]->String());
-        }
-        fclose(f);
-        }
-        */
 }
 
 void FltkConsole::AddGroup()
@@ -322,7 +300,6 @@ void FltkConsole::AddText(LispCharPtr aText,int color, const char* aPrompt,
         {
             toadd = new ConsoleFlatText(aText, color,aPrompt,aFont,aFontSize);
             iLast->Add(toadd);
-//TODO remove            iOutputHeight+=toadd->height();
             aText+=len;
         }
         else
@@ -331,7 +308,6 @@ void FltkConsole::AddText(LispCharPtr aText,int color, const char* aPrompt,
             buffer[len] = '\0';
             toadd = new ConsoleFlatText(buffer, color,aPrompt,aFont,aFontSize);
             iLast->Add(toadd);
-//TODO remove            iOutputHeight+=toadd->height();
             if (aText[len] == '\n') aText++;
             aText+=len;
         }
@@ -404,6 +380,10 @@ void FltkConsole::DoLine(char* inpline)
         }
     }
 
+
+    extern CYacas* yacas;
+    yacas->Evaluate(inpline);
+
 #ifdef SUPPORT_NOTEPAD
     if (iCurrentHighlighted >= 0)
     {
@@ -415,10 +395,14 @@ void FltkConsole::DoLine(char* inpline)
             iLast->DeleteAll();
         }
         else
+        {
             AddGroup();
+        }
     }
     else
+    {
         AddGroup();
+    }
 #else
     AddGroup();
 #endif
@@ -428,15 +412,13 @@ void FltkConsole::DoLine(char* inpline)
     redraw(); //output changed
     Fl::flush();
     {
-        extern CYacas* yacas;
-        yacas->Evaluate(inpline);
+//        extern CYacas* yacas;
+//        yacas->Evaluate(inpline);
 
         extern LispString the_out;
         if (the_out[0])
         {
             AddText(the_out.String(), FL_RED,printPrompt,FL_COURIER,iDefaultFontSize);
-            the_out.SetNrItems(0);
-            the_out.Append('\0');
             the_out.SetNrItems(0);
             the_out.Append('\0');
         }
@@ -484,9 +466,6 @@ void FltkConsole::SetInput(LispCharPtr aText, LispInt nr)
 }
 void FltkConsole::GetHistory(LispInt aLine)
 {
-    /*TODO remove?
-     SetInput(&(*iHistory[aLine])[0], iHistory[aLine]->NrItems());
-     */
 }
 
 void FltkConsole::MakeSureHighlightedVisible()
@@ -586,7 +565,6 @@ void FltkConsole::handle_key(int key)
         {
             iSubLine.Delete(cursor);
             iFullLineDirty = 1;
-//TODO remove?            iHistoryUnchanged = 0;
         }
         break;
     case eBackSpace:
@@ -595,7 +573,6 @@ void FltkConsole::handle_key(int key)
             cursor--;
             iSubLine.Delete(cursor);
             iFullLineDirty = 1;
-//TODO remove?            iHistoryUnchanged = 0;
         }
         break;
     case eLeft:
@@ -626,17 +603,6 @@ void FltkConsole::handle_key(int key)
             break;
         }
 #endif
-        
-        /*TODO remove?
-         if (history>0)
-        {
-            history--;
-            GetHistory(history);
-            cursor = iSubLine.NrItems()-1;
-            iFullLineDirty = 1;
-            iHistoryUnchanged = 1;
-            }
-            */
         break;
     case eDown:
 #ifdef SUPPORT_NOTEPAD
@@ -655,52 +621,9 @@ void FltkConsole::handle_key(int key)
             break;
         }
 #endif
-        /*TODO remove?
-        if (history<iHistory.NrItems()-1)
-        {
-            history++;
-            GetHistory(history);
-            cursor = iSubLine.NrItems()-1;
-            iFullLineDirty = 1;
-            iHistoryUnchanged = 1;
-        }
-        else if (history == iHistory.NrItems()-1)
-        {
-            iSubLine.SetNrItems(1);
-            iSubLine[0] = '\0';
-            cursor = iSubLine.NrItems()-1;
-            history++;
-            iFullLineDirty = 1;
-        }
-        */
         break;
     case eTab:
         {
-/*TODO remove?
-            LispInt prevhistory=history;
-            history = iHistory.NrItems()-1;
-            while (history>=0)
-            {
-                LispInt j=0;
-                while (j<iSubLine.NrItems()-1 &&
-                       j<iHistory[history]->NrItems())
-                {
-                    if (iSubLine[j] != (*iHistory[history])[j])
-                        goto CONTINUE;
-                    j++;
-                }
-
-                GetHistory(history);
-                cursor = iSubLine.NrItems()-1;
-                iFullLineDirty = 1;
-                iHistoryUnchanged = 1;
-                break;
-            CONTINUE:
-                history--;
-            }
-            if (history<0)
-                history = prevhistory;
-                */
         }
         break;
     case eEscape:
@@ -708,8 +631,6 @@ void FltkConsole::handle_key(int key)
         iSubLine[0] = '\0';
         cursor = iSubLine.NrItems()-1;
         iFullLineDirty = 1;
-//TODO remove?        iHistoryUnchanged = 0;
-//TODO remove?        history=iHistory.NrItems();
         DeleteHints();
         iCurrentHighlighted = -1;
         iLast = NULL;
@@ -725,7 +646,6 @@ void FltkConsole::handle_key(int key)
         DeleteHints();
         if (iSubLine.NrItems()>1)
         {
-//TODO remove?            iHistory.Append(new LispString(iSubLine));
             CommandLineEnd();
             if (iCurrentHighlighted < 0 )
                 CommandLineStartNew();
@@ -747,23 +667,6 @@ void FltkConsole::handle_key(int key)
             LispChar cc=(LispChar)key;
             iSubLine.Insert(cursor,cc);
             iFullLineDirty = 1;
-//TODO remove?            iHistoryUnchanged = 0;
-/*
-            if (hints == NULL)
-            {
-                int ifrom,ito;
-                ifrom = cursor;
-                while (ifrom>0 && IsAlpha(iSubLine[ifrom])) ifrom--;
-                if (!IsAlpha(iSubLine[ifrom])) ifrom++;
-                if (ifrom<=cursor)
-                {
-                    ito = ifrom;
-                    while (ito<iSubLine.NrItems() && IsAlpha(iSubLine[ito])) ito++;
-                    if (ito>ifrom)
-                        TryToHint(ifrom,ito);
-                }
-            }
-*/
         }
         cursor++;
         if (hints == NULL)
@@ -778,15 +681,7 @@ struct HintItem
     char* hint;
 };
 
-/*
- HintItem hintTexts[] =
-{
-    {"Integrate", "Integrate(var,from,to)expression" },
-    {"Sum","Sum(var,from,to,body)"},
-    {"Sum","Sum(list)"},
-    {"Taylor","Taylor(var,at,order)function"},
-};
- */
+
 CArrayGrower<HintItem> hintTexts;
 char* htex = NULL;
 int hoffsets[256];
@@ -963,11 +858,10 @@ int FltkConsole::handle(int event)
             }
             else
             {
-//TODO remove?                if (event == FL_PUSH)
                 {
                     iMovingOutput = 1;
-                    iMoveBaseX = 0;//iOutputOffsetX;
-                    iMoveBaseY = 0; // iOutputOffsetY;
+                    iMoveBaseX = 0;
+                    iMoveBaseY = 0;
                     iMouseDownX = Fl::event_x();
                     iMouseDownY = Fl::event_y();
 
@@ -988,7 +882,6 @@ int FltkConsole::handle(int event)
                                 if (prevHighlight == i)
                                 {
                                     iCurrentHighlighted = i;
-                                    //TODO maybe?  handle_key(eEnter);
                                 }
                                 else
                                 {
@@ -1004,22 +897,6 @@ int FltkConsole::handle(int event)
                     }
 #endif
                 }
-/*TODO remove?
-                else
-                {
-                    iOutputOffsetX = iMoveBaseX + Fl::event_x() - iMouseDownX;
-                    iOutputOffsetY = iMoveBaseY + Fl::event_y()  - iMouseDownY;
-
-                    if (iOutputOffsetX > 0) iOutputOffsetX = 0;
-                    if (iOutputOffsetX < -600) iOutputOffsetX = -600;
-                    
-                    if (iOutputOffsetY < 0) iOutputOffsetY = 0;
-                    if (iOutputOffsetY > iOutputHeight) iOutputOffsetY = iOutputHeight;
-                    //SetInputDirty();
-                    SetOutputDirty();
-                    redraw(); //output changed
-                }
-*/
             }
         }
         break;
@@ -1233,90 +1110,6 @@ void FltkConsole::DrawUnderEdit()
     }
     iOutputDirty = 0;
     return;
-/*TODO remove?
-    fl_font(FL_HELVETICA,iDefaultFontSize);
-    fl_clip(x(),y(),w(),h());
-    fl_color(FL_WHITE);
-
-
-    int i,nr;
-    nr = iConsoleOut.NrItems();
-    int ix = x(),iy = y(), iw = w(), ih = h();
-    int lowy = iy+ih-fl_height();
-
-//    if (iInputDirty)
-    {
-        fl_rectf(x(),lowy,w(),fl_height());
-    }
-//    if (iOutputDirty)
-    {
-        fl_rectf(x(),y(),w(),ih-fl_height());
-    }
-
-    
-//    if (iInputDirty)
-    {
-        const char* text = &iSubLine[0];
-        int iix =  ix + (int)fl_width(INPUT_PROMPT);
-        int cur = iix+(int)fl_width(text, cursor);
-
-        int limit = x()+w()-8;
-        if (cur > limit)
-        {
-            iix += (limit - cur);
-            cur = limit;
-        }
-        
-        SetInputFont();
-        fl_color(FL_RED);
-        fl_draw(INPUT_PROMPT,ix,lowy+fl_height()-fl_descent());
-
-
-        fl_clip(ix + (int)fl_width(INPUT_PROMPT),lowy,w()-(int)fl_width(INPUT_PROMPT),fl_height());
-
-        fl_draw(text,iix,lowy+fl_height()-fl_descent());
-
-        fl_color(FL_BLACK);
-        fl_begin_line();
-        fl_vertex(cur,lowy);
-        fl_vertex(cur,lowy+fl_height());
-        fl_end_line();
-
-        fl_pop_clip();
-    }
-    iInputDirty = 0;
-    fl_pop_clip();
-
-
-//    if (iOutputDirty)
-    {
-        fl_clip(x(),y(),w(),h()-fl_height());
-        for (i=nr-1;i>=0;i--)
-        {
-            if (lowy+iOutputOffsetY < iy)
-                break;
-            int thisheight = iConsoleOut[i]->height();
-            lowy = lowy - thisheight;
-            iConsoleOut[i]->draw(ix+iOutputOffsetX, lowy+iOutputOffsetY, iw);
-#ifdef SUPPORT_NOTEPAD
-            if (iCurrentHighlighted == i)
-            {
-                fl_color(FL_BLACK);
-                fl_rect(ix+iOutputOffsetX, lowy+iOutputOffsetY, iw, thisheight);
-            }
-#endif
-        }
-        fl_pop_clip();
-
-        if (hints)
-        {
-            fl_font(FL_HELVETICA,iDefaultFontSize);
-            hints->draw(x(),y()+h()-fl_height()-fl_descent()-3);
-        }
-    }
-    iOutputDirty = 0;
-    return;
-*/
 }
 
 
@@ -1327,7 +1120,7 @@ void FltkConsole::UpdateHeight(int aDelta)
     extern Fl_Scroll *console_scroll;
     if (console_scroll)
     {
-      resize(x(),y(),w(),iOutputHeight/*TODO*/);
+      resize(x(),y(),w(),iOutputHeight);
       MakeSureHighlightedVisible();
       console_scroll->redraw();
     }

@@ -83,7 +83,7 @@ will be shown. This command can be used to speed up
 loading if loading takes too much time due to one
 command taking a lot of time.
 
-	Proteus'AddLink(CommandString,LinkText);
+	Proteus'AddLink(CommandString,LinkText,ShowPrompt,EnablePrompt);
 
 {Proteus'AddLink} adds a line without output, and
 for which "CommandString" is not executed initially.
@@ -92,6 +92,16 @@ that is displayed. This can be used to place normal
 text in the notepad, but also for instance links to
 other notepads. It basically allows executing actions
 that don't have an output.
+
+"ShowPrompt" and "EnablePrompt" can have the values:
+
+*	1. Both {False}: Flat text
+*	1. "ShowPrompt" {False} and "EnablePrompt" {True}: A <i>link</i>, 
+something that is executed when you click on it. The result is replaced
+with the result returned by evaluating the "CommandString". This can be used
+for linking to other notepads.
+
+
 
 
 		State-changing commands
