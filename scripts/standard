@@ -61,14 +61,13 @@ Function("N",{aNumberBody})
   Set(prevPi,Pi);
   Set(Pi,Pi());
   Set(Numeric,True);
-  Set(numericresult,Eval(aNumberBody));
+  Set(numericresult,Eval(NN(aNumberBody)));
   Set(Numeric,prevNumeric);
   Set(Pi,prevPi);
   numericresult;
 ];
-
-
 UnFence("N",1);
+
 Function("N",{aNumberBody,aDigits})
 [
   Local(prevNumeric,prevPi,numericresult);
@@ -78,7 +77,7 @@ Function("N",{aNumberBody,aDigits})
   Precision(aDigits);
   Set(Pi,Pi());
   Set(Numeric,True);
-  Set(numericresult,Eval(aNumberBody));
+  Set(numericresult,Eval(NN(aNumberBody)));
   Set(Numeric,prevNumeric);
   Set(Pi,prevPi);
   Precision(prevdigits);
@@ -86,6 +85,19 @@ Function("N",{aNumberBody,aDigits})
 ];
 UnFence("N",2);
 
+Set(PreNumeric,False);
+Function("NN",{aNumberBody})
+[
+  Local(prevNumeric,result);
+  Set(prevNumeric,Numeric);
+  Set(Numeric,False);
+  Set(PreNumeric, True);
+  Set(result,Eval(aNumberBody));
+  Set(PreNumeric,False);
+  Set(Numeric,prevNumeric);
+  result;
+];
+UnFence("NN",1);
 
 Set(Verbose,False);
 Function("V",{aNumberBody})
@@ -377,7 +389,7 @@ Function("TableForm",{list})
 61 # x_IsPositiveNumber ^ y_IsPositiveNumber <-- MathPower(x,y);
 61 # x_IsPositiveNumber ^ y_IsNegativeNumber <-- (1/MathPower(x,-y));
 
-90 # ((_x) ^ (_m / p_IsOdd))_(Numeric And Not(IsNumber(x)) <-- (N((x)^m)))^(1/p);
+90 # (_x ^ (_m / p_IsOdd))_(PreNumeric And Not(IsNumber(x))) <-- N(x)^(m/p);
 91 # (- _x) ^ (_m / p_IsOdd) <-- -(x)^(m/p);
 91 # x_IsNegativeNumber ^ (_m / p_IsOdd) <-- -(-x)^(m/p);
 92 # (x_IsNegativeNumber ^ y_IsRationalOrNumber)_Numeric <-- Exp(y*Ln(x));
