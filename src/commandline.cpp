@@ -1,4 +1,5 @@
 
+#include "yacasprivate.h"
 #include "commandline.h"
 
 CCommandLine::~CCommandLine()

@@ -1,4 +1,5 @@
 
+#include "yacasprivate.h"
 #include "lispenvironment.h"
 #include "standard.h"
 #include "lispeval.h"

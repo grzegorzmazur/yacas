@@ -1,6 +1,7 @@
 // \file standard.cpp
 // Implementation of some standard lisp operations
 //
+#include "yacasprivate.h"
 #include "standard.h"
 #include "lispatom.h"
 #include "lisperror.h"

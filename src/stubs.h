@@ -5,6 +5,10 @@
 #ifndef __stubs_h__
 #define __stubs_h__
 
+#ifndef __yacasprivate_h__
+#error "You might not want to include this file outside of Yacas!"
+#endif
+
 #include "lisptype.h"
 
 #ifdef NO_GLOBALS

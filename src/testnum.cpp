@@ -2,6 +2,7 @@
 
 
 #include <stdio.h>
+#include "yacasprivate.h"
 #include "anumber.h"
 
 

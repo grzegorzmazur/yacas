@@ -49,8 +49,9 @@
  */
 
 #include "lisptype.h"
-#define SIZEOF_LONG   4// (sizeof(long))
-#define SIZEOF_VOID_P 4// (sizeof(void*))
+//TODO is this always true?
+#define SIZEOF_LONG   (BITS_PER_LONG/8)
+#define SIZEOF_VOID_P (BITS_PER_LONG/8)
 
 /* #undef WITH_MEMORY_LIMITS */		/* disable mem limit checks  */
  #define WITH_MALLOC_HOOKS		/* for profiling & debugging */

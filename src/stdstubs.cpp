@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "yacasprivate.h"
 #include "lisperror.h"
 #include "stubs.h"
 

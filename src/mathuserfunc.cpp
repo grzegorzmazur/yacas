@@ -1,4 +1,5 @@
 
+#include "yacasprivate.h"
 #include "mathuserfunc.h"
 #include "lispobject.h"
 #include "lispeval.h"

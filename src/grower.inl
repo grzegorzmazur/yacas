@@ -64,6 +64,7 @@ inline void CArrayGrower<T>::Move(int aSrcIndex, int aTrgIndex)
     Item(aTrgIndex) = toMove;
     }
 
+#ifdef __yacasprivate_h__
 template<class T>
 inline void DestructArray(CArrayGrower<T>& aArray)
 {
@@ -75,6 +76,7 @@ inline void DestructArray(CArrayGrower<T>& aArray)
     aArray[i] = NULL;
   }
 }
+#endif
 
 template<class T>
 inline void CArrayGrower<T>::Insert(int aIndex, T& aObj, LispInt aCount)
@@ -100,6 +102,7 @@ inline void CArrayGrower<T>::SetExternalArray(T* aArray, LispInt aNrItems)
 }
 
 
+#ifdef __yacasprivate_h__
 template<class T>
 inline void CArrayGrower<T>::CopyToExternalArray(T*& aArray, LispBoolean aPreAlloc)
 {
@@ -126,5 +129,6 @@ inline CDeletingArrayGrower<T>::~CDeletingArrayGrower()
     delete Item(i);
   }
 }
+#endif
 
 

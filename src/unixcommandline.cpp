@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdio.h>
 
+#include "yacasprivate.h"
 #include "unixcommandline.h"
 
 void CUnixCommandLine::NewLine()

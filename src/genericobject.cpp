@@ -1,6 +1,6 @@
 
+#include "yacasprivate.h"
 #include "genericobject.h"
-#include "stubs.h"
 
 LispArgList::~LispArgList()
 {

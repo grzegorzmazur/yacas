@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "yacasprivate.h"
 #include "stdfileio.h"
 
 

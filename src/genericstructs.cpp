@@ -1,4 +1,5 @@
 
+#include "yacasprivate.h"
 #include "genericstructs.h"
 
 GenericStruct::GenericStruct(LispCharPtr aTypeName, void* aData, void (*aDestructor)(void*))

@@ -1,4 +1,5 @@
 
+#include "yacasprivate.h"
 #include "choices.h"
 #include "lispenvironment.h"
 #include "lispplugin.h"

@@ -1,4 +1,5 @@
 
+#include "yacasprivate.h"
 #include "patternclass.h"
 
 PatternClass::PatternClass(YacasPatternPredicateBase* aPatternMatcher)

@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <dirent.h>
 #include <sys/stat.h>
+//#include "yacasprivate.h"
 #include "yacas.h"
 
 #include "unixcommandline.h"

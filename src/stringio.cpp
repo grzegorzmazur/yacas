@@ -1,5 +1,6 @@
 
 
+#include "yacasprivate.h"
 #include "stringio.h"
 
 

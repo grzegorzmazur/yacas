@@ -1,6 +1,6 @@
 
 
-#include "lisptype.h"
+#include "yacasprivate.h"
 #include "lispenvironment.h"
 
 #include "lispplugin.h"

@@ -1,4 +1,5 @@
 
+#include "yacasprivate.h"
 #include "lispcleanupstack.h"
 #include "lispassert.h"
 #include "lisptype.h"

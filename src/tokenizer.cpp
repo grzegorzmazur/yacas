@@ -10,6 +10,7 @@
  *
  */
 
+#include "yacasprivate.h"
 #include "lispassert.h"
 #include "lisperror.h"
 #include "numbers.h"
