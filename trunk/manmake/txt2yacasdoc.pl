@@ -140,13 +140,17 @@ while (<STDIN>) {
 		# un-escape quotes and backslash again
 		$expression =~ s/\\"/"/g;
 		$expression =~ s/\\\\/\\/g;
-		&finish_text_close_quote();
+		&finish_text_close_quote();	# careful using Eval inside Enum/Item
 		$have_par = 0;	# even if we had a paragraph before us, now we don't
 		print "DocEval($expression);\n";	# this will insert inline Yacas code
 	} elsif (/^\*FOOT\s\s*(.*)$/) {	# footnote
-		&finish_text_close_quote();
+#		&finish_text_close_quote();
 		#$have_par = 0;
-		print "AddBody(DocFootnote(\"" . &escape_term($1) . "\"));\n";
+#		print "AddBody(DocFootnote(\"" . &escape_term($1) . "\"));\n";
+#		close_quote();
+		start_text_open_quote();
+		print "\":DocFootnote(\"" . &escape_term($1) . "\")\n:\"";
+		
 	} elsif (/^\*YSFILE\s\s*(.*)$/) {	# designate a .ys output file name
 		&finish_text_close_quote();
 		#$have_par = 0;

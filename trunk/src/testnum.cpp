@@ -145,13 +145,13 @@ void TestTypes2(const char* float_string, const char* int_string, double double_
 	BigNumber x(float_string, 3*strlen(float_string), base);
 	BigNumber y;
 	y.SetTo(int_string, 3*strlen(int_string), base);
-	y.BecomeInt();	// FIXME: this would be unnecessary if the type were automatically decided based on the string.
+//	y.BecomeInt();	// FIXME: this would be unnecessary if the type were automatically decided based on the string.
 
 //	Check(!x.IsSmall(), "x is a big number");
 //	Check(!y.IsSmall(), "y is a big number");
 	
-	Check(!x.IsInt(), "x is a float type");
-	Check(y.IsInt(), "y is an integer type");
+	Check(!x.IsInt(), "x is a float type as read");
+	Check(y.IsInt(), "y is an integer type as read");
 	Check(x.Double()==double_value, "value is correct");
 	Check(!x.IsIntValue(), "x has a float value");
 	Check(y.IsIntValue(), "y has an integer value");
@@ -162,6 +162,7 @@ void TestTypes2(const char* float_string, const char* int_string, double double_
 	y.ToString(str,base);
 	Check(str,int_string,"read integer value correctly");
 	BigNumber z(x);
+	Check(!z.IsInt(), "z has int type");
 	Check(!z.IsIntValue(), "z has a float value");
 	z.BecomeInt();
 	Check(z.Sign()==sign, "sign of z is correct");
@@ -315,7 +316,7 @@ int main(void)
 	
 	Next("constructor");
 	BigNumber x;	// default constructor
-	Next("call some functions on object with undefined value");
+	Next("call some functions on objects with undefined values");
 	x.IsInt();
 	x.Double();	// value is undefined
 	Next("construct 0 from string");
@@ -334,8 +335,6 @@ int main(void)
 	
 	Next("testing big integers");
 	x.SetTo("010203040506070809101112131415161718192021222324252627282930", 200, 10);
-	Check(!x.IsSmall(), "big value is not small");
-//	x.BecomeInt();
 	Check(x.IsInt(), "has integer type");
 	Check(x.Sign()==1, "has positive value");
 	Check(x.IsIntValue(), "has integer value");
@@ -348,7 +347,8 @@ int main(void)
 	y.Mod(x,y);
 	Check(y.Double()==0, "value is even");
 	x.BecomeFloat();
-	Check(!x.IsSmall(), "big value is not small");
+	Check(!x.IsInt(), "has float type");
+	Check(x.IsIntValue(), "still has integer value type");
 	
 
 	Next("test small integers and floats");
@@ -364,7 +364,7 @@ int main(void)
 	TestTypes1(-100000.1);
 	TestTypes1(15416.563);
 
-	Next("test big integers and floats");
+	Next("test big integers and floats 1");
 	// values must be out of range for platform numbers. Usage:
 	// TestTypes2("float value", "equivalent integer value", double_value, base);
 	const char* num1_float = "3.00000000000000000000000000000000000000099999999999992";
@@ -381,8 +381,11 @@ int main(void)
 	const double num4_double = 123.332332332332332332323333333333;
 
 	TestTypes2(num1_float, num1_int, num1_double);
+	Next("test big integers and floats 2");
 	TestTypes2(num2_float, num2_int, num2_double);
+	Next("test big integers and floats 3");
 	TestTypes2(num3_float, num3_int, num3_double);
+	Next("test big integers and floats 4");
 	TestTypes2(num4_float, num4_int, num4_double);
 	
 	Next("test copy constructor");
@@ -423,13 +426,16 @@ int main(void)
 	Check(!z.LessThan(y), "z<y is false");
 	Check(z.LessThan(x), "z<x is true");
 	
-	Next("simple arithmetic");
+	Next("simple arithmetic 1");
 	TestArith1(num1_int, 10, 15, -25);
 	TestArith1(num1_float, 10, -15, 0.19e-8);
+	Next("simple arithmetic 2");
 	TestArith1(num2_int, 10, -15, -2500000);
 	TestArith1(num2_float, 10, -15, 0.19e8);
+	Next("simple arithmetic 3");
 	TestArith1(num3_int, 10, 1500, 29);
 	TestArith1(num3_float, 10,  -15, 0.19);
+	Next("simple arithmetic 4");
 	TestArith1(num4_int, 10, 1500, 29);
 	TestArith1(num4_float, 10,  -50000, 99999.99999);
 	
@@ -512,6 +518,17 @@ int main(void)
 	TestStringIO(1234, "1234", 10, 10);
 	TestStringIO(12345, "12345", 10, 10);
 	TestStringIO(123456, "123456", 10, 10);
+	
+	Next("determine types from string");
+	x.SetTo("1234",0,10);
+	Check(x.IsInt(), "1234 is integer");
+	Check(x.IsIntValue(), "1234 has int value");
+	x.SetTo("1234.5",50,10);
+	Check(!x.IsInt(), "1234.5 is float type");
+	Check(!x.IsIntValue(), "1234.5 has float value");
+	x.SetTo("1234.5e2",50,10);
+	Check(!x.IsInt(), "1234.5e2 is float type");
+	Check(x.IsIntValue(), "1234.5e2 has int value");
 
 	Next("bit operations");
 	// precision is ignored when reading integers
@@ -545,10 +562,12 @@ int main(void)
 	Next("precision");
 	x.BecomeFloat();
 	x.Precision(10);
-	x.SetTo(1000./243.);
-	y.SetTo(1024);
+	x.SetTo(100./243.);
+	x.Precision(10);
+	y.SetTo(1000.);
+	y.Precision(10);
 	x.Multiply(x,y, 10);
-	CheckStringValue(x, "411", 20, 10, "imprecise 1000./243. is correct");
+	CheckStringValue(x, "411", 20, 10, "imprecise 100./243. is correct");
 	Check(x.IsIntValue(), "have only 10 bits of precision");
 
 	Next("Floor()");
@@ -628,7 +647,6 @@ int main(void)
 	
 }
 	
-#endif
 
 /*
     ANumber n1("65535",100,10);
@@ -766,6 +784,7 @@ int main(void)
     n1.SetTo("");
     n2.SetTo("");
 */
+#endif
     Finish();
     return 0;
 }

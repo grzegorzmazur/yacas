@@ -233,6 +233,7 @@ For example,
 will insert the string `
 *EVAL "Yacas version: " : Version()
 ' into the manual. Note the spaces around the version string---these additional spaces are currently unavoidable.
+*FOOT If the absense of spaces is critically important, you can create the required text in a Yacas expression.
 
 	    Formatting text for the reference manual
 
