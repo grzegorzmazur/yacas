@@ -1,0 +1,95 @@
+			Preparing Yacas documentation from formatted plain text files
+
+		Introduction
+
+Yacas documentation is written in Yacas language and processed by Yacas scripts to make HTML files. The script {txt2yacasdoc.pl} can make it easier to create and maintain the documentation. The idea is to prepare "source" documentation in plain text format and process it with the script to prepare Yacas-language files. The source text must be formatted in a certain fashion to delimit sections, code examples, and so on, but the format is easy enough to enter in a plain text editor and still leave the source documentation itself readable.
+
+There is also a utility {book2txt} that attempts to convert existing documentation in the Yacas format into the plain text form suitable for {txt2yacasdoc.pl}.
+
+		Usage of the script {txt2yacasdoc.pl}
+
+The script acts as a stream filter:
+
+	perl txt2yacasdoc.pl < file.txt > file.chapt
+
+In this example, {file.txt} contains some formatted plain text (source text) and the resulting file {file.chapt} will be produced in Yacas-language documentation format.
+
+		Formatting of source text files
+
+Formatting of source text files uses TAB symbols; if your editor does not support them and converts them to spaces, you should convert the results back to contain real TAB symbols using the standard Unix {unexpand} utility or a custom perl script.
+
+Currently the following markup is implemented:
+
+*	Paragraphs are separated by blank lines. Several blank lines next to each other are equivalent to one.
+*	Book heading is quadruple TAB indented. Chapter heading is triple TAB indented. Section heading is double TAB indented. Subsection heading is indented by a TAB and 4 spaces. Chapter and section headings should be in one line (but that line can be as long as needed).
+
+*	Sample code is single Tab indented, for example:
+
+	In> 1+2;
+	
+	Out> 3;
+Note that empty lines in a single sample code block
+must be also TAB indented or else the sample code block will be split into two paragraphs. A sample code block should be separated from the text that follows it by an empty line. The reason for this is that the script will assume that everything which is single-TAB indented belongs to one sample code block. This makes it easier to enter multiply indented sample code: e.g. a double-TAB indentation inside a sample code block will not start a new section. For example:
+
+	While(x<0) [
+		x:=x+1;
+		Write(x);
+	];
+
+*	Ordinary text is not indented. Line length is arbitrary and
+linebreaks
+inside
+a
+paragraph
+are of no significance to the resulting documentation.
+
+*	Itemized text is marked by "*" in the first position, followed by TAB. For example:
+
+	*	Item
+	*	Another item
+
+*	Enumerated text is marked by "*" followed by TAB, number and period. The number used in the source text is irrelevant because the enumerated environment of the final document will introduce its own counter. For example:
+
+	*	0. First item
+	*	0. Second item
+
+Note that item text continues until the next itemized line is given or until end of paragraph.
+
+*	Text surrounded by {&lt;i>} {&lt;/i>} becomes <i>emphasized</i>. Note that the whole emphasized fragment of text must be located within a single line, or else it will not be emphasized.
+
+*	Text surrounded by braces {
+} becomes {typewriter font text}. The typewriter font text must be within a single line and must not contain more than four nested sets of {{}} inside.
+
+*	Text surrounded by {<*}
+{*>} is made into a Web hyperlink if it begins with {http://} or {ftp://}. Alternatively, a hyperlink with anchored text is made by the markup {<*}
+<i>anchored text</i>{|}<i>Web URL</i>{*>}. For example:
+
+	<*this text will be underlined|somewebpage.html*>
+
+		{book2txt}: Conversion of existing documentation to plain text
+
+Currently, not all of the Yacas documentation markup functionality is implemented in the simple plaintext filter. However, most of the markup needed to write freeform user guide-style documentation is present. Therefore it is possible to maintain a part of the documentation in the plain text format. To convert existing Yacas documentation back to the plain text format, a script {book2txt.ys}/{book2txt.sh} can be used.
+
+By using a command such as
+
+	book2txt.sh file.chapt
+
+one can create a source text file {file.chapt.txt} corresponding to the Yacas documentation file {file.chapt}. 
+For example:
+
+	12:51pm scriabin:manmake> book2txt.sh ../manualmaker/in/intro.book
+	[editvi.ys] [gnuplot.ys] 
+	True;
+	Out> True;
+	Quitting...
+	File '../manualmaker/in/intro.book.txt' was created.
+	12:51pm scriabin:manmake>
+
+In the above example, the shell commands in {book2txt.sh} executed the following Yacas command,
+
+	In> [ Use("book2txt.ys"); ToFile("file.chapt.txt") Load("file.chapt"); ];
+	Out> True;
+
+This requires that the Yacas script {book2txt.ys} is available in the current directory. The shell script {book2txt.sh} assumes that {book2txt.ys} is stored in the same directory as {book2txt.sh}.
+
+Of course, it is possible that some features of Yacas documentation were not implemented in the script and in that case the resulting file must be edited by hand. But the purpose of the {book2txt} script is exactly this: to make a plain text source file to be edited and maintained.

@@ -1,6 +1,6 @@
-			Creating plugins for Yacas
+		Creating plugins for Yacas
 
-		Introduction
+	    Introduction
 
 Yacas supports dynamical loading of libraries ("plugins") at runtime. This allows to interface with other libraries or external code and support additional functionality. In a Yacas session, plugins are seen as additional Yacas functions that become available after a plugin has been loaded. Plugins may be loaded at any time during a Yacas session.
 
@@ -8,7 +8,7 @@ Currently, plugins are implemented as ELF dynamic libraries (or "shared objects"
 
 Plugins currently have to be written in C++ and require certain include files from the Yacas source tree. A plugin may be compiled as a shared object after Yacas itself has been compiled and installed successfully.
 
-		An example plugin
+	    An example plugin
 
 Here is what we need to do to make a new plugin:
 
@@ -77,7 +77,7 @@ The {FindFile()} function will help locate the Yacas path; we need to use it bec
 	In> Func1(2,3);
 	Out> 0.61837;
 
-		A dynamically generated plugin
+	    A dynamically generated plugin
 
 Since Yacas can load plugins at runtime, why not have them generated also at runtime? Here is how we could dynamically create plugin functions to speed up numerical calculations.
 

@@ -25,11 +25,19 @@ using the Yacas system for calculations to programming in
 the Yacas scripting language.";
 
 Book()"Essays on Yacas";
-Chapter()"Essays";
+Chapter()"Yacas programming";
 
-Load("ABIN-grammar.chapt");
-Load("MaintenanceHowto.chapt");
-Load("Plugin_factory.chapt");
+/* Load each chapter */
+"Load" /@ {
+"ABIN-grammar.chapt",
+"Plugin_factory.chapt",
+};
+
+Chapter()"For Yacas developers";
+"Load" /@ {
+"MaintenanceHowto.chapt",
+"txt2yacasdoc.chapt"
+};
 
 //Echo({"1..."});
 //EndOfFile;

@@ -1,18 +1,8 @@
 #!/usr/bin/perl -w
 
 # convert plain ascii to Yacas manual code
-# Syntax of ascii files:
-# Paragraphs are separated by blank lines.
-# Chapter is triple Tab indented; Section is double Tab indented.
-# sample code is single Tab indented (note that linebreaks in sample code
-# must be also Tab indented or else you get two sample code blocks)
-# Ordinary text is not indented.
-# Itemized text is marked by * in the first position, followed by Tab
-# Enumerated text is marked by * followed by Tab, number and period.
-# Text surrounded by <i>...</i> becomes emphasized (must be on a single line!)
-# Text surrounded by {} becomes fixed-width (must not contain more than four nested sets of {} inside!)
-# Text surrounded by <* *> is made into hyperlinks into the manual (SeeAlso()), e.g. <*FlatCopy, Take,Length*> is translated into SeeAlso({"FlatCopy", "Take", "Length"}). If that text begins with http:// or ftp:// it is made into an HTML hyperlink.
-# 
+# Syntax of ascii files is described in "txt2yacasdoc" essay
+#
 # Use with care, test output with manualmaker
 
 $have_Text = 0;	# Means we have a Text() declared somewhere above
@@ -26,16 +16,24 @@ while (<STDIN>) {
 	chomp;
 	s/\\/\\\\/g;
 	s/"/\\"/g;
-	
-	if (/^\t\t\t(.*)$/) {	# Chapter
+	# First deal with TAB-indented lines
+	if (not $in_htmlcommand and /^\t\t\t\t([^ ].*)$/) {	# Book
+		&finish_text();
+		print "\tBook()\"", &escape_term($1), "\";\n\n";
+		$have_par = 1;
+	} elsif (not $in_htmlcommand and /^\t\t\t([^ ].*)$/) {	# Chapter
 		&finish_text();
 		print "\tChapter()\"", &escape_term($1), "\";\n\n";
 		$have_par = 1;
-	} elsif (/^\t\t(.*)$/) {	# Section
+	} elsif (not $in_htmlcommand and /^\t\t([^ ].*)$/) {	# Section
 		&finish_text();
 		print "\tSection()\"", &escape_term($1), "\";\n\n";
 		$have_par = 1;
-	} elsif (/^\t(.*)$/) {	# Sample code
+	} elsif (not $in_htmlcommand and /^\t    ([^ ].*)$/) {	# Subsection
+		&finish_text();
+		print "\tSubSection()\"", &escape_term($1), "\";\n\n";
+		$have_par = 1;
+	} elsif ((not $in_htmlcommand and /^\t([^ \t].*)$/) or ($in_htmlcommand and /^\t(.*)$/)) {	# Sample code; cannot start with empty line
 		&start_text();
 		if (not $in_htmlcommand) {
 			&close_quote();
@@ -45,13 +43,14 @@ while (<STDIN>) {
 		print "$1\n";
 		$have_par = 0;
 		$in_text = 1;
-	} elsif (/^\s*$/) {	# New paragraph
+	}	# Now not TAB-indented lines
+	elsif (/^\s*$/) {	# New paragraph
 		if (not $have_par) {
 			&start_text();
 			&close_quote();
-			if ($in_itemized or $in_enum) {
+			if ($in_itemized or $in_enum or $in_htmlcommand) {
 				print ")\n";
-				$in_itemized = $in_enum = 0;
+				$in_itemized = $in_enum = $in_htmlcommand = 0;
 			}
 			print ":HtmlNewParagraph()\n\n";
 			$have_par = 1;
@@ -78,19 +77,25 @@ while (<STDIN>) {
 		}
 		$in_text = 1;
 		$have_par = 0;
-	} else {	# plain text
+	}	# Now non-TAB indented markup
+	elsif (/^\*INCLUDE\s*([^ ].*)\s*$/) {	# Include another file
+		&finish_text();
+		$have_par = 1;
+		print "IncludeFile(\"$1\");\n\n";
+		
+	} else {	# plain text - process it last, after every other markup is done
 		&start_text();
 		&open_quote();
 		print &escape_term($_), "\n";
 		$have_par = 0;
 		$in_text = 1;
 	}
-	
 }
 
-# Finish
+# Finish up
 
 &finish_text();
+print "\n";
 
 sub close_quote {
 	if ($in_text) {
@@ -133,24 +138,26 @@ sub escape_term {
 # this would only allow one level of nested braces:
 #	$text =~ s/\{((?:[^{}]*\{[^{}]*\})*[^{}]*)\}/":HtmlTerm("$1"):"/g;
 	# {HtmlTerm}. Need to get the interior braces. Build the regex recursively:
-	$regexes[0]='[^{}]*';	# if this is 'nobraces', then
+	$regex='[^{}]*';	# if this is 'nobraces', then
 #	oneornobraces = (nobraces {nobraces})* nobraces ;
 	$nmax = 4;	# Max nesting level
 	for($i=0; $i<$nmax; ++$i) {
-		$regexes[$i+1]="(?:" . $regexes[$i] . "\{" . $regexes[$i] . "\})*" . $regexes[$i];
+		$regex="(?:$regex\{$regex\})*$regex";
 	}
-	$text =~ s/\{($regexes[$nmax])\}/":HtmlTerm("$1"):"/go;
+	$text =~ s/\{($regex)\}/":HtmlTerm("$1"):"/go;
 	# <i>emphasis</i>
 	$text =~ s/<i>(.*)<\/i>/":HtmlEmphasis("$1"):"/gi;
-	# "see also" and explicit hyperlinks
+	# explicit hyperlinks
 	$text =~ s/<\*((?:[^*]|\*[^>])+)\*>/&make_link($1);/ge;
 	$text;
 }
 
 sub make_link {
 	my ($text) = @_;
-	if ($text =~ /^(ftp|http|file):\/\/[^>]+$/i) {
-		return "\":HtmlLink(\"$text\", \"$text\"):\"";
+	if ($text =~ /^((?:ftp|http|file):\/\/.+)$/i) {	# Web URL
+		return "\":HtmlLink(\"$1\", \"$1\", \"\", \"\"):\"";
+	} elsif ($text =~ /^([^|]+)\|([^|]+)$/) {	# URL with anchored text
+		return "\":HtmlLink(\"$1\", \"$2\", \"\", \"\"):\"";
 	} else {
 		return "\":SeeAlso({\"" . join("\", \"", split(/, */, $text)) . "\"}):\"";
 	}
