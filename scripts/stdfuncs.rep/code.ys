@@ -98,12 +98,31 @@ HoldArg("TruncRadian",r);
 100 # Cos(_x)*Tan(_x) <-- Sin(x);
 100 # Sin(_x)/Cos(_x) <-- Tan(x);
 
-2 # Exp(x_IsNumber)_(Numeric) <-- MathExp(x);
+2 # Exp(x_IsNumber)_(Numeric) <-- MyMathExp(x);
 4 # Exp(Ln(_x))           <-- x;
 110 # Exp(Complex(_r,_i)) <--  Exp(r)*(Cos(i) + I*Sin(i));
 200 # Exp(0) <-- 1;
 200 # Exp(-Infinity) <-- 0;
 200 # Exp(Infinity) <-- Infinity;
+
+// improve convergence of Exp(x) for large x
+MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
+
+// large positive x
+10 # MyMathExp(_x) _ (x > MathExpThreshold) <-- [
+	Local(i, y);
+	i:=0;
+	For(i:=0, x > MathExpThreshold, i++)
+		x := N(x/2);
+	For(y:= MathExp(x), i>0, i--)
+		y := N(y*y);
+	y;
+	
+];
+// large negative x
+20 # MyMathExp(_x) _ (x < N(-MathExpThreshold/2)) <-- N(1/MyMathExp(-x));
+// other values of x
+30 # MyMathExp(_x) <-- MathExp(x);
 
 2 # Tan(x_IsNumber)_(Numeric) <--
 [
