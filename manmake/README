@@ -1,31 +1,20 @@
+This directory contains all sources and scripts required to build the Yacas documentation.
 
-manmake: a tool that allows for an easier syntax for entering documentation
-etcetera.
-
-You can enter special sections with \section{text} where
-you get to name your own section, and the text is some text.
-
-This then gets converted to ManP(section,text) with text
-enclosed in quotes. All text outside such special sections
-are part of the section named 'text'.
-
-NOTE: mangen, manmake.cc, manmake, test.txt are not used any more.
-
-		Tools for the new documentation format
+It also has some additional experimental scripts that may be useful in the future.
 
 txt2yacasdoc.pl: a Perl script to convert plaintext documentation to Yacas
-language. (See the essays book for documentation on the plaintext format.)
+language. (See the essays book or YacasDocs.chapt.txt for documentation on the plaintext format.)
 
 book2txt.sh: a shell/perl/Yacas script to convert Yacas-language documentation
 back to plain text (does not work on all docs and is not used any more)
 
 book2TeX.sh: a shell/perl/Yacas script to convert Yacas-language documentation
-to TeX (does not work on all docs)
+to TeX
 
 book2ys.sh: a shell/Yacas script to extract Yacas source code from examples in
-Yacas-language documentation. ("Literate programming")
+Yacas-language documentation. ("Literate Programming")
 
-book2xml.sh: a shell/Yacas script to convert Yacas-language documentation to XML.
+book2xml.sh: a shell/Yacas script to convert Yacas-language documentation to XML. (experimental, not yet used)
 
 api2txt.pl: a perl script to convert src/yacasapi.cpp into plain text
 documentation (the list of kernel functions to be included into the reference
@@ -33,9 +22,9 @@ manual). This script depends on a particular syntax of the src/yacasapi.cpp
 file.
 
 ys2book.pl: a perl script to extract comments from Yacas source code and make a
-separate file out of them. ("Literate programming")
+separate file out of them. ("Literate Programming")
 
 ytxt2tex: a standalone shell script to convert plaintext documentation to TeX.
-(Requires book2TeX and txt2yacasdoc)
+(Requires book2TeX.* and txt2yacasdoc.pl). This script is not used to build documentation but is intended for other texts, as a simple TeX preprocessor.
 
 
