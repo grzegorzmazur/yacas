@@ -16,8 +16,9 @@ static LispStringPtr FloatToString(ANumber& aInt, LispHashTable& aHashTable
 
 LispInt NumericSupportForMantissa()
 {
+  return LispTrue;
     // TODO make it a mission in life to support mantissa!
-    return LispFalse;
+//    return LispFalse;
 }
 
 const LispCharPtr NumericLibraryName()

@@ -89,3 +89,32 @@ Eval(Factors(447738843))
 );
 
 
+//Exponential notation is now supported in the native arithmetic library too...
+Verify(2e3+1,2001);
+Verify(2.0e3+1,2001);
+Verify(2.00e3+1,2001);
+Verify(2.000e3+1,2001);
+Verify(2.0000e3+1,2001);
+
+Verify(1+2e3,2001);
+Verify(1+2.0e3,2001);
+Verify(1+2.00e3,2001);
+Verify(1+2.000e3,2001);
+Verify(1+2.0000e3,2001);
+
+Verify(N(Sqrt(1e4))-100,0);
+Verify(N(Sqrt(1.0e4))-100,0);
+
+Verify(2.0000e3-1,1999);
+Verify(10e3*1.2e-3,12);
+Verify((10e3*1.2e-4)-1.2,0);
+
+Verify(N(Sin(0.1e1)-Sin(1),30),0);
+[
+  /* In Dutch they have a saying "dit verdient geen schoonheidsprijs" ;-) We need to sort this out.
+   * But a passable result, for now.
+   */
+  Local(diff);
+  diff := N(Sin(10e-1)-Sin(1),30);
+  Verify(diff > -0.00001 And diff < 0.00001,True);
+];

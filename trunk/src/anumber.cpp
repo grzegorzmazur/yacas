@@ -24,6 +24,15 @@ LispBoolean BaseLessThan(ANumber& a1, ANumber& a2);
 void BaseSqrt(ANumber& aResult, ANumber& N);
 
 
+/*TESTCODE
+#include <stdio.h>
+void PrintNumber(char* prefix,ANumber& aNumber)
+{
+  LispString result;
+	ANumberToString(result, aNumber, 10);
+  printf("%s : %s\n",prefix,result.String());
+}
+*/
 
 static LispInt DigitIndex(LispInt c)
 {
@@ -176,6 +185,8 @@ void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
         endIntIndex = endFloatIndex;
     if (endFloatIndex == endIntIndex+1)
         endFloatIndex = endIntIndex;
+//printf("%s\n",aString);        
+//printf("\tendint = %d, endfloat = %d, endnumber = %d\n",endIntIndex,endFloatIndex,endNumberIndex);        
         
     // Go to least significant digit first
     LispCharPtr ptr = aString + endIntIndex-1; 
@@ -205,7 +216,8 @@ void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
         LispInt i;
 
         // Map to a char base number
-        LispInt nr = fraction.NrItems()-1; //Excluding the zero terminator
+        LispInt nr;// = fraction.NrItems()-1; //Excluding the zero terminator
+        nr = endFloatIndex - endIntIndex-1;
         LispString::ElementTypePtr fractionPtr = &fraction[0];
 
         for (i=0;i<(nr>>1);i++)
@@ -264,7 +276,9 @@ void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
     if (endNumberIndex > endFloatIndex+1)
     {
         iTensExp = PlatAsciiToInt(&aString[endFloatIndex+1]);
+//printf("%s mapped to %d\n",&aString[endFloatIndex+1],iTensExp);
     }
+//PrintNumber("      ",*this);
 }
 
 void ANumber::CopyFrom(ANumber& aOther)
@@ -366,6 +380,11 @@ static void BalanceFractions(ANumber& a1, ANumber& a2)
 {
     PlatWord word=0;
 
+//ANumber a3("10e2");
+//PrintNumber("a3 enter ",a3);
+//a3.iTensExp = 0;
+//PrintNumber("a3 enter ",a3);
+
     LispInt nr;
 
     nr = a2.iExp - a1.iExp;
@@ -381,6 +400,42 @@ static void BalanceFractions(ANumber& a1, ANumber& a2)
     {
         a2.Insert(0,word,nr);
         a2.iExp+=nr;
+    }
+
+
+    //TODO this is not the fastest way to multiply by 10^exp
+    if (a1.iTensExp < a2.iTensExp)
+    {
+      ANumber ten("10",a2.iPrecision);
+
+//PrintNumber("ten",ten);
+//PrintNumber("a2 init ",a2);
+
+      LispInt diff = a2.iTensExp - a1.iTensExp;
+      a2.iTensExp = a1.iTensExp;
+      while (diff > 0)
+      {
+        ANumber temp;
+        temp.CopyFrom(a2);
+        BaseMultiplyFull(a2,temp,ten);
+
+//PrintNumber("a2  ",a2);
+
+        diff--;
+      }
+    }
+    else if (a2.iTensExp < a1.iTensExp)
+    {
+      ANumber ten("10",a2.iPrecision);
+      LispInt diff = a1.iTensExp - a2.iTensExp;
+      a1.iTensExp = a2.iTensExp;
+      while (diff > 0)
+      {
+        ANumber temp;
+        temp.CopyFrom(a1);
+        BaseMultiplyFull(a1,temp,ten);
+        diff--;
+      }
     }
 }
 
@@ -703,12 +758,19 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase)
 
     //Handle tens exp
 TENSEXP:
-    if (aNumber.iTensExp != 0)
+    if (aNumber.iTensExp != 0 && 
+        !(aResult[0] == '0' && aResult.NrItems() == 1))
     {
-        aResult.Append('E');
+        aResult.Append('e');
         LispString tens;
         //hier
-        IntToAscii(tens,aNumber.iTensExp, 10);
+        LispInt tenex = aNumber.iTensExp;
+        if (tenex<0)
+        {
+          aResult.Append('-');
+          tenex = -tenex;
+        }
+        IntToAscii(tens,tenex, 10);
         LispInt i,nr;
         nr=PlatStrLen(&tens[0]);
         for (i=0;i<nr;i++)
@@ -1270,6 +1332,12 @@ void Sqrt(ANumber& aResult, ANumber& N)
 {
     LispInt digs = WordDigits(aResult.iPrecision, 10);
     PlatWord zero=0;
+
+   if ((N.iTensExp&1) != 0)
+    {
+      BaseTimesInt(N,10, WordBase);
+    }
+
     while(N.iExp<2*digs)
     {
         N.Insert(0,zero);
@@ -1278,8 +1346,10 @@ void Sqrt(ANumber& aResult, ANumber& N)
     
     BaseSqrt(aResult, N);
     aResult.iExp=digs;
+    aResult.iTensExp = (N.iTensExp/2);
 
     //TODO!!!@@@###$$$ iTensExp???
+    //AYALTODO
 }
 
 
