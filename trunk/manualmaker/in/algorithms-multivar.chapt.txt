@@ -13,6 +13,8 @@ In addition, for multiplication the following rule is obeyed:
 
 The last is optional. For multivariate polynomials (described elsewhere)
 both hold, but for matrices, only the addition property holds.
+The function {MultiplyAddSparseTrees} (described below) should not
+be used in these cases.
 
 	    Internal structure
 
