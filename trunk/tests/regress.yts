@@ -327,3 +327,5 @@ Verify(D(t) Integrate(x,a,b) f(x,t),Integrate(x,a,b)Deriv(t)f(x,t));
 // This was returning FWatom(Sin(x)) 
 Verify( Factor(Sin(x)), Factor(Sin(x)) );
 
+// should return unevaled
+Verify( BesselJ(0,x), BesselJ(0,x) );
