@@ -1,4 +1,9 @@
 
+
+EndOfFile;
+
+//Expression(Term({factor,factor},{factor,factor}));
+
 SpecialTerm(_X) <--
 [
   Local(gather,result,newterm);

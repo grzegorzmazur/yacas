@@ -222,15 +222,17 @@ void LispTime(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
     TESTARGS(2);
     clock_t starttime = clock();
-    aEnvironment.iEvaluator->Eval(aEnvironment, aResult, Argument(aArguments,1));
+    LispPtr res;
+    aEnvironment.iEvaluator->Eval(aEnvironment, res, Argument(aArguments,1));
     clock_t endtime = clock();
     double timeDiff;
 
 //    printf("%ld to %ld\n",starttime,endtime);
     timeDiff = endtime-starttime;
     timeDiff /= CLOCKS_PER_SEC;
-//    LispChar buf[30];
-    printf("%g seconds taken\n",timeDiff);
+    char buf[100];
+    sprintf(buf,"%g",timeDiff);
+    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
 }
 
 void ShStack(LispEnvironment& aEnvironment, LispPtr& aResult,

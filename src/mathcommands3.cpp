@@ -366,6 +366,9 @@ void LispFloor(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispGetExactBits(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
+      // Check that we have the right number of arguments (function name plus one argument).
+      TESTARGS(2);
+
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aArguments, 1);
@@ -373,6 +376,7 @@ void LispGetExactBits(LispEnvironment& aEnvironment, LispPtr& aResult,
       z->SetTo(x.Ptr()->GetPrecision());
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else	// this is not defined without BigNumber, so return something
+    RaiseError("Function MathGetExactBits not supported without BigNumber support");
     LispArithmetic1(aEnvironment, aResult, aArguments, FloorFloat);
 #endif
 }
@@ -380,6 +384,8 @@ void LispGetExactBits(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispSetExactBits(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
+      // Check that we have the right number of arguments (function name plus two arguments).
+      TESTARGS(3);
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
@@ -390,6 +396,7 @@ void LispSetExactBits(LispEnvironment& aEnvironment, LispPtr& aResult,
 	  z->Precision((long)y->Double());	// segfaults unless y is defined?
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else	// this is not defined without BigNumber, so return something
+    RaiseError("Function MathSetExactBits not supported without BigNumber support");
     LispArithmetic1(aEnvironment, aResult, aArguments, FloorFloat);
 #endif
 }

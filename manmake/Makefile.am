@@ -18,24 +18,31 @@ bin_SCRIPTS = ytxt2tex
 ytxt2tex_DEPS = book2TeX.sh book2TeX.ys txt2yacasdoc.pl
 
 BOOKS = intro.book coding.book ref.book refprog.book essays.book \
-	Algo.book LispProgramming.book
+	Algo.book LispProgramming.book NewDesign.book
 
 BOOKSOURCES = intro.book.txt coding.book.txt ref.book.txt refprog.book.txt \
-	essays.book.txt Algo.book.txt LispProgramming.book.txt
+	essays.book.txt Algo.book.txt LispProgramming.book.txt \ 
+	NewDesign.book.txt
 
 PS_DOCS = intro.book.ps coding.book.ps essays.book.ps ref.book.ps \
-	refprog.book.ps Algo.book.ps LispProgramming.book.ps
+	refprog.book.ps Algo.book.ps LispProgramming.book.ps \
+	NewDesign.book.ps
 
 PDF_DOCS = intro.book.pdf coding.book.pdf essays.book.pdf ref.book.pdf \
-	refprog.book.pdf Algo.book.pdf LispProgramming.book.pdf
+	refprog.book.pdf Algo.book.pdf LispProgramming.book.pdf \
+	NewDesign.book.pdf
 
 # refprog.html is not listed because it is generated together with ref.html
 HTMLBOOKS = intro.html coding.html essays.html ref.html \
-	Algo.html LispProgramming.html 
+	Algo.html LispProgramming.html NewDesign.book.html
 
 INTROCHAPTERS = FDL.chapt cl-options.chapt
 
 INTROSOURCES = FDL.chapt.txt cl-options.chapt.txt
+
+NEWDESIGNCHAPTERS = GlobalMatching.chapt NewDesignMisc.chapt FDL.chapt
+NEWDESIGNSOURCES = GlobalMatching.chapt.txt NewDesignMisc.chapt.txt \
+	FDL.chapt.txt
 
 ALGOCHAPTERS = algo-basic.chapt algo-numapprox.chapt \
 	algorithms-elemfunc.chapt algorithms-specfunc.chapt \
@@ -74,13 +81,13 @@ CODINGSOURCES = YacasDebugger.chapt.txt FDL.chapt.txt
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
 	SimpleTools.chapt CVS-Howto.chapt YacasDocs.chapt \
 	wester-1994.chapt new.chapt paper.chapt codecheck.chapt \
-	wordproblems.chapt FDL.chapt BuildSystem.chapt GlobalMatching.chapt
+	wordproblems.chapt FDL.chapt BuildSystem.chapt 
 
 ESSAYSOURCES = ABIN-grammar.chapt.txt Plugins-Howto.chapt.txt \
 	SimpleTools.chapt.txt CVS-Howto.chapt.txt YacasDocs.chapt.txt \
         paper.chapt.txt wester-1994.chapt.txt new.chapt.txt \
 	wordproblems.chapt.txt FDL.chapt.txt BuildSystem.chapt.txt \
-	codecheck.chapt.txt GlobalMatching.chapt.txt
+	codecheck.chapt.txt 
 
 LISPPROGRAMMINGCHAPTERS = LispLanguage.chapt FDL.chapt
 LISPPROGRAMMINGSOURCES = LispLanguage.chapt.txt FDL.chapt.txt
@@ -98,7 +105,8 @@ EXTRA_DIST = api2txt.pl book2txt.sh book2txt.ys \
 	book2ys.sh book2ys.ys ys2book.pl \
 	ytxt2tex $(ytxt2tex_DEPS) \
 	manualmaker indexmaker styleplain \
-	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) $(INTROSOURCES) \
+	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) \
+	$(INTROSOURCES) $(NEWDESIGNSOURCES) \
 	$(REFPROGSOURCES) $(ALGOSOURCES) $(LISPPROGRAMMINGSOURCES) \
 	dummies 
 
@@ -144,6 +152,7 @@ coding.book.tex : coding.book $(CODINGCHAPTERS)
 intro.book.tex: intro.book $(INTROCHAPTERS)
 Algo.book.tex: Algo.book $(ALGOCHAPTERS)
 LispProgramming.book.tex: LispProgramming.book $(LISPPROGRAMMINGCHAPTERS)
+NewDesign.book.tex: NewDesign.book $(NEWDESIGNCHAPTERS)
 
 # special "virtual" chapter built from yacasapi.cpp
 yacasapi.chapt.txt: $(top_srcdir)/src/yacasapi.cpp
@@ -158,7 +167,7 @@ pdf-docs: $(PDF_DOCS)
 
 CLEANFILES = books.html *.tex *.dvi *.aux *.idx *.ind *.ilg *.toc *.log *.ps *.pdf \
 	coding*.html intro*.html ref*.html essays*.html Algo*.html LispProgramming*.html *.o core *~ texdocs.c \
-	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(LISPPROGRAMMINGCHAPTERS) \
+	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(LISPPROGRAMMINGCHAPTERS) $(NEWDESIGNCHAPTERS) \
 	$(CODESNIPPETS) $(ALGOCHAPTERS) yacasapi.chapt.txt $(BOOKS) manicon.html
 
 # The top HTML docs target is now "manicon.html" that is built by GenerateIndex().
