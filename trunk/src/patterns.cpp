@@ -46,6 +46,13 @@ LispBoolean MatchAtom::ArgumentMatches(LispEnvironment& aEnvironment,
         LogPrintf("trying to match atom to list\n");
     }
     */
+
+    // If it is a floating point, don't even bother comparing
+    if (aExpression.Get() != NULL)
+      if (aExpression.Get()->Number(0) != NULL)
+        if (!aExpression.Get()->Number(0)->IsInt())
+          return LispFalse;
+      
     return (iString == aExpression.Get()->String());
 }
 

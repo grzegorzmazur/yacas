@@ -78,8 +78,23 @@ static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
 //    printf("[%d,%d]:",x.NrItems()-x.iExp,x.iExp);
 
     // While (term>epsilon)
-    while (Significant(term))      
+    while (1 /* Significant(term)*/)      
     {
+    
+#ifdef CORRECT_DIVISION
+
+/*
+        LispInt significantDigits = WordDigits(term.iPrecision, 10);
+        NormalizeFloat(term,significantDigits);
+        if ((-term.iTensExp) > term.iPrecision+2)
+        {
+          break;
+        }
+*/
+        if (!Significant(term)) break;
+#else
+        if (!Significant(term)) break;
+#endif
         ANumber orig(sum.iPrecision);
 
         //   term <- term*x^2/((i+1)(i+2))
@@ -112,7 +127,10 @@ static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
         //   sum <- sum+term
         orig.CopyFrom(sum);
         Add(sum, orig, term);
+
+
     }
+
 //    printf("[%d,%d]:",sum.NrItems()-sum.iExp,sum.iExp);
 }
 
@@ -534,9 +552,11 @@ LispObject* PiFloat( LispEnvironment& aEnvironment, LispInt aPrecision)
     {
  		// start of iteration code
 		result.ChangePrecision(cur_prec);	// result has precision cur_prec now
+//    NormalizeFloat(result,cur_prec);
         // Get Sin(result)
         x.CopyFrom(result);
 		s.ChangePrecision(cur_prec);
+//    NormalizeFloat(s,cur_prec);
         SinFloat(s, x);
         // Calculate new result: result := result + Sin(result);
         x.CopyFrom(result);	// precision cur_prec
@@ -554,6 +574,12 @@ LispObject* PiFloat( LispEnvironment& aEnvironment, LispInt aPrecision)
     }
 	
 //    return aHashTable.LookUp("3.14"); // Just kidding, Serge ;-)
+
+//NormalizeFloat(result,WordDigits(result.iPrecision,10));
+#ifdef CORRECT_DIVISION
+    NormalizeFloat(result,WordDigits(result.iPrecision,10));
+#endif
+
     return FloatToString(result, aEnvironment);
 }
 
