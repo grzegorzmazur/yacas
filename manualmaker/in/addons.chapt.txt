@@ -86,7 +86,7 @@ The function creates the following files in subdirectory {plugins.tmp/} of curre
 Note that all files have names matching "{*_plugin*}".
 
 After creating these files, {MakeFunctionPlugin()} will:
-*	1. Run a {c++} compiler command; if compilation fails, all error messages will appear on the screen;
+*	1. Run a {c++} compiler command; if compilation fails, all error messages will appear in the log file {f1_plugin.log};
 *	1. Load resulting .so object with {DllLoad()};
 *	1. Print an information message on success.
 
