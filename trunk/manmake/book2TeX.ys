@@ -1,21 +1,19 @@
-/* book2TeX - convert Yacas docs back to TeX format
-	version 0.1 */
+/* book2TeX - convert Yacas docs back to TeX format (Serge Winitzki)
+	version 0.2 */
 Book(x) := [	/* this is the first declaration in a file */
-	WriteString(
-"\\documentclass[12pt]{report}
+	WriteString("
+\\documentclass[11pt]{report}
 
-\\setlength{\\topmargin}{-1.3in}
-\\setlength{\\oddsidemargin}{-0.4in}
-\\setlength{\\evensidemargin}{-0.6in}
-\\setlength{\\textwidth}{7.5in}
-\\setlength{\\textheight}{10.2in}
+\\setlength{\\topmargin}{-1.2in}
+\\setlength{\\oddsidemargin}{-0.5in}
+\\setlength{\\evensidemargin}{-0.5in}
+\\setlength{\\textwidth}{7.2in}
+\\setlength{\\textheight}{10.0in}
 
 \\begin{document}
-
 \\title{" : x : "}
-\\author{by the Yacas team}
-
-\\date{Yacas version: " : Version() : "}
+\\author{by the \\textsc{Yacas} team}
+\\date{\\textsc{Yacas} version: " : Version() : "}
 \\maketitle
 \\tableofcontents
 ");
@@ -53,10 +51,10 @@ HtmlCommand(x) := "\\begin{quote}\\begin{verbatim}" : x : "\\end{verbatim}\\end{
 
 HtmlEmphasis(x) := "\\emph{" : x : "}";
 
-/* decide whether to use "verb" or "texttt" based on whether the string contains any of the special characters #, _, \, & */
+/* decide whether to use "verb" or "texttt" based on whether the string contains any of the special characters #, _, \, &, {, } */
 HtmlTerm(x) := [
 	Local(i);
-	For (i:=1, i<=Length(x) And Not Contains({"#", "_", "&", "\\"}, x[i]), i:=i+1) [];
+	For (i:=1, i<=Length(x) And Not Contains({"{", "}", "#", "_", "&", "\\"}, x[i]), i:=i+1) [];
 	If (i<=Length(x),
 	"\\verb|" : x : "|",
 	"\\texttt{" : x : "}");
@@ -83,3 +81,11 @@ TeXFinishUp() := WriteString("
 ");
 
 IncludeFile(x) := Load(x);
+
+HtmlLink(text, url, param1, param2) :=
+  If (text = url,
+	"\\verb|" : text : "|",
+	text : " (Web URL: \\verb|" : url :
+	  If(param1 != "", "#" : param1, "" )
+	: "|)"
+);

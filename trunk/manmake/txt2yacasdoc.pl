@@ -45,9 +45,10 @@ while (<STDIN>) {
 		$in_text = 1;
 	}	# Now not TAB-indented lines
 	elsif (/^\s*$/) {	# New paragraph
+#		&start_text();
 		if (not $have_par) {
-			&start_text();
 			&close_quote();
+			&start_text();
 			if ($in_itemized or $in_enum or $in_htmlcommand) {
 				print ")\n";
 				$in_itemized = $in_enum = $in_htmlcommand = 0;
@@ -56,8 +57,8 @@ while (<STDIN>) {
 			$have_par = 1;
 		}
 	} elsif (/^\*\t[0-9]+\. (.*)$/) {	# Enum
-		&start_text();
 		&close_quote();
+		&start_text();
 		if ($in_enum) {
 			print ":Item()\"", &escape_term($1), "\n";
 		} else {
@@ -67,8 +68,8 @@ while (<STDIN>) {
 		$in_text = 1;
 		$have_par = 0;
 	} elsif (/^\*\t(.*)$/) {	# Itemized
-		&start_text();
 		&close_quote();
+		&start_text();
 		if ($in_itemized) {
 			print ":Item()\"", &escape_term($1), "\n";
 		} else {
@@ -84,6 +85,10 @@ while (<STDIN>) {
 		print "IncludeFile(\"$1\");\n\n";
 		
 	} else {	# plain text - process it last, after every other markup is done
+	# plain text closes HtmlCommand environment but does not close itemize or enum
+		if ($in_htmlcommand) {
+			&close_quote();	# this will close HtmlCommand too
+		}
 		&start_text();
 		&open_quote();
 		print &escape_term($_), "\n";
@@ -114,6 +119,7 @@ sub open_quote {
 }
 sub start_text {	# start a Text() block if necessary
 	if ($have_Text == 0) {
+		&close_quote();
 		print "Text()\"";
 		$have_Text = $in_text = 1;
 	}

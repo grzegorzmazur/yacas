@@ -14,8 +14,8 @@ if [ -r "$1" ]; then
 	echo 'ToFile("'"$1"'.tex") [ Use("'"$ourdir"'/book2TeX.ys"); Load("'"$1"'"); TeXFinishUp(); ];' | yacas -f
 	if [ -s "$1.tex" ]; then
 		echo "File '$1.tex' was created."
-		#perl -e 'while(<>) { s/([%])/\\$1/g; s/\{\\(?:text)?tt\{(.*[\\#&\$^_].*)\}\}/\\verb|$1|/g; print; }' < "$1.tex" > "$1.tex.tmp"
-		#mv "$1.tex.tmp" "$1.tex"
+		perl -e 'while(<>) { s/([%])/\\$1/g; print; }' < "$1.tex" > "$1.tex.tmp"
+		mv "$1.tex.tmp" "$1.tex"
 	else
 		echo "book2TeX: Some problem generating file '$1.tex', aborted."
 	fi
