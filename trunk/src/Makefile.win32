@@ -4,7 +4,7 @@ PLATDIR = plat\win32
 
 CXX = cxx
 
-OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
+OBJS = anumber.o archiver.o arggetter.o arrayclass.o commandline.o \
 	deffile.o errors.o genericobject.o genericstructs.o \
 	grower.o infixparser.o lispatom.o lispcleanupstack.o         \
 	lispenvironment.o lispeval.o lispevalhash.o lisphash.o       \
