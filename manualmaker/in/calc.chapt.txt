@@ -1,0 +1,1783 @@
+
+			Calculus
+
+*INTRO In this chapter, some functions for doing calculus are
+described. These include functions implementing differentiation,
+integration, standard mathematical functions, and the solving of
+equations.
+
+*A Sin
+
+*A Cos
+
+*A Tan
+
+*CMD Sin, Cos, Tan --- Trigonometric functions
+
+*STD
+
+*CALL
+
+Sin(x)
+
+Cos(x)
+
+Tan(x)
+
+*PARMS
+
+x - argument to the function, in radians
+
+*DESC
+
+These functions represent the trigonometric functions sine, cosine,
+and tangent respectively. Yacas leaves them alone even if x is a
+number, trying to keep the result as exact as possible. The floating
+point approximations of these functions can be forced by using the {N} function.
+
+Yacas knows some trigonometric identities, so it can simplify to exact
+results even if {N} is not used. This is the case
+when the arguments are multiples of Pi/6 or Pi/4.
+
+These functions are threaded, meaning that if the argument "x" is a
+list, the function is applied to all the entries in the list.
+
+*E.G.
+
+	In> Sin(1)
+	Out> Sin(1);
+	In> N(Sin(1),20)
+	Out> 0.84147098480789650665;
+	In> Sin(Pi/4)
+	Out> Sqrt(2)/2;
+
+*SEE ArcSin, ArcCos, ArcTan, N, Pi
+
+*A ArcSin
+
+*A ArcCos
+
+*A ArcTan
+
+*CMD ArcSin, ArcCos, ArcTan --- Inverse trigonometric functions
+
+*STD
+
+*CALL
+
+ArcSin(x)
+
+ArcCos(x)
+
+ArcTan(x)
+
+*PARMS
+
+x - argument to the function
+
+*DESC
+
+These functions represent the inverse trigonometric functions. For
+instance, the value of "ArcSin(x)" is the number "y" such that
+"Sin(y)" equals "x".
+
+Note that the number "y" is not unique. For instance, "Sin(0)" and
+"Sin(Pi)" both equal 0, so what should "ArcSin(0)" be? In Yacas,
+it is agreed that the value of "ArcSin(x)" should be in the interval
+[-Pi/2,Pi/2]. The same goes for "ArcTan(x)". However, "ArcCos(x)"
+is in the interval [0,Pi].
+
+Usually, Yacas leaves these functions alone unless it is forced to do
+a numerical evaluation by the {N} function. If the
+argument is -1. 0, or 1 however, Yacas will simplify the
+expression. If the argument is complex,  the expression will be
+rewritten as a {Ln} function.
+
+These functions are threaded, meaning that if the argument "x" is a
+list, the function is applied to all the entries in the list.
+
+*E.G.
+
+	In> ArcSin(1)
+	Out> Pi/2;
+	
+	In> ArcSin(1/3)
+	Out> ArcSin(1/3);
+	In> Sin(ArcSin(1/3))
+	Out> 1/3;
+	
+	In> N(ArcSin(0.75))
+	Out> 0.848062;
+	In> N(Sin(%))
+	Out> 0.7499999477;
+
+*SEE Sin, Cos, Tan, N, Pi, Ln
+
+*CMD Exp --- Exponential function
+
+*STD
+
+*CALL
+
+Exp(x)
+
+*PARMS
+
+x - argument to the function
+
+*DESC
+
+This function calculates e raised to the power "x", where e is the
+mathematic constant 2.71828... One can use {Exp(1)}
+to represent e.
+
+This function is threaded, meaning that if the argument "x" is a
+list, the function is applied to all the entries in the list.
+
+*E.G.
+
+	In> Exp(0)
+	Out> 1;
+	In> Exp(I*Pi)
+	Out> -1;
+	In> N(Exp(1))
+	Out> 2.7182818284;
+
+*SEE Ln, Sin, Cos, Tan, N
+
+*CMD Ln --- Natural logarithm
+
+*STD
+
+*CALL
+
+Ln(x)
+
+*PARMS
+
+x - argument to the function
+
+*DESC
+
+This function calculates the natural logarithm of "x". This is the
+inverse function of the exponential function, {Exp}, ie. "Ln(x) = y" implies that "Exp(y) = x". For complex
+arguments, the imaginary part of the logarithm is in the interval
+(-Pi,Pi]. This is compatible with the branch cut of {Arg}.
+
+This function is threaded, meaning that if the argument "x" is a
+list, the function is applied to all the entries in the list.
+
+*E.G.
+
+	In> Ln(1)
+	Out> 0;
+	In> Ln(Exp(x))
+	Out> x;
+	In> D(x) Ln(x)
+	Out> 1/x;
+
+*SEE Exp, Arg
+
+*CMD Sqrt --- Square root
+
+*STD
+
+*CALL
+
+Sqrt(x)
+
+*PARMS
+
+x - argument to the function
+
+*DESC
+
+This function calculates the square root of "x". If the result is
+not rational, the call is returned unevaluated unless a numerical
+approximation is forced with the {N} function. This
+function can also handle negative and complex arguments.
+
+This function is threaded, meaning that if the argument "x" is a
+list, the function is applied to all the entries in the list.
+
+*E.G.
+
+	In> Sqrt(16)
+	Out> 4;
+	In> Sqrt(15)
+	Out> Sqrt(15);
+	In> N(Sqrt(15))
+	Out> 3.8729833462;
+	In> Sqrt(4/9)
+	Out> 2/3;
+	In> Sqrt(-1)
+	Out> Complex(0,1);
+
+*SEE Exp, ^, N
+
+*CMD Abs --- Absolute value or modulus
+
+*STD
+
+*CALL
+
+Abs(x)
+
+*PARMS
+
+x - argument to the function
+
+*DESC
+
+This function returns the absolute value (also called the modulus) of
+"x". If "x" is positive, the absolute value is "x" itself; if
+"x" is negative, the absolute value is "-x". For complex "x",
+the modulus is the "r" in the polar decomposition "x = r *
+Exp(I*phi)".
+
+This function is connected to the {Sign} function by
+the identity "Abs(x) * Sign(x) = x" for real "x".
+
+This function is threaded, meaning that if the argument "x" is a
+list, the function is applied to all the entries in the list.
+
+*E.G.
+
+	In> Abs(2);
+	Out> 2;
+	In> Abs(-1/2);
+	Out> -1/2;
+	In> Abs(3+4*I);
+	Out> 5;
+
+*SEE Sign, Arg
+
+*CMD Sign --- Sign of a number
+
+*STD
+
+*CALL
+
+Sign(x)
+
+*PARMS
+
+x - argument to the function
+
+*DESC
+
+This function returns the sign of the real number "x". It is "1"
+for positive numbers and "-1" for negative numbers. Somewhat
+arbitrarily, {Sign(0)} is defined to be 1.
+
+This function is connected to the {Abs} function by
+the identity "Abs(x) * Sign(x) = x" for real "x".
+
+This function is threaded, meaning that if the argument "x" is a
+list, the function is applied to all the entries in the list.
+
+*E.G.
+
+	In> Sign(2)
+	Out> 1;
+	In> Sign(-3)
+	Out> -1;
+	In> Sign(0)
+	Out> 1;
+	In> Sign(-3) * Abs(-3)
+	Out> -3;
+
+*SEE Arg, Abs
+
+*CMD Complex --- Construct a complex number
+
+*STD
+
+*CALL
+
+Complex(r, c)
+
+*PARMS
+
+r - real part
+
+c - imaginary part
+
+*DESC
+
+This function represents the complex number "r + I*c", where "I"
+is the imaginary unit. It is the standard representation used in Yacas
+to represent complex numbers. Both "r" and "c" are supposed to be
+real.
+
+Note that, at the moment, many functions in Yacas assume that all
+numbers are real unless it is obvious that it is a complex
+number. Hence {Im(Sqrt(x))} evaluates to {0} which is only true for nonnegative "x".
+
+*E.G.
+
+	In> I
+	Out> Complex(0,1);
+	In> 3+4*I
+	Out> Complex(3,4);
+	In> Complex(-2,0)
+	Out> -2;
+
+*SEE Re, Im, I, Abs, Arg
+
+*CMD Re --- Real part of a complex number
+
+*STD
+
+*CALL
+
+Re(x)
+
+*PARMS
+
+x - argument to the function
+
+*DESC
+
+This function returns the real part of the complex number "x".
+
+*E.G.
+
+	In> Re(5)
+	Out> 5;
+	In> Re(I)
+	Out> 0;
+	In> Re(Complex(3,4))
+	Out> 3;
+
+*SEE Complex, Im
+
+*CMD Im --- Imaginary part of a complex number
+
+*STD
+
+*CALL
+
+Im(x)
+
+*PARMS
+
+x - argument to the function
+
+*DESC
+
+This function returns the imaginary part of the complex number "x".
+
+*E.G.
+
+	In> Im(5)
+	Out> 0;
+	In> Im(I)
+	Out> 1;
+	In> Im(Complex(3,4))
+	Out> 4;
+
+*SEE Complex, Re
+
+*CMD I --- Imaginary unit
+
+*STD
+
+*CALL
+
+I
+
+*PARMS
+
+none
+
+*DESC
+
+This symbol represents the imaginary unit, which equals the square
+root of -1. It evaluates immediately to {Complex(0,1)}.
+
+*E.G.
+
+	In> I
+	Out> Complex(0,1);
+	In> I = Sqrt(-1)
+	Out> True;
+
+*SEE Complex
+
+*CMD Conjugate --- Complex conjugate
+
+*STD
+
+*CALL
+
+Conjugate(x)
+
+*PARMS
+
+x - argument to the function
+
+*DESC
+
+This function returns the complex conjugate of "x". The complex
+conjugate of "a + I*b" is "a - I*b". This function assumes that all
+unbound variables are real.
+
+*E.G.
+
+	In> Conjugate(2)
+	Out> 2;
+	In> Conjugate(Complex(a,b))
+	Out> Complex(a,-b);
+
+*SEE Complex, Re, Im
+
+*CMD Arg --- Argument of a complex number
+
+*STD
+
+*CALL
+
+Arg(x)
+
+*PARMS
+
+x - argument to the function
+
+*DESC
+
+This function returns the argument of "x". The argument is the angle
+with the positive real axis in the Argand diagram, or the angle
+"phi" in the polar representation "r * Exp(I*phi)" of "x". The
+result lies between -Pi and Pi, excluding -Pi but including Pi. The
+argument of 0 is {Undefined}.
+
+*E.G.
+
+	In> Arg(2)
+	Out> 0;
+	In> Arg(-1)
+	Out> Pi;
+	In> Arg(1+I)
+	Out> Pi/4;
+
+*SEE Abs, Sign
+
+*CMD ! --- Factorial
+
+*STD
+
+*CALL
+
+n!
+
+*PARMS
+
+n - argument to the function
+
+*DESC
+
+This function calculate "n" factorial. For nonnegative integers, n!
+equals "n*(n-1)*(n-2)*...*1". The factorial of half-integers,
+defined via the gamma function, is also implemented.
+
+This function is threaded, meaning that if the argument "x" is a
+list, the function is applied to all the entries in the list.
+
+*E.G.
+
+	In> 5!
+	Out> 120;
+	In> 1 * 2 * 3 * 4 * 5
+	Out> 120;
+	In> (1/2)!
+	Out> Sqrt(Pi)/2;
+
+*SEE Bin, Factorize
+
+*CMD Bin --- Binomial coefficient
+
+*STD
+
+*CALL
+
+Bin(n, m)
+
+*PARMS
+
+n, m - integers
+
+*DESC
+
+This function calculates the binomial coefficient "n" above
+"m", which equals "n! / (n! * (n-m)!)". This is the number of ways
+to choose "m" objects out of a total of "n" objects if order is
+not taken into account. The binomial coefficient is defined to be zero
+if "m" is negative or greater than "n".
+
+*E.G.
+
+	In> Bin(10, 4)
+	Out> 210;
+	In> 10! / (4! * 6!)
+	Out> 210;
+
+*SEE !
+
+*CMD Sum --- Sum of a list of values
+
+*STD
+
+*CALL
+
+Sum(list)
+
+Sum(var, from, to, body)
+
+*PARMS
+
+list - list of values to sum
+
+var - variable to iterate over
+
+from - integer value to iterate from
+
+to - integer value to iterate upto
+
+body - expression to evaluate for each iteration
+
+*DESC
+
+The first form of the {Sum} command simply adds all
+the entries in "list" and returns their sum.
+
+If the second calling sequence is used, the expression "body" is
+evaluated while the variable "var" ranges over all integers from
+"from" upto "to", and the sum of all the results is
+returned. Obviously, "to" should be greater than or equal to
+"from".
+
+*E.G.
+
+	In> Sum({1,4,9});
+	Out> 14;
+	In> Sum(i, 1, 3, i^2);
+	Out> 14;
+
+*SEE Average, Factorize, Apply
+
+*CMD Average --- Average of a list of values
+
+*STD
+
+*CALL
+
+Average(list)
+
+*PARMS
+
+list - list of values to average
+
+*DESC
+
+This command calculates the (arithmetical) average of all the entries in
+"list", which is the sum of all entries divided by the number of
+entries.
+
+*E.G.
+
+	In> Average({1,2,3,4,5});
+	Out> 3;
+	In> Average({2,6,7});
+	Out> 5;
+
+*SEE Sum
+
+*CMD Factorize --- Product of a list of values
+
+*STD
+
+*CALL
+
+Factorize(list)
+
+Factorize(var, from, to, body)
+
+*PARMS
+
+list - list of values to multiply
+
+var - variable to iterate over
+
+from - integer value to iterate from
+
+to - integer value to iterate upto
+
+body - expression to evaluate for each iteration
+
+*DESC
+
+The first form of the {Factorize} command simply
+multiplies all the entries in "list" and returns their product.
+
+If the second calling sequence is used, the expression "body" is
+evaluated while the variable "var" ranges over all integers from
+"from" upto "to", and the product of all the results is
+returned. Obviously, "to" should be greater than or equal to
+"from".
+
+*E.G.
+
+	In> Factorize({1,2,3,4});
+	Out> 24;
+	In> Factorize(i, 1, 4, i);
+	Out> 24;
+
+*SEE Sum, Apply
+
+*CMD Min --- Minimum of a number of values
+
+*STD
+
+*CALL
+
+Min(x,y)
+
+Min(list)
+
+*PARMS
+
+x, y - pair of values to determine the minimum of
+
+list - list of values from which the minimum is sought
+
+*DESC
+
+This function returns the minimum value of its argument(s). If the
+first calling sequence is used, the smaller of "x" and "y" is
+returned. If one uses the second form, the smallest of the entries in
+"list" is returned. In both cases, this function can only be used
+with numerical values and not with symbolic arguments.
+
+*E.G.
+
+	In> Min(2,3);
+	Out> 2;
+	In> Min({5,8,4});
+	Out> 4;
+
+*SEE Max, Sum, Average
+
+*CMD Max --- Maximum of a number of values
+
+*STD
+
+*CALL
+
+Max(x,y)
+
+Max(list)
+
+*PARMS
+
+x, y - pair of values to determine the maximum of
+
+list - list of values from which the maximum is sought
+
+*DESC
+
+This function returns the maximum value of its argument(s). If the
+first calling sequence is used, the larger of "x" and "y" is
+returned. If one uses the second form, the largest of the entries in
+"list" is returned. In both cases, this function can only be used
+with numerical values and not with symbolic arguments.
+
+*E.G.
+
+	In> Max(2,3);
+	Out> 3;
+	In> Max({5,8,4});
+	Out> 8;
+
+*SEE Min, Sum, Average
+
+*CMD IsZero --- Test whether argument is zero
+
+*STD
+
+*CALL
+
+IsZero(n)
+
+*PARMS
+
+n - number to test
+
+*DESC
+
+{IsZero(n)} evaluates to {True} if
+"n" is zero. In case "n" is not a number, the function returns
+{False}.
+
+*E.G.
+
+	In> IsZero(3.25)
+	Out> False;
+	In> IsZero(0)
+	Out> True;
+	In> IsZero(x)
+	Out> False;
+
+*SEE IsNumber, IsNotZero
+
+*CMD IsRational --- Test whether argument is a rational
+
+*STD
+
+*CALL
+
+IsRational(expr)
+
+*PARMS
+
+expr - expression to test
+
+*DESC
+
+This commands tests whether the expression "expr" is a rational
+number. This is the case if the top-level operator of "expr" is {/}.
+
+*E.G.
+
+	In> IsRational(5)
+	Out> False;
+	In> IsRational(2/7)
+	Out> True;
+	In> IsRational(a/b)
+	Out> True;
+	In> IsRational(x + 1/x)
+	Out> False;
+
+*SEE Numer, Denom
+
+*CMD Numer --- Numerator of an expression
+
+*STD
+
+*CALL
+
+Numer(expr)
+
+*PARMS
+
+expr - expression to determine numerator of
+
+*DESC
+
+This function determines the numerator of the rational expression
+"expr" and returns it. As a special case, if its argument is numeric
+but not rational, it returns this number. If "expr" is neither
+rational nor numeric, the function returns unevaluated.
+
+*E.G.
+
+	In> Numer(2/7)
+	Out> 2;
+	In> Numer(a / x^2)
+	Out> a;
+	In> Numer(5)
+	Out> 5;
+
+*SEE Denom, IsRational, IsNumber
+
+*CMD Denom --- Denominator of an expression
+
+*STD
+
+*CALL
+
+Denom(expr)
+
+*PARMS
+
+expr - expression to determine denominator of
+
+*DESC
+
+This function determines the denominator of the rational expression
+"expr" and returns it. As a special case, if its argument is numeric
+but not rational, it returns {1}. If "expr" is
+neither rational nor numeric, the function returns unevaluated.
+
+*E.G.
+
+	In> Denom(2/7)
+	Out> 7;
+	In> Denom(a / x^2)
+	Out> x^2;
+	In> Denom(5)
+	Out> 1;
+
+*SEE Numer, IsRational, IsNumber
+
+*CMD Commutator --- Commutator of two objects
+
+*STD
+
+*CALL
+
+Commutator(a, b)
+
+*PARMS
+
+a, b - two objects whose commutator should be computed
+
+*DESC
+
+This command computes the commutator of 'a" and "b", ie. the
+expression "a b - b a". For numbers and other objects for which
+multiplication is commutative, the commutator is zero. But this is not
+necessarily the case for matrices.
+
+*E.G.
+
+	In> Commutator(2,3)
+	Out> 0;
+	In> PrettyPrinter("PrettyForm");
+	
+	True
+	
+	Out>
+	In> A := { {0,x}, {0,0} }
+	
+	/              \
+	| ( 0 ) ( x )  |
+	|              |
+	| ( 0 ) ( 0 )  |
+	\              /
+	
+	Out>
+	In> B := { {y,0}, {0,z} }
+	
+	/              \
+	| ( y ) ( 0 )  |
+	|              |
+	| ( 0 ) ( z )  |
+	\              /
+	
+	Out>
+	In> Commutator(A,B)
+	
+	/                          \
+	| ( 0 ) ( x * z - y * x )  |
+	|                          |
+	| ( 0 ) ( 0 )              |
+	\                          /
+	
+	Out>
+
+*CMD Taylor --- Univariate Taylor series expansion
+
+*STD
+
+*CALL
+
+Taylor(var, at, order) expr
+
+*PARMS
+
+var - variable
+
+at - point to get Taylor series around
+
+order - order of approximation
+
+expr - expression to get Taylor series for
+
+*DESC
+
+This function returns the Taylor series expansion of the expression
+"expr" with respect to the variable "var" around "at" upto order
+"order". This is a polynomial which agrees with "expr" at the
+point "var = at", and furthermore the first "order" derivatives of
+the polynomial at this point agree with "expr". Taylor expansions
+around removable singularities are correctly handled by taking the
+limit as "var" approaches "at".
+
+*E.G.
+
+	In> PrettyForm(Taylor(x,0,9) Sin(x))
+	
+	     3    5      7       9
+	    x    x      x       x
+	x - -- + --- - ---- + ------
+	    6    120   5040   362880
+	
+	Out> True;
+
+*SEE D, InverseTaylor, ReversePoly, BigOh
+
+*CMD InverseTaylor --- Taylor expansion of inverse
+
+*STD
+
+*CALL
+
+InverseTaylor(var, at, order) expr
+
+*PARMS
+
+var - variable
+
+at - point to get inverse Taylor series around
+
+order - order of approximation
+
+expr - expression to get inverse Taylor series for
+
+*DESC
+
+This function builds the Taylor series expansion of the inverse of the
+expression "expr" with respect to the variable "var" around "at"
+upto order "order". It uses the function {ReversePoly} to perform the task.
+
+*E.G.
+
+	In> PrettyPrinter("PrettyForm")
+	
+	True
+	
+	Out>
+	In> exp1 := Taylor(x,0,7) Sin(x)
+	
+	     3    5      7
+	    x    x      x
+	x - -- + --- - ----
+	    6    120   5040
+	
+	Out>
+	In> exp2 := InverseTaylor(x,0,7) ArcSin(x)
+	
+	 5      7     3
+	x      x     x
+	--- - ---- - -- + x
+	120   5040   6
+	
+	Out>
+	In> Simplify(exp1-exp2)
+	
+	0
+	
+	Out>
+
+*SEE ReversePoly, Taylor, BigOh
+
+*CMD ReversePoly --- Solve "h(f(x)) = g(x) + O(x^n)" for h
+
+*STD
+
+*CALL
+
+ReversePoly(f, g, var, newvar, degree)
+
+*PARMS
+
+f, g - expressions in "var"
+
+var - a variable
+
+newvar - a new variable to express the result in
+
+degree - the degree of the required solution
+
+*DESC
+
+This function returns a polynomial in "newvar", say "h(newvar)",
+with the property that "h(f(var))" equals "g(var)" upto order
+"degree". The degree of the result will be at most "degree-1". The
+only requirement is that the first derivative of "f" should not be zero.
+
+This function is used to determine the Taylor series expansion of the
+inverse of a function "f": if we take "g(var)=var", then
+"h(f(var))=var" (upto order "degree"), so "h" will be the
+inverse of "f".
+
+*E.G.
+
+	In> f(x):=Eval(Expand((1+x)^4))
+	Out> True;
+	In> g(x) := x^2
+	Out> True;
+	In> h(y):=Eval(ReversePoly(f(x),g(x),x,y,8))
+	Out> True;
+	In> BigOh(h(f(x)),x,8)
+	Out> x^2;
+	In> h(x)
+	Out> (-2695*(x-1)^7)/131072+(791*(x-1)^6)/32768+(-119*(x-1)^5)/4096+(37*(x-1)^4)
+	/1024+(-3*(x-1)^3)/64+(x-1)^2/16;
+
+*SEE InverseTaylor, Taylor, BigOh
+
+*CMD BigOh --- Drop all terms of a certain order in a polynomial
+
+*STD
+
+*CALL
+
+BigOh(poly, var, degree)
+
+*PARMS
+
+poly - a univariate polynomial
+
+var - a free variable
+
+degree - positive integer
+
+*DESC
+
+This function drops all terms of order "degree" or higher in
+"poly", which is a polynomial in the variable "var".
+
+*E.G.
+
+	In> BigOh(1+x+x^2+x^3,x,2)
+	Out> x+1;
+
+*SEE Taylor, InverseTaylor
+
+*CMD Newton --- Solve an equation numerically with Newton's method
+
+*STD
+
+*CALL
+
+Newton(expr, var, initial, accuracy)
+
+*PARMS
+
+expr - an expression to find a zero for
+
+var - free variable to adjust to find a zero
+
+initial - initial value for "var" to use in the search
+
+accuracy - minimum required accuracy of the result
+
+*DESC
+
+This function tries to numerically find a zero of the expression
+"expr", which should depend only on the variable "var". It uses
+the value "initial" as an initial guess.
+
+The function will iterate using Newton's method until it estimates
+that it has come within a distance "accuracy" of the correct
+solution, and then it will return its best guess. In particular, it
+may loop forever if the algorithm does not converge.
+
+*E.G.
+
+	In> Newton(Sin(x),x,3,0.0001)
+	Out> 3.1415926535;
+
+*SEE Solve
+
+*CMD D --- Differentiation
+
+*STD
+
+*CALL
+
+D(var) expr
+
+D(list) expr
+
+D(var,n) expr
+
+*PARMS
+
+var - variable
+
+list - a list of variables
+
+expr - expression to take derivative of
+
+n - order of derivative
+
+*DESC
+
+This function calculates the derivative of the expression "expr" with
+respect to the variable "var" and returns it. If the third calling
+sequence is used, the "n"-th derivative is determined. Yacas knows
+how the differentiate standard functions like {Ln}
+and {Sin}.
+
+The {D} operator is threaded in both "var" and
+"expr". This means that if either of them is a list, the function is
+applied to each entry in the list. The results are collected in
+another list which is returned. If both "var" and "expr" are a
+list, their lengths should be equal. In this case, the first entry in
+the list "expr" is differentiated with respect to the first entry in
+the list "var", the second entry in "expr" is differentiated with
+respect to the second entry in "var", and so on.
+
+*E.G.
+
+	In> D(x)Sin(x*y)
+	Out> y*Cos(x*y);
+	In> D({x,y,z})Sin(x*y)
+	Out> {y*Cos(x*y),x*Cos(x*y),0};
+	In> D(x,2)Sin(x*y)
+	Out> -Sin(x*y)*y^2;
+	In> D(x){Sin(x),Cos(x)}
+	Out> {Cos(x),-Sin(x)};
+
+*SEE Integrate, Taylor, Diverge, Curl
+
+*CMD Curl --- Curl of a vector field
+
+*STD
+
+*CALL
+
+Curl(vector, basis)
+
+*PARMS
+
+vector - vector field to take the curl of
+
+basis - list of variables forming the basis
+
+*DESC
+
+This function takes the curl of the vector field "vector" with
+respect to the variables "basis". The curl is defined as
+
+  {Curl(f,x) = { D(x[2]) f[3] - D(x[3]) f[2], D(x[3]) f[1] - D(x[1]) f[3], D(x[1]) f[2] - D(x[2]) f[1] }}
+
+Both "vector" and "basis" should be lists of length 3.
+
+*E.G.
+
+	In> Curl({x*y,x*y,x*y},{x,y,z})
+	Out> {x,-y,y-x};
+
+*SEE D, Diverge
+
+*CMD Diverge --- Divergence of a vector field
+
+*STD
+
+*CALL
+
+Diverge(vector, basis)
+
+*PARMS
+
+vector - vector field to calculate the divergence of
+
+basis - list of variables forming the basis
+
+*DESC
+
+This function calculates the divergence of the vector field "vector"
+with respect to the variables "basis". The divergence is defined as
+
+  {Diverge(f,x) = D(x[1]) f[1] + ... + D(x[n]) f[n]},
+
+where {n} is the length of the lists "vector" and
+"basis". These lists should have equal length.
+
+*E.G.
+
+	In> Diverge({x*y,x*y,x*y},{x,y,z})
+	Out> y+x;
+
+*SEE D, Curl
+
+*CMD Integrate --- Integration
+
+*STD
+
+*CALL
+
+Integrate(var, from, to) expr
+
+Integrate(var) expr
+
+*PARMS
+
+var - variable to integrate over
+
+from - begin of interval to integrate over
+
+to - end of interval to integrate over
+
+expression - expression to integrate
+
+*DESC
+
+This function integrates the expression "expr" with respect to the
+variable "var". The first calling sequence is used to perform
+definite integration: the integration is carried out from "var=form"
+to "var=to". The second form signifies indefinite integration. In
+this case, the function {UniqueConstant} is called
+to get a variable of the form {C}n (where "n" is
+an integer) which represent the integration constant.
+
+Some simple integration rules have currently been
+implemented. Polynomials, quotients of polynomials, the transcendental
+functions {Sin}, {Cos}, {Exp}, and {Ln}, and products of these
+functions with polynomials can all be integrated.
+
+*E.G.
+
+	In> Integrate(x,a,b) Cos(x)
+	Out> Sin(b)-Sin(a);
+	In> Integrate(x) Cos(x)
+	Out> Sin(x)+C9;
+
+*SEE D, UniqueConstant
+
+*CMD Simplify --- Try to simplify an expression
+
+*STD
+
+*CALL
+
+Simplify(expr)
+
+*PARMS
+
+expression - expression to simplify
+
+*DESC
+
+This function tries to simplify the expression "expr" as much
+as possible. It does this by grouping powers within terms, and then
+grouping like terms.
+
+*E.G.
+
+	In> a*b*a^2/b-a^3
+	Out> (b*a^3)/b-a^3;
+	In> Simplify(a*b*a^2/b-a^3)
+	Out> 0;
+
+*SEE TrigSimpCombine, RadSimp
+
+*CMD RadSimp --- Simplify expression with nested radicals
+
+*STD
+
+*CALL
+
+RadSimp(expr)
+
+*PARMS
+
+expr - an expression containing nested radicals
+
+*DESC
+
+This function tries to write the expression "expr" as a sum of roots
+of integers: "Sqrt(e1) + Sqrt(e2) + ...", where "e1", "e2" and
+so on are natural numbers. The expression "expr" may not contain
+free variables.
+
+It does this by trying all possible combinations for "e1", "e2",
+etcetera. Every possibility is numerically evaluated using {N} and compared with the numerical evaluation of
+"expr". If the approximations are equal (upto a certain margin),
+this possibility is returned. Otherwise, the expression is returned
+unevaluated.
+
+Note that due to the use of numerical approximations, there is a small
+chance that the expression returned by {RadSimp} is
+close but not equal to "expr". The last example underneath
+illustrates this problem. Furthermore, if the numerical value of
+"expr" is large, the number of possibilities becomes exorbitantly
+big so the evaluation may take very long.
+
+*E.G.
+
+	In> RadSimp(Sqrt(9+4*Sqrt(2)))
+	Out> Sqrt(8)+1;
+	In> RadSimp(Sqrt(5+2*Sqrt(6))+Sqrt(5-2*Sqrt(6)))
+	Out> Sqrt(12);
+	In> RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2))))))
+	Out> Sqrt(2)+3;
+
+But this command may yield incorrect results:
+
+	In> RadSimp(Sqrt(1+10^(-6)))
+	Out> 1;
+
+*SEE Simplify, N
+
+*CMD Rationalize --- Convert floating point numbers to fractions
+
+*STD
+
+*CALL
+
+Rationalize(expr)
+
+*PARMS
+
+expr - an expression containing real numbers
+
+*DESC
+
+This command converts every real number in the expression "expr"
+into a rational number. This is useful when a calculation needs to be
+done on floating point numbers and the algorithm is unstable.
+Converting the floating point numbers to rational numbers will force
+calculations to be done with infinite precision (by using rational
+numbers as representations).
+
+It does this by finding the smallest integer n such that multiplying
+the number with 10^n is an integer. Then it divides by 10^n again,
+depending on the internal gcd calculation to reduce the resulting
+division of integers.
+
+*E.G.
+
+	In> {1.2,3.123,4.5}
+	Out> {1.2,3.123,4.5};
+	In> Rationalize(%)
+	Out> {6/5,3123/1000,9/2};
+
+*SEE IsRational
+
+*CMD Solve --- Solve one or more algebraic equations
+
+*STD
+
+*CALL
+
+Solve(eq, var)
+
+Solve(eqlist, varlist)
+
+*PARMS
+
+eq - single identity equation
+
+var - single variable
+
+eqlist - list of identity equations
+
+varlist - list of variables
+
+*DESC
+
+This command tries to solve one or more equations. Use the first form
+to solve a single equation and the second one for systems of
+equations.
+
+The first calling sequence solves the equation "eq" for the variable
+"var". Use the {==} operator to form the equation.
+The value of "var" which satisfies the equation, is returned. Note
+that only one solution is found and returned.
+
+To solve a system of equations, the second form should be used. It
+solves the system of equations contained in the list "eqlist" for
+the variables appearing in the list "varlist". A list of results is
+returned, and each result is a list containing the values of the
+variables in "varlist". Again, at most a single solution is
+returned.
+
+The task of solving a single equation is simply delegated to {SuchThat}. Multiple equations are solved recursively:
+firstly, an equation is sought in which one of the variables occurs
+exactly once; then this equation is solved with {SuchThat}; and finally the solution is substituted in the
+other equations by {Eliminate} decreasing the number
+of equations by one. This suffices for all linear equations and a
+large group of simple nonlinear equations.
+
+*E.G.
+
+	In> Solve(a+x*y==z,x)
+	Out> (z-a)/y;
+	In> Solve({a*x+y==0,x+z==0},{x,y})
+	Out> {{-z,z*a}};
+
+This means that "x = (z-a)/y" is a solution of the first equation
+and that "x = -z", "y = z*a" is a solution of the systems of
+equations in the second command.
+
+An example which {Solve} cannot solve:
+
+	In> Solve({x^2-x == y^2-y, x^2-x == y^3+y}, {x,y});
+	Out> {};
+
+*SEE SuchThat, Eliminate, PSolve, ==
+
+*CMD SuchThat --- Find a value which makes some expression zero
+
+*STD
+
+*CALL
+
+SuchThat(expr, var)
+
+*PARMS
+
+expr - expression to make zero
+
+var - variable (or subexpression) to solve for
+
+*DESC
+
+This functions tries to find a value of the variable "var" which
+makes the expression "expr" zero. It is also possible to pass a
+subexpression as "var", in which case {SuchThat}
+will try to eliminate for that subexpression.
+
+Basically, only expressions in which "var" occurs only once are
+handled; and in fact, {SuchThat} may even give wrong
+results if the variables occurs more than once. This is a consequence
+of the implementation, which repeatedly applies the inverse of the top
+function until the variable "var" is reached.
+
+*E.G.
+
+	In> SuchThat(a+b*x, x)
+	Out> (-a)/b;
+	In> SuchThat(Cos(a)+Cos(b)^2, Cos(b))
+	Out> Cos(a)^(1/2);
+	In> Expand(a*x+b*x+c, x)
+	Out> (a+b)*x+c;
+	In> SuchThat(%, x)
+	Out> (-c)/(a+b);
+
+*SEE Solve, Subst, Simplify
+
+*CMD Eliminate --- Substitute and simplify
+
+*STD
+
+*CALL
+
+Eliminate(var, value, expr)
+
+*PARMS
+
+var - variable (or subexpression) to substitute
+
+value - new value of "var"
+
+expr - expression in which the substitution should take place
+
+*DESC
+
+This function uses {Subst} to replace all instances
+of the variable (or subexpression) "var" in the expression "expr"
+with "value", calls {Simplify} to simplify the
+resulting expression, and returns the result.
+
+*E.G.
+
+	In> Subst(Cos(b), c) (Sin(a)+Cos(b)^2/c)
+	Out> Sin(a)+c^2/c;
+	In> Eliminate(Cos(b), c, Sin(a)+Cos(b)^2/c)
+	Out> Sin(a)+c;
+
+*SEE SuchThat, Subst, Simplify
+
+*CMD PSolve --- Solve a polynomial equation
+
+*STD
+
+*CALL
+
+PSolve(poly, var)
+
+*PARMS
+
+poly - a polynomial in "var"
+
+var - a variable
+
+*DESC
+
+This commands returns a list containing the roots of "poly",
+considered as a polynomial in the variable "var". If there is only
+one root, it is not returned as a one-entry list but just by
+itself. A double root occurs twice in the result, and similarly for
+roots of higher multiplicity. All polynomials of degree upto 4 are
+handled.
+
+*E.G.
+
+	In> PSolve(b*x+a,x)
+	Out> -a/b;
+	In> PSolve(c*x^2+b*x+a,x)
+	Out> {(Sqrt(b^2-4*c*a)-b)/(2*c),(-(b+Sqrt(b^2-4*c*a)))/(2*c)};
+
+*SEE Solve, Factor
+
+*CMD Pi --- Numerical approximation of pi
+
+*CORE
+
+*CALL
+
+Pi()
+
+*PARMS
+
+none
+
+*DESC
+
+This commands returns the mathematical constant pi to the current
+precision, as set by {Precision}. Usually this
+function will not be called directly. The constant {Pi} can (and should) be used to represent pi, as it is recognized by
+the simplification rules. Then when the function {N}
+is invoked, {Pi} will be replaced with the value
+returned by {Pi()}.
+
+*E.G.
+
+	In> Pi()
+	Out> 3.14159265358979323846;
+	In> Precision(40)
+	Out> True;
+	In> Pi()
+	Out> 3.1415926535897932384626433832795028841971;
+
+*SEE N, Pi, Precision
+
+*CMD Random --- Random number between 0 and 1
+
+*STD
+
+*CALL
+
+Random()
+
+*PARMS
+
+none
+
+*DESC
+
+This function returns a random number, uniformly distributed in the
+interval between 0 and 1. The same sequence of random numbers is
+generated in every Yacas session.
+
+*SEE RandomInteger, RandomPoly
+
+*CMD VarList --- List of variables appearing in some expression
+
+*STD
+
+*CALL
+
+VarList(expr)
+
+*PARMS
+
+expr - an expression
+
+*DESC
+
+This command returns a list of all the variables that appear in the
+expression "expr".
+
+*E.G.
+
+	In> VarList(Sin(x))
+	Out> {x};
+	In> VarList(x+a*y)
+	Out> {x,a,y};
+
+*SEE IsFreeOf, IsVariable
+
+*CMD Limit --- Limit of an expression
+
+*STD
+
+*CALL
+
+Limit(var, val) expr
+
+Limit(var, val, dir) expr
+
+*PARMS
+
+var - a variable
+
+val - a number
+
+dir - a direction ({Left} or {Right})
+
+expr - an expression
+
+*DESC
+
+This command tries to determine the value that the expression "expr"
+converges to when the variable "var" approaches "val". One may use
+{Infinity} or {-Infinity} for
+"val". The result of {Limit} may be one of the
+symbols {Undefined} (meaning that the limit does not
+exist), {Infinity}, or {-Infinity}.
+
+The second calling sequence is used for unidirectional limits. If one
+gives "dir" the value {Left}, the limit is taken as
+"var" approaches "val" from the positive infinity; and {Right} will take the limit from the negative infinity.
+
+*E.G.
+
+	In> Limit(x,0) Sin(x)/x
+	Out> 1;
+	In> Limit(x,0) (Sin(x)-Tan(x))/(x^3)
+	Out> -1/2;
+	In> Limit(x,0) 1/x
+	Out> Undefined;
+	In> Limit(x,0,Left) 1/x
+	Out> -Infinity;
+	In> Limit(x,0,Right) 1/x
+	Out> Infinity;
+
+*CMD TrigSimpCombine --- Combine products of trigonometric functions
+
+*STD
+
+*CALL
+
+TrigSimpCombine(expr)
+
+*PARMS
+
+expr - expression to simplify
+
+*DESC
+
+This function applies the product rules of trigonometry, like {Cos(u)*Sin(v) = (Sin(v-u) + Sin(v+u)) / 2}. As a
+result, all products of the trigonometric functions {Cos} and {Sin} disappear. The
+function also tries to simplify the resulting expression as much as
+possible by combining all like terms.
+
+This function is used in for instance {Integrate},
+to bring down the expression into a simpler form that hopefully can be
+integrated easily.
+
+*E.G.
+
+	In> PrettyPrinter("PrettyForm");
+	
+	True
+	
+	Out>
+	In> TrigSimpCombine(Cos(a)^2+Sin(a)^2)
+	
+	1
+	
+	Out>
+	In> TrigSimpCombine(Cos(a)^2-Sin(a)^2)
+	
+	Cos( -2 * a )
+	
+	Out>
+	In> TrigSimpCombine(Cos(a)^2*Sin(b))
+	
+	Sin( b )   Sin( -2 * a + b )   Sin( -2 * a - b )
+	-------- + ----------------- - -----------------
+	   2               4                   4
+	
+	Out>
+
+*SEE Simplify, Integrate, Expand, Sin, Cos, Tan
+
+*CMD LagrangeInterpolant --- Polynomial interpolation
+
+*STD
+
+*CALL
+
+LagrangeInterpolant(xlist, ylist, var)
+
+*PARMS
+
+xlist - list of argument values
+
+ylist - list of function values
+
+var - free variable for resulting polynomial
+
+*DESC
+
+This function returns a polynomial in the variable "var" which
+interpolates the points "(xlist, ylist)". Specifically, the value of
+the resulting polynomial at "xlist[1]" is "ylist[1]", the value at
+"xlist[2]" is "ylist[2]", etc. The degree of the polynomial is not
+greater than the length of "xlist".
+
+The lists "xlist" and "ylist" should be of equal
+length. Furthermore, the entries of "xlist" should be all distinct
+to ensure that there is one and only one solution.
+
+This routine uses the Lagrange interpolant formula to build up the
+polynomial.
+
+*E.G.
+
+	In> f := LagrangeInterpolant({0,1,2}, {0,1,1}, x);
+	Out> (x*(x-1))/2-x*(x-2);
+	In> Eval(Subst(x,0) f);
+	Out> 0;
+	In> Eval(Subst(x,1) f);
+	Out> 1;
+	In> Eval(Subst(x,2) f);
+	Out> 1;
+	
+	In> PrettyPrinter("PrettyForm");
+	
+	True
+	
+	Out>
+	In> LagrangeInterpolant({x1,x2,x3}, {y1,y2,y3}, x)
+	
+	y1 * ( x - x2 ) * ( x - x3 )   y2 * ( x - x1 ) * ( x - x3 )
+	---------------------------- + ----------------------------
+	 ( x1 - x2 ) * ( x1 - x3 )      ( x2 - x1 ) * ( x2 - x3 )
+	
+	  y3 * ( x - x1 ) * ( x - x2 )
+	+ ----------------------------
+	   ( x3 - x1 ) * ( x3 - x2 )
+	
+	Out>
+
+*SEE Subst
+
+*CMD Fibonacci --- Fibonacci sequence
+
+*STD
+
+*CALL
+
+Fibonacci(n)
+
+*PARMS
+
+n - an integer
+
+*DESC
+
+This command calculates and returns the "n"-th Fibonacci number.
+
+The Fibonacci sequence is 1, 1, 2, 3, 5, 8, 13, 21, ..., where every
+number is the sum of the two preceding numbers. Formally, it is
+defined by F(1) = 1, F(2) = 1, and F(n+1) = F(n) + F(n-1), where F(n)
+denotes the n-th Fibonacci number.
+
+*E.G.
+
+	In> Fibonacci(4)
+	Out> 3;
+	In> Fibonacci(8)
+	Out> 21;
+	In> Table(Fibonacci(i), i, 1, 10, 1)
+	Out> {1,1,2,3,5,8,13,21,34,55};
+

@@ -1,0 +1,107 @@
+
+			Built-in functions
+
+*AA MathNot
+
+	    MathNot(expression)
+
+MathNot(expression) :
+Returns "False" if "expression" evaluates
+to "True", and vice versa.
+
+*AA MathAnd
+
+	    MathAnd(...)
+
+MathAnd(...) :
+Lazy and: returns True" if all args evaluate to
+"True", and does this by looking at first, and then at the
+second argument, until one is "False".
+If one is "False" it immediately returns "False" without
+evaluating the rest. This is faster, but also means that none of the
+arguments should cause side effects when they are evaluated.
+
+*AA MathOr
+
+	    MathOr(...)
+
+MathOr(...) :
+MathOr is the or equivalent of And. It is lazy-evaluated too.
+"And(...)" and "Or(...)" do also exist. You can define
+them as infix operators
+yourself, so you have the choice of precedence. In the standard scripts
+they are in fact declared as infix operators, so you can write
+"expr1 And expr".
+
+*AA BitAnd
+
+*AA BitOr
+
+*AA BitXor
+
+	    BitAnd(n,m), BitOr(n,m), BitXor(n,m)
+
+BitAnd(n,m), BitOr(n,m), BitXor(n,m) : return bitwise and, or and xor
+of two numbers.
+
+*AA Equals
+
+	    Equals(a,b)
+
+Equals(a,b) :
+Compares evaluated a and b recursively
+(stepping into expressions). so "Equals(a,b)" returns
+"True" if the expressions would be printed exactly
+the same, and "False" otherwise.
+
+*AA LessThan
+
+*AA GreaterThan
+
+	    LessThan(a,b), GreaterThan(a,b)
+
+LessThan(a,b), GreaterThan(a,b) :
+Comparing numbers.
+
+	    Math...
+
+MathGcd(n,m)  (Greatest Common Divisor),
+MathAdd(x,y),
+MathSubtract(x,y),
+MathMultiply(x,y),
+MathDivide(x,y),
+MathSqrt(x)  (Square root),
+MathFloor(x), MathCeil(x),
+MathAbs(x), MathMod(x,y),
+MathExp(x), MathLog(x) (Natural logarithm),
+MathPower(x,y),
+MathSin(x), MathCos(x), MathTan(x),
+MathArcSin(x), MathArcCos(x), MathArcTan(x),
+MathDiv(x,y), MathMod(x,y) :
+MathSqrt(x) (Square root),
+
+Calculation of sin,cos,tan etc. of x. x HAS to
+be a number. The reason Math is prepended to
+the names is you might want to derive equivalent
+non-evaluating functions. The Math... versions require the arguments
+to be numbers.
+
+	    Fast...
+
+FastExp(x), FastLog(x) (Natural logarithm),
+FastPower(x,y),
+FastSin(x), FastCos(x), FastTan(x),
+FastArcSin(x), FastArcCos(x), FastArcTan(x) :
+
+Versions of these functions using the internal c version. These
+should then at least be faster than the arbitrary precision versions.
+
+*AA ShiftLeft
+
+*AA ShiftRight
+
+	    ShiftLeft(number,bits), ShiftRight(number,bits)
+
+ShiftLeft(number,bits), ShiftRight(number,bits) :
+Shift number bits to left or right.
+

@@ -1,0 +1,808 @@
+
+			Arithmetic
+
+*A +
+
+*A -
+
+*A *
+
+*A /
+
+*A ^
+
+*CMD +, -, *, /, ^ --- Arithmetic operations
+
+*STD
+
+*CALL
+
+x+y  (precedence 6)
+
++x
+
+x-y  (precedence 5)
+
+-x
+
+x*y  (precedence 3)
+
+x/y  (precedence 3)
+
+x^y  (precedence 2)
+
+*PARMS
+
+x and y - some objects for which arithmetic operations are defined.
+
+*DESC
+
+These are the basic arithmetic operations. They can work on integers,
+rational numbers, complex numbers, vectors, matrices and lists.
+
+These operators are implemented in the standard math library (as opposed
+to being built-in). This means that they can be extended by the user.
+
+*E.G.
+
+	In> 2+3
+	Out> 5;
+	In> 2*3
+	Out> 6;
+
+			Other operations on numbers
+
+*INTRO Besides the arithmetical operations defined in the
+previous chapter, one can also use the following operations on
+numbers. Many of these also work on polynomials.
+
+*A Div
+
+*A Mod
+
+*CMD Div, Mod --- Division with remainder
+
+*STD
+
+*CALL
+
+Div(x,y)
+
+Mod(x,y)
+
+*PARMS
+
+x, y - integers, or univariate polynomials
+
+*DESC
+
+{Div} performs integer division and {Mod} returns the remainder after division. {Div} and
+{Mod} are also defined for polynomials.
+
+If {Div(x,y)} returns "a" and {Mod(x,y)} equals "b", then these numbers satisfy x =
+a*y + b and 0 <= b < y.
+
+*E.G.
+
+	In> Div(5,3)
+	Out> 1;
+	In> Mod(5,3)
+	Out> 2;
+
+*SEE Gcd, Lcm
+
+*CMD Gcd --- Greatest common divisor
+
+*STD
+
+*CALL
+
+Gcd(n,m)
+
+Gcd(list)
+
+*PARMS
+
+n,m - integers or univariate polynomials
+
+list - a list of all integers or all univariate polynomials
+
+*DESC
+
+This function returns the greatest common divisor of "n" and "m".
+The gcd is the largest number that divides "n" and "m".  It is
+also known as the highest common factor (hcf).  The library code calls
+{MathGcd}, which is an internal function.  This
+function implements the binary Euclidean algorithm for determining the
+greatest common divisor:
+
+	Routine for calculating Gcd(n,m)
+	
+	1) if n = m then return n
+	2) if both n and m are even then return 2*Gcd(n/2,m/2)
+	3) if exactly one of n or m (say n) is even then return Gcd(n/2,m)
+	4) if both n and m are odd and, say, n>m then return Gcd( (n-m)/2,m)
+
+This is a rather fast algorithm on computers that can efficiently shift
+integers.
+
+If the second calling form is used, {Gcd} will
+return the greatest common divisor of all the integers or polynomials
+in "list". It uses the identity
+
+	Gcd({a,b,c}) = Gcd(Gcd(a,b),c)
+
+*E.G.
+
+	In> Gcd(55,10)
+	Out> 5;
+	In> Gcd({60,24,120})
+	Out> 12;
+
+*SEE Lcm
+
+*CMD Lcm --- Least common multiple
+
+*STD
+
+*CALL
+
+Lcm(n,m)
+
+*PARMS
+
+n, m - integers, or univariate polynomials
+
+*DESC
+
+This command returns the least common multiple of "n" and "m".
+The least common multiple of two numbers "n" and "m" is the lowest
+number which is an integer multiple of both "n" and "m".
+It is calculated with the formula:
+
+	Lcm(n,m) = Div(n*m,Gcd(n,m))
+
+This means it also works on polynomials, since {Div}, {Gcd} and multiplication are also defined for
+them.
+
+*E.G.
+
+	In> Lcm(60,24)
+	Out> 120;
+
+*SEE Gcd
+
+*A \<\<
+
+*A \>\>
+
+*CMD \<\<, \>\> --- Shift operators
+
+*STD
+
+*CALL
+
+n\<\<m
+n\>\>m
+
+*PARMS
+
+n,m - integers
+
+*DESC
+
+These operators shift integers to the left or to the right.
+They are similar to the C shift operators. These are sign-extended
+shifts, so they act like multiplication or division by powers of 2.
+
+*E.G.
+
+	In> 1 \<\< 10
+	Out> 1024;
+	In> -1024 \>\> 10
+	Out> -1;
+
+*A FromBase
+
+*A ToBase
+
+*CMD FromBase, ToBase --- Conversion from/to non-decimal base
+
+*CORE
+
+*CALL
+
+FromBase(base,number)
+
+ToBase(base,number)
+
+*PARMS
+
+base - a base to write the numbers in
+
+number - a number to write out in the base representation
+
+*DESC
+
+{FromBase} converts "number", written in base
+"base", to base 10. {ToBase} converts "number",
+written in base 10, to base "base".
+
+These functions use the p-adic expansion capabilities of the built-in
+arbitrary precision math libraries.
+
+*E.G.
+
+	In> FromBase(2,111111)
+	Out> 63;
+	In> ToBase(16,255)
+	Out> ff;
+
+The first command writes the binary number {111111}
+in decimal base. The second command converts {255}
+(in decimal base) to hexadecimal base.
+
+*SEE PAdicExpand
+
+*CMD Precision --- Sets the precision
+
+*CORE
+
+*CALL
+
+Precision(n)
+
+*PARMS
+
+n - new precision
+
+*DESC
+
+This command sets the number of binary digits to be used in
+calculations. All subsequent floating point operations will allow for
+at least "n" digits after the decimal point.
+
+*E.G.
+
+	In> Precision(10)
+	Out> True;
+	In> N(Sin(1))
+	Out> 0.8414709848;
+	In> Precision(20)
+	Out> True;
+	In> N(Sin(1))
+	Out> 0.84147098480789650665;
+	In> GetPrecision()
+	Out> 20;
+
+*SEE GetPrecision, N
+
+*CMD GetPrecision --- Returns the current precision
+
+*CORE
+
+*CALL
+
+GetPrecision()
+
+*PARMS
+
+none
+
+*DESC
+
+This command returns the current precision, as set by {Precision}.
+
+*E.G.
+
+	In> GetPrecision();
+	Out> 10;
+	In> Precision(20);
+	Out> True;
+	In> GetPrecision();
+	Out> 20;
+
+*SEE Precision, N
+
+*CMD N --- Numerical approximation
+
+*STD
+
+*CALL
+
+N(expr)
+
+N(expr, prec)
+
+*PARMS
+
+expr - expression to evaluate
+
+prec - precision to use
+
+*DESC
+
+This function forces Yacas to give a numerical approximation to the
+expression "expr", using "prec" digits if the second calling
+sequence is used, and the precision as set by {SetPrecision} otherwise. This overrides the normal
+behaviour, in which expressions are kept in symbolic form (eg. {Sqrt(2)} instead of {1.41421}).
+
+Application of the {N} operator will make Yacas
+calculate floating point representations of functions whenever
+possible. In addition, the variable {Pi} is bound to
+the value of pi up to the required precision.
+
+*E.G.
+
+	In> 1/2
+	Out> 1/2;
+	In> N(1/2)
+	Out> 0.5;
+	In> Sin(1)
+	Out> Sin(1);
+	In> N(Sin(1),10)
+	Out> 0.8414709848;
+	In> Pi
+	Out> Pi;
+	In> N(Pi,20)
+	Out> 3.14159265358979323846;
+
+*SEE Precision, GetPrecision, Pi
+
+*CMD Rationalize --- Convert floating point numbers to fractions
+
+*STD
+
+*CALL
+
+Rationalize(expr)
+
+*PARMS
+
+expr - an expression containing real numbers
+
+*DESC
+
+This command converts every real number in the expression "expr"
+into a rational number. This is useful when a calculation needs to be
+done on floating point numbers and the algorithm is unstable.
+Converting the floating point numbers to rational numbers will force
+calculations to be done with infinite precision (by using rational
+numbers as representations).
+
+It does this by finding the smallest integer n such that multiplying
+the number with 10^n is an integer. Then it divides by 10^n again,
+depending on the internal gcd calculation to reduce the resulting
+division of integers.
+
+*E.G.
+
+	In> {1.2,3.123,4.5}
+	Out> {1.2,3.123,4.5};
+	In> Rationalize(%)
+	Out> {6/5,3123/1000,9/2};
+
+*SEE IsRational
+
+*CMD IsPrime --- Test whether argument is a prime number
+
+*STD
+
+*CALL
+
+IsPrime(n)
+
+*PARMS
+
+n - integer to test
+
+*DESC
+
+This command tests whether "n", which should be a positive integer,
+is a prime number. A number is a prime number if it is only divisible
+by 1 and itself. As a special case, 1 is not a prime number.
+
+This function essentially checks for all integers between 2 and the
+square root of "n" whether they divide "n", and hence may take a
+long time for large numbers.
+
+*E.G.
+
+	In> IsPrime(1)
+	Out> False;
+	In> IsPrime(2)
+	Out> True;
+	In> IsPrime(10)
+	Out> False;
+	In> IsPrime(23)
+	Out> True;
+	In> Select("IsPrime", 1 .. 100)
+	Out> {2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97};
+
+*SEE IsPrimePower, Factors
+
+*CMD IsPrimePower --- Test whether argument is a prime power
+
+*STD
+
+*CALL
+
+IsPrime(n)
+
+*PARMS
+
+n - integer to test
+
+*DESC
+
+This command tests whether "n", which should be a positive integer,
+is a prime power, that is whether it is of the form "p^m", with
+"p" prime and "m" an integer.
+
+This function essentially checks for all integers between 2 and the
+square root of "n" for the largest divisor, and then tests whether
+"n" is a power of this divisor. So it will take a long time for
+large numbers.
+
+*E.G.
+
+	In> IsPrimePower(9)
+	Out> True;
+	In> IsPrimePower(10)
+	Out> False;
+	In> Select("IsPrimePower", 1 .. 50)
+	Out> {2,3,4,5,7,8,9,11,13,16,17,19,23,25,27,29,31,32,37,41,43,47,49};
+
+*SEE IsPrime, Factors
+
+*CMD Factors --- Factorization
+
+*STD
+
+*CALL
+
+Factors(x)
+
+*PARMS
+
+x - integer or univariate polynomial
+
+*DESC
+
+This function decomposes the integer number "x" into a product of
+numbers. Alternatively, if "x" is a univariate polynomial, it is
+decomposed in irreducible polynomials.
+
+The factorization is returned as a list of pairs. The first member of
+each pair is the factor, while the second member denotes the power to
+which this factor should be raised. So the factorization "x = p1^n1 *
+... * p9^n9" is returned as {{{p1,n1}, ..., {p9,n9}}}.
+
+*E.G.
+
+	In> Factors(24);
+	Out> {{2,3},{3,1}};
+	In> Factors(2*x^3 + 3*x^2 - 1);
+	Out> {{2,1},{x+1,2},{x-1/2,1}};
+
+*SEE Factor, IsPrime
+
+*CMD Factor --- Factorization, in pretty form
+
+*STD
+
+*CALL
+
+Factors(x)
+
+*PARMS
+
+x - integer or univariate polynomial
+
+*DESC
+
+This function factorizes "x", like {Factors}, but
+it shows the result in a nicer human readable format.
+
+*E.G.
+
+	In> PrettyForm(Factor(24));
+	
+	 3
+	2  * 3
+	
+	Out> True;
+	In> PrettyForm(Factor(2*x^3 + 3*x^2 - 1));
+	
+	             2   /     1 \
+	2 * ( x + 1 )  * | x - - |
+	                 \     2 /
+	
+	Out> True;
+
+*SEE Factors, IsPrime, PrettyForm
+
+*CMD PAdicExpand --- p-adic expansion
+
+*STD
+
+*CALL
+
+PAdicExpand(n, p)
+
+*PARMS
+
+n - number, or polynomial, to expand
+
+p - base to expand in
+
+*DESC
+
+This command computes the p-adic expansion of "n". In other words,
+"n" is expanded in powers of "p". The argument "n" can be either
+an integer or a univariate polynomial. The base "p" should be of the
+same type.
+
+*E.G.
+
+	In> PrettyForm(PAdicExpand(1234, 10));
+	
+	               2     3
+	3 * 10 + 2 * 10  + 10  + 4
+	
+	Out> True;
+	In> PrettyForm(PAdicExpand(x^3, x-1));
+	
+	                             2            3
+	3 * ( x - 1 ) + 3 * ( x - 1 )  + ( x - 1 )  + 1
+	
+	Out> True;
+
+*SEE Mod, ContFrac, FromBase, ToBase
+
+*CMD ContFrac --- Continued fraction expansion
+
+*STD
+
+*CALL
+
+ContFrac(x)
+
+ContFrac(x, maxdepth)
+
+*PARMS
+
+x - expression to break down
+
+maxdepth - maximum required depth of result
+
+*DESC
+
+This command returns the continued fraction expansion of "n", which
+should be either a floating point number or a polynomial. If
+"maxdepth" is not specified, it defaults to 6. The remainder is
+denoted by {rest}.
+
+This is especially useful for polynomials, since series expansions
+that converge slowly will typically converge a lot faster if
+calculated using a continued fraction expansion.
+
+*E.G.
+
+	In> PrettyForm(ContFrac(N(Pi)))
+	
+	             1
+	--------------------------- + 3
+	           1
+	----------------------- + 7
+	        1
+	------------------ + 15
+	      1
+	-------------- + 1
+	   1
+	-------- + 292
+	rest + 1
+	
+	Out> True;
+	In> PrettyForm(ContFrac(x^2+x+1, 3))
+	
+	       x
+	---------------- + 1
+	         x
+	1 - ------------
+	       x
+	    -------- + 1
+	    rest + 1
+	
+	Out> True;
+
+*SEE PAdicExpand, N
+
+*CMD Decimal --- Decimal representation of a rational
+
+*STD
+
+*CALL
+
+Decimal(frac)
+
+*PARMS
+
+frac - a rational number
+
+*DESC
+
+This function returns the infinite decimal representation of the
+rational number "frac".  It returns a list, with the first element
+being the number before the decimal point and the last element the
+sequence of digits that will repeat forever. All the intermediate list
+elements are the initial digits.
+
+*E.G.
+
+	In> Decimal(1/22)
+	Out> {0,0,{4,5}};
+	In> N(1/22,30)
+	Out> 0.045454545454545454545454545454;
+
+*SEE N
+
+*CMD TruncRadian --- Remainder modulo 2*Pi
+
+*STD
+
+*CALL
+
+TruncRadian(r)
+
+*PARMS
+
+r - a radian
+
+*DESC
+
+TruncRadian calculates r mod 2*Pi, returning a value
+between 0 and 2*Pi. This function is used in the trigonometry
+functions, just before doing the numerical calculation. It
+greatly speeds up the calculation if the value passed is a big
+number.
+
+The library uses the formula
+
+	
+	             /   r    \
+	r - MathFloor| ------ | * 2 * Pi
+	             \ 2 * Pi /
+	
+	
+
+where r and 2*Pi are calculated with twice the precision used in the
+environment to make sure there is no rounding error in the significant
+digits.
+
+*E.G.
+
+	In> 2*Pi()
+	Out> 6.283185307;
+	In> TruncRadian(6.28)
+	Out> 6.28;
+	In> TruncRadian(6.29)
+	Out> 0.0068146929;
+
+*SEE Sin, Cos, Tan
+
+*CMD Floor --- Round a number downwards
+
+*STD
+
+*CALL
+
+Floor(x)
+
+*PARMS
+
+x - a number
+
+*DESC
+
+This function returns the largest integer smaller than "x".
+
+*E.G.
+
+	In> Floor(1.1)
+	Out> 1;
+	In> Floor(-1.1)
+	Out> -2;
+
+*SEE Ceil, Round
+
+*CMD Ceil --- Round a number upwards
+
+*STD
+
+*CALL
+
+Ceil(x)
+
+*PARMS
+
+x - a number
+
+*DESC
+
+This function returns the smallest integer larger than "x".
+
+*E.G.
+
+	In> Ceil(1.1)
+	Out> 2;
+	In> Ceil(-1.1)
+	Out> -1;
+
+*SEE Floor, Round
+
+*CMD Round --- Round a number to the nearest integer
+
+*STD
+
+*CALL
+
+Round(x)
+
+*PARMS
+
+x - a number
+
+*DESC
+
+This function returns the integer closest to "x". Half-integers
+(ie. numbers of the form "n + 0.5", with "n" an integers) are
+rounded upwards.
+
+*E.G.
+
+	In> Round(1.49)
+	Out> 1;
+	In> Round(1.51)
+	Out> 2;
+	In> Round(-1.49)
+	Out> -1;
+	In> Round(-1.51)
+	Out> -2;
+
+*SEE Floor, Ceil
+
+*CMD Pslq --- Search for integer relations between reals
+
+*STD
+
+*CALL
+
+Pslq(xlist,precision)
+
+*PARMS
+
+xlist - list of numbers
+
+precision - required number of digits precision of calculation
+
+*DESC
+
+This function is an integer relation detection algorithm. This means
+that, given the numbers "x[i]" in the list "xlist", it tries
+to find integer coefficients "a[i]" such that "a[1]*x[1] + ... +
+a[n]*x[n] = 0". The list of integer coefficients is returned.
+
+The numbers in "xlist" must evaluate to floating point numbers if
+the {N} operator is applied on them.
+
+*E.G.
+
+	In> Pslq({ 2*Pi+3*Exp(1) , Pi , Exp(1) },20)
+	Out> {1,-2,-3};
+
+Note: in this example the system detects correctly that
+{1 * (2*Pi+3*E) + (-2) * (Pi) + (-3) * (E) = 0}
+
+*SEE N
+

@@ -25,8 +25,8 @@ $in_htmlcommand = 0;
 
 while (<STDIN>) {
 	chomp;
-	s/\\/\\\\/g;
-	s/"/\\"/g;
+	s/\\/\\\\/g;	# escape all backslashes in the source text
+	s/"/\\"/g;	# escape all quotes in the source text
 	# First deal with TAB-indented lines
 	if (not $in_htmlcommand and /^\t\t\t\t([^ ].*)$/) {	# Book
 		&finish_text();
@@ -157,7 +157,7 @@ while (<STDIN>) {
 			}
 		}
 		print "CmdDescription(\"" . $names . "\", \"" . $title . "\");\n";
-	} elsif (/^\*INTRO\s\s*(.*)$/) {	# ChapterIntro()
+	} elsif (/^\*INTRO\s\s*(.*)$/ or /^\*INTRO\s*()$/) {	# ChapterIntro()
 		$text = $1;
 		&finish_text();
 		$have_par = ($text =~ /^\s*$/) ? 1 : 0;
@@ -219,9 +219,10 @@ sub finish_text {
 	$have_Text = 0;
 }
 
-# This is called on a piece of plain text which should be inside quotes
+# This routine is called on a piece of plain text which should be inside quotes
 # (extra quotes need to be supplied as necessary)
-# We need to convert special escapes to their Yacas representation
+# It will add escapes when it finds certain special symbols 
+# using their Yacas representation
 sub escape_term {
 	my ($text) = @_;
 # this would only allow one level of nested braces:
@@ -235,8 +236,8 @@ sub escape_term {
 	}
 	$text =~ s/\{($regex)\}/":HtmlTerm("$1"):"/go;
 	# special escapes \< \> for HTML
-	$text =~ s/\\</":Lt():"/g;
-	$text =~ s/\\>/":Gt():"/g;
+	$text =~ s/\\\\</":Lt():"/g;
+	$text =~ s/\\\\>/":Gt():"/g;
 	# math
 	$text =~ s/\$\$([^\$"]+)\$\$/":TeXMathD($1):"/g;
 	$text =~ s/\$([^\$"]+)\$/":TeXMath($1):"/g;
