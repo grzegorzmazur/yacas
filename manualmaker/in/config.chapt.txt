@@ -56,6 +56,9 @@ and standard scripts.
 This function sets up the function printer to print out the results on
 the command line. This can be reset to the internal printer with {PrettyPrinter()}.
 
+Currently implemented prettyprinters are: {PrettyForm}, {TeXForm}, {Print} and
+{DefaultPrint}.
+
 *E.G.
 
 	In> Taylor(x,0,5)Sin(x)
@@ -77,6 +80,17 @@ the command line. This can be reset to the internal printer with {PrettyPrinter(
 	Out> x-x^3/6+x^5/120;
 
 *SEE PrettyForm, Write
+
+*CMD MaxEvalDepth -- set depth of recursion stack
+*CORE
+*CALL
+	MaxEvalDepth(n)
+*PARMS
+{n} -- integer
+*DESC
+Sets the maximum depth of recursive function call. An error message is printed when too many recursive calls are executed, and this function can be used to increase or decrease the limit as necessary.
+
+
 
 *CMD Help --- get documentation for some command
 *STD

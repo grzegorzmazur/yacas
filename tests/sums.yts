@@ -8,3 +8,14 @@ Verify( Sum(k,1,Infinity,1/k), Infinity );
 Verify( Sum(k,1,Infinity,Sqrt(k)), Infinity );
 Verify( Sum(k,2,Infinity,x^k/k!), Exp(x)-(x+1) );
 Verify( Sum(k,1,n,Sin(a)+Sin(b)+p),(Sin(a)+Sin(b)+p)*n );
+
+Verify(Add({1,2,3,4}), 10);
+Verify(Add({1}), 1);
+Verify(Add({}), 0);
+Verify(Add(1,2,3,4), 10);
+Verify(Add(1), 1);
+Verify(Add(), Add());
+Verify(Average({1,2,3,4,5}), 3);
+Verify(Average({0}), 0);
+Verify(Average({}), Undefined);
+
