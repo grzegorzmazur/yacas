@@ -946,6 +946,8 @@ This integer {n} is returned by {GetExactBits(x)}
 and can be modified by {SetExactBits(x,n)} (see below).
 Error estimates are not guaranteed to be correct in all cases, but they should give sensible upper bounds on the error.
 A number {{x,n}} stands for an interval between $x*(1-2^(-n))$ and $x*(1+2^(-n))$.
+*	1. When printing a float, we print only as many digits as needed to represent the float value to its current precision.
+When reading a float, we reserve enough precision to preserve all given digits.
 *	1. The number 0 is either an integer {0} or a floating-point {0.}
 (a "floating zero" for short).
 For a floating zero, the "number of exact bits" means an absolute error, not a relative error.
@@ -1075,14 +1077,17 @@ In the first case, {{x,m}={y,n}} if and only if the following condition holds:
 $$ Abs(x-y)<Max(2^(-m)*Abs(x), 2^(-n)*Abs(y)) $$.
 This is a somewhat complicated condition but its evaluation does not require any long multiplications, only long additions, bit shifts and comparisons.
 
-It is always necessary to compute $x-y$ (one long addition);
+It is now necessary to compute $x-y$ (one long addition);
 this computation needs to be done with $Min(m,n)$ bits of precision.
 
-After computing $x-y$, we can avoid the full evaluation of the complicated condition by first checking some easier conditions with the bit count of $x-y$.
-A fast sufficient (but not a necessary) condition is:
+After computing $x-y$, we can avoid the full evaluation of the complicated condition by first checking some easier conditions on $x-y$.
+If $x-y=0$ as floating-point numbers ("exact cancellation"), then certainly {{x,m}={y,n}}.
+Otherwise we can assume that $x-y!=0$ and check:
+*	A sufficient (but not a necessary) condition:
 if $B(x-y)<=B(x)-Min(m,n)-1$ then {{x,m}={y,n}}.
-A fast necessary (but not a sufficient) condition is:
+*	A necessary (but not a sufficient) condition is:
 if $B(x-y)>B(x)-Min(m,n)+1$ then {{x,m}!={y,n}}.
+
 If neither of these conditions can give us the answer,
 we have to evaluate the full condition by computing $Abs(x)*2^(-m)$ and $Abs(x)*2^(-m)$ and comparing with $Abs(x-y)$.
 
@@ -1149,7 +1154,7 @@ Then we compute $B(z)$ and determine the precision $p$ as
 $$ p = Min(m-B(x),n-B(y))+B(z)$$
 $$-1-Dist(m-B(x),n-B(y)) $$,
 where the auxiliary function $Dist(a,b)$ is defined as $0$ when $Abs(a-b)>2$ and $1$ otherwise.
-*FOOT The definition of $Dist(a,b)$ is necessarily approximate; if we replace $2$ by a large number, we shall be overestimating the error in more cases.
+*FOOT The definition of $Dist(a,b)$ is necessarily approximate; if we replace $2$ by a larger number, we shall be overestimating the error in more cases.
 The result is {{z,p}}.
 
 Note that the obtained value of $p$ may be negative (total underflow) even though we have first checked for underflow.
