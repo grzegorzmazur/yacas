@@ -53,7 +53,7 @@ ALGOSOURCES = algo-basic.chapt.txt algo-numapprox.chapt.txt \
 	algorithms-elemfunc.chapt.txt algorithms-specfunc.chapt.txt \
 	algorithms-numtheory.chapt.txt algorithms-integration.chapt.txt \
 	algorithms-multivar.chapt.txt SturmSequences.chapt.txt FDL.chapt.txt \
-	algo-refs.chapt.txt algo-contfrac.chapt.txt
+	algo-refs.chapt.txt algo-contfrac.chapt.txt algorithms-transforms.chapt.txt
 
 REFCHAPTERS = config.chapt arith.chapt calc.chapt ode.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
@@ -62,7 +62,7 @@ REFCHAPTERS = config.chapt arith.chapt calc.chapt ode.chapt linalg.chapt \
 	probability-and-statistics.chapt addons.chapt FDL.chapt
 
 REFSOURCES = config.chapt.txt arith.chapt.txt calc.chapt.txt ode.chapt.txt \
-	linalg.chapt.txt univar.chapt.txt lists.chapt.txt cl-options.chapt \
+	linalg.chapt.txt univar.chapt.txt lists.chapt.txt cl-options.chapt.txt \
 	functional.chapt.txt controlflow.chapt.txt preds.chapt.txt \
 	logic.chapt.txt const.chapt.txt vars.chapt.txt io.chapt.txt \
 	numtheory.chapt.txt strings.chapt.txt transforms.chapt.txt \
@@ -217,7 +217,7 @@ install-scripts: $(ytxt2tex_DEPS)
 	-for file in $(ytxt2tex_DEPS); do \
 	   $(INSTALL_DATA) $(srcdir)/$$file $(pkgdatadir)/manmake/$$file; \
 	done
-	
+
 install-html: books.html 
 	$(mkinstalldirs) $(htmldir)/
 	$(INSTALL_DATA) $(top_srcdir)/docs/yacaslogo.gif $(htmldir)/
