@@ -142,6 +142,24 @@ void LispTime(LispEnvironment& aEnvironment, LispPtr& aResult,
     printf("%g seconds taken\n",timeDiff);
 }
 
+void ShStack(LispEnvironment& aEnvironment, LispPtr& aResult,
+             LispPtr& aArguments)
+{
+    LispEnvironment::LocalVariableFrame* fr = aEnvironment.iLocalsList;
+    
+    LispEnvironment::LispLocalVariable* ptr = fr->iFirst;
+    int nr=0;
+    while (ptr != NULL)
+    {
+        printf("%s ",ptr->iVariable->String());
+        nr++;
+        ptr = ptr->iNext;
+    }
+    printf("nr = %d\n",nr);
+    InternalTrue(aEnvironment, aResult);
+}
+
+
 
 void LispVersion(LispEnvironment& aEnvironment, LispPtr& aResult,
                  LispPtr& aArguments)
@@ -313,7 +331,11 @@ void LoadYacas()
                                            (*yacas)()().HashTable().LookUp("HistorySize"));
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispStackSize),
                                            (*yacas)()().HashTable().LookUp("StaSiz"));
+    (*yacas)()().Commands().SetAssociation(LispEvaluator(ShStack),
+                                           (*yacas)()().HashTable().LookUp("ShStack"));
 
+    
+    
 #ifdef _TESTCODE_
     (*yacas)()().Commands().SetAssociation(LispEvaluator(DummyTestFunction),
                                            (*yacas)()().HashTable().LookUp("DummyTestFunction"));

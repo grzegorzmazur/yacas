@@ -18,6 +18,11 @@
        results when taking the inverse of a function at
        x0 != 0
   <li> Small extension to CForm, converting "Exp" to "exp".
+  <li> Small bug fix:
+        In> Integrate(x,0,1)1-x^a;
+	Out> 1-1/(a+1)+0^(a+1)/(a+1);
+	In> Simplify(%);
+       never halted 
 </ul>
 
 

@@ -198,6 +198,8 @@ private:
         LispLocalVariable* iFirst;
         LispLocalVariable* iLast;
     };
+public: //Well... only because I want to be able to show the stack to the outside world...
+    LocalVariableFrame *iLocalsList;
 private:
     LispCommands&  iCommands;
     LispUserFunctions& iUserFunctions;
@@ -208,7 +210,6 @@ private:
 
     LispGlobal&    iGlobals;
 
-    LocalVariableFrame *iLocalsList;
 //    LispPtr        iLocals;
 
     LispOperators& iPreFixOperators;
