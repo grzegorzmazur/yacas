@@ -139,7 +139,7 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 
 5 # Gcd(n_IsRationalOrInteger,m_IsRationalOrInteger) <--
 [
-  Gcd(Numer(n),Numer(m))/Gcd(Denom(n),Denom(m));
+  Gcd(Numer(n),Numer(m))/Lcm(Denom(n),Denom(m));
 ];
 
 
