@@ -5,9 +5,9 @@
 #define PACKAGE "yacas"
 #define VERSION "1.0.54"
 
-#define ACCEPT_TYPE_ARG1 int
-#define ACCEPT_TYPE_ARG2 struct sockaddr *
-#define ACCEPT_TYPE_ARG3 int *
+/* #undef ACCEPT_TYPE_ARG1 */
+/* #undef ACCEPT_TYPE_ARG2 */
+/* #undef ACCEPT_TYPE_ARG3 */
 /* #undef socklen_t */
 
 /* #undef LTDL_OBJDIR */
@@ -133,13 +133,13 @@
 #define STDC_HEADERS 1
 
 /* Define to build the network server version */
-#define SUPPORT_SERVER 
+/* #undef SUPPORT_SERVER */
 
 /* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
 #define TIME_WITH_SYS_TIME 1
 
 /* Define to build the debug version */
-/* #undef USE_ASSERT */
+#define USE_ASSERT 
 
 /* Define to use the GNU MP library */
 /* #undef USE_GMP */
@@ -151,7 +151,7 @@
 #define X_DISPLAY_MISSING 1
 
 /* Define to build the debug version */
-/* #undef YACAS_DEBUG */
+#define YACAS_DEBUG 
 
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */

@@ -50,7 +50,11 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
             {
               extern int verbose_debug;
               if (verbose_debug)
-                printf("Debug> Loading file %s for function %s\n",def->iFileName()->String(),head->String()->String());
+              {
+                char buf[1024];
+                sprintf(buf,"Debug> Loading file %s for function %s\n",def->iFileName()->String(),head->String()->String());
+                aEnvironment.CurrentOutput()->Write(buf);
+              }
             }
 #endif
             multiUserFunc->iFileToOpen=NULL;
@@ -60,7 +64,11 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
             {
               extern int verbose_debug;
               if (verbose_debug)
-                printf("Debug> Finished loading file %s\n",def->iFileName()->String());
+              {
+                char buf[1024];
+                sprintf(buf,"Debug> Finished loading file %s\n",def->iFileName()->String());
+                aEnvironment.CurrentOutput()->Write(buf);
+              }
             }
 #endif
         }
