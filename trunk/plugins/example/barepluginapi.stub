@@ -4,7 +4,15 @@ Use("cstubgen.rep/code.ys");
 /* Start generating a c stub file */
 StubApiCStart("Bare");
 
-StubApiCRemark("This is an example mini api.");
+StubApiCPrettyName("example");
+StubApiCPluginPurpose(
+"This servers as an illustration of the plugin capability of Yacas.
+The plugin defines some functions operating on integers, floats, and
+on a custom structure type \"{Bla}\".
+"
+);
+
+StubApiCRemark("This is an example mini-API.");
 
 /* define an include file for the stub file */
 StubApiCInclude("\"bareplugin.h\"");
