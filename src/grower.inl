@@ -123,10 +123,10 @@ template <class T>
 inline CDeletingArrayGrower<T>::~CDeletingArrayGrower()
 {
   LispInt i,nr;
-  nr = NrItems();
+  nr = CDeletingArrayGrower::NrItems();
   for (i=0;i<nr;i++)
   {
-    delete Item(i);
+    delete CDeletingArrayGrower::Item(i);
   }
 }
 #endif

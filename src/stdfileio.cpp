@@ -99,7 +99,7 @@ CachedStdFileInput::CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus
     iCurrentPos = 0;
     fread(iBuffer,iNrBytes,1,iFile);
     iBuffer[iNrBytes] = '\0';
-};
+}
 
 LispChar CachedStdFileInput::Next()
 {
@@ -222,7 +222,7 @@ StdUserInput(aStatus)
 {
 //printf("CachedStdUserInput:construct\n");
     Rewind();
-};
+}
 LispChar CachedStdUserInput::Next()
 {
 //printf("CachedStdUserInput:Next\n");
