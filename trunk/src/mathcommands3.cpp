@@ -27,6 +27,11 @@
 #ifdef HAVE_CONFIG_H
 #include "../config.h"
 #endif
+
+#ifdef HAVE_MATH_H
+  #include <math.h>
+#endif
+
 #ifdef VERSION
 #undef VERSION
 #endif //VERSION
@@ -414,7 +419,9 @@ void LispDiv(LispEnvironment& aEnvironment, LispPtr& aResult,
 	  }
 	  else
 	  {// FIXME: either need to report error that one or both of the arguments are not integer, or coerce them to integers
+#ifdef HAVE_STDIO_H
 	  	fprintf(stderr, "LispDiv: error: both arguments must be integer\n");
+#endif
 		  return;
 	  }
 	  
@@ -461,7 +468,21 @@ void LispFastIsPrime(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 void LispFastSin(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{//FIXME
+{
+#ifndef NO_USE_BIGFLOAT
+#ifdef HAVE_MATH_H
+      RefPtr<BigNumber> x;
+      GetNumber(x,aEnvironment, aArguments, 1);
+      double result = sin(x->Double());
+      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      z->SetTo(result);
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+#else
+      LispSin(aEnvironment, aResult, aArguments);
+#endif
+      return;
+#endif
+
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatSin);
 }
 

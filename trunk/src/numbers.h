@@ -138,13 +138,13 @@ public: //information retrieval on library used
 static const LispCharPtr NumericLibraryName();
 
 public://basic object manipulation
-  bool Equals(const BigNumber& aOther) const;
-  bool IsInt() const;
-  bool IsIntValue() const;
-  bool IsSmall() const;
+  LispBoolean Equals(const BigNumber& aOther) const;
+  LispBoolean IsInt() const;
+  LispBoolean IsIntValue() const;
+  LispBoolean IsSmall() const;
   void BecomeInt();
   void BecomeFloat();
-  bool LessThan(const BigNumber& aOther) const;
+  LispBoolean LessThan(const BigNumber& aOther) const;
 public://arithmetic
   /// Multiply two numbers at given precision and put result in *this
   void Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
@@ -233,11 +233,11 @@ private:
   unsigned type_;
   mpz_t exponent_; 	// this is only used for exp-floats when the exponent is out of range for GMP.
   /// Check whether we are of exp-float type.
-  bool IsExpFloat() const;
+  LispBoolean IsExpFloat() const;
   
   /// GMP wrapper ends here.
   #else
-    inline void SetIsInteger(bool aIsInteger) {iType = (aIsInteger ? KInt : KFloat);}
+    inline void SetIsInteger(LispBoolean aIsInteger) {iType = (aIsInteger ? KInt : KFloat);}
     enum ENumType
     {
       KInt = 0,

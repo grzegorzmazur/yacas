@@ -13,7 +13,11 @@
 #include "lisperror.h"
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+  #include <config.h>
+#endif
+
+#ifdef HAVE_STDIO_H
+  #include <stdio.h>
 #endif
 
 static LispStringPtr FloatToString(ANumber& aInt, LispHashTable& aHashTable
@@ -603,6 +607,7 @@ LispStringPtr FloorFloat( LispCharPtr int1, LispHashTable& aHashTable,
     ANumber i1(int1,aPrecision);
     LispInt i=0;
     LispInt fraciszero=LispTrue;
+
     while (i<i1.iExp && fraciszero)
     {
         if (i1[i] != 0)
@@ -906,7 +911,7 @@ BigNumber::BigNumber(LispInt aPrecision)
 {
   iPrecision = aPrecision;
   iNumber = NEW ANumber(aPrecision);
-  SetIsInteger(false);
+  SetIsInteger(LispFalse);
 }
 
 BigNumber::~BigNumber()
@@ -939,6 +944,7 @@ double BigNumber::Double() const
   char* endptr;
   return strtod(str.String(),&endptr);
 #else
+  //FIXME
   LISPASSERT(0);
   return 0.0;
 #endif
@@ -994,12 +1000,12 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
     Check(a1.iExp == 0, KLispErrNotInteger);
     Check(a2.iExp == 0, KLispErrNotInteger);
     Check(!IsZero(a2),KLispErrInvalidArg);
-    SetIsInteger(true);
+    SetIsInteger(LispTrue);
     ::IntegerDivide(*iNumber, remainder, a1, a2);
   }
   else
   {
-    SetIsInteger(false);
+    SetIsInteger(LispFalse);
     ::Divide(*iNumber,remainder,a1,a2);
   }
 }
@@ -1131,7 +1137,7 @@ void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
 
     ANumber quotient(static_cast<LispInt>(0));
     ::IntegerDivide(quotient, *iNumber, a1, a2);
-    SetIsInteger(true);
+    SetIsInteger(LispTrue);
 }
 
 void BigNumber::Floor(const BigNumber& aX)
@@ -1140,8 +1146,25 @@ void BigNumber::Floor(const BigNumber& aX)
     LispString str;
     aX.ToString(str,aX.GetPrecision());
     iNumber->SetTo(str.String());
-//    iNumber->CopyFrom(*aX.iNumber);
 
+    if (iNumber->iTensExp > 0)
+    {
+      while (iNumber->iTensExp > 0)
+      {
+        BaseTimesInt(*iNumber,10, WordBase);
+        iNumber->iTensExp--;
+      }
+    }
+    else if (iNumber->iTensExp < 0)
+    {
+      while (iNumber->iTensExp < 0)
+      {
+        PlatDoubleWord carry;
+        BaseDivideInt(*iNumber,10, WordBase, carry);
+        iNumber->iTensExp++;
+      }
+    }
+    
     LispInt i=0;
     LispInt fraciszero=LispTrue;
     while (i<iNumber->iExp && fraciszero)
@@ -1160,7 +1183,7 @@ void BigNumber::Floor(const BigNumber& aX)
         ANumber minone("-1",10);
         ::Add(*iNumber,orig,minone);
     }
-    SetIsInteger(true);
+    SetIsInteger(LispTrue);
 }
 
 
@@ -1179,7 +1202,7 @@ void BigNumber::Precision(LispInt aPrecision)
 
 
 //basic object manipulation
-bool BigNumber::Equals(const BigNumber& aOther) const
+LispBoolean BigNumber::Equals(const BigNumber& aOther) const
 {
   BigNumber diff;
   BigNumber otherNeg;
@@ -1191,40 +1214,39 @@ bool BigNumber::Equals(const BigNumber& aOther) const
 }
 
 
-bool BigNumber::IsInt() const
-{
+LispBoolean BigNumber::IsInt() const
+{//FIXME ???
   return (iType == KInt);
-//  return (iNumber->iExp == 0 && iNumber->iTensExp == 0);
 }
 
 
-bool BigNumber::IsIntValue() const
-{//FIXME
-  LISPASSERT(0);
-  return false; // function has to return *some* result
+LispBoolean BigNumber::IsIntValue() const
+{//FIXME ???
+  return (iType == KInt);
 }
 
 
-bool BigNumber::IsSmall() const
-{//FIXME
-  LISPASSERT(0);
-  return false; // function has to return *some* result
+LispBoolean BigNumber::IsSmall() const
+{
+  if (iNumber->iExp == 0 && iNumber->iTensExp == 0 && iNumber->NrItems() <2) 
+    return LispTrue;
+  return LispFalse; 
 }
 
 
 void BigNumber::BecomeInt()
 {
-  SetIsInteger(true);
+  SetIsInteger(LispTrue);
 }
 
 
 void BigNumber::BecomeFloat()
 {
-  SetIsInteger(false);
+  SetIsInteger(LispFalse);
 }
 
 
-bool BigNumber::LessThan(const BigNumber& aOther) const
+LispBoolean BigNumber::LessThan(const BigNumber& aOther) const
 {
   ANumber a1(iPrecision);
   a1.CopyFrom(*this->iNumber);
@@ -1234,15 +1256,31 @@ bool BigNumber::LessThan(const BigNumber& aOther) const
 }
 
 // assign from a platform type
-void BigNumber::SetTo(LispInt value)
-{//FIXME
+void BigNumber::SetTo(LispInt aValue)
+{
+#ifdef HAVE_STDIO_H
+  char dummy[150];
+  //FIXME platform code
+  sprintf(dummy,"%d",aValue);
+  SetTo(dummy,iPrecision,10);
+#else
+  //FIXME
   LISPASSERT(0);
+#endif
 }
 
 
-void BigNumber::SetTo(double value)
-{//FIXME
+void BigNumber::SetTo(double aValue)
+{
+#ifdef HAVE_STDIO_H
+  char dummy[150];
+  //FIXME platform code
+  sprintf(dummy,"%g",aValue);
+  SetTo(dummy,iPrecision,10);
+#else
+  //FIXME
   LISPASSERT(0);
+#endif
 }
 
 
@@ -1267,20 +1305,49 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
   iNumber->SetPrecision(aPrecision);
   iNumber->SetTo(aString,aBase);
   
-//  iNumber = NEW ANumber(aString,aPrecision,aBase);
+//TODO remove old  iNumber = NEW ANumber(aString,aPrecision,aBase);
   SetIsInteger(!isFloat && iNumber->iExp == 0 && iNumber->iTensExp == 0);
 }
 
 
 void BigNumber::ShiftLeft(const BigNumber& aX, const BigNumber& aNrToShift)
-{//FIXME
-  LISPASSERT(0);
+{
+  // first, see if we can use short numbers
+  if (aNrToShift.IsInt() && aNrToShift.Sign()>=0)
+  {
+    if (aNrToShift.IsSmall())
+    {
+      long shift_amount=(*aNrToShift.iNumber)[0];
+      ShiftLeft(aX, shift_amount);
+    }
+    else
+    {
+      // only floats can be shifted by a non-small number, so convert to float and use exponent_
+      // FIXME: make this work for large shift amounts
+    }
+  }	// do nothing if shift amount is not integer or negative
 }
+
 
 
 void BigNumber::ShiftRight(const BigNumber& aX, const BigNumber& aNrToShift)
-{//FIXME
-  LISPASSERT(0);
+{
+  // first, see if we can use short numbers
+  if (aNrToShift.IsInt() && aNrToShift.Sign()>=0)
+  {
+    if (aNrToShift.IsSmall())
+    {
+      long shift_amount=(*aNrToShift.iNumber)[0];
+      ShiftRight(aX, shift_amount);
+    }
+    else
+    {
+      // only floats can be shifted by a non-small number, so convert to float and use exponent_
+      // FIXME: make this work for large shift amounts
+    }
+  }	// do nothing if shift amount is not integer or negative
 }
+
+
 
 #endif
