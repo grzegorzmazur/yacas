@@ -21,7 +21,7 @@ Summary:
 13. [Trigonometry] 'TrigSimpCombine(x^500)' returns nothing
 14. [Calculus] Some limits not working correctly when using infinity
 15. (RESOLVED?)[Core] 'MathPower(0,0.5)' locks up
-16. [Build System]  mathcommands3.cpp is compiled twice and libyacas is linked
+16. (COULD NOT REPRODUCE)[Build System]  mathcommands3.cpp is compiled twice and libyacas is linked
     twice
 17. [Polynomials] Factor(x^6-1) gives wrong result
 
@@ -262,6 +262,16 @@ Submitted by: Pablo De Napoli
 
 When building yacas, "make install" recompile mathcommands3.cpp, links
 yacas again and also libyacas is linked twice.
+
+Note from Ayal: are you sure? Cannot reproduce. Are you sure you
+didn't do a cvs update but forgot to do a make before the make
+install? I did make changes to mathcommands3.cpp
+
+Or: maybe you just did a cvs update, then compiled, but your
+clock is way behind mine. So then it compiles the source
+file, resulting in an object file with an older time stamp
+than the source file, which causes the system to think it
+needs to recompile the source file again next time.
 
 ----------------------------------------------------------------------
 
