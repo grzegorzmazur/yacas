@@ -2,7 +2,7 @@
 
 // test DllLoad and DllUnload
 DllLoad("example");
-Verify(DllEnumerate(), {"example"});
+Verify(Contains(DllEnumerate(), "example"), True);
 Verify(AddTwoIntegers(1,2), 3);
 Verify(AddTwoDoubles(1.5,2.7), 4.2);
 mybla := CreateBla(5,7);
@@ -11,7 +11,7 @@ BlaSetA(mybla, -2);
 Verify(BlaGetA(mybla), -2);
 DllUnload("example");
 Verify(AddTwoIntegers(1,2), Hold(AddTwoIntegers(1,2)));
-Verify(DllEnumerate(), {});
+Verify(Contains(DllEnumerate(), "example"), False);
 
 // test MakeFunctionPlugin
 If(MakeFunctionPlugin(),

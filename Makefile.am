@@ -34,7 +34,12 @@ test: check
 dvi: texdocs
 
 texdocs:
-	cd manmake ; make ps-docs ; make pdf-docs
+	cd manmake ; make ps-docs pdf-docs
+
+# this target will create all HTML docs in case they are disabled by configure
+
+htmldocs:
+	cd manmake; make manicon.html
 
 backup:
 	-rm yacas-*.tar.gz
