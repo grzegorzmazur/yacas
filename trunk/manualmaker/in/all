@@ -37,9 +37,6 @@ Load("refprog.book");
 
   GarbageCollect();
 
-InitBook("Algo");
-Load("Algo.book");
-
 /* Emit framed version of the manual. */
 SelectBook("intro");
 EmitHtmlFramed();
