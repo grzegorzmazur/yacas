@@ -12,6 +12,8 @@ void IncNrObjects()
 #ifdef YACAS_DEBUG
     theNrConstructed++;
     theNrCurrent++;
+#else
+    LISPASSERT(0);
 #endif
 }
 void DecNrObjects()
@@ -19,6 +21,8 @@ void DecNrObjects()
 #ifdef YACAS_DEBUG
     theNrDestructed++;
     theNrCurrent--;
+#else
+    LISPASSERT(0);
 #endif
 }
 

@@ -299,7 +299,7 @@ void TraceShowLeave(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 void TracedStackEvaluator::PushFrame()
 {
-    UserStackInformation *op = new UserStackInformation;
+    UserStackInformation *op = NEW UserStackInformation;
     objs.Append(op);
 }
 void TracedStackEvaluator::PopFrame()

@@ -177,7 +177,7 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
             if (iSubLine.NrItems()>1)
             {
                 NewLine();
-                LispStringPtr ptr = new LispString();
+                LispStringPtr ptr = NEW LispString();
                 *ptr = iSubLine.String();
                 iHistory.Append(ptr);
             }

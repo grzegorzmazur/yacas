@@ -67,7 +67,7 @@ CUnixCommandLine::CUnixCommandLine()
                 for(i=0;buff[i] && buff[i] != '\n';++i)
                     ;
                 buff[i++] = '\0';
-                LispStringPtr ptr = new LispString(buff);
+                LispStringPtr ptr = NEW LispString(buff);
                 iHistory.Append(ptr);
                 
             }

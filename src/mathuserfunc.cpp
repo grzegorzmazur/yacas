@@ -98,7 +98,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     else
     {
         LISPASSERT(arity>0);
-        arguments = new LispPtr[arity];
+        arguments = NEW LispPtr[arity];
     }
     LocalArgs args(arguments);
 
@@ -215,7 +215,7 @@ void BranchingUserFunction::DeclareRule(LispInt aPrecedence, LispPtr& aPredicate
                          LispPtr& aBody)
 {
     // New branching rule.
-    BranchRule* newRule = new BranchRule(aPrecedence,aPredicate,aBody);
+    BranchRule* newRule = NEW BranchRule(aPrecedence,aPredicate,aBody);
     Check(newRule != NULL,KLispErrCreatingRule);
 
     InsertRule(aPrecedence,newRule);
@@ -223,7 +223,7 @@ void BranchingUserFunction::DeclareRule(LispInt aPrecedence, LispPtr& aPredicate
  void BranchingUserFunction::DeclareRule(LispInt aPrecedence, LispPtr& aBody)
 {
     // New branching rule.
-    BranchRule* newRule = new BranchRuleTruePredicate(aPrecedence,aBody);
+    BranchRule* newRule = NEW BranchRuleTruePredicate(aPrecedence,aBody);
     Check(newRule != NULL,KLispErrCreatingRule);
 
     InsertRule(aPrecedence,newRule);
@@ -233,7 +233,7 @@ void BranchingUserFunction::DeclarePattern(LispInt aPrecedence, LispPtr& aPredic
                                            LispPtr& aBody)
 {
     // New branching rule.
-    BranchPattern* newRule = new BranchPattern(aPrecedence,aPredicate,aBody);
+    BranchPattern* newRule = NEW BranchPattern(aPrecedence,aPredicate,aBody);
     Check(newRule != NULL,KLispErrCreatingRule);
 
     InsertRule(aPrecedence,newRule);

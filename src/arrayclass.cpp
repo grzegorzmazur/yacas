@@ -5,7 +5,7 @@
 ArrayClass::ArrayClass(LispInt aSize,LispObject* aInitialItem)
 {
     iSize=aSize;
-    iArray = new LispPtr[aSize];
+    iArray = NEW LispPtr[aSize];
     LispInt i;
     for (i=0;i<aSize;i++)
     {

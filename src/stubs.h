@@ -13,16 +13,28 @@
 
 
 #ifdef NO_GLOBALS
-LispCharPtr PlatAlloc(LispInt aNrBytes);
-LispCharPtr PlatReAlloc(LispCharPtr aOrig, LispInt aNrBytes);
-void PlatFree(LispCharPtr aOrig);
+  LispCharPtr PlatAlloc(LispInt aNrBytes);
+  LispCharPtr PlatReAlloc(LispCharPtr aOrig, LispInt aNrBytes);
+  void PlatFree(LispCharPtr aOrig);
+  #define NEW new 
 #else
-void *PlatObAlloc(size_t nbytes);
-void PlatObFree(void *p);
-void *PlatObReAlloc(void *p, size_t nbytes);
-#define PlatAlloc(nr)        (LispCharPtr)PlatObAlloc((size_t)nr)
-#define PlatReAlloc(orig,nr) (LispCharPtr)PlatObReAlloc((void*)orig,(size_t)nr)
-#define PlatFree(orig)       PlatObFree((void*)orig)
+
+#ifdef DEBUG_MODE
+#include "debugmem.h"
+  #define PlatAlloc(nr)        (LispCharPtr)YacasMallocPrivate((size_t)nr,__FILE__,__LINE__)
+  #define PlatReAlloc(orig,nr) (LispCharPtr)YacasReAllocPrivate((void*)orig,(size_t)nr,__FILE__,__LINE__)
+  #define PlatFree(orig)       YacasFreePrivate((void*)orig)
+  #define NEW new (__FILE__,__LINE__)
+#else
+  void *PlatObAlloc(size_t nbytes);
+  void PlatObFree(void *p);
+  void *PlatObReAlloc(void *p, size_t nbytes);
+  #define PlatAlloc(nr)        (LispCharPtr)PlatObAlloc((size_t)nr)
+  #define PlatReAlloc(orig,nr) (LispCharPtr)PlatObReAlloc((void*)orig,(size_t)nr)
+  #define PlatFree(orig)       PlatObFree((void*)orig)
+  #define NEW new 
+#endif
+
 
 #ifdef YACAS_DEBUG
 #include <stdio.h>

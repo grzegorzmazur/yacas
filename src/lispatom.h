@@ -106,7 +106,7 @@ LispObject* LispAnnotatedObject<T>::Copy(LispInt aRecursed)
 {
     LispPtr copied;
     copied.Set(iObject.Get()->Copy(aRecursed));
-    LispObject *result = new LispAnnotatedObject<T>(copied.Get());
+    LispObject *result = NEW LispAnnotatedObject<T>(copied.Get());
     copied.Set(iAdditionalInfo.Get()->Copy(aRecursed));
     result->SetExtraInfo(copied);
 #ifdef DEBUG_MODE
