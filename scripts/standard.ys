@@ -333,6 +333,10 @@ LocalSymbols(x,y,xarg,yarg)
 ];
 
 
+50  # _x * Undefined <-- Undefined;
+50  # Undefined * _y <-- Undefined;
+
+
 100  # 0 * Infinity <-- Undefined;
 100  # Infinity * 0 <-- Undefined;
 
@@ -371,8 +375,6 @@ LocalSymbols(x,y,xarg,yarg)
 250  # x_IsInfinity * y_IsNumber <-- Sign(y)*x;
 250  # x_IsInfinity * y_IsComplex <-- Sign(Re(y))*Infinity;
 
-250  # _x * Undefined <-- Undefined;
-250  # Undefined * _y <-- Undefined;
 
 
 /* Note: this rule MUST be past all the transformations on
