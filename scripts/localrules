@@ -54,6 +54,7 @@ HoldArg("<-",right);
     If (Head(Head(tr)) = exp,
     [
       result := Eval(Head(Tail(Head(tr))));
+      If(Verbose, Echo({exp," replaced with ",result}));
       tr:={};
     ],
     [
@@ -74,6 +75,7 @@ HoldArg("<-",right);
     If (Not(IsAtom(head)) And PatternMatches(head, exp),
     [
       result := Eval(Head(Tail(Head(tr))));
+      If(Verbose, Echo({exp," replaced with ",result}));
       tr:={};
     ],
     [
