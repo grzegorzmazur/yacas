@@ -17,7 +17,7 @@ TESTFILES = arithmetic.yts c_tex_form.yts calculus.yts canprove.yts \
 	tensors.yts trace.yts tr.yts multivar.yts numbers.yts io.yts \
 	programming.yts regress.yts simplify.yts solve.yts sums.yts \
 	radsimp.yts linalg.yts orthopoly.yts poly.yts sturm.yts numerics.yts \
-	scopestack.yts plots.yts
+	scopestack.yts plots.yts GaussianIntegers.yts
 
 SPECIALTESTFILES = ../manualmaker/wester-1994.ys
 

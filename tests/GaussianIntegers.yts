@@ -1,0 +1,27 @@
+
+NextTest("Gaussian Integers");
+
+/* TestGaussianFactors: test if Gaussian Factors Really works! */
+TestGaussianFactors(z_IsGaussianInteger) <--
+[
+ Local(r,gfactors,Ok);
+ Echo("TestGaussianFactors: factoring ",z);
+ gfactors := GaussianFactors(z);
+ Echo(gfactors);
+ Ok := True;
+ r :=1;
+ ForEach(p,gfactors)
+ [
+  r  := r*p[1]^p[2];
+  Ok := Ok And IsGaussianPrime(p[1]);
+ ];
+ Echo(r);
+ Ok := Ok And IsGaussianUnit(r/z);
+ If(Ok,Echo("passed!"));
+];
+
+TestGaussianFactors((9!)+1);
+TestGaussianFactors(2+3*I);
+TestGaussianFactors(-1+2*I);
+TestGaussianFactors(17);
+TestGaussianFactors(41);
