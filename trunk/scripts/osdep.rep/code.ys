@@ -1,0 +1,23 @@
+// OS-dependent code (to be replaced or configured at build time)
+
+// this lists the available modules
+SupportedOSes :=
+{
+	{"Unix", "unix.ys"},
+	{"Win32", "win32.ys"},
+//	{"MacOSX", "macosX.ys"},
+	{"Default", "unix.ys"},
+};
+
+FilePathSeparator :=
+{
+	{"Unix", "/"},
+	{"Win32", "\\"},
+//	{"MacOSX", ":"},
+	{"Default", "/"},
+};
+
+// this variable says which module we should load
+ChosenOS := "Default";
+
+Use("osdep.rep" : FilePathSeparator[ChosenOS] : SupportedOSes[ChosenOS]);
