@@ -338,10 +338,10 @@ TRun(2+t/2-t^2,10);
 */
 
 /////////////////////////////////////////////////
-/// Continuous fractions stuff
+/// Continued fractions stuff
 /////////////////////////////////////////////////
 
-/// compute the list of continuous fraction coefficients for a given number
+/// compute the list of continued fraction coefficients for a given number
 /// if order is not given, computes to the end
 10 # ContFracList(_n) <-- ContFracList(n, Infinity);
 /// compute list of given length
@@ -471,7 +471,36 @@ GuessRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 	ContFracEval(Take(cf, i));
 ];
 
+//////////////////////////////////////////////////
+/// BracketRational: find two rational approximations
+//////////////////////////////////////////////////
 
+/// Return a list of two rational numbers r1, r2 such that r1<r<r2 and |r2-r1| < eps*|r|
+BracketRational(r,eps):=
+[
+	Local(n,cflist, r1, r2);
+	cflist := ContFracList(r);
+	n:=2;
+	r1 := ContFracEval(Take(cflist,n));
+	r2 := -r1;
+	// find two successive approximations and check that they differ by less than |eps*r|
+	While (n<Length(cflist) And ( Abs(N(r2-r1)) > Abs(N(eps*r)) ) )
+	[
+		r2 := r1;
+		n++;
+		r1 := ContFracEval(Take(cflist,n));
+	];
+	// now r1 and r2 are some rational numbers.
+	// decide whether the search was successful.
+	If(
+		n=Length(cflist),
+		{},	// return empty list if not enough precision
+		If(N(r-r1)>0,
+			{r1, r2},	// successive approximations are always bracketing, we only need to decide their order
+			{r2, r1}
+		)
+	);
+];
 
 /** MatchLinear(variable,expression)
  */
