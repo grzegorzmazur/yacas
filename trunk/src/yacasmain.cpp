@@ -636,6 +636,7 @@ int runserver(int argc,char** argv)
     int maxConnections;
     int process;
     fd_set readfds, testfds;
+    CYacas* used_clients[FD_SETSIZE];
     int serverbusy;
 
     int seconds = 30; // give each calculation only so many calculations
@@ -674,6 +675,14 @@ int runserver(int argc,char** argv)
         perror("YacasServer Could not listen to the socket\n");
         exit(1);
     }
+    
+    {
+      int i;
+      for (i=0;i<FD_SETSIZE;i++)
+      {
+        used_clients[i] = NULL;
+      }
+    }
 
     FD_ZERO(&readfds);
     FD_SET(server_sockfd, &readfds);
@@ -706,7 +715,9 @@ int runserver(int argc,char** argv)
 #endif
                     {
                         FD_SET(client_sockfd, &readfds);
-                        //LOGTODO                    printf("adding client on fd %d\n", client_sockfd);
+#ifdef YACAS_DEBUG
+                        printf("adding client on fd %d\n", client_sockfd);
+#endif
                     }
 
                 }
@@ -718,6 +729,11 @@ int runserver(int argc,char** argv)
                     {
                         close(fd);
                         FD_CLR(fd, &readfds);
+                        delete used_clients[fd];
+                        used_clients[fd] = NULL;
+#ifdef YACAS_DEBUG
+                        printf("Removing client on %d\n",fd);
+#endif
                     }
                     else
                     {
@@ -733,55 +749,64 @@ int runserver(int argc,char** argv)
                         }
                         free(buffer);
                         cmd.Append('\0');                        
-                        if (fork() == 0)
-                        {
 
-                        
+#ifdef YACAS_DEBUG
+printf("Servicing on %d (%ld)\n",fd,used_clients[fd]);
+#endif
+                            if (used_clients[fd] == NULL)
+                            {
+#ifdef YACAS_DEBUG
+  printf("Loading new Yacas environment\n");
+#endif
+                              LoadYacas();
+                              used_clients[fd] = yacas;
+                              yacas = NULL;
+                            }
+
+// enable if fork needed
+//                        if (fork() == 0)
+                        {
+                            int clfd = fd;
                             char* response = cmd.String();
-                            LoadYacas();
-                            (*yacas)()().iSecure = 1;
+                            (*used_clients[clfd])()().iSecure = 1;
                             if (seconds>0)
                             {
                                 signal(SIGALRM,exit);
                                 alarm(seconds);
                             }
-                            yacas->Evaluate(cmd.String());
+                            used_clients[clfd]->Evaluate(cmd.String());
                             if (seconds>0)
                             {
                                 signal(SIGALRM,SIG_IGN);
                             }
-                            if (yacas->IsError())
+                            if (used_clients[clfd]->IsError())
                             {
-                                response = yacas->Error();
+                                response = used_clients[clfd]->Error();
                             }
                             else
                             {
-                              response = yacas->Result();
+                              response = used_clients[clfd]->Result();
                             }
 
                             int buflen=strlen(response);
-
+#ifdef YACAS_DEBUG
                             printf("In> %s\n",cmd.String());
                             printf("Out> %s\n",response);
-
+#endif
                             if (response)
                             {
                                 if (buflen>0)
                                     write(fd, response, buflen);
+                                char c;
+                                c = '\r';
+                                write(fd,&c,1);
+                                c = '\n';
+                                write(fd,&c,1);
                             }
-                            delete yacas;
-                            yacas = NULL;
 
-                            close(fd);
-                            FD_CLR(fd, &readfds);
-                            exit(0);
+// enable if fork needed
+//                            exit(0);
                         }
-                        else
-                        {
-                            close(fd);
-                            FD_CLR(fd, &readfds);
-                        }
-                        
                     }
                 }
             }
