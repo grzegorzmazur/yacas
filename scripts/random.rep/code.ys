@@ -1,9 +1,238 @@
+/*
+Random number generators implemented in an object-oriented manner.
+
+Old interface (still works):
+
+	RandomSeed(123);
+	Random(); Random();
+
+It provides only one global RNG with a globally assigned seed.
+
+New interface allows creating many RNG objects:
+
+	RngCreate(r1);	// create a default RNG object, assign structure to r1, define function r1()
+	RngCreate(r2, 12345);	// create RNG object with given seed
+	RngCreate(r3, seed==0, engine==L'Ecuyer, dist==Gaussian); 	// extended options: specify seed, type of RNG engine and the type of statistical distribution
+	Rng(r1); Rng(r1); Rng(r2);	// generate some floating-point numbers
+	RngSeed(r1, 12345);	// r1 is reset, r2 is unaffected
+
+More "RNG engines" and "RNG distribution adaptors" can be defined later (i.e. at run time).
+
+RngCreate will return an object of the following type:
+	{SomeDist, SomeEngine, state }
+
+here SomeEngine is a function atom that describes the RNG engine,
+SomeDist is a function atom that specifies the distribution adaptor,
+and state is a "RNG state object", e.g. a list of all numbers that specify the current RNG state (seeds, temporaries, etc.).
+
+RngSeed(r1, seed) expects an integer seed. It will initialize the RNG object r1 with the given seed.
+
+The "RNG engine API": calling RngCreate with engine==SomeEngine expects that:
+	SomeEngine(seed_IsInteger) will create and initialize a state object with given seed and return the new state object. SomeEngine can assume that "seed" is a positive integer.
+	SomeEngine(state1_IsList) will update the RNG state object state1 and return the pair {new state object, new number}.
+
+The "RNG distribution adaptor API": calling RngCreate with distribution==SomeDist expects that:
+	SomeDist(r1) will update the RNG object r1 and return the pair {new state object, new number}. r1 is a full RNG object, not just a state object.
+
+*/
+
+//////////////////////////////////////////////////
+/// lists of defined RNG entities
+//////////////////////////////////////////////////
+
+/// The idea is that options must be short and easy to type, but procedure names should be long.
+
+KnownRNGEngines :=
+{
+	{ "default", "RNGEngine'LCG'2"},
+	{ "advanced", "RNGEngine'L'Ecuyer"},
+};
+
+KnownRNGDists :=
+{
+	{"default", "FlatRNGDistribution"},
+	{"flat", "FlatRNGDistribution"},
+	{"uniform", "FlatRNGDistribution"},
+//	{"gauss", "GaussianRNGDistribution"},
+};
+
+//////////////////////////////////////////////////
+/// RNG object API
+//////////////////////////////////////////////////
+
+Function() RngCreate(r);
+Function() RngCreate(r, seed, ...);
+HoldArg("RngCreate", r);	// we want to be able to reuse RNG objects, so we pass just the name
+UnFence("RngCreate", 1);
+UnFence("RngCreate", 2);
+Function() RngSeed(r, seed);
+UnFence("RngSeed", 2);
+/// accessor for RNG objects
+Function() Rng(r);
+UnFence("Rng", 1);
+
+RngCreate(_r) <-- (RngCreate @ {r, 0});
+
+10 # RngCreate(_r, a'seed_IsInteger) <-- (RngCreate @ {r, Atom("seed") == a'seed});
+
+20 # RngCreate(_r, _key == _value) <-- (RngCreate @ {r, {key==value}});
+
+// expect a list of options
+30 # RngCreate(_r, _options) <--
+[
+	// "options" will become an empty list unless it's already a list
+	(Assert("warning", {"RngCreate: invalid argument type for options", options}) IsList(options)
+	) Or (options := {});
+	options := ListToHash @ {options};
+	// check options and assign defaults
+	If(
+		options["seed"] = Empty Or options["seed"] <= 0,
+		options["seed"] := 76544321	// some default seed out of the blue sky
+	);
+	If(
+		options["engine"] = Empty Or Not (Assert("warning", {"RngCreate: invalid engine", options["engine"]}) KnownRNGEngines[options["engine"] ] != Empty),
+		options["engine"] := "default"
+	);
+	If(
+		options["dist"] = Empty Or Not (Assert("warning", {"RngCreate: invalid distribution", options["dist"]}) KnownRNGDists[options["dist"] ] != Empty),
+		options["dist"] := "default"
+	);
+	
+	// construct a new RNG object and assign to the variable name stored in "r"
+	// a RNG object has the form {"SomeDist", "SomeEngine", {state}}
+	MacroSet(r,
+	{
+		KnownRNGDists[options["dist"] ], KnownRNGEngines[options["engine"] ], 
+		// initialize object with given seed using "SomeEngine(seed)
+		KnownRNGEngines[options["engine"] ] @ { options["seed"] }
+	}
+	);
+];
+
+/// accessor function: will call SomeDist(r) and update r
+Rng(_r) <--
+[
+	Local(state, result);
+	{state, result} := (r[1] @ {r});	// this calls SomeDist(r)
+	DestructiveReplace(r, 3, state);	// update RNG object 
+	result;	// return floating-point number
+];
+
+/// set seed: will call SomeEngine(r, seed) and update r
+RngSeed(_r, seed_IsInteger) <--
+[
+	Local(state);
+	(Assert("warning", {"RngSeed: seed must be positive", seed}) seed>0
+	) Or (seed:=76544321);
+	state := (r[2] @ {seed});	// this calls SomeEngine(r)
+	DestructiveReplace(r, 3, state);	// update object 
+	True;
+];
+
+//////////////////////////////////////////////////
+/// RNG distribution adaptors
+//////////////////////////////////////////////////
+
+// trivial distribution adaptor: flat distribution, simply calls SomeEngine(r)
+/* we have to return whole objects; we can't use references b/c the core
+function ApplyPure will not work properly on references, i.e. if r = {"", "", {1}} so that
+r[3] = {1}, then LCG'2(r[3]) modifies r[3], but LCG'2 @ r[3] or
+ApplyPure("LCG'2", {r[3]}) do not actually modify r[3].
+*/
+
+// return pair {state, number}
+FlatRNGDistribution(_r) <--(r[2] @ {r[3]});	// this calls SomeEngine(state)
+
+
+//////////////////////////////////////////////////
+/// RNG engines
+//////////////////////////////////////////////////
+
+/// default RNG engine: the LCG generator
+
+// first method: initialize a state object with given seed
+RNGEngine'LCG'1(seed_IsInteger) <-- {seed};
+// second method: update state object and return new number
+RNGEngine'LCG'1(state_IsList) <-- LCG'1(state);
+
+// first method: initialize a state object with given seed
+RNGEngine'LCG'2(seed_IsInteger) <-- {seed};
+// second method: update state object and return new number
+RNGEngine'LCG'2(state_IsList) <-- LCG'2(state);
+
+// first method: initialize a state object with given seed
+RNGEngine'LCG'3(seed_IsInteger) <-- {seed};
+// second method: update state object and return new number
+RNGEngine'LCG'3(state_IsList) <-- LCG'3(state);
+
+// first method: initialize a state object with given seed
+RNGEngine'LCG'4(seed_IsInteger) <-- {seed};
+// second method: update state object and return new number
+RNGEngine'LCG'4(state_IsList) <-- LCG'4(state);
+
+/// parameters from P. Hellekalek, 1994; see G. S. Fishman, Math. Comp. vol. 54, 331 (1990)
+LCG'1(state) := RandomLCG(state, 2147483647,950706376,0);
+LCG'2(state) := RandomLCG(state, 4294967296,1099087573,0);
+LCG'3(state) := RandomLCG(state, 281474976710656,68909602460261,0);
+LCG'4(state) := RandomLCG(state, 18014398509481984,2783377640906189,0);
+
+/// Linear congruential generator engine: backend
+// state is a list with one element
+RandomLCG(_state, _im, _ia, _ic) <--
+{
+	DestructiveReplace(state,1, MathMod(state[1]*ia+ic,im)),
+	MathDivide(state[1], im)	// division should never give 1
+};
+
+/// Advanced RNG engine due to L'Ecuyer et al.
+/// RNG from P. L'ecuyer et al (2000). Period approximately 2^191
+// state information: 6 32-bit integers, corresponding to {x3,x2,x1,y3,y2,y1}
+
+// first method: initialize a state object with given seed
+RNGEngine'L'Ecuyer(seed_IsInteger) <--
+[
+	// use LCG'2 as auxiliary RNG to fill the seeds
+	Local(rng'aux, result);
+	RngCreate(rng'aux, seed);
+	// this will be the state vector
+	result:=ZeroVector(6);
+	// fill the state object with random numbers
+	Local(i);
+	For(i:=1, i<=6, i++)
+	[
+		Rng(rng'aux);
+		result[i] := rng'aux[3][1];	// hack to get the integer part
+	];
+	// return the state object
+	result;
+];
+
+// second method: update state object and return a new random number (floating-point)
+RNGEngine'L'Ecuyer(state_IsList) <--
+[
+	Local(new'state, result);
+	new'state := {
+		Mod(1403580*state[2]-810728*state[3], 4294967087), state[1], state[2],
+		Mod(527612*state[4]-1370589*state[6], 4294944433), state[4], state[5]
+	};
+	result:=Mod(state[1]-state[4], 4294967087);
+	{
+		new'state,
+		MathDivide(If(result=0, 4294967087, result), 4294967088)
+	};
+];
+
+//////////////////////////////////////////////////
+/// old stuff
+//////////////////////////////////////////////////
 
 // initial seed should be nonzero
 RandSeed:=7654321;
 
+Function("RandomSeed", {seed}) Set(RandSeed, seed);
+
 /// Linear congruential generator
-Function("RandomLCG",{im,ia,ic})
+RandomLCG(_im, _ia, _ic) <--
 [
   RandSeed:=MathMod(RandSeed*ia+ic,im);
   N(RandSeed/im);	// should never give 1
@@ -17,6 +246,7 @@ Function("Random3",{}) RandomLCG(4294967296,1099087573,0);
 Function("Random4",{}) RandomLCG(281474976710656,68909602460261,0);
 Function("Random5",{}) RandomLCG(18014398509481984,2783377640906189,0);
 
+// select one of them
 Function("Random",{}) Random3();
 
 /// RNG from P. L'ecuyer et al (2000). Period approximately 2^191

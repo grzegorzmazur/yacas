@@ -440,7 +440,7 @@ LocalSymbols(x)
 // Out> 0.0000^2;
 // In> 0.0^2/2
 // Out> 0.0^2/2;
-60 # (x_IsNumber ^ n_IsRationalOrNumber)_(x+1==1) <-- 0;
+60 # (x_IsNumber ^ n_IsRationalOrNumber)_(x+1=1) <-- 0;
 
 59 # _x ^ Undefined <-- Undefined;
 59 # Undefined ^ _x <-- Undefined;
@@ -502,8 +502,8 @@ LocalSymbols(x)
 250 # (x_IsNumber ^ -Infinity)_(x< -1) <-- 0;
 250 # (x_IsNumber ^ -Infinity)_(x> 1) <-- 0;
 
-255 # (x_IsComplex ^ Infinity)_(Abs(x) == 1) <-- Undefined;
-255 # (x_IsComplex ^ -Infinity)_(Abs(x) == 1) <-- Undefined;
+255 # (x_IsComplex ^ Infinity)_(Abs(x) = 1) <-- Undefined;
+255 # (x_IsComplex ^ -Infinity)_(Abs(x) = 1) <-- Undefined;
 
 
 
