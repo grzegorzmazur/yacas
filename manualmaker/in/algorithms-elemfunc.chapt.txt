@@ -260,7 +260,7 @@ The routines {PiBrentSalamin()} and {PiBorwein()} are based on much more advance
 Trigonometric functions $Sin(x)$, $Cos(x)$ are computed by subtracting $2*Pi$ from $x$ until it is in the range $0<x<2*Pi$ and then using Taylor series.
 Tangent is computed by dividing $Sin(x)/Cos(x)$.
 
-*A computation of $ArcTan(x)$!by Taylor series
+*A computation of $ArcTan(x)$
 
 Inverse trigonometric functions are computed by Newton's method (for {ArcSin}) or by continued fraction expansion (for {ArcTan}),
 $$ArcTan(x) = x/(1+x^2/(3+(2*x)^2/(5+(3*x)^2/(7+...))))$$.
@@ -315,7 +315,20 @@ This can be understood by the following elementary argument. The difference betw
 $$ Abs(delta) := Abs(b[0]/(a[1]+b[1]/(...+b[n-1]/a[n])) - b[0]/(a[1]+b[1]/(...+b[n]/a[n+1])) ) < (b[0]*b[1]*...*b[n])/ ((a[1]*...*a[n])^2 * a[n+1]) $$.
 (This is a conservative estimate that could be slightly improved with more careful analysis. See also the section on numerical continued fractions.) For the above continued fraction for $ArcTan(x)$, this directly gives the following estimate,
 $$ Abs(delta) < (x^(2*n+1)*(n!)^2)/((2*n+1)*((2*n-1)!!)^2) <> x*(x/2)^(2*n) $$.
-This formula only gives a meaningful bound if $x<2$, but it is clear that the precision generally becomes worse when $x$ grows. If we need $P$ digits of precision, then, for a given $x$, the number of terms $n$ has to be large enough so that the relative precision is sufficient, i.e. $$delta/ArcTan(x) < 10^(-P)$$. This gives $n > P*Ln(10)/(Ln(4)-2*Ln(x))$ and for $x=1$, $n>3/2*P$. This estimate is very close for small $x$ and only slightly suboptimal for larger $x$: numerical experimentation shows that for $x<=1$, the required number of terms for $P$ decimal digits is only about $4/3*P$, and for $x<=0.42$, $n$ must be $3/4*P$. If $x<1$ is very small then one needs a much smaller number of terms $n > P*Ln(10)/(Ln(4)-2*Ln(x))$. The number of terms is set equal to this number (computed at low precision) in the routine {ContArcTan}. Roundoff errors may actually make the result less precise if a larger number of terms is used.
+This formula only gives a meaningful bound if $x<2$, but it is clear that the precision generally becomes worse when $x$ grows. If we need $P$ digits of precision, then, for a given $x$, the number of terms $n$ has to be large enough so that the relative precision is sufficient, i.e. $$delta/ArcTan(x) < 10^(-P)$$. This gives $n > (P*Ln(10))/(Ln(4)-2*Ln(x))$ and for $x=1$, $n>3/2*P$. This estimate is very close for small $x$ and only slightly suboptimal for larger $x$: numerical experimentation shows that for $x<=1$, the required number of terms for $P$ decimal digits is only about $4/3*P$, and for $x<=0.42$, $n$ must be $3/4*P$. If $x<1$ is very small then one needs a much smaller number of terms $n > P*Ln(10)/(Ln(4)-2*Ln(x))$.
+Roundoff errors may actually make the result less precise if a larger number of terms is used.
+
+*A computation of $ArcTan(x)$!by Taylor series
+
+If we compare the rate of convergence of the continued fraction for $ArcTan(x)$  with the Taylor series
+$$ ArcTan(x) = Sum(n,0,Infinity, ((-1)^n*x^(2*n+1))/(2*n+1)) $$,
+we find that the number of terms of the Taylor series needed for $P$ digits is about
+$n > (P*Ln(10))/(2*Ln(x))$.
+Since the range of $x$ can be reduced to about [0, 0.42] by trigonometric identities, the difference between this and $P*Ln(10)/(Ln(4)-2*Ln(x))$ is never very large.
+At most twice as many terms $n$ are needed in the Taylor series as in the continued fraction.
+However, a Taylor series can be evaluated efficiently using $O(Sqrt(n))$ long multiplications, while a continued fraction with $n$ terms always requires $n$ divisions.
+Therefore, at high enough precision the continued fraction method will be much less efficient than the Taylor series.
+
 
 		Factorials and binomial coefficients
 

@@ -509,6 +509,8 @@ An additional speed-up is possible if the elementary function allows a transform
 
 		Using asymptotic series for calculations
 
+*A asymptotic series
+
 Several important analytic functions have asymptotic series expansions.
 For example, the error function $Erf(x)$ and Euler's Gamma function $Gamma(x)$ have asymptotic expansions at large (positive) $x$:
 
@@ -534,6 +536,9 @@ The inherent limitation of the method of asymptotic series is that for a given
 $x$, there will be a certain place in the series where the term has the minimum
 absolute value (after that, the series is unusable), and the error of the
 approximation cannot be smaller than that term.
+
+*A error function $Erf(x)$!by asymptotic series 
+*A asymptotic series!estimate of precision
 
 For example, take the above asymptotic series for $Erf(x)$.
 The logarithm of the absolute value of the $n$-th term can be estimated using Stirling's formula for the factorial as
