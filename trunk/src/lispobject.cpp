@@ -34,11 +34,12 @@ LispObject::~LispObject()
 {
 }
 
+/*
 LispStringPtr LispObject::String()
 {
     return NULL;
 }
-
+*/
 LispPtr* LispObject::SubList()
 {
     return NULL;

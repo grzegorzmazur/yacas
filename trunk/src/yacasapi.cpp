@@ -344,12 +344,12 @@ void CYacas::Evaluate(const LispCharPtr aExpression)
          LispPtr lispexpr;
          LispTokenizer &tok = *environment().iCurrentTokenizer;
          InfixParser parser(tok, input,
-                            environment().HashTable(),
+                            environment(),
                             environment().PreFix(),
                             environment().InFix(),
                             environment().PostFix(),
                             environment().Bodied());
-         parser.Parse(lispexpr,environment());
+         parser.Parse(lispexpr);
 
          environment().iEvalDepth=0;
          environment().iEvaluator->ResetStack();

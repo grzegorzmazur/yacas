@@ -9,12 +9,12 @@
 
 
 InfixParser::InfixParser(LispTokenizer& aTokenizer, LispInput& aInput,
-                         LispHashTable& aHashTable,
+                         LispEnvironment& aEnvironment,
                          LispOperators& aPrefixOperators,
                          LispOperators& aInfixOperators,
                          LispOperators& aPostfixOperators,
                          LispOperators& aBodiedOperators)
-    : LispParser( aTokenizer,  aInput,aHashTable),
+    : LispParser( aTokenizer,  aInput,aEnvironment),
     iPrefixOperators(aPrefixOperators),
     iInfixOperators(aInfixOperators),
     iPostfixOperators(aPostfixOperators),
@@ -29,12 +29,12 @@ InfixParser::~InfixParser()
 
 
 
-void InfixParser::Parse(LispPtr& aResult, LispEnvironment& aEnvironment )
+void InfixParser::Parse(LispPtr& aResult )
 {
-    iEnvironment = &aEnvironment;
-    Parse(aResult);
+//    iEnvironment = &aEnvironment;
+    ParseCont(aResult);
 }
-void InfixParser::Parse(LispPtr& aResult)
+void InfixParser::ParseCont(LispPtr& aResult)
 {
     ParsedObject object(*this);
     object.Parse();
@@ -75,7 +75,7 @@ void ParsedObject::ReadToken()
 {
     // Get token.
     iLookAhead = iParser.iTokenizer.NextToken(iParser.iInput,
-                                              iParser.iHashTable);
+                                              iParser.iEnvironment.HashTable());
     if (iLookAhead->String()[0] == '\0')
         iEndOfFile=LispTrue;
 }
@@ -92,17 +92,17 @@ void ParsedObject::Parse()
     ReadToken();
     if (iEndOfFile)
     {
-        iResult.Set(LispAtom::New(iParser.iEnvironment->iEndOfFile));
+        iResult.Set(LispAtom::New(iParser.iEnvironment,iParser.iEnvironment.iEndOfFile));
         return;
     }
 
     ReadExpression(KMaxPrecedence);  // least precedence
 
-    if (iLookAhead != iParser.iEnvironment->iEndStatement)
+    if (iLookAhead != iParser.iEnvironment.iEndStatement)
         iError = LispTrue;
     if (iError)
     {
-        while ((*iLookAhead)[0] != '\0' && iLookAhead != iParser.iEnvironment->iEndStatement)
+        while ((*iLookAhead)[0] != '\0' && iLookAhead != iParser.iEnvironment.iEndStatement)
         {
             ReadToken();
         }
@@ -163,7 +163,7 @@ void ParsedObject::GetOtherSide(LispInt aNrArgsToCombine, LispInt depth)
 void ParsedObject::InsertAtom(LispStringPtr aString)
 {
     LispPtr ptr;
-    ptr.Set(LispAtom::New(aString));
+    ptr.Set(LispAtom::New(iParser.iEnvironment,aString));
 #ifdef YACAS_DEBUG
     ptr.Get()->SetFileAndLine(
                               iParser.iInput.Status().FileName(),
@@ -182,21 +182,21 @@ void ParsedObject::ReadExpression(LispInt depth)
     for(;;)
     {
         //Handle special case: a[b]. a is matched with lowest precedence!!
-        if (iLookAhead == iParser.iEnvironment->iProgOpen)
+        if (iLookAhead == iParser.iEnvironment.iProgOpen)
         {
             // Match opening bracket
             MatchToken(iLookAhead);
             // Read "index" argument
             ReadExpression(KMaxPrecedence);
             // Match closing bracket
-            if (iLookAhead != iParser.iEnvironment->iProgClose)
+            if (iLookAhead != iParser.iEnvironment.iProgClose)
             {
                 iError = LispTrue;
                 return;
             }
             MatchToken(iLookAhead);
             // Build into Ntn(...)
-            LispStringPtr theOperator = iParser.iEnvironment->iNth;
+            LispStringPtr theOperator = iParser.iEnvironment.iNth;
             InsertAtom(theOperator);
             Combine(2);
         }
@@ -268,49 +268,49 @@ void ParsedObject::ReadAtom()
         }
     }
     // Else parse brackets
-    else if (iLookAhead == iParser.iEnvironment->iBracketOpen)
+    else if (iLookAhead == iParser.iEnvironment.iBracketOpen)
     {
         MatchToken(iLookAhead);
         ReadExpression(KMaxPrecedence);  // least precedence
-        MatchToken(iParser.iEnvironment->iBracketClose);
+        MatchToken(iParser.iEnvironment.iBracketClose);
     }
     //Parse lists
-    else if (iLookAhead == iParser.iEnvironment->iListOpen)
+    else if (iLookAhead == iParser.iEnvironment.iListOpen)
     {
         LispInt nrargs=0;
         MatchToken(iLookAhead);
-        while (iLookAhead != iParser.iEnvironment->iListClose)
+        while (iLookAhead != iParser.iEnvironment.iListClose)
         {
             ReadExpression(KMaxPrecedence);  // least precedence
             nrargs++;
 
-            if (iLookAhead == iParser.iEnvironment->iComma)
+            if (iLookAhead == iParser.iEnvironment.iComma)
             {
                 MatchToken(iLookAhead);
             }
-            else if (iLookAhead != iParser.iEnvironment->iListClose)
+            else if (iLookAhead != iParser.iEnvironment.iListClose)
             {
                 iError = LispTrue;
                 return;
             }
         }
         MatchToken(iLookAhead);
-        LispStringPtr theOperator = iParser.iEnvironment->iList;
+        LispStringPtr theOperator = iParser.iEnvironment.iList;
         InsertAtom(theOperator);
         Combine(nrargs);
 
     }
     // Parse prog bodies
-    else if (iLookAhead == iParser.iEnvironment->iProgOpen)
+    else if (iLookAhead == iParser.iEnvironment.iProgOpen)
     {
         LispInt nrargs=0;
         MatchToken(iLookAhead);
-        while (iLookAhead != iParser.iEnvironment->iProgClose)
+        while (iLookAhead != iParser.iEnvironment.iProgClose)
         {
             ReadExpression(KMaxPrecedence);  // least precedence
             nrargs++;
 
-            if (iLookAhead == iParser.iEnvironment->iEndStatement)
+            if (iLookAhead == iParser.iEnvironment.iEndStatement)
             {
                 MatchToken(iLookAhead);
             }
@@ -321,7 +321,7 @@ void ParsedObject::ReadAtom()
             }
         }
         MatchToken(iLookAhead);
-        LispStringPtr theOperator = iParser.iEnvironment->iProg;
+        LispStringPtr theOperator = iParser.iEnvironment.iProg;
         InsertAtom(theOperator);
         Combine(nrargs);
     }
@@ -332,20 +332,20 @@ void ParsedObject::ReadAtom()
         MatchToken(iLookAhead);
 
         LispInt nrargs=-1;
-        if (iLookAhead == iParser.iEnvironment->iBracketOpen)
+        if (iLookAhead == iParser.iEnvironment.iBracketOpen)
         {
             nrargs=0;
             MatchToken(iLookAhead);
-            while (iLookAhead != iParser.iEnvironment->iBracketClose)
+            while (iLookAhead != iParser.iEnvironment.iBracketClose)
             {
                 ReadExpression(KMaxPrecedence);  // least precedence
                 nrargs++;
 
-                if (iLookAhead == iParser.iEnvironment->iComma)
+                if (iLookAhead == iParser.iEnvironment.iComma)
                 {
                     MatchToken(iLookAhead);
                 }
-                else if (iLookAhead != iParser.iEnvironment->iBracketClose)
+                else if (iLookAhead != iParser.iEnvironment.iBracketClose)
                 {
                     iError = LispTrue;
                     return;

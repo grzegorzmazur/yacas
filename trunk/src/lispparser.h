@@ -16,9 +16,9 @@ class LispParser : public YacasBase
 {
 public:
     LispParser(LispTokenizer& aTokenizer, LispInput& aInput,
-               LispHashTable& aHashTable);
+               LispEnvironment& aEnvironment);
     virtual ~LispParser();
-    virtual void Parse(LispPtr& aResult, LispEnvironment& aEnvironment );
+    virtual void Parse(LispPtr& aResult );
 protected:
     void ParseList(LispPtr& aResult);
     void ParseAtom(LispPtr& aResult,LispStringPtr aToken);
@@ -26,7 +26,7 @@ protected:
 public:
     LispTokenizer& iTokenizer;
     LispInput& iInput;
-    LispHashTable& iHashTable;
+    LispEnvironment& iEnvironment;
     LispInt iListed;
 };
 

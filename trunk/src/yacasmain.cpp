@@ -151,7 +151,7 @@ LispBoolean Busy()
 void LispPlatformOS(LispEnvironment& aEnvironment, LispPtr& aResult,
               LispPtr& aArguments)
 {
-  aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(PLATFORM_OS)));
+  aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(PLATFORM_OS)));
 }
 
 void LispExit(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -169,7 +169,7 @@ void LispStackSize(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
     LispChar buf[30];
     InternalIntToAscii(buf, (int)(the_first_stack_var-(unsigned char*)&buf[0]));
-    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(buf)));
+    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
 }
 
 static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -185,7 +185,7 @@ static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispPtr& aResul
     commandline->ReadLine(prompt.String());
     readmode = 0;
     char *output =  commandline->iLine.String();
-    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUpStringify(output)));
+    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(output)));
 }
 
 static void LispHistorySize(LispEnvironment& aEnvironment, LispPtr& aResult,

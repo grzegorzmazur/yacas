@@ -54,23 +54,23 @@ class InfixParser : public LispParser
 {
 public:
     InfixParser(LispTokenizer& aTokenizer, LispInput& aInput,
-                LispHashTable& aHashTable,
+                LispEnvironment& aEnvironment,
                 LispOperators& aPrefixOperators,
                 LispOperators& aInfixOperators,
                 LispOperators& aPostfixOperators,
                 LispOperators& aBodiedOperators);
     ~InfixParser();
     
-    virtual void Parse(LispPtr& aResult, LispEnvironment& aEnvironment );
+    virtual void Parse(LispPtr& aResult);
 //private:
-    void Parse(LispPtr& aResult);
+    void ParseCont(LispPtr& aResult);
 public:
     LispOperators& iPrefixOperators;
     LispOperators& iInfixOperators;
     LispOperators& iPostfixOperators;
     LispOperators& iBodiedOperators;
 
-    LispEnvironment* iEnvironment;
+//    LispEnvironment* iEnvironment;
 };
 
 class ParsedObject : public YacasBase

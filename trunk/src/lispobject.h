@@ -80,7 +80,7 @@ public: //Derivables
      *  the string representation is only relevant if the object is a
      *  simple atom. This method returns NULL by default.
      */
-    virtual LispStringPtr String();
+    virtual LispStringPtr String() = 0;
     /** If this object is a list, return a pointer to it.
      *  Default behaviour is to return NULL.
      */

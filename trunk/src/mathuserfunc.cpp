@@ -344,7 +344,7 @@ void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEn
     else
     {
         LispPtr head;
-        head.Set(LispAtom::New(aEnvironment.iList));
+        head.Set(LispAtom::New(aEnvironment,aEnvironment.iList));
         head.Get()->Next().Set(iter());
         ptr->Set(LispSubList::New(head.Get()));
     }
@@ -536,7 +536,7 @@ void ListedMacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnviro
     else
     {
         LispPtr head;
-        head.Set(LispAtom::New(aEnvironment.iList));
+        head.Set(LispAtom::New(aEnvironment,aEnvironment.iList));
         head.Get()->Next().Set(iter());
         ptr->Set(LispSubList::New(head.Get()));
     }

@@ -415,7 +415,7 @@ static void BalanceFractions(ANumber& a1, ANumber& a2)
       a2.iTensExp = a1.iTensExp;
       while (diff > 0)
       {
-        ANumber temp;
+        ANumber temp(a2.iPrecision);
         temp.CopyFrom(a2);
         BaseMultiplyFull(a2,temp,ten);
 
@@ -431,7 +431,7 @@ static void BalanceFractions(ANumber& a1, ANumber& a2)
       a1.iTensExp = a2.iTensExp;
       while (diff > 0)
       {
-        ANumber temp;
+        ANumber temp(a1.iPrecision);
         temp.CopyFrom(a1);
         BaseMultiplyFull(a1,temp,ten);
         diff--;
@@ -1270,7 +1270,7 @@ void BaseSqrt(ANumber& aResult, ANumber& N)
     ANumber v2 (Precision(aResult));
     ANumber uv2(Precision(aResult));
     ANumber n  (Precision(aResult));
-    ANumber two("2");
+    ANumber two("2",10);
 
     //sqrt(1) = 1, sqrt(0) = 0
     if( BaseGreaterThan(two, N))
@@ -1393,5 +1393,16 @@ void ANumber::ChangePrecision(LispInt aPrecision)
   {
     PlatWord zero = 0;
     Insert(0,zero,iExp-oldExp);
+  }
+  LispInt todel;
+  todel=0;
+  while (todel<iExp && (*this)[todel] == 0)
+  {
+      todel++;
+  }
+  if (todel)
+  {
+      iExp-=todel;
+      Delete(0,todel);
   }
 }

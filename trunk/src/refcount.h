@@ -80,6 +80,7 @@ inline RefPtr<T>& RefPtr<T>::operator=(RefPtr<T>& aObject)
 template<class T>
 inline void RefPtr<T>::SetTo(T* aOther)
 {
+  if (aOther) aOther->IncreaseRefCount();
   if (iObject)
   {
     if (!iObject->DecreaseRefCount())
@@ -88,7 +89,6 @@ inline void RefPtr<T>::SetTo(T* aOther)
     }
   }
   iObject = aOther;
-  if (iObject) iObject->IncreaseRefCount();
 }
 
 
