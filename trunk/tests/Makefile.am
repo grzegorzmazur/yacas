@@ -54,7 +54,7 @@ $(TESTS) $(INSTALL_TESTS): Makefile
 	   fi;										\
 	 done
 	@echo echo The output of the test scripts can be found in `pwd`/$(TESTRESULT) >> $@
-	@echo 'if grep -v "^$@: Running" $(TESTRESULT) > /dev/null; then false; else true; fi' >> $@
+	@echo 'if grep "\*\*\*\*\*\*" $(TESTRESULT) > /dev/null; then false; else true; fi' >> $@
 	@chmod u+x $@
 
 ## Support for 'installcheck' target, used by 'make checkdist'.
