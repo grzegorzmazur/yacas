@@ -1732,9 +1732,9 @@ menubar.")
   (forward-char -1)
   (message "Args: square matrix"))
 
-(defun yacas-fn-ishermitean ()
+(defun yacas-fn-ishermitian ()
   (interactive)
-  (insert "IsHermitean()")
+  (insert "IsHermitian()")
   (forward-char -1)
   (message "Args: square matrix"))
 
@@ -3062,7 +3062,7 @@ menubar.")
    ["ZeroVector" yacas-fn-zerovector]
    (list
     "Predicates"
-    ["IsHermitean" yacas-fn-ishermitean]
+    ["IsHermitian" yacas-fn-ishermitian]
     ["IsMatrix" yacas-fn-ismatrix]
     ["IsUnitary" yacas-fn-isunitary]
     ["IsZeroVector" yacas-fn-iszerovector])))

@@ -180,7 +180,7 @@ Function("Taylor",{taylorvariable,taylorat,taylororder,taylorfunction})
   ];
   dif:=taylorfunction;
   polf:=(taylorvariable-taylorat);
-  For(n:=1,n<=taylororder,n++)
+  For(n:=1,result != Undefined And n<=taylororder,n++)
   [
     dif:= Deriv(taylorvariable) dif;
     Local(term);

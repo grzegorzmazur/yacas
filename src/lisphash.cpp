@@ -1,4 +1,8 @@
 
+#ifdef YACAS_DEBUG
+#include <stdio.h>
+#endif
+
 #include "yacasbase.h"
 #include "lisperror.h"
 #include "lisphash.h"

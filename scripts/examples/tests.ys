@@ -81,9 +81,9 @@ Verify(Delete({a,b,c},2),{a,c});
 Verify(Insert({a,c},2,b),{a,b,c});
 
 Testing("Matrix predicates");
-Verify(IsHermitean({{0,I},{-I,0}}),True);
-Verify(IsHermitean({{0,I},{-I,1}}),True);
-Verify(IsHermitean({{0,I},{-2*I,0}}),False);
+Verify(IsHermitian({{0,I},{-I,0}}),True);
+Verify(IsHermitian({{0,I},{-I,1}}),True);
+Verify(IsHermitian({{0,I},{-2*I,0}}),False);
 
 Verify(IsUnitary({{0,I},{-I,0}}),True);
 Verify(IsUnitary({{0,I},{-I,1}}),False);

@@ -69,14 +69,6 @@ This is a list of some expressions that currently go wrong:
        Taylor(x,0,5)Sin(x)/x; 
        seems to keep on going for ever, actually due to Limits:
        Limit(x,0)D(x,2)Sin(x)/x; // never terminates, causing the taylor to never terminate
-  <li> infinite recursion in Integrate:
-       Integrate(x)x*Ln(x); // goes into an infinite loop, exhausting the stack
-       due to integration by parts entering a recursion. integrating Ln(x) returns
-       x*Ln(x), which then causes reintegrating Ln(x), etcetera.
-  <li> infinite recursion in Integrate:
-       Integrate(x)Sin(Exp(x)); // exhausted stack
-       this one is due to the incorrect assumption that TrigSimpCombine will always
-       bring expressions with trigonometric functions in them into a form that is integrable.
   <li> In> Factor(17041024)
        Out> 19*13*11*2^7*7^2;
        In> Factor(170410240)
@@ -100,18 +92,11 @@ This is a list of some expressions that currently go wrong:
        Out> (3*Pi)/2;  // ok
   <li> In> Simplify( a*(Sqrt(b))^2/2)
        Out> (a*b)/2;   // ok
-  <li> In> Integrate(x) x^(-1)
-       Out> Undefined+C20;
-  <li> In> Integrate(x) x^(1/x)
-       Out> x^(1/x+1)/(1/x+1)+C29;
-  <li> In> Integrate(x) x^(Sin(x))
-       Out> x^(Sin(x)+1)/(Sin(x)+1)+C30;
+  <li> In> Integrate(x) x^(-1) should return Ln(x)
   <li> In> Integrate(x) Ln(0)
        Out> C35-Infinity*x;
-  <li> In> Integrate(x) Exp(x^2)
-       Out> Undefined*Exp(x^2)+C41;
-  <li> In> Integrate(x) Sin(x^2)
-       Out> C44-Undefined*Cos(x^2);
+  <li> Integrate(x)x^500, Integrate(x)(1/x^2)
+  <li> TrigSimpCombine(x^500)
 </ul>
 </pre>
 

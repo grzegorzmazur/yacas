@@ -105,6 +105,7 @@ HoldArg("TruncRadian",r);
 200 # Exp(0) <-- 1;
 200 # Exp(-Infinity) <-- 0;
 200 # Exp(Infinity) <-- Infinity;
+200 # Exp(Undefined) <-- Undefined;
 
 // improve convergence of Exp(x) for large x
 MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
@@ -147,6 +148,8 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 2 # Ln(0)                    <-- -Infinity;
 2 # Ln(1)                    <-- 0;
 2 # Ln(Infinity)                    <-- Infinity;
+2 # Ln(Undefined)                   <-- Undefined;
+
 /* 2 # Ln(-Infinity)                    <-- 0; */
 2 # Ln(x_IsNegativeNumber)_(Numeric) <-- Complex(MathLog(-x), Pi);
 3 # Ln(x_IsNumber)_(Numeric) <-- MathLog(x);
@@ -178,7 +181,8 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 	Sign(x)*Pi/2-MyArcTan(1/x), /* to improve convergence */
 	MyArcTan(x)
 );
-4 # ArcTan(Tan(_x))           <-- x;
+//TODO fix! 4 # ArcTan(Tan(_x))           <-- x;
+4 # ArcTan(-Tan(_x))           <-- -ArcTan(Tan(x));
 110 # ArcTan(Complex(_r,_i)) <--
      (- I*0.5)*Ln(Complex(1,Complex(r,i))/ Complex(1, - Complex(r,i)));
 
@@ -189,6 +193,7 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 200 # ArcTan(_n)_(n = -1) <-- -Pi/4;
 200 # ArcTan(Infinity) <-- Pi/2;
 200 # ArcTan(-Infinity) <-- -Pi/2;
+200 # ArcTan(Undefined) <-- Undefined;
 
 /* Threading of standard analytic functions */
 Sin(xlist_IsList) <-- MapSingle("Sin",xlist);

@@ -228,9 +228,10 @@ Rule("Degree",1,0, IsUniVar(expr))
 
 /*TODO this can be made twice as fast!*/
 
-200 # (aLeft_IsUniVar * _aRight)_(Not(Contains(VarList(aRight),aLeft[1]))) <--
+201 # (aLeft_IsUniVar * _aRight)_(Not(Contains(VarList(aRight),aLeft[1]))) <--
+[
     aRight*aLeft;
-
+];
 
 200 # (_factor * UniVariate(_var,_first,_coefs))_(Not(Contains(VarList(factor),var))) <--
   UniVariate(var,first,coefs*factor);

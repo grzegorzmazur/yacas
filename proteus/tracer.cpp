@@ -14,6 +14,8 @@
 #include <signal.h>
 #include <stdlib.h>
 
+void call_yacas(void);
+void InterruptHandler(int errupt);
 
 
 struct LineInfo
@@ -71,19 +73,27 @@ char expression[200],scriptdir[200],tempdir[200],pre_eval[200];
 int get_string(char*expression,char*scriptdir,char*tempdir,
               char*pre_eval)
 {
+printf("gs 1...\n");
     Fl_Window *window = new Fl_Window(320,145);
+printf("gs 2...\n");
 
     Fl_Input e(60, 10, 250, 25, "Input:");
+printf("gs 3...\n");
     e.value(expression);
+printf("gs 4...\n");
 
     Fl_Input s(60, 35, 250, 25, "Scripts:");
+printf("gs 5...\n");
     s.value(scriptdir);
+printf("gs 6...\n");
 
     Fl_Input t(60, 60, 250, 25, "Temp dir:");
     t.value(tempdir);
+printf("gs 7...\n");
 
     Fl_Input p(60, 85, 250, 25, "Pre-exec:");
     p.value(pre_eval);
+printf("gs 8...\n");
 
     Fl_Button cancel(60, 110, 80, 25, "cancel");
     Fl_Return_Button ok(150, 110, 80, 25, "OK");
@@ -116,16 +126,15 @@ int get_string(char*expression,char*scriptdir,char*tempdir,
             }
         }
     }
+printf("gs 9...\n");
     delete window;
+printf("gs 10...\n");
 }
 
 
 #include "editor.h"
-#include "yacas.h"
-#include "debugclass.h"
 
 
-CYacas *yacas=NULL;
 
 
 
@@ -422,59 +431,29 @@ void NewCalculation()
         system(buf);
     }
 
-    {
-        yacas = CYacas::NewL();
-        char buf[200];
-        sprintf(buf,"DefaultDirectory(\"%s\");",scriptdir);
-        yacas->Evaluate(buf);
-        yacas->Evaluate("Load(\"yacasinit.ys\");");
-        yacas->Evaluate("ForEach(item,DefPackages)Use(item);");
-        yacas->Evaluate("Load(\"tracer.ys\");");
-        if (pre_eval[0])
-        {
-            yacas->Evaluate(pre_eval);
-        }
-        {
-            char buf[300];
-            sprintf(buf,"ToFile(\"trace.tmp\")TraceExp(%s);",expression);
-            YacasDebuggerBase* prev = (*yacas)()().iDebugger;
-            (*yacas)()().iDebugger = NEW ProteusDebugger(tempdir);
-            yacas->Evaluate(buf);
-            delete (*yacas)()().iDebugger;
-            (*yacas)()().iDebugger = prev;
-        }
-        delete yacas;
-        yacas=NULL;
-    }
+    call_yacas();
+printf("1...\n");
     fileViewer->clear();
+printf("2...\n");
     tracer->clear();
+printf("3...\n");
     tracer->load_in(1,0);
     {
         char fn[200];
         sprintf(fn,"%sprofile.sortcounted",tempdir);
         profiler->load(fn);
     }
+printf("4...\n");
     selected = 1;
+printf("5...\n");
     lineptr = NULL;
+printf("6...\n");
 
 }
 
 void newcb(Fl_Widget *, void *)
 {
     NewCalculation();
-}
-
-void InterruptHandler(int errupt)
-{
-    if (yacas)
-    {
-        printf("^C pressed\n");
-        (*yacas)()().iEvalDepth = (*yacas)()().iMaxEvalDepth+100;
-    }
-    else
-    {
-        exit(0);
-    }
 }
 
 
@@ -589,9 +568,52 @@ int main(int argc, char **argv)
 
   
   window.show(argc,argv);
-  NewCalculation();
+//  NewCalculation();
 
   return Fl::run();
 }
 
 
+#include "yacas.h"
+#include "debugclass.h"
+
+CYacas* yacas = NULL;
+void InterruptHandler(int errupt)
+{
+    if (yacas)
+    {
+        printf("^C pressed\n");
+        (*yacas)()().iEvalDepth = (*yacas)()().iMaxEvalDepth+100;
+    }
+    else
+    {
+        exit(0);
+    }
+}
+
+    void call_yacas(void)
+    {
+return;
+        yacas = CYacas::NewL();
+        char buf[200];
+        sprintf(buf,"DefaultDirectory(\"%s\");",scriptdir);
+        yacas->Evaluate(buf);
+        yacas->Evaluate("Load(\"yacasinit.ys\");");
+        yacas->Evaluate("ForEach(item,DefPackages)Use(item);");
+        yacas->Evaluate("Load(\"tracer.ys\");");
+        if (pre_eval[0])
+        {
+            yacas->Evaluate(pre_eval);
+        }
+        {
+            char buf[300];
+            sprintf(buf,"ToFile(\"trace.tmp\")TraceExp(%s);",expression);
+            YacasDebuggerBase* prev = (*yacas)()().iDebugger;
+            (*yacas)()().iDebugger = NEW ProteusDebugger(tempdir);
+            yacas->Evaluate(buf);
+            delete (*yacas)()().iDebugger;
+            (*yacas)()().iDebugger = prev;
+        }
+        delete yacas;
+        yacas=NULL;
+    }
