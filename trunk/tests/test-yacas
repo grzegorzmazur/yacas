@@ -1,0 +1,77 @@
+#! /bin/sh
+#
+# Script for testing Yacas
+
+# Give help, if requested
+
+if [ $# -eq 0 ] || [ "x$1" = "x-h" ] || [ "x$1" = "x--help" ]; then
+    echo "Usage: test-yacas <cmd> ; <dir> <scripts>"
+    echo "  cmd      Command plus options, needed to run Yacas"
+    echo "  dir      Directory in which scripts reside"
+    echo "  scripts  List of test scripts to be run"
+    echo "Test script may reside in <dir> or in the current directory"
+    echo "Exit status is number of tests scripts which fail"
+    exit 0
+fi
+
+# Parse arguments
+
+CMD=""
+while [ $# -ge 1 ] && [ "x$1" != "x;" ]; do
+    CMD="$CMD $1"
+    shift
+done
+if [ $# -eq 0 ]; then
+    echo "Error: could not find semi-colon terminating the command"
+    exit 255
+fi
+shift # gobble semi-colon
+
+if [ $# -eq 0 ]; then
+    echo "Error: no arguments after semi-colon"
+    exit 255
+fi
+SCRIPTDIR=$1
+shift
+SCRIPTS=$*
+
+# run the tests
+
+FAILED_TESTS=""  # containes list of failed tests
+FAILURES=0       # number of fails tests
+NOF_TESTS=0      # total number of tests
+TMPFILE=/tmp/test-yacas.$$
+
+for scr in $SCRIPTS; do
+    if [ -f $SCRIPTDIR/$scr ]; then
+	f=$SCRIPTDIR/$scr
+    else 
+	f=$scr
+    fi
+    echo "Running $scr"
+    ($CMD $f || echo "Error: exit status $?") | tee $TMPFILE
+    if grep "\*\*\*\*\*\*\|Error" $TMPFILE > /dev/null; then
+        FAILED_TESTS="$FAILED_TESTS $scr"
+        FAILURES=`expr $FAILURES + 1`
+    fi
+    NOF_TESTS=`expr $NOF_TESTS + 1`
+done
+
+rm $TMPFILE
+
+# report
+
+if [ $FAILURES -eq 0 ]; then
+    RES="All $NOF_TESTS tests PASSED"
+else
+    if [ $FAILURES -eq 1 ]; then
+        echo "Failed test: $FAILED_TESTS"
+    else
+        echo "Failed tests: $FAILED_TESTS"
+    fi   
+    RES="$FAILURES of $NOF_TESTS tests FAILED"
+fi
+EQS=`echo $RES | sed 's/./=/g'`
+echo $EQS
+echo $RES
+echo $EQS
