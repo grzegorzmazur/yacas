@@ -36,10 +36,14 @@
        add support for more) - replaces {GnuPlot()} (SW)
   <li> Removed {GnuPlot} altogether -- people should use {Plot2D} since it's much better
   <li> Improved integer factorization algorithm: {Factor(50!)} now works, avoiding
-       infinite loop in {PollardRhoFactorize}; added factorization tests (SW)
-  <li> New fast algorithm for {IsPrimePower}/{GetPrimePower}; added {IntLog} to replace
-       slow {CountBits}, and {IntNthRoot} to avoid floating-point computations (SW)
+       infinite loop in {PollardRhoFactorize}; added factorization tests;
+       the list of prime factors is now sorted (SW)
+  <li> New fast algorithm for {IsPrimePower}/{GetPrimePower}; added new
+       functions: fast {IntLog} to replace slow {CountBits}, and {IntNthRoot} to
+       avoid floating-point computations for roots, documented algorithms (SW)
   <li> Added some tests for {Deriv} (Jonathan Leto)
+  <li> Added an essay chapter on Wester benchmarks, with automatic test code
+       extraction (SW)
 
 </ul>
 
