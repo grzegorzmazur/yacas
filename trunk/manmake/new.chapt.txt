@@ -1134,7 +1134,35 @@ The only drawback of this scheme is that a plugin will not be able to use the fa
 So it appears that either the first or the third solution is viable.
 
 
+	    Converting from bits to digits and back
 
+One task frequently needed by the arithmetic library is to convert a precision in (decimal) digits to binary bits and back.
+(We consider the decimal base to be specific; the same considerations apply to conversions between any other bases.)
+The kernel implements auxiliary routines {bits_to_digits} and {digits_to_bits} for this purpose.
+
+Suppose that the mantissa of a floating-point number is known to $d$ decimal digits.
+It means that the relative error is no more than $0.5*10^(-d)$.
+The mantissa is represented internally as a binary number.
+The number $b$ of precise bits of mantissa should be determined from the equation $10^(-d)=2^(-b)$, which gives $b=d*Ln(10)/Ln(2)$.
+
+One potential problem with the conversions is that of incorrect rounding.
+It is impossible to represent $d$ decimal digits by some exact number $b$ of binary bits.
+Therefore the actual value of $b$ must be a little different from the theoretical one.
+Then suppose we perform the inverse operation on $b$ to obtain the corresponding number of precise decimal digits;
+there is a danger that we shall obtain a number $d'$ that is different from $d$.
+
+To avoid this danger, the following trick is used.
+The binary base 2 is the least of all possible bases, so successive powers of 2 are more frequent than successive powers of 10 or of any other base.
+Therefore for any power of 10 there will be a unique power of 2 that is the first one above it.
+
+The recipe to obtain this power of 2 is simple:
+one should round $d*Ln(10)/Ln(2)$ upwards using the {Ceil} function,
+but $b*Ln(2)/Ln(10)$ should be rounded downwards using the {Floor} function.
+
+This procedure will make sure that the number of bits $b$ is high enough to represent all information in the $d$ decimal digits;
+at the same time, the number $d$ will be correctly restored from $b$.
+So when a user requests $d$ decimal digits of precision, Yacas may simply compute the corresponding value of $b$ and store it.
+The precision of $b$ digits is enough to hold the required information, and the precision $d$ can be easily computed given $b$.
 
 
 	    The internal storage of BigNumber objects
@@ -1153,19 +1181,24 @@ For numbers, there is a separate class, {LispNumber}. Objects
 of class {LispNumber} also have a {String()} method in case
 a string representation of a number is needed, but the main 
 uniquely identifying piece of information is the object of
-class {BigNumber} which is returned by the {Number(precision)}
-method.
+class {BigNumber} stored inside a {LispNumber} object.
 
 The life cycle of a {LispNumber} is as follows:
 
 *	1. A {LispNumber} can be born when the parser reads in a numeric
-atom. In such a case an object of type {LispNumber} is created in stead
-of the {LispAtom}. The {LispNumber} constructor proceeds to create
+atom. In such a case an object of type {LispNumber} is created instead
+of the {LispAtom}. The {LispNumber} constructor stores
+the string representation and proceeds to create
 an object of type {BigNumber} in response.
+[The {BigNumber} object is automatically created from the string representation
+by the {Number(precision)} method.]
 *	1. For a calculation, say addition, two arguments are passed in,
 and their internal object should be of class {LispNumber}, so that the
 function doing the multiplication can get at the {BigNumber} objects
-by calling the {Number()} methods. The function doing the multiplying
+by calling the {Number()} method.
+[This method will not attempt to create a number from the string representation
+if a numerical representation is already available.]
+The function doing the multiplying
 then creates a new {BigNumber}, stores the result of the multiplication
 in it, and again creates a {LispNumber} by constructing it with the
 resulting {BigNumber}. Note no conversion to string representation is needed,
@@ -1174,8 +1207,8 @@ inside it. Other operations can proceed to use this {BigNumber}
 stored inside the {LispNumber}. This is in effect the second way a
 {LispNumber} can be born.
 *	1. Right at the end, when a result needs to be printed to screen,
-the printer will call the {String()} method of the {LispNumber} object,
-to get a string representation. The string representation is also
+the printer will call the {String()} method of the {LispNumber} object
+to get a (decimal) string representation. The string representation is also
 stored in the {LispNumber}. This is not expensive since it is just a pointer
 to a string in the string container (hash table).
 
