@@ -6,11 +6,11 @@ int font_size = 12;
 
 static Fl_Menu_Item menuitems[] = 
 {
- {"File", 0,  0, NULL, 64, 0, 0, font_size, 0},
+ {"&File", 0,  0, NULL, 64, 0, 0, font_size, 0},
    {"new", 0,  new_cb, (void*)"TODO", 0, 0, 0, font_size, 0},
    {"load", 0,  cb_notepad, (void*)NULL, 0, 0, 0, font_size, 0},
    {"TODO save", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
-   {"TODO save as", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"save as", 0,  cb_save_notepad, (void*)NULL, 0, 0, 0, font_size, 0},
    {"TODO about", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
    {"quit", 0,  quit_cb, (void*)NULL, 0, 0, 0, font_size, 0},
    {0},

@@ -264,6 +264,17 @@ void cb_notepad(Fl_Widget* o, void* v)
 }
 
 
+void cb_save_notepad(Fl_Widget* o, void* v)
+{
+    char *newfile;
+    newfile = fl_file_chooser("Save to file?",NULL,"");
+    if (newfile != NULL)
+    {
+        console->SaveNotePad(newfile);
+    }
+}
+
+
 void quit_cb(Fl_Widget *,void *)
 {
     exit(0);

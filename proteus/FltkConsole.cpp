@@ -3,16 +3,17 @@
 /*
 
 TODO:
+- loading a notepad seems to require the first line to be empty?
+- save note books
+- Notepad(FindFile("")) crashes, empty file name should be trapped
+  before fopen is called.
+- embedded grapher
+- embedded links, text
+- pp formulae
 
-x- if iLast==NULL, don't add texts
-x- set iLast to NULL in DeleteAll
-x- set iLast to NULL after a Notepad command
-x- remove all code relating to the old history list.
-x- remove and rethink the dirty scheme (don't respond to dirty right now)
 - if there is a selection,show the input line above the output, and as
   soon as the input line is modified, don't show the output. only show
   the output again when enter is pressed, or escape, etc.
-x- no resetting the cursor back to 0 when staying on the same line?
 - MakeSure.... should adjust to the top, not the bottom!
 
 
@@ -121,6 +122,22 @@ void FltkConsole::DeleteAll()
     iCurrentHighlighted = -1;
 }
 
+
+void FltkConsole::SaveNotePad(LispCharPtr aFile)
+{
+  FILE*f=fopen(aFile,"w");
+  if(f)
+  {
+    fprintf(f,"\n");
+    int i;
+    for (i=0;i<iConsoleOut.NrItems();i++)
+    {
+      iConsoleOut[i]->Save(f);
+    }
+    
+    fclose(f);
+  }
+}
 
 void FltkConsole::LoadNotePad(LispCharPtr aFile)
 {
@@ -1342,6 +1359,11 @@ ConsoleOutBase::~ConsoleOutBase()
 {
 }
 
+void ConsoleFlatText::Save(FILE* f)
+{
+  fprintf(f,"%s\n",iText.String());
+}
+
 ConsoleFlatText::ConsoleFlatText(LispCharPtr aText, int aColor, const char* aPrompt,
                                  int aFont,int aFontSize)
 {
@@ -1374,6 +1396,20 @@ LispCharPtr ConsoleFlatText::input()
 {
     return &iText[0];
 }
+
+void ConsoleGrouped::Save(FILE* f)
+{
+  if (iConsoleOut.NrItems()>0 && iShowInput && iEnableInput)
+  {
+    fprintf(f,":");
+    if (!iShowInput) fprintf(f,"i");
+    if (!iEnableInput) fprintf(f,"e");
+    fprintf(f,":");
+    iConsoleOut[0]->Save(f);
+  }
+}
+
+
 LispCharPtr ConsoleGrouped::input()
 {
     if (!iEnableInput)
@@ -1450,3 +1486,4 @@ int ConsoleOutBase::InputIsVisible()
 {
     return 0;
 }
+
