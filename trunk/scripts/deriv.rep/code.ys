@@ -81,9 +81,6 @@ HoldArg("D",aFunc);
 2 # (Deriv(_var)ArcSin(_x)) <-- (Deriv(var) x )/Sqrt(1 -(x ^ 2));
 2 # (Deriv(_var)ArcCos(_x)) <-- -(Deriv(var)x)/Sqrt(1 -(x^2));
 2 # (Deriv(_var)ArcTan(_x)) <-- (Deriv(var) x)/(1 + x^2);
-2 # (Deriv(_var)ArcCsc(_x)) <-- -(Deriv(var)x)/(Abs(x)*Sqrt(x^2 - 1));
-2 # (Deriv(_var)ArcSec(_x)) <-- (Deriv(var)x)/(Abs(x)*Sqrt(x^2 - 1));
-2 # (Deriv(_var)ArcCot(_x)) <-- -(Deriv(var)x)/(1+x^2);
 2 # (Deriv(_var)Sqrt(_x)) <-- ((Deriv(var)x)/(2*Sqrt(x)));
 2 # (Deriv(_var)Complex(_r,_i)) <-- Complex(Deriv(var)r,Deriv(var)i);
 
