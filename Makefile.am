@@ -38,5 +38,3 @@ backup:
 	yacas --patchload -pc docs/downloads.html.in > downloads.html
 	ftp -i ftp.xs4all.nl < upload.txt
 
-debug:
-	cd src; make -f makefile.debug
