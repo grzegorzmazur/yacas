@@ -28,5 +28,40 @@ proteus   : $(PROTEUS_OBJS)
 .cxx.o:
 	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCS) -c $*.cxx -o $*.o
 
+# Stuff for automatic generation of Yacas books
+%.chapt: %.chapt.txt
+	perl $(INSTALL_DIR)/share/yacas/manmake/txt2yacasdoc.pl < $< > $@
+
+%.book: %.book.txt
+	perl $(INSTALL_DIR)/share/yacas/manmake/txt2yacasdoc.pl < $< > $@
+
+%.book.tex: %.book
+	sh $(INSTALL_DIR)/share/yacas/manmake/book2TeX.sh -run yacas $< $@
+
+%.dvi: %.tex
+	latex $< > /dev/null
+	latex $< > /dev/null
+	latex $< > /dev/null
+
+%.ps: %.dvi
+	dvips -q -o $@ $<
+	@echo Documentation created: $*.ps
+
+%.pdf: %.dvi
+	pdflatex $* > /dev/null
+	@echo Documentation created: $*.pdf
+
+PROTEUSMANUALCHAPTERS = 
+
+texdocs: proteusmanual.book proteusmanual.book.tex proteusmanual.book.pdf 
+
+proteusmanual.book.tex: $(PROTEUSMANUALCHAPTERS) proteusmanual.book 
+
+
+
 include depend.dep
+
+
+
+
 
