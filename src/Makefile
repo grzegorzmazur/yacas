@@ -68,7 +68,7 @@ NUMBERS_LIB = libyacasnumbers.a
 PACKAGE = yacas
 RANLIB = ranlib
 RELEASE = 1
-VERSION = 1.0.45
+VERSION = 1.0.45rev1
 scriptdir = ${prefix}/share/yacas/
 
 DEFS = -DHAVE_CONFIG_H -DSCRIPT_DIR=\"$(scriptdir)\"
@@ -137,7 +137,7 @@ mathutil.o
 testnum_LDADD = $(LDADD)
 testnum_DEPENDENCIES = 
 testnum_LDFLAGS = 
-CXXFLAGS = -O2
+CXXFLAGS = -g -O2
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@

@@ -67,7 +67,7 @@ NUMBERS_LIB = libyacasnumbers.a
 PACKAGE = yacas
 RANLIB = ranlib
 RELEASE = 1
-VERSION = 1.0.45
+VERSION = 1.0.45rev1
 scriptdir = ${prefix}/share/yacas/
 
 noinst_PROGRAMS = books.html
@@ -91,7 +91,7 @@ books_html_OBJECTS =  books.html.o
 books_html_LDADD = $(LDADD)
 books_html_DEPENDENCIES = 
 books_html_LDFLAGS = 
-CFLAGS = -O2
+CFLAGS = -g -O2
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@

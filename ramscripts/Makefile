@@ -67,7 +67,7 @@ NUMBERS_LIB = libyacasnumbers.a
 PACKAGE = yacas
 RANLIB = ranlib
 RELEASE = 1
-VERSION = 1.0.45
+VERSION = 1.0.45rev1
 scriptdir = ${prefix}/share/yacas/
 
 noinst_PROGRAMS = ramscripts
@@ -87,7 +87,7 @@ ramscripts_OBJECTS =  ramscripts.o
 ramscripts_LDADD = $(LDADD)
 ramscripts_DEPENDENCIES = 
 ramscripts_LDFLAGS = 
-CXXFLAGS = -O2
+CXXFLAGS = -g -O2
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
