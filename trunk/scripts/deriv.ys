@@ -96,7 +96,7 @@ Curl2(_f,_b) <--
 */
 RuleBase("Diverge", {aFunc, aBasis});
 Rule("Diverge", 2, 1, IsList(aBasis) And IsList(aFunc) And Length(aBasis) = Length(aFunc))
-	Map("D", {aBasis,aFunc});
+	Sum(Map("D", {aBasis,aFunc}));
 
 RuleBase("Curl", {aFunc, aBasis});
 
