@@ -1314,8 +1314,11 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
     // This value should at least be WordDigits, so grow a1
     // by WordDigits-(a1.iExp-a2.iExp) = WordDigits+a2.iExp-a1.iExp
     {
-        LispInt toadd = WordDigits(aQuotient.iPrecision, 10)
-            +a2.iExp-a1.iExp; 
+        LispInt digitsNeeded = WordDigits(aQuotient.iPrecision, 10);
+#define noCORRECT_DIVISION
+#ifdef CORRECT_DIVISION
+
+        LispInt toadd = a2.iExp-a1.iExp; 
         LispInt i;
         PlatWord zero=0;
         for (i=0;i<toadd;i++)
@@ -1323,6 +1326,22 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
             a1.Insert(0,zero);
             a1.iExp++;
         }
+        while (a1.NrItems()<a2.NrItems()+digitsNeeded || a1[a1.NrItems()-1]<a2[a2.NrItems()-1])
+        {
+          WordBaseTimesInt(a1, 10);
+          a1.iTensExp--;
+        }
+#else // CORRECT_DIVISION
+
+        LispInt toadd = digitsNeeded+a2.iExp-a1.iExp; 
+        LispInt i;
+        PlatWord zero=0;
+        for (i=0;i<toadd;i++)
+        {
+            a1.Insert(0,zero);
+            a1.iExp++;
+        }
+#endif // CORRECT_DIVISION
     }
 
     IntegerDivide(aQuotient,aRemainder,a1,a2);

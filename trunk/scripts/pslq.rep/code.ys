@@ -39,13 +39,19 @@ Pslq(x, precision) :=
   ndigits:=GetPrecision();
   Precision(precision+2);
   Confidence:=10^(-MathFloor(N(Eval(precision/3))));
+//Echo("Confidence is ",Confidence);
+
   gam:=N(Sqrt(4/3));
   For (i:=1, i<=n,i++) x[i]:=N(x[i]);
+
+//Echo("1...");
 
   A:=Identity(n); /*A and B are of Integer type*/
   B:=Identity(n); /*but this doesn't speed up*/
   s:=ZeroVector(n);
   y:=ZeroVector(n);
+
+//Echo("2...");
 
   For(k:=1,k<=n,k++)
   [
@@ -53,6 +59,9 @@ Pslq(x, precision) :=
     For (j:=k,j<=n,j++) tmp:=tmp + x[j]^2;
     s[k]:=N(Eval(Sqrt(tmp)));
   ];
+
+//Echo("3...");
+
   tmp:=s[1];
   For (k:= 1,k<= n,k++)
   [
@@ -61,21 +70,30 @@ Pslq(x, precision) :=
   ];
   H:=ZeroMatrix(n, n-1);
 
+//Echo("4...",n);
   For (i:=1,i<= n,i++)
   [
 
     if (i <= n-1)  [ H[i][i]:=s[i + 1]/s[i]; ];
+
+//Echo("4.1...");
     For (j:= 1,j<=i-1,j++)
     [
+//Echo("4.2...");
       H[i][j]:= -(y[i]*y[j])/(s[j]*s[j + 1]);
+//Echo("4.3...");
     ];
   ];
+
+//Echo("5...");
 
   For (i:=2,i<=n,i++)
   [
     For (j:=i-1,j>= 1,j--)
     [
+//Echo("5.1...");
       t:=Round(H[i][j]/H[j][j]);
+//Echo("5.2...");
       y[j]:=y[j] + t*y[i];
       For (k:=1,k<=j,k++) [ H[i][k]:=H[i][k]-t*H[j][k]; ];
       For (k:=1,k<=n,k++)
@@ -87,6 +105,8 @@ Pslq(x, precision) :=
   ];
   Local(found);
   found:=False;
+
+//Echo("Enter loop");
 
   While (Not(found))
   [
@@ -170,7 +190,7 @@ Pslq(x, precision) :=
       if (tmp > maxi) [ maxi:=tmp; ];
     ];
     /* following line may be commented */
-/*    Echo({"Norm bound:",norme," Min=",mini," Conf=",mini/maxi}); */
+//    Echo({"Norm bound:",norme," Min=",mini," Conf=",mini/maxi}); 
     if ((mini/maxi) < Confidence) /*prefered to : if mini < 10^(- precision) then*/
     [
     /* following line may be commented */
