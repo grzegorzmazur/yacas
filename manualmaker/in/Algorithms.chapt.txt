@@ -338,8 +338,8 @@ for this sum to give enough precision to compute the integer part of the
 Bernoulli number $B[n]$.
 
 Alternatively, one can use the infinite product over prime numbers $p[i]$
-$$1/zeta(n) <=> (1-1/p[1]^s)*...*(1-1/p[k]^s)$$
-where $k$ must be chosen such that the $k$-th prime number $p[k]>N$ and $N$ is chosen as above. This formula is realized  by the routine {ZetaNum2(n, N)}. Since only prime numbers $p[i]$ are used, this formula is asymptotically faster than {ZetaNum1(n, N)}. The number of primes up to $N$ is asymptotically
+$$1/zeta(n) <=> Factorize(k,1,N,(1-1/p[k]^s))$$
+where $k$ must be chosen such that the $k$-th prime number $p[k]>N$ and $N$ is chosen as above, i.e. $N > n/(2*Pi*e)$. This formula is realized  by the routine {ZetaNum2(n, N)}. Since only prime numbers $p[i]$ are used, this formula is asymptotically faster than {ZetaNum1(n, N)}. The number of primes up to $N$ is asymptotically
 $pi(N) <> N/Ln(N)$ and therefore this procedure is faster by a factor $O(Ln(N)) <> O(Ln(n))$. However, for $n<250$ it is faster (with Yacas internal math) to use the {ZetaNum1(n, N)} because it involves fewer multiplications.
 
 For example, let us compute $B[20]$ using this method.

@@ -12,7 +12,8 @@
 	0.4.3 bugfixes: complex I, indeterminate integration; relaxed bracketing of Sin()-like functions; implemented $TeX$ and $LaTeX$ correctly now (using \textrm{})
 	0.4.4 use ordinary instead of partial derivative if expression has only one variable
 	0.4.5 fixes for bracketing of Sum(); added <> to render as \sim and <=> to render as \approx; added Bin()
-        0.4.6 moved the <> and <=> operators to stdopers.ys
+	0.4.6 moved the <> and <=> operators to stdopers.ys
+	0.4.7 added Factorize() i.e. Product()
 */
 
 /* To do:
@@ -196,6 +197,8 @@ TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, 
 /* Some functions with limits: Lim, Sum, Integrate */
 
 100 # TeXForm(Sum(_x, _x1, _x2, _expr), _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\sum _{", TeXForm(x, TeXFormMaxPrec), " = ", TeXForm(x1, TeXFormMaxPrec), "} ^{", TeXForm(x2, TeXFormMaxPrec), "} ", TeXForm(expr, OpPrecedence("*")) ) );
+
+100 # TeXForm(Factorize(_x, _x1, _x2, _expr), _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\prod _{", TeXForm(x, TeXFormMaxPrec), " = ", TeXForm(x1, TeXFormMaxPrec), "} ^{", TeXForm(x2, TeXFormMaxPrec), "} ", TeXForm(expr, OpPrecedence("*")) ) );
 
 100 # TeXForm(Integrate(_x, _x1, _x2) _expr, _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings(
 "\\int _{", TeXForm(x1, TeXFormMaxPrec), "} ^{", TeXForm(x2, TeXFormMaxPrec), " } ", TeXForm(expr, OpPrecedence("*")), " d", TeXForm(x, TeXFormMaxPrec)
