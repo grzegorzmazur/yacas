@@ -24,15 +24,15 @@ install-data-local:
 #	-mkdir $(scriptdir)addons/
 #	-cp addons/README $(scriptdir)addons/
 #	-cp addons/editvi* $(scriptdir)addons/
-#	-cp addons/gnuplot* $(scriptdir)addons/
+
 
 EXTRA_DIST = $(SCRIPTFILES) \
         examples/tests.ys examples/ABIN.ys examples/pi.ys \
         examples/findsum.ys examples/wordproblems.ys \
         examples/queens.ys examples/benchmark.ys \
         examples/benchmark2.ys examples/benchbuild.ys  examples/goldbach.ys examples/series.ys \
-        addons/README addons/editvi.ys addons/editvi.ys.def addons/gnuplot.ys \
-        addons/gnuplot.ys.def addons/unix.ys addons/unix.ys.def maketest
+        addons/README addons/editvi.ys addons/editvi.ys.def \
+        addons/unix.ys addons/unix.ys.def maketest
 
 testscriptdir = ../scripts/
 yacastest = ../src/yacas -pc --rootdir $(testscriptdir)
