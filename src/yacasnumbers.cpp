@@ -1028,11 +1028,11 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
   a2.CopyFrom(*aY.iNumber);
   ANumber remainder(aPrecision);
 
+  Check(!IsZero(a2),KLispErrInvalidArg);
   if (aX.IsInt() && aY.IsInt())
   { 
     Check(a1.iExp == 0, KLispErrNotInteger);
     Check(a2.iExp == 0, KLispErrNotInteger);
-    Check(!IsZero(a2),KLispErrInvalidArg);
     SetIsInteger(LispTrue);
     ::IntegerDivide(*iNumber, remainder, a1, a2);
   }
