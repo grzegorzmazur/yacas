@@ -16,8 +16,10 @@ noinst_PROGRAMS = manripper
 
 manripper_SOURCES = manripper.cpp 
 
-hints: manripper $(REFPROGSOURCES) $(REFSOURCES) ref.book.txt refprog.book.txt
-	./manripper ref.book.txt refprog.book.txt > hints.unsorted 
+hints: manripper $(REFSOURCES) $(REFPROGSOURCES) ref.book.txt refprog.book.txt
+	rm -f hints.unsorted
+	for file in ref.book.txt $(REFSOURCES) refprog.book.txt $(REFPROGSOURCES); do \
+	./manripper $(srcdir)/"$$file" >> hints.unsorted ; done
 	sort -t ":" hints.unsorted > hints.sorted
 	echo "::::" > tail.txt
 	cat hints.sorted tail.txt > hints
@@ -154,7 +156,7 @@ SUFFIXES = .chapt.txt .chapt .book.tex .book.txt .book .tex .dvi .ps .pdf .ys
 
 .dvi.pdf:
 	pdflatex $* > /dev/null
-	@echo Documentation created: $*.pdf
+	@echo "***Documentation created:" $*.pdf
 
 .chapt.ys:
 	sh $(srcdir)/book2ys.sh -run "$(ouryacas)" $< $@
@@ -248,7 +250,7 @@ Algo.html : Algo.book $(ALGOCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 install-data-local: @INSTALL_HTML@ @INSTALL_PS@ install-scripts install-hints
 
 install-hints: hints
-	$(INSTALL_DATA) $(srcdir)/hints $(pkgdatadir)/documentation/hints
+	$(INSTALL_DATA) hints $(pkgdatadir)/documentation/hints
 
 install-scripts: $(ytxt2tex_DEPS)
 	$(mkinstalldirs) $(pkgdatadir)/manmake/
