@@ -1,11 +1,11 @@
 
 		Integration
 
-Integration can be performed by the function Integrate, which
+Integration can be performed by the function {Integrate}, which
 has two calling conventions:
 
-*	Integrate(variable)expression
-*	Integrate(variable,from,to)expression
+*	Integrate(variable) expression
+*	Integrate(variable, from, to) expression
 
 Integrate can have its own set of rules for specific integrals,
 which might return a correct answer immediately. Alternatively,
@@ -111,9 +111,9 @@ $ a*x^2+b $ which can easily be integrated.
 The general form for declaring anti-derivatives for such expressions
 is:
 
-	IntPureSquare(variable,pattern,sign2,sign0,antiderivative)
-
-Where {IntPureSquare} uses {MatchPureSquared} to match the expression.
+	IntPureSquare(variable, pattern, sign2, sign0,
+	  antiderivative)
+Here {IntPureSquare} uses {MatchPureSquared} to match the expression.
 
 The expression is searched for the pattern, where the variable
 can match to a sub-expression of the form $ a*x^2+b $, and
