@@ -169,11 +169,12 @@ it is best to keep this in mind and keep the code passed to
 
 	    Introduction
 
-@@@@@@@@@@@@@@@@@@@@@@@@
-
+*REM @@@@@@@@@@@@@@@@@@@@@@@@
 THIS IS A DRAFT, THE FUNCTIONALITY DESCRIBED BELOW IS NOT FULLY
 IMPLEMENTED YET!!! THIS IS JUST A PROPOSAL FOR HOW SOLVE MIGHT
 WORK.
+
+*HEAD (This is a draft)
 
 Worries: 
 
@@ -186,7 +187,7 @@ This has to be done with extra commands (which is ok?). It can not
 stay the way it was, because lists now mean something else, a collection
 of disjunct solutions.
 
-@@@@@@@@@@@@@@@@@@@@@@@@
+*REM @@@@@@@@@@@@@@@@@@@@@@@@
 
 The difference between a problem stated and a solution given is
 a subtle one. From a mathematical standpoint, 
@@ -343,11 +344,11 @@ in a solution set
 
 	    Use Case Scenarios
 
-TODO@@@@ THIS SECTION IS GOING TO CONTAIN EXPLICIT EXAMPLES OF
+*REM TODO@@@@ THIS SECTION IS GOING TO CONTAIN EXPLICIT EXAMPLES OF
 SOLVING INTERESTING SETS OF EQUATIONS, AND SHOWING THAT THE SOLVE
 SCHEME IS ACTUALLY EASY TO USE.
 
-
+*HEAD To be filled in
 
 
 
