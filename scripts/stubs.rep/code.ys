@@ -249,7 +249,7 @@ Rule("Gcd",2,100,True)
 100 # Abs(_a)^n_IsOdd <-- Sign(a)*a^n;
 
 10 # Sign(n_IsPositiveNumber) <-- 1;
-10 # Sign(n_IsZero) <-- 1;
+10 # Sign(n_IsZero) <-- 0;
 20 # Sign(n_IsNumber) <-- -1;
 15 # Sign(n_IsInfinity)_(n < 0) <-- -1;
 15 # Sign(n_IsInfinity)_(n > 0) <-- 1;
