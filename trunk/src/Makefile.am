@@ -3,8 +3,8 @@ AM_CPPFLAGS = -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS = yacas
 noinst_PROGRAMS = testnum
-noinst_LIBRARIES = libyacas.a @NUMBERS_LIB@ libcyacas.a
-EXTRA_LIBRARIES = libgmpnumbers.a libyacasnumbers.a libyacasplatform.a 
+noinst_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
+EXTRA_LTLIBRARIES = libgmpnumbers.la libyacasnumbers.la 
 
 noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	infixparser.h lispassert.h lispatom.h lispcleanupstack.h \
@@ -18,20 +18,19 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
         lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h \
         archiver.h elfdll.h cyacas.h
 yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
-yacas_LDADD = libyacas.a libyacasplatform.a @NUMBERS_LIB@ @NUMBERS_LDFLAGS@ 
-
-yacas_DEPENDENCIES = libyacas.a libyacasplatform.a  @NUMBERS_LIB@
+yacas_LDADD = libyacas.la libyacasplatform.la @NUMBERS_LIB@ @NUMBERS_LDFLAGS@
+yacas_DEPENDENCIES = libyacas.la libyacasplatform.la @NUMBERS_LIB@
 
 #
 # some one who understands autoconf/automake: how do I detect if a platform
 # supports elf binaries?
 #
 
-yacas_LDFLAGS = $(LIBS)
+#yacas_LDFLAGS = $(LIBS)
 
 testnum_SOURCES = anumber.cpp grower.cpp lispstring.cpp stdstubs.cpp obmalloc.cpp \
 	testnum.cpp mathutil.cpp
-libyacas_a_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
+libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \
 	lispio.cpp lispobject.cpp lispparser.cpp  \
 	lispuserfunc.cpp mathcommands.cpp mathenvironment.cpp \
@@ -42,13 +41,12 @@ libyacas_a_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
         lispplugin.cpp elfdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
         archiver.cpp
 
-libcyacas_a_SOURCES = cyacas.cpp
+libcyacas_la_SOURCES = cyacas.cpp
 
-libyacasplatform_a_SOURCES = platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
+libyacasplatform_la_SOURCES = platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp yacasbase.cpp
-libyacasplatform_a_LIBADD = @NUMBERS_LIB@
-libyacasnumbers_a_SOURCES = anumber.cpp yacasnumbers.cpp 
-libgmpnumbers_a_SOURCES = gmpnumbers.cpp 
+libyacasnumbers_la_SOURCES = anumber.cpp yacasnumbers.cpp 
+libgmpnumbers_la_SOURCES = gmpnumbers.cpp 
 
 EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp \
 	epocyacas.hrh epocyacas.mmp epocyacasconsole.mmp \

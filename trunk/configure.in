@@ -16,7 +16,7 @@ AC_SUBST(RELEASE)
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_CXX
-AC_PROG_RANLIB
+AM_PROG_LIBTOOL  
 AC_CHECK_PROG(have_perl, perl, yes, no)
 AC_CHECK_PROG(have_latex, latex, yes, no)
 AC_CHECK_PROG(have_makeindex, makeindex, yes, no)
@@ -26,7 +26,6 @@ AC_CHECK_PROG(have_gzip, gzip, yes, no)
 
 # libtool support
 #AC_LIBTOOL_DLOPEN
-#AM_PROG_LIBTOOL
 
 
 # Checks for header files.
@@ -55,10 +54,10 @@ if test "$enable_gmp" = "yes" ; then
 	if test "$have_gmp" = "no" ; then
 		AC_MSG_ERROR([GNU MP library not found])
 	fi
-	NUMBERS_LIB="libgmpnumbers.a"
+	NUMBERS_LIB="libgmpnumbers.la"
 	NUMBERS_LDFLAGS="-lgmp -lm"
 else
-	NUMBERS_LIB="libyacasnumbers.a"
+	NUMBERS_LIB="libyacasnumbers.la"
 	NUMBERS_LDFLAGS="-lm"
 fi
 AC_SUBST(NUMBERS_LIB)
