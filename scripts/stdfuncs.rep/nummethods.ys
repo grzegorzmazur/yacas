@@ -117,7 +117,7 @@ SumTaylorNum1(x, nth'term'func, next'term'factor, n'terms) :=
 	cols := Div(n'terms+rows, rows);	// now: rows*cols >= n'terms+1
 	Check(rows>1 And cols>1, "SumTaylorNum1: Internal error: number of Taylor sum terms must be at least 4");
 	rows'tmp := ArrayCreate(rows, 0);
-	x'power := MathPower(x, rows);
+	x'power := x ^ rows;	// do not use MathPower b/c x might be complex
 	// initialize partial sums (array rows'tmp) - the 0th column (i:=0)
 	// prepare term'tmp for the first element
 	// if we are using next'term'factor, then term'tmp is x^(rows*i)*a[rows*i]
@@ -200,6 +200,12 @@ Function() MultiplyNum(x);
 20 # MultiplyNum(x_IsNumber, y_IsRationalOrInteger) <-- MultiplyNum(y, x);
 
 25 # MultiplyNum(x_IsNumber, y_IsNumber) <-- MathMultiply(x,y);
+
+30 # MultiplyNum(Complex(r_IsNumber, i_IsNumber), y_IsRationalOrNumber) <-- Complex(MultiplyNum(r, y), MultiplyNum(i, y));
+
+35 # MultiplyNum(y_IsNumber, Complex(r_IsNumber, i_IsRationalOrNumber)) <-- MultiplyNum(Complex(r, i), y);
+
+40 # MultiplyNum(Complex(r1_IsNumber, i1_IsNumber), Complex(r2_IsNumber, i2_IsNumber)) <-- Complex(MultiplyNum(r1,r2)-MultiplyNum(i1,i2), MultiplyNum(r1,i2)+MultiplyNum(i1,r2));
 
 /// more than 2 operands
 30 # MultiplyNum(x_IsRationalOrNumber, y_IsNumericList)_(Length(y)>1) <-- MultiplyNum(MultiplyNum(x, Head(y)), Tail(y));
