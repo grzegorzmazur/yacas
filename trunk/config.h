@@ -124,7 +124,7 @@
 #define TIME_WITH_SYS_TIME 1
 
 /* Define to build the debug version */
-/* #undef USE_ASSERT */
+#define USE_ASSERT 
 
 /* Version number of package */
 #define VERSION "1.0.53rev9"
@@ -133,7 +133,7 @@
 #define X_DISPLAY_MISSING 1
 
 /* Define to build the debug version */
-/* #undef YACAS_DEBUG */
+#define YACAS_DEBUG 
 
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */

@@ -314,5 +314,12 @@ Verify(Floor(1001.1e-1),100);
 Verify(Floor(10.01e1),100);
 Verify(Floor(100.1),100);
 
+// Bugs discovered by Jonathan:
+Verify(Undefined*0,Undefined);
+// Actually, the following Groebner test is just to check that the program doesn't crash on this,
+// more than on the exact result (which is hopefully correct also ;-) )
+Verify(Groebner({x*(y-1),y*(x-1)}),{x*y-x,x*y-y,y-x,y^2-y});
+
+
 
 

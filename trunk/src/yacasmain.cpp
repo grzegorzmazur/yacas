@@ -108,6 +108,9 @@ int use_plain = 0;
 int show_prompt = 1;
 int trace_history = 0;
 int use_texmacs_out = 0;
+#ifdef YACAS_DEBUG
+  int verbose_debug=0;
+#endif
 int patchload=0;
 int winsockinitialised=0;
 int hideconsolewindow=0;
@@ -131,6 +134,8 @@ int server_port = 9734;
 void ReportNrCurrent()
 {
 #ifdef YACAS_DEBUG
+  if (verbose_debug)
+  {
     extern long theNrCurrent;
     extern long theNrConstructed;
     extern long theNrDestructed;
@@ -144,6 +149,7 @@ void ReportNrCurrent()
     printf("Total %ld functions defined (%ld built-in, %ld user)\n",
            theNrDefinedBuiltIn+theNrDefinedUser,
            theNrDefinedBuiltIn,theNrDefinedUser);
+  }
 #endif
 }
 
@@ -1077,12 +1083,15 @@ int main(int argc, char** argv)
     the_first_stack_var = &first_stack_var;
 
 #ifdef YACAS_DEBUG
+  if (verbose_debug)
+  {
     SHOWSIZE(LispString);
     SHOWSIZE(LispAtom);
     SHOWSIZE(LispHashTable);
     SHOWSIZE(LispEnvironment);
     SHOWSIZE(CYacas);
     SHOWSIZE(LispStringSmartPtr);
+  }
 #endif
 
     
@@ -1115,6 +1124,12 @@ int main(int argc, char** argv)
             {
                 patchload=1;
             }
+#ifdef YACAS_DEBUG
+            else if (!strcmp(argv[fileind],"--verbose-debug"))
+            {
+                verbose_debug=1;
+            }
+#endif
             else if (!strcmp(argv[fileind],"--init"))
             {
                 fileind++;

@@ -15,7 +15,7 @@ LispObject* LispAtom::New(LispEnvironment& aEnvironment, LispStringPtr aString)
 #ifndef NO_USE_BIGFLOAT
   if (IsNumber(aString->String(),LispTrue))
   {
-    self = NEW LispNumber(aEnvironment.HashTable(), aString, aEnvironment.Precision());
+    self = NEW LispNumber(aEnvironment.HashTable(), aString, aEnvironment.BinaryPrecision());
   }
   else
 #endif

@@ -33,7 +33,7 @@ some useful features.
 When you build the debug version of yacas, and run a command, it will:
 *	keep track of the memory allocated and freed, and show any memory leaks
 when you quit the program.
-*	show which files are loaded to read function definitions and when.
+*	show which files are loaded to read function definitions and when. This is only done when the {--verbose-debug} flag is passed to the program at startup.
 *	keep a file name and line number for each object loaded from file, for
 debugging purposes.
 *	show you the stack trace when evaluation goes into an infinite recursion
