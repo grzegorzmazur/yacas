@@ -116,6 +116,12 @@
 /* Operating system */
 #undef PLATFORM_OS
 
+/* Directory in which plugins are installed */
+#undef PLUGIN_DIR
+
+/* Directory in which scripts are installed */
+#undef SCRIPT_DIR
+
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
@@ -127,6 +133,9 @@
 
 /* Define to build the debug version */
 #undef USE_ASSERT
+
+/* Define to use the GNU MP library */
+#undef USE_GMP
 
 /* Version number of package */
 #undef VERSION

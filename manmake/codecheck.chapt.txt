@@ -1,0 +1,41 @@
+
+
+Yacas has some tools to assess the quality of the scripts.
+The code checking tools are never finished, as new bugs
+are found, and guards against them added.
+
+The idea behind the static code checkers is to check that
+coding standards are upheld, and to mark code that is dangerous 
+and thus is likely to be buggy.
+
+The following sections each describe one specific type of test.
+The static code analysis code can be found in {codecheck.rep/} .
+
+	    Interface check
+
+As described in an essay elsewhere, files should be careful with
+what they expose to the environment. the {def} file mechanism
+and the {LocalSymbols} routine should be used for this. The
+{interface} check verifies that no global resources are accidentally
+
+The rules that should be upheld are:
+
+*	0. global variables should not be accessible to the outside
+world. They should be made local to the module by using {LocalSymbols}.
+*	0. functions can be global, exposed to the outside world, 
+iff they are declared in the corresponding {def} file. Otherwise,
+they should be made local to the module with {LocalSymbols}.
+*	0. files should not be loaded with {Load} or {Use},
+explicitly. Rather, the module should depend on the system automatically
+loading the right file through the {def} file mechanism.
+
+The {interface} check also assumes the code to consist of simple
+function definitions. It is meant to be used for the scripts in the 
+standard scripts library. Exposing functionality to the outside
+world is usually less of a problem in one-off scripts to do 
+specific calculations, for instance.
+
+
+
+
+

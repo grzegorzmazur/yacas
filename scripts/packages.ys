@@ -3,6 +3,8 @@ Set(DefFileList, {
 "array.rep/code.ys",
 "assoc.rep/code.ys",
 "c_form.rep/code.ys",
+"codecheck.rep/interface.ys",
+"codecheck.rep/process.ys",
 "complex.rep/code.ys",
 "constants.rep/code.ys",
 "controlflow.rep/code.ys",

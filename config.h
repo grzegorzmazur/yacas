@@ -117,6 +117,12 @@
 /* Operating system */
 #define PLATFORM_OS "\"darwin5.4.2\""
 
+/* Directory in which plugins are installed */
+#define PLUGIN_DIR "NONE/lib/yacas"
+
+/* Directory in which scripts are installed */
+#define SCRIPT_DIR "NONE/share/yacas/"
+
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
@@ -128,6 +134,9 @@
 
 /* Define to build the debug version */
 /* #undef USE_ASSERT */
+
+/* Define to use the GNU MP library */
+/* #undef USE_GMP */
 
 /* Version number of package */
 #define VERSION "1.0.53rev9"
