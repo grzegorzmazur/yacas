@@ -52,8 +52,8 @@
   #include "win32commandline.h"
   #define FANCY_COMMAND_LINE CWin32CommandLine
   #define SCRIPT_DIR ""
-  #define VERSION "Windows latest"
 #endif
+
 
 #include "stdcommandline.h"
 #include "standard.h"
@@ -69,6 +69,10 @@
 #ifdef HAVE_CONFIG_H
 #include "../config.h"
 #endif
+#ifndef VERSION
+//#define VERSION "Windows latest"
+#include "version.h"
+#endif  //VERSION
 
 //#define PROMPT_SHOW_FREE_MEMORY
 
@@ -191,12 +195,6 @@ void ShStack(LispEnvironment& aEnvironment, LispPtr& aResult,
 }
 
 
-// this function is declared in yacasapi.cpp
-void LispVersion(LispEnvironment& aEnvironment, LispPtr& aResult,
-                 LispPtr& aArguments)
-{
-    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp("\"" VERSION "\"")));
-}
 
 void LispIsPromptShown(LispEnvironment& aEnvironment,LispPtr& aResult,
               LispPtr& aArguments)
@@ -344,7 +342,7 @@ void ShowResult(char *prompt)
         printf("%clatex:",TEXMACS_DATA_BEGIN);
     }
 
-    if (yacas->Error()[0] != '\0')
+    if (yacas->IsError())
     {
         printf("%s\n",yacas->Error());
     }
@@ -377,10 +375,6 @@ void LoadYacas()
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispExit),
                                            (*yacas)()().HashTable().LookUp("Exit"));
 	// this function is declared in yacasapi.cpp rather than here
-/*Sorry Serge... */
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispVersion),
-                                           (*yacas)()().HashTable().LookUp("Version"));
-/* */
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispHistorySize),
                                            (*yacas)()().HashTable().LookUp("HistorySize"));
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispStackSize),
@@ -463,7 +457,7 @@ void LoadYacas()
         sprintf(buf,"Load(\"%s\");",init_script);
         yacas->Evaluate(buf);
     }
-    if (yacas->Error()[0] != '\0')
+    if (yacas->IsError())
         ShowResult("");
 
     /* renaming .cc to .cpp files (I know, doesn't belong here ;-) ) */
@@ -761,7 +755,7 @@ int main(int argc, char** argv)
             }
             yacas->Evaluate(s);
 
-            if (yacas->Error()[0] != '\0')
+            if (yacas->IsError())
             {
                 printf("Error in file %s:\n",argv[fileind]);
                 printf("%s\n",yacas->Error());

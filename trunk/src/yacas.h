@@ -62,6 +62,7 @@ public:
     virtual void Evaluate(const LispCharPtr aExpression);
     virtual LispCharPtr Result();
     virtual LispCharPtr Error();
+    inline LispBoolean IsError();
 private:
   CYacas(LispOutput* aOutput);
 
@@ -73,6 +74,10 @@ private:
   StringOutput iResultOutput;
 };
 
+inline LispBoolean CYacas::IsError()
+{
+    return (Error()[0] != '\0');
+}
 
 #endif
 
