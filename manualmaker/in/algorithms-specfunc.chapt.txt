@@ -28,12 +28,11 @@ For efficiency, "double factorials" are used in this calculation.
 *A Gamma function!by Lanczos-Spouge method
 
 For arbitrary complex arguments with nonnegative real part, the library
-function {GammaNum(x)} computes a uniform appoximation of Lanczos and Spouge
-(with the so-called "less precise coefficients of Spouge"). See: C. J. Lanczos,
-J. SIAM of Num. Anal. Ser. B, vol. 1, 86 (1964); J. L. Spouge, J. SIAM of Num.
-Anal., vol. 31, 931 (1994). See also: Paul Godfrey 2001 (unpublished):
-<*http://winnie.fit.edu/~gabdo/gamma.txt*> for some explanations on the
-method.  The method gives the $Gamma$-function only for arguments with positive
+function {GammaNum(x)} computes a uniform appoximation of Lanczos [Lanczos 1964] and Spouge [Spouge 1994]
+(with the so-called "less precise coefficients of Spouge").
+(See also [Godfrey 2001] for some more explanations on the method.)
+
+The method gives the $Gamma$-function only for arguments with positive
 real part; at negative values of the real part of the argument, the
 $Gamma$-function is computed via the identity
 $$Gamma(x)*Gamma(1-x) = Pi/Sin(Pi*x)$$.
@@ -103,9 +102,7 @@ Then we can choose $M$ to be large enough so that the Stirling asymptotic series
 
 *A Gamma function!by Sweeney-Brent method
 
-The second method for the Gamma function was used in Brent's Fortran MP package (R. P. Brent, 
-<i>A Fortran Multiple-Precision Arithmetic Package</i>,
-ACM TOMS, Vol. 4, no. 1 (1978), p. 57).
+The second method for the Gamma function was used in Brent's Fortran MP package [Brent 1978].
 Brent refers to a 1963 paper by D. W. Sweeney for the origin of this method. Therefore we called this the "Sweeney-Brent" method.
 
 The idea  is to represent the Gamma function as a sum of two integrals,
@@ -138,10 +135,7 @@ Approximately $gamma<=>0.577216$.
 
 Computing $gamma$ by the series in the definition is extremely slow.
 A much faster method can be used, based on some identities of Bessel functions.
-(See R. P. Brent and E. M. McMillan,
-<i>Some new algorithms for high precision computation of Euler's constant</i>, Math. Comp. v. 34 (1980), 305;
-and also the online paper by X. Gourdon and P. Sebah, 
-<i>The Euler constant</i>, online at <*http://numbers.computation.free.fr/Constants/*> (2001).
+(See [Brent <i>et al.</i> 1980] and [Gourdon <i>et al.</i> 2001].
 
 The basic formulae for the "fast" method (Brent's method "B1") are:
 $$gamma <=> S(n) / V(n) - Ln(n) $$,
@@ -184,7 +178,7 @@ Then a more precise approximation for $gamma$ is
 $$ gamma <=> U(n)/V(n)-W(n)/V(n)^2 $$.
 The precision of this approximation is of order $O(Exp(-8*n))$ instead of $O(Exp(-4*n))$ in Brent's method "B1".
 However, this is not such a great savings in time, because almost as much additional work has to be done to compute $W(n)$.
-Brent estimated this "B3" method to be about 20{%} faster than "B1".
+Brent estimated that the method "B3" is about 20{%} faster than "B1".
 
 Computation of $S(n)$ seems to need $H[k]$ first, and a long multiplication by $H[k]$ at each term.
 To compute $S(n)$ and $V(n)$ faster and more accurately, Brent suggested the following trick that avoids this long multiplication and computes $H[k]$ simultaneously with the series.
@@ -247,19 +241,12 @@ and a formula for even integers that helps in numerical testing,
 $$zeta(2*n) = ((-1)^(n+1)*(2*Pi)^(2*n))/(2*(2*n)!)*B[2*n]$$,
 where $B[n]$ are Bernoulli numbers.
 
-The classic book of Bateman and Erdelyi, <i>Higher Transcendental Functions</i>,
-vol. 1, describes many results concerning analytic properties of $zeta(s)$.
+The classic book [Bateman <i>et al.</i> 1953], vol. 1, describes many results concerning the properties of $zeta(s)$.
 
 For the numerical evaluation of Riemann's Zeta function with arbitrary
-precision to become feasible, one needs special algorithms. Recently P. Borwein
-gave a simple and quick approximation algorithm for positive $Re(s)$ (P.
-Borwein,
-<i>An efficient algorithm for Riemann Zeta function</i> (1995),
-published online and in Canadian Math. Soc. Conf. Proc., 27 (2000), 29-34.) See
-also:
-J. M. Borwein, D. M. Bradley, R. E. Crandall:
-<i>Computation strategies for the Riemann Zeta function</i>, preprint
-CECM-98-118, 1999, for a review of methods.
+precision to become feasible, one needs special algorithms. Recently P. Borwein [Borwein 1995]
+gave a simple and quick approximation algorithm for positive $Re(s)$. See
+also [Borwein <i>et al.</i> 1999] for a review of methods.
 
 *A Riemann's Zeta function!by Borwein's algorithm
 
@@ -365,7 +352,8 @@ $ J[n] <> Sqrt(2/(Pi*x))*Cos(zeta)*Sum(k,0,Infinity, (-1)^k*A(2*k,n)*x^(-2*k)) -
 $ Y[n] <> Sqrt(2/(Pi*x))*Sin(zeta)*Sum(k,0,Infinity, (-1)^k*A(2*k,n)*x^(-2*k)) + Sqrt(2/(Pi*x))*Cos(zeta)*Sum(k,0,Infinity, (-1)^k*A(2*k+1,n)*x^(-2*k-1)) $.
 
 The error of a truncated asymptotic series is not larger than the first discarded term if the number of terms is larger than $n-1/2$.
-(See the book: F. W. J. Olver, <i>Asymptotic and special functions</i>, Academic Press, 1974.)
+(See the book [Olver 1974] for derivations.
+It seems that each asymptotic series requires special treatment and yet in all cases the error is about the same as the first discarded term.)
 
 Currently Yacas can compute {BesselJ(n,x)} for all $x$ where $n$ is an integer and for $Abs(x)<= 2*Gamma(n)$ when
 $n$ is a real number. Yacas currently uses the Taylor series
@@ -403,7 +391,9 @@ Bug: Something is not right with complex numbers, but pure imaginary are OK.
 *A Bernoulli numbers!definition
 *A Bernoulli polynomials!definition
 
-The Bernoulli numbers $B[n]$ come from a sequence of rational numbers defined
+The Bernoulli numbers $B[n]$ are rational numbers that are frequently used in applications.
+The first few numbers are $B[0]=1$, $B[1]= -1/2$, $B[2]=4$, $B[3]=0$,  $B[4]= -1/30$.
+The numbers $B[n]$ can be defined
 by the series expansion of the following generating function,
 $$z/(e^z-1) = Sum(n, 0, Infinity, B[n]*z^n/n!)$$.
 The Bernoulli polynomials $B(x)[n]$ are defined similarly by
@@ -418,8 +408,6 @@ Bernoulli numbers and polynomials are used in various Taylor series expansions, 
 $$Sum(k, 0, n-1, k^p) = (B(n)[p+1] - B[p+1])/(p+1)$$.
 
 The Bernoulli polynomials $B(x)[n]$ can be found by first computing an array of Bernoulli numbers up to $B[n]$ and then applying the above formula for the coefficients.
-
-In this definition, the first Bernoulli numbers are $B[0]=1$, $B[1]= -1/2$, $B[2]=4$, $B[3]=0$,  $B[4]= -1/30$.
 
 We consider two distinct computational tasks: evaluate a Bernoulli number exactly as
 a rational, or find it approximately to a specified floating-point precision.
@@ -540,7 +528,8 @@ If Bernoulli numbers do not have to be found exactly but only to a certain float
 
 *A Bernoulli numbers!by recurrence!numerical stability
 
-However, the recurrence relation used in {BernoulliArray} turns out to be numerically unstable and needs to be replaced by another (R. P. Brent, "A FORTRAN multiple-precision arithmetic package", ACM TOMS vol. 4, no. 1 (1978), p. 57). Brent's algorithm computes the Bernoulli numbers divided by factorials, $C[n]:=B[2*n]/(2*n)!$ using a (numerically stable) recurrence relation
+However, the recurrence relation used in {BernoulliArray} turns out to be numerically unstable and needs to be replaced by another [Brent 1978].
+Brent's algorithm computes the Bernoulli numbers divided by factorials, $C[n]:=B[2*n]/(2*n)!$ using a (numerically stable) recurrence relation
 
 $$2*C[k]*(1-4^(-k)) = (2*k-1)/(4^k*(2*k)!) - Sum(j, 1, k-1, C[k-j]/(4^j*(2*j)!))$$.
 
@@ -580,11 +569,7 @@ $$ Erfi(x) := (2/Sqrt(Pi))*Integrate(t,x,Infinity)Exp(t^2) $$.
 
 Numerical computation of the error function $Erf(z)$ needs to be performed by
 different methods depending on the value of $z$ and its position in the complex
-plane, and on the required precision.  We follow the book: Shulim E. Tsimring,
-<i>Handbook of special functions and definite integrals: algorithms and programs for calculators</i>, Radio and communications (publisher), Moscow, 1988 (in Russian), and the paper:
-Henry C. Thacher, Jr.,
-<i>Algorithm 180, Error function for large real X</i>,
-Communications of the ACM, vol. 6, no. 6, 1963, p. 314.
+plane, and on the required precision.  We follow the book [Tsimring 1988] and the paper [Thacher 1963].
 (These texts, however, do not describe arbitrary-precision computations.)
 
 *A error function $Erf(x)$!summary of methods

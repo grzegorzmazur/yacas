@@ -355,7 +355,7 @@ But this may sometimes conflict with the topic separator.
 Mark-up labels <i>must</i> appear as first characters on a line. The following mark-up labels are currently defined:
 
 
-Labels that affect only the current line:
+Labels with an argument on the same line (affect only the current line):
 
 *	{*A} <i>anchor</i> -- insert anchor and index entry
 *	{*BOOK} <i>title</i> -- start a book, give title
@@ -363,12 +363,13 @@ Labels that affect only the current line:
 *	{*HEAD} <i>heading</i> -- lowest-level heading (lower than subsection)
 *	{*FOOT} <i>text</i> -- insert a footnote
 *	{*INCLUDE} <i>filename</i> -- include another documentation file
+*	{*YSFILE} <i>filename</i> -- give an alternative file name for {Yacas} code extraction (see the section on {book2ys})
 
-Labels that affect a subsequent paragraph (and must be separated by an empty line from what follows):
+Labels that affect the rest of the line and the subsequent paragraph:
 
 *	{*BLURB} -- short summary of the book (must immediately precede the {*BOOK} label)
-*	{*INTRO} -- chapter introduction (significant for HTML only)
-*	{*REM} -- documentation comment
+*	{*INTRO} -- chapter introduction (significant for HTML only) (must be separated by an empty line from what follows)
+*	{*REM} -- documentation comment (must be separated by an empty line from what follows)
 
 Special labels for the reference manual that accept several arguments on the same line:
 
@@ -475,8 +476,10 @@ This requires that the Yacas script {book2TeX.ys} be available in the current di
 	  yacas-dir/scripts" file.book file.book.tex
 Note that the entire Yacas command line is given in quotes.
 
+*HEAD Some concerns with the printed documentation
+
 *A documentation!$TeX$ problems
-Not all features of Yacas documentation are compatible with $TeX$ typesetting. To prevent errors, documentation source should avoid certain things. In general, it is a good idea to check the typeset appearance of documentation, since it helps detect errors.
+Not all features of the Yacas documentation-generating scripts are compatible with $TeX$ typesetting. To prevent errors, documentation source should avoid certain things. In general, it is a good idea to check the typeset appearance of documentation, since it helps detect errors.
 
 For example, the symbols {%}, {{ }}, {< >}, {#}, {\}, {_} and {&} are special to $TeX$. They should not normally be used in plain text; it is okay to use them in "typerwriter" text (within braces {{}}) or code samples -- but <i>not</i> in section or chapter heads, because it makes it difficult to export to $TeX$ correctly. $TeX$ commands may be entered but will not be correctly rendered in HTML online documentation.
 
@@ -493,6 +496,12 @@ about 50 characters.
 The current implementation uses a "report" style which allows chapters, sections, subsections and includes an automatically generated table of contents and an index.
 The standard 10 point font and two-column format are used to save space (and trees).
 
+The script {txt2yacasdoc.pl} attempts to convert double quotes {""}
+into proper English quotation marks "".
+However, this automatic conversion sometimes fails and produces wrongly-directed quotes.
+One such case is if the quotes are on the same line as a TAB character (e.g. in an itemized environment).
+This problem can be circumvented by putting the quoted words on a different line.
+
 Some complicated mathematical expressions may not correctly render in $TeX$.
 This is because Yacas uses its internal function {TeXForm()} to transform Yacas
 expressions to $TeX$.  Mathematical expressions are entered in the plain text
@@ -506,18 +515,54 @@ errors. In case of doubt, check that the expression evaluates without errors
 and then try to use {TeXForm} on that expression and see if that evaluates
 without errors as well. For example, expressions such as {x=+1} will cause a syntax error and this will break the compilation of the manual (both HTML and $TeX$).
 
-	    {book2ys}: extracting Yacas code from books
+	    {book2ys}: extracting Yacas code from books ("literate programming")
 
 *A documentation!embedded code
-{book2ys.sh} is a shell script that extracts Yacas code examples from a documentation chapter into a separate file. Usage is similar to {book2TeX.sh}. For example, the benchmarking test code {wester.yts} can be automatically extracted from the corresponding essay chapter by the command
-	sh ../manmake/book2ys.sh wester-1994.chapt
-After this command, the file {wester-1994.ys} is created. Note that {wester-1994.chapt} is in Yacas language and is itself a generated file.
+*A documentation!literate programming
+{book2ys.sh} is a shell script that extracts Yacas code examples from a documentation chapter into a separate file.
+All other text is omitted.
 
-Using this script, one can write documentation and code together, a la "literate programming".
+Usage is similar to {book2TeX.sh}. For example, the benchmarking test code {wester.yts} can be automatically extracted from the corresponding essay chapter by the command
+	sh ../manmake/book2ys.sh wester-1994.chapt \
+	  wester.yts
+After this command, the file {wester.yts} is created. Note that {wester-1994.chapt} is in Yacas language and is itself a generated file.
 
 To prepare a documentation chapter in such a way that code extraction is possible, one only needs to make sure that all code examples in the chapter will become a correct sequence of Yacas expressions when cut out and written sequentially into a file. So, for instance, semicolons at the end of each statement are required. The script {book2ys} will <i>not</i> export example Yacas session code with "{In>}" and "{Out>}" prompts but it will export all other example code.
+The example code with "{In>}" and "{Out>}" prompts will become comments in the exported Yacas file.
+It is possible to suppress this comment generation by the {-strip} option to the {book2ys.sh} script.
 
-See the source file {wester-1994.chapt.txt} to get a feeling of how the source documentation is formatted to allow completely automatic code extraction. Note that the printed documentation will be in twocolumn format, and therefore it is necessary to split lines that are too long.
+If the output file name is not given, the name will be the same as the Yacas book source name but with the {.ys} extension.
+
+See the source file {wester-1994.chapt.txt} to get a feeling of how the source documentation is formatted to allow completely automatic code extraction. Note that the printed documentation may be in twocolumn format, and therefore it is necessary to split lines that are too long.
+
+Using the script {book2ys.sh}, one can write documentation and code together, a la "literate programming".
+The main idea of literate programming is that code should be written like one large book explaining to humans how the program is organized and how it works.
+From this book, a printable copy is generated and all code is automatically extracted for compilation.
+Literate programming may require that code be split between many source files, and yet it is convenient to keep all descriptions in one book.
+The special document formatting label {*YSFILE} can be used to redirect output to different Yacas source files.
+By default, the output goes to the file specified on the {book2ys.sh} command line.
+This default can be restored by the directive "{*YSFILE -}" at any time.
+Otherwise, all code output will be printed to the file specified after the {*YSFILE} label.
+
+Note that the multiple file support is somewhat restrictive:
+*	Once the output file name has been changed, the old file is closed and cannot be appended to. (This is a limitation of the {ToFile()} function in Yacas.)
+*	If the same file name is chosen again, the file will be overwritten.
+*	The file name must be reset to the default "{-}" at the end of the document, or else the last file will not be written.
+
+An example of using multiple files:
+
+	Text that does not appear in the code.
+	  // code into default file
+	  // more code
+	*YSFILE script1.ys
+	This will not appear in the file.
+	  x:=1;
+	  // some code for the file script1.ys
+	*YSFILE script2.ys
+	  // some code for the file script2.ys
+	End of the example, need to reset *YSFILE.
+	*YSFILE -
+
 
 	    {ytxt2tex}: Conversion of plain text documentation to $LaTeX$
 
@@ -532,11 +577,12 @@ Therefore, {ytxt2tex} is a kind of a special-purpose $TeX$ preprocessor designed
 
 Limitations of this script are:
 *	it is impossible to include raw $TeX$ code;
-*	mathematical expressions are limited to those representable using Yacas functions;
-*	the document comes out to be a twocolumn "report" with a certain fixed title page format, table of contents, and index;
-*	front matter is fixed ("<i>This is Yacas documentation... by the Yacas team... GNU Free Documentation License...</i>" etc.) and will most probably have to be edited by hand if you need something else rather than new Yacas documentation;
+*	mathematical expressions are limited to those representable using Yacas functions from the standard library;
+*	the document comes out to be a twocolumn "report" with a certain fixed title page format, a table of contents, and an index;
+*	front matter is fixed
+("<i>This is Yacas documentation... by the Yacas team... GNU Free Documentation License...</i>" etc.) and will most probably have to be edited by hand if you need something else rather than new Yacas documentation;
 *	all current limitations of plaintext documentation format, for example, no nested itemized/enumerated environments;
-*	advanced features of index generation (the {!} separators etc.) are not yet supported.
+*	some advanced features of index generation (e.g. the {!} separators combined with other markup) are not yet supported.
 
 These limitations may be easily overcome by editing the resulting $TeX$ file (but you need to know at least some $TeX$ to do that).
 

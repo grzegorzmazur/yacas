@@ -64,7 +64,7 @@ part of a polynomial. For example:
 
 For a polynomial $ p(x) $ of degree $ n $, the Sturm sequence
 $ p[0] $, $ p[1] $, ... $ p[n] $ is defined by the following
-equations (following Davenport, <i>Computer Algebra</i>):
+equations (following the book [Davenport <i>et al.</i> 1989]):
 
 $$ p[0] = p(x) $$,
 $$ p[1] = p'(x) $$,

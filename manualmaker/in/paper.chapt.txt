@@ -1,6 +1,9 @@
 
 			{Yacas}: A do-it-yourself symbolic algebra environment
 
+A much shorter and more polished version of this paper is published as: Ayal Z. Pinkus and Serge Winitzki,
+"<i>YACAS: a do-it-yourself computer algebra system</i>", Lecture Notes in Artificial Intelligence 2385, pp. 332 - 336 (Springer-Verlag, 2002).
+
 *HEAD by Ayal Zwi Pinkus and Serge Winitzki
 
 	    Abstract
