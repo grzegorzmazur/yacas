@@ -206,3 +206,29 @@ Verify(0.0000^(24),0);
 Verify(Bernoulli(24), -236364091/2730);
 
 Verify(Gamma(1/2), Sqrt(Pi));
+
+// Coef accepted non-integer arguments as second argument, and
+// crashed on it.
+Verify(Coef(3*Pi,Pi),Coef(3*Pi,Pi));
+Verify(Coef(3*Pi,x), Coef(3*Pi,x));
+
+// Univariates in Pi did not get handled well, due to Pi being
+// considered a constant, non-variable.
+Verify(Degree(Pi,Pi),1);
+Verify(Degree(2*Pi,Pi),1);
+
+Verify(Sin(2*Pi), 0);
+Verify(Cos(2*Pi), 1);
+Verify(Cos(4*Pi), 1);
+Verify(Sin(3*Pi/2)+1, 0);
+
+// - and ! operators didn't get handled correctly in the
+// parser/pretty printer (did you fix this, Serge?)
+Verify(ToString()Write((-x)!),"(-x)!");
+
+// some interesting interaction between the rules...
+Verify(x*x*x,x^3,);
+Verify(x+x+x,3*x);
+Verify(x+x-x+x,2*x);
+
+
