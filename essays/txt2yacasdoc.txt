@@ -29,7 +29,9 @@ Currently the following markup is implemented:
 	
 	Out> 3;
 Note that empty lines in a single sample code block
-must be also TAB indented or else the sample code block will be split into two paragraphs. A sample code block should be separated from the text that follows it by an empty line. The reason for this is that the script will assume that everything which is single-TAB indented belongs to one sample code block. This makes it easier to enter multiply indented sample code: e.g. a double-TAB indentation inside a sample code block will not start a new section. For example:
+must be also TAB indented or else the sample code block will be split into several sample code paragraphs. Text immediately following a sample code block will not be made into a separate paragraph. A sample code block may be separated from the text that follows it by an empty line.
+
+It is necessary to separate sample code blocks from section or chapter headings when they follow them. The reason for this is that the script will assume that everything which is single-TAB indented belongs to one sample code block. This makes it easier to enter multiply indented sample code: e.g. a double-TAB indentation inside a sample code block will not start a new section. For example:
 
 	While(x<0) [
 		x:=x+1;
@@ -55,10 +57,10 @@ are of no significance to the resulting documentation. The first symbol on a lin
 
 Note that item text continues until the next itemized line is given or until end of paragraph.
 
-*	Text surrounded by {&lt;i>} {&lt;/i>} becomes <i>emphasized</i>. Note that the whole emphasized fragment of text must be located within a single line, or else it will not be emphasized.
+*	Text surrounded by {<i>}
+{</i>} becomes <i>emphasized</i>. Note that the whole emphasized fragment of text must be located within a single line, or else it will not be emphasized.
 
-*	Text surrounded by braces {
-} becomes {typewriter font text}. The typewriter font text must be within a single line and must not contain more than four nested sets of {{}} inside.
+*	Text surrounded by braces {{}} becomes {typewriter font text}. The typewriter font text must be within a single line and must not contain more than four nested sets of {{}} inside.
 
 *	Text surrounded by {<*}
 {*>} is made into a Web hyperlink if it begins with {http://} or {ftp://}. Alternatively, a hyperlink with anchored text is made by the markup {<*}
@@ -70,7 +72,7 @@ Note that item text continues until the next itemized line is given or until end
 
 	*INCLUDE ../essays/howto.chapt
 
-Note that the included document must be a Yacas-language file. (This will become a {Load()} call in the Yacas document.)
+Note that the included document must be a Yacas-language file. (This will become the {IncludeFile()} call in the Yacas document -- an alias to {Load()}.)
 
 		{book2txt}: Conversion of existing documentation to plain text
 
@@ -102,7 +104,7 @@ Of course, it is possible that some features of Yacas documentation were not imp
 
 		{book2TeX}: preparing typeset documentation
 
-The script {book2TeX.sh} prepares a \TeX file out of a Yacas-language documentation book. Usage is similar to {book2txt.sh}, for example:
+The script {book2TeX.sh} prepares a \TeX\/ file out of a Yacas-language documentation book. Usage is similar to {book2txt.sh}, for example:
 	book2TeX.sh intro.book
 will create a \TeX-formatted version introductory guide. It can be processed with standard tools, for example
 
@@ -115,8 +117,8 @@ will prepare a Postscript version, while
 	pdflatex intro.book.tex
 will prepare a PDF version.
 
-Not all features of Yacas documentation are compatible with \TeX typesetting. To prevent errors, documentation should avoid certain things. In general, it is a good idea to check the typeset appearance of documentation, since it helps detect errors.
+Not all features of Yacas documentation are compatible with \TeX\/ typesetting. To prevent errors, documentation should avoid certain things. In general, it is a good idea to check the typeset appearance of documentation, since it helps detect errors.
 
-For example, symbols such as {#}, {\}, {_} and {&} are special to TeX. They should not normally be used in plain text; it is fine to use them in "typerwriter" text or code samples. \TeX commands may be entered but will not be rendered in HTML online documentation.
+For example, the symbols {{ }}, {< >}, {#}, {\}, {_} and {&} are special to \TeX. They should not normally be used in plain text; but it is okay to use them in "typerwriter" text or code samples. \TeX\/ commands may be entered but will not be correctly rendered in HTML online documentation. Sometimes fixed-font text will hang over the right edge; a workaround is to break the fixed-font text into shorter fragments or to rephrase the text.
 
-The current implementation uses a "report" style which allows chapters, sections, subsections and includes an automatically generated table of contents. (\LaTeX should be run twice to produce it.)
+The current implementation uses a "report" style which allows chapters, sections, subsections and includes an automatically generated table of contents. (\LaTeX\/ should be run twice to produce it.)
