@@ -209,14 +209,14 @@ void ANumber::SetTo(const LispCharPtr aString,LispInt aBase)
     {
         ANumber term(iPrecision);
         term.CopyFrom(factor2);
-        BaseTimesInt(term, DigitIndex(*ptr), WordBase);
-        BaseAdd(*this,term,WordBase);
+        WordBaseTimesInt(term, DigitIndex(*ptr));
+        WordBaseAdd(*this,term);
         /*
         ANumber current(iPrecision);
         current.CopyFrom(*this);
         BaseAddFull(*this,current,term);
         */
-        BaseTimesInt(factor2, aBase, WordBase);
+        WordBaseTimesInt(factor2, aBase);
         ptr--;
     }
 
@@ -308,6 +308,8 @@ void ANumber::CopyFrom(const ANumber& aOther)
     LispInt nr = aOther.NrItems();
     if (nr)
     {
+//this is actually slower!      PlatMemCopy((LispCharPtr)&((*this)[0]),(LispCharPtr)&( aOther[0]),nr*sizeof(ANumber::ElementType));
+
       ANumber::ElementTypePtr sptr = &( aOther[0]);
       ANumber::ElementTypePtr tptr = &((*this)[0]);
       while (nr--)
@@ -438,7 +440,7 @@ static void BalanceFractions(ANumber& a1, ANumber& a2)
       a2.iTensExp = a1.iTensExp;
       while (diff > 0)
       {
-        BaseTimesInt(a2,10, WordBase);
+        WordBaseTimesInt(a2,10);
 
 /*
         ANumber temp(a2.iPrecision);
@@ -455,7 +457,7 @@ static void BalanceFractions(ANumber& a1, ANumber& a2)
       a1.iTensExp = a2.iTensExp;
       while (diff > 0)
       {
-        BaseTimesInt(a1,10, WordBase);
+        WordBaseTimesInt(a1,10);
 /*
         ANumber temp(a1.iPrecision);
         temp.CopyFrom(a1);
@@ -724,7 +726,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, Lisp
             // Build the fraction
             for (i=0;i<number.iPrecision+1;i++)
             {
-                BaseTimesInt(number, aBase, WordBase);
+                WordBaseTimesInt(number, aBase);
                 if (number.NrItems() > number.iExp)
                 {
                     aResult.Append((LispChar)(number[number.iExp]));
@@ -820,7 +822,7 @@ void BaseAddFull(ANumber& aResult, ANumber& a1, ANumber& a2)
 {
     // Initialize result
     aResult.CopyFrom(a1);
-    BaseAdd(aResult,a2,WordBase);
+    WordBaseAdd(aResult,a2);
 }
 
 
@@ -881,7 +883,7 @@ void BaseSubtract(ANumber& aResult, ANumber& a2, LispInt offset)
 void BaseMultiplyFull(ANumber& aResult, ANumber& a1, ANumber& a2)
 {
     // Initialize result
-    BaseMultiply(aResult,a1,a2,WordBase);
+    WordBaseMultiply(aResult,a1,a2);
 }
 
 
@@ -948,7 +950,7 @@ void BaseShiftRight(ANumber& a, LispInt aNrBits)
     LispInt residue = aNrBits % WordBits;
 
     // Bit mask: bits that are going to be shifted out of each word.
-    LispInt bitMask = (1L<<residue)-1;
+    PlatDoubleWord bitMask = (PlatDoubleWord)((((PlatDoubleWord)1)<<residue)-1);
 
     // Nr of bits to move to the other side.
     LispInt otherSideBits = WordBits-residue;
@@ -958,16 +960,22 @@ void BaseShiftRight(ANumber& a, LispInt aNrBits)
     LispInt nr = a.NrItems();
 
     ANumber::ElementTypePtr ptr = &a[0];
-
-    for (i=0;i<nr-wordsShifted;i++)
+    ANumber::ElementTypePtr ptrshifted = &a[wordsShifted];
+    ANumber::ElementTypePtr endp = ptr +nr - wordsShifted;
+    if (ptr<endp)
     {
-        PlatDoubleWord newCarry =
-            (((PlatDoubleWord)ptr[i+wordsShifted]) & bitMask)<<otherSideBits;
-
-        ptr[i] = (ptr[i+wordsShifted]>>residue);
-
-        if (i > 0)
-            ptr[i-1] |= newCarry;
+      *ptr = ((*ptrshifted)>>residue);
+      ptr++;
+      ptrshifted++;
+      while (ptr<endp)
+  //    for (i=1;i<nr-wordsShifted;i++)
+      {
+        PlatDoubleWord newCarry = (((PlatDoubleWord)*ptrshifted) & bitMask)<<otherSideBits;
+        *ptr = ((*ptrshifted)>>residue);
+        ptr[-1] |= newCarry;
+        ptr++;
+        ptrshifted++;
+      }
     }
 
     int start=nr-wordsShifted;
@@ -975,19 +983,9 @@ void BaseShiftRight(ANumber& a, LispInt aNrBits)
         start=0;
     for (i=start;i<nr;i++)
     {
-        ptr[i] = 0;
+        a[i] = 0;
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 void BaseShiftLeft(ANumber& a, LispInt aNrBits)
 {
@@ -1041,14 +1039,30 @@ void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
     v.CopyFrom(a2);
 
      LispInt k=0;
+
+
+    {
+      LispInt i=0;
+      PlatWord bit=1;
+      while (u[i] == 0 && v[i]==0) i++;
+      k+=WordBits*i;
+      while ((u[i]&bit) == 0 && (v[i]&bit)==0) 
+      {
+        bit<<=1;
+        k++;
+      }
+      BaseShiftRight(u,k);
+      BaseShiftRight(v,k);
+    }
     
+/*TODO remove, replaced with the better single shift, see code above
     while (IsEven(u) && IsEven(v))
     {
         BaseShiftRight(u,1);
         BaseShiftRight(v,1);
         k++;
     }
-
+*/
     ANumber t("0",10);
 
     if (IsOdd(u))
@@ -1061,11 +1075,28 @@ void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
 
     while (!IsZero(t))
     {
+
+        {
+          LispInt k=0;
+          LispInt i=0;
+          PlatWord bit=1;
+          while (t[i] == 0) i++;
+          k+=WordBits*i;
+          while ((t[i]&bit) == 0) 
+          {
+            bit<<=1;
+            k++;
+          }
+          BaseShiftRight(t,k);
+        }
+  
+
+/*TODO remove, replaced with the better single shift, see code above
         while (IsEven(t))
         {
             BaseShiftRight(t,1);
         }
-
+*/
         if (GreaterThan(t,zero))
         {
             u.CopyFrom(t);
@@ -1103,8 +1134,8 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
     
     //D1:
     PlatDoubleWord d = WordBase/(a2[n-1]+1);
-    BaseTimesInt(a1, d, WordBase);
-    BaseTimesInt(a2, d, WordBase);
+    WordBaseTimesInt(a1, d);
+    WordBaseTimesInt(a2, d);
     a1.Append(0);
     a2.Append(0);
     
@@ -1129,7 +1160,7 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
         //D4:
         ANumber sub(Precision(aQuotient));
         sub.CopyFrom(a2);
-        BaseTimesInt(sub, q, WordBase);
+        WordBaseTimesInt(sub, q);
         sub.Append(0);
         
         PlatSignedDoubleWord carry;
@@ -1159,7 +1190,7 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
             {
                 q--;
                 sub.CopyFrom(a2);
-                BaseTimesInt(sub, q, WordBase);
+                WordBaseTimesInt(sub, q);
                 sub.Append(0);
             }
             
@@ -1176,7 +1207,7 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
                     word+=WordBase;
                     carry--;
                 }
-                a1[digit+j] = ((PlatWord)(word%WordBase));
+                a1[digit+j] = ((PlatWord)(word));
             }
         }
         LISPASSERT(carry == 0);
@@ -1253,7 +1284,7 @@ void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber
         aQuotient.iExp = a1.iExp-a2.iExp;
         aQuotient.iTensExp = a1.iTensExp-a2.iTensExp;
         // Divide the mantissas
-        BaseDivide(aQuotient, aRemainder, a1, a2,WordBase);
+        WordBaseDivide(aQuotient, aRemainder, a1, a2);
     }
 
     // Correct for signs
@@ -1349,13 +1380,13 @@ void BaseSqrt(ANumber& aResult, ANumber& N)
 
         // n = (u+v)^2  =  u^2 + 2*u*v + v^2 = u2+uv2+v2
         n.CopyFrom(u2);
-        BaseAdd(n,uv2,WordBase);
-        BaseAdd(n,v2,WordBase);
+        WordBaseAdd(n,uv2);
+        WordBaseAdd(n,v2);
         // if n (possible new best estimate for sqrt(N)^2 is smaller than
         // N, then the bit l2 is set in the result, and add v to u.
         if( !BaseGreaterThan(n , N) )
         {
-            BaseAdd(u,v,WordBase); // u <- u+v
+            WordBaseAdd(u,v); // u <- u+v
             u2.CopyFrom(n);  // u^2 <- u^2 + 2*u*v + v^2
         }
     }
@@ -1369,7 +1400,7 @@ void Sqrt(ANumber& aResult, ANumber& N)
 
    if ((N.iTensExp&1) != 0)
     {
-      BaseTimesInt(N,10, WordBase);
+      WordBaseTimesInt(N,10);
     }
 
     while(N.iExp<2*digs)
@@ -1427,8 +1458,8 @@ void ANumber::RoundBits(void)
     for (i=1;i<nr;i++)
     {
         PlatDoubleWord dword = ptr[i]+carry;
-        ptr[i] = dword%WordBase;
-        carry = dword / WordBase;
+        ptr[i] = (PlatWord)dword;
+        carry = dword >> WordBits;
     }
     if (carry)
     {

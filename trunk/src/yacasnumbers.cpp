@@ -1219,6 +1219,20 @@ LispInt BigNumber::Sign() const
 }
 
 
+void BigNumber::DumpDebugInfo()
+{
+#ifdef HAVE_STDIO_H 
+  if (iNumber == NULL)
+  {
+    printf("No number representation\n");
+  }
+  else
+  {
+    printf("%d words, %d of them decimals\n",iNumber->NrItems(),iNumber->iExp);
+  }
+#else
+#endif
+}
 
 
 /// integer operation: *this = y mod z

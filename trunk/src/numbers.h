@@ -338,6 +338,9 @@ public://arithmetic
   /// integer operation: *this = y mod z
   void Mod(const BigNumber& aY, const BigNumber& aZ);
 
+  /// For debugging purposes, dump internal state of this object into a string
+  void DumpDebugInfo();
+
 public:
   void Floor(const BigNumber& aX);
   void Precision(LispInt aPrecision);

@@ -14,7 +14,7 @@
  */
 
 #define WordBits  (8*sizeof(PlatWord))
-#define WordBase  (1L<<WordBits)
+#define WordBase  (((PlatDoubleWord)1)<<WordBits)
 #define WordMask  (WordBase-1)
 
 /* Class ANumber represents an arbitrary precision number. it is
