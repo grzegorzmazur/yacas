@@ -108,13 +108,13 @@ ShowPS(expr) := [
 	filename := FromFile("/tmp/yacas-tmpfile") Read();
 	SystemCall("rm -f /tmp/yacas-tmpfile");
 	ToFile(filename : ".tex") WriteString(
-"\\documentclass{article} \\begin{document} \\thispagestyle{empty}
+"\\documentclass{article} \\usepackage{geometry} \\geometry{paperwidth=22in,paperheight=17in,tmargin=3in} \\begin{document} \\thispagestyle{empty}
 " : TeXForm(expr) : "
 \\end{document}
 ");
 	WriteString("Expression exported as " : filename : ".tex" : Nl());
 	/* Make PS file */
-	SystemCall("cd /tmp; latex " : filename : " > /dev/null; dvips -q -o " : filename : ".ps " : filename : ".dvi");
+	SystemCall("cd /tmp; latex " : filename : " > /dev/null; dvips -q -T 22in,17in -o " : filename : ".ps " : filename : ".dvi");
 	/* Show PS file */
 	SystemCall(PSViewCommand : " " : filename : ".ps; rm -f " : filename : ".*");
 ];
