@@ -3,7 +3,7 @@
 
 DefaultDirectory("in/");
 
-Use("html");
+//Use("html");
 SetHtmlDirectory("");
 Use("styleplain");  /* style cheet for the documentation */
 Use("manualmaker"); /* engine that renders book to html */

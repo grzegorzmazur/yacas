@@ -21,6 +21,7 @@ $in_htmlcommand = 0;
 	"STD" => "StandardLib();",
 	"CORE" => "BuiltIn();",
 	"E.G." => "Topical() \"Examples:\";",
+	"EG" => "Topical() \"Example:\";",
 );
 
 while (<STDIN>) {
@@ -140,6 +141,10 @@ while (<STDIN>) {
 			$have_prev_name = 1;
 		}
 		print "});\n";
+	} elsif (/^\*SEE\s*(.*)$/) {	# empty SeeAlso()
+		&finish_text();
+		$have_par = 1;
+		# do nothing
 	} elsif (/^\*(?:CMD|FUNC)\s\s*(.*)\s*---\s*(.*)$/) {	# CmdDescription()
 		$names = $1;
 		$title = $2;

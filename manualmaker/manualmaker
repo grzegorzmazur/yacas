@@ -20,6 +20,7 @@ plain["Chapters"][currentChapter]["Body"]:=
 
 Chapter(title):=
 [
+GarbageCollect();
 WriteString("  Creating Chapter ");
 WriteString(title);NewLine();
   currentChapter:=title;

@@ -7,10 +7,12 @@
 *CMD	/*, */, // --- comments
 *CORE
 *CALL
+
 	/* comment */
 	// comment
 
 *DESC
+
 Introduce a comment block in a source file, similar to C++ comments.
 {//} makes everything until the end of the line a comment, while {/*} and {*/} may delimit a multi-line comment.
 
@@ -21,10 +23,12 @@ Introduce a comment block in a source file, similar to C++ comments.
 *CMD Prog, [, ] --- block of statements
 *CORE
 *CALL
+
 	Prog(statement1, statement2, ...)
 	[ statement1; statement2; ... ]
 
 *PARMS
+
 statement1, statement2 -- expressions
 
 *DESC
@@ -41,9 +45,11 @@ function bodies. The {[...]} construct is a syntactically nicer version of the
 *CMD Check --- report errors
 *CORE
 *CALL
+
 	Check(predicate,"error text")
 
 *PARMS
+
 predicate -- expression returning {True} o
 
 *DESC
@@ -57,6 +63,7 @@ against internal errors).
 *CMD Bodied, Infix, Postfix, Prefix --- define function syntax
 *CORE
 *CALL
+
 	Bodied("op", precedence)
 	Infix("op")
 	Infix("op", precedence)
@@ -65,7 +72,9 @@ against internal errors).
 	Prefix("op", precedence)
 
 *PARMS
+
 "op" -- string, the name of a function
+
 precedence -- nonnegative integer (evaluated)
 
 *DESC
@@ -90,7 +99,7 @@ Declares a function for the parser to understand as a bodied, infix, postfix, or
 
 
 
-*CMD IsBodied, IsInfix, IsPostfix, IsPrefix --- Check for function syntax
+*CMD IsBodied, IsInfix, IsPostfix, IsPrefix --- check for function syntax
 *CORE
 *CALL
 	IsBodied("op")
@@ -99,6 +108,7 @@ Declares a function for the parser to understand as a bodied, infix, postfix, or
 	IsPrefix("op")
 
 *PARMS
+
 "op" -- string, the name of a function
 
 *DESC
@@ -123,6 +133,7 @@ Check whether the function with given name "op" has been declared as a "bodied",
 	OpRightPrecedence("op")
 
 *PARMS
+
 "op" -- string, the name of a function
 
 *DESC
@@ -142,10 +153,12 @@ For infix operators, right precedence can differ from left precedence. Bodied fu
 
 *CALL
 	RightAssociative("op")
+
 *PARMS
+
 "op" -- string, the name of a function
 
-makes the operator right-associative. Example:
+This makes the operator right-associative. Example:
 
 	RightAssociative("*")
 would make multiplication right-associative. Take care not to abuse
@@ -162,16 +175,19 @@ left-associative, is not implemented.
 	RightPrecedence("op",precedence)
 
 *PARMS
+
 "op" -- string, the name of a function
+
 precedence -- nonnegative integer
 
 *DESC
-oper should be an infix operator. This function call tells the
+
+"op" should be an infix operator. This function call tells the
 infix expression printer to bracket the left or right hand side of
 the expression if its precedence is larger than precedence.
 
 This functionality was required in order to display a-(b-c)
-correctly. a+b+c is the same as a+(b+c), but a-(b-c) is not
+correctly. Thus, a+b+c is the same as a+(b+c), but a-(b-c) is not
 the same as a-b-c.
 
 *CMD RuleBase --- define function name
@@ -217,7 +233,7 @@ after all RuleBase calls for this operator.
 *CALL
 Retract("operator",arity)
 
-Retract("operator",arity) : Remove a rulebase with some specific arity,
+Remove a rulebase with some specific arity,
 if it exists at all.
 
 *CMD UnFence --- ...
@@ -226,7 +242,7 @@ if it exists at all.
 UnFence("operator",arity)
 
 *DESC
-UnFence("operator",arity) : When applied to a user function, the bodies
+When applied to a user function, the bodies
 defined for the rules for "operator" with given
 arity can see the local variables from the calling
 function. This is useful for defining macro-like
@@ -244,9 +260,11 @@ useful in macro-like procedures.
 *CMD Secure --- guard the host OS
 
 *CALL
-Secure(body)
+	Secure(body)
 
-Secure evaluates body in a safe environment, where file opening
+*DESC
+
+{Secure} evaluates body in a safe environment, where file opening
 and system calls are not allowed. This can protect the system
 when an unsafe evaluation is done (Like a script sent over the
 internet to be evaluated on a computer).
@@ -266,20 +284,21 @@ to "True", and vice versa.
 *CMD MathAnd --- ...
 
 *CALL
-MathAnd(...)
+	MathAnd(...)
 
 MathAnd(...) :
-Lazy and: returns True" if all args evaluate to
-"True", and does this by looking at first, and then at the
-second argument, until one is "False".
-If one is "False" it immediately returns "False" without
+Lazy {And}: returns {True} if all args evaluate to
+{True}, and does this by looking at first, and then at the
+second argument, until one is {False}.
+If one is {False} it immediately returns {False} without
 evaluating the rest. This is faster, but also means that none of the
 arguments should cause side effects when they are evaluated.
 
 *CMD MathOr --- ...
 *CORE
 *CALL
-MathOr(...)
+
+	MathOr(...)
 
 MathOr(...) :
 MathOr is the or equivalent of And. It is lazy-evaluated too.
@@ -359,12 +378,12 @@ should then at least be faster than the arbitrary precision versions.
 *CALL
 ShiftLeft(number,bits), ShiftRight(number,bits)
 
-ShiftLeft(number,bits), ShiftRight(number,bits) :
-Shift number bits to left or right.
+Shift bits to left or right.
 
 
 			The Yacas plugin structure
 
+*INTRO
 Yacas supports dynamically loading libraries at runtime. This allows
 it to interface with other libraries that support additional
 functionality. For example, there could be a plugin enabling
@@ -402,7 +421,7 @@ it is only supported on platforms that support the elf binary format.
 This chapter assumes the reader is comfortable programming in c++.
 
 
-*CMD DllLoad, DllUnload, DllEnumerate
+*CMD DllLoad, DllUnload, DllEnumerate --- manipulate plugins
 *CORE
 *CALL
 	DllLoad(file)
@@ -465,7 +484,7 @@ StubApiCShortIntegerConstant(const,value)
 
 const - string representing the global variable to be bound runtime
 
-       value - integer value the global should be bound to
+value - integer value the global should be bound to
 
 *DESC
 
@@ -473,23 +492,18 @@ define a constant 'const' to have value 'value'.  The value should
 be short integer constant. This is useful for linking in
 defines and enumerated values into Yacas.
 If the library for instance has a define
-
-#define FOO 10
-
+	#define FOO 10
 Then
-
-StubApiCShortIntegerConstant("FOO","FOO")
-
+	StubApiCShortIntegerConstant("FOO","FOO")
 will bind the global variable FOO to the value for FOO defined in
 the library header file.
 
 *SEE StubApiCStart, StubApiCInclude, StubApiCFunction, StubApiCFile, StubApiCSetEnv
 
+
+
 *CMD StubApiCInclude --- ...
-
-
 *STD
-
 *CALL
 
 StubApiCInclude(file)
@@ -504,10 +518,9 @@ Declare an include file (a header file for the library, for instance)
 The delimiters need to be specified too. So, for a standard library
 like the one needed for opengl, you need to specify
 
-StubApiCInclude("\<GL/gl.h\>")
-
+	StubApiCInclude("\<GL/gl.h\>")
 and for user include file:
-StubApiCInclude("\"GL/gl.h\"")
+	StubApiCInclude("\"GL/gl.h\"")
 
 *SEE StubApiCStart, StubApiCShortIntegerConstant, StubApiCFunction, StubApiCFile, StubApiCSetEnv
 
@@ -542,23 +555,24 @@ literal strings (surrounded by quotes).
 
 If fname2 is not supplied, it will be assumed to be the same as fname.
 
-The return types currently supported are "int", "double" and "void".
+The return types currently supported are "{int}", "{double}" and "{void}".
 
 The argument values that are currently supported
-are "int", "double", and "input_string".
+are "{int}", "{double}", and "{input_string}".
 
 Argument types can be specified simply as a string referring to their
 type, like "int", or they can be lists with an additional element
-stating the name of the variable: {"int","n"}. The variable
+stating the name of the variable: {{"int","n"}}. The variable
 will then show up in the automatically generated documentation as
-having the name n.
+having the name "n".
 
 *E.G.
 
-To define the opengl function glVertex3d that accepts three
+To define the opengl function {glVertex3d} that accepts three
 doubles and returns void:
 
-	StubApiCFunction("void","glVertex3d",{"double","double","double"});
+	StubApiCFunction("void","glVertex3d",
+	  {"double","double","double"});
 
 *SEE StubApiCStart, StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFile, StubApiCSetEnv
 
@@ -599,7 +613,7 @@ func - function to call to set the environment variable
 *DESC
 
 This function forces the plugin to call the function func, with as
-argument LispEnvironment& aEnvironment. This lets the plugin store
+argument {LispEnvironment&} {aEnvironment}. This lets the plugin store
 the environment class (which is needed for almost any thing to do with
 Yacas), somewhere in a global variable. aEnvironment can then be used
 from within a callback function in the plugin that doesn't take the
@@ -612,8 +626,8 @@ There needs to ba a function in the plugin somewhere of the form
 	{
 	    env = &aEnv;
 	}
-Then calling
 
+Then calling
 	StubApiCSetEnv("GlutSetEnv");
 will force the plugin to call GlutSetEnv at load time. All functions
 in the plugin will then have access to the Yacas environment.
@@ -671,7 +685,7 @@ to delete the object from memory.
 
 *E.G.
 
-in a library header file, define:
+In a library header file, define:
 
 	typedef struct SomeStruct
 	{

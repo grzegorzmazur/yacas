@@ -83,16 +83,10 @@ ALLBOOKSOURCES = in/intro.book.txt in/coding.book.txt 	in/ref.book.txt in/refpro
 REFCHAPTERS = in/config.chapt in/arith.chapt in/calc.chapt in/linalg.chapt 	in/univar.chapt in/lists.chapt in/functional.chapt in/controlflow.chapt 	in/preds.chapt in/logic.chapt in/const.chapt in/vars.chapt in/io.chapt 	in/strings.chapt
 
 
-REFPROGCHAPTERS = in/prog.chapt in/built.chapt 	in/plugins.chapt in/generic.chapt
-
-
 REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt in/linalg.chapt.txt 	in/univar.chapt.txt in/lists.chapt.txt in/functional.chapt.txt in/controlflow.chapt.txt 	in/preds.chapt.txt in/logic.chapt.txt in/const.chapt.txt in/vars.chapt.txt in/io.chapt.txt 	in/strings.chapt.txt
 
 
-REFPROGSOURCES = in/prog.chapt.txt in/built.chapt.txt 	in/plugins.chapt.txt in/generic.chapt.txt
-
-
-EXTRA_DIST =  	manualmaker styleplain in/all 	in/intromaker in/codingmaker in/refmaker in/refprogmaker 	$(REFSOURCES) $(REFPROGSOURCES) $(ALLBOOKSOURCES) 	in/dummies newhelp yacasinit.ys .cvsignore
+EXTRA_DIST =  	manualmaker styleplain in/all 	in/intromaker in/codingmaker in/refmaker in/refprogmaker 	$(REFSOURCES) $(ALLBOOKSOURCES) 	in/dummies newhelp yacasinit.ys .cvsignore
 
 
 yacas_helpdir = $(datadir)/yacas/documentation
@@ -303,15 +297,17 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 	@echo Documentation created: $*.pdf
 
 # TeX/PS/PDF top target
-texdocs: coding.book.ps coding.book.pdf intro.book.ps intro.book.pdf
+texdocs: coding.book.ps coding.book.pdf \
+	intro.book.ps intro.book.pdf \
+	refprog.book.ps refprog.book.pdf
 	echo "done" > texdocs.c
 
 clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.toc *.log *.ps *.pdf \
 	coding*html intro*html ref*html .o core *~ texdocs.c \
-	$(REFCHAPTERS) $(REFPROGCHAPTERS) $(ALLBOOKS)
+	$(REFCHAPTERS) $(ALLBOOKS)
 
-books.html:  $(ALLBOOKS) $(REFCHAPTERS) $(REFPROGCHAPTERS)
+books.html:  $(ALLBOOKS) $(REFCHAPTERS)
 	-$(ouryacas) in/all
 	echo "done" > books.html.c
 
@@ -329,7 +325,7 @@ ref.html : in/ref.book $(REFCHAPTERS)
 	-$(ouryacas) in/refmaker
 	touch books.html
 
-refprog.html : in/refprog.book $(REFPROGCHAPTERS)
+refprog.html : in/refprog.book
 	-$(ouryacas) in/refprogmaker
 	touch books.html
 
