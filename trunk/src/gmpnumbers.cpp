@@ -1486,18 +1486,18 @@ bool BigNumber::Equals(const BigNumber& aOther) const
   if (IsInt())
     if (aOther.IsInt())
     	return mpz_cmp(int_, aOther.int_)==0;
-    else
-    {
-    	BigNumber temp(aOther);
-	temp.BecomeInt();
-	return this->Equals(temp);
+    else	// comparing integers with floats: must convert both to floats
+    {	// *this is integer, aOther is float
+    	BigNumber temp(*this);
+	temp.BecomeFloat();
+	return aOther.Equals(temp);
     }
   else
     if (aOther.IsInt())
-    {
-    	BigNumber temp(*this);
-	temp.BecomeInt();
-	return temp.Equals(aOther);
+    {	// *this is float, aOther is integer
+    	BigNumber temp(aOther);
+	temp.BecomeFloat();
+	return this->Equals(temp);
     }
     else // two floats are equal when they are equal and both not ExpFloat, or if they are both ExpFloat and their exponents are also equal
     	return
