@@ -33,11 +33,12 @@ public: //constructors
   /// Construct a number class
   NativeNumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
 public: //constructors
+  virtual void SetTo(const NumberBase&);
   /// ToString : return string representation of number in aResult 
-  virtual void ToString(LispString& aResult, LispInt aBase);
+  virtual void ToString(LispString& aResult, LispInt aBase) const;
 public: //information retrieval on library used  
   /// Numeric library name
-  virtual const LispCharPtr NumericLibraryName();
+  virtual const LispCharPtr NumericLibraryName() const;
 public://arithmetic
   /// Multiply two numbers, and return result in aResult
   virtual void Multiply(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision);
@@ -54,6 +55,9 @@ public://arithmetic
   virtual void Negate(const NumberBase& aX);
   /// Divide, and return result. Note: if the two arguments are integer, it should return an integer result!
   virtual void Divide(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision);
+  virtual LispInt BitCount() const;
+  virtual double Double() const;
+  virtual LispInt Sign() const;
 
 public://bitwise operations  
   virtual void ShiftLeft( const NumberBase& aX, LispInt aNrToShift);

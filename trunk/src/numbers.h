@@ -147,6 +147,16 @@ protected: // I don't want any one to construct this class any other way!
 class NumberBase : public YacasBase
 {
 public: //constructors
+// default constructor
+  NumberBase() { };
+// copy constructor
+  NumberBase(const NumberBase& ) { };
+// construct from string
+  NumberBase(const LispString& number, LispInt aPrecision, LispInt aBase=10) {};
+// construct from a double value
+  NumberBase(double number, LispInt aPrecision) {};
+  // assign to another number
+ virtual void SetTo(const NumberBase& ) = 0;
   /// ToString : return string representation of number in aResult 
   virtual void ToString(LispString& aResult, LispInt aBase) const = 0;
 public: //information retrieval on library used  
@@ -158,7 +168,7 @@ public://arithmetic
   /** Multiply two numbers, and add to aResult (this is useful and generally efficient to implement).
    * This is most likely going to be used by internal functions only, using aResult as an accumulator.
    */
- static virtual void MultiplyAdd(NumberBase& aResult, const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
+  virtual void MultiplyAdd(NumberBase& aResult, const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
   /// Add two numbers at given precision and return result in *this
   virtual void Add(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
   /// Negate the given number, return result in *this
@@ -174,6 +184,10 @@ public:/// Bitwise operations, return result in *this.
   virtual void BitXor(const NumberBase& aX, const NumberBase& aY) = 0;
   /// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
   virtual LispInt BitCount() const = 0;
+  /// Give approximate representation as a double number
+  virtual double Double() const = 0;
+  /// Give sign (-1, 0, 1)
+  virtual LispInt Sign() const = 0;
 };
 
 
