@@ -202,12 +202,27 @@ else
 fi
 AC_SUBST(psdir)
 
-eval expanded_scriptdir=$scriptdir
-eval expanded_libdir=$libdir
-expanded_libdir=`echo $expanded_libdir | sed "s%^NONE%$prefix%"` 
-AC_DEFINE_UNQUOTED(SCRIPT_DIR, "$expanded_scriptdir", [ Directory in which scripts are installed ])
-AC_DEFINE_UNQUOTED(PLUGIN_DIR, "$expanded_libdir/$PACKAGE", [ Directory in which plugins are installed ])
-                
+dnl jb_PREFIX_EXPAND(VARNAME)
+dnl -------------------------
+dnl Expand $prefix and $exec_prefix in $VARNAME and assign the
+dnl result to jb_expanded_VARNAME.
+dnl
+dnl Written by Alexandre Duret-Lutz
+dnl Adapted from AC_DEFINE_DIR by Alexandre Oliva
+dnl See http://www.geocrawler.com/archives/3/402/2001/12/0/7416783/
+AC_DEFUN([jb_PREFIX_EXPAND],[
+        jb_expanded_$1=`(
+            test "x$prefix" = xNONE && prefix="$ac_default_prefix"
+            test "x$exec_prefix" = xNONE && exec_prefix="${prefix}"
+            eval echo \""[$]$1"\"
+        )`])
+
+jb_PREFIX_EXPAND([scriptdir])
+jb_PREFIX_EXPAND([libdir])
+
+AC_DEFINE_UNQUOTED(SCRIPT_DIR, "$jb_expanded_scriptdir", [ Directory in which scripts are installed ])
+AC_DEFINE_UNQUOTED(PLUGIN_DIR, "$jb_expanded_libdir/$PACKAGE", [ Directory in which plugins are installed ])
+               
 # libtool support
 # ---------------
 
