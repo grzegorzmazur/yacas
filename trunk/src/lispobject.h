@@ -28,6 +28,7 @@ void DecNrObjects();
 #endif
 
 class LispObject;
+class BigNumber;
 
 /** class LispPtr. This class is a smart pointer type class to Lisp
  *  objects that can be inserted into linked lists. They do the actual
@@ -85,10 +86,11 @@ public: //Derivables
      */
     virtual LispPtr* SubList();
     virtual GenericClass* Generic();
-/*TODO remove?
-    virtual EvalFuncBase* EvalFunc();
-    virtual void SetEvalFunc(EvalFuncBase* aEvalFunc);
-    */
+
+    /** If this is a number, return a BigNumber representation
+     */
+    virtual BigNumber* Number(LispInt aPrecision);
+
     virtual LispObject* Copy(LispInt aRecursed)=0;
 
     /** Return a pointer to extra info. This allows for annotating

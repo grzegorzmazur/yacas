@@ -419,7 +419,7 @@ Bk(_poly,_prime) <--
 //    coefs := coefs*lc^((deg-1) .. (-1));
 //    prime:=prime*lc;
 //Echo("to ",coefs);
-
+//Echo(coefs,prime);
     result := Berlekamp(coefs,prime);
     Local(i);
     For(i:=1,i<=Length(result),i++)

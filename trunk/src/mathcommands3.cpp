@@ -60,19 +60,26 @@
 
 
 
-
 #define InternalEval aEnvironment.iEvaluator->Eval
 
-#define noUSE_BIGNUM
+#define USE_BIGFLOAT
 
 
+#ifdef USE_BIGFLOAT
+void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispPtr& aArguments, LispInt aArgNr)
+{
+    LispPtr result;
+    InternalEval(aEnvironment, result, Argument(aArguments,aArgNr));
+    BigNumber *num = result.Get()->Number(aEnvironment.Precision());
+    CHK_ARG(num != NULL,aArgNr);
+    x = num;
+}
+#endif // USE_BIGFLOAT
+
+//FIXME remove these
 void LispArithmetic2(LispEnvironment& aEnvironment, LispPtr& aResult,
                      LispPtr& aArguments,
-#ifdef USE_BIGNUM
-                    void (*func)(BigNumber& x, BigNumber& y, LispInt aPrecision),
-#else
                      LispStringPtr (*func)(LispCharPtr f1, LispCharPtr f2,LispHashTable& aHashTable,LispInt aPrecision),
-#endif
                     LispBoolean arbbase=LispFalse);
 
 void LispArithmetic1(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -84,6 +91,7 @@ void LispArithmetic1(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 
 
+//FIXME remove these
 void LispArithmetic1(LispEnvironment& aEnvironment, LispPtr& aResult,
                      LispPtr& aArguments,
                      LispStringPtr (*func)(LispCharPtr f1, LispHashTable& aHashTable,LispInt aPrecision))
@@ -104,13 +112,10 @@ void LispArithmetic1(LispEnvironment& aEnvironment, LispPtr& aResult,
 }
 
 
+//FIXME remove these
 void LispArithmetic2(LispEnvironment& aEnvironment, LispPtr& aResult,
                      LispPtr& aArguments,
-#ifdef USE_BIGNUM
-                    void (*func)(BigNumber& x, BigNumber& y, LispInt aPrecision),
-#else
                      LispStringPtr (*func)(LispCharPtr f1, LispCharPtr f2,LispHashTable& aHashTable,LispInt aPrecision),
-#endif
                     LispBoolean arbbase)
 {
     TESTARGS(3);
@@ -133,63 +138,26 @@ void LispArithmetic2(LispEnvironment& aEnvironment, LispPtr& aResult,
         CHK_ARG(IsNumber(str2->String(),LispTrue) ,2);
     }
 
-#ifdef USE_BIGNUM
-    BigNumber x(str1->String(),aEnvironment.Precision());
-    BigNumber y(str1->String(),aEnvironment.Precision());
-    LispString resultStr;
-    func(x,y, aEnvironment.Precision());
-    x.ToString(resultStr, aEnvironment.Precision());
-    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(resultStr.String())));
-#else
     aResult.Set(LispAtom::New(func(str1->String(),str2->String(),
                                    aEnvironment.HashTable(),
                                    aEnvironment.Precision())));
-#endif
 }
 
-
-#ifdef USE_BIGNUM
-void MultiplyBigFloat(BigNumber& x, BigNumber& y, LispInt aPrecision)
-{
-  x.Multiply(x,y,aPrecision);
-}
-void DivideBigFloat(BigNumber& x, BigNumber& y, LispInt aPrecision)
-{
-  x.Divide(x,y,aPrecision);
-}
-void AddBigFloat(BigNumber& x, BigNumber& y, LispInt aPrecision)
-{
-  x.Add(x,y,aPrecision);
-}
-void SubtractBigFloat(BigNumber& x, BigNumber& y, LispInt aPrecision)
-{
-  y.Negate(y);
-  x.Add(x,y,aPrecision);
-}
-void ModBigFloat(BigNumber& x, BigNumber& y, LispInt aPrecision)
-{
-  x.Mod(x,y);
-}
-void DivBigFloat(BigNumber& x, BigNumber& y, LispInt aPrecision)
-{
-  x.Divide(x,y,aPrecision);
-}
-
-void PowerBigFloat(BigNumber& x, BigNumber& y, LispInt aPrecision)
-{
-  x.Power(x,y,aPrecision);
-}
-
-#endif
 
 void LispMultiply(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
-#ifdef USE_BIGNUM
-    LispArithmetic2(aEnvironment, aResult, aArguments, MultiplyBigFloat);
-#else
+#ifdef USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      RefPtr<BigNumber> y;
+      GetNumber(x,aEnvironment, aArguments, 1);
+      GetNumber(y,aEnvironment, aArguments, 2);
+      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      z->Multiply(*x.Ptr(),*y.Ptr(),aEnvironment.Precision());
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      return;
+#endif // USE_BIGFLOAT
     LispArithmetic2(aEnvironment, aResult, aArguments, MultiplyFloat);
-#endif
 }
 
 void LispAdd(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -197,16 +165,23 @@ void LispAdd(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
     LispInt length = InternalListLength(aArguments);
     if (length == 2)
-    {
+    {//FIXME
         LispArithmetic1(aEnvironment, aResult, aArguments, PlusFloat);
     }
     else
     {
-#ifdef USE_BIGNUM
-        LispArithmetic2(aEnvironment, aResult, aArguments, AddBigFloat);
-#else
+#ifdef USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      RefPtr<BigNumber> y;
+      GetNumber(x,aEnvironment, aArguments, 1);
+      GetNumber(y,aEnvironment, aArguments, 2);
+      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      z->Add(*x.Ptr(),*y.Ptr(),aEnvironment.Precision());
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+      return;
+#endif // USE_BIGFLOAT
+
         LispArithmetic2(aEnvironment, aResult, aArguments, AddFloat);
-#endif
     }
 }
 
@@ -220,11 +195,7 @@ void LispSubtract(LispEnvironment& aEnvironment, LispPtr& aResult,
     }
     else
     {
-#ifdef USE_BIGNUM
-        LispArithmetic2(aEnvironment, aResult, aArguments, SubtractBigFloat);
-#else
         LispArithmetic2(aEnvironment, aResult, aArguments, SubtractFloat);
-#endif
     }
 }
 
@@ -232,11 +203,7 @@ void LispSubtract(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispDivide(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
-#ifdef USE_BIGNUM
-    LispArithmetic2(aEnvironment, aResult, aArguments, DivideBigFloat);
-#else
     LispArithmetic2(aEnvironment, aResult, aArguments, DivideFloat);
-#endif
 }
 
 
@@ -303,21 +270,13 @@ void LispAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispMod(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
-#ifdef USE_BIGNUM
-    LispArithmetic2(aEnvironment, aResult, aArguments, ModBigFloat);
-#else
     LispArithmetic2(aEnvironment, aResult, aArguments, ModFloat);
-#endif
 }
 
 void LispDiv(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
-#ifdef USE_BIGNUM
-    LispArithmetic2(aEnvironment, aResult, aArguments, DivBigFloat);
-#else
     LispArithmetic2(aEnvironment, aResult, aArguments, DivFloat);
-#endif
 }
 
 void LispLog(LispEnvironment& aEnvironment, LispPtr& aResult,

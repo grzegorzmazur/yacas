@@ -893,14 +893,17 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
 
 BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {
+  iPrecision = aPrecision;
   iNumber = NEW ANumber(aString,aPrecision,aBase);
 }
 BigNumber::BigNumber(const BigNumber& aOther)
 {
+  iPrecision = aOther.GetPrecision();
   iNumber = NEW ANumber(*aOther.iNumber);
 }
-BigNumber::BigNumber()
+BigNumber::BigNumber(LispInt aPrecision)
 {
+  iPrecision = aPrecision;
   iNumber = NEW ANumber();
 }
 

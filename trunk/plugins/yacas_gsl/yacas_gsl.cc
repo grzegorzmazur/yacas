@@ -6,9 +6,12 @@
 #endif
 
 
-#ifdef HAVE_LIBGSL
+//#ifdef HAVE_LIBGSL
 
 // This is where optional stub functions can be defined
+void foo(void)
+{
+}
 
-#endif // HAVE_LIBGSL
+//#endif // HAVE_LIBGSL
 
