@@ -75,6 +75,8 @@ void Sqrt(ANumber& aResult, ANumber& N);
 
 void PrintNumber(char* prefix,ANumber& aNumber);
 
+void NormalizeFloat(ANumber& a2, LispInt digitsNeeded);
+
 
 #include "anumber.inl"
 

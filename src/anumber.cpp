@@ -1318,13 +1318,37 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
 #define noCORRECT_DIVISION
 #ifdef CORRECT_DIVISION
 
-        LispInt toadd = a2.iExp-a1.iExp; 
-        LispInt i;
-        PlatWord zero=0;
-        for (i=0;i<toadd;i++)
+
+{
+        if (a2.iExp - digitsNeeded > 0)
         {
-            a1.Insert(0,zero);
-            a1.iExp++;
+          a2.Delete(0,a2.iExp-digitsNeeded);
+          a2.iExp -= (a2.iExp-digitsNeeded);
+        }
+
+        LispInt min = 1+digitsNeeded;
+        if (a2.iExp+1>min)
+          min = a2.iExp+1;
+        while (a2.NrItems()>min ||
+               (a2.NrItems()==min && a2[a2.NrItems()-1]>10))
+        {
+          PlatDoubleWord carry = 0;
+          BaseDivideInt(a2, 10, WordBase,carry);
+          if (a2[a2.NrItems()-1] == 0)
+            a2.SetNrItems(a2.NrItems()-1);
+          a2.iTensExp++;
+        }
+}
+
+        LispInt toadd = a2.iExp-a1.iExp; 
+        {
+          LispInt i;
+          PlatWord zero=0;
+          for (i=0;i<toadd;i++)
+          {
+              a1.Insert(0,zero);
+              a1.iExp++;
+          }
         }
         
         if (!IsZero(a1)) 
@@ -1335,6 +1359,8 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
             a1.iTensExp--;
           }
         }
+
+
 /*
 if (a1.iTensExp<-1000)
   a1.iTensExp=-1000;

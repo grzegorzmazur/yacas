@@ -40,10 +40,12 @@
 #endif
 
 
-
 #ifdef YACAS_DEBUG
 #include <stdio.h>
-inline void* operator new(size_t size)
+#include <new>
+#define NEW_THROWER throw (std::bad_alloc)
+#define DELETE_THROWER throw ()
+inline void* operator new(size_t size) NEW_THROWER
 {
     printf("WARNING! Global new called\n");
 #ifndef YACAS_DEBUG
@@ -52,7 +54,7 @@ inline void* operator new(size_t size)
 #endif
     return PlatAlloc(size);
 }
-inline void* operator new[](size_t size)
+inline void* operator new[](size_t size) NEW_THROWER
 {
     printf("WARNING! Global new called\n");
 #ifndef YACAS_DEBUG
@@ -61,7 +63,7 @@ inline void* operator new[](size_t size)
 #endif
     return PlatAlloc(size);
 }
-inline void operator delete(void* object)
+inline void operator delete(void* object) DELETE_THROWER
 {
     printf("WARNING! Global delete called\n");
 #ifndef YACAS_DEBUG
@@ -70,7 +72,7 @@ inline void operator delete(void* object)
 #endif
     PlatFree((LispCharPtr)object);
 }
-inline void operator delete[](void* object)
+inline void operator delete[](void* object) DELETE_THROWER
 {
     printf("WARNING! Global delete called\n");
 #ifndef YACAS_DEBUG
