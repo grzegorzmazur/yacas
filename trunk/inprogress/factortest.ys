@@ -8,13 +8,13 @@ integers.
 // input roots, output poly
 Mkp(roots):= Factorize(x-roots);
 
-// input coefs, output poly
+// Mkpc: input coefs, output poly
 Mkpc(coefs):= NormalForm(UniVariate(x,0,coefs));
 
-
-// input roots, output roots modulo an integer
+// Mkn: input roots, output roots modulo an integer
 Mkn(list,n):= Mod(list,n);
 
+// Mkc: returns list of coefficients of polynomial
 // input poly, output coefficients
 Mkc(poly):=
 [
@@ -22,7 +22,7 @@ Mkc(poly):=
   Concat(FillList(0,poly[2]),poly[3]);
 ];
 
-// input coefficients for polys, output coefs for quotient and remainder
+// Division: input coefficients for polys, output coefs for quotient and remainder
 Mkd(numer,denom,p):=
 [
   Local(q,r,i,j,ln,ld,nq);
@@ -61,173 +61,46 @@ Mkd(numer,denom,p):=
   {q,r};
 ];
 
-/*
-// input coefficients for polys, output coefs for gcd
-10 # Mkgcd(_poly1,_poly2,_p)_(Length(poly1) < Length(poly2))<-- Mkgcd(poly2,poly1,p);
-15 # Mkgcd(_poly1,poly2_IsZeroVector,_p)<--{1};
-20 # Mkgcd(_poly1,_poly2,_p)<--
-[
-  Local(dv);
-Echo("enter ",poly1,poly2);
-
-  dv:=Mkd(poly1,poly2,p);
-//Echo({poly1,poly2,dv});
-
-  If(Not IsZeroVector(dv[2]),
-    [
-      dv:=dv[2];
-      DropEndZeroes(dv);
-      Mkgcd(poly2,dv,p);
-    ],
-    poly2/Gcd(poly2)
-  );
-];
-*/
 
 SimpleFactor(polynom):=FW(SimpleFactors(polynom));
 SimpleFactors(polynom):=
 [
   Local(list,i,result,p,newlist,poly,nrroots);
 
-//Echo("1... ",polynom);
-
   // Make list of coefficients
   poly:=Mkc(polynom);
 
-
-  Local(d);
-
-/*
-Echo("1... ",polynom,Deriv(x)polynom);
-Echo("2... ",poly);
-  d:=Mkc(Deriv(x)polynom);
-  d:=d/Gcd(d);
-Echo("2.1.. ",d);
-  d:=Mkgcd(poly,d,Infinity);
-Echo("3... ",d);
-  testpoly:=Mkd(poly,d,Infinity)[1];
-  DropEndZeroes(testpoly);
-*/
-  d:=Monic(Gcd(polynom,Deriv(x)polynom));
-  testpoly:=Mkc(Div(polynom,d));
-
-  
-//testpoly:=FlatCopy(poly);
-//Echo("polys are ",{poly,testpoly});
+  // testpoly is the square-free version of the polynomial, used for finding
+  // the factors. the original polynomials is kept around to find the
+  // multiplicity of the factor.
+  testpoly:=Mkc(Div(polynom,Monic(Gcd(polynom,Deriv(x)polynom))));
 
   // resulting factors will be stored here
   result:={};
   list:={};
-//Echo("1...");
+
   // Start off with the seeds for factoring
   If(IsZeroVector(Mkd(testpoly,{0,1},2)[2]),list:=0:list);
   If(IsZeroVector(Mkd(testpoly,{-1,1},2)[2]),list:=1:list);
   p:=2;
   nrroots:=Length(poly)-1;
-//Echo("2...");
+
   While(nrroots>0 And Length(list)>0)
   [
-//Echo("3... list = ",list);
     // check if any of the factors already divides the original polynomial
     For(i:=1,i<=Length(list),i++)
     [
       Local(lst1);
-      lst1:=Mkd(testpoly,{-list[i],1},Infinity);
-      If(IsZeroVector(lst1[2]),
-        [
-          testpoly:=lst1[1];
-          lst1:=Mkd(poly,{-list[i],1},Infinity);
-          Local(count);
-          count:=0;
-          While(IsZeroVector(lst1[2]))
-          [
-            count++;
-            poly:=lst1[1];
-            lst1:=Mkd(poly,{-list[i],1},Infinity);
-            nrroots--;
-          ];
-          result:={x-list[i],count}:result;
-        ]
-      );
-
-
-
-      lst1:=Mkd(testpoly,{-p+list[i],1},Infinity);
-      If(IsZeroVector(lst1[2]),
-        [
-          testpoly:=lst1[1];
-          lst1:=Mkd(poly,{-p+list[i],1},Infinity);
-          Local(count);
-          count:=0;
-          While(IsZeroVector(lst1[2]))
-          [
-            count++;
-            poly:=lst1[1];
-            lst1:=Mkd(poly,{-p+list[i],1},Infinity);
-            nrroots--;
-          ];
-          result:={x-(p-list[i]),count}:result;
-        ]
-      );
-
-
-
-
-      lst1:=Mkd(testpoly,{list[i],1},Infinity);
-//Echo("ddd2 ",lst1);
-      If(IsZeroVector(lst1[2]),
-        [
-
-          testpoly:=lst1[1];
-//Echo("testpoly simplified to ",testpoly);
-          lst1:=Mkd(poly,{list[i],1},Infinity);
-          Local(count);
-          count:=0;
-          While(IsZeroVector(lst1[2]))
-          [
-            count++;
-            poly:=lst1[1];
-            lst1:=Mkd(poly,{list[i],1},Infinity);
-            nrroots--;
-          ];
-          result:={x+list[i],count}:result;
-
-//Echo("result = ",result);
-        ]
-      );
-
-
-      lst1:=Mkd(testpoly,{p-list[i],1},Infinity);
-//Echo("ddd2 ",lst1);
-      If(IsZeroVector(lst1[2]),
-        [
-
-          testpoly:=lst1[1];
-//Echo("testpoly simplified to ",testpoly);
-          lst1:=Mkd(poly,{p-list[i],1},Infinity);
-          Local(count);
-          count:=0;
-          While(IsZeroVector(lst1[2]))
-          [
-            count++;
-            poly:=lst1[1];
-            lst1:=Mkd(poly,{p-list[i],1},Infinity);
-            nrroots--;
-          ];
-          result:={x+(p-list[i]),count}:result;
-
-//Echo("result = ",result);
-        ]
-      );
-
-
-
+      TryFact(-list[i]);
+      TryFact(-p+list[i]);
+      TryFact(list[i]);
+      TryFact(p-list[i]);
     ];  
 
-//Echo("4...");
+    // Given the partial solutions so far (potential roots modulo p), determine 
+    // new roots up to modulo 2*p. This step essentially adds one binary bit
+    // to the potential solutions and checks if they are still a solution.
     newlist:={};
-
-    // Raise by one bit
     For(i:=1,i<=Length(list),i++)
     [
       If(IsZeroVector(Mkd(testpoly,{-(list[i]+p),1},2*p)[2]),
@@ -236,19 +109,45 @@ Echo("3... ",d);
         newlist:=(list[i]):newlist);
     ];
 
-//Echo("5...",{list,result},p);
-    p:=2*p;
+//Echo(p,Length(list),list);
+    // We now have a new set of potential roots, modulo 2*p
     list:=newlist;
-
-//Echo("p = ",p,Length(list),{list});
-//Echo("6...",{list});
-
+    p:=2*p;
   ]; 
+
+  // If the polynom is not one, it is a polynomial which is not reducible any further
+  // with this algorithm, return as is.
+  If(poly != {1},result:={Mkpc(poly),1}:result);
 
   result;  
 ];
 
 
-
+/* TryFact is an utility macro used in SimpleFactors. For a polynomial 'poly'
+   for which the square-free part is 'testpoly', it determines if the 'root'
+   passed in is a root. If so, it is added to the list of results, and the
+   macro determines the multiplicity based on 'poly'. The factor (x-root) is
+   then divided out of the polynomials.
+ */
+Macro(TryFact,{root})
+[
+  lst1:=Mkd(testpoly,{-(@root),1},Infinity);
+  If(IsZeroVector(lst1[2]),
+    [
+      testpoly:=lst1[1];
+      lst1:=Mkd(poly,{-(@root),1},Infinity);
+      Local(count);
+      count:=0;
+      While(IsZeroVector(lst1[2]))
+      [
+        count++;
+        poly:=lst1[1];
+        lst1:=Mkd(poly,{-(@root),1},Infinity);
+        nrroots--;
+      ];
+      result:={x-(@root),count}:result;
+    ]
+  );
+];
 
 
