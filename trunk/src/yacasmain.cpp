@@ -534,7 +534,6 @@ CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator
         }
     }
     
-    //TODO #include "../ramscripts/some.inc"
 
     /*TODO test code!!!
      (*yacas)()().iRamDisk.SetAssociation(

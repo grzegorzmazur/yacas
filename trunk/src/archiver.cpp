@@ -1,8 +1,10 @@
 
 #include "yacasprivate.h"
 #include "archiver.h"
-#include "../ramscripts/compressedfiles.cpp"
-#include "../ramscripts/minilzo.c"
+/*TODO remove?
+#include "compressedfiles.cpp"
+*/
+#include "minilzo.c"
 
 CCompressedArchive::CCompressedArchive(unsigned char * aBuffer, LispInt aFullSize, LispInt aCompressed)
 : iFiles(aBuffer, aFullSize, aCompressed)

@@ -610,12 +610,14 @@ LispStringPtr LispEnvironment::FindCachedFile(LispCharPtr aFileName)
         }
     }
 
+/*TODO remove
     LispStringPtr hashedname = HashTable().LookUp(aFileName);
     LispRamFile* ramFile=iRamDisk.LookUp(hashedname);
     if (ramFile != NULL)
     {
         return NEW LispString(ramFile->Contents()->String(),LispTrue);
     }
+*/
     return NULL;
 }
 

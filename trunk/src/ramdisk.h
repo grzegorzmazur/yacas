@@ -1,4 +1,6 @@
 
+#if 0
+
 /** \file ramdisk.h
  *  LispRamDisk implements an in-memory file system by deriving from
  *  LispAssociatedHash.
@@ -51,3 +53,5 @@ class LispRamDisk : public LispAssociatedHash<LispRamFile>
 
 #endif
 
+
+#endif
