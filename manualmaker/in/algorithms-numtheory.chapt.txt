@@ -235,7 +235,7 @@ Also, $(-1)^((b^2-1)/8)$ is equal to $1$ if either $b:=1$ or $b:=7$ mod 8, and i
 Of course, if $s$ is even, none of this needs to be computed.
 
 
-		Integer Partitions
+		Integer partitions
 
 *A partitions of an integer
 
@@ -330,46 +330,44 @@ the definition, it can be seen that if $n$ is prime, then $Moebius(n) = -1 $. Th
 {IsSquareFree(n)} then reduces to $Moebius(n)!=0$, which means no factors are repeated.
 
 
-		Gaussian Integers
+		Gaussian integers
 
-*A Gaussian Integers
+*A Gaussian integers
 
 A Gaussian integer is a complex number of the form $ z = a+bi$, where $a$ and 
 $b$ are ordinary (rational) integers. The ring of Gaussian integers is usually
-denoted by $Z[i]$ in the mathematical literature. It is an example of ring of
+denoted by $Z[i]$ in the mathematical literature. It is an example of a ring of
 algebraic integers.
 
 The {GaussianNorm} function computes the norm $N(z)=a^2+b^2$ of $z$, which 
 plays a fundamental role in the arithmetic of Gaussian integers, since it has
 the multiplicative property:
-
-$ N(z.w) = N(z).N(w) $
+$$ N(z.w) = N(z).N(w) $$.
 
 A unit in a ring is an element that divides any other element in the ring. 
 There are four units in the Gaussian integers: $1$, $-1$, $I$, $-I$. They are 
 exactly the Gaussian integers whose norm is $1$. The predicate {IsGaussianUnit} 
-test for a Gaussian unit.
+tests for a Gaussian unit.
 
-Two Gaussian integers $z$ and $w$ are called associated is $z/w$ is a unit. 
+Two Gaussian integers $z$ and $w$ are "associated" is $z/w$ is a unit. 
 
 For example, $2+I$ and $-1+2*I$ are associated. 
 
-A Gaussian integer is called prime if it is only divisible by the units, and
-and its associates. It can be shown that the primes in the ring of Gaussian 
+A Gaussian integer is called prime if it is only divisible by the units and by
+its associates. It can be shown that the primes in the ring of Gaussian 
 integers are:
 *	1. $1+i$ and its associates.
 *	2. The rational (ordinary) primes of the form $4*n+3$.
-*	3. The factors $a+bi$ of rational primes $p$ of the form $4*n+1$, whose norm is $p$. 
+*	3. The factors $a+b*I$ of rational primes $p$ of the form $4*n+1$, whose norm is $p$. 
 
 For example, $7$ is prime as a Gaussian integer, while $5$ is not, since
+$$ 5 = (2+I)*(2-I) $$.
 
-$$ 5 = (2+I)*(2-I) $$
-
-*A The function Factors
+*A {Factors}
 
 The ring of Gaussian integers is an example of an Euclidean ring, i.e. a ring 
 where there is a division algorithm, and this makes possible to compute the 
-greatest common divisor using Euclid's algorithm. This is what the {GuassianGcd} 
+greatest common divisor using Euclid's algorithm. This is what the {GaussianGcd} 
 function does. 
 
 As a consequence, it is possible to prove a version of the  fundamental 
@@ -377,30 +375,32 @@ theorem of arithmetic for this ring: The expression of a Gaussian
 integer as a product of primes is unique, apart from the order of primes, the
 presence of units, and the ambiguities between associated primes.
 
-The function {Factors} find this expression of a Gaussian integer $z$ as 
+The function {Factors} finds this expression of a Gaussian integer $z$ as 
 the product of Gaussian primes, and returns the result as a list of elements
-of the form {p,e} where $p$ is a Gaussian prime and $e$ is the corresponding 
+of the form {{p,e}} where $p$ is a Gaussian prime and $e$ is the corresponding 
 exponent.
 
-To do that, an auxiliary function called GausianFactorPrime is used. This 
-function finds a factor of a rational prime of the form $4*n+1$. We 
-compute  $a := (2*n)!$ (mod p). By Wilson's theorem $a^2$ is congruent 
-$-1$ (mod $p$), it follows that $p$ divides $(a+I)*(a-I)=a^2+1$ in the 
-Gaussian  integers. The desired factor is then the {GaussianGcd} of $a+i$ 
-and $p$. If the result is $a+bi$, then $p=a^2+b^2$. 
+To do that, an auxiliary function called {GaussianFactorPrime} is used. This 
+function finds a factor of a real prime of the form $4*n+1$. We 
+compute  $a := (2*n)!$ (mod p). By Wilson's theorem $a^2$ is congruent to
+$-1$ (mod $p$), and it follows that $p$ divides $(a+I)*(a-I)=a^2+1$ in the 
+Gaussian  integers. The desired factor is then the {GaussianGcd} of $a+I$ 
+and $p$. If the result is $a+b*I$, then $p=a^2+b^2$. 
 
-If z is a rational integer, we factor z in the Gaussian integers, by first 
-factor it in the rational integers, and after that factoring each of 
-its integer prime factors.
+If $z$ is a real integer, we factor z in the Gaussian integers, by first 
+factor it in the real integers, and after that factoring each of 
+its integer prime factors in the complex integers.
  
-If $z$ is not a rational integer, we find its possible Gaussian prime factors, 
-by factoring its norm $N(z)$, and then computing the exponent of each of 
+If $z$ is not a real integer, we find its possible Gaussian prime factors
+by factoring its norm $N(z)$ and then computing the exponent of each of 
 the factors of $N(z)$ in the decomposition of $z$.
 
-*A References for Gaussian Integers
+	    References for Gaussian integers
 
-*	1. G. H. Hardy, E. M. Wright. An Introduction to the Theory of Numbers. Oxford University Press(1945).
-*	2. H. Pollard. The theory of Algebraic Numbers. John Willey and Sons (1965).
+*	1. G. H. Hardy and E. M. Wright,
+<i>An Introduction to the Theory of Numbers</i>. Oxford University Press (1945).
+*	2. H. Pollard,
+<i>The theory of Algebraic Numbers</i>. Wiley, New York (1965).
 
 
 
