@@ -19,6 +19,7 @@
 #include "lispglobals.h"
 #include "lispplugin.h"
 #include "ctokenizer.h"
+#include "xmltokenizer.h"
 
 
 class LispDefFiles;
@@ -223,6 +224,7 @@ private:
 public:
     LispTokenizer iDefaultTokenizer;
     CTokenizer    iCTokenizer;
+    XmlTokenizer  iXmlTokenizer;
     LispTokenizer* iCurrentTokenizer;
 };
 

@@ -661,7 +661,6 @@ void LispBerlekamp(LispEnvironment& aEnvironment, LispPtr& aResult,
     aResult.Set(LIST(LA(ATOML("List")) + LA(res)));
 }
 
-
 void LispDefaultTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments)
 {
@@ -677,6 +676,108 @@ void LispCTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
     InternalTrue(aEnvironment,aResult);
 }
 
+void LispXmlTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
+                      LispPtr& aArguments)
+{
+    TESTARGS(1);
+    aEnvironment.iCurrentTokenizer = &aEnvironment.iXmlTokenizer;
+    InternalTrue(aEnvironment,aResult);
+}
+
+void LispExplodeTag(LispEnvironment& aEnvironment, LispPtr& aResult,
+                   LispPtr& aArguments)
+{
+    TESTARGS(2);
+    LispPtr out;
+    InternalEval(aEnvironment, out, Argument(aArguments,1));
+    CHK_ISSTRING(out,1);
+
+    LispCharPtr str = out.Get()->String()->String();
+    str++;
+    if (str[0] != '<')
+    {
+        aResult.Set(out.Get());
+        return;
+    }
+    CHK_ARG(str[0] == '<',1);
+    str++;
+    LispCharPtr type = "\"Open\"";
+
+    if (str[0] == '/')
+    {
+        type = "\"Close\"";
+        str++;
+    }
+    LispString tag;
+    tag.SetNrItems(0);
+    
+    tag.Append('\"');
+    while (IsAlpha(*str))
+    {
+        LispChar c = *str++;
+        if (c >= 'a' && c <= 'z')
+            c = c + ('A'-'a');
+        tag.Append(c);
+    }
+    tag.Append('\"');
+    tag.Append('\0');
+
+    LispObject* info = NULL;
+
+    while (*str == ' ') str++;
+    while (*str != '>')
+    {
+        LispString name;
+        name.SetNrItems(0);
+        name.Append('\"');
+        
+        LispCharPtr start = str;
+        while (IsAlpha(*str))
+        {
+            LispChar c = *str++;
+            if (c >= 'a' && c <= 'z')
+                c = c + ('A'-'a');
+            name.Append(c);
+        }
+        name.Append('\"');
+        name.Append('\0');
+//printf("Should be =, is %c\n",str[0]);
+        CHK_ARG(str[0] == '=',1);
+        str++;
+//printf("Should be \", is %c\n",str[0]);
+        CHK_ARG(str[0] == '\"',1);
+        LispString value;
+        value.SetNrItems(0);
+        value.Append(*str++);
+        while (*str != '\"')
+        {
+            value.Append(*str++);
+        }
+        value.Append(*str++);
+        value.Append('\0');
+//printf("[%s], [%s]\n",name.String(),value.String());
+        info =  LIST(LA(ATOML("List")) + LA(ATOML(name.String())) + LA(ATOML(value.String()))) + LA(info);
+        while (*str == ' ') str++;
+
+//printf("End is %c\n",str[0]);
+        if (*str == '/')
+        {
+            type = "\"OpenClose\"";
+            str++;
+            while (*str == ' ') str++;
+        }
+    }
+    
+    info = LIST(LA(ATOML("List")) + LA(info));
+    aResult.Set(
+                LIST(
+                     LA(ATOML("XmlTag")) +
+                     LA(ATOML(tag.String())) +
+                     LA(info) +
+                     LA(ATOML(type))
+                    )
+               );
+}
 
 
 void LispFastAssoc(LispEnvironment& aEnvironment, LispPtr& aResult,
