@@ -1603,8 +1603,8 @@ the results are assembled in a list and this list is returned.
 
 *DESC
 
-This functions writes out "list" in a nicer readable form, by
-printing every element in the list on a seperate line.
+This functions writes out the list {list} in a better readable form, by
+printing every element in the list on a separate line.
 
 *E.G.
 
