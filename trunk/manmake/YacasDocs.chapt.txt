@@ -89,7 +89,7 @@ You may want to examine the source of this file ({manmake/}
 {YacasDocs.chapt.txt}) to see how various features of the markup are used.
 Currently the following markup is implemented:
 
-*	Paragraphs are separated by blank lines (lines consisting of space or TAB characters or empty). Several blank lines next to each other are equivalent to one. However, TAB-indented blank lines inside a code example (see below) do not create another paragraph.
+*	Paragraphs are separated by blank lines (lines consisting of space characters or empty). Several blank lines next to each other are equivalent to one. However, TAB-indented blank lines inside a code example (see below) do not create another paragraph.
 
 *	Book heading is quadruple TAB indented. Chapter heading is triple TAB indented. Section heading is double TAB indented. Subsection heading is indented by a TAB and 4 spaces. Headings must be within one line (but that line can be as long as needed).
 
@@ -139,6 +139,9 @@ blank line.
 
 	*	Item
 	*	Another item
+This will produce:
+*	Item
+*	Another item
 
 *	Enumerated text is marked by "*" followed by TAB, number and period. The number used in the source text is irrelevant because the enumerated environment of the final document will introduce its own counter. For example:
 	*	0. First item
@@ -460,10 +463,11 @@ Other special markup:
 *A documentation!summary of syntax
 
 Special syntax entities include:
-*	TAB indented: chapter, section, subsection titles, sample code
-*	asterisk-TAB: enumerated and itemized environments
+*	TAB indented: book title (4 TABs), chapter (3 TABs), section (2 TABs), subsection (1 TAB and 4 spaces) titles, sample code (1 TAB)
+*	asterisk-TAB: enumerated environment
+*	asterisk-TAB-number-period: itemized environment
 *	curly braces
-"{{}}": inline code samples, Yacas names (monospaced font)
+"{{}}": inline code samples, names of functions or variables (monospaced font)
 *	special delimiters
 "{<i>}"
 and "{</i>}": italics (for emphasis, not for mathematics)
@@ -472,7 +476,7 @@ and "{</i>}": italics (for emphasis, not for mathematics)
 "{<*}" and
 "{*>}": Web hyperlinks and documentation hyperlinks
 *	the exclamation mark
-"{!}": nested index entries
+"{!}": nested index entries (use inside the {*A} label)
 
 	    Debugging the manual
 
