@@ -730,9 +730,15 @@ LispStringPtr PiFloat( LispHashTable& aHashTable,
 static LispStringPtr FloatToString(ANumber& aInt,
                             LispHashTable& aHashTable, LispInt aBase)
 {
+    LispStringPtr result = NEW LispString;
+    ANumberToString(*result, aInt, aBase);
+    return result;
+
+/*TODO FIXME remove?
     LispString result;
     ANumberToString(result, aInt, aBase);
     return aHashTable.LookUp(result.String());
+*/
 }
 
 
