@@ -1,6 +1,7 @@
 
 
 Use("codecheck.rep/codetransform.ys");
+Use("codecheck.rep/genericparser.ys");
 
 /*
  * Parser part for reading Common Lisp expressions
@@ -34,18 +35,23 @@ CommonLisp'Tokens :=
 lists
  * of token indices into the input stream.
  */
+ 
+ /*
 CommonLisp'GetExpression() := CommonLisp'GetExpression(CommonLisp'grammar);
 
 CommonLisp'GetExpression(grammar) := 
 [
-  CommonLisp'CleanParseTree(GenericParserNextExpression(grammar));
+  Local(result);
+  result:=CommonLisp'CleanParseTree(GenericParserNextExpression(grammar));
+//Echo("HIER ",result);
+  result;
 ];
 
 CommonLisp'CleanParseTree(_x) <-- x;
 
 DefineGrammar(CommonLisp'grammar,
   {
-    CommonLisp'atom,
+   { at,CommonLisp'atom },
    { "(",CommonLisp'list,")"}
   });
 
@@ -56,11 +62,14 @@ DefineGrammar(CommonLisp'atom,
 
 DefineGrammar(CommonLisp'list,
   {
-    { CommonLisp'atom, CommonLisp'list},
-    { CommonLisp'atom}
+    { atl,CommonLisp'atom, CommonLisp'list},
+    { ati,CommonLisp'atom},
+    { ate}
   });
 
-/*TODO remove
+*/
+
+
 CommonLisp'GetExpression() :=
 [
   Local(expression);
@@ -87,9 +96,24 @@ CommonLisp'GetExpression() :=
   expression;
 ];
 
-*/
 
 
-CommonLisp'Echo'EmitCode() := WriteTokens(CodeTrans'output);
+CommonLisp'Echo'PreProcess():= [ ];
+CommonLisp'Echo'PostProcess() := 
+[
+  Local(result);
+  DefaultPostProcess("CommonLisp'GetExpression","CommonLisp'Echo'travBase");
+];
+
+CommonLisp'Echo'travBase(_atoms,_ids) <--
+[
+  Write(atoms);
+  NewLine();
+];
+
+CommonLisp'Echo'EmitCode() := 
+[
+  WriteTokens(CodeTrans'output);
+];
 
 
