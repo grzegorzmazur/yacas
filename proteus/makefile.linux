@@ -5,7 +5,7 @@ YACAS_DIR = ../src
 
 CXX		=c++
 INCS = -I$(YACAS_DIR) -I$(YACAS_DIR)/plat/linux32 -Ifl_editor-0.4/
-CXXFLAGS	= -O2 -Wall -Wno-return-type   -I/usr/X11R6/include
+CXXFLAGS	= -O2 -Wno-return-type   -I/usr/X11R6/include
 
 LDLIBS		=  -L/usr/X11R6/lib -lX11 -lXext  -lm -ldl
 GLDLIBS		=  -L/usr/X11R6/lib  -lGLU -lGL -lX11 -lXext  -lm
