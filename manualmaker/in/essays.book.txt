@@ -4,6 +4,7 @@ using the Yacas system for specific calculations
 to general issues related to the Yacas system development and maintenance.
 				Essays on Yacas
 
+
 *INCLUDE paper.chapt
 
 *INCLUDE wester-1994.chapt

@@ -25,10 +25,12 @@
 #ifdef HAVE_CONFIG_H
 #include "../config.h"
 #endif
-#ifndef VERSION
+#ifdef VERSION
+#undef VERSION
+#endif //VERSION
+
 //#define VERSION "Windows latest"
 #include "version.h"
-#endif  //VERSION
 
 
 /*TODO

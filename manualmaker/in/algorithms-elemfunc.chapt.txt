@@ -368,6 +368,8 @@ Double factorials are used in the exact calculation of the Gamma function of hal
 
 *A binomial coefficients
 
+
+
 Binomial coefficients $Bin(n,m)$ are found by first selecting the smaller of $m$, $n-m$ and using the identity $Bin(n,m) = Bin(n,n-m)$. Then a partial factorial is used to compute
 $$ Bin(n,m)= ((n-m+1)***n) / m! $$.
 This is always much faster than computing the three factorials in the definition of $Bin(n,m)$.
@@ -384,9 +386,12 @@ If the required precision is much less than the number of digits in the exact fa
 
 *A orthogonal polynomials
 
+
 A family of orthogonal polynomials is a sequence of polynomials $q_n(x)$, $n=0$, 1, ... that satisfy the orthogonality condition on some interval [$a$, $b$] with respect to some weight function $rho(x)$:
 $$ (Integrate(x,a,b) q_m(x)*q_n(x)*rho(x) ) = 0 $$.
 The interval can be finite or infinite and the weight function must be real and non-negative on this interval.
+
+
 
 In principle, one could choose any (non-negative) weight function $rho(x)$ and any interval [$a$, $b$] and construct the corresponding family of orthogonal polynomials $q_n(x)$.
 For example, take $q_0=1$, then take $q_1=x+c$ with unknown $c$ and find $c$ such that $q_0$ and $q_1$ satisfy the orthogonality condition;
@@ -407,27 +412,37 @@ $$ beta(x)=beta_0+beta_1*x+beta_2*x^2 $$.
 Also, the following boundary conditions must be satisfied on both ends $a$, $b$ of the interval,
 $$ rho(a)*beta(a)=rho(b)*beta(b)=0 $$.
 
+
+
 *A orthogonal polynomials!Rodrigues formula
 
-If the function $rho(x)$ and the interval [$a$, $b$] is chosen in this way, then the corresponding orthogonal polynomials $q_n(x)$ are solutions of the differential equation
-$$ (Deriv(x)(beta(x)*rho(x)*(Deriv(x)q_n(x))))-n*(alpha_1+(n+1)*beta_2)*q[n]=0 $$.
-The polynomials $q_n(x)$ are also given by the Rodrigues formula,
-$$ q_n(x) = A[n]/rho(x)*D(x,n)rho(x)*beta(x)^n $$,
+If the function $rho(x)$ and the interval [$a$, $b$] is chosen in this way, then the corresponding orthogonal polynomials {q_n(x)} are solutions of the differential equation
+
+	(Deriv(x)(beta(x)*rho(x)*(Deriv(x)q_n(x))))-n*(alpha_1+(n+1)*beta_2)*q[n]=0 .
+
+The polynomials {q_n(x)} are also given by the Rodrigues formula,
+
+	q_n(x) = A[n]/rho(x)*D(x,n)rho(x)*beta(x)^n ,
+
 where $A[n]$ is a normalization constant.
 It is usual practice to normalize the polynomials so that
-$$ (Integrate(x,a,b)(q_n(x))^2*rho(x))=1 $$.
+
+	(Integrate(x,a,b)(q_n(x))^2*rho(x))=1 .
+
 So the normalization constant can be chosen accordingly.
 
 *A orthogonal polynomials!generating function
-
 
 Finally, there is a formula for the generating function of the polynomials,
 $$ G(x,w) = 1/rho(x)*rho(t(x,w))/Abs(1-w*(beta_1+2*beta_2*t(x,w))) $$,
 where $t(x,w)$ is the root of $t-x-w*beta(t)=0$ which is nearest to $t=x$ at small $w$.
 This function $G(x,w)$ gives the non-normalized polynomials,
-$$ G(x,w) = Sum(n,0,Infinity, q_n(x)/n! *w^n) $$,
+
+	G(x,w) = Sum(n,0,Infinity, q_n(x)/n! *w^n) ,
+
 where
-$$ q_n(x) = 1/rho(x)*D(x,n)rho(x)*beta(x)^n $$.
+
+	q_n(x) = 1/rho(x)*D(x,n)rho(x)*beta(x)^n .
 
 The classical families of (normalized) orthogonal polynomials are obtained in this framework with the following definitions:
 
@@ -462,6 +477,12 @@ The Rodrigues formula or the generating function are not efficient ways to calcu
 A better way is to use linear recurrence relations connecting $q[n+1]$ with $q[n]$ and $q[n-1]$.
 (These recurrence relations can also be written out in full generality through $alpha(x)$ and $beta(x)$ but we shall save the space.)
 
+
+
+
+
+
+
 There are three computational tasks related to orthogonal polynomials:
 *	1. Compute the coefficients of a given polynomial $q_n(x)$ exactly.
 The coefficients are usually rational numbers, but the numerators and denominators usually grow exponentially quickly with $n$, so that $n$-th polynomial has at least some coefficients as $n$-digit numbers.
@@ -480,6 +501,20 @@ if we use the so-called Clenshaw-Smith procedure
 which gives the value of $f(x)$ directly in $n$ iterations.
 (See the next section for more explanations.)
 The number of operations is again $O(n*P)$ because only "short" multiplications and divisions are needed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 In the next section we shall give some formulae that allow to calculate particular polynomials more efficiently.
 

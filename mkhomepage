@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/sh
 
 # clean
 rm -f yacas-*.tar.gz
@@ -9,6 +9,8 @@ make clean
 ./configure --enable-ps-doc --enable-pdf-doc
 cd src ; make versionstamper ; cd ..
 make
+cd src ; make -f makefile.ibook ; cd ..
+cd manualmaker ; make ; cd ..
 make install
 make dist
 # make distcheck
