@@ -83,6 +83,9 @@ CmdDescription(cmd, desc) :=
             {{ChapterLink(cmd), desc}});
 ];   
 
+CmdDescriptionMany(cmd, desc) := CmdDescription(cmd, desc);
+CmdDescriptionSingle(cmd, desc) := CmdDescription(cmd, desc);
+
 ChapterLink(aLink) := 
   HtmlLink(aLink, plain["BaseName"] : "chapter" 
                                     : String(currentChapterIndex) : ".html",

@@ -26,7 +26,8 @@
 	2. Need to figure out how to deal with variable names such as "alpha3"
 */
 
-TexForm(_expr) <-- [WriteString(TeXForm(expr));NewLine();];
+/// TeXmacs prettyprinter
+TexForm(_expr) <-- [DumpErrors();WriteString(TeXForm(expr));NewLine();];
 
 RuleBase("TeXForm",{expression});
 RuleBase("TeXForm",{expression, precedence});
@@ -48,7 +49,7 @@ Function ("TeXFormBracketIf", {predicate, string})
 TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equal to KMaxPrec */
 
 /// main front-end
-100 # TeXForm(_x) <-- ConcatStrings("$", TeXForm(x, TeXFormMaxPrec), "$", ToString()DumpErrors());
+100 # TeXForm(_x) <-- ConcatStrings("$", TeXForm(x, TeXFormMaxPrec), "$");
 
 /* Replace numbers and variables -- never bracketed except explicitly */
 

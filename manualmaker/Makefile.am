@@ -65,6 +65,7 @@ EXTRA_DIST = \
 %.dvi: %.tex
 	latex $< > /dev/null
 	latex $< > /dev/null
+	@perl -pe 's/verb\|(.*)\|/verb=$$1=/;s/([!()|])/"$$1/g;s/\@([^\\])/"\@$$1/g;' < $*.idx | makeindex -i > $*.ind # black magic
 	latex $< > /dev/null
 
 %.ps: %.dvi
@@ -101,7 +102,7 @@ texdocs: \
 	echo "done" > texdocs.c
 
 clean:
-	rm -f books.html.c *.tex *.dvi *.aux *.toc *.log *.ps *.pdf \
+	rm -f books.html.c *.tex *.dvi *.aux *.idx *.ind *.ilg *.toc *.log *.ps *.pdf \
 	coding*html intro*html ref*html essays*html .o core *~ texdocs.c \
 	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS) \
 	$(CODESNIPPETS) in/yacasapi.chapt.txt $(BOOKS) manicon.html

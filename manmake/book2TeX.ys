@@ -14,14 +14,15 @@ Book(x) := [	/* this is the first declaration in a file */
 \\setlength{\\textwidth}{7.2in}
 \\setlength{\\textheight}{10.0in}
 
+\\makeindex
+\\usepackage{makeidx}
 \\begin{document}
 \\title{%
 " : x : "}
 \\author{by the \\textsc{Yacas} team
 \\thanks{
 This text is part of the \\textsc{Yacas} software package and may be freely
-distributed under the terms of the GNU General Public License (GPL) for
-documentation, version 2 or later.
+distributed under the terms of the GNU Free Documentation License (GFDL) version 1.1 or later. Copyleft 2002.
 Principal documentation authors:
 Ayal Zwi Pinkus, Serge Winitzki, Jitse Niesen.
 }}
@@ -120,6 +121,7 @@ Bodied("Itemize",2);
 Bodied("Enumerate",2);
 
 TeXFinishUp() := AddBody("
+\\printindex
 \\end{document}
 ");
 
@@ -151,11 +153,14 @@ ChapterIntro(string) := AddBody("
 ");
 Bodied("ChapterIntro", 60000);
 
-CmdDescription(cmd, desc) := AddBody(
-"
+CmdDescriptionMany(cmd, desc) := AddBody(CmdDescriptionHead(cmd, desc));
+CmdDescriptionSingle(cmd, desc) := AddBody(CmdDescriptionHead(cmd, desc)
+: "\\index{":cmd:"@":HtmlTerm(cmd):"}");
+
+CmdDescriptionHead(cmd, desc) := "
 \\section{%
 " : HtmlTermHeading(cmd) : " --- " : desc : "}
-");
+";
 
 StandardLib() := AddBody("
 \\begin{flushright}\\small (standard library)\\end{flushright}
@@ -188,8 +193,8 @@ SeeAlso(list) := AddBody("
 \\end{flushleft}
 ");
 
-AddAnchor(string) := "";
-HtmlAnchor(string) := "";
+AddAnchor(string) := "\\index{" : string : "}";
+HtmlAnchor(string) := "\\index{" : string : "@" : HtmlTerm(string) : "}";
 
 Bodied("HtmlAnchor", 60000);
 Topical(string) := If(string = "See also:", "",
