@@ -27,6 +27,7 @@ MatrixRow
 MatrixColumn
 GenMatrix
 RandomIntegerVector
+RandomIntegerMatrix
 JacobianMatrix
 HessianMatrix
 WronskianMatrix

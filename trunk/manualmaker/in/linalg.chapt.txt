@@ -1452,3 +1452,42 @@ matrices with positive elements and Hilbert matrices.
 	CommandLine(1) : "Cholesky: Matrix is not positive definite"
 
 *SEE IsSymmetric, IsDiagonal, Diagonal
+
+*CMD RandomIntegerMatrix --- generate a matrix of random integers
+
+*STD
+
+*CALL
+	RandomIntegerMatrix(rows,cols,from,to)
+
+*PARMS
+
+{rows} -- number of rows in matrix
+
+{cols} -- number of cols in matrix
+
+{from} -- lower bound
+
+{to} -- upper bound
+
+*DESC
+
+This function generates a {rows x cols} matrix of random integers. All
+entries lie between "from" and "to", including the boundaries, and
+are uniformly distributed in this interval.
+
+*E.G.
+	In> PrettyForm( RandomIntegerMatrix(5,5,-2^10,2^10) )
+	/                                               \
+	| ( -506 ) ( 749 )  ( -574 ) ( -674 ) ( -106 )  |
+	|                                               |
+	| ( 301 )  ( 151 )  ( -326 ) ( -56 )  ( -277 )  |
+	|                                               |
+	| ( 777 )  ( -761 ) ( -161 ) ( -918 ) ( -417 )  |
+	|                                               |
+	| ( -518 ) ( 127 )  ( 136 )  ( 797 )  ( -406 )  |
+	|                                               |
+	| ( 679 )  ( 854 )  ( -78 )  ( 503 )  ( 772 )   |
+	\                                               /
+
+*SEE RandomIntegerVector, RandomPoly
