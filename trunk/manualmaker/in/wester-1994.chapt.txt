@@ -7,7 +7,8 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 {Yacas} version: 1.0.51
 
 *	1. (OK) $50!$
-	50!;
+	Verify(25!, 15511210043330985984000000);
+	Verify(50!, (26***50)*25!);
 *	2. (OK) Factorize $50!$
 	Verify(Factors(50!), {{47,1},{2,47}, {3,22},
 	  {5,12},{7,8},{11,4},{13,3},{17,2}, {19,2},
@@ -15,7 +16,8 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 *	3. (OK) $1/2 + ... + 1/10 = 4861/2520$
 	Verify(Sum(n,2,10,1/n) , 4861/2520);
 *	4. (OK) Evaluate $e^(Pi*Sqrt(163))$ to 50 decimal digits
-	Verify(N(1000000000000*(-262537412640768744 +Exp(Pi*Sqrt(163))), 50)> -0.75, True);
+	Verify(N(1000000000000*(-262537412640768744 +
+	  Exp(Pi*Sqrt(163))), 50)> -0.75, True);
 *	5. (NO) Evaluate the Bessel function $J[2]$ numerically at $z=1+I$.
 	N(BesselJ(1+I));
 *	6. (OK) Obtain period of decimal fraction 1/7=0.(142857).
@@ -57,7 +59,8 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 *	28. (OK) $Sqrt(997)-(997^3)^(1/6) = 0$
 	Verify(RadSimp(Sqrt(997)-(997^3)^(1/6)), 0);
 *	29. (OK) $Sqrt(99983)-(99983^3)^(1/6) = 0$
-	Verify(RadSimp(Sqrt(99983)-(99983^3)^(1/6)), 0);
+	Verify(RadSimp(Sqrt(99983)-(99983^3)^(1/6))
+	  , 0);
 *	30. (OK) $(2^(1/3)+4^(1/3))^2-6*(2^(1/3)+4^(1/3))-6 = 0$
 	Verify(RadSimp((2^(1/3)+4^(1/3))^3-6*(2^(1/3)+
 	  4^(1/3))-6), 0);
@@ -99,9 +102,10 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 	  Deriv(x,n) (x^2-1)^n );
 	TestYacas(P(4,x), (35*x^4)/8+(-15*x^2)/4+3/8);
 *	124. (OK) Compute Legendre polynomials $P[n]$ recursively.
-	Verify(OrthoP(4, x), 3/8+((35*x^2)/8-15/4)*x^2);
+	Verify(OrthoP(4,x)
+	  , 3/8+((35*x^2)/8-15/4)*x^2);
 *	125. (OK) Compute Legendre polynomial $P[4]$ at $x=1$.
-	Verify(OrthoP(4, 1), 1);
+	Verify(OrthoP(4,1), 1);
 *	126. (OK) Define the polynomial $p=Sum(i,1,5,a[i]*x^i)$.
 	p:=Sum(i,1,5,a[i]*x^i);
 	Verify(p, a[1]*x+a[2]*x^2+a[3]*x^3
@@ -115,6 +119,6 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 	Verify(True And False, False);
 *	130. (OK) Prove $x$ Or Not $x$.
 	Verify(CanProve(x Or Not x), True);
-*	131. (OK) Prove $x Or y Or (x And y) => x Or y$.
-	Verify(CanProve(x Or y Or (x And y) => x Or y)
+*	131. (OK) Prove $x Or y Or x And y => x Or y$.
+	Verify(CanProve(x Or y Or x And y => x Or y)
 	  , True);
