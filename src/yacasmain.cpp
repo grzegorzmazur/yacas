@@ -626,7 +626,20 @@ void InterruptHandler(int errupt)
         exit(0);
 }
 
+/*
+void BusErrorHandler(int errupt)
+{
+#ifdef SIGBUS
+  signal(SIGBUS,SIG_IGN);
+#endif
+#ifdef SIGBUS
+  signal(SIGSEGV,SIG_IGN);
+#endif
 
+    printf("Bus error/segfault\n");
+    (*yacas)()().iEvalDepth = (*yacas)()().iMaxEvalDepth+100;
+}
+*/
 
 #ifdef SUPPORT_SERVER
 
@@ -1033,6 +1046,14 @@ int main(int argc, char** argv)
 #endif
 
     atexit(my_exit);
+/*
+#ifdef SIGBUS
+  signal(SIGBUS,BusErrorHandler);
+#endif
+#ifdef SIGBUS
+  signal(SIGSEGV,BusErrorHandler);
+#endif
+*/
 
     signal(SIGINT, InterruptHandler);
 

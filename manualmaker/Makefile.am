@@ -148,8 +148,9 @@ books.html:  $(BOOKS) $(srcdir)/indexmaker $(srcdir)/styleplain
 # this is the old command that generated all HTML docs at once:
 #	-$(ouryacas2) $(srcdir)/in/all
 	-echo '[Use("indexmaker"); GenerateIndex();];' | $(ouryacas2) -fpc
-	# do we need this?
-	#echo "done" > manicon.html.c
+	
+# do we need this?
+#echo "done" > manicon.html.c
 
 intro.html : intro.book $(INTROCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[Use("manualmaker"); GenerateBook("intro");];' | $(ouryacas2) -fpc
