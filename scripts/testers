@@ -86,7 +86,7 @@ VerifyDiv(_u,_v) <--
   ForEach(item,list) EchoInternal(item);
   NewLine();
 ];
-20 # Echo(item)<--
+20 # Echo(_item)<--
 [
   EchoInternal(item);
   NewLine();

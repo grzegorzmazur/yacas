@@ -1486,6 +1486,12 @@ void LispReadToken(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispStringPtr result;
     result = tok.NextToken(*aEnvironment.CurrentInput(),
                            aEnvironment.HashTable());
+
+    if (result->String()[0] == '\0')
+    {
+        aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp("EndOfFile")));
+        return;
+    }
     aResult.Set(LispAtom::New(result));
 }
 
