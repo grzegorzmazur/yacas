@@ -1,5 +1,7 @@
 		Euler's Gamma function
 
+*A Gamma function
+
 Euler's Gamma function $Gamma(z)$ is defined for complex $z$ such that
 $Re(z)>0$ by the integral
 $$Gamma(z):=Integrate(z, 0, Infinity) Exp(-t)*t^(z-1)$$.
@@ -13,13 +15,17 @@ $$ Gamma(n+1) := n! $$,
 so the factorial notation can be used for the Gamma function too. Some formulae
 become a little simpler when written in factorials.
 
+*A Gamma function!half-integer arguments
+
 The Gamma function is implemented as {Gamma(x)}. At integer values {n} of the
-argument, {Gamma(n)} is computed exactly. For half-integer values it is
+argument, {Gamma(n)} is computed exactly. For half-integer arguments it is
 also computed exactly, using the following identities (here $n$ is a
 nonnegative integer):
 $$ (+(2*n+1)/2)! = Sqrt(Pi)*(2*n+1)! / (2^(2*n+1)*n!) $$,
 $$ (-(2*n+1)/2)! = (-1)^n*Sqrt(Pi) * (2^(2*n)*n!) / (2*n)! $$.
 For efficiency, "staggered factorials" are used in this calculation.
+
+*A Gamma function!by Lanczos-Spouge method
 
 For arbitrary complex arguments with nonnegative real part, the library
 function {GammaNum(x)} computes a uniform appoximation of Lanczos and Spouge
@@ -32,7 +38,7 @@ real part; at negative values of the real part of the argument, the
 $Gamma$-function is computed via the identity
 $$Gamma(x)*Gamma(1-x) = Pi/Sin(Pi*x)$$.
 
-The approximation formula used in Yacas depends on a parameter $a$,
+The Lanczos-Spouge approximation formula depends on a parameter $a$,
 $$Gamma(z) = (Sqrt(2*Pi)*(z+a)^(z-1/2)) / (z*e^(z+a)) * (1+e^(a-1)/Sqrt(2*Pi) * Sum(k, 1, N, c[k]/(z+k)))$$,
 with $N := Ceil(a)-1$. The coefficients $c[k]$ are defined by
 $$ c[k] = (-1)^(k-1)*(a-k)^(k-1/2)/(e^(k-1)*(k-1)!) $$.
@@ -56,8 +62,8 @@ In the calculation of the sum $Sum(k, 1, N, c[k]*(z+k)^(-1))$, round-off error
 can lead to a serious loss of precision. At version
 *EVAL Version() : ","
 {Yacas} is limited in
-its internal arbitrary precision facility in that does not support
-floating-point numbers with mantissa; this hinders precise calculations with
+its internal arbitrary precision facility that does not support
+true floating-point computation but rather uses fixed-point logic; this hinders precise calculations with
 floating-point numbers. (This concern does not apply to Yacas linked with
 {gmp}.) In the current version of the {GammaNum()} function, two workarounds
 are implemented. First, a Horner scheme is used to compute the sum; this is somewhat
@@ -65,13 +71,18 @@ faster and leads to smaller roundoff errors. Second, intermediate calculations
 are performed at 40{%} higher precision than requested. This is much slower but
 allows to obtain results at desired precision.
 
-If the factorial of a large integer or half-integer $n$ needs to be computed not exactly but only with a certain floating-point precision, it is faster (for large enough $Abs(n)$) not to evaluate an exact integer product, but to use the {GammaNum} approximation or Stirling's asymptotic formula,
+*A Stirling's formula
 
+If the factorial of a large integer or half-integer $n$ needs to be computed not exactly but only with a certain floating-point precision, it is faster (for large enough $Abs(n)$) not to evaluate an exact integer product, but to use the {GammaNum} approximation or Stirling's asymptotic formula,
 $$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)+1/(12*n)-1/(360*n^3)+...$$
 (The coefficients of the series expansion are related to Bernoulli numbers: $B[k+1]/(k*(k+1)*n^k)$ for $k>=1$.)
 This method is currently not implemented in Yacas.
 
 		Riemann's Zeta function
+
+*A Riemann's Zeta function
+
+*A Bernoulli numbers!asymptotic
 
 Riemann's Zeta function $zeta(s)$ is defined for complex $s$ such that $Re(s)>0$ as a sum of inverse powers of integers:
 $$zeta(s) := Sum(n,0,Infinity, 1/n^s)$$.
@@ -97,6 +108,8 @@ J. M. Borwein, D. M. Bradley, R. E. Crandall:
 <i>Computation strategies for the Riemann Zeta function</i>, preprint
 CECM-98-118, 1999, for a review of methods.
 
+*A Riemann's Zeta function!by Borwein's algorithm
+
 It is the "third" algorithm (the simplest one) from P. Borwein's paper which is implemented in
 Yacas. The approximation formula valid for $Re(s) > -(n-1)$ is
 $$ zeta(s) = 1/(2^n*(1-2^(1-s)))*Sum(j,0,2*n-1, e[j]/(j+1)^s) $$,
@@ -111,6 +124,8 @@ must have $n>P*Ln(10)$/$Ln(8)$.
 
 The function {Zeta(s)} calls {ZetaNum(s)} to compute this approximation formula
 for $Re(s)>1/2$ and uses the identity above to get the value for other $s$.
+
+*A Riemann's Zeta function!by direct summation
 
 For very large values of $s$, it is faster to use another method implemented in the routine {ZetaNum1(s, N)}. If the required precision is $P$ digits and
 $s > 1 + Ln(10)/Ln(P)*P$,
@@ -129,13 +144,14 @@ Lambert's $W$ function is (a multiple-valued, complex function) defined for any 
 $ W(z) * Exp(W(z)) = z$.
 This function is sometimes useful to represent solutions of transcendental equations or integrals.
 
+*A Lambert's $W$ function!asymptotics
 
 Asymptotics of Lambert's $W$ function are, as usual, not precise enough for actual calculations:
 $$W((z^2-2)/2/Exp(1)) = -1 + z - z^3/3 + 11/72*z^4 - ...$$ (this is only good really close to z=0);
 $W(x) = x-x^2+3/2*x^3-...$ (this is good very near x=0);
-$$W(x) = Ln(x) - Ln(Ln(x)) + Ln(Ln(x))/Ln(x) + 1/2*(Ln(Ln(x))/Ln(x))^2 + ...$$ (good for very large $x$ but it is not clear how to form higher terms!).
+$$W(x) = Ln(x) - Ln(Ln(x)) + Ln(Ln(x))/Ln(x) + 1/2*(Ln(Ln(x))/Ln(x))^2 + ...$$ (good for very large $x$ but it is not straightforward to find higher terms!).
 
-Fortunately, one can use uniform rational approximations:
+One can also use uniform rational approximations, e.g.:
 $$W(x) <=> Ln(1+x)*(1-Ln(1+Ln(1+x))/(2+Ln(1+x)))$$ (uniformly good for $x>0$, relative error not more than $10^(-2)$); and
 $$W(x) <=> (x*Exp(1)) / (1+( (2*(x*Exp(1)+1))^(-1/2) -1/Sqrt(2) +1/(Exp(1)-1))^(-1) )$$
 (uniformly good for $-Exp(-1)<x<0$, relative error not more than $10^(-3)$).
@@ -148,8 +164,9 @@ However, the coefficients $a$, ..., $f$ are not elementary constants; they have
 to be found numerically by matching to the asymptotics at three points
 $x= -Exp(-1)$, $x=0$, $x=Infinity$.
 
+*A Lambert's $W$ function!by Halley's method
 
-The numerical procedure uses the Newton-Halley iteration and the first two uniform rational approximation of $W(x)$ for the initial value of $x$.
+The numerical procedure uses the Halley iteration and the first two uniform rational approximation of $W(x)$ for the initial value of $x$.
 
 The Halley iteration for the equation $W*Exp(W)=x$ can be written as
 $$ W'=W-(W-x*Exp(-W))/(W+1-(W+2)/(W+1)*(W-x*Exp(-W))/2) $$. It has cubic convergence for any initial value $W> -Exp(-1)$.
@@ -157,11 +174,14 @@ $$ W'=W-(W-x*Exp(-W))/(W+1-(W+2)/(W+1)*(W-x*Exp(-W))/2) $$. It has cubic converg
 
 		Bessel functions
 
+*A Bessel functions
 
 Bessel functions are a family of special functions solving the equation
 $$ (Deriv(x,2)w(x))+1/x*(D(x)w(x))+(1-n^2/x^2)*w(x)=0 $$. There are two linearly independent solutions which can be taken as the pair of Hankel functions $H1(n,x)$, $H2(n,x)$, or as the pair of Bessel-Weber functions $J[n]$, $Y[n]$.
 These pairs are linearly related,
 $J[n]=1/2*(H1(n,x)+H2(n,x))$, $J[n]=1/(2*I)*(H1(n,x)-H2(n,x))$. The function $H2(n,x)$ is the complex conjugate of $H1(n,x)$. This arrangement of four functions is very similar to the relation between $Sin(x)$, $Cos(x)$ and $Exp(I*x)$, $Exp(-I*x)$, which are all solutions of $(Deriv(x,2)f(x))+f(x)=0$.
+
+*A Bessel functions!asymptotics
 
 For large values of $Abs(x)$, there is the following asymptotic series:
 $$ H1(n,x) <> Sqrt(2/(Pi*x))*Exp(I*zeta)*Sum(k,0,Infinity, I^k*A(k,n)/x^k) $$,
@@ -206,6 +226,9 @@ Bug: Something is not right with complex numbers, but pure imaginary are OK.
 
 		Bernoulli numbers and polynomials
 
+*A Bernoulli numbers!definition
+*A Bernoulli polynomials!definition
+
 The Bernoulli numbers $B[n]$ come from a sequence of rational numbers defined
 by the series expansion of the following generating function,
 $$z/(e^z-1) = Sum(n, 0, Infinity, B[n]*z^n/n!)$$.
@@ -214,6 +237,8 @@ $$(z*Exp(z*x))/(e^z-1) = Sum(n, 0, Infinity, B(x)[n]*z^n/n!)$$.
 The Bernoulli polynomials are related to Bernoulli numbers by
 $$B(x)[n] = Sum(k,0,n,x^k*B[n-k]*Bin(n,k))$$,
 where $Bin(n,k)$ are binomial coefficients.
+
+*A sums of integer powers
 
 Bernoulli numbers and polynomials are used in various Taylor series expansions, in the Euler-Maclauren series resummation formula, in Riemann's Zeta function and so on. For example, the sum of (integer) $p$-th powers of consecutive integers is given by
 $$Sum(k, 0, n-1, k^p) = (B(n)[p+1] - B[p+1])/(p+1)$$.
@@ -231,19 +256,28 @@ is, different algorithms need to be used in these cases.
 
 	    Exact evaluation of Bernoulli numbers
 
+*A Bernoulli numbers!by recurrence
+
 In the {Bernoulli()} routine,
-Bernoulli numbers are evaluated exactly (as rational numbers) via one of the two algorithms. The first, simpler algorithm ({BernoullliArray()}) uses the recursion relation,
+Bernoulli numbers are evaluated exactly (as rational numbers) via one of the two algorithms. The first, simpler algorithm ({BernoullliArray()}) uses the recurrence relation,
 $$B[n] = -1/(n+1)*Sum(k,0,n-1,B[k]*Bin(n+1,k))$$.
 This formula requires to know the entire set of $B[k]$ with $k$ up to a given
 $n$ to compute $B[n]$. Therefore at large $n$ this algorithm
 is a very slow way to compute $B[n]$ if we do not need all other $B[k]$.
 
+*A Bernoulli numbers!by recurrence!cost estimate
 
 Here is an estimate of the cost of {BernoullliArray}. Suppose $P$ is the required number of digits and $M(P)$ is the time to multiply $P$-digit integers. The required number of digits $P$ to store the numerator of $B[n]$ is asymptotically $P <> n*Ln(n)$. At each of the $n$ iterations we need to multiply $O(n)$ large rational numbers by large coefficients and take a GCD to simplify the resulting fractions. The time for GCD is logarithmic in $P$. So the complexity of this algorithm is $O(n^2*M(P)*Ln(P))$ with $P <> n*Ln(n)$. 
+
+*A Bernoulli numbers!from Zeta function
 
 For large (even) values of the index $n$, the Bernoulli numbers $B[n]$ are
 computed by a more efficient procedure: the integer part and the fractional
 part of $B[n]$ are found separately.
+
+*A Clausen -- von Staudt, theorem of
+
+*A Bernoulli numbers!fractional part of
 
 First, by the theorem of Clausen -- von
 Staudt, the fractional part of ($-B[n]$) is the same as the fractional part of
@@ -258,30 +292,40 @@ part $f$ is a nonnegative rational number, $0<=f<1$, which is now known to be
 $61/66$. Indeed $-B[10]= -1+61/66$. So one can find the fractional part of the Bernoulli number relatively quickly by
 just checking the numbers that might divide $n$.
 
+*A Stirling's formula
+*A Bernoulli numbers!asymptotic
+
 Now one needs to obtain the
 integer part of $B[n]$. The number $B[n]$ is positive if $Mod(n,4)=2$ and negative if
 $Mod(n,4)=0$. One can use Riemann's Zeta function identity for even integer
 values of the argument and compute the value $zeta(n)$ precisely enough so that
 the integer part of the Bernoulli number is determined. The required precision
-is found by estimating the Bernoulli number using the same identity in which
-one approximates $zeta(n)=1$ and uses Stirling's asymptotic formula for the
-factorial of large numbers,
-$$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)$$.
+is found by estimating the Bernoulli number from the same identity
+in which
+one approximates $zeta(n)=1$, i.e.
+$$ Abs(B[2*n]) <=> 2*(2*n)! /(2*Pi)^(2*n) $$.
+To estimate the factorial of large numbers, we can use Stirling's asymptotic formula
+$$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)$$. The result is that for large $n$,
+$$ Abs(B[2*n]) <>  2*(n/(Pi*e))^(2*n)$$.
 
 At such 
 large values of the argument $n$, it is feasible to compute the defining series
 for $zeta(n)$,
 $$zeta(n) <=> Sum(k,1,N, 1/k^n)$$.
 This sum is calculated by the routine {ZetaNum1(n, N)}. The remainder of the
-sum is of order $N^(-n)$. By simple algebra one obtains a lower bound on $N$,
+sum is of order $N^(-n)$. By straightforward algebra one obtains a lower bound on $N$,
 $$N > n/(2*Pi*e)$$,
 for this sum to give enough precision to compute the integer part of the
 Bernoulli number $B[n]$.
+
+*A Riemann's Zeta function!by product over primes
 
 Alternatively, one can use the infinite product over prime numbers $p[i]$
 $$1/zeta(n) <=> Factorize(k,1,M,(1-1/p[k]^s))$$,
 where $M$ must be chosen such that the $M$-th prime number $p[M]>N$ and $N$ is chosen as above, i.e. $N > n/(2*Pi*e)$. This formula is realized  by the routine {ZetaNum2(n, N)}. Since only prime numbers $p[i]$ are used, this formula is asymptotically faster than {ZetaNum1(n, N)}. The number of primes up to $N$ is asymptotically
 $pi(N) <> N/Ln(N)$ and therefore this procedure is faster by a factor $O(Ln(N)) <> O(Ln(n))$. However, for $n<250$ it is better (with Yacas internal math) to use the {ZetaNum1(n, N)} because it involves fewer multiplications.
+
+*A Bernoulli numbers!from Zeta function!example
 
 For example, let us compute $B[20]$ using this method.
 *	1. We find the fractional part, using the fact that 20 is divided only by 1, 2, 4, 5, 10, and 20 and only 2, 3, 5, 11 are prime:
@@ -291,7 +335,7 @@ This number has fractional part equal to 41/330 and it's the same as the fractio
 this means that $B[20]$ is of the form $-(X+41/330)$ where $X$ is some positive integer which we now have to find.
 *	2. We estimate the magnitude of $Abs(B[20])$ to find the required precision to compute its integer part. We use the identity
 $$Abs(B[20])=(2*20!)/(2*Pi)^20*zeta(20)$$,
-the Stirling formula
+Stirling's formula
 $$Ln(20!) = (Ln(2*Pi)+Ln(20))/2+20*Ln(20/e) <=> 42.3$$,
 and also the fact that $zeta(20)=1+2^(-20)+...$ is approximately equal to 1.
 We find that the number $B[20]$ has approximately
@@ -313,6 +357,8 @@ the sum up to $N=2$:
 	Out> -174611/330;
 This is exactly the Bernoulli number $B[20]$.
 
+*A {Bernoulli1}
+
 All these steps are implemented in the routine {Bernoulli1}. The variable {Bernoulli1Threshold} determines the smallest $n$ for which $B[n]$ is to be computed via this routine instead of the recursion relation. Its current value is 20. 
 
 The complexity of {Bernoulli1} is estimated as the complexity of finding all primes up to $n$ plus the complexity of computing the factorial, the power and the Zeta function. Finding the prime numbers up to $n$ by checking all potential divisors up to $Sqrt(n)$ requires $O(n^(3/2)*M(Ln(n)))$ operations with precision $O(Ln(n))$ digits. For the second step we need to evaluate $n!$, $Pi^n$ and $zeta(n)$ with precision of $P=O(n*Ln(n))$ digits. The factorial is found in $n$ short multiplications with $P$-digit numbers (giving $O(n*P)$), the power of $pi$ in $Ln(n)$ long multiplications (giving $O(M(P)*Ln(n))$), and {ZetaNum2(n)} (the asymptotically faster algorithm) requires $O(n*M(P))$ operations. The Zeta function calculation dominates the total cost because $M(P)$ is slower than $O(P)$. So the total complexity of {Bernoulli1} is $O(n*M(P))$ with $P <> n*Ln(n)$.
@@ -322,6 +368,8 @@ Note that this is the cost of finding just one Bernoulli number, as opposed to t
 	    Approximate calculation of Bernoulli numbers
 
 If Bernoulli numbers do not have to be found exactly but only to a certain floating-point precision $P$ (this is usually the case for most numerical applications), then the situation is rather different. First, all calculations can be performed using floating-point numbers instead of exact rationals. This significantly speeds up the recurrence-based algorithms.
+
+*A Bernoulli numbers!by recurrence!numerical stability
 
 However, the recurrence relation used in {BernoulliArray} turns out to be numerically unstable and needs to be replaced by another (R. P. Brent, "A FORTRAN multiple-precision arithmetic package", ACM TOMS vol. 4, no. 1 (1978), p. 57). Brent's algorithm computes the Bernoulli numbers divided by factorials, $C[n]:=B[2*n]/(2*n)!$ using a (numerically stable) recurrence relation
 
@@ -339,6 +387,8 @@ $$ Sum(j,0,k-1,(-lambda)^(k-j)*((2*Pi)^(2*j)/((2*j+1)!)) ) <=> lambda^k*Sin((2*P
 which means that $lambda=4$ is a solution. Therefore the recurrence is unstable.
 
 By a very similar calculation one finds that the inverse powers of $4$ in Brent's recurrence make the largest eigenvalue of the error sequence $e[k]$ almost equal to $1$ and therefore the recurrence is stable. Brent gives the relative error in the computed $C[k]$ as $O(k^2)$ times the roundoff error in the last digit of precision.
+
+*A Bernoulli numbers!by recurrence!cost estimate
 
 The complexity of Brent's method is given as $O(n^2*P+n*M(P))$ for finding all Bernoulli numbers up to $B[n]$ with precision $P$ digits. This computation time can be achieved if we compute the inverse factorials and powers of $4$ approximately by floating-point routines that know how much precision is needed for each term in the recurrence relation. The final long multiplication by $(2*k)!$ computed to precision $P$ adds $M(P)$ to each Bernoulli number.
 
@@ -365,6 +415,7 @@ Henry C. Thacher, Jr.,
 Communications of the ACM, vol. 6, no. 6, 1963. (These texts, however,
 do not describe arbitrary-precision computations.)
 
+*A error function $Erf(x)$!summary of methods
 
 The function $Erf(z)$ has the following approximations that are useful for its
 numerical computation:
@@ -388,11 +439,15 @@ necessary number of terms to take.
 
 Both Taylor series converge absolutely for all $z$, but they do not converge uniformly fast; in fact these series are not very useful for large $z$ because a very large number of slowly decreasing terms gives a significant contribution to the result, and the roundoff error (especially for the first series with the alternating signs) becomes too high. Both series converge well for $Abs(z)<1$.
 
+*A error function $Erf(x)$!by Taylor series
+
 Consider method 1 (the first Taylor series). We shall use the method 1 only for $Abs(z)<=1$. If the absolute error of the truncated Taylor series is estimated as the first discarded term, the precision after taking all terms up to and including $z^(2*n)$ is approximately $z^(2*n+2)/(n+2)!$. The factorial can be approximated by Stirling's formula,
 $ n! <=> n^n * e^(-n)$. The value of $Erf(z)$ at small $z$ is of order 1, so we can take the absolute error to be equal to the relative error of the series that starts with $1$. Therefore, to obtain $P$ decimal digits of precision, we need the number of terms $n$ that satisfies the inequality
 $$ Abs(e*z^2/(n+1))^(n+1) < 10^(-P)$$.
 (We have substituted $n+1$ instead of $n+2$ which made the inequality stronger.)
 The error will be greatest when $Abs(z)=1$. For these values of $z$, the above inequality is satisfied when $n>1+Exp(1+W(P*Ln(10)/e))$ where $W$ is Lambert's $W$ function.
+
+*A error function $Erf(x)$!by asymptotic series
 
 Consider method 3 (the asymptotic series). We shall use the method 3 only for
 large enough values of $z$ and small enough precision. The asymptotic series

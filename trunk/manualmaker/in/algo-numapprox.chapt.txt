@@ -3,6 +3,8 @@
 
 	    Approximation of numbers by continued fractions
 
+*A continued fraction approximation!of rational numbers
+
 The function {ContFrac} converts a (rational) number $r$ into a regular
 continued fraction,
 $$ r = n[0] + 1/(n[1] + 1/(n[2]+...)) $$.
@@ -21,6 +23,8 @@ $r[1]$, obtain the next integer term $n[1]$ and the remainder $r[2]$ and so on,
 until such $n$ that $r[n]$ is an integer and there is no more work to do. This
 process will always terminate because all floating-point values are actually
 rationals in disguise.
+
+*A {GuessRational}
 
 Continued fractions are useful in many ways. For example, if we know that a
 certain number $x$ is rational but have only a floating-point representation of
@@ -52,6 +56,8 @@ when adding one more term would change the result by less than the specified
 precision. To realize this in practice, we need an estimate of how much a
 continued fraction changes when we add one term.
 
+*A continued fraction approximation!error bound
+
 The routine {GuessRational} uses a (somewhat weak) upper bound for the difference of continued fractions that differ only by an additional last term:
 $$ Abs(delta) := Abs( 1/(a[1]+1/(...+1/a[n])) - 1/(a[1]+1/(...+1/a[n+1])) ) < 1/ ((a[1]*...*a[n])^2 * a[n+1]) $$.
 Thus we should compute the product of successive terms $a[i]$ of the continued fraction and stop at $a[n]$ at which this product exceeds the maximum number of digits. The routine {GuessRational} has a second parameter {prec} which is by default 1/2 times the number of decimal digits of current precision; it stops at $a[n]$ at which the product $a[1]*...*a[n]$ exceeds $10^prec$.
@@ -70,6 +76,8 @@ must be computed to at least as many digits as there are in the numerator and
 the denominator of the fraction combined. Also, the parameter {prec} should not
 be too large (or else the algorithm will find another rational number with a larger
 denominator that approximates $x$ "better" than the precision to which you know $x$).
+
+*A {NearRational}
 
 The related function {NearRational(x, prec)} works somewhat differently. The
 goal is to find an "optimal" rational number, i.e. with smallest numerator and
@@ -122,6 +130,8 @@ Let us denote by $F[m][n]$ the truncated fraction containing only terms from $m$
 $$ F[m][n] := a[m]+b[m]/(a[m+1]+b[m+1]/(...+b[n]/a[n]))$$.
 In this notation, the continued fraction that we need to compute is $F[0][n]$. Our problem is first, to select a large enough $n$ so that $F[0][n]$ gives enough precision, and second, to compute that value.
 
+*A continued fraction approximation!bottom-up computation
+
 The "bottom-up" method is to select some value of $n$ and start evaluating the fraction from the bottom upwards. First we take $F[n][n]=a[n]$ and then we use the obvious relation of backward recurrence,
 $$ F[m][n] = a[m]+b[m]/F[m+1][n] $$,
 to obtain successively $F[n-1][n]$, ..., $F[0][n]$. This method requires one long division at each step.
@@ -134,6 +144,8 @@ $p[m]=a[m]*p[m+1]+b[m]*q[m+1]$ and $q[m]=p[m+1]$. This method would start with
 $p[n]=a[n]$, $q[n]=1$ and require two long multiplications at each step; the only
 division will be performed at the very end. Sometimes this method allows to
 reduce the roundoff error.
+
+*A continued fraction approximation!bottom-up computation!improvement of precision
 
 There is an improvement to this method that can sometimes increase the achieved
 precision without computing more terms (this is suggested in the Tsimring book).
@@ -154,6 +166,8 @@ and take the solution $x$ as the approximation for $F[n][Infinity]$.
 The "bottom-up" method obviously requires to know the number of terms $n$ in
 advance; calculations have to be started all over again if more terms are
 needed. Also, it provides no error estimate.
+
+*A continued fraction approximation!top-down computation
 
 The "top-down" method is slower but provides an error estimate and
 allows to compute the fraction in the forward direction. The idea is to
@@ -183,6 +197,8 @@ that $f[n]/f[0]$ is less than the required precision.
 Evaluating the next element $f[k]$ requires four long multiplications
 and one division.
 
+*A continued fraction approximation!bottom-up computation!non-alternating signs
+
 Note that typically all terms $a[i]$, $b[i]$ are positive, so the
 series we obtained will have terms $f[k]$ of alternating signs. To
 reduce the round-off error, we can convert this series into a series
@@ -192,6 +208,8 @@ definition of $f[k]$ using the recurrence relations for $P[k]$, $Q[k]$:
 $$ f[2*k-1]+f[2*k] = - (b[0]*...*b[2*k-2]*a[2*k]) / (Q[2*k-1]*Q[2*k+1]) $$,
 $$ f[2*k]+f[2*k+1] = (b[0]*...*b[2*k-1]*a[2*k+1]) / (Q[2*k]*Q[2*k+2]) $$.
 Now e.g. in the series $f[0]$+($f[1]+f[2]$)+($f[3]+f[4]$)+... the first term is positive and all subsequent terms will be negative.
+
+*A continued fraction approximation!bottom-up computation!derivation
 
 Here is a straightforward derivation of the above formula for $f[k]$. We need
 to compute the difference between successive approximations $F[0][n]$
@@ -231,6 +249,8 @@ Thus we have converted the continued fraction into a series, i.e. $F[0][n]=Sum(k
 
 	    Estimating convergence of continued fractions
 
+*A continued fraction approximation!convergence rate
+
 Suppose we are given the terms $a[k]$, $b[k]$ that define an infinite continued
 fraction, and we are interested to estimate its rate of convergence. 
 We need to find the number of terms $n$ for which the error of approximation is
@@ -249,6 +269,8 @@ The recurrence relation for it can be rewritten as
 $$ Q[k+2]=a[k+1]*Q[k+1]+b[k]*Q[k] $$,
 for $k>=0$, with initial values $Q[0]=0$ and $Q[1]=1$.
 
+*A continued fraction approximation!error bound
+
 A simple lower bound on the growth can be quickly obtained from this recurrence
 relation.
 Assume that $a[k]>0$, $b[k]>0$.
@@ -266,6 +288,8 @@ indicates that the bound is too weak in some cases.
 The sequence $Q[k]$ actually grows faster than the product of all $a[k]$ and we
 sometimes a tighter bound on this growth.
 
+*A continued fraction approximation!of $Erfc(x)$
+
 We shall now consider another example when the growth of this sequence can be
 estimated analytically. 
 The complementary error function $Erfc(x)$ can be computed using an auxiliary
@@ -278,10 +302,14 @@ The simple bound would give $Abs(f[n+1])<=(v^n*n!)$ and this expression grows wi
 But we know that our continued fraction actually converges for any $v$ and $f[n+1]$ must tend to zero for large $n$.
 It seems that the simple bound is not strong enough for any $v$ and we need a better bound.
 
+*A method of stationary phase
+
 The asymptotic growth of the sequence $Q[k]$ can be estimated in this case by the method of stationary phase.
 This method is somewhat complicated but quite powerful.
 The method requires that we find an integral representation for $Q[k]$, and then it gives the dominant contribution to the integral as an asymptotic series in $k^(-1)$.
 We actually only need the leading terms of the series which are easy to find (even without a CAS).
+
+*A generating function of a sequence
 
 An integral representation for $Q[k]$ can be obtained using the method of generating functions.
 Consider a function $G(s)$ defined by the infinite series
@@ -291,6 +319,8 @@ We shifted the index to $k+1$ for cosmetic convenience, since $Q[0]=0$.
 The imaginary unit in front of $s$ is not strictly necessary to introduce but
 it usually makes the generating function nicer (on the real axis, that is).
 
+*A generating function of a sequence!obtaining
+
 It is generally the case that if we know a simple linear recurrence relation for a sequence, then we can also easily find its generating function.
 The generating function will satisfy a linear differential equation.
 To guess this equation, we write down the series for $G(s)$ and its
@@ -298,54 +328,73 @@ derivative $D(s)G(s)$ and try to find their linear combination which is
 identically zero because of the recurrence relation.
 (There is, of course, a computer algebra algorithm for doing this automatically.)
 
-In the case of our continued fraction above, we find that
+In the case of our sequence $Q[k]$ above, we find that
 $$ I*(D(s)G(s)) = (1-I*v*s)*G(s) $$.
 The solution with the obvious initial condition $G(0)=1$ is
 $$ G(s) = Exp(-I*s-v*s^2/2) $$.
 
-The second step is to obtain an integral representation for $Q[k]$.
-This is possible because $Q[k]$ are equal to the derivatives of the generating function at $s=0$:
-$$ Q[k+1] = I^k*D(s, k) G(s=0) $$.
-If we had an integral representation for $G(s)$, we could also obtain one for $Q[k]$ by differentiation.
+*A generating function of a sequence!integral representation
 
-We use the fact that derivatives of Fourier transforms are "easy".
-The generating function $G(s)$ has a Fourier representation,
+The second step is to obtain an integral representation for $Q[k]$.
+This is possible because $Q[k+1]$ is equal to the $k$-th derivative of the generating function at $s=0$:
+$$ Q[k+1] = I^k*D(s, k) G(s=0) $$.
+So if we had an integral representation for $G(s)$, we could also obtain one for $Q[k]$ by differentiation.
+
+Now we use the fact that derivatives of Fourier transforms are "easy".
+The generating function $G(s)$ has the following Fourier representation,
 $$ G(s) = (1/Sqrt(2*Pi*v)) * Integrate(t, -Infinity, Infinity) Exp(-t^2/(2*v)-I*s*(t+1)) $$.
 Taking the derivatives with respect to $s$ at $s=0$, we obtain an integral representation for $Q[k]$:
-$$ Q[k+1] = (1/Sqrt(2*Pi*v)) * Integrate(t, -Infinity, Infinity) (1+t)^n * Exp(-t^2/(2*v)) $$.
+$$ Q[n+1] = (1/Sqrt(2*Pi*v)) * Integrate(t, -Infinity, Infinity) (1+t)^n * Exp(-t^2/(2*v)) $$.
+
+*A method of stationary phase!example
 
 Now we can use the method of stationary phase.
 (See any textbook on mathematical physics.)
 We represent the integrand as an exponential of some function $g(t,n)$ and find "stationary points" where this function has local maxima:
-$$ Q[k+1] = (1/Sqrt(2*Pi*v)) * Integrate(t, -Infinity, Infinity) Exp(g(t,n)) $$,
+$$ Q[n+1] = (1/Sqrt(2*Pi*v)) * Integrate(t, -Infinity, Infinity) Exp(g(t,n)) $$,
 $$ g(t,n) := -t^2/(2*v)+n*Ln(1+t) $$.
-(Note that the logarithm here must acquire an imaginary part $I*Pi$ for $t<-1$.)
+(Note that the logarithm here must acquire an imaginary part $I*Pi$ for $t<-1$,
+but we shall see that the integral over negative $t$ is negligible.)
 We expect that when $n$ is large, $g(t,n)$ will have a peak or several peaks at certain values of $t$.
-At other values of $t$, the value of $g(t,n)$ will be much smaller and, since $g$ is in the exponential, the integral is dominated by the contribution of the peaks.
+At $t$ away from the peaks, the value of $g(t,n)$ is much smaller and,
+since $g$ is in the exponential, the integral is dominated by the
+contribution of the peaks.
+This is the essence of the method of stationary phase.
+
 We find that in our case, two peaks occur at approximately $t1<=> -1/2+Sqrt(n*v)$ and $t2<=> -1/2-Sqrt(n*v)$. 
 We assume that $n$ is large enough so that $n*v>1/2$. Then the first peak is at a positive $t$ and the second peak is at a negative $t$.
 
 The contribution of the peaks can be computed from the Taylor approximation of $g(t,n)$ near the peaks.
 We can expand, for example,
-$$ g(t,n) <=> g(t1,n) - (Deriv(t,2)g(t1,n))*(t-t1)^2/2 $$
+$$ g(t,n) <=> g(t1,n) + (Deriv(t,2)g(t1,n))*(t-t1)^2/2 $$
 near $t=t1$.
 The values $g(t1,n)$ and $Deriv(t,2)g(t1,n)$, and likewise for $t2$, are constants that we already know since we know $t1$ and $t2$.
 Then the integral of $Exp(g)$ will be approximated by the integral of the form
-$$ Integrate(t, -Infinity, Infinity) Exp(g(t1,n) - (Deriv(t,2)g(t1,n))*(t-t1)^2/2) $$.
+$$ Integrate(t, -Infinity, Infinity) Exp(g(t1,n) + (Deriv(t,2)g(t1,n))*(t-t1)^2/2) $$.
+(Note that $Deriv(t,2)g(t1,n)$ is negative.)
 This is a Gaussian integral that can be easily evaluated, with the result
-$$ e^g(t1,n)*Sqrt((2*Pi)/Deriv(t,2)g(t1,n)) $$.
+$$ e^g(t1,n)*Sqrt(-(2*Pi)/Deriv(t,2)g(t1,n)) $$.
 This will be the leading term of the contribution of the peak at $t1$;
 there will be a similar expression for the contribution of $t2$.
 We find that the peak at $t1$ gives a larger contribution, by the factor $Exp(2*Sqrt(n/v))$.
-This factor is about 4 when $n>v/2$, and a factor of 4 is large enough to ignore the peak at $t2$ for the purposes of our error analysis.
+This factor is never small since $n>1$ and $v<1/2$.
+So it is safe to ignore the peak at $t2$ for the purposes of our error analysis.
+
+*A Stirling's formula
+
+*A continued fraction approximation!of $Erfc(x)$!error estimate
 
 We find, after some algebra, that the leading asymptotic of $Q[k]$ is
-$$ Q[n+1] <=> Exp(Sqrt(n/v)-1/(4*v)-n/2)/Sqrt(2)*(v*n)^(n/2) $$.
-This, together with the Stirling formula
+$$ Q[n+1] <=> 1/Sqrt(2)*Exp(Sqrt(n/v)-1/(4*v)-n/2)*(v*n)^(n/2) $$.
+This, together with Stirling's formula
 $$ n! <=> Sqrt(2*Pi*n)*(n/e)^n $$,
 allows to estimate the error of the continued fraction approximation:
 $$ Abs(f[n+1]) <=> 2*Sqrt((2*Pi*n)/v)*Exp(-n/2-2*Sqrt(n/v)+1/(2*v)) $$.
-(By the way, the Stirling formula can be also derived using the method of stationary phase from an integral representation of the Gamma function.)
+
+Note that this is not merely a bound but an actual asymptotic estimate of $Abs(f[n+1])$.
+(By the way, Stirling's formula can be also derived using the method of
+stationary phase from an integral representation of the Gamma function,
+in a similar way.)
 
 
 We find that indeed the error decreases with $n$ in a geometric progression (i.e. roughly as some constant to the power of $n$).
@@ -356,16 +405,26 @@ We find that indeed the error decreases with $n$ in a geometric progression (i.e
 
 The Newton-Raphson method of numerical solution of algebraic equations can be used to obtain multiple-precision values of several elementary functions.
 
+*A Newton's method
+
 The basic formula is widely known: If $f(x)=0$ must be solved, one starts with a value of $x$ that is close to some root and iterates $$x'=x-f(x)*(D(x)f(x))^(-1)$$.
 This formula is based on the approximation of the function $f(x)$ by a tangent line at some point $x$. A Taylor expansion in the neighborhood of the root shows that (for an initial value $x[0]$ sufficiently close to the root) each iteration gives at least twice as many correct digits of the root as the previous one ("quadratic convergence"). Therefore the complexity of this algorithm is proportional to a logarithm of the required precision and to the time it takes to evaluate the function and its derivative. Generalizations of this method require computation of higher derivatives of the function $f(x)$ but successive approximations to the root converge several times faster (the complexity is still logarithmic).
 
+*A Newton's method!error control
+
 Newton's method is particularly convenient for multiple precision calculations because of its insensitivity to accumulated errors: if $x[k]$ at some iteration is found with a small error, the error will be corrected at the next iteration. Therefore it is not necessary to compute all iterations with the full required precision; each iteration needs to be performed at the precision of the root expected from that iteration. For example, if we know that the initial approximation is accurate to 3 digits, then (assuming quadratic convergence)
-*FOOT This disregards the possibility that the convergence might be slightly slower. For example, when the precision at one iteration is $n$ digits, it might be $2*n-10$ digits at the next iteration. In these (fringe) cases, the initial approximation must be already precise to at least 10 digits.
+*FOOT This disregards the possibility that the convergence might be slightly slower. For example, when the precision at one iteration is $n$ digits, it might be $2*n-10$ digits at the next iteration. In these (fringe) cases, the initial approximation must be already precise enough (e.g. to at least 10 digits in this example).
 it is enough to perform the first iteration to 6 digits, the second iteration to 12 digits and so on. In this way, multiple precision calculations are enormously speeded up.
+
+*A Newton's method!initial value
 
 However, Newton's method suffers from sensitivity to the initial guess. If the initial value $x[0]$ is not chosen sufficiently close to the root, the iterations may converge very slowly or not converge at all. To remedy this, one can combine Newton's iteration with simple bisection. Once the root is bracketed inside an interval ($a$, $b$), one checks whether $(a+b)/2$ is a better approximation for the root than that obtained from Newton's iteration. This guarantees at least linear convergence in the worst case.
 
+*A Newton's method!cubic convergence
+
 For some equations $f(x)=0$, Newton's method converges faster; for example, solving $Sin(x)=0$ in the neighborhood of $x=3.14159$ gives "cubic" convergence, i.e. the number of correct digits is tripled at each step. This happens because $Sin(x)$ near its root $x=Pi$ has vanishing second derivative and thus the function is particularly well approximated by a straight line.
+
+*A Halley's method
 
 <i>Halley's method</i> is an improvement to Newton's method that makes each equation well approximated by a straight line near the root. Edmund Halley computed fractional powers, $x=a^(1/n)$, by the iteration
 $$ x'=x*(n*(a+x^n)+(a-x^n))/(n*(a+x^n)-(a-x^n)) $$.
@@ -380,6 +439,8 @@ and use the standard Newton's method on it.
 Here the function $g(x)$ is chosen so that its second derivative vanishes ($D(x,2)g(x)=0$) at the root of the equation $f(x)=0$, independently of where this root is.
 (There is no unique choice of the function $g(x)$ and sometimes another choice is needed to make the iteration more easily computable.)
 
+*A Halley's method!explicit formula
+
 The Halley iteration for the equation $f(x)=0$ can be written as
 $$ x'=x-(2*f(x)*D(x)f(x))/(2*(D(x)f(x))^2-f(x)*Deriv(x,2)f(x)) $$.
 For example, the equation $Exp(x)=a$ is transformed into $g(x) := Exp(x/2)-a*Exp(-x/2)=0$.
@@ -393,6 +454,8 @@ converges only for $Exp(a-2)<x<Exp(a+2)$.
 
 
 When it converges, Halley's iteration can still converge very slowly for certain functions $f(x)$, for example, for $f(x)=x^n-a$ if $n^n>a$. For such functions that have very large and rapidly changing derivatives, no general method can converge faster than linearly. In other words, a simple bisection will generally do just as well as any sophisticated iteration, until the root is approximated relatively precisely. Halley's iteration combined with bisection seems to be a good choice for such problems.
+
+*A Newton's method!error control
 
 For practical evaluation, iterations must be supplemented with error control.
 For example, if $x0$ and $x1$ are two consecutive approximations that are
@@ -409,11 +472,15 @@ slow at high precision.
 
 		Fast evaluation of Taylor series
 
+*A Taylor series
+
 Taylor series for elementary functions can be used for evaluating the functions when no faster method is available. For example, to straightforwardly evaluate
 $$Exp(x)<=>Sum(k,0,N-1,x^k/k!)$$
 with $P$ decimal digits of precision and $x<2$, one would need about $N<=>P*Ln(10)/Ln(P)$ terms of the series. To evaluate the truncated series term by term, one needs $N-1$ long multiplications. (Divisions by large integers $k!$ can be replaced by a short division of the previous term by $k$.) In addition, about $Ln(N)/Ln(10)$ decimal digits will be lost due to accumulated roundoff errors; therefore the working precision must be increased by this many digits.
 
 If we do not know in advance how many terms of the Taylor series we need, we cannot do any better than just evaluate each term and check if it is already small enough. So in this case we will have to do $O(N)$ long multiplications. However, we can organize the calculation much more efficiently if we can estimate the necessary number of terms and if we can afford some storage. A "rectangular" algorithm uses $2*Sqrt(N)$ long multiplications (assuming that the coefficients of the series are short rational numbers) and $Sqrt(N)$ units of storage. (See paper: D. M. Smith, <i>Efficient multiple-precision evaluation of elementary functions</i>, 1985.)
+
+*A Taylor series!rectangular method
 
 Suppose we need to evaluate $Sum(k,0,N, a[k]*x^k)$ and we know the number of terms $N$ in advance.
 Suppose also that the coefficients $a[k]$ are rational numbers with small numerators and denominators, so a  multiplication $a[k]*x$ is not a long multiplication (usually, either $a[k]$ or the ratio $a[k]$/$a[k-1]$ is a short rational number). Then we can organize the calculation in a rectangular array with $c$ columns and $r$ rows like this,
@@ -434,9 +501,13 @@ The total required number of long multiplications is $r+c+Ln(r)-2$. The minimum 
 
 One might wonder if we should not try to arrange the Taylor series in a cube or another multidimensional matrix instead of a rectangle. However, calculations show that this does not save time: the optimal arrangement is the two-dimensional rectangle.
 
+*A Taylor series!$O(N^(1/3))$ method
+
 An additional speed-up is possible if the elementary function allows a transformation that reduces $x$ and makes the Taylor series converge faster. For example, $Ln(x)=2*Ln(Sqrt(x))$, $Cos(2*x)=2*Cos(x)^2-1$, and $Sin(3*x)=3*Sin(x)-4*Sin(x)^3$ are such transformations. It may be faster to perform a number of such transformations before evaluating the Taylor series, if the time saved by its quicker convergence is more than the time needed to perform the transformations. The optimal number of transformations can be estimated. Using this technique in principle reduces the cost of Taylor series from $O(Sqrt(N))$ to $O(N^(1/3))$ long multiplications. However, additional roundoff error may be introduced by this procedure for some $x$.
 
 		The AGM sequence algorithms
+
+*A AGM sequence
 
 Several algorithms are based on the arithmetic-geometric mean (AGM)
 sequence. If one takes two numbers $a$, $b$ and computes their arithmetic
@@ -444,24 +515,28 @@ mean and their geometric mean, $(a+b)/2$ and $Sqrt(a*b)$, then the two means
 are generally much closer to each other than the original numbers. Repeating
 this process creates a rapidly converging sequence.
 
-More formally, one can define the (complex) function of two (complex)
-numbers $AGM(x,y)$ as the limit of the sequence $a[k]$ where
+More formally, one can define the function of two
+arguments $AGM(x,y)$ as the limit of the sequence $a[k]$ where
 $a[k+1]=1/2*(a[k]+b[k])$, $b[k+1]=Sqrt(a[k]*b[k])$, and the initial values
 are $a[0]=x$, $b[0]=y$. (The limit of the sequence $b[k]$ is the same.)
 This function is obviously linear, $AGM(c*x, c*y)=c*AGM(x,y)$, so in
 principle it is enough to compute $AGM(1,x)$ or arbitrarily select $c$ for convenience.
 
+*A AGM sequence!integral representation
+
 Gauss and Legendre have shown that
 the limit of the AGM sequence is related to the complete elliptic integral by
 $$ Pi/2*1/AGM(a,Sqrt(a^2-b^2)) = Integrate(x,0,Pi/2)1/Sqrt(a^2-b^2*Sin(x)^2) $$.
-This integral can be rearranged to provide some other useful functions. For
+(Here $0<b<a$.) This integral can be rearranged to provide some other useful functions. For
 example, with suitable parameters $a$ and $b$, this integral is equal to
 $1$. Thus, one obtains a fast method of computing $Pi$.
 
 The AGM sequence is also defined for complex values $a$, $b$. It requires to take a square root $Sqrt(a*b)$, which needs a branch cut to be defined.
-Selecting the natural cut along the negative real semiaxis ($Re(x)<0$, $Im(x)=0$), we obtain a AGM sequence that converges for any initial values $x$, $y$ with positive real part.
+Selecting the natural cut along the negative real semiaxis ($Re(x)<0$, $Im(x)=0$), we obtain an AGM sequence that converges for any initial values $x$, $y$ with positive real part.
 
-Let us estimate the speed of convergence of the AGM sequence starting from $x$, $y$, following Brent's paper {rpb028} (see reference below). Clearly the worst case is when
+*A AGM sequence!convergence rate
+
+Let us estimate the convergence rate of the AGM sequence starting from $x$, $y$, following Brent's paper {rpb028} (see reference below). Clearly the worst case is when
 the numbers $x$ and $y$ are very different (one is much larger than another). In this case
 the numbers $a[k]$, $b[k]$ become approximately equal after about
 $k=1/Ln(2)*Ln(Abs(Ln(x/y)))$ iterations (note: Brent's paper online mistypes
