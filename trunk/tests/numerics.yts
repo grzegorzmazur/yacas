@@ -1,9 +1,9 @@
 /* Numerical testers - all confirmed with Matlab 6r12.0 */
 
-Macro(NumericEqual,{left,right,precision})
-[
-  Verify(RoundTo((@left)-(@right),@precision),0);
-];
+
+
+
+
 
 Precision(10);
 

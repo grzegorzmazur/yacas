@@ -69,10 +69,11 @@ libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 
 
 libmath_la_SOURCES = libmath.cpp
-libmath_la_DEPENDENCIES = yacas
+libmath_la_DEPENDENCIES = yacas gencorefunctions
 
 # assuming the directory below does not have plugins!
-libmath.cpp: ../scripts/base.rep/math.ys
+libmath.cpp: ../scripts/base.rep/math.ys 
+	cd ../scripts ; make packages.ys ; make corefunctions.ys ; cd ../src/
 	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
 	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
 	./yacas --rootdir ../scripts/ -pc --init compileinit.txt compile.txt

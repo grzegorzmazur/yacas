@@ -14,6 +14,12 @@ RoundTo(x_IsNumber, prec_IsPositiveInteger) <--
 // complex numbers too
 RoundTo(Complex(r_IsNumber, i_IsNumber), prec_IsPositiveInteger) <-- Complex(RoundTo(r, prec), RoundTo(i, prec));
 
+Macro(NumericEqual,{left,right,precision})
+[
+  Verify(RoundTo((@left)-(@right),@precision),0);
+];
+
+
 // print current file and line
 ShowLine() := [Echo({CurrentFile(),": ",CurrentLine()});];
 

@@ -142,10 +142,13 @@ CORE_KERNEL_FUNCTION("MathAdd",LispAdd,2,YacasEvaluator::Function | YacasEvaluat
 CORE_KERNEL_FUNCTION("MathSubtract",LispSubtract,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathDivide",LispDivide,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathDebugInfo",LispDumpBigNumberDebugInfo,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
+/*TODO remove
 CORE_KERNEL_FUNCTION("MathSin",LispSin,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathCos",LispCos,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathTan",LispTan,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathArcSin",LispArcSin,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("MathExp",LispExp,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
+*/
 CORE_KERNEL_FUNCTION("MathArcCos",LispArcCos,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathArcTan",LispArcTan,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("Precision",LispPrecision,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
@@ -158,7 +161,6 @@ CORE_KERNEL_FUNCTION("MathAbs",LispAbs,1,YacasEvaluator::Function | YacasEvaluat
 CORE_KERNEL_FUNCTION("MathMod",LispMod,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathDiv",LispDiv,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathLog",LispLog,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
-CORE_KERNEL_FUNCTION("MathExp",LispExp,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathPower",LispPower,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathPi",LispPi,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathGcd",LispGcd,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
