@@ -676,37 +676,41 @@ LispStringPtr PiFloat( LispHashTable& aHashTable,
 {
     // Newton's method for finding pi:
     // x[0] := 3.1415926
-    // x[n+1] := x[n] - Tan(x[n])
+    // x[n+1] := x[n] + Sin(x[n])
 
-    LispInt cur_prec = 20;  // precision of the initial guess
-    ANumber result("3.14159265358979323846",aPrecision);    // initial guess
-    
-    while (cur_prec < aPrecision)
+	LispInt initial_prec = aPrecision;	// target precision of first iteration, will be computed below
+    LispInt cur_prec = 40;  // precision of the initial guess
+    ANumber result("3.141592653589793238462643383279502884197169399",cur_prec + 3);    // initial guess is stored with 3 guard digits
+    ANumber x(cur_prec);
+	ANumber s(cur_prec);
+
+	// optimize precision sequence
+	while (initial_prec > cur_prec*3)
+		initial_prec = int((initial_prec+2)/3);
+	cur_prec = initial_prec;
+    while (cur_prec <= aPrecision)
     {
-        cur_prec *= 3;	// precision triples at each iteration
-        if (cur_prec > aPrecision) cur_prec = aPrecision;
-
-        ANumber xtrunc(cur_prec);
-        xtrunc.CopyFrom(result);
-        xtrunc.ChangePrecision(cur_prec);
-
-        ANumber x(cur_prec);    // dummy variables need to be created at new precision
-        ANumber q(cur_prec);
-        ANumber s(cur_prec);
-        ANumber c(cur_prec);
-        // Get Tan(result)
-        x.CopyFrom(xtrunc);
-        SinFloat(s, x);
-        x.CopyFrom(xtrunc);
-        CosFloat(c, x);
-        Divide(q,x,s,c);
-
-        // Calculate new result: result:=result-Tan(oldresult);
-        Negate(q);
+ 		// start of iteration code
+		result.ChangePrecision(cur_prec);	// result has precision cur_prec now
+        // Get Sin(result)
         x.CopyFrom(result);
-        Add(s,x,q);
-        result.CopyFrom(s);
+		s.ChangePrecision(cur_prec);
+        SinFloat(s, x);
+        // Calculate new result: result := result + Sin(result);
+        x.CopyFrom(result);	// precision cur_prec
+        Add(result,x,s);
+		// end of iteration code
+		// decide whether we are at end of loop now
+		if (cur_prec == aPrecision)	// if we are exactly at full precision, it's the last iteration
+			cur_prec = aPrecision+1;	// terminate loop
+		else {
+			cur_prec *= 3;	// precision triples at each iteration
+			// need to guard against overshooting precision
+ 			if (cur_prec > aPrecision)
+				cur_prec = aPrecision;	// next will be the last iteration
+		}
     }
+	
 //    return aHashTable.LookUp("3.14"); // Just kidding, Serge ;-)
     return FloatToString(result, aHashTable);
 }
