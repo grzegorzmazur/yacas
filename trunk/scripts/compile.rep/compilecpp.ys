@@ -13,7 +13,19 @@ to do list:
 
 /* Compile : compile an expression
  */
+ 
+
 Macro()CompileStatement(expression);
+
+1000 # CompileStatement(_rest) <--
+[
+  Check(False,
+    ToString()
+    [
+      Echo("Base statement can not be compiled ");
+    ]);
+];
+
 CompileStatement(Defun(_cn,_ag) (_body)) <--
 [
   Local(callName,compiledName,args,stack,i,nrArgs);
@@ -24,10 +36,13 @@ CompileStatement(Defun(_cn,_ag) (_body)) <--
 //  Echo("CORE_KERNEL_FUNCTION(\"",Type(@f),"\",",compiledName,",",nrArgs,",YacasEvaluator::Function | YacasEvaluator::Fixed)");
 
 //TODO remove  funcDecls := {Type(@f),compiledName,nrArgs} : funcDecls;
-  funcDecls[(@cn)] := {compiledName,Function,Fixed,nrArgs};
+  ForwardDeclareFixedFunction(@cn,nrArgs);
+//  funcDecls[(@cn)] := {compiledName,Function,Fixed,nrArgs};
 
   Echo("void ",compiledName,"(LispEnvironment& aEnvironment,LispInt aStackTop)");
-  Echo("{");
+  Echo("{
+    register LispEnvironment::YacasArgStack& _this_stack = aEnvironment.iStack;
+    ");
   Set(stack,NewStack());
   PushStackFrame(stack,fenced);
   For(i:=1,i<=nrArgs,i++)
@@ -44,6 +59,37 @@ CompileStatement(Defun(_cn,_ag) (_body)) <--
 
 
 
+CompileStatement(ForwardDeclareFixedFunction(_name,_nrArgs)) <--
+[
+//Echo("Name is ",@name," nrArgs is",@nrArgs);
+//  /* funcDecls[name] := */ {"Compiled_bla",Function,Fixed,nrArgs};
+  ForwardDeclareFixedFunction(@name,@nrArgs);
+];
+ForwardDeclareFixedFunction(name,nrArgs):=
+[
+  Local(newEntry,compiledName);
+  Set(compiledName,"Compiled_":(name));
+  Set(newEntry,{compiledName,Function,Fixed,nrArgs});
+  If (funcDecls[name] = Empty,
+    [
+      funcDecls[name] := newEntry;
+funcPrototypes := funcPrototypes:
+"extern void ":compiledName:"(LispEnvironment& aEnvironment,LispInt aStackTop);
+";
+
+    ]);
+  Check(funcDecls[name] = newEntry,
+    ToString()
+    [
+      Echo("Function prototype for ",name," is declared more than once, incompatibly.");
+      Echo("  Original definition: ",funcDecls[name]);
+      Echo("  New definition: ",newEntry);
+    ]
+       );  
+  
+  True;
+];
+
 CompileStatement(f_IsFunction := _body) <--
 [
   Local(callName,compiledName,args,stack,i,nrArgs);
@@ -54,7 +100,8 @@ CompileStatement(f_IsFunction := _body) <--
 //  Echo("CORE_KERNEL_FUNCTION(\"",Type(@f),"\",",compiledName,",",nrArgs,",YacasEvaluator::Function | YacasEvaluator::Fixed)");
 
 //TODO remove  funcDecls := {Type(@f),compiledName,nrArgs} : funcDecls;
-  funcDecls[Type(@f)] := {compiledName,Function,Fixed,nrArgs};
+//  funcDecls[Type(@f)] := {compiledName,Function,Fixed,nrArgs};
+  ForwardDeclareFixedFunction(Type(@f),nrArgs);
 
   Echo("void ",compiledName,"(LispEnvironment& aEnvironment,LispInt aStackTop)");
   Echo("{");
@@ -73,11 +120,16 @@ CompileStatement(f_IsFunction := _body) <--
 ];
 
 Use("corefunctions.ys");
-10  # CompileFn(_fname)_(coreFunctions[fname] != Empty And
+10  # CompileFn(_fname)_(coreFunctions[fname] != Empty 
+                        /* And
                          coreFunctions[fname][2]=Function And
-                         coreFunctions[fname][3]=Fixed) <-- coreFunctions[fname][1];
+                         coreFunctions[fname][3]=Fixed */) <-- coreFunctions[fname] /*[1] */;
 
-30  # CompileFn(_fname)_(funcDecls[fname] != Empty) <-- funcDecls[fname][1];
+
+30  # CompileFn(_fname)_(funcDecls[fname] != Empty) <-- funcDecls[fname] /*[1]*/;
+//hier
+// 40  # CompileFn(_fname) <-- "Compiled_":fname;
+
 100 # CompileFn(_rest) <-- Empty;
 
 
@@ -144,13 +196,14 @@ Use("corefunctions.ys");
 20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "Prog") <--
 [
   Set(body,Tail(Listify(body)));
+  If(Length(body)=0,Set(body,{True}));
   PushStackFrame(stack,unfenced);
-  Echo("  PUSH(",CompiledConstant("True"),");");
+//  Echo("  PUSH(",CompiledConstant("True"),");");
   While(body != {})
   [
-    Echo("  POP(1);");
     CompileBody(Head(body),stack);
     Set(body,Tail(body));
+    If(Length(body)>0,Echo("  POP(1);"));
   ];
   PopStackFrame();
 ];
@@ -193,30 +246,68 @@ Use("corefunctions.ys");
   ]);
 ];
 
-
-
-90 # CompileBody(body_IsFunction,_stack)_(CompileFn(Type(body)) != Empty) <--
+//LocalSymbols(item,body,stack)
 [
+  30 # CompileBody(body_IsList,_stack) <--
+  [
   Echo("  PUSH(NULL);");
   Echo("  {");
-
-  Local(i,args,nrArgs,compileFn);
-  Set(compileFn,CompileFn(Type(body)));
-  Set(args,Tail(Listify(body)));
-  Set(nrArgs,NrArgs(body));
-  For(i:=1,i<=nrArgs,i++)
+  Echo("    LispPtr all;");
+  Echo("    all.Set(aEnvironment.iList->Copy(LispFalse));");
+  Echo("    LispIterator tail(all);");
+  Echo("    tail.GoNext();");
+  
+  ForEach(item,body)
   [
-    CompileBody(args[i],stack);
+    CompileBody(item,stack);
+  
+  Echo("      tail.Ptr()->Set(STACK(STACKTOP()-1).Get()->Copy(LispFalse));");
+  Echo("      tail.GoNext();");
+  Echo("      POP(1);");
   ];
-  Echo("    ",compileFn,"(aEnvironment,STACKTOP()-",(nrArgs+1),");");
-  Echo("    POP(",nrArgs,");");
+  Echo("    STACK(STACKTOP()-1).Set(LispSubList::New(all.Get()));");
   Echo("  }");
+  ];
 ];
 
-100 # CompileBody(_body,_stack) <-- 
+LocalSymbols(cFn)
 [
+  90 # CompileBody(body_IsFunction,_stack)_
+       [
+         Set(cFn,CompileFn(Type(body)));
+         (cFn != Empty);
+       ] <--
+  [
+    Local(compileFn);
+    Set(compileFn,cFn);
+    Echo("  PUSH(NULL);");
+    Echo("  {");
   
+    Local(i,args,nrArgs);
+    Set(args,Tail(Listify(body)));
+    Set(nrArgs,NrArgs(body));
+
+    Check(compileFn[2]=Function,ToString()[Echo("Trying to call non-function ",Type(body));]);
+    Check(compileFn[3]=Fixed,ToString()[Echo("Trying to call function with variable number of arguments ",Type(body));]);
+    Check(compileFn[4]=nrArgs,ToString()[Echo("Trying to call function ",Type(body)," with ",nrArgs," arguments, expected ",compileFn[4]);]);
+
+    For(i:=1,i<=nrArgs,i++)
+    [
+      CompileBody(args[i],stack);
+    ];
   
+  //hier
+  //  Echo("    void ",compileFn,"(LispEnvironment& aEnvironment,LispInt aStackTop);");
+  
+    Echo("    ",compileFn[1],"(aEnvironment,STACKTOP()-",(nrArgs+1),");");
+    If(nrArgs != 0,Echo("    POP(",nrArgs,");"));
+    Echo("  }");
+  ];
+];
+
+
+400 # CompileBody(_body,_stack) <-- 
+[
   Check(False,ToString()Echo("Unhandled expression type ",body));
 ];
 
@@ -245,7 +336,7 @@ fileBuildString:=
 /* This file was automatically generated with compilecpp.
 */
 
-//#include <stdio.h>
+#include <stdio.h>
 
 #include \"lisptype.h\"
 #include \"lispenvironment.h\"
@@ -258,14 +349,14 @@ fileBuildString:=
 #include \"genericstructs.h\"
 #include \"mathcommands.h\"
 
-
+//#define _this_stack (aEnvironment.iStack)
 #define ATOM(_x) LispAtom::New(aEnvironment,_x)
-#define RESULT aEnvironment.iStack.GetElement(aStackTop)
-#define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
-#define PUSH(_x)   aEnvironment.iStack.PushArgOnStack(_x)
-#define POP(_i)    aEnvironment.iStack.PopTo(aEnvironment.iStack.GetStackTop() - _i)
-#define STACKTOP() aEnvironment.iStack.GetStackTop()
-#define STACK(_i)  aEnvironment.iStack.GetElement(_i)
+#define RESULT _this_stack.GetElement(aStackTop)
+#define ARGUMENT(i) _this_stack.GetElement(aStackTop+i)
+#define PUSH(_x)   _this_stack.PushArgOnStack(_x)
+#define POP(_i)    _this_stack.PopTo(_this_stack.GetStackTop() - _i)
+#define STACKTOP() _this_stack.GetStackTop()
+#define STACK(_i)  _this_stack.GetElement(_i)
 
 #define ISTRUE(_x) IsTrue(aEnvironment, _x)
 #define ISFALSE(_x) IsFalse(aEnvironment, _x)
@@ -276,6 +367,7 @@ fileBuildString:=
   [
     Echo(\"LispObject * \",item[2],\";\");
   ];
+  Echo(funcPrototypes);
 ?>
 
 
@@ -363,6 +455,7 @@ CompileCpp(file_IsString,pluginName_IsString)<--
 [
   Local(funcDefs);
   Set(funcDecls,{});
+  Set(funcPrototypes,"");
   Set(constDefs,{});
   Set(constCount,0);
   Echo("Converting ",file," to C++ code");

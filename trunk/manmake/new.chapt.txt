@@ -1445,19 +1445,11 @@ The calling sequence for {Defun} is:
 
 	Defun(FunctionName,Arguments)Body;
 
-Or when used from {LISP}
-
-	(Defun FunctionName Arguments Body) 
-
 
 For example, {Defun} can be used in infix grammar script
 as:
 
 	Defun("add",{x,y}) MathAdd(x,y);
-
-The {LISP} equivalent would be:
-
-	(Defun "add" (List x y) (MathAdd x y))
 
 
 {Defun} is defined entirely in terms of functions supported
@@ -1466,19 +1458,42 @@ in the initialization script. As such it can be defined
 even before plugins get loaded.
 
 There is one additional limitation: Compiled code can currently
-only call functions that have already been defined. This includes
+only call functions with a fixed number of arguments for which
+it already knows the function prototype (it needs to know that it
+is a function with fixed number of arguments, and the number of
+arguments). This includes
 the functions in the kernel, and the scripts and plugins loaded
-before this script or plugin was loaded.
+before this script or plugin was loaded. If a function needs to
+be called that is defined later in the script or defined in another
+script that is compiled, a forward-declaration of the function can
+be made through:
 
-Why {LISP} expressions, instead of the usual infix grammar notation?
-Somewhere in the future the infix grammar parser will also be
-defined in script. And since the compiler only allows 
-use of functions that have already been defined, the functions
-used by the infix grammar parser have to be defined in 
-{LISP} syntax. If you think this is too strict, there is the 
-added advantage of using functions that have already been 
-compiled, in that the resulting code will be faster (the compiled
-code calls other compiled code directly).
+	ForwardDeclareFixedFunction(name,nrArguments);
+
+
+Functions defined in script (or either in script or compiled), or functions
+with variable number of arguments, or macros, can
+be called by using the function {ApplyPure}. For instance, to invoke
+addition as defined in the scripts one could call
+
+	ApplyPure("+",{a,b});
+
+Unfencing a routine does not work in compiled mode (currently). 
+However, the preferred method would be to use macros here (which
+also don't work yet). Macros can be inlined and thus optimized some more.
+
+Also constructs using {LocalSymbols} don't yet work, although
+this should be fixed soon. {LocalSymbols} is <i>the</i> mechanism
+used in {Yacas} to limit access to resources.
+
+Also, groups of transformation rules can currently not be 
+converted to compiled code. This will only be a problem in 
+cases where the transformation rules dominate performance.
+In all other cases one can write:
+
+	f(x_IsNumber,y_IsNumber) <-- fcompiled(x,y);
+
+with {fcompiled} defined in some script that gets compiled.
 
 Other than that, <i>all</i> functions with fixed number of
 arguments in the kernel are supported, and some macros and
