@@ -250,24 +250,25 @@ Algo.html : Algo.book $(ALGOCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 install-data-local: @INSTALL_HTML@ @INSTALL_PS@ install-scripts install-hints
 
 install-hints: hints
-	$(INSTALL_DATA) hints $(pkgdatadir)/documentation/hints
+	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/documentation
+	$(INSTALL_DATA) hints $(DESTDIR)$(pkgdatadir)/documentation/hints
 
 install-scripts: $(ytxt2tex_DEPS)
-	$(mkinstalldirs) $(pkgdatadir)/manmake/
+	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/manmake/
 	-for file in $(ytxt2tex_DEPS); do \
-	   $(INSTALL_DATA) $(srcdir)/$$file $(pkgdatadir)/manmake/$$file; \
+	   $(INSTALL_DATA) $(srcdir)/$$file $(DESTDIR)$(pkgdatadir)/manmake/$$file; \
 	done
 
 install-html: books.html 
-	$(mkinstalldirs) $(htmldir)/
-	$(INSTALL_DATA) $(top_srcdir)/docs/yacaslogo.gif $(htmldir)/
+	$(mkinstalldirs) $(DESTDIR)$(htmldir)/
+	$(INSTALL_DATA) $(top_srcdir)/docs/yacaslogo.gif $(DESTDIR)$(htmldir)/
 	-for file in *.html; do \
-	   $(INSTALL_DATA) $$file $(htmldir)/$$file; \
+	   $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$file; \
 	done
 
 install-ps: ps-docs
-	$(mkinstalldirs) $(psdir)/
+	$(mkinstalldirs) $(DESTDIR)$(psdir)/
 	-for file in $(PS_DOCS); do \
-	   $(INSTALL_DATA) $$file $(psdir)/$$file; \
-	   gzip $(psdir)/$$file; \
+	   $(INSTALL_DATA) $$file $(DESTDIR)$(psdir)/$$file; \
+	   gzip $(DESTDIR)$(psdir)/$$file; \
 	done

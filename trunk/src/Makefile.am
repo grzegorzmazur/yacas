@@ -149,7 +149,7 @@ fastprimes.c: mkfastprimes
 	./mkfastprimes > fastprimes.c
 # We don't want $(srcdir)/mkfastprimes because this executable
 # is not generated inside the $(srcdir). 
- 
+
 yacas_include = $(datadir)/yacas/include
 
 clean-compile:
@@ -160,25 +160,25 @@ clean-compile:
 # 'make install' should also install all header files
 
 install-data-local: yacas.h
-	$(mkinstalldirs) $(yacas_include)/
-	$(mkinstalldirs) $(yacas_lib)/
-	$(mkinstalldirs) $(yacas_include)/plat/
-	$(mkinstalldirs) $(yacas_include)/plat/linux32/
+	$(mkinstalldirs) $(DESTDIR)$(yacas_include)/
+	$(mkinstalldirs) $(DESTDIR)$(yacas_lib)/
+	$(mkinstalldirs) $(DESTDIR)$(yacas_include)/plat/
+	$(mkinstalldirs) $(DESTDIR)$(yacas_include)/plat/linux32/
 	-for file in $(srcdir)/*.h; do \
 	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $$file $(yacas_include)/$$basefile; \
+	$(INSTALL_DATA) $$file $(DESTDIR)$(yacas_include)/$$basefile; \
 	done
 	-for file in $(srcdir)/*.inl; do \
 	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $$file $(yacas_include)/$$basefile; \
+	$(INSTALL_DATA) $$file $(DESTDIR)$(yacas_include)/$$basefile; \
 	done
 	-for file in $(srcdir)/plat/linux32/*.h; do \
 	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $$file $(yacas_include)/plat/linux32/$$basefile; \
+	$(INSTALL_DATA) $$file $(DESTDIR)$(yacas_include)/plat/linux32/$$basefile; \
 	done
 	-for file in $(srcdir)/plat/linux32/*.inl; do \
 	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $$file $(yacas_include)/plat/linux32/$$basefile; \
+	$(INSTALL_DATA) $$file $(DESTDIR)$(yacas_include)/plat/linux32/$$basefile; \
 	done
 
 version.h: ../config.h
