@@ -87,7 +87,9 @@ TestYacas(TrigSimpCombine(x^Sin(a*x+b)),x^Sin(a*x+b));
 Verify(CanBeUni(x^(-1)),False);
 
 
-
-
+f(x):=Eval(Factor(x))=x;
+Verify(f(703), True);
+Verify(f(485), True);
+Verify(f(170410240), True);
 
 
