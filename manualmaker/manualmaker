@@ -466,11 +466,11 @@ SeeAlso(_list)<--
 ];
 */
 
-BuiltIn() <-- AddBody("Internal function<br>");
-UnixSpecific() <-- AddBody("Unix-specific add-on<br>");
-MacSpecific() <-- AddBody("Macintosh-specific add-on<br>");
-MSWinSpecific() <-- AddBody("MS Windows-specific add-on<br>");
-StandardLib() <-- AddBody("Standard library<br>");
+BuiltIn() <-- AddBody("<h5 align=right>Internal function</h5>");
+UnixSpecific() <-- AddBody("<h5 align=right>Unix-specific add-on</h5>");
+MacSpecific() <-- AddBody("<h5 align=right>Macintosh-specific add-on</h5>");
+MSWinSpecific() <-- AddBody("<h5 align=right>MS Windows-specific add-on</h5>");
+StandardLib() <-- AddBody("<h5 align=right>Standard library</h5>");
 
 /* alias for Load() that can be redefined */
 IncludeFile(x) := [ Load(x); GarbageCollect(); ];

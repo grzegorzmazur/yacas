@@ -1,32 +1,31 @@
 
 			Variables
 
-*CMD := --- assignment
+*CMD := --- assign a variable or a list; define a function
 *STD
 *CALL
-	var := exp
-	{var1, var2, ...} := {exp1, exp2, ...}
-	var[i] := exp
-	fn(param, ...) := exp 
-
-(all are of precedence 1000)
+	var := expr
+	{var1, var2, ...} := {expr1, expr2, ...}
+	var[i] := expr
+	fn(arg1, arg2, ...) := expr
+(the {:=} operator has precedence 1000)
 
 *PARMS
 
 var - variable which should be assigned
 
-exp - expression to assign to the variable
+expr - expression to assign to the variable or body of function
 
 i - index (can be integer or string)
 
-fn - name of a function to define
+fn - atom, name of a new function to define
 
-param - argument of the function "fn"
+{arg1}, {arg2} -- atoms, names of arguments of the new function {fn}
 
 *DESC
 
-As one can see above, the {:=} operator can be used
-in a number of ways. In all cases, some sort of assignment takes
+The {:=} operator can be used
+in a number of ways. In all cases, some sort of assignment or definition takes
 place.
 
 The first form is the most basic one. It evaluates the expression on
@@ -52,11 +51,13 @@ table), and the key "i" is paired with the value "exp". In both
 cases, the right-hand side is evaluated before the assigment and the
 result of the assignment is {True}.
 
-The last form defines a function. For example, the assignment {f(x) := x^2} removes all rules associated with {f(x)} and defines the rule {f(_x) <-- x^2}. Note that the left-hand side may take a different form if
-"f" is defined to be a prefix, infix or bodied function. This case
-is a bit special since the right-hand side is not evaluated
-immediately, but only if the function "f" is used. If this takes
-time, it may be better to force an immediate evaluation with {Eval} (see the last example).
+The last form defines a function. For example, the assignment {fn(x) := x^2} removes any rules previously associated with {fn(x)} and defines the rule {fn(_x) <-- x^2}. Note that the left-hand side may take a different form if
+{fn} is defined to be a prefix, infix or bodied function. This case
+is special since the right-hand side is not evaluated
+immediately, but only when the function {fn} is used. If this takes
+time, it may be better to force an immediate evaluation with {Eval} (see the last example). If the expression on the right hand side begins with {Eval()}, then it <i>will</i> be evaluated before definining the new function.
+
+A variant of the function definition can be used to make a function accepting a variable number of arguments. The last argument
 
 *E.G.
 
@@ -106,7 +107,18 @@ Defining a function:
 	Out> 9;
 	In> f(Sin(a));
 	Out> Sin(a)^2;
-	
+
+Defining a function with variable number of arguments:
+
+	In> f(x, ...) := If(IsList(x),Sum(x),x);
+	Out> True;
+	In> f(2);
+	Out> 2;
+	In> f(1,2,3);
+	Out> 6;
+
+Defining a new infix operator:
+
 	In> Infix("*&*",10);
 	Out> True;
 	In> x1 *&* x2 := x1/x2 + x2/x1;
@@ -158,7 +170,7 @@ expansion is computed only once.
 	-x^23/25852016738884976640000+x^25/
 	15511210043330985984000000;
 
-*SEE Set, Clear, [], Rule, Infix, Eval
+*SEE Set, Clear, [], Rule, Infix, Eval, Function
 
 *CMD Set --- assignment
 *CORE

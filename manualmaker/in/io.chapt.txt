@@ -679,7 +679,7 @@ The function is currently implemented using a global variable {Verbose} which ca
 	Plot2D(f(x))
 	Plot2D(f(x), a:b)
 	Plot2D(f(x), a:b, option=value)
-	Plot2D(f(x), a:b, {option=value, ...})
+	Plot2D(f(x), a:b, option=value, ...)
 	Plot2D(list, ...)
 
 *PARMS
@@ -692,13 +692,13 @@ The function is currently implemented using a global variable {Verbose} which ca
 
 {option} -- atom, option name
 
-{value} -- atom, number or string, option value
+{value} -- atom, number or string (value of option)
 
 *DESC
 The routine {Plot2D} performs adaptive plotting of one or several functions
 of one variable in the specified range. Several functions are specified by
 giving a list of expressions. Various plotting options can be
-specified. Output can be directed to a plotting program (default is to use
+specified. Output can be directed to a plotting program (the default is to use
 {gnuplot}), to a data file, or to a list of values.
 
 The function parameter {f(x)} must be an unevaluated expression containing
@@ -707,8 +707,8 @@ a variable (not necessarily called {x}). Several functions may be specified as a
 Data files are created in a temporary directory {/tmp/plot.tmp/}. File names
 and other information is printed if the {Verbose} option is switched on using {V()}.
 
-The current algorithm uses Newton-Cotes quadratures and some heuristics (see the essay chapter on adaptive plotting).
-Grid is refined between any grid points $a$, $b$ where the integral
+The current algorithm uses Newton-Cotes quadratures and some heuristics for error estimation (see the essay chapter on adaptive plotting).
+The initial grid of {points+1} points is refined between any grid points $a$, $b$ where the integral
 $Integrate(x,a,b)f(x)$ is not approximated within given precision by
 the existing grid.
 
@@ -721,7 +721,7 @@ chosen to avoid singularities.)
 Options are of the form {option=value}. Currently supported option names
 are: "points", "precision", "depth", "output", "filename". Option values
 are either numbers or special unevaluated atoms such as {data}. If names of these atoms
-are needed in the program, strings can be used (e.g. {output="gnuplot"}).
+are needed in the program, strings can be used (e.g. {output="gnuplot"}). Several option/value pairs may be specified (the function {Plot2D} has a variable number of arguments).
 
 *	{points}: initial number of points (default 23) -- at least that
 many points will be plotted. The initial grid of this many points will be
@@ -747,8 +747,8 @@ accept an undefined variable, {Plot2D()} will fail to plot it. Use
 *E.G.
 	In> Plot2D({(2+x)/(2-x),Exp(y)},-1.8:1.5)
 	Out> True;
-	In> V(Plot2D(Sin(1/x),1/100:1, { depth=4, \
-	In>   precision=1/10^3, output=gnuplot}))
+	In> V(Plot2D(Sin(1/x),1/100:1, depth=4, \
+	In>   precision=1/10^3, output=gnuplot))
 	Plot2D: using 65 points for function Sin(1/x)
 	Plot2D'datafile: created file '/tmp/plot.tmp/data1'
 	Out> True;

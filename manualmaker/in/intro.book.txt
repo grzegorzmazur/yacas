@@ -4,11 +4,11 @@ Included is a brief tutorial on the syntax and some
 commands to get you started using Yacas. There are also some examples.
 				Introduction to Yacas: tutorial and examples
 
-			Getting started with Yacas
+			Getting started with {Yacas}
 
 		Introduction
 
-Yacas (Yet Another Computer Algebra System) is a small and highly flexible
+{Yacas} (Yet Another Computer Algebra System) is a small and highly flexible
 general-purpose computer algebra language. The syntax uses a infix-operator
 grammar parser. The distribution contains a small library of mathematical
 functions, but its real strength is in the language in which you can easily
@@ -18,19 +18,19 @@ be linked with the GNU arbitrary precision math library {libgmp}) and is able
 to execute symbolic manipulations on various mathematical objects by following
 user-defined rules.
 
-Currently, the Yacas programming language is stable and seems powerful enough for all computer algebra applications. External libraries providing additional functionality may be dynamically loaded into Yacas via the "plugin" mechanism.
+Currently, the {Yacas} programming language is stable and seems powerful enough for all computer algebra applications. External libraries providing additional functionality may be dynamically loaded into {Yacas} via the "plugin" mechanism.
 
-		Installing Yacas
+		Installing {Yacas}
 
-Read the file {INSTALL} for instructions on how to compile Yacas. Yacas is
+Read the file {INSTALL} for instructions on how to compile {Yacas}. {Yacas} is
 portable across most Unix-ish platforms and requires only a standard C++
 compiler such as {g++}.
 
-The base Yacas application accepts text as input and returns text as output.
-This makes it rather platform-independent. Apart from Unix-like systems, Yacas has been
+The base {Yacas} application accepts text as input and returns text as output.
+This makes it rather platform-independent. Apart from Unix-like systems, {Yacas} has been
 compiled on Windows and on EPOC32, aka Psion (which doesn't come with a standard C++
 library!).
-The source code to compile Yacas for Windows can be found at the
+The source code to compile {Yacas} for Windows can be found at the
 <*Sourceforge repository|http://sourceforge.net/projects/yacas/*>.
 
 For Unix, compilation basically amounts to the standard sequence
@@ -40,7 +40,7 @@ For Unix, compilation basically amounts to the standard sequence
 	make install
 This will install the binaries to {/usr/local/bin} and the library files to {/usr/local/share/yacas/}.
 
-The arbitrary precision math in Yacas will be generally faster if you compile Yacas with the {libgmp} library (the option {--enable-gmp} for the {configure} script). Precompiled Red Hat (RPM) and Debian (DEB) packages are also available.
+The arbitrary precision math in {Yacas} will be generally faster if you compile {Yacas} with the {libgmp} library (the option {--enable-gmp} for the {configure} script). Precompiled Red Hat (RPM) and Debian (DEB) packages are also available.
 
 Additionally, $LaTeX$-formatted documentation in PostScript and PDF formats can be produced by the command
 
@@ -48,13 +48,13 @@ Additionally, $LaTeX$-formatted documentation in PostScript and PDF formats can 
 
 		Using the console mode
 
-You can run Yacas in the console mode simply by typing {yacas}. The Yacas command prompt looks like this:
+You can run {Yacas} in the console mode simply by typing {yacas}. The {Yacas} command prompt looks like this:
 	In>
-and Yacas's answers appear after the prompt
+and {Yacas}'s answers appear after the prompt
 	Out>
 
-A Yacas session may be terminated by typing {Exit()} or {quit}. Pressing {^C}
-will also quit Yacas; however, pressing {^C} while Yacas is busy with a
+A {Yacas} session may be terminated by typing {Exit()} or {quit}. Pressing {^C}
+will also quit {Yacas}; however, pressing {^C} while {Yacas} is busy with a
 calculation will stop just that calculation. A session can be restarted
 (forgetting all previous definitions and results) by typing
 	restart
@@ -64,21 +64,21 @@ Typically, you would enter one statement per line, for example
 	In> Sin(Pi/2);
 	Out> 1;
 
-Statements should end with a semicolon ({;}) although this is not required (Yacas will append a semicolon at end of line to finish the statement).
+Statements should end with a semicolon ({;}) although this is not required ({Yacas} will append a semicolon at end of line to finish the statement).
 
-All documentation is accessible from the Yacas prompt. If you type
+All documentation is accessible from the {Yacas} prompt. If you type
 
 	In> ??
-you should be able to read all available manuals; Yacas will run {lynx} or another text-mode browser to show you the HTML documentation. You can also get help on individual functions: to read about the function {Sum()}, type
+you should be able to read all available manuals; {Yacas} will run {lynx} or another text-mode browser to show you the HTML documentation. You can also get help on individual functions: to read about the function {Sum()}, type
 
 	In> ?Sum
 
-Type {Example();} to get some random examples of Yacas calculations.
+Type {Example();} to get some random examples of {Yacas} calculations.
 
 The command line has a history list, so it should be easy to
 browse through the expressions you entered previously using the Up and Down arrow keys.
 Typing the first few characters of a previous expression and then
-hitting the TAB key makes Yacas recall the last expression
+hitting the TAB key makes {Yacas} recall the last expression
 in the history list that matches these first characters.
 
 Commands spanning multiple lines can (and actually have to) be entered by using a trailing backslash \ at end of each continued line. For example:
@@ -92,13 +92,13 @@ Commands spanning multiple lines can (and actually have to) be entered by using 
 	In> a:=2+3+ \
 	In> 1
 	Out> 6;
-The error after our first attempt occurred because Yacas has appended a semicolon at end of the first line and {2+3+;} is not a valid Yacas expression.
+The error after our first attempt occurred because {Yacas} has appended a semicolon at end of the first line and {2+3+;} is not a valid {Yacas} expression.
 
-Incidentally, any text Yacas prints without a prompt is either messages printed by functions as their side-effect, or error messages. Resulting values of expressions are always printed after an {Out>}  prompt.
+Incidentally, any text {Yacas} prints without a prompt is either messages printed by functions as their side-effect, or error messages. Resulting values of expressions are always printed after an {Out>}  prompt.
 
-		Yacas as a symbolic calculator
+		{Yacas} as a symbolic calculator
 
-We are ready to try some calculations. Yacas uses a C-like infix syntax and is case-sensitive. Here are some exact manipulations with fractions for a start:
+We are ready to try some calculations. {Yacas} uses a C-like infix syntax and is case-sensitive. Here are some exact manipulations with fractions for a start:
 
 	In> 1/14+5/21*(30-(1+1/2)*5^2);
 	Out> -12/7;
@@ -117,9 +117,9 @@ symbolic simplification of basic algebraic functions. Any names such as {x} are 
 	In> Simplify(%)
 	Out> 6*x^2*y+2*y^3;
 
-The special operator {%} automatically recalls the result from the previous line. The function Simplify attempts to reduce an expression to a simpler form. Note that standard function names in Yacas are typically capitalized. Multiple capitalization such as {ArcSin} is sometimes used. The underscore character {_} is a reserved operator symbol and cannot be part of variable or function names.
+The special operator {%} automatically recalls the result from the previous line. The function Simplify attempts to reduce an expression to a simpler form. Note that standard function names in {Yacas} are typically capitalized. Multiple capitalization such as {ArcSin} is sometimes used. The underscore character {_} is a reserved operator symbol and cannot be part of variable or function names.
 
-Yacas can deal with arbitrary precision numbers:
+{Yacas} can deal with arbitrary precision numbers:
 
 	In> 20!;
 	Out> 2432902008176640000;
@@ -143,11 +143,11 @@ Rational numbers will stay rational as long as the numerator and denominator
 are integers, so {55/10} will evaluate to {11/2}. You can override this
 behaviour by using the numerical evaluation function {N()}. For example,
 {N(55/10)} will evaluate to {5.5} . This behaviour holds for most math
-functions. Yacas will try to maintain an exact answer (in terms of integers or
+functions. {Yacas} will try to maintain an exact answer (in terms of integers or
 fractions) instead of using floating point numbers, unless {N()} is used. Where
 the value for the constant $pi$ is needed, use the built-in variable {Pi}. It
 will be replaced by the (approximate) numerical value when {N(Pi)} is called.
-Yacas knows some simplification rules using {Pi} (especially with trigonometric
+{Yacas} knows some simplification rules using {Pi} (especially with trigonometric
 functions). The imaginary unit $i$ is denoted {I} and complex numbers can be
 entered as either expressions involving {I} or explicitly {Complex(a,b)} for
 $a+ib$.
@@ -177,7 +177,7 @@ The function {PrettyForm()} tries to render the formula in a better format for r
 
 		Variables
 
-Yacas supports variables:
+{Yacas} supports variables:
 
 	In> Set(a,Cos(0));
 	Out> True;
@@ -188,7 +188,7 @@ operator {:=} can both be used to assign values to global variables. (Variables
 local to procedures can also be defined; see below the chapters on
 programming.) To clear a variable binding, execute {Clear(a);}  "{a}" will now
 evaluate to just {a}. This is one of the properties of the evaluation scheme of
-Yacas: when some object can not be evaluated or transformed any further, it is
+{Yacas}: when some object can not be evaluated or transformed any further, it is
 returned as the final result.
 
 Currently there is no difference between assigning variables using {Set()} or using the operator {:=}. The latter can however also assign lists and define functions.
@@ -201,7 +201,7 @@ The {:=} operator can be used to define functions:
 will define a new function, {f}, that accepts
 one argument and returns twice the square of that argument.
 
-One and the same function name such as {f} may be used by different functions if they take different numbers of arguments (but not if they merely take different <i>types</i> of arguments, since Yacas does not have a strict type system):
+One and the same function name such as {f} may be used by different functions if they take different numbers of arguments (but not if they merely take different <i>types</i> of arguments, since {Yacas} does not have a strict type system):
 
 	In> f(x):=x^2;
 	Out> True;
@@ -211,7 +211,7 @@ One and the same function name such as {f} may be used by different functions if
 	Out> 15;
 Functions may return values of any type, or may even return values of different types at different times.
 
-Yacas predefines {True} and {False} as boolean values. Functions returning boolean values are called <i>predicates</i>. For example, {IsNumber()} and {IsInteger()} are predicates defined in the standard library:
+{Yacas} predefines {True} and {False} as boolean values. Functions returning boolean values are called <i>predicates</i>. For example, {IsNumber()} and {IsInteger()} are predicates defined in the standard library:
 
 	In> IsNumber(2+x);
 	Out> False;
@@ -236,7 +236,7 @@ series expansion each time that user-defined function is called.
 
 		Strings and lists
 
-In addition to numbers and variables, Yacas supports strings and lists. Strings are simply sequences of characters enclosed by double quotes, for example: {"this is a string with \"quotes\" in it"}. Lists are ordered groups of items, as usual. Yacas represents lists by putting the objects between braces and separating them with commas. The list consisting of objects {a}, {b}, and {c} could be entered by typing {{a,b,c}}. In Yacas, vectors are represented as lists and matrices as lists of lists. In fact, any Yacas expression can be converted to a list (see below).
+In addition to numbers and variables, {Yacas} supports strings and lists. Strings are simply sequences of characters enclosed by double quotes, for example: {"this is a string with \"quotes\" in it"}. Lists are ordered groups of items, as usual. {Yacas} represents lists by putting the objects between braces and separating them with commas. The list consisting of objects {a}, {b}, and {c} could be entered by typing {{a,b,c}}. In {Yacas}, vectors are represented as lists and matrices as lists of lists. In fact, any {Yacas} expression can be converted to a list (see below).
 
 Items in a list can be accessed through the {[ ]}
 operator. Examples: when you enter
@@ -255,7 +255,7 @@ evaluates to {{2,3,4}}. Note that
 spaces around the {..} operator are necessary, or else the
 parser will not be able to distinguish it from a part of a number.
 
-Another use of lists is the associative list, sometimes called a hash table, which is implemented in Yacas simply as a list of key-value pairs. Keys must be strings and values may be any objects. Associative lists can also work as mini-databases. As an example, first
+Another use of lists is the associative list, sometimes called a hash table, which is implemented in {Yacas} simply as a list of key-value pairs. Keys must be strings and values may be any objects. Associative lists can also work as mini-databases. As an example, first
 enter
 
 	u:={};
@@ -268,7 +268,8 @@ and then
 Now, {u["name"]} would return {"Isaia"}. The list {u} now contains three sublists, as we can see:
 
 	In> u;
-	Out> { {"is alive", False}, {"occupation", "prophet"}, {"name", "Isaia"} };
+	Out> { {"is alive", False}, {"occupation",
+	  "prophet"}, {"name", "Isaia"} };
 
 Lists evaluate their arguments, and return a list with results of evaluating each element. So, typing {{1+2,3};} would evaluate to {{3,3}}.
 
@@ -319,7 +320,7 @@ Vector components can be assigned values just like list items, since they are in
 	In> l;
 	Out> {0,2,0};
 
-Yacas can perform multiplication of matrices, vectors and numbers as usual
+{Yacas} can perform multiplication of matrices, vectors and numbers as usual
 in linear algebra:
 
 	In> v:={1,0,0,0}
@@ -336,14 +337,14 @@ in linear algebra:
 	Out> {1+u1*d0,d0+(d0*u1+u2*d1)*d0,
 	  d1*d0,d2*d1*d0};
 
-The standard Yacas script library also includes taking the determinant and
+The standard {Yacas} script library also includes taking the determinant and
 inverse of a matrix, finding eigenvectors and eigenvalues (in simple cases) and solving linear sets of equations, such as $A * x = b$ where $A$ is a matrix, and $x$ and $b$ are vectors. There
 are several more matrix operations supported. See the reference manual for
 more details.
 
 		Control flow: conditionals, loops, blocks
 
-The Yacas language includes some constructs and functions for control flow. Looping can be done with either a {ForEach()} or a {While()} function call. The function {ForEach(x, list) body} executes its body for each element of the list and assigns the variable {x} to that element each time. The function call {While(predicate) body} repeats the "body" until the "predicate" returns {False}.
+The {Yacas} language includes some constructs and functions for control flow. Looping can be done with either a {ForEach()} or a {While()} function call. The function {ForEach(x, list) body} executes its body for each element of the list and assigns the variable {x} to that element each time. The function call {While(predicate) body} repeats the "body" until the "predicate" returns {False}.
 
 Conditional execution is implemented by the {If(predicate, body1, body2)} function call, which works like the C language construct {(predicate) ? body1 : body2}. If the condition is true, "body1" is evaluated, otherwise "body2" is evaluated, and the corresponding value is returned. For example, the absolute value of a number can be computed with:
 
@@ -352,7 +353,7 @@ Conditional execution is implemented by the {If(predicate, body1, body2)} functi
 
 If several operations need to be executed in sequence to obtain a result, you can use a {Prog()} function call or equivalently the {[ ]} construct.
 
-To illustrate these features, let us create a list of all even integers from 2 to 20 and compute the product of all those integers except those divisible by 3. (What follows is not necessarily the most economical way to do it in Yacas.)
+To illustrate these features, let us create a list of all even integers from 2 to 20 and compute the product of all those integers except those divisible by 3. (What follows is not necessarily the most economical way to do it in {Yacas}.)
 
 	In> L := {};
 	Out> {};
@@ -375,15 +376,15 @@ We used a shorter form of {If(predicate, body)} with only one body which is exec
 
 			Examples
 
-This is a small tour of the capabilities Yacas currently offers. Note
-that this list of examples is far from complete. Yacas contains a few
+This is a small tour of the capabilities {Yacas} currently offers. Note
+that this list of examples is far from complete. {Yacas} contains a few
 hundred commands, of which only a few are shown here.
 
 Additional example calculations including the results can be found
 here:
 
 *	A selection of calculations from the <*Wester benchmark|westerbench.html*>.
-*	Some additional <*example calculations|mybench2.html*> that Yacas can currently perform.
+*	Some additional <*example calculations|mybench2.html*> that {Yacas} can currently perform.
 
 		Miscellaneous capabilities
 
@@ -436,13 +437,13 @@ Create a partial fraction expansion of a polynomial.
 
 		A longer calculation with plotting
 
-Here is an example of a semi-real numerical calculation using Yacas. The task was to visualize a particular exact solution of an elliptical differential equation. The solution was found as an infinite series. We need to evaluate this infinite series numerically and plot it for particular values of the parameters.
+Here is an example of a semi-real numerical calculation using {Yacas}. The task was to visualize a particular exact solution of an elliptical differential equation. The solution was found as an infinite series. We need to evaluate this infinite series numerically and plot it for particular values of the parameters.
 
 The function $g(q,phi,chi)$ is defined by
 $$g(q,phi,chi)=1/(2*Pi)*Sin(q*phi)/Sin(2*q*phi)+ 1/Pi*Sum(n, 0, Infinity, Cos(n*chi) * Sin(Sqrt(q^2-n^2)*phi) / Sin(2*Sqrt(q^2-n^2)*phi) )$$.
 Here $q$, $phi$ and $chi$ are numerical parameters of the problem. We would like to plot this series evaluated at fixed $q$ and $phi$ as function of $chi$ between 0 and $2*Pi$.
 
-To solve this problem, we prepare a separate file with the following Yacas code:
+To solve this problem, we prepare a separate file with the following {Yacas} code:
 
 	*
 	    /* Auxiliary function */
@@ -490,7 +491,7 @@ After this you should see a window with a plot.
 
 		Command-line options
 
-The default operation of Yacas is to run in the interactive console mode. Yacas accepts several options that modify its operation. Options can be combined, for example, {yacas -pc} {filename} will execute a file non-interactively. Here is a summary of options:
+The default operation of {Yacas} is to run in the interactive console mode. {Yacas} accepts several options that modify its operation. Options can be combined, for example, {yacas -pc} {filename} will execute a file non-interactively. Here is a summary of options:
 
 	yacas -c
 Inhibit printing of prompts {In>} and {Out>}. Useful for non-interactive sessions.
@@ -511,12 +512,12 @@ Reads and executes commands in the filename and exits. Equivalent to {Load()}.
 Prints version information and exits.
 
 	yacas -d
-Prints the path to the Yacas library directory and exits.
+Prints the path to the {Yacas} library directory and exits.
 
 	yacas --patchload
 Will load every file on the command line not with the normal Load command,
 but with PatchLoad. This is useful for generating html pages for a
-web site using the Yacas scripting language, much like you can do with
+web site using the {Yacas} scripting language, much like you can do with
 the php scripting language.
 
 	yacas --init [file]
@@ -569,9 +570,9 @@ and comments) may be disabled by editing {compressor.cpp} (variable {strip_scrip
 
 		Client/server usage
 
-In addition to the console mode, an experimental persistent session facility is provided through the script {yacas_client}. By means of this script, the user can configure third-party applications to pass commands to a constantly running "Yacas server" and get output. The "Yacas server" is automatically started by {yacas_client}. It may run on a remote computer; in that case the user should have a user account on the remote computer and privileges to execute {yacas_client} there, as well as {rsh} or {ssh} access. The purpose of {yacas_client} is to enable users to pass commands to Yacas within a persistent session while running another application such as a text editor.
+In addition to the console mode, an experimental persistent session facility is provided through the script {yacas_client}. By means of this script, the user can configure third-party applications to pass commands to a constantly running "{Yacas} server" and get output. The "{Yacas} server" is automatically started by {yacas_client}. It may run on a remote computer; in that case the user should have a user account on the remote computer and privileges to execute {yacas_client} there, as well as {rsh} or {ssh} access. The purpose of {yacas_client} is to enable users to pass commands to {Yacas} within a persistent session while running another application such as a text editor.
 
-The script {yacas_client} reads Yacas commands from the standard input and passes them to the running "Yacas server"; it then waits 2 seconds and prints whatever output Yacas produced up to this time. Usage may look like this:
+The script {yacas_client} reads {Yacas} commands from the standard input and passes them to the running "{Yacas} server"; it then waits 2 seconds and prints whatever output {Yacas} produced up to this time. Usage may look like this:
 
 	8:20pm Unix>echo "x:=3" | yacas_client
 	Starting server.
@@ -594,16 +595,16 @@ The script {yacas_client} reads Yacas commands from the standard input and passe
 	Server stopped.
 	8:23pm Unix>
 
-Persistence of the session means that Yacas remembered the value of {x} between invocations of {yacas_client}. If there is not enough time for Yacas to produce output within 2 seconds, the output will be displayed the next time you call {yacas_client}.
+Persistence of the session means that {Yacas} remembered the value of {x} between invocations of {yacas_client}. If there is not enough time for {Yacas} to produce output within 2 seconds, the output will be displayed the next time you call {yacas_client}.
 
-The "Yacas server" is started automatically when first used and can be stopped either by quitting Yacas or by an explicit option {yacas_client -stop}, in which case {yacas_client} does not read standard input.
+The "{Yacas} server" is started automatically when first used and can be stopped either by quitting {Yacas} or by an explicit option {yacas_client -stop}, in which case {yacas_client} does not read standard input.
 
 The script {yacas_client} reads standard input and writes to standard output, so it can be used via remote shell execution. For example, if an account "user" on a remote computer "remote.host" is accessible through {ssh}, then {yacas_client} can be used remotely, like this:
 
 	echo "x:=2;" | \
 	  ssh user@remote.host yacas_client
 
-On a given host computer running the "Yacas server", each user currently may have only one persistent Yacas session.
+On a given host computer running the "{Yacas} server", each user currently may have only one persistent {Yacas} session.
 
 		Compound statements
 
@@ -616,7 +617,7 @@ local to a compound statement block by the function {Local(var1, var2,...)}.
 
 		"Threading" of functions
 
-Some functions in Yacas can be "threaded". This means that calling the function
+Some functions in {Yacas} can be "threaded". This means that calling the function
 with a list as argument will result in a list with that function being
 called on each item in the list. E.g.
 
@@ -626,7 +627,7 @@ operators.
 
 		Functions as lists
 
-Internally, Yacas represents all atomic expressions (numbers and variables) as strings and all compound expressions as lists, just like LISP. Try {FullForm(a+b*c);} and you will see
+Internally, {Yacas} represents all atomic expressions (numbers and variables) as strings and all compound expressions as lists, just like LISP. Try {FullForm(a+b*c);} and you will see
 the text "{(+ a (* b c ))}" appear on the screen. Also, any expression can be converted to a list by the function {Listify()} or back to an expression by the function {UnList()}:
 
 	In> Listify(a+b*(c+d));
@@ -636,7 +637,7 @@ the text "{(+ a (* b c ))}" appear on the screen. Also, any expression can be co
 Note that the first element of the list is the name of the function {+} which is equivalently represented as {Atom("+")} and that the subexpression {b*(c+d)} was not converted to list form.
 
 <i>Pure functions</i> are the equivalent of "lambda expressions"
-of LISP; in other words, they are Yacas expressions representing bodies of functions. They are currently implemented using lists and the operator
+of LISP; in other words, they are {Yacas} expressions representing bodies of functions. They are currently implemented using lists and the operator
 {Apply()}. The following line:
 
 	Apply( {{x,y},x+y} , {2,3} );
@@ -672,7 +673,7 @@ are equal and merely take a certain number of arguments. The user may
 define or redefine any operators with either "normal" names such as "A"
 or names made of one or more of the special symbols {+ - * /} {= ` ~ :} {! @ # $} {^ & * _} {| < >} and declare them to be infix, postfix, or
 prefix operators, as well as normal or bodied functions. (The symbol {%} is reserved for the result of the previous expression; the decimal point {.} is special and cannot be part of an operator's name unless the whole name consists entirely of points, e.g. the "{..}" operator.)
-Some of these operators and combinations are already defined in Yacas's
+Some of these operators and combinations are already defined in {Yacas}'s
 script library, for instance the "syntactic sugar" operators such as
 {:=} or {<--}, but they can be in principle
 redefined or erased. These "special" operators are in no way special to the system, except
@@ -693,7 +694,7 @@ make sense of that expression. The correct way to deal with this is to
 insert a space: "{a:= @@(b)}". Similarly, {a!+3} will cause an error unless you define "{!+}", so use a space: {a! +3}. Spaces are
 <i>not</i> required in situations such as
 "{a:=-1}", but this is so only because the operator
-{:=-} is actually defined in Yacas.
+{:=-} is actually defined in {Yacas}.
 
 Let's now have a hands-on primer for these syntactic features. Suppose we wanted to define a function $F(x,y)=x/y+y/x$. We could use the standard syntax:
 
@@ -728,7 +729,7 @@ could have used any other name such as {xx} or {F} or even {_-+@+-_}.
 Apart from possibly confusing yourself, it doesn't matter what you call the
 functions you define.
 
-There is currently one limitation in Yacas: once a
+There is currently one limitation in {Yacas}: once a
 function name is declared as infix (prefix, postfix) or bodied, it will
 always be interpreted that way. If we declare {f} to be "bodied", we may
 later define different functions named {f} with different numbers of
@@ -737,13 +738,13 @@ arguments, however all of these functions must be "bodied".
 		Writing simplification rules
 
 Mathematical calculations require versatile transformations on symbolic
-quantities. Instead of trying to define all possible transformations, Yacas
+quantities. Instead of trying to define all possible transformations, {Yacas}
 provides a simple and easy to use pattern matching scheme for manipulating
-expressions according to user-defined <i>rules</i>. Yacas itself is designed as a small core engine executing a large library of rules to match and replace patterns. Examples can be found in the library files "standard", "stdfuncs", "deriv" and "solve" that
-come with the Yacas distribution.
+expressions according to user-defined <i>rules</i>. {Yacas} itself is designed as a small core engine executing a large library of rules to match and replace patterns. Examples can be found in the library files "standard", "stdfuncs", "deriv" and "solve" that
+come with the {Yacas} distribution.
 
 One simple application of pattern-matching rules is to define new
-functions. (This is actually the only way Yacas can learn about new
+functions. (This is actually the only way {Yacas} can learn about new
 functions.) As an example, let's define a function {f} that will evaluate
 factorials of non-negative integers. We'll first define a predicate to
 check whether our argument is indeed a non-negative integer, and we'll use
@@ -828,9 +829,9 @@ Some more examples of rules:
 	20 # _x - _x <-- 0;
 	ArcSin(Sin(_x)) <-- x;
 
-Yacas will first try to match the pattern as a template. Names preceded
+{Yacas} will first try to match the pattern as a template. Names preceded
 or followed by an underscore can match any one object: a number, a
-function, a list, etc. Yacas will assign the relevant variables as local
+function, a list, etc. {Yacas} will assign the relevant variables as local
 variables within the rule, and try the predicates as stated in the pattern.
 The post-predicate (defined after the pattern) is tried after all these
 matched. As an example, the simplification rule {_x - _x <--0} specifies that the two objects at left and at right of the minus
