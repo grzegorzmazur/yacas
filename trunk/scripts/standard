@@ -426,11 +426,17 @@ SumListSide(_x, y_IsList) <--
 61 # x_IsPositiveNumber ^ y_IsNegativeNumber <-- (1/MathPower(x,-y));
 
 /*TODO 90 # (_x ^ (_m / p_IsOdd))_(PreNumeric And Not(IsNumber(x))) <-- N(x)^(m/p); */
-91 # (- _x) ^ (_m / p_IsOdd) <-- -((x)^(m/p));
-91 # x_IsNegativeNumber ^ (_m / p_IsOdd) <-- -((-x)^(m/p));
+/*91 # (- _x) ^ (_m / p_IsOdd) <-- -((x)^(m/p));*/
+/*91 # (- _x) ^ (_m / p_IsEven) <-- Complex(0,(x)^(m/p));*/
+/*91 # x_IsNegativeNumber ^ (_m / p_IsOdd) <-- -((-x)^(m/p));*/
+/*91 # x_IsNegativeNumber ^ (_m / p_IsEven) <-- Complex(0,(-x)^(m/p));*/
 91 # (x_IsConstant ^ (_m / p_IsOdd))_(IsNegativeNumber(N(x))) <--
      -((-x)^(m/p));
-92 # (x_IsNegativeNumber ^ y_IsRationalOrNumber)_Numeric <-- Exp(y*Ln(x));
+91 # (x_IsConstant ^ (_m / p_IsEven))_(IsNegativeNumber(N(x))) <--
+     Complex(0,(-x)^(m/p));
+91 # (Sqrt(x_IsConstant))_(IsNegativeNumber(N(x))) <--
+     Complex(0,Sqrt(-x));
+92 # (x_IsNegativeNumber ^ y_IsNumber)_Numeric <-- Exp(y*Ln(x));
 
 
 70  # (_x ^ m_IsRationalOrNumber) ^ n_IsRationalOrNumber <-- x^(n*m);

@@ -553,14 +553,7 @@ Rule("PSolve",1,1,IsUniVar(uni) And Degree(uni) = 3 )
   a:=(-r/2 + Sqrt(q^3/27+ r*r/4))^(1/3);
   b:=(-r/2 - Sqrt(q^3/27+ r*r/4))^(1/3);
 
-Echo({N(-r/2 + Sqrt(q^3/27+ r*r/4))});
-Echo({N(-r/2 - Sqrt(q^3/27+ r*r/4))});
-
-/*TODO remove? old version...(incorrect)
   {a+b+adjust,w*a+w*w*b+adjust,w*w*a+w*b+adjust};
-*/
-  a:= -a;
-  {a+b,w*a+w*w*b,w*w*a+w*b}+adjust;
 ];
 
 
