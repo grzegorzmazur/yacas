@@ -83,6 +83,8 @@ yacas_include = $(datadir)/yacas/include
 
 install-data-local: yacas.h
 	$(mkinstalldirs) $(yacas_include)/
+	$(mkinstalldirs) $(yacas_include)/plat/
+	$(mkinstalldirs) $(yacas_include)/plat/linux32/
 	-for file in $(srcdir)/*.h; do \
 	basefile=`basename $$file`; \
 	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/$$basefile; \
@@ -90,6 +92,14 @@ install-data-local: yacas.h
 	-for file in $(srcdir)/*.inl; do \
 	basefile=`basename $$file`; \
 	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/$$basefile; \
+	done
+	-for file in $(srcdir)/plat/linux32/*.h; do \
+	basefile=`basename $$file`; \
+	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/plat/linux32/$$basefile; \
+	done
+	-for file in $(srcdir)/plat/linux32/*.inl; do \
+	basefile=`basename $$file`; \
+	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/plat/linux32/$$basefile; \
 	done
 
 include depend.dep
