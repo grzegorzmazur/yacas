@@ -710,6 +710,8 @@ Eulerian(n_IsInteger,k_IsInteger) <-- Sum(j,0,k+1,(-1)^j*Bin(n+1,j)*(k-j+1)^n);
 
 StirlingNumber2(n_IsInteger,k_IsInteger) <-- Sum(i,0,k-1,(-1)^i*Bin(k,i)*(k-i)^n)/ k! ;
 
+10 # BellNumber(n_IsInteger)		<-- Sum(k,1,n,StirlingNumber2(n,k));
+
 5  # Euler(0)		<-- 1;
 10 # Euler(n_IsOdd)	<-- 0;
 10 # Euler(n_IsEven)	<-- - Sum(r,0,n/2-1,Bin(n,2*r)*Euler(2*r));

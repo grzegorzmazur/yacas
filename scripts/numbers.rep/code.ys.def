@@ -35,6 +35,7 @@ PartitionsP
 Eulerian
 StirlingNumber2
 StirlingNumber1
+BellNumber
 Euler
 EulerArray
 }
