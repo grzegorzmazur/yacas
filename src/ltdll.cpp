@@ -63,11 +63,16 @@ LtDll::~LtDll()
     if (handle)
     {
         LISPASSERT(iPlugin == NULL);
-        if (lt_dlclose((lt_dlhandle)handle) != 0)
+/*        
+        FIXME: We want to unload the DLL, but before we can do so, we must
+               destruct all the objects created by the DLL.
+
+	if (lt_dlclose((lt_dlhandle)handle) != 0)
     	{
     	    err = lt_dlerror();
     	    if (err) printf("LtDll::~LtDll: lt_dlclose says %s\n",err);
     	}
+*/
     }
     handle = NULL;
 }
