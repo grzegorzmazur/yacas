@@ -109,9 +109,12 @@ OdeSolveLinearHomogeneousConstantCoefficients(_e) <--
    */
   e:=OdeSubstitute(e,{{n},aaa^n*Exp(aaa*x)});
   e:=Subst(Exp(aaa*x),1)e;
-
+  e:=Subst(aaa,x)e;
+  
   /* Solve the resulting polynomial */
-  roots:=Transpose(RemoveDuplicates(RootsWithMultiples(e)));
+  e := Apply("RootsWithMultiples",{e});
+  e := RemoveDuplicates(e);
+  roots:=Transpose(e);
 
   /* Generate dummy constants */
   consts:=
@@ -136,7 +139,9 @@ OdeSolve(_e) <--
 ];
 
 10 # OdeSolveLinear(_e,OdeTerm(0,_list))_(Length(VarList(list)) = 0) <--
+[
   OdeSolveLinearHomogeneousConstantCoefficients(OdeNormalForm(e));
+];
 
 100 # OdeSolveLinear(_e,_ode) <-- OdeUnsolved(e);
 

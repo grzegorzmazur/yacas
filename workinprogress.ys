@@ -1,4 +1,16 @@
 
+
+f(y,n) :=
+[
+  i:=Apply("D",{x,y});
+  Echo({i});
+  Echo({1/i});
+  Echo({Taylor(x,0,n)(1/i)});
+  Integrate(x,0,a)Taylor(x,0,n)(i);
+];
+
+EndOfFile;
+
 10 # II^n_IsNegativeInteger <-- (-II)^(-n);
 20 # (II^_n)_(IsEven(n) = True) <-- (-1)^(n>>1);
 20 # (II^_n)_(IsOdd(n)  = True) <--  II*(-1)^(n>>1);
