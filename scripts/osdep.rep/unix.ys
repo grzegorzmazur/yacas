@@ -2,29 +2,28 @@
 
 /// These functions should return the command line necessary to accomplish tasks.
 
-DeleteFile(filename) := "rm -f " : filename;
+DeleteFileCmd(filename) := "rm \"" : filename : "\"";
 
-DeleteDirectory(dirname) := "rm -rf " : dirname;
+DeleteDirCmd(dirname) := "rm -r \"" : dirname : "\"";
 
-CopyFile(filename1, filename2) := "cp " : filename1 : " " : filename2;
+CopyFileCmd(filename1, filename2) := "cp \"" : filename1 : "\" \"" : filename2 : "\"";
+MakeDirCmd(dirname) := "test -d \"" : dirname : "\" || mkdir -p \"" : dirname : "\"";
 
-MakeDirectory(dirname) := "test -d " : dirname : " || mkdir -p " : dirname;
+ChangeDirCmd(dirname) := "cd \"" : dirname : "\"";
 
-ChangeDirectory(dirname) := "cd " : dirname;
-
-PrintFile(filename) := "cat " : filename;
+PrintFileCmd(filename) := "cat \"" : filename : "\"";
 
 // execute a given command in the background
-BackgroundCommand(command'line) := command'line : "&";
+BackgroundCmd(command'line) := command'line : "&";
 
 /// These functions should return some system-dependent strings.
 
-TemporaryDirectory() := "/tmp";
+TemporaryDir() := "/tmp";
 
 NullFileName() := "/dev/null";
 
-// this is a cludge until we have tmpnam() call
-TemporaryFileName() :=
+// it would be cleaner if we had a tmpnam() call
+TemporaryFile() :=
 [
 	Local(cludgefile, filename);
 	cludgefile := TemporaryDirectory() : FilePathSeparator[ChosenOS] : "yacas-tmpfile";

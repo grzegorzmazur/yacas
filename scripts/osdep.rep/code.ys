@@ -9,8 +9,8 @@ SupportedOSes :=
 	{"Default", "unix.ys"},
 };
 
-// unfortunately we need this here because otherwise we won't be able to load the module...
-FilePathSeparator :=
+// it seems that we need this here because otherwise we won't be able to load the module... or will we?
+FilePathSeparators :=
 {
 	{"Unix", "/"},
 	{"Win32", "\\"},
@@ -18,9 +18,39 @@ FilePathSeparator :=
 	{"Default", "/"},
 };
 
-// this variable says which module we should load - should this go into yacasinit.ys?
-ChosenOS := "Default";
+// The variable ChosenOS determines which module we should load.
+// Try to decide this from Version().
+// On Windows, Version() should begin with the letters "Win".
+// Otherwise we assume Unix.
+ChosenOS := If(StringMid(1,3,Version())="Win", "Win32", "Default");
+
+FilePathSeparator := FilePathSeparators[ChosenOS];
 
 // this function should probably be called from yacasinit.ys
-LoadOSDependentModule() := Use("osdep.rep" : FilePathSeparator[ChosenOS] : SupportedOSes[ChosenOS]);
+LoadOSDependentModule() := Use("osdep.rep" : FilePathSeparator : SupportedOSes[ChosenOS]);
+
+// definitions of variable-argument functions
+
+Function() MakeFilePath(file, ...);
+Function() MakeDir(dir, ...);
+Function() DeleteDir(dir, ...);
+Function() DeleteFile(file, ...);
+
+CopyFile(file1, file2) := SystemCall(CopyFileCmd(file1, file2));
+
+10 # MakeFilePath(file_IsString) <-- file;
+10 # MakeFilePath({file_IsString}) <-- file;
+20 # MakeFilePath(files_IsList) <-- ConcatStrings(files[1], FilePathSeparator, MakeFilePath(Tail(files)));
+
+10 # MakeDir(dir_IsString) <-- SystemCall(MakeDirCmd(dir));
+10 # MakeDir({dir_IsString}) <-- MakeDir(dir);
+20 # MakeDir(dirs_IsList) <-- MakeDir(Head(dirs)) And MakeDir(Tail(dirs));
+
+10 # DeleteDir(dir_IsString) <-- SystemCall(DeleteDirCmd(dir));
+10 # DeleteDir({dir_IsString}) <-- DeleteDir(dir);
+20 # DeleteDir(dirs_IsList) <-- DeleteDir(Head(dirs)) And DeleteDir(Tail(dirs));
+
+10 # DeleteFile(file_IsString) <-- SystemCall(DeleteFileCmd(file));
+10 # DeleteFile({file_IsString}) <-- DeleteFile(file);
+20 # DeleteFile(files_IsList) <-- DeleteFile(Head(files)) And DeleteFile(Tail(files));
 
