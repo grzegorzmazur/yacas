@@ -183,6 +183,9 @@ GenerateIndex() :=
 
 //	  GarbageCollect();
 
+	InitBook("NewDesign");
+	Load("NewDesign.book");
+
 	InitBook("LispProgramming");
 	Load("LispProgramming.book");	// note: manualmaker crashes mysteriously when trying to emit a book that was not loaded
 
