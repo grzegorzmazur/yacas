@@ -54,6 +54,7 @@ int use_stdin = 0;
 int use_plain = 0;
 int show_prompt = 1;
 int trace_history = 0;
+int use_texmacs_out = 0;
 
 void ReportNrCurrent()
 {
@@ -134,8 +135,18 @@ void my_exit(void)
     ReportNrCurrent();
 }
 
+#define TEXMACS_DATA_BEGIN   ((char)2)
+#define TEXMACS_DATA_END     ((char)5)
+#define TEXMACS_DATA_ESCAPE  ((char)27)
+
 void ShowResult(char *prompt)
 {
+    if (use_texmacs_out)
+    {
+//        printf("%cverbatim:",TEXMACS_DATA_BEGIN);
+        printf("%clatex:",TEXMACS_DATA_BEGIN);
+    }
+
     if (yacas->Error()[0] != '\0')
     {
         printf("%s\n",yacas->Error());
@@ -144,9 +155,12 @@ void ShowResult(char *prompt)
     {
         printf("%s%s\n",prompt,yacas->Result());
     }
+    if (use_texmacs_out)
+    {
+        printf("%c",TEXMACS_DATA_END);
+    }
     fflush(stdout);
 }
-
 
 void LoadYacas()
 {
@@ -179,6 +193,8 @@ void LoadYacas()
     yacas->Evaluate("Load(\"yacasinit\");");
     if (yacas->Error()[0] != '\0')
         ShowResult("");
+//    if (use_texmacs_out)
+//        yacas->Evaluate("PrettyPrinter(\"TexForm\");");
 
 
     /* renaming .cc to .cpp files (I know, doesn't belong here ;-) ) */
@@ -215,6 +231,10 @@ void LoadYacas()
     return;
 */
     //Loading user addons
+    if (use_texmacs_out)
+    {
+        printf("%cverbatim:",TEXMACS_DATA_BEGIN);
+    }
     {
         DIR *dp;
         struct dirent* entry;
@@ -222,7 +242,8 @@ void LoadYacas()
         char dir[256];
         char cwd[256];
         strcpy(dir,SCRIPT_DIR "addons/");
-    
+
+        
         if ((dp = opendir(dir)) != NULL)
         {
             yacas->Evaluate("DefaultDirectory(\"" SCRIPT_DIR "addons/\");");
@@ -268,6 +289,11 @@ void LoadYacas()
             yacas->Evaluate(fname);
         }
     }
+    if (use_texmacs_out)
+    {
+        printf("%c",TEXMACS_DATA_END);
+    }
+    fflush(stdout);
 }
 
 static int readmode = 0;
@@ -278,6 +304,8 @@ void InterruptHandler(int errupt)
     if (readmode)
         exit(0);
 }
+
+
 
 int main(int argc, char** argv)
 {
@@ -290,6 +318,13 @@ int main(int argc, char** argv)
     {
         while (fileind<argc && argv[fileind][0] == '-')
         {
+            if (!strcmp(argv[fileind],"--texmacs"))
+            {
+                use_texmacs_out = 1;
+//                show_prompt=0;
+                trace_history=1;
+                use_plain = 1;
+            }
             if (strchr(argv[fileind],'f'))
             {
                 use_stdin = 1;
@@ -376,7 +411,7 @@ int main(int argc, char** argv)
         }
         exit(0);
     }
-    if (show_prompt)
+    if (show_prompt && (!use_texmacs_out))
         ShowResult("");
 
     if (use_stdin)
@@ -394,16 +429,25 @@ int main(int argc, char** argv)
         exit(0);
     }
 
-    
-    
 RESTART:
     if (show_prompt)
     {
+        if (use_texmacs_out)
+        {
+            printf("%cverbatim:",TEXMACS_DATA_BEGIN);
+        }
+
         printf("Numeric mode: \"%s\"\n",NumericLibraryName());
         printf("To exit Yacas, enter  Exit(); or quit or Ctrl-c. Type ?? for help.\n");
         printf("Or type ?function for help on a function.\n");
         printf("Type 'restart' to restart Yacas.\n");
         printf("To see example commands, keep typing Example();\n");
+
+        if (use_texmacs_out)
+        {
+            printf("%c",TEXMACS_DATA_END);
+        }
+        fflush(stdout);
     }
 
     while (Busy())
@@ -412,6 +456,10 @@ RESTART:
         commandline->ReadLine(inprompt);
         readmode = 0;
         char *inpline =  commandline->iLine.String();
+        if (use_texmacs_out)
+        {
+            printf("%cverbatim:",TEXMACS_DATA_BEGIN);
+        }
 
         if (inpline)
         {
@@ -453,6 +501,11 @@ RESTART:
                 }
             }
         }
+        if (use_texmacs_out)
+        {
+            printf("%c",TEXMACS_DATA_END);
+        }
+        fflush(stdout);
     }
     return 0;
 }

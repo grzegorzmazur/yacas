@@ -36,7 +36,7 @@ SOURCE          arggetter.cpp lispplugin.cpp patcher.cpp genericstructs.cpp
 
 source			EPOCMAIN.CPP
 
-EPOCSTACKSIZE 100000
+EPOCSTACKSIZE 800000
 
 library			EUSER.LIB  BAFL.LIB  GDI.LIB     WS32.LIB
 library			ETEXT.LIB  CONE.LIB  APPARC.LIB  EIKON.LIB
