@@ -1,5 +1,7 @@
 LogicSimplify
 CanProve
+LogicRemoveTautologies
+LS
 ~
 |
 &

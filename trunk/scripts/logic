@@ -57,7 +57,7 @@ RuleBase("=>",{a,b});
 
 
 /*
-31  # LogicSimplify((_x)  Or  (_y))_(x!= LogicSimplify(x) Or y!=LogicSimplify(y))               
+31  # LogicSimplify((_x)  Or  (_y))_(x!= LogicSimplify(x) Or y!=LogicSimplify(y))
                                               <--
   LogicSimplify(LogicSimplify(x) Or LogicSimplify(y));
 */
@@ -67,9 +67,15 @@ RuleBase("=>",{a,b});
 20 # LogOr(_x,_y,_u,_v) <-- LogicSimplify(u Or v);
 
 
-
+/*
 35  # LogicSimplify( Not  (_x))_(x != LogicSimplify(x))
-                                                <-- LogicSimplify(Not LogicSimplify(x));        /* Transform subexpression */
+                                                <-- LogicSimplify(Not LogicSimplify(x));
+*/
+
+130  # LogicSimplify( Not  (_x))                <-- LogNot(x, LogicSimplify(x));
+10 # LogNot(_x,_x) <-- Not (x);
+20 # LogNot(_x,_y) <-- LogicSimplify(Not (y));
+
 
 40 # LogicSimplify( Not ( Not  (_x)))           <-- LogicSimplify(x);                           /* eliminate double negation */
 45 # LogicSimplify((_x)=>(_y))                  <-- LogicSimplify((Not x)  Or  y);              /* eliminate implication */
@@ -90,10 +96,7 @@ RuleBase("=>",{a,b});
 106 # LogicSimplify( (_x) !== (_y) )            <-- Not Simplify(x == y);
 
 111 # LogicSimplify( Not((_x) <  (_y)) )        <-- Simplify( x >= y );
-/*112 # LogicSimplify( Not((_x) >  (_y)) )        <-- Simplify( x <= y );*/
 113 # LogicSimplify( Not((_x) <= (_y)) )        <-- Simplify( x > y );
-/*114 # LogicSimplify( Not((_x) >= (_y)) )        <-- Simplify( x < y );*/
-/*115 # LogicSimplify( Not((_x) == (_y)) )        <-- Simplify( x !== y );*/
 116 # LogicSimplify( Not((_x) !== (_y)) )       <-- Simplify( x == y );
 
 /* Accept as fully simplified, fallthrough case */
@@ -101,49 +104,65 @@ RuleBase("=>",{a,b});
 
 
 /* Simplify the logic expression to see if it is true. */
-CanProveAux(_proposition) <--
+CanProveAux(_proposition) <-- LS(proposition, 3);
+
+LS(_proposition, _level) <--
 [
   Local(negated,list,clauses);
   /* First get the LogicSimplify version of the negation of the proposition */
-  negated:=LogicSimplify(proposition);
-  list:=Flatten(negated,"And");
-  clauses:={};
-  ForEach(clause,list)
-  [
-    Local(newclause);
-    newclause:=LogicRemoveTautologies(RemoveDuplicates(Flatten(clause,"Or")));
-    If(newclause != {}, DestructiveAppend(clauses,newclause));
-  ];
+  negated := LogicSimplify(proposition);
+  If(level <= 1, negated, [
+    list    := Flatten(negated,"And");
+    clauses := {};
+    ForEach(clause,list)
+    [
+      Local(newclause);
+      /*newclause := BubbleSort(LogicRemoveTautologies(Flatten(clause,"Or")), LexLessThan);*/
+      newclause := LogicRemoveTautologies(Flatten(clause,"Or"));
+      If(newclause != {}, DestructiveAppend(clauses, newclause));
+    ];
 
-  clauses:=RemoveDuplicates(clauses);
-  clauses:=LogicCombine(clauses);
+    /*
+          Note that we sort each of the clauses so that they look the same,
+          i.e. if we have (A And B) And ( B And A), only the first one will
+          persist.
+    */
+    clauses := RemoveDuplicates(clauses);
+    If(level = 3,[
+      clauses := LogicCombine(clauses);
+    ]);
 
-  Local(result);
-  result:=True;
-  ForEach(item,clauses)
-  [
-    result:= result And UnFlatten(item,"Or",False);
-  ];
+    /* assemble the result back into a boolean expression */
+    Local(result);
+    result := True;
+    ForEach(item,clauses)
+    [
+      result:= result And UnFlatten(item,"Or",False);
+    ];
 
-  result;
+    result;
+  ]);
 ];
 
 /* CanProve tries to prove that the negation of the negation of
    the proposition is true. Negating twice is just a trick to
    allow all the simplification rules a la De Morgan to operate
  */
-CanProve(_proposition) <-- CanProveAux( Not CanProveAux( Not proposition));
+/*CanProve(_proposition) <-- CanProveAux( Not CanProveAux( Not proposition));*/
+
+CanProve(_proposition) <-- CanProveAux( proposition );
 
 1 # SimpleNegate(Not (_x)) <-- x;
 2 # SimpleNegate(_x)       <-- Not(x);
 
 /* LogicRemoveTautologies scans a list representing e1 Or e2 Or ... to find
-   if there are elements p and  Not p in the list. This signifies p Or   Not
-p,
-   which is always True. These pairs are removed. Another function that is
-used
+   if there are elements p and  Not p in the list. This signifies p Or Not p,
+   which is always True. These pairs are removed. Another function that is used
    is RemoveDuplicates, which converts p Or p into p.
  */
+
+/* this can be optimized to walk through the lists a bit more efficiently and also take
+care of duplicates in one pass */
 LogicRemoveTautologies(_e) <--
 [
   Local(i, len); len := Length(e);
@@ -171,8 +190,7 @@ LogicRemoveTautologies(_e) <--
             ],
         If(Equals(y, x),
             [
-/*                Echo({"Deleting from ", e, " i=", Nl()}); */
-
+/*                Echo({"Deleting from ", e, " j=", j, Nl()});    */
                 DestructiveDelete(e, j);
                 len--;
             ])
@@ -189,10 +207,10 @@ LogicRemoveTautologies(_e) <--
 
   Check(len = Length(e), "The length computation is incorrect");
 
-  e;
+  e;            /* note that a list is returned */
 ];
 
-
+/* find the number of the list that contains n in it, a pointer to a list of lists in passed */
 LogicFindWith(_list,_n)<--
 [
   Local(i);
