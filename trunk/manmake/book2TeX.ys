@@ -195,6 +195,12 @@ BuiltIn() := AddBody("
 \\begin{flushright}\\small (\\textsc{Yacas} internal)\\end{flushright}
 ");
 
+LineBreak() := AddBody("\\\\
+");
+PageBreak() := AddBody("
+\\newpage
+");
+
 // this could in principle also post-process the TeX code, e.g. replace " by `` '' etc., but it's faster to do it in Perl
 AddBody(string) := WriteString(string);
 
