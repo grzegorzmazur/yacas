@@ -13,9 +13,9 @@ while(<STDIN>)
 	# only match lines that contain a single function prototype, and if all arguments are doubles or integers
 	# function must return double or int, also all arguments must have this type
 	# specify type here
-	$type = "double|int|unsigned|long|unsigned long||unsigned int";
+	$type = "double|int|unsigned|long|unsigned long|unsigned int|gsl_mode_t";
 	
-	if (/^\s*($type)\s+([0-9a-z_]+)\((const )?($type) [0-9a-z_]+(, ?(const )?($type) [0-9a-z_]+)*\);\s*$/)
+	if (/^\s*($type)\s+([0-9A-Za-z_]+)\((const )?($type) [0-9A-Za-z_]+(, ?(const )?($type) [0-9A-Za-z_]+)*\);\s*$/o)
 	{
 		# now $1 is the type, $2 is the function name
 		$return_type = $1;
@@ -26,7 +26,7 @@ while(<STDIN>)
 		# create an argument list of the form {{"int", "x"}, {"double", "y"}}
 		$text = $_;
 		# strip everything except argument list
-		$text =~ s/^\s*($type)\s+([0-9a-z_]+)\((.*)\);\s*$/$3/;
+		$text =~ s/^\s*($type)\s+([0-9A-Za-z_]+)\((.*)\);\s*$/$3/;
 		# prettyprint
 		$arg_list = $text;
 		# strip extra spaces
@@ -37,7 +37,9 @@ while(<STDIN>)
 		$arg_list =~ s/const +//g;
 		# replace "long" by "int"
 		$arg_list =~ s/([ \"])long\"/$1int\"/g;
-		# remove "unsigned" - this is just for testing, should not do this!
+		# GSL-specific: replace gsl_mode_t by unsigned int
+		$arg_list =~ s/gsl_mode_t/unsigned int/g;
+		# remove "unsigned" - this is just for testing, should not do this!!
 		$arg_list =~ s/\"unsigned /\"/g;
 		$arg_list =~ s/^unsigned //;
 		# separate the last argument
