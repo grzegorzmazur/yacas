@@ -207,14 +207,95 @@ Note that the left and right precedence of an infix operator does not affect the
 
 *SEE OpPrecedence, OpLeftPrecedence, OpRightPrecedence, RightAssociative
 
-*CMD RuleBase --- define function name
+*CMD RuleBase --- define function name with fixed number of arguments
 *CORE
 *CALL
-	RuleBase("operator",{params})
+	RuleBase(operator,params)
+
+*PARMS
+
+{operator} -- string containing the function name
+
+{params} -- list of arguments to function
 
 *DESC
 Define a new rules table entry for a
 function "operator", with {params} as the parameter list.
+
+In the context of the transformation rule declaration facilities
+this is a useful function in that it allows the stating of argument
+names that can he used with HoldArg.
+
+Functions can be overloaded: the same function can be defined
+with different number of arguments.
+
+
+*SEE MacroRuleBase, RuleBaseListed, MacroRuleBaseListed, HoldArg, Retract
+
+
+
+*CMD RuleBaseListed --- define function name with variable number of arguments
+*CORE
+*CALL
+	RuleBaseListed(operator,params)
+
+*PARMS
+
+{operator} -- string containing the function name
+
+{params} -- list of arguments to function
+
+*DESC
+
+This function essentially works the same as {RuleBase}, with the
+exception that it declares a function to have a variable number of
+arguments. If the number of arguments passed in is larger than the
+number of parameters, the last argument will be a list containing
+all the remaining arguments.
+
+For all intents and purposes, with a {RuleBase}-defined function,
+the arity is the number of parameters. A {RuleBaseListed}-defined 
+function can accept any number of arguments as long as the number
+of arguments is at least the number of parameters.
+
+There is one step before evaluation: if the number of arguments exceeds
+the number of parameters, the evaluator puts the end
+arguments in a list first, and only then pass it on to the function,
+so reducing the number of arguments to exactly the number of parameters.
+The rest then works like a {RuleBase}-defined function, and transformation
+rules can be defined for this function.
+
+
+*E.G.
+
+The definition
+
+        RuleBaseListed("f",{a,b,c})
+        10 # f(_a,_b,{_c,_d}) <-- Echo({"four arguments",a,b,c,d});
+        20 # f(_a,_b,c_IsList) <-- Echo({"more than four arguments",a,b,c});
+        30 # f(_a,_b,_c) <-- Echo({"three arguments",a,b,c});
+
+gives the following interaction:
+
+        In> f(A)
+        Out> f(A);
+        In> f(A,B)
+        Out> f(A,B);
+        In> f(A,B,C)
+        three arguments A B C 
+        Out> True;
+        In> f(A,B,C,D)
+        four arguments A B C D 
+        Out> True;
+        In> f(A,B,C,D,E)
+        more than four arguments A B {C,D,E} 
+        Out> True;
+        In> f(A,B,C,D,E,E)
+        more than four arguments A B {C,D,E,E} 
+        Out> True;
+
+*SEE RuleBase, Retract, Echo
+
 
 *CMD Rule --- define rule
 
@@ -332,7 +413,7 @@ for the function named {"operator"} with the specific {arity}.
 *SEE RuleBase, HoldArgNr, HoldArg
 
 
-*CMD MacroSet, MacroClear, MacroLocal, MacroRuleBase, MacroRule --- define rules in functions
+*CMD MacroSet, MacroClear, MacroLocal, MacroRuleBase, MacroRuleBaseListed, MacroRule --- define rules in functions
 
 *DESC
 
