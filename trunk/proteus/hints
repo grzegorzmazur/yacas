@@ -405,25 +405,6 @@
 :OrthoUSum:OrthoUSum(c, x);:sums of series of orthogonal polynomials:
 :OrthogonalBasis:OrthogonalBasis(W):create an orthogonal basis :
 :OrthonormalBasis:OrthonormalBasis(W):create an orthonormal basis :
-:Out:Out> 0;::
-:Out:Out> 11;::
-:Out:Out> 34105;::
-:Out:Out> False;::
-:Out:Out> False;::
-:Out:Out> True;::
-:Out:Out> True;::
-:Out:Out> {12,1884};::
-:Out:Out> {144,157};::
-:Out:Out> {17,39};::
-:Out:Out> {2,3};::
-:Out:Out> {23,34};::
-:Out:Out> {3,3};::
-:Out:Out> {{-59/4,27/4},{81/8,-37/8}};::
-:Out:Out> {{1,0},{0,1}};::
-:Out:Out> {{1,2},{3,4}};::
-:Out:Out> {{1,2},{3,4}};::
-:Out:Out> {{19,22},{43,50}};::
-:Out:Out> {{37,54},{81,118}};::
 :Outer:Outer(t1,t2):get outer tensor product:
 :PAdicExpand:PAdicExpand(n, p):p-adic expansion:
 :PDF:PDF(dist,x):probability density function:
