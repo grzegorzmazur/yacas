@@ -202,7 +202,7 @@ void Htmlize(char* filename)
     
     fprintf(htmlfp,"<h1>%s</h1>\n",filename);
 
-    fprintf(htmlfp,"<table>\n<TR><TD WIDTH=100\% bgcolor=%.6x>\n<PRE>",BACKGROUND);
+    fprintf(htmlfp,"<table>\n<TR><TD WIDTH=100%% bgcolor=%.6x>\n<PRE>",BACKGROUND);
     fprintf(htmlfp,"<font color=%.6x>",FOREGROUND);
     
     PutFile(htmlfp,fp);
