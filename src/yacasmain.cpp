@@ -1160,12 +1160,14 @@ int main(int argc, char** argv)
             {
                 patchload=1;
             }
-#ifdef YACAS_DEBUG
             else if (!strcmp(argv[fileind],"--verbose-debug"))
             {
+#ifdef YACAS_DEBUG
                 verbose_debug=1;
-            }
+#else
+                printf("Warning: --verbose-debug is only supported in debug the version of this program.\n");
 #endif
+            }
             else if (!strcmp(argv[fileind],"--init"))
             {
                 fileind++;
@@ -1250,7 +1252,7 @@ int main(int argc, char** argv)
                 }
               
 #ifdef HAVE_CONFIG_H
-                if (strchr(argv[1],'v'))
+                if (strchr(argv[fileind],'v'))
                 {
                     printf("%s\n",VERSION);
                     return 0;
@@ -1258,7 +1260,7 @@ int main(int argc, char** argv)
 #endif
 
 #ifndef NO_GLOBALS
-                if (strchr(argv[1],'m'))
+                if (strchr(argv[fileind],'m'))
                 {
                     extern void
                         Malloc_SetHooks( void *(*malloc_func)(size_t),
