@@ -1,4 +1,6 @@
 
+#if 0 //sorry guys, I'm testing it on Mac OS X now ;-)
+
 #include <dlfcn.h>
 #include <stdio.h>
 
@@ -50,3 +52,5 @@ LispPluginBase* ElfDll::GetPlugin(void)
     maker = (LispPluginBase*(*)(void))dlsym(handle,"maker");
     return maker();
 }
+
+#endif

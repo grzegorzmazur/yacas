@@ -42,7 +42,7 @@
 #define LispTrue 1
 
 // Dynamic link library loader class
-#define DLLCLASS    ElfDll
+#define DLLCLASS    LispDllBase // ElfDll
 
 // System calls
 #define SystemCall system
