@@ -1,0 +1,23 @@
+Use("testers");
+
+StartTests();
+
+NextTest("Testing LogicSimplify");
+
+/*
+    The main point is that LogicSimplify should return an answer in CNF, that is,
+    as a conjunction of disjuncts.
+*/
+
+Verify(LogicSimplify(A And A),      A);
+Verify(LogicSimplify(A And True),   A);
+Verify(LogicSimplify(A And False),  False);
+Verify(LogicSimplify(A Or  True),   True);
+Verify(LogicSimplify(A Or  False),  A);
+Verify(LogicSimplify(A Or  Not A),  True);
+Verify(LogicSimplify(A And Not A),  False);
+
+Verify(LogicSimplify((A And B) Or (A And B)),   A And B);
+Verify(LogicSimplify(A Or (A And B)),           A And(A Or B));
+Verify(LogicSimplify((A => B) And A,            A And(A Or B));
+Verify(LogicSimplify((A And B) And A,           (A And B) And A);
