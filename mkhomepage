@@ -6,15 +6,15 @@ make clean
 
 # Rebuild yacas and the documentation
 ./makemake
-./configure
-cd src ; make versionstamper
+./configure --enable-ps-doc --enable-pdf-doc
+cd src ; make versionstamper ; cd ..
 make
 make install
 make dist
 # make distcheck
 
 # make ps/pdf documentation
-make texdocs
+# make texdocs
 
 
 # Copy all the files to a homepage directory
