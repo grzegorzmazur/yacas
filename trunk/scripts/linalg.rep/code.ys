@@ -771,3 +771,43 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	x;
 
 ];
+
+// Cholesky Decomposition, adapted from:
+//	Fundamentals Of Matrix Computation (2nd), David S. Watkins, pp38
+// This algorithm performs O(n^3) flops where A is nxn
+// Given the positive definite matrix A, a matrix R is returned such that
+// A = Transpose(R) * R
+	
+10 # Cholesky(A_IsMatrix) <-- 
+[
+	Local(matrix,n,k,j);
+	n:=Length(A);
+	matrix:=ZeroMatrix(n);
+
+	// copy entries of A into matrix
+        ForEach(i,1 .. n)
+                ForEach(j,1 .. n)
+			matrix[i][j] := A[i][j];
+
+	// in place algorithm for cholesky decomp
+	ForEach(i,1 .. n)[
+		For(k:=1,k<=(i-1),k++)
+			matrix[i][i] := matrix[i][i] - matrix[k][i]^2;
+		Check( matrix[i][i] > 0, "Cholesky: Matrix is not positive definite");
+		matrix[i][i] := Sqrt(matrix[i][i]);
+		//Echo({"matrix[",i,"][",i,"] = ", matrix[i][i] });
+		For(j:=i+1,j<=n,j++)[
+			For(k:=1,k<=(i-1),k++)
+				matrix[i][j]:= matrix[i][j] - matrix[k][i]*matrix[k][j];
+			matrix[i][j] := matrix[i][j]/matrix[i][i];
+			//Echo({"matrix[",i,"][",j,"] = ", matrix[i][j] });
+		];
+	];
+	// cholesky factorization is upper triangular
+	ForEach(i,1 .. n)
+		ForEach(j,1 .. n)
+			If(i>j,matrix[i][j] := 0);
+	matrix;
+];
+
+
