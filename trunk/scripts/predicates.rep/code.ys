@@ -171,7 +171,7 @@ IsDiagonal(A_IsMatrix) <--
 	m:=Length(A);
 	n:=Length(A[1]);
 	i:=2;
-	result:=True;
+	result:=(m=n);
 	While(i<=m And result)
 	[
 		j:=1;
@@ -190,7 +190,7 @@ IsUpperTriangular(A_IsMatrix) <--
         m:=Length(A);
         n:=Length(A[1]);
         i:=2; 
-        result:=True;
+        result:=(m=n);
         While(i<=m And result)
         [ 
                 j:=1;
