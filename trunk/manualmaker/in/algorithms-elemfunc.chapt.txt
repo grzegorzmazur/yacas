@@ -53,7 +53,7 @@ The (real) logarithm function {Ln(x)} is computed using its Taylor series,
 $$Ln(1+x) = x - x/2 + x^2/3 -...$$
 This series converges only for $Abs(x)<1$, so for all other values of $x$ one first needs to bring the argument into this range by taking several square roots and then using the identity $Ln(x) = 2^k*Ln(x^(2^(-k)))$. This is implemented in the Yacas core.
 
-The "integer logarithm" {IntLog(x, base)} is defined as the integer part of $$Ln(x)/Ln(base)$$ and is computed using a special routine with purely integer math. The algorithm consists of dividing $x$ by $base$ repeatedly until $x$ becomes 0 and counting the number of divisions. A speed-up for large $x$ is achieved by dividing $x$ first by $base$, then by $base^2$, $base^4$, etc., until the factor $base^(2^n)$ overshoots. At this point, the remaining value is divided by successively smaller powers of $base$.
+The "integer logarithm" {IntLog(x, base)} is defined as the integer part of $$Ln(x)/Ln(base)$$ and is computed using a special routine with purely integer math. The algorithm consists of dividing $x$ by $base$ repeatedly until $x$ becomes 0 and counting the number of divisions. A speed-up for large $x$ is achieved by first comparing $x$ with $base$, then with $base^2$, $base^4$, etc., until the factor $base^(2^n)$ is larger than $x$. At this point, $x$ is divided by that power of $base$ and the remaining value is iteratively compared with and divided by successively smaller powers of $base$.
 
 	    Exponential
 
