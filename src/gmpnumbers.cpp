@@ -1849,6 +1849,28 @@ void BigNumber::turn_int()
   }
 }
 
+// copy from gmp objects
+BigNumber::import_gmp(mpz_t gmp_int)
+{
+	turn_int();
+	mpz_set(int_, gmp_int);
+}
+BigNumber::import_gmp(mpf_t gmp_float)
+{
+	turn_float();
+	mpf_set(float_, gmp_float);
+}
+// copy to gmp objects
+export_gmp(mpz_t gmp_int) const
+{
+	mpz_set(gmp_int, int_);
+}
+export_gmp(mpf_t gmp_float) const
+{
+	mpf_set(gmp_float, float_);
+}
+
+
 //////////////////////////////////////////////////
 ///// End of BigNumber implementation
 //////////////////////////////////////////////////

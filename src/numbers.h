@@ -192,6 +192,15 @@ private:
 
 #else 
   #ifdef USE_GMP
+  /// GMP wrapper starts here
+  public:
+  /// These functions will enable us to use arbitrary GMP functions without changing this class definition.
+  // copy from gmp objects (which must have values)
+  import_gmp(mpz_t gmp_int);
+  import_gmp(mpf_t gmp_float);
+  // copy to gmp objects (which must be already initialized and of correct type)
+  export_gmp(mpz_t gmp_int) const;
+  export_gmp(mpf_t gmp_float) const;
   private:
   // auxiliary internal private functions
   bool IsExpFloat() const;
@@ -199,18 +208,20 @@ private:
   void init();
   void turn_float();
   void turn_int();
-  
+  /// This gives the current type of the BigNumber
   enum EType
-  { // bit masks, so that ExpFloat is also Float.
+  { // bit masks: KExpFloat is also KFloat.
 	  KInt = 1,
 	  KFloat = 2,
 	  KExpFloat = 6,
   };
-  mpz_t int_;
-  mpf_t float_;
+  mpz_t int_;	// these two are not in a union
+  mpf_t float_;	// because we want to avoid excessive memory reallocation.
+  
   unsigned type_;
   mpz_t exponent_; 	// this is only used for ExpFloats when the exponent is out of range for GMP.
   
+  /// GMP wrapper ends here.
   #else
     ANumber* iNumber;
   #endif
