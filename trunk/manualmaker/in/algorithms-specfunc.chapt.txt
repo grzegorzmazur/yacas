@@ -358,11 +358,12 @@ $$ Erfc(x) := (2/Sqrt(Pi))*Integrate(t,x,Infinity)Exp(-t^2) = 1-Erf(x) $$.
 
 Numerical computation of the error function $Erf(z)$ needs to be performed by
 different methods depending on the value of $z$ and its position in the complex
-plane, and on the required precision.  We follow the book: Sh. E. Tsimring,
-<i>Special functions: algorithms and programs</i>
-(in Russian), and the paper: 
-<i>Algorithm ..., Error function for large real argument</i>,
-ACM TOMS ... 197?. (These texts do not consider methods for arbitrary-precision computations.)
+plane, and on the required precision.  We follow the book: Shulim E. Tsimring,
+<i>Handbook of special functions and definite integrals: algorithms and programs for calculators</i>, Radio and communications (publisher), Moscow, 1988 (in Russian), and the paper:
+Henry C. Thacher, Jr.,
+<i>Algorithm 180, Error function for large real X</i>,
+Communications of the ACM, vol. 6, no. 6, 1963. (These texts, however,
+do not describe arbitrary-precision computations.)
 
 
 The function $Erf(z)$ has the following approximations that are useful for its

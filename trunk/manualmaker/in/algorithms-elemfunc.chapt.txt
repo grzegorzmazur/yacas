@@ -8,7 +8,9 @@ reduce the calculation of $x^n$ to the calculation of $x^k$ with $k<=n/2$,
 using at most two multiplications. This is one "step"; at each step $n$ is divided by 2. This algorithm stops when $n$ becomes 1,
 which is after $m$ steps where $m$ is the number of bits in $n$.
 
-It is more convenient to implement this algorithm in a slightly different form: suppose we have the bits $b[i]$ of the number $n$, so that $n=b[0]+2*b[1]+...+b[m]*2^m$. Then
+This procedure should be recursive, or else it requires to obtain the bits
+of the number $n$ in reverse order.
+It is easier to implement this algorithm in a slightly different form: suppose we have the bits $b[i]$ of the number $n$, so that $n=b[0]+2*b[1]+...+b[m]*2^m$. Then
 $$ x^n = x^b[0] * (x^2)^b[1] * ... * (x^(2^m))^b[m] $$.
 In other words, we evaluate $x^2$, $x^4$, ... by repeated squaring, and multiply those $x^(2^k)$ for which the $k$-th bit $b[k]$ of the number $n$ is nonzero.
 
@@ -20,10 +22,8 @@ In Yacas script form, the algorithm looks like this:
 	  result:=1;
 	  While(n != 0)
 	  [
-	    if ((n&1) = 1)
-	    [
+	    if (IsOdd(n))
 	      result := result*x;
-	    ];
 	    x := x*x;
 	    n := n>>1;
 	  ];
@@ -35,6 +35,8 @@ integer $ n $ and integer $ m $.
 Since the "binary squaring" algorithm scans bits in the number $n$,
 the execution time is linear in the number of
 digits of $n$, i.e. logarithmic in $n$.
+
+		Roots
 
 The square root is computed by using the bisection method, which
 works well for integers. The general approach is to scan
@@ -161,12 +163,19 @@ $$Ln(x)=Pi*x*(1+4*x^(-2)*(1-1/Ln(x))+O(x^(-4)))/(2*AGM(x,4))$$.
 If $x$ is large enough, the numerator is very close to 1 and can be disregarded.
 "Large enough" for a desired precision of $P$ decimal digits means that $4*x^(-2)<10^(-P)$. The AGM algorithm gives $P$ digits only for such large values of $x$, unlike the Taylor series which is only good for $x$ close to 1.
 
-The required number of AGM iterations is approximately $2*Ln(P)/Ln(2)$. For smaller values of $x$ (but $x>1$), one can either raise $x$ to a large integer power $s$ (this is quick only if $x$ is an integer or a rational) and compute $1/r*Ln(x^r)$, or multiply $x$ by a large integer power of 2 (this is better for floating-point $x$) and compute $Ln(2^s*x)-s*Ln(2)$. Here the required powers are
+The required number of AGM iterations is approximately $2*Ln(P)/Ln(2)$. For
+smaller values of $x$ (but $x>1$), one can either raise $x$ to a large
+integer power $r$ (this is quick only if $x$ is an integer or a rational)
+and compute $1/r*Ln(x^r)$, or multiply $x$ by a large integer power of 2
+(this is better for floating-point $x$) and compute $Ln(2^s*x)-s*Ln(2)$.
+Here the required powers are
 $$r=Ln(10^P*4)/(2*Ln(x))$$, $$s=P*Ln(10)/(2*Ln(2))+1-Ln(x)/Ln(2)$$. 
 These parameters can be found quickly by using the integer logarithm procedure {IntLog}, while constant values such as $Ln(10)/Ln(2)$ can be simply approximated by rational numbers because $r$ and $s$ do not need to be very precise (but they do need to be large enough). For the second calculation, $Ln(2^s*x)-s*Ln(2)$, we must precompute $Ln(2)$ to the same precision. Also, the subtraction of a large number $s*Ln(2)$ leads to a certain loss of precision, namely, about $Ln(s)/Ln(10)$ decimal digits are lost, therefore the operating precision must be increased by this number of digits. (The quantity $Ln(s)/Ln(10)$ is computed, of course, by the integer logarithm procedure.)
 
 If $x<1$, then ($-Ln(1/x)$) is computed. Finally, there is a special case when $x$ is very close to 1, where the Taylor series converges quickly but the AGM algorithm requires to multiply $x$ by a large power of 2 and then subtract two almost equal numbers, leading to a great loss of precision. Suppose $1<x<1+10^(-M)$, where $M$ is large (say of order $P$). The Taylor series for $Ln(1+epsilon)$ needs about $N= -P*Ln(10)/Ln(epsilon)$=$P/M$ terms.
-If we evaluate the Taylor series using the rectangular scheme, we need $2*Sqrt(N)$ multiplications and $Sqrt(N)$ units of storage. On the other hand, the main slow operation for the AGM sequence is the geometric mean $Sqrt(a*b)$. If $Sqrt(a*b)$ takes an equivalent of $c$ multiplications (Brent's estimate would be $c=13/2$ but it may be more in practice), then the AGM sequence requires $2*c*Ln(P)/Ln(2)$ multiplications. Therefore the Taylor series method is more efficient for
+If we evaluate the Taylor series using the rectangular scheme, we need
+$2*Sqrt(N)$ multiplications and $Sqrt(N)$ units of storage. On the other
+hand, the main slow operation for the AGM sequence is the geometric mean $Sqrt(a*b)$. If $Sqrt(a*b)$ takes an equivalent of $c$ multiplications (Brent's estimate is $c=13/2$ but it may be more in practice), then the AGM sequence requires $2*c*Ln(P)/Ln(2)$ multiplications. Therefore the Taylor series method is more efficient for
 $$ M > 1/c^2*P*(Ln(2)/Ln(P))^2 $$.
 In this case it requires at most $c*Ln(P)/Ln(2)$ units of storage and $2*c*Ln(P)/Ln(2)$ multiplications.
 
@@ -188,7 +197,13 @@ This iteration converges for initial values $0<x<Exp(a+2)$ with a cubic converge
 
 		Calculation of $Pi$
 
-In Yacas, the constant $pi$ is computed by the library routine {Pi()} which uses the internal routine {MathPi()} to compute the value to current precision {Precision()}. The result is stored in the global variable {PiCache} which is a list of the form {{precision, value}} where {precision} is the number of digits of $pi$ that have already been found and {value} is the multiple-precision value. This is done to avoid recalculating $pi$ if a precise enough value for it has already been found.
+In Yacas, the constant $pi$ is computed by the library routine {Pi()} which
+uses the internal routine {MathPi} to compute the value to current
+precision {Precision()}. The result is stored in the global variable as a
+list of the form {{precision, value}} where {precision} is the number of
+digits of $pi$ that have already been found and {value} is the
+multiple-precision value. This is done to avoid recalculating $pi$ if a
+precise enough value for it has already been found.
 
 Efficient iterative algorithms for computing $pi$ with arbitrary precision have been recently developed by Brent, Salamin, Borwein and others. However, limitations of the current multiple-precision implementation in Yacas (compiled with the "internal" math option) make these advanced algorithms run slower because they require many more arbitrary-precision multiplications at each iteration.
 
@@ -252,10 +267,10 @@ In that book the author explains how he got the idea to use continued fraction
 expansions to approximate $ArcTan(x)$, given that the Taylor series converges
 slowly, and having a hunch that in that case the continued fraction expansion
 then converges rapidly. He then proceeds to show that in the case of
-$ArcTan(x)$, this is true in a big way. Now, it might not be true for all
-slowly converging series. No articles or books have been found yet that prove
-this. The above book  shows it empirically. 
+$ArcTan(x)$, this advantage is very significant. However, it might not be true for all
+slowly converging series.
 
+*REM
 One disadvantage of both continued fraction expansions and approximation by 
 rational functions, compared to a simple series, is that it is in general not
 easy to do the calculation with one step more precision, due to the nature
