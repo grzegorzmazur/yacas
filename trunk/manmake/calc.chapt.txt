@@ -1323,11 +1323,102 @@ division of integers.
 
 *SEE IsRational
 
-*CMD Solve --- solve one or more algebraic equations
+*CMD Solve --- solve an equation
 *STD
 *CALL
 	Solve(eq, var)
-	Solve(eqlist, varlist)
+
+*PARMS
+
+{eq} -- equation to solve
+
+{var} -- variable to solve for
+
+*DESC
+
+This command tries to solve an equation. If {eq} does not contain the
+{==} operator, it is assumed that the user wants to solve $eq ==
+0$. The result is a list of equations of the form {var == value}, each
+representing a solution of the given equation. The {Where} operator
+can be used to substitute this solution in another expression. If the
+given equation {eq} does not have any solutions, or if {Solve} is
+unable to find any, then an empty list is returned.
+
+The current implementation is far from perfect. In particular, the
+user should keep the following points in mind:
+*	{Solve} cannot solve all equations. If it is given a equation
+it can not solve, it raises an error via {Check}. Unfortunately, this
+is not displayed by the inline pretty-printer; call {PrettyPrinter} to
+change this. If an equation cannot be solved analytically, you may
+want to call {Newton} to get a numerical solution.
+*	Systems of equations are not handled yet. For linear systems,
+{MatrixSolve} can be used. The old version of {Solve}, with the name
+{OldSolve} might be able to solve nonlinear systems of equations.
+*	The periodicity of the trigonometric functions {Sin}, {Cos},
+and {Tan} is not taken into account. The same goes for the (imaginary)
+periodicity of {Exp}. This causes {Solve} to miss solutions.
+*	It is assumed that all denominators are nonzero. Hence, a
+solution reported by {Solve} may in fact fail to be a solution because
+a denominator vanishes.
+*	In general, it is wise not to have blind trust in the results
+returned by {Solve}. A good strategy is to substitute the solutions
+back in the equation.
+
+*E.G.
+
+First a simple example, where everything works as it should. The
+quadratic equation $x^2 + x == 0$ is solved. Then the result is
+checked by substituting it back in the quadratic.
+
+	In> quadratic := x^2+x;
+	Out> x^2+x;
+	In> Solve(quadratic, x);
+	Out> {x==0,x==(-1)};
+	In> quadratic Where %;
+	Out> {0,0};
+
+If one tries to solve the equation $Exp(x) == Sin(x)$, one finds that
+{Solve} can not do this.
+
+	In> PrettyPrinter("DefaultPrint");
+	Out> True;
+	In> Solve(Exp(x) == Sin(x), x);
+	Error: Solve'Fails: cannot solve equation Exp(x)-Sin(x) for x
+	Out> {};
+
+The equation $Cos(x) == 1/2$ has an infinite number of solutions,
+namely $x == (2*k + 1/3) * Pi$ and $x == (2*k - 1/3) * Pi$ for any
+integer $k$. However, {Solve} only reports the solutions with $k == 0$.
+
+	In> Solve(Cos(x) == 1/2, x);
+	Out> {x==Pi/3,x== -Pi/3};
+
+For the equation $x/Sin(x) == 0$, a spurious solution at $x == 0$ is
+returned. However, the fraction is undefined at that point.
+
+	In> Solve(x / Sin(x) == 0, x);
+	Out> {x==0};
+
+At first sight, the equation $Sqrt(x) == a$ seems to have the solution
+$x == a^2$. However, this is not true for eg. $a == -1$.
+
+	In> PrettyPrinter("DefaultPrint");
+	Out> True;
+	In> Solve(Sqrt(x) == a, x);
+	Error: Solve'Fails: cannot solve equation Sqrt(x)-a for  x
+	Out> {};
+	In> Solve(Sqrt(x) == 2, x);
+	Out> {x==4};
+	In> Solve(Sqrt(x) == -1, x);
+	Out> {};
+
+*SEE Check, MatrixSolve, Newton, OldSolve, PrettyPrinter, PSolve, Where, ==
+
+*CMD OldSolve --- old version of {Solve}
+*STD
+*CALL
+	OldSolve(eq, var)
+	OldSolve(eqlist, varlist)
 
 *PARMS
 
@@ -1340,6 +1431,11 @@ division of integers.
 {varlist} -- list of variables
 
 *DESC
+
+This is an older version of {Solve}. It is retained for two
+reasons. The first one is philosophical: it is good to have multiple
+algorithms available. The second reason is more practical: the newer
+version cannot handle systems of equations, but {OldSolve} can.
 
 This command tries to solve one or more equations. Use the first form
 to solve a single equation and the second one for systems of
@@ -1380,9 +1476,9 @@ An example which {Solve} cannot solve:
 	In> Solve({x^2-x == y^2-y,x^2-x == y^3+y},{x,y});
 	Out> {};
 
-*SEE SuchThat, Eliminate, PSolve, ==
+*SEE Solve, SuchThat, Eliminate, PSolve, ==
 
-*CMD SuchThat --- find a value which makes some expression zero
+*CMD SuchThat --- special purpose solver
 *STD
 *CALL
 	SuchThat(expr, var)
@@ -1417,7 +1513,7 @@ function until the variable "var" is reached.
 	In> SuchThat(A, x)
 	Out> (-c)/(a+b);
 
-*SEE Solve, Subst, Simplify
+*SEE Solve, OldSolve, Subst, Simplify
 
 *CMD Eliminate --- substitute and simplify
 *STD

@@ -178,7 +178,7 @@ BenchCall(s:=Taylor(y,0,6)Sin(y)+Cos(y));
 BenchShow(BigOh(Subst(y,s)t,y,6));
 
 DoNext("Solve the linear (dependent) system x+y+z=6,2x+y+2z=10,x+3y+z=10.");
-BenchShow(Solve({x+y+z==6,2*x+y+2*z==10,x+3*y+z==10},{x,y,z}));
+BenchShow(OldSolve({x+y+z==6,2*x+y+2*z==10,x+3*y+z==10},{x,y,z}));
 
 
 

@@ -211,11 +211,15 @@ $a+ib$.
 *A {==}
 Some simple equation solving algorithms are in place:
 
-	In> Solve(a+x*y==z,x);
-	Out> (z-a)/y;
-	In> Solve({11*x+3*y==1,2*x+y==0},{x,y})
-	Out> {{1/5,-2/5}};
-(Note the use of the {==} operator, which does not evaluate to anything, to denote an "equation" object.) Currently {Solve} is rather limited and only deals with equations where the variable to be solved for only occurs once in the equation. In the future there will be more sophisticated algorithms.
+	In> Solve(x/(1+x) == a, x);
+	Out> {x==a/(1-a)};
+	In> Solve(x^2+x == 0, x);
+	Out> {x==0,x==(-1)};
+
+(Note the use of the {==} operator, which does not evaluate to
+anything, to denote an "equation" object.) Currently {Solve} is rather
+limited, but in the future there will be more sophisticated
+algorithms.
 
 *A {Taylor}
 Taylor series are supported, for example:

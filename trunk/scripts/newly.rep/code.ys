@@ -111,7 +111,7 @@ EigenVectors(_matrix,_eigenvalues) <--
   [
     Local(possible);
 /* Echo({"1...",result}); */
-    possible:=Solve(matrix*MakeVector(k,n)==e*MakeVector(k,n),MakeVector(k,n))[1];
+    possible:=OldSolve(matrix*MakeVector(k,n)==e*MakeVector(k,n),MakeVector(k,n))[1];
 /* Echo({"2..."}); */
 /* Echo({"2..."}); */
 

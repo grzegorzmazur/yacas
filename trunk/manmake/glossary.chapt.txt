@@ -68,7 +68,7 @@ This operator does not assign or compare its sides.
 For example, the expression {Sin(x)==1} is kept unevaluated and can be passed as argument to functions.
 For example,
 	In> Solve(Sin(x)==1, x)
-	Out> Pi/2;
+	Out> {x==Pi/2};
 
 The symbolic equation operator {==} is also useful to represent solutions of equations or to specify substitutions, give options, and so on.
 

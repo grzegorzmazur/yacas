@@ -50,7 +50,6 @@ Set(DefFileList, {
 "random.rep/code.ys",
 "simplify.rep/code.ys",
 "solve.rep/code.ys",
-"solve.rep/jnsolve.ys",
 "specfunc.rep/bernou.ys",
 "specfunc.rep/bessel.ys",
 "specfunc.rep/code.ys",
