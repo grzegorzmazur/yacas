@@ -109,6 +109,8 @@ UnFence("IntegrateMultiplicative",4);
 10 # AntiDeriv(_var,   - _y) <--            - AntiDeriv(var,y);
 
 10 # AntiDeriv(_var,_x/c_IsFreeOf(var) )_(HasExpr(x,var)) <-- AntiDeriv(var,x)/c;
+10 # AntiDeriv(_var,c_IsFreeOf(var)/_x )_(HasExpr(x,var) And c!= 1)
+	<-- c*AntiDeriv(var,1/x);
 
 
 ////////////////////////////////////////////////
