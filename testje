@@ -1,3 +1,62 @@
 
+RadSimp(_n) <--
+[
+  Local(max);
+  max := MathCeil(N(Eval(n)^2));
+  result:=0;
+  RadSimpTry(n,0,max);
+];
 
-Taylor(x,0,5)Sin(x)
+/*Echo({"Try ",test}); */
+
+RadSimpTry(_n,_result,_max)<--
+[
+  if (N(Eval(result-n)) < 0)
+  [
+    Local(i);
+    For (i:=1,i<=max,i++)
+    [
+      Local(new, test);
+      test:=result+Sqrt(i);
+
+ Echo({"Cut-try ",test}); 
+
+      if (Simplify(n^2-test^2) = 0)
+      [
+        result:=test;
+        i:=max+1;
+      ];
+    ];
+
+    if (N(Eval(result-n)) < 0)
+    [
+      For (i:=1,i<=max,i++)
+      [
+        Local(new, test);
+        test:=result+Sqrt(i);
+
+ Echo({"Full-try ",test}); 
+
+        if (Simplify(n^2-test^2) = 0)
+        [
+          result:=test;
+          i:=max+1;
+        ]
+        else
+        [
+           new:=RadSimpTry(n,test,max);
+   	   if (Simplify(n^2-new^2) = 0)
+           [
+             result:=new;
+             i:=max+1;
+           ];
+        ];
+      ];
+    ];
+/*
+*/
+  ];
+  result;
+];
+
+

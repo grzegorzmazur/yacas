@@ -396,14 +396,28 @@ Function("UniDivide",{u,v})
       r[j+1] := r[j+1] - q[k+1]*v[j-k+1];
     ];
   ];
-  While (Length(r)>n) DestructiveDelete(r,Length(r));
+  Local(end);
+  end:=Length(r);
+  While (end>n)
+  [
+    DestructiveDelete(r,end);
+    end:=end-1;
+  ];
 
   {q,r};
 ];
 
 
 DropEndZeroes(list):=
-  While(list[Length(list)] = 0) DestructiveDelete(list,Length(list));
+[
+  Local(end);
+  end:=Length(list);
+  While(list[end] = 0)
+  [
+    DestructiveDelete(list,end);
+    end:=end-1;
+  ];
+];
 
 
 

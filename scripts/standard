@@ -425,11 +425,13 @@ RuleBase("if",{predicate,body});
 if(_predicate) _body <-- If(Eval(predicate),Eval(body));
 HoldArg("if",predicate);
 HoldArg("if",body);
+UnFence("if",2);
 
 RuleBase("else",{ifthen,otherwise});
 (if (_predicate) _body else _otherwise) <-- If(Eval(predicate),Eval(body), Eval(otherwise));
 HoldArg("else",ifthen);
 HoldArg("else",otherwise);
+UnFence("else",2);
 
 
 
