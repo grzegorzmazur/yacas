@@ -34,6 +34,7 @@ IsNegativeNumber(x):= IsNumber(x) And x < 0;
 IsPositiveNumber(x):= IsNumber(x) And x > 0;
 
 IsNegativeInteger(x):= IsInteger(x) And x < 0;
+IsNonNegativeInteger(x):=IsInteger(x) And x >= 0;
 IsPositiveInteger(x):= IsInteger(x) And x > 0;
 
 10 # IsZero(x_IsNumber) <-- ( (x+0.5)-0.5  = 0);
