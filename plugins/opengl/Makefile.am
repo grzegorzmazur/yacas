@@ -6,7 +6,7 @@ INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/ $(GL_CFLAGS)
 # -I$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Libraries/CIncludes -framework AGL -framework OpenGL
 
 # noinst_ in stead of pkglib_ because it doesn't currently work on MacOSX 
-noinst_LTLIBRARIES = $(OPENGL_PLUGIN)
+pkglib_LTLIBRARIES = $(OPENGL_PLUGIN)
 EXTRA_LTLIBRARIES = opengl.la
 opengl_la_SOURCES = glutcode.cc openglapi.stub glutcode.h
 opengl_la_LIBADD = openglapi.lo

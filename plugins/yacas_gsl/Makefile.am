@@ -3,7 +3,7 @@
 INCLUDES = $(GSL_CFLAGS) -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/ 
 
 # noinst_ in stead of pkglib_ because it doesn't currently work on MacOSX 
-noinst_LTLIBRARIES = $(GSL_PLUGIN)
+pkglib_LTLIBRARIES = $(GSL_PLUGIN)
 EXTRA_LTLIBRARIES = yacas_gsl.la
 yacas_gsl_la_SOURCES = yacas_gsl.cc yacas_gsl.h yacas_gslapi.stub 
 yacas_gsl_la_LIBADD = yacas_gslapi.cc
