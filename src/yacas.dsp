@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /I "plat\win32" /I "\prj\yacas\src\\" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "SUPPORT_SERVER" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /O2 /I "\prj\yacas\src\\" /I "\work\yacas\src\\" /I "\work\yacas\src\plat\win32\\" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "SUPPORT_SERVER" /YX /FD /c
 # ADD BASE RSC /l 0x413 /d "NDEBUG"
 # ADD RSC /l 0x413 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -66,7 +66,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "plat\win32" /I "\prj\yacas\src\\" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "SUPPORT_SERVER" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "\work\yacas\src\\" /I "\work\yacas\src\plat\win32\\" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "SUPPORT_SERVER" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x413 /d "_DEBUG"
 # ADD RSC /l 0x413 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -135,6 +135,10 @@ SOURCE=.\genericstructs.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\plugins\pcre\get.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\grower.cpp
 # End Source File
 # Begin Source File
@@ -195,6 +199,10 @@ SOURCE=.\lispuserfunc.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\plugins\pcre\maketables.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\mathcommands.cpp
 # End Source File
 # Begin Source File
@@ -239,7 +247,19 @@ SOURCE=.\patterns.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\plugins\pcre\pcre.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\plugins\pcre\pcreposix.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\platmath.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\plugins\pcre\plugin.cpp
 # End Source File
 # Begin Source File
 
@@ -263,6 +283,10 @@ SOURCE=.\stringio.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\plugins\pcre\study.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\substitute.cpp
 # End Source File
 # Begin Source File
@@ -276,15 +300,6 @@ SOURCE=.\unipoly.cpp
 # Begin Source File
 
 SOURCE=.\plat\win32\win32commandline.cpp
-
-!IF  "$(CFG)" == "yacas - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "yacas - Win32 Debug"
-
-# ADD CPP /I "..\.."
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 

@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "YACASDLL_EXPORTS" /Yu"stdafx.h" /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "plat\win32" /I "\prj\yacas\src\\" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "YACASDLL_EXPORTS" /FR /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "\prj\yacas\src\\" /I "\work\yacas\src\\" /I "\work\yacas\src\plat\win32\\" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "YACASDLL_EXPORTS" /FR /FD /c
 # SUBTRACT CPP /YX /Yc /Yu
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -68,7 +68,7 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "YACASDLL_EXPORTS" /Yu"stdafx.h" /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "plat\win32" /I "\prj\yacas\src\\" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "YACASDLL_EXPORTS" /FR /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "\work\yacas\src\\" /I "\work\yacas\src\plat\win32\\" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "YACASDLL_EXPORTS" /FR /FD /GZ /c
 # SUBTRACT CPP /YX /Yc /Yu
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -144,6 +144,10 @@ SOURCE=.\genericstructs.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\plugins\pcre\get.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\grower.cpp
 # End Source File
 # Begin Source File
@@ -204,6 +208,10 @@ SOURCE=.\lispuserfunc.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\plugins\pcre\maketables.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\mathcommands.cpp
 # End Source File
 # Begin Source File
@@ -248,7 +256,19 @@ SOURCE=.\patterns.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\plugins\pcre\pcre.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\plugins\pcre\pcreposix.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\platmath.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\plugins\pcre\plugin.cpp
 # End Source File
 # Begin Source File
 
@@ -265,6 +285,10 @@ SOURCE=.\stdstubs.cpp
 # Begin Source File
 
 SOURCE=.\stringio.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\plugins\pcre\study.c
 # End Source File
 # Begin Source File
 

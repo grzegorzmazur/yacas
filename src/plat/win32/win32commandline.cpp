@@ -153,7 +153,7 @@ CWin32CommandLine::CWin32CommandLine() :
                         ;
                     buff[i++] = '\0';
                     LispStringPtr ptr = new LispString(buff);
-                    iHistory.Append(ptr);
+                    iHistoryList.Append(ptr);
                 
                 }
                 fclose(f);
@@ -169,9 +169,9 @@ CWin32CommandLine::~CWin32CommandLine()
         FILE*f=fopen("history.log","w");
         if (f){
             int i;
-            for (i=0;i<iHistory.NrItems();i++)
+            for (i=0;i<iHistoryList.NrLines();i++)
             {
-                fprintf(f,"%s\n",iHistory[i]->String());
+                fprintf(f,"%s\n",iHistoryList.GetLine(i)->String());
             }
             fclose(f);
         }
