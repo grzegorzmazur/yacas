@@ -215,24 +215,36 @@ the definition, it can be seen that if $n$ is prime, then $Moebius(n) = -1 $. Th
 		Integer Partitions
 
 A partition of an integer $n$ is way of writing $n$ as the sum of positive integers, where
-order is not important. The function {PartitionsP} counts the number of these partitions. 
-This function uses the Rademacher-Hardy-Ramanujan theorem: 
+order is not important.
+For example, there are 3 ways to write the number 3 in this way: $3=1+1+1$, $3=1+2$, $3=3$.
+The function {PartitionsP} counts the number of these partitions. 
 
-$ C=Pi*Sqrt(2/3) $
+The algorithm used to compute this function uses the Rademacher-Hardy-Ramanujan theorem.
+The number of partitions $P(n)$ is equal to an infinite sum:
 
-$ lambda=Sqrt(m - 1/24) $
+$$ P(n) = 1/(Pi*Sqrt(2))*Sum(k,1,Infinity, Sqrt(k)*A(k,n)*S(k,n)) $$,
+where the functions $A$ and $S$ are defined as follows:
+$$ S(k,n) := Deriv(n) Sinh(Pi/k*Sqrt(2/3*(n-1/24)))/Sqrt(n-1/24) $$;
+$$ A(k,n) := Sum(l,1,k, delta(Gcd(l,k),1)*Exp(-2*Pi*I*(l*n)/k+Pi*I*B(k,l))) $$,
+where $delta(x,y)$ is the Kronecker delta function (so that the summation goes only over integers $l$ which are mutually prime with $k$) and $B$ is defined by
+$$ B(k,l) := Sum(j,1,k-1, j/k*(l*j/k-Floor(l*j/k)-1/2)) $$.
 
-$ PartitionsP(n) = Sum(k,1,Infinity,A(n,k)*(Sqrt(k)*(Deriv(m) Sinh(C*lambda)/lambda) Where m==n))/(Pi*Sqrt(2)) $
+The first term of the series gives, at large $n$, the Hardy-Ramanujan asymptotic estimate,
+$$ P(n) <> P0(n) := 1/(4*n*Sqrt(3))*Exp(Pi*Sqrt((2*n)/3))$$.
+The absolute value of each term decays quickly,
+so after $O(Sqrt(n))$ terms the series gives an answer that is very close to the integer result.
+There exist estimates of the error of this series, but they are complicated.
+The series is sufficiently well-behaved and it is easier to determine the truncation point heuristically.
+Each term of the series is either 0 (when all terms in $A(k,n)$ happen to cancel) or has a magnitude which is not very much larger than the magnitude of the previous nonzero term.
+(The series is not actually monotonic.)
+In the current implementation, the series is truncated when $Abs(A(k,n)*S(n)*Sqrt(k))$ becomes smaller than 0.1 for the first time;
+in any case, the maximum number of calculated terms is $5+Sqrt(n)/2$.
 
-$ A(n,k) = Sum(h,1,k-1, If( Gcd(h,k)=1, Exp(I*Pi*Sum(j,1,k-1,(j/k)*((h*j)/k - Floor((h*j)/k) -1/2)) - 2*Pi*I*h*n/k ), 0 ) ) $
+The floating-point precision necessary to obtain the integer result must be at least the number of digits in the first term $P0(n)$, i.e.
+$$ Prec > (Pi*Sqrt(2/3*n)-Ln(4*n*Sqrt(3)))/Ln(10) $$.
+However, Yacas currently uses the fixed-point precision model.
+Therefore, the current implementation divides the series by $P0(n)$ and computes all terms to $Prec$ digits.
 
-The absolute values of each term decay very quickly and can be truncated to give an exact answer.
-What is not clear is when to truncate the series, and what precision to use at each step. Currently a precision
-of $ 10 + Sqrt(n) $ is used, which is a healthy overshoot. The series are truncated when the terms are less than
-.1 in absolute value.
-
-The current implementation seems to work for all $n<=4096$. 
-
-
-
-
+*REM
+Currently a precision
+of $ 10 + Sqrt(n) $ is used, which is a healthy overshoot.

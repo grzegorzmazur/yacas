@@ -258,8 +258,8 @@ IntNthRoot1(_n, s_IsInteger) <--
 ];
 */
 
-CatalanNumber(_n) <-- 
-[	
+CatalanNumber(_n) <--
+[
 	Check( IsPositiveInteger(n), "CatalanNumber: Error: argument must be positive" );
 	Bin(2*n,n)/(n+1);
 ];
@@ -290,9 +290,9 @@ HarmonicNumber(n_IsInteger,r_IsPositiveInteger) <--
 [
 	// small speed up
 	if( r=1 )[
-		Sum(k,1,n,1/k);	
+		Sum(k,1,n,1/k);
 	] else [
-		Sum(k,1,n,1/k^r);	
+		Sum(k,1,n,1/k^r);
 	];
 ];
 Function("FermatNumber",{n})[
@@ -401,7 +401,7 @@ Function("FermatNumber",{n})[
 10 # LegendreSymbol(_a,_p)	<--
 [
         Check( IsInteger(a) And IsInteger(p) And p>2 And IsCoprime(a,p) And IsPrime(p),
-                "LegendreSymbol: Invalid arguments"); 
+                "LegendreSymbol: Invalid arguments");
 	If(IsQuadraticResidue(a,p), 1, -1 );
 ];
 
@@ -417,12 +417,12 @@ IsPerfect(n_IsPositiveInteger) <-- ProperDivisorsSum(n)=n;
 10 # IsQuadraticResidue(_a,_p) <--
 [
         Check( IsInteger(a) And IsInteger(p) And p>2 And IsCoprime(a,p) And IsPrime(p),
-                "IsQuadraticResidue: Invalid arguments"); 
+                "IsQuadraticResidue: Invalid arguments");
         If(a^((p-1)/2) % p = 1, True, False);
 ];
 
 5  # IsGaussianInteger(x_IsList)	<-- False;
-// ?????? 
+// ??????
 5  # IsGaussianInteger(ProductPrimesTo257)	<-- False;
 10 # IsGaussianInteger(x_IsComplex)  	<-- (IsInteger(Re(x)) And IsInteger(Im(x)));
 // to catch IsGaussianInteger(x+2) from Apart
@@ -454,7 +454,7 @@ IsAmicablePair(m_IsPositiveInteger,n_IsPositiveInteger) <-- ( ProperDivisorsSum(
 // First irregular prime is 37
 5  # IsIrregularPrime(_p)_(p<37)	<-- False;
 
-// an odd prime p is irregular iff p divides the numerator of a Bernoulli number B(2*n) with 
+// an odd prime p is irregular iff p divides the numerator of a Bernoulli number B(2*n) with
 // 2*n+1<p
 10 # IsIrregularPrime(p_IsPositiveInteger) <--
 [
@@ -464,7 +464,7 @@ IsAmicablePair(m_IsPositiveInteger,n_IsPositiveInteger) <-- ( ProperDivisorsSum(
 	irregular:=False;
 
 	While( 2*i + 1 < p And (irregular = False) )[
-		If( Abs(Numer(Bernoulli(2*i))) % p = 0, irregular:=True );			
+		If( Abs(Numer(Bernoulli(2*i))) % p = 0, irregular:=True );
 		i++;
 	];
 	irregular;
@@ -481,7 +481,7 @@ IsSquareFree(n_IsInteger)	<-- ( Moebius(n) != 0 );
 // Algorithm adapted from: Number Theory: A Programmer's Guide
 //			Mark Herkommer
 // Program 8.7.1c, p 264
-// This function needs to be modified to return the factors in 
+// This function needs to be modified to return the factors in
 // data structure instead of printing them out
 Function("FactorGaussianInteger",{x}) [
 	Check( IsGaussianInteger(x), "FactorGaussianInteger: argument must be a Gaussian integer");
@@ -496,7 +496,7 @@ Function("FactorGaussianInteger",{x}) [
 	if( IsComposite(norm) )[
 		For(i:=0, i^2 <= norm, i++ )[	// real part
 			For(j:=0, i^2 + j^2 <= norm, j++)[	// complex part
-				if( Not( (i = re And j = im) Or 
+				if( Not( (i = re And j = im) Or
 					 (i = im And j = re) ) )[ // no associates
 					d:=i^2+j^2;
 					if( d > 1 )[
@@ -545,9 +545,9 @@ Function("FactorGaussianInteger",{x}) [
 IsCarmichaelNumber(n_IsList) <-- MapSingle("IsCarmichaelNumber",n);
 
 // approximation to the number of additive partitions of an integer
-// this is the first term in Rademachers explicit infinite series 
+// this is the first term in Rademachers explicit infinite series
 // formula
-// Maybe use this for small n? 
+// Maybe use this for small n?
 /*
 PartitionsP(n_IsPositiveInteger) <--
 [
@@ -566,33 +566,104 @@ PartitionsP(n_IsPositiveInteger) <--
 */
 
 5  # PartitionsP(0)	<-- 1;
+5  # PartitionsP(1)	<-- 1;
 10 # PartitionsP(n_IsPositiveInteger) <--
 [
-        Local(C,A,lambda,m,pa,k,h,term);
+	Local(P0, A, lambda, mu, mu'k, result, term, j, k, l, prec, epsilon);
+	result:=0;
+	term:=1;	// initial value must be nonzero
 	GlobalPush(GetPrecision());
-	// this is an overshoot, but seems to work up to at least n=4096
-	Precision(10 + Floor(N(Sqrt(n))) );
-	pa:=0;
-        C:=Pi*Sqrt(2/3)/k;
-        lambda:=Sqrt(m - 1/24);
-	term:=1;
-	// this is a heuristic, because the next term error is expensive 
+	// precision must be at least Pi/Ln(10)*Sqrt(2*n/3)-Ln(4*n*Sqrt(3))/Ln(10)
+	// here Pi/Ln(10) < 161/118, and Ln(4*Sqrt(3))/Ln(10) <1 so it is disregarded. Add 2 guard digits and compensate for round-off errors by not subtracting Ln(n)/Ln(10) now
+	prec := 2+Div(IntNthRoot(Div(2*n+2,3),2)*161+117,118);
+	Precision(prec);	// compensate for round-off errors
+	epsilon := MathPower(10,-prec)*n*10;	// stop when term < epsilon
+
+	// get the leading term approximation P0 - compute once at high precision
+	lambda := N(Sqrt(n - 1/24));
+	mu := N(Pi*lambda*Sqrt(2/3));
+	// the hoops with MathDivide are needed to avoid roundoff error at large n due to fixed precision: Exp(mu)/()
+	P0 := N(1-1/mu)*MathDivide(MathExp(mu),(n-MathDivide(1,24))*4*MathSqrt(3));
+	/*
+	the series is now equal to
+	P0*Sum(k,1,Infinity,
+	  (
+		Exp(mu*(1/k-1))*(1/k-1/mu) + Exp(-mu*(1/k+1))*(1/k+1/mu)
+	  ) * A(k,n) * Sqrt(k)
+	)
+	*/
+
+	A := 0;	// this is also used as a flag
+	// this is a heuristic, because the next term error is expensive
 	// to calculate and the theoretic bounds have arbitrary constants
-	For(k:=1,k<=15 And ( term=0 Or Abs(term)>0.1) ,k++)[
+	// use at most 5+Sqrt(n)/2 terms, stop when the term is nonzero and result stops to change at precision prec
+	For(k:=1, k<=5+Div(IntNthRoot(n,2),2) And (A=0 Or Abs(term)>epsilon), k++)
+	[
+		// compute A(k,n)
 		A:=0;
-		For(h:=1,h<=k,h++)[
-			if( Gcd(h,k)=1 )[
-				A:=A+Exp(I*Pi*Sum(j,1,k-1,(j/k)*((h*j)/k - Floor((h*j)/k) -1/2)) - 2*Pi*I*h*n/k );	
-			];
-		];	
-		If(A!=0, term:= N(A*Sqrt(k)*(Deriv(m) Sinh(C*lambda)/lambda) Where m==n ),term:=0 );
-		//Echo("Term ",k," is ",term);
-        	pa:=pa+term;
+		For(l:=1,l<=k,l++)
+		[
+			If(
+				Gcd(l,k)=1,
+				A := A + Cos(Pi*
+				  (	// replace Exp(I*Pi*...) by Cos(Pi*...) since the imaginary part always cancels
+					Sum(j,1,k-1, j*(Mod(l*j,k)/k-1/2)) - 2*l*n
+					// replace (x/y - Floor(x/y)) by Mod(x,y)/y for integer x,y
+				  )/k)
+			);
+			A:=N(A);	// avoid accumulating symbolic Cos() expressions
+		];
+
+		term := If(
+			A=0,	// avoid long calculations if the term is 0
+			0,
+			N( A*Sqrt(k)*(
+			  [
+			  	mu'k := mu/k;	// save time, compute mu/k once
+			    Exp(mu'k-mu)*(mu'k-1) + Exp(-mu'k-mu)*(mu'k+1);
+			  ]
+			)/(mu-1) )
+		);
+//		Echo("k=", k, "term=", term);
+		result := result + term;
+//		Echo("result", new'result* P0);
 	];
-	pa:=N(pa/(Pi*Sqrt(2)));
+	result := result * P0;
 	Precision(GlobalPop());
-	Round(pa);
+	Round(result);
 ];
+
+// old code for comparison
+
+10 # PartitionsP1(n_IsPositiveInteger) <--
+ [
+		 Local(C,A,lambda,m,pa,k,h,term);
+	   GlobalPush(GetPrecision());
+	   // this is an overshoot, but seems to work up to at least n=4096
+	   Precision(10 + Floor(N(Sqrt(n))) );
+	   pa:=0;
+		 C:=Pi*Sqrt(2/3)/k;
+		 lambda:=Sqrt(m - 1/24);
+	   term:=1;
+	   // this is a heuristic, because the next term error is expensive
+	   // to calculate and the theoretic bounds have arbitrary constants
+	   For(k:=1,k<=5+Floor(MathSqrt(n)*0.5) And ( term=0 Or Abs(term)>0.1) ,k++)[
+			   A:=0;
+			   For(h:=1,h<=k,h++)[
+					   if( Gcd(h,k)=1 )[
+							   A:=A+Exp(I*Pi*Sum(j,1,k-1,(j/k)*((h*j)/k - Floor((h*j)/k) -1/2))
+- 2*Pi*I*h*n/k );
+					   ];
+			   ];
+			   If(A!=0, term:= N(A*Sqrt(k)*(Deriv(m) Sinh(C*lambda)/lambda) Where m==n ),term:=0 );
+//			   Echo("Term ",k,"is ",N(term/(Pi*Sqrt(2))));
+			   pa:=pa+term;
+//			   Echo("result", N(pa/(Pi*Sqrt(2))));
+	   ];
+	   pa:=N(pa/(Pi*Sqrt(2)));
+	   Precision(GlobalPop());
+	   Round(pa);
+ ];
 
 
 // the product of all the elements of a list
@@ -602,5 +673,5 @@ Product(list_IsList) <--
 	product:=1;
 	ForEach(i,list)
 		product:=product*i;
-	product;	
+	product;
 ];
