@@ -227,6 +227,7 @@ void ParsedObject::ReadAtom()
         LispStringPtr theOperator = iLookAhead;
         MatchToken(iLookAhead);
 
+/*TODO remove?
         LispInt negativeNumber = 0;
 
         if (!StrCompare(theOperator->String(), "-"))
@@ -259,6 +260,7 @@ void ParsedObject::ReadAtom()
             MatchToken(iLookAhead);
         }
         else
+*/
         {
             ReadExpression(op->iPrecedence);
             InsertAtom(theOperator);
