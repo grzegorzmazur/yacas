@@ -158,7 +158,7 @@ The expression {e1 != e2} is equivalent to {Not(e1 = e2)}.
 
 *SEE =
 
-*CMD = --- Test whether two expressions are equal
+*CMD = --- Test for equality of expressions
 *STD
 *CALL
 	e1 = e2 (prec. 9)
@@ -169,15 +169,15 @@ e1, e2 - expressions to be compared
 
 *DESC
 
-Both expression are evaluated and compared. If they turn out to be
-equal, the result is {True}. Otherwise, the result is {False}. The function {Equals} does
+Both expression are evaluated and compared. If they turn out to be equal, the
+result is {True}. Otherwise, the result is {False}. The function {Equals} does
 the same.
 
-Note that the test is on syntactic equality, not mathematical
-equality. Hence even if the result is {False}, the
-expressions can still be <i>mathematically</i> equal; see the examples
-below. Put otherwise, this function tests whether the two
-expressions would be displayed in the same way if they were printed.
+Note that the test is on syntactic equality, not mathematical equality. Hence
+even if the result is {False}, the expressions can still be
+<i>mathematically</i> equal; see the examples below. Put otherwise, this
+function tests whether the two expressions would be displayed in the same way
+if they were printed.
 
 *E.G.
 
@@ -365,7 +365,7 @@ In fact, the result is always {True}.
 
 *SEE Object
 
-*CMD IsEven --- Test whether integer is even
+*CMD IsEven --- Test for an even integer
 *STD
 *CALL
 	IsEven(n)
@@ -389,7 +389,7 @@ even if it is divisible by two. Hence the even numbers are 0, 2, 4, 6,
 
 *SEE IsOdd, IsInteger
 
-*CMD IsOdd --- Test whether integer is odd
+*CMD IsOdd --- Test for an odd integer
 *STD
 *CALL
 	IsOdd(n)
@@ -413,7 +413,7 @@ odd if it is not divisible by two. Hence the odd numbers are 1, 3, 5,
 
 *SEE IsEven, IsInteger
 
-*CMD IsFunction --- Test whether argument is a composite object
+*CMD IsFunction --- Test for a composite object
 *CORE
 *CALL
 	IsFunction(expr)
@@ -436,7 +436,7 @@ atom. This includes not only obvious functions like {f(x)}, but also expressions
 
 *SEE IsAtom, IsList, Type
 
-*CMD IsAtom --- Test whether argument is an atom
+*CMD IsAtom --- Test for an atom
 *CORE
 *CALL
 	IsAtom(expr)
@@ -459,7 +459,7 @@ variables are all atoms.
 
 *SEE IsFunction, IsNumber, IsString
 
-*CMD IsString --- Test whether argument is an string
+*CMD IsString --- Test for an string
 *CORE
 *CALL
 	IsString(expr)
@@ -482,7 +482,7 @@ within quotes, eg. {"duh"}.
 
 *SEE IsAtom, IsNumber
 
-*CMD IsNumber --- Test whether argument is a number
+*CMD IsNumber --- Test for a number
 *CORE
 *CALL
 	IsNumber(expr)
@@ -511,7 +511,7 @@ function, so {IsNumber} will return {False}.
 
 *SEE IsAtom, IsString, IsInteger, IsPositiveNumber, IsNegativeNumber, Complex
 
-*CMD IsList --- Test whether argument is a list
+*CMD IsList --- Test for a list
 *CORE
 *CALL
 	IsList(expr)
@@ -548,7 +548,7 @@ Returns {True} when called on a list of numbers or expressions that evaluate to 
 
 *SEE N, IsNumber
 
-*CMD IsBound --- test whether a variable is bound to a value
+*CMD IsBound --- test for a bound variable
 *CORE
 *CALL
 	IsBound(var)
@@ -560,7 +560,7 @@ var - variable to test
 *DESC
 
 This function tests whether the variable "var" is bound, ie. whether
-it has a value. The argument "var" is not evaluated.
+it has been assigned a value. The argument "var" is not evaluated.
 
 *E.G.
 
@@ -573,7 +573,7 @@ it has a value. The argument "var" is not evaluated.
 
 *SEE IsAtom
 
-*CMD IsBoolean --- Test whether argument is a Boolean
+*CMD IsBoolean --- Test for a Boolean value
 *STD
 *CALL
 	IsBoolean(expression)
@@ -600,7 +600,7 @@ functions that return a boolean result, like
 
 *SEE True, False
 
-*CMD IsNegativeNumber --- Test whether argument is a negative number
+*CMD IsNegativeNumber --- Test for a negative number
 *STD
 *CALL
 	IsNegativeNumber(n)
@@ -623,7 +623,7 @@ number, the function returns {False}.
 
 *SEE IsNumber, IsPositiveNumber, IsNotZero, IsNegativeInteger, IsNegativeReal
 
-*CMD IsNegativeInteger --- Test whether argument is a negative integer
+*CMD IsNegativeInteger --- Test for a negative integer
 *STD
 *CALL
 	IsNegativeInteger(n)
@@ -647,7 +647,7 @@ negative. The negative integers are -1, -2, -3, -4, -5, etcetera. If
 
 *SEE IsPositiveInteger, IsNonZeroInteger, IsNegativeNumber
 
-*CMD IsPositiveNumber --- Test whether argument is a positive number
+*CMD IsPositiveNumber --- Test for a positive number
 *STD
 *CALL
 	IsPositiveNumber(n)
@@ -670,7 +670,7 @@ number the function returns {False}.
 
 *SEE IsNumber, IsNegativeNumber, IsNotZero, IsPositiveInteger, IsPositiveReal
 
-*CMD IsPositiveInteger --- Test whether argument is a positive integer
+*CMD IsPositiveInteger --- Test for a positive integer
 *STD
 *CALL
 	IsPositiveInteger(n)
@@ -694,7 +694,7 @@ integer the function returns {False}.
 
 *SEE IsNegativeInteger, IsNonZeroInteger, IsPositiveNumber
 
-*CMD IsNotZero --- Test whether argument is a nonzero number
+*CMD IsNotZero --- Test for a nonzero number
 *STD
 *CALL
 	IsNotZero(n)
@@ -718,7 +718,7 @@ n - number to test
 
 *SEE IsNumber, IsPositiveNumber, IsNegativeNumber, IsNonZeroInteger
 
-*CMD IsNonZeroInteger --- Test whether argument is a nonzero integer
+*CMD IsNonZeroInteger --- Test for a nonzero integer
 *STD
 *CALL
 	IsNonZeroInteger(n)
@@ -741,7 +741,7 @@ not an integer, the result is {False}.
 
 *SEE IsPositiveInteger, IsNegativeInteger, IsNotZero
 
-*CMD IsInfinity --- Test whether argument is an infinity
+*CMD IsInfinity --- Test for an infinity
 *STD
 *CALL
 	IsInfinity(expr)
@@ -764,7 +764,7 @@ case if "expr" is either {Infinity} or {-Infinity}.
 
 *SEE Integer
 
-*CMD IsPositiveReal --- Test whether argument is numerically positive
+*CMD IsPositiveReal --- Test for a numerically positive value
 *STD
 *CALL
 	IsPositiveReal(expr)
@@ -794,7 +794,7 @@ Yacas can not determine the sign of this expression.
 
 *SEE IsNegativeReal, IsPositiveNumber, N
 
-*CMD IsNegativeReal --- Test whether argument is numerically negative
+*CMD IsNegativeReal --- Test for a numerically negative value
 *STD
 *CALL
 	IsNegativeReal(expr)
@@ -824,7 +824,7 @@ Yacas can not determine the sign of this expression.
 
 *SEE IsPositiveReal, IsNegativeNumber, N
 
-*CMD IsConstant --- Test whether argument is constant
+*CMD IsConstant --- Test for a constant
 *STD
 *CALL
 	IsConstant(expr)

@@ -9,12 +9,9 @@ change. Operations on lists have better support in the current
 system.
 
 *CMD Head --- The first element of a list
-
 *CORE
-
 *CALL
-
-Head(list)
+	Head(list)
 
 *PARMS
 
@@ -36,12 +33,9 @@ returned if "list" is an atom.
 *SEE Tail, Length
 
 *CMD Tail --- Returns a list without its first element
-
 *CORE
-
 *CALL
-
-Tail(list)
+	Tail(list)
 
 *PARMS
 
@@ -59,12 +53,9 @@ This function returns "list" without its first element.
 *SEE Head, Length
 
 *CMD Length --- The length of a list or string
-
 *CORE
-
 *CALL
-
-Length(object)
+	Length(object)
 
 *PARMS
 
@@ -85,12 +76,9 @@ This function also works on strings and arrays.
 *SEE Head, Tail, Nth, Count
 
 *CMD Map --- Apply an n-ary function to all entries in a list
-
 *STD
-
 *CALL
-
-Map(fn, list)
+	Map(fn, list)
 
 *PARMS
 
@@ -116,12 +104,9 @@ a string or as a pure function.
 *SEE MapSingle, MapArgs
 
 *CMD MapSingle --- Apply a unary function to all entries in a list
-
 *STD
-
 *CALL
-
-MapSingle(fn, list)
+	MapSingle(fn, list)
 
 *PARMS
 
@@ -178,12 +163,9 @@ are uniformly distributed in this interval.
 *SEE Random, RandomPoly
 
 *CMD MakeVector --- Vector of uniquely numbered variable names
-
 *STD
-
 *CALL
-
-MakeVector(var,n)
+	MakeVector(var,n)
 
 *PARMS
 
@@ -206,12 +188,9 @@ which contains "var" with the number "n" appended to it.
 *SEE RandomIntegerVector, ZeroVector
 
 *CMD Select --- Select the entries satisfying some predicate
-
 *STD
-
 *CALL
-
-Select(pred, list)
+	Select(pred, list)
 
 *PARMS
 
@@ -233,12 +212,10 @@ the entries for which the predicate "pred" returns
 *SEE Length, Find, Count
 
 *CMD Nth --- Return the n-th element of a list
-
 *CORE
-
 *CALL
 
-Nth(list, n)
+	Nth(list, n)
 
 *PARMS
 
@@ -274,12 +251,9 @@ An alternative but equivalent form of {Nth(list, n)} is
 *SEE Select, Nth
 
 *CMD DestructiveReverse --- Reverse a list destructively
-
 *CORE
-
 *CALL
-
-DestructiveReverse(list)
+	DestructiveReverse(list)
 
 *PARMS
 
@@ -308,12 +282,9 @@ a list. Use {FlatCopy} and
 *SEE FlatCopy
 
 *CMD List --- Construct a list
-
 *CORE
-
 *CALL
-
-List(expr1, expr2, ...)
+	List(expr1, expr2, ...)
 
 *PARMS
 
@@ -337,12 +308,9 @@ is "expr2", and so on. This command is equivalent to the expression
 *SEE UnList, Listify
 
 *CMD UnList --- Convert a list to a function application
-
 *CORE
-
 *CALL
-
-UnList(list)
+	UnList(list)
 
 *PARMS
 
@@ -372,12 +340,9 @@ formed, but the resulting expression is not evaluated.
 *SEE List, Listify
 
 *CMD Listify --- Convert a function application to a list
-
 *CORE
-
 *CALL
-
-Listify(expr)
+	Listify(expr)
 
 *PARMS
 
@@ -401,12 +366,9 @@ list is returned.
 *SEE List, UnList, IsAtom
 
 *CMD Concat --- Concatenate lists
-
 *CORE
-
 *CALL
-
-Concat(list1, list2, ...)
+	Concat(list1, list2, ...)
 
 *PARMS
 
@@ -427,12 +389,9 @@ concatenated. The resulting big list is returned.
 *SEE ConcatStrings, :, Insert
 
 *CMD Delete --- Delete an element from a list
-
 *CORE
-
 *CALL
-
-Delete(list, n)
+	Delete(list, n)
 
 *PARMS
 
@@ -456,12 +415,9 @@ is returned.
 *SEE DestructiveDelete, Insert, Replace
 
 *CMD Insert --- Insert an element into a list
-
 *CORE
-
 *CALL
-
-Insert(list, n, expr)
+	Insert(list, n, expr)
 
 *PARMS
 
@@ -496,12 +452,9 @@ case, the resulting list is returned.
 *SEE DestructiveInsert, :, Append, Delete, Remove
 
 *CMD DestructiveDelete --- Delete an element destructively from a list
-
 *CORE
-
 *CALL
-
-DestructiveDelete(list, n)
+	DestructiveDelete(list, n)
 
 *PARMS
 
@@ -536,12 +489,9 @@ because the latter copy the list before they alter it.
 *SEE Delete, DestructiveInsert, DestructiveReplace
 
 *CMD DestructiveInsert --- Insert an element destructively into a list
-
 *CORE
-
 *CALL
-
-DestructiveInsert(list, n, expr)
+	DestructiveInsert(list, n, expr)
 
 *PARMS
 
@@ -651,12 +601,9 @@ because the latter copy the list before they alter it.
 *SEE Replace, DestructiveDelete, DestructiveInsert
 
 *CMD FlatCopy --- Copy the top level of a list
-
 *CORE
-
 *CALL
-
-FlatCopy(list)
+	FlatCopy(list)
 
 *PARMS
 
@@ -685,12 +632,9 @@ list nondestructively.
 	Out> {a,b,c,d,e};
 
 *CMD Contains --- Test whether a list contains a certain element
-
 *STD
-
 *CALL
-
-Contains(list, expr)
+	Contains(list, expr)
 
 *PARMS
 
@@ -721,12 +665,9 @@ that case the top-level operands are tested for the occurence of
 *SEE Find, Count
 
 *CMD Find --- The index at which a certain element occurs
-
 *STD
-
 *CALL
-
-Find(list, expr)
+	Find(list, expr)
 
 *PARMS
 
@@ -753,12 +694,9 @@ index is returned. If "expr" does not occur at all,
 *SEE Contains
 
 *CMD Append --- Append an entry at the end of a list
-
 *STD
-
 *CALL
-
-Append(list, expr)
+	Append(list, expr)
 
 *PARMS
 
@@ -784,12 +722,9 @@ constant.
 *SEE Concat, :, DestructiveAppend
 
 *CMD DestructiveAppend --- Destructively append an entry to a list
-
 *CORE
-
-*CALL
-
-DestructiveAppend(list, expr)
+CALL
+	DestructiveAppend(list, expr)
 
 *PARMS
 
@@ -824,12 +759,9 @@ because the latter copy the list before they alter it.
 *SEE Concat, :, Append
 
 *CMD RemoveDuplicates --- Remove any duplicates from a list
-
 *STD
-
 *CALL
-
-RemoveDuplicates(list)
+	RemoveDuplicates(list)
 
 *PARMS
 
@@ -849,12 +781,9 @@ third, the fourth, etcetera.
 	Out> {a,1,b,c};
 
 *CMD Push --- Add an element on top of a stack
-
 *STD
-
 *CALL
-
-Push(stack, expr)
+	Push(stack, expr)
 
 *PARMS
 
@@ -882,12 +811,9 @@ top of the stack, and returns the stack afterwards.
 *SEE Pop, PopFront, PopBack
 
 *CMD Pop --- Remove an element from a stack
-
 *STD
-
 *CALL
-
-Pop(stack, n)
+	Pop(stack, n)
 
 *PARMS
 
@@ -921,12 +847,9 @@ greater than the number of element on the stack, lead to an error.
 *SEE Push, PopFront, PopBack
 
 *CMD PopFront --- Remove an element from the top of a stack
-
 *STD
-
 *CALL
-
-PopFront(stack)
+	PopFront(stack)
 
 *PARMS
 
@@ -959,8 +882,7 @@ the stack.
 *CMD PopBack --- Remove an element from the bottom of a stack
 *STD
 *CALL
-
-PopBack(stack)
+	PopBack(stack)
 
 *PARMS
 
@@ -1104,7 +1026,7 @@ the lists. In the resulting list, any element will occur only once.
 *CMD Difference --- Return the difference of two lists
 *STD
 *CALL
-	Intersection(l1, l2)
+	Difference(l1, l2)
 
 *PARMS
 
@@ -1190,16 +1112,11 @@ through "n".
 *SEE Take, Select, Remove
 
 *CMD Take --- Take a sublist from a list, dropping the rest
-
 *STD
-
 *CALL
-
-Take(list, n)
-
-Take(list, -n)
-
-Take(list, {m,n})
+	Take(list, n)
+	Take(list, -n)
+	Take(list, {m,n})
 
 *PARMS
 
@@ -1229,12 +1146,9 @@ number "m" and ending with the "n"-th entry.
 *SEE Drop, Select, Remove
 
 *CMD Partition --- Partition a list in sublists of equal length
-
 *STD
-
 *CALL
-
-Partition(list, n)
+	Partition(list, n)
 
 *PARMS
 
@@ -1262,12 +1176,9 @@ returned.
 *SEE Take, Permutations
 
 *CMD Assoc --- Return element stored in association list
-
 *STD
-
 *CALL
-
-Assoc(key, alist)
+	Assoc(key, alist)
 
 *PARMS
 
@@ -1306,12 +1217,9 @@ intuitively) be accessed as {alist[key]}.
 *SEE AssocIndices, [], :=
 
 *CMD AssocIndices --- Return the keys in an association list
-
 *STD
-
 *CALL
-
-AssocIndices(alist)
+	AssocIndices(alist)
 
 *PARMS
 
@@ -1338,12 +1246,9 @@ and this list is returned.
 *SEE Assoc
 
 *CMD Flatten --- Flatten expression w.r.t. some operator
-
 *STD
-
 *CALL
-
-Flatten(expression,operator)
+	Flatten(expression,operator)
 
 *PARMS
 
@@ -1368,12 +1273,9 @@ used in simple simplification schemes.
 *SEE UnFlatten
 
 *CMD UnFlatten --- Inverse operation of Flatten
-
 *STD
-
 *CALL
-
-UnFlatten(list,operator,identity)
+	UnFlatten(list,operator,identity)
 
 *PARMS
 
@@ -1402,12 +1304,9 @@ a+0=a). For multiplication the identity element would be 1.
 *SEE Flatten
 
 *CMD Type --- Return the type of an expression
-
 *CORE
-
 *CALL
-
-Type(expr)
+	Type(expr)
 
 *PARMS
 
@@ -1432,12 +1331,9 @@ the result is the empty string {""}.
 *SEE IsAtom, NrArgs
 
 *CMD NrArgs --- Return number of top-level arguments
-
 *STD
-
 *CALL
-
-NrArgs(expr)
+	NrArgs(expr)
 
 *PARMS
 
@@ -1461,12 +1357,9 @@ that would lead to an error.
 *SEE Type, Length
 
 *CMD BubbleSort --- Sort a list
-
 *STD
-
 *CALL
-
-BubbleSort(list, fn)
+	BubbleSort(list, fn)
 
 *PARMS
 
@@ -1495,14 +1388,10 @@ though it is not particularly fast.
 	Out> {53,23,7,4,1,-2};
 
 *CMD PrintList --- print list with padding
-
 *STD
-
 *CALL
-
-{PrintList}(list)
-
-{PrintList}(list, padding);
+	PrintList(list)
+	PrintList(list, padding);
 
 *PARMS
 
@@ -1521,12 +1410,9 @@ Prints {list} and inserts the {padding} string between each pair of items of the
 *SEE Write, WriteString
 
 *CMD Table --- Evaluate while some variable ranges over interval
-
 *STD
-
 *CALL
-
-Table(body, var, from, to, step)
+	Table(body, var, from, to, step)
 
 *PARMS
 
@@ -1563,12 +1449,9 @@ the results are assembled in a list and this list is returned.
 *SEE For, MapSingle, .., TableForm
 
 *CMD TableForm --- Print each entry in a list on a line
-
 *STD
-
 *CALL
-
-TableForm(list)
+	TableForm(list)
 
 *PARMS
 
