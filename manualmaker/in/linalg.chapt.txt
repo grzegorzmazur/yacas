@@ -100,7 +100,7 @@ vector or a matrix.
 *SEE Outer, Cross, IsScalar, IsVector, IsMatrix
 
 
-*CMD InProduct --- inner product of vectors (use NEW Dot function!!!)
+*CMD InProduct --- inner product of vectors (deprecated)
 *STD
 *CALL
 	InProduct(a,b)
@@ -113,6 +113,8 @@ vector or a matrix.
 
 The inner product of the two vectors "a" and "b" is returned. The
 vectors need to have the same size.
+
+This function is superceded by the {.} operator.
 
 *E.G.
 

@@ -164,7 +164,9 @@ Namely, for the starting value of the recurrence we should choose not
 $a[n]$ but another number that more closely approximates the infinite remainder
 of the fraction.
 The infinite remainder, which can be symbolically written as $F[n][Infinity]$, can be sometimes estimated (obviously, we are unable to compute the remainder exactly -- otherwise we would not embark on computing the continued fraction numerically).
-In simple cases, $F[n][Infinity]$ changes very slowly at large $n$. Suppose that $F[n][Infinity]$ is approximately constant; then it must be approximately equal to $F[n+1][Infinity]$.
+In simple cases, $F[n][Infinity]$ changes very slowly at large $n$
+(warning: this is not always true and needs to be verified in each particular case!).
+Suppose that $F[n][Infinity]$ is approximately constant; then it must be approximately equal to $F[n+1][Infinity]$.
 Therefore, if we solve the (quadratic) equation
 $$ x = a[n] + b[n]/x $$,
 we shall obtain the (positive) value $x$ which may be a much better
@@ -425,11 +427,23 @@ We find that the error of the continued fraction approximation to $Erfc(x)$
 decreases with $n$ in a geometric progression
 (i.e. roughly as some constant to the power of $n$), for any $v$.
 
+	   Usefulness of continued fractions
 
+Many mathematical functions have a representation as a continued fraction.
+Some systems of "exact arithmetic" even use continued fractions as a primary internal representation of real numbers.
+This has its advantages (no round-off errors, lazy "exact" computations) and disadvantages (it is slow, especially with some operations).
+Here we consider the application of continued fractions to a traditional implementation of arithmetic (floating-point numbers with variable precision).
+
+Usually, a continued fraction representation to a function will converge geometrically, i.e. $O(P)$ terms are needed for a precision of $P$ digits.
+If a geometrically convergent Taylor series representation is also available, the continued fraction method will always be slower because it requires at least as many or more long multiplications per term, and because the Taylor series in most cases can be summed efficiently using the rectangular scheme.
+
+However, there are some functions for which a Taylor series is not easily computable but a simple continued fraction is available.
+For example, incomplete Gamma functions (in particular the error function $Erf(x)$) can be computed using the continued fractions in some domains of their arguments.
 
 		Newton's method and its improvements
 
-The Newton-Raphson method of numerical solution of algebraic equations can be used to obtain multiple-precision values of several elementary functions.
+The Newton-Raphson method of numerical solution of algebraic equations and its generalizations
+can be used to obtain multiple-precision values of several elementary functions.
 
 	    Newton's method
 
@@ -475,16 +489,49 @@ Halley's iteration, despite its faster convergence rate, may be more cumbersome 
 It is at any rate not true that Halley's method always converges better than Newton's method. For instance, it diverges on the equation $2*Cos(x)=x$ unless started at $x[0]$ within the interval ($-1/6*Pi$,$7/6*Pi$). Another example is the equation $Ln(x)=a$. This equation allows to compute $x=Exp(a)$ if a fast method for computing $Ln(x)$ is available (e.g. the AGM-based method). For this equation, Newton's iteration
 $$ x' = x*(1+a-Ln(x)) $$
 converges for any $0<x<Exp(a+1)$, while Halley's iteration
-converges only for $Exp(a-2)<x<Exp(a+2)$.
+converges only if $Exp(a-2)<x<Exp(a+2)$.
 
 *A Halley's method!when to use
 
 When it converges, Halley's iteration can still converge very slowly for certain functions $f(x)$, for example, for $f(x)=x^n-a$ if $n^n>a$. For such functions that have very large and rapidly changing derivatives, no general method can converge faster than linearly. In other words, a simple bisection will generally do just as well as any sophisticated iteration, until the root is approximated relatively precisely. Halley's iteration combined with bisection seems to be a good choice for such problems.
 
 However, despite its faster convergence, Halley's iteration frequently gives no advantage over Newton's method.
-To obtain $P$ digits of the result, we need about $Ln(P)/Ln(2)$ iterations of a quadratically convergent method and about $Ln(P)/Ln(2)$ iterations of a cubically convergent method.
+To obtain $P$ digits of the result, we need about $Ln(P)/Ln(2)$ iterations of a quadratically convergent method and about $Ln(P)/Ln(3)$ iterations of a cubically convergent method.
 So the cubically convergent iteration is faster only if the time taken by one iteration is less than about $Ln(3)/Ln(2)<=>1.6$ of the time of one quadratic iteration.
-With arbitrary-precision computations, this is rarely the case.
+
+	    Higher-order schemes
+
+*A Newton's method!higher-order schemes
+
+In some cases it is easy to generalize Newton's iteration to higher-order schemes.
+There are general formulae such as Shroeder's and Householder's iterations.
+We shall give some examples where the construction is very straightforward.
+In all examples $x$ is the initial approximation and the next approximation is obtained by truncating the given series.
+
+*	1. Inverse $1/a$.
+Set $y=1-a*x$, then
+$$ 1/a = x/(1-y) = x*(1+y+y^2+...) $$.
+*	1. Square root $Sqrt(a)$.
+Set $y=1-a*x^2$, then
+$$ Sqrt(a) = Sqrt(1-y)/x = 1/x*(1-1/2*y-1/8*y^2-...) $$.
+*	1. Inverse square root $1/Sqrt(a)$.
+Set $y=1-a*x^2$, then
+$$ 1/Sqrt(a) = x/Sqrt(1-y) = x*(1+1/2*y+3/8*y^2+...) $$.
+*	1. $n$-th root $a^(1/n)$.
+Set $y=1-a*x^n$, then
+$$ a^(1/n) = (1-y)^(1/n)/x = 1/x*(1-1/n*y-(n-1)/(2*n^2)*y^2-...) $$.
+*	1. Exponential $Exp(a)$.
+Set $y=a-Ln(x)$, then
+$$ Exp(a) = x*Exp(y) = x*(1+y+y^2/2! + y^3/3! +...) $$.
+*	1. Logarithm $Ln(a)$.
+Set $y=1-a*Exp(-x)$, then
+$$ Ln(a) = x+Ln(1-y) = x-y-y^2/2-y^3/3-... $$.
+
+
+In the above examples, $y$ is a small quantity and the series represents corrections to the initial value $x$, therefore the order of convergence is equal to the first discarded order of $y$ in the series.
+
+These simple constructions are possible because the functions satisfy simple identities, such as $Exp(a+b)=Exp(a)*Exp(b)$ or $Sqrt(a*b)=Sqrt(a)*Sqrt(b)$.
+For other functions the formulae quickly become very complicated and unsuitable for practical computations.
 
 	    Precision control
 
@@ -494,20 +541,140 @@ With arbitrary-precision computations, this is rarely the case.
 Newton's method is particularly convenient for multiple precision calculations because of its insensitivity to accumulated errors: if $x[k]$ at some iteration is found with a small error, the error will be corrected at the next iteration. Therefore it is not necessary to compute all iterations with the full required precision; each iteration needs to be performed at the precision of the root expected from that iteration. For example, if we know that the initial approximation is accurate to 3 digits, then (assuming quadratic convergence)
 *FOOT This disregards the possibility that the convergence might be slightly slower. For example, when the precision at one iteration is $n$ digits, it might be $2*n-10$ digits at the next iteration. In these (fringe) cases, the initial approximation must be already precise enough (e.g. to at least 10 digits in this example).
 it is enough to perform the first iteration to 6 digits, the second iteration to 12 digits and so on. In this way, multiple precision calculations are enormously speeded up.
-The cost of finding the root $x$ of the equation $f(x)=0$ with $P$ digits of precision is, according to [Brent 1975], usually asymptotically the same as the cost of computing $f(x)$.
-Thus, if we have a fast method of computing, say, $ArcTan(x)$, then we immediately obtain a method of computing $Tan(x)$ which is asymptotically as fast (up to a constant).
 
-For practical evaluation, iterations must be supplemented with error control.
+For practical evaluation, iterations must be supplemented with "quality control".
 For example, if $x0$ and $x1$ are two consecutive approximations that are
 already very close, we can quickly compute the achieved (relative) precision by
 finding the number of leading zeros in the number $Abs(x0-x1)/Max(x0,x1)$. This
-is easily done using the integer logarithm. After performing a small number of
+is easily done using the bit count function. After performing a small number of
 initial iterations at low precision, we can make sure that $x1$ has at least a
 certain number of correct digits of the root. Then we know which precision to
 use for the next iteration (e.g. triple precision if we are using a cubically
 convergent scheme). It is important to perform each iteration at the precision
 of the root which it will give and not at a higher precision; this saves a
 great deal of time since all calculations are very slow at high precision.
+
+	    Fine-tuning the working precision
+
+To reduce the computation time, it is important to write the iteration formula with explicit separation of higher-order quantities.
+For example, Newton's iteration for the inverse square root $1/Sqrt(a)$ can be written either as
+$$ x' = x*(3-a*x^2)/2 $$
+or equivalently as
+$$ x' = x + x*(1-a*x^2)/2 $$.
+At first sight the first formula seems simpler because it saves one long addition.
+However, the second formula can be computed significantly faster than the first one, if we are willing to exercise a somewhat more fine-grained control of the working precision.
+
+Suppose $x$ is an approximation that is correct to $P$ digits; then we expect the quantity $x'$ to be correct to $2*P$ digits.
+Therefore we should perform calculations in the first formula with $2*P$ digits;
+this means three long multiplications, $3*M(2*P)$.
+Now consider the calculation in the second formula.
+First, the quantity $y:=1-a*x^2$ is computed using two $2*P$-digit multiplications.
+*FOOT In fact, both multiplications are a little shorter, since $x$ is a number with only $P$ correct digits; we can compute $a*x$ and then $a*x^2$ as products of a $2*P$-digit number and a $P$-digit number, with a $2*P$-digit result. We ignore this small difference.
+Now, the number $y$ is small and has only $P$ nonzero digits.
+Therefore the third multiplication $x*y$ costs only $M(P)$, not $M(2*P)$.
+This is a significant time savings, especially with slower multiplication.
+The total cost is now $2*M(2*P)+M(P)$.
+
+The advantage is even greater with higher-order methods.
+For example, a fourth-order iteration for the inverse square root can be written as
+$$ x' = x + 1/2*x*y + 3/8*x*y^2 + 5/16*x*y^3 $$,
+where $y := 1-a*x^2$.
+Suppose $x$ is an approximation that is correct to $P$ digits; we expect $4*P$ correct digits in $x'$.
+We need two long multiplications in precision $4*P$ to compute $y$, then $M(3*P)$ to compute $x*y$, $M(2*P)$ to compute $x*y^2$, and $M(P)$ to compute $x*y^3$.
+The total cost is $2*M(4*P)+M(3*P)+M(2*P)+M(P)$.
+
+*A Newton's method!asymptotic cost
+
+The asymptotic cost of finding the root $x$ of the equation $f(x)=0$ with $P$ digits of precision is usually the same as the cost of computing $f(x)$ [Brent 1975].
+The main argument can be summarized by the following simple example.
+To get the result to $P$ digits, we need $O(Ln(P))$ Newton's iterations.
+At each iteration we shall have to compute the function $f(x)$ to a certain number of digits.
+Suppose that we start with one correct digit and that each iteration costs us $c*M(2*P)$ operations where $c$ is a given constant, while the number of correct digits grows from $P$ to $2*P$.
+Then the total cost of $k$ iterations is
+$$c*M(2)+c*M(4)+c*M(8)+...+c*M(2^k)$$.
+If the function $M(P)$ grows linearly with $P=2^k$, then we can estimate this sum roughly as $2*c*M(P)$; if $M(P)=O(P^2)$ then the result is about $4/3*c*M(P)$.
+It is easy to see that when $M(P)$ is some power of $P$ that grows faster than linear, the sum is not larger than a small multiple of $M(P)$.
+
+
+Thus, if we have a fast method of computing, say, $ArcTan(x)$, then we immediately obtain a method of computing $Tan(x)$ which is asymptotically as fast (up to a constant).
+
+
+	    Choosing the optimal order
+
+*A Newton's method!optimal order
+
+Suppose we need to compute a function by Newton's method to precision $P$.
+We can usually find iterations of any order of convergence.
+For example, a $k$-th order iteration for the reciprocal $1/a$ is
+$$ x' = x+x*y+x*y^2+...+x*y^(k-1) $$,
+where $y:=1-a*x$.
+The cost of one iteration with final precision $P$ is
+$$ C(k,P) := M(P/k)+M((2*P)/k)+M((3*P)/k)+...+c*M(P) $$.
+(Here the constant $c:=1$ is introduced for later convenience.
+It denotes the number of multiplications needed to compute $y$.)
+
+Increasing the order by $1$ costs us comparatively little, and
+we may change the order $k$ at any time.
+Is there a particular order $k$ that gives the smallest computational cost and should be used for all iterations, or the order needs to be adjusted during the computation?
+A natural question is to find the optimal computational strategy.
+
+It is difficult to fully analyze this question, but seems that choosing a particular order $k$ for all iterations is close to the optimal strategy.
+
+A general "strategy" is a set of orders $S(P,P[0])$=($k[1]$, $k[2]$, ..., $k[n]$) to be chosen at the first, second, ..., $n$-th iteration, given the initial precision $P[0]$ and the required final precision $P$.
+At each iteration, the precision will be multiplied by the factor $k[i]$.
+The optimal strategy $S(P,P[0])$ is a certain function of $P[0]$ and $P$ such that the required precision is reached, i.e.
+$$ P[0]*k[1]*...*k[n] = P $$,
+and the cost
+$$ C(k[1],P[0]*k[1])+C(k[2],P[0]*k[1]*k[2])+ ...+C(k[n],P) $$
+is minimized.
+
+If we assume that the cost of multiplication $M(P)$ is proportional to some power of $P$, for instance $M(P)=P^mu$, then
+the cost of each iteration and the total cost are homogeneous functions of $P$ and $P[0]$.
+Therefore the optimal strategy is a function only of the ratio $P/P[0]$.
+We can multiply both $P[0]$ and $P$ by a constant factor and the optimal strategy will remain the same.
+We can denote the optimal strategy $S(P/P[0])$.
+
+We can check whether it is better to use several iterations at smaller orders instead of one iteration at a large order.
+Suppose that  $M(P)=P^mu$, the initial precision is 1 digit, and the final precision $P=k^n$.
+We can use either $n$ iterations of the order $k$ or 1 iteration of the order $P$.
+The cost of one iteration of order $P$ at target precision $P$ is
+$ C(P,P)$, whereas the total cost of $n$ iterations of order $k$ is
+$$ C(k,k)+C(k,k^2)+...+C(k,k^n) $$.
+We can take approximately
+$$ C(k,p) <=> p^mu*(c-1+k/(mu+1)) $$.
+Then the cost of one $P$-th order iteration is
+$$ P^mu*(c-1+P/(mu+1)) $$,
+while the cost of $n$ iterations of the order $k$ is clearly smaller since $k<P$,
+$$ P^mu*(c-1+k/(mu+1))*k^mu/(k^mu-1) $$.
+At fixed $P$, the best value of $k$ is found by minimizing this function.
+For $c=1$ (division) we find $k=(1+mu)^(1/mu)$ which is never above $2$.
+This suggests that $k=2$ is the best value for the division.
+However, larger values of $c$ can give larger values of $k$.
+The  equation for the optimal value of $k$ is
+$$ k^(mu+1)/(mu+1)-k=mu*(c-1) $$.
+
+But we have only considered strategies that use the same order $k$ for all iterations, and we have not yet shown that such strategies are the best ones.
+We give a plausible argument (i.e. not quite a rigorous proof) to justify this claim.
+
+Consider the optimal strategy $S(P^2)$ for the initial precision $1$ and the final precision $P^2$, when $P$ is very large.
+Since it is better to use several iterations at lower orders, we may assume that the strategy $S(P^2)$ contains many iterations and that one of these iterations reaches precision $P$.
+Then the strategy $S(P^2)$ is equivalent to a sequence of the two optimal strategies to go from $1$ to $P$ and from $P$ to $P^2$.
+However, both strategies must be the same $S(P)$ since the optimal strategy only depends on the ratio of precisions.
+Therefore, the optimal strategy $S(P^2)$ is a sequence of two identical strategies ($S(P)$, $S(P)$).
+
+Suppose that $k[1]$ is the first element of $S(P)$.
+The optimal strategy to go from precision $k[1]$ to precision $P*k[1]$ is also $S(P)$.
+Therefore the second element of $S(P)$ is also equal to $k[1]$, and by extension
+all elements of $S(P)$ are the same.
+
+A similar consideration gives the optimal strategy for other iterations that compute inverses of analytic functions, such as Newton's iteration for the inverse square root or for higher roots.
+The difference is that the value of $c$ should be chosen as the equivalent number of multiplications needed to compute the function.
+For instance, $c=1$ for division and $c=2$ for the inverse square root iteration.
+
+The conclusion is that in each case we should compute the optimal order $k$ in advance and use this order for all iterations.
+
+
+
 
 		Fast evaluation of Taylor series
 
