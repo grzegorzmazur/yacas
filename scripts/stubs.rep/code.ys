@@ -35,7 +35,7 @@
 
 // These rules currently don't ever match as Floor() isn't sufficiently
 // clever
-40 # (Sin(_x) < 0)_(Not(IsEven(x/Pi)) And IsEven(Floor(x/Pi))) <-- False;
+40 # (Sin(_x) < 0)_(Not(IsEven(N(x/Pi))) And IsEven(N(Floor(x/Pi)))) <-- False;
 
 // Functions that need special treatment with more than one of the comparison
 // operators as they always return true or false.  For these we must define
@@ -46,16 +46,12 @@
 40 # (Sqrt(_x))_(x < 0) >= 0      <--  False;
 
 // Deal with negated terms
-50 # -(_x) < 0 <-- Not(x<0);
+50 # -(_x) < 0 <-- Not((x<0) Or (x=0));
 
 // Define each of {>,<=,>=} in terms of <
 50 # _n >  _m <-- m < n;
 50 # _n <= _m <-- m >= n;
 50 # _n >= _m <-- Not(n<m);
-
-/* I wish this line weren't necessary, but it seems I can't get away with
- * omitting it */
-10 # n_IsNumber > m_IsNumber <-- GreaterThan(n,m);
 
 
 Function("!=",{aLeft,aRight}) Not(aLeft=aRight);
