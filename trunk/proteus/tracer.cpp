@@ -48,6 +48,7 @@ int load_in(int line, int fileNo);
 int switchToFile(char* newfile,int line);
 void go_viewer_line(int line) {last_selected = line;select(line);}
 char oldfile[200];
+char wouldbefile[200];
 int last_selected;
 };
 
@@ -147,13 +148,13 @@ int Fl_My_Browser::load_in(int line, int fileNo)
 int Fl_My_Browser::switchToFile(char* newfile,int line)
 {
     int changed=0;
+    strcpy(wouldbefile,newfile);
     if (locked->value())
     {
         if (!strcmp(oldfile,newfile))
         {
             if (line != fileViewer->last_selected)
                 changed = 1;
-//            ::selected = line;
             fileViewer->go_viewer_line(line);
             fileViewer->make_visible(line);
         }
@@ -166,7 +167,6 @@ int Fl_My_Browser::switchToFile(char* newfile,int line)
         fileViewer->load(newfile);
         strcpy(oldfile,newfile);
     }
-//    ::selected = line;
     fileViewer->go_viewer_line(line);
     fileViewer->make_visible(line);
     return changed;
@@ -260,6 +260,10 @@ REDO:
     if (gonewline!=0 && changed == 0 && lineptr != NULL)
         goto REDO;
 
+//printf("%s %s",fileViewer->oldfile,fileViewer->wouldbefile);
+    if (changed == 0 && locked->value() && lineptr != NULL && strcmp(fileViewer->oldfile,fileViewer->wouldbefile))
+        goto REDO;
+    
     if (lineptr != NULL)
     {
         lineinfo =  (LineInfo *)tracer->data(selected);
