@@ -72,7 +72,7 @@ This is a list of some expressions that currently go wrong:
        Limit(x,0)D(x,2)Sin(x)/x; // never terminates, causing the taylor to never terminate
   <li> In> Limit(n, Infinity) n^5/2^n
        Out> Infinity/(Infinity*Ln(2));
-       wrong answer -- L'Hospital's theorem is not always the correct thing to
+       wrong answer -- L'Hopital's theorem is not always the correct thing to
        do... but it's not easy to decide the growth of exp-log and powers.
        There is a paper by Richardson, Salvy et al "Asymptotic expansions of
        exp-log functions" that may be helpful.
@@ -116,7 +116,7 @@ This is a todo list of things I want to get out of the way before version
   <li> revisit all analytic functions implemented in anumber, including
        log, sin, arctan, etc.
   <li> remove the final references to stdlib in the code.
-  <li> Improved complex numbers. Ln(x) for x &lt 0 not working yet.
+  <li> Improved complex numbers.
   <li> put Nl() in a common place.
   <li> test Apart for polys. This might have to be adjusted by adding
        using the same mechanism used for the integer version.
@@ -208,7 +208,7 @@ This is the real meat, the functionality that should be in Yacas 2.0.
 	<li> render matrices and square roots nicely too, in PrettyForm.
 	<li> FindZeroes (polynoms and other functions)
 	<li> redivide some code ('newly')
-	<li> make suchthat more powerful, so it simplifies sin(x)=cos(x) to tan(x)=1 to x/Pi/4
+	<li> make suchthat more powerful, so it simplifies sin(x)=cos(x) to tan(x)=1 to x=Pi/4
 	<li> groebner bases
 	<li> see if using arrays for matrices speeds up things.
 	<li> Fix CanBeUni so that it deals correctly with 1/c
@@ -296,7 +296,6 @@ These are nice to haves in the engine.
      evaluate something within the environment. Together with
      Apply this would allow for packages.
   <li> engine-side apply "op" for speed.
-<li> faster Pi() calculation --? seems okay for now
 <li>  LispCleanupStack: implement LocalLispString and LocalLispPtr.
 <li>  Clean up c++ code a little: Remove ALL TODO's and write javadoc-able-comments in the
       source code.
@@ -314,12 +313,12 @@ These are nice to haves in the engine.
 
 <li> Clean up TrigSimpCombine and Simplify in such a way as to make the
       code reusable for other simplifications.
-<li> QSort (? have HeapSort now)
+<li> QSort (still relevant? have HeapSort now)
 <li> BinarySearch (array!)
 <li> FourierTransform?
 <li> LaplaceTransform?
 <li> Singular Value Decomposition.
-<li> Factorization of integers is not done until it can factorize
+<li> Factorization of integers is not done until we can factorize
      49000018970000027 = 70000027 * 700000001
 	 and
      3000000000000000000000061 = 2380105039001857 * 1260448573
@@ -343,14 +342,16 @@ These plans are possibly further away but (in my opinion) important enough to ke
  <li> Multiple-precision (MP) math should be redesigned with the following goals:
 
   <ol>
-  <li> Internal "big number" format must be better than char*. There must be two basic classes: "big int" (always signed and dynamically allocated) and "big float". "Big float" may consist simply of two big integers (mantissa and exponent, both signed). I'd rather have the exponent a big integer than a 32-bit -- many MP libraries suffer from this problem.
-  <li> MP wrapper class holds big numbers in the internal format and passes them to either "ANumber" or "GMPNumber" backends with hopefully minimal conversion on input and output. MP algorithms such as ArcSin() should not have to be written separately for each MP backend; they are written using the MP wrapper class. Plugins can also use the MP wrapper class only.
-  <li> Almost all MP numerical algorithms should be coded in the script library rather than compiled. (except for critical ones). Experiments with MathPi() show that it does not really slow things down when the bulk of the calculation is in the numerics.
+  <li> Internal "big number" format must be better than the current char* strings. There must be two basic classes: "big int" (always signed and dynamically allocated) and "big float". "Big float" may consist simply of two big integers (mantissa and exponent, both signed). I'd rather have the exponent a big integer than a 32-bit -- many MP libraries suffer from the problem that exponents cannot grow.
+  <li> MP wrapper class holds big numbers in the internal format and passes them to either "ANumber" or "GMPNumber" backends with hopefully minimal conversion on input and output. MP algorithms such as ArcSin() should not have to be written separately for each MP backend (as it is right now); the algorithms will be written using the MP wrapper class. Plugins can also use the MP wrapper class and not the internal representation of numbers. Ideally, there will be a "GNU multiple precision scientific library" which will provide all functions such as Exp(), Pow(), Sin(), LnGamma(), BesselJ() etc., for high-speed arbitrary precision calculations. This library could be developed separately from Yacas if the number class architecture is done right.
+  <li> The backend for MP wrapper class will be selected at compile time or even at runtime. It will be either "yacasnumbers" or "gmp". 
+  <li> Almost all MP numerical algorithms should be coded in the script library rather than compiled. (Except for critical ones). Experiments with MathPi() show that keeping the algorithm in the scripts does not really slow things down when the bulk of the calculation is in the numerics.
   </ol>
 
 This should mostly take care of the MP calculations - no need to reimplement Karatsuba multiplication etc., it's all already done in GMP and platforms without GMP are probably not suitable for serious numerics.
 
- <li> Random number generation should be fixed to give a uniform distribution. Also, arbitrary-precision random numbers should be generated if requested. Need a better interface to make random arrays?
+ <li> Random numbers in arbitrary-precision should be generated if requested.
+      Need a better interface to make random arrays?
 
  </ol>
 
