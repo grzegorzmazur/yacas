@@ -1,7 +1,7 @@
 
 
 
-all : conf proteus
+all : conf proteus hints
 
 distclean:  clean
 	-rm -f proteus
@@ -10,7 +10,7 @@ depend :
 	gcc -MM *.cpp $(INCS) > depend.dep
 
 clean :
-	-rm -rf *.o *~ *.a core *.zip 
+	-rm -rf *.o *~ *.a hints core *.zip 
 
 conf:
 	yacas -pc yacasconf
@@ -32,6 +32,9 @@ proteus   : $(PROTEUS_OBJS)
 %.chapt: %.chapt.txt
 	perl $(INSTALL_DIR)/share/yacas/manmake/txt2yacasdoc.pl < $< > $@
 
+%.man: %.man.txt
+	perl $(INSTALL_DIR)/share/yacas/manmake/txt2yacasdoc.pl < $< > $@
+
 %.book: %.book.txt
 	perl $(INSTALL_DIR)/share/yacas/manmake/txt2yacasdoc.pl < $< > $@
 
@@ -51,14 +54,21 @@ proteus   : $(PROTEUS_OBJS)
 	pdflatex $* > /dev/null
 	@echo Documentation created: $*.pdf
 
-PROTEUSMANUALCHAPTERS = 
+PROTEUSMANUALCHAPTERS = fltkgraphstub.man 
 
-texdocs: proteusmanual.book proteusmanual.book.tex proteusmanual.book.pdf 
+texdocs: fltkgraphstub.man proteusmanual.book proteusmanual.book.tex proteusmanual.book.pdf 
 
 proteusmanual.book.tex: $(PROTEUSMANUALCHAPTERS) proteusmanual.book 
 
 fltkgraphstub.cc: fltkgraph.stub
 	yacas -pc fltkgraph.stub
+
+hints:
+	g++ manripper.cpp -o manripper
+	cd ../manmake ; ../proteus/manripper ref.book.txt refprog.book.txt > ../proteus/hints.unsorted ; cd ../proteus
+	sort -t ":" hints.unsorted > hints.sorted
+	echo "::::" > tail.txt
+	cat hints.sorted tail.txt > hints
 
 include depend.dep
 

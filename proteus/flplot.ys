@@ -26,8 +26,6 @@
   if (max>0) [y:=y/max;];
   plist := Eval(y);
 
-//  FlGraphStart(Eval(flplot2d));
-
   Local(execute);
   execute:={};
   
@@ -38,23 +36,9 @@
     plist:=(@plist);
     @flplot2d2;
   ];
-  execute:=Hold(FlTranslate(FlWindow[1],FlWindow[2])):execute;
-  DestructiveAppend(execute,Hold(FlTranslate(-FlWindow[1],-FlWindow[2])));
-  `FlGraphStart(@execute);
-
-
-
-/*TODO remove?
-  `FlGraphStart(
-  [
-    Local(dowidth,crect,plist);
-    dowidth:=(@dowidth);
-    crect:=(@crect);
-    plist:=(@plist);
-    @flplot2d;
-  ]);
-*/
-
+//  execute:=Hold(FlTranslate(FlWindow[1],FlWindow[2])):execute;
+//  DestructiveAppend(execute,Hold(FlTranslate(-FlWindow[1],-FlWindow[2])));
+  FlGraphStart(execute,320,240);
   True;
 ]);
 
@@ -66,66 +50,6 @@ GraphColorForLine(1) <-- FlColor(255,0,0);
 GraphColorForLine(2) <-- FlColor(0,255,0);
 GraphColorForLine(3) <-- FlColor(0,0,255);
 GraphColorForLine(0) <-- FlColor(255,0,255);
-
-//TODO remove this version?
-  flplot2d := Hold(
-  [
-    Local(flx,fly,flw,flh,i,line,ll);
-    flx:=FlWindow[1];
-    fly:=FlWindow[2];
-    flw:=FlWindow[3];
-    flh:=FlWindow[4];
-
-    Local(nr);
-    nr := Length(plist);
-    /* Get the screen extent */
-    if (crect != FlWindow) 
-    [
-      mlist:=FillList(0,nr);
-      N(
-      For(line:=1,line<=nr,line++)
-      [
-        ll:=FillList(0,dowidth);
-        For(i:=1,i<=dowidth,i++)
-        [
-          ll[i] := N({flx+((i-1)*flw)/(dowidth-1),fly+(plist[line][i]*flh)});
-        ];
-        mlist[line] := ll;
-      ]);
-    ];
-    crect := FlWindow;
-    /* Clear the screen */
-    FlColor(192,192,192);
-    FlBeginPolygon();
-    FlVertex(flx,fly);
-    FlVertex(flx,fly+flh);
-    FlVertex(flx+flw,fly+flh);
-    FlVertex(flx+flw,fly);
-    FlEndPolygon();
-
-    For(line:=1,line<=Length(mlist),line++)
-    [
-        Local(ll,h);
-        ll:=mlist[line];
-        GraphColorForLine(line&3);
-        FlBeginLine();
-        For(i:=1,i<=dowidth,i++)
-        [
-          if (Length(ll)>0)
-          [
-            h:=Head(ll);
-            if (IsList(h)) 
-            if (Length(h) > 1)
-              if (IsNumber(h[1]) And IsNumber(h[2]))
-              [
-                FlVertex(h[1],h[2]);
-              ];
-            ll:=Tail(ll);
-          ];
-        ];
-        FlEndLine();
-     ];
-   ]);
 
 
 Macro(ExB,{op,args})
@@ -141,13 +65,13 @@ Macro(ExB,{op,args})
     
     flx:=0;
     fly:=0;
-    flw:=FlWindow[3];
-    flh:=FlWindow[4];
+    flw:=FlWindowWidth;
+    flh:=FlWindowHeight;
 
     Local(nr);
     nr := Length(plist);
     /* Get the screen extent */
-    if (crect != FlWindow) 
+//    if (crect != FlWindow) 
     [
       mlist:=FillList(0,nr);
       N(
@@ -156,12 +80,12 @@ Macro(ExB,{op,args})
         ll:=FillList(0,dowidth);
         For(i:=1,i<=dowidth,i++)
         [
-          ll[i] := N({flx+((i-1)*flw)/(dowidth-1),fly+(plist[line][i]*flh)});
+          ll[i] := N({flx+((i-1)*flw)/(dowidth-1),fly+flh-(plist[line][i]*flh)});
         ];
         mlist[line] := ll;
       ]);
     ];
-    crect := FlWindow;
+//    crect := FlWindow;
     /* Clear the screen */
     ExB(FlColor,{192,192,192});
     ExB(FlBeginPolygon,{});
@@ -194,6 +118,30 @@ Macro(ExB,{op,args})
         ExB(FlEndLine,{});
      ];
    ]);
+
+
+
+
+/*
+  Frm(render,width,height);
+FrmWidth(Frm(_r,_w,_h)) <-- w;
+FrmHeight(Frm(_r,_w,_h)) <-- h;
+FrmRender(Frm(_r,_w,_h)) <-- r;
+
+
+10 # FrmForm(_x/_y)
+   <--
+   [
+     x:=FrmForm(x);
+     y:=FrmForm(y);
+     Local(w);
+     w:=Max(FrmWidth(x),FrmWidth(y));          
+     
+   ];
+
+10 # FrmForm(x_IsAtom)
+   <-- Frm();
+*/
 
 
 

@@ -21,13 +21,13 @@ YACASLIBS       = -L$(INSTALL_DIR)/lib/ -lyacas -lyacasplatform -lyacasnumbers
 
 LIBS = $(LDLIBS) $(FLTKLIBS) $(YACASLIBS)
 
-all-inclusive: conf proteus
+all-inclusive: conf proteus  hints
 
 # proteuscalculator
 install:
 	cp proteus /usr/local/bin/
 	cp proteus.conf /etc/proteus.conf
-	cp hints WorksheetBanner /usr/local/share/yacas/
+	cp hints WorksheetBanner flplot.ys flplot.ys.def /usr/local/share/yacas/
 	cp proteusbooks.html /usr/local/share/yacas/documentation/proteusbooks.html
 
 include makeinclude
