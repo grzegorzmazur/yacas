@@ -929,8 +929,17 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 {
   ANumber num(BITS_TO_DIGITS(aPrecision,aBase));
   num.CopyFrom(*iNumber);
-  if (num.iExp > 1)
-    num.RoundBits();
+  
+  //TODO this round-off code is not correct yet, but will work in most cases
+  // This is a bit of a messy way to round off numbers. It is probably incorrect,
+  // even. When precision drops one digit, it rounds off the last ten digits.
+  // So the following code is probably only correct if aPrecision>=num.iPrecision
+  // or if aPrecision < num.iPrecision-10
+  if (aPrecision<num.iPrecision)
+  {
+    if (num.iExp > 1)
+      num.RoundBits();
+  }
   num.ChangePrecision(BITS_TO_DIGITS(aPrecision,aBase));
 
 #define ENABLE_SCI_NOTATION

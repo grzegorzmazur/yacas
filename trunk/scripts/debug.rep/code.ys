@@ -101,7 +101,7 @@ Macro(DebugLeave,{})
 Macro(Debug,{expression})
 [
    DebugStart();
-   CustomEval(DebugEnter(),DebugLeave(),If(debugstopped,Check(False,"Debug stopped"),[debugging:=True;debugcallstack := Tail(debugcallstack);]),@expression);
+   CustomEval(DebugEnter(),DebugLeave(),If(debugstopped,Check(False,""),[debugging:=True;debugcallstack := Tail(debugcallstack);]),@expression);
 ];
 
 

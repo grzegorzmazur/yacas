@@ -1,0 +1,166 @@
+
+
+			Reflection
+
+			Multi-valued expressions
+
+			Assume facilities
+
+			Defining a new function in the kernel
+
+This section will explain how to add a new kernel-level
+function to {Yacas}, and will explain why it is this way.
+
+			A user interface for Yacas
+
+In practice, for power users, {Yacas} is already a convenient
+system when accessible from the command line. The command
+line allows one to enter calculations rapidly when the user
+already knows the commands that are available, and knows
+what he wants to do and what is possible. This unfortunately
+includes all developers working on {Yacas}, so there is
+little incentive to create a user interface front end
+for {Yacas}.
+
+Nevertheless, this chapter will try to specify a graphical
+user interface that services users other than power users.
+
+The single big usability issue is currently that one
+already needs to know the system a bit before one can
+use it. The user is greeted with an intimidating flashing
+cursor, waiting for the user to enter a command. The user
+needs to know which commands are available, and when to use
+those commands. In short, the user, whether it is a new
+of experienced user, can be greatly helped with information
+that is more readily available.
+
+		Use case scenarios
+
+There are two use case scenarios the author can think of:
+
+*	1. The user wants to have some fun, and enjoys playing
+around with math. 
+*	1. The user has a specific calculation that needs to be
+performed, and hopes {Yacas} can do it quickly.
+
+The following sections describe the possible features a
+graphical front end could offer to facilitate these.
+
+		Yacas for fun
+
+When a user is bored and wants to be entertained, and when
+entertainment includes having fun with math, the user might
+start up the (currently hypothetical) graphical user interface
+and start to explore the possibilities. The first question
+the user will ask is "What can Yacas do?", and when an interesting
+subject is found, perhaps play with it, entering various parameters
+to a calculation model, generate graphs, and maybe even learn
+something new along the way.
+
+		Yacas for profit
+
+When the user has a real world problem, a calculation that
+needs to be performed, one that he knows he can do perhaps
+by looking it up in a book or writing dozens of pages
+until he reaches the result, or perhaps verify that a calculation
+is correct, the goal is much narrower. The user already 
+knows what he wants to do, but might want to know <i>how</i>
+he can do it.
+
+		The current solution
+
+With the command line version of {Yacas}, the solution
+for the above mentioned use case scenarios is to 
+read the manual, and perhaps try some examples until the
+user understands the tools available.
+
+The user can then play around with some commands, and
+finally set up a file with code that will perform the
+calculation and run that file.
+
+A graphical user interface offers the opportunity to
+allow the user to access relevant information more
+quickly than scanning the hundreds of pages of
+documentation (with the chance of getting lost).
+
+Of course documentation in combination with examples that show
+how to do specific types of calculations go a long
+way when a user needs to find out how to do a specific
+calculation, or wants to know what is possible.
+However, a user interface might provide the required
+information more readily.
+
+		Possible additional ways to offer information
+
+	    "What is available?" information
+
+When typing in a command, it happens often (even with experienced
+users) that the user forgot the exact arguments to that function,
+or the order of the arguments. 
+
+One solution might be to pop up a tip box with the possible
+ways the command can be completed.
+
+When the user doesn't know which command to use in the first
+place, the system could provide a list of possible commands,
+perhaps categorized by type of operation. For each command
+a short blurb could be shown about what the routine does,
+when it is applicable, and perhaps some examples for the user
+to try out to get a handle on the command.
+
+Arguably the last option is offered by the manual already.
+
+	    "How do I ...?" information
+
+For more elaborate use, the user might be better off
+with example calculations. A well-documented example
+showing how a calculation is done goes a long way.
+
+The user can then use the example as a template for his
+own calculation. The user interface could even offer 
+a facility to have a template for a calculation, where
+the user enters some final parameters for that specific
+calculation. With such a template, most of the work is
+already done, and all the user needs to do is change
+some parameters to reflect the calculation he wants to do.
+
+		Other facilities
+
+In addition to the features described above, where
+a graphical front end offers information in a more
+flexible way, there are other facilities a graphical
+front end could offer.
+
+	    Repeated calculations
+
+Computers are good at doing repetitive tasks. If some
+task is performed often, it might be a good idea to 
+extend the "template example with parameters" model
+to actually allow the user to design a user interface
+for a specific calculation so a calculation using that
+model can be entered more quickly. Enter a few parameters,
+and out come the numbers and graphs.
+
+
+	    Facilities for programmers
+
+For developers, a good debugger could be handy. The
+usual facilities like putting breakpoints, stepping
+through code, seeing (the values of) local variables,
+could be handy. The command line version already offers
+a useful command line interactive debugger, so this
+feature might not be too important.
+
+A tree view of the source code, allowing a programmer
+to easily navigate through the code could be useful.
+As a project (and the code body) becomes larger and larger
+it becomes harder to find things in the scripts.
+
+
+
+
+
+
+
+
+

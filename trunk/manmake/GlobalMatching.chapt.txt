@@ -215,7 +215,7 @@ In stead of writing custom hand-written code for this
 transformation, one would want a system were the
 $a^n$ part is matched in the database and the $a^m$
 part in the expression being processed. The result,
-a^(n+m), would be the result, and one would want the
+$a^(n+m)$, would be the result, and one would want the
 system to remove the $a^n$ from the database and put back
 $a^(n+m)$. 
 

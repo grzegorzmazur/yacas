@@ -63,18 +63,21 @@
     } \
     catch(LispInt b) \
     { \
-     if (_e.iInputStatus.LineNumber()>=0) \
-        { \
-            LispChar linenum[20]; \
-            InternalIntToAscii(linenum,_e.iInputStatus.LineNumber()); \
-            _o.Write(_e.iInputStatus.FileName());\
-            _o.Write("(");\
-            _o.Write(linenum);\
-            _o.Write(") : ");\
+     if (_e.ErrorString(b)[0] != '\0') \
+     {\
+      if (_e.iInputStatus.LineNumber()>=0) \
+      { \
+          LispChar linenum[20]; \
+          InternalIntToAscii(linenum,_e.iInputStatus.LineNumber()); \
+          _o.Write(_e.iInputStatus.FileName());\
+          _o.Write("(");\
+          _o.Write(linenum);\
+          _o.Write(") : ");\
         } \
         _e.iCleanup.Delete(); \
         _o.Write(_e.ErrorString(b)); \
         _o.Write("\n"); \
+      }\
     }
 
 //            CHECKPTR(_e.iInputStatus.FileName());

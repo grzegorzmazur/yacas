@@ -28,8 +28,6 @@ to general issues related to the Yacas system development and maintenance.
 
 *INCLUDE BuildSystem.chapt
 
-*INCLUDE GlobalMatching.chapt
-
 			The static code analyzer
 
 *INCLUDE codecheck.chapt

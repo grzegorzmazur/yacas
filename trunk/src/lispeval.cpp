@@ -479,15 +479,16 @@ void TracedEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
                            LispPtr& aExpression)
 {
   if(aEnvironment.iDebugger == NULL) RaiseError("Internal error: debugging failing");
-  if(aEnvironment.iDebugger->Stopped()) RaiseError("Debugging halted");
+  if(aEnvironment.iDebugger->Stopped()) RaiseError("");
 
 REENTER:
   errorStr.SetNrItems(1); errorStr[0] = '\0';
   LispTrap(aEnvironment.iDebugger->Enter(aEnvironment, aExpression),errorOutput,aEnvironment);
-  if(aEnvironment.iDebugger->Stopped()) RaiseError("Debugging halted");
+  if(aEnvironment.iDebugger->Stopped()) RaiseError("");
   if (errorStr[0])
   {
     aEnvironment.CurrentOutput()->Write(errorStr.String());
+    aEnvironment.iEvalDepth=0;
     goto REENTER;
   }
 
@@ -497,14 +498,15 @@ REENTER:
   if (errorStr[0])
   {
     aEnvironment.CurrentOutput()->Write(errorStr.String());
+    aEnvironment.iEvalDepth=0;
     aEnvironment.iDebugger->Error(aEnvironment);
     goto REENTER;
   }
 
-  if(aEnvironment.iDebugger->Stopped()) RaiseError("Debugging halted");
+  if(aEnvironment.iDebugger->Stopped()) RaiseError("");
 
   aEnvironment.iDebugger->Leave(aEnvironment, aResult, aExpression);
-  if(aEnvironment.iDebugger->Stopped()) RaiseError("Debugging halted");
+  if(aEnvironment.iDebugger->Stopped()) RaiseError("");
 }
 
 
