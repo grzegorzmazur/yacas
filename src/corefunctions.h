@@ -159,6 +159,8 @@ CORE_KERNEL_FUNCTION("MathMod",LispMod,2,YacasEvaluator::Function | YacasEvaluat
 CORE_KERNEL_FUNCTION("MathDiv",LispDiv,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathLog",LispLog,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 //CORE_KERNEL_FUNCTION("MathPower",LispPower,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("BitsToDigits",LispBitsToDigits,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("DigitsToBits",LispDigitsToBits,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathPi",LispPi,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("MathGcd",LispGcd,2,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("SystemCall",LispSystemCall,1,YacasEvaluator::Function | YacasEvaluator::Fixed);

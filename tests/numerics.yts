@@ -82,6 +82,18 @@ RoundTo(N(Sqrt(5.3)), 50)
 , 2.30217288664426764419484158642020185018583028263367
 ); f();
 
+// this failed in gmp due to broken MathSqrt()
+Verify(
+RoundTo(N(Sqrt(25.3)), 50)
+, 5.0299105359837166789719353820984438468186649281130
+);
+
+// this failed due to broken RoundTo()
+Verify(
+RoundTo(MathPower(13, -23), 50)
+, 0.23949855470974885180294666343025235387321690490245e-25
+);
+
 Verify(
 RoundTo([x:=Newton(x*Exp(x)-4,x,1,10^(-49)); N(x*Exp(x));], 49)
 , 4.

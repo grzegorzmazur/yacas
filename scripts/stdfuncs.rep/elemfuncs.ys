@@ -15,7 +15,7 @@
 //30 # MathMul2Exp(_x,_n)_(n<0) <-- MathDivide(x, MathPower(2,-n));
 */
 /// BitsToDigits(n,base) and DigitsToBits(n,base). Enough to compute at low precision.
-
+// this is now a call to the kernel functions, so leave as a reference implementation
 BitsToDigits(n, base) := MathFloor(0.51+n*N(Ln(2)/Ln(base),10));
 DigitsToBits(n, base) := MathFloor(0.51+n*N(Ln(base)/Ln(2),10));
 
@@ -23,7 +23,7 @@ DigitsToBits(n, base) := MathFloor(0.51+n*N(Ln(base)/Ln(2),10));
 
 ///  MathBitCount: count number of bits in an integer or a float number.
 /*  MathBitCount is now implemented through BigNumber::BitCount() */
-/*  so this should remain commented out as an example implementation
+/*  so this stays here as a reference implementation */
 10 # MathBitCount(0) <-- 1;
 20 # MathBitCount(_x) _ (x<0) <-- MathBitCount(-x);
 
@@ -49,7 +49,7 @@ DigitsToBits(n, base) := MathFloor(0.51+n*N(Ln(base)/Ln(2),10));
 	]);
 	nbits;
 ];
-*/
+/**/
 
 /* this is already moved to base.rep/math.ys
 /// MathPower(x,y).
@@ -73,11 +73,80 @@ DigitsToBits(n, base) := MathFloor(0.51+n*N(Ln(base)/Ln(2),10));
 /// MathSqrt(x).
 /// Compute square root(x) with nonnegative x. FIXME: No precision tracking yet.
 10 # MathSqrt1(0) <-- 0;
-// BisectSqrt() works only on integers
-//20 # MathSqrt1(x_IsInteger) <-- BisectSqrt(x);
-30 # MathSqrt1(x_IsPositiveNumber) <-- x*NewtonNum({{r}, r+r*(1-x*r^2)/2}, FastPower(x,-0.5), 4, 2);
+//30 # MathSqrt1(x_IsPositiveNumber) <-- x*NewtonNum({{r}, r+r*(1-x*r^2)/2}, FastPower(x,-0.5), 4, 2);
+// for integers, it is enough to compute Sqrt(x) to about half the number of bits to figure out whether Sqrt(x) is itself integer. If Sqrt(x) for integer x is exactly equal to an integer, we should return the integer answer rather than the float answer. For this answer, the current precision might be insufficient, therefore we compute with potentially more digits.
+20 # MathSqrt1(x_IsInteger) _ (GreaterThan(x,0)) <-- 
+[
+	Local(result);
+	result := SqrtNum(x, Max(BitsToDigits(MathBitCount(x)+1, 10), GetPrecision()));
+];
+// this function is *only* for float and nonzero A!
+MathSqrtFloat0(_A) <-- 
+[
+	Local(bitshift, a0, x0, x0sq, targetbits, gotbits, curprec, targetprec);
+	bitshift := ShiftRight(MathBitCount(A),1);
+	// this is how many bits of precision we need
+	targetprec := GetPrecision();
+
+	Precision(10);	// enough to compute at this point
+	// target bits cannot be more than 1 + the bits in A
+	// if this is less than the requested precision, the result will be silently less precise, such is life
+	targetbits := Min(DigitsToBits(targetprec, 10), 1+MathGetExactBits(A));
+	// initial approximation
+	a0 := MathMul2Exp(A, -bitshift*2);	// would be wrong for integers
+	x0 := MathDivide(2+4*a0, 5+a0);
+	// this approximation gives at least 6 bits of Sqrt(a0) for 1 <= a0 < 4
+	gotbits := 6;
+	curprec := 2;
+	While(gotbits <= targetbits) // Or curprec <= targetprec)
+	[
+		gotbits := 3*gotbits;	// Halley iteration; get 3n+2 bits, subtract 2 bits to allow for roundoff
+		curprec := 3*curprec;
+//		Echo("debug: curprec=", curprec);
+		Precision(curprec);
+		x0 := MathSetExactBits(x0, gotbits);
+		x0sq := MathMultiply(x0, x0);
+		x0 := MathMultiply(x0, MathDivide(3*a0+x0sq, a0+3*x0sq));
+	];
+	Precision(targetprec);
+	MathSetExactBits(MathMul2Exp(x0, bitshift), targetbits);
+];
+
+MathSqrtFloat(_A) <-- 
+[
+	Local(bitshift, a0, x0, x0sq, targetbits, gotbits, curprec, targetprec);
+	bitshift := ShiftRight(MathBitCount(A),1);
+	// this is how many bits of precision we need
+	targetprec := GetPrecision();
+
+	Precision(10);	// enough to compute at this point
+	// target bits cannot be more than 1 + the bits in A
+	// if this is less than the requested precision, the result will be silently less precise, but c'est la vie
+	targetbits := Min(DigitsToBits(targetprec, 10), 1+MathGetExactBits(A));
+	// initial approximation
+	a0 := MathMul2Exp(A, -bitshift*2);	// would be wrong for integers
+	x0 := MathDivide(2+4*a0, 5+a0);
+	// this approximation gives at least 6 bits of Sqrt(a0) for 1 <= a0 < 4
+	gotbits := 6;
+	curprec := 2;
+	While(gotbits <= targetbits) // Or curprec <= targetprec)
+	[
+		gotbits := 3*gotbits;	// Halley iteration; get 3n+2 bits, subtract 2 bits to allow for roundoff
+		curprec := 3*curprec;
+//		Echo("debug: curprec=", curprec);
+		Precision(curprec);
+		x0 := MathSetExactBits(x0, gotbits);
+		x0sq := MathMultiply(x0, x0);
+		x0 := MathMultiply(x0, MathDivide(3*a0+x0sq, a0+3*x0sq));
+	];
+	Precision(targetprec);
+	MathSetExactBits(MathMul2Exp(x0, bitshift), targetbits);
+];
+
+40 # MathSqrt1(_x) <-- False;	// error condition for negative arguments
 
 //{BisectSqrt(N)} computes the integer part of $ Sqrt(N) $ for integer $N$.
+// BisectSqrt() works only on integers
 	//sqrt(1) = 1, sqrt(0) = 0
 10 # BisectSqrt(0) <-- 0;
 10 # BisectSqrt(1) <-- 1;

@@ -368,6 +368,12 @@ Verify((0.0000000000000000000000000000000000000001 = 0), False);
 Verify((0.0000000000000000000000000000000000000000000000001 = 0), False);
 
 
+// Problem with FloatIsInt and gmp
+Verify(FloatIsInt(3.1415926535e9), False);
+Verify(FloatIsInt(3.1415926535e10), True);
+Verify(FloatIsInt(3.1415926535e20), True);
+Verify(FloatIsInt(0.3e20), True);
+
 /* Regression on bug reports from docs/bugs.txt */
 
 /* Bug #1 */
