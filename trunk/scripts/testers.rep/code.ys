@@ -33,7 +33,7 @@ Function("Testing",{aLeft})
 Function("KnownFailure",{expr})
 [
   Local(rfail);
-  Echo({"Known failure:"});
+  Echo({"Known failure: ", expr});
   Set(rfail,Eval(expr));
   If(rfail,Echo({"Failure resolved!"}));
 ];
@@ -153,7 +153,9 @@ HoldArg("BenchShow",expr);
 
 Function ("TestYacas", {expr, ans})
 [
-		If (Simplify(Eval(expr)-ans)=0, True,
+	Local(diff);
+	diff := Simplify(Eval(expr)-Eval(ans));
+		If (Simplify(diff)=0, True,
 			[
 			  WriteString("******************");
 			  NewLine();
@@ -164,7 +166,11 @@ Function ("TestYacas", {expr, ans})
 			  NewLine();
 			  WriteString(" which differs from ");
 			  NewLine();
-			  Write(ans);
+			  Write(Eval(ans));
+			  NewLine();
+			  WriteString(" by ");
+			  NewLine();
+			  Write(diff);
 			  NewLine();
 			  WriteString("******************");
 			  NewLine();
