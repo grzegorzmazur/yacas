@@ -1,6 +1,8 @@
 /* Standard analytic functions */
 2 # Sin(x_IsNumber)_(Numeric) <-- SinNum(x);
 4 # Sin(ArcSin(_x))           <-- x;
+4 # Sin(ArcCos(_x)) <-- Sqrt(1-x^2);
+4 # Sin(ArcTan(_x)) <-- x/Sqrt(1+x^2);
 5 # Sin(- _x)_(Not IsConstant(x))                 <-- -Sin(x);
 6 # (Sin(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- -Sin(-x);
 
@@ -33,6 +35,8 @@
 
 2 # Cos(x_IsNumber)_(Numeric) <-- CosNum(x);
 4 # Cos(ArcCos(_x))           <-- x;
+4 # Cos(ArcSin(_x)) <-- Sqrt(1-x^2);
+4 # Cos(ArcTan(_x)) <-- 1/Sqrt(1+x^2);
 5 # Cos(- _x)_(Not IsConstant(x))                 <-- Cos(x);
 6 # (Cos(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- Cos(-x);
 // must prevent it from looping
@@ -105,6 +109,8 @@
 
 2 # Tan(x_IsNumber)_(Numeric) <-- TanNum(x);
 4 # Tan(ArcTan(_x))           <-- x;
+4 # Tan(ArcSin(_x)) <-- x/Sqrt(1-x^2);
+4 # Tan(ArcCos(_x)) <-- Sqrt(1-x^2)/x;
 110 # Tan(Complex(_r,_i))       <-- Sin(Complex(r,i))/Cos(Complex(r,i));
 
 200 # Tan(0)                  <-- 0;
@@ -213,12 +219,28 @@
 100 # Cosh(_x)*Sech(_x) <-- 1;
 100 # Tanh(_x)*Cosh(_x) <-- Sinh(x);
 100 # Coth(_x)*Sinh(_x) <-- Cosh(x);
+
 200 # Sinh(0)		<-- 0;
 200 # Sinh(Infinity)	<-- Infinity;
 200 # Sinh(-Infinity)	<-- -Infinity;
+200 # Sinh(ArcSinh(_x)) <-- x;
+200 # Sinh(ArcCosh(_x)) <-- Sqrt((x-1)/(x+1))*(x+1);
+200 # Sinh(ArcTanh(_x)) <-- x/Sqrt(1-x^2);
+
 200 # Cosh(0)		<-- 1;
 200 # Cosh(Infinity)	<-- Infinity;
 200 # Cosh(-Infinity)	<-- Infinity;
+200 # Cosh(ArcCosh(_x)) <-- x;
+200 # Cosh(ArcSinh(_x)) <-- Sqrt(1+x^2);
+200 # Cosh(ArcTanh(_x)) <-- 1/Sqrt(1-x^2);
+
+200 # Tanh(0)           <-- 0;
+200 # Tanh(Infinity)    <-- 1;
+200 # Tanh(-Infinity)   <-- -1;
+200 # Tanh(ArcTanh(_x)) <-- x;
+200 # Tanh(ArcSinh(_x)) <-- x/Sqrt(1+x^2);
+200 # Tanh(ArcCosh(_x)) <-- Sqrt((x-1)/(x+1))*(x+1)/x;
+
 200 # Sinh(Undefined) <-- Undefined;
 200 # Cosh(Undefined) <-- Undefined;
 200 # Tanh(Undefined) <-- Undefined;
