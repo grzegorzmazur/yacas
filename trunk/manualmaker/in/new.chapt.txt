@@ -453,16 +453,17 @@ Equivalent Yacas script code is given, as well as examples of C++ usage.
 *	Construct a number from a string in given base.
 The format is the standard integer, fixed-point and floating-point representations of numbers.
 The number will be rounded to a given number of base digits.
-	x.SetTo("2.e-19", 10);
+	x.SetTo("2.e-19", 100, 10);
 Here we encounter a problem of ambiguous hexadecimal exponent:
-	x.SetTo("2A8C.E2", 16);
+	x.SetTo("2A8C.E2", 100, 16);
 It is not clear whether the above number is in exponential notation or not.
 But this is hopefully not a critical issue.
 *	Print a number to a string in a given precision and in a given base.
 The precision is given as the number of digits in the given base.
-The value should be rounded to that number of significant digits.
-(Integers are printed exactly.)
-	x.ToString(buffer, 40, 10);
+The value should be rounded to that number of significant base digits.
+(Integers are printed exactly, regardless of the given precision.)
+	x.ToString(buffer, 200, 16); // hexadecimal
+	x.ToString(buffer, 40, 10); // decimal
 *	Construct a number from a platform number (a 32-bit integer or a double precision value).
 	x.SetTo(12345); y.SetTo(-0.001);
 *	Obtain an approximate representation of {x} as double-precision value.
@@ -534,6 +535,7 @@ For non-integers, this operation is usually also more efficient than multiplicat
 (Optimization of multiplication and division by a power of 2.)
 Note that the shift amount is a big number.
 	x.ShiftLeft(y, n); x.ShiftRight(y, n);
+(Versions of these functions with {n} a platform {long} integer are also provided for efficiency.)
 *	Perform bitwise arithmetic, {x := y&z}, {x := y|z}, {x := y^z}.
 This should be implemented only for integers.
 Integer values are interpreted as bit sequences starting from the least significant bit.
@@ -568,13 +570,22 @@ Arithmetic with floating-point numbers requires only very simple operations on t
 The {BigNumber} API can be implemented efficiently so that there is not much loss of time when the numbers are actually small.
 This will reduce the overhead required for handling exponents.
 
-To implement this idea, the API specifies that big numbers are used in situations when normally one would expect a platform number.
+To realize this idea, the API specifies that big numbers are used in situations when normally one would expect a platform number.
 The relevant functions are {BitCount}, {ShiftLeft}, {ShiftRight}.
 At first sight, it seems unlikely that we shall need numbers with more than $2^32$ bits (although computer hardware may develop very quickly to cover that range).
 However, the real catch is the floating-point overflow and underflow.
 The bit count is defined as the integer part of the binary logarithm of the absolute value of the number.
 Defined in this way, the "bit count" of a floating-point number can exceed a 32-bit {long} value; consider for example $x=Exp(Exp(1000))$.
 Similarly, we may need to multiply a floating-point number by a very large power of $2$ using the very efficient {ShiftLeft} function.
+
+On the other hand, it is impractical to print several billion digits to the screen.
+So the precision argument in string printing functions should be not a big integer but a platform integer.
+Also, alternative versions of the API functions {BitCount}, {ShiftLeft}, {ShiftRight} may be provided with platform-typed arguments.
+
+
+In the future this limitation might be avoided if we use a 64-bit platform.
+(Clearly, a 64-bit platform is a better choice for heavy-duty multiple-precision computations than a 32-bit platform.)
+
 
 	    Library versions of mathematical functions
 
