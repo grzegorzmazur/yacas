@@ -42,7 +42,7 @@ SCRIPTFILES = 	        										    \
 	simplify.rep/code.ys simplify.rep/code.ys.def 							    \
 	solve.rep/code.ys solve.rep/code.ys.def 							    \
 	specfunc.rep/bessel.ys specfunc.rep/bessel.ys.def specfunc.rep/bernou.ys specfunc.rep/bernou.ys.def \
-	specfunc.rep/code.ys specfunc.rep/code.ys.def 							    \
+	specfunc.rep/code.ys specfunc.rep/code.ys.def specfunc.rep/gammaconst.ys specfunc.rep/gammaconst.ys.def \
 	specfunc.rep/gamma.ys specfunc.rep/gamma.ys.def specfunc.rep/zeta.ys specfunc.rep/zeta.ys.def 	    \
 	statistics.rep/hypothesystest.ys statistics.rep/incompletegamma.ys.def	 			    \
 	statistics.rep/regression.ys.def statistics.rep/hypothesystest.ys.def 				    \
