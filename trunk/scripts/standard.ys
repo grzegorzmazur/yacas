@@ -75,11 +75,11 @@ Function("N",{aNumberBody})
 [
   Local(prevNumeric,numericresult);
   Set(prevNumeric,Numeric);
-  AssignCachedConstants();
+  AssignCachedConstantsN();
   Set(Numeric,True);
   Set(numericresult,Eval(aNumberBody));
   Set(Numeric,prevNumeric);
-  ClearCachedConstants();
+  ClearCachedConstantsN();
   numericresult;
 ];
 UnFence("N",1);
@@ -90,11 +90,11 @@ Function("N",{aNumberBody,aDigits})
   Set(prevNumeric,Numeric);
   Set(prevdigits,GetPrecision());
   Precision(aDigits);
-  AssignCachedConstants();
+  AssignCachedConstantsN();
   Set(Numeric,True);
   Set(numericresult,Eval(aNumberBody));
   Set(Numeric,prevNumeric);
-  ClearCachedConstants();
+  ClearCachedConstantsN();
   Precision(prevdigits);
   numericresult;
 ];
