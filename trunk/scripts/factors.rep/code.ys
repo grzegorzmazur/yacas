@@ -108,7 +108,8 @@ PollardCombineLists(_left,_right) <--
 ];
 30 # FindModAux(_poly,_item,_p,_n) <-- 1;
 
-MergeTerm(_f,_i) <-- MergeTerm(f,i,Assoc(i[1],f));
+5  # MergeTerm(_f,{1,_pow}) <-- True;
+10 # MergeTerm(_f,_i) <-- MergeTerm(f,i,Assoc(i[1],f));
 10 # MergeTerm(_f,_i,Empty) <-- DestructiveAppend(f,i);
 20 # MergeTerm(_f,_i,list_IsList) <--
 [
@@ -129,15 +130,17 @@ FactorUniVarSec(_poly) <--
   checked := Bk(poly);
   Local(pre);
   pre:=Div(poly,FW(checked));
-
+  pre:=Eval(pre); //TODO very crude form of simplification?
   // Rescan the solutions, because there may be some that still
   // divide the remaining polynomial.
   For(i:=1,i<=Length(checked),i++)
   [
+    if (Degree(checked[i][1]) > 0)
     While (Mod(pre,checked[i][1]) = 0)
     [
       checked[i][2] := checked[i][2] + 1;
       pre := Div(pre, checked[i][1]);
+      pre:=Eval(pre); //TODO very crude form of simplification?
     ];
   ];
 
@@ -174,12 +177,15 @@ MakeInteger(_poly) <--
 
 Bk(_poly) <--
 [
-  Local(p,checked,factored,result);
+  Local(p,checked,factored,result,var);
 
   // result will contain the final result returned to the user. 
   checked := {};
   result:= {};
   // Create a internal representation, to speed up processing
+  var:=(VarList(poly)[1]);
+//  poly :=Apply("Subst",{var,Hold(x),poly};
+  poly:=Subst(var,Hold(x))poly;
   poly := MakeUni(poly,VarList(poly));
 
   // Convert from polynomial containing rational coefficients
@@ -231,7 +237,6 @@ Bk(_poly) <--
   While (Not IsPrime(p)) p++;
 
   factored := Bk(poly,p);
-
   if (Length(factored) < 2)
   [
     p++;
@@ -247,7 +252,7 @@ Bk(_poly) <--
 
   ];
   MergeFactors(checked,result);
-  checked;
+  Subst(Hold(x),var)checked;
 ];
 Bk(_poly,_prime) <--
 [
