@@ -1,12 +1,4 @@
-		The Yacas debugger program
-
-A debugging version of yacas comes with the 
-distribution. The yacas debugger consists of:
-*	{./yacasdebug}, a separate program
-*	{libyacasdebug.a}, a static library that can be linked in
-
-The debug version has to be built separately from the "production"
-version of Yacas (all source files have to be recompiled).
+		The Yacas Debugger
 
 	    Why introduce a debug version?
 
@@ -18,39 +10,27 @@ to see where a calculation breaks. Having certain features only
 in the debug version keeps the release executable can be kept lean 
 and mean, while still offering advanced debug features.
 
-	    How to build {yacasdebug}
+	    How to build the debug version of Yacas ?
 
-The yacas debugging components can be built by the command
-	make debug
-or, alternatively, by going into the 
-{src/} directory and using the file {makefile.debug} to build 
-it:
+The debug version has to be built separately from the "production"
+version of Yacas (all source files have to be recompiled).
 
-	cd src/
-	make -f makefile.debug
+To build the debug version of yacas, run configure with
 
-Note the object files generated are called {*-d.o} and are suited for the
-normal Yacas executable. The static library {libyacasdebug.a} is built instead
-of the normal {libyacas.a}.
+	./configure --enable-debug
 
-The file {makefile.debug} was written to compile under Linux, but
-should work on other platforms with little tweaks.
+and after that
 
-After the build the debug version of Yacas can be found in the {src/} directory.
+	make
 
-To invoke the debugger, type
+as usual.
 
-	./yacasdebug --rootdir ../scripts/
-
-The Yacas debugger assumes the current directory for scripts,
-so the {--rootdir} command line option is required.
-
-	    What does {yacasdebug} offer?
+	    What does the debug version of yacas offer?
 
 The Yacas debugger is in development still, but already has
 some useful features. 
 
-When you build {yacasdebug} and run a command, it will:
+When you build the debug version of yacas, and run a command, it will:
 *	keep track of the memory allocated and freed, and show any memory leaks
 when you quit the program.
 *	show which files are loaded to read function definitions and when.
@@ -59,9 +39,6 @@ debugging purposes.
 *	show you the stack trace when evaluation goes into an infinite recursion
 (equivalent of always using {TraceStack}) and print file names and line numbers
 for all rules.
-
-The {libyacasdebug.a} library is used by {proteusdebugger}, a graphical
-front-end for debugging which is also still in development.
 
 Future versions will have the ability to step through code and to
 watch local and global variables while executing, modifying them
