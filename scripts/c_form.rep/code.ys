@@ -8,6 +8,7 @@
 	0.3 Fix for indexed expressions: support a[2][3][4]
 	0.3.1 Fix for CForm(integer): add a decimal point
 	0.4 Support While()[]. Added IsCFormable. Use Concat() instead of Union() on lists.
+	0.4.1 Support False, True
 */
 
 /* To do:
@@ -35,7 +36,9 @@ TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equa
 /* Replace numbers and variables -- never bracketed except explicitly */
 110 # CForm(x_IsInteger, _p) <-- ConcatStrings(String(x), ".");
 112 # CForm(x_IsNumber, _p) <-- String(x);
-/* Variables are left as is */
+/* Variables are left as is, except some special ones */
+190 # CForm(False, _p) <-- "false";
+190 # CForm(True, _p) <-- "true";
 200 # CForm(x_IsAtom, _p) <-- String(x);
 
 /* Strings must be quoted but not bracketed */
