@@ -470,5 +470,26 @@ void ReturnUnEvaluated(LispPtr& aResult,LispPtr& aArguments,
     full.Get()->Next().Set(NULL);
 }
 
+void PrintExpression(LispString& aResult, LispPtr& aExpression,
+                     LispEnvironment& aEnvironment,
+                     LispInt aMaxChars)
+{
+    aResult.SetNrItems(0);
+    aResult.Append('\0');
+    StringOutput newOutput(aResult);
+    InfixPrinter infixprinter(aEnvironment.PreFix(),
+                              aEnvironment.InFix(),
+                              aEnvironment.PostFix(),
+                              aEnvironment.Bodied());
+    infixprinter.Print(aExpression, newOutput, aEnvironment);
+    if (aMaxChars > 0 && aResult.NrItems()>aMaxChars)
+    {
+        aResult[aMaxChars-3] = '.';
+        aResult[aMaxChars-2] = '.';
+        aResult[aMaxChars-1] = '.';
+        aResult[aMaxChars] = '\0';
+        aResult.SetNrItems(aMaxChars+1);
+    }
+}
 
 

@@ -26,6 +26,7 @@ public:
 #endif
     }
     LispPtr iOperator;
+    LispPtr iExpression;
     LispInt iRulePrecedence;
     LispInt iSide; // 0=pattern, 1=body
 

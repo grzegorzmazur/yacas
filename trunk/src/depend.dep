@@ -81,7 +81,7 @@ errors.o: errors.cpp yacasprivate.h plat/linux32/lisptype.h \
  lisphash.inl lispevalhash.h lispcleanupstack.h deffile.h deffile.inl \
  ramdisk.h lispio.h stringio.h lispglobals.h lispplugin.h ctokenizer.h \
  tokenizer.h xmltokenizer.h standard.h lispatom.h numbers.h \
- standard.inl lispeval.h errors.h
+ standard.inl lispeval.h errors.h infixparser.h lispparser.h
 genericobject.o: genericobject.cpp yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl genericobject.h yacasbase.h

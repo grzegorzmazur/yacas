@@ -103,53 +103,21 @@ void CheckArgType(LispInt aPredicate, LispInt aArgNr, LispPtr& aArguments,LispEn
         LispPtr& arg = Argument(aArguments,aArgNr);
 
         LispString strout;
-        StringOutput newOutput(strout);
-        
-        InfixPrinter infixprinter(aEnvironment.PreFix(),
-                                  aEnvironment.InFix(),
-                                  aEnvironment.PostFix(),
-                                  aEnvironment.Bodied());
-
         aEnvironment.iErrorOutput.Write("Argument ");
-        infixprinter.Print(arg, newOutput, aEnvironment);
 #define LIM_AL 60
-        if (strout.NrItems()>LIM_AL)
-        {
-            strout[LIM_AL-3] = '.';
-            strout[LIM_AL-2] = '.';
-            strout[LIM_AL-1] = '.';
-            strout[LIM_AL] = '\0';
-        }
+        PrintExpression(strout, arg, aEnvironment, LIM_AL);
         aEnvironment.iErrorOutput.Write(strout.String());
 
-        strout.SetNrItems(0);
-        strout.Append('\0');
         LispPtr eval;
         InternalEval(aEnvironment, eval, arg);
         aEnvironment.iErrorOutput.Write(" evaluated to ");
-        infixprinter.Print(eval, newOutput, aEnvironment);
-        if (strout.NrItems()>LIM_AL)
-        {
-            strout[LIM_AL-3] = '.';
-            strout[LIM_AL-2] = '.';
-            strout[LIM_AL-1] = '.';
-            strout[LIM_AL] = '\0';
-        }
+        PrintExpression(strout, arg, aEnvironment, LIM_AL);
         aEnvironment.iErrorOutput.Write(strout.String());
         aEnvironment.iErrorOutput.Write("\n");
 
         ReturnUnEvaluated(eval, aArguments, aEnvironment);
         aEnvironment.iErrorOutput.Write("In function call ");
-        strout.SetNrItems(0);
-        strout.Append('\0');
-        infixprinter.Print(eval, newOutput, aEnvironment);
-        if (strout.NrItems()>LIM_AL)
-        {
-            strout[LIM_AL-3] = '.';
-            strout[LIM_AL-2] = '.';
-            strout[LIM_AL-1] = '.';
-            strout[LIM_AL] = '\0';
-        }
+        PrintExpression(strout, arg, aEnvironment, LIM_AL);
         aEnvironment.iErrorOutput.Write(strout.String());
         aEnvironment.iErrorOutput.Write("\n");
 #ifdef DEBUG_MODE
