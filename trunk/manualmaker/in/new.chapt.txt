@@ -1153,7 +1153,7 @@ Addition is not necessary if $Abs(x)<=Delta[y]$ or if $Abs(y)<=Delta[x]$.
 Since we should rather perform an addition than wrongly dismiss it as unnecessary, we should use a sufficient condition here: if
 $$ B(x)<=B(y)-n-1 $$
 then we can neglect $x$ and set $z=y$, $p=n-Dist(B(x),B(y)-n-1)$.
-(We subtract one bit from the precision of $y$ in case $x$ is close to the absolute error.)
+(We subtract one bit from the precision of $y$ in case the magnitude of $x$ is close to the absolute error of $y$.)
 Also, if
 $$ B(y)<=B(x)-m-1 $$
 then we can neglect $y$ and set $z=x$, $p=m-Dist(B(y),B(x)-m-1)$.
@@ -1163,7 +1163,7 @@ Now, the float value $z=x+y$ needs to be calculated.
 To find it, we need the target precision of only
 $$ 1+Max(B(x),B(y))-Max(B(x)-m,B(y)-n) $$
 bits.
-(An easy upper bound on this is $1+Max(m,n)$ but this is wasteful when $x$ and $y$ have very different precisions.)
+(An easier upper bound on this is $1+Max(m,n)$ but this is wasteful when $x$ and $y$ have very different precisions.)
 
 Then we compute $B(z)$ and determine the precision $p$ as
 $$ p = Min(m-B(x),n-B(y))+B(z)$$
@@ -1173,6 +1173,10 @@ where the auxiliary function $Dist(a,b)$ is defined as $0$ when $Abs(a-b)>2$ and
 
 In the case when $x$ and $y$ have the same sign, we have a potentially better estimate $ p = Min(m,n) $.
 We should take this value if it is larger than the value obtained from the above formula.
+
+Also, the above formula is underestimating the precision of the result by 1 bit if the result <i>and</i> the absolute error are dominated by one of the summands.
+In this case the absolute error should be unchanged save for the $Dist$ term, i.e. the above formula needs to be incremented by 1.
+The condition for this is $B(x)>B(y)$ and $B(x)-m>B(y)-n$, or the same for $y$ instead of $x$.
 
 The result is now {{z,p}}.
 
