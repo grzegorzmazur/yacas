@@ -100,6 +100,9 @@ CountBits(value) :=
  */
 10 # IsPrime(n_IsPositiveInteger) <-- RabinMiller(n);
 
+5  # IsComposite(1)			<-- False;
+10 # IsComposite(n_IsPositiveInteger) 	<-- (Not IsPrime(n));
+
 /* Returns whether n is a prime^m. */
 10 # IsPrimePower(n_IsPrime) <-- True;
 10 # IsPrimePower(0) <-- False;
@@ -434,3 +437,29 @@ Function("IsGaussianPrime",{x})
 
 ];
 
+// Digital root of n (repeatedly add digits until reach a single digit).
+10 # DigitalRoot(n_IsPositiveInteger) <-- If(n%9==0,9,n%9);
+
+IsTwinPrime(n_IsPositiveInteger)	<-- (IsPrime(n) And IsPrime(n+2));
+
+IsAmicablePair(m_IsPositiveInteger,n_IsPositiveInteger) <-- ( ProperDivisorsSum(m)==n And ProperDivisorsSum(n)==m );
+
+5  # IsIrregularPrime(p_IsComposite)	<-- False;
+
+// an odd prime p is irregular iff p divides the numerator of a Bernoulli number B(2*n) with 
+// 2*n+1<p
+// Currently malfunctional due to bug with Bernoulli
+10 # IsIrregularPrime(p_IsPositiveInteger) <--
+[
+	Local(i,irregular);
+
+	i:=1;
+	irregular:=False;
+
+	While(2*i + 1 < p)[
+		If( Abs(Numer(Bernoulli(2*i))) % p == 0, irregular:=True );			
+		i++;
+	];
+	irregular;
+
+];

@@ -1,4 +1,5 @@
 IsPrime
+IsComposite
 IsPrimePower
 GetPrimePower
 NextPrime
@@ -22,4 +23,8 @@ IsCoprime
 IsQuadraticResidue
 IsGaussianInteger
 IsGaussianPrime
+DigitalRoot
+IsTwinPrime
+IsAmicablePair
+IsIrregularPrime
 }
