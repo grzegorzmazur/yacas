@@ -276,6 +276,7 @@ Rule("Gcd",2,100,True)
 10 # Floor(x_IsRationalOrNumber) <-- MathFloor(N(x));
 10 # Ceil (x_IsRationalOrNumber) <-- MathCeil (N(x));
 10 # Round(x_IsRationalOrNumber) <-- MathFloor(N(x+0.5));
+10 # Round(x_IsList) <-- MapSingle("Round",x);
 
 20 # Round(x_IsComplex)  _ (IsRationalOrNumber(Re(x)) And IsRationalOrNumber(Im(x)) )
 		<-- MathFloor(N(Re(x)+0.5)) + MathFloor(N(Im(x)+0.5))*I;

@@ -392,8 +392,8 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
     a2.DropTrailZeroes();
 
 #ifdef CORRECT_DIVISION
-    if (a1.iExp) NormalizeFloat(a1,WordDigits(a1.iPrecision, 10));
-    if (a2.iExp) NormalizeFloat(a1,WordDigits(a2.iPrecision, 10));
+    if (a1.iExp || a1.iTensExp) NormalizeFloat(a1,WordDigits(a1.iPrecision, 10));
+    if (a2.iExp || a2.iTensExp) NormalizeFloat(a1,WordDigits(a2.iPrecision, 10));
 #endif // CORRECT_DIVISION
 
 
@@ -443,7 +443,7 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
 
     aResult.DropTrailZeroes();
 #ifdef CORRECT_DIVISION
-    if (aResult.iExp) NormalizeFloat(aResult,WordDigits(aResult.iPrecision, 10));
+    if (aResult.iExp || aResult.iTensExp) NormalizeFloat(aResult,WordDigits(aResult.iPrecision, 10));
 #endif // CORRECT_DIVISION
 }
 
@@ -499,6 +499,13 @@ static void BalanceFractions(ANumber& a1, ANumber& a2)
 
 void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
 {
+
+#ifdef CORRECT_DIVISION
+    // if the numbers are float, make sure they are normalized
+    if (a1.iExp || a1.iTensExp) NormalizeFloat(a1,WordDigits(a1.iPrecision, 10));
+    if (a2.iExp || a2.iTensExp) NormalizeFloat(a1,WordDigits(a2.iPrecision, 10));
+#endif // CORRECT_DIVISION
+
     //Two positive numbers
     BalanceFractions(a1, a2);
 
@@ -555,6 +562,11 @@ void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
         }
     }
     aResult.DropTrailZeroes();
+
+#ifdef CORRECT_DIVISION
+    if (aResult.iExp || aResult.iTensExp) NormalizeFloat(aResult,WordDigits(aResult.iPrecision, 10));
+#endif // CORRECT_DIVISION
+
 }
 
 
@@ -632,6 +644,13 @@ LispBoolean GreaterThan(ANumber& a1, ANumber& a2)
 
 LispBoolean LessThan(ANumber& a1, ANumber& a2)
 {
+
+#ifdef CORRECT_DIVISION
+    // if the numbers are float, make sure they are normalized
+    if (a1.iExp || a1.iTensExp) NormalizeFloat(a1,WordDigits(a1.iPrecision, 10));
+    if (a2.iExp || a2.iTensExp) NormalizeFloat(a1,WordDigits(a2.iPrecision, 10));
+#endif // CORRECT_DIVISION
+
     BalanceFractions(a1, a2);
     if (IsNegative(a1) && IsPositive(a2))
         return LispTrue;

@@ -15,7 +15,7 @@
 #include "mathuserfunc.h"
 #include "platmath.h"
 #include "numbers.h"
-#include "anumber.h"
+//TODO remove #include "anumber.h"
 #include "arrayclass.h"
 #include "patternclass.h"
 #include "substitute.h"

@@ -1,4 +1,4 @@
-f():=[]; //Echo(CurrentLine());
+f():=[]; //Echo(CurrentFile()," line ",CurrentLine());
 Testing("UnaryFunctionInverses");
 Verify(Sin(ArcSin(a)),a);  f();
 Verify(Cos(ArcCos(a)),a);  f();
