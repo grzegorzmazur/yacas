@@ -26,6 +26,11 @@
        allocating many small blocks (which is the case in Yacas).
   <li> Changed the directory structure for the script files
   <li> Greatly improved Simplify function.
+  <li> Added CurrentFile, CurrentLine functions
+  <li> Implemented backquote mechanism: `(...) will substitute
+       every @a with the evaluation of a (and if a is a function
+       the function name is replaced). The end result is evaluated.
+       see substitute.cpp for more details
 </ul>
 
 

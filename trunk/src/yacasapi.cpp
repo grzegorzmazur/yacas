@@ -249,6 +249,11 @@ input(iEnvironment.iInputStatus)
 
     SetCommand(LispFastAssoc    ,"FastAssoc");
 
+    SetCommand(LispCurrentFile ,"CurrentFile");
+    SetCommand(LispCurrentLine ,"CurrentLine");
+
+    SetCommand(LispBackQuote ,"`");
+    
     
     bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("While"));
     bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("Rule"));
@@ -262,7 +267,10 @@ input(iEnvironment.iInputStatus)
     bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("TraceRule"));
     bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("Subst"));
     bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("LocalSymbols"));
+    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("BackQuote"));
 
+    prefixoperators.SetOperator(0,hash.LookUp("`"));
+    prefixoperators.SetOperator(0,hash.LookUp("@"));
     prefixoperators.SetOperator(0,hash.LookUp("_"));
     infixoperators.SetOperator(0,hash.LookUp("_"));
 }

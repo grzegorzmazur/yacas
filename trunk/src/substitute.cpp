@@ -3,6 +3,8 @@
 #include "substitute.h"
 #include "lispatom.h"
 #include "standard.h"
+#include "lispeval.h"
+
 
 //Subst, Substitute, FullSubstitute
 void InternalSubstitute(LispPtr& aTarget, LispPtr& aSource,
@@ -81,5 +83,42 @@ LispBoolean LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
     return LispFalse;
 }
 
+#define InternalEval iEnvironment.iEvaluator->Eval
+
+LispBoolean BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
+{
+    if (!aElement.Get()->SubList()) return LispFalse;
+    LispObject* ptr = aElement.Get()->SubList()->Get();
+    if (!ptr) return LispFalse;
+    if (!ptr->String()) return LispFalse;
+    if (!StrEqual("@", ptr->String()->String())) return LispFalse;
+    ptr = ptr->Next().Get();
+    if (!ptr) return LispFalse;
+    if (ptr->String())
+    {
+        LispPtr cur;
+        cur.Set(ptr);
+        LispPtr result;
+        InternalEval(iEnvironment, result, cur);
+        InternalSubstitute(aResult, result,*this);
+        return LispTrue;
+    }
+    else
+    {
+        ptr = ptr->SubList()->Get();
+        LispPtr cur;
+        cur.Set(ptr);
+        LispPtr args;
+        args.Set(ptr->Next().Get());
+        LispPtr result;
+        InternalEval(iEnvironment, result, cur);
+        result.Get()->Next().Set(args.Get());
+        LispPtr result2;
+        result2.Set(LispSubList::New(result.Get()));
+        InternalSubstitute(aResult, result2,*this);
+        return LispTrue;
+    }
+    return LispFalse;
+}
 
 
