@@ -19,7 +19,7 @@ copy embed\wintest1.* winrel\DLL\examples\
 
 mkdir winrel\tests\
 copy tests\*.yts winrel\tests\
-copy tests\test.bat winrel\tests\
+copy tests\test.bat tests\_do_test.bat winrel\tests\
 
 echo "finished"
 pause
