@@ -1368,8 +1368,8 @@ double BigNumber::Double() const
 /// get library name
 const LispCharPtr BigNumber::NumericLibraryName()
 {
-	static char* buf= "                ";
-	sprintf(buf, "GMP %10s", gmp_version); 
+	static char buf[20];
+	snprintf(buf, 18, "GMP %s", gmp_version); 
 	return buf;
 }
 

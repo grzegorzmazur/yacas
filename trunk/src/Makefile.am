@@ -18,9 +18,11 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
         lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h \
         archiver.h elfdll.h cyacas.h ltdl.h
 yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
-yacas_LDADD = libyacas.la libyacasplatform.la libltdl.la @NUMBERS_LIB@ @NUMBERS_LDFLAGS@
+yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la libltdl.la @NUMBERS_LDFLAGS@
 yacas_LDFLAGS = -export-dynamic
-yacas_DEPENDENCIES = libyacas.la libyacasplatform.la @NUMBERS_LIB@
+yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la
+
+# order of libraries is important, @NUMBERS_LIB@ before libyacas.la and that is before libyacasplatform.la
 
 #
 # some one who understands autoconf/automake: how do I detect if a platform
@@ -30,9 +32,9 @@ yacas_DEPENDENCIES = libyacas.la libyacasplatform.la @NUMBERS_LIB@
 #yacas_LDFLAGS = $(LIBS)
 
 testnum_SOURCES = testnum.cpp 
-testnum_LDADD = libyacas.la libyacasplatform.la libltdl.la @NUMBERS_LIB@ @NUMBERS_LDFLAGS@
+testnum_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la libltdl.la @NUMBERS_LDFLAGS@
 testnum_LDFLAGS = -export-dynamic
-testnum_DEPENDENCIES = libyacas.la libyacasplatform.la @NUMBERS_LIB@
+testnum_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la
 
 
 libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \

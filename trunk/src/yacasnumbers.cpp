@@ -1084,7 +1084,7 @@ bool BigNumber::Equals(const BigNumber& aOther) const
 }
 
 
-inline bool BigNumber::IsInt() const
+bool BigNumber::IsInt() const
 {//FIXME
 }
 
@@ -1110,7 +1110,8 @@ void BigNumber::BecomeFloat()
 
 
 bool BigNumber::LessThan(const BigNumber& aOther) const
-{//FIXME
+{
+	return ::LessThan(*(this->iNumber), *(aOther.iNumber));
 }
 
 // assign from a platform type

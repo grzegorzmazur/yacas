@@ -5,6 +5,8 @@
 #include "numbers.h"
 #include <stdio.h>
 
+#define ENABLE_TESTS 1
+
 unsigned failed = 0;
 unsigned passed = 0;
 
@@ -12,12 +14,12 @@ void Check(LispString& str, const char* s, const char* test_description)
 {
     if (strcmp(str.String(),s))
     {
-        printf("%s: failed: %s != %s\n",test_description, str.String(),s);
+        printf("@@@@@@@ %s: failed: %s != %s\n",test_description, str.String(),s);
 		++failed;
     }
 	else
 	{
-		printf("%s: passed\n", test_description);
+		printf("\t%s: passed\n", test_description);
 		++passed;
 	}
 }
@@ -26,12 +28,12 @@ void Check(bool test_condition, const char* test_description)
 {
     if (!test_condition)
     {
-        printf("%s: failed\n",test_description);
+        printf("@@@@@@@ %s: failed\n",test_description);
 		++failed;
     }
 	else
 	{
-		printf("%s: passed\n", test_description);
+		printf("\t%s: passed\n", test_description);
 		++passed;
 	}
 }
@@ -51,7 +53,7 @@ void Finish()
     fflush(stdout);
 }
 
-#if 0
+#if ENABLE_TESTS
 // test small numbers
 void TestTypes1(double value)
 {
@@ -89,7 +91,7 @@ void TestTypes1(double value)
 	Check(!x.IsInt(), "still float type");
 	Check(x.Double()==value, "value is still correct");
 	Check(x.IsSmall(), "value is small");
-	Check(x.Sign()==sign, "sign is orrect");
+	Check(x.Sign()==sign, "sign is correct");
 
 	BigNumber y;
 	y.SetTo(value);	// test constructor from double
@@ -102,7 +104,7 @@ void TestTypes1(double value)
 
 	x.Negate(x);	// negate a float
 	Check(x.Double()==-value, "value is negated");
-	Check(x.Sign()==-sign, "sign is orrect");
+	Check(x.Sign()==-sign, "sign is correct");
 	x.BecomeInt();
 	Check(x.IsInt(), "converted to integer type");
 	Check(x.Double()==-int_value, "value is correct");
@@ -177,6 +179,43 @@ void TestTypes2(const char* float_string, const char* int_string, double double_
 
 }
 
+void TestArith1(const char* str_value, int base, int val1, double val2)
+{
+	long prec=strlen(str_value)+5;
+	BigNumber x(str_value, prec, base);
+	BigNumber x1(x), x2(x), y;
+	
+	y.SetTo(val1);
+	x.Add(x,y, prec);
+	x.Negate(x);
+	x.Add(x,y, prec);
+	x.Negate(x);
+	Check(x.Equals(x1), "add and subtract an integer");
+	x1.Negate(x1);
+	x1.Add(x1,x, prec);
+	Check(x1.Sign()==0, "x-x=0");
+	
+	x.SetTo(x2);
+	x1.SetTo(x2);
+	BigNumber z;
+	z.SetTo(val2);
+	for (int i=0; i<100; ++i) x.Add(x,z, prec);
+	z.Negate(z);
+	BigNumber t;
+	t.SetTo(100);
+	z.Multiply(z,t,prec);
+	x.Add(x,z, prec);
+	Check(x.Equals(x1), "add and subtract a double 100 times");
+	
+	x.SetTo(x2);
+	x1.SetTo(x2);
+	y.SetTo(fabs(100));
+	for (int i=0; i<100; ++i) x.Add(x,x, prec);
+	x1.Multiply(x1,y, prec);
+	Check(x.Equals(x1), "add to itself 100 times");
+	
+}
+
 #endif // test numbers
 
 int main(void)
@@ -191,7 +230,8 @@ int main(void)
 //    printf("WordMask = %ld\n",WordMask);
 //    printf("Starting tests...\n");
 
-#if 0
+#if ENABLE_TESTS
+#if 1
 {
 
     // Calculate z=x+y where x=10 and y=15
@@ -205,12 +245,12 @@ int main(void)
     Check(str,"25", "adding 10 and 15");
 
 }
-
+{
     BigNumber n1("65535",100,10);
     n1.ToString(str,10);
     Check(str,"65535", "reading 65535 from string");
     n1.ToString(str,10);
-    Check(str,"65535", "");
+    Check(str,"65535", "reading 65535 from string again");
     n1.ToString(str,2);
     Check(str,"1111111111111111", "printing in binary");
     n1.Negate(n1);
@@ -221,13 +261,15 @@ int main(void)
     res1.Add(n1,n1,10);    
     res1.ToString(str,10);
     Check(str,"-131070", "add -65535 to itself");
-
+}
+#endif
 {
 //////////////////////////////////////////////////
 ///// BigNumber comprehensive test suite
 //////////////////////////////////////////////////
-	
-	printf("Testing numeric library: %s.\n", BigNumber::NumericLibraryName());
+
+	Next();	
+	printf("Testing numeric library: '%s'.\n", BigNumber::NumericLibraryName());
 	
 	Next();
 	BigNumber x;	// default constructor
@@ -259,10 +301,23 @@ int main(void)
 	Next();
 	// test big integers and floats - values must be out of range for platform numbers. Use:
 	// TestTypes("float value", "equivalent integer value", double_value, base);
-	TestTypes2("3.00000000000000000000000000000000000000099999999999992", "3", 3, 10);
-	TestTypes2("-100000000000000.23333333333", "-100000000000000", -1.e14, 10);
-	TestTypes2("100000000000000.23333333333", "100000000000000", 1.e14, 10);
-	TestTypes2("123.33233233233233233232333333111111111111199797797973333", "123", 123.332332332332332332323333333333, 10);
+	const char* num1_float = "3.00000000000000000000000000000000000000099999999999992";
+	const char* num1_int = "3";
+	const double num1_double = 3;
+	const char* num2_float = "-100000000000000.23333333333";
+	const char* num2_int = "-100000000000000";
+	const double num2_double = -1.e14;
+	const char* num3_float = "10000000000000000.23333333333";
+	const char* num3_int = "10000000000000000";
+	const double num3_double = 1.e16;
+	const char* num4_float = "123.33233233233233233232333333111111111111199797797973333";
+	const char* num4_int = "123";
+	const double num4_double = 123.332332332332332332323333333333;
+
+	TestTypes2(num1_float, num1_int, num1_double, 10);
+	TestTypes2(num2_float, num2_int, num2_double, 10);
+	TestTypes2(num3_float, num3_int, num3_double, 10);
+	TestTypes2(num4_float, num4_int, num4_double, 10);
 	
 	Next();
 	y.SetTo(-15416.0);
@@ -303,7 +358,66 @@ int main(void)
 	Check(z.LessThan(x), "z<x is true");
 	
 	Next();
+	TestArith1(num1_int, 10, 15, -25);
+	TestArith1(num1_float, 10, -15, 0.19e-8);
+	TestArith1(num2_int, 10, -15, -2500000);
+	TestArith1(num2_float, 10, -15, 0.19e8);
+	TestArith1(num3_int, 10, 1500, 29);
+	TestArith1(num3_float, 10,  -15, 0.19);
+	TestArith1(num4_int, 10, 1500, 29);
+	TestArith1(num4_float, 10,  -50000, 99999.99999);
+	
+	Next();
+	for (int i=0; i<=100; ++i) x.SetTo(y);
+	Check(x.Equals(y), "x=y after 100 times");
 
+	Next();
+	y.SetTo(100);
+	z.SetTo(1);
+	BigNumber t;
+	t.SetTo(0);
+	for (x.SetTo(0); x.LessThan(y); x.Add(x,z,10))
+	{
+		t.Add(t,x,10);
+	}
+	Check(t.Double()==4950, "correct sum of n from 0 to 99");
+	
+	Next();
+	x.SetTo(65537);
+	x.BitCount(x);
+	Check(x.IsInt(), "bit count is integer");
+	Check(x.Double()==17, "bit count of 65537 is 17");
+	Check(x.Double()!=16, "bit count of 65537 is not 16");
+	x.SetTo(1./1050000.);
+	Check(!x.IsInt(), "x is a floating-point value");
+	Check(x.Sign()==1, "x is positive");
+	x.BitCount(x);
+	Check(x.IsInt(), "bit count is integer");
+	Check(x.Double()==-20, "bit count of 2^(-20)");
+	Check(x.Double()!=-21, "bit count of 2^(-20) is not -21");
+	Check(x.Double()!=-19, "bit count of 2^(-20) is not -19");
+	
+	Next();
+	// compute 15^(large number) and check that it divides both 3^(that number) and 5^(that number)
+	x.SetTo(15);
+	for(int i=0; i<10; ++i) x.Multiply(x,x,10);
+	Check(x.IsInt(), "15^N is integer");
+	y.SetTo(3);
+	for(int i=0; i<10; ++i) y.Multiply(y,y,10);
+	z.Mod(x,y);
+	Check(y.LessThan(x), "3^N<15^N");
+	Check(z.Sign()==0, "15^N divides 3^N");
+	z.SetTo(5);
+	for(int i=0; i<10; ++i) z.Multiply(z,z,10);
+	t.Mod(x,z);
+	Check(t.Sign()==0, "15^N divides 5^N");
+	y.Multiply(z,y,10);
+	Check(x.Equals(y), "15^N = 3^N*5^N");
+	
+	
+	
+	
+	
 }
 	
 #endif
