@@ -80,7 +80,8 @@ public:
     LispUserFunction* UserFunction(LispStringPtr aName,LispInt aArity);
     LispMultiUserFunction* MultiUserFunction(LispStringPtr aArguments);
     LispDefFiles& DefFiles();
-    void DeclareRuleBase(LispStringPtr aOperator, LispPtr& aParameters);
+    void DeclareRuleBase(LispStringPtr aOperator, LispPtr& aParameters,
+                         LispInt aListed);
     void DefineRule(LispStringPtr aOperator,LispInt aArity,
                             LispInt aPrecedence, LispPtr& aPredicate,
                             LispPtr& aBody);

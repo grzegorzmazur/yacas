@@ -62,7 +62,9 @@ LispSubList* LispSubList::New(LispObject* aSubList)
 LispSubList::LispSubList(LispObject* aSubList)
 {
     iSubList.Set(aSubList);
+/*TODO remove?
     iEvalFunc = NULL;
+*/
 }
 
 LispPtr* LispSubList::SubList()
@@ -70,6 +72,7 @@ LispPtr* LispSubList::SubList()
     return &iSubList;
 }
 
+/*TODO remove?
 EvalFuncBase* LispSubList::EvalFunc()
 {
     return iEvalFunc;
@@ -79,7 +82,7 @@ void LispSubList::SetEvalFunc(EvalFuncBase* aEvalFunc)
 {
     iEvalFunc = aEvalFunc;
 }
-
+*/
 LispObject* LispSubList::Copy(LispInt aRecursed)
 {
     //TODO recursed copy needs to be implemented still

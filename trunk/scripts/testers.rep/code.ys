@@ -123,6 +123,7 @@ VerifyDiv(_u,_v) <--
   Write(item);Space();
 ];
 
+RuleBaseListed("Echo",{args});
 10 # Echo(list_IsList)<--
 [
   ForEach(item,list) EchoInternal(item);

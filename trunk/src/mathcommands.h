@@ -133,6 +133,11 @@ void LispRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments);
 void LispMacroRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
                        LispPtr& aArguments);
+void LispRuleBaseListed(LispEnvironment& aEnvironment, LispPtr& aResult,
+                  LispPtr& aArguments);
+void LispMacroRuleBaseListed(LispEnvironment& aEnvironment, LispPtr& aResult,
+                             LispPtr& aArguments);
+
 void LispHoldArg(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments);
 void LispNewRule(LispEnvironment& aEnvironment, LispPtr& aResult,

@@ -4,6 +4,7 @@
 
 #include "yacasbase.h"
 #include "lispobject.h"
+#include "lispenvironment.h"
 
 
 /** Behaviour for substituting sub-expressions.
