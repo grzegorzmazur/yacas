@@ -177,12 +177,12 @@ private:
   UValue value;
 };
 
-const YacasBigNumber* MakeNativeNumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+YacasBigNumber* MakeNativeNumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {
   return YacasNativeNumber::Make(aString,aPrecision,aBase);
 }
 
-YacasNativeNumber* YacasNativeNumber::Make(LispCharPtr aString,LispInt aPrecision,LispInt aBase=10)
+YacasNativeNumber* YacasNativeNumber::Make(LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {
   YacasNativeNumber* result = NEW YacasNativeNumber();
   if (strchr(aString,'.'))
@@ -276,8 +276,8 @@ YacasBigNumber* YacasNativeNumber::Multiply(YacasBigNumberPtr& aX, YacasBigNumbe
 TWO_FUNC(=,*)
 
 YacasBigNumber* YacasNativeNumber::MultiplyAdd(YacasBigNumber* aResult,
-              const YacasBigNumberPtr& aX, 
-              const YacasBigNumberPtr& aY, 
+              YacasBigNumberPtr& aX, 
+              YacasBigNumberPtr& aY, 
               LispInt aPrecision) 
 TWO_FUNC_WITH(((YacasNativeNumber*)aResult),+=,*)
 

@@ -117,13 +117,11 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
           LispString prefix;
           prefix.SetStringCounted(iSubLine.String(),cursor);
 
-          if (history == 0) history = iHistory.NrItems()-1;
-
           int i = history - 1;
 
 //printf("Searching for [%s] starting at %d (of %d)\n",prefix.String(),i,iHistory.NrItems());
           LispString histpre;
-          while (i > 0)
+          while (i >= 0)
           {
             histpre.SetStringCounted(iHistory[i]->String(),cursor);
             if (histpre == prefix)

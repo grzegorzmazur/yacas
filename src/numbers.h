@@ -103,7 +103,7 @@ class YacasBigNumber : public RefCountedObject
 {
 public: //constructors
   /// Copy a number class
-  virtual const YacasBigNumber* Copy() const = 0;
+  virtual YacasBigNumber* Copy() const = 0;
   /// ToString : return string representation of number in aResult 
   virtual void ToString(LispString& aResult, LispInt aBase) = 0;
 public: //information retrieval on library used  
@@ -111,13 +111,13 @@ public: //information retrieval on library used
   virtual const LispCharPtr NumericLibraryName() = 0;
 public://arithmetic
   /// Multiply two numbers, and return result in aResult
-  virtual YacasBigNumber* Multiply(const YacasBigNumberPtr& aX, const YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
+  virtual YacasBigNumber* Multiply(YacasBigNumberPtr& aX, YacasBigNumberPtr& aY, LispInt aPrecision) = 0;
   /** Multiply two numbers, and add to aResult (this is useful and generally efficient to implement).
    * This is most likely going to be used by internal functions only, using aResult as an accumulator.
    */
   virtual YacasBigNumber* MultiplyAdd(YacasBigNumber* aResult,
-                const YacasBigNumberPtr& aX, 
-                const YacasBigNumberPtr& aY, 
+                YacasBigNumberPtr& aX, 
+                YacasBigNumberPtr& aY, 
                 LispInt aPrecision) = 0;
   /// Add two numbers, and return result in aResult
   virtual YacasBigNumber* Add(YacasBigNumberPtr& aX, YacasBigNumberPtr& aY, LispInt aPrecision) = 0;

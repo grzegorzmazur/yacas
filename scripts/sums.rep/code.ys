@@ -396,6 +396,9 @@ SumFunc(_k,0,Infinity,(-1)^k*_x^(2*_k)/(2*_k)!,Cos(x) );
 SumFunc(_k,0,Infinity,_x^(2*_k+1)/(2*_k+1),ArcTanh(x) );
 SumFunc(_k,0,Infinity,1/(_k)!,Exp(1) );
 SumFunc(_k,0,Infinity,_x^_k/(_k)!,Exp(x) );
+40 # Sum(_var,_from,Infinity,_expr)_( `(Limit(@var,Infinity)(@expr)) = Infinity) <-- Infinity;
+SumFunc(_k,_m,Infinity,Sqrt(_k),Infinity,m>=0 );
+
 SumFunc(_k,1,Infinity,1/Bin(2*_k,_k), (2*Pi*Sqrt(3)+9)/27 );
 SumFunc(_k,1,Infinity,1/(_k*Bin(2*_k,_k)), (Pi*Sqrt(3))/9 );
 SumFunc(_k,1,Infinity,1/(_k^2*Bin(2*_k,_k)), Zeta(2)/3 );
