@@ -114,3 +114,8 @@ Verify(Rng(r2), x2);	// reproducible number
 RngSeed(r3, 12345);
 Verify(Rng(r3), x3);	// reproducible number
 
+Verify(PartitionsP(1),1);
+Verify(PartitionsP(2),2);
+Verify(PartitionsP(3),3);
+Verify(PartitionsP(4),5);
+Verify(PartitionsP(13),101);
