@@ -30,6 +30,7 @@ Ayal Zwi Pinkus, Serge Winitzki, Jitse Niesen.
 generated on \\today
 \\vskip 3cm " : BlurbText : "}
 \\maketitle
+\\tableofcontents
 ");
 ];
 
