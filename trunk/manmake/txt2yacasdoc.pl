@@ -146,7 +146,7 @@ while (<STDIN>) {
 		$have_par = 1;
 		print "Topical()\"See also:\";\nSeeAlso({";
 		$have_prev_name = 0;
-		foreach $name (split(/, /, $names)) {
+		foreach $name (split(/,[ \t]+/, $names)) {
 			print ((($have_prev_name == 1) ? ", " : "") . "\"$name\"");
 			$have_prev_name = 1;
 		}
@@ -167,7 +167,7 @@ while (<STDIN>) {
 		$title =~ s/\s*$//;
 		$title =~ s/^\s*//;
 		if ($names =~ /, /) {	# Section describes several commands, need to add anchors
-			foreach $name (split(/, /, $names)) {
+			foreach $name (split(/,[ \t]+/, $names)) {
 				print "AddBody(HtmlAnchor() \"" . $name . "\");\n";
 			}
 		}
@@ -279,6 +279,6 @@ sub make_link {
 	} elsif ($text =~ /^([^|]+)\|([^|]+)$/) {	# URL with anchored text
 		return "\":HtmlLink(\"$1\", \"$2\", \"\", \"\"):\"";
 	} else {
-		return "\":SeeAlso({\"" . join("\", \"", split(/, */, $text)) . "\"}):\"";
+		return "\":SeeAlso({\"" . join("\", \"", split(/,[ \t]*/, $text)) . "\"}):\"";
 	}
 }

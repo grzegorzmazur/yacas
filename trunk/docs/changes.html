@@ -16,8 +16,8 @@
 	   make it (note: generating HTML or PS/PDF docs currently requires Perl) (SW)
   <li> Ayal: Out&gt now not shown any more if PrettyPrinter is used.
   <li> Ayal: Fixed bug: TrigSimpCombine(Exp(A*X))
-  <li> Ayal: added SolutionTuples.txt, as a specification of how I think
-           Solve should work in the future.
+  <li> Ayal: added a specification of how I think {Solve} should work in the
+       future, to new.chapt.txt.
   <li> Ayal: added "Where" and "AddTo" operators, and documented their use.
   <li> Ayal: refactored the integration code into cleaner and faster
        and also more correct code, based on some bug reports.
@@ -36,19 +36,21 @@
        that can be useful for polynomials and matrices/vectors.
   <li> Ayal: implemented pre-loading files for functions for which a def
        file prescribes loading a function, when calling DefLoadFunction(function).
-       This is used when declaring a &lt-- pattern.
+       This is used when declaring a &lt;-- pattern.
   <li> Ayal: fixed bug where redeclaring a function could cause segfaults.
-  <li> Ayal: Listed functions implemented (RuleBaseListed).
+  <li> Ayal: functions with variable number of arguments implemented (RuleBaseListed).
+  <li> Added convenient Function() and := formats for declaring functions with
+       variable number of arguments. See ?Function, ?:= (SW)
   <li> Ayal: Initial implementation of compressed archives for the scripts.
   <li> Documentation updates: added experimental scripts {book2ys.*} for
        automatic extraction of Yacas code from documentation; added comment
        (*REM) label and trailing punctuation to displayed equations; documented
-       Newton and Halley's method (SW)
+       Newton and Halley's method in essays (SW)
   <li> Implemented adaptive 2D plotting {Plot2D} in {plots.rep} and multiple
        backends architecture (so far only gnuplot or plotutils but easy to
        add support for more) - replaces {GnuPlot()} (SW)
-  <li> Removed {GnuPlot} altogether -- people should use {Plot2D} since it's much better
-  <li> Improved integer factorization algorithm: {Factor(50!)} now works, avoids
+  <li> Removed {GnuPlot} altogether -- people should use {Plot2D} since it's much better. See ?Plot2D (SW)
+  <li> Improved integer factorization algorithm: {Factor(500!)} now works, avoids
        infinite loop in {PollardRhoFactorize}; added factorization tests;
        the list of prime factors is now sorted (SW)
   <li> New fast algorithm for {IsPrimePower}/{GetPrimePower}; added new
@@ -58,12 +60,12 @@
   <li> Added an essay chapter on Wester benchmarks, with automatic test code
        extraction; currently 39 tests pass (SW)
   <li> Added Linear Algebra functions: {IsSymmetric}, {IsSkewSymmetric},
-	{IsOrthogonal}, {IsIdempotent}, {VandermondeMatrix}, {JacobianMatrix},
-	{WronskianMatrix},{HessianMatrix} (Jonathan Leto)
+       {IsOrthogonal}, {IsIdempotent}, {VandermondeMatrix}, {JacobianMatrix},
+       {WronskianMatrix},{HessianMatrix} (Jonathan Leto)
   <li> Fix for integrating {Abs(x)}, removed arbitrary constant in {Integrate},
        {Simplify} now works on {if}/{then}/{else}, fix for taking derivatives
-       D(x) Ln(x)^a when a does not depend on x; speedup of OrthoT, OrthoU (SW)
-  <li> Added rules for {ArcSinh}, {ArcCosh}, {ArcTanh} on for numerical real
+       D(x) Ln(x)^a when a does not depend on x; speedup of {OrthoT}, {OrthoU} (SW)
+  <li> Added rules for {ArcSinh}, {ArcCosh}, {ArcTanh} for numerics on real
        and complex numbers, added numerical tests (SW)
   <li> Added ExpandFrac() and new (better) random number generators (SW)
 </ul>
