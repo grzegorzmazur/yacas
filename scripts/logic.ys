@@ -177,7 +177,7 @@ CanProve(_proposition)      <-- CanProveAux( proposition );
 
 /* this can be optimized to walk through the lists a bit more efficiently and also take
 care of duplicates in one pass */
-LocalCmp(_e1, _e2)                  <-- LexLessThan(ToString() Write(e1), ToString() Write(e2));
+LocalCmp(_e1, _e2)                  <-- LessThan(ToString() Write(e1), ToString() Write(e2));
 
 // we may want to add other expression simplifers for new expression types
 100 # SimplifyExpression(_x)        <-- x;
