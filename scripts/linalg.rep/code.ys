@@ -252,7 +252,19 @@ x X y := CrossProduct(x,y);
 x . y := InProduct(x,y);
 Commutator(x,y):=x*y-y*x;
 
+Function("VandermondeMatrix",{vector})[
+	Local(len,i,j,item,result);
+	len:=Length(vector);	
+	matrix:=ZeroMatrix(len,len);
 
+	For(i:=1,i<=Length(matrix),i++)[
+		For(j:=1,j<=Length(matrix[1]),j++)[
+      			matrix[j][i]:=vector[i]^(j-1);
+		];
+	];
+
+	matrix;
+];
 /* SylvesterMatrix */
 
 Function("SylvesterMatrix",{poly1, poly2, var})
