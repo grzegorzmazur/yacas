@@ -5,10 +5,13 @@
 
 #include "win32commandline.h"
 
-#define BufSz 256
+#define BufSz 1024
 
 bool is_NT_or_later = false;
 
+/*
+    This displays a message box.
+*/
 static void win_assert(BOOL condition){
     if(condition) return;
     LPVOID lpMsgBuf;
@@ -67,7 +70,7 @@ void CWin32CommandLine::color_read(LispCharPtr str, WORD text_attrib){
 
     DWORD read;
     status = ReadConsole(in_console, str, 80, &read, NULL);
-    str[read - 1] = '\0';
+    str[read - 2] = '\0';
     win_assert(status);
     // restore the attributes
     status = SetConsoleTextAttribute(out_console, old_attrib);
@@ -87,9 +90,10 @@ void CWin32CommandLine::Pause()
 
 void CWin32CommandLine::ReadLineSub(LispCharPtr prompt){
     if(_is_NT_or_later){
+        char buff[BufSz];
         color_print(prompt, FOREGROUND_RED | FOREGROUND_INTENSITY );
-        color_read(prompt, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-        iSubLine = prompt;
+        color_read(buff, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+        iSubLine = buff;
     }else{
         CCommandLine::ReadLineSub(prompt);
     }
@@ -105,9 +109,9 @@ void CWin32CommandLine::ShowLine(LispCharPtr prompt, LispInt promptlen, LispInt 
     color_print(str, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY );
 
 
-	i = strlen(&iSubLine[0]) + promptlen;		// position cursor
+	/*i = strlen(&iSubLine[0]) + promptlen;		// position cursor
 	for (;i > cursor+promptlen; i--)
-		putchar('\b');
+		putchar('\b');*/
     fflush(stdout);
 }
 
