@@ -26,7 +26,7 @@ TestYacas( D, x^2 - 6*x + 10 );
 TestYacas(C,3-x);
 TestYacas(D,(x-6)*x+10);
 TestYacas(E,5*x+5);
-//KnownFailure(TestYacas(polyGCDExt(A,B,x),{3-x,(x-6)*x+10,5*x+5}));
+Verify(polyGCDExt(A,B,x),{3-x,(x-6)*x+10,5*x+5});
 
 
 TestYacas(polyGCD(4*x^2+4*x,4*x+4,x), 4*x+4 );
