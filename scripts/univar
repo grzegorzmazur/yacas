@@ -502,76 +502,58 @@ Rule("PSolve",1,1,IsUniVar(uni) And Degree(uni) = 2)
      {(-b+Sqrt(d))/(2*a),(-b-Sqrt(d))/(2*a)};
     ];
 
+
 Rule("PSolve",1,1,IsUniVar(uni) And Degree(uni) = 3 ) 
     [
-     Local(a,b,c,d,p,q,u,v,w,ww);
+     Local(p,q,r,w,a,b);
+     Local(coef0,coef1,coef3,adjust);
 
-    a:=Coef(uni,3);
-    b:=Coef(uni,2);
-    c:=Coef(uni,1);
-    d:=Coef(uni,0);
+/* Get coefficients for a new polynomial, such that the coefficient of
+   degree 2 is zero:
+   Take f(x)=a0+a1*x+a2*x^2+a3*x^3 and substitute x = x' + adjust
+   This gives g(x) = b0+b1*x+b2*x^2+b3*x^3 where
+   b3 = a3;
+   b2 = 0 => adjust = (-a2)/(3*a3);
+   b1 = 2*a2*adjust+3*a3*adjust^2+a1;
+   b0 = a2*adjust^2+a3*adjust^3+adjust*a1+a0;
 
-/* First reduce the cubic ax^3+bx^2+cx+d by making it monic
-   and eliminating the second term */
+   After solving g(x') = 0, return x = x' + adjust.
+*/
 
-    p:=9*a*c-3*b^2;
-    q:=2*b^3-9*a*b*c+27*a^2*d;
+     adjust := (-Coef(uni,2))/(3*Coef(uni,3));
+     coef3 := Coef(uni,3);
+     coef1 := 2*Coef(uni,2)*adjust+3*Coef(uni,3)*adjust^2+Coef(uni,1);
+     coef0 := Coef(uni,2)*adjust^2+Coef(uni,3)*adjust^3+
+              adjust*Coef(uni,1)+Coef(uni,0);
 
-/* Equation is now xxx + px + q = 0 */
-/* 	Let x = u + v 
-	u^3 + v^3 + 3(uuv + vvu) + p(u + v) + q = 0
-	u^3 + v^3 + (uvb+p)x + q = 0
+     p:=coef3;
+     q:=coef1/p;
+     r:=coef0/p;
+    w:=Complex(-1/2,Sqrt(3)/2);
 
-	Let 3uv+p = 0. This is permissible, for we can still find u+v == x
+/* Equation is xxx + qx + r = 0 */
+/* 	Let x = a + b 
+	a^3 + b^3 + 3(aab + bba) + q(a + b) + r = 0
+	a^3 + b^3 + (3ab+q)x + r = 0
+
+	Let 3ab+q = 0. This is permissible, for we can still find a+b == x
 	
-	u^3 + v^3 = -q
-	(uv)^3 = -p^3/27
+	a^3 + b^3 = -r
+	(ab)^3 = -q^3/27
 	
-        So u^3 and v^3 are the roots of t^2 + qt - p^3/27 = 0
+        So a^3 and b^3 are the roots of t^2 + rt - q^3/27 = 0
  	
 	Let 
-                u^3 = -q/2 + Sqrt(p^3/27+ qq/4)
-                v^3 = -q/2 - Sqrt(p^3/27+ qq/4)
-	Therefore there are three values for each of u and v.
-	Clearly if uv = -p/3 is true then (wu)(wwv) == (wv)(wwu) == -p/3 
-        where w is a third root of unity
+                a^3 = -r/2 + Sqrt(q^3/27+ rr/4)
+                b^3 = -r/2 - Sqrt(q^3/27+ rr/4)
+	Therefore there are three values for each of a and b.
+	Clearly if ab = -q/3 is true then (wa)(wwb) == (wb)(wwa) == -q/3 
 */
-  u:=(-q/2 + Sqrt(p^3/27+ q*q/4))^(1/3);
-  v:=(-q/2 - Sqrt(p^3/27+ q*q/4))^(1/3);
-  w:=Complex(-1/2,Sqrt(3/4));
-  ww:=Complex(-1/2,-Sqrt(3/4));
-  {(u+v-b)/(3*a),(w*u+ww*v-b)/(3*a),(ww*u+w*v-b)/(3*a)};
+  a:=(-r/2 + Sqrt(q^3/27+ r*r/4))^(1/3);
+  b:=(-r/2 - Sqrt(q^3/27+ r*r/4))^(1/3);
+ {a+b+adjust,w*a+w*w*b+adjust,w*w*a+w*b+adjust};
 ];
 
-Rule("PSolve",1,1,IsUniVar(uni) And Degree(uni) = 4 ) 
-[
-  Local(a1,a2,a3,a4,y,y1,z,x1,x2,x3,x4,count);
-/* We have a*x^4 + b*x^3 + c*x^2 + d*x + e = 0 
-   Make this monic: x^4 + a1*x^3 + a2*x^2 + a3*x + a4 */
-  a1:=4*Coef(uni,3);
-  a2:=Coef(uni,2)*16*Coef(uni,4);
-  a3:=Coef(uni,1)*64*Coef(uni,4)^2;
-  a4:=Coef(uni,0)*256*Coef(uni,4)^3;
-  Echo({"DEBUG: New coefficients are ", {a1,a2,a3,a4}});
-/* Now let y1 be a real root of 
-   y^3 - a2*y^2 + (a1*a3 - 4*a4)*y + (4*a2*a4 - a3^2 - a1^2*a4) = 0 */
-  y1:=PSolve(y^3-a2*y^2+(a1*a3-4*a4)*y+(4*a2*a4-a3^2-a1^2*a4),y);
-  Echo({"DEBUG: The cubic is ", y^3-a2*y^2+(a1*a3-4*a4)*y+(4*a2*a4-a3^2-a1^2*a4)});
-  Echo({"DEBUG: PSolve found roots ", y1});
-  count:=1;
-  While(count <= 3 And IsNotZero(Im(Nth(y1,count)))) count++;
-  If(count>3, count:=1);
-  Echo({"DEBUG: Count is ",count});
-  y1:=Nth(y1,count);
-  Echo({"DEBUG: Chosen root is ",y1});
-/* The solutions are then the four roots of
-  z^2 + 1/2*(a1 +- Sqrt(a1^2 - 4*a2 + 4*y1))*z + 1/2*(y1 +- Sqrt(y1^2 - 4*a4)) = 0 */
-  x1 := Head(PSolve(z^2+(a1+Sqrt(Eval(a1^2-4*a2+4*y1)))/2*z+(y1+Sqrt(Eval(y1^2-4*a4)))/2,z));
-  x2 := Head(PSolve(z^2+1/2*(a1+Sqrt(Eval(a1^2-4*a2+4*y1)))*z+1/2*(y1-Sqrt(Eval(y1^2-4*a4))),z));
-  x3 := Head(PSolve(z^2-1/2*(a1+Sqrt(Eval(a1^2-4*a2+4*y1)))*z+1/2*(y1+Sqrt(Eval(y1^2-4*a4))),z));
-  x4 := Head(PSolve(z^2-1/2*(a1+Sqrt(Eval(a1^2-4*a2+4*y1)))*z+1/2*(y1-Sqrt(Eval(y1^2-4*a4))),z));
-  {x1,x2,x3,x4};
-];
 
 Function("PSolve",{uni,var})
     [
