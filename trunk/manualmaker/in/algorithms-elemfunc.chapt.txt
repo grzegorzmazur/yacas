@@ -1,46 +1,121 @@
 		Powers
 
-*A repeated squaring algorithm
+*A powers
 
-Integer powers $x^n$ are computed by a fast algorithm of "repeated squaring", as
-described in the famous book, <i>The art of computer programming</i> [Knuth 1973]. The
-algorithm is based on the following trick: if $n$ is even, $n=2*k$, then
+There are two computational tasks:
+to compute the power $x^n$ where $n$ is an integer (but $x$ may be a real or a complex number),
+and compute $x^y$ for arbitrary (real or complex) $x$, $y$.
+We assume that $x$, $y$, $n$ are "big" numbers with $P$ significant digits.
+
+We also assume that the power is positive, or else we need to perform an additional division to obtain $x^(-y)=1/x^y$.
+
+	    Integer powers
+
+*A powers!by repeated squaring
+
+Integer powers $x^n$ with integer $n$ are computed by a fast algorithm of "repeated squaring".
+This algorithm is well known (see, for example,
+the famous book, <i>The art of computer programming</i> [Knuth 1973]).
+
+The
+algorithm is based on the following trick: if $n$ is even, say $n=2*k$, then
 $x^n=(x^k)^2$; and if $n$ is odd, $n=2*k+1$, then $x^n=x*(x^k)^2$. Thus we can
 reduce the calculation of $x^n$ to the calculation of $x^k$ with $k<=n/2$,
-using at most two multiplications. This is one "step"; at each step $n$ is divided by 2. This algorithm stops when $n$ becomes 1,
-which is after $m$ steps where $m$ is the number of bits in $n$.
+using at most two long multiplications.
+This reduction is one step of the algorithm; at each step $n$ is reduced to at most half.
+This algorithm stops when $n$ becomes 1,
+which happens after $m$ steps where $m$ is the number of bits in $n$.
+So the total number of long multiplications is at most $2*m=(2*Ln(n))/Ln(2)$.
+More precisely, it is equal to $m$ plus the number of nonzero bits in the binary representation of $n$.
+On the average, we shall have $3/2*Ln(n)/Ln(2)$ long multiplications.
+The computational cost of the algorithm is therefore $O(M(P)*Ln(n))$.
+This should be compared with e.g. the cost of the best method for $Ln(x)$ which is $O(P*M(P))$.
 
-This procedure should be recursive, or else it requires to obtain the bits
-of the number $n$ in reverse order.
-It is easier to implement this algorithm in a slightly different form: suppose we have the bits $b[i]$ of the number $n$, so that $n=b[0]+2*b[1]+...+b[m]*2^m$. Then
+The outlined procedure is most easily implemented using recursive calls.
+The depth of recursion is of order $Ln(n)$ and should be manageable for most real-life applications.
+The Yacas code would look like this:
+	10# power(_x,1)<--x;
+	20# power(_x,n_IsEven)<-- power(x,n>>1)^2;
+	30# power(_x,n_IsOdd)<--x*power(x,n>>1)^2;
+The function {power(m,n)} calculates the result of $ m^n $ for $ n>0 $, $ m>0 $,
+integer $ n $ and integer $ m $.
+The bit shifts and the check for an odd number are very fast operations if the internal representation of big numbers uses base $2$.
+
+If we wanted to avoid recursion with its overhead,
+we would have to obtain the bits of the number $n$ in reverse order.
+This is possible but is somewhat cumbersome unless we store the bits in an array.
+
+*A powers!by repeated squaring!non-recursive
+
+It is easier to implement the non-recursive version of the squaring algorithm in a slightly different form.
+Suppose we obtain the bits $b[i]$ of the number $n$ in the usual order, so that $n=b[0]+2*b[1]+...+b[m]*2^m$.
+Then we can express the power $x^n$ as
 $$ x^n = x^b[0] * (x^2)^b[1] * ... * (x^(2^m))^b[m] $$.
-In other words, we evaluate $x^2$, $x^4$, ... by repeated squaring, and multiply those $x^(2^k)$ for which the $k$-th bit $b[k]$ of the number $n$ is nonzero.
+In other words, we evaluate $x^2$, $x^4$, ... by repeated squaring, select those $x^(2^k)$ for which the $k$-th bit $b[k]$ of the number $n$ is nonzero, and multiply all selected powers together.
 
-In Yacas script form, the algorithm looks like this:
+In the Yacas script form, the algorithm looks like this:
 
-	power(x_IsPositiveInteger, n_IsPositiveInteger)<--
+	power(x_IsPositiveInteger,n_IsPositiveInteger)<--
 	[
-	  Local(result);
+	  Local(result, p);
 	  result:=1;
+	  p := x;
 	  While(n != 0)
-	  [
+	  [ // at step k, p = x^(2^k)
 	    if (IsOdd(n))
-	      result := result*x;
-	    x := x*x;
+	      result := result*p;
+	    p := p*p;
 	    n := n>>1;
 	  ];
 	  result;
 	];
-{power(m,n)} calculates the result of $ m^n $ for $ n>0 $, $ m>0 $, 
-integer $ n $ and integer $ m $.
 
-Since the "binary squaring" algorithm scans bits in the number $n$,
-the execution time is linear in the number of
-digits of $n$, i.e. logarithmic in $n$.
+*A powers!modular
+
+The same algorithm can be used to obtain a power of an integer modulo another integer, $Mod(x^n,M)$, if we replace the multiplication {p*p} by a modular multiplication, such as {p:=Mod(p*p,M)}.
+Since the remainder modulo $m$ would be computed at each step, the results do not grow beyond $M$.
+This allows to efficiently compute even extremely large modular powers of integers.
+
+*A powers!by repeated squaring!improvements
+
+The squaring algorithm can be improved a little bit if we are willing to use recursion or to obtain the bits of $n$ in the reverse order.
+(This was suggested in an exercise in the book
+[von zur Gathen <i>et al.</i> 1999].)
+Let us represent the power $n$ in base $4$ instead of base $2$.
+If $q[k]$ are the digits of $n$ in base $4$, then we can express
+$$ x^n = x^q[0] * (x^4)^q[1] * ... * (x^(4^m))^q[m] $$.
+We shall compute this expression from right to left: first we compute $x^q[m]$.
+This is a small power because $q[m]$ is a digit in base $4$, an integer between $0$ and $3$.
+Then we raise it to the $4$th power and multiply by $x^q[m-1]$.
+We repeat this process until we reach the $0$th digit of $n$.
+At each step we would need to multiply at most three times.
+Since each of the $q[k]$ is between $0$ and $3$, we would need to precompute $x^2$ and $x^3$ which requires one extra multiplication ($x^2$ would be computed anyway).
+Therefore the total number of long multiplications is in the worst case $3*Ln(n)/Ln(4)+1$.
+This is about 25{%} better than the previous worst-case result, $2*Ln(n)/Ln(2)$.
+However, the average-case improvement is only about 8{%} because the average number of multiplications in the base-$4$ method is $11/4*Ln(n)/Ln(4)$.
+
+We might then use the base $8$ instead of $4$ and obtain a further small improvement.
+(Using bases other than powers of $2$ is less efficient.)
+But the small gain in speed probably does not justify the increased complexity of the algorithm.
+
+	    Real powers
+
+*A powers!real numbers
+
+The squaring algorithm can be used to obtain integer powers $x^n$ in any ring---as long as $n$ is an integer, $x$ can be anything from a complex number to a matrix. But for a general real number $n$, there is no such trick and the power $x^n$ has to be computed through the logarithm and the exponential function, $x^n = Exp(n*Ln(x))$.
+(This also covers the case when $x$ is negative and the result is a complex number.)
+
+An exceptional case is when $n$ is a rational number with a very small numerator and denominator, for example, $n=2/3$.
+In this case it is faster to take the square of the cubic root of $x$.
+(See the section on the computation of roots below.)
+Then the case of negative $x$ should be handled separately.
 
 		Roots
 
-*A bisection algorithm for roots
+Computation of roots $r=x^(1/n)$ is efficient when $n$ is a small integer.
+The basic approach is to numerically solve the equation $r^n=x$.
+
+*A roots!by bisection algorithm
 
 The square root is computed by using the bisection method, which
 works well for integers. The general approach is to scan
@@ -150,44 +225,81 @@ This is also faster on integers than the integer root algorithm if $b$ is very l
 
 		Logarithm
 
-There are two functions for the logarithm: one for the integer argument and one for the real argument.
+The basic computational task here is to obtain the logarithm of a real number.
+However, sometimes only the integer part of the logarithm is needed and the logarithm is taken with respect to an integer base.
+For example, we might need to evaluate the integer part of $Ln(n)/Ln(2)$ where $n$ is a large integer, to find how many bits are needed to hold $n$.
+Computing this "integer logarithm" is an easier task than computing the logarithm in floating-point.
+
+Logarithms of complex numbers are easily reduced to elementary functions of real numbers, for example:
+$$ Ln(a+I*b)=1/2*Ln(a^2+b^2)+I*ArcTan(b/a) $$.
+For a negative real number, we have
+$$ Ln(-x) = Ln(Abs(x))+I*Pi $$.
+
+	    Integer logarithms
 
 *A logarithm!on integers
 
-The "integer logarithm", defined as the integer part of $Ln(x)/Ln(b)$, where $x$ and $b$ are integers, is computed using a special routine {IntLog(x, b)} with purely integer math.
-This is much faster than evaluating the full logarithm when both arguments are integers and only the integer part of the logarithm is needed. The algorithm consists of (integer) dividing $x$ by $b$ repeatedly until $x$ becomes 0 and counting the number of divisions. A speed-up for large $x$ is achieved by first comparing $x$ with $b$, then with $b^2$, $b^4$, etc., until the factor $b^(2^n)$ is larger than $x$. At this point, $x$ is divided by that power of $b$ and the remaining value is iteratively compared with and divided by successively smaller powers of $b$.
+The "integer logarithm", defined as the integer part of $Ln(x)/Ln(b)$, where $x$ and $b$ are integers, is computed using a special routine {IntLog(x,b)} with purely integer math.
+When both arguments are integers and only the integer part of the logarithm is needed, the integer logarithm is much faster than evaluating the full floating-point logarithm and truncating the result.
 
-*A logarithm!square root speed-up
+The algorithm consists of (integer-) dividing $x$ by $b$ repeatedly until $x$ becomes 0 and counting the necessary number of divisions. A speed-up for large $x$ is achieved by first comparing $x$ with $b$, then with $b^2$, $b^4$, etc., without performing any divisions, until the factor $b^(2^n)$ is larger than $x$. At this point, $x$ is divided by that power of $b$ and the remaining value is iteratively compared with and divided by successively smaller powers of $b$.
 
-The logarithm function $Ln(x)$ for general (complex) $x$ can be computed using its Taylor series,
+	    Real logarithms
+
+
+*A logarithm!by Taylor series
+
+The logarithm function $Ln(x)$ for general (real) $x$ such that $Abs(x)<1$ can be computed using the Taylor series,
 $$Ln(1+x) = x - x/2 + x^2/3 -...$$
-This series converges only for $Abs(x)<1$, so for all other values of $x$ one first needs to bring the argument into this range by taking several square roots and then using the identity $Ln(x) = 2^k*Ln(x^(2^(-k)))$. This is implemented in the Yacas core (for real $x$).
+The series converges quite slowly unless $Abs(x)$ is very small.
 
-Currently the routine {LnNum} uses the Halley method for the equation $Exp(x)=a$ to find $x=Ln(a)$,
+*REM FIXME: estimate the necessary number of terms depending on the magnitude of x.
+
+For values of $x$ that are not small, one first needs to make $x$ small.
+One way is to take several square roots, reducing $x$ to $x^(2^(-k))$, and then use the identity $Ln(x) = 2^k*Ln(x^(2^(-k)))$.
+
+*REM FIXME: estimate the roundoff error resulting from this and the number of operations.
+
+*A logarithm!by inverting exp
+
+Currently the routine {LnNum} uses the Halley method for the equation $Exp(x)=a$ to find $x=Ln(a)$.
+The iteration formula is
 $$ x' = x - 2*(Exp(x)-a)/(Exp(x)+a) $$.
+
+*REM FIXME: initial value and required number of steps.
+
 This is currently quicker than other methods (with internal math).
 
 *A logarithm!by AGM sequence
 
-A much faster algorithm based on the AGM sequence was given by Salamin (see [Brent 1975]).
+A fast algorithm based on the AGM sequence was given by Salamin (see [Brent 1975]).
 The formula is based on an asymptotic relation,
 $$Ln(x)=Pi*x*(1+4*x^(-2)*(1-1/Ln(x))+O(x^(-4)))/(2*AGM(x,4))$$.
-If $x$ is large enough, the numerator is very close to 1 and can be disregarded.
+If $x$ is large enough, the numerator can be replaced by 1.
 "Large enough" for a desired precision of $P$ decimal digits means that $4*x^(-2)<10^(-P)$. The AGM algorithm gives $P$ digits only for such large values of $x$, unlike the Taylor series which is only good for $x$ close to 1.
 
 The required number of AGM iterations is approximately $2*Ln(P)/Ln(2)$. For
-smaller values of $x$ (but $x>1$), one can either raise $x$ to a large
-integer power $r$ (this is quick only if $x$ is an integer or a rational)
-and compute $1/r*Ln(x^r)$, or multiply $x$ by a large integer power of 2
-(this is better for floating-point $x$) and compute $Ln(2^s*x)-s*Ln(2)$.
+smaller values of $x$ (but $x>1$),
+one can either raise $x$ to a large integer 
+power $r$ and then compute $1/r*Ln(x^r)$
+(this is quick only if $x$ is itself an integer or a rational),
+or multiply $x$ by a large integer power of 2
+and compute $Ln(2^s*x)-s*Ln(2)$ (this is better for floating-point $x$).
 Here the required powers are
 $$r=Ln(10^P*4)/(2*Ln(x))$$, $$s=P*Ln(10)/(2*Ln(2))+1-Ln(x)/Ln(2)$$. 
-These parameters can be found quickly by using the integer logarithm procedure {IntLog}, while constant values such as $Ln(10)/Ln(2)$ can be simply approximated by rational numbers because $r$ and $s$ do not need to be very precise (but they do need to be large enough). For the second calculation, $Ln(2^s*x)-s*Ln(2)$, we must precompute $Ln(2)$ to the same precision. Also, the subtraction of a large number $s*Ln(2)$ leads to a certain loss of precision, namely, about $Ln(s)/Ln(10)$ decimal digits are lost, therefore the operating precision must be increased by this number of digits. (The quantity $Ln(s)/Ln(10)$ is computed, of course, by the integer logarithm procedure.)
+The values of these parameters can be found quickly by using the integer logarithm procedure {IntLog},
+while constant values such as $Ln(10)/Ln(2)$ can be simply approximated by rational numbers because $r$ and $s$ do not need to be very precise (but they do need to be large enough).
+For the second calculation, $Ln(2^s*x)-s*Ln(2)$, we must precompute $Ln(2)$ to the same precision of $P$ digits.
+Also, the subtraction of a large number $s*Ln(2)$ leads to a certain loss of precision, namely, about $Ln(s)/Ln(10)$ decimal digits are lost, therefore the operating precision must be increased by this number of digits.
+(The quantity $Ln(s)/Ln(10)$ is computed, of course, by the integer logarithm procedure.)
+
+*REM FIXME: the cost estimate of the algorithms with r and s
 
 *A logarithm!choice of AGM vs. Taylor
 
 If $x<1$, then ($-Ln(1/x)$) is computed.
-Finally, there is a special case when $x$ is very close to 1, where the Taylor series converges quickly but the AGM algorithm requires to multiply $x$ by a large power of 2 and then subtract two almost equal numbers, leading to a great loss of precision. Suppose $1<x<1+10^(-M)$, where $M$ is large (say of order $P$). The Taylor series for $Ln(1+epsilon)$ needs about $N= -P*Ln(10)/Ln(epsilon)$=$P/M$ terms.
+
+Finally, there is a special case when $x$ is very close to 1, where the Taylor series converges quickly but the AGM algorithm requires to multiply $x$ by a large power of 2 and then subtract two almost equal numbers, leading to a great waste of precision. Suppose $1<x<1+10^(-M)$, where $M$ is large (say of order $P$). The Taylor series for $Ln(1+epsilon)$ needs about $N= -P*Ln(10)/Ln(epsilon)$=$P/M$ terms.
 If we evaluate the Taylor series using the rectangular scheme, we need
 $2*Sqrt(N)$ multiplications and $Sqrt(N)$ units of storage. On the other
 hand, the main slow operation for the AGM sequence is the geometric mean $Sqrt(a*b)$. If $Sqrt(a*b)$ takes an equivalent of $c$ multiplications (Brent's estimate is $c=13/2$ but it may be more in practice), then the AGM sequence requires $2*c*Ln(P)/Ln(2)$ multiplications. Therefore the Taylor series method is more efficient for
@@ -198,17 +310,27 @@ For larger $x>1+10^(-M)$, the AGM method is more efficient. It is necessary to i
 
 		Exponential
 
+*A exponential function $Exp(x)$!by Taylor series
 *A exponential function $Exp(x)$!squaring speed-up
 
 The exponential function is computed using its Taylor series,
 $$ Exp(x) = 1 + x + x^2/2! + ...$$
-This series converges for all (complex) $x$, but if $Abs(x)$ is large, it converges slowly. A speed-up trick used for large $x$ is to divide the argument by some power of 2 and then square the result several times, i.e.
+This series converges for all (complex) $x$, but if $Abs(x)$ is large, it converges slowly.
+A speed-up trick used for large $x$ is to divide the argument by some power of 2 and then square the result several times, i.e.
 $$Exp(x) = (Exp(2^(-k)*x))^(2^k)$$,
-where $k$ is chosen sufficiently large so that the Taylor series converges quickly at $2^(-k)*x$. The threshold value for $x$ is in the variable {MathExpThreshold} in {stdfuncs}. If $x$ is large and negative, then it is easier to compute 1/$Exp(-x)$. If $x$ is sufficiently small, e.g. $Abs(x)<10^(-M)$ and $M>Ln(P)/Ln(10)$, then it is enough to take about $P/M$ terms in the Taylor series. If $x$ is of order 1, one needs about $P*Ln(10)/Ln(P)$ terms.
+where $k$ is chosen sufficiently large so that the Taylor series converges quickly at $2^(-k)*x$ [Smith 1985]. The threshold value for $x$ is in the variable {MathExpThreshold} in {stdfuncs}.
 
-*A exponential function $Exp(x)$!by Newton's method
+If $x$ is large and negative, then it is easier to compute 1/$Exp(-x)$.
 
-An alternative way to compute $x=Exp(a)$ at large precision would be to solve the equation $Ln(x)=a$ using a fast logarithm routine. A cubically convergent formula is obtained if we replace $Ln(x)=a$ by an equivalent equation
+If $x$ is sufficiently small, e.g. $Abs(x)<10^(-M)$ and $M>Ln(P)/Ln(10)$, then it is enough to take about $P/M$ terms in the Taylor series. If $x$ is of order 1, one needs about $P*Ln(10)/Ln(P)$ terms.
+
+*REM FIXME: roundoff error for squaring. How many times to square. How many terms to take.
+
+*A exponential function $Exp(x)$!by inverting ln
+
+An alternative way to compute $x=Exp(a)$ if a fast logarithm routine is available would be to solve the equation $Ln(x)=a$.
+(This might be better at very large precision where the AGM method for the logarithm is asymptotically the fastest.)
+A cubically convergent formula is obtained if we replace $Ln(x)=a$ by an equivalent equation
 $$ (Ln(x)-a)/(Ln(x)-a-2) = 0$$.
 For this equation, Newton's method gives the iteration
 $$ x' = x*(1+(a+1-Ln(x))^2)/2 $$.

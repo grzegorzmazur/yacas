@@ -33,7 +33,7 @@
 10 # Zeta(n_IsInteger)_(n<0) <-- -Bernoulli(-n+1)/(-n+1);
 
 /// compute numeric value
-20 # Zeta(_s)_(Numeric And IsNumber(N(s))) <-- N(ZetaNum(N(s)));
+20 # Zeta(s_IsConstant)_(Numeric) <-- ZetaNum(N(s));
 
 /////////////////////////////////////////////////
 /// Bernoulli numbers and polynomials
