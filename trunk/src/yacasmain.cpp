@@ -125,12 +125,25 @@ char* root_dir    = SCRIPT_DIR;
 #endif
 char* init_script = "yacasinit.ys";
 
+char* read_eval_print = "REP()";
+
+
 static int readmode = 0;
 
 int compressed_archive = 1;
 
 int server_mode = 0;
 int server_port = 9734;
+
+//TODO global!!!
+static LispBoolean busy=LispTrue;
+static LispBoolean restart=LispFalse;
+
+static LispBoolean Busy()
+{
+  return busy;
+}
+
 
   
 void ReportNrCurrent()
@@ -156,13 +169,7 @@ void ReportNrCurrent()
 }
 
 
-//TODO global!!!
-static LispBoolean busy=LispTrue;
 
-LispBoolean Busy()
-{
-    return busy;
-}
 
 #define RESULT aEnvironment.iStack.GetElement(aStackTop)
 #define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
@@ -174,9 +181,17 @@ void LispPlatformOS(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispExit(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     busy=LispFalse;
-//    Check(0,KQuitting);
     InternalTrue(aEnvironment, RESULT);
 }
+
+void LispExitRequested(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+  if (!busy)
+    InternalTrue(aEnvironment, RESULT);
+  else
+    InternalFalse(aEnvironment, RESULT);
+}
+
 
 unsigned char *the_first_stack_var;
 
@@ -187,6 +202,58 @@ void LispStackSize(LispEnvironment& aEnvironment, LispInt aStackTop)
     RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
 }
 
+
+char* ReadInputString(char* prompt)
+{
+  char *inpline;
+REDO:
+  readmode = 1;
+  commandline->ReadLine(prompt);
+  readmode = 0;
+  inpline =  commandline->iLine.String();
+
+  if (inpline)
+  {
+    if(*inpline)
+    {
+      if (inpline[0] == '?')
+      {
+        if (inpline[1] == '?')
+        {
+          yacas->Evaluate("Help()");
+          goto REDO;
+        }
+        else
+        {
+          if (strlen(&inpline[1]) < 100)
+          {
+            char buf[120];
+            sprintf(buf,"Help(\"%s\")",&inpline[1]);
+            yacas->Evaluate(buf);
+            goto REDO;
+          }
+        }
+      }
+      else
+      {
+        if (!strncmp(inpline,"restart",7))
+        {
+          restart=LispTrue;
+          busy=LispFalse;
+        }
+        else if (!strncmp(inpline,"quit",4))
+        {
+          busy=LispFalse;
+        }
+      }
+    }
+  }
+  if (inpline)
+    if(*inpline)
+      return inpline;
+  return "True";
+}
+
 static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispPtr promptObject;
@@ -194,9 +261,12 @@ static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackT
     CHK_ISSTRING_CORE(promptObject,1);
     LispString prompt;
     InternalUnstringify(prompt, promptObject.Get()->String());
+    ReadInputString(prompt.String());
+/*TODO remove
     readmode = 1;
     commandline->ReadLine(prompt.String());
     readmode = 0;
+*/
     char *output =  commandline->iLine.String();
     RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(output)));
 }
@@ -360,16 +430,20 @@ void DeclarePath(char *ptr2)
 
 void LoadYacas(LispOutput* aOutput=NULL)
 {
-    if (aOutput)
-      yacas = CYacas::NewL(aOutput);
-    else
-      yacas = CYacas::NewL();
+  busy=LispTrue;
+  restart=LispFalse;
+
+  if (aOutput)
+    yacas = CYacas::NewL(aOutput);
+  else
+    yacas = CYacas::NewL();
 
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) (*yacas)()().SetCommand(fname,iname,nrargs,flags);
 
 CORE_KERNEL_FUNCTION("OSVersion",LispPlatformOS,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Exit",LispExit,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("IsExitRequested",LispExitRequested,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("HistorySize",LispHistorySize,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("StaSiz",LispStackSize,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("IsPromptShown",LispIsPromptShown,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
@@ -981,6 +1055,9 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
 #endif
 
 
+
+
+
 #define SHOWSIZE(a)    printf("   sizeof(" #a ") = %ld\n",sizeof(a));
 int main(int argc, char** argv)
 {
@@ -1041,6 +1118,16 @@ int main(int argc, char** argv)
             {
                 fileind++;
                 init_script = argv[fileind];
+            }
+            else if (!strcmp(argv[fileind],"--read-eval-print"))
+            {
+                fileind++;
+
+//printf("rep %d\n",argv[fileind][0]);
+                if (argv[fileind][0])
+                  read_eval_print = argv[fileind];
+                else
+                  read_eval_print = NULL;
             }
             else if (!strcmp(argv[fileind],"--rootdir"))
             {
@@ -1235,6 +1322,7 @@ int main(int argc, char** argv)
     }
 
 RESTART:
+
     if (show_prompt)
     {
         if (use_texmacs_out)
@@ -1261,8 +1349,20 @@ RESTART:
         fflush(stdout);
     }
 
-    while (Busy())
+    if (read_eval_print)
     {
+      while (Busy())
+      {
+#ifdef YACAS_DEBUG
+        LispLocalEvaluator local((*yacas)()(),NEW TracedStackEvaluator);
+#endif
+        yacas->Evaluate(read_eval_print);
+      }
+    }
+    else
+    {
+      while (Busy())
+      {
 #ifdef YACAS_DEBUG
         LispLocalEvaluator local((*yacas)()(),NEW TracedStackEvaluator);
 #endif
@@ -1273,13 +1373,9 @@ RESTART:
           build_full_prompt(full_prompt, inprompt, 30);
         else
           full_prompt[0] = (char) 0;
-        readmode = 1;
-        commandline->ReadLine(full_prompt);
-        readmode = 0;
+        ReadInputString(full_prompt);
 #else
-        readmode = 1;
-        commandline->ReadLine(inprompt);
-        readmode = 0;
+        ReadInputString(inprompt);
 #endif
         char *inpline =  commandline->iLine.String();
         if (use_texmacs_out)
@@ -1287,64 +1383,30 @@ RESTART:
             printf("%cverbatim:",TEXMACS_DATA_BEGIN);
         }
 
-        if (inpline)
+        if (busy)
         {
-            if(*inpline)
+          if(*inpline)
+          {
+            if (use_texmacs_out)
             {
-                if (inpline[0] == '?')
-                {
-                    if (inpline[1] == '?')
-                    {
-                        yacas->Evaluate("Help()");
-                    }
-                    else
-                    {
-                        if (strlen(&inpline[1]) < 100)
-                        {
-                            char buf[120];
-                            sprintf(buf,"Help(\"%s\")",&inpline[1]);
-                            yacas->Evaluate(buf);
-                        }
-                    }
-                }
-                else
-                {
-                    if (!strncmp(inpline,"restart",7))
-                    {
-                        delete yacas;
-                        LoadYacas();
-                        goto RESTART;
-                    }
-                    else if (!strncmp(inpline,"quit",4))
-                    {
-                        busy=LispFalse;
-                    }
-                    else
-                    {
-                        if (use_texmacs_out)
-                        {
-                            //        printf("%cverbatim:",TEXMACS_DATA_BEGIN);
-                            printf("%clatex:",TEXMACS_DATA_BEGIN);
-                        }
-                        yacas->Evaluate(inpline);
-                        if (use_texmacs_out)
-                        {
-                            printf("%c",TEXMACS_DATA_END);
-                        }
-
-#ifdef PROMPT_SHOW_FREE_MEMORY
-                        char full_prompt[30];
-                        if (show_prompt)
-                          build_full_prompt(full_prompt, outprompt, 30);
-                        else
-                          full_prompt[0] = (char) 0;
-                        ShowResult(full_prompt);
-#else
-                        ShowResult(outprompt);
-#endif
-                    }
-                }
+              printf("%clatex:",TEXMACS_DATA_BEGIN);
             }
+            yacas->Evaluate(inpline);
+            if (use_texmacs_out)
+            {
+              printf("%c",TEXMACS_DATA_END);
+            }
+#ifdef PROMPT_SHOW_FREE_MEMORY
+            char full_prompt[30];
+            if (show_prompt)
+              build_full_prompt(full_prompt, outprompt, 30);
+            else
+              full_prompt[0] = (char) 0;
+            ShowResult(full_prompt);
+#else
+            ShowResult(outprompt);
+#endif
+          }
         }
         if (use_texmacs_out)
         {
@@ -1352,6 +1414,13 @@ RESTART:
         }
         fflush(stdout);
     }
-    return 0;
+  }
+  if (restart)
+  {
+    delete yacas;
+    LoadYacas();
+    goto RESTART;
+  }
+  return 0;
 }
 

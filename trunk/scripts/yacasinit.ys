@@ -65,4 +65,32 @@ Rule("Help",0,1,True)
 
 SetHelpBrowser("lynx");
 
+/* The read-eval-print loop */
+RuleBase("REP",{});
+Rule("REP",0,1,True)
+[
+  Local(input,stringOut,result);
+  While(Not(IsExitRequested()))
+  [
+    Set(errorString, "");
+    TrapError(Set(input, FromString(ConcatStrings(ReadCmdLineString("In> "),";"))Read()),Set(errorString,GetCoreError()));
+    If(Not(errorString = ""), WriteString(errorString));
+    If (Not(IsExitRequested()) And errorString="",
+    [
+      Set(stringOut,"");
+      Set(result,False);
+      TrapError(Set(stringOut,ToString()[Set(result,Eval(input));]),Set(errorString,GetCoreError()));
+      If(Not(errorString = ""), WriteString(errorString));
+      If(Not(stringOut = ""), WriteString(stringOut));
+      Set(%,result);
+      LazyGlobal(%);
+      If(GetPrettyPrinter()="",
+      [
+        Write(Atom("Out> "),result);
+        NewLine();
+      ],
+      Apply(GetPrettyPrinter(),{result}));
+    ]);
+  ];
+];
               
