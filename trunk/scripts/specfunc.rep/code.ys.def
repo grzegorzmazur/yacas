@@ -11,4 +11,9 @@ BesselI
 BesselY
 BesselJN
 BesselJN0
+ApproxInfSum
+Erf
+Erfc
+FresnelSin
+FresnelCos
 }
