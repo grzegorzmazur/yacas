@@ -74,28 +74,23 @@ The convergence of this expansion for large $Abs(x)$ is improved by using the id
 $$ArcTan(x) = Pi/2*Sign(x) - ArcTan(1/x)$$
 This is implemented in the standard library scripts.
 
-The idea to use continued fraction expansions for ArcTan comes from the book
-
+The idea to use continued fraction expansions for {ArcTan} comes from the book:
 Jack W. Crenshaw,
 <i>MATH Toolkit for REAL-TIME Programming</i> (2000),
 CMP Media Inc.
 
 In that book the author explains how he got the idea to use continued
-fraction expansions to approximate ArcTan, given that the Taylor series converges
+fraction expansions to approximate $ArcTan(x)$, given that the Taylor series converges
 slowly, and having a hunch that in that case the continued fraction expansion
-then converges rapidly. He then proceeds to show that in the case of ArcTan,
+then converges rapidly. He then proceeds to show that in the case of $ArcTan(x)$,
 this is true in a big way. Now, it might not be true for all slowly converging
 series. No articles or books have been found yet that prove this. The above book 
 shows it empirically. 
 
-The book
-
-Joachim von zur Gathen and Jurgen Gerhard,
-<i>Modern Computer Algebra</i> (1999),
-Cambridge University Press.
-
+The book <i>Modern Computer Algebra</i> by Joachim von zur Gathen and Jurgen Gerhard
+(1999, Cambridge University Press)
 does discuss Cauchy interpolation and Pade approximation,
-both trying to approximate functions using rational functions f/g in stead of 
+both trying to approximate functions using rational functions f/g instead of 
 a simple polynomial f, and mentions that "it was observed empirically that 
 sometimes rational functions yield a much smaller approximation error".
 

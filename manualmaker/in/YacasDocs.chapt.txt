@@ -184,6 +184,13 @@ the beginning of a line, e.g.
 
 Note that the included document must be a Yacas-language file. (This will become the {IncludeFile()} call in the Yacas document -- an alias to {Load()}.)
 
+*	Comments may be introduced by the directive {*REM}. The line and the paragraph of text following {*REM} will be omitted from the documentation. An empty line should separate the {*REM} block from other text. For example,
+	*REM this is
+	a comment
+	
+	(documentation text continues)
+
+
 	    Formatting text for the reference manual
 
 The formatting explained in the previous section is enough to create most of the user guide and tutorial documentation. The script {txt2yacasdoc.pl} implements some additional markup features to help create reference manual sections.
