@@ -1230,20 +1230,18 @@ LispStringPtr BitXor(LispCharPtr int1, LispCharPtr int2,
 /// The exp-float mode is to be used only for really large or really small exponents.
 
 // TO DO:
-// - allow functions that will in the future implement better GMP wrapping. -?
-// - replace _init by _init2 and specify explicit precision. (default precision is a non-reentrant global) (done)
-// - use gmp_sprintf to print numbers rather than doing it by hand.
-// - introduce an "universal functor" that is good for any floating-point functions; it uses a function object to encapsulate any details? Or use a void* instead of function pointers and then explicit casts?
 // - optimize some arithmetic functions to use _ui or _si versions in case some operands are small integers. (IsSmall() checks that it fits into signed long.)
 
 
 BigNumber::BigNumber() { init(); }
 
 void BigNumber::init()
-{
+{// this function should be called only from constructors because it is not recommended to re-initialize a non-cleared gmp object
 	turn_int();	// by default all numbers are created integer
 	mpz_init2(int_, 32);	// default precision
 	mpf_init2(float_, 32);
+//	mpf_set_d(float_, 2);	// default value 1 to fool gmp into allocating more memory
+//	mpf_set_prec(float_, 32);
 	mpz_init2(exponent_, 32);
 }
 
@@ -1273,16 +1271,20 @@ BigNumber::BigNumber(const BigNumber& aOther)
 void BigNumber::SetTo(const BigNumber& aOther)
 {
   if (this == &aOther)
-  	return;
+	return;
   if (aOther.IsInt())
   {
-  	turn_int();
+	turn_int();
 	mpz_set(int_, aOther.int_);
   }
   else
   {
-    	turn_float();
-  	mpf_set(float_, aOther.float_);
+	turn_float();
+	mpf_set_d(float_, 1.);	// otherwise gmp doesn't really set the precision
+	// FIXME?: precision is set by hand here, instead of setting it from the string automatically... not sure whether to change the API about this.
+
+	mpf_set_prec(float_, mpf_get_prec(aOther.float_));
+	mpf_set(float_, aOther.float_);
 	if (aOther.IsExpFloat())
 	  mpz_set(exponent_, aOther.exponent_);
   }
@@ -1296,24 +1298,22 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
 	// decide whether the string is an integer or a float
   if (strchr(aString, '.') || aBase<10 && (strchr(aString, 'e') || strchr(aString,'E')) || strchr(aString, '@'))
   {	// converting to a float
-  	Precision(aPrecision);	// FIXME?: precision is set by hand here, instead of setting it from the string automatically... not sure whether to change the API about this.
-	if (mpf_set_str(float_, aString, aBase)==0)
-	{
-	    turn_float();
-	}
-	else
+	turn_float();
+	mpf_set_d(float_, 1.);	// otherwise gmp doesn't really set the precision
+	// FIXME?: precision is set by hand here, instead of setting it from the string automatically... not sure whether to change the API about this.
+	//Precision(aPrecision);
+	mpf_set_prec(float_, aPrecision);// this is all we need right now (fix later?)
+	
+	if (mpf_set_str(float_, aString, aBase)!=0)
 	{// FIXME: this clause is executed when there is an error in the string. Need to signal the error somehow.
 	    fprintf(stderr, "BigNumber::SetTo: Error reading a float from string '%s'\n", aString);
-	    SetTo(0.0);
+	    SetTo(0.);
 	}
   }
   else
   {	// converting to an integer, aPrecision is ignored
-  	if (mpz_set_str(int_, aString, aBase)==0)
-	{
-	    turn_int();
-	}
-	else
+    turn_int();
+  	if (mpz_set_str(int_, aString, aBase)!=0)
 	{// FIXME: this clause is executed when there is an error in the string. Need to signal the error somehow.
 	    fprintf(stderr, "BigNumber::SetTo: Error reading an integer from string '%s'\n", aString);
 	    SetTo(0);
@@ -1338,7 +1338,7 @@ void BigNumber::SetTo(double value)
 
 
 // Convert back to other types
-/// ToString : return string representation of number to given precision (base digits) in aResult
+/// ToString : return string representation of the number at given precision (base digits) in aResult
 
 void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase) const
 {
@@ -1359,8 +1359,9 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 	    fprintf(stderr, "BigNumber::ToString: printing exp-floats is not implemented\n");
 	    return;
     }
-
-    unsigned long size=(unsigned long)fabs(aPrecision);	// FIXME: what if aPrecision<=0? we need to signal error
+	// note: aPrecision means *base digits* here
+    unsigned long size=(unsigned long)fabs(aPrecision);	// FIXME: what if aPrecision<=0? we probably should signal an error
+	
     // the size needed to print the exponent cannot be more than 200 chars since we refuse to print exp-floats
     size += 200;
     char* buffer=(char*)malloc(size);
@@ -1371,7 +1372,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
     }
     char* offset = buffer;
     if (Sign()==0)
-    {    // print zero
+    {    // print zero - note that gmp does not print "0."
 	    strcpy(offset, "0."); // end of string
     }
     else
@@ -1384,7 +1385,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 	// get the exponent in given base and print the string at the same time
 	// string is printed starting at an offset to allow for leading zeros/decimal point
 	offset += 2-lower_exp;
-	mpf_get_str(offset, &exp_small, aBase, aPrecision, float_);
+	(void) mpf_get_str(offset, &exp_small, aBase, aPrecision, float_);
 	if (lower_exp <= exp_small && exp_small <= upper_exp)
 	{	// print in fixed point.
 		if (exp_small>0)
@@ -1807,19 +1808,19 @@ void BigNumber::Precision(LispInt aPrecision)
 	// determine the shift amount
 	shift_amount = exp_small - aPrecision;
 	// truncate at aPrecision bits
-	if (shift_amount > 0)
+  	mpf_set_prec(float_, aPrecision);
+	if (shift_amount >= 0)
 	{
 		mpf_div_2exp(float_, float_, (unsigned) shift_amount);
 		mpf_trunc(float_, float_);
 		mpf_mul_2exp(float_, float_, (unsigned) shift_amount);
-	}
+	}	// otherwise we don't have to truncate
 	else if (shift_amount < 0)
 	{
 		mpf_mul_2exp(float_, float_, (unsigned) (-shift_amount));
 		mpf_trunc(float_, float_);
 		mpf_div_2exp(float_, float_, (unsigned) (-shift_amount));
 	}
-  	mpf_set_prec(float_, aPrecision);
   }
 }
 
@@ -1963,7 +1964,7 @@ LispInt BigNumber::Sign() const
 {
   if (IsInt())
   {
-  	return mpz_sgn(int_);	// mutable cast (mpz_t) needed?
+  	return mpz_sgn(int_);
   }
   else
   {
@@ -1971,7 +1972,7 @@ LispInt BigNumber::Sign() const
   }
 }
 
-/// 
+/// these functions do not change the number but merely prepare its type
 void BigNumber::turn_float()
 {
 //  if (IsInt())
