@@ -303,9 +303,14 @@ void FltkConsole::AddText(LispCharPtr aText,int color, const char* aPrompt,
     while (aText[0] != '\0')
     {
         int len=0;
-        while (len < BufSz && aText[len] != '\n' && aText[len] != '\0')
+
+        while (aText[0] == '\n' || aText[0] == '\r') aText++;
+        if (aText[0] != '\0')
         {
-            len++;
+            while (len < BufSz && aText[len] != '\n' && aText[len] != '\r' && aText[len] != '\0')
+            {
+                len++;
+            }
         }
         if (aText[len] == '\0')
         {
