@@ -32,6 +32,7 @@ WronskianMatrix
 HilbertMatrix
 HilbertInverseMatrix
 HankelMatrix
+ToeplitzMatrix
 FrobeniusNorm
 PNorm
 Norm
