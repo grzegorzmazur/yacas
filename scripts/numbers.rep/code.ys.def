@@ -33,4 +33,8 @@ FactorGaussianInteger
 IsCarmichaelNumber
 PartitionsP
 Eulerian
+StirlingNumber2
+StirlingNumber1
+Euler
+EulerArray
 }

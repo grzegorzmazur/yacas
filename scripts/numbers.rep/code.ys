@@ -700,5 +700,47 @@ Product(list_IsList) <--
 
 Eulerian(n_IsInteger,k_IsInteger) <-- Sum(j,0,k+1,(-1)^j*Bin(n+1,j)*(k-j+1)^n);
 
+10 # StirlingNumber1(n_IsInteger,0) <-- If(n=0,1,0);
+10 # StirlingNumber1(n_IsInteger,1) <-- (-1)^(n-1)*(n-1)!;
+10 # StirlingNumber1(n_IsInteger,2) <-- (-1)^n*(n-1)! * HarmonicNumber(n-1);
+10 # StirlingNumber1(n_IsInteger,n-1) <-- -Bin(n,2);
+10 # StirlingNumber1(n_IsInteger,3) <-- (-1)^(n-1)*(n-1)! * (HarmonicNumber(n-1)^2 - HarmonicNumber(n-1,2))/2;
+20 # StirlingNumber1(n_IsInteger,m_IsInteger) <-- 
+	Sum(k,0,n-m,(-1)^k*Bin(k+n-1,k+n-m)*Bin(2*n-m,n-k-m)*StirlingNumber2(k-m+n,k));
+
+StirlingNumber2(n_IsInteger,k_IsInteger) <-- Sum(i,0,k-1,(-1)^i*Bin(k,i)*(k-i)^n)/ k! ;
+
+5  # Euler(0)		<-- 1;
+10 # Euler(n_IsOdd)	<-- 0;
+10 # Euler(n_IsEven)	<-- - Sum(r,0,n/2-1,Bin(n,2*r)*Euler(2*r));
+10 # Euler(n_IsNonNegativeInteger,_x)	<-- Sum(i,0,Round(n/2),Bin(n,2*i)*Euler(2*i)*(x-1/2)^(n-2*i)/2^(2*i));
+
+/*
+In> EulerArray(2)
+sums.rep/code.ys(323) : Could not create user function
+
+Line 323 is 400 lines up!! Why is this happening?
+The line that causes this is the one with Bin(i,2*r)
+
+10 # EulerArray(n_IsInteger) <-- 
+[
+	Local(E,i,sum,r);
+	E:=ZeroVector(n+1);
+	For(i:=0,i<=n,i++)[
+		if(i%2=0)[
+			if(i=0)[
+				E[1]:=1;
+			] else [
+				sum:=0;	
+				For(r:=0,r<=i/2-1,r++)[
+					sum:=sum+Bin(i,2*r)*E[2*r];
+				];
+				E[i+1] := -sum;
+			];
+		];
+	];
+	E;
+];
+*/
 
 
