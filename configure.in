@@ -53,7 +53,7 @@ AC_CHECK_LIB(dl,dlopen,LIBS="$LIBS -ldl -rdynamic",,-rdynamic)
 
 # Choice of arbitrary precision library
 AC_ARG_ENABLE(gmp, [  --enable-gmp            use GNU MP [default=no]])
-AC_MSG_CHECKING([checking which arbitray precision library to use])
+AC_MSG_CHECKING([checking which arbitrary precision library to use])
 if test "$enable_gmp" = "yes" ; then
 	AC_MSG_RESULT(gmp)
 	AC_CHECK_LIB(gmp, __gmpz_init, have_gmp=yes, have_gmp=no)
@@ -73,8 +73,8 @@ AC_SUBST(NUMBERS_LIB)
 AC_SUBST(NUMBERS_LDFLAGS)
 AC_SUBST(NUMBERS_CFLAGS)
 
-AC_ARG_ENABLE(debug, [  --enable-debug            build the debug version])
-AC_MSG_CHECKING([checking whether build the debug version])
+AC_ARG_ENABLE(debug, [  --enable-debug          build the debug version [default=no]])
+AC_MSG_CHECKING([checking whether to build the debug version])
 AC_MSG_RESULT($enable_debug)
 if test "$enable_debug" = "yes" ; then
   DEBUG_FLAGS="-DYACAS_DEBUG -DUSE_ASSERT -DDEBUG_MODE"
@@ -84,8 +84,8 @@ fi
 AC_SUBST(DEBUG_FLAGS)
 
 
-AC_ARG_ENABLE(server, [  --enable-server            build a version that can act as a server through a socket])
-AC_MSG_CHECKING([checking if server mode should be enabled])
+AC_ARG_ENABLE(server, [  --enable-server         build the network server version [default=no]])
+AC_MSG_CHECKING([checking whether to enable the server mode])
 AC_MSG_RESULT($enable_server)
 if test "$enable_server" = "yes" ; then
   SERVER_FLAGS="-DSUPPORT_SERVER"
@@ -96,7 +96,7 @@ AC_SUBST(SERVER_FLAGS)
 
 
 # Generate HTML documentation?
-AC_ARG_ENABLE(html-doc, [  --disable-html-doc      do not generate HTML documentation])
+AC_ARG_ENABLE(html-doc, [  --disable-html-doc      do not generate HTML documentation [default=enable]])
 if test "x$enable_html_doc" = x; then
 	enable_html_doc=$have_perl
 	if test "x$have_perl" = xno; then
@@ -120,7 +120,7 @@ AC_SUBST(BOOKS_HTML)
 AC_SUBST(INSTALL_HTML)
 
 # Generate PS documentation?
-AC_ARG_ENABLE(ps-doc, [  --enable-ps-doc         generate PostScript documentation])
+AC_ARG_ENABLE(ps-doc, [  --enable-ps-doc         generate PostScript documentation [default=no]])
 if test "x$enable_ps_doc" = xyes; then
 	if test "x$have_perl" = xno || test "x$have_latex" = xno \
 	   || test "x$have_makeindex" = xno || test "x$have_dvips" = xno \
@@ -134,7 +134,7 @@ AC_SUBST(PS_DOCS)
 AC_SUBST(INSTALL_PS)
 
 # Generate PDF documentation?
-AC_ARG_ENABLE(pdf-doc, [  --enable-pdf-doc        generate PDF documentation])
+AC_ARG_ENABLE(pdf-doc, [  --enable-pdf-doc        generate PDF documentation [default=no]])
 if test "x$enable_pdf_doc" = xyes; then
 	if test "x$have_perl" = xno || test "x$have_pdflatex" = xno \
 	   || test "x$have_makeindex" = xno || test "x$have_dvips" = xno; then
@@ -145,7 +145,7 @@ fi
 AC_SUBST(PDF_DOCS)
 
 # Generate and install library archive?
-AC_ARG_ENABLE(archive, [  --enable-archive        generate library archive])
+AC_ARG_ENABLE(archive, [  --enable-archive        generate library archive [default=no]])
 AM_CONDITIONAL(GENERATE_ARCHIVE, test "x$enable_archive" = xyes)
 
 # Choice of directories
