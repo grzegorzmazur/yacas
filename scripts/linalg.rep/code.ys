@@ -483,6 +483,16 @@ HankelMatrix(m,n):=GenMatrix({{i,j}, If(i+j-1>n,0,i+j-1)}, m,n );
 
 ToeplitzMatrix(N):=GenMatrix({{i,j},N[Abs(i-j)+1]}, Length(N), Length(N) );
 
+// Used to test numerical eigenvalue algorithms, because it
+// has eigenvalues extremely close to each other.
+// WilkinsonMatrix(21) has 2 eigenvalues near 10.7 that agree
+// to 14 decimal places
+// Leto: I am not going to document this until we actually have
+// numerical eigenvalue algorithms
+WilkinsonMatrix(N):=GenMatrix({{i,j}, 
+		If( Abs(i-j)=1,1,
+		[ If(i=j,Abs( (N-1)/2 - i+1 ),0 ); ] )}, N,N );
+
 10 # Norm(_v) <-- PNorm(v,2);
 
 // p-norm, reduces to euclidean norm when p = 2
