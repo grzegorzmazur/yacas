@@ -14,6 +14,8 @@ the command line for ordinary tasks.
 
 *INCLUDE ode.chapt
 
+*INCLUDE transforms.chapt
+
 *INCLUDE linalg.chapt
 
 *INCLUDE univar.chapt
