@@ -209,7 +209,7 @@ library is considered to be platform-specific, as there exist
 platforms without support even for the standard c++ libraries.
 
 To date Yacas can be run on Linux and various other Unix variants,
-Windows, Psion organizers, BeOS, and Apple iMacs. Creating an 
+Windows, Psion organizers, Ipaq palmtops, BeOS, and Apple iMacs. Creating an 
 executable for other platforms should not be a problem.
 
 	    Ease of use

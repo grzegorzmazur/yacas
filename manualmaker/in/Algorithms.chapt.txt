@@ -202,9 +202,8 @@ and a formula for even integers that helps in numerical testing,
 $$zeta(2*n) = ((-1)^(n+1)*(2*Pi)^(2*n))/(2*(2*n)!)*B[2*n]$$
 where $B[n]$ are Bernoulli numbers.
 
-The classic book of Bateman and Erdelyi, <i>Higher Transcendental
-Functions</i>, vol. 1, describes many results concerning analytic properties of
-$zeta(s)$.
+The classic book of Bateman and Erdelyi, <i>Higher Transcendental Functions</i>,
+vol. 1, describes many results concerning analytic properties of $zeta(s)$.
 
 For the numerical evaluation of Riemann's Zeta function with arbitrary
 precision to become feasible, one needs special algorithms. Recently P. Borwein
@@ -217,13 +216,13 @@ J. M. Borwein, D. M. Bradley, R. E. Crandall:
 <i>Computation strategies for the Riemann Zeta function</i>, preprint
 CECM-98-118, 1999, for a review of methods.
 
-It is the "third" algorithm from P. Borwein's paper which is implemented in
+It is the "third" algorithm (the simplest one) from P. Borwein's paper which is implemented in
 Yacas. The approximation formula valid for $Re(s) > -(n-1)$ is
 $$ zeta(s) = 1/(2^n*(1-2^(1-s)))*Sum(j,0,2*n-1, e[j]/(j+1)^s) $$
 where the coefficients $e[j]$ for $j=0$, ..., $2*n-1$ are defined by
 $$ e[j] := (-1)^(j-1)*(Sum(k,0,j-n, n! /(k! *(n-k)!))-2^n) $$
 and the empty sum (for $j<n$) is taken to be zero. The parameter $n$ must be
-chosen high enough to achieve desired precision. The error estimate for this
+chosen high enough to achieve the desired precision. The error estimate for this
 formula is approximately
 $$error < 8^(-n)$$
 for the relative precision, which means that to achieve $P$ correct digits we
