@@ -20,8 +20,9 @@
  *  class from a dll, and unloading the dll when necessary.
  *
  */
+#include "yacasbase.h"
 
-class LispPluginBase
+class LispPluginBase : public YacasBase
 {
 public:
     /**
@@ -37,7 +38,7 @@ public:
  *  needs to have. If it fails to open or get a plugin it should return
  *  a NULL pointer. The destructor should close the DLL again.
  */
-class LispDllBase
+class LispDllBase : public YacasBase
 {
 public:
     virtual LispInt Open(LispCharPtr aDllFile);

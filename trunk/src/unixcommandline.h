@@ -11,6 +11,7 @@
 #include <termios.h>
 #include <time.h>
 
+#include "yacasbase.h"
 #include "commandline.h"
 
 /** Unix command line class, using assorted termios functionality

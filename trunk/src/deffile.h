@@ -7,11 +7,12 @@
 #ifndef __deffile_h__
 #define __deffile_h__
 
+#include "yacasbase.h"
 #include "lisphash.h"
 
 /** LispDefFile represents one file that can be loaded just-in-time.
  */
-class LispDefFile
+class LispDefFile : public YacasBase
 {
 public:
     LispDefFile(LispStringPtr aFile);

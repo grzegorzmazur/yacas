@@ -10,12 +10,14 @@
 #ifndef _GROWER_H_
 #define _GROWER_H_
 
+#include "yacasbase.h"
+
 /** \class CArrayGrowerBase has the base utility functions needed for a
  *  growing array. It implements the operations without knowing the types
  *  the array stores. A derived template class can then use these utility
  *  functions, so the inline functions from the template class stay small.
  */
-class CArrayGrowerBase
+class CArrayGrowerBase : public YacasBase
 {
 public:
     virtual ~CArrayGrowerBase();

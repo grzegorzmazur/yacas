@@ -14,11 +14,12 @@
 // to use these variables).
 //
 
+#include "yacasbase.h"
 #include "lisptype.h"
 #include "grower.h"
 #include "lispenvironment.h"
 
-class YacasParamMatcherBase
+class YacasParamMatcherBase : public YacasBase
 {
 public:
     virtual ~YacasParamMatcherBase();
@@ -68,7 +69,7 @@ protected:
 // YacasPatternPredicateBase defines the interface to an object
 // that matches a set of arguments to a function to a pattern.
 //
-class YacasPatternPredicateBase
+class YacasPatternPredicateBase : public YacasBase
 {
 public:
     YacasPatternPredicateBase(LispEnvironment& aEnvironment,

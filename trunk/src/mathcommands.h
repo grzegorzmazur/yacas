@@ -2,6 +2,7 @@
 #ifndef __mathcommands_h__
 #define __mathcommands_h__
 
+#include "yacasbase.h"
 #include "lispenvironment.h"
 #include "lispevalhash.h"
 #include "lispobject.h"

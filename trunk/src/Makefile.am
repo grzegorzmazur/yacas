@@ -17,7 +17,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	stdfileio.h stringio.h stubs.h tokenizer.h yacas.h ramdisk.h refcount.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
-        lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h
+        lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h
 yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = libyacas.a libyacasplatform.a @NUMBERS_LIB@ @NUMBERS_LDFLAGS@ 
 
@@ -41,7 +41,7 @@ libyacas_a_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
         lispplugin.cpp elfdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp
         
 libyacasplatform_a_SOURCES = platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
-	lispstring.cpp mathutil.cpp
+	lispstring.cpp mathutil.cpp yacasbase.cpp
 libyacasplatform_a_LIBADD = @NUMBERS_LIB@
 libyacasnumbers_a_SOURCES = anumber.cpp yacasnumbers.cpp 
 libgmpnumbers_a_SOURCES = gmpnumbers.cpp 

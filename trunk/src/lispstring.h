@@ -6,7 +6,7 @@
 #ifndef __lispstring_h__
 #define __lispstring_h__
 
-#include "lisptype.h"
+#include "yacasbase.h"
 #include "grower.h"
 #include "refcount.h"
 
@@ -21,7 +21,7 @@
  * by another part of the system, in which case it cannot be resized.
  * The array will then not be freed by this class.
  */
-class LispString : public CArrayGrower<LispChar>, public RefCountedObject
+class LispString : public CArrayGrower<LispChar>, public RefCountedObjectBase
 {
 public:
     /** Constructor which allows the caller to specify whether

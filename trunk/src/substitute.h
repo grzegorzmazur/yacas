@@ -2,12 +2,13 @@
 #ifndef __substitute_h__
 #define __substitute_h__
 
+#include "yacasbase.h"
 #include "lispobject.h"
 
 
 /** Behaviour for substituting sub-expressions.
  */
-class SubstBehaviourBase
+class SubstBehaviourBase : public YacasBase
 {
 public:
     virtual LispBoolean Matches(LispPtr& aResult, LispPtr& aElement) = 0;

@@ -2,11 +2,13 @@
 #ifndef __evalfuncbase_h__
 #define __evalfuncbase_h__
 
+#include "yacasbase.h"
+
 // class EvalFuncBase defines the interface to 'something that can
 // evaluate'
 class LispPtr;
 class LispEnvironment;
-class EvalFuncBase
+class EvalFuncBase : public YacasBase
 {
 public:
     virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,

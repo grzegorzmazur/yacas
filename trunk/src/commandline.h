@@ -16,7 +16,7 @@
 #define __commandline_h__
 
 #include "lispstring.h"
-#include "lisptype.h"
+#include "yacasbase.h"
 
 enum ESpecialChars
 {
@@ -48,7 +48,7 @@ enum ESpecialChars
  *  and for externalizing the history list to disk when the system
  *  shuts down.
  */
-class CCommandLine
+class CCommandLine : public YacasBase
 {
 public:
     CCommandLine() : iHistoryUnchanged(0), history(0),iTraceHistory(0){};

@@ -2,6 +2,7 @@
 #ifndef __elfdll_h__
 #define __elfdll_h__
 
+#include "yacasbase.h"
 #include "lispplugin.h"
 
 class ElfDll : public LispDllBase

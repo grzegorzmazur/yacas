@@ -3,7 +3,7 @@
 #define __anumber_h__
 
 #include "grower.h"
-#include "lisptype.h"
+#include "yacasbase.h"
 #include "lispassert.h"
 #include "lispstring.h"
 

@@ -6,6 +6,7 @@
 #ifndef __lispeval_h__
 #define __lispeval_h__
 
+#include "yacasbase.h"
 #include "lispobject.h"
 #include "lispenvironment.h"
 
@@ -13,7 +14,7 @@
 void InternalEval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
 */
 
-class UserStackInformation
+class UserStackInformation : public YacasBase
 {
 public:
     UserStackInformation():
@@ -27,7 +28,7 @@ public:
 
 
 
-class LispEvaluatorBase
+class LispEvaluatorBase : public YacasBase
 {
 public:
     virtual ~LispEvaluatorBase();
@@ -91,7 +92,7 @@ void ShowExpression(LispString& outString, LispEnvironment& aEnvironment,
                     LispPtr& aExpression);
 
 
-class YacasDebuggerBase
+class YacasDebuggerBase : public YacasBase
 {
 public:
     virtual ~YacasDebuggerBase();

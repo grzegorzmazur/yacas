@@ -3,7 +3,7 @@
 #define __numbers_h__
 
 #include "lispenvironment.h"
-#include "lisptype.h"
+#include "yacasbase.h"
 
 /// Create a internal number object from an ascii string.
 void* AsciiToNumber(LispCharPtr aString,LispInt aPrecision);

@@ -3,9 +3,9 @@
 #ifndef __genericobject_h__
 #define __genericobject_h__
 
-#include "lisptype.h"
+#include "yacasbase.h"
 
-class LispArgList
+class LispArgList : public YacasBase
 {
 public:
   virtual ~LispArgList();
@@ -14,7 +14,7 @@ public:
   virtual LispBoolean Compare(LispInt aIndex, LispCharPtr aString)=0;
 };
 
-class GenericClass
+class GenericClass : public YacasBase
 {
 public:
     GenericClass() : iReferenceCount(0) {};

@@ -5,7 +5,7 @@
 /** LAssoc is a helper class for LispAssociatedHash
  */
 template<class T>
-class LAssoc
+class LAssoc : public YacasBase
 {
 public:
     inline LAssoc(LispStringPtr aString,const T& aData);

@@ -7,6 +7,7 @@
 #ifndef __lispenvironment_h__
 #define __lispenvironment_h__
 
+#include "yacasbase.h"
 #include "lispobject.h"
 #include "lisphash.h"
 #include "lispevalhash.h"
@@ -36,7 +37,7 @@ class LispEvaluatorBase;
 class BasicEvaluator;
 class LispDllBase;
 class YacasDebuggerBase;
-class LispEnvironment
+class LispEnvironment : public YacasBase
 {
 public:
     LispEnvironment(LispCommands& aCommands,
@@ -136,7 +137,7 @@ private:
 
 private:
 
-    class LispLocalVariable
+    class LispLocalVariable : public YacasBase
     {
     public:
         LispLocalVariable(LispStringPtr aVariable,
@@ -154,7 +155,7 @@ private:
         LispStringPtr iVariable;
         LispPtr iValue;
     };
-    class LocalVariableFrame
+    class LocalVariableFrame : public YacasBase
     {
     public:
         LocalVariableFrame(LocalVariableFrame *aNext,
@@ -324,7 +325,7 @@ private:
 };
 
 
-class LispLocalEvaluator
+class LispLocalEvaluator : public YacasBase
 {
 public:
     LispLocalEvaluator(LispEnvironment& aEnvironment,LispEvaluatorBase* aNewEvaluator);
@@ -335,7 +336,7 @@ private:
     LispEnvironment& iEnvironment;
 };
 
-class LispLocalTrace
+class LispLocalTrace : public YacasBase
 {
 public:
     LispLocalTrace(LispUserFunction* aUserFunc);
@@ -344,7 +345,7 @@ private:
     LispUserFunction* iUserFunc;
 };
 
-class LocalArgs
+class LocalArgs : public YacasBase
 {
 public:
     LocalArgs(LispPtr* aPtrs)

@@ -2,6 +2,7 @@
 #ifndef _customparser_h_
 #define _customparser_h_
 
+#include "yacasbase.h"
 #include "tokenizer.h"
 
 

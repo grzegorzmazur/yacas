@@ -6,10 +6,11 @@
 #ifndef __tokenizer_h__
 #define __tokenizer_h__
 
+#include "yacasbase.h"
 #include "lispstring.h"
 #include "lispio.h"
 #include "lisphash.h"
-class LispTokenizer
+class LispTokenizer : public YacasBase
 {
     
 public:

@@ -6,11 +6,11 @@
 #ifndef __lispio_h__
 #define __lispio_h__
 
-#include "lisptype.h"
+#include "yacasbase.h"
 
 // Hope this forward declaration doesn't screw us over...
 class InputDirectories;
-class InputStatus
+class InputStatus : public YacasBase
 {
 public:
     InputStatus() : iFileName("none") , iLineNumber(-1)  {};
@@ -42,7 +42,7 @@ inline void InputStatus::NextLine()
  *  that needs to be implemented by a file (something that expressions
  *  can be read from).
  */
-class LispInput
+class LispInput : public YacasBase
 {
 public:
     /** Constructor with InputStatus. InputStatus retains the information
@@ -81,7 +81,7 @@ protected:
 
 /** \class LispOutput : interface an output object should adhere to.
  */
-class LispOutput
+class LispOutput : public YacasBase
 {
 public:
     virtual ~LispOutput();

@@ -11,6 +11,7 @@
 #ifndef __lispatom_h__
 #define __lispatom_h__
 
+#include "yacasbase.h"
 #include "lispobject.h"
 #include "lispstring.h"
 

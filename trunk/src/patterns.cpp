@@ -3,7 +3,7 @@
    - - - a not working correctly...
  - make a RetractRule with a predicate as argument.
  */
-#include "yacasprivate.h"
+#include "yacasbase.h"
 #include "patterns.h"
 #include "standard.h"
 #include "mathuserfunc.h"
@@ -88,7 +88,7 @@ MatchSubList::~MatchSubList()
         LispInt i;
         for (i=0;i<iNrMatchers;i++)
             delete iMatchers[i];
-        delete[] iMatchers;
+        PlatFree(iMatchers);
     }
 }
 
@@ -201,13 +201,12 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
 
                         iPredicates.Append(pred);
                     }
-
                     return new MatchVariable(index);
                 }
             }
         }
         
-        YacasParamMatcherBase** matchers = new YacasParamMatcherBase*[num];
+        YacasParamMatcherBase** matchers = (YacasParamMatcherBase**)PlatAlloc(num*sizeof(YacasParamMatcherBase*));
 
         LispInt i;
         LispIterator iter(*sublist);

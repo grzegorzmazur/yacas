@@ -7,12 +7,13 @@
 #ifndef __infixparser_h__
 #define __infixparser_h__
 
+#include "yacasbase.h"
 #include "lispparser.h"
 
 
 #define KMaxPrecedence 60000
 
-class LispInFixOperator
+class LispInFixOperator : public YacasBase
 {
 public:
     inline LispInFixOperator(LispInt aPrecedence)
@@ -81,7 +82,7 @@ public:
     LispStringPtr iProg;
 };
 
-class ParsedObject
+class ParsedObject : public YacasBase
 {
 public:
     ParsedObject(InfixParser& aParser)

@@ -6,6 +6,7 @@
 #ifndef __lispevalhash_h__
 #define __lispevalhash_h__
 
+#include "yacasbase.h"
 #include "lispobject.h"
 #include "lisphash.h"
 #include "evalfunc.h"

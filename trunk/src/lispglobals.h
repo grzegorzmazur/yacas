@@ -7,12 +7,13 @@
 #ifndef __lispglobals_h__
 #define __lispglobals_h__
 
+#include "yacasbase.h"
 #include "lispobject.h"
 #include "lisphash.h"
 
 
 
-class LispGlobalVariable
+class LispGlobalVariable : public YacasBase
 {
 public:
     inline LispGlobalVariable(const LispGlobalVariable& aOther);
