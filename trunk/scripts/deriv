@@ -42,6 +42,13 @@ HoldArg("D",aFunc);
 2 # (Deriv(_var)(_x ^ n_IsRationalOrNumber)) <--
     n * (Deriv(var) x) * (x ^ (n - 1));
 
+2 # (Deriv(_var)(Abs(_x)))  <-- Sign(x)*(Deriv(var)x);
+2 # (Deriv(_var)(Sign(_x))) <-- 0;
+
+2 # (Deriv(_var)(if(_cond)(_body))) <--
+	UnList({Atom("if"),cond,Deriv(var)body});
+2 # (Deriv(_var)((_left) else (_right))) <--
+        UnList({Atom("else"), (Deriv(var)left), (Deriv(var)right) } );
 
 3 # (Deriv(_var)(_x ^ _n)) <-- (x^n)*Deriv(var)(n*Ln(x));
 

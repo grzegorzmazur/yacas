@@ -83,6 +83,21 @@ CanBeTerm(_expr,_var) <-- (MakeTerm(expr,var) != False);
   var*Ln(exx)-var;
 ];
 
+
+14 # AntiDeriv(Abs(_exx),_var)_
+     (CanBeUni(exx,var) And Length(MakeUni(exx,var)[3]) <= 2) <--
+[
+  Local(uni);
+  uni:=MakeUni(exx,var);
+  (Abs(exx)*exx)/(2*Coef(uni,1));
+];
+
+14 # AntiDeriv(if(_cond)(_body),_var) <--
+     UnList({Atom("if"),cond,AntiDeriv(body,var)});
+14 # AntiDeriv((_left) else (_right),_var) <--
+     UnList({Atom("else"), (AntiDeriv(left,var)), (AntiDeriv(right,var)) } );
+
+
 15 # AntiDeriv(_exx * _exy,_var)_(CanBeUni(exx,var) And
                             Type(Apply("AntiDeriv",{exy,var})) != "AntiDeriv") <--
 [

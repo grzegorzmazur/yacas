@@ -112,7 +112,23 @@ In&gt  A:={{5,-3,-7},{-2,1,2},{2,-3,-4}}
 In&gt Limit(x,0)(1-Cos(x))/x^2 
 <font color=ff0000> Out&gt 1/2 </font>
 
-19. <font color=0000ff>Compute the first terms of the Taylor expansion of 1/sqrt(1-v^2/c^2) at v=0. </font> : 
+19. <font color=0000ff>Compute the derivative of |x|.</font> : 
+In&gt D(x)Abs(x) 
+<font color=ff0000> Out&gt Sign(x) </font>
+
+20. <font color=0000ff>Compute an antiderivative of |x|.</font> : 
+In&gt AntiDeriv(Abs(x),x) 
+<font color=ff0000> Out&gt (Abs(x)*x)/2 </font>
+
+21. <font color=0000ff>Compute the derivative of |x| (piecewise defined).</font> : 
+In&gt D(x)if(x<0)(-x)else x 
+<font color=ff0000> Out&gt  if(x<0)-1else1 </font>
+
+22. <font color=0000ff>Compute the antiderivative of |x| (piecewise defined).</font> : 
+In&gt AntiDeriv(if(x<0)(-x)else x,x) 
+<font color=ff0000> Out&gt if(x<0)(-x^2/2)else x^2/2 </font>
+
+23. <font color=0000ff>Compute the first terms of the Taylor expansion of 1/sqrt(1-v^2/c^2) at v=0. </font> : 
 In&gt ans:=Taylor(v,0,4)Sqrt(1/(1-v^2/c^2)) 
 <font color=ff0000></font>In&gt ans:=Simplify(ans) 
 <font color=ff0000></font>In&gt PrettyForm(ans) 
@@ -125,7 +141,7 @@ In&gt ans:=Taylor(v,0,4)Sqrt(1/(1-v^2/c^2))
 
 Out&gt True </font>
 
-20. <font color=0000ff>Compute the inverse of the square of the above expansion. </font> : 
+24. <font color=0000ff>Compute the inverse of the square of the above expansion. </font> : 
 In&gt  ans:=Taylor(v,0,4)(1/ans)^2 
 <font color=ff0000></font>In&gt PrettyForm(Simplify(ans)) 
 <font color=ff0000> 
@@ -137,7 +153,7 @@ In&gt  ans:=Taylor(v,0,4)(1/ans)^2
 
 Out&gt True </font>
 
-21. <font color=0000ff>Compute the Taylor expansion of tan(x) at x=0 by dividing the expansion of sin(x) by that of cos(x). </font> : 
+25. <font color=0000ff>Compute the Taylor expansion of tan(x) at x=0 by dividing the expansion of sin(x) by that of cos(x). </font> : 
 In&gt  ans1:=Taylor(x,0,5)Sin(x)/Cos(x) 
 <font color=ff0000></font>In&gt PrettyForm(ans1) 
 <font color=ff0000>
@@ -157,7 +173,7 @@ x + -- + ------
 </font>In&gt ans1-ans2 
 <font color=ff0000> Out&gt 0 </font>
 
-22. <font color=0000ff>Compute the Legendre polynomials directly.</font> : 
+26. <font color=0000ff>Compute the Legendre polynomials directly.</font> : 
 In&gt 10#Legendre(0,_x)<--1 
 <font color=ff0000></font>In&gt 20#Legendre(n_IsInteger,_x)<--[Local(result);result:=[Local(x);Expand(1/(2^n*n!)*Deriv(x,n)Expand((x^2-1)^n,x));];Eval(result);] 
 <font color=ff0000></font>In&gt ForEach(item,Table(Legendre(i,x),i,0,4,1))PrettyForm(item) 
@@ -186,7 +202,7 @@ x
 8      4          8   
 
 </font>
-23. <font color=0000ff>Compute the Legendre polynomials recursively, using their recurrence of order 2. </font> : 
+27. <font color=0000ff>Compute the Legendre polynomials recursively, using their recurrence of order 2. </font> : 
 In&gt 10#LegendreRecursive(0,_x)<--1 
 <font color=ff0000></font>In&gt 20#LegendreRecursive(1,_x)<--x 
 <font color=ff0000></font>In&gt 30#LegendreRecursive(n_IsPositiveInteger,_x)<--Expand(((2*n-1)*x*LegendreRecursive(n-1,x)-(n-1)*LegendreRecursive(n-2,x))/n) 
@@ -216,11 +232,11 @@ x
 8      4          8   
 
 </font>
-24. <font color=0000ff>Evaluate the fourth Legendre polynomial at 1. </font> : 
+28. <font color=0000ff>Evaluate the fourth Legendre polynomial at 1. </font> : 
 In&gt Legendre(4,1) 
 <font color=ff0000> Out&gt 1 </font>
 
-25. <font color=0000ff>Define the polynomial p = sum( i=1..5, ai*x^i ). </font> : 
+29. <font color=0000ff>Define the polynomial p = sum( i=1..5, ai*x^i ). </font> : 
 In&gt ans:=Sum(MakeVector(a,5)*FillList(x,5)^(1..5)) 
 <font color=ff0000></font>In&gt PrettyForm(ans) 
 <font color=ff0000>
@@ -228,7 +244,14 @@ In&gt ans:=Sum(MakeVector(a,5)*FillList(x,5)^(1..5))
 a1 * x + a2 * x  + a3 * x  + a4 * x  + a5 * x 
 
 </font>
-26. <font color=0000ff>Compute the first terms of the continued fraction of Pi. </font> : 
+30. <font color=0000ff>Apply Horner's rule to the above polynomial.</font> : 
+In&gt ans:=Sum(MakeVector(a,5)*FillList(x,5)^(1..5)) 
+<font color=ff0000></font>In&gt PrettyForm(Horner(ans,x)) 
+<font color=ff0000>
+( ( ( ( a5 * x + a4 ) * x + a3 ) * x + a2 ) * x + a1 ) * x
+
+</font>
+31. <font color=0000ff>Compute the first terms of the continued fraction of Pi. </font> : 
 In&gt pi:=N(Pi,20) 
 <font color=ff0000></font>In&gt a:=ContFrac(pi,6) 
 <font color=ff0000></font>In&gt PrettyForm(a) 
@@ -246,21 +269,21 @@ In&gt pi:=N(Pi,20)
                        1 + rest
 
 </font>
-27. <font color=0000ff>Compute an infinite decimal representation of 1/7. </font> : 
+32. <font color=0000ff>Compute an infinite decimal representation of 1/7. </font> : 
 In&gt Decimal(1/7) 
 <font color=ff0000> Out&gt {0,{1,4,2,8,5,7}} </font>
 This result means that the decimal expansion of 1/7 is
 0.142857142857142....
 
-28. <font color=0000ff>Evaluate TRUE and FALSE. </font> : 
+33. <font color=0000ff>Evaluate TRUE and FALSE. </font> : 
 In&gt True And False 
 <font color=ff0000> Out&gt  False </font>
 
-29. <font color=0000ff>Solve the equation tan(x) = 1. </font> : 
+34. <font color=0000ff>Solve the equation tan(x) = 1. </font> : 
 In&gt  Solve(Tan(x)==1,x) 
 <font color=ff0000> Out&gt Pi/4 </font>
 
-30. <font color=0000ff>Revert the Taylor expansion of sin(y) + cos(y) at y=0. </font> : 
+35. <font color=0000ff>Revert the Taylor expansion of sin(y) + cos(y) at y=0. </font> : 
 In&gt t:=InverseTaylor(y,0,6)Sin(y)+Cos(y) 
 <font color=ff0000></font>In&gt PrettyForm(t) 
 <font color=ff0000>
@@ -279,22 +302,22 @@ In&gt s:=Taylor(y,0,6)Sin(y)+Cos(y)
 <font color=ff0000></font>In&gt BigOh(Subst(y,s)t,y,6) 
 <font color=ff0000> Out&gt y </font>
 
-31. <font color=0000ff>Solve the linear (dependent) system x+y+z=6,2x+y+2z=10,x+3y+z=10.</font> : 
+36. <font color=0000ff>Solve the linear (dependent) system x+y+z=6,2x+y+2z=10,x+3y+z=10.</font> : 
 In&gt  Solve({x+y+z==6,2*x+y+2*z==10,x+3*y+z==10},{x,y,z}) 
 <font color=ff0000> Out&gt {{4-z,2,z}} </font>
 
-32. <font color=0000ff>Evaluate True And False</font> : 
+37. <font color=0000ff>Evaluate True And False</font> : 
 In&gt True And False 
 <font color=ff0000> Out&gt  False </font>
 In&gt  CanProve(True And False) 
 <font color=ff0000> Out&gt False </font>
 
-33. <font color=0000ff>Simplify x or (not x)</font> : 
+38. <font color=0000ff>Simplify x or (not x)</font> : 
 In&gt  CanProve(x Or Not x) 
 <font color=ff0000> Out&gt True </font>
 
-34. <font color=0000ff>Simplify x or y or (x and y)</font> : 
+39. <font color=0000ff>Simplify x or y or (x and y)</font> : 
 In&gt  CanProve(x Or y Or x And y) 
 <font color=ff0000> Out&gt x Or y </font>
-34  examples done
+39  examples done
 </FONT></PRE></BODY></HTML>

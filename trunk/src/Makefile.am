@@ -62,6 +62,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp \
 	plat/linux64/platdll.h \
 	plat/epoc32/lisptype.h \
 	plat/epoc32/stubs.inl \
+	plat/epoc32/platdll.h \
 	plat/epoc32/platfileio.h \
 	plat/beos/lisptype.h \
 	plat/beos/stubs.inl \

@@ -17,4 +17,5 @@ PrimitivePart
 FactorUniVar
 RandomPoly
 BigOh
+Horner
 }

@@ -422,13 +422,19 @@ a_IsPositiveInteger | b_IsPositiveInteger <-- BitOr(a,b);
 a_IsPositiveInteger % b_IsPositiveInteger <-- Mod(a,b);
 
 RuleBase("if",{predicate,body});
-if(_predicate) _body <-- If(Eval(predicate),Eval(body));
-HoldArg("if",predicate);
+(if(True) _body) <-- Eval(body);
 HoldArg("if",body);
 UnFence("if",2);
 
 RuleBase("else",{ifthen,otherwise});
-(if (_predicate) _body else _otherwise) <-- If(Eval(predicate),Eval(body), Eval(otherwise));
+0 # (if (_predicate) _body else _otherwise)_(Eval(predicate) = True) <--
+     Eval(body);
+0 # (if (_predicate) _body else _otherwise)_(Eval(predicate) = False) <--
+     Eval(otherwise);
+1 # (if (_predicate) _body else _otherwise) <--
+    UnList({Atom("else"),
+            UnList({Atom("if"), (Eval(predicate)), body}),
+            otherwise});
 HoldArg("else",ifthen);
 HoldArg("else",otherwise);
 UnFence("else",2);
