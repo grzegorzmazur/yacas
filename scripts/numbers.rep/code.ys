@@ -297,9 +297,12 @@ Function("FermatNumber",{n})[
 		"FermatNumber: argument must be a positive integer");
 	2^(2^n)+1;
 ];
+
+// Algorithm adapted from:
+// Elementary Number Theory, David M. Burton
+// Theorem 6.2 p112
 5  # Divisors(0)	<-- 0;
 5  # Divisors(1)	<-- 1;
-
 // Unsure about if there should also be a function that returns
 // n's divisors, may have to change name in future
 10 # Divisors(_n)	<--
@@ -328,6 +331,9 @@ Function("FermatNumber",{n})[
         DivisorsSum(n)-n;
 ];
 
+// Algorithm adapted from:
+// Elementary Number Theory, David M. Burton
+// Theorem 6.2 p112
 5  # DivisorsSum(0)	<-- 0;
 5  # DivisorsSum(1)	<-- 1;
 10 # DivisorsSum(_n) 	<--
@@ -348,6 +354,10 @@ Function("FermatNumber",{n})[
 	sum;
 ];
 
+// Algorithm adapted from:
+// Elementary Number Theory, David M. Burton
+// Definition 6.3 p120
+
 5  # Moebius(1)	<-- 1;
 10 # Moebius(_n)	<--
 [
@@ -363,6 +373,10 @@ Function("FermatNumber",{n})[
 	If(repeat==0,(-1)^len,0);
 
 ];
+
+// Algorithm adapted from:
+// Elementary Number Theory, David M. Burton
+// Theorem 7.3 p139
 
 10 # Totient(_n)	<--
 [
