@@ -23,7 +23,7 @@ yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_L
 yacas_LDFLAGS = -export-dynamic
 yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c version.h
 
-
+.PHONY: version.h
 
 # order of libraries is important, @NUMBERS_LIB@ before libyacas.la and that is before libyacasplatform.la
 
@@ -98,7 +98,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	plat/win32/win32commandline.h   \
 	plat/win32/yacas.dsp            \
 	plat/win32/yacas_exe.dsp        \
-	plat/win32/yacasmain-win32.cpp makefile.debug Makefile.win32 \
+	plat/win32/yacasmain-win32.cpp Makefile.win32 \
 	makefile.agenda yacas.dsp yacas.dsw \
   debugmem.h mkfastprimes.dsp \
 	win32dllresource.h win32yacasdll.h win32yacasdll.cpp \
