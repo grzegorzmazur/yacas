@@ -478,6 +478,72 @@ resulting expression a second time. The code for functions of just one variable 
 This executes a little slower than the above version, because the backquote
 needs to traverse the expression twice, but makes for much more readable code.
 
+
+		Macro expansion
+
+Yacas supports macro expansion (back-quoting). An expression can be
+back-quoted by putting a {`} in front of it. Within the back-quoted
+expression, all atoms that have a {@} in front of them get replaced
+with the value of that atom (treated as a variable), and then the
+resulting expression is evaluated:
+
+	In> x:=y
+	Out> y;
+	In> `(@x:=2)
+	Out> 2;
+	In> x
+	Out> y;
+	In> y
+	Out> 2;
+
+This is useful in cases where within an expression one sub-expression
+is not evaluated. For instance, transformation rules can be built
+dynamically, before being declared. This is a particularly powerful
+feature that allows a programmer to write programs that write programs.
+The idea is borrowed from Lisp.
+
+As the above example shows, there are similarities with the {Macro...}
+functions, that serve the same purpose for specific expressions.
+For example, for the above code, one could also have called {MacroSet}:
+
+	In> MacroSet(x,3)
+	Out> True;
+	In> x
+	Out> y;
+	In> y
+	Out> 3;
+
+The difference is that {MacroSet}, and in general the {Macro...}
+functions, are faster than their back-quoted counterparts.
+This is because with back-quoting, first a new expression is 
+built before it is evaluated. The advantages of back-quoting
+are readability and flexibility (the number of {Macro...}
+functions is limited, whereas back-quoting can be used anywhere).
+
+When an {@} operator is placed in front of a function call, the
+function call is replaced:
+
+	In> plus:=Add
+	Out> Add;
+	In> `(@plus(1,2,3))
+	Out> 6;
+
+Application of pure functions is also possible (as of version 1.0.53)
+by using macro expansion:
+
+	In> pure:={{a,b},a+b}; 
+	Out> {{a,b},a+b};
+	In> ` @pure(2,3); 
+	Out> 5;
+
+Pure (nameless) functions are useful for declaring a temporary function,
+that has functionality depending on the current environment it is in,
+or as a way to call driver functions. In the case of drivers (interfaces
+to specific functionality), a variable can be bound to a function to 
+be evaluated to perform a specific task. That way several drivers can
+be around, with one bound to the variables holding the functions that
+will be called.
+
 		Scope of variable bindings
 
 When setting variables or retrieving variable values, variables are

@@ -18,8 +18,8 @@ Regress(x,y) :=
 
  mx := Mean(x);
  my := Mean(y);
- xy := Sum((x-mx)*(y-my));
- x2 := Sum((x-mx)^2);  
+ xy := Add((x-mx)*(y-my));
+ x2 := Add((x-mx)^2);  
  {alpha <- (my-xy*mx/x2) , beta <-  xy/x2}; 
 ];
 

@@ -49,6 +49,7 @@ void InternalLoad(LispEnvironment& aEnvironment,LispStringPtr aFileName);
 void InternalUse(LispEnvironment& aEnvironment,LispStringPtr aFileName);
 void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
                          LispStringPtr aOperator,LispPtr& aArgs);
+void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnvironment& aEnvironment);
 
 void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
                         LispCharPtr aString);
@@ -83,6 +84,8 @@ void PrintExpression(LispString& aResult, LispPtr& aExpression,
                      LispInt aMaxChars);
 
 LispStringPtr SymbolName(LispEnvironment& aEnvironment,LispCharPtr aSymbol);
+
+
 
 #include "standard.inl"
 

@@ -109,80 +109,55 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
     }
 
     {
-        EvalFuncBase* func = NULL; //TEST aExpression.Get()->EvalFunc();
+//        EvalFuncBase* func = NULL;
         LispPtr* subList = aExpression.Get()->SubList();
 
-//      CHECKPTR(func);
-        /*TODO I have to be REALLY sure about this one... */
-        if (func)
-        {
-            func->Evaluate(aResult, aEnvironment, *subList);
-            goto FINISH;
-        }
-        /* */
+//        if (func)
+//        {
+//            func->Evaluate(aResult, aEnvironment, *subList);
+//            goto FINISH;
+//        }
         if (subList)
         {
             LispObject* head = subList->Get();
             if (head)
             {
-                LispEvaluator* evaluator =
-                    aEnvironment.Commands().LookUp(head->String());
-//                CHECKPTR(evaluator);
-
-                // Try to find a built-in command
-                if (evaluator)
+                if (head->String())
                 {
-//TEST                 aExpression.Get()->SetEvalFunc(evaluator);
-                evaluator->Evaluate(aResult, aEnvironment, *subList);
-                goto FINISH;
+                    LispEvaluator* evaluator =
+                        aEnvironment.Commands().LookUp(head->String());
+                    // Try to find a built-in command
+                    if (evaluator)
+                    {
+                        evaluator->Evaluate(aResult, aEnvironment, *subList);
+                        goto FINISH;
+                    }
+
+                    else // Else try to find a user-defined function
+                    {
+                        LispUserFunction* userFunc;
+                        userFunc = GetUserFunction(aEnvironment, subList);
+                        CHECKPTR(userFunc);
+                        if (userFunc != NULL)
+                        {
+                            userFunc->Evaluate(aResult,aEnvironment,*subList);
+                            goto FINISH;
+                        }
+                    }
                 }
-                // Else try to find a user-defined function
                 else
                 {
-
-                    LispUserFunction* userFunc;
-
-                    userFunc = GetUserFunction(aEnvironment, subList);
-                    CHECKPTR(userFunc);
-                    if (userFunc != NULL)
-                    {
-//TEST                         aExpression.Get()->SetEvalFunc(userFunc);
-                        userFunc->Evaluate(aResult,aEnvironment,*subList);
-                        goto FINISH;
-                    }
-#if 1
-                    else
-                    {
-//                        printf("**** Undef: %s\n",head->String()->String());
-
-                        ReturnUnEvaluated(aResult,*subList,aEnvironment);
-                        /*TODO remove?
-                         {
-                            LispPtr full;
-                            full.Set(subList->Get()->Copy(LispFalse));
-                            aResult.Set(LispSubList::New(full.Get()));
-
-                            LispIterator iter(*subList);
-                            iter.GoNext();
-
-
-                            while (iter() != NULL)
-                            {
-                                LispPtr next;
-                                aEnvironment.iEvaluator->Eval(aEnvironment, next, *iter.Ptr());
-                                full.Get()->Next().Set(next.Get());
-                                full.Set(next.Get());
-                                iter.GoNext();
-                            }
-                            full.Get()->Next().Set(NULL);
-                        }
-                        */
-
-
-                        goto FINISH;
-                    }
-#endif
+                    //printf("ApplyPure!\n");
+                    LispPtr oper;
+                    LispPtr args2;
+                    oper.Set(subList->Get());
+                    args2.Set(subList->Get()->Next().Get());
+                    InternalApplyPure(oper,args2,aResult,aEnvironment);
+                    goto FINISH;
                 }
+                //printf("**** Undef: %s\n",head->String()->String());
+                ReturnUnEvaluated(aResult,*subList,aEnvironment);
+                goto FINISH;
             }
         }
         aResult.Set(aExpression.Get()->Copy(LispFalse));
