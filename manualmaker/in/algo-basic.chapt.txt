@@ -429,13 +429,13 @@ So we should increase precision again by $Ln(P)/Ln(10)$ digits plus a few guard 
 As an example, to compute $Sin(10)$ to $50$ decimal digits with this method, we need a working precision of about $60$ digits, while to compute $Sin(1000)$ we need to work with about $490$ digits.
 This shows how inefficient the Taylor series for $Sin(x)$ becomes for large arguments $x$.
 A simple transformation $x=2*Pi*n+x'$ would have reduced $x$ to at most 7, and the unnecessary computations with $490$ digits would be avoided.
-The main cause of this inefficiency is that we have to subtract extremely large numbers of order $Exp(10^M)$ to get a relatively small result of order $1$.
+The main cause of this inefficiency is that we have to add and subtract extremely large numbers of order $Exp(10^M)$ to get a relatively small result of order $1$.
 
 We find that the method of Taylor series for $Sin(x)$ at large $x$ is highly inefficient because of round-off error and should be complemented by other methods.
 
 
 
-		Basic arbitrary-precision arithmetic
+		Basic arbitrary-precision arithmetic 
 
 *A arbitrary-precision computation!Yacas internal math
 

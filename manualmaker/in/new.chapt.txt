@@ -451,16 +451,16 @@ Equivalent Yacas script code is given, as well as examples of C++ usage.
 1. Input/output operations.
 *	Construct a number from a string in given base.
 The format is the standard integer, fixed-point and floating-point representations of numbers.
-When the string does not contain the period character "{.}" or the exponent character "{e}" (the exponent character "{@}" can be also used for $base>10$),
+When the string does not contain the period character "{.}" or the exponent character "{e}" (the exponent character "{@}" should be used for $base>10$),
 the result is an integer number and the precision argument is ignored.
 Otherwise, the result is a floating-point number
 rounded to a given number of <i>base digits</i>.
 	x.SetTo("2.e-19", 100, 10);
 Here we encounter a problem of ambiguous hexadecimal exponent:
-	x.SetTo("2A8C.E2", 100, 16);
+	x.SetTo("2a8c.e2", 100, 16);
 It is not clear whether the above number is in exponential notation or not.
-But this is hopefully not a critical issue.
-We may assume that the exponent character for $base>10$ is "{@}".
+But this is hopefully not a frequently encountered situation.
+We assume that the exponent character for $base>10$ is "{@}" and not "{e}".
 *	Print a number to a string in a given precision and in a given base.
 The precision is given as the number of digits in the given base.
 The value should be rounded to that number of significant base digits.
@@ -500,11 +500,22 @@ Note that here "precision" always means the number of significant <i>bits</i>, i
 *	Compute the integer part of a number, {x := Floor(y)}.
 This function should round toward arithmetically smaller integers, as usual.
 	x.Floor(y);
-*	Truncate (or expand) the number {x} to a given floating-point precision of {n} bits.
+*	Report the current precision of a number {x} in bits.
+	prec=x.GetPrecision();
+Every floating-point number contains information about how many significant bits of mantissa it currently has.
+(A particular implementation may hold more bits for convenience but they may not be guaranteed to be correct.)
+Integer numbers are always exact and do not have a concept of precision.
+This function is undefined on integers.
+The precision of a given number is changed automatically by arithmetic operations (due to round-off errors), by conversions from strings (to the given precision), or manually by the function {Precision}.
+It is not strictly guaranteed that {Precision} returns the number of correct digits.
+Rather, this number of digits is intended as an upper limit of the real achieved precision and as a rough measure of round-off errors.
+(It is difficult to accurately track the round-off errors accumulated after many operations, without a time-consuming interval arithmetic or another similar technique.)
+*	Set the precision of a number {x} and truncate (or expand) it to a given floating-point precision of {n} bits.
 This has an effect of converting the number to the floating-point type with {n} significant bits of mantissa.
+(No effect on integers.)
 Note that the {Floor} function is not similar to {Precision} because
-1) {Floor} converts to an integer value while {Precision} converts to a floating-point value,
-2) {Floor} always decreases the number while {Precision} gives the best approximation.
+1) {Floor} always converts to an integer value while {Precision} converts generally to a floating-point value,
+2) {Floor} always decreases the number while {Precision} tries to find the closest approximation.
 For example, if $x= -1123.38$, then {x.Precision(1)} should return {-1024.}, since that's the best one-bit floating-point approximation.
 However, {Floor(-1123.38)} returns {-1124}.
 	x.Precision(300);
