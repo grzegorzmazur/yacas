@@ -995,7 +995,7 @@ int main(void)
 
 	Next("Floor()");
 	x.BecomeFloat();
-	Check(!x.IsInt(), "have a float value");
+	Check(!x.IsInt(), "x has float type");
 	x.Precision(100);
 	x.SetTo(1.7);
 	y.Floor(x);
@@ -1563,6 +1563,13 @@ int main(void)
 		Check(y.IsIntValue(), "subtracted to integer value");
 		CheckValues(y.Double(), 181.0, "y has correct value");
 		CheckStringValue(y, "181.", 20, 10, "y prints correctly"); 
+		
+		// imitating the Yacas calculation, FloatIsInt(5.1*10)
+		x.SetTo("5.1", 34, 10);
+		y.SetTo(10);
+		Check(!x.IsIntValue(), "x has float value");
+		x.Multiply(x,y,34);
+		Check(x.IsIntValue(), "10*x has int value");
 		
 		x.SetTo("101.00010", 0, 2);
 		CheckValues(x.GetPrecision(), 8, "x has 8 bits");
