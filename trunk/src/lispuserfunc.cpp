@@ -46,15 +46,6 @@ void LispMultiUserFunction::DeleteBase(LispInt aArity)
 
 LispMultiUserFunction::~LispMultiUserFunction()
 {
-    /*TODO remove???
-     LispInt i;
-    LispInt nrc=iFunctions.NrItems();
-    for (i=0;i<nrc;i++)
-    {
-        delete iFunctions[i];
-        iFunctions[i] = NULL;
-        }
-        */
 }
 
 void LispMultiUserFunction::HoldArgument(LispStringPtr aVariable)

@@ -22,16 +22,6 @@
 class LispDefFiles;
 class InputDirectories : public CDeletingArrayGrower<LispStringPtr>
 {
-    /*TODO remove???
-     public:
-    inline ~InputDirectories()
-    {
-        LispInt nritems = NrItems();
-        LispInt j;
-        for (j=0;j<nritems;j++)
-            delete Item(j);
-            }
-            */
 };
 
 class LispInput;

@@ -25,7 +25,6 @@ void DecNrObjects()
 
 LispObject::LispObject()
 {
-//TODO remove?    iReferenceCount = 0;
 #ifdef YACAS_DEBUG
     IncNrObjects();
 #endif

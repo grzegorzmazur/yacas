@@ -56,4 +56,8 @@ Function ("IsBoolean", {x})
 0 # IsBoolType(False) <-- True;
 1 # IsBoolType(_anythingelse) <-- False;
 
+/* Predicates on matrices */
+IsHermitean(A_IsMatrix) <-- (Conjugate(Transpose(A))=A);
+IsUnitary(A_IsMatrix) <-- (Transpose(Conjugate(A))*A = Identity(Length(A)));
+
 

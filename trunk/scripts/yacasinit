@@ -59,6 +59,7 @@ CntDefLoad("tensor");
 CntDefLoad("texform");
 CntDefLoad("logic");
 CntDefLoad("radsimp");
+CntDefLoad("pslq");
 
 /* set the help system. This can be overridden in ~/.yacasrc */
 

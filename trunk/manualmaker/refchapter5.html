@@ -65,6 +65,12 @@ EigenValues
 , <A HREF="refchapter5.html#EigenVectors" TARGET="Chapters">
 EigenVectors
 </A>
+, <A HREF="refchapter5.html#IsHermitean" TARGET="Chapters">
+IsHermitean
+</A>
+, <A HREF="refchapter5.html#IsUnitary" TARGET="Chapters">
+IsUnitary
+</A>
 , <HEAD><TITLE>Linear Algebra</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
 <BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
 <H1>
@@ -341,6 +347,84 @@ EigenValues
 </A>
 , <A HREF="ref.html#CharacteristicEquation" TARGET="Chapters">
 CharacteristicEquation
+</A>
+, <A NAME="IsHermitean">
+
+</A>
+<H3>
+<HR>IsHermitean
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+IsHermitean(A)
+<H5>
+Parameters:
+</H5>
+A - square matrix
+<H5>
+Description:
+</H5>
+IsHermitean(A) returns True if A is Hermitean and False
+otherwise. A is a Hermitean matrix iff Conjugate(Transpose(A))=A.
+For real matrices A is tested to be symmetric.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> IsHermitean({{0,I},{-I,0}})
+Out> True;
+In> IsHermitean({{0,I},{2,0}})
+Out> False;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#IsUnitary" TARGET="Chapters">
+IsUnitary
+</A>
+, <A NAME="IsUnitary">
+
+</A>
+<H3>
+<HR>IsUnitary
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+IsUnitary(A)
+<H5>
+Parameters:
+</H5>
+A - square matrix
+<H5>
+Description:
+</H5>
+This function tries to find out if A is unitary.
+
+Matrix A is orthogonal iff A^(-1) = Transpose(Conjugate(A)). This is 
+equivalent to the fact that the columns of A build an orthonormal system 
+(in respect to the scalar product defined by InProduct).
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> IsUnitary({{0,I},{-I,0}})
+Out> True;
+In> IsUnitary({{0,I},{2,0}})
+Out> False;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#IsHermitean" TARGET="Chapters">
+IsHermitean
 </A>
 , 
 </BODY>

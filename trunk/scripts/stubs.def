@@ -16,4 +16,7 @@ Sqrt
 Abs
 Sign
 Lcm
+Floor
+Ceil
+Round
 }

@@ -563,7 +563,126 @@ SeeAlso({"Sin","Cos","Tan"});
 
 
 
+AddAnchor("Floor");
+SubSection()"Floor";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Floor(x)";
 
+Topical()"Parameters";
+Text()"x - a number";
+
+Topical()"Description";
+Text()
+"Floor returns the largest integer smaller than x.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Floor(1.1)
+Out> 1;
+In> Floor(-1.1)
+Out> -2;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Ceil","Round"});
+
+
+AddAnchor("Ceil");
+SubSection()"Ceil";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Ceil(x)";
+
+Topical()"Parameters";
+Text()"x - a number";
+
+Topical()"Description";
+Text()
+"Ceil returns the smallest integer larger than x.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Ceil(1.1)
+Out> 2;
+In> Ceil(-1.1)
+Out> -1;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Floor","Round"});
+
+
+AddAnchor("Round");
+SubSection()"Round";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Round(x)";
+
+Topical()"Parameters";
+Text()"x - a number";
+
+Topical()"Description";
+Text()
+"Round returns the integer closest to x. 0.5 is rounded down.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Round(1.49)
+Out> 1;
+In> Round(1.51)
+Out> 2;
+In> Round(-1.49)
+Out> -1;
+In> Round(-1.51)
+Out> -2;
+
+");
+
+Topical()"See Also"; 
+SeeAlso({"Floor","Ceil"});
+
+
+
+
+
+
+AddAnchor("Pslq");
+SubSection()"Pslq";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Pslq(xlist,precision)";
+
+Topical()"Parameters";
+Text()
+"xlist - list of floating point numbers <br>
+precision - required number of digits precision of calculation
+";
+
+Topical()"Description";
+Text()
+"The Pslq is an integer relation detection algorithm.
+
+Given a list of constants x find coefficients sol[i] such that
+":HtmlTerm("sum(sol[i]*x[i], i=1..n) = 0"):" (where n=Length(x)).
+x is the list of real expressions. N(x[i]) must evaluate to floating
+point numbers.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Pslq({ 2*Pi+3*Exp(1) , Pi , Exp(1) },20)
+Out> {1,-2,-3};
+"):
+"Note: in this example the system detects correctly that
+":HtmlTerm("1* (2*Pi+3*E) -2*(Pi) - 3*(E) = 0"):"";
+
+Topical()"See Also"; 
+SeeAlso({});
 
 
 

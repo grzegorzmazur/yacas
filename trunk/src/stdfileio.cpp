@@ -5,66 +5,7 @@
 // For lack of better place to put it...
 InputStatus::~InputStatus()
 {
-	if(iLineString != '\0')
-		PlatFree(iLineString);
 }
-
-// TODO: use a LispLocalFile?  Problem:  would have to pass in
-// a LispEnvironment address, when we don't need it for anything
-// else
-LispCharPtr InputStatus::Line(InputDirectories& aInputDirectories)
-{
-    FILE *iFile;
-    LispChar c;
-    LispInt iFileLine = 0, i = 0;
-    LispUnsLong iFileSize1, iFileSize2;
-
-    iFile = fopen(iFileName,"r");
-    while(iFile == 0 && i < aInputDirectories.NrItems())
-    {
-        LispChar othername[1024]; //TODO
-        strcpy(othername,aInputDirectories[i]->String());
-        strcat(othername,iFileName);
-        iFile = fopen(othername,"r");
-        i++;
-    }
-
-	if(iFile == 0) {
-		iLineString = PlatAlloc(1*sizeof(LispChar));
-		iLineString[0] = '\0';
-		return iLineString;
-	}
-
-	// move to the error
-	while(iFileLine < iLineNumber-1 && !feof(iFile)) {
-		c=fgetc(iFile);
-		if (c == '\n')
-			iFileLine++;
-	}
-
-	// Start of line
-	iFileSize1 = ftell(iFile);
-
-	while(iFileLine < iLineNumber && !feof(iFile)) {
-		c=fgetc(iFile);
-		if (c == '\n')
-			iFileLine++;
-	}
-
-	// End of line
-	iFileSize2 = ftell(iFile);
-	iLineString = PlatAlloc((int)(iFileSize2-iFileSize1+1));
-
-	fseek(iFile,iFileSize1,SEEK_SET);
-
-	for(i = 0; i < iFileSize2-iFileSize1; i++)
-		iLineString[i] = fgetc(iFile);
-	iLineString[i] = '\0';
-
-	return iLineString;
-}
-
-
 
 
 StdFileInput::StdFileInput(FILE* aFile,InputStatus& aStatus)

@@ -323,17 +323,6 @@ void YacasPatternPredicateBase::SetPatternVariables(LispEnvironment& aEnvironmen
 
 YacasPatternPredicateBase::~YacasPatternPredicateBase()
 {
-    /*TODO remove???
-     LispInt i;
-    for (i=0;i<iParamMatchers.NrItems();i++)
-    {
-        delete iParamMatchers[i];
-    }
-    for (i=0;i<iPredicates.NrItems();i++)
-    {
-        delete iPredicates[i];
-        }
-        */
 }
 
 

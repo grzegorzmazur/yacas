@@ -1,4 +1,32 @@
 
+
+
+EndOfFile;
+
+belllist:= {1,1};
+10 # bell(n_IsInteger)_(Length(belllist)-1>=n) <--
+[
+  belllist[n+1];
+];
+
+20 # bell(n_IsPositiveInteger) <--
+[
+  Local(c, i, r);
+
+  r := 0;
+  c := 1;
+  For(i:=0,i<n,i++)
+  [
+     r := r+c*bell(i);
+     c := (c*(n-i-1)) / (i+1);
+  ];
+  belllist := DestructiveAppend(belllist,r);
+  r;
+];
+
+EndOfFile;
+
+
 Load("coeffer");
 IndexedFunction(_fie) <-- UnList(f:IndexedFunctionAux(fie));
 10 # IndexedFunctionAux(a_IsAtom) <-- {};
@@ -47,7 +75,7 @@ F(_x) <-- Substitute(x,"FPred","IndexedFunction");
 
 
 RuleBase("f",{i,j});
-10 # f(_i,_j)_(j<i)  <-- -f(j,i);
+10 # f(_i,_j)_(j<i)  <-- f(j,i);
 ff(_i,_j)<--
 [
   Local(eq);

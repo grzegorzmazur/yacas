@@ -194,7 +194,9 @@ Rule("Gcd",2,100,True)
 100 # Sign(_a)^n_IsEven <-- 1;
 100 # Sign(_a)^n_IsOdd <-- Sign(a);
 
-
+10 # Floor(x_IsNumber) <-- MathFloor(x);
+10 # Ceil (x_IsNumber) <-- MathCeil (x);
+10 # Round(x_IsNumber) <-- MathFloor(x+0.5);
 
 
 

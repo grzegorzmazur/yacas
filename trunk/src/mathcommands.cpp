@@ -348,7 +348,6 @@ void LispLength(LispEnvironment& aEnvironment, LispPtr& aResult,
         aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(s)));
         return;
     }
-    //hier
     GenericClass *gen = evaluated.Get()->Generic();
     if (gen != NULL)
     if (StrEqual(gen->TypeName(),"\"Array\""))
@@ -359,7 +358,6 @@ void LispLength(LispEnvironment& aEnvironment, LispPtr& aResult,
         aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(s)));
         return;
     }
-    //hier
     CHK_ISLIST(evaluated,1);
 }
 
@@ -434,13 +432,6 @@ void LispConcatenateStrings(LispEnvironment& aEnvironment, LispPtr& aResult,
         str->GrowTo(curlen+length-1);
         LispCharPtr put = &(*str)[curlen-1];
         PlatMemCopy(put+1,ptr+1,length-1);
-        /*TODO remove?
-         for (i=1;i<length;i++)
-        {
-            put[i] = ptr[i];
-        }
-        */
-        
         iter.GoNext();
         arg++;
     }
@@ -509,16 +500,6 @@ void LispFlatCopy(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispPtr copied;
     InternalFlatCopy(copied,*list.Get()->SubList());
     aResult.Set(LispSubList::New(copied.Get()));
-
-    /*TODO remove???
-     TESTARGS(2);
-    LispPtr evaluated;
-    InternalEval(aEnvironment, evaluated, Argument(aArguments,1));
-    CHK_ISLIST(evaluated,1);
-    LispPtr copied;
-    InternalFlatCopy(copied,*evaluated.Get()->SubList());
-    aResult.Set(LispSubList::New(copied.Get()));
-    */
 }
 
 
@@ -1017,8 +998,6 @@ void LispAtomize(LispEnvironment& aEnvironment, LispPtr& aResult,
     CHK_ARG(evaluated.Get() != NULL, 1);
     LispStringPtr orig = evaluated.Get()->String();
     CHK_ARG(orig != NULL, 1);
-    //HIER LispString oper;
-    //HIER InternalUnstringify(oper, orig);
     aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUpUnStringify(orig->String())));
 }
 
@@ -1067,7 +1046,6 @@ static void InternalRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
     TESTARGS(3);
     
     // Get operator
-//HIER    LispString oper;
     LispPtr args;
     LispStringPtr orig=NULL;
     
@@ -1077,7 +1055,6 @@ static void InternalRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
         InternalEval(aEnvironment, result, Argument(aArguments,1));
         orig = result.Get()->String();
         CHK_ARG(orig != NULL, 1);
-        //HIER InternalUnstringify(oper, orig);
         InternalEval(aEnvironment, args, Argument(aArguments,2));
     }
     else
@@ -1085,7 +1062,6 @@ static void InternalRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
         CHK_ARG(Argument(aArguments,1).Get() != NULL, 1);
         orig = Argument(aArguments,1).Get()->String();
         CHK_ARG(orig != NULL, 1);
-        //HIER InternalUnstringify(oper, orig);
         args.Set(Argument(aArguments,2).Get());
     }
     
@@ -1726,7 +1702,6 @@ void LispRightPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 
 
-//hier
 static LispInFixOperator* OperatorInfo(LispEnvironment& aEnvironment,
                                        LispPtr& aArguments,
                                        LispOperators & aOperators)
@@ -1889,12 +1864,7 @@ void LispFindFile(LispEnvironment& aEnvironment,LispPtr& aResult,
     LispChar filename[1024];//TODO FIXME
     InternalFindFile(oper.String(), aEnvironment.iInputDirectories,
                      filename);
-
     LispString res(filename,1);
-    
-
-    //HIER LispString result;
-    //HIER InternalStringify(result, &res);
     aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUpStringify(res.String())));
 }
 

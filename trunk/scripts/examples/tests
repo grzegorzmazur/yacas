@@ -42,6 +42,20 @@ Testing("Concat");
 Verify(Concat({a,b},{c,d}),{a,b,c,d});
 Verify(Hold(Concat({a,b},{c,d})),Concat({a,b},{c,d}));
 
+Testing("Rounding");
+Verify(Floor(1.2),1);
+Verify(Floor(-1.2),-2);
+Verify(Ceil(1.2),2);
+Verify(Ceil(-1.2),-1);
+Verify(Round(1.49),1);
+Verify(Round(1.51),2);
+Verify(Round(-1.49),-1);
+Verify(Round(-1.51),-2);
+
+Testing("Pslq");
+Verify(Pslq({ Pi+2*Exp(1) , Pi , Exp(1) },20),{1,-1,-2});
+Verify(Pslq({ 2*Pi+3*Exp(1) , Pi , Exp(1) },20),{1,-2,-3});
+
 Testing("ListOperations");
 Verify(Head({a,b,c}),a);
 Verify(Tail({a,b,c}),{b,c});
@@ -52,7 +66,16 @@ Verify(Listify(a(b,c)),{a,b,c});
 Verify(Delete({a,b,c},2),{a,c});
 Verify(Insert({a,c},2,b),{a,b,c});
 
-Testing("BooleanOperations");
+Testing("Matrix predicates");
+Verify(IsHermitean({{0,I},{-I,0}}),True);
+Verify(IsHermitean({{0,I},{-I,1}}),True);
+Verify(IsHermitean({{0,I},{-2*I,0}}),False);
+
+Verify(IsUnitary({{0,I},{-I,0}}),True);
+Verify(IsUnitary({{0,I},{-I,1}}),False);
+Verify(IsUnitary({{0,I},{-2*I,0}}),False);
+
+Testing("Boolean Operations");
 Verify(False And False,False);
 Verify(True And False,False);
 Verify(False And True,False);

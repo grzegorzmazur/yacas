@@ -521,6 +521,18 @@ Decimal
 , <A HREF="refchapter3.html#TruncRadian" TARGET="Chapters">
 TruncRadian
 </A>
+, <A HREF="refchapter3.html#Floor" TARGET="Chapters">
+Floor
+</A>
+, <A HREF="refchapter3.html#Ceil" TARGET="Chapters">
+Ceil
+</A>
+, <A HREF="refchapter3.html#Round" TARGET="Chapters">
+Round
+</A>
+, <A HREF="refchapter3.html#Pslq" TARGET="Chapters">
+Pslq
+</A>
 , <H1>
 Other operations on numbers
 </H1>
@@ -1140,7 +1152,165 @@ Cos
 , <A HREF="ref.html#Tan" TARGET="Chapters">
 Tan
 </A>
-, <p><HR><A NAME="c4">
+, <A NAME="Floor">
+
+</A>
+<H3>
+<HR>Floor
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Floor(x)
+<H5>
+Parameters:
+</H5>
+x - a number
+<H5>
+Description:
+</H5>
+Floor returns the largest integer smaller than x.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Floor(1.1)
+Out> 1;
+In> Floor(-1.1)
+Out> -2;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Ceil" TARGET="Chapters">
+Ceil
+</A>
+, <A HREF="ref.html#Round" TARGET="Chapters">
+Round
+</A>
+, <A NAME="Ceil">
+
+</A>
+<H3>
+<HR>Ceil
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Ceil(x)
+<H5>
+Parameters:
+</H5>
+x - a number
+<H5>
+Description:
+</H5>
+Ceil returns the smallest integer larger than x.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Ceil(1.1)
+Out> 2;
+In> Ceil(-1.1)
+Out> -1;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Floor" TARGET="Chapters">
+Floor
+</A>
+, <A HREF="ref.html#Round" TARGET="Chapters">
+Round
+</A>
+, <A NAME="Round">
+
+</A>
+<H3>
+<HR>Round
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Round(x)
+<H5>
+Parameters:
+</H5>
+x - a number
+<H5>
+Description:
+</H5>
+Round returns the integer closest to x. 0.5 is rounded down.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Round(1.49)
+Out> 1;
+In> Round(1.51)
+Out> 2;
+In> Round(-1.49)
+Out> -1;
+In> Round(-1.51)
+Out> -2;
+
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Floor" TARGET="Chapters">
+Floor
+</A>
+, <A HREF="ref.html#Ceil" TARGET="Chapters">
+Ceil
+</A>
+, <A NAME="Pslq">
+
+</A>
+<H3>
+<HR>Pslq
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Pslq(xlist,precision)
+<H5>
+Parameters:
+</H5>
+xlist - list of floating point numbers <br>
+precision - required number of digits precision of calculation
+
+<H5>
+Description:
+</H5>
+The Pslq is an integer relation detection algorithm.
+
+Given a list of constants x find coefficients sol[i] such that
+<B><TT>sum(sol[i]*x[i], i=1..n) = 0</TT></B> (where n=Length(x)).
+x is the list of real expressions. N(x[i]) must evaluate to floating
+point numbers.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Pslq({ 2*Pi+3*Exp(1) , Pi , Exp(1) },20)
+Out> {1,-2,-3};
+</PRE>
+</TABLE>
+Note: in this example the system detects correctly that
+<B><TT>1* (2*Pi+3*E) -2*(Pi) - 3*(E) = 0</TT></B>
+<H5>
+See Also:
+</H5>
+<p><HR><A NAME="c4">
 
 </A>
 <A HREF="refchapter4.html#Sin" TARGET="Chapters">
@@ -1976,6 +2146,12 @@ EigenValues
 , <A HREF="refchapter5.html#EigenVectors" TARGET="Chapters">
 EigenVectors
 </A>
+, <A HREF="refchapter5.html#IsHermitean" TARGET="Chapters">
+IsHermitean
+</A>
+, <A HREF="refchapter5.html#IsUnitary" TARGET="Chapters">
+IsUnitary
+</A>
 , <H1>
 Linear Algebra
 </H1>
@@ -2250,6 +2426,84 @@ EigenValues
 </A>
 , <A HREF="ref.html#CharacteristicEquation" TARGET="Chapters">
 CharacteristicEquation
+</A>
+, <A NAME="IsHermitean">
+
+</A>
+<H3>
+<HR>IsHermitean
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+IsHermitean(A)
+<H5>
+Parameters:
+</H5>
+A - square matrix
+<H5>
+Description:
+</H5>
+IsHermitean(A) returns True if A is Hermitean and False
+otherwise. A is a Hermitean matrix iff Conjugate(Transpose(A))=A.
+For real matrices A is tested to be symmetric.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> IsHermitean({{0,I},{-I,0}})
+Out> True;
+In> IsHermitean({{0,I},{2,0}})
+Out> False;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#IsUnitary" TARGET="Chapters">
+IsUnitary
+</A>
+, <A NAME="IsUnitary">
+
+</A>
+<H3>
+<HR>IsUnitary
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+IsUnitary(A)
+<H5>
+Parameters:
+</H5>
+A - square matrix
+<H5>
+Description:
+</H5>
+This function tries to find out if A is unitary.
+
+Matrix A is orthogonal iff A^(-1) = Transpose(Conjugate(A)). This is 
+equivalent to the fact that the columns of A build an orthonormal system 
+(in respect to the scalar product defined by InProduct).
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> IsUnitary({{0,I},{-I,0}})
+Out> True;
+In> IsUnitary({{0,I},{2,0}})
+Out> False;
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#IsHermitean" TARGET="Chapters">
+IsHermitean
 </A>
 , <p><HR><A NAME="c6">
 
