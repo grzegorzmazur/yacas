@@ -1,4 +1,4 @@
-*REM functions related to number theory
+*REM functions related to number theory[D
 
 			Number theory
 
@@ -691,7 +691,9 @@ This kind of computation is frequently used in number theory.
 This function computes the Ramanujan sum, i.e. the sum of the $n$-th powers of 
 the $k$-th primitive roots of the unit:
 
-$$ Sum(l,0,k-1, Exp(2*Pi*I*(l*n)/k)) $$.
+$$ Sum(l,1,k, Exp(2*Pi*I*(l*n)/k)) $$
+
+where l runs thought the integers between 1 and k-1 that are coprime to l.
 
 The computation is done by using the formula in Apostol,
 <i>Introduction to Analytic Theory</i> (Springer-Verlag), Theorem 8.6.
@@ -727,7 +729,7 @@ In order to compute this in a efficient way, we use the function
 of $x^(n/d)-1$ with $mu(d)=1$ , and in {poly2} the product of these polynomials
 with  $mu(d)= -1$. Finally we compute the quotient {poly1}/{poly2}.
 
-
+*SEE RamanujanSum
 
 *CMD PAdicExpand --- p-adic expansion
 *STD
@@ -803,3 +805,31 @@ The Jacobi symbol can be efficiently computed without knowing the full factoriza
 
 *SEE Gcd
 
+*CMD GaussianFactors --- factorization in Gaussian Integers
+*STD
+*CALL
+	Factors(z)
+
+*PARMS
+
+{z} -- Gaussian integer
+
+*DESC
+
+This function decomposes the Gaussian integer number {z} into a product of
+Gaussian prime factors. 
+
+The factorization is returned as a list of pairs. The first member of
+each pair is the factor, while the second member denotes the power to
+which this factor should be raised. So the factorization
+$x = p1^n1 * ... * p9^n9$
+is returned as {{{p1,n1}, ..., {p9,n9}}}.
+
+*E.G.
+
+	In> GaussianFactors(5);
+	Out> {{Complex(2,1),1},{Complex(2,-1),1}};
+	In> GaussianFactors(3+I);
+	Out> {{Complex(1,1),1},{Complex(2,-1},1}};
+
+*SEE Factors, IsGaussianPrime
