@@ -159,7 +159,7 @@ Function("Rationalize",{a})
 20 # ContFracDo(_n,_m,_depth) <-- 1/(Div(m,n) + ContFracDo(Mod(m,n),n,depth-1));
     
 10 # Decimal( n_IsInteger ) <-- {n,{0}};
-10 # Decimal( (_n) / (_d) ) <--
+10 # Decimal( (n_IsPositiveInteger) / (d_IsPositiveInteger) ) <--
 [
   Local(result,rev,first,period,repeat,static);
   result:={Div(n,d)};
@@ -171,6 +171,7 @@ Function("Rationalize",{a})
   static:=result[1 .. (first-1)];
   DestructiveAppend(static,repeat);
 ];
+20 # Decimal(_n/_m)_((n/m)<0) <-- "-":Decimal(-n/m);
 
 10 # Decimal(_result , _n , _d,_count ) <--
 [
