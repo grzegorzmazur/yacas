@@ -2,7 +2,7 @@ AM_CXXFLAGS = -DSCRIPT_DIR=\"$(scriptdir)\" $(NUMBERS_CFLAGS) $(DEBUG_FLAGS) $(S
 AM_CPPFLAGS = -I$(srcdir)/plat/linux32 $(NUMBERS_CFLAGS) $(DEBUG_FLAGS) $(SERVER_FLAGS)
 
 bin_PROGRAMS =  yacas
-noinst_PROGRAMS = testnum 
+noinst_PROGRAMS = mkfastprimes testnum 
 noinst_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la libltdl.la @NUMBERS_LIB@ 
 EXTRA_LTLIBRARIES = libgmpnumbers.la libyacasnumbers.la 
 
@@ -20,7 +20,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la libltdl.la @NUMBERS_LDFLAGS@
 yacas_LDFLAGS = -export-dynamic
-yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la
+yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c
 
 
 
@@ -37,6 +37,8 @@ testnum_SOURCES = testnum.cpp
 testnum_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la libltdl.la @NUMBERS_LDFLAGS@
 testnum_LDFLAGS = -export-dynamic
 testnum_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la
+
+mkfastprimes_SOURCES = mkfastprimes.cc 
 
 
 libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
@@ -115,7 +117,7 @@ CLEANFILES = fastprimes.c
 
 platmath.cpp: fastprimes.c
 
-fastprimes.c: mkfastprimes.pl
+fastprimes.c: mkfastprimes
 	perl $(srcdir)/mkfastprimes.pl > fastprimes.c
  
 yacas_include = $(datadir)/yacas/include
