@@ -98,6 +98,7 @@ SetHelpBrowser("lynx");
 
 /* The read-eval-print loop */
 RuleBase("REP",{});
+LocalSymbols(input,stringOut,result)
 Rule("REP",0,1,True)
 [
   Local(input,stringOut,result);
