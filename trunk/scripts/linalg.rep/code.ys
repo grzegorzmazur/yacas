@@ -299,7 +299,7 @@ Trace(matrix_IsList) <-- Tr(matrix);
 */
 
 x X y := CrossProduct(x,y);
-x . y := InProduct(x,y);
+// x . y := InProduct(x,y); // see Dot function below (dr)
 Commutator(x,y):=x*y-y*x;
 
 Function("VandermondeMatrix",{vector})[
@@ -504,4 +504,73 @@ LocalSymbols(x,i,n,m,aux,dim,result)
 //////
 //////
 
+//////
+// dot product for vectors and matrices (dr)
+//////
 
+_x . _y <-- Dot(x,y);
+
+LocalSymbols(Dot0,Dot1)
+[
+// vector . vector
+Dot(t1_IsVector,t2_IsVector)_(Length(t1)=Length(t2)) <--
+   Dot0(t1,t2,Length(t1));
+
+// matrix . vector
+Dot(t1_IsMatrix,t2_IsVector)_(Length(t1[1])=Length(t2)) <--
+[
+   Local(i,n,m,result);
+   n:=Length(t1);
+   m:=Length(t2);
+   result:=List();
+   For(i:=1,i<=n,i++)
+	DestructiveInsert(result,1,Dot0(t1[i],t2,m));
+   DestructiveReverse(result);
+];
+
+// vector . matrix
+Dot(t1_IsVector,t2_IsMatrix)_(Length(t1)=Length(t2)
+                               And Length(t2[1])>0) <--
+   Dot1(t1,t2,Length(t1),Length(t2[1]));
+
+// matrix . matrix
+Dot(t1_IsMatrix,t2_IsMatrix)_(Length(t1[1])=Length(t2)
+                                  And Length(t2[1])>0) <--
+[
+   Local(i,n,k,l,result);
+   n:=Length(t1);
+   k:=Length(t2);
+   l:=Length(t2[1]);
+   result:=List();  
+   For(i:=1,i<=n,i++)
+      DestructiveInsert(result,1,Dot1(t1[i],t2,k,l));
+   DestructiveReverse(result);
+];
+  
+// vector . vector
+Dot0(_t1,_t2,_n) <--
+[
+   Local(i,result);
+   result:=0;
+   For(i:=1,i<=n,i++)
+      result:=result+t1[i]*t2[i];
+   result;
+];
+  
+// vector . matrix
+// m vector length
+// n number of matrix cols
+Dot1(_t1,_t2,_m,_n) <--   
+[
+   Local(i,j,result);
+   result:=ZeroVector(n);
+   For(i:=1,i<=n,i++)
+      For(j:=1,j<=m,j++)
+         result[i]:=result[i]+t1[j]*t2[j][i];
+   result;
+];
+  
+]; // LocalSymbols(Dot0,Dot1)
+
+//////
+//////
