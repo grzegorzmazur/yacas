@@ -67,7 +67,7 @@ CntDefLoad("localrules.rep/code.ys");
 CntDefLoad("rabinmiller.rep/code.ys");
 CntDefLoad("orthopoly.rep/code.ys");
 CntDefLoad("openmath.rep/code.ys");
-
+CntDefLoad("multivar.rep/code.ys");
 /* set the help system. This can be overridden in ~/.yacasrc */
 
 SetHelpBrowser(browser):=

@@ -1,0 +1,371 @@
+
+/* Sparse multinomial representation */
+
+/*
+   - MakeMultiNomial(expression)
+     converts an expression to internal sparse multinomial format.
+     NormalForm converts back.
+
+New proposal for simplify:
+
+1) IsRational a in a+b or a*b etcetera: combine into one rational.
+2) if root expression is rational, call Simplify(a)/Simplify(b)
+   or even better: by dividing out the pp of the two (best is gcd).
+3) for normal expression: make multinomial, and return normalized
+   content*pp
+ */
+
+/* We need to include this one because we're extending NormalForm */
+/*TODO remove this dependency! */
+Use("univar.rep/code.ys");
+
+
+MultiSimp(_expr) <--
+[
+  Local(vars);
+  vars:=MultiExpressionList(expr);
+  MultiSimp2(MM(expr,vars));
+];
+
+10 # MultiSimp2(_a / _b) <--
+[
+  Local(c1,c2,gcd,cmn);
+
+  c1:=MultiContent(a);
+  c2:=MultiContent(b);
+
+  gcd:=Gcd(c1[2][1][2],c2[2][1][2]);
+  c1[2][1][2] := c1[2][1][2]/gcd;
+  c2[2][1][2] := c2[2][1][2]/gcd;
+
+  cmn:=Min(c1[2][1][1],c2[2][1][1]);
+  c1[2][1][1] := c1[2][1][1] - cmn;
+  c2[2][1][1] := c2[2][1][1] - cmn;
+
+  (NormalForm(c1)/NormalForm(c2))
+    *(NormalForm(MultiPrimitivePart(a))/NormalForm(MultiPrimitivePart(b)));
+];
+
+20 # MultiSimp2(expr_IsMulti) <--
+[
+  NormalForm(MultiContent(expr))*NormalForm(MultiPrimitivePart(expr));
+];
+30 # MultiSimp2(_expr) <-- expr;
+
+MultiExpressionList(_expr) <-- VarList(expr,"IsMultiExpression");
+10 # IsMultiExpression(_x + _y) <-- False;
+10 # IsMultiExpression(_x - _y) <-- False;
+10 # IsMultiExpression(   - _y) <-- False;
+10 # IsMultiExpression(_x * _y) <-- False;
+10 # IsMultiExpression(_x / _y) <-- False;
+10 # IsMultiExpression(_x ^ y_IsInteger) <-- False;
+10 # IsMultiExpression(x_IsConstant) <-- False;
+
+100 # IsMultiExpression(_x) <-- True;
+
+
+
+10 # IsMulti(MultiNomial(vars_IsList,terms_IsList)) <-- True;
+20 # IsMulti(_anything) <-- False;
+
+
+
+RuleBase("MultiNomial",{vars,terms});
+
+
+10 # NormalForm(x_IsMulti/y_IsMulti) <-- NormalForm(x)/NormalForm(y);
+
+20 # NormalForm(MultiNomial(vars_IsList,terms_IsList)) <--
+[
+  Local(result);
+  result:=0;
+  ForEach(t,terms)
+  [
+    result := result + t[2] * Factorize(vars^(t[1]));
+  ];
+  result;
+];
+
+MultiContent(MultiNomial(vars_IsList,terms_IsList))
+<--
+[
+  Local(least,list);
+  Set(list,Transpose(terms));
+  Set(least, Min(list[1]));
+  MultiNomial(vars,{{least,Gcd(list[2])}});
+];
+
+MultiPrimitivePart(_multi)
+<--
+[
+  Local(cont);
+  cont:=MultiContent(multi);
+  cont := MultiNomial(cont[1],{{-cont[2][1][1],1/cont[2][1][2]}});
+  MultiNomialMultiply(multi, cont);
+];
+
+
+MM(_expr) <--  MM(expr,MultiExpressionList(expr));
+MM(_expr,_vars) <--  MakeMultiNomial(expr,vars);
+
+MakeMultiNomial(_expr) <-- MakeMultiNomial(ExpandBrackets(expr),MultiExpressionList(expr));
+
+LocalSymbols(a,vars)  [
+  10 #  MakeMultiNomial(a_IsConstant,vars_IsList) <--
+        MultiNomial(vars,{{FillList(0,Length(vars)),a}});
+];
+
+
+LocalSymbols(a,vars,pow)  [
+  20 #  MultiSingleFactor(_vars,_a,_pow) <--
+    [
+//Echo({vars,a,pow});
+      Local(term);
+      term:={FillList(0,Length(vars)),1};
+      term[1][Find(vars,a)] := pow;
+      MultiNomial(vars,{term});
+    ];
+];
+
+LocalSymbols(a,vars)  [
+  20 #  MakeMultiNomial(_a,vars_IsList)_(Contains(vars,a)) <-- MultiSingleFactor(vars,a,1);
+];
+
+
+LocalSymbols(x,y,vars)  [
+  30 #  MakeMultiNomial(_x + _y,vars_IsList) <--
+        MakeMultiNomial(x,vars) + MakeMultiNomial(y,vars);
+];
+LocalSymbols(x,y,vars)  [
+  30 #  MakeMultiNomial(_x * _y,vars_IsList) <--
+        MakeMultiNomial(x,vars) * MakeMultiNomial(y,vars);
+];
+
+LocalSymbols(x,y,vars)  [
+  30 #  MakeMultiNomial(_x / _y,vars_IsList) <--
+        MakeMultiNomial(x,vars)/MakeMultiNomial(y,vars);
+  ];
+
+
+
+MultiNomial(_vars,_x) + MultiNomial(_vars,_y) <--
+	   MultiNomialAdd(MultiNomial(vars,x), MultiNomial(vars,y));
+MultiNomial(_vars,_x) * MultiNomial(_vars,_y) <--
+           MultiNomialMultiply(MultiNomial(vars,x), MultiNomial(vars,y));
+MultiNomial(_vars,_x) - MultiNomial(_vars,_y) <--
+        MultiNomialAdd(MultiNomial(vars,x), MultiNomialNegate(MultiNomial(vars,y)));
+                      - MultiNomial(_vars,_y) <--
+        MultiNomialNegate(MultiNomial(vars,y));
+
+- MultiNomial(_vars,_x) <--
+        MultiNomialNegate(MultiNomial(vars,x));
+x_IsMulti + (y_IsMulti/z_IsMulti) <-- (x*z+y)/z;
+(y_IsMulti/z_IsMulti) + x_IsMulti <-- (x*z+y)/z;
+
+(y_IsMulti/z_IsMulti) + (x_IsMulti/w_IsMulti) <-- (y*w+x*z)/(z*w);
+(y_IsMulti/z_IsMulti) - (x_IsMulti/w_IsMulti) <-- (y*w-x*z)/(z*w);
+
+(y_IsMulti/z_IsMulti) * (x_IsMulti/w_IsMulti) <-- (y*x)/(z*w);
+(y_IsMulti/z_IsMulti) / (x_IsMulti/w_IsMulti) <-- (y*w)/(z*x);
+
+x_IsMulti - (y_IsMulti/z_IsMulti) <-- (x*z-y)/z;
+(y_IsMulti/z_IsMulti) - x_IsMulti <-- (y-x*z)/z;
+(a_IsMulti/(c_IsMulti/b_IsMulti))    <-- (a*b)/c;
+((a_IsMulti/c_IsMulti)/b_IsMulti)    <-- a/(b*c);
+((a_IsMulti/b_IsMulti) * c_IsMulti)  <-- (a*c)/b;
+(a_IsMulti * (c_IsMulti/b_IsMulti))  <-- (a*c)/b;
+- ((a_IsMulti)/(b_IsMulti))         <-- (-a)/b;
+
+
+LocalSymbols(x,vars) [
+  30 #  MakeMultiNomial(- _x,vars_IsList) <--
+        [
+          -MakeMultiNomial(x,vars);
+        ];
+];
+
+LocalSymbols(x,y,vars) [
+  30 #  MakeMultiNomial(_x - _y,vars_IsList) <--
+        MakeMultiNomial(x,vars) - MakeMultiNomial(y,vars);
+];
+
+LocalSymbols(x,n,vars)  [
+  30 #  MakeMultiNomial(_x ^ n_IsInteger,vars_IsList)_(Contains(vars,x)) <--
+	MultiSingleFactor(vars,x,n);
+];
+
+LocalSymbols(x,n,vars)  [
+  40 #  MakeMultiNomial(_x ^ n_IsPositiveInteger,vars_IsList) <--
+	[
+          Local(mult,result);
+          Set(mult,MakeMultiNomial(x,vars));
+          Set(result,MakeMultiNomial(1,vars));
+	  While(n>0)
+          [
+            If(n&1 != 0, Set(result, MultiNomialMultiply(result,mult)));
+            Set(n,n>>1);
+            Set(mult,MultiNomialMultiply(mult,mult));
+          ];
+          result;
+        ];
+];
+
+LocalSymbols(x,vars)  [
+  100 #  MakeMultiNomial(x_IsFunction,vars_IsList) <--
+  [
+//Echo({"Adding unknown",x});
+         MultiSingleFactor(vars,x,1);
+  ];
+];
+
+MultiNomialAdd(MultiNomial(_vars,_terms1),MultiNomial(_vars,_terms2)) <--
+[
+  ForEach(t,terms2) MultiAddTerm(terms1,t);
+  MultiNomial(vars,terms1);
+];
+
+MultiTermLess({_deg1,_fact1},{_deg2,_fact2}) <--
+  [
+    Local(deg);
+    deg := deg1-deg2;
+    While(deg != {} And Head(deg) = 0) [ deg := Tail(deg);];
+    if (deg = {})
+    [
+      if (fact1-fact2 < 0) True else False;
+    ]
+    else
+    [
+      if (deg[1] < 0) True else False;
+    ];
+  ];
+10 # MultiAddTerm(_terms,_t)_(Assoc(t[1],terms) = Empty) <--
+     [
+       Local(i,nr);
+       nr:=Length(terms);
+       i:=1;
+       While (i<=nr And MultiTermLess(t,terms[i])) i++;
+       DestructiveInsert(terms,i,t);
+       /* DestructiveAppend(terms,t); */
+     ];
+20 # MultiAddTerm(_terms,_t) <--
+     [
+       Local(as);
+       as := Assoc(t[1],terms);
+       as[2] := as[2] + t[2];
+     ];
+
+
+MultiNomialMultiply(MultiNomial(_vars,_terms1),MultiNomial(_vars,_terms2)) <--
+[
+  Local(result,t);
+  result := {};
+  ForEach(t1,terms1)
+    ForEach(t2,terms2)
+    [
+      t := FlatCopy(t1);
+      t[1] := t[1] + t2[1];
+      t[2] := t[2] * t2[2];
+      MultiAddTerm(result,t);
+    ];
+  MultiNomial(vars,result);
+];
+
+10 # MultiNomialMultiply(_a,_b) <--
+[
+  Echo({"ERROR!",Type(a),Type(b)});
+];
+
+MultiNomialNegate(MultiNomial(_vars,_terms)) <--
+[
+  ForEach(t,terms) [t[2] := -t[2]; ];
+  MultiNomial(vars,terms);
+];
+
+
+
+10 # MultiDegree(MultiNomial(_vars,{})) <-- FillList(-Infinity,Length(vars));
+20 # MultiDegree(MultiNomial(_vars,_terms)) <-- Head(Head(terms));
+
+10 # MultiLeadingCoef(MultiNomial(_vars,{})) <-- 0;
+20 # MultiLeadingCoef(MultiNomial(_vars,_terms)) <-- (Head(terms)[2]);
+
+10 # MultiLeadingMono(MultiNomial(_vars,{})) <-- 0;
+20 # MultiLeadingMono(MultiNomial(_vars,_terms)) <-- Factorize(vars^(Head(Head(terms))));
+
+20 # MultiLeadingTerm(_m) <-- MultiLeadingCoef(m) * MultiLeadingMono(m);
+
+/*
+MultiDivide(_f,glist_IsList) <--
+[
+  Local(i,v,g,nr,q,r,p);
+  v:=VarList({f,glist});
+  f:=MakeMultiNomial(f,v);
+  nr := Length(glist);
+  g:=FillList(0,nr);
+  For(i:=1,i<=nr,i++)
+  [
+    g[i] := MakeMultiNomial(glist,v);
+  ];
+
+  q:=FillList(0,nr);
+  r:=0;
+  p:=f;
+  While (p != 0)
+  [
+    For(i:=1,i<=nr,i++)
+    [
+      if (MultiTermLess({MultiDegree(g[i])[1],1}, {MultiDegree(p)[1],1}))
+      [
+        Local(ff);
+        ff := ...;
+        q[i] := q[i] + ff;
+        p := p - ff*g[i];
+        nr:=i+2;
+      ];
+    ];
+    if (i = nr+1)
+    [
+      Local(ff);
+      ff := ...;
+      r := r + ff;
+      p := p - ff;
+    ];
+  ];
+  {q,r};
+];
+*/
+
+
+
+
+/*
+try(f):=
+[
+  Echo({"input",f});
+  Local(ms);
+  ms:=MultiSimp(f);
+  Echo({"output",ms});
+  Echo({});
+];
+//try(D(x,4)Exp((-x^2)/2));
+
+tst:= (-2*m^3*y)/M^2-(m^2*y)/M+m*y+1/(1/(2*y*m+(-6*y*m^2)/M+(4*m^3*y)/M^2)+1/((-6*m^2*y)/M+(4*m^3*y)/M^2+2*y*m));
+//try(1/(1+1/x));
+//try(1/(1+1/(1+1/x)));
+
+tryfull():=
+[
+  exp:=1/x;
+  While(True)
+  [
+    try(exp);
+    exp:=1/(1+exp);
+  ];
+];
+
+//try(1/(1+1/(1+1/(1+1/x))));
+//try(tst);
+
+//(-2 m^3 y)/M^2-(m^2 y)/M+m y+1/(1/(2 y m+(-6 y m^2)/M+(4 m^3 y)/M^2)+1/((-6 m^2 y)/M+(4 m^3 y)/M^2+2 y m))
+
+*/
