@@ -105,7 +105,7 @@ Function("IsSquareMatrix",{p,x}) IsMatrix(p,x) And Length(x)=Length(x[1]);
 
 ]; // LocalSymbols(p,x)
 
-
+/* changed definition of IsRational, Nobbi 030529
 Function("IsRational",{aLeft}) Type(aLeft) = "/";
 
 Function("IsRationalNumeric",{aLeft})
@@ -119,11 +119,25 @@ IsRationalOrNumber(_x) <-- (IsNumber(x) Or IsRationalNumeric(x));
 10 # IsRationalOrInteger(x_IsInteger / y_IsInteger) <-- True;
 20 # IsRationalOrInteger(_x) <-- False;
 
+*/
+
+10 # IsRational(x_IsInteger) <-- True;
+10 # IsRational(x_IsInteger / y_IsInteger) <-- True;
+10 # IsRational(-(x_IsInteger / y_IsInteger)) <-- True;
+60000 # IsRational(_x) <-- False;
+
+10 # IsRationalOrNumber(x_IsNumber) <-- True;
+10 # IsRationalOrNumber(x_IsNumber / y_IsNumber) <-- True;
+10 # IsRationalOrNumber(-(x_IsNumber / y_IsNumber)) <-- True;
+60000 # IsRationalOrNumber(_x) <-- False;
+
+
 IsNegativeNumber(x):= IsNumber(x) And x < 0;
+IsNonNegativeNumber(x):= IsNumber(x) And x >= 0;
 IsPositiveNumber(x):= IsNumber(x) And x > 0;
 
 IsNegativeInteger(x):= IsInteger(x) And x < 0;
-IsNonNegativeInteger(x):=IsInteger(x) And x >= 0;
+IsNonNegativeInteger(x):= IsInteger(x) And x >= 0;
 IsPositiveInteger(x):= IsInteger(x) And x > 0;
 
 
@@ -133,13 +147,16 @@ IsPositiveInteger(x):= IsInteger(x) And x > 0;
 */
 
 10 # IsZero(x_IsNumber) <-- ( MathAbs(x)  < MathPower(10, -GetPrecision()));
-10 # IsNotZero(x_IsNumber)       <-- ( MathAbs(x)  > MathPower(10, -GetPrecision()));
+60000 # IsZero(_x) <-- False;
 
+10 # IsNotZero(x_IsNumber) <-- ( MathAbs(x)  > MathPower(10, -GetPrecision()));
 10 # IsNotZero(x_IsInfinity) <-- True;
-1000 # IsZero(_n) <-- False;
-1000 # IsNotZero(_n) <-- False;
+60000 # IsNotZero(_x) <-- False;
 
 IsNonZeroInteger(x) := (IsInteger(x) And x != 0);
+
+10 # IsOne(x_IsNumber) <-- IsZero(MathSubtract(x,1));
+60000 # IsOne(_x) <-- False;
 
 IsEven(n) := IsInteger(n) And ( BitAnd(n,1)  = 0 );
 IsOdd(n)  := IsInteger(n) And ( BitAnd(n,1)  = 1 );
@@ -155,7 +172,7 @@ IsOddFunction(f,x):= (f = Eval(-Subst(x,-x)f));
 // cases for f*Infinity where f can be guaranteed to not be zero
 11 # IsInfinity(Sign(_x)*y_IsInfinity) <-- True;
 
-20 # IsInfinity(_x) <-- False;
+60000 # IsInfinity(_x) <-- False;
 
 IsConstant(_n) <-- (VarList(n) = {});
 
@@ -180,7 +197,7 @@ IsNegativeReal(_r) <--
 
 
 /* Predicates on matrices */
-IsDiagonal(A_IsMatrix) <-- 
+IsDiagonal(A_IsMatrix) <--
 [
 	Local(i,j,m,n,result);
 	m:=Length(A);
@@ -204,10 +221,10 @@ IsUpperTriangular(A_IsMatrix) <--
         Local(i,j,m,n,result);
         m:=Length(A);
         n:=Length(A[1]);
-        i:=2; 
+        i:=2;
         result:=(m=n);
         While(i<=m And result)
-        [ 
+        [
                 j:=1;
                 While(j<=n And result)
                 [
@@ -217,7 +234,7 @@ IsUpperTriangular(A_IsMatrix) <--
                 i++;
         ];
         result;
-]; 
+];
 IsLowerTriangular(A_IsMatrix) <-- (IsUpperTriangular(Transpose(A)));
 IsSkewSymmetric(A_IsMatrix) <-- (Transpose(A)=(-1*A));
 IsHermitian(A_IsMatrix) <-- (Conjugate(Transpose(A))=A);

@@ -176,7 +176,7 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 4 # Gcd(Sqrt(n_IsInteger),m_IsInteger) <-- Sqrt(Gcd(n,m^2));
 4 # Gcd(n_IsInteger,Sqrt(m_IsInteger)) <-- Sqrt(Gcd(n^2,m));
 
-5 # Gcd(n_IsRationalOrInteger,m_IsRationalOrInteger) <--
+5 # Gcd(n_IsRational,m_IsRational) <--
 [
   Gcd(Numer(n),Numer(m))/Lcm(Denom(n),Denom(m));
 ];
@@ -268,6 +268,8 @@ Rule("Gcd",2,100,True)
 5 # Round(Infinity) <-- Infinity;
 5 # Round(-Infinity) <-- -Infinity;
 5 # Round(Undefined) <-- Undefined;
+
+/* Changed by Nobbi before redefinition of Rational
 10 # Floor(x_IsNumber) <-- MathFloor(x);
 10 # Ceil (x_IsNumber) <-- MathCeil (x);
 10 # Round(x_IsNumber) <-- MathFloor(x+0.5);
@@ -275,9 +277,11 @@ Rule("Gcd",2,100,True)
 20 # Floor(x_IsRational) _ (IsNumber(Numer(x)) And IsNumber(Denom(x))) <-- MathFloor(N(x));
 20 # Ceil (x_IsRational) _ (IsNumber(Numer(x)) And IsNumber(Denom(x))) <-- MathCeil (N(x));
 20 # Round(x_IsRational) _ (IsNumber(Numer(x)) And IsNumber(Denom(x))) <-- MathFloor(N(x+0.5));
-20 # Round(x_IsComplex)  _ (IsRationalOrNumber(Re(x)) And IsRationalOrNumber(Im(x)) ) 
+*/
+
+10 # Floor(x_IsRationalOrNumber) <-- MathFloor(N(x));
+10 # Ceil (x_IsRationalOrNumber) <-- MathCeil (N(x));
+10 # Round(x_IsRationalOrNumber) <-- MathFloor(N(x+0.5));
+
+20 # Round(x_IsComplex)  _ (IsRationalOrNumber(Re(x)) And IsRationalOrNumber(Im(x)) )
 		<-- MathFloor(N(Re(x)+0.5)) + MathFloor(N(Im(x)+0.5))*I;
-
-
-
-

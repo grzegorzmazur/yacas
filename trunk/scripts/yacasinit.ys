@@ -53,6 +53,7 @@ Use("deffunc.rep/code.ys");
 
 Use("constants.rep/code.ys");
 Use("standard.ys");
+Use("stdarith.ys");
 
 // at this point arithmetic can be used
 

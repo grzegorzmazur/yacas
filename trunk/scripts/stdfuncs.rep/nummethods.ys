@@ -193,10 +193,10 @@ Function() MultiplyNum(x);
 
 10 # MultiplyNum(x_IsList)_(Length(x)>1) <-- MultiplyNum(Head(x), Tail(x));
 
-10 # MultiplyNum(x_IsRationalOrInteger, y_IsRationalOrNumber) <--
+10 # MultiplyNum(x_IsRational, y_IsRationalOrNumber) <--
 [
 	If(
-		IsRational(y),
+        Type(y) = "/",  // IsRational(y), changed by Nobbi before redefinition of IsRational
 		MathDivide(Numer(x)*Numer(y), Denom(x)*Denom(y)),
 		// y is floating-point
 		// avoid multiplication or division by 1
@@ -212,7 +212,7 @@ Function() MultiplyNum(x);
 	);
 ];
 
-20 # MultiplyNum(x_IsNumber, y_IsRationalOrInteger) <-- MultiplyNum(y, x);
+20 # MultiplyNum(x_IsNumber, y_IsRational) <-- MultiplyNum(y, x);
 
 25 # MultiplyNum(x_IsNumber, y_IsNumber) <-- MathMultiply(x,y);
 

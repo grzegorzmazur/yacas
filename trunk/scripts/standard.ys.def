@@ -4,11 +4,6 @@ IsNonObject
 Numer
 Denom
 NormalForm
-+
--
-*
-/
-^
 ==
 !==
 +-

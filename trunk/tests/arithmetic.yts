@@ -11,7 +11,11 @@ Verify(IsZero(0.000),True);
 
 Verify(2/5,Hold(2/5));
 Verify(N(2/5),0.4);
+Verify(IsRational(2),True);
 Verify(IsRational(2/5),True);
+Verify(IsRational(-2/5),True);
+Verify(IsRational(2.0/5),False);
+Verify(IsRational(Pi/2),False);
 Verify(Numer(2/5),2);
 Verify(Denom(2/5),5);
 
