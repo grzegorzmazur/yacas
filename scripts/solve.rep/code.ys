@@ -38,6 +38,7 @@ LocalSymbols(res)
   80  # Solve(_e1 - _e2, _var)_(Not HasExpr(e1,var) And (res := Solve'Simple(e2,e1,var)) != Failed) <-- res;
   85  # Solve(_expr, _var)_((res := Solve'Simple(expr, 0, var)) != Failed) <-- res;
   90  # Solve(_expr, _var)_((res := Solve'Reduce(expr, var)) != Failed) <-- res;
+  95  # Solve(_expr, _var)_((res := Solve'Divide(expr, var)) != Failed) <-- res;
   100 # Solve(_expr, _var)_((res := Simplify(expr)) != expr) <-- Solve(res, var);
   110 # Solve(_expr, _var) <--
         [ Assert("Solve'Fails", "cannot solve equation ":(ToString() Write(expr)):" for ":ToString() Write(var)) False; {}; ];
@@ -211,6 +212,30 @@ LocalSymbols(x)
 20 # Solve'Simple(Sqrt(_e1), _rhs, _var)_(e1 = var And IsNegativeReal(Re(rhs)) And Re(rhs) != 0) <-- { };
 
 30 # Solve'Simple(_lhs, _rhs, _var) <-- Failed;
+
+
+/********** Solve'Divide **********/
+/* For some classes of equations, it may be easier to solve them if we
+ * divide through by their first term.  A simple example of this is the
+ * equation  Sin(x)+Cos(x)==0  
+ * One problem with this is that we may lose roots if the thing we
+ * are dividing by shares roots with the whole equation.
+ * The final HasExprs are an attempt to prevent infinite recursion caused by
+ * the final Simplify step in Solve undoing what we do here.  It's conceivable
+ * though that this won't always work if the recurring loop is more than two
+ * steps long.  I can't think of any ways this can happen though :)
+ */
+
+10 # Solve'Divide(_e1 + _e2, _var)_(HasExpr(e1, var) And HasExpr(e2, var)
+		And Not (HasExpr(Simplify(1 + (e2/e1)), e1)
+		      Or HasExpr(Simplify(1 + (e2/e1)), e2)))
+                                           <-- Solve(1 + (e2/e1), var);
+10 # Solve'Divide(_e1 - _e2, _var)_(HasExpr(e1, var) And HasExpr(e2, var)
+		And Not (HasExpr(Simplify(1 - (e2/e1)), e1)
+		      Or HasExpr(Simplify(1 - (e2/e1)), e2)))
+                                           <-- Solve(1 - (e2/e1), var);
+
+20 # Solve'Divide(_e, _v) <-- Failed;
 
 
 /********** Solve'System **********/
