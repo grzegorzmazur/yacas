@@ -104,7 +104,9 @@ static void PcreNextToken(LispEnvironment& aEnvironment, LispInt aStackTop)
     memcpy(trg,&trav[ovector[0]],ovector[1]-ovector[0]);
     trg[ovector[1]-ovector[0]] = '\0';
     strcat(trg,"\"");
-    aEnvironment.CurrentInput()->SetPosition(pos+ovector[1]);
+    while (aEnvironment.CurrentInput()->Position() < pos+ovector[1]) aEnvironment.CurrentInput()->Next();
+
+//TODO remove    aEnvironment.CurrentInput()->SetPosition(pos+ovector[1]);
     LispObject *res = NULL;
     res = LA(patterns[i].type.Get())+LA(res);
     res = LA(ATOML(resultbuf)) + LA(res);
