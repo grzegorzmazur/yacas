@@ -401,12 +401,24 @@ Bk(_poly,_prime) <--
   ]
   else
   [
-    coefs := MakeUni(poly)[3];
+    Local(uni,lc,deg);
+    uni:=MakeUni(poly);
+    coefs := uni[3];
+    deg:=Degree(uni);
+
+//Echo("prime ",prime);
+//Echo("from ",coefs);
+    lc:=1;
+//    lc:=LeadingCoef(uni);
+//    coefs := coefs*lc^((deg-1) .. (-1));
+//    prime:=prime*lc;
+//Echo("to ",coefs);
+
     result := Berlekamp(coefs,prime);
     Local(i);
     For(i:=1,i<=Length(result),i++)
     [
-      result[i] := {Monic(NormalForm(UniVariate(x,0,result[i]))),1};
+      result[i] := {Monic(NormalForm(UniVariate(x/lc,0,result[i]))),1};
     ];
   ];
   result;
