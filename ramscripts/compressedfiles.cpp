@@ -20,13 +20,19 @@ CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, Lis
     iIsValid = LispFalse;
     if (iFullBuffer == NULL) return;
 
+    // the archive cannot possibly be less than 8 bytes
+    if (iFullSize < 8) return;
+    
     unsigned char * ptr=iFullBuffer;
     iNrFiles   = GetInt(ptr);
     iIndexSize = GetInt(ptr);
 
+    // These have to be positive integers to make sense
     if (iNrFiles<=0) return;
     if (iIndexSize<=0) return;
-    if (iIndexSize>=iFullSize) return;
+
+    // The archive can not possibly be empty
+    if (8+iIndexSize>=iFullSize) return;
 
     // 1000 is just an arbitrary size, to disallow this tool
     // from allocating too much memory
