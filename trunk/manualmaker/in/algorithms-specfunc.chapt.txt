@@ -77,11 +77,165 @@ If the factorial of a large integer or half-integer $n$ needs to be computed not
 $$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)+1/(12*n)-1/(360*n^3)+...$$
 This method is currently not implemented in Yacas.
 
+	    Other methods for the Gamma function
+
+More traditional ways of calculating the Gamma function are the Stirling asymptotic series and the Sweeney-Brent method of combined series.
+
+*A Gamma function!by asymptotic series
+
+The Stirling asymptotic series is
+$$ Ln(Gamma(x)) <> (x-1/2)*Ln(x)-x+1/2*Ln(2*Pi) $$
+$$ + Sum(n,1,Infinity, B[2*n]/(2*n*(2*n-1)*x^(2*n-1))) $$.
+This series requires finding the Bernoulli numbers $B[n]$ up to a sufficiently high index $n$.
+
+*REM FIXME
+For a given value of $x$, the terms of this series decrease at first, but then start to grow.
+The value of $n$ at which the series starts to grow and diverge is
+$n=Pi*x-1/2$.
+
+
+Using the identity
+$ x*Gamma(x) = Gamma(x+1) $,
+we can reduce the computation of $Gamma(x)$ to $Gamma(x+M)$ for some integer $M$.
+Then we can choose $M$ to be large enough so that the Stirling asymptotic series gives the required precision when evaluated at $x+M$.
+
+*REM FIXME
+
+*A Gamma function!by Sweeney-Brent method
+
+The second method for the Gamma function was used in Brent's Fortran MP package (R. P. Brent, 
+<i>A Fortran Multiple-Precision Arithmetic Package</i>,
+ACM TOMS, Vol. 4, no. 1 (1978), p. 57).
+Brent refers to a 1963 paper by D. W. Sweeney for the origin of this method. Therefore we called this the "Sweeney-Brent" method.
+
+The idea  is to represent the Gamma function as a sum of two integrals,
+$$ Gamma(x) = (Integrate(u,0,M) u^(x-1)*Exp(-u)) + (Integrate(u,M,Infinity) u^(x-1)*Exp(-u)) $$.
+The above equation is clearly an identity for any $M$.
+Both integrals in this equation are approximated by power series.
+The parameter $M$ can be chosen to minimize the error of the approximation, as we shall see below.
+
+The first integral in this equation can be found as a sum of the Taylor series (expanding $Exp(-u)$ near $u=0$),
+$$ (Integrate(u,0,M) u^(x-1)*Exp(-u)) = M^x*Sum(n,0,Infinity, ((-1)^n*M^n)/((n+x)*n!)) $$.
+This series is an alternating series and its computation requires a significant increase of working precision, but the series absolutely converges for any finite $M$.
+The second integral can be approximated by an asymptotic series using standard methods of finding the asymptotics of integrals.
+
+*REM FIXME
+
+Calculations are faster if $M$ is chosen as an integer value.
+
+
+		Euler's constant $gamma$
+
+*A Euler's constant $gamma$
+
+Euler's constant $gamma$ is defined as
+$$ gamma := Limit(n,Infinity) (Sum(k,1,n,1/k)-Ln(n)) $$.
+This constant is useful for various reasons, mostly when working with higher transcendental functions.
+For example, $gamma$ is needed to obtain a Taylor series expansion of $Gamma(x)$.
+Another useful relation is
+$$ (D(x)Gamma(x)[x= -1]) = -gamma $$.
+Approximately $gamma<=>0.577216$.
+
+Computing $gamma$ by the series in the definition is extremely slow.
+A much faster method can be used, based on some identities of Bessel functions.
+(See R. P. Brent and E. M. McMillan,
+<i>Some new algorithms for high precision computation of Euler's constant</i>, Math. Comp. v. 34 (1980), 305;
+and also the online paper by X. Gourdon and P. Sebah, 
+<i>The Euler constant</i>, online at <*http://numbers.computation.free.fr/Constants/*> (2001).
+
+The basic formulae for the "fast" method (Brent's method "B1") are:
+$$gamma <=> S(n) / V(n) - Ln(n) $$,
+where $S(n)$ and $V(n)$ are some auxiliary functions, and $n$ is chosen appropriately (basically, "high enough"; precise estimates are given).
+
+First, the sequence $H[n]$ is defined as the partial sum of the harmonic series:
+$$ H[n] := Sum(k,1,n,1/k) $$.
+We also define $H[0]:=0$ for convenience.
+The function $V(n)$ is the modified Bessel function $I0(2*n)$. It is computed as a Taylor series
+$$ V(n) := Sum(k,0,Infinity, (n^k/k!)^2) $$.
+The function $S(n)$ is defined by a series like $V(n)$ but with each term multiplied by $H[k]$:
+$$ S(n) := Sum(k,0,Infinity, (n^k/k!)^2*H[k]) $$.
+Note that we need to compute $S(n)$ and $V(n)$ with enough precision, so the sum over $k$ will have to be performed up to a large enough $k$.
+(In practice, we do not really need to know the limit $k[max]$ beforehand.
+Instead, we can simply add terms to the series for $V(n)$ and $S(n)$ until desired precision is achieved.
+Knowing $k[max]$ in advance would help only if we needed to compare this method for computing $gamma$ with some other method, or if we would use the rectangular method of evaluating the Taylor series.)
+
+According to Brent's paper, the error of this approximation of $gamma$, assuming that $S(n)$ and $V(n)$ are computed exactly, is
+$$ Abs(gamma-S(n)/V(n)) < Pi*Exp(-4*n) $$.
+Therefore the parameter $n$ is proportional to the number of digits we need.
+If we need $P$ decimal digits (of absolute, not relative, precision), then we have to choose
+$$ n>(P*Ln(10)+Ln(Pi))/4$$.
+
+
+The required number of terms $k[max]$ in the summation over $k$ to get $S(n)$ and $V(n)$ with this precision can be approximated as usual via Stirling's formula.
+It turns out that $k[max]$ is also proportional to the number of digits,
+$k[max]<=>2.07*P$.
+
+Therefore, this method of computing $gamma$ has "linear convergence", i.e. the number of iterations is linear in the number of correct digits we need in the result.
+Of course, all calculations need to be performed with the working precision.
+The working precision must be a few digits more than $P$ because we accumulate about $Ln(k[max])/Ln(10)$ digits of roundoff error by performing $k[max]$ arithmetic operations.
+
+Brent mentions a small improvement on this method (his method "B3").
+It consists of estimating the error of the approximation of $gamma$ by an asymptotic series.
+Denote $W(n)$ the function
+$$ W(n):=(1/(4*n))*Sum(k,0,2*n, (2*k)! ^3/((k!)^4)*(16*n)^(2*k)) $$.
+This function is basically the asymptotic series for $I0(2*n)*K0(2*n)$, where $I0$ and $K0$ are modified Bessel functions.
+The sum in this series has to be evaluated until about $k=2*n$ to get a good precision.
+Then a more precise approximation for $gamma$ is
+$$ gamma <=> U(n)/V(n)-W(n)/V(n)^2 $$.
+The precision of this approximation is of order $O(Exp(-8*n))$ instead of $O(Exp(-4*n))$ in Brent's method "B1".
+However, this is not such a great savings in time, because almost as much additional work has to be done to compute $W(n)$.
+Brent estimated this "B3" method to be about 20% faster than "B1".
+
+Computation of $S(n)$ seems to need $H[k]$ first, and a long multiplication by $H[k]$ at each term.
+To compute $S(n)$ and $V(n)$ faster and more accurately, Brent suggested the following trick that avoids this long multiplication and computes $H[k]$ simultaneously with the series.
+Define the function $U(n):=S(n)-Ln(n)*V(n)$.
+Then $gamma<=>U(n)/V(n)$.
+The series for $U(n)$ is
+$ U(n) := Sum(k,0,Infinity, A[k]) $,
+with
+$$ A[k] := (n^k/k!)^2*(H[k]-Ln(n)) $$.
+If we denote
+$$ B[k] := (n^k/k!)^2 $$
+the $k$-th term of the series for $V(n)$, then we can compute $A[k]$ and $B[k]$ simultaneously using the recurrence relations
+$A[0]= -Ln(n)$, $B[0]=1$,
+$$ B[k]=B[k-1]*n^2/k^2 $$,
+$$ A[k]=1/k*(A[k-1]*n^2/k+B[k]) $$.
+All multiplications and divisions in these recurrence relations are performed with integers.
+
+The time complexity of this method is $O(P^2)$ where $P$ is the required number of digits.
+
+
+Also, it turns out that we can use a variant of the fast "rectangular method" to evaluate the series for $U(n)$ and $V(n)$ simultaneously.
+(We can consider these series as Taylor series in $n^2$.)
+This however does not speed up the evaluation of $gamma$.
+This happens because the rectangular method requires long multiplications and leads in this case to increased roundoff errors.
+The rectangular method for computing a power series in $x$ is less efficient than a straightforward computation when $x$ is a "short" rational or integer number.
+
+*REM
+The "rectangular method" for computing $Sum(k,0,N,x^k*A[k])$ needs to be able to convert a coefficient of the Taylor series into the next coefficient $A[k+1]$ by "short" operations, more precisely, by some multiplications and divisions by integers of order $k$.
+The $j$-th column of the rectangle ($j=0$, 1, ...) consists of numbers $x^(r*j)*A[r*j]$, $x^(r*j)*A[r*j+1]$, ..., $x^r*A[r*j+r-1]$.
+The numbers of this column are computed sequentially by short operations, starting from the $x^(r*j)*A[j*r]$ which is known from the end of the previous column.
+The recurrence relation for $A[k]$ is not just some multiplication by rational numbers, but also contains an addition of $B[k]$.
+However, if we also use the rectangular method for $V(n)$, the number $x^(r*j)*B[r*j]$ will be known and so we will be able to use the recurrence relation to get $x^(r*j)*A[r*j+1]$ and all following numbers of the column.
+
+Brent's "B1" method can be derived from the Taylor series for the modified Bessel function $BesselI(nu,z)$,
+$$ BesselI(nu,z) = Sum(k,0,Infinity, z^(nu+2*k)/(2^(nu+2*k)*Gamma(nu+k+1)*k!)) $$,
+and the definition of the modified Bessel function $K0(z)$,
+$$ K0(z) := - D(nu)BesselI(nu,z)[nu=0]$$.
+Here the derivative wrt $nu$ is taken at $nu=0$.
+This derivative can be evaluated using the above Taylor series for $BesselI(nu,z)$ and expressed through the series for $S(n)$.
+To compute this, we need the derivative of the Gamma function at integer arguments $n$:
+$$ (D(x) Gamma(x)[x=n+1]) = n! *(H[n]-gamma) $$.
+The resulting identity in the way it is used here is
+$$ gamma+Ln(n) = (S0(2*n)-K0(2*n))/I0(2*n) $$.
+Since $K0(2*n)$ decays very quickly at large $n$, we obtain the approximation
+$$ gamma <=> S0(2*n)/I0(2*n)-Ln(n)+O(Exp(-4*n)) $$.
+
 		Riemann's Zeta function
 
 *A Riemann's Zeta function
 
-*A Bernoulli numbers!asymptotic
+*A Bernoulli numbers
 
 Riemann's Zeta function $zeta(s)$ is defined for complex $s$ such that $Re(s)>0$ as a sum of inverse powers of integers:
 $$zeta(s) := Sum(n,0,Infinity, 1/n^s)$$.
@@ -218,8 +372,10 @@ $n$ is a real number. Yacas currently uses the Taylor series
 when $Abs(x)<= 2*Gamma(n)$ to compute the numerical value:
 $$ BesselJ(n,x) := Sum(k,0,Infinity,(-1)^k*x^(2*k+n)/(2^(2*k+n)* k! * Gamma(k+n+1))) $$.
 
-If $Abs(x) > 2*Gamma(n)$ and $n$ is an integer, then Yacas uses the forward recursion
-identity:
+*A Bessel functions!by recurrence relation
+
+If $Abs(x) > 2*Gamma(n)$ and $n$ is an integer, then Yacas uses the forward recurrence
+relation:
 $$ BesselJ(n,x) := (2*(n+1)/x)*BesselJ(n+1,x) - BesselJ(n+2,x) $$
 until the given {BesselJ} function is represented in terms of higher order terms which 
 all satisfy $Abs(x) <= 2*Gamma(n)$. Note that when $n$ is much smaller than $x$, this
