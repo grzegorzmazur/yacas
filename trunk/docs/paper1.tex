@@ -2,76 +2,78 @@
 
 \begin{document}
 
-\title{YACAS: A Do-it-yourself Symbolic Algebra Environment}
+\title{\textsc{Yacas}: A Do-it-yourself Symbolic Algebra Environment}
 
 \author{Ayal Zwi Pinkus\inst{1} \and Serge Winitzki\inst{2}}
 \institute{
-Tomtom, of Palm Software,
-Zandsteen 54, 2132 MR Hoofddorp, Netherlands
-\email{apinkus@xs4all.nl}, http://www.xs4all.nl/\homedir apinkus/
+Amsterdam, Netherlands
+(\email{apinkus@xs4all.nl}, http://www.xs4all.nl/\homedir apinkus/)
 \and
 Tufts Institute of Cosmology, Department of Physics and Astronomy, Tufts University, Medford, MA 02155, USA
-\email{winitzki@geocities.com}
+(\email{winitzki@geocities.com})
 }
 
 \maketitle
 
 \begin{abstract}
-We describe the design and implementation of YACAS, a free computer
-algebra system currently under development.  The system consists of a
-core interpreter and a library of scripts that implement symbolic algebra
+We describe the design and implementation of \textsc{Yacas}, a free computer
+algebra system currently under development.  The system consists of a core
+interpreter and a library of scripts that implement symbolic algebra
 functionality.  The interpreter provides a high-level weakly typed functional
-language designed for quick
-prototyping of computer algebra algorithms, but the language is suitable to all
-kinds of symbolic manipulation. It supports recursive evaluation,
+language designed for quick prototyping of computer algebra algorithms, but the
+language is suitable to all kinds of symbolic manipulation. It supports
 conditional term rewriting of symbolic expression trees, closures (pure
 functions) and delayed evaluation, dynamic creation of transformation rules,
 arbitrary-precision numerical calculations, and flexible user-defined syntax
-using infix notation.  The library of scripts currently
-provides basic numerical and symbolic algebra functionality, such as polynomials and
-elementary functions, limits, derivatives and (limited) integration,
-solution of (simple) equations. The main advantages of Yacas are: free (GPL) software;
-cross-platform portability and small resource requirements; a flexible and
-easy-to-use programming language with a comfortable and adjustable syntax; and extensibility.
+using infix notation.  The library of scripts currently provides basic
+numerical and symbolic algebra functionality, such as polynomials and
+elementary functions, limits, derivatives and (limited) integration, solution
+of (simple) equations. The main advantages of \textsc{Yacas} are: free (GPL)
+software; cross-platform portability and small resource requirements; a
+flexible and easy-to-use programming language with a comfortable and adjustable
+syntax; and extensibility.
 \end{abstract}
 
+%%% Start of main text
+
+
 \section{Introduction}
-Yacas is a small CAS which has been in development since the beginning of 1999.
+\textsc{Yacas} is a small CAS which has been in development since the beginning of 1999.
 The goal was to make a small system that allows to easily prototype and
 research symbolic mathematics algorithms. A secondary future goal is to evolve
-Yacas into a full-blown general purpose computer algebra system.
+\textsc{Yacas} into a full-blown general purpose computer algebra system.
 
 
-The main advantage of Yacas is its rich and  flexible scripting language
-adapted to prototyping of symbolic manipulation algorithms. Yacas is currently
+The main advantage of \textsc{Yacas} is its rich and  flexible scripting language
+adapted to prototyping of symbolic manipulation algorithms. \textsc{Yacas} is currently
 primarily intended to be a research tool for quick and easy exploration of
 algorithms of symbolic mathematical computation. The language is closely
-related to LISP \cite{WH89} and includes expression transformation (term rewriting)
+related to LISP [WH89] and includes expression transformation (term rewriting)
 facilities, with additional syntactic facilities in the form of a recursive
-descent infix grammar parser \cite{ASU86}  that also supports defining operators at
-run time similarly to Prolog \cite{B86}.
+descent infix grammar parser [ASU86]  that also supports defining operators at
+run time similarly to Prolog [B86].
 
 
-The Yacas language interpreter comes with a library of scripts that are
-intended to implement the specific computer algebra features. The Yacas script library
+The \textsc{Yacas} language interpreter comes with a library of scripts that are
+intended to implement the specific computer algebra features. The \textsc{Yacas} script library
 at the present stage does not offer the full functionality of
-industrial-strength systems like \texttt{Mathematica} \cite{W96} or \texttt{MAPLE} \cite{M98}. Extensive
+industrial-strength systems like \textsc{Mathematica} or \textsc{MAPLE}. Extensive
 implementation of algorithms of symbolic computation is one of the future
 development goals.
 
 
 \section{Basic design}
-Yacas consists of a "core engine", an interpreter for the Yacas scripting
-language, and a library of script code. The Yacas interpreter has been
+\textsc{Yacas} consists of a "core engine", an interpreter for the \textsc{Yacas} scripting
+language, and a library of script code. The \textsc{Yacas} interpreter has been
 implemented in standard C++.
 
 
-The design goals for Yacas are: portability, self-containment, ease of use,
-code transparency, and flexibility of the core engine (lack of predefined "policies"). The system falls into the "prototype/hacker" rather than into the "axiom/algebraic" category, according to the classification of Fateman \cite{F90}. This means that there are relatively few specific design decisions related to mathematical objects, but instead an emphasis was made on extensibility.
+The design goals for \textsc{Yacas} are: portability, self-containment, ease of use,
+code transparency, and flexibility of the core engine (lack of predefined "policies"). The system falls into the "prototype/hacker" rather than into the "axiom/algebraic" category, according to the classification of Fateman [F90]. This means that there are relatively few specific design decisions related to mathematical objects, but instead an emphasis was made on extensibility.
 
 
 \subsection*{Portability}
-Yacas is designed to be as platform-independent as possible. Yacas is written
+\textsc{Yacas} is designed to be as platform-independent as possible. \textsc{Yacas} is written
 in a subset of C++ which is supported by almost all, if not all, C++ compilers.
 The platform-specific parts have been clearly separated to facilitate porting.
 Even the standard C++ library is considered to be platform-specific, as there
@@ -79,18 +81,16 @@ exist  platforms without support for the standard C++ library (e.g. the
 EPOC32 platform).
 
 
-The primary development platform is GNU/Linux. Currently Yacas runs under
+The primary development platform is GNU/Linux. Currently \textsc{Yacas} runs under
 various Unix variants, Windows environments, Psion organizers (EPOC32),
 Ipaq PDAs running the Linux kernel,
-BeOS, and Apple iMacs. Creating an executable for another platform
-should not be difficult for a developer. Since it is also possible to compile
-all script library code into the Yacas executable, porting to embedded
-platforms is possible.
+BeOS, and Apple iMacs. Creating an executable for another platform (including embedded platforms)
+should not be difficult for a developer.
 
 
 \subsection*{A self-contained system}
-Yacas should work as a standalone package, requiring minimum support from other
-operating system components. Yacas takes input and output in plain ASCII,
+\textsc{Yacas} should work as a standalone package, requiring minimum support from other
+operating system components. \textsc{Yacas} takes input and output in plain ASCII,
 either interactively or in batch mode. (An optional graphical interface is under development.) The system comes with its own
 (unoptimized) arbitrary precision arithmetic module but could be compiled to
 use another arbitrary precision arithmetic library; currently linking to \texttt{gmp}
@@ -101,27 +101,27 @@ functionality.
 
 Self-containment is a requirement if the program is to be easy to port. A
 dependency on libraries that might not be available on other platforms would
-reduce portability. On the other hand, Yacas can be compiled with a complement
+reduce portability. On the other hand, \textsc{Yacas} can be compiled with a complement
 of external libraries on "production" platforms.
 
 
 \subsection*{Ease of use}
-Yacas is used mainly by executing programs written in the Yacas script
+\textsc{Yacas} is used mainly by executing programs written in the \textsc{Yacas} script
 language. A design goal is to create a high-level language that allows the user
 to conveniently express symbolic algorithms. A few lines of user code should go
 a long way.
 
 
-One major advantage of Yacas is the flexibility of its syntax. Although Yacas
+One major advantage of \textsc{Yacas} is the flexibility of its syntax. Although \textsc{Yacas}
 works internally as a LISP-style interpreter, all user interaction is through
-the Yacas script language which has a flexible infix grammar. Infix operators
+the \textsc{Yacas} script language which has a flexible infix grammar. Infix operators
 are defined by the user and may contain non-alphabetic characters such as "\texttt{+}"
-or "\verb|#|". This means that the user interacts with Yacas using a comfortable and adjustable infix syntax,
+or "\verb|#|". This means that the user interacts with \textsc{Yacas} using a comfortable and adjustable infix syntax,
 rather than a LISP-style syntax. The user can define such syntactic
 conventions as are most convenient for a given problem.
 
 
-For example, the Yacas script library defines infix operators "\texttt{+}", "\texttt{*}" and so
+For example, the \textsc{Yacas} script library defines infix operators "\texttt{+}", "\texttt{*}" and so
 on with conventional precedence, so that an algebraic expression can be entered
 in the familiar infix form such as
 
@@ -139,7 +139,7 @@ problem.
 
 Suppose the user needs to reorder expressions containing non-commutative creation and
 annihilation operators of quantum field theory. It takes about 20 lines of
-Yacas script code to define an infix operation "\texttt{**}" to express non-commutative
+\textsc{Yacas} script code to define an infix operation "\texttt{**}" to express non-commutative
 multiplication with the appropriate commutation relations and to automatically
 normal-order all expressions involving these symbols and other (commutative)
 factors. Once the operator \texttt{**} is defined (with precedence 4),
@@ -155,12 +155,12 @@ respect to addition may look like this:
 Here, \verb|15 #| is a specification of the rule precedence, \verb|_x| denotes a
 pattern-matching variable \texttt{x} and the expression to the right of \texttt{<--} is to be
 substituted instead of a matched expression on the left hand side. Since all
-transformation rules are applied recursively, these two lines of code are enough for the Yacas
+transformation rules are applied recursively, these two lines of code are enough for the \textsc{Yacas}
 engine to expand all brackets in any expression containing the infix operators
 \texttt{**} and \texttt{+}.
 
 
-Rule-based programming is not the only tool that can be used in Yacas scripts;
+Rule-based programming is not the only tool that can be used in \textsc{Yacas} scripts;
 there are alternatives that may be more useful in some situations. For example,
 the familiar \texttt{if} / \texttt{else} constructs, \texttt{While}, \texttt{For}, \texttt{ForEach} loops are
 defined in the script library for the convenience of users.
@@ -170,31 +170,31 @@ Standard patterns of procedural programming, such as subroutines that
 return values, with code blocks and temporary local variables, are also
 available. (A "subroutine" is implemented as a new "ground term" with a single
 rule defined for it.) Users may freely combine rules with C-like
-procedures or LISP-like recursive list processing primitives such as \texttt{Head()},
+procedures or LISP-like list processing primitives such as \texttt{Head()},
 \texttt{Tail()}.
 
 
 \subsection*{Code clarity vs. speed}
-Speed is obviously an important factor. For Yacas, where a choice had to be
-made between speed and clarity of code, clarity was chosen. Yacas is mainly a
+Speed is obviously an important factor. For \textsc{Yacas}, where a choice had to be
+made between speed and clarity of code, clarity was chosen. \textsc{Yacas} is mainly a
 prototyping system and its future maintainability is more important.
 
 
 This means that special-purpose systems designed for specific types of
 calculations, as well as heavily optimized industrial-strength computer algebra
-systems, will outperform Yacas. However, special-purpose or optimized external
-libraries can be dynamically linked into Yacas using the plugin mechanism.
+systems, will outperform \textsc{Yacas}. However, special-purpose or optimized external
+libraries can be dynamically linked into \textsc{Yacas} using the plugin mechanism.
 
 
 \subsection*{Flexible, "policy-free" engine}
-The Yacas system has two main components: the kernel (core interpreter) which
-is implemented in C++, and the script library written  in the Yacas script
+The \textsc{Yacas} system has two main components: the kernel (core interpreter) which
+is implemented in C++, and the script library written  in the \textsc{Yacas} script
 language.
 
 
 The kernel offers sufficiently rich but basic
 functionality through a limited number of core functions. This functionality
-includes recursive substitutions and rewriting of symbolic expression trees,
+includes substitutions and rewriting of symbolic expression trees,
 syntax parser, and arbitrary-precision numerical computations. The core does
 not include definitions of any symbolic mathematical operations and tries to be
 as general and free of predefined notions or policies as possible.
@@ -203,7 +203,7 @@ as general and free of predefined notions or policies as possible.
 The reason to implement yet another LISP-based custom language interpreter
 instead of taking an already existing one was to have full control over the
 system and to make it self-contained.
-While most of the features of the Yacas script language are "syntactic sugar" on top of a LISP 
+While most of the features of the \textsc{Yacas} script language are "syntactic sugar" on top of a LISP 
 interpreter, some features not commonly found in LISP systems were  added, such
 as the system of transformation rules.
 
@@ -217,7 +217,7 @@ functions that are frequently used; they are compiled into the core for speed.
 
 For example, the mathematical operator "\texttt{+}" is an infix operator defined in the
 library scripts. To the kernel, this operator is on the same footing as any
-other function defined by the user and can be redefined. The Yacas kernel
+other function defined by the user and can be redefined. The \textsc{Yacas} kernel
 itself does not store any properties for this operator. Instead it relies
 entirely on the script library to provide transformation rules for manipulating
 expressions involving the operator "\texttt{+}". In this way, the kernel does not need
@@ -225,14 +225,14 @@ to anticipate all possible meanings of the operator "\texttt{+}" that users migh
 in their calculations.
 
 
-This policy-free scheme means that Yacas is highly configurable through its
+This policy-free scheme means that \textsc{Yacas} is highly configurable through its
 scripting language. It is possible to create an entirely different symbolic
 manipulation engine based on the same C++ kernel, with different syntax and
 different naming  conventions, by simply using another script library instead
-of the current library scripts. An example of the flexibility of the Yacas
+of the current library scripts. An example of the flexibility of the \textsc{Yacas}
 system is a sample script \texttt{wordproblems.ys}. It contains a set of rule
-definitions that make Yacas recognize simple English sentences, such as "Tom
-has 3 apples" or "Jane gave an apple to Tom", as valid Yacas expressions. Yacas
+definitions that make \textsc{Yacas} recognize simple English sentences, such as "Tom
+has 3 apples" or "Jane gave an apple to Tom", as valid \textsc{Yacas} expressions. \textsc{Yacas}
 can then "evaluate" these sentences to \texttt{True} or \texttt{False} according to
 the semantics of the current situation described in them.
 
@@ -256,14 +256,14 @@ from the library
 and have a CAS without this feature.
 
 
-\section{The Yacas kernel functionality}
-Yacas script is a functional language based on various ideas that seemed useful
+\section{The \textsc{Yacas} kernel functionality}
+\textsc{Yacas} script is a functional language based on various ideas that seemed useful
 for an implementation of CAS: list-based data structures, object properties,
-and recursive functional programming (a la LISP); term rewriting \cite{BN98} with
+and functional programming (a la LISP); term rewriting [BN98] with
 pattern matching somewhat along the lines of Mathematica; user-defined infix
 operators a la PROLOG; delayed evaluation of expressions; and
-arbitrary-precision arithmetic.  Garbage collection, reference counting and
-memory management are automatic.
+arbitrary-precision arithmetic.
+Implicit garbage collection is implemented through reference counting.
 
 
 The kernel provides three basic data types: numbers,
@@ -281,10 +281,12 @@ user-defined transformation rules from the script library.
 Evaluation proceeds bottom-up, that is, for each function term, the arguments are evaluated first and then the function.
 
 
-A \texttt{Hold()} primitive is also provided to stop the recursive
-application of rules at a certain point and obtain an unevaluated expression.
-Also, the interpreter can be instructed via the \texttt{HoldArg()} primivite to
-not evaluate certain arguments of certain functions before passing them on as parameters to these functions. Finally, the \texttt{Eval()} primitive initiates evaluation of an expression which was previously held unevaluated.
+A \texttt{HoldArg()} primitive is provided to not evaluate certain arguments of
+certain functions before passing them on as parameters to these functions. The
+\texttt{Hold()} and \texttt{Eval()} primitives, similarly to LISP's \texttt{QUOTE} and \texttt{EVAL}, can
+be used to stop the recursive application of rules at a certain point and
+obtain an unevaluated expression, or to initiate evaluation of an expression
+which was previously held unevaluated.
 
 
 When an expression can not be transformed any further, that is, when no more rules apply to it, the expression is returned
@@ -297,13 +299,13 @@ Rules are matched by a pattern expression which can contain \emph{pattern variab
 
 
 This type of semantic matching has been frequently implemented before in
-various term rewriting systems (see, e.g., \cite{C86}). However, the Yacas language
+various term rewriting systems (see, e.g., [C86]). However, the \textsc{Yacas} language
 offers its users an ability to create a much more flexible and powerful term
 rewriting system than one based on a fixed set of rules.
 
 
-First, transformation rules in Yacas have predicates that control whether a
-rule should be applied to an expression. Predicates can be any Yacas
+First, transformation rules in \textsc{Yacas} have predicates that control whether a
+rule should be applied to an expression. Predicates can be any \textsc{Yacas}
 expressions that evaluate to the atoms \texttt{True} or \texttt{False} and is typically a
 function of local pattern variables. A predicate could check the types or
 values of certain subexpressions of the matching context (see the \verb|_x ^ _y|
@@ -314,98 +316,65 @@ Second, rules are assigned a precedence value (a positive integer) that
 controls the order of rules to be attempted. Rules with smaller precedence are
 attempted before rules with higher precedence. In the current evaluation
 scheme, rules with fewer elements in the pattern are always attempted earlier
-than rules with longer patters. (Thus Yacas provides somewhat better control
+than rules with longer patters. (Thus \textsc{Yacas} provides somewhat better control
 over the automatic recursion than the pattern-matching system of \texttt{Mathematica}
 which does not allow for rule precedence.)
+The interpreter will first apply the rule that matches the argument pattern,
+for which the predicate returns \texttt{True}, and which has the least precedence.
 
 
 Third, new rules can be defined dynamically as a side-effect of evaluation.
 This means that there is no predefined "ranking alphabet" of "ground terms" (in
-the terminology of \cite{TATA99}), in other words, no fixed set of functions with
+the terminology of [TATA99]), in other words, no fixed set of functions with
 predefined arities. It is also possible to define a "rule closure" that defines
-rules depending on its arguments, or to erase rules. Thus, a Yacas script
+rules depending on its arguments, or to erase rules. Thus, a \textsc{Yacas} script
 library (although it is read-only) does not represent a fixed tree rewriting
-automaton. An implementation of machine learning is possible in Yacas (among
+automaton. An implementation of machine learning is possible in \textsc{Yacas} (among
 other things). For example, when the module \texttt{wordproblems.ys} (mentioned in the previous subsection) "learns" from the
 user input that \texttt{apple} is a countable object, it defines a new postfix
 operator \texttt{apples} and a rule for its evaluation, so the expression \texttt{3 apples} is later parsed as a
 function \texttt{apples(3)} and evaluated according to the rule.
 
 
-Fourth, Yacas expressions can be "tagged" (assigned a "property object") and
+Fourth, \textsc{Yacas} expressions can be "tagged" (assigned a "property object") and
 tags can be checked by predicates in rules or used in the evaluation.
 
 
-Fifth, the scope of variables can be controlled. A function can be allowed to
-have  access to local variables from its calling environment (the \texttt{UnFence()}
-primitive). It is also possible to declare the variables within a  function
-local to the function, so that their scope is limited to that function (the
-\texttt{Local()} primitive).  The scoping is a "policy decision", in other words it
-should be enforced by the script which  defines the function. This
-flexibility is by design.
+Fifth, the scope of variables can be controlled. In addition to having its own
+local variables, a function can be allowed to access local variables of its
+calling environment (the \texttt{UnFence()} primitive).
+It is also possible to encapsulate a group of variables and functions into a
+"module", making some of them inaccessible from the outside (the \texttt{LocalSymbols()} primitive).
+The scoping of variables is a "policy decision", to be enforced by the script
+which  defines the function. This flexibility is by design and allows to easily
+modify the behaviour of the interpreter, effectively changing the language
+as needed.
 
 
-\section{The Yacas scripting language}
-The Yacas interpreter is sufficiently powerful so that the functions \texttt{While},
+\section{The \textsc{Yacas} scripting language}
+The \textsc{Yacas} interpreter is sufficiently powerful so that the functions \texttt{While},
 \texttt{For}, \texttt{ForEach}, \texttt{if}, \texttt{else} etc., as well as convenient shorthand
 "...\texttt{<--}..." for defining new rules, can be defined in the script library
 itself rather than in the kernel. This power is fully given to the user, since
 the library scrips are on the same footing as any user-defined code. Some
-library functions are intended mainly as tools available to a Yacas user to
-make algorithm implementation more comfortable. Below are some examples of the features provided by the Yacas script language.
+library functions are intended mainly as tools available to a \textsc{Yacas} user to
+make algorithm implementation more comfortable. Below are some examples of the features provided by the \textsc{Yacas} script language.
 
 
-Simple transformations on expressions can be performed using
-rules. For instance, if we need to expand the natural logarithm in an expression, we could use the
-following rules:
+\textsc{Yacas} supports "function overloading": it allows a user to declare functions
+\texttt{f(x)} and \texttt{f(x,y)}, each having their own set of transformation rules. Of
+course, different rules can be defined for the same function name with the same
+number of arguments (arity) but with different argument patterns or different
+predicates.
 
 
-\begin{quote}\small\begin{verbatim}
-log(_x * _y) <-- log(x) + log(y);
-log(_x ^ _n) <-- n * log(x);
-\end{verbatim}\end{quote}
-These two rules define a new symbolic function \texttt{log} which will not be evaluated
-but only transformed if one of these two rules are applicable. The symbol \verb|_|, as before, indicates that the following atom is a pattern variable that matches subexpressions.
 
-
-After entering these two rules, the following interactive session is possible:
-
-
-\begin{quote}\small\begin{verbatim}
-In> log(a*x^2)
-
-log( a ) + 2 * log( x )
-\end{verbatim}\end{quote}
-
-
-Integration of the new function \texttt{log} can be defined by adding a rule for the
-\texttt{AntiDeriv} function atom,
-
-
-\begin{quote}\small\begin{verbatim}
-AntiDeriv(log(_x),_x) <-- x*log(x)-x;
-\end{verbatim}\end{quote}
-Now Yacas can do integrations involving the newly defined \texttt{log} function, for example:
-
-
-\begin{quote}\small\begin{verbatim}
-In> Integrate(x)log(a*x^n)
-
-log( a ) * x + n * ( x * log( x ) - x ) + C18
-
-In> Integrate(x,B,C)log(a*x^n)
-
-log( a ) * C + n * ( C * log( C ) - C ) -
-
-( log( a ) * B + n * ( B * log( B ) - B ) )
-\end{verbatim}\end{quote}
-
-
+XXX where to put this?
 Rules are applied when their associated patterns match and when their
 predicates return \texttt{True}. Rules also have precedence, an integer value
 to indicate which rules need to be applied first. Using these features, a
 recursive implementation of the integer factorial function may look like this
-in Yacas script,
+in \textsc{Yacas} script,
 
 
 \begin{quote}\small\begin{verbatim}
@@ -416,53 +385,11 @@ in Yacas script,
 Here the rules have precedence 10 and 20, so that the first rule will be tried first and the recursion will stop when $n = 0$ is reached.
 
 
-Different rules can be defined for the same function name but with different
-argument patterns or different predicates. The interpreter will apply the first
-rule that matches the argument pattern, for which the predicate returns \texttt{True},
-and which has the least number of elements in the pattern, or for rules with
-equally long patterns, the rule which has the least precedence.
-
-
 Rule-based programming can be freely combined with procedural programming when
-the latter is a more appropriate method. For example, here is a function that
-computes ($x ^{n}\bmod m$) efficiently:
-
-
-\begin{quote}\small\begin{verbatim}
-powermod(x_IsPositiveInteger,n_IsPositiveInteger,
-         m_IsPositiveInteger) <--
-[
-  Local(result);
-  result:=1;
-  x:=Mod(x,m);
-  While(n != 0)
-  [
-     if ((n&1) = 1) [
-	   result := Mod(result*x,m);
-	 ];
-     x := Mod(x*x,m);
-     n := n>>1;
-  ];
-  result;
-];
-\end{verbatim}\end{quote}
-
-
-Interaction with the function \texttt{powermod(x,n,m)} would then look like this:
-
-
-\begin{quote}\small\begin{verbatim}
-In> powermod(2,10,100)
-Out> 24;
-In> Mod(2^10,100)
-Out> 24;
-In> powermod(23234234,2342424234,232423424)
-Out> 210599936;
-\end{verbatim}\end{quote}
-
+the latter is a more appropriate method.
 
 \section{Currently supported CAS features}
-Yacas consists of approximately 22000 lines of C++ code and  13000 lines of 
+\textsc{Yacas} consists of approximately 22000 lines of C++ code and  13000 lines of 
 scripting code, with 170 functions defined in the C++ kernel and 600 functions
 defined  in the scripting language. These numbers are deceptively small. The
 program is written in clean and simple style to keep it maintainable. Excessive
@@ -470,283 +397,44 @@ optimization tends to bloat software and make it less readable.
 
 
 A base of mathematical capabilities has already been implemented in the script
-library (the primary sources of inspiration where the books \cite{K98}, \cite{GG99} and
-\cite{B86}). The script library is currently under active development.  The
-following section demonstrates a few facilities already offered in the  current
-system.
+library (the primary sources of inspiration were the books [K98], [GG99] and
+[B86]). The script library is currently under active development.
 
+%%% End of main text
 
-Basic operations of elementary calculus have been implemented:
+\begin{thebibliography}{1}
 
+\bibitem[ASU86]{ASU86} A. Aho, R. Sethi and J. Ullman, \emph{Compilers (Principles, Techniques and Tools)}, Addison-Wesley, 1986.
 
-\begin{quote}\small\begin{verbatim}
-In> Limit(n,Infinity)(1+(1/n))^n
 
-Exp( 1 )
+\bibitem[B86]{B86} I. Bratko, \emph{Prolog (Programming for Artificial Intelligence)}, Addison-Wesley, 1986.
 
-In> Taylor(x,0,5)ArcSin(x)
 
-     3        5
-    x    3 * x 
-x + -- + ------
-    6      40  
+\bibitem[BN98]{BN98} F. Baader and T. Nipkow, \emph{Term rewriting and all that}, Cambridge University Press, 1998.
 
-In> InverseTaylor(x,0,5)Sin(x)
 
-     5    3    
-3 * x    x     
------- + -- + x
-  40     6     
+\bibitem[C86]{C86} G. Cooperman, \emph{A semantic matcher for computer algebra }, in Proceedings of the symposium on symbolic and algebraic computation, (1986), Waterloo, Ontario, Canada (ACM Press, NY).
 
-In> Integrate(x,a,b)Ln(x)+x
 
-                   2   /                    2 \
-                  b    |                   a  |
-b * Ln( b ) - b + -- - | a * Ln( a ) - a + -- |
-                  2    \                   2  /
+\bibitem[F90]{F90} R. Fateman, \emph{On the design and construction of algebraic manipulation systems}, also published as: ACM Proceedings of the ISSAC-90, Tokyo, Japan.
 
-In> Integrate(x)1/(x^2-1)
 
-Ln( 2 * ( x - 1 ) )   Ln( 2 * ( x + 1 ) )      
-------------------- - ------------------- + C38
-         2                     2               
+\bibitem[GG99]{GG99} J. von zur Gathen and J. Gerhard, \emph{Modern Computer Algebra}, Cambridge University Press, 1999.
 
-In> Integrate(x)Sin(a*x)^2*Cos(b*x)
 
-Sin( b * x )   Sin( -2 * x * a + b * x )   
------------- - ------------------------- - 
-   2 * b          4 * ( -2 * a + b )       
+\bibitem[K98]{K98} D. Knuth, \emph{The Art of Computer Programming (Volume 2, Seminumerical Algorithms)}, Addison-Wesley, 1998.
 
-Sin( -2 * x * a - b * x )      
-------------------------- + C39
-   4 * ( -2 * a - b )          
 
-In> OdeSolve(y''==4*y)
+%\bibitem[M98]{M98} See, for example, M. B. Monagan \emph{et al.}: \emph{Maple V programming guide,} Springer-Verlag, Berlin, 1998.
 
-C193 * Exp( -2 * x ) + C195 * Exp( 2 * x )
-\end{verbatim}\end{quote}
 
+\bibitem[TATA99]{TATA99} H. Comon, M. Dauchet, R. Gilleron, F. Jacquemard, D. Lugiez, S. Tison, and M. Tommasi, \emph{Tree Automata Techniques and Applications}, 1999, online book: {\small \verb|http://www.grappa.univ-lille3.fr/tata|}
 
-Solving systems of equations has been implemented using a generalized Gaussian
-elimination scheme:
 
+%\bibitem[W96]{W96} S. Wolfram, \emph{The Mathematica book}, Wolfram Media, Champain, 1996.
 
-\begin{quote}\small\begin{verbatim}
-In> Solve( {x+y+z==6, 2*x+y+2*z==10, x+3*y+z==10}, \
-In>      {x,y,z} ) [1]
-Out> {4-z,2,z};
-\end{verbatim}\end{quote}
-(The solution of this underdetermined system is returned as a vector, so $x = 4 - z$, $y = 2$, and $z$ remains arbitrary.)
 
-
-A small theorem prover \cite{B86} using a resolution principle is offered:
-
-
-\begin{quote}\small\begin{verbatim}
-In> CanProve(P Or (Not P And Not Q))
-
-Not( Q ) Or P
-\end{verbatim}\end{quote}
-
-
-\begin{quote}\small\begin{verbatim}
-In> CanProve(a > 3 And a < 2)
-
-False
-\end{verbatim}\end{quote}
-
-
-Various exact and arbitrary-precision numerical algorithms have been
-implemented:
-
-
-\begin{quote}\small\begin{verbatim}
-In> N(1/7,40)	// evaluate to 40 digits
-Out> 0.1428571428571428571428571428571428571428;
-In> Decimal(1/7)	// obtain decimal period
-Out> {0,{1,4,2,8,5,7}};
-In> N(LnGamma(1.234+2.345*I))	// gamma-function
-Out> Complex(-2.13255691127918,0.70978922847121);
-\end{verbatim}\end{quote}
-
-
-Various domain-specific expression simplifiers are available:
-
-
-\begin{quote}\small\begin{verbatim}
-In> RadSimp(Sqrt(9+4*Sqrt(2)))
-
-Sqrt( 8 ) + 1
-
-In> TrigSimpCombine(Sin(x)^2+Cos(x)^2)
-
-1
-
-In> TrigSimpCombine(Cos(x/2)^2-Sin(x/2)^2)
-
-Cos( x )
-
-In> GcdReduce((x^2+2*x+1)/(x^2-1),x)
-
-x + 1
------
-x - 1
-\end{verbatim}\end{quote}
-
-
-Univariate polynomials are supported in a dense representation, 
-and multivariate polynomials in a sparse representation:
-
-
-\begin{quote}\small\begin{verbatim}
-In> Factor(x^6+9*x^5+21*x^4-5*x^3-54*x^2-12*x+40)
-
-         3            2            
-( x + 2 )  * ( x - 1 )  * ( x + 5 )
-
-In> Apart(1/(x^2-x-2))
-
-      1               1      
-------------- - -------------
-3 * ( x - 2 )   3 * ( x + 1 )
-
-In> Together(%)
-
-         9         
--------------------
-     2             
-9 * x  - 9 * x - 18
-
-In> Simplify(%)
-
-     1     
-----------
- 2        
-x  - x - 2
-
-\end{verbatim}\end{quote}
-
-
-Various "syntactic sugar" functions are defined to more easily enter
-expressions:
-
-
-\begin{quote}\small\begin{verbatim}
-In> Ln(x*y) /: { Ln(_a*_b) <- Ln(a) + Ln(b) }
-
-Ln( x ) + Ln( y )
-
-In> Sum(x^(1 .. 5))
-
-     2    3    4    5
-x + x  + x  + x  + x 
-
-In> Select("IsPrime", 1 .. 15)
-Out> {2,3,5,7,11,13};
-
-\end{verbatim}\end{quote}
-Groebner bases \cite{GG99} have been implemented:
-
-
-\begin{quote}\small\begin{verbatim}
-In> Groebner({x*(y-1),y*(x-1)})
-
-/           \
-| x * y - x |
-|           |
-| x * y - y |
-|           |
-| y - x     |
-|           |
-|  2        |
-| y  - y    |
-\           /
-\end{verbatim}\end{quote}
-(From this it  follows that $x = y$, and $x ^{2} = x$ so $x$ is $0$ or $ 1
-$.)
-
-
-Symbolic inverses of matrices:
-
-
-\begin{quote}\small\begin{verbatim}
-In> Inverse({{a,b},{c,d}})
-
-/                                      \
-| /       d       \ /    -( b )     \  |
-| | ------------- | | ------------- |  |
-| \ a * d - b * c / \ a * d - b * c /  |
-|                                      |
-| /    -( c )     \ /       a       \  |
-| | ------------- | | ------------- |  |
-| \ a * d - b * c / \ a * d - b * c /  |
-\                                      /
-\end{verbatim}\end{quote}
-
-
-This list of features is not exhaustive. 
-
-
-\section{Documentation}
-The documentation for the Yacas is extensive and is actively updated, following the development of the system.
-Documentation is in the form of two tutorial guides (user's introduction and
-programmer's introduction), a collection of essays that describe some
-advanced features in more detail, and a full reference manual.
-
-
-Yacas currently comes with its own document formatting module that allows to write
-documentation in a special plain text format with a minimal markup. This text format is
-automatically converted to HTML, $\textrm{\LaTeX\/}$, PostScript and PDF formats. The HTML
-version of the documentation is hyperlinked and is used as online help
-available from the Yacas prompt.
-
-
-\section{Future plans}
-The long-term goal for Yacas is to become an industrial-strength CAS and to
-remain a flexible research tool for easy prototyping of various methods of
-various kinds of symbolic calculations. Yacas is meant to be a repository and a
-testbed for such algorithm prototypes.
-
-
-The plugin facility will be extended in the future, so that a rich set of extra
-additional libraries (especially free software libraries), system-specific as
-well as mathematics-oriented, should be loadable from the Yacas system. The
-issue of speed is also continuously being addressed. 
-
-
-\begin{thebibliography}{10}
-
-\bibitem{ASU86} A. Aho, R. Sethi and J. Ullman, \emph{Compilers (Principles, Techniques and Tools)}, Addison-Wesley, 1986.
-
-
-\bibitem{B86} I. Bratko, \emph{Prolog (Programming for Artificial Intelligence)}, Addison-Wesley, 1986.
-
-
-\bibitem{BN98} F. Baader and T. Nipkow, \emph{Term rewriting and all that}, Cambridge University Press, 1998.
-
-
-\bibitem{C86} G. Cooperman, \emph{A semantic matcher for computer algebra }, in Proceedings of the symposium on symbolic and algebraic computation, (1986), Waterloo, Ontario, Canada (ACM Press, NY).
-
-
-\bibitem{F90} R. Fateman, \emph{On the design and construction of algebraic manipulation systems}, also published as: ACM Proceedings of the ISSAC-90, Tokyo, Japan.
-
-
-\bibitem{GG99} J. von zur Gathen and J. Gerhard, \emph{Modern Computer Algebra}, Cambridge University Press, 1999.
-
-
-\bibitem{K98} D. Knuth, \emph{The Art of Computer Programming (Volume 2, Seminumerical Algorithms)}, Addison-Wesley, 1998.
-
-
-\bibitem{M98} See, for example, M. B. Monagan \emph{et al.}: \emph{Maple V programming guide,} Springer-Verlag, Berlin, 1998.
-
-
-\bibitem{TATA99} H. Comon, M. Dauchet, R. Gilleron, F. Jacquemard, D. Lugiez, S. Tison, and M. Tommasi, \emph{Tree Automata Techniques and Applications}, 1999, online book: {\small \verb|http://www.grappa.univ-lille3.fr/tata|}
-
-
-\bibitem{W96} S. Wolfram, \emph{The Mathematica book}, Wolfram Media, Champain, 1996.
-
-
-\bibitem{WH89} P. Winston and B. Horn, \emph{LISP}, Addison-Wesley, 1989.
+\bibitem[WH89]{WH89} P. Winston and B. Horn, \emph{LISP}, Addison-Wesley, 1989.
 
 
 \end{thebibliography}

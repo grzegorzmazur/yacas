@@ -18,7 +18,7 @@ Book(x) := [	/* this is the first declaration in a file */
 \\title{" : x : "}
 \\author{by the \\textsc{Yacas} team
 \\thanks{
-This text is part of the Yacas software package and may be freely
+This text is part of the \\textsc{Yacas} software package and may be freely
 distributed under the terms of the GNU General Public License (GPL) for
 documentation, version 2 or later.
 Principal documentation authors:
@@ -73,11 +73,15 @@ HasTexChars(x) := [
 	i<=Length(x);
 ];
 
-HtmlTerm(x) := [
-	If (HasTexChars(x),
-	"\\verb|" : x : "|",
-	"\\texttt{" : x : "}");
-];
+HtmlTerm(x) :=
+If(x = "Yacas",
+	"\\textsc{Yacas}",
+	If (
+		HasTexChars(x),
+		"\\verb|" : x : "|",
+		"\\texttt{" : x : "}"
+	)
+);
 
 TexEscapeTT(x) := [
 	Local(i, result);
