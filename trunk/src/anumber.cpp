@@ -1383,22 +1383,24 @@ void ANumber::ChangePrecision(LispInt aPrecision)
   LispInt oldExp = iExp;
   
   iPrecision = aPrecision;
-  iExp = WordDigits(iPrecision,10);
-
-  if (iExp < oldExp)
+  LispInt newExp = WordDigits(iPrecision,10);
+  if (newExp < oldExp)
   {
+    iExp = newExp;
     Delete(0,oldExp-iExp);
   }
   else if (iExp > oldExp)
   {
-    PlatWord zero = 0;
-    Insert(0,zero,iExp-oldExp);
+//    PlatWord zero = 0;
+//    Insert(0,zero,iExp-oldExp);
   }
   LispInt todel;
   todel=0;
-  while (todel<iExp && (*this)[todel] == 0)
+  ElementTypePtr ptr = &((*this)[0]);
+  while (todel<iExp && *ptr ==0 )
   {
       todel++;
+      ptr++;
   }
   if (todel)
   {

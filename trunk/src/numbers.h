@@ -8,7 +8,7 @@
 //TODO FIXME : this define is just temporary, to be able to easily enable/disable new numerics
 //TODO FIXME : code, but still be able to revert back to stable code. But this has to be removed
 //TODO FIXME : at a certain stage.
-#define NO_USE_BIGFLOAT
+#define noNO_USE_BIGFLOAT
 
 
 

@@ -4,6 +4,7 @@
  * by yacas any way
  */
 
+#include "yacasprivate.h"
 #include "yacasbase.h"
 #include "numbers.h"
 #include "standard.h"
@@ -959,6 +960,7 @@ const LispCharPtr BigNumber::NumericLibraryName()
 
 void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
+  iNumber->ChangePrecision(aPrecision);
   ANumber a1(aPrecision);
   a1.CopyFrom(*aX.iNumber);
   ANumber a2(aPrecision);
@@ -1147,16 +1149,8 @@ bool BigNumber::Equals(const BigNumber& aOther) const
 
 
 bool BigNumber::IsInt() const
-{//FIXME (done? Working?)
-  if (iNumber->iTensExp != 0) return false;
-  if (iPrecision == iNumber->iPrecision)
-  {
-    return (iNumber->iExp == 0 && iNumber->iTensExp == 0);
-  }
-  ANumber num(iPrecision);
-  num.CopyFrom(*iNumber);
-  num.ChangePrecision(iPrecision);
-  return (num.iExp == 0 && num.iTensExp == 0);
+{
+  return (iNumber->iExp == 0 && iNumber->iTensExp == 0);
 }
 
 

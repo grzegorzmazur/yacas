@@ -29,6 +29,7 @@
 //          showing no prompts, and with no readline functionality.
 //
 
+#include "yacasprivate.h"
 
 #include <stdio.h>
 #ifndef WIN32
@@ -69,7 +70,7 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include "../config.h"
+#include <config.h>
 #endif
 #ifndef VERSION
 //#define VERSION "Windows latest"
@@ -132,7 +133,7 @@ void ReportNrCurrent()
     printf("%ld constructed, %ld destructed\n",theNrConstructed,theNrDestructed);
     printf("nr tokens: %ld \n",theNrTokens);
     printf("-------------------------------\n");
-    printf("Total %d functions defined (%d built-in, %d user)\n",
+    printf("Total %ld functions defined (%ld built-in, %ld user)\n",
            theNrDefinedBuiltIn+theNrDefinedUser,
            theNrDefinedBuiltIn,theNrDefinedUser);
 #endif
@@ -789,7 +790,7 @@ int runserver(int argc,char** argv)
 
 */
 #ifdef YACAS_DEBUG
-printf("Servicing on %d (%ld)\n",fd,used_clients[fd]);
+printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[fd]);
 #endif
                             if (used_clients[fd] == NULL)
                             {
@@ -868,6 +869,7 @@ printf("Servicing on %d (%ld)\n",fd,used_clients[fd]);
             }
         }
     }
+    return 0;
 }
 #endif
 
@@ -889,7 +891,7 @@ void TestNum()
 
 
 
-#define SHOWSIZE(a)    printf("   sizeof(" #a ") = %d\n",sizeof(a));
+#define SHOWSIZE(a)    printf("   sizeof(" #a ") = %ld\n",sizeof(a));
 int main(int argc, char** argv)
 {
 //TestNum();

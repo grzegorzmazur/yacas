@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "yacasprivate.h"
 #include "yacasbase.h"
 #include "lispobject.h"
 #include "lispatom.h"

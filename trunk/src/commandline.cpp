@@ -115,6 +115,7 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
       case eUp:
         {
           LispString prefix;
+          if (iHistoryUnchanged && cursor == iSubLine.NrItems()-1) cursor = 0;
           prefix.SetStringCounted(iSubLine.String(),cursor);
 
           int i = history - 1;
@@ -132,7 +133,7 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
           {
             history = i;
             GetHistory(history);
-
+            if (cursor == 0) cursor = iSubLine.NrItems()-1;
             iFullLineDirty = 1;
             iHistoryUnchanged = 1;
           }
@@ -141,6 +142,7 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
       case eDown:
         {
           LispString prefix;
+          if (iHistoryUnchanged && cursor == iSubLine.NrItems()-1) cursor = 0;
           prefix.SetStringCounted(iSubLine.String(),cursor);
           int i = history + 1;
           LispString histpre;
@@ -155,6 +157,7 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
           {
             history = i;
             GetHistory(history);
+            if (cursor == 0) cursor = iSubLine.NrItems()-1;
             iFullLineDirty = 1;
             iHistoryUnchanged = 1;
           }

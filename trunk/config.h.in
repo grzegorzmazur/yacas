@@ -107,14 +107,23 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* Define to build the network server version */
+#undef SUPPORT_SERVER
+
 /* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
 #undef TIME_WITH_SYS_TIME
+
+/* Define to build the debug version */
+#undef USE_ASSERT
 
 /* Version number of package */
 #undef VERSION
 
 /* Define to 1 if the X Window System is missing or not being used. */
 #undef X_DISPLAY_MISSING
+
+/* Define to build the debug version */
+#undef YACAS_DEBUG
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const

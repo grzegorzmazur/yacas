@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "yacasprivate.h"
 #include "debugmem.h"
 #include "stubs.h"
 #include "lispassert.h"
