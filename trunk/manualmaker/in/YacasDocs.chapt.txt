@@ -97,12 +97,23 @@ or
 	<*click here|somewebpage.html*>
 
 
-*	Mathematical expressions should be typed in Yacas notation and surrounded by dollar signs (within one line of text). For example: {$}
+*	Mathematical expressions should be typed in Yacas notation and surrounded by dollar signs (must be within one line of text). For example: {$}
 {x^2 + y^2 != z^2 $}
-gives "$x^2+y^2 != z^2$". Double dollar signs will denote a displayed equation, like in $TeX$, but it should still be within one line. As a special exception, one can enter the symbols "$TeX$" and "$LaTeX$" as if they are mathematical expressions, e.g. "{$TeX$}" produces "$TeX$". Mathematics will be kept in Yacas notation in online HTML documents but typeset in $TeX$ when creating printed documentation.
+gives $x^2+y^2 != z^2$. Double dollar signs will denote a displayed equation,
+like in $TeX$; both pairs of dollar signs should still be within one line.
+As a special exception, one can enter the symbols "$TeX$" and "$LaTeX$" as if
+they are Yacas symbols, i.e. "{$T}{eX$}" produces "$TeX$". Mathematical
+expressions <i>must</i> be valid Yacas expressions, with balanced parentheses,
+no hanging periods and so on, or else the Yacas script that formats the docs
+will fail! (This limits the scope of mathematical formulae but is hopefully not
+critical.) Currently, when creating online HTML documentation, mathematics is
+kept in Yacas notation and set in boldface font.
+(This may change in the future.) Of course, $LaTeX$ typesets printed
+documentation with correct mathematical symbols.
 
 
-*	To include contents of another document, use the {*INCLUDE} directive at the beginning of a line, e.g.
+*	To include contents of another document, use the {*INCLUDE} directive at
+the beginning of a line, e.g.
 
 	*INCLUDE ../essays/howto.chapt
 
