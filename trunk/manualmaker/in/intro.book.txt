@@ -41,7 +41,7 @@ For Unix, compilation basically amounts to the standard sequence
 This will install the binaries to {/usr/local/bin} and the library files to {/usr/local/share/yacas/}.
 
 *A compiling with {libgmp}
-The arbitrary precision math in {Yacas} will be generally faster if you compile {Yacas} with the {libgmp} library (the option {--enable-gmp} for the {configure} script). Precompiled Red Hat (RPM) and Debian (DEB) packages are also available.
+The arbitrary precision math in {Yacas} will be generally faster if you compile {Yacas} with the {libgmp} library (the option {--with-numlib=gmp} for the {configure} script). Precompiled Red Hat (RPM) and Debian (DEB) packages are also available.
 
 *A getting printed manuals
 Additionally, $LaTeX$-formatted documentation in PostScript and PDF formats can be produced by the command
