@@ -409,7 +409,7 @@ This function is used to test numbers for prime powers.
 *CMD NthRoot --- calculate/simplify nth root of an integer
 *STD
 *CALL
-        NthRoot(m,n)
+	NthRoot(m,n)
 
 *PARMS
 

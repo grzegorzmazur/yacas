@@ -323,7 +323,7 @@ $n$ and the sum of the proper divisors of $n$ is $m$.
 *CMD Factor --- factorization, in pretty form
 *STD
 *CALL
-	Factors(x)
+	Factor(x)
 
 *PARMS
 
@@ -930,7 +930,7 @@ if and only if $Re(z)$ is an ordinary prime and $Re(z):=Mod(3,4)$.
 *CMD GaussianGcd --- greatest common divisor in Gaussian integers
 *STD
 *CALL
-	Gcd(z,w)
+	GaussianGcd(z,w)
 
 *PARMS
 

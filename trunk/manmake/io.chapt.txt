@@ -590,7 +590,7 @@ might follow:
 *SEE Read, LispRead, LispReadListed
 
 
-*CMD LispRead, ListReadListed --- read expressions in LISP syntax
+*CMD LispRead, LispReadListed --- read expressions in LISP syntax
 *CORE
 *CALL
 	LispRead()

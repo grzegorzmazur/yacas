@@ -231,6 +231,10 @@ True.
 	Out> a^2;
 
 *SEE Set, :=
+
+
+
+*CMD Local --- declare new local variables
 *CORE
 *CALL
 	Local(var, ...)

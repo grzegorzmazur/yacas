@@ -6,8 +6,8 @@
 //    Fl::flush();
 
 TODO:
-- not all functions get ripped correctly, see output from manripper
-- delete should do new hints too.
+x not all functions get ripped correctly, see output from manripper
+x delete should do new hints too.
 - document the user interface
 - document the files that should be available, and where they should be.
 
@@ -162,7 +162,11 @@ iInputDirty(1),iOutputDirty(1),iShowInput(1),iEnableInput(1)
     {
         extern char defdir[128];
         char buf[128];
-        sprintf(buf,"%sdocumentation/hints",defdir);
+        extern int release_structure;
+        if (release_structure)
+          sprintf(buf,"%sdocumentation/hints",defdir);
+        else
+          sprintf(buf,"%smanmake/hints",defdir);
         {
           FILE*f=fopen(buf,"r");
           if (!f) 
@@ -505,7 +509,12 @@ void FltkConsole::DoLine(char* inpline)
                     char buf[120];
                     extern char defdir[128];
 
-                    sprintf(buf,"%s/documentation/ref.html#%s",defdir,&inpline[1]);
+                    extern int release_structure;
+                    if (release_structure)
+                      sprintf(buf,"%s/documentation/ref.html#%s",defdir,&inpline[1]);
+                    else
+                      sprintf(buf,"%s/manmake/ref.html#%s",defdir,&inpline[1]);
+
                     extern void HelpGo(char*);
                     HelpGo(buf);
                 }
@@ -729,16 +738,30 @@ void FltkConsole::handle_key(int key)
     case eDelete:
         if (cursor<iSubLine.NrItems()-1)
         {
-            iSubLine.Delete(cursor);
-            iFullLineDirty = 1;
+          if (iSubLine[cursor] == '(' || iSubLine[cursor] == ')')
+          {
+            delete hints;
+            hints=NULL;
+          }
+          iSubLine.Delete(cursor);
+          iFullLineDirty = 1;
+          if (hints == NULL)
+            CheckForNewHints();
         }
         break;
     case eBackSpace:
         if (cursor>0)
         {
-            cursor--;
-            iSubLine.Delete(cursor);
-            iFullLineDirty = 1;
+          cursor--;
+          if (iSubLine[cursor] == '(' || iSubLine[cursor] == ')')
+          {
+            delete hints;
+            hints=NULL;
+          }
+          iSubLine.Delete(cursor);
+          iFullLineDirty = 1;
+          if (hints == NULL)
+            CheckForNewHints();
         }
         break;
     case eLeft:

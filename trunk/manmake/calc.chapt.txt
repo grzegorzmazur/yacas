@@ -1576,7 +1576,7 @@ handled.
 
 *SEE Solve, Factor
 
-*CMD Pi() --- numerical approximation of $Pi$
+*CMD Pi --- numerical approximation of $Pi$
 *CORE
 *CALL
 	Pi()

@@ -16,7 +16,7 @@ noinst_PROGRAMS = manripper
 
 manripper_SOURCES = manripper.cpp 
 
-hints: manripper
+hints: manripper $(REFPROGSOURCES) $(REFSOURCES) ref.book.txt refprog.book.txt
 	./manripper ref.book.txt refprog.book.txt > hints.unsorted 
 	sort -t ":" hints.unsorted > hints.sorted
 	echo "::::" > tail.txt
