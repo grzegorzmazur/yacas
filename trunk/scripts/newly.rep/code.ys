@@ -128,15 +128,17 @@ EigenVectors(_matrix,_eigenvalues) <--
 Function("RationalizeNumber",{x})
 [
   Check(IsNumber(x),"RationalizeNumber: Error: " : (ToString()Write(x)) :" is not a number");
-  Local(n);
+  Local(n,i);
   n:=1;
+  i:=0;
   // We can not take for granted that the internal representation is rounded properly...
-  While(Not(FloatIsInt(x)))  
+  While(i<=GetPrecision() And Not(FloatIsInt(x)))  
   [ 
     n:=n*10; x:=x*10; 
+    i:=i+1;
 //Echo(x,"/",n);
   ];
-  Floor(x)/n; //FIXME forced thunking to string representation
+  Floor(x+0.5)/n; //FIXME forced thunking to string representation
 ];
 
 Function("Rationalize",{a'number})

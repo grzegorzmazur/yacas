@@ -219,12 +219,12 @@ void ANumber::SetTo(const LispCharPtr aString,LispInt aBase)
 //printf("\tendint = %d, endfloat = %d, endnumber = %d\n",endIntIndex,endFloatIndex,endNumberIndex);        
 
 //printf("%d digits\n",endFloatIndex-endIntIndex-1);
-/*
-    if (endFloatIndex-endIntIndex > iPrecision) 
+
+    if (endFloatIndex-endIntIndex-1 > iPrecision) 
     {
-      iPrecision = endFloatIndex-endIntIndex;
+      iPrecision = endFloatIndex-endIntIndex-1;
     }
-*/        
+        
     // Go to least significant digit first
     const LispCharPtr ptr = aString + endIntIndex-1; 
     
@@ -1520,6 +1520,7 @@ void ANumber::ChangePrecision(LispInt aPrecision)
   {
     RoundBits();
   }
+//  return;
 
   LispInt oldExp = iExp;
   
@@ -1536,21 +1537,6 @@ void ANumber::ChangePrecision(LispInt aPrecision)
     PlatWord zero = 0;
     Insert(0,zero,newExp-oldExp);
   }
-/* 
-  LispInt todel;
-  todel=0;
-  ElementTypePtr ptr = &((*this)[0]);
-  while (todel<iExp && *ptr ==0 )
-  {
-      todel++;
-      ptr++;
-  }
-  if (todel)
-  {
-      iExp-=todel;
-      Delete(0,todel);
-  }
- */
 }
 
 

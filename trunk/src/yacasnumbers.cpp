@@ -1001,6 +1001,10 @@ const LispCharPtr BigNumber::NumericLibraryName()
 void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
   SetIsInteger(aX.IsInt() && aY.IsInt());
+
+  if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
+  if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
+
   iNumber->ChangePrecision(BITS_TO_DIGITS(aPrecision,10));
   ANumber a1(BITS_TO_DIGITS(aPrecision,10));
   a1.CopyFrom(*aX.iNumber);
@@ -1019,6 +1023,10 @@ void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aP
 void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
   SetIsInteger(aX.IsInt() && aY.IsInt());
+
+  if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
+  if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
+
   ANumber a1(BITS_TO_DIGITS(aPrecision,10));
   a1.CopyFrom(*aX.iNumber);
   ANumber a2(BITS_TO_DIGITS(aPrecision,10));
@@ -1036,6 +1044,10 @@ void BigNumber::Negate(const BigNumber& aX)
 }
 void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
+
+  if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
+  if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
+
   ANumber a1(BITS_TO_DIGITS(aPrecision,10));
   a1.CopyFrom(*aX.iNumber);
   ANumber a2(BITS_TO_DIGITS(aPrecision,10));
@@ -1349,8 +1361,10 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
   BigNumber diff;
   BigNumber otherNeg;
   otherNeg.Negate(aOther);
-  diff.Add(*this,otherNeg,GetPrecision());
-  diff.iNumber->ChangePrecision(BITS_TO_DIGITS(iPrecision,10));
+  LispInt precision = GetPrecision();
+  if (precision<aOther.GetPrecision()) precision = aOther.GetPrecision();
+  diff.Add(*this,otherNeg,BITS_TO_DIGITS(precision,10));
+//  diff.iNumber->ChangePrecision(BITS_TO_DIGITS(iPrecision,10));
 
   return !Significant(*diff.iNumber);
 /* */
