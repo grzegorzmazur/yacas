@@ -117,7 +117,7 @@ clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.idx *.ind *.ilg *.toc *.log *.ps *.pdf \
 	coding*html intro*html ref*html essays*html Algo*html .o core *~ texdocs.c \
 	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS) \
-	$(CODESNIPPETS) $(ALGOCHAPTERS) in/yacasapi.chapt.txt $(BOOKS) manicon.html
+	$(CODESNIPPETS) $(ALGOCHAPTERS) yacasapi.chapt.txt $(BOOKS) manicon.html
 
 # Newly-built version of yacas with an extended search path
 ouryacas2 = ../src/yacas --rootdir $(top_srcdir)/scripts/:../scripts/:$(srcdir)/:$(srcdir)/in/
