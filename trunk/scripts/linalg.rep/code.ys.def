@@ -12,6 +12,7 @@ Normalize
 ZeroMatrix
 Transpose
 Determinant
+SymbolicDeterminant
 CoFactor
 Minor
 Inverse

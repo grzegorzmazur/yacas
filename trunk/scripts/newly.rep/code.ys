@@ -91,7 +91,7 @@ UnFence("Limit",3);
 
 
 Function("CharacteristicEquation",{matrix,var})
-   Determinant(matrix-var*Identity(Length(matrix)));
+   SymbolicDeterminant(matrix-var*Identity(Length(matrix)));
 HoldArg("CharacteristicEquation",var);
 
 // diagonal matrices will be caught by IsUpperTriangular
