@@ -68,7 +68,6 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispPtr& aResult,
         InternalIntToAscii(&newname[1+len],uniquenumber);
         LispStringPtr variable = aEnvironment.HashTable().LookUp(newname);
         localnames[i] = variable;
-        aEnvironment.NewLocal(variable,NULL);
     }
     
 

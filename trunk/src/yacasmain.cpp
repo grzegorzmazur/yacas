@@ -1056,29 +1056,10 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
 }
 #endif
 
-#include "platmath.h"
-void TestNum()
-{//numeric test code
-  BigNumber result;
-  BigNumber x("23",10);
-  BigNumber y("45.23e3",10);
-  result.Multiply(x,y,10);
-  LispString str;
-  result.ToString(str,10);
-  printf("23*45.23e3 = %s\n",str.String());
-
-  BigNumber minusOne("-1.0",10);
-  minusOne.ToString(str,10);
-  printf("-1 = %s\n",str.String());
-}
-
-
 
 #define SHOWSIZE(a)    printf("   sizeof(" #a ") = %ld\n",sizeof(a));
 int main(int argc, char** argv)
 {
-//TestNum();
-
     unsigned char first_stack_var=0;
     the_first_stack_var = &first_stack_var;
 

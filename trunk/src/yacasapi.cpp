@@ -77,10 +77,6 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispWrite         ,"Write");
     SetCommand(LispMathLibName         ,"MathLibrary");
     SetCommand(LispVersion         ,"Version");
-    /*TODO remove!
-    Set*Command(LispSpace         ,"Space");
-    Set*Command(LispNewLine       ,"NewLine");
-*/
     SetCommand(LispWriteString   ,"WriteString");
     SetCommand(LispProgBody      ,"Prog");
     SetCommand(LispNewLocal      ,"Local");

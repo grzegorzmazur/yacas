@@ -319,7 +319,6 @@ void LispFullForm(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
     InternalEval(aEnvironment, aResult, Argument(aArguments,1));
     LispPrinter printer;
-//TODO remove    StdUserOutput output;
     printer.Print(aResult, *aEnvironment.CurrentOutput(), aEnvironment);
     aEnvironment.CurrentOutput()->Write("\n");
 }
@@ -871,41 +870,6 @@ void LispWrite(LispEnvironment& aEnvironment, LispPtr& aResult,
     }
     InternalTrue(aEnvironment,aResult);
 }
-/*TODO remove!!!
-static void RepeatChar(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments, LispCharPtr aString)
-{
-    LispInt nrArguments = InternalListLength(aArguments);
-    CHK(nrArguments == 1 || nrArguments == 2,KLispErrWrongNumberOfArgs);
-    LispInt nrTimes=1;
-    if (nrArguments == 2)
-    {
-        LispPtr index;
-        InternalEval(aEnvironment, index, Argument(aArguments,1));
-        CHK_ARG(index.Get() != NULL, 1);
-        CHK_ARG(index.Get()->String() != NULL, 1);
-        nrTimes = InternalAsciiToInt(index.Get()->String()->String());
-    }
-    CHK_ARG(nrTimes>=0,1);
-    LispInt i;
-    for (i=0;i<nrTimes;i++)
-        aEnvironment.CurrentOutput()->Write(aString);
-    InternalTrue(aEnvironment,aResult);
-}
-
-void LispSpace(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
-{
-    RepeatChar(aEnvironment, aResult, aArguments, " ");
-}
-
-void LispNewLine(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments)
-{
-    RepeatChar(aEnvironment, aResult, aArguments, "\n");
-}
-*/
-
 
 void LispWriteString(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
@@ -1542,7 +1506,6 @@ void LispRetract(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispStringPtr orig = evaluated.Get()->String();
     CHK_ARG(orig != NULL, 1);
     LispStringPtr oper = SymbolName(aEnvironment,orig->String());
-//TODO remove    InternalUnstringify(oper, orig);
     
     LispPtr arity;
     InternalEval(aEnvironment, arity, Argument(aArguments,2));
@@ -1607,12 +1570,10 @@ void LispFromFile(LispEnvironment& aEnvironment, LispPtr& aResult,
 
     LispStringPtr contents = aEnvironment.FindCachedFile(orig->String());
     LispStringPtr hashedname = aEnvironment.HashTable().LookUpUnStringify(orig->String());
-//TODO remove?    LispRamFile* ramFile=aEnvironment.iRamDisk.LookUp(hashedname);
 
     InputStatus oldstatus = aEnvironment.iInputStatus;
     aEnvironment.iInputStatus.SetTo(hashedname->String());
 
-    //TODO remove?    if (ramFile != NULL)
     if (contents)
     {
         StringInput newInput(*contents,aEnvironment.iInputStatus);

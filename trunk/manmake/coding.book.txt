@@ -1734,9 +1734,12 @@ in interactive mode while debugging:
 expression to evaluate
 *	1. {DebugStop()} - completely halt evaluation
 *	1. {DebugVerbose(verbose)} - turn on trace-like output to the console
-*	1. {BreakpointAdd(name)} - set a breakpoint at a certain function. The interpreter
+*	1. {DebugAddBreakpoint(name)} - set a breakpoint at a certain function. The interpreter
 will now stop at the point where the arguments to a function need to be evaluated.
-*	1. {BreakpointsClear()} - remove all breakpoints.
+*	1. {DebugBreakIf(predicate)} - halt when a certain predicate becomes true. This is useful for designing a custom break point (eg. stop when a 
+certain local variable gets some value). The predicate is removed again
+after it has fired the first time. 
+*	1. {BreakpointsClear()} - remove all breakpoints (including the custom break point predicate).
 *	1. {DebugLocals()} - show the currently available local variables
 *	1. {DebugCallstack()} - show the current function call stack
 
@@ -1894,7 +1897,7 @@ The following code allows for simple interactive debugging:
 	];
 	DebugRun():= [debugging:=False;];
 	DebugStep():=[debugging:=False;nextdebugging:=True;];
-	BreakpointAdd(fname_IsString) <-- [ breakpoints := fname:breakpoints;];
+	DebugAddBreakpoint(fname_IsString) <-- [ breakpoints := fname:breakpoints;];
 	BreakpointsClear() <-- [ breakpoints := {};];
 	Macro(DebugEnter,{})
 	[
@@ -1990,7 +1993,7 @@ a call is made to the {MathAdd} function:
 
 	In> Debug(2+3)
 	>>> 2+3 
-	Debug> BreakpointAdd("MathAdd")
+	Debug> DebugAddBreakpoint("MathAdd")
 	DebugOut> {"MathAdd"} 
 	Debug> DebugRun()
 	>>> 2 

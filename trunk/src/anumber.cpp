@@ -23,6 +23,10 @@ LispBoolean BaseGreaterThan(ANumber& a1, ANumber& a2);
 LispBoolean BaseLessThan(ANumber& a1, ANumber& a2);
 void BaseSqrt(ANumber& aResult, ANumber& N);
 
+// The default is 8, but it is suspected mose numbers will be short integers that fit into
+// one or two words. For these numbers memory allocation will be a lot more friendly.
+#define NUMBER_GRANULARITY 2 
+
 
 /*TESTCODE
 #include <stdio.h>
@@ -62,7 +66,7 @@ ANumber::~ANumber()
 {
 }
 
-ANumber::ANumber(LispInt aPrecision)
+ANumber::ANumber(LispInt aPrecision) : CArrayGrower<PlatWord>(NUMBER_GRANULARITY)
 {
     LISPASSERT(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
     iPrecision = aPrecision;
@@ -73,7 +77,7 @@ ANumber::ANumber(LispInt aPrecision)
 }
 
 /* Allow use of external arrays */
-ANumber::ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision)
+ANumber::ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision): CArrayGrower<PlatWord>(NUMBER_GRANULARITY)
 {
     LISPASSERT(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
     iPrecision = aPrecision;
@@ -84,7 +88,7 @@ ANumber::ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision)
 }
 
 /* ANumber: Constructor for an arbitrary precision number. */
-ANumber::ANumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+ANumber::ANumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase): CArrayGrower<PlatWord>(NUMBER_GRANULARITY)
 {
     SetPrecision(aPrecision);
     SetTo(aString,aBase);

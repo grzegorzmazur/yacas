@@ -571,3 +571,9 @@ LocalSymbols(x)
 		x;
 	];
 ];
+
+
+
+// Non-destructive Reverse operation
+Reverse(list):=DestructiveReverse(FlatCopy(list));
+

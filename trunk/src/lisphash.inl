@@ -1,5 +1,4 @@
  
-//#include <stdio.h> //TODO!
 
 
 /** LAssoc is a helper class for LispAssociatedHash
@@ -22,37 +21,12 @@ inline LAssoc<T>::LAssoc(LispStringPtr aString,const T& aData)
 {
     LISPASSERT(aString != NULL);
     iString.Set(aString);
-//TODO remove!    aString->IncreaseRefCount();
 }
-
-/*
-template<class T>
-inline LAssoc<T>::LAssoc(const LAssoc<T>& aOther)
-: iData(aOther.iData)
-{
-//    printf("LAssoc copyconstruct\n");
-    iString.Set(aOther.aString);
-//TODO remove!    iString->IncreaseRefCount();
-}
-
-template<class T>
-inline LAssoc<T>::operator=(const LAssoc<T>& aOther)
-{
-//    printf("LAssoc assignment\n");
-//TODO remove!    iString->DecreaseRefCount();
-    iString.Set(aOther.iString);
-//TODO remove!    iString->IncreaseRefCount();
-    iData=aOther.iData;
-}
-*/
 
 template<class T>
 inline LAssoc<T>::~LAssoc()
 {
    iString.Set(NULL);
-//printf(" %d ",iString->ReferenceCount());
-//TODO remove!    iString->DecreaseRefCount();
-//printf("lassoc2\n");
 }
 
 
@@ -69,7 +43,6 @@ inline T* LispAssociatedHash<T>::LookUp(LispStringPtr aString)
     {
         LispStringSmartPtr &ptr = (((LAssoc<T>*)iHashTable[bin][i])->iString);
         if (ptr() == aString)
-//TODO remove?        if (((LAssoc<T>*)iHashTable[bin][i])->iString() == aString)
         {
             return &((LAssoc<T>*)iHashTable[bin][i])->iData;
         }
@@ -88,7 +61,6 @@ inline void LispAssociatedHash<T>::SetAssociation(const T& aData, LispStringPtr 
     {
         LispStringSmartPtr &ptr = (((LAssoc<T>*)iHashTable[bin][i])->iString);
         if (ptr() == aString)
-//TODO remove?        if (((LAssoc<T>*)iHashTable[bin][i])->iString() == aString)
         {
             //change existing version of association
             ((LAssoc<T>*)iHashTable[bin][i])->iData = aData;
@@ -112,7 +84,6 @@ inline void LispAssociatedHash<T>::Release(LispStringPtr aString)
     {
         LispStringSmartPtr &ptr = (((LAssoc<T>*)iHashTable[bin][i])->iString);
         if (ptr() == aString)
-//TODO remove?        if (((LAssoc<T>*)iHashTable[bin][i])->iString() == aString)
         {
             //change existing version of association
             delete ((LAssoc<T>*)iHashTable[bin][i]);

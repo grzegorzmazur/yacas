@@ -29,13 +29,23 @@ DebugStart():=
    debugstopped:=False;
    debugverbose:=False;
    debugcallstack:={};
+   breakpredicate:=False;
 ];
 DebugRun():= [debugging:=False;];
 DebugStep():=[debugging:=False;nextdebugging:=True;];
 DebugStop():=[debugging:=False;debugstopped:=True;CustomEval'Stop();];
 DebugVerbose(verbose):=[debugverbose:=verbose;];
-BreakpointAdd(fname_IsString) <-- [ breakpoints := fname:breakpoints;];
-BreakpointsClear() <-- [ breakpoints := {};];
+DebugAddBreakpoint(fname_IsString) <-- [ breakpoints := fname:breakpoints;];
+Macro(DebugBreakIf,{predicate})
+[
+  breakpredicate:= Hold(@predicate);
+];
+
+BreakpointsClear() <-- 
+[ 
+  breakpredicate:=False;
+  breakpoints := {};
+];
 Macro(DebugLocals,{})
 [
   Echo("");
@@ -63,7 +73,15 @@ DebugCallstack() <--
 Macro(DebugEnter,{})
 [
   debugcallstack := CustomEval'Expression():debugcallstack;
-   If(debugging = False And
+  // custom breakpoint (custom predicate thought up by the programmer)
+  If(debugging = False And 
+      Eval(breakpredicate) = True,
+      [
+        breakpredicate:=False;
+        debugging:=True;
+      ]);
+  // the standard breakpoint
+  If(debugging = False And
       IsFunction(CustomEval'Expression()) And 
       Contains(breakpoints,Type(CustomEval'Expression())),   debugging:=True);
    nextdebugging:=False;

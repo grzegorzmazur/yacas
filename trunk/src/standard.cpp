@@ -352,12 +352,10 @@ void InternalLoad(LispEnvironment& aEnvironment,LispStringPtr aFileName)
 
     LispStringPtr contents = aEnvironment.FindCachedFile(oper.String());
     LispStringPtr hashedname = aEnvironment.HashTable().LookUp(oper.String());
-//TODO remove?    LispRamFile* ramFile=aEnvironment.iRamDisk.LookUp(hashedname);
 
     InputStatus oldstatus = aEnvironment.iInputStatus;
     aEnvironment.iInputStatus.SetTo(hashedname->String());
 
-    //TODO remove?    if (ramFile != NULL)
     if (contents)
     {
         StringInput newInput(*contents,aEnvironment.iInputStatus);

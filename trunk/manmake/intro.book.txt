@@ -48,6 +48,11 @@ Additionally, $LaTeX$-formatted documentation in PostScript and PDF formats can 
 
 	make texdocs
 
+or, alternatively, by passing {--enable-ps-doc} or {--enable-pdf-doc}
+to {./configure} when building {Yacas}. In the latter case, the documentation
+will be automatically rebuilt every time the documentation changes (which is
+useful when maintaining the documentation).
+
 		Using the console mode
 
 You can run {Yacas} in the console mode simply by typing {yacas}. The {Yacas} command prompt looks like this:
@@ -89,6 +94,13 @@ Type {Example();} to get some random examples of {Yacas} calculations.
 *A command history
 The command line has a history list, so it should be easy to
 browse through the expressions you entered previously using the Up and Down arrow keys.
+
+When a few characters have been typed, the command line will use
+the characters before the cursor as a filter into the history,
+and allow you to browse through all the commands in the history
+that start with these characters quickly, instead of browsing through
+the entire history. 
+
 *A TAB completion
 Typing the first few characters of a previous expression and then
 hitting the TAB key makes {Yacas} recall the last expression
@@ -150,6 +162,16 @@ When dealing with floating point numbers, the command {Precision(n);} can be use
 *A {N}
 Note that we need to enter {N()} to force the approximate calculation, otherwise the fraction would have been left unevaluated. The value {True} is a boolean constant.
 
+The {N} function has an optional second argument, the required precision:
+
+	In> N(1/234,10)
+	Out> 0.0042735042;
+	In> N(1/234,20)
+	Out> 0.0042735042735042735;
+	In> N(1/234,30)
+	Out> 0.004273504273504273504273504273;
+
+
 *A {D(x)}
 Analytic derivatives of functions can be evaluated:
 
@@ -157,6 +179,16 @@ Analytic derivatives of functions can be evaluated:
 	Out> Cos(x);
 	In> D(x) D(x) Sin(x);
 	Out> -Sin(x);
+
+The {D} function also accepts an argument specifying how often
+the derivative has to be taken. In that case, the above expressions
+can also be written as:
+
+	In> D(x,1)Sin(x)
+	Out> Cos(x);
+	In> D(x,2)Sin(x)
+	Out> -Sin(x);
+
 
 *A fractions
 Rational numbers will stay rational as long as the numerator and denominator
@@ -418,6 +450,47 @@ To illustrate these features, let us create a list of all even integers from 2 t
 	Out> 2867200;
 
 We used a shorter form of {If(predicate, body)} with only one body which is executed when the condition holds. If the condition does not hold, this function call returns {False}.
+
+The above example is not the shortest possible way to write out the
+algorithm. A more 'functional' approach would go like this:
+
+First construct a list with all even numbers from {2} to {20}.
+For this we use the {..} operator to set up all numbers from one
+to ten, and then multiply that with two.
+
+	In> 2*(1 .. 10)
+	Out> {2,4,6,8,10,12,14,16,18,20};
+
+Now we want an expression that returns all the even numbers up to
+{20} which are not divisible by {3}. For this we can use {Select},
+which takes as first argument a predicate that should return {True}
+if the list item is to be accepted, and false otherwise, and as
+second argument the list in question:
+
+	In> Select({{n},Mod(n,3)!=0},2*(1 .. 10))
+	Out> {2,4,8,10,14,16,20};
+
+The numbers {6}, {12} and {18} have been correctly filtered out.
+
+All that remains is to factor the items in this list. For this we
+can use {Factorize}, which accepts a list as argument and returns
+the product of all the items in that list:
+
+	In> Factorize(Select({{n},Mod(n,3)!=0},2*(1 .. 10)))
+	Out> 2867200;
+
+A more flexible function one can use is UnFlatten:
+
+	In> UnFlatten({a,b,c},"*",1)
+	Out> a*b*c;
+	In> UnFlatten({a,b,c},"+",0)
+	Out> a+b+c;
+
+Using {UnFlatten}, the result becomes:
+
+	In> UnFlatten(Select({{n},Mod(n,3)!=0},2*(1 .. 10)),"*",1)
+	Out> 2867200;
+
 
 			Examples
 

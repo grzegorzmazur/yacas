@@ -60,18 +60,6 @@ GenericClass* LispObject::Generic()
     return NULL;
 }
 
-/*TODO remove?
-EvalFuncBase* LispObject::EvalFunc()
-{
-    return NULL;
-}
-
-void LispObject::SetEvalFunc(EvalFuncBase* aEvalFunc)
-{
-    LISPASSERT(0);
-}
-*/
-
 LispInt LispObject::Equal(LispObject& aOther)
 {
     // next line handles the fact that either one is a string

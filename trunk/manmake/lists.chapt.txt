@@ -260,13 +260,13 @@ An alternative but equivalent form of {Nth(list, n)} is
 *DESC
 
 This command reverses "list" in place, so that the original is
-destroyed. This means that any variable bound to "list" will now be
-bound to the reversed list. The reversed list is also returned.
+destroyed. This means that any variable bound to "list" will now have
+an undefined content, and should not be used any more. 
+The reversed list is returned.
 
 Destructive commands are faster than their nondestructive
-counterparts. Strangely, there is no nondestructive command to reverse
-a list. Use {FlatCopy} and
-{DestructiveReverse} to achieve this.
+counterparts. {Reverse} is the non-destructive version of
+this function.
 
 *E.G.
 
@@ -277,7 +277,51 @@ a list. Use {FlatCopy} and
 	In> lst;
 	Out> {a};
 
-*SEE FlatCopy
+*SEE FlatCopy, Reverse
+
+
+
+
+
+
+*CMD Reverse --- return the reversed list (without touching the original)
+*STD
+*CALL
+	Reverse(list)
+
+*PARMS
+
+{list} -- list to reverse
+
+*DESC
+
+This function returns a list reversed, without changing the
+original list. It is similar to {DestructiveReverse}, but safer
+and slower.
+
+
+*EG
+
+	In> lst:={a,b,c,13,19}
+	Out> {a,b,c,13,19};
+	In> revlst:=Reverse(lst)
+	Out> {19,13,c,b,a};
+	In> lst
+	Out> {a,b,c,13,19};
+
+*SEE FlatCopy, DestructiveReverse
+
+
+
+
+
+
+
+
+
+
+
+
 
 *CMD List --- construct a list
 *CORE

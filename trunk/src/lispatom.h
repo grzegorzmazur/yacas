@@ -46,10 +46,6 @@ public:
     virtual LispStringPtr String();
     virtual LispPtr* SubList();
     virtual GenericClass* Generic();
-/*TODO remove?
-    virtual EvalFuncBase* EvalFunc();
-    virtual void SetEvalFunc(EvalFuncBase* aEvalFunc);
-    */
     virtual LispObject* Copy(LispInt aRecursed);
 public:
     virtual LispObject* SetExtraInfo(LispPtr& aAdditionalInfo);
@@ -93,21 +89,6 @@ GenericClass* LispAnnotatedObject<T>::Generic()
     return iObject.Get()->Generic();
 }
 
-/*TODO remove?
-template<class T>
-EvalFuncBase* LispAnnotatedObject<T>::EvalFunc()
-{
-    return iObject.Get()->EvalFunc();
-}
-*/
-
-/*TODO remove?
-template<class T>
-void LispAnnotatedObject<T>::SetEvalFunc(EvalFuncBase* aEvalFunc)
-{
-    iObject.Get()->SetEvalFunc(aEvalFunc);
-}
-*/
 template<class T>
 LispObject* LispAnnotatedObject<T>::Copy(LispInt aRecursed)
 {
@@ -131,19 +112,12 @@ public:
     virtual LispPtr* SubList();
     virtual LispStringPtr String();
     virtual LispObject* Copy(LispInt aRecursed);
-/*TODO remove?
-    virtual EvalFuncBase* EvalFunc();
-    virtual void SetEvalFunc(EvalFuncBase* aEvalFunc);
-    */
 public:
     virtual LispObject* SetExtraInfo(LispPtr& aData);
 private:
     LispSubList(LispObject* aSubList);
 private:
     LispPtr iSubList;
-/*TODO remove?
-    EvalFuncBase* iEvalFunc;
-*/
 };
 
 
