@@ -1462,7 +1462,7 @@ void BaseSqrt(ANumber& aResult, ANumber& N)
 
 void Sqrt(ANumber& aResult, ANumber& N)
 {
-    LispInt digs = WordDigits(aResult.iPrecision, 10);
+    LispInt digs = WordDigits(N.iPrecision, 10);
     PlatWord zero=0;
 
    if ((N.iTensExp&1) != 0)

@@ -268,7 +268,7 @@ Verify( N(BesselJ(10,10)), RoundTo( .2074861066333588576972787235187534280327446
 Verify( RoundTo(N(BesselJ(1,3.6)),50), RoundTo( .09546554717787640384570674422606098601943275490886, 50 )) ;
 
 Precision(20);
-Verify( RoundTo(N(Erf(Sqrt(0.8))),19), // verified with Maple
+Verify( RoundTo(N(Erf(Sqrt(0.8)),20),19), // verified with Maple
 RoundTo(.79409678926793169113034892342, 19)
 );
 Verify( RoundTo(N(Erf(50*I+20)/10^910,22),19), // verified with Maple
