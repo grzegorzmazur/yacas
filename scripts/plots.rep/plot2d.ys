@@ -185,7 +185,7 @@ Plot2D'adaptive(_func, _var, {_a,_b,_c}, {_fa, _fb, _fc}, _depth, _epsilon) <--
 		  sign'change(fa, fa1, fb) + sign'change(fa1, fb, fb1) + sign'change(fb, fb1, fc) <= 2
 		  And
 		  // condition for the values not to change too rapidly
-		  Abs( (fa-5*fa1+9*fb-7*fb1+2*fc)/24 )	// this is the Simpson quadrature for the (fb,fb1) subinterval (using points b,b1,c), subtracted from the 4-point Newton-Cotes quadrature for the (fb,fb1) subinterval (using points a, a1, b, b1)
+		  N(Abs( (fa-5*fa1+9*fb-7*fb1+2*fc)/24 ) )	// this is the Simpson quadrature for the (fb,fb1) subinterval (using points b,b1,c), subtracted from the 4-point Newton-Cotes quadrature for the (fb,fb1) subinterval (using points a, a1, b, b1)
 		  	<= N( epsilon*(	// the expression here will be nonnegative because we subtract the minimum value
 		    //(fa+fc+2*fb+4*(fa1+fb1))/12	// this is 1/4 of the Simpson quadrature on the whole interval
 			(5*fb+8*fb1-fc)/12	// this is the Simpson quadrature for the (fb,f1) subinterval

@@ -45,7 +45,7 @@ MakeFunctionPlugin(_extName, _fBody) <--
     Check(MakeDir(dirBase), "MakeFunctionPlugin: error: cannot create a temporary directory.");
 	fileBase := dirBase : extName : "_plugin";
 	intName := extName : "_plugin_cc";	// name of C++ function
-	exportName := extName : "_plugin"; // name of intermediate Yacas function
+	exportName := extName : "'plugin"; // name of intermediate Yacas function
 	dllName := "lib" : intName : ".so";
 	dllPath := dirBase : dllName;
 	/* specify more include dirs to be able to compile from different places */
