@@ -20,6 +20,7 @@ Summary:
 12. [Calculus] 'Limit(n, Infinity) n^5/2^n' uses L'Hopital incorrectly
 13. [Trigonometry] 'TrigSimpCombine(x^500)' returns nothing
 15. (RESOLVED?)[Core] 'MathPower(0,0.5)' locks up
+19. [Epoc] ToBase, FromBase do not work
 
 ----------------------------------------------------------------------
 
@@ -187,6 +188,17 @@ Resolved? Right now the behaviour is:
   Out> False
   In> 0^0.5
   Out> 0
+
+----------------------------------------------------------------------
+
+Bug #19
+Title: [Epoc] ToBase, FromBase do not work
+Submitted by: Fabian Marx
+Date: 2004-2-4
+Description:
+
+Fabian Marx wrote to the yacas-deval mailing list:
+"the functions ToBase and FromBase dont work on my epoc-version 56."
 
 ----------------------------------------------------------------------
 
