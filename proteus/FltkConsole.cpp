@@ -108,6 +108,7 @@ does.
 #include <FL/Fl_Tabs.H>
 #include <FL/Fl_Scroll.H>
 #include <FL/Fl_Pixmap.H>
+#include <FL/Fl_Help_Dialog.H>
 
 #include "yacasprivate.h"
 #include "FltkConsole.h"
@@ -514,7 +515,6 @@ void FltkConsole::DoLine(char* inpline)
                       sprintf(buf,"%s/documentation/ref.html#%s",defdir,&inpline[1]);
                     else
                       sprintf(buf,"%s/manmake/ref.html#%s",defdir,&inpline[1]);
-
                     extern void HelpGo(char*);
                     HelpGo(buf);
                 }
