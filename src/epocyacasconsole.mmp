@@ -45,6 +45,7 @@ SOURCE          xmltokenizer.cpp obmalloc.cpp
 source			EPOCMAINcmd.CPP
 
 EPOCSTACKSIZE 800000
+epocheapsize 10240 3145728
 
 //#if defined(MARM)
 //LIBRARY			ecrt0.o

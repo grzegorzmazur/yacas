@@ -16,13 +16,17 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
                                   LispPtr* subList)
 {
     LispObject* head = subList->Get();
-    LispUserFunction* userFunc = aEnvironment.UserFunction(*subList);
+    LispUserFunction* userFunc = NULL;
+    /*
+     userFunc = aEnvironment.UserFunction(*subList);
     CHECKPTR(userFunc);
     if (userFunc != NULL)
     {
         return userFunc;
     }
-    else if (head->String()!=NULL)
+    else
+    */
+    if (head->String()!=NULL)
     {
         LispMultiUserFunction* multiUserFunc =
         aEnvironment.MultiUserFunction(head->String());
@@ -41,8 +45,8 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
 #ifdef YACAS_DEBUG
             printf("Debug> Finished loading file %s\n",def->iFileName()->String());
 #endif
-            userFunc = aEnvironment.UserFunction(*subList);
         }
+        userFunc = aEnvironment.UserFunction(*subList);
     }
     CHECKPTR(userFunc);
     return userFunc;

@@ -334,6 +334,13 @@ void LispEnvironment::DeclareRuleBase(LispStringPtr aOperator,
 {
     LispMultiUserFunction* multiUserFunc = MultiUserFunction(aOperator);
 
+    /*
+     if (multiUserFunc->iFileToOpen != NULL)
+    {
+        LISPASSERT(multiUserFunc->iFileToOpen->iIsLoaded);
+        }
+        */
+        
     // add an operator with this arity to the multiuserfunc.
     BranchingUserFunction *newFunc;
     if (aListed)
