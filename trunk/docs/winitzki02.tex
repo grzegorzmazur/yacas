@@ -1,8 +1,8 @@
 \documentclass{llncs}
 \usepackage{graphicx}
 \usepackage{amssymb}
-\usepackage[T1]{fontenc}
-\usepackage[latin1]{inputenc}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin1]{inputenc}
 %\usepackage{babel}
 
 \begin{document}
@@ -82,7 +82,7 @@ The error function is related to the incomplete Gamma function by
 $\sqrt{\pi }\, \textrm{erfc}\, z$$=\Gamma \left(1/2,z^{2}\right)$
 and has similar representations, in particular, the continued fraction
 due to Laplace,\begin{equation}
-\frac{\sqrt{\pi }}{2}xe^{x^{2}}\textrm{erfc}\, x=\frac{1}{1+}\frac{v}{1+}\frac{2v}{1+}\frac{3v}{1+}...,\label{eq:erfc-cf}\end{equation}
+\sqrt{\pi }xe^{x^{2}}\textrm{erfc}\, x=\frac{1}{1+}\frac{v}{1+}\frac{2v}{1+}\frac{3v}{1+}...,\label{eq:erfc-cf}\end{equation}
 where $v\equiv \left(2x^{2}\right)^{-1}$. This representation was
 used e.g.~in \cite{Thacher63}. Our analysis of the continued fraction
 method will include Eq.~(\ref{eq:erfc-cf}) as a particular case.
@@ -98,8 +98,8 @@ using the {}``rectangular'' or {}``baby step/giant step'' method
 encountered in approximations of analytic functions. The increased
 asymptotic speed of the {}``rectangular'' method is obtained when
 the ratios $b_{k}/b_{k-1}$ are rational numbers with {}``short''
-numerators and denominators {[}of order $O\left(k\right)${]}. If
-the coefficients $b_{k}$ are general real numbers, the best method
+numerators and denominators with $O\left(\ln k\right)$ digits. If
+these ratios are not short, the best method
 is the Horner scheme requiring $O\left(n\right)$ long multiplications.
 
 The series of Eqs.~(\ref{eq:Gam-ser1}), (\ref{eq:Gam-ser2}) have
@@ -266,7 +266,7 @@ In this case, the recurrence relation can be used \cite{Gautschi99}.
 Consider the first series of Eq.~(\ref{eq:Gam-ser1}). The magnitude
 of the ratio of successive terms is $\left|z\right|/\left|a+n+1\right|$.
 If $Re\, \left(a+1\right)>0$ and $\left|a+1\right|>\left|z\right|$,
-or if $Im\, a>\left|z\right|$, then $\left|z\right|<\left|a+n+1\right|$
+or if $|Im\, a|>\left|z\right|$, then $\left|z\right|<\left|a+n+1\right|$
 for all $n$ and the convergence is monotonic. In this case it is
 enough to take $O\left(P/\ln P\right)$ terms for a precision of $P$
 digits. Otherwise, the rapid convergence regime begins only after
@@ -304,7 +304,7 @@ order of the $n_{0}$-th term,\begin{equation}
 \left|z^{a-1}e^{-z}\frac{\Gamma \left(a\right)z^{-n_{0}}}{\Gamma \left(a-n_{0}\right)}\right|\sim e^{-2n_{0}}\end{equation}
 (assuming $\left|z\right|>\left|a\right|$). This error is below the
 required precision $\varepsilon =10^{-P}$ when $2n_{0}\sim 2\left|z\right|>P\ln 10$.
-The working precision will have to be increased to $O\left(P\right)$
+The working precision needs to be increased by $O\left(P\right)$
 digits. We find that the cost of computation for a precision $P$
 for $\left|z\right|\gg P$ is at most $O\left(P\right)$ multiplications.
 
