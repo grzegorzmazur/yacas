@@ -147,6 +147,39 @@ elsewhere. Use {TemplateFunction} instead of
 {Function} to define a function whose parameters should be
 treated as unique symbols.
 
+Consider the following example:
+
+	In> f1(x):=Apply("+",{x,x});
+	Out> True
+
+The function {f1} simply adds its argument to itself. Now calling 
+this function with some argument:
+
+	In> f1(Sin(a))
+	Out> 2*Sin(a)
+
+yields the expected result. However, if we pass as an argument an 
+expression containing the variable {x}, things go wrong:
+
+	In> f1(Sin(x))
+	Out> 2*Sin(Sin(x))
+
+This happens because within the function, {x} is bound to {Sin(x)},
+and since it is passed as an argument to {Apply} it will be re-evaluated,
+resulting in {Sin(Sin(x))}. {TemplateFunction} solves this by making sure
+the arguments can not collide like this (by using {LocalSymbols}:
+
+	In> TemplateFunction("f2",{x}) Apply("+",{x,x});
+	Out> True
+	In> f2(Sin(a))
+	Out> 2*Sin(a)
+	In> f2(Sin(x))
+	Out> 2*Sin(x)
+
+In general one has to be careful when functions like {Apply}, {Map} 
+or {Eval} (or derivatives) are used.
+
+
 		Rules
 
 <i>Rules</i> are special properties of functions that
@@ -1761,6 +1794,15 @@ there can be a sign ">". This points at the current line
 being executed. In addition, one can put breakpoints at
 specific lines in specific files. These will be shown
 with a "*" in front of the lines.
+
+The predicate {InDebugMode()} can be used to determine if 
+the executable currently running supports file names and 
+line numbers of objects. It returns {True} if the executable was
+compiled with debug support, {False} otherwise. The debugger can
+use the functions {DebugFile(object)} and {DebugLine(object)} to 
+determine the file and line of the code being executed. Typically 
+the argument passed to these functions is {CustomEval'Expression()}, 
+which returns the expression currently being executed.
 
 The additional commands available when the debug version
 of the {Yacas} executable is used are:
