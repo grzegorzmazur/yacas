@@ -384,6 +384,21 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
 void TracedStackEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
                            LispPtr& aExpression)
 {
+
+#ifdef VLADIMIR
+    InfixPrinter infixprinter(aEnvironment.PreFix(),
+                              aEnvironment.InFix(),
+                              aEnvironment.PostFix(),
+                              aEnvironment.Bodied());
+
+    LispString outString;
+    StringOutput outStream(outString);
+    infixprinter.Print(aExpression, outStream);
+    LispCharPtr expression = outString.String();
+//    printf("%s\n",expression);
+
+#endif
+
     LispPtr* subList = aExpression.Get()->SubList();
     LispStringPtr str=NULL;
     if (subList)
