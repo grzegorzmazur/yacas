@@ -269,3 +269,11 @@ Rule("Fibonacci",1,1, IsInteger(n) And n > 2)
 	RadSimp( (a-b)/Sqrt(5) );
 ];
 */
+
+Function("Subfactorial",{n}) 
+[
+	n! * Sum(k,0,n,(-1)^(k)/k!);
+];
+
+30 # Subfactorial(n_IsList) <-- MapSingle("Subfactorial",n);
+

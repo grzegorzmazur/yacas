@@ -404,15 +404,17 @@ argument of 0 is {Undefined}.
 
 *SEE Abs, Sign
 
-*CMD !, !!, ***  --- factorial and related functions
+*CMD !, !!, ***,Subfactorial  --- factorial and related functions
 *STD
 *CALL
 	n!
 	n!!
 	a *** b
+	Subfactorial(m)
 
 *PARMS
 
+{m} -- integer
 {n} -- integer, half-integer, or list
 {a}, {b} -- numbers
 
@@ -425,6 +427,9 @@ half-integers is defined via Euler's Gamma function, $z! := Gamma(z+1)$. If $n=0
 The "staggered factorial" function {n!!} calculates $n*(n-2)*(n-4)*...$. This product terminates either with $1$ or with $2$ depending on whether $n$ is odd or even. If $n=0$ the function returns $1$.
 
 The "partial factorial" function {a *** b} calculates the product $a*(a+1)*...$ which is terminated at the least integer not greater than $b$. The arguments $a$ and $b$ do not have to be integers; for integer arguments, {a *** b} = $b! / (a-1)!$. This function is sometimes a lot faster than evaluating the two factorials, especially if $a$ and $b$ are close together. If $a>b$ the function returns $1$.
+
+The {Subfactorial} function can be interpreted as the  number of permutations of {m} objects in which no object 
+appears in its natural place, also called "derangements." 
 
 The factorial functions are threaded, meaning that if the argument {n} is a
 list, the function will be applied to each element of the list.
@@ -447,8 +452,11 @@ The factorial functions terminate and print an error message if the arguments ar
 	Out> 105;
 	In> 1/3 *** 10;
 	Out> 17041024000/59049;
+	In> Subfactorial(10)
+	Out> 1334961;
 
-*SEE Bin, Factorize, Gamma, !!, ***
+
+*SEE Bin, Factorize, Gamma, !!, ***, Subfactorial
 
 *CMD Bin --- binomial coefficients
 *STD
