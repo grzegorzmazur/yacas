@@ -41,31 +41,10 @@ HoldArg("TruncRadian",r);
 5 # SinMap( 1/2 ) <-- 1;
 10 # SinMap(_n) <-- UnList({Atom("Sin"),n*Pi});
 
-200 # Sin(_v)_(CanBeUni(v,Pi) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
+200 # Sin(_v)_(Not(Numeric) And CanBeUni(v,Pi) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
 [
   SinMap(Coef(v,Pi,1));
 ];  
-
-/*TODO remove?
-200 # Sin(0) <-- 0;
-200 # Sin(Pi) <-- 0;
-200 # Sin(n_IsInteger * Pi) <-- 0;
-
-200 # Sin(((n_IsPositiveInteger * Pi)/2))_IsEven(Div(n,2)) <-- 1;
-200 # Sin(((n_IsPositiveInteger * Pi)/2))_IsOdd(Div(n,2)) <-- -1;
-
-200 # Sin(( Pi)/2) <--  1;
-200 # Sin((-Pi)/2) <-- -1;
-
-200 # Sin(((n_IsNegativeInteger * Pi)/2)) <-- -Sin(Pi*((-n)/2));
-200 # Sin(((n_IsNegativeInteger * Pi)/2)) <-- -Sin(Pi*((-n)/2));
-*/
-
-/* TODO very ugly! */
-/*TODO remove?
-200 # Sin((Pi)/4) <--  Sqrt(2)/2;
-200 # Cos((Pi)/4) <--  Sqrt(2)/2;
-*/
 
 2 # Cos(x_IsNumber)_(Numeric) <--
 [
@@ -76,6 +55,25 @@ HoldArg("TruncRadian",r);
 5 # Cos(- _x)                 <-- Cos(x);
 5 # Cos(x_IsNegativeNumber * _y)   <-- Cos((-x)*y);
 5 # Cos(_y * x_IsNegativeNumber)   <-- Cos(y*(-x));
+
+4 # Cos(x_IsRationalOrNumber) <-- 
+    [
+     Local(ll);
+     ll:= MathFloor(N(x/Pi));
+     If(IsEven(ll),x:=(x - Pi*ll),x:=(-x + Pi*(ll+1)));
+     UnList({Cos,x});
+     ];
+
+4 # Cos(x_IsRationalOrNumber) <-- 
+    [
+     Local(ll);
+     ll:= MathFloor(N(Abs(x)/Pi));
+     If(IsEven(ll),x:=(Abs(x) - Pi*ll),x:=(-Abs(x) + Pi*(ll+1)));
+     UnList({Cos,x});
+     ];
+
+
+
 110 # Cos(Complex(_r,_i)) <--
     (Exp(I*Complex(r,i)) + Exp(- I*Complex(r,i))) / (2) ;
 
@@ -92,19 +90,8 @@ HoldArg("TruncRadian",r);
 5 # CosMap( 1/2 ) <-- 0;
 10 # CosMap(_n) <-- UnList({Atom("Cos"),n*Pi});
 
-200 # Cos(_v)_(CanBeUni(v,Pi) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
+200 # Cos(_v)_(Not(Numeric) And CanBeUni(v,Pi) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
       CosMap(Coef(v,Pi,1));
-
-/*TODO remove?
-200 # Cos(0)  <-- 1;
-200 # Cos(Pi) <-- -1;
-200 # Cos(n_IsEven * Pi) <-- 1;
-200 # Cos(n_IsOdd * Pi) <-- -1;
-200 # Cos((n_IsInteger*Pi) / 2)  <-- 0;
-200 # Cos(Pi / 2)  <-- 0;
-200 # Cos(-Pi / 2)  <-- 0;
-*/
-
 
 100 # Sin(_x)/Tan(_x) <-- Cos(x);
 100 # Tan(_x)/Sin(_x) <-- (1/Cos(x));
