@@ -781,3 +781,97 @@ The only drawback of this scheme is that a plugin will not be able to use the fa
 
 So it appears that either the first or the third solution is viable.
 
+
+
+
+
+	    The internal storage of BigNumber objects
+
+an object of type {BigNumber} represents a number (and contains all
+information relevant to the number), and offers an interface to
+operations on it, dispatching the operations to an underlying
+arbitrary precision arithmetic library.
+
+Higher up, Yacas only knows about objects derived from {LispObject}.
+Specifically, there are objects of class {LispAtom} which represent
+an atom. They are uniquely represented by the result returned by
+the {String()} method. 
+
+For numbers, there is a separate class, {LispNumber}. Objects
+of class {LispNumber} also have a {String()} method in case
+a string representation of a number is needed, but the main 
+uniquely identifying piece of information is the object of
+class {BigNumber} which is returned by the {Number(precision)}
+method.
+
+The life cycle of a {LispNumber} is as follows:
+
+*	1. a {LispNumber} can be born when the parser reads in a numeric
+atom. In such a case an object of type {LispNumber} is created in stead
+of the {LispAtom}. The {LispNumber} constructor proceeds to create
+an object of type {BigNumber} in response.
+*	1. For a calculation, say addition, two arguments are passed in,
+and their internal object should be of class {LispNumber}, so that the
+function doing the multiplication can get at the {BigNumber} objects
+by calling the {Number()} methods. The function doing the multiplying
+then creates a new {BigNumber}, stores the result of the multiplication
+in it, and again creates a {LispNumber} by constructing it with the
+resulting {BigNumber}. Note no conversion to string representation is needed,
+and thus not made. The result is a {LispNumber} with just a {BigNumber}
+inside it. Other operations can proceed to use this {BigNumber}
+stored inside the {LispNumber}. This is in effect the second way a
+{LispNumber} can be born.
+*	1. Right at the end, when a result needs to be printed to screen,
+the printer will call the {String()} method of the {LispNumber} object,
+to get a string representation to print. The string representation is also
+stored in the {LispNumber} This is not expensive, as it is just a pointer
+to a string in the string container (hash table).
+
+In order to fully support the {LispNumber} object, the function in the
+kernel that determines if two objects are the same needs to know about
+{LispNumber}. This is required to get valid behaviour. Pattern matching
+for instance uses comparisons of this type, so comparisons are performed
+often and need to be efficient.
+
+The other functions working on numbers can, in principle, call the
+{String()} method, but that induces conversions from {BigNumber}
+to string, which are relatively expensive operations. For efficiency
+reasons, the functions dealing with numeric input should call the
+{Number()} method, operate on the {BigNumber} returned, and
+return a {LispNumber} constructed with a {BigNumber}. A function
+can call {String()} and return a {LispNumber} constructed with 
+a string representation, but it will be less efficient.
+
+
+*HEAD Precision tracking inside LispNumber
+
+There are various subtle details when dealing with precision.
+A number gets constructed with a certain precision, but a
+higher precision might be needed later on. That is the reason there
+is a {aPrecision} argument to the {Number()} method. 
+
+A {BigNumber} gets constructed with a minimum lower bound on the 
+precision, but the actual internal representation the underlying
+numeric library uses might actually store the number with even
+higher precision. This is needed because at a certain stage 
+the actual digits it was constructed with need to be reproduced
+to higher precision than when the object was created. The string
+representation has to match the one the {BigNumber} was created with.
+
+There are thus actually two precisions in the {BigNumber}. One is
+the precision it was constructed with, the value passed in by the system.
+This is the lower bound, the minimum precision the user requires.
+Above that, the representation inside {BigNumber} has the actual
+precision, the precision it needs to perform to specifications.
+It has to reproduce the string representation it was constructed
+with, so it might decide to use a higher precision than the system passed
+to it.
+
+
+
+
+
+
+
+
+
