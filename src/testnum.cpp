@@ -22,6 +22,17 @@ unsigned passed = 0;
 #define CheckStringValue(a,b,c,d,e) CheckStringValueL(__LINE__,a,b,c,d,e) 
 #define CheckEquals(a,b,c,d,e) CheckEqualsL(__LINE__,a,b,c,d,e) 
 
+
+char* Message(char* str,...)
+{
+  static char buf[512];
+  va_list arg;
+  va_start (arg, str);
+  vsnprintf (buf, 500, str, arg);
+  va_end (arg);
+  return buf;
+}
+
 // compare a given LispString value to a given character string and print diagnostic
 void CheckL(int line, LispString& str, const char* s, const char* test_description)
 {
@@ -256,7 +267,7 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 // test some integer and float arithmetic
 void TestArith1(const char* str_value, int base, int val1, double val2)
 {
-	const long prec=strlen(str_value)*3+20*3+10;	// many guard digits
+	const long prec=long((strlen(str_value)+20)*3.322)+10;	// many guard digits
 	const long print_prec = strlen(str_value)+20;	// at least 20 more digits must be correct
 	BigNumber x(str_value, prec, base);
 	BigNumber x1(x), x2(x), y;
@@ -282,7 +293,11 @@ void TestArith1(const char* str_value, int base, int val1, double val2)
 	BigNumber z;
 	z.SetTo(val2);
 	z.Precision(prec);	// consider z to have the same precision as x,x1,x2
-	for (int i=0; i<100; ++i) x.Add(x,z, prec);
+	for (int i=0; i<100; ++i)
+	{
+		x.Add(x,z, prec);
+	}
+	Check(x.GetPrecision()> prec-3, Message("x has precision %d which must be at least %d\n ---- in calculation with x=%f, z=%f", x.GetPrecision(), prec-3, x.Double(), z.Double()));
 	z.Negate(z);
 	CheckValues(z.GetPrecision(), prec, "z has the same precision");
 	BigNumber t;
@@ -304,7 +319,7 @@ void TestArith1(const char* str_value, int base, int val1, double val2)
 	Check(y.IsInt(), "y is integer");
 	x1.Multiply(x1,y, prec);
 	Check(x.Equals(x1), "add to itself 100 times");
-	CheckEquals(x, x1, prec, base, "result of add to itself 100 times");
+	CheckEquals(x, x1, print_prec, base, "result of add to itself 100 times");
 	
 }
 
@@ -363,28 +378,18 @@ void test_string2float(double value, const char* test_string, LispInt precision,
 	Check(!x.IsInt(), "x has a float type");
 	BigNumber y(test_string, precision, base);
 	Check(!y.IsInt(), "y has a float type");
-	
+//	if (x.Equals(y)) printf("y has precision %d and value %f\n", y.GetPrecision(), y.Double());	// debug
 	CheckEquals(x,y,precision,base,"value read from string matches");
 }
-
-
-char* Message(char* str,...)
-{
-  static char buf[512];
-  va_list arg;
-  va_start (arg, str);
-  vsnprintf (buf, 500, str, arg);
-  va_end (arg);
-  return buf;
-}
-
-
 
 // test only reading from string and comparing to the correct value
 void test_string2string(const char* test_string, LispInt precision=0, LispInt base=10)
 {
 	BigNumber x(test_string,precision,base); // Set string with low precision
   LispString str;
+
+  //  Check(x.GetPrecision()>3*strlen(test_string), Message("for string %s, precision of x is %d and must be at least %d", test_string, x.GetPrecision(), 3*strlen(test_string)));	// this is actually incorrect but helps debugging
+  
   x.ToString(str,200,base); // Request it back with high precision
   Check(!strcmp(test_string,str.String()),Message("String rep. %s != %s",test_string,str.String()));	
 }
@@ -603,15 +608,15 @@ int main(void)
 	const char* num1_printed = num1_float;
 	const char* num1_int = "3";
 	const double num1_double = 3;
-	const char* num2_float =     "-100000000000000.23333333333";
-	const char* num2_printed = "-0.10000000000000023333333333e15";
+	const char* num2_float =     "-100000000000000.233333333331";
+	const char* num2_printed = "-0.100000000000000233333333331e15";
 	const char* num2_int = "-100000000000000";
 	const double num2_double = -1.0000000000000023333333333e14;
-	const char* num3_float =     "10000000000000000.23333333333";
-	const char* num3_printed = "0.1000000000000000023333333333e17";
+	const char* num3_float =     "10000000000000000.233333333331";
+	const char* num3_printed = "0.10000000000000000233333333331e17";
 	const char* num3_int = "10000000000000000";
 	const double num3_double = 1.e16;
-	const char* num4_float = "123.33233233233233233232333333111111111111199797797973333";
+	const char* num4_float = "123.33233233233233233232333333111111111111199999999999993";
 	const char* num4_printed = num4_float;
 	const char* num4_int = "123";
 	const double num4_double = 123.332332332332332332323333333333;
@@ -996,7 +1001,7 @@ int main(void)
     printf("Correctly caught floating division by zero.\n");
   }
     Next("conversions with large strings");
-	x.SetTo("3.000000000000000000000000000000000000000050104", 150, 10);
+	x.SetTo("3.000000000000000000000000000000000000000050104", 0, 10);
 	y.SetTo("3.000000000000000000000000000000000000000050204", 150, 10);
 	Check(!x.Equals(y), "read a large number of digits from string");
 	{
@@ -1017,7 +1022,7 @@ int main(void)
 		
 	}
 	{
-		BigNumber a("3.000000000000000000000000000000000000000050104", 150, 10);
+		BigNumber a("3.000000000000000000000000000000000000000050104", 0, 10);
 		BigNumber b(a);
 		LispString str;
 		b.ToString(str, 50, 10);
@@ -1103,9 +1108,12 @@ int main(void)
 	    CheckStringValue(x, "0.", 10, 10, "x=0 now due to roundoff");
 	}
 
-/*Heuh... this didn't work out as I expected...
+/*Heuh... this didn't work out as I expected... 
+*/
    Next("Precision of string representation higher than requested precision");  
    test_string2string("1");
+   test_string2string("1000000000000000000000");
+   test_string2string("10000000.");
    test_string2string("0.1");
    test_string2string("-0.1");
 
@@ -1118,8 +1126,8 @@ int main(void)
    test_string2string("1.01");
    test_string2string("-1.01");
 
-   test_string2string("0.0000000000000000000001");
-   test_string2string("-0.0000000000000000000001");
+   test_string2string("2.0000000000000000000001");
+   test_string2string("-2.0000000000000000000001");
 
    test_string2string("1.0000000000000000000001");
    test_string2string("-1.0000000000000000000001");
@@ -1129,9 +1137,59 @@ int main(void)
 
    test_string2string("0.10000000000000000000001e-11");
    test_string2string("-0.10000000000000000000001e-11");
-*/
+/**/
+	Next("read strings with many extra zeros correctly");
+	test_string2float(0., "000.0000", 0, 10);
+	test_string2float(0., "000.", 0, 10);
+	test_string2float(0., ".000", 0, 10);
+	test_string2float(0.002, "000.002", 0, 10);
+	test_string2float(0.003, ".003", 0, 10);
+	test_string2float(40., "40.00", 0, 10);
+	test_string2float(0.005, ".005000", 0, 10);
+	test_string2float(60., "000000060.00", 0, 10);
+	test_string2float(70., "000000070.", 0, 10);
+	test_string2float(80., "0000000.8000e2", 0, 10);
+	test_string2float(90., "9000e-2", 0, 10);
+	test_string2float(1000., "1000.000", 0, 10);
+	test_string2float(1.3e15, "0001.3000e15", 0, 10);
+	test_string2float(1.3e15, "0001.3e15", 0, 10);
+	test_string2float(1.3e15, "00013e14", 0, 10);
+	
+	{ // set aPrecision to 0 and see what happens
+		BigNumber x0("0.10000", 0, 10);
+		BigNumber x("0.1", 10, 10);
+		LispString str;
+		x.ToString(str, 0, 10);
+		CheckStringEquals(str, "0.1", "printed 0.1 correctly");
+		CheckEquals(x0, x, 0, 10, "value is consistent");
+		
+		x.SetTo("0.1", 0, 10);
+		x.ToString(str, 0, 10);
+		CheckStringEquals(str, "0.1", "printed 0.1 correctly");
+		CheckEquals(x0, x, 0, 10, "value is consistent");
 
+		x.SetTo("0.1", 0, 10);
+		x.ToString(str, 10, 10);
+		CheckStringEquals(str, "0.1", "printed 0.1 correctly");
+		CheckEquals(x0, x, 0, 10, "value is consistent");
+		
+		x.SetTo("0.1", 0, 10);
+		x.ToString(str, 10, 10);
+		CheckStringEquals(str, "0.1", "printed 0.1 correctly");
+		CheckEquals(x0, x, 10, 10, "value is consistent");
 
+		x.SetTo(0.1);
+		x.ToString(str, 0, 10);
+		CheckStringEquals(str, "0.1", "printed 0.1 correctly");
+		CheckEquals(x0, x, 0, 10, "value is consistent");
+		
+		x.SetTo(0.1);
+		x.ToString(str, 10, 10);
+		CheckStringEquals(str, "0.1", "printed 0.1 correctly");
+		CheckEquals(x0, x, 10, 10, "value is consistent");
+		
+	}
+	
 	Next("a calculation from arithmetic.yts");
 	{// compute 10e3*1.2e-4 - 1.2, must get zero
 		BigNumber x("10e3", 10), y("1.2e-4", 10), z("1.2", 10);
@@ -1139,12 +1197,76 @@ int main(void)
 		CheckValues(z.GetPrecision(), 36, "z has correct precision");
 		//z.MultiplyAdd(x,y,10);
 		x.Multiply(x,y,10);
-		CheckValues(z.GetPrecision(), 36, "z has correct precision");
+		CheckValues(x.GetPrecision(), 35, "x has correct precision");
 		z.Add(z,x,10);
 		CheckValues(z.GetPrecision(), 32, "z has correct precision");
 		CheckValues(z.Sign(),0,"z has correct sign");
 		CheckStringValue(z, "0.", 10, 10, "z is equal to 0.");
+	}
+	{
+		BigNumber z("0.000", 10, 10);
+		CheckValues(z.GetPrecision(), 36, "z has correct precision");
+		BigNumber y("0.5", 10, 10);
+		CheckValues(y.GetPrecision(), 36, "y has correct precision");
+		z.Add(z,y,10);
 		
+		CheckValues(z.GetPrecision(), 10, "z has correct precision");
+		CheckValues(z.Sign(),1,"z has correct sign");
+		CheckStringValue(z, "0.5", 10, 10, "z is equal to 0.");
+
+	}
+
+	Next("the same calculation imitating the Yacas kernel");
+	{
+		BigNumber x("10e3", 10), y("1.2e-4", 10), z0("1.2", 10);
+		BigNumber t1(10);
+		t1.Negate(z0);
+		CheckValues(t1.GetPrecision(), 36, "t1 has correct precision");
+		BigNumber t2(10);
+		t2.Multiply(x,y,10);
+		CheckValues(t2.GetPrecision(), 35, "t2 has correct precision");
+		BigNumber z(10);
+		z.Add(t2,t1, 10);
+		CheckValues(z.GetPrecision(), 32, "z has correct precision");
+		CheckValues(z.Sign(),0,"z has correct sign");
+		CheckStringValue(z, "0.", 10, 10, "z is equal to 0.");
+	}
+	{
+		BigNumber x("0.000", 10, 10);
+		CheckValues(x.GetPrecision(), 36, "x has correct precision");
+		BigNumber y("0.5", 10, 10);
+		CheckValues(y.GetPrecision(), 36, "y has correct precision");
+		BigNumber z(10);
+		z.Add(x,y,10);
+		
+		CheckValues(z.GetPrecision(), 10, "z has correct precision");
+		CheckValues(z.Sign(),1,"z has correct sign");
+		CheckStringValue(z, "0.5", 10, 10, "z is equal to 0.");
+
+	}
+	
+	Next("precision control for Add(), check optimization");
+	{
+		BigNumber x("0.10000011", 10, 10);
+		BigNumber y("0.1", 10, 10);	// not necessary to give trailing zeros since we are requesting 10 base digits of precision
+		CheckValues(x.GetPrecision(), 36, Message("x=%10.10f has precision 36 initially", x.Double()));
+		y.Negate(y);
+		y.Add(x,y,36);	// y = 0.00000011 now, and has low precision
+		CheckValues(y.GetPrecision(), 14, "y has precision 14");
+		for (int i=0; i<100; i++)
+		{
+			x.Add(x,y,36);
+		}
+		CheckValues(x.GetPrecision(), 31, Message("x=%10.10f has precision 31", x.Double()));
+		y.Negate(y);
+		for (int i=0; i<100; i++)
+		{
+			x.Add(x,y,36);
+		}
+		CheckValues(x.GetPrecision(), 31, "x has precision 31");
+		CheckStringValue(x, "0.10000011", 10, 10, "x is equal to its old value");
+		
+
 	}
 
 /* not yet implemented
