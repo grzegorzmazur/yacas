@@ -16,8 +16,8 @@ the mechanisms for doing so in the Yacas scripting language.
 	    Demonstration of the problem
  
 Unintentional interactions between two modules typically happen 
-when the two modules accidentally share a common 'global'
-resource, and there should be a mechanism to guarantee this
+when the two modules accidentally share a common "global"
+resource, and there should be a mechanism to guarantee that this
 will not happen.
 
 The following piece of code is a little example that demonstrates
@@ -33,15 +33,15 @@ function {Map}, passing the argument passed if it is a string, and
 if the function to be mapped was set with the {SetExpand} function.
 It contains the following flaws:
 
-*	0. expand is a global variable with a rather generic name, one
+*	0. {expand} is a global variable with a rather generic name, one
 that another module might decide to use.
-*	0. ramlocal was intended to be used from within this module only, and
+*	0. {ramlocal} was intended to be used from within this module only, and
 doesn't check for correctness of arguments (a small speed up optimization
 that can be used for routines that get called often). As it is, it can be
 called from other parts, or even the command line.
-*	0. the function ramlocal has one parameter, named {x}, which is also
+*	0. the function {ramlocal} has one parameter, named {x}, which is also
 generic (and might be used in the expression passed in to the function),
-and ramlocal calls Map, which calls {Eval} on the arguments. 
+and {ramlocal} calls {Map}, which calls {Eval} on the arguments. 
 
 The above code can be entered into a file and loaded from the command
 line at leisure. Now, consider the following command line interaction
@@ -54,13 +54,13 @@ after loading the file with the above code in it:
 	In function call  Length(a)
 	CommandLine(1) : Argument is not a list
 
-We called ramlocal here, which should not have been allowed.
+We called {ramlocal} here, which should not have been allowed.
 
 	In> ram(a)
 	Out> ram(a);
 
 The function {ram} checks that the correct arguments are passed in
-and that {SetExpand} was called, so it will not simplify if these
+and that {SetExpand} was called, so it will not evaluate if these
 requirements are not met. 
 
 Here are some lines showing the functionality of this code as
@@ -73,7 +73,7 @@ it was intended to be used:
 
 The following piece of code forces the functionality to break
 by passing in an expression containing the variable {x}, which
-is also used as a parameter name to ramlocal.
+is also used as a parameter name to {ramlocal}.
 
 	In> ram({a,b,c})
 	Out> {Sin(a),Sin(b),Sin(c)};
@@ -92,9 +92,9 @@ to its environment:
 
 The solution to the problem is {LocalSymbols}, which changes every
 symbol with a specified name to a unique name that could never
-be entered by the user on the command line, guaranteeing that it
+be entered by the user on the command line and guarantees that it
 can never interact with the rest of the system. The following code
-snippet is the same as the above, with the correct use of LocalSymbols:
+snippet is the same as the above, with the correct use of {LocalSymbols}:
 
 
 	LocalSymbols(x,expand,ramlocal) [
@@ -126,7 +126,7 @@ With this the interaction becomes a little bit more predictable:
 	Out> expand;
 
 
-	    When to use and when not to use LocalSymbols
+	    When to use and when not to use {LocalSymbols}
 
 The {LocalSymbols} should ideally be used for every global variable,
 for functions that can only be useful within the module and thus
@@ -151,8 +151,8 @@ There are more caveats: if a local variable is made unique with
 {UnFence} construct. This means that {LocalSymbols} is not always 
 wanted. 
 
-Also, The entire expression the {LocalSymbols} command works
-on is copied and modified before being evaluated, making loading
+Also, the entire expression on which the {LocalSymbols} command works
+is copied and modified before being evaluated, making loading
 time a little slower. This is not a big problem, because the 
 speed hit is usually during calculations, not during loading, but
 it is best to keep this in mind and keep the code passed to 

@@ -122,7 +122,6 @@ The full source of this example is in the file {examples/wordproblems.ys}. In th
 	OK,  software is an object.
 	Out> True;
 	In> Ayal made some software
-	OK,  Ayal is a person.
 	OK,  Ayal  has some  software  now.
 	Out> True;
 	In> Ayal gave some software to everyone
