@@ -2972,11 +2972,11 @@ Trace
 , <A HREF="refchapter5.html#Inverse" TARGET="Chapters">
 Inverse
 </A>
-, <A HREF="refchapter5.html#CoFactor" TARGET="Chapters">
-CoFactor
-</A>
 , <A HREF="refchapter5.html#Minor" TARGET="Chapters">
 Minor
+</A>
+, <A HREF="refchapter5.html#CoFactor" TARGET="Chapters">
+CoFactor
 </A>
 , <A HREF="refchapter5.html#SolveMatrix" TARGET="Chapters">
 SolveMatrix
@@ -3000,11 +3000,14 @@ IsUnitary
 <H1>
 Linear Algebra
 </H1>
+This chapter describes the commands for doing linear
+algebra. They can be used to manipulate vectors, represented as lists,
+and matrices, represented as lists of lists.
 <A NAME="LeviCivita">
 
 </A>
 <H3>
-<HR>LeviCivita
+<HR>LeviCivita -- The totally anti-symmetric Levi Civita tensor
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -3047,7 +3050,7 @@ Permutations
 
 </A>
 <H3>
-<HR>Permutations
+<HR>Permutations -- Form all permutations of a list
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -3080,113 +3083,285 @@ LeviCivita
 .<A NAME="InProduct">
 
 </A>
-<A NAME="CrossProduct">
-
-</A>
 <H3>
-<HR>Vector products
+<HR>InProduct -- Inner product of vectors
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-InProduct(a,b) (or alternatively a . b) <br>
-CrossProduct(a,b) (or alternatively a X b)
 
+InProduct(a,b) <br>
+a . b  (prec. 3)
 <H5>
 Parameters:
 </H5>
-a - a vector <br>
-b - a vector
+a, b - vectors of equal length
 <H5>
 Description:
 </H5>
-InProduct and CrossProduct return the inner product and outer product
-of two vectors, respectively. For CrossProduct the vectors have to be
-three-dimensional.
+
+The inner product of the two vectors "a" and "b" is returned. The
+vectors need to have the same size.
 <H5>
 Examples:
 </H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> {a,b,c} . {d,e,f}
-Out> a*d+b*e+c*f;
-In> {a,b,c} X {d,e,f}
-Out> {b*f-c*e,c*d-a*f,a*e-b*d};
-</PRE></TR>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> {a,b,c} . {d,e,f};
+Out> a*d+b*e+c*f;</PRE></TR>
 </TABLE>
 
-<A NAME="ZeroVector">
-
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#CrossProduct" TARGET="Chapters">
+CrossProduct
 </A>
-<A NAME="BaseVector">
-
-</A>
-<A NAME="Identity">
-
-</A>
-<A NAME="ZeroMatrix">
-
-</A>
-<A NAME="DiagonalMatrix">
+.<A NAME="CrossProduct">
 
 </A>
 <H3>
-<HR>Vector and matrix creation
+<HR>CrossProduct -- Outer product of vectors
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-ZeroVector(n) <br>
-BaseVector(row,n) <br>
-Identity(n) <br>
-ZeroMatrix(n,m) <br>
-DiagonalMatrix(v)
 
+CrossProduct(a,b) <br>
+a X b  (prec. 3)
 <H5>
 Parameters:
 </H5>
-n - an integer <br>
-m - an integer <br>
-row - a positive integer <= n <br>
-v - a list of values
+a, b - three-dimensional vectors
 <H5>
 Description:
 </H5>
-ZeroVector returns a list with n zeroes.
-<P>
 
-BaseVector returns a vector with item row
-set to 1, the other n-1 set to zero.
-<P>
-Identity returns a identity matrix of dimension n x n.
-<P>
-ZeroMatrix Returns a matrix with n rows and m columns,
-all zeros.
-<P>
-DiagonalMatrix returns a square matrix with the elements of vector
-v on the diagonal of the matrix. All other elements are zero.
-
+The outer product (also called the cross product) of the vectors "a"
+and "b" is returned. The result is perpendicular to both "a" and
+"b" and its length is the product of the lengths of the vectors. 
+Both "a" and "b" have to be three-dimensional.
 <H5>
 Examples:
 </H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> ZeroVector(4)
-Out> {0,0,0,0};
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> {a,b,c} X {d,e,f};
+Out> {b*f-c*e,c*d-a*f,a*e-b*d};</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#InProduct" TARGET="Chapters">
+InProduct
+</A>
+.<A NAME="ZeroVector">
+
+</A>
+<H3>
+<HR>ZeroVector -- Create a vector with all zeroes
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+ZeroVector(n)
+<H5>
+Parameters:
+</H5>
+n - length of the vector to return
+<H5>
+Description:
+</H5>
+
+This command returns a vector of length "n", filled with zeroes.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> ZeroVector(4)
+Out> {0,0,0,0};</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#BaseVector" TARGET="Chapters">
+BaseVector
+</A>
+, <A HREF="ref.html#ZeroMatrix" TARGET="Chapters">
+ZeroMatrix
+</A>
+, <A HREF="ref.html#IsZeroVector" TARGET="Chapters">
+IsZeroVector
+</A>
+.<A NAME="BaseVector">
+
+</A>
+<H3>
+<HR>BaseVector -- Base vector
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+BaseVector(k, n)
+<H5>
+Parameters:
+</H5>
+
+k - index of the base vector to construct <br>
+n - dimension of the vector
+<H5>
+Description:
+</H5>
+
+This command returns the "k"-th base vector of dimension "n". This
+is a vector of length "n" with all zeroes except for the "k"-th
+entry, which contains a 1.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
 In> BaseVector(2,4)
-Out> {0,1,0,0};
-In> Identity(3)
-Out> {{1,0,0},{0,1,0},{0,0,1}};
-In> ZeroMatrix(3,4)
-Out> {{0,0,0,0},{0,0,0,0},{0,0,0,0}};
-In> DiagonalMatrix(1 .. 4)
-Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
-</PRE></TR>
+Out> {0,1,0,0};</PRE></TR>
 </TABLE>
 
-<A NAME="IsMatrix">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#ZeroVector" TARGET="Chapters">
+ZeroVector
+</A>
+, <A HREF="ref.html#Identity" TARGET="Chapters">
+Identity
+</A>
+.<A NAME="Identity">
 
 </A>
 <H3>
-<HR>IsMatrix
+<HR>Identity -- Identity matrix
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Identity(n)
+<H5>
+Parameters:
+</H5>
+n - size of the matrix
+<H5>
+Description:
+</H5>
+
+This commands returns the identity matrix of size "n" by "n". This
+matrix has ones on the diagonal while the other entries are zero.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Identity(3)
+Out> {{1,0,0},{0,1,0},{0,0,1}};</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#BaseVector" TARGET="Chapters">
+BaseVector
+</A>
+, <A HREF="ref.html#ZeroMatrix" TARGET="Chapters">
+ZeroMatrix
+</A>
+, <A HREF="ref.html#DiagonalMatrix" TARGET="Chapters">
+DiagonalMatrix
+</A>
+.<A NAME="ZeroMatrix">
+
+</A>
+<H3>
+<HR>ZeroMatrix -- Matrix filled with zeroes
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+ZeroMatrix(n, m)
+<H5>
+Parameters:
+</H5>
+
+n - number of rows <br>
+m - number of columns
+<H5>
+Description:
+</H5>
+
+This command returns a matrix with "n" rows and "m" columns,
+completely filled with zeroes.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> ZeroMatrix(3,4)
+Out> {{0,0,0,0},{0,0,0,0},{0,0,0,0}};</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#ZeroVector" TARGET="Chapters">
+ZeroVector
+</A>
+, <A HREF="ref.html#Identity" TARGET="Chapters">
+Identity
+</A>
+.<A NAME="DiagonalMatrix">
+
+</A>
+<H3>
+<HR>DiagonalMatrix -- Construct a diagonal matrix
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+DiagonalMatrix(d)
+<H5>
+Parameters:
+</H5>
+d - list of values to put on the diagonal
+<H5>
+Description:
+</H5>
+
+This command constructs a diagonal matrix, that is a square matrix
+whose off-diagonal entries are all zero. The elements of the vector
+"d" are put on the diagonal.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> DiagonalMatrix(1 .. 4)
+Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Identity" TARGET="Chapters">
+Identity
+</A>
+, <A HREF="ref.html#ZeroMatrix" TARGET="Chapters">
+ZeroMatrix
+</A>
+.<A NAME="IsMatrix">
+
+</A>
+<H3>
+<HR>IsMatrix -- Test whether argument is a matrix
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -3199,7 +3374,9 @@ M - a mathematical object
 <H5>
 Description:
 </H5>
-IsMatrix returns True if M is a matrix, False otherwise.
+IsMatrix returns True if M is a matrix, False otherwise. Something is
+considered to be a matrix if it is a list and all the entries of this
+list are lists themselves.
 <H5>
 Examples:
 </H5>
@@ -3214,11 +3391,17 @@ Out> False;
 </PRE></TR>
 </TABLE>
 
-<A NAME="Normalize">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#IsVector" TARGET="Chapters">
+IsVector
+</A>
+.<A NAME="Normalize">
 
 </A>
 <H3>
-<HR>Normalize
+<HR>Normalize -- Normalize a vector
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -3257,7 +3440,7 @@ CrossProduct
 
 </A>
 <H3>
-<HR>Transpose
+<HR>Transpose -- Transpose of a matrix
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -3286,7 +3469,7 @@ Out> {{a},{b}};
 
 </A>
 <H3>
-<HR>Determinant
+<HR>Determinant -- Determinant of a matrix
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -3315,7 +3498,7 @@ Out> 24;
 
 </A>
 <H3>
-<HR>Trace
+<HR>Trace -- Trace of a matrix
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -3345,7 +3528,7 @@ Out> 10;
 
 </A>
 <H3>
-<HR>Inverse
+<HR>Inverse -- Inverse of a matrix
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -3375,44 +3558,120 @@ Out> {{1/a,0,0},{0,1/b,0},{0,0,1/c}};
 </PRE></TR>
 </TABLE>
 
-<A NAME="CoFactor">
-
-</A>
 <A NAME="Minor">
 
 </A>
 <H3>
-<HR>CoFactor and Minor
+<HR>Minor -- Principal minor of a matrix
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-CoFactor(M,i,j) <br>
 Minor(M,i,j)
-
 <H5>
 Parameters:
 </H5>
 M - a matrix <br>
-i - a positive integer <br>
-j - a positive integer
+i, j - positive integers
 <H5>
 Description:
 </H5>
 
 Minor returns the minor of a matrix around
 the element (i,j). The minor is the determinant of the matrix
-excluding the ith row and jth column.
-<P>
+excluding the "i"-th row and "j"-th column.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> A := {{1,2,3}, {4,5,6}, {7,8,9}};
+Out> {{1,2,3},{4,5,6},{7,8,9}};
+In> PrettyForm(A);
+
+/                    \
+| ( 1 ) ( 2 ) ( 3 )  |
+|                    |
+| ( 4 ) ( 5 ) ( 6 )  |
+|                    |
+| ( 7 ) ( 8 ) ( 9 )  |
+\                    /
+
+Out> True;
+In> Minor(A,1,2);
+Out> -6;
+In> Determinant({{2,3}, {8,9}});
+Out> -6;</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#CoFactor" TARGET="Chapters">
+CoFactor
+</A>
+, <A HREF="ref.html#Determinant" TARGET="Chapters">
+Determinant
+</A>
+, <A HREF="ref.html#Inverse" TARGET="Chapters">
+Inverse
+</A>
+.<A NAME="CoFactor">
+
+</A>
+<H3>
+<HR>CoFactor -- Cofactor of a matrix
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+CoFactor(M,i,j)
+<H5>
+Parameters:
+</H5>
+M - a matrix <br>
+i, j - positive integers
+<H5>
+Description:
+</H5>
 
 CoFactor returns the cofactor of a matrix around
 the element (i,j). The cofactor is the minor times
 (-1)^(i+j)
 
 <H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> A := {{1,2,3}, {4,5,6}, {7,8,9}};
+Out> {{1,2,3},{4,5,6},{7,8,9}};
+In> PrettyForm(A);
+
+/                    \
+| ( 1 ) ( 2 ) ( 3 )  |
+|                    |
+| ( 4 ) ( 5 ) ( 6 )  |
+|                    |
+| ( 7 ) ( 8 ) ( 9 )  |
+\                    /
+
+Out> True;
+In> CoFactor(A,1,2);
+Out> 6;
+In> Minor(A,1,2);
+Out> -6;
+In> Minor(A,1,2) * (-1)^(1+2);
+Out> 6;</PRE></TR>
+</TABLE>
+
+<H5>
 See Also:
 </H5>
-<A HREF="ref.html#Determinant" TARGET="Chapters">
+<A HREF="ref.html#Minor" TARGET="Chapters">
+Minor
+</A>
+, <A HREF="ref.html#Determinant" TARGET="Chapters">
 Determinant
 </A>
 , <A HREF="ref.html#Inverse" TARGET="Chapters">
@@ -3422,7 +3681,7 @@ Inverse
 
 </A>
 <H3>
-<HR>SolveMatrix
+<HR>SolveMatrix -- Solve a linear system
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -3439,11 +3698,38 @@ Description:
 SolveMatrix returns the vector x that satisfies
 the equation "M x = v". The determinant of M should be non-zero.
 
-<A NAME="CharacteristicEquation">
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> A := {{1,2}, {3,4}};
+Out> {{1,2},{3,4}};
+In> v := {5,6};
+Out> {5,6};
+In> x := SolveMatrix(A, v);
+Out> {-4,9/2};
+In> A * x;
+Out> {5,6};</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Inverse" TARGET="Chapters">
+Inverse
+</A>
+, <A HREF="ref.html#Solve" TARGET="Chapters">
+Solve
+</A>
+, <A HREF="ref.html#PSolve" TARGET="Chapters">
+PSolve
+</A>
+.<A NAME="CharacteristicEquation">
 
 </A>
 <H3>
-<HR>CharacteristicEquation
+<HR>CharacteristicEquation -- Characteristic polynomial of a matrix
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -3487,7 +3773,7 @@ EigenVectors
 
 </A>
 <H3>
-<HR>EigenValues
+<HR>EigenValues -- Eigenvalues of a matrix
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -3531,7 +3817,7 @@ CharacteristicEquation
 
 </A>
 <H3>
-<HR>EigenVectors
+<HR>EigenVectors -- Eigenvectors of a matrix
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -3540,7 +3826,7 @@ EigenVectors(matrix,eigenvalues)
 Standard math library<br><H5>
 Parameters:
 </H5>
-matrix - matrix - a square matrix <br>
+matrix - a square matrix <br>
  eigenvalues - list of eigenvalues as returned by EigenValues
 
 <H5>
@@ -3576,7 +3862,7 @@ CharacteristicEquation
 
 </A>
 <H3>
-<HR>IsHermitean
+<HR>IsHermitean -- Test whether a matrix is Hermitean
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -3614,7 +3900,7 @@ IsUnitary
 
 </A>
 <H3>
-<HR>IsUnitary
+<HR>IsUnitary -- Test whether a matrix is unitary
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -4160,7 +4446,7 @@ equivalent expression<TABLE CELLPADDING="3" WIDTH="90%">
 </TABLE>
 
 Both expression are equal, but the latter form gives a more
-efficient way to evaluate the polynomial as there the powers have
+efficient way to evaluate the polynomial as  the powers have
 disappeared.
 <H5>
 Examples:

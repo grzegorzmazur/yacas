@@ -1,10 +1,13 @@
 
 Chapter()"Linear Algebra";
 
+ChapterIntro("This chapter describes the commands for doing linear
+algebra. They can be used to manipulate vectors, represented as lists,
+and matrices, represented as lists of lists.");
 
 
-AddAnchor("LeviCivita");
-SubSection()"LeviCivita";
+
+CmdDescription("LeviCivita", "The totally anti-symmetric Levi Civita tensor");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"LeviCivita(list)";
@@ -38,8 +41,7 @@ SeeAlso({"Permutations"});
 
 
 
-AddAnchor("Permutations");
-SubSection()"Permutations";
+CmdDescription("Permutations", "Form all permutations of a list");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Permutations(list)";
@@ -62,94 +64,188 @@ Out> {{a,b,c},{a,c,b},{c,a,b},{b,a,c},{b,c,a},{c,b,a}};
 Topical()"See Also"; 
 SeeAlso({"LeviCivita"});
 
-AddAnchor("InProduct");
-AddAnchor("CrossProduct");
-SubSection()"Vector products";
+
+
+CmdDescription("InProduct", "Inner product of vectors");
 StandardLib();
-Topical()"Calling Sequence";
-Text()
-"InProduct(a,b) (or alternatively a . b) <br>
-CrossProduct(a,b) (or alternatively a X b)
-";
 
-Topical()"Parameters";
-Text()
-"a - a vector <br>
-b - a vector";
+Topical() "Calling Sequence";
+Text() "
+InProduct(a,b) <br>
+a . b  (prec. 3)";
 
-Topical()"Description";
-Text()
-"InProduct and CrossProduct return the inner product and outer product
-of two vectors, respectively. For CrossProduct the vectors have to be
-three-dimensional.";
+Topical() "Parameters";
+Text() "a, b - vectors of equal length";
+
+Topical() "Description";
+Text() "
+The inner product of the two vectors \"a\" and \"b\" is returned. The
+vectors need to have the same size.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> {a,b,c} . {d,e,f};
+Out> a*d+b*e+c*f;");
+
+Topical() "See Also";
+SeeAlso({"CrossProduct"});
+
+
+
+CmdDescription("CrossProduct", "Outer product of vectors");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "
+CrossProduct(a,b) <br>
+a X b  (prec. 3)";
+
+Topical() "Parameters";
+Text() "a, b - three-dimensional vectors";
+
+Topical() "Description";
+Text() "
+The outer product (also called the cross product) of the vectors \"a\"
+and \"b\" is returned. The result is perpendicular to both \"a\" and
+\"b\" and its length is the product of the lengths of the vectors. 
+Both \"a\" and \"b\" have to be three-dimensional.";
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"In> {a,b,c} . {d,e,f}
-Out> a*d+b*e+c*f;
-In> {a,b,c} X {d,e,f}
-Out> {b*f-c*e,c*d-a*f,a*e-b*d};
-");
+Text() HtmlCommand("
+In> {a,b,c} X {d,e,f};
+Out> {b*f-c*e,c*d-a*f,a*e-b*d};");
+
+Topical() "See Also";
+SeeAlso({"InProduct"});
 
 
-AddAnchor("ZeroVector");
-AddAnchor("BaseVector");
-AddAnchor("Identity");
-AddAnchor("ZeroMatrix");
-AddAnchor("DiagonalMatrix");
-SubSection()"Vector and matrix creation";
+
+CmdDescription("ZeroVector", "Create a vector with all zeroes");
 StandardLib();
-Topical()"Calling Sequence";
-Text()
-"ZeroVector(n) <br>
-BaseVector(row,n) <br>
-Identity(n) <br>
-ZeroMatrix(n,m) <br>
-DiagonalMatrix(v)
-";
 
-Topical()"Parameters";
-Text()
-"n - an integer <br>
-m - an integer <br>
-row - a positive integer <= n <br>
-v - a list of values";
+Topical() "Calling Sequence";
+Text() "ZeroVector(n)";
 
-Topical()"Description";
-Text()
-"ZeroVector returns a list with n zeroes.":
-HtmlNewParagraph():
-"
-BaseVector returns a vector with item row
-set to 1, the other n-1 set to zero.":
-HtmlNewParagraph():
-"Identity returns a identity matrix of dimension n x n.":
-HtmlNewParagraph():
-"ZeroMatrix Returns a matrix with n rows and m columns,
-all zeros.":
-HtmlNewParagraph():
-"DiagonalMatrix returns a square matrix with the elements of vector
-v on the diagonal of the matrix. All other elements are zero.
-";
+Topical() "Parameters";
+Text() "n - length of the vector to return";
 
-Topical()"Examples";
-Text()
-HtmlCommand(
-"In> ZeroVector(4)
-Out> {0,0,0,0};
+Topical() "Description";
+Text() "
+This command returns a vector of length \"n\", filled with zeroes.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> ZeroVector(4)
+Out> {0,0,0,0};");
+
+Topical() "See Also";
+SeeAlso({"BaseVector", "ZeroMatrix", "IsZeroVector"});
+
+
+
+CmdDescription("BaseVector", "Base vector");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "BaseVector(k, n)";
+
+Topical() "Parameters";
+Text() "
+k - index of the base vector to construct <br>
+n - dimension of the vector";
+
+Topical() "Description";
+Text() "
+This command returns the \"k\"-th base vector of dimension \"n\". This
+is a vector of length \"n\" with all zeroes except for the \"k\"-th
+entry, which contains a 1.";
+
+Topical() "Examples";
+Text() HtmlCommand("
 In> BaseVector(2,4)
-Out> {0,1,0,0};
-In> Identity(3)
-Out> {{1,0,0},{0,1,0},{0,0,1}};
-In> ZeroMatrix(3,4)
-Out> {{0,0,0,0},{0,0,0,0},{0,0,0,0}};
-In> DiagonalMatrix(1 .. 4)
-Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
-");
+Out> {0,1,0,0};");
 
-AddAnchor("IsMatrix");
-SubSection()"IsMatrix";
+Topical() "See Also";
+SeeAlso({"ZeroVector", "Identity"});
+
+
+
+CmdDescription("Identity", "Identity matrix");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Identity(n)";
+
+Topical() "Parameters";
+Text() "n - size of the matrix";
+
+Topical() "Description";
+Text() "
+This commands returns the identity matrix of size \"n\" by \"n\". This
+matrix has ones on the diagonal while the other entries are zero.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Identity(3)
+Out> {{1,0,0},{0,1,0},{0,0,1}};");
+
+Topical() "See Also";
+SeeAlso({"BaseVector", "ZeroMatrix", "DiagonalMatrix"});
+
+
+
+CmdDescription("ZeroMatrix", "Matrix filled with zeroes");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "ZeroMatrix(n, m)";
+
+Topical() "Parameters";
+Text() "
+n - number of rows <br>
+m - number of columns";
+
+Topical() "Description";
+Text() "
+This command returns a matrix with \"n\" rows and \"m\" columns,
+completely filled with zeroes.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> ZeroMatrix(3,4)
+Out> {{0,0,0,0},{0,0,0,0},{0,0,0,0}};");
+
+Topical() "See Also";
+SeeAlso({"ZeroVector", "Identity"});
+
+
+
+CmdDescription("DiagonalMatrix", "Construct a diagonal matrix");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "DiagonalMatrix(d)";
+
+Topical() "Parameters";
+Text() "d - list of values to put on the diagonal";
+
+Topical() "Description";
+Text() "
+This command constructs a diagonal matrix, that is a square matrix
+whose off-diagonal entries are all zero. The elements of the vector
+\"d\" are put on the diagonal.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> DiagonalMatrix(1 .. 4)
+Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};");
+
+Topical() "See Also";
+SeeAlso({"Identity", "ZeroMatrix"});
+
+
+
+CmdDescription("IsMatrix", "Test whether argument is a matrix");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"IsMatrix(M)";
@@ -159,7 +255,9 @@ Text()"M - a mathematical object";
 
 Topical()"Description";
 Text()
-"IsMatrix returns True if M is a matrix, False otherwise.";
+"IsMatrix returns True if M is a matrix, False otherwise. Something is
+considered to be a matrix if it is a list and all the entries of this
+list are lists themselves.";
 
 Topical()"Examples";
 Text()
@@ -173,9 +271,12 @@ In> IsMatrix(3)
 Out> False;
 ");
 
+Topical() "See Also";
+SeeAlso({"IsVector"});
 
-AddAnchor("Normalize");
-SubSection()"Normalize";
+
+
+CmdDescription("Normalize", "Normalize a vector");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Normalize(v)";
@@ -201,8 +302,8 @@ Topical()"See Also";
 SeeAlso({"InProduct","CrossProduct"});
 
 
-AddAnchor("Transpose");
-SubSection()"Transpose";
+
+CmdDescription("Transpose", "Transpose of a matrix");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Transpose(M)";
@@ -225,8 +326,7 @@ Out> {{a},{b}};
 
 
 
-AddAnchor("Determinant");
-SubSection()"Determinant";
+CmdDescription("Determinant", "Determinant of a matrix");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Determinant(M)";
@@ -247,8 +347,9 @@ In> Determinant(%)
 Out> 24;
 ");
 
-AddAnchor("Trace");
-SubSection()"Trace";
+
+
+CmdDescription("Trace", "Trace of a matrix");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Trace(M)";
@@ -270,8 +371,9 @@ In> Trace(%)
 Out> 10;
 ");
 
-AddAnchor("Inverse");
-SubSection()"Inverse";
+
+
+CmdDescription("Inverse", "Inverse of a matrix");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Inverse(M)";
@@ -297,41 +399,98 @@ In> Simplify(%)
 Out> {{1/a,0,0},{0,1/b,0},{0,0,1/c}};
 ");
 
-AddAnchor("CoFactor");
-AddAnchor("Minor");
-SubSection()"CoFactor and Minor";
+
+
+CmdDescription("Minor", "Principal minor of a matrix");
 StandardLib();
+
 Topical()"Calling Sequence";
-Text()
-"CoFactor(M,i,j) <br>
-Minor(M,i,j)
-";
+Text() "Minor(M,i,j)";
 
 Topical()"Parameters";
 Text()
 "M - a matrix <br>
-i - a positive integer <br>
-j - a positive integer";
+i, j - positive integers";
 
 Topical()"Description";
 Text()
 "
 Minor returns the minor of a matrix around
 the element (i,j). The minor is the determinant of the matrix
-excluding the ith row and jth column.":
-HtmlNewParagraph():
+excluding the \"i\"-th row and \"j\"-th column.";
+
+Topical()"Examples";
+Text() HtmlCommand("
+In> A := {{1,2,3}, {4,5,6}, {7,8,9}};
+Out> {{1,2,3},{4,5,6},{7,8,9}};
+In> PrettyForm(A);
+
+/                    \\
+| ( 1 ) ( 2 ) ( 3 )  |
+|                    |
+| ( 4 ) ( 5 ) ( 6 )  |
+|                    |
+| ( 7 ) ( 8 ) ( 9 )  |
+\\                    /
+
+Out> True;
+In> Minor(A,1,2);
+Out> -6;
+In> Determinant({{2,3}, {8,9}});
+Out> -6;");
+
+Topical()"See Also"; 
+SeeAlso({"CoFactor", "Determinant", "Inverse"});
+
+
+
+CmdDescription("CoFactor", "Cofactor of a matrix");
+StandardLib();
+
+Topical()"Calling Sequence";
+Text() "CoFactor(M,i,j)";
+
+Topical()"Parameters";
+Text()
+"M - a matrix <br>
+i, j - positive integers";
+
+Topical()"Description";
+Text()
 "
 CoFactor returns the cofactor of a matrix around
 the element (i,j). The cofactor is the minor times
 (-1)^(i+j)
 ";
 
+Topical()"Examples";
+Text() HtmlCommand("
+In> A := {{1,2,3}, {4,5,6}, {7,8,9}};
+Out> {{1,2,3},{4,5,6},{7,8,9}};
+In> PrettyForm(A);
+
+/                    \\
+| ( 1 ) ( 2 ) ( 3 )  |
+|                    |
+| ( 4 ) ( 5 ) ( 6 )  |
+|                    |
+| ( 7 ) ( 8 ) ( 9 )  |
+\\                    /
+
+Out> True;
+In> CoFactor(A,1,2);
+Out> 6;
+In> Minor(A,1,2);
+Out> -6;
+In> Minor(A,1,2) * (-1)^(1+2);
+Out> 6;");
+
 Topical()"See Also"; 
-SeeAlso({"Determinant","Inverse"});
+SeeAlso({"Minor", "Determinant", "Inverse"});
 
 
-AddAnchor("SolveMatrix");
-SubSection()"SolveMatrix";
+
+CmdDescription("SolveMatrix", "Solve a linear system");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"SolveMatrix(M,v)";
@@ -347,9 +506,24 @@ Text()
 the equation \"M x = v\". The determinant of M should be non-zero.
 ";
 
+Topical() "Examples";
+Text() HtmlCommand("
+In> A := {{1,2}, {3,4}};
+Out> {{1,2},{3,4}};
+In> v := {5,6};
+Out> {5,6};
+In> x := SolveMatrix(A, v);
+Out> {-4,9/2};
+In> A * x;
+Out> {5,6};");
 
-AddAnchor("CharacteristicEquation");
-SubSection()"CharacteristicEquation";
+Topical() "See Also";
+SeeAlso({"Inverse", "Solve", "PSolve"});
+
+
+
+CmdDescription("CharacteristicEquation", 
+	       "Characteristic polynomial of a matrix");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"CharacteristicEquation(matrix,var)";
@@ -380,8 +554,9 @@ Out> (b+a+c)*x^2-x^3-((b+a)*c+a*b)*x+a*b*c;
 Topical()"See Also"; 
 SeeAlso({"EigenValues","EigenVectors"});
 
-AddAnchor("EigenValues");
-SubSection()"EigenValues";
+
+
+CmdDescription("EigenValues", "Eigenvalues of a matrix");
 StandardLib();
 
 Topical()"Calling Sequence";
@@ -413,8 +588,7 @@ SeeAlso({"EigenVectors","CharacteristicEquation"});
 
 
 
-AddAnchor("EigenVectors");
-SubSection()"EigenVectors";
+CmdDescription("EigenVectors", "Eigenvectors of a matrix");
 StandardLib();
 
 Topical()"Calling Sequence";
@@ -423,7 +597,7 @@ StandardLib();
 
 Topical()"Parameters";
 Text()
-"matrix - matrix - a square matrix <br>
+"matrix - a square matrix <br>
  eigenvalues - list of eigenvalues as returned by EigenValues
 ";
    
@@ -448,8 +622,8 @@ Topical()"See Also";
 SeeAlso({"EigenValues","CharacteristicEquation"});
     
 
-AddAnchor("IsHermitean");
-SubSection()"IsHermitean";
+
+CmdDescription("IsHermitean", "Test whether a matrix is Hermitean");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"IsHermitean(A)";
@@ -479,8 +653,7 @@ SeeAlso({"IsUnitary"});
 
 
 
-AddAnchor("IsUnitary");
-SubSection()"IsUnitary";
+CmdDescription("IsUnitary", "Test whether a matrix is unitary");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"IsUnitary(A)";
