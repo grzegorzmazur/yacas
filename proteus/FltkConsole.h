@@ -26,6 +26,8 @@ public:
     virtual int InputIsVisible();
     /// Saving to file
     virtual void Save(FILE* f) = 0;
+    /// Return a font size
+    virtual int Fontsize() const = 0;
 };
 
 
@@ -39,6 +41,7 @@ public:
     inline LispString& Text() {return iText;};
     virtual LispCharPtr input();
     virtual void Save(FILE* f);
+    virtual int Fontsize() const;
 private:
     LispString iText;
     int iColor;
@@ -59,6 +62,7 @@ public:
     virtual int IsEditable();
     virtual int InputIsVisible();
     virtual void Save(FILE* f);
+    virtual int Fontsize() const;
 private:
     CDeletingArrayGrower<ConsoleOutBase*> iConsoleOut;
     int iShowInput;

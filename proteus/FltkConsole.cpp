@@ -11,7 +11,9 @@ x save note books
 x convert the previous example note pads to the new format.
 
 - links should always keep their text, and not change
-- input cells should maintain their font sizes
+- input cells should maintain their font sizes, also when editing
+- you should be able to set currentFont size and type and color 
+  for the command line also.
 - document the graphing capabilities
 - prompt changing
 - command processing changing: $
@@ -186,7 +188,7 @@ void FltkConsole::LoadNotePad(LispCharPtr aFile)
 
   SetCurrentHighlighted(0); // to update the initial line value
   //        iOutputOffsetY = 0;
-  MakeSureHighlightedVisible();//hier
+  MakeSureHighlightedVisible();//
   redraw(); //output changed
   Fl::flush();
   return;
@@ -382,6 +384,8 @@ void FltkConsole::Restart()
 
 void FltkConsole::DoLine(char* inpline)
 {
+    int font_size = 0;
+
     if(*inpline)
     {
         extern Fl_Tabs* mainTabs;
@@ -434,6 +438,7 @@ void FltkConsole::DoLine(char* inpline)
             iLast = (ConsoleGrouped*)iConsoleOut[iCurrentHighlighted];
             iOutputHeight -= iLast->height();
             UpdateHeight(0);
+            font_size = iLast->Fontsize();
             iLast->DeleteAll();
         }
         else
@@ -448,7 +453,10 @@ void FltkConsole::DoLine(char* inpline)
 #else
     AddGroup();
 #endif
-    AddText(inpline, FL_BLACK,inPrompt,FL_HELVETICA,iDefaultFontSize);
+
+    if (font_size==0) font_size=iDefaultFontSize;
+
+    AddText(inpline, FL_BLACK,inPrompt,FL_HELVETICA,font_size);
     //SetInputDirty();
     SetOutputDirty();
 //    redraw(); //output changed
@@ -460,18 +468,18 @@ void FltkConsole::DoLine(char* inpline)
         extern LispString the_out;
         if (the_out[0])
         {
-            AddText(the_out.String(), FL_RED,printPrompt,FL_COURIER,iDefaultFontSize);
+            AddText(the_out.String(), FL_RED,printPrompt,FL_COURIER,font_size);
             the_out.SetNrItems(0);
             the_out.Append('\0');
         }
 
         if (yacas->Error()[0] != '\0')
         {
-            AddText(yacas->Error(), FL_RED,errorPrompt,FL_HELVETICA,iDefaultFontSize);
+            AddText(yacas->Error(), FL_RED,errorPrompt,FL_HELVETICA,font_size);
         }
         else
         {
-            AddText(yacas->Result(), FL_BLUE,outPrompt,FL_HELVETICA,iDefaultFontSize);
+            AddText(yacas->Result(), FL_BLUE,outPrompt,FL_HELVETICA,font_size);
         }
     }
 
@@ -1242,6 +1250,12 @@ LispCharPtr ConsoleFlatText::input()
     return &iText[0];
 }
 
+int ConsoleFlatText::Fontsize() const
+{
+  return iFontSize;
+}
+
+
 void ConsoleGrouped::Save(FILE* f)
 {
   if (iConsoleOut.NrItems()>0 && iShowInput && iEnableInput)
@@ -1252,6 +1266,13 @@ void ConsoleGrouped::Save(FILE* f)
     fprintf(f,":");
     iConsoleOut[0]->Save(f);
   }
+}
+
+int ConsoleGrouped::Fontsize() const
+{
+  if (iConsoleOut.NrItems()>0)
+    return iConsoleOut[0]->Fontsize();
+  return 0;
 }
 
 
