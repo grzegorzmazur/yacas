@@ -24,40 +24,67 @@ syntax; cross-platform portability and small resource requirements; and extensib
 
 		Introduction
 
-{Yacas} is a small CAS which has been in development since the beginning of 1999.
+{Yacas} is a computer algebra system (CAS) which has been in development since the beginning of 1999.
 The goal was to make a small system that allows to easily prototype and
 research symbolic mathematics algorithms. A secondary future goal is to evolve
-{Yacas} into a full-blown general purpose computer algebra system.
+{Yacas} into a full-blown general purpose CAS.
 
-{Yacas} is currently primarily intended to be a research tool for easy
-exploration of algorithms of symbolic mathematical computation. The main
-advantage of {Yacas} is its rich and  flexible scripting language. The language
-is closely related to LISP [WH89] but has a  recursive descent infix grammar
-parser [ASU86], includes expression transformation (term rewriting), and
-supports defining operators at run time similarly to Prolog [B86].
 
-The {Yacas} language interpreter comes with a library of scripts that are
-intended to implement the specific computer algebra features. The {Yacas} script library
-at the present stage does not offer the full functionality of
-industrial-strength systems like {Mathematica} [W96] or {Maple} [M98]. Extensive
+{Yacas} is primarily intended to be a research tool for easy
+exploration and prototyping of algorithms of symbolic
+computation.  The main advantage of {Yacas} is its rich and flexible
+scripting language. The language is closely related to LISP {WH89} but has
+a recursive descent infix grammar parser {ASU86}, includes expression
+transformation (term rewriting), and supports defining infix operators at run time
+similarly to Prolog {B86}.
+
+
+The {Yacas} language interpreter comes with a library of scripts that implement a set of computer algebra features. The {Yacas} script library
+is in active development and at the present stage does not offer the rich functionality of
+industrial-strength systems such as {Mathematica} or {Maple}.
+Extensive
 implementation of algorithms of symbolic computation is one of the future
 development goals.
+
+{Yacas} handles input and output in plain ASCII,
+either interactively or in batch mode. (A graphical interface is under development.) There is also an optional plugin mechanism
+whereby external libraries can be linked into the system to provide extra
+functionality.
 
 
 		Basic design
 
-{Yacas} consists of a "core engine", an interpreter for the {Yacas} scripting
-language, and a library of script code. The {Yacas} interpreter has been
-implemented in standard C++.
+{Yacas} consists of a ``core engine" (kernel), which is an interpreter
+for the {Yacas} scripting language, and a library of script code.
 
-The design goals for {Yacas} are: portability, self-containment, ease of use,
-code transparency, and flexibility of the core engine (lack of predefined "policies"). The system falls into the "prototype/hacker" rather than into the "axiom/algebraic" category, according to the terminology of Fateman [F90]. This means that there are relatively few specific design decisions related to mathematical objects, but instead an emphasis was made on extensibility.
+The
+{Yacas} engine has been implemented in a subset of C++ which is
+supported by almost all C++ compilers.
+The design goals for {Yacas} core engine are: portability,
+self-containment (no dependence on extra libraries or packages), ease of
+implementing algorithms, code transparency, and flexibility. The {Yacas}
+system as a whole falls into the ``prototype/hacker" rather than into the
+``axiom/algebraic" category, according to the terminology of Fateman
+{F90}. There are relatively few specific design decisions related to
+mathematics, but instead the emphasis is made on extensibility.
+
+The kernel offers sufficiently rich but basic functionality through a limited
+number of core functions. This core functionality includes substitutions and
+rewriting of symbolic expression trees, an infix syntax parser, and arbitrary
+precision numerics. The kernel does not contain any definitions of symbolic
+mathematical operations and tries to be as general and free as possible of
+predefined notions or policies in the domain of symbolic computation.
+
+The script library contains declarations of transformation rules and of function
+syntax (prefix, infix etc.). The intention is that all symbolic manipulation algorithms, definitions
+of mathematical functions etc. should be held in the script library and not in the kernel. The
+only exception so far is for a very small number of mathematical or utility
+functions that are frequently used; they are compiled into the core for speed.
 
 	    Portability
 
-{Yacas} is designed to be as platform-independent as possible. {Yacas} is written
-in a subset of C++ which is supported by almost all, if not all, C++ compilers.
-The platform-specific parts have been clearly separated to facilitate porting.
+{Yacas} is designed to be as platform-independent as possible.
+All platform-specific parts have been clearly separated to facilitate porting.
 Even the standard C++ library is considered to be platform-specific, as there
 exist  platforms without support for the standard C++ library (e.g. the
 EPOC32 platform).
@@ -153,26 +180,16 @@ libraries can be dynamically linked into {Yacas} using the plugin mechanism.
 
 	    Flexible, "policy-free" engine
 
-The {Yacas} system has two main components: the kernel (core interpreter) which
-is implemented in C++, and the script library written  in the {Yacas} script
-language.
-
-The kernel offers sufficiently rich but basic functionality through a limited
-number of core functions. This core functionality includes substitutions and
-rewriting of symbolic expression trees, an infix syntax parser, and arbitrary
-precision numerics. The kernel does not contain any definitions of symbolic
-mathematical operations and tries to be as general and free as possible of
-predefined notions or policies in the domain of symbolic computation.
-
+The core engine of the {Yacas} system interprets the Yacas script language.
 The reason to implement yet another LISP-based custom language interpreter
 instead of taking an already existing one was to have full control over the
 system and to make it self-contained.
 While most of the features of the {Yacas} script language are "syntactic sugar" on top of a LISP 
-interpreter, some features not commonly found in LISP systems were  added.
+interpreter, some features not commonly found in LISP systems were added.
 
 The script library contains declarations of transformation rules and of function
 syntax (prefix, infix etc.). The intention is that all symbolic manipulation algorithms, definitions
-of mathematical functions etc. should be held in the script library and not in the kernel. The
+of mathematical functions and so on should be held in the script library and not in the kernel. The
 only exception so far is for a very small number of mathematical or utility
 functions that are frequently used; they are compiled into the core for speed.
 
@@ -184,7 +201,6 @@ entirely on the script library to provide transformation rules for manipulating
 expressions involving the operator "{+}". In this way, the kernel does not need
 to anticipate all possible meanings of the operator "{+}" that users might need
 in their calculations.
-
 
 This policy-free scheme means that {Yacas} is highly configurable through its
 scripting language. It is possible to create an entirely different symbolic
@@ -621,8 +637,6 @@ issue of speed is also continuously being addressed.
 
 		References
 
-Bibliography:
-
 [ASU86] A. Aho, R. Sethi and J. Ullman, <i>Compilers (Principles, Techniques and Tools)</i>, Addison-Wesley, 1986.
 
 [B86] I. Bratko, <i>Prolog (Programming for Artificial Intelligence)</i>, Addison-Wesley, 1986.
@@ -636,8 +650,6 @@ Bibliography:
 [GG99] J. von zur Gathen and J. Gerhard, <i>Modern Computer Algebra</i>, Cambridge University Press, 1999.
 
 [K98] D. Knuth, <i>The Art of Computer Programming (Volume 2, Seminumerical Algorithms)</i>, Addison-Wesley, 1998.
-
-[M98] See, for example, M. B. Monagan <i>et al.</i>: <i>Maple V programming guide,</i> Springer-Verlag, Berlin, 1998.
 
 [TATA99] H. Comon, M. Dauchet, R. Gilleron, F. Jacquemard, D. Lugiez, S. Tison, and M. Tommasi, <i>Tree Automata Techniques and Applications</i>, 1999, online book: <*http://www.grappa.univ-lille3.fr/tata*>
 
