@@ -1,11 +1,15 @@
 
 
-all: ABIN-grammar.chapt essays.html
+all: ABIN-grammar.chapt MaintenanceHowto.chapt essays.html
 
 ABIN-grammar.chapt: ABIN-grammar.txt
 	../manmake/txt2yacasdoc.pl < ABIN-grammar.txt > ABIN-grammar.chapt
 
-essays.html: ABIN-grammar.chapt
+
+MaintenanceHowto.chapt: MaintenanceHowto.txt
+	../manmake/txt2yacasdoc.pl < MaintenanceHowto.txt > MaintenanceHowto.chapt
+
+essays.html: ABIN-grammar.chapt MaintenanceHowto.chapt
 	../src/yacas -pc all.ys
 
 clean:

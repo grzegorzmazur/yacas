@@ -11,7 +11,7 @@ WriteString("<HTML>
 </HTML>");
 
 
-Use("html.ys");
+//Use("html.ys");
 SetHtmlDirectory("");
 Use("styleplain");  /* style cheet for the documentation */
 Use("manualmaker"); /* engine that renders book to html */
@@ -28,6 +28,8 @@ Book()"Essays on Yacas";
 Chapter()"Essays";
 
 Load("ABIN-grammar.chapt");
+Load("MaintenanceHowto.chapt");
+
 //Echo({"1..."});
 //EndOfFile;
 //  GarbageCollect();
