@@ -38,11 +38,11 @@ REFPROGSOURCES =
 CODINGCHAPTERS = YacasDebugger.chapt FDL.chapt
 CODINGSOURCES = in/YacasDebugger.chapt.txt in/FDL.chapt.txt
 
-ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
+ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt SimpleTools.chapt \
 	CVS-Howto.chapt YacasDocs.chapt wester-1994.chapt \
 	new.chapt paper.chapt wordproblems.chapt FDL.chapt
 
-ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
+ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt SimpleTools.chapt.txt \
 	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt \
         in/new.chapt.txt in/paper.chapt.txt in/wester-1994.chapt.txt \
 		in/wordproblems.chapt.txt in/FDL.chapt.txt
