@@ -143,6 +143,40 @@ ZetaNumCoeffEj(j,n) := [
 	);
 ];
 
+/// fast numerical calculation of Zeta(3) using a special series
+
+Zeta3() :=
+[
+	Local(result, old'result, prev'prec, k, term, prev'Numeric);
+	For(
+	[
+		k:=1;
+		result := 1;
+		old'result := -1;
+		term := 1;
+		prev'Numeric := Numeric;
+		Numeric := True;
+		prev'prec := GetPrecision();
+		// need guard digits
+		Precision(prev'prec+IntLog(prev'prec,10)+1);
+	],
+	old'result!=result,
+	k++
+	)
+	[
+		old'result := result;
+		term := -term * k^2 / ((2*k+1)*(2*k));
+		result := result + term/(k+1)^2;
+	];
+	
+	result := 5/4*result;
+	Numeric := prev'Numeric;
+	Precision(prev'prec);
+	
+	result;
+];
+
+
 /// User interface for ZetaNum(s,n)
 10 # ZetaNum(_s) _ (N(s)=0) <-- -0.5;
 10 # ZetaNum(_s) _ (N(s)=1) <-- Infinity;
@@ -176,7 +210,8 @@ ZetaNumCoeffEj(j,n) := [
 
 /// use identities for exact values of Zeta
 10 # Zeta(1) <-- Infinity;
-10 # Zeta(0) <-- -1/2;
+10 # Zeta(0) <-- -1/2;	// let's save time
+10 # Zeta(3) <-- Zeta3();	// special case
 10 # Zeta(n_IsEven)_(n>0) <-- Pi^n*(2^(n-1)/n! *Abs(Bernoulli(n)));
 10 # Zeta(n_IsInteger)_(n<0) <-- -Bernoulli(-n+1)/(-n+1);
 
