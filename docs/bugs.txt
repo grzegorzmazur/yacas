@@ -20,6 +20,7 @@ Summary:
 12. [Calculus] 'Limit(n, Infinity) n^5/2^n' uses L'Hopital incorrectly
 13. [Trigonometry] 'TrigSimpCombine(x^500)' returns nothing
 15. (RESOLVED?)[Core] 'MathPower(0,0.5)' locks up
+20. [Calculus] 'Solve(Exp(x^2)==Exp(x),x)' yields {}
 
 ----------------------------------------------------------------------
 
@@ -187,6 +188,17 @@ Resolved? Right now the behaviour is:
   Out> False
   In> 0^0.5
   Out> 0
+
+----------------------------------------------------------------------
+
+Bug #20
+Title: [Calculus] 'Solve(Exp(x^2)==Exp(x),x)' yields {}
+Submitted by: Michael Grossmann
+Date: 2004-04-02
+Description:
+
+Typing Solve(Exp(x^2)==Exp(x),x) gives {} (empty set) as result instead of
+{0,1}.
 
 ----------------------------------------------------------------------
 
