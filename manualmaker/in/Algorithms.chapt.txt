@@ -24,9 +24,8 @@ Warning: calculations with internal math with precision exceeding 10,000 digits 
 
 Factorization of integers is implemented by functions {Factor} and {Factors}. Both functions try to find all prime factors of a given integer $n$.
 
-For small integers $n<100000$ the trial division algorithm is used: $n$ is divided by all prime numbers $p<=Sqrt(n)$ until a factor is found.
-
-For larger integers, the trial division algorithm is used to find any prime factors $p<200$ and then the Pollard "rho" algorithm is applied to the remaining number. The "rho" algorithm chooses an irreducible polynomial such as $f(x)=x^2+1$ and builds a sequence of integers $x[k+1] := Mod( f(x[k]), n)$ starting from $x[0]=2$. For each $k$, the value $x[2*k]-x[k]$ is attempted as possibly containing a factor of $n$ in the following sense: The GCD of $x[2*k]-x[k]$ with $n$ is computed, and if $Gcd(x[2*k]-x[k], n)>1$, then that value is a factor of $n$.
+For small prime factors the trial division algorithm is used: $n$ is divided by all prime numbers $p<=200$ until a factor is found.
+After separating small prime factors the Pollard "rho" algorithm is applied to the remaining number. The Pollard "rho" algorithm takes an irreducible polynomial such as $f(x)=x^2+1$ and builds a sequence of integers $x[k+1]:=Mod(f(x[k]),n)$, starting from $x[0]=2$. For each $k$, the value $x[2*k]-x[k]$ is attempted as possibly containing a factor of $n$ in the following sense: The GCD of $x[2*k]-x[k]$ with $n$ is computed, and if $Gcd(x[2*k]-x[k],n)>1$, then that GCD value divides $n$.
 
 The Pollard "rho" algorithm may enter an infinite loop when the sequence $x[k]$ repeats itself without giving any factors of $n$. For example, the unmodified "rho" algorithm loops on the number 703. The loop is detected by comparing $x[2*k]$ and $x[k]$. When these two quantities become equal to each other for the first time, the loop may not yet have occurred so the value of GCD is set to 1 and the sequence is continued. But when the equality of $x[2*k]$ and $x[k]$ occurs many times, it indicates that the algorithm has entered a loop. In this case the current implementation stops and prints an error message, "failed to factorize number". A solution may be to randomly choose a different starting number $x[0]$ when a loop occurs (this is currently not implemented) and keep trying until a non-looping sequence is found. A better (and faster) factoring algorithm is needed.
 
@@ -48,7 +47,7 @@ pairs of points {{{x1,y1}, {x2,y2}, ...}} to be used directly for plotting.
 
 *	 1.  Given an interval ($a$, $c$), we split
          it in half, $b:=(a+c)/2$ and first compute $f(x)$ at five grid
-         points $x=a$, $(a+b)/2$, $b$, $(b+c)/2$, $c$. 
+         points $a$, $a[1]:=(a+b)/2$, $b$, $b[1]:=(b+c)/2$, $c$. 
 *	 2. If currently $depth <= 0$, return this list of 5 points and
          values because we cannot refine the grid any more.
 *	 3. Otherwise we check that the function does not change sign too
@@ -73,38 +72,43 @@ pairs of points {{{x1,y1}, {x2,y2}, ...}} to be used directly for plotting.
 *	 4. Check that the function values are smooth enough through the
          interval. Smoothness is controlled by a parameter $epsilon$. The
          meaning of the parameter $epsilon$ is the relative error of the
-         approximation of the integral by the quadratures. A good heuristic
+         numerical approximation of the integral of $f(x)$ by the grid. A good heuristic
          value of $epsilon$ is 1/(the number of pixels on the screen)
          because it means that no pixels will be missing in the area under
-         the graph. We compute the Newton-Cotes and the Simpson quadratures
-         for $ Integrate(x,a,c) f(x) $ using these 5 points. The Simpson
-         coefficients are: (1, 4, 2, 4, 1)/3; and the Newton-Cotes
-         coefficients are: (14, 64, 24, 64, 14)/45. Difference between the
-         quadratures has coefficients (-1, 4, -6, 4, -1)/45. If the
-         abs. value of the difference between these quadratures is less
-         than $epsilon$ * (abs. value of the Simpson quadrature), then we
-         are done and we return the list of 5 points and values.
+         the graph. We define $g(x):=f(x)-f[0]$ where $f[0]$ is the minimum of the values of $f(x)$ on the five grid points $a$, $a[1]$, $b$, $b[1]$, and $c$; the function $g(x)$ is therefore nonnegative. Then we compute two different Newton-Cotes quadratures
+		 for $ Integrate(x,b,b[1]) g(x) $ using these five points. (Asymmetric
+         quadratures are chosen to avoid running into an accidental symmetry of the
+function; the first quadrature uses points $a$, $a[1]$, $b$, $b[1]$ and the second
+quadrature uses $b$, $b[1]$, $c$.) If the
+         absolute value of the difference between these quadratures is less
+         than $epsilon$ * (value of the second quadrature), then we
+         are done and we return the list of these five points and values.
 *	 5. Otherwise we need to refine the grid. We compute
          {Plot2D'adaptive} recursively for the two halves of the interval,
          i.e. for ($a$,$b$) and ($b$,$c$); we pass the midpoint values as
          necessary and decrease {depth} by 1. The resulting lists are
-         concatenated (excepting the double value at point $b$) and
+         concatenated (excluding the double value at point $b$) and
          returned.
 
 This algorithm works well if the initial number of points and the {depth}
-parameter are large enough. The initial number of points is passed as the
-option {points} and is 20 by default; the default {depth} is 5.
+parameter are large enough.
 
-The meaning of quadrature coefficients is that the integral is approximated as
+The meaning of Newton-Cotes quadrature coefficients is that an integral is approximated as
 
-$$Integrate(x,a[1],a[n]) f(x) <=> h*Sum(i,1,n,f(a[i])*c[i])$$
+$$(Integrate(x,a[0],a[n]) f(x)) <=> h*Sum(k,0,n,c[k]*f(a[k]))$$
+where $h:=a[1]-a[0]$ is the grid step, $a[k]$ are the grid points, and
+$c[k]$ are the quadrature coefficients. These coefficients are independent
+of the function $f(x)$ and can be precomputed
+in advance for any grid $a[k]$ (not necessarily with constant step
+$h=a[k]-a[k-1]$).
+The Newton-Cotes coefficients $c[k]$ for
+grids with a constant step $h$ can be found, for example, by solving a system of equations,
+$$Sum(k, 0, n, c[k]*k^p) = n^(p+1)/(p+1)$$
+for $p=0$, 1, ..., $n$. This system of equations means that the coefficients $c[k]$ correctly approximate the integrals of functions $f(x)=x^p$ over the interval (0,$n$).
 
-where $h:=a[2]-a[1]$ is the grid step, $a[i]$ are the grid points, and
-$c[i]$ are the quadrature coefficients. These coefficients are independent
-of the function $f(x)$ that needs to be integrated, and one can precompute
-them in advance for any grid $a[i]$ (not necessarily with constant step
-$h=a[i]-a[i-1]$). The Newton-Cotes and the Simpson coefficients are for
-grids with a constant step.
+The solution of this system always exists and gives quadrature coefficients as rational numbers. For example, the Simpson quadrature $c[0]=1/6$, $c[1]=2/3$, $c[2]=1/6$ is obtained with $n=2$.
+
+In the same way it is possible to find quadratures for the integral over a subinterval rather than over the whole interval of $x$. In the current implementation of the adaptive plotting algorithm, two quadratures are used: the 3-point quadrature ($n=2$) and the 4-point quadrature ($n=3$) for the integral over the first subinterval, $Integrate(x,a[0],a[1]) f(x)$. Their coefficients are ($5/12$, $2/3$, $-1/12$) and ($3/8$, $19/24$, $-5/24$, $1/24$). 
 
 *INCLUDE algorithms-elemfunc.chapt
 *INCLUDE algorithms-specfunc.chapt
