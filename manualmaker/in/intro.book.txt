@@ -545,6 +545,8 @@ After this you should see a window with a plot.
 
 		Using Yacas from the console
 
+	    Command-line options
+
 *INCLUDE cl-options.chapt
 
 	    Client/server usage

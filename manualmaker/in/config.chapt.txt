@@ -1,8 +1,9 @@
-			Interactive session commands
+			Running Yacas
 
+		Interactive session commands
 
 *INTRO
-This chapter describes the special commands for the Yacas interactive sessions (for example, to restart or to exit the interpreter).
+This section describes the special commands for the Yacas interactive sessions (for example, to restart or to exit the interpreter).
 These commands are not functions but special directives
 that only apply while running Yacas interactively.
 They should not be used in scripts.
@@ -78,6 +79,12 @@ There is no effect if we type some spaces first:
 	Out> restart;
 
 *SEE Exit
+
+		Command-line options
+
+*A options
+*INCLUDE cl-options.chapt
+
 
 			Startup configuration
 

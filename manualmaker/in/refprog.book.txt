@@ -1984,11 +1984,6 @@ Apart from the syntax, operators are exactly the same as any other functions, th
 
 *SEE Bodied, Infix, Prefix, Postfix
 
-*A options
-	    options
-
-*INCLUDE cl-options.chapt
-
 *A plotting
 	    plotting
 
