@@ -449,5 +449,26 @@ void ParseExpression(LispPtr& aResult,LispCharPtr aString,LispEnvironment& aEnvi
     parser.Parse(aResult,aEnvironment);
 }
 
+void ReturnUnEvaluated(LispPtr& aResult,LispPtr aArguments,
+                       LispEnvironment& aEnvironment)
+{
+    LispPtr full;
+    full.Set(aArguments.Get()->Copy(LispFalse));
+    aResult.Set(LispSubList::New(full.Get()));
+
+    LispIterator iter(aArguments);
+    iter.GoNext();
+
+    while (iter() != NULL)
+    {
+        LispPtr next;
+        aEnvironment.iEvaluator->Eval(aEnvironment, next, *iter.Ptr());
+        full.Get()->Next().Set(next.Get());
+        full.Set(next.Get());
+        iter.GoNext();
+    }
+    full.Get()->Next().Set(NULL);
+}
+
 
 

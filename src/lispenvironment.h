@@ -38,6 +38,14 @@ class LispEvaluatorBase;
 class BasicEvaluator;
 class LispDllBase;
 class YacasDebuggerBase;
+class LispEnvironment;
+class CDllArray : public CDeletingArrayGrower<LispDllBase*>
+{
+public:
+    void DeleteNamed(LispCharPtr aName, LispEnvironment& aEnvironment);
+};
+
+
 class LispEnvironment : public YacasBase
 {
 public:
@@ -65,6 +73,7 @@ public:
 public:
     inline LispCommands& Commands();
     void SetCommand(LispEvalCaller aEvaluatorFunc, LispCharPtr aString);
+    void RemoveCommand(LispCharPtr aString);
 
     inline  LispHashTable& HashTable();
     LispUserFunction* UserFunction(LispPtr& aArguments);
@@ -144,7 +153,7 @@ public: // pre-found
 public: // Error reporting
     LispString iError;
     StringOutput iErrorOutput;
-    CDeletingArrayGrower<LispDllBase*> iDlls;
+    CDllArray iDlls;
     YacasDebuggerBase* iDebugger;
     
 private:
@@ -376,6 +385,7 @@ public:
 private:
     LispPtr* iPtrs;
 };
+
 
 
 inline void LispEnvironment::SetPrettyPrinter(LispStringPtr aPrettyPrinter)

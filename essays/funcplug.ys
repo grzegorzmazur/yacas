@@ -108,6 +108,7 @@ MakeFunctionPlugin(extName, argList, fBody) := [
 	/* If compilation succeeds, DLL file is present */
 	Check(FindFile(dllPath) = dllPath, "Error in MakeFunctionPlugin: compilation of " : fileBase : ".so failed.");
 	/* Load DLL file */
+	DllUnload(dllPath);
 	DllLoad(dllPath);
 	Echo({"Function " : extName : "(" : MakeArgumentList(argList, ""): ") loaded from " : dllPath});
 ];

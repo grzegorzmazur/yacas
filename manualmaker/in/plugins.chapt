@@ -39,10 +39,11 @@ This chapter assumes the reader is comfortable programming in c++.
 ";
 
 AddAnchor("DllLoad");
-SubSection()"DllLoad";
+AddAnchor("DllUnload");
+SubSection()"DllLoad, DllUnload";
 BuiltIn();
 Topical()"Calling Sequence";
-Text()"DllLoad(file)";
+Text()"DllLoad(file) <BR> DllUnload(file)";
 
 Topical()"Parameters";
 Text()"file - file name of the plugin";
@@ -51,7 +52,15 @@ Topical()"Description";
 Text()
 "DllLoad forces Yacas to load the dynamic link library (.so file
 under Linux). The full path to the DLL has to be specified,
-or the file needs to be in a path where dlopen can find it.";
+or the file needs to be in a path where dlopen can find it. <BR>
+
+DllUnload unloads a dynamic link library previously loaded with
+DllLoad. Note the dll file name has to be exactly the same,
+or the system will not be able to determine which dll to unload.
+It will scan all the dll files, and delete the first one found
+to exactly match, and return silently if it didn't find the dll.
+DllUnload always returns True.
+";
 
 Topical()"Examples";
 Text()

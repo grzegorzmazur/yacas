@@ -11,6 +11,7 @@ StubApiCStart():=
   cconsts := "";
   cfuncs  := "";
   cadders := "";
+  cremovers := "";
   cincludes:="";
   cremarks:="";
   cstructs:={};
@@ -180,6 +181,11 @@ cadderstring:=
 "  aEnvironment.SetCommand(base_<? WriteString(fname); ?>, <? Write(fname2); ?>);
 ";
 
+cremoverstring:=
+"  aEnvironment.RemoveCommand(<? Write(fname2); ?>);
+";
+
+
 fileapi:=
 "
 /* This file was automatically generated with cstubgen.
@@ -206,6 +212,7 @@ class ThisPlugin : public LispPluginBase
 {
 public:
     virtual void Add(LispEnvironment& aEnvironment);
+    virtual void Remove(LispEnvironment& aEnvironment);
 };
 void ThisPlugin::Add(LispEnvironment& aEnvironment)
 {
@@ -216,6 +223,12 @@ WriteString(cconsts);
 WriteString(cadders);
 ?>}
 
+void ThisPlugin::Remove(LispEnvironment& aEnvironment)
+{
+//printf(\"CLOSED DLL!!!\\n\");
+<?
+WriteString(cremovers);
+?>}
 
 extern \"C\" {
 LispPluginBase* maker(void)
@@ -250,6 +263,7 @@ StubApiCFunction(returntype,fname,args) :=
   cfuncs:= cfuncs:PatchString(funcstring);
   fname2:=fname;
   cadders:=cadders:PatchString(cadderstring);
+  cremovers:=cremovers:PatchString(cremoverstring);
   StubApiCDocumentFunction(returntype,fname,fname2,args);
 ];
 
@@ -257,6 +271,7 @@ StubApiCFunction(returntype,fname,fname2,args) :=
 [
   cfuncs:= cfuncs:PatchString(funcstring);
   cadders:=cadders:PatchString(cadderstring);
+  cremovers:=cremovers:PatchString(cremoverstring);
   StubApiCDocumentFunction(returntype,fname,fname2,args);
 ];
 
