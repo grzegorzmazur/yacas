@@ -587,6 +587,26 @@ is not square-free) and is {(-1)^r} if {n} has {r} distinct factors. Also,
 
 *SEE DivisorsSum, ProperDivisors, ProperDivisorsSum, Moebius
 
+*CMD CatalanNumber --- return the {n}th Catalan Number
+*STD
+*CALL
+	CatalanNumber(n)
+*PARMS
+
+{n}	-- positive integer
+
+*DESC
+
+This function returns the {n}th Catalan number, defined as {Bin(2*n,n)/(n+1)}.
+
+*E.G.
+
+	In> CatalanNumber(10)
+	Out> 16796;
+	In> CatalanNumber(5)
+	Out> 42;
+
+*SEE Bin
 
 
 *CMD FermatNumber --- return the {n}th Fermat Number
@@ -608,6 +628,37 @@ This function returns the {n}th Fermat number, which is defined as
 	Out> 340282366920938463463374607431768211457;
 
 *SEE	Factor
+
+
+*CMD HarmonicNumber --- return the {n}th Harmonic Number
+*STD
+*CALL
+	HarmonicNumber(n)
+	HarmonicNumber(n,r)
+*PARMS
+
+{n},{r}	-- positive integers
+
+*DESC
+
+This function returns the {n}th Harmonic number, which is defined
+as {Sum(k,1,n,1/k)}. If given a second argument, the Harmonic number
+of order {r} is returned, which is defined as {Sum(k,1,n,1/k^r)}.
+
+*E.G.
+
+	In> HarmonicNumber(10)
+	Out> 7381/2520;
+	In> HarmonicNumber(15)
+	Out> 1195757/360360;
+	In> HarmonicNumber(1)
+	Out> 1;
+	In> HarmonicNumber(4,3)
+	Out> 2035/1728;
+
+
+
+*SEE Sum
 
 
 *CMD IntLog --- integer part of logarithm
