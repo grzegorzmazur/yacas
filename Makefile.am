@@ -49,7 +49,7 @@ backup:
 
 ## Install the plotting scripts
 install-data-local: $(PLOTTINGSCRIPTS)
-	$(mkinstalldirs) $(pkgdatadir)/
+	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/
 	-for file in $(PLOTTINGSCRIPTS); do \
-	   $(INSTALL_DATA) $(srcdir)/$$file $(pkgdatadir)/$$file; \
+	   $(INSTALL_DATA) $(srcdir)/$$file $(DESTDIR)$(pkgdatadir)/$$file; \
 	done
