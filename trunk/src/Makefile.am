@@ -134,23 +134,23 @@ install-data-local: yacas.h
 	$(mkinstalldirs) $(yacas_include)/plat/linux32/
 	-for file in $(srcdir)/*.h; do \
 	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/$$basefile; \
+	$(INSTALL_DATA) $$file $(yacas_include)/$$basefile; \
 	done
 	-for file in $(srcdir)/*.inl; do \
 	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/$$basefile; \
+	$(INSTALL_DATA) $$file $(yacas_include)/$$basefile; \
 	done
 	-for file in $(srcdir)/plat/linux32/*.h; do \
 	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/plat/linux32/$$basefile; \
+	$(INSTALL_DATA) $$file $(yacas_include)/plat/linux32/$$basefile; \
 	done
 	-for file in $(srcdir)/plat/linux32/*.inl; do \
 	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_include)/plat/linux32/$$basefile; \
+	$(INSTALL_DATA) $$file $(yacas_include)/plat/linux32/$$basefile; \
 	done
 	-for file in $(srcdir)/*.a; do \
 	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $(srcdir)/$$file $(yacas_lib)/$$basefile; \
+	$(INSTALL_DATA) $$file $(yacas_lib)/$$basefile; \
 	done
 
 version.h: ../config.h
