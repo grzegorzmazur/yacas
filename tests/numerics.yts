@@ -72,7 +72,7 @@ RoundTo([x:=Newton(x*Exp(x)-4,x,1,10^(-49)); N(x*Exp(x));], 49)
 , 4
 );
 Verify(Newton(x^2+1,x,1,0.1,-3,3), Fail);
-Verofy(Newton(x^2-1,x,1,0.1,-3,3), 1);
+Verify(Newton(x^2-1,x,1,0.1,-3,3), 1);
 
 Verify(
 RoundTo(N(ArcSin(0.32)), 49)
