@@ -4,7 +4,7 @@ noinst_PROGRAMS = books.html
 EXTRA_DIST = \
 	manualmaker styleplain \
 	in/all in/arith.chapt in/built.chapt in/calc.chapt \
-	in/coding.book in/const.chapt in/functional.chapt  \
+	in/coding.book.txt in/const.chapt in/functional.chapt  \
 	in/intro.book.txt in/io.chapt in/linalg.chapt in/dummies  \
 	in/lists.chapt in/preds.chapt in/prog.chapt        \
         in/refprog.book in/controlflow.chapt newhelp in/plugins.chapt   \
