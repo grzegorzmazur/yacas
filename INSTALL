@@ -16,10 +16,10 @@ To install, do the following:
 
 * You can now, if you like, type 'make test', to run the test script.
 
-* type 'make install'. 
+* type 'make install'.
 
 *  type 'yacas'  and you should see a Yacas prompt!
-   You could now type 'Load("scripts/examples/tests");' to perform some
+   You could now type 'Load("scripts/examples/tests.ys");' to perform some
    standard tests. The scripts
    (which are installed in '/usr/local/share/yacas/') should also be
    a good starting point to see some example source code.
@@ -74,17 +74,17 @@ to build RPMS/SRPMS, and -bb to build RPMS only.
 
 CVS shortlist:
 
-cvs -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas login 
-cvs -z3 -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas co modulename 
+cvs -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas login
+cvs -z3 -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas co modulename
 
 export CVS_RSH=ssh1
 
-Type the following, making necessary obvious substitutions for your username and project. 
-  cvs -d:ext:loginname@cvs.yacas.sourceforge.net:/cvsroot/yacas co yacas 
+Type the following, making necessary obvious substitutions for your username and project.
+  cvs -d:ext:loginname@cvs.yacas.sourceforge.net:/cvsroot/yacas co yacas
 After initial checkout, you can change into this directory and execute cvs commands without the -d tag. For
-example: 
+example:
   cvs update
   cvs commit -m "comments for this commit"
-  cvs add myfile.c 
+  cvs add myfile.c
 
-cd /cvsroot/yacas/CVSROOT; co syncmail 
+cd /cvsroot/yacas/CVSROOT; co syncmail
