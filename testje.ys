@@ -5,6 +5,7 @@ mdivide(x,y):=
   Local(v); MM(1);
   v:=MultiExpressionList(x+y);
   v:=MultiDivide(MM(x,v),{MM(y,v)});
+//  Check(False,"fake error raised");
   {NormalForm(v[1][1]),NormalForm(v[2])};
 ];
 

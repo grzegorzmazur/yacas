@@ -1831,6 +1831,15 @@ void LispToString(LispEnvironment& aEnvironment, LispInt aStackTop)
     RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(oper.String())));
 }
 
+
+void LispToStdout(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+    LispLocalOutput localOutput(aEnvironment, aEnvironment.iInitialOutput);
+    // Evaluate the body
+    InternalEval(aEnvironment, RESULT, ARGUMENT(1));
+}
+
+
 void LispSecure(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     //TESTARGS(2);

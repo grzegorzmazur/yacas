@@ -99,6 +99,7 @@ Macro(DebugLeave,{})
   If(debugverbose,Echo(CustomEval'Result()," <-- ",CustomEval'Expression()));
 ];
 Macro(Debug,{expression})
+ToStdout()
 [
    DebugStart();
    CustomEval(DebugEnter(),DebugLeave(),If(debugstopped,Check(False,""),[debugging:=True;debugcallstack := Tail(debugcallstack);]),@expression);

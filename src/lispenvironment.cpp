@@ -40,6 +40,7 @@ LispEnvironment::LispEnvironment(
     iUserFunctions(aUserFunctions),
     iHashTable(aHashTable),
     iPrinter(aPrinter),
+    iInitialOutput(aOutput),
     iCurrentOutput(aOutput),
     iGlobals(aGlobals),
     iPreFixOperators(aPreFixOperators),

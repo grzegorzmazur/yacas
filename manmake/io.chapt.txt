@@ -507,11 +507,28 @@ the end of an input file is encountered, the token atom {EndOfFile} is returned.
 
 
 
+*CMD ToStdout --- select initial output stream for output
+*CORE
+*CALL
+	ToStdout() body
 
+*PARMS
 
+{body} -- expression to be evaluated
 
+*DESC
 
+When using {ToString} or {ToFile}, it might happen that something needs to be
+written to the standard default initial output (typically the screen). {ToStdout} can be used to select this stream.
 
+*EG
+
+	In> ToString()[Echo("aaaa");ToStdout()Echo("bbbb");];
+	bbbb
+	Out> "aaaa
+	"
+
+*SEE ToString, ToFile
 
 
 
