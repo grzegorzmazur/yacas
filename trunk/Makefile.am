@@ -1,6 +1,8 @@
 SUBDIRS = docs inprogress YacasNotebook scripts src ramscripts essays manualmaker colorcode plugins proteus tests manmake compile
 
-EXTRA_DIST = yacas.sgml yacas.spec yacas.spec.in makemake mkhomepage mkmanual yacas.sh yacas_client doxy_yacas yacas.el README.beos README.Win32 workinprogress.ys upload.txt
+EXTRA_DIST = yacas.sgml yacas.spec yacas.spec.in makemake mkhomepage mkmanual \
+	yacas.sh yacas_client doxy_yacas yacas.el README.beos README.Win32 \
+	workinprogress.ys upload.txt readme.bin.win32.txt
 
 install-data-local:
 	-cp yacas_client $(bindir)/

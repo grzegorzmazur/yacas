@@ -81,7 +81,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp \
 	plat/win32/yacas.dsp            \
 	plat/win32/yacas_exe.dsp        \
 	plat/win32/yacasmain-win32.cpp makefile.debug Makefile.win32 \
-	makefile.agenda \
+	makefile.agenda yacas.dsp yacas.dsw \
         debugmem.cpp debugmem.h
 
 
