@@ -10,7 +10,8 @@
 ## "manualmaker".
 
 SUBDIRS = . docs inprogress YacasNotebook scripts src ramscripts essays \
-	manualmaker colorcode plugins proteus tests manmake compile embed 
+	manualmaker colorcode plugins proteus tests manmake compile embed \
+	JavaConsole
 
 ## A script to be installed in the directory for binaries
 bin_SCRIPTS = yacas_client
