@@ -210,7 +210,7 @@ static Fl_Menu_Item menuitems[] =
  {"Links", 0,  0, NULL, 64, 0, 0, font_size, 0},
  {"Plot", 0,  0, NULL, 64, 0, 0, font_size, 0},
  {"Load(\"flplot\")", 0,  cb_menu_insert, (void*)"Load(\"flplot\")", 0, 0, 0, font_size, 0},
- {"FlPlot", 0,  cb_menu_insert, "FlPlot(", 0, 0, 0, font_size, 0},
+ {"FlPlot", 0,  cb_menu_insert, (void*)"FlPlot(", 0, 0, 0, font_size, 0},
  {0},
  {"Braces", 0,  0, NULL, 64, 0, 0, font_size, 0},
  {"(", 0,  cb_menu_insert, (void*)"(", 0, 0, 0, font_size, 0},

@@ -134,28 +134,64 @@ CanProveAux(_proposition) <--
  */
 CanProve(_proposition) <-- CanProveAux( Not CanProveAux( Not proposition));
 
+1 # SimpleNegate(Not (_x)) <-- x;
+2 # SimpleNegate(_x)       <-- Not(x);
+
 /* LogicRemoveTautologies scans a list representing e1 Or e2 Or ... to find
-   if there are elements p and  Not p in the list. This signifies p Or   Not p,
-   which is always true. These are removed. Another function that is used
+   if there are elements p and  Not p in the list. This signifies p Or   Not
+p,
+   which is always True. These pairs are removed. Another function that is
+used
    is RemoveDuplicates, which converts p Or p into p.
  */
-LogicRemoveTautologies(_e)<--
+LogicRemoveTautologies(_e) <--
 [
-  Local(i);
-  For(i:=1,i<=Length(e),i++)
+  Local(i, len); len := Length(e);
+
+  For(i := 1, i <= len, i++)
   [
-    Local(n);
-    n:=LogicSimplify( Not  (e[i]));
-    If(Contains(e,n),
-       [
-        If(i>=Find(e,n), Echo({"WRONG!!!"}));
-         DestructiveDelete(e,Find(e,n));
-         DestructiveDelete(e,i);
-         i--;
-       ]);
+    Local(x, n, j, negationfound);
+    x := e[i];
+    n := SimpleNegate(e[i]);      /* this is all we have to do because of
+                                     the kind of expressions we can have coming in */
+    negationfound := False;
+
+    For(j := i+1, j <= len, j++)
+    [
+        Local(y); y := e[j];
+
+        If(Equals(y, n),
+            [
+/*                Echo({"Deleting from ", e, " i=", i, ", j=", j, Nl()}); */
+
+                DestructiveDelete(e, j);
+                len--;
+
+                negationfound := True;
+            ],
+        If(Equals(y, x),
+            [
+/*                Echo({"Deleting from ", e, " i=", Nl()}); */
+
+                DestructiveDelete(e, j);
+                len--;
+            ])
+        );
+    ];
+
+    If(negationfound,
+    [
+        DestructiveDelete(e, i);
+        len--;
+        i--;
+    ]);
   ];
+
+  Check(len = Length(e), "The length computation is incorrect");
+
   e;
 ];
+
 
 LogicFindWith(_list,_n)<--
 [
