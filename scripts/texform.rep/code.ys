@@ -66,9 +66,6 @@ TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equa
 
 TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv "}, {"=="," = "}, {"="," = "}, {"!=","\\neq "}, {"<=","\\leq "}, {">=","\\geq "}, {"<"," < "}, {">"," > "}, {"And"," \\wedge "}, {"Or"," \\vee "}, {"<>", "\\sim "}, {"<=>", "\\approx "} };
 
-If(Not(IsInfix("<>")), Infix("<>", OpPrecedence("=")) );
-If(Not(IsInfix("<=>")), Infix("<=>", OpPrecedence("=")) );
-
 	/* Template for "regular" binary infix operators:
 100 # TeXForm(_x + _y, _p) <-- TeXFormBracketIf(p<OpPrecedence("+"), ConcatStrings(TeXForm(x, OpLeftPrecedence("+")), " + ", TeXForm(y, OpRightPrecedence("+")) ) );
 	*/
