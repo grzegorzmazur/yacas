@@ -9,12 +9,15 @@
 <ul>
   <li> Wester test for BesselJ(2,1+I) now passes. (Jonathan Leto)
   <li> New functions: MultiplyNum, NewtonNum, SumTaylorNum, optimized for numerical
-       evaluation; new algorithm for much faster N(Ln) - LnNum (SW)
+       evaluation; new LnNum algorithm for much faster N(Ln) (SW)
   <li> New global stack functions: GlobalPush, GlobalPop (SW)
   <li> New linear algebra functions: {HilbertMatrix},{HilbertInverseMatrix},
 	{FrobeniusNorm},{PNorm},{Norm},{OrthogonalBasis},{OrthonormalBasis},
 	(Jonathan Leto)
   <li> speeded up IntNthRoot for large integers by using FP arithmetic (SW)
+  <li> added new label *EVAL in the manual for inline Yacas code (SW)
+  <li> added new function LambertW, documented (SW)
+  <li> documented the Rabin-Miller algorithm (Christian Obrecht, SW)
 </ul>
 
 <h1>Release of version 1.0.51 (April 20th, 2002)</h1>
@@ -84,7 +87,7 @@
   <li> Fixed all known bugs dealing with {Infinity} and {I}, including {Limit} bugs. (Jonathan Leto)
   <li> Added preliminary versions of BesselJ, BesselI, Erf, Erfc, FresnelSin, FresnelCos (Jonathan Leto)
   <li> Ayal: made floating point not propagating in expressions like 1/1.2
-  <li> updated mkhomepage and make distcheck to work (SW)
+  <li> fixed 'mkhomepage' and 'make distcheck' to work (SW)
 </ul>
 
 <h1>Release of version 1.0.50 (March 12th,  2002)</h1>
