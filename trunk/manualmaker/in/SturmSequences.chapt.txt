@@ -221,8 +221,10 @@ is {FindRealRoots(p)}, for example:
 	In> FindRealRoots(p)
 	Out> {-3.1,6.23};
 	In> p:=Expand((x+3.1)^3*(x-6.23))
-	Out> x^4+3.07*x^3-29.109*x^2-149.8199*x-185.59793;
-	In> p:=SquareFree(Rationalize(Expand((x+3.1)^3*(x-6.23))))
+	Out> x^4+3.07*x^3-29.109*x^2-149.8199\ 
+	In> *x-185.59793;
+	In> p:=SquareFree(Rationalize( \ 
+	In> Expand((x+3.1)^3*(x-6.23))))
 	Out> (-160000*x^2+500800*x+3090080)/2611467;
 	In> FindRealRoots(p)
 	Out> {-3.1,6.23};

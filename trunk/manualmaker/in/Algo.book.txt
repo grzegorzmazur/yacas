@@ -6,6 +6,7 @@ The goal of this book is to become a compendium of all relevant issues
 of design and implementation of these algorithms.
 				The Yacas Book of Algorithms
 
+
 			Symbolic algebra algorithms
 
 *INCLUDE algorithms-multivar.chapt

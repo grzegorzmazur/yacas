@@ -376,8 +376,9 @@ Rule-based programming can be freely combined with procedural programming when
 the latter is a more appropriate method. For example, here is a function that
 computes ($ Mod(x^n,m) $) efficiently:
 
-	powermod(x_IsPositiveInteger, n_IsPositiveInteger,
-	    m_IsPositiveInteger) <--
+	powermod(x_IsPositiveInteger, 
+	   n_IsPositiveInteger,
+	   m_IsPositiveInteger) <--
 	[
 	  Local(result);
 	  result:=1;
@@ -473,7 +474,8 @@ Basic operations of elementary calculus have been implemented:
 Solving systems of equations has been implemented using a generalized Gaussian
 elimination scheme:
 
-	In> Solve( {x+y+z==6, 2*x+y+2*z==10, x+3*y+z==10}, \
+	In> Solve( {x+y+z==6, 2*x+y+2*z==10, \ 
+	In> x+3*y+z==10}, \ 
 	In>      {x,y,z} ) [1]
 	Out> {4-z,2,z};
 (The solution of this underdetermined system is returned as a vector, so $x=4-z$, $y=2$, and $z$ remains arbitrary.)
@@ -496,7 +498,7 @@ implemented:
 	Out> 0.1428571428571428571428571428571428571428;
 	In> Decimal(1/7);    // obtain decimal period
 	Out> {0,{1,4,2,8,5,7}};
-	In> N(LnGamma(1.234+2.345*I));    // gamma-function
+	In> N(LnGamma(1.234+2.345*I)); // gamma-function
 	Out> Complex(-2.13255691127918,0.70978922847121);
 
 
