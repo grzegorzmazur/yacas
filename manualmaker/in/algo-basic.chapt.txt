@@ -159,7 +159,7 @@ $M(P)$. Typically all operations will fall into the following categories
 Some algorithms (e.g. Taylor series summation) also need extra storage space, typically of order $P*Ln(P)$ (i.e. $O(Ln(P))$ temporary $P$-digit numbers).
 
 Here is a worked-out example of how we could estimate the required number of terms in the power series
-$$Exp(x)=1+x+x^2/2! +...+x^n/n! + O(x^(n+1))$$,
+$$ Exp(x)=1+x+x^2/2! +...+x^n/n! + O(x^(n+1))$$,
 if we need $P$ digits of precision and $x$ is a "small enough" number,
 say $Abs(x)<1$. (A similar calculation can be done for any other bound on $x$.) Suppose we truncate the series after $n$-th term and
 the series converges "well enough" after that term. The error will be
@@ -182,17 +182,17 @@ Finally, we are mostly interested in having a good enough answer for
 large values of $P$. So let us assume that $P$ is large (say, 100).
 We can try to guess what the result is: The largest term on the LHS
 grows as $n0*Ln(n0)$ and it should be approximately equal to
-$P*Ln(10)$; $Ln(n0$ grows very slowly, so this gives us a hint that
+$P*Ln(10)$; $Ln(n0)$ grows very slowly, so this gives us a hint that
 $n0$ is proportional to $P*Ln(10)$. As a first try, set $n0=P*Ln(10)-2$
 and compare the RHS with the LHS; we see that we have overshot by a
 factor $Ln(P)-1+Ln(Ln(10))$, which is not a large factor. We
 can now compensate and divide $n0$ by this factor, so our second try is
 $$ n0 = (P*Ln(10))/(Ln(P)-1+Ln(Ln(10)))-2 $$.
 (This approximation procedure is equivalent to solving the equation
-$$ x = (P*Ln(10))/(Ln(x)-1)) $$
+$$ x = (P*Ln(10))/(Ln(x)-1) $$
 by iterations, starting from $x=P*Ln(10)$.)
 If we substitute our second try for $n0$ into the equation, we shall find that we undershot a little bit (i.e. the LHS is a little smaller than the RHS), but our $n0$ is now smaller than it should be by a quantity that is smaller than 1 for large enough $P$.
-So we should stop at this point and simply add 1 to this approximate answer. We should also replace $-1+Ln(Ln(10))$ by 0 for simplicity (this is safe because it will slightly increase $n0$.)
+So we should stop at this point and simply add 1 to this approximate answer. We should also replace $Ln(Ln(10))-1$ by 0 for simplicity (this is safe because it will slightly increase $n0$.)
 
 Our final result is that it is enough to take
 $$ n=(P*Ln(10))/Ln(P)-1 $$
@@ -208,8 +208,8 @@ calculations with a few more digits and compensate for round-off error.
 It is however imperative to know in advance how many more digits we
 need to take for our "working precision". We should also take that
 increase into account when estimating the total cost of the method. Of
-course, we should avoid very large roundoff errors; "do everything with
-twice as many digits" is not a solution in those cases.
+course, we should avoid very large roundoff errors; "repeat everything with
+twice as many digits" is not an adequate solution.
 
 Here is a simple estimate of the round-off error in a computation of
 $n$ terms of a power series. Suppose that adding each term requires two

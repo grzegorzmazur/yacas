@@ -37,6 +37,9 @@ Load("refprog.book");
 
   GarbageCollect();
 
+InitBook("Algo");
+Load("Algo.book");	// note: manualmaker crashes mysteriously when trying to emit a book that was not loaded
+
 /* Emit framed version of the manual. */
 SelectBook("intro");
 EmitHtmlFramed();
@@ -59,11 +62,6 @@ EmitHtmlFramed();
 
   GarbageCollect();
 
-SelectBook("Algo");
-EmitHtmlFramed();
-
-  GarbageCollect();
-
 SelectBook("essays");
 EmitHtmlFramed();
 //EmitHtmlSimple();
@@ -78,7 +76,6 @@ EmitHtmlSimple();
 
 SelectBook("Algo");
 EmitHtmlFramed();
-
 
   GarbageCollect();
 

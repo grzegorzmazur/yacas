@@ -117,9 +117,8 @@ number of terms in advance. If we know the number of terms, then the faster
 A continued fraction
 $$ a[0]+b[0]/(a[1]+b[1]/(a[2]+...))$$
 is specified by a set of <i>terms</i> ($a[i]$, $b[i]$). [If continued fractions are used to approximate analytic functions such as $ArcTan(x)$, then ($a[i]$, $b[i]$) will be some infinite sequences that depend on $x$.]
-Denote the truncated fraction containing only terms from $m$ to $n$, i.e.
-$$ a[m]+b[m]/(a[m+1]+b[m+1]/(...+b[n]/a[n]))$$,
-by $F[m][n]$.
+Let us denote by $F[m][n]$ the truncated fraction containing only terms from $m$ to $n$, i.e.
+$$ F[m][n] := a[m]+b[m]/(a[m+1]+b[m+1]/(...+b[n]/a[n]))$$.
 In this notation, the continued fraction that we need to compute is $F[0][n]$. Our problem is first, to select a large enough $n$ so that $F[0][n]$ gives enough precision, and second, to compute that value.
 
 The "bottom-up" method is to select some value of $n$ and start evaluating the fraction from the bottom upwards. First we take $F[n][n]=a[n]$ and then we use the obvious relation of backward recurrence,
@@ -136,9 +135,10 @@ division will be performed at the very end. Sometimes this method allows to
 reduce the roundoff error.
 
 There is an improvement to this method that can sometimes increase the achieved
-precision without computing more terms. Namely, at the starting point of the recurrence we choose for $F[0][n]$ not the
-obvious $a[n]$ but another number that more closely approximates the infinite remainder
-of the fraction, symbolically written as $F[n][Infinity]$, which we are obviously not computing. In simple cases, $F[n][Infinity]$ changes very slowly at large $n$. Suppose that it is approximately constant; then it must be approximately equal to $F[n+1][Infinity]$.
+precision without computing more terms (this is suggested in the Tsimring book).
+Namely, for the starting value of the recurrence we should choose not
+$a[n]$ but another number that more closely approximates the infinite remainder
+of the fraction. The infinite remainder, which can be symbolically written as $F[n][Infinity]$, can be sometimes estimated (obviously, we are not able to compute it exactly). In simple cases, $F[n][Infinity]$ changes very slowly at large $n$. Suppose that $F[n][Infinity]$ is approximately constant; then it must be approximately equal to $F[n+1][Infinity]$.
 Therefore, if we solve the (quadratic) equation
 $$ x = a[n] + b[n]/x $$,
 we shall obtain the (positive) value $x$ which may be a much better
@@ -156,9 +156,11 @@ needed. Also, it provides no error estimate.
 
 The "top-down" method is slower but provides an error estimate and
 allows to compute the fraction in the forward direction. The idea is to
-replace the continued fraction $F[0][n]$ with a sum of a certain series
-$Sum(k,0,n,f[k])$, in which $f[k]=F[0][k]-F[0][k-1]$ (here $k>=1$) can
-be calculated in the forward direction, starting from $k=1$. If we
+replace the continued fraction $F[0][n]$ with a sum of a certain series, i.e.
+$$ a[0]+b[0]/(a[1]+b[1]/(...+b[n-1]/a[n])) = Sum(k,0,n,f[k]) $$.
+Here
+$$ f[k]:=F[0][k]-F[0][k-1] $$
+($k>=1$) is a sequence that can be calculated in the forward direction, starting from $k=1$. If we
 manage to convert the continued fraction to a series, then adding one
 more term $f[k]$ of this series will be equivalent to recalculating the
 continued fraction with $k$ terms instead of $k-1$ terms. This will
@@ -169,15 +171,16 @@ series is exact, not merely an approximation.)
 
 The formula for $f[k]$ is the following.
 First the auxiliary sequence $P[k]$, $Q[k]$ for $k>=1$ needs to be
-defined as $P[1]=0$, $Q[1]$=1, and $P[k+1]:=b[k]*Q[k]$,
+defined by $P[1]=0$, $Q[1]$=1, and $P[k+1]:=b[k]*Q[k]$,
 $Q[k+1]:=P[k]+a[k]*Q[k]$.
 Then define $f[0] := a[0]$ and 
 $$ f[k] := ((-1)^k*b[0]*...*b[k-1])/(Q[k]*Q[k+1]) $$
 for $k>=1$.
-Evaluating the next element $f[k]$ requires four long multiplications
-and one division. The "top-down" method consists of computing $f[n]$
+The "top-down" method consists of computing $f[n]$
 sequentially and adding them together, until $n$ is large enough so
 that $f[n]/f[0]$ is less than the required precision.
+Evaluating the next element $f[k]$ requires four long multiplications
+and one division.
 
 Note that typically all terms $a[i]$, $b[i]$ are positive, so the
 series we obtained will have terms $f[k]$ of alternating signs. To
@@ -190,7 +193,7 @@ $$ f[2*k]+f[2*k+1] = (b[0]*...*b[2*k-1]*a[2*k+1]) / (Q[2*k]*Q[2*k+2]) $$.
 Now e.g. in the series $f[0]$+($f[1]+f[2]$)+($f[3]+f[4]$)+... the first term is positive and all subsequent terms will be negative.
 
 Here is a straightforward derivation of the above formula for $f[k]$. We need
-to estimate the difference between successive approximations $F[0][n]$
+to compute the difference between successive approximations $F[0][n]$
 and $F[0][n+1]$.
 The recurrence relation we shall use is
 $$ F[m][n+1] - F[m][n] = -(b[m]*(F[m+1][n+1]-F[m+1][n]))/(F[m+1][n+1]*F[m+1][n]) $$.
@@ -202,7 +205,7 @@ can increment $m$ but keep $n$ fixed. We can apply this formula to
 $F[0][n+1]-F[0][n]$, i.e. for $m=0$, and continue applying the same
 recurrence relation until $m$ reaches $n$. The result
 is
-$$ f[n+1]:=F[0][n+1] - F[0][n] = ((-1)^n*b[0]*...*b[n])/(F[1][n+1]*...*F[n+1][n+1]*F[1][n]*...*F[n][n]) $$.
+$$ F[0][n+1] - F[0][n] = ((-1)^n*b[0]*...*b[n])/(F[1][n+1]*...*F[n+1][n+1]*F[1][n]*...*F[n][n]) $$.
 
 Now the problem is to simplify the two long products in the
 denominator. We notice that $F[1][n]$ has $F[2][n]$ in the denominator,
@@ -221,9 +224,9 @@ $P[k+1]+Q[k+1]*F[k+1][n]$.
 
 Having found the coefficients $P[k]$, $Q[k]$, we can now rewrite the long products in the denominator, e.g.
 $$ F[1][n]*...*F[n][n] = P[n]+Q[n]*F[n][n] = Q[n+1] $$.
-(We have used the reurrence relation for $Q[n+1]$.) Now it follows that
-$$ F[0][n+1]-F[0][n] = ((-1)^n*b[0]*...*b[n])/(Q[n+2]*Q[n+1]) $$.
-Thus we have converted the continued fraction into a series, i.e. $F[0][n]=Sum(k,0,n,f[k])$ with a suitably defined $f[k]$.
+(We have used the recurrence relation for $Q[n+1]$.) Now it follows that
+$$ f[n+1]:=F[0][n+1]-F[0][n] = ((-1)^n*b[0]*...*b[n])/(Q[n+2]*Q[n+1]) $$.
+Thus we have converted the continued fraction into a series, i.e. $F[0][n]=Sum(k,0,n,f[k])$ with $f[k]$ defined above.
 
 
 		Newton's method and its improvements
