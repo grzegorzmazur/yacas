@@ -7,7 +7,7 @@ StubApiCPrelog(
 #ifdef HAVE_CONFIG_H
 #include \"../../../config.h\"
 #endif
-#ifdef HAVE_GLUT_H
+#ifdef HAVE_GL_GLUT_H
 ");
 /* OpenGL section */
 StubApiCInclude("<GL/gl.h>");
@@ -145,7 +145,7 @@ LispPluginBase* maker(void)
     return NULL;
 }
 };
-#endif //HAVE_GLUT_H
+#endif //HAVE_GL_GLUT_H
 ");
 
 StubApiCFile("openglapi");
