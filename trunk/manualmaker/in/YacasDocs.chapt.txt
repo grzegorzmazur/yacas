@@ -102,15 +102,25 @@ or
 gives $x^2+y^2 != z^2$. Double dollar signs will denote a displayed equation,
 like in $TeX$; both pairs of dollar signs should still be within one line.
 As a special exception, one can enter the symbols "$TeX$" and "$LaTeX$" as if
-they are Yacas symbols, i.e. "{$T}{eX$}" produces "$TeX$". Mathematical
-expressions <i>must</i> be valid Yacas expressions, with balanced parentheses,
-no hanging periods and so on, or else the Yacas script that formats the docs
-will fail! (This limits the scope of mathematical formulae but is hopefully not
-critical.) Currently, when creating online HTML documentation, mathematics is
-kept in Yacas notation and set in boldface font.
-(This may change in the future.) Of course, $LaTeX$ typesets printed
-documentation with correct mathematical symbols.
+they are Yacas symbols, i.e. "{$T}{eX$}" produces "$TeX$".
 
+Mathematical expressions <i>must</i> be valid Yacas expressions, with balanced
+parentheses, no hanging periods and so on, or else the Yacas script that
+formats the docs will fail! (This limits the scope of mathematical formulae but
+is hopefully not critical.) Currently, when creating online HTML documentation,
+mathematics is kept in Yacas notation and set in boldface font. (This may
+change in the future.) Of course, $LaTeX$ typesets printed documentation with
+correct mathematical symbols.
+
+Another feature of the $LaTeX$ exporter is that it will try to show all
+functions and infix operators according to their mathematical meaning, and if
+no such meaning is defined in Yacas, then it will show them exactly as they are
+written in Yacas. For infix operators to work, they have to be declared in the
+standard library, or else an error will occur when processing the manual. For
+example, Yacas operators {=} and {==} are both represented by and equals sign
+"=", the operator {:=} becomes "identically equal" ($a:=b$), and the cosmetic
+operators {<>} and {<=>} become $a<>b$ and $a<=>b$. But you cannot use an
+undefined infix operator such as "{:=*}".
 
 *	To include contents of another document, use the {*INCLUDE} directive at
 the beginning of a line, e.g.

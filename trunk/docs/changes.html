@@ -23,12 +23,18 @@
   <li> added a new package repository "specfunc" with special functions and
        documented them in a separate chapter of the reference manual
   <li> bug fixed: exact factorials of negative half-integers were not given
-  <li> TeXForm: introduced new "<>" (\sim) and "<=>" (\approx) infix operators
-       for cosmetic purposes
+  <li> introduced new "<>" (\sim) and "<=>" (\approx) infix operators
+       for cosmetic purposes (used in the manual)
   <li> New functions ContFracList, ContFracEval, GuessRational,
        NearRational to find optimal rational approximations to numbers
   <li> added section in the manual with a full listing of all core functions
        (generated automagically from yacasapi.cpp)
+  <li> {yacasdebug} now can be built together with non-debug {yacas} (renamed
+       all *.o files to *-d.o)
+  <li> moved short descriptions of books ("blurb") into books themselves out of
+       the build scripts
+  <li> fixed documentation building scripts so that individual (non-framed) html
+       files can now be built
 
 </ul>
 
