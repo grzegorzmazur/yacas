@@ -24,6 +24,7 @@ $in_htmlcommand = 0;
 
 while (<STDIN>) {
 	chomp;
+	s/\\/\\\\/g;
 	s/"/\\"/g;
 	
 	if (/^\t\t\t(.*)$/) {	# Chapter
@@ -35,6 +36,7 @@ while (<STDIN>) {
 		print "\tSection()\"", &escape_term($1), "\";\n\n";
 		$have_par = 1;
 	} elsif (/^\t(.*)$/) {	# Sample code
+		&start_text();
 		if (not $in_htmlcommand) {
 			&close_quote();
 			print ":HtmlCommand(\"\n";
@@ -44,17 +46,18 @@ while (<STDIN>) {
 		$have_par = 0;
 		$in_text = 1;
 	} elsif (/^\s*$/) {	# New paragraph
-		if ($in_itemized or $in_enum) {
-			&close_quote();
-			print ")\n";
-			$in_itemized = $in_enum = 0;
-		}
 		if (not $have_par) {
+			&start_text();
 			&close_quote();
+			if ($in_itemized or $in_enum) {
+				print ")\n";
+				$in_itemized = $in_enum = 0;
+			}
 			print ":HtmlNewParagraph()\n\n";
 			$have_par = 1;
 		}
 	} elsif (/^\*\t[0-9]+\. (.*)$/) {	# Enum
+		&start_text();
 		&close_quote();
 		if ($in_enum) {
 			print ":Item()\"", &escape_term($1), "\n";
@@ -65,6 +68,7 @@ while (<STDIN>) {
 		$in_text = 1;
 		$have_par = 0;
 	} elsif (/^\*\t(.*)$/) {	# Itemized
+		&start_text();
 		&close_quote();
 		if ($in_itemized) {
 			print ":Item()\"", &escape_term($1), "\n";
@@ -75,10 +79,7 @@ while (<STDIN>) {
 		$in_text = 1;
 		$have_par = 0;
 	} else {	# plain text
-		if (not $have_Text) {
-			print "Text()\"";
-			$have_Text = $in_text = 1;
-		}
+		&start_text();
 		&open_quote();
 		print &escape_term($_), "\n";
 		$have_par = 0;
@@ -104,6 +105,12 @@ sub open_quote {
 	if (not $in_text) {
 		print ":\"" ;
 		$in_text = 1;
+	}
+}
+sub start_text {	# start a Text() block if necessary
+	if ($have_Text == 0) {
+		print "Text()\"";
+		$have_Text = $in_text = 1;
 	}
 }
 

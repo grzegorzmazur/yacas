@@ -128,7 +128,7 @@ HtmlBreak():="<P>  </P>";
 
 Enumerate(body):=
 [
-  "<OL>" : body : "</OL>";
+  "<UL>" : body : "</UL>";
 ];
 Bodied("Enumerate",2);
 
