@@ -439,9 +439,21 @@ GuessRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 	denom'estimate := 1;
 	cf := ContFracList(x);
 	For(i:=2, i<=Length(cf) And denom'estimate < 10^prec, i++)
-		denom'estimate := denom'estimate * cf[i];
-	If (i>Length(cf),
-		If(Verbose, Echo({"GuessRational: number is already within limits"})),
+		[	// estimate the denominator
+			denom'estimate := denom'estimate * If(
+				cf[i] = 1,
+				If(
+					i+2<=Length(cf),	// have at least two more terms, do a full estimate
+					RoundTo(N(cf[i]+1/(cf[i+1]+1/cf[i+2])), 3),
+					// have only one more term
+					RoundTo(N(cf[i]+1/cf[i+1]), 3)
+				),
+				// term is not 1, use the simple estimate
+				cf[i]
+			);
+		];
+	If (denom'estimate < 10^prec,
+		If(Verbose, Echo({"GuessRational: all ", i, "terms are within limits"})),
 		i--	// do not use the last term
 	);
 	i--;	// loop returns one more number

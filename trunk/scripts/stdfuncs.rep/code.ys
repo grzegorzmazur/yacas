@@ -196,10 +196,6 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 200 # ArcCos(1) <-- 0;
 200 # ArcCos(_n)_(n = -1) <-- Pi;
 
-2 # ArcTan(x_IsNumber)_(Numeric) <-- If(Abs(x)>1,
-	Sign(x)*Pi/2-MyArcTan(1/x), /* to improve convergence */
-	MyArcTan(x)
-);
 //TODO fix! 4 # ArcTan(Tan(_x))           <-- x;
 4 # ArcTan(-Tan(_x))           <-- -ArcTan(Tan(x));
 110 # ArcTan(Complex(_r,_i)) <--
@@ -291,8 +287,36 @@ ArcTanh(xlist_IsList) <-- MapSingle("ArcTanh",xlist);
 Exp(xlist_IsList) <-- MapSingle("Exp",xlist);
 Ln(xlist_IsList) <-- MapSingle("Ln",xlist);
 
+/// numerical evaluation of ArcTan: top level
+2 # ArcTan(x_IsNumber)_(Numeric) <--
+Sign(x) *
+// now we need to compute ArcTan of a nonnegative number Abs(x)
+[
+	Local(nterms, y);
+	y := Abs(x);
+	// use identities to improve convergence -- see essays book
+	If(
+		y>1,
+		y:=1/y	// now y <= 1
+	// we shall know that the first identity was used because Abs(x) > 1 still
+	);
+	// use the second identity 
+	y := y/(1+Sqrt(1+y^2));	// now y <= Sqrt(2)-1
+	// find the required number of terms in the continued fraction
+	nterms := 1/y;	// this needs to be calculated at full precision
+	// see essays book on the choice of the number of terms (added 2 "guard terms").
+	// we need Hold() because otherwise, if Numeric=True, N(..., 5) will not avoid the full precision calculation of Ln().
+	// the value of x should not be greater than 1 here!
+	nterms := 2 + Ceil( N(Hold(Ln(10)/(Ln(4)+2*Ln(nterms))), 5) * GetPrecision() );
+	If(	// call the actual routine
+		Abs(x)>1,
+		Pi/2-2*MyArcTan(y, nterms),	// this is for |x|>1
+		2*MyArcTan(y, nterms)
+		// MyArcTan(x, nterms)
+	);
+];
 
-/// numerical evaluation of arctan using continued fractions
+/// numerical evaluation of ArcTan using continued fractions
 10 # ContArcTan(_x,_n,_n) <-- (2*n-1);
 20 # ContArcTan(_x,_n,_m) <--
 [
@@ -303,8 +327,4 @@ MyArcTan(x,n) :=
 [
   x/ContArcTan(x,1,n);
 ];
-
-MyArcTan(x) := MyArcTan(x,2*GetPrecision());
-
-
 

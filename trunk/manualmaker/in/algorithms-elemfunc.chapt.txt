@@ -70,22 +70,25 @@ Tangent is computed by dividing $Sin(x)/Cos(x)$.
 
 Inverse trigonometric functions are computed by Newton's method (for {ArcSin}) or by continued fraction expansion (for {ArcTan}),
 $$ArcTan(x) = x/(1+x^2/(3+(2*x)^2/(5+(3*x)^2/(7+...))))$$.
-The convergence of this expansion for large $Abs(x)$ is improved by using the identity
-$$ArcTan(x) = Pi/2*Sign(x) - ArcTan(1/x)$$.
-This is implemented in the standard library scripts.
+The convergence of this expansion for large $Abs(x)$ is improved by using the identities
+$$ArcTan(x) = Pi/2*Sign(x) - ArcTan(1/x)$$,
+$$ ArcTan(x) = 2*ArcTan(x/(1+Sqrt(1+x^2))) $$.
+Thus, any value of $x$ is reduced to $Abs(x)<0.42$. This is implemented in the standard library scripts.
 
-The idea to use continued fraction expansions for {ArcTan} comes from the book:
+By the identity $ArcCos(x) := Pi/2 - ArcSin(x)$, the inverse cosine is reduced to the inverse sine. Newton's method for $ArcSin(x)$ consists of solving the equation $Sin(y)=x$ for $y$. Implementation is similar to the calculation of $pi$ in {PiMethod0()}.
+
+Hyperbolic and inverse hyperbolic functions are reduced to exponentials and logarithms.
+
+The idea to use continued fraction expansions for {ArcTan} comes from the book by
 Jack W. Crenshaw,
-<i>MATH Toolkit for REAL-TIME Programming</i> (2000),
-CMP Media Inc.
-
-In that book the author explains how he got the idea to use continued
-fraction expansions to approximate $ArcTan(x)$, given that the Taylor series converges
+<i>MATH Toolkit for REAL-TIME Programming</i> (CMP Media Inc., 2000).
+In that book the author explains how he got the idea to use continued fraction
+expansions to approximate $ArcTan(x)$, given that the Taylor series converges
 slowly, and having a hunch that in that case the continued fraction expansion
-then converges rapidly. He then proceeds to show that in the case of $ArcTan(x)$,
-this is true in a big way. Now, it might not be true for all slowly converging
-series. No articles or books have been found yet that prove this. The above book 
-shows it empirically. 
+then converges rapidly. He then proceeds to show that in the case of
+$ArcTan(x)$, this is true in a big way. Now, it might not be true for all
+slowly converging series. No articles or books have been found yet that prove
+this. The above book  shows it empirically. 
 
 The book <i>Modern Computer Algebra</i> by Joachim von zur Gathen and Jurgen Gerhard
 (1999, Cambridge University Press)
@@ -94,8 +97,7 @@ both trying to approximate functions using rational functions f/g instead of
 a simple polynomial f, and mentions that "it was observed empirically that 
 sometimes rational functions yield a much smaller approximation error".
 
-The continued fraction expansion yields a rational function after simplification, 
-making the two approaches similar.
+Since the continued fraction expansion yields a rational function after simplification, the two approaches are similar.
 
 One disadvantage of both continued fraction expansions and approximation by 
 rational functions, compared to a simple series, is that it is in general not
@@ -107,9 +109,13 @@ rational function change. This contrasts with a Taylor series expansion, where
 each additional term improves the accuracy of the result, and the calculation
 can be terminated when sufficient accuracy is achieved.
 
-By the identity $ArcCos(x) := Pi/2 - ArcSin(x)$, the inverse cosine is reduced to the inverse sine. Newton's method for $ArcSin(x)$ consists of solving the equation $Sin(y)=x$ for $y$. Implementation is similar to the calculation of $pi$ in {PiMethod0()}.
+The convergence of the continued fraction expansion of $ArcTan(x)$ is indeed better than convergence of the Taylor series. Namely, the Taylor series converges only for $Abs(x)<1$ while the continued fraction converges for all $x$. However, the speed of its convergence is not uniform in $x$; the larger the value of $x$, the slower the convergence. The necessary number of terms of the continued fraction is in any case proportional to the required number of digits of precision, but the constant of proportionality depends on $x$.
 
-Hyperbolic and inverse hyperbolic functions are reduced to exponentials and logarithms.
+This can be understood by the following elementary argument. The difference between two partial continued fractions that differ only by one extra last term can be estimated by
+$$ Abs(delta) := Abs(b[0]/(a[1]+b[1]/(...+b[n-1]/a[n])) - b[0]/(a[1]+b[1]/(...+b[n]/a[n+1])) ) < (b[0]*b[1]*...*b[n])/ ((a[1]*...*a[n])^2 * a[n+1]) $$.
+(This is a conservative estimate that could be slightly improved with more careful analysis. See also the section on numerical continued fractions.) For the above continued fraction for $ArcTan(x)$, this directly gives the following estimate,
+$$ Abs(delta) < (x^(2*n+1)*(n!)^2)/((2*n+1)*((2*n-1)!!)^2) <> x*(x/2)^(2*n) $$.
+This formula only gives a meaningful bound if $x<2$, but it is clear that the precision generally becomes worse when $x$ grows. If we need $P$ digits of precision, then, for a given $x$, the number of terms $n$ has to be large enough so that the relative precision is sufficient, i.e. $$delta/ArcTan(x) < 10^(-P)$$. This gives $n > P*Ln(10)/(Ln(4)-2*Ln(x))$ and for $x=1$, $n>3/2*P$. This estimate is very close for small $x$ and only slightly suboptimal for larger $x$: numerical experimentation shows that for $x<=1$, the required number of terms for $P$ decimal digits is only about $4/3*P$, and for $x<=0.42$, $n$ must be $3/4*P$. If $x<1$ is very small then one needs a much smaller number of terms $n > P*Ln(10)/(Ln(4)-2*Ln(x))$. The number of terms is set equal to this number (computed at low precision) in the routine {ContArcTan}. Roundoff errors may actually make the result less precise if a larger number of terms is used.
 
 		Calculation of $Pi$
 
@@ -117,7 +123,7 @@ In Yacas, the constant $pi$ is computed by the library routine {Pi()} which uses
 
 Efficient iterative algorithms for computing $pi$ with arbitrary precision have been recently developed by Brent, Salamin, Borwein and others. However, limitations of the current multiple-precision implementation in Yacas (compiled with the "internal" math option) make these advanced algorithms run slower because they require many more arbitrary-precision multiplications at each iteration.
 
-The example file {examples/pi.ys} implements five different algorithms that
+The file {examples/pi.ys} implements five different algorithms that
 duplicate the functionality of {Pi()}. See
 <*http://numbers.computation.free.fr/Constants/*> for details of computations of $pi$ and
 generalizations of Newton-Raphson iteration.
@@ -142,12 +148,12 @@ The complexity of this algorithm is proportional to the number of digits and to 
 
 The routines {PiBrentSalamin()} and {PiBorwein()} are based on much more advanced mathematics. (See papers of P. Borwein for review and explanations of the methods.) They do not require evaluations of trigonometric functions, but they do require taking a few square roots at each iteration, and all calculations must be done using full precision. Using modern algorithms, one can compute a square root roughly in the same time as a division; but Yacas's internal math is not yet up to it. Therefore, these two routines perform poorly compared to the more simple-minded {PiMethod0()}.
 
-		Continued fractions
+		Continued fractions with numeric terms
 
 The function {ContFracList} converts a (rational) number $r$ into a regular
 continued fraction,
 $$ r = n[0] + 1/(n[1] + 1/(n[2]+...)) $$.
-Here all numbers $n[i]$ are integers and all except $n[0]$ must be positive.
+Here all numbers $n[i]$ ("terms" of a continued fraction) are integers and all except $n[0]$ must be positive.
 (Continued fractions may not converge unless their terms are positive and
 bounded from below.)
 
@@ -160,44 +166,56 @@ completed the first step in the decomposition, $r = n[0] + 1/r[1]$; now $n[0]$
 is integer but $r[1]$ is perhaps not integer. We repeat the same procedure on
 $r[1]$, obtain the next integer term $n[1]$ and the remainder $r[2]$ and so on,
 until such $n$ that $r[n]$ is an integer and there is no more work to do. This
-process will always stop because all floating-point values are actually
+process will always terminate because all floating-point values are actually
 rationals in disguise.
 
-The function {GuessRational(x, prec)} attempts to find a rational number with a
-denominator of at most {prec} digits that is approximately equal to a
-floating-point number $x$. It works by the following heuristic method. First,
-$x$ is expanded into a continued fraction. Then the coefficients of that
-fraction are multiplied together until the resulting number exceeds {prec}
-digits. At that point, the continued fraction is cut and evaluated, resulting
-in a rational number with a small denominator close to $x$.
+Continued fractions are useful in many ways. For example, if we know that a
+certain number $x$ is rational but have only a floating-point representation of
+$x$ with a limited precision, say, 1.5662650602409638, we can try to guess its
+rational form (in this example $x=130/83$). The function {GuessRational} uses
+continued fractions to find a rational number with "optimal" (small) numerator
+and denominator that is approximately equal to a given floating-point number.
 
-This works because partial continued fractions provide very good rational
-approximations for the final number, and because the magnitude of the partial
-fraction coefficients is related to the magnitude of the denominator of the
-resulting number. Consider the following example. The number 17/3 has a
-continued fraction expansion {{5,1,2}}. Evaluated as a limited precision
-floating point number, it becomes something like $17/3+0.00001$ where the small
-number represents a roundoff error. The continued fraction expansion of this is
-{{5, 1, 2, 11110, 1, 5, 1, 3, 2777, 2}}. Clearly the presence of an unnaturally
-large term $11110$ signifies the place where the floating-point error was
-introduced. The heuristic algorithm in {GuessRational()} would compute the
-product of 5, 1, 2 and so on until this product becomes larger than $10^prec$.
-By default the {prec} argument is half the number of digits in current
-precision (which is 10 by default) and since the 4th product is $111100$ which
-has already 6 digits, the algorithm discards $11110$ and all following terms in
-the continued fraction. Thus it is able to restore the original number $17/3$.
+Consider the following example. The number $17/3$ has a continued fraction
+expansion {{5,1,2}}. Evaluated as a floating point number with limited
+precision, it may become something like $17/3+0.00001$, where the small number
+represents a roundoff error. The continued fraction expansion of this number is
+{{5, 1, 2, 11110, 1, 5, 1, 3, 2777, 2}}. The presence of an unnaturally large
+term $11110$ clearly signifies the place where the floating-point error was
+introduced; all terms following it should be discarted to recover the continued fraction {{5,1,2}} and from it the initial number $17/3$.
 
-This algorithm works well if $x$ is computed precisely enough; it must be
-computed to at least as many digits as there are in the numerator and the
-denominator of the fraction combined. Also, the parameter {prec} should not be
-too large (or else the algorithm would find a rational number with a larger
+If a continued fraction for a number $x$ is
+cut right before an unusually large term, and
+evaluated, the resulting rational number is very close to close to $x$ but has an unusually small
+denominator. This works because partial continued fractions provide "optimal"
+rational approximations for the final (irrational) number, and because the
+magnitude of the terms of the partial fraction is related to the magnitude of
+the denominator of the resulting rational approximation.
+
+{GuessRational(x, prec)} needs to choose the place where it should cut the
+continued fraction. The algorithm for this is somewhat imprecise but works well enough. We can try to find an upper bound for the difference of continued fractions that differ only by an additional last term,
+$$ Abs(delta) := Abs( 1/(a[1]+1/(...+1/a[n])) - 1/(a[1]+1/(...+1/a[n+1])) ) < 1/ ((a[1]*...*a[n])^2 * a[n+1]) $$.
+Thus we should compute the product of successive terms $a[i]$ of the continued fraction and stop at $a[n]$ at which this product exceeds the maximum number of digits. The routine {GuessRational} has a second parameter {prec} which is by default 1/2 times the number of decimal digits of current precision; it stops at $a[n]$ at which the product $a[1]*...*a[n]$ exceeds $10^prec$.
+
+The above estimate for $delta$ hinges on the inequality
+$$ 1/(a+1/(b+...)) < 1/a $$
+and is suboptimal if some terms $a[i]=1$, because the product of $a[i]$ does not increase when one of the terms is equal to 1, whereas in fact these terms do make $delta$ smaller. A somewhat better estimate would be obtained if we use the inequality
+$$ 1/(a+1/(b+1/(c+...))) < 1/(a+1/(b+1/c)) $$.
+This does not lead to a significant improvement if $a>1$ but makes a difference when $a=1$. In the product $a[1]*...*a[n]$, the terms $a[i]$ which are equal to 1 should be replaced by
+$$ a[i]+1/(a[i+1]+1/a[i+2])$$.
+Since the comparison of $a[1]*...*a[n]$ with $10^prec$ is qualitative, it it enough to do calculations for it with only limited precision.
+
+This algorithm works well if $x$ is computed with enough precision; namely, it
+must be computed to at least as many digits as there are in the numerator and
+the denominator of the fraction combined. Also, the parameter {prec} should not
+be too large (or else the algorithm will find a rational number with a larger
 denominator that approximates $x$ even better).
 
-The function {NearRational(x, prec)} works somewhat differently. The idea is to
-find an "optimal" rational number, i.e. with smallest numerator and
+The related function {NearRational(x, prec)} works somewhat differently. The
+goal is to find an "optimal" rational number, i.e. with smallest numerator and
 denominator, that is within the distance $10^(-prec)$ of a given value $x$. The
-algorithm for this comes from the 1972 HAKMEM document, Item
-101C. Their description is terse but clear:
+algorithm for this comes from the 1972 HAKMEM document, Item 101C. Their
+description is terse but clear:
 
 	Problem: Given an interval, find in it the
 	rational number with the smallest numerator and
@@ -211,7 +229,7 @@ algorithm for this comes from the 1972 HAKMEM document, Item
 	terminates but matches the other as far as it
 	goes, append an infinity and proceed as above.)
 
-The HAKMEM text (M. Beeler, R. W. Gosper, and R. Schroeppel: Memo No. 239, MIT AI Lab, 1972) is available as HTML online from various places.
+The HAKMEM text (M. Beeler, R. W. Gosper, and R. Schroeppel: Memo No. 239, MIT AI Lab, 1972, available as HTML online from various places) contains several interesting insights relevant to continued fractions and other numerical algorithms.
 
 		Factorials and binomial coefficients
 
