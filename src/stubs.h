@@ -7,8 +7,9 @@
 
 #include "lisptype.h"
 
-/** Simple function that determines if two strings are equal */
-inline LispInt StrEqual(LispCharPtr ptr1, LispCharPtr ptr2);
+/** Simple function that determines if two strings are equal,
+  should be defined in stubs.inl */
+//inline LispInt StrEqual(LispCharPtr ptr1, LispCharPtr ptr2);
 
 
 #ifdef NO_GLOBALS

@@ -4,13 +4,13 @@
 
 15 # Simplify(Complex(_r,_i)) <-- Complex(Simplify(r),Simplify(i));
 
-20 # Simplify((_xex) == (_yex)) <-- (Simplify1(xex-yex) == 0);
+20 # Simplify((_xex) == (_yex)) <-- (Simplify(xex-yex) == 0);
 
-20 # Simplify((_xex) > (_yex)) <-- (Simplify1(xex-yex) > 0);
-20 # Simplify((_xex) < (_yex)) <-- (Simplify1(xex-yex) < 0);
-20 # Simplify((_xex) >= (_yex)) <-- (Simplify1(xex-yex) >= 0);
-20 # Simplify((_xex) <= (_yex)) <-- (Simplify1(xex-yex) <= 0);
-20 # Simplify((_xex) !== (_yex)) <-- (Simplify1(xex-yex) !== 0);
+20 # Simplify((_xex) > (_yex)) <-- (Simplify(xex-yex) > 0);
+20 # Simplify((_xex) < (_yex)) <-- (Simplify(xex-yex) < 0);
+20 # Simplify((_xex) >= (_yex)) <-- (Simplify(xex-yex) >= 0);
+20 # Simplify((_xex) <= (_yex)) <-- (Simplify(xex-yex) <= 0);
+20 # Simplify((_xex) !== (_yex)) <-- (Simplify(xex-yex) !== 0);
 
 50 # Simplify(_expr) <-- MultiSimp(Eval(expr));
 
