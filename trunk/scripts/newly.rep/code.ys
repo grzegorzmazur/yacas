@@ -122,15 +122,15 @@ EigenVectors(_matrix,_eigenvalues) <--
 
 Function("RationalizeNumber",{x})
 [
-  Check(IsNumber(x),"Not a number");
+  Check(IsNumber(x),"RationalizeNumber: Error: " : (ToString()Write(x)) :" is not a number");
   Local(n);
   n:=1;
   While(Not(IsInteger(x)))  [ n:=n*10; x:=x*10; ];
   x/n;
 ];
 
-Function("Rationalize",{a})
-  Substitute(a,{{x},IsNumber(x) And Not(IsInteger(x))},"RationalizeNumber");
+Function("Rationalize",{a'number})
+  Substitute(a'number,{{x},IsNumber(x) And Not(IsInteger(x))},"RationalizeNumber");
 
 
 
@@ -383,32 +383,32 @@ ContFracEval(list_IsList) <-- ContFracEval(list, 0);
 /// See: HAKMEM, MIT AI Memo 239, 02/29/1972, Item 101C
 NearRational(_x) <-- NearRational(x, Floor(1/2*GetPrecision()));
 NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
-	Local(a, b, i,  old'prec);
+	Local(x1, x2, i,  old'prec);
 	old'prec := GetPrecision();
 	Precision(prec + 4);	// 4 guard digits
-	a := ContFracList(x+10^(-prec));
-	b := ContFracList(x-10^(-prec));
-	// find where the continued fractions for "a" and "b" differ
-	// prepare result in "a" and length of result in "i"
-	For (i:=1, i<=Length(a) And i<=Length(b) And a[i]=b[i], i++ ) True;
+	x1 := ContFracList(x+10^(-prec));
+	x2 := ContFracList(x-10^(-prec));
+	// find where the continued fractions for "x1" and "x2" differ
+	// prepare result in "x1" and length of result in "i"
+	For (i:=1, i<=Length(x1) And i<=Length(x2) And x1[i]=x2[i], i++ ) True;
 	If(
-		i>Length(a),
-		// "a" ended but matched, so use "b" as "a"
-		a:=b,
+		i>Length(x1),
+		// "x1" ended but matched, so use "x2" as "x1"
+		x1:=x2,
 		If(
-			i>Length(b),
-		// "b" ended but matched, so use "a"
+			i>Length(x2),
+		// "x2" ended but matched, so use "x1"
 			True,
-		// neither "a" nor "b" ended and there is a mismatch at "i"
+		// neither "x1" nor "x2" ended and there is a mismatch at "i"
 		// apply recipe: select the smalest of the differing terms
-			a[i]:=Min(a[i],b[i])
+			x1[i]:=Min(x1[i],x2[i])
 		)
 	);
-	// recipe: add 1 to the last term unless it's the last in the original sequence
-	a[i] := a[i] + If(i=Length(a), 0, 1);
+	// recipe: x1dd 1 to the lx1st term unless it's the lx1st in the originx1l sequence
+	x1[i] := x1[i] + If(i=Length(x1), 0, 1);
 	If(Verbose, Echo({"NearRational: using ", i, "terms of the continued fraction"}));
 	Precision(old'prec);
-	ContFracEval(Take(a, i));
+	ContFracEval(Take(x1, i));
 ];
 
 /// guess the rational number behind an imprecise number

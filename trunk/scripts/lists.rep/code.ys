@@ -242,16 +242,16 @@ VarListAll(_expr) <-- VarListAll(expr,"IsVariable");
  * (since they are defined as local symbols).
  */
 
-TemplateFunction("Table",{body,var,from,to,step})
+TemplateFunction("Table",{body,var,count'from,count'to,step})
   LocalSymbols(result,nr,i)
   [
     MacroLocal(var);
     result:={};
-    nr := (to - from) / step;
+    nr := (count'to - count'from) / step;
     i := 0;
     While( i <= nr )
       [
-       MacroSet( var, from + i * step );
+       MacroSet( var, count'from + i * step );
        DestructiveInsert( result,1,Eval(body) );
        Set(i,MathAdd(i,1));
       ];
