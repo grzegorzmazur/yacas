@@ -32,8 +32,9 @@
 
 #include <stdio.h>
 #include <dirent.h>
+
+
 #include <sys/stat.h>
-//#include "yacasprivate.h"
 #include "yacas.h"
 
 #include "unixcommandline.h"
@@ -42,6 +43,10 @@
 #include "numbers.h"
 #include "ramdisk.h" //TODO keep this?
 #include "arggetter.h"
+
+//TODO time.h and errors.h are only needed for LispTime
+#include <time.h>
+#include "errors.h"
 
 
 #ifdef HAVE_CONFIG_H
@@ -118,6 +123,23 @@ static void LispHistorySize(LispEnvironment& aEnvironment, LispPtr& aResult,
     /* Return result. */
     InternalTrue(aEnvironment,aResult);
 }
+
+void LispTime(LispEnvironment& aEnvironment, LispPtr& aResult,
+              LispPtr& aArguments)
+{
+    TESTARGS(2);
+    clock_t starttime = clock();
+    aEnvironment.iEvaluator->Eval(aEnvironment, aResult, Argument(aArguments,1));
+    clock_t endtime = clock();
+    double timeDiff;
+
+//    printf("%ld to %ld\n",starttime,endtime);
+    timeDiff = endtime-starttime;
+    timeDiff /= CLOCKS_PER_SEC;
+//    LispChar buf[30];
+    printf("%g seconds taken\n",timeDiff);
+}
+
 
 void LispVersion(LispEnvironment& aEnvironment, LispPtr& aResult,
                  LispPtr& aArguments)
@@ -230,6 +252,10 @@ void LoadYacas()
                                            (*yacas)()().HashTable().LookUp("DummyTestFunction"));
 #endif
 
+    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispTime),
+                                           (*yacas)()().HashTable().LookUp("Time"));
+    
+    
 
     //TODO #include "../ramscripts/some.inc"
 
@@ -371,6 +397,7 @@ int main(int argc, char** argv)
 */
     
     char* file_to_load=NULL;
+    
     int fileind=1;
     if (argc > 1)
     {
