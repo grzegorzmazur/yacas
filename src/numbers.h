@@ -10,7 +10,8 @@
 //TODO FIXME : at a certain stage.
 #define noNO_USE_BIGFLOAT
 
-
+// this will switch to the new BigNumber/BigInt/BigFloat scheme
+#define noUSE_NEW_BIGNUM
 
 /// Create a internal number object from an ascii string.
 void* AsciiToNumber(LispCharPtr aString,LispInt aPrecision);
@@ -109,8 +110,172 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
   #endif
 #endif
 
+#ifdef USE_NEW_BIGNUM
+/// Low-level wrapper classes for multiple-precision arithmetic.
+/// BigInt and BigFloat will be impemented in separate c++ files, e.g. gmpnumbers.cpp, yacasnumbers.cpp, etc.
 
-/// Base class for low-level multiple-precision arithmetic.
+class BigInt;
+
+class BigFloat
+{
+friend class BigInt;
+public: //constructors
+/// assign a float from given string, using exactly aPrecision *bits*
+  BigFloat(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
+/// copy constructor
+  BigFloat(const BigFloat& aOther);
+  // no constructors from int or double to avoid automatic conversions
+  BigFloat(LispInt aPrecision = 32);
+  ~BigFloat();
+  // assign from another number
+  void SetTo(const BigFloat& aOther);
+  void SetTo(const BigInt& aOther, LispInt aPrecision);
+  // assign from string, using exactly aPrecision *bits*
+  void SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
+    // assign from a platform type
+  void SetTo(double value);
+public: // Convert back to other types
+  /// GetMantissaExp: return a string representation of the mantissa in aResult to given precision (base digits), and the exponent in the same base into aExponent
+  void GetMantissaExp(LispCharPtr aBuffer, unsigned long aBufferSize, long* aExponent, LispInt aPrecision, LispInt aBase=10) const;
+  /// Give approximate representation as a double number
+  double Double() const;
+
+  /// Numeric library name
+static const LispCharPtr NumericLibraryName();
+
+public://basic object manipulation
+  LispBoolean Equals(const BigFloat& aOther) const;
+  LispBoolean IsIntValue() const;
+  LispBoolean LessThan(const BigFloat& aOther) const;
+public://arithmetic
+  /// Multiply two numbers and put result in *this, result should have at least aPrecision correct digits
+  void Multiply(const BigFloat& aX, const BigFloat& aY, LispInt aPrecision);
+  /** Multiply two numbers, and add to *this (this is useful and generally efficient to implement).
+   * This is most likely going to be used by internal functions only, using aResult as an accumulator.
+   */
+  void MultiplyAdd(const BigFloat& aX, const BigFloat& aY, LispInt aPrecision);
+  /// Add two numbers at given precision and return result in *this
+  void Add(const BigFloat& aX, const BigFloat& aY, LispInt aPrecision);
+  /// Negate the given number, return result in *this
+  void Negate(const BigFloat& aX);
+  /// Divide two numbers and return result in *this. Note: if the two arguments are integer, it should return an integer result!
+  void Divide(const BigFloat& aX, const BigFloat& aY, LispInt aPrecision);
+
+public:
+/// return the integer part of the number (still as float value)
+  void Floor(const BigFloat& aX);
+/// set internal precision to this many bits
+  void Precision(LispInt aPrecision);
+
+public:
+/// Multiplication by a power of 2, return result in *this.
+  void Multiply2exp(const BigFloat& aX, LispInt aNrToShift);
+  /// return the binary exponent (shortcut for binary logarithm)
+  long GetBinaryExp() const;
+  
+  /// Give sign (-1, 0, 1)
+  LispInt Sign() const;
+  /// Import/export underlying objects.
+  void ImportData(const void* aData);
+  const void* ExportData() const;
+
+public:
+/// manipulate internal precision
+  inline LispInt GetPrecision() const {return iPrecision;};
+
+private: 
+  LispInt iPrecision;
+
+private:
+#ifdef USE_GMP
+	// gmpnumbers
+	mpf_t iFloat;
+	void init(LispInt aPrecision = 32);	
+#else
+	// yacasnumbers
+	ANumber* iNumber;
+#endif
+};
+
+class BigInt
+{
+friend class BigFloat;
+public:
+/// assign an int from given string
+  BigInt(const LispCharPtr aString, LispInt aBase=10);
+/// copy constructor
+  BigInt(const BigInt& aOther);
+  // no constructors from int or double to avoid automatic conversions
+  BigInt();
+  ~BigInt();
+  // assign from another number
+  void SetTo(const BigFloat& aOther);
+  void SetTo(const BigInt& aOther);
+  // assign from string
+  void SetTo(const LispCharPtr aString, LispInt aBase=10);
+    // assign from a platform type
+  void SetTo(long value);
+public: // Convert back to other types
+  /// ToString: return a string representation in the given aBuffer
+  void ToString(LispCharPtr aBuffer, unsigned long aBufferSize, LispInt aBase=10) const;
+  /// Give approximate representation as a double number
+  double Double() const;
+
+  /// Numeric library name
+static const LispCharPtr NumericLibraryName();
+
+public://basic object manipulation
+  LispBoolean Equals(const BigInt& aOther) const;
+  LispBoolean IsSmall() const;
+  LispBoolean LessThan(const BigInt& aOther) const;
+public://arithmetic
+  /// Multiply two integers and put result in *this
+  void Multiply(const BigInt& aX, const BigInt& aY);
+  /** Multiply two numbers, and add to *this (this is useful and generally efficient to implement).
+   * This is most likely going to be used by internal functions only, using aResult as an accumulator.
+   */
+  void MultiplyAdd(const BigInt& aX, const BigInt& aY);
+  /// Add two integers and return result in *this
+  void Add(const BigInt& aX, const BigInt& aY);
+  /// Negate the given number, return result in *this
+  void Negate(const BigInt& aX);
+  /// Divide two numbers and return result in *this. (This is the integer division!)
+  void Div(const BigInt& aX, const BigInt& aY);
+
+  /// integer operation: *this = y mod z
+  void Mod(const BigInt& aY, const BigInt& aZ);
+
+public:/// Bitwise operations, return result in *this.
+  void ShiftLeft(const BigInt& aX, LispInt aNrToShift);
+  void ShiftRight(const BigInt& aX, LispInt aNrToShift);
+  void BitAnd(const BigInt& aX, const BigInt& aY);
+  void BitOr(const BigInt& aX, const BigInt& aY);
+  void BitXor(const BigInt& aX, const BigInt& aY);
+  void BitNot(const BigInt& aX);
+  /// Bit count operation: return the number of significant bits,
+  /// give bit count as a platform integer
+  signed long BitCount() const;
+  
+  /// Give sign (-1, 0, 1)
+  LispInt Sign() const;
+  /// Import/export underlying objects.
+  void ImportData(const void* aData);
+  const void* ExportData() const;
+private:
+#ifdef USE_GMP
+	// gmpnumbers
+	mpz_t iInt;
+	void init();	
+#else
+	// yacasnumbers
+	ANumber* iNumber;
+#endif
+
+};
+
+#endif // USE_NEW_BIGNUM
+		
+/// Main class for multiple-precision arithmetic.
 /// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
 class BigNumber : public RefCountedObject
 {
@@ -134,7 +299,7 @@ public: // Convert back to other types
   void ToString(LispString& aResult, LispInt aPrecision, LispInt aBase=10) const;
   /// Give approximate representation as a double number
   double Double() const;
-public: //information retrieval on library used  
+
   /// Numeric library name
 static const LispCharPtr NumericLibraryName();
 
@@ -191,6 +356,33 @@ public:
 private: 
   LispInt iPrecision;
 
+#ifdef USE_NEW_BIGNUM
+public:
+  /// Import and export constituent objects.
+  void ImportBigInt(const BigInt &);
+  void ImportBigFloat(const BigFloat &);
+  void ExportBigInt(BigInt &) const;
+  void ExportBigFloat(BigFloat &) const;
+private:
+	enum EType
+	{ /// bit masks: KExpFloat includes KFloat.
+		KInt = 1,
+		KFloat = 2,
+		KExpFloat = 6
+	};
+	BigInt int_;
+	BigFloat float_;
+  /// Auxiliary internal private functions.
+  /// Initialize all objects.
+	void init(LispInt aPrecision = 32);	
+  /// Change types to int and float but do not convert any values.
+	void turn_float();
+	void turn_int();
+	unsigned type_;
+	BigInt exponent_; 	// this is only used for exp-floats when the exponent is out of range for GMP.
+	/// Check whether we are of exp-float type.
+	LispBoolean IsExpFloat() const;
+#else
 #ifdef USE_NATIVE
 
 private:
@@ -252,8 +444,9 @@ private:
     ENumType iType;
     ANumber* iNumber;
   /// Internal library wrapper ends here.
-  #endif
-#endif
+  #endif	// USE_GMP
+#endif	// USE_NATIVE
+#endif // USE_NEW_BIGNUM
 };
 
 

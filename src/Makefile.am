@@ -62,9 +62,9 @@ libyacasplatform_la_SOURCES = platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp 
 libyacasplatform_la_LDFLAGS = -export-dynamic
 libyacasplatform_la_DEPENDENCIES= fastprimes.c
 
-libyacasnumbers_la_SOURCES = anumber.cpp yacasnumbers.cpp 
+libyacasnumbers_la_SOURCES = anumber.cpp yacasnumbers.cpp numbers.cpp
 libyacasnumbers_la_LDFLAGS = -export-dynamic
-libgmpnumbers_la_SOURCES = gmpnumbers.cpp 
+libgmpnumbers_la_SOURCES = gmpnumbers.cpp numbers.cpp
 libgmpnumbers_la_LDFLAGS = -export-dynamic
 
 

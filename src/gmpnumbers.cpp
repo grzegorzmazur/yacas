@@ -19,6 +19,7 @@
 #include "numbers.h"
 #include "standard.h"
 #include "platmath.h"
+#include "errors.h"
 
 // we still need some of these functions but it will eventually all be removed
 //#ifdef NO_USE_BIGFLOAT
@@ -1230,6 +1231,440 @@ LispStringPtr BitXor(LispCharPtr int1, LispCharPtr int2,
 
 //#endif // NO_USE_BIGFLOAT
 
+#ifdef USE_NEW_BIGNUM
+
+/// Implementation of BigFloat and BigInt through GMP.
+
+
+
+//////////////////////////////////////////////////
+///// Start of BigFloat implementation
+//////////////////////////////////////////////////
+
+// initialization, set precision
+void BigFloat::init(LispInt aPrecision)
+{
+	mpf_init2(iFloat, aPrecision);
+	iPrecision = aPrecision;
+}
+
+/// assign a float from given string, using exactly aPrecision *bits*
+BigFloat::BigFloat(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+{
+	init(aPrecision);
+	SetTo(aString, aPrecision, aBase);
+}
+
+/// copy constructor
+BigFloat::BigFloat(const BigFloat& aOther)
+{
+	init(aOther.GetPrecision());
+	SetTo(aOther);
+}
+
+
+// no constructors from int or double to avoid automatic conversions
+BigFloat::BigFloat(LispInt aPrecision)
+{
+	init(aPrecision);
+}
+
+
+BigFloat::~BigFloat()
+{
+	mpf_clear(iFloat);
+}
+
+/// set precision to a given # of bits, maybe reallocate number
+void BigFloat::Precision(LispInt aPrecision)
+{
+	iPrecision = aPrecision;
+	mpf_set_prec(iFloat, iPrecision);
+}
+
+// assign from another float number
+void BigFloat::SetTo(const BigFloat& aOther)
+{
+	Precision(aOther.GetPrecision());
+	mpf_set(iFloat, aOther.iFloat);
+}
+
+
+// assign from another integer number
+void BigFloat::SetTo(const BigInt& aOther, LispInt aPrecision)
+{
+	Precision(aPrecision);
+	mpf_set_z(iFloat, aOther.iInt);
+}
+
+
+// assign from string, using exactly aPrecision *bits*
+void BigFloat::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+{
+	Precision(aPrecision);
+	if (mpf_set_str(iFloat, aString, aBase)!=0)
+	{
+		RaiseError("BigFloat::SetTo: Error reading a float from string '%s'\n", aString);
+	    SetTo(0.);
+		iPrecision = 0;
+	}
+
+}
+
+
+// assign from a platform type
+void BigFloat::SetTo(double value)
+{
+	Precision(53);	// 53 bits in a double
+	mpf_set_d(iFloat, value);
+}
+
+
+/// GetMantissaExp: return a string representation of the mantissa in aResult
+/// to given precision (base digits), and the exponent in the same base into aExponent
+void BigFloat::GetMantissaExp(LispCharPtr aBuffer, unsigned long aBufferSize, long* aExponent, LispInt aPrecision, LispInt aBase) const
+{
+	mpf_get_str(aBuffer, aExponent, aBase, aPrecision, iFloat);
+}
+
+
+/// Give approximate representation as a double number
+double BigFloat::Double() const
+{
+	return mpf_get_d(iFloat);
+}
+
+
+/// Numeric library name
+const LispCharPtr BigFloat::NumericLibraryName()
+{
+	return BigInt::NumericLibraryName();
+}
+
+
+/// Compare exactly as float numbers, bit-for-bit, no rounding
+LispBoolean BigFloat::Equals(const BigFloat& aOther) const
+{
+	return (mpf_cmp(iFloat, aOther.iFloat)==0);
+}
+
+
+/// check that a float has exactly an integer value
+LispBoolean BigFloat::IsIntValue() const
+{
+	return mpf_integer_p(iFloat);
+}
+
+
+/// check that a float is less than aOther, exactly as floats, no rounding
+LispBoolean BigFloat::LessThan(const BigFloat& aOther) const
+{
+	return (mpf_cmp(iFloat, aOther.iFloat)<0);
+}
+
+
+/// Multiply two numbers and put result in *this, result should have at least aPrecision correct digits
+void BigFloat::Multiply(const BigFloat& aX, const BigFloat& aY, LispInt aPrecision)
+{
+	Precision(aPrecision);
+	mpf_mul(iFloat, aX.iFloat, aY.iFloat);
+}
+
+
+/** Multiply two numbers, and add to *this (this is useful and generally efficient to implement).
+* This is most likely going to be used by internal functions only, using aResult as an accumulator.
+*/
+void BigFloat::MultiplyAdd(const BigFloat& aX, const BigFloat& aY, LispInt aPrecision)
+{	// GMP does not have this function
+	BigFloat temp;
+	temp.Multiply(aX, aY, aPrecision);
+	Add(*this, temp, aPrecision);
+}
+
+
+/// Add two numbers at given precision and return result in *this
+void BigFloat::Add(const BigFloat& aX, const BigFloat& aY, LispInt aPrecision)
+{
+	Precision(aPrecision);
+	mpf_add(iFloat, aX.iFloat, aY.iFloat);
+}
+
+
+/// Negate the given number, return result in *this
+void BigFloat::Negate(const BigFloat& aX)
+{
+	Precision(aX.GetPrecision());
+	mpf_neg(iFloat, aX.iFloat);
+}
+
+
+/// Divide two numbers and return result in *this. Note: if the two arguments are integer, it should return an integer result!
+void BigFloat::Divide(const BigFloat& aX, const BigFloat& aY, LispInt aPrecision)
+{
+	Precision(aPrecision);
+	mpf_div(iFloat, aX.iFloat, aY.iFloat);
+}
+
+
+/// return the integer part of the number (still as float value)
+void BigFloat::Floor(const BigFloat& aX)
+{
+	Precision(aX.GetPrecision());
+	mpf_floor(iFloat, aX.iFloat);
+}
+
+
+/// Multiplication by a power of 2, return result in *this.
+void BigFloat::Multiply2exp(const BigFloat& aX, LispInt aNrToShift)
+{
+	Precision(aX.GetPrecision());
+	if (aNrToShift>0)
+		mpf_mul_2exp(iFloat, aX.iFloat, aNrToShift);
+	else
+		mpf_div_2exp(iFloat, aX.iFloat, - aNrToShift);
+}
+
+
+/// return the binary exponent (shortcut for binary logarithm)
+long BigFloat::GetBinaryExp() const
+{
+	long result;
+	(void) mpf_get_d_2exp(&result, iFloat);
+	return result;
+}
+
+
+/// Give sign (-1, 0, 1)
+LispInt BigFloat::Sign() const
+{
+	return mpf_sgn(iFloat);
+}
+
+
+  /// Import/export underlying objects.
+void BigFloat::ImportData(const void* aData)
+{// assuming that aData is a pointer to a valid, initialized GMP object of type mpf_t
+	Precision(mpf_get_prec(*(mpf_t*)aData));
+	mpf_set(iFloat, *(mpf_t*)aData);
+}
+
+const void* BigFloat::ExportData() const
+{// export a pointer to iFloat
+	return (const void*)&iFloat;
+}
+
+//////////////////////////////////////////////////
+///// End of BigFloat implementation
+//////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////
+///// Start of BigInt implementation
+//////////////////////////////////////////////////
+
+void BigInt::init()
+{
+	mpz_init(iInt);
+}
+
+/// assign an int from given string
+BigInt::BigInt(const LispCharPtr aString, LispInt aBase)
+{
+	init();
+	SetTo(aString);
+}
+
+/// copy constructor
+BigInt::BigInt(const BigInt& aOther)
+{
+	init();
+	SetTo(aOther);
+}
+
+// no constructors from int or double to avoid automatic conversions
+BigInt::BigInt()
+{
+	init();
+}
+
+BigInt::~BigInt()
+{
+	mpz_clear(iInt);
+}
+
+// assign from another number
+void BigInt::SetTo(const BigFloat& aOther)
+{
+	mpz_set_f(iInt, aOther.iFloat);
+}
+
+void BigInt::SetTo(const BigInt& aOther)
+{
+	mpz_set(iInt, aOther.iInt);
+}
+
+// assign from string
+void BigInt::SetTo(const LispCharPtr aString, LispInt aBase)
+{
+
+  	if (mpz_set_str(iInt, aString, aBase)!=0)
+	{
+	    RaiseError("BigInt::SetTo: Error reading an integer from string '%s'\n", aString);
+	}
+}
+
+// assign from a platform type
+void BigInt::SetTo(long value)
+{
+	mpz_set_si(iInt, value);
+}
+
+
+/// ToString: return a string representation in the given aBuffer
+void BigInt::ToString(LispCharPtr aBuffer, unsigned long aBufferSize, LispInt aBase) const
+{
+	mpz_get_str(aBuffer, aBase, iInt);
+}
+
+
+/// Give approximate representation as a double number
+double BigInt::Double() const
+{
+	return mpz_get_d(iInt);
+}
+
+
+/// Numeric library name
+const LispCharPtr BigInt::NumericLibraryName()
+{
+	static char buf[20];
+	snprintf(buf, 18, "GMP %s", gmp_version); 
+	return buf;
+}
+
+/// check if integers are equal
+LispBoolean BigInt::Equals(const BigInt& aOther) const
+{
+	return (mpz_cmp(iInt, aOther.iInt)==0);
+}
+
+
+/// check if the integer fits into a platform long
+LispBoolean BigInt::IsSmall() const
+{
+	return mpz_fits_slong_p(iInt);
+}
+
+
+/// check that an integer is smaller
+LispBoolean BigInt::LessThan(const BigInt& aOther) const
+{
+	return (mpz_cmp(iInt, aOther.iInt)<0);
+}
+
+
+/// Multiply two integers and put result in *this
+void BigInt::Multiply(const BigInt& aX, const BigInt& aY)
+{
+	mpz_mul(iInt, aX.iInt, aY.iInt);
+}
+
+/** Multiply two numbers, and add to *this (this is useful and generally efficient to implement).
+* This is most likely going to be used by internal functions only, using aResult as an accumulator.
+*/
+void BigInt::MultiplyAdd(const BigInt& aX, const BigInt& aY)
+{
+	mpz_addmul(iInt, aX.iInt, aY.iInt);
+}
+
+/// Add two integers and return result in *this
+void BigInt::Add(const BigInt& aX, const BigInt& aY)
+{
+	mpz_add(iInt, aX.iInt, aY.iInt);
+}
+
+/// Negate the given number, return result in *this
+void BigInt::Negate(const BigInt& aX)
+{
+	mpz_neg(iInt, aX.iInt);
+}
+
+/// Divide two numbers and return result in *this. (This is the integer division!)
+void BigInt::Div(const BigInt& aX, const BigInt& aY)
+{
+	mpz_tdiv_q(iInt, aX.iInt, aY.iInt);	// e.g. divide -5/3 = -1
+}
+
+
+/// integer operation: *this = y mod z
+void BigInt::Mod(const BigInt& aX, const BigInt& aY)
+{
+	mpz_mod(iInt, aX.iInt, aY.iInt);
+}
+
+/// Bitwise operations, return result in *this.
+void BigInt::ShiftLeft(const BigInt& aX, LispInt aNrToShift)
+{
+	mpz_mul_2exp(iInt, aX.iInt, aNrToShift);
+}
+
+void BigInt::ShiftRight(const BigInt& aX, LispInt aNrToShift)
+{
+	mpz_tdiv_q_2exp(iInt, aX.iInt, aNrToShift);
+}
+
+void BigInt::BitAnd(const BigInt& aX, const BigInt& aY)
+{
+	mpz_and(iInt, aX.iInt, aY.iInt);
+}
+
+void BigInt::BitOr(const BigInt& aX, const BigInt& aY)
+{
+	mpz_ior(iInt, aX.iInt, aY.iInt);
+}
+
+void BigInt::BitXor(const BigInt& aX, const BigInt& aY)
+{
+	mpz_xor(iInt, aX.iInt, aY.iInt);
+}
+
+void BigInt::BitNot(const BigInt& aX)
+{
+	mpz_com(iInt, aX.iInt);
+}
+
+/// Bit count operation: return the number of significant bits,
+/// give bit count as a platform integer
+long BigInt::BitCount() const
+{
+	long result;
+	(void) mpz_get_d_2exp(&result, iInt);
+	return result;
+}
+
+/// Give sign (-1, 0, 1)
+LispInt BigInt::Sign() const
+{
+	return mpz_sgn(iInt);
+}
+
+  /// Import/export underlying objects.
+void BigInt::ImportData(const void* aData)
+{// assuming that aData is a pointer to the GMP object mpz_t
+	mpz_set(iInt, *(mpz_t*)aData);
+}
+
+const void* BigInt::ExportData() const
+{// export a pointer to iInt
+	return (const void*)&iInt;
+}
+
+//////////////////////////////////////////////////
+///// End of BigInt implementation
+//////////////////////////////////////////////////
+
+#else
+
 //////////////////////////////////////////////////
 ///// BigNumber implementation by wrapping GMP
 ///// (coded by Serge Winitzki)
@@ -1322,7 +1757,7 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
 	//FIXME: need to check that aBase is between 2 and 32
   if (aBase<2 || aBase>32)
   {
-  	fprintf(stderr, "BigNumber::SetTo(string): error: aBase should be between 2 and 32, not %d\n", aBase);
+  	RaiseError("BigNumber::SetTo(string): error: aBase should be between 2 and 32, not %d\n", aBase);
   	return;
   }
 	// decide whether the string is an integer or a float
@@ -1342,7 +1777,7 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
 	
 	if (mpf_set_str(float_, aString, aBase)!=0)
 	{// FIXME: this clause is executed when there is an error in the string (GMP couldn't read it). Need to signal the error somehow.
-	    fprintf(stderr, "BigNumber::SetTo: Error reading a float from string '%s'\n", aString);
+	    RaiseError("BigNumber::SetTo: Error reading a float from string '%s'\n", aString);
 	    SetTo(0.);
 		iPrecision = 0;
 	}
@@ -1351,8 +1786,8 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
   {	// converting to an integer, aPrecision is ignored
     turn_int();
   	if (mpz_set_str(int_, aString, aBase)!=0)
-	{// FIXME: this clause is executed when there is an error in the string. Need to signal the error somehow.
-	    fprintf(stderr, "BigNumber::SetTo: Error reading an integer from string '%s'\n", aString);
+	{
+	    RaiseError("BigNumber::SetTo: Error reading an integer from string '%s'\n", aString);
 	    SetTo(0);
 	}
   }
@@ -1383,7 +1818,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 {
   if (aBase<2 || aBase>32)
   {
-  	fprintf(stderr, "BigNumber::ToString: error: aBase should be between 2 and 32, not %d\n", aBase);
+  	RaiseError("BigNumber::ToString: error: aBase should be between 2 and 32, not %d\n", aBase);
   	return;
   }
   if (IsInt())
@@ -1400,7 +1835,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
   // FIXME: maybe allow printing exp-float numbers in bases 2, 4, 8, 16?
     if (IsExpFloat())
     {
-	    fprintf(stderr, "BigNumber::ToString: printing exp-floats is not implemented\n");
+	    RaiseError("BigNumber::ToString: printing exp-floats is not implemented\n");
 	    return;
     }
 	// note: aPrecision means *base digits* here
@@ -1408,13 +1843,13 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
     unsigned long size=(unsigned long)aPrecision;
     // how many base digits to print
     unsigned long print_prec = (unsigned long) (1.51+double(iPrecision) / log2_table_lookup(unsigned(aBase)));
-	
+	print_prec = MIN(print_prec, (unsigned long)aPrecision);
     // the size needed to print the exponent cannot be more than 200 chars since we refuse to print exp-floats
     size += 200;
     char* buffer=(char*)malloc(size);
     if (!buffer)
     {
-	    fprintf(stderr, "BigNumber::ToString: out of memory, need %ld chars\n", size);
+	    RaiseError("BigNumber::ToString: out of memory, need %ld chars\n", size);
 	    return;
     }
     char* offset = buffer;
@@ -1516,7 +1951,7 @@ double BigNumber::Double() const
 	return mpz_get_d(int_);
   else if (IsExpFloat())
   {
-	  fprintf(stderr, "BigNumber::Double: error: cannot convert an ExpFloat to double\n");
+	  RaiseError("BigNumber::Double: error: cannot convert an ExpFloat to double\n");
 	  return 0;
   }
   else
@@ -1727,7 +2162,7 @@ void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrec
 		else
 		{	// multiplying by nonzero integer, precision is unmodified
     	  BigNumber temp(aX);
-    	  temp.BecomeFloat(aX.BitCount());	// enough digits here
+    	  temp.BecomeFloat(aY.GetPrecision()+GUARD_BITS);	// enough digits here
     	  Multiply(temp, aY, aPrecision);
 		  iPrecision = MIN(aPrecision, aY.GetPrecision());
 		}
@@ -1783,21 +2218,21 @@ void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aP
   {	// some are integers and some are floats. Need to promote all to floats and then call MultiplyAdd again
     if (IsInt())
     {
-    	this->BecomeFloat(aPrecision);
+    	this->BecomeFloat(aPrecision+GUARD_BITS);
 	MultiplyAdd(aX, aY, aPrecision);
     }
     else
     if (aX.IsInt())
     {
     	BigNumber temp(aX);
-	temp.BecomeFloat(aPrecision);
+	temp.BecomeFloat(aPrecision+GUARD_BITS);
 	MultiplyAdd(temp, aY, aPrecision);
     }
     else
     if (aY.IsInt())
     {	// need to promote both aX and aY to floats
       	BigNumber temp(aY);
-	temp.BecomeFloat(aPrecision);
+	temp.BecomeFloat(aPrecision+GUARD_BITS);
 	MultiplyAdd(aX, temp, aPrecision);
     }
   }
@@ -1830,7 +2265,7 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
     else	// float + float
     {
       if (IsInt()) turn_float(); // if we are int, then we are not aX or aY, can clear our values
-	  // bit counts of aX, aY, and of absolute errors of aX, aY
+	  // bit counts of aX, aY, and of absolute errors DeltaX, DeltaY
 	  long B_x = aX.BitCount();
 	  long B_y = aY.BitCount();
 	  long B_Dx = B_x-aX.GetPrecision();
@@ -1869,6 +2304,11 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
 			  p = p-BitCount();
 			  mpf_set_d(result, 0);
 		  }
+		  // check for minimum roundoff (when both arguments are of the same sign)
+		  if (aX.Sign()*aY.Sign()==1)
+		  {
+			  p = MAX(p, (long)MIN(aX.GetPrecision(), aY.GetPrecision()));
+		  }
 		  import_gmp(result);
 		  mpf_clear(result);
 		  iPrecision = p;
@@ -1900,7 +2340,7 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
 {
   if (aY.Sign()==0)
   {	// zero division, report and do nothing
-  	fprintf(stderr, "BigNumber::Divide: zero division request ignored\n");
+  	RaiseError("BigNumber::Divide: zero division request ignored\n");
 	return;
   }
   if (aX.IsInt())
@@ -1918,7 +2358,7 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
     else
 	{	// divide nonzero integer by nonzero float, precision is unmodified
    	  BigNumber temp(aX);
-   	  temp.BecomeFloat(aX.BitCount());	// enough digits here
+   	  temp.BecomeFloat(aY.GetPrecision()+GUARD_BITS);	// enough digits here
 	  long p = MIN(aPrecision, aY.GetPrecision());
    	  Divide(temp, aY, p);
 	  iPrecision = p;
@@ -1937,7 +2377,7 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
     else if (aY.IsInt())
     {	// aY is integer, must be promoted to float
       BigNumber temp(aY);
-      temp.BecomeFloat(MIN(aPrecision, aX.GetPrecision()));
+      temp.BecomeFloat(MIN(aPrecision, aX.GetPrecision())+GUARD_BITS);
       Divide(aX, temp, aPrecision);
     }
     else
@@ -2229,7 +2669,6 @@ void BigNumber::export_gmp(mpf_t gmp_float) const
 ///// End of BigNumber implementation
 //////////////////////////////////////////////////
 
-
 //////////////////////////////////////////////////
 ///// Hooks to some GMP functions for efficiency
 //////////////////////////////////////////////////
@@ -2311,3 +2750,4 @@ void math_factorial(BigNumber& result, const BigNumber& x)
 	}
 }
 
+#endif // USE_NEW_BIGNUM

@@ -891,8 +891,8 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
 
 
 
-
-
+// this will use the new BigNumber/BigInt/BigFloat scheme
+#ifndef USE_NEW_BIGNUM
 
 #ifndef USE_NATIVE
 
@@ -1498,6 +1498,367 @@ void BigNumber::ShiftRight(const BigNumber& aX, const BigNumber& aNrToShift)
   }	// do nothing if shift amount is not integer or negative
 }
 
+#endif	// ifndef USE_NATIVE
 
+#endif	// ifndef USE_NEW_BIGNUM
+
+#ifdef USE_NEW_BIGNUM
+
+/// Implementation of BigFloat and BigInt through ANumber.
+
+
+//////////////////////////////////////////////////
+///// Start of BigFloat implementation
+//////////////////////////////////////////////////
+
+
+/// assign a float from given string, using exactly aPrecision *bits*
+BigFloat::BigFloat(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+{
+}
+
+/// copy constructor
+BigFloat::BigFloat(const BigFloat& aOther)
+{
+}
+
+
+// no constructors from int or double to avoid automatic conversions
+BigFloat::BigFloat(LispInt aPrecision)
+{
+}
+
+
+BigFloat::~BigFloat()
+{
+}
+
+/// set precision to a given # of bits, maybe reallocate number
+void BigFloat::Precision(LispInt aPrecision)
+{
+}
+
+// assign from another float number
+void BigFloat::SetTo(const BigFloat& aOther)
+{
+}
+
+
+// assign from another integer number
+void BigFloat::SetTo(const BigInt& aOther, LispInt aPrecision)
+{
+}
+
+
+// assign from string, using exactly aPrecision *bits*
+void BigFloat::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+{
+	Precision(aPrecision);
+}
+
+
+// assign from a platform type
+void BigFloat::SetTo(double value)
+{
+	Precision(53);	// 53 bits in a double
+}
+
+
+/// GetMantissaExp: return a string representation of the mantissa in aResult
+/// to given precision (base digits), and the exponent in the same base into aExponent
+void BigFloat::GetMantissaExp(LispCharPtr aBuffer, unsigned long aBufferSize, long* aExponent, LispInt aPrecision, LispInt aBase) const
+{
+}
+
+
+/// Give approximate representation as a double number
+double BigFloat::Double() const
+{
+	return 0;
+}
+
+
+/// Numeric library name
+const LispCharPtr BigFloat::NumericLibraryName()
+{
+	return BigInt::NumericLibraryName();
+}
+
+
+/// Compare exactly as float numbers, bit-for-bit, no rounding
+LispBoolean BigFloat::Equals(const BigFloat& aOther) const
+{
+	return 0;
+}
+
+
+/// check that a float has exactly an integer value
+LispBoolean BigFloat::IsIntValue() const
+{
+	return 0;
+}
+
+
+/// check that a float is less than aOther, exactly as floats, no rounding
+LispBoolean BigFloat::LessThan(const BigFloat& aOther) const
+{
+	return 0;
+}
+
+
+/// Multiply two numbers and put result in *this, result should have at least aPrecision correct digits
+void BigFloat::Multiply(const BigFloat& aX, const BigFloat& aY, LispInt aPrecision)
+{
+	Precision(aPrecision);
+}
+
+
+/** Multiply two numbers, and add to *this (this is useful and generally efficient to implement).
+* This is most likely going to be used by internal functions only, using aResult as an accumulator.
+*/
+void BigFloat::MultiplyAdd(const BigFloat& aX, const BigFloat& aY, LispInt aPrecision)
+{
+}
+
+
+/// Add two numbers at given precision and return result in *this
+void BigFloat::Add(const BigFloat& aX, const BigFloat& aY, LispInt aPrecision)
+{
+	Precision(aPrecision);
+}
+
+
+/// Negate the given number, return result in *this
+void BigFloat::Negate(const BigFloat& aX)
+{
+	Precision(aX.GetPrecision());
+}
+
+
+/// Divide two numbers and return result in *this. Note: if the two arguments are integer, it should return an integer result!
+void BigFloat::Divide(const BigFloat& aX, const BigFloat& aY, LispInt aPrecision)
+{
+	Precision(aPrecision);
+}
+
+
+/// return the integer part of the number (still as float value)
+void BigFloat::Floor(const BigFloat& aX)
+{
+	Precision(aX.GetPrecision());
+}
+
+
+/// Multiplication by a power of 2, return result in *this.
+void BigFloat::Multiply2exp(const BigFloat& aX, LispInt aNrToShift)
+{
+	Precision(aX.GetPrecision());
+}
+
+
+/// return the binary exponent (shortcut for binary logarithm)
+long BigFloat::GetBinaryExp() const
+{
+	return 0;
+}
+
+
+/// Give sign (-1, 0, 1)
+LispInt BigFloat::Sign() const
+{
+	return 0;
+}
+
+
+
+  /// Import/export underlying objects.
+void BigFloat::ImportData(const void* aData)
+{// assuming that aData is a pointer to a valid, initialized number object
+}
+
+const void* BigFloat::ExportData() const
+{// export a pointer to iFloat
+	return (const void*)&iNumber;
+}
+
+//////////////////////////////////////////////////
+///// End of BigFloat implementation
+//////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////
+///// Start of BigInt implementation
+//////////////////////////////////////////////////
+
+void BigInt::init()
+{
+}
+
+/// assign an int from given string
+BigInt::BigInt(const LispCharPtr aString, LispInt aBase)
+{
+}
+
+/// copy constructor
+BigInt::BigInt(const BigInt& aOther)
+{
+}
+
+// no constructors from int or double to avoid automatic conversions
+BigInt::BigInt()
+{
+}
+
+BigInt::~BigInt()
+{
+}
+
+// assign from another number
+void BigInt::SetTo(const BigFloat& aOther)
+{
+}
+
+void BigInt::SetTo(const BigInt& aOther)
+{
+}
+
+// assign from string
+void BigInt::SetTo(const LispCharPtr aString, LispInt aBase)
+{
+}
+
+// assign from a platform type
+void BigInt::SetTo(long value)
+{
+}
+
+
+/// ToString: return a string representation in the given aBuffer
+void BigInt::ToString(LispCharPtr aBuffer, unsigned long aBufferSize, LispInt aBase) const
+{
+}
+
+
+/// Give approximate representation as a double number
+double BigInt::Double() const
+{
+	return 0;
+}
+
+
+/// Numeric library name
+const LispCharPtr BigInt::NumericLibraryName()
+{
+	return "Yacas";
+}
+
+/// check if integers are equal
+LispBoolean BigInt::Equals(const BigInt& aOther) const
+{
+	return 0;
+}
+
+
+/// check if the integer fits into a platform long
+LispBoolean BigInt::IsSmall() const
+{
+	return 0;
+}
+
+
+/// check that an integer is smaller
+LispBoolean BigInt::LessThan(const BigInt& aOther) const
+{
+	return 0;
+}
+
+
+/// Multiply two integers and put result in *this
+void BigInt::Multiply(const BigInt& aX, const BigInt& aY)
+{
+}
+
+/** Multiply two numbers, and add to *this (this is useful and generally efficient to implement).
+* This is most likely going to be used by internal functions only, using aResult as an accumulator.
+*/
+void BigInt::MultiplyAdd(const BigInt& aX, const BigInt& aY)
+{
+}
+
+/// Add two integers and return result in *this
+void BigInt::Add(const BigInt& aX, const BigInt& aY)
+{
+}
+
+/// Negate the given number, return result in *this
+void BigInt::Negate(const BigInt& aX)
+{
+}
+
+/// Divide two numbers and return result in *this. (This is the integer division!)
+void BigInt::Div(const BigInt& aX, const BigInt& aY)
+{
+}
+
+
+/// integer operation: *this = y mod z
+void BigInt::Mod(const BigInt& aX, const BigInt& aY)
+{
+}
+
+/// Bitwise operations, return result in *this.
+void BigInt::ShiftLeft(const BigInt& aX, LispInt aNrToShift)
+{
+}
+
+void BigInt::ShiftRight(const BigInt& aX, LispInt aNrToShift)
+{
+}
+
+void BigInt::BitAnd(const BigInt& aX, const BigInt& aY)
+{
+}
+
+void BigInt::BitOr(const BigInt& aX, const BigInt& aY)
+{
+}
+
+void BigInt::BitXor(const BigInt& aX, const BigInt& aY)
+{
+}
+
+void BigInt::BitNot(const BigInt& aX)
+{
+}
+
+/// Bit count operation: return the number of significant bits,
+/// give bit count as a platform integer
+long BigInt::BitCount() const
+{
+	return 0;
+}
+
+/// Give sign (-1, 0, 1)
+LispInt BigInt::Sign() const
+{
+	return 0;
+}
+
+
+  /// Import/export underlying objects.
+void BigInt::ImportData(const void* aData)
+{// assuming that aData is a pointer to a valid, initialized number object
+}
+
+const void* BigInt::ExportData() const
+{// export a pointer to iNumber
+	return (const void*)&iNumber;
+}
+
+
+//////////////////////////////////////////////////
+///// End of BigInt implementation
+//////////////////////////////////////////////////
 
 #endif
+
