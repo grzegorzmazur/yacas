@@ -25,6 +25,9 @@ TestYacas(Integrate(x,0,A)Sin(B*x),1/B-Cos(B*A)/B);
 TestYacas(Integrate(x,0,A)(x^2+2*x+1)/(x+1),(A^2)/2+A);
 TestYacas(Integrate(x,0,A)(x+1)/(x^2+2*x+1),Ln(Abs(A+1)));
 
+// Check that threaded integration works
+Verify((Integrate(x,0,1) {1,x*x,1+x})-{1,1/3,3/2},{0,0,0});
+
 
 // Test MatchLinear: code heavily used with integration
 LocalSymbols(TestMatchLinearTrue,TestMatchLinearFalse) [

@@ -2,7 +2,11 @@
 RuleBase("IntegrateMultiplicative",{var,from,a,b});
 UnFence("IntegrateMultiplicative",4);
 
-(Integrate(_var)(_expr)) <-- IntSub(var,expr,AntiDeriv(var,IntClean(var,expr)));
+10# (Integrate(_var)(expr_IsList)) 
+    <-- Map("Integrate",{FillList(var,Length(expr)),expr});
+20 # (Integrate(_var)(_expr)) <-- IntSub(var,expr,AntiDeriv(var,IntClean(var,expr)));
+
+
 10 # IntSub(_var,_expr,Integrate(_var)(_expr2)) <--
      `Hold(Integrate(@var)(@expr));
 20 # IntSub(_var,_expr,_result) <-- result + UniqueConstant();
@@ -12,7 +16,12 @@ UnFence("IntegrateMultiplicative",4);
 // Integrate over a range
 //
 ////////////////////////////////////////////////
-(Integrate(_var,_from,_to)(_expr))
+10# (Integrate(_var,_from,_to)(expr_IsList)) 
+    <-- Map("Integrate",{FillList(var,Length(expr)),
+                         FillList(from,Length(expr)),
+			 FillList(to,Length(expr)),
+                         expr});
+20 # (Integrate(_var,_from,_to)(_expr))
     <-- indefIntegrate(var,from,to,expr,a,b);
 
 ////////////////////////////////////////////////
@@ -61,7 +70,7 @@ UnFence("IntegrateMultiplicative",4);
      <-- NormalForm(AntiDeriv(var,`MakeUni(@poly,@var)));
 5 # AntiDeriv(_var,UniVariate(_var,_first,_coefs)) <--
 [
-  Local(result);
+  Local(result,i);
   result:=FlatCopy(coefs);
   For(i:=1,i<=Length(result),i++)
   [
