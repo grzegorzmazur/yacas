@@ -188,7 +188,8 @@ Function("Normalize",{vector})
   (1/(norm^(1/2)))*vector;
 ];
 
-ZeroMatrix(n_IsNonNegativeInteger,m_IsNonNegativeInteger) <--
+5  # ZeroMatrix(n_IsNonNegativeInteger) <--  ZeroMatrix(n,n);
+10 # ZeroMatrix(n_IsNonNegativeInteger,m_IsNonNegativeInteger) <--
 [
   Local(i,result);
   result:={};
@@ -244,6 +245,20 @@ FrobeniusNorm(matrix_IsMatrix) <--
 		result:=result*i;
 	result;
 ];
+
+Function("Sparsity",{matrix})
+[
+	Local(rows,cols,nonzero);
+	nonzero:=0;
+	rows:=Length(matrix);
+	cols:=Length(matrix[1]);
+	ForEach(i, 1 .. rows )
+		ForEach(j, 1 .. cols )
+			If(matrix[i][j] != 0, nonzero:=nonzero+1 );
+
+	N(1 - nonzero/(rows*cols));
+];
+
 Function("CoFactor",{matrix,ii,jj})
 [
   Local(perms,indices,result);
