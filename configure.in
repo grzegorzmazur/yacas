@@ -36,7 +36,7 @@ fi;
 AC_HEADER_STDC
 AC_CHECK_HEADERS(unistd.h sys/ioctl.h sys/socket.h sys/time.h sys/types.h)
 AC_CHECK_HEADERS(malloc.h memory.h stdlib.h stdio.h ctype.h dlfcn.h dl.h dld.h)
-AC_CHECK_HEADERS(dirent.h math.h stdarg.h)
+AC_CHECK_HEADERS(dirent.h math.h stdarg.h signal.h)
 AC_CHECK_HEADERS(string.h strings.h, break)
 
 
@@ -48,9 +48,46 @@ AC_HEADER_TIME
 # Checks for library functions.
 AC_CHECK_FUNCS(select socket strtod strchr vsnprintf)
 
+# Check type of signal handler
+AC_MSG_CHECKING([type of argument of signal handler])
+AC_CACHE_VAL(ac_cv_sighandler_arg,dnl
+             [ ac_not_found=yes
+
+               cat > conftest.cpp <<EOF
+#include <signal.h>
+void handler(int foo) {return;}
+int main(int argc, char** argv) {signal(SIGKILL,handler); return 0;}
+EOF
+               if ${CXX-g++} -c $CXXFLAGS $CPPFLAGS conftest.cpp 2>&5; then
+                  ac_cv_sighandler_arg=int
+	          ac_not_found=no
+               fi
+               rm conftest.cpp
+
+	       if test "$ac_not_found" = yes; then
+                  cat > conftest.cpp <<EOF
+#include <signal.h>
+void handler(void) {return;}
+int main(int argc, char** argv) {signal(SIGKILL,handler); return 0;}
+EOF
+                  if ${CXX-g++} -c $CXXFLAGS $CPPFLAGS conftest.cpp 2>&5; then
+                     ac_cv_sighandler_arg=void
+		     ac_not_found=no
+                  fi
+                  rm conftest.cpp
+               fi
+             ])
+if test "$ac_not_found" = yes; then
+   ac_cv_sighandler_arg=int
+fi
+AC_MSG_RESULT([$ac_cv_sighandler_arg])
+if test "$ac_cv_sighandler_arg" = void; then
+   AC_DEFINE(SIGHANDLER_NO_ARGS,, [Define if signal hander as set by signal() has no arguments])
+fi
+
 # Define PLATFORM_OS to be the Operating System
 AC_CANONICAL_HOST
-AC_DEFINE_UNQUOTED(PLATFORM_OS, "\"$host_os\"", [Operating system])
+AC_DEFINE_UNQUOTED(PLATFORM_OS, "$host_os", [Operating system])
 
 # Check for the existence of the Gnu Scientific Library on this machine
 AM_PATH_GSL(0.0, HAVE_GSL=yes, HAVE_GSL=no)
