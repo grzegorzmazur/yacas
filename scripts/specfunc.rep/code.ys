@@ -500,7 +500,7 @@ Function("BesselJN0",{x})
 
 // Ex:
 // Bessel of order n:
-// ApproxInfSum(k,(-1)^k*(x/2)^(2*k+c[1])/(k! * Gamma(k+c[1]+1) ),1,{n} );
+// ApproxInfSum((-1)^k*(x/2)^(2*k+c[1])/(k! * Gamma(k+c[1]+1) ),1,x,{n} );
 
 Function("ApproxInfSum",{expr,start,x})[
 	ApproxInfSum(expr,start,x,{0});
@@ -552,6 +552,6 @@ Function("ApproxInfSum",{expr,start,x,c})
 10 # FresnelCos(Infinity)       <-- 1/2;
 10 # FresnelCos(_x)_(x<0)       <-- -FresnelCos(x);
 
-40 # FresnelSin(_x)_(Abs(x) <= 1) <-- ApproxInfSum((-1)^(k+1)*x^(2*k+1)/(k! * (2*k+1)),1,x);
-40 # FresnelCos(_x)_(Abs(x) <= 1) <-- ApproxInfSum((-1)^(k+1)*x^(2*k+1)/(k! * (2*k+1)),1,x);
+40 # FresnelSin(_x)_(Abs(x) <= 1) <-- N(Sqrt(2/Pi)*ApproxInfSum((-1)^(k+1)*x^(2*k+1)/(k! * (2*k+1)),1,x));
+40 # FresnelCos(_x)_(Abs(x) <= 1) <-- N(Sqrt(2/Pi)*ApproxInfSum((-1)^(k+1)*x^(4*k-3)/((4*k-3) * (2*k-2)! ),1,x));
 
