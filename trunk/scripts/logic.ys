@@ -105,7 +105,7 @@ RuleBase("=>",{a,b});
 30 # CNFInEq(_exp)                    <-- (CNFInEqSimplify(exp));
 
 10 # CNFInEqSimplify((_x) - (_x))     <-- 0;        // strictly speaking, this is not always valid, i.e. 1/0 - 1/0 != 0...
-100# CNFInEqSimplify(_x)              <-- x; /*Vladimir? [ Echo({"Hit the bottom of CNFInEqSimplify with ", x, Nl()}); x;]; */
+100# CNFInEqSimplify(_x)              <-- [/*Echo({"Hit the bottom of CNFInEqSimplify with ", x, Nl()});*/ x;];
                                                     // former "Simplify";
 
 // Some shortcuts to match prev interface
@@ -177,14 +177,7 @@ CanProve(_proposition)      <-- CanProveAux( proposition );
 
 /* this can be optimized to walk through the lists a bit more efficiently and also take
 care of duplicates in one pass */
-
-LocalCmp(_e1, _e2) <-- [
-    Local(s1, s2);
-    Set(s1, ToString() Write(e1));
-    Set(s2, ToString() Write(e2));
-
-    LessThan(s1, s2);
-];
+LocalCmp(_e1, _e2)                  <-- LexLessThan(ToString() Write(e1), ToString() Write(e2));
 
 // we may want to add other expression simplifers for new expression types
 100 # SimplifyExpression(_x)        <-- x;
@@ -380,31 +373,3 @@ DoUnitSubsumptionAndResolution(_list) <--
 
     list;
 ];
-
-/*
-DP(_list) <--
-[
-  Local(isTrue, isFalse, changed);
-  isTrue := False; isFalse := False; changed := True;
-
-  // unit propagation
-  While(Not isFalse And Not isTrue And changed,
-    For(i:=1, i<=Length(list) And (Not isTrue And Not isFalse),  i++)
-    [
-        If(Length(list[i]) = 1,
-            {isFalse, isTrue, changed} := DoUnitSubsumptionAndResolution(list, i);
-        ]);
-    ]
-  );
-
-  If(isTrue) return {True};
-  If(isFalse) return {};
-
-  // splitting
-  // pick L for splitting
-  L := PickForSplitting(list);
-  If(DP(Append(list, {L})), True,
-    If(isF
-
-];
-*/
