@@ -22,6 +22,7 @@ Here is a summary of options:
 *	{--verbose-debug} (turn on showing some additional debugging information on screen)
 *	{--disable-compiled-plugins} (disable loading of compiled plugins, loading the script versions instead)
 *	{--stacksize} <i>size</i> (change size of stack arguments are stored on)
+*	{--execute} <i>expression</i> (run expression from the command line)
 
 
 Options can be combined, for example
@@ -200,6 +201,12 @@ nested), instead of the number of arguments pushed on the stack. MaxEvalDepth
 was introduced to protect the normal {C++} stack.
 
 
+	yacas --execute <expression>
+This instructs Yacas to run a certain expression, passed in over the command line, before dropping to the read-eval-print loop. This can be used to load a file before dropping to the command line without exiting (if there are files to run specified on the command line, Yacas will exit after running these scripts). Alternatively, the expression can exit the interpreter immediately by calling {Exit();}. When used in combination with {-pc}, the Yacas interpreter can be used to calculate something and print the result to standard output. Example:
+
+	user% ./yacas -pc --execute '[Echo("answer ",D(x)Sin(x));Exit();]'
+	answer Cos(x) 
+	user% 
 
 
 
