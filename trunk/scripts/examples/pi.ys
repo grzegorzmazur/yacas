@@ -2,70 +2,63 @@
 
 /* Defined: PiMethod0(), PiMethod1(), PiMethod2(), PiBrentSalamin(), PiBorwein() */
 
-/* Benchmarks at precision X were performed on a Pentium 133 by:
-	Precision(X); Time(Pi()); Time(PiMethod0());  ...
-	"Advanced" methods (with names) are significantly slower in internal math. Time to compute Pi to given precision is given in seconds. All methods give identical digits of Pi. Yacas was compiled with internal math. Pi() was computed using the old implementation (no variable precision).
- Precision  Pi()  method 0   method 1  Brent-Salamin  Borwein
-   1400    401.2   98.4       90.5          ?           ?
-   1000    134.7   55.3       37.5          ?           ?
-	500     21.0    9.5        7.0        92.8        95.0
-	300     4.54    2.25       2.0        30.8        34.5
-*/
+// Reference method: just use Newton's method all the time, no complicated logic to select precision steps. Slightly slower than method 1 but a lot simpler. This is implemented in Pi()
 
-/* Brute-force method 1: solve equation sin x = 0 near 3.14159... using Nth order Newton method: x[n] = x[n-1] - ( tan(x) - tan(x)^3/3 + tan(x)^5/5 +...) i.e. the Taylor series for arctan but cut at a finite point
-Convergence is of order of the last term, i.e. superlinear, but need to evaluate Sin() and Cos() at each step. However, we don't need to evaluate them to full precision each time, because each iteration will correct any accumulated errors. In fact, first iterations can be computed with significantly lower precision than the final result. This makes method1 the fastest for Yacas internal math.
-*/
+PiMethod0() := [
+	Local(result, delta, k, Epsilon, prec, prec1, curprec);
+	prec := GetPrecision();	// full required precision
+	prec1 := Ceil(N(prec/3));	// precision of the last-but-one iteration
+
+	/* initial approximation */
+	result := 3.14159265358979323846;
+	curprec := 20;
+	Precision(curprec);
+	For(k:=0, curprec < prec1, k:=k+1) [
+		curprec := Min(prec1, curprec * 3);
+		Precision(curprec);
+//		Echo({"Iteration ", k, " setting precision to ", curprec});
+		result := MathAdd(result, MathSin(result));
+	];
+	// last iteration -- do by hand
+	Precision(prec);	// restore full precision
+	result := MathAdd(result, MathSin(result));
+	Echo({"variable precision Newton's method: ", k, "iterations"}); 
+	result;
+];
+
+/* Brute-force method 1: start near 3.14159... and iterate using Nth order
+Newton method: x := x + ( sin(x) + 1/6*sin(x)^3 + 3/40*sin(x)^5 +
+5/112*sin(x)^7 + ...) i.e. the Taylor series for arcsin but cut at a finite
+point. Convergence is of order of the next term, i.e. x^9, but need to evaluate
+Sin() at each step. However, we don't need to evaluate them to full precision
+each time, because each iteration will correct any accumulated errors. In fact,
+first iterations can be computed with significantly lower precision than the
+final result. This makes method1 the fastest for Yacas internal math. */
 
 PiMethod1() := [
 	Local(result, delta, deltasq, k, Epsilon, prec, curprec);
 	prec := GetPrecision();
-//	Epsilon := N(2*10 ^ (-prec));
 
 	/* initial approximation */
-	result := 3.141592653589793;
-	curprec := 14;
+	result := 3.14159265358979323846;
+	curprec := 20;
 	Precision(curprec);
-	k := 0;
 	/* right now we do all but the last iteration using the 8th order scheme, and the last iteration is done using the 2nd order scheme. However it would be faster to use a very high-order scheme first, then a smaller-order scheme, etc., because it's faster to do multiplications at low precision.
 	*/
-	While(curprec*3 < prec) [
+	For(k:=0, curprec*3 < prec, k := k+1) [
 		curprec := Min(Ceil(N(prec/3)), curprec * 9);
 		Precision(curprec);
-		k := k+1;
 //		Echo({"Iteration ", k, " setting precision to ", curprec});
-		delta := MathTan(result);
+		delta := MathSin(result);
 		deltasq := N(delta*delta);
-		result := N(result - delta*(1 - deltasq*(1/3 - deltasq*(1/5 - deltasq/7))));
+		result := N(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*5/112))));
 	];
 	// now do the last iteration
 	Precision(prec);
 	k := k+1;
 //	Echo({"last iteration, precision ", prec});
-	result := MathSubtract(result, MathTan(result));
-	Echo({"8th order Newton's method: ", k, "iterations, ": Nl() : "Pi=", result}); 
-	result;
-];
-
-// Reference method: just use Newton's method all the time, no complicated logic to select precision steps. Slightly slower than method 1 but a lot simpler. This is implemented in Pi()
-
-PiMethod0() := [
-	Local(result, delta, k, Epsilon, prec, curprec);
-	prec := GetPrecision();
-//	Epsilon := N(2*10 ^ (-prec));
-
-	/* initial approximation */
-	result := 3.141592653589793;
-	curprec := 14;
-	Precision(curprec);
-	k := 0;
-	While(curprec < prec) [
-		curprec := Min(prec, curprec * 3);
-		Precision(curprec);
-		k := k+1;
-//		Echo({"Iteration ", k, " setting precision to ", curprec});
-		result := MathSubtract(result, MathTan(result));
-	];
-	Echo({"variable precision Newton's method: ", k, "iterations, ": Nl() : "Pi=", result}); 
+	result := MathAdd(result, MathSin(result));
+	Echo({"8th order Newton's method: ", k, "iterations"}); 
 	result;
 ];
 
@@ -88,7 +81,7 @@ PiMethod2() := [
 		delta := N(-delta * tansq);
 		k := k+1;
 	];
-	Echo({"Brute force method 2: ", k, "iterations, ": Nl() : "Pi=", result}); 
+	Echo({"Brute force method 2: ", k, "iterations"}); 
 	result;
 ];
 
@@ -111,7 +104,7 @@ PiBrentSalamin() := [
 		s := N(s - 2^k*(a^2-b^2));
 		p := N(2*a^2/s);
 	];
-	Echo({"Brent and Salamin's algorithm: ", k, "iterations, ": Nl() : "Pi=", result}); 
+	Echo({"Brent and Salamin's algorithm: ", k, "iterations"}); 
 	
 	result;
 ];
@@ -138,7 +131,7 @@ PiBorwein() := [
 	/* {a} will converge to 1/Pi */
 	result := N(1/result);
 
-	Echo({"Borwein's quartic algorithm: ", k, "iterations, ": Nl() : "Pi=", result}); 
+	Echo({"Borwein's quartic algorithm: ", k, "iterations"}); 
 	result;
 ];
 	
