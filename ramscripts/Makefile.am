@@ -6,6 +6,8 @@ EXTRA_DIST = README ramscripts-win32.cpp \
 	compressor.dsp compressor.dsw win32rcwriter.cpp ramscripts.cc
 
 
+yacas_include = $(datadir)/yacas/include
+
 if GENERATE_ARCHIVE
 
 AM_CPPFLAGS = 
@@ -29,12 +31,12 @@ check-archive: scripts.dat
 ## a .dat extension. So we install it by hand in $(libdir)
 ## Furthermore, we need to install compressedfiles.h because plugins need it.
 
-yacas_include = $(datadir)/yacas/include
-
 install-exec-local: scripts.dat
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
 	$(INSTALL_PROGRAM) scripts.dat $(DESTDIR)$(libdir)/`echo scripts.dat|sed '$(transform)'`
+
+endif
 
 install-data-local: compressedfiles.h
 	$(INSTALL_DATA) $(srcdir)/compressedfiles.h $(yacas_include)/compressedfiles.h
@@ -44,8 +46,6 @@ uninstall-local:
 	@$(NORMAL_UNINSTALL)
 	rm -f $(DESTDIR)$(libdir)/`echo scripts.dat|sed '$(transform)'`
 	rm -f $(yacas_include)/compressedfiles.h
-
-endif
 
 
 
