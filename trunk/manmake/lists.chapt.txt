@@ -1165,7 +1165,7 @@ through "n".
 
 {list} -- list to act on
 
-{n}, {m} -- positive integers describing the entries to drop
+{n}, {m} -- positive integers describing the entries to take
 
 *DESC
 
