@@ -83,15 +83,36 @@ void parseCommandLine(int argc, char *argv[]);
 void runYacasCalculations(char *arg);
 void runYacasTestScript(void);
 
+void processMemoryOptions(int argc, char *argv[]){
+#ifndef NO_GLOBALS
+	for (int i = 1; i < argc; i++) {
+        if (!strcmp(argv[i], "-m")) {
+            extern void Malloc_SetHooks( void *(*malloc_func)(size_t),
+                                 void *(*calloc_func)(size_t, size_t),
+                                 void *(*realloc_func)(void *, size_t),
+                                 void (*free_func)(void *) );
+
+            Malloc_SetHooks( malloc, calloc, realloc, free );
+            return;
+        }
+    }
+#endif
+}
+
 int main(int argc, char *argv[]){
     {
        const char* yacas_exe = argv[0];
-       char drive[_MAX_DRIVE]; char fname[_MAX_FNAME]; char ext[_MAX_EXT];
-       _splitpath( yacas_exe, drive, yacas_dir, fname, ext );
-       sprintf(cfg_file_name, "%s\\%s", yacas_dir, "yacas.cfg");
+       char yacas_drive[_MAX_DRIVE]; char fname[_MAX_FNAME]; char ext[_MAX_EXT];
+       _splitpath( yacas_exe, yacas_drive, yacas_dir, fname, ext );
+       if(yacas_dir[strlen(yacas_dir)-1] == '\\'){
+        yacas_dir[strlen(yacas_dir)-1] = 0;
+       }
+       sprintf(cfg_file_name, "%s%s\\%s", yacas_drive, yacas_dir, "yacas.cfg");
     }
 
     int line = 0;
+
+    processMemoryOptions(argc, argv);
 
     yacas = CYacas::NewL();
     atexit(my_exit);
@@ -160,6 +181,8 @@ getdir:
 			scriptdir[--i] = '/';
 			scriptdir[++i] = '\0';
 		}
+        printf("Saving script path %s in %s \n", scriptdir, cfg_file_name);
+
 		fputs(scriptdir, config);			// Store the location of scripts for
 											// reference later
 	}
@@ -170,10 +193,14 @@ getdir:
 	strcat(fullpath, "\");");
 
     yacas->Evaluate(fullpath);
+
 #endif	// USE_RAMSCRIPTS
 
     yacas->Evaluate("Load(\"yacasinit.ys\");");
-    ShowResult("");
+    //yacas->Evaluate("FullForm(a_3+a_4)");
+    if (yacas->Error()[0] != '\0'){
+        ShowResult("");
+    }
 
 	scripts = true;
 }
@@ -198,17 +225,12 @@ void runYacasTestScript(void)
 	yacas->Evaluate(fullpath);
 }
 
-void parseCommandLine(int argc, char *argv[])
-{
-	bool needtoexit = false;
-
+void parseCommandLine(int argc, char *argv[]) {
 	for (int i = 1; i < argc; i++) {
 		if (!strcmp(argv[i],"-d") || !strcmp(argv[i],"--scriptdir")) {
 			loadYacasScriptDir();
 			printf("%s\n",scriptdir);
-			exit(0);
-		}
-
+		}else
 		if (!strcmp(argv[i],"-h") || !strcmp(argv[i],"--help") || !strcmp(argv[i],"/?")) {
 			printf("Yacas Windows client -- version %s\n", VERSION);
 			printf("The following command line options are available:\n\n");
@@ -218,30 +240,22 @@ void parseCommandLine(int argc, char *argv[])
 			printf("\t-t  --test\t\tRuns the test script.\n");
             printf("\t-e  --eval\t\tEvaluate the expression passed in the command line.\n");
 			printf("\t-v  --version\t\tPrints version of yacas this client uses.\n");
-			exit(0);
-		}
-
+		}else
 		if (!strcmp(argv[i],"-t") || !strcmp(argv[i],"--test")) {
 			runYacasTestScript();
-			exit(0);
-		}
-
+		}else
 		if (!strcmp(argv[i],"-v") || !strcmp(argv[i],"--version")) {
 			puts(VERSION);
-			exit(0);
-		}
-
+		}else
 		if (!strcmp(argv[i],"-f") || !strcmp(argv[i],"--runfile")) {
 			if (i + 1 <= argc) {
-				needtoexit = true;
 				runYacasCalculations(argv[++i]);
 			} else {
 				printf("%s: you need to supply a filename for \'%s\'\n",
 					   argv[0], argv[i]);
 				exit(1);
 			}
-		}
-
+		}else
         if(!strcmp(argv[i],"-e") || !strcmp(argv[i],"--eval")) {
             i++;
             loadYacasScriptDir();
@@ -249,10 +263,14 @@ void parseCommandLine(int argc, char *argv[])
             printf("In> %s \n", inpline);
             yacas->Evaluate(inpline);
             ShowResult("Out> ");
-
-            needtoexit = true;
+        }else
+        if(!strcmp(argv[i],"-m")) {
+            // do nothing here
+            continue;
+        }else{
+            printf("Invalid argument %s \n", argv[i]);
         }
-	}
-	if (needtoexit)
-		exit(0);
+    
+        exit(0);
+    }
 }
