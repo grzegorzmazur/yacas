@@ -13,6 +13,8 @@ of design and implementation of these algorithms.
 
 *INCLUDE algorithms-integration.chapt
 
+*INCLUDE algorithms-transforms.chapt
+
 *INCLUDE SturmSequences.chapt
 
 

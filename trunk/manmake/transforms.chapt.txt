@@ -1,0 +1,42 @@
+
+			Transforms
+
+*INTRO In this chapter, some facilities for various transforms
+are described.
+
+*CMD LaplaceTransform --- Laplace Transform
+*STD
+*CALL
+	LaplaceTransform(t,s,func)	
+*PARMS
+
+{t} -- independent variable that is being transformed
+
+{s} -- independent variable that is being transformed into
+
+{f} -- function
+
+*DESC
+
+This function attempts to take the function {f(t)} and find the Laplace transform
+of it,{F(s)}, which is defined as {Integrate(t,0,Infinity) Exp(-s*t)*f}. This is
+also sometimes referred to the "unilateral" Laplace tranform. {LaplaceTransform}
+can transform most elementary functions that do not require a convolution integral,
+as well as any polynomial times an elementary function. If a transform cannot
+be found then {LaplaceTransform} will return unevaluated. This can happen
+for function which are not of "exponential order", which means that they grow
+faster than exponential functions.
+
+
+*E.G.
+
+	In> LaplaceTransform(t,s,2*t^5+ t^2/2 )
+	Out> 240/s^6+2/(2*s^3);
+	In> LaplaceTransform(t,s,t*Sin(2*t)*Exp(-3*t) )
+	Out> (2*(s+3))/(2*(2*(((s+3)/2)^2+1))^2);
+	In> LaplaceTransform(t,s, BesselJ(3,2*t) )
+	Out> (Sqrt((s/2)^2+1)-s/2)^3/(2*Sqrt((s/2)^2+1));
+	In> LaplaceTransform(t,s,Exp(t^2)); // not of exponential order
+	Out> LaplaceTransform(t,s,Exp(t^2));
+	In> LaplaceTransform(p,q,Ln(p))
+	Out> -(gamma+Ln(q))/q;

@@ -47,7 +47,7 @@ ALGOCHAPTERS = algo-basic.chapt algo-numapprox.chapt \
 	algorithms-elemfunc.chapt algorithms-specfunc.chapt \
 	algorithms-numtheory.chapt algorithms-integration.chapt \
 	algorithms-multivar.chapt SturmSequences.chapt FDL.chapt \
-	algo-refs.chapt algo-contfrac.chapt
+	algo-refs.chapt algo-contfrac.chapt algorithms-transforms.chapt
 
 ALGOSOURCES = algo-basic.chapt.txt algo-numapprox.chapt.txt \
 	algorithms-elemfunc.chapt.txt algorithms-specfunc.chapt.txt \
@@ -58,14 +58,14 @@ ALGOSOURCES = algo-basic.chapt.txt algo-numapprox.chapt.txt \
 REFCHAPTERS = config.chapt arith.chapt calc.chapt ode.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
 	preds.chapt logic.chapt const.chapt vars.chapt io.chapt \
-	numtheory.chapt strings.chapt \
+	numtheory.chapt strings.chapt transforms.chapt \
 	probability-and-statistics.chapt addons.chapt FDL.chapt
 
 REFSOURCES = config.chapt.txt arith.chapt.txt calc.chapt.txt ode.chapt.txt \
 	linalg.chapt.txt univar.chapt.txt lists.chapt.txt \
 	functional.chapt.txt controlflow.chapt.txt preds.chapt.txt \
 	logic.chapt.txt const.chapt.txt vars.chapt.txt io.chapt.txt \
-	numtheory.chapt.txt strings.chapt.txt \
+	numtheory.chapt.txt strings.chapt.txt transforms.chapt.txt \
 	probability-and-statistics.chapt.txt addons.chapt.txt FDL.chapt.txt
 
 REFPROGCHAPTERS = yacasapi.chapt FDL.chapt cl-options.chapt glossary.chapt \
