@@ -1094,6 +1094,123 @@ more powerful compilers each time the system has faster components,
 resulting in faster and faster code.
 
 
+		Strong typing as an option for generating optimized code
+
+Until now we have only discussed an untyped Lisp system, one where
+the system doesn't know the types of arguments passed or variables.
+An untyped Lisp is in principle enough for implementing a CAS. However,
+a small addition, declaration of types for parameters and variables,
+has a lot of advantages.
+
+Take a function {fact}
+
+	(defun fact (n)
+	   (if (equal n 0)
+	      1
+	      (* n (fact (+ n -1)))
+	)  )
+
+Now, if we write this as
+
+	(defun (fact INTEGER) ( (n INTEGER) )
+	   (if (equal n 0)
+	      1
+	      (* n (fact (+ n -1)))
+	)  )
+
+Note that this just adds extra information, about types
+that should be passed in or returned. But the addition of
+type information greatly aids in translating (compiling)
+to other targets. For example, in c++ this bit of code
+could look like
+
+	BigInteger fact(BigInteger n)
+	{
+	   if (n==0)
+	      return 1;
+	   else
+	      return n*fact(n-1);
+	}
+
+Strong typing has the advantages of adding extra information the
+compiler can use to optimize code further, and strong typing also
+allows the compiler to give appropriate error messages when a function
+is called with incompatible arguments.
+
+The step back to untyped Lisp can of course always be made, with
+a simple translation step removing typing information from expressions.
+We can keep a simple low-level Lisp untyped interpreter, write code
+in a typed version of the Lisp dialect, and in a translation phase
+remove the typing information so the untyped interpreter can understand
+it.
+
+For the typed Lisp, the following functions are changed:
+
+*	0. {defun} and {defmacro}
+*	0. {let}
+
+In addition, global variables will have to be declared explicitly,
+with {global}:
+
+*	0. {(global <var> <type>)} - declares a global variable.
+
+{declare} is not needed for the untyped interpreter, just for the
+typed Lisp code that will be used for conversion to c++/Java or other
+targets.
+
+The typing system is very simple; no automatic type conversion is
+performed. In stead, the user is expected to call conversion routines.
+For instance, when a function {sin} expects a float, but an integer {n}
+is passed in, the calling sequence should ne something
+like {(sin (int-to-float n))}, and not {(sin n)}. Some functions,
+like {setf}, will accept different types of arguments (the second argument
+to {setf} should be of the type of the variable the value is assigned to).
+
+This is a very simple typing system, but this Lisp dialect is not meant
+to be really used for programming, just a basic minimum set. Overloading
+of functions and variable number of arguments are also not supported.
+
+The following native types are supported in the basic Lisp dialect:
+
+*	0. {OBJECT} - any Lisp expression
+*	0. {INTEGER} - Big (arbitrary precision) integer
+*	0. {FLOAT} - Big (arbitrary precision) float
+*	0. {STRING} - text string (should be encapsulated by double quotes
+when entered by the user)
+*	0. {STRINGBUFFER} - String, but not stored in any caches or hash
+tables. Stringbuffer is meant to be used to build up strings.
+*	0. {CHAR} - Array element of a string or string buffer. This is
+made a base type so that parsers and tokenizers can be written in the Lisp dialect
+itself, and efficiently compiled to native code. Char is represented as a string
+with one character.
+*	0. {HASHTABLE} - fast association of one object with another.
+
+This list will be extended.
+
+The compiler can also be made to accept non-typed variables, arguments
+and functions. The type of these objects should then default to {OBJECT}.
+However, this does not save the user from converting to appropriate
+type. For instance, if the type of some expression is not explicitly
+set to {INTEGER}, and it is used in addition, then a call to
+{object-to-int}
+is required every time the object is treated as an integer. Next to it
+being a nuissance for the programmer, it also makes the code less
+efficient.
+
+The compiler is of course free to ignore types when it comes to
+translation.
+All objects should be able to pass as type {OBJECT}. The typing system is
+there to ensure efficiency of the generated code. The untyped interpreter
+described in the beginning of this book disregards all typing information
+whatsoever. The compiler does however have to check that arguments passed
+in have a valid type.
+
+By the same token, the interpreter could be modified to handle the typed
+expressions, and just ignore the typing information.
+
+
+
+
 			Converting {Yacas} script code to other languages
 
 		Introduction
