@@ -13,10 +13,11 @@ Here is a summary of options:
 *	{-p} (do not use terminal capabilities)
 *	{-t} (enable extra history features)
 *	{--archive} <i>filename</i> (use a given library archive file)
+*	{--dlldir} <i>directory</i> (specify default directory for plugins)
 *	{--init} <i>filename</i> (use a given initial file)
-*	{--read-eval-print} <i>expression</i> (call this expression for the read-eval-print loop)
 *	{--patchload} (use {PatchLoad} to load files)
-*	{--rootdir} <i>directory</i>{/} (specify library directory)
+*	{--read-eval-print} <i>expression</i> (call this expression for the read-eval-print loop)
+*	{--rootdir} <i>directory</i> (specify default directory for scripts)
 *	{--server} <i>port</i> (start {Yacas} as a network server on given port)
 *	{--verbose-debug} (turn on showing some additional debugging information on screen)
 
@@ -118,13 +119,16 @@ solution might be to have a proxy in front of the service listening
 to the port, redirecting it to different processes which get
 started up for users (this has not been tried yet).
 
-	yacas --rootdir [directory]/
-Tells the system where to find the library scripts. Here, {directory/} is a
-path that is passed to {DefaultDirectory}, and file names will be simply
-appended to it, so you should make sure to include a forward or backward slash
-(depending on the platform) at the end. It is also possible to give a
+	yacas --rootdir [directory]
+Tells the system where to find the library scripts. Here, {directory} is a
+path that is passed to {DefaultDirectory}. It is also possible to give a
 list of directories, separated by a colon, eg. 
 {yacas --rootdir scripts/:morescripts/}.
+
+	yacas --dlldir [directory]
+Tells the system where to find the plugins. Here, {directory} is a
+path that is passed to {DllDirectory}. It is also possible to give a
+list of directories, separated by a colon.
 
 	yacas --archive [file]
 Use a compressed archive instead of the script library.
