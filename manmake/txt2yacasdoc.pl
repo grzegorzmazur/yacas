@@ -134,7 +134,7 @@ while (<STDIN>) {
 	} elsif (/^\*FOOT\s\s*(.*)$/) {	# footnote
 		&finish_text_close_quote();
 		#$have_par = 0;
-		print "AddBody(DocFootnote(\"" . $1 . "\"));\n";
+		print "AddBody(DocFootnote(\"" . &escape_term($1) . "\"));\n";
 	}
 	#############################################################
 	# stuff for refman
@@ -152,8 +152,9 @@ while (<STDIN>) {
 		#$have_par = 1;
 		$anchor = $1;
 		# if the first word is {...}, then we need to use the @ stuff
-		$anchor =~ s/^\{([^{}]+)\}/$1 . "@" . &escape_term(
-"{$1}")/e;
+		$anchor = &escape_term($anchor) unless ($anchor =~
+			s/^(.*)\{([^{}]+)\}(.*)$/"$1$2$3" . "\@"
+			. &escape_term("$1" . "{$2}$3")/e);
 		print "AddBody(AddAnchor(\"" . $anchor . "\"));\n";
 	} elsif (/^\*SEE\s\s*(.*)$/) {	# SeeAlso()
 		$names = $1;
