@@ -423,7 +423,8 @@ Here is how one can create a file with C code to evaluate an expression:
 	In> ToFile("expr1.c") WriteString(
 	  CForm(Sqrt(x-y)*Sin(x)) );
 	Out> True;
-The file {expr1.c} was created in the current working directory and it contains
+The file {expr1.c} was created in the current working directory and it
+contains the line
 	sqrt(x-y)*sin(x)
 
 As another example, take a look at the following command:
