@@ -7,6 +7,9 @@
 #include "genericobject.h"
 #include "patterns.h"
 
+/// Wrapper for YacasPatternPredicateBase.
+/// This class allows a YacasPatternPredicateBase to be put in a
+/// LispGenericObject.
 class PatternClass : public GenericClass
 {
 public:

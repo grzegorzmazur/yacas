@@ -10,9 +10,11 @@
 #include "grower.h"
 #include "evalfunc.h"
 
-// class LispUserFunc : base user function api: should be able
-// to evaluate with some arguments. It's a pure abstract class that
-// should be obtained through an associated hash...
+/// Abstract class providing the basic user function API.
+/// Instances of this class are associated to the name of the function
+/// via an associated hash table. When obtained, they can be used to
+/// evaluate the function with some arguments.
+
 class LispUserFunction : public EvalFuncBase
 {
 public:
@@ -40,7 +42,11 @@ private:
     LispBoolean iTraced;
 };
 
-// User function with a specific arity (number of arguments)
+
+/// User function with a specific arity.
+/// This is still an abstract class, but the arity (number of
+/// arguments) of the function is now fixed.
+
 class LispArityUserFunction : public LispUserFunction
 {
 public:
@@ -48,23 +54,48 @@ public:
     virtual LispInt IsArity(LispInt aArity) const = 0;
 };
 
+
 class LispDefFile;
+
+
+/// Set of LispArityUserFunction's.
+/// By using this class, you can associate multiple functions (with
+/// different arities) to one name. A specific LispArityUserFunction
+/// can be selected by providing its name. Additionally, the name of
+/// the file in which the function is defined, can be specified.
+
 class LispMultiUserFunction : public YacasBase
 {
 public:
+    /// Constructor.
     LispMultiUserFunction() : iFileToOpen(NULL) {};
-        
+  
+    /// Return user function with given arity.
     LispUserFunction* UserFunc(LispInt aArity);
+
+    /// Destructor.
     virtual ~LispMultiUserFunction();
+
+    /// Specify that some argument should be held.
     virtual void HoldArgument(LispStringPtr aVariable);
+
+    /// Add another LispArityUserFunction to #iFunctions.
     virtual void DefineRuleBase(LispArityUserFunction* aNewFunction);
+
+    /// Delete tuser function with given arity.
     virtual void DeleteBase(LispInt aArity);
+
 private:
+    /// Set of LispArityUserFunction's provided by this LispMultiUserFunction.
     CDeletingArrayGrower<LispArityUserFunction*> iFunctions;
+
 public:
-    LispDefFile* iFileToOpen; // file to read for definition of this function
+    /// File to read for the definition of this function.
+    LispDefFile* iFileToOpen;
 };
 
+
+/// Associated hash of LispMultiUserFunction objects.
 
 class LispUserFunctions : public LispAssociatedHash<LispMultiUserFunction>
 {

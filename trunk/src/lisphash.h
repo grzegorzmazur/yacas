@@ -72,8 +72,19 @@ class LispAssociatedHash : public YacasBase
 {
 public:
     inline ~LispAssociatedHash();
+
+    /// Find the data associated to \a aString.
+    /// If \a aString is not stored in the hash table, this function
+    /// returns #NULL.
     inline T* LookUp(LispStringPtr aString);
+
+    /// Add an association to the hash table.
+    /// If \a aString is already stored in the hash table, its 
+    /// association is changed to \a aData. Otherwise, a new
+    /// association is added.
     inline void SetAssociation(const T& aData, LispStringPtr aString);
+
+    /// Delete an association from the hash table.
     inline void Release(LispStringPtr aString);
 
 private:

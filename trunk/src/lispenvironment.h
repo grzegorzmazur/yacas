@@ -46,10 +46,15 @@ public:
 };
 
 
+/// The Lisp environment.
+/// This huge class is the central class of the Yacas program. It
+/// implements a dialect of Lisp.
 
 class LispEnvironment : public YacasBase
 {
 public:
+    /// \name Constructor and destructor
+    //@{
     LispEnvironment(YacasCoreCommands &aCoreCommands,
                     LispUserFunctions& aUserFunctions,
                     LispGlobal& aGlobals,
@@ -62,9 +67,41 @@ public:
                     LispOperators &aBodiedOperators,
                     LispInput*    aCurrentInput);
     ~LispEnvironment();
+    //@}
+
 public:
+    /// \name Lisp variables
+    //@{
+
+    /// Assign a value to a Lisp variable.
+    /// \param aString name of the variable
+    /// \param aValue value to be assigned to \a aString
+    ///
+    /// If there is a local variable with the name \a aString, the
+    /// object \a aValue is assigned to it. Otherwise, a
+    /// LispGlobalVariable is constructed, and it is associated with
+    /// \a aValue in #iGlobals.
+    /// \sa FindLocal
     void SetVariable(LispStringPtr aString, LispPtr& aValue);
+
+    /// Get the value assigned to a variable.
+    /// \param aVariable name of the variable
+    /// \param aResult (on exit) value of \a aVariable
+    /// 
+    /// - If there is a local variable with the name \a aString,
+    ///   \a aResult is set to point to the value assigned to this local
+    ///   variable. 
+    /// - If there is a global variable \a aString and its
+    ///   #iEvalBeforeReturn is false, its value is returned via
+    ///   \a aResult. 
+    /// - If there is a global variable \a aString and its
+    ///   #iEvalBeforeReturn is true, its value is evaluated. The
+    ///   result is assigned back to the variable, its
+    ///   #iEvalBeforeReturn is set to false, and a copy of the result
+    ///   is returned in \a aResult.
+    /// - Otherwise, \a aResult is set to #NULL.
     void GetVariable(LispStringPtr aVariable,LispPtr& aResult);
+
     void SetGlobalEvaluates(LispStringPtr aVariable);
 
     void UnsetVariable(LispStringPtr aString);
@@ -72,9 +109,20 @@ public:
     void PopLocalFrame();
     void NewLocal(LispStringPtr aVariable,LispObject* aValue);
     void CurrentLocals(LispPtr& aResult);
+    //@}
 
 public:
+    /// \name Lisp functions
+    //@{
+
+    /// Return the #iCoreCommands attribute.
     inline YacasCoreCommands& CoreCommands();
+
+    /// Add a command to the list of core commands.
+    /// \param aEvaluatorFunc C function evaluating the core command
+    /// \param aString name of the command
+    /// \param aNrArgs number of arguments
+    /// \param aFlags flags, see YacasEvaluator::FunctionFlags
     void SetCommand(YacasEvalCaller aEvaluatorFunc, LispCharPtr aString,LispInt aNrArgs,LispInt aFlags);
 
     void RemoveCommand(LispCharPtr aString);
@@ -83,7 +131,16 @@ public:
     inline  LispHashTable& HashTable();
     LispUserFunction* UserFunction(LispPtr& aArguments);
     LispUserFunction* UserFunction(LispStringPtr aName,LispInt aArity);
+
+    /// Return LispMultiUserFunction with given name.
+    /// \param aArguments name of the multi user function
+    ///
+    /// The table of user functions, #iUserFunctions, is consulted. If
+    /// a user function with the given name exists, it is returned. 
+    /// Otherwise, a new LispMultiUserFunction is constructed, added
+    /// to #iUserFunctions, and returned. 
     LispMultiUserFunction* MultiUserFunction(LispStringPtr aArguments);
+
     LispDefFiles& DefFiles();
     void DeclareRuleBase(LispStringPtr aOperator, LispPtr& aParameters,
                          LispInt aListed);
@@ -100,14 +157,20 @@ public:
     void UnFenceRule(LispStringPtr aOperator,LispInt aArity);
     void Retract(LispStringPtr aOperator,LispInt aArity);
     void HoldArgument(LispStringPtr  aOperator,LispStringPtr aVariable);
+    //@}
 
     LispStringPtr FindCachedFile(LispCharPtr aFileName);
     
 public:
+    /// \name Precision
+    //@{
+
     /// set precision to a given number of decimal digits
     void SetPrecision(LispInt aPrecision);
     inline LispInt Precision(void) const;
     inline LispInt BinaryPrecision(void) const;
+    //@}
+
 public:
     inline void SetPrettyPrinter(LispStringPtr aPrettyPrinter);
     inline LispStringPtr PrettyPrinter(void);
@@ -115,12 +178,19 @@ public:
     LispInt GetUniqueId();
 public:
     LispPrinter& CurrentPrinter();
+
 public:
+    /// \name Operators
+    //@{
     LispOperators& PreFix();
     LispOperators& InFix();
     LispOperators& PostFix();
     LispOperators& Bodied();
+    //@}
+
 public:
+    /// \name Input and output
+    //@{
     LispInput* CurrentInput();
     void SetCurrentInput(LispInput* aInput);
 public:
@@ -129,7 +199,8 @@ public:
 public:
     void SetUserError(LispCharPtr aErrorString);
     LispCharPtr ErrorString(LispInt aError);
-    
+    //@}
+
 protected:
 		/// current precision for user interaction, in decimal and in binary
     LispInt iPrecision;
@@ -225,14 +296,19 @@ private:
 public: //Well... only because I want to be able to show the stack to the outside world...
     LocalVariableFrame *iLocalsList;
     LispOutput*    iInitialOutput;
+
 private:
+
+    /// Hash of core commands with associated YacasEvaluator
     YacasCoreCommands& iCoreCommands;
+
     LispUserFunctions& iUserFunctions;
     LispHashTable& iHashTable;
     LispDefFiles   iDefFiles;
     LispPrinter&   iPrinter;
     LispOutput*    iCurrentOutput;
 
+    /// Hash of global variables with their values
     LispGlobal&    iGlobals;
 
 //    LispPtr        iLocals;
