@@ -1,5 +1,7 @@
 
 #include <windows.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #include "yacasprivate.h"
 #include "lispenvironment.h"
