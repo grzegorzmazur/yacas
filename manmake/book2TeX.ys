@@ -57,10 +57,15 @@ HtmlCommand(x) := "\\begin{quote}\\begin{verbatim}" : x : "\\end{verbatim}\\end{
 HtmlEmphasis(x) := "\\emph{" : x : "}";
 
 /* decide whether to use "verb" or "texttt" based on whether the string contains any of the special characters #, _, \, &, {, } */
-HtmlTerm(x) := [
+
+HasTexChars(string) := [
 	Local(i);
 	For (i:=1, i<=Length(x) And Not Contains(TexCharsToEscape, x[i]), i:=i+1) [];
-	If (i<=Length(x),
+	i<=Length(x);
+];
+
+HtmlTerm(x) := [
+	If (HasTexChars(x),
 	"\\verb|" : x : "|",
 	"\\texttt{" : x : "}");
 ];
@@ -70,12 +75,11 @@ HtmlBreak() := "
 
 Bodied("Item",2);	/* competes with prec. 7 of ":" */
 Bodied("Book",60000);
-Bodied("Title",60000);
-Bodied("Author",60000);
+//Bodied("Title",60000);
+//Bodied("Author",60000);
 Bodied("Chapter",60000);
 Bodied("Section",60000);
 Bodied("SubSection",60000);
-Bodied("Topical",60000);
 Bodied("Text",60000);
 Bodied("Blurb",60000);
 Bodied("Itemize",2);
@@ -102,3 +106,36 @@ HoldArg("TeXMathD", x);
 /* use <-- since := would redefine everything */
 TeXMath(_x) <-- TeXForm(x);
 TeXMathD(_x) <-- "$" : TeXForm(x) : "$";
+
+/* stuff for refman */
+
+ChapterIntro(string) := WriteString("
+" : string : "
+");
+Bodied("ChapterIntro", 60000);
+
+CmdDescription(cmd, desc) := WriteString(
+HtmlTerm(cmd) : " --- " : desc : Nl()
+);
+
+StandardLib() := WriteString("
+\\raggedleft {\\small Standard library}
+");
+
+BuiltIn() := WriteString("
+\\raggedleft {\\small Core function}
+");
+
+AddBody(string) := WriteString(string);
+
+SeeAlso(list) := WriteString(
+Nl() : PrintList(MapSingle("HtmlTerm", list), ", ") : Nl()
+);
+HtmlAnchor(string) := "
+";
+
+Bodied("HtmlAnchor", 60000);
+Topical(string) := WriteString(
+"\\begin{quote}\\textbf{\\large " : string : "}\\end{quote}"
+);
+Bodied("Topical",60000);

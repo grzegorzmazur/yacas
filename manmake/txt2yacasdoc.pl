@@ -14,6 +14,15 @@ $in_itemized = 0;
 $in_enum = 0;
 $in_htmlcommand = 0;
 
+%star_labels = (
+	"CALL" => "Topical() \"Calling format:\";",
+	"PARMS" => "Topical() \"Parameters:\";",
+	"DESC" => "Topical() \"Description:\";",
+	"STD" => "StandardLib();",
+	"CORE" => "BuiltIn();",
+	"E.G." => "Topical() \"Examples:\";",
+);
+
 while (<STDIN>) {
 	chomp;
 	s/\\/\\\\/g;
@@ -35,22 +44,24 @@ while (<STDIN>) {
 		&finish_text();
 		print "\tSubSection()\"", &escape_term($1), "\";\n\n";
 		$have_par = 1;
-	} elsif ((not $in_htmlcommand and /^\t( {0,2}[^ \t].*)$/) or ($in_htmlcommand and /^\t(.*)$/)) {	# Sample code (HtmlCommand); cannot start with empty line
+	}
+	# HtmlCommand processed here
+	elsif ((not $in_htmlcommand and /^\t( {0,2}[^ \t].*)$/) or ($in_htmlcommand and /^\t(.*)$/)) {	# Sample code (HtmlCommand); cannot start with empty line
 		&start_text();
 		if (not $in_htmlcommand) {
+			if ($debug_pars) {
+				&finish_text();
+				&start_text();
+			}
 			&close_quote();
 			print ":HtmlCommand(\"\n";
 			$in_htmlcommand = 1;
 		}
-		print "$1\n";
+		print "$1\n" unless ($1 eq "*");	# Special feature to allow code examples that start with indented lines
 		$have_par = 0;
 		$in_text = 1;
 	}	# Now not TAB-indented lines
 	elsif (/^\s*$/) {	# New paragraph
-	if ($debug_pars) {
-		&finish_text();
-		&start_text();
-	}
 		if (not $have_par) {
 			&close_quote();
 			&start_text();
@@ -61,7 +72,11 @@ while (<STDIN>) {
 			print ":HtmlNewParagraph()\n\n";
 			$have_par = 1;
 		}
-	} elsif (/^\*\t[0-9]+\. (.*)$/) {	# Enum
+	}
+	#############################################################
+	#			Star-based markup
+	#############################################################
+	elsif (/^\*\t[0-9]+\. (.*)$/) {	# Enum
 		&close_quote();
 		&start_text();
 		if ($in_enum) {
@@ -84,12 +99,66 @@ while (<STDIN>) {
 		$in_text = 1;
 		$have_par = 0;
 	}	# Now non-TAB indented markup
-	elsif (/^\*INCLUDE\s*([^ ].*)\s*$/) {	# Include another file
+	elsif (/^\*INCLUDE\s\s*([^ ].*)\s*$/i) {	# Include another file
 		&finish_text();
 		$have_par = 1;
 		print "IncludeFile(\"$1\");\n\n";
-		
-	} else {	# plain text - process it last, after every other markup is done
+	}
+	#############################################################
+	# stuff for refman
+	#############################################################
+	elsif (/^\*(CALL|PARMS|DESC|STD|CORE|E\.G\.)\s*$/) {	# labels without parameters
+		&finish_text();
+		$have_par = 1;
+		print $star_labels{$1} . "\n";
+	} elsif (/^\*(?:HEAD)\s\s*(.*)$/) {	# Topical()
+		&finish_text();
+		$have_par = 1;
+		print "Topical()\"" . &escape_term($1) . "\";\n";
+	} elsif (/^\*(?:A)\s\s*(.*)$/) {	# anchor
+		&finish_text();
+		$have_par = 1;
+		print "AddBody(HtmlAnchor() \"" . $1 . "\");\n";
+	} elsif (/^\*SEE\s\s*(.*)$/) {	# SeeAlso()
+		$names = $1;
+		$names =~ s/\s*$//;
+		$names =~ s/^\s*//;
+		&finish_text();
+		$have_par = 1;
+		print "Topical()\"See also:\";\nSeeAlso({";
+		$have_prev_name = 0;
+		foreach $name (split(/, /, $names)) {
+			print ((($have_prev_name == 1) ? ", " : "") . "\"$name\"");
+			$have_prev_name = 1;
+		}
+		print "});\n";
+	} elsif (/^\*(?:CMD|FUNC)\s\s*(.*)\s*---\s*(.*)$/) {	# CmdDescription()
+		$names = $1;
+		$title = $2;
+		&finish_text();
+		$have_par = 1;
+		print "\n";	# separate from previous command (has no effect on docs)
+		# Trim extra spaces
+		$names =~ s/\s*$//;
+		$names =~ s/^\s*//;
+		$title =~ s/\s*$//;
+		$title =~ s/^\s*//;
+		if ($names =~ /, /) {	# Section describes several commands, need to add anchors
+			foreach $name (split(/, /, $names)) {
+				print "AddBody(HtmlAnchor() \"" . $name . "\");\n";
+			}
+		}
+		print "CmdDescription(\"" . $names . "\", \"" . $title . "\");\n";
+	} elsif (/^\*INTRO\s\s*(.*)$/) {	# ChapterIntro()
+		$text = $1;
+		&finish_text();
+		$have_par = ($text =~ /^\s*$/) ? 1 : 0;
+		print "ChapterIntro()\"" . $text . "\n";
+		$in_text = 1;		
+	} else {
+	#############################################################
+	# plain text - process it last, after every other markup is done
+	#############################################################
 	# plain text closes HtmlCommand environment but does not close itemize or enum
 		if ($in_htmlcommand) {
 			&close_quote();	# this will close HtmlCommand too

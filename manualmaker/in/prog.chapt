@@ -63,15 +63,39 @@ AddAnchor("IsInfix");
 AddAnchor("IsPrefix");
 AddAnchor("IsPostfix");
 SubSection()"IsInfix(\"str\"), IsPrefix(\"str\"), IsPostfix(\"str\")";  Text()"
-Returns wether str is an infix, prefix, or postfix operator.
+Check whether str is an infix, prefix, or postfix operator.
 IsInfix(\"+\") should return True. IsInfix(\"a\") should return False.
 
 ";
 
+CmdDescription("IsBodied", "Check for a bodied function");
+BuiltIn();
+
+Topical()"Calling Sequence";
+Text()"IsBodied(funcname)";
+Topical()"parameters";
+Text()"funcname - a string specifying the name of a function";
+Topical()"Description";
+Text()"The predicate will check whether the function with given name \"funcname\" has been declared as \"bodied\" and correspondingly return True or False.
+
+";
+Topical()"Example";
+Text() HtmlCommand("
+In> IsBodied(\"While\");
+Out> True;
+In> IsBodied(\"Sin\");
+Out> False;
+");
+
+Topical()"See Also";
+SeeAlso({"Bodied", "IsInfix", "IsPrefix", "IsPostfix", "OpPrecedence"});
+
+
+
 AddAnchor("OpPrecedence");
 SubSection()"OpPrecedence(\"str\")";  Text()"
-Returns the precedence of the infix operator str. OpPrecedence(\"+\")
-should return 6.
+Returns the precedence of the function str which should have been declared a bodied function or an infix, postfix, or prefix operator. OpPrecedence(\"+\")
+currently returns 6. Generates an error message if the string str does not represent a type of function that can have precedence.
 
 ";
 

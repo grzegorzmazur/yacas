@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -47,10 +47,9 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -79,7 +78,7 @@ noinst_PROGRAMS = testnum
 noinst_LIBRARIES = libyacas.a @NUMBERS_LIB@
 EXTRA_LIBRARIES = libgmpnumbers.a libyacasnumbers.a libyacasplatform.a
 
-noinst_HEADERS = anumber.h choices.h deffile.h grower.h 	infixparser.h lispassert.h lispatom.h lispcleanupstack.h 	lispenvironment.h lisperror.h lispeval.h lispevalhash.h 	lispglobals.h lisphash.h lispio.h lispobject.h lispparser.h 	lispstring.h lispuserfunc.h mathcommands.h mathenvironment.h patcher.h 	mathuserfunc.h numbers.h platmath.h standard.h patterns.h errors.h arggetter.h 	stdfileio.h stringio.h stubs.h tokenizer.h yacas.h ramdisk.h refcount.h 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h         lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h
+noinst_HEADERS = anumber.h choices.h deffile.h grower.h 	infixparser.h lispassert.h lispatom.h lispcleanupstack.h 	lispenvironment.h lisperror.h lispeval.h lispevalhash.h 	lispglobals.h lisphash.h lispio.h lispobject.h lispparser.h 	lispstring.h lispuserfunc.h mathcommands.h mathenvironment.h patcher.h 	mathuserfunc.h numbers.h platmath.h standard.h patterns.h errors.h arggetter.h 	stdfileio.h stringio.h stubs.h tokenizer.h yacas.h ramdisk.h refcount.h 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h         lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h 
 
 yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = libyacas.a libyacasplatform.a @NUMBERS_LIB@ @NUMBERS_LDFLAGS@ 
@@ -102,7 +101,7 @@ libyacasplatform_a_LIBADD = @NUMBERS_LIB@
 libyacasnumbers_a_SOURCES = anumber.cpp yacasnumbers.cpp 
 libgmpnumbers_a_SOURCES = gmpnumbers.cpp 
 
-EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp 	epocyacas.hrh epocyacas.rss epocyacas.mmp 	epocstubs.cpp grower.inl lisphash.inl lispobject.inl 	lispstring.inl standard.inl 	win32dll.cpp 	depend.dep makefile.beos 	convertcctocpp.bat 	plat/linux32/lisptype.h 	plat/linux32/stubs.inl 	plat/linux32/platfileio.h 	plat/linux32/platdll.h 	plat/linux64/lisptype.h 	plat/linux64/stubs.inl 	plat/linux64/platfileio.h 	plat/linux64/platdll.h 	plat/epoc32/lisptype.h 	plat/epoc32/stubs.inl 	plat/epoc32/platdll.h 	plat/epoc32/platfileio.h 	plat/beos/lisptype.h 	plat/beos/stubs.inl 	plat/beos/platfileio.h 	plat/beos/platdll.h 	plat/win32/lisptype.h 	plat/win32/platdll.h   	plat/win32/platfileio.h 	plat/win32/stubs.inl  unipoly.h   	plat/win32/win32commandline.cpp 	plat/win32/win32commandline.h   	plat/win32/yacas.dsp            	plat/win32/yacas_exe.dsp        	plat/win32/yacasmain-win32.cpp makefile.debug
+EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp 	epocyacas.hrh epocyacas.rss epocyacas.mmp 	epocstubs.cpp grower.inl lisphash.inl lispobject.inl 	lispstring.inl standard.inl 	win32dll.cpp 	depend.dep makefile.beos 	convertcctocpp.bat 	plat/linux32/lisptype.h 	plat/linux32/stubs.inl 	plat/linux32/platfileio.h 	plat/linux32/platdll.h 	plat/linux64/lisptype.h 	plat/linux64/stubs.inl 	plat/linux64/platfileio.h 	plat/linux64/platdll.h 	plat/epoc32/lisptype.h 	plat/epoc32/stubs.inl 	plat/epoc32/platdll.h 	plat/epoc32/platfileio.h 	plat/beos/lisptype.h 	plat/beos/stubs.inl 	plat/beos/platfileio.h 	plat/beos/platdll.h 	plat/win32/lisptype.h 	plat/win32/platdll.h   	plat/win32/platfileio.h 	plat/win32/stubs.inl  unipoly.h   	plat/win32/win32commandline.cpp 	plat/win32/win32commandline.h   	plat/win32/yacas.dsp            	plat/win32/yacas_exe.dsp        	plat/win32/yacasmain-win32.cpp makefile.debug makefile.win32
 
 
 yacas_include = $(datadir)/yacas/include
@@ -152,7 +151,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libgmpnumbers_a_SOURCES) $(libyacasnumbers_a_SOURCES) $(libyacasplatform_a_SOURCES) $(libyacas_a_SOURCES) $(yacas_SOURCES) $(testnum_SOURCES)
 OBJECTS = $(libgmpnumbers_a_OBJECTS) $(libyacasnumbers_a_OBJECTS) $(libyacasplatform_a_OBJECTS) $(libyacas_a_OBJECTS) $(yacas_OBJECTS) $(testnum_OBJECTS)
@@ -230,8 +229,8 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "  $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	     $(INSTALL_PROGRAM) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	    echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	     $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	  else :; fi; \
 	done
 
@@ -329,7 +328,7 @@ uninstall: uninstall-am
 all-am: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir)
 

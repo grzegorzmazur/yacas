@@ -1,7 +1,8 @@
 
 /* Functions that aid in testing */
 
-
+/* Round to specified number of digits */
+Round(x_IsNumber, prec_IsPositiveInteger) <-- N(Round(x*10^prec)*10^(-prec));
 
 /* Logging functions */
 // curline:=0;
@@ -43,7 +44,9 @@ Function("Verify",{aLeft,aRight})
       WriteString("******************");
       NewLine();
       Write(aLeft);
-      WriteString(" does not evaluate to ");
+      WriteString(" evaluates to ");
+	  Write(Eval(aLeft));
+	  WriteString(" which differs from ");
       Write(aRight);
       NewLine();
       WriteString("******************");
@@ -143,28 +146,29 @@ HoldArg("BenchShow",expr);
 
 /* Testing Yacas functionality by checking expressions against correct
    answer.
+   Use with algebraic expressions only, since we need Simplify() for that to work.
  */
 
 Function ("TestYacas", {expr, ans})
 [
-        Local(difference);
-        difference := Simplify(expr-ans);
-        If (difference = 0, True,
-            [
-              WriteString("******************");
-              NewLine();
-              Write(expr);
-              WriteString(" is not equal to ");
-              Write(ans);
-              NewLine();
-              WriteString("The difference is ");
-              Write(difference);
-              NewLine();
-              WriteString("******************");
-              NewLine();
-              False;
-             ]
-            );
+		If (Simplify(Eval(expr)-ans)=0, True,
+			[
+			  WriteString("******************");
+			  NewLine();
+			  Write(expr);
+			  WriteString(" evaluates to ");
+			  NewLine();
+			  Write(Eval(expr));
+			  NewLine();
+			  WriteString(" which differs from ");
+			  NewLine();
+			  Write(ans);
+			  NewLine();
+			  WriteString("******************");
+			  NewLine();
+			  False;
+			 ]
+			);
 ];
 
 HoldArg("TestYacas", expr);

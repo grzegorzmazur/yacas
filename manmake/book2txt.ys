@@ -46,6 +46,31 @@ StripNl(x) := [ /* replace all newlines by spaces */
 HtmlEmphasis(x) := "<i>" : StripNl(x) : "</i>";
 HtmlTerm(x) := "{" : StripNl(x) : "}";
 HtmlBreak() := Nl();
+
+HtmlAnchor(string) := "*A " : string : Nl();
+Bodied("HtmlAnchor", 60000);
+AddBody(string) := WriteString(string);
+SeeAlso(list) := WriteString(
+Nl() : "*SEE " : PrintList(list) : Nl()
+);
+
+ChapterIntro(string) := WriteString(
+"*INTRO " : string : "
+");
+
+TopicalStrings := {
+	{"Calling Sequence", "CALL"},
+	{"Parameters", "PARMS"},
+	{"Description", "DESC"},
+	{"Examples", "E.G."},
+};
+
+Topical(string) := WriteString(
+Nl() : "*" : If(Contains(AssocIndices(TopicalStrings), string),
+	TopicalStrings[string], "HEAD" : string)
+: Nl()
+);
+
 Bodied("Item",1);
 Bodied("Book",60000);
 Bodied("Title",60000);
@@ -58,5 +83,17 @@ Bodied("Text",60000);
 Bodied("Blurb",60000);
 Bodied("Itemize",2);
 Bodied("Enumerate",2);
+//Bodied("ChapterIntro", 60000);
 
 IncludeFile(x) := WriteString(Nl() : "*INCLUDE " : x : Nl());
+
+StandardLib() := WriteString("
+*STD
+");
+BuiltIn() := WriteString("
+*CORE
+");
+
+CmdDescription(cmd, desc) := WriteString(
+"*CMD" : cmd : " --- " : desc : Nl()
+);
