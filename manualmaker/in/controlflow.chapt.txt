@@ -553,17 +553,12 @@ to the second variable, etcetera.
 
 *SEE Subst, /:
 
-*A /:
-
-*A /::
-
 *CMD /:, /:: --- Local simplification rules
 *STD
 *CALL
-
-expression /: patterns (prec. 10000)
-
-expressions /:: patterns (prec. 10000)
+	expression /: patterns
+	expressions /:: patterns
+(prec. 10000)
 
 *PARMS
 
@@ -575,10 +570,10 @@ patterns - a list of patterns
 
 Sometimes you have an expression, and you want to use specific
 simplification rules on it that are not done by default. This
-can be done with the /: and the /:: operators. Suppose we have the
+can be done with the {/:} and the {/::} operators. Suppose we have the
 expression containing things like {Ln(a*b)}, and we want
 to change these into {Ln(a)+Ln(b)}, the easiest way
-to do this is using the /: operator, as follows:
+to do this is using the {/:} operator, as follows:
 
 	In> Sin(x)*Ln(a*b)
 	Out> Sin(x)*Ln(a*b);
@@ -605,8 +600,8 @@ rules to the end of the list of rules. If the rules cannot be applied
 to an expression, it will try subexpressions of that
 expression and so on.
 
-It might be necessary sometimes to use the /:: operator, which
-repeatedly applies the /: operator until the result doesn't change
+It might be necessary sometimes to use the {/::} operator, which
+repeatedly applies the {/:} operator until the result doesn't change
 any more. Caution is required, since rules can contradict each other,
 which could result in an infinite loop. To detect this situation,
 just use /: repeatedly on the expression. The repetitive nature
