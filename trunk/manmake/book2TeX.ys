@@ -137,15 +137,15 @@ StandardLib() := WriteString("
 ");
 
 UnixSpecific() := WriteString("
-\\begin{flushright}\\small (Unix-specific add-on)\\end{flushright}
+\\begin{flushright}\\small (Unix-specific)\\end{flushright}
 ");
 
 MSWinSpecific() := WriteString("
-\\begin{flushright}\\small (MS Windows-specific add-on)\\end{flushright}
+\\begin{flushright}\\small (MS Windows-specific)\\end{flushright}
 ");
 
 MacSpecific() := WriteString("
-\\begin{flushright}\\small (Macintosh-specific add-on)\\end{flushright}
+\\begin{flushright}\\small (Macintosh-specific)\\end{flushright}
 ");
 
 BuiltIn() := WriteString("

@@ -241,8 +241,7 @@ sequence is used), the {If} expression returns {False}.
 The sign function is defined to be 1 if its argument is positive and
 -1 if its argument is negative. A possible implementation is
 
-	In> mysign(x) := If (IsPositiveReal(x), \
-	  1, -1);
+	In> mysign(x) := If (IsPositiveReal(x), 1, -1);
 	Out> True;
 	In> mysign(Pi);
 	Out> 1;
@@ -577,8 +576,7 @@ to do this is using the {/:} operator, as follows:
 
 	In> Sin(x)*Ln(a*b)
 	Out> Sin(x)*Ln(a*b);
-	In> % /: { Ln(_x*_y) <- Ln(x) \
-	  +Ln(y) }
+	In> % /: { Ln(_x*_y) <- Ln(x)+Ln(y) }
 	Out> Sin(x)*(Ln(a)+Ln(b));
 
 A whole list of simplification rules can be built up in the list,
@@ -609,7 +607,7 @@ should become apparent.
 
 *E.G.
 
-	In> Sin(u)*Ln(a*b) /: { Ln(_x*_y) <- Ln(x)+Ln(y) }
+	In> Sin(u)*Ln(a*b) /: {Ln(_x*_y) <- Ln(x)+Ln(y)}
 	Out> Sin(u)*(Ln(a)+Ln(b));
 	In> Sin(u)*Ln(a*b) /:: { a <- 2, b <- 3 }
 	Out> Sin(u)*Ln(6);
