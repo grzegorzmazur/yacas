@@ -1,0 +1,19 @@
+//////
+// $Id: outer.yts,v 1.1 2002-09-03 21:22:36 ayalpinkus Exp $
+// Tests for Outer
+//////
+
+Testing("-- Outer");
+
+Verify(Outer({},{}),{});
+Verify(Outer({{}},{}),Hold(Outer({{}},{})));
+Verify(Outer({},{{}}),Hold(Outer({},{{}})));
+Verify(Outer({{}},{{}}),Hold(Outer({{}},{{}})));
+Verify(Outer(a,b),Hold(Outer(a,b)));
+Verify(Outer({a},{b}),{{a*b}});
+Verify(Outer({a,b},{c}),{{a*c},{b*c}});
+Verify(Outer({a},{b,c}),{{a*b,a*c}});
+Verify(Outer({a,b},{c,d,e}),{{a*c,a*d,a*e},{b*c,b*d,b*e}});
+Verify(Outer({a,b,c},{d,e}),{{a*d,a*e},{b*d,b*e},{c*d,c*e}});
+
+//////

@@ -1,4 +1,5 @@
 IsMatrix
+IsVector
 IsSquareMatrix
 IsRational
 IsRationalNumeric
