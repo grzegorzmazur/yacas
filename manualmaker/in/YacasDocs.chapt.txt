@@ -319,6 +319,7 @@ Mark-up labels <i>must</i> appear as first characters on a line. The following m
 Labels that affect only the current line:
 
 *	{*A} <i>anchor</i> -- insert anchor and index entry
+*	{*BOOK} <i>title</i> -- start a book, give title
 *	{*EVAL} <i>statement</i> -- evaluate inline as a {Yacas} statement and insert results
 *	{*HEAD} <i>heading</i> -- lowest-level heading (lower than subsection)
 *	{*FOOT} <i>text</i> -- insert a footnote
