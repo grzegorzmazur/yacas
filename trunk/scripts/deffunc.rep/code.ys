@@ -1,0 +1,137 @@
+
+/* Defining a macro-like function that declares a function
+ * with only one rule.
+ */
+RuleBase("Function",{oper,args,body});
+Bodied("Function",60000);
+HoldArg("Function",oper);
+HoldArg("Function",args);
+HoldArg("Function",body);
+Rule("Function",3,0,True)
+[
+  Retract(oper,Length(args)); 
+  MacroRuleBase(oper,args);
+  MacroRule(oper,Length(args),0,True) body;
+];
+
+RuleBase("TemplateFunction",{oper,args,body});
+Bodied("TemplateFunction",60000);
+HoldArg("TemplateFunction",oper);
+HoldArg("TemplateFunction",args);
+HoldArg("TemplateFunction",body);
+Rule("TemplateFunction",3,0,True)
+[
+  Retract(oper,Length(args)); 
+  Local(arglist);
+  arglist:=FlatCopy(args);
+  
+  DestructiveAppend(arglist,{args,UnList({Hold,body})});
+  arglist:=ApplyPure("LocalSymbols",arglist);
+
+  MacroRuleBase(oper,arglist[1]);
+  MacroRule(oper,Length(args),0,True) arglist[2];
+
+];
+
+Function("HoldArgNr",{function,arity,index})
+[
+  Local(args);
+  args:=RuleBaseArgList(function,arity);
+/* Echo({"holdnr ",args}); */
+  ApplyPure("HoldArg",{function,args[index]});
+];
+
+
+
+/* := assignment. */
+RuleBase(":=",{aLeftAssign,aRightAssign});
+UnFence(":=",2);
+HoldArg(":=",aLeftAssign);
+HoldArg(":=",aRightAssign);
+
+/* := assignment. */
+Rule(":=",2,0,IsAtom(aLeftAssign))
+[
+  MacroSet(aLeftAssign,Eval(aRightAssign));
+  Eval(aLeftAssign);
+];
+
+
+Rule(":=",2,0,IsList(aLeftAssign))
+[
+  Map(":=",{aLeftAssign,Eval(aRightAssign)});
+];
+
+
+RuleBase("AssignArray",{setlistterm,setlistindex,setlistresult});
+UnFence("AssignArray",3);
+Rule("AssignArray",3,1,IsString(setlistindex))
+[
+  Local(item);
+  item:=Assoc(setlistindex,setlistterm);
+  If(item = Empty,
+     DestructiveInsert(setlistterm,1,{setlistindex,setlistresult}),
+     DestructiveReplace(item,2,setlistresult)
+     );
+  True;
+];
+
+Rule("AssignArray",3,1,
+   MathAnd(
+           Equals(IsGeneric(setlistterm),True),
+           Equals(GenericTypeName(setlistterm),"Array")
+          )
+    )
+[
+  ArraySet(setlistterm,setlistindex,setlistresult);
+];
+
+
+Rule("AssignArray",3,2,True)
+[
+  DestructiveReplace(setlistterm ,setlistindex, setlistresult);
+  True;
+];
+
+Rule(":=",2,10,IsFunction(aLeftAssign) And (Head(Listify(aLeftAssign)) = Nth))
+[
+ Local(frst,scnd);
+
+ Local(lst);
+ Set(lst,(Listify(aLeftAssign)));
+ Set(lst,Tail(lst));
+ Set(frst, Eval(Head(lst)));
+ Set(lst,Tail(lst));
+ Set(scnd, Eval(Head(lst)));
+
+ AssignArray(frst,scnd,Eval(aRightAssign));
+];
+Rule(":=",2,20,IsFunction(aLeftAssign) And aLeftAssign[0] != Atom(":="))
+[
+  Local(oper,args,arity);
+  Set(oper,String(aLeftAssign[0]));
+  Set(args,Tail(Listify(aLeftAssign)));
+  Set(arity,Length(args));
+  Retract(oper,arity); 
+  MacroRuleBase(oper, args);
+  UnHoldable(aRightAssign);
+  MacroRule(oper,arity,0,True) aRightAssign;
+];
+
+RuleBase("UnHoldable",{var});
+HoldArg("UnHoldable",var);
+UnFence("UnHoldable",1);
+Rule("UnHoldable",1,10,Equals(Type(Eval(var)),"Eval"))
+[
+  MacroSet(var,Eval(Eval(var)));
+/* Echo({"unheld",var,Eval(var)}); */
+];
+Rule("UnHoldable",1,20,True)
+[
+/* Echo({"held"}); */
+  True;
+];
+
+
+
+

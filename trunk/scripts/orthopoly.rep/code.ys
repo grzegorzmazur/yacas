@@ -1,0 +1,279 @@
+/*
+Orthogonal polynomials
+version 1.1
+(Serge Winitzki)
+
+Polynomials are found from direct recurrence relations. Sums of series of polynomials are found using the Clenshaw-Smith recurrence scheme.
+
+Reference: Yudell L. Luke. Mathematical functions and their approximations. Academic Press, N. Y., 1975.
+
+Usage:
+  The polynomials are evaluated by functions named Ortho*, where * is one of P, G, H, L, T, U. The first argument of these functions is an integer.  The series of polynomials are evaluated by functions named Ortho*Sum. The first argument of these functions is a list of coefficients. The last argument is the value x at which the polynomials are to be computed; if x is numerical, a faster routine is used.
+
+  If n is an integer, n>=0, then:
+	OrthoP(n, x) gives the n-th Legendre polynomial, evaluated on x
+	OrthoP(n, a, b, x) gives the n-th Jacobi polynomial with parameters a, b, evaluated on x
+	OrthoG(n, a, x) gives the n-th Gegenbauer polynomial
+	OrthoH(n, x) gives the n-th Hermite polynomial
+	OrthoL(n, a, x) gives the n-th Laguerre polynomial
+	OrthoT(n, x) gives the n-th Tschebyscheff polynomial of the 1st kind
+	OrthoU(n, x) gives the n-th Tschebyscheff polynomial of the 2nd kind
+
+  If c is a list of coefficients c[1], c[2], ..., c[N], then Ortho*Sum(c, ...) where * is one of P, G, H, L, T, U, computes the sum of a series c[1]*P_0+c[2]*P_1+...+c[N]*P_N, where P_k is the relevant polynomial of k-th order. (For polynomials taking parameters: the parameters must remain constant throughout the summation.) Note that the intermediate polynomials are not evaluated and the recurrence relations are different for this computation, so there may be a numerical difference between Ortho*(c, ...) and computing the sum of the series directly.
+
+  Internal functions that may be useful:
+	OrthoPolyCoeffs(name_IsString, n_IsInteger, parameters_IsList) returns a list of coefficients of the polynomial. Here "name" must be one of the predefined names: "Jacobi", "Gegenbauer", "Hermite", "Laguerre", "Tscheb1",  "Tscheb2"; and "parameters" is a list of extra parameters for the given family of polynomials, e.g. {a,b} for the Jacobi, {a} for Laguerre and {} for Hermite polynomials.
+	OrthoPolySumCoeffs(name_IsString, c_IsList, parameters_IsList) returns a list of coefficients of the polynomial which is a sum of series with coefficients c.
+	EvaluateHornerScheme(coefficients, x) returns the Horner-evaluated polynomial on x. The "coefficients" is a list that starts at the lowest power. For example, EvaluateHornerScheme({a,b,c}, x) should return (a+x*(b+x*c))
+*/
+
+10 # EvaluateHornerScheme({}, _x) <-- 0;
+/* Strictly speaking, the following rule is not needed, but it doesn't hurt */
+10 # EvaluateHornerScheme({_coeffs}, _x) <-- coeffs;
+20 # EvaluateHornerScheme(coeffs_IsList, _x) <-- Head(coeffs)+x*EvaluateHornerScheme(Tail(coeffs), x);
+
+/* Plain polynomials */
+
+OrthoP(n_IsInteger, _x)_(n>=0) <-- OrthoP(n, 0, 0, x);
+OrthoP(n_IsInteger, a_IsRationalOrNumber, b_IsRationalOrNumber, _x)_(n>=0 And a> -1 And b> -1) <-- OrthoPoly("Jacobi", n, {a, b}, x);
+
+OrthoG(n_IsInteger, a_IsRationalOrNumber, _x)_(n>=0 And a> -1/2) <-- OrthoPoly("Gegenbauer", n, {a}, x);
+
+OrthoH(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Hermite", n, {}, x);
+
+OrthoL(n_IsInteger, a_IsRationalOrNumber, _x)_(n>=0 And a> -1) <-- OrthoPoly("Laguerre", n, {a}, x);
+
+OrthoT(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Tscheb1", n, {}, x);
+OrthoU(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Tscheb2", n, {}, x);
+
+/* Sums of series of orthogonal polynomials */
+
+OrthoPSum(c_IsList, _x) <-- OrthoP(c, 0, 0, x);
+OrthoPSum(c_IsList, a_IsRationalOrNumber, b_IsRationalOrNumber, _x)_(a> -1 And b> -1) <-- OrthoPolySum("Jacobi", c, {a, b}, x);
+
+OrthoGSum(c_IsList, a_IsRationalOrNumber, _x)_(a> -1/2) <-- OrthoPolySum("Gegenbauer", c, {a}, x);
+
+OrthoHSum(c_IsList, _x) <-- OrthoPolySum("Hermite", c, {}, x);
+
+OrthoLSum(c_IsList, a_IsRationalOrNumber, _x)_(a> -1) <-- OrthoPolySum("Laguerre", c, {a}, x);
+
+OrthoTSum(c_IsList, _x) <-- OrthoPolySum("Tscheb1", c, {}, x);
+OrthoUSum(c_IsList, _x) <-- OrthoPolySum("Tscheb2", c, {}, x);
+
+/*
+Orthogonal polynomials are evaluated using a general routine OrthoPolyCoeffs that generates their coefficients recursively.
+
+The recurrence relations start with n=0 and n=1 (the n=0 polynomial is always identically 1) and continue for n>=2. Note that the n=1 polynomial is not always given by the n=1 recurrence formula if we assume P_{-1}=0, so the recurrence should be considered undefined at n=1.
+
+	For Legendre/Jacobi polynomials: (a>-1, b>-1)
+P(0,a,b,x):=1
+P(1,a,b,x):=(a-b)/2+x*(1+(a+b)/2)
+P(n,a,b,x):=(2*n+a+b-1)*(a^2-b^2+x*(2*n+a+b-2)*(2*n+a+b))/(2*n*(n+a+b)*(2*n+a+b-2))*P(n-1,a,b,x)-(n+a-1)*(n+b-1)*(2*n+a+b)/(n*(n+a+b)*(2*n+a+b-2))*P(n-2,a,b,x)
+
+	For Hermite polynomials:
+H(0,x):=1
+H(1,x):=2*x
+H(n,x):=2*x*H(n-1,x)-2*(n-1)*H(n-2,x)
+
+	For Gegenbauer polynomials: (a>-1/2)
+G(0,a,x):=1
+G(1,a,x):=2*a*x
+G(n,a,x):=2*(1+(a-1)/n)*x*G(n-1,a,x)-(1+2*(a-2)/n)*G(n-2,a,x)
+
+	For Laguerre polynomials: (a>-1)
+L(0,a,x):=1
+L(1,a,x):=a+1-x
+L(n,a,x):=(2+(a-1-x)/n)*L(n-1,a,x)-(1+(a-1)/n)*L(n-2,a,x)
+
+	For Tschebycheff polynomials of the first kind:
+T(0,x):=1
+T(1,x):=x
+T(n,x):=2*x*T(n-1,x)-T(n-2,x)
+
+	For Tschebycheff polynomials of the second kind:
+U(0,x):=1
+U(1,x):=2*x
+U(n,x):=2*x*U(n-1,x)-U(n-2,x)
+
+The database "KnownOrthoPoly" contains closures that return coefficients for the recurrence relations of each family of polynomials. KnownOrthoPoly["name"] is a closure that takes two arguments: the order (n) and the extra parameters (p), and returns a list of two lists: the first list contains the coefficients {A,B} of the n=1 polynomial, i.e. "A+B*x"; the second list contains the coefficients {A,B,C} in the recurrence relation, i.e. "P_n = (A+B*x)*P_{n-1}+C*P_{n-2}". (So far there are only 3 coefficients in the second list, i.e. no "C+D*x", but we don't want to be limited.)
+
+*/
+
+KnownOrthoPoly := Hold({
+	{"Jacobi", {{n, p}, {{(p[1]-p[2])/2, 1+(p[1]+p[2])/2}, {(2*n+p[1]+p[2]-1)*((p[1])^2-(p[2])^2)/(2*n*(n+p[1]+p[2])*(2*n+p[1]+p[2]-2)), (2*n+p[1]+p[2]-1)*(2*n+p[1]+p[2])/(2*n*(n+p[1]+p[2])), -(n+p[1]-1)*(n+p[2]-1)*(2*n+p[1]+p[2])/(n*(n+p[1]+p[2])*(2*n+p[1]+p[2]-2))}}}},
+	{"Gegenbauer", {{n, p}, {{0, 2*p[1]}, {0, 2+2*(p[1]-1)/n, -1-2*(p[1]-1)/n}}}},
+	{"Laguerre", {{n, p}, {{p[1]+1, -1}, {2+(p[1]-1)/n, -1/n, -1-(p[1]-1)/n}}}},
+	{"Hermite", {{n, p}, {{0,2}, {0, 2, -2*(n-1)}}}},
+	{"Tscheb1", {{n, p}, {{0,1}, {0,2,-1}}}},
+	{"Tscheb2", {{n, p}, {{0,2}, {0,2,-1}}}}
+});
+
+/*
+For efficiency, polynomials are represented by lists of coefficients rather than by Yacas expressions. Polynomials are evaluated using the explicit Horner scheme. On numerical arguments, the polynomial coefficients are not computed, only the resulting value.
+*/
+
+/*
+Sums of series of orthogonal polynomials are found using the Clenshaw-Smith recurrence scheme:
+	If $P_n$ satisfy $P_n = A_n p_{n-1} + B_n p_{n-2}$, $n>=2$, and if $A_1$ is defined so that $P_1 = A_1 P_0$, then $\sum _{n=0}^N c_n P_n = X_0 P_0$, where $X_n$ are found from the following backward recurrence: $X_{N+1} = X_{N+2} = 0$, $X_n = c_n + A_{n+1} X_{n+1} + B_{n+2} X_{n+2}$, $n=N, N-1, ..., 0$.
+*/
+
+/* Numeric arguments are processed by a faster routine */
+
+10 # OrthoPoly(name_IsString, _n, p_IsList, x_IsRationalOrNumber) _ (KnownOrthoPoly[name] != Empty) <-- OrthoPolyNumeric(name, n, p, x);
+20 # OrthoPoly(name_IsString, _n, p_IsList, _x) _ (KnownOrthoPoly[name] != Empty) <-- EvaluateHornerScheme(OrthoPolyCoeffs(name, n, p), x);
+
+10 # OrthoPolySum(name_IsString, c_IsList, p_IsList, x_IsRationalOrNumber) _ (KnownOrthoPoly[name] != Empty) <-- OrthoPolySumNumeric(name, c, p, x);
+20 # OrthoPolySum(name_IsString, c_IsList, p_IsList, _x) _ (KnownOrthoPoly[name] != Empty) <-- EvaluateHornerScheme(OrthoPolySumCoeffs(name, c, p), x);
+
+/*
+OrthoPolyNumeric computes the value of the polynomial from recurrence relations directly. Do not use with non-numeric arguments, except for testing!
+*/
+OrthoPolyNumeric(name_IsString, n_IsInteger, p_IsList, _x) <-- [
+	Local(value1, value2, value3, ruleCoeffs, index);
+	value1 := 1;
+	ruleCoeffs := Apply(KnownOrthoPoly[name], {n, p})[1];
+	value2 := ruleCoeffs[1] + x*ruleCoeffs[2];
+	index := 1;
+	/* value1, value2, value3 is the same as P_{n-2}, P_{n-1}, P_n where n = index */
+	While(index<n) [
+		index := index + 1;
+		ruleCoeffs := Apply(KnownOrthoPoly[name], {index, p})[2];
+		value3 := (ruleCoeffs[1] + x*ruleCoeffs[2])*value2 + ruleCoeffs[3]*value1;
+		value1 := value2;
+		value2 := value3;
+	];
+	value2;
+];
+
+/* Clenshaw-Smith recurrence scheme */
+OrthoPolySumNumeric(name_IsString, c_IsList, p_IsList, _x) <-- [
+	Local(value1, value2, value3, ruleCoeffs, ruleCoeffs1, index);
+	value1 := 0;
+	value2 := 0;
+	index := Length(c) - 1;
+	/* value1, value2, value3 is the same as X_{n+2}, X_{n+1}, X_n where n = index */
+	While(index>=1) [
+		ruleCoeffs := Apply(KnownOrthoPoly[name], {index+1, p})[2];
+		ruleCoeffs1 := Apply(KnownOrthoPoly[name], {index+2, p})[2];
+		value3 := (ruleCoeffs[1] + x*ruleCoeffs[2])*value2 + ruleCoeffs1[3]*value1 + c[index+1];
+		value1 := value2;
+		value2 := value3;
+		index := index - 1;
+	];
+	/* Last iteration by hand: works correctly also if c has only 1 element */
+	ruleCoeffs := Apply(KnownOrthoPoly[name], {1, p})[1];
+	ruleCoeffs1 := Apply(KnownOrthoPoly[name], {2, p})[2];
+	value2 := (ruleCoeffs[1] + x*ruleCoeffs[2])*value2 + ruleCoeffs1[3]*value1 + c[1];
+	value2;
+];
+
+/*
+OrthoPolyCoeffs(name, n, p) returns the list of coefficients for orthogonal polynomials, starting with the lowest powers.
+*/
+
+10 # OrthoPolyCoeffs(name_IsString, 0, p_IsList) <-- {1};
+10 # OrthoPolyCoeffs(name_IsString, 1, p_IsList) <-- Apply(KnownOrthoPoly[name], {1, p})[1];
+
+/* Simple implementation, very slow, for testing only: recursive rule matches, no loops
+20 # OrthoPolyCoeffs(name_IsString, n_IsInteger, p_IsList)_(n>1) <-- [
+	Local(ruleCoeffs, newCoeffs);
+	ruleCoeffs := Apply(KnownOrthoPoly[name], {n, p})[2];
+	newCoeffs := OrthoPolyCoeffs(name, n-1, p);
+	Concat(newCoeffs,{0})*ruleCoeffs[1] + Concat(OrthoPolyCoeffs(name, n-2, p),{0,0})*ruleCoeffs[3] + Concat({0}, newCoeffs)*ruleCoeffs[2];
+];
+*/
+
+/* A fast implementation that works directly with lists and saves memory. Same recurrence as in OrthoPolyNumeric() */
+/* note: here we pass "name" instead of "KnownOrthoPoly[name]" for efficiency, but strictly speaking we don't need to use this global constant */
+
+20 # OrthoPolyCoeffs(name_IsString, n_IsInteger, p_IsList)_(n>1) <-- [
+	Local(ruleCoeffs, tmpCoeffs, newCoeffs, prevCoeffs, index, jndex, tmptmpCoeffs, prevCoeffsA, newCoeffsA, tmpCoeffsA);
+	/* For speed, allocate all lists now. Length is n+1 */
+	prevCoeffsA := ZeroVector(n+1);
+	newCoeffsA := ZeroVector(n+1);
+	tmpCoeffsA := ZeroVector(n+1);
+	/* pointers to arrays */
+	prevCoeffs := prevCoeffsA;
+	newCoeffs := newCoeffsA;
+	tmpCoeffs := tmpCoeffsA;
+	/* Initialize: n=0 and n=1 */
+	prevCoeffs[1] := 1;
+	ruleCoeffs := Apply(KnownOrthoPoly[name], {n, p})[1];
+	newCoeffs[1] := ruleCoeffs[1];
+	newCoeffs[2] := ruleCoeffs[2];
+	/* Invariant: answer ready in "newCoeffs" at value of index */
+	index := 1;
+	/* main loop */
+	While(index < n) [
+		index := index + 1;
+		/* Echo({"index ", index}); */ /* in case this is slow */
+		ruleCoeffs := Apply(KnownOrthoPoly[name], {index, p})[2];
+		tmpCoeffs[1] := ruleCoeffs[1]*newCoeffs[1] + ruleCoeffs[3]*prevCoeffs[1];
+		/* The polynomial tmpCoeffs must have (index+1) coefficients now */
+		For(jndex:=2, jndex <= index, jndex:=jndex+1) [
+			tmpCoeffs[jndex] := ruleCoeffs[1]*newCoeffs[jndex] + ruleCoeffs[3]*prevCoeffs[jndex] + ruleCoeffs[2]*newCoeffs[jndex-1];
+		];
+		tmpCoeffs[index+1] := ruleCoeffs[2]*newCoeffs[index];
+/*
+		prevCoeffs := FlatCopy(newCoeffs);
+		newCoeffs := FlatCopy(tmpCoeffs);
+*/
+/* juggle pointers instead of copying lists */
+		tmptmpCoeffs := prevCoeffs;
+		prevCoeffs := newCoeffs;
+		newCoeffs := tmpCoeffs;
+		tmpCoeffs := tmptmpCoeffs;
+	];
+	newCoeffs;
+];
+
+/*
+OrthoPolySumCoeffs(name, c, p) returns the list of coefficients for the sum of a series of orthogonal polynomials. Same recurrence as in OrthoPolySumNumeric()
+*/
+
+OrthoPolySumCoeffs(name_IsString, c_IsList, p_IsList) <-- [
+	Local(n, ruleCoeffs, ruleCoeffs1, tmpCoeffs, newCoeffs, prevCoeffs, index, jndex, tmptmpCoeffs, prevCoeffsA, newCoeffsA, tmpCoeffsA);
+	/* n is the max polynomial order we need */
+	n := Length(c) - 1;
+	/* For speed, allocate all lists now. Length is n+1 */
+	prevCoeffsA := ZeroVector(n+1);
+	newCoeffsA := ZeroVector(n+1);
+	tmpCoeffsA := ZeroVector(n+1);
+	/* pointers to arrays */
+	prevCoeffs := prevCoeffsA;
+	newCoeffs := newCoeffsA;
+	tmpCoeffs := tmpCoeffsA;
+	/* Invariant: answer ready in "newCoeffs" at value of index */
+	/* main loop */
+	For(index:=n, index >= 1, index:=index-1) [
+		/* Echo({"index ", index}); */ /* in case this is slow */
+		ruleCoeffs := Apply(KnownOrthoPoly[name], {index+1, p})[2];
+		ruleCoeffs1 := Apply(KnownOrthoPoly[name], {index+2, p})[2];
+		tmpCoeffs[1] := c[index+1] + ruleCoeffs[1]*newCoeffs[1] + ruleCoeffs1[3]*prevCoeffs[1];
+		/* The polynomial tmpCoeffs must have (n-index+1) coefficients now */
+		For(jndex:=2, jndex <= n-index, jndex:=jndex+1) [
+			tmpCoeffs[jndex] := ruleCoeffs[1]*newCoeffs[jndex] + ruleCoeffs1[3]*prevCoeffs[jndex] + ruleCoeffs[2]*newCoeffs[jndex-1];
+		];
+		If(n-index>0, tmpCoeffs[n-index+1] := ruleCoeffs[2]*newCoeffs[n-index]);
+/*
+		prevCoeffs := FlatCopy(newCoeffs);
+		newCoeffs := FlatCopy(tmpCoeffs);
+*/
+/* juggle pointers instead of copying lists */
+		tmptmpCoeffs := prevCoeffs;
+		prevCoeffs := newCoeffs;
+		newCoeffs := tmpCoeffs;
+		tmpCoeffs := tmptmpCoeffs;
+	];
+	/* Last iteration by hand: works correctly also if c has only 1 element */
+	index:=0;
+	ruleCoeffs := Apply(KnownOrthoPoly[name], {index+1, p})[1];
+	ruleCoeffs1 := Apply(KnownOrthoPoly[name], {index+2, p})[2];
+	tmpCoeffs[1] := c[index+1] + ruleCoeffs[1]*newCoeffs[1] + ruleCoeffs1[3]*prevCoeffs[1];
+	/* The polynomial tmpCoeffs must have (n-index+1) coefficients now */
+	For(jndex:=2, jndex <= n-index, jndex:=jndex+1) [
+		tmpCoeffs[jndex] := ruleCoeffs[1]*newCoeffs[jndex] + ruleCoeffs1[3]*prevCoeffs[jndex] + ruleCoeffs[2]*newCoeffs[jndex-1];
+	];
+	tmpCoeffs[n-index+1] := ruleCoeffs[2]*newCoeffs[n-index];
+	tmpCoeffs;
+];

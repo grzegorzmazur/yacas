@@ -1,0 +1,8 @@
+
+
+OMSymbol[ "Complex"   ] := { "complex1", "complex_cartesian", {} };
+OMSymbol[ "Re"        ] := { "complex1", "real",              {} };
+OMSymbol[ "Im"        ] := { "complex1", "imaginary",         {} };
+OMSymbol[ "Conjugate" ] := { "complex1", "conjugate",         {} };
+OMSymbol[ "Arg"       ] := { "complex1", "argument",          {} };
+OMSymbol[ "IsComplex" ] := { "yacas", "is_complex", {} };

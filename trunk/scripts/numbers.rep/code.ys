@@ -1,0 +1,103 @@
+
+/*: Count number of bits in a number */
+CountBits(value) :=
+[
+  Local(nbits);
+  nbits:=0;
+  Check(value>=0,"Value should be positive integer");
+  While(value != 0)
+  [
+    nbits++;
+    value := value >> 1;
+  ];
+  If(IsZero(nbits),nbits:=1);
+  nbits;
+];
+
+
+/* this uses code borrowed from Bernhard Oemer, borrowed from OpenQuBit
+ * project.
+ */
+/* Returns whether n is a prime */
+
+/* Fast prime testing: if n is a prime, then 24 divides (n^2-1) */
+5 # IsPrime(n_IsPositiveInteger)_(n > 4 And Mod(n^2-1,24)!=0) <-- False;
+
+/* Determine if a number is prime, using Rabin Miller primality
+   testing. Code submitted by Christian Obrecht
+ */
+10 # IsPrime(n_IsPositiveInteger) <-- RabinMiller(n);
+
+/*TODO remove?
+10 # IsPrime(n_IsPositiveInteger) <--
+[
+  Local(result);
+  result:=True;
+  If (n<=1,result:=False);
+  Local(i,m);
+  m:=MathFloor(MathSqrt(n));
+  For(i:=2,i <= m And result = True,i++)
+      If(Mod(n,i) = 0, result:=False);
+  result;
+];
+20 # IsPrime(_n) <-- False;
+*/
+
+/*code by Bernhard Oemer, borrowed from OpenQuBit
+ * project.
+ */
+/* Returns whether n is a prime^m. */
+10 # IsPrimePower(n_IsPrime) <-- True;
+10 # IsPrimePower(1) <-- False;
+20 # IsPrimePower(n_IsPositiveInteger) <--
+[
+  Local(i,f,m,result);
+  i:=2;
+  f:=0;
+  m:=MathFloor(MathSqrt(n));
+  result:=False;
+
+   While( (i<=m) And f=0)
+      [
+       If(((Mod(n,i))=0), f:=i);
+       i++;
+      ];
+
+
+  m:=MathFloor(0.000001+N((CountBits(n)-1)/(CountBits(f)-1)));
+  For(i:=2, (i<=m) And (result = False), i++)
+      [
+        If(f^i = n, result:=True);
+      ];
+
+  result;
+];
+30 # IsPrimePower(_n) <-- False;
+
+10 # GetPrimeFactors(n_IsPrime) <-- {n,1};
+
+20 # GetPrimeFactors(n_IsPrimePower) <--
+[
+  Local(i,f,m,result);
+  i:=2;
+  f:=0;
+  m:=MathFloor(MathSqrt(n));
+  result:=False;
+
+   While( (i<=m) And f=0)
+      [
+       If(((Mod(n,i))=0), f:=i);
+       i++;
+      ];
+
+
+  m:=MathFloor(0.000001+N((CountBits(n)-1)/(CountBits(f)-1)));
+  For(i:=2, (i<=m) And (result = False), i++)
+      [
+        If(f^i = n, result:={f,i});
+      ];
+
+  result;
+];
+
+

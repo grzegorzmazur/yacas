@@ -1,0 +1,82 @@
+
+
+Function("IsMatrix",{aLeft})
+[
+  If(IsList(aLeft),
+    [
+      Local(result);
+      result:=True;
+
+      /*TODO also check nr elements! */
+      ForEach(item,aLeft)
+        If(Not(IsList(item)),result:=False);
+      result;
+    ],
+    False
+    );
+];
+
+
+Function("IsRational",{aLeft}) Type(aLeft) = "/";
+
+Function("IsRationalNumeric",{aLeft})
+    Type(aLeft) = "/" And
+    IsNumber(aLeft[1]) And
+    IsNumber(aLeft[2]);
+
+IsRationalOrNumber(_x) <-- (IsNumber(x) Or IsRationalNumeric(x));
+
+10 # IsRationalOrInteger(x_IsInteger) <-- True;
+10 # IsRationalOrInteger(x_IsInteger / y_IsInteger) <-- True;
+20 # IsRationalOrInteger(_x) <-- False;
+
+IsNegativeNumber(x):= IsNumber(x) And x < 0;
+IsPositiveNumber(x):= IsNumber(x) And x > 0;
+
+IsNegativeInteger(x):= IsInteger(x) And x < 0;
+IsNonNegativeInteger(x):=IsInteger(x) And x >= 0;
+IsPositiveInteger(x):= IsInteger(x) And x > 0;
+
+10 # IsZero(x_IsNumber) <-- ( (x+0.5)-0.5  = 0);
+10 # IsNotZero(x_IsNumber)       <-- ( (x+0.5)-0.5 != 0);
+1000 # IsZero(_n) <-- False;
+1000 # IsNotZero(_n) <-- False;
+
+IsNonZeroInteger(x) := (IsInteger(x) And x != 0);
+
+10 # IsEven(n_IsInteger) <--  ( BitAnd(n,1)  = 0 );
+10 # IsOdd(n_IsInteger) <--   ( BitAnd(n,1)  = 1 );
+
+
+10 # IsInfinity(Infinity) <-- True;
+10 # IsInfinity(-Infinity) <-- True;
+20 # IsInfinity(_x) <-- False;
+
+IsConstant(_n) <-- (VarList(n) = {});
+
+Function ("IsBoolean", {x})
+	(x=True) Or (x=False) Or IsFunction(x) And Contains({"=", ">", "<", ">=", "<=", "!=", "And", "Not", "Or"}, Type(x));
+
+0 # IsBoolType(True) <-- True;
+0 # IsBoolType(False) <-- True;
+1 # IsBoolType(_anythingelse) <-- False;
+
+/* See if a number, when evaluated, would be a positive/negative real value */
+IsPositiveReal(_r) <--
+[
+  r:=N(r);
+  (IsNumber(r) And r >= 0);
+];
+IsNegativeReal(_r) <--
+[
+  r:=N(r);
+  (IsNumber(r) And r <= 0);
+];
+
+
+/* Predicates on matrices */
+IsHermitean(A_IsMatrix) <-- (Conjugate(Transpose(A))=A);
+IsUnitary(A_IsMatrix) <-- (Transpose(Conjugate(A))*A = Identity(Length(A)));
+
+IsVariable(_expr) <-- (IsAtom(expr) And Not(IsNumber(N(expr))));
+

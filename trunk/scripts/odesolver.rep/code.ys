@@ -1,0 +1,180 @@
+
+/*
+ 1) implement more sub-solvers
+ 2) test code
+ 3) documentation for OdeSolve and OdeTest
+ */
+
+
+10 # OdeLeftHandSideEq(_l == _r) <-- (l-r);
+20 # OdeLeftHandSideEq(_e) <-- e;
+
+10 # OdeNormChange(y(n_IsInteger)) <-- UnList({yyy,n});
+20 # OdeNormChange(y) <-- yyy(0);
+25 # OdeNormChange(y') <-- yyy(1);
+25 # OdeNormChange(y'') <-- yyy(2);
+30 # OdeNormChange(_e) <-- e;
+OdeNormPred(_e) <-- (e != OdeNormChange(e));
+
+
+OdeNormalForm(_e) <--
+[
+  e := Substitute(OdeLeftHandSideEq(e),"OdeNormPred","OdeNormChange");
+];
+
+/*TODO better OdeNormalForm?
+OdeNormalForm(_e) <--
+[
+  OdeLeftHandSideEq(e) /:
+    {
+      y <- yyy(0),
+      y' <- yyy(1),
+      y'' <- yyy(2),
+      y(_n) <- yyy(n)
+    };
+];
+*/
+
+10 # OdeChange(yyy(n_IsInteger)) <-- Apply(yn,{n});
+30 # OdeChange(_e) <-- e;
+OdePred(_e) <-- (e != OdeChange(e));
+UnFence("OdeChange",1);
+UnFence("OdePred",1);
+OdeSubstitute(_e,_yn) <--
+[
+  Substitute(e,"OdePred","OdeChange");
+];
+UnFence("OdeSubstitute",2);
+
+OdeConstantList(n_IsInteger) <--
+[
+  Local(result,i);
+  result:=ZeroVector(n);
+  For (i:=1,i<=n,i++) result[i]:=UniqueConstant();
+  result;
+];
+
+
+RuleBase("OdeTerm",{px,list});
+
+/*5 # OdeFlatTerm(_x)_[Echo({x});False;] <-- True; */
+
+10# OdeFlatTerm(OdeTerm(_a0,_b0)+OdeTerm(_a1,_b1)) <-- OdeTerm(a0+a1,b0+b1);
+10# OdeFlatTerm(OdeTerm(_a0,_b0)-OdeTerm(_a1,_b1)) <-- OdeTerm(a0-a1,b0-b1);
+10# OdeFlatTerm(-OdeTerm(_a1,_b1)) <-- OdeTerm(-a1,-b1);
+10# OdeFlatTerm(OdeTerm(_a0,_b0)*OdeTerm(_a1,_b1))_
+    (IsZeroVector(b0) Or IsZeroVector(b1)) <--
+[
+  OdeTerm(a0*a1,a1*b0+a0*b1);
+];
+
+10# OdeFlatTerm(OdeTerm(_a0,_b0)/OdeTerm(_a1,_b1))_
+    (IsZeroVector(b1)) <--
+    OdeTerm(a0/a1,b0/a1);
+
+10# OdeFlatTerm(OdeTerm(_a0,b0_IsZeroVector)^OdeTerm(_a1,b1_IsZeroVector)) <--
+    OdeTerm(a0^a1,b0);
+15 # OdeFlatTerm(OdeTerm(_a,_b)) <-- OdeTerm(a,b);
+
+15# OdeFlatTerm(OdeTerm(_a0,_b0)*OdeTerm(_a1,_b1)) <-- OdeTermFail();
+15# OdeFlatTerm(OdeTerm(_a0,b0)^OdeTerm(_a1,b1)) <-- OdeTermFail();
+15# OdeFlatTerm(OdeTerm(_a0,b0)/OdeTerm(_a1,b1)) <-- OdeTermFail();
+20 # OdeFlatTerm(a_IsAtom) <-- OdeTermFail();
+
+20 # OdeFlatTerm(_a+_b) <-- OdeFlatTerm(OdeFlatTerm(a) + OdeFlatTerm(b));
+20 # OdeFlatTerm(_a-_b) <-- OdeFlatTerm(OdeFlatTerm(a) - OdeFlatTerm(b));
+20 # OdeFlatTerm(_a*_b) <-- OdeFlatTerm(OdeFlatTerm(a) * OdeFlatTerm(b));
+20 # OdeFlatTerm(_a^_b) <-- OdeFlatTerm(OdeFlatTerm(a) ^ OdeFlatTerm(b));
+20 # OdeFlatTerm(_a/_b) <-- OdeFlatTerm(OdeFlatTerm(a) / OdeFlatTerm(b));
+OdeMakeTerm(xx_IsAtom) <-- OdeTerm(xx,FillList(0,10));
+OdeMakeTerm(yyy(_n)) <-- OdeTerm(0,BaseVector(n+1,10));
+20 # OdeMakeTerm(_xx) <-- xx;
+OdeMakeTermPred(_xx) <-- (xx != OdeMakeTerm(xx));
+OdeCoefList(_e) <--
+[
+  Substitute(e,"OdeMakeTermPred","OdeMakeTerm");
+];
+OdeTermFail() <-- OdeTerm(Error,FillList(Error,10));
+
+
+/* Solving a Homogeneous linear differential equation with constant
+   coefficients
+ */
+OdeSolveLinearHomogeneousConstantCoefficients(_e) <--
+[
+  Local(roots,consts);
+
+  /* Try solution Exp(aaa*x), and divide by Exp(aaa*x), which
+   * should yield a polynomial in aaa.
+   */
+  e:=OdeSubstitute(e,{{n},aaa^n*Exp(aaa*x)});
+  e:=Subst(Exp(aaa*x),1)e;
+  e:=Subst(aaa,x)e;
+  
+  /* Solve the resulting polynomial */
+  e := Apply("RootsWithMultiples",{e});
+  e := RemoveDuplicates(e);
+  roots:=Transpose(e);
+
+  /* Generate dummy constants */
+  consts:=
+    MapSingle(Hold({{nn},Sum(OdeConstantList(nn)*(x^(0 .. (nn-1))))}),roots[2]);
+  roots:=roots[1];
+
+  /* Return results */
+  Sum(consts * Exp(roots*x));
+];
+
+OdeSolve(_e) <--
+[
+  Local(h);
+  e:=OdeNormalForm(e);
+  h:=OdeFlatTerm(OdeCoefList(e));
+  if (IsFreeOf(h, Error))
+  [
+    OdeSolveLinear(e,h);
+  ]
+  else
+    OdeUnsolved(e);
+];
+
+10 # OdeSolveLinear(_e,OdeTerm(0,_list))_(Length(VarList(list)) = 0) <--
+[
+  OdeSolveLinearHomogeneousConstantCoefficients(OdeNormalForm(e));
+];
+
+100 # OdeSolveLinear(_e,_ode) <-- OdeUnsolved(e);
+
+OdeUnsolved(_e) <-- Subst(yyy,y)e;
+
+
+
+/*
+FT3(_e) <--
+[
+  e:=OdeNormalForm(e);
+Echo({e});
+  e:=OdeCoefList(e);
+Echo({e});
+  e:=OdeFlatTerm(e);
+Echo({e});
+  e;
+];
+OdeBoundaries(_solution,bounds_IsList) <--
+[
+];
+*/
+
+OdeTest(_e,_solution) <--
+[
+  Local(s);
+  s:=Subst(ss,solution){{n},if (n>0)(D(x,n)ss) else ss};
+  e:=OdeNormalForm(e);
+  e:=Apply("OdeSubstitute",{e,s});
+  e:=Simplify(e);
+  e;
+];
+
+
+
+

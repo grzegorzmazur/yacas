@@ -1,0 +1,198 @@
+
+
+Min(a,b):= If(a<b,a,b);
+Max(a,b):= If(a>b,a,b);
+
+Min(list_IsList) <--
+[
+  Local(result);
+  result:= list[1];
+  ForEach(item,Tail(list)) result:=Min(result,item);
+  result;
+];
+Max(list_IsList) <--
+[
+  Local(result);
+  result:= list[1];
+  ForEach(item,Tail(list)) result:=Max(result,item);
+  result;
+];
+
+/* Factorials */
+
+10 # 0! <-- 1;
+20 # ((n_IsPositiveInteger)!) <-- MathFac(n);
+30 # ((n_IsList)!) <-- MapSingle("!",n);
+
+/* formulae for half-integer factorials:
+
+(+(2*z+1)/2)! = Sqrt(Pi)*(2*z+1)! / (2^(2*z+1)*z!) for z >= 0
+(-(2*z+1)/2)! = Sqrt(Pi)*(-1)^z*z!*2^(2*z) / (2*z)! for z >= 0
+
+*/
+ 
+40 # (n_IsRational)! _(Denom(n)=2 And n>0) <-- Simplify(
+(Sqrt(Pi)/2^Numer(n)) * Numer(n)! / (((Numer(n)-1)/2)!) );
+40 # (n_IsRational)! _(Denom(n)=2 And -n>0) <-- Simplify( 
+(Sqrt(Pi)*(-1)^((Numer(-n)-1)/2)*2^(Numer(-n)-1)*((Numer(-n)-1)/2)!) 
+/ (Numer(-n)-1)! );
+
+/* Want to also compute (2.5)! */
+30 # (n_IsNumber)! _(IsPositiveInteger(N(n*2))) <-- (N(n*2)/2)!;
+
+
+RuleBase("Sum",{sumvar,sumfrom,sumto,sumbody}); 
+
+10 # Sum(_sumvar,sumfrom_IsNumber,sumto_IsNumber,_sumbody)_(sumto<sumfrom) <--
+     ApplyPure("Sum",{sumvar,sumto,sumfrom,sumbody});
+20 # Sum(_sumvar,sumfrom_IsNumber,sumto_IsNumber,_sumbody) <--
+[
+   Local(sumi,sumsum);
+   sumsum:=0;
+   For(sumi:=sumfrom,sumi<=sumto,sumi++)
+       [
+        MacroLocal(sumvar);
+        MacroSet(sumvar,sumi);
+        sumsum:=sumsum+Eval(sumbody);
+       ];
+   sumsum;
+];
+UnFence("Sum",4);
+HoldArg("Sum",sumvar);
+HoldArg("Sum",sumbody);
+
+Function("Sum",{sumlist})
+[
+   Local(sumi,sumsum);
+   sumsum:=0;
+   ForEach(sumi,sumlist) sumsum:=sumsum+sumi;
+   sumsum;
+];
+
+Average(list):=Sum(list)/Length(list);
+
+Function("Factorize",{sumvar,sumfrom,sumto,sumbody})
+[
+   Local(sumi,sumsum);
+   sumsum:=1;
+   For(sumi:=sumfrom,sumi<=sumto And sumsum!=0,sumi++)
+       [
+        MacroLocal(sumvar);
+        MacroSet(sumvar,sumi);
+        sumsum:=sumsum*Eval(sumbody);
+       ];
+   sumsum;
+];
+UnFence("Factorize",4);
+HoldArg("Factorize",sumvar);
+HoldArg("Factorize",sumbody);
+
+Function("Factorize",{sumlist})
+[
+   Local(sumi,sumsum);
+   sumsum:=1;
+   ForEach(sumi,sumlist)
+   [
+     sumsum:=sumsum*sumi;
+   ];
+   sumsum;
+];
+
+
+Function("Taylor",{taylorvariable,taylorat,taylororder,taylorfunction})
+[
+  Local(n,result,dif,polf);
+  [
+    MacroLocal(taylorvariable);
+    [
+      MacroLocal(taylorvariable);
+      MacroSet(taylorvariable, taylorat);
+      result:=Eval(taylorfunction);
+    ];
+    If(result=Undefined,
+    [
+      result:=Apply("Limit",{taylorvariable,taylorat,taylorfunction});
+    ]);
+/*
+    MacroSet(taylorvariable,taylorat);
+    result:=Eval(taylorfunction);
+*/
+  ];
+  dif:=taylorfunction;
+  polf:=(taylorvariable-taylorat);
+  For(n:=1,n<=taylororder,n++)
+  [
+    dif:= Deriv(taylorvariable) dif;
+    Local(term);
+    MacroLocal(taylorvariable);
+    [
+      MacroLocal(taylorvariable);
+      MacroSet(taylorvariable, taylorat);
+      term:=Eval(dif);
+    ];
+    If(term=Undefined,
+    [
+      term:=Apply("Limit",{taylorvariable,taylorat,dif});
+    ]);
+      
+    result:=result+(term/(n!))*(polf^n);
+/*    result:=result+Apply("Limit",{taylorvariable,taylorat,(dif/(n!))})*(polf^n); */
+/*
+    MacroSet(taylorvariable,taylorat);
+    result:=result+(Eval(dif)/(n!))*(polf^n);
+*/    
+  ];
+  result;
+];
+
+/*
+RuleBase("Fibonacci",{n});
+Rule("Fibonacci",1,0, IsInteger(n) And IsZero(n-1)) 1;
+Rule("Fibonacci",1,0, IsInteger(n) And IsZero(n-2)) 1;
+Rule("Fibonacci",1,1, IsInteger(n) And n > 2)
+[
+  Local(i,a1,a2,result);
+  i:=3;
+  a1:=1;
+  a2:=1;
+  result:=a1+a2;
+  While(i<n)
+  [
+    a1:=a2;
+    a2:=result;
+    result:=a1+a2;
+    i++;
+  ];
+  result;
+];
+*/
+
+10 # Lucas(0) <-- {2,1};
+11 # Lucas(n_IsPositiveInteger) <--
+[
+   Local(result, residue, z, t);
+   {z,t}:=Lucas(ShiftRight(n,1));
+   residue:=Mod(n,4);
+   If(residue=0, [
+     t:=z*t-1;
+     z:=z*z-2;
+   ], If(residue=1, [
+     z:=z*t-1;
+     t:=2+t*t;
+   ], If(residue=2, [
+     t:=1+z*t;
+     z:=2+z*z;
+   ], If(residue=3, [
+     z:=1+z*t;
+     t:=t*t-2;
+   ]))));
+   {z,t};
+];
+
+10 # Fibonacci(n_IsPositiveInteger) <--
+[
+   Local(z,t);
+   {z,t}:=Lucas(n-1);
+   ((z << 1)+t)/5;
+];
+
