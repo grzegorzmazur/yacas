@@ -1,0 +1,39 @@
+/// Unix-specific functions.
+
+/// These functions should return the command line necessary to accomplish tasks.
+
+DeleteFile(filename) := "rm -f " : filename;
+
+DeleteDirectory(dirname) := "rm -rf " : dirname;
+
+CopyFile(filename1, filename2) := "cp " : filename1 : " " : filename2;
+
+MakeDirectory(dirname) := "test -d " : dirname : " || mkdir -p " : dirname;
+
+ChangeDirectory(dirname) := "cd " : dirname;
+
+PrintFile(filename) := "cat " : filename;
+
+// execute a given command in the background
+BackgroundCommand(command'line) := command'line : "&";
+
+/// These functions should return some system-dependent strings.
+
+TemporaryDirectory() := "/tmp";
+
+NullFileName() := "/dev/null";
+
+// this is a cludge until we have tmpnam() call
+TemporaryFileName() :=
+[
+	Local(cludgefile, filename);
+	cludgefile := TemporaryDirectory() : FilePathSeparator[ChosenOS] : "yacas-tmpfile";
+	SystemCall("echo \\\"" : cludgefile : "-$$\\\" ';' > " : cludgefile);
+	filename := FromFile(cludgefile) Read();
+	SystemCall(DeleteFile(cludgefile));
+	filename;
+];
+
+// this depends on having "gv" on the path
+PSViewer() := "gv";
+
