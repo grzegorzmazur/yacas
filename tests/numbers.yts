@@ -52,3 +52,7 @@ Verify(300! / 250!, 251***300);
 
 Verify(Repunit(3), 111 );
 Verify(HarmonicNumber(5), 137/60 );
+
+Verify( Subfactorial(0), 1 );
+Verify( Subfactorial(21), 18795307255050944540 );
+
