@@ -36,9 +36,9 @@ REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt \
 	in/strings.chapt.txt in/probability-and-statistics.chapt.txt \
 	in/addons.chapt.txt in/FDL.chapt.txt
 
-REFPROGCHAPTERS = yacasapi.chapt FDL.chapt cl-options.chapt glossary.chapt GPL.chapt
+REFPROGCHAPTERS = yacasapi.chapt FDL.chapt cl-options.chapt glossary.chapt GPL.chapt numerics.chapt
 # yacasapi.chapt and GPL.chapt have no .txt source
-REFPROGSOURCES = in/FDL.chapt.txt in/cl-options.chapt.txt in/glossary.chapt.txt
+REFPROGSOURCES = in/FDL.chapt.txt in/cl-options.chapt.txt in/glossary.chapt.txt in/numerics.chapt.txt
 
 CODINGCHAPTERS = YacasDebugger.chapt FDL.chapt
 CODINGSOURCES = in/YacasDebugger.chapt.txt in/FDL.chapt.txt

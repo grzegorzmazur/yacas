@@ -303,3 +303,26 @@ LN(x_IsNumber)_(x>1 ) <--
 	NewtonNum({{y},4*x/(Exp(y)+x)-2+y}, N(794/2291*IntLog(Floor(x*x),2),5), 10, 3);
 ];
 /**/
+
+/// generalized integer Power function using the classic binary method.
+5 # IntPowerNum(_x, 0, _func, _unity) <-- unity;
+10 # IntPowerNum(_x, n_IsInteger, _func, _unity) <--
+[
+	// use binary method
+	Local(result);
+	// unity might be of non-scalar type, avoid assignment
+	While(n > 0)
+	[
+		If(
+			(n&1) = 1,
+			If(
+				IsBound(result), // if result is already assigned
+				result := Apply(func, {result,x}),
+				result := x, // avoid multiplication
+			)
+		);
+		x := Apply(func, {x,x});
+		n := n>>1;
+	];
+	result;
+];
