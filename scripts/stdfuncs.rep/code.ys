@@ -112,20 +112,17 @@
 
 
 100 # Sin(_x)/Tan(_x) <-- Cos(x);
+100 # Sin(_x)/Cos(_x) <-- Tan(x);
+100 # Cos(_x)*Tan(_x) <-- Sin(x);
+100 # Cos(_x)/Sin(_x) <-- (1/Tan(x));
 100 # Tan(_x)/Sin(_x) <-- (1/Cos(x));
 100 # Tan(_x)*Cos(_x) <-- Sin(x);
-100 # Cos(_x)*Tan(_x) <-- Sin(x);
-100 # Sin(_x)/Cos(_x) <-- Tan(x);
 100 # 1/Cot(_x)		<-- Tan(x);
 100 # 1/Sec(_x)		<-- Cos(x);
 100 # 1/Csc(_x)		<-- Sin(x);
 100 # Sec(_x)		<-- 1/Cos(x);
 100 # Csc(_x)		<-- 1/Sin(x);
 100 # Cot(_x)		<-- 1/Tan(x);
-
-100 # Sin(_x)*Csc(x)  <-- 1;
-100 # Cos(_x)*Sec(x)  <-- 1;
-100 # Tan(_x)*Cot(x)  <-- 1;
 
 
 2 # Exp(x_IsNumber)_(Numeric) <-- ExpNum(x);
