@@ -25,6 +25,7 @@ RuleBase("=>",{a,b});
    That is, a conjunction of disjunctions.
 */
 
+
 // Trivial simplifications
 10  # CNF( Not  True)                  <-- False;
 11  # CNF( Not  False)                 <-- True;
@@ -84,19 +85,31 @@ RuleBase("=>",{a,b});
 
 90 # CNF((_x)  And  (_y))             <-- CNF(x) And CNF(y);                // Transform subexpression
 
-101 # CNF( (_x) < (_y) )              <-- Not Simplify(x >=  y);
-102 # CNF( (_x) > (_y) )              <-- Simplify(x >   y);
-103 # CNF( (_x) >= (_y) )             <-- Simplify(x >=  y);
-104 # CNF( (_x) <= (_y) )             <-- Not Simplify(x >  y);
-105 # CNF( (_x) == (_y) )             <-- Simplify(x ==  y);
-106 # CNF( (_x) !== (_y) )            <-- Not Simplify(x == y);
+101 # CNF( (_x) < (_y) )              <-- Not CNFInEq(x >=  y);
+102 # CNF( (_x) > (_y) )              <-- CNFInEq(x >   y);
+103 # CNF( (_x) >= (_y) )             <-- CNFInEq(x >=  y);
+104 # CNF( (_x) <= (_y) )             <-- Not CNFInEq(x >  y);
+105 # CNF( (_x) == (_y) )             <-- CNFInEq(x ==  y);
+106 # CNF( (_x) !== (_y) )            <-- Not CNFInEq(x == y);
 
-111 # CNF( Not((_x) <  (_y)) )        <-- Simplify( x >= y );
-113 # CNF( Not((_x) <= (_y)) )        <-- Simplify( x > y );
-116 # CNF( Not((_x) !== (_y)) )       <-- Simplify( x == y );
+111 # CNF( Not((_x) <  (_y)) )        <-- CNFInEq( x >= y );
+113 # CNF( Not((_x) <= (_y)) )        <-- CNFInEq( x > y );
+116 # CNF( Not((_x) !== (_y)) )       <-- CNFInEq( x == y );
 
 /* Accept as fully simplified, fallthrough case */
 200 # CNF(_x)                         <-- x;
+
+
+
+20 # CNFInEq((_xex) == (_yex)) <-- (Apply(CNFInEqSimplify,{xex-yex}) == 0);
+20 # CNFInEq((_xex) > (_yex)) <-- (Apply(CNFInEqSimplify,{xex-yex}) > 0);
+20 # CNFInEq((_xex) < (_yex)) <-- (Apply(CNFInEqSimplify,{xex-yex}) < 0);
+20 # CNFInEq((_xex) >= (_yex)) <-- (Apply(CNFInEqSimplify,{xex-yex}) >= 0);
+20 # CNFInEq((_xex) <= (_yex)) <-- (Apply(CNFInEqSimplify,{xex-yex}) <= 0);
+20 # CNFInEq((_xex) !== (_yex)) <-- (Apply(CNFInEqSimplify,{xex-yex}) !== 0);
+30 # CNFInEq(_exp) <-- Apply(CNFInEqSimplify,{exp});
+
+CNFInEqSimplify := {{x},x}; // "Simplify";
 
 
 // Some shortcuts to match prev interface
