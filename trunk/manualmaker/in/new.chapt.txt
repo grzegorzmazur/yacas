@@ -179,7 +179,7 @@ it is best to keep this in mind and keep the code passed to
 
 	    Abstract
 
-We describe the design and implementation of Yacas, a free (GPL) computer
+We describe the design and implementation of YACAS, a free computer
 algebra system currently under development.  The system consists of a small
 core interpreter and a library of scripts that implement computer algebra
 functionality.  The interpreter provides a high-level weakly typed functional
@@ -214,7 +214,7 @@ and a library of script code. The Yacas interpreter has been implemented in
 standard C++.
 
 The design goals for Yacas are: portability, self-containment, ease of use,
-code transparency, and flexibility of the core engine (lack of predefined "policies"). The system falls into the "prototype/hacker" rather than into the "axiom-algebraic" category, according to the classification of Fateman [Fateman].
+code transparency, and flexibility of the core engine (lack of predefined "policies"). The system falls into the "prototype/hacker" rather than into the "axiom-algebraic" category, according to the classification of Fateman [F90].
 
 	    Portability
 
@@ -223,7 +223,7 @@ in a subset of C++ which is supported by almost all, if not all, C++ compilers.
 The platform-specific parts have been clearly separated to facilitate porting.
 Even the standard C++ library is considered to be platform-specific, as there
 exist  platforms without support for the standard C++ library (e.g. the
-EPOC32).
+EPOC32 platform).
 
 The primary development platform is GNU/Linux. Currently Yacas runs under
 various Unix variants, Windows environments, Psion organizers (EPOC32), Ipaq
@@ -367,7 +367,7 @@ use.
 
 Yacas script is a functional language based on various ideas that seemed
 useful for an implementation of CAS: list-based data structures, object properties, and recursive
-functional programming (a la LISP); term rewriting [TermRewriting] with pattern
+functional programming (a la LISP); term rewriting [BN98] with pattern
 matching somewhat along the lines of Mathematica; user-defined infix operators
 a la PROLOG; and delayed evaluation of expressions.  Garbage collection and
 memory management are automatic.
@@ -388,19 +388,23 @@ Secondly, rules are assigned a precedence value (a positive integer) that
 controls the order of rules to be attempted. 
 
 Thirdly, new rules can be defined dynamically, which means that there is no
-predefined "ranking alphabet" of "ground terms" (in the terminology of [TATA]).
-It is also possible to define a "rule closure" that defines rules depending on
-its arguments, or to erase rules. Thus, the Yacas script library does not
-necessarily represent a fixed tree rewriting automaton. An implementation of
-machine learning is possible in Yacas (among other things).
+predefined "ranking alphabet" of "ground terms" (in the terminology of
+[TATA99]). It is also possible to define a "rule closure" that defines rules
+depending on its arguments, or to erase rules. Thus, the Yacas script library
+does not necessarily represent a fixed tree rewriting automaton. An
+implementation of machine learning is possible in Yacas (among other things).
+For example, when the module {wordproblems.ys} "learns" from the user input
+that "apple" is a countable object, it defines a new postfix operator {apples},
+so that the expression {3 apples} is parsed as a function {apples(3)} and
+evaluated according to a newly defined rule.
+
+		The Yacas scripting language
 
 Convenience functions are defined in the script library to allow a more
 straightforward procedural programming a la C and a more convenient syntax to
 define new rewriting rules. The interpreter is sufficiently flexible so that
 the functions {While}, {For}, {ForEach}, {if}, {else} etc. can be defined in
 the script library itself rather than in the kernel.
-
-		The Yacas scripting language
 
 @@@large section to be written with lots of examples
 
@@ -413,9 +417,9 @@ advanced features in detail, and a full reference manual.
 
 Yacas currently comes with its own document formatting conventions for writing
 documentation in plain text format with a minimal markup. This text format is
-automatically converted to HTML, PostScript and PDF formats. The HTML
-documentation is hyperlinked and can be used as online help from the Yacas
-prompt.
+automatically converted to HTML, LaTeX, PostScript and PDF formats. The HTML
+version of the documentation is hyperlinked and is used as online help
+available from the Yacas prompt.
 
 		Future plans
 
@@ -432,15 +436,18 @@ being addressed.
 
 		References
 
-[Fateman] R. Fateman,
+Bibliography:
+
+[F90] R. Fateman,
 <i>On the design and construction of algebraic manipulation systems</i>,
 also published as: ACM Proceedings of the ISSAC-90, Tokyo, Japan.
 
-[TermRewriting] F. Baader and T. Nipkow, <i>Term rewriting and all that</i>,
+[BN98] F. Baader and T. Nipkow, <i>Term rewriting and all that</i>,
 Cambridge University Press, 1998.
 
-
-
+[TATA99] H. Comon, M. Dauchet, R. Gilleron, F. Jacquemard, D. Lugiez, S. Tison,
+and M. Tommasi, <i>Tree Automata Techniques and Applications</i>, 1999, online
+book: <*http://www.grappa.univ-lille3.fr/tata*>
 
 
 
