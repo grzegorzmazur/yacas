@@ -13,32 +13,50 @@
 Indent() :=
 [
   Local(result,i);
-  result:="";
-  For(i:=Length(traceStack),i>=1,i--) [result := result:"    ";];
+  Set(result,"");
+  For(Set(i,Length(traceStack)),i>=1,Set(i,i-1)) [Set(result, result:"    ");];
   result;
 ];
 Last(list) := list[Length(list)];
+
+
+10 # Dump({_expand,_expr1,_expr2}) <--
+[
+      Echo({expand,0});
+      Echo({indent,expr1,expr2});
+];
+10 # Dump({_expand,_expr1,_expr2,_file,0}) <-- 
+[
+      Echo({expand,0});
+      Echo({indent,expr1,expr2});
+];
+20 # Dump({_expand,_expr1,_expr2,_file,_line}) <-- 
+[
+      Echo({expand,line});
+      Echo({file});
+      Echo({indent,expr1,expr2});
+];
+
 Dump():=
 [
   Local(head);
-  head := Head(traceStack);
+  Set(head, Head(traceStack));
   ToFile(TraceFile(traceFile))
   [
     ForEach(item,head)
     [
-      Echo({item[1]});
-      Echo({indent,item[2],item[3]});
+      Dump(item);
     ];
     Echo({"end"});
   ];
 ];
 
-TrEnter(_expr) <--
+TrEnter(_function,_expr,_file,_line) <--
 [
-  If(Length(expr)>100,expr:=StringMid(1,100,expr):"...");
-  DestructiveAppend(traceStack[1],{-1,"ENTER: ",expr});
-  traceStack := {}:traceStack;
-  indent := Indent();
+  If(Length(expr)>100,Set(expr,StringMid(1,100,expr):"..."));
+  DestructiveAppend(traceStack[1],{-1,"ENTER: ",expr,file,line});
+  DestructiveInsert(traceStack,1,{});
+  Set(indent, Indent());
 ];
 HoldArg("TrEnter",arg1);
 
@@ -48,15 +66,15 @@ TrLeave(_expr,_result) <--
   if (Length(Head(traceStack)) > 0)
   [
     Dump();
-    traceStack := Tail(traceStack);
-    Last(traceStack[1])[1] := traceFile;
-    traceFile++;
+    Set(traceStack, Tail(traceStack));
+    Last(Head(traceStack))[1] := traceFile;
+    Set(traceFile,traceFile+1);
   ]
   else
   [
-    traceStack := Tail(traceStack);
+    Set(traceStack, Tail(traceStack));
   ];
-  indent := Indent();
+  Set(indent, Indent());
   DestructiveAppend(traceStack[1],{-1,"LEAVE: ",result});
 ];
 HoldArg("TrLeave",arg1);

@@ -31,10 +31,6 @@ proteus   : $(PROTEUS_OBJS) $(YACAS_DIR)/libyacas.a $(YACAS_DIR)/libyacasplatfor
 	$(CXX) $(PROTEUS_OBJS) $(YACAS_DIR)/libyacas.a $(YACAS_DIR)/libyacasplatform.a $(YACAS_DIR)/libyacasnumbers.a -o proteus $(CXXFLAGS) $(LIBS) -lm
 	mv proteus $(EXENAME)
 
-TRACER_OBJS = tracer.cpp
-
-proteustracer: $(TRACER_OBJS)
-	$(CXX) $(TRACER_OBJS) -o proteustracer $(CXXFLAGS) $(LIBS) -lm
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCS) -c $*.cpp -o $*.o

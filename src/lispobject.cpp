@@ -23,12 +23,6 @@ void DecNrObjects()
 
 
 
-LispObject::LispObject()
-{
-#ifdef YACAS_DEBUG
-    IncNrObjects();
-#endif
-}
 
 
 LispObject::~LispObject()

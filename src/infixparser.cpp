@@ -150,6 +150,12 @@ void ParsedObject::Combine(LispInt aNrArgsToCombine)
 {
     LispPtr subList;
     subList.Set(LispSubList::New(iResult.Get()));
+#ifdef DEBUG_MODE
+    subList.Get()->SetFileAndLine(
+                              iParser.iInput.Status().FileName(),
+                              iParser.iInput.Status().LineNumber()
+                             );
+#endif
 
     LispIterator iter(iResult);
     LispInt i;
@@ -188,6 +194,12 @@ void ParsedObject::InsertAtom(LispStringPtr aString)
 {
     LispPtr ptr;
     ptr.Set(LispAtom::New(aString));
+#ifdef DEBUG_MODE
+    ptr.Get()->SetFileAndLine(
+                              iParser.iInput.Status().FileName(),
+                              iParser.iInput.Status().LineNumber()
+                             );
+#endif
     ptr.Get()->Next().Set(iResult.Get());
     iResult.Set(ptr.Get());
 }

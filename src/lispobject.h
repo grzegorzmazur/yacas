@@ -93,8 +93,30 @@ public:
     inline LispInt operator!=(LispObject& aOther);
     inline void SetFlag(LispInt aFlag);
     inline void ResetFlag(LispInt aFlag);
+
+#ifdef DEBUG_MODE
+    LispCharPtr iFileName;
+    LispInt iLine;
+    
+    inline void SetFileAndLine(LispCharPtr aFileName, LispInt aLine)
+    {
+        iFileName = aFileName;
+        iLine = aLine;
+    }
+#endif
+
 protected:
-    LispObject();
+    inline LispObject()
+    {
+#ifdef YACAS_DEBUG
+        IncNrObjects();
+#endif
+
+#ifdef DEBUG_MODE
+        iFileName = NULL;
+        iLine = 0;
+#endif
+    }
     
 private:
     LispPtr   iNext;

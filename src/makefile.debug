@@ -1,4 +1,6 @@
 
+RANLIB = ranlib
+
 
 
 OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
@@ -11,20 +13,23 @@ OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
 	patternclass.o patterns.o platmath.o standard.o                \
 	stdcommandline.o stdfileio.o stdstubs.o stringio.o             \
 	substitute.o tokenizer.o                                       \
-	yacasapi.o yacasmain.o yacasnumbers.o unipoly.o
+	yacasapi.o yacasnumbers.o unipoly.o elfdll.o
 
 .SUFFIXES: .cpp 
 
 .cpp.o:
 	gcc -x c++ $(INC) -c $<
 
+all:
+	-rm *.o
+	make libyacasdebug.a -f makefile.debug
 
-all: yacas
+INC = -I./plat/linux32/  -DDEBUG_MODE
 
-INC = -I./plat/beos/  -DSCRIPT_DIR=\"/boot/home/desktop/yacas/scripts/\" -DVERSION=\"Beos\"
+libyacasdebug.a : $(OBJS)
+	$(AR) cru libyacasdebug.a $(OBJS)
+	$(RANLIB) libyacasdebug.a
 
-yacas : $(OBJS)
-	gcc $(OBJS) -o yacas
-
+#	-rm -f libyacasdebug.a
 
         
