@@ -120,17 +120,17 @@ ChapterIntro(string) := WriteString("
 Bodied("ChapterIntro", 60000);
 
 CmdDescription(cmd, desc) := WriteString("
-\\section*{" : HtmlTermHeading(cmd) : " --- " : desc : "}
+\\section{" : HtmlTermHeading(cmd) : " --- " : desc : "}
 ");
 
 StandardLib() := WriteString("
 
-\\begin{flushright} \\small Standard library \\end{flushright}
+\\begin{flushright} \\small (standard library) \\end{flushright}
 
 ");
 
 BuiltIn() := WriteString("
-\\raggedleft {\\small Core function}
+\\begin{flushright} \\small (\\textsc{Yacas} internal) \\end{flushright}
 ");
 
 AddBody(string) := WriteString(string);

@@ -31,7 +31,7 @@ EXTRA_DIST = $(SCRIPTFILES) \
         examples/queens.ys examples/benchmark.ys \
         examples/benchmark2.ys examples/benchbuild.ys  examples/goldbach.ys examples/series.ys \
         addons/README addons/editvi.ys addons/editvi.ys.def addons/gnuplot.ys \
-        addons/gnuplot.ys.def
+        addons/gnuplot.ys.def addons/unix.ys addons/unix.ys.def
 
 testscriptdir = ../scripts/
 yacastest = ../src/yacas -pc --rootdir $(testscriptdir)

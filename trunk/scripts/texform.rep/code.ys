@@ -242,29 +242,3 @@ Function ("TeXFormPrintMatrix", {M})
 	ConcatStrings(result, " \\end{array} ");
 ];
 
-/* show a Yacas expression graphically in a PS file */
-/* The following global variable will define the available PS viewer */
-PSViewCommand := "gv";
-TeXShowPS(expr) := [
-/* Example code to read the PID of the Yacas process into the variable PID
-	We have to jump through the hoops here because we can't redirect STDOUT to a Yacas stream... ideally it would be just this:
-	PID := FromString(ToString() SystemCall("echo $PPID")) Read();
-/*
-	SystemCall("echo $PPID ';' > /tmp/yacas-tmp");
-	PID := FromFile("/tmp/yacas-tmp") Read();
-*/
-	/* Create a temporary file */
-	SystemCall("echo \\\"/tmp/yacas-tmpfile-$$\\\" ';' > /tmp/yacas-tmp");
-	filename := FromFile("/tmp/yacas-tmp") Read();
-	SystemCall("rm -f /tmp/yacas-tmp");
-	ToFile(filename : ".tex") WriteString(
-"\\documentclass{article} \\begin{document} \\thispagestyle{empty}
-" : TeXForm(expr) : "
-\\end{document}
-");
-	WriteString("Expression exported as " : filename : ".tex" : Nl());
-	/* Make PS file */
-	SystemCall("cd /tmp; latex " : filename : " > /dev/null; dvips -q -o " : filename : ".ps " : filename : ".dvi");
-	/* Show PS file */
-	SystemCall(PSViewCommand : " " : filename : ".ps; rm -f " : filename : ".*");
-];
