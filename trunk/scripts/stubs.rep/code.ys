@@ -167,6 +167,9 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 0 # Gcd(0,0) <-- 1;
 1 # Gcd(0,_m) <-- Abs(m);
 1 # Gcd(_n,0) <-- Abs(n);
+1 # Gcd(_m,_m) <-- m;
+2 # Gcd(_n,1) <-- 1;
+2 # Gcd(1,_m) <-- 1;
 2 # Gcd(n_IsInteger,m_IsInteger) <-- MathGcd(n,m);
 3 # Gcd(_n,_m)_(IsGaussianInteger(m) And IsGaussianInteger(n) )<-- GaussianGcd(n,m);
 
