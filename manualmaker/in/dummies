@@ -1,5 +1,5 @@
 *CMD CommandName --- command description
-*STD/*CORE
+*STD/*CORE/*UNIX/*MSWIN/*MAC
 *CALL
 	CommandName(parameter)
 	CommandName()
@@ -37,6 +37,7 @@ Sometimes it does not work. For example, when using $Sin(x)^2+Cos(x)^2$ as its {
 
 *E.G.
 
+	<cmdline>
 	<cmdline>
 
 *SEE <cmd1>, <cmd2>

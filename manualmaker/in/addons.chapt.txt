@@ -130,14 +130,9 @@ We find that 101 is not enough points to accurately represent this function. How
 *CALL
 	Version()
 
-*PARMS
-
-none
-
 *DESC
 
-The function {Version()} returns the version of the Yacas interpreter,
-as a string.
+The function {Version()} returns a string representing the version of the currently running Yacas interpreter.
 
 *E.G.
 
@@ -172,16 +167,15 @@ in the form {d.d.dd} as above.
 
 {Vi} will try to edit a file, or if the argument passed is a
 function, it will try to edit the file the function is defined in.
-It will try to do so by invoking vi.
+It will try to do so by invoking the editor {vi}.
 
-It finds the function by scanning the *.def files that have been
-reported to the system (using the function {FindFunction}).
+It finds the function by scanning the {*.def} files that have been
+reported to the system. ({Vi} calls  {FindFunction} for this.)
 If editing a function, the command will jump directly to the first
 occurrence of the name of the function in the file (usually the 
 beginning of a definition of a function).
 
-To be really useful, you need to go to the directory containing
-the original files, to edit the original files.
+For {Vi()} to be really useful, you need to start Yacas from the {scripts/} directory in the development tree. In that case, {FindFunction()} will return the filename under that directory. Otherwise,  {FindFunction()} will return a name in the systemwide installation directory (or directory specified in the {--rootdir} option).
 
 *E.G.
 
