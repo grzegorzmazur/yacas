@@ -114,7 +114,7 @@ RoundTo(N(ArcCos(N(Cos(1.234567)))), 49)
 );
 
 Verify(
-RoundTo(N(Tan(N(ArcTan(20)))), 47)
+RoundTo(N(Tan(N(ArcTan(20)))), 46)	// large roundoff error on Tan() calculation due to subtraction from Pi/2 -- unavoidable loss of precision
 , 20
 );
 

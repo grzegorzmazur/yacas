@@ -15,6 +15,7 @@
 	0.4.6 moved the <> and <=> operators to stdopers.ys
 	0.4.7 added Factorize() i.e. Product()
 	0.4.8 added D(x,n), Deriv(x,n), =>, and fixed errors with ArcSinh, ArcCosh, ArcTanh
+	0.4.9 fixed omission: (fraction)^n was not put in brackets
 */
 
 /* To do:
@@ -93,8 +94,8 @@ TeXFormRegularPrefixOps := { {"+"," + "}, {"-"," - "}, {"Not"," \\neg "} };
 	TeXFormTeXify(Type(expr))
 ) );
 
-	/* division and its operands are never bracketed */
-100 # TeXForm(_x / _y, _p) <-- ConcatStrings("\\frac{", TeXForm(x, TeXFormMaxPrec), "}{", TeXForm(y, TeXFormMaxPrec), "} ");
+	/* fraction and its operands are never bracketed except when they are under power */
+100 # TeXForm(_x / _y, _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\frac{", TeXForm(x, TeXFormMaxPrec), "}{", TeXForm(y, TeXFormMaxPrec), "} ") );
 
 	/* power's argument is never bracketed but it must be put in braces. Chained powers must be bracketed. Powers of 1/n are displayed as roots. */
 100 # TeXForm(_x ^ (1/2), _p) <-- ConcatStrings("\\sqrt{", TeXForm(x, TeXFormMaxPrec), "}");
