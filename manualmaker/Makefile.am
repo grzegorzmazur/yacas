@@ -7,7 +7,7 @@
 # newly compiled version of yacas in ../src (not necessarily under $(srcdir))
 ouryacas = ../src/yacas --rootdir $(top_srcdir)/scripts/:../scripts/
 
-noinst_DATA = books.html
+noinst_DATA = @BOOKS_HTML@ # books.html
 
 BOOKS = intro.book coding.book ref.book refprog.book essays.book Algo.book
 
@@ -156,18 +156,10 @@ refprog.html : refprog.book $(REFPROGCHAPTERS)
 
 noindex: intro.html ref.html coding.html essays.html refprog.html
 
-# this dist-hook copies the html files into the distributed .tar.gz file.
-dist-hook:
-# do not copy html files any more
-#	-cp $(srcdir)/*.html  $(distdir) 
-
-# not sure if this is very helpful b/c we are overriding distcheck in the top Makefile
-distcheck-hook:
-	make texdocs
-	make test
-
 ## Hook to install documentation
-install-data-local: books.html 
+install-data-local: @INSTALL_HTML@ 
+
+install-html: books.html 
 	$(mkinstalldirs) $(yacas_helpdir)/
 	cp $(top_srcdir)/docs/yacaslogo.gif $(yacas_helpdir)/
 	-for file in *.html; do \
