@@ -73,7 +73,7 @@ CODINGSOURCES = YacasDebugger.chapt.txt FDL.chapt.txt
 
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
 	SimpleTools.chapt CVS-Howto.chapt YacasDocs.chapt \
-	wester-1994.chapt new.chapt paper.chapt \
+	wester-1994.chapt new.chapt paper.chapt codecheck.chapt \
 	wordproblems.chapt FDL.chapt BuildSystem.chapt
 
 ESSAYSOURCES = ABIN-grammar.chapt.txt Plugins-Howto.chapt.txt \
