@@ -5,7 +5,7 @@ cd ..
 
 mkdir winrel\
 copy yacas.exe winrel\
-copy ramscripts\scripts.dat winrel\
+copy src\scripts.dat winrel\
 copy readme.bin.win32.txt winrel\readme.txt
 copy copying winrel\copying.txt
 

@@ -9,6 +9,7 @@
 #include "lispstring.h"
 #include "stringio.h"
 #include "yacas.h"
+#include "archiver.h"
 
 static CYacas *yacas = NULL;
 LispString *stringout = NULL;

@@ -79,7 +79,7 @@ libmath_la_SOURCES = libmath.cpp
 libmath_la_DEPENDENCIES = yacas gencorefunctions
 
 # assuming the directory below does not have plugins!
-libmath.cpp: ../scripts/base.rep/math.ys 
+libmath.cpp: yacas ../scripts/base.rep/math.ys gencorefunctions core_yacasmain.h 
 	cd ../scripts ; make packages.ys ; make corefunctions.ys ; cd ../src/
 	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
 	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
@@ -129,7 +129,6 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	setup.py yacasc.i yacas.py \
 	epoccli.cpp epoccli.h epoccli.mmp epocclsv.h epocserv.cpp epocserv.h \
 	epocserv.mmp yacas.rss elfdll.cpp \
-	libmath.cpp \
 	compressedfiles.cpp \
 	README.LZO lzoconf.h minilzo.c minilzo.h decompressor.cpp \
 	compressor.cpp filescanner.cpp filescanner.h \
@@ -138,7 +137,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 
 
 # list some extra generated files
-CLEANFILES = fastprimes.c core_yacasmain.h
+CLEANFILES = fastprimes.c core_yacasmain.h libmath.cpp 
 
 $(srcdir)/platmath.cpp: fastprimes.c
 

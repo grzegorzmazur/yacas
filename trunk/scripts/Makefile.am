@@ -1,7 +1,7 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
 # The script files are listed in two separate variables, SCRIPTFILES1 and SCRIPTFILES2
-# because Sun computers 
+# because Sun computers  
 
 SCRIPTFILES1 = 	        										    \
 	glview.ys standard.ys standard.ys.def stdopers.ys yacasinit.ys					    \

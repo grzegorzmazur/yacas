@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /I "plat\win32" /I "\prj\yacas\src\\" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "SUPPORT_SERVER" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /O2 /I "plat\win32" /I "\prj\yacas\src\\" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "SUPPORT_SERVER" /YX /FD /c
 # ADD BASE RSC /l 0x413 /d "NDEBUG"
 # ADD RSC /l 0x413 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -66,7 +66,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "plat\win32" /I "\prj\yacas\src\\" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "SUPPORT_SERVER" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "plat\win32" /I "\prj\yacas\src\\" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "SUPPORT_SERVER" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x413 /d "_DEBUG"
 # ADD RSC /l 0x413 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -107,6 +107,10 @@ SOURCE=.\commandline.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\compressedfiles.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ctokenizer.cpp
 # End Source File
 # Begin Source File
@@ -116,6 +120,10 @@ SOURCE=.\deffile.cpp
 # Begin Source File
 
 SOURCE=.\errors.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\exedll.cpp
 # End Source File
 # Begin Source File
 
@@ -132,6 +140,10 @@ SOURCE=.\grower.cpp
 # Begin Source File
 
 SOURCE=.\infixparser.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\libmath.cpp
 # End Source File
 # Begin Source File
 
@@ -204,6 +216,10 @@ SOURCE=.\mathuserfunc.cpp
 # Begin Source File
 
 SOURCE=.\mathutil.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\numbers.cpp
 # End Source File
 # Begin Source File
 

@@ -112,6 +112,10 @@ SOURCE=.\commandline.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\compressedfiles.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ctokenizer.cpp
 # End Source File
 # Begin Source File
@@ -128,6 +132,10 @@ SOURCE=.\errors.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\exedll.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\genericobject.cpp
 # End Source File
 # Begin Source File
@@ -141,6 +149,10 @@ SOURCE=.\grower.cpp
 # Begin Source File
 
 SOURCE=.\infixparser.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\libmath.cpp
 # End Source File
 # Begin Source File
 
@@ -213,6 +225,10 @@ SOURCE=.\mathuserfunc.cpp
 # Begin Source File
 
 SOURCE=.\mathutil.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\numbers.cpp
 # End Source File
 # Begin Source File
 
