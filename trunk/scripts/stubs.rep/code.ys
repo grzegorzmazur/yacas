@@ -2,72 +2,60 @@
  * both arguments are numbers. The value Infinity is also understood.
 */
 
-10 # n_IsNumber < m_IsNumber <-- LessThan(n,m);
+// Undefined is a very special case as we return False for everything
+1 # Undefined <  _x  <--  False;
+1 # Undefined <= _x  <--  False;
+1 # Undefined >  _x  <--  False;
+1 # Undefined >= _x  <--  False;
+1 # _x <  Undefined  <--  False;
+1 # _x <= Undefined  <--  False;
+1 # _x >  Undefined  <--  False;
+1 # _x >= Undefined  <--  False;
 
-20 # (n1_IsNumber/n2_IsNumber) < (m1_IsNumber/m2_IsNumber) <--
-     n1*m2 < m1*n2;
-20 # (n1_IsNumber            ) < (m1_IsNumber/m2_IsNumber) <--
-     n1*m2 < m1;
-20 # (n1_IsNumber/n2_IsNumber) < (m1_IsNumber            ) <--
-     n1    < m1*n2;
-30 # n_IsNumber < Infinity <-- True;
-30 # Infinity < n_IsNumber <-- False;
-30 # n_IsNumber < -Infinity <-- False;
-30 # -Infinity < n_IsNumber <-- True;
+// Convert our comparisons to a canonical form with zero on one side
+5  # (_n < _m)_(m != 0)  <--  n-m < 0;
 
+10 # n_IsNumber < 0  <--  LessThan(n,0);
+
+// Deal with Infinity
+20 #  Infinity < 0 <-- False;
+
+// Lots of known identities go here
+30 # (_n1/_n2) < 0  <--  (n1 < 0) != (n2 < 0);
+30 # (_n1*_n2) < 0  <--  (n1 < 0) != (n2 < 0);
+
+// This doesn't sadly cover the case where a and b have opposite signs
+30 # ((_n1+_n2) < 0)_((n1 < 0) And (n2 < 0))  <--  True;
+30 # ((_n1+_n2) < 0)_((n1 > 0) And (n2 > 0))  <--  False;
+30 #  _x^a_IsOdd  < 0  <--  x < 0;
+30 #  _x^a_IsEven < 0  <--  True;
+
+// Add other functions here!  Everything we can compare to 0 should be here.
+40 # (Sqrt(_x))_(x > 0) < 0          <--  False;
+
+// These rules currently don't ever match as Floor() isn't sufficiently
+// clever
+40 # (Sin(_x) < 0)_(Not(IsEven(x/Pi)) And IsEven(Floor(x/Pi))) <-- False;
+
+// Functions that need special treatment with more than one of the comparison
+// operators as they always return true or false.  For these we must define
+// both the `<' and `>=' operators.
+40 # (Complex(_a,_b) <  0)_(b!=0) <--  False;
+40 # (Complex(_a,_b) >= 0)_(b!=0) <--  False;
+40 # (Sqrt(_x))_(x < 0) <  0      <--  False;
+40 # (Sqrt(_x))_(x < 0) >= 0      <--  False;
+
+// Deal with negated terms
+50 # -(_x) < 0 <-- Not(x<0);
+
+// Define each of {>,<=,>=} in terms of <
+50 # _n >  _m <-- m < n;
+50 # _n <= _m <-- m >= n;
+50 # _n >= _m <-- Not(n<m);
+
+/* I wish this line weren't necessary, but it seems I can't get away with
+ * omitting it */
 10 # n_IsNumber > m_IsNumber <-- GreaterThan(n,m);
-20 # (n1_IsNumber/n2_IsNumber) > (m1_IsNumber/m2_IsNumber) <--
-     n1*m2 > m1*n2;
-20 # (n1_IsNumber            ) > (m1_IsNumber/m2_IsNumber) <--
-     n1*m2 > m1;
-20 # (n1_IsNumber/n2_IsNumber) > (m1_IsNumber            ) <--
-     n1    > m1*n2;
-30 # n_IsNumber > Infinity <-- False;
-30 # Infinity > n_IsNumber <-- True;
-30 # n_IsNumber > -Infinity <-- True;
-30 # -Infinity > n_IsNumber <-- False;
-
-40 # Undefined < _n <-- False;
-40 # Undefined > _n <-- False;
-40 # _n > Undefined <-- False;
-40 # _n < Undefined <-- False;
-
-/// grrrr... please do not define == to actually do anything! (sw)
-//10 # n_IsNumber == m_IsNumber <-- n=m;
-
-// bug fix: Equals(1, 1.0) returns False and we want 1 <= 1.0 to return True.
-5 # n_IsNumber <= 0 <-- Not(GreaterThan(n, 0));
-10 # n_IsNumber <= m_IsNumber <-- (MathSubtract(n,m)<=0);
-
-20 # (n1_IsNumber/n2_IsNumber) <= (m1_IsNumber/m2_IsNumber) <--
-     n1*m2 <= m1*n2;
-20 # (n1_IsNumber            ) <= (m1_IsNumber/m2_IsNumber) <--
-     n1*m2 <= m1;
-20 # (n1_IsNumber/n2_IsNumber) <= (m1_IsNumber            ) <--
-     n1    <= m1*n2;
-30 # n_IsNumber <= Infinity <-- True;
-30 # Infinity <= n_IsNumber <-- False;
-30 # n_IsNumber <= -Infinity <-- False;
-30 # -Infinity <= n_IsNumber <-- True;
-
-// do we need to define all those separate rules for >= and <= ?
-1000 # _n >= _m <-- (n>m) Or (n=m);
-1000 # _n <= _m <-- (n<m) Or (n=m);
-
-// see above for <=
-5 # n_IsNumber >= 0 <-- Not(LessThan(n, 0));
-10 # n_IsNumber >= m_IsNumber <-- (MathSubtract(n,m)>=0);
-
-20 # (n1_IsNumber/n2_IsNumber) >= (m1_IsNumber/m2_IsNumber) <--
-     n1*m2 >= m1*n2;
-20 # (n1_IsNumber            ) >= (m1_IsNumber/m2_IsNumber) <--
-     n1*m2 >= m1;
-20 # (n1_IsNumber/n2_IsNumber) >= (m1_IsNumber            ) <--
-     n1    >= m1*n2;
-30 # n_IsNumber >= Infinity <-- False;
-30 # Infinity >= n_IsNumber <-- True;
-30 # n_IsNumber >= -Infinity <-- True;
-30 # -Infinity >= n_IsNumber <-- False;
 
 
 Function("!=",{aLeft,aRight}) Not(aLeft=aRight);
