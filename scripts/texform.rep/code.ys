@@ -8,7 +8,8 @@
 	0.3 fixed bracketing of lists, changed bracketing of math functions, modified TeX representation of user-defined functions (up to two-letter functions are in italics), added TeX Greek letters
 	0.4 added nth roots, Sum, Limit, Integrate, hyperbolics, set operations, Abs, Max, Min, "==", ":=", Infinity; support indexed expressions A[i] and matrices.
 	0.4.1 bugfixes for [] operator, support for multiple indices a[1][2][3]
-	0.4.2 fix for variable names ending on digits "a2" represented as "a_2"
+	0.4.2 fix for variable names ending on digits "a2" represented as $a_2$
+	0.4.3 bugfixes: complex I, indeterminate integration; relaxed bracketing of Sin(); implemented $TeX$ and $LaTeX$ correctly now (using \textrm{})
 */
 
 /* To do:
@@ -42,13 +43,9 @@ TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equa
 
 /* Replace numbers and variables -- never bracketed except explicitly */
 
-/* This doesn't work: try TeXForm(I) vs TeXForm(I+1) ... */
-//110 # TeXForm(I, _p) <-- TeXFormSpecialNames["I"];
-//110 # TeXForm(Complex(0, 1), _p) <-- TeXFormSpecialNames["I"];
-
 110 # TeXForm(x_IsNumber, _p) <-- String(x);
 /* Variables */
-200 # TeXForm(x_IsAtom, _p) <-- TeXFormTextify(String(x));
+200 # TeXForm(x_IsAtom, _p) <-- TeXFormTeXify(String(x));
 
 /* Strings must be quoted but not bracketed */
 100 # TeXForm(x_IsString, _p) <-- ConcatStrings("\\mathrm{", x, "}");
@@ -62,27 +59,25 @@ TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equa
 
 /* Replace operations */
 
-/* arithmetic */
-
 	/* addition, subtraction, multiplication, all comparison and logical operations are "regular" */
-/* binary ops */
+
 TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv "}, {"=="," = "}, {"="," = "}, {"!=","\\neq "}, {"<=","\\leq "}, {">=","\\geq "}, {"<"," < "}, {">"," > "}, {"And"," \\wedge "}, {"Or"," \\vee "} };
 
-	/* This is the template for "regular" binary infix operators:
+	/* Template for "regular" binary infix operators:
 100 # TeXForm(_x + _y, _p) <-- TeXFormBracketIf(p<OpPrecedence("+"), ConcatStrings(TeXForm(x, OpLeftPrecedence("+")), " + ", TeXForm(y, OpRightPrecedence("+")) ) );
-	*/ 
-
-120 # TeXForm(expr_IsFunction, _p)_(NrArgs(expr)=2 And Contains(AssocIndices(TeXFormRegularOps), Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence(Type(expr)), ConcatStrings(TeXForm(Listify(expr)[2], OpLeftPrecedence(Type(expr))), TeXFormRegularOps[Type(expr)], TeXForm(Listify(expr)[3], OpRightPrecedence(Type(expr))) ) );
-
-/* unary ops */
-
-TeXFormRegularPrefixOps := { {"+"," + "}, {"-"," - "}, {"Not"," \\neg "} };
-	/* unary addition */
-	/* Template for "regular" unary prefix operators:
-100 # TeXForm(+ _y, _p) <-- TeXFormBracketIf(p<OpPrecedence("+"), ConcatStrings(" + ", TeXForm(y, OpRightPrecedence("+")) ) );
 	*/
 
-100 # TeXForm(expr_IsFunction, _p)_(NrArgs(expr)=1 And Contains(AssocIndices(TeXFormRegularPrefixOps), Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence(Type(expr)), ConcatStrings(TeXFormRegularPrefixOps[Type(expr)], TeXForm(Listify(expr)[2], OpRightPrecedence(Type(expr))) ) );
+	/* almost all binary ops here */
+120 # TeXForm(expr_IsFunction, _p)_(NrArgs(expr)=2 And IsInfix(Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence(Type(expr)), ConcatStrings(TeXForm(Listify(expr)[2], OpLeftPrecedence(Type(expr))), TeXFormTeXify(Type(expr)), TeXForm(Listify(expr)[3], OpRightPrecedence(Type(expr))) ) );
+
+TeXFormRegularPrefixOps := { {"+"," + "}, {"-"," - "}, {"Not"," \\neg "} };
+	/* Template for "regular" unary prefix operators:
+100 # TeXForm(+ _y, _p) <-- TeXFormBracketIf(p<OpPrecedence("+"), ConcatStrings(" + ", TeXForm(y, OpRightPrecedence("+")) ) );
+	Note that OpRightPrecedence needs to be defined for prefix ops or else we won't be able to tell combined prefix/infix ops like "-" from strictly prefix ops.
+	*/
+
+	/* almost all unary ops here */
+120 # TeXForm(expr_IsFunction, _p)_(NrArgs(expr)=1 And IsPrefix(Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence(Type(expr)), ConcatStrings(TeXFormTeXify(Type(expr)), TeXForm(Listify(expr)[2], OpRightPrecedence(Type(expr))) ) );
 
 	/* division and its operands are never bracketed */
 100 # TeXForm(_x / _y, _p) <-- ConcatStrings("\\frac{", TeXForm(x, TeXFormMaxPrec), "}{", TeXForm(y, TeXFormMaxPrec), "} ");
@@ -98,28 +93,54 @@ TeXFormRegularPrefixOps := { {"+"," + "}, {"-"," - "}, {"Not"," \\neg "} };
 
 TeXFormGreekLetters := {"Gamma", "Delta", "Theta", "Lambda", "Xi", "Pi", "Sigma", "Upsilon", "Phi", "Psi", "Omega", "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu", "nu", "xi", "pi", "rho", "sigma", "tau", "upsilon", "phi", "chi", "psi", "omega", "varpi", "varrho", "varsigma", "varphi", "varepsilon"};
 
-TeXFormSpecialNames := { {"I", "\\imath "}, {"Pi", "\\pi "}, {"Infinity", "\\infty "} };
+TeXFormSpecialNames := {
+	{"I", "\\imath "},
+	{"Pi", "\\pi "},
+	{"Infinity", "\\infty "},
+	{"TeX", "\\textrm{\\TeX\\/}"},
+	{"LaTeX", "\\textrm{\\LaTeX\\/}"}
+};
 
 /* this function will take a user-defined variable or function name and output either this name unmodified if it's only 2 characters long, or the name in normal text if it's longer, or a TeX Greek letter code */
-Function ("TeXFormTextify", {string})
+Function ("TeXFormTeXify", {string})
 [
-	Check(IsString(string), "TeXForm internal error: non-string argument of TeXFormTextify");
+	Check(IsString(string), "TeXForm internal error: non-string argument of TeXFormTeXify");
 	/* Check if it's a greek letter or a special name */
 	If (Contains(AssocIndices(TeXFormSpecialNames), string), TeXFormSpecialNames[string],
 	If (Contains(TeXFormGreekLetters, string), ConcatStrings("\\", string, " "),
+	If (Contains(AssocIndices(TeXFormRegularOps), string), TeXFormRegularOps[string],
+	If (Contains(AssocIndices(TeXFormRegularPrefixOps), string), TeXFormRegularPrefixOps[string],
 	If (Length(string) >= 2 And IsNumber(Atom(StringMid(2, Length(string)-1, string))), ConcatStrings(StringMid(1,1,string), "_{", StringMid(2, Length(string)-1, string), "}"),
 	If (Length(string) > 2, ConcatStrings("\\mathrm{", string, "}"),
 	string
-	))));
+	))))));
 ];
 
-200 # TeXForm(_x, _p)_(IsFunction(x)) <-- ConcatStrings(TeXFormTextify(Type(x)), TeXForm(Tail(Listify(x)), TeXFormMaxPrec) ); 
+/* */
+
+/* Unknown bodied function - wait until we have IsBodiedFunction() and OpPrecedence() working on bodied functions */
+/*
+200 # TeXForm(x_IsBodiedFunction, _p) <-- [
+	Local(func, args, last'arg);
+	func := Type(x);
+	args := Tail(Listify(x));
+	last'arg := PopBack(args);
+	TeXFormBracketIf(p<OpPrecedence(func), ConcatStrings(
+	  TeXFormTeXify(func), TeXForm(args, TeXFormMaxPrec),  TeXForm(last'arg, OpPrecedence(func))
+	));
+];
+*/
+/* Unknown infix function : already done above
+210 # TeXForm(x_IsFunction, _p)_(IsInfix(Type(x))) <-- ConcatStrings(TeXFormTeXify(Type(x)), TeXForm(Tail(Listify(x)), TeXFormMaxPrec) );
+*/
+/* Unknown function that is not prefix, infix or postfix */
+220 # TeXForm(x_IsFunction, _p) <-- ConcatStrings(TeXFormTeXify(Type(x)), TeXForm(Tail(Listify(x)), TeXFormMaxPrec) );
 
 	/* Never bracket Sqrt or its arguments */
-100 # TeXForm(Sqrt(_x), _p) <-- ConcatStrings("\\sqrt{", TeXForm(x, TeXFormMaxPrec), "}"); 
+100 # TeXForm(Sqrt(_x), _p) <-- ConcatStrings("\\sqrt{", TeXForm(x, TeXFormMaxPrec), "}");
 
 	/* Always bracket Exp's arguments */
-100 # TeXForm(Exp(_x), _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\exp ", TeXFormBracketIf(True, TeXForm(x, TeXFormMaxPrec)) ) ); 
+100 # TeXForm(Exp(_x), _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\exp ", TeXFormBracketIf(True, TeXForm(x, TeXFormMaxPrec)) ) );
 
 /* Sin, Cos, etc. and their argument is bracketed when it's a sum or product but not bracketed when it's a power. */
 
@@ -127,10 +148,10 @@ TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, 
 
 /* Precedence of 120 because we'd like to process other functions like sqrt or exp first */
 
-120 # TeXForm(expr_IsFunction, _p) _ (NrArgs(expr)=1 And Contains(AssocIndices(TeXFormMathFunctions), Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence("-"), ConcatStrings(TeXFormMathFunctions[Type(expr)], TeXForm( Listify(expr)[2], OpPrecedence("*")) ) );
+120 # TeXForm(expr_IsFunction, _p) _ (NrArgs(expr)=1 And Contains(AssocIndices(TeXFormMathFunctions), Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence("*"), ConcatStrings(TeXFormMathFunctions[Type(expr)], TeXForm( Listify(expr)[2], OpPrecedence("*")) ) );
 
 /* Complex numbers */
-100 # TeXForm(Complex(0, 1), _p) <-- "I";
+100 # TeXForm(Complex(0, 1), _p) <-- TeXForm(Hold(I), p);
 100 # TeXForm(Complex(_x, 0), _p) <-- TeXForm(x, p);
 110 # TeXForm(Complex(_x, 1), _p) <-- TeXForm(x+Hold(I), p);
 110 # TeXForm(Complex(0, _y), _p) <-- TeXForm(Hold(I)*y, p);
@@ -156,15 +177,24 @@ TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, 
 
 /* Some functions with limits: Lim, Sum, Integrate */
 
-100 # TeXForm(Sum(_x, _x1, _x2, _expr), _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\sum _{", TeXForm(x, TeXFormMaxPrec), " = ", TeXForm(x1, TeXFormMaxPrec), " } ^{", TeXForm(x2, TeXFormMaxPrec), "} ", TeXForm(expr, OpPrecedence("/")) ) ); 
+100 # TeXForm(Sum(_x, _x1, _x2, _expr), _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\sum _{", TeXForm(x, TeXFormMaxPrec), " = ", TeXForm(x1, TeXFormMaxPrec), "} ^{", TeXForm(x2, TeXFormMaxPrec), "} ", TeXForm(expr, OpPrecedence("/")) ) );
 
-100 # TeXForm(Integrate(_x, _x1, _x2) _expr, _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\int _{", TeXForm(x1, TeXFormMaxPrec), " } ^{", TeXForm(x2, TeXFormMaxPrec), " }d ", TeXForm(x, TeXFormMaxPrec), TeXForm(expr, OpPrecedence("/")) ) ); 
+100 # TeXForm(Integrate(_x, _x1, _x2) _expr, _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings(
+"\\int _{", TeXForm(x1, TeXFormMaxPrec), "} ^{", TeXForm(x2, TeXFormMaxPrec), " } ", TeXForm(expr, OpPrecedence("*")), " d", TeXForm(x, TeXFormMaxPrec)
+) );
 
-100 # TeXForm(Limit(_x, _x1) _expr, _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\lim _{", TeXForm(x, TeXFormMaxPrec), "\\rightarrow ", TeXForm(x1, TeXFormMaxPrec), "} ", TeXForm(expr, OpPrecedence("/")) ) ); 
+/* indeterminate integration */
+100 # TeXForm(Integrate(_x) _expr, _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings(
+"\\int ", TeXForm(expr, OpPrecedence("*")), " d", TeXForm(x, TeXFormMaxPrec)
+) );
+
+100 # TeXForm(Limit(_x, _x1) _expr, _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\lim _{", TeXForm(x, TeXFormMaxPrec), "\\rightarrow ", TeXForm(x1, TeXFormMaxPrec), "} ", TeXForm(expr, OpPrecedence("/")) ) );
 
 /* Derivatives */
 
 100 # TeXForm(Deriv(_x)_y, _p) <-- TeXFormBracketIf(p<OpPrecedence("-"), ConcatStrings("\\frac{\\partial}{\\partial ", TeXForm(x, OpPrecedence("^")), "}", TeXForm(y, OpPrecedence("/")) ) );
+
+100 # TeXForm(D(_x)_y, _p) <-- TeXForm(Deriv(x) y, p);
 
 /* Indexed expressions */
 
@@ -193,19 +223,23 @@ Function ("TeXFormPrintMatrix", {M})
 	result := "\\begin{array}{";
 	ForEach(col, M[1]) result:=ConcatStrings(result, "c");
 	result := ConcatStrings(result, "}");
-	
+
 	ForEach(row, 1 .. Length(M)) [
 		ForEach(col, 1 .. Length(M[row])) [
 			result := ConcatStrings( result, " ", TeXForm(M[row][col], TeXFormMaxPrec), If(col = Length(M[row]), If(row = Length(M), "", " \\\\"), " &"));
 		];
 	];
-	
+
 	ConcatStrings(result, " \\end{array} ");
 ];
 
 /* show a Yacas expression graphically in a PS file */
+/* The following global variable will define the available PS viewer */
+PSViewCommand := "gv";
 TeXShowPS(expr) := [
-/* Read the PID of the Yacas process into the variable PID */
+/* Example code to read the PID of the Yacas process into the variable PID
+	We have to jump through the hoops here because we can't redirect STDOUT to a Yacas stream... ideally it would be just this:
+	PID := FromString(ToString() SystemCall("echo $PPID")) Read();
 /*
 	SystemCall("echo $PPID ';' > /tmp/yacas-tmp");
 	PID := FromFile("/tmp/yacas-tmp") Read();
@@ -220,11 +254,8 @@ TeXShowPS(expr) := [
 \\end{document}
 ");
 	WriteString("Expression exported as " : filename : ".tex" : Nl());
-	/* Make PS and determine the minimal bounding box */
-	SystemCall("cd /tmp; latex " : filename : "; dvips -o " : filename : ".ps " : filename : ".dvi");
-	SystemCall("gs -sDEVICE=bbox -dNOPAUSE -dBATCH -q " : filename : ".ps 2>&1 | head -1 | sed -e 's/%%BoundingBox: \\(.*\\)/\"\\1\";/' > " : filename : ".bbox");
-	bbox := FromFile(filename : ".bbox") Read();
-	/* Patch the PS file to display only that bbox */
-	SystemCall("sed -e 's/\\(%%BoundingBox:\\).*/\\1 " : bbox : "/' < " : filename : ".ps > " : filename : ".cut.ps ; gv " : filename : ".cut.ps; rm -f " : filename : ".*");
-
+	/* Make PS file */
+	SystemCall("cd /tmp; latex " : filename : " > /dev/null; dvips -q -o " : filename : ".ps " : filename : ".dvi");
+	/* Show PS file */
+	SystemCall(PSViewCommand : " " : filename : ".ps; rm -f " : filename : ".*");
 ];
