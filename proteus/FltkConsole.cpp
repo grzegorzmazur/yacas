@@ -320,6 +320,19 @@ void FltkConsole::CommandLineEnd()
 {
     DoLine(&iSubLine[0]);
 }
+
+void FltkConsole::Restart()
+{
+  DeleteAll();
+  {
+    extern LispPtr graph;
+    graph.Set(NULL);
+  }
+  
+  extern void RestartYacas();
+  RestartYacas();
+}
+
 void FltkConsole::DoLine(char* inpline)
 {
     if(*inpline)
@@ -352,15 +365,8 @@ void FltkConsole::DoLine(char* inpline)
         {
             if (!strncmp(inpline,"restart",7))
             {
-                DeleteAll();
-                {
-                    extern LispPtr graph;
-                    graph.Set(NULL);
-                }
-
-                extern void RestartYacas();
-                RestartYacas();
-                goto END;
+              Restart();
+              goto END;
             }
             else if (!strncmp(inpline,"quit",4))
             {

@@ -1,6 +1,6 @@
 
 #ifndef __proteusmenu_h__
-#define _proteusmenu_h__
+#define __proteusmenu_h__
 
 #ifdef WORKSHEET
 int font_size = 12;
@@ -8,6 +8,44 @@ int font_size = 12;
 int font_size = 8;
 #endif
 
+static Fl_Menu_Item menuitems[] = 
+{
+ {"File", 0,  0, NULL, 64, 0, 0, font_size, 0},
+   {"new", 0,  new_cb, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"load", 0,  cb_notepad, (void*)NULL, 0, 0, 0, font_size, 0},
+   {"TODO save", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"TODO save as", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"TODO about", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"quit", 0,  quit_cb, (void*)NULL, 0, 0, 0, font_size, 0},
+   {0},
+ {"Edit", 0,  0, NULL, 64, 0, 0, font_size, 0},
+   {"TODO cut", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"TODO copy", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"TODO paste", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {0},
+ {"Notepad", 0,  0, NULL, 64, 0, 0, font_size, 0},
+   {"TODO edit code", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"insert", 0,  0, NULL, 64, 0, 0, font_size, 0},
+     {"TODO section title", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+     {"TODO flat text", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+     {"TODO 2d graph", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+     {"TODO link to other notepad", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+     {"TODO link command", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+     {0},
+   {"TODO edit", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"TODO delete", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {0},
+ {"Help", 0,  0, NULL, 64, 0, 0, font_size, 0},
+   {"introduction", 0,  help_intro_cb, (void*)NULL, 0, 0, 0, font_size, 0},
+   {"TODO tutorial", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"TODO find function", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"detailed help on function", 0,  help_detailed_function_cb, (void*)NULL, 0, 0, 0, font_size, 0},
+   {"TODO programmers reference", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {0},
+ {0}
+};
+
+/*TODO remove?
 static Fl_Menu_Item menuitems[] = 
 {
  {"Func", 0,  0, NULL, 64, 0, 0, font_size, 0},
@@ -248,5 +286,6 @@ static Fl_Menu_Item menuitems[] =
  {0},
  {0}
 };
+*/
 
 #endif

@@ -84,6 +84,7 @@ public:
     FltkConsole(int x, int y, int w, int h, int aDefaultFontSize);
     ~FltkConsole();
     void SaveHistory();
+    void Restart();
 public:
     void draw();
     virtual int handle(int event);

@@ -270,6 +270,39 @@ void cb_notepad(Fl_Widget* o, void* v)
 }
 
 
+void quit_cb(Fl_Widget *,void *)
+{
+    exit(0);
+}
+
+void new_cb(Fl_Widget *,void *)
+{
+  console->Restart();
+}
+
+void help_intro_cb(Fl_Widget *,void *)
+{
+  extern char defdir[128];
+  char buf[120];
+//  sprintf(buf,"%s/documentation/ref.html#%s",defdir,&inpline[1]);
+  sprintf(buf,"%s/documentation/intro.html",defdir);
+  HelpGo(buf);
+  mainTabs->value(helptab);
+}
+
+
+void help_detailed_function_cb(Fl_Widget *,void *)
+{
+  const char *input = fl_input("Find help on function:", "");
+  if (input) 
+  {
+    extern char defdir[128];
+    char buf[256];
+    snprintf(buf,256,"%s/documentation/ref.html#%s",defdir,input);
+    HelpGo(buf);
+    mainTabs->value(helptab);
+  }
+}
 #include "proteusmenu.h"
 
 
@@ -409,11 +442,6 @@ void myexit()
 //    printf("Quitting...\n");
     delete yacas;
     yacas = NULL;
-}
-
-void quit_cb(Fl_Widget *,void *)
-{
-    exit(0);
 }
 
 
