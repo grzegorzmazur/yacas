@@ -216,8 +216,8 @@ DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
 
 //TODO optimize this! keeps on converting to and from internal format!
 
-10 # MultiGcd( 0,_g) <-- 1;
-10 # MultiGcd(_f, 0) <-- 1;
+10 # MultiGcd( 0,_g) <-- g;
+10 # MultiGcd(_f, 0) <-- f;
 
 20 # MultiGcd(_f,_g) <--
 [
