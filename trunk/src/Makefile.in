@@ -624,7 +624,7 @@ mathuserfunc.o: mathuserfunc.cpp yacasprivate.h \
 mathutil.o: mathutil.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl
 obmalloc.o: obmalloc.cpp plat/linux32/lisptype.h \
- plat/linux32/../../choices.h
+ plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl
 patcher.o: patcher.cpp yacasbase.h yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl lispio.h standard.h lispobject.h refcount.h \
@@ -751,7 +751,7 @@ yacasmain.o: yacasmain.cpp yacas.h yacasbase.h yacasprivate.h \
  deffile.inl ramdisk.h lispglobals.h lispplugin.h ctokenizer.h \
  plat/linux32/platfileio.h lispatom.h lispeval.h mathenvironment.h \
  lispuserfunc.h unixcommandline.h commandline.h stdcommandline.h \
- standard.h numbers.h standard.inl arggetter.h
+ standard.h numbers.h standard.inl arggetter.h errors.h
 yacasnumbers.o: yacasnumbers.cpp yacasbase.h yacasprivate.h \
  plat/linux32/lisptype.h plat/linux32/../../choices.h stubs.h \
  plat/linux32/stubs.inl numbers.h lispenvironment.h lispobject.h \

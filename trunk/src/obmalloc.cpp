@@ -49,6 +49,7 @@
  */
 
 #include "lisptype.h"
+#include "stubs.h"
 //TODO is this always true?
 #define SIZEOF_LONG   (BITS_PER_LONG/8)
 #define SIZEOF_VOID_P (BITS_PER_LONG/8)
@@ -680,7 +681,7 @@ _THIS_REALLOC(void *p, size_t nbytes)
 
 			bp = (block *)_THIS_MALLOC(nbytes);
 			if (bp != NULL) {
-				memcpy(bp, p, size);
+				PlatMemCopy((LispCharPtr)bp, (LispCharPtr)p, size);
 				_THIS_FREE(p);
 			}
 		}
