@@ -718,7 +718,7 @@ $(-1)^(i+j)$.
 *DESC
 
 {MatrixPower(mat,n)} returns the {n}th power of a square matrix {mat}. For
-positve {n} it evaluates dot products of {mat} with itself. For negative
+positive {n} it evaluates dot products of {mat} with itself. For negative
 {n} the nth power of the inverse of {mat} is returned. For {n}=0 the identity
 matrix is returned.
 
@@ -1013,7 +1013,7 @@ $A$ is symmetric iff Transpose ($A$) =$A$.
 *DESC
 
 {IsSkewSymmetric(A)} returns {True} if {A} is skew symmetric and {False} otherwise.
-$A$ is skew symmetic iff Transpose $A$ =$-A$. 
+$A$ is skew symmetric iff $Transpose(A)$ =$-A$. 
 
 *E.G.
 

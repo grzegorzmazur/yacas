@@ -246,7 +246,7 @@ are  37, 59 and 67. Asymptotically, roughly 40{%} of primes are irregular.
 
 *DESC
 
-This fuction returns {True} if {n} is a Carmichael number, also called an absolute pseudoprime.
+This function returns {True} if {n} is a Carmichael number, also called an absolute pseudoprime.
 They have the property that $ b^(n-1) % n == 1 $ for all $b$ satisfying $Gcd(b,n)==1$. These numbers
 cannot be proved composite by Fermat's little theorem. Because the previous property is extremely
 slow to test, the following equivalent property is tested by Yacas: for all prime factors $p[i]$ of $n$,
@@ -646,7 +646,7 @@ For example, $18=2*3*3$ is not square-free because it contains a square of $3$ a
 Returns a list of pairs of the form {{d,m}}, where {d} runs through the squarefree divisors of $n$ and $m=Moebius(d)$. 
 This is more efficient than making a list of all 
 square-free divisors of $n$ and then computing {Moebius} on each of them.
-It is useful for computing the cyclotomic polinomials. 
+It is useful for computing the cyclotomic polynomials. 
 It can be useful in other computations based on the Moebius inversion formula. 
 
 *E.G.
@@ -712,7 +712,7 @@ The computation is done by using the formula in T. M. Apostol,
 
 *DESC
 
-Returns the cyclotomic polinomial in the variable {x}
+Returns the cyclotomic polynomial in the variable {x}
 (which is the minimal polynomial of the $n$-th primitive
 roots of the unit, over the field of rational numbers).
  
@@ -722,7 +722,7 @@ $$ Cyclotomic(n,x) = Cyclotomic(m,-x^(k/2)) $$.
 
 If $m=1$, $n$ is a power of $2$, and $Cyclotomic(n,x)= x^k+1$.
 
-For $n$ odd, the algoritm is based on the formula
+For $n$ odd, the algorithm is based on the formula
 $$ Cyclotomic(n,x) := Prod((x^(n/d)-1)^mu(d)) $$,
 where $d$ runs through the divisors of $n$.
 In order to compute this in a efficient way, we use the function
@@ -938,7 +938,7 @@ if and only if $Re(z)$ is an ordinary prime and $Re(z):=Mod(3,4)$.
 
 *DESC
 
-This function returns thre greatest common divisor, in the ring of Gaussian
+This function returns the greatest common divisor, in the ring of Gaussian
 integers, computed using Euclid's algorithm. Note that in the Gaussian
 integers, the greatest common divisor is only defined up to a Gaussian unit factor.
 

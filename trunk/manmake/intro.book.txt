@@ -76,7 +76,7 @@ Typically, you would enter one statement per line, for example
 	Out> 1;
 
 Statements should end with a semicolon ({;}) although this is not required
-in interactive sesions
+in interactive sessions
 ({Yacas} will append a semicolon at end of line to finish the statement).
 
 *A online help
@@ -193,8 +193,8 @@ can also be written as:
 *A fractions
 Rational numbers will stay rational as long as the numerator and denominator
 are integers, so {55/10} will evaluate to {11/2}. You can override this
-behaviour by using the numerical evaluation function {N()}. For example,
-{N(55/10)} will evaluate to {5.5} . This behaviour holds for most math
+behavior by using the numerical evaluation function {N()}. For example,
+{N(55/10)} will evaluate to {5.5} . This behavior holds for most math
 functions. {Yacas} will try to maintain an exact answer (in terms of integers or
 fractions) instead of using floating point numbers, unless {N()} is used. Where
 the value for the constant $pi$ is needed, use the built-in variable {Pi}. It
@@ -734,7 +734,7 @@ In this case we could make "A" a prefix operator and then the syntax
 *A prefix operators
 would become somewhat cleaner: "{A x;}"
 
-However, regardess of presentation, internally all functions and operators
+However, regardless of presentation, internally all functions and operators
 are equal and merely take a certain number of arguments. The user may
 define or redefine any operators with either "normal" names such as "A"
 *A special symbols

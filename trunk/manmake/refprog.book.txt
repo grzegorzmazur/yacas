@@ -1485,13 +1485,13 @@ generated while adding functions and constants to the stub.
 
 *DESC
 
-StubApiCStruct declares a struct in a specific library. The name
-should be followed by an asterisk (clearly showing it is a pointer).
-After that, in the stub api definition, this type can be used as
+{StubApiCStruct} declares a {struct} in a specific library. The name
+should be followed by an asterisk (clearly showing that it is a pointer).
+After that, in the stub API definition, this type can be used as
 argument or return type to functions to the library.
 
 By default the struct will be deleted from memory with a normal
-call to free(...). This can be overriden with a function given
+call to {free(...)}. This can be overridden with a function given
 as second argument, freefunction. This is needed in the case where
 there are additional operations that need to be performed in order
 to delete the object from memory.

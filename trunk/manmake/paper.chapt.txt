@@ -312,7 +312,7 @@ It is also possible to encapsulate a group of variables and functions into a
 "module", making some of them inaccessible from the outside (the {LocalSymbols()} primitive).
 The scoping of variables is a "policy decision", to be enforced by the script
 which  defines the function. This flexibility is by design and allows to easily
-modify the behaviour of the interpreter, effectively changing the language
+modify the behavior of the interpreter, effectively changing the language
 as needed.
 
 		The {Yacas} scripting language
@@ -321,7 +321,7 @@ The {Yacas} interpreter is sufficiently powerful so that the functions {While},
 {For}, {ForEach}, {if}, {else} etc., as well as the convenient shorthand
 "...{<--}..." for defining new rules, can be defined in the script library
 itself rather than in the kernel. This power is fully given to the user, since
-the library scrips are on the same footing as any user-defined code. Some
+the library scripts are on the same footing as any user-defined code. Some
 library functions are intended mainly as tools available to a {Yacas} user to
 make algorithm implementation more comfortable. Below are some examples of the features provided by the {Yacas} script language.
 

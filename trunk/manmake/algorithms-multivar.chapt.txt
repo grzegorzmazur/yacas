@@ -218,7 +218,7 @@ rather large, requiring a lot of storage and processing power even
 to add two such polynomials. For instance, $ x^200*y^100*z^300+1 $
 could take 6000000 places in an array for the coefficients. Of course
 variables could be substituted for the single factors, $ p:=x^200 $
-etcetera, but it requires an additional ad hoc step.
+etc., but it requires an additional ad hoc step.
 
 An alternative is to store only the terms for which the coefficients
 are non-zero. This adds a little overhead to polynomials that could
@@ -277,7 +277,7 @@ and allows for easy multiplication:
 The implementation of multivariates can be divided in three levels.
 
 At the top level are the routines callable by the user or the rest
-of the system: MultiDegree, MultiDivide, MultiGcd, Groebner, etcetera.
+of the system: MultiDegree, MultiDivide, MultiGcd, Groebner, etc.
 In general, this is the level implementing the operations actually
 desired.
 

@@ -5,7 +5,7 @@
 polynomials. This includes functions for constructing and evaluating
 orthogonal polynomials.
 
-*CMD Expand --- put polynomial in expanded form
+*CMD Expand --- transform a polynomial to an expanded form
 *STD
 *CALL
 	Expand(expr)
@@ -300,7 +300,7 @@ this interval, and are independent of each other.
 
 *SEE Div, Mod
 
-*CMD Horner --- convert polynomial into Horner form
+*CMD Horner --- convert a polynomial into the Horner form
 *STD
 *CALL
 	Horner(expr, var)
@@ -796,25 +796,22 @@ a polynomial expression.
 
 
 
-*CMD SquareFree --- Return square-free part of polynom p=p(x) in x
+*CMD SquareFree --- return the square-free part of polynomial
 *STD
 *CALL
 	SquareFree(p)
 
 *PARMS
 
-{p} - a polynom in x
+{p} - a polynomial in {x}
 
 *DESC
 
-Given a polynom 
-
+Given a polynomial 
 $$ p = p[1]^n[1]* ... * p[m]^n[m] $$
-
-with irreducible polynoms $ p[i] $,
+with irreducible polynomials $ p[i] $,
 return the square-free version part (with all the factors having
 multiplicity 1):
-
 $$ p[1]* ... * p[m] $$
 
 *E.G.
@@ -829,14 +826,14 @@ $$ p[1]* ... * p[m] $$
 *SEE FindRealRoots, NumRealRoots, MinimumBound, MaximumBound, Factor
 
 
-*CMD FindRealRoots --- Find the real roots of a polynom p=p(x) in x
+*CMD FindRealRoots --- find the real roots of a polynomial
 *STD
 *CALL
 	FindRealRoots(p)
 
 *PARMS
 
-{p} - a polynom in x
+{p} - a polynomial in {x}
 
 *DESC
 
@@ -856,18 +853,19 @@ of the result can be improved by increasing the calculation precision.
 
 
 
-*CMD NumRealRoots --- Return the number of real roots of a polynom p=p(x) in x
+*CMD NumRealRoots --- return the number of real roots of a polynomial
 *STD
 *CALL
 	NumRealRoots(p)
 
 *PARMS
 
-{p} - a polynom in x
+{p} - a polynomial in {x}
 
 *DESC
 
-Returns the number of real roots of a polynom $ p $.
+Returns the number of real roots of a polynomial $ p $.
+The polynomial must use the variable {x} and no other variables.
 
 *E.G.
 
@@ -878,23 +876,22 @@ Returns the number of real roots of a polynom $ p $.
 
 *SEE FindRealRoots, SquareFree, MinimumBound, MaximumBound, Factor
 
-*CMD MinimumBound --- Return a lower bound on the absolute value of the real roots of a polynom p=p(x) in x
-*CMD MaximumBound --- Return an upper bound on the absolute value of the real roots of a polynom p=p(x) in x
+*CMD MinimumBound, MaximumBound --- return upper/lower bounds on the absolute values of real roots of a polynomial
 *STD
 *CALL
 	MinimumBound(p)
-
 	MaximumBound(p)
 
 *PARMS
 
-{p} - a polynom in x
+{p} - a polynomial in $x$
 
 *DESC
 
 Return minimum and maximum bounds for the absolute values of the real
-roots of a polynom {p}. The polynom has to be converted to one with
+roots of a polynomial {p}. The polynomial has to be converted to one with
 rational coefficients first, and be made square-free.
+The polynomial must use the variable {x}.
 
 *E.G.
 

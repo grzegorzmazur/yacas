@@ -21,7 +21,7 @@ A tool should not be clever. The user of the tool can be clever
 about using the tool, or combining it with other tools.
 A 'clever' tool often results in a tool that is not useful.
 It is hard to understand what a clever tool does, or why
-it does what it does. In short: its behaviour will be unpredictable.
+it does what it does. In short: its behavior will be unpredictable.
 
 This is a passionate plea against generic commands like {Simplify}
 and {Solve}.

@@ -11,7 +11,7 @@ Suppose we want to build a system that understands a simple set of English
 sentences and will be able to answer questions. For example, we would like to
 say "Tom had an apple and Jane gave 3 apples to Tom"; the system should
 understand that Tom has 4 apples now. In the usual LISP-based treatments of
-artificial intelligence, this problem would be illustrated with cumbersom list
+artificial intelligence, this problem would be illustrated with a cumbersome list
 syntax such as {(had (Tom apple 1))} but we would like to use the power of the
 Yacas syntax and use plain English.
 
@@ -244,7 +244,7 @@ operator will have to operate on a preceding number, so that a sentence such as
 "Mary had 3 lambs" will parse correctly.
 
 If {x} were an unevaluated atom such as "{lambs}" which is passed to a
-function, how can we declare {labms} to be a postfix operator within that
+function, how can we declare {lambs} to be a postfix operator within that
 function? The string representation of the new operator is {String(x)}. But we cannot call {Postfix(String(x))} because {Postfix()} does not
 evaluate its arguments (as of Yacas 1.0.49). Instead, we use the function
 {UnList} to build the expression {Postfix(String(x))} with {String(x)}

@@ -214,7 +214,7 @@ This command sets the number of binary digits to be used in
 calculations. All subsequent floating point operations will allow for
 at least {n} digits after the decimal point.
 
-When the precision is changed, all variables containing previosly calculated values
+When the precision is changed, all variables containing previously calculated values
 remain unchanged.
 The {Precision} function only makes all further calculations proceed with a different precision.
 

@@ -109,7 +109,9 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 	Verify(Limit(x,0) (1-Cos(x))/x^2, 1/2);
 *	76. (OK) $D(x) Abs(x)$
 	Verify(D(x) Abs(x), Sign(x));
-*	77. (OK) D(x) Integrate(x) Abs(x) = Abs(x)*x/2 (mathed version with dollar signs doesn't generate doc on MacOs X BSD)
+*	77. (OK) $(Integrate(x) Abs(x)) = Abs(x)*x/2$
+*REM (mathed version with dollar signs doesn't generate doc on MacOs X BSD FIXME?)
+
 	Verify(Simplify(Integrate(x) Abs(x)),
 	  Abs(x)*x/2);
 *	78. (OK) Compute derivative of $Abs(x)$, piecewise defined.
