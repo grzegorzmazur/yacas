@@ -34,12 +34,14 @@ RuleBase("=>",{a,b});
 5  # LogicSimplify(_x  Or  True )               <-- True;
 5  # LogicSimplify(_x  Or  False)               <-- LogicSimplify(x);
 
+/*TODO Vladimir: these break CanProve!
 6  # LogicSimplify(_x  Or  _x)                  <-- LogicSimplify(x);
 6  # LogicSimplify(_x  And  _x)                 <-- LogicSimplify(x);
 6  # LogicSimplify(_x  Or Not (_x))             <-- True;
 6  # LogicSimplify(Not (_x)  Or _x)             <-- True;
 6  # LogicSimplify(_x  And Not (_x))            <-- False;
 6  # LogicSimplify(Not (_x)  And _x)            <-- False;
+*/
 
 7  # LogicSimplify((_x)  Or  (_y))_(x!= LogicSimplify(x) Or y!=LogicSimplify(y))                /* Transform subexpression */
                                                 <-- LogicSimplify(LogicSimplify(x) Or LogicSimplify(y));
