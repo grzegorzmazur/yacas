@@ -104,11 +104,11 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
   sgn2 := Sign(m1*n2);
   sgn1*sgn2*Floor(MathDivide(sgn1*n1*m2,sgn2*m1*n2));
 ];
-30 # Div(n_CanBeUni,m_CanBeUni) <--
+30 # Div(n_CanBeUni,m_CanBeUni)_(Length(VarList(n*m))=1) <--
 [
 
   Local(vars,nl,ml);
-  vars:=VarList(n+m);
+  vars:=VarList(n*m);
   nl := MakeUni(n,vars);
   ml := MakeUni(m,vars);
   NormalForm(Div(nl,ml));
@@ -171,7 +171,7 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 
 20 # Gcd(list_IsList)_(Length(list)=2) <-- Gcd(list[1],list[2]);
 
-30 # Gcd(n_CanBeUni,m_CanBeUni) <--
+30 # Gcd(n_CanBeUni,m_CanBeUni)_(Length(VarList(n*m))=1) <--
 [
   Local(vars);
   vars:=VarList(n+m);
@@ -205,12 +205,12 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 RuleBase("Object",{pred,x});
 Rule("Object",2,0,Apply(pred,{x})=True) x;
 
-/*TODO move to math */
+/*TODO remove
 Rule("Gcd",2,100,True)
 [
    NormalForm(Gcd(MakeUni(n),MakeUni(m)));
 ];
-
+*/
 
 10 # Abs(n_IsNumber) <-- MathAbs(n);
 10 # Abs(n_IsPositiveNumber/m_IsPositiveNumber) <-- n/m;

@@ -1,4 +1,51 @@
 
+  LocalSymbols(theConsts,theFreeVars,msres,msvars,nrconsts,nrvars)
+  [
+    Expect(_expr,_consts,_freeVars) <--
+    [
+      MM(x);
+      msvars:=Concat(consts,freeVars);
+      theConsts:=consts;  theFreeVars:=freeVars;
+      nrconsts:=Length(consts); nrvars:=Length(msvars);
+      Local(terms,realvars); realvars:=MultiExpressionList(expr);
+      Check(Length(Intersection(msvars,realvars))=Length(realvars),"Not all variables enumerated!");
+      terms:=MM(expr,msvars)[2];
+      msres:=0;
+      SparseTreeMap("ExpectOp",Length(msvars),terms);
+      msres;
+    ];
+  
+    ExpectOp(deg,coef) :=
+    [ 
+      Local(constdeg,freedeg);  
+      constdeg:=deg[1 .. nrconsts];
+      freedeg:=deg[(nrconsts+1) .. nrvars];
+      msres:=msres+
+        coef*
+        Factorize(theConsts^constdeg)*
+        E(Factorize(theFreeVars^freedeg));
+    ];
+  
+  ];
+
+
+
+EndOfFile;
+
+
+IsConst(_expr) <-- (IsConstant(expr) Or IsFreeOf({x,y,x1,x2,y1,y2,i},expr) Or 
+Type(expr)="E");
+
+10 # E(x_IsConst) <-- x;
+20 # E(_x+_y) <-- E(x)+E(y);
+30 # E(_x*_y)_(IsConst(x) Or IsConst(y)) <-- E(x)*E(y);
+40 # E((_x*_y)^_n) <-- E(x^n)*E(y^n);
+
+ReOrder(expr) := NormalForm(MM(expr,{a,x,y,x1,x2,y1,y2,i}));
+
+EndOfFile;
+
+
    LocalSymbols(p) 
    [
    10 # Foo(_x,_y)_([p:=x+y; p>0;]) <-- Bar(p);

@@ -1,5 +1,171 @@
 
 
+
+  LocalSymbols(theConsts,theFreeVars,msres,msvars,nrconsts,nrvars)
+  [
+    Expect(_expr,_consts,_freeVars) <--
+    [
+      MM(x);
+      msvars:=Concat(consts,freeVars);
+      theConsts:=consts;  theFreeVars:=freeVars;
+      nrconsts:=Length(consts); nrvars:=Length(msvars);
+      Local(terms,realvars); realvars:=MultiExpressionList(expr);
+      Check(Length(Intersection(msvars,realvars))=Length(realvars),"Not all variables enumerated!");
+      terms:=MM(expr,msvars)[2];
+      msres:=0;
+      SparseTreeMap("ExpectOp",Length(msvars),terms);
+      msres;
+    ];
+  
+    ExpectOp(deg,coef) :=
+    [ 
+      Local(constdeg,freedeg);  
+      constdeg:=deg[1 .. nrconsts];
+      freedeg:=deg[(nrconsts+1) .. nrvars];
+      msres:=msres+
+        coef*
+        Factorize(theConsts^constdeg)*
+        E(Factorize(theFreeVars^freedeg));
+    ];
+  
+  ];
+
+
+
+EndOfFile;
+
+
+IsConst(_expr) <-- (IsConstant(expr) Or IsFreeOf({x,y,x1,x2,y1,y2,i},expr) Or 
+Type(expr)="E");
+
+10 # E(x_IsConst) <-- x;
+20 # E(_x+_y) <-- E(x)+E(y);
+30 # E(_x*_y)_(IsConst(x) Or IsConst(y)) <-- E(x)*E(y);
+40 # E((_x*_y)^_n) <-- E(x^n)*E(y^n);
+
+ReOrder(expr) := NormalForm(MM(expr,{a,x,y,x1,x2,y1,y2,i}));
+
+EndOfFile;
+
+
+   LocalSymbols(p) 
+   [
+   10 # Foo(_x,_y)_([p:=x+y; p>0;]) <-- Bar(p);
+   20 # Foo(_x,_y) <-- NoBar(p);
+   ];
+
+
+EndOfFile;
+
+   Foo(_x,_y) <-- Foo(x,y,x+y);
+   10 # Foo(_x,_y,_p)_(p>0) <-- Bar(p);
+   20 # Foo(_x,_y,_p) <-- NoBar(p);   
+
+
+   Foo(_x,_y) <-- Foo(x,y,0);
+   Function()Foo(x,y,p);
+   10 # Foo(_x,_y,_dummy)_([p:=x+y; p>0;]) <-- Bar(p);
+   20 # Foo(_x,_y,_dummy) <-- NoBar(p);   
+
+
+   Foo(_x,_y) <-- [ Local(p); Foo2(x,y); ];
+   10 # Foo2(_x,_y)_([p:=x+y; p>0;]) <-- Bar(p);
+   20 # Foo2(_x,_y) <-- NoBar(p);   
+   UnFence(Foo2,2);
+
+
+   Foo(_x,_y)_([Local(p);p:=...;...;]) <--
+   [
+	Local(q);
+	q:=Bar(p);
+	...
+   ];
+
+
+
+
+EndOfFile;
+EndOfFile;
+EndOfFile;
+EndOfFile;
+
+  int j=0;
+  int k=0;
+  while(j<i)
+  {
+    k=k+j;
+    j=j+1;
+  }
+
+
+
+/* Simplification of nested radicals.
+*/
+
+RadSimp(_n) <--
+[
+  Local(max);
+  max := MathCeil(N(Eval(n)^2));
+  result:=0;
+  result:=RadSimpTry(n,0,1,max);
+  if (CheckRadicals(n,result))
+    result
+  else
+    n;
+];
+
+/*Echo({"Try ",test}); */
+
+CheckRadicals(_n,_test) <-- Abs(N(Eval(n-test))) < 0.000001;
+
+
+RadSimpTry(_n,_result,_current,_max)<--
+[
+  if (N(Eval(result-n)) < 0)
+  [
+    Local(i);
+    For (i:=current,i<=max,i++)
+    [
+      Local(new, test);
+      test:=result+Sqrt(i);
+
+/* Echo({"Cut-try ",test});  */
+
+
+      if (CheckRadicals(n,test))
+      [
+        result:=test;
+        i:=max+1;
+      ];
+    ];
+
+    if (N(Eval(result-n)) < 0)
+    [
+      For (i:=current,i<=max,i++)
+      [
+        Local(new, test);
+        test:=result+Sqrt(i);
+
+/* Echo({"Full-try ",test}); */
+
+        new:=RadSimpTry(n,test,i,max);
+	if (CheckRadicals(n,new))
+        [
+          result:=new;
+          i:=max+1;
+        ];
+      ];
+    ];
+/*
+*/
+  ];
+  result;
+];
+
+
+
+EndOfFile;
+
 Bodied(MultiSubst,60000);
 (MultiSubst(_from,_to)(_expr)) <--
 [
