@@ -146,31 +146,35 @@ This function is sometimes useful to represent solutions of transcendental equat
 
 *A Lambert's $W$ function!asymptotics
 
-Asymptotics of Lambert's $W$ function are, as usual, not precise enough for actual calculations:
-$$W((z^2-2)/2/Exp(1)) = -1 + z - z^3/3 + 11/72*z^4 - ...$$ (this is only good really close to z=0);
+Asymptotics of Lambert's $W$ function are
+$$W((z^2-2)/2/e) = -1 + z - z^3/3 + 11/72*z^4 - ...$$ (this is only good really close to z=0);
 $W(x) = x-x^2+3/2*x^3-...$ (this is good very near x=0);
 $$W(x) = Ln(x) - Ln(Ln(x)) + Ln(Ln(x))/Ln(x) + 1/2*(Ln(Ln(x))/Ln(x))^2 + ...$$ (good for very large $x$ but it is not straightforward to find higher terms!).
 
-One can also use uniform rational approximations, e.g.:
-$$W(x) <=> Ln(1+x)*(1-Ln(1+Ln(1+x))/(2+Ln(1+x)))$$ (uniformly good for $x>0$, relative error not more than $10^(-2)$); and
-$$W(x) <=> (x*Exp(1)) / (1+( (2*(x*Exp(1)+1))^(-1/2) -1/Sqrt(2) +1/(Exp(1)-1))^(-1) )$$
-(uniformly good for $-Exp(-1)<x<0$, relative error not more than $10^(-3)$).
+*A Lambert's $W$ function!uniform approximations
 
-There is also a uniform approximation of the form
+One can also find uniform rational approximations, e.g.:
+$$W(x) <=> Ln(1+x)*(1-Ln(1+Ln(1+x))/(2+Ln(1+x)))$$ (uniformly good for $x>0$, relative error not more than $10^(-2)$); and
+$$W(x) <=> (x*e) / (1+( (2*(x*e+1))^(-1/2) -1/Sqrt(2) +1/(e-1))^(-1) )$$
+(uniformly good for $-1/e<x<0$, relative error not more than $10^(-3)$).
+
+There exists a uniform approximation of the form
 $$ W(x) <=> (a+l)*(f-Ln(1+c*Ln(1+d*y))+2*l)/(a+1/2+l) $$,
-where $a$, $b$, $c$, $d$, $f$ are certain constants, $y:=Sqrt(2*x*Exp(1)+2)$ and $l:=Ln(1+b*y)$.
+where $a=2.3436$, $b=0.8842$, $c=0.9294$, $d=0.5106$, $f= -1.2133$ are constants, $y:=Sqrt(2*e*x+2)$ and $l:=Ln(1+b*y)$.
+(The coefficients $a$, ..., $f$ are
+found numerically by matching the asymptotics at three points
+$x= -1/e$, $x=0$, $x=Infinity$.)
 This approximation miraculously works over the whole complex plane within relative error at most $0.008$.
-However, the coefficients $a$, ..., $f$ are not elementary constants; they have
-to be found numerically by matching to the asymptotics at three points
-$x= -Exp(-1)$, $x=0$, $x=Infinity$.
+The behavior of this formula at the branching points $x= -1/e$ and $x=Infinity$ correctly mimics $W(x)$ if the branch cuts of the square root and of the logarithm are chosen appropriately (e.g. the common branch cut along the negative real semiaxis).
 
 *A Lambert's $W$ function!by Halley's method
 
-The numerical procedure uses the Halley iteration and the first two uniform rational approximation of $W(x)$ for the initial value of $x$.
-
-The Halley iteration for the equation $W*Exp(W)=x$ can be written as
+The numerical procedure uses Halley's method.
+Halley's iteration for the equation $W*Exp(W)=x$ can be written as
 $$ W'=W-(W-x*Exp(-W))/(W+1-(W+2)/(W+1)*(W-x*Exp(-W))/2) $$. It has cubic convergence for any initial value $W> -Exp(-1)$.
 
+The initial value is computed using one of the uniform approximation formulae.
+The good precision of the uniform approximation guarantees rapid convergence of the iteration scheme to the correct root of the equation, even for complex arguments $x$.
 
 		Bessel functions
 
@@ -449,21 +453,9 @@ The error will be greatest when $Abs(z)=1$. For these values of $z$, the above i
 
 *A error function $Erf(x)$!by asymptotic series
 
-Consider method 3 (the asymptotic series). We shall use the method 3 only for
-large enough values of $z$ and small enough precision. The asymptotic series
-does not actually converge for any $z$; if we select a large value of $z$, the
-terms of the series decrease at first but then start to grow. The way to use an
-asymptotic series for a numerical calculation is to truncate the series
-<i>well</i> <i>before</i> the terms start to grow. The error of this
-approximation is usually not greater than the first discarded term.
-
-The inherent limitation of the method of asymptotic series is that for a given
-$z$, there will be a certain place in the series where the term has the minimum
-absolute value (after that, the series is unusable), and the error of the
-approximation cannot be smaller than that term. This means that for a given
-finite $z$, no matter how large, there is a maximum number of digits of
-precision that can be achieved with the asymptotic series; getting more
-precision requires a different method.
+Consider method 3 (the asymptotic series). 
+Due to limitations of the asymptotic series, we shall use the method 3 only for
+large enough values of $z$ and small enough precision.
 
 There are two important cases when calculating $Erf(z)$ for large (complex) $z$: the case of $z^2>0$ and the case of $z^2<0$. In the first case (e.g. a real $z$), the function $Erf(z)$ is approximately $1$ for large $Abs(z)$ (if $Re(z)>0$, and approximately $-1$ if $Re(z)<0$). In the second case (e.g. pure imaginary $z=I*t$) the function $Erf(z)$ rapidly grows as $Exp(-z^2)/z$ at large $Abs(z)$.
 
