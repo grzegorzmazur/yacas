@@ -1,13 +1,25 @@
 #!/usr/bin/perl
 
-# Usage: perl ys2book.pl < file.ys > file.chapt.txt
+# Usage: perl ys2book.pl [-strip] < file.ys > file.chapt.txt
 
 # This will make a documentation chapter out of a Yacas script file.
-# All comments /* ... */  or /// ... become doc text.
-# Comments such as // ... remain code comments. All Yacas code becomes code sample code blocks.
+# All comments /** ... */  or /// ... become doc text.
+# Comments such as // ... remain code comments. All Yacas code becomes code sample code blocks unless -strip option is given.
 # Multiple indentation of code blocks: TAB is converted to 2 spaces.
 
 $inside_comment = 0;
+
+$want_code = ("@ARGV" =~ /-strip/) ? 0 : 1;
+
+sub print_code_line
+{
+# FIXME: need to wrap long lines of code
+	my $text = shift;
+	if ($want_code)
+	{
+		print $text;
+	}
+}
 
 while(<STDIN>)
 {
@@ -17,7 +29,8 @@ while(<STDIN>)
 		if (m|(.*)\*/\s*(.*)$|)	# */ comment finished, possibly some code follows
 		{
 			$inside_comment = 0;
-			print "$1\n\t$2\n";
+			print "$1\n";
+			print_code_line("$2\n");
 		}
 		else	# still inside a /* */ block
 		{
@@ -27,15 +40,19 @@ while(<STDIN>)
 	}
 	else
 	{
-		if (m|^\s*///+\s*(.*)$|)	# /// comment
+		if (m|^\s*///+\s*([^\s/].*)$|)	# /// comment
 		{
 			print "$1\n";
 		}
-		elsif (m|^\s*/\*\s*(.*)\*/$|)	# /* comment started and finished
+		elsif (m|^\s*///+\s*$|)	# empty /// comment
+		{
+			print "\n";
+		}
+		elsif (m|^\s*/\*\*\s*([^\s].*)\*/$|)	# /** comment started and finished on the same line
 		{
 			print "$1\n";
 		}
-		elsif (m|^\s*/\*\s*(.*)$|)	# /* comment started
+		elsif (m|^\s*/\*\*\s*([^\s].*)$|)	# /** comment started
 		{
 			print "$1\n";
 			$inside_comment = 1;
@@ -43,9 +60,7 @@ while(<STDIN>)
 		else
 		{	 # Code block: convert indentation: TAB <-- 2 spaces
 			s/\t/  /g;
-			# FIXME: need to wrap long lines of code
-
-			print "\t$_\n";
+			print_code_line($_);
 		}
 	}
 }

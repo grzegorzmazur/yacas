@@ -232,7 +232,7 @@ For example,
 	*EVAL "Yacas version: " : Version()
 will insert the string `
 *EVAL "Yacas version: " : Version()
-' into the manual. Note the spaces around the version string -- the additional spaces are currently unavoidable.
+' into the manual. Note the spaces around the version string---these additional spaces are currently unavoidable.
 
 	    Formatting text for the reference manual
 
@@ -244,10 +244,11 @@ A typical reference manual subsection documenting a certain function may look li
 	*CMD PrintList --- print list with padding
 	*STD
 	*CALL
-		{PrintList}(list)
-		{PrintList}(list, padding);
+	   {PrintList}(list)
+	   {PrintList}(list, padding);
 	
 	*PARMS
+	
 	{list} -- a list to be printed
 	
 	{padding} -- (optional) a string
@@ -265,11 +266,16 @@ Compare this with the reference manual section on the function {PrintList} to se
 
 Notes:
 *	Some labels have parameters while other labels do not; labels that do not have parameters must be put alone on a line.
-*	The {*STD} label is for functions defined in the standard library and the {*CORE} label is for built-in functions defined in the Yacas core engine. In addition, {*UNIX}, {*MSWIN} and {*MAC} can be used to label Un*x, MS Wind*ws and Macint*sh-specific add-on functions.
-*	There must be <i>some</i> whitespace separating a markup label such as {*} and the following text. Either TAB characters or ordinary spaces work equally well.
-*	The comma-space combination "{, }" is mandatory in label argument lists (but can have several spaces after a comma). Lists of commands are used by the {*CMD} and {*SEE} labels.
-*	Characters {<} and {>} are of special significance to both HTML and $TeX$ and should be always escaped either by braces {{}} or by dollar signs, as appropriate.
+*	The {*STD} label is for functions defined in the standard library and the {*CORE} label is for built-in functions defined in the Yacas core engine.
+In addition, the labels {*UNIX}, {*MSWIN} and {*MAC} can be used to denote Un*x, MS Wind*ws and Macint*sh-specific add-on functions.
+*	There must be <i>some</i> whitespace separating a markup label such as {*} and the following text.
+Either TAB characters or spaces work equally well.
+*	The comma-space combination "{, }" is mandatory when a label accepts a list of arguments.
+(One can put several spaces after a comma.)
+Lists of commands are used by the {*CMD} and {*SEE} labels.
+*	Characters {<} and {>} are of special significance to both HTML and $TeX$ and should be always escaped---either by braces {{}} or by dollar signs, as appropriate.
 *	In the "examples" section, there may be just one example, in which case the alternative label "{*EG}" could be used instead of "{*E.G.}". This will currently generate the word "Example:" instead of "Examples:" in the documentation.
+(This is a cosmetic feature.)
 *	In a subsection there may be either one function documented or several at once: for example, it may make sense to document {Sin}, {Cos} and {Tan} together. In this case, all function names should be simply listed in the {*CMD} header, for example:
 
 	*CMD Sin, Cos, Tan --- Trigonometric ...
@@ -283,8 +289,10 @@ summary (it enters the HTML book index and the front page of the $LaTeX$ docs)
 *	 {*A} to manually
 create an HTML anchor in a reference manual section and an index entry in the printed docs (see below for more details on indexing)
 *	{*HEAD}
-to create a small heading ({Topical()}).
-The {*HEAD} tag might be useful for lowest-level headings. For instance,
+to create a small heading.
+The {*HEAD} tag might be useful for lowest-level headings.
+Currently, the special markup for the reference manual implements the same tag for its topical sections ("Parameters", "See also" etc.) {*HEAD}.
+For instance,
 	*PARMS
 results in the same text as
 	*HEAD Parameters:
@@ -367,7 +375,7 @@ Labels with an argument on the same line (affect only the current line):
 
 Labels that affect the rest of the line and the subsequent paragraph:
 
-*	{*BLURB} -- short summary of the book (must immediately precede the {*BOOK} label)
+*	{*BLURB} -- short summary of the book (must immediately precede the {*BOOK} label without any empty lines)
 *	{*INTRO} -- chapter introduction (significant for HTML only) (must be separated by an empty line from what follows)
 *	{*REM} -- documentation comment (must be separated by an empty line from what follows)
 
@@ -396,20 +404,25 @@ Special labels without arguments that generate headings for the reference manual
 Special syntax entities include:
 *	TAB indented: chapter, section, subsection titles, sample code
 *	asterisk-TAB: enumerated and itemized environments
-*	braces {{}}: inline code samples, Yacas names (monospaced font)
-*	{<i>}
-and {</i>}: italics (for emphasis, not for mathematics)
-*	dollar signs {$}, {$}{$}: inline and displayed mathematical equations
-*	{<*} and
-{*>}: Web hyperlinks and documentation hyperlinks
-*	{!} symbol: nesting of index entries
+*	curly braces
+"{{}}": inline code samples, Yacas names (monospaced font)
+*	special delimiters
+"{<i>}"
+and "{</i>}": italics (for emphasis, not for mathematics)
+*	dollar signs "{$}", "{$}{$}": inline and displayed mathematical equations
+*	special delimiters
+"{<*}" and
+"{*>}": Web hyperlinks and documentation hyperlinks
+*	the exclamation mark
+"{!}": nested index entries
 
 	    Debugging the manual
 
 *A documentation!markup debugging
 Sometimes the manual compilation {make} or {make texdocs} will break after you edit the plaintext manual sources. This can happen for one of these reasons:
-*	1. A math syntax error. You have used a mathematical formula that does not evaluate to a Yacas expression. Unbalanced parentheses, invalid infix operators such as {>-}, or forgotten punctuation inside the formula such as {x+1:} are the most frequent culprits. This will break both HTML and $TeX$ manual formats.
-*	2. The HTML format compiles but the $TeX$ does not ({latex} never finishes, i.e. it shows an error message which you do not see because it is redirected to {/dev/null} and waits for your input). This means that the generated $TeX$ code is incorrect. You probably forgot to balance braces {{}} or something more subtle happened.
+*	1. A math syntax error. You have used a mathematical formula that does not evaluate to a Yacas expression. Unbalanced parentheses, invalid infix operators such as {>-}, {=-}, or forgotten punctuation inside the formula such as {x+1:} are the most frequent culprits. This will break both HTML and $TeX$ manual formats.
+*	2. The HTML format compiles but the $TeX$ does not (the {latex} commands never finishes, that is, $latex$ prints an error message which you do not see because it is redirected to {/dev/null}, and waits for your input; you have to kill the process).
+This means that somewhere the generated $TeX$ code is incorrect. You probably forgot to balance braces {{}} or something more subtle happened.
 *	3. Some mark-up which should not be split between lines was
 unintentionally split by reformatting paragraphs in a text editor. This will sometimes not break the compilation but will always give undesired results.
 
@@ -426,8 +439,7 @@ and look at the error message(s) it prints.
 The script {txt2yacasdoc.pl} is used to transform plain text markup into the
 Yacas language. The script acts as a stream filter:
 
-	perl txt2yacasdoc.pl < file.txt \
-	  > file.chapt
+	perl txt2yacasdoc.pl < file.txt > file.chapt
 
 In this example, {file.txt} contains some formatted plain text (source text) and the resulting file {file.chapt} will be produced in Yacas-language documentation format.
 
@@ -503,8 +515,9 @@ One such case is if the quotes are on the same line as a TAB character (e.g. in 
 This problem can be circumvented by putting the quoted words on a different line.
 
 Some complicated mathematical expressions may not correctly render in $TeX$.
-This is because Yacas uses its internal function {TeXForm()} to transform Yacas
-expressions to $TeX$.  Mathematical expressions are entered in the plain text
+This is because Yacas uses its library function {TeXForm()} to transform Yacas
+expressions to $TeX$.
+Mathematical expressions are entered in the plain text
 documentation source using Yacas syntax, then transformed to a special
 non-evaluating call {TeXMath()} in the Yacas-language documentation, which
 formats into HTML using a {Write()} call or into $TeX$ using a {TeXForm()}
@@ -527,7 +540,10 @@ Usage is similar to {book2TeX.sh}. For example, the benchmarking test code {west
 	  wester.yts
 After this command, the file {wester.yts} is created. Note that {wester-1994.chapt} is in Yacas language and is itself a generated file.
 
-To prepare a documentation chapter in such a way that code extraction is possible, one only needs to make sure that all code examples in the chapter will become a correct sequence of Yacas expressions when cut out and written sequentially into a file. So, for instance, semicolons at the end of each statement are required. The script {book2ys} will <i>not</i> export example Yacas session code with "{In>}" and "{Out>}" prompts but it will export all other example code.
+To prepare a documentation chapter in such a way that code extraction is possible, one needs to make sure that <i>all</i> code examples in the chapter taken together will become a correct sequence of Yacas expressions when cut out and written sequentially into a file.
+So, for instance, semicolons at the end of each statement are required.
+The script {book2ys} will <i>not</i> export example Yacas session code with "{In>}" and "{Out>}" prompts but it will export <i>all other</i> example code.
+
 The example code with "{In>}" and "{Out>}" prompts will become comments in the exported Yacas file.
 It is possible to suppress this comment generation by the {-strip} option to the {book2ys.sh} script.
 
@@ -547,40 +563,124 @@ Otherwise, all code output will be printed to the file specified after the {*YSF
 Note that the multiple file support is somewhat restrictive:
 *	Once the output file name has been changed, the old file is closed and cannot be appended to. (This is a limitation of the {ToFile()} function in Yacas.)
 *	If the same file name is chosen again, the file will be overwritten.
-*	The file name must be reset to the default "{-}" at the end of the document, or else the last file will not be written.
+*	If the output file has been changed at least once,
+then at the end of the document the file name must be reset to the default "{-}".
+Otherwise the last file will not be properly closed.
 
-An example of using multiple files:
+Here is an example of using multiple files. Note how documentation text is interspersed with TAB-indented code.
 
 	Text that does not appear in the code.
-	  // code into default file
-	  // more code
+	    // code into default file
+	    // more code
 	*YSFILE script1.ys
 	This will not appear in the file.
-	  x:=1;
-	  // some code for the file script1.ys
+	    x:=1;
+	    // some code for the file script1.ys
 	*YSFILE script2.ys
-	  // some code for the file script2.ys
+	    // some code for the file script2.ys
 	End of the example, need to reset *YSFILE.
 	*YSFILE -
 
+
+	    {ys2book}: extracting documentation from Yacas code ("literate programming")
+
+*A documentation!embedded in code
+*A documentation!literate programming
+The standard view of literate programming is that one prepares a book readable by humans, and all code is automatically extracted from the book.
+The focus in this approach is on writing explanations on how the code works.
+
+The converse approach is to write primarily code and
+embed some documentation as comments in the code files.
+This approach is implemented by the script {ys2book.pl}.
+
+This script takes a Yacas script file and extracts Yacas comments from it into another file.
+Usage may look like this:
+
+	perl ys2book.pl < file.ys > file.chapt.txt
+	perl ys2book.pl -strip < file.ys > file.chapt.txt
+Here {file.ys} is the source file and {file.chapt.txt} is the output file.
+
+Not all comments may be desirable as documentation.
+Formatting of comments is implemented as follows:
+
+*	Line comments starting at the beginning of line with three or more slashes
+("{///}", "{////}" etc.) are exported as documentation.
+Line comments starting with "{//}" are not exported.
+Line comments that are found after some Yacas statements are also not exported.
+For example, if the source file contains the following lines,
+	a:=1; // initialize a.
+	   ///// This function needs
+	  ///   an initializer.
+	b:=1; /// also initialize b.
+then only the text
+	This function needs
+	an initializer.
+will appear in the output file.
+Note that the initial spaces are stripped from the line comment strings.
+*	Block comments starting with
+"{/**}" become documentation.
+The block comment must be the only content of the line.
+For example,
+	/** documentation text */
+	/**   continues
+	    here*/
+will export the following:
+	documentation text
+	continues
+	    here
+Note that some initial spaces have been stripped.
+See below for more detail about the stripping of spaces.
+*	Multiline comments marked with an initial asterisk
+"{*}" become documentation with the initial asterisk removed.
+For example, in the block comment
+	/** This starts
+	 * a multiline
+	 * comment.
+	 */ 
+the initial {*} and any spaces before it will be removed from each line.
+This feature is designed to make the format easier to comprehend visually, if the documentation needs to be specially formatted.
+*	All other comments remain unexported code comments.
+*	All Yacas code, including unexported comments, is TAB-indented and printed to the output file, unless the "{-strip}" option is given.
+(TAB-indentation is the Yacas documentation markup for code examples.)
+With the "{-strip}" option, the output file will contain only exportable documentation comments and no code samples.
+
+All exported text is printed to the output file as is, without any additional reformatting.
+The only change to the text is stripping of initial spaces.
+
+Any leading spaces after the beginning of the comment sign are removed.
+For example,
+	/*      text */
+will be exported as just "text" without the leading spaces.
+In a multiline comment, such as
+	/*    start
+	      of comment */
+the leading spaces in the first line will be stripped.
+However, the leading spaces (and TABs) in other lines of the multiline comment block will be preserved.
+
+Empty lines can be introduced into the documentation either as part of a multiline comment block, or as a standalone empty comments such as
+	///
+	////////
+
+With these features it is easy to prepare the embedded documentation in the Yacas plaintext documentation format.
+This format requires space- and TAB-based formatting, which is mostly preserved by the script {ys2book.pl}.
 
 	    {ytxt2tex}: Conversion of plain text documentation to $LaTeX$
 
 *A documentation!outside of Yacas source tree
 An auxiliary script {ytxt2tex} converts plain text documentation to $LaTeX$.
-This is a standalone script; it is installed into {/usr/local/bin} and requires the Yacas executable also on the path, as well as the script files {book2TeX.*} and {txt2yacasdoc.pl} in the {/manmake} subdirectory of the Yacas installation tree {/usr/local/share/yacas/}.
-It also requires {perl} and the Unix shell {sh}.
-
 The script {ytxt2tex} can be used outside of the Yacas source tree to convert individual documents to $LaTeX$.
 This is useful if you would like to produce $TeX$ documents and if you find the plain text format of the Yacas documentation more comfortable.
 Therefore, {ytxt2tex} is a kind of a special-purpose $TeX$ preprocessor designed for producing Yacas documentation.
 
+This is a standalone script; it is installed by default into {/usr/local/bin} and requires the Yacas executable also on the path, as well as the script files {book2TeX.*} and {txt2yacasdoc.pl} in the {/manmake} subdirectory of the Yacas installation tree {/usr/local/share/yacas/}.
+The script also requires {perl} and the Unix shell {sh}.
+
 Limitations of this script are:
 *	it is impossible to include raw $TeX$ code;
-*	mathematical expressions are limited to those representable using Yacas functions from the standard library;
+*	mathematical expressions are limited to those representable using Yacas functions and operators from the standard library;
 *	the document comes out to be a twocolumn "report" with a certain fixed title page format, a table of contents, and an index;
 *	front matter is fixed
-("<i>This is Yacas documentation... by the Yacas team... GNU Free Documentation License...</i>" etc.) and will most probably have to be edited by hand if you need something else rather than new Yacas documentation;
+("<i>This is Yacas documentation... by the Yacas team... GNU Free Documentation License...</i>" etc.) and will most probably have to be edited by hand if you need to prepare anything other than Yacas documentation;
 *	all current limitations of plaintext documentation format, for example, no nested itemized/enumerated environments;
 *	some advanced features of index generation (e.g. the {!} separators combined with other markup) are not yet supported.
 
@@ -630,13 +730,13 @@ For example:
 The chapter files might be:
 
 	*REM this is the file "chapter1.txt"
-			Entities and Epiphenomena
+	        Entities and Epiphenomena
 	The history of the ambiguous question of
 	epiphenomenological discourse can be
 	traced to the pre-postmodern period...
 
 	*REM this is the file "chapter2.txt"
-			Substrates and Superficiality
+	        Substrates and Superficiality
 	In the preceding chapter, we have thoroughly
 	investigated the metaphilosophical aspects of
 	the trans-homocentric considerations...
@@ -655,6 +755,7 @@ The commands to create a PostScript file out of the $LaTeX$ file might be:
 	latex MyBook.tex
 
 Note that the resulting $LaTeX$ file needs to be processed three times if the table of contents or index are to be used.
+Without a table of contents and index, it is enough to process the file with $LaTeX$ twice.
 
 	    {book2txt}: Conversion of existing documentation to plain text
 
