@@ -1,6 +1,5 @@
 
 DefaultDirectory("../scripts/");
 
-Load("../scripts/yacasinit");
-
+Load("../scripts/yacasinit.ys");
 

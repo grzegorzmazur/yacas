@@ -44,7 +44,7 @@ HelpView* helpview_;
 Fl_Button *back_;
 Fl_Button *forward_;
 Fl_Button *smaller_;
-Fl_Button *larger_; 
+Fl_Button *larger_;
 
 Fl_Group* input;
 
@@ -209,32 +209,32 @@ void cb_smaller__i(Fl_Button*, void*)
 {
   if (helpview_->textsize() > 8)
   helpview_->textsize(helpview_->textsize() - 2);
- 
+
   if (helpview_->textsize() <= 8)
   smaller_->deactivate();
   larger_->activate();
 }
- 
+
 void cb_smaller_(Fl_Button* o, void* v)
 {
   cb_smaller__i(o,v);
 }
- 
+
 void cb_larger__i(Fl_Button*, void*)
 {
   if (helpview_->textsize() < 18)
   helpview_->textsize(helpview_->textsize() + 2);
- 
+
   if (helpview_->textsize() >= 18)
   larger_->deactivate();
   smaller_->activate();
 }
- 
+
 void cb_larger_(Fl_Button* o, void* v)
 {
   cb_larger__i(o,v);
 }
- 
+
 
 void cb_menu_insert(Fl_Widget* o, void* v)
 {
@@ -354,7 +354,7 @@ void RestartYacas()
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispNotepad),
                                            (*yacas)()().HashTable().LookUp("Notepad"));
 
-    
+
     char cmd[128];
     sprintf(cmd,"DefaultDirectory(\"%s\");",defdir);
     yacas->Evaluate(cmd);
@@ -384,7 +384,7 @@ void RestartYacas()
     console->AddText("Proteus Notepad", FL_BLACK,"",FL_HELVETICA,9);
     #endif
     */
-    yacas->Evaluate("Load(\"yacasinit\");");
+    yacas->Evaluate("Load(\"yacasinit.ys\");");
 }
 
 
@@ -413,12 +413,12 @@ int main(int argc, char **argv)
     Fl_Window* w;
     {
         Fl_Window* o = /* foo_window = */ new Fl_Window(640, 320);
-        
+
         w = o;
         {
             mainTabs = new Fl_Tabs(5, 1, 630, 315);
             o->selection_color(15);
-			
+
             {
                 Fl_Group* o = input = new Fl_Group(10, 20, 630, 310, "Input");
 				{
@@ -433,13 +433,13 @@ int main(int argc, char **argv)
                 o->end();
                 Fl_Group::current()->resizable(o);
             }
-			
+
             {
                 Fl_Group* o = grapher = new Fl_Group(10, 20, 630, 310, "Graph");
                 drawing = new Drawer(11,23,618,285);
                 o->end();
             }
-			
+
             {
                 Fl_Group* o = new Fl_Group(10, 20, 630, 310, "Edit");
                 editor_add_items(11,23,618, 285);
@@ -450,7 +450,7 @@ int main(int argc, char **argv)
                 Fl_Group* helptab;
                 Fl_Group* o = helptab = new Fl_Group(10, 20, 630, 310, "Help");
 
-                 
+
                 {
                     HelpView* o = helpview_ = new HelpView(11, 23, 620, 260);
                     o->box(FL_DOWN_BOX);
@@ -481,7 +481,7 @@ int main(int argc, char **argv)
                     o->labelfont(11);
                     o->labelsize();
                     o->callback((Fl_Callback*)cb_larger_);
-                }  
+                }
                 {
                     char helpfile[128];
 #ifdef _WINDOWS
@@ -491,11 +491,11 @@ int main(int argc, char **argv)
 #endif
                     helpview_->load(helpfile);
                 }
-                
+
                 o->end();
 
             }
-			
+
             init_editor();
 
             mainTabs->end();
@@ -582,15 +582,15 @@ int main(int argc, char **argv)
     Fl_Window* w;
     {
         Fl_Window* o = /* foo_window = */ new Fl_Window(160, 220);
-        
+
         w = o;
         {
             mainTabs = new Fl_Tabs(0, 1, 160, 219);
             o->selection_color(15);
-			
+
             {
                 Fl_Group* o = input = new Fl_Group(2, 15, 158, 215, "Input");
-				
+
 				{
                 	console = new FltkConsole(2,16,156,153,9);
 				}
@@ -834,19 +834,19 @@ int main(int argc, char **argv)
                 	o->labelsize(9);
                 	o->callback((Fl_Callback*)cb_menu_enter);
 				}
-				
+
                 o->labelsize(10);
                 o->end();
                 Fl_Group::current()->resizable(o);
             }
-			
+
             {
                 Fl_Group* o = grapher = new Fl_Group(2, 15, 156, 215, "Graph");
                 drawing = new Drawer(2,16,156,203);
       		    o->labelsize(10);
                 o->end();
             }
-			
+
             {
                 Fl_Group* o = new Fl_Group(2, 15, 156, 215, "Edit");
                 editor_add_items(2,16,156,203,9);
@@ -857,7 +857,7 @@ int main(int argc, char **argv)
             {
                 Fl_Group* o = new Fl_Group(2, 15, 156, 215, "?");
 
-                 
+
                 {
                     HelpView* o = helpview_ = new HelpView(2, 16, 156, 181);
                     helpview_->textsize(8);
