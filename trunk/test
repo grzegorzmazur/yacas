@@ -1,5 +1,32 @@
 
 
+LocalSymbols(f,x,n)
+  Nest(_f,_x,n_IsInteger) <--
+  [
+    While (n>0)
+    [
+      x := Apply(f,{x});
+      n--;
+    ];
+    x;
+  ];
+
+LocalSymbols(result,f,x,n)
+  NestList(_f,_x,_n) <--
+  [
+    Local(result);
+    result:={x};
+    While (n>0)
+    [
+      x := Apply(f,{x});
+      result := x:result;
+      n--;
+    ];
+    result;
+  ];
+
+EndOfFile;
+
 
 10 # PowerMod(x_IsPositiveInteger,n_IsPositiveInteger,m_IsPositiveInteger)_((n&1) = 1) <--
      Mod(PowerMod(Mod(x*x,m),n>>1,m)*x,m);
