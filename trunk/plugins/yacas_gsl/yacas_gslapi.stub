@@ -21,8 +21,11 @@ StubApiCPrelog(
 
 
 /* Declare a function */
-StubApiCFunction("double", "gsl_sf_bessel_J0","gsl'sf'bessel'J0",{"double"});
-StubApiCFunction("double", "gsl_sf_erf","gsl'sf'erf",{"double"});
+//StubApiCFunction("double", "gsl_sf_bessel_J0","gsl'sf'bessel'J0",{"double"});
+//StubApiCFunction("double", "gsl_sf_erf","gsl'sf'erf",{"double"});
+
+// Automatically generated stubs
+Load("gsl_auto.stub");
 
 /*
 StubApiCFunction("int","add_integers","AddTwoIntegers",{"int","int"});
