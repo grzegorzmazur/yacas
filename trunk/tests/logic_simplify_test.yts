@@ -1,5 +1,5 @@
 
-Use("logic.ys");
+//Use("logic.ys");
 
 
 NextTest("CNF");
