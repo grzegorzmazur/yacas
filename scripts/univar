@@ -22,7 +22,11 @@ Function("ExpandUniVariate",{var,first,coefs})
   Local(result,i);
   result:=0;
   For(i:=1,i<=Length(coefs),i++)
-    result:=result+NormalForm(coefs[i])*var^(first+i-1);
+  [
+    Local(term);
+    term:=NormalForm(coefs[i])*var^(first+i-1);
+    result:=result+term;
+  ];
   result;
 ];
 

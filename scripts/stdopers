@@ -85,7 +85,7 @@ RightAssociative("else");
 Infix("&",5);
 Infix("|",5);
 Infix("%",5);
-Infix("^",5);
+/* Infix("^",5); */
 
 
 
