@@ -537,9 +537,12 @@ LispStringPtr LispEnvironment::FindCachedFile(LispCharPtr aFileName)
         LispInt index = iArchive->iFiles.FindFile(aFileName);
         if (index>=0)
         {
-//printf("File %s found in archive!\n",aFileName);
             LispCharPtr contents = iArchive->iFiles.Contents(index);
-            return NEW LispString(contents,LispFalse);
+            if (contents != NULL)
+            {
+                return NEW LispString(contents,LispFalse);
+            }
+//printf("File %s unsuccessfully decompressed\n",aFileName);
         }
     }
 

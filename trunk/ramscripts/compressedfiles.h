@@ -14,6 +14,7 @@ public:
     LispCharPtr Contents(LispInt aIndex);
     inline LispInt NrFiles() const {return iNrFiles;}
     void Sizes(LispInt& aOriginalSize, LispInt& aCompressedSize, LispInt aIndex);
+    inline LispInt IsValid() const {return iIsValid;}
 protected:
     LispInt GetInt(unsigned char*&indptr);
     
@@ -24,7 +25,7 @@ private:
     unsigned char * *iIndex;
     LispInt iNrFiles;
     LispInt iIndexSize;
-    
+    LispInt iIsValid;
 };
 
 #endif // __compressedfiles_h__

@@ -73,7 +73,11 @@ int main(int argc, char** argv)
     fclose(fin);
 
     CompressedFiles files(fullbuf,fullsize,lzo_compress);
-
+    if (!files.IsValid())
+    {
+        printf("Error, %s is not a valid archive file.\n",argv[3]);
+        exit(0);
+    }
     int i;
 
     printf("%d %d\n",10,files.FindFile(files.Name(10)));
@@ -114,120 +118,5 @@ int main(int argc, char** argv)
         PlatFree(expanded);
     }
     printf("finished\n");
-    return 0;
-    
-    unsigned char* ptr=fullbuf;
-    int nrfiles   = getint(ptr);
-    int indexsize = getint(ptr);
-    unsigned char* indexbuf = ptr;
-    unsigned char* indptr = indexbuf;
-    unsigned char *endptr = indexbuf+indexsize;
-    while (indptr<endptr)
-    {
-//        printf("from start %d\n",indexbuf-fullbuf);
-//        printf("from end %d\n",endptr-indptr);
-        int offset   = getint(indptr);
-        int origsize = getint(indptr);
-        int compressedsize = getint(indptr);
-
-        /*
-         printf("EXTRAIN: %d, %d, %d, %s\n",
-               offset,
-               origsize,
-               compressedsize,
-              indptr);
-         */
-//        printf("offset %d\n",offset);
-//        printf("Inflating %s\n",indptr);
-
-        unsigned char *expanded = (unsigned char*)PlatAlloc(origsize);
-
-        lzo_uint new_len=origsize;
-        int r = LZO_E_OK-1;
-        if (lzo_compress)
-        {
-            r = lzo1x_decompress((unsigned char*)&fullbuf[offset],compressedsize,(unsigned char*)expanded,&new_len,NULL);
-        }
-        else
-        {
-            if (compressedsize != origsize)
-            {
-                printf("internal error: expected %d == %d\n",
-                       compressedsize, origsize);
-                exit(0);
-            }
-            r = LZO_E_OK;
-
-            
-            memcpy(expanded,&fullbuf[offset],origsize);
-
-//            printf("uncompressed\n");
-//            if (strstr(indptr,"editvi"))
-//            {
-//                printf("%s",expanded);
-//                getchar();
-//            }
-
-        }
-//        printf("%d %d %d\n",new_len, origsize,compressedsize);
-//        printf("%s",expanded);
-        if (r == LZO_E_OK)
-        {
-            char name[256];
-            sprintf(name,"%s%s",argv[2],indptr);
-
-            {
-                char *ptr = name;
-                while (*ptr)
-                {
-                    if (*ptr == '/')
-                    {
-                        *ptr = '\0';
-
-                        DIR *dp;
-                        dp = opendir(name);
-                        if (dp == NULL)
-                        {
-                            char dum[256];
-                            sprintf(dum,"mkdir %s",name);
-                            system(dum);
-                        }
-                        else
-                        {
-                            closedir(dp);
-                        }
-                        *ptr = '/';
-                    }
-                    ++ptr;
-                }
-            }
-
-
-            FILE*fout = fopen(name,"wb");
-            if (fout)
-            {
-                printf("Inflating %d:\t %d: %s\n",compressedsize,origsize,name);
-                fwrite(expanded,1,origsize,fout);
-                fclose(fout);
-            }
-            else
-            {
-                printf("Error, could not write to file %s\n",name);
-                exit(0);
-            }
-        }
-	else
-	{
-		/* this should NEVER happen */
-		printf("internal error - decompression failed: %d\n", r);
-		return 1;
-	}
-        
-        PlatFree(expanded);
-        indptr+=strlen((char*)indptr)+1;
-    }
-    
-    fclose(fin);
-    PlatFree(fullbuf);
     return 0;
 }
