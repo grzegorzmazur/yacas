@@ -1,14 +1,16 @@
 
 Chapter()"List operations";
 
-Text()"Most objects that can be of variable size are represented as
-lists (linked lists internally). Yacas does implement arrays, which
-are faster when the number of elements in a collection of objects
-doesn't change. Operations on lists have better support in the current
-system.";
+ChapterIntro("
+Most objects that can be of variable size are represented as lists
+(linked lists internally). Yacas does implement arrays, which are
+faster when the number of elements in a collection of objects doesn't
+change. Operations on lists have better support in the current
+system.");
 
-AddAnchor("Head");
-SubSection()"Head";
+
+
+CmdDescription("Head", "The first element of a list");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()"Head(list)";
@@ -17,12 +19,17 @@ Topical()"Parameters";
 Text()"list - a list";
 
 Topical()"Description";
-Text()"Returns the first element of a list.";
+Text()"
+This function returns the first element of a list. If it is applied to
+a general expression, it returns the first operand. An error is
+returned if \"list\" is an atom.";
 
 Topical()"Examples";
 Text()
 HtmlCommand(
 "In> Head({a,b,c})
+Out> a;
+In> Head(f(a,b,c));
 Out> a;
 ");
 
@@ -30,8 +37,8 @@ Topical()"See Also";
 SeeAlso({"Tail","Length"});
 
 
-AddAnchor("Tail");
-SubSection()"Tail";
+
+CmdDescription("Tail", "Returns a list without its first element");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()"Tail(list)";
@@ -40,7 +47,7 @@ Topical()"Parameters";
 Text()"list - a list";
 
 Topical()"Description";
-Text()"Returns a list without its first element.";
+Text()"This function returns \"list\" without its first element.";
 
 Topical()"Examples";
 Text()
@@ -54,8 +61,7 @@ SeeAlso({"Head","Length"});
 
 
 
-AddAnchor("Length");
-SubSection()"Length";
+CmdDescription("Length", "The length of a list or string");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()"Length(object)";
@@ -77,71 +83,91 @@ Out> 6;
 ");
 
 Topical()"See Also"; 
-SeeAlso({"Head","Tail","Nth"});
+SeeAlso({"Head","Tail","Nth","Count"});
 
 
 
-AddAnchor("MapSingle");
-AddAnchor("Map");
-SubSection()"Applying a function to multiple values";
+CmdDescription("Map", "Apply an n-ary function to all entries in a list");
 StandardLib();
-Topical()"Calling Sequence";
-Text()
-"MapSingle(function,list) <br>
-Map(function,doublelist)
-";
 
-Topical()"Parameters";
-Text()
-"function - a function to apply <br>
-list - list of arguments to be passed to function accepting a single argument
-doublelist - list of lists of arguments to be passed to a function
-";
+Topical() "Calling Sequence";
+Text() "Map(fn, list)";
 
-Topical()"Description";
-Text()
-"MapSingle performs Apply on every item in list, returning a
-list of the results.
-":
-HtmlNewParagraph():
-"
-Map performs Apply on every set of items in doublelist, returning a
-list of the results. Eg. Map(\"+\",{{a,b},{c,d}}) would return {a+c,b+d}.
-doublelist should be a list of lists each the same size. 
-";
+Topical() "Parameters";
+Text() "
+fn - function to apply <br>
+list - list of lists of arguments";
+
+Topical() "Description";
+Text() "
+This function applies \"fn\" to every list of arguments to be found in
+\"list\". So the first entry of \"list\" should be a list containing
+the first, second, third, ... argument to \"fn\", and the same goes
+for the other entries of \"list\". The function can either be given as
+a string or as a pure function.";
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"In> MapSingle(\"Sin\",{a,b,c})
+Text() HtmlCommand("
+In> MapSingle(\"Sin\",{a,b,c});
 Out> {Sin(a),Sin(b),Sin(c)};
-In> Map(\"+\",{{a,b},{c,d}})
-Out> {a+c,b+d};
-In> \"Sin\" /@ {a,b,c}
-Out> {Sin(a),Sin(b),Sin(c)};
-");
+In> Map(\"+\",{{a,b},{c,d}});
+Out> {a+c,b+d};");
 
-Topical()"See Also"; 
-SeeAlso({"/@"});
+Topical() "See Also";
+SeeAlso({"MapSingle", "MapArgs"});
 
 
-AddAnchor("RandomIntegerVector");
-SubSection()"RandomIntegerVector";
+
+CmdDescription("MapSingle", "Apply a unary function to all entries in a list");
 StandardLib();
+
+Topical() "Calling Sequence";
+Text() "MapSingle(fn, list)";
+
+Topical() "Parameters";
+Text() "
+fn - function to apply <br>
+list - list of arguments";
+
+Topical() "Description";
+Text() "
+The function \"fn\" is successively applied to all entries in
+\"list\", and a list containing the respective results is
+returned. The function can be given either as a string or as a pure
+function. 
+<p> </p>
+The ":HtmlTerm("/@"):" operator provides a shorthand for
+":HtmlTerm("MapSingle"):"."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> MapSingle(\"Sin\",{a,b,c});
+Out> {Sin(a),Sin(b),Sin(c)};
+In> MapSingle({{x},x^2}, {a,2,c});
+Out> {a^2,4,c^2};");
+
+Topical() "See Also";
+SeeAlso({"Map", "MapArgs", "/@"});
+
+
+
+CmdDescription("RandomIntegerVector", "Generate a vector of random integers");
+StandardLib();
+
 Topical()"Calling Sequence";
-Text()"RandomIntegerVector(nr,from,to)";
+Text()"RandomIntegerVector(nr, from, to)";
 
 Topical()"Parameters";
-Text()
-"nr - integer
-from - integer
-to - integer
-";
+Text() "
+nr - number of integers to generate <br>
+from - lower bound <br>
+to - upper bound";
 
 Topical()"Description";
-Text()
-"RandomIntegerVector generates a vector of random
-integers p in the range [from,to] (including from and to).";
+Text() "
+This function generates a list with \"nr\" random integers. All
+entries lie between \"from\" and \"to\", including the boundaries, and
+are uniformly distributed in this interval.";
 
 Topical()"Examples";
 Text()
@@ -154,21 +180,24 @@ Topical()"See Also";
 SeeAlso({"Random","RandomPoly"});
 
 
-AddAnchor("MakeVector");
-SubSection()"MakeVector";
+
+CmdDescription("MakeVector", "Vector of uniquely numbered variable names");
 StandardLib();
+
 Topical()"Calling Sequence";
 Text()"MakeVector(var,n)";
 
 Topical()"Parameters";
 Text()
 "var - free variable<br>
-n - integer";
+n - length of the vector";
 
 Topical()"Description";
-Text()
-"MakeVector(var,n) : return a vector of unique numbered variable names.
-";
+Text() "
+A list of length \"n\" is generated. The first entry contains the
+identifier \"var\" with the number 1 appended to it, the second entry
+contains \"var\" with the suffix 2, and so on until the last entry
+which contains \"var\" with the number \"n\" appended to it.";
 
 Topical()"Examples";
 Text()
@@ -180,23 +209,24 @@ Out> {a1,a2,a3};
 Topical()"See Also"; 
 SeeAlso({"RandomIntegerVector","ZeroVector"});
 
-AddAnchor("Select");
-SubSection()"Select";
+
+
+CmdDescription("Select", "Select the entries satisfying some predicate");
 StandardLib();
+
 Topical()"Calling Sequence";
-Text()"Select(predicate,list)";
+Text()"Select(pred, list)";
 
 Topical()"Parameters";
 Text()
-"predicate - a predicate function<br>
+"pred - a predicate <br>
 list - a list of elements to select from";
 
 Topical()"Description";
-Text()
-"Select returns a sublist of list, containing all
-elements for which the predicate returned after applying the
-predicate on that list element. 
-";
+Text() 
+HtmlTerm("Select"):" returns a sublist of \"list\" which contains all
+the entries for which the predicate \"pred\" returns
+":HtmlTerm("True"):" when applied to this entry.";
 
 Topical()"Examples";
 Text()
@@ -206,290 +236,1133 @@ Out> {2,3,4};
 ");
 
 Topical()"See Also"; 
-SeeAlso({"Length","Find"});
+SeeAlso({"Length","Find","Count"});
+
+
+
+CmdDescription("Nth", "Return the n-th element of a list");
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "Nth(list, n)";
+
+Topical() "Parameters";
+Text() "
+list - list to choose from <br>
+n - index of entry to pick";
 
+Topical() "Description";
+Text() "
+The entry with index \"n\" from \"list\" is returned. The first entry
+has index 1. It is possible to pick several entries of the list by
+taking \"n\" to be a list of indices. 
+<p> </p>
+More generally, ":HtmlTerm("Nth"):" returns the n-th operand of the
+expression passed as first argument.
+<p> </p>
+An alternative but equivalent form of ":HtmlTerm("Nth(list, n)"):" is
+":HtmlTerm("list[n]"):"."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> lst := {a,b,c,13,19};
+Out> {a,b,c,13,19};
+In> Nth(lst, 3);
+Out> c;
+In> lst[3];
+Out> c;
+In> Nth(lst, {3,4,1});
+Out> {c,13,a};
+In> Nth(b*(a+c), 2);
+Out> a+c;");
+
+Topical() "See Also";
+SeeAlso({"Select", "Nth"});
+
+
+
+CmdDescription("DestructiveReverse", "Reverse a list destructively");
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "DestructiveReverse(list)";
+
+Topical() "Parameters";
+Text() "list - list to reverse";
+
+Topical() "Description"; 
+Text() " 
+This command reverses \"list\" in place, so that the original is
+destroyed. This means that any variable bound to \"list\" will now be
+bound to the reversed list. The reversed list is also returned.
+<p> </p>
+Destructive commands are faster than their nondestructive
+counterparts. Stangely, there is no nondestructive command to reverse
+a list. Use ":HtmlTerm("FlatCopy"):" and
+":HtmlTerm("DestructiveReverse"):" to achieve this.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> lst := {a,b,c,13,19};
+Out> {a,b,c,13,19};
+In> revlst := DestructiveReverse(lst);
+Out> {19,13,c,b,a};
+In> lst;
+Out> {a};");
+
+Topical() "See Also";
+SeeAlso({"FlatCopy"});
 
+
 
+CmdDescription("List", "Construct a list");
+BuiltIn();
 
-AddAnchor("Nth");
-SubSection()"Nth({list},index)"; Text()"
-Nth({list},index) : Returns the element in the list \"{list}\" at
-position \"index\", where the first element is 1.
+Topical() "Calling Sequence";
+Text() "List(expr1, expr2, ...)";
 
-";
+Topical() "Parameters";
+Text() "expr1, expr2 - expressions making up the list";
 
+Topical() "Descriptions";
+Text() "
+A list is constructed whose first entry is \"expr1\", the second entry
+is \"expr2\", and so on. This command is equivalent to the expression
+\"{expr1, expr2, ...}\".";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> List();
+Out> {};
+In> List(a,b);
+Out> {a,b};
+In> List(a,{1,2},d);
+Out> {a,{1,2},d};");
 
-AddAnchor("DestructiveReverse");
-SubSection()"DestructiveReverse({list})"; Text()"
-DestructiveReverse({list}) : Returns the list {list} in reverse order.
-The list is reversed in place, so the original is changed into nonsense.
-Use FlatCopy to avoid this.
+Topical() "See Also";
+SeeAlso({"UnList", "Listify"});
 
-";
 
 
-AddAnchor("List");
-SubSection()"List(...)"; Text()"
-List(...) : Returns a list with ... as its elements, after they
-were evaluated. This is the same as entering \"{...};\".
+CmdDescription("UnList", "Convert a list to a function application");
+BuiltIn();
 
-";
+Topical() "Calling Sequence";
+Text() "UnList(list)";
 
-AddAnchor("UnList");
-SubSection()"UnList({list})"; Text()"
-UnList({list}) : 
-Changes the list {list} into an expression specified in the
-elements of the list. This means the first element
-is treated as the command, and the elements following
-are the arguments to that command. \"{list}\" is evaluated
-before the operation is performed. Example: \"UnList({Cos,x});\"
-would evaluate to \"Cos(x);\".
+Topical() "Parameters";
+Text() "list - list to be converted";
 
-";
+Topical() "Description";
+Text() "
+This command converts a list to a function application. The first
+entry of \"list\" is treated as a function, and the following entries
+are the arguments to this function. So the function refered to in the
+first element of \"list\" is applied to the other elements. 
+<p> </p>
+Note that \"list\" is evaluated before the function application is
+formed, but the resulting expression is not evaluated.";
 
-AddAnchor("Listify");
-SubSection()"Listify(expression)"; Text()"
-Listify(expression) : 
-Inverse of UnList: it converts the expression \"expression\" 
-into a list. Eg. \"Listify(a(b));\" evaluates to \"{a,b};\".
+Topical() "Examples";
+Text() HtmlCommand("
+In> UnList({Cos, x});
+Out> Cos(x);
+In> UnList({f});
+Out> f();
+In> UnList({Taylor,x,0,5,Cos(x)});
+Out> Taylor(x,0,5)Cos(x);
+In> Eval(%);
+Out> 1-x^2/2+x^4/24;");
 
-";
+Topical() "See Also";
+SeeAlso({"List", "Listify"});
 
-AddAnchor("Concat");
-SubSection()"Concat(...)"; Text()"
-Concat(...) : concatenates the lists in ... after evaluation.
-Eg. \"Concat({a,b},{c,d});\" returns \"{a,b,c,d};\".
 
-";
 
-AddAnchor("Delete");
-SubSection()"Delete({list},index)"; Text()"
-Delete({list},index) : 
-Deletes an element at position \"index\" from the
-list \"{list}\", and returns that list. \"{list}\" and
-\"index\" are evaluated first. The first index in list is 1.
+CmdDescription("Listify", "Convert a function application to a list");
+BuiltIn();
 
-";
+Topical() "Calling Sequence";
+Text() "Listify(expr)";
 
-AddAnchor("Insert");
-SubSection()"Insert({list},index,element)"; Text()"
+Topical() "Parameters";
+Text() "expr - expression to be converted";
 
-Evaluates arguments, and inserts \"element\"
-in \"{list}\" at position \"index\", where position
-1 means insert at the front of the existing list. The result is returned,
-and the original list is left unchanged.
+Topical() "Description";
+Text() "
+The parameter \"expr\" is expected to be a compound object, i.e. not
+an atom. It is evaluated and then converted to a list. The first entry
+in the list is the top-level operator in the evaluated expression and
+the other entries are the arguments to this operator. Finally, the
+list is returned.";
 
-";
+Topical() "Examples";
+Text() HtmlCommand("
+In> Listify(Cos(x));
+Out> {Cos,x};
+In> Listify(3*a);
+Out> {*,3,a};");
 
-AddAnchor("DestructiveInsert");
-SubSection()"DestructiveInsert({list},index,element)"; Text()"
-DestructiveInsert({list},index,element) : 
-The Destructive... versions actually perform the operations
-on the original lists. So, if
-a variable is bound to a list, the list the variable points
-to is actually modified. This is more efficient memory-wise
-and in execution if the same variable is going to be set to
-the result.
+Topical() "See Also";
+SeeAlso({"List", "UnList", "IsAtom"});
 
-";
 
-AddAnchor("DestructiveDelete");
-SubSection()"DestructiveDelete({list},index)"; Text()"
-DestructiveDelete({list},index) : 
-The Destructive... versions actually perform the operations
-on the original lists. So, if
-a variable is bound to a list, the list the variable points
-to is actually modified. This is more efficient memory-wise
-and in execution if the same variable is going to be set to
-the result.
 
-";
+CmdDescription("Concat", "Concatenate lists");
+BuiltIn();
 
-AddAnchor("Replace");
-SubSection()"Replace({list},index,element)"; Text()"
-This replaces an element, much like calling Delete and Insert
-in sequence.
+Topical() "Calling Sequence";
+Text() "Concat(list1, list2, ...)";
 
-";
+Topical() "Parameters";
+Text() "list1, list2 - lists to concatenate";
 
-AddAnchor("DestructiveReplace");
-SubSection()"DestructiveReplace({list},index,element)"; Text()"
-This replaces an element, much like calling DestructiveDelete
-and DestructiveInsert in sequence.
+Topical() "Description";
+Text() "
+The lists \"list1\", \"list2\", ..., are evaluated and
+concatenated. The resulting big list is returned.";
 
-";
+Topical() "Examples";
+Text() HtmlCommand("
+In> Concat({a,b}, {c,d});
+Out> {a,b,c,d};
+In> Concat({5}, {a,b,c}, {{f(x)}});
+Out> {5,a,b,c,{f(x)}};");
 
-AddAnchor("FlatCopy");
-SubSection()"FlatCopy({list})"; Text()"
-FlatCopy({list}) : 
-Copying of the contents of a list. It is not recursed
-into, only the first level is copied. This is useful
-in combination with the destructive commands that actually
-modify lists in place (for efficiency).
+Topical() "See Also";
+SeeAlso({"ConcatStrings", ":", "Insert"});
+
+
+
+CmdDescription("Delete", "Delete an element from a list");
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "Delete(list, n)";
+
+Topical() "Parameters";
+Text() "
+list - list from which an element should be removed <br>
+n - index of the element to remove";
 
+Topical() "Description";
+Text() "
+This command deletes the n-th element from \"list\". The first
+parameter should be a list, while \"n\" should be a positive integer
+less than or equal to the length of \"list\". The entry with index
+\"n\" is removed (the first entry has index 1), and the resulting list
+is returned.";
 
-";
-
-AddAnchor("Contains");
-SubSection()"Contains({list},element)"; Text()"
-Contains({list},element) : 
-Returns whether \"{list}\" contains element \"element\".
-
-";
-
-AddAnchor("Find");
-SubSection()"Find(list,item)"; Text()"
-Find(list,item) : returns the index of item in the list.
-Example: Find({a,b,c,d},c) returns 3.
-
-";
-
-AddAnchor("Append");
-SubSection()"Append({list},element)"; Text()"
-Append({list},element) : 
-Append an element {{I:element}} to list {{I:{list} }}.
-
-";
-
-AddAnchor("DestructiveAppend");
-SubSection()"DestructiveAppend({list},element)"; Text()"
-DestructiveAppend({list},element) :
-Append an element {{I:element}} to list {{I:{list} }}.
-
-";
-
-AddAnchor("RemoveDuplicates");
-SubSection()"RemoveDuplicates({list})"; Text()"
-RemoveDuplicates({list}) : 
-Returns a list with exactly one occurrence of each element that is
-also in \"{list}\".
-
-";
-
-AddAnchor("Push");
-SubSection()"Push(stack,element)"; Text()"
-These implement a stack (represented as a list). \"Push\" adds an element
-in front of the list. \"Pop\" then removes and returns any element you
-need from the list. \"PopFront\" and \"PopBack\" pop the first and last
-element of the stack respectively.
-
-";
-
-AddAnchor("Pop");
-SubSection()"Pop(stack,index)"; Text()"
-These implement a stack (represented as a list). \"Push\" adds an element
-in front of the list. \"Pop\" then removes and returns any element you
-need from the list. \"PopFront\" and \"PopBack\" pop the first and last
-element of the stack respectively.
-
-";
-
-AddAnchor("PopFront");
-SubSection()"PopFront(stack)"; Text()"
-These implement a stack (represented as a list). \"Push\" adds an element
-in front of the list. \"Pop\" then removes and returns any element you
-need from the list. \"PopFront\" and \"PopBack\" pop the first and last
-element of the stack respectively.
-
-";
-
-AddAnchor("PopBack");
-SubSection()"PopBack(stack)"; Text()"
-These implement a stack (represented as a list). \"Push\" adds an element
-in front of the list. \"Pop\" then removes and returns any element you
-need from the list. \"PopFront\" and \"PopBack\" pop the first and last
-element of the stack respectively.
-
-";
-
-AddAnchor("Swap");
-SubSection()"Swap({list},i1,i2)"; Text()"
-Swap({list},i1,i2) : 
-Swap elements with indices \"i1\" and \"i2\" in the list \"{list}\".
-
-";
-
-AddAnchor("Count");
-SubSection()"Count({list},element)"; Text()"
-Count({list},element) : 
-Returns number of occurrences of \"element\" in \"{list}\".
-
-";
-
-AddAnchor("Intersection");
-SubSection()"Intersection({list1},{list2})"; Text()"
-Intersection({list1},{list2}) : 
-returns the intersection of two lists.
-Example : \"Intersection({a,b},{b,c});\" would evaluate to \"{b};\".
-
-";
-
-AddAnchor("Union");
-SubSection()"Union({list1},{list2})"; Text()"
-Union({list1},{list2}) : 
-returns the union of two lists.
-Example : \"Union({a,b},{b,c});\" would evaluate to \"{a,b,c};\".
-
-";
-
-AddAnchor("Difference");
-SubSection()"Difference({list1},{list2})"; Text()"
-Difference({list1},{list2}) : 
-returns the difference of two lists.
-
-";
-
-AddAnchor("FillList");
-SubSection()"FillList(aItem, aLength)"; Text()"
-FillList(aItem, aLength) : create a list with length aLength,
-filling it with aItem.
-
-Example: \"FillList(0,5)\" returns {0,0,0,0,0}
-";
-
-
-AddAnchor("Drop");
-SubSection()"Drop(list,which)"; Text()"
-
- Drop( list, n ) gives 'list' with its first n elements dropped      <BR>
- Drop( list, -n ) gives 'list' with its last n elements dropped      <BR>
- Drop( list, {m,n} ) gives 'list' with elements m through n dropped  
-";
-
-AddAnchor("Take");
-SubSection()"Take(list,which)"; Text()"
-
- Take( list, n ) gives the first n elements of 'list'   <BR>
- Take( list, -n ) gives the last n elements of 'list'   <BR>
- Take( list, {m,n} ) elements m through n of 'list'
-
-";
-
-AddAnchor("Partition");
-SubSection()"Partition( list, n )"; Text()"
-
-  Partition( list, n ) partitions 'list' into non-overlapping sublists of length n
-";
-
-
-AddAnchor("Assoc");
-SubSection()"Assoc(key,assoclist)"; Text()"
-
-Treat assoclist as a traditional assoc list well known from Lisp, and return
-the element stored with key. This functionality is probably best
-accessed through the [ ] operator.
-
-";
-AddAnchor("AssocIndices");
-SubSection()"AssocIndices(list)"; Text()"
-
-Return the list of keys in the associated list assoclist.
-
-";
-
-
-AddAnchor("Flatten");
-SubSection()"Flatten";
+Topical() "Examples";
+Text() HtmlCommand("
+In> Delete({a,b,c,d,e,f}, 4);
+Out> {a,b,c,e,f};");
+
+Topical() "See Also";
+SeeAlso({"DestructiveDelete", "Insert", "Replace"});
+
+
+
+CmdDescription("Insert", "Insert an element into a list");
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "Insert(list, n, expr)";
+
+Topical() "Parameters";
+Text() "
+list - list in which \"expr\" should be inserted <br>
+n - index at which to insert <br>
+expr - expression to insert in \"list\"";
+
+Topical() "Description";
+Text() "
+The expression \"expr\" is inserted just before the n-th entry in
+\"list\". The first parameter \"list\" should be a list, while \"n\"
+should be a positive integer less than or equal to the length of
+\"list\" plus one. The expression \"expr\" is placed between the
+entries in \"list\" with entries \"n-1\" and \"n\". There are two
+border line cases: if \"n\" is 1, the expression \"expr\" is placed in
+front of the list (like the ":HtmlTerm(":"):" operator); if \"n\"
+equals the length of \"list\" plus one, the expression \"expr\" is
+placed at the end of the list (like ":HtmlTerm("Append"):"). In any
+case, the resulting list is returned.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Insert({a,b,c,d}, 4, x);
+Out> {a,b,c,x,d};
+In> Insert({a,b,c,d}, 5, x);
+Out> {a,b,c,d,x};
+In> Insert({a,b,c,d}, 1, x);
+Out> {x,a,b,c,d};");
+
+Topical() "See Also";
+SeeAlso({"DestructiveInsert", ":", "Append", "Delete", "Remove"});
+
+
+
+CmdDescription("DestructiveDelete", 
+               "Delete an element destructively from a list");
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "DestructiveDelete(list, n)";
+
+Topical() "Parameters";
+Text() "
+list - list from which an element should be removed <br>
+n - index of the element to remove";
+
+Topical() "Description";
+Text() "
+This is the destructive counterpart of ":HtmlTerm("Delete"):". This
+command yields the same result as the corresponding call to
+":HtmlTerm("Delete"):", but the original list is modified. So if a
+variable is bound to \"list\", it will now be bound to the list with
+the n-th entry removed. 
+<p> </p>
+Destructive commands run faster than their nondestructive counterparts
+because the latter copy the list before they alter it.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> lst := {a,b,c,d,e,f};
+Out> {a,b,c,d,e,f};
+In> Delete(lst, 4);
+Out> {a,b,c,e,f};
+In> lst;
+Out> {a,b,c,d,e,f};
+In> DestructiveDelete(lst, 4);
+Out> {a,b,c,e,f};
+In> lst;
+Out> {a,b,c,e,f};");
+
+Topical() "See Also";
+SeeAlso({"Delete", "DestructiveInsert", "DestructiveReplace"});
+
+
+
+CmdDescription("DestructiveInsert", 
+               "Insert an element destructively into a list");
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "DestructiveInsert(list, n, expr)";
+
+Topical() "Parameters";
+Text() "
+list - list in which \"expr\" should be inserted <br>
+n - index at which to insert <br>
+expr - expression to insert in \"list\"";
+
+Topical() "Description";
+Text() "
+This is the destructive counterpart of ":HtmlTerm("Insert"):". This
+command yields the same result as the corresponding call to
+":HtmlTerm("Insert"):", but the original list is modified. So if a
+variable is bound to \"list\", it will now be bound to the list with
+the expression \"expr\" inserted.
+<p> </p>
+Destructive commands run faster than their nondestructive counterparts
+because the latter copy the list before they alter it.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> lst := {a,b,c,d};
+Out> {a,b,c,d};
+In> Insert(lst, 2, x);
+Out> {a,x,b,c,d};
+In> lst;
+Out> {a,b,c,d};
+In> DestructiveInsert(lst, 2, x);
+Out> {a,x,b,c,d};
+In> lst;
+Out> {a,x,b,c,d};");
+
+Topical() "See Also";
+SeeAlso({"Insert", "DestructiveDelete", "DestructiveReplace"});
+
+
+
+CmdDescription("Replace", "Replace an entry in a list");
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "Replace(list, n, expr)";
+
+Topical() "Parameters";
+Text() "
+list - list of which an entry should be replaced <br>
+n - index of entry to replace <br>
+expr - expression to replace the n-th entry with";
+
+Topical() "Description";
+Text() "
+The n-th entry of \"list\" is replaced by the expression
+\"expr\". This is equivalent to calling ":HtmlTerm("Delete"):" and
+":HtmlTerm("Insert"):" in sequence. To be precise, the expression
+":HtmlTerm("Replace(list, n, expr)"):" has the same result as the
+expression ":HtmlTerm("Insert(Delete(list, n), n, expr)"):".";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Replace({a,b,c,d,e,f}, 4, x);
+Out> {a,b,c,x,e,f};");
+
+Topical() "See Also";
+SeeAlso({"Delete", "Insert", "DestructiveReplace"});
+
+
+
+CmdDescription("DestructiveReplace", 
+               "Replace an entry in a list destructively");
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "DestructiveReplace(list, n, expr)";
+
+Topical() "Parameters";
+Text() "
+list - list of which an entry should be replaced <br>
+n - index of entry to replace <br>
+expr - expression to replace the n-th entry with";
+
+Topical() "Description";
+Text() "
+This is the destructive counterpart of ":HtmlTerm("Replace"):". This
+command yields the same result as the corresponding call to
+":HtmlTerm("Replace"):", but the original list is modified. So if a
+variable is bound to \"list\", it will now be bound to the list with
+the expression \"expr\" inserted.
+<p> </p>
+Destructive commands run faster than their nondestructive counterparts
+because the latter copy the list before they alter it.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> lst := {a,b,c,d,e,f};
+Out> {a,b,c,d,e,f};
+In> Replace(lst, 4, x);
+Out> {a,b,c,x,e,f};
+In> lst;
+Out> {a,b,c,d,e,f};
+In> DestructiveReplace(lst, 4, x);
+Out> {a,b,c,x,e,f};
+In> lst;
+Out> {a,b,c,x,e,f};");
+
+Topical() "See Also";
+SeeAlso({"Replace", "DestructiveDelete", "DestructiveInsert"});
+
+
+
+CmdDescription("FlatCopy", "Copy the top level of a list");
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "FlatCopy(list)";
+
+Topical() "Parameters";
+Text() "list - list to be copied";
+
+Topical() "Description";
+Text() "
+A copy of \"list\" is made and returned. The list is not recursed
+into, only the first level is copied. This is useful in combination
+with the destructive commands that actually modify lists in place (for
+efficiency).";
+
+Topical() "Example";
+Text() "
+The following shows a possible way to define a command that reverses a
+list nondestructively." : HtmlCommand("
+In> reverse(l_IsList) <-- DestructiveReverse(FlatCopy(l));
+Out> True;
+In> lst := {a,b,c,d,e};
+Out> {a,b,c,d,e};
+In> reverse(lst);
+Out> {e,d,c,b,a};
+In> lst;
+Out> {a,b,c,d,e};");
+
+
+
+CmdDescription("Contains", "Test whether a list contains a certain element");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Contains(list, expr)";
+
+Topical() "Parameters";
+Text() "
+list - list to examine <br>
+expr - expression to look for in \"list\"";
+
+Topical() "Description";
+Text() "
+This command tests whether \"list\" contains the expression \"expr\"
+as an entry. It returns ":HtmlTerm("True"):" if it does and
+":HtmlTerm("False"):" otherwise. Only the top level of \"list\" is
+examined. The parameter \"list\" may also be a general expression, in
+that case the top-level operands are tested for the occurence of
+\"expr\".";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Contains({a,b,c,d}, b);
+Out> True;
+In> Contains({a,b,c,d}, x);
+Out> False;
+In> Contains({a,{1,2,3},z}, 1);
+Out> False;
+In> Contains(a*b, b);
+Out> True;");
+
+Topical() "See Also";
+SeeAlso({"Find", "Count"});
+
+
+
+CmdDescription("Find", "The index at which a certain element occurs");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Find(list, expr)";
+
+Topical() "Parameters";
+Text() "
+list - the list to examine <br>
+expr - expression to look for in \"list\"";
+
+Topical() "Description";
+Text() "
+This commands returns the index at which the expression \"expr\"
+occurs in \"list\". If \"expr\" occurs more than once, the lowest
+index is returned. If \"expr\" does not occur at all,
+":HtmlTerm("-1"):" is returned.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Find({a,b,c,d,e,f}, d);
+Out> 4;
+In> Find({1,2,3,2,1}, 2);
+Out> 2;
+In> Find({1,2,3,2,1}, 4);
+Out> -1;");
+
+Topical() "See Also";
+SeeAlso({"Contains"});
+
+
+
+CmdDescription("Append", "Append an entry at the end of a list");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Append(list, expr)";
+
+Topical() "Parameters";
+Text() "
+list - list to append \"expr\" to <br>
+expr - expression to append to the list";
+
+Topical() "Description";
+Text() "
+The expression \"expr\" is appended at the end of \"list\" and the
+resulting list is returned. 
+<p> </p>
+Note that due to the underlying data structure, the time it takes to
+append an entry at the end of a list grows linearly with the length of
+the list, while the time for prepending an entry at the beginning is
+constant.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Append({a,b,c,d}, 1);
+Out> {a,b,c,d,1};");
+
+Topical() "See Also";
+SeeAlso({"Concat", ":", "DestructiveAppend"});
+
+ 
+ 
+CmdDescription("DestructiveAppend", 
+               "Destructively append an entry to a list");
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "DestructiveAppend(list, expr)";
+
+Topical() "Parameters";
+Text() "
+list - list to append \"expr\" to <br>
+expr - expression to append to the list";
+
+Topical() "Description";
+Text() "
+This is the destructive counterpart of ":HtmlTerm("Append"):". This
+command yields the same result as the corresponding call to
+":HtmlTerm("Append"):", but the original list is modified. So if a
+variable is bound to \"list\", it will now be bound to the list with
+the expression \"expr\" inserted.
+<p> </p>
+Destructive commands run faster than their nondestructive counterparts
+because the latter copy the list before they alter it.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> lst := {a,b,c,d};
+Out> {a,b,c,d};
+In> Append(lst, 1);
+Out> {a,b,c,d,1};
+In> lst
+Out> {a,b,c,d};
+In> DestructiveAppend(lst, 1);
+Out> {a,b,c,d,1};
+In> lst;
+Out> {a,b,c,d,1};");
+
+Topical() "See Also";
+SeeAlso({"Concat", ":", "Append"});
+
+
+
+CmdDescription("RemoveDuplicates", "Remove any duplicates from a list");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "RemoveDuplicates(list)";
+
+Topical() "Parameters";
+Text() "list - list to act on";
+
+Topical() "Description";
+Text() "
+This command returns \"list\" after all duplicates are removed. To be
+precise, the second occurence of any entry is deleted, as are the
+third, the fourth, etcetera.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> RemoveDuplicates({1,2,3,2,1});
+Out> {1,2,3};
+In> RemoveDuplicates({a,1,b,1,c,1});
+Out> {a,1,b,c};");
+
+
+
+CmdDescription("Push", "Add an element on top of a stack");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Push(stack, expr)";
+
+Topical() "Parameters";
+Text() "
+stack - a stack (represented as a list) <br>
+expr - expression to push on \"stack\"";
+
+Topical() "Description";
+Text() "
+This is part of a simple implementation of a stack, internally
+represented as a list. This command pushes the expression \"expr\" on
+top of the stack, and returns the stack afterwards.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> stack := {};
+Out> {};
+In> Push(stack, x);
+Out> {x};
+In> Push(stack, x2);
+Out> {x2,x};
+In> PopFront(stack);
+Out> x2;");
+
+Topical() "See Also";
+SeeAlso({"Pop", "PopFront", "PopBack"});
+
+
+
+CmdDescription("Pop", "Remove an element from a stack");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Pop(stack, n)";
+
+Topical() "Parameters";
+Text() "
+stack - a stack (represented as a list) <br>
+n - index of the element to remove";
+
+Topical() "Description";
+Text() "
+This is part of a simple implementation of a stack, internally
+represented as a list. This command removes the element with index
+\"n\" from the stack and returns this element. The top of the stack is
+represented by the index 1. Invalid indices, for example indices
+greater than the number of element on the stack, lead to an error.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> stack := {};
+Out> {};
+In> Push(stack, x);
+Out> {x};
+In> Push(stack, x2);
+Out> {x2,x};
+In> Push(stack, x3);
+Out> {x3,x2,x};
+In> Pop(stack, 2);
+Out> x2;
+In> stack;
+Out> {x3,x};");
+
+Topical() "See Also";
+SeeAlso({"Push", "PopFront", "PopBack"});
+
+
+
+CmdDescription("PopFront", "Remove an element from the top of a stack");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "PopFront(stack)";
+
+Topical() "Parameters";
+Text() "stack - a stack (represented as a list)";
+
+Topical() "Description";
+Text() "
+This is part of a simple implementation of a stack, internally
+represented as a list. This command removes the element on the top of
+the stack and returns it. This is the last element that is pushed onto
+the stack.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> stack := {};
+Out> {};
+In> Push(stack, x);
+Out> {x};
+In> Push(stack, x2);
+Out> {x2,x};
+In> Push(stack, x3);
+Out> {x3,x2,x};
+In> PopFront(stack);
+Out> x3;
+In> stack;
+Out> {x2,x};");
+
+Topical() "See Also";
+SeeAlso({"Push", "Pop", "PopBack"});
+
+
+
+CmdDescription("PopBack", "Remove an element from the bottom of a stack");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "PopBack(stack)";
+
+Topical() "Parameters";
+Text() "stack - a stack (represented as a list)";
+
+Topical() "Description";
+Text() "
+This is part of a simple implementation of a stack, internally
+represented as a list. This command removes the element at the bottom
+of the stack and returns this element. Of course, the stack should not
+be empty.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> stack := {};
+Out> {};
+In> Push(stack, x);
+Out> {x};
+In> Push(stack, x2);
+Out> {x2,x};
+In> Push(stack, x3);
+Out> {x3,x2,x};
+In> PopBack(stack);
+Out> x;
+In> stack;
+Out> {x3,x2};");
+
+Topical() "See Also";
+SeeAlso({"Push", "Pop", "PopFront"});
+
+
+
+CmdDescription("Swap", "Swap two elements in a list");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Swap(list, i1, i2)";
+
+Topical() "Parameters";
+Text() "
+list - the list in which a pair of entries should be swapped <br>
+i1, i2 - indices of the entries in \"list\" to swap";
+
+Topical() "Description";
+Text() "
+This command swaps the pair of entries with entries \"i1\" and \"i2\"
+in \"list\". So the element at index \"i1\" ends up at index \"i2\"
+and the entry at \"i2\" is put at index \"i1\". Both indices should be
+valid to address elements in the list. Then the updated list is
+returned.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> lst := {a,b,c,d,e,f};
+Out> {a,b,c,d,e,f};
+In> Swap(lst, 2, 4);
+Out> {a,d,c,b,e,f};");
+
+Topical() "See Also";
+SeeAlso({"Replace", "DestructiveReplace"});
+
+
+
+CmdDescription("Count", "Count the number of occurrences of an expression");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Count(list, expr)";
+
+Topical() "Parameters";
+Text() "
+list - the list to examine <br>
+expr - expression to look for in \"list\"";
+
+Topical() "Description";
+Text() "
+This command counts the number of times that the expression \"expr\"
+occurs in \"list\" and returns this number.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> lst := {a,b,c,b,a};
+Out> {a,b,c,b,a};
+In> Count(lst, a);
+Out> 2;
+In> Count(lst, c);
+Out> 1;
+In> Count(lst, x);
+Out> 0;");
+
+Topical() "See Also";
+SeeAlso({"Length", "Select", "Contains"});
+
+
+
+CmdDescription("Intersection", "Return the intersection of two lists");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Intersection(l1, l2)";
+
+Topical() "Parameters";
+Text() "l1, l2 - two lists";
+
+Topical() "Description";
+Text() "
+The intersection of the lists \"l1\" and \"l2\" is determined and
+returned. The intersection contains all elements that occur in both
+lists. The entries in the result are listed in the same order as in
+\"l1\". If an expression occurs multiple times in both \"l1\" and
+\"l2\", then it will occur the same number of times in the result.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Intersection({a,b,c}, {b,c,d});
+Out> {b,c};
+In> Intersection({a,e,i,o,u}, {f,o,u,r,t,e,e,n});
+Out> {e,o,u};
+In> Intersection({1,2,2,3,3,3}, {1,1,2,2,3,3});
+Out> {1,2,2,3,3};");
+
+Topical() "See Also";
+SeeAlso({"Union", "Difference"});
+
+
+
+CmdDescription("Union", "Return the union of two lists");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Intersection(l1, l2)";
+
+Topical() "Parameters";
+Text() "l1, l2 - two lists";
+
+Topical() "Description";
+Text() "
+The union of the lists \"l1\" and \"l2\" is determined and
+returned. The union contains all elements that occur in one or both of
+the lists. In the resulting list, any element will occur only once."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Union({a,b,c}, {b,c,d});
+Out> {a,b,c,d};
+In> Union({a,e,i,o,u}, {f,o,u,r,t,e,e,n});
+Out> {a,e,i,o,u,f,r,t,n};
+In> Union({1,2,2,3,3,3}, {2,2,3,3,4,4});
+Out> {1,2,3,4};");
+
+Topical() "See Also";
+SeeAlso({"Intersection", "Difference"});
+
+
+
+CmdDescription("Difference", "Return the difference of two lists");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Intersection(l1, l2)";
+
+Topical() "Parameters";
+Text() "l1, l2 - two lists";
+
+Topical() "Description";
+Text() "
+The difference of the lists \"l1\" and \"l2\" is determined and
+returned. The difference contains all elements that occur in \"l1\"
+but not in \"l2\". The order of elements in \"l1\" is preserved. If a
+certain expression occurs \"n1\" times in the first list and \"n2\"
+times in the second list, it will occur \"n1-n2\" times in the result
+if \"n1\" is greater than \"n2\" and not at all otherwise.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Difference({a,b,c}, {b,c,d});
+Out> {a};
+In> Difference({a,e,i,o,u}, {f,o,u,r,t,e,e,n});
+Out> {a,i};
+In> Difference({1,2,2,3,3,3}, {2,2,3,4,4});
+Out> {1,3,3};");
+
+Topical() "See Also";
+SeeAlso({"Intersection", "Union"});
+
+
+
+CmdDescription("FillList", "Fill a list with a certain expression");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "FillList(expr, n)";
+
+Topical() "Parameters";
+Text() "
+expr - expression to fill the list with <br>
+n - the length of the list to construct";
+
+Topical() "Description";
+Text() "
+This command creates a list of length \"n\" in which all slots contain
+the expression \"expr\" and returns this list.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> FillList(x, 5);
+Out> {x,x,x,x,x};");
+
+Topical() "See Also";
+SeeAlso({"MakeVector", "ZeroVector", "RandomIntegerVector"});
+
+
+
+CmdDescription("Drop", "Drop a range of elements from a list");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "
+Drop(list, n) <br>
+Drop(list, -n) <br>
+Drop(list, {m,n})";
+
+Topical() "Parameters";
+Text() "
+list - list to act on <br>
+n, m - positive integers describing the entries to drop";
+
+Topical() "Description";
+Text() "
+This command removes a sublist of \"list\" and returns a list
+containing the remaining entries. The first calling sequence drops the
+first \"n\" entries in \"list\". The second form drops the last \"n\"
+entries. The last invocation drops the elements with indices \"m\"
+through \"n\".";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> lst := {a,b,c,d,e,f,g};
+Out> {a,b,c,d,e,f,g};
+In> Drop(lst, 2);
+Out> {c,d,e,f,g};
+In> Drop(lst, -3);
+Out> {a,b,c,d};
+In> Drop(lst, {2,4});
+Out> {a,e,f,g};");
+
+Topical() "See Also";
+SeeAlso({"Take", "Select", "Remove"});
+
+
+
+CmdDescription("Take", "Take a sublist from a list, dropping the rest");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "
+Take(list, n) <br>
+Take(list, -n) <br>
+Take(list, {m,n})";
+
+Topical() "Parameters";
+Text() "
+list - list to act on <br>
+n, m - positive integers describing the entries to drop";
+
+Topical() "Description";
+Text() "
+This command takes a sublist of \"list\", drops the rest, and returns
+the selected sublist. The first calling sequence selects the first
+\"n\" entries in \"list\". The second form takes the last \"n\"
+entries. The last invocation selects the sublist beginning with entry
+number \"m\" and ending with the \"n\"-th entry.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> lst := {a,b,c,d,e,f,g};
+Out> {a,b,c,d,e,f,g};
+In> Take(lst, 2);
+Out> {a,b};
+In> Take(lst, -3);
+Out> {e,f,g};
+In> Take(lst, {2,4});
+Out> {b,c,d};");
+
+Topical() "See Also";
+SeeAlso({"Drop", "Select", "Remove"});
+
+
+
+CmdDescription("Partition", "Partition a list in sublists of equal length");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Partition(list, n)";
+
+Topical() "Parameters";
+Text() "
+list - list to partition <br>
+n - length of partitions";
+
+Topical() "Description";
+Text() "
+This command partitions \"list\" into non-overlapping sublists of
+length \"n\" and returns a list of these sublists. The first \"n\"
+entries in \"list\" form the first partition, the entries from
+position \"n+1\" upto \"2n\" form the second partition, and so on. If
+\"n\" does not divide the length of \"list\", the remaining entries
+will be thrown away. If \"n\" equals zero, an empty list is
+returned.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Partition({a,b,c,d,e,f,}, 2);
+Out> {{a,b},{c,d},{e,f}};
+In> Partition(1 .. 11, 3);
+Out> {{1,2,3},{4,5,6},{7,8,9}};");
+
+Topical() "See Also";
+SeeAlso({"Take", "Permutations"});
+
+
+
+CmdDescription("Assoc", "Return element stored in association list");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Assoc(key, alist)";
+
+Topical() "Parameters";
+Text() "
+key - key under which element is stored <br>
+alist - association list to examine";
+
+Topical() "Description";
+Text() "
+The association list \"alist\" is searched for an entry stored with
+index \"key\". If such an entry is found, it is returned. Otherwise
+the atom ":HtmlTerm("Empty"):" is returned.
+<p> </p>
+Association lists are represented as a list of two-entry lists. The
+first element in the two-entry list is the key, the second element is
+the value stored under this key.
+<p> </p>
+The call ":HtmlTerm("Assoc(key, alist)"):" can (probably more
+intuitively) be accessed as ":HtmlTerm("alist[key]"):".";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> writer := {};
+Out> {};
+In> writer[\"Iliad\"] := \"Homer\";
+Out> True;
+In> writer[\"Henry IV\"] := \"Shakespeare\";
+Out> True;
+In> writer[\"Ulysses\"] := \"James Joyce\";
+Out> True;
+In> Assoc(\"Henry IV\", writer);
+Out> {\"Henry IV\",\"Shakespeare\"};
+In> Assoc(\"War and Peace\", writer);
+Out> Empty;");
+
+Topical() "See Also";
+SeeAlso({"AssocIndices", "[]", ":="});
+
+
+
+CmdDescription("AssocIndices", "Return the keys in an association list");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "AssocIndices(alist)";
+
+Topical() "Parameters";
+Text() "alist - association list to examine";
+
+Topical() "Description";
+Text() "
+All the keys in the association list \"alist\" are assembled in a list
+and this list is returned.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> writer := {};
+Out> {};
+In> writer[\"Iliad\"] := \"Homer\";
+Out> True;
+In> writer[\"Henry IV\"] := \"Shakespeare\";
+Out> True;
+In> writer[\"Ulysses\"] := \"James Joyce\";
+Out> True;
+In> AssocIndices(writer);
+Out> {\"Iliad\",\"Henry IV\",\"Ulysses\"};");
+
+Topical() "See Also";
+SeeAlso({"Assoc"});
+
+
+
+CmdDescription("Flatten", "Flatten expression w.r.t. some operator");
 StandardLib();
 
 Topical()"Calling Sequence";
@@ -521,8 +1394,7 @@ SeeAlso({"UnFlatten"});
 
 
 
-AddAnchor("UnFlatten");
-SubSection()"UnFlatten";
+CmdDescription("UnFlatten", "Inverse operation of Flatten");
 StandardLib();
 
 Topical()"Calling Sequence";
@@ -530,8 +1402,8 @@ Text()"UnFlatten(list,operator,identity)";
 
 Topical()"Parameters";
 Text()
-"list - list of objects the operator is to work on
- operator - infix operator
+"list - list of objects the operator is to work on <br>
+ operator - infix operator <br>
  identity - identity of the operator
 ";
 
@@ -557,46 +1429,166 @@ SeeAlso({"Flatten"});
 
 
 
-AddAnchor("Type");
-SubSection()"Type(expression)";  Text()"
-Type(expression) : 
-Returns a string representation of the type of \"expression\".
-\"Type(Cos(x));\" would evaluate to \"Cos\", for instance.
+CmdDescription("Type", "Return the type of an expression");
+BuiltIn();
 
-";
+Topical() "Calling Sequence";
+Text() "Type(expr)";
 
-AddAnchor("NrArgs");
-SubSection()"NrArgs(expression)";  Text()"
-NrArgs(expression) : 
-Returns number of arguments in top-level function of \"expression\".
-\"NrArgs(Cos(x));\" would evaluate to \"1\".
-";
+Topical() "Parameters";
+Text() "expr - expression to examine";
 
-AddAnchor("BubbleSort");
-SubSection()"BubbleSort({list},\"compare\")";  Text()"
-BubbleSort({list},\"compare\") : 
-Sort the list {list}, using \"compare\" as the operator to compare
-elements. \"compare\" gives the relation that should be true for
-neighbouring elements in the list after sorting.
+Topical() "Description";
+Text() "
+The type of the expression \"expr\" is represented as a string and
+returned. So, if \"expr\" is a list, the string " :
+HtmlTerm("\"List\"") : " is returned. In general, the top-level
+operator of \"expr\" is returned. If the argument \"expr\" is an atom,
+the result is the empty string " : HtmlTerm("\"\"") : ".";
 
-";
+Topical() "Examples";
+Text() HtmlCommand("
+In> Type({a,b,c});
+Out> \"List\";
+In> Type(a*(b+c));
+Out> \"*\";
+In> Type(123);
+Out> \"\";");
 
-AddAnchor("Table");
-SubSection()"Table(body,var,from,to,step)";  Text()"
-Table(body,var,from,to,step) : 
-Generate a list of values from \"body\", by assigning variable \"var\"
-values from \"from\" upto \"to\", incrementing \"step\" each time.
-
-";
-
-AddAnchor("TableForm");
-SubSection()"TableForm({list})";  Text()"
-Tableform({list}) : 
-TableForm writes out a list in a nicer readable form, eg. one line for
-each element in the list.
-
-";
+Topical() "See Alsi";
+SeeAlso({"IsAtom", "NrArgs"});
 
 
 
+CmdDescription("NrArgs", "Return number of top-level arguments");
+StandardLib();
 
+Topical() "Calling Sequence";
+Text() "NrArgs(expr)";
+
+Topical() "Parameters";
+Text() "expr - expression to examine";
+
+Topical() "Description";
+Text() "
+This function evaluates to the number of top-level arguments of the
+expression \"expr\". The argument \"expr\" may not be an atom, since
+that would lead to an error.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> NrArgs(f(a,b,c))
+Out> 3;
+In> NrArgs(Sin(x));
+Out> 1;
+In> NrArgs(a*(b+c));
+Out> 2;");
+
+Topical() "See Also";
+SeeAlso({"Type", "Length"});
+
+
+
+CmdDescription("BubbleSort", "Sort a list");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "BubbleSort(list, fn)";
+
+Topical() "Parameters";
+Text() "
+list - list to sort <br>
+fn - function used to compare element of \"list\"";
+
+Topical() "Description";
+Text() "
+This command returns \"list\" after it is sorted using \"fn\" to
+compare elements. The function \"fn\" should accept two arguments,
+which will be elements of \"list\", and compare them. It should return
+" : HtmlTerm("True") : " if in the sorted list the second argument
+should come after the first one, and " : HtmlTerm("False") : "
+otherwise. 
+<p> </p>
+This function uses the so-called BubbleSort algorithm to do the
+sorting. This algorithm is chosen because it is easy to implement,
+though it is not particularly fast.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> BubbleSort({4,7,23,53,-2,1}, \"<\");
+Out> {-2,1,4,7,23,53};
+In> BubbleSort({4,7,23,53,-2,1}, \">\");
+Out> {53,23,7,4,1,-2};");
+
+
+
+CmdDescription("Table", "Evaluate while some variable ranges over interval");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "Table(body, var, from, to, step)";
+
+Topical() "Parameters";
+Text() "
+body - expression to evaluate multiple times <br>
+var - variable to use as loop variable <br>
+from - initial value for \"var\" <br>
+to - final value for \"var\" <br>
+step - step size with which \"var\" is incremented";
+
+Topical() "Description";
+Text() "
+This command generates a list of values from \"body\", by assigning
+variable \"var\" values from \"from\" upto \"to\", incrementing
+\"step\" each time. So, the variable \"var\" first gets the value
+\"from\", and the expression \"body\" is evaluated. Then the value
+\"from\"+\"step\" is assigned to \"var\" and the expression \"body\"
+is again evaluated. This continues, incrementing \"var\" with \"step\"
+on every iteration, until \"var\" exceeds \"to\". At that moment, all
+the results are assembled in a list and this list is returned.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Table(i!, i, 1, 10, 1);
+Out> {1,2,6,24,120,720,5040,40320,362880,3628800};
+In> Table(i, i, 3, 16, 4);
+Out> {3,7,11,15};
+In> Table(i^2, i, 10, 1, -1);
+Out> {100,81,64,49,36,25,16,9,4,1};");
+
+Topical() "See Also";
+SeeAlso({"For", "MapSingle", "..", "TableForm"});
+
+
+
+CmdDescription("TableForm", "Print each entry in a list on a line");
+StandardLib();
+
+Topical() "Calling Sequence";
+Text() "TableForm(list)";
+
+Topical() "Parameters";
+Text() "list - list to print";
+
+Topical() "Description";
+Text() "
+This functions writes out \"list\" in a nicer readable form, by
+printing every element in the list on a seperate line.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> TableForm(Table(i!, i, 1, 10, 1));
+1
+ 2
+ 6
+ 24
+ 120
+ 720
+ 5040
+ 40320
+ 362880
+ 3628800
+Out> True;");
+
+Topical() "See Also";
+SeeAlso({"PrettyForm", "Echo", "Table"});

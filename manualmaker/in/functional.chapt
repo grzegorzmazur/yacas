@@ -1,14 +1,19 @@
 
 Chapter()"Functional operators";
 
+ChapterIntro("
+These operators can help the user to program in the style of
+functional programming languages like Miranda and Haskell.");
 
-AddAnchor(":");
-SubSection()":";
+
+
+CmdDescription(":", "Prepend item to list, or concatenate strings");
 StandardLib();
+
 Topical()"Calling Sequence";
 Text()
-"item : list <br>
-string1 : string2";
+"item : list (prec. 7) <br>
+string1 : string2 (prec. 7)";
 
 Topical()"Parameters";
 Text()
@@ -20,7 +25,9 @@ string2 - a string
 
 Topical()"Description";
 Text()
-"Prepends an item to a list, or a string. ";
+"The first form prepends \"item\" as the first entry to the list
+\"list\". The second form concatenates the strings \"string1\" and
+\"string2\"."; 
 
 Topical()"Examples";
 Text()
@@ -35,20 +42,24 @@ Topical()"See Also";
 SeeAlso({"Concat","ConcatStrings"});
 
 
-AddAnchor("@");
-SubSection()"@";
+
+CmdDescription("@", "Apply a function");
 StandardLib();
+
 Topical()"Calling Sequence";
-Text()"function @ arguments";
+Text()"fn @ arglist (prec. 60)";
 
 Topical()"Parameters";
 Text()
-"function - a string representing a function <br>
-arguments - a single arguments, or a list of arguments";
+"fn - function to apply <br>
+arglist - single argument, or a list of arguments";
 
 Topical()"Description";
-Text()
-"Applies an operator to arguments. Equivalent to Apply";
+Text() "
+This function is a shorthand for ":HtmlTerm("Apply"):". It applies the
+function \"fn\" to the argument(s) in \"arglist\" and returns the
+result. The first parameter \"fn\" can either be a string containing
+the name of a function or a pure function.";
 
 Topical()"Examples";
 Text()
@@ -66,20 +77,25 @@ Topical()"See Also";
 SeeAlso({"Apply"});
 
 
-AddAnchor("/@");
-SubSection()"/@";
+
+CmdDescription("/@", "Apply a function to all entries in a list");
 StandardLib();
+
 Topical()"Calling Sequence";
-Text()"function /@ arguments";
+Text()"fn /@ list (prec. 60)";
 
 Topical()"Parameters";
 Text()
-"function - a string representing a function <br>
-arguments - a list of arguments";
+"fn - function to apply <br>
+list - list of arguments";
 
 Topical()"Description";
-Text()
-"Applies an operator to arguments in a list, in a threaded manner.";
+Text() "
+This function is a shorthand for ":HtmlTerm("MapSingle"):". It
+successively applies the function \"fn\" to all the entries in
+\"list\" and returns a list contains the results. The parameter \"fn\"
+can either be a string containing the name of a function or a pure
+function."; 
 
 Topical()"Examples";
 Text()
@@ -91,24 +107,28 @@ Out> {Sin(a)*a,Sin(b)*b};
 ");
 
 Topical()"See Also"; 
-SeeAlso({"MapSingle"});
+SeeAlso({"MapSingle", "Map", "MapArgs"});
 
 
-AddAnchor("..");
-SubSection()"..";
+
+CmdDescription("..", "Construct a list of consecutive integers");
 StandardLib();
 Topical()"Calling Sequence";
-Text()"n .. m";
+Text()"n .. m (prec. 60)";
 
 Topical()"Parameters";
 Text()
-"n - an integer <br>
-m - an integer 
+"n - integer. the first entry in the list <br>
+m - integer, the last entry in the list 
 ";
 
 Topical()"Description";
 Text()
-"Returns a list of numbers from n upto m.";
+"This command returns the list \"{n, n+1, n+2, ..., m}\". If \"m\" is
+smaller than \"n\", the empty list is returned. Note that the
+":HtmlTerm(".."):" operator should be surrounded by spaces to keep the
+parser happy, if \"n\" is a number. So one should write ":HtmlTerm("1
+.. 4"):" instead of ":HtmlTerm("1..4"):".";
 
 Topical()"Examples";
 Text()
@@ -117,5 +137,6 @@ HtmlCommand(
 Out> {1,2,3,4};
 ");
 
-
+Topical() "See Also";
+SeeAlso({"Table"});
 

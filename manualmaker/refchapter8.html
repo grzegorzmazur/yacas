@@ -21,18 +21,51 @@
 <H1>
 Functional operators
 </H1>
+
+These operators can help the user to program in the style of
+functional programming languages like Miranda and Haskell.
 <p> </p>
+<CENTER><TABLE>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter8.html#:" TARGET="Chapters">
+:
+</A>
+</TD>
+<TD>Prepend item to list, or concatenate strings</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter8.html#@" TARGET="Chapters">
+@
+</A>
+</TD>
+<TD>Apply a function</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter8.html#/@" TARGET="Chapters">
+/@
+</A>
+</TD>
+<TD>Apply a function to all entries in a list</TD>
+</TR>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter8.html#.." TARGET="Chapters">
+..
+</A>
+</TD>
+<TD>Construct a list of consecutive integers</TD>
+</TR>
+</TABLE></CENTER>
 <A NAME=":">
 
 </A>
 <H3>
-<HR>:
+<HR>: -- Prepend item to list, or concatenate strings
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-item : list <br>
-string1 : string2
+item : list (prec. 7) <br>
+string1 : string2 (prec. 7)
 <H5>
 Parameters:
 </H5>
@@ -44,7 +77,9 @@ string2 - a string
 <H5>
 Description:
 </H5>
-Prepends an item to a list, or a string. 
+The first form prepends "item" as the first entry to the list
+"list". The second form concatenates the strings "string1" and
+"string2".
 <H5>
 Examples:
 </H5>
@@ -69,21 +104,25 @@ ConcatStrings
 
 </A>
 <H3>
-<HR>@
+<HR>@ -- Apply a function
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-function @ arguments
+fn @ arglist (prec. 60)
 <H5>
 Parameters:
 </H5>
-function - a string representing a function <br>
-arguments - a single arguments, or a list of arguments
+fn - function to apply <br>
+arglist - single argument, or a list of arguments
 <H5>
 Description:
 </H5>
-Applies an operator to arguments. Equivalent to Apply
+
+This function is a shorthand for <B><TT>Apply</TT></B>. It applies the
+function "fn" to the argument(s) in "arglist" and returns the
+result. The first parameter "fn" can either be a string containing
+the name of a function or a pure function.
 <H5>
 Examples:
 </H5>
@@ -108,21 +147,26 @@ Apply
 
 </A>
 <H3>
-<HR>/@
+<HR>/@ -- Apply a function to all entries in a list
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-function /@ arguments
+fn /@ list (prec. 60)
 <H5>
 Parameters:
 </H5>
-function - a string representing a function <br>
-arguments - a list of arguments
+fn - function to apply <br>
+list - list of arguments
 <H5>
 Description:
 </H5>
-Applies an operator to arguments in a list, in a threaded manner.
+
+This function is a shorthand for <B><TT>MapSingle</TT></B>. It
+successively applies the function "fn" to all the entries in
+"list" and returns a list contains the results. The parameter "fn"
+can either be a string containing the name of a function or a pure
+function.
 <H5>
 Examples:
 </H5>
@@ -140,26 +184,36 @@ See Also:
 <A HREF="ref.html#MapSingle" TARGET="Chapters">
 MapSingle
 </A>
+, <A HREF="ref.html#Map" TARGET="Chapters">
+Map
+</A>
+, <A HREF="ref.html#MapArgs" TARGET="Chapters">
+MapArgs
+</A>
 .<A NAME="..">
 
 </A>
 <H3>
-<HR>..
+<HR>.. -- Construct a list of consecutive integers
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-n .. m
+n .. m (prec. 60)
 <H5>
 Parameters:
 </H5>
-n - an integer <br>
-m - an integer 
+n - integer. the first entry in the list <br>
+m - integer, the last entry in the list 
 
 <H5>
 Description:
 </H5>
-Returns a list of numbers from n upto m.
+This command returns the list "{n, n+1, n+2, ..., m}". If "m" is
+smaller than "n", the empty list is returned. Note that the
+<B><TT>..</TT></B> operator should be surrounded by spaces to keep the
+parser happy, if "n" is a number. So one should write <B><TT>1
+.. 4</TT></B> instead of <B><TT>1..4</TT></B>.
 <H5>
 Examples:
 </H5>
@@ -169,7 +223,13 @@ Out> {1,2,3,4};
 </PRE></TR>
 </TABLE>
 
-
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Table" TARGET="Chapters">
+Table
+</A>
+.
 </FONT>
 
 </BODY>

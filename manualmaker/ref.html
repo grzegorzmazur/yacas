@@ -4046,11 +4046,11 @@ Tail
 , <A HREF="refchapter7.html#Length" TARGET="Chapters">
 Length
 </A>
-, <A HREF="refchapter7.html#MapSingle" TARGET="Chapters">
-MapSingle
-</A>
 , <A HREF="refchapter7.html#Map" TARGET="Chapters">
 Map
+</A>
+, <A HREF="refchapter7.html#MapSingle" TARGET="Chapters">
+MapSingle
 </A>
 , <A HREF="refchapter7.html#RandomIntegerVector" TARGET="Chapters">
 RandomIntegerVector
@@ -4085,11 +4085,11 @@ Delete
 , <A HREF="refchapter7.html#Insert" TARGET="Chapters">
 Insert
 </A>
-, <A HREF="refchapter7.html#DestructiveInsert" TARGET="Chapters">
-DestructiveInsert
-</A>
 , <A HREF="refchapter7.html#DestructiveDelete" TARGET="Chapters">
 DestructiveDelete
+</A>
+, <A HREF="refchapter7.html#DestructiveInsert" TARGET="Chapters">
+DestructiveInsert
 </A>
 , <A HREF="refchapter7.html#Replace" TARGET="Chapters">
 Replace
@@ -4185,16 +4185,17 @@ TableForm
 <H1>
 List operations
 </H1>
-Most objects that can be of variable size are represented as
-lists (linked lists internally). Yacas does implement arrays, which
-are faster when the number of elements in a collection of objects
-doesn't change. Operations on lists have better support in the current
+
+Most objects that can be of variable size are represented as lists
+(linked lists internally). Yacas does implement arrays, which are
+faster when the number of elements in a collection of objects doesn't
+change. Operations on lists have better support in the current
 system.
 <A NAME="Head">
 
 </A>
 <H3>
-<HR>Head
+<HR>Head -- The first element of a list
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -4207,12 +4208,17 @@ list - a list
 <H5>
 Description:
 </H5>
-Returns the first element of a list.
+
+This function returns the first element of a list. If it is applied to
+a general expression, it returns the first operand. An error is
+returned if "list" is an atom.
 <H5>
 Examples:
 </H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Head({a,b,c})
+Out> a;
+In> Head(f(a,b,c));
 Out> a;
 </PRE></TR>
 </TABLE>
@@ -4230,7 +4236,7 @@ Length
 
 </A>
 <H3>
-<HR>Tail
+<HR>Tail -- Returns a list without its first element
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -4243,7 +4249,7 @@ list - a list
 <H5>
 Description:
 </H5>
-Returns a list without its first element.
+This function returns "list" without its first element.
 <H5>
 Examples:
 </H5>
@@ -4266,7 +4272,7 @@ Length
 
 </A>
 <H3>
-<HR>Length
+<HR>Length -- The length of a list or string
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -4304,81 +4310,128 @@ Tail
 , <A HREF="ref.html#Nth" TARGET="Chapters">
 Nth
 </A>
-.<A NAME="MapSingle">
-
+, <A HREF="ref.html#Count" TARGET="Chapters">
+Count
 </A>
-<A NAME="Map">
+.<A NAME="Map">
 
 </A>
 <H3>
-<HR>Applying a function to multiple values
+<HR>Map -- Apply an n-ary function to all entries in a list
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-MapSingle(function,list) <br>
-Map(function,doublelist)
-
+Map(fn, list)
 <H5>
 Parameters:
 </H5>
-function - a function to apply <br>
-list - list of arguments to be passed to function accepting a single argument
-doublelist - list of lists of arguments to be passed to a function
 
+fn - function to apply <br>
+list - list of lists of arguments
 <H5>
 Description:
 </H5>
-MapSingle performs Apply on every item in list, returning a
-list of the results.
 
-<P>
-
-Map performs Apply on every set of items in doublelist, returning a
-list of the results. Eg. Map("+",{{a,b},{c,d}}) would return {a+c,b+d}.
-doublelist should be a list of lists each the same size. 
-
+This function applies "fn" to every list of arguments to be found in
+"list". So the first entry of "list" should be a list containing
+the first, second, third, ... argument to "fn", and the same goes
+for the other entries of "list". The function can either be given as
+a string or as a pure function.
 <H5>
 Examples:
 </H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> MapSingle("Sin",{a,b,c})
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> MapSingle("Sin",{a,b,c});
 Out> {Sin(a),Sin(b),Sin(c)};
-In> Map("+",{{a,b},{c,d}})
-Out> {a+c,b+d};
-In> "Sin" /@ {a,b,c}
-Out> {Sin(a),Sin(b),Sin(c)};
-</PRE></TR>
+In> Map("+",{{a,b},{c,d}});
+Out> {a+c,b+d};</PRE></TR>
 </TABLE>
 
 <H5>
 See Also:
 </H5>
-<A HREF="ref.html#/@" TARGET="Chapters">
+<A HREF="ref.html#MapSingle" TARGET="Chapters">
+MapSingle
+</A>
+, <A HREF="ref.html#MapArgs" TARGET="Chapters">
+MapArgs
+</A>
+.<A NAME="MapSingle">
+
+</A>
+<H3>
+<HR>MapSingle -- Apply a unary function to all entries in a list
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+MapSingle(fn, list)
+<H5>
+Parameters:
+</H5>
+
+fn - function to apply <br>
+list - list of arguments
+<H5>
+Description:
+</H5>
+
+The function "fn" is successively applied to all entries in
+"list", and a list containing the respective results is
+returned. The function can be given either as a string or as a pure
+function. 
+<p> </p>
+The <B><TT>/@</TT></B> operator provides a shorthand for
+<B><TT>MapSingle</TT></B>.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> MapSingle("Sin",{a,b,c});
+Out> {Sin(a),Sin(b),Sin(c)};
+In> MapSingle({{x},x^2}, {a,2,c});
+Out> {a^2,4,c^2};</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Map" TARGET="Chapters">
+Map
+</A>
+, <A HREF="ref.html#MapArgs" TARGET="Chapters">
+MapArgs
+</A>
+, <A HREF="ref.html#/@" TARGET="Chapters">
 /@
 </A>
 .<A NAME="RandomIntegerVector">
 
 </A>
 <H3>
-<HR>RandomIntegerVector
+<HR>RandomIntegerVector -- Generate a vector of random integers
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-RandomIntegerVector(nr,from,to)
+RandomIntegerVector(nr, from, to)
 <H5>
 Parameters:
 </H5>
-nr - integer
-from - integer
-to - integer
 
+nr - number of integers to generate <br>
+from - lower bound <br>
+to - upper bound
 <H5>
 Description:
 </H5>
-RandomIntegerVector generates a vector of random
-integers p in the range [from,to] (including from and to).
+
+This function generates a list with "nr" random integers. All
+entries lie between "from" and "to", including the boundaries, and
+are uniformly distributed in this interval.
 <H5>
 Examples:
 </H5>
@@ -4401,7 +4454,7 @@ RandomPoly
 
 </A>
 <H3>
-<HR>MakeVector
+<HR>MakeVector -- Vector of uniquely numbered variable names
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -4411,12 +4464,15 @@ MakeVector(var,n)
 Parameters:
 </H5>
 var - free variable<br>
-n - integer
+n - length of the vector
 <H5>
 Description:
 </H5>
-MakeVector(var,n) : return a vector of unique numbered variable names.
 
+A list of length "n" is generated. The first entry contains the
+identifier "var" with the number 1 appended to it, the second entry
+contains "var" with the suffix 2, and so on until the last entry
+which contains "var" with the number "n" appended to it.
 <H5>
 Examples:
 </H5>
@@ -4439,24 +4495,23 @@ ZeroVector
 
 </A>
 <H3>
-<HR>Select
+<HR>Select -- Select the entries satisfying some predicate
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-Select(predicate,list)
+Select(pred, list)
 <H5>
 Parameters:
 </H5>
-predicate - a predicate function<br>
+pred - a predicate <br>
 list - a list of elements to select from
 <H5>
 Description:
 </H5>
-Select returns a sublist of list, containing all
-elements for which the predicate returned after applying the
-predicate on that list element. 
-
+<B><TT>Select</TT></B> returns a sublist of "list" which contains all
+the entries for which the predicate "pred" returns
+<B><TT>True</TT></B> when applied to this entry.
 <H5>
 Examples:
 </H5>
@@ -4475,416 +4530,1636 @@ Length
 , <A HREF="ref.html#Find" TARGET="Chapters">
 Find
 </A>
+, <A HREF="ref.html#Count" TARGET="Chapters">
+Count
+</A>
 .<A NAME="Nth">
 
 </A>
 <H3>
-<HR>Nth({list},index)
+<HR>Nth -- Return the n-th element of a list
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Nth(list, n)
+<H5>
+Parameters:
+</H5>
 
-Nth({list},index) : Returns the element in the list "{list}" at
-position "index", where the first element is 1.
+list - list to choose from <br>
+n - index of entry to pick
+<H5>
+Description:
+</H5>
 
+The entry with index "n" from "list" is returned. The first entry
+has index 1. It is possible to pick several entries of the list by
+taking "n" to be a list of indices. 
+<p> </p>
+More generally, <B><TT>Nth</TT></B> returns the n-th operand of the
+expression passed as first argument.
+<p> </p>
+An alternative but equivalent form of <B><TT>Nth(list, n)</TT></B> is
+<B><TT>list[n]</TT></B>.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> lst := {a,b,c,13,19};
+Out> {a,b,c,13,19};
+In> Nth(lst, 3);
+Out> c;
+In> lst[3];
+Out> c;
+In> Nth(lst, {3,4,1});
+Out> {c,13,a};
+In> Nth(b*(a+c), 2);
+Out> a+c;</PRE></TR>
+</TABLE>
 
-<A NAME="DestructiveReverse">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Select" TARGET="Chapters">
+Select
+</A>
+, <A HREF="ref.html#Nth" TARGET="Chapters">
+Nth
+</A>
+.<A NAME="DestructiveReverse">
 
 </A>
 <H3>
-<HR>DestructiveReverse({list})
+<HR>DestructiveReverse -- Reverse a list destructively
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+DestructiveReverse(list)
+<H5>
+Parameters:
+</H5>
+list - list to reverse
+<H5>
+Description:
+</H5>
+ 
+This command reverses "list" in place, so that the original is
+destroyed. This means that any variable bound to "list" will now be
+bound to the reversed list. The reversed list is also returned.
+<p> </p>
+Destructive commands are faster than their nondestructive
+counterparts. Stangely, there is no nondestructive command to reverse
+a list. Use <B><TT>FlatCopy</TT></B> and
+<B><TT>DestructiveReverse</TT></B> to achieve this.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> lst := {a,b,c,13,19};
+Out> {a,b,c,13,19};
+In> revlst := DestructiveReverse(lst);
+Out> {19,13,c,b,a};
+In> lst;
+Out> {a};</PRE></TR>
+</TABLE>
 
-DestructiveReverse({list}) : Returns the list {list} in reverse order.
-The list is reversed in place, so the original is changed into nonsense.
-Use FlatCopy to avoid this.
-
-
-<A NAME="List">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#FlatCopy" TARGET="Chapters">
+FlatCopy
+</A>
+.<A NAME="List">
 
 </A>
 <H3>
-<HR>List(...)
+<HR>List -- Construct a list
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+List(expr1, expr2, ...)
+<H5>
+Parameters:
+</H5>
+expr1, expr2 - expressions making up the list
+<H5>
+Descriptions:
+</H5>
 
-List(...) : Returns a list with ... as its elements, after they
-were evaluated. This is the same as entering "{...};".
+A list is constructed whose first entry is "expr1", the second entry
+is "expr2", and so on. This command is equivalent to the expression
+"{expr1, expr2, ...}".
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> List();
+Out> {};
+In> List(a,b);
+Out> {a,b};
+In> List(a,{1,2},d);
+Out> {a,{1,2},d};</PRE></TR>
+</TABLE>
 
-
-<A NAME="UnList">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#UnList" TARGET="Chapters">
+UnList
+</A>
+, <A HREF="ref.html#Listify" TARGET="Chapters">
+Listify
+</A>
+.<A NAME="UnList">
 
 </A>
 <H3>
-<HR>UnList({list})
+<HR>UnList -- Convert a list to a function application
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+UnList(list)
+<H5>
+Parameters:
+</H5>
+list - list to be converted
+<H5>
+Description:
+</H5>
 
-UnList({list}) : 
-Changes the list {list} into an expression specified in the
-elements of the list. This means the first element
-is treated as the command, and the elements following
-are the arguments to that command. "{list}" is evaluated
-before the operation is performed. Example: "UnList({Cos,x});"
-would evaluate to "Cos(x);".
+This command converts a list to a function application. The first
+entry of "list" is treated as a function, and the following entries
+are the arguments to this function. So the function refered to in the
+first element of "list" is applied to the other elements. 
+<p> </p>
+Note that "list" is evaluated before the function application is
+formed, but the resulting expression is not evaluated.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> UnList({Cos, x});
+Out> Cos(x);
+In> UnList({f});
+Out> f();
+In> UnList({Taylor,x,0,5,Cos(x)});
+Out> Taylor(x,0,5)Cos(x);
+In> Eval(%);
+Out> 1-x^2/2+x^4/24;</PRE></TR>
+</TABLE>
 
-
-<A NAME="Listify">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#List" TARGET="Chapters">
+List
+</A>
+, <A HREF="ref.html#Listify" TARGET="Chapters">
+Listify
+</A>
+.<A NAME="Listify">
 
 </A>
 <H3>
-<HR>Listify(expression)
+<HR>Listify -- Convert a function application to a list
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Listify(expr)
+<H5>
+Parameters:
+</H5>
+expr - expression to be converted
+<H5>
+Description:
+</H5>
 
-Listify(expression) : 
-Inverse of UnList: it converts the expression "expression" 
-into a list. Eg. "Listify(a(b));" evaluates to "{a,b};".
+The parameter "expr" is expected to be a compound object, i.e. not
+an atom. It is evaluated and then converted to a list. The first entry
+in the list is the top-level operator in the evaluated expression and
+the other entries are the arguments to this operator. Finally, the
+list is returned.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Listify(Cos(x));
+Out> {Cos,x};
+In> Listify(3*a);
+Out> {*,3,a};</PRE></TR>
+</TABLE>
 
-
-<A NAME="Concat">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#List" TARGET="Chapters">
+List
+</A>
+, <A HREF="ref.html#UnList" TARGET="Chapters">
+UnList
+</A>
+, <A HREF="ref.html#IsAtom" TARGET="Chapters">
+IsAtom
+</A>
+.<A NAME="Concat">
 
 </A>
 <H3>
-<HR>Concat(...)
+<HR>Concat -- Concatenate lists
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Concat(list1, list2, ...)
+<H5>
+Parameters:
+</H5>
+list1, list2 - lists to concatenate
+<H5>
+Description:
+</H5>
 
-Concat(...) : concatenates the lists in ... after evaluation.
-Eg. "Concat({a,b},{c,d});" returns "{a,b,c,d};".
+The lists "list1", "list2", ..., are evaluated and
+concatenated. The resulting big list is returned.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Concat({a,b}, {c,d});
+Out> {a,b,c,d};
+In> Concat({5}, {a,b,c}, {{f(x)}});
+Out> {5,a,b,c,{f(x)}};</PRE></TR>
+</TABLE>
 
-
-<A NAME="Delete">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#ConcatStrings" TARGET="Chapters">
+ConcatStrings
+</A>
+, <A HREF="ref.html#:" TARGET="Chapters">
+:
+</A>
+, <A HREF="ref.html#Insert" TARGET="Chapters">
+Insert
+</A>
+.<A NAME="Delete">
 
 </A>
 <H3>
-<HR>Delete({list},index)
+<HR>Delete -- Delete an element from a list
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Delete(list, n)
+<H5>
+Parameters:
+</H5>
 
-Delete({list},index) : 
-Deletes an element at position "index" from the
-list "{list}", and returns that list. "{list}" and
-"index" are evaluated first. The first index in list is 1.
+list - list from which an element should be removed <br>
+n - index of the element to remove
+<H5>
+Description:
+</H5>
 
+This command deletes the n-th element from "list". The first
+parameter should be a list, while "n" should be a positive integer
+less than or equal to the length of "list". The entry with index
+"n" is removed (the first entry has index 1), and the resulting list
+is returned.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Delete({a,b,c,d,e,f}, 4);
+Out> {a,b,c,e,f};</PRE></TR>
+</TABLE>
 
-<A NAME="Insert">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#DestructiveDelete" TARGET="Chapters">
+DestructiveDelete
+</A>
+, <A HREF="ref.html#Insert" TARGET="Chapters">
+Insert
+</A>
+, <A HREF="ref.html#Replace" TARGET="Chapters">
+Replace
+</A>
+.<A NAME="Insert">
 
 </A>
 <H3>
-<HR>Insert({list},index,element)
+<HR>Insert -- Insert an element into a list
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Insert(list, n, expr)
+<H5>
+Parameters:
+</H5>
 
+list - list in which "expr" should be inserted <br>
+n - index at which to insert <br>
+expr - expression to insert in "list"
+<H5>
+Description:
+</H5>
 
-Evaluates arguments, and inserts "element"
-in "{list}" at position "index", where position
-1 means insert at the front of the existing list. The result is returned,
-and the original list is left unchanged.
+The expression "expr" is inserted just before the n-th entry in
+"list". The first parameter "list" should be a list, while "n"
+should be a positive integer less than or equal to the length of
+"list" plus one. The expression "expr" is placed between the
+entries in "list" with entries "n-1" and "n". There are two
+border line cases: if "n" is 1, the expression "expr" is placed in
+front of the list (like the <B><TT>:</TT></B> operator); if "n"
+equals the length of "list" plus one, the expression "expr" is
+placed at the end of the list (like <B><TT>Append</TT></B>). In any
+case, the resulting list is returned.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Insert({a,b,c,d}, 4, x);
+Out> {a,b,c,x,d};
+In> Insert({a,b,c,d}, 5, x);
+Out> {a,b,c,d,x};
+In> Insert({a,b,c,d}, 1, x);
+Out> {x,a,b,c,d};</PRE></TR>
+</TABLE>
 
-
-<A NAME="DestructiveInsert">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#DestructiveInsert" TARGET="Chapters">
+DestructiveInsert
+</A>
+, <A HREF="ref.html#:" TARGET="Chapters">
+:
+</A>
+, <A HREF="ref.html#Append" TARGET="Chapters">
+Append
+</A>
+, <A HREF="ref.html#Delete" TARGET="Chapters">
+Delete
+</A>
+, <A HREF="ref.html#Remove" TARGET="Chapters">
+Remove
+</A>
+.<A NAME="DestructiveDelete">
 
 </A>
 <H3>
-<HR>DestructiveInsert({list},index,element)
+<HR>DestructiveDelete -- Delete an element destructively from a list
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+DestructiveDelete(list, n)
+<H5>
+Parameters:
+</H5>
 
-DestructiveInsert({list},index,element) : 
-The Destructive... versions actually perform the operations
-on the original lists. So, if
-a variable is bound to a list, the list the variable points
-to is actually modified. This is more efficient memory-wise
-and in execution if the same variable is going to be set to
-the result.
+list - list from which an element should be removed <br>
+n - index of the element to remove
+<H5>
+Description:
+</H5>
 
+This is the destructive counterpart of <B><TT>Delete</TT></B>. This
+command yields the same result as the corresponding call to
+<B><TT>Delete</TT></B>, but the original list is modified. So if a
+variable is bound to "list", it will now be bound to the list with
+the n-th entry removed. 
+<p> </p>
+Destructive commands run faster than their nondestructive counterparts
+because the latter copy the list before they alter it.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> lst := {a,b,c,d,e,f};
+Out> {a,b,c,d,e,f};
+In> Delete(lst, 4);
+Out> {a,b,c,e,f};
+In> lst;
+Out> {a,b,c,d,e,f};
+In> DestructiveDelete(lst, 4);
+Out> {a,b,c,e,f};
+In> lst;
+Out> {a,b,c,e,f};</PRE></TR>
+</TABLE>
 
-<A NAME="DestructiveDelete">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Delete" TARGET="Chapters">
+Delete
+</A>
+, <A HREF="ref.html#DestructiveInsert" TARGET="Chapters">
+DestructiveInsert
+</A>
+, <A HREF="ref.html#DestructiveReplace" TARGET="Chapters">
+DestructiveReplace
+</A>
+.<A NAME="DestructiveInsert">
 
 </A>
 <H3>
-<HR>DestructiveDelete({list},index)
+<HR>DestructiveInsert -- Insert an element destructively into a list
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+DestructiveInsert(list, n, expr)
+<H5>
+Parameters:
+</H5>
 
-DestructiveDelete({list},index) : 
-The Destructive... versions actually perform the operations
-on the original lists. So, if
-a variable is bound to a list, the list the variable points
-to is actually modified. This is more efficient memory-wise
-and in execution if the same variable is going to be set to
-the result.
+list - list in which "expr" should be inserted <br>
+n - index at which to insert <br>
+expr - expression to insert in "list"
+<H5>
+Description:
+</H5>
 
+This is the destructive counterpart of <B><TT>Insert</TT></B>. This
+command yields the same result as the corresponding call to
+<B><TT>Insert</TT></B>, but the original list is modified. So if a
+variable is bound to "list", it will now be bound to the list with
+the expression "expr" inserted.
+<p> </p>
+Destructive commands run faster than their nondestructive counterparts
+because the latter copy the list before they alter it.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> lst := {a,b,c,d};
+Out> {a,b,c,d};
+In> Insert(lst, 2, x);
+Out> {a,x,b,c,d};
+In> lst;
+Out> {a,b,c,d};
+In> DestructiveInsert(lst, 2, x);
+Out> {a,x,b,c,d};
+In> lst;
+Out> {a,x,b,c,d};</PRE></TR>
+</TABLE>
 
-<A NAME="Replace">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Insert" TARGET="Chapters">
+Insert
+</A>
+, <A HREF="ref.html#DestructiveDelete" TARGET="Chapters">
+DestructiveDelete
+</A>
+, <A HREF="ref.html#DestructiveReplace" TARGET="Chapters">
+DestructiveReplace
+</A>
+.<A NAME="Replace">
 
 </A>
 <H3>
-<HR>Replace({list},index,element)
+<HR>Replace -- Replace an entry in a list
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Replace(list, n, expr)
+<H5>
+Parameters:
+</H5>
 
-This replaces an element, much like calling Delete and Insert
-in sequence.
+list - list of which an entry should be replaced <br>
+n - index of entry to replace <br>
+expr - expression to replace the n-th entry with
+<H5>
+Description:
+</H5>
 
+The n-th entry of "list" is replaced by the expression
+"expr". This is equivalent to calling <B><TT>Delete</TT></B> and
+<B><TT>Insert</TT></B> in sequence. To be precise, the expression
+<B><TT>Replace(list, n, expr)</TT></B> has the same result as the
+expression <B><TT>Insert(Delete(list, n), n, expr)</TT></B>.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Replace({a,b,c,d,e,f}, 4, x);
+Out> {a,b,c,x,e,f};</PRE></TR>
+</TABLE>
 
-<A NAME="DestructiveReplace">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Delete" TARGET="Chapters">
+Delete
+</A>
+, <A HREF="ref.html#Insert" TARGET="Chapters">
+Insert
+</A>
+, <A HREF="ref.html#DestructiveReplace" TARGET="Chapters">
+DestructiveReplace
+</A>
+.<A NAME="DestructiveReplace">
 
 </A>
 <H3>
-<HR>DestructiveReplace({list},index,element)
+<HR>DestructiveReplace -- Replace an entry in a list destructively
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+DestructiveReplace(list, n, expr)
+<H5>
+Parameters:
+</H5>
 
-This replaces an element, much like calling DestructiveDelete
-and DestructiveInsert in sequence.
+list - list of which an entry should be replaced <br>
+n - index of entry to replace <br>
+expr - expression to replace the n-th entry with
+<H5>
+Description:
+</H5>
 
+This is the destructive counterpart of <B><TT>Replace</TT></B>. This
+command yields the same result as the corresponding call to
+<B><TT>Replace</TT></B>, but the original list is modified. So if a
+variable is bound to "list", it will now be bound to the list with
+the expression "expr" inserted.
+<p> </p>
+Destructive commands run faster than their nondestructive counterparts
+because the latter copy the list before they alter it.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> lst := {a,b,c,d,e,f};
+Out> {a,b,c,d,e,f};
+In> Replace(lst, 4, x);
+Out> {a,b,c,x,e,f};
+In> lst;
+Out> {a,b,c,d,e,f};
+In> DestructiveReplace(lst, 4, x);
+Out> {a,b,c,x,e,f};
+In> lst;
+Out> {a,b,c,x,e,f};</PRE></TR>
+</TABLE>
 
-<A NAME="FlatCopy">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Replace" TARGET="Chapters">
+Replace
+</A>
+, <A HREF="ref.html#DestructiveDelete" TARGET="Chapters">
+DestructiveDelete
+</A>
+, <A HREF="ref.html#DestructiveInsert" TARGET="Chapters">
+DestructiveInsert
+</A>
+.<A NAME="FlatCopy">
 
 </A>
 <H3>
-<HR>FlatCopy({list})
+<HR>FlatCopy -- Copy the top level of a list
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+FlatCopy(list)
+<H5>
+Parameters:
+</H5>
+list - list to be copied
+<H5>
+Description:
+</H5>
 
-FlatCopy({list}) : 
-Copying of the contents of a list. It is not recursed
-into, only the first level is copied. This is useful
-in combination with the destructive commands that actually
-modify lists in place (for efficiency).
+A copy of "list" is made and returned. The list is not recursed
+into, only the first level is copied. This is useful in combination
+with the destructive commands that actually modify lists in place (for
+efficiency).
+<H5>
+Example:
+</H5>
 
-
+The following shows a possible way to define a command that reverses a
+list nondestructively.<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> reverse(l_IsList) <-- DestructiveReverse(FlatCopy(l));
+Out> True;
+In> lst := {a,b,c,d,e};
+Out> {a,b,c,d,e};
+In> reverse(lst);
+Out> {e,d,c,b,a};
+In> lst;
+Out> {a,b,c,d,e};</PRE></TR>
+</TABLE>
 
 <A NAME="Contains">
 
 </A>
 <H3>
-<HR>Contains({list},element)
+<HR>Contains -- Test whether a list contains a certain element
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Contains(list, expr)
+<H5>
+Parameters:
+</H5>
 
-Contains({list},element) : 
-Returns whether "{list}" contains element "element".
+list - list to examine <br>
+expr - expression to look for in "list"
+<H5>
+Description:
+</H5>
 
+This command tests whether "list" contains the expression "expr"
+as an entry. It returns <B><TT>True</TT></B> if it does and
+<B><TT>False</TT></B> otherwise. Only the top level of "list" is
+examined. The parameter "list" may also be a general expression, in
+that case the top-level operands are tested for the occurence of
+"expr".
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Contains({a,b,c,d}, b);
+Out> True;
+In> Contains({a,b,c,d}, x);
+Out> False;
+In> Contains({a,{1,2,3},z}, 1);
+Out> False;
+In> Contains(a*b, b);
+Out> True;</PRE></TR>
+</TABLE>
 
-<A NAME="Find">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Find" TARGET="Chapters">
+Find
+</A>
+, <A HREF="ref.html#Count" TARGET="Chapters">
+Count
+</A>
+.<A NAME="Find">
 
 </A>
 <H3>
-<HR>Find(list,item)
+<HR>Find -- The index at which a certain element occurs
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Find(list, expr)
+<H5>
+Parameters:
+</H5>
 
-Find(list,item) : returns the index of item in the list.
-Example: Find({a,b,c,d},c) returns 3.
+list - the list to examine <br>
+expr - expression to look for in "list"
+<H5>
+Description:
+</H5>
 
+This commands returns the index at which the expression "expr"
+occurs in "list". If "expr" occurs more than once, the lowest
+index is returned. If "expr" does not occur at all,
+<B><TT>-1</TT></B> is returned.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Find({a,b,c,d,e,f}, d);
+Out> 4;
+In> Find({1,2,3,2,1}, 2);
+Out> 2;
+In> Find({1,2,3,2,1}, 4);
+Out> -1;</PRE></TR>
+</TABLE>
 
-<A NAME="Append">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Contains" TARGET="Chapters">
+Contains
+</A>
+.<A NAME="Append">
 
 </A>
 <H3>
-<HR>Append({list},element)
+<HR>Append -- Append an entry at the end of a list
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Append(list, expr)
+<H5>
+Parameters:
+</H5>
 
-Append({list},element) : 
-Append an element {{I:element}} to list {{I:{list} }}.
+list - list to append "expr" to <br>
+expr - expression to append to the list
+<H5>
+Description:
+</H5>
 
+The expression "expr" is appended at the end of "list" and the
+resulting list is returned. 
+<p> </p>
+Note that due to the underlying data structure, the time it takes to
+append an entry at the end of a list grows linearly with the length of
+the list, while the time for prepending an entry at the beginning is
+constant.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Append({a,b,c,d}, 1);
+Out> {a,b,c,d,1};</PRE></TR>
+</TABLE>
 
-<A NAME="DestructiveAppend">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Concat" TARGET="Chapters">
+Concat
+</A>
+, <A HREF="ref.html#:" TARGET="Chapters">
+:
+</A>
+, <A HREF="ref.html#DestructiveAppend" TARGET="Chapters">
+DestructiveAppend
+</A>
+.<A NAME="DestructiveAppend">
 
 </A>
 <H3>
-<HR>DestructiveAppend({list},element)
+<HR>DestructiveAppend -- Destructively append an entry to a list
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+DestructiveAppend(list, expr)
+<H5>
+Parameters:
+</H5>
 
-DestructiveAppend({list},element) :
-Append an element {{I:element}} to list {{I:{list} }}.
+list - list to append "expr" to <br>
+expr - expression to append to the list
+<H5>
+Description:
+</H5>
 
+This is the destructive counterpart of <B><TT>Append</TT></B>. This
+command yields the same result as the corresponding call to
+<B><TT>Append</TT></B>, but the original list is modified. So if a
+variable is bound to "list", it will now be bound to the list with
+the expression "expr" inserted.
+<p> </p>
+Destructive commands run faster than their nondestructive counterparts
+because the latter copy the list before they alter it.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> lst := {a,b,c,d};
+Out> {a,b,c,d};
+In> Append(lst, 1);
+Out> {a,b,c,d,1};
+In> lst
+Out> {a,b,c,d};
+In> DestructiveAppend(lst, 1);
+Out> {a,b,c,d,1};
+In> lst;
+Out> {a,b,c,d,1};</PRE></TR>
+</TABLE>
 
-<A NAME="RemoveDuplicates">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Concat" TARGET="Chapters">
+Concat
+</A>
+, <A HREF="ref.html#:" TARGET="Chapters">
+:
+</A>
+, <A HREF="ref.html#Append" TARGET="Chapters">
+Append
+</A>
+.<A NAME="RemoveDuplicates">
 
 </A>
 <H3>
-<HR>RemoveDuplicates({list})
+<HR>RemoveDuplicates -- Remove any duplicates from a list
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+RemoveDuplicates(list)
+<H5>
+Parameters:
+</H5>
+list - list to act on
+<H5>
+Description:
+</H5>
 
-RemoveDuplicates({list}) : 
-Returns a list with exactly one occurrence of each element that is
-also in "{list}".
-
+This command returns "list" after all duplicates are removed. To be
+precise, the second occurence of any entry is deleted, as are the
+third, the fourth, etcetera.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> RemoveDuplicates({1,2,3,2,1});
+Out> {1,2,3};
+In> RemoveDuplicates({a,1,b,1,c,1});
+Out> {a,1,b,c};</PRE></TR>
+</TABLE>
 
 <A NAME="Push">
 
 </A>
 <H3>
-<HR>Push(stack,element)
+<HR>Push -- Add an element on top of a stack
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Push(stack, expr)
+<H5>
+Parameters:
+</H5>
 
-These implement a stack (represented as a list). "Push" adds an element
-in front of the list. "Pop" then removes and returns any element you
-need from the list. "PopFront" and "PopBack" pop the first and last
-element of the stack respectively.
+stack - a stack (represented as a list) <br>
+expr - expression to push on "stack"
+<H5>
+Description:
+</H5>
 
+This is part of a simple implementation of a stack, internally
+represented as a list. This command pushes the expression "expr" on
+top of the stack, and returns the stack afterwards.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> stack := {};
+Out> {};
+In> Push(stack, x);
+Out> {x};
+In> Push(stack, x2);
+Out> {x2,x};
+In> PopFront(stack);
+Out> x2;</PRE></TR>
+</TABLE>
 
-<A NAME="Pop">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Pop" TARGET="Chapters">
+Pop
+</A>
+, <A HREF="ref.html#PopFront" TARGET="Chapters">
+PopFront
+</A>
+, <A HREF="ref.html#PopBack" TARGET="Chapters">
+PopBack
+</A>
+.<A NAME="Pop">
 
 </A>
 <H3>
-<HR>Pop(stack,index)
+<HR>Pop -- Remove an element from a stack
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Pop(stack, n)
+<H5>
+Parameters:
+</H5>
 
-These implement a stack (represented as a list). "Push" adds an element
-in front of the list. "Pop" then removes and returns any element you
-need from the list. "PopFront" and "PopBack" pop the first and last
-element of the stack respectively.
+stack - a stack (represented as a list) <br>
+n - index of the element to remove
+<H5>
+Description:
+</H5>
 
+This is part of a simple implementation of a stack, internally
+represented as a list. This command removes the element with index
+"n" from the stack and returns this element. The top of the stack is
+represented by the index 1. Invalid indices, for example indices
+greater than the number of element on the stack, lead to an error.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> stack := {};
+Out> {};
+In> Push(stack, x);
+Out> {x};
+In> Push(stack, x2);
+Out> {x2,x};
+In> Push(stack, x3);
+Out> {x3,x2,x};
+In> Pop(stack, 2);
+Out> x2;
+In> stack;
+Out> {x3,x};</PRE></TR>
+</TABLE>
 
-<A NAME="PopFront">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Push" TARGET="Chapters">
+Push
+</A>
+, <A HREF="ref.html#PopFront" TARGET="Chapters">
+PopFront
+</A>
+, <A HREF="ref.html#PopBack" TARGET="Chapters">
+PopBack
+</A>
+.<A NAME="PopFront">
 
 </A>
 <H3>
-<HR>PopFront(stack)
+<HR>PopFront -- Remove an element from the top of a stack
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+PopFront(stack)
+<H5>
+Parameters:
+</H5>
+stack - a stack (represented as a list)
+<H5>
+Description:
+</H5>
 
-These implement a stack (represented as a list). "Push" adds an element
-in front of the list. "Pop" then removes and returns any element you
-need from the list. "PopFront" and "PopBack" pop the first and last
-element of the stack respectively.
+This is part of a simple implementation of a stack, internally
+represented as a list. This command removes the element on the top of
+the stack and returns it. This is the last element that is pushed onto
+the stack.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> stack := {};
+Out> {};
+In> Push(stack, x);
+Out> {x};
+In> Push(stack, x2);
+Out> {x2,x};
+In> Push(stack, x3);
+Out> {x3,x2,x};
+In> PopFront(stack);
+Out> x3;
+In> stack;
+Out> {x2,x};</PRE></TR>
+</TABLE>
 
-
-<A NAME="PopBack">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Push" TARGET="Chapters">
+Push
+</A>
+, <A HREF="ref.html#Pop" TARGET="Chapters">
+Pop
+</A>
+, <A HREF="ref.html#PopBack" TARGET="Chapters">
+PopBack
+</A>
+.<A NAME="PopBack">
 
 </A>
 <H3>
-<HR>PopBack(stack)
+<HR>PopBack -- Remove an element from the bottom of a stack
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+PopBack(stack)
+<H5>
+Parameters:
+</H5>
+stack - a stack (represented as a list)
+<H5>
+Description:
+</H5>
 
-These implement a stack (represented as a list). "Push" adds an element
-in front of the list. "Pop" then removes and returns any element you
-need from the list. "PopFront" and "PopBack" pop the first and last
-element of the stack respectively.
+This is part of a simple implementation of a stack, internally
+represented as a list. This command removes the element at the bottom
+of the stack and returns this element. Of course, the stack should not
+be empty.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> stack := {};
+Out> {};
+In> Push(stack, x);
+Out> {x};
+In> Push(stack, x2);
+Out> {x2,x};
+In> Push(stack, x3);
+Out> {x3,x2,x};
+In> PopBack(stack);
+Out> x;
+In> stack;
+Out> {x3,x2};</PRE></TR>
+</TABLE>
 
-
-<A NAME="Swap">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Push" TARGET="Chapters">
+Push
+</A>
+, <A HREF="ref.html#Pop" TARGET="Chapters">
+Pop
+</A>
+, <A HREF="ref.html#PopFront" TARGET="Chapters">
+PopFront
+</A>
+.<A NAME="Swap">
 
 </A>
 <H3>
-<HR>Swap({list},i1,i2)
+<HR>Swap -- Swap two elements in a list
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Swap(list, i1, i2)
+<H5>
+Parameters:
+</H5>
 
-Swap({list},i1,i2) : 
-Swap elements with indices "i1" and "i2" in the list "{list}".
+list - the list in which a pair of entries should be swapped <br>
+i1, i2 - indices of the entries in "list" to swap
+<H5>
+Description:
+</H5>
 
+This command swaps the pair of entries with entries "i1" and "i2"
+in "list". So the element at index "i1" ends up at index "i2"
+and the entry at "i2" is put at index "i1". Both indices should be
+valid to address elements in the list. Then the updated list is
+returned.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> lst := {a,b,c,d,e,f};
+Out> {a,b,c,d,e,f};
+In> Swap(lst, 2, 4);
+Out> {a,d,c,b,e,f};</PRE></TR>
+</TABLE>
 
-<A NAME="Count">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Replace" TARGET="Chapters">
+Replace
+</A>
+, <A HREF="ref.html#DestructiveReplace" TARGET="Chapters">
+DestructiveReplace
+</A>
+.<A NAME="Count">
 
 </A>
 <H3>
-<HR>Count({list},element)
+<HR>Count -- Count the number of occurrences of an expression
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Count(list, expr)
+<H5>
+Parameters:
+</H5>
 
-Count({list},element) : 
-Returns number of occurrences of "element" in "{list}".
+list - the list to examine <br>
+expr - expression to look for in "list"
+<H5>
+Description:
+</H5>
 
+This command counts the number of times that the expression "expr"
+occurs in "list" and returns this number.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> lst := {a,b,c,b,a};
+Out> {a,b,c,b,a};
+In> Count(lst, a);
+Out> 2;
+In> Count(lst, c);
+Out> 1;
+In> Count(lst, x);
+Out> 0;</PRE></TR>
+</TABLE>
 
-<A NAME="Intersection">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Length" TARGET="Chapters">
+Length
+</A>
+, <A HREF="ref.html#Select" TARGET="Chapters">
+Select
+</A>
+, <A HREF="ref.html#Contains" TARGET="Chapters">
+Contains
+</A>
+.<A NAME="Intersection">
 
 </A>
 <H3>
-<HR>Intersection({list1},{list2})
+<HR>Intersection -- Return the intersection of two lists
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Intersection(l1, l2)
+<H5>
+Parameters:
+</H5>
+l1, l2 - two lists
+<H5>
+Description:
+</H5>
 
-Intersection({list1},{list2}) : 
-returns the intersection of two lists.
-Example : "Intersection({a,b},{b,c});" would evaluate to "{b};".
+The intersection of the lists "l1" and "l2" is determined and
+returned. The intersection contains all elements that occur in both
+lists. The entries in the result are listed in the same order as in
+"l1". If an expression occurs multiple times in both "l1" and
+"l2", then it will occur the same number of times in the result.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Intersection({a,b,c}, {b,c,d});
+Out> {b,c};
+In> Intersection({a,e,i,o,u}, {f,o,u,r,t,e,e,n});
+Out> {e,o,u};
+In> Intersection({1,2,2,3,3,3}, {1,1,2,2,3,3});
+Out> {1,2,2,3,3};</PRE></TR>
+</TABLE>
 
-
-<A NAME="Union">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Union" TARGET="Chapters">
+Union
+</A>
+, <A HREF="ref.html#Difference" TARGET="Chapters">
+Difference
+</A>
+.<A NAME="Union">
 
 </A>
 <H3>
-<HR>Union({list1},{list2})
+<HR>Union -- Return the union of two lists
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Intersection(l1, l2)
+<H5>
+Parameters:
+</H5>
+l1, l2 - two lists
+<H5>
+Description:
+</H5>
 
-Union({list1},{list2}) : 
-returns the union of two lists.
-Example : "Union({a,b},{b,c});" would evaluate to "{a,b,c};".
+The union of the lists "l1" and "l2" is determined and
+returned. The union contains all elements that occur in one or both of
+the lists. In the resulting list, any element will occur only once.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Union({a,b,c}, {b,c,d});
+Out> {a,b,c,d};
+In> Union({a,e,i,o,u}, {f,o,u,r,t,e,e,n});
+Out> {a,e,i,o,u,f,r,t,n};
+In> Union({1,2,2,3,3,3}, {2,2,3,3,4,4});
+Out> {1,2,3,4};</PRE></TR>
+</TABLE>
 
-
-<A NAME="Difference">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Intersection" TARGET="Chapters">
+Intersection
+</A>
+, <A HREF="ref.html#Difference" TARGET="Chapters">
+Difference
+</A>
+.<A NAME="Difference">
 
 </A>
 <H3>
-<HR>Difference({list1},{list2})
+<HR>Difference -- Return the difference of two lists
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Intersection(l1, l2)
+<H5>
+Parameters:
+</H5>
+l1, l2 - two lists
+<H5>
+Description:
+</H5>
 
-Difference({list1},{list2}) : 
-returns the difference of two lists.
+The difference of the lists "l1" and "l2" is determined and
+returned. The difference contains all elements that occur in "l1"
+but not in "l2". The order of elements in "l1" is preserved. If a
+certain expression occurs "n1" times in the first list and "n2"
+times in the second list, it will occur "n1-n2" times in the result
+if "n1" is greater than "n2" and not at all otherwise.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Difference({a,b,c}, {b,c,d});
+Out> {a};
+In> Difference({a,e,i,o,u}, {f,o,u,r,t,e,e,n});
+Out> {a,i};
+In> Difference({1,2,2,3,3,3}, {2,2,3,4,4});
+Out> {1,3,3};</PRE></TR>
+</TABLE>
 
-
-<A NAME="FillList">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Intersection" TARGET="Chapters">
+Intersection
+</A>
+, <A HREF="ref.html#Union" TARGET="Chapters">
+Union
+</A>
+.<A NAME="FillList">
 
 </A>
 <H3>
-<HR>FillList(aItem, aLength)
+<HR>FillList -- Fill a list with a certain expression
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+FillList(expr, n)
+<H5>
+Parameters:
+</H5>
 
-FillList(aItem, aLength) : create a list with length aLength,
-filling it with aItem.
+expr - expression to fill the list with <br>
+n - the length of the list to construct
+<H5>
+Description:
+</H5>
 
-Example: "FillList(0,5)" returns {0,0,0,0,0}
+This command creates a list of length "n" in which all slots contain
+the expression "expr" and returns this list.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> FillList(x, 5);
+Out> {x,x,x,x,x};</PRE></TR>
+</TABLE>
 
-<A NAME="Drop">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#MakeVector" TARGET="Chapters">
+MakeVector
+</A>
+, <A HREF="ref.html#ZeroVector" TARGET="Chapters">
+ZeroVector
+</A>
+, <A HREF="ref.html#RandomIntegerVector" TARGET="Chapters">
+RandomIntegerVector
+</A>
+.<A NAME="Drop">
 
 </A>
 <H3>
-<HR>Drop(list,which)
+<HR>Drop -- Drop a range of elements from a list
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
 
+Drop(list, n) <br>
+Drop(list, -n) <br>
+Drop(list, {m,n})
+<H5>
+Parameters:
+</H5>
 
- Drop( list, n ) gives 'list' with its first n elements dropped      <BR>
- Drop( list, -n ) gives 'list' with its last n elements dropped      <BR>
- Drop( list, {m,n} ) gives 'list' with elements m through n dropped  
+list - list to act on <br>
+n, m - positive integers describing the entries to drop
+<H5>
+Description:
+</H5>
 
-<A NAME="Take">
+This command removes a sublist of "list" and returns a list
+containing the remaining entries. The first calling sequence drops the
+first "n" entries in "list". The second form drops the last "n"
+entries. The last invocation drops the elements with indices "m"
+through "n".
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> lst := {a,b,c,d,e,f,g};
+Out> {a,b,c,d,e,f,g};
+In> Drop(lst, 2);
+Out> {c,d,e,f,g};
+In> Drop(lst, -3);
+Out> {a,b,c,d};
+In> Drop(lst, {2,4});
+Out> {a,e,f,g};</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Take" TARGET="Chapters">
+Take
+</A>
+, <A HREF="ref.html#Select" TARGET="Chapters">
+Select
+</A>
+, <A HREF="ref.html#Remove" TARGET="Chapters">
+Remove
+</A>
+.<A NAME="Take">
 
 </A>
 <H3>
-<HR>Take(list,which)
+<HR>Take -- Take a sublist from a list, dropping the rest
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
 
+Take(list, n) <br>
+Take(list, -n) <br>
+Take(list, {m,n})
+<H5>
+Parameters:
+</H5>
 
- Take( list, n ) gives the first n elements of 'list'   <BR>
- Take( list, -n ) gives the last n elements of 'list'   <BR>
- Take( list, {m,n} ) elements m through n of 'list'
+list - list to act on <br>
+n, m - positive integers describing the entries to drop
+<H5>
+Description:
+</H5>
 
+This command takes a sublist of "list", drops the rest, and returns
+the selected sublist. The first calling sequence selects the first
+"n" entries in "list". The second form takes the last "n"
+entries. The last invocation selects the sublist beginning with entry
+number "m" and ending with the "n"-th entry.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> lst := {a,b,c,d,e,f,g};
+Out> {a,b,c,d,e,f,g};
+In> Take(lst, 2);
+Out> {a,b};
+In> Take(lst, -3);
+Out> {e,f,g};
+In> Take(lst, {2,4});
+Out> {b,c,d};</PRE></TR>
+</TABLE>
 
-<A NAME="Partition">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Drop" TARGET="Chapters">
+Drop
+</A>
+, <A HREF="ref.html#Select" TARGET="Chapters">
+Select
+</A>
+, <A HREF="ref.html#Remove" TARGET="Chapters">
+Remove
+</A>
+.<A NAME="Partition">
 
 </A>
 <H3>
-<HR>Partition( list, n )
+<HR>Partition -- Partition a list in sublists of equal length
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Partition(list, n)
+<H5>
+Parameters:
+</H5>
 
+list - list to partition <br>
+n - length of partitions
+<H5>
+Description:
+</H5>
 
-  Partition( list, n ) partitions 'list' into non-overlapping sublists of length n
+This command partitions "list" into non-overlapping sublists of
+length "n" and returns a list of these sublists. The first "n"
+entries in "list" form the first partition, the entries from
+position "n+1" upto "2n" form the second partition, and so on. If
+"n" does not divide the length of "list", the remaining entries
+will be thrown away. If "n" equals zero, an empty list is
+returned.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Partition({a,b,c,d,e,f,}, 2);
+Out> {{a,b},{c,d},{e,f}};
+In> Partition(1 .. 11, 3);
+Out> {{1,2,3},{4,5,6},{7,8,9}};</PRE></TR>
+</TABLE>
 
-<A NAME="Assoc">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Take" TARGET="Chapters">
+Take
+</A>
+, <A HREF="ref.html#Permutations" TARGET="Chapters">
+Permutations
+</A>
+.<A NAME="Assoc">
 
 </A>
 <H3>
-<HR>Assoc(key,assoclist)
+<HR>Assoc -- Return element stored in association list
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Assoc(key, alist)
+<H5>
+Parameters:
+</H5>
 
+key - key under which element is stored <br>
+alist - association list to examine
+<H5>
+Description:
+</H5>
 
-Treat assoclist as a traditional assoc list well known from Lisp, and return
-the element stored with key. This functionality is probably best
-accessed through the [ ] operator.
+The association list "alist" is searched for an entry stored with
+index "key". If such an entry is found, it is returned. Otherwise
+the atom <B><TT>Empty</TT></B> is returned.
+<p> </p>
+Association lists are represented as a list of two-entry lists. The
+first element in the two-entry list is the key, the second element is
+the value stored under this key.
+<p> </p>
+The call <B><TT>Assoc(key, alist)</TT></B> can (probably more
+intuitively) be accessed as <B><TT>alist[key]</TT></B>.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> writer := {};
+Out> {};
+In> writer["Iliad"] := "Homer";
+Out> True;
+In> writer["Henry IV"] := "Shakespeare";
+Out> True;
+In> writer["Ulysses"] := "James Joyce";
+Out> True;
+In> Assoc("Henry IV", writer);
+Out> {"Henry IV","Shakespeare"};
+In> Assoc("War and Peace", writer);
+Out> Empty;</PRE></TR>
+</TABLE>
 
-
-<A NAME="AssocIndices">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#AssocIndices" TARGET="Chapters">
+AssocIndices
+</A>
+, <A HREF="ref.html#[]" TARGET="Chapters">
+[]
+</A>
+, <A HREF="ref.html#:=" TARGET="Chapters">
+:=
+</A>
+.<A NAME="AssocIndices">
 
 </A>
 <H3>
-<HR>AssocIndices(list)
+<HR>AssocIndices -- Return the keys in an association list
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+AssocIndices(alist)
+<H5>
+Parameters:
+</H5>
+alist - association list to examine
+<H5>
+Description:
+</H5>
 
+All the keys in the association list "alist" are assembled in a list
+and this list is returned.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> writer := {};
+Out> {};
+In> writer["Iliad"] := "Homer";
+Out> True;
+In> writer["Henry IV"] := "Shakespeare";
+Out> True;
+In> writer["Ulysses"] := "James Joyce";
+Out> True;
+In> AssocIndices(writer);
+Out> {"Iliad","Henry IV","Ulysses"};</PRE></TR>
+</TABLE>
 
-Return the list of keys in the associated list assoclist.
-
-
-<A NAME="Flatten">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Assoc" TARGET="Chapters">
+Assoc
+</A>
+.<A NAME="Flatten">
 
 </A>
 <H3>
-<HR>Flatten
+<HR>Flatten -- Flatten expression w.r.t. some operator
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -4924,7 +6199,7 @@ UnFlatten
 
 </A>
 <H3>
-<HR>UnFlatten
+<HR>UnFlatten -- Inverse operation of Flatten
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -4933,8 +6208,8 @@ UnFlatten(list,operator,identity)
 <H5>
 Parameters:
 </H5>
-list - list of objects the operator is to work on
- operator - infix operator
+list - list of objects the operator is to work on <br>
+ operator - infix operator <br>
  identity - identity of the operator
 
 <H5>
@@ -4967,63 +6242,241 @@ Flatten
 
 </A>
 <H3>
-<HR>Type(expression)
+<HR>Type -- Return the type of an expression
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Type(expr)
+<H5>
+Parameters:
+</H5>
+expr - expression to examine
+<H5>
+Description:
+</H5>
 
-Type(expression) : 
-Returns a string representation of the type of "expression".
-"Type(Cos(x));" would evaluate to "Cos", for instance.
+The type of the expression "expr" is represented as a string and
+returned. So, if "expr" is a list, the string <B><TT>"List"</TT></B> is returned. In general, the top-level
+operator of "expr" is returned. If the argument "expr" is an atom,
+the result is the empty string <B><TT>""</TT></B>.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Type({a,b,c});
+Out> "List";
+In> Type(a*(b+c));
+Out> "*";
+In> Type(123);
+Out> "";</PRE></TR>
+</TABLE>
 
-
-<A NAME="NrArgs">
+<H5>
+See Alsi:
+</H5>
+<A HREF="ref.html#IsAtom" TARGET="Chapters">
+IsAtom
+</A>
+, <A HREF="ref.html#NrArgs" TARGET="Chapters">
+NrArgs
+</A>
+.<A NAME="NrArgs">
 
 </A>
 <H3>
-<HR>NrArgs(expression)
+<HR>NrArgs -- Return number of top-level arguments
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+NrArgs(expr)
+<H5>
+Parameters:
+</H5>
+expr - expression to examine
+<H5>
+Description:
+</H5>
 
-NrArgs(expression) : 
-Returns number of arguments in top-level function of "expression".
-"NrArgs(Cos(x));" would evaluate to "1".
+This function evaluates to the number of top-level arguments of the
+expression "expr". The argument "expr" may not be an atom, since
+that would lead to an error.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> NrArgs(f(a,b,c))
+Out> 3;
+In> NrArgs(Sin(x));
+Out> 1;
+In> NrArgs(a*(b+c));
+Out> 2;</PRE></TR>
+</TABLE>
 
-<A NAME="BubbleSort">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Type" TARGET="Chapters">
+Type
+</A>
+, <A HREF="ref.html#Length" TARGET="Chapters">
+Length
+</A>
+.<A NAME="BubbleSort">
 
 </A>
 <H3>
-<HR>BubbleSort({list},"compare")
+<HR>BubbleSort -- Sort a list
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+BubbleSort(list, fn)
+<H5>
+Parameters:
+</H5>
 
-BubbleSort({list},"compare") : 
-Sort the list {list}, using "compare" as the operator to compare
-elements. "compare" gives the relation that should be true for
-neighbouring elements in the list after sorting.
+list - list to sort <br>
+fn - function used to compare element of "list"
+<H5>
+Description:
+</H5>
 
+This command returns "list" after it is sorted using "fn" to
+compare elements. The function "fn" should accept two arguments,
+which will be elements of "list", and compare them. It should return
+<B><TT>True</TT></B> if in the sorted list the second argument
+should come after the first one, and <B><TT>False</TT></B>
+otherwise. 
+<p> </p>
+This function uses the so-called BubbleSort algorithm to do the
+sorting. This algorithm is chosen because it is easy to implement,
+though it is not particularly fast.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> BubbleSort({4,7,23,53,-2,1}, "<");
+Out> {-2,1,4,7,23,53};
+In> BubbleSort({4,7,23,53,-2,1}, ">");
+Out> {53,23,7,4,1,-2};</PRE></TR>
+</TABLE>
 
 <A NAME="Table">
 
 </A>
 <H3>
-<HR>Table(body,var,from,to,step)
+<HR>Table -- Evaluate while some variable ranges over interval
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Table(body, var, from, to, step)
+<H5>
+Parameters:
+</H5>
 
-Table(body,var,from,to,step) : 
-Generate a list of values from "body", by assigning variable "var"
-values from "from" upto "to", incrementing "step" each time.
+body - expression to evaluate multiple times <br>
+var - variable to use as loop variable <br>
+from - initial value for "var" <br>
+to - final value for "var" <br>
+step - step size with which "var" is incremented
+<H5>
+Description:
+</H5>
 
+This command generates a list of values from "body", by assigning
+variable "var" values from "from" upto "to", incrementing
+"step" each time. So, the variable "var" first gets the value
+"from", and the expression "body" is evaluated. Then the value
+"from"+"step" is assigned to "var" and the expression "body"
+is again evaluated. This continues, incrementing "var" with "step"
+on every iteration, until "var" exceeds "to". At that moment, all
+the results are assembled in a list and this list is returned.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Table(i!, i, 1, 10, 1);
+Out> {1,2,6,24,120,720,5040,40320,362880,3628800};
+In> Table(i, i, 3, 16, 4);
+Out> {3,7,11,15};
+In> Table(i^2, i, 10, 1, -1);
+Out> {100,81,64,49,36,25,16,9,4,1};</PRE></TR>
+</TABLE>
 
-<A NAME="TableForm">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#For" TARGET="Chapters">
+For
+</A>
+, <A HREF="ref.html#MapSingle" TARGET="Chapters">
+MapSingle
+</A>
+, <A HREF="ref.html#.." TARGET="Chapters">
+..
+</A>
+, <A HREF="ref.html#TableForm" TARGET="Chapters">
+TableForm
+</A>
+.<A NAME="TableForm">
 
 </A>
 <H3>
-<HR>TableForm({list})
+<HR>TableForm -- Print each entry in a list on a line
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+TableForm(list)
+<H5>
+Parameters:
+</H5>
+list - list to print
+<H5>
+Description:
+</H5>
 
-Tableform({list}) : 
-TableForm writes out a list in a nicer readable form, eg. one line for
-each element in the list.
+This functions writes out "list" in a nicer readable form, by
+printing every element in the list on a seperate line.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> TableForm(Table(i!, i, 1, 10, 1));
+1
+ 2
+ 6
+ 24
+ 120
+ 720
+ 5040
+ 40320
+ 362880
+ 3628800
+Out> True;</PRE></TR>
+</TABLE>
 
-
-<p>  </P><HR><A NAME="c8">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#PrettyForm" TARGET="Chapters">
+PrettyForm
+</A>
+, <A HREF="ref.html#Echo" TARGET="Chapters">
+Echo
+</A>
+, <A HREF="ref.html#Table" TARGET="Chapters">
+Table
+</A>
+.<p>  </P><HR><A NAME="c8">
 
 </A>
 <A HREF="refchapter8.html#:" TARGET="Chapters">
@@ -5042,17 +6495,20 @@ each element in the list.
 <H1>
 Functional operators
 </H1>
+
+These operators can help the user to program in the style of
+functional programming languages like Miranda and Haskell.
 <A NAME=":">
 
 </A>
 <H3>
-<HR>:
+<HR>: -- Prepend item to list, or concatenate strings
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-item : list <br>
-string1 : string2
+item : list (prec. 7) <br>
+string1 : string2 (prec. 7)
 <H5>
 Parameters:
 </H5>
@@ -5064,7 +6520,9 @@ string2 - a string
 <H5>
 Description:
 </H5>
-Prepends an item to a list, or a string. 
+The first form prepends "item" as the first entry to the list
+"list". The second form concatenates the strings "string1" and
+"string2".
 <H5>
 Examples:
 </H5>
@@ -5089,21 +6547,25 @@ ConcatStrings
 
 </A>
 <H3>
-<HR>@
+<HR>@ -- Apply a function
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-function @ arguments
+fn @ arglist (prec. 60)
 <H5>
 Parameters:
 </H5>
-function - a string representing a function <br>
-arguments - a single arguments, or a list of arguments
+fn - function to apply <br>
+arglist - single argument, or a list of arguments
 <H5>
 Description:
 </H5>
-Applies an operator to arguments. Equivalent to Apply
+
+This function is a shorthand for <B><TT>Apply</TT></B>. It applies the
+function "fn" to the argument(s) in "arglist" and returns the
+result. The first parameter "fn" can either be a string containing
+the name of a function or a pure function.
 <H5>
 Examples:
 </H5>
@@ -5128,21 +6590,26 @@ Apply
 
 </A>
 <H3>
-<HR>/@
+<HR>/@ -- Apply a function to all entries in a list
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-function /@ arguments
+fn /@ list (prec. 60)
 <H5>
 Parameters:
 </H5>
-function - a string representing a function <br>
-arguments - a list of arguments
+fn - function to apply <br>
+list - list of arguments
 <H5>
 Description:
 </H5>
-Applies an operator to arguments in a list, in a threaded manner.
+
+This function is a shorthand for <B><TT>MapSingle</TT></B>. It
+successively applies the function "fn" to all the entries in
+"list" and returns a list contains the results. The parameter "fn"
+can either be a string containing the name of a function or a pure
+function.
 <H5>
 Examples:
 </H5>
@@ -5160,26 +6627,36 @@ See Also:
 <A HREF="ref.html#MapSingle" TARGET="Chapters">
 MapSingle
 </A>
+, <A HREF="ref.html#Map" TARGET="Chapters">
+Map
+</A>
+, <A HREF="ref.html#MapArgs" TARGET="Chapters">
+MapArgs
+</A>
 .<A NAME="..">
 
 </A>
 <H3>
-<HR>..
+<HR>.. -- Construct a list of consecutive integers
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-n .. m
+n .. m (prec. 60)
 <H5>
 Parameters:
 </H5>
-n - an integer <br>
-m - an integer 
+n - integer. the first entry in the list <br>
+m - integer, the last entry in the list 
 
 <H5>
 Description:
 </H5>
-Returns a list of numbers from n upto m.
+This command returns the list "{n, n+1, n+2, ..., m}". If "m" is
+smaller than "n", the empty list is returned. Note that the
+<B><TT>..</TT></B> operator should be surrounded by spaces to keep the
+parser happy, if "n" is a number. So one should write <B><TT>1
+.. 4</TT></B> instead of <B><TT>1..4</TT></B>.
 <H5>
 Examples:
 </H5>
@@ -5189,7 +6666,13 @@ Out> {1,2,3,4};
 </PRE></TR>
 </TABLE>
 
-<p>  </P><HR><A NAME="c9">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Table" TARGET="Chapters">
+Table
+</A>
+.<p>  </P><HR><A NAME="c9">
 
 </A>
 <A HREF="refchapter9.html#MaxEvalDepth" TARGET="Chapters">
