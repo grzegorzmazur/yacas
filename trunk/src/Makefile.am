@@ -62,12 +62,16 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp \
 	plat/epoc32/lisptype.h \
 	plat/epoc32/stubs.inl \
 	plat/epoc32/platfileio.h \
+	plat/win32/lisptype.h \
+	plat/win32/platdll.h   \
 	plat/win32/platfileio.h \
-	plat/win32/stubs.inl \
-	plat/win32/List.h \
-	plat/win32/List.inl \
-	plat/win32/platdll.h \
-	plat/win32/lisptype.h
+	plat/win32/stubs.inl     \
+	plat/win32/win32commandline.cpp \
+	plat/win32/win32commandline.h   \
+	plat/win32/yacas.dsp            \
+	plat/win32/yacas_exe.dsp        \
+	plat/win32/yacasmain-win32.cpp
+
 
 include depend.dep
 
