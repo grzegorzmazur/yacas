@@ -28,6 +28,8 @@ static LispStringPtr PowerInteger(LispCharPtr int1, LispCharPtr int2,
 static LispStringPtr NegateInteger(LispCharPtr int1, LispHashTable& aHashTable);
 static LispBoolean IsInteger(LispCharPtr num);
 static LispStringPtr EFloat( LispHashTable& aHashTable, LispInt aPrecision);
+static unsigned long BitCount(long x);
+static long bit(long a, long k);
 
 LispInt NumericSupportForMantissa()
 {
@@ -41,7 +43,7 @@ const LispCharPtr NumericLibraryName()
 
 void SetGMPPrecision(LispInt aPrecision)
 {
-// FIXME this is very primitive
+// FIXME this is still very primitive
     mpf_set_default_prec((unsigned long)aPrecision<<2);
 }
 
@@ -346,11 +348,32 @@ LispStringPtr DivideFloat(LispCharPtr int1, LispCharPtr int2,
 LispStringPtr PowerFloat(LispCharPtr int1, LispCharPtr int2,
                          LispHashTable& aHashTable,LispInt aPrecision)
 {
-    if(IsInteger(int1)) {
+    if(IsInteger(int1) && IsInteger(int2)) {
       return PowerInteger(int1, int2, aHashTable);
     } else {
     //TODO
-      return PlatPower(int1, int2, aHashTable, 0);
+    //  return PlatPower(int1, int2, aHashTable, 0);
+
+      long e = atol(int2); //TODO: check if int2 > MAX_LONG
+      int neg = e < 0 ? 1 : 0;
+      long n = BitCount(e);
+      SetGMPPrecision(aPrecision + n + 10);
+      mpf_t i1;
+      mpf_t res;
+      mpf_init(i1);
+      mpf_init_set_ui(res,1);
+      mpf_set_str(i1,int1,10);
+
+      for (long i = n-1; i >= 0; i--) {
+          mpf_mul(res, res, res);
+          if (bit(e, i)) mpf_mul(res, res, i1);
+      }
+
+      if (neg) mpf_ui_div(res, 1, res);
+      LispStringPtr result = FloatToString(res, aHashTable);
+      mpf_clear(i1);
+      mpf_clear(res);
+      return result;
 
 //  FOR THIS YOU NEED GMP >= 3.0  
 /*  
@@ -872,5 +895,36 @@ LispBoolean IsInteger(LispCharPtr num)
   } else {
     return LispFalse;
   }
+}
+
+unsigned long BitCount(long x)
+{
+   unsigned long tmp;
+   if (x < 0) 
+      tmp = - ((unsigned long) x);
+   else
+      tmp = x;
+
+   unsigned long count = 0;
+   while (tmp) {
+      count++;
+      tmp = tmp >> 1;
+   }
+
+   return count;
+}
+
+long bit(long a, long k)
+{
+   unsigned long aa;
+   if (a < 0)
+      aa = - ((unsigned long) a);
+   else
+      aa = a;
+
+   if (k < 0 || k >= BITS_PER_LONG)
+      return 0;
+   else
+      return long((aa >> k) & 1);
 }
 
