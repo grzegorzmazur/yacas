@@ -223,7 +223,31 @@ FrobeniusNorm(matrix_IsMatrix) <--
 
 
 
-/* Cramer-like matrix operations */
+20 # Determinant(_matrix) <-- 
+[
+        Local(n,s,result);
+        n:=Length(matrix);
+	result:=1;
+
+        // gaussian elimination
+        ForEach(i, 1 .. (n-1) )[
+                ForEach(k, (i+1) .. n )[
+                        s:=matrix[k][i];
+                        ForEach(j, i .. n )[
+                                matrix[k][j] := matrix[k][j] - (s/matrix[i][i])*matrix[i][j];
+                                //Echo({"matrix[",k,"][",j,"] =", aug[k][j]," - ",
+                                //      matrix[k][i],"/",matrix[i][i],"*",matrix[i][j]," k i =", k,i  });
+                        ];
+                ];
+        ];
+	// now upper triangular
+        ForEach(i, Diagonal(matrix) )
+                result:=result*i;
+        result;
+
+];
+
+/* Sucky
 20 # Determinant(_matrix) <-- 
 [
   Local(perms,indices,result);
@@ -236,6 +260,7 @@ FrobeniusNorm(matrix_IsMatrix) <--
                     LeviCivita(item);
   result;
 ];
+*/
 
 10 # Determinant(_matrix)_(IsUpperTriangular(matrix) Or IsLowerTriangular(matrix)) <--
 [ 
