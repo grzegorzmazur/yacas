@@ -51,8 +51,7 @@ public:
 class LispEnvironment : public YacasBase
 {
 public:
-    LispEnvironment(/*TODO remove LispCommands& aCommands, */
-                    YacasCoreCommands &aCoreCommands,
+    LispEnvironment(YacasCoreCommands &aCoreCommands,
                     LispUserFunctions& aUserFunctions,
                     LispGlobal& aGlobals,
                     LispHashTable& aHashTable,
@@ -76,9 +75,7 @@ public:
     void CurrentLocals(LispPtr& aResult);
 
 public:
-//TODO remove    inline LispCommands& Commands();
     inline YacasCoreCommands& CoreCommands();
-//TODO remove    void SetCommand(LispEvalCaller aEvaluatorFunc, LispCharPtr aString);
     void SetCommand(YacasEvalCaller aEvaluatorFunc, LispCharPtr aString,LispInt aNrArgs,LispInt aFlags);
 
     void RemoveCommand(LispCharPtr aString);
@@ -228,7 +225,6 @@ private:
 public: //Well... only because I want to be able to show the stack to the outside world...
     LocalVariableFrame *iLocalsList;
 private:
-//TODO remove    LispCommands&  iCommands;
     YacasCoreCommands& iCoreCommands;
     LispUserFunctions& iUserFunctions;
     LispHashTable& iHashTable;
@@ -313,12 +309,7 @@ inline LispInt LispEnvironment::BinaryPrecision(void)
     return digits_to_bits(iPrecision,10);
 }
 
-/*TODO remove
-inline LispCommands& LispEnvironment::Commands()
-{
-    return iCommands;
-}
-*/
+
 
 inline YacasCoreCommands& LispEnvironment::CoreCommands()
 {

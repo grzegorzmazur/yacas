@@ -11,28 +11,6 @@
 #include "lisphash.h"
 #include "evalfunc.h"
 
-/*TODO remove
-class LispEnvironment;
-// aArguments are ALL the arguments, including the head...
-typedef void (*LispEvalCaller)(LispEnvironment& aEnvironment,
-                               LispPtr& aResult,
-                               LispPtr& aArguments);
-class LispEvaluator : public EvalFuncBase
-{
-public:
-    LispEvaluator(LispEvalCaller aCaller): iCaller(aCaller)
-    {
-    }
-    virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-                          LispPtr& aArguments);
-private:
-    LispEvalCaller iCaller;
-};
-
-typedef LispAssociatedHash<LispEvaluator> LispCommands;
-*/
-
-
 
 // new-style evaluator, passing arguments onto the stack in LispEnvironment
 typedef void (*YacasEvalCaller)(LispEnvironment& aEnvironment,LispInt aStackTop);

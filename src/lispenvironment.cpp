@@ -13,7 +13,7 @@
 #define InternalEval iEvaluator->Eval
 
 
-LispEnvironment::LispEnvironment(/*TODO remove LispCommands& aCommands, */
+LispEnvironment::LispEnvironment(
                     YacasCoreCommands& aCoreCommands,
                     LispUserFunctions& aUserFunctions,
                     LispGlobal& aGlobals,
@@ -36,7 +36,6 @@ LispEnvironment::LispEnvironment(/*TODO remove LispCommands& aCommands, */
     iErrorOutput(iError),
     iDebugger(NULL),
     iLocalsList(NULL),
-//TODO remove    iCommands(aCommands),
     iCoreCommands(aCoreCommands),
     iUserFunctions(aUserFunctions),
     iHashTable(aHashTable),
@@ -489,19 +488,6 @@ void LispEnvironment::DefineRulePattern(LispStringPtr aOperator,LispInt aArity,
 
 
 
-/*TODO remove
-void LispEnvironment::SetCommand(LispEvalCaller aEvaluatorFunc, LispCharPtr aString)
-{
-#ifdef YACAS_DEBUG
-    extern long theNrDefinedBuiltIn;
-    theNrDefinedBuiltIn++;
-#endif
-    LispEvaluator eval(aEvaluatorFunc);
-    Commands().SetAssociation(eval,
-                            HashTable().LookUp(aString,LispTrue));
-}
-*/
-
 void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, LispCharPtr aString,LispInt aNrArgs,LispInt aFlags)
 {
 #ifdef YACAS_DEBUG
@@ -512,13 +498,6 @@ void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, LispCharPtr aSt
     CoreCommands().SetAssociation(eval,HashTable().LookUp(aString,LispTrue));
 }
 
-
-/*TODO remove
-void LispEnvironment::RemoveCommand(LispCharPtr aString)
-{
-    Commands().Release(HashTable().LookUp(aString,LispTrue));
-}
-*/
 void LispEnvironment::RemoveCoreCommand(LispCharPtr aString)
 {
     CoreCommands().Release(HashTable().LookUp(aString,LispTrue));

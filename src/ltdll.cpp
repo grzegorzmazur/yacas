@@ -5,7 +5,7 @@
 #endif
 
 //DLFCN support better done by elfdll.cpp
-#if !HAVE_DLFCN_H
+#if 1 // !HAVE_DLFCN_H
 
 #include <stdio.h>
 

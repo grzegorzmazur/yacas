@@ -3,7 +3,7 @@
 #include "../config.h"
 #endif
 
-#if HAVE_DLFCN_H
+#if 0//HAVE_DLFCN_H
 
 
 #include <dlfcn.h>
