@@ -891,7 +891,7 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
 #ifndef USE_NATIVE
 
 
-BigNumber::BigNumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {
   iNumber = NEW ANumber(aString,aPrecision,aBase);
 }
@@ -913,7 +913,7 @@ void BigNumber::SetTo(const BigNumber& aOther)
 {
   iNumber->CopyFrom(*aOther.iNumber);
 }
-void BigNumber::ToString(LispString& aResult, LispInt aBase) const
+void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase) const
 {
   ANumberToString(aResult, *iNumber, aBase);
 }
@@ -931,7 +931,7 @@ double BigNumber::Double() const
 #endif
 }
 
-const LispCharPtr BigNumber::NumericLibraryName() const
+const LispCharPtr BigNumber::NumericLibraryName()
 {
   return "Internal implementation";
 }
@@ -1049,10 +1049,9 @@ void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
     (*iNumber)[i] = (*aX.iNumber)[i];
   }
 }
-LispInt BigNumber::BitCount() const
+void BigNumber::BitCount(const BigNumber& aX)
 {
   LISPASSERT(0);
-  return 0;
 }
 LispInt BigNumber::Sign() const
 {

@@ -5,45 +5,180 @@
 #include "numbers.h"
 #include <stdio.h>
 
+unsigned failed = 0;
+unsigned passed = 0;
 
-void Check(LispString& str,char* s)
+void Check(LispString& str, const char* s, const char* test_description)
 {
     if (strcmp(str.String(),s))
     {
-        printf("ERROR: %s != %s\n",str.String(),s);
+        printf("%s: failed: %s != %s\n",test_description, str.String(),s);
+		++failed;
     }
+	else
+	{
+		printf("%s: passed\n", test_description);
+		++passed;
+	}
+}
+
+void Check(bool test_condition, const char* test_description)
+{
+    if (!test_condition)
+    {
+        printf("%s: failed\n",test_description);
+		++failed;
+    }
+	else
+	{
+		printf("%s: passed\n", test_description);
+		++passed;
+	}
 }
 
 void Next()
 {
     static int i=0;
     i++;
-    printf("[%d]",i);
+    printf("Test group [%d]\n",i);
     fflush(stdout);
 }
 
 void Finish()
 {
-    printf("\n");
+
+	printf("Passed %d, failed %d tests.\n", passed, failed);
     fflush(stdout);
 }
 
-/*
-void Faculty(ANumber& fac,int n)
+#if 0
+// test small numbers
+void TestTypes1(double value)
 {
-    fac.SetTo("1");
-    int i;
-    for (i=1;i<=n;i++)
-    {
-        char ss[100];
-        sprintf(ss,"%d",i);
-        ANumber f(ss,100);
-        ANumber re("1",100);
-        re.CopyFrom(fac);
-        Multiply(fac,re,f);
-    }
+	int sign = (value>0)?1:((value<0)?-1:0);
+	int int_value = int(value);
+	int int_sign = (int_value>0)?1:((int_value<0)?-1:0);
+// test integers
+	BigNumber x;
+	x.SetTo(int_value);
+	Check(x.IsInt(), "set to integer type");
+	Check(x.Double()==int_value, "value is correct");
+	Check(x.IsIntValue(), "is an integer value");
+	Check(x.Sign()==int_sign, "sign is correct");
+	x.BecomeInt();
+	Check(x.IsInt(), "still integer type");
+	x.BecomeFloat();
+	Check(!x.IsInt(), "converted to double type");
+	Check(x.Double()==int_value, "value is still correct");
+	Check(x.Sign()==int_sign, "sign is correct");
+	Check(x.IsSmall(), "value is small");
+	x.BecomeInt();
+	Check(x.IsInt(), "converted to integer type");
+	Check(x.Double()==int_value, "value is still correct");
+	x.Negate(x);	// negate an integer
+	Check(x.Double()==-int_value, "value is negated");
+	Check(x.Sign()==-int_sign, "sign is correct");
+
+// test floats
+	x.SetTo(value);
+	Check(!x.IsInt(), "set to float type");
+	Check(x.Double()==value, "value is correct");
+// value doesn't have to be float
+	//	Check(!x.IsIntValue(), "is not an integer value");
+	x.BecomeFloat();
+	Check(!x.IsInt(), "still float type");
+	Check(x.Double()==value, "value is still correct");
+	Check(x.IsSmall(), "value is small");
+	Check(x.Sign()==sign, "sign is orrect");
+
+	BigNumber y;
+	y.SetTo(value);	// test constructor from double
+	Check(y.IsSmall(), "value is small");
+	Check(y.Equals(x), "y=x");
+	Check(x.Equals(y), "x=y");
+	y.SetTo(int_value);	// constructor from integers
+	Check(y.Double()==int_value, "value of y is correct");
+	Check(y.IsInt() && y.IsIntValue(), "y is integer");
+
+	x.Negate(x);	// negate a float
+	Check(x.Double()==-value, "value is negated");
+	Check(x.Sign()==-sign, "sign is orrect");
+	x.BecomeInt();
+	Check(x.IsInt(), "converted to integer type");
+	Check(x.Double()==-int_value, "value is correct");
+	x.BecomeFloat();
+	Check(!x.IsInt(), "convert to float type");
+	Check(x.Double()==-int_value, "value is still correct");
+	Check(x.IsIntValue(), "is an integer value");
+	Check(x.IsSmall(), "value is small");
+
+	
 }
-*/
+
+// test big numbers
+void TestTypes2(const char* float_string, const char* int_string, double double_value, LispInt base)
+{
+	int sign = (double_value>0)?1:((double_value<0)?-1:0);
+	
+// test constructors from strings
+	BigNumber x(float_string, base);
+	BigNumber y;
+	y.SetTo(int_string, base);
+
+	Check(!x.IsSmall(), "x is a big number");
+	Check(!y.IsSmall(), "y is a big number");
+	
+	Check(!x.IsInt(), "x is a float type");
+	Check(y.IsInt(), "y is an integer type");
+	Check(x.Double()==double_value, "value is correct");
+	Check(!x.IsIntValue(), "x has a float value");
+	Check(y.IsIntValue(), "y has an integer value");
+	Check(x.Sign()==sign, "sign of x is correct");
+	Check(y.Sign()==sign, "sign of y is correct");
+
+	LispString str;
+	y.ToString(str,base);
+	Check(str,int_string,"read integer value correctly");
+	BigNumber z(x);
+	Check(!z.IsIntValue(), "z has a float value");
+	z.BecomeInt();
+	Check(z.Sign()==sign, "sign of z is correct");
+	z.ToString(str,base);
+	Check(str,int_string,"convert to integer value correctly");
+	Check(z.IsInt(), "z is an integer now");
+	Check(z.IsIntValue(), "z has an integer value now");
+	
+	Check(z.Equals(y), "z=y");
+	Check(y.Equals(z), "y=z");
+	Check(x.Equals(x), "x=x");
+	Check(y.Equals(y), "y=y");
+	Check(z.Equals(z), "z=z");
+	Check(!x.Equals(z), "x!=z");
+	Check(!z.Equals(x), "z!=x");
+	Check(!x.Equals(y), "x!=y");
+	
+	z.BecomeFloat();
+	Check(!z.IsInt(), "z is not an integer now");
+	Check(z.Sign()==sign, "sign of z is correct");
+	Check(z.IsIntValue(), "z still has an integer value");
+
+	
+	BigNumber t;
+	t.SetTo(x);
+	Check(t.Equals(x), "t=x");
+	Check(t.Equals(t), "t=t");
+	t.Negate(t);
+	Check(t.Sign()==-sign, "sign of t is correct");
+	Check(!t.Equals(x), "t!=x now");
+	Check(!x.LessThan(x), "x<x is false");
+	Check(!t.LessThan(t), "t<t is false");
+	Check(double_value > 0 && t.LessThan(x) || !(double_value>0) && t.LessThan(x), "comparison t <> x is correct");
+	Check(double_value < 0 && x.LessThan(t) || !(double_value<0) && !x.LessThan(t), "comparison x <> t is correct");
+
+}
+
+#endif // test numbers
+
 int main(void)
 {
     LispString  str;
@@ -56,8 +191,6 @@ int main(void)
 //    printf("WordMask = %ld\n",WordMask);
 //    printf("Starting tests...\n");
 
-    Next(); //1
-
 #if 0
 {
 
@@ -69,27 +202,110 @@ int main(void)
     // cast the result to a string
     LispString  str;
     z.ToString(str,10);
-    Check(str,"25");
+    Check(str,"25", "adding 10 and 15");
 
 }
 
     BigNumber n1("65535",100,10);
     n1.ToString(str,10);
-    Check(str,"65535");
+    Check(str,"65535", "reading 65535 from string");
     n1.ToString(str,10);
-    Check(str,"65535");
+    Check(str,"65535", "");
     n1.ToString(str,2);
-    Check(str,"1111111111111111");
+    Check(str,"1111111111111111", "printing in binary");
     n1.Negate(n1);
     n1.ToString(str,10);
-    Check(str,"-65535");
+    Check(str,"-65535", "negate 65535");
 
     BigNumber res1;
     res1.Add(n1,n1,10);    
     res1.ToString(str,10);
-    Check(str,"-131070");
+    Check(str,"-131070", "add -65535 to itself");
 
+{
+//////////////////////////////////////////////////
+///// BigNumber comprehensive test suite
+//////////////////////////////////////////////////
+	
+	printf("Testing numeric library: %s.\n", BigNumber::NumericLibraryName());
+	
+	Next();
+	BigNumber x;	// default constructor
+	Next();
+	x.Double();	// value is undefined
+	Next();
+	BigNumber y("0", 10);	// construct with automatic precision
+	Check(y.Double()==0, "value of 0");
 
+	Next();
+	BigNumber y("-101010", 50, 2);	// construct with given precision
+	Check(y.Double()==-42, "value is correct");
+	Check(y.IsInt() && y.IsIntValue(), "value is integer");
+
+	Next();
+	// test small integers and floats
+	TestTypes1(0);
+	TestTypes1(1);
+	TestTypes1(-1);
+	TestTypes1(2);
+	TestTypes1(-2);
+	TestTypes1(1.11111111);
+	TestTypes1(-0.0000044);
+	TestTypes1(-1.99999e6);
+	TestTypes1(1.88800001e-20);
+	TestTypes1(-100000.1);
+	TestTypes1(15416.563);
+
+	Next();
+	// test big integers and floats - values must be out of range for platform numbers. Use:
+	// TestTypes("float value", "equivalent integer value", double_value, base);
+	TestTypes2("3.00000000000000000000000000000000000000099999999999992", "3", 3, 10);
+	TestTypes2("-100000000000000.23333333333", "-100000000000000", -1.e14, 10);
+	TestTypes2("100000000000000.23333333333", "100000000000000", 1.e14, 10);
+	TestTypes2("123.33233233233233233232333333111111111111199797797973333", "123", 123.332332332332332332323333333333, 10);
+	
+	Next();
+	y.SetTo(-15416.0);
+	Check(!y.IsInt(), "y is of float type");
+	Check(y.IsIntValue(), "y has integer value");
+	BigNumber z(y);	// copy constructor
+	Check(!z.IsInt(), "z is of float type");
+	Check(z.Double()==-15416, "value is still -15416");
+	Check(z.IsSmall(), "value is small");
+	
+	Next();
+	z.BecomeInt();
+	x.SetTo(z);	// copy assignment
+	Check(x.IsInt(), "is of integer type");
+	Check(x.Double()==-15416, "value is still -15416");
+	Check(x.IsSmall(), "value is small");
+
+	Next();
+
+	Check(x.Equals(x), "x=x");
+	Check(y.Equals(y), "y=y");
+	Check(x.Equals(y), "x=y");
+	Check(y.Equals(x), "y=x");
+	Check(z.Equals(x), "z=x");
+	Check(z.Equals(y), "z=y");
+	Check(x.Equals(z), "x=z");
+	x.Negate(x);	// negate an integer
+	Check(x.IsInt(), "x still of integer type");
+	Check(x.Double()==15416, "value is now 15416")
+	Check(!z.Equals(x), "z!=-x");
+	Check(!y.Equals(x), "y!=-x");
+	
+	Next();
+	Check(!x.LessThan(x), "x<x is false");
+	Check(!x.LessThan(y), "y<y is false");
+	Check(y.LessThan(x), "y<x is true");
+	Check(!z.LessThan(y), "z<y is false");
+	Check(z.LessThan(x), "z<x is true");
+	
+	Next();
+
+}
+	
 #endif
 
 /*

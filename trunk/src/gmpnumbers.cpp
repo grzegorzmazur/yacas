@@ -1219,3 +1219,223 @@ LispStringPtr BitXor(LispCharPtr int1, LispCharPtr int2,
     return result;*/
 }
 
+//////////////////////////////////////////////////
+///// BigNumber implementation via GMP
+//////////////////////////////////////////////////
+
+BigNumber::BigNumber()
+{
+}
+
+BigNumber::~BigNumber()
+{
+}
+// construct from string
+BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+{
+}
+
+
+/// copy constructor
+BigNumber::BigNumber(const BigNumber& aOther)
+{
+}
+
+
+// assign from another number
+void BigNumber::SetTo(const BigNumber& aOther)
+{
+}
+
+// assign from string
+void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10)
+{
+}
+
+
+// assign from a platform type
+void BigNumber::SetTo(int)
+{
+}
+
+
+void BigNumber::SetTo(double)
+{
+}
+
+
+// Convert back to other types
+/// ToString : return string representation of number in aResult  to given precision (base digits)
+
+void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase) const
+{
+}
+
+/// Give approximate representation as a double number
+double BigNumber::Double() const
+{
+}
+
+
+
+/// Numeric library name
+inline const LispCharPtr BigNumber::NumericLibraryName()
+{
+		return "GMP library";
+}
+
+
+
+//basic object manipulation
+bool BigNumber::Equals(const BigNumber& aOther) const
+{
+}
+
+
+inline bool BigNumber::IsInt() const
+{
+	return (type_ & BigNumber::KInt)!=0;
+}
+
+
+bool BigNumber::IsIntValue() const
+{
+}
+
+
+bool BigNumber::IsSmall() const
+{
+}
+
+
+void BigNumber::BecomeInt()
+{
+}
+
+
+void BigNumber::BecomeFloat()
+{
+}
+
+
+bool BigNumber::LessThan(const BigNumber& aOther) const
+{
+}
+
+
+//arithmetic
+/// Multiply two numbers at given precision and put result in *this
+void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
+{
+}
+
+
+/** Multiply two numbers, and add to aResult (this is useful and generally efficient to implement).
+* This is most likely going to be used by internal functions only, using aResult as an accumulator.
+*/
+void BigNumber::MultiplyAdd(BigNumber& aResult, const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
+{
+}
+
+
+/// Add two numbers at given precision and return result in *this
+void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
+{
+}
+
+
+/// Negate the given number, return result in *this
+void BigNumber::Negate(const BigNumber& aX)
+{
+}
+
+
+/// Divide two numbers and return result in *this. Note: if the two arguments are integer, it should return an integer result!
+void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
+{
+}
+
+
+
+/// integer operation: *this = y mod z
+void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
+{
+}
+
+
+/// integer operation: x+y mod z
+void BigNumber::AddMod(const BigNumber& aX, const BigNumber& aY, const BigNumber& aZ)
+{
+}
+
+
+/// integer operation: *this = x*y mod z
+void BigNumber::MultiplyMod(const BigNumber& aX, const BigNumber& aY, const BigNumber& aZ)
+{
+}
+
+
+void BigNumber::Floor(const BigNumber& aX)
+{
+}
+
+
+void BigNumber::Round(const BigNumber& aX, LispInt aPrecision)
+{
+}
+
+
+
+/// Bitwise operations, return result in *this.
+void BigNumber::ShiftLeft( const BigNumber& aX, LispInt aNrToShift)
+{
+}
+
+
+void BigNumber::ShiftRight( const BigNumber& aX, LispInt aNrToShift)
+{
+}
+
+
+void BigNumber::ShiftLeft( const BigNumber& aX, const BigNumber& aNrToShift)
+{
+}
+
+
+void BigNumber::ShiftRight( const BigNumber& aX, const BigNumber& aNrToShift)
+{
+}
+
+
+void BigNumber::BitAnd(const BigNumber& aX, const BigNumber& aY)
+{
+}
+
+
+void BigNumber::BitOr(const BigNumber& aX, const BigNumber& aY)
+{
+}
+
+
+void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
+{
+}
+
+
+/// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
+void BigNumber::BitCount(const BigNumber& aX)
+{
+}
+
+
+
+/// Give sign (-1, 0, 1)
+LispInt BigNumber::Sign() const
+{
+}
+
+
+
+//////////////////////////////////////////////////
+///// End of BigNumber implementation
+//////////////////////////////////////////////////

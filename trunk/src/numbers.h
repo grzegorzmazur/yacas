@@ -97,7 +97,7 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
 
 #ifndef USE_NATIVE
   #ifdef USE_GMP
-    //...
+	#include <gmp.h>
   #else
     class ANumber;
   #endif
@@ -109,23 +109,27 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
 class BigNumber : public YacasBase
 {
 public: //constructors
-  BigNumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
+  BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
+/// copy constructor
   BigNumber(const BigNumber& aOther);
+  // no constructors from int or double to avoid automatic conversions
   BigNumber();
   ~BigNumber();
   // assign from another number
   void SetTo(const BigNumber& aOther);
-  // assign from a platform type
+  // assign from string
+  void SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
+    // assign from a platform type
   void SetTo(int);
   void SetTo(double);
 public: // Convert back to other types
-  /// ToString : return string representation of number in aResult 
-  void ToString(LispString& aResult, LispInt aBase) const;
+  /// ToString : return string representation of number in aResult to given precision (base digits)
+  void ToString(LispString& aResult, LispInt aPrecision, LispInt aBase=10) const;
   /// Give approximate representation as a double number
   double Double() const;
 public: //information retrieval on library used  
   /// Numeric library name
-  const LispCharPtr NumericLibraryName() const;
+static const LispCharPtr NumericLibraryName();
 
 public://basic object manipulation
   bool Equals(const BigNumber& aOther) const;
@@ -169,9 +173,6 @@ public:/// Bitwise operations, return result in *this.
   void BitOr(const BigNumber& aX, const BigNumber& aY);
   void BitXor(const BigNumber& aX, const BigNumber& aY);
   /// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
-  /// Integer version: applying this to floats may cause overflow
-  LispInt BitCount() const;
-  /// General version, guaranteed to work but usually suboptimal for integers
   void BitCount(const BigNumber& aX);
   
   /// Give sign (-1, 0, 1)
@@ -195,7 +196,22 @@ private:
 
 #else 
   #ifdef USE_GMP
-  //...
+
+  enum EType
+  { // bit masks, so that ExpFloat is also Float.
+	  KInt = 1,
+	  KFloat = 2,
+	  KExpFloat = 6,
+  };
+  union UValue
+  {
+	  mpz_t int_;
+	  mpf_t float_;
+  };
+  unsigned type_;
+  UValue value_;
+  mpz_t exponent_; 	// this is only used for ExpFloats when the exponent is out of range for GMP.
+  
   #else
     ANumber* iNumber;
   #endif

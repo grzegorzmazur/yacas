@@ -84,7 +84,7 @@ ANumber::ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision)
 }
 
 /* ANumber: Constructor for an arbitrary precision number. */
-ANumber::ANumber(LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+ANumber::ANumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {
     SetPrecision(aPrecision);
     SetTo(aString,aBase);
@@ -148,7 +148,7 @@ LispInt WordDigits(LispInt aPrecision, LispInt aBase)
 }
 
 
-void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
+void ANumber::SetTo(const LispCharPtr aString,LispInt aBase)
 {
     SetNrItems(0);
     
@@ -158,7 +158,7 @@ void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
     iExp = 0;
     iTensExp = 0;
     
-    LispCharPtr endptr = aString;
+    const LispCharPtr endptr = aString;
 
     // Parse minus sign
     if (*endptr == '-')
@@ -189,7 +189,7 @@ void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
 //printf("\tendint = %d, endfloat = %d, endnumber = %d\n",endIntIndex,endFloatIndex,endNumberIndex);        
         
     // Go to least significant digit first
-    LispCharPtr ptr = aString + endIntIndex-1; 
+    const LispCharPtr ptr = aString + endIntIndex-1; 
     
     // Now parse the integer part of the number.
     ANumber factor2(iPrecision);
@@ -212,7 +212,7 @@ void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
     //Parse the fraction
     if (endFloatIndex > endIntIndex)
     {
-        LispString fraction(&aString[endIntIndex+1]);
+        LispString fraction((LispCharPtr)&aString[endIntIndex+1]);
         LispInt i;
 
         // Map to a char base number
@@ -275,7 +275,7 @@ void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
     // Parse the E<num> part at the end
     if (endNumberIndex > endFloatIndex+1)
     {
-        iTensExp = PlatAsciiToInt(&aString[endFloatIndex+1]);
+        iTensExp = PlatAsciiToInt((LispCharPtr)&aString[endFloatIndex+1]);
 //printf("%s mapped to %d\n",&aString[endFloatIndex+1],iTensExp);
     }
 //PrintNumber("      ",*this);
