@@ -5,6 +5,7 @@
 #include <FL/Fl_Tabs.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Return_Button.H>
+#include <FL/Fl_Tile.H>
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -30,6 +31,11 @@ public:
         strcpy(oldfile,"");
     };
 
+void my_item_select(void *l) {item_select(l,1);};
+
+void* my_selection() {return selection();}
+void* my_item_first() {return item_first();}
+void* my_item_next(void*i) {return item_next(i);}
 void *my_find_item(int my) {return find_item(my);};
 int my_lineno(void*l) const {return lineno(l);};
 void my_remove(int line);
@@ -46,8 +52,8 @@ Fl_My_Browser *tracer;
 Fl_My_Browser *fileViewer;
 Fl_My_Browser *profiler;
 Fl_Group* input;
-
-
+int selected = 1;
+void* lineptr = NULL;
 void Fl_My_Browser::collapse(int line)
 {
     LineInfo *lineinfo =  (LineInfo *)data(line);
@@ -141,26 +147,21 @@ void Fl_My_Browser::switchToFile(char* newfile,int line)
     fileViewer->make_visible(line);
 }
 
-void b_cb(Fl_Widget* o, void* )
+void CallSelect()
 {
-    Fl_My_Browser* oo = (Fl_My_Browser*)o;
-    int my = Fl::event_y();
-    void* l = oo->my_find_item(my);
-    int line = oo->my_lineno(l);
-    LineInfo *lineinfo =  (LineInfo *)oo->data(line);
+    Fl_My_Browser* oo = tracer;
+    LineInfo *lineinfo =  (LineInfo *)oo->data(selected);
 
     if (lineinfo != NULL)
     {
         if (lineinfo->expanded)
         {
-            oo->collapse(line);
+            oo->collapse(selected);
         }
         else
         {
             if (lineinfo->file)
             {
-//                printf("file %s, line %d\n",
-//                       lineinfo->file,lineinfo->line);
                 char buf[200];
                 sprintf(buf,"/usr/local/share/yacas/%s",lineinfo->file);
                 FILE*f = fopen(buf,"r");
@@ -171,9 +172,47 @@ void b_cb(Fl_Widget* o, void* )
                 }
 
             }
-            lineinfo->expanded = oo->load_in(line+1, lineinfo->toExpand);
+            lineinfo->expanded = oo->load_in(selected+1, lineinfo->toExpand);
         }
     }
+}
+
+void b_cb(Fl_Widget* o, void* )
+{
+    int my = Fl::event_y();
+    lineptr = tracer->my_find_item(my);
+    selected = tracer->my_lineno(lineptr);
+    CallSelect();
+}
+
+void stepcb(Fl_Widget *, void *)
+{
+    if (lineptr == NULL)
+    {
+        lineptr = tracer->my_item_first();
+        selected = 1;
+    }
+    LineInfo *lineinfo =  (LineInfo *)tracer->data(selected);
+    if (lineinfo != NULL)
+    {
+        if (!lineinfo->expanded)
+        {
+            lineinfo->expanded = tracer->load_in(selected+1, lineinfo->toExpand);
+        }
+    }
+    lineinfo = NULL;
+    while (lineinfo == NULL && lineptr != NULL)
+    {
+        selected++;
+        lineptr = tracer->my_item_next(lineptr);
+        lineinfo =  (LineInfo *)tracer->data(selected);
+    }
+    if (lineptr != NULL)
+    {
+        tracer->select(selected,1);
+        CallSelect();
+    }
+
 }
 
 int get_string(char*buffer) {
@@ -199,6 +238,7 @@ int get_string(char*buffer) {
     }
   }
 }
+
 
 
 int main(int argc, char **argv)
@@ -227,15 +267,31 @@ int main(int argc, char **argv)
   Fl_Window window(400,400,"Proteus Debugger");
   window.box(FL_NO_BOX); // because it is filled with browser
 
+  selected = 1;
+  lineptr = NULL;
+  
   mainTabs = new Fl_Tabs(0, 0, 400, 400);
   window.resizable(mainTabs);
   {
       Fl_Group *o = input = new Fl_Group(10, 20, 390, 390, "Trace");
-      tracer = new Fl_My_Browser(0,20,200,378,0);
+//      tracer = new Fl_My_Browser(0,20,200,378,0);
+
+      Fl_Tile *t = new Fl_Tile(10,20,390,390);
+
+      tracer = new Fl_My_Browser(0,210,400,160,0);
       tracer->callback(b_cb);
       tracer->load_in(1,0);
       tracer->position(0);
-      fileViewer = new Fl_My_Browser(200,20,200,378,0);
+      tracer->align(FL_ALIGN_CLIP);
+//      fileViewer = new Fl_My_Browser(200,20,200,378,0);
+      fileViewer = new Fl_My_Browser(0,20,400,190,0);
+      fileViewer->align(FL_ALIGN_CLIP);
+      t->end();
+
+      Fl_Button *b = new Fl_Button(20, 375, 80, 20, "Step");
+      b->callback(stepcb,0);
+
+      
       o->end();
       Fl_Group::current()->resizable(o);
   }
