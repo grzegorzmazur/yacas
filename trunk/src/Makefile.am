@@ -1,10 +1,10 @@
-AM_CXXFLAGS = -DSCRIPT_DIR=\"$(scriptdir)\" $(NUMBERS_CFLAGS)
-AM_CPPFLAGS = $(NUMBERS_CFLAGS)
+## Makefile.am -- Process this file with automake to produce Makefile.in
+
 INCLUDES = @INCLTDL@ -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS =  yacas
 noinst_PROGRAMS = mkfastprimes testnum 
-noinst_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
+lib_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
 EXTRA_LTLIBRARIES = libgmpnumbers.la libyacasnumbers.la 
 
 noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
@@ -18,29 +18,18 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
         lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h \
         archiver.h elfdll.h cyacas.h GPL_stuff.h
+
 yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
-yacas_LDFLAGS = -export-dynamic
 yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c version.h GPL_stuff.h
-
-# .PHONY: version.h
 
 # order of libraries is important, @NUMBERS_LIB@ before libyacas.la and that is before libyacasplatform.la
 
-#
-# some one who understands autoconf/automake: how do I detect if a platform
-# supports elf binaries?
-#
-
-#yacas_LDFLAGS = $(LIBS)
-
 testnum_SOURCES = testnum.cpp 
 testnum_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
-testnum_LDFLAGS = -export-dynamic
 testnum_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la
 
 mkfastprimes_SOURCES = mkfastprimes.cpp 
-
 
 libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \
@@ -52,20 +41,19 @@ libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
         lispplugin.cpp ltdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
         archiver.cpp
-libyacas_la_LDFLAGS = -export-dynamic
 
 libcyacas_la_SOURCES = cyacas.cpp
-libcyacas_la_LDFLAGS = -export-dynamic
 
 libyacasplatform_la_SOURCES = platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp 
-libyacasplatform_la_LDFLAGS = -export-dynamic
 libyacasplatform_la_DEPENDENCIES= fastprimes.c
 
+## The -rpath flag is not added automatically because lib*numbers is listed in EXTRA_LTLIBRARIES,
+## so automake does not know in what directory it is installed.
 libyacasnumbers_la_SOURCES = anumber.cpp yacasnumbers.cpp numbers.cpp
-libyacasnumbers_la_LDFLAGS = -export-dynamic
+libyacasnumbers_la_LDFLAGS = -rpath $(libdir)
 libgmpnumbers_la_SOURCES = gmpnumbers.cpp numbers.cpp
-libgmpnumbers_la_LDFLAGS = -export-dynamic
+libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 
 
 EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp \
@@ -120,14 +108,10 @@ fastprimes.c: mkfastprimes
  
 yacas_include = $(datadir)/yacas/include
 
-yacas_lib     = $(datadir)/yacas/lib
-
 clean-compile:
 	test -z "libyacasplatform.a" || rm -rf libyacasplatform.a
 	test -z "libyacasdebug.a" || rm -rf libyacasdebug.a
 	test -z "yacasdebug" || rm -rf yacasdebug
-
-## Do we want to install headers or not?
 
 install-data-local: yacas.h
 	$(mkinstalldirs) $(yacas_include)/
@@ -149,10 +133,6 @@ install-data-local: yacas.h
 	-for file in $(srcdir)/plat/linux32/*.inl; do \
 	basefile=`basename $$file`; \
 	$(INSTALL_DATA) $$file $(yacas_include)/plat/linux32/$$basefile; \
-	done
-	-for file in $(srcdir)/*.a; do \
-	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $$file $(yacas_lib)/$$basefile; \
 	done
 
 version.h: ../config.h
