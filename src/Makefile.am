@@ -72,7 +72,7 @@ libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 
 # The libmath.cpp source file is generated as follows
 
-libmath.cpp: $(top_srcdir)/scripts/base.rep/math.ys yacas$(EXEEXT)
+$(srcdir)/libmath.cpp: $(top_srcdir)/scripts/base.rep/math.ys yacas$(EXEEXT)
 	(cd ../scripts && make packages.ys corefunctions.ys)
 	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
 	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
@@ -141,7 +141,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 
 
 # list some extra generated files
-CLEANFILES = fastprimes.c core_yacasmain.h libmath.cpp 
+CLEANFILES = fastprimes.c core_yacasmain.h $(srcdir)/libmath.cpp 
 
 $(srcdir)/platmath.cpp: fastprimes.c
 
