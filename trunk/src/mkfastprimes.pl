@@ -8,9 +8,9 @@ $verbose = 1;	# whether to print progress bar
 
 $steps_done = 0;	# progress bar
 
-# $chunk_size is the number of bits that we can access from perl at once
-$chunk_size = 32;
-# we are using a list of long integers for storage
+# $chunk_size is the number of bits that we store at once
+$chunk_size = 8;
+# we are using a list of integers for storage
 @table = ();
 for(0 .. (int($table_limit/$chunk_size/2)))
 {
@@ -120,39 +120,14 @@ sub print_table
  * and a function to test whether a small number is prime by a table lookup.
  */
 const unsigned long primes_table_limit = $table_limit;
-const unsigned long primes_table[] = {
+const unsigned char primes_table[] = {
 EOF1
 	for (@table)
 	{
-		printf "0x%08x,\n", $_;
+		printf "0x%02x,\n", $_;#, int($chunk_size/4);
 	}
 	print << "EOF2";
 };
-
-/* subroutine returns 1 if the number is in the table of prime numbers up to $table_limit */
-unsigned primes_table_check(unsigned p)
-{
-	unsigned index;
-	unsigned field;
-	if (p==2) return 1;
-	if (p<2 || p>primes_table_limit || (p & 1) == 0) return 0;
-	p >>= 1;
-	index = p >> 5;
-	field = p & 31;
-	return ((primes_table[index] & (1 << field))==0) ? 0 : 1;
-}
-/* Testing: run 'mkfastprimes.pl > fastprimes.c' and then compile the following file: */
-/*
-	#include <stdio.h>
-	#include "fastprimes.c"
-	int main()
-	{
-		unsigned i;
-		printf("Primes up to %d:\n", primes_table_limit);
-		for (i=0; i<=primes_table_limit; i++)
-			if (primes_table_check(i)) printf("%d\n", i); 
-	}
-*/
 
 EOF2
 	

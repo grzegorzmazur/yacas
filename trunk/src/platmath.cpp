@@ -105,6 +105,20 @@ LispStringPtr PlatAbs(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPreci
 
 #include "fastprimes.c"
 
+/* subroutine returns 1 if p is in the table of prime numbers up to primes_table_limit */
+unsigned primes_table_check(unsigned p)
+{
+	unsigned index;
+	unsigned field;
+	if (p==2) return 1;
+	if (p<2 || p>primes_table_limit || (p & 1) == 0) return 0;
+	p >>= 1;
+	// get index in 8-bit chunks
+	index = p >> 3;
+	field = p & 7;
+	return ((primes_table[index] & (1 << field))==0) ? 0 : 1;
+}
+
 LispStringPtr PlatIsPrime(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
 {
     return Double(primes_table_check(unsigned(GetDouble(int1))),aHashTable);
