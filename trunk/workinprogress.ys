@@ -280,7 +280,8 @@ void ExpressionCacher::CacheFirst()
 
 void ExpressionCacher::CachePrevious()
 {
-    iLastCached--;
+    if (iLastCached>=0)
+        iLastCached--;
 }
 
 void ExpressionCacher::CacheNext()

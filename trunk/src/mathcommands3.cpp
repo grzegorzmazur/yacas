@@ -827,10 +827,10 @@ void LispFastAssoc(LispEnvironment& aEnvironment, LispPtr& aResult,
     aResult.Set(ATOML("Empty"));
 }
 
-
+/*TODO remove!
 void LispSetCRemarkReceiver(LispEnvironment& aEnvironment, LispPtr& aResult,
                             LispPtr& aArguments)
 {
 }
-
+*/
 
