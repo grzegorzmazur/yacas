@@ -19,7 +19,8 @@ Here is a summary of options:
 *	{--rootdir} <i>directory</i>{/} (specify library directory)
 *	{--server} <i>port</i> (start {Yacas} as a network server on given port)
 *	{--verbose-debug} (turn on showing some additional debugging information on screen)
-Options can be combined, for example,
+
+Options can be combined, for example
 	yacas -pc filename
 will read and execute the file {filename} non-interactively without using terminal capabilities and without printing prompts.
 
@@ -67,17 +68,19 @@ uses {yacasinit.ys} and adds some extra custom code.
 	yacas --read-eval-print [expression]
 Call {expression} for the read-eval-print loop. The default 
 read-eval-print loop is implemented in the initialization 
-script {yacasinit.ys}. There is a fallback read-eval-print
-loop in the kernel, which can be invoked by passing an empty
-string with this command line option, as {--read-eval-print ""}.
+script {yacasinit.ys} as the function {REP}.
+The default behavior is therefore equivalent to {--read-eval-print} {REP}.
+
+There is also a fallback read-eval-print
+loop in the kernel; it can be invoked by passing an empty
+string to this command line option, as {--read-eval-print ""}.
 
 An alternative way to replace the default read-eval-print
-loop is to write a custom initialization script that re-implements
-the read-eval-print loop that us used by default: the function 
-{REP()} which is defined in {yacasinit.ys}.
+loop is to write a custom initialization script that implements
+the read-eval-print loop function {REP()} instead of {yacasinit.ys}.
 
-Care has to be taken with this option, as when the read-eval-print
-expression doesn't function correctly Yacas cannot be quit.
+Care has to be taken with this option because a Yacas session may
+become unusable if the read-eval-print expression doesn't function correctly.
 
 	yacas --server <port>
 On some platforms server mode can be enabled at build time by passing the

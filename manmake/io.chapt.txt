@@ -573,7 +573,7 @@ might follow:
 *SEE Read, LispRead, LispReadListed
 
 
-*CMD LispRead, ListReadListed --- read expressions in the LISP syntax
+*CMD LispRead, ListReadListed --- read expressions in LISP syntax
 *CORE
 *CALL
 	LispRead()
@@ -609,20 +609,27 @@ first object in a list can be itself a list (this is never the case for Yacas ex
 
 *SEE FromFile, FromString, Read, ReadToken, FullForm
 
-*CMD ReadToken --- read an token from current input
+*CMD ReadToken --- read a token from current input
 *CORE
 *CALL
 	ReadToken()
 
 *DESC
 
-Read a token from the current input, and return it unevaluated. When
+Read a token from the current input, and return it unevaluated.
+The returned object is a Yacas atom (not a string).
+When
 the end of an input file is encountered, the token atom {EndOfFile} is returned.
 
 A token is for computer languages what a word is for human languages:
 it is the smallest unit in which a command can be divided, so that the
 semantics (that is the meaning) of the command is in some sense a
 combination of the semantics of the tokens. Hence {a := foo} consists of three tokens, namely {a}, {:=}, and {foo}.
+
+The parsing of the string depends on the syntax of the language.
+The part of the kernel that does the parsing is the "tokenizer".
+Yacas can parse its own syntax (the default tokenizer) or it can be instructed to parse XML or C++ syntax using the directives {DefaultTokenizer}, {XmlTokenizer}, or {CTokenizer}.
+Setting a tokenizer is a global action that affects all {ReadToken} calls.
 
 *E.G. notest
 
@@ -637,7 +644,16 @@ combination of the semantics of the tokens. Hence {a := foo} consists of three t
 	)
 	Out> True;
 
-*SEE FromFile, FromString, Read, LispRead
+We can read some junk too:
+	In> FromString("-$3")ReadToken();
+	Out> -$;
+The result is an atom with the string representation {-$}.
+Yacas assumes that {-$} is an operator symbol yet to be defined.
+The "{3}" will be in the next token.
+(The results will be different if a non-default tokenizer is selected.)
+
+
+*SEE FromFile, FromString, Read, LispRead, DefaultTokenizer
 
 *CMD Load --- evaluate all expressions in a file
 *CORE
@@ -1047,69 +1063,98 @@ Same limitations as {Plot2D}.
 
 *SEE V, NFunction, MakeFunctionPlugin, Plot2D
 
-
-
-*CMD DefaultTokenizer --- switch to tokenizer used for parsing regular Yacas syntax
-*CMD XmlTokenizer --- switch to tokenizer used for parsing xml-like syntax
-*CMD CTokenizer --- switch to tokenizer used for parsing C/C++ like syntax
+*CMD XmlExplodeTag --- convert XML strings to tag objects
 *CORE
 *CALL
-
-	DefaultTokenizer()
-	XmlTokenizer()
 	XmlExplodeTag(tagstring)
-	CTokenizer()
-
 *PARMS
 
 {tagstring} -- string containing one xml token
 
 *DESC
 
+{XmlExplodeTag} parses an XML token and returns a Yacas expression.
+
+The following subset of XML syntax is supported currently:
+
+*	{<TAG [options]>} -- an opening tag
+*	{</TAG [options]>} -- a closing tag
+*	{<TAG [options] />} -- an open/close tag
+*	plain (non-tag) text
+
+The tag options take the form {paramname="value"}.
+
+If given an XML tag, {XmlExplodeTag} returns a structure of the form {XmlTag(name,params,type)}.
+In the returned object,
+{name} is the (capitalized) tag name, {params} is an assoc list with
+the options (key fields capitalized), and type can be either "Open", "Close" or "OpenClose".
+
+If given a plain text string, the same string is returned.
+
+
+*E.G.
+	In> XmlExplodeTag("some plain text")
+	Out> "some plain text";
+	In> XmlExplodeTag("<a name=\"blah blah\"
+	  align=\"left\">")
+	Out> XmlTag("A",{{"ALIGN","left"},
+	  {"NAME","blah blah"}},"Open");
+	In> XmlExplodeTag("</p>")
+	Out> XmlTag("P",{},"Close");
+
+*SEE XmlTokenizer
+
+*CMD DefaultTokenizer, XmlTokenizer, CTokenizer --- select a syntax for parsing the input
+*CORE
+*CALL
+	DefaultTokenizer()
+	XmlTokenizer()
+	CTokenizer()
+
+*DESC
+
+A "tokenizer" is an internal routine in the kernel that parses the input into Yacas expressions.
+This affects all input typed in by a user at the prompt and also the input redirected from files or strings using {FromFile} and {FromString} and read using {Read} or {ReadToken}.
+
 The Yacas environment currently supports some experimental tokenizers for 
 various syntaxes. {DefaultTokenizer} switches to the tokenizer used for
-default Yacas syntax. Note that this is a global side effect. One needs
-to switch back to the default tokenizer when finished reading. Some
-special care has to be taken when errors are raised. These have to be
+default Yacas syntax. {XmlTokenizer} switches to an XML syntax and {CTokenizer} to a C syntax.
+Note that setting the tokenizer is a global side effect.
+One typically needs
+to switch back to the default tokenizer when finished reading the special syntax.
+
+Care needs to be taken when kernel errors are raised during a non-default tokenizer operation (as with any global change in the environment).
+Errors need to be
 caught with the {TrapError} function. The error handler code should re-instate
-the default tokenizer.
+the default tokenizer,
+or else the user will be unable to continue the session
+(everything a user types will be parsed using a non-default tokenizer).
 
-The following subset of xml syntax (tokens) is supported currently:
+When reading XML syntax, the supported formats are the same as those of {XmlExplodeTag}.
+The parser does not validate anything in the XML input.
+After an XML token has been read in, it can be converted into an
+Yacas expression with {XmlExplodeTag}.
+Note that when reading XML, any plain text between tags is returned as one token.
+Any malformed XML will be treated as plain text.
 
-	<TAG [options]> - an opening tag
-	</TAG [options]> - a closing tag
-	<TAG [options] /> - an open/close tag
-
-The rest is returned as simple text in one token.
-
-The options take on the form {paramname="value"}.
-
-After an xml token has been read in, it can be converted into an
-expression Yacas can deal with (through the pattern-matching 
-transformation rule facilities). One can use XmlExplodeTag for this.
-
-XmlExplodeTag either returns a string, or a structure {XmlTag(name,params,type)}.
-{name} is the (capitalized) tag name, {params} contains an assoc list with
-the options (key fields capitalized), and type can be either "Open", "Close" or "OpenClose".
 
 {CTokenizer} is an implementation of a C/C++ tokenizer. It is still work in progress.
 
-*EG
+*EG notest
 
-	In> XmlExplodeTag("<sometag>")
-	Out> XmlTag("SOMETAG",{},"Open");
-	In> XmlExplodeTag("</sometag>")
-	Out> XmlTag("SOMETAG",{},"Close");
-	In> XmlExplodeTag("</sometag paramone=\"value1\" paramtwo=\"value2\"/>")
-	Out> XmlTag("SOMETAG",{{"PARAMTWO","value2"},{"PARAMONE","value1"}},"OpenClose");
+	In> [XmlTokenizer(); q:=ReadToken(); DefaultTokenizer();q;]
+	<a>Out> <a>;
 
-*SEE OMParse, TrapError
+Note that:
+*	1. after switching to {XmlTokenizer} the {In>} prompt disappeared; the user typed {<a>} and the {Out>} prompt with the resulting expression appeared.
+*	2. The resulting expression is an atom with the string representation {<a>};
+it is <i>not</i> a string.
+
+*SEE OMParse, TrapError, XmlExplodeTag, ReadToken, FromFile, FromString
 
 
 
-*CMD OMForm --- Write OpenMath representation of expression to standard output
-*CMD OMParse --- Read OpenMath representation expression from standard input and return Yacas expression
-
+*CMD OMForm, OMParse --- convert expressions to and from OpenMath
 *STD
 *CALL
 	OMForm(expression)
@@ -1126,8 +1171,7 @@ to standard output. {OMParse} reads a OpenMath expression from standard
 input and returns a normal Yacas expression that matches the input OpenMath
 expression.
 
-
-*EG
+*EG notest
 
 	In> str:=ToString()OMForm(2+Sin(a*3))
 	Out> "<OMOBJ>
