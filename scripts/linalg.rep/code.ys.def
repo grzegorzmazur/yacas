@@ -26,4 +26,7 @@ RandomIntegerVector
 JacobianMatrix
 HessianMatrix
 WronskianMatrix
+HilbertMatrix
+HilbertInverseMatrix
+HankelMatrix
 }

@@ -364,5 +364,11 @@ HessianMatrix(f,v):=GenMatrix({{i,j}, Deriv(v[i]) Deriv(v[j]) f},Length(v),Lengt
 WronskianMatrix(f,v):=GenMatrix({{i,j}, Deriv(v,i-1) f[j]}, Length(f), Length(f) );
 
 // notoriously hard to manipulate numerically
-// has analytical expression for H^-1
 HilbertMatrix(n):=GenMatrix({{i,j}, 1/(i+j-1)}, n,n );
+HilbertMatrix(m,n):=GenMatrix({{i,j}, 1/(i+j-1)}, m,n );
+HilbertInverseMatrix(n):=GenMatrix({{i,j}, 
+	(-1)^(i+j)*(i+j-1)*Bin(n+i-1,n-j)*Bin(n+j-1,n-i)*Bin(i+j-2,i-1)^2},n,n);
+
+HankelMatrix(n):=GenMatrix({{i,j}, If(i+j-1>n,0,i+j-1) }, n,n );
+HankelMatrix(m,n):=GenMatrix({{i,j}, If(i+j-1>n,0,i+j-1)}, m,n );
+
