@@ -47,4 +47,5 @@ Diagonal
 Sparsity
 MatrixSolve
 Cholesky
+LU
 }
