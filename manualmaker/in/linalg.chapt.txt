@@ -275,6 +275,30 @@ completely filled with zeroes.
 
 *SEE ZeroVector, Identity
 
+*CMD Diagonal --- extract the diagonal from a matrix
+*STD
+*CALL
+	Diagonal(A)
+
+*PARMS
+
+{A} -- matrix
+
+*DESC
+
+This command returns a vector of the diagonal components
+of the matrix {A}.
+
+
+*E.G.
+
+	In> Diagonal(5*Identity(4))
+	Out> {5,5,5,5};
+	In> Diagonal(HilbertMatrix(3))
+	Out> {1,1/3,1/5};
+
+*SEE DiagonalMatrix, IsDiagonal
+
 *CMD DiagonalMatrix --- construct a diagonal matrix
 *STD
 *CALL
