@@ -56,7 +56,9 @@ Infix("/@",600);
 Infix("..",600);
 
 Bodied("Taylor",60000);
+Bodied("Taylor1",60000);
 Bodied("Taylor2",60000);
+Bodied("Taylor3",60000);
 Bodied("InverseTaylor",60000);
 
 Infix("<--",10000);

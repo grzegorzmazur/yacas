@@ -77,7 +77,7 @@ SCRIPTFILES2 = \
 	stdfuncs.rep/numerical.ys.def stdfuncs.rep/nummethods.ys stdfuncs.rep/nummethods.ys.def 	    \
 	stubs.rep/code.ys stubs.rep/code.ys.def stubs.rep/om.ys stdfuncs.rep/elemfuncs.ys                   \
 	substitute.rep/code.ys substitute.rep/code.ys.def stdfuncs.rep/elemfuncs.ys.def 		    \
-	sums.rep/code.ys sums.rep/code.ys.def sums.rep/taylor.ys sums.rep/taylor.ys.def                    \
+	sums.rep/code.ys sums.rep/code.ys.def sums.rep/taylor.ys sums.rep/taylor.ys.def   sums.rep/taylor3.ys sums.rep/taylor3.ys.def     \
 	tensor.rep/code.ys tensor.rep/code.ys.def 							    \
 	testers.rep/code.ys testers.rep/code.ys.def 							    \
 	texform.rep/code.ys texform.rep/code.ys.def 							    \
