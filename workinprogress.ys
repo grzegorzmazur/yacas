@@ -1,0 +1,844 @@
+
+
+
+LogicTrivials :=
+{
+  (_x  Or  _x)                  <- x,
+  (_x  And  _x)                 <- x,
+  (_x  Or Not (_x))             <- True,
+  (Not (_x)  Or _x)             <- True,
+  (_x  And Not (_x))            <- False,
+  (Not (_x)  And _x)            <- False
+};
+
+
+LogicEqu :=
+{
+  (((_x) == (_y))   Or  ((_x) !== (_y)))   <- True,
+  (((_x) !== (_y))  Or  ((_x) == (_y)))    <- True,
+  (((_x) == (_y))   And ((_x) !== (_y)))   <- False,
+  (((_x) !== (_y))  And ((_x) == (_y)))    <- False,
+
+  (((_x) >= (_y))   And ((_x) < (_y)))     <- False,
+  (((_x) < (_y))    And ((_x) >= (_y)))    <- False,
+  (((_x) >= (_y))   Or  ((_x) < (_y)))     <- True,
+  (((_x) < (_y))    Or  ((_x) >= (_y)))    <- True,
+  ( Not ( Not  (_x)))           <- (x),                           /* eliminate double negation */
+  ((_x)=>(_y))                  <- ((Not x)  Or  y)               /* eliminate implication */
+};
+
+LogicDist :=
+{
+  ( Not ((_x)  And  (_y)))      <- ((Not x) Or (Not y)),                     /* De Morgan's law */
+  ( Not ((_x)  Or  (_y)))       <- (Not x) And (Not y),         /* De Morgan's law */
+  (((_x)  And  (_y))  Or  (_z)) <- (x Or z) And (y Or z),       /* Distribution */
+  ((_x)  Or  ((_y)  And  (_z))) <- (x Or y) And (x Or z)        /* Distribution */
+};
+
+LogicInEq :=
+{
+  ( (_x) < (_y) )              <- Not Simplify(x >=  y),
+  ( (_x) > (_y) )              <- Simplify(x >   y),
+  ( (_x) >= (_y) )             <- Simplify(x >=  y),
+  ( (_x) <= (_y) )             <- Not Simplify(x >  y),
+  ( (_x) == (_y) )             <- Simplify(x ==  y),
+  ( (_x) !== (_y) )            <- Not Simplify(x == y),
+  ( Not((_x) <  (_y)) )        <- Simplify( x >= y ),
+  ( Not((_x) <= (_y)) )        <- Simplify( x > y ),
+  ( Not((_x) !== (_y)) )       <- Simplify( x == y )
+};
+
+LogicPatAll := Concat(LogicTrivials, LogicEqu, LogicDist, LogicInEq);
+AltLogicSimplify(f) := (f /:: LogicPatAll);
+
+
+EndOfFile;
+
+
+
+10 # De(_x + _y) <-- Max(De(x),De(y));
+10 # De(_x - _y) <-- Max(De(x),De(y));
+10 # De(_x * _y) <-- Max(De(x),De(y));
+10 # De(_x / _y) <--     De(x);
+10 # De(- _x )   <--     De(x);
+10 # De(y(_n))   <--     n;
+20 # De(_x)      <--     0;
+
+pat1 := {y <- y(0), y' <- y(1), y'' <- y(2)};
+pat2 := {y(_n) <- A(m+n)*MFac(n)};
+pat3 := {MFac(0) <- 1, MFac(_n) <- (m+n)*MFac(n-1)};
+
+Pro(f,deg,cons) :=
+[
+  Local(norm,d,in,li,pt);
+  norm := (f /: pat1);
+  d := De(norm);
+  in := (norm /: pat2);
+  in := (in /:: pat3);
+  in := Apply("SuchThat",{in,A(m+d)});
+  in := Subst(m,m-d)in;
+  li := (MapSingle("A",0 .. d-1) /: cons);
+  pt := Concat(cons,{{A(_m),m>=d,in}});
+  While(Length(li)<=deg)
+  [
+    Local(te);
+    te:=(A(Length(li))/: pt /: pt);
+    pt := {A(Length(li)),te}:pt;
+    DestructiveAppend(li,te);
+  ];
+  Sum(li*x^(0 .. deg));
+];
+
+
+EndOfFile;
+
+
+
+/*
+Infix("|->",100);
+RuleBase("|->",{left,right});
+(_var |-> _exp) <-- {{var},exp};
+HoldArg("|->",right);
+EndOfFile;
+*/
+
+10 # MyLog(x_IsPositiveNumber)_(x>2) <--
+[
+  Local(result,n);
+  result := 0;
+  n      := 0;
+  While (x>1)
+  [
+    n++;
+    x := x/1.5;
+  ];
+  MyLog(x) + n*MyLog(1.5);
+];
+20 # MyLog(x_IsPositiveNumber)_(x<0.1) <--
+[
+  Local(n);
+  n:=0;
+
+  While (x<0.1)
+  [
+    n++;
+    x := x*1.5;
+  ];
+  MyLog(x) - n*MyLog(1.5);
+];
+
+30 # MyLog(x_IsPositiveNumber) <--
+[
+  Local(n,result,term,xminusone,toTest);
+
+  result := 0;
+  term   := -1;
+  n      := 1;
+  xminusone := -(x-1);
+  toTest := Abs(N(term/n));
+  While (IsNotZero(toTest))
+  [
+    term   := term * xminusone;
+    result := result +  term/n;
+    n++;
+    toTest := Abs(N(term/n));
+  ];
+  result;
+];
+
+EndOfFile;
+
+
+Use("odesolver.ys");
+Use("univar.ys");
+
+OdeTaylorSolve(e,nr,init) :=
+[
+  Local(r,first,ar,len);
+  e:=OdeNormalForm(e);
+  e:=OdeFlatTerm(OdeCoefList(e));
+
+  first := e[1];
+  ar := e[2];
+  DropEndZeroes(ar);
+  len := Length(ar);
+
+  r:=FlatCopy(init);
+  While(Length(r)<len-1+first) DestructiveAppend(r,UniqueConstant());
+  r:= Concat(r,FillList(0,nr-(len-1+first)));
+
+  For(n:=first+len,n<=nr,n++)
+  [
+    Local(fact);
+    fact := 1/(ar[len]);
+    r[n] := 0;
+    For(i:=1,i<len,i++)
+    [
+      fact := fact/(n-i);
+      r[n] := r[n] - ar[len-i]*r[n-i]*fact;
+    ];
+  ];
+  Sum(r*x^(0 .. (nr-1)));
+];
+
+EndOfFile;
+
+
+/* Sparse multinomial representation */
+RuleBase("MultiNomial",{vars,terms});
+
+NormalForm(MultiNomial(vars_IsList,terms_IsList)) <--
+[
+  Local(result);
+  result:=0;
+  ForEach(t,terms)
+  [
+    result := result + t[2] * Factorize(vars^(t[1]));
+  ];
+  result;
+];
+
+MakeMultiNomial(_expr) <-- MakeMultiNomial(ExpandBrackets(expr),VarList(expr));
+
+LocalSymbols(a,vars)  [
+  10 #  MakeMultiNomial(a_IsConstant,vars_IsList) <--
+        MultiNomial(vars,{{FillList(0,Length(vars)),a}});
+];
+
+LocalSymbols(a,vars,pow)  [
+  MultiSingleFactor(_vars,_a,_pow) <--
+    [
+      Local(term);
+      term:={FillList(0,Length(vars)),1};
+      term[1][Find(vars,a)] := pow;
+      MultiNomial(vars,{term});
+    ];
+];
+
+LocalSymbols(a,vars)  [
+  20 #  MakeMultiNomial(a_IsAtom,vars_IsList) <-- MultiSingleFactor(vars,a,1);
+];
+
+LocalSymbols(x,y,vars)  [
+  30 #  MakeMultiNomial(_x + _y,vars_IsList) <--
+        MultiNomialAdd(MakeMultiNomial(x,vars),MakeMultiNomial(y,vars));
+];
+LocalSymbols(x,y,vars)  [
+  30 #  MakeMultiNomial(_x * _y,vars_IsList) <--
+        MultiNomialMultiply(MakeMultiNomial(x,vars),MakeMultiNomial(y,vars));
+];
+
+LocalSymbols(x,vars) [
+  30 #  MakeMultiNomial(- _x,vars_IsList) <--
+        MultiNomialNegate(MakeMultiNomial(x,vars));
+];
+LocalSymbols(x,y,vars) [
+  30 #  MakeMultiNomial(_x - _y,vars_IsList) <--
+        MultiNomialAdd(MakeMultiNomial(x,vars),MultiNomialNegate(MakeMultiNomial(y,vars)));
+];
+
+LocalSymbols(x,n,vars)  [
+  30 #  MakeMultiNomial(x_IsAtom ^ n_IsInteger,vars_IsList) <--
+	MultiSingleFactor(vars,x,n);
+];
+
+
+MultiNomialAdd(MultiNomial(_vars,_terms1),MultiNomial(_vars,_terms2)) <--
+[
+  ForEach(t,terms2) MultiAddTerm(terms1,t);
+  MultiNomial(vars,terms1);
+];
+
+MultiTermLess({_deg1,_fact1},{_deg2,_fact2}) <--
+  [
+    Local(deg);
+    deg := deg1-deg2;
+    While(deg != {} And Head(deg) = 0) [ deg := Tail(deg);];
+    if (deg = {})
+    [
+      if (fact1-fact2 < 0) True else False;
+    ]
+    else
+    [
+      if (deg[1] < 0) True else False;
+    ];
+  ];
+10 # MultiAddTerm(_terms,_t)_(Assoc(t[1],terms) = Empty) <--
+     [
+       Local(i,nr);
+       nr:=Length(terms);
+       i:=1;
+       While (i<=nr And MultiTermLess(t,terms[i])) i++;
+       DestructiveInsert(terms,i,t);
+       /* DestructiveAppend(terms,t); */
+     ];
+20 # MultiAddTerm(_terms,_t) <--
+     [
+       Local(as);
+       as := Assoc(t[1],terms);
+       as[2] := as[2] + t[2];
+     ];
+
+
+MultiNomialMultiply(MultiNomial(_vars,_terms1),MultiNomial(_vars,_terms2)) <--
+[
+  Local(result,t);
+  result := {};
+  ForEach(t1,terms1)
+    ForEach(t2,terms2)
+    [
+      t := t1;
+      t[1] := t[1] + t2[1];
+      t[2] := t[2] * t2[2];
+      MultiAddTerm(result,t);
+    ];
+  MultiNomial(vars,result);
+];
+
+
+MultiNomialNegate(MultiNomial(_vars,_terms)) <-- ForEach(t,terms) [t[2] := -t[2]; ];
+
+
+
+10 # MultiDegree(MultiNomial(_vars,{})) <-- FillList(-Infinity,Length(vars));
+20 # MultiDegree(MultiNomial(_vars,_terms)) <-- Head(Head(terms));
+
+10 # MultiLeadingCoef(MultiNomial(_vars,{})) <-- 0;
+20 # MultiLeadingCoef(MultiNomial(_vars,_terms)) <-- (Head(terms)[2]);
+
+10 # MultiLeadingMono(MultiNomial(_vars,{})) <-- 0;
+20 # MultiLeadingMono(MultiNomial(_vars,_terms)) <-- Factorize(vars^(Head(Head(terms))));
+
+20 # MultiLeadingTerm(_m) <-- MultiLeadingCoef(m) * MultiLeadingMono(m);
+
+/*
+MultiDivide(_f,glist_IsList) <--
+[
+  Local(i,v,g,nr,q,r,p);
+  v:=VarList({f,glist});
+  f:=MakeMultiNomial(f,v);
+  nr := Length(glist);
+  g:=FillList(0,nr);
+  For(i:=1,i<=nr,i++)
+  [
+    g[i] := MakeMultiNomial(glist,v);
+  ];
+
+  q:=FillList(0,nr);
+  r:=0;
+  p:=f;
+  While (p != 0)
+  [
+    For(i:=1,i<=nr,i++)
+    [
+      if (MultiTermLess({MultiDegree(g[i])[1],1}, {MultiDegree(p)[1],1}))
+      [
+        Local(ff);
+        ff := ...;
+        q[i] := q[i] + ff;
+        p := p - ff*g[i];
+        nr:=i+2;
+      ];
+    ];
+    if (i = nr+1)
+    [
+      Local(ff);
+      ff := ...;
+      r := r + ff;
+      p := p - ff;
+    ];
+  ];
+  {q,r};
+];
+*/
+
+EndOfFile;
+
+
+LocalSymbols(f,x,n)
+  Nest(_f,_x,n_IsInteger) <--
+  [
+    While (n>0)
+    [
+      x := Apply(f,{x});
+      n--;
+    ];
+    x;
+  ];
+
+LocalSymbols(result,f,x,n)
+  NestList(_f,_x,_n) <--
+  [
+    Local(result);
+    result:={x};
+    While (n>0)
+    [
+      x := Apply(f,{x});
+      result := x:result;
+      n--;
+    ];
+    result;
+  ];
+
+EndOfFile;
+
+
+10 # PowerMod(x_IsPositiveInteger,n_IsPositiveInteger,m_IsPositiveInteger)_((n&1) = 1) <--
+     Mod(PowerMod(Mod(x*x,m),n>>1,m)*x,m);
+15 # PowerMod(x_IsPositiveInteger,n_IsPositiveInteger,m_IsPositiveInteger) <--
+     PowerMod(Mod(x*x,m),n>>1,m);
+20 # PowerMod(x_IsPositiveInteger,0,m_IsPositiveInteger) <-- 1;
+
+Verify(PowerMod(165850066684781158,157096713508806848,2101168546281212491),1753484498340281299);
+EndOfFile;
+
+PowerMod(x_IsPositiveInteger,n_IsPositiveInteger,m_IsPositiveInteger) <--
+[
+  Local(result);
+  result:=1;
+  x:=Mod(x,m);
+  While(n != 0)
+  [
+    if ((n&1) = 1) [ result := Mod(result*x,m); ];
+    x := Mod(x*x,m);
+    n := n>>1;
+  ];
+  result;
+];
+Verify(PowerMod(165850066684781158,157096713508806848,2101168546281212491),1753484498340281299);
+
+
+EndOfFile;
+
+
+10 # CharAt(string_IsString,index_IsInteger) <-- StringMid(index,1,string);
+20 # CharAt(string_IsString,index_IsList   ) <-- MapSingle("CharAt",index);
+     CharAt(index_IsInteger)                 <-- CharAt(string,index);
+UnFence("CharAt",1);
+[
+  pairs := {};
+  sqrs  := MapSingle("String",(N(Ceil(Sqrt(1000))) .. N(Floor(Sqrt(9999))))^2);
+  neuns := Select({{i},CharAt(i,1) = CharAt(i,4)},sqrs);
+  ForEach(vier,sqrs)
+    ForEach(neun,neuns)
+      if (CharAt(vier,3) = CharAt(neun,2))
+        if (Length(VarList(CharAt(vier:neun,1 .. 8))) = 6)
+          [ pairs := {vier,neun} : pairs; ];
+  sides := Transpose(pairs);
+  result:={};
+  ForEach(solution,pairs)
+    if (Count(sides[1],solution[1]) = 1 And Count(sides[2],solution[2]) = 1)
+      [ result := (solution:result); ];
+  Echo({result});
+];
+
+
+
+EndOfFile;
+
+
+/*
+  SubstituteHeld does a substitute without evaluating the intermediate
+  expressions. For this, Held(...) is used (Held(x) makes sure x is
+  never evaluated). SubstituteHeld has two arguments, body and change.
+  Body is the expression to be worked on, and change is a function
+  that can change a sub-expression e. It gets the argument in the
+  form of Held(e1), and it should return a resulting expression, also
+  in that same form, eg. Held(e2). the change function can return
+  the expression unchanged, in which case the routine continues to
+  traverse the arguments of the expression at hand.
+*/
+
+RuleBase("Held",{expr});
+HoldArg("Held",expr);
+RuleBase("MakeHeld",{expr});
+MakeHeld(_expr) <-- UnList({Held,expr});
+MakeHeldList(list_IsList) <--
+[
+  Local(i,nr);
+  nr:=Length(list);
+  For(i:=1,i<=nr,i++)
+  [
+    list[i] := MakeHeld(list[i]);
+  ];
+  list;
+];
+
+UnHold(Held(_x)) <-- x;
+
+
+
+
+Function("SubstituteHeld",{body,change})
+[
+  UnHold(SubstituteHeld(MakeHeld(body)));
+];
+/* HoldArg("SubstituteHeld",body);  */
+HoldArg("SubstituteHeld",predicate);
+HoldArg("SubstituteHeld",change);
+UnFence("SubstituteHeld",2);
+RuleBase("SubstituteHeld",{body});
+UnFence("SubstituteHeld",1);
+
+10 # SubstituteHeldF(Held(f_IsFunction)) <--
+[
+  Local(lst,args);
+  lst := Listify(f);
+  args:=Tail(lst);
+  args:=MakeHeldList(args);
+  args:=MapSingle("SubstituteHeld",args);
+  args:=MapSingle("UnHold",args);
+  MakeHeld(UnList(Head(lst):args));
+];
+20 # SubstituteHeldF(_f) <--
+[
+  f;
+];
+UnFence("SubstituteHeldF",1);
+
+SubstituteHeld(_body) <--
+[
+  Local(s);
+  s :=  Apply(change,{body});
+  If (s = body, SubstituteHeldF(body),s);
+];
+
+
+
+10 # Variab2(Held(x_IsNumber)) <-- MakeHeld(x);
+20 # Variab2(Held(x_IsAtom)) <-- MakeHeld(UniqueConstant()*x);
+100 # Variab2(Held(_x)) <-- MakeHeld(x);
+
+/*
+C({"+",x,C({"*",-1,y}) })
+
+*/
+
+10 # FlatPlus(Held(_x - _y)) <--
+     MakeHeld(LocalSymbols(a,b,c)(Subst(a,x)Subst(b,-y)(a+b)));
+20 # FlatPlus(_x) <-- x;
+
+10 # FlatHeld(Held(xheld_IsFunction))_(Type(xheld) = flatheldop)
+    <--
+    [
+     Local(r);
+      r := Tail(Listify(xheld));
+/*Echo({"1...",r});*/
+      r := MakeHeldList(r);
+/*Echo({"2...",r});*/
+      r := MapSingle("SubstituteHeld",r);
+/*Echo({"3...",r});*/
+      r := Flatten(r,"List");
+/*Echo({"4...",r});*/
+      r := MapSingle("UnHold",r);
+/*Echo({"5...",r});*/
+      r := Apply("Concat",r);
+/*Echo({"6...",r});*/
+      r := MakeHeld(r);
+/*Echo({"7...",r});*/
+      r;
+    ];
+30 # FlatHeld(Held(_x)) <-- MakeHeld({x});
+UnFence("FlatHeld",1);
+
+FlattenHeld(function,flatheldop) := SubstituteHeld(function,"FlatHeld");
+
+EndOfFile;
+
+
+Given
+  f(x):=a*x^2+x^4;
+
+This has extrema x=0 or x= Sqrt(a/2) or x= -Sqrt(a/2)
+
+  h(x):=(x-(a/(4*x)+x/2));
+goes to Sqrt(a/2), and
+
+  h(x):=-(x-(a/(4*x)+x/2));
+alternates between Sqrt(a/2) and -Sqrt(a/2) respectively.
+
+
+EndOfFile;
+
+
+/*
+class IInterfaceCallBack
+{
+public:
+    virtual void Execute() = 0;
+};
+
+class IUserInterfaceBase
+{
+public: // Support for buttons
+    /// Remove all buttons below screen
+    virtual void ButtonsReset() = 0;
+
+    /// Add one new button below screen
+    virtual void AddButton(LispCharPtr aTitle,
+                           LispChar aShortCutKey,
+                           IInterfaceCallBack* aCallBack) = 0;
+
+    /// Finalize the buttons
+    virtual void ButtonsFinish() = 0;
+
+public: // Access to current expressions
+    /// Append a result to the stack of expressions on screen
+    virtual LispInt AddResult(CResult& aResult) = 0;
+
+    /// Return number of results
+    virtual LispInt NrResults() const = 0;
+
+    /// Get a specific result
+    virtual void GetResult(CResult& aResult, LispInt aIndex) = 0;
+
+    /// Delete a specific result
+    virtual void DeleteResult(LispInt aIndex) = 0;
+};
+
+
+Example code to add buttons:
+this example has a button, and instructs the system to execute
+a yacas command if the button is pressed. In this case it could be
+Simplify applied to the last expression on screen, which the
+object of type CYacasSimpleCallBack could obtain from the interface
+through a call interface.GetResult(result,interface.NrResults())
+
+  CMacUserInterface interface;
+  interface.ButtonsReset();
+  interface.AddButton("Simplify","s",
+                      new CYacasSimpleCallBack("Simplify",interface));
+  interface.ButtonsFinish();
+
+Notes:
+1) this interface wouldn't necessarily require Yacas to be around.
+   It could be used with other calculation engines, although if it is
+   used with Yacas, it is wise to link to it and use some of the
+   classes in the yacas library.
+2) there should probably be a division of the screen into three
+   parts: a menu, the buttons below the screen, and a middle part
+   showing a stack of expressions, or a graph, help text, or something
+   else perhaps.
+3) we probably need an internal representation of equations for the
+   UI, one that can be displayed on screen in a nice way, and can
+   easily be edited with equation editor code.
+4) Even this small interface should get us going. We could write a
+   small piece of test code that runs on any platform, using the
+   above interface to create a user interface.
+
+What do you think of this approach?
+
+Ayal
+
+
+*/
+
+
+
+
+
+EndOfFile;
+
+
+ZReset():=
+[
+  Assign(A,0);
+  Assign(B,0);
+  Assign(C,0);
+  Assign(D,0);
+  Assign(E,0);
+  Assign(H,0);
+  Assign(L,0);
+];
+RuleBase("Mem",{ptr});
+Asm(list_IsList) <--
+[
+  Local(result);
+  result:={};
+  ForEach(st,list)
+  [
+    Local(t);
+    t:=Asm(st);
+    if (t!=False) DestructiveAppend(result,t);
+  ];
+  result;
+];
+
+Asm(Ld(_reg,_expr)) <-- Assign(reg,Eval(expr));
+Asm(ZAnd(_expr)) <-- Assign(A, Eval(A And expr));
+Asm(Inc(_reg))   <-- Assign(reg, Eval(reg+1));
+Asm(Dec(_reg))   <-- Assign(reg, Eval(reg-1));
+
+Assign(A,_expr) <-- [(A:=expr);False;];
+Assign(B,_expr) <-- [(B:=expr);BC:=(B<<8)+C;False;];
+Assign(C,_expr) <-- [(C:=expr);BC:=(B<<8)+C;False;];
+Assign(D,_expr) <-- [(D:=expr);DE:=(D<<8)+E;False;];
+Assign(E,_expr) <-- [(E:=expr);DE:=(D<<8)+E;False;];
+Assign(H,_expr) <-- [(H:=expr);HL:=(H<<8)+L;False;];
+Assign(L,_expr) <-- [(L:=expr);HL:=(H<<8)+L;False;];
+
+Assign(BC,_expr) <-- [(BC:=expr);B:=(BC>>8);C:=BC&255;False;];
+Assign(DE,_expr) <-- [(DE:=expr);D:=(DE>>8);E:=DE&255;False;];
+Assign(HL,_expr) <-- [(HL:=expr);H:=(HL>>8);L:=HL&255;False;];
+Assign(Mem(_expr1),_expr2) <-- [expr1:=Eval(expr1);expr2:=Eval(expr2);Mem(expr1) == expr2;];
+
+tst:=
+{
+  Ld(HL,DATA),
+  Ld(B,Mem(HL)),
+  Inc(HL),
+  Ld(C,Mem(HL)),
+  Inc(HL),
+  Ld(A,Mem(BC)),
+  Ld(B,Mem(HL)),
+  Inc(HL),
+  Ld(C,Mem(HL)),
+  Inc(HL),
+  Ld(Mem(BC),A),
+
+};
+
+
+EndOfFile;
+
+belllist:= {1,1};
+10 # bell(n_IsInteger)_(Length(belllist)-1>=n) <--
+[
+  belllist[n+1];
+];
+
+20 # bell(n_IsPositiveInteger) <--
+[
+  Local(c, i, r);
+
+  r := 0;
+  c := 1;
+  For(i:=0,i<n,i++)
+  [
+     r := r+c*bell(i);
+     c := (c*(n-i-1)) / (i+1);
+  ];
+  belllist := DestructiveAppend(belllist,r);
+  r;
+];
+
+EndOfFile;
+
+
+Load("coeffer.ys");
+IndexedFunction(_fie) <-- UnList(f:IndexedFunctionAux(fie));
+10 # IndexedFunctionAux(a_IsAtom) <-- {};
+20 # IndexedFunctionAux((_a)[_i]) <-- Concat(IndexedFunctionAux(a),{i});
+
+10 # FPred((_a)[_i]) <-- True;
+20 # FPred(_b) <-- False;
+
+
+F(_x) <-- Substitute(x,"FPred","IndexedFunction");
+
+
+/* One-dimensional harmonic */
+
+/*
+10 #f(0) <-- f0;
+10 #f(1) <-- f1;
+20 # f(i_IsInteger) <-- E*f(i-2)/(i*(i-1));
+30 # f({})          <-- {};
+35 # f(list_IsList) <-- f(Head(list)):f(Tail(list));
+*/
+
+
+/* Two-dimensional harmonic */
+/*
+ (i+1)*(i+1+1)*f(i+1+1,j)+(j+1)*(j+1+1)*f(i,j+1+1)-E*f(i,j) = 0
+
+ f(i+2,j) = (E*f(i,j) - (j+1)*(j+2)*f(i,j+2))/((i+1)*(i+2))
+ f(i,j+2) = (E*f(i,j) - (i+1)*(i+2)*f(i+2,j))/((j+1)*(j+2))
+
+*/
+/*
+10 # f(_i,_j)_(j>0) <-- 0;
+15 # f(1,0) <-- f1;
+15 # f(0,0) <-- f0;
+20 #  f(_ii,_jj) <--
+ [
+   Local(i,j);
+   i:=i-2;
+   j:=j;
+   (E*f(i,j) - (j+1)*(j+2)*f(i,j+2))/((i+1)*(i+2));
+ ];
+*/
+
+/* Normal distro */
+
+
+RuleBase("f",{i,j});
+10 # f(_i,_j)_(j<i)  <-- f(j,i);
+ff(_i,_j)<--
+[
+  Local(eq);
+  eq:=Simplify(Eval(F(ApplyCof({i,j},cofeq)[2])));
+  SuchThat(eq,f(i,j));
+];
+
+EndOfFile;
+
+
+fun(x):=(Exp(-a*x*Sign(x))-1)/(x*Sign(x));
+/*
+g(x)  :=Eval(Simplify((Taylor(x,0,9)(Exp(-a*x)-1))/x));
+k(x):=f(x)
+          -a/Sign(x)-a
+          -a^3*x^2/(6*Sign(x))-a^3*x^2/6
+          -a^5*x^4/(120*Sign(x))-a^5*x^4/120
+          -a^7*x^6/(5040*Sign(x))-a^7*x^6/5040
+          -a^9*x^8/(362880*Sign(x))-a^9*x^8/362880;
+
+h(x):=Sum(n,0,10,
+          if(IsEven(n))
+              -(a^(n+1))*x^n/((n+1)!)
+          else
+              (a^(n+1))*x^n/(Sign(x)*((n+1)!))
+         );
+
+*/
+f(x)  :=Eval(Simplify((Taylor(x,0,9)(Exp(-a*x*Sign(x))-1))/(x*Sign(x))));
+h(x):=Sum(n,0,10,
+          x^n*((-1)^(n+1))*(a^(n+1))/(Sign(x)^n*((n+1)!))
+         );
+
+
+/*
+- ascii graph plotter
+- ascii help
+*/
+
+/*
+
+ll:=InverseTaylor(n,0,5)(p^n+q^n);
+ll:=Subst(Ln(p)+Ln(q),lnplnq)ll;
+ll:=Subst(Ln(p)^2+Ln(q)^2,lnplnq2)ll;
+ll:=Subst(Ln(p)^3+Ln(q)^3,lnplnq3)ll;
+ll:=Subst(Ln(p)^4+Ln(q)^4,lnplnq4)ll;
+ll:=Subst(Ln(p)^5+Ln(q)^5,lnplnq5)ll;
+ll:=Subst(n-2,nmin2)ll;
+ll:=Simplify(ll);
+PrettyForm(ll);
+*/
+
+/*
+10 # CBool(_a And _b) <-- CBool(a) And CBool(b);
+10 # CBool(_a Or _b) <-- CBool(a) Or CBool(b);
+10 # CBool(Not _a) <-- Not CBool(a);
+
+20 # CBool(0) <-- False;
+30 # CBool(n_IsInteger) <-- True;
+*/
+
+/* gamma(P, x, y) := (P And x) Or (Not P And y); */
+
+/*
+55 # LogicSimplify(gamma(_P,_x,_y)> _n) <--
+       LogicSimplify(P And (x>n)) Or ( (Not p) And (y>n));
+
+*/
