@@ -257,6 +257,14 @@ IntFunc(x,Ln(_x),x*Ln(x)-x);
 IntFunc(x,(_x)*Ln(_x),(1/(1+1))*x^(1+1)*Ln(x) - (1/(1+1)^2)*x^(1+1) );
 IntFunc(x,Ln(_x)*(_x),(1/(1+1))*x^(1+1)*Ln(x) - (1/(1+1)^2)*x^(1+1) );
 
+IntFunc(x,Csc(_x)^2,-Cot(x));
+IntFunc(x,Sec(_x)^2,Tan(x));
+IntFunc(x,Csc(_x)*Cot(_x),-Csc(x));
+IntFunc(x,Sec(_x)*Tan(_x),Sec(x));
+IntFunc(x,CscH(_x)^2,-CotH(x));
+IntFunc(x,SecH(_x)^2,TanH(x));
+IntFunc(x,CscH(_x)*Cot(_x),-CscH(x));
+IntFunc(x,SecH(_x)*TanH(_x),-SecH(x));
 
 
 // n>0
