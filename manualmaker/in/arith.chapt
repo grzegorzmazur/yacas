@@ -445,13 +445,29 @@ This function should also work on polynomials.
 
 
 
-AddAnchor("ContFrac");
-SubSection()"ContFrac(x) or ContFrac(x,maxdepth)";
-Text()"
-Return the continued fraction expansion of a floating point
-number. Example:
 
-":HtmlCommand(
+AddAnchor("ContFrac");
+SubSection()"ContFrac";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"ContFrac(x) or ContFrac(x,maxdepth)";
+
+Topical()"Parameters";
+Text()"x - expression to break down<br>
+maxdepth - maximum required depth of result
+";
+
+Topical()"Description";
+Text()
+"Return the continued fraction expansion of a floating point
+number, or of a polynomial. This is especially useful for
+polynomials, since series expansions that converge slowly
+will typically converge a lot faster if calculated using
+a continued fraction expansion.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
 "In> PrettyForm(ContFrac(N(Pi)))
 
                  1             
@@ -465,10 +481,11 @@ number. Example:
                           1    
                  292 + --------
                        1 + rest
-"):"
 
+");
 
-";
+Topical()"See Also"; 
+SeeAlso({});
 
 
 

@@ -546,12 +546,29 @@ This function should also work on polynomials.
 
 </A>
 <H3>
-<HR>ContFrac(x) or ContFrac(x,maxdepth)
+<HR>ContFrac
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+ContFrac(x) or ContFrac(x,maxdepth)
+<H5>
+Parameters:
+</H5>
+x - expression to break down<br>
+maxdepth - maximum required depth of result
 
+<H5>
+Description:
+</H5>
 Return the continued fraction expansion of a floating point
-number. Example:
-
+number, or of a polynomial. This is especially useful for
+polynomials, since series expansions that converge slowly
+will typically converge a lot faster if calculated using
+a continued fraction expansion.
+<H5>
+Examples:
+</H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> PrettyForm(ContFrac(N(Pi)))
 
@@ -566,12 +583,13 @@ number. Example:
                           1    
                  292 + --------
                        1 + rest
+
 </PRE>
 </TABLE>
 
-
-
-
+<H5>
+See Also:
+</H5>
 <A NAME="Decimal">
 
 </A>

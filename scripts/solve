@@ -91,6 +91,23 @@ nreq--;
 /* HoldArg("Solve",arg2); */
 
 
+10 # ContainsExpression(_body,_body) <-- True;
+15 # ContainsExpression(body_IsAtom,_expr) <-- False;
+20 # ContainsExpression(body_IsFunction,_expr) <--
+[
+  Local(result,args);
+  result:=False;
+  args:=Tail(Listify(body));
+  While(args != {})
+  [
+    result:=ContainsExpression(Head(args),expr);
+    args:=Tail(args);
+    if (result = True) (args:={});
+  ];
+  result;
+];
+
+
 SuchThat(_function,_var) <-- SuchThat(function,0,var);
 
 10 # SuchThat(_left,_right,_var)_(left = var) <-- right;
@@ -102,24 +119,24 @@ SuchThat(_function,_var) <-- SuchThat(function,0,var);
 
 20 # SuchThat(left_IsAtom,_right,_var) <-- var;
 
-30 # SuchThat((_x) + (_y),_right,_var)_Contains(VarList(x),var) <--
+30 # SuchThat((_x) + (_y),_right,_var)_ContainsExpression(x,var) <--
     SuchThat(x , right-y , var);
-30 # SuchThat((_y) + (_x),_right,_var)_Contains(VarList(x),var) <--
+30 # SuchThat((_y) + (_x),_right,_var)_ContainsExpression(x,var) <--
     SuchThat(x , right-y , var);
 
-30 # SuchThat(Complex(_r,_i),_right,_var)_Contains(VarList(r),var) <--
+30 # SuchThat(Complex(_r,_i),_right,_var)_ContainsExpression(r,var) <--
     SuchThat(r , right-I*i , var);
-30 # SuchThat(Complex(_r,_i),_right,_var)_Contains(VarList(i),var) <--
+30 # SuchThat(Complex(_r,_i),_right,_var)_ContainsExpression(i,var) <--
     SuchThat(i , right+I*r , var);
 
-30 # SuchThat(_x * _y,_right,_var)_Contains(VarList(x),var) <--
+30 # SuchThat(_x * _y,_right,_var)_ContainsExpression(x,var) <--
     SuchThat(x , right/y , var);
-30 # SuchThat(_y * _x,_right,_var)_Contains(VarList(x),var) <--
+30 # SuchThat(_y * _x,_right,_var)_ContainsExpression(x,var) <--
     SuchThat(x , right/y , var);
 
-30 # SuchThat(_x ^ _y,_right,_var)_Contains(VarList(x),var) <--
+30 # SuchThat(_x ^ _y,_right,_var)_ContainsExpression(x,var) <--
     SuchThat(x , right^(1/y) , var);
-30 # SuchThat(_x ^ _y,_right,_var)_Contains(VarList(y),var) <--
+30 # SuchThat(_x ^ _y,_right,_var)_ContainsExpression(y,var) <--
     SuchThat(y , Ln(right)/Ln(x) , var);
 
 30 # SuchThat(Sin(_x),_right,_var) <--
@@ -142,17 +159,17 @@ SuchThat(_function,_var) <-- SuchThat(function,0,var);
 30 # SuchThat(Ln(_x),_right,_var) <--
     SuchThat(x , Exp(right) , var);
 
-30 # SuchThat(_x / _y,_right,_var)_Contains(VarList(x),var) <--
+30 # SuchThat(_x / _y,_right,_var)_ContainsExpression(x,var) <--
     SuchThat(x , right*y , var);
-30 # SuchThat(_y / _x,_right,_var)_Contains(VarList(x),var) <--
+30 # SuchThat(_y / _x,_right,_var)_ContainsExpression(x,var) <--
     SuchThat(x , y/right , var);
 
 30 # SuchThat(- (_x),_right,_var) <--
     SuchThat(x , -right , var);
 
-30 # SuchThat((_x) - (_y),_right,_var)_Contains(VarList(x),var) <--
+30 # SuchThat((_x) - (_y),_right,_var)_ContainsExpression(x,var) <--
     SuchThat(x , right+y , var);
-30 # SuchThat((_y) - (_x),_right,_var)_Contains(VarList(x),var) <--
+30 # SuchThat((_y) - (_x),_right,_var)_ContainsExpression(x,var) <--
     SuchThat(x , y-right , var);
 
 30 # SuchThat(Sqrt(_x),_right,_var) <--
