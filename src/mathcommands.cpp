@@ -1331,6 +1331,19 @@ void LispDefaultDirectory(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
+void LispDllDirectory(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+    // Get file name
+    CHK_ARG_CORE(ARGUMENT(1).Get() != NULL, 1);
+    LispStringPtr orig = ARGUMENT(1).Get()->String();
+    CHK_ARG_CORE(orig != NULL, 1);
+    LispString oper;
+    InternalUnstringify(oper, orig);
+    aEnvironment.iDllDirectories.Append(NEW LispString(oper.String()));
+    InternalTrue(aEnvironment,RESULT);
+}
+
+
 void LispFromFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);

@@ -60,6 +60,7 @@
   #include "win32commandline.h"      
   #define FANCY_COMMAND_LINE CWin32CommandLine
   #define SCRIPT_DIR ""
+  #define PLUGIN_DIR ""
   #define PLATFORM_OS "Win32"
 #endif
 
@@ -117,6 +118,7 @@ int patchload=0;
 int winsockinitialised=0;
 int hideconsolewindow=0;
 char* root_dir    = SCRIPT_DIR;
+char* dll_dir     = PLUGIN_DIR;
 #ifndef WIN32
   char* archive     = NULL;
 #else
@@ -450,6 +452,16 @@ void DeclarePath(char *ptr2)
   yacas->Evaluate(buf);
 }
 
+void DeclareDllPath(char *ptr2)
+{
+  char buf[1000];
+  if (ptr2[strlen(ptr2)-1] != PATH_SEPARATOR)
+    sprintf(buf,"DllDirectory(\"%s%c\");",ptr2,PATH_SEPARATOR);
+  else
+    sprintf(buf,"DllDirectory(\"%s\");",ptr2);
+  yacas->Evaluate(buf);
+}
+
 void LoadYacas(LispOutput* aOutput=NULL)
 {
   busy=LispTrue;
@@ -530,19 +542,19 @@ CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator
                                         );
                                         */
     {
-      /* Split up root_dir in pieces separated by colons, and run 
-    DefaultDirectory on each of them. */
+        /* Split up root_dir in pieces separated by colons, and run 
+           DefaultDirectory on each of them. */
         char *ptr1, *ptr2;
-   ptr1 = ptr2 = root_dir;
-   while (*ptr1 != '\0') {
-     while (*ptr1 != '\0' && *ptr1 != ':') ptr1++;
-     if (*ptr1 == ':') {
-       *ptr1 = '\0';
-            DeclarePath(ptr2);
-       ptr1++;
-       ptr2 = ptr1;
-     }
-   }
+        ptr1 = ptr2 = root_dir;
+        while (*ptr1 != '\0') {
+            while (*ptr1 != '\0' && *ptr1 != ':') ptr1++;
+            if (*ptr1 == ':') {
+                *ptr1 = '\0';
+                DeclarePath(ptr2);
+                ptr1++;
+                ptr2 = ptr1;
+            }
+        }
         DeclarePath(ptr2);
         char buf[1000];
 #ifdef HAVE_VSNPRINTF
@@ -552,6 +564,24 @@ CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator
 #endif
         yacas->Evaluate(buf);
     }
+
+    {
+        /* Split up dll_dir in pieces separated by colons, and run 
+           DllDirectory on each of them. */
+        char *ptr1, *ptr2;
+        ptr1 = ptr2 = dll_dir;
+        while (*ptr1 != '\0') {
+            while (*ptr1 != '\0' && *ptr1 != ':') ptr1++;
+            if (*ptr1 == ':') {
+                *ptr1 = '\0';
+                DeclareDllPath(ptr2);
+                ptr1++;
+                ptr2 = ptr1;
+            }
+        }
+        DeclareDllPath(ptr2);
+    }
+
     if (yacas->IsError())
         ShowResult("");
 
@@ -1192,6 +1222,12 @@ int main(int argc, char** argv)
                 fileind++;
                 if (fileind<argc)
                   root_dir = argv[fileind];
+            }
+            else if (!strcmp(argv[fileind],"--dlldir"))
+            {
+                fileind++;
+                if (fileind<argc)
+                  dll_dir = argv[fileind];
             }
             else if (!strcmp(argv[fileind],"--archive"))
             {

@@ -137,6 +137,7 @@ protected:
 	LispInt iBinaryPrecision;
 public:
     InputDirectories iInputDirectories;
+    InputDirectories iDllDirectories;
     DeletingLispCleanup iCleanup;
     LispInt iEvalDepth;
     LispInt iMaxEvalDepth;
