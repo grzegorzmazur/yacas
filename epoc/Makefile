@@ -78,7 +78,6 @@ INCLTDL =
 INSTALL_HTML = install-html
 INSTALL_PS = 
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
-LIBADD_DL = 
 LIBLTDL = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIBTOOL_DEPS = ./ltconfig ./ltmain.sh
