@@ -165,7 +165,7 @@ What if $x$ is not large enough? Using the identity
 $ x*Gamma(x) = Gamma(x+1) $,
 we can reduce the computation of $Gamma(x)$ to $Gamma(x+M)$ for some integer $M$.
 Then we can choose $M$ to be large enough so that the asymptotic series gives the required precision when evaluated at $x+M$.
-We shall have to divide the result $M$ times by some numbers to obtain $Gamma(x)$.
+We shall have to divide the result $M$ times by some long numbers to obtain $Gamma(x)$.
 Therefore, the complexity of this method for given ($x$,$P$) is increased by
 $M(P)*(P*Ln(10)/Ln(P)-x)$.
 For small $x$ this will be the dominant contribution to the complexity.
@@ -225,7 +225,7 @@ $$ gamma := Limit(n,Infinity) (Sum(k,1,n,1/k)-Ln(n)) $$.
 This constant is useful for various reasons, mostly when working with higher transcendental functions.
 For example, $gamma$ is needed to obtain a Taylor series expansion of $Gamma(x)$.
 Another useful relation is
-$$ (D(x)Gamma(x)[x= -1]) = -gamma $$.
+$$ (D(x)Gamma(x)[x=1]) = -gamma $$.
 Approximately $gamma<=>0.577216$.
 
 	    Method 1: Brent's decomposition
@@ -279,9 +279,9 @@ Brent estimated that the method "B3" is about 20{%} faster than "B1".
 
 	    Method 2: Brent's summation trick
 
-Computation of $S(n)$ seems to need $H[k]$ first, and a long multiplication by $H[k]$ at each term.
+Computation of $S(n)$ seems to need a running computation of $H[k]$ and a long multiplication by $H[k]$ at each term.
 To compute $S(n)$ and $V(n)$ faster and more accurately, Brent suggested the following trick that avoids this long multiplication and computes $H[k]$ simultaneously with the series.
-Define the function $U(n):=S(n)-Ln(n)*V(n)$.
+Define the function $U(n):=S(n)-V(n)*Ln(n)$.
 Then $gamma<=>U(n)/V(n)$.
 The series for $U(n)$ is
 $ U(n) := Sum(k,0,Infinity, A[k]) $,
@@ -293,10 +293,17 @@ the $k$-th term of the series for $V(n)$, then we can compute $A[k]$ and $B[k]$ 
 $A[0]= -Ln(n)$, $B[0]=1$,
 $$ B[k]=B[k-1]*n^2/k^2 $$,
 $$ A[k]=1/k*(A[k-1]*n^2/k+B[k]) $$.
-All multiplications and divisions in these recurrence relations are performed with integers.
 
+This trick can be formulated for any sequence $A[k]$ of the form $A[k]=B[k]*C[k]$, where the sequences $B[k]$ and $C[k]$ are given by the recurrences
+$ B[k]=p(k)*B[k-1]$ and $C[k]=q(k)+C[k-1]$.
+Here we assume that $p(k)$ and $q(k)$ are known functions of $k$ that can be computed to $P$ digits using $O(P)$ operations, e.g. rational functions with short constant coefficients.
+Instead of evaluating $B[k]$ and $C[k]$ separately and multiplying them using a long multiplication, we note that $p(k)*A[k-1] = B[k]*C[k-1]$.
+This allows to compute $A[k]$ by using the following two recurrences:
+$$ B[k] = p(k)*B[k-1] $$,
+$$ A[k]=p(k)*A[k-1]+q(k)*B[k] $$.
+All multiplications and divisions in these recurrence relations are performed with short integers, so the long multiplications are avoided.
 The time complexity of this method is $O(P^2)$ where $P$ is the required number of digits.
-
+A variant of binary splitting method can be used to reduce the complexity to $$ which gives an asymptotic advantage at very high precision.
 
 Also, it turns out that we can use a variant of the fast "rectangular method" to evaluate the series for $U(n)$ and $V(n)$ simultaneously.
 (We can consider these series as Taylor series in $n^2$.)
@@ -304,14 +311,13 @@ This however does not speed up the evaluation of $gamma$.
 This happens because the rectangular method requires long multiplications and leads in this case to increased roundoff errors.
 The rectangular method for computing a power series in $x$ is less efficient than a straightforward computation when $x$ is a "short" rational or integer number.
 
-*REM
 The "rectangular method" for computing $Sum(k,0,N,x^k*A[k])$ needs to be able to convert a coefficient of the Taylor series into the next coefficient $A[k+1]$ by "short" operations, more precisely, by some multiplications and divisions by integers of order $k$.
 The $j$-th column of the rectangle ($j=0$, 1, ...) consists of numbers $x^(r*j)*A[r*j]$, $x^(r*j)*A[r*j+1]$, ..., $x^r*A[r*j+r-1]$.
 The numbers of this column are computed sequentially by short operations, starting from the $x^(r*j)*A[j*r]$ which is known from the end of the previous column.
 The recurrence relation for $A[k]$ is not just some multiplication by rational numbers, but also contains an addition of $B[k]$.
 However, if we also use the rectangular method for $V(n)$, the number $x^(r*j)*B[r*j]$ will be known and so we will be able to use the recurrence relation to get $x^(r*j)*A[r*j+1]$ and all following numbers of the column.
 
-	    Derivation of Brent's method
+	    Derivation of method 1
 
 Brent's "B1" method can be derived from the Taylor series for the modified Bessel function $BesselI(nu,z)$,
 $$ BesselI(nu,z) = Sum(k,0,Infinity, z^(nu+2*k)/(2^(nu+2*k)*Gamma(nu+k+1)*k!)) $$,
@@ -331,7 +337,7 @@ $$ gamma <=> S0(2*n)/I0(2*n)-Ln(n)+O(Exp(-4*n)) $$.
 Catalan's constant $G$ is defined by
 $$ G = Sum(n,0,Infinity,(-1)^n/(2*n+1)^2) $$.
 This series converges very slowly.
-There are several alternative methods that can be used instead.
+There are several alternative methods.
 
 	    Best method so far
 
@@ -352,14 +358,17 @@ A drawback of this scheme is that it requires a separate high-precision computat
 Another method is based on an identity by Ramanujan.
 The formula is
 $$ G = Sum(k,0,Infinity,(k!)^2/(2*k+1)! *2^(k-1)*Sum(j,0,k,1/(2*j+1))) $$.
-The $k$-th term of the outer sum is of order $2^(-k)$ and so we need to take about $P*Ln(10)/Ln(2)$ terms for $P$ decimal digits.
+The $k$-th term of the outer sum is of order $2^(-k)$ and so we need to take slightly more than $P*Ln(10)/Ln(2)$ terms for $P$ decimal digits.
 But each term is more complicated than in the first method's series.
 The running time of this formula seems to be a few times slower than the previous method.
 
-This method was used by [Fee 1990] combined with Brent's summation trick (see the section on the Euler constant).
-This trick allows to avoid a separate computation of the harmonic sum, and thus avoids all long multiplications.
-The running time is $O(P^2)$ as implemented there.
-Since there are only rational numbers involved, the binary splitting technique can be used at high precision.
+This method combined with Brent's summation trick (see the section on the Euler constant) was used in [Fee 1990].
+Brent's trick allows to avoid a separate computation of the harmonic sum and all long multiplications.
+Catalan's constant is obtained as a limit of $G[k]$ where $G[0]=B[0]=1/2$ and
+$$ B[k]=k/(2*k+1)*B[k-1] $$,
+$$ G[k]=1/(2*k+1)*(k*G[k-1]+B[k]) $$.
+The running time is $O(P^2)$.
+Since only rational numbers are involved, the binary splitting technique can be used at high precision.
 
 A third formula is more complicated but the convergence is much faster and there is no need to evaluate any other transcendental functions.
 This formula is called "Broadhurst's series".
@@ -391,8 +400,8 @@ The classic book [Bateman <i>et al.</i> 1953], vol. 1, describes many results co
 
 For the numerical evaluation of Riemann's Zeta function with arbitrary
 precision to become feasible, one needs special algorithms. Recently P. Borwein [Borwein 1995]
-gave a simple and quick approximation algorithm for positive $Re(s)$. See
-also [Borwein <i>et al.</i> 1999] for a review of all methods.
+gave a simple and quick approximation algorithm for $Re(s)>0$. See
+also [Borwein <i>et al.</i> 1999] for a review of methods.
 
 *A Riemann's Zeta function!by Borwein's algorithm
 
@@ -530,6 +539,10 @@ Asymptotics of Lambert's $W$ function are
 $$W((z^2-2)/2/e) = -1 + z - z^3/3 + 11/72*z^4 - ...$$ (this is only good really close to z=0);
 $W(x) = x-x^2+3/2*x^3-...$ (this is good very near x=0);
 $$W(x) = Ln(x) - Ln(Ln(x)) + Ln(Ln(x))/Ln(x) + 1/2*(Ln(Ln(x))/Ln(x))^2 + ...$$ (good for very large $x$ but it is not straightforward to find higher terms!).
+
+Here are some inequalities to help estimate $W(x)$ at large $x$ (more exactly, for $x>e$):
+$$ Ln(x/Ln(x))<W(x)<Ln(x) $$,
+$$ Ln(x/(Ln(x)-1))<W(x)<Ln(x/(Ln(x)-1))+0.13$$.
 
 *A Lambert's $W$ function!uniform approximations
 
@@ -787,7 +800,7 @@ The error function $Erf(z)$ is defined for any (complex) $z$ by
 $$ Erf(z) := (2/Sqrt(Pi))*Integrate(t,0,z)Exp(-t^2) $$.
 
 The complementary error function $Erfc(x)$ is defined for real $x$ as
-$$ Erfc(x) := (2/Sqrt(Pi))*Integrate(t,x,Infinity)Exp(-t^2) = 1-Erf(x) $$.
+$$ Erfc(x) := (2/Sqrt(Pi))*(Integrate(t,x,Infinity)Exp(-t^2)) = 1-Erf(x) $$.
 
 The imaginary error function $Erfi(x)$ is defined for real $x$ as
 $$ Erfi(x) := (2/Sqrt(Pi))*Integrate(t,x,Infinity)Exp(t^2) $$.
@@ -810,13 +823,13 @@ $$ (Sqrt(Pi)/2)*(e^(z^2)/z)*Erf(z) = 1+(2*z^2)/3+... + (2*z^2)^n/(2*n+1)!! + O(z
 $$ Erfc(z) = e^(-z^2)/(z*Sqrt(Pi))*(1-1/(2*z^2) + ... + (2*n-1)!! /(-2*z^2)^n+...) $$.
 *	4. Continued fraction expansion due to Laplace:
 $$ (Sqrt(Pi)/2)*z*e^(z^2)*Erfc(z) = z/(z+1/2/(z+1/(z+3/2/(z+...)))) $$
-The continued fraction on the RHS of the above equation can be rewritten equivalently as
-$$ 1/(1+v/(1+2*v/(1+3*v/(1+...)))) $$
+The continued fraction in the RHS of the above equation can be rewritten equivalently as
+$$ 1/(1+v/(1+(2*v)/(1+(3*v)/(1+...)))) $$
 if we define $v:=(2*z^2)^(-1)$.
 
-Here we shall analyze the convergence and precision of these methods and show
-which one has to be chosen to compute $Erf(z)$ with (relative) precision $P$
-decimal digits for a given (complex) number $z$, and obtain estimates for the
+Here we shall analyze the convergence and precision of these methods.
+We need to choose a good method to compute $Erf(z)$ with (relative) precision $P$
+decimal digits for a given (complex) number $z$, and to obtain estimates for the
 necessary number of terms to take.
 
 Both Taylor series converge absolutely for all $z$, but they do not converge uniformly fast; in fact these series are not very useful for large $z$ because a very large number of slowly decreasing terms gives a significant contribution to the result, and the roundoff error (especially for the first series with the alternating signs) becomes too high. Both series converge well for $Abs(z)<1$.
