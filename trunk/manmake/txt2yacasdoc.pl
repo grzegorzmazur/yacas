@@ -262,6 +262,7 @@ sub escape_term {
 	$text =~ s/\\\\</":Lt():"/g;
 	$text =~ s/\\\\>/":Gt():"/g;
 	# math
+	$text =~ s/\$\$([^\$"]+)\$\$([^- \t]+)/":TeXMathD($1,\"$2\"):"/g;
 	$text =~ s/\$\$([^\$"]+)\$\$/":TeXMathD($1):"/g;
 	$text =~ s/\$([^\$"]+)\$/":TeXMath($1):"/g;
 	# <i>emphasis</i>

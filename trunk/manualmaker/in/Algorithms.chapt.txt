@@ -113,7 +113,7 @@ parameter are large enough.
 
 The meaning of Newton-Cotes quadrature coefficients is that an integral is approximated as
 
-$$(Integrate(x,a[0],a[n]) f(x)) <=> h*Sum(k,0,n,c[k]*f(a[k]))$$
+$$(Integrate(x,a[0],a[n]) f(x)) <=> h*Sum(k,0,n,c[k]*f(a[k]))$$,
 where $h:=a[1]-a[0]$ is the grid step, $a[k]$ are the grid points, and
 $c[k]$ are the quadrature coefficients. These coefficients are independent
 of the function $f(x)$ and can be precomputed

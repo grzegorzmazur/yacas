@@ -1273,8 +1273,7 @@ according to a mathematically provable theorem.
 
 {VerifyArithmetic} verifies for an arbitrary set of numbers
 $ x $, $ n $ and $ m $ that
-
-$$ (x^n-1)*(x^m-1) = x^(n+m)-(x^n)-(x^m)+1 $$
+$$ (x^n-1)*(x^m-1) = x^(n+m)-(x^n)-(x^m)+1 $$.
 
 The left and right side represent two ways to arrive at the
 same result, and so an arithmetic module actually doing the
@@ -1285,8 +1284,7 @@ The results should be exactly equal.
 random values, {n} times.
 
 {VerifyDiv(u,v)} checks that 
-
-$$ u = v*Div(u,v) + Mod(u,v) $$
+$$ u = v*Div(u,v) + Mod(u,v) $$.
 
 
 *E.G.

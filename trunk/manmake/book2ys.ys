@@ -80,11 +80,14 @@ HtmlLink(text, url, param1, param2) := "";
 
 RuleBase("TeXMath", {x});
 RuleBase("TeXMathD", {x});
+RuleBase("TeXMathD", {x,y});
 HoldArg("TeXMath", x);
 HoldArg("TeXMathD", x);
 /* use <-- since := would redefine everything */
 TeXMath(_x) <-- "";
 TeXMathD(_x) <-- "";
+// special form: punctuation at the end of a displayed equation
+TeXMathD(_x, _string) <-- "";
 
 /* stuff for refman */
 
