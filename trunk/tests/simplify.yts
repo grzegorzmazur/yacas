@@ -6,7 +6,9 @@ TestYacas( Simplify((x+y)*(x-y)-(x+y)^2), -2*y^2-2*x*y );
 TestYacas( Simplify(1+x+x+3*y-4*(x+y+2)), -2*x-y-7 );
 TestYacas( Simplify((1+I)^4), -4 );
 TestYacas( Simplify((x-y)/(x*y)), 1/y-1/x );
-KnownFailure(TestYacas( Simplify((x+I)^4), x^4+4*x^3*I-6*x^2-4*x*I+1 ));
+//See below, now handled with II KnownFailure(TestYacas( Simplify((x+I)^4), x^4+4*x^3*I-6*x^2-4*x*I+1 ));
+
+TestYacas( Simplify((xx+II)^4), xx^4+4*xx^3*II-6*xx^2-4*xx*II+1 );
 
 /*Serge: these are not handled yet ;-)
 TestYacas( Simplify((x^2-y^2)/(x+y)), x-y );
