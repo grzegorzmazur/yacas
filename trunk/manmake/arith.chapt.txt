@@ -8,13 +8,29 @@ numbers. Many of them also work on polynomials.
 *CMD +, -, *, /, ^ --- arithmetic operations
 *STD
 *CALL
-	x+y  (precedence 6)
+	x+y
 	+x
-	x-y  (precedence 5)
+Precedence:
+*EVAL OpPrecedence("+")
+
+	x-y
+Precedence: left-side:
+*EVAL OpPrecedence("-")
+, right-side:
+*EVAL OpRightPrecedence("-")
+
 	-x
-	x*y  (precedence 3)
-	x/y  (precedence 3)
-	x^y  (precedence 2)
+	x*y
+Precedence:
+*EVAL OpPrecedence("*")
+
+	x/y
+Precedence:
+*EVAL OpPrecedence("/")
+
+	x^y
+Precedence:
+*EVAL OpPrecedence("^")
 
 *PARMS
 

@@ -847,7 +847,9 @@ a custom error handler.
 	Assert("str", expr) pred
 	Assert("str") pred
 	Assert() pred
-(bodied function, precedence 60000)
+Precedence:
+*EVAL OpPrecedence("Assert")
+
 *PARMS
 
 {pred} -- predicate to check

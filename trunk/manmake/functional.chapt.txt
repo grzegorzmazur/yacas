@@ -8,8 +8,10 @@ functional programming languages such as Miranda or Haskell.
 *CMD : --- prepend item to list, or concatenate strings
 *STD
 *CALL
-	item : list (prec. 7)
-	string1 : string2 (prec. 7)
+	item : list
+	string1 : string2
+Precedence:
+*EVAL OpPrecedence(":")
 
 *PARMS
 {item} -- an item to be prepended to a list
@@ -38,7 +40,9 @@ The first form prepends "item" as the first entry to the list
 *CMD @ --- apply a function
 *STD
 *CALL
-	fn @ arglist (prec. 60)
+	fn @ arglist
+Precedence:
+*EVAL OpPrecedence("@")
 
 *PARMS
 
@@ -67,7 +71,9 @@ the name of a function or a pure function.
 *CMD /@ --- apply a function to all entries in a list
 *STD
 *CALL
-	fn /@ list (prec. 60)
+	fn /@ list
+Precedence:
+*EVAL OpPrecedence("/@")
 
 *PARMS
 
@@ -96,7 +102,9 @@ function.
 *STD
 
 *CALL
-	n .. m (prec. 60)
+	n .. m
+Precedence:
+*EVAL OpPrecedence("..")
 
 *PARMS
 

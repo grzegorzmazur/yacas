@@ -1603,7 +1603,7 @@ returned by {Pi()}.
 
 *SEE N, Pi, Precision
 
-*CMD Random, RandomSeed --- (pseudo-)random number generator
+*CMD Random, RandomSeed --- (pseudo-) random number generator
 *STD
 *CALL
 	Random()

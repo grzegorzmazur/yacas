@@ -171,14 +171,25 @@ Currently plugins have to be written in C++.
 *A precedence
 	    precedence
 
-Precedence is a property of the syntax of a given operator that specifies how this function is parsed.
+Precedence is a property of the syntax of an operator that specifies how it is parsed.
 Only operators, i.e. functions with special syntax, can have precedence.
 Precedence values are nonnegative integers: 0, 1, ...
 Lower numbers bind more tightly.
 
-For example, the operator "{+}" binds less tightly (i.e. has a higher precedence <i>value</i>) than the operator "{*}" and so the expression {a+b*c} is parsed as {a+(b*c)}, as one would expect.
+For example, the operator "{+}" binds less tightly
+(i.e. has a <i>higher</i> precedence value)
+than the operator "{*}" and so the expression {a+b*c}
+is parsed as {a+(b*c)}, as one would expect.
 
-*SEE Bodied, OpPrecedence
+Infix operators can have different left-side and right-side precedence.
+For example, the infix operator "{-}" has left precedence
+*EVAL OpLeftPrecedence("-")
+and right precedence
+*EVAL OpRightPrecedence("-")
+-- this allows us to parse expressions such as {a-b+c} correctly, as $(a-b)+c$, and not as $a-(b+c)$.
+
+
+*SEE Bodied, OpPrecedence, OpLeftPrecedence, OpRightPrecedence
 
 *A properties
 	    properties
@@ -231,7 +242,9 @@ This allows to write mathematical expressions more comfortably, for example,
 	In> D(x) Sin(x)+1
 	Out> Cos(x);
 
-*SEE Bodied
+Functions with special syntax can have different precedence.
+
+*SEE Bodied, Infix, Prefix, Postfix, OpPrecedence
 
 *A variables
 	    variables
