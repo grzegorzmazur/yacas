@@ -55,6 +55,8 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
 
 LispEnvironment::~LispEnvironment()
 {
+    PopLocalFrame();
+    LISPASSERT(iLocalsList == NULL);
     iTrue->DecreaseRefCount();
     iFalse->DecreaseRefCount();
     delete iEvaluator;

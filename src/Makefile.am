@@ -49,7 +49,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp \
 	epocyacas.hrh epocyacas.rss epocyacas.mmp \
 	epocstubs.cpp grower.inl lisphash.inl lispobject.inl \
 	lispstring.inl standard.inl \
-	yacas.mmp win32dll.cpp \
+	win32dll.cpp \
 	depend.dep makefile.beos \
 	convertcctocpp.bat \
 	plat/linux32/lisptype.h \
