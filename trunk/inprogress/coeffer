@@ -28,9 +28,9 @@ CofDoEffic(_deg,_dim)<--
  * The Yukawa potential (goes to electrostatic potential for a to infinity)
  *
  *  (Exp(-a*((x^2)^(1/2)))-1)/((x^2)^(1/2))
- *  -1*(-1)^n*a^(n+1)/((n+1)!)
+ * ((-1)^(n+1))*(a^(n+1))/(Sign(x)^n*((n+1)!))
 */
-Yukawa(_n) <-- (-1*(-1)^n*a^(n+1)/((n+1)!));
+Yukawa(_n) <-- ((-1)^(n+1))*(alpha^(n+1))/(Sign(x)^n*((n+1)!));
 CofDoYukawa(_deg,_dim)<--
 [
   CofDegree(deg);
@@ -97,17 +97,20 @@ CofDoNormal(_deg,_dim)<--
 ];
 
 
-
-CofPlot()<--
+CofPlot(_from,_to,_steps)<--
 [
   Local(applied,E,f);
-  Apply("GnuPlot",{-3,3,20,{CofT()}});
+  Apply("GnuPlot",{from,to,steps,{CofT()}});
   Echo({"solution is ",CofT()});
   E:=CofFindE();
   f:=E*CofT();
   applied:=CofT(CofMap(CofTaylor(cofeq + CofMul(E,psi),cofdegree)));
   applied:=BigOh(applied,x,cofdegree);
-  Apply("GnuPlot",{-3,3,20,{f,applied}});
+  Apply("GnuPlot",{from,to,steps,{f,applied}});
+];
+CofPlot()<--
+[
+  CofPlot(-3,3,20);
 ];
 
 
@@ -118,22 +121,31 @@ CofSetUp({aS0==1,aS1==1,E==1});
 */
 
 
-/*
+
 CofDoHarmonic(12,1);
 CofSetUp({aS0==0,aS1==1,aS3== -1/6});
-*/
+
 
 /*
 CofDoXsqr(12,1); 
 CofSetUp({aS0==1,aS1==2,aS5==1});
 */
 
-
+/*
 CofDoNormal(20,1);
 CofSetUp({aS0==1,aS1==0,E == 0});
+*/
+
+/*
+CofDoYukawa(5,1);
+CofSetUp({alpha==1,E==0,aS1==1,aS3==1});
+*/
+
 
 
 CofSolve();
+/*
 CofPlot();
+*/
 
 
