@@ -70,7 +70,7 @@ RELEASE = @RELEASE@
 VERSION = @VERSION@
 scriptdir = @scriptdir@
 
-SUBDIRS = docs inprogress YacasNotebook scripts src ramscripts manualmaker colorcode plugins proteus
+SUBDIRS = docs inprogress YacasNotebook scripts src ramscripts manualmaker colorcode plugins proteus tests
 
 EXTRA_DIST = yacas.sgml yacas.spec yacas.spec.in makemake mkhomepage mkmanual yacas.sh yacas_client doxy_yacas yacas.el README.beos workinprogress
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
