@@ -1341,6 +1341,58 @@ are integers.
 *SEE Simplify, !, Bin
 
 
+*CMD LnExpand --- expand a logarithmic expression using standard logarithm rules
+*STD
+*CALL
+	LnExpand(expr)
+
+*PARMS
+
+{expr} -- the logarithm of an expression
+
+*DESC
+
+{LnExpand} takes an expression of the form $Ln(expr)$, and applies logarithm
+rules to expand this into multiple {Ln} expressions where possible.  An
+expression like $Ln(a*b^n)$ would be expanded to $Ln(a)+n*Ln(b)$.
+
+If the logarithm of an integer is discovered, it is factorised using {Factors}
+and expanded as though {LnExpand} had been given the factorised form.  So 
+$Ln(18)$ goes to $Ln(x)+2*Ln(3)$.
+
+*EG
+	In> LnExpand(Ln(a*b^n))
+	Out> Ln(a)+Ln(b)*n
+	In> LnExpand(Ln(a^m/b^n))
+	Out> Ln(a)*m-Ln(b)*n
+	In> LnExpand(Ln(60))
+	Out> 2*Ln(2)+Ln(3)+Ln(5)
+	In> LnExpand(Ln(60/25))
+	Out> 2*Ln(2)+Ln(3)-Ln(5)
+
+*SEE Ln, LnCombine, Factors
+
+*CMD LnCombine --- combine logarithmic expressions using standard logarithm rules
+*STD
+*CALL
+	LnCombine(expr)
+
+*PARMS
+
+{expr} -- an expression possibly containing multiple {Ln} terms to be combined
+
+*DESC
+
+{LnCombine} finds {Ln} terms in the expression it is given, and combines them
+using logarithm rules.  It is intended to be the exact converse of {LnExpand}.
+
+*EG
+	In> LnCombine(Ln(a)+Ln(b)*n)
+	Out> Ln(a*b^n)
+	In> LnCombine(2*Ln(2)+Ln(3)-Ln(5))
+	Out> Ln(12/5)
+
+*SEE Ln, LnExpand
 
 
 *CMD Rationalize --- convert floating point numbers to fractions
