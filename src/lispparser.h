@@ -36,6 +36,7 @@ class LispPrinter : public YacasBase
 public:
     virtual ~LispPrinter();
     virtual void Print(LispPtr& aExpression, LispOutput& aOutput, LispEnvironment& aEnvironment);
+	virtual void RememberLastChar(LispChar aChar);
 };
 
 

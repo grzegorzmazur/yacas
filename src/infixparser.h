@@ -117,6 +117,7 @@ public:
 
     virtual void Print(LispPtr& aExpression, LispOutput& aOutput,
                        LispEnvironment& aEnvironment);
+	virtual void RememberLastChar(LispChar aChar);
 private:
     void Print(LispPtr& aExpression, LispOutput& aOutput,
                LispInt iPrecedence);

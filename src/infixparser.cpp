@@ -388,7 +388,12 @@ void InfixPrinter::WriteToken(LispOutput& aOutput,LispCharPtr aString)
         aOutput.Write(" ");
     }
     aOutput.Write(aString);
-    iPrevLastChar = aString[PlatStrLen(aString)-1];
+	RememberLastChar(aString[PlatStrLen(aString)-1]);
+}
+
+void InfixPrinter::RememberLastChar(LispChar aChar)
+{
+	iPrevLastChar = aChar;
 }
 
 void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
