@@ -266,10 +266,44 @@ LispStringPtr TanFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrec
 
 LispStringPtr ArcSinFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
 {
-//TODO
-    return PlatArcSin(int1,  aHashTable, 0);
+	// Use Newton's method to solve sin(x) = y by iteration:
+    // x := x - (Sin(x) - y) / Cos(x)
+	// this is similar to PiFloat()
+	// we are using PlatArcSin() as the initial guess
+	// maybe, for y very close to 1 or to -1 convergence will
+	// suffer but seems okay in some tests
+    LispStringPtr iResult = PlatArcSin(int1,  aHashTable, 0);	// is this LispCharPtr or LispStringPtr?
+	ANumber result(iResult->String(), aPrecision);	// what is this??
+	// how do I get an ANumber from the result of PlatArcSin()?
+	// am I leaking memory in the above hack with string pointers?
+	// hopefully not if LispString is ref counted
+    ANumber x(aPrecision);	// dummy variable
+    ANumber q("10", aPrecision);	// initial value must be "significant"
+    ANumber s(aPrecision);
+    ANumber c(aPrecision);
+	
+	while (Significant(q))
+    {
+        x.CopyFrom(result);
+        SinFloat(s, x);
+		Negate(s);
+        x.CopyFrom(s);
+		ANumber y(int1, aPrecision);
+		Add(s, x, y);
+        // now s = y - Sin(x)
+		x.CopyFrom(result);
+        CosFloat(c, x);
+        Divide(q,x,s,c);
+		// now q = (y - Sin(x)) / Cos(x)
+
+        // Calculate result:=result+q;
+        x.CopyFrom(result);
+        Add(result,x,q);
+    }
+    return FloatToString(result, aHashTable);
 }
 
+// ArcCosFloat should be defined in scripts through ArcSinFloat
 LispStringPtr ArcCosFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
 {
     //TODO
@@ -646,30 +680,25 @@ LispStringPtr PiFloat( LispHashTable& aHashTable,
     // x[0] := 3.1415926
     // x[n+1] := x[n] - Tan(x[n])
 
-    ANumber result("3.1415926",aPrecision);
-    ANumber x(aPrecision);
+    ANumber result("3.14159265358979323846",aPrecision);
+    ANumber x(aPrecision);	// dummy variable
+    ANumber q("10", aPrecision);	// initial value must be "significant"
+    ANumber s(aPrecision);
+    ANumber c(aPrecision);
     
-REDO:
+	while (Significant(q))
     {
         // Get Tan(result)
-        ANumber s(aPrecision);
         x.CopyFrom(result);
         SinFloat(s, x);
-        ANumber c(aPrecision);
         x.CopyFrom(result);
         CosFloat(c, x);
-        ANumber q(aPrecision);
-        ANumber r(aPrecision);
-        Divide(q,r,s,c);
+        Divide(q,x,s,c);
 
         // Calculate new result: result:=result-Tan(oldresult);
         Negate(q);
-        ANumber dummy(aPrecision);
-        dummy.CopyFrom(result);
-        Add(result,dummy,q);
-
-        if (Significant(q))
-            goto REDO;
+        x.CopyFrom(result);
+        Add(result,x,q);
     }
     return FloatToString(result, aHashTable);
 }

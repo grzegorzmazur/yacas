@@ -3,5 +3,6 @@ KnownFailure
 Echo
 VerifyArithmetic
 TestYacas
+RoundTo
 LogicVerify
 }

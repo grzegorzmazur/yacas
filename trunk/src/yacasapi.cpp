@@ -144,7 +144,7 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispAbs   ,"MathAbs");
     SetCommand(LispMod   ,"MathMod");
     SetCommand(LispDiv   ,"MathDiv");
-    SetCommand(LispPi    ,"Pi");
+    SetCommand(LispPi    ,"MathPi");
     SetCommand(LispGcd   ,"MathGcd");
 
 

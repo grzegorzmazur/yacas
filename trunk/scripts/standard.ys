@@ -71,7 +71,26 @@ Function("NrArgs",{aLeft}) Length(Listify(aLeft))-1;
 1 # Denom(_x / _y)      <-- y;
 2 # Denom(x_IsNumber)   <-- 1;
 
-
+/* Cache the most recently computed value of Pi and its precision
+  This helps because right now every N() requires a new evaluation of Pi
+ */
+Set(PiCache, {40, 3.1415926535897932384626433832795028841971694});
+	/* return numerical value recalculated only if necessary
+	  we could get more speed if we also passed the previous value of pi
+	  to MathPi() as its initial guess but that can wait for now */
+Function("Pi", {})
+[
+	Local(new'prec, new'pi);
+	Set(new'prec, GetPrecision());
+	If ( LessThan(MathNth(PiCache,1), new'prec),
+	[
+		Set(new'pi, MathPi());
+		Set(PiCache, {new'prec, new'pi});
+		new'pi;
+	],
+	MathNth(PiCache,2)
+	);
+];
 
 Set(Numeric,False);
 Clear(Pi);
