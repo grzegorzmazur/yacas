@@ -119,3 +119,8 @@ Verify(PartitionsP(2),2);
 Verify(PartitionsP(3),3);
 Verify(PartitionsP(4),5);
 Verify(PartitionsP(13),101);
+// This takes about 18 seconds, useful for benchmarking
+//Verify( PartitionsP(4096), 6927233917602120527467409170319882882996950147283323368445315320451 );
+
+Verify(Euler(16),19391512145);
+

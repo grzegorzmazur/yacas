@@ -287,3 +287,5 @@ Verify(RoundTo(N(1/2+gamma+Pi), 19), 4.2188083184913260991);
 // From GSL 1.0
 Verify( RoundTo(N(PolyLog(2,-0.001)),20), -0.00099975011104865108 );
 
+Verify( Fibonacci(6,.5), 2.03125 );
+Verify( Fibonacci(3,.5), 1.25 );
