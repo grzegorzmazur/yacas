@@ -228,21 +228,35 @@ This is also faster on integers than the integer root algorithm if $b$ is very l
 The basic computational task here is to obtain the logarithm of a real number.
 However, sometimes only the integer part of the logarithm is needed and the logarithm is taken with respect to an integer base.
 For example, we might need to evaluate the integer part of $Ln(n)/Ln(2)$ where $n$ is a large integer, to find how many bits are needed to hold $n$.
-Computing this "integer logarithm" is an easier task than computing the logarithm in floating-point.
+Computing this "integer logarithm" is a much easier task than computing the logarithm in floating-point.
 
-Logarithms of complex numbers are easily reduced to elementary functions of real numbers, for example:
+Logarithms of complex numbers can be reduced to elementary functions of real numbers, for example:
 $$ Ln(a+I*b)=1/2*Ln(a^2+b^2)+I*ArcTan(b/a) $$.
 For a negative real number, we have
 $$ Ln(-x) = Ln(Abs(x))+I*Pi $$.
+This assumes, of course, an appropriate branch cut for the complex logarithm.
+A natural choice is to cut along the negative real semiaxis, $Im(z)=0$, $Re(z)<0$.
 
-	    Integer logarithms
+	    Integer logarithm
 
 *A logarithm!on integers
 
 The "integer logarithm", defined as the integer part of $Ln(x)/Ln(b)$, where $x$ and $b$ are integers, is computed using a special routine {IntLog(x,b)} with purely integer math.
 When both arguments are integers and only the integer part of the logarithm is needed, the integer logarithm is much faster than evaluating the full floating-point logarithm and truncating the result.
 
-The algorithm consists of (integer-) dividing $x$ by $b$ repeatedly until $x$ becomes 0 and counting the necessary number of divisions. A speed-up for large $x$ is achieved by first comparing $x$ with $b$, then with $b^2$, $b^4$, etc., without performing any divisions, until the factor $b^(2^n)$ is larger than $x$. At this point, $x$ is divided by that power of $b$ and the remaining value is iteratively compared with and divided by successively smaller powers of $b$.
+The basic algorithm consists of (integer-) dividing $x$ by $b$ repeatedly until $x$ becomes $0$ and counting the necessary number of divisions.
+If $x$ has $P$ digits and $b$ and $P$ are small numbers, then division is linear in $P$ and the total number of divisions is $O(P)$.
+Therefore this algorithm costs $O(P^2)$ operations.
+
+A speed-up for large $x$ is achieved by first comparing $x$ with $b$, then with $b^2$, $b^4$, etc., without performing any divisions.
+We perform $n$ such steps until the factor $b^(2^n)$ is larger than $x$.
+At this point, $x$ is divided by the previous power of $b$ and the remaining value is iteratively compared with and divided by successively smaller powers of $b$.
+The number of squarings needed to compute $b^(2^n)$ is logarithmic in $P$. However, the last few of these multiplications are long multiplications with numbers of length $P/4$, $P/2$, $P$ digits.
+These multiplications take the time $O(M(P))$.
+Then we need to perform another long division and a series of progressively shorter divisions.
+The total cost is still $O(M(P))$.
+For large $P$, the cost of multplication $M(P)$ is less than $O(P^2)$ and therefore this method is preferable. 
+
 
 	    Real logarithms
 
@@ -250,13 +264,41 @@ The algorithm consists of (integer-) dividing $x$ by $b$ repeatedly until $x$ be
 *A logarithm!by Taylor series
 
 The logarithm function $Ln(x)$ for general (real) $x$ such that $Abs(x)<1$ can be computed using the Taylor series,
-$$Ln(1+x) = x - x/2 + x^2/3 -...$$
-The series converges quite slowly unless $Abs(x)$ is very small.
+$$Ln(1+x) = x - x^2/2 + x^3/3 -...$$
+The series converges quite slowly unless $Abs(x)$ is small.
+For negative $x$, the series is monotonic,
+$$Ln(1-x) = - x - x^2/2 - x^3/3 -...$$,
+and the round-off error is somewhat smaller in that case (but not very much smaller, because this Taylor series is normally used only for very small $x$).
 
-*REM FIXME: estimate the necessary number of terms depending on the magnitude of x.
+Here is an estimate of the necessary number of terms to achieve a (relative) precision of $P$ decimal digits when computing $Ln(1+x)$.
+Suppose that $x$ is of order $10^(-N)$, where $N>=1$.
+The error after keeping $n$ terms is not greater than the first discarded term, $x^(n+1)/(n+1)$.
+The magnitude of the sum is approximately $x$, so the relative error is $x^n/(n+1)$ and this should be smaller than $10^(-P)$.
+We obtain a sufficient condition $n>P/N$.
 
-For values of $x$ that are not small, one first needs to make $x$ small.
-One way is to take several square roots, reducing $x$ to $x^(2^(-k))$, and then use the identity $Ln(x) = 2^k*Ln(x^(2^(-k)))$.
+All calculations need to be performed with $P$ digits of precision.
+The "rectangular" scheme for evaluating $n$ terms of the Taylor series needs about $2*Sqrt(n)$ long multiplications.
+Therefore the cost of this calculation is $2*Sqrt(P/N)*M(P)$.
+
+Note that we need to know $P+N$ digits of $1+x$ to be able to extract $P$ digits of $Ln(1+x)$.
+The $N$ extra digits will be lost when we subtract $1$ from $1+x$.
+
+This method allows to compute $Ln(x)$ efficiently when $x$ is very close to $1$ (i.e. for large $N$).
+For all other values of $x$ we first need to transform the function.
+One way is to take several square roots, reducing $x$ to $x^(2^(-k))$ until $x$ becomes close to $1$.
+Then we can compute $Ln(x^(2^(-k)))$ using the Taylor series and use the identity $Ln(x) = 2^k*Ln(x^(2^(-k)))$.
+
+The number of times to take the square root can be chosen to minimize the total computational cost.
+Each square root operation takes the time equivalent to a fixed number $c$ of long multiplications.
+(According to the estimate of [Brent 1975], $c<=>13/2$.)
+Suppose $x$ is initially of order $10^L$ where $L>0$.
+Then we can take the square root $k[1]$ times and reduce $x$ to about $1.33$.
+Here we can take $k[1]<=>Ln(L)/Ln(2)+3$.
+After that, we can take the square root $k[2]$ times and reduce $x$ to $1+10^(-N)$ with $N>=1$.
+For this we need $k[2]<=>1+N*Ln(10)/Ln(2)$ square roots.
+The cost of all square roots is $c*(k[1]+k[2])$ long multiplications.
+Now we can use the Taylor series and obtain $Ln(x^(2^(-k[1]-k[2])))$ in $2*Sqrt(P/N)$ multiplications.
+We can choose $N$ to minimize the total cost for a given $L$.
 
 *REM FIXME: estimate the roundoff error resulting from this and the number of operations.
 
@@ -283,7 +325,7 @@ smaller values of $x$ (but $x>1$),
 one can either raise $x$ to a large integer 
 power $r$ and then compute $1/r*Ln(x^r)$
 (this is quick only if $x$ is itself an integer or a rational),
-or multiply $x$ by a large integer power of 2
+or multiply $x$ by a large integer power of $2$
 and compute $Ln(2^s*x)-s*Ln(2)$ (this is better for floating-point $x$).
 Here the required powers are
 $$r=Ln(10^P*4)/(2*Ln(x))$$, $$s=P*Ln(10)/(2*Ln(2))+1-Ln(x)/Ln(2)$$. 
@@ -330,6 +372,11 @@ If $x$ is sufficiently small, e.g. $Abs(x)<10^(-M)$ and $M>Ln(P)/Ln(10)$, then i
 
 An alternative way to compute $x=Exp(a)$ if a fast logarithm routine is available would be to solve the equation $Ln(x)=a$.
 (This might be better at very large precision where the AGM method for the logarithm is asymptotically the fastest.)
+
+The Newton method gives the iteration
+$$ x'=x*(a+1-Ln(x)) $$.
+The iteration converges quadratically to $Exp(a)$ if the initial value of $x$ is close enough to that value.
+
 A cubically convergent formula is obtained if we replace $Ln(x)=a$ by an equivalent equation
 $$ (Ln(x)-a)/(Ln(x)-a-2) = 0$$.
 For this equation, Newton's method gives the iteration
