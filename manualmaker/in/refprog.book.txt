@@ -50,10 +50,10 @@ function bodies. The {[...]} construct is a syntactically nicer version of the
 
 *PARMS
 
-predicate -- expression returning {True} o
+predicate -- expression returning {True} or {False}
 
 *DESC
-If {predicate} doesn't evaluate to "True",
+If {predicate} doesn't evaluate to {True},
 then current operation will be stopped, and execution
 will jump right back to the command line, showing
 {error text}. Use this to assure that some condition
@@ -272,7 +272,11 @@ internet to be evaluated on a computer).
 
 			Built-in (core) functions
 
-*INTRO Yacas comes with a small core of built-in functions and a large library of user-defined functions. It is important for a developer to know which functions are built-in and cannot be redefined or {Retract}-ed. All core functions are listed in the file {yacasapi.cc} in the {src/} subdirectory of the Yacas source tree. The declarations typically look like this:
+*INTRO Yacas comes with a small core of built-in functions and a large library
+of user-defined functions. It is important for a developer to know which
+functions are built-in and cannot be redefined or {Retract}-ed. All core
+functions are listed in the file {yacasapi.cpp} in the {src/} subdirectory of
+the Yacas source tree. The declarations typically look like this:
 
 	SetCommand(LispSubtract, "MathSubtract");
 Here {LispSubtract} is the Yacas internal name for the function and {MathSubtract} is the name visible to the Yacas language.
@@ -384,9 +388,12 @@ should then at least be faster than the arbitrary precision versions.
 
 
 *CALL
-ShiftLeft(number,bits), ShiftRight(number,bits)
+	ShiftLeft(expr,bits)
+	ShiftRight(expr,bits)
 
-Shift bits to left or right.
+*DESC
+
+Shift bits to the left or to the right.
 
 
 			The Yacas plugin structure
