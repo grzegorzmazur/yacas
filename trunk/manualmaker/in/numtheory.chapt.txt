@@ -805,10 +805,10 @@ The Jacobi symbol can be efficiently computed without knowing the full factoriza
 
 *SEE Gcd
 
-*CMD GaussianFactors --- factorization in Gaussian Integers
+*CMD GaussianFactors --- factorization in Gaussian integers
 *STD
 *CALL
-	Factors(z)
+	GaussianFactors(z)
 
 *PARMS
 
@@ -816,14 +816,15 @@ The Jacobi symbol can be efficiently computed without knowing the full factoriza
 
 *DESC
 
-This function decomposes the Gaussian integer number {z} into a product of
+This function decomposes a Gaussian integer number {z} into a product of
 Gaussian prime factors. 
+A Gaussian integer is a complex number with integer real and imaginary parts.
 
 The factorization is returned as a list of pairs. The first member of
 each pair is the factor, while the second member denotes the power to
 which this factor should be raised. So the factorization
-$x = p1^n1 * ... * p9^n9$
-is returned as {{{p1,n1}, ..., {p9,n9}}}.
+$x = p[1]^n[1] * ... * p[9]^n[9]$
+is returned as the list {{{p1,n1}, ..., {p9,n9}}}.
 
 *E.G.
 
@@ -834,7 +835,7 @@ is returned as {{{p1,n1}, ..., {p9,n9}}}.
 
 *SEE Factors, IsGaussianPrime
 
-*CMD GaussianNorm --- norm of a Gaussian Integer
+*CMD GaussianNorm --- norm of a Gaussian integer
 *STD
 *CALL
 	GaussianNorm(z)
@@ -845,8 +846,8 @@ is returned as {{{p1,n1}, ..., {p9,n9}}}.
 
 *DESC
 
-This function returns the norm of a Guassian integer z=a+b*I, i.e.
-a^2+b^2
+This function returns the norm of a Gaussian integer $z=a+b*I$, defined as
+$a^2+b^2$.
 
 *E.G.
 
