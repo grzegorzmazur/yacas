@@ -1,8 +1,7 @@
 
 
-EXTRA_DIST = ABIN-grammar.txt ABIN.ys all.ys makefile.essays essays.book.txt\
-	yacasinit.ys MaintenanceHowto.txt .cvsignore \
-	Plugin_factory.txt txt2yacasdoc.txt
+EXTRA_DIST = all.ys makefile.essays \
+	yacasinit.ys .cvsignore
 
 all: essays
 
@@ -11,6 +10,3 @@ clean:
 
 essays:
 	make -f makefile.essays
-
-texdocs:
-	make texdocs -f makefile.essays
