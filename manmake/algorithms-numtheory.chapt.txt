@@ -1,15 +1,15 @@
 			Number theory algorithms
 
 *INTRO This chapter describes the algorithms used for computing various number-theoretic functions.
-A number-theoretic function is any function that takes integer arguments,
+We call "number-theoretic" any function that takes integer arguments,
 produces integer values, and is of interest to number theory.
 
 		Euclidean GCD algorithms
 
 *A GCD!binary Euclidean method
 
-The easiest case is the calculation of the GCD of two integers.
-The main algorithm for the integer GCD calculation is the binary Euclidean algorithm.
+The main algorithm for the calculation of the GCD of two integers
+is the binary Euclidean algorithm.
 It is based on the following identities: $ Gcd(a,b) = Gcd(b,a) $,
 $ Gcd(a,b) = Gcd(a-b,b)$, and for odd $b$, $Gcd(2*a,b) = Gcd(a,b)$.
 Thus we can produce a sequence of pairs with the same GCD as the original two numbers, and each pair will be at most half the size of the previous pair.
@@ -17,18 +17,27 @@ The number of steps is logarithmic in the number of digits in $a$, $b$.
 The only operations needed for this algorithm are binary shifts and subtractions (no modular division is necessary).
 The low-level function for this is {MathGcd}.
 
-		Prime numbers: the Miller-Rabin algorithm and its improvements
+To speed up the calculation when one of the numbers is much larger than another, one could use the property $Gcd(a,b)=Gcd(a,Mod(a,b))$.
+This will introduce an additional modular division into the algorithm; this is a slow operation when the numbers are large.
+
+		Prime numbers: the Miller-Rabin test and its improvements
 
 *A primality testing
 
-Small prime numbers $p<=65537$ are simply stored in a precomputed table as an array of 32768 bits; the bits corresponding to prime numbers are set to 1.
-This makes primality testing on small numbers very quick; the size of the table is only 4 KB.
+Small prime numbers
+*EVAL "$p<=" : (ToString()Write(FastIsPrime(0))) : "$"
+are simply stored in a precomputed table as an array of bits; the bits corresponding to prime numbers are set to 1.
+This makes primality testing on small numbers very quick.
+This is implemented by the function {FastIsPrime}.
 
 Primality of larger numbers is tested by the function {IsPrime} that uses the
-Miller-Rabin algorithm (initial implementation and documentation
-supplied by Christian Obrecht). This algorithm is deterministic for
-"small" numbers $n<3.4*10^13$ and probabilistic for larger numbers. In other words, it
-could sometimes flag a number as prime when in fact the number is
+Miller-Rabin algorithm.
+*FOOT Initial implementation and documentation was supplied by Christian Obrecht.
+This algorithm is deterministic (guaranteed correct within a certain running time) for
+"small" numbers $n<3.4*10^13$ and probabilistic
+(correct with high probability but not guaranteed) for larger numbers.
+In other words, the Miller-Rabin test
+could sometimes flag a large number $n$ as prime when in fact $n$ is
 composite; but the probability for this to happen can be made extremely
 small. The basic reference is [Rabin 1980].
 We also implemented some of the improvements suggested in [Davenport 1992].
@@ -36,21 +45,27 @@ We also implemented some of the improvements suggested in [Davenport 1992].
 *A primality testing!Fermat test
 *A primality testing!Miller-Rabin algorithm
 
-The idea of the Miller-Rabin algorithm is to improve the Fermat primality test. If $n$ is prime, then for any $x$ we have $Gcd(n,x)=1$. Then by Fermat's "little theorem", $x^(n-1):=Mod(1,n)$. (This is really a simple statement; if $n$ is prime, then $n-1$ nonzero remainders modulo $n$: 1, 2, ..., $n-1$ form a cyclic multiplicative group.) Therefore we pick some "base" integer $x$ and compute $Mod(x^(n-1), n)$; this is a quick computation even if $n$ is large. If this value is not equal to $1$ for some base $x$, then $n$ is definitely not prime. However, we cannot test <i>every</i> base $x<n$; instead we test only some $x$, so it may happen that we miss the right values of $x$ that would expose the non-primality of $n$. So Fermat's test sometimes fails, i.e. says that $n$ is prime when it is in fact not a prime. Also there are infinitely many integers called "Carmichael numbers" which are not prime but pass the Fermat test for every base.
+The idea of the Miller-Rabin algorithm is to improve the Fermat primality test. If $n$ is prime, then for any $x$ we have $Gcd(n,x)=1$. Then by Fermat's "little theorem", $x^(n-1):=Mod(1,n)$. (This is really a simple statement; if $n$ is prime, then $n-1$ nonzero remainders modulo $n$: 1, 2, ..., $n-1$ form a cyclic multiplicative group.) Therefore we pick some "base" integer $x$ and compute $Mod(x^(n-1), n)$; this is a quick computation even if $n$ is large. If this value is not equal to $1$ for some base $x$, then $n$ is definitely not prime.
+However, we cannot test <i>every</i> base $x<n$; instead we test only some $x$, so it may happen that we miss the right values of $x$ that would expose the non-primality of $n$.
+So Fermat's test sometimes fails, i.e. says that $n$ is a prime when $n$ is in fact not a prime.
+Also there are infinitely many integers called "Carmichael numbers" which are not prime but pass the Fermat test for every base.
 
 The Miller-Rabin algorithm improves on this by using the property that for prime $n$ there are no nontrivial square roots of unity in the ring of integers modulo $n$ (this is Lagrange's theorem). In other words, if $x^2:=Mod(1,n)$ for some $x$, then $x$ must be equal to $1$ or $-1$ modulo $n$. (Note that $n-1$ is equal to $-1$ modulo $n$, so $n-1$ is a trivial square root of unity modulo $n$.) In fact, if $n$ is prime, there must be no divisors of $1$ at all, i.e. no numbers $x$ and $y$, not equal to $1$ or $-1$ modulo $n$, such that $x*y:=Mod(1,n)$. If we find such $x$, $y$, then $Gcd(x,n)>1$ or $Gcd(y,n)>1$ and $n$ is not prime.
 
-We can check that $n$ is odd before applying any primality test. (A quick test $n^2:=Mod(1,24)$ guarantees that $n$ is not divisible by $2$ or $3$.) Then we note that in Fermat's test, the power $n-1$ is certainly a composite number because $n-1$ is even. So if we first find the largest power of $2$ in $n-1$ and decompose $n-1=2^r*q$ with $q$ odd, then $x^(n-1):=Mod(a^(2^r),n)$ where $a:=Mod(x^q,n)$. (Here $r>=1$ since $n$ is odd.) In other words, the number $Mod(x^(n-1),n)$ is obtained by repeated squaring of the number $a$ that we can easily find. We get a sequence of $r$ repeated squares: $a$, $a^2$, ..., $a^(2^r)$. 
-The last element of this sequence must be $1$ if $n$ passes the Fermat test. (If it does not pass, $n$ must be a composite number.) If $n$ passed the Fermat test, the previous element of the sequence of squares is a square root of unity modulo $n$. We can check whether this square root is non-trivial (i.e. not equal to $1$ or $-1$ modulo $n$). If it is non-trivial, then $n$ definitely cannot be a prime. If it is trivial and equal to $1$, we can check the preceding element, and so on. If an element is equal to $-1$, we cannot say anything, i.e. the test passes ($n$ is "probably a prime").
+We can check that $n$ is odd before applying any primality test. (A test $n^2:=Mod(1,24)$ guarantees that $n$ is not divisible by $2$ or $3$.
+For large $n$ it is faster to first compute $Mod(n,24)$ rather than $n^2$, or test $n$ directly.)
+Then we note that in Fermat's test the number $n-1$ is certainly a composite number because $n-1$ is even. So if we first find the largest power of $2$ in $n-1$ and decompose $n-1=2^r*q$ with $q$ odd, then $x^(n-1):=Mod(a^(2^r),n)$ where $a:=Mod(x^q,n)$. (Here $r>=1$ since $n$ is odd.) In other words, the number $Mod(x^(n-1),n)$ is obtained by repeated squaring of the number $a$.
+We get a sequence of $r$ repeated squares: $a$, $a^2$, ..., $a^(2^r)$.
+The last element of this sequence must be $1$ if $n$ passes the Fermat test.
+(If it does not pass, $n$ is definitely a composite number.)
+If $n$ passes the Fermat test, the last-but-one element $a^(2^(r-1))$ of the sequence of squares is a square root of unity modulo $n$.
+We can check whether this square root is non-trivial (i.e. not equal to $1$ or $-1$ modulo $n$). If it is non-trivial, then $n$ definitely cannot be a prime. If it is trivial and equal to $1$, we can check the preceding element, and so on. If an element is equal to $-1$, we cannot say anything, i.e. the test passes ($n$ is "probably a prime").
  
 This procedure can be summarized like this:
 *	1. Find the largest power of $2$ in $n-1$ and an odd number $q$ such that $n-1=2^r*q$.
 *	2. Select the "base number" $x<n$. Compute the sequence $a:=Mod(x^q,n)$, $a^2$, $a^4$, ..., $a^(2^r)$ by repeated squaring modulo $n$. This sequence contains at least two elements since $r>=1$.
 *	3. If $a=1$ or $a=n-1$, the test passes on the base number $x$. Otherwise, the test passes if at least one of the elements of the sequence is equal to $n-1$ and fails if none of them are equal to $n-1$. 
-This simplified procedure works because the first element that is equal to $1$ <i>must</i> be preceded by a $-1$, or else we'd found a root of unity.
-
-A practical application of this procedure needs to select particular base numbers. 
-It is advantageous (according to [Pomerance <i>et al.</i> 1980]) to choose <i>prime</i> numbers $b$ as bases, because for a composite base $b=p*q$, if $n$ is a strong pseudoprime for both $p$ and $q$, then it is very probable that $n$ is a strong pseudoprime also for $b$, so composite bases rarely give new information.
+This simplified procedure works because the first element that is equal to $1$ <i>must</i> be preceded by a $-1$, or else we would find a nontrivial root of unity.
 
 Here is a more formal definition.
 An odd integer $n$ is called <i>strongly-probably-prime</i> for base $b$ if
@@ -59,7 +74,15 @@ or
 $b^(q*2^i):=Mod(n-1,n)$ for some $i$ such that $0 <= i < r$,
 where $q$ and $r$ are such that $q$ is odd and $n-1 = q*2^r$.
 
-An additional check suggested by [Davenport 1992] is activated if $r>2$ (i.e. if $n:=Mod(1,4)$ which is true for only 1/2 of all odd numbers). If $i>=1$ is found such that $b^(q*2^i):=Mod(n-1,n)$, then $b^(q*2^(i-1))$ is a square root of $-1$ modulo $n$. If $n$ is prime, there may be only two different square roots of $-1$. Therefore we should store the set of found values of roots; if there are more than two such roots, then we have found roots $s1$, $s2$ of $-1$ such that $0!=Mod(s1+s2+1,n)$. Then $s1^2-s2^2:=Mod(0,n)$ and $n$ is definitely composite because e.g. $Gcd(s1+s2,n)>1$. This check costs very little computational effort but guards against some strong pseudoprimes.
+A practical application of this procedure needs to select particular base numbers. 
+It is advantageous (according to [Pomerance <i>et al.</i> 1980]) to choose <i>prime</i> numbers $b$ as bases, because for a composite base $b=p*q$, if $n$ is a strong pseudoprime for both $p$ and $q$, then it is very probable that $n$ is a strong pseudoprime also for $b$, so composite bases rarely give new information.
+
+An additional check suggested by [Davenport 1992] is activated if $r>2$ (i.e. if $n:=Mod(1,8)$ which is true for only 1/4 of all odd numbers).
+If $i>=1$ is found such that $b^(q*2^i):=Mod(n-1,n)$, then $b^(q*2^(i-1))$ is a square root of $-1$ modulo $n$.
+If $n$ is prime, there may be only two different square roots of $-1$.
+Therefore we should store the set of found values of roots of $-1$; if there are more than two such roots, then we woill find some roots $s1$, $s2$ of $-1$ such that $s1+s2!=Mod(0,n)$.
+But $s1^2-s2^2:=Mod(0,n)$.
+Therefore $n$ is definitely composite, e.g. $Gcd(s1+s2,n)>1$. This check costs very little computational effort but guards against some strong pseudoprimes.
 
 Yet another small improvement comes from [Damgard <i>et al.</i> 1993].
 They found that the strong primality test sometimes (rarely) passes on
@@ -67,24 +90,31 @@ composite numbers $n$ for more than $1/8$ of all bases $x<n$ if $n$ is such
 that either $3*n+1$ or $8*n+1$ is a perfect square, or if $n$ is a
 Carmichael number. Checking Carmichael numbers is slow, but it is easy to show that
 if $n$ is a large enough prime number, then neither $3*n+1$, nor $8*n+1$,
-nor any $s*n+1$ with small integer $s$ can be a perfect square. (If
-$s*n+1=r^2$, then $s*n=(r-1)*(r+1)$.) Testing for a perfect square is quick
-and does not slow down the routine very much. This is however not
-implemented in Yacas because it seems that perfect squares are rare enough
-for this improvement not to be very significant.
+nor any $s*n+1$ with small integer $s$ can be a perfect square.
+[If
+$s*n+1=r^2$, then $s*n=(r-1)*(r+1)$.]
+Testing for a perfect square is quick
+and does not slow down the algorithm.
+This is however not
+implemented in Yacas because it seems that perfect squares are too rare
+for this improvement to be significant.
 
 *A primality testing!strong pseudoprimes
 
 If an integer is not "strongly-probably-prime" for a given base $b$, then it is
-a composite number. However, the reciprocal is false, i.e. "strongly-probably-prime" numbers can actually be composite. Composite strongly-probably-prime numbers for
+a composite number.
+However, the converse statement is false, i.e. "strongly-probably-prime" numbers can actually be composite.
+Composite strongly-probably-prime numbers for
 base $b$ are called <i>strong pseudoprimes</i> for base $b$. There is a theorem that if $n$ is
 composite, then among all numbers $b$ such that $1 < b < n$, at most one fourth
 are such that $n$ is a strong pseudoprime for base $b$.
+Therefore if $n$ is strongly-probably-prime for many bases, then the probability for $n$ to be composite is very small.
 
-For numbers less than $B=34155071728321$, exhaustive computations have shown
+For numbers less than $B=34155071728321$, exhaustive
+*FOOT And surely exhausting.
+computations have shown
 that there are no strong pseudoprimes simultaneously for bases 2, 3, 5, 7, 11, 13
-and 17. This leads to a very simple and quick way to check whether a number is
-prime, provided it is smaller than $B$.
+and 17. This gives a simple and reliable primality test for integers below $B$.
 If $n >= B$, the Rabin-Miller method consists in checking if $n$ is
 strongly-probably-prime for $k$ base numbers $b$.
 The base numbers are chosen to be consecutive "weak pseudoprimes" that are easy to generate (see below the function {NextPseudoPrime}).
@@ -96,27 +126,30 @@ make the probability of erroneously passing the test $p < 10^(-25)$. (Note that
 this is <i>not</i> the same as the probability to give an incorrect answer,
 because all numbers that do not pass the test are definitely composite.) The
 probability for the test to pass mistakenly on a given number is found as
-follows. Suppose the number of bases $k$ is fixed. Then the probability for a
+follows.
+Suppose the number of bases $k$ is fixed. Then the probability for a
 given composite number to pass the test is less than $p[f]=4^(-k)$. The
 probability for a given number $n$ to be prime is roughly $p[p]=1/Ln(n)$ and to
-be composite $p[c]=1-1/Ln(n)$. Prime numbers never fail the test. Therefore, the probability for the test to pass is $p[f]*p[c]+p[p]$ and the probability for pass erroneously is
+be composite $p[c]=1-1/Ln(n)$. Prime numbers never fail the test.
+Therefore, the probability for the test to pass is $p[f]*p[c]+p[p]$ and the probability to pass erroneously is
 $$ p = (p[f]*p[c])/(p[f]*p[c]+p[p]) < Ln(n)*4^(-k) $$.
 To make $p<epsilon$, it is enough to select $k=1/Ln(4)*(Ln(n)-Ln(epsilon))$.
 
 Before calling {MillerRabin}, the function {IsPrime} performs two quick
-checks: first, for $n>=4$ it checks that $n^2:=Mod(1,24)$ (all primes larger than 4 must satisfy this); second, for $n>257$, it
-checks that $n$ does not contain small prime factors $p<=257$. This is
-checked by evaluating the GCD of $n$ with the product of all primes up
-to 257. The computation of GCD is very quick and saves time in case a
+checks:
+first, for $n>=4$ it checks that $n$ is not divisible by 2 or 3 
+(all primes larger than 4 must satisfy this);
+second, for $n>257$, it checks that $n$ does not contain small prime factors $p<=257$.
+This is checked by evaluating the GCD of $n$ with the precomputed product of all primes up to 257.
+The computation of the GCD is quick and saves time in case a
 small prime factor is present.
 
 *A {NextPrime}
 
-There are also a function {NextPrime(n)} that returns the smallest prime number larger than {n}. 
+There is also a function {NextPrime(n)} that returns the smallest prime number larger than {n}. 
 This function uses a sequence 5,7,11,13,... generated by the function {NextPseudoPrime}.
-This sequence
-contains numbers not divisible by 2 or 3 (but perhaps divisible by 5,7,...). The function {NextPseudoPrime} 
-is very fast because it does not perform a full primality test.
+This sequence contains numbers not divisible by 2 or 3 (but perhaps divisible by 5,7,...).
+The function {NextPseudoPrime} is very fast because it does not perform a full primality test.
 
 The function {NextPrime} however does check each of these pseudoprimes using {IsPrime} and finds the first prime number.
 
@@ -127,11 +160,13 @@ The function {NextPrime} however does check each of these pseudoprimes using {Is
 
 *A {Factor}
 
-Factorization of integers is implemented by functions {Factor} and {Factors}. Both functions 
-try to find all prime factors of a given integer $n$. (Before doing this, the primality 
-checking algorithm is used to detect whether $n$ is a prime number.)
+When we find from the primality test that an integer $n$ is composite, we usually do not obtain any factors of $n$.
+Factorization is implemented by functions {Factor} and {Factors}.
+Both functions use the same algorithms to find all prime factors of a given integer $n$.
+(Before doing this, the primality checking algorithm is used to detect whether $n$ is a prime number.)
 Factorization consists of repeatedly finding a factor, i.e. an 
 integer $f$ such that $Mod(n, f)=0$, and dividing $n$ by $f$.
+(Of course, each fastor $f$ needs to be factorized too.)
 
 *A factorization of integers!small prime factors
 
@@ -320,49 +355,48 @@ With internal Yacas math, the recurrence relation is faster for $n<300$ or so,
 and for larger $n$ the RHR algorithm is faster.
 
 
-		Miscellaneous number-theoretic functions
+		Miscellaneous functions
 
 *A divisors
 
-The function {Divisors} currently returns the number of divisors an integer has, while
-{DivisorsSum} returns the sum of these factors. (The current
+The function {Divisors} currently returns the number of divisors of integer, while {DivisorsSum} returns the sum of these divisors.
+(The current
 algorithms need to factor the number.) The following theorem is used:
 
-Let $ p[1]^k[1]* ... *p[r]^k[r] $ be the prime factorization of n, where $r$ is the
-number of prime factors, and $k[r]$ is the multiplicity of $r$-th factor. Then:
-
-$ Divisors(n) = (k[1]+1)*...*(k[r]+1) $,
-
-$ DivisorsSum(n) = ( ((p[1]^(k[1]+1) - 1)/(p[1]-1)))*...*(p[r]^(k[r]+1)-1)/(p[r]-1) $.
+Let $ p[1]^k[1]* ... *p[r]^k[r] $ be the prime factorization of $n$, where $r$ is the
+number of prime factors and $k[r]$ is the multiplicity of the $r$-th factor. Then
+$$ Divisors(n) = (k[1]+1)*...*(k[r]+1) $$,
+$$ DivisorsSum(n) = ( ((p[1]^(k[1]+1) - 1)/(p[1]-1)))*...*(p[r]^(k[r]+1)-1)/(p[r]-1) $$.
 
 *A divisors!proper
 
-The functions {ProperDivisors} and {ProperDivisorsSum} are functions that do the above,
-except they ignore the actual number $n$ itself as a divisor. They are given by:
+The functions {ProperDivisors} and {ProperDivisorsSum} are functions that do the same as the above functions,
+except they do not consider the number $n$ as a divisor for itself.
+These functions are defined by:
 
 $ ProperDivisors(n) = Divisors(n) - 1 $,
 
 $ ProperDivisorsSum(n) = DivisorsSum(n) - n $.
 
-Another number-theoretic function is {Moebius}, which is defined as
-follows: $Moebius(n)=(-1)^r$ if no factors are repeated, $Moebius(n)=0$ if
+Another number-theoretic function is {Moebius}, defined as
+follows:
+$Moebius(n)=(-1)^r$ if no factors of $n$ are repeated, $Moebius(n)=0$ if
 some factors are repeated, and $Moebius(n)=1$ if $n = 1$.
-
-This again requires to factor the number completely and investigate the
+This again requires to factor the number $n$ completely and investigate the
 properties of its prime factors. From
 the definition, it can be seen that if $n$ is prime, then $Moebius(n) = -1 $. The predicate
-{IsSquareFree(n)} then reduces to $Moebius(n)!=0$, which means no factors are repeated.
+{IsSquareFree(n)} then reduces to $Moebius(n)!=0$, which means that no factors of $n$ are repeated.
 
 
 		Gaussian integers
 
 *A Gaussian integers
 
-A Gaussian integer is a complex number of the form $ z = a+b*I$, where $a$ and 
+A "Gaussian integer" is a complex number of the form $ z = a+b*I$, where $a$ and 
 $b$ are ordinary (rational) integers.
 *FOOT To distinguish ordinary integers from Gaussian integers, the ordinary integers (with no imaginary part) are called "rational integers".
 The ring of Gaussian integers is usually
-denoted by $Z[i]$ in the mathematical literature. It is an example of a ring of
+denoted by $Z$[$I$] in the mathematical literature. It is an example of a ring of
 algebraic integers.
 
 The function {GaussianNorm} computes the norm $N(z)=a^2+b^2$ of $z$.
@@ -371,7 +405,7 @@ plays a fundamental role in the arithmetic of Gaussian integers, since it has
 the multiplicative property:
 $$ N(z.w) = N(z).N(w) $$.
 
-A unit in a ring is an element that divides any other element in the ring. 
+A unit of a ring is an element that divides any other element of the ring.
 There are four units in the Gaussian integers: $1$, $-1$, $I$, $-I$. They are 
 exactly the Gaussian integers whose norm is $1$. The predicate {IsGaussianUnit} 
 tests for a Gaussian unit.
@@ -384,27 +418,26 @@ its associates. It can be shown that the primes in the ring of Gaussian
 integers are:
 *	1. $1+i$ and its associates.
 *	2. The rational (ordinary) primes of the form $4*n+3$.
-*	3. The factors $a+b*I$ of rational primes $p$ of the form $4*n+1$, whose norm is $p$. 
+*	3. The factors $a+b*I$ of rational primes $p$ of the form $p=4*n+1$, whose norm is $p=a^2+b^2$. 
 
 For example, $7$ is prime as a Gaussian integer, while $5$ is not, since
-$$ 5 = (2+I)*(2-I) $$.
+$ 5 = (2+I)*(2-I) $.
+Here $2+I$ is a Gaussian prime.
 
 *A {Factors}
 
 The ring of Gaussian integers is an example of an Euclidean ring, i.e. a ring 
-where there is a division algorithm, and this makes possible to compute the 
-greatest common divisor using Euclid's algorithm. This is what the function {GaussianGcd} computes. 
+where there is a division algorithm.
+This makes it possible to compute the greatest common divisor using Euclid's algorithm. This is what the function {GaussianGcd} computes. 
 
-As a consequence, it is possible to prove a version of the  fundamental 
+As a consequence, one can prove a version of the fundamental 
 theorem of arithmetic for this ring: The expression of a Gaussian 
 integer as a product of primes is unique, apart from the order of primes, the
 presence of units, and the ambiguities between associated primes.
 
 The function {GaussianFactors} finds this expression of a Gaussian integer 
-$z$ as the product of Gaussian primes, and returns the result as a list of 
-elements of the form {{p,e}} where $p$ is a Gaussian prime and $e$ is the 
-corresponding exponent.
-
+$z$ as the product of Gaussian primes, and returns the result
+as a list of pairs {{p,e}}, where $p$ is a Gaussian prime and $e$ is the corresponding exponent.
 To do that, an auxiliary function called {GaussianFactorPrime} is used. This 
 function finds a factor of a rational prime of the form $4*n+1$. We 
 compute  $a := (2*n)!$ (mod p). By Wilson's theorem $a^2$ is congruent to
@@ -412,9 +445,9 @@ $-1$ (mod $p$), and it follows that $p$ divides $(a+I)*(a-I)=a^2+1$ in the
 Gaussian  integers. The desired factor is then the {GaussianGcd} of $a+I$ 
 and $p$. If the result is $a+b*I$, then $p=a^2+b^2$. 
 
-If $z$ is a real integer, we factor $z$ in the Gaussian integers, by first 
+If $z$ is a rational (i.e. real) integer, we factor $z$ in the Gaussian integers by first 
 factoring it in the rational integers, and after that by factoring each of 
-the integer prime factors in the complex integers.
+the integer prime factors in the Gaussian integers.
  
 If $z$ is not a rational integer, we find its possible Gaussian prime factors
 by first factoring its norm $N(z)$ and then computing the exponent of each of 

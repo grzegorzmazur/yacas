@@ -8,7 +8,7 @@ $$Gamma(z):=Integrate(z, 0, Infinity) Exp(-t)*t^(z-1)$$.
 The Gamma function satisfies several identities that can be proved by
 rearranging this integral; for example, $Gamma(z+1)=z*Gamma(z)$. This identity
 defines $Gamma(z)$ for all complex $z$. The Gamma function is regular
-everywhere except nonpositive integers (0, -1, -2, ...) where it diverges.
+everywhere except nonpositive integers ($0$, $-1$, $-2$, ...) where it diverges.
 
 	    Special arguments
 
@@ -21,15 +21,20 @@ become a little simpler when written in factorials.
 
 The Gamma function is implemented as {Gamma(x)}. At integer values {n} of the
 argument, {Gamma(n)} is computed exactly.
-It only makes sense to compute exact integer factorials for small numbers $n$.
+Because of overflow, it only makes sense to compute exact integer factorials for small numbers $n$.
 Currently a warning message is printed if a factorial of $n>65535$ is requested.
 
-For half-integer arguments it is
+For half-integer arguments $Gamma(x)$ is
 also computed exactly, using the following identities (here $n$ is a
-nonnegative integer):
+nonnegative integer and we use the factorial notation):
 $$ (+(2*n+1)/2)! = Sqrt(Pi)*(2*n+1)! / (2^(2*n+1)*n!) $$,
 $$ (-(2*n+1)/2)! = (-1)^n*Sqrt(Pi) * (2^(2*n)*n!) / (2*n)! $$.
 For efficiency, "double factorials" are used in this calculation.
+The "double factorial" is defined as
+$n!! = n*(n-2)*...$ and satisfies the identities
+$$ (2*n-1)!! = (2*n)! /(2^n*n!) $$,
+$$ (2*n)!! = 2^n*n! $$.
+For convenience, one defines $0! = 1$, $0!! = 1$, $(-1)!! = 1$.
 
 If the factorial of a large integer or half-integer $n$ needs to be computed not exactly but only with a certain floating-point precision, it is faster (for large enough $Abs(n)$) not to evaluate an exact integer product, but to use the floating-point numerical approximation.
 This method is currently not implemented in Yacas.
@@ -38,26 +43,32 @@ This method is currently not implemented in Yacas.
 
 There is also the famous Stirling's asymptotic formula for large factorials,
 $$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)+1/(12*n)-1/(360*n^3)+...$$
+An analogous formula for double factorials can be easily found.
+
+	    Method 0: power series (rational arguments)
 
 *A Gamma function!rational arguments
 
-For "small" rational arguments, i.e. for numbers $s=p/q$ where $p$, $q$ are small integers, [Haible <i>et al.</i> 1998] give a faster method for computing $Gamma(s)$.
-Partial integration repeated many times gives the expansion
+For "small" rational arguments, i.e. for numbers $s=p/q$ where $p$, $q$ are small integers, there is a faster method for computing $Gamma(s)$.
+This method was used in [Smith 2001].
+[Haible <i>et al.</i> 1998] give this method in conjunction with the binary splitting technique.
+
+Repeated partial integration gives the expansion
 $$ Gamma(s) = M^s*Exp(-M)*Sum(n,0,Infinity,M^n/(s*(s+1)*...*(s+n))) $$
 $$ + (Integrate(u,M,Infinity) u^(s-1)*Exp(-u)) $$.
 Suppose that $1<=s<=2$.
-Then the last integral is smaller than $M*Exp(-M)$.
-By choosing $M$ large enough, this can be made small enough to discard that integral.
-Then we can evaluate the series using the binary splitting technique.
+Then the remainder is given by the last integral that is smaller than $M*Exp(-M)$.
+By choosing $M$ a large enough integer, the remainder can be made small enough to discard it.
+Then we obtain a series of rational numbers that can be evaluated directly in $O(P^2)$ time or using the binary splitting technique in $O(M(P*Ln(P))*Ln(P))$ time.
 This method is currently not implemented in Yacas.
 
 	    Method 1: the Lanczos-Spouge formula
 
 *A Gamma function!by Lanczos-Spouge method
 
-For arbitrary complex arguments with nonnegative real part, the library
+For arbitrary complex arguments with nonnegative real part, the
 function {GammaNum(x)} computes a uniform appoximation of Lanczos [Lanczos 1964] modified by Spouge [Spouge 1994].
-(See also [Godfrey 2001] for some more explanations on the method.)
+(See also [Godfrey 2001] for some more explanations.)
 
 The method gives the $Gamma$-function only for arguments with positive
 real part; at negative values of the real part of the argument, the
@@ -98,7 +109,7 @@ true floating-point computation but rather uses fixed-point logic; this hinders 
 floating-point numbers. (This concern does not apply to Yacas linked with
 {gmp}.) In the current version of the {GammaNum()} function, two workarounds
 are implemented. First, a Horner scheme is used to compute the sum; this is somewhat
-faster and leads to smaller roundoff errors. Second, intermediate calculations
+faster and leads to smaller round-off errors. Second, intermediate calculations
 are performed at 40{%} higher precision than requested. This is much slower but
 allows to obtain results at desired precision.
 
@@ -203,14 +214,14 @@ The terms of the series are however not monotonic: first the terms grow and then
 The ratio of the ($k+1$)-th term to the $k$-th term is approximately $M/(k+1)$.
 Therefore the terms with $k<=>M$ will be the largest and will have the magnitude of order $M^M/M! <=>Exp(M)<=>10^P$.
 In other words, we will be adding and subtracting large numbers with $P$ digits before the decimal point, but we need to obtain a result with $P$ digits after the decimal point.
-Therefore to avoid the roundoff error we need to increase the working precision to $2*P$ floating-point decimal digits.
+Therefore to avoid the round-off error we need to increase the working precision to $2*P$ floating-point decimal digits.
 
 It is quicker to compute this series if $x$ is a small rational number, because then the long multiplications can be avoided, or at high enough precision the binary splitting can be used.
 Calculations are also somewhat faster if $M$ is chosen as an integer value.
 
 If the second integral is approximated by an asymptotic series instead of a constant $Exp(-M)$,
 then it turns out that the smallest error of the series is $Exp(-2*M)$.
-Therefore we can choose a smaller value of $M$ and the roundoff error gets somewhat smaller.
+Therefore we can choose a smaller value of $M$ and the round-off error gets somewhat smaller.
 According to [Brent 1978], we then need only $3/2*P$ digits of working precision, rather than $2*P$, for computing the first series
 (and only $P/2$ digits for computing the second series).
 However, this computational savings may not be significant enough to justify computing a second series.
@@ -263,7 +274,7 @@ $k[max]<=>2.07*P$.
 
 Therefore, this method of computing $gamma$ has "linear convergence", i.e. the number of iterations is linear in the number of correct digits we need in the result.
 Of course, all calculations need to be performed with the working precision.
-The working precision must be a few digits more than $P$ because we accumulate about $Ln(k[max])/Ln(10)$ digits of roundoff error by performing $k[max]$ arithmetic operations.
+The working precision must be a few digits more than $P$ because we accumulate about $Ln(k[max])/Ln(10)$ digits of round-off error by performing $k[max]$ arithmetic operations.
 
 Brent mentions a small improvement on this method (his method "B3").
 It consists of estimating the error of the approximation of $gamma$ by an asymptotic series.
@@ -303,12 +314,12 @@ $$ B[k] = p(k)*B[k-1] $$,
 $$ A[k]=p(k)*A[k-1]+q(k)*B[k] $$.
 All multiplications and divisions in these recurrence relations are performed with short integers, so the long multiplications are avoided.
 The time complexity of this method is $O(P^2)$ where $P$ is the required number of digits.
-A variant of binary splitting method can be used to reduce the complexity to $$ which gives an asymptotic advantage at very high precision.
+A variant of binary splitting method can be used to reduce the complexity to $O(M(P*Ln(P))*Ln(P))$ which gives an asymptotic advantage at very high precision.
 
 Also, it turns out that we can use a variant of the fast "rectangular method" to evaluate the series for $U(n)$ and $V(n)$ simultaneously.
 (We can consider these series as Taylor series in $n^2$.)
 This however does not speed up the evaluation of $gamma$.
-This happens because the rectangular method requires long multiplications and leads in this case to increased roundoff errors.
+This happens because the rectangular method requires long multiplications and leads in this case to increased round-off errors.
 The rectangular method for computing a power series in $x$ is less efficient than a straightforward computation when $x$ is a "short" rational or integer number.
 
 The "rectangular method" for computing $Sum(k,0,N,x^k*A[k])$ needs to be able to convert a coefficient of the Taylor series into the next coefficient $A[k+1]$ by "short" operations, more precisely, by some multiplications and divisions by integers of order $k$.
@@ -782,7 +793,7 @@ The eigenvalue of the sequence $e[k]$ can be found approximately for large $k$ i
 $$ Sum(j,0,k-1,(-lambda)^(k-j)*((2*Pi)^(2*j)/((2*j+1)!)) ) <=> lambda^k*Sin((2*Pi)/Sqrt(lambda)) <=> 0 $$,
 which means that $lambda=4$ is a solution. Therefore the recurrence is unstable.
 
-By a very similar calculation one finds that the inverse powers of $4$ in Brent's recurrence make the largest eigenvalue of the error sequence $e[k]$ almost equal to $1$ and therefore the recurrence is stable. Brent gives the relative error in the computed $C[k]$ as $O(k^2)$ times the roundoff error in the last digit of precision.
+By a very similar calculation one finds that the inverse powers of $4$ in Brent's recurrence make the largest eigenvalue of the error sequence $e[k]$ almost equal to $1$ and therefore the recurrence is stable. Brent gives the relative error in the computed $C[k]$ as $O(k^2)$ times the round-off error in the last digit of precision.
 
 *A Bernoulli numbers!by recurrence!cost estimate
 
@@ -832,7 +843,7 @@ We need to choose a good method to compute $Erf(z)$ with (relative) precision $P
 decimal digits for a given (complex) number $z$, and to obtain estimates for the
 necessary number of terms to take.
 
-Both Taylor series converge absolutely for all $z$, but they do not converge uniformly fast; in fact these series are not very useful for large $z$ because a very large number of slowly decreasing terms gives a significant contribution to the result, and the roundoff error (especially for the first series with the alternating signs) becomes too high. Both series converge well for $Abs(z)<1$.
+Both Taylor series converge absolutely for all $z$, but they do not converge uniformly fast; in fact these series are not very useful for large $z$ because a very large number of slowly decreasing terms gives a significant contribution to the result, and the round-off error (especially for the first series with the alternating signs) becomes too high. Both series converge well for $Abs(z)<1$.
 
 *A error function $Erf(x)$!by Taylor series
 
