@@ -1,4 +1,30 @@
 
+LocalSymbols(realvars,rest)
+[
+  OutBracket(_expr) <--
+  [
+    MM(x);
+    Local(terms);
+    realvars:=MultiExpressionList(expr);
+    terms:=MM(expr,realvars)[2];
+    coefs:=FillList(Infinity,Length(realvars));
+    SparseTreeMap("OutBracketOp",Length(realvars),terms);
+    rest:=0;
+    SparseTreeMap("OutBracketRemove",Length(realvars),terms);
+    Factorize(realvars^coefs)*rest;
+  ];
+  OutBracketOp(deg,coef) :=
+  [ 
+    If(Not(IsZero(coef)),coefs:=Map(Min,{deg,coefs}));
+    coef;
+  ];
+  OutBracketRemove(deg,coef) :=
+  [ 
+    rest:=rest+coef*Factorize(realvars^(deg-coefs));
+  ];
+];
+
+EndOfFile;
 
 
   Function() RuleSet'Make(name,rules);
