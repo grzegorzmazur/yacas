@@ -24,7 +24,7 @@ static void initGMPNumber(GMPNumber& x, long y=0);
 static void initGMPNumber(GMPNumber& x, char* str);
 static void initGMPNumber(GMPNumber& x, mpz_t mpz);
 static void clearGMPNumber(GMPNumber& x);
-static void SetGMPNumber(GMPNumber& r, mpf_t x);
+static void ConvToGMPNumber(GMPNumber& r, mpf_t x, long prec=0);
 static char* getstrGMPNumber(GMPNumber& x, long prec=0);
 static LispStringPtr GMPNumberToString(GMPNumber& x, LispHashTable& h, 
                                        LispInt prec=0);
@@ -37,10 +37,6 @@ static void GMPNumberMultiply(GMPNumber& r, GMPNumber& x,
                               GMPNumber& y, long prec);
 static void GMPNumberDivide(GMPNumber& r, GMPNumber& x, 
                                  GMPNumber& y, long prec);
-static void GMPNumberDivideTrunc(GMPNumber& r, GMPNumber& x, unsigned long i, 
-                            long prec);
-static void GMPNumberDivideTrunc(GMPNumber& r, GMPNumber& x, 
-                                 GMPNumber& y, long prec);
 static void GMPNumberInvert(GMPNumber& r, GMPNumber& x, long prec);
 static void GMPNumberPower(GMPNumber& r, GMPNumber& x, long e, long prec);
 static void GMPNumberNeg(GMPNumber& r, GMPNumber& x);
@@ -52,15 +48,15 @@ static void GMPNumberDiv(GMPNumber& r, GMPNumber& x, GMPNumber& y);
 static void GMPNumberMod(GMPNumber& r, GMPNumber& x, GMPNumber& y);
 static void GMPNumberSqrt(GMPNumber& r, GMPNumber& x, long prec);
 static void GMPNumberExp(GMPNumber& r, GMPNumber& x, long prec);
+static void GMPNumberLog(GMPNumber& r, GMPNumber& x, long prec);
 static void GMPNumberPi(GMPNumber& r, long prec);
 static void GMPNumberShiftLeft(GMPNumber& r, GMPNumber& x, unsigned long d);
 static void GMPNumberShiftRight(GMPNumber& r, GMPNumber& x, unsigned long d);
 static void SetMPFPrecision(LispInt aPrecision);
 
 static LispStringPtr IntegerToString(mpz_t& aInt, LispHashTable& aHashTable);
-static LispStringPtr FloatToString(mpf_t& aInt, LispHashTable& aHashTable
-                                  , LispInt aBase = 10);
-static LispStringPtr EFloat( LispHashTable& aHashTable, LispInt aPrecision);
+static LispStringPtr FloatToString(mpf_t& aInt, LispHashTable& aHashTable, 
+                                   LispInt aBase = 10);
 
 LispInt NumericSupportForMantissa()
 {
@@ -154,11 +150,11 @@ void clearGMPNumber(GMPNumber& x)
   mpz_clear(x.man);
 }
 
-static void SetGMPNumber(GMPNumber& r, mpf_t x) {
+static void ConvToGMPNumber(GMPNumber& r, mpf_t x, long prec) {
   mp_exp_t expt;
-  char* str=mpf_get_str(NULL,&expt,10,0,x);
+  char* str=mpf_get_str(NULL,&expt,10,prec,x);
   mpz_set_str(r.man,str,10);
-  r.exp=expt-strlen(str);
+  r.exp=expt-strlen(str)+(mpz_sgn(r.man)<0);
   free(str);
 }
 
@@ -371,42 +367,6 @@ void GMPNumberDivide(GMPNumber& r, GMPNumber& x, GMPNumber& y, long prec)
   }
 }
 
-void GMPNumberDivideTrunc(GMPNumber& r, GMPNumber& x, unsigned long i, long prec)
-{
-  GMPNumber integer;
-  initGMPNumber(integer,i);
-  GMPNumberDivideTrunc(r,x,integer,prec);
-}
-
-static void GMPNumberDivideTrunc(GMPNumber& r, GMPNumber& x, 
-                                 GMPNumber& y, long prec)
-{
-  int neg = mpz_sgn(x.man)/mpz_sgn(y.man);
-  if (neg) {
-    long e = prec + x.exp - y.exp;
-    if (e<prec) e=prec;
-    e<<=2;
-    mpz_mul_2exp(r.man,x.man,e);
-    mpz_tdiv_q(r.man,r.man,y.man);
-    mpz_t factor;
-    mpz_init_set_ui(factor,10);
-    mpz_pow_ui(factor,factor,prec);
-    mpz_mul(r.man,r.man,factor);
-    mpz_fdiv_q_2exp(r.man,r.man,e);
-    long exp = -(x.exp-y.exp-prec);
-    if (exp>prec && exp>mpz_sizeinbase(x.man,10)+prec) {
-      mpz_set_ui(r.man,0);
-      r.exp = 0;
-    } else {
-      r.exp = -exp;
-    }
-    mpz_clear(factor);
-  } else {
-    mpz_set_ui(r.man,0);
-    r.exp = 0;
-  }
-}
-
 static void GMPNumberSqrt(GMPNumber& r, GMPNumber& x, long prec)
 {
   int neg = mpz_sgn(x.man);
@@ -475,8 +435,9 @@ void GMPNumberPower(GMPNumber& r, GMPNumber& x, long e, long prec)
 
 static void GMPNumberExp(GMPNumber& r, GMPNumber& x, long prec)
 {
+  mpf_set_default_prec(prec<<2);
   mpf_t e;
-  mpf_init2(e,prec<<2);
+  mpf_init(e);
   mpf_set_z(e,x.man);
   mpz_t factor;
   mpz_init_set_ui(factor,10);
@@ -508,13 +469,13 @@ static void GMPNumberExp(GMPNumber& r, GMPNumber& x, long prec)
   mpf_clear(t);
   mpf_clear(s1);
   mpf_clear(e);
-  SetGMPNumber(r,s);
+  ConvToGMPNumber(r,s,prec);
   mpf_clear(s);
 }
 
 static void GMPNumberLog(GMPNumber& r, GMPNumber& x, long prec)
 {
-  mpf_set_default_prec((prec<<2)+mpz_sizeinbase(x.man,2));
+  mpf_set_default_prec(prec<<2);
   mpf_t y;
   mpf_init(y);
   mpf_set_z(y,x.man);
@@ -562,7 +523,7 @@ static void GMPNumberLog(GMPNumber& r, GMPNumber& x, long prec)
   mpf_clear(y);
   mpf_neg(s,s);
   mpf_mul_2exp(s,s,n);
-  SetGMPNumber(r,s);
+  ConvToGMPNumber(r,s,0);
   mpf_clear(s);
 }
 
@@ -617,7 +578,7 @@ static void GMPNumberPi(GMPNumber& r, long prec)
   mpf_clear(t1);
   mpf_clear(negfourth);
   mpf_clear(g);
-  SetGMPNumber(r,s);
+  ConvToGMPNumber(r,s,prec+1);
   mpf_clear(s);
 }
 
@@ -742,7 +703,7 @@ LispStringPtr AddFloat(LispCharPtr int1, LispCharPtr int2,
   initGMPNumber(x,int1);
   initGMPNumber(y,int2);
   GMPNumberAdd(r,x,y);        
-  LispStringPtr result = GMPNumberToString(r, aHashTable, 0);
+  LispStringPtr result = GMPNumberToString(r, aHashTable, aPrecision);
   clearGMPNumber(r);
   clearGMPNumber(x);
   clearGMPNumber(y);
@@ -756,7 +717,7 @@ LispStringPtr PlusFloat(LispCharPtr int1,LispHashTable& aHashTable
 // TODO: is this routine ever really used?
   GMPNumber x;
   initGMPNumber(x,int1);
-  LispStringPtr result = GMPNumberToString(x, aHashTable, 0);
+  LispStringPtr result = GMPNumberToString(x, aHashTable, aPrecision);
   clearGMPNumber(x);
   return result;
 }
@@ -769,7 +730,7 @@ LispStringPtr SubtractFloat(LispCharPtr int1, LispCharPtr int2,
   initGMPNumber(x,int1);
   initGMPNumber(y,int2);
   GMPNumberSubtract(r,x,y);        
-  LispStringPtr result = GMPNumberToString(r, aHashTable, 0);
+  LispStringPtr result = GMPNumberToString(r, aHashTable, aPrecision);
   clearGMPNumber(r);
   clearGMPNumber(x);
   clearGMPNumber(y);
@@ -782,7 +743,7 @@ LispStringPtr NegateFloat(LispCharPtr int1, LispHashTable& aHashTable
   GMPNumber x;
   initGMPNumber(x,int1);
   GMPNumberNeg(x,x);
-  LispStringPtr result = GMPNumberToString(x, aHashTable, 0);
+  LispStringPtr result = GMPNumberToString(x, aHashTable, aPrecision);
   clearGMPNumber(x);
   return result;
 }
@@ -795,7 +756,7 @@ LispStringPtr DivideFloat(LispCharPtr int1, LispCharPtr int2,
   initGMPNumber(x,int1);
   initGMPNumber(y,int2);
   GMPNumberDivide(r,x,y,aPrecision);        
-  LispStringPtr result = GMPNumberToString(r, aHashTable, 0);
+  LispStringPtr result = GMPNumberToString(r, aHashTable, aPrecision);
   clearGMPNumber(r);
   clearGMPNumber(x);
   clearGMPNumber(y);
@@ -896,7 +857,7 @@ LispStringPtr SqrtFloat(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPre
   GMPNumber x;
   initGMPNumber(x,int1);
   GMPNumberSqrt(x,x,aPrecision);
-  LispStringPtr result = GMPNumberToString(x, aHashTable, 0);
+  LispStringPtr result = GMPNumberToString(x, aHashTable, aPrecision);
   clearGMPNumber(x);
   return result;
 }
@@ -1048,35 +1009,11 @@ LispStringPtr DivFloat( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHash
   initGMPNumber(x,int1);
   initGMPNumber(y,int2);
   GMPNumberDiv(r,x,y);        
-  LispStringPtr result = GMPNumberToString(r, aHashTable, 0);
+  LispStringPtr result = GMPNumberToString(r, aHashTable, aPrecision);
   clearGMPNumber(r);
   clearGMPNumber(x);
   clearGMPNumber(y);
   return result;
-}
-
-LispStringPtr EFloat( LispHashTable& aHashTable,
-                        LispInt aPrecision)
-{
-    SetMPFPrecision(aPrecision);
-    mpf_t s;
-    mpf_t s1;
-    mpf_t t;
-    mpf_init_set_ui(s,1);
-    mpf_init_set_ui(t,1);
-    mpf_init(s1);
-    unsigned long i;
-    for(i=2;;i++) {
-       mpf_add(s1,s,t);
-       if (!mpf_cmp(s,s1)) break;
-       mpf_set(s,s1);
-       mpf_div_ui(t,t,i);
-    }
-    LispStringPtr result = FloatToString(s, aHashTable);
-    mpf_clear(s);
-    mpf_clear(t);
-    mpf_clear(s1);
-    return result;
 }
 
 LispStringPtr PiFloat( LispHashTable& aHashTable,
