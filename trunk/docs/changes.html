@@ -6,6 +6,7 @@
 <FONT face="Helvetica" size="3">
 <h1>Release of version 1.0.54 (???, 2002)</h1>
 <ul>
+  <li> New build option --with-numlib=... instead of --enable-gmp (JN)
   <li> Fixed bug: Sqrt(4) not simplifying to 2 the first time it was typed. (AP)
   <li> Daniel fixed a bug: EPOC version now runs again on a Psion PDA!
   <li> Fixed bug: relating to the Sqrt(4) bug. Yacas will now always load
@@ -34,7 +35,7 @@
   <li> Added {IsSmallPrime}, a table look-up of small prime numbers (SW)
   <li> Added a small "glossary" section to refman, with explanations
        of terms, users can now type e.g. ?arity or ?rules (SW)
-  <li> Added some facilities for literate programming to docs (SW)
+  <li> Added some facilities for literate programming (SW)
   <li> Added GPL-related blurb to Yacas startup screen and to docs (SW)
   <li> Initial changes to avoid rebuilding the whole HTML manual (SW)
   <li> Improved Trace, with test code, supplied by Dirk Reusch. (AP)
@@ -45,7 +46,7 @@
        the up and down arrow will browse through history using the
        string before the cursor as a prefix filter.(AP)
   <li> Initial version of the new numerics class encapsulating 
-       a numeric library. (AP,SW)
+       a numeric library. New numerics supports precision tracking. (AP,SW)
   <li> Larger history by default: 1024 lines. I think no one
        who uses Yacas will mind a 50Kb history file in their directory,
        and the original default of 50 seemed too small. (AP)
@@ -66,8 +67,7 @@
        flag '--server <port>' on the command line to yacas, after which
        it is a server. You can telnet to it, type a string, and return
        back a result. (AP)
-  <li> Added initial support for macro expansion, needs to be documented
-       still. (AP)
+  <li> Added initial support for macro expansion. (AP)
   <li> Finished macros, with support for listed (variable-length)
        arguments, and implemented a function {Macro} which does
        the same as {Function}, but for macros. (AP)
