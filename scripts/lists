@@ -161,7 +161,7 @@ Function("BubbleSort",{list,compare})
 
 
 /* VarList: return the variables this expression depends on. */
-Function("VarList",{expr})  RemoveDuplicates(VarListAll(expr));
+Function("VarList",{expr})  RemoveDuplicates(VarListAll(N(expr)));
 
 /*
  * RuleBase for VarListAll: recursively traverse na expression looking
