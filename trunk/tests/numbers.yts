@@ -1,0 +1,4 @@
+
+Verify( CatalanNumber(6), 132 );
+Verify( CatalanNumber(10), 16796 );
+Verify( Fibonacci(242), 168083057059453008835412295811648513482449585399521 );
