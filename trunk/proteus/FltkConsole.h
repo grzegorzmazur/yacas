@@ -24,6 +24,8 @@ public:
     virtual int IsEditable();
     /// Whether the user can see the input line of this object
     virtual int InputIsVisible();
+    /// Saving to file
+    virtual void Save(FILE* f) = 0;
 };
 
 
@@ -36,6 +38,7 @@ public:
     virtual int height(int draw_input=1);
     inline LispString& Text() {return iText;};
     virtual LispCharPtr input();
+    virtual void Save(FILE* f);
 private:
     LispString iText;
     int iColor;
@@ -55,6 +58,7 @@ public:
     virtual LispCharPtr input();
     virtual int IsEditable();
     virtual int InputIsVisible();
+    virtual void Save(FILE* f);
 private:
     CDeletingArrayGrower<ConsoleOutBase*> iConsoleOut;
     int iShowInput;
@@ -98,6 +102,7 @@ public:
     void handle_key(int key);
     void SetInput(LispCharPtr aText, LispInt nr);
     void LoadNotePad(LispCharPtr aFile);
+    void SaveNotePad(LispCharPtr aFile);
     inline void ShowInput(int aShowInput)     {iShowInput   = aShowInput;};
     inline void EnableInput(int aEnableInput) {iEnableInput = aEnableInput;};
     void DeleteAll();
