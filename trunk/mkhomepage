@@ -6,6 +6,7 @@ cd homepage
 if [ -d backups ] ; then : ; else  mkdir backups ; fi; 
 cp ../manualmaker/*.html .
 cp ../docs/*.gif ../docs/*.html .
+cp yacas.html index.html
 cd backups
 mv ../../yacas-*.tar.gz .
 cd ..
