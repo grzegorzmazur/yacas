@@ -1,4 +1,4 @@
-
+//#include <stdio.h>
 #include "tokenizer.h"
 
 /* Default parse algorithm:
@@ -54,7 +54,7 @@ LispStringPtr LispTokenizer::NextToken(LispInput& aInput,
 {
     LispChar c;
     LispInt firstpos;
-    
+
 REDO:
     firstpos = aInput.Position();
 
@@ -63,6 +63,7 @@ REDO:
         goto FINISH;
 
     c = aInput.Next();
+    //printf("%c",c);
 
     //Parse brackets
     if (c == '(')      {}
@@ -95,6 +96,12 @@ REDO:
             goto REDO;
         }
         goto FALSEALARM;
+    }
+    else if (c == '/' && aInput.Peek() == '/')
+    {
+        aInput.Next(); //consume /
+        while (aInput.Next() != '\n' && !aInput.EndOfStream());
+        goto REDO;
     }
     // parse literal strings
     else if (c == '\"')
@@ -167,6 +174,5 @@ REDO:
 FINISH:
     return aHashTable.LookUpCounted(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos);
 }
-
 
 
