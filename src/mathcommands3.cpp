@@ -687,13 +687,68 @@ void LispBitXor(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 void LispFromBase(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{//FIXME
-    LispArithmetic2(aEnvironment, aResult, aArguments, FromBase,LispTrue);
+{
+    TESTARGS(3);
+
+    // Get the base to convert to:
+    // Evaluate first argument, and store result in oper
+    LispPtr oper;
+    InternalEval(aEnvironment, oper, Argument(aArguments,1));
+    // Check that result is a number, and that it is in fact an integer
+    RefPtr<BigNumber> num; num = oper.Get()->Number(aEnvironment.Precision());
+    CHK_ARG(num.Ptr() != NULL,1);
+    CHK_ARG(num->IsInt(),1);
+
+    // Get a short platform integer from the first argument
+    LispStringPtr str1;
+    str1 = oper.Get()->String();
+    CHK_ARG(str1 != NULL,1);
+    LispInt base = InternalAsciiToInt(str1->String());
+
+    // Get the number to convert
+    LispPtr fromNum;
+    InternalEval(aEnvironment, fromNum, Argument(aArguments,2));
+    LispStringPtr str2;
+    str2 = fromNum.Get()->String();
+    CHK_ARG(str2 != NULL,2);
+
+    // convert using correct base
+    BigNumber *z = NEW BigNumber(str2->String(),aEnvironment.Precision(),base);
+    aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+
+//TODO remove old code    LispArithmetic2(aEnvironment, aResult, aArguments, FromBase,LispTrue);
 }
 void LispToBase(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{//FIXME
-    LispArithmetic2(aEnvironment, aResult, aArguments, ToBase);
+{
+    TESTARGS(3);
+
+    // Get the base to convert to:
+    // Evaluate first argument, and store result in oper
+    LispPtr oper;
+    InternalEval(aEnvironment, oper, Argument(aArguments,1));
+    // Check that result is a number, and that it is in fact an integer
+    RefPtr<BigNumber> num; num = oper.Get()->Number(aEnvironment.Precision());
+    CHK_ARG(num.Ptr() != NULL,1);
+    CHK_ARG(num->IsInt(),1);
+
+    // Get a short platform integer from the first argument
+    LispStringPtr str1;
+    str1 = oper.Get()->String();
+    CHK_ARG(str1 != NULL,1);
+    LispInt base = InternalAsciiToInt(str1->String());
+
+    // Get the number to convert
+    RefPtr<BigNumber> x;
+    GetNumber(x,aEnvironment, aArguments, 2);
+
+    // convert using correct base
+    LispString str;
+    x->ToString(str,aEnvironment.Precision(),base);
+    // Get unique string from hash table, and create an atom from it.
+    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str.String())));
+
+//TODO remove old code?    LispArithmetic2(aEnvironment, aResult, aArguments, ToBase);
 }
 
 

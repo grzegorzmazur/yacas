@@ -137,6 +137,7 @@ void IntToAscii(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
 
 LispInt WordDigits(LispInt aPrecision, LispInt aBase)
 {
+    if (aPrecision == 0) return 0;
     LispInt bitsPerBase=0;
 
     while (aBase!=0)
@@ -1391,6 +1392,37 @@ LispBoolean Significant(ANumber& a)
 
 void ANumber::ChangePrecision(LispInt aPrecision)
 {
+  //First, round.
+/* TODO not working correctly yet 
+  //TODO code bloat! Deserves its own routine!
+  if (iExp>1)
+  {
+    PlatWord* ptr = (PlatWord*)iArray;
+    if (*ptr < (WordBase/2))
+    {
+      *ptr = 0;
+    }
+    else
+    {
+      *ptr = 0;
+      PlatDoubleWord carry=1;
+      LispInt i,nr=NrItems();
+      for (i=1;i<nr;i++)
+      {
+          PlatDoubleWord dword = ptr[i]+carry;
+          ptr[i] = dword%WordBase;
+          carry = dword / WordBase;
+      }
+      if (carry)
+      {
+        Append(carry);
+      }
+    }
+  }
+ */
+
+
+
   LispInt oldExp = iExp;
   
   iPrecision = aPrecision;

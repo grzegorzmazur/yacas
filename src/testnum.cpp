@@ -120,7 +120,8 @@ void TestTypes1(double value)
 // test floats
 	x.SetTo(value);
 	Check(!x.IsInt(), "set to float type");
-	Check(x.Double()==value, "value is correct");
+  double returned_value =x.Double();
+  Check(returned_value==value, "value is correct");
 // value doesn't have to be float
 	//	Check(!x.IsIntValue(), "is not an integer value");
 	x.BecomeFloat();
@@ -139,7 +140,8 @@ void TestTypes1(double value)
 	Check(y.IsInt() && y.IsIntValue(), "y is integer");
 
 	x.Negate(x);	// negate a float
-	Check(x.Double()==-value, "value is negated");
+	returned_value = x.Double();
+  Check(returned_value==-value, "value is negated");
 	Check(x.Sign()==-sign, "sign is correct");
 	x.BecomeInt();
 	Check(x.IsInt(), "converted to integer type");
