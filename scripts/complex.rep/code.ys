@@ -137,4 +137,10 @@ Function("Magnitude",{x}) [
 40 # Arg(Complex(r_IsNegativeReal,i_IsPositiveReal)) <-- Pi+ArcTan(i/r);
 50 # Arg(Complex(r_IsNegativeReal,i_IsNegativeReal)) <-- ArcTan(i/r)-Pi;
 
+// returns the n roots of unity
+Function("RootsOfUnity",{n})[
+	Check(IsPositiveInteger(n),"RootsOfUnity: argument must be a positive integer");
+	MapSingle({{k},Exp(2*Pi*I*k/n)}, 1 .. n );
+
+];
 
