@@ -691,7 +691,7 @@ for the program to be able to catch the error and continue.
 
 The "soft" error reporting is provided by the functions {Assert} and {IsError}, e.g.
 	Assert(x>0, "domain") x;
-	If(IsError(), ...);
+	If(IsError("domain"), ...);
 The error will be reported but execution will continue normally until
 some other function "handles" the error (prints the error message or
 does something else appropriate for that error). Here the string
@@ -705,6 +705,7 @@ accumulates all reported error objects. When errors are "handled",
 their objects should be removed from the list. The utility function
 {DumpErrors()} is a simple error handler that prints all errors and
 clears the list.
+Other handlers are {GetError} and {ClearError}. These functions may be used to handle errors when it is safe to do so.
 
 The "soft" error reporting facility is safer and more flexible than the
 "hard" facility. However, the disadvantage is that errors are not

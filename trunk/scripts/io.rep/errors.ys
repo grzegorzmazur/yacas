@@ -7,16 +7,25 @@ Set(ErrorTableau, {});
 
 ClearErrors() <-- Set(ErrorTableau, {});
 
+/// aux function to check for corrupt tableau
 CheckErrorTableau() <--
-If(	// check for corrupt tableau
+If(
 	Not IsList(ErrorTableau),
 	Set(ErrorTableau, {{"general", "corrupted ErrorTableau"}})
 );
 
+/// check for errors
 IsError() <--
 [
 	CheckErrorTableau();
 	Length(ErrorTableau)>0;
+];
+
+/// check for errors of a given kind
+IsError(error'class_IsString) <--
+[
+	CheckErrorTableau();
+	ErrorTableau[error'class] != Empty;
 ];
 
 /// post an error if assertion fails
@@ -26,7 +35,7 @@ IsError() <--
 	If(Equals(predicate, True),	// if it does not evaluate to True, it's an error
 		True,
 		[	// error occurred, need to post error'object
-			Push(ErrorTableau, {error'class, error'object});
+			DestructiveAppend(ErrorTableau, {error'class, error'object});
 			False;
 		]
 	);
@@ -55,5 +64,20 @@ DumpErrors() <--
 	];
 	ClearErrors();
 ];
+
+/// obtain error object
+GetError(error'class_IsString) <--
+[
+	Local(error);
+	error := ErrorTableau[error'class];
+	If(
+		error != Empty,
+		error,
+		False
+	);
+];
+
+/// delete error
+ClearError(error'class_IsString) <-- AssocDelete(ErrorTableau, error'class);
 
 //////////////////////////////////////////////////
