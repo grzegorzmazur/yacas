@@ -1,11 +1,3 @@
-			Arbitrary precision numerical algorithms
-
-*INTRO This chapter documents some numerical algorithms used in Yacas for exact
-integer calculations as well as for multiple precision floating-point
-calculations, gives brief descriptions of the non-trivial algorithms and
-estimates of the computational cost. Most of the algorithms are taken from referenced literature; the remaining algorithms were developed by us.
-
-
 		Basic arithmetic
 
 Currently, Yacas uses either internal math (the {yacasnumbers} library) or the
@@ -13,12 +5,12 @@ GNU multiple precision library {gmp}. The algorithms for basic arithmetic in
 the internal math mode are currently rather slow compared with {gmp}. If $P$ is
 the number of digits of precision, then multiplication and division take
 $M(P)=O(P^2)$ operations in the internal math. (Of course, multiplication and division by a short integer takes time linear in $P$.) Much faster algorithms for long multiplication
-(Karatsuba / Toom-Cook / FFT, Newton-Raphson division etc.) are
-implemented in {gmp} where at large precision $M(P)=O(P*Ln(P))$. In the
-computation cost estimations of this chapter we shall assume that $M(P)$ is at
-least linear in $P$. 
+(Karatsuba, Toom-Cook, FFT, Newton-Raphson division etc.) are
+implemented in {gmp} where the cost of multiplication is $M(P)=O(P*Ln(P))$ for very large precision. For the
+estimates of computation cost in this book we shall assume that $M(P)$ is at
+least linear in $P$ and maybe slower.
 
-Warning: calculations with internal math with precision exceeding 10,000 digits are currently impractically slow.
+Warning: calculations with internal Yacas math using precision exceeding 10,000 digits are currently impractically slow.
 
 In some algorithms it is necessary to compute the integer parts of expressions such as $a*Ln(b)/Ln(10)$ or $a*Ln(10)/Ln(2)$ where $a$, $b$ are short integers of order $O(P)$. Such expressions are frequently needed to estimate the number of terms in the Taylor series or similar parameters of the algorithms. In these cases, it is important that the result is not underestimated but it would be wasteful to compute $Ln(10)/Ln(2)$ in floating point only to discard most of that information by taking the integer part of say $1000*Ln(10)/Ln(2)$. It is more efficient to approximate such constants from above by short rational numbers, for example, $Ln(10)/Ln(2) < 28738/8651$ and $Ln(2) < 7050/10171$. The error of such an approximation will be small enough for practical purposes. The function {NearRational} can be used to find optimal rational approximations. The function {IntLog} (see below) efficiently computes the integer part of a logarithm in integer base. If more precision is desired in calculating $Ln(a)/Ln(b)$ for integer $a$, $b$, one can compute $IntLog(a^k,b)$ for some integer $k$ and then divide by $k$.
 
@@ -46,23 +38,23 @@ points $a$, $a[1]:=(a+b)/2$, $b$, $b[1]:=(b+c)/2$, $c$.
 *	 2. If currently $depth <= 0$, return this list of 5 points and
 values because we cannot refine the grid any more.
 *	 3. Otherwise check that the function does not change sign too
-rapidly on the interval. The formal criterion is that among these 5 points there are always
-at least 2 consecutive points of equal sign. Checking is done by
+rapidly on the interval [$a$, $c$]. The formal criterion is that among these 5 points there must not be
+two consecutive changes of sign. For example, the signs "+, +, -, -, +" change "slowly enough" but "-, +, -, -, -" do not. We use
 the following procedure: Mark the sequence of signs of the values
-$f(x)$ at the 5 grid points, e.g. "0, +, -, +, +". Here "0" stands
+$f(x)$ at the 5 grid points; e.g. "0, +, -, +, +". Here "0" stands
 for zero. Then, for each pair of consecutive signs, write "1" if
 the signs are different and "0" otherwise. If one of the signs is
 0, then also write "0". E.g. we get the sequence of 4 bits "0, 1,
 1, 0". Each "1" stands for a sign change. Then, for each pair of
-consecutive bits, write the logical AND of these bits. E.g.: 0, 1,
+consecutive bits, write the logical {And} of these bits. E.g.: 0, 1,
 0. Each "1" now signifies that two sign changes occurred, one
-right after another. If we have all "0" now, then the sign changes
-are "slow enough". Otherwise they are not "slow enough". We can
+right after another. If we have all "0" now, then the signs change
+"slowly enough". Otherwise they are not "slow enough". We can
 compute the logical OR of these 3 bits to test this. In our
 example we get 1. This means that we have a sign change that is
 too rapid.
-If the sign is not changing "slow enough" within the interval
-[a,c], then we need to refine the grid; go to step 5. Otherwise,
+If the sign is not changing "slowly enough" within the interval
+[$a$, $c$], then we need to refine the grid; go to step 5. Otherwise,
 go to step 4.
 *	 4. Check that the function values are smooth enough through the
 interval. Smoothness is controlled by a parameter $epsilon$. The
@@ -88,35 +80,21 @@ returned.
 This algorithm works well if the initial number of points and the {depth}
 parameter are large enough.
 
-Singularities in the function are handled by the step 3. Namely, the algorithm checks whether the function returns a non-number (e.g. {Infinity}) and if so, the sign change is always considered to be "too rapid". Thus, the intervals immediately adjacent to the singularity will be plotted at the highest allowed refinement level. When plotting the resulting data, the singular points are simply not printed the data file and the plotting programs do not have any problems.
+Singularities in the function are handled by the step 3. Namely, the algorithm checks whether the function returns a non-number (e.g. {Infinity}) and if so, the sign change is always considered to be "too rapid". Thus, the intervals immediately adjacent to the singularity will be plotted at the highest allowed refinement level. When plotting the resulting data, the singular points are simply not printed to the data file and the plotting programs do not have any problems.
 
 The meaning of Newton-Cotes quadrature coefficients is that an integral is approximated as
 
 $$(Integrate(x,a[0],a[n]) f(x)) <=> h*Sum(k,0,n,c[k]*f(a[k]))$$,
 where $h:=a[1]-a[0]$ is the grid step, $a[k]$ are the grid points, and
-$c[k]$ are the quadrature coefficients. These coefficients are independent
+$c[k]$ are the quadrature coefficients. These coefficients $c[k]$ are independent
 of the function $f(x)$ and can be precomputed
-in advance for any grid $a[k]$ (not necessarily with constant step
+in advance for a given grid $a[k]$ (not necessarily a grid with constant step
 $h=a[k]-a[k-1]$).
 The Newton-Cotes coefficients $c[k]$ for
 grids with a constant step $h$ can be found, for example, by solving a system of equations,
 $$Sum(k, 0, n, c[k]*k^p) = n^(p+1)/(p+1)$$
-for $p=0$, 1, ..., $n$. This system of equations means that the coefficients $c[k]$ correctly approximate the integrals of functions $f(x)=x^p$ over the interval (0,$n$).
+for $p=0$, 1, ..., $n$. This system of equations means that the quadrature correctly approximates the integrals of $p+1$ functions $f(x)=x^p$, $p=0$, 1, ..., $n$, over the interval (0,$n$).
 
 The solution of this system always exists and gives quadrature coefficients as rational numbers. For example, the Simpson quadrature $c[0]=1/6$, $c[1]=2/3$, $c[2]=1/6$ is obtained with $n=2$.
 
 In the same way it is possible to find quadratures for the integral over a subinterval rather than over the whole interval of $x$. In the current implementation of the adaptive plotting algorithm, two quadratures are used: the 3-point quadrature ($n=2$) and the 4-point quadrature ($n=3$) for the integral over the first subinterval, $Integrate(x,a[0],a[1]) f(x)$. Their coefficients are ($5/12$, $2/3$, $-1/12$) and ($3/8$, $19/24$, $-5/24$, $1/24$). 
-
-*INCLUDE algorithms-elemfunc.chapt
-*INCLUDE algorithms-specfunc.chapt
-
-
-*INCLUDE algorithms-numtheory.chapt
-
-			Symbolic algebra algorithms
-
-*INCLUDE algorithms-multivar.chapt
-
-*INCLUDE algorithms-integration.chapt
-
-*INCLUDE SturmSequences.chapt

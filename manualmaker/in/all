@@ -39,6 +39,9 @@ Load("refprog.book");
 
   GarbageCollect();
 
+InitBook("Algo");
+Load("Algo.book");
+
 /* Emit framed version of the manual. */
 SelectBook("intro");
 EmitHtmlFramed();
@@ -59,6 +62,13 @@ EmitHtmlFramed();
 SelectBook("coding");
 EmitHtmlFramed();
 
+  GarbageCollect();
+
+SelectBook("Algo");
+EmitHtmlFramed();
+
+  GarbageCollect();
+
 SelectBook("essays");
 EmitHtmlFramed();
 //EmitHtmlSimple();
@@ -68,6 +78,12 @@ EmitHtmlFramed();
 GroupBooks("ref","refprog");
 SelectBook("ref");
 EmitHtmlSimple();
+
+  GarbageCollect();
+
+SelectBook("Algo");
+EmitHtmlFramed();
+
 
   GarbageCollect();
 

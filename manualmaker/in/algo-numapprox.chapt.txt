@@ -1,0 +1,223 @@
+
+		Continued fractions
+
+	    Approximation of numbers by continued fractions
+
+The function {ContFrac} converts a (rational) number $r$ into a regular
+continued fraction,
+$$ r = n[0] + 1/(n[1] + 1/(n[2]+...)) $$.
+Here all numbers $n[i]$ ("terms" of a continued fraction) are integers and all except $n[0]$ must be positive.
+(Continued fractions may not converge unless their terms are positive and
+bounded from below.)
+
+The algorithm for converting a rational number $r=n/m$ into a continued
+fraction is simple. First, we determine the integer part of $r$, which is
+$Div(n,m)$. If it is negative, we need to subtract one, so that $r=n[0]+x$ and
+the remainder $x$ is nonnegative and less than $1$. The remainder
+$x=Mod(n,m)/m$ is then inverted, $r[1] := 1/x = m/Mod(n,m)$ and so we have
+completed the first step in the decomposition, $r = n[0] + 1/r[1]$; now $n[0]$
+is integer but $r[1]$ is perhaps not integer. We repeat the same procedure on
+$r[1]$, obtain the next integer term $n[1]$ and the remainder $r[2]$ and so on,
+until such $n$ that $r[n]$ is an integer and there is no more work to do. This
+process will always terminate because all floating-point values are actually
+rationals in disguise.
+
+Continued fractions are useful in many ways. For example, if we know that a
+certain number $x$ is rational but have only a floating-point representation of
+$x$ with a limited precision, say, 1.5662650602409638, we can try to guess its
+rational form (in this example $x=130/83$). The function {GuessRational} uses
+continued fractions to find a rational number with "optimal" (small) numerator
+and denominator that is approximately equal to a given floating-point number.
+
+Consider the following example. The number $17/3$ has a continued fraction
+expansion {{5,1,2}}. Evaluated as a floating point number with limited
+precision, it may become something like $17/3+0.00001$, where the small number
+represents a roundoff error. The continued fraction expansion of this number is
+{{5, 1, 2, 11110, 1, 5, 1, 3, 2777, 2}}. The presence of an unnaturally large
+term $11110$ clearly signifies the place where the floating-point error was
+introduced; all terms following it should be discarded to recover the continued fraction {{5,1,2}} and from it the initial number $17/3$.
+
+If a continued fraction for a number $x$ is
+cut right before an unusually large term, and
+evaluated, the resulting rational number is very close to close to $x$ but has an unusually small
+denominator. This works because partial continued fractions provide "optimal"
+rational approximations for the final (irrational) number, and because the
+magnitude of the terms of the partial fraction is related to the magnitude of
+the denominator of the resulting rational approximation.
+
+{GuessRational(x, prec)} needs to choose the place where it should cut the
+continued fraction. The algorithm for this is somewhat less precise than it
+could be but it works well enough. The idea is to cut the continued fraction
+when adding one more term would change the result by less than the specified
+precision. To realize this in practice, we need an estimate of how much a
+continued fraction changes when we add one term.
+
+The routine {GuessRational} uses an easy upper bound for the difference of continued fractions that differ only by an additional last term:
+$$ Abs(delta) := Abs( 1/(a[1]+1/(...+1/a[n])) - 1/(a[1]+1/(...+1/a[n+1])) ) < 1/ ((a[1]*...*a[n])^2 * a[n+1]) $$.
+Thus we should compute the product of successive terms $a[i]$ of the continued fraction and stop at $a[n]$ at which this product exceeds the maximum number of digits. The routine {GuessRational} has a second parameter {prec} which is by default 1/2 times the number of decimal digits of current precision; it stops at $a[n]$ at which the product $a[1]*...*a[n]$ exceeds $10^prec$.
+
+The above estimate for $delta$ hinges on the inequality
+$$ 1/(a+1/(b+...)) < 1/a $$
+and is suboptimal if some terms $a[i]=1$, because the product of $a[i]$ does not increase when one of the terms is equal to 1, whereas in fact these terms do make $delta$ smaller. A somewhat better estimate would be obtained if we use the inequality
+$$ 1/(a+1/(b+1/(c+...))) < 1/(a+1/(b+1/c)) $$.
+This does not lead to a significant improvement if $a>1$ but makes a difference when $a=1$. In the product $a[1]*...*a[n]$, the terms $a[i]$ which are equal to 1 should be replaced by
+$$ a[i]+1/(a[i+1]+1/a[i+2])$$.
+Since the comparison of $a[1]*...*a[n]$ with $10^prec$ is qualitative, it it enough to do calculations for it with limited precision.
+
+This algorithm works well if $x$ is computed with enough precision; namely, it
+must be computed to at least as many digits as there are in the numerator and
+the denominator of the fraction combined. Also, the parameter {prec} should not
+be too large (or else the algorithm will find another rational number with a larger
+denominator that approximates $x$ "better" than the precision to which you know $x$).
+
+The related function {NearRational(x, prec)} works somewhat differently. The
+goal is to find an "optimal" rational number, i.e. with smallest numerator and
+denominator, that is within the distance $10^(-prec)$ of a given value $x$. The
+algorithm for this comes from the 1972 HAKMEM document, Item 101C. Their
+description is terse but clear:
+
+	Problem: Given an interval, find in it the
+	rational number with the smallest numerator and
+	denominator.
+	Solution: Express the endpoints as continued
+	fractions.  Find the first term where they differ
+	and add 1 to the lesser term, unless it's last. 
+	Discard the terms to the right.  What's left is
+	the continued fraction for the "smallest"
+	rational in the interval.  (If one fraction
+	terminates but matches the other as far as it
+	goes, append an infinity and proceed as above.)
+
+The HAKMEM text (M. Beeler, R. W. Gosper, and R. Schroeppel: Memo No. 239, MIT AI Lab, 1972, available as HTML online from various places) contains several interesting insights relevant to continued fractions and other numerical algorithms.
+
+	    Precision of approximation by continued fractions
+
+Sometimes an analytic function $f(x)$ can be approximated using a continued
+fraction that contains $x$ in its terms. Examples include: the inverse tangent
+$ArcTan(x)$, the error function $Erf(x)$ and the incomplete gamma function
+$Gamma(a,x)$ (see below for details). For these functions, continued fractions
+provide a method of numerical calculation that works when the Taylor series
+converges slowly or not at all. However, continued fractions usually converge
+quickly for one value of $x$ but slowly for another. Also, it is not as easy to
+obtain an analytic error bound for a continued fraction approximation as it is
+for power series.
+
+In this section we describe two methods that compute a continued fraction: the
+simple "bottom-up" and the more complicated "top-down" method. The "bottom-up"
+method is faster but requires to know the number of terms in advance. The
+"top-down" method provides an automatic error estimate and can be used to
+evaluate a continued fraction with more and more terms until the desired
+precision is achieved. The formula for the precision of the continued fraction
+approximation used in the "top-down" method sometimes allows to estimate the
+number of terms in advance.
+
+*REM FIXME
+
+		Newton's method and its improvements
+
+The Newton-Raphson method of numerical solution of algebraic equations can be used to obtain multiple-precision values of several elementary functions.
+
+The basic formula is widely known: If $f(x)=0$ must be solved, one starts with a value of $x$ that is close to some root and iterates $$x'=x-f(x)*(D(x)f(x))^(-1)$$.
+This formula is based on the approximation of the function $f(x)$ by a tangent line at some point $x$. A Taylor expansion in the neighborhood of the root shows that (for an initial value $x[0]$ sufficiently close to the root) each iteration gives at least twice as many correct digits of the root as the previous one ("quadratic convergence"). Therefore the complexity of this algorithm is proportional to a logarithm of the required precision and to the time it takes to evaluate the function and its derivative. Generalizations of this method require computation of higher derivatives of the function $f(x)$ but successive approximations to the root converge several times faster (the complexity is still logarithmic).
+
+Newton's method is particularly convenient for multiple precision calculations because of its insensitivity to accumulated errors: if $x[k]$ at some iteration is found with a small error, the error will be corrected at the next iteration. Therefore it is not necessary to compute all iterations with the full required precision; each iteration needs to be performed at the precision of the root expected from that iteration. For example, if we know that the initial approximation is accurate to 3 digits, then (assuming quadratic convergence)
+*FOOT This disregards the possibility that the convergence might be slightly slower. For example, when the precision at one iteration is $n$ digits, it might be $2*n-10$ digits at the next iteration. In these (fringe) cases, the initial approximation must be already precise to at least 10 digits.
+it is enough to perform the first iteration to 6 digits, the second iteration to 12 digits and so on. In this way, multiple precision calculations are enormously speeded up.
+
+However, Newton's method suffers from sensitivity to the initial guess. If the initial value $x[0]$ is not chosen sufficiently close to the root, the iterations may converge very slowly or not converge at all. To remedy this, one can combine Newton's iteration with simple bisection. Once the root is bracketed inside an interval ($a$, $b$), one checks whether $(a+b)/2$ is a better approximation for the root than that obtained from Newton's iteration. This guarantees at least linear convergence in the worst case.
+
+For some equations $f(x)=0$, Newton's method converges faster; for example, solving $Sin(x)=0$ in the neighborhood of $x=3.14159$ gives "cubic" convergence, i.e. the number of correct digits is tripled at each step. This happens because $Sin(x)$ near its root $x=Pi$ has vanishing second derivative and thus the function is particularly well approximated by a straight line.
+
+<i>Halley's method</i> is an improvement to Newton's method that makes each equation well approximated by a straight line near the root. Edmund Halley computed fractional powers, $x=a^(1/n)$, by the iteration
+$$ x'=x*(n*(a+x^n)+(a-x^n))/(n*(a+x^n)-(a-x^n)) $$.
+This formula is equivalent to Newton's method applied to the equation
+$x^(n-q) = a*x^(-q)$ with $q=(n-1)/2$. This iteration has a cubic convergence rate. This is the fastest method to compute $n$-th roots with multiple precision. Iterations with higher order of convergence, for example, the method with quintic convergence rate
+$$ x' = x* ( (n-1)/(n+1)*(2*n-1)/(2*n+1) *x^(2*n) + 2*(2*n-1)/(n+1)*x^n*a + a^2) / (x^(2*n)+2*(2*n-1)/(n+1)*x^n*a+(n-1)/(n+1)*(2*n-1)/(2*n+1)*a^2) $$,
+require more arithmetic operations per step and are in fact less efficient at high precision.
+
+Halley's method can be generalized to any function $f(x)$. A cubically convergent iteration is always obtained if we replace the equation $f(x)=0$ by an equivalent equation
+$$ g(x):=f(x)/Sqrt(Abs(D(x)f(x))) = 0 $$
+and use the standard Newton's method on it.
+Here the function $g(x)$ is chosen so that its second derivative vanishes ($D(x,2)g(x)=0$) at the root of the equation $f(x)=0$, independently of where this root is.
+(There is no unique choice of the function $g(x)$ and sometimes another choice is needed to make the iteration more easily computable.)
+
+The Halley iteration for the equation $f(x)=0$ can be written as
+$$ x'=x-(2*f(x)*D(x)f(x))/(2*(D(x)f(x))^2-f(x)*Deriv(x,2)f(x)) $$.
+For example, the equation $Exp(x)=a$ is transformed into $g(x) := Exp(x/2)-a*Exp(-x/2)=0$.
+
+Halley's iteration, despite its faster convergence rate, may be more cumbersome to evaluate than Newton's iteration and so it may not provide a more efficient numerical method for some functions. Only in some special cases is Halley's iteration just as simple to compute as Newton's iteration. But Halley's method has another advantage: it is generally less sensitive to the choice of the initial point $x[0]$. An extreme example of sensitivity to the initial point is the equation $x^(-2)= 12$ for which Newton's iteration $x'=3*x/2-6*x^3$ converges to the root only from initial points $0<x[0] <0.5$ and wildly diverges otherwise, while Halley's iteration converges to the root from any $x[0]>0$.
+
+It is at any rate not true that Halley's method always converges better than Newton's method. For instance, it diverges on the equation $2*Cos(x)=x$ unless started at $x[0]$ within the interval ($-1/6*Pi$,$7/6*Pi$). Another example is the equation $Ln(x)=a$. This equation allows to compute $x=Exp(a)$ if a fast method for computing $Ln(x)$ is available (e.g. the AGM-based method). For this equation, Newton's iteration
+$$ x' = x*(1+a-Ln(x)) $$
+converges for any $0<x<Exp(a+1)$, while Halley's iteration
+converges only for $Exp(a-2)<x<Exp(a+2)$.
+
+
+When it converges, Halley's iteration can still converge very slowly for certain functions $f(x)$, for example, for $f(x)=x^n-a$ if $n^n>a$. For such functions that have very large and rapidly changing derivatives, no general method can converge faster than linearly. In other words, a simple bisection will generally do just as well as any sophisticated iteration, until the root is approximated relatively precisely. Halley's iteration combined with bisection seems to be a good choice for such problems.
+
+For practical evaluation, iterations must be supplemented with error control.
+For example, if $x0$ and $x1$ are two consecutive approximations that are
+already very close, we can quickly compute the achieved (relative) precision by
+finding the number of leading zeros in the number $Abs(x0-x1)/Max(x0,x1)$. This
+is easily done using the integer logarithm. After performing a small number of
+initial iterations at low precision, we can make sure that $x1$ has at least a
+certain number of correct digits of the root. Then we know which precision to
+use for the next iteration (e.g. triple precision if we are using a cubically
+convergent scheme). It is important to perform each iteration at the precision
+of the root which it will give and not at a higher precision; this saves a
+great deal of time since multiple-precision calculations quickly become very
+slow at high precision.
+
+		Fast evaluation of Taylor series
+
+Taylor series for elementary functions can be used for evaluating the functions when no faster method is available. For example, to straightforwardly evaluate
+$$Exp(x)<=>Sum(k,0,N-1,x^k/k!)$$
+with $P$ decimal digits of precision and $x<2$, one would need about $N<=>P*Ln(10)/Ln(P)$ terms of the series. To evaluate the truncated series term by term, one needs $N-1$ long multiplications. (Divisions by large integers $k!$ can be replaced by a short division of the previous term by $k$.) In addition, about $Ln(N)/Ln(10)$ decimal digits will be lost due to accumulated roundoff errors; therefore the working precision must be increased by this many digits.
+
+If we do not know in advance how many terms of the Taylor series we need, we cannot do any better than just evaluate each term and check if it is already small enough. So in this case we will have to do $O(N)$ long multiplications. However, we can organize the calculation much more efficiently if we can estimate the necessary number of terms and if we can afford some storage. A "rectangular" algorithm uses $2*Sqrt(N)$ long multiplications (assuming that the coefficients of the series are short rational numbers) and $Sqrt(N)$ units of storage. (See paper: D. M. Smith, <i>Efficient multiple-precision evaluation of elementary functions</i>, 1985.)
+
+Suppose we need to evaluate $Sum(k,0,N, a[k]*x^k)$ and we know the number of terms $N$ in advance.
+Suppose also that the coefficients $a[k]$ are rational numbers with small numerators and denominators, so a  multiplication $a[k]*x$ is not a long multiplication (usually, either $a[k]$ or the ratio $a[k]$/$a[k-1]$ is a short rational number). Then we can organize the calculation in a rectangular array with $c$ columns and $r$ rows like this,
+$$ a[0]+a[r]*x^r+...+a[(c-1)*r]*x^((c-1)*r) $$+
+$$ x*(a[1]+a[r+1]*x^r+...+a[(c-1)*r+1]*x^((c-1)*r+1)) $$+
+$$ ... $$+
+$$ x^(r-1)*(a[r-1]+a[2*r+1]*x^r+...) $$.
+To evaluate this rectangle, we first compute $x^r$ (which, if done by the fast
+binary algorithm, requires $O(Ln(r))$ long multiplications). Then we compute
+the $c-1$ successive powers of $x^r$, namely
+$x^(2*r)$, $x^(3*r)$, ..., $x^((c-1)*r)$ in $c-1$ long
+multiplications. The partial sums in the $r$ rows are evaluated column by column as more powers of $x^r$ become available. This requires storage of $r$ intermediate results but no more long multiplications by $x$. If a simple formula relating the coefficients $a[k]$ and $a[k-1]$ is available, then a whole column can be computed and added to the accumulated row values using only short operations, e.g. $a[r+1]*x^r$ can be computed from $a[r]*x^r$ (note that each column contains some consecutive terms of the series). Otherwise, we would need to multiply each coefficient $a[k]$ separately by the power of $x$; if the coefficients $a[k]$  are short numbers, this is also a short operation. After this, we need $r-1$ more
+multiplications for the vertical summation of rows (using the Horner scheme). We have potentially saved time because we do not
+need to evaluate powers such as $x^(r+1)$ separately, so we do not have to multiply $x$ by itself quite so many
+times.
+
+The total required number of long multiplications is $r+c+Ln(r)-2$. The minimum number of multiplications, given that $r*c>=N$, is around  $2*Sqrt(N)$ at $r<=>Sqrt(N)-1/2$ (the formula $r<=>Sqrt(N-Sqrt(N))$ can be used with an integer square root algorithm). Therefore, by arranging the Taylor series in a rectangle of sides $r$ and $c$, we have obtained an algorithm which costs $O(Sqrt(N))$ instead of $O(N)$ long multiplications and requires $Sqrt(N)$ units of storage.
+
+One might wonder if we should not try to arrange the Taylor series in a cube or another multidimensional matrix instead of a rectangle. However, calculations show that this does not save time: the optimal arrangement is the two-dimensional rectangle.
+
+An additional speed-up is possible if the elementary function allows a transformation that reduces $x$ and makes the Taylor series converge faster. For example, $Ln(x)=2*Ln(Sqrt(x))$, $Cos(2*x)=2*Cos(x)^2-1$, and $Sin(3*x)=3*Sin(x)-4*Sin(x)^3$ are such transformations. It may be faster to perform a number of such transformations before evaluating the Taylor series, if the time saved by its quicker convergence is more than the time needed to perform the transformations. The optimal number of transformations can be estimated. Using this technique in principle reduces the cost of Taylor series from $O(Sqrt(N))$ to $O(N^(1/3))$ long multiplications. However, additional roundoff error may be introduced by this procedure for some $x$.
+
+		The AGM sequence algorithms
+
+Several algorithms are based on the arithmetic-geometric mean (AGM) sequence. If one takes two numbers and computes their arithmetic mean and their geometric mean, the two means are generally much closer to each other than the original numbers. Repeating this process creates a rapidly converging sequence.
+
+More formally, one can define the (complex) function of two (complex) numbers $AGM(x,y)$ as the limit of the sequence $a[k]$ where $a[k+1]=1/2*(a[k]+b[k])$, $b[k+1]=Sqrt(a[k]*b[k])$, and the initial values are $a[0]=x$, $b[0]=y$.
+This function is obviously linear, $AGM(k*x, k*y)=k*AGM(x,y)$, so in principle it is enough to compute $AGM(1,x)$ or arbitrarily select $k$ for convenience.
+
+Gauss and Legendre have shown that
+the limit of the AGM sequence is related to the complete elliptic integral by
+$$ Pi/2*1/AGM(a,Sqrt(a^2-b^2)) = Integrate(x,0,Pi/2)1/Sqrt(a^2-b^2*Sin(x)^2) $$.
+This integral can be rearranged to provide some other useful functions. For example, with suitable parameters $a$ and $b$, this integral is equal to $Pi$. Thus one obtains a fast method of computing $Pi$.
+
+The AGM sequence is also defined for complex values $a$, $b$. It requires to take a square root $Sqrt(a*b)$, which needs a branch cut to be defined.
+Selecting the natural cut along the negative real semiaxis ($Re(x)<0$, $Im(x)=0$), we obtain a AGM sequence that converges for any initial values $x$, $y$ with positive real part.
+
+Let us estimate the speed of convergence of the AGM sequence starting from $x$, $y$, following Brent's paper {rpb028} (see reference below). Clearly the worst case is when
+the numbers $x$ and $y$ are very different (one is much larger than another). In this case
+the numbers $a[k]$, $b[k]$ become approximately equal after about $k=1/Ln(2)*Ln(Abs(Ln(x/y)))$ iterations (note: Brent's paper online mistypes this as $1/Ln(2)*Abs(Ln(x/y))$). Then one needs about $Ln(n)/Ln(2)$ more iterations to make the first $n$ decimal digits of $a[k]$ and $b[k]$ coincide, because the relative error $epsilon=1-b/a$ decays approximately as $epsilon[k]=1/8*Exp(-2^k)$.
+
+Unlike the Newton iteration, the AGM sequence does not correct errors and all elements need to be computed with full precision. Actually, slightly more precision is needed to compensate for accumulated roundoff error. Brent (in paper {rpb028}) says that $O(Ln(Ln(n)))$ bits of accuracy are lost to roundoff error if there are total of $n$ iterations.
+
+The AGM sequence can be used for fast computations of $Pi$, $Ln(x)$ and $ArcTan(x)$.
+However, currently the limitations of Yacas internal math make these methods less efficient than simpler methods based on Taylor series and Newton iterations.
+

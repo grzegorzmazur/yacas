@@ -7,13 +7,16 @@ ouryacas = ../src/yacas --rootdir $(top_srcdir)/scripts/
 
 noinst_PROGRAMS = books.html
 
-BOOKS = intro.book coding.book ref.book refprog.book essays.book
+BOOKS = intro.book coding.book ref.book refprog.book essays.book Algo.book
 
 BOOKSOURCES = in/intro.book.txt in/coding.book.txt \
-	in/ref.book.txt in/refprog.book.txt in/essays.book.txt in/FDL.chapt.txt
+	in/ref.book.txt in/refprog.book.txt in/essays.book.txt in/Algo.book.txt
 
 INTROCHAPTERS = FDL.chapt
 INTROSOURCES = in/FDL.chapt.txt
+
+ALGOCHAPTERS = algo-basic.chapt algo-numapprox.chapt algorithms-elemfunc.chapt algorithms-specfunc.chapt algorithms-numtheory.chapt algorithms-integration.chapt algorithms-multivar.chapt SturmSequences.chapt FDL.chapt
+ALGOSOURCES = in/algo-basic.chapt.txt in/algo-numapprox.chapt.txt in/algorithms-elemfunc.chapt.txt in/algorithms-specfunc.chapt.txt in/algorithms-numtheory.chapt.txt in/algorithms-integration.chapt.txt in/algorithms-multivar.chapt.txt in/SturmSequences.chapt.txt in/FDL.chapt.txt
 
 REFCHAPTERS = config.chapt arith.chapt calc.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
@@ -35,20 +38,12 @@ CODINGSOURCES = in/YacasDebugger.chapt.txt in/FDL.chapt.txt
 
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
 	CVS-Howto.chapt YacasDocs.chapt wester-1994.chapt \
-	new.chapt paper.chapt Algorithms.chapt wordproblems.chapt \
-	algorithms-specfunc.chapt algorithms-elemfunc.chapt \
-	algorithms-integration.chapt algorithms-multivar.chapt \
-	SturmSequences.chapt FDL.chapt \
-	algorithms-numtheory.chapt
+	new.chapt paper.chapt wordproblems.chapt FDL.chapt
 
 ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt \
         in/new.chapt.txt in/paper.chapt.txt in/wester-1994.chapt.txt \
-		in/Algorithms.chapt.txt in/wordproblems.chapt.txt \
-	in/algorithms-specfunc.chapt.txt in/algorithms-elemfunc.chapt.txt \
-	in/algorithms-integration.chapt.txt in/algorithms-multivar.chapt.txt \
-	in/SturmSequences.chapt.txt in/FDL.chapt.txt \
-	in/algorithms-numtheory.chapt.txt
+		in/wordproblems.chapt.txt in/FDL.chapt.txt
 
 # Yacas code extracted from the docs
 CODESNIPPETS = wester-1994.ys
@@ -56,7 +51,7 @@ CODESNIPPETS = wester-1994.ys
 EXTRA_DIST = \
 	manualmaker styleplain in/all \
 	in/intromaker in/codingmaker in/refmaker in/refprogmaker in/essaysmaker\
-	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) $(INTROSOURCES) $(REFPROGSOURCES) $(CODESNIPPETS) \
+	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) $(INTROSOURCES) $(REFPROGSOURCES) $(ALGOSOURCES) $(CODESNIPPETS) \
 	in/dummies .cvsignore
 
 # Stuff for automatic generation of Yacas books
@@ -98,6 +93,7 @@ ref.book.tex : ref.book $(REFCHAPTERS)
 refprog.book.tex : refprog.book $(REFPROGCHAPTERS)
 coding.book.tex : coding.book $(CODINGCHAPTERS)
 intro.book.tex: intro.book $(INTROCHAPTERS)
+Algo.book.tex: Algo.book $(ALGOCHAPTERS)
 
 # special "virtual" chapter built from yacasapi.cpp
 in/yacasapi.chapt.txt : $(top_srcdir)/src/yacasapi.cpp
@@ -109,23 +105,23 @@ texdocs: \
 		coding.book.tex coding.book.ps coding.book.pdf \
 		essays.book.tex essays.book.ps essays.book.pdf \
 		ref.book.tex ref.book.ps ref.book.pdf \
-		refprog.book.tex refprog.book.ps refprog.book.pdf
+		refprog.book.tex refprog.book.ps refprog.book.pdf \
+		Algo.book.tex Algo.book.ps Algo.book.pdf
 	echo "done" > texdocs.c
 
 clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.idx *.ind *.ilg *.toc *.log *.ps *.pdf \
 	coding*html intro*html ref*html essays*html .o core *~ texdocs.c \
 	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS) \
-	$(CODESNIPPETS) in/yacasapi.chapt.txt $(BOOKS) manicon.html
+	$(CODESNIPPETS) $(ALGOCHAPTERS) in/yacasapi.chapt.txt $(BOOKS) manicon.html
 
 yacas_helpdir = $(datadir)/yacas/documentation
 
 books.html:  $(BOOKS) $(REFCHAPTERS) $(ESSAYCHAPTERS) \
-   $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(CODESNIPPETS)
+   $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(ALGOCHAPTERS) $(CODESNIPPETS)
 	-$(ouryacas) $(srcdir)/in/all
 	echo "done" > books.html.c
 
-# No separate chapters
 intro.html : intro.book $(INTROCHAPTERS)
 	-$(ouryacas) in/intromaker 
 	touch books.html
