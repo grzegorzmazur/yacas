@@ -66,19 +66,6 @@ void LispString::SetStringUnStringified(LispCharPtr aString)
 }
 
 
-
-LispInt StrEqual(LispCharPtr ptr1, LispCharPtr ptr2)
-{
-    while (*ptr1 != 0 && *ptr2 != 0)
-    {
-        if (*ptr1++ != *ptr2++)
-            return 0;
-    }
-    if (*ptr1 != *ptr2)
-        return 0;
-    return 1;
-}
-
 LispInt LispString::operator==(const LispString& aString)
 {
     if (NrItems() != aString.NrItems())
