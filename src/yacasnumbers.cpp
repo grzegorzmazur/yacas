@@ -1032,25 +1032,8 @@ void BigNumber::BitNot(const BigNumber& aX)
   }
 }
 
-/// return true if the bit count fits into signed long
-LispBoolean BigNumber::BitCountIsSmall() const
-{//FIXME
-	return LispTrue;
-}
 
 /// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
-void BigNumber::BitCount(const BigNumber& aX)
-{
-  if (aX.BitCountIsSmall())
-  {
-    SetTo(aX.BitCount());
-  }
-  else
-  {// FIXME
-    LISPASSERT(0);
-  }
-}
-
 // give BitCount as platform integer
 signed long BigNumber::BitCount() const
 {
@@ -1362,44 +1345,6 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aBasePrecision,LispInt a
   SetIsInteger(!isFloat && iNumber->iExp == 0 && iNumber->iTensExp == 0);
 }
 
-
-void BigNumber::ShiftLeft(const BigNumber& aX, const BigNumber& aNrToShift)
-{
-  // first, see if we can use short numbers
-  if (aNrToShift.IsInt() && aNrToShift.Sign()>=0)
-  {
-    if (aNrToShift.IsSmall())
-    {
-      long shift_amount=(*aNrToShift.iNumber)[0];
-      ShiftLeft(aX, shift_amount);
-    }
-    else
-    {
-      // only floats can be shifted by a non-small number, so convert to float and use exponent_
-      // FIXME: make this work for large shift amounts
-    }
-  }	// do nothing if shift amount is not integer or negative
-}
-
-
-
-void BigNumber::ShiftRight(const BigNumber& aX, const BigNumber& aNrToShift)
-{
-  // first, see if we can use short numbers
-  if (aNrToShift.IsInt() && aNrToShift.Sign()>=0)
-  {
-    if (aNrToShift.IsSmall())
-    {
-      long shift_amount=(*aNrToShift.iNumber)[0];
-      ShiftRight(aX, shift_amount);
-    }
-    else
-    {
-      // only floats can be shifted by a non-small number, so convert to float and use exponent_
-      // FIXME: make this work for large shift amounts
-    }
-  }	// do nothing if shift amount is not integer or negative
-}
 
 #endif	// ifndef USE_NATIVE
 

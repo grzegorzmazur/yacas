@@ -59,8 +59,10 @@ const unsigned GUARD_BITS = 8;	// we leave this many guard bits untruncated in v
 template<class T> inline T MAX(T x, T y) { if (x<y) return y; else return x; }
 template<class T> inline T MIN(T x, T y) { if (x>y) return y; else return x; }
 
-const long DIST_BITS = 3;	// at least this many bits of difference
-template<class T> inline T DIST(T x, T y) { return (x>=y && x>=y+DIST_BITS || y>=x && y>=x+DIST_BITS) ? 0 : 1; }
+const long DIST_BITS = 3;	// at least this many bits of difference - used in precision tracking
+
+/// DIST(x, y) returns 1 if abs(x-y) >= DIST_BITS. See documentation for precision tracking.
+template<class T> inline T DIST(T x, T y) { return (x>=y+DIST_BITS || y>=x+DIST_BITS) ? 0 : 1; }
 
 
 /** Base number class. 
@@ -97,7 +99,7 @@ public: //constructors
   // assign from another number
   void SetTo(const BigFloat& aOther);
   void SetTo(const BigInt& aOther, LispInt aPrecision);
-  // assign from string, using exactly aPrecision *bits*
+  // assign from string, using exactly aPrecision *digits*
   void SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
     // assign from a platform type
   void SetTo(double value);
@@ -147,7 +149,7 @@ public:
   const void* ExportData() const;
 
 public:
-/// manipulate internal precision
+/// manipulate internal precision (in bits)
   inline LispInt GetPrecision() const {return iPrecision;};
 
 private: 
@@ -255,7 +257,7 @@ public: //constructors
   ~BigNumber();
   // assign from another number
   void SetTo(const BigNumber& aOther);
-  // assign from string
+  // assign from string, precision in base digits
   void SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
     // assign from a platform type
   void SetTo(long value);
@@ -299,24 +301,21 @@ public://arithmetic
   void DumpDebugInfo();
 
 public:
+  /// assign self to Floor(aX) if possible
   void Floor(const BigNumber& aX);
+  /// set precision (in bits)
   void Precision(LispInt aPrecision);
 
 public:/// Bitwise operations, return result in *this.
   void ShiftLeft( const BigNumber& aX, LispInt aNrToShift);
   void ShiftRight( const BigNumber& aX, LispInt aNrToShift);
-  void ShiftLeft( const BigNumber& aX, const BigNumber& aNrToShift);
-  void ShiftRight( const BigNumber& aX, const BigNumber& aNrToShift);
   void BitAnd(const BigNumber& aX, const BigNumber& aY);
   void BitOr(const BigNumber& aX, const BigNumber& aY);
   void BitXor(const BigNumber& aX, const BigNumber& aY);
   void BitNot(const BigNumber& aX);
   /// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
-  void BitCount(const BigNumber& aX);
-  /// give bit count as a platform integer if we can
+  /// give bit count as a platform integer
   signed long BitCount() const;
-  /// return true if the bit count fits into LispInt
-  LispBoolean BitCountIsSmall() const;
   
   /// Give sign (-1, 0, 1)
   LispInt Sign() const;
@@ -335,10 +334,10 @@ public:
   void ExportBigFloat(BigFloat &) const;
 private:
 	enum EType
-	{ /// bit masks: KExpFloat includes KFloat.
-		KInt = 1,
-		KFloat = 2,
-		KExpFloat = 6
+	{ /// bit masks: KFloatNAN includes KFloat.
+	  KInt = 1,
+	  KFloat = 2,
+	  KFloatNAN =  2 | 4
 	};
 	BigInt int_;
 	BigFloat float_;
@@ -349,9 +348,6 @@ private:
 	void turn_float();
 	void turn_int();
 	unsigned type_;
-	BigInt exponent_; 	// this is only used for exp-floats when the exponent is out of range for GMP.
-	/// Check whether we are of exp-float type.
-	LispBoolean IsExpFloat() const;
 #else
 #ifdef USE_NATIVE
 
@@ -371,7 +367,7 @@ private:
 
 #else 
   #ifdef USE_GMP
-  /// GMP wrapper starts here
+  /// direct GMP wrapper starts here
   public:
   /// These functions will enable us to use arbitrary GMP functions without changing this class definition.
   /// Copy from gmp objects (which must have values).
@@ -389,20 +385,17 @@ private:
   void turn_int();
   /// This type gives masks to check the current type of the BigNumber.
   enum EType
-  { /// bit masks: KExpFloat includes KFloat.
+  { /// bit masks: KFloatNAN includes KFloat.
 	  KInt = 1,
 	  KFloat = 2,
-	  KExpFloat = 6
+	  KFloatNAN =  2 | 4
   };
   mpz_t int_;	// these two are not in a union
   mpf_t float_;	// because we want to avoid excessive memory reallocation.
   /// Type flag (a bit mask).
   unsigned type_;
-  mpz_t exponent_; 	// this is only used for exp-floats when the exponent is out of range for GMP.
-  /// Check whether we are of exp-float type.
-  LispBoolean IsExpFloat() const;
   
-  /// GMP wrapper ends here.
+  /// direct GMP wrapper ends here.
   #else
   public:
   /// Internal library wrapper starts here.

@@ -1681,17 +1681,14 @@ const void* BigInt::ExportData() const
 ///// (coded by Serge Winitzki)
 //////////////////////////////////////////////////
 
-/// The number class describes either integers or floats, depending on the type_ flag. However, both the float part (float_, exponent_) and the integer part (int_) are always initialized for the life of the BigNumber object.
+/// The number class describes either integers or floats, depending on the type_ flag. However, both the float part (float_) and the integer part (int_) are always initialized for the life of the BigNumber object.
 /// Wrapping of the GMP library is done using its mpz_t / mpf_t pointer types.
-/// A special mode is that of "exp-float" number. Then the type_ flag has the value KExpFloat. The number is equal to float_ * 2^exponent_ where exponent_ is a big integer and float_ is a normal GMP float value with a normal exponent. Otherwise the value of the exponent_ stays zero (actually it is ignored).
-/// The exp-float mode is to be used only for really large or really small exponents. (not yet fully implemented)
 /// A BigFloat object contains valid, initialized GMP objects at all times. It contains a GMP integer and a GMP floating-point number. Only one of them is used at any time, depending on the current type of the number.
 
 // TO DO:
 // no need to call _ui / _si functions, as gmp tells us not to worry.
 // make sure that precision control works correctly.
 // test precision on from/to string conversion.
-// implement exp-float.
 
 
 // debugging
@@ -1704,7 +1701,6 @@ void BigNumber::init()
 	turn_int();	// by default all numbers are created integer
 	mpz_init2(int_, 32);	// default precision
 	mpf_init2(float_, 32);
-	mpz_init2(exponent_, 32);
 	iPrecision = 32;
 }
 
@@ -1712,7 +1708,6 @@ BigNumber::~BigNumber()
 {
 	mpz_clear(int_);
 	mpf_clear(float_);
-	mpz_clear(exponent_);
 }
 // construct from string
 BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
@@ -1751,15 +1746,13 @@ void BigNumber::SetTo(const BigNumber& aOther)
 
 	mpf_set_prec(float_, mpf_get_prec(aOther.float_));
 	mpf_set(float_, aOther.float_);
-	if (aOther.IsExpFloat())
-	  mpz_set(exponent_, aOther.exponent_);
   }
   type_ = aOther.type_;
 }
 
 // assign from string, result is always a float type
 void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
-{// FIXME: we use gmp to read into float_, so we cannot read expfloats, e.g. 1.3e123412341234123412341234, which should be possible.
+{
   if (aBase<2 || aBase>32)
   {
   	RaiseError("BigNumber::SetTo(string): error: aBase should be between 2 and 32, not %d\n", aBase);
@@ -1847,13 +1840,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 	free(buffer);
   }
   else
-  {	// we have a floating-point number. Note that we cannot print exp-float numbers (except in base 2^n).
-  // FIXME: maybe allow printing exp-float numbers in bases 2, 4, 8, 16?
-    if (IsExpFloat())
-    {
-	    RaiseError("BigNumber::ToString: printing exp-floats is not implemented\n");
-	    return;
-    }
+  {	// we have a floating-point number.
 	// note: aPrecision means *base digits* here
 	LISPASSERT(aPrecision>=0);
 	if (aPrecision <=0)
@@ -1952,7 +1939,6 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 		// compute the total exponent
 		BigNumber exp_total;
 		exp_total.SetTo((LispInt)exp_small);
-//		if (IsExpFloat()) mpz_add(exp_total.int_, exp_total.int_, exponent_);	// this won't work since exp_ is the binary exponent
 		mpz_get_str(offset+size+1, aBase, exp_total.int_);
 	}
 	// assign result
@@ -1967,11 +1953,6 @@ double BigNumber::Double() const
 {
   if(IsInt())
 	return mpz_get_d(int_);
-  else if (IsExpFloat())
-  {
-	  RaiseError("BigNumber::Double: error: cannot convert an ExpFloat to double\n");
-	  return 0;
-  }
   else
 	return mpf_get_d(float_);
 }
@@ -2021,14 +2002,6 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
 	return aOther.Equals(*this);
     }
     else
-    /* ExpFloats are on hold for now
-	 // two floats are equal when the values are equal and both not ExpFloat, or if they are both ExpFloat and their exponents are also equal
-    	return
-		mpf_cmp(float_, aOther.float_)==0
-		&& (!IsExpFloat() && !aOther.IsExpFloat() 
-		  || IsExpFloat() && aOther.IsExpFloat() 
-		    && mpz_cmp(exponent_, aOther.exponent_)==0);
-    */
     // two floats x, y are equal if |x-y| < max(Delta x, Delta y), where Delta x is the absolute error of x
     {
     	BigNumber x_minus_y(*this);
@@ -2066,11 +2039,6 @@ LispBoolean BigNumber::IsInt() const
 }
 
 
-LispBoolean BigNumber::IsExpFloat() const
-{
-	return (type_ & KExpFloat)==KExpFloat;
-}
-
 LispBoolean BigNumber::IsIntValue() const
 {
 	// *this has integer value if it's an integer or if it does not have enough digits to be non-integer, or if it's exactly equal to an integer
@@ -2098,8 +2066,7 @@ LispBoolean BigNumber::IsSmall() const
 	(void) mpf_get_d_2exp(&exp_small, float_);
 	return
 	(
-		!IsExpFloat() 
-		&& iPrecision <= 53	// standard float is 53 bits
+		iPrecision <= 53	// standard float is 53 bits
 		&& fabs(exp_small)<1021
 	);
 	// standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021
@@ -2158,7 +2125,6 @@ LispBoolean BigNumber::LessThan(const BigNumber& aOther) const
     }
     else
   	return mpf_cmp(float_, aOther.float_)<0;
-	// FIXME: this does not work for KExpFloat
 }
 
 
@@ -2216,7 +2182,6 @@ void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrec
 			RaiseError("BigNumber::Multiply: loss of precision with arguments %e, %e", aX.Double(), aY.Double());
 */
 	  }
-      // FIXME: this does not work for KExpFloat
     }
 }
 
@@ -2353,7 +2318,6 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
 			RaiseError("BigNumber::Add: loss of precision with arguments %e, %e", aX.Double(), aY.Double());
 */
 	  }	// handled no apriori underflow
-      // FIXME: this does not work for KExpFloat
     }	// handled float + float
 }
 
@@ -2433,7 +2397,6 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
 */
     }
   }
-	// FIXME: this does not work for KExpFloat
 }
 
 void BigNumber::DumpDebugInfo()
@@ -2467,7 +2430,7 @@ void BigNumber::PowerMod(const BigNumber& aX, const BigNumber& aY, const BigNumb
 void BigNumber::Floor(const BigNumber& aX)
 {
 // check that aX is a float and that it has enough digits to evaluate its integer part
-  if (!aX.IsInt() && !aX.IsExpFloat())
+  if (!aX.IsInt())
   {
     if(aX.GetPrecision() >= aX.BitCount())
     {	// now aX is a float for which we can evaluate Floor()
@@ -2560,42 +2523,6 @@ void BigNumber::ShiftRight(const BigNumber& aX, LispInt aNrToShift)
 }
 
 
-void BigNumber::ShiftLeft(const BigNumber& aX, const BigNumber& aNrToShift)
-{
-// first, see if we can use short numbers
-  if (aNrToShift.IsInt() && aNrToShift.Sign()>=0)
-  {
-    if (aNrToShift.IsSmall())
-    {
-  	long shift_amount=(long)aNrToShift.Double();
-	ShiftLeft(aX, shift_amount);
-    }
-    else
-    {// only floats can be shifted by a non-small number, so convert to float and use exponent_
-    // FIXME: make this work for large shift amounts
-    }
-  }	// do nothing if shift amount is not integer or negative
-}
-
-
-void BigNumber::ShiftRight(const BigNumber& aX, const BigNumber& aNrToShift)
-{
-// first, see if we can use short numbers
-  if (aNrToShift.IsInt() && aNrToShift.Sign()>=0)
-  {
-    if (aNrToShift.IsSmall())
-    {
-  	long shift_amount=(long)aNrToShift.Double();
-	ShiftRight(aX, shift_amount);
-    }
-    else
-    {// only floats can be shifted by a non-small number, so convert to float and use exponent_
-    // FIXME: make this work for large shift amounts
-    }
-  }	// do nothing if shift amount is not integer or negative
-}
-
-
 void BigNumber::BitAnd(const BigNumber& aX, const BigNumber& aY)
 {
   if (aX.IsInt() && aY.IsInt())
@@ -2635,17 +2562,10 @@ void BigNumber::BitNot(const BigNumber& aX)
   }
 }
 
-
-/// return true if the bit count fits into signed long
-LispBoolean BigNumber::BitCountIsSmall() const
-{
-	return !IsExpFloat();
-}
-
-// give BitCount as platform integer; if it is an expfloat, give the bit count of the float part
+/// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
+// give BitCount as platform integer
 signed long BigNumber::BitCount() const
 {
-//  LISPASSERT(0);
   long bit_count;
   if (Sign()==0)
 	  return 1;	// BitCount(0)=1
@@ -2658,12 +2578,6 @@ signed long BigNumber::BitCount() const
   	(void) mpf_get_d_2exp(&bit_count, float_);
   }
   return bit_count;
-}
-/// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
-void BigNumber::BitCount(const BigNumber& aX)
-{
-	SetTo(aX.BitCount());
-	if (aX.IsExpFloat()) mpz_add(int_, int_, aX.exponent_);
 }
 
 
