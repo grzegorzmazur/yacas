@@ -32,10 +32,53 @@ LispStringPtr PlatIsPrime(LispCharPtr int1, LispHashTable& aHashTable,LispInt aP
 unsigned primes_table_check(unsigned long p);
 unsigned primes_table_range();
 
+#ifdef HAVE_MATH_H
+
 // lookup table for Ln(n)/Ln(2)
 double log2_table_lookup(unsigned n);
 // table range is from 1 to this value
 unsigned log2_table_range();
+
+
+// convert the number of digits in given base to the number of bits, and back.
+// need to round the number of digits.
+inline unsigned long digits_to_bits(unsigned long digits, unsigned base)
+{
+	return (unsigned long)(0.5 + double(digits)*log2_table_lookup(base));
+}
+
+inline unsigned long bits_to_digits(unsigned long bits, unsigned base)
+{
+	return (unsigned long)(0.5 + double(bits)/log2_table_lookup(base));
+}
+
+#else
+
+struct Fake_float
+{	// this represents f0+f1/2^16 + f2/2^32 where all f's are >=0
+	unsigned long f0, f1, f2;
+};
+// need tables of both Ln(n)/Ln(2) and of Ln(2)/Ln(n)
+const Fake_float& log2_table_fake_lookup_l(unsigned n);
+const Fake_float& log2_table_fake_lookup_linv(unsigned n);
+
+// multiply aF by aX and round up to the nearest integer
+unsigned long fake_multiply_ceil(const Fake_float& aF, unsigned long aX);
+
+
+// convert the number of digits in given base to the number of bits, and back
+inline unsigned long digits_to_bits(unsigned long digits, unsigned base)
+{
+	return fake_multiply_ceil(log2_table_lookup_l(base), digits);
+}
+
+inline unsigned long bits_to_digits(unsigned long bits, unsigned base)
+{
+	return fake_multiply_ceil(log2_table_lookup_linv(base), bits);
+}
+
+#endif // HAVE_MATH_H
+
 
 /*
 class NativeNumber : public NumberBase
