@@ -1446,7 +1446,7 @@ void LispFromString(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispRead(LispEnvironment& aEnvironment, LispPtr& aResult,
               LispPtr& aArguments)
 {
-    LispTokenizer tok;
+    LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
     InfixParser parser(tok,
                        *aEnvironment.CurrentInput(),
                        aEnvironment.HashTable(),
@@ -1462,7 +1462,7 @@ void LispRead(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispReadToken(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments)
 {
-    LispTokenizer tok;
+    LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
     LispStringPtr result;
     result = tok.NextToken(*aEnvironment.CurrentInput(),
                            aEnvironment.HashTable());
@@ -1990,7 +1990,7 @@ void LispTraceStack(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aAr
 void LispReadLisp(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
-    LispTokenizer tok;
+    LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
     LispParser parser(tok,
                       *aEnvironment.CurrentInput(),
                       aEnvironment.HashTable());

@@ -240,6 +240,10 @@ input(iEnvironment.iInputStatus)
 
     SetCommand(LispBerlekamp,"Berlekamp");
 
+    SetCommand(LispDefaultTokenizer,"DefaultTokenizer");
+    SetCommand(LispCTokenizer      ,"CTokenizer");
+
+    
     bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("While"));
     bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("Rule"));
     bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("MacroRule"));
@@ -302,7 +306,7 @@ void CYacas::Evaluate(const LispCharPtr aExpression)
          StringInput input(full,environment().iInputStatus);
          environment().iInputStatus.SetTo("CommandLine");
          LispPtr lispexpr;
-         LispTokenizer tok;
+         LispTokenizer &tok = *environment().iCurrentTokenizer;
          InfixParser parser(tok, input,
                             environment().HashTable(),
                             environment().PreFix(),

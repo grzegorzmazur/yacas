@@ -400,6 +400,11 @@ void LispGetExtraInfo(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispBerlekamp(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments);
 
+void LispDefaultTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
+                   LispPtr& aArguments);
+void LispCTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
+                   LispPtr& aArguments);
+
 
 #endif
 
