@@ -1283,6 +1283,8 @@ void BigNumber::SetTo(const BigNumber& aOther)
   {
     	turn_float();
   	mpf_set(float_, aOther.float_);
+	if (aOther.IsExpFloat())
+	  mpz_set(exponent_, aOther.exponent_);
   }
   
   type_ = aOther.type_;
@@ -1290,15 +1292,32 @@ void BigNumber::SetTo(const BigNumber& aOther)
 
 // assign from string, result is always a float type
 void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10)
-{
-  Precision(aPrecision);	// FIXME: precision is set by hand here, instead of setting it from the string automatically... not sure whether to change the API about this.
-  if (mpf_set_str(float_, aString, aBase)==0)
-  {	// FIXME: we convert the string always to a float, while we could in principle decide whether to convert it to an integer or to a float
-	turn_float();
+{// FIXME: we use gmp to read into float_, so we cannot read expfloats, e.g. 1.3e123412341234123412341234, which should be possible.
+	// decide whether the string is an integer or a float
+  if (strchr(aString, '.') || aBase<10 && (strchr(aString, 'e') || strchr(aString,'E')) || strchr(aString, '@'))
+  {	// converting to a float
+  	Precision(aPrecision);	// FIXME?: precision is set by hand here, instead of setting it from the string automatically... not sure whether to change the API about this.
+	if (mpf_set_str(float_, aString, aBase)==0)
+	{
+	    turn_float();
+	}
+	else
+	{// FIXME: this clause is executed when there is an error in the string. Need to signal the error somehow.
+	    fprintf(stderr, "BigNumber::SetTo: Error reading a float from string '%s'\n", aString);
+	    SetTo(0.0);
+	}
   }
   else
-  {// FIXME: this clause is executed when there is an error in the string. Need to signal the error somehow.
-  
+  {	// converting to an integer, aPrecision is ignored
+  	if (mpz_set_str(int_, aString, aBase)==0)
+	{
+	    turn_int();
+	}
+	else
+	{// FIXME: this clause is executed when there is an error in the string. Need to signal the error somehow.
+	    fprintf(stderr, "BigNumber::SetTo: Error reading an integer from string '%s'\n", aString);
+	    SetTo(0);
+	}
   }
 }
 
@@ -1333,33 +1352,112 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 	free(buffer);
   }
   else
-  {	// we have a floating-point number. Note that we cannot print exp-float numbers (except in base 2).
-  // FIXME: maybe print exp-float numbers in bases 2, 8, 16?
-	if (IsExpFloat()) return;
-  	
-	long size=aPrecision;	// FIXME: what if aPrecision<=0?
-	// Find out the size needed to print the exponent
-	long exp_small;
-	size += 80;
-	char* buffer=(char*)malloc(size);
-	if (!buffer) return;	// error: cannot allocate memory
+  {	// we have a floating-point number. Note that we cannot print exp-float numbers (except in base 2^n).
+  // FIXME: maybe allow printing exp-float numbers in bases 2, 4, 8, 16?
+    if (IsExpFloat())
+    {
+	    fprintf(stderr, "BigNumber::ToString: printing exp-floats is not implemented\n");
+	    return;
+    }
+
+    unsigned long size=(unsigned long)fabs(aPrecision);	// FIXME: what if aPrecision<=0? we need to signal error
+    // the size needed to print the exponent cannot be more than 200 chars since we refuse to print exp-floats
+    size += 200;
+    char* buffer=(char*)malloc(size);
+    if (!buffer)
+    {
+	    fprintf(stderr, "BigNumber::ToString: out of memory, need %d chars\n", size);
+	    return;
+    }
+    char* offset = buffer;
+    if (Sign()==0)
+    {    // print zero
+	    strcpy(offset, "0."); // end of string
+    }
+    else
+    {
+	// print a number using fixed point if the exponent is between -4 and +8
+	const long lower_exp=-4, upper_exp=8;
 //	gmp_snprintf(buffer, size-1, "%*g", float_, aPrecision);
 // cannot use gmp_printf because we need to print in a given base
-	buffer[0] = '0';
-	buffer[1] = '.';
-	mpf_get_str(buffer+2, &exp_small, aBase, aPrecision, float_);
-	// now print the exponent: either "e" or "@" and then the long integer
-	size = strlen(buffer);
-	buffer[size] = (aBase<=10) ? 'e' : '@';	// one character there, start exponent at offset size+1. Printing as per GMP instructions.
-	// compute the total exponent for real now
-	BigNumber exp_total;
-	exp_total.SetTo((LispInt)exp_small);
-	if (IsExpFloat()) mpz_add(exp_total.int_, exp_total.int_, exponent_);
-	mpz_get_str(buffer+size+1, aBase, exp_total.int_);
+	long exp_small;
+	// get the exponent in given base and print the string at the same time
+	// string is printed starting at an offset to allow for leading zeros/decimal point
+	offset += 2-lower_exp;
+	mpf_get_str(offset, &exp_small, aBase, aPrecision, float_);
+	if (lower_exp <= exp_small && exp_small <= upper_exp)
+	{	// print in fixed point.
+		if (exp_small>0)
+		{	// Insert a point somewhere in the middle. Uses memmove() if needed
+			// *offset contains something like "-123" and exp_small is 2, then we need to get "-12.3". Or perhaps we had "-123" and exp_small=5, then we need to get "-12300."
+			// point position
+			char* point_pos = offset + exp_small;
+			if (Sign()<0) ++point_pos;
+			// decide if the point is within the printed part of the string
+			size=strlen(offset);
+			if (point_pos-offset>=size)
+			{	// no moving required, but perhaps need to pad with zeros, and we need to add the point
+				int i=size;
+				for(; i<point_pos-offset; ++i)
+				  offset[i] = '0';
+				strcpy(offset+i, ".");	// end of string
+			}
+			else
+			{	// need to insert the point and shift the rest of the string
+				memmove(point_pos+1, point_pos, size-(point_pos-offset)+1);
+				*point_pos = '.';
+			}
+		}
+		else
+		{// add leading zeros and decimal point, handle sign
+		// we need to add (1-exp_small) zeros total
+			if (Sign()<0)
+			{	// *offset contains something like "-123..."
+				// and instead we need -0.00123... (if small_exp=-2)
+				// final offset:
+				offset = offset-(2-exp_small);
+				memcpy(offset, "-0.",3);	// 3 chars added
+				// fill more zeros
+				for (int i=3; i<3-exp_small; ++i)
+				  offset[i] = '0';
+				// done printing
+			}
+			else	// the number is surely nonzero.
+			{	// *offset contains something like "123..."
+				// and instead we need 0.00123... (if small_exp=-2)
+				// final offset:
+				offset = offset-(2-exp_small);
+				memcpy(offset, "0.",2);	// 2 chars added
+				// fill more zeros
+				for (int i=2; i<2-exp_small; ++i)
+				  offset[i] = '0';
+				// done printing to buffer
+			}
+		}	// end of printing numbers < 1
+	}	// end of printing in fixed point
+	else
+	{ // printing in floating point
+		// if the number is negative, need to handle the - sign
+		offset -= 2;	// final offset already known
+		if (Sign()<0)
+			memcpy(offset, "-0.", 3);
+		else
+			memcpy(offset, "0.", 2);
+		
+		// now print the exponent: either "e" or "@" and then the long integer
+		size = strlen(offset);
+		offset[size] = (aBase<=10) ? 'e' : '@';	// one character there, start exponent at offset size+1. Printing as per GMP instructions.
+		// compute the total exponent
+		BigNumber exp_total;
+		exp_total.SetTo((LispInt)exp_small);
+		if (IsExpFloat()) mpz_add(exp_total.int_, exp_total.int_, exponent_);	// this won't hurt
+		mpz_get_str(offset+size+1, aBase, exp_total.int_);
+	}
 	// assign result
-	aResult.SetStringCounted(buffer, strlen(buffer));
-	free(buffer);
-  }
+     }	// finished printing a float
+     aResult.SetStringCounted(offset, strlen(offset));
+     free(buffer);
+   } // finished printing a nonzero number
 }
 
 /// Give approximate representation as a double number
@@ -1439,8 +1537,13 @@ bool BigNumber::IsSmall() const
   {
 	long exp_small;
 	(void) mpf_get_d_2exp(&exp_small, float_);
-	return (!IsExpFloat() && mpf_get_prec(float_)<=64 && fabs(exp_small)<1021);
-	// standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021. But GMP sets the precision rather arbitrarily. Let's see how well this "64" works.
+	return
+	(
+		!IsExpFloat() 
+		// && mpf_get_prec(float_)<=64
+		&& fabs(exp_small)<1021
+	);
+	// standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021. But GMP sets the precision rather arbitrarily. Let's see how well this "64" works. (This should at least not say that small numbers are big.) IsSmall() on floats and decisions based on that should be deprecated, really.
   }
 
 }
@@ -1621,6 +1724,11 @@ void BigNumber::Negate(const BigNumber& aX)
 /// Divide two numbers and return result in *this. Note: if the two arguments are integer, it should return an integer result!
 void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
+  if (aY.Sign()==0)
+  {	// zero division, report and do nothing
+  	fprintf(stderr, "BigNumber::Divide: zero division request ignored\n");
+	return;
+  }
   if (aX.IsInt())
     if (aY.IsInt())
     {
