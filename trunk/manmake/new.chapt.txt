@@ -169,15 +169,17 @@ it is best to keep this in mind and keep the code passed to
 {Yacas} comes with its own arbitrary-precision arithmetic library,
 to reduce dependencies on other software.
 Several excellent and free arbitrary precision arithmetic
-libraries are available (such as {gmp} and {CLN}).
-These libraries can optionally be linked with the {Yacas} engine.
+libraries are available, for example {gmp} and {CLN}.
+The {gmp} library can optionally be linked with the {Yacas} engine, instead of the internal arithmetic library.
+The choice of a specific number library is a <i>compile-time</i> option; one cannot switch to another arithmetic library at runtime.
+The default choice is the internal library ("{yacasnumbers.a}").
 
 This part describes how the arithmetic library is embedded into
-{Yacas}, and how to embed other arithmetic libraries.
+{Yacas} and how to embed other arithmetic libraries.
 
 		The link between the interpreter and the arithmetic library
 
-The interpreter (as of version 1.0.54) has the concept of an <i>atom</i>, an object
+The {Yacas} interpreter has the concept of an <i>atom</i>, an object
 which has a string representation.
 Numbers are also atoms and are initially entered into Yacas as decimal strings.
 *FOOT There are functions to work with numbers in non-decimal bases, but direct input/output of numbers is supported only in decimal notation.
@@ -188,29 +190,28 @@ the arithmetic library can work with.
 
 The basic layout is as follows: there is one class {BigNumber} that offers basic numerical functions,
 arithmetic operations such as addition and multiplication, through a set of class methods.
-
 Integers and floating-point numbers are handled by the same class.
 
 The {BigNumber} class delegates the actual arithmetic operations to the auxiliary classes {BigInt} and {BigFloat}.
 These two classes are direct wrappers of an underlying arithmetic library.
 The library implements a particular internal representation of numbers.
-Yacas must be compiled to use a specific number library (one cannot switch to another arithmetic library at runtime).
 
-The class {BigNumber} performs precision tracking, floating-point formatting, error reporting, type checking and so on, while {BigInt} and {BigFloat} only concern themselves with low-level arithmetic operations on integer and floating-point numbers, respectively.
+The responsibility of the class {BigNumber} is to perform precision tracking, floating-point formatting, error reporting, type checking and so on, while {BigInt} and {BigFloat} only concern themselves with low-level arithmetic operations on integer and floating-point numbers respectively.
 In this way Yacas isolates higher-level features like precision tracking from the lower-level arithmetic operations.
 The number objects in a library should only be able to convert themselves to/from a string and perform basic arithmetic.
+It should be easy to wrap a generic arithmetic library into a {BigNumber} implementation.
 
 It is impossible to have several alternative number libraries operating at the same time.
 [In principle, one might write the classes {BigInt} and {BigFloat}
-as wrappers of two different arithmetic libraries, one for integers,
-but one cannot have two different libraries for integers at the same time.]
+as wrappers of two different arithmetic libraries, one for integers and the other for floats,
+but at any rate one cannot have two different libraries for integers at the same time.]
 Having several libraries in the same Yacas session does not seem to be very useful;
 it would also incur a lot of overhead because one would have to convert the numbers from one internal library representation to another.
-For performance benchmarking or for testing purposes one can compile separate versions of {Yacas} linked against different arithmetic libraries.
+For performance benchmarking or for testing purposes one can compile separate versions of {Yacas} configured with different arithmetic libraries.
 
 To embed an arbitrary-precision arithmetic library into Yacas, one needs to write two wrapper classes, {BigInt} and {BigFloat}.
 (Alternatively, one could write a full {BigNumber} wrapper class but that would result in code duplication unless the library happens to implement a large portion of the {BigNumber} API.
-There is already a standard implementation of {BigNumber} through {BigInt} and {BigFloat} in the file {numbers.cpp}.)
+There is already a reference implementation of {BigNumber} through {BigInt} and {BigFloat} in the file {numbers.cpp}.)
 The required API for the {BigNumber} class is described below.
 
 
@@ -307,12 +308,13 @@ C++:
 	x.Equals(y)==true;
 Yacas:
 	MathEquals(x,y)
-Note that the values are compared arithmetically, their internal precision may differ, and integers may be compared to floats.
+The values are compared arithmetically, their internal precision may differ, and integers may be compared to floats.
+Two floats are considered "equal" when their values coincide within their precision.
 It is only guaranteed that {Equals} returns true for equal integers, for an integer and a floating-point number with the same integer value, and for two exactly bit-by-bit equal floating-point numbers.
 Floating-point comparison may be unreliable due to roundoff error and particular internal representations.
 So it may happen that after {y:=x+1;} {y:=y-1;} the comparison
 	y.Equals(x)
-will return {false}.
+will return {false}, although such cases should be rare.
 *	{BigNumber::IsInt} -- Check whether the number {x} is of integer or floating type.
 (Both types are represented by the same class {BigNumber}, and we need to be able to distinguish them.)
 C++:
@@ -335,6 +337,7 @@ C++:
 *HEAD 3. Basic arithmetic operations.
 Note that here "precision" always means the number of significant <i>bits</i>, i.e. digits in the base 2, <i>not decimal digits</i>.
 *	{BigNumber::LessThan} -- Compare two objects, {x<y}. Returns {true} if the numerical comparison holds, regardless of the value types (integer or float).
+If the numbers are equal up to their precision, the comparison returns {false}.
 C++:
 	x.LessThan(y)==true;
 Yacas:
@@ -355,19 +358,22 @@ Yacas:
 Every floating-point number contains information about how many significant bits of mantissa it currently has.
 A particular implementation may hold more bits for convenience but the additional bits may be incorrect.
 [Integer numbers are always exact and do not have a concept of precision.
-This function should not be used on integers.]
-The precision of a given number is changed automatically by arithmetic operations, by conversions from strings (to the given precision), or manually by the function {SetExactBits}.
+The function {GetExactBits} should not be used on integers;
+it will return a meaningless result.]
+The precision of a number object is changed automatically by arithmetic operations, by conversions from strings (to the given precision), or manually by the function {SetExactBits}.
 It is not strictly guaranteed that {GetExactBits} returns the number of correct bits.
 Rather, this number of bits is intended as rough lower bound of the real achieved precision.
 (It is difficult to accurately track the round-off errors accumulated after many operations, without a time-consuming interval arithmetic or another similar technique.)
 Note: the number of bits is a platform signed integer (C++ type {long}).
-*	{BigNumber::SetExactBits} -- Set the precision of a number {x} and truncate (or expand) it to a given floating-point precision of {n} bits.
-This has an effect of converting the number to the floating-point type with {n} significant bits of mantissa.
+*	{BigNumber::SetExactBits} -- Set the precision of a number {x} 
+<i>and truncate</i> (or expand) it to a given floating-point precision of {n} bits.
+This function has an effect of converting the number to the floating-point type with {n} significant bits of mantissa.
+The {BigNumber} object is changed.
 [No effect on integers.]
-Note that the {Floor} function is not similar to {Precision} because
-1) {Floor} always converts to an integer value while {Precision} converts to a floating-point value,
-2) {Floor} always decreases the number while {Precision} tries to find the closest approximation.
-For example, if $x= -1123.38$ then {x.Precision(1)} should return "{-1024.}" which is the best one-bit floating-point approximation.
+Note that the {Floor} function is not similar to {SetExactBits} because
+1) {Floor} always converts to an integer value while {SetExactBits} converts to a floating-point value,
+2) {Floor} always decreases the number while {SetExactBits} tries to find the closest approximation.
+For example, if $x= -1123.38$ then {x.SetExactBits(1)} should return "{-1024.}" which is the best one-bit floating-point approximation.
 However, {Floor(-1123.38)} returns {-1124}
 (the largest integer not greater than {-1123.38}).
 C++:
@@ -403,9 +409,11 @@ Yacas:
 Some additional operations useful for optimization purposes.
 These operations can be efficiently implemented with a binary-based internal representation of big numbers.
 *	{BigNumber::IsSmall} -- Check whether the number {x} fits into a platform type {long} or {double}. (Optimization of comparison.)
-Sometimes this helps avoid unnecessary calculations with big numbers.
-Note that the semantics of this operation is different for integers and for floats. An integer is "small" only when it fits into a platform {long} integer.
-A float is "small" when it can be approximated by a platform {double} (that is, when its exponent is not too large).
+This test should helps avoid unnecessary calculations with big numbers.
+Note that the semantics of this operation is different for integers and for floats.
+An integer is "small" only when it fits into a platform {long} integer.
+A float is "small" when it can be approximated by a platform {double} (that is, when its decimal exponent is smaller than 1021).
+For example, a {BigNumber} representing $Pi$ to 1000 digits is "small" because it can be approximated by a platform float.
 C++:
 	x.IsSmall()==true;
 Yacas:
@@ -481,23 +489,25 @@ In some arithmetic operations (add, multiply, divide) the working precision is g
 For example,
 	x.Add(y,z,100)
 will add {y} to {z} and put the result into {x}, truncating it to at most 100 bits of mantissa, if necessary.
-(The precision is usually given in bits, not in decimal digits, because when dealing with low-level operations it is much more natural to think in terms of bits.)
+(The precision is given in bits, not in decimal digits, because when dealing with low-level operations it is much more natural to think in terms of bits.)
 If the numbers {y}, {z} have fewer than 100 bits of mantissa each, then their sum will not be precise to all 100 digits.
 That is fine;
 but it is important that the sum should not contain <i>more</i> than 100 digits.
 Floating-point values, unlike integers, only grow up to the given number of significant bits and then a round-off <i>must</i> occur.
 Otherwise we will be wasting a lot of time on computations with many meaningless digits.
+A good low-level arithmetic library such as {gmp} will avoid floating-point computations with more digits than explicitly requested.
 
 	    Automatic precision tracking
 
 The precision of arithmetic operations on floating-point numbers can be maintained automatically.
-A rigorous way to do it is to represent each imprecise real number $x$ by an interval with rational bounds within which $x$ is guaranteed to be.
-This is usually called "interval arithmetic".
-A result of an interval-arithmetic calculation is "exact" in the sense that the actual number is always within the resulting interval.
-However, this is computationally expensive.
-A "poor man's interval arithmetic" is proposed where the precision is represented by the "number of correct bits".
+A rigorous way to do it would be to represent each imprecise real number $x$ by an interval with rational bounds within which $x$ is guaranteed to be.
+This is usually called "interval arithmetic."
+A result of an interval-arithmetic calculation is "exact" in the sense that the actual (unknown) number $x$ is <i>always</i> within the resulting interval.
+However, interval arithmetic is computationally expensive and at any rate the width of the resulting interval is not guaranteed to be small enough for a particular application.
+
+For the Yacas arithmetic library, a "poor man's interval arithmetic" is proposed where the precision is represented by the "number of correct bits".
 The precision is not tracked exactly but almost always adequately.
-This kind of precision tracking can catch a critical roundoff error or
+The purpose of this kind of rough precision tracking is to catch a critical roundoff error or to
 indicate an unexpected loss of precision in numerical calculations.
 
 Suppose we have two floating-point numbers $x$ and $y$ and we know that they have certain numbers of correct mantissa bits, say $m$ and $n$.
@@ -506,8 +516,9 @@ Here $delta$ and $epsilon$ are the relative errors for $x$ and $y$.
 Typically $delta$ and $epsilon$ are much smaller than $1$.
 
 Suppose that every floating-point number knows the number of its correct digits.
-We symbolically represent such numbers as pairs {{x,m}} or {{y,n}}.
+We can symbolically represent such numbers as pairs {{x,m}} or {{y,n}}.
 When we perform an arithmetic operation on numbers, we need to update the precision component as well.
+
 Now we shall consider the basic arithmetic operations to see how the precision is updated.
 
 *HEAD Multiplication
@@ -515,7 +526,8 @@ Now we shall consider the basic arithmetic operations to see how the precision i
 If we need to multiply $x$ and $y$, the correct answer is $x'*y'$ but we only know an approximation to it, $x*y$.
 We can estimate the precision by $x'*y' = x*y*(1+delta)*(1+epsilon)$ and it follows that the relative precision is at most $delta+epsilon$.
 But we only represent the relative errors by the number of bits.
-So we can either set the precision of $x*y$ to the smallest of the precisions of $x$ and $y$, or double it.
+The whole idea of the simplified precision tracking is to avoid costly operations connected with precision.
+So instead of tracking the number $delta+epsilon$ exactly, we represent it roughly: either set the error of $x*y$ to the larger of the errors of $x$ and $y$, or double the error.
 
 More formally, we have the estimates $Abs(delta)<2^(-m)$, $Abs(epsilon)<2^(-n)$ and we need a similar estimate $Abs(r)<2^(-p)$ for $r=delta + epsilon$.
 
@@ -523,10 +535,12 @@ If the two numbers $x$ and $y$ have the same number of correct bits, we should d
 But if they don't have the same number of bits, we cannot really estimate the error very well.
 To be on the safe side, we might double the error if the numbers $x$ and $y$ have almost the same number of significant bits, and leave the error constant if the numbers of significant bits of $x$ and $y$ are very different.
 
-The answer expressed as a formula is $p=Min(m,n)$ if $Abs(m-n)>2$ and $p=Min(m,n)-1$ otherwise.
+The answer expressed as a formula is $p=Min(m,n)$ if $Abs(m-n)>=D$ and $p=Min(m,n)-1$ otherwise.
+Here $D$ is a constant that expresses our tolerance for error.
+In the current implementation, $D=1$.
 
 If one of the operands is a floating zero $x$={{0.,m}} (see below) and $x$={{x,n}}, then $p=m-BitCount(x)+1$.
-This is formally the same as if the bit count of {{0.,m}} were equal to $1-m$.
+This is the same formula as above, if we pretend that the bit count of {{0.,m}} is equal to $1-m$.
 
 *HEAD Division
 
@@ -560,7 +574,7 @@ The above formula for $r$ gives an estimate
 $$ r < Max(Abs(delta), Abs(epsilon)) $$
 and therefore the precision of the result is at least $p = Min(m,n)$.
 
-If one of the operands is a floating zero represented by $x$={{0.,m}} (see below), then the calculation of the error is formally the same as if $x$={{1.,m}}.
+If one of the operands is a floating zero represented by $x$={{0.,m}} (see below), then the calculation of the error is formally the same as in the case $x$={{1.,m}}.
 This is as if the bit count of {{0.,m}} were equal to $1$ (unlike the case of multiplication).
 
 Finally, if the sum $x+y$ is a floating zero but $x!=0$ and $y!=0$,
@@ -598,9 +612,9 @@ Therefore the subtraction will have to be performed using all available digits.
 
 *HEAD The floating zero
 
-When we obtain a floating-point zero, it is always a result of a subtraction.
+There is a difference between an integer zero and a floating-point zero.
 An integer zero is exact, so the result of {0*1.1} is exactly zero (also an integer).
-However, {x:=1.1-1.1} is a floating-point zero (a "floating zero" for short) of which we can only be sure about the first digit, {x=0.0}.
+However, {x:=1.1-1.1} is a floating-point zero (a "floating zero" for short) of which we can only be sure about the first digit after the decimal point, i.e. {x=0.0}.
 The number {x} might represent {0.01} or {-0.02} for all we know.
 
 It is impossible to track the <i>relative</i> precision of a floating zero, but it is possible to track the <i>absolute</i> precision.
@@ -679,7 +693,7 @@ as "increase precision by 10 digits" is largely unfamiliar to us except
 in decimals. This seems to be mostly a cosmetic problem. In a real
 calculation, we shouldn't be writing "0.1" when we need an exact number
 {1/10}.
-When we increase precision in the middle of the calculation, this mistake surfaces and gives unexpected results.
+When we request to increase precision in the middle of a calculation, this mistake surfaces and gives unexpected results.
 
 2) When precision is increased, the number {x} takes its decimal
 representation, pads it with zeros, and converts back to the internal
@@ -698,15 +712,15 @@ matter how we extend {x} to more digits; but it's a lot slower to go
 through the decimal representation every time.
 
 3) The approach currently being implemented in {Yacas} is a compromise between the above two.
-We distinguish number objects that were given as decimal strings
-(not by any calculations), for instance {x:=1.2},
-from floats that are results of calculations, for instance {y:=1.2*1.4}.
+We distinguish number objects that were given by the user as decimal strings
+(and not as results of calculations), for instance {x:=1.2},
+from number objects that are results of calculations, for instance {y:=1.2*1.4}.
 Objects of the first kind are interpreted as exact rational numbers given by a decimal fraction,
 while objects of the second kind are interpreted as inexact floating-point numbers known to a limited precision.
-Suppose {x} and {y} are first assigned as indicated, under precision of 5 digits,
-and then the precision is increased to 10 digits
+Suppose {x} and {y} are first assigned as indicated, with the precision of 5 digits each,
+then the precision is increased to 10 digits
 and {x} and {y} are used in some calculation.
-Then {x} will be converted from the string representation "{1.2}" to 10 decimal digits, effectively making {1.2} a shorthand for {1.200000000}.
+At this point {x} will be converted from the string representation "{1.2}" to 10 decimal digits, effectively making {1.2} a shorthand for {1.200000000}.
 But the value of {y} will be binary-padded in some efficient way and may be different from {1.680000000}.
 
 In this way, efficiency is not lost (there are no repeated conversions from binary to decimal and back),
@@ -729,7 +743,7 @@ Now we shall increase the precision:
 	Out> True
 	In> y
 	Out> 0.33333
-The number {y} is printed with 5 digits only, because it knows that it has only 5 correct digits.
+The number {y} is printed with 5 digits, because it knows that it has only 5 correct digits.
 	In> y+0
 	Out> 0.33333333325572311878
 In a calculation, {y} was binary-padded, so the last digits are incorrect.
@@ -749,10 +763,11 @@ Now we can see how the number {z} is padded again:
 
 	    The meaning of the {Precision()} call
 
-We could use different interpretations:
-The first interpretation is that {Precision(10)} means "I want all answers 
-to contain 10 correct digits".
-The second interpretation is "do all calculations with floating-point numbers
+The user calls {Precision()} to specify the "wanted number of digits."
+We could use different interpretations of the user's wish:
+The first interpretation is that {Precision(10)} means "I want all answers
+of all calculations to contain 10 correct digits".
+The second interpretation is "I want all calculations with floating-point numbers done
 using at least 10 digits".
 
 Suppose we have floating-point numbers {x} and {y}, known only to 2 and 3 significant
@@ -766,27 +781,31 @@ But we
 can satisfy the second interpretation, even if we print "3.2028214767" instead of the expected {3.2}.
 The garbage after the third digit is unavoidable 
 and harmless unless our calculation really depends on having 10 correct 
-digits of $x*y$. But if our calculation depends on the way we choose the extra digits, then we are using a bad algorithm.
+digits of $x*y$.
+The garbage digits can be suppressed when the number is printed, so that the user will never see them.
+But if our calculation depends on the way we choose the extra digits, then we are using a bad algorithm.
 
 The first interpretation of {Precision()} is only possible to satisfy if
-we are given a self-contained calculation starting with integer
+we are given a self-contained calculation with integer
 numbers. For example,
 	N(Sin(Sqrt(3/2)-10^(20)), 50)
 This can be computed to 50 digits with some effort,
 but only if
 we are smart enough to use 70 digits in the calculation of the argument
 of {Sin()}.)
+(This level of smartness is currently not implemented in the {N} function.)
 The result of this calculation will have 50 digits and 
 not a digit more; we cannot put the result inside another expression 
 and expect full precision in all cases.
 This seems to be a separate task, "compute something with {n} digits 
 no matter what", and not a general routine to be followed at all times.
 
-So it seems that the second interpretation of {Precision()}, namely:
-"please use that many digits in all calculations now", is a little more
+So it seems that the second interpretation of {Precision(n)}, namely:
+"please use {n} digits in all calculations now", is more
 sensible as a general-purpose prescription.
 
-But let's look at a particular case (for simplicity I am talking about
+But this interpretation does not mean that all numbers will be
+<i>printed</i> with {n} digits. Let's look at a particular case (for simplicity we are talking about
 decimal digits but in the implementation they will be binary digits).
 Suppose we have {x} precise to 10 digits and {y} precise to 20 digits, and
 the user says {Precision(50)} and {z:=1.4+x*y}. What happens now in this
@@ -840,21 +859,28 @@ These operations are directed at a particular number object {x}.
 
 *	1. All integers are always exact; all floats carry an error estimate, which is stored as the number of correct bits of mantissa they have.
 Symbolically, each float is a pair {{x,n}} where {x} is a floating-point value and {n} is a (platform) integer value.
-If $x!=0$, then the relative error of $x$ is not larger than $2^(-n)$.
+If $x!=0$, then the relative error of $x$ is estimated as $2^(-n)$.
+A number {{x,n}} with $x!=0$ stands for an interval between $x*(1-2^(-n))$ and $x*(1+2^(-n))$.
 This integer {n} is returned by {GetExactBits(x)}
 and can be modified by {SetExactBits(x,n)} (see below).
-Error estimates are not guaranteed to be correct in all cases, but they should give sensible upper bounds on the error.
-A number {{x,n}} stands for an interval between $x*(1-2^(-n))$ and $x*(1+2^(-n))$.
+Error estimates are not guaranteed to be correct in all cases, but they should give sensible <i>lower</i> bounds on the error.
+For example, if {{x,n}={123.456,3}}, the error estimate says that {x} is known to at most 3 bits and therefore the result of $1/(x-123)$ is completely undefined becase $x$ cannot be distinguished from {0}.
+The purpose of the precision tracking mechanism is to catch catastrophic
+losses of numerical precision in cases like these,
+not to provide a precise round-off error estimates.
+In most cases it is better to let the program continue even with loss of precision than have it aborted due to a false round-off alarm.
 *	1. When printing a float, we print only as many digits as needed to represent the float value to its current precision.
 When reading a float, we reserve enough precision to preserve all given digits.
 *	1. The number 0 is either an integer {0} or a floating-point {0.}
 (a "floating zero" for short).
-For a floating zero, the "number of exact bits" means an absolute error, not a relative error.
+For a floating zero, the "number of exact bits" means the absolute error, not the relative error.
 It means that the symbolic pair {{0.,n}} represents all number $x$ in the interval $-2^(-n)<=x<=2^(-n)$.
+A floating zero can be obtained either by subtracting almost equal numbers or by squaring a very imprecise number.
+In both cases the possible result can be close to zero and the precision of the initial numbers is insufficient to distinguish it from zero.
 *	1. An integer and a float are equal only if the float contains this
 integer value within its precision interval.
 Two floats are equal only if their values differ by less than the largest of their error estimates (i.e. if their precision intervals intersect).
-In particular, it means that an integer zero is always equal to any floating zero, and any two floating zeros are equal.
+In particular, it means that an integer zero is always equal to any floating zero, and that any two floating zeros are equal.
 It follows that if {x=y}, then for any floating zeros {x+0.=y+0.} and {x-y=0.} as well.
 (So this arithmetic is not obviously inconsistent.)
 *	1. The Yacas function {IsInteger(x)} returns {True} if {x} has integer <i>type</i>;

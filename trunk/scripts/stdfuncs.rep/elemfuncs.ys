@@ -22,8 +22,8 @@ DigitsToBits(n, base) := MathFloor(0.51+n*N(Ln(base)/Ln(2),10));
 
 
 ///  MathBitCount: count number of bits in an integer or a float number.
-/*  MathBitCount(0)=1. */
-/*
+/*  MathBitCount is now implemented through BigNumber::BitCount() */
+/*  so this should remain commented out as an example implementation
 10 # MathBitCount(0) <-- 1;
 20 # MathBitCount(_x) _ (x<0) <-- MathBitCount(-x);
 
@@ -53,11 +53,17 @@ DigitsToBits(n, base) := MathFloor(0.51+n*N(Ln(base)/Ln(2),10));
 
 
 /// MathPower(x,y).
-/// Compute x^y. Generally, x must be positive, except for integer y.
+/// Compute x^y, using a binary algorithm for integer y and exp/log for all other cases.
 /// FIXME: No precision tracking yet.
 // identities:
 5 # MathPower(0, _y) <-- 0;
 5 # MathPower(1, _y) <-- 1;
+
+7 # MathPower(_x, 0) <-- 1;
+7 # MathPower(_x, 1) <-- x;
+
+8 # MathPower(_x, y_IsInteger) _ (y<0) <-- MathDivide(1, MathPower(x, -y));
+
 // integer powers:
 10 # MathPower(_x, y_IsInteger) <-- IntPowerNum(x, y, MathMultiply, 1);
 // real powers: this needs precision tracking.

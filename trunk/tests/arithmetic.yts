@@ -62,6 +62,14 @@ Verify(Mod(2,Infinity),2);
 Verify(Mod({0,1,2,3,4,5,6},2),{0,1,0,1,0,1,0});
 Verify(Mod({0,1,2,3,4,5,6},{2,2,2,2,2,2,2}),{0,1,0,1,0,1,0});
 
+Testing("MathPower");
+// was broken in the gmp version
+Verify(MathPower(19, 0), 1);
+Verify(MathPower(1, -1), 1);
+Verify(MathPower(1, -2), 1);
+Verify(MathPower(10, -2), 0.01);
+Verify(MathPower(2, 3), 8);
+Verify(MathPower(2, -3), .125); 
 
 Testing("Rounding");
 Verify(Floor(1.2),1);
