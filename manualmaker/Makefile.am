@@ -39,7 +39,7 @@ EXTRA_DIST = \
 	manualmaker styleplain in/all \
 	in/intromaker in/codingmaker in/refmaker in/refprogmaker in/essaysmaker\
 	$(REFSOURCES) $(ALLBOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) \
-	in/dummies newhelp yacasinit.ys .cvsignore
+	in/dummies yacasinit.ys .cvsignore
 
 # Stuff for automatic generation of Yacas books
 %.chapt: in/%.chapt.txt
