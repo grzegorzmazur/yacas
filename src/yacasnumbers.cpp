@@ -1110,9 +1110,27 @@ void BigNumber::BitNot(const BigNumber& aX)
   }
 }
 
+/// return true if the bit count fits into signed long
+LispBoolean BigNumber::BitCountIsSmall() const
+{//FIXME
+	return LispTrue;
+}
+
+/// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
 void BigNumber::BitCount(const BigNumber& aX)
+{
+  if (aX.BitCountIsSmall())
+	SetTo(aX.BitCount());
+  else
+  {// FIXME
+  }
+}
+
+// give BitCount as platform integer
+signed long BigNumber::BitCount() const
 {//FIXME
   LISPASSERT(0);
+  return 0;
 }
 LispInt BigNumber::Sign() const
 {
@@ -1298,12 +1316,12 @@ LispBoolean BigNumber::LessThan(const BigNumber& aOther) const
 }
 
 // assign from a platform type
-void BigNumber::SetTo(LispInt aValue)
+void BigNumber::SetTo(long aValue)
 {
 #ifdef HAVE_STDIO_H
   char dummy[150];
   //FIXME platform code
-  sprintf(dummy,"%d",aValue);
+  sprintf(dummy,"%ld",aValue);
   SetTo(dummy,iPrecision,10);
   SetIsInteger(LispTrue);
 #else
