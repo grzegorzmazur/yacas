@@ -113,7 +113,5 @@ A := {{0,-1},{1,0}};
 Verify( IsSkewSymmetric(A), True );
 Verify( IsSkewSymmetric(Identity(10)), False );
 Verify( IsSkewSymmetric(ZeroMatrix(10,10)), True );
-
-
 Verify( IsIdempotent(Identity(20)), True );
-Verify( IsIdempotent(ZeroMatrix(10,10)), False );
+Verify( IsIdempotent(ZeroMatrix(10,10)), True );
