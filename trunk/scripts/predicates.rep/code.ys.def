@@ -27,6 +27,9 @@ IsOrthogonal
 IsUnitary
 IsVariable
 IsNumericList
+IsGaussianInteger
+IsGaussianPrime
+IsCoprime
 HasExpr
 HasFunc
 HasExprSome

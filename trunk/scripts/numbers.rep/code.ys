@@ -276,3 +276,20 @@ LocalSymbols(p, q)
 	];
 ];
 
+10 # 	Repunit(0)	<-- 0;
+// Number consisting of n 1's
+Repunit(n_IsPositiveInteger) <--
+[
+	(10^n-1)/9;
+];
+
+10 # 	HarmonicNumber(n_IsInteger)	<-- HarmonicNumber(n,1);
+HarmonicNumber(n_IsInteger,r_IsPositiveInteger) <--
+[
+	// small speed up
+	if( IsZero(r) )[
+		Sum(k,1,n,1/k);	
+	] else [
+		Sum(k,1,n,1/k^r);	
+	];
+];

@@ -859,6 +859,60 @@ expression. {Pi} is considered a constant.
 *SEE IsNumber, IsInteger, VarList
 
 
+*CMD IsGaussianInteger ---  test for a Gaussian integer
+*STD
+*CALL
+	IsGaussianInteger(z)
+*PARMS
+
+{z} - a complex or real number	
+
+*DESC
+
+This function returns a boolean value depending on whether or not
+the argument is a Gaussian integer. A Gaussian integer is a generalization
+of integers into the complex plane. A complex number {a+b*I} is a Gaussian
+integer if and only if {a} and {b} are integers.
+
+*E.G.
+	In> IsGaussianInteger(5)
+	Out> True;
+	In> IsGaussianInteger(5+6*I)
+	Out> True;
+	In> IsGaussianInteger(1+2.5*I)
+	Out> False;
+
+*SEE  IsGaussianPrime
+
+*CMD IsGaussianPrime ---  test for a Gaussian prime
+*STD
+*CALL
+        IsGaussianPrime(z)
+*PARMS
+
+{z} - a complex or real number
+
+*DESC
+
+This function returns a boolean value depending on whether or not the argument
+is a Gaussian prime. Gaussian primes are Gaussian integers $z=a+b*I$
+that satisfy one of the following properties. If {Re(z)} and {Im(z)} are nonzero then,
+$z$ is a Gaussian prime if and only if {Re(z)^2 + Im(z)^2} is an ordinary
+prime. If {Re(z)==0}, then {z} is a Gaussian prime if and only if {Im(z)} is an
+ordinary prime and {Im(z)%4==3} .If {Im(z)==0}, then {Re(z)} is a Gaussian prime
+if and only if {Re(z)} is an ordinary prime and {Re(z)%4==3}. 
+
+*E.G.
+	In> IsGaussianPrime(13)
+	Out> False;
+	In> IsGaussianPrime(2+2*I)
+	Out> False;
+	In> IsGaussianPrime(2+3*I)
+	Out> True;
+	In> IsGaussianPrime(3)
+	Out> True;
+
+*SEE  IsGaussianInteger
 
 
 
