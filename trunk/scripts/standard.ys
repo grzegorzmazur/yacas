@@ -166,6 +166,8 @@ Function("TableForm",{list})
   True;
 ];
 
+RuleBase("NormalForm",{expression});
+Rule("NormalForm",1,1000,True) expression;
 
 
 /* Standard arithmetic */

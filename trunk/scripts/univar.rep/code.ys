@@ -11,9 +11,6 @@
 /* we need to use "predicates" because we are adding to IsZero */
 Use("predicates.rep/code.ys");
 
-RuleBase("NormalForm",{expression});
-Rule("NormalForm",1,1000,True) expression;
-
 
 0 # NormalForm(UniVariate(_var,_first,_coefs)) <--
     ExpandUniVariate(var,first,coefs);
