@@ -57,7 +57,7 @@ LispInt WordDigits(LispInt aPrecision, LispInt aBase);
 
 // Operations on ANumber.
 void Negate(ANumber& aNumber);
-void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase);
+void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, LispBoolean aForceFloat=0);
 void Add(ANumber& aResult, ANumber& a1, ANumber& a2);
 void Subtract(ANumber& aResult, ANumber& a1, ANumber& a2);
 void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2);

@@ -237,6 +237,13 @@ private:
   
   /// GMP wrapper ends here.
   #else
+    inline void SetIsInteger(bool aIsInteger) {iType = (aIsInteger ? KInt : KFloat);}
+    enum ENumType
+    {
+      KInt = 0,
+      KFloat
+    };
+    ENumType iType;
     ANumber* iNumber;
   #endif
 #endif

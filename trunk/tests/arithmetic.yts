@@ -41,7 +41,7 @@ Verify((4+2)*3,18);
 Verify(15/5,3);
 
 Verify(-2+3,1);
-Verify(-2.01+3.01,1);
+Verify(-2.01+3.01,1.);
 
 Verify(0+a,a);
 Verify(a+0,a);
@@ -90,23 +90,23 @@ Eval(Factors(447738843))
 
 
 //Exponential notation is now supported in the native arithmetic library too...
-Verify(2e3+1,2001);
-Verify(2.0e3+1,2001);
-Verify(2.00e3+1,2001);
-Verify(2.000e3+1,2001);
-Verify(2.0000e3+1,2001);
+Verify(2e3+1,2001.);
+Verify(2.0e3+1,2001.);
+Verify(2.00e3+1,2001.);
+Verify(2.000e3+1,2001.);
+Verify(2.0000e3+1,2001.);
 
-Verify(1+2e3,2001);
-Verify(1+2.0e3,2001);
-Verify(1+2.00e3,2001);
-Verify(1+2.000e3,2001);
-Verify(1+2.0000e3,2001);
+Verify(1+2e3,2001.);
+Verify(1+2.0e3,2001.);
+Verify(1+2.00e3,2001.);
+Verify(1+2.000e3,2001.);
+Verify(1+2.0000e3,2001.);
 
 Verify(N(Sqrt(1e4))-100,0);
 Verify(N(Sqrt(1.0e4))-100,0);
 
-Verify(2.0000e3-1,1999);
-Verify(10e3*1.2e-3,12);
+Verify(2.0000e3-1,1999.);
+Verify(10e3*1.2e-3,12.);
 Verify((10e3*1.2e-4)-1.2,0);
 
 Verify(N(Sin(0.1e1)-Sin(1),30),0);

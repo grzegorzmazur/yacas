@@ -287,3 +287,8 @@ HasExprSome(_expr, _atom, _look'list) _ Equals(expr, atom) <-- True;
 HasExprArith(expr, atom) := HasExprSome(expr, atom, {Atom("+"), Atom("-"), *, /});
 HasFuncArith(expr, atom) := HasFuncSome(expr, atom, {Atom("+"), Atom("-"), *, /});
 
+
+/// TODO FIXME document this: FloatIsInt returns True if the argument is integer after removing potential trailing 
+/// zeroes after the decimal point
+FloatIsInt(_x) <-- IsZero(x-Floor(x));
+
