@@ -2338,6 +2338,39 @@ void LispRuleBaseDefined(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr
     InternalBoolean(aEnvironment,aResult,userFunc != NULL);
 }
 
+void LispDefLoadFunction(LispEnvironment& aEnvironment,LispPtr& aResult,
+                         LispPtr& aArguments)
+{
+    TESTARGS(2);
+    LispPtr name;
+    InternalEval(aEnvironment, name, Argument(aArguments,1));
+    LispStringPtr orig = name.Get()->String();
+    CHK_ARG(orig != NULL, 1);
+    LispString oper;
+    InternalUnstringify(oper, orig);
+
+    LispMultiUserFunction* multiUserFunc =
+        aEnvironment.MultiUserFunction(aEnvironment.HashTable().LookUp(oper.String()));
+    if (multiUserFunc != NULL)
+    {
+        if (multiUserFunc->iFileToOpen!=NULL)
+        {
+            LispDefFile* def = multiUserFunc->iFileToOpen;
+            if (!def->iIsLoaded)
+            {
+#ifdef YACAS_DEBUG
+                /*Show loading... */
+                printf("Debug> Loading file %s for function %s\n",def->iFileName()->String(),oper.String());
+#endif
+                multiUserFunc->iFileToOpen=NULL;
+                InternalUse(aEnvironment,def->iFileName());
+            }
+        }
+    }
+    InternalTrue(aEnvironment,aResult);
+}
+
+
 void LispRuleBaseArgList(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments)
 {
     TESTARGS(3);

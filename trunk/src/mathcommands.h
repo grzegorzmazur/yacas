@@ -356,6 +356,8 @@ void GenPatternMatches(LispEnvironment& aEnvironment,LispPtr& aResult,
 
 void LispRuleBaseDefined(LispEnvironment& aEnvironment,LispPtr& aResult,
                          LispPtr& aArguments);
+void LispDefLoadFunction(LispEnvironment& aEnvironment,LispPtr& aResult,
+                         LispPtr& aArguments);
 void LispRuleBaseArgList(LispEnvironment& aEnvironment,LispPtr& aResult,
                          LispPtr& aArguments);
 

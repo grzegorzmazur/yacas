@@ -217,6 +217,8 @@ input(iEnvironment.iInputStatus)
     SetCommand(GenPatternMatches,"PatternMatches");
 
     SetCommand(LispRuleBaseDefined,"RuleBaseDefined");
+    SetCommand(LispDefLoadFunction,"DefLoadFunction");
+    
     SetCommand(LispRuleBaseArgList,"RuleBaseArgList");
 
     SetCommand(LispNewRulePattern       ,"RulePattern");

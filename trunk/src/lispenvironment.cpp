@@ -329,9 +329,9 @@ void LispEnvironment::Retract(LispStringPtr aOperator,LispInt aArity)
 void LispEnvironment::DeclareRuleBase(LispStringPtr aOperator, LispPtr& aParameters)
 {
     LispMultiUserFunction* multiUserFunc = MultiUserFunction(aOperator);
+
     // add an operator with this arity to the multiuserfunc.
     multiUserFunc->DefineRuleBase(NEW BranchingUserFunction(aParameters));
-
 
 #ifdef YACAS_DEBUG
     {
