@@ -25,6 +25,7 @@ public:
     void Rewind();
     virtual LispCharPtr StartPtr();
     virtual LispInt Position();
+    virtual void SetPosition(LispInt aPosition);
 
 protected:
     StdFileInput(FILE* aFile,InputStatus& aStatus);

@@ -47,12 +47,14 @@ Bodied("Integrate",60000);
 
 Bodied("Limit",60000);
 
+/*TODO remove?
 Infix("+-",5);
 Infix("/-",3);
 Infix("*-",4);
 Infix("^-",2);
 Infix(":=-",1000);
 Infix(":=+",1000);
+*/
 
 /* functional operators */
 Infix(":",7);

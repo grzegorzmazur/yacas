@@ -364,7 +364,7 @@ Internal math should be only a fall-back so that things work without external li
  <li> Parser improvements:
  <ol>
    <li> The parser should be able to pick up symbol atoms such as "_" or "+" when they are unambiguously used as atoms. For example, one should be able to call a function f() on the atom "+" by f(+). Currently this only works if the atom is not defined as a prefix operator. (E.g. f(*) works.)
-   <li> The parser should read the compound operators such as ":=+" more intelligently. The algorithm should be something like this: a) if ":=+" is defined, use the definition. b) otherwise, find the longest initial substring that is defined (in this case it might be ":=") and split it off as if there was a space after it: ":= +". c) continue parsing after the space in the same way.
+   <li> DONE? : The parser should read the compound operators such as ":=+" more intelligently. The algorithm should be something like this: a) if ":=+" is defined, use the definition. b) otherwise, find the longest initial substring that is defined (in this case it might be ":=") and split it off as if there was a space after it: ":= +". c) continue parsing after the space in the same way.
  </ol>
  </ol>
 

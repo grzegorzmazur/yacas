@@ -19,6 +19,7 @@ public:
     virtual LispBoolean EndOfStream();
     virtual LispCharPtr StartPtr();
     virtual LispInt Position();
+    virtual void SetPosition(LispInt aPosition);
 protected:
     LispString iString;
     LispInt iCurrent;
