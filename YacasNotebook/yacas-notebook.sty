@@ -26,6 +26,13 @@
 
 \preyacasspace = 0pt
 
+%% Process any options
+\newif\ifyacasusebreqn
+\yacasusebreqnfalse
+\DeclareOption{breqn}{\yacasusebreqntrue}
+\ProcessOptions\relax
+
+
 %% First of all, set up some delimiters
 %% The units are in terms of em and ex, so if the font size is
 %% changed, the units will be changed accordingly
@@ -133,7 +140,7 @@
 %% The verbatim environment for the input  is based mostly on the 
 %% environment from "TeX for the Impatient" and Tim Morgan's verbtim2.tex
 
-\def\deactivate{%
+\def\yacasdeactivate{%
         \catcode`\{ = 12
         \catcode`\} = 12
         \catcode`\$ = 12
@@ -147,17 +154,17 @@
 }
 
 {\catcode`\^^M=13
- {\catcode`\ =13\gdef\verbatimdefs{\def^^M{\ \par}\let =\ }}
+ {\catcode`\ =13\gdef\yacasverbatimdefs{\def^^M{\ \par}\let =\ }}
  \gdef\verbatimgobble#1^^M{}}
 
 \def\yac@sinputverbatim{
         \begingroup 
         \setlength{\parskip}{0pt}                     %% added by WMS
-        \everypar{In> }
+%        \everypar{In> }
         \par
         \yacasinputfont
-        \deactivate
-        \verbatimdefs
+        \yacasdeactivate
+        \yacasverbatimdefs
         \catcode`\ =13 
         \catcode`\^^M=13
 }
@@ -303,6 +310,20 @@
      \yac@soutputverbatim
 }      
 
+\ifyacasusebreqn
+  \usepackage[cmbase]{flexisym}
+  \usepackage{breqn}
+  \newenvironment{yacasmath}
+     {\begin{dmath*}}
+     {\end{dmath*}}
+\else
+  \newenvironment{yacasmath}
+     {\begin{displaymath}}
+     {\end{displaymath}}
+\fi
+  
+\def\yac@stexeqn#1\\{\begin{yacasmath} #1 \end{yacasmath}}
+
 \def\outputtex{
      \endyac@sinputverbatim
      \sm@llsk
@@ -311,12 +332,13 @@
      \yac@stexoutput
      \sm@llsk
      \begingroup
-     \def\par{}
-     $$
+     \def\ys{\yac@stexeqn}
+%     \def\par{}
+%     $$
 }      
 
 \def\@ndtexoutput{
-    $$
+%    $$
     \endgroup
     \yac@stexoutputfalse
     \par
