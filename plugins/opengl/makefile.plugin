@@ -1,0 +1,39 @@
+
+# configurable
+
+YACAS_SOURCE = /root/myprojects/yacas-latest
+
+# static
+
+CC = c++
+
+INCLUDES = -I$(YACAS_SOURCE)/src -I$(YACAS_SOURCE)/src/plat/linux32
+
+LIBS = -ldl
+
+XLIBS = -L/usr/X11/lib -L/usr/X11R6/lib -lX11 -lXext -lXmu -lXt -lXi -lSM -lICE -L../lib
+OPENGL_LIBS = -lGL -lGLU -lglut -lm $(XLIBS) 
+
+ .cc.o:
+	$(CC) -c $(INCLUDES) $<
+
+PRGS = libopengl.so 
+
+all: $(PRGS)
+
+
+libopengl.so: openglapi.o glutcode.o
+	c++ -shared -Wl,-soname,libopengl.so -o libopengl.so openglapi.o glutcode.o $(OPENGL_LIBS)
+
+openglapi.cc : openglapi.stub
+	yacas -pc openglapi.stub
+
+include depend.dep
+
+depend:
+	gcc -MM *.cc $(INCLUDES) > depend.dep
+
+clean :
+	-rm core *~ $(PRGS) *.o *api.cc *.so
+
+

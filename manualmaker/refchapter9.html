@@ -1,0 +1,449 @@
+<HTML>
+<A NAME="c9">
+
+</A>
+<A HREF="refchapter9.html#MaxEvalDepth" TARGET="Chapters">
+MaxEvalDepth
+</A>
+, <A HREF="refchapter9.html#Hold" TARGET="Chapters">
+Hold
+</A>
+, <A HREF="refchapter9.html#Eval" TARGET="Chapters">
+Eval
+</A>
+, <A HREF="refchapter9.html#While" TARGET="Chapters">
+While
+</A>
+, <A HREF="refchapter9.html#Until" TARGET="Chapters">
+Until
+</A>
+, <A HREF="refchapter9.html#If" TARGET="Chapters">
+If
+</A>
+, <A HREF="refchapter9.html#SystemCall" TARGET="Chapters">
+SystemCall
+</A>
+, <A HREF="refchapter9.html#PatchString" TARGET="Chapters">
+PatchString
+</A>
+, <A HREF="refchapter9.html#Function" TARGET="Chapters">
+Function
+</A>
+, <A HREF="refchapter9.html#Use" TARGET="Chapters">
+Use
+</A>
+, <A HREF="refchapter9.html#For" TARGET="Chapters">
+For
+</A>
+, <A HREF="refchapter9.html#ForEach" TARGET="Chapters">
+ForEach
+</A>
+, <A HREF="refchapter9.html#Apply" TARGET="Chapters">
+Apply
+</A>
+, <A HREF="refchapter9.html#LocalSymbols" TARGET="Chapters">
+LocalSymbols
+</A>
+, <A HREF="refchapter9.html#Subst" TARGET="Chapters">
+Subst
+</A>
+, <A HREF="refchapter9.html#WithValue" TARGET="Chapters">
+WithValue
+</A>
+, <A HREF="refchapter9.html#SetHelpBrowser" TARGET="Chapters">
+SetHelpBrowser
+</A>
+, <A HREF="refchapter9.html#TraceStack" TARGET="Chapters">
+TraceStack
+</A>
+, <A HREF="refchapter9.html#TraceExp" TARGET="Chapters">
+TraceExp
+</A>
+, <A HREF="refchapter9.html#TraceRule" TARGET="Chapters">
+TraceRule
+</A>
+, <HEAD><TITLE>Control flow functions</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
+<BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
+<H1>
+Control flow functions
+</H1>
+<A NAME="MaxEvalDepth">
+
+</A>
+<H3>
+<HR>MaxEvalDepth(n)
+</H3>
+
+
+Use this command to set the maximum evaluation depth. This will
+catch any infinite recursion. For example, f(x):=f(x); and then
+f(x) would keep on calling f(x), which would call f(x), which
+would call f(x)... etcetera. The interpreter will halt if
+the call is n deep. The default value is 100000.
+
+<A NAME="Hold">
+
+</A>
+<H3>
+<HR>Hold(expression)
+</H3>
+
+Hold(expression) : returns expression unevaluated.
+
+
+<A NAME="Eval">
+
+</A>
+<H3>
+<HR>Eval(expression)
+</H3>
+
+Eval(expression) : Re-evaluates expression.
+
+<A NAME="While">
+
+</A>
+<H3>
+<HR>While(predicate) body
+</H3>
+
+While(predicate) body : 
+Keep on evaluating "body" while "predicate"
+evaluates to "True". "predicate" is tested
+before evaluating the body. While returns "True".
+
+<A NAME="Until">
+
+</A>
+<H3>
+<HR>Until(predicate) body
+</H3>
+
+Until repeats a statement until a predicate becomes
+true. A difference with While is that the statement is evaluated
+at least once, as opposed to While where the body statement is
+evaluated zero or more times.
+
+<A NAME="If">
+
+</A>
+<H3>
+<HR>If(predicate,then,else)
+</H3>
+
+If(predicate,then,else) : 
+If statement. If "predicate" evaluates to
+"True", return result of evaluating the
+"then" body, else if there is a "else" body,
+return that result, otherwise return "False".
+
+<A NAME="SystemCall">
+
+</A>
+<H3>
+<HR>SystemCall(string)
+</H3>
+
+SystemCall(string) : 
+This will call a command in the surrounding shell Yacas was invoked
+from. SystemCall can be used to pass commands to other programs
+or the operating system. 
+
+
+<A NAME="PatchString">
+
+</A>
+<H3>
+<HR>PatchString
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+PatchString(string)
+<H5>
+Parameters:
+</H5>
+string - a string to patch
+<H5>
+Description:
+</H5>
+This function does the same as PatchLoad, but it works on a string
+in stead of on the contents of a text file. See PatchLoad for more
+details.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> PatchString("Two plus three is &lt? Write(2+3); ?&gt ");
+Out> "Two plus three is 5 ";
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#PatchLoad" TARGET="Chapters">
+PatchLoad
+</A>
+, <A NAME="Function">
+
+</A>
+<H3>
+<HR>Function("operator",{arguments} ) body
+</H3>
+
+Function("operator",{arguments} ) body : 
+Use this to declare a simple function, one that doesn't need an entire
+rules data base.
+
+
+<A NAME="Use">
+
+</A>
+<H3>
+<HR>Use("file")
+</H3>
+
+Use("file") : 
+This function loads a file if it was not already loaded with Use.
+
+<A NAME="For">
+
+</A>
+<H3>
+<HR>For(start,predicate,increment) body
+</H3>
+
+For(start,predicate,increment) body : 
+Looping in a C style. "start" gets called, and then "body" as
+long as "predicate" evaluates to True", evaluating
+"increment" each time after body was evaluated. Returns "True".
+
+
+
+<A NAME="ForEach">
+
+</A>
+<H3>
+<HR>ForEach(item,{list}) body
+</H3>
+
+ForEach(item,{list}) body : 
+This function loops over each element in {list}, assigning it to
+the variable "item", and calling "body". Returns "True".
+
+
+<A NAME="Apply">
+
+</A>
+<H3>
+<HR>Apply("oper",{list})
+</H3>
+
+Apply("oper",{list}) : 
+This function applies a operator to the arguments mentioned in the list.
+Eg. "Apply("+",{2,3});" would evaluate to "5".
+
+You can also apply pure functions, declared using the form {varlist,body}.
+Example: "Apply( {{x,y},x+y} , {2,3} );" would also evaluate to 5.
+
+
+<A NAME="LocalSymbols">
+
+</A>
+<H3>
+<HR>LocalSymbols(...)body
+</H3>
+
+Given the symbols passed as the first arguments to LocalSymbols
+a set of local symbols will be created, and creates unique ones
+for them, typically of the form $<symbol><number>, where
+symbol was the symbol entered by the user, and number is a unique
+number. This scheme was used
+to such a generated symbol can not accientally be entered by a user.
+Example:
+
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> LocalSymbols(a,b)a+b
+Out> $a6+ $b6;</PRE>
+</TABLE>
+
+
+This is useful in cases where a guaranteed free variable is needed,
+like in the macro-like functions (For, While, etc.).
+
+
+<A NAME="Subst">
+
+</A>
+<H3>
+<HR>Subst(from,to)body
+</H3>
+
+
+Subst replaces any occurrence of from in body with to. <BR>
+
+Example:
+  Subst(x,Sin(y)) x+x -> Sin(y)+Sin(y)
+
+<A NAME="WithValue">
+
+</A>
+<H3>
+<HR>WithValue(variable,value,expression)
+</H3>
+
+WithValue(variable,value,expression) : evaluate expression, with
+variable set to value. variable and value can be lists of
+variables and values.
+
+<A NAME="SetHelpBrowser">
+
+</A>
+<H3>
+<HR>SetHelpBrowser
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+SetHelpBrowser(helpbrowser)
+<H5>
+Parameters:
+</H5>
+helpbrowser - string containing a html browser to use for help
+<H5>
+Description:
+</H5>
+This function sets the help browser you want to use to
+browse the help online. It calls helpbrowser with the html
+page as first argument. The default is lynx. If you want to
+use a different browser by default it suffices to create a
+file ~/.yacasrc. and add a line to set the browser in there.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> SetHelpBrowser("netscape")
+Out> "netscape";
+In> ??
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A NAME="TraceStack">
+
+</A>
+<H3>
+<HR>TraceStack
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+TraceStack(expression)
+<H5>
+Parameters:
+</H5>
+expression - an expression to evaluate
+<H5>
+Description:
+</H5>
+TraceStack shows the calling stack after an error occurred.
+It shows the last few items on the stack, not to flood the screen.
+These are usually the only items of interest on the stack.
+This is probably by far the most useful debugging function in
+Yacas. It shows the last few things it did just after an error
+was generated somewhere.
+<P>
+For each stack frame, it shows if the function evaluated was a
+built-in function or a user-defined function, and for the user-defined
+function, the number of the rule it is trying whether it was evaluating
+the pattern matcher of the rule, or the body code of the rule.
+<P>
+This functionality is not offered by default because it slows
+down the evaluation code.
+
+
+<H5>
+Examples:
+</H5>
+Here is an example of a function calling itself recursively,
+causing Yacas to flood its stack:<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> f(x):=f(Sin(x))
+Out> True;
+In> TraceStack(f(2))
+Debug> 982 :  f (Rule # 0 in body)
+Debug> 983 :  f (Rule # 0 in body)
+Debug> 984 :  f (Rule # 0 in body)
+Debug> 985 :  f (Rule # 0 in body)
+Debug> 986 :  f (Rule # 0 in body)
+Debug> 987 :  f (Rule # 0 in body)
+Debug> 988 :  f (Rule # 0 in body)
+Debug> 989 :  f (Rule # 0 in body)
+Debug> 990 :  f (Rule # 0 in body)
+Debug> 991 :  f (Rule # 0 in body)
+Debug> 992 :  f (Rule # 0 in body)
+Debug> 993 :  f (Rule # 0 in body)
+Debug> 994 :  f (Rule # 0 in body)
+Debug> 995 :  f (User function)
+Debug> 996 :  Sin (Rule # 0 in pattern)
+Debug> 997 :  IsList (Internal function)
+Error on line 1 in file [CommandLine]
+Max evaluation stack depth reached.
+Please use MaxEvalDepth to increase the stack size as needed.
+</PRE>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#TraceExp" TARGET="Chapters">
+TraceExp
+</A>
+, <A HREF="ref.html#TraceRule" TARGET="Chapters">
+TraceRule
+</A>
+, <A NAME="TraceExp">
+
+</A>
+<H3>
+<HR>TraceExp(expression)
+</H3>
+
+TraceExp(expression) : turn on tracing facility, and evaluate
+expression. This is useful for tracing the evaluation of small
+routines interactively from the command line.
+
+<A NAME="TraceRule">
+
+</A>
+<H3>
+<HR>TraceRule(template)expression
+</H3>
+
+Tracerule(template)expression : turn on tracing facility given
+the template, and evaluate expression. the template is an example
+of the function to trace on. template=x+y would trace all additions,
+showing the arguments passed in, and the result of the addition.
+Only user-defined functions can be traced.
+<P>
+This is useful for tracing a function that is called from within
+another function. This way you can see how your function behaves
+in the environment it is used in.
+<P>
+An example invocation of TraceRule is<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In( 1 ) = TraceRule(x+y)2+3*5+4;<P></PRE>
+</TABLE>
+Which should then show something to the effect of <TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>    ENTER:2+3*5+4<P>      ENTER:2+3*5<P>          ARG:2 <- 2<P>          ARG:3*5 <- 15<P>      LEAVE:2+3*5 -> 17<P>        ARG:2+3*5 <- 17<P>        ARG:4 <- 4<P>    LEAVE:2+3*5+4 -> 21<P>Out( 0 ) = 21;</PRE>
+</TABLE>
+
+
+</BODY>
+
+</FONT>
+
+</HTML>

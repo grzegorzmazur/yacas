@@ -1,0 +1,524 @@
+
+Chapter()"List operations";
+
+Text()"Most objects that can be of variable size are represented as
+lists (linked lists internally). Yacas does implement arrays, which
+are faster when the number of elements in a collection of objects
+doesn't change. Operations on lists have better support in the current
+system.";
+
+AddAnchor("Head");
+SubSection()"Head";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()"Head(list)";
+
+Topical()"Parameters";
+Text()"list - a list";
+
+Topical()"Description";
+Text()"Returns the first element of a list.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Head({a,b,c})
+Out> a;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Tail","Length"});
+
+
+AddAnchor("Tail");
+SubSection()"Tail";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()"Tail(list)";
+
+Topical()"Parameters";
+Text()"list - a list";
+
+Topical()"Description";
+Text()"Returns a list without its first element.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Tail({a,b,c})
+Out> {b,c};
+");
+
+Topical()"See Also"; 
+SeeAlso({"Head","Length"});
+
+
+
+AddAnchor("Length");
+SubSection()"Length";
+BuiltIn();
+Topical()"Calling Sequence";
+Text()"Length(object)";
+
+Topical()"Parameters";
+Text()"object - a list, array or string";
+
+Topical()"Description";
+Text()"Length returns the length of a list.
+This function also works on strings and arrays.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Length({a,b,c})
+Out> 3;
+In> Length(\"abcdef\");
+Out> 6;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Head","Tail","Nth"});
+
+
+
+
+AddAnchor("Nth");
+SubSection()"Nth({list},index)"; Text()"
+Nth({list},index) : Returns the element in the list \"{list}\" at
+position \"index\", where the first element is 1.
+
+";
+
+
+AddAnchor("DestructiveReverse");
+SubSection()"DestructiveReverse({list})"; Text()"
+DestructiveReverse({list}) : Returns the list {list} in reverse order.
+The list is reversed in place, so the original is changed into nonsense.
+Use FlatCopy to avoid this.
+
+";
+
+
+AddAnchor("List");
+SubSection()"List(...)"; Text()"
+List(...) : Returns a list with ... as its elements, after they
+were evaluated. This is the same as entering \"{...};\".
+
+";
+
+AddAnchor("UnList");
+SubSection()"UnList({list})"; Text()"
+UnList({list}) : 
+Changes the list {list} into an expression specified in the
+elements of the list. This means the first element
+is treated as the command, and the elements following
+are the arguments to that command. \"{list}\" is evaluated
+before the operation is performed. Example: \"UnList({Cos,x});\"
+would evaluate to \"Cos(x);\".
+
+";
+
+AddAnchor("Listify");
+SubSection()"Listify(expression)"; Text()"
+Listify(expression) : 
+Inverse of UnList: it converts the expression \"expression\" 
+into a list. Eg. \"Listify(a(b));\" evaluates to \"{a,b};\".
+
+";
+
+AddAnchor("Concat");
+SubSection()"Concat(...)"; Text()"
+Concat(...) : concatenates the lists in ... after evaluation.
+Eg. \"Concat({a,b},{c,d});\" returns \"{a,b,c,d};\".
+
+";
+
+AddAnchor("Delete");
+SubSection()"Delete({list},index)"; Text()"
+Delete({list},index) : 
+Deletes an element at position \"index\" from the
+list \"{list}\", and returns that list. \"{list}\" and
+\"index\" are evaluated first. The first index in list is 1.
+
+";
+
+AddAnchor("Insert");
+SubSection()"Insert({list},index,element)"; Text()"
+
+Evaluates arguments, and inserts \"element\"
+in \"{list}\" at position \"index\", where position
+1 means insert at the front of the existing list. The result is returned,
+and the original list is left unchanged.
+
+";
+
+AddAnchor("DestructiveInsert");
+SubSection()"DestructiveInsert({list},index,element)"; Text()"
+DestructiveInsert({list},index,element) : 
+The Destructive... versions actually perform the operations
+on the original lists. So, if
+a variable is bound to a list, the list the variable points
+to is actually modified. This is more efficient memory-wise
+and in execution if the same variable is going to be set to
+the result.
+
+";
+
+AddAnchor("DestructiveDelete");
+SubSection()"DestructiveDelete({list},index)"; Text()"
+DestructiveDelete({list},index) : 
+The Destructive... versions actually perform the operations
+on the original lists. So, if
+a variable is bound to a list, the list the variable points
+to is actually modified. This is more efficient memory-wise
+and in execution if the same variable is going to be set to
+the result.
+
+";
+
+AddAnchor("Replace");
+SubSection()"Replace({list},index,element)"; Text()"
+This replaces an element, much like calling Delete and Insert
+in sequence.
+
+";
+
+AddAnchor("DestructiveReplace");
+SubSection()"DestructiveReplace({list},index,element)"; Text()"
+This replaces an element, much like calling DestructiveDelete
+and DestructiveInsert in sequence.
+
+";
+
+AddAnchor("FlatCopy");
+SubSection()"FlatCopy({list})"; Text()"
+FlatCopy({list}) : 
+Copying of the contents of a list. It is not recursed
+into, only the first level is copied. This is useful
+in combination with the destructive commands that actually
+modify lists in place (for efficiency).
+
+
+";
+
+AddAnchor("Contains");
+SubSection()"Contains({list},element)"; Text()"
+Contains({list},element) : 
+Returns whether \"{list}\" contains element \"element\".
+
+";
+
+AddAnchor("Find");
+SubSection()"Find(list,item)"; Text()"
+Find(list,item) : returns the index of item in the list.
+Example: Find({a,b,c,d},c) returns 3.
+
+";
+
+AddAnchor("Append");
+SubSection()"Append({list},element)"; Text()"
+Append({list},element) : 
+Append an element {{I:element}} to list {{I:{list} }}.
+
+";
+
+AddAnchor("DestructiveAppend");
+SubSection()"DestructiveAppend({list},element)"; Text()"
+DestructiveAppend({list},element) :
+Append an element {{I:element}} to list {{I:{list} }}.
+
+";
+
+AddAnchor("RemoveDuplicates");
+SubSection()"RemoveDuplicates({list})"; Text()"
+RemoveDuplicates({list}) : 
+Returns a list with exactly one occurrence of each element that is
+also in \"{list}\".
+
+";
+
+AddAnchor("Push");
+SubSection()"Push(stack,element)"; Text()"
+These implement a stack (represented as a list). \"Push\" adds an element
+in front of the list. \"Pop\" then removes and returns any element you
+need from the list. \"PopFront\" and \"PopBack\" pop the first and last
+element of the stack respectively.
+
+";
+
+AddAnchor("Pop");
+SubSection()"Pop(stack,index)"; Text()"
+These implement a stack (represented as a list). \"Push\" adds an element
+in front of the list. \"Pop\" then removes and returns any element you
+need from the list. \"PopFront\" and \"PopBack\" pop the first and last
+element of the stack respectively.
+
+";
+
+AddAnchor("PopFront");
+SubSection()"PopFront(stack)"; Text()"
+These implement a stack (represented as a list). \"Push\" adds an element
+in front of the list. \"Pop\" then removes and returns any element you
+need from the list. \"PopFront\" and \"PopBack\" pop the first and last
+element of the stack respectively.
+
+";
+
+AddAnchor("PopBack");
+SubSection()"PopBack(stack)"; Text()"
+These implement a stack (represented as a list). \"Push\" adds an element
+in front of the list. \"Pop\" then removes and returns any element you
+need from the list. \"PopFront\" and \"PopBack\" pop the first and last
+element of the stack respectively.
+
+";
+
+AddAnchor("Swap");
+SubSection()"Swap({list},i1,i2)"; Text()"
+Swap({list},i1,i2) : 
+Swap elements with indices \"i1\" and \"i2\" in the list \"{list}\".
+
+";
+
+AddAnchor("Count");
+SubSection()"Count({list},element)"; Text()"
+Count({list},element) : 
+Returns number of occurrences of \"element\" in \"{list}\".
+
+";
+
+AddAnchor("Intersection");
+SubSection()"Intersection({list1},{list2})"; Text()"
+Intersection({list1},{list2}) : 
+returns the intersection of two lists.
+Example : \"Intersection({a,b},{b,c});\" would evaluate to \"{b};\".
+
+";
+
+AddAnchor("Union");
+SubSection()"Union({list1},{list2})"; Text()"
+Union({list1},{list2}) : 
+returns the union of two lists.
+Example : \"Union({a,b},{b,c});\" would evaluate to \"{a,b,c};\".
+
+";
+
+AddAnchor("Difference");
+SubSection()"Difference({list1},{list2})"; Text()"
+Difference({list1},{list2}) : 
+returns the difference of two lists.
+
+";
+
+AddAnchor("FillList");
+SubSection()"FillList(aItem, aLength)"; Text()"
+FillList(aItem, aLength) : create a list with length aLength,
+filling it with aItem.
+
+Example: \"FillList(0,5)\" returns {0,0,0,0,0}
+";
+
+
+AddAnchor("Drop");
+SubSection()"Drop(list,which)"; Text()"
+
+ Drop( list, n ) gives 'list' with its first n elements dropped      <BR>
+ Drop( list, -n ) gives 'list' with its last n elements dropped      <BR>
+ Drop( list, {m,n} ) gives 'list' with elements m through n dropped  
+";
+
+AddAnchor("Take");
+SubSection()"Take(list,which)"; Text()"
+
+ Take( list, n ) gives the first n elements of 'list'   <BR>
+ Take( list, -n ) gives the last n elements of 'list'   <BR>
+ Take( list, {m,n} ) elements m through n of 'list'
+
+";
+
+AddAnchor("Partition");
+SubSection()"Partition( list, n )"; Text()"
+
+  Partition( list, n ) partitions 'list' into non-overlapping sublists of length n
+";
+
+
+AddAnchor("Assoc");
+SubSection()"Assoc(key,assoclist)"; Text()"
+
+Treat assoclist as a traditional assoc list well known from Lisp, and return
+the element stored with key. This functionality is probably best
+accessed through the [ ] operator.
+
+";
+AddAnchor("AssocIndices");
+SubSection()"AssocIndices(list)"; Text()"
+
+Return the list of keys in the associated list assoclist.
+
+";
+
+
+AddAnchor("Flatten");
+SubSection()"Flatten";
+StandardLib();
+
+Topical()"Calling Sequence";
+Text()"Flatten(expression,operator)";
+
+Topical()"Parameters";
+Text()
+"expression - an expression <br>
+ operator - string with the contents of an infix operator.
+";
+
+Topical()"Description";
+Text()"Flatten flattens an expression with respect to a specific
+operator, converting the result into a list.
+This is useful for unnesting an expression. Flatten is typically
+used in simple simplification schemes.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Flatten(a+b*c+d,\"+\");
+Out> {a,b*c,d};
+In> Flatten({a,{b,c},d},\"List\");
+Out> {a,b,c,d};
+");
+
+Topical()"See Also"; 
+SeeAlso({"UnFlatten"});
+
+
+
+AddAnchor("UnFlatten");
+SubSection()"UnFlatten";
+StandardLib();
+
+Topical()"Calling Sequence";
+Text()"UnFlatten(list,operator,identity)";
+
+Topical()"Parameters";
+Text()
+"list - list of objects the operator is to work on
+ operator - infix operator
+ identity - identity of the operator
+";
+
+Topical()"Description";
+Text()"UnFlatten is the inverse operation of Flatten. Given
+a list, it can be turned into an expression representing
+for instance the addition of these elements by calling
+UnFlatten with \"+\" as argument to operator, and 0 as
+argument to identity (0 is the identity for addition, since
+a+0=a). For multiplication the identity element would be 1.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> UnFlatten({a,b,c},\"+\",0)
+Out> a+b+c;
+In> UnFlatten({a,b,c},\"*\",1)
+Out> a*b*c;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Flatten"});
+
+
+
+AddAnchor("Type");
+SubSection()"Type(expression)";  Text()"
+Type(expression) : 
+Returns a string representation of the type of \"expression\".
+\"Type(Cos(x));\" would evaluate to \"Cos\", for instance.
+
+";
+
+AddAnchor("NrArgs");
+SubSection()"NrArgs(expression)";  Text()"
+NrArgs(expression) : 
+Returns number of arguments in top-level function of \"expression\".
+\"NrArgs(Cos(x));\" would evaluate to \"1\".
+";
+
+AddAnchor("BubbleSort");
+SubSection()"BubbleSort({list},\"compare\")";  Text()"
+BubbleSort({list},\"compare\") : 
+Sort the list {list}, using \"compare\" as the operator to compare
+elements. \"compare\" gives the relation that should be true for
+neighbouring elements in the list after sorting.
+
+";
+
+AddAnchor("Table");
+SubSection()"Table(body,var,from,to,step)";  Text()"
+Table(body,var,from,to,step) : 
+Generate a list of values from \"body\", by assigning variable \"var\"
+values from \"from\" upto \"to\", incrementing \"step\" each time.
+
+";
+
+AddAnchor("TableForm");
+SubSection()"TableForm({list})";  Text()"
+Tableform({list}) : 
+TableForm writes out a list in a nicer readable form, eg. one line for
+each element in the list.
+
+";
+
+AddAnchor("MapSingle");
+SubSection()"MapSingle(\"operator\",{list})";  Text()"
+MapSingle(\"operator\",{list}) : 
+MapSingle performs Apply on every item in {list}, returning a
+list of the results.
+
+";
+
+AddAnchor("Map");
+SubSection()"Map(\"operator\",{lists})";  Text()"
+Map(\"operator\",{lists}) : 
+{lists} should be a list of lists each the same size. 
+Map performs Apply on every set of items in {lists}, returning a
+list of the results. Eg. Map(\"+\",{{a,b},{c,d}}) would return {a+c,b+d}.
+";
+
+
+AddAnchor("RandomIntegerVector");
+SubSection()"RandomIntegerVector(nr,from,to)";
+Text()"
+RandomIntegerVector(nr,from,to) : generate a vector of random
+integers p in the range [from,to] (including from and to).
+";
+
+
+AddAnchor("MakeVector");
+SubSection()"MakeVector(var,n)";
+Text()"
+MakeVector(var,n) : return a vector of unique numbered variable names.
+Example:
+
+":HtmlCommand(
+"In> MakeVector(a,3)
+Out> {a1,a2,a3};"):"
+
+";
+
+
+AddAnchor("Select");
+SubSection()"Select(predicate,list)";
+Text()"
+Select(predicate,list) : return a sublist of list, containing all
+elements for which the predicate returned after applying the
+predicate on that list element. Example:
+
+":HtmlCommand(
+"In> Select(\"IsInteger\",{a,b,2,c,3,d,4,e,f})
+Out> {2,3,4};"):"
+
+";
+
+
+
+

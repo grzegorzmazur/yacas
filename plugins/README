@@ -1,0 +1,20 @@
+
+This directory contains the tools to write plugin DLLs for Yacas.
+For now, only the Linux elf dlopen/dlsym/dlclose functions are supported.
+
+to build the plugins in this directory, simply type
+
+make -f makefile.plugin
+make install -f makefile.plugin
+
+Then start up yacas, and type
+
+In> DllLoad(FindFile("plugins/libbare.so"));
+Out> True;
+In> AddTwoIntegers(1,2)
+Out> 3;
+
+AddTwoIntegers is defined in libbare.so .
+
+
+

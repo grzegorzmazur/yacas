@@ -1,0 +1,39 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:571: checking for a BSD compatible install
+configure:624: checking whether build environment is sane
+configure:681: checking whether make sets ${MAKE}
+configure:728: checking for working aclocal
+configure:741: checking for working autoconf
+configure:754: checking for working automake
+configure:767: checking for working autoheader
+configure:780: checking for working makeinfo
+configure:799: checking for gcc
+configure:912: checking whether the C compiler (gcc  ) works
+configure:928: gcc -o conftest    conftest.c  1>&5
+configure:954: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:959: checking whether we are using GNU C
+configure:987: checking whether gcc accepts -g
+configure:1019: checking how to run the C preprocessor
+configure:1103: checking for c++
+configure:1135: checking whether the C++ compiler (c++  ) works
+configure:1151: c++ -o conftest    conftest.C  1>&5
+configure:1177: checking whether the C++ compiler (c++  ) is a cross-compiler
+configure:1182: checking whether we are using GNU C++
+configure:1210: checking whether c++ accepts -g
+configure:1244: checking for ranlib
+configure:1274: checking for ANSI C header files
+configure:1381: checking for unistd.h
+configure:1381: checking for sys/ioctl.h
+configure:1381: checking for sys/socket.h
+configure:1381: checking for sys/time.h
+configure:1381: checking for sys/types.h
+configure:1420: checking for working const
+configure:1495: checking for inline
+configure:1535: checking whether time.h and sys/time.h may both be included
+configure:1574: checking for select
+configure:1574: checking for socket
+configure:1574: checking for strtod
+configure:1628: checking types of arguments for accept()
+configure:1694: checking for socklen_t

@@ -1,0 +1,17 @@
+IsMatrix
+IsRational
+IsRationalNumeric
+IsRationalOrNumber
+IsNegativeNumber
+IsPositiveNumber
+IsZero
+IsNotZero
+IsNonZeroInteger
+IsPositiveInteger
+IsNegativeInteger
+IsEven
+IsOdd
+IsInfinity
+IsConstant
+IsBoolean
+}
