@@ -532,7 +532,8 @@ then
 $$Mod(a^p=a,p)$$
 for all integers $a$ (for a proof, see Knuth).
 
-An interesting corollary to this is that
+An interesting corollary to this is that, for some 
+prime integer $p$:
 $$ Mod(v(x)^p = v(x^p),p) $$.
 This follows from writing it out and using Fermat's theorem
 to replace $a^p$ with $a$ where appropriate (the coefficients
