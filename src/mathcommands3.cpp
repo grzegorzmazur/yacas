@@ -388,18 +388,18 @@ void LispAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
    LispArithmetic1(aEnvironment, aResult, aArguments, AbsFloat);
 #endif
 }
-BINARYFUNCTION(LispMod, Mod, ModFloat)
-/*
+//BINARYFUNCTION(LispMod, Mod, ModFloat)
+/* this will be gone */
 void LispMod(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, ModFloat);
 }
-*/
+/**/
 
 void LispDiv(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
-{//FIXME
+{
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
@@ -537,7 +537,7 @@ void LispFastAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatAbs);
 }
 
-
+/*
 BINARYFUNCTION(LispShiftLeft, ShiftLeft, ShiftLeft)
 BINARYFUNCTION(LispShiftRight, ShiftRight, ShiftRight)
 
@@ -546,7 +546,8 @@ BINARYFUNCTION(LispBitOr, BitOr, BitOr)
 BINARYFUNCTION(LispBitXor, BitXor, BitXor)
 // BitNot not yet in yacasapi etc.
 //BINARYFUNCTION(LispBitNot, BitNot, BitNot)
-/*
+*/
+/* this will be gone */
 void LispShiftLeft(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {//FIXME
@@ -573,7 +574,7 @@ void LispBitXor(LispEnvironment& aEnvironment, LispPtr& aResult,
 {//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, BitXor);
 }
-*/
+/**/
 
 
 void LispFromBase(LispEnvironment& aEnvironment, LispPtr& aResult,
