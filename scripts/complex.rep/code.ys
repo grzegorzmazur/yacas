@@ -72,6 +72,18 @@ IsNotComplex(x) := Not(IsComplex(x));
 	Complex(A-B,(r1+i1)*(r2+i2)-A-B);
 ];
 */
+
+
+// Multiplication in combination with complex numbers in the light of infinity
+250 # Complex(0,_i) * Infinity <-- Complex(0,i*Infinity);
+250 # Complex(_r,0) * Infinity <-- Complex(r*Infinity,0);
+251 # Complex(_r,_i) * Infinity <-- Complex(r*Infinity,i*Infinity);
+
+250 # Infinity * Complex(0,_i) <-- Complex(0,i*Infinity);
+250 # Infinity * Complex(_r,0) <-- Complex(r*Infinity,0);
+251 # Infinity * Complex(_r,_i) <-- Complex(r*Infinity,i*Infinity);
+
+
 300 # Complex(_r,_i) * y_IsConstant <-- Complex(r*y,i*y);
 300 # y_IsConstant * Complex(_r,_i) <-- Complex(r*y,i*y);
 

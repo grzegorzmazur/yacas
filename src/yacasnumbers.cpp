@@ -11,6 +11,7 @@
 #include "anumber.h"
 #include "platmath.h"
 #include "lisperror.h"
+#include "errors.h"
 
 #ifdef HAVE_CONFIG_H
   #include <config.h>
@@ -392,10 +393,15 @@ static void LnFloat(ANumber& aResult, LispCharPtr int1)
     // thus y=1+x => x = y-1
     //
 
+
     LispInt shifts=0;
     LispBoolean smallenough=LispFalse;
     LispInt precision = 2*aResult.iPrecision;
     ANumber y(int1,precision);
+
+    if (!Significant(y)) RaiseError("MathLog does not handle zero");
+    if (y.iNegative) RaiseError("MathLog does not handle negative numbers");
+
     ANumber minusone("-1",precision);
     ANumber x(precision);
 

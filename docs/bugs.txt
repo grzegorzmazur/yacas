@@ -12,7 +12,7 @@ Summary:
  4. [Calculus] 2^Infinity not simplified at startup
  5. [Calculus] Limit(n,Infinity) Sqrt(n+1) - Sqrt(n)
  6. [Complex] D(z) Conjugate(z) returns 1
- 7. [Complex] Im() and Undefined or Infinity
+ 7. (RESOLVED?)[Complex] Im() and Undefined or Infinity
  8. [Linear Algebra] EigenValues() with complex matrix hangs
  9. [Calculus] Integration through singularities
 10. [Simplify] Simplify(x^(-2)/(1-x)^3) returns 0
@@ -20,10 +20,11 @@ Summary:
 12. [Calculus] 'Limit(n, Infinity) n^5/2^n' uses L'Hopital incorrectly
 13. [Trigonometry] 'TrigSimpCombine(x^500)' returns nothing
 14. [Calculus] Some limits not working correctly when using infinity
-15. [Core] 'MathPower(0,0.5)' locks up
+15. (RESOLVED?)[Core] 'MathPower(0,0.5)' locks up
 16. [Build System]  mathcommands3.cpp is compiled twice and libyacas is linked
     twice
 17. [Polynomials] Factor(x^6-1) gives wrong result
+
 ----------------------------------------------------------------------
 
 Bug #1
@@ -121,10 +122,33 @@ Submitted by: Jonathan Leto
 Date: 2002-05-30
 Description:
 
-In> Im(3+I*Undefined)
-Out> 0;
-In> Im(3+I*Infinity)
-Out> 0;
+  In> Im(3+I*Undefined)
+  Out> 0;
+  In> Im(3+I*Infinity)
+  Out> 0;
+
+Actually, 
+
+  In> 3+I*Infinity
+  Out> Infinity
+  In> 3+I*Undefined
+  Out> Undefined
+
+Although in the case of 'Undefined', it might be defendable?
+
+It now works like this:
+
+  In> Im(3+I*Infinity)
+  Out> Infinity
+  In> Re(3+I*Infinity)
+  Out> 3
+
+And it wasn't my mistake! I would never have put rules relating to complex
+numbers in standard.ys!
+
+By the way, before removing these bug reports we should turn them into regression
+tests! Add them as a test to the file regress.yts.
+Ayal
 
 ----------------------------------------------------------------------
 
@@ -218,6 +242,19 @@ Bug #15
 Title: [Core] 'MathPower(0,0.5)' locks up
 Submitted by: Ayal Pinkus
 
+<<<<<<< bugs.txt
+Resolved? Right now the behaviour is:
+
+  In> MathPower(0,0.5)
+  CommandLine(1) : MathLog does not handle zero
+  Out> False
+  In> 0^0.5
+  Out> 0
+
+
+----------------------------------------------------------------------
+
+=======
 ----------------------------------------------------------------------
 
 Bug #16
@@ -243,3 +280,4 @@ Out>(x^4+2*x^3+3*x^2+4*x+5)*(x-1)^2
 1 is not a double root of x^6-1!
 
 ----------------------------------------------------------------------
+>>>>>>> 1.3
