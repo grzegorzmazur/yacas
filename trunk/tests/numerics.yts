@@ -284,3 +284,6 @@ Verify(gamma,Atom("gamma"));
 Verify(gamma()+0, 0.5772156649015328606);
 Verify(RoundTo(N(1/2+gamma+Pi), 19), 4.2188083184913260991);
 
+// From GSL 1.0
+Verify( RoundTo(N(PolyLog(2,-0.001)),20), -0.00099975011104865108 );
+

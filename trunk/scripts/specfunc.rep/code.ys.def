@@ -14,4 +14,8 @@ FresnelCos
 LambertW
 LambertWNum
 Beta
+DirichletEta
+DirichletLambda
+Sinc
+PolyLog
 }
