@@ -34,14 +34,15 @@
 	nbits;
 ];
 
-// tests - can move to tests/
+// tests - can move to tests/ Serge? Shouldn't this move? Also, there was a typo, indicating
+// there is no test code? ;-)
 Verify(MathBitCount(4),3);
 Verify(MathBitCount(-3), 2);
 Verify(MathBitCount(3), 2);
 Verify(MathBitCount(0), 1);
 Verify(MathBitCount(-0.6), 0);
 Verify(MathBitCount(0.5), 0);
-Verify(MathBitCount(0.3,-1);
+Verify(MathBitCount(0.3),-1);
 
 
 /// MathPower(x,y).

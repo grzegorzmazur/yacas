@@ -56,7 +56,12 @@ SCRIPTFILES1 = 	        										    \
 	statistics.rep/randomtest.ys statistics.rep/statistics.ys 					    \
 	statistics.rep/incompletegamma.ys statistics.rep/regression.ys	 				    \
 	statistics.rep/statistics.ys.def 								    \
-	statistics.rep/distributions.ys statistics.rep/distributions.ys.def                                 
+	statistics.rep/distributions.ys statistics.rep/distributions.ys.def                                 \
+	codecheck.rep/datastructs.ys    codecheck.rep/interface.ys      codecheck.rep/process.ys	    \
+	codecheck.rep/datastructs.yts   codecheck.rep/interface.ys.def  codecheck.rep/process.ys.def
+
+#        test.ys    test.ys.def
+
 
 SCRIPTFILES2 = \
 	stats.rep/code.ys stats.rep/code.ys.def 							    \
