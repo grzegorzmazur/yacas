@@ -407,6 +407,11 @@ void LispDefaultTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments);
 void LispCTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments);
+void LispXmlTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
+                      LispPtr& aArguments);
+
+void LispExplodeTag(LispEnvironment& aEnvironment, LispPtr& aResult,
+                    LispPtr& aArguments);
 
 void LispFastAssoc(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments);

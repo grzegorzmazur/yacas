@@ -1,8 +1,7 @@
+<html><body font="helvetica">some text</body></html>
 
-int main(void)
-{
-  #define Something 2
-  int i=2;
+<body font="helvetica">
 
-}
+Tag("BODY",{{"FONT","helvetica"}},"Open");
+
 
