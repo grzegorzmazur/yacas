@@ -259,9 +259,7 @@ The documentation can be improved.
        growing function. BSearch returns -1 if not found,
        FindIsq returns the insertion point.
   <li>   MultiDivide, MultiGcd, Groebner
-  <li> restart, quit, 
   <li> DefLoadFunction
-  <li> PlatformOS
   <li> FloatIsInt
   <li> --server <port> , and its associated --enable-server to the 
        ./configure script
@@ -335,7 +333,8 @@ These plans are possibly further away but (in my opinion) important enough to ke
   <ol>
   <li> Internal "big number" format must be better than the current char* strings. There must be two basic classes: "big int" (always signed and dynamically allocated) and "big float". "Big float" may consist simply of two big integers (mantissa and exponent, both signed). I'd rather have the exponent a big integer than a 32-bit -- many MP libraries suffer from the problem that exponents cannot grow.
   <li> MP wrapper class holds big numbers in the internal format and passes them to either "ANumber" or "GMPNumber" backends with hopefully minimal conversion on input and output. MP algorithms such as ArcSin() should not have to be written separately for each MP backend (as it is right now); the algorithms will be written using the MP wrapper class. Plugins can also use the MP wrapper class and not the internal representation of numbers. Ideally, there will be a "GNU multiple precision scientific library" which will provide all functions such as Exp(), Pow(), Sin(), LnGamma(), BesselJ() etc., for high-speed arbitrary precision calculations. This library could be developed separately from Yacas if the number class architecture is done right.
-  <li> The backend for MP wrapper class will be selected at compile time or even at runtime. It will be either "yacasnumbers" or "gmp". 
+  <li> The backend for MP wrapper class will be selected at compile time. It could be either "yacasnumbers" or "gmp", or perhaps something else. All backends should transparently implement the BigNumber functions.
+  <li> The BigNumber class includes basic arithmetic (+ - * / but not Sqrt), modular arithmetic, binary logic, bit shifts, and precision tracking. All other mathematical functions are implemented externally.
   <li> Almost all MP numerical algorithms should be coded in the script library rather than compiled. (Except for critical ones). Experiments with MathPi() show that keeping the algorithm in the scripts does not really slow things down when the bulk of the calculation is in the numerics.
   </ol>
 
@@ -344,18 +343,37 @@ This should mostly take care of the MP calculations - no need to reimplement Kar
  <li> Random numbers in arbitrary-precision should be generated if requested.
       Need a better interface to make random arrays?
 
+ <li> Libraries such as GMP, NTL, CLN, ... provide many useful functions. We should be able to access these functions using plugins.
+ <li> We need to optimize the numeric classes with respect to creation and destruction of number objects.
+
+ </ol>
+
+<li> Development of the Yacas language
+ <ol>
+
+ <li> Right now, all rules are global. This seems to be a bad design decision. Instead, we want to have "rule objects" that can be manipulated by the scripts. Rules are now implemented using either Rule() or RulePattern calls. This should be made more transparent.
+ <li> Implement a dictionary container (in a plugin?). Using the dictionary container, we can have a "core evaluator" function that will evaluate a Yacas experssion given a set of rules. This will allow to encapsulate rule sets into Yacas objects and to manipulate them more explicitly. E.g. a special simplifier will be implemented as a rule set that will only be activated when requested by the user. The "core evaluator" will also allow to manipulate rules from plugins and will probably make static compilation easier.
+ <li> Local() and LocalSymbols() are redundant. It is probably better to have LocalSymbols-like behavior for Local (avoids all clashes).
+ <li> All scripted functions except macros should always evaluate their arguments. We can replace all HoldArg/UnFence instances by macros (but it's not clear whether it would be a significant performance hit). This will make the language a lot cleaner.
+ <li> The parser is organized in a somewhat ad hoc fashion (since there is no formally defined context-free grammar). For instance, it cannot parse prefix operators as atoms in situations when it's unambiguous. E.g. f(+) is unambiguously an application of the function "f" on the atom "+", but the parser cannot handle this.
+ <li> Implement unrolling of tail-recursive functions (but not in the debug version of Yacas - we need to be able to stop infinite recursion).
+ <li> Implement iterators over lists, arrays, dictionaries. (Allow iterators to be implemented over generic objects and implement everything as plugins.) This will get rid of many explicit loops in the library and speed up everything. Implement Map()/MapSingle() using iterators.
+ <li> Automatic parallelization of "pure functional functions", i.e. functions without side-effects and without local or global static non-constant variables. Suppose we need to evaluate MapSingle() of a pure functional function on some list. Then each element may be computed by a separate thread. This can be easily detected if we are using list iterators. Or suppose we need to sort a list; if we use the recursive sorting algorithm, then each sublist may be sorted by a separate thread. The interpreter should be able to wait for each thread and automatically decide when to generate more threads, depending on how many parallel CPUs we have. This should be completely transparent to the script library; the programmer will only have to keep the functions "purely functional".
+ <li> The library should be able to determine which plugins are available. (This can be done using FindFile() and the canonical plugin path DirectoryName() : "/plugins"). It's clear that some plugins will not be available on some platforms; but the library should know about this and print error messages if the user tries to call the unavailable functions.
  </ol>
 
 <li> Library improvements
  <ol>
  <li> Library could be redesigned to streamline all calculations:
   <ol>
-  <li> remove default ad hoc simplifications such as a^2*b^2 <-- (a*b)^2, 4*b/c <-- (4*b)/c etc. -- instead provide functions for collecting powers, exponentials, coefficients for a variable, etc., so that the user can do this when needed
-  <li> use property tags to make simplification algorithms more understandable
-  <li> remove unconventional notation such as a+-b or a^-c
-  <li> modify precedences of infix operations: 10, 20, 30 instead of 0,1,2 to allow more fine-grained control
+  <li> remove default ad hoc simplifications such as a^2*b^2 <-- (a*b)^2, 4*b/c <-- (4*b)/c etc. -- instead provide functions for collecting powers, exponentials, coefficients for a variable, etc., so that the user can do this when needed. Default simplifications must be more cleanly designed and more basic (e.g. 1+x+1+x should always be simplified, but x^2*y^2 should not be simplified to (x*y)^2.)
+  <li> use property tags to make simplification algorithms more understandable?
+  <li> remove unconventional notation such as a+-b or a^-c.
+  <li> modify precedences of infix operations: 110, 120, 130 instead of 0,1,2 to allow more fine-grained control. Make algorithms more precedence-independent.
   </ol>
-  <li> Implement classical algorithms as well as newest algorithms -- the more different algorithms, the better. There is frequently no "best" algorithm.
+ <li> Implement classical algorithms as well as newest algorithms -- the more different algorithms, the better. There is frequently no "best" algorithm.
+But we need to analyze all available algorithms and discard those that are clearly always inferior.
+ <li> Implement "thresholding": finding the fastest algorithm at runtime. Ideally we want to run "thresholds.ys" on different platforms and use the output to optimize the algorithms. We would then implement all numerical algorithms and automatically determine the thresholds between them. The user may run the thresholding routine if they have lots of spare time, or else use the defaults.
  </ol>
 
 
