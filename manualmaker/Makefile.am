@@ -140,32 +140,36 @@ ouryacas2 = ../src/yacas --rootdir $(top_srcdir)/scripts/:../scripts/:$(srcdir)/
 # refprog.html is not listed because it is generated together with ref.html
 HTMLBOOKS = intro.html coding.html essays.html LispProgramming.html Algo.html ref.html
 
-# the dependence on $(HTMLBOOKS) is only to make sure that all HTML docs
-# are built - maybe there is a better way to organize this.
-# (books.html doesn't really depend on other HTML documents.)
-books.html:  $(BOOKS) $(HTMLBOOKS)
-# this is the old command:
+# The top HTML docs target is now "manicon.html" that is built by GenerateIndex().
+# The dependence on $(HTMLBOOKS) is only to make sure that all HTML docs
+# are built - in fact manicon.html is a constant file and has no dependencies.
+manicon.html:  books.html $(HTMLBOOKS)
+
+# books.html only depends on top book files (*.book.txt).
+books.html:  $(BOOKS)
+# this is the old command that generated all HTML docs at once:
 #	-$(ouryacas2) $(srcdir)/in/all
-	-echo '[Use("indexmaker"); GenerateIndex();];' | $(ouryacas2) -f
-	@echo "done" > books.html.c
+	-echo '[Use("indexmaker"); GenerateIndex();];' | $(ouryacas2) -fpc
+	# do we need this?
+	#echo "done" > manicon.html.c
 
 intro.html : intro.book $(INTROCHAPTERS)
-	-@echo '[Use("manualmaker"); GenerateBook("intro");];' | $(ouryacas2) -f
+	-@echo '[Use("manualmaker"); GenerateBook("intro");];' | $(ouryacas2) -fpc
 
 coding.html : coding.book $(CODINGCHAPTERS)
-	-@echo '[Use("manualmaker"); GenerateBook("coding");];' | $(ouryacas2) -f
+	-@echo '[Use("manualmaker"); GenerateBook("coding");];' | $(ouryacas2) -fpc
 
 essays.html : essays.book $(ESSAYCHAPTERS)
-	-@echo '[Use("manualmaker"); GenerateBook("essays");];' | $(ouryacas2) -f
+	-@echo '[Use("manualmaker"); GenerateBook("essays");];' | $(ouryacas2) -fpc
 
 ref.html : ref.book $(REFCHAPTERS) refprog.book $(REFPROGCHAPTERS)
-	-@echo '[Use("manualmaker"); GenerateTwoBooks("ref","refprog");];' | $(ouryacas2) -f
+	-@echo '[Use("manualmaker"); GenerateTwoBooks("ref","refprog");];' | $(ouryacas2) -fpc
 
 LispProgramming.html : LispProgramming.book $(LISPPROGRAMMINGCHAPTERS)
-	-@echo '[Use("manualmaker"); GenerateBook("LispProgramming");];' | $(ouryacas2) -f
+	-@echo '[Use("manualmaker"); GenerateBook("LispProgramming");];' | $(ouryacas2) -fpc
 
 Algo.html : Algo.book $(ALGOCHAPTERS)
-	-@echo '[Use("manualmaker"); GenerateBook("Algo");];' | $(ouryacas2) -f
+	-@echo '[Use("manualmaker"); GenerateBook("Algo");];' | $(ouryacas2) -fpc
 
 # do we need this?
 #noindex: intro.html ref.html coding.html essays.html refprog.html

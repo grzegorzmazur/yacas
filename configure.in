@@ -137,7 +137,7 @@ elif test "x$enable_html_doc" = xyes; then
 	fi
 fi
 if test "x$enable_html_doc" = xyes; then
-	BOOKS_HTML=books.html
+	BOOKS_HTML=manicon.html
 	INSTALL_HTML=install-html
 fi
 AC_SUBST(BOOKS_HTML)
