@@ -1,0 +1,501 @@
+
+/* See the documentation on the assignment of the precedence of the rules.
+ */
+
+/* Some very basic functions that are used always any way... */
+
+
+/* Implementation of Nth that allows extending. */
+RuleBase("Nth",{alist,aindex});
+Rule("Nth",2,10,
+    MathAnd(Equals(IsFunction(alist),True),
+            Equals(IsInteger(aindex),True),
+            Not(Equals(Head(Listify(alist)),Nth))
+            ))
+     MathNth(alist,aindex);
+
+
+
+
+Rule("Nth",2,14,
+     MathAnd(Equals(IsString(alist),True),IsList(aindex))
+    )
+[
+  Local(result);
+  result:="";
+  ForEach(i,aindex) [ result := result : StringMid(i,1,alist); ];
+  result;
+];
+
+Rule("Nth",2,15,Equals(IsString(alist),True))
+[
+  StringMid(aindex,1,alist);
+];
+
+
+Rule("Nth",2,20,Equals(IsList(aindex),True))
+[
+  Map({{ii},alist[ii]},{aindex});
+];
+
+Rule("Nth",2,30,
+   MathAnd(
+           Equals(IsGeneric(alist),True),
+           Equals(GenericTypeName(alist),"Array"),
+           Equals(IsInteger(aindex),True)
+          )
+    )
+[
+  ArrayGet(alist,aindex);
+];
+
+
+
+Rule("Nth",2,40,Equals(IsString(aindex),True))
+[
+  Local(as);
+  as := Assoc(aindex,alist);
+  If (Not(Equals(as,Empty)),Set(as,Nth(as,2)));
+  as;
+];
+
+
+
+Function("NrArgs",{aLeft}) Length(Listify(aLeft))-1;
+
+10 # IsNonObject(Object(_x)) <-- False;
+20 # IsNonObject(_x)         <-- True;
+
+1 # Numer(_x / _y)      <-- x;
+2 # Numer(x_IsNumber)   <-- x;
+1 # Denom(_x / _y)      <-- y;
+2 # Denom(x_IsNumber)   <-- 1;
+
+
+
+Set(Numeric,False);
+Clear(Pi);
+Function("N",{aNumberBody})
+[
+  Local(prevNumeric,prevPi,numericresult);
+  Set(prevNumeric,Numeric);
+  Set(prevPi,Pi);
+  Set(Pi,Pi());
+  Set(Numeric,True);
+  Set(numericresult,Eval(aNumberBody));
+  Set(Numeric,prevNumeric);
+  Set(Pi,prevPi);
+  numericresult;
+];
+UnFence("N",1);
+
+Function("N",{aNumberBody,aDigits})
+[
+  Local(prevNumeric,prevPi,numericresult);
+  Set(prevNumeric,Numeric);
+  Set(prevPi,Pi);
+  Set(prevdigits,GetPrecision());
+  Precision(aDigits);
+  Set(Pi,Pi());
+  Set(Numeric,True);
+  Set(numericresult,Eval(aNumberBody));
+  Set(Numeric,prevNumeric);
+  Set(Pi,prevPi);
+  Precision(prevdigits);
+  numericresult;
+];
+UnFence("N",2);
+
+
+Set(Verbose,False);
+Function("V",{aNumberBody})
+[
+  Local(prevVerbose,result);
+  Set(prevVerbose,Verbose);
+  Set(Verbose,True);
+  Set(result,Eval(aNumberBody));
+  Set(Verbose,prevVerbose);
+  result;
+];
+HoldArg("V",aNumberBody); 
+UnFence("V",1);
+
+Function("++",{aVar})
+[
+   MacroSet(aVar,MathAdd(Eval(aVar),1));
+];
+UnFence("++",1);
+HoldArg("++",aVar);
+
+
+Function("--",{aVar})
+[
+   MacroSet(aVar,MathSubtract(Eval(aVar),1));
+];
+UnFence("--",1);
+HoldArg("--",aVar);
+
+
+Function("TableForm",{list})
+[
+  Local(i);
+  ForEach(i,list)
+  [
+    Write(i);
+    NewLine();
+  ];
+  True;
+];
+
+
+
+/* Standard arithmetic */
+
+
+/* Addition */
+
+100 # + _x  <-- x;
+
+50 # x_IsNumber + y_IsNumber <-- MathAdd(x,y);
+
+100 # 0 + _x    <-- x;
+100 # _x + 0    <-- x;
+100 # _x + _x   <-- 2*x;
+101 # _x + - _y <-- x-y;
+101 # _x + (- _y)/(_z) <-- x-(y/z);
+101 # (- _y)/(_z) + _x  <-- x-(y/z);
+101 # (- _x) + _y <-- y-x;
+102 # _x + y_IsNegativeNumber <-- x-(-y);
+102 # _x + y_IsNegativeNumber * _z <-- x-((-y)*z);
+102 # _x + (y_IsNegativeNumber)/(_z) <-- x-((-y)/z);
+102 # (y_IsNegativeNumber)/(_z) + _x  <-- x-((-y)/z);
+102 # (x_IsNegativeNumber) + _y <-- y-(-x);
+150 # _n1 / _d + _n2 / _d <-- (n1+n2)/d;
+
+200 # (x_IsNumber + _y)_Not(IsNumber(y)) <-- y+x;
+200 # ((_y + x_IsNumber) + _z)_Not(IsNumber(y) Or IsNumber(z)) <-- (y+z)+x;
+200 # ((x_IsNumber + _y) + z_IsNumber)_Not(IsNumber(y)) <-- y+(x+z);
+200 # ((_x + y_IsNumber) + z_IsNumber)_Not(IsNumber(x)) <-- x+(y+z);
+
+210 # x_IsNumber + (y_IsNumber / z_IsNumber) <--(x*z+y)/z;
+210 # (y_IsNumber / z_IsNumber) + x_IsNumber <--(x*z+y)/z;
+210 # (x_IsNumber / v_IsNumber) + (y_IsNumber / z_IsNumber) <--(x*z+y*v)/(v*z);
+
+
+220 # + x_IsList          <-- MapSingle("+",x);
+220 # xlist_IsList + ylist_IsList <-- Map("+",{xlist,ylist});
+
+SumListSide(_x, y_IsList) <--
+[
+   Local(i,result);
+   result:={};
+   For(i:=1,i<=Length(y),i++)
+   [ DestructiveInsert(result,i,x + y[i]); ];
+   result;
+];
+
+240 # (x_IsList + _y)_Not(IsList(y)) <-- SumListSide(y,x);
+241 # (_x + y_IsList)_Not(IsList(x)) <-- SumListSide(x,y);
+
+250 # Infinity + y_IsNumber <-- Infinity;
+250 # x_IsNumber + Infinity <-- Infinity;
+
+
+/* Subtraction arity 1 */
+
+//50 # -0 <-- 0;
+51 # -Undefined <-- Undefined;
+54 # - (- _x)      <-- x;
+55 # (- (x_IsNumber)) <-- MathSubtract(x);
+110 # - (_x - _y) <-- y-x;
+111 # - (x_IsNumber / _y) <-- (-x)/y;
+200 # - (x_IsList) <-- MapSingle("-",x);
+
+
+/* Subtraction arity 2 */
+50  # x_IsNumber - y_IsNumber <-- MathSubtract(x,y);
+50  # x_IsNumber - y_IsNumber <-- MathSubtract(x,y);
+60  # Infinity - Infinity <-- Undefined;
+100 # 0 - _x <-- -x;
+100 # _x - 0 <-- x;
+100 # _x - _x <-- 0;
+
+110 # _x - (- _y) <-- x + y;
+110 # _x - (y_IsNegativeNumber) <-- x + (-y);
+111 # (_x + _y)- _x <-- y;
+111 # (_x + _y)- _y <-- x;
+112 # _x - (_x + _y) <-- - y;
+112 # _y - (_x + _y) <-- - x;
+113 # (- _x) - _y <-- -(x+y);
+113 # (x_IsNegativeNumber) - _y <-- -((-x)+y);
+113 # (x_IsNegativeNumber)/_y - _z <-- -((-x)/y+z);
+
+/* TODO move to this precedence everywhere? */
+10 # (x_IsList) - (y_IsList) <-- Map({{xarg,yarg},xarg-yarg},{x,y});
+
+240 # (x_IsList - y_IsNonObject)_Not(IsList(y)) <-- -(y-x);
+
+241 # (x_IsNonObject - y_IsList)_Not(IsList(x)) <--
+[
+   Local(i,result);
+   result:={};
+   For(i:=1,i<=Length(y),i++)
+   [ DestructiveInsert(result,i,x - y[i]); ];
+   result;
+];
+
+250  # Infinity - y_IsNumber <-- Infinity;
+250  # x_IsNumber - Infinity <-- - Infinity;
+
+
+210 # x_IsNumber - (y_IsNumber / z_IsNumber) <--(x*z-y)/z;
+210 # (y_IsNumber / z_IsNumber) - x_IsNumber <--(y-x*z)/z;
+210 # (x_IsNumber / v_IsNumber) - (y_IsNumber / z_IsNumber) <--(x*z-y*v)/(v*z);
+
+
+/* Multiplication */
+
+50  # x_IsNumber * y_IsNumber <-- MathMultiply(x,y);
+100 #  1  * _x  <-- x;
+100 # _x  *  1  <-- x;
+100 # (_f  * _x)_(f= -1)  <-- -x;
+100 # (_x  * _f)_(f= -1)  <-- -x;
+
+100 # x_IsNumber * (y_IsNumber * _z) <-- (x*y)*z;
+100 # x_IsNumber * (_y * z_IsNumber) <-- (x*z)*y;
+
+100 # (_x * _y) * _y <-- x * y^2;
+100 # (_x * _y) * _x <-- y * x^2;
+100 # _y * (_x * _y) <-- x * y^2;
+100 # _x * (_x * _y) <-- y * x^2;
+100 # _x * (_y / _z) <-- (x*y)/z;
+100 # (_y / _z) * _x <-- (x*y)/z;
+100 # (_x * y_IsNumber)_Not(IsNumber(x)) <-- y*x;
+
+100 # (_x * _y)* _x ^ n_IsInteger <-- y * x^(n+1);
+100 # (_y * _x)* _x ^ n_IsInteger <-- y * x^(n+1);
+
+105 # x_IsNumber * -(_y) <-- (-x)*y;
+105 # (-(_x)) * (y_IsNumber) <-- (-y)*x;
+
+106 # _x * -(_y) <-- -(x*y);
+106 # (- _x) * _y <-- -(x*y);
+
+107 # -( (-(_x))/(_y)) <-- x/y;
+107 # -( (_x)/(-(_y))) <-- x/y;
+
+
+
+200 # x_IsMatrix * y_IsMatrix <-- 
+[
+   Local(i,j,k,row,result);
+   result:=ZeroMatrix(Length(x),Length(y[1]));
+   For(i:=1,i<=Length(x),i++)
+   For(j:=1,j<=Length(y),j++)
+   For(k:=1,k<=Length(y[1]),k++)
+   [
+     row:=result[i];
+     row[k]:= row[k]+x[i][j]*y[j][k];
+   ];
+   result;
+];
+
+
+210 # x_IsMatrix * y_IsList <-- 
+[
+   Local(i,result);
+   result:={};
+   For(i:=1,i<=Length(x),i++)
+   [ DestructiveInsert(result,i,x[i] . y); ];
+   result;
+];
+
+
+240 # (x_IsList * y_IsNonObject)_Not(IsList(y)) <-- y*x;
+241 # (x_IsNonObject * y_IsList)_Not(IsList(x)) <--
+[
+   Local(i,result);
+   result:={};
+   For(i:=1,i<=Length(y),i++)
+   [ DestructiveInsert(result,i,x * y[i]); ];
+   result;
+];
+
+249  # 0 * Infinity <-- Undefined;
+250  # x_IsNumber * y_IsInfinity <-- Sign(x)*y;
+250  # x_IsInfinity * y_IsNumber <-- Sign(y)*x;
+
+
+/* Note: this rule MUST be past all the transformations on
+ * matrices, since they are lists also.
+ */
+230 # aLeft_IsList * aRight_IsList <-- Map("*",{aLeft,aRight});
+242 # (x_IsInteger / y_IsInteger) * (v_IsInteger / w_IsInteger) <-- (x*v)/(y*w);
+243 #  x_IsInteger * (y_IsInteger / z_IsInteger) <--  (x*y)/z;
+243 #  (y_IsInteger / z_IsInteger) * x_IsInteger <--  (x*y)/z;
+
+400 # _x * _x <-- x^2;
+401 # 0 * _x <-- 0;
+401 # _x * 0 <-- 0;
+
+
+/* Division */
+
+50 # _x / 0 <-- Undefined;
+51 # 0 / _x <-- 0;
+52 # (x_IsNumber / y_IsNumber)_((Numeric = True) Or
+                                Not(IsInteger(x) And IsInteger(y))) <--
+    MathDivide(x,y);
+
+
+51 # x_IsNumber / y_IsNegativeNumber <-- (-x)/(-y);
+
+51 # (x_IsNonZeroInteger / y_IsNonZeroInteger)_(MathGcd(x,y) > 1) <--
+     [
+       Local(gcd);
+       Set(gcd,MathGcd(x,y));
+       MathDivide(x,gcd)/MathDivide(y,gcd);
+     ];
+    
+
+90 # x_IsInfinity / y_Infinity <-- Undefined;
+91  # x_IsInfinity / y_IsNumber <-- Sign(y)*x;
+
+
+100 # _x / _x <-- 1;
+100 # _x /  1 <-- x;
+100 # (_x / y_IsNegativeNumber) <-- -x/(-y);
+100 # (_x / - _y) <-- -x/y;
+200 # (_x / _y)/ _z <-- x/(y*z);
+
+230 # _x / (_y / _z) <-- (x*z)/y;
+240 # xlist_IsList / ylist_IsList <-- Map("/",{xlist,ylist});
+
+
+250 # x_IsList / _y <--
+[
+   Local(i,result);
+   result:={};
+   For(i:=1,i<=Length(x),i++)
+   [ DestructiveInsert(result,i,x[i] / y); ];
+   result;
+];
+
+250 # _x / y_IsList <--
+[
+   Local(i,result);
+   result:={};
+   For(i:=1,i<=Length(y),i++)
+   [ DestructiveInsert(result,i,x/y[i]); ];
+   result;
+];
+
+250 # _x / Infinity <-- 0;
+250 # _x / (-Infinity) <-- 0;
+
+
+400 # 0 / _x <-- 0;
+
+/* Faster version of raising power to 0.5 */
+50 # (x_IsPositiveNumber ^ (1/2))_(Numeric) <-- Sqrt(x);
+50 # (x_IsPositiveNumber ^ (1/2))_IsInteger(MathSqrt(x)) <-- MathSqrt(x);
+58 # 1 ^ n_IsInfinity <-- Undefined; 
+59 # _x ^ 1 <-- x;
+59 # 1 ^ _n <-- 1;
+59 # 0 ^ 0 <-- Undefined;
+60 # 0 ^ n_IsRationalOrNumber <-- 0;
+
+/* Regular raising to the power. */
+61 # Infinity ^ (y_IsNegativeNumber) <-- 0;
+61 # (-Infinity) ^ (y_IsNegativeNumber) <-- 0;
+61 # x_IsPositiveNumber ^ y_IsPositiveNumber <-- MathPower(x,y);
+61 # x_IsPositiveNumber ^ y_IsNegativeNumber <-- (1/MathPower(x,-y));
+
+90 # (-_x)^m_IsEven <-- x^m;
+90 # (Sqrt(x_IsConstant))_(IsNegativeNumber(N(x))) <-- Complex(0,Sqrt(-x));
+91 # (x_IsConstant ^ (m_IsOdd / p_IsOdd))_(IsNegativeNumber(Re(N(x)))) <--
+     -((-x)^(m/p));
+92 # (x_IsNegativeNumber ^ y_IsNumber)_Numeric <-- Exp(y*Ln(x));
+
+
+70  # (_x ^ m_IsRationalOrNumber) ^ n_IsRationalOrNumber <-- x^(n*m);
+80 # x_IsRationalOrNumber ^ n_IsPositiveInteger <-- x*x^(n-1);
+
+100  # ((_x)*(_x ^ _m)) <-- x^(m+1);
+100  # ((_x ^ _n)*(_x ^ _m)) <-- x^(m+n);
+100  # ((_x)^(_n))*((_y)^(_n)) <-- (x*y)^n;
+
+100  # ((x_IsNumber)^(n_IsNumber/(_m)))_(n>1) <-- MathPower(x,n)^(1/m);
+
+100 # Sqrt(_n)^(m_IsEven) <-- n^(m/2);
+
+
+/*
+100 # ((_x)^(_n))^((_m)/(_p)) <-- x^(n*m/p);
+100 # ((_x)^((_m)/(_p)))^(_n) <-- x^(n*m/p);
+
+100 # ((_x)^((_m)/(_p)))^((_n)/(_q)) <-- x^((n*m)/(p*q));
+ */
+200 # xlist_IsList ^ nlist_IsList <-- Map("^",{xlist,nlist});
+201 # xlist_IsList ^ n_IsConstant <-- Map({{xx},xx^n},{xlist});
+202 # _x ^ n_IsList <-- Map({{xx},x^xx},{n});
+
+249 # x_IsInfinity ^ 0 <-- Undefined;
+250 # Infinity ^ (_n) <-- Infinity;
+250 # ((-Infinity) ^ (n_IsNumber))_(IsEven(n)) <-- Infinity;
+250 # ((-Infinity) ^ (n_IsNumber))_(IsOdd(n)) <-- -Infinity;
+
+250 # (x_IsNumber ^ Infinity)_(x> -1 And x < 1) <-- 0;
+250 # (x_IsNumber ^ Infinity)_(x< -1) <-- - Infinity;
+250 # (x_IsNumber ^ Infinity)_(x> 1) <-- Infinity;
+
+250 # (x_IsNumber ^ -Infinity)_(x> -1 And x < 1) <-- Infinity;
+250 # (x_IsNumber ^ -Infinity)_(x< -1) <-- 0;
+250 # (x_IsNumber ^ -Infinity)_(x> 1) <-- 0;
+
+
+400 # _x ^ 0 <-- 1;
+
+
+RuleBase("==",{left,right});
+RuleBase("!==",{left,right});
+
+
+Function("+-",{x,y})  x + -y;
+Function("/-",{x,y})  x / -y;
+Function("*-",{x,y})  x * -y;
+Function("^-",{x,y})  x ^ -y;
+
+Function(":=-",{xleft,yminright}) Apply(":=",{xleft,-yminright}); 
+HoldArg(":=-",xleft);
+HoldArg(":=-",yminright);
+
+Function(":=+",{xleft,yright}) Apply(":=",{xleft,yright}); 
+HoldArg(":=+",xleft);
+HoldArg(":=+",yright);
+
+
+a_IsPositiveInteger & b_IsPositiveInteger <-- BitAnd(a,b);
+a_IsPositiveInteger | b_IsPositiveInteger <-- BitOr(a,b);
+a_IsPositiveInteger % b_IsPositiveInteger <-- Mod(a,b);
+
+RuleBase("if",{predicate,body});
+(if(True) _body) <-- Eval(body);
+HoldArg("if",body);
+UnFence("if",2);
+
+RuleBase("else",{ifthen,otherwise});
+0 # (if (_predicate) _body else _otherwise)_(Eval(predicate) = True) <--
+     Eval(body);
+0 # (if (_predicate) _body else _otherwise)_(Eval(predicate) = False) <--
+     Eval(otherwise);
+1 # (if (_predicate) _body else _otherwise) <--
+    UnList({Atom("else"),
+            UnList({Atom("if"), (Eval(predicate)), body}),
+            otherwise});
+HoldArg("else",ifthen);
+HoldArg("else",otherwise);
+UnFence("else",2);
+
+
+
