@@ -1682,15 +1682,9 @@ const void* BigInt::ExportData() const
 // test precision on from/to string conversion.
 // implement exp-float.
 
-/*Serge, I moved these to the numbers.h file, they seem to be of general use?
-const unsigned GUARD_BITS = 8;	// we leave this many guard bits untruncated in various situations when we need to truncate precision by hand
 
-template<class T> inline T MAX(T x, T y) { if (x<y) return y; else return x; }
-template<class T> inline T MIN(T x, T y) { if (x>y) return y; else return x; }
-
-const long DIST_BITS = 3;	// at least this many bits of difference
-template<class T> inline T DIST(T x, T y) { return (x>=y && x>=y+DIST_BITS || y>=x && y>=x+DIST_BITS) ? 0 : 1; }
-*/
+// debugging
+#define RaiseError1 printf
 
 BigNumber::BigNumber(LispInt aPrecision) { iPrecision = aPrecision; init(); }
 
@@ -1850,7 +1844,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 	    return;
     }
 	// note: aPrecision means *base digits* here
-	LISPASSERT(aPrecision>0);
+	LISPASSERT(aPrecision>=0);
 	if (aPrecision <=0)
 		aPrecision = 1;	// refuse to print with 0 or fewer digits
     unsigned long size=(unsigned long)aPrecision;
@@ -2118,13 +2112,13 @@ void BigNumber::BecomeInt()
 /// Note that aPrecision=0 means automatic setting (just enough digits to represent the integer).
 void BigNumber::BecomeFloat(LispInt aPrecision)
 {
+	LISPASSERT(aPrecision >= 0);
   if (IsInt())
   {	// the precision of the resulting float is at least the number of bits in the int_, i.e. its bit count
 	iPrecision = MAX((LispInt)BitCount(), aPrecision)+GUARD_BITS;
 	mpf_set_prec(float_, iPrecision);
 	mpf_set_z(float_, int_);	// FIXME need to test that all digits are preserved after this
   	turn_float();
-	LISPASSERT(iPrecision >= 0);
   }
 }
 
@@ -2160,6 +2154,7 @@ LispBoolean BigNumber::LessThan(const BigNumber& aOther) const
 /// Multiply two numbers at given precision and put result in *this
 void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
+	LISPASSERT(aPrecision>=0);
   if (aX.IsInt())
     if (aY.IsInt())	// both integer
     {
@@ -2205,6 +2200,9 @@ void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrec
 		mpf_set_prec(float_, MIN((long)aPrecision, xy_prec)+GUARD_BITS);	// GMP does calculations in target precision
 		mpf_mul(float_, aX.float_, aY.float_);
 		iPrecision = xy_prec;
+/*		if (iPrecision<=0)
+			RaiseError("BigNumber::Multiply: loss of precision with arguments %e, %e", aX.Double(), aY.Double());
+*/
 	  }
       // FIXME: this does not work for KExpFloat
     }
@@ -2255,6 +2253,7 @@ void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aP
 /// Add two numbers at given precision and return result in *this
 void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
+  LISPASSERT(aPrecision>=0);
   if (aX.IsInt())
     if (aY.IsInt())	// both integer
     {
@@ -2292,6 +2291,10 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
 			  mpf_set(float_, aY.float_);
 		  }
 		  iPrecision = MIN((long)aPrecision, aY.GetPrecision()-DIST(B_x, B_Dy-1));
+/*
+		  if (iPrecision<=0)
+			RaiseError("BigNumber::Add: loss of precision with arguments %e, %e", aX.Double(), aY.Double());
+*/
 	  }
 	  else
 	  if (B_y<=B_Dx-1)
@@ -2315,10 +2318,10 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
 		  // not always optimal but a good first value:
 		  long p = B_z-1 - MAX(B_Dx, B_Dy) - DIST(B_Dx, B_Dy);
 		  if (B_Dx > B_Dy && B_x > B_y || B_Dx < B_Dy && B_x < B_y)
-		  {	// the error of x dominates and the value of x also dominates, or ditto for y
+		  {	// optimization 1: the error of x dominates and the value of x also dominates, or ditto for y
 			  p++;
 		  }
-		  // check for minimum roundoff (when both arguments are of the same sign)
+		  // optimization 2: check for minimum roundoff (when both arguments are of the same sign)
 		  if (aX.Sign()*aY.Sign()==1)
 		  {
 			  p = MAX(p, (long)MIN(aX.GetPrecision(), aY.GetPrecision()));
@@ -2334,6 +2337,10 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
 		  import_gmp(result);
 		  mpf_clear(result);
 		  iPrecision = p;
+/*  
+	 	  if (iPrecision<=0)
+			RaiseError("BigNumber::Add: loss of precision with arguments %e, %e", aX.Double(), aY.Double());
+*/
 	  }	// handled no apriori underflow
       // FIXME: this does not work for KExpFloat
     }	// handled float + float
@@ -2410,6 +2417,9 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
 		mpf_set_prec(float_, p+GUARD_BITS);
 		mpf_div(float_, aX.float_, aY.float_);
 		iPrecision = p;
+/*		if (iPrecision<=0)
+			RaiseError("BigNumber::Divide: loss of precision with arguments %e, %e", aX.Double(), aY.Double());
+*/
     }
   }
 	// FIXME: this does not work for KExpFloat
@@ -2451,7 +2461,6 @@ void BigNumber::Floor(const BigNumber& aX)
     }
     else
     {	// do not have enough precision, raise error
-#define RaiseError1 printf
       RaiseError("BigNumber::Floor: error: not enough precision of argument %e (%ld bits)", aX.Double(), aX.GetPrecision());
       SetTo(aX);
     }
@@ -2461,7 +2470,7 @@ void BigNumber::Floor(const BigNumber& aX)
 	SetTo(aX);
   }
 
-  LISPASSERT(iPrecision >= 0);
+//  LISPASSERT(iPrecision >= 0);
 }
 
 // round to a given precision (in bits) and set target precision. Does not change the number if the current precision is lower, or if the number is an integer.
