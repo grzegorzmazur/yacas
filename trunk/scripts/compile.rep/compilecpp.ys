@@ -88,13 +88,15 @@ Use("corefunctions.ys");
 10 # CompileBody(body_IsNumber,_stack) <--
 [
   Echo("/* number : ",body," */");
-  Echo("  PUSH(ATOM(",String(String(body)),"));");
+  Echo("  PUSH(",CompiledConstant(String(body)),");");
+//  Echo("  PUSH(ATOM(",String(String(body)),"));");
 ];
 
 10 # CompileBody(body_IsString,_stack) <--
 [
   Echo("/* string : ",body," */");
-  Echo("  PUSH(ATOM(\"\\\"",body,"\\\"\"));");
+  Echo("  PUSH(",CompiledConstant("\\\"":body:"\\\""),");");
+//  Echo("  PUSH(ATOM(\"\\\"",body,"\\\"\"));");
 ];
 
 11 # CompileBody(body_IsAtom,_stack)_(IsOnStack(stack,String(body))) <--
@@ -107,7 +109,8 @@ Use("corefunctions.ys");
 12 # CompileBody(body_IsAtom,_stack) <--
 [
   Echo("/* atom : ",body," */");
-  Echo("  PUSH(ATOM(",String(String(body)),"));");
+  Echo("  PUSH(",CompiledConstant(String(body)),");");
+//  Echo("  PUSH(ATOM(",String(String(body)),"));");
 ];
 
 20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "Local") <--
@@ -119,12 +122,16 @@ Use("corefunctions.ys");
   For(i:=1,i<=nr,i++)
   [
     //TODO handle initialization
-    Echo("LispPtr ",body[i],"; ",body[i],".Set(ATOM(",String(String(body[i])),"));");
+
+
+    Echo("LispPtr ",body[i],"; ",body[i],".Set(",CompiledConstant(String(body[i])),");");
+//    Echo("LispPtr ",body[i],"; ",body[i],".Set(ATOM(",String(String(body[i])),"));");
     AddToStack(stack,String(body[i]));
     FindOnStack(stack,String(body[i]))["call"] := String(body[i]);
   ];
-  Echo("  PUSH(ATOM(\"True\"));");
+  Echo("  PUSH(",CompiledConstant("True"),");");
 ];
+  
 
 20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "Set") <--
 [
@@ -138,7 +145,7 @@ Use("corefunctions.ys");
 [
   Set(body,Tail(Listify(body)));
   PushStackFrame(stack,unfenced);
-  Echo("  PUSH(ATOM(\"True\"));");
+  Echo("  PUSH(",CompiledConstant("True"),");");
   While(body != {})
   [
     Echo("  POP(1);");
@@ -263,6 +270,15 @@ fileBuildString:=
 #define ISTRUE(_x) IsTrue(aEnvironment, _x)
 #define ISFALSE(_x) IsFalse(aEnvironment, _x)
 
+
+<?
+  ForEach(item,constDefs)
+  [
+    Echo(\"LispObject * \",item[2],\";\");
+  ];
+?>
+
+
 <?
 WriteString(funcDefs);
 ?>
@@ -277,6 +293,15 @@ public:
 
 void <?WriteString(\"Plugin_\":pluginName);?>::Add(LispEnvironment& aEnvironment)
 {
+
+<?
+  ForEach(item,constDefs)
+  [
+    Echo(item[2],\" = ATOM(\",String(item[1]),\");\");
+    Echo(item[2],\"->IncreaseRefCount();\");
+  ];
+?>
+
 <?
 [
   Local(cname,fname,nrargs,t1,t2);
@@ -290,6 +315,13 @@ Echo(\"  aEnvironment.SetCommand(\",cname,\",\",String(fname),\",\",nrargs,\",Ya
 }
 void <?WriteString(\"Plugin_\":pluginName);?>::Remove(LispEnvironment& aEnvironment)
 {
+<?
+  ForEach(item,constDefs)
+  [
+    Echo(item[2],\"->DecreaseRefCount();\");
+  ];
+?>
+
 <?
 [
   Local(cname,fname,nrargs,t1,t2);
@@ -316,10 +348,23 @@ LispPluginBase* <?WriteString(\"make_\":pluginName);?>(void)
 ";
 //{cname,fname,nrargs}
 
+10 # CompiledConstant(string_IsString)_(constDefs[string] = Empty) 
+   <--
+   [
+     Local(cst);
+     Set(cst,"_constant":String(constCount));
+     constDefs[string] := cst;
+     constCount++;
+     cst;
+   ];
+20 # CompiledConstant(string_IsString) <-- constDefs[string];
+
 CompileCpp(file_IsString,pluginName_IsString)<--
 [
   Local(funcDefs);
   Set(funcDecls,{});
+  Set(constDefs,{});
+  Set(constCount,0);
   Echo("Converting ",file," to C++ code");
   Set(funcDefs,PatchString(fileCompileString));
   Echo("Generating C++ file ",pluginName,".cpp");
