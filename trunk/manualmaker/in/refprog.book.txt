@@ -616,12 +616,11 @@ with the file name of the current file and the current line
 of input respectively.
 
 These functions are most useful in batch file calculations, where
-there is a need to determine at which line an error occurred. It is
-easy to define a function 
+there is a need to determine at which line an error occurred.
+One can define a function 
 
 	tst() := Echo({CurrentFile(),CurrentLine()});
-
-which can then be spread out over the input file at various places,
+which can then be inserted into the input file at various places,
 to see how far the interpreter reaches before an error occurs.
 
 *SEE Echo

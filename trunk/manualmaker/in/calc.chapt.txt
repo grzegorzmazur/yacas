@@ -28,8 +28,8 @@ Yacas knows some trigonometric identities, so it can simplify to exact
 results even if {N} is not used. This is the case, for instance,
 when the argument is a multiple of $Pi$/6 or $Pi$/4.
 
-These functions are threaded, meaning that if the argument "x" is a
-list, the function is applied to all the entries in the list.
+These functions are threaded, meaning that if the argument {x} is a
+list, the function is applied to all entries in the list.
 
 *E.G.
 
@@ -56,23 +56,23 @@ list, the function is applied to all the entries in the list.
 *DESC
 
 These functions represent the inverse trigonometric functions. For
-instance, the value of "ArcSin(x)" is the number "y" such that
-"Sin(y)" equals "x".
+instance, the value of $ArcSin(x)$ is the number $y$ such that
+$Sin(y)$ equals $x$.
 
-Note that the number "y" is not unique. For instance, "Sin(0)" and
-"Sin(Pi)" both equal 0, so what should "ArcSin(0)" be? In Yacas,
-it is agreed that the value of "ArcSin(x)" should be in the interval
-[-Pi/2,Pi/2]. The same goes for "ArcTan(x)". However, "ArcCos(x)"
-is in the interval [0,Pi].
+Note that the number $y$ is not unique. For instance, $Sin(0)$ and
+$Sin(Pi)$ both equal 0, so what should $ArcSin(0)$ be? In Yacas,
+it is agreed that the value of $ArcSin(x)$ should be in the interval
+[-$Pi$/2,$Pi$/2]. The same goes for $ArcTan(x)$. However, $ArcCos(x)$
+is in the interval [0,$Pi$].
 
 Usually, Yacas leaves these functions alone unless it is forced to do
 a numerical evaluation by the {N} function. If the
 argument is -1, 0, or 1 however, Yacas will simplify the
 expression. If the argument is complex,  the expression will be
-rewritten as a {Ln} function.
+rewritten using the {Ln} function.
 
-These functions are threaded, meaning that if the argument "x" is a
-list, the function is applied to all the entries in the list.
+These functions are threaded, meaning that if the argument {x} is a
+list, the function is applied to all entries in the list.
 
 *E.G.
 
@@ -102,12 +102,12 @@ list, the function is applied to all the entries in the list.
 
 *DESC
 
-This function calculates $e$ raised to the power "x", where $e$ is the
+This function calculates $e$ raised to the power $x$, where $e$ is the
 mathematic constant 2.71828... One can use {Exp(1)}
 to represent $e$.
 
-This function is threaded, meaning that if the argument "x" is a
-list, the function is applied to all the entries in the list.
+This function is threaded, meaning that if the argument {x} is a
+list, the function is applied to all entries in the list.
 
 *E.G.
 
@@ -132,12 +132,12 @@ list, the function is applied to all the entries in the list.
 *DESC
 
 This function calculates the natural logarithm of "x". This is the
-inverse function of the exponential function, {Exp}, ie. "Ln(x) = y" implies that "Exp(y) = x". For complex
+inverse function of the exponential function, {Exp}, i.e. $Ln(x) = y$ implies that $Exp(y) = x$. For complex
 arguments, the imaginary part of the logarithm is in the interval
 (-$Pi$,$Pi$]. This is compatible with the branch cut of {Arg}.
 
-This function is threaded, meaning that if the argument "x" is a
-list, the function is applied to all the entries in the list.
+This function is threaded, meaning that if the argument {x} is a
+list, the function is applied to all entries in the list.
 
 *E.G.
 
@@ -166,8 +166,8 @@ not rational, the call is returned unevaluated unless a numerical
 approximation is forced with the {N} function. This
 function can also handle negative and complex arguments.
 
-This function is threaded, meaning that if the argument "x" is a
-list, the function is applied to all the entries in the list.
+This function is threaded, meaning that if the argument {x} is a
+list, the function is applied to all entries in the list.
 
 *E.G.
 
@@ -204,8 +204,8 @@ $x = r *Exp(I*phi)$.
 This function is connected to the {Sign} function by
 the identity "Abs(x) * Sign(x) = x" for real "x".
 
-This function is threaded, meaning that if the argument "x" is a
-list, the function is applied to all the entries in the list.
+This function is threaded, meaning that if the argument {x} is a
+list, the function is applied to all entries in the list.
 
 *E.G.
 
@@ -229,15 +229,15 @@ list, the function is applied to all the entries in the list.
 
 *DESC
 
-This function returns the sign of the real number "x". It is "1"
+This function returns the sign of the real number $x$. It is "1"
 for positive numbers and "-1" for negative numbers. Somewhat
 arbitrarily, {Sign(0)} is defined to be 1.
 
 This function is connected to the {Abs} function by
-the identity "Abs(x) * Sign(x) = x" for real "x".
+the identity $Abs(x) * Sign(x) = x$ for real $x$.
 
-This function is threaded, meaning that if the argument "x" is a
-list, the function is applied to all the entries in the list.
+This function is threaded, meaning that if the argument {x} is a
+list, the function is applied to all entries in the list.
 
 *E.G.
 
@@ -767,7 +767,6 @@ necessarily the case for matrices.
 	
 	True
 	
-	Out>
 	In> A := { {0,x}, {0,0} }
 	
 	/              \
@@ -776,7 +775,6 @@ necessarily the case for matrices.
 	| ( 0 ) ( 0 )  |
 	\              /
 	
-	Out>
 	In> B := { {y,0}, {0,z} }
 	
 	/              \
@@ -785,7 +783,6 @@ necessarily the case for matrices.
 	| ( 0 ) ( z )  |
 	\              /
 	
-	Out>
 	In> Commutator(A,B)
 	
 	/                          \
@@ -793,8 +790,8 @@ necessarily the case for matrices.
 	|                          |
 	| ( 0 ) ( 0 )              |
 	\                          /
-	
-	Out>
+
+
 
 *CMD Taylor --- univariate Taylor series expansion
 *STD
@@ -861,7 +858,6 @@ up to order "order". It uses the function {ReversePoly} to perform the task.
 	
 	True
 	
-	Out>
 	In> exp1 := Taylor(x,0,7) Sin(x)
 	
 	     3    5      7
@@ -869,7 +865,6 @@ up to order "order". It uses the function {ReversePoly} to perform the task.
 	x - -- + --- - ----
 	    6    120   5040
 	
-	Out>
 	In> exp2 := InverseTaylor(x,0,7) ArcSin(x)
 	
 	 5      7     3
@@ -877,12 +872,10 @@ up to order "order". It uses the function {ReversePoly} to perform the task.
 	--- - ---- - -- + x
 	120   5040   6
 	
-	Out>
 	In> Simplify(exp1-exp2)
 	
 	0
-	
-	Out>
+
 
 *SEE ReversePoly, Taylor, BigOh
 
@@ -973,11 +966,11 @@ This function drops all terms of order "degree" or higher in
 *DESC
 
 This function tries to numerically find a zero of the expression
-"expr", which should depend only on the variable "var". It uses
-the value "initial" as an initial guess.
+{expr}, which should depend only on the variable {var}. It uses
+the value {initial} as an initial guess.
 
 The function will iterate using Newton's method until it estimates
-that it has come within a distance "accuracy" of the correct
+that it has come within a distance {accuracy} of the correct
 solution, and then it will return its best guess. In particular, it
 may loop forever if the algorithm does not converge.
 
@@ -1609,12 +1602,10 @@ integrated easily.
 	
 	True
 	
-	Out>
 	In> TrigSimpCombine(Cos(a)^2+Sin(a)^2)
 	
 	1
 	
-	Out>
 	In> TrigSimpCombine(Cos(a)^2-Sin(a)^2)
 	
 	Cos( -2 * a )
@@ -1629,8 +1620,6 @@ integrated easily.
 	    Sin( -2 * a - b )
 	  - -----------------
 	            4
-	
-	Out>
 
 *SEE Simplify, Integrate, Expand, Sin, Cos, Tan
 
@@ -1678,7 +1667,6 @@ polynomial.
 	
 	True
 	
-	Out>
 	In> LagrangeInterpolant({x1,x2,x3}, {y1,y2,y3}, x)
 	
 	y1 * ( x - x2 ) * ( x - x3 ) 
@@ -1692,8 +1680,7 @@ polynomial.
 	  y3 * ( x - x1 ) * ( x - x2 )
 	+ ----------------------------
 	   ( x3 - x1 ) * ( x3 - x2 )
-	
-	Out>
+
 
 *SEE Subst
 
