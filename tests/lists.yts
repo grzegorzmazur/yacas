@@ -82,4 +82,6 @@ Verify(FindIsq(100,{{n},n^2-16}), 4);
 Verify(FindIsq(100,{{n},n^2-100002}), 100);
 Verify(FindIsq(100,{{n},n^2-0}), 1);
 
-
+Verify(Difference(FuncList(a*b/c*d), {*,/}), {});
+Verify(Difference(FuncListArith(x*Sin(a/b)*Ln(Cos(y-z)+Sin(a))), {*,Ln,Sin}), {});
+Verify(Difference(VarListArith(x+a*y^2-1), {x,a,y^2}), {});

@@ -1354,6 +1354,87 @@ that would lead to an error.
 
 *SEE Type, Length
 
+*CMD VarList, VarListArith, VarListSome --- list of variables appearing in an expression
+*STD
+*CALL
+	VarList(expr)
+	VarListArith(expr)
+	VarListSome(expr, list)
+
+*PARMS
+
+{expr} -- an expression
+
+{list} -- a list of function atoms
+
+*DESC
+
+The command {VarList(expr)} returns a list of all variables that appear in the
+expression {expr}. The expression is traversed recursively.
+
+The command {VarListSome} looks only at arguments of functions in the {list}. All other functions are considered "opaque" (as if they do not contain any variables) and their arguments are not checked.
+For example, {VarListSome(a + Sin(b-c))} will return {{a, b, c}}, but {VarListSome(a*Sin(b-c), {*})} will not look at arguments of {Sin()} and will return {{a,Sin(b-c)}}. Here {Sin(b-c)} is considered a "variable" because the function {Sin} does not belong to {list}.
+
+
+The command {VarListArith} returns a list of all variables that appear
+arithmetically in the expression {expr}. This is implemented through
+{VarListSome} by resticting to the arithmetic functions {+}, {-}, {*}, {/}.
+Arguments of other functions are not checked.
+
+Note that since the operators "{+}" and "{-}" are prefix as well as infix operators, it is currently required to use {Atom("+")} to obtain the unevaluated atom "{+}".
+
+*E.G.
+
+	In> VarList(Sin(x))
+	Out> {x};
+	In> VarList(x+a*y)
+	Out> {x,a,y};
+	In> VarListSome(x+a*y, {Atom("+")})
+	Out> {x,a*y};
+	In> VarListArith(x+y*Cos(Ln(x)/x))
+	Out> {x,y,Cos(Ln(x)/x)}
+	In> VarListArith(x+a*y^2-1)
+	Out> {x,a,y^2};
+
+*SEE IsFreeOf, IsVariable, FuncList, HasExpr, HasFunc
+
+
+*CMD FuncList, FuncListArith, FuncListSome --- list of functions used in an expression
+*STD
+*CALL
+	FuncList(expr)
+	FuncListArith(expr)
+	FuncListSome(expr, list)
+
+*PARMS
+
+{expr} -- an expression
+
+{list} -- list of function atoms to be considered "transparent"
+
+*DESC
+
+The command {FuncList(expr)} returns a list of all function atoms that appear
+in the expression {expr}. The expression is recursively traversed.
+
+The command {FuncListSome(expr, list)} does the same, except it only looks at arguments of a given {list} of functions. All other functions become "opaque" (as if they do not contain any other functions).
+For example, {FuncListSome(a + Sin(b-c))} will see that the expression has a "{-}" operation and return {{+,Sin,-}}, but {FuncListSome(a + Sin(b-c), {+})} will not look at arguments of {Sin()} and will return {{+,Sin}}.
+
+{FuncListArith} is defined through {FuncListSome} to look only at arithmetic operations {+}, {-}, {*}, {/}.
+
+Note that since the operators "{+}" and "{-}" are prefix as well as infix operators, it is currently required to use {Atom("+")} to obtain the unevaluated atom "{+}".
+
+*E.G.
+
+	In> FuncList(x+y*Cos(Ln(x)/x))
+	Out> {+,*,Cos,/,Ln};
+	In> FuncListArith(x+y*Cos(Ln(x)/x))
+	Out> {+,*,Cos};
+	In> FuncListSome({a+b*2,c/d},{List})
+	Out> {List,+,/};
+
+*SEE VarList, HasExpr, HasFunc
+
 *CMD BubbleSort, HeapSort --- sort a list
 *STD
 *CALL

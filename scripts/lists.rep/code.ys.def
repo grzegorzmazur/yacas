@@ -28,4 +28,9 @@ Drop
 Take
 Partition
 PrintList
+FuncList
+FuncListSome
+FuncListArith
+VarListArith
+VarListSome
 }

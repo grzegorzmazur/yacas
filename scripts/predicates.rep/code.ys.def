@@ -27,4 +27,11 @@ IsOrthogonal
 IsUnitary
 IsVariable
 IsNumericList
+HasExpr
+HasFunc
+HasExprSome
+HasFuncSome
+ListHasFunc
+HasExprArith
+HasFuncArith
 }
