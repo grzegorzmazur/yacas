@@ -1,27 +1,47 @@
 
 /* Implementation of a sparse tree of Multidimensional matrix elements.
-
-API:
-- CreateSparseTree(coefs,fact)
-  Create a sparse tree with one monomial, where 'coefs' is the 
-  key, and 'fact' the value. 'coefs' should be a list of integers.
-- SparseTreeMap(op,depth,tree)
-  Walk over the sparse tree, one element at a time, and apply the 
-  function "op" on the arguments (key,value). The 'value' in the
-  tree is replaced by the value returned by the "op" function.
-- SparseTreeScan(op,depth,tree)
-  Same as SparseTreeMap, but without changing elements.
-- AddSparseTrees(depth,x,y)
-- MultiplyAddSparseTrees(depth,x,y,coefs,fact)
-  Add sparse tree 'y' to sparse tree 'x', destructively.
-  in the MultiplyAdd case, the monomials are treated as 
-  if they were Multiplied by a monomial with coefficients 
-  with the (key,value) pair (coefs,fact).
-
 */
 
+10 # SparseTreeGet({},_tree) <-- tree;
+20 # SparseTreeGet(_key,_tree) <--
+[
+  SparseTreeGet2(Tail(key),Assoc(Head(key),tree));
+];
+10 # SparseTreeGet2(_key,Empty) <-- 0;
+20 # SparseTreeGet2(_key,_item) <-- SparseTreeGet(key,Head(Tail(item)));
+
+10 # SparseTreeSet({_i},_tree,_newvalue)
+   <--
+[
+  Local(Current,assoc,result);
+  Set(assoc,Assoc(i,tree));
+  if(assoc=Empty)
+  [
+    Set(Current,0);
+    Set(result,Eval(newvalue));
+    AddSparseTrees(1,tree,CreateSparseTree({i},result));
+  ]
+  else
+  [
+    Set(Current,assoc[2]);
+    Set(result,Eval(newvalue));
+    assoc[2] := result;
+  ];
+  result;
+];
+20 # SparseTreeSet(_key,_tree,_newvalue) <--
+[
+  SparseTreeSet2(Tail(key),Assoc(Head(key),tree));
+];
+10 # SparseTreeSet2(_key,Empty) <-- 0;
+20 # SparseTreeSet2(_key,_item)
+   <-- SparseTreeSet(key,Head(Tail(item)),newvalue);
+UnFence("SparseTreeSet",3);
+UnFence("SparseTreeSet2",2);
+
+
 LocalSymbols(SparseTreeMap2,SparseTreeScan2,Muaddterm,MuMuaddterm,
-              meradd,meraddmap,NormalMonomial) [
+              meradd,meraddmap) [
 
 10 # CreateSparseTree({},_fact) <-- fact;
 

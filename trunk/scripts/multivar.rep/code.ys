@@ -27,8 +27,8 @@ MultiSimp(_expr) <--
   Local(c1,c2,gcd,cmn,vars);
 
 
-  c1 := MultiContentMonomial(a);
-  c2 := MultiContentMonomial(b);
+  c1 := MultiContentTerm(a);
+  c2 := MultiContentTerm(b);
   gcd:=Gcd(c1[2],c2[2]);
   c1[2] := c1[2]/gcd;
   c2[2] := c2[2]/gcd;
@@ -40,7 +40,7 @@ MultiSimp(_expr) <--
   vars:=MultiVars(a);
   Check(vars = MultiVars(a),"incompatible Multivars to simplify");
   
-  (NormalForm(CreateMonomial(vars,c1))/NormalForm(CreateMonomial(vars,c2)))
+  (NormalForm(CreateTerm(vars,c1))/NormalForm(CreateTerm(vars,c2)))
     *(NormalForm(MultiPrimitivePart(a))/NormalForm(MultiPrimitivePart(b)));
 ];
 
@@ -57,10 +57,10 @@ MultiContent(multi_IsMulti)
   Set(least, MultiDegree(multi));
   Set(gcd,MultiLeadingCoef(multi));
   ScanMultiNomial("MultiContentScan",multi);
-  CreateMonomial(MultiVars(multi),MultiContentMonomial(multi));
+  CreateTerm(MultiVars(multi),MultiContentTerm(multi));
 ];
 
-MultiContentMonomial(multi_IsMulti)
+MultiContentTerm(multi_IsMulti)
 <--
 [
   Local(least,gcd);
@@ -81,8 +81,8 @@ MultiPrimitivePart(MultiNomial(vars_IsList,_terms))
 <--
 [
   Local(cont);
-  Set(cont,MultiContentMonomial(MultiNomial(vars,terms)));
-  Set(cont,CreateMonomial(vars,{-cont[1],1/(cont[2])}));
+  Set(cont,MultiContentTerm(MultiNomial(vars,terms)));
+  Set(cont,CreateTerm(vars,{-cont[1],1/(cont[2])}));
   MultiNomialMultiply(MultiNomial(vars,terms), cont);
 ];
 
@@ -101,11 +101,11 @@ MultiPrimitivePart(MultiNomial(vars_IsList,_terms))
 5 # MultiDegree(MultiNomial(_vars,_term))_(Not(IsList(term))) <-- {};
 10 # MultiDegree(MultiNomial(_vars,{})) <-- FillList(-Infinity,Length(vars));
 20 # MultiDegree(MultiNomial(_vars,_terms)) 
-   <-- (MultiLeadingMonomial(MultiNomial(vars,terms))[1]);
+   <-- (MultiLeadingTerm(MultiNomial(vars,terms))[1]);
 
 
 10 # MultiLeadingCoef(MultiNomial(_vars,_terms)) 
-   <-- (MultiLeadingMonomial(MultiNomial(vars,terms))[2]);
+   <-- (MultiLeadingTerm(MultiNomial(vars,terms))[2]);
 
 10 # MultiLeadingMono(MultiNomial(_vars,{})) <-- 0;
 20 # MultiLeadingMono(MultiNomial(_vars,_terms)) 
@@ -116,19 +116,12 @@ MultiPrimitivePart(MultiNomial(vars_IsList,_terms))
 MultiVars(MultiNomial(_vars,_terms)) <-- vars;
 
 20 # MultiLT(multi_IsMulti) 
-   <-- CreateMonomial(MultiVars(multi),MultiLeadingMonomial(multi));
+   <-- CreateTerm(MultiVars(multi),MultiLeadingTerm(multi));
 
 10 # MultiLM(multi_IsMulti) <-- MultiDegree(multi);
 
 10 # MultiLC(MultiNomial(_vars,{})) <-- 0;
 20 # MultiLC(multi_IsMulti) <-- MultiLeadingCoef(multi);
-
-20 # MultiZero(multi_IsMulti) <-- 
-[
-  CheckMultiZero(DropZeroLC(multi));
-];
-10 # CheckMultiZero(MultiNomial(_vars,{})) <-- True;
-20 # CheckMultiZero(MultiNomial(_vars,_terms)) <-- False;
 
 DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
 
@@ -191,7 +184,7 @@ DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
       if (Select({{n},n<0},MultiLM(plt)-MultiLM(glt)) = {})
       [
         Local(ff);
-      Set(ff, CreateMonomial(v,{MultiLM(plt)-MultiLM(glt),MultiLC(plt)/MultiLC(glt)}));
+      Set(ff, CreateTerm(v,{MultiLM(plt)-MultiLM(glt),MultiLC(plt)/MultiLC(glt)}));
         q[i] := q[i] + ff;
         Set(p, p - ff*g[i]);
         Set(i,nr+2);
@@ -228,13 +221,13 @@ DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
 ];
 
 5  # MultiGcd(MultiNomial(_vars,_terms),g_IsMulti)_(MultiLM(MultiNomial(vars,terms)) = MultiLM(g))
-     <-- CreateMonomial(vars,{FillList(0,Length(vars)),1});
+     <-- CreateTerm(vars,{FillList(0,Length(vars)),1});
 
 5  # MultiGcd(MultiNomial(_vars,_terms),g_IsMulti)_(Select({{n},n<0},MultiLM(MultiNomial(vars,terms))-MultiLM(g)) != {})
-     <-- CreateMonomial(vars,{FillList(0,Length(vars)),1});
+     <-- CreateTerm(vars,{FillList(0,Length(vars)),1});
 
 5  # MultiGcd(MultiNomial(_vars,_terms),g_IsMulti)_(NormalForm(g) = 0)
-     <-- CreateMonomial(vars,{FillList(0,Length(vars)),1});
+     <-- CreateTerm(vars,{FillList(0,Length(vars)),1});
 10 # MultiGcd(f_IsMulti,g_IsMulti) <--
 [
   LocalSymbols(a)
@@ -257,9 +250,9 @@ DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
 MultiDivTerm(MultiNomial(_vars,_term1),MultiNomial(_vars,_term2)) <--
 [
   Local(lm1,lm2);
-  Set(lm1,MultiLeadingMonomial(MultiNomial(vars,term1)) );
-  Set(lm2,MultiLeadingMonomial(MultiNomial(vars,term2)) );
-  CreateMonomial(vars,{lm1[1]-lm2[1],lm1[2] / lm2[2]});
+  Set(lm1,MultiLeadingTerm(MultiNomial(vars,term1)) );
+  Set(lm2,MultiLeadingTerm(MultiNomial(vars,term2)) );
+  CreateTerm(vars,{lm1[1]-lm2[1],lm1[2] / lm2[2]});
 ];
 MultiS(_g,_h,MultiNomial(_vars,_terms)) <--
 [

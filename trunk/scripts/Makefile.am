@@ -15,8 +15,8 @@ SCRIPTFILES = \
         localrules.rep/code.ys localrules.rep/code.ys.def rabinmiller.rep/code.ys rabinmiller.rep/code.ys.def \
         orthopoly.rep/code.ys orthopoly.rep/code.ys.def openmath.rep/code.ys openmath.rep/code.ys.def \
         multivar.rep/code.ys multivar.rep/code.ys.def \
-        multivar.rep/makemulti.ys multivar.rep/partialdensetree.ys \
-        multivar.rep/sparsetree.ys multivar.rep/partialdensenomial.ys \
+        multivar.rep/makemulti.ys  \
+        multivar.rep/sparsetree.ys  \
         multivar.rep/sparsenomial.ys \
         specfunc.rep/code.ys specfunc.rep/code.ys.def \
 	plots.rep/code.ys plots.rep/code.ys.def plots.rep/backends-2d.ys

@@ -9,6 +9,7 @@ $(testtarget): ../tests/wester.yts
 	$(yacastest) ../tests/linalg.yts
 	$(yacastest) ../tests/lists.yts
 	$(yacastest) ../tests/logic_simplify_test.yts
+	$(yacastest) ../tests/multivar.yts
 	$(yacastest) ../tests/numerics.yts
 	$(yacastest) ../tests/orthopoly.yts
 	$(yacastest) ../tests/poly.yts
