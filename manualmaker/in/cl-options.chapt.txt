@@ -1,0 +1,137 @@
+	    Command-line options
+
+*A command-line options!summary
+
+The default operation of {Yacas} is to run in the interactive console mode. {Yacas} accepts several options that modify its operation.
+Here is a summary of options:
+
+*	<i>filename</i> ... (read and execute a file or several files)
+*	{-c} (omit line prompts)
+*	{-d} (print default directory)
+*	{-v} (print version information)
+*	{-f} (execute standard input as one statement)
+*	{-p} (do not use terminal capabilities)
+*	{-t} (enable extra history features)
+*	{--archive} <i>filename</i> (use a given library archive file)
+*	{--init} <i>filename</i> (use a given initial file)
+*	{--patchload} (use {PatchLoad} to load files)
+*	{--rootdir} <i>directory</i>{/} (specify library directory)
+*	{--server} <i>port</i> (start {Yacas} as a network server on given port)
+
+Options can be combined, for example,
+	yacas -pc filename
+will read and execute the file {filename} non-interactively without using terminal capabilities and without printing prompts.
+
+Here is a more detailed description of the command-line options.
+
+*A command-line options
+
+	yacas -c
+Inhibit printing of prompts {In>} and {Out>}. Useful for non-interactive sessions.
+
+	yacas -f
+Reads standard input as one file, but executes only the first statement in it. (You may want to use a statement block to have several statements executed.)
+
+	yacas -p
+Does not use terminal capabilities, no fancy editing on the command line and no escape sequences printed. Useful for non-interactive sessions.
+
+	yacas -t
+Enable some extra history recall functionality in console mode: after executing a command from the history list, the next unmodified command from the history list will be automatically entered on the command line.
+
+*A executing script files
+	yacas [options] {filename}
+Reads and executes commands in the filename and exits. Equivalent to {Load()}.
+
+	yacas -v
+Prints version information and exits.
+(This is the same information as returned by {Version()}.)
+
+	yacas -d
+Prints the path to the {Yacas} default library directory (this information is compiled into the {Yacas} executable) and exits.
+
+	yacas --patchload
+Will load every file on the command line with the {PatchLoad} command instead of the normal {Load} command,
+This is useful for generating HTML pages for a
+web site using the {Yacas} scripting language, much like you can do with
+the PHP scripting language.
+
+	yacas --init [file]
+Tells the system to load {file} as the initialization file. By default
+it loads the file {yacasinit.ys} from the scripts directory.
+
+	yacas --server <port>
+On some platforms server mode can be enabled at build time by passing the
+flag {--enable-server} to the {./configure} script. {Yacas}
+then allows you to pass the flag {--server} with a port number
+behind it, and the {Yacas} executable will listen to the socket
+behind that port instead of waiting for user input on the console.
+
+Commands can be sent to the server by sending a text line as
+one block of data, and the server will respond back with another text block. 
+
+One can test this function by using {telnet}. First, set up
+the server by calling
+
+	yacas --server 9734
+and then invoke {telnet} in another window, for example:
+	telnet 127.0.0.1 9734
+Then type a line of Yacas input and hit Enter.
+The result will be one line that you will get back from the Yacas server.
+
+Some security measures and resource management measures have been 
+taken. No more than 10 connections can be alive at any time, 
+a calculation cannot take more than 30 seconds, and {Yacas}
+operates in the <i>secure</i> mode, much like calling an expression
+by passing it as an argument to the {Secure} function.
+This means that no system calls are allowed, and no writing to
+local files, amongst other things. Something that has not been 
+taken care of yet is memory use. A calculation could take up all
+memory, but not for longer than 30 seconds. 
+
+	yacas --rootdir [directory]/
+Tells the system where to find the library scripts. Here, {directory/} is a
+path that is passed to {DefaultDirectory}, and file names will be simply
+appended to it, so you should make sure to include a forward or backward slash
+(depending on the platform) at the end. It is also possible to give a
+list of directories, separated by a colon, eg. 
+{yacas --rootdir scripts/:morescripts/}.
+
+	yacas --archive [file]
+Use a compressed archive instead of the script library.
+
+*A using compressed libraries
+{Yacas} has an experimental system where files can be compressed into
+one file, and accessed through this command line option. The advantages
+are:
+
+*	0. Smaller disk/memory use (useful if {Yacas} is used on small hand-held computers).
+*	0. No problems with directory path separators: "{path}/{file}" will always
+resolve to the right file, no matter what platform (read: Windows) it runs on.
+*	0. The start-up time of the program might improve a little, since 
+a smaller file is loaded from disk (disk access being slow), and then decompressed
+in memory, which might be a lot faster than loading from disk.
+
+An additional savings is due to the fact that the script files are 
+stripped from white spaces and comments, making them smaller and faster loading.
+
+To prepare the compressed library archive, go into the {ramscripts/} directory
+and type
+	make -f makefile.compressor
+The result should be the archive file {scripts.dat}.
+Then launch {Yacas} with the command line option {--archive scripts.dat},
+with the file {scripts.dat} in the current directory.
+
+The reason that the {scripts.dat} file is not built automatically is
+that it is not tested, at this time, that the build process works on all
+platforms.
+(Right now it works on Unix, MacOSX, and Win32.)
+
+When an archive is present, Yacas will try to load it before it looks for scripts from the library directories.
+Typing 
+	make archivetest -f makefile.compressor
+in the {ramscripts/} directory runs all the test scripts using the archived
+files.
+
+The currently supported compression schemes are uncompressed
+and compressed with {minilzo}. Script file stripping (removing whitespace
+and comments) may be disabled by editing {compressor.cpp} (variable {strip_script}).
