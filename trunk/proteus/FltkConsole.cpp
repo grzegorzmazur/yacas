@@ -6,19 +6,26 @@
 //    Fl::flush();
 
 TODO:
-- add testnotes/fonts to cvs
+
+- remove flplot from cvs
+- add flplot.ys and flplot.ys.def to cvs
+- font size: use the size of the current cell
+- font size: remember, so the user can change default font size.
+- bug: putting current command on last line from a link.
+
+x rip hint box from manual.
+
 - console drawer is slow: 
   - render only what is on screen
-  - optimize graph rendering
 - menu bar resizes, i think it shouldn't
+- select, copy-paste
+- document graphing primitives
 - graphing cell:
   - Why not load flplot by default?
   - modify flplot so that all is local, so we can have multiple plots.
   - if there is a ConsoleOutBase ready to be inserted,
     insert it instead of the text returned.
   - just for laughs, a formula pretty printer using the graphing capabilities.
-- rip hint box from manual.
-- hint boxes: show a little help blurb also.
 - function browser at the top, allowing you to insert, but also
   showing a hint box when you hover over it, with a short description
   of the command.
@@ -767,6 +774,7 @@ struct HintItem
 {
     char* base;
     char* hint;
+    char* description;
 };
 
 
@@ -812,10 +820,19 @@ int LoadHints(char* file)
                 hi.base = &htex[i];
                 while(htex[i] != ':') i++;
                 htex[i] = '\0';
+
+//printf("%s\n",hi.base);
+
                 i++;
                 hi.hint = &htex[i];
                 while(htex[i] != ':') i++;
                 htex[i] = '\0';
+
+                i++;
+                hi.description = &htex[i];
+                while(htex[i] != ':') i++;
+                htex[i] = '\0';
+
                 hintTexts.Append(hi);
             }
         }
@@ -853,11 +870,15 @@ void FltkConsole::TryToHint(int ifrom,int ito)
     {
         if ((unsigned char)iSubLine[ifrom] < (unsigned char)hintTexts[i].base[0])
             break;
-        if (!strncmp(&iSubLine[ifrom],hintTexts[i].base,strlen(hintTexts[i].base)))
+        int baselen = strlen(hintTexts[i].base);
+        if (ito-ifrom==baselen)
         {
+          if (!strncmp(&iSubLine[ifrom],hintTexts[i].base,baselen))
+          {
             if (hints == NULL)
                 CreateHints();
-            AddHintLine(hintTexts[i].hint);
+            AddHintLine(hintTexts[i].hint,hintTexts[i].description);
+          }
         }
     }
 }
@@ -1245,10 +1266,14 @@ void FltkConsole::CreateHints()
     hints = new FltkHintWindow(iDefaultFontSize);
     iOutputDirty=1;
 }
-void FltkConsole::AddHintLine(LispCharPtr aText)
+void FltkConsole::AddHintLine(LispCharPtr aText, LispCharPtr aDescription)
 {
     hints->AddLine(aText);
+    if (aDescription[0] != '\0')
+      hints->AddDescription(aDescription);
+
 }
+
 
 ConsoleOutBase::~ConsoleOutBase()
 {
@@ -1408,17 +1433,17 @@ void ConsoleDrawer::draw(int x, int y, int width,int draw_input)
   if (iExecute.Get())
   {
     char buf[300];
-    sprintf(buf,"FlWindow:={%d,%d,%d,%d};",
-            (int)x,
-            (int)y,
+    sprintf(buf,"{FlWindowWidth,FlWindowHeight}:={%d,%d};",
             (int)iWidth,
             (int)iHeight);
     yacas->Evaluate(buf);
     the_out.SetNrItems(0);
     the_out.Append('\0');
     fl_clip(x,y,iWidth,iHeight);
+    fl_translate(x,y);
     LispPtr result;
     iEnvironment.iEvaluator->Eval(iEnvironment,result,iExecute);
+    fl_translate(-x,-y);
     fl_pop_clip();
   }
 }

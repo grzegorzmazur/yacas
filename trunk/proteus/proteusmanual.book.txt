@@ -4,7 +4,7 @@
 			Hand-writing a notepad
 
 Important note: the notepad functionality discussed in
-this chapter is not implemented yet. It is a design,
+this chapter only partially implemented. It is a design,
 and specifies how this feature <i>will</i> work when it is
 finished.
 
@@ -22,18 +22,16 @@ up a custom user interface for a calculation.
 The commands that are specific to building a notepad
 all start with {Proteus'}.
 
-A notepad takes the form:
+A notepad takes the form of a Yacas script.
 
-	Proteus'Notepad(Program,UserInterface);
 
-In the "Program" part, functions can be defined, global
+In the file, functions can be defined, global
 variables set up, etcetera. It is thus one Yacas expression,
 that can be stored in a file. This file can then be loaded
 from the user interface, through the "Load" menu item.
 
-The "UserInterface" part can be used to set up a little
-user interface for a calculation. The basic command that
-can be used here is:
+The user interface can be set up with special commands. 
+The basic command that can be used here is:
 
 	Proteus'AddCommand(CommandString);
 
@@ -42,17 +40,14 @@ as if it had been typed in in the notepad by the user.
 
 A very simple sample notepad could look like this:
 
-	Proteus'Notepad(
-	   [
-	     // program part: define a function
-		 f(x,y):=x^y;
-	   ],
-	   [
-	     // user interface part: enter x and y, and evaluate f(x,y)
-	     Proteus'AddCommand("x:=2");
-	     Proteus'AddCommand("y:=3");
-	     Proteus'AddCommand("f(x,y)");
-	   ]);
+	// program part: define a function
+	f(x,y):=x^y;
+
+	// user interface part: enter x and y, and evaluate f(x,y)
+	Proteus'AddCommand("x:=2");
+	Proteus'AddCommand("y:=3");
+	Proteus'AddCommand("f(x,y)");
+
 
 The following sections will discuss the commands that can
 be used to customize the notepad further, expanding it into
@@ -111,9 +106,14 @@ lines added to the notepad. For instance, the font
 type, color and size could be changed.
 
 	Proteus'FontSize(Size)
-	Proteus'FontColor(Size)
-	Proteus'FontBold(Boolean)
-	Proteus'FontItalic(Boolean)
+	Proteus'FontColor(Color)
+	Proteus'FontType(Type)
+
+The font size is in pixels. The values for "Color" and
+"Type" are discussed in the graphics capabilities
+section.
+
+		Commands not implemented yet
 
 
 	Proteus'Command(CommandString)
@@ -173,7 +173,43 @@ be assigned to {a}.
 
 
 
+			Graphics capabilities
 
+Graphics can be scripted in Yacas script. There are hooks
+into the system allowing for drawing text and lines, and
+changing colors and fonts and font sizes and such.
+
+		Inserting a graph into a notepad
+
+One command, {FlGraphStart}, allows for inserting a graph
+into the notepad. The syntax is:
+
+	FlGraphStart(Expression,Width,Height);
+
+"Expression" gets executed whenever the graph needs
+to be drawn. "Expression" can then use other graphics
+commands to draw it.
+
+The graphics commands currently supported are directly
+linked to the drawing commands defined by {fltk}.
+The command set would be different for different
+widget sets. This is not a problem, since a script
+can be written to generate an expression that 
+renders a graph.
+
+For efficient rendering, it is best to do as many
+calculations as possible <i>before</i> the
+call to {FlGraphStart}, so that "Expression" only
+contains simple calls to the functions that do the drawing.
+
+		Graphing functions
+
+The fltk functions linked in to the executable
+that call {fltk} drawing functions are listed
+here. Please refer to the {fltk} documentation
+for further explanation.
+
+*INCLUDE fltkgraphstub.man
 
 
 

@@ -350,6 +350,7 @@ void LispNotepad(LispEnvironment& aEnvironment,LispInt aStackTop)
     CHK_ARG_CORE(orig != NULL, 1);
     LispString oper;
     InternalUnstringify(oper, orig);
+    if (oper[0] == '\0') RaiseError("Could not open notepad file %s for reading",&oper[0]);
     console->LoadNotePad(&oper[0]);
     InternalTrue(aEnvironment,RESULT);
 }
@@ -522,6 +523,8 @@ CORE_KERNEL_FUNCTION("Proteus'FontColor",LispNotepadFontColor,1,YacasEvaluator::
     AddGraphingCapabilities((*yacas)()());
     yacas->Evaluate("Load(\"yacasinit.ys\");");
 
+    yacas->Evaluate("DefLoad(\"flplot.ys\");");
+
     {
         extern char defdir[128];
         char buf[128];
@@ -582,13 +585,13 @@ int main(int argc, char **argv)
         o->end();
       }
 */
-/*TODO editor shouild be separate app, with debugger
+/*TODO editor shouild be separate app, with debugger*/
       {
         Fl_Group* o = new Fl_Group(10, 20, 630, 310, "Edit");
          editor_add_items(11,23,618, 285);
         o->end();
       }
-*/
+/**/
       {
         Fl_Group* helptab;
         Fl_Group* o = helptab = new Fl_Group(10, 20, 630, 310, "Help");

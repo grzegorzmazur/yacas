@@ -141,7 +141,7 @@ private:
     void CheckForNewHints();
     void DeleteHints();
     void CreateHints();
-    void AddHintLine(LispCharPtr aText);
+    void AddHintLine(LispCharPtr aText, LispCharPtr aDescription);
     void AddOutput(ConsoleOutBase* aOutput);
     void CommandLineStartNew();
     void CommandLineEnd();

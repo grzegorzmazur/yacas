@@ -27,23 +27,3 @@ Proteus'FontColor(FlColorGreen);
 Proteus'AddLink("Notepad(FindFile(\"index\"));", "Back to index",False,True);
 
 
-/*TODO old remove?
-:n:Clear(x);
-:n:PrettyPrinter("PrettyForm");
-:iel:True
-And another notepad
-
-To not make this note pad *too* empty, a few limits ;-)
-:
-Limit(x,0)Sin(x)/x
-:iel:True
-
-The line below is "held", meaning it will not automatically be
-simplified at startup. But if you go and stand on the line and
-press enter it should simplify to 0.
-
-:
-:h:Limit(x,Infinity)Sin(x)/x
-:il:Notepad(FindFile("index"));
-Back to index
-*/

@@ -34,26 +34,3 @@ Proteus'AddLink("Notepad(FindFile(\"graphtest2\"));",
 Proteus'AddLink("restart",
   "Quit this tutorial",False,True);
 
-
-/*TODO old remove?
-:n:DefaultDirectory("./testnotes/");
-:n:Use("print.ys");
-:n:PrettyPrinter("Print");
-:iel:True
-This is an example index for a notepad tutorial.
-Click on any one of the items below to go to a specific example.
-
-This is the next line after an empty line.
-:
-:il:Notepad(FindFile("testnotepad"));
-First test notepad
-:il:Notepad(FindFile("testnotepad2"));
-Second test notepad
-:il:Notepad(FindFile("recursetest"));
-A Simple exercise: solve x^2-4=0.
-:il:Notepad(FindFile("graphtest2"));
-Plotting a graph.
-:il:restart
-Quit this tutorial
-
-*/

@@ -32,7 +32,10 @@ static void FlGraphStart(LispEnvironment& aEnvironment,LispInt aStackTop)
   {
     delete cell_to_insert;
   }
-  cell_to_insert = new ConsoleDrawer(aEnvironment,ARGUMENT(1),320,200);
+  ShortIntegerArgument(width,  2 );
+  ShortIntegerArgument(height, 3 );
+
+  cell_to_insert = new ConsoleDrawer(aEnvironment,ARGUMENT(1),width,height);
   InternalTrue(aEnvironment,RESULT);
 
 /*TODO remove?
@@ -52,7 +55,7 @@ void AddGraphingCapabilities(LispEnvironment& aEnvironment)
 {
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) aEnvironment.SetCommand(fname,iname,nrargs,flags)
-CORE_KERNEL_FUNCTION("FlGraphStart",FlGraphStart,1,YacasEvaluator::Macro | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("FlGraphStart",FlGraphStart,3,YacasEvaluator::Function | YacasEvaluator::Fixed);
 #undef CORE_KERNEL_FUNCTION
 /*
   aEnvironment.SetCommand(FlGraphStart, "FlGraphStart");
