@@ -14,7 +14,7 @@
   <li> Removed HTML files from tar.gz to save 30% space -- they are regenerated
 	   anyway, and users can download documentation separately if they can't
 	   make it (note: generating HTML or PS/PDF docs currently requires Perl) (SW)
-  <li> Ayal: Out &gt now not shown any more if PrettyPrinter is used.
+  <li> Ayal: Out&gt now not shown any more if PrettyPrinter is used.
   <li> Ayal: Fixed bug: TrigSimpCombine(Exp(A*X))
   <li> Ayal: added SolutionTuples.txt, as a specification of how I think
            Solve should work in the future.
@@ -32,20 +32,22 @@
   <li> Ayal: improved multivariates, by using a better sparse representation:
        recursive sparse tree. Also added a driver structure to allow changing
        representation later.
-  <li> Ayal: implentation of sparse trees: a recursive sparse representation
+  <li> Ayal: implementation of sparse trees: a recursive sparse representation
        that can be useful for polynomials and matrices/vectors.
   <li> Ayal: implemented pre-loading files for functions for which a def
        file prescribes loading a function, when calling DefLoadFunction(function).
        This is used when declaring a &lt-- pattern.
   <li> Ayal: fixed bug where redeclaring a function could cause segfaults.
-  <li> Ayal: Listed functions implemented.
-  <li> Added experimental scripts {book2ys.*} for automatic extraction of Yacas
-       code from documentation (SW)
+  <li> Ayal: Listed functions implemented (RuleBaseListed).
+  <li> Documentation updates: added experimental scripts {book2ys.*} for
+       automatic extraction of Yacas code from documentation; added comment
+       (*REM) label and trailing punctuation to displayed equations; documented
+       Newton and Halley's method (SW)
   <li> Implemented adaptive 2D plotting {Plot2D} in {plots.rep} and multiple
        backends architecture (so far only gnuplot or plotutils but easy to
        add support for more) - replaces {GnuPlot()} (SW)
   <li> Removed {GnuPlot} altogether -- people should use {Plot2D} since it's much better
-  <li> Improved integer factorization algorithm: {Factor(50!)} now works, avoiding
+  <li> Improved integer factorization algorithm: {Factor(50!)} now works, avoids
        infinite loop in {PollardRhoFactorize}; added factorization tests;
        the list of prime factors is now sorted (SW)
   <li> New fast algorithm for {IsPrimePower}/{GetPrimePower}; added new
