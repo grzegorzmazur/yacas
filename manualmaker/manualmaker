@@ -117,7 +117,7 @@ Blurb(text):=
 HtmlCommand(command):=
 [
 HtmlTable(3,"90%",
-"<TR>" : "<TD WIDTH=100% bgcolor=e0e0e0>" : "<PRE>" : command : "</PRE></TR>"
+"<TR>" : "<TD WIDTH=100% bgcolor=e0e0e0>" : "<PRE>" : EscapeLtGt(command) : "</PRE></TR>"
          );
 ];
 
@@ -590,4 +590,4 @@ AddBody(ToString()
 ]
 );
 
-HoldArgNr("DocEval", 1);
+HoldArgNr("DocEval", 1, 1);
