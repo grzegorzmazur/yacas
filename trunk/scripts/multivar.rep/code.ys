@@ -231,7 +231,6 @@ LocalSymbols(x,n,vars)  [
 LocalSymbols(x,n,vars)  [
   40 #  MakeMultiNomial(_x ^ n_IsPositiveInteger,vars_IsList) <--
 	[
-//Echo({"hello!"});
           Local(mult,result);
           Set(mult,MakeMultiNomial(x,vars));
           Set(result,MakeMultiNomial(1,vars));
@@ -242,7 +241,7 @@ LocalSymbols(x,n,vars)  [
 //Echo({"2...",n});
             Set(n,n>>1);
 //Echo({"3...",n});
-            Set(mult,MultiNomialMultiply(mult,mult));
+            If(n!=0,Set(mult,MultiNomialMultiply(mult,mult)));
 //Echo({"4...",n});
           ];
 //Echo({"end"});
@@ -267,11 +266,104 @@ LocalSymbols(x,vars)  [
   ];
 ];
 
+
 MultiNomialAdd(MultiNomial(_vars,_terms1),MultiNomial(_vars,_terms2)) <--
 [
-  ForEach(t,terms2) MultiAddTerm(terms1,t);
-  MultiNomial(vars,terms1);
+  Local(i,t1,t2,inspt);
+  Set(t1,terms1);
+  Set(i,1);
+  Set(t2,terms2);
+  Set(inspt,{});
+//Echo({"1..."});
+//Echo({"termcmp ",Length(terms1),Length(terms2)});
+  While(t1 != {} And t2 != {})
+  [
+    Muaddterm(Head(t1),Head(t2));
+  ];  
+  While(t2 != {})
+  [
+    Set(terms1,DestructiveAppend(terms1,FlatCopy(Head(t2))));
+    Set(t2,Tail(t2));
+  ];  
+//Echo({"2...",t2});
+//Echo({"2...",inspt});
+//Echo({"   inspt ",Length(inspt)});
+  While(inspt != {})
+  [
+    Set(i,Head(inspt));
+    Set(terms1,DestructiveInsert(terms1,i[2],i[1]));
+    Set(inspt,Tail(inspt));
+  ];
+//Echo({"3..."});
+  MultiNomial(vars,terms1);  
 ];
+10 # Muaddterm({_pows,_fact1},{_pows,_fact2}) <--
+[
+//Echo({"same"});
+  t1[1][2] := fact1+fact2;
+//  Set(t1,Tail(t1));
+//  Set(i,MathAdd(i,1));
+  Set(t2,Tail(t2));
+];
+20 # Muaddterm(_h1,_h2)_(MultiTermLess(h1,h2)) <--
+[
+//Echo({"inspt"});
+  Set(inspt,{h2,i}:inspt);
+  Set(t2,Tail(t2));
+];
+30 # Muaddterm(_h1,_h2)<--
+[
+//Echo({"advance"});
+  Set(t1,Tail(t1));
+  Set(i,MathAdd(i,1));
+];
+UnFence("Muaddterm",2);
+
+/*TODO remove?
+MultiNomialAdd(MultiNomial(_vars,_terms1),MultiNomial(_vars,_terms2)) <--
+[
+  Local(reslist,t1,t2);
+  Set(reslist,{});
+  Set(t1,terms1);
+  Set(t2,terms2);
+  // merge-sort
+  While(t1 != {} And t2 != {})
+  [
+    Muaddterm(Head(t1),Head(t2));
+  ];  
+  // from here on, only one of the lists can be non-empty
+  While(t1 != {})
+  [
+    DestructiveAppend(reslist,FlatCopy(Head(t1)));
+    Set(t1,Tail(t1));
+  ];
+  While(t2 != {})
+  [
+    DestructiveAppend(reslist,FlatCopy(Head(t2)));
+    Set(t2,Tail(t2));
+  ];
+//Echo({"reslist = ",reslist});
+  MultiNomial(vars,reslist);
+];
+10 # Muaddterm({_pows,_fact1},{_pows,_fact2}) <--
+[
+  DestructiveAppend(reslist,{pows,fact1+fact2});
+  Set(t1,Tail(t1));
+  Set(t2,Tail(t2));
+];
+20 # Muaddterm(_h1,_h2)_(MultiTermLess(h1,h2)) <--
+[
+  DestructiveAppend(reslist,FlatCopy(h2));
+  Set(t2,Tail(t2));
+];
+30 # Muaddterm(_h1,_h2)<--
+[
+  DestructiveAppend(reslist,FlatCopy(h1));
+  Set(t1,Tail(t1));
+];
+UnFence("Muaddterm",2);
+*/
+
 
 MultiTermLess({_deg1,_fact1},{_deg2,_fact2}) <--
   [
@@ -282,37 +374,45 @@ MultiTermLess({_deg1,_fact1},{_deg2,_fact2}) <--
     ((deg = {}) And (fact1-fact2 < 0)) Or
     ((deg != {}) And (deg[1] < 0));
   ];
-10 # MultiAddTerm(_terms,_t)_(Assoc(t[1],terms) = Empty) <--
+
+
+MultiAddTerm(_terms,_t) <-- MultiAddTerm(terms,t,Assoc(t[1],terms));
+
+10 # MultiAddTerm(_terms,_t, Empty) <--
      [
-       Local(i,nr);
-       nr:=Length(terms);
-       i:=1;
-       While (i<=nr And MultiTermLess(t,terms[i])) i++;
+       Local(i,nr,trav);
+       Set(nr,Length(terms));
+       Set(i,1);
+       Set(trav,terms);
+       While (i<=nr And MultiTermLess(t,Head(trav))) 
+       [
+         Set(i,MathAdd(i,1));
+	 Set(trav,Tail(trav));
+       ];
        DestructiveInsert(terms,i,t);
        /* DestructiveAppend(terms,t); */
      ];
-20 # MultiAddTerm(_terms,_t) <--
-     [
-       Local(as);
-       as := Assoc(t[1],terms);
-       as[2] := as[2] + t[2];
-     ];
+20 # MultiAddTerm(_terms,_t,_as) <-- [ as[2] := as[2] + t[2]; ];
+
 
 
 MultiNomialMultiply(MultiNomial(_vars,_terms1),MultiNomial(_vars,_terms2)) <--
 [
-  Local(result,t);
-  result := {};
+  Local(result,newsub);
+  Set(result, MultiNomial(vars,{}));
   ForEach(t1,terms1)
+  [
+    Set(newsub,{});
     ForEach(t2,terms2)
     [
-      t := FlatCopy(t1);
-      t[1] := t[1] + t2[1];
-      t[2] := t[2] * t2[2];
-      MultiAddTerm(result,t);
+      DestructiveAppend(newsub,{t1[1]+t2[1],t1[2]*t2[2]});
     ];
-  MultiNomial(vars,result);
+    Set(result,MultiNomialAdd(result,MultiNomial(vars,newsub)));
+  ];
+  result;
 ];
+
+
 
 MultiNomialMultiply(
      MultiNomial(_vars,_terms1)/MultiNomial(_vars,_terms2),
