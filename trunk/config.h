@@ -5,9 +5,9 @@
 #define PACKAGE "yacas"
 #define VERSION "1.0.53rev5"
 
-/* #undef ACCEPT_TYPE_ARG1 */
-/* #undef ACCEPT_TYPE_ARG2 */
-/* #undef ACCEPT_TYPE_ARG3 */
+#define ACCEPT_TYPE_ARG1 int
+#define ACCEPT_TYPE_ARG2 struct sockaddr *
+#define ACCEPT_TYPE_ARG3 int *
 /* #undef socklen_t */
 
 #define LTDL_OBJDIR "../src"
