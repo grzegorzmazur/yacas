@@ -30,6 +30,25 @@ Function("Find",{list,element})
   result;
 ];
 
+// Find the first thingy that matches a predicate
+Function("FindPredicate",{list,predicate})
+[
+  Local(result,count);
+  Set(result, -1);
+  Set(count, 1);
+  While(MathAnd(result<0, Not(Equals(list, {}))))
+  [
+    If(Apply(predicate,{Head(list)}),
+      Set(result, count)
+      );
+    Set(list,Tail(list));
+    Set(count,MathAdd(count,1));
+  ];
+  result;
+];  
+
+
+
 
 Function("Append",{list,element})
 [

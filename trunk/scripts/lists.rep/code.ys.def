@@ -1,5 +1,6 @@
 Contains
 Find
+FindPredicate
 Append
 DestructiveAppend
 DestructiveAppendList
