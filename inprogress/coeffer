@@ -118,18 +118,21 @@ CofSetUp({aS0==1,aS1==1,E==1});
 */
 
 
+/*
 CofDoHarmonic(12,1);
 CofSetUp({aS0==0,aS1==1,aS3== -1/6});
+*/
 
 /*
 CofDoXsqr(12,1); 
 CofSetUp({aS0==1,aS1==2,aS5==1});
 */
 
-/*
+
 CofDoNormal(20,1);
 CofSetUp({aS0==1,aS1==0,E == 0});
-*/
+
+
 CofSolve();
 CofPlot();
 

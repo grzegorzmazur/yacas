@@ -27,7 +27,8 @@
 
 CanBeTerm(_expr,_var) <-- (MakeTerm(expr,var) != False);
 10 # MakeTerm(     _var ^ _n, _var) <-- {var,n,1};
-10 # MakeTerm(_a * _var ^ _n, _var)_IsFreeOf(a,var) <-- {var,n,a};
+10 # MakeTerm(_a * (_var ^ _n), _var)_IsFreeOf(a,var) <-- {var,n,a};
+10 # MakeTerm((_a * _var) ^ _n, _var)_IsFreeOf(a,var) <-- {var,n,a^n};
 10 # MakeTerm(_var ^ _n * _a, _var)_IsFreeOf(a,var) <-- {var,n,a};
 20 # MakeTerm(_expr,_var) <-- False;
 
