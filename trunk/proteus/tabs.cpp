@@ -513,7 +513,7 @@ CORE_KERNEL_FUNCTION("Proteus'FontColor",LispNotepadFontColor,1,YacasEvaluator::
     yacas->Evaluate(cmd);
 
     AddGraphingCapabilities((*yacas)()());
-
+    yacas->Evaluate("Load(\"yacasinit.ys\");");
 
     {
         extern char defdir[128];
@@ -523,7 +523,6 @@ CORE_KERNEL_FUNCTION("Proteus'FontColor",LispNotepadFontColor,1,YacasEvaluator::
         console->handle_key(eEscape); // Highlight should be on bottom line
     }
 
-    yacas->Evaluate("Load(\"yacasinit.ys\");");
 }
 
 
