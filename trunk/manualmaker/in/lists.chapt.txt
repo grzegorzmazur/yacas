@@ -1356,35 +1356,41 @@ that would lead to an error.
 
 *SEE Type, Length
 
-*CMD BubbleSort --- Sort a list
+*CMD BubbleSort, HeapSort --- sort a list
 *STD
 *CALL
-	BubbleSort(list, fn)
+	BubbleSort(list, compare)
+	HeapSort(list, compare)
 
 *PARMS
 
-list - list to sort
+{list} - list to sort
 
-fn - function used to compare element of "list"
+{compare} - function used to compare elements of {list}
 
 *DESC
 
-This command returns "list" after it is sorted using "fn" to
-compare elements. The function "fn" should accept two arguments,
-which will be elements of "list", and compare them. It should return
+This command returns {list} after it is sorted using {compare} to
+compare elements. The function {compare} should accept two arguments,
+which will be elements of {list}, and compare them. It should return
 {True} if in the sorted list the second argument
 should come after the first one, and {False}
 otherwise.
 
-This function uses the so-called BubbleSort algorithm to do the
-sorting. This algorithm is chosen because it is easy to implement,
-though it is not particularly fast.
+The function {BubbleSort} uses the so-called "bubble sort" algorithm to do the
+sorting by swapping elements that are out of order. This algorithm is easy to
+implement, though it is not particularly fast. The sorting time is proportional
+to $n^2$ where $n$ is the length of the list.
+
+The function {HeapSort} uses a recursive algorithm "heapsort" and is much
+faster for large lists. The sorting time is proportional to $n*Ln(n)$ where $n$
+is the length of the list.
 
 *E.G.
 
 	In> BubbleSort({4,7,23,53,-2,1}, "<");
 	Out> {-2,1,4,7,23,53};
-	In> BubbleSort({4,7,23,53,-2,1}, ">");
+	In> HeapSort({4,7,23,53,-2,1}, ">");
 	Out> {53,23,7,4,1,-2};
 
 *CMD PrintList --- print list with padding

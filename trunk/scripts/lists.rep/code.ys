@@ -159,6 +159,90 @@ Function("BubbleSort",{list,compare})
   list;
 ];
 
+/// fast in-place sorting of a list (or array!)
+/// SmallSort sorts up to 3 elements, HeapSort sorts 4 and more elements
+SmallSort(_list, _first, _last, _compare) _ (last=first) <-- list;
+SmallSort(_list, _first, _last, _compare) _ (last=first+1) <--
+[
+	Local(temp);
+	temp := list[first];
+	If(
+		Apply(compare,{temp,list[last]}),
+		list,
+		[
+			list[first] := list[last];
+			list[last] := temp;
+		]	//Swap(list, first, last)
+	);
+];
+SmallSort(_list, _first, _last, _compare) _ (last=first+2) <--
+[
+	Local(temp);
+	temp := list[first];
+	If(
+		Apply(compare,{list[first+1],temp}),
+		[
+			list[first] := list[first+1];
+			list[first+1] := temp;
+		]	//Swap(list, first, first+1)	// x>y, z
+	);
+	// x<y, z
+	temp := list[last];
+	If(
+		Apply(compare,{list[first],temp}),
+		If(	// z>x<y
+			Apply(compare,{list[first+1],temp}),
+			list,
+			[
+				list[last] := list[first+1];
+				list[first+1] := temp;
+			]	//Swap(list, first+1, last)	// 1, 3, 2
+		),
+		[	// 2, 3, 1 -> 1, 2, 3
+			list[last] := list[first+1];
+			list[first+1] := list[first];
+			list[first] := temp;
+		]
+	);
+];
+
+HeapSort(list, compare) := HeapSort(list, ArrayCreate(Length(list), 0), 1, Length(list), compare);
+
+// this will sort "list" and mangle "tmplist"
+1 # HeapSort(_list, _tmplist, _first, _last, _compare) _ (last - first <= 2) <-- SmallSort(list, first, last, compare);
+2 # HeapSort(_list, _tmplist, _first, _last, _compare) <-- 
+[	// See: J. W. J. Williams, Algorithm 232 (Heapsort), Com. of ACM, vol. 7, no. 6, p. 347 (1964)
+	// sort two halves recursively, then merge two halves
+	// cannot merge in-place efficiently, so need a second list
+	Local(mid, ileft, iright, pleft);
+	mid := first+((last-first)>>1);
+	HeapSort(list, tmplist, first, mid, compare);
+	HeapSort(list, tmplist, mid+1, last, compare);
+	// copy the lower part to temporary array
+	For(ileft := first,  ileft <= mid, ileft++)
+		tmplist[ileft] := list[ileft];
+	For(
+		[ileft := first; pleft := first; iright := mid+1;],
+		ileft <= mid,	// if the left half is finished, we don't have to do any more work
+		pleft++	// one element is stored at each iteration
+	)	// merge two halves
+		// elements before pleft have been stored
+		// the smallest element of the right half is at iright
+		// the smallest element of the left half is at ileft, access through tmplist
+	If(	// we copy an element from ileft either if it is smaller or if the right half is finished; it is unnecessary to copy the remainder of the right half since the right half stays in the "list"
+		iright>last Or Apply(compare,{tmplist[ileft],list[iright]}),
+		[	// take element from ileft
+			list[pleft] := tmplist[ileft];
+			ileft++;
+		],
+		[	// take element from iright
+			list[pleft] := list[iright];
+			iright++;
+		]
+	);
+
+	list;
+];
 
 LocalSymbols(max,f,low,high,mid,current)
 [
