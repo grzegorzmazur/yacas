@@ -17,11 +17,11 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
         lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h \
-        archiver.h elfdll.h cyacas.h
+        archiver.h elfdll.h cyacas.h GPL_stuff.h
 yacas_SOURCES = yacasmain.cpp commandline.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
 yacas_LDFLAGS = -export-dynamic
-yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c version.h
+yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c version.h GPL_stuff.h
 
 # .PHONY: version.h
 
