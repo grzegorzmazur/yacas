@@ -8,7 +8,7 @@ Install the tools on a new drive (this release assumes P:), and extract this zip
 
 a) From a command prompt, create the scripts.dat file containing all the maths routines:
 
-cd ramscripts
+cd src
 compress.bat
 
 b) Go to P:\Yacas-1.0.53\src and type the following:

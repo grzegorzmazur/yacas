@@ -1,5 +1,5 @@
 
-cd ramscripts\
+cd src\
 call compress.bat
 cd ..
 
