@@ -12,6 +12,9 @@ BOOKS = intro.book coding.book ref.book refprog.book essays.book
 BOOKSOURCES = in/intro.book.txt in/coding.book.txt \
 	in/ref.book.txt in/refprog.book.txt in/essays.book.txt in/FDL.chapt.txt
 
+INTROCHAPTERS = FDL.chapt
+INTROSOURCES = in/FDL.chapt.txt
+
 REFCHAPTERS = config.chapt arith.chapt calc.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
 	preds.chapt logic.chapt const.chapt vars.chapt io.chapt \
@@ -53,7 +56,7 @@ CODESNIPPETS = wester-1994.ys
 EXTRA_DIST = \
 	manualmaker styleplain in/all \
 	in/intromaker in/codingmaker in/refmaker in/refprogmaker in/essaysmaker\
-	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) $(REFPROGSOURCES) $(CODESNIPPETS) \
+	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) $(INTROSOURCES) $(REFPROGSOURCES) $(CODESNIPPETS) \
 	in/dummies .cvsignore
 
 # Stuff for automatic generation of Yacas books
@@ -92,6 +95,7 @@ essays.book.tex: essays.book $(ESSAYCHAPTERS)
 ref.book.tex : ref.book $(REFCHAPTERS)
 refprog.book.tex : refprog.book $(REFPROGCHAPTERS)
 coding.book.tex : coding.book $(CODINGCHAPTERS)
+intro.book.tex: intro.book $(INTROCHAPTERS)
 
 # special "virtual" chapter built from yacasapi.cpp
 in/yacasapi.chapt.txt : $(top_srcdir)/src/yacasapi.cpp
