@@ -19,7 +19,7 @@ TESTFILES = macro.yts arithmetic.yts c_tex_form.yts calculus.yts canprove.yts \
 	radsimp.yts linalg.yts orthopoly.yts poly.yts numerics.yts \
 	scopestack.yts plots.yts GaussianIntegers.yts nummethods.yts sturm.yts 
 
-SPECIALTESTFILES = ../manualmaker/wester-1994.ys
+SPECIALTESTFILES = ../manmake/wester-1994.ys
 
 # Script to run for 'check' target
 TESTS = test-built-yacas   

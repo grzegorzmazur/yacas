@@ -16,10 +16,10 @@ The source text must be formatted in a certain fashion to delimit sections, code
 	    Organization of the Yacas documentation
 
 *A documentation!organization
-All documentation source files are kept in the subdirectory {manualmaker/in}.
+All documentation source files are kept in the subdirectory {manmake}.
 During compilation, Yacas language files as well as HTML, $LaTeX$ and PS/PDF
-files are automatically generated in the {manualmaker} subdirectory.
-Contributors should only need to edit {*.txt} files in {manualmaker/in}.
+files are automatically generated in the {manmake} subdirectory.
+Contributors should only need to edit {*.txt} files in {manmake}.
 
 Currently, the Yacas documentation consists of four "core" books (the introductory tutorial,
 the programming tutorial, the user's reference manual, and the
@@ -34,7 +34,7 @@ of the two reference books.
 
 Stand-alone books are free-form, but reference books must be written with a
 certain template that allows online hyperlinking. The file
-{manualmaker/in/dummies} is an example template for a reference manual section.
+{manmake/dummies} is an example template for a reference manual section.
 
 Books are divided into "chapters", "sections" and "subsections".
 The reference manuals
@@ -58,7 +58,7 @@ right after the first paragraph of "chapter intro". For the printed (PS/PDF) doc
 *A documentation!markup overview
 Formatting of source text files uses TAB symbols; if your editor does not support them and converts them to spaces, you should convert the results back to contain real TAB symbols using the standard Unix {unexpand} utility or a custom perl script.
 
-You may want to examine the source of this file ({manualmaker/} {in/}
+You may want to examine the source of this file ({manmake/}
 {YacasDocs.chapt.txt}) to see how various features of the markup are used.
 Currently the following markup is implemented:
 
