@@ -123,4 +123,17 @@ Verify(PartitionsP(13),101);
 //Verify( PartitionsP(4096), 6927233917602120527467409170319882882996950147283323368445315320451 );
 
 Verify(Euler(16),19391512145);
+Verify(EulerArray(8), {1,0,-1,0,5,0,-61,0,1385});
 
+Verify(JacobiSymbol(165,1), 1);
+Verify(JacobiSymbol(1,3), 1);
+Verify(JacobiSymbol(1,13), 1);
+Verify(JacobiSymbol(2,15), 1);
+Verify(JacobiSymbol(3,15), 0);
+Verify(JacobiSymbol(7,15), -1);
+Verify(JacobiSymbol(3,7), -1);
+Verify(JacobiSymbol(0,3), 0);
+Verify(JacobiSymbol(0,1), 1);
+Verify(JacobiSymbol(1323132412,31312317), -1);
+Verify(JacobiSymbol(57173571,1976575123), 1);
+Verify(JacobiSymbol(-3,5), -1);
