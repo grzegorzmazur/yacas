@@ -126,6 +126,7 @@ void ParsedObject::Parse()
         iResult.Set(LispAtom::New(iParser.iEndOfFile));
         return;
     }
+
     ReadExpression(KMaxPrecedence);  // least precedence
 
     if (iLookAhead != iParser.iEndStatement)
@@ -137,7 +138,7 @@ void ParsedObject::Parse()
             ReadToken();
         }
     }
-    
+
     if (iError)
     {
         iResult.Set(NULL);
@@ -258,7 +259,7 @@ void ParsedObject::ReadAtom()
         MatchToken(iLookAhead);
 
         LispInt negativeNumber = 0;
-        
+
         if (!StrCompare(theOperator->String(), "-"))
         {
             LispChar c = iLookAhead->String()[0];
@@ -407,7 +408,7 @@ void ParsedObject::ReadAtom()
 
 void InfixPrinter::WriteToken(LispOutput& aOutput,LispCharPtr aString)
 {
-    if (IsAlNum(iPrevLastChar) && IsAlNum(aString[0]))
+    if (IsAlNum(iPrevLastChar) && (IsAlNum(aString[0]) || aString[0]=='_'))
     {
         aOutput.Write(" ");
     }
@@ -442,7 +443,7 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
         WriteToken(aOutput,aExpression.Get()->Generic()->TypeName());
         return;
     }
-    
+
     LispPtr* subList = aExpression.Get()->SubList();
     Check(subList!=NULL, KLispErrUnprintableToken);
     if (subList->Get() == NULL)
@@ -548,13 +549,13 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                     counter.GoNext();
                     nr++;
                 }
-                
+
                 if (bodied)
                     nr--;
                 while (nr--)
                 {
                     Print(*iter.Ptr(), aOutput, KMaxPrecedence);
-                          
+
                     iter.GoNext();
                     if (nr)
                         WriteToken(aOutput,",");
@@ -566,5 +567,4 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
         }
     }
 }
-
 
