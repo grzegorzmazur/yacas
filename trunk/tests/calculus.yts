@@ -13,7 +13,7 @@ Verify( Limit(x,Infinity) Cos(x), Undefined );
 Verify( Limit(x,Infinity) Tan(x), Undefined );
 Verify( Limit(x,Infinity) Gamma(x), Infinity );
 Verify( Limit(x,Infinity) Abs(x), Infinity );
-Verify( Limit(x,Infinity) Factorial(x), Infinity);
+Verify( Limit(x,Infinity) x!, Infinity);
 
 Verify( Sin(x)/Cos(x), Tan(x) );
 // Jonathan, are you sure you want the expression below to 

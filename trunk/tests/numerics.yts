@@ -1,120 +1,129 @@
 /* Numerical testers - all confirmed with Matlab 6r12.0 */
+Precision(10);
 
-TestYacas( RoundTo(N(Sec(2)), 9), -2.402997962);
-TestYacas( RoundTo(N(Csc(2)), 9), 1.099750170);
-TestYacas( RoundTo(N(Cot(2)), 9), -0.457657554);
-TestYacas( RoundTo(N(Sinh(2)), 9), 3.626860408);
+Verify( RoundTo(N(Sec(2)), 9), -2.402997962);
+Verify( RoundTo(N(Csc(2)), 9),  1.09975017);
+Verify( RoundTo(N(Cot(2)), 9), -0.457657554);
+Verify( RoundTo(N(Sinh(2)), 9), 3.626860408);
 
-/* Numerical testers - all confirmed with Maple */
+Verify( RoundTo(N(ArcSin(2)), 9), Complex(1.570796327,1.316957897));
+Verify( RoundTo(N(ArcCos(2)), 9), Complex(0,-1.316957897));
+Verify( RoundTo(N(ArcTan(2*I)), 9), Complex(1.570796327,0.549306144));
+Verify( RoundTo(N(ArcSinh(2)), 9), 1.443635475);
+Verify( RoundTo(N(ArcCosh(2)), 9), 1.316957897);
+Verify( RoundTo(N(ArcCosh(-2)), 9), Complex(-1.316957897,3.141592654));
+Verify( RoundTo(N(ArcTanh(2)), 9), Complex(0.549306144,1.570796327));
+
+/* Numerical tests - all confirmed with Maple */
 Precision(50);
 
-TestYacas(
+Verify(
 RoundTo(N(Pi), 50)
 , 3.1415926535897932384626433832795028841971693993751
 );
 
-TestYacas(
+Verify(
 RoundTo(N(Sin(2.0)), 49)
 , 0.9092974268256816953960198659117448427022549714479
 );
 
-TestYacas(
+Verify(
 RoundTo(N(Sin(2.0)), 50)
 , 0.90929742682568169539601986591174484270225497144789
 );
 
-TestYacas(
+Verify(
 RoundTo(N(Sin(2.0)), 51)
 , 0.90929742682568169539601986591174484270225497144789
 );
 
-TestYacas(
+Verify(
 RoundTo(N(Cos(20.0)), 49)
 , 0.4080820618133919860622678609276449570992995103162
 );
 
-TestYacas(
+Verify(
 RoundTo(N(Tan(20.0)), 49)
 , 2.237160944224742265287173247730349178372483974919
 );
 
-TestYacas(
+Verify(
 RoundTo(N(Exp(10.32)), 48)
 , 30333.257596224603560034348335010962177837648633545013
 );
 
-TestYacas(
+Verify(
 RoundTo(N(Ln(10.32/4.07)), 49)
 , 0.93044076059891305468974486564632598071134270468
 );
 
-TestYacas(
+Verify(
 RoundTo(N(1.3^10.32), 48)
 , 14.993236648257179564739369471232469878029789853061
 );
 
-TestYacas(
+Verify(
 RoundTo(N(Sqrt(5.3)), 50)
 , 2.30217288664426764419484158642020185018583028263367
 );
 
-TestYacas(
+Verify(
 RoundTo([x:=Newton(x*Exp(x)-4,x,1,10^(-49)); N(x*Exp(x));], 49)
 , 4
 );
 
-TestYacas(
+Verify(
 RoundTo(N(ArcSin(0.32)), 49)
 , 0.3257294872946301593103199105324500784354180998123
 );
 
-TestYacas(
+Verify(
 RoundTo(N(Sin(N(ArcSin(0.1234567)))), 49)
 , 0.1234567
 );
 
 /* ArcSin(x) for x close to 1 */
-TestYacas(
+Verify(
 RoundTo(N( (1-Sin(N(ArcSin(1-10^(-25)))))*10^25), 25)
 , 1
 );
 
-TestYacas(
+Verify(
 RoundTo(N(ArcSin(N(Sin(1.234567)))), 49)
 , 1.234567
 );
 
-TestYacas(
+Verify(
 RoundTo(N(ArcCos(0.32)), 49)
 , 1.2450668395002664599210017811073013636631665998753
 );
 
-TestYacas(
+Verify(
 RoundTo(N(ArcTan(0.32)), 49)
 , 0.3097029445424561999173808103924156700884366304804
 );
 
-TestYacas(
+Verify(
 RoundTo(N(Cos(N(ArcCos(0.1234567)))), 49)
 , 0.1234567
 );
 
-TestYacas(
+Verify(
 RoundTo(N(ArcCos(N(Cos(1.234567)))), 49)
 , 1.234567
 );
 
-TestYacas(
+Verify(
 RoundTo(N(Tan(N(ArcTan(20)))), 47)
 , 20
 );
 
-TestYacas(
+Verify(
 RoundTo(N(Tan(N(ArcTan(500000)))), 38)
 , 500000
 );
 
-TestYacas(
+Verify(
 RoundTo(N((Pi/2-ArcTan(N(Tan(N(Pi/2)-10^(-24)))))*10^24 ), 25)
 , 1
 );

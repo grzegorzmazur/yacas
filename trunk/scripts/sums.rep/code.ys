@@ -28,7 +28,7 @@ Max(list_IsList) <--
 	Check(n <= 65535, "Factorial: Error: the argument " : ( ToString() Write(n) ) : " is too large, you may want to avoid exact calculation");
 	MathFac(n);
 ];
-30 # ((n_IsList)!) <-- MapSingle("!",n);
+30 # (n_IsList)! <-- MapSingle("!",n);
 
 /* formulae for half-integer factorials:
 
