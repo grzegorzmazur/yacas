@@ -304,7 +304,10 @@ It seems that the simple bound is not strong enough for any $v$ and we need a be
 
 *A method of stationary phase
 
-The asymptotic growth of the sequence $Q[k]$ can be estimated in this case by the method of stationary phase.
+The asymptotic growth of the sequence $Q[k]$ can be estimated in this case by the method of stationary phase, or Laplace's method.
+(See, e.g., F. W. J. Olver,
+<i>Asymptotics and special functions</i>, Academic Press, 1974,
+ch. 3, sect. 7.5.)
 This method is somewhat complicated but quite powerful.
 The method requires that we find an integral representation for $Q[k]$, and then it gives the dominant contribution to the integral as an asymptotic series in $k^(-1)$.
 We actually only need the leading terms of the series which are easy to find (even without a CAS).
@@ -349,7 +352,6 @@ $$ Q[n+1] = (1/Sqrt(2*Pi*v)) * Integrate(t, -Infinity, Infinity) (1+t)^n * Exp(-
 *A method of stationary phase!example
 
 Now we can use the method of stationary phase.
-(See any textbook on mathematical physics.)
 We represent the integrand as an exponential of some function $g(t,n)$ and find "stationary points" where this function has local maxima:
 $$ Q[n+1] = (1/Sqrt(2*Pi*v)) * Integrate(t, -Infinity, Infinity) Exp(g(t,n)) $$,
 $$ g(t,n) := -t^2/(2*v)+n*Ln(1+t) $$.
@@ -504,6 +506,51 @@ One might wonder if we should not try to arrange the Taylor series in a cube or 
 *A Taylor series!$O(N^(1/3))$ method
 
 An additional speed-up is possible if the elementary function allows a transformation that reduces $x$ and makes the Taylor series converge faster. For example, $Ln(x)=2*Ln(Sqrt(x))$, $Cos(2*x)=2*Cos(x)^2-1$, and $Sin(3*x)=3*Sin(x)-4*Sin(x)^3$ are such transformations. It may be faster to perform a number of such transformations before evaluating the Taylor series, if the time saved by its quicker convergence is more than the time needed to perform the transformations. The optimal number of transformations can be estimated. Using this technique in principle reduces the cost of Taylor series from $O(Sqrt(N))$ to $O(N^(1/3))$ long multiplications. However, additional roundoff error may be introduced by this procedure for some $x$.
+
+		Using asymptotic series for calculations
+
+Several important analytic functions have asymptotic series expansions.
+For example, the error function $Erf(x)$ and Euler's Gamma function $Gamma(x)$ have asymptotic expansions at large (positive) $x$:
+
+$$ Erf(x) = 1-e^(-x^2)/(x*Sqrt(Pi))*(1-1/(2*x^2) + ... + (2*n-1)!! /(-2*x^2)^n+...) $$,
+
+$$ Ln(Gamma(x)) = (x-1/2)*Ln(x)-x+Ln(2*Pi)/2 $$
+$$ + Sum(n,1,Infinity, B[2*n]/(2*n*(2*n-1)*x^(2*n-1))) $$
+(here $B[k]$ are Bernoulli numbers).
+
+Usually, an asymptotic series
+does not actually converge for any $x$.
+This can be seen in the examples above.
+For instance, in the asymptotic series for $Erf(x)$ the $n$-th term has $(2*n-1)!!$ in the numerator which grows faster than $n$-th power of any number.
+So if we select a large value of $x$, the
+terms of the series decrease at first but then start to grow.
+
+The way to use an
+asymptotic series for a numerical calculation is to truncate the series
+<i>well</i> <i>before</i> the terms start to grow. The error of this
+approximation is usually not greater than the first discarded term.
+
+The inherent limitation of the method of asymptotic series is that for a given
+$x$, there will be a certain place in the series where the term has the minimum
+absolute value (after that, the series is unusable), and the error of the
+approximation cannot be smaller than that term.
+
+For example, take the above asymptotic series for $Erf(x)$.
+The logarithm of the absolute value of the $n$-th term can be estimated using Stirling's formula for the factorial as
+$$ Ln((2*n-1)!! /(2*x^2)^n) <=> n*(Ln(n)-1-2*Ln(x)) $$.
+This function of $n$ has its minimum at $n=x^2$ where it is equal to $-x^2$.
+Therefore the best we can do with this series is to truncate it before this term.
+The resulting approximation to $Erf(x)$ will have relative precision of order $Exp(-x^2)$.
+
+We find that for a given finite $x$, no matter how large, there is a maximum
+precision that can be achieved with the asymptotic series; getting more
+precision requires a different method.
+
+However, sometimes the function we are evaluating allows identity transformations that relate $f(x)$ to $f(y)$ with $y>x$.
+For example, the Gamma function satisfies $x*Gamma(x)=Gamma(x+1)$.
+In this case we can transform the function so that we would need to
+evaluate it at  large enough $x$ for the asymptotic series to give us
+enough precision.
 
 		The AGM sequence algorithms
 

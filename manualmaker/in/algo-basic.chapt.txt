@@ -23,7 +23,7 @@ a given initial interval; thus, at most $2^depth$ additional grid points
 will be generated. The function {Plot2D'adaptive} should return a list of
 pairs of points {{{x1,y1}, {x2,y2}, ...}} to be used directly for plotting.
 
-The recursive bisection algorithm works like this:
+The adaptive bisection algorithm works like this:
 
 *	 1.  Given an interval ($a$, $c$), we split
 it in half, $b:=(a+c)/2$ and first compute $f(x)$ at five grid
@@ -91,7 +91,7 @@ for $p=0$, 1, ..., $n$. This system of equations means that the quadrature corre
 
 The solution of this system always exists and gives quadrature coefficients as rational numbers. For example, the Simpson quadrature $c[0]=1/6$, $c[1]=2/3$, $c[2]=1/6$ is obtained with $n=2$.
 
-*A Newton-Cotes quadrature!for partial intervals
+*A Newton-Cotes quadratures!for partial intervals
 
 In the same way it is possible to find quadratures for the integral over a subinterval rather than over the whole interval of $x$. In the current implementation of the adaptive plotting algorithm, two quadratures are used: the 3-point quadrature ($n=2$) and the 4-point quadrature ($n=3$) for the integral over the first subinterval, $Integrate(x,a[0],a[1]) f(x)$. Their coefficients are ($5/12$, $2/3$, $-1/12$) and ($3/8$, $19/24$, $-5/24$, $1/24$). 
 
@@ -269,3 +269,99 @@ Warning: calculations with internal Yacas math using precision exceeding 10,000 
 
 In some algorithms it is necessary to compute the integer parts of expressions such as $a*Ln(b)/Ln(10)$ or $a*Ln(10)/Ln(2)$ where $a$, $b$ are short integers of order $O(P)$. Such expressions are frequently needed to estimate the number of terms in the Taylor series or similar parameters of the algorithms. In these cases, it is important that the result is not underestimated but it would be wasteful to compute $Ln(10)/Ln(2)$ in floating point only to discard most of that information by taking the integer part of say $1000*Ln(10)/Ln(2)$. It is more efficient to approximate such constants from above by short rational numbers, for example, $Ln(10)/Ln(2) < 28738/8651$ and $Ln(2) < 7050/10171$. The error of such an approximation will be small enough for practical purposes. The function {NearRational} can be used to find optimal rational approximations. The function {IntLog} (see below) efficiently computes the integer part of a logarithm (for an integer base, not a natural logarithm). If more precision is desired in calculating $Ln(a)/Ln(b)$ for integer $a$, $b$, one can compute $IntLog(a^k,b)$ for some integer $k$ and then divide by $k$.
 
+		How many digits of $Sin(Exp(Exp(1000)))$ do we need?
+
+*A arbitrary-precision computation!very large numbers
+
+Consider the problem of representing very large numbers such as $x=Exp(Exp(1000))$.
+Suppose we need a floating-point representation of the number $x$ with $P$ decimal digits of precision.
+In other words, we need to express
+$$ x <=> M*10^E $$,
+where the mantissa $1<M<10$ is a floating-point number and the exponent
+$E$ is an integer, chosen so that the relative precision is $10^(-P)$.
+How much effort is needed to find $M$ and $E$?
+
+The exponent $E$ is easier to obtain:
+$$ E = Floor(Ln(x)/Ln(10)) = Floor(Exp(1000)/Ln(10))$$.
+To compute $Floor(y)$ exactly as an integer, we need to approximate $y$ with at least $Ln(y)/Ln(10)$ floating-point digits.
+In our example, we find that we need 434 decimal digits to represent $E$.
+
+Once we found $E$, we can write $x=10^(E+m)$ where $m=Exp(1000)/Ln(10)-E$ is a floating-point number, $0<m<1$.
+Then $M=10^m$.
+To find $M$ with $P$ (decimal) digits, we need $m$ with also at least $P$ digits.
+Therefore, we actually need to evaluate $Exp(1000)/Ln(10)$ with $434+P$ decimal digits before we can find $P$ digits of the mantissa of $x$.
+In other words, we need a high-precision calculation even to find the first digit of $x$, because it is necessary to find the exponent $E$ exactly as an integer.
+
+What about finding $Sin(x)$?
+This is extremely difficult, because to find even the first digit of $Sin(x)$ we have to evaluate $x$ with <i>absolute</i> error at most 0.5.
+We know, however, that the number $x$ has approximately $10^434$ digits <i>before</i> the decimal point.
+Therefore, we would need to calculate $x$ with at least that many digits which is clearly far beyond the capability of modern computers.
+It seems unlikely that even the sign of $Sin(Exp(Exp(1000)))$ will be obtained in the near future,
+and even more unlikely that it would be of any use to anybody even if it could be obtained.
+
+Suppose that $N$ is the largest integer that our arbitrary-precision facility can reasonably handle.
+(For Yacas internal math library, $N$ is about $10^10000$.)
+Then we see that numbers $x$ of order $10^N$ can be calculated with at most one (1) digit of floating-point precision,
+while larger numbers cannot be calculated with any precision at all.
+
+It seems that very large numbers can be obtained in practice only through exponentiation or powers.
+It is unlikely that such numbers will arise from sums or products of reasonably-sized numbers in some formula.
+*FOOT A factorial function can produce rapidly growing results, but exact factorials $n!$ for large $n$ are well represented by the Stirling formula which involves powers and exponentials.
+For example, suppose a program operates with numbers $x$ of size $N$ or smaller;
+a number such as $10^N$ can be obtained only by multiplying $O(N)$ numbers $x$ together.
+But since $N$ is the largest representable number, it is certainly unfeasible to perform $O(N)$ operations on a computer (at least on a classical computer).
+However, it is feasible to obtain $N$-th power of a number, since it requires only $O(Ln(N))$ operations.
+
+*A exponentially large numbers
+
+If numbers larger than $10^N$  are created only by exponentiation operations, then special exponential notation could be used to represent them.
+For example, a very large number $z$ could be stored and manipulated as an unevaluated exponential $z=Exp(M*10^E)$ where $M>=1$ is a floating-point number with $P$ digits of mantissa and $E$ is an integer, $0<E<N$.
+Let us call such objects "exponentially large numbers" or "exp-numbers" for short.
+
+In practice, we should decide on a threshold value $N$ and promote a number to an exp-number when its decimal exponent exceeds $N$.
+
+Note that an exp-number $z$ might be known to be positive or negative, e.g.
+$z= -Exp(M*10^E)$.
+
+Arithmetic operations can be applied to the exp-numbers, although we should warn that exp-large arithmetic is of limited use because of almost certainly critical loss of precision.
+The power and logarithm operations can be meaningfully performed on exp-numbers $z$.
+For example, if $z=Exp(M*10^E)$ and $p$ is a normal floating-point number, then $z^p=Exp(p*M*10^E)$ and $Ln(z)=M*10^E$.
+We can also multiply or divide two exp-numbers.
+But it makes no sense to multiply an exp-number $z$ by a normal number because we cannot represent the difference between $z$ and say $2.52*z$.
+Similarly, adding $z$ to anything else would result in a total underflow, since we do not actually know a single digit of the decimal representation of $z$.
+So if $z1$ and $z2$ are exp-numbers, then $z1+z2$ is simply equal to either $z1$ or $z2$ depending on which of them is larger.
+Therefore, an exp-number $z$ acts as an effective "infinity" compared with normal numbers.
+But they should not be used as a device for computing limits: the unavoidable underflow will almost certainly produce wrong results.
+For example, trying to verify 
+$$ (Limit(x,0) (Exp(x)-1)/x)  = 1 $$
+by substituting $x=1/z$ with some exp-number $z$ gives 0 instead of 1.
+
+Taking a logarithm of an exp-number brings it back to the realm of normal, representable numbers.
+However, taking an exponential of an exp-number results in a number which is not representable even as an exp-number.
+This is because an exp-number $z$ needs to have its exponent $E$ represented exactly as an integer,
+but $Exp(z)$ has an exponent of order $O(z)$ which is not a representable number.
+The monstrous number $Exp(z)$ could be only written as $Exp(Exp(M*10^E))$, i.e. as a "doubly exponentially large" number, or "2-exp-number" for short.
+Thus we obtain a hierarchy of iterated exp-numbers.
+Each layer is "unrepresentably larger" than the previous one.
+
+*A arbitrary-precision computation!very small numbers
+
+*A exponentially small numbers
+
+The same considerations apply to very small numbers of the order $10^(-N)$ or smaller.
+Such numbers can be manipulated as "exponentially small numbers", i.e. expressions of the form $Exp(-M*10^E)$ with floating-point mantissa $M>=1$ and integer $E$ satisfying $0<E<N$.
+
+Similarly to exponentially large numbers, only some arithmetic operations can be meaningfully performed.
+Exponentially small numbers act as an effective zero compared with normal numbers.
+
+Taking a logarithm of an exp-small number makes it again a normal representable number.
+However, taking an exponential of an exp-small number produces 1 because of underflow.
+To obtain a "doubly exponentially small" number, we need to take a reciprocal of a doubly exponentially large number, or take the exponent of an exponentially large negative power.
+In other words, $Exp(-M*10^E)$ is exp-small, while $Exp(-Exp(M*10^E))$ is 2-exp-small.
+
+The practical significance of exp-numbers is rather limited. 
+We cannot obtain even a single significant digit of an exp-number.
+A "computation" with exp-numbers is essentially a floating-point computation with logarithms of these exp-numbers.
+A practical problem that needs numbers of this magnitute can probably be restated in terms of more manageable logarithms of such numbers.
+In practice, exp-numbers could be useful not as a means to get a numerical answer,
+but as a warning sign of critical overflow or underflow.
