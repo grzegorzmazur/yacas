@@ -483,10 +483,18 @@ $$ x' = x*(1+a-Ln(x)) $$
 converges for any $0<x<Exp(a+1)$, while Halley's iteration
 converges only for $Exp(a-2)<x<Exp(a+2)$.
 
+*A Halley's method!when to use
 
 When it converges, Halley's iteration can still converge very slowly for certain functions $f(x)$, for example, for $f(x)=x^n-a$ if $n^n>a$. For such functions that have very large and rapidly changing derivatives, no general method can converge faster than linearly. In other words, a simple bisection will generally do just as well as any sophisticated iteration, until the root is approximated relatively precisely. Halley's iteration combined with bisection seems to be a good choice for such problems.
 
-*A Newton's method!error control
+However, despite its faster convergence, Halley's iteration frequently gives no advantage over Newton's method.
+To obtain $P$ digits of the result, we need about $Ln(P)/Ln(2)$ iterations of a quadratically convergent method and about $Ln(P)/Ln(2)$ iterations of a cubically convergent method.
+So the cubically convergent iteration is faster only if the time taken by one iteration is less than about $Ln(3)/Ln(2)<=>1.6$ of the time of one quadratic iteration.
+With arbitrary-precision computations, this is rarely the case.
+
+	    Precision control
+
+*A Newton's method!precision control
 
 For practical evaluation, iterations must be supplemented with error control.
 For example, if $x0$ and $x1$ are two consecutive approximations that are
@@ -681,7 +689,7 @@ iterations to make the first $n$ (decimal) digits of $a[k]$ and $b[k]$
 coincide, because the relative error $epsilon=1-b/a$ decays approximately as
 $epsilon[k]<=>1/8*Exp(-2^k)$.
 
-Unlike the Newton iteration, the AGM sequence does not correct errors, so all numbers need to be computed with full precision.
+Unlike Newton's iteration, the AGM sequence does not correct errors, so all numbers need to be computed with full precision.
 Actually, slightly more precision is needed to compensate for accumulated round-off error.
 Brent (in [Brent 1975]) says that $O(Ln(Ln(n)))$ bits of accuracy are lost to round-off error if there are total of $n$ iterations.
 

@@ -453,8 +453,11 @@ implemented in {gmp}, {CLN} and some other libraries.
 The asymptotic cost of multiplication for very large precision is $M(P)<=>O(P^1.6)$ for the Karatsuba method and $M(P)=O(P*Ln(P))$ for the FFT method.
 In the estimates of computation cost in this book we shall assume that $M(P)$ is at
 least linear in $P$ and maybe a bit slower.
-The asymptotically fastest method of FFT multiplication is only cost-effective at the precision of about 10,000 or more decimal digits.
-For very small precision up to about 200 digits the simple $O(P^2)$ multiplication is the most efficient.
+
+The costs of multiplication may be different in various arbitrary-precision arithmetic libraries and on different computer platforms.
+As a rough guide, one can assume that the straightforward $O(P^2)$ multiplication is good until 100-200 decimal digits,
+the asymptotically fastest method of FFT multiplication is good at the precision of about 5,000 or more decimal digits,
+and the Karatsuba multiplication is best in the middle range.
 
 Warning: calculations with internal Yacas math using precision exceeding 10,000 digits are currently impractically slow.
 

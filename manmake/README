@@ -9,6 +9,8 @@ This then gets converted to ManP(section,text) with text
 enclosed in quotes. All text outside such special sections
 are part of the section named 'text'.
 
+NOTE: mangen, manmake.cc, manmake, test.txt are not used any more.
+
 		Tools for the new documentation format
 
 txt2yacasdoc.pl: a Perl script to convert plaintext documentation to Yacas

@@ -1,7 +1,0 @@
-<html><body font="helvetica">some text</body></html>
-
-<body font="helvetica">
-
-Tag("BODY",{{"FONT","helvetica"}},"Open");
-
-
