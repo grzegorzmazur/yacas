@@ -48,6 +48,7 @@ CPP'Tokens :=
   {"^\\!\\=",Operators},
   {"^[\\<\\=\\>\\^\\|\\*\\+\\-\\/\\&\\%\\~\\!]",Operators},
   {"^\\$.*?\\$",Patterns}, // $ is reserved for pattern definitions
+  {"^\\.\\.\\.",Operators},
   {"^[\\;\\:\\,\\.]",Delimiters},
   {"^[a-zA-Z_][a-zA-Z0-9_]*",Atoms},
   {"^.+",UnParsed}
@@ -56,12 +57,24 @@ CPP'Tokens :=
 
 CPP'grammar:=
   {
-   {StrctType1,CPP'objDef,";"}
-  ,{TypeDecl1,"typedef",CPP'typeDecl,CPP'annotatedVar,";"}
-    ,{GlobalDefinedVariable,CPP'varDecl,";"}
-  ,{GlobalDefinedFunction, CPP'typeDecl,CPP'annotatedVar,CPP'argList,CPP'statement}
+    {Template1,"template","<",CPP'templateDeclList,">",CPP'grammar}
+   ,{StrctType1,CPP'objDef,";"}
+   ,{TypeDecl1,"typedef",CPP'typeDecl,CPP'annotatedVar,";"}
+   ,{GlobalDefinedVariable,CPP'varDecl,";"}
+   ,{GlobalDefinedFunction, CPP'typeDecl,CPP'annotatedVar,CPP'argList,CPP'statement}
+   ,{GlobalDefinedFunction, CPP'annotatedVar,CPP'argList,":",CPP'initList,CPP'statement}
    ,{GlobalDefinedFunction, CPP'annotatedVar,CPP'argList,CPP'statement}
 //   ,{StrctType1,"union",CPP'symbolName,CPP'block,";"}
+  };
+
+CPP'templateDeclList :=
+  {
+    {TempType1,CPP'templateTypeDecl,",",CPP'templateDeclList}
+   ,{TempType1,CPP'templateTypeDecl}
+  };
+CPP'templateTypeDecl :=
+  {
+    {Temp1,"class",CPP'tokenName}
   };
 
 
@@ -76,7 +89,9 @@ CPP'annotatedVar :=
   {
     {Pattern1,"varname",AcceptToken(Patterns)},
     {Pointer1,"*",CPP'annotatedVar}
+   ,{Reference1,"&",CPP'annotatedVar}
    ,{Destructor1,"~",CPP'annotatedVar}
+   ,{Operator1,"operator",CPP'annotatedVar}
    ,{VarName, CPP'symbolName,CPP'arrayAugment}
    ,{SimpleAtom,CPP'tokenName}
   };
@@ -91,12 +106,24 @@ CPP'arrayAugment :=
 CPP'typeDecl:=
   {
     {Pattern1,"typenamed",AcceptToken(Patterns)}
+    ,{Type1,CPP'plainType,"<",CPP'templateTypeList,">"}
     ,{Type1,CPP'plainType}
     ,{StrctType1,"struct",CPP'block}
     ,{StrctType1,"class",CPP'block}
 //    ,{StrctType1,"union",CPP'block}
   };
 
+CPP'templateTypeList :=
+  {
+    {TempType1,CPP'typeDecl,CPP'typePost,",",CPP'templateTypeList}
+   ,{TempType1,CPP'typeDecl,CPP'typePost}
+  };
+
+CPP'typePost :=
+  {
+    {TypeInst1,"*"}
+   ,{TypeInst1}
+  };
 
 CPP'plainType :=
   {
@@ -109,7 +136,7 @@ CPP'plainType2 :=
     {PlainType1,AnyOf(CPP'typeList)}
   };
 CPP'typeList :=
-  {"static","const","unsigned","char","short","int","long","float","void"};
+  {"inline","virtual","static","const","unsigned","char","short","int","long","float","void"};
 
 
 CPP'symbolName := 
@@ -139,6 +166,7 @@ CPP'argList :=
 CPP'restargs := 
 {
    {Pattern1,"restargs",AcceptToken(Patterns)}
+  ,{RestArgList1,"..."}
   ,{RestArgList1,CPP'varDecl,",",CPP'restargs}
   ,{RestArgList1,CPP'varDecl}
 };
@@ -283,20 +311,47 @@ CPP'statement:=
     {CaseStmt,"case",CPP'tokenName,":"},
     {DefaultStmt,"default",":"}
    ,{Expression,CPP'expr0,";"}
+   ,{LocalDefinedFunction, CPP'typeDecl,CPP'annotatedVar,CPP'argList,"=","0",";"}
+   ,{LocalDefinedFunction, CPP'typeDecl,CPP'annotatedVar,CPP'argList,":",CPP'initList,CPP'statement}
    ,{LocalDefinedFunction, CPP'typeDecl,CPP'annotatedVar,CPP'argList,CPP'statement}
    ,{LocalDefinedVariable,CPP'varDecl,";"}
+   ,{LocalDefinedFunction, CPP'annotatedVar,CPP'argList,":",CPP'initList,CPP'statement}
    ,{LocalDefinedFunction, CPP'annotatedVar,CPP'argList,CPP'statement}
    ,{StrctType1,CPP'objDef,";"}
 //   ,{StrctType1,"union",CPP'tokenName,CPP'block,";"}
    ,{BlockStmt,CPP'block}
   };
 
+CPP'initList :=
+  {
+    {InitList1,CPP'init,",",CPP'initList}
+   ,{InitList1,CPP'init}
+  };
+
+CPP'init :=
+  {
+    {Init1,CPP'tokenName,"(",CPP'expression,")"} 
+  };
+
 CPP'objDef :=
   {
     {StrctType1,"struct",CPP'tokenName,CPP'block}
+   ,{StrctType1,"class",CPP'tokenName,":",CPP'superList,CPP'block}
    ,{StrctType1,"class",CPP'tokenName,CPP'block}
   };
 
+CPP'superList :=
+  {
+    {SuperList1,CPP'super,",",CPP'superList}
+   ,{SuperList1,CPP'super}
+  };
+
+CPP'super :=
+  {
+    {Super1,"public",CPP'tokenName}
+   ,{Super1,"protected",CPP'tokenName}
+   ,{Super1,"private",CPP'tokenName}
+  };
 
 optExpr := 
   {
