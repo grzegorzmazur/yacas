@@ -73,7 +73,7 @@ uses {yacasinit.ys} and adds some extra custom code.
 Call {expression} for the read-eval-print loop. The default 
 read-eval-print loop is implemented in the initialization 
 script {yacasinit.ys} as the function {REP}.
-The default behavior is therefore equivalent to {--read-eval-print} {REP}.
+The default behavior is therefore equivalent to {--read-eval-print} {REP()}.
 
 There is also a fallback read-eval-print
 loop in the kernel; it can be invoked by passing an empty
