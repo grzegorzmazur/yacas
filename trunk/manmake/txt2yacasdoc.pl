@@ -282,6 +282,7 @@ sub finish_text_close_quote {
 # using their Yacas representation
 sub escape_term {
 	my ($text) = @_;
+# nested braces {} (monospaced font)
 # this would only allow one level of nested braces:
 #	$text =~ s/\{((?:[^{}]*\{[^{}]*\})*[^{}]*)\}/":HtmlTerm("$1"):"/g;
 	# {HtmlTerm}. Need to get the interior braces. Build the regex recursively:
@@ -292,16 +293,16 @@ sub escape_term {
 		$regex="(?:$regex\{$regex\})*$regex";
 	}
 	$text =~ s/\{($regex)\}/":HtmlTerm("$1"):"/go;
-	# special escapes \< \> for HTML
-	$text =~ s/\\\\</":Lt():"/g;
-	$text =~ s/\\\\>/":Gt():"/g;
-	# math
+# math
 	$text =~ s/\$\$([^\$"]+)\$\$([^- \t]+)/":TeXMathD($1,\"$2\"):"/g;
 	$text =~ s/\$\$([^\$"]+)\$\$/":TeXMathD($1):"/g;
 	$text =~ s/\$([^\$"]+)\$/":TeXMath($1):"/g;
-	# <i>emphasis</i>
+# special escapes \< \> for HTML
+	$text =~ s/\\\\</":Lt():"/g;
+	$text =~ s/\\\\>/":Gt():"/g;
+# <i>emphasis</i>
 	$text =~ s/<i>((?:[^<]|<[^\/]|<\/[^i]|<\/i[^>])*)<\/i>/":HtmlEmphasis("$1"):"/gi;
-	# explicit hyperlinks
+# explicit hyperlinks
 	$text =~ s/<\*((?:[^*]|\*[^>])+)\*>/&make_link($1);/ge;
 	$text;
 }
