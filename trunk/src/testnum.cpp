@@ -9,7 +9,8 @@
 #define ENABLE_TESTS 1
 
 // whether to print detailed information about passed tests
-const bool show_passed = false;
+//const bool show_passed = false;
+const bool show_passed = true;
 
 unsigned failed = 0;
 unsigned passed = 0;
@@ -54,6 +55,15 @@ void CheckStringValue(const BigNumber& x, const char* value, LispInt precision, 
     LispString str;
     x.ToString(str, precision, base);
     Check(str, value, test_description);
+}
+
+// check that the two numbers are equal by their string representation in given base
+void CheckEquals(const BigNumber& x1, const BigNumber& x2, LispInt precision, LispInt base, const char* test_description)
+{
+    LispString str1, str2;
+    x1.ToString(str1, precision, base);
+    x2.ToString(str2, precision, base);
+    Check(str1, str2.String(), test_description);
 }
 
 // print a progress message
@@ -139,34 +149,35 @@ void TestTypes1(double value)
 void TestTypes2(const char* float_string, const char* int_string, double double_value)
 {
 	const LispInt base = 10;
+	const LispInt precision = 4*strlen(float_string);
 	int sign = (double_value>0)?1:((double_value<0)?-1:0);
+	LispString str; // temporary space
 	
 // test constructors from strings
-	BigNumber x(float_string, 3*strlen(float_string), base);
+	BigNumber x(float_string, precision, base);
 	BigNumber y;
-	y.SetTo(int_string, 3*strlen(int_string), base);
-//	y.BecomeInt();	// FIXME: this would be unnecessary if the type were automatically decided based on the string.
+	y.SetTo(int_string, precision, base);
 
-//	Check(!x.IsSmall(), "x is a big number");
-//	Check(!y.IsSmall(), "y is a big number");
-	
 	Check(!x.IsInt(), "x is a float type as read");
 	Check(y.IsInt(), "y is an integer type as read");
 	Check(x.Double()==double_value, "value is correct");
-	Check(!x.IsIntValue(), "x has a float value");
-	Check(y.IsIntValue(), "y has an integer value");
+	x.ToString(str, precision, base);
+	Check(str, float_string, "float value is printed back correctly");
+	Check(!x.IsIntValue(), "x has a non-integer value as read");
+	Check(y.IsIntValue(), "y has an integer value as read");
+	y.ToString(str, precision, base);
+	Check(str, int_string, "int value is printed back correctly");
 	Check(x.Sign()==sign, "sign of x is correct");
 	Check(y.Sign()==sign, "sign of y is correct");
 
-	LispString str;
-	y.ToString(str,base);
+	y.ToString(str,precision, base);
 	Check(str,int_string,"read integer value correctly");
 	BigNumber z(x);
-	Check(!z.IsInt(), "z has int type");
+	Check(!z.IsInt(), "z has float type");
 	Check(!z.IsIntValue(), "z has a float value");
 	z.BecomeInt();
 	Check(z.Sign()==sign, "sign of z is correct");
-	z.ToString(str,base);
+	z.ToString(str,precision,base);
 	Check(str,int_string,"convert to integer value correctly");
 	Check(z.IsInt(), "z is an integer now");
 	Check(z.IsIntValue(), "z has an integer value now");
@@ -203,7 +214,7 @@ void TestTypes2(const char* float_string, const char* int_string, double double_
 // test some integer and float arithmetic
 void TestArith1(const char* str_value, int base, int val1, double val2)
 {
-	long prec=strlen(str_value)+5;
+	long prec=strlen(str_value)+50;	// many guard digits
 	BigNumber x(str_value, prec, base);
 	BigNumber x1(x), x2(x), y;
 	
@@ -213,6 +224,7 @@ void TestArith1(const char* str_value, int base, int val1, double val2)
 	x.Add(x,y, prec);
 	x.Negate(x);
 	Check(x.Equals(x1), "add and subtract an integer");
+	CheckEquals(x, x1, prec, base, "result of add and subtract an integer");
 	x1.Negate(x1);
 	x1.Add(x1,x, prec);
 	Check(x1.Sign()==0, "x-x=0");
@@ -228,13 +240,18 @@ void TestArith1(const char* str_value, int base, int val1, double val2)
 	z.Multiply(z,t,prec);
 	x.Add(x,z, prec);
 	Check(x.Equals(x1), "add and subtract a double 100 times");
+	x1.BecomeFloat();
+	CheckEquals(x, x1, prec, base, "result of add and subtract a double 100 times");
 	
 	x.SetTo(x2);
 	x1.SetTo(x2);
-	y.SetTo(fabs(100));
 	for (int i=0; i<100; ++i) x.Add(x,x, prec);
+	y.SetTo(1);
+	y.ShiftLeft(y, 100);
+	
 	x1.Multiply(x1,y, prec);
 	Check(x.Equals(x1), "add to itself 100 times");
+	CheckEquals(x, x1, prec, base, "result of add to itself 100 times");
 	
 }
 
@@ -312,7 +329,7 @@ int main(void)
 //////////////////////////////////////////////////
 
 	Next("library name");	
-	printf("Testing numeric library: '%s'.\n", BigNumber::NumericLibraryName());
+	printf("\tTesting numeric library: '%s'.\n", BigNumber::NumericLibraryName());
 	
 	Next("constructor");
 	BigNumber x;	// default constructor
@@ -334,7 +351,7 @@ int main(void)
 	Check(y.IsSmall(), "value is small");
 	
 	Next("testing big integers");
-	x.SetTo("010203040506070809101112131415161718192021222324252627282930", 200, 10);
+	x.SetTo("010203040506070809101112131415161718192021222324252627282930", 0, 10);	// the precision argument should be ignored when reading integers
 	Check(x.IsInt(), "has integer type");
 	Check(x.Sign()==1, "has positive value");
 	Check(x.IsIntValue(), "has integer value");
@@ -560,8 +577,9 @@ int main(void)
 	Check(z.Equals(t), "ShiftLeft operation correct (big shift)");
 	z.BitNot(z);
 	t.SetTo("9EDC9EDC9EDC9EDC9EDC9EDC9EDC9EDC9EDC9EDCF", 0, 16);
-	Check(z.Equals(t), "BitNot operation correct");
-	
+	z.BitAnd(z,t);	// result of BitNot is negative
+	Check(z.Equals(t), "bit Not operation correct");
+	CheckEquals(z, t, 50, 16, "bit Not operation result printed correctly");
 	Next("precision");
 	x.BecomeFloat();
 	x.Precision(10);
@@ -570,8 +588,13 @@ int main(void)
 	y.SetTo(1000.);
 	y.Precision(10);
 	x.Multiply(x,y, 10);
-	CheckStringValue(x, "411", 20, 10, "imprecise 100./243. is correct");
-	Check(x.IsIntValue(), "have only 10 bits of precision");
+	x.Precision(10);
+	CheckStringValue(x, "411.", 20, 10, "imprecise 100./243. is correct");
+	Check(x.IsIntValue(), "x has integer value due to low precision");
+	y.SetTo(1234.5678);
+	y.Precision(10);
+	Check(y.IsIntValue(), "y has integer value due to low precision");
+	CheckStringValue(y, "1234.", 10, 10, "value of y is printed correctly");
 
 	Next("Floor()");
 	x.BecomeFloat();
