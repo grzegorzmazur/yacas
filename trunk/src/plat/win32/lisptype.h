@@ -100,6 +100,7 @@
 // Fake config.h, some defines I'm sure are valid on Windows
 #define HAVE_MATH_H   1
 #define HAVE_STDIO_H  1
+#define HAVE_STDARG_H 1
 #define HAVE_STRTOD   1
 
 

@@ -36,7 +36,7 @@ fi;
 AC_HEADER_STDC
 AC_CHECK_HEADERS(unistd.h sys/ioctl.h sys/socket.h sys/time.h sys/types.h)
 AC_CHECK_HEADERS(malloc.h memory.h stdlib.h stdio.h ctype.h dlfcn.h dl.h dld.h)
-AC_CHECK_HEADERS(dirent.h math.h)
+AC_CHECK_HEADERS(dirent.h math.h stdarg.h)
 AC_CHECK_HEADERS(string.h strings.h, break)
 
 

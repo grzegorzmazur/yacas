@@ -33,6 +33,12 @@ void CheckArgType(LispInt aPredicate, LispInt aArgNr, LispPtr& aArguments,LispEn
 
 #define CHK_ISSTRING(_pred, _argnr) {if (!InternalIsString((_pred).Get()->String())) CheckArgType(0 ,_argnr, aArguments,aEnvironment,KLispErrNotString);}
 
+
+char *GenericErrorBuf();
+void RaiseError(char* str,...);
+
+
+
 /*
 #define TESTARGS(_n)  \
     { \

@@ -8,6 +8,7 @@
 #include "standard.h"
 #include "lispuserfunc.h"
 #include "mathuserfunc.h"
+#include "errors.h"
 
 
 #define InternalEval iEvaluator->Eval
@@ -556,6 +557,7 @@ LispCharPtr LispEnvironment::ErrorString(LispInt aError)
         break;
     case KLispErrNonBooleanPredicateInPattern:
         return "Predicate doesn't evaluate to a boolean in pattern";
+     case KLispErrGenericFormat: return GenericErrorBuf();
     }
     return "Unspecified Error";
 }

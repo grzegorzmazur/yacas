@@ -40,6 +40,7 @@ enum ErrorCodes
     KLispErrLibraryNotFound       ,
     KLispErrUserInterrupt         ,
     KLispErrNonBooleanPredicateInPattern,
+    KLispErrGenericFormat,
     KLispNrErrors
 };
 
