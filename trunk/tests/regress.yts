@@ -369,3 +369,67 @@ Verify((0.0000000000000000000000000000000000000001 = 0), False);
 Verify((0.0000000000000000000000000000000000000000000000001 = 0), False);
 
 
+/* Regression on bug reports from docs/bugs.txt */
+
+/* Bug #1 */
+/* Can't test: 'Limit(x,0)D(x,2)Sin(x)/x' never terminates */
+
+/* Bug #2 */
+KnownFailure((Limit(x,Infinity) x^n/Ln(x)) = Infinity);
+KnownFailure((Limit(x,0,Right) x^(Ln(a)/(1+Ln(x)))) = a);
+KnownFailure((Limit(x,0) (x+1)^(Ln(a)/x)) = a);
+/* Note paren's around bodied operators like Limit, D, Integrate;
+   otherwise it's parsed as Limit (... = ...) */
+
+/* Bug #3 */
+KnownFailure(Gcd(10,3.3) != 3.3 And Gcd(10,3.3) != 1);
+/* I don't know what the answer should be, but buth 1 and 3.3 seem */
+/* certainly wrong. */
+KnownFailure(Gcd(-10, 0) = 10);
+KnownFailure(Gcd(0, -10) = 10);
+
+/* Bug #4 */
+/* How can we test for this? */
+/* Bug says: at startup, 2^Infinity does not simplify to Infinity */
+
+/* Bug #5 */
+/* How can we test for this? */
+/* Bug says: Limit(n,Infinity) Sqrt(n+1)-Sqrt(n) floods stack */
+/* but 'MaxEvalDepth reached' exits Yacas, even inside TrapError */
+
+/* Bug #6 */
+KnownFailure((D(z) Conjugate(z)) = Undefined);
+
+/* Bug #7 */
+Verify(Im(3+I*Infinity), Infinity); /* resolved */
+KnownFailure(Im(3+I*Undefined) = Undefined);
+
+/* Bug #9 */
+KnownFailure((Integrate(x,-1,1) 1/x) = 0); /* or maybe Undefined? */
+KnownFailure((Integrate(x,-1,1) 1/x^2) = Infinity);
+
+/* Bug #10 */
+KnownFailure(Simplify(x^(-2)/(1-x)^3) != 0);
+/* I don't know what we want to return, but '0' is definitely wrong! */
+
+/* Bug #11 */
+KnownFailure(ArcCos(Cos(beta)) != beta);
+
+/* Bug #12 */
+KnownFailure((Limit(n, Infinity) n^5/2^n) = 0);
+
+/* Bug #13 */
+/* Cannot test; TrigSimpCombine(x^500) floods stack */
+
+/* Bug #14 */
+KnownFailure((Limit(x,Infinity) Zeta(x)) = 1);
+KnownFailure((Limit(x,Infinity) Factorial(x)) = Infinity);
+
+/* Bug #15 */
+Verify(TrapError(MathPower(0,0.5), error), error);
+
+/* Bug #16 */
+/* Can't test, bug in build system */
+
+/* Bug #17 */
+KnownFailure(Assoc(x-1, Factors(x^6-1)) = 1);
