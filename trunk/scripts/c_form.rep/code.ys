@@ -7,6 +7,7 @@
 	0.2 Fix for extra parens in Sin() and other functions; fixes for Exp(), Abs() and inverse trig functions
 	0.3 Fix for indexed expressions: support a[2][3][4]
 	0.3.1 Fix for CForm(integer): add a decimal point
+	0.4 Support While()[]. Added IsCFormable.
 */
 
 /* To do:
@@ -24,7 +25,7 @@ Function ("CFormBracketIf", {predicate, string})
 	If(predicate, ConcatStrings("( ", string, ") "), string);
 ];
 
-/* Proceed just like CForm()
+/* Proceed just like TeXForm()
 */
 
 TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equal to KMaxPrec */
@@ -93,7 +94,9 @@ CFormMathFunctions :=
     {"ArcTanh","atanh"},
     {"Max","max"},
     {"Min","min"},
-    {"Abs","fabs"}
+    {"Abs","fabs"},
+    {"Floor","floor"},
+    {"Ceil","ceil"},
   };
 
 /* Precedence of 120 because we'd like to process some special functions like pow() first */
@@ -197,6 +200,11 @@ CFormStatement(_x) <-- CForm(x) : ";" : NlIndented();
 	: CIndent() : NlIndented()
 	: CFormStatement(body) : CUndent();
 
+120 # CForm(While(_pred)_body, _p) <--
+	"while(" : CForm(pred,TeXFormMaxPrec) : ")"
+	: CIndent() : NlIndented()
+	: CFormStatement(body) : CUndent();
+
 /*TODO test
 test:=Hold(
 
@@ -209,4 +217,47 @@ test:=Hold(
     
 */
 
+//////////////////////////////////////////////////
+/// IsCFormable
+//////////////////////////////////////////////////
 
+/// predicate to test whether an expression can be successfully exported to C code
+
+/// interface with empty extra function list
+// need the backquote stuff b/c we have HoldArg now
+IsCFormable(_expr) <-- `IsCFormable(@expr, {});
+
+// need to check that expr contains only allowed functions
+IsCFormable(_expr, funclist_IsList) <--
+[
+	Local(bad'functions);
+	bad'functions := Difference(`FuncList(@expr), Union(CFormAllFunctions, funclist));
+	If(Length(bad'functions)=0,
+		True,
+		[
+			If(Verbose,
+				Echo(Union({"IsCFormable: Info: unexportable function(s): "}, bad'functions))
+			);
+			False;
+		]
+	);
+];
+HoldArgNr("IsCFormable", 1, 1);
+HoldArgNr("IsCFormable", 2, 1);
+
+/// This is a list of all function atoms which CForm can safely handle
+CFormAllFunctions := MapSingle(Atom, Union(Union(AssocIndices(CFormMathFunctions), AssocIndices(CFormRegularOps)),
+// list of "other" (non-math) functions supported by CForm: needs to be updated when CForm is extended to handle new functions
+{
+	"For",
+	"While",
+	"Prog",
+	"Nth",
+	"Mod",
+	"Complex",
+	"if",
+	"else",
+	"++",
+	"--",
+}
+));

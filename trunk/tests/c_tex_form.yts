@@ -81,3 +81,40 @@ Verify(
 CForm(Hold(Cos(A-B)*Sin(a)*func(b,c,d*(e+Pi))*Sqrt(Abs(C)+D)-g(a+b)^(c+d)^(c+d)))
 ,"cos(A - B) * sin(a) * func(b, c, d * ( e + Pi) ) * sqrt(fabs(C) + D) - pow(pow(g(a + b), c + d), c + d)" 
 );
+
+Verify(
+CForm(Hold([i:=0;While(i<10)[i++; a:=a+Floor(i);];]))
+, "{
+  i = 0.;
+  while(i < 10.)
+    {
+      ++(i);
+      a = a + floor(i);
+      }
+    ;
+    ;
+  }
+"
+);
+
+Testing("IsCFormable");
+Verify(
+IsCFormable(e+Pi*Cos(A-B)/3-Floor(3.14)*2)
+, True
+);
+Verify(
+IsCFormable(e+Pi*Cos(A-B)/3-Floor(3.14)*2+bad'func(x+y))
+, False
+);
+Verify(
+IsCFormable(e+Pi*Cos(A-B)/3-Floor(3.14)*2+bad'func(x+y), {bad'func})
+, True
+);
+Verify(
+IsCFormable([i:=0;While(i<10)[i++; a:=a+i;];])
+, True
+);
+Verify(
+IsCFormable([i:=0;While(i<10)[i++; a:=a+i; {};];])
+, False
+);
