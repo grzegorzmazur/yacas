@@ -77,6 +77,23 @@ be evaluated by the default evaluator. It is important to keep
 the distinction between data and program. 
 
 
+		Why choose Lisp over other languages?
+
+Lisp has some powerful options not available in for instance c++/Java.
+The syntax is closer to the way a human thinks about transforming
+expressions, and the resulting routines are thus shorter and easier to
+read. The same routine, when written out in Lisp or in c++, is much
+more readable and natural in Lisp than in c++, for instance. c++ syntax
+is made for other purposes.
+
+Also, the typed Lisp dialect developed in this book is easily translated
+to other languages. This removes the argument of Lisp being less
+efficient;
+the code can be converted to efficient c++/Java code. What is more, the
+code is easy to parse and transform into these languages, giving a
+language-independent specification of algorithms.
+
+
 		A little history of Lisp
 
 Lisp is one of the older computer programming languages in existence.
@@ -768,14 +785,155 @@ and then assign the values to the new local variables. Note that the
 values are evaluated <i>before</i> assigning them to the variables,
 so the variables can not depend on each other.
 
-		Some further implementation details
+
+			Language design issues
 
 This documentation comes with some implementation for the little
 Lisp dialect introduced in this document. It is implemented 
 in {Java}. This section discusses some details pertaining to the
-implementation.
+implementation. It will discuss some features of the language
+design.
 
-	    Error handling
+		Enforcing correct code
+
+Programmers are lazy. They will try to get as much as possible done
+by typing as little as possible. This can be used as an advantage in
+the design of a programming language. If the programming language
+makes it easy 'to do it the right way', but hard 'to do it the wrong
+way', the programmer might take the easy route and do it right.
+The culmination of this is to make it possible to do it right, but
+impossible to do wrong. The language {c} has many examples of the 
+opposite, where it is easy to do something wrong, but hard to do
+it right. The functions {gets} and {fgets} are examples.
+
+From the other side, exceptions in Java for instance, can not
+be ignored. A routine has to handle it, or promiss to pass off the
+exception to the calling environment. But then all the functions
+calling the function must handle the exception, resulting in much
+more typing work. 
+
+This concept can be put to great use in for instance a typing system,
+where it can be made very hard to pass an arbitrary-type object
+around, like the {void *} of {c} or {c++}, or 
+a {GenericLispObjectHugeTypeDeclarator} in a Lisp system, where 
+type declarations can be enforced. In addition to this, it can
+be made harder to pass around wrong types by forcing hand-written
+type-conversions. An object of a generic type can be passed in,
+but if it results in considerable extra effort on the behalf of
+the programmer to do type conversions in the code, the programmer
+might consider declaring the object of the correct type in the 
+first place. 
+
+C++ does this the other way round; the language makes it particularly
+easy to do automatic type conversions between types, sometimes resulting
+in dangerous code.
+
+		Containers and iterators
+
+In the {c++} standard library there is a powerful notion of <i>containers</i>
+and <i>iterators</i>. The idea is to hide how objects are stored
+in a structure, and offer a generic way to access objects in a store
+of objects. General algorithms that work on sets of data can then
+be defined in terms of this unified interface. The object that 
+gives access to an element in a container is called an <i>iterator</i>.
+The typical things needed are:
+
+*	0. get the first object in a container
+*	0. get the next object in a container
+*	0. check if there are still objects in the container
+
+A lot of algorithms working on data can get away with this
+sequential processing, performing an operation on an object, 
+and then moving to the next object to perform the same operation
+on it.
+
+The classic way in Lisp has been to have a list of objects, and
+have the {first} function return the first of the list, {rest} return
+the rest (the objects that still need processing), and when the
+list is empty, all objects have been processed.
+
+The reason to make this abstraction is that for specific cases
+optimizations can be made in the way the container is implemented
+internally. For instance, in stead of a list, an array could be
+used, which gives constant-time access to an element in a container,
+but slow O(n) insertion time. Many more options are available;
+objects could be obtained from a compressed block of data, or
+read in sequentially from disk (for huge sets of objects), 
+or a set of objects could be defined symbolically, like 
+{(range 1 Infinity)}. A routine could then be written that finds
+the first occurrence of an integer that has certain properties,
+for instance. One would need to have a function {first} and
+{rest} and {null} for arrays and for objects of the 
+form {(range <from> <to>)}.
+
+This is an important issue, because computers are good at doing 
+a dull task, but doing it millions of times over. One option
+is to have a huge data set and process it. An efficient way of
+walking over a sequence of data objects is then necessary.
+
+		Packaging modules
+
+Modules are essentially groups of functions and 'global' variables
+that can only be accessed from within that environment. It is an
+important feature in a language that hopes to stay modular while
+the software written in it grows to a sizable number of separate
+files.
+
+An environment can be built up with {make-environment}, and defining 
+the functions and global variables contained therein:
+
+	(make-environment arithmetic
+	   (progn
+	      (defun add (n m) ...)
+	      (setf pi 3.1415926535)
+	)  )
+
+An expression can then be evaluated in this environment through:
+
+	(eval <expression> <environment>)
+
+For example, in the little example above, {(eval '(add pi 2) arithmetic)}
+could be called.
+
+Functions within an environment can call all the functions defined
+in the encapsulating environment, but the encapsulating environment
+cannot call all functions in the encapsulated environment. Functions
+within the encapsulated environments can be called by exporting them.
+A macro {export} can be written to support the following:
+
+	(export (add n m) arithmetic)
+
+in the enclosing environment to export that function from the enclosed
+environment.
+
+It is important that a function from the encapsulating environment
+can be called, because an environment still needs access to the
+global environment; operations like {first}, {rest}, {+}, etcetera,
+should still be available. A compiler and an interpreter would still
+know in which environment to evaluate that function. The interpreter
+would have to traverse down the line of environments to find the 
+environment in which the symbol or function is defined, but the
+compiler can decide this at compile time.
+
+The 'environment' can be thought of as a static class, a singleton,
+in object-oriented terms. There is only one of this type of object,
+and one instance of each property in the class, which is why
+the compiler can generate a static link to it. A function in an
+environment is no more than a method in such a singleton class.
+
+A plugin class is no more than a compiled environment that gets loaded.
+
+	    Static versus dynamic scoping
+
+Dynamic scoping is not supported implicitly. To access a function
+or object from an environment, the environment needs to be specified
+explicitly. This is important because the compiler needs to be
+able to determine where to find the information at compile time.
+The reference to the function or variable needs to be hard-coded
+at compile time. Having to look up the symbol at run-time would
+simply be an unnecessary performance penalty.
+
+		Error handling
 
 Error handling is done by using exceptions. A function {preEval}
 is the entry point for evaluating expressions, and can be called 
@@ -791,6 +949,13 @@ code cannot be expected to treat correctly.
 
 Exceptions halt execution immediately. The {preEval} catches it,
 and the user interface can continue where it left off. 
+This is defendable behaviour. The system is only expected to
+do on-line commands typed in by the user, or fail. The story
+would be different if {Yacas} were used to control some system,
+and it needs to keep running after failure, but it was not designed 
+for that. {Yacas} is a computer algebra system, not a controlling
+system for a Space Shuttle.
+
 
 			Compiling Lisp code
 
