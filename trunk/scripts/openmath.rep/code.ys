@@ -46,7 +46,8 @@
      [
      OMEcho("<OMS cd=\"":OMSymbol[ Type(function) ][1]:"\" name=\"":OMSymbol[ Type(function) ][2]:"\"/>");
      If(OMSymbol[ Type(function) ][3] = {},
-        [ ForEach(arg, function) OMFormExpression(arg);
+        [ 
+          ForEach(arg, Tail(Listify(function))) OMFormExpression(arg);
         ],
         [ arity := Length(function);
           ForEach(i, OMSymbol[ Type(function) ][3])

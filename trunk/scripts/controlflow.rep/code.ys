@@ -16,22 +16,114 @@ HoldArgNr("For",4,3);
 HoldArgNr("For",4,4);
 
 
+/* 
+ * This was an experiment to try to get to using a new ForEach that works the
+ * same on lists and arrays. For some odd reason all sorts of places in the scripts
+ * break if we use this version of ForEach. We need to look into this still! I want
+ * a ForEach that works on lists as well as arrays.
 
+Macro()(ForEachRest(i,L,B));
+
+LocalSymbols(foreachtail)
+[
+  10 # ForEachRest(_i,L_IsFunction,_B) <-- 
+  [
+    Local(foreachtail);
+    Local(@i);
+    Set(foreachtail,@L);
+    While(Not(Equals(foreachtail,{})))
+    [
+      Set(@i,Head(foreachtail));
+      @B;
+      Set(foreachtail,Tail(foreachtail));
+    ];
+  ];
+];
+
+LocalSymbols(index,nr)
+[
+  20 # ForEachRest(_i,_A,_B)_(   And(
+            Equals(IsGeneric(A),True),
+            Equals(GenericTypeName(A),"Array")
+            )) <-- 
+  [
+    Local(index,nr);
+    Local(@i);
+    Set(index,1);
+    Set(nr,Length(@A));
+    While(index<=nr)
+    [
+      Set(@i,(@A)[index]);
+      @B;
+      Set(index,MathAdd(index,1));
+    ];
+  ];
+];
+
+Macro()(ForEach(i,L)(B));
+
+LocalSymbols(itm,lst,bd)
+[
+  (ForEach(_i,_L)(_B)) <-- 
+  [
+    Local(itm,lst,bd);
+//CurrentFile(),CurrentLine(),,Hold(@B)
+//Echo(CurrentFile(),CurrentLine());
+// Echo("ForEach(",Hold(@i),", ",Hold(@L),", ) ");
+    itm:=Hold(@i);
+    lst:= (@L);
+    bd:=Hold(@B);
+//Echo("1...",itm);
+    `ForEachRest(@itm,@lst,@bd);
+  ];
+];
+*/
+
+LocalSymbols(i,nr)
+[
+  TemplateFunction("ForEachInArray",{item,list,body})
+  [
+    Local(i,nr);
+    MacroLocal(item);
+    Set(i,1);
+    Set(nr,Length(list));
+    While(i<=nr)
+    [
+      MacroSet(item,list[i]);
+      Eval(body);
+      Set(i,MathAdd(i,1));
+    ];
+  ];
+];
+
+UnFence("ForEachInArray",3);
+HoldArgNr("ForEachInArray",3,1);
+HoldArgNr("ForEachInArray",3,3);
+
+
+/*TODO remove? Not yet. If the code above can be made to work we can do away with this version. */
 TemplateFunction("ForEach",{item,list,body})
 [
-  Local(foreachtail);
-  MacroLocal(item);
-  Set(foreachtail,list);
-  While(Not(Equals(foreachtail,{})))
-  [
-     MacroSet(item,Head(foreachtail));
-     Eval(body);
-     Set(foreachtail,Tail(foreachtail));
-  ];
+  If(And(Equals(IsGeneric(list),True),
+         Equals(GenericTypeName(list),"Array")
+         ),
+    `ForEachInArray(@item,list,@body),
+    [
+      Local(foreachtail);
+      MacroLocal(item);
+      Set(foreachtail,list);
+      While(Not(Equals(foreachtail,{})))
+      [
+        MacroSet(item,Head(foreachtail));
+        Eval(body);
+        Set(foreachtail,Tail(foreachtail));
+      ];
+    ]);
 ];
 UnFence("ForEach",3);
 HoldArgNr("ForEach",3,1);
 HoldArgNr("ForEach",3,3);
+/* */
 
 
 10 # Apply(_applyoper,_applyargs) _ (Or(IsString(applyoper), IsList(applyoper))) <-- ApplyPure(applyoper,applyargs);

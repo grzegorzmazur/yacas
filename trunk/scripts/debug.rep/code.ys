@@ -3,7 +3,8 @@
 
 LocalSymbols(TraceStart,TraceEnter,TraceLeave,DebugStart,DebugEnter, 
              DebugLeave,ProfileStart,ProfileEnter,result,
-             ReadLines,WriteLines,ClearScreenString,Debug'FileLoaded, Debug'FileLines, Debug'NrLines) [
+             ReadLines,WriteLines,ClearScreenString,Debug'FileLoaded, Debug'FileLines, Debug'NrLines,
+             debugstepoverfile, debugstepoverline) [
 
 TraceStart() := [indent := 0;];
 TraceEnter() :=
@@ -29,7 +30,7 @@ Macro(TraceExp,{expression})
 DebugStart():=
 [
    debugging:=True;
-   DebugStopDepth := -1;
+   debugstopdepth := -1;
    breakpoints:={};
    filebreakpoints := {};
    debugstopped:=False;
@@ -40,7 +41,13 @@ DebugStart():=
 DebugRun():= [debugging:=False;True;];
 DebugStep():=[debugging:=False;nextdebugging:=True;];
 
-DebugStepOver():=[debugging:=False;DebugStopDepth := Length(debugcallstack);];
+DebugStepOver():=
+[
+  debugging:=False;
+  debugstepoverfile := DebugFile(CustomEval'Expression());
+  debugstepoverline := DebugLine(CustomEval'Expression());
+  debugstopdepth := Length(debugcallstack);
+];
 DebugBreakAt(file,line):=
 [
   Check(InDebugMode(),"DebugBreakAt only supported in the debug build of Yacas");
@@ -110,7 +117,12 @@ Macro(DebugEnter,{})
     If(filebreakpoints[file] != Empty,
     [
       line := DebugLine(CustomEval'Expression());
-      If(Contains(filebreakpoints[file],line),debugging:=True);
+      If(Not(file = debugstepoverfile And line = debugstepoverline) And
+         Contains(filebreakpoints[file],line),
+         [
+           debugging:=True;
+         ]
+        );
     ]);
   ]);
 
@@ -138,10 +150,11 @@ Macro(DebugEnter,{})
 ];
 Macro(DebugLeave,{})
 [
-  If(debugging = False And DebugStopDepth >= 0 And Length(debugcallstack) = DebugStopDepth,
+  If(debugging = False And debugstopdepth >= 0 And Length(debugcallstack) = debugstopdepth,
   [
+    debugstepoverline := -1;
     debugging := True;
-    DebugStopDepth := -1;
+    debugstopdepth := -1;
   ]);
 
   debugcallstack := Tail(debugcallstack);
