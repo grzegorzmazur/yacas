@@ -1,20 +1,9 @@
-		Basic arithmetic
-
-Currently, Yacas uses either internal math (the {yacasnumbers} library) or the
-GNU multiple precision library {gmp}. The algorithms for basic arithmetic in
-the internal math mode are currently rather slow compared with {gmp}. If $P$ is
-the number of digits of precision, then multiplication and division take
-$M(P)=O(P^2)$ operations in the internal math. (Of course, multiplication and division by a short integer takes time linear in $P$.) Much faster algorithms for long multiplication
-(Karatsuba, Toom-Cook, FFT, Newton-Raphson division etc.) are
-implemented in {gmp} where the cost of multiplication is $M(P)=O(P*Ln(P))$ for very large precision. For the
-estimates of computation cost in this book we shall assume that $M(P)$ is at
-least linear in $P$ and maybe slower.
-
-Warning: calculations with internal Yacas math using precision exceeding 10,000 digits are currently impractically slow.
-
-In some algorithms it is necessary to compute the integer parts of expressions such as $a*Ln(b)/Ln(10)$ or $a*Ln(10)/Ln(2)$ where $a$, $b$ are short integers of order $O(P)$. Such expressions are frequently needed to estimate the number of terms in the Taylor series or similar parameters of the algorithms. In these cases, it is important that the result is not underestimated but it would be wasteful to compute $Ln(10)/Ln(2)$ in floating point only to discard most of that information by taking the integer part of say $1000*Ln(10)/Ln(2)$. It is more efficient to approximate such constants from above by short rational numbers, for example, $Ln(10)/Ln(2) < 28738/8651$ and $Ln(2) < 7050/10171$. The error of such an approximation will be small enough for practical purposes. The function {NearRational} can be used to find optimal rational approximations. The function {IntLog} (see below) efficiently computes the integer part of a logarithm in integer base. If more precision is desired in calculating $Ln(a)/Ln(b)$ for integer $a$, $b$, one can compute $IntLog(a^k,b)$ for some integer $k$ and then divide by $k$.
-
 		Adaptive plotting
+
+The problem of generating plots of functions generally does not require
+calculations in high precision. However, the algorithm is able to
+approximate the function arbitrarily well (except for some particularly
+ill-behaved examples).
 
 The adaptive plotting routine {Plot2D'adaptive} uses a simple algorithm
 to select the optimal grid to approximate a function $f(x)$. The same algorithm
@@ -30,14 +19,14 @@ a given initial interval; thus, at most $2^depth$ additional grid points
 will be generated. The function {Plot2D'adaptive} should return a list of
 pairs of points {{{x1,y1}, {x2,y2}, ...}} to be used directly for plotting.
 
-The recursive bisection algorithm goes like this:
+The recursive bisection algorithm works like this:
 
 *	 1.  Given an interval ($a$, $c$), we split
 it in half, $b:=(a+c)/2$ and first compute $f(x)$ at five grid
 points $a$, $a[1]:=(a+b)/2$, $b$, $b[1]:=(b+c)/2$, $c$. 
 *	 2. If currently $depth <= 0$, return this list of 5 points and
 values because we cannot refine the grid any more.
-*	 3. Otherwise check that the function does not change sign too
+*	 3. Otherwise, check that the function does not change sign too
 rapidly on the interval [$a$, $c$]. The formal criterion is that among these 5 points there must not be
 two consecutive changes of sign. For example, the signs "+, +, -, -, +" change "slowly enough" but "-, +, -, -, -" do not. We use
 the following procedure: Mark the sequence of signs of the values
@@ -70,7 +59,7 @@ quadrature uses $b$, $b[1]$, $c$.) If the
 absolute value of the difference between these quadratures is less
 than $epsilon$ * (value of the second quadrature), then we
 are done and we return the list of these five points and values.
-*	 5. Otherwise we need to refine the grid. We compute
+*	 5. Otherwise, we need to refine the grid. We compute
 {Plot2D'adaptive} recursively for the two halves of the interval,
 i.e. for ($a$,$b$) and ($b$,$c$); we pass the midpoint values as
 necessary and decrease {depth} by 1. We also multiply $epsilon$ by 2 because we need to maintain constant <i>absolute</i> precision and this means that the relative error for the two subintervals can be twice as large. The resulting two lists for the two subintervals are
@@ -98,3 +87,165 @@ for $p=0$, 1, ..., $n$. This system of equations means that the quadrature corre
 The solution of this system always exists and gives quadrature coefficients as rational numbers. For example, the Simpson quadrature $c[0]=1/6$, $c[1]=2/3$, $c[2]=1/6$ is obtained with $n=2$.
 
 In the same way it is possible to find quadratures for the integral over a subinterval rather than over the whole interval of $x$. In the current implementation of the adaptive plotting algorithm, two quadratures are used: the 3-point quadrature ($n=2$) and the 4-point quadrature ($n=3$) for the integral over the first subinterval, $Integrate(x,a[0],a[1]) f(x)$. Their coefficients are ($5/12$, $2/3$, $-1/12$) and ($3/8$, $19/24$, $-5/24$, $1/24$). 
+
+		Cost of arbitrary-precision computations
+
+A computer algebra system absolutely needs to be able to perform
+computations with very large <i>integer</i>  numbers. Without this
+capability, many symbolic computations (such as exact GCD of
+polynomials or exact solution of polynomial equations) would be
+impossible.
+
+A different question is whether a CAS really needs to be able to
+evaluate, say, 10,000 digits of the value of a Bessel function of some
+complex argument. It is almost certain that no applied problem of
+natural sciences would need floating-point computations of special
+functions with such a high precision. However, arbitrary-precision
+computations are certainly useful in some mathematical applications;
+e.g. some numerical identities can be first guessed by a floating-point
+computation with many digits and then proved (by hand).
+
+Very high precision computations <i>might</i> be useful in the future.
+It is however quite clear that computations with moderately high
+precision (50 or 100 digits) are useful for applied problems.
+Implementing an efficient algorithm that computes 100 digits of
+$Sin(3/7)$ already involves many of the issues that would also be
+relevant for a 10,000 digit computation. 
+Modern algorithms allow evaluations of all elementary functions in time
+that is asymptotically logarithmic in the number of digits $P$ and
+linear in the cost of long multiplication (usually denoted $M(P)$).
+All special functions can be evaluated in time that is linear in $P$
+and in $M(P)$. There is, however, no wide-spread free implementation of
+these algorithms.
+
+Therefore Yacas strives to implement all of its numerical functions in
+arbitrary precision. All integer or rational functions return exact
+results, and all floating-point functions return their value with $P$
+correct decimal digits. The current value of $P$ is accessed as
+{GetPrecision()} and may be changed by {Precision(...)}.
+
+Implementing an arbitrary-precision floating-point computation of a
+function $f(x)$, such as $f(x)=Exp(x)$, typically needs the following:
+
+*	An algorithm that will compute $f(x)$ for a given value $x$ to a
+user-specified precision of $P$ (decimal) digits. Sometimes several
+algorithms must be implemented that work for certain subdomains of the
+($x$,$P$) space.
+*	An estimate of the computational cost of the algorithm(s), as a function of $x$ and $P$. This is needed to select the best algorithm for given $x$, $P$.
+*	An estimate of the round-off error. This is needed to select the "working precision" which will typically be somewhat higher than the precision of the final result.
+
+Selecting algorithms for computations are the most non-trivial part of
+the implementation. We want to achieve arbitrarily high precision, so
+somehow we need to find either a series, or a continued fraction, or a
+sequence given by explicit formula, that converges to the function in a
+controlled way. It is not enough to use a table of precomputed values
+or an approximation formula that has a limited precision. Recently
+(1980--2000), the interest in research of arbitrary-precision
+computations grew and many efficient algorithms for elementary and
+special functions were published.
+
+In most cases it is imperative to know in advance how many iterations
+are needed for given $x$, $P$.
+This knowledge allows to estimate the computational cost, in terms of
+the required precision $P$ and of the cost of long multiplication
+$M(P)$. Typically all operations will fall into the following categories
+(sorted by the increasing cost):
+
+*	addition, subtraction: linear in $P$;
+*	multiplication, division, integer power, integer root: linear in $M(P)$;
+*	elementary functions: $Exp(x)$, $Ln(x)$, $Sin(x)$, $ArcTan(x)$ etc.: $Ln(P)*M(P)$ or slower by some more factors of $Ln(P)$;
+*	transcendental functions: $Erf(x)$, $Gamma(x)$ etc.: typically $P*M(P)$ or slower.
+
+Some algorithms (e.g. Taylor series summation) also need extra storage space, typically of order $P*Ln(P)$ (i.e. $O(Ln(P))$ temporary $P$-digit numbers).
+
+Here is a worked-out example of how we could estimate the required number of terms in the power series
+$$Exp(x)=1+x+x^2/2! +...+x^n/n! + O(x^(n+1))$$,
+if we need $P$ digits of precision and $x$ is a "small enough" number,
+say $Abs(x)<1$. (A similar calculation can be done for any other bound on $x$.) Suppose we truncate the series after $n$-th term and
+the series converges "well enough" after that term. The error will be
+approximately equal to the first term we dropped (this is what we
+really mean by "converges well enough" and this will generally be the case in all applications, because we will not use series that do not converge well enough).
+The term we dropped is $x^(n+1)/(n+1)!$.
+To estimate $n!$ for large $n$, one can use the inequality
+$$ e^(e-1)*(n/e)^n < n! < (n/e)^(n+1)$$
+(valid for all $n>=47$) which provides tight bounds for the growth of
+the factorial, or a weaker inequality which is easier to use,
+$$ (n/e)^n < n! < ((n+1)/e)^(n+1) $$
+(valid for all $n>=6$). The latter inequality is quite enough for most purposes.
+If we use the upper bound on $n!$ from this estimate, the term we dropped is bounded by
+$$ x^(n+1)/(n+1)! < (e/(n+2))^(n+2) $$. We need this to be smaller than $10^(-P)$. This leads to an inequality
+$$ (e/(n+2))^(n+2) < 10^(-P) $$,
+which we now need to solve for $n$. The left hand side decreases with growing $n$. So it is clear that the inequality will hold for large enough $n$, say for $n>=n0$ where $n0$ is an unknown (integer) value. We can take a logarithm of both sides, replace $n$ with $n0$ and obtain the following equation for $n0$:
+$$ (n0+2)*Ln((n0+2)/e) = P*Ln(10) $$.
+This equation cannot be solved exactly in terms of elementary functions; this is a typical situation in such estimates. However, we do not really need an precise exact solution; all we need is its integer part. It is also acceptable if our approximate $n0$ comes out a couple of units higher than necessary, because a couple of extra terms of the Taylor series will not significantly slow down the algorithm (but it is important that we do not underestimate $n0$). This is also a typical situation and it simplifies the analysis.
+Finally, we are mostly interested in having a good enough answer for
+large values of $P$. So let us assume that $P$ is large (say, 100).
+We can try to guess what the result is: The largest term on the LHS
+grows as $n0*Ln(n0)$ and it should be approximately equal to
+$P*Ln(10)$; $Ln(n0$ grows very slowly, so this gives us a hint that
+$n0$ is proportional to $P*Ln(10)$. As a first try, set $n0=P*Ln(10)-2$
+and compare the RHS with the LHS; we see that we have overshot by a
+factor $Ln(P)-1+Ln(Ln(10))$, which is not a large factor. We
+can now compensate and divide $n0$ by this factor, so our second try is
+$$ n0 = (P*Ln(10))/(Ln(P)-1+Ln(Ln(10)))-2 $$.
+(This approximation procedure is equivalent to solving the equation
+$$ x = (P*Ln(10))/(Ln(x)-1)) $$
+by iterations, starting from $x=P*Ln(10)$.)
+If we substitute our second try for $n0$ into the equation, we shall find that we undershot a little bit (i.e. the LHS is a little smaller than the RHS), but our $n0$ is now smaller than it should be by a quantity that is smaller than 1 for large enough $P$.
+So we should stop at this point and simply add 1 to this approximate answer. We should also replace $-1+Ln(Ln(10))$ by 0 for simplicity (this is safe because it will slightly increase $n0$.)
+
+Our final result is that it is enough to take
+$$ n=(P*Ln(10))/Ln(P)-1 $$
+terms in the Taylor series to compute $Exp(x)$ for $Abs(x)<1$ to $P$
+decimal digits. (Of course, if $x$ is much smaller than 1, many fewer
+terms will suffice.)
+
+As the required precision $P$ grows, an arbitrary-precision algorithm
+will need more iterations or more terms of the series. So the round-off
+error introduced by every floating-point operation will increase. When
+doing arbitrary-precision computations, we can always perform all
+calculations with a few more digits and compensate for round-off error.
+It is however imperative to know in advance how many more digits we
+need to take for our "working precision". We should also take that
+increase into account when estimating the total cost of the method. Of
+course, we should avoid very large roundoff errors; "do everything with
+twice as many digits" is not a solution in those cases.
+
+Here is a simple estimate of the round-off error in a computation of
+$n$ terms of a power series. Suppose that adding each term requires two
+multiplications and one addition. If all calculations are performed
+with relative precision $epsilon=10^(-P)$, then the accumulated
+relative round-off error is $3*n*epsilon$. (This is an optimistic
+estimate that needs to be verified in each particular case; what if the
+series begins with some large terms but converges to a very small
+value?) If the relative error is $3*n*epsilon$, it means that our
+answer is something like $a*(1+3*n*epsilon)$ where $a$ is the correct
+answer. We can see that out of the total $P$ digits of this answer,
+only the first $k$ decimal digits are correct, where
+$k= -Ln(3*n*epsilon)/Ln(10)$. In other words, we have lost $P-k$ digits
+because of accumulated roundoff error. So we found that we need
+$P-k=Ln(3*n)/Ln(10)$ extra decimal digits to compensate for this
+round-off error.
+
+In the previous exercise we found the number of terms $n$ for $Exp(x)$. So now we know how many extra digits of working precision we need for this particular case.
+
+Below we shall have to perform similar estimates of the required number
+of terms and of the accumulated round-off error in our analysis of the
+algorithms.
+
+		Basic arbitrary-precision arithmetic
+
+Currently, Yacas uses either internal math (the {yacasnumbers} library) or the
+GNU multiple precision library {gmp}. The algorithms for basic arithmetic in
+the internal math mode are currently rather slow compared with {gmp}. If $P$ is
+the number of digits of precision, then multiplication and division take
+$M(P)=O(P^2)$ operations in the internal math. (Of course, multiplication and division by a short integer takes time linear in $P$.) Much faster algorithms for long multiplication
+(Karatsuba, Toom-Cook, FFT, Newton-Raphson division etc.) are
+implemented in {gmp} where the cost of multiplication is $M(P)=O(P*Ln(P))$ for very large precision. For the
+estimates of computation cost in this book we shall assume that $M(P)$ is at
+least linear in $P$ and maybe slower.
+
+Warning: calculations with internal Yacas math using precision exceeding 10,000 digits are currently impractically slow.
+
+In some algorithms it is necessary to compute the integer parts of expressions such as $a*Ln(b)/Ln(10)$ or $a*Ln(10)/Ln(2)$ where $a$, $b$ are short integers of order $O(P)$. Such expressions are frequently needed to estimate the number of terms in the Taylor series or similar parameters of the algorithms. In these cases, it is important that the result is not underestimated but it would be wasteful to compute $Ln(10)/Ln(2)$ in floating point only to discard most of that information by taking the integer part of say $1000*Ln(10)/Ln(2)$. It is more efficient to approximate such constants from above by short rational numbers, for example, $Ln(10)/Ln(2) < 28738/8651$ and $Ln(2) < 7050/10171$. The error of such an approximation will be small enough for practical purposes. The function {NearRational} can be used to find optimal rational approximations. The function {IntLog} (see below) efficiently computes the integer part of a logarithm (for an integer base, not a natural logarithm). If more precision is desired in calculating $Ln(a)/Ln(b)$ for integer $a$, $b$, one can compute $IntLog(a^k,b)$ for some integer $k$ and then divide by $k$.
+
