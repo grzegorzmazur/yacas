@@ -71,7 +71,15 @@ Function("NrArgs",{aLeft}) Length(Listify(aLeft))-1;
 
 Set(Numeric,False);
 
-10 # N(_expr)_Numeric <-- Eval(expr);
+10 # N(_expr)_Numeric <--
+[ // we were in numeric mode
+    Local(numeric'result);
+	AssignCachedConstantsN();
+	Set(numeric'result, Eval(expr));
+	ClearCachedConstantsN();
+	numeric'result;
+];	
+ Eval(expr);
 20 # N(_expr) <--
 [ // we were in non-numeric mode
 	Local(numeric'result);
@@ -90,9 +98,11 @@ UnFence("N",1);
 // evaluate numerically with given precision
 10 # N(_expr, _digits)_Numeric <--
 [
+	ClearCachedConstantsN();
 	Local(prev'digits, numeric'result);
 	Set(prev'digits, GetPrecision());
 	Precision(digits);
+	AssignCachedConstantsN();
 	Set(numeric'result, Eval(expr));
 	Precision(prev'digits);
 	numeric'result;
