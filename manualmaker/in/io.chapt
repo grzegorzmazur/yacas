@@ -1,33 +1,109 @@
 
 Chapter()"Input/Output";
 
-AddAnchor("FullForm");
-SubSection()"FullForm(expression)";  Text()"
-FullForm(expression) : 
-Displays evaluated form of \"expression\", and returns it.
+Text() "
+This chapter contains command to use for input and output. All output
+commands write to the same destination, called the \"current
+output\". This is initially the screen, but the current output is
+redirected by some commands. Similarly, most input commands
+read from the \"current input\", which can also be redirected. The
+exception to this rule are the commands for reading in script files,
+which simply read  the specified file.";
 
+
+
+AddAnchor("FullForm");
+SubSection() "FullForm";
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "FullForm(expr)";
+
+Topical() "Parameters";
+Text() "expr - The expression to be printed in LISP-format";
+
+Topical() "Description";
+Text() 
+"Evaluates \"expr\", and prints it in LISP-format on the current
+output. It is followed by a newline. The evaluated expression is also
+returned. 
+
+This can be useful if you want to study the internal representation of
+a certain expression.
 ";
 
+Topical() "Examples";
+Text() HtmlCommand(
+"In> FullForm(a+b+c);
+(+ (+ a b )c )
+Out> a+b+c;
+In> FullForm(2*I*b^2);
+(* (Complex 0 2 )(^ b 2 ))
+Out> Complex(0,2)*b^2;
+") :
+"The first example shows how the expression ":HtmlTerm("a+b+c"):" is
+internally represented. In the second example, ":HtmlTerm("2*I"):" is
+first evaluated to ":HtmlTerm("Complex(0,2)"):" before the expression
+is printed.";
+
+Topical() "See Also";
+SeeAlso({"LispRead", "Listify", "Unlist"});
+
+
+
+/* Pending my bug report */
 AddAnchor("Echo");
-SubSection()"Echo({...})";  Text()"
+SubSection() "Echo";
+StandardLib();
 
-Echo writes the contents of the list passed to it to the current
-output, and calls NewLine(). If an entry in the list is a string
-it writes the string unstringified. Example:":
+Topical() "Calling Sequence";
+Text() 
+"Echo(item) <br>
+Echo(list)";
 
-HtmlCommand("
-f(x):=x^2;
-Echo({\"The square of two is \",f(2)});
-"):
+Topical() "Parameters";
+Text()
+"item - the item to be printed <br>
+list - a list of items to be printed";
 
-"which should write out \"The square of two is 2\" to the current
-output";
+Topical() "Description";
+Text()
+"If passed a single item, Echo will evaluate it and print it to the
+current output, followed by a newline. If \"item\" is a string, it is
+printed without quotation marks. <P> </P>
+If the second calling sequence is used, Echo will print all the
+entries in the list subsequently to the current output, followed by a
+newline. Any strings in the list are printed without quotation
+marks. All other entries are followed by a space.<P> </P>
+Echo always returns True.";
+
+Topical() "Examples";
+Text() HtmlCommand(
+"In> Echo(5+3);
+ 8 
+Out> True;
+In> Echo({\"The square of two is \", 2*2});
+The square of two is  4 
+Out> True;") : "<P> </P>
+Note that one must use the second calling sequence if one wishes to
+print a list:" : 
+HtmlCommand(
+"In> Echo({a,b,c});
+a  b  c 
+Out> True;
+In> Echo({{a,b,c}});
+{a,b,c} 
+Out> True;");
+
+Topical() "See Also";
+SeeAlso({"PrettyForm", "Write", "WriteString"});
 
 
 
 AddAnchor("PrettyForm");
 SubSection()"PrettyForm";
 StandardLib();
+
 Topical()"Calling Sequence";
 Text()"PrettyForm(expr)";
 
@@ -59,19 +135,22 @@ Out> True;
 Topical()"See Also"; 
 SeeAlso({"EvalFormula","PrettyPrinter"});
 
+
+
 AddAnchor("EvalFormula");
 SubSection()"EvalFormula";
 StandardLib();
+
 Topical()"Calling Sequence";
-Text() "EvalFormula(expression)";
+Text() "EvalFormula(expr)";
 
 Topical()"Parameters";
-Text()"expression - an expression
-";
+Text()"expr - an expression";
 
 Topical()"Description";
-Text()"Show an evaluation in a nice way, using PrettyPrinter
-   to show 'input = output'.";
+Text()
+"Show an evaluation in a nice way, using PrettyPrinter
+to show 'input = output'.";
 
 Topical()"Examples";
 Text()
@@ -84,148 +163,497 @@ Taylor( x , 0 , 7 , Sin( x ) ) = x - -- + --- - ----
                                      6    120   5040
 
 Out&gt True 
-
 ");
 
 Topical()"See Also"; 
 SeeAlso({"PrettyForm"});
 
 
-
-
 AddAnchor("Write");
-SubSection()"Write(...)";  Text()"
-Write(...) : Write out the expressions contained in \"...\" (evaluated).
+SubSection() "Write";
+BuiltIn();
 
-";
+Topical() "Calling Sequence";
+Text() "Write(expr, ...)";
+
+Topical() "Parameters";
+Text() "expr - the expression to be printed";
+
+Topical() "Description";
+Text() "
+The expression \"expr\" is evaluated and written to the current
+output. Note that Write accept an arbitrary number of arguments, all
+of which are written to the current output (see second
+example). Write always returns True.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Write(1);
+1Out> True;
+In> Write(1,2);
+ 1 2Out> True;") : "
+Write does not write a newline, so the " : HtmlTerm("Out>") : " prompt
+immediately follows the output of Write.";
+
+Topical() "See Also";
+SeeAlso({"Echo", "WriteString"});
+
+
 
 AddAnchor("WriteString");
-SubSection()"WriteString(string)";  Text()"
-WriteString(string) : Writes out a literal string, which should be of
-the form \"string\" (surrounded by quotes). The argument is evaluated.
+SubSection() "WriteString";
+BuiltIn();
 
-";
+Topical() "Calling Sequence";
+Text() "WriteString(string)";
+
+Topical() "Parameters";
+Text() "string - the string to be printed";
+
+Topical() "Description";
+Text() "
+The expression \"string\" is evaluated and written to the current
+output without quotation marks. The argument should be a
+string. WriteString always returns True.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Write(\"Hello, world!\");
+\"Hello, world!\"Out> True;
+In> WriteString(\"Hello, world!\");
+Hello, world!Out> True;
+") : "
+This example clearly shows the difference between Write and
+WriteString. Note that Write and WriteString do not write a newline,
+so the " : HtmlTerm("Out>") : " prompt immediately follows the output.";
+
+Topical() "See Also";
+SeeAlso({"Echo", "Write"});
+
+
 
 AddAnchor("Space");
-SubSection()"Space(nr)";  Text()"
-Space(nr) : Print out \"nr\" spaces. The \"nr\"
-argument is optional, the default value being 1.
+SubSection() "Space";
+BuiltIn();
 
-";
+Topical() "Calling Sequence";
+Text() "
+Space() <br>
+Space(nr)";
+
+Topical() "Parameters";
+Text() "nr - the number of spaces to print";
+
+Topical() "Description";
+Text() "
+The command " : HtmlTerm("Space()") : " prints one space on the
+current output. The second form prints \"nr\" spaces on the current
+output. The result is always True.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> Space(5);
+     Out> True;
+");
+
+Topical() "See Also";
+SeeAlso({"Echo", "Write", "NewLine"});
+
+
 
 AddAnchor("NewLine");
-SubSection()"NewLine(nr)";  Text()"
-NewLine(nr) : Print out \"nr\" newlines. The \"nr\"
-argument is optional, the default value being 1.
+SubSection() "NewLine";
+BuiltIn();
 
-";
+Topical() "Calling Sequence";
+Text() "
+NewLine() <br>
+NewLine(nr)";
+
+Topical() "Parameters";
+Text() "nr - the number of newlines to print";
+
+Topical() "Description";
+Text() "
+The command " : HtmlTerm("NewLine()") : " prints one newline character
+on the current output. The second form prints \"nr\" newlines on the
+current output. The result is always True.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> NewLine();
+     
+Out> True;
+");
+
+Topical() "See Also";
+SeeAlso({"Echo", "Write", "Space"});
 
 
 AddAnchor("FromFile");
-SubSection()"FromFile(\"file\") body";  Text()"
-FromFile(\"file\") body : Open \"file\" for reading, and execute body, returning
-its result.
+SubSection() "FromFile";
+BuiltIn();
 
-";
+Topical() "Calling Sequence";
+Text() "FromFile(name) body";
+
+Topical() "Parameters";
+Text() "
+name - the name of the file to read <br>
+body - the command to be executed";
+
+Topical() "Description";
+Text() "
+The current input is connected to the file \"name\". Then the command
+\"body\" is executed. Everything that the commands in \"body\" read
+from current input, is now read from the file \"name\". Finally, the
+file is closed and the result of evaluating \"body\" is returned.";
+
+Topical() "Examples";
+Text() "
+Suppose that the file " : HtmlTerm("foo") : " contains" :
+HtmlCommand("
+2 + 5;
+") : " <P> </P>
+Then we can have the following dialogue:" : HtmlCommand("
+In> FromFile(\"foo\") res := Read();
+Out> 2+5;
+In> FromFile(\"foo\") res := ReadToken();
+Out> 2;
+");
+
+Topical() "See Also";
+SeeAlso({"ToFile", "FromString", "Read", "ReadToken"}); 
+
+
 
 AddAnchor("FromString");
-SubSection()"FromString(\"string\") body";  Text()"
-FromString(\"string\") body : use \"string\" to parse from when issuing
-a read from file, and execute body, returning its result.
+SubSection() "FromString";
+BuiltIn();
 
-";
+Topical() "Calling Sequence";
+Text() "FromString(str) body;";
+
+Topical() "Parameters";
+Text() "
+str - a string containing the text to parse <br>
+body - the command to be executed";
+
+Topical() "Description";
+Text() "
+The commands in \"body\" are executed, but everything that is read
+from the current input is now read from the string \"str\". The
+result of \"body\" is returned.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> FromString(\"2+5; this is never read\") res := Read();
+Out> 2+5;
+In> FromString(\"2+5; this is never read\") res := Eval(Read());
+Out> 7;
+");
+
+Topical() "See Also";
+SeeAlso({"ToString", "FromFile", "Read", "ReadToken"}); 
+
+
+
+AddAnchor("ToFile");
+SubSection() "ToFile";
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "ToFile(name) body";
+
+Topical() "Parameters";
+Text() "
+name - the name of the file to write the result to <br>
+body - the command to be executed";
+
+Topical() "Description";
+Text() "
+The current output is connected to the file \"name\". Then the command
+\"body\" is executed. Everything that the commands in \"body\" print
+to the current output, ends up in the file \"name\". Finally, the
+file is closed and the result of evaluating \"body\" is returned.";
+
+Topical() "Examples";
+Text() "
+Take first a look at the following command:" : HtmlCommand("
+In> [ Echo(\"Result:\");  PrettyForm(Taylor(x,0,9) Sin(x)); ];
+Result:
+
+     3    5      7       9  
+    x    x      x       x   
+x - -- + --- - ---- + ------
+    6    120   5040   362880
+
+Out> True;
+") : " <P> </P>
+Now suppose one wants to send the output of this command to a
+file. This can be achieved as follows:" : HtmlCommand("
+In> ToFile(\"out\") [ Echo(\"Result:\");  PrettyForm(Taylor(x,0,9) Sin(x)); ];
+Out> True;
+") : " <P> </P>
+After this command the file " : HtmlTerm("out") : " contains:" :
+HtmlCommand(" 
+Result:
+
+     3    5      7       9  
+    x    x      x       x   
+x - -- + --- - ---- + ------
+    6    120   5040   362880
+
+");
+
+Topical() "See Also";
+SeeAlso({"FromFile", "ToString", "Echo", "Write", "WriteString",
+"PrettyForm", "Taylor"});  
+
+
 
 AddAnchor("ToString");
-SubSection()"ToString() body"; Text()"
-ToString redirects all output (from Write or WriteString, for instance)
-to a string, and returns this string.
-";
+SubSection() "ToString";
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "ToString() body";
+
+Topical() "Parameters";
+Text() "body - the command to be executed";
+
+Topical() "Description";
+Text() "
+The commands in \"body\" are executed. Everything that is printed on
+the current output, by " : HtmlTerm("Echo") : " for instance, is
+collected in a string and this string is returned.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> str := ToString() \\
+In>        [ WriteString(\"The square of 8 is \"); Write(8^2); ];
+Out> \"The square of 8 is  64\";
+");
+
+Topical() "See Also";
+SeeAlso({"FromFile", "ToString", "Echo", "Write", "WriteString"});  
+
 
 
 AddAnchor("Read");
-SubSection()"Read()";  Text()"
-Read() : 
-Read expression from current input, and return result. When the end of an
-input file is encountered, the token atom \"EndOfFile\" is returned.
+SubSection() "Read";
+BuiltIn();
 
-";
+Topical() "Calling Sequence";
+Text() "Read()";
+
+Topical() "Parameters";
+Text() "none";
+
+Topical() "Description";
+Text() "
+Read an expression from the current input, and return it unevaluated. When
+the end of an input file is encountered, the token atom " :
+HtmlTerm("EndOfFile") : " is returned.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> FromString(\"2+5;\") Read();
+Out> 2+5;
+In> FromString(\"\") Read();
+Out> EndOfFile;
+");
+
+Topical() "See Also";
+SeeAlso({"FromFile", "FromString", "LispRead", "ReadToken", "Write"});
+
+
 
 AddAnchor("LispRead");
-SubSection()"LispRead()";  Text()"
-Read() : 
-Read expression from current input, and return result. When the end of an
-input file is encountered, the token atom \"EndOfFile\" is returned.
-<P>  </P>
-This function is different from ":HtmlTerm("Read()"):
-" in that it parses an expression
-in lisp syntax: so you need to type ":HtmlTerm("(+ a b)"):
-" in stead of ":HtmlTerm("a+b"):
-". The advantage of lisp syntax is that it is less unambiguous than the
-infix operator grammar Yacas uses by default.
-";
+SubSection() "LispRead";
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "LispRead()";
+
+Topical() "Parameters";
+Text() "none";
+
+Topical() "Description";
+Text() "
+Read an expression in LISP syntax from the current input, and return
+it unevaluated. When the end of an input file is encountered, the
+token atom " : HtmlTerm("EndOfFile") : " is returned. 
+<P> </P>
+The expression " : HtmlTerm("a+b") : " is written in LISP syntax as "
+: HtmlTerm("(+ a b)") : ". The advantage of this syntax is that it is
+less ambiguous than the infix operator grammar that Yacas uses by
+default."; 
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> FromString(\"(+ a b)\") LispRead();
+Out> a+b;
+In> FromString(\"(List (Sin x) (- (Cos x)))\") LispRead();
+Out> {Sin(x),-Cos(x)};
+");
+
+Topical() "See Also";
+SeeAlso({"FromFile", "FromString", "Read", "ReadToken", "FullForm"});
+
 
 
 AddAnchor("ReadToken");
-SubSection()"ReadToken()";  Text()"
-ReadToken() : Read token from current input, and return result.                          
-When the end of an input file is encountered, the token
-atom \"EndOfFile\" is returned.
+SubSection() "ReadToken";
+BuiltIn();
 
-";
+Topical() "Calling Sequence";
+Text() "ReadToken()";
 
-AddAnchor("ToFile");
-SubSection()"ToFile(\"file\")";  Text()"
-ToFile(\"file\") : 
-Open \"file\" for writing, and execute body, returning its result.
+Topical() "Parameters";
+Text() "none";
 
-";
+Topical() "Description";
+Text() "
+Read a token from the current input, and return it unevaluated. When
+the end of an input file is encountered, the token atom " :
+HtmlTerm("EndOfFile") : " is returned.  
+<P> </P>
+A token is for computer languages what a word is for human languages:
+it is the smallest unit in which a command can be divided, so that the
+semantics (that is the meaning) of the command is in some sense a
+combination of the semantics of the tokens. Hence " : HtmlTerm("a := foo")
+: " consists of three tokens, namely " : HtmlTerm("a") : ", " :
+HtmlTerm(":=") : ", and " : HtmlTerm("foo") : ".";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> FromString(\"a := Sin(x)\") \\
+In>    While((tok := ReadToken()) != EndOfFile) Echo(tok);
+a 
+:= 
+Sin 
+( 
+x 
+) 
+Out> True
+");
+
+Topical() "Bugs";
+Text() "In fact, " : HtmlTerm("ReadToken") : " never returns " :
+HtmlTerm("EndOfFile") : ". Hence the example above will end up in an
+endless loop and not display anything.";
+
+Topical() "See Also";
+SeeAlso({"FromFile", "FromString", "Read", "LispRead"});
+
+
 
 AddAnchor("Load");
-SubSection()"Load(\"filename\")";  Text()"
-Load(\"filename\") : Reads in and evaluates expressions from the file
-with file name filename.
+SubSection() "Load";
+BuiltIn();
 
-See also \"Use\".
+Topical() "Calling Sequence";
+Text() "Load(name)";
 
-";
+Topical() "Parameters";
+Text() "name - name of the file to load";
+
+Topical() "Description";
+Text() "
+The file \"name\" is opened. All expressions in the file are read and
+evaluated. " : HtmlTerm("Load") : " always returns " :
+HtmlTerm("true") : ".";
+
+Topical() "See Also";
+SeeAlso({"Use", "DefLoad", "DefaultDirectory", "FindFile"});
+
+
 
 AddAnchor("Use");
-SubSection()"Use(\"filename\")";  Text()"
+SubSection() "Use";
+BuiltIn();
 
-Use(\"filename\") : Reads in and evaluates expressions from the file
-with file name filename if it hasn't been loaded before. This function
-makes sure the file will at least have been loaded, but not loaded twice.
+Topical() "Calling Sequence";
+Text() "Use(name)";
 
-See also \"Load\".
+Topical() "Parameters";
+Text() "name - name of the file to load";
 
-";
+Topical() "Description";
+Text() "
+If the file \"name\" has been loaded before, either by an earlier call
+to " : HtmlTerm("Use") : " or via the " : HtmlTerm("DefLoad") : "
+mechanism, nothing happens. Otherwise all expressions in the file are
+read and evaluated. " : HtmlTerm("Use") : " always returns " :
+HtmlTerm("true") : ".
+<P> </P>
+The purpose of this function is to make sure that the file will at
+least have been loaded, but is not loaded twice.";
+
+Topical() "See Also";
+SeeAlso({"Load", "DefLoad", "DefaultDirectory"});
+
+
 
 AddAnchor("DefLoad");
-SubSection()"DefLoad(\"filename\")";  Text()"
+SubSection() "DefLoad";
+BuiltIn();
 
-DefLoad(\"filename\") : Loads a file filename.def, which should have a
-list of functions, terminated by a }. This tells the system to load
-the file \"filename\" as soon as the user calls one of the functions
-named in the file (if not done so already). This allows for faster
-startup times, since not all of the rules databases need to be loaded,
-just the descriptions on which files to load for which functions.
-";
+Topical() "Calling Sequence";
+Text() "DefLoad(name)";
+
+Topical() "Parameters";
+Text() "name - name of the file (without " : HtmlTerm(".def") : " suffix)";
+
+Topical() "Description";
+Text() "
+The suffix " : HtmlTerm(".def") : " is appended to \"name\" and the
+file with this name is loaded. It should contain a list of functions,
+terminated by a " : HtmlTerm("}") : " (end-of-list character). This
+tells the system to load the file \"name\" as soon as the user calls
+one of the functions named in the file (if not done so already). This
+allows for faster startup times, since not all of the rules databases
+need to be loaded, just the descriptions on which files to load for
+which functions."; 
+
+Topical() "See Also";
+SeeAlso({"Load", "Use", "DefaultDirectory"});
+
 
 
 AddAnchor("FindFile");
-SubSection()"FindFile(name)"; Text()"
-FindFile returns the file that would be opened when a Load(name)
-would be invoked. It returns the full path to the file.
-";
+SubSection() "FindFile";
+BuiltIn();
+
+Topical() "Calling Sequence";
+Text() "FindFile(name)";
+
+Topical() "Parameters";
+Text() "name - name of the file to find";
+
+Topical() "Description";
+Text() "
+The result of this command is the full path to the file that would be
+opened when the command " : HtmlTerm("Load(name)") : " would be
+invoked. This means that the input directories are subsequently
+searched for a file called \"name\". If such a file is not found, " :
+HtmlTerm("FindFile") : " returns an empty string.";
+
+Topical() "See Also";
+SeeAlso({"Load", "DefaultDirectory"});
+
+
 
 AddAnchor("PatchLoad");
 SubSection()"PatchLoad";
 BuiltIn();
+
 Topical()"Calling Sequence";
-Text()"PatchLoad(filename)";
+Text()"PatchLoad(name)";
 
 Topical()"Parameters";
-Text()"filename - the file to patch";
+Text()"name - the file to patch";
 
 Topical()"Description";
 Text()
@@ -248,13 +676,28 @@ SeeAlso({"PatchString","Load"});
 AddAnchor("Nl");
 SubSection()"Nl";
 StandardLib();
+
 Topical()"Calling Sequence";
 Text() "Nl()";
 
 Topical()"Description";
-Text()"This function returns a string with one element in it, a new line
-  character. Useful for building strings to send to some output in the
-  end.";
+Text()"
+This function returns a string with one element in it, namely a newline
+character. This may be useful for building strings to send to some
+output in the end.
+<P> </P>
+Note that the second letter in the name of this command is a lower
+case " : HtmlTerm("L") : " (from \"line\").";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> WriteString(\"First line\" : Nl() : \"Second line\" : Nl());
+First line
+Second line
+Out> True;");
+
+Topical() "See also";
+SeeAlso({"NewLine"});
 
 
 

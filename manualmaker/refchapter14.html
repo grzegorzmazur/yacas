@@ -32,6 +32,9 @@ FromFile
 , <A HREF="refchapter14.html#FromString" TARGET="Chapters">
 FromString
 </A>
+, <A HREF="refchapter14.html#ToFile" TARGET="Chapters">
+ToFile
+</A>
 , <A HREF="refchapter14.html#ToString" TARGET="Chapters">
 ToString
 </A>
@@ -43,9 +46,6 @@ LispRead
 </A>
 , <A HREF="refchapter14.html#ReadToken" TARGET="Chapters">
 ReadToken
-</A>
-, <A HREF="refchapter14.html#ToFile" TARGET="Chapters">
-ToFile
 </A>
 , <A HREF="refchapter14.html#Load" TARGET="Chapters">
 Load
@@ -70,36 +70,128 @@ Nl
 <H1>
 Input/Output
 </H1>
+
+This chapter contains command to use for input and output. All output
+commands write to the same destination, called the "current
+output". This is initially the screen, but the current output is
+redirected by some commands. Similarly, most input commands
+read from the "current input", which can also be redirected. The
+exception to this rule are the commands for reading in script files,
+which simply read  the specified file.
 <A NAME="FullForm">
 
 </A>
 <H3>
-<HR>FullForm(expression)
+<HR>FullForm
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+FullForm(expr)
+<H5>
+Parameters:
+</H5>
+expr - The expression to be printed in LISP-format
+<H5>
+Description:
+</H5>
+Evaluates "expr", and prints it in LISP-format on the current
+output. It is followed by a newline. The evaluated expression is also
+returned. 
 
-FullForm(expression) : 
-Displays evaluated form of "expression", and returns it.
+This can be useful if you want to study the internal representation of
+a certain expression.
 
-
-<A NAME="Echo">
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> FullForm(a+b+c);
+(+ (+ a b )c )
+Out> a+b+c;
+In> FullForm(2*I*b^2);
+(* (Complex 0 2 )(^ b 2 ))
+Out> Complex(0,2)*b^2;
+</PRE></TR>
+</TABLE>
+The first example shows how the expression <B><TT>a+b+c</TT></B> is
+internally represented. In the second example, <B><TT>2*I</TT></B> is
+first evaluated to <B><TT>Complex(0,2)</TT></B> before the expression
+is printed.
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#LispRead" TARGET="Chapters">
+LispRead
+</A>
+, <A HREF="ref.html#Listify" TARGET="Chapters">
+Listify
+</A>
+, <A HREF="ref.html#Unlist" TARGET="Chapters">
+Unlist
+</A>
+, <A NAME="Echo">
 
 </A>
 <H3>
-<HR>Echo({...})
+<HR>Echo
 </H3>
-
-
-Echo writes the contents of the list passed to it to the current
-output, and calls NewLine(). If an entry in the list is a string
-it writes the string unstringified. Example:<TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
-f(x):=x^2;
-Echo({"The square of two is ",f(2)});
-</PRE></TR>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Echo(item) <br>
+Echo(list)
+<H5>
+Parameters:
+</H5>
+item - the item to be printed <br>
+list - a list of items to be printed
+<H5>
+Description:
+</H5>
+If passed a single item, Echo will evaluate it and print it to the
+current output, followed by a newline. If "item" is a string, it is
+printed without quotation marks. <P> </P>
+If the second calling sequence is used, Echo will print all the
+entries in the list subsequently to the current output, followed by a
+newline. Any strings in the list are printed without quotation
+marks. All other entries are followed by a space.<P> </P>
+Echo always returns True.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Echo(5+3);
+ 8 
+Out> True;
+In> Echo({"The square of two is ", 2*2});
+The square of two is  4 
+Out> True;</PRE></TR>
 </TABLE>
-which should write out "The square of two is 2" to the current
-output
-<A NAME="PrettyForm">
+<P> </P>
+Note that one must use the second calling sequence if one wishes to
+print a list:<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Echo({a,b,c});
+a  b  c 
+Out> True;
+In> Echo({{a,b,c}});
+{a,b,c} 
+Out> True;</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#PrettyForm" TARGET="Chapters">
+PrettyForm
+</A>
+, <A HREF="ref.html#Write" TARGET="Chapters">
+Write
+</A>
+, <A HREF="ref.html#WriteString" TARGET="Chapters">
+WriteString
+</A>
+, <A NAME="PrettyForm">
 
 </A>
 <H3>
@@ -155,17 +247,16 @@ PrettyPrinter
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-EvalFormula(expression)
+EvalFormula(expr)
 <H5>
 Parameters:
 </H5>
-expression - an expression
-
+expr - an expression
 <H5>
 Description:
 </H5>
 Show an evaluation in a nice way, using PrettyPrinter
-   to show 'input = output'.
+to show 'input = output'.
 <H5>
 Examples:
 </H5>
@@ -179,7 +270,6 @@ Taylor( x , 0 , 7 , Sin( x ) ) = x - -- + --- - ----
                                      6    120   5040
 
 Out&gt True 
-
 </PRE></TR>
 </TABLE>
 
@@ -193,181 +283,735 @@ PrettyForm
 
 </A>
 <H3>
-<HR>Write(...)
+<HR>Write
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Write(expr, ...)
+<H5>
+Parameters:
+</H5>
+expr - the expression to be printed
+<H5>
+Description:
+</H5>
 
-Write(...) : Write out the expressions contained in "..." (evaluated).
+The expression "expr" is evaluated and written to the current
+output. Note that Write accept an arbitrary number of arguments, all
+of which are written to the current output (see second
+example). Write always returns True.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Write(1);
+1Out> True;
+In> Write(1,2);
+ 1 2Out> True;</PRE></TR>
+</TABLE>
 
-
-<A NAME="WriteString">
+Write does not write a newline, so the <B><TT>Out></TT></B> prompt
+immediately follows the output of Write.
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Echo" TARGET="Chapters">
+Echo
+</A>
+, <A HREF="ref.html#WriteString" TARGET="Chapters">
+WriteString
+</A>
+, <A NAME="WriteString">
 
 </A>
 <H3>
-<HR>WriteString(string)
+<HR>WriteString
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+WriteString(string)
+<H5>
+Parameters:
+</H5>
+string - the string to be printed
+<H5>
+Description:
+</H5>
 
-WriteString(string) : Writes out a literal string, which should be of
-the form "string" (surrounded by quotes). The argument is evaluated.
+The expression "string" is evaluated and written to the current
+output without quotation marks. The argument should be a
+string. WriteString always returns True.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Write("Hello, world!");
+"Hello, world!"Out> True;
+In> WriteString("Hello, world!");
+Hello, world!Out> True;
+</PRE></TR>
+</TABLE>
 
-
-<A NAME="Space">
+This example clearly shows the difference between Write and
+WriteString. Note that Write and WriteString do not write a newline,
+so the <B><TT>Out></TT></B> prompt immediately follows the output.
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Echo" TARGET="Chapters">
+Echo
+</A>
+, <A HREF="ref.html#Write" TARGET="Chapters">
+Write
+</A>
+, <A NAME="Space">
 
 </A>
 <H3>
-<HR>Space(nr)
+<HR>Space
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
 
-Space(nr) : Print out "nr" spaces. The "nr"
-argument is optional, the default value being 1.
+Space() <br>
+Space(nr)
+<H5>
+Parameters:
+</H5>
+nr - the number of spaces to print
+<H5>
+Description:
+</H5>
 
+The command <B><TT>Space()</TT></B> prints one space on the
+current output. The second form prints "nr" spaces on the current
+output. The result is always True.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Space(5);
+     Out> True;
+</PRE></TR>
+</TABLE>
 
-<A NAME="NewLine">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Echo" TARGET="Chapters">
+Echo
+</A>
+, <A HREF="ref.html#Write" TARGET="Chapters">
+Write
+</A>
+, <A HREF="ref.html#NewLine" TARGET="Chapters">
+NewLine
+</A>
+, <A NAME="NewLine">
 
 </A>
 <H3>
-<HR>NewLine(nr)
+<HR>NewLine
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
 
-NewLine(nr) : Print out "nr" newlines. The "nr"
-argument is optional, the default value being 1.
+NewLine() <br>
+NewLine(nr)
+<H5>
+Parameters:
+</H5>
+nr - the number of newlines to print
+<H5>
+Description:
+</H5>
 
+The command <B><TT>NewLine()</TT></B> prints one newline character
+on the current output. The second form prints "nr" newlines on the
+current output. The result is always True.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> NewLine();
+     
+Out> True;
+</PRE></TR>
+</TABLE>
 
-<A NAME="FromFile">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Echo" TARGET="Chapters">
+Echo
+</A>
+, <A HREF="ref.html#Write" TARGET="Chapters">
+Write
+</A>
+, <A HREF="ref.html#Space" TARGET="Chapters">
+Space
+</A>
+, <A NAME="FromFile">
 
 </A>
 <H3>
-<HR>FromFile("file") body
+<HR>FromFile
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+FromFile(name) body
+<H5>
+Parameters:
+</H5>
 
-FromFile("file") body : Open "file" for reading, and execute body, returning
-its result.
+name - the name of the file to read <br>
+body - the command to be executed
+<H5>
+Description:
+</H5>
 
+The current input is connected to the file "name". Then the command
+"body" is executed. Everything that the commands in "body" read
+from current input, is now read from the file "name". Finally, the
+file is closed and the result of evaluating "body" is returned.
+<H5>
+Examples:
+</H5>
 
-<A NAME="FromString">
+Suppose that the file <B><TT>foo</TT></B> contains<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+2 + 5;
+</PRE></TR>
+</TABLE>
+ <P> </P>
+Then we can have the following dialogue:<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> FromFile("foo") res := Read();
+Out> 2+5;
+In> FromFile("foo") res := ReadToken();
+Out> 2;
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#ToFile" TARGET="Chapters">
+ToFile
+</A>
+, <A HREF="ref.html#FromString" TARGET="Chapters">
+FromString
+</A>
+, <A HREF="ref.html#Read" TARGET="Chapters">
+Read
+</A>
+, <A HREF="ref.html#ReadToken" TARGET="Chapters">
+ReadToken
+</A>
+, <A NAME="FromString">
 
 </A>
 <H3>
-<HR>FromString("string") body
+<HR>FromString
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+FromString(str) body;
+<H5>
+Parameters:
+</H5>
 
-FromString("string") body : use "string" to parse from when issuing
-a read from file, and execute body, returning its result.
+str - a string containing the text to parse <br>
+body - the command to be executed
+<H5>
+Description:
+</H5>
 
+The commands in "body" are executed, but everything that is read
+from the current input is now read from the string "str". The
+result of "body" is returned.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> FromString("2+5; this is never read") res := Read();
+Out> 2+5;
+In> FromString("2+5; this is never read") res := Eval(Read());
+Out> 7;
+</PRE></TR>
+</TABLE>
 
-<A NAME="ToString">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#ToString" TARGET="Chapters">
+ToString
+</A>
+, <A HREF="ref.html#FromFile" TARGET="Chapters">
+FromFile
+</A>
+, <A HREF="ref.html#Read" TARGET="Chapters">
+Read
+</A>
+, <A HREF="ref.html#ReadToken" TARGET="Chapters">
+ReadToken
+</A>
+, <A NAME="ToFile">
 
 </A>
 <H3>
-<HR>ToString() body
+<HR>ToFile
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+ToFile(name) body
+<H5>
+Parameters:
+</H5>
 
-ToString redirects all output (from Write or WriteString, for instance)
-to a string, and returns this string.
+name - the name of the file to write the result to <br>
+body - the command to be executed
+<H5>
+Description:
+</H5>
 
-<A NAME="Read">
+The current output is connected to the file "name". Then the command
+"body" is executed. Everything that the commands in "body" print
+to the current output, ends up in the file "name". Finally, the
+file is closed and the result of evaluating "body" is returned.
+<H5>
+Examples:
+</H5>
+
+Take first a look at the following command:<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> [ Echo("Result:");  PrettyForm(Taylor(x,0,9) Sin(x)); ];
+Result:
+
+     3    5      7       9  
+    x    x      x       x   
+x - -- + --- - ---- + ------
+    6    120   5040   362880
+
+Out> True;
+</PRE></TR>
+</TABLE>
+ <P> </P>
+Now suppose one wants to send the output of this command to a
+file. This can be achieved as follows:<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> ToFile("out") [ Echo("Result:");  PrettyForm(Taylor(x,0,9) Sin(x)); ];
+Out> True;
+</PRE></TR>
+</TABLE>
+ <P> </P>
+After this command the file <B><TT>out</TT></B> contains:<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE> 
+Result:
+
+     3    5      7       9  
+    x    x      x       x   
+x - -- + --- - ---- + ------
+    6    120   5040   362880
+
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#FromFile" TARGET="Chapters">
+FromFile
+</A>
+, <A HREF="ref.html#ToString" TARGET="Chapters">
+ToString
+</A>
+, <A HREF="ref.html#Echo" TARGET="Chapters">
+Echo
+</A>
+, <A HREF="ref.html#Write" TARGET="Chapters">
+Write
+</A>
+, <A HREF="ref.html#WriteString" TARGET="Chapters">
+WriteString
+</A>
+, <A HREF="ref.html#PrettyForm" TARGET="Chapters">
+PrettyForm
+</A>
+, <A HREF="ref.html#Taylor" TARGET="Chapters">
+Taylor
+</A>
+, <A NAME="ToString">
 
 </A>
 <H3>
-<HR>Read()
+<HR>ToString
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+ToString() body
+<H5>
+Parameters:
+</H5>
+body - the command to be executed
+<H5>
+Description:
+</H5>
 
-Read() : 
-Read expression from current input, and return result. When the end of an
-input file is encountered, the token atom "EndOfFile" is returned.
+The commands in "body" are executed. Everything that is printed on
+the current output, by <B><TT>Echo</TT></B> for instance, is
+collected in a string and this string is returned.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> str := ToString() \
+In>        [ WriteString("The square of 8 is "); Write(8^2); ];
+Out> "The square of 8 is  64";
+</PRE></TR>
+</TABLE>
 
-
-<A NAME="LispRead">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#FromFile" TARGET="Chapters">
+FromFile
+</A>
+, <A HREF="ref.html#ToString" TARGET="Chapters">
+ToString
+</A>
+, <A HREF="ref.html#Echo" TARGET="Chapters">
+Echo
+</A>
+, <A HREF="ref.html#Write" TARGET="Chapters">
+Write
+</A>
+, <A HREF="ref.html#WriteString" TARGET="Chapters">
+WriteString
+</A>
+, <A NAME="Read">
 
 </A>
 <H3>
-<HR>LispRead()
+<HR>Read
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Read()
+<H5>
+Parameters:
+</H5>
+none
+<H5>
+Description:
+</H5>
 
-Read() : 
-Read expression from current input, and return result. When the end of an
-input file is encountered, the token atom "EndOfFile" is returned.
-<P>  </P>
-This function is different from <B><TT>Read()</TT></B> in that it parses an expression
-in lisp syntax: so you need to type <B><TT>(+ a b)</TT></B> in stead of <B><TT>a+b</TT></B>. The advantage of lisp syntax is that it is less unambiguous than the
-infix operator grammar Yacas uses by default.
+Read an expression from the current input, and return it unevaluated. When
+the end of an input file is encountered, the token atom <B><TT>EndOfFile</TT></B> is returned.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> FromString("2+5;") Read();
+Out> 2+5;
+In> FromString("") Read();
+Out> EndOfFile;
+</PRE></TR>
+</TABLE>
 
-<A NAME="ReadToken">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#FromFile" TARGET="Chapters">
+FromFile
+</A>
+, <A HREF="ref.html#FromString" TARGET="Chapters">
+FromString
+</A>
+, <A HREF="ref.html#LispRead" TARGET="Chapters">
+LispRead
+</A>
+, <A HREF="ref.html#ReadToken" TARGET="Chapters">
+ReadToken
+</A>
+, <A HREF="ref.html#Write" TARGET="Chapters">
+Write
+</A>
+, <A NAME="LispRead">
 
 </A>
 <H3>
-<HR>ReadToken()
+<HR>LispRead
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+LispRead()
+<H5>
+Parameters:
+</H5>
+none
+<H5>
+Description:
+</H5>
 
-ReadToken() : Read token from current input, and return result.                          
-When the end of an input file is encountered, the token
-atom "EndOfFile" is returned.
+Read an expression in LISP syntax from the current input, and return
+it unevaluated. When the end of an input file is encountered, the
+token atom <B><TT>EndOfFile</TT></B> is returned. 
+<P> </P>
+The expression <B><TT>a+b</TT></B> is written in LISP syntax as <B><TT>(+ a b)</TT></B>. The advantage of this syntax is that it is
+less ambiguous than the infix operator grammar that Yacas uses by
+default.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> FromString("(+ a b)") LispRead();
+Out> a+b;
+In> FromString("(List (Sin x) (- (Cos x)))") LispRead();
+Out> {Sin(x),-Cos(x)};
+</PRE></TR>
+</TABLE>
 
-
-<A NAME="ToFile">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#FromFile" TARGET="Chapters">
+FromFile
+</A>
+, <A HREF="ref.html#FromString" TARGET="Chapters">
+FromString
+</A>
+, <A HREF="ref.html#Read" TARGET="Chapters">
+Read
+</A>
+, <A HREF="ref.html#ReadToken" TARGET="Chapters">
+ReadToken
+</A>
+, <A HREF="ref.html#FullForm" TARGET="Chapters">
+FullForm
+</A>
+, <A NAME="ReadToken">
 
 </A>
 <H3>
-<HR>ToFile("file")
+<HR>ReadToken
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+ReadToken()
+<H5>
+Parameters:
+</H5>
+none
+<H5>
+Description:
+</H5>
 
-ToFile("file") : 
-Open "file" for writing, and execute body, returning its result.
+Read a token from the current input, and return it unevaluated. When
+the end of an input file is encountered, the token atom <B><TT>EndOfFile</TT></B> is returned.  
+<P> </P>
+A token is for computer languages what a word is for human languages:
+it is the smallest unit in which a command can be divided, so that the
+semantics (that is the meaning) of the command is in some sense a
+combination of the semantics of the tokens. Hence <B><TT>a := foo</TT></B> consists of three tokens, namely <B><TT>a</TT></B>, <B><TT>:=</TT></B>, and <B><TT>foo</TT></B>.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> FromString("a := Sin(x)") \
+In>    While((tok := ReadToken()) != EndOfFile) Echo(tok);
+a 
+:= 
+Sin 
+( 
+x 
+) 
+Out> True
+</PRE></TR>
+</TABLE>
 
-
-<A NAME="Load">
+<H5>
+Bugs:
+</H5>
+In fact, <B><TT>ReadToken</TT></B> never returns <B><TT>EndOfFile</TT></B>. Hence the example above will end up in an
+endless loop and not display anything.
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#FromFile" TARGET="Chapters">
+FromFile
+</A>
+, <A HREF="ref.html#FromString" TARGET="Chapters">
+FromString
+</A>
+, <A HREF="ref.html#Read" TARGET="Chapters">
+Read
+</A>
+, <A HREF="ref.html#LispRead" TARGET="Chapters">
+LispRead
+</A>
+, <A NAME="Load">
 
 </A>
 <H3>
-<HR>Load("filename")
+<HR>Load
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Load(name)
+<H5>
+Parameters:
+</H5>
+name - name of the file to load
+<H5>
+Description:
+</H5>
 
-Load("filename") : Reads in and evaluates expressions from the file
-with file name filename.
-
-See also "Use".
-
-
-<A NAME="Use">
+The file "name" is opened. All expressions in the file are read and
+evaluated. <B><TT>Load</TT></B> always returns <B><TT>true</TT></B>.
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Use" TARGET="Chapters">
+Use
+</A>
+, <A HREF="ref.html#DefLoad" TARGET="Chapters">
+DefLoad
+</A>
+, <A HREF="ref.html#DefaultDirectory" TARGET="Chapters">
+DefaultDirectory
+</A>
+, <A HREF="ref.html#FindFile" TARGET="Chapters">
+FindFile
+</A>
+, <A NAME="Use">
 
 </A>
 <H3>
-<HR>Use("filename")
+<HR>Use
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+Use(name)
+<H5>
+Parameters:
+</H5>
+name - name of the file to load
+<H5>
+Description:
+</H5>
 
-
-Use("filename") : Reads in and evaluates expressions from the file
-with file name filename if it hasn't been loaded before. This function
-makes sure the file will at least have been loaded, but not loaded twice.
-
-See also "Load".
-
-
-<A NAME="DefLoad">
+If the file "name" has been loaded before, either by an earlier call
+to <B><TT>Use</TT></B> or via the <B><TT>DefLoad</TT></B>
+mechanism, nothing happens. Otherwise all expressions in the file are
+read and evaluated. <B><TT>Use</TT></B> always returns <B><TT>true</TT></B>.
+<P> </P>
+The purpose of this function is to make sure that the file will at
+least have been loaded, but is not loaded twice.
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Load" TARGET="Chapters">
+Load
+</A>
+, <A HREF="ref.html#DefLoad" TARGET="Chapters">
+DefLoad
+</A>
+, <A HREF="ref.html#DefaultDirectory" TARGET="Chapters">
+DefaultDirectory
+</A>
+, <A NAME="DefLoad">
 
 </A>
 <H3>
-<HR>DefLoad("filename")
+<HR>DefLoad
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+DefLoad(name)
+<H5>
+Parameters:
+</H5>
+name - name of the file (without <B><TT>.def</TT></B> suffix)
+<H5>
+Description:
+</H5>
 
-
-DefLoad("filename") : Loads a file filename.def, which should have a
-list of functions, terminated by a }. This tells the system to load
-the file "filename" as soon as the user calls one of the functions
-named in the file (if not done so already). This allows for faster
-startup times, since not all of the rules databases need to be loaded,
-just the descriptions on which files to load for which functions.
-
-<A NAME="FindFile">
+The suffix <B><TT>.def</TT></B> is appended to "name" and the
+file with this name is loaded. It should contain a list of functions,
+terminated by a <B><TT>}</TT></B> (end-of-list character). This
+tells the system to load the file "name" as soon as the user calls
+one of the functions named in the file (if not done so already). This
+allows for faster startup times, since not all of the rules databases
+need to be loaded, just the descriptions on which files to load for
+which functions.
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Load" TARGET="Chapters">
+Load
+</A>
+, <A HREF="ref.html#Use" TARGET="Chapters">
+Use
+</A>
+, <A HREF="ref.html#DefaultDirectory" TARGET="Chapters">
+DefaultDirectory
+</A>
+, <A NAME="FindFile">
 
 </A>
 <H3>
-<HR>FindFile(name)
+<HR>FindFile
 </H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+FindFile(name)
+<H5>
+Parameters:
+</H5>
+name - name of the file to find
+<H5>
+Description:
+</H5>
 
-FindFile returns the file that would be opened when a Load(name)
-would be invoked. It returns the full path to the file.
-
-<A NAME="PatchLoad">
+The result of this command is the full path to the file that would be
+opened when the command <B><TT>Load(name)</TT></B> would be
+invoked. This means that the input directories are subsequently
+searched for a file called "name". If such a file is not found, <B><TT>FindFile</TT></B> returns an empty string.
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Load" TARGET="Chapters">
+Load
+</A>
+, <A HREF="ref.html#DefaultDirectory" TARGET="Chapters">
+DefaultDirectory
+</A>
+, <A NAME="PatchLoad">
 
 </A>
 <H3>
@@ -376,11 +1020,11 @@ would be invoked. It returns the full path to the file.
 Internal function<br><H5>
 Calling Sequence:
 </H5>
-PatchLoad(filename)
+PatchLoad(name)
 <H5>
 Parameters:
 </H5>
-filename - the file to patch
+name - the file to patch
 <H5>
 Description:
 </H5>
@@ -416,10 +1060,31 @@ Nl()
 <H5>
 Description:
 </H5>
-This function returns a string with one element in it, a new line
-  character. Useful for building strings to send to some output in the
-  end.
 
+This function returns a string with one element in it, namely a newline
+character. This may be useful for building strings to send to some
+output in the end.
+<P> </P>
+Note that the second letter in the name of this command is a lower
+case <B><TT>L</TT></B> (from "line").
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> WriteString("First line" : Nl() : "Second line" : Nl());
+First line
+Second line
+Out> True;</PRE></TR>
+</TABLE>
+
+<H5>
+See also:
+</H5>
+<A HREF="ref.html#NewLine" TARGET="Chapters">
+NewLine
+</A>
+, 
 </BODY>
 
 </FONT>
