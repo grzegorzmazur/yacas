@@ -1,6 +1,6 @@
 ;; yacas-notebook.el  Mode for interaction with Yacas from TeX buffer
 ;;; Written 2/12/1991 by Dan Dill dan@chem.bu.edu
-;;; Modified August 2000 by Jay Belanger
+;;; Modified 2000-2001 by Jay Belanger
 ;;; Copyright (C) 1991, 1993 Dan Dill (dan@chem.bu.edu) 1999 Jay Belanger
 ;;; (belanger@truman.edu)
 ;;; This is part of Yacas-Notebook
@@ -21,61 +21,62 @@
 
 (require 'yacas)
 (require 'font-lock)
-(require 'font-latex)
-(require 'easymenu)
 
-(defvar yacas-notebook-temp-dir
+(defvar ynb-use-tex 'auctex
+  "Determines which TeX mode yacas-notebook should use.
+Choices are 'auctex, 'tex and nil")
+
+(defvar ynb-info-dir "")
+
+(defvar ynb-temp-dir
   "/tmp/"
   "*Directory for temporary files.
 Specify \"\" to use the directory of the Yacas-Notebook document buffer.")
 
-(defvar yacas-notebook-output-marker "\\output"
+(defvar ynb-output-marker "\\output"
   "*Contents of line separating input and output portion of cell.")
 
-(defvar yacas-notebook-abbreviations-allowed nil
+(defvar ynb-abbreviations-allowed nil
   "*If non-nil, then `...' abbreviations are allowed in cell labels 
 and references. Note that enabling this options will slow cell and 
 package assembly.")
 
-(defvar yacas-notebook-max-references 5
+(defvar ynb-max-references 5
   "*Number of references in a cell below which cell references are fetched
 as needed, scanning the entire document for each reference.  At or above this
 number, all cells in a document for the given filename are precollated in a
 single scan of the document.")
 
-(defvar yacas-notebook-tex-string
+(defvar ynb-tex-string
   "TeXForm(%);")
 
-(setq yacas-notebook-texform nil)
+(setq ynb-texform nil)
 
-;;; @@ Data structures
-
-(defvar yacas-notebook-dereference-path nil
+(defvar ynb-dereference-path nil
   "List of buffers referenced in cell assembly.
-Used by `yacas-notebook-dereference-buffer' to detect self-reference.")
+Used by `ynb-dereference-buffer' to detect self-reference.")
 
-(defvar yacas-notebook-error-point nil
+(defvar ynb-error-point nil
   "Buffer position where error detected.")
 
-(defvar yacas-notebook-buffer-alist nil
+(defvar ynb-buffer-alist nil
   "Alist of temporary buffers associate with cells `file:part'.
 The buffers are used in package and cell assembly.")
 
-(defvar yacas-notebook-source-buffer nil
-  "Buffer from which yacas-notebook-collate-cells works.")
+(defvar ynb-source-buffer nil
+  "Buffer from which ynb-collate-cells works.")
 
-(defconst yacas-notebook-temp-suffix 0
+(defconst ynb-temp-suffix 0
   "Temporary filename suffix.  Incremented by 1 for each filename.")
 
-(defun yacas-notebook-make-temp-name ()
+(defun ynb-make-temp-name ()
   "Return a unique filename."
-  (setq yacas-notebook-temp-suffix (+ yacas-notebook-temp-suffix 1))
+  (setq ynb-temp-suffix (+ ynb-temp-suffix 1))
   (concat (concat (make-temp-name "#mz") "-")
-          yacas-notebook-temp-suffix
-          ".mu")
-  )
+          ynb-temp-suffix
+          ".mu"))
 
-(defun yacas-notebook-mark-file-as-yacas-notebook ()
+(defun ynb-mark-file-as-yacas-notebook ()
   "Mark the file as an Yacas-Notebook buffer.
 The next time the file is loaded, it will then be in Yacas-Notebook mode"
   (interactive)
@@ -85,20 +86,19 @@ The next time the file is loaded, it will then be in Yacas-Notebook mode"
     (if (looking-at ".*-\\*-Yacas-Notebook-\\*-")
 	()
       (open-line 1)
-      (insert "%-*-Yacas-Notebook-*-")
-      )))
+      (insert "%-*-Yacas-Notebook-*-"))))
 
 ;;; @@ Initialization
 
-(defun yacas-notebook-replace-assoc (alist key val)
-  "Replace ALIST KEY VALUE, if KEY present, else add KEY VALUE.
+(defun ynb-replace-assoc (alist key val)
+  "Replace ALIST KEY VALuE, if KEY present, else add KEY VALUE.
 Return modified alist."
   (if (assoc key alist)
       (setcdr (assoc key alist) val)
     (setcdr alist (cons (cons key val) (cdr alist))))
   alist)
 
-(defun yacas-notebook-toggle-init ()
+(defun ynb-toggle-init ()
   "Toggle initialization marker of TYPE cell containing point."
   (interactive)
   (save-excursion
@@ -106,47 +106,55 @@ Return modified alist."
     (goto-char (match-end 0))
     (if (looking-at "\\[\\* Initialization Cell \\*\\]")
         (delete-region (match-beginning 0) (match-end 0))
-      (insert "[* Initialization Cell *]")
-      )))
+      (insert "[* Initialization Cell *]"))))
 
-(defun yacas-notebook-update-all (arg)
+(defun ynb-package-part ()
+  "Toggle initialization marker of TYPE cell containing point."
+  (interactive)
+  (save-excursion
+    (let ((package (read-string "Package: " "...:")))
+      (re-search-backward "^\\\\mupad")
+      (goto-char (match-end 0))
+      (insert (concat "<" package ">")))))
+
+(defun ynb-update-all (arg)
   "Optionally update all cells.
 With C-u prefix, update without confirmation at each cell."
   (interactive "P")
   (if arg
-      (yacas-notebook-update nil nil nil)
-    (yacas-notebook-update nil (y-or-n-p "Interactive update ? ") nil)))
+      (ynb-update nil nil nil)
+    (ynb-update nil (y-or-n-p "Interactive update ? ") nil)))
 
-(defun yacas-notebook-tex-update-all (arg)
+(defun ynb-tex-update-all (arg)
   "Optionally update all cells and return output in TeX form.
 With C-u prefix, update without confirmation at each cell."
   (interactive "P")
   (if arg
-      (yacas-notebook-update nil nil t)
-    (yacas-notebook-update nil (y-or-n-p "Interactive update ? ") t)))
+      (ynb-update nil nil t)
+    (ynb-update nil (y-or-n-p "Interactive update ? ") t)))
 
-(defun yacas-notebook-update-init (arg)
+(defun ynb-update-init (arg)
   "Optionally update all initialization cells.
 With C-u prefix, update without confirmation at each cell."
   (interactive "P")
   (if arg
-      (yacas-notebook-update "\\[\\* Initialization Cell \\*\\]" nil nil)
-    (yacas-notebook-update "\\[\\* Initialization Cell \\*\\]" 
+      (ynb-update "\\[\\* Initialization Cell \\*\\]" nil nil)
+    (ynb-update "\\[\\* Initialization Cell \\*\\]" 
 			   (y-or-n-p "Interactive update ? ") nil)))
 
-(defun yacas-notebook-tex-update-init (arg)
+(defun ynb-tex-update-init (arg)
   "Optionally update all initialization cells and return output in TeX form.
 With C-u prefix, update without confirmation at each cell."
   (interactive "P")
   (if arg
-      (yacas-notebook-update "\\[\\* Initialization Cell \\*\\]" nil t)
-    (yacas-notebook-update "\\[\\* Initialization Cell \\*\\]" 
+      (ynb-update "\\[\\* Initialization Cell \\*\\]" nil t)
+    (ynb-update "\\[\\* Initialization Cell \\*\\]" 
 			   (y-or-n-p "Interactive update ? ") t)))
 
-(defun yacas-notebook-create-cell ()
+(defun ynb-create-cell ()
   "Insert cell in buffer."
   (interactive)
-  (if (yacas-notebook-cell-p)
+  (if (ynb-cell-p)
       (error "Cell already exists")
     (if (not (bolp))
         (progn
@@ -156,39 +164,37 @@ With C-u prefix, update without confirmation at each cell."
     (beginning-of-line)
     (previous-line 1)))
 
-(defun yacas-notebook-forward-cell ()
+(defun ynb-forward-cell ()
   "Move to next cell."
   (interactive)
     (let ((cur-pos (point))
           (cell-pos (point-max))
           new-pos)
-        (setq new-pos (yacas-notebook-next-cell-start))
+        (setq new-pos (ynb-next-cell-start))
         (if (not (equal new-pos cur-pos))
             (if (> new-pos cell-pos)
                 nil
               (setq cell-pos new-pos)))
       (if (equal cell-pos (point-max))
           nil; No more cells
-        (goto-char cell-pos)
-       )))
+        (goto-char cell-pos))))
 
-(defun yacas-notebook-backward-cell ()
+(defun ynb-backward-cell ()
   "Move to previous cell."
   (interactive)
     (let ((cur-pos (point))
           (cell-pos (point-min))
           new-pos)
-        (setq new-pos (yacas-notebook-previous-cell-start))
+        (setq new-pos (ynb-previous-cell-start))
         (if (not (equal new-pos cur-pos))
             (if (< new-pos cell-pos)
                 nil
               (setq cell-pos new-pos)))
       (if (equal cell-pos (point-min))
           nil ; No more cells
-        (goto-char cell-pos)
-       )))
+        (goto-char cell-pos))))
 
-(defun yacas-notebook-update (kind ask tex)
+(defun ynb-update (kind ask tex)
   "Optionally update all KIND cells.
 If ASK is non-nil, then ask whether each KIND cell is to be updated,
 else update each KIND cell.  If KIND is nil, update all cells.
@@ -196,7 +202,7 @@ If TEX is non-nil, then insert \\outputtex instead of \\output."
   (let (bypass display-start display-end cur-pos)
     (save-excursion
       (goto-char (point-min))
-      (while (yacas-notebook-forward-cell)
+      (while (ynb-forward-cell)
         (forward-line -1)
         (if (not (looking-at (concat "^\\\\yacas" kind)))
             (progn
@@ -204,7 +210,7 @@ If TEX is non-nil, then insert \\outputtex instead of \\output."
               nil) ; Wrong kind of cell
           ;; We have a cell of the right kind
           (setq display-start (point))
-          (goto-char (yacas-notebook-cell-end))
+          (goto-char (ynb-cell-end))
           (forward-line 1) ; We need to include cell trailer in narrowed region
           (end-of-line)    ; ..
           (setq display-end (point))
@@ -217,7 +223,7 @@ If TEX is non-nil, then insert \\outputtex instead of \\output."
                 (forward-line 1)
                 (if (and ask (not (y-or-n-p "Update this cell? ")))
                     t
-                  (yacas-notebook-update-type-cell tex)
+                  (ynb-update-type-cell tex)
 ))
             (widen) ; If user aborts evaluation at prompt
             ) ; unwind-protect
@@ -226,17 +232,15 @@ If TEX is non-nil, then insert \\outputtex instead of \\output."
       ) ; save-excursion
     (widen)
 ;    (beep)
-    (message "Update of cells finished")
-    ) ; let
-  )
+    (message "Update of cells finished")))
 
-(defun yacas-notebook-eval-init ()
+(defun ynb-eval-init ()
   "Evaluate all initialization cells, without returning the output."
   (interactive)
   (let (bypass display-start display-end cur-pos)
     (save-excursion
       (goto-char (point-min))
-      (while (yacas-notebook-forward-cell)
+      (while (ynb-forward-cell)
         (forward-line -1)
         (if (not (looking-at "^\\\\yacas\\[\\* Initialization Cell \\*\\]"))
             (progn
@@ -244,7 +248,7 @@ If TEX is non-nil, then insert \\outputtex instead of \\output."
               nil) ; Wrong kind of cell
           ;; We have a cell of the right kind
           (setq display-start (point))
-          (goto-char (yacas-notebook-cell-end))
+          (goto-char (ynb-cell-end))
           (forward-line 1) ; We need to include cell trailer in narrowed region
           (end-of-line)    ; ..
           (setq display-end (point))
@@ -255,7 +259,7 @@ If TEX is non-nil, then insert \\outputtex instead of \\output."
                 (goto-char (point-min))
                 (recenter 1) ; force display, just in case...
                 (forward-line 1)
-                (yacas-notebook-send-cell))
+                (ynb-send-cell))
             (widen) ; If user aborts evaluation at prompt
             ) ; unwind-protect
           ) ; if in a valid cell
@@ -263,11 +267,9 @@ If TEX is non-nil, then insert \\outputtex instead of \\output."
       ) ; save-excursion
     (widen)
 ;    (beep)
-    (message "Evaluation of initialization cells finished")
-    ) ; let
-  )
+    (message "Evaluation of initialization cells finished")))
 
-(defun yacas-notebook-cell-start ()
+(defun ynb-cell-start ()
   "Return position of start of cell containing point."
   (let ((begin-re "^\\\\yacas"))
   (save-excursion
@@ -276,7 +278,7 @@ If TEX is non-nil, then insert \\outputtex instead of \\output."
     (forward-line 1)
     (point))))
 
-(defun yacas-notebook-cell-end ()
+(defun ynb-cell-end ()
   "Return position of end of cell containing point."
   (let ((end-re "^\\\\endyacas"))
     (save-excursion
@@ -285,7 +287,7 @@ If TEX is non-nil, then insert \\outputtex instead of \\output."
       (end-of-line)
       (point))))
 
-(defun yacas-notebook-previous-cell-start ()
+(defun ynb-previous-cell-start ()
   "Get start of preceding cell.  If none, return current position."
   (let ((cur-pos (point))
         (start nil)
@@ -294,14 +296,14 @@ If TEX is non-nil, then insert \\outputtex instead of \\output."
     (save-excursion
       (if (not (re-search-backward end-re (point-min) t))
           cur-pos
-        (if (yacas-notebook-cell-p)
+        (if (ynb-cell-p)
             (progn
               (re-search-backward begin-re)
               (forward-line 1)
               (point))
           cur-pos)))))
               
-(defun yacas-notebook-next-cell-start ()
+(defun ynb-next-cell-start ()
   "Get start of next cell.  If none, return current position."
   (let ((cur-pos (point))
         (start nil)
@@ -310,13 +312,13 @@ If TEX is non-nil, then insert \\outputtex instead of \\output."
     (save-excursion
       (if (re-search-forward begin-re (point-max) t)
           (progn
-            (if (not (yacas-notebook-cell-p))
+            (if (not (ynb-cell-p))
                 cur-pos)
             (forward-line 1)
             (point))
         cur-pos))))
 
-(defun yacas-notebook-cell-p ()
+(defun ynb-cell-p ()
   "Returns t if point is in a Yacas-Notebook cell, else returns nil."
   (let ((begin-re "^\\\\yacas")
         (end-re "^\\\\endyacas")
@@ -338,32 +340,31 @@ If TEX is non-nil, then insert \\outputtex instead of \\output."
             (throw 'done nil) ; Intervening \begin{...}
           (throw 'done t)))))) ; In a cell
         
-(defun yacas-notebook-newline ()
+(defun ynb-newline ()
   "yacas-newline if in a cell, otherwise newline"
   (interactive)
-  (if (yacas-notebook-cell-p)
+  (if (ynb-cell-p)
       (yacas-newline)
-    (newline)
-))
+    (newline)))
 
-(defun yacas-notebook-delete-output ()
+(defun ynb-delete-output ()
   "Delete current output (if any).  Assumes point in cell.
 Output assumed to follow input, separated by a 
-yacas-notebook-output-marker line.  Input *may* contain blank lines."
+ynb-output-marker line.  Input *may* contain blank lines."
   (interactive)
-  (let ((out-start (yacas-notebook-output-p)))
+  (let ((out-start (ynb-output-p)))
     (if out-start
-        (delete-region out-start (yacas-notebook-cell-end))
+        (delete-region out-start (ynb-cell-end))
       t)))
 
-(defun yacas-notebook-output-p ()
+(defun ynb-output-p ()
   "Return start of output text if present, else return nil.  Assumes
 point in cell.  Output assumed to follow input, separated by a
 \output."
   (save-excursion
-    (goto-char (yacas-notebook-cell-start))
+    (goto-char (ynb-cell-start))
     (if (re-search-forward "^\\\\output"
-         (yacas-notebook-cell-end) t)
+         (ynb-cell-end) t)
         (progn
           (forward-line -1)
           (end-of-line)
@@ -372,15 +373,15 @@ point in cell.  Output assumed to follow input, separated by a
 
 ;;; @@ Yacas-Notebook functions for package assembly
 
-(defun yacas-notebook-assemble (arg)
- "Assemble package (see yacas-notebook-assemble-package), or, with C-u prefix,
-assemble references within a cell (see yacas-notebook-assemble-cell)."
+(defun ynb-assemble (arg)
+ "Assemble package (see ynb-assemble-package), or, with C-u prefix,
+assemble references within a cell (see ynb-assemble-cell)."
   (interactive "P")
   (if arg
-      (yacas-notebook-assemble-cell)
-    (yacas-notebook-assemble-package)))
+      (ynb-assemble-cell)
+    (ynb-assemble-package)))
 
-(defun yacas-notebook-assemble-cell (&optional delete)
+(defun ynb-assemble-cell (&optional delete)
   "Assemble references in cell to file with unique name.  The buffer used to
 write the file is not deleted, unless optional DELETE is non-nil.
 Return the filename."
@@ -389,20 +390,20 @@ Return the filename."
 
   ;; The text of the cell is written to a buffer with key `file:part'.  Then
   ;; the number of references in the cell is counted.  If the number of
-  ;; references in the cell is less than yacas-notebook-max-references, 
+  ;; references in the cell is less than ynb-max-references, 
   ;; then the cell references are resolved by successive calls to 
-  ;; yacas-notebook-dereference-buffer
+  ;; ynb-dereference-buffer
   ;; which collates the text for cell references as needed, using
-  ;; yacas-notebook-collate-cells.  If the number of references is equal to or
-  ;; greater than yacas-notebook-max-references, then all cells in the document
+  ;; ynb-collate-cells.  If the number of references is equal to or
+  ;; greater than ynb-max-references, then all cells in the document
   ;; correpsonding to the current cell type and filename are collated into
-  ;; buffers, using yacas-notebook-collate-cells, and then the all cell 
+  ;; buffers, using ynb-collate-cells, and then the all cell 
   ;; references are are resolved by successive calls to 
-  ;; yacas-notebook-dereference-buffer.
+  ;; ynb-dereference-buffer.
 
-  ;; The global`yacas-notebook-buffer-alist' associates buffer names with keys.
+  ;; The global`ynb-buffer-alist' associates buffer names with keys.
   ;; Buffer names are unique.  The names of all buffers are constructed with
-  ;; `yacas-notebook-make-temp-name' and are unique.  All buffers except 
+  ;; `ynb-make-temp-name' and are unique.  All buffers except 
   ;; possibly the cell-buffer are deleted on exit.
 
   (interactive)
@@ -410,69 +411,66 @@ Return the filename."
         files parts file part 
         ref-count
         cell-key cell-buffer tmp-alist tmp-buffer)
-    (if (not (yacas-notebook-cell-p)) (error "Not in a cell"))
-    (if (not (yacas-notebook-reference-p)) 
+    (if (not (ynb-cell-p)) (error "Not in a cell"))
+    (if (not (ynb-reference-p)) 
 	(error "Cell contains no references"))
     (save-excursion
-      (goto-char (yacas-notebook-cell-start))
+      (goto-char (ynb-cell-start))
       (forward-line -1)
       (if (not (looking-at "^\\\\yacas.*<.*:.*>"))
           (error "Cell is not marked"))
 
-      (setq yacas-notebook-error-point (point))
-      (if yacas-notebook-abbreviations-allowed
+      (setq ynb-error-point (point))
+      (if ynb-abbreviations-allowed
           (unwind-protect ; In case filename errors
               ;; This can take some seconds
               (progn
                 (message "Getting filenames...")
-                (setq files (yacas-notebook-get-filenames))
+                (setq files (ynb-get-filenames))
                 (message "")
                 )
-            (goto-char yacas-notebook-error-point)))
+            (goto-char ynb-error-point)))
 
-      (setq file (yacas-notebook-get-filename files))
+      (setq file (ynb-get-filename files))
       (if (not file) (error "Ambiguous filename"))
 
-      (if yacas-notebook-abbreviations-allowed
+      (if ynb-abbreviations-allowed
           ;; This can take several seconds for a document with many cells
           (progn
             (message "Getting partnames")
-            (setq parts (yacas-notebook-get-partnames file files))
+            (setq parts (ynb-get-partnames file files))
             (message "")
             ))
 
-      (setq part (yacas-notebook-get-partname parts))
-      (if  (not part) (error "Ambiguous partname"))
-
-      ) ; save-excursion
+      (setq part (ynb-get-partname parts))
+      (if  (not part) (error "Ambiguous partname"))) ; save-excursion
 
     (setq cell-key (concat file ":"))
     (if (not (equal part "")) (setq cell-key (concat cell-key part)))
     (message "Assembling `%s' ..." cell-key) ; (sleep-for 1)
-    (setq cell-buffer (yacas-notebook-make-temp-name))
-    (setq yacas-notebook-buffer-alist (list (cons cell-key cell-buffer)))
+    (setq cell-buffer (ynb-make-temp-name))
+    (setq ynb-buffer-alist (list (cons cell-key cell-buffer)))
     (unwind-protect
         (save-excursion
-          (yacas-notebook-append-cell-to-buffer cell-buffer)
-          (setq yacas-notebook-source-buffer (current-buffer)) 
+          (ynb-append-cell-to-buffer cell-buffer)
+          (setq ynb-source-buffer (current-buffer)) 
                                                           ; Collate from here
 
-          (if (< (yacas-notebook-reference-count cell-buffer) 
-		 yacas-notebook-max-references)
+          (if (< (ynb-reference-count cell-buffer) 
+		 ynb-max-references)
               ;; Build reference buffers as needed
                 (while 
-		  (yacas-notebook-dereference-buffer cell-key files parts nil))
+		  (ynb-dereference-buffer cell-key files parts nil))
             ;; Prebuild all reference buffers
-            (yacas-notebook-collate-cells file part files parts nil)
+            (ynb-collate-cells file part files parts nil)
             (while 
-              (yacas-notebook-dereference-buffer cell-key files parts nil nil))
+              (ynb-dereference-buffer cell-key files parts nil nil))
             )
           (set-buffer cell-buffer)
-          (write-file (concat yacas-notebook-temp-dir cell-buffer))
-          (set-buffer home-buffer)
-          )
+          (write-file (concat ynb-temp-dir cell-buffer))
+          (set-buffer home-buffer))
       ;; unwind-protect forms: deleted cell buffers
-      (setq tmp-alist yacas-notebook-buffer-alist)
+      (setq tmp-alist ynb-buffer-alist)
       (while (setq tmp-buffer (cdr (car tmp-alist)))
         (setq tmp-alist (cdr tmp-alist))
         (condition-case nil ; In case buffer not actually created
@@ -482,12 +480,10 @@ Return the filename."
           (error nil)))
       ) ; unwind-protect
     (message "`%s' assembled in file `%s%s'" 
-	     cell-key yacas-notebook-temp-dir cell-buffer)
-    (concat yacas-notebook-temp-dir cell-buffer)
-    ) ; let
-  ) ; done
+	     cell-key ynb-temp-dir cell-buffer)
+    (concat ynb-temp-dir cell-buffer))) ; done
 
-(defun yacas-notebook-assemble-package (&optional file overwrite)
+(defun ynb-assemble-package (&optional file overwrite)
   "Assemble text into a package buffer and write that buffer to a file.
 The buffer is *not* deleted.  Return the filename.
 
@@ -507,41 +503,39 @@ without asking."
   ;; Once the cell buffers have been created, then all cell references in the
   ;; package buffer, with key `FILE', are replaced by the contents of the
   ;; corresponding buffers with keys `file:part', by successive calls to
-  ;; yacas-notebook-dereference-buffer.
+  ;; ynb-dereference-buffer.
 
-  ;; The global `yacas-notebook-buffer-alist' associates buffer names with keys.
+  ;; The global `ynb-buffer-alist' associates buffer names with keys.
   ;; Buffer names are unique.  The names of all buffers are constructed with
-  ;; `yacas-notebook-make-temp-name' and are unique.    All buffers
+  ;; `ynb-make-temp-name' and are unique.    All buffers
   ;; except the package buffer `FILE' are deleted on exit.
 
   (interactive)
   (let ((home-buffer (current-buffer))
         files parts prompt
-        tmp-buffer tmp-alist file-buffer
-        )
+        tmp-buffer tmp-alist file-buffer)
 
     (if (not file)
         ;; If file has not been specifed, prompt
         (progn
               ;; Get default file from cell label, if any
               (save-excursion
-                (goto-char (yacas-notebook-cell-start))
+                (goto-char (ynb-cell-start))
                 (forward-line -1)
                 (if (looking-at "^\\\\yacas.*<.*:.*>")
                     (progn
-                      (setq yacas-notebook-error-point (point))
+                      (setq ynb-error-point (point))
                       (unwind-protect ; In case filename errors
-                          (if yacas-notebook-abbreviations-allowed
+                          (if ynb-abbreviations-allowed
                               ;; This can take some seconds
                               (progn
                                (message "Getting filenames...")
                                (if (not (setq files 
-					       (yacas-notebook-get-filenames)))
+					       (ynb-get-filenames)))
                                  (error "No complete package filenames found"))
-                               (message "")
-                               ))
-                        (goto-char yacas-notebook-error-point))
-                      (setq file (yacas-notebook-get-filename files)))))
+                               (message "")))
+                        (goto-char ynb-error-point))
+                      (setq file (ynb-get-filename files)))))
           (setq file (read-from-minibuffer "Package file: " file))
           (if (or (not file) (equal file "")) (error "No file specified"))
           ) ; if file not specified in function call
@@ -559,52 +553,47 @@ without asking."
     
     (if (get-buffer file) (kill-buffer file))
 
-    (if yacas-notebook-abbreviations-allowed
+    (if ynb-abbreviations-allowed
         ;; This can take several seconds for a document with many cells
         (progn
           (message "Getting partnames...")
-          (setq parts (yacas-notebook-get-partnames file files))
-          (message "")
-          ))
+          (setq parts (ynb-get-partnames file files))
+          (message "")))
 
     (message "Assembling package `%s' ..." file) ;(sleep-for 1)
 
     ;; Set where assembly will occur
-    (setq file-buffer (yacas-notebook-make-temp-name))
-    (setq yacas-notebook-buffer-alist (list (cons file file-buffer)))
+    (setq file-buffer (ynb-make-temp-name))
+    (setq ynb-buffer-alist (list (cons file file-buffer)))
 
     (unwind-protect ; So buffer can be deleted even if errors or abort
         (progn
-          (setq yacas-notebook-source-buffer (current-buffer)) 
+          (setq ynb-source-buffer (current-buffer)) 
 					; Collate from here
-          (yacas-notebook-collate-cells file nil files parts nil)
-          (or (get-buffer (cdr (assoc file yacas-notebook-buffer-alist)))
+          (ynb-collate-cells file nil files parts nil)
+          (or (get-buffer (cdr (assoc file ynb-buffer-alist)))
               (error "No `%s' cell `%s:' found" file))
           
           ;; OK, here we go:  Recursively dereference the cell buffer:
-          (while (yacas-notebook-dereference-buffer file files parts))
+          (while (ynb-dereference-buffer file files parts))
 
           (set-buffer file-buffer)
           (write-file file)
-          (set-buffer home-buffer)
-          )
+          (set-buffer home-buffer))
       ;; unwind-protect tail:  Delete part files
-      (setq tmp-alist yacas-notebook-buffer-alist)
+      (setq tmp-alist ynb-buffer-alist)
       (while (setq tmp-buffer (cdr (car tmp-alist)))
         (setq tmp-alist (cdr tmp-alist))
         (condition-case nil ; In case buffer not actually created
             (if (equal tmp-buffer file-buffer)
                 nil ; Don't delete the package buffer
               (kill-buffer tmp-buffer))
-          (error nil)))
-      ) ; unwind-protect
+          (error nil)))) ; unwind-protect
     (message "Package `%s' assembled" file)
 ;    file
-    (switch-to-buffer-other-window file)
-    ) ; let
-  ) ; done
+    (switch-to-buffer-other-window file))) ; done
 
-(defun yacas-notebook-reference-count (buffer)
+(defun ynb-reference-count (buffer)
   "Return the number of references in BUFFER."
   (let ((count 0)
         (home-buffer (current-buffer)))
@@ -615,25 +604,24 @@ without asking."
             (setq count (+ count 1)))
           (set-buffer home-buffer)
           )
-    count
-    ))
+    count))
 
-(defun yacas-notebook-append-cell-to-buffer (buffer)
+(defun ynb-append-cell-to-buffer (buffer)
   "Append text of cell containing point to BUFFER.
 Create BUFFER if it does not exist."
-  (if (not (yacas-notebook-cell-p))
+  (if (not (ynb-cell-p))
       (error "Not in a cell.")
     (let ((home-buffer (current-buffer))
-          (start (yacas-notebook-cell-start))
+          (start (ynb-cell-start))
           end)
       (save-excursion
 	(goto-char start)
 	(beginning-of-line)
         (while (looking-at "^ *$") (forward-line 1))
 	(setq start (point))
-	(if (not (setq end (yacas-notebook-output-p)))
+	(if (not (setq end (ynb-output-p)))
 	    (progn
-	      (goto-char (yacas-notebook-cell-end))
+	      (goto-char (ynb-cell-end))
 	      (while (looking-at "^ *$") (forward-line -1))
 	      (end-of-line)
 	      (setq end (point)))
@@ -645,56 +633,53 @@ Create BUFFER if it does not exist."
         (set-buffer (get-buffer-create buffer))
         (goto-char (point-max))
         (insert-buffer-substring home-buffer start end)
-        (insert "\n")
-        ))))
+        (insert "\n")))))
 
-(defun yacas-notebook-collate-cells (file part files parts &optional single)
+(defun ynb-collate-cells (file part files parts &optional single)
 
   "Assemble cells marked with filename FILE in buffers with keys
 `file:part' or, for part = null string (package cells), with key `file'.  The
-names of all buffers are constructed with `yacas-notebook-make-temp-name' 
+names of all buffers are constructed with `ynb-make-temp-name' 
 and are unique.  If PART is non-nil then do not collate cells with keys 
 `FILE:PART' and `FILE' (package cells).  Use FILES and PARTS for name 
-completion \(see `yacas-notebook-get-filename' and 
-`yacas-notebook-get-partname'\).  If optional SINGLE is non-nil, then 
+completion \(see `ynb-get-filename' and 
+`ynb-get-partname'\).  If optional SINGLE is non-nil, then 
 collate just cells `FILE:PART' (PART must be non-nil).
 
-The global `yacas-notebook-buffer-alist' associates buffer names with keys.  
+The global `ynb-buffer-alist' associates buffer names with keys.  
 It must be initialized, typically with the buffer for key `FILE' or 
 `FILE:PART', according to whether PART is nil or not."
 
   (let ((home-buffer (current-buffer))
-        this-part this-file key
-        )
+        this-part this-file key)
     (unwind-protect ; For error location
-        (setq yacas-notebook-error-point (point)) ; Go here if no error
+        (setq ynb-error-point (point)) ; Go here if no error
         (progn
-
           ;; Scan buffer to construct buffers for all `file:part'
           (save-excursion
-            (set-buffer yacas-notebook-source-buffer) ; Collate from here
+            (set-buffer ynb-source-buffer) ; Collate from here
             (goto-char (point-min))
-            (while (yacas-notebook-forward-cell)
+            (while (ynb-forward-cell)
                    ;; We have a cell of the right type
                 (forward-line -1) ; Move to \begin{...
                 (if (not (looking-at "^\\\\yacas.*<.*:.*>"))
                     (forward-line 1) ; So we go to next cell next time through
 
                   ;; We have a marked cell
-                  (setq this-file (yacas-notebook-get-filename files))
+                  (setq this-file (ynb-get-filename files))
                   (cond
                    ((not this-file)
-                    (setq yacas-notebook-error-point (point))
+                    (setq ynb-error-point (point))
                     (error "Ambiguous filename"))
                    ((not (equal file this-file))
                     (forward-line 1)) ; So we go to next cell next time through
                    (t
 
                     ;; We have a cell of the right package filename
-                    (setq this-part (yacas-notebook-get-partname parts))
+                    (setq this-part (ynb-get-partname parts))
                     (cond
                      ((not this-part)
-                      (setq yacas-notebook-error-point (point))
+                      (setq ynb-error-point (point))
                       (error "Ambiguous partname"))
                      ((and single (not (equal this-part part)))
                       (forward-line 1))    ; Do only `file:part' for 
@@ -713,15 +698,15 @@ It must be initialized, typically with the buffer for key `FILE' or
                           (setq key file)
                         (setq key (concat file ":" this-part)))
                       (or
-                       (assoc key yacas-notebook-buffer-alist) ; buffer 
+                       (assoc key ynb-buffer-alist) ; buffer 
                                                               ;already created
-                       (yacas-notebook-replace-assoc
-                        yacas-notebook-buffer-alist
-                        key (yacas-notebook-make-temp-name)))
+                       (ynb-replace-assoc
+                        ynb-buffer-alist
+                        key (ynb-make-temp-name)))
 
                       ;; Append cell contents to its buffer
-                      (yacas-notebook-append-cell-to-buffer
-                       (cdr (assoc key yacas-notebook-buffer-alist)))
+                      (ynb-append-cell-to-buffer
+                       (cdr (assoc key ynb-buffer-alist)))
                       
                       ) ; t on valid partname
                      ) ; cond on partname
@@ -734,58 +719,53 @@ It must be initialized, typically with the buffer for key `FILE' or
           ) ; progn of unwind-protect body
       
       ;; unwind-protect tail:  Delete part files
-      (goto-char yacas-notebook-error-point)
-      ) ; unwind-protect
-    ) ; let
-  ) ; done
+      (goto-char ynb-error-point)))) ; done
 
-(defun yacas-notebook-dereference-buffer (key files parts &optional noinit)
+(defun ynb-dereference-buffer (key files parts &optional noinit)
   "Resolve all references in buffer corresponding to KEY in alist
-yacas-notebook-buffer-alist, using FILES and PARTS for name completion.  
+ynb-buffer-alist, using FILES and PARTS for name completion.  
 If optional NOINIT is nil, initialize global variable 
-`yacas-notebook-dereference-path' with KEY.  If NOINIT is non-nil, 
-add KEY to `yacas-notebook-dereference-path'. then references are collated 
-in buffers and added to yacas-notebook-buffer-alist if necessary.  Use 
-`yacas-notebook-dereference-path' to check for self-reference and
+`ynb-dereference-path' with KEY.  If NOINIT is non-nil, 
+add KEY to `ynb-dereference-path'. then references are collated 
+in buffers and added to ynb-buffer-alist if necessary.  Use 
+`ynb-dereference-path' to check for self-reference and
 report error if detected,"
   (let ((ref-found nil)
         (home-buffer (current-buffer))
         path-to-here
         ref-indent ref-key ref-buffer
-        (key-buffer (cdr (assoc key yacas-notebook-buffer-alist)))
+        (key-buffer (cdr (assoc key ynb-buffer-alist)))
         file part
-        re-found
-        )
+        re-found)
     (or key-buffer (error "No cell `%s'" key))
     (set-buffer key-buffer)
     (goto-char (point-min))
     (if noinit
         t
       (setq noinit t)
-      (setq yacas-notebook-dereference-path (list key))
-      )
-    (setq path-to-here yacas-notebook-dereference-path)
+      (setq ynb-dereference-path (list key)))
+    (setq path-to-here ynb-dereference-path)
     (while (re-search-forward "^ *\t*<[^:].*:[^>].*>$" (point-max) t)
       (setq re-found 1)
       (beginning-of-line)
-      (setq ref-indent (yacas-notebook-get-reference-indentation))
-      (setq file (yacas-notebook-get-filename files))
-      (setq part (yacas-notebook-get-partname parts))
+      (setq ref-indent (ynb-get-reference-indentation))
+      (setq file (ynb-get-filename files))
+      (setq part (ynb-get-partname parts))
       (setq ref-key (concat file ":" part))
-      (if (yacas-notebook-string-mem ref-key path-to-here)
-            (yacas-notebook-dereference-error (cons ref-key path-to-here)))
-      (setq yacas-notebook-dereference-path (cons ref-key path-to-here))
-      (if (not (assoc ref-key yacas-notebook-buffer-alist))
+      (if (ynb-string-mem ref-key path-to-here)
+            (ynb-dereference-error (cons ref-key path-to-here)))
+      (setq ynb-dereference-path (cons ref-key path-to-here))
+      (if (not (assoc ref-key ynb-buffer-alist))
           ;; Construct buffer on the fly
           (progn
-            (setq ref-buffer (yacas-notebook-make-temp-name))
-            (yacas-notebook-replace-assoc yacas-notebook-buffer-alist 
+            (setq ref-buffer (ynb-make-temp-name))
+            (ynb-replace-assoc ynb-buffer-alist 
 					  ref-key ref-buffer)
-            (yacas-notebook-collate-cells file part files parts t)
+            (ynb-collate-cells file part files parts t)
             )
-        (setq ref-buffer (cdr (assoc ref-key yacas-notebook-buffer-alist)))
+        (setq ref-buffer (cdr (assoc ref-key ynb-buffer-alist)))
         )
-      (while (yacas-notebook-dereference-buffer ref-key files parts noinit))
+      (while (ynb-dereference-buffer ref-key files parts noinit))
       (kill-line 1) ; Remove reference line
       (insert-buffer ref-buffer)
       (let ((indent-start (point))
@@ -793,17 +773,12 @@ report error if detected,"
         (exchange-point-and-mark)
         (setq indent-end (point))
         (exchange-point-and-mark)
-        (if ref-indent (indent-rigidly indent-start indent-end ref-indent))
-        )
-
-      )
-    (setq yacas-notebook-dereference-path path-to-here)
+        (if ref-indent (indent-rigidly indent-start indent-end ref-indent))))
+    (setq ynb-dereference-path path-to-here)
     (set-buffer home-buffer)
-    ref-found
-    ) ; let
-  ) ; done
+    ref-found))
 
-(defun yacas-notebook-dereference-error (path)
+(defun ynb-dereference-error (path)
   "Report package self-reference error, in PATH"
   (let ((cell (car path))
         (home-buffer (current-buffer))
@@ -825,10 +800,9 @@ report error if detected,"
       (setq from-cell to-cell)
       )
     (pop-to-buffer home-buffer)
-    (error "Self-reference detected")
-    ))
+    (error "Self-reference detected")))
 
-(defun yacas-notebook-get-reference-indentation ()
+(defun ynb-get-reference-indentation ()
   "Return indentation of reference on current line.
 Line assumed tabified."
   (let (start end)
@@ -843,13 +817,12 @@ Line assumed tabified."
       (- end start 1) ; -1 since search places point after `>'
       )))
 
-(defun yacas-notebook-insert-complete-name ()
+(defun ynb-insert-complete-name ()
   "Insert complete name in buffer for cell.
 Return t if successful, else nil."
   (interactive)
   (let ((here (point))
-        start end name text files parts
-        )
+        start end name text files parts)
     (save-excursion
       (beginning-of-line)
       (cond
@@ -861,7 +834,7 @@ Return t if successful, else nil."
 
         ;; This can take a second or two
         (message "Getting filenames...")
-        (if (not (setq files (yacas-notebook-get-filenames)))
+        (if (not (setq files (ynb-get-filenames)))
             (error "No package filenames in document"))
         (message "")
 
@@ -871,18 +844,18 @@ Return t if successful, else nil."
         (search-forward ":")
         (forward-char -1)
         (setq text (buffer-substring start (point)))
-        (if (not (setq name (yacas-notebook-complete-name text files)))
+        (if (not (setq name (ynb-complete-name text files)))
             (error "No matching package filename found"))
 
         ;; This can take several seconds for a document with many cells
         (message "Getting partnames")
-        (setq parts (yacas-notebook-get-partnames name files))
+        (setq parts (ynb-get-partnames name files))
         (message "")
 
         (forward-char 1)
         (setq start (point)) ; New start, for partname deletion
         (setq text (buffer-substring (point) here))
-        (if (not (setq name (yacas-notebook-complete-name
+        (if (not (setq name (ynb-complete-name
                              (concat text "...")
                              parts)))
             (error "No matching package partname found"))
@@ -909,7 +882,7 @@ Return t if successful, else nil."
 
         ;; This can take a second or two
         (message "Getting filenames...")
-        (if (not (setq files (yacas-notebook-get-filenames)))
+        (if (not (setq files (ynb-get-filenames)))
             (error "No package filenames in document"))
         (message "")
 
@@ -917,7 +890,7 @@ Return t if successful, else nil."
         (forward-char 1)
         (setq start (point))
         (setq text (buffer-substring start here))
-        (if (not (setq name (yacas-notebook-complete-name
+        (if (not (setq name (ynb-complete-name
                              (concat text "...") ; completion form
                              files)))
             (error "No matching package filename found"))
@@ -949,16 +922,16 @@ Return t if successful, else nil."
       (goto-char (+ (point) (length name) 1))
       t)))
 
-(defun yacas-notebook-get-filenames ()
+(defun ynb-get-filenames ()
   "Return alist of package filenames for cells."
   (let (file files)
     (save-excursion
       (goto-char (point-min))
-      (while (yacas-notebook-forward-cell)
+      (while (ynb-forward-cell)
           (forward-line -1)
           (if (not (looking-at (concat "^\\\\yacas.*<.*>")))
               (forward-line 1) ; Cell not marked.  Get set for next one
-            (if (setq file (yacas-notebook-get-filename)) ; Only unabbreviated
+            (if (setq file (ynb-get-filename)) ; Only unabbreviated
                                                           ;  names
                 (if files
                     (if (assoc file files)
@@ -969,10 +942,9 @@ Return t if successful, else nil."
             ) ; if a marked cell
         ) ; while cell to look at
       ) ; save-excursion
-    files
-    )) ; let and done
+    files)) ; let and done
 
-(defun yacas-notebook-complete-name (text alist &optional exact)
+(defun ynb-complete-name (text alist &optional exact)
   "Get full name corresponding to TEXT.
 If text is a string ending in `...',
 then the substring preceding the `...' is used with try-completion on ALIST.
@@ -998,21 +970,21 @@ Oherwise nil is returned."
         (setq name nil)))) ; Not an exact match, so error
     name))
 
-(defun yacas-notebook-get-partnames (file files)
+(defun ynb-get-partnames (file files)
   "Return alist of partnames for package FILE, using FILES for
 filename completion."
   (let (cell-end cell-file part parts)
-    (setq yacas-notebook-error-point (point))
+    (setq ynb-error-point (point))
     (unwind-protect
         (save-excursion
           (goto-char (point-min))
-          (while (yacas-notebook-forward-cell)
-              (setq cell-end (yacas-notebook-cell-end))
+          (while (ynb-forward-cell)
+              (setq cell-end (ynb-cell-end))
               (forward-line -1)
               (if (not (looking-at
                        "^\\\\yacas.*<[^:].*:.*>"))
                   (forward-line 1) ; Not a marked cell
-                (setq cell-file (yacas-notebook-get-filename files))
+                (setq cell-file (ynb-get-filename files))
                 (if (not (equal file cell-file))
                     (forward-line 1) ; Wrong file
                   (while (and
@@ -1023,22 +995,22 @@ filename completion."
                            (re-search-forward
                             "^ *\t*<[^:].*:.*>" cell-end t)))
                     (beginning-of-line) ; We have a filename-partname reference
-                    (if (not (setq file (yacas-notebook-get-filename files)))
+                    (if (not (setq file (ynb-get-filename files)))
                         (progn
-                          (setq yacas-notebook-error-point (point))
+                          (setq ynb-error-point (point))
                           (error "Ambiguous filename")))
                     (if (not (equal cell-file file))
                         (progn
-                          (setq yacas-notebook-error-point (point))
+                          (setq ynb-error-point (point))
                           (error "Reference must match cell filename: `%s'"
                                  cell-file)))
-                    (setq part (yacas-notebook-get-partname))
+                    (setq part (ynb-get-partname))
                     (if (not part)
                         nil ; Need full (unabbreviated) parts only, for alist
                       (if parts ; Update alist
                           (if (or
                                (equal part "")
-                               (yacas-notebook-string-mem part parts))
+                               (ynb-string-mem part parts))
                               nil; already on list
                             (setq parts (append (list part) parts))) ; Add 
                                                                      ;to alist
@@ -1051,14 +1023,12 @@ filename completion."
                 ) ; if a marked cell
             ) ; while cells to process
           ); save-excursion
-      (goto-char yacas-notebook-error-point) ; unwind-protect form
+      (goto-char ynb-error-point) ; unwind-protect form
       ) ; unwind-protect
     (setq parts (mapcar 'list parts)) ; Make list into an alist
-    parts
-    ) ; let
-  ) ; done
+    parts))
 
-(defun yacas-notebook-get-filename (&optional alist)
+(defun ynb-get-filename (&optional alist)
   "Get filename in package reference on current line.
 If optional ALIST is supplied, use it for name completion.
 Return nil if no name or error in name."
@@ -1075,16 +1045,17 @@ Return nil if no name or error in name."
 	    (substring text (+ 1 (match-beginning 1)) (+ -1 (match-end 2))))
       ) ; save excursion
     (if alist
-        (yacas-notebook-complete-name text alist t)
+        (ynb-complete-name text alist t)
       (if (string-match abbrev-re text)
-          (if yacas-notebook-abbreviations-allowed
+          (if ynb-abbreviations-allowed
               nil
-            (setq yacas-notebook-error-point (point))
- (error "Set yacas-notebook-abbreviations-allowed (M-x set-variable) to use abbreviations")
+            (setq ynb-error-point (point))
+	    (error 
+"Set ynb-abbreviations-allowed (M-x set-variable) to use abbreviations")
             )
         text))))
 
-(defun yacas-notebook-get-partname (&optional alist)
+(defun ynb-get-partname (&optional alist)
   "Get partname in package reference on current line.
 If optional ALIST is supplied, use it for name completion.
 Return nil if no name or error in name."
@@ -1100,16 +1071,16 @@ Return nil if no name or error in name."
       (setq text (substring text (+ 1 (match-beginning 1)) (match-end 2)))
       ) ; save excursion
     (if alist
-        (yacas-notebook-complete-name text alist t)
+        (ynb-complete-name text alist t)
       (if (string-match abbrev-re text)
-          (if yacas-notebook-abbreviations-allowed
+          (if ynb-abbreviations-allowed
               nil
-            (setq yacas-notebook-error-point (point))
- (error "Set yacas-notebook-abbreviations-allowed (M-x set-variable) to use abbreviations")
+            (setq ynb-error-point (point))
+ (error "Set ynb-abbreviations-allowed (M-x set-variable) to use abbreviations")
             )
         text))))
 
-(defun yacas-notebook-string-mem (element list) ; memq doesn't work for strings
+(defun ynb-string-mem (element list) ; memq doesn't work for strings
   "Returns t if string ELEMENT is in LIST of strings, else returns nil."
   (let (try)
     (catch 'done
@@ -1119,18 +1090,18 @@ Return nil if no name or error in name."
             (throw 'done t)))
       nil)))
 
-(defun yacas-notebook-reference-p ()
+(defun ynb-reference-p ()
   "Return t if cell contains a cell reference, else retrun nil."
   (save-excursion
-    (goto-char (yacas-notebook-cell-start))
+    (goto-char (ynb-cell-start))
     (if 
-       (re-search-forward "^ *\t*<[^:].*:[^>].*>$" (yacas-notebook-cell-end) t)
+       (re-search-forward "^ *\t*<[^:].*:[^>].*>$" (ynb-cell-end) t)
         t
       nil)))
 
 ;;; @@ Yacas-Notebook functions for "yacas" cells
 
-(defun yacas-notebook-send-line ()
+(defun ynb-send-line ()
   "Send the current line to the yacas process."
   (interactive)
   (save-excursion
@@ -1139,36 +1110,36 @@ Return nil if no name or error in name."
     (end-of-line)
     (setq ed (point))
     (yacas-region bg ed)
-    (if yacas-notebook-texform
-	(yacas-string yacas-notebook-tex-string))))
+    (if ynb-texform
+	(yacas-string ynb-tex-string))))
 
 
-(defun yacas-notebook-send-cell ()
+(defun ynb-send-cell ()
   "Send input to process. Point must be in a cell."
   (interactive)
-  (if (not (yacas-notebook-cell-p))
+  (if (not (ynb-cell-p))
       (error "Not in Yacas cell"))
   (let ((home-buffer (current-buffer))
         assembled-file start end)
-    (if (yacas-notebook-reference-p)
+    (if (ynb-reference-p)
         (progn
           (widen) ; So cell references will be found
-          (setq assembled-file (yacas-notebook-assemble-cell t)))
+          (setq assembled-file (ynb-assemble-cell t)))
       (save-excursion
-        (goto-char (yacas-notebook-cell-start))
+        (goto-char (ynb-cell-start))
         (setq start (point))
-        (if (not (setq end (yacas-notebook-output-p)))
-            (setq end (yacas-notebook-cell-end))))
+        (if (not (setq end (ynb-output-p)))
+            (setq end (ynb-cell-end))))
       (progn
-	(goto-char (yacas-notebook-cell-start))
+	(goto-char (ynb-cell-start))
         ;; Now I want to skip over any blank lines at the beginning of the cell
 	(beginning-of-line)
 	(while (looking-at "^ *$") (forward-line 1))
 	(setq start (point))
         ;; as well as at the end of the cell
-	(if (not (setq end (yacas-notebook-output-p)))
+	(if (not (setq end (ynb-output-p)))
 	    (progn
-	      (goto-char (yacas-notebook-cell-end))
+	      (goto-char (ynb-cell-end))
 	      (while (looking-at "^ *$") (forward-line -1))
 	      (end-of-line)
 	      (setq end (point)))
@@ -1196,7 +1167,7 @@ Return nil if no name or error in name."
       )))
 
 
-(defun yacas-notebook-copy-last-tex-output ()
+(defun ynb-copy-last-tex-output ()
   "Copy the last output from Yacas to the kill-ring,
 removing the beginning \"$ and ending $\";"
   (interactive)
@@ -1223,15 +1194,15 @@ removing the beginning \"$ and ending $\";"
     (pop-to-buffer old-buffer)))
 
 
-(defun yacas-notebook-get-output (tex)
+(defun ynb-get-output (tex)
   "Insert last output from Yacas.
 Assumes point in cell.  Output inserted at end of cell."
   (if tex
       (progn
-	(yacas-string yacas-notebook-tex-string)
-	(yacas-notebook-copy-last-tex-output)) 
+	(yacas-string ynb-tex-string)
+	(ynb-copy-last-tex-output)) 
     (yacas-copy-complete-last-output))
-  (goto-char (yacas-notebook-cell-end))
+  (goto-char (ynb-cell-end))
   (forward-line 1)		 ; Insert marker before output
   (open-line 1)
   (if tex
@@ -1244,121 +1215,201 @@ Assumes point in cell.  Output inserted at end of cell."
     (if tex
 	(insert "\n"))))
 
-(defun yacas-notebook-put-output ()
+(defun ynb-put-output ()
   " "
   (interactive)
-  (yacas-notebook-delete-output)
-  (yacas-notebook-get-output nil))
+  (ynb-delete-output)
+  (ynb-get-output nil))
 
-(defun yacas-notebook-replace (tex)
+(defun ynb-replace (tex)
   "Replace output (if any) with last Yacas result. Point must be in a cell.
-Output assumed to follow input, separated by a yacas-notebook-output-marker 
+Output assumed to follow input, separated by a ynb-output-marker 
 line."
-  (if (not (yacas-notebook-cell-p))
+  (if (not (ynb-cell-p))
       (error "Not in Yacas cell"))
   (save-excursion
-    (yacas-notebook-delete-output)
-    (yacas-notebook-get-output tex)
+    (ynb-delete-output)
+    (ynb-get-output tex)
     ))
 
-(defun yacas-notebook-update-type-cell (tex)
+(defun ynb-update-type-cell (tex)
   "Send input to Yacas and replace output with result.
 Point must be in cell.  Output assumed to follow input,
-separated by a yacas-notebook-output-marker line."
-  (if (not (yacas-notebook-cell-p))
+separated by a ynb-output-marker line."
+  (if (not (ynb-cell-p))
       (error "Not in Yacas cell"))
-  (yacas-notebook-send-cell)
-  (yacas-notebook-replace tex))
+  (ynb-send-cell)
+  (ynb-replace tex))
 
-(defun yacas-notebook-update-cell ()
+(defun ynb-update-cell ()
   "Send input to Yacas and replace output with result.
 Point must be in cell.  Output assumed to follow input,
-separated by a yacas-notebook-output-marker line."
+separated by a ynb-output-marker line."
   (interactive)
-  (yacas-notebook-update-type-cell nil))
+  (ynb-update-type-cell nil))
 
-(defun yacas-notebook-tex-update-cell ()
+(defun ynb-tex-update-cell ()
   "Send input to yacas and replace output with the result in TeX form.
 Point must be in cell.  Output assumed to follow input,
-separated by a yacas-notebook-output-marker line."
+separated by a ynb-output-marker line."
   (interactive)
-  (setq yacas-notebook-texform t)
-  (yacas-notebook-update-type-cell t)
-  (setq yacas-notebook-texform nil))
+  (setq ynb-texform t)
+  (ynb-update-type-cell t)
+  (setq ynb-texform nil))
 
-(defun yacas-notebook-replace-line-with-tex ()
+(defun ynb-replace-line-with-tex ()
   "Sends the current line to Yacas, and then replaces it with the Yacas
 output in TeX form."
   (interactive)
-  (setq yacas-notebook-texform t)
-  (yacas-notebook-replace-line)
-  (setq yacas-notebook-texform nil))
+  (setq ynb-texform t)
+  (ynb-replace-line)
+  (setq ynb-texform nil))
 
-(defun yacas-notebook-replace-line ()
+(defun ynb-replace-line ()
   "Sends the current line to Yacas, and then replaces it with the Yacas
 output."
   (interactive)
   (yacas-wait)
-  (yacas-notebook-send-line)
+  (ynb-send-line)
   (yacas-wait)
   (beginning-of-line)
   (insert "% ")
   (end-of-line)
   (newline)
-  (if yacas-notebook-texform
-      (yacas-notebook-copy-last-tex-output)
+  (if ynb-texform
+      (ynb-copy-last-tex-output)
     (yacas-copy-complete-last-output))
   (yank))
 
 ;; This next part isn't useful right not, but it may be
 ;; in the future ...
-; (defun yacas-notebook-put-outputgraphics ()
+; (defun ynb-put-outputgraphics ()
 ;   "Insert environment outputgraphic. Assumes point in cell."
 ;   (interactive)
-;   (if (not (yacas-notebook-cell-p))
+;   (if (not (ynb-cell-p))
 ;       (error "Not in Yacas cell"))
-;   (yacas-notebook-delete-output)
-;   (goto-char (yacas-notebook-cell-end))
+;   (ynb-delete-output)
+;   (goto-char (ynb-cell-end))
 ;   (forward-line 1)		 ; Insert marker before output
 ;   (open-line 2)		 ; ..
 ;   (insert "\\outputgraphics")
 ;   (forward-line 1)
-;   (insert (concat "\\mgraphics{" yacas-notebook-default-graphics-width "}{"))
+;   (insert (concat "\\mgraphics{" ynb-default-graphics-width "}{"))
 ;   (setq pt (point))
 ;   (insert "}")
 ;   (goto-char pt)
 ; 	)
 ;
-; (defun yacas-notebook-graphics-update ()
+; (defun ynb-graphics-update ()
 ;   "Sends the cell to yacas and inserts a graphics environment"
 ;   (interactive)
-;   (yacas-notebook-send-cell)
-;   (yacas-notebook-put-outputgraphics)
+;   (ynb-send-cell)
+;   (ynb-put-outputgraphics)
 ; )
 
-(defun yacas-notebook-dont-show-yacas-buffer ()
+(defun ynb-dont-show-yacas-buffer ()
   "Prevents the yacas buffer from automatically popping up."
   (interactive)
         (delete-other-windows)
 	(setq pop-up-windows nil)
 	(setq yacas-show-yacas-buffer nil))
 
-(defun yacas-notebook-show-yacas-buffer ()
+(defun ynb-show-yacas-buffer (arg)
   "Pops the yacas buffer up."
   (interactive)
-  (yacas-recenter-output-buffer nil)
-  (setq pop-up-windows t)
-  (setq yacas-show-yacas-buffer t))
+  (if arg
+      (ynb-dont-show-yacas-buffer)
+    (yacas-recenter-output-buffer nil)
+    (setq pop-up-windows t)
+    (setq yacas-show-yacas-buffer t)))
 
 ;;; @@ The mode
+;;; First of all, I want to be able to change the keymap depending 
+;;; on whether the point is in a cell or not.
+;;; So I need one keymap for when in a cell, and one for when 
+;;; not in a cell.
+;;; Changing the keymaps doesn't seem to work, so I'll have to do 
+;;; it on a key by key basis.
+;;; yacas-add-keys will add the mupad keys.
 
-(define-derived-mode yacas-notebook-mode tex-mode "Yacas-Notebook"
+
+;; First, find out what kind of TeX mode is being used.
+(cond
+ ((eq ynb-use-tex 'auctex)
+  (require 'tex-site)
+  ;; I don't think this is the best thing to do...
+  (load "latex")
+  (setq texmode-map LaTeX-mode-map)
+  (defun texmode () (latex-mode)))
+ ((eq ynb-use-tex 'tex)
+  (require 'tex-mode)
+  (setq texmode-map tex-mode-map)
+  (defun texmode () (tex-mode)))
+ (t
+  (autoload 'text-mode "text-mode")
+  (setq texmode-map text-mode-map)
+  (defun texmode () (text-mode))))
+
+;;; Now, define two keymaps; one default, and one to use when in
+;;; a cell
+;;; These keys will be used both inside and outside of cells
+(defun ynb-add-both-keys (map)
+  (define-key map "\C-c+" 'ynb-forward-cell)
+  (define-key map "\C-c-" 'ynb-backward-cell)
+  (define-key map "\C-c\C-y" 'ynb-show-yacas-buffer)
+  (define-key map "\C-c\C-va" 'ynb-update-all)
+  (define-key map "\C-c\C-vA" 'ynb-tex-update-all)
+  (define-key map "\C-c\C-vq" 'ynb-eval-init)
+  (define-key map "\C-c\C-vi" 'ynb-update-init)
+  (define-key map "\C-c\C-vI" 'ynb-tex-update-init)
+  (define-key map "\C-c?" 'ynb-info-help))
+
+;;; First, the default keymap, an extension of the tex keymap
+(setq yacas-notebook-mode-map (copy-keymap texmode-map))
+(define-key yacas-notebook-mode-map "\C-c\C-v" nil)
+(ynb-add-both-keys yacas-notebook-mode-map)
+(yacas-add-process-keys yacas-notebook-mode-map)
+(define-key yacas-notebook-mode-map "\C-c\C-o" 'ynb-create-cell)
+(define-key yacas-notebook-mode-map "\C-c\C-vl" 'ynb-replace-line)
+(define-key yacas-notebook-mode-map "\C-c\C-vL" 'ynb-replace-line-with-tex)
+
+;;; The cell keymap, an extension of the yacas keymap
+(setq ynb-yacas-map (copy-keymap yacas-mode-map))
+;;; Get rid of yacas-title and yacas-modify
+(define-key ynb-yacas-map "\C-c\C-t" nil)
+(define-key ynb-yacas-map "\C-c\C-m" nil)
+(define-key ynb-yacas-map "\C-c\C-v" nil)
+;; And some keymaps that make sense in cells
+(define-key ynb-yacas-map "\C-c\C-s" 'ynb-send-cell)
+(define-key ynb-yacas-map "\C-c\C-vc" 'ynb-update-cell)
+(define-key ynb-yacas-map "\C-c\C-vC" 'ynb-tex-update-cell)
+(define-key ynb-yacas-map "\C-c\C-d" 'ynb-delete-output)
+(define-key ynb-yacas-map "\C-c\C-q" 'ynb-toggle-init)
+(define-key ynb-yacas-map "\C-c\C-x" 'ynb-package-part)
+(define-key ynb-yacas-map "\C-c@" 'ynb-assemble)
+(define-key ynb-yacas-map [(control c) (control tab)] 
+                                   'ynb-insert-complete-name)
+
+(defvar ynb-latex-keymap-p t)
+
+(defun ynb-change-keymap ()
+  "Set the keymap to the correct keymap"
+  (if (ynb-cell-p)
+      (if ynb-latex-keymap-p
+	  (progn
+	    (setq overriding-local-map ynb-yacas-map)
+	    (setq ynb-latex-keymap-p nil)))
+    (if (not ynb-latex-keymap-p)
+	(progn
+	  (setq overriding-local-map nil)
+	  (setq ynb-latex-keymap-p t)))))
+
+(define-derived-mode yacas-notebook-mode texmode "Yacas-Notebook"
   "This is a mode intended to allow the user to write documents that
 include Yacas code.  The file can be LaTeXed to produce nice 
 looking output (although that isn't necessary, of course), and so the
 mode is an extension of TeX-mode (AucTeX, if you use that) that also
-includes all the functionality of yacas-mode.  (\"TeX-command-master\", 
-however, has been rebound to \"C-cC-cC-c\".)
+includes all the functionality of yacas-mode.
 The units of Yacas code that are worked with are \"cells\", which are 
 delimited by \"\\yacas\" and \"\\endyacas\". The cells can be evaluated 
 individually, as a group, and the output can be returned as Yacas output 
@@ -1367,152 +1418,66 @@ or in TeX form.  Evaluating a cell and returning the output is called
 constructs.  (See the file \"Yacas-NotebookIntro.tex\" for more 
 information.)
 The commands for working with cells are:
-  C-c C-c o  create a cell         C-c C-c d  delete the cell's output
-  C-c C-c u  update a cell         C-c C-c U  update a cell in TeX form
-  C-c C-c a  update all the cells  C-c C-c A  update all the cells in TeX form
-  C-c C-c +  go to the next cell   C-c C-c -  go to the previous cell
-  C-c C-c q  toggle initialization cells
-  C-c C-c Q  evaluate all  initialization cells
-  C-c C-c v  update all the initialization cells
-  C-c C-c V  update all the initialization cells in TeX form
-  C-c C-c =  assemble a cell with references
-  C-c C-c @  assemble a cell which defines a package
-(With a prefix, C-c C-c a and C-c C-c A will update the cells without
-prompting)
+ \\[ynb-create-cell]  create a cell         
+ \\[ynb-update-all] update all the cells 
+ \\[ynb-tex-update-all] update all the cells in TeX form 
+ \\[ynb-forward-cell] go to the next cell 
+ \\[ynb-backward-cell] go to the previous cell
+ \\[ynb-eval-init] evaluate all  initialization cells
+ \\[ynb-update-init] update all the initialization cells
+ \\[ynb-tex-update-init] update all the initialization cells in TeX form
+
+(With a prefix, C-u \\[ynb-update-all] and C-u \\[ynb-tex-update-all] will update the cells 
+without prompting)
 Since the Yacas output can be returned to the Yacas-Notebook buffer, by default
 the buffer which runs the Yacas process is not shown.  This can be changed.
-  C-c C-c B  show the Yacas buffer
-  C-c C-c b  don't show the Yacas buffer.
+ \\[ynb-show-yacas-buffer] show the Yacas buffer
+ C-u \\[ynb-show-yacas-buffer] don't show the Yacas buffer.
 Single lines can be evaluated:
-  C-c C-c n replace the current line with Yacas output
-  C-c C-c N replace the current line with Yacas output in TeX form.
+ \\[ynb-replace-line] replace the current line with Yacas output
+ \\[ynb-replace-line-with-tex] replace the current line with Yacas output 
+in TeX form.
 
-Finally, the command C-c C-c M will insert a %-*-Yacas-Notebook-*- at the beginning
+Within a cell, the following commands are available:\\<ynb-yacas-map>
+ \\[ynb-delete-output]  delete the cell's output
+ \\[ynb-update-cell]  update a cell 
+ \\[ynb-tex-update-cell] update a cell in TeX form
+ \\[ynb-toggle-init] toggle initialization cells
+ \\[ynb-assemble]  assemble a cell which defines a package
+ C-u \\[ynb-assemble]  assemble a cell with references
+
+Finally, the command \\[ynb-mark-file-as-yacas-notebook] will 
+insert a 
+%-*-Yacas-Notebook-*- at the beginning
 of the file (if there isn't one there already) so the file will begin in
 yacas-notebook-mode next time it's opened.
 
 \\{yacas-notebook-mode-map}
 "
-  (font-latex-setup)
+  (make-local-hook 'post-command-hook)
+  (add-hook 'post-command-hook 'ynb-change-keymap)
   (make-local-variable 'ispell-parser)
   (setq ispell-parser 'tex)
   (make-local-variable 'ispell-tex-p)
   (setq ispell-tex-p t)
   (setq yacas-use-filter t)
-  (yacas-notebook-dont-show-yacas-buffer)
+  (if (eq ynb-use-tex 'auctex)
+    (progn
+      (require 'font-latex)
+      (add-hook 'yacas-notebook-mode-hook 'font-latex-setup)))
+  (ynb-dont-show-yacas-buffer)
+  (ynb-menu-install-menus)
   (run-hooks 'yacas-notebook-mode-hook))
 
-;; The keymap
-(define-key yacas-notebook-mode-map "\C-c\C-c" nil)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-c" 
-  'TeX-command-master)
-(define-key yacas-notebook-mode-map "\C-c\C-cM"  
-  'yacas-notebook-mark-file-as-yacas-notebook)
-(define-key yacas-notebook-mode-map "\C-m"  
-  'yacas-notebook-newline)
-(define-key yacas-notebook-mode-map "\C-c\C-cn" 
-  'yacas-notebook-replace-line)
-(define-key yacas-notebook-mode-map "\C-c\C-cN" 
-  'yacas-notebook-replace-line-with-tex)
-(define-key yacas-notebook-mode-map "\C-c\C-co" 
-  'yacas-notebook-create-cell)
-(define-key yacas-notebook-mode-map "\C-c\C-c-" 
-  'yacas-notebook-backward-cell)
-(define-key yacas-notebook-mode-map "\C-c\C-c+" 
-  'yacas-notebook-forward-cell)
-(define-key yacas-notebook-mode-map "\C-c\C-cs" 
-  'yacas-notebook-send-cell)
-(define-key yacas-notebook-mode-map "\C-c\C-cd" 
-  'yacas-notebook-delete-output)
-(define-key yacas-notebook-mode-map "\C-c\C-cu" 
-  'yacas-notebook-update-cell)
-(define-key yacas-notebook-mode-map "\C-c\C-cU" 
-  'yacas-notebook-tex-update-cell)
-(define-key yacas-notebook-mode-map "\C-c\C-ca" 
-  'yacas-notebook-update-all)
-(define-key yacas-notebook-mode-map "\C-c\C-cA" 
-  'yacas-notebook-tex-update-all)
-(define-key yacas-notebook-mode-map "\C-c\C-cb" 
-  'yacas-notebook-dont-show-yacas-buffer)
-(define-key yacas-notebook-mode-map "\C-c\C-cB" 
-  'yacas-notebook-show-yacas-buffer)
-(define-key yacas-notebook-mode-map "\C-c\C-cq" 
-  'yacas-notebook-toggle-init)
-(define-key yacas-notebook-mode-map "\C-c\C-cv" 
-  'yacas-notebook-update-init)
-(define-key yacas-notebook-mode-map "\C-c\C-cV" 
-  'yacas-notebook-tex-update-init)
-(define-key yacas-notebook-mode-map "\C-c\C-cQ" 
-  'yacas-notebook-eval-init)
-;(define-key yacas-notebook-mode-map "\C-c\C-cG" 
-;  'yacas-notebook-graphics-update)
-;(define-key yacas-notebook-mode-map "\C-c\C-cg" 
-;  'yacas-notebook-put-outputgraphics)
-;    (define-key yacas-notebook-mode-map "\e\t"  
-;  'yacas-notebook-insert-complete-name)
-(define-key yacas-notebook-mode-map "\C-c\C-c=" 
-  'yacas-notebook-assemble-cell)
-(define-key yacas-notebook-mode-map "\C-c\C-c@" 
-  'yacas-notebook-assemble-package)
-(define-key yacas-notebook-mode-map "\C-c\C-m" 
-  'yacas-newline)
-(define-key yacas-notebook-mode-map "\C-c\C-?" 
-  'yacas-untab)
-(define-key yacas-notebook-mode-map "\C-c\C-i" 
-  'yacas-tab)
-;; The control constructs
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-e" 
-  'yacas-else)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-f" 
-  'yacas-for)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-a" 
-  'yacas-foreach)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-i" 
-  'yacas-if)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-v" 
-  'yacas-local)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-p" 
-  'yacas-proc)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-w" 
-  'yacas-while)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-u" 
-  'yacas-until)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-n" 
-  'yacas-function)
-;; Other formatting commands
-(define-key yacas-notebook-mode-map "\C-c\C-c#" 
-  'yacas-short-comment)
-(define-key yacas-notebook-mode-map "\C-c\C-c]" 
-  'yacas-indent-region)
-;; Motion commands
-(define-key yacas-notebook-mode-map "\C-c\C-c<" 
-  'yacas-backward-to-same-indent)
-(define-key yacas-notebook-mode-map "\C-c\C-c>" 
-  'yacas-forward-to-same-indent)
-;; The run Yacas commands
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-y" 
-  'yacas-start-process)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-r" 
-  'yacas-region)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-b" 
-  'yacas-buffer)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-l" 
-  'yacas-line)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-k" 
-  'yacas-kill-job)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-o" 
-  'yacas-copy-last-output)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-s" 
-  'yacas-copy-complete-last-output)
-(define-key yacas-notebook-mode-map "\C-c\C-c\C-t" 
-  'yacas-recenter-output-buffer)
+(if (eq ynb-use-tex 'auctex)
+    (put 'latex-mode 'font-lock-defaults 'yacas-notebook-mode))
 
 ;; Some more fontlocking
 ;; First, fontify the \yacas and \endyacas
 
 (if (fboundp 'font-lock-add-keywords)
     (progn
-      (defun yacas-notebook-font-lock-cell (limit)
+      (defun ynb-font-lock-cell (limit)
 	"Used to fontify whatever's between \\yacas and \\endyacas."
 	(when (re-search-forward "\\\\yacas" 
 				 limit t)
@@ -1525,61 +1490,305 @@ yacas-notebook-mode next time it's opened.
 	    t)))
 
       (font-lock-add-keywords 'yacas-notebook-mode 
-			      '((yacas-notebook-font-lock-cell
+			      '((ynb-font-lock-cell
 				 (0 font-lock-function-name-face append t))))
 
       (font-lock-add-keywords 'yacas-notebook-mode 
 	    '(("\\(\\\\\\(endyacas\\|output\\(tex\\)?\\|yacas\\)\\)"
 	       . font-lock-keyword-face)))))
 
-;; Now, the menu
 
-(easy-menu-define yacas-notebook-mode-menu yacas-notebook-mode-map 
-		  "Yacas-Notebook mode menu"
-   '("Yacas-Notebook"
-    ("Cell operations"
-     ["Create cell"  yacas-notebook-create-cell]
-     ["Toggle initialization"  yacas-notebook-toggle-init]
-     ["Forward cell"  yacas-notebook-forward-cell]
-     ["Backwards cell"  yacas-notebook-backward-cell])
-    ("Yacas evaluation"
-     ["Update line"   yacas-notebook-replace-line]
-     ["Update cell"   yacas-notebook-update-cell]
-     ["Evaluate initialization cells"  yacas-notebook-eval-init]
-     ["Update initialization cells"  yacas-notebook-update-init]
-     ["Update all cells"  yacas-notebook-update-all]
-     ["Toggle PrettyForm" yacas-toggle-prettyform ])
-    ("Yacas TeX evaluation"
-     ["Update line"   yacas-notebook-replace-line-with-tex]
-     ["Update cell"  yacas-notebook-tex-update-cell]
-     ["Update initialization cells"  yacas-notebook-tex-update-init]
-     ["Update all cells"  yacas-notebook-tex-update-all])
-    ("Yacas evaluate only"
-     ["Evaluate region"  yacas-region]
-     ["Evaluate cell"  yacas-notebook-send-cell])
-    ("Yacas formatting"
-     ["Insert procedure"  yacas-proc t]
-     ["Insert new local variable"  yacas-local t]
-     ["Insert function" yacas-function t]
-     ["If"  yacas-if t]
-     ["Else"  yacas-else t]
-     ["For"  yacas-for t]
-     ["ForEach"  yacas-foreach t]
-     ["While"  yacas-while t]
-     ["Until"  yacas-until t]
-     ["Inline comment"  yacas-short-comment]
-     ["Indent region"   yacas-indent-region])
-    ("Web"
-     ["Assemble cell"  yacas-notebook-assemble-cell]
-     ["Assemble package"  yacas-notebook-assemble-package])
-    ("Miscellaneous"
-     ["Start a Yacas process"   yacas-start-process]
-     ["Delete output"   yacas-notebook-delete-output]
-     ["Show Yacas buffer"  yacas-notebook-show-yacas-buffer]
-     ["Dont show Yacas buffer"  yacas-notebook-dont-show-yacas-buffer]
-     ["Kill Yacas process"  yacas-kill-job]
-     ["Mark file as Yacas-Notebook"  
-                            yacas-notebook-mark-file-as-yacas-notebook])))
+;;; This is stolen, more or less, from w3-menu.el, by William Perry
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Copyright (c) 1996 by William M. Perry <wmperry@cs.indiana.edu>
+;;; Copyright (c) 1996 - 1999 Free Software Foundation, Inc.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar ynb-running-xemacs 
+  (string-match "XEmacs\\|Lucid" emacs-version))
 
-(provide 'yacas-notebook)
+(defvar ynb-menu-yn-menu nil)
+(defvar ynb-menu-cell-menu nil)
+(defvar ynb-menu-update-menu nil)
+(defvar ynb-menu-eval-menu nil)
+(defvar ynb-menu-format-menu nil)
+(defvar ynb-menu-misc-menu nil)
+(defvar ynb-menu-help-menu nil)
+(defvar ynb-menu-yacas-notebook-menubar nil)
+
+(defvar ynb-use-menus 
+  '(yn cell update process control misc nil help)
+  "*Non-nil value causes Yacas-Notebook mode to provide a menu interface.
+A value that is a list causes YACAS-NOTEBOOK mode to install its own menubar.
+A value of 1 causes YACAS-NOTEBOOK mode to install a \"Yacas-Notebook\" item in the 
+Emacs menubar.
+
+If the value of ynb-use-menus is a list, it should be a list of symbols.
+The symbols and the order that they are listed determine what menus
+will be in the menubar and how they are ordered.  Valid symbol values
+are:
+
+cell		-- Cell operations
+update  	-- Updating functions
+process          -- Running a Yacas process
+control          -- Control constructs
+misc		-- Miscellaneous
+yn		-- A toggle button to switch back to normal emacs menus
+help            -- help on yacas functions
+nil		-- ** special **
+
+If nil appears in the list, it should appear exactly once.  All
+menus after nil in the list will be displayed flushright in the
+menubar.")
+
+(defun ynb-menu-global-menubar ()
+  (if ynb-running-xemacs
+      (default-value 'default-menubar)
+    (lookup-key (current-global-map) [menu-bar])))
+
+(defconst ynb-menu-cell
+  (list
+   "Cells"
+   ["Create cell"  ynb-create-cell (not (ynb-cell-p))]
+   ["Send cell"  ynb-send-cell (ynb-cell-p)]
+   ["Update cell"   ynb-update-cell (ynb-cell-p)]
+   ["TeX update cell"  ynb-tex-update-cell (ynb-cell-p)]
+   ["Delete output"   ynb-delete-output (ynb-cell-p)]
+   ["Toggle initialization"  ynb-toggle-init 
+                                                     (ynb-cell-p)]
+   ["Mark as package part" ynb-package-part (ynb-cell-p)]
+   ["Insert complete name" ynb-insert-complete-name 
+                                                      (ynb-cell-p)]
+   ["Forward cell"  ynb-forward-cell]
+   ["Backwards cell"  ynb-backward-cell]))
+
+(defconst ynb-menu-update
+  (list
+   "Update"
+   ["Update line"   ynb-replace-line (not (ynb-cell-p))]
+   ["Update all cells"  ynb-update-all]
+   ["Update initialization cells"  ynb-update-init]
+   "---"
+   ["TeX update line"   ynb-replace-line-with-tex 
+                                          (not (ynb-cell-p))]
+   ["TeX update all cells"  ynb-tex-update-all]
+   ["TeX update initialization cells"  ynb-tex-update-init]))
+
+(defconst ynb-menu-control
+  (list
+   "Control"
+   ["Procedure"  yacas-proc (ynb-cell-p)]
+   ["New local variable"  yacas-local (ynb-cell-p)]
+   ["Function" yacas-function (ynb-cell-p)]
+   ["If"  yacas-if (ynb-cell-p)]
+   ["Else"  yacas-else (ynb-cell-p)]
+   ["For"  yacas-for (ynb-cell-p)]
+   ["ForEach"  yacas-foreach (ynb-cell-p)]
+   ["While"  yacas-while (ynb-cell-p)]
+   ["Until"  yacas-until (ynb-cell-p)]))
+
+(defconst ynb-menu-process
+  (list
+    "Process"
+    ["Start a Yacas process"   yacas-start-process 
+     (not (processp yacas-process))]
+    ["Run Yacas on region"  yacas-region]
+    ["Run Yacas on initialization cells"  ynb-eval-init]
+    ["Send string to Yacas" yacas-eval-string t]
+    ["Show Yacas buffer"  ynb-show-yacas-buffer]
+    ["Don't show Yacas buffer"  ynb-dont-show-yacas-buffer]
+    ["Reset the Yacas process" yacas-reset t]
+    ["Kill Yacas process"  yacas-kill-job (processp yacas-process)]))
+
+(defun ynb-info-help ()
+  (interactive)
+  (info (concat ynb-info-dir "yacas-notebook")))
+
+(defconst ynb-menu-help
+  (list
+   "Help"
+   ["Yacas help" yacas-help]
+   ["Yacas notebook help" ynb-info-help]))
+
+
+(defconst ynb-menu-yn
+  (list
+   "Yacas Notebook>>"
+   ["Toggle Yacas Notebook/Emacs menus"  ynb-menu-toggle-menubar]))
+
+(defconst ynb-menu-misc
+  (list
+   "Misc"
+   ["Indent region"   yacas-indent-region (ynb-cell-p)]
+   ["Short comment"  yacas-short-comment (ynb-cell-p)]
+   ["Long comment" yacas-long-comment (ynb-cell-p)]
+   ["Mark file as Yacas-Notebook"  ynb-mark-file-as-yacas-notebook]
+   (list
+    "Web"
+    ["Assemble cell"  ynb-assemble-cell 
+     (and (ynb-cell-p) (ynb-reference-p))]
+    ["Assemble package"  ynb-assemble-package 
+     (and (ynb-cell-p) (ynb-reference-p))])))
+
+(defvar yacas-notebook-mode-menu-map nil)
+
+(defun ynb-menu-initialize-yacas-notebook-mode-menu-map ()
+  (if (null yacas-notebook-mode-menu-map)
+      (let ((map (make-sparse-keymap))
+	    (dummy (make-sparse-keymap)))
+	(require 'easymenu)
+	;; initialize all the ynb-menu-*-menu variables
+	;; with the menus.
+	(easy-menu-define ynb-menu-help-menu (list dummy) nil
+			  ynb-menu-help)
+	(easy-menu-define ynb-menu-yn-menu (list dummy) nil
+			  ynb-menu-yn)
+	(easy-menu-define ynb-menu-cell-menu (list dummy) nil
+			  ynb-menu-cell)
+	(easy-menu-define ynb-menu-update-menu (list dummy) nil
+			  ynb-menu-update)
+	(easy-menu-define ynb-menu-control-menu (list dummy) nil
+			  ynb-menu-control)
+	(easy-menu-define ynb-menu-process-menu (list dummy) nil
+			  ynb-menu-process)
+	(easy-menu-define ynb-menu-misc-menu (list dummy) nil
+			  ynb-menu-misc)
+	;; block the global menubar entries in the map so that YACAS-NOTEBOOK
+	;; can take over the menubar if necessary.
+	(define-key map [rootmenu] (make-sparse-keymap))
+	(define-key map [rootmenu yacas-notebook] 
+	        (cons "Yacas-Notebook" (make-sparse-keymap "Yacas-Notebook")))
+	(define-key map [rootmenu yacas-notebook options] 'undefined)	
+	(define-key map [rootmenu yacas-notebook search] 'undefined)
+	(define-key map [rootmenu yacas-notebook buffer] 'undefined)
+	(define-key map [rootmenu yacas-notebook mule] 'undefined)
+	(define-key map [rootmenu yacas-notebook tools] 'undefined)
+	(define-key map [rootmenu yacas-notebook help] 'undefined)
+	(define-key map [rootmenu yacas-notebook help-menu] 'undefined)
+	;; now build YACAS's menu tree.
+	(let ((menu-alist
+	       '(
+		 (yn
+		  (cons "Yacas-Notebook>>" ynb-menu-yn-menu))
+		 (cell
+		  (cons "Cells" ynb-menu-cell-menu))
+		 (update
+		  (cons "Update" ynb-menu-update-menu))
+		 (control
+		  (cons "Control" ynb-menu-control-menu))
+		 (process
+		  (cons "Process" ynb-menu-process-menu))
+		 (misc
+		  (cons "Misc" ynb-menu-misc-menu))
+		 (help
+		  (cons "Help" ynb-menu-help-menu))))
+	      cons
+	      (vec (vector 'rootmenu 'yacas-notebook nil))
+	      ;; menus appear in the opposite order that we
+	      ;; define-key them.
+	      (menu-list 
+	       (if (consp ynb-use-menus)
+		   (reverse ynb-use-menus)
+		 (list 'help nil 'misc 'control 'process
+		       'update 'cell))))
+	  (while menu-list
+	    (if (null (car menu-list))
+		nil;; no flushright support in FSF Emacs
+	      (aset vec 2 (intern (concat "ynb-menu-"
+					  (symbol-name
+					   (car menu-list)) "-menu")))
+	      (setq cons (assq (car menu-list) menu-alist))
+	      (if cons
+		  (define-key map vec (eval (car (cdr cons))))))
+	    (setq menu-list (cdr menu-list))))
+	(setq yacas-notebook-mode-menu-map map)
+	(run-hooks 'ynb-menu-setup-hook))))
+
+(defun ynb-menu-make-xemacs-menubar ()
+  (let ((menu-alist
+	 '((yn . ynb-menu-yn)
+	   (cell . ynb-menu-cell)
+	   (update   . ynb-menu-update)
+	   (control     . ynb-menu-control)
+	   (process    . ynb-menu-process)
+	   (misc     . ynb-menu-misc)
+	   (help . ynb-menu-help)))
+	cons
+	(menubar nil)
+	(menu-list ynb-use-menus))
+    (while menu-list
+      (cond
+       ((null (car menu-list))
+	(setq menubar (cons nil menubar)))
+       (t (setq cons (assq (car menu-list) menu-alist))
+	  (if cons
+	      (setq menubar (cons (symbol-value (cdr cons)) menubar)))))
+      (setq menu-list (cdr menu-list)))
+    (nreverse menubar)))
+
+(defun ynb-menu-install-menubar ()
+  (cond
+   (ynb-running-xemacs
+    (cond
+     ((not (featurep 'menubar)) nil)	; No menus available
+     (t
+      (setq ynb-menu-yacas-notebook-menubar 
+                              (ynb-menu-make-xemacs-menubar))
+      (set-buffer-menubar ynb-menu-yacas-notebook-menubar))))
+   ((not (fboundp 'ynb-menu-cell-menu))
+    (ynb-menu-initialize-yacas-notebook-mode-menu-map)
+    (define-key yacas-notebook-mode-map [menu-bar]
+      (lookup-key yacas-notebook-mode-menu-map [rootmenu yacas-notebook])))))
+
+(defun ynb-menu-install-menubar-item ()
+  (cond
+   (ynb-running-xemacs
+    (if (not (featurep 'menubar))
+	nil				; No menus available
+      (set-buffer-menubar (copy-sequence (ynb-menu-global-menubar)))
+      (add-menu nil "Yacas-Notebook" 
+                            (cdr ynb-menu-yacas-notebook-menubar))))
+   ((not (fboundp 'ynb-menu-cell-menu))
+    (ynb-menu-initialize-yacas-notebook-mode-menu-map)
+    (define-key yacas-notebook-mode-map [menu-bar]
+      (lookup-key yacas-notebook-mode-menu-map [rootmenu])))))
+
+(defun ynb-menu-install-menus ()
+  (cond ((consp ynb-use-menus)
+	 (ynb-menu-install-menubar))
+	((eq ynb-use-menus 1)
+	 (ynb-menu-install-menubar-item))
+	(t nil)))
+
+(defun ynb-menu-set-menubar-dirty-flag ()
+  (cond (ynb-running-xemacs
+	 (set-menubar-dirty-flag))
+	(t
+	 (force-mode-line-update))))
+
+(defun ynb-menu-toggle-menubar ()
+  (interactive)
+  (cond
+   (ynb-running-xemacs
+    (if (null (car (find-menu-item current-menubar '("[Yacas-Notebook>>]"))))
+	(set-buffer-menubar ynb-menu-yacas-notebook-menubar)
+      (set-buffer-menubar (copy-sequence (ynb-menu-global-menubar)))
+      (condition-case ()
+	  (add-menu-button nil ["[Yacas-Notebook]" 
+                                        ynb-menu-toggle-menubar t] nil)
+	(void-function
+	 (add-menu-item nil "[Yacas-Notebook]" 
+                                         'ynb-menu-toggle-menubar t))))
+    (ynb-menu-set-menubar-dirty-flag))
+   (t
+    (if (not (eq (lookup-key yacas-notebook-mode-map [menu-bar])
+		 (lookup-key yacas-notebook-mode-menu-map 
+                                                 [rootmenu yacas-notebook])))
+	(define-key yacas-notebook-mode-map [menu-bar]
+	  (lookup-key yacas-notebook-mode-menu-map [rootmenu yacas-notebook]))
+      (define-key yacas-notebook-mode-map [menu-bar]
+	(make-sparse-keymap))
+      (define-key yacas-notebook-mode-map [menu-bar yacas-notebook]
+	(cons "[Yacas-Notebook]" 'ynb-menu-toggle-menubar)))
+    (ynb-menu-set-menubar-dirty-flag))))
+
 ;;; yacas-notebook.el ends here
