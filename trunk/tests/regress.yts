@@ -409,7 +409,7 @@ Verify((Integrate(x,-1,1) 1/x), 0); /* or maybe Undefined? */
 Verify((Integrate(x,-1,1) 1/x^2), Infinity);
 
 /* Bug #10 */
-KnownFailure(Simplify(x^(-2)/(1-x)^3) != 0);
+Verify(Simplify(x^(-2)/(1-x)^3) != 0);
 /* I don't know what we want to return, but '0' is definitely wrong! */
 
 /* Bug #11 */
@@ -436,6 +436,6 @@ Verify(TrapError(MathPower(0,0.5), error), error);
 Verify(Assoc(x-1, Factors(x^6-1))[2], 1);
 
 /* Bug #18 */
-KnownFailure(Type(Integrate(x)x^(1/2)) != "Integrate");
+TestYacas(Integrate(x) x^(1/2), 2/3*x^(3/2));
 
 Verify(a[2]*Sin(x)/:{Sin(_x) <- sin(x)},a[2]*sin(x));

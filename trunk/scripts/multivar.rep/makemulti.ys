@@ -19,8 +19,8 @@ MultiExpressionList(_expr) <-- VarList(expr,"IsMultiExpression");
 10 # IsMultiExpression(   - _y) <-- False;
 10 # IsMultiExpression(_x * _y) <-- False;
 10 # IsMultiExpression(_x / _y) <-- False;
-10 # IsMultiExpression(_x ^ y_IsInteger) <-- False;
-11 # IsMultiExpression(_x ^ _y)_(IsInteger(Simplify(y))) <-- False;
+10 # IsMultiExpression(_x ^ y_IsPositiveInteger) <-- False;
+11 # IsMultiExpression(_x ^ _y)_(IsPositiveInteger(Simplify(y))) <-- False;
 //10 # IsMultiExpression(x_IsConstant) <-- False;
 10 # IsMultiExpression(x_IsMultiConstant) <-- False;
 
