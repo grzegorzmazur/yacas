@@ -16,6 +16,10 @@ LambertWNum
 Beta
 DirichletEta
 DirichletLambda
+DirichletBeta
 Sinc
 PolyLog
+CatalanConstNum
+Digamma
+DawsonIntegral
 }
