@@ -211,8 +211,10 @@ adapted to prototyping of symbolic manipulation algorithms.
 Yacas is currently primarily intended to be a research tool to
 easily and quickly explore various algorithms pertaining to 
 automated mathematical calculations using computers. As such, it is
-related to LISP, with additional syntactic and expression transformation 
-(term rewriting) facilities.
+related to LISP [WH89], with additional syntactic facilities in the
+form of a recursive descent infix grammar parser [ASU86] 
+supporting defining operators at run time similar to Prolog [B86],
+and expression transformation (term rewriting) facilities.
 
 In addition to Yacas implementing a language to comfortably specify
 algorithms in, the Yacas system comes with a set of scripts that 
@@ -252,7 +254,7 @@ platforms is possible.
 Yacas should work as a standalone package, requiring minimum support from other
 operating system components. Yacas takes input and output in plain ASCII,
 either interactively or in batch mode. The system comes with its own
-(unoptimized) arbitrary precision arithmetic module but could be compiled to
+(unoptimized) arbitrary precision arithmetic module [K98] but could be compiled to
 use another arbitrary precision arithmetic library (currently linking to {gmp}
 is experimentally supported). There is also an optional plugin mechanism
 whereby external libraries can be linked into the system to provide extra
@@ -623,8 +625,9 @@ tends to bloat software and make it less readable).
 @@@SERGE end added
 
 Yacas comes with a base of mathematical capabilities implemented in the script
-library which is currently under active development. The following section
-demonstrates a few facilities already offered in the current system.
+library ([K98], [GG99] and [B86]) which is currently under active development. 
+The following section demonstrates a few facilities already offered in the 
+current system.
 
 Basic calculus operations have been implemented:
 
@@ -689,7 +692,7 @@ elimination scheme:
 	Out> {4-z,2,z};
 
 
-A small theorem prover using a resolution principle is offered:
+A small theorem prover [B86] using a resolution principle is offered:
 
 
 	In> CanProve(P Or (Not P And Not Q))
@@ -703,7 +706,7 @@ A small theorem prover using a resolution principle is offered:
 	
 	Out> 
 
-Various exact and arbitrary-precision numerical algorithms have been
+Various exact and arbitrary-precision numerical algorithms [K98] have been
 implemented:
 
 	In> N(1/7,40)	// evaluate to 40 digits
@@ -792,7 +795,7 @@ problems to be solved:
 	In> Select("IsPrime", 1 .. 15)
 	Out> {2,3,5,7,11,13};
 	
-Groebner bases have been implemented:
+Groebner bases [GG99] have been implemented:
 
 	In> Groebner({x*(y-1),y*(x-1)})
 	
@@ -870,6 +873,22 @@ Cambridge University Press, 1998.
 and M. Tommasi, <i>Tree Automata Techniques and Applications</i>, 1999, online
 book: <*http://www.grappa.univ-lille3.fr/tata*>
 
+[ASU86] A. Aho, R. Sethi and J. Ullman,
+<i>Compilers (Principles, Techniques and Tools)</i>,
+Addison-Wesley publishing company, 1986.
+
+[WH89] P. Winston and B. Horn, <i>LISP</i>,
+Addison-Wesley publishing company, 1989.
+
+[B86] I. Bratko, <i>Prolog (Programming for Artificial Intelligence)</i>,
+Addison-Wesley publishing company, 1986.
+
+[K98] D. Knuth, 
+<i>The Art of Computer Programming (Volume 2, Seminumerical Algorithms)</i>,
+Addison-Wesley publishing company, 1998.
+
+[GG99] J. v.z. Gathen and J. Gerhard, <i>Modern Computer Algebra</i>,
+Cambridge University Press, 1999.
 
 
 
