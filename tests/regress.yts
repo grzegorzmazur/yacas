@@ -155,5 +155,7 @@ Verify(Identity(-2),Identity(-2));
 //Verify(SylvesterMatrix(-2,-2,-2),SylvesterMatrix(-2,-2,-2));
 Verify(ZeroVector(-2),ZeroVector(-2));
 
+Verify(Sech(x),1/Cosh(x));
+Verify(Cot(x),1/Tan(x));
 
 
