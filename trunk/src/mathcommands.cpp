@@ -1018,7 +1018,16 @@ void LispPreFix(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispPostFix(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
-    SingleFix(0, aEnvironment, aResult,aArguments, aEnvironment.PostFix());
+    LispInt nrArguments = InternalListLength(aArguments);
+    if (nrArguments == 2)
+    {
+        SingleFix(0, aEnvironment, aResult,aArguments, aEnvironment.PostFix());
+    }
+    else
+    {
+        MultiFix(aEnvironment, aResult, aArguments, aEnvironment.PostFix());
+    }
+//    SingleFix(0, aEnvironment, aResult,aArguments, aEnvironment.PostFix());
 }
 void LispBodied(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)

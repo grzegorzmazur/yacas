@@ -69,6 +69,7 @@ against internal errors).
 	Infix("op")
 	Infix("op", precedence)
 	Postfix("op")
+	Postfix("op", precedence)
 	Prefix("op")
 	Prefix("op", precedence)
 
@@ -130,6 +131,8 @@ Check whether the function with given name "op" has been declared as a
 	Out> True;
 	In> IsBodied("Sin");
 	Out> False;
+	In> IsPostfix("!");
+	Out> True;
 
 *SEE Bodied, OpPrecedence
 
@@ -168,7 +171,7 @@ For infix operators, right precedence can differ from left precedence. Bodied fu
 {"op"} -- string, the name of a function
 
 *DESC
-This makes the operator right-associative. Example:
+This makes the operator right-associative. For example:
 	RightAssociative("*")
 would make multiplication right-associative. Take care not to abuse this
 function, because the reverse, making an infix operator left-associative, is
@@ -254,20 +257,32 @@ The {parameter} must be an atom from the list of symbolic arguments used when ca
 *CMD Retract --- erase rules for a function
 *CORE
 *CALL
-	Retract("operator",arity)
+	Retract("function",arity)
+
+*PARMS
+{"function"} -- string, name of function
+
+{arity} -- positive integer
 
 *DESC
 
-Remove a rulebase with some specific arity, if it exists at all. This will make
+Remove a rulebase for the function named {"function"} with the specific {arity}, if it exists at all. This will make
 Yacas forget all rules defined for a given function. Rules for functions with
 the same name but different arities are not affected.
 
 Assignment {:=} of a function does this to the function being (re)defined.
 
+*SEE RuleBaseArgList, RuleBase, :=
+
 *CMD UnFence --- change local variable scope for a function
 *CORE
 *CALL
 	UnFence("operator",arity)
+
+*PARMS
+{"operator"} -- string, name of function
+
+{arity} -- positive integers
 
 *DESC
 
@@ -337,7 +352,7 @@ Make sure that the arguments of {Macro}... commands evaluate to expressions that
 
 *PARMS
 
-{expression} -- expression containing {@var} to substitute the value of variable {var}
+{expression} -- expression containing "{@var}" to substitute the value of variable "{var}"
 
 *DESC
 
