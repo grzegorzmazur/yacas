@@ -221,6 +221,7 @@ Verify(Sin(2*Pi), 0);
 Verify(Cos(2*Pi), 1);
 Verify(Cos(4*Pi), 1);
 Verify(Sin(3*Pi/2)+1, 0);
+Verify(Sin(Pi/2), 1);
 
 // - and ! operators didn't get handled correctly in the
 // parser/pretty printer (did you fix this, Serge?)
