@@ -157,7 +157,7 @@ $(srcdir)/corefunctions.ys: $(srcdir)/../src/corefunctions.h ../src/core_yacasma
 
 check:
 	@(for i in $(ALLSCRIPTS); do echo $$i; done) | sort > scripts-listed-in-makefile.txt
-	@find $(srcdir)/../scripts \( -name \*.ys -o -name \*.ys.def \) -print \
+	@find $(srcdir)/../scripts ../scripts \( -name \*.ys -o -name \*.ys.def \) -print \
 	   | sed -e 's,.*scripts/,,' | sort > contents-of-tree.txt
 	@echo "Comparing scripts listed in the Makefile against the contents of the tree"
 	@if diff scripts-listed-in-makefile.txt contents-of-tree.txt; \
