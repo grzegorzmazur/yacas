@@ -538,9 +538,14 @@ P(n, a-1/2, a-1/2, x). They satisfy the recurrence relations:
 	
 	G(1,a,x) = 2 x
 	
-	             /     a - 1 \                /     2 (a-2) \
-	G(n,a,x) = 2 | 1 + ----- | x G(n-1,a,x) - | 1 + ------- | G(n-2,a,x), for n>1.
-	             \       n   /                \        n    /
+	             /     a - 1 \              
+	G(n,a,x) = 2 | 1 + ----- | x G(n-1,a,x) 
+	             \       n   /              
+	
+	  /     2 (a-2) \
+	- | 1 + ------- | G(n-2,a,x),
+	  \        n    /
+for $n>1$.
 
 Most of the work is performed by the internal function {OrthoPoly}.
 
@@ -601,7 +606,7 @@ Most of the work is performed by the internal function {OrthoPoly}.
 
 *SEE OrthoLSum, OrthoPoly
 
-*CMD OrthoT --- Tshebyscheff polynomials of the first kind
+*CMD OrthoT --- Tschebyscheff polynomials of the first kind
 *STD
 *CALL
 	OrthoT(n, x);
@@ -623,9 +628,7 @@ special case of the Gegenbauer polynomials, with a=0. They satisfy the
 recurrence relations:
 
 	T(0,x) = 1
-	
 	T(1,x) = x
-	
 	T(n,x) = 2 x T(n-1,x) - T(n-2,x),
 for $n > 1$.
 
@@ -640,7 +643,7 @@ Most of the work is performed by the internal function {OrthoPoly}.
 
 *SEE OrthoG, OrthoU, OrthoTSum, OrthoPoly
 
-*CMD OrthoU --- Tshebyscheff polynomials of the second kind
+*CMD OrthoU --- Tschebyscheff polynomials of the second kind
 *STD
 *CALL
 	OrthoU(n, x);
@@ -654,7 +657,7 @@ x - point to evaluate polynomial at
 *DESC
 
 This function evaluates the Tschebyscheff polynomial of the second kind
-of degree "n" at the point "x". (The name is also spelled Chebyshev.)
+of degree "n" at the point "x". (The name of this Russian mathematician is also sometimes spelled "Chebyshev".)
 
 The Tschebyscheff polynomials of the second kind are orthogonal with
 respect to the weight function $(1-x^2)^(1/2)$. Hence they are a
@@ -662,10 +665,8 @@ special case of the Gegenbauer polynomials, with a=1. They satisfy the
 recurrence relations:
 
 	U(0,x) = 1
-	
 	U(1,x) = 2 x
-	
-	U(n,x) = 2 x U(n-1,x) - u(n-2,x),
+	U(n,x) = 2 x U(n-1,x) - U(n-2,x),
 for $n > 1$.
 
 Most of the work is performed by the internal function {OrthoPoly}.

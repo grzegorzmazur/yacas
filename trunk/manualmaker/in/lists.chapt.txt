@@ -957,9 +957,7 @@ the stack.
 *SEE Push, Pop, PopBack
 
 *CMD PopBack --- Remove an element from the bottom of a stack
-
 *STD
-
 *CALL
 
 PopBack(stack)
@@ -993,12 +991,9 @@ be empty.
 *SEE Push, Pop, PopFront
 
 *CMD Swap --- Swap two elements in a list
-
 *STD
-
 *CALL
-
-Swap(list, i1, i2)
+	Swap(list, i1, i2)
 
 *PARMS
 
@@ -1024,12 +1019,9 @@ returned.
 *SEE Replace, DestructiveReplace
 
 *CMD Count --- Count the number of occurrences of an expression
-
 *STD
-
 *CALL
-
-Count(list, expr)
+	Count(list, expr)
 
 *PARMS
 
@@ -1056,12 +1048,9 @@ occurs in "list" and returns this number.
 *SEE Length, Select, Contains
 
 *CMD Intersection --- Return the intersection of two lists
-
 *STD
-
 *CALL
-
-Intersection(l1, l2)
+	Intersection(l1, l2)
 
 *PARMS
 
@@ -1079,22 +1068,17 @@ lists. The entries in the result are listed in the same order as in
 
 	In> Intersection({a,b,c}, {b,c,d});
 	Out> {b,c};
-	In> Intersection({a,e,i,o,u}, {f,o,u,r,t,e, \
-	  e,n});
+	In> Intersection({a,e,i,o,u}, {f,o,u,r,t,e,e,n});
 	Out> {e,o,u};
-	In> Intersection({1,2,2,3,3,3}, \
-	  {1,1,2,2,3,3});
+	In> Intersection({1,2,2,3,3,3}, {1,1,2,2,3,3});
 	Out> {1,2,2,3,3};
 
 *SEE Union, Difference
 
 *CMD Union --- Return the union of two lists
-
 *STD
-
 *CALL
-
-Intersection(l1, l2)
+	Union(l1, l2)
 
 *PARMS
 
@@ -1110,22 +1094,17 @@ the lists. In the resulting list, any element will occur only once.
 
 	In> Union({a,b,c}, {b,c,d});
 	Out> {a,b,c,d};
-	In> Union({a,e,i,o,u}, {f,o,u,r,t,e, \
-	  e,n});
+	In> Union({a,e,i,o,u}, {f,o,u,r,t,e,e,n});
 	Out> {a,e,i,o,u,f,r,t,n};
-	In> Union({1,2,2,3,3,3}, \
-	  {2,2,3,3,4,4});
+	In> Union({1,2,2,3,3,3}, {2,2,3,3,4,4});
 	Out> {1,2,3,4};
 
 *SEE Intersection, Difference
 
 *CMD Difference --- Return the difference of two lists
-
 *STD
-
 *CALL
-
-Intersection(l1, l2)
+	Intersection(l1, l2)
 
 *PARMS
 
@@ -1152,12 +1131,9 @@ if "n1" is greater than "n2" and not at all otherwise.
 *SEE Intersection, Union
 
 *CMD FillList --- Fill a list with a certain expression
-
 *STD
-
 *CALL
-
-FillList(expr, n)
+	FillList(expr, n)
 
 *PARMS
 
@@ -1182,12 +1158,9 @@ the expression "expr" and returns this list.
 *STD
 
 *CALL
-
-Drop(list, n)
-
-Drop(list, -n)
-
-Drop(list, {m,n})
+	Drop(list, n)
+	Drop(list, -n)
+	Drop(list, {m,n})
 
 *PARMS
 

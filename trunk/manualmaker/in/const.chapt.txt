@@ -80,24 +80,27 @@ Thus {Infinity*2} will return {Infinity}, and {a < Infinity} will evaluate to {T
 *STD
 *CALL
 	Pi
-	Pi()
 
 *DESC
 
-Pi represents the value of $pi$. When the {N()} function is used,
-{Pi} is set to the correct numerical value according to current precision. The function {Pi()} always returns the numerical value. It is probably better to use
-{Pi} than {Pi()}, for simplification purposes.
+Pi symbolically represents the exact value of $pi$. When the {N()} function is
+used, {Pi} evaluates to a numerical value according to the current precision.
+This is performed by the function {Pi()} which always returns the numerical
+value. It is probably better to use {Pi} than {Pi()}, because exact
+simplification will be possible.
 
 *E.G.
 
 	In> Sin(3*Pi/2)
 	Out> -1;
-	In> Pi
-	Out> Pi;
+	In> Sin(3*Pi()/2)
+	Out> Sin(4.7123889804);
+	In> Pi+1
+	Out> Pi+1;
 	In> N(Pi)
-	Out> 3.1415926535;
+	Out> 3.14159265358979323846;
 
-*SEE Sin, Cos, Precision, N
+*SEE Sin, Cos, Precision, N, Pi()
 
 *CMD Undefined --- Constant signifying an undefined result
 *STD

@@ -51,7 +51,7 @@ HtmlNewParagraph() := "
 
 ";
 
-HtmlCommand(x) := "\\begin{quote}\\begin{verbatim}" : x : "\\end{verbatim}\\end{quote}
+HtmlCommand(x) := "\\begin{quote}\\small\\begin{verbatim}" : x : "\\end{verbatim}\\end{quote}
 "; /* use "quote" and not "quotation" */
 
 HtmlEmphasis(x) := "\\emph{" : x : "}";
