@@ -157,10 +157,17 @@ CmdDescriptionMany(cmd, desc) := AddBody(CmdDescriptionHead(cmd, desc));
 CmdDescriptionSingle(cmd, desc) := AddBody(CmdDescriptionHead(cmd, desc)
 : "\\index{":cmd:"@":HtmlTerm(cmd):"}");
 
-CmdDescriptionHead(cmd, desc) := "
-\\section{%
-" : HtmlTermHeading(cmd) : " --- " : desc : "}
+CmdDescriptionHead(cmd, desc) :=
+[
+	Local(heading);
+	heading := HtmlTermHeading(cmd) : " --- " : desc;
+	"
+\\section*{%
+" : heading : "}
+\\addcontentsline{toc}{section}{%
+" : heading : "}
 ";
+];
 
 StandardLib() := AddBody("
 \\begin{flushright}\\small (standard library)\\end{flushright}

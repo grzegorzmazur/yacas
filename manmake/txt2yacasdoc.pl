@@ -152,7 +152,8 @@ while (<STDIN>) {
 		#$have_par = 1;
 		$anchor = $1;
 		# if the first word is {...}, then we need to use the @ stuff
-		$anchor =~ s/^\{([^{}]+)\}/$1 . "@" . &escape_term($1)/e;
+		$anchor =~ s/^\{([^{}]+)\}/$1 . "@" . &escape_term(
+"{$1}")/e;
 		print "AddBody(AddAnchor(\"" . $anchor . "\"));\n";
 	} elsif (/^\*SEE\s\s*(.*)$/) {	# SeeAlso()
 		$names = $1;
