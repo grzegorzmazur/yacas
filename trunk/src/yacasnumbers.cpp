@@ -1819,10 +1819,12 @@ void BigInt::Mod(const BigInt& aX, const BigInt& aY)
 /// Bitwise operations, return result in *this.
 void BigInt::ShiftLeft(const BigInt& aX, LispInt aNrToShift)
 {
+      ShiftLeft(aX, aNrToShift);
 }
 
 void BigInt::ShiftRight(const BigInt& aX, LispInt aNrToShift)
 {
+      ShiftRight(aX, aNrToShift);
 }
 
 void BigInt::BitAnd(const BigInt& aX, const BigInt& aY)
