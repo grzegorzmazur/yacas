@@ -69,8 +69,8 @@ Bodied("TExplicitSum",60000);
 Bodied("TD",0);  /* Tell the Yacas interpreter that TD is to be used as TD(i)f */
 
 /* Operator to be used for non-evaluating comparisons */
-Infix("==",1000);
-Infix("!==",1000);
+Infix("==",9);
+Infix("!==",9);
 
 /* Operators needed for propositional logic theorem prover */
 Infix("=>",1000); /* implication, read as 'implies' */
