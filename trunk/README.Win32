@@ -1,0 +1,22 @@
+README for Windows users
+
+	Compilation
+
+To compile Yacas under 32-bit Windows platforms, you need a C++ compiler. Most probably any C++ compiler will work. You may use a freely available CYGWIN suite for a full Unix layer emulation, including Unix shells. However, it is a very large environment and you may not want to install it. There is a smaller "MIN-GW32" port of GCC-2.95 which only requires about 37 MB of disk space for a full installation; see <*http://www.mingw.org/*>.
+
+After installation of a compiler, you should have GCC available at the command prompt. For Windows compatibility reasons, file names containing "+" signs may be problematic. Therefore, it is assumed that the C++ compiler is invoked by the command "cxx". This can be changed by editing the makefile.
+
+Unpack the Yacas archive and go to the {src/} subdirectory. Edit {Makefile.win32} and change the name of the compiler from {cxx} to whatever it is on your system.
+
+Execute "{make -f Makefile.win32}" at the command prompt in the {src/} directory. This should produce {yacas.exe} in the same directory.
+
+	Installation
+
+The Yacas executable {yacas.exe} requires a directory with scripts and documentation. Choose a location on your system such as {C:\Yacas} and copy the Yacas executable to that directory. Also copy the contents of the {scripts/} directory to the same location (including all its subdirectories). Thus you may create {C:\Yacas\scripts\} and some subdirectories under that. This will be your Yacas library directory.
+
+These are example installation instructions. The executable {yacas.exe} does not have to be on the system path or in the same directory as the scripts.
+
+	Usage notes
+
+The windows version currently works as a console application, so you would need to run it from a command prompt. On first execution, Yacas will ask you for the full path to the library directory. You should enter "C:\Yacas\scripts\" with the trailing backslash (if that is where you installed the library scripts).
+
