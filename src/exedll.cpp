@@ -28,11 +28,15 @@ extern LispPluginBase* make_filescanner(void);
 static const ExeDllEntry exeDllentries[] =
 {
 #ifdef EXE_DLL_PLUGINS
+  {"filescanner",make_filescanner},
   {"libmath",make_libmath},
   {"pcre",make_pcre},
-  {"filescanner",make_filescanner},
 #endif
 };
+
+/*TODO here we should have code that checks, at least in debug mode, that the
+  exedll entries are sorted alphabetically! 
+*/
 
 ExePluginMaker FindExePlugin(char* aName)
 {
