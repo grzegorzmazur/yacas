@@ -6,24 +6,19 @@ These operators can help the user to program in the style of
 functional programming languages like Miranda and Haskell.
 
 *CMD : --- Prepend item to list, or concatenate strings
-
 *STD
-
 *CALL
-
-item : list (prec. 7)
-
-string1 : string2 (prec. 7)
+	item : list (prec. 7)
+	string1 : string2 (prec. 7)
 
 *PARMS
+{item} - an item to be prepended to a list
 
-item - an item to be prepended to a list
+{list} - a list
 
-list - a list
+{string1} - a string
 
-string1 - a string
-
-string2 - a string
+{string2} - a string
 
 *DESC
 
@@ -41,18 +36,15 @@ The first form prepends "item" as the first entry to the list
 *SEE Concat, ConcatStrings
 
 *CMD @ --- Apply a function
-
 *STD
-
 *CALL
-
-fn @ arglist (prec. 60)
+	fn @ arglist (prec. 60)
 
 *PARMS
 
-fn - function to apply
+{fn} - function to apply
 
-arglist - single argument, or a list of arguments
+{arglist} - single argument, or a list of arguments
 
 *DESC
 
@@ -73,21 +65,18 @@ the name of a function or a pure function.
 *SEE Apply
 
 *CMD /@ --- Apply a function to all entries in a list
-
 *STD
-
 *CALL
 
 fn /@ list (prec. 60)
 
 *PARMS
 
-fn - function to apply
+{fn} - function to apply
 
-list - list of arguments
+{list} - list of arguments
 
 *DESC
-
 This function is a shorthand for {MapSingle}. It
 successively applies the function "fn" to all the entries in
 "list" and returns a list contains the results. The parameter "fn"
@@ -109,25 +98,52 @@ function.
 
 *CALL
 
-n .. m (prec. 60)
+	n .. m (prec. 60)
 
 *PARMS
 
-n - integer. the first entry in the list
+{n} - integer. the first entry in the list
 
-m - integer, the last entry in the list
+{m} - integer, the last entry in the list
 
 *DESC
 
-This command returns the list "{n, n+1, n+2, ..., m}". If "m" is
-smaller than "n", the empty list is returned. Note that the
+This command returns the list {{n, n+1, n+2, ..., m}}. If {m} is
+smaller than {n}, the empty list is returned. Note that the
 {..} operator should be surrounded by spaces to keep the
-parser happy, if "n" is a number. So one should write {1 .. 4} instead of {1..4}.
+parser happy, if "n" is a number. So one should write "{1 .. 4}" instead of "{1..4}".
 
-*E.G.
+*EG
 
 	In> 1 .. 4
 	Out> {1,2,3,4};
 
 *SEE Table
 
+*CMD NFunction --- make wrapper for numeric functions
+*STD
+*CALL
+	NFunction("newname","funcname", {arglist})
+
+*PARMS
+"newname" - name of new function
+
+"funcname" - name of an existing function
+
+arglist - symbolic list of arguments
+
+*DESC
+This function will define a function named "newname"
+with the same arguments as an existing function named "funcname". The new function will evaluate "funcname(arglist)" only when
+all items in the argument list are numbers and return unevaluated otherwise.
+
+*EG
+
+	In> NFunction("NSin", "Sin", {x})
+	Out> True;
+	In> NSin(x);
+	Out> NSin(x);
+	In> NSin(2);
+	Out> Sin(2);
+
+*SEE MacroRule
