@@ -6,9 +6,9 @@ make clean
 
 # Rebuild yacas and the documentation
 ./makemake
-#./configure
+./configure
 make
-#make install
+make install
 make dist
 # make distcheck
 
@@ -40,6 +40,7 @@ mv manual.pdf.tar.gz backups
 cd backups
 mv ../../yacas-*.tar.gz .
 cd ..
+# chmod -R 755 *
 tar -zcf ../homepage.tgz *
 cd ..
 rm -rf homepage/
