@@ -33,4 +33,6 @@ FuncListSome
 FuncListArith
 VarListArith
 VarListSome
+GlobalPop
+GlobalPush
 }

@@ -79,6 +79,9 @@ CntDefLoad("multivar.rep/sparsetree.ys");
 CntDefLoad("specfunc.rep/code.ys");
 CntDefLoad("plots.rep/code.ys");
 
+CntDefLoad("stdfuncs.rep/numerical.ys");
+CntDefLoad("stdfuncs.rep/nummethods.ys");
+
 /* set the help system. This can be overridden in ~/.yacasrc */
 
 //Echo({defPackages});

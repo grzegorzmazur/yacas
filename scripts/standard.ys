@@ -147,7 +147,7 @@ Set(Numeric,False);
 
 Function("N",{aNumberBody})
 [
-  Local(prevNumeric,prevPi,numericresult);
+  Local(prevNumeric,numericresult);
   Set(prevNumeric,Numeric);
   AssignCachedConstants();
   Set(Numeric,True);
@@ -160,7 +160,7 @@ UnFence("N",1);
 
 Function("N",{aNumberBody,aDigits})
 [
-  Local(prevNumeric,prevPi,numericresult);
+  Local(prevNumeric,numericresult);
   Set(prevNumeric,Numeric);
   Set(prevdigits,GetPrecision());
   Precision(aDigits);
@@ -511,8 +511,11 @@ LocalSymbols(x)
 /* Regular raising to the power. */
 61 # Infinity ^ (y_IsNegativeNumber) <-- 0;
 61 # (-Infinity) ^ (y_IsNegativeNumber) <-- 0;
-61 # x_IsPositiveNumber ^ y_IsPositiveNumber <-- MathPower(x,y);
-61 # x_IsPositiveNumber ^ y_IsNegativeNumber <-- (1/MathPower(x,-y));
+//61 # x_IsPositiveNumber ^ y_IsPositiveNumber <-- MathPower(x,y);
+//61 # x_IsPositiveNumber ^ y_IsNegativeNumber <-- (1/MathPower(x,-y));
+// integer powers are very fast
+61 # x_IsPositiveNumber ^ y_IsInteger <-- MathPower(x,y);
+65 # (x_IsPositiveNumber ^ y_IsNumber)_Numeric <-- Exp(y*Ln(x));
 
 90 # (-_x)^m_IsEven <-- x^m;
 90 # (Sqrt(x_IsConstant))_(IsNegativeNumber(N(x))) <-- Complex(0,Sqrt(-x));

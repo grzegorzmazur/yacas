@@ -6,4 +6,8 @@ ArcSinNum
 ArcTanNum
 ExpNum
 LnNum
+BrentLn
+Ln2
+NewtonLn
+Exp1
 }
