@@ -267,7 +267,19 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
                 LispStringPtr ptr = NEW LispString();
                 *ptr = iSubLine.String();
                 if (!iHistoryUnchanged)
+                {
                   iHistory.Append(ptr);
+                }
+                else
+                {
+                  LispStringPtr orig = iHistory[history];
+                  LispInt i;
+                  for (i=history;i<iHistory.NrItems()-1;i++)
+                  {
+                    iHistory[i] = iHistory[i+1];
+                  }
+                  iHistory[iHistory.NrItems()-1] = orig;
+                }
             }
             return;
             break;

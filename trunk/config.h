@@ -3,7 +3,7 @@
 /* acconfig.h */
 
 #define PACKAGE "yacas"
-#define VERSION "1.0.53rev4"
+#define VERSION "1.0.53rev5"
 
 /* #undef ACCEPT_TYPE_ARG1 */
 /* #undef ACCEPT_TYPE_ARG2 */
@@ -109,7 +109,7 @@
 #define TIME_WITH_SYS_TIME 1
 
 /* Version number of package */
-#define VERSION "1.0.53rev4"
+#define VERSION "1.0.53rev5"
 
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */
