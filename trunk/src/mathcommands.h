@@ -21,10 +21,6 @@ void LispEval(LispEnvironment& aEnvironment,LispPtr& aResult,
 //
 void LispWrite(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments);
-void LispSpace(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispNewLine(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
 void LispWriteString(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments);
 void LispFullForm(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -142,7 +138,7 @@ void LispMacroNewRule(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments);
 void LispUnFence(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments);
-void LispTryRetract(LispEnvironment& aEnvironment, LispPtr& aResult,
+void LispRetract(LispEnvironment& aEnvironment, LispPtr& aResult,
                  LispPtr& aArguments);
 
 //

@@ -193,7 +193,7 @@ should be evaluated, and the original expression replaced by the result.
 Predicate and body can use the symbolic names of arguments that were
 declared in the <B><TT>RuleBase</TT></B> call.
 <P>
-All rules for a given function can be erased with a call to <B><TT>TryRetract(funcname, arity)</TT></B>. This is useful, for instance, when too many rules have been entered in the interactive mode. This call undefines the function and also invalidates the <B><TT>RuleBase</TT></B> declaration. 
+All rules for a given function can be erased with a call to <B><TT>Retract(funcname, arity)</TT></B>. This is useful, for instance, when too many rules have been entered in the interactive mode. This call undefines the function and also invalidates the <B><TT>RuleBase</TT></B> declaration. 
 <P>
 You can specify that function arguments are not evaluated before they are
 bound to the parameter: <B><TT>HoldArg("foo",a);</TT></B> would then

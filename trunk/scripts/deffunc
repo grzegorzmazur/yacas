@@ -9,7 +9,7 @@ HoldArg("Function",args);
 HoldArg("Function",body);
 Rule("Function",3,0,True)
 [
-  TryRetract(oper,Length(args)); 
+  Retract(oper,Length(args)); 
   MacroRuleBase(oper,args);
   MacroRule(oper,Length(args),0,True) body;
 ];
@@ -21,7 +21,7 @@ HoldArg("TemplateFunction",args);
 HoldArg("TemplateFunction",body);
 Rule("TemplateFunction",3,0,True)
 [
-  TryRetract(oper,Length(args)); 
+  Retract(oper,Length(args)); 
   Local(arglist);
   arglist:=FlatCopy(args);
   
@@ -112,7 +112,7 @@ Rule(":=",2,20,IsFunction(aLeftAssign) And aLeftAssign[0] != Atom(":="))
   Set(oper,String(aLeftAssign[0]));
   Set(args,Tail(Listify(aLeftAssign)));
   Set(arity,Length(args));
-  TryRetract(oper,arity); 
+  Retract(oper,arity); 
   MacroRuleBase(oper, args);
   UnHoldable(aRightAssign);
   MacroRule(oper,arity,0,True) aRightAssign;

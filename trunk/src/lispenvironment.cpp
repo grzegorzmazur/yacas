@@ -257,7 +257,7 @@ void LispEnvironment::UnFenceRule(LispStringPtr aOperator,LispInt aArity)
     userFunc->UnFence();
 }
 
-void LispEnvironment::TryRetract(LispStringPtr aOperator,LispInt aArity)
+void LispEnvironment::Retract(LispStringPtr aOperator,LispInt aArity)
 {
     LispMultiUserFunction* multiUserFunc = iUserFunctions.LookUp(aOperator);
     if (multiUserFunc)

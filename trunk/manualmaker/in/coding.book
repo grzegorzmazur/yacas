@@ -201,7 +201,7 @@ should be evaluated, and the original expression replaced by the result.
 Predicate and body can use the symbolic names of arguments that were
 declared in the ":HtmlTerm("RuleBase"):" call.":HtmlNewParagraph():
 
-"All rules for a given function can be erased with a call to ":HtmlTerm("TryRetract(funcname, arity)"):". This is useful, for instance, when too many rules have been entered in the interactive mode. This call undefines the function and also invalidates the ":HtmlTerm("RuleBase"):" declaration. ":HtmlNewParagraph():
+"All rules for a given function can be erased with a call to ":HtmlTerm("Retract(funcname, arity)"):". This is useful, for instance, when too many rules have been entered in the interactive mode. This call undefines the function and also invalidates the ":HtmlTerm("RuleBase"):" declaration. ":HtmlNewParagraph():
 
 "You can specify that function arguments are not evaluated before they are
 bound to the parameter: ":HtmlTerm("HoldArg(\"foo\",a);"):" would then

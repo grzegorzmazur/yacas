@@ -234,7 +234,7 @@ SeeAlso({"Echo", "Write"});
 
 AddAnchor("Space");
 SubSection() "Space";
-BuiltIn();
+StandardLib();
 
 Topical() "Calling Sequence";
 Text() "
@@ -263,7 +263,7 @@ SeeAlso({"Echo", "Write", "NewLine"});
 
 AddAnchor("NewLine");
 SubSection() "NewLine";
-BuiltIn();
+StandardLib();
 
 Topical() "Calling Sequence";
 Text() "

@@ -133,9 +133,9 @@ after all RuleBase calls for this operator.
 
 ";
 
-AddAnchor("TryRetract");
-SubSection()"TryRetract(\"operator\",arity)";  Text()"
-TryRetract(\"operator\",arity) : Remove a rulebase with some specific arity,
+AddAnchor("Retract");
+SubSection()"Retract(\"operator\",arity)";  Text()"
+Retract(\"operator\",arity) : Remove a rulebase with some specific arity,
 if it exists at all.
 
 ";

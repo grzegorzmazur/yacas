@@ -786,7 +786,7 @@ void LispWrite(LispEnvironment& aEnvironment, LispPtr& aResult,
     }
     InternalTrue(aEnvironment,aResult);
 }
-
+/*TODO remove!!!
 static void RepeatChar(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments, LispCharPtr aString)
 {
@@ -819,6 +819,7 @@ void LispNewLine(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
     RepeatChar(aEnvironment, aResult, aArguments, "\n");
 }
+*/
 
 
 void LispWriteString(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -1327,7 +1328,7 @@ void LispIf(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 
 
-void LispTryRetract(LispEnvironment& aEnvironment, LispPtr& aResult,
+void LispRetract(LispEnvironment& aEnvironment, LispPtr& aResult,
                  LispPtr& aArguments)
 {
     TESTARGS(3);
@@ -1346,7 +1347,7 @@ void LispTryRetract(LispEnvironment& aEnvironment, LispPtr& aResult,
     InternalEval(aEnvironment, arity, Argument(aArguments,2));
     CHK_ARG(arity.Get()->String() != NULL, 2);
     LispInt ar = InternalAsciiToInt(arity.Get()->String()->String());
-    aEnvironment.TryRetract(aEnvironment.HashTable().LookUp(oper.String()), ar);
+    aEnvironment.Retract(aEnvironment.HashTable().LookUp(oper.String()), ar);
     InternalTrue(aEnvironment,aResult);
 }
 

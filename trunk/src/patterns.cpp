@@ -1,7 +1,7 @@
 /*TODO
  - some bugs left:
    - - - a not working correctly...
- - make a TryRetractRule with a predicate as argument.
+ - make a RetractRule with a predicate as argument.
  */
 #include "patterns.h"
 #include "standard.h"

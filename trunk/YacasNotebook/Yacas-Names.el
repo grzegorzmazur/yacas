@@ -254,7 +254,7 @@
 "BitOr"
 "BitAnd"
 "UnFence"
-"TryRetract"
+"Retract"
 "HoldArg"
 "RuleBase"
 "MacroRuleBase"
