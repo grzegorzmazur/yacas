@@ -192,6 +192,13 @@ Note that the included document must be a Yacas-language file. (This will become
 	
 	(documentation text continues)
 
+*	Yacas expressions may be evaluated inline by using the directive {*EVAL}. Anything that follows {*EVAL} until the end of the line will be evaluated as a Yacas expression. If this expression prints something (e.g. via {Write}), the output will be inserted into the text (as is). Also, the result of the expression will be inserted, unless the expression evaluates to {True}. The Yacas expression <i>must</i> be on one line.
+
+For example,
+	*EVAL "Yacas version: " : Version()
+will insert the string `
+*EVAL "Yacas version: " : Version()
+' into the manual.
 
 	    Formatting text for the reference manual
 
@@ -242,8 +249,8 @@ which creates a small heading ({Topical()}). For instance,
 	*PARMS
 results in the same text as
 	*HEAD Parameters:
-Usage of the {*A}, {*AA}, {*HEAD} tags is for compatibility only and should not
-be necessary. The {*CMD} tag generates all necessary HTML anchors.
+Usage of the {*A} and {*AA} tags is for compatibility only and should not
+be necessary. The {*CMD} tag generates all necessary HTML anchors. The {*HEAD} tag might be useful for lowest-level headings.
 
 The {*INTRO} and {*BLURB} tags only work for one paragraph. There must be no
 empty line between {*INTRO}/{*BLURB} and that paragraph. Also, there must be no
@@ -350,3 +357,39 @@ To prepare a documentation chapter in such a way that code extraction is possibl
 
 See the source file {wester-1994.chapt.txt} to get a feeling of how the source documentation is formatted to allow completely automatic code extraction. Note that the printed documentation will be in twocolumn format, and therefore it is necessary to split lines that are too long.
 
+	    Summary of mark-up labels
+
+Mark-up labels <i>must</i> appear as first characters on a line. The following mark-up labels are currently defined:
+
+
+Labels that affect only the current line:
+
+*	{*HEAD} -- lowest-level heading (lower than subsection)
+*	{*INCLUDE} <i>filename</i> -- include another documentation file
+*	{*EVAL} <i>statement</i> -- evaluate inline as a {Yacas} statement and insert results
+*	{*A} <i>anchor</i> -- insert anchor using {HtmlAnchor} (for HTML only, deprecated)
+*	{*AA} <i>anchor</i> -- insert anchor using {AddAnchor} (for HTML only, deprecated)
+
+Labels that affect a subsequent paragraph (and must be separated by an empty line from what follows):
+
+*	{*BLURB} -- book short description (for HTML only)
+*	{*INTRO} -- chapter introduction
+*	{*REM} -- documentation comment
+
+Special labels for the reference manual that require an argument on the same line:
+
+*	{*CMD} or {*FUNC} -- command name and one-line description
+*	{*SEE} -- "See also"
+
+Special labels without arguments that generate headings for the reference manual:
+
+*	{*STD} -- "Standard library"
+*	{*UNIX} -- "Unix-specific"
+*	{*MSWIN} -- "MS Windows-specific"
+*	{*MAC} -- "Macintosh-specific"
+*	{*CORE} -- "Core function"
+*	{*CALL} -- "Calling format"
+*	{*PARMS} -- "Parameters"
+*	{*DESC} -- "Description"
+*	{*E.G.} -- "Examples"
+*	{*EG} -- "Example"

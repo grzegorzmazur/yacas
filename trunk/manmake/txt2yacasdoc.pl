@@ -77,7 +77,7 @@ while (<STDIN>) {
 	# New paragraph	
 	#############################################################
 	elsif (/^\s*$/) {
-		if (not $have_par) {
+		if ($have_par == 0) {
 			&finish_text_close_quote();
 			&start_text_open_quote();
 			print "\":HtmlNewParagraph():\n\n\"";
@@ -122,6 +122,15 @@ while (<STDIN>) {
 		&finish_text_close_quote();
 		$have_par = 1;
 		print "IncludeFile(\"$1\");\n\n";
+	}
+	elsif (/^\*EVAL\s\s*([^ ].*)\s*$/i) {	# Evaluate a Yacas expression and insert its result as text
+		$expression = $1;
+		# un-escape quotes and backslash again
+		$expression =~ s/\\"/"/g;
+		$expression =~ s/\\\\/\\/g;
+		&finish_text_close_quote();
+		$have_par = 0;	# even if we had a paragraph before us, now we don't
+		print "DocEval($expression);\n";	# this will insert inline Yacas code
 	}
 	#############################################################
 	# stuff for refman
