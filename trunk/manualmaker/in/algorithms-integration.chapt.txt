@@ -28,7 +28,7 @@ Each function can deem the integral unsolvable, and thus return
 the integral unevaluated. These different functions offer
 hooks for adding new types of integrals to be handled.
 
-	    Expression clean up
+	    Expression clean-up
 
 Integration starts by first cleaning up the expression, by
 calling {TrigSimpCombine} to simplify expressions containing
@@ -92,10 +92,10 @@ function, and the variable {var} is the real variable being integrated
 over. To clarify: suppose the user wants to integrate $ Cos(c*y+d) $
 over $ y $, then the following variables are set:
 
-*	a = c
-*	b = d
-*	x = A*y+b
-*	var = x
+*	{a} = $c$
+*	{b} = $d$
+*	{x} = $a*y+b$
+*	{var} = $x$
 
 When functions are multiplied by constants, that situation is
 handled by the integration rule that can deal with univariate
@@ -122,10 +122,11 @@ and $ b*sign0>0 $.
 
 As an example:
 
-	IntPureSquare(x,num_IsFreeOf2(var)/(_x),1,1,(num/(a*Sqrt(b/a)))*ArcTan(var/Sqrt(b/a)));
-
+	IntPureSquare(x,num_IsFreeOf2(var)/(_x),
+	  1,1,(num/(a*Sqrt(b/a)))*
+	  ArcTan(var/Sqrt(b/a)));
 declares that the anti-derivative of $ c/(a*x^2+b) $ is
-$ (c/(a*Sqrt(b/a)))*ArcTan(x/Sqrt(b/a)) $, if both $ a $ and $ b $
-are positive numbers.
+$$ (c/(a*Sqrt(b/a)))*ArcTan(x/Sqrt(b/a)) $$
+if both $ a $ and $ b $ are positive numbers.
 
 
