@@ -13,12 +13,12 @@ inline LispPtr& Argument(LispPtr& cur, LispInt n)
 // Boolean operations
 inline void InternalTrue(LispEnvironment& aEnvironment, LispPtr& aResult)
 {               
-    aResult.Set(aEnvironment.iTrueAtom.Get()->Copy(LispFalse));
+    aResult.Set(aEnvironment.iTrue->Copy(LispFalse));
 }
 
 inline void InternalFalse(LispEnvironment& aEnvironment, LispPtr& aResult)
 {
-    aResult.Set(aEnvironment.iFalseAtom.Get()->Copy(LispFalse));
+    aResult.Set(aEnvironment.iFalse->Copy(LispFalse));
 }
 
 inline void InternalBoolean(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -38,12 +38,12 @@ inline void InternalBoolean(LispEnvironment& aEnvironment, LispPtr& aResult,
 inline LispBoolean IsTrue(LispEnvironment& aEnvironment, LispPtr& aExpression)
 {
     LISPASSERT(aExpression.Get() != NULL);
-    return aExpression.Get()->String() == aEnvironment.iTrue;
+    return aExpression.Get()->String() == aEnvironment.iTrue->String();
 }
 inline LispBoolean IsFalse(LispEnvironment& aEnvironment, LispPtr& aExpression)
 {
     LISPASSERT(aExpression.Get() != NULL);
-    return aExpression.Get()->String() == aEnvironment.iFalse;
+    return aExpression.Get()->String() == aEnvironment.iFalse->String();
 }
 
 

@@ -40,7 +40,7 @@ class LispEnvironment;
 class LispAtom : public LispObject
 {
 public:
-    static LispObject* New(LispEnvironment& aEnvironment, LispStringPtr aString);
+    static LispObject* New(LispEnvironment& aEnvironment, LispCharPtr aString);
     virtual ~LispAtom();
     virtual LispStringPtr String();
     virtual LispObject* Copy(LispInt aRecursed);
@@ -159,11 +159,11 @@ class LispNumber : public LispObject
 public:
     /// constructors:
     /// construct from another LispNumber
-    LispNumber(LispHashTable* aHashTable, BigNumber* aNumber,LispStringPtr aString);
+    LispNumber(BigNumber* aNumber,LispStringPtr aString);
     /// construct from a BigNumber; the string representation will be absent
-    LispNumber(LispHashTable& aHashTable, BigNumber* aNumber);
+    LispNumber(BigNumber* aNumber);
     /// construct from a decimal string representation (also create a number object) and use aBasePrecision decimal digits 
-    LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt aBasePrecision);
+    LispNumber(LispStringPtr aString, LispInt aBasePrecision);
     virtual ~LispNumber();
     virtual LispObject* Copy(LispInt aRecursed);
     /// return a string representation in decimal with maximum decimal precision allowed by the inherent accuracy of the number
@@ -177,8 +177,6 @@ private:
     RefPtr<BigNumber> iNumber;
     /// string representation in decimal; NULL if not yet converted from BigNumber
     RefPtr<LispString> iString;
-    /// hash table pointer (for saving strings)
-    LispHashTable* iHashTable;
 };
 
 #endif

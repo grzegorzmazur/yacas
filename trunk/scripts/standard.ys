@@ -224,8 +224,12 @@ SumListSide(_x, y_IsList) <--
 240 # (x_IsList + _y)_Not(IsList(y)) <-- SumListSide(y,x);
 241 # (_x + y_IsList)_Not(IsList(x)) <-- SumListSide(x,y);
 
-250 # Infinity + y_IsComplex <-- Infinity;
-250 # x_IsComplex + Infinity <-- Infinity;
+250 # z_IsInfinity + Complex(_x,_y) <-- Complex(x+z,y);
+250 # Complex(_x,_y) + z_IsInfinity <-- Complex(x+z,y);
+
+251 # z_IsInfinity + _x <-- z;
+251 # _x + z_IsInfinity <-- z;
+
 
 250 # Undefined + _y <-- Undefined;
 250 # _x + Undefined <-- Undefined;
@@ -288,8 +292,11 @@ LocalSymbols(x,y,xarg,yarg)
    result;
 ];
 
-250  # Infinity - y_IsComplex <-- Infinity;
-250  # x_IsComplex - Infinity <-- - Infinity;
+250 # z_IsInfinity - Complex(_x,_y) <-- Complex(-x+z,-y);
+250 # Complex(_x,_y) - z_IsInfinity <-- Complex(x-z,y);
+
+251 # z_IsInfinity - _x <-- z;
+251 # _x - z_IsInfinity <-- -z;
 
 250 # Undefined - _y <-- Undefined;
 250 # _x - Undefined <-- Undefined;
@@ -534,7 +541,7 @@ LocalSymbols(x,y,xarg,yarg)
 250 # ((-Infinity) ^ (n_IsNumber))_(IsOdd(n)) <-- -Infinity;
 
 250 # (x_IsNumber ^ Infinity)_(x> -1 And x < 1) <-- 0;
-250 # (x_IsNumber ^ Infinity)_(x< -1) <-- - Infinity;
+//TODO remove, this is not true is it? 250 # (x_IsNumber ^ Infinity)_(x< -1) <-- - Infinity;
 250 # (x_IsNumber ^ Infinity)_(x> 1) <-- Infinity;
 
 // these Magnitude(x)s should probably be changed to Abs(x)s

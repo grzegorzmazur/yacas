@@ -168,10 +168,10 @@ Verify( D(x,0) Sin(x), Sin(x) );
 
 Verify( 2/3 >= 1/3, True);
 
-Verify( Infinity + I, Infinity );
-Verify( Infinity - I, Infinity );
-Verify( I - Infinity,-Infinity );
-Verify( I + Infinity, Infinity );
+Verify( Infinity + I, Complex(Infinity,1) );
+Verify( Infinity - I, Complex(Infinity,-1) );
+Verify( I - Infinity,Complex(-Infinity,1) );
+Verify( I + Infinity, Complex(Infinity,1) );
 Verify( I*Infinity,Complex(0,Infinity)); //Changed Ayal: I didn't like the old definition
 Verify(-I*Infinity,Complex(0,-Infinity)); //Changed Ayal: I didn't like the old definition
 Verify( Infinity*I,Complex(0,Infinity)); //Changed Ayal: I didn't like the old definition

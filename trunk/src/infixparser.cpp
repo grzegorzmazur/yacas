@@ -113,19 +113,19 @@ void ParsedObject::Parse()
     ReadToken();
     if (iEndOfFile)
     {
-        iResult.Set(LispAtom::New(iParser.iEnvironment,iParser.iEnvironment.iEndOfFile));
+        iResult.Set(iParser.iEnvironment.iEndOfFile->Copy(LispTrue));
         return;
     }
 
     ReadExpression(KMaxPrecedence);  // least precedence
 
-    if (iLookAhead != iParser.iEnvironment.iEndStatement)
+    if (iLookAhead != iParser.iEnvironment.iEndStatement->String())
     {
       RAISE_PARSE_ERROR; // iError = LispTrue;
     }
     if (iError)
     {
-        while ((*iLookAhead)[0] != '\0' && iLookAhead != iParser.iEnvironment.iEndStatement)
+        while ((*iLookAhead)[0] != '\0' && iLookAhead != iParser.iEnvironment.iEndStatement->String())
         {
             ReadToken();
         }
@@ -186,7 +186,7 @@ void ParsedObject::GetOtherSide(LispInt aNrArgsToCombine, LispInt depth)
 void ParsedObject::InsertAtom(LispStringPtr aString)
 {
     LispPtr ptr;
-    ptr.Set(LispAtom::New(iParser.iEnvironment,aString));
+    ptr.Set(LispAtom::New(iParser.iEnvironment,aString->String()));
 #ifdef YACAS_DEBUG
     ptr.Get()->SetFileAndLine(
                               iParser.iInput.Status().FileName(),
@@ -206,21 +206,21 @@ void ParsedObject::ReadExpression(LispInt depth)
     for(;;)
     {
         //Handle special case: a[b]. a is matched with lowest precedence!!
-        if (iLookAhead == iParser.iEnvironment.iProgOpen)
+        if (iLookAhead == iParser.iEnvironment.iProgOpen->String())
         {
             // Match opening bracket
             MatchToken(iLookAhead);
             // Read "index" argument
             ReadExpression(KMaxPrecedence);
             // Match closing bracket
-            if (iLookAhead != iParser.iEnvironment.iProgClose)
+            if (iLookAhead != iParser.iEnvironment.iProgClose->String())
             {
                 RaiseError("Expecting a ] close bracket for program block, but got %s instead",iLookAhead->String()); // RAISE_PARSE_ERROR; // iError = LispTrue;
                 return;
             }
             MatchToken(iLookAhead);
             // Build into Ntn(...)
-            LispStringPtr theOperator = iParser.iEnvironment.iNth;
+            LispStringPtr theOperator = iParser.iEnvironment.iNth->String();
             InsertAtom(theOperator);
             Combine(2);
         }
@@ -306,49 +306,49 @@ void ParsedObject::ReadAtom()
         }
     }
     // Else parse brackets
-    else if (iLookAhead == iParser.iEnvironment.iBracketOpen)
+    else if (iLookAhead == iParser.iEnvironment.iBracketOpen->String())
     {
         MatchToken(iLookAhead);
         ReadExpression(KMaxPrecedence);  // least precedence
-        MatchToken(iParser.iEnvironment.iBracketClose);
+        MatchToken(iParser.iEnvironment.iBracketClose->String());
     }
     //Parse lists
-    else if (iLookAhead == iParser.iEnvironment.iListOpen)
+    else if (iLookAhead == iParser.iEnvironment.iListOpen->String())
     {
         LispInt nrargs=0;
         MatchToken(iLookAhead);
-        while (iLookAhead != iParser.iEnvironment.iListClose)
+        while (iLookAhead != iParser.iEnvironment.iListClose->String())
         {
             ReadExpression(KMaxPrecedence);  // least precedence
             nrargs++;
 
-            if (iLookAhead == iParser.iEnvironment.iComma)
+            if (iLookAhead == iParser.iEnvironment.iComma->String())
             {
                 MatchToken(iLookAhead);
             }
-            else if (iLookAhead != iParser.iEnvironment.iListClose)
+            else if (iLookAhead != iParser.iEnvironment.iListClose->String())
             {
                 RaiseError("Expecting a } close bracket for a list, but got %s instead",iLookAhead->String()); // RAISE_PARSE_ERROR; // iError = LispTrue;
                 return;
             }
         }
         MatchToken(iLookAhead);
-        LispStringPtr theOperator = iParser.iEnvironment.iList;
+        LispStringPtr theOperator = iParser.iEnvironment.iList->String();
         InsertAtom(theOperator);
         Combine(nrargs);
 
     }
     // Parse prog bodies
-    else if (iLookAhead == iParser.iEnvironment.iProgOpen)
+    else if (iLookAhead == iParser.iEnvironment.iProgOpen->String())
     {
         LispInt nrargs=0;
         MatchToken(iLookAhead);
-        while (iLookAhead != iParser.iEnvironment.iProgClose)
+        while (iLookAhead != iParser.iEnvironment.iProgClose->String())
         {
             ReadExpression(KMaxPrecedence);  // least precedence
             nrargs++;
 
-            if (iLookAhead == iParser.iEnvironment.iEndStatement)
+            if (iLookAhead == iParser.iEnvironment.iEndStatement->String())
             {
                 MatchToken(iLookAhead);
             }
@@ -359,7 +359,7 @@ void ParsedObject::ReadAtom()
             }
         }
         MatchToken(iLookAhead);
-        LispStringPtr theOperator = iParser.iEnvironment.iProg;
+        LispStringPtr theOperator = iParser.iEnvironment.iProg->String();
         InsertAtom(theOperator);
         Combine(nrargs);
     }
@@ -370,20 +370,20 @@ void ParsedObject::ReadAtom()
         MatchToken(iLookAhead);
 
         LispInt nrargs=-1;
-        if (iLookAhead == iParser.iEnvironment.iBracketOpen)
+        if (iLookAhead == iParser.iEnvironment.iBracketOpen->String())
         {
             nrargs=0;
             MatchToken(iLookAhead);
-            while (iLookAhead != iParser.iEnvironment.iBracketClose)
+            while (iLookAhead != iParser.iEnvironment.iBracketClose->String())
             {
                 ReadExpression(KMaxPrecedence);  // least precedence
                 nrargs++;
 
-                if (iLookAhead == iParser.iEnvironment.iComma)
+                if (iLookAhead == iParser.iEnvironment.iComma->String())
                 {
                     MatchToken(iLookAhead);
                 }
-                else if (iLookAhead != iParser.iEnvironment.iBracketClose)
+                else if (iLookAhead != iParser.iEnvironment.iBracketClose->String())
                 {
                     RaiseError("Expecting ) closing bracket for sub-expression, but got %s instead",iLookAhead->String()); // RAISE_PARSE_ERROR; // iError = LispTrue;
                     return;
@@ -536,7 +536,7 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
         else
         {
             LispIterator iter(subList->Get()->Next());
-            if (string == iCurrentEnvironment->iList)
+            if (string == iCurrentEnvironment->iList->String())
             {
                 WriteToken(aOutput,"{");
                 while (iter())
@@ -548,7 +548,7 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                 }
                 WriteToken(aOutput,"}");
             }
-            else if (string == iCurrentEnvironment->iProg)
+            else if (string == iCurrentEnvironment->iProg->String())
             {
                 WriteToken(aOutput,"[");
                 while (iter())
@@ -559,7 +559,7 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                 }
                 WriteToken(aOutput,"]");
             }
-            else if (string == iCurrentEnvironment->iNth)
+            else if (string == iCurrentEnvironment->iNth->String())
             {
                 Print(*iter.Ptr(), aOutput, 0);
                 iter.GoNext();

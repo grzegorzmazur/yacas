@@ -216,8 +216,7 @@ void LispLexCompare2(LispEnvironment& aEnvironment, LispInt aStackTop,
 void LispPi(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     //TESTARGS(1);
-    RESULT.Set(LispAtom::New(aEnvironment,PiFloat(aEnvironment.HashTable(),
-                                         aEnvironment.Precision())));
+    RESULT.Set(PiFloat(aEnvironment, aEnvironment.Precision()));
 }
 
 
@@ -255,7 +254,7 @@ void LispTail(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalTail(first, ARGUMENT(1));
     InternalTail(RESULT, first);
     LispPtr head;
-    head.Set(LispAtom::New(aEnvironment,aEnvironment.iList));
+    head.Set(aEnvironment.iList->Copy(LispFalse));
     head.Get()->Next().Set(RESULT.Get()->SubList()->Get());
     RESULT.Get()->SubList()->Set(head.Get());
 }
@@ -266,7 +265,7 @@ void LispUnList(LispEnvironment& aEnvironment, LispInt aStackTop)
   CHK_ARG_CORE(ARGUMENT(1).Get()->SubList(), 1);
   LispObject* subList = ARGUMENT(1).Get()->SubList()->Get();
   CHK_ARG_CORE(subList, 1);
-  CHK_ARG_CORE(subList->String() == aEnvironment.iList,1);
+  CHK_ARG_CORE(subList->String() == aEnvironment.iList->String(),1);
   InternalTail(RESULT, ARGUMENT(1));
 }
 
@@ -274,7 +273,7 @@ void LispListify(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   CHK_ARG_CORE(ARGUMENT(1).Get()->SubList(), 1);
   LispPtr head;
-  head.Set(LispAtom::New(aEnvironment,aEnvironment.iList));
+  head.Set(aEnvironment.iList->Copy(LispFalse));
   head.Get()->Next().Set(ARGUMENT(1).Get()->SubList()->Get());
   RESULT.Set(LispSubList::New(head.Get()));
 }
@@ -285,7 +284,7 @@ void LispListify(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispDestructiveReverse(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispPtr reversed;
-  reversed.Set(LispAtom::New(aEnvironment,aEnvironment.iList));
+  reversed.Set(aEnvironment.iList->Copy(LispFalse));
   InternalReverseList(reversed.Get()->Next(), ARGUMENT(1).Get()->SubList()->Get()->Next());
   RESULT.Set(LispSubList::New(reversed.Get()));
 }
@@ -299,7 +298,7 @@ void LispLength(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispChar s[20];
     LispInt num = InternalListLength(subList->Get()->Next());
     InternalIntToAscii(s,num);
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(s)));
+    RESULT.Set(LispAtom::New(aEnvironment,s));
     return;
   }
   LispStringPtr string = ARGUMENT(1).Get()->String();
@@ -308,7 +307,7 @@ void LispLength(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispChar s[20];
     LispInt num = string->NrItems()-3;
     InternalIntToAscii(s,num);
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(s)));
+    RESULT.Set(LispAtom::New(aEnvironment,s));
     return;
   }
   GenericClass *gen = ARGUMENT(1).Get()->Generic();
@@ -318,7 +317,7 @@ void LispLength(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispInt size=((ArrayClass*)gen)->Size();
     LispChar s[20];
     InternalIntToAscii(s,size);
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(s)));
+    RESULT.Set(LispAtom::New(aEnvironment,s));
     return;
   }
 //  CHK_ISLIST_CORE(ARGUMENT(1),1);
@@ -327,7 +326,7 @@ void LispLength(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispList(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispPtr all;
-  all.Set(LispAtom::New(aEnvironment,aEnvironment.iList));
+  all.Set(aEnvironment.iList->Copy(LispFalse));
   LispIterator tail(all);
   tail.GoNext();
   LispIterator iter(*ARGUMENT(1).Get()->SubList());
@@ -348,7 +347,7 @@ void LispList(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispConcatenate(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispPtr all;
-  all.Set(LispAtom::New(aEnvironment,aEnvironment.iList));
+  all.Set(aEnvironment.iList->Copy(LispFalse));
   LispIterator tail(all);
   tail.GoNext();
   LispInt arg = 1;
@@ -408,7 +407,7 @@ void LispConcatenateStrings(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispStringSmartPtr smartptr;
     smartptr.Set(str);
     ConcatenateStrings(smartptr,aEnvironment, aStackTop);
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str)));
+    RESULT.Set(LispAtom::New(aEnvironment,str->String()));
 }
 
 static void InternalDelete(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aDestructive)
@@ -907,7 +906,7 @@ void LispAtomize(LispEnvironment& aEnvironment, LispInt aStackTop)
     CHK_ARG_CORE(evaluated.Get() != NULL, 1);
     LispStringPtr orig = evaluated.Get()->String();
     CHK_ARG_CORE(orig != NULL, 1);
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpUnStringify(orig->String())));
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpUnStringify(orig->String())->String()));
 }
 
 
@@ -923,7 +922,7 @@ void LispStringify(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispStringPtr orig = evaluated.Get()->String();
     CHK_ARG_CORE(orig != NULL, 1);
 
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(orig->String())));
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(orig->String())->String()));
 }
 
 
@@ -1130,7 +1129,7 @@ void LispMathLibName(LispEnvironment& aEnvironment,LispInt aStackTop)
         char* library_name = const_cast<char*>(NumericLibraryName());
         RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(
 		library_name
-	)));
+	)->String()));
 }
 
 void LispIsFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1442,10 +1441,10 @@ void LispReadToken(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     if (result->String()[0] == '\0')
     {
-        RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp("EndOfFile")));
+        RESULT.Set(aEnvironment.iEndOfFile->Copy(LispFalse));
         return;
     }
-    RESULT.Set(LispAtom::New(aEnvironment,result));
+    RESULT.Set(LispAtom::New(aEnvironment,result->String()));
 }
 
 
@@ -1514,7 +1513,7 @@ void LispTrapError(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispGetCoreError(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(aEnvironment.iError.String())));
+  RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(aEnvironment.iError.String())->String()));
 }
 
 
@@ -1554,8 +1553,7 @@ void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
 void LispFastPi(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     //TESTARGS(1);
-    RESULT.Set(LispAtom::New(aEnvironment,PlatPi(aEnvironment.HashTable(),
-                                         aEnvironment.Precision())));
+    RESULT.Set(PlatPi(aEnvironment,aEnvironment.Precision()));
 }
 
 
@@ -1750,7 +1748,7 @@ void LispGetPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
 	}
     LispChar buf[30];
     InternalIntToAscii(buf, op->iPrecedence);
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
+    RESULT.Set(LispAtom::New(aEnvironment,buf));
 }
 
 
@@ -1769,7 +1767,7 @@ void LispGetLeftPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     LispChar buf[30];
     InternalIntToAscii(buf, op->iLeftPrecedence);
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
+    RESULT.Set(LispAtom::New(aEnvironment,buf));
 }
 void LispGetRightPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
@@ -1791,7 +1789,7 @@ void LispGetRightPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     LispChar buf[30];
     InternalIntToAscii(buf, op->iRightPrecedence);
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
+    RESULT.Set(LispAtom::New(aEnvironment,buf));
 }
 
 
@@ -1826,7 +1824,7 @@ void LispGetPrecision(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispChar buf[30];
 	// decimal precision
     InternalIntToAscii(buf, aEnvironment.Precision());
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(buf)));
+    RESULT.Set(LispAtom::New(aEnvironment,buf));
 }
 
 
@@ -1842,7 +1840,7 @@ void LispToString(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalEval(aEnvironment, RESULT, ARGUMENT(1));
 
     //Return the result
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(oper.String())));
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(oper.String())->String()));
 }
 
 
@@ -1883,7 +1881,7 @@ void LispFindFile(LispEnvironment& aEnvironment,LispInt aStackTop)
     InternalFindFile(oper.String(), aEnvironment.iInputDirectories,
                      filename);
     LispString res(filename,1);
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(res.String())));
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(res.String())->String()));
 }
 
 
@@ -1908,7 +1906,7 @@ void LispGenericTypeName(LispEnvironment& aEnvironment,LispInt aStackTop)
     CHK_ARG_CORE(evaluated.Get()->Generic() != NULL,1);
 
     LispCharPtr name = evaluated.Get()->Generic()->TypeName();
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(name)));
+    RESULT.Set(LispAtom::New(aEnvironment,name));
 }
 
 void GenArrayCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1942,7 +1940,7 @@ void GenArraySize(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispInt size=((ArrayClass*)gen)->Size();
     LispChar s[20];
     InternalIntToAscii(s,size);
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(s)));
+    RESULT.Set(LispAtom::New(aEnvironment,s));
 }
 
 void GenArrayGet(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -2103,11 +2101,11 @@ void LispType(LispEnvironment& aEnvironment,LispInt aStackTop)
     head = subList->Get();
     if (!head->String())
         goto EMPTY;
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(head->String()->String())));
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(head->String()->String())->String()));
     return;
     
 EMPTY:
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp("\"\"")));
+    RESULT.Set(LispAtom::New(aEnvironment,"\"\""));
     return;
 }
 
@@ -2143,7 +2141,7 @@ void LispStringMid(LispEnvironment& aEnvironment,LispInt aStackTop)
         str.Append((*orig)[i]);
     str.Append('\"');
     str.Append('\0');
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str.String())));
+    RESULT.Set(LispAtom::New(aEnvironment,str.String()));
 }
 
 
@@ -2174,7 +2172,7 @@ void LispSetStringMid(LispEnvironment& aEnvironment,LispInt aStackTop)
 
     for (i=0;i<count-3;i++)
         str[i+from] = (*replace)[i+1];
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str.String())));
+    RESULT.Set(LispAtom::New(aEnvironment,str.String()));
 }
 
 
@@ -2201,11 +2199,11 @@ void LispFindFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
         LispDefFile* def = multiUserFunc->iFileToOpen;
         if (def != NULL)
         {
-            RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(def->iFileName()->String())));
+            RESULT.Set(LispAtom::New(aEnvironment,def->iFileName()->String()));
             return;
         }
     }
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp("\"\"")));
+    RESULT.Set(LispAtom::New(aEnvironment,"\"\""));
 }
 
 
@@ -2356,7 +2354,7 @@ void LispRuleBaseArgList(LispEnvironment& aEnvironment,LispInt aStackTop)
 
     LispPtr& list = userFunc->ArgList();
     LispPtr head;
-    head.Set(LispAtom::New(aEnvironment,aEnvironment.iList));
+    head.Set(aEnvironment.iList->Copy(LispFalse));
     head.Get()->Next().Set(list.Get());
     RESULT.Set(LispSubList::New(head.Get()));
 }

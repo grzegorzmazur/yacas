@@ -36,7 +36,8 @@ void PrintNumber(char* prefix,ANumber& aNumber)
 {
 #ifdef HAVE_STDIO_H 
   printf("%s\n",prefix);
-  printf("%d words, %d after point, 10-prec. %d\n",aNumber.NrItems(),aNumber.iExp, aNumber.iPrecision);
+  printf("%d words, %d after point (x10^%d), 10-prec. %d\n",
+        aNumber.NrItems(),aNumber.iExp, aNumber.iTensExp,aNumber.iPrecision);
   int i;
   for (i=aNumber.NrItems()-1;i>=0;i--)
   {
@@ -496,7 +497,7 @@ static void BalanceFractions(ANumber& a1, ANumber& a2)
     //TODO this is not the fastest way to multiply by 10^exp
     if (a1.iTensExp < a2.iTensExp)
     {
-      ANumber ten("10",a2.iPrecision);
+//      ANumber ten("10",a2.iPrecision);
 
 //PrintNumber("ten",ten);
 //PrintNumber("a2 init ",a2);
@@ -517,7 +518,7 @@ static void BalanceFractions(ANumber& a1, ANumber& a2)
     }
     else if (a2.iTensExp < a1.iTensExp)
     {
-      ANumber ten("10",a2.iPrecision);
+//      ANumber ten("10",a2.iPrecision);
       LispInt diff = a1.iTensExp - a2.iTensExp;
       a1.iTensExp = a2.iTensExp;
       while (diff > 0)
@@ -1098,12 +1099,12 @@ void BaseShiftLeft(ANumber& a, LispInt aNrBits)
 /* Binary Greatest common divisor algorithm. */
 void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
 {
-    a1.iNegative = a2.iNegative = LispFalse;
     ANumber zero("0",Precision(aResult),10);
     ANumber u("0",Precision(aResult));
     ANumber v("0",Precision(aResult));
     u.CopyFrom(a1);
     v.CopyFrom(a2);
+    u.iNegative = v.iNegative = LispFalse;
 
      LispInt k=0;
 
@@ -1176,6 +1177,7 @@ void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
         Subtract(t,u,v);
      }
     aResult.CopyFrom(u);
+    aResult.iNegative=LispFalse;
     BaseShiftLeft(aResult,k);
 }
 
@@ -1468,20 +1470,19 @@ void Sqrt(ANumber& aResult, ANumber& N)
    if ((N.iTensExp&1) != 0)
     {
       WordBaseTimesInt(N,10);
+      N.iTensExp--;
     }
-
-    while(N.iExp<2*digs)
+    while(N.iExp<2*digs || (N.iExp&1))
     {
         N.Insert(0,zero);
         N.iExp++;
     }
+    LispInt resultDigits = N.iExp/2;
     
     BaseSqrt(aResult, N);
-    aResult.iExp=digs;
-    aResult.iTensExp = (N.iTensExp/2);
+    aResult.iExp=resultDigits;
 
-    //TODO!!!@@@###$$$ iTensExp???
-    //AYALTODO
+    aResult.iTensExp = (N.iTensExp/2);
 }
 
 

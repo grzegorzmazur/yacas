@@ -20,7 +20,7 @@ void LispParser::Parse(LispPtr& aResult)
     token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
     if (token->String()[0] == '\0')
     {
-        aResult.Set(LispAtom::New(iEnvironment,iEnvironment.HashTable().LookUp("EndOfFile")));
+        aResult.Set(LispAtom::New(iEnvironment,"EndOfFile"));
         return;
     }
     ParseAtom(aResult,token);
@@ -41,7 +41,7 @@ void LispParser::ParseAtom(LispPtr& aResult, LispStringPtr aToken)
         return;
     }
     // else make a simple atom, and return it.
-    aResult.Set(LispAtom::New(iEnvironment,aToken));
+    aResult.Set(LispAtom::New(iEnvironment,aToken->String()));
 }
 
 void LispParser::ParseList(LispPtr& aResult)
@@ -51,7 +51,7 @@ void LispParser::ParseList(LispPtr& aResult)
     LispPtr* iter = &aResult;
     if (iListed)
     {
-        aResult.Set(LispAtom::New(iEnvironment,iEnvironment.HashTable().LookUp("List")));
+        aResult.Set(LispAtom::New(iEnvironment,"List"));
         iter  = &(aResult.Get()->Next());
     }
     for (;;)

@@ -57,7 +57,7 @@ void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 LispInt StrCompare(LispCharPtr f1, LispCharPtr f2);
 
-#define ATOML(_s) LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(_s))
+#define ATOML(_s) LispAtom::New(aEnvironment,_s)
 #define LIST(_c) LispSubList::New(_c)
 class LispObjectAdder : public YacasBase
 {

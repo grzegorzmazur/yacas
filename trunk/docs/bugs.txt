@@ -9,7 +9,7 @@ Summary:
  1. [Calculus] Limit(x,0)D(x,2)Sin(x)/x never terminates
  2. [Calculus] Various limit bugs
  3. [Number theory] Gcd bugs when arguments are not natural numbers
- 4. [Calculus] 2^Infinity not simplified at startup
+ 4. (RESOLVED?)[Calculus] 2^Infinity not simplified at startup
  5. [Calculus] Limit(n,Infinity) Sqrt(n+1) - Sqrt(n)
  6. [Complex] D(z) Conjugate(z) returns 1
  7. (RESOLVED?)[Complex] Im() and Undefined or Infinity

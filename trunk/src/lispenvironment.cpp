@@ -57,25 +57,23 @@ LispEnvironment::LispEnvironment(
     iPrettyPrinter(NULL),
     iCurrentTokenizer(&iDefaultTokenizer)
 {
-    iTrue=NULL;
-    iFalse=NULL;
+    iTrue = LispAtom::New(*this,"True");
+    iFalse = LispAtom::New(*this,"False");
 
-    iTrue = HashTable().LookUp("True");
-    iFalse = HashTable().LookUp("False");
+    iEndOfFile    = LispAtom::New(*this,"EndOfFile");
+    iEndStatement = LispAtom::New(*this,";");
+    iProgOpen     = LispAtom::New(*this,"[");
+    iProgClose    = LispAtom::New(*this,"]");
+    iNth          = LispAtom::New(*this,"Nth");
+    iBracketOpen  = LispAtom::New(*this,"(");
+    iBracketClose = LispAtom::New(*this,")");
+    iListOpen     = LispAtom::New(*this,"{");
+    iListClose    = LispAtom::New(*this,"}");
+    iComma        = LispAtom::New(*this,",");
+    iList         = LispAtom::New(*this,"List");
+    iProg         = LispAtom::New(*this,"Prog");
 
-    iEndOfFile    = iHashTable.LookUp("EndOfFile");
-    iEndStatement = iHashTable.LookUp(";");
-    iProgOpen     = iHashTable.LookUp("[");
-    iProgClose    = iHashTable.LookUp("]");
-    iNth          = iHashTable.LookUp("Nth");
-    iBracketOpen  = iHashTable.LookUp("(");
-    iBracketClose = iHashTable.LookUp(")");
-    iListOpen     = iHashTable.LookUp("{");
-    iListClose    = iHashTable.LookUp("}");
-    iComma        = iHashTable.LookUp(",");
-    iList         = iHashTable.LookUp("List");
-    iProg         = iHashTable.LookUp("Prog");
-
+/*TODO remove
     iEndOfFile   ->IncreaseRefCount();
     iEndStatement->IncreaseRefCount();
     iProgOpen    ->IncreaseRefCount();
@@ -91,9 +89,8 @@ LispEnvironment::LispEnvironment(
 
     iTrue        ->IncreaseRefCount();
     iFalse       ->IncreaseRefCount();
+*/
 
-    iTrueAtom.Set(LispAtom::New(*this,iTrue));
-    iFalseAtom.Set(LispAtom::New(*this,iFalse));
     PushLocalFrame(LispTrue);
     iCTokenizer.SetRemarkReceiver(*this);
 }
@@ -114,6 +111,7 @@ LispEnvironment::~LispEnvironment()
     }
     
     LISPASSERT(iLocalsList == NULL);
+/*TODO remove
     iTrue        ->DecreaseRefCount();
     iFalse       ->DecreaseRefCount();
 
@@ -129,7 +127,7 @@ LispEnvironment::~LispEnvironment()
     iComma       ->DecreaseRefCount();
     iList        ->DecreaseRefCount();
     iProg        ->DecreaseRefCount();
-
+*/
     delete iEvaluator;
     if (iDebugger) delete iDebugger;
     delete iArchive;
