@@ -733,6 +733,7 @@ polyDivide(_A,_B,_var) <--
 [
 	Local(Q,R);
 	Check( LeadingCoef(B,var) != 0, "polyDivide: Cannot divide by zero polynomial");
+	//Echo("in polydiv");
 
 	if( Degree(B) = 0 )[
 		// just divide through by a constant
@@ -756,6 +757,7 @@ polyDivide(_A,_B,_var) <--
 	// have to simplify first, because it wasn't
 	// seeing that a UniVar(etc) - (etc) = 0
 	// There is a much better way to do this.
+	//Echo("going to simplify Q,R");
         Q:=Horner(Simplify(Q),var);
 	R:=Horner(Simplify(R),var);
 
@@ -778,7 +780,7 @@ polyGCD(_A,_B,_var) <--
 	A;
 ];
 // The Extended GCD
-// Given A,B, finds the GCD g 
+// Given A,B, finds the GCD g and
 // the polys a1,a2 sucht that a1*A + a2*B = g
 // From M.Bronstein(1997) pp11
 polyGCDExt(_A,_B,_var) <-- 
@@ -804,3 +806,60 @@ polyGCDExt(_A,_B,_var) <--
 	{a1,a2,A};
 
 ];
+// The Extended GCD, Version 2
+// Given A,B, finds the GCD g and
+// the polys s,t such that s*A + t*B = g
+// From M.Bronstein(1997) pp12
+// This uses the Half Extended GCD algorithm, and recovers t
+// without calculating it directly, and should be 
+// faster
+polyGCDExt2(_A,_B,_var) <--
+[
+	Local(r,s,t,g);
+	s:=MakeUni(0,var);
+	t:=MakeUni(0,var);
+	g:=MakeUni(0,var);
+	r:=MakeUni(0,var);
+
+	{s,g} := polyGCDExtHalf(A,B,var);
+	//Echo({"s is ",s});
+	//Echo({"g is ",g});
+	//Echo({"g-s*A:",g-s*A });
+	{t,r} := polyDivide(g-s*A,B,var);
+        //Echo({"t is ",t});
+        //Echo({"r is ",r});
+        s:=Horner(Simplify(s),var);
+        t:=Horner(Simplify(t),var);
+        g:=Horner(Simplify(g),var);
+	{s,t,g};
+	
+];
+// The Half Extended GCD
+// Given A,B, finds the GCD g and
+// the polys a1,a2 such that a1*A = g (mod B)
+// From M.Bronstein(1997) pp11
+polyGCDExtHalf(_A,_B,_var) <--
+[
+	Local(a1,b1,r1,Q,R);
+
+	//Echo({"polyGCDExtHalf: A =",A});
+        //Echo({"polyGCDExtHalf: B =",B});
+
+	a1:=1;b1:=0;
+
+	While( LeadingCoef(B) != 0 )[
+		{Q,R} := polyDivide(A,B,var);
+		A:=B;
+		B:=R;
+		r1:=a1-Q*b1;
+		a1:=b1;	
+		b1:=r1;
+	];
+	A:=Horner(Simplify(A),var);
+	a1:=Horner(Simplify(a1),var);
+        //Echo({"polyGCDExtHalf: a1 =",a1});
+        //Echo({"polyGCDExtHalf: A =",A});
+	
+	{a1,A};
+];
+

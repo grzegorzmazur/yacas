@@ -22,4 +22,5 @@ DropEndZeroes
 polyDivide
 polyGCD
 polyGCDExt
+polyGCDExt2
 }
