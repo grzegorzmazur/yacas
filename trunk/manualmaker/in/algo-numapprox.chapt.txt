@@ -795,7 +795,7 @@ long multiplications are used.
 If the series converges linearly, we need $N=O(P)$ terms to obtain $P$ digits of precision.
 Therefore, the total asymptotic cost of the method is $O(M(P*Ln(P))*Ln(P))$ operations.
 
-This is a somewhat general form of the binary splitting technique.
+A more general form of the binary splitting technique is also given in [Haible <i>et al.</i> 1998].
 In particular cases the algorithm may be simplified.
 
 *REM FIXME: fill in the details and give examples

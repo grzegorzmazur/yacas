@@ -1804,6 +1804,7 @@ void BigNumber::Precision(LispInt aPrecision)
 {
   if (!IsInt())
   {
+	iPrecision = aPrecision;
   	long int exp_small = 0, shift_amount = 0;
 	// determine the binary exponent
 	(void) mpf_get_d_2exp(&exp_small, float_);
@@ -1823,7 +1824,7 @@ void BigNumber::Precision(LispInt aPrecision)
 		mpf_trunc(float_, float_);
 		mpf_div_2exp(float_, float_, (unsigned) (-shift_amount));
 	}
-  }
+  }	// do nothing if integer
 }
 
 
