@@ -333,6 +333,8 @@ TracedStackEvaluator::~TracedStackEvaluator()
 
 void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& aOutput)
 {
+    LispLocalEvaluator local(aEnvironment,NEW BasicEvaluator);
+
     LispInt i;
     LispInt from=0;
     LispInt upto = objs.NrItems();
@@ -354,14 +356,18 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
         }
 #endif
         InternalIntToAscii(str,i);
+#ifndef DEBUG_MODE
         aEnvironment.CurrentOutput()->Write("Debug> ");
+#endif
         aEnvironment.CurrentOutput()->Write(str);
-        aEnvironment.CurrentOutput()->Write(" : ");
+        aEnvironment.CurrentOutput()->Write(": ");
         aEnvironment.CurrentPrinter().Print(objs[i]->iOperator, *aEnvironment.CurrentOutput(),aEnvironment);
 
-        if (aEnvironment.Commands().LookUp(objs[i]->iOperator.Get()->String()))
+        LispInt internal;
+        internal = (NULL != aEnvironment.Commands().LookUp(objs[i]->iOperator.Get()->String()));
+        if (internal)
         {
-            aEnvironment.CurrentOutput()->Write(" (Internal function)");
+            aEnvironment.CurrentOutput()->Write(" (Internal function) ");
         }
         else
         {
@@ -371,13 +377,37 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
                 InternalIntToAscii(str,objs[i]->iRulePrecedence);
                 aEnvironment.CurrentOutput()->Write(str);
                 if (objs[i]->iSide)
-                    aEnvironment.CurrentOutput()->Write(" in body)");
+                    aEnvironment.CurrentOutput()->Write(" in body) ");
                 else
-                    aEnvironment.CurrentOutput()->Write(" in pattern)");
+                    aEnvironment.CurrentOutput()->Write(" in pattern) ");
             }
             else
-                aEnvironment.CurrentOutput()->Write(" (User function)");
+                aEnvironment.CurrentOutput()->Write(" (User function) ");
+        }
+        if (objs[i]->iExpression.Get())
+        {
+            aEnvironment.CurrentOutput()->Write("\n      ");
+            if (aEnvironment.iEvalDepth>(aEnvironment.iMaxEvalDepth-10))
+            {
+                LispString expr;
+                PrintExpression(expr, objs[i]->iExpression,aEnvironment,60);
+                aEnvironment.CurrentOutput()->Write(expr.String());
             }
+            else
+            {
+                LispPtr* subList = objs[i]->iExpression.Get()->SubList();
+                if (subList && subList->Get())
+                {
+                    LispString expr;
+                    LispPtr out;
+                    LispPtr in;
+                    in.Set(subList->Get());
+                    ReturnUnEvaluated(out,in,aEnvironment);
+                    PrintExpression(expr, out,aEnvironment,60);
+                    aEnvironment.CurrentOutput()->Write(expr.String());
+                }
+            }
+        }
 
         aEnvironment.CurrentOutput()->Write("\n");
     }
@@ -387,6 +417,9 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
 void TracedStackEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
                            LispPtr& aExpression)
 {
+
+
+    
 
 #ifdef VLADIMIR
     InfixPrinter infixprinter(aEnvironment.PreFix(),
@@ -416,6 +449,7 @@ void TracedStackEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
                 PushFrame();
                 UserStackInformation& st = StackInformation();
                 st.iOperator.Set(LispAtom::New(str));
+                st.iExpression.Set(aExpression.Get());
 #ifdef DEBUG_MODE
                 if (aExpression.Get()->iFileName != NULL)
                 {

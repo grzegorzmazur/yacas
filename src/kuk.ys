@@ -1,1 +1,13 @@
-Load("../scripts/examples/tests.ys");
+
+f(x):=
+[
+  Local(y,n);
+  y:=x;
+  n:=x;
+  While(n>0)
+  [
+    y:=y+x;
+    n--;
+  ];
+  y;  
+];

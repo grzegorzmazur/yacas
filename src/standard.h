@@ -74,6 +74,14 @@ void ParseExpression(LispPtr& aResult,LispCharPtr aString,LispEnvironment& aEnvi
 void ReturnUnEvaluated(LispPtr& aResult,LispPtr& aArguments,
                        LispEnvironment& aEnvironment);
 
+/** PrintExpression : print an expression into a string,
+ limiting it to a maximum number of characters. If aMaxChars
+ is less than zero, the result is not truncated.
+ */
+void PrintExpression(LispString& aResult, LispPtr& aExpression,
+                     LispEnvironment& aEnvironment,
+                     LispInt aMaxChars);
+
 
 #include "standard.inl"
 
