@@ -89,7 +89,7 @@ LocalSymbols(var,var2,a,b,y)[
   2 # (Deriv(_var)Integrate(_var)(_y)) <-- y;
   2 # (Deriv(_var)Integrate(_var2,_a,_b)(_y)) <-- 
         (Deriv(var)b)*(y Where var2 == b) -
-        Deriv(var)a)*(y Where var2 == a) );
+        (Deriv(var)a)*(y Where var2 == a);
 ];
 
 2 # (Deriv(_var)func_IsList)_(Not(IsList(var))) <--
