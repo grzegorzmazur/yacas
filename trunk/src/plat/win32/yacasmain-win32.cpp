@@ -13,7 +13,7 @@
 
 #include "win32commandline.h"
 #include "standard.h"
-#include "config.h"
+#include "win32config.h"
 
 #ifdef USE_RAMSCRIPTS
 #include "ramdisk.h" //TODO keep this?
@@ -171,7 +171,8 @@ getdir:
 		printf("Directory where the scripts are (use a full path name)\n");
 		printf("Path: ");
 		gets(scriptdir);
-		for(unsigned i = 0; i <= strlen(scriptdir); i++){
+		unsigned i = 0;
+		for(i = 0; i <= strlen(scriptdir); i++){
 			if(scriptdir[i] == '\\')
 				scriptdir[i] = '/';
 		}
