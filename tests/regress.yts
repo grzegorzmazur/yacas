@@ -77,4 +77,9 @@ LocalSymbols(f,p,a,b,x,n,simple,u,v)
 
 ];
 
+// Verify that postfix operators can be applied one after the other
+// without brackets
+Verify((3!) !, 720);
+Verify(3! !, 720);
+
 
