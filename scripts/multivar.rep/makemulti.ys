@@ -44,12 +44,12 @@ LocalSymbols(a,vars,pow)  [
       Local(term);
       term:={FillList(0,Length(vars)),1};
       term[1][Find(vars,a)] := pow;
-      CreateMonomial(vars,term);
+      CreateTerm(vars,term);
     ];
 ];
 LocalSymbols(x,y,vars)  [
 10 #  MakeMultiNomial(x_IsMultiConstant,vars_IsList) <--
-      CreateMonomial(vars,{FillList(0,Length(vars)),x});
+      CreateTerm(vars,{FillList(0,Length(vars)),x});
 20 #  MakeMultiNomial(_x,vars_IsList)_(Contains(vars,x)) <-- MultiSingleFactor(vars,x,1);
 30 #  MakeMultiNomial(_x + _y,vars_IsList) <--
       MakeMultiNomial(x,vars) + MakeMultiNomial(y,vars);

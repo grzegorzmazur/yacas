@@ -29,6 +29,11 @@
   <li> Ayal: fixed bug: Taylor series around a singularity, terminates immediately
   <li> Ayal: fixed the {numerics.yts} failure: it was actually a failure by the
        program to simplify expressions containing {Pi}.
+  <li> Ayal: improved multivariates, by using a better sparse representation:
+       recursive sparse tree. Also added a driver structure to allow changing
+       representation later.
+  <li> Ayal: implentation of sparse trees: a recursive sparse representation
+       that can be useful for polynomials and matrices/vectors.
   <li> Added experimental scripts {book2ys.*} for automatic extraction of Yacas
        code from documentation (SW)
   <li> Implemented adaptive 2D plotting {Plot2D} in {plots.rep} and multiple

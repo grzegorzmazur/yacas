@@ -2,46 +2,12 @@
 /* Implementation of MultiNomials based on sparse representation
    in the sparsetree.ys code. This is the real driver, using 
    the sparse trees just for representation.
-API:
-- CreateMonomial(vars,{coefs,fact}) 
-  create a Multivariate polynomial with one monomial, in the
-  variables defined in 'var', with the (key,value) pair
-  (coefs,fact)
-
-- MultiNomialAdd(multi1, multi2) 
-  add two multivars, and destructively modify multi1 to contain
-  the result: [multi1:=multi1+multi2;multi1;];
-- MultiNomialMultiplyAdd(multi1, multi2,coefs,fact) 
-  add two multivars, and destructively modify multi1 to contain
-  the result. multi2 is considered multiplied by a monomial
-  represented by the (key,value) pair (coefs,fact).
-  [multi1:=multi1+term*multi2;multi1;];
-- MultiNomialNegate(multi) 
-  negate a multivar, returning -multi, and destructively changing
-  the original.
-  [multi:= -multi;multi1;];
-- MultiNomialMultiply(multi1,multi2) 
-  Multiply two multivars, and destructively modify multi1 to contain
-  the result, returning the result: [multi1:=multi1*multi2;multi1;];
-- NormalForm(multi)
-  convert MultiNomial to normal form (as would be typed in be the user).
-- MultiLeadingMonomial(multi) 
-  return the (key,value) pair (coefs,fact) representing the leading
-  monomial
-- MultiDropLeadingZeroes(multi) 
-  remove leading terms with zero factors.
-- MultiTermLess(x,y)
-  for two (key,value) pairs, return true if x<y, for the '<' used for
-  the representation, and False otherwise.
-- ScanMultiNomial(op,multi)
-  traverse all the monomials of the multivariate, applying the
-  function 'op' to each (key,value) pair (coefs,fact)
  */
 Use("multivar.rep/sparsetree.ys");
 
 LocalSymbols(NormalMultiNomial) [
 
-CreateMonomial(_vars,{_coefs,_fact}) 
+CreateTerm(_vars,{_coefs,_fact}) 
   <-- MultiNomial(vars,CreateSparseTree(coefs,fact));
 
 /************************************************************
@@ -70,6 +36,7 @@ MultiNomialMultiply(MultiNomial(_vars,_x),_multi2)
 muadm(_coefs,_fact) <--
 [
   Set(result,MultiNomialMultiplyAdd(result, multi2,coefs,fact));
+//GarbageCollect(); //TODO do we really want this?
 ];
 UnFence("muadm",2);
 
@@ -97,7 +64,7 @@ UnFence("muadm",2);
 
 ]; // LocalSymbols
 
-MultiLeadingMonomial(MultiNomial(_vars,_terms)) 
+MultiLeadingTerm(MultiNomial(_vars,_terms)) 
     <--
     [
       Local(coefs,fact);
@@ -171,3 +138,11 @@ MultiTermLess({_deg1,_fact1},{_deg2,_fact2}) <--
     ((deg = {}) And (fact1-fact2 < 0)) Or
     ((deg != {}) And (deg[1] < 0));
   ];
+
+20 # MultiZero(multi_IsMulti) <-- 
+[
+  CheckMultiZero(DropZeroLC(multi));
+];
+10 # CheckMultiZero(MultiNomial(_vars,{})) <-- True;
+20 # CheckMultiZero(MultiNomial(_vars,_terms)) <-- False;
+
