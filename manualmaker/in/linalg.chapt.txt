@@ -757,7 +757,7 @@ of {i}th function with respect to the {j}th variable.
 *CMD VandermondeMatrix --- Calculate the Vandermonde matrix
 *STD
 *CALL
-	VandermondeMatrix({vector})
+	VandermondeMatrix(vector)
 *PARMS
 
 {vector} -- An {n} dimensional vector 
@@ -772,6 +772,7 @@ The {ij}th element of the Vandermonde matrix is defined as {i^(j-1)}.
 *E.G.
 	In> VandermondeMatrix({1,2,3,4})
 	Out> {{1,1,1,1},{1,2,3,4},{1,4,9,16},{1,8,27,64}};
+	In>PrettyForm(%)
 	/                            \
 	| ( 1 ) ( 1 ) ( 1 )  ( 1 )   |
 	|                            |
@@ -781,6 +782,51 @@ The {ij}th element of the Vandermonde matrix is defined as {i^(j-1)}.
 	|                            |
 	| ( 1 ) ( 8 ) ( 27 ) ( 64 )  |
 	\                            /
+
+*CMD WronskianMatrix --- Calculate the Wronskian matrix
+*STD
+*CALL
+        WronskianMatrix(func,var)
+*PARMS
+
+{func} -- An {n} dimensional vector of functions
+
+{var} -- A variable to differentiate with respect to
+
+*DESC
+
+The function {WronskianMatrix} calculates the Wronskian matrix
+of $n$ functions.
+
+The Wronskian matrix is created by putting each function as the
+first element of each column, and filling in the rest of each
+column by the $i-1$th derivative, where $i$ is the current row.
+
+The Wronskian is used to verify if $n$ functions are linearly
+independent, usually solutions to a differential equation.
+If the determinant of the Wronskian is zero, then the functions
+are dependent, otherwise they are independent.
+
+*E.G.
+	In> WronskianMatrix({Sin(x),Cos(x),x^4},x);
+	Out> {{Sin(x),Cos(x),x^4},{Cos(x),-Sin(x),4*x^3},{-Sin(x),-Cos(x),12*x^2}};
+	In> PrettyForm(%)
+	/                                                  \
+	| ( Sin( x ) )      ( Cos( x ) )      /  4 \       |
+	|                                     \ x  /       |
+	|                                                  |
+	| ( Cos( x ) )      ( -( Sin( x ) ) ) /      3 \   |
+	|                                     \ 4 * x  /   |
+	|                                                  |
+	| ( -( Sin( x ) ) ) ( -( Cos( x ) ) ) /       2 \  |
+	|                                     \ 12 * x  /  |
+	\                                                  /
+	// The last element is a linear combination of the first 2
+	In> Determinant( WronskianMatrix( {x^4,x^3,2*x^4 + 3*x^3},x ) )
+	Out> x^4*3*x^2*(24*x^2+18*x)-x^4*(8*x^3+9*x^2)*6*x+(2*x^4+3*x^3)*4*x^3*6*x-
+		4*x^6*(24*x^2+18*x)+x^3*(8*x^3+9*x^2)*12*x^2-(2*x^4+3*x^3)*3*x^2*12*x^2;
+	In> Simplify(%)
+	Out> 0;
 
 
 *CMD SylvesterMatrix --- calculate the Sylvester matrix of two polynomials
