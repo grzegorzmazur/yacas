@@ -30,19 +30,20 @@ explained below.
 	    The GNU autotools suite
 
 *A build system!autotools
-*A autotools
+*A {autotools}
 
-The GNU autotools suite is a collection of applications to streamline
+The GNU {autotools} suite is a collection of applications to streamline
 the build system of other programs, like Yacas. Its two main goals are
 to present a consistent build procedure to users, and to assist
 developers in tackling portability problems.
 
 One important thing to keep in mind is that the autotools suite needs
 only to be installed on the developers' systems, not on the users'
-system (here, "users" refers to the people who are compiling Yacas). 
+system (here, "users" refers to the people who do not want to make
+any changes to Yacas and includes those who just want to compile Yacas from a tar.gz source archive). 
 
 *A build system!libtool
-*A libtool
+*A {libtool}
 
 The autotools suite consists of a number of utilities. These are
 developed separately, but are designed to be used together. They are
@@ -63,7 +64,7 @@ However, it is thought that the plug-in system may profit from it, so
 this may change.
 
 *A build system!makemake
-*A makemake
+*A {makemake}
 Usually, developers never need to run these tools directly, as the
 Makefiles contain the necessary commands. When the Makefiles are not
 present, which occurs for instance when installing afresh from the CVS
@@ -84,7 +85,7 @@ available from <*http://sources.redhat.com/autobook*>.
 	    The automake tool
 
 *A build system!automake
-*A automake
+*A {automake}
 
 Automake is a tool to generate standard-compliant Makefiles. More
 precisely, {automake} uses the information in {Makefile.am} to produce a
@@ -162,10 +163,10 @@ documentation that comes with the package.
 	    The autoconf tool
 
 *A build system!autoconf
-*A autoconf
+*A {autoconf}
 
-Autoconf is a tool to generate portable shell scripts which the user
-can run to configure the package (in our case Yacas) for his/her
+Autoconf is a tool to generate portable shell scripts that users
+can run to configure the package (in our case Yacas) for their
 system. It reads the file {configure.in} and produces the {configure}
 script. The latter script can be run by the user to prepare for
 building Yacas.
@@ -202,8 +203,8 @@ This effect is achieved by the following fragment of {configure.in}.
 	AC_SUBST(NUMBERS_LDFLAGS)
 
 The first line tells the {configure} script to accept an extra option,
-{enable-gmp}. If this option is invoked by the user, then first it is
-checked that the GNU MP library is available - if this is not the
+{--enable-gmp}. If this option is invoked by the user, then first it is
+checked that the GNU MP library is available -- if this is not the
 case, the configuration terminates with an error. Now the
 {NUMBERS_LIB} and {NUMBERS_LDFLAGS} shell variables are set to
 suitable values. The penultimate line says that the value of the
@@ -422,10 +423,10 @@ to check that {3+2} evaluates to {5}.
 When the {make check} command is given, a shell script with the name
 {test-built-yacas} is generated. This script successively runs all the
 tests listed in the {TESTFILES} variable through the Yacas executable
-in the build tree. The tests that take a long time are put at the end
+in the build tree. The tests that take a long time are at the end
 of the list, so that these tests are performed last. The output of the
 tests is collected in the file {testresult.txt}. The string {******}
-(six stars) in the output signals failure of the test; if this string
+(six stars) in the output signals failure of a test; if this string
 does not occur, the tests are considered to be passed.
 
 The procedure for the {make installcheck} command is the same, except
