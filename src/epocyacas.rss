@@ -1,0 +1,185 @@
+
+NAME YACA
+
+
+#include <eikdef.rh>
+#include <eikmenu.rh>
+#include "epocyacas.hrh"
+#include <eikmenu.hrh>
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF16 { buf=""; }
+
+RESOURCE EIK_APP_INFO { hotkeys=r_cons_hotkeys; menubar=r_cons_menubar; }
+
+RESOURCE HOTKEYS r_cons_hotkeys
+    {
+    control=
+        {
+        HOTKEY { command=EMenuCommandEditCopy; key='c'; },
+        HOTKEY { command=EMenuCommandFileExit; key='e'; },
+        HOTKEY { command=EMenuFontDialog; key='f'; },
+        HOTKEY { command=EMenuCommandLongLine; key='l'; },
+        HOTKEY { command=EMenuCommandEditPaste; key='v'; }
+        };
+    }
+
+RESOURCE MENU_BAR r_cons_menubar
+    {
+    titles=
+        {
+        MENU_TITLE { menu_pane=r_cons_edit_menu; txt="Edit"; },
+        MENU_TITLE { menu_pane=r_cons_tools_menu; txt="Tools"; },
+        MENU_TITLE { menu_pane=r_cons_options_menu; txt="Options"; },
+		MENU_TITLE { menu_pane=r_cons_window_menu; txt="Bars"; },
+		MENU_TITLE { menu_pane=r_cons_special_menu; txt="Special"; }
+        };
+    }
+
+RESOURCE MENU_PANE r_cons_edit_menu
+    {
+    items=
+        {
+        MENU_ITEM { command=EMenuCommandEditCopy; txt="Copy"; },
+        MENU_ITEM { command=EMenuCommandEditPaste; txt="Paste"; }
+        };
+    }
+
+RESOURCE MENU_PANE r_cons_special_menu
+    {
+    items=
+        {
+        MENU_ITEM 
+			{ 
+			command=EMenuCursorSize; 
+			flags=EEikMenuItemCheckBox; 
+			txt="Block cursor"; 
+			},
+		MENU_ITEM 
+			{ 
+			command=EMenuScreenSize; 
+			flags=EEikMenuItemCheckBox; 
+			txt="Small screen"; 
+			},
+ 		MENU_ITEM 
+			{ 
+			command=EMenuWindowType; 
+			flags=EEikMenuItemCheckBox|EEikMenuItemSeparatorAfter; 
+			txt="Backup window"; 
+			},
+ 	   MENU_ITEM 
+			{ 
+			command=EMenuCommandLongLine; 
+			txt="Print a long line"; 
+			flags=EEikMenuItemSeparatorAfter; 
+			},
+       MENU_ITEM 
+			{ 
+			command=EMenuCommandFileExit; 
+			txt="Exit"; 
+			}
+        };
+    }
+
+RESOURCE MENU_PANE r_cons_tools_menu
+    {
+    items=
+        {
+        MENU_ITEM 
+			{ 
+			command=EMenuCommandHideCursor; txt="Hide cursor"; 
+			flags=EEikMenuItemCheckBox;
+			},
+        MENU_ITEM 
+			{ 
+			command=EMenuCommandIgnoreCursor; txt="Ignore cursor"; 
+			flags=EEikMenuItemCheckBox;
+			},
+        MENU_ITEM 
+			{ 
+			command=EMenuCommandScrollLock; txt="Scroll lock"; 
+			flags=EEikMenuItemCheckBox;
+			},
+        MENU_ITEM 
+			{ 
+			command=EMenuCommandPrintable; txt="Print unprintables"; 
+			flags=EEikMenuItemCheckBox;
+			}
+        };
+    }
+
+
+RESOURCE MENU_PANE r_cons_window_menu
+    {
+    items=
+        {
+        MENU_ITEM
+            {
+            command=EMenuScrollNone;
+            txt="None";
+            },
+        MENU_ITEM
+            {
+            command=EMenuScrollHor;
+            txt="Horiz only";
+            },
+        MENU_ITEM
+            {
+            command=EMenuScrollVert;
+            txt="Vert only";
+            },
+        MENU_ITEM
+            {
+            command=EMenuScrollBoth;
+            txt="Both scrollbars";
+            
+            }
+        };
+    }
+
+
+RESOURCE MENU_PANE r_cons_options_menu
+	{
+	items=
+        {
+        MENU_ITEM
+            {
+            command=EMenuFontDialog;
+            txt="Set font…";
+            },
+        MENU_ITEM
+			{
+	    	command=EMenuCommandBold;
+			flags=EEikMenuItemCheckBox;
+	    	txt="Bold";
+			},
+        MENU_ITEM
+			{
+		    command=EMenuCommandItalic;
+			flags=EEikMenuItemCheckBox;
+	    	txt="Italic";
+			},
+        MENU_ITEM
+			{
+		    command=EMenuCommandInverse;
+			flags=EEikMenuItemCheckBox;
+	    	txt="Inverse";
+			},
+        MENU_ITEM
+			{
+	    	command=EMenuCommandUnderline;
+			flags=EEikMenuItemCheckBox;
+	    	txt="Underline";
+			flags=EEikMenuItemSeparatorAfter;
+			},
+        MENU_ITEM
+			{
+	    	command=EMenuCommandColor;
+			flags=EEikMenuItemCheckBox;
+	    	txt="Color";
+			}
+        };
+	}			
+
+RESOURCE TBUF r_cons_pointer_event { buf=" [Pointer event %d at %d,%d] "; }
