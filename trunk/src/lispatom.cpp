@@ -219,7 +219,7 @@ LispNumber::LispNumber(LispHashTable& aHashTable, BigNumber* aNumber)
   iNumber =aNumber;
 }
 
-    /// construct from a decimal string representation (also create a number object) and use aPrecision bits  
+    /// construct from a decimal string representation (also create a number object) and use aBasePrecision digits
 LispNumber::LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt aBasePrecision)
   : iHashTable(&aHashTable)
 {
@@ -229,7 +229,7 @@ LispNumber::LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt
   Number(aBasePrecision);
 }
 
-    /// return a string representation in decimal (always in decimal!)
+    /// return a string representation in decimal
 LispStringPtr LispNumber::String() 
 {
   if (iString.Ptr() == NULL)
@@ -237,15 +237,12 @@ LispStringPtr LispNumber::String()
     LISPASSERT(iNumber.Ptr() != NULL);	// either the string is null or the number but not both
     LispString *str = NEW LispString;
     // export the current number to string and store it as LispNumber::iString
-    // FIXME API breach: precision must be in digits, not in bits here!
-	// must be replaced with bits_to_digits(iNumber->GetPrecision(), BASE10)
-  //AYAL: fixed?
     iNumber->ToString(*str, bits_to_digits(iNumber->GetPrecision(),BASE10), BASE10);
     // register the string with the hash table - trying to avoid this now
 //    LISPASSERT(iHashTable != NULL);
 //    iString = iHashTable->LookUp(str);
     iString = str;	// this used to not work, testing now
-
+	// when we are sure this works, we can remove iHashTable from LispNumber (Ayal?)
   }
   return iString.Ptr();
 }
@@ -268,7 +265,7 @@ LispObject* LispNumber::Copy(LispInt aRecursed)
 
     /// Return a BigNumber object.
 // Will create a BigNumber object out of a stored string, at given precision (in decimal) - that's why the aPrecision argument must be here - but only if no BigNumber object is already present
-BigNumber* LispNumber::Number(LispInt aPrecision)
+BigNumber* LispNumber::Number(LispInt aBasePrecision)
 {
   if (iNumber.Ptr() == NULL)
   {	// create and store a BigNumber out of string
@@ -278,24 +275,21 @@ BigNumber* LispNumber::Number(LispInt aPrecision)
 //#endif
     RefPtr<LispString> str;
     str = iString.Ptr();
-    // aPrecision is in digits, not in bits, ok
-    iNumber = NEW BigNumber(str->String(), aPrecision, BASE10);
+    // aBasePrecision is in digits, not in bits, ok
+    iNumber = NEW BigNumber(str->String(), aBasePrecision, BASE10);
   }
 
   // check if the BigNumber object has enough precision, if not, extend it
   // (applies only to floats). Note that iNumber->GetPrecision() might be < 0
-  else if (!iNumber->IsInt() && iNumber->GetPrecision() < (LispInt)digits_to_bits(aPrecision, BASE10))
+  else if (!iNumber->IsInt() && iNumber->GetPrecision() < (LispInt)digits_to_bits(aBasePrecision, BASE10))
   {
     if (iString.Ptr())
     {// have string representation, can extend precision
-      iNumber->SetTo(iString.Ptr()->String(),aPrecision, BASE10);
+      iNumber->SetTo(iString.Ptr()->String(),aBasePrecision, BASE10);
     }
     else
     {
 	// do not have string representation, cannot extend precision!
-		// FIXME: the statement below should be removed
-    //Serge: fixed? I agree with you, Ayal.
-//TODO remove    iNumber->Precision(digits_to_bits(aPrecision,BASE10));
     }
   }
   return iNumber.Ptr();
