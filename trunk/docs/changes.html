@@ -21,7 +21,7 @@
   <li> Added files with place holders for distribution functions, supplied
        by Andrei Zorine (current version does nothing but check for 
        correctness of input values). (AP)
-  <li> BUGFIX: 0*{a,b,c} returned 0 in stead of {0,0,0} (AP)
+  <li> BUGFIX: 0*{a,b,c} returned 0 instead of {0,0,0} (AP)
   <li> Added "Dimensions" function and "IsSquareMatrix" function, and
       improved "IsMatrix" function using "Dimensions". Code supplied
       by Dirk Reusch. (AP)
@@ -41,6 +41,7 @@
        (e.g. Sin(ArcCos(x))=Sqrt(1-x^2),&#8230;) (dr)
   <li> Added new function "NthRoot" w/ docs and test code. It calculates/
        simplifies nth roots of positive integers. (dr)
+  <li> Added documentation hyperlink feature to plaintext docs formatter. (SW)
 </ul>
 
 <FONT face="Helvetica" size="3">
@@ -431,7 +432,7 @@
        Arg now implemented correctly.
   <li> better numeric Ln and ArcTan.
   <li> functions that are not defined yet are now returned with their
-       arguments evaluated. Eg f(2+3) returns f(5) in stead of f(2+3).
+       arguments evaluated. Eg f(2+3) returns f(5) instead of f(2+3).
 </ul>
 
 
@@ -666,14 +667,14 @@
   <li> Made improvements to the tensor package.
   <li> started on the unixtools addons. Vi and GnuPlot.
   <li> Implemented LessThan and GreaterThan that do a lexical compare
-       in stead of just comparing numbers. You can now compare any
+       instead of just comparing numbers. You can now compare any
        type of atomic.
   <li> fixed c++ wrapper to gmp.
   <li> Serge Winitzki fixed some bugs with complex arithmetic.
   <li> Some more improvements to the introduction manual by Serge
        Winitzky.
   <li> changed lexical analyzer so % is a separate token. You can
-       now type a:=%; in stead of having to type a:= %;
+       now type a:=%; instead of having to type a:= %;
   <li> Print Bodied with correct precedence.
   <li> Implement "quit" (together with, "Exit()")
   <li> Implement Version() to return 1.0.34
@@ -993,7 +994,7 @@
        to connect to other programs. For now the http servers and
        the mysql stubs are there. In the future such things as
        a stubs for superficie and for gnuplot should also be there.
-  <li> The documentation is now built when you type 'make', in stead
+  <li> The documentation is now built when you type 'make', instead
        of when 'make install' is invoked.
 </ul>
 
@@ -1136,7 +1137,7 @@
 <ul>
 <li> additional debug code: count number of defined functions:
   built-ins, RuleBases. 
-<li> binarysearch in some places, in stead of linear search.
+<li> binarysearch in some places, instead of linear search.
 <li> split mathenvironment into that plus commands.cpp/h
 <li> Add support for access to some engine information: 
   <ul>
