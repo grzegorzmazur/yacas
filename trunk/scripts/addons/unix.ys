@@ -86,7 +86,7 @@ MakeFunctionPlugin(_extName, _fBody) <--
 	DeleteFile(dllPath);
 	SystemCall(commandLine);
 	/* If compilation succeeds, DLL file is present */
-	Check(FindFile(dllPath) = dllPath, "MakeFunctionPlugin: error: compilation of '" : dllPath : "' failed.");
+	Check(FindFile(dllPath) = dllPath, "MakeFunctionPlugin: error: compilation of '" : dllPath : "' failed, consult " : fileBase : ".log");
 	/* Load DLL file */
 	DllUnload(dllPath);
 	DllLoad(dllPath);
@@ -113,7 +113,7 @@ GetYacasPID() := [
 If(Not(IsBound(PSViewCommand)), PSViewCommand := "gv");
 
 ShowPS(expr) := [
-	Check(PlatformOS="Unix", "Error in ShowPS: need a Unix OS.");
+	Check(PlatformOS="Unix", "ShowPS: error: need a Unix OS.");
 	/* Create a temporary file */
 	SystemCall("echo \\\"/tmp/yacas-tmpfile-$$\\\" ';' > /tmp/yacas-tmpfile");
 	filename := FromFile("/tmp/yacas-tmpfile") Read();
