@@ -107,4 +107,7 @@ UnFence("ClearCachedConstantsN", 0);
 /// declare some constants now
 CachedConstant(CacheOfConstantsN, Pi, MathPi());
 CachedConstant(CacheOfConstantsN, gamma, GammaConstNum());
+CachedConstant(CacheOfConstantsN, GoldenRatio, N( (1+Sqrt(5))/2 ) );
+CachedConstant(CacheOfConstantsN, Catalan, CatalanConstNum() );
+
 
