@@ -472,7 +472,6 @@ Partition(lst, len):=
 //////////////////////////////////////////////////
 /// like VarList except collects functions
 
-10 # FuncList({}) <-- {};
 10 # FuncList(expr_IsAtom) <-- {};
 20 # FuncList(expr_IsFunction) <--
 RemoveDuplicates(
@@ -488,8 +487,7 @@ RemoveDuplicates(
 This is like FuncList except only looks at arguments of a given list of functions. All other functions become "opaque".
 FuncListArith() is defined to only look at arithmetic operations +, -, *, /.
 */
-10 # FuncList({}, _look'list) <-- {};
-10 # FuncList(expr_IsAtom, _look'list) <-- {};
+10 # FuncList(expr_IsAtom, look'list_IsList) <-- {};
 // a function not in the looking list - return its type
 20 # FuncList(expr_IsFunction, look'list_IsList)_(Not Contains(look'list, Atom(Type(expr)))) <-- {Atom(Type(expr))};
 // a function in the looking list - traverse its arguments
@@ -508,6 +506,10 @@ RemoveDuplicates(
 );
 
 FuncListArith(expr) := FuncList(expr, {Atom("+"), Atom("-"), *, /});
+
+HoldArgNr("FuncList", 1, 1);
+HoldArgNr("FuncList", 2, 1);
+HoldArgNr("FuncListArith", 1, 1);
 
 /// VarListArith --- obtain arithmetic variables
 // currently the VarList(x,y) semantic is convoluted so let's introduce a new name; but in principle this needs to be cleaned up
@@ -532,7 +534,9 @@ RemoveDuplicates(
 		]
 );
 
+//////////////////////////////////////////////////
 /// Global stack operations on variables
+//////////////////////////////////////////////////
 
 GlobalStack := {};
 

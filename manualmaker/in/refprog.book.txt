@@ -32,7 +32,7 @@ Introduce a comment block in a source file, similar to C++ comments.
 
 *PARMS
 
-statement1, statement2 -- expressions
+{statement1}, {statement2} -- expressions
 
 *DESC
 
@@ -271,9 +271,11 @@ arguments. Transformation rules can be defined for the new function as usual.
 The definitions
 
 	RuleBaseListed("f",{a,b,c})
-	10 # f(_a,_b,{_c,_d}) <-- Echo({"4 args",a,b,c,d});
-	20 # f(_a,_b,c_IsList) <-- Echo({">4 args",a,b,c});
-	30 # f(_a,_b,_c) <-- Echo({"3 args",a,b,c});
+	10 # f(_a,_b,{_c,_d}) <--
+	  Echo({"four args",a,b,c,d});
+	20 # f(_a,_b,c_IsList) <--
+	  Echo({"more than four args",a,b,c});
+	30 # f(_a,_b,_c) <-- Echo({"three args",a,b,c});
 give the following interaction:
 
 	In> f(A)
@@ -281,16 +283,16 @@ give the following interaction:
 	In> f(A,B)
 	Out> f(A,B);
 	In> f(A,B,C)
-	three arguments A B C 
+	three args A B C 
 	Out> True;
 	In> f(A,B,C,D)
-	four arguments A B C D 
+	four args A B C D 
 	Out> True;
 	In> f(A,B,C,D,E)
-	more than four arguments A B {C,D,E} 
+	more than four args A B {C,D,E} 
 	Out> True;
 	In> f(A,B,C,D,E,E)
-	more than four arguments A B {C,D,E,E} 
+	more than four args A B {C,D,E,E} 
 	Out> True;
 
 The function {f} now appears to occupy all arities greater than 3:
@@ -308,6 +310,15 @@ The function {f} now appears to occupy all arities greater than 3:
 *CALL
 	Rule("operator", arity,
 	  precedence, predicate) body
+*PARMS
+
+{"operator"} -- string, name of function
+
+{arity}, {precedence} -- integers
+
+{predicate} -- function returning boolean
+
+{body} -- expression, body of rule
 
 *DESC
 
