@@ -27,3 +27,14 @@ TestYacas( Simplify((x^2-y^2)/(x+y)), x-y );
 */
 
 TestYacas(ExpandFrac(x+y/x+1/3),(x^2+y+x/3)/x);
+
+// this did not work until the latest fix to ExpandBrackets using MM()
+Verify(
+ExpandBrackets(x*(a+b)*y*z)
+, x*a*y*z+x*b*y*z
+);
+
+Verify(
+ExpandBrackets(ExpandFrac((x+1)/(x-1)+1/x))
+, (x^2+2*x-1)/(x^2-x)
+);
