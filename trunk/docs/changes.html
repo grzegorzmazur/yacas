@@ -15,7 +15,6 @@
 	{FrobeniusNorm},{PNorm},{Norm},{OrthogonalBasis},{OrthonormalBasis},
 	(Jonathan Leto)
   <li> speeded up IntNthRoot for large integers by using FP arithmetic (SW)
-  <li> added new label *EVAL in the manual for inline Yacas code (SW)
   <li> added new function LambertW, documented (SW)
   <li> documented the Rabin-Miller algorithm (Christian Obrecht, SW)
   <li> New functions: {IsGaussianInteger},{IsGaussianPrime},{IsCoprime},
@@ -32,7 +31,7 @@
        roots, documentation on this, and test code for Sturm.
   <li> Newton iteration can now also accept minimum and maximum values, so it
        halts when trial values fall outside of these bounds, and the routine
-       returns Fail.
+       returns Fail (AP).
   <li> Added more documentation to the coding book: explanation of the
        evaluation scheme (AP).
   <li> {Gcd} now takes Gaussian Integers. (Jonathan Leto)
@@ -49,9 +48,10 @@
   <li> Speed up of OrthoP (Legendre), OrthoL, OrthoH, OrthoT, OrthoU in case of
        symbolic argument (SW)
   <li> General architecture for cached numerical constants {CachedConstant}. (SW)
-  <li> TeX documentation is now automatically indexed; new semantic of *A label
-       to add index entries; new *FOOT label for footnotes; updates to docs (SW)
+  <li> TeX documentation is now automatically indexed; new semantic of *A label to
+       add index entries; new labels: *FOOT, *EVAL; updates to docs (SW)
   <li> {Lcm} and {IsCoprime} now can take lists as arguments. (Jonathan Leto)
+  <li> added GNU Free Documentation License to docs (SW)
 </ul>
 
 <h1>Release of version 1.0.51 (April 20th, 2002)</h1>
