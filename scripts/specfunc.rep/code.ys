@@ -78,8 +78,8 @@ GammaNum(z,a) := N(Exp(LnGammaNum(z,a)));	/// should not be used by applications
 20 # Gamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or IsInteger(N(2*n))) <-- Eval((n-1)!);
 20 # LnGamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or IsInteger(N(2*n))) <-- Eval(Ln((n-1)!));
 
-30 # Gamma(_x)_(Numeric And IsNumber(N(x))) <-- GammaNum(x);
-30 # LnGamma(_x)_(Numeric And IsNumber(N(x))) <-- LnGammaNum(x);
+30 # Gamma(x_IsConstant)_(Numeric) <-- GammaNum(N(x));
+30 # LnGamma(x_IsConstant)_(Numeric) <-- LnGammaNum(N(x));
 
 /////////////////////////////////////////////////
 /// Riemann's Zeta function
