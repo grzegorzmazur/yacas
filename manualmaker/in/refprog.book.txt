@@ -36,31 +36,14 @@ Introduce a comment block in a source file, similar to C++ comments.
 
 *DESC
 
-The {Prog()} and the {[ ... ]} constuct have the same effect: they evaluate all
+The {Prog} and the {[ ... ]} constuct have the same effect: they evaluate all
 arguments in order and return the result of the last evaluated expression.
 
 {Prog(a,b);} is the same as typing {[a;b;];} and is very useful for writing out
 function bodies. The {[...]} construct is a syntactically nicer version of the
-{Prog()} call; it is converted into {Prog(...)} during the parsing stage.
+{Prog} call; it is converted into {Prog(...)} during the parsing stage.
 
 
-
-*CMD Check --- report errors
-*CORE
-*CALL
-	Check(predicate,"error text")
-
-*PARMS
-
-{predicate} -- expression returning {True} or {False}
-
-*DESC
-If {predicate} doesn't evaluate to {True},
-then current operation will be stopped, and execution
-will jump right back to the command line, showing
-{error text}. Use this to assure that some condition
-is met during evaluation of expressions (guarding
-against internal errors).
 
 *CMD Bodied, Infix, Postfix, Prefix --- define function syntax
 *CORE
@@ -396,7 +379,7 @@ arity can see the local variables from the calling
 function. This is useful for defining macro-like
 procedures (looping and such).
 
-The standard library functions {For} and {ForEach} use {UnFence()}.
+The standard library functions {For} and {ForEach} use {UnFence}.
 
 *CMD HoldArgNr --- specify argument as not evaluated
 *STD
@@ -413,7 +396,7 @@ The standard library functions {For} and {ForEach} use {UnFence()}.
 Declares the argument numbered {argNum} of the function named {"function"} with
 specified {arity} to be unevaluated ("held"). Useful if you don't know symbolic
 names of parameters, for instance, when the function was not declared using an
-explicit {RuleBase} call. Otherwise you could use {HoldArg()}.
+explicit {RuleBase} call. Otherwise you could use {HoldArg}.
 
 *SEE HoldArg, RuleBase
 
@@ -430,7 +413,7 @@ explicit {RuleBase} call. Otherwise you could use {HoldArg()}.
 
 *DESC
 
-Returns a list of atoms, symbolic parameters specified in the {RuleBase()} call
+Returns a list of atoms, symbolic parameters specified in the {RuleBase} call
 for the function named {"operator"} with the specific {arity}.
 
 *SEE RuleBase, HoldArgNr, HoldArg
@@ -449,7 +432,8 @@ Make sure that the arguments of {Macro}... commands evaluate to expressions that
 
 *SEE Set, Clear, Local, RuleBase, Rule, Backquoting
 
-*CMD Backquoting --- LISP backquoting (macro expansion)
+*A {`}
+*CMD Backquoting --- macro expansion (LISP-style backquoting)
 *CORE
 *CALL
 	`(expression)
@@ -471,7 +455,7 @@ backquote binds tighter than other operators.
 The expression should contain some variables (assigned atoms) with the special
 prefix operator {@}. Variables prefixed by {@} will be evaluated even if they
 are inside function arguments that are normally not evaluated (e.g. functions
-declared with {HoldArg()}). If the {@var} pair is in place of a function name,
+declared with {HoldArg}). If the {@var} pair is in place of a function name,
 e.g. "{@f(x)}", then at the first stage of evaluation the function name itself
 is replaced, not the return value of the function (see example); so at the
 second stage of evaluation, a new function may be called.
@@ -479,7 +463,7 @@ second stage of evaluation, a new function may be called.
 One way to view backquoting is to view it as a parametric expression
 generator. {@var} pairs get substituted with the value of the variable {var}
 even in contexts where nothing would be evaluated. This effect can be also
-achieved using {UnList()} and {Hold()} but the resulting code is much more
+achieved using {UnList} and {Hold} but the resulting code is much more
 difficult to read and maintain.
 
 This operation is relatively slow since a new expression is built
@@ -503,7 +487,7 @@ a {N(...)} section).
 	Out> 0.8414709848;
 
 This example assigns the expression {func(value)} to variable {var}. Normally
-the first argument of {Set()} would be unevaluated.
+the first argument of {Set} would be unevaluated.
 
 	In> SetF(var,func,value) := \
 	In>     `(Set(@var,@func(@value)));
@@ -560,7 +544,7 @@ list (perhaps empty). A script that uses tagged objects will check whether an
 object has a tag and if so, will add or modify certain entries of the
 association list, preserving any other tag information.
 
-Note that {FlatCopy()} currently does <i>not</i> copy the tag information (see
+Note that {FlatCopy} currently does <i>not</i> copy the tag information (see
 examples).
 
 *E.G.
@@ -595,7 +579,7 @@ examples).
 
 *DESC
 
-{GarbageCollect()} garbage-collects unused memory. The Yacas system
+{GarbageCollect} garbage-collects unused memory. The Yacas system
 uses a reference counting system for most objects, so this call
 is usually not necessary. 
 
@@ -607,34 +591,12 @@ of doing garbage collection, but it can be implemented in a very
 clean way with very little code.
 
 Among the most important objects that are not reference counted are
-the strings. {GarbageCollect()} collects these and disposes of them
+the strings. {GarbageCollect} collects these and disposes of them
 when they are not used any more. 
 
-{GarbageCollect()} is useful when doing a lot of text processing,
+{GarbageCollect} is useful when doing a lot of text processing,
 to clean up the text buffers. It is not highly needed, but it keeps
 memory use low.
-
-*CMD CurrentFile, CurrentLine --- show current file and line of input
-*CORE
-*CALL
-	CurrentFile()
-	CurrentLine()
-
-*DESC
-
-The functions {CurrentFile()} and {CurrentLine()} return a string
-with the file name of the current file and the current line 
-of input respectively.
-
-These functions are most useful in batch file calculations, where
-there is a need to determine at which line an error occurred.
-One can define a function 
-
-	tst() := Echo({CurrentFile(),CurrentLine()});
-which can then be inserted into the input file at various places,
-to see how far the interpreter reaches before an error occurs.
-
-*SEE Echo
 
 
 *CMD FindFunction --- find the file where a function is defined
@@ -650,9 +612,9 @@ to see how far the interpreter reaches before an error occurs.
 
 This function is useful for quickly finding the file where a standard library
 function is defined. It is likely to only be useful for developers. The
-function {FindFunction()} scans the {.def} files that were loaded at start-up.
+function {FindFunction} scans the {.def} files that were loaded at start-up.
 This means that functions that were not defined in {.def} files, but were loaded
-directly, will not be found with {FindFunction()}.
+directly, will not be found with {FindFunction}.
 
 *E.G.
 
@@ -668,14 +630,225 @@ directly, will not be found with {FindFunction()}.
 *CALL
 	Secure(body)
 
+*PARMS
+
+{body} -- expression
+
 *DESC
 
-{Secure} evaluates body in a "safe" environment, where file opening
-and system calls are not allowed. This can protect the system
-when an unsafe evaluation is done, e.g. a script sent over the
-Internet to be evaluated on a remote computer.
+{Secure} evaluates {body} in a "safe" environment, where files cannot be opened
+and system calls are not allowed. This can help protect the system
+when e.g. a script is sent over the
+Internet to be evaluated on a remote computer, which is potentially unsafe.
 
 *SEE SystemCall
+
+
+*CMD MultiplyNum --- optimized numerical multiplication
+*STD
+*CALL
+	MultiplyNum(x,y)
+	MultiplyNum(x,y,z,...)
+	MultiplyNum({x,y,z,...})
+
+*PARMS
+
+{x}, {y}, {z} -- integer, rational or floating-point numbers to multiply
+
+*DESC
+The function {MultiplyNum} is used to speed up multiplication of floating-point numbers with rational numbers. Suppose we need to compute $(p/q)*x$ where $p$, $q$ are integers and $x$ is a floating-point number. At high precision, it is faster to multiply $x$ by an integer $p$ and divide by an integer $q$ than to compute $p/q$ to high precision and then multiply by $x$. The function  {MultiplyNum} performs this optimization.
+
+The function accepts any number of arguments (not less than two) or a list of numbers. The result is always a floating-point number (even if {Numeric} is not set).
+
+*SEE MathMultiply
+
+			Error reporting
+
+*INTRO
+This chapter contains commands useful for reporting errors to the user.
+
+*CMD Check --- report "hard" errors
+*CORE
+*CALL
+	Check(predicate,"error text")
+
+*PARMS
+
+{predicate} -- expression returning {True} or {False}
+
+{"error text"} -- string to print on error
+
+*DESC
+If {predicate} does not evaluate to {True},
+the current operation will be stopped, the string {"error text"} will be printed, and control will be returned immediately to the command line. This facility can be used to assure that some condition
+is satisfied during evaluation of expressions (guarding
+against critical internal errors).
+
+A "soft" error reporting facility that does not stop the execution is provided by the function {Assert}.
+
+*EG
+
+	In> [Check(1=0,"bad value"); Echo(OK);]
+	In function "Check" : 
+	CommandLine(1) : "bad value"
+
+Note that {OK} is not printed.
+
+*SEE Assert
+
+*CMD Assert --- signal "soft" custom error
+*STD
+*CALL
+	Assert(pred) "str"
+	Assert(pred, "str") expr
+(bodied function, precedence 60000)
+*PARMS
+
+{pred} -- predicate to check
+
+{"str"} -- string to classify the error
+
+{expr} -- expression, error object
+
+*DESC
+
+{Assert} is a global error reporting mechanism. It can be used to check for
+errors and report them. An error is considered to occur when the predicate
+{pred} evaluates to anything except {True}. In this case, the function returns
+{False} and an error object is created and posted to the global error tableau.
+Otherwise the function returns {True}.
+
+Unlike the "hard" error function {Check}, the function {Assert} does not stop
+the execution of the program.
+
+The error object consists of the string {"str"} and optionally an arbitrary
+expression {expr}. The string should be used to classify the kind of error that
+has occurred. The association list of error objects is currently the global
+variable {ErrorTableau}.
+
+Errors can be handled by a
+custom error handler in the portion of the code that is able to handle a certain class of
+errors using the functions {IsError}, {GetError} and {ClearError}. Normally, all errors posted during evaluation of an expression should
+be eventually printed to the screen. This is the behavior of prettyprinters
+{PrettyForm} and {TeXForm} which use {DumpErrors}.
+
+*E.G.
+
+	In> Assert(1=0, "bad value") "must be zero"
+	Out> False;
+	In> Assert(1=1, "bad value") "must be one"
+	Out> True;
+	In> IsError()
+	Out> True;
+	In> IsError("bad value")
+	Out> True;
+	In> IsError("bad file")
+	Out> False;
+	In> GetError("bad value");
+	Out> "must be zero";
+	In> DumpErrors()
+	Error: value: must be zero
+	Out> True;
+No more errors left:
+	In> IsError()
+	Out> False;
+	In> DumpErrors()
+	Out> True;
+
+*SEE IsError, DumpErrors, Check, GetError, ClearError, ClearErrors
+
+*CMD DumpErrors, ClearErrors --- custom error handlers
+*STD
+*CALL
+	DumpErrors()
+	ClearErrors()
+
+*DESC
+
+{DumpErrors} is a simple error handler for the global error reporting mechanism. It prints all errors posted using {Assert} and clears the error tableau.
+
+{ClearErrors} is a trivial error handler that does nothing except it clears the tableau.
+
+*SEE Assert, IsError
+
+*CMD IsError --- check for custom error
+*STD
+*CALL
+	IsError()
+	IsError("str")
+
+*PARMS
+
+{"str"} -- string to classify the error
+
+*DESC
+
+{IsError()} returns {True} if any custom errors have been reported using {Assert}.
+The second form takes a parameter {"str"} that designates the class of the
+error we are interested in. It returns {True} if any errors of the given class
+{"str"} have been reported.
+
+*SEE GetError, ClearError, Assert, Check
+
+
+*CMD GetError, ClearError --- handle custom errors
+*STD
+*CALL
+	GetError("str")
+	ClearError("str")
+
+*PARMS
+
+{"str"} -- string to classify the error
+
+*DESC
+
+{GetError} returns the error object if a custom error of class {"str"} has been
+reported using {Assert}, or {False} if no errors of this class have been
+reported.
+
+{ClearError("str")} deletes the same error object that is returned by
+{GetError("str")}. It deletes at most one error object. It returns {True} if an
+object was found and deleted, and {False} otherwise.
+
+
+*E.G.
+
+	In> x:=1
+	Out> 1;
+	In> Assert(x=0, "bad value") {x,"must be zero"}
+	Out> False;
+	In> GetError("bad value")
+	Out> {1, "must be zero"};
+	In> ClearError("bad value");
+	Out> True;
+	In> IsError()
+	Out> False;
+
+*SEE IsError, Assert, Check, ClearErrors
+
+*CMD CurrentFile, CurrentLine --- show current file and line of input
+*CORE
+*CALL
+	CurrentFile()
+	CurrentLine()
+
+*DESC
+
+The functions {CurrentFile} and {CurrentLine} return a string
+with the file name of the current file and the current line 
+of input respectively.
+
+These functions are most useful in batch file calculations, where
+there is a need to determine at which line an error occurred.
+One can define a function 
+
+	tst() := Echo({CurrentFile(),CurrentLine()});
+which can then be inserted into the input file at various places,
+to see how far the interpreter reaches before an error occurs.
+
+*SEE Echo
+
 
 			Built-in (core) functions
 
@@ -696,17 +869,6 @@ source tree. The declarations typically look like this:
 	SetCommand(LispSubtract, "MathSubtract");
 Here {LispSubtract} is the Yacas internal name for the function and {MathSubtract} is the name visible to the Yacas language.
 Built-in bodied functions and infix operators are declared in the same file.
-
-		Full listing of core functions
-
-The following Yacas functions are currently declared in {yacasapi.cpp}
-as core functions:
-
-*REM yacasapi.chapt is generated from yacasapi.cpp
-
-*INCLUDE yacasapi.chapt
-
-
 
 *CMD MathNot --- built-in logical "not"
 *CORE
@@ -781,6 +943,26 @@ Comparing numbers or strings (lexicographically).
 	Out> True;
 
 
+*A {MathExp}
+*A {MathLog}
+*A {MathPower}
+*A {MathSin}
+*A {MathCos}
+*A {MathTan}
+*A {MathArcSin}
+*A {MathArcCos}
+*A {MathArcTan}
+*A {MathGcd}
+*A {MathAdd}
+*A {MathSubtract}
+*A {MathMultiply}
+*A {MathDivide}
+*A {MathSqrt}
+*A {MathFloor}
+*A {MathCeil}
+*A {MathAbs}
+*A {MathMod}
+*A {MathDiv}
 *CMD Math... --- arbitrary-precision math functions
 *CORE
 *CALL
@@ -793,7 +975,7 @@ MathMultiply(x,y),
 MathDivide(x,y),
 MathSqrt(x)  (square root),
 MathFloor(x), MathCeil(x),
-MathAbs(x), MathMod(x,y),
+MathAbs(x),
 MathExp(x), MathLog(x) (natural logarithm),
 MathPower(x,y),
 MathSin(x), MathCos(x), MathTan(x),
@@ -804,11 +986,19 @@ MathDiv(x,y), MathMod(x,y)
 
 Calculation of sin, cos, tan and other mathematical functions.
 The argument <i>must</i>
-be a number. The reason {Math} is prepended to
-the names is you might want to derive equivalent
-non-evaluating functions. The {Math}... versions require the arguments
-to be numbers.
+be a number. The reason for the prefix {Math} is that
+the library needs to define equivalent
+non-numerical functions for symbolic computations, such as {Exp}, {Sin} and so on.
 
+*A {FastExp}
+*A {FastLog}
+*A {FastPower}
+*A {FastSin}
+*A {FastCos}
+*A {FastTan}
+*A {FastArcSin}
+*A {FastArcCos}
+*A {FastArcTan}
 *CMD Fast... --- double-precision math functions
 *CORE
 *CALL
@@ -820,7 +1010,7 @@ FastSin(x), FastCos(x), FastTan(x),
 FastArcSin(x), FastArcCos(x), FastArcTan(x)
 
 *DESC
-Versions of these functions using the internal C++ version. These
+Versions of these functions using the C++ library. These
 should then at least be faster than the arbitrary precision versions.
 
 *CMD ShiftLeft, ShiftRight --- built-in bit shifts
@@ -832,6 +1022,19 @@ should then at least be faster than the arbitrary precision versions.
 *DESC
 
 Shift bits to the left or to the right.
+
+
+
+		Full listing of core functions
+
+The following Yacas functions are currently declared in {yacasapi.cpp}
+as core functions:
+*A core functions, listing of
+*REM yacasapi.chapt is generated from yacasapi.cpp
+
+*INCLUDE yacasapi.chapt
+
+
 
 
 			The Yacas plugin structure
@@ -899,7 +1102,7 @@ It will scan all the dll files, and delete the first one found
 to exactly match, and return silently if it didn't find the dll.
 {DllUnload} always returns {True}.
 
-{DllEnumerate()} returns a list with all loaded dynamic link libraries.
+{DllEnumerate} returns a list with all loaded dynamic link libraries.
 
 *EG
 
@@ -1271,7 +1474,7 @@ This is the fastest and simplest comparison, and can be
 used, for example, to test that an expression evaluates to $ 2 $.
 *	{TestYacas} -- compare two expressions after simplification as 
 multivariate polynomials. If the two arguments are equivalent
-multivariate polynomials, this test succeeds. {TestYacas} uses {Simplify()}. Note: {TestYacas} currently should not be used to test equality of lists.
+multivariate polynomials, this test succeeds. {TestYacas} uses {Simplify}. Note: {TestYacas} currently should not be used to test equality of lists.
 *	{LogicVerify} -- Perform a test by using {CanProve} to verify that from 
 {question} the expression {answer} follows. This test command is 
 used for testing the logic theorem prover in Yacas.
@@ -1390,7 +1593,7 @@ same result, and so an arithmetic module actually doing the
 calculation does the calculation in two different ways. 
 The results should be exactly equal.
 
-{RandVerifyArithmetic(n)} calls {VerifyArithmetic()} with
+{RandVerifyArithmetic(n)} calls {VerifyArithmetic} with
 random values, {n} times.
 
 {VerifyDiv(u,v)} checks that 
@@ -1409,21 +1612,3 @@ $$ u = v*Div(u,v) + Mod(u,v) $$.
 	Out> True;
 
 *SEE Verify
-
-*CMD MultiplyNum --- optimized numerical multiplication
-*STD
-*CALL
-	MultiplyNum(x,y)
-	MultiplyNum(x,y,z,...)
-	MultiplyNum({x,y,z,...})
-
-*PARMS
-
-{x}, {y}, {z} -- integer, rational or floating-point numbers to multiply
-
-*DESC
-The function {MultiplyNum} is used to speed up multiplication of floating-point numbers with rational numbers. Suppose we need to compute $(p/q)*x$ where $p$, $q$ are integers and $x$ is a floating-point number. At high precision, it is faster to multiply $x$ by an integer $p$ and divide by an integer $q$ than to compute $p/q$ to high precision and then multiply by $x$. The function  {MultiplyNum} performs this optimization.
-
-The function accepts any number of arguments (not less than two) or a list of numbers. The result is always a floating-point number (even if {Numeric} is not set).
-
-*SEE MathMultiply
