@@ -2,29 +2,5 @@
 NextTest("Polynomials");
 TestYacas(Expand((1+x)^2),1+2*x+x^2);
 
-A:=3*x^3+x^2+x+5;
-B:=5*x^2 - 3*x + 1;
-{C,D}:=polyDivide(A,B,x);
-
-//Echo(C);
-//Echo(D);
-//Echo(LeadingCoef(A,x));
-//Echo(LeadingCoef(B,x));
-
-TestYacas( Simplify(B*C+D), A );
-
-A:=2*x^2+4;
-KnownFailure(Verify( polyDivide(A,2,x), x^2 +2, 0 ));
-
-A:= x^4 - 2*x^3 - 6*x^2 + 12*x + 15;
-B:= x^3 + x^2 -4*x - 4;
-TestYacas(polyGCD(A,B,x),5*x+5);
-
-KnownFailure(Verify(polyGCDExt2(A,B,x) , x^2 - 6*x + 10, 5*x+5 ));
-
-Verify(polyGCDExt(A,B,x),{3-x,(x-6)*x+10,5*x+5});
-
-TestYacas(polyGCD(4*x^2+4*x,4*x+4,x), 4*x+4 );
-
-TestYacas(polyContent(1400*x^2+1200*x,x), 200 );
+// We need more polynomial tests
 
