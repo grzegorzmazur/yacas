@@ -22,8 +22,12 @@ void *PlatObReAlloc(void *p, size_t nbytes);
 #define PlatAlloc(nr)        (LispCharPtr)PlatObAlloc((size_t)nr)
 #define PlatReAlloc(orig,nr) (LispCharPtr)PlatObReAlloc((void*)orig,(size_t)nr)
 #define PlatFree(orig)       PlatObFree((void*)orig)
-#endif
 
+
+enum TAllocTypes
+{
+    EAlloc=0
+};
 
 inline void* operator new(unsigned long size)
 {
@@ -41,6 +45,8 @@ inline void operator delete[](void* object)
 {
     PlatFree((LispCharPtr)object);
 }
+
+#endif
 
 #include "stubs.inl"
 

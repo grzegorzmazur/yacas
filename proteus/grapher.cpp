@@ -2,6 +2,7 @@
 
 #include <FL/Fl_Tabs.H>
 #include <FL/fl_draw.H>
+#include "yacasprivate.h"
 #include "lisptype.h"
 #include "lispenvironment.h"
 #include "lispatom.h"
@@ -9,7 +10,6 @@
 #include "arggetter.h"
 #include "lispplugin.h"
 #include "platmath.h"
-#include "stubs.h"
 #include "genericstructs.h"
 #include "errors.h"
 
