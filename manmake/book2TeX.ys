@@ -58,7 +58,7 @@ HtmlEmphasis(x) := "\\emph{" : x : "}";
 
 /* decide whether to use "verb" or "texttt" based on whether the string contains any of the special characters #, _, \, &, {, } */
 
-HasTexChars(string) := [
+HasTexChars(x) := [
 	Local(i);
 	For (i:=1, i<=Length(x) And Not Contains(TexCharsToEscape, x[i]), i:=i+1) [];
 	i<=Length(x);
@@ -75,8 +75,8 @@ HtmlBreak() := "
 
 Bodied("Item",2);	/* competes with prec. 7 of ":" */
 Bodied("Book",60000);
-//Bodied("Title",60000);
-//Bodied("Author",60000);
+Bodied("Title",60000);
+Bodied("Author",60000);
 Bodied("Chapter",60000);
 Bodied("Section",60000);
 Bodied("SubSection",60000);
