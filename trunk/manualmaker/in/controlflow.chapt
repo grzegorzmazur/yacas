@@ -58,32 +58,6 @@ or the operating system.
 ";
 
 
-AddAnchor("PatchString");
-SubSection()"PatchString";
-BuiltIn();
-Topical()"Calling Sequence";
-Text()"PatchString(string)";
-
-Topical()"Parameters";
-Text()"string - a string to patch";
-
-Topical()"Description";
-Text()
-"This function does the same as PatchLoad, but it works on a string
-in stead of on the contents of a text file. See PatchLoad for more
-details.
-";
-
-Topical()"Examples";
-Text()
-HtmlCommand(
-"In> PatchString(\"Two plus three is &lt? Write(2+3); ?&gt \");
-Out> \"Two plus three is 5 \";
-");
-
-Topical()"See Also"; 
-SeeAlso({"PatchLoad"});
-
 
 
 AddAnchor("Function");
@@ -131,25 +105,6 @@ Example: \"Apply( {{x,y},x+y} , {2,3} );\" would also evaluate to 5.
 
 
 
-AddAnchor("LocalSymbols");
-SubSection()"LocalSymbols(...)body";
-Text()"
-Given the symbols passed as the first arguments to LocalSymbols
-a set of local symbols will be created, and creates unique ones
-for them, typically of the form $<symbol><number>, where
-symbol was the symbol entered by the user, and number is a unique
-number. This scheme was used
-to such a generated symbol can not accientally be entered by a user.
-Example:
-
-":HtmlCommand(
-"In> LocalSymbols(a,b)a+b
-Out> $a6+ $b6;"):"
-
-This is useful in cases where a guaranteed free variable is needed,
-like in the macro-like functions (For, While, etc.).
-
-";
 
 
 AddAnchor("Subst");

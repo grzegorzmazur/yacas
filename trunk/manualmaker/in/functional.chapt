@@ -1,36 +1,121 @@
 
 Chapter()"Functional operators";
 
+
 AddAnchor(":");
-SubSection()"item:list"; Text()"
-prepends an item to a list, or a string. 
-Examples:
- a:b:c:{}       ->  {a,b,c} <BR>
- \"hello\":\" \":\"world\" -> \"hello world\"
+SubSection()":";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"item : list <br>
+string1 : string2";
+
+Topical()"Parameters";
+Text()
+"item - an item to be prepended to a list <br>
+list - a list <br>
+string1 - a string <br>
+string2 - a string 
 ";
+
+Topical()"Description";
+Text()
+"Prepends an item to a list, or a string. ";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> a:b:c:{}
+Out> {a,b,c};
+In> \"This\":\"Is\":\"A\":\"String\"
+Out> \"ThisIsAString\";
+");
+
+Topical()"See Also"; 
+SeeAlso({"Concat","ConcatStrings"});
+
 
 AddAnchor("@");
-SubSection()"\"oper\" @ arg"; Text()"
-Applies an operator to arguments.
-Examples:
- \"Sin\" @ a      ->   Sin(a)
- \"Sin\" @ {a,b}  ->   Sin(a,b)
+SubSection()"@";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"function @ arguments";
 
-";
+Topical()"Parameters";
+Text()
+"function - a string representing a function <br>
+arguments - a single arguments, or a list of arguments";
+
+Topical()"Description";
+Text()
+"Applies an operator to arguments. Equivalent to Apply";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> \"Sin\" @ a
+Out> Sin(a);
+In> {{a},Sin(a)} @ a
+Out> Sin(a);
+In> \"f\" @ {a,b}
+Out> f(a,b);
+");
+
+Topical()"See Also"; 
+SeeAlso({"Apply"});
+
 
 AddAnchor("/@");
-SubSection()"oper /@ arglist"; Text()"
-Applies an operator to arguments in a list, in a threaded manner.
-Example:
- \"Sin\" /@ {a,b} ->   {Sin(a),Sin(b)}
+SubSection()"/@";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"function /@ arguments";
 
-";
+Topical()"Parameters";
+Text()
+"function - a string representing a function <br>
+arguments - a list of arguments";
+
+Topical()"Description";
+Text()
+"Applies an operator to arguments in a list, in a threaded manner.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> \"Sin\" /@ {a,b}
+Out> {Sin(a),Sin(b)};
+In> {{a},Sin(a)*a} /@ {a,b}
+Out> {Sin(a)*a,Sin(b)*b};
+");
+
+Topical()"See Also"; 
+SeeAlso({"MapSingle"});
+
 
 AddAnchor("..");
-SubSection()"n .. m"; Text()"
-returns a list of numbers from n upto m.
-Example:
- 1 .. 4         ->   {1,2,3,4}
+SubSection()"..";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"n .. m";
+
+Topical()"Parameters";
+Text()
+"n - an integer <br>
+m - an integer 
 ";
+
+Topical()"Description";
+Text()
+"Returns a list of numbers from n upto m.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> 1 .. 4
+Out> {1,2,3,4};
+");
+
 
 

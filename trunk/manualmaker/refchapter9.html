@@ -23,9 +23,6 @@ If
 , <A HREF="refchapter9.html#SystemCall" TARGET="Chapters">
 SystemCall
 </A>
-, <A HREF="refchapter9.html#PatchString" TARGET="Chapters">
-PatchString
-</A>
 , <A HREF="refchapter9.html#Function" TARGET="Chapters">
 Function
 </A>
@@ -40,9 +37,6 @@ ForEach
 </A>
 , <A HREF="refchapter9.html#Apply" TARGET="Chapters">
 Apply
-</A>
-, <A HREF="refchapter9.html#LocalSymbols" TARGET="Chapters">
-LocalSymbols
 </A>
 , <A HREF="refchapter9.html#Subst" TARGET="Chapters">
 Subst
@@ -150,43 +144,7 @@ from. SystemCall can be used to pass commands to other programs
 or the operating system. 
 
 
-<A NAME="PatchString">
-
-</A>
-<H3>
-<HR>PatchString
-</H3>
-Internal function<br><H5>
-Calling Sequence:
-</H5>
-PatchString(string)
-<H5>
-Parameters:
-</H5>
-string - a string to patch
-<H5>
-Description:
-</H5>
-This function does the same as PatchLoad, but it works on a string
-in stead of on the contents of a text file. See PatchLoad for more
-details.
-
-<H5>
-Examples:
-</H5>
-<TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> PatchString("Two plus three is &lt? Write(2+3); ?&gt ");
-Out> "Two plus three is 5 ";
-</PRE></TR>
-</TABLE>
-
-<H5>
-See Also:
-</H5>
-<A HREF="ref.html#PatchLoad" TARGET="Chapters">
-PatchLoad
-</A>
-, <A NAME="Function">
+<A NAME="Function">
 
 </A>
 <H3>
@@ -247,31 +205,6 @@ Eg. "Apply("+",{2,3});" would evaluate to "5".
 
 You can also apply pure functions, declared using the form {varlist,body}.
 Example: "Apply( {{x,y},x+y} , {2,3} );" would also evaluate to 5.
-
-
-<A NAME="LocalSymbols">
-
-</A>
-<H3>
-<HR>LocalSymbols(...)body
-</H3>
-
-Given the symbols passed as the first arguments to LocalSymbols
-a set of local symbols will be created, and creates unique ones
-for them, typically of the form $<symbol><number>, where
-symbol was the symbol entered by the user, and number is a unique
-number. This scheme was used
-to such a generated symbol can not accientally be entered by a user.
-Example:
-
-<TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> LocalSymbols(a,b)a+b
-Out> $a6+ $b6;</PRE></TR>
-</TABLE>
-
-
-This is useful in cases where a guaranteed free variable is needed,
-like in the macro-like functions (For, While, etc.).
 
 
 <A NAME="Subst">

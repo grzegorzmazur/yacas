@@ -56,23 +56,6 @@ HoldArg("TruncRadian",r);
 5 # Cos(x_IsNegativeNumber * _y)   <-- Cos((-x)*y);
 5 # Cos(_y * x_IsNegativeNumber)   <-- Cos(y*(-x));
 
-4 # Cos(x_IsRationalOrNumber) <-- 
-    [
-     Local(ll);
-     ll:= MathFloor(N(x/Pi));
-     If(IsEven(ll),x:=(x - Pi*ll),x:=(-x + Pi*(ll+1)));
-     UnList({Cos,x});
-     ];
-
-4 # Cos(x_IsRationalOrNumber) <-- 
-    [
-     Local(ll);
-     ll:= MathFloor(N(Abs(x)/Pi));
-     If(IsEven(ll),x:=(Abs(x) - Pi*ll),x:=(-Abs(x) + Pi*(ll+1)));
-     UnList({Cos,x});
-     ];
-
-
 
 110 # Cos(Complex(_r,_i)) <--
     (Exp(I*Complex(r,i)) + Exp(- I*Complex(r,i))) / (2) ;
@@ -92,6 +75,24 @@ HoldArg("TruncRadian",r);
 
 200 # Cos(_v)_(Not(Numeric) And CanBeUni(v,Pi) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
       CosMap(Coef(v,Pi,1));
+
+400 # Cos(x_IsRationalOrNumber) <-- 
+    [
+     Local(ll);
+     ll:= MathFloor(N(x/Pi));
+     If(IsEven(ll),x:=(x - Pi*ll),x:=(-x + Pi*(ll+1)));
+     UnList({Cos,x});
+     ];
+
+400 # Cos(x_IsRationalOrNumber) <-- 
+    [
+     Local(ll);
+     ll:= MathFloor(N(Abs(x)/Pi));
+     If(IsEven(ll),x:=(Abs(x) - Pi*ll),x:=(-Abs(x) + Pi*(ll+1)));
+     UnList({Cos,x});
+     ];
+
+
 
 100 # Sin(_x)/Tan(_x) <-- Cos(x);
 100 # Tan(_x)/Sin(_x) <-- (1/Cos(x));

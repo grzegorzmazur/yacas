@@ -26,6 +26,9 @@ Object
 , <A HREF="refchapter13.html#LazyGlobal" TARGET="Chapters">
 LazyGlobal
 </A>
+, <A HREF="refchapter13.html#UniqueConstant" TARGET="Chapters">
+UniqueConstant
+</A>
 , <HEAD><TITLE>Variables</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
 <BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
 <H1>
@@ -183,7 +186,35 @@ Clear
 , <A HREF="ref.html#Local" TARGET="Chapters">
 Local
 </A>
-, 
+, <A NAME="UniqueConstant">
+
+</A>
+<H3>
+<HR>UniqueConstant
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+UniqueConstant()
+<H5>
+Description:
+</H5>
+This function returns a unique constant atom each time you call it,
+  starting with a C character, and a unique number appended to it.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In&gt UniqueConstant() 
+Out&gt C9 
+In&gt  UniqueConstant() 
+Out&gt C10 
+
+</PRE></TR>
+</TABLE>
+
+
 </BODY>
 
 </FONT>

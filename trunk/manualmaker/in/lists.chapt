@@ -81,6 +81,135 @@ SeeAlso({"Head","Tail","Nth"});
 
 
 
+AddAnchor("MapSingle");
+AddAnchor("Map");
+SubSection()"Applying a function to multiple values";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"MapSingle(function,list) <br>
+Map(function,doublelist)
+";
+
+Topical()"Parameters";
+Text()
+"function - a function to apply <br>
+list - list of arguments to be passed to function accepting a single argument
+doublelist - list of lists of arguments to be passed to a function
+";
+
+Topical()"Description";
+Text()
+"MapSingle performs Apply on every item in list, returning a
+list of the results.
+":
+HtmlNewParagraph():
+"
+Map performs Apply on every set of items in doublelist, returning a
+list of the results. Eg. Map(\"+\",{{a,b},{c,d}}) would return {a+c,b+d}.
+doublelist should be a list of lists each the same size. 
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> MapSingle(\"Sin\",{a,b,c})
+Out> {Sin(a),Sin(b),Sin(c)};
+In> Map(\"+\",{{a,b},{c,d}})
+Out> {a+c,b+d};
+In> \"Sin\" /@ {a,b,c}
+Out> {Sin(a),Sin(b),Sin(c)};
+");
+
+Topical()"See Also"; 
+SeeAlso({"/@"});
+
+
+AddAnchor("RandomIntegerVector");
+SubSection()"RandomIntegerVector";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"RandomIntegerVector(nr,from,to)";
+
+Topical()"Parameters";
+Text()
+"nr - integer
+from - integer
+to - integer
+";
+
+Topical()"Description";
+Text()
+"RandomIntegerVector generates a vector of random
+integers p in the range [from,to] (including from and to).";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> RandomIntegerVector(4,-3,3)
+Out> {0,3,2,-2};
+");
+
+Topical()"See Also"; 
+SeeAlso({"Random","RandomPoly"});
+
+
+AddAnchor("MakeVector");
+SubSection()"MakeVector";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"MakeVector(var,n)";
+
+Topical()"Parameters";
+Text()
+"var - free variable<br>
+n - integer";
+
+Topical()"Description";
+Text()
+"MakeVector(var,n) : return a vector of unique numbered variable names.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> MakeVector(a,3)
+Out> {a1,a2,a3};
+");
+
+Topical()"See Also"; 
+SeeAlso({"RandomIntegerVector","ZeroVector"});
+
+AddAnchor("Select");
+SubSection()"Select";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Select(predicate,list)";
+
+Topical()"Parameters";
+Text()
+"predicate - a predicate function<br>
+list - a list of elements to select from";
+
+Topical()"Description";
+Text()
+"Select returns a sublist of list, containing all
+elements for which the predicate returned after applying the
+predicate on that list element. 
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Select(\"IsInteger\",{a,b,2,c,3,d,4,e,f})
+Out> {2,3,4};
+");
+
+Topical()"See Also"; 
+SeeAlso({"Length","Find"});
+
+
+
 
 AddAnchor("Nth");
 SubSection()"Nth({list},index)"; Text()"
@@ -465,57 +594,6 @@ SubSection()"TableForm({list})";  Text()"
 Tableform({list}) : 
 TableForm writes out a list in a nicer readable form, eg. one line for
 each element in the list.
-
-";
-
-AddAnchor("MapSingle");
-SubSection()"MapSingle(\"operator\",{list})";  Text()"
-MapSingle(\"operator\",{list}) : 
-MapSingle performs Apply on every item in {list}, returning a
-list of the results.
-
-";
-
-AddAnchor("Map");
-SubSection()"Map(\"operator\",{lists})";  Text()"
-Map(\"operator\",{lists}) : 
-{lists} should be a list of lists each the same size. 
-Map performs Apply on every set of items in {lists}, returning a
-list of the results. Eg. Map(\"+\",{{a,b},{c,d}}) would return {a+c,b+d}.
-";
-
-
-AddAnchor("RandomIntegerVector");
-SubSection()"RandomIntegerVector(nr,from,to)";
-Text()"
-RandomIntegerVector(nr,from,to) : generate a vector of random
-integers p in the range [from,to] (including from and to).
-";
-
-
-AddAnchor("MakeVector");
-SubSection()"MakeVector(var,n)";
-Text()"
-MakeVector(var,n) : return a vector of unique numbered variable names.
-Example:
-
-":HtmlCommand(
-"In> MakeVector(a,3)
-Out> {a1,a2,a3};"):"
-
-";
-
-
-AddAnchor("Select");
-SubSection()"Select(predicate,list)";
-Text()"
-Select(predicate,list) : return a sublist of list, containing all
-elements for which the predicate returned after applying the
-predicate on that list element. Example:
-
-":HtmlCommand(
-"In> Select(\"IsInteger\",{a,b,2,c,3,d,4,e,f})
-Out> {2,3,4};"):"
 
 ";
 

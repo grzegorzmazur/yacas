@@ -11,23 +11,11 @@ Degree
 , <A HREF="refchapter6.html#Coef" TARGET="Chapters">
 Coef
 </A>
-, <A HREF="refchapter6.html#PSolve" TARGET="Chapters">
-PSolve
-</A>
-, <A HREF="refchapter6.html#Div" TARGET="Chapters">
-Div
-</A>
-, <A HREF="refchapter6.html#Mod" TARGET="Chapters">
-Mod
-</A>
 , <A HREF="refchapter6.html#Content" TARGET="Chapters">
 Content
 </A>
 , <A HREF="refchapter6.html#PrimitivePart" TARGET="Chapters">
 PrimitivePart
-</A>
-, <A HREF="refchapter6.html#RandomPoly" TARGET="Chapters">
-RandomPoly
 </A>
 , <A HREF="refchapter6.html#LeadingCoef" TARGET="Chapters">
 LeadingCoef
@@ -35,8 +23,14 @@ LeadingCoef
 , <A HREF="refchapter6.html#Monic" TARGET="Chapters">
 Monic
 </A>
-, <A HREF="refchapter6.html#BigOh" TARGET="Chapters">
-BigOh
+, <A HREF="refchapter6.html#RandomPoly" TARGET="Chapters">
+RandomPoly
+</A>
+, <A HREF="refchapter6.html#Horner" TARGET="Chapters">
+Horner
+</A>
+, <A HREF="refchapter6.html#ExpandBrackets" TARGET="Chapters">
+ExpandBrackets
 </A>
 , <HEAD><TITLE>Polynomials</TITLE></HEAD><FONT FACE="Verdana, Arial, Helvetica, sans-serif" SIZE="3">
 <BODY BGCOLOR="ffffff" LINK="0000ff" VLINK="0000ff">
@@ -47,41 +41,82 @@ Polynomials
 
 </A>
 <H3>
-<HR>Expand(expr)
+<HR>Expand
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Expand(expr) <br>
+Expand(expr,var)
+Expand(expr,varlist)
 
+<H5>
+Parameters:
+</H5>
+expr - a univariate polynomial expression <br>
+var - a variable <br>
+varlist - a list of variables
 
+<H5>
+Description:
+</H5>
 Expand(expr) : expands a univariate. Example: Expand((1+x)^2)
 would evaluate to 1+2*x+x^2.
 
 If the expression depends on more than one variable, you can
-specify which variable to expand to using Expand(expr,var);
+specify which variable to expand to using Expand(expr,var).
 Also, you can expand to multiple variables, by specifying the
 order in which to expand, in a list, using Expand(expr,{varlist}).
 
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Expand((1+x)^4,x)
+Out> x^4+4*x^3+6*x^2+4*x+1;
+</PRE></TR>
+</TABLE>
 
-<A NAME="Degree">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#ExpandBrackets" TARGET="Chapters">
+ExpandBrackets
+</A>
+, <A NAME="Degree">
 
 </A>
-<H3>
-<HR>Degree(expr) or Degree(expression, variable)
-</H3>
-
-
-Degree(expr) : return the degree of a polynomial. Example: <B><TT>Degree((1+x)^2);</TT></B> evaluates to 2. 
-<P>
-The version accepting an additional variable as an argument can be
-used to get the degree of a multivariate polynomial with respect to
-that variable. Example: <B><TT>Degree(a+b*x^3,a);</TT></B>returns 1.
 <A NAME="Coef">
 
 </A>
 <H3>
-<HR>Coef(expr,var,order)
+<HR>Coefficients of univariate polynomials
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Degree(expr)     <br>
+Degree(expr, var) <br>
+Coef(expr,var,order)
 
+<H5>
+Parameters:
+</H5>
+expr - an expression <br>
+var - a variable <br>
+order - an integer
+<H5>
+Description:
+</H5>
 
-Coef(expr,var,order) : return the coefficient of order for expression
+Degree returns the degree of a polynomial. Example: <B><TT>Degree((1+x)^2);</TT></B> evaluates to 2. 
+<P>
+The version accepting an additional variable as an argument can be
+used to get the degree of a multivariate polynomial with respect to
+that variable. Example: <B><TT>Degree(a+b*x^3,a);</TT></B>returns 1.
+<P>
+
+Coef returns the coefficient of order for expression
 expr treated as a univariate with respect to the variable var.
 
 <P>
@@ -90,133 +125,266 @@ The argument to parameter order can also be a list of integers, in
 which case this function returns a list of coefficients.
 
 
-<A NAME="PSolve">
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> e := Expand((a+x)^4,x)
+Out> x^4+4*a*x^3+(a^2+(2*a)^2+a^2)*x^2+(a^2*2*a+2*a^3)*x+a^4;
+In> Degree(e,a)
+Out> 4;
+In> Coef(e,a,2)
+Out> 6*x^2;
+In> Coef(e,a,0 .. 4)
+Out> {x^4,4*x^3,6*x^2,4*x,1};
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Expand" TARGET="Chapters">
+Expand
+</A>
+, <A NAME="Content">
 
 </A>
-<H3>
-<HR>PSolve(expr,var)
-</H3>
-
-
-PSolve(expr,var) : solve expr=0, treating expr as a polynomial in
-the variable var. The result returned is the value var should take
-for expr=0 to be true. This has been implemented for polynomials
-upto degree 2.
-
-
-<A NAME="Div">
-
-</A>
-<H3>
-<HR>Div(n,m)
-</H3>
-
-
-Div(n,m) : div is also defined for polynomials.
-
-
-<A NAME="Mod">
-
-</A>
-<H3>
-<HR>Mod(n,m)
-</H3>
-
-
-Mod(n,m) : mod is also defined for polynomials.
-
-<A NAME="Content">
-
-</A>
-<H3>
-<HR>Content(poly)
-</H3>
-
-Content(poly) : determine the content of a univariate polynomial.
-The content is the greatest common divisor of each term in the
-polynomial. The content of 2*x^2+4*x should be 2*x for instance.
-
 <A NAME="PrimitivePart">
 
 </A>
 <H3>
-<HR>PrimitivePart(poly)
+<HR>Content and primitive parts of univariate polynomials
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Content(poly) <br>
+PrimitivePart(poly)
 
-PrimitivePart(poly) : determine the primitive part of a univariate polynomial.
+<H5>
+Parameters:
+</H5>
+poly - a univariate polynomial with constant coefficients
+<H5>
+Description:
+</H5>
+
+Content determines the content of a univariate polynomial.
+The content is the greatest common divisor of each term in the
+polynomial. The content of 2*x^2+4*x should be 2*x for instance.
+
+<P>
+
+PrimitivePart determines the primitive part of a univariate polynomial.
 This is defined as PrimitivePart(poly)*Content(poly) = poly, and can
 easily be checked with Expand(PrimitivePart(poly)*Content(poly))
 which should be equal to Expand(poly).
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> e := 2*x^2+4*x
+Out> 2*x^2+4*x;
+In> Content(e)
+Out> 2*x;
+In> PrimitivePart(e)
+Out> x+2;
+In> Expand(Content(e)*PrimitivePart(e))
+Out> 2*x^2+4*x;
+</PRE></TR>
+</TABLE>
+
+<A NAME="LeadingCoef">
+
+</A>
+<A NAME="Monic">
+
+</A>
+<H3>
+<HR>LeadingCoef and Monic
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+LeadingCoef(poly) <br>
+LeadingCoef(poly,var) <br>
+Monic(poly) <br>
+Monic(poly,var)
+
+<H5>
+Parameters:
+</H5>
+poly - a univariate polynomial
+<H5>
+Description:
+</H5>
+LeadingCoef returns the leading coefficient of the polynomial poly.
+If there are more variables in poly, you can specify which variable
+is the main one, by adding it as an argument.
+
+Monic returns the monic part of the polynomial poly.
+This is poly/LeadingCoef(poly). This function also accepts
+a second argument, specifying the variable of the univariate
+polynomial. The leading coefficient of the monic polynomial will
+thus be one.
+
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> e := a*x^2 + b
+Out> a*x^2+b;
+In> LeadingCoef(e,x)
+Out> a;
+In> Monic(e,x)
+Out> x^2+b/a;
+</PRE></TR>
+</TABLE>
 
 <A NAME="RandomPoly">
 
 </A>
 <H3>
-<HR>RandomPoly(var,deg,coefmin,coefmax)
+<HR>RandomPoly
 </H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+RandomPoly(var,deg,coefmin,coefmax)
+<H5>
+Parameters:
+</H5>
+var - free variable for resulting univariate polynomial <br>
+deg - degree of resulting univariate polynomial <br>
+coefmin - minimum value for coefficients <br>
+coefmax - maximum value for coefficients
 
-RandomPoly(var,deg,coefmin,coefmax) :
-generate a random polynomial in variable var, of degree deg,
-with coefficients ranging from coefmin to coefmax (inclusive).
-
-
-<A NAME="LeadingCoef">
-
-</A>
-<H3>
-<HR>LeadingCoef(poly)
-</H3>
-
-LeadingCoef(poly) : get the leading coefficient of the polynomial poly.
-If there are more variables in poly, you can specify which variable
-is the main one, by adding it as an argument:
-
+<H5>
+Description:
+</H5>
+RandomPoly generates a random polynomial in variable var, of
+degree deg, with coefficients ranging from coefmin to coefmax
+(inclusive).
+<H5>
+Examples:
+</H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> LeadingCoef(a*x^2+2,x)
-Out> a;</PRE></TR>
-</TABLE>
-
-
-
-<A NAME="Monic">
-
-</A>
-<H3>
-<HR>Monic(poly)
-</H3>
-
-Monic(poly) : return the monic part of the polynomial poly.
-This is poly/LeadingCoef(poly). This function also accepts
-a second argument, specifying the variable of the univariate
-polynomial:
-
-<TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
-In> f:=a*x^2+b
-Out> a*x^2+b;
-In> PrettyForm(Monic(f,x))
-
-b    2
-- + x 
-a     
-
-Out> True;
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> RandomPoly(x,3,-10,10)
+Out> 3*x^3+10*x^2+ -4*x-6;
+In> RandomPoly(x,3,-10,10)
+Out> -2*x^3+ -8*x^2+8;
 </PRE></TR>
 </TABLE>
 
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Random" TARGET="Chapters">
+Random
+</A>
+, <A HREF="ref.html#RandomIntegerVector" TARGET="Chapters">
+RandomIntegerVector
+</A>
+, <H3>
+<HR>Div and Mod for polynomials
+</H3>
+Standard math library<br>
 
+Div and Mod are also defined for polynomials.
 
-<A NAME="BigOh">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Div" TARGET="Chapters">
+Div
+</A>
+, <A HREF="ref.html#Mod" TARGET="Chapters">
+Mod
+</A>
+, <A NAME="Horner">
 
 </A>
 <H3>
-<HR>BigOh(_uv,_var,_degree)
+<HR>Horner
 </H3>
-BigOh(poly,var,degree) : Given a polynomial poly in variable var,
-drop all terms of order degree or higher.
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+Horner(expression,variable)
+<H5>
+Parameters:
+</H5>
+expression - an expression
+variable - a variable
 
+<H5>
+Description:
+</H5>
+Horner turns a univariate polynomial into a Horner form,
+   ((x+a)*x+b)*x+c ... . This is usually an efficient way to
+   evaluate a polynomial.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In&gt expr1:=Expand((1+x)^4) 
+Out&gt x^4+4*x^3+6*x^2+4*x+1 
+In&gt  Horner(expr1,x) 
+Out&gt (((x+4)*x+6)*x+4)*x+1 
 
+</PRE></TR>
+</TABLE>
 
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Expand" TARGET="Chapters">
+Expand
+</A>
+, <A HREF="ref.html#ExpandBrackets" TARGET="Chapters">
+ExpandBrackets
+</A>
+, <A NAME="ExpandBrackets">
+
+</A>
+<H3>
+<HR>ExpandBrackets
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+ExpandBrackets(expr)
+<H5>
+Parameters:
+</H5>
+expr - a multivariate polynomial
+<H5>
+Description:
+</H5>
+ExpandBrackets goes further than Expand, in that it expands
+all terms.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Expand((a-x)*(b-x),x)
+Out> x^2-(b+a)*x+a*b;
+In> Expand((a-x)*(b-x),{x,a,b})
+Out> x^2-(b+a)*x+b*a;
+In> ExpandBrackets((a-x)*(b-x))
+Out> a*b-x*b+x^2-a*x;
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Expand" TARGET="Chapters">
+Expand
+</A>
+, 
 </BODY>
 
 </FONT>

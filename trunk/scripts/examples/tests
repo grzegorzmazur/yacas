@@ -446,7 +446,6 @@ TestYacas(TSimplify(TSum({i})TD(i)(X(i)*X(j)*X(j))),  Ndim*X(j)^2+2*X(j)^2);
 TestYacas(TSimplify(TSum({i,j,k})TD(i)TD(j)TD(k)(X(i)*X(j)*X(k))),  3*Ndim^2+2*Ndim+Ndim^3);
 
 NextTest("Propositional logic theorem prover");
-
 Verify(CanProve(( (a=>b) And (b=>c)=>(a=>c) )),True);
 Verify(CanProve(a Or Not a)                   ,True);
 Verify(CanProve(True Or a)                 ,True);
@@ -460,6 +459,9 @@ TestYacas(RadSimp(Sqrt(9+4*Sqrt(2))), 1+Sqrt(8));
 TestYacas(RadSimp(Sqrt(5+2*Sqrt(6))+Sqrt(5-2*Sqrt(6))),Sqrt(12));
 TestYacas(RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2)))))), 3+Sqrt(2));
 
+NextTest("Regression on bug reports");
+Verify(CanProve(P Or (Not P And Not Q)),P Or Not Q);
+Verify(Cos(0),1);
 
 
 /*

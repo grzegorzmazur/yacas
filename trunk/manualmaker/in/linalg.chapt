@@ -4,131 +4,381 @@ Chapter()"Linear Algebra";
 
 
 AddAnchor("LeviCivita");
-SubSection()"LeviCivita({list})";
-Text()"LeviCivita({list}) :
-\"LeviCivita\" implements the Levi Civita symbol. This is generally
+SubSection()"LeviCivita";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"LeviCivita(list)";
+
+Topical()"Parameters";
+Text()"list - a list of integers 1 .. n in some order";
+
+Topical()"Description";
+Text()
+"\"LeviCivita\" implements the Levi Civita symbol. This is generally
 useful for tensor calculus.  {list}  should be a list of integers,
 and this function returns 1 if the integers are in successive order,
 eg.  {1,2,3,...}  would return 1. Swapping two elements of this
 list would return -1. So, LeviCivita( {2,1,3} ) would evaluate
-to -1.
-";
+to -1.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> LeviCivita({1,2,3})
+Out> 1;
+In> LeviCivita({2,1,3})
+Out> -1;
+In> LeviCivita({2,2,3})
+Out> 0;
+");
+
+Topical()"See Also"; 
+SeeAlso({"Permutations"});
+
+
 
 AddAnchor("Permutations");
-SubSection()"Permutations({list})";
-Text()"Permutations({list}) :
-Permutations returns a list with all the premutations of the original
-list.
-";
+SubSection()"Permutations";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Permutations(list)";
+
+Topical()"Parameters";
+Text()"list - a list of elements";
+
+Topical()"Description";
+Text()
+"Permutations returns a list with all the permutations of
+the original list.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Permutations({a,b,c})
+Out> {{a,b,c},{a,c,b},{c,a,b},{b,a,c},{b,c,a},{c,b,a}};
+");
+
+Topical()"See Also"; 
+SeeAlso({"LeviCivita"});
 
 AddAnchor("InProduct");
-SubSection()"InProduct(a,b)";
-Text()"InProduct(a,b) (or alternatively a . b) :
-Calculate the inproduct of two vectors.
+AddAnchor("CrossProduct");
+SubSection()"Vector products";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"InProduct(a,b) (or alternatively a . b) <br>
+CrossProduct(a,b) (or alternatively a X b)
 ";
 
-AddAnchor("CrossProduct");
-SubSection()"CrossProduct(a,b)";
-Text()"CrossProduct(a,b) (or alternatively a X b) :
-Calculate the crossproduct of two three-dimensional vectors.
-";
+Topical()"Parameters";
+Text()
+"a - a vector <br>
+b - a vector";
+
+Topical()"Description";
+Text()
+"InProduct and CrossProduct return the inner product and outer product
+of two vectors, respectively. For CrossProduct the vectors have to be
+three-dimensional.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> {a,b,c} . {d,e,f}
+Out> a*d+b*e+c*f;
+In> {a,b,c} X {d,e,f}
+Out> {b*f-c*e,c*d-a*f,a*e-b*d};
+");
+
 
 AddAnchor("ZeroVector");
-SubSection()"ZeroVector(n)";
-Text()"ZeroVector(n) : ZeroVector returns a list with n zeroes.
-";
-
 AddAnchor("BaseVector");
-SubSection()"BaseVector(row,n)";
-Text()"BaseVector(row,n) : BaseVector returns a vector with item row set to 1, the
-other n-1 set to zero.
-
-";
-
 AddAnchor("Identity");
-SubSection()"Identity(n)";
-Text()"Identity(n) : Identity returns a identity matrix of dimension n x n.
+AddAnchor("ZeroMatrix");
+AddAnchor("DiagonalMatrix");
+SubSection()"Vector and matrix creation";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"ZeroVector(n) <br>
+BaseVector(row,n) <br>
+Identity(n) <br>
+ZeroMatrix(n,m) <br>
+DiagonalMatrix(v)
 ";
 
+Topical()"Parameters";
+Text()
+"n - an integer <br>
+m - an integer <br>
+row - a positive integer <= n <br>
+v - a list of values";
+
+Topical()"Description";
+Text()
+"ZeroVector returns a list with n zeroes.":
+HtmlNewParagraph():
+"
+BaseVector returns a vector with item row
+set to 1, the other n-1 set to zero.":
+HtmlNewParagraph():
+"Identity returns a identity matrix of dimension n x n.":
+HtmlNewParagraph():
+"ZeroMatrix Returns a matrix with n rows and m columns,
+all zeros.":
+HtmlNewParagraph():
+"DiagonalMatrix returns a square matrix with the elements of vector
+v on the diagonal of the matrix. All other elements are zero.
+";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> ZeroVector(4)
+Out> {0,0,0,0};
+In> BaseVector(2,4)
+Out> {0,1,0,0};
+In> Identity(3)
+Out> {{1,0,0},{0,1,0},{0,0,1}};
+In> ZeroMatrix(3,4)
+Out> {{0,0,0,0},{0,0,0,0},{0,0,0,0}};
+In> DiagonalMatrix(1 .. 4)
+Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
+");
 
 AddAnchor("IsMatrix");
-SubSection()"IsMatrix(x)";
-Text()"IsMatrix(x) : Predicates checking if the object x is a matrix.
-";
+SubSection()"IsMatrix";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"IsMatrix(M)";
+
+Topical()"Parameters";
+Text()"M - a mathematical object";
+
+Topical()"Description";
+Text()
+"IsMatrix returns True if M is a matrix, False otherwise.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"
+In> IsMatrix(ZeroMatrix(3,4))
+Out> True;
+In> IsMatrix(ZeroVector(4))
+Out> False;
+In> IsMatrix(3)
+Out> False;
+");
+
 
 AddAnchor("Normalize");
-SubSection()"Normalize(v)";
-Text()"Normalize(v) : Return the normalized vector v.
+SubSection()"Normalize";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Normalize(v)";
 
-";
+Topical()"Parameters";
+Text()"v - a vector";
 
-AddAnchor("ZeroMatrix");
-SubSection()"ZeroMatrix(n,m)";
-Text()"ZeroMatrix(n,m) : Returns a matrix with n rows and m columns, all zeros.
+Topical()"Description";
+Text()
+"Return the normalized vector of v: a vector going in the same
+direction but with length 1.";
 
-";
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Normalize({3,4})
+Out> {3/5,4/5};
+In> % . %
+Out> 1;
+");
+
+Topical()"See Also"; 
+SeeAlso({"InProduct","CrossProduct"});
+
 
 AddAnchor("Transpose");
-SubSection()"Transpose(M)";
-Text()"Transpose(M) : Return the transpose of a matrix M.
+SubSection()"Transpose";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Transpose(M)";
+
+Topical()"Parameters";
+Text()"M - a matrix";
+
+Topical()"Description";
+Text()
+"Transpose returns the transpose of a matrix M. Because matrices are
+just lists of lists, this is a useful operation too for lists.
 ";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> Transpose({{a,b}})
+Out> {{a},{b}};
+");
+
+
 
 AddAnchor("Determinant");
-SubSection()"Determinant(M)";
-Text()"Determinant(M) : Return the determinant of a matrix M.
-";
+SubSection()"Determinant";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Determinant(M)";
 
-AddAnchor("DiagonalMatrix");
-SubSection()"DiagonalMatrix(v)";
-Text()"DiagonalMatrix(v) : Return a square matrix with the elements of vector
-v on the diagonal of the matrix. All other elements are zero.
+Topical()"Parameters";
+Text()"M - a matrix";
 
-";
+Topical()"Description";
+Text()
+"Returns the determinant of a matrix M.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> DiagonalMatrix(1 .. 4)
+Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
+In> Determinant(%)
+Out> 24;
+");
 
 AddAnchor("Trace");
-SubSection()"Trace(M)";
-Text()"Trace(M) : Return the trace of a matrix M (defined as the sum of the
-elements on the diagonal of the matrix).
+SubSection()"Trace";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Trace(M)";
 
-";
+Topical()"Parameters";
+Text()"M - a matrix";
+
+Topical()"Description";
+Text()
+"Trace returns the trace of a matrix M (defined as the sum of the
+elements on the diagonal of the matrix).";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> DiagonalMatrix(1 .. 4)
+Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
+In> Trace(%)
+Out> 10;
+");
 
 AddAnchor("Inverse");
-SubSection()"Inverse(M)";
-Text()"Inverse(M) : Return the inverse of matrix M. The determinant of M should
-be non-zero.
+SubSection()"Inverse";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"Inverse(M)";
 
-";
+Topical()"Parameters";
+Text()"M - a matrix";
+
+Topical()"Description";
+Text()
+"Inverse returns the inverse of matrix M. The determinant of M should
+be non-zero. Because this function uses Determinant for calculating
+the inverse of a matrix, you can supply matrices with non-numeric
+matrix elements.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> DiagonalMatrix({a,b,c})
+Out> {{a,0,0},{0,b,0},{0,0,c}};
+In> Inverse(%)
+Out> {{(b*c)/(a*b*c),0,0},{0,(a*c)/(a*b*c),0},{0,0,(a*b)/(a*b*c)}};
+In> Simplify(%)
+Out> {{1/a,0,0},{0,1/b,0},{0,0,1/c}};
+");
 
 AddAnchor("CoFactor");
-SubSection()"CoFactor(M,i,j)";
-Text()"CoFactor(M,i,j) : This function returns the cofactor of a matrix around
+AddAnchor("Minor");
+SubSection()"CoFactor and Minor";
+StandardLib();
+Topical()"Calling Sequence";
+Text()
+"CoFactor(M,i,j) <br>
+Minor(M,i,j)
+";
+
+Topical()"Parameters";
+Text()
+"M - a matrix <br>
+i - a positive integer <br>
+j - a positive integer";
+
+Topical()"Description";
+Text()
+"
+Minor returns the minor of a matrix around
+the element (i,j). The minor is the determinant of the matrix
+excluding the ith row and jth column.":
+HtmlNewParagraph():
+"
+CoFactor returns the cofactor of a matrix around
 the element (i,j). The cofactor is the minor times
 (-1)^(i+j)
-
 ";
 
-AddAnchor("Minor");
-SubSection()"Minor(M,i,j)";
-Text()"Minor(M,i,j) : This function returns the minor of a matrix around
-the element (i,j). The minor is the determinant of the matrix
-excluding the ith row and jth column.
+Topical()"See Also"; 
+SeeAlso({"Determinant","Inverse"});
 
-";
 
 AddAnchor("SolveMatrix");
-SubSection()"SolveMatrix(M,v)";
-Text()"SolveMatrix(M,v) : This function returns the vector x that satisfies
-the equation \"M x = v\". The determinant of M should be non-zero.
+SubSection()"SolveMatrix";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"SolveMatrix(M,v)";
 
+Topical()"Parameters";
+Text()
+"M - a matrix <br>
+v - a vector";
+
+Topical()"Description";
+Text()
+"SolveMatrix returns the vector x that satisfies
+the equation \"M x = v\". The determinant of M should be non-zero.
 ";
+
 
 AddAnchor("CharacteristicEquation");
-SubSection()"CharacteristicEquation(matrix,var)";
-Text()"CharacteristicEquation(matrix,var) : 
-calculate characteristic equation of \"matrix\", using
-\"var\". The zeros os this equation are the eigenvalues
-of the matrix, Det(matrix-I var);
-";
+SubSection()"CharacteristicEquation";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"CharacteristicEquation(matrix,var)";
+
+Topical()"Parameters";
+Text()
+"matrix - a matrix <br>
+var - a free variable";
+
+Topical()"Description";
+Text()
+"CharacteristicEquation
+returns the characteristic equation of \"matrix\", using
+\"var\". The zeros of this equation are the eigenvalues
+of the matrix, Det(matrix-I*var);";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> DiagonalMatrix({a,b,c})
+Out> {{a,0,0},{0,b,0},{0,0,c}};
+In> CharacteristicEquation(%,x)
+Out> (a-x)*(b-x)*(c-x);
+In> Expand(%,x)
+Out> (b+a+c)*x^2-x^3-((b+a)*c+a*b)*x+a*b*c;
+");
+
+Topical()"See Also"; 
+SeeAlso({"EigenValues","EigenVectors"});
 
 AddAnchor("EigenValues");
 SubSection()"EigenValues";
@@ -160,10 +410,6 @@ Out> {3,-1};
 
 Topical()"See Also"; 
 SeeAlso({"EigenVectors","CharacteristicEquation"});
-
-
-
-
 
 
 
