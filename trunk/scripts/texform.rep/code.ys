@@ -8,6 +8,7 @@
 	0.3 fixed bracketing of lists, changed bracketing of math functions, modified TeX representation of user-defined functions (up to two-letter functions are in italics), added TeX Greek letters
 	0.4 added nth roots, Sum, Limit, Integrate, hyperbolics, set operations, Abs, Max, Min, "==", ":=", Infinity; support indexed expressions A[i] and matrices.
 	0.4.1 bugfixes for [] operator, support for multiple indices a[1][2][3]
+	0.4.2 fix for TeX, LaTeX special names, variable names ending on digits "a2" represented as "a_2"
 */
 
 /* To do:
@@ -40,9 +41,9 @@ TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equa
 100 # TeXForm(_x) <-- ConcatStrings("$", TeXForm(x, TeXFormMaxPrec), "$");
 
 /* Replace numbers and variables -- never bracketed except explicitly */
-110 # TeXForm(Pi, _p) <-- "\\pi ";
-110 # TeXForm(I, _p) <-- "i";
-110 # TeXForm(Infinity, _p) <-- "\\infty ";
+//110 # TeXForm(Pi, _p) <-- "\\pi ";
+//110 # TeXForm(I, _p) <-- "i";
+//110 # TeXForm(Infinity, _p) <-- "\\infty ";
 110 # TeXForm(x_IsNumber, _p) <-- String(x);
 /* Variables */
 200 # TeXForm(x_IsAtom, _p) <-- TeXFormTextify(String(x));
@@ -91,12 +92,19 @@ TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv "}, {
 
 TeXFormGreekLetters := {"Gamma", "Delta", "Theta", "Lambda", "Xi", "Pi", "Sigma", "Upsilon", "Phi", "Psi", "Omega", "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu", "nu", "xi", "pi", "rho", "sigma", "tau", "upsilon", "phi", "chi", "psi", "omega", "varpi", "varrho", "varsigma", "varphi", "varepsilon"};
 
+TeXFormSpecialNames := { {"I", "i"}, {"Pi", "\\pi "}, {"Infinity", "\\infty "}, {"TeX", "\\TeX\\/"}, {"LaTeX", "\\LaTeX\\/"} };
+
 /* this function will take a user-defined variable or function name and output either this name unmodified if it's only 2 characters long, or the name in normal text if it's longer, or a TeX Greek letter code */
 Function ("TeXFormTextify", {string})
 [
 	Check(IsString(string), "TeXForm internal error: non-string argument of TeXFormTextify");
-	/* Check if it's a greek letter */
-	If(Contains(TeXFormGreekLetters, string), ConcatStrings("\\", string, " "), If(Length(string)>2, ConcatStrings("\\mathrm{", string, "}"), string ) );
+	/* Check if it's a greek letter or a special name */
+	If (Contains(AssocIndices(TeXFormSpecialNames), string), TeXFormSpecialNames[string],
+	If (Contains(TeXFormGreekLetters, string), ConcatStrings("\\", string, " "),
+	If (Length(string) >= 2 And IsNumber(Atom(StringMid(2, Length(string)-1, string))), ConcatStrings(StringMid(1,1,string), "_{", StringMid(2, Length(string)-1, string), "}"),
+	If (Length(string) > 2, ConcatStrings("\\mathrm{", string, "}"),
+	string
+	))));
 ];
 
 200 # TeXForm(_x, _p)_(IsFunction(x)) <-- ConcatStrings(TeXFormTextify(Type(x)), TeXForm(Tail(Listify(x)), TeXFormMaxPrec) ); 

@@ -470,7 +470,7 @@ StandardLib() <-- AddBody("Standard math library<br>");
 IncludeFile(x) := Load(x);
 
 /* mathematical expressions */
-TeXMath(x) := "<b>" : x : "</b>";
+TeXMath(x) := "<b>" : (ToString() x) : "</b>";
 TeXMathD(x) := "
-<p><center><b> " : x : " </b></center></p>
+<p><center><b> " : (ToString() x) : " </b></center></p>
 ";

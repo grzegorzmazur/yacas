@@ -24,7 +24,7 @@ compiler such as {g++}.
 
 The base Yacas application accepts text as input and returns text as output.
 This makes it rather platform-independent. Apart from Unix-like systems, Yacas has been
-compiled on Windows and on EPOC32, aka Psion (which doesn't come with a standard c++
+compiled on Windows and on EPOC32, aka Psion (which doesn't come with a standard C++
 library!).
 The source code to compile Yacas for Windows can be found at the
 <*Sourceforge repository|http://www.sourceforge.net/projects/yacas/*>.
@@ -36,7 +36,11 @@ For Unix, compilation basically amounts to the standard sequence
 	make install
 This will install the binaries to {/usr/local/bin} and the library files to {/usr/local/share/yacas/}.
 
-The arbitrary precision math in Yacas will be generally faster if you compile Yacas with the {libgmp} library (configure option {--enable-gmp}). Precompiled Red Hat (RPM) and Debian (DEB) packages are also available.
+The arbitrary precision math in Yacas will be generally faster if you compile Yacas with the {libgmp} library (the option {--enable-gmp} for the {configure} script). Precompiled Red Hat (RPM) and Debian (DEB) packages are also available.
+
+Additionally, $LaTeX$-formatted documentation in PostScript and PDF formats can be produced by the command
+
+	make texdocs
 
 		Using the console mode
 
@@ -137,12 +141,12 @@ behaviour by using the numerical evaluation function {N()}. For example,
 {N(55/10)} will evaluate to {5.5} . This behaviour holds for most math
 functions. Yacas will try to maintain an exact answer (in terms of integers or
 fractions) instead of using floating point numbers, unless {N()} is used. Where
-the value for the constant $\pi$ is needed, use the built-in variable {Pi}. It
+the value for the constant $pi$ is needed, use the built-in variable {Pi}. It
 will be replaced by the (approximate) numerical value when {N(Pi)} is called.
 Yacas knows some simplification rules using {Pi} (especially with trigonometric
 functions). The imaginary unit $i$ is denoted {I} and complex numbers can be
 entered as either expressions involving {I} or explicitly {Complex(a,b)} for
-$a+i*b$.
+$a+ib$.
 
 Some simple equation solving algorithms are in place:
 
@@ -150,24 +154,22 @@ Some simple equation solving algorithms are in place:
 	Out> (z-a)/y;
 	In> Solve({11*x+3*y==1,2*x+y==0},{x,y})
 	Out> {{1/5,-2/5}};
-
 (Note the use of the {==} operator, which does not evaluate to anything, to denote an "equation" object.) Currently {Solve} is rather limited and only deals with equations where the variable to be solved for only occurs once in the equation. In the future there will be more sophisticated algorithms.
 
-Taylor series are supported. Typing
+Taylor series are supported, for example:
 
 	In> Taylor(x,0,3) Exp(x)
-
-will result in {1+x+(1/2)*x^2+(1/6)*x^3} . As this form may be a little bit hard to read, you might then type
+	Out> 1+x+(1/2)*x^2+(1/6)*x^3;
+As this form of the answer may be a little bit hard to read, you might then type
 
 	In> PrettyForm(%);
-
 	        / 1 \    2   / 1 \    3
 	1 + x + | - | * x  + | - | * x
 	        \ 2 /        \ 6 /
-
+	
 	Out> True;
 
-The function {PrettyForm()} tries to render the formula in a better format for reading, using just ASCII text.
+The function {PrettyForm()} tries to render the formula in a better format for reading, using ASCII text. You can also export an expression to $TeX$ by typing {TeXForm(...)}.
 
 		Variables
 
@@ -177,27 +179,25 @@ Yacas supports variables:
 	Out> True;
 	In> a:=a+1;
 	Out> 2;
-
-The variable {a} has now been globally set to 2. The function Set() and the operator {:=} can both be used to assign values to global variables. (Variables
+The variable {a} has now been globally set to 2. The function {Set()} and the
+operator {:=} can both be used to assign values to global variables. (Variables
 local to procedures can also be defined; see below the chapters on
-programming.) To clear a variable binding, execute
-{Clear(a);}. {a;} will now evaluate to just
-{a}. This is one of the properties of the evaluation
-scheme of Yacas: when some object can not be evaluated or transformed
-any further, it is returned as the final result.
+programming.) To clear a variable binding, execute {Clear(a);}  "{a}" will now
+evaluate to just {a}. This is one of the properties of the evaluation scheme of
+Yacas: when some object can not be evaluated or transformed any further, it is
+returned as the final result.
 
-Currently there is no difference between assigning variables using Set() or using the operator {:=}. The latter can however also assign lists and define functions.
+Currently there is no difference between assigning variables using {Set()} or using the operator {:=}. The latter can however also assign lists and define functions.
 
 		Functions
 
 The {:=} operator can be used to define functions:
 
 	f(x):=2*x*x
-
-will define a new function, "f", that accepts
+will define a new function, {f}, that accepts
 one argument and returns twice the square of that argument.
 
-A function name such as "f" may be used by different functions if they take different numbers of arguments:
+One and the same function name such as {f} may be used by different functions if they take different numbers of arguments (but not if they merely take different <i>types</i> of arguments, since Yacas does not have a strict type system):
 
 	In> f(x):=x^2;
 	Out> True;
@@ -205,8 +205,9 @@ A function name such as "f" may be used by different functions if they take diff
 	Out> True;
 	In> f(3)+f(3,2);
 	Out> 15;
+Functions may return values of any type, or may even return values of different types at different times.
 
-Functions may also return boolean values ({True} and {False}). Such functions are called <i>predicates</i>. For example, IsNumber() and IsInteger() are predicates defined in the standard library:
+Yacas predefines {True} and {False} as boolean values. Functions returning boolean values are called <i>predicates</i>. For example, {IsNumber()} and {IsInteger()} are predicates defined in the standard library:
 
 	In> IsNumber(2+x);
 	Out> False;
@@ -217,14 +218,10 @@ When assigning variables, the right hand side is evaluated before it
 is assigned. Thus
 
 	a:=2*2
-
-will set {a}
-to 4. This is however <i>not</i> the case for functions. When entering {f(x):=x+x} the right hand side, {x+x}, is
-not evaluated before being assigned. This can be forced by using the
-assignment in combination with Eval:
+will set {a} to 4. This is however <i>not</i> the case for functions. When entering {f(x):=x+x} the right hand side, {x+x}, is
+not evaluated before being assigned. This can be forced by using {Eval()}:
 
 	f(x):=Eval(x+x)
-
 will first evaluate {x+x} to {2*x} before
 assigning it to the user function f. This specific example is not a
 very useful one but it will come in handy when the operation being
@@ -235,53 +232,48 @@ series expansion each time that user-defined function is called.
 
 		Strings and lists
 
-In addition to numbers and variables, Yacas supports strings and lists. Strings are simply sequences of characters enclosed by double quotes, for example: {"this is a string with \"quotes\" in it"}. Lists are ordered groups of items, as usual. Yacas represents lists by putting the objects between braces and separating them with commas. The list consisting of objects a, b, and c could be entered by typing {{a,b,c}}. In Yacas, vectors are represented as lists and matrices as lists of lists. In fact, any Yacas expression can be converted to a list (see below).
+In addition to numbers and variables, Yacas supports strings and lists. Strings are simply sequences of characters enclosed by double quotes, for example: {"this is a string with \"quotes\" in it"}. Lists are ordered groups of items, as usual. Yacas represents lists by putting the objects between braces and separating them with commas. The list consisting of objects {a}, {b}, and {c} could be entered by typing {{a,b,c}}. In Yacas, vectors are represented as lists and matrices as lists of lists. In fact, any Yacas expression can be converted to a list (see below).
 
 Items in a list can be accessed through the {[ ]}
 operator. Examples: when you enter
 
 	uu:={a,b,c,d,e,f};
-
 then
 
 	uu[2];
-
 evaluates to b, and
 
 	uu[2 .. 4];
-
-evaluates to {b,c,d}. Here
+evaluates to {{b,c,d}}. The "range" expression
 
 	2 .. 4
-
 evaluates to {{2,3,4}}. Note that
 spaces around the {..} operator are necessary, or else the
-parser will not be able to distinguish it from a number.
+parser will not be able to distinguish it from a part of a number.
 
 Another use of lists is the associative list, sometimes called a hash table, which is implemented in Yacas simply as a list of key-value pairs. Keys must be strings and values may be any objects. Associative lists can also work as mini-databases. As an example, first
 enter
 
 	u:={};
-
 and then
 
 	u["name"]:="Isaia";
 	u["occupation"]:="prophet";
 	u["is alive"]:=False;
 
-Then, {u["name"]} would return {"Isaia"}. The list {u} now contains three sublists, as we can see:
+Now, {u["name"]} would return {"Isaia"}. The list {u} now contains three sublists, as we can see:
 
 	In> u;
 	Out> { {"is alive", False}, {"occupation", "prophet"}, {"name", "Isaia"} };
 
-Assignment of multiple variables is also possible using lists. For instance, {{x,y}:={2!,3!}} will result in 2 being assigned to
-x and 6 to y.
+Lists evaluate their arguments, and return a list with results of evaluating each element. So, typing {{1+2,3};} would evaluate to {{3,3}}.
 
-Lists evaluate their arguments, and return a list with results of evaluating each element. So, typing {{1+2,3};} would evaluate to {{3,3}}
+Assignment of multiple variables is also possible using lists. For instance, {{x,y}:={2!,3!}} will result in 2 being assigned to
+{x} and 6 to {y}.
 
 The idea of using lists to represent expressions dates back to the
-language LISP, which was developed in the 70's. Together with a
-small set of operations on lists very powerful symbolic manipulation
+language LISP developed in the 1970's. From a
+small set of operations on lists, very powerful symbolic manipulation
 algorithms can be built. Lists can also be used as function arguments when a variable number of arguments are expected.
 
 Let's try some list operations now:
@@ -310,7 +302,7 @@ Many more list operations are described in the reference manual.
 
 		Linear Algebra
 
-Vectors of fixed dimension are represented as lists of their components. The list {1,2,3} would be a three-dimensional vector with components 1, 2 and 3. Matrices are represented as a vector of vectors.
+Vectors of fixed dimension are represented as lists of their components. The list {{1,2,3}} would be a three-dimensional vector with components 1, 2 and 3. Matrices are represented as a vector of vectors.
 
 Vector components can be assigned values just like list items, since they are in fact list items:
 
@@ -338,21 +330,22 @@ in linear algebra:
 	Out> {1+u1*d0,d0+(d0*u1+u2*d1)*d0,d1*d0,d2*d1*d0};
 
 The standard Yacas script library also includes taking the determinant and
-inverse of a matrix, finding eigenvectors and eigenvalues (in simple cases) and solving linear sets of equations, such as {A x = b} where A is a matrix, and x and b are vectors. There
-are several more supported matrix operations. See the reference manual for
+inverse of a matrix, finding eigenvectors and eigenvalues (in simple cases) and solving linear sets of equations, such as $A * x = b$ where $A$ is a matrix, and $x$ and $b$ are vectors. There
+are several more matrix operations supported. See the reference manual for
 more details.
 
 		Control flow: conditionals, loops, blocks
 
-The Yacas language includes some constructs and functions for control flow. Looping can be done with either a {ForEach()} or a {While()} function call. The function {ForEach(x, list) body} executes its body for each element of the list and assigns the variable "x" to that element each time. The function call {While(predicate) body} repeats "body" until the "predicate" returns {False}.
+The Yacas language includes some constructs and functions for control flow. Looping can be done with either a {ForEach()} or a {While()} function call. The function {ForEach(x, list) body} executes its body for each element of the list and assigns the variable {x} to that element each time. The function call {While(predicate) body} repeats the "body" until the "predicate" returns {False}.
 
-Conditional execution is implemented by the {If(predicate, body1, body2)} function call, which works like the C language construct {(predicate) ? body1 : body2}. If the condition is true, "body1" is executed, otherwise "body2" and the corresponding value is returned. For example, the absolute value of a number "x" can be computed with:
+Conditional execution is implemented by the {If(predicate, body1, body2)} function call, which works like the C language construct {(predicate) ? body1 : body2}. If the condition is true, "body1" is evaluated, otherwise "body2" is evaluated, and the corresponding value is returned. For example, the absolute value of a number can be computed with:
 
 	absx := If( x>=0, x, -x );
+(The library function {Abs()} does this already.)
 
-If several operations need to be executed in sequence to obtain a result, you can use a {Prog()} function call or equivalently the [ ] construct.
+If several operations need to be executed in sequence to obtain a result, you can use a {Prog()} function call or equivalently the {[ ]} construct.
 
-To illustrate these constructs, let us create a list of all even integers from 2 to 20 and compute the product of all those integers except those divisible by 3. (This is not necessarily the most economical way to do it in Yacas.)
+To illustrate these features, let us create a list of all even integers from 2 to 20 and compute the product of all those integers except those divisible by 3. (What follows is not necessarily the most economical way to do it in Yacas.)
 
 	In> L := {};
 	Out> {};
@@ -381,7 +374,7 @@ Additional example calculations including the results can be found
 here:
 
 *	A selection of calculations from the <*Wester benchmark|westerbench.html*>.
-*	Some additional <*example calculations|mybench2.html*><A HREF="mybench2.html"> that Yacas can currently perform.
+*	Some additional <*example calculations|mybench2.html*> that Yacas can currently perform.
 
 		Miscellaneous capabilities
 
@@ -410,7 +403,7 @@ Take derivatives of a function.
 Solve an equation for a variable.
 
 	Taylor(x,0,5) Sin(x);
-Calculate the taylor series expansion of a function.
+Calculate the Taylor series expansion of a function.
 
 	Limit(x,0) Sin(x)/x;
 Calculate the limit of a function as a variable
@@ -434,16 +427,16 @@ Create a partial fraction expansion of a polynomial.
 
 		A longer calculation with plotting
 
-Here is an example of a semi-real numerical calculation using Yacas. The problem is to visualize a particular exact solution of an elliptical differential equation that is represented by an infinite series. We want to evaluate this infinite series numerically and plot it for particular values of the parameters. The series could be represented using Yacas notation as
+Here is an example of a semi-real numerical calculation using Yacas. The task was to visualize a particular exact solution of an elliptical differential equation. The solution was found as an infinite series. We need to evaluate this infinite series numerically and plot it for particular values of the parameters.
 
-	1/(2*Pi)*Sin(q*phi)/Sin(2*q*phi)+ 1/Pi*Sum(n, 0, Infinity,
-	  Cos(n*chi) * Sin(Sqrt(q^2-n^2)*phi) / Sin(Sqrt(q^2-n^2)*phi) )
+The function $g(q,phi,chi)$ is defined by
+$$g(q,phi,chi)=1/(2*Pi)*Sin(q*phi)/Sin(2*q*phi)+ 1/Pi*Sum(n, 0, Infinity, Cos(n*chi) * Sin(Sqrt(q^2-n^2)*phi) / Sin(Sqrt(q^2-n^2)*phi) )$$
 
-Here {q}, {phi} and {chi} are numerical parameters of the problem. We would like to plot this series evaluated at fixed {q} and {phi} as function of {chi} between 0 and {2*Pi}.
+Here $q$, $phi$ and $chi$ are numerical parameters of the problem. We would like to plot this series evaluated at fixed $q$ and $phi$ as function of $chi$ between 0 and $2*Pi$.
 
 To solve this problem, we prepare a separate file with the following Yacas code:
 
-	   /* Auxiliary function */
+	  /* Auxiliary function */
 	g1(n, q, phi, chi) := [
 		Local(s);
 		s := q^2-n^2;
@@ -454,7 +447,6 @@ To solve this problem, we prepare a separate file with the following Yacas code:
 			)
 		);
 	];
-	
 		/* Main function */
 	g(q, phi, chi) := [
 		Local(M, n);
@@ -472,10 +464,9 @@ To solve this problem, we prepare a separate file with the following Yacas code:
 		/* Plot from 0 to 2*Pi with 80 points */
 	GnuPlot(0, N(2*Pi), 80, f(x));
 
-Name this file "fun1" and execute this script by typing
+Name this file "{fun1}" and execute this script by typing
 
 	Load("fun1");
-
 After this you should see a window with a plot.
 
 			Let's learn some more
@@ -485,7 +476,7 @@ After this you should see a window with a plot.
 The default operation of Yacas is to run in the interactive console mode. Yacas accepts several options that modify its operation. Options can be combined, for example, {yacas -pc} {filename} will execute a file non-interactively. Here is a summary of options:
 
 	yacas -c
-Inhibit printing of prompts "In>" and "Out>". Useful for non-interactive sessions.
+Inhibit printing of prompts {In>} and {Out>}. Useful for non-interactive sessions.
 
 	yacas -f
 Reads standard input as one file, but executes only the first statement in it. (You may want to use a statement block to have several statements executed.)
@@ -536,11 +527,11 @@ The script {yacas_client} reads Yacas commands from the standard input and passe
 	Server stopped.
 	8:23pm Unix>
 
-Persistence of the session means that Yacas remembered the value of "x" between invocations of {yacas_client}. If there is not enough time for Yacas to produce output within 2 seconds, the output will be displayed the next time you call {yacas_client}.
+Persistence of the session means that Yacas remembered the value of {x} between invocations of {yacas_client}. If there is not enough time for Yacas to produce output within 2 seconds, the output will be displayed the next time you call {yacas_client}.
 
 The "Yacas server" is started automatically when first used and can be stopped either by quitting Yacas or by an explicit option {yacas_client -stop}, in which case {yacas_client} does not read standard input.
 
-The script {yacas_client} reads standard input and writes to standard output, so it can be used via remote shell execution. For instance, if an account "user" on a remote computer "remote.host" is accessible through ssh, then {yacas_client} can be used remotely like this:
+The script {yacas_client} reads standard input and writes to standard output, so it can be used via remote shell execution. For example, if an account "user" on a remote computer "remote.host" is accessible through {ssh}, then {yacas_client} can be used remotely like this:
 
 	echo "x:=2;" | ssh user@remote.host yacas_client
 
@@ -548,9 +539,9 @@ On a given host computer running the "Yacas server", each user currently may hav
 
 		Compound statements
 
-Multiple statements can be grouped together using the [ and ] brackets.
-The compound {[a; b; c;];} evaluates a, then b, then c, and returns the result
-of evaluating c.
+Multiple statements can be grouped together using the {[} and {]} brackets.
+The compound {[a; b; c;];} evaluates {a}, then {b}, then {c}, and returns the result
+of evaluating {c}.
 
 A variable can be declared
 local to a compound statement block by the function {Local(var1, var2,...)}.
@@ -562,32 +553,28 @@ with a list as argument will result in a list with that function being
 called on each item in the list. E.g.
 
 	Sin({a,b,c});
-
 will result in {{Sin(a),Sin(b),Sin(c)}}. This functionality is implemented for most normal analytic functions and arithmetic
 operators.
 
 		Functions as lists
 
 Internally, Yacas represents all atomic expressions (numbers and variables) as strings and all compound expressions as lists, just like LISP. Try {FullForm(a+b*c);} and you will see
-the text {(+ a (* b c ))} appear on the screen. Also, any expression can be converted to a list by the function Listify() or back to an expression by the function UnList():
+the text {(+ a (* b c ))} appear on the screen. Also, any expression can be converted to a list by the function {Listify()} or back to an expression by the function {UnList()}:
 
 	In> Listify(a+b*(c+d));
 	Out> {+,a,b*(c+d)};
 	In> UnList({Atom("+"),x,1});
 	Out> x+1;
-
-Note that the first element of the list is the name of the function {+} which is equivalently represented as {Atom("+")} and that the subexpression "b*(c+d)" was not converted to the list form.
+Note that the first element of the list is the name of the function {+} which is equivalently represented as {Atom("+")} and that the subexpression {b*(c+d)} was not converted to list form.
 
 <i>Pure functions</i> are the equivalent of "lambda expressions"
-of LISP. They are currently implemented using lists and the operator
-Apply(). The following line:
+of LISP; in other words, they are Yacas expressions representing bodies of functions. They are currently implemented using lists and the operator
+{Apply()}. The following line:
 
 	Apply( {{x,y},x+y} , {2,3} );
-
 would evaluate to 5.
-
 Here, {{{x,y},x+y}} is a list that is treated as a pure
-function by the operator {Apply}, the symbols "x" and "y" become
+function by the operator {Apply}, the symbols {x} and {y} become
 local variables bound to the parameters passed, and {x+y}
 becomes the body of the function.
 
@@ -595,17 +582,17 @@ becomes the body of the function.
 
 The syntax is handled by an infix grammar parser. Precedence of operations
 can be specified explicitly by parentheses {( )} when the
-normal precedence is not what you want. This means that most of the time
-you will have to enter expressions of the form {Func(var1,var2)}, or using infix operators, {a*(b+c)}, prefix
+normal precedence is not what you want. Most of the time
+you will enter expressions of the form {Func(var1,var2)}, or using infix operators, {a*(b+c)}, prefix
 operators: {-x}, or postfix operators: {x++}.
 The parser is case-sensitive and overall the syntax conventions resemble
 the C language. Last but not least there are the so called "bodied"
 functions, which unlike normal functions such as {f(x,y)}
 keep the last argument outside of the bracketed argument list:
 "{f(x) y}". This looks somewhat like a mathematical
-"operator" <i>f(x)</i> acting on <i>y</i>. A
+"operator" $f(x)$ acting on $y$. A
 typical example is the function {While} which looks like
-"{While (predicate) body;}". The derivative operator D(x)
+"{While (predicate) body;}". The derivative operator {D(x)}
 is also defined as a "bodied" function. Note that if we defined a
 "bodied" function {A} with only one argument, we'd have to
 use it like this: "{A() x;}" and it would look a bit odd.
@@ -620,8 +607,10 @@ prefix operators, as well as normal or bodied functions. (The symbol {%} is rese
 Some of these operators and combinations are already defined in Yacas's
 script library, for instance the "syntactic sugar" operators such as
 {:=} or {<--}, but they can be in principle
-re-defined too. These "special" operators are in no way special, except
-for their syntax. All infix, prefix, and postfix operators and bodied
+redefined. These "special" operators are in no way special, except
+for their syntax.
+
+All infix, prefix, and postfix operators and bodied
 functions can be assigned a precedence; infix operators in addition have a
 left and a right precedence. All this will only affect the syntax of input
 and could be arranged for the user's convenience.
@@ -633,17 +622,16 @@ new function "{@@(x):=x^2;}" expressions such as
 unless you also define the operator "{:=@@}". This is
 because the parser will not stop at "{:=}" when trying to
 make sense of that expression. The correct way to deal with this is to
-insert a space: "{a:=&nbsp;@@(b);}" Spaces are
+insert a space: "{a:= @@(b);}" Spaces are
 <i>not</i> required in situations such as
 "{a:=-1}", but this is so only because the operator
 {:=-} is actually defined in Yacas.
 
-Let's now have a hands-on primer for these syntactic constructions. Suppose we wanted to define a function <i>F(x,y)=x/y+y/x</i>. We could use the standard syntax:
+Let's now have a hands-on primer for these syntactic features. Suppose we wanted to define a function $F(x,y)=x/y+y/x$. We could use the standard syntax:
 
 	In> F(a,b) := a/b + b/a;
 	Out> True;
-
-and then use the function as {F(1,2);} We might also declare an equivalent infix operation, let's call it "{xx}", so that we could write simply "1 xx 2". Infix operators must have a precedence, so let's assign it the precedence of the usual division operator. The declaration goes as follows:
+and then use the function as {F(1,2);} We might also declare an equivalent infix operation, let's call it "{xx}", so that we could write simply {1 xx 2}. Infix operators must have a precedence, so let's assign it the precedence of the usual division operator. The declaration goes as follows:
 
 	In> Infix("xx", OpPrecedence("/"));
 	Out> True;
@@ -651,8 +639,9 @@ and then use the function as {F(1,2);} We might also declare an equivalent infix
 	Out> True;
 	In> 3 xx 2 + 1;
 	Out> 19/6;
+Check the math and note how the precedence works!
 
-Check the math and note how the precedence works! We have chosen the name "{xx}" just to show that we don't need to use the special characters in the infix operator's name. However we must define this operator as infix before using it in expressions, or we'd get syntax errors.
+We have chosen the name "{xx}" just to show that we don't need to use the special characters in the infix operator's name. However we must define this operator as infix before using it in expressions, or we'd get syntax errors.
 
 Finally, we might decide to be completely flexible with this important
 function and also define it as a mathematical operator
@@ -669,9 +658,11 @@ function and also define it as a mathematical operator
 We have used the name {##} but we
 could have used any other name such as {xx} or {F} or even {_-+@+-_}.
 Apart from possibly confusing yourself, it doesn't matter what you call the
-functions you define. There is currently one limitation in Yacas: once a
+functions you define.
+
+There is currently one limitation in Yacas: once a
 function name is declared as infix (prefix, postfix) or bodied, it will
-always be interpretedthat way. If we declare {f} to be "bodied", we may
+always be interpreted that way. If we declare {f} to be "bodied", we may
 later define different functions named {f} with different numbers of
 arguments, however all of these functions must be "bodied".
 
@@ -680,57 +671,56 @@ arguments, however all of these functions must be "bodied".
 Mathematical calculations require versatile transformations on symbolic
 quantities. Instead of trying to define all possible transformations, Yacas
 provides a simple and easy to use pattern matching scheme for manipulating
-expressions according to user-defined <i>rules</i>. Yacas itself is designed as a small core with a large library of rules that match and replace patterns. Examples can be found in the library files "standard", "stdfuncs", "deriv" and "solve" that
+expressions according to user-defined <i>rules</i>. Yacas itself is designed as a small core engine executing a large library of rules to match and replace patterns. Examples can be found in the library files "standard", "stdfuncs", "deriv" and "solve" that
 come with the Yacas distribution.
 
 One simple application of pattern-matching rules is to define new
 functions. (This is actually the only way Yacas can learn about new
-functions.) As an example, let's define a function "f" that will evaluate
+functions.) As an example, let's define a function {f} that will evaluate
 factorials of non-negative integers. We'll first define a predicate to
 check whether our argument is indeed a non-negative integer, and we'll use
-this predicate and the obvious recursion f(n)=n*f(n-1) to evaluate the
+this predicate and the obvious recursion $f(n)=n*f(n-1)$ to evaluate the
 factorial. All this is accomplished by the following three lines:
 
-	IsIntegerGreaterThanZero(_n) <-- IsInteger(n) And n>0;
 	10 # f(0) <-- 1;
 	20 # f(n_IsIntegerGreaterThanZero) <-- n*f(n-1);
+	IsIntegerGreaterThanZero(_n) <-- IsInteger(n) And n>0;
 
-We have first defined a new predicate
-{IsIntegerGreaterThanZero()} and then defined two
-"simplification rules" for a new function {f()}. A
-predicate equivalent to {IsIntegerGreaterThanZero()} is
-actually already defined in the standard library and it's called
-{IsPositiveInteger}, so it was not necessary, strictly
-speaking, to define our own predicate to do the same thing and we did it
-here just for illustration. The other two lines obviously define a
-factorial function f(n)=n*(n-1)*...*1, and the rules are given precedence
-values 10 and 20, so the first rule will be applied first. Incidentally,
-the factorial is also defined in the standard library as the operator
-"{!}" and it is bound to an internal routine much faster
-than the recursion in our example.
+We have first defined two "simplification rules" for a new function {f()}. Then
+we realized that we need to define a predicate {IsIntegerGreaterThanZero()}. A
+predicate equivalent to {IsIntegerGreaterThanZero()} is actually already
+defined in the standard library and it's called {IsPositiveInteger}, so it was
+not necessary, strictly speaking, to define our own predicate to do the same
+thing; we did it here just for illustration.
+
+The first two lines recursively
+define a factorial function $f(n)=n*(n-1)*...*1$. The rules are given
+precedence values 10 and 20, so the first rule will be applied first.
+Incidentally, the factorial is also defined in the standard library as a postfix
+operator "{!}" and it is bound to an internal routine much faster than the
+recursion in our example.
 
 The operator {<--} defines a rule to be applied to a
 specific function. (The {<--} operation cannot be applied to an atom.)
 The {_n} in the rule for
-IsIntegerGreaterThanZero() specifies that any object which happens to be
+{IsIntegerGreaterThanZero()} specifies that any object which happens to be
 the argument of that predicate is matched and assigned to the local
-variable "n". The expression to the right of {<--} can then
-just use {n} (without the underscore) as a variable.
+variable {n}. The expression to the right of {<--} can use {n} (without the underscore) as a variable.
 
 Now we consider the rules for the function <i>f</i>. The
 first rule just specifies that {f(0)} should be replaced by 1 in any
 expression. The second rule is a little more involved.
 {n_IsIntegerGreaterThanZero} is a match for the argument of
-<i>f</i>, with the proviso that the predicate {IsIntegerGreaterThanZero(n)} should return
+{f}, with the proviso that the predicate {IsIntegerGreaterThanZero(n)} should return
 {True}, otherwise the pattern is not matched. The underscore
 operator is to be used only on the left hand side of the rule operator
 {<--}.
 
-There are actually another equivalent way of writing the second rule:
+There is another, slightly longer but equivalent way of writing the second rule:
 
 	20 # f(_n)_(IsIntegerGreaterThanZero(n)) <-- n*f(n-1);
-
-The underscore <i>after</i> the function object is a predicate that should return {True}, or else there is no match. This predicate may be a complicated expression involving several logical operations, unlike the simple checking of just one predicate in the {n_IsIntegerGreaterThanZero} construct.
+The underscore <i>after</i> the function object denotes a "postpredicate" that should return {True} or else there is no match. This predicate may be a complicated expression involving several logical operations, unlike the simple checking of just one predicate in the {(n_IsIntegerGreaterThanZero)} construct. The postpredicate can also use the variable {n} (without the underscore).
+Equivalent ways of defining the same predicate in rule patterns are simply for convenience.
 
 Precedence values for rules are given by a number followed by the
 {#} operator. This number determines the ordering of
@@ -741,21 +731,20 @@ matter what order these patterns are tried in. If no number is supplied, 0
 is assumed. In our example, the rule {f(0) <-- 1} must be
 applied earlier than the recursive rule, or else the recursion will never
 terminate. But as long as there are no other rules concerning the function
-<i>f</i>, the assignment of numbers 10 and 20 is arbitrary,
+{f}, the assignment of numbers 10 and 20 is arbitrary,
 and they could have been 500 and 501 just as well.
 
-Additional predicates can be specified too. {IsIntegerGreaterThanZero} could also have been defined as:
+Predicates can be combined: for example, {IsIntegerGreaterThanZero()} could also have been defined as:
 
 	10 # IsIntegerGreaterThanZero(n_IsInteger)_(n>0) <-- True;
 	20 # IsIntegerGreaterThanZero(_n) <-- False;
-
-Where the first rule specifies that if n is an integer, and greater than
-zero, the predicate is true, and the second rule states that the
-predicate is false otherwise.
+The first rule specifies that if {n} is an integer, and is greater than
+zero, the result is {True}, and the second rule states that otherwise (when the rule with precedence 10 did not apply) the
+predicate returns {False}.
 
 In the above example, the {(n>0)} clause is added after the pattern and allows the pattern to match only if this predicate return {True}. This is a useful syntax for defining rules with complicated predicates. There is no difference between the rules {F(n_IsPositiveInteger)<--...} and {F(_n)_(IsPositiveInteger(n)) <-- ...} except that the first syntax is a little more concise.
 
-The left hand side of a rule has the form
+The left hand side of a rule has the form;
 
 <i>precedence</i> {#} <i>pattern</i> {_} <i>postpredicate</i> {<--} <i>replacement</i>.
 
@@ -772,21 +761,21 @@ or followed by an underscore can match any one object: a number, a
 function, a list, etc. Yacas will assign the relevant variables as local
 variables within the rule, and try the predicates as stated in the pattern.
 The post-predicate (defined after the pattern) is tried after all these
-matched. As an example, the simplification rule {_x - _x <--0;} specifies that the two objects at left and at right of the minus
+matched. As an example, the simplification rule {_x - _x <--0} specifies that the two objects at left and at right of the minus
 sign should be the same.
 
 There is a slightly more complex and general way of
-defining rules using the {RuleBase()} and
-{Rule()} functions, but the "{... # ... <--...}" construct is usually sufficiently flexible and much more readable.
+defining rules using the functions {Rule()}, {RuleBase()} and
+{RulePattern()}. However, the standard library defines the "{... # ... <--...}" construct which is much more readable and usually sufficiently flexible.
 
 		Local simplification rules
 
 Sometimes you have an expression, and you want to use specific
-simplification rules on it that are not done by default. This
+simplification rules on it that should not be universally applied. This
 can be done with the {/:} and the {/::} operators. Suppose we have the
 expression containing things like {Ln(a*b)}, and we want
 to change these into {Ln(a)+Ln(b)}, the easiest way
-to do this is using the /: operator, as follows:
+to do this is using the {/:} operator as follows:
 
 	In> Sin(x)*Ln(a*b)
 	Out> Sin(x)*Ln(a*b);
@@ -799,24 +788,22 @@ of {/:}.
 
 The forms the patterns can have are one of:
 
-pattern <- replacement
+	pattern <- replacement
+	pattern , replacement
+	pattern , postpredicate , replacement
 
-{pattern,replacement}
+Note that for these local rules, {<-} should be used instead of
+{<--}. The latter would be used to define a "global" rule.
 
-{pattern,postpredicate,replacement}
-
-Note that for these local rules, {<-} should be used in stead of
-{<--} which defines a global rule.
-
-The {/:} operator traverses an expression much like Subst does: top
-down, trying to apply the rules from the begin of the list of
-rules to the end of the list of rules. If the rules cannot be applied
-to a sub-expression, it will try the sub expressions of the
+The {/:} operator traverses an expression much like {Subst()} does, i.e. top
+down, trying to apply the rules from the beginning of the list of
+rules to the end of the list of rules. If no rules can be applied
+to the whole expression, it will try the sub-expressions of the
 expression being analyzed.
 
-It might be necessary sometimes to use the {/::} operator, which
+It might be sometimes necessary to use the {/::} operator, which
 repeatedly applies the {/:} operator until the result does not change
-any more. Caution is required, since rules can contradict eachother,
+any more. Caution is required, since rules can contradict each other,
 and that could result in an infinite loop. To detect this situation,
 just use {/:} repeatedly on the expression. The repetitive nature
 should become apparent.

@@ -22,8 +22,13 @@ texdocs: essays.book.pdf essays.book.ps
 
 %.dvi: %.tex
 	latex $<
+	latex $<
 
-%.pdf %.ps: %.dvi
+%.ps: %.dvi
+	dvips -o $@ $<
+	@echo Documentation created: $*.ps
+
+%.pdf: %.dvi
 #	dvipdf $<
 	pdflatex $*
-	dvips -o $@ $<
+	@echo Documentation created: $*.pdf

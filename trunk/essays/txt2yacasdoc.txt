@@ -57,16 +57,21 @@ are of no significance to the resulting documentation. The first symbol on a lin
 
 Note that item text continues until the next itemized line is given or until end of paragraph.
 
-*	Text surrounded by {<i>}
-{</i>} becomes <i>emphasized</i>. Note that the whole emphasized fragment of text must be located within a single line, or else it will not be emphasized.
+*	Emphasized text (<i>italics</i>) should be surrounded by {<i>}
+{</i>}. Note that the whole emphasized fragment of text must be located within a single line, or else it will not be emphasized.
 
-*	Text surrounded by braces {{}} becomes {typewriter font text}. The typewriter font text must be within a single line and must not contain more than four nested sets of {{}} inside.
+*	{Typewriter font} text is surrounded by braces {{}}. The typewriter font fragment must be within a single line and must not contain more than four nested sets of {{}} inside.
 
-*	Text surrounded by {<*}
-{*>} is made into a Web hyperlink if it begins with {http://} or {ftp://}. Alternatively, a hyperlink with anchored text is made by the markup {<*}
+*	Web hyperlinks are surrounded by {<*}
+{*>}. Text of the link must begin with {http://} or {ftp://}. Alternatively, a hyperlink with anchored text is made by the markup {<*}
 <i>anchored text</i>{|}<i>Web URL</i>{*>}. For example:
 
+	<*http://nowhere.host.net/directory/file.html#anchor*>
 	<*this text will be underlined|somewebpage.html*>
+
+*	Mathematical expressions should be typed in Yacas notation and surrounded by dollar signs (within one line of text). For example: {$}
+{x^2 + y^2 != z^2 $}
+gives "$x^2+y^2 != z^2$". Double dollar signs will denote a displayed equation, like in $TeX$, but it should still be within one line. Mathematics will be kept in Yacas notation in online HTML documents but typeset in $TeX$ when creating printed documentation.
 
 *	To include contents of another document, use the {*INCLUDE} directive at the beginning of a line, e.g.
 
@@ -104,9 +109,9 @@ Of course, it is possible that some features of Yacas documentation were not imp
 
 		{book2TeX}: preparing typeset documentation
 
-The script {book2TeX.sh} prepares a \TeX\ file out of a Yacas-language documentation book. Usage is similar to {book2txt.sh}, for example:
+The script {book2TeX.sh} prepares a $TeX$ file out of a Yacas-language documentation book. Usage is similar to {book2txt.sh}, for example:
 	book2TeX.sh intro.book
-will create a \TeX-formatted version introductory guide. It can be processed with standard tools, for example
+will create a $TeX$-formatted version introductory guide. It can be processed with standard tools, for example
 
 	latex intro.book.tex
 	latex intro.book.tex
@@ -117,8 +122,10 @@ will prepare a Postscript version, while
 	pdflatex intro.book.tex
 will prepare a PDF version.
 
-Not all features of Yacas documentation are compatible with \TeX\ typesetting. To prevent errors, documentation should avoid certain things. In general, it is a good idea to check the typeset appearance of documentation, since it helps detect errors.
+Not all features of Yacas documentation are compatible with $TeX$ typesetting. To prevent errors, documentation should avoid certain things. In general, it is a good idea to check the typeset appearance of documentation, since it helps detect errors.
 
-For example, the symbols {%}, {{ }}, {< >}, {#}, {\}, {_} and {&} are special to \TeX. They should not normally be used in plain text; it is okay to use them in "typerwriter" text or code samples -- but <i>not</i> in section or chapter heads, because it makes it difficult to export to \TeX\ correctly. \TeX\ commands may be entered but will not be correctly rendered in HTML online documentation. Sometimes fixed-font text will hang over the right edge; a workaround is to break the fixed-font text into shorter fragments or to rephrase the text.
+For example, the symbols {%}, {{ }}, {< >}, {#}, {\}, {_} and {&} are special to $TeX$. They should not normally be used in plain text; it is okay to use them in "typerwriter" text or code samples -- but <i>not</i> in section or chapter heads, because it makes it difficult to export to $TeX$ correctly. $TeX$ commands may be entered but will not be correctly rendered in HTML online documentation. Sometimes fixed-font text will hang over the right edge; a workaround is to break the fixed-font text into shorter fragments or to rephrase the text.
 
-The current implementation uses a "report" style which allows chapters, sections, subsections and includes an automatically generated table of contents. (\LaTeX\ should be run twice to produce it.)
+The current implementation uses a "report" style which allows chapters, sections, subsections and includes an automatically generated table of contents. ($LaTeX$ is automatically run twice to produce it, when executing {make texdocs}.)
+
+Some complicated mathematical expressions may not correctly render in $TeX$. This is because Yacas uses its internal function {TeXForm()} to transform Yacas expressions to $TeX$. Mathematical expressions are entered in the plain text documentation source using Yacas syntax, then transformed to a special non-evaluating call {TeXMath()} in the Yacas-language documentation, which formats into HTML using a {Write()} call or into $TeX$ using a {TeXForm()} call, as necessary. Testing should be performed on documentation before releasing it.
