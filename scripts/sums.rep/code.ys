@@ -24,6 +24,7 @@ Max(list_IsList) <--
 /* Factorials */
 
 10 # 0! <-- 1;
+10 # (Infinity)! <-- Infinity;
 20 # ((n_IsPositiveInteger)!) <-- [
 	Check(n <= 65535, "Factorial: Error: the argument " : ( ToString() Write(n) ) : " is too large, you may want to avoid exact calculation");
 	MathFac(n);

@@ -1,5 +1,4 @@
 
-
 Verify(Intersection({aa,b,c},{b,c,d}),{b,c});
 Verify(Union({aa,b,c},{b,c,d}),{aa,b,c,d});
 Verify(Difference({aa,b,c},{b,c,d}),{aa});
@@ -22,10 +21,12 @@ Verify(Type(Cos(x)),"Cos");
 Verify(NrArgs(Cos(x)),1);
 Verify(Contains({a,b,c},b),True);
 Verify(Contains({a,b,c},d),False);
+
 Verify(Append({a,b,c},d),{a,b,c,d});
 Verify(RemoveDuplicates({a,b,b,c}),{a,b,c});
 Verify(Count({a,b,b,c},b),2);
 Verify(VarList(x*Cos(x)),{x});
+
 
 [
   Local(l);

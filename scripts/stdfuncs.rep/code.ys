@@ -262,7 +262,6 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 200 # Cosh(-Infinity)	<-- Infinity;
 
 10 # Abs(Infinity) 	<-- Infinity;
-10 # (Infinity)! <-- Infinity;
 
 /* Threading of standard analytic functions */
 Sin(xlist_IsList) <-- MapSingle("Sin",xlist);

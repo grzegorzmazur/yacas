@@ -329,17 +329,17 @@ VarListAll(_expr) <-- VarListAll(expr,"IsVariable");
  */
 
 TemplateFunction("Table",{body,var,count'from,count'to,step})
-  LocalSymbols(result,nr,i)
+  LocalSymbols(result,nr,ii)
   [
     MacroLocal(var);
     result:={};
     nr := (count'to - count'from) / step;
-    i := 0;
-    While( i <= nr )
+    ii := 0;
+    While( ii <= nr )
       [
-       MacroSet( var, count'from + i * step );
+       MacroSet( var, count'from + ii * step );
        DestructiveInsert( result,1,Eval(body) );
-       Set(i,MathAdd(i,1));
+       Set(ii,MathAdd(ii,1));
       ];
     DestructiveReverse(result);
   ];
