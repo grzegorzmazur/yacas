@@ -212,7 +212,12 @@ in decimal base. The second command converts {255}
 
 This command sets the number of binary digits to be used in
 calculations. All subsequent floating point operations will allow for
-at least "n" digits after the decimal point.
+at least {n} digits after the decimal point.
+
+When the precision is changed, all variables containing previosly calculated values
+remain unchanged.
+The {Precision} function only makes all further calculations proceed with a different precision.
+
 
 *E.G.
 
@@ -222,10 +227,14 @@ at least "n" digits after the decimal point.
 	Out> 0.8414709848;
 	In> Precision(20)
 	Out> True;
-	In> N(Sin(1))
+	In> x:=N(Sin(1))
 	Out> 0.84147098480789650665;
 	In> GetPrecision()
 	Out> 20;
+	In> [ Precision(10); x; ]
+	Out> 0.84147098480789650665;
+	In> x+0
+	Out> 0.8414709848;
 
 *SEE GetPrecision, N
 

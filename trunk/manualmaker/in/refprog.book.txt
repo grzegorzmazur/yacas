@@ -686,17 +686,28 @@ The call to {CachedConstant} defines a new function named {Cname()} that
 returns the value of the constant at given precision. If the precision is
 increased, the value will be recalculated as necessary, otherwise calling {Cname()} will take very little time.
 
-This mechanism is currently used by {N()} to precompute the value of $Pi$. The name of the cache for {N()} is {CacheOfConstantsN}.
-
 The parameter {Cfunc} must be an expression that can be evaluated and returns
 the value of the desired constant at the current precision. (Most arbitrary-precision mathematical functions do this by default.)
 
 The associative list {cache} contains elements of the form {{Cname, prec, value}}, as illustrated in the example. If this list does not exist, it will be created.
 
+This mechanism is currently used by {N()} to precompute the values of $Pi$ and $gamma$.
+The name of the cache for {N()} is {CacheOfConstantsN}.
+The code in the function {N()} assigns unevaluated calls to {Pi()} and {gamma()} to the atoms {Pi} and {gamma} and declares them {LazyGlobal}.
+The result is that the constants will be recalculated only when they are used in the expression under {N()}.
+In other words, the code in {N()} does the equivalent of
+	Pi := Hold(Pi());
+	gamma := Hold(gamma());
+	LazyGlobal(Pi);
+	LazyGlobal(gamma);
+After this, evaluating an expression such as {1/2+gamma} will call the function {gamma()} but not the function {Pi()}.
+
 *EG
 
 	In> CachedConstant( my'cache, Ln2, LnNum(2) )
 	Out> 0.6931471806;
+	In> Ln2
+	Out> Ln2;
 	In> Ln2()
 	Out> 0.6931471806;
 	In> [ Precision(20); V( Ln2() ); ]
@@ -707,7 +718,7 @@ The associative list {cache} contains elements of the form {{Cname, prec, value}
 	Out> {{"Ln2",20,0.69314718055994530942}};
 
 
-*SEE N, Pi(), Precision
+*SEE N, Pi(), Precision, gamma
 
 *CMD NewtonNum --- low-level optimized Newton's iterations
 *STD
@@ -747,6 +758,7 @@ up this function by specifying the correct order. (Caution: if you give
 {order}=3 but the sequence is actually quadratic, the result will be
 silently incorrect. It is safe to use {order}=2.)
 
+*REM
 The verbose option {V} can be used to monitor the convergence. The
 achieved exact digits should roughly form a geometric progression.
 
@@ -754,9 +766,7 @@ achieved exact digits should roughly form a geometric progression.
 
 	In> Precision(20)
 	Out> True;
-	In> V(NewtonNum({{x}, x+Sin(x)}, 3, 5, 3))
-	NewtonNum: Info: got 3 exact digits at prec. 7
-	NewtonNum: Info: got 7 exact digits at prec. 9
+	In> NewtonNum({{x}, x+Sin(x)}, 3, 5, 3)
 	Out> 3.14159265358979323846;
 
 *SEE Newton
