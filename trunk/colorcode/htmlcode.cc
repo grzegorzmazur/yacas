@@ -21,7 +21,7 @@ enum ColorModes
     EModeBrackets,  //ForeGroundBlue
     EModeOperator1, //ForeGroundBlue
     EModeOperator2, //ForeGroundMagenta
-    EModeNumber,    //ForeGroundRed
+    EModeNumber     //ForeGroundRed
 };
 
 int quoted=0,commented=0;
