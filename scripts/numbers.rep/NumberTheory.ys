@@ -80,59 +80,6 @@ MoebiusDivisorsList(n_IsPositiveInteger) <--
   result;
 ];
 
-/*  Returns the cyclotomic polinomial in the variable x
-    (which is the minimal polynomial of the n-th primitive
-    roots of the unit). 
-    For n even, we write n= m*k, where k is a Power of 2 
-    and m is odd, and redce it to the case m even since:
-
-    Cyclotomic(n,x) = Cyclotomic(m,-x^{k/2}) 
-
-If m=1, n is a power of 2, and Cyclotomic(n,x)= x^k+1 */
-
-5 # Cyclotomic(1,x) <-- x-1;
-
-10 # Cyclotomic(n_IsEven,x) <--
-     [
-      Local(k,m); 
-      /*  */ 
-       k := 1;
-       m := n;
-	While(IsEven(m))
-       [
-	k := k*2;
-        m := m/2;
-       ];
-       k := k/2 ;
-       If(m>1,Expand(Subst(x,-x^k) Cyclotomic(m,x)),x^k+1);
-     ]; 
-
-/*  For n odd, the algoritm is based on the formula
-
-     Cyclotomic(n,x) := Prod (x^(n/d)-1)^Moebius(d) 
- 
-where d runs through the divisors of n.
-In order to compute this in a efficient way, we use the function
-SquareFreeDivisorsListMoebius. Then we compute in poly1 the product
-of (x^(n/d)-1) with Moebius(d)=1 , and in poly2 the product of these polynomials
-with  Moebius(d)=-1. Finally we compute the quotient poly1/poly2 */
-
-20 # Cyclotomic(n_IsOdd,x)_(n>1) <--
-[
- Local(divisors,poly1,poly2,q,d);
- divisors := MoebiusDivisorsList(n); 
- poly1 :=1 ;
- poly2 := 1;
- ForEach (d,divisors)
- [ 
-   q:=n/d[1];
-   If (d[2]=1,(poly1:=poly1*(x^q-1)),(poly2:=poly2*(x^q-1)));
- ];
- poly1 := Expand(poly1);
- poly2 := Expand(poly2);
- Div(poly1,poly2);
-];
-
 /* RamanujanSum(k,n) = the sum of the n-th powers of the
 k-th primitive roots of the identity */
 
