@@ -25,6 +25,8 @@ to general issues related to the Yacas system development and maintenance.
 
 *INCLUDE YacasDocs.chapt
 
+*INCLUDE BuildSystem.chapt
+
 			Work in progress, specifications
 
 *INCLUDE new.chapt
