@@ -72,11 +72,26 @@ TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equa
 
 	/* addition, subtraction, multiplication, all comparison and logical operations are "regular" */
 
-TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv
-"}, {"=="," = "}, {"="," = "}, {"!=","\\neq "}, {"<=","\\leq "},
-{">=","\\geq "}, {"<"," < "}, {">"," > "}, {"And"," \\wedge "}, {"Or","
-\\vee "}, {"<>", "\\sim "}, {"<=>", "\\approx "}, {"=>", "\\Rightarrow "},
-{"%", "\\bmod "} };
+TeXFormRegularOps :=
+{
+	{"+"," + "},
+	{"-"," - "},
+	{"*"," "},
+	{":=","\\equiv "},
+	{"=="," = "},
+	{"="," = "},
+	{"!=","\\neq "},
+	{"<=","\\leq "},
+	{">=","\\geq "},
+	{"<"," < "},
+	{">"," > "},
+	{"And","\\wedge "},
+	{"Or", "\\vee "},
+	{"<>", "\\sim "},
+	{"<=>", "\\approx "},
+	{"=>", "\\Rightarrow "},
+	{"%", "\\bmod "},
+};
 
 	/* Template for "regular" binary infix operators:
 100 # TeXForm(_x + _y, _p) <-- TeXFormBracketIf(p<OpPrecedence("+"), ConcatStrings(TeXForm(x, OpLeftPrecedence("+")), " + ", TeXForm(y, OpRightPrecedence("+")) ) );
