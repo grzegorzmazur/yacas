@@ -18,3 +18,18 @@ Function("Random4",{}) RandomLCG(281474976710656,68909602460261,0);
 Function("Random5",{}) RandomLCG(18014398509481984,2783377640906189,0);
 
 Function("Random",{}) Random3();
+
+/// RNG from P. L'ecuyer et al (2000). Period approximately 2^191
+// state information: 6 32-bit integers, corresponding to {x3,x2,x1,y3,y2,y1}
+L'Ecuyer'state := {199402,27728,3198,4993361,590366611,633112};
+// shuffle and return floating-point number
+L'Ecuyer() :=
+[
+	Local(x);
+	L'Ecuyer'state := {
+		Mod(1403580*L'Ecuyer'state[2]-810728*L'Ecuyer'state[3], 4294967087), L'Ecuyer'state[1], L'Ecuyer'state[2],
+		Mod(527612*L'Ecuyer'state[4]-1370589*L'Ecuyer'state[6], 4294944433), L'Ecuyer'state[4], L'Ecuyer'state[5]
+	};
+	x:=Mod(L'Ecuyer'state[1]-L'Ecuyer'state[4], 4294967087);
+	N(If(x=0, 4294967087, x)/4294967088);
+];
