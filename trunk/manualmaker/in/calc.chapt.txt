@@ -1034,6 +1034,9 @@ the list "expr" is differentiated with respect to the first entry in
 the list "var", the second entry in "expr" is differentiated with
 respect to the second entry in "var", and so on.
 
+The {D} operator returns the original function if $n=0$, a common
+mathematical idiom that simplifies many formulas.
+
 *E.G.
 
 	In> D(x)Sin(x*y)
