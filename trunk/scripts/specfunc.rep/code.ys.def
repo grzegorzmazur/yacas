@@ -8,8 +8,10 @@ BesselI
 BesselY
 Erf
 Erfc
+Erfi
 FresnelSin
 FresnelCos
 LambertW
 LambertWNum
+Beta
 }
