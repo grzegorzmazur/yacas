@@ -49,7 +49,7 @@
 #ifndef WIN32
   #include "unixcommandline.h"
   #define FANCY_COMMAND_LINE CUnixCommandLine
-  #define PLATFORM_OS "\"Unix\""
+  /* PLATFORM_OS is defined in config.h */
 #else
   #include "win32commandline.h"
   #define FANCY_COMMAND_LINE CWin32CommandLine
@@ -69,9 +69,6 @@
 #include "errors.h"
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 #ifndef VERSION
 //#define VERSION "Windows latest"
 #include "version.h"
