@@ -271,8 +271,8 @@ Echo("VmLabel(",elseClause,");");
     Echo("  VmPop(1);");
     CompileBody(body[3],stack);
 //    Echo("  }");
-Echo("VmLabel(",pastClause,");");
   ]);
+Echo("VmLabel(",pastClause,");");
 ];
 
 //LocalSymbols(item,body,stack)
