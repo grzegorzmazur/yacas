@@ -53,6 +53,8 @@
 #include "../config.h"
 #endif
 
+//#define PROMPT_SHOW_FREE_MEMORY
+
 
 CYacas* yacas=NULL;
 CCommandLine *commandline = NULL;
@@ -204,6 +206,71 @@ void my_exit(void)
     delete commandline;
     ReportNrCurrent();
 }
+
+#ifdef PROMPT_SHOW_FREE_MEMORY
+void build_full_prompt(char* full_prompt, const char* prompt, const int maxlen)
+{
+    if (!full_prompt) return;
+    if (!prompt) prompt = "";
+    FILE* meminfo;
+    meminfo = fopen("/proc/meminfo", "r");
+    if (meminfo)
+    {
+        char entry[20];
+        unsigned int current_pos;
+        int current_char;
+        bool entry_read;
+        int entry_countdown = -1;
+        while (!feof(meminfo) && entry_countdown != 0)
+        {
+            entry_read = false;
+            current_pos = 0;
+            while (!entry_read && !feof(meminfo))
+            {
+                current_char = fgetc(meminfo);
+                switch (current_char)
+                {
+                  case ' ':
+                  case '\n':
+                  case '\r':
+                  case '\t':
+                  case EOF:
+                    if (current_pos > 0)
+                      entry_read = true;
+                    break;
+                  default:
+                    entry[current_pos] = (char) current_char;
+                    if (current_pos < 20 - 4)
+                      ++current_pos;
+                    break;
+                }
+            }
+            entry[current_pos] = (char) 0;
+            if (entry_read)
+            {
+                if (0 == strncmp("MemFree:", entry, 20))
+                  entry_countdown = 1;
+                else if (entry_countdown > 0) --entry_countdown;
+            }
+        }
+        fclose(meminfo);
+        meminfo = (FILE*) NULL;
+        if (strlen(entry) + strlen(prompt) + 5 < maxlen)
+          sprintf(full_prompt, "%sk %s", entry, prompt);
+        else
+        {
+            strncpy(full_prompt, prompt, maxlen);
+            full_prompt[maxlen-1] = (char) 0;
+        }
+    }
+    else
+    {
+        strncpy(full_prompt, prompt, maxlen);
+        full_prompt[maxlen-1] = (char) 0;
+    }
+}
+#endif
+
 
 #define TEXMACS_DATA_BEGIN   ((char)2)
 #define TEXMACS_DATA_END     ((char)5)
@@ -557,9 +624,20 @@ RESTART:
 
     while (Busy())
     {
+#ifdef PROMPT_SHOW_FREE_MEMORY
+        char full_prompt[30];
+        if (show_prompt)
+          build_full_prompt(full_prompt, inprompt, 30);
+        else
+          full_prompt[0] = (char) 0;
+        readmode = 1;
+        commandline->ReadLine(full_prompt);
+        readmode = 0;
+#else
         readmode = 1;
         commandline->ReadLine(inprompt);
         readmode = 0;
+#endif
         char *inpline =  commandline->iLine.String();
         if (use_texmacs_out)
         {
