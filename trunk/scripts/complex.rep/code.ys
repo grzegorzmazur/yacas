@@ -81,15 +81,34 @@ IsNotComplex(x) := Not(IsComplex(x));
 110 # Sqrt(Complex(_r,_i)) <-- Exp(Ln(Complex(r,i))/2);
 110 # (Complex(_r,_i) ^ x_IsRationalOrNumber)_(Not(IsInteger(x))) <-- Exp(x*Ln(Complex(r,i)));
 
-120 # Complex(0,_i) ^ n_IsPositiveInteger <--
-  If(IsOdd(n),
-    Complex(0,If(IsZero(Mod(n-1,4)),1,-1)*i^n),
-    If(IsZero(Mod(n,4)),1,-1)*i^n); 
+// This is commented out because it used MathPower so (2*I)^(-10) became a floating-point number. Now everything is handled by binary algorithm below
+//120 # Complex(0,_i) ^ n_IsInteger <-- {1,I,-1,-I}[1+Mod(n,4)] * i^n;
 
-121 # Complex(_r,_i) ^ n_IsPositiveInteger <-- 
+123 # Complex(_r, _i) ^ n_IsNegativeInteger <-- 1/Complex(r, i)^(-n);
+
+124 # Complex(_r, _i) ^ 0 <-- 1;	// cannot have Complex(0,0) here
+
+125 # Complex(_r, _i) ^ n_IsPositiveInteger <--
 [
+	// use binary method
+	Local(result, x);
+	x:=Complex(r,i);
+	result:=1;
+	While(n > 0)
+	[
+		if ((n&1) = 1)
+		[
+		  result := result*x;
+		];
+		x := x*x;
+		n := n>>1;
+	];
+	result;
+];
+
+
+/*[	// this method is disabled b/c it suffers from severe roundoff errors
   Local(rr,ii,count,sign);
-  
   rr:=r^n;
   ii:=0;
   For(count:=1,count<=n,count:=count+2) [
@@ -100,7 +119,7 @@ IsNotComplex(x) := Not(IsComplex(x));
   ];
   Complex(rr,ii);
 ];
-
+*/
 
 Function("Conjugate",{a}) 
   Substitute(a,{{x},Type(x)="Complex"},{{x},Complex(x[1],-(x[2]))});
