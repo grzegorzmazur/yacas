@@ -183,24 +183,25 @@ CheckIntPower(n, limit) :=
 IntNthRoot(_n, s_IsInteger) <--
 [
 	Local(x, y, q);
-	// initial guess should always undershoot
-	x:= 2 ^ Div(IntLog(n, 2), s);
+	// initial guess should always undershoot; try to improve it
+	x:= Max({2 ^ Div(IntLog(n, 2), s), 3 ^ Div(IntLog(n, 3), s), 5 ^ Div(IntLog(n, 5), s)});
 	y := x^s;	// y is always x^s
-	// choose q
-	q:=Div(s, 2);
+	// choose q at the point when y''=0 at the root
+	q:=(s-1)/2;
 	// Newton iteration. Works well unless "s" is very large (>50)
 	While(y < n)
 	[
-		x := Div(x*((s-q-1)*y+(q+1)*n), (s-q)*y+q*n) + 1;	// add 1 because the floating-point value undershoots
+//	Echo({"x=", x});
+		x := Div(x*((s-1)*y+(s+1)*n), ((s+1)*y+(s-1)*n)) + 1;	// add 1 because the floating-point value undershoots
 		y := x^s;
 	];
-	If(y=n, x, x-1);	// subtract 1 if we undershot
+	If(y<=n, x, x-1);	// subtract 1 if we undershot
 ];
 
 
 CatalanNumber(_n) <-- 
 [	
-	Check( IsPositiveInteger(n), "n is negative" );
+	Check( IsPositiveInteger(n), "CatalanNumber: Error: argument must be positive" );
 	Bin(2*n,n)/(n+1);
 ];
 

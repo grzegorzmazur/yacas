@@ -1653,8 +1653,8 @@ This command calculates and returns the "n"-th Fibonacci number.
 
 The Fibonacci sequence is 1, 1, 2, 3, 5, 8, 13, 21, ... where every
 number is the sum of the two preceding numbers. Formally, it is
-defined by $F(1) = 1$, $F(2) = 1$, and $F(n+1) = F(n) + F(n-1)$, where F(n)
-denotes the n-th Fibonacci number.
+defined by $F(1) = 1$, $F(2) = 1$, and $F(n+1) = F(n) + F(n-1)$, where $F(n)$
+denotes the $n$-th Fibonacci number.
 
 *E.G.
 
