@@ -1,0 +1,5 @@
+
+y:=OdeSolve( y'' + y == 0 );
+Verify( (D(x,2)y) + y, 0 );
+Clear(y);
+
