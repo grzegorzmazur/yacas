@@ -537,6 +537,9 @@ program is compiled, but not installed.
 website. The file {yacaslogo.gif} is also used in the HTML
 documentation of Yacas, therefore this file is copied in the
 appropriate directory during installation.
+*	The directory {plugins} contains files showing how to build
+plugins, which can be dynamically loaded into Yacas. See 
+<*yacasdoc://essays/3/3/*> for details.
 
 The build system does not perform any actions for the following
 components of Yacas. 
@@ -549,9 +552,6 @@ Yacas in one's own application; see <*yacasdoc://essays/3/4/*>.
 *	The directory {epoc} contains the support for the EPOC
 device. See the file {README.EPOC} in the root of the distribution for
 details. 
-*	The directory {plugins} contains files showing how to build
-plugins, which can be dynamically loaded into Yacas. See 
-<*yacasdoc://essays/3/3/*> for details.
 *	The directory {proteus} contains an experimental
 implementation of a graphical interface to Yacas. 
 
