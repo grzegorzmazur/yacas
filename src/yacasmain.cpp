@@ -491,8 +491,11 @@ int main(int argc, char** argv)
     unsigned char first_stack_var=0;
     the_first_stack_var = &first_stack_var;
 
+
+    
 #ifdef DEBUG_MODE
-//    PlatAlloc(100); // test the alloc memory leak checker
+    //    PlatAlloc(100); // test the alloc memory leak checker
+    CHECKPTR(NULL);
 #endif
     
 /*

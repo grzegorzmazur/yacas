@@ -14,6 +14,7 @@
   void* YacasReAllocPrivate(void* orig, unsigned long size, char* aFile, int aLine);
   void YacasFreePrivate(void* aOrig);
   void YacasCheckMemory();
+  void CheckPtr( void * anAllocatedPtr, char* file, int line );
   void CheckAllPtrs();
 #endif
 

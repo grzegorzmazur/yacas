@@ -17,6 +17,7 @@ LispAtom::LispAtom(LispStringPtr aString)
     LISPASSERT(aString!=NULL);
     iString = aString;
     aString->IncreaseRefCount();
+    CHECKPTR(iString);
 }
 LispAtom::~LispAtom()
 {
@@ -28,6 +29,7 @@ LispAtom::~LispAtom()
 
 LispStringPtr LispAtom::String() const
 {
+    CHECKPTR(iString);
     return iString;
 }
 

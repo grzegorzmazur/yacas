@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "debugmem.h"
+#include "stubs.h"
 #include "lispassert.h"
 
 #ifdef DEBUG_MODE
@@ -25,49 +26,10 @@ typedef struct YacasMemBlock
 #define Header(p) ((YacasMemBlock*)(((unsigned char*)p)-sizeof(YacasMemBlock)))
 
 
-static int totalBytesAllocated = 0;
-static int totalNrAllocated = 0;
-static int currentBytesAllocated = 0;
-static int currentNrAllocated = 0;
-static int totalSmall = 0;
-static int maxBytesAllocated = 0;
-static int maxPlusOverhead = 0;
-
-
-void Increment(void* data)
-{
-  if (data)
-  {
-    int size = Header(data)->iSize;
-
-    totalBytesAllocated += size;
-    totalNrAllocated ++;
-    currentBytesAllocated += size;
-    currentNrAllocated ++;
-    if (size<=256)totalSmall ++;
-    if (maxBytesAllocated < currentBytesAllocated) 
-    {
-      maxBytesAllocated = currentBytesAllocated;
-      maxPlusOverhead = currentBytesAllocated + currentNrAllocated*(sizeof(YacasMemBlock)+4);
-    }
-  }
-}
-void Decrement(void* data)
-{
-  if (data)
-  {
-    int size = Header(data)->iSize;
-    currentBytesAllocated -= size;
-    currentNrAllocated --;
-    LISPASSERT(currentNrAllocated>=0);
-  }
-}
-
-
 
 YacasMemBlock*	iFirst	= NULL;
 YacasMemBlock*	iLast	= NULL;
-void CheckPtr( void * anAllocatedPtr );
+void CheckPtr( void * anAllocatedPtr,char* file, int line );
 void CheckAllPtrs()
 {
   YacasMemBlock*	p = iFirst;
@@ -75,33 +37,50 @@ void CheckAllPtrs()
   {
     unsigned char* ptr = (unsigned char*)p;
     ptr += sizeof(YacasMemBlock);
-    CheckPtr( ptr );
+    CheckPtr( ptr, __FILE__, __LINE__ );
     p = p->iNEXT;
   }	
 }
 
-
-void CheckPtr( void * anAllocatedPtr )
+void CheckPred(int pred, char* file, int line)
 {
-  unsigned char* ptr = (unsigned char*)anAllocatedPtr;
-  ptr -= sizeof(YacasMemBlock);
-  YacasMemBlock* t = (YacasMemBlock*)ptr;
+    if (!pred)
+    {
+        printf("%s(%d) : dereferencing invalid pointer\n",file,line);
+    }
+}
 
-  if ( t->iMagicPrefix[0] != 'x' )
-  {
-     LISPASSERT( t->iMagicPrefix[0] == 'x' );
-  }
-  LISPASSERT( t->iMagicPrefix[1] == 'y' );
-  LISPASSERT( t->iMagicPrefix[2] == 'z' );
-  LISPASSERT( t->iMagicPrefix[3] == 0 );
+void CheckPtr( void * anAllocatedPtr, char* file, int line )
+{
+    if (anAllocatedPtr == NULL)
+        return;
+    unsigned char* ptr = (unsigned char*)anAllocatedPtr;
+    ptr -= sizeof(YacasMemBlock);
+    YacasMemBlock* t = (YacasMemBlock*)ptr;
 
-  LISPASSERT( t->iData		== ptr+sizeof(YacasMemBlock) );
-  LISPASSERT( (unsigned char*)t->iMagicPostfix	== ptr+sizeof(YacasMemBlock)+t->iSize );
+    CheckPred ( t->iMagicPrefix[0] == 'x',file,line );
+    LISPASSERT( t->iMagicPrefix[0] == 'x' );
+    CheckPred ( t->iMagicPrefix[1] == 'y',file,line );
+    LISPASSERT( t->iMagicPrefix[1] == 'y' );
+    CheckPred ( t->iMagicPrefix[2] == 'z',file,line );
+    LISPASSERT( t->iMagicPrefix[2] == 'z' );
+    CheckPred ( t->iMagicPrefix[3] == 0,file,line );
+    LISPASSERT( t->iMagicPrefix[3] == 0 );
 
-  LISPASSERT( t->iMagicPostfix[0] == 'x' );
-  LISPASSERT( t->iMagicPostfix[1] == 'y' );
-  LISPASSERT( t->iMagicPostfix[2] == 'z' );
-  LISPASSERT( t->iMagicPostfix[3] == 0 );
+    CheckPred ( t->iData		== ptr+sizeof(YacasMemBlock),file,line );
+    LISPASSERT( t->iData		== ptr+sizeof(YacasMemBlock) );
+    CheckPred ( (unsigned char*)t->iMagicPostfix	== ptr+sizeof(YacasMemBlock)+t->iSize,file,line );
+    LISPASSERT( (unsigned char*)t->iMagicPostfix	== ptr+sizeof(YacasMemBlock)+t->iSize );
+
+    CheckPred ( t->iMagicPostfix[0] == 'x',file,line );
+    LISPASSERT( t->iMagicPostfix[0] == 'x' );
+    CheckPred ( t->iMagicPostfix[1] == 'y',file,line );
+    LISPASSERT( t->iMagicPostfix[1] == 'y' );
+    CheckPred ( t->iMagicPostfix[2] == 'z',file,line );
+    LISPASSERT( t->iMagicPostfix[2] == 'z' );
+    CheckPred ( t->iMagicPostfix[3] == 0,file,line );
+    LISPASSERT( t->iMagicPostfix[3] == 0 );
+
 }
 
 
@@ -109,7 +88,7 @@ void CheckPtr( void * anAllocatedPtr )
 void* YacasMallocPrivate(unsigned long aSize, char* aFile, int aLine)
 {
   if (aSize<=0) return NULL;
-  unsigned char* ptr = (unsigned char*)malloc(aSize+sizeof(YacasMemBlock)+4);
+  unsigned char* ptr = (unsigned char*)PlatObAlloc(aSize+sizeof(YacasMemBlock)+4);
   YacasMemBlock* t = (YacasMemBlock*)ptr;
   t->iMagicPrefix[0]= 'x';
   t->iMagicPrefix[1]= 'y';
@@ -147,7 +126,6 @@ void* YacasMallocPrivate(unsigned long aSize, char* aFile, int aLine)
   //CheckPtr( ptr );
 
   LISPASSERT(ptr != NULL);
-  Increment(ptr);
   return ptr;
 }
 void* YacasReAllocPrivate(void* orig, unsigned long size, char* aFile, int aLine)
@@ -166,11 +144,6 @@ void* YacasReAllocPrivate(void* orig, unsigned long size, char* aFile, int aLine
 }
 void YacasFreePrivate(void* aOrig)
 {
-  if (aOrig != NULL)
-  {
-    Decrement(aOrig);
-  }
-  
   if (aOrig)
   {
 //    CheckPtr( aOrig );
@@ -216,7 +189,7 @@ void YacasFreePrivate(void* aOrig)
     }
     //CheckAllPtrs();
     //
-    free( t );
+    PlatObFree( t );
   }
 }
 
@@ -232,7 +205,7 @@ void YacasCheckMemory()
             printf("%s(%d) : error C6666: memory leak!\n",p->iFile,p->iLine);
             unsigned char* ptr = (unsigned char*)p;
             ptr += sizeof(YacasMemBlock);
-            CheckPtr( ptr );
+            CheckPtr( ptr, __FILE__, __LINE__ );
             p = p->iNEXT;
         }
         printf("\n\n***********************************************\n\n");
