@@ -20,6 +20,7 @@
 	0.4.11 added DumpErrors() to TexForm for the benefit of TeXmacs notebooks
 	0.4.12 implement the % operation as Mod
 	0.4.13 added Bessel{I,J,K,Y}, Ortho{H,P,T,U}, with a general framework for usual two-argument functions of the form $A_n(x)$; fix for Max, Min
+	0.4.14 added mathematical notation for Floor(), Ceil()
 */
 
 /* To do:
@@ -230,9 +231,11 @@ TeXFormMathFunctions2 := {
 110 # TeXForm(Complex(0, _y), _p) <-- TeXForm(Hold(I)*y, p);
 120 # TeXForm(Complex(_x, _y), _p) <-- TeXForm(x+Hold(I)*y, p);
 
-/* Abs() is displayed as special brackets */
+/* Abs(), Floor(), Ceil() are displayed as special brackets */
 
 100 # TeXForm(Abs(_x), _p) <-- ConcatStrings("\\left| ", TeXForm(x, TeXFormMaxPrec), "\\right| ");
+100 # TeXForm(Floor(_x), _p) <-- ConcatStrings("\\left\\lfloor ", TeXForm(x, TeXFormMaxPrec), "\\right\\rfloor ");
+100 # TeXForm(Ceil(_x), _p) <-- ConcatStrings("\\left\\lceil ", TeXForm(x, TeXFormMaxPrec), "\\right\\rceil ");
 
 /* Some functions which are displayed as infix: Mod, Union, Intersection, Difference, Contains */
 

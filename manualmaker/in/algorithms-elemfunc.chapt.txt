@@ -380,7 +380,7 @@ A floating-point computation of the factorial may proceed either via Euler's Gam
 or by a direct method (multiplying the integers and maintaining a certain floating-point precision).
 If the required precision is much less than the number of digits in the exact factorial, then almost all multiplications will be truncated to the precision $P$ and the tree method $O(n*M(P))$ is always slower than the simple method $O(n*P)$.
 
-		Classical orthogonal polynomials
+		Classical orthogonal polynomials: general case
 
 *A orthogonal polynomials
 
@@ -469,7 +469,8 @@ The array of coefficients can be obtained using recurrence relations $n$ times.
 The required number of operations is proportional to $n^2$
 (because of $n$ coefficients, $n$ recurrence relations for each of them)
 and to the multiplication time of $n$-digit integers, i.e. $O(n^2*M(n))$.
-Sometimes an exact formula for the coefficients is available (this is the case for the four "classical" families of polynomials above).
+Sometimes an exact formula for the coefficients is available
+(this is the case for the four "classical" families of polynomials above; see the next section).
 Then the computation time dramatically drops down to $O(n^2)$ because no recurrences are needed.
 *	2. Compute the numerical value of a given polynomial $q_n(x)$ at given $x$, either exactly (at rational $x$) or approximately in floating point.
 This requires only $O(n*M(n))$ operations for exact computation and $O(n*P)$ operations in $P$-digit floating point.
@@ -479,6 +480,75 @@ if we use the so-called Clenshaw-Smith procedure
 which gives the value of $f(x)$ directly in $n$ iterations.
 (See the next section for more explanations.)
 The number of operations is again $O(n*P)$ because only "short" multiplications and divisions are needed.
+
+In the next section we shall give some formulae that allow to calculate particular polynomials more efficiently.
+
+		Classical orthogonal polynomials: special cases
+
+*A orthogonal polynomials!by specific formulae
+
+The fastest algorithm available is for Tschebyscheff polynomials $OrthoT(n,x)$, $OrthoU(n,x)$.
+The following recurrence relations can be used:
+$$ OrthoT(2*n,x) = 2*OrthoT(n,x)^2-1 $$,
+$$ OrthoT(2*n+1,x) = 2*OrthoT(n+1,x)*OrthoT(n,x)-x $$,
+$$ OrthoU(2*n,x) = 2*OrthoT(n,x)*OrthoU(n,x)-1 $$,
+$$ OrthoU(2*n+1,x) = 2*OrthoT(n+1,x)*OrthoU(n,x) $$.
+This allows to
+compute $OrthoT(n,x)$ and $OrthoU(n,x)$ in time logarithmic in $n$.
+
+There is a way to implement this method without recursion.
+The idea is to build the sequence of numbers $n[1]$, $n[2]$, ... that are needed to compute $OrthoT(n,x)$.
+
+For example, to compute $OrthoT(19,x)$ using the second recurrence relation, we need $OrthoT(10,x)$ and $OrthoT(9,x)$.
+We can write this chain symbolically as $19 <> c(9,10)$.
+For $OrthoT(10,x)$ we need only $OrthoT(5,x)$.
+This we can write as $10 <> c(5)$.
+Similarly we find: $9 <> c(4,5)$.
+Therefore, we can find both $OrthoT(9,x)$ and $OrthoT(10,x)$ if we know $OrthoT(4,x)$ and $OrthoT(5,x)$.
+Eventually we find the following chain of pairs:
+$$ 19 <> c(9,10) <> c(4,5) <> c(2,3) <> c(1,2) <> c(1) $$.
+Therefore, we find that $OrthoT(19,x)$ requires to compute $OrthoT(k,x)$ sequentially for all $k$ that appear in this sequence (1,2,3,4,5,9,10).
+
+There are about $2*Ln(n)/Ln(2)$ elements in the chain that leads to the number $n$.
+We can generate this chain in a straightforward way by examining the bits in the binary representation of $n$.
+Therefore, we find that this method requires no storage and time logarithmic in $n$.
+A recursive routine would also take logarithmic time and also require logarithmic storage space.
+
+Note that using these recurrence relations we do not obtain any individual coefficients of the Tschebyscheff polynomials.
+This method does not seem very useful for symbolic calculations (with symbolic $x$), because the resulting expressions are rather complicated combinations of nested products.
+It is difficult to expand such an expression into powers of $x$ or manipulate it in any other way, except compute a numerical value.
+However, these fast recurrences are numerically unstable, so numerical values need to be evaluated with extended working precision.
+Currently this method is not used in Yacas, despite its speed.
+
+Coefficients for Legendre, Hermite, Laguerre, Chebyshev polynomials can be obtained by explicit formulae. This is faster than using recurrences if we need the entire polynomial symbolically, but still slower than the recurrences for numerical calculations.
+
+*	Tschebyscheff polynomials of the first and of the second kind:
+If $k=Floor(n/2)$, then
+$$ OrthoT(n,x) = Sum(i,0,k, (-1)^i*(2*x)^(n-2*i)/(n-i)*Bin(n-i,i)) $$,
+$$ OrthoU(n,x) = Sum(i,0,k, (-1)^i*(2*x)^(n-2*i)*Bin(n-i,i)) $$.
+Here it is assumed that $n>0$ (the case $n=0$ must be done separately). The summation is over integer values of $i$ such that $0<=2*i<=n$, regardless of whether $n$ is even or odd.
+
+*	Hermite polynomials:
+For even $n=2*k$ where $k>=0$, 
+$$ OrthoH(n,x) = (-2)^(k)*(n-1)!! *Sum(i,0,k, (x^(2*i)*(-4)^i*k!) / ((2*i)! * (k-i)!)) $$,
+and for odd $n=2*k+1$ where $k>=0$,
+$$ OrthoH(n,x) = 2*(-2)^(k)*n!! *Sum(i,0,k, (x^(2*i+1)*(-4)^i*k!) / ((2*i+1)! * (k-i)!)) $$.
+
+
+*	Legendre polynomials:
+If $k=Floor(n/2)$, then
+$$ OrthoP(n,x) = 2^(-n)*Sum(i,0,k, (-1)^i*x^(n-2*i)*Bin(n,i)*Bin(2*n-2*i,n)) $$.
+The summation is over integer values of $i$ such that $0<=2*i<=n$, regardless of whether $n$ is even or odd.
+
+*	Laguerre polynomials:
+$$ OrthoL(n,a,x) = Sum(i,0,n,(-x)^i/i! *Bin(n+a,n-i)) $$.
+Here the binomial coefficient must be defined for non-integer $a$ through the Gamma function instead of factorials, which gives
+$$ Bin(n+a,n-i) = ( (n+a)*...*(i+1+a) )/(n-i)! $$.
+The result is a rational function of $a$.
+
+In all formulae for the coefficients, there is no need to compute factorials every time:
+the next coefficient can be obtained from the previous one by a few short multiplications and divisions.
+Therefore this computation costs $O(n^2)$ short operations.
 
 		Series of orthogonal polynomials
 
