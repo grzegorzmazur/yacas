@@ -1049,6 +1049,20 @@ void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
     (*iNumber)[i] = (*aX.iNumber)[i];
   }
 }
+
+void BigNumber::BitNot(const BigNumber& aX)
+{// FIXME?
+  LispInt len=(*aX.iNumber).NrItems();
+  
+  iNumber->GrowTo(len);
+
+  LispInt i;
+  for (i=0;i<len;i++)
+  {
+    (*iNumber)[i] = ~((*aX.iNumber)[i]);
+  }
+}
+
 void BigNumber::BitCount(const BigNumber& aX)
 {//FIXME
   LISPASSERT(0);

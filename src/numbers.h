@@ -168,6 +168,7 @@ public:/// Bitwise operations, return result in *this.
   void BitAnd(const BigNumber& aX, const BigNumber& aY);
   void BitOr(const BigNumber& aX, const BigNumber& aY);
   void BitXor(const BigNumber& aX, const BigNumber& aY);
+  void BitNot(const BigNumber& aX);
   /// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
   void BitCount(const BigNumber& aX);
   
