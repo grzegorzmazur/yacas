@@ -1,0 +1,171 @@
+		Calculation of $Pi$
+
+In Yacas, the constant $pi$ is computed by the library routine {Pi()} which uses the internal routine {MathPi()} to compute the value to current precision {Precision()}. The result is stored in the global variable {PiCache} which is a list of the form {{precision, value}} where {precision} is the number of digits of $pi$ that have already been found and {value} is the multiple-precision value. This is done to avoid recalculating $pi$ if a precise enough value for it has already been found.
+
+Efficient iterative algorithms for computing $pi$ with arbitrary precision have been recently developed by Brent, Salamin, Borwein and others. However, limitations of the current multiple-precision implementation in Yacas (compiled with the "internal" math option) make these advanced algorithms run slower because they require many more arbitrary-precision multiplications at each iteration.
+
+The example file {examples/pi.ys} implements five different algorithms that
+duplicate the functionality of {Pi()}. See
+<*http://numbers.computation.free.fr/Constants/*> for details of computations of $pi$ and
+generalizations of Newton-Raphson iteration.
+
+{PiMethod0()}, {PiMethod1()}, {PiMethod2()} are all based on a generalized Newton-Raphson method of solving equations. The basic method is widely known: If $f(x)=0$ must be solved, one starts with a value of $x$ that is close to some root and iterates $$x'=x-f(x)*(D(x)f(x))^(-1)$$
+For initial value of $x$ sufficiently close to the root, each iteration gives at least twice as many correct digits of the root as the previous one.
+Therefore the complexity of this algorithm is proportional to a logarithm of the required precision and to the time it takes to evaluate the function and its derivative. Generalizations of this method require computation of higher derivatives of the function $f(x)$ but successive approximations to the root converge several times faster (but the complexity is still logarithmic).
+
+Since $pi$ is a solution of $Sin(x)=0$, one may start sufficiently close, e.g. at $x0 = 3.14159265$ and iterate $x'=x-Tan(x)$. In fact it is faster to iterate
+$x'=x+Sin(x)$ which solves a different equation for $pi$. {PiMethod0()} is the straightforward implementation of the latter iteration. A significant speed improvement is achieved by doing calculations at each iteration only with the precision of the root that we expect to get from that iteration. Any imprecision introduced by round-off will be automatically corrected at the next iteration.
+
+If at some iteration $x=pi+epsilon$ for small $epsilon$, then from the Taylor expansion of $Sin(x)$ it follows that the value $x'$ at the next iteration will differ from $pi$ by $O(epsilon^3)$. Therefore, the number of correct digits triples at each iteration. If we know the number of correct digits of $pi$ in the initial approximation, we can decide in advance how many iterations to compute and what precision to use at each iteration.
+
+The final speed-up in {PiMethod0()} is to avoid computing at unnecessarily high precision. This may happen if, for example, we need to evaluate 200 digits of $pi$ starting with 20 correct digits. After 2 iterations we would be calculating with 180 digits; the next iteration would have given us 540 digits but we only need 200, so the third iteration would be wasteful. This can be avoided by first computing $pi$ to just over 1/3 of the required precision, i.e. to 67 digits, and then executing the last iteration at full 200 digits. There is still a wasteful step when we would go from 60 digits to 67, but much less time would be wasted than in the calculation with 200 digits of precision.
+
+Newton's method is based on approximating the function $f(x)$ by a straight line. One can achieve better approximation and therefore faster convergence to the root if one approximates the function with a polynomial curve of higher order. The routine {PiMethod1()} uses the iteration 
+$$ x'=x+Sin(x)+1/6*Sin(x)^3 + 3/40*Sin(x)^5 + 5/112*Sin(x)^7$$
+which has a faster convergence, giving 9 times as many digits at every iteration. (The series is the Taylor series for $ArcSin(y)$ cut at $O(y^9)$.) The same speed-up tricks are used as in {PiMethod0()}. In addition, the last iteration, which must be done at full precision, is performed with the simpler iteration $x'=x+Sin(x)$ to reduce the number of high-precision multiplications.
+
+Both {PiMethod0()} and {PiMethod1()} require a computation of $Sin(x)$ at every iteration. An industrial-strength arbitrary precision library such as {gmp} can multiply numbers much faster than it can evaluate a trigonometric function. Therefore, it would be good to have a method which does not require trigonometrics. {PiMethod2()} is a simple attempt to remedy the problem. It computes the Taylor series for $ArcTan(x)$,
+$$ ArcTan(x) = x - x^3/3 + x^5/5 - x^7/7 + ... $$
+for the value of $x$ obtained as the tangent of the initial guess for $pi$; in other words, if $x=pi+epsilon$ where $epsilon$ is small, then $Tan(x)=Tan(epsilon)$, therefore $epsilon = ArcTan(Tan(x))$ and $pi$ is found as $pi = x - epsilon$. If the initial guess is good (i.e. $epsilon$ is very small), then the Taylor series for $ArcTan(x)$ converges very quickly (although linearly, i.e. it gives a fixed number of digits of $pi$ per term). Only a single full-precision evaluation of $Tan(x)$ is necessary at the beginning of the algorithm.
+The complexity of this algorithm is proportional to the number of digits and to the time of a long multiplication.
+
+The routines {PiBrentSalamin()} and {PiBorwein()} are based on much more advanced mathematics. (See papers of P. Borwein for review and explanations of the methods.) They do not require evaluations of trigonometric functions, but they do require taking a few square roots at each iteration, and all calculations must be done using full precision. Using modern algorithms, one can compute a square root roughly in the same time as a division; but Yacas's internal math is not yet up to it. Therefore, these two routines perform poorly compared to the more simple-minded {PiMethod0()}.
+
+Note that the GNU muptiple-precision library {gmp} implements its own routine to compute $pi$.
+
+		Elementary functions
+
+	    Logarithm
+
+The (real) logarithm function is computed using its Taylor series,
+$$Ln(1+x) = x - x/2 + x^2/3 -...$$
+This series converges only for $Abs(x)<1$, so for all other values of $x$ one first needs to bring the argument into this range by taking several square roots and then using the identity $Ln(x) = 2^k*Ln(x^(2^(-k)))$. This is implemented in the Yacas core.
+
+	    Exponential
+
+The exponential function is computed using its Taylor series,
+$$ Exp(x) = 1 + x + x^2/2! + ...$$
+This series converges for all (complex) $x$, but if $Abs(x)$ is large, it converges slowly. A speed-up trick used for large $x$ is to divide the argument by some power of 2 and then square the result several times, i.e.
+$$Exp(x) = (Exp(2^(-k)*x))^(2^k)$$
+where $k$ is chosen sufficiently large so that the Taylor series converges quickly at $2^(-k)*x$. The threshold value for $x$ is in the variable {MathExpThreshold} in {stdfuncs}. If $x$ is large and negative, then it is easier to compute 1/$Exp(-x)$.
+
+	    Trigonometric
+
+Trigonometric functions $Sin(x)$, $Cos(x)$ are computed by subtracting $2*Pi$ from $x$ until it is in the range $0<x<2*Pi$ and then using Taylor series.
+Tangent is computed by dividing $Sin(x)/Cos(x)$.
+
+Inverse trigonometric functions are computed by Newton's method (for {ArcSin}) or by continuous fraction expansion (for {ArcTan}),
+$$ArcTan(x) = x/(1+x^2/(3+(2*x)^2/(5+(3*x)^2/(7+...))))$$
+The convergence of this expansion for large $Abs(x)$ is improved by using the identity
+$$ArcTan(x) = Pi/2*Sign(x) - ArcTan(1/x)$$
+This is implemented in the standard library scripts.
+
+By the identity $ArcCos(x) := Pi/2 - ArcSin(x)$, the inverse cosine is reduced to the inverse sine. Newton's method for $ArcSin(x)$ consists of solving the equation $Sin(y)=x$ for $y$. Implementation is similar to the calculation of $pi$ in {PiMethod0()}.
+
+Hyperbolic and inverse hyperbolic functions are reduced to exponentials and logarithms.
+
+		Continued fractions
+
+The function {ContFracList} converts a (rational) number $r$ into a regular
+continued fraction,
+$$ r = n[0] + 1/(n[1] + 1/(n[2]+...)) $$
+Here all numbers $n[i]$ are integers and all except $n[0]$ must be positive.
+(Continued fractions may not converge unless their terms are positive and
+bounded from below.)
+
+The algorithm for converting a rational number $r=n/m$ into a continued
+fraction is simple. First, we determine the integer part of $r$, which is
+$Div(n,m)$. If it is negative, we need to subtract one, so that $r=n[0]+x$ and
+the remainder $x$ is nonnegative and less than $1$. The remainder
+$x=Mod(n,m)/m$ is then inverted, $r[1] := 1/x = m/Mod(n,m)$ and so we have
+completed the first step in the decomposition, $r = n[0] + 1/r[1]$; now $n[0]$
+is integer but $r[1]$ is perhaps not integer. We repeat the same procedure on
+$r[1]$, obtain the next integer term $n[1]$ and the remainder $r[2]$ and so on,
+until such $n$ that $r[n]$ is an integer and there is no more work to do. This
+process will always stop because all floating-point values are actually
+rationals in disguise.
+
+The function {GuessRational(x, prec)} attempts to find a rational number with a
+denominator of at most {prec} digits that is approximately equal to a
+floating-point number $x$. It works by the following heuristic method. First,
+$x$ is expanded into a continued fraction. Then the coefficients of that
+fraction are multiplied together until the resulting number exceeds {prec}
+digits. At that point, the continued fraction is cut and evaluated, resulting
+in a rational number with a small denominator close to $x$.
+
+This works because partial continued fractions provide very good rational
+approximations for the final number, and because the magnitude of the partial
+fraction coefficients is related to the magnitude of the denominator of the
+resulting number. Consider the following example. The number 17/3 has a
+continued fraction expansion {{5,1,2}}. Evaluated as a limited precision
+floating point number, it becomes something like $17/3+0.00001$ where the small
+number represents a roundoff error. The continued fraction expansion of this is
+{{5, 1, 2, 11110, 1, 5, 1, 3, 2777, 2}}. Clearly the presence of an unnaturally
+large term $11110$ signifies the place where the floating-point error was
+introduced. The heuristic algorithm in {GuessRational()} would compute the
+product of 5, 1, 2 and so on until this product becomes larger than $10^prec$.
+By default the {prec} argument is half the number of digits in current
+precision (which is 10 by default) and since the 4th product is $111100$ which
+has already 6 digits, the algorithm discards $11110$ and all following terms in
+the continued fraction. Thus it is able to restore the original number $17/3$.
+
+This algorithm works well if $x$ is computed precisely enough; it must be
+computed to at least as many digits as there are in the numerator and the
+denominator of the fraction combined. Also, the parameter {prec} should not be
+too large (or else the algorithm would find a rational number with a larger
+denominator that approximates $x$ even better).
+
+The function {NearRational(x, prec)} works somewhat differently. The idea is to
+find an "optimal" rational number, i.e. with smallest numerator and
+denominator, that is within the distance $10^(-prec)$ of a given value $x$. The
+algorithm for this comes from the 1972 HAKMEM document, Item
+101C. Their description is terse but clear:
+
+	Problem: Given an interval, find in it the
+	rational number with the smallest numerator and
+	denominator.
+	Solution: Express the endpoints as continued
+	fractions.  Find the first term where they differ
+	and add 1 to the lesser term, unless it's last. 
+	Discard the terms to the right.  What's left is
+	the continued fraction for the "smallest"
+	rational in the interval.  (If one fraction
+	terminates but matches the other as far as it
+	goes, append an infinity and proceed as above.)
+
+The HAKMEM text (M. Beeler, R. W. Gosper, and R. Schroeppel: Memo No. 239, MIT AI Lab, 1972) is available as HTML online from various places.
+
+		Factorials and binomial coefficients
+
+The factorial is defined by $n! := n*(n-1)*...*1$ for integer $n$ and the binomial coefficient is defined as
+$$Bin(n,m) := n! / (m! * (n-m)!)$$
+A "staggered factorial" $n!! := n*(n-2)*(n-4)*...$ is also useful for some calculations.
+
+There are two tasks related to the factorial: the exact integer calculation and an approximate calculation to some floating-point precision. Factorial of $n$ has approximately $n*Ln(n)/Ln(10)$ decimal digits, so an exact calculation is practical only for relatively small $n$. In the current implementation, exact factorials for $n>65535$ are not computed but print an error message advising the user to avoid exact computations. For example, {LnGammaNum(n+1)} is able to compute $Ln(n!)$ for very large $n$ to the desired floating-point precision.
+
+	    Exact factorials
+
+To compute factorials exactly, we use two direct methods. The first method is
+to multiply the numbers $1$, $2$, ..., $n$ in a loop. This method requires $n$
+multiplications of short numbers with $P$-digit numbers, where $P=O(n*Ln(n))$
+is the number of digits in $n!$. Therefore its complexity is $O(n^2*Ln(n))$.
+This factorial routine is implemented in the Yacas core with a small speedup:
+consecutive pairs of integers are first multiplied together using platform math
+and then multiplied by the accumulator product.
+
+A second method uses a binary tree arrangement of the numbers $1$, $2$, ..., $n$ similar to the recursive sorting routine ("merge-sort"). If we denote by {a *** b} the "partial factorial" product $a*(a+1)*...(b-1)*b$, then the tree-factorial algorithm consists of replacing $n!$ by $1 *** n$ and recursively evaluating
+$(1 *** m) * ((m+1) *** n)$ for some integer $m$ near $n/2$. The partial factorials of nearby numbers such as $m***(m+2)$ are evaluated explicitly. The binary tree algorithm requires one multiplication of $P/2$ digit integers at the last step, two $P/4$ digit multiplications at the last-but-one step and so on. There are $O(Ln(n))$ total steps of the recursion. If the cost of multiplication is $M(P) = P^(1+a)*Ln(P)^b$, then one can show that the total cost of the binary tree algorithm is $O(M(P))$ if $a>0$ and $O(M(P)*Ln(n))$ if $a=0$ (which is the best asymptotic multiplication algorithm).
+
+Therefore, the tree method wins over the simple method if the cost of multiplication is lower than quadratic.
+
+The tree method can also be used to compute "staggered factorials" $n!!$. This is faster than to use the identities
+$(2*n)!! = 2^n*n! $
+$$ (2*n-1)!! = (2*n)! / (2^n*n!)$$
+Staggered factorials are used in the exact calculation of the Gamma function of half-integer argument.
+
+Binomial coefficients $Bin(n,m)$ are found by first selecting the smaller of $m$, $n-m$ and using the identity $Bin(n,m) = Bin(n,n-m)$. Then a partial factorial is used to compute $Bin(n,m)= ((n-m+1)***n) / m!$. This is always much faster than computing the three factorials in the definition of $Bin(n,m)$.
+
+	    Approximate factorials
+
+A floating-point computation of the factorial may proceed either via Euler's Gamma function or by a direct method (multiplying the integers). If the required precision is much less than the number of digits in the exact factorial, then almost all multiplications will be truncated to the precision $P$ and the tree method $O(n*Ln(n)*M(P))$ is slower than the simple method $O(n*P)$.
+

@@ -45,12 +45,9 @@ list, the function is applied to all the entries in the list.
 *CMD ArcSin, ArcCos, ArcTan --- Inverse trigonometric functions
 *STD
 *CALL
-
-ArcSin(x)
-
-ArcCos(x)
-
-ArcTan(x)
+	ArcSin(x)
+	ArcCos(x)
+	ArcTan(x)
 
 *PARMS
 
@@ -224,8 +221,7 @@ list, the function is applied to all the entries in the list.
 *CMD Sign --- Sign of a number
 *STD
 *CALL
-
-Sign(x)
+	Sign(x)
 
 *PARMS
 
@@ -292,8 +288,7 @@ number. Hence {Im(Sqrt(x))} evaluates to {0} which is only true for nonnegative 
 *CMD Re --- Real part of a complex number
 *STD
 *CALL
-
-Re(x)
+	Re(x)
 
 *PARMS
 
@@ -409,27 +404,36 @@ argument of 0 is {Undefined}.
 
 *SEE Abs, Sign
 
-*CMD ! --- Factorial
+*CMD !, !!, ***  --- factorial and related functions
 *STD
 *CALL
 	n!
+	n!!
+	a *** b
 
 *PARMS
 
-n - argument to the function
+{n} -- integer, half-integer, or list
+{a}, {b} -- numbers
 
 *DESC
 
-This function calculates the factorial of integer or half-integer numbers. For
-nonnegative integers, $n!$ equals $n*(n-1)*(n-2)*...*1$. The factorial of
-half-integers, defined via the gamma function, is also evaluated.
+The factorial function {n!} calculates the factorial of integer or half-integer numbers. For
+nonnegative integers, $n! := n*(n-1)*(n-2)*...*1$. The factorial of
+half-integers is defined via Euler's Gamma function, $z! := Gamma(z+1)$. If $n=0$ the function returns $1$.
 
-This function is threaded, meaning that if the argument "x" is a
-list, the function is applied to all the entries in the list.
+The "staggered factorial" function {n!!} calculates $n*(n-2)*(n-4)*...$. This product terminates either with $1$ or with $2$ depending on whether $n$ is odd or even. If $n=0$ the function returns $1$.
+
+The "partial factorial" function {a *** b} calculates the product $a*(a+1)*...$ which is terminated at the least integer not greater than $b$. The arguments $a$ and $b$ do not have to be integers; for integer arguments, {a *** b} = $b! / (a-1)!$. This function is sometimes a lot faster than evaluating the two factorials, especially if $a$ and $b$ are close together. If $a>b$ the function returns $1$.
+
+The factorial functions are threaded, meaning that if the argument {n} is a
+list, the function will be applied to each element of the list.
 
 For reasons of Yacas syntax, the factorial sign {!} cannot precede other
 non-letter symbols such as {+} or {*}. Therefore, you should enter a space
 after {!} in expressions such as {x! +1}.
+
+The factorial functions terminate and print an error message if the arguments are too large (currently the limit is $n < 65535$) because exact factorials of such large numbers are computationally expensive and most probably not useful. One can call {LnGammaNum()} to evaluate logarithms of such factorials to desired precision.
 
 *E.G.
 
@@ -439,18 +443,21 @@ after {!} in expressions such as {x! +1}.
 	Out> 120;
 	In> (1/2)!
 	Out> Sqrt(Pi)/2;
+	In> 7!!;
+	Out> 105;
+	In> 1/3 *** 10;
+	Out> 17041024000/59049;
 
-*SEE Bin, Factorize
+*SEE Bin, Factorize, Gamma, !!, ***
 
 *CMD Bin --- Binomial coefficients
 *STD
 *CALL
-
-Bin(n, m)
+	Bin(n, m)
 
 *PARMS
 
-n, m - integers
+{n}, {m} -- integers
 
 *DESC
 
@@ -460,7 +467,7 @@ This function calculates the binomial coefficient "n" above
 This is equal to the number of ways
 to choose "m" objects out of a total of "n" objects if order is
 not taken into account. The binomial coefficient is defined to be zero
-if "m" is negative or greater than "n".
+if "m" is negative or greater than "n"; {Bin(0,0)}=1.
 
 *E.G.
 
@@ -474,10 +481,8 @@ if "m" is negative or greater than "n".
 *CMD Sum --- Sum of a list of values
 *STD
 *CALL
-
-Sum(list)
-
-Sum(var, from, to, body)
+	Sum(list)
+	Sum(var, from, to, body)
 
 *PARMS
 
@@ -539,10 +544,8 @@ entries.
 *CMD Factorize --- Product of a list of values
 *STD
 *CALL
-
-Factorize(list)
-
-Factorize(var, from, to, body)
+	Factorize(list)
+	Factorize(var, from, to, body)
 
 *PARMS
 
@@ -579,10 +582,8 @@ returned. Obviously, "to" should be greater than or equal to
 *CMD Min --- Minimum of a number of values
 *STD
 *CALL
-
-Min(x,y)
-
-Min(list)
+	Min(x,y)
+	Min(list)
 
 *PARMS
 
@@ -610,10 +611,8 @@ with numerical values and not with symbolic arguments.
 *CMD Max --- Maximum of a number of values
 *STD
 *CALL
-
-Max(x,y)
-
-Max(list)
+	Max(x,y)
+	Max(list)
 
 *PARMS
 
@@ -641,8 +640,7 @@ with numerical values and not with symbolic arguments.
 *CMD IsZero --- Test whether argument is zero
 *STD
 *CALL
-
-IsZero(n)
+	IsZero(n)
 
 *PARMS
 
@@ -668,8 +666,7 @@ n - number to test
 *CMD IsRational --- Test whether argument is a rational
 *STD
 *CALL
-
-IsRational(expr)
+	IsRational(expr)
 
 *PARMS
 

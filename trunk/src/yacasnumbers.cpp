@@ -835,12 +835,45 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
     Check(nr>=0,KLispErrInvalidArg);
     ANumber fac("1",aPrecision);
     LispInt i;
+/*
     for (i=2;i<=nr;i++)
     {
         BaseTimesInt(fac,i, WordBase);
     }
+*/
+    for (i=2;i<nr;i+=2)
+    {
+        BaseTimesInt(fac,i*(i+1), WordBase);
+    }
+    if (i==nr) BaseTimesInt(fac, i, WordBase);
     return FloatToString(fac, aHashTable);
 }
 
+/* This code will compute factorials faster when multiplication becomes better than quadratic time
 
+// return old result*product of all integers from iLeft to iRight
+void tree_factorial(ANumber& result, LispInt iLeft, LispInt iRight, LispInt aPrecision)
+{
+	if (iRight == iLeft) BaseTimesInt(result, iLeft, WordBase);
+	else if (iRight == iLeft + 1) BaseTimesInt(result, iLeft*iRight, WordBase);
+	else if (iRight == iLeft + 2) BaseTimesInt(result, iLeft*iRight*(iLeft+1), WordBase);
+	else
+	{
+	    ANumber fac1("1", aPrecision), fac2("1", aPrecision);
+	    LispInt i = (iLeft+iRight)>>1;
+		tree_factorial(fac1, iLeft, i, aPrecision);
+		tree_factorial(fac2, i+1, iRight, aPrecision);
+		Multiply(result, fac1, fac2);
+	}
+}
 
+LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+{
+    LispInt nr = InternalAsciiToInt(int1);
+    Check(nr>=0,KLispErrInvalidArg);
+	ANumber fac("1",aPrecision);
+	tree_factorial(fac, 1, nr, aPrecision);
+    return FloatToString(fac, aHashTable);
+}
+
+*/

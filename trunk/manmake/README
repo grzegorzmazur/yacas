@@ -15,4 +15,4 @@ book2txt.sh: a shell/perl/Yacas script to convert Yacas-language documentation b
 
 book2TeX.sh: a shell/perl/Yacas script to convert Yacas-language documentation to TeX (does not work on all docs)
 
-
+book2ys.sh: a shell/Yacas script to extract Yacas source code from examples in Yacas-language documentation.

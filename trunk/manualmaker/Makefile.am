@@ -4,10 +4,9 @@ ouryacas = ../src/yacas --rootdir ../scripts/
 
 noinst_PROGRAMS = books.html
 
-ALLBOOKS = intro.book coding.book ref.book refprog.book \
-	essays.book
+BOOKS = intro.book coding.book ref.book refprog.book essays.book
 
-ALLBOOKSOURCES = in/intro.book.txt in/coding.book.txt \
+BOOKSOURCES = in/intro.book.txt in/coding.book.txt \
 	in/ref.book.txt in/refprog.book.txt in/essays.book.txt
 
 REFCHAPTERS = config.chapt arith.chapt calc.chapt linalg.chapt \
@@ -22,23 +21,27 @@ REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt \
 	in/strings.chapt.txt in/addons.chapt.txt 
 
 REFPROGCHAPTERS = yacasapi.chapt
+# yacasapi.chapt has no .txt source
+REFPROGSOURCES =
 
 CODINGCHAPTERS = YacasDebugger.chapt
 CODINGSOURCES = in/YacasDebugger.chapt.txt
 
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
 	CVS-Howto.chapt YacasDocs.chapt \
-	new.chapt paper.chapt Algorithms.chapt wordproblems.chapt
+	new.chapt paper.chapt Algorithms.chapt wordproblems.chapt \
+	algorithms-specfunc.chapt algorithms-elemfunc.chapt
 
 ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt \
         in/new.chapt.txt in/paper.chapt.txt \
-		in/Algorithms.chapt.txt in/wordproblems.chapt.txt
+		in/Algorithms.chapt.txt in/wordproblems.chapt.txt \
+	in/algorithms-specfunc.chapt.txt in/algorithms-elemfunc.chapt.txt
 
 EXTRA_DIST = \
 	manualmaker styleplain in/all \
 	in/intromaker in/codingmaker in/refmaker in/refprogmaker in/essaysmaker\
-	$(REFSOURCES) $(ALLBOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) \
+	$(REFSOURCES) $(BOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) $(REFPROGSOURCES) \
 	in/dummies yacasinit.ys .cvsignore
 
 # Stuff for automatic generation of Yacas books
@@ -87,11 +90,11 @@ clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.toc *.log *.ps *.pdf \
 	coding*html intro*html ref*html essays*html .o core *~ texdocs.c \
 	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS) \
-	in/yacasapi.chapt.txt $(ALLBOOKS) manicon.html
+	in/yacasapi.chapt.txt $(BOOKS) manicon.html
 
 yacas_helpdir = $(datadir)/yacas/documentation
 
-books.html:  $(ALLBOOKS) $(REFCHAPTERS) $(ESSAYCHAPTERS) \
+books.html:  $(BOOKS) $(REFCHAPTERS) $(ESSAYCHAPTERS) \
    $(REFPROGCHAPTERS) $(CODINGCHAPTERS)
 	-$(ouryacas) in/all
 	echo "done" > books.html.c
@@ -119,9 +122,10 @@ refprog.html : refprog.book $(REFPROGCHAPTERS)
 
 noindex: intro.html ref.html coding.html essays.html refprog.html
 
-# dist-hook copies the html files into the distributed .tar.gz file.
-dist-hook: 
-	-cp $(srcdir)/*.html  $(distdir) 
+# this dist-hook copies the html files into the distributed .tar.gz file.
+dist-hook:
+# do not copy html files any more
+#	-cp $(srcdir)/*.html  $(distdir) 
 
 distcheck-hook:
 	make test
