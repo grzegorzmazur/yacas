@@ -126,15 +126,15 @@ $$n=Ln(10)/Ln(8)*P$$ terms (of a different series).
 Currently Yacas can do {BesselJ(n,x)} where $Abs(x)<=2$, Yacas currently uses the infinite series definition
 to compute the numerical value. The series definition is:
 
-$$ BesselJ(n,x) := Sum(k,0,Infinity,(-1)^k*x^(2*k+n)/(2^(2k+n)* k! * Gamma(k+n+1))); $$
+$$ BesselJ(n,x) := Sum(k,0,Infinity,(-1)^k*x^(2*k+n)/(2^(2*k+n)* k! * Gamma(k+n+1))) $$.
 
 Note that n need not be an integer. We see from the definition that when $Abs(x)<=2$, the absolute
 value of each term is always decreasing ( which is called absolutely monotonely decreasing.) From this
 we know that if we stop after $i$ iterations, the error will be bounded by the absolute value of the
 next term. So given a set precision, turn this into a value epsilon, so that we can check if the current
 term will contribute to the sum at the prescribed precision. Before doing this, Yacas currently increases
-the precision by 20% to do interim calculations. This is a heuristic that works, it is not backed by theory.
-The value epsilon is given by $eps:=5*10^(-prec);$ where $prec$ was the previous precision. This is directly
+the precision by 20{%} to do interim calculations. This is a heuristic that works, it is not backed by theory.
+The value epsilon is given by $eps:=5*10^(-prec)$, where $prec$ was the previous precision. This is directly
 from the definition of floating point number who is correct to $prec$ digits: A number correct to $prec$ digits
 has a rounding error no greater than $5*10^(-prec)$ . Beware that some books incorrectly have $.5$ instead of $5$,
 which is incorrect.
