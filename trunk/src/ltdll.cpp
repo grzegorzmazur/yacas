@@ -27,12 +27,10 @@ printf("plugin found\n");
         }
     }
 
-/*
 {
 const char *err = lt_dlerror();
 if (err) printf("Last error: %s\n",err);
 }
-*/
     return (handle != NULL && iPlugin != NULL);
 }
 LispInt LtDll::Close(LispEnvironment& aEnvironment)
@@ -52,16 +50,17 @@ LtDll::~LtDll()
     if (handle)
     {
         LISPASSERT(iPlugin == NULL);
-        lt_dlclose(handle);
+        lt_dlclose((lt_dlhandle)handle);
     }
     handle = NULL;
 }
+
 LispPluginBase* LtDll::GetPlugin(void)
 {
     LISPASSERT(handle != NULL);
     LispPluginBase* (*maker)(void);
-    maker = (LispPluginBase*(*)(void))lt_dlsym(handle,"maker");
-    lt_dlexit();
+    maker = (LispPluginBase*(*)(void))lt_dlsym((lt_dlhandle)handle,"maker");
+    /* lt_dlexit(); */
     return maker();
 }
 

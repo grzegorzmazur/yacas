@@ -180,14 +180,23 @@ else
 fi
 AC_SUBST(psdir)
 
+
 # libtool support
-AC_DEFINE(LTDL_OBJDIR, "../src")
+# ---------------
+
+# Configure libltdl:
+AC_CONFIG_SUBDIRS(libltdl)
+# Search for dlopen():
+AC_LIBTOOL_DLOPEN
+# Build libltdl as convenience library:
+AC_LIBLTDL_CONVENIENCE
+# Configure libtool:
+AM_PROG_LIBTOOL
+# Substitute INCLTDL and LIBLTDL in the Makefiles
+# (INCLDT lists include flags for the compiler,
+#  LIBLDT lists libraries to link in for the linker)
 AC_SUBST(INCLTDL)
 AC_SUBST(LIBLTDL)
-AC_LIBTOOL_DLOPEN
-AM_PROG_LIBTOOL
-AC_SUBST(LIBTOOL_DEPS)
-
 
 # All done
 AC_OUTPUT(yacas.spec

@@ -9,9 +9,9 @@
 ## suite in "tests". In addition, one of the tests to be run is generated in
 ## "manualmaker".
 
-SUBDIRS = . docs inprogress YacasNotebook scripts src ramscripts essays \
-	manualmaker colorcode plugins proteus tests manmake compile embed \
-	JavaConsole
+SUBDIRS = . docs inprogress YacasNotebook scripts libltdl src ramscripts \
+	essays manualmaker colorcode plugins proteus tests manmake compile \
+	embed JavaConsole
 
 ## A script to be installed in the directory for binaries
 bin_SCRIPTS = yacas_client

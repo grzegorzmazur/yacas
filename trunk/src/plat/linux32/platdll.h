@@ -2,15 +2,17 @@
 #ifndef __ltdll_h__
 #define __ltdll_h__
 
-#include "../../lispplugin.h"
+#include "yacasbase.h"
+#include "lispplugin.h"
 
-class ElfDll : public LispDllBase
+class LtDll : public LispDllBase
 {
 public:
-    ElfDll() : handle(NULL) {}
-    virtual ~ElfDll();
-    virtual LispInt Open(LispCharPtr aDllFile, LispEnvironment& aEnvironment);
+    LtDll() : handle(NULL) {}
+    virtual ~LtDll();
+    virtual LispInt Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment);
     virtual LispInt Close(LispEnvironment& aEnvironment);
+protected:
     virtual LispPluginBase* GetPlugin(void);
 private:
     void *handle;
