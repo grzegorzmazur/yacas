@@ -1224,29 +1224,39 @@ LispStringPtr BitXor(LispCharPtr int1, LispCharPtr int2,
 ///// (coded by Serge Winitzki)
 //////////////////////////////////////////////////
 
-/// The number class describes either integers or floats, depending on the type_ flag. If the number is integer, then the float part (value_.float_) must be cleared using mpf_clear(). The same goes for the integer part (value_.int_) if the number is floating-point.
+/// The number class describes either integers or floats, depending on the type_ flag. However, both the float part (value_.float_, exponent_) and the integer part (value_.int_) are always initialized for the life of the BigNumber object.
+/// Wrapping of the GMP library is done using its mpz_t / mpf_t pointer types.
 /// A special mode is that of "exp-float" number. Then the type_ flag has the value KExpFloat. The number is equal to value_.float_ * 2^exponent_ where exponent_ is a big integer and value_.float_ is a normal GMP float value. Otherwise the value of the exponent_ stays zero (actually it is ignored).
 /// The exp-float mode is to be used only for really large or really small exponents.
 
-BigNumber::BigNumber()
-	: type_(KInt)	// by default all numbers are created integer
+// TO DO:
+// - allow functions that will in the future implement better GMP wrapping. -?
+// - replace _init by _init2 and specify explicit precision. (default precision is a non-reentrant global)
+// - use gmp_sprintf to print numbers rather than doing it by hand.
+// - introduce an "universal functor" that is good for any floating-point functions; it uses a function object to encapsulate any details? Or use a void* instead of function pointers and then explicit casts?
+// - optimize some arithmetic functions to use _ui or _si versions in case some operands are small integers. (IsSmall() checks that it fits into signed long.)
+
+
+BigNumber::BigNumber() { init(); }
+
+void BigNumber::init()
 {
-	mpz_init(value_.int_);
+	turn_int();	// by default all numbers are created integer
+	mpz_init2(value_.int_, 32);	// default precision
+	mpf_init2(value_.float_, 53);
+	mpz_init2(exponent_, 32);
 }
 
 BigNumber::~BigNumber()
 {
-  if (IsInt())
 	mpz_clear(value_.int_);
-  else
-  {
-  	mpf_clear(value_.float_);
+	mpf_clear(value_.float_);
 	mpz_clear(exponent_);
-  }
 }
 // construct from string
 BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {
+	init();
 	SetTo(aString, aPrecision, aBase);
 }
 
@@ -1254,10 +1264,8 @@ BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 /// copy constructor
 BigNumber::BigNumber(const BigNumber& aOther)
 {
-  // initialize just in case
-  type_ = KInt;
-  mpz_init(value_.int_);
-  SetTo(aOther);
+	init();
+	SetTo(aOther);
 }
 
 
@@ -1440,29 +1448,22 @@ bool BigNumber::IsSmall() const
 
 
 void BigNumber::BecomeInt()
-{	// can't use turn_int because that will delete the value
+{
   if (!IsInt())
   {
-	mpz_init(value_.int_);
+	turn_int();
 	mpz_set_f(value_.int_, value_.float_);
-	type_ = KInt;
-	mpz_clear(exponent_);
-	mpf_clear(value_.float_);
   }
 }
 
 
 void BigNumber::BecomeFloat()
-{	// can't use turn_float because that will delete the value
+{
   if (IsInt())
   {
-	mpf_init(value_.float_);
-	mpz_init(exponent_);
+  	turn_float();
 	mpf_set_z(value_.float_, value_.int_);
-	type_ = KFloat;
-	mpz_clear(value_.int_);
   }
-  
 }
 
 
@@ -1820,11 +1821,9 @@ void BigNumber::BitCount(const BigNumber& aX)
   // now careful not to overwrite *this
   if (!IsInt())
   {	// we are float and about to become int. Careful not to erase exponent_ in case *this == aX.
-	mpz_init_set_si(value_.int_, bit_count);
+  	turn_int();
+	mpz_set_si(value_.int_, bit_count);
 	if (aX.IsExpFloat()) mpz_add(value_.int_, value_.int_, aX.exponent_);
-  	type_ = KInt;
-	mpf_clear(value_.float_);
-	mpz_clear(exponent_);
   }
   else
   {	// we are int and need to set *this to bit_count + aX.exponent_
@@ -1851,26 +1850,19 @@ LispInt BigNumber::Sign() const
 /// 
 void BigNumber::turn_float()
 {
-  if (IsInt())
+//  if (IsInt())
   {
-    mpz_clear(value_.int_);
     type_ = KFloat;
-    mpf_init(value_.float_);
-    mpz_init(exponent_);
   }
 }
 
 void BigNumber::turn_int()
 {
-  if (!IsInt())
+//  if (!IsInt())
   {
-    mpf_clear(value_.float_);
-    mpz_clear(exponent_);
     type_ = KInt;
-    mpz_init(value_.int_);
   }
 }
-
 
 //////////////////////////////////////////////////
 ///// End of BigNumber implementation
