@@ -211,22 +211,25 @@ SumListSide(_x, y_IsList) <--
 240 # (x_IsList + _y)_Not(IsList(y)) <-- SumListSide(y,x);
 241 # (_x + y_IsList)_Not(IsList(x)) <-- SumListSide(x,y);
 
-250 # Infinity + _y <-- Infinity;
-250 # _x + Infinity <-- Infinity;
+250 # Infinity + y_IsNumber <-- Infinity;
+250 # x_IsNumber + Infinity <-- Infinity;
 
 
 /* Subtraction arity 1 */
 
 50 # -0 <-- 0;
+51 # -Indefinite <-- Indefinite;
 54 # - (- _x)      <-- x;
 55 # (- (x_IsNumber)) <-- MathSubtract(x);
 110 # - (_x - _y) <-- y-x;
 111 # - (x_IsNumber / _y) <-- (-x)/y;
 200 # - (x_IsList) <-- MapSingle("-",x);
 
+
 /* Subtraction arity 2 */
 50  # x_IsNumber - y_IsNumber <-- MathSubtract(x,y);
 50  # x_IsNumber - y_IsNumber <-- MathSubtract(x,y);
+60  # Infinity - Infinity <-- Indefinite;
 100 # 0 - _x <-- -x;
 100 # _x - 0 <-- x;
 100 # _x - _x <-- 0;
@@ -255,8 +258,8 @@ SumListSide(_x, y_IsList) <--
    result;
 ];
 
-250  # Infinity - _y <-- Infinity;
-250  # _x - Infinity <-- - Infinity;
+250  # Infinity - y_IsNumber <-- Infinity;
+250  # x_IsNumber - Infinity <-- - Infinity;
 
 
 210 # x_IsNumber - (y_IsNumber / z_IsNumber) <--(x*z-y)/z;
@@ -332,8 +335,9 @@ SumListSide(_x, y_IsList) <--
    result;
 ];
 
-250  # _x * Infinity <-- Infinity;
-250  # Infinity * (_y) <-- Infinity;
+249  # 0 * Infinity <-- Indefinite;
+250  # x_IsNumber * y_IsInfinity <-- Sign(x)*y;
+250  # x_IsInfinity * y_IsNumber <-- Sign(y)*x;
 
 
 /* Note: this rule MUST be past all the transformations on
@@ -351,7 +355,7 @@ SumListSide(_x, y_IsList) <--
 
 /* Division */
 
-50 # _x / 0 <-- Infinity;
+50 # _x / 0 <-- Indefinite;
 51 # 0 / _x <-- 0;
 52 # (x_IsNumber / y_IsNumber)_((Numeric = True) Or
                                 Not(IsInteger(x) And IsInteger(y))) <--
@@ -368,11 +372,10 @@ SumListSide(_x, y_IsList) <--
      ];
     
 
-90 # Infinity / Infinity <-- Infinity;
-90 # (-Infinity) / Infinity <-- -Infinity;
-90 # Infinity / (-Infinity) <-- -Infinity;
-91 # Infinity / _y <-- Infinity;
-91 # -Infinity / _y <-- -Infinity;
+90 # x_IsInfinity / y_Infinity <-- Indefinite;
+91  # x_IsInfinity / y_IsNumber <-- Sign(y)*x;
+
+
 100 # _x / _x <-- 1;
 100 # _x /  1 <-- x;
 100 # (_x / y_IsNegativeNumber) <-- -x/(-y);
@@ -410,9 +413,10 @@ SumListSide(_x, y_IsList) <--
 /* Faster version of raising power to 0.5 */
 50 # (x_IsPositiveNumber ^ (1/2))_(Numeric) <-- Sqrt(x);
 50 # (x_IsPositiveNumber ^ (1/2))_IsInteger(MathSqrt(x)) <-- MathSqrt(x);
+/* ??? I don't think this is right? 58 # 1 ^ n_IsInfinity <-- Indefinite; */
 59 # _x ^ 1 <-- x;
 59 # 1 ^ _n <-- 1;
-59 # 0 ^ 0 <-- 1;
+59 # 0 ^ 0 <-- Indefinite;
 60 # 0 ^ n_IsRationalOrNumber <-- 0;
 
 /* Regular raising to the power. */
@@ -450,6 +454,7 @@ SumListSide(_x, y_IsList) <--
 201 # xlist_IsList ^ n_IsConstant <-- Map({{xx},xx^n},{xlist});
 202 # _x ^ n_IsList <-- Map({{xx},x^xx},{n});
 
+249 # x_IsInfinity ^ 0 <-- Indefinite;
 250 # Infinity ^ (_n) <-- Infinity;
 250 # ((-Infinity) ^ (n_IsNumber))_(IsEven(n)) <-- Infinity;
 250 # ((-Infinity) ^ (n_IsNumber))_(IsOdd(n)) <-- -Infinity;
