@@ -572,6 +572,11 @@ CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator
         sprintf(buf,"Load(\"%s\");",init_script);
 #endif
         yacas->Evaluate(buf);
+        if (yacas->IsError())
+        {
+          ShowResult("");
+          read_eval_print = NULL;
+        }
     }
 
     {

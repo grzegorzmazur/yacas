@@ -6,7 +6,17 @@ TestPoly(poly,requiredResult):=
   Local(realResult);
   realResult:=BinaryFactors(poly);
   Verify(Length(realResult),Length(requiredResult));
-  Verify(Length(realResult),Length(Intersection(requiredResult,realResult)));
+
+//Echo(requiredResult,realResult);
+  Local(intersection);
+  intersection:={};
+  ForEach(item1,requiredResult)
+    ForEach(item2,realResult)
+    [
+      If(Simplify(item1-item2) = {0,0},
+        intersection := (item1:intersection));
+    ];
+  Verify(Length(realResult),Length(intersection/*Intersection(requiredResult,realResult)*/));
   Verify(Simplify(poly-FW(realResult)),0);
 ];
 
