@@ -661,3 +661,20 @@ void LispBerlekamp(LispEnvironment& aEnvironment, LispPtr& aResult,
 }
 
 
+void LispDefaultTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
+                   LispPtr& aArguments)
+{
+    TESTARGS(1);
+    aEnvironment.iCurrentTokenizer = &aEnvironment.iDefaultTokenizer;
+    InternalTrue(aEnvironment,aResult);
+}
+void LispCTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
+                   LispPtr& aArguments)
+{
+    TESTARGS(1);
+    aEnvironment.iCurrentTokenizer = &aEnvironment.iCTokenizer;
+    InternalTrue(aEnvironment,aResult);
+}
+
+
+

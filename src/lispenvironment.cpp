@@ -38,7 +38,8 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
     iCurrentInput(aCurrentInput),
     theUserError(NULL),
     iPrettyPrinter(NULL),
-    iDebugger(new DefaultDebugger)
+    iDebugger(new DefaultDebugger),
+    iCurrentTokenizer(&iDefaultTokenizer)
 {
     iTrue=NULL;
     iFalse=NULL;

@@ -17,6 +17,7 @@
 #include "stringio.h"
 #include "lispglobals.h"
 #include "lispplugin.h"
+#include "ctokenizer.h"
 
 
 class LispDefFiles;
@@ -204,6 +205,10 @@ private:
     LispCharPtr theUserError;
 
     LispStringPtr iPrettyPrinter;
+public:
+    LispTokenizer iDefaultTokenizer;
+    CTokenizer    iCTokenizer;
+    LispTokenizer* iCurrentTokenizer;
 };
 
 

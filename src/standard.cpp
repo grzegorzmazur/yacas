@@ -383,7 +383,7 @@ void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
     full.Append('\0');
     StringInput input(full,aEnvironment.iInputStatus);
     LispPtr lispexpr;
-    LispTokenizer tok;
+    LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
     InfixParser parser(tok, input,
                        aEnvironment.HashTable(),
                        aEnvironment.PreFix(),
@@ -436,7 +436,7 @@ void ParseExpression(LispPtr& aResult,LispCharPtr aString,LispEnvironment& aEnvi
     full.Append('\0');
     StringInput input(full,aEnvironment.iInputStatus);
     aEnvironment.iInputStatus.SetTo("String");
-    LispTokenizer tok;
+    LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
     InfixParser parser(tok,
                        input,
                        aEnvironment.HashTable(),
