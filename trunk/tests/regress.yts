@@ -439,3 +439,10 @@ Verify(Assoc(x-1, Factors(x^6-1))[2], 1);
 TestYacas(Integrate(x) x^(1/2), 2/3*x^(3/2));
 
 Verify(a[2]*Sin(x)/:{Sin(_x) <- sin(x)},a[2]*sin(x));
+
+// There was a bug, reported by Sebastian Ferraro, which caused the determinant
+// to return "Undefined" when one of the elements of the diagonal of a matrix
+// was zero. This was due to the numeric determinant algorithm applying 
+// Gaussian elimination, but taking the elements on the diagonal as pivot points.
+Verify(IsZero(Determinant( {{1,-1,0,0},{0,0,-1,1},{1,0,0,1},{0,1,1,0}} )),True);
+
