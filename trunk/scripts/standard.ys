@@ -484,7 +484,8 @@ LocalSymbols(x,y,xarg,yarg)
 59 # _x ^ 1 <-- x;
 59 # 1 ^ _n <-- 1;
 59 # x_IsZero ^ y_IsZero <-- Undefined;
-60 # x_IsZero ^ n_IsRationalOrNumber <-- 0;
+60 # (x_IsZero ^ n_IsRationalOrNumber)_(n>0) <-- 0;
+60 # (x_IsZero ^ n_IsRationalOrNumber)_(n<0) <-- Infinity;
 // This is to fix:
 // In> 0.0000^2
 // Out> 0.0000^2;

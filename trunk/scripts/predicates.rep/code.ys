@@ -144,9 +144,17 @@ IsNonZeroInteger(x) := (IsInteger(x) And x != 0);
 IsEven(n) := IsInteger(n) And ( BitAnd(n,1)  = 0 );
 IsOdd(n)  := IsInteger(n) And ( BitAnd(n,1)  = 1 );
 
+IsEvenFunction(f,x):= (f = Eval(Subst(x,-x)f));
+IsOddFunction(f,x):= (f = Eval(-Subst(x,-x)f));
+
 
 10 # IsInfinity(Infinity) <-- True;
-10 # IsInfinity(-Infinity) <-- True;
+10 # IsInfinity(-(_x)) <-- IsInfinity(x);
+
+// This is just one example, we probably need to extend this further to include all
+// cases for f*Infinity where f can be guaranteed to not be zero
+11 # IsInfinity(Sign(_x)*y_IsInfinity) <-- True;
+
 20 # IsInfinity(_x) <-- False;
 
 IsConstant(_n) <-- (VarList(n) = {});
