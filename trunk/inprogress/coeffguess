@@ -244,8 +244,9 @@ CofSolve()<--
   [
     vr2:=VarList(cf2[1]);
     cf2:=Map("List",{vr,cf2[1]});
-    TableForm(cf2);
-    Echo({Length(vr2),vr2});
+    ForEach(term,cf2) Echo({term[1]," = ",term[2]});
+/*    TableForm(cf2); */
+/*    Echo({Length(vr2),vr2}); */
   ]);
   True;
 ];

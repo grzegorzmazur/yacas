@@ -357,8 +357,11 @@ Function("TableForm",{list})
 /* Faster version of raising power to 0.5 */
 50 # (x_IsNumber ^ (1/2))_(Numeric) <-- Sqrt(x);
 50 # (x_IsNumber ^ (1/2))_IsInteger(MathSqrt(x)) <-- MathSqrt(x);
-60 # _x ^ 1 <-- x;
-60 # 1 ^ _n <-- 1;
+59 # _x ^ 1 <-- x;
+59 # 1 ^ _n <-- 1;
+59 # 0 ^ 0 <-- 1;
+60 # 0 ^ n_IsRationalOrNumber <-- 0;
+
 /* Regular raising to the power. */
 61 # x_IsNumber ^ y_IsPositiveNumber <-- MathPower(x,y);
 61 # x_IsNumber ^ y_IsNegativeNumber <-- (1/MathPower(x,-y));
@@ -380,7 +383,7 @@ Function("TableForm",{list})
 100 # ((_x)^((_m)/(_p)))^((_n)/(_q)) <-- x^((n*m)/(p*q));
  */
 200 # xlist_IsList ^ nlist_IsList <-- Map("^",{xlist,nlist});
-201 # xlist_IsList ^ n_IsPositiveInteger <-- Map({{xx},xx^n},{xlist});
+201 # xlist_IsList ^ n_IsConstant <-- Map({{xx},xx^n},{xlist});
 202 # _x ^ n_IsList <-- Map({{xx},x^xx},{n});
 
 250 # Infinity ^ (_n) <-- Infinity;

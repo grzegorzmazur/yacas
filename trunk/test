@@ -4,3 +4,9 @@
 55 # LogicSimplify(gamma(_P,_x,_y)> _n) <--
        LogicSimplify(P And (x>n)) Or ( (Not p) And (y>n));
 
+
+y      := y(x);
+degree := 5;
+DSolve( dd(y,x,2) + x*y
+
+

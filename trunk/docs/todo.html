@@ -15,13 +15,16 @@ This is a todo list of things I want to get out of the way before version
 
 <h1>emergencies</h1>
 <ul>
-<li> put Nl() in a common place.
-<li> test Apart for polys. This might have to be adjusted by adding
-     using the same mechanism used for the integer version.
-<li> loading dll only once (defload mechanism), DllUse iso DllLoad
-<li> the refcount 0xffff problem? Problem is actually the intermediate
-     expression swell.
-<li> improved TraceExp
+  <li> Support for scientific notation in anumber.
+  <li> revisit MathPower: MathPower(0,0.5) locks up.
+  <li> integrating x ln x goes into infinite recursion.
+  <li> put Nl() in a common place.
+  <li> test Apart for polys. This might have to be adjusted by adding
+       using the same mechanism used for the integer version.
+  <li> loading dll only once (defload mechanism), DllUse iso DllLoad
+  <li> the refcount 0xffff problem? Problem is actually the intermediate
+       expression swell.
+  <li> improved TraceExp
 </ul>
 
 

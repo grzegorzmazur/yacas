@@ -19,6 +19,10 @@ CountBits(value) :=
  * project.
  */
 /* Returns whether n is a prime */
+
+/* Fast prime testing: if n is a prime, then 24 divides (n^2-1) */
+5 # IsPrime(n_IsPositiveInteger)_(n > 4 And Mod(n^2-1,24)!=0) <-- False;
+
 10 # IsPrime(n_IsPositiveInteger) <--
 [
   Local(result);
