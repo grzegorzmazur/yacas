@@ -532,7 +532,7 @@ fi
 PACKAGE=yacas
 MAJOR=1
 MINOR=0
-MICRO=48
+MICRO=48rev2
 RELEASE=1
 
 VERSION=$MAJOR.$MINOR.$MICRO
@@ -1958,6 +1958,8 @@ trap 'rm -fr `echo "yacas.spec
 	colorcode/Makefile
 	ramscripts/Makefile
 	tests/Makefile
+        manmake/Makefile
+        compile/Makefile
 	src/Makefile config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
@@ -2062,6 +2064,8 @@ CONFIG_FILES=\${CONFIG_FILES-"yacas.spec
 	colorcode/Makefile
 	ramscripts/Makefile
 	tests/Makefile
+        manmake/Makefile
+        compile/Makefile
 	src/Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF

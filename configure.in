@@ -5,7 +5,7 @@ AM_CONFIG_HEADER(config.h)
 PACKAGE=yacas
 MAJOR=1
 MINOR=0
-MICRO=48
+MICRO=48rev2
 RELEASE=1
 
 VERSION=$MAJOR.$MINOR.$MICRO
@@ -75,4 +75,6 @@ AC_OUTPUT(yacas.spec
 	colorcode/Makefile
 	ramscripts/Makefile
 	tests/Makefile
+        manmake/Makefile
+        compile/Makefile
 	src/Makefile)
