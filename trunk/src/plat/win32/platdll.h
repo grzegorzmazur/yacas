@@ -9,7 +9,8 @@ class Win32Dll : public LispDllBase
 public:
     Win32Dll() : handle(NULL) {}
     virtual ~Win32Dll();
-    virtual LispInt Open(LispCharPtr aDllFile);
+    virtual LispInt Open(LispCharPtr aDllFile, LispEnvironment& aEnvironment);
+    virtual LispInt Close(LispEnvironment& aEnvironment);
     virtual LispPluginBase* GetPlugin(void);
 private:
     void *handle;

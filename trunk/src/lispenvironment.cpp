@@ -87,6 +87,17 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
 LispEnvironment::~LispEnvironment()
 {
     PopLocalFrame();
+
+    {
+        LispInt i,nr=iDlls.NrItems();
+        for (i=0;i<nr;i++)
+        {
+            iDlls[i]->Close(*this);
+            delete iDlls[i];
+            iDlls[i] = NULL;
+        }
+    }
+    
     LISPASSERT(iLocalsList == NULL);
     iTrue        ->DecreaseRefCount();
     iFalse       ->DecreaseRefCount();
@@ -419,6 +430,10 @@ void LispEnvironment::SetCommand(LispEvalCaller aEvaluatorFunc, LispCharPtr aStr
                             HashTable().LookUp(aString,LispTrue));
 }
 
+void LispEnvironment::RemoveCommand(LispCharPtr aString)
+{
+    Commands().Release(HashTable().LookUp(aString,LispTrue));
+}
 
 void LispEnvironment::SetUserError(LispCharPtr aErrorString)
 {
@@ -563,4 +578,22 @@ void LispErrorNrArgs::PrintError(LispOutput& aOutput)
 }
 */
 
+void CDllArray::DeleteNamed(LispCharPtr aName, LispEnvironment& aEnvironment)
+{
+    LispInt i,nr=NrItems();
+    for (i=0;i<nr;i++)
+    {
+//printf("DLL: %s ",(*this)[i]->DllFileName());
+        if (StrEqual(aName,(*this)[i]->DllFileName()))
+        {
+            (*this)[i]->Close(aEnvironment);
+            delete (*this)[i];
+            (*this)[i] = NULL;
+            Delete(i,1);
+//printf("deleted!\n");
+            return;
+        }
+//printf("\n");
+    }
+}
 

@@ -32,6 +32,7 @@ public:
      *  variables (constants for the plugin).
      */
     virtual void Add(LispEnvironment& aEnvironment) = 0;
+    virtual void Remove(LispEnvironment& aEnvironment) = 0;
     virtual ~LispPluginBase(){};
 };
 
@@ -42,11 +43,18 @@ public:
 class LispDllBase : public YacasBase
 {
 public:
-    virtual LispInt Open(LispCharPtr aDllFile);
-    virtual LispPluginBase* GetPlugin(void);
+    LispDllBase();
+    virtual LispInt Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment);
+    virtual LispInt Close(LispEnvironment& aEnvironment);
+    LispPluginBase* Plugin(void);
     virtual ~LispDllBase();
+    LispCharPtr DllFileName() const;
+protected:
+    virtual LispPluginBase* GetPlugin(void);
+protected:
+    LispPluginBase* iPlugin;
+    LispString iDllFileName;
 };
-
 
 #endif
 

@@ -560,17 +560,36 @@ void LispDllLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 //    printf("file is [%s]\n"&(oper[0]));
     
-    opened = dll->Open(&oper[0]);
+    opened = dll->Open(&oper[0],aEnvironment);
     if (!opened) delete dll;
     Check(opened,KLispErrLibraryNotFound);
-    LispPluginBase* plugin = dll->GetPlugin();
+    /*TODO remove?
+    LispPluginBase* plugin = dll->Plugin();
     if (plugin == NULL)
     {
         delete dll;
         Check(plugin != NULL,KLispErrLibraryNotFound);
     }
+    */
     aEnvironment.iDlls.Append(dll);
-    plugin->Add(aEnvironment);
+//TODO remove?    plugin->Add(aEnvironment);
+
+    InternalTrue(aEnvironment,aResult);
+}
+
+void LispDllUnload(LispEnvironment& aEnvironment, LispPtr& aResult,
+                   LispPtr& aArguments)
+{
+    TESTARGS(2);
+    LispPtr evaluated;
+    InternalEval(aEnvironment, evaluated, Argument(aArguments,1));
+
+    LispStringPtr string = evaluated.Get()->String();
+    CHK_ARG(string != NULL, 1);
+
+    LispString oper;
+    InternalUnstringify(oper, string);
+    aEnvironment.iDlls.DeleteNamed(&oper[0],aEnvironment);
 
     InternalTrue(aEnvironment,aResult);
 }

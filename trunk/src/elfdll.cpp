@@ -8,16 +8,39 @@
 #include "lispassert.h"
 #include "platdll.h"
 
-LispInt ElfDll::Open(LispCharPtr aDllFile)
+LispInt ElfDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
 {
+    iDllFileName = aDllFile;
     handle = dlopen(aDllFile,RTLD_LAZY);
-    return (handle != NULL);
+    if (handle)
+    {
+        iPlugin = GetPlugin();
+        if (iPlugin)
+        {
+            iPlugin->Add(aEnvironment);
+        }
+    }
+    return (handle != NULL && iPlugin != NULL);
+}
+LispInt ElfDll::Close(LispEnvironment& aEnvironment)
+{
+    if (iPlugin)
+    {
+        iPlugin->Remove(aEnvironment);
+        delete iPlugin;
+        iPlugin = NULL;
+        return 1;
+    }
+    return 0;
 }
 
 ElfDll::~ElfDll()
 {
     if (handle)
+    {
+        LISPASSERT(iPlugin == NULL);
         dlclose(handle);
+    }
     handle = NULL;
 }
 LispPluginBase* ElfDll::GetPlugin(void)

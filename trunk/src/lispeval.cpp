@@ -147,7 +147,9 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
                     {
 //                        printf("**** Undef: %s\n",head->String()->String());
 
-                        {
+                        ReturnUnEvaluated(aResult,*subList,aEnvironment);
+                        /*TODO remove?
+                         {
                             LispPtr full;
                             full.Set(subList->Get()->Copy(LispFalse));
                             aResult.Set(LispSubList::New(full.Get()));
@@ -166,7 +168,7 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
                             }
                             full.Get()->Next().Set(NULL);
                         }
-
+                        */
 
 
                         goto FINISH;

@@ -393,6 +393,8 @@ void LispPatchString(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 void LispDllLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
                  LispPtr& aArguments);
+void LispDllUnload(LispEnvironment& aEnvironment, LispPtr& aResult,
+                   LispPtr& aArguments);
 
 void LispSetExtraInfo(LispEnvironment& aEnvironment, LispPtr& aResult,
                    LispPtr& aArguments);
