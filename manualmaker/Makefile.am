@@ -116,7 +116,7 @@ LispProgramming.book.tex: LispProgramming.book $(LISPPROGRAMMINGCHAPTERS)
 yacasapi.chapt.txt: $(top_srcdir)/src/yacasapi.cpp
 	perl $(top_srcdir)/manmake/api2txt.pl < $(top_srcdir)/src/yacasapi.cpp > yacasapi.chapt.txt
 yacasapi.chapt: yacasapi.chapt.txt
-	perl $(top_srcdir)/manmake/txt2yacasdoc.pl < $< > $@
+	perl $(top_srcdir)/manmake/txt2yacasdoc.pl < yacasapi.chapt.txt > $@
 
 PS_DOCS = intro.book.ps coding.book.ps essays.book.ps ref.book.ps refprog.book.ps Algo.book.ps LispProgramming.book.ps
 
