@@ -205,6 +205,7 @@ void LispStackSize(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 char* ReadInputString(char* prompt)
 {
+  if (!commandline) return "False";
   char *inpline;
 REDO:
   readmode = 1;
@@ -261,13 +262,7 @@ static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackT
     CHK_ISSTRING_CORE(promptObject,1);
     LispString prompt;
     InternalUnstringify(prompt, promptObject.Get()->String());
-    ReadInputString(prompt.String());
-/*TODO remove
-    readmode = 1;
-    commandline->ReadLine(prompt.String());
-    readmode = 0;
-*/
-    char *output =  commandline->iLine.String();
+    char* output = ReadInputString(prompt.String());
     RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(output)));
 }
 
@@ -275,8 +270,10 @@ static void LispHistorySize(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     /* Obtain arguments passed in. */
     ShortIntegerArgument(depth, 1);
-    commandline->MaxHistoryLinesSaved(depth);
-
+    if (commandline)
+    {
+      commandline->MaxHistoryLinesSaved(depth);
+    }
     /* Return result. */
     InternalTrue(aEnvironment,RESULT);
 }
@@ -308,8 +305,8 @@ void my_exit(void)
 {
     if (show_prompt)
         printf("Quitting...\n");
-    delete yacas;
-    delete commandline;
+    if (yacas) delete yacas; yacas = NULL;
+    if (commandline) delete commandline; commandline = NULL;
     ReportNrCurrent();
 #ifdef YACAS_DEBUG
     YacasCheckMemory();
