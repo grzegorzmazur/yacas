@@ -7,24 +7,62 @@
  *  then the kernel version will automatically shadow these functions.
  */
 
+/*: Count number of bits in an integer or a float number. MathBitCount(0)=1. */
+10 # MathBitCount(0) <-- 1;
+20 # MathBitCount(_x) _ (x<0) <-- MathBitCount(-x);
+
+30 # MathBitCount(_value) <--
+[
+	Local(nbits);
+	nbits:=0;
+  	If(value<1,
+	[	// float value < 1, need to multiply by 2
+		nbits := 1;
+		While(value<1)
+		[
+			nbits--;
+			value := MathMul2Exp(value,1); //FIXME this should work for floats too
+		];
+	],
+	[	// need to divide by 2
+		While(value>=1)
+		[
+			nbits++;
+			value := MathMul2Exp(value, -1);
+		];
+	]);
+	nbits;
+];
+
+// tests - can move to tests/
+Verify(MathBitCount(4),3);
+Verify(MathBitCount(-3), 2);
+Verify(MathBitCount(3), 2);
+Verify(MathBitCount(0), 1);
+Verify(MathBitCount(-0.6), 0);
+Verify(MathBitCount(0.5), 0);
+Verify(MathBitCount(0.3,-1);
+
+
 /// MathPower(x,y).
 /// Compute x^y. Generally, x must be positive, except for integer y.
+/// FIXME: No precision tracking yet.
 // identities:
 5 # MathPower(0, _y) <-- 0;
 5 # MathPower(1, _y) <-- 1;
 // integer powers:
-10 # MathPower(_x, y_IsInteger) <-- IntMultiplyNum(x, y, MathMultiply, 1);
+10 # MathPower(_x, y_IsInteger) <-- IntPowerNum(x, y, MathMultiply, 1);
 // real powers:
 20 # MathPower(_x, _y) <-- MathExp(MathMultiply(y,MathLn(x)));
 
 /// MathPower(x,y,op): cost functions.
-10 # MathPower(_x, y_IsInteger, "+") <-- 2*CountBits(y);
-10 # MathPower(_x, y_IsInteger, "1") <-- 8*CountBits(y);
+10 # MathPower(_x, y_IsInteger, "+") <-- 2*MathBitCount(y);
+10 # MathPower(_x, y_IsInteger, "1") <-- 8*MathBitCount(y);
 20 # MathPower(_x, _y, _op) <-- 0;
 
 
 /// MathSqrt(x).
-/// Compute square root(x) with nonnegative x.
+/// Compute square root(x) with nonnegative x. FIXME: No precision tracking yet.
 10 # MathSqrt(0) <-- 0;
 // BisectSqrt() works only on integers
 //20 # MathSqrt(x_IsInteger) <-- BisectSqrt(x);
@@ -41,13 +79,7 @@
 
   // Find highest set bit, l2
   u  := N;
-  l2 := 0;
-  While (u!=0)
-  [
-    u:=u>>1;
-    l2++;
-  ];
-  l2--;
+  l2 := MathBitCount(u)-1;
 
   // 1<<(l2/2) now would be a good under estimate 
   // for the square root. 1<<(l2/2) is definitely 
@@ -97,6 +129,7 @@
 
 10 # MathGcd(x_IsInteger, y_IsInteger) <--
 [
+	Local(z);
 	While(x!=y)
 	[
 		While(x<y)
@@ -104,10 +137,54 @@
 			y:=y-x;
 			While((y&1) = 0)
 			[
-				y := y>>1;
+				y := ShiftRight(y,1);
 			];
 		];
-		{x,y} := {y,x};
+		z:=x;
+		x:=y;
+		y:=z;
 	];
 	x;
 ];
+
+/// MathMul2Exp(x,n): multiply x by 2^n.
+10 # MathMul2Exp(_x,0) <-- x;
+20 # MathMul2Exp(_x,_n)_(n>0) <-- MathMultiply(x, MathPower(2,n));
+30 # MathMul2Exp(_x,_n)_(n<0) <-- MathDivide(x, MathPower(2,n));
+
+/// MathExp(x). Use the shifted squaring argument reduction and Taylor series.
+/// FIXME: No precision tracking yet.
+
+10 # MathExp(0) <-- 1;
+20 # MathExp(_x)_(x<0) <-- MathDivide(1, MathExp(-x));
+30 # MathExp(_x)_(x>1) <-- MathExp(MathMul2Exp(x,-1))^2;
+40 # MathExp(_x) <--
+// now 0<x<1
+[	Local(y, prec, shift, result);
+	prec:=GetPrecision();
+	// find the optimal number of divisions by 2.
+	// it is approximately (P*Ln(10)/Ln(2))^(1/3)-BitCount(P)
+	shift := IntNthRoot(Div(prec*28738,8651),3)-MathBitCount(prec);
+	// increase precision by some bits to allow for roundoff
+	Precision(prec+IntLog(prec, 10)+2);
+	// compute Exp(x/2^shift) - 1
+	result := MathExp'Taylor1(MathMul2Exp(x,-shift));
+	While(shift>0)
+	[	// lose 'shift' bits of precision here
+		result := MathMul2Exp(result, 1) + MathMultiply(result, result);
+		shift--;
+	];
+	
+	Precision(prec);
+	RoundTo(1+result, prec);
+];
+
+/// Straightforward Taylor series, compute Exp(x)-1.
+MathExp'Taylor1(x) :=
+[
+	Local(num'terms, prec);
+	prec := GetPrecision();
+	num'terms := MathDiv(prec*2291,MathBitCount(prec)*1588)+1;	// P/Ln(P)
+	x*SumTaylorNum(x, 1, {{k},1/(k+1)}, num'terms);
+];
+
