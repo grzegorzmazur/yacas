@@ -1249,4 +1249,61 @@ void LispVersion(LispEnvironment& aEnvironment, LispInt aStackTop)
     RESULT.Set(LispAtom::New(aEnvironment,"\"" VERSION "\""));
 }
 
+/// convert bits to digits. Use the kernel function bits_to_digits. Arguments must be small integers.
+void LispBitsToDigits(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+#ifndef NO_USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      RefPtr<BigNumber> y;
+      GetNumber(x,aEnvironment, aStackTop, 1);
+      GetNumber(y,aEnvironment, aStackTop, 2);
+	  long result = 0;	// initialize just in case
+	  if (x->IsInt() && x->IsSmall() && y->IsInt() && y->IsSmall())
+	  {
+		  // bits_to_digits uses unsigned long, see numbers.h
+			unsigned base = unsigned(y->Double());
+			result = bits_to_digits((unsigned long)(x->Double()), base);
+	  }
+	  else
+	  {
+		  RaiseError("BitsToDigits: error: arguments (%f, %f) must be small integers", x->Double(), y->Double());		  
+	  }
+      BigNumber *z = NEW BigNumber();
+      z->SetTo((long)result);
+      RESULT.Set(NEW LispNumber(z));
+
+#else	// this is not defined without BigNumber, so return something
+    RaiseError("Function BitsToDigits is not available without BigNumber support");
+    LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
+#endif
+}
+
+/// convert digits to bits. Use the kernel function digits_to_bits. Arguments must be small integers.
+void LispDigitsToBits(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+#ifndef NO_USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      RefPtr<BigNumber> y;
+      GetNumber(x,aEnvironment, aStackTop, 1);
+      GetNumber(y,aEnvironment, aStackTop, 2);
+	  long result = 0;	// initialize just in case
+	  if (x->IsInt() && x->IsSmall() && y->IsInt() && y->IsSmall())
+	  {
+		  // bits_to_digits uses unsigned long, see numbers.h
+			unsigned base = unsigned(y->Double());
+			result = digits_to_bits((unsigned long)(x->Double()), base);
+	  }
+	  else
+	  {
+		  RaiseError("DigitsToBits: error: arguments (%f, %f) must be small integers", x->Double(), y->Double());
+	  }
+      BigNumber *z = NEW BigNumber();
+      z->SetTo((long)result);
+      RESULT.Set(NEW LispNumber(z));
+
+#else	// this is not defined without BigNumber, so return something
+    RaiseError("Function BitsToDigits is not available without BigNumber support");
+    LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
+#endif
+}
 

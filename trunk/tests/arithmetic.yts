@@ -85,6 +85,10 @@ Testing("Bases");
 Verify(ToBase(16,255),"ff");
 Verify(FromBase(2,"100"),4);
 
+// conversion between decimal and binary digits
+Verify(BitsToDigits(2000, 10), 602);
+Verify(DigitsToBits(602, 10), 2000);
+
 LocalSymbols(f,ft)
 [
   f(x,y):=(Div(x,y)*y+Rem(x,y)-x);
