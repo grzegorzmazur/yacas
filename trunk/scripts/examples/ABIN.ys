@@ -1,5 +1,5 @@
 /* Implementation of the ABIN formal grammar
-	(see Yacas programming tutorial) */
+	(see Yacas tutorial essays) */
 
 IsExpr(x_IsList) <-- IsBExpr(x) Or IsNExpr(x) Or IsAExpr(x);
 
