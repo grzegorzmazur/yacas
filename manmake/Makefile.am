@@ -59,14 +59,17 @@ REFCHAPTERS = config.chapt arith.chapt calc.chapt ode.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
 	preds.chapt logic.chapt const.chapt vars.chapt io.chapt \
 	numtheory.chapt strings.chapt transforms.chapt cl-options.chapt \
-	probability-and-statistics.chapt addons.chapt FDL.chapt
+	probability-and-statistics.chapt addons.chapt FDL.chapt \
+	plugin-docs.chapt
 
 REFSOURCES = config.chapt.txt arith.chapt.txt calc.chapt.txt ode.chapt.txt \
 	linalg.chapt.txt univar.chapt.txt lists.chapt.txt cl-options.chapt.txt \
 	functional.chapt.txt controlflow.chapt.txt preds.chapt.txt \
 	logic.chapt.txt const.chapt.txt vars.chapt.txt io.chapt.txt \
 	numtheory.chapt.txt strings.chapt.txt transforms.chapt.txt \
-	probability-and-statistics.chapt.txt addons.chapt.txt FDL.chapt.txt
+	probability-and-statistics.chapt.txt addons.chapt.txt FDL.chapt.txt \
+	plugin-docs.chapt.txt
+
 
 REFPROGCHAPTERS = yacasapi.chapt FDL.chapt glossary.chapt \
 	GPL.chapt numerics.chapt
@@ -174,13 +177,30 @@ yacasapi.chapt.txt: ../src/gencorefunctions
 GPL.chapt: $(top_srcdir)/COPYING
 	cat $(top_srcdir)/COPYING | sed -e 's,<,{<},g;s,>,{>},g;' | perl $(srcdir)/txt2yacasdoc.pl > $@
 
+
+# this chapter depends on special chapters
+PLUGINDOCSCHAPTERS = yacas_gsl.chapt example.chapt opengl.chapt forth.chapt
+plugin-docs.chapt: $(PLUGINDOCSCHAPTERS)
+
+# special chapters built from plugin stubs
+yacas_gsl.chapt: ../plugins/yacas_gsl/yacas_gslapi.man.txt
+	perl $(srcdir)/txt2yacasdoc.pl < $< > $@
+example.chapt: ../plugins/example/barepluginapi.man.txt
+	perl $(srcdir)/txt2yacasdoc.pl < $< > $@
+opengl.chapt: ../plugins/opengl/openglapi.man.txt
+	perl $(srcdir)/txt2yacasdoc.pl < $< > $@
+forth.chapt: ../plugins/forth/forthpluginapi.man.txt
+	perl $(srcdir)/txt2yacasdoc.pl < $< > $@
+
+
 ps-docs: $(PS_DOCS)
 pdf-docs: $(PDF_DOCS)
 
 CLEANFILES = books.html *.tex *.dvi *.aux *.idx *.ind *.ilg *.toc *.log *.ps *.pdf \
-	coding*.html intro*.html ref*.html essays*.html Algo*.html LispProgramming*.html *.o core *~ texdocs.c \
+	coding*.html intro*.html ref*.html essays*.html Algo*.html NewDesign*.html LispProgramming*.html *.o core *~ texdocs.c \
 	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(LISPPROGRAMMINGCHAPTERS) $(NEWDESIGNCHAPTERS) \
-	$(TESTCODESNIPPETS) $(ALGOCHAPTERS) yacasapi.chapt.txt $(BOOKS) manicon.html
+	$(TESTCODESNIPPETS) $(ALGOCHAPTERS) yacasapi.chapt.txt $(BOOKS) manicon.html \
+	$(PLUGINDOCSCHAPTERS)
 
 # The top HTML docs target is now "manicon.html" that is built by GenerateIndex().
 # The dependence on $(HTMLBOOKS) is only to make sure that all HTML docs

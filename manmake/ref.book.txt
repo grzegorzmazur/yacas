@@ -42,7 +42,7 @@ the command line for ordinary tasks.
 
 *INCLUDE addons.chapt
 
-
+*INCLUDE plugin-docs.chapt
 
 *REM GNU Free Documentation License
 *INCLUDE FDL.chapt

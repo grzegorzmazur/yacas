@@ -9,9 +9,9 @@ example_la_SOURCES = bareplugin.cc bareplugin.h barepluginapi.stub
 example_la_LIBADD = barepluginapi.lo
 example_la_LDFLAGS = -module -avoid-version -no-undefined 
 
-CLEANFILES = barepluginapi.cc barepluginapi.description
+CLEANFILES = barepluginapi.cc barepluginapi.man.txt
 
-barepluginapi.cc : barepluginapi.stub
+barepluginapi.cc barepluginapi.man.txt: barepluginapi.stub
 	../../src/yacas --rootdir ../../scripts/:$(top_srcdir)/scripts/ -pc $(srcdir)/barepluginapi.stub
 
 example.dylib: bareplugin.lo barepluginapi.lo

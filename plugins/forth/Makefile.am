@@ -8,9 +8,9 @@ forth_la_SOURCES = forthplugin.cc forthplugin.h forth.cc forth.h forthpluginapi.
 forth_la_LIBADD = forthpluginapi.lo
 forth_la_LDFLAGS = -module -avoid-version -no-undefined
 
-CLEANFILES = forthpluginapi.cc forthpluginapi.description
+CLEANFILES = forthpluginapi.cc forthpluginapi.man.txt
 
-forthpluginapi.cc : forthpluginapi.stub
+forthpluginapi.cc forthpluginapi.man.txt: forthpluginapi.stub
 	../../src/yacas --rootdir ../../scripts/:$(top_srcdir)/scripts/ -pc $(srcdir)/forthpluginapi.stub
 
 forth.dylib: forth.la
