@@ -60,7 +60,15 @@ P. Godfrey (2001) (unpublished text):
 
 [Gourdon <i>et al.</i> 2001]
 X. Gourdon and P. Sebah,
-<i>The Euler constant</i>; <i>The Bernoulli numbers</i>; and other essays, online at <*http://numbers.computation.free.fr/Constants/*> (2001).
+<i>The Euler constant</i>;
+<i>The Bernoulli numbers</i>;
+<i>The Gamma Function</i>;
+and other essays, online at <*http://numbers.computation.free.fr/Constants/*> (2001).
+
+[Kanemitsu <i>et al.</i> 2001]
+S. Kanemitsu, Y. Tanigawa, and M. Yoshimoto,
+<i>On the values of the Riemann zeta-function at rational arguments</i>,
+The Hardy-Ramanujan Journal 24 (2001), p. 11.
 
 [Knuth 1973]
 D. E. Knuth,

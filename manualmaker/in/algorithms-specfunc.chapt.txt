@@ -83,11 +83,9 @@ More traditional ways of calculating the Gamma function are the Stirling asympto
 
 *A Stirling's formula
 
-One of the
-
 *A Gamma function!by asymptotic series
 
-This formula is the same as the Stirling asymptotic series for the Gamma function,
+The Stirling asymptotic series for the Gamma function is
 $$ Ln(Gamma(x)) <> (x-1/2)*Ln(x)-x+1/2*Ln(2*Pi) $$
 $$ + Sum(n,1,Infinity, B[2*n]/(2*n*(2*n-1)*x^(2*n-1))) $$.
 This series is valid asymptotically for large $Abs(x)$, also for complex values of $x$ (but excluding the negative real values).
@@ -96,7 +94,7 @@ Computation of this series  up to $n=N$ requires finding the Bernoulli numbers $
 For a given (large) value of $Abs(x)$, the terms of this series decrease at first, but then start to grow.
 (Here $x$ can be a complex number.)
 There exist estimates for the error term of the asymptotic series (see [Abramowitz <i>et al.</i> 1964], 6.1.42).
-Roughly the error is of the order of the first discarded term.
+Roughly, the error is of the order of the first discarded term.
 
 We can estimate the magnitude of the terms using the asymptotic formula for the Bernoulli numbers (see below).
 After some algebra, we find that the value of $n$ at which the series starts to grow and diverge is
@@ -128,7 +126,7 @@ Therefore, the complexity of this method for given ($x$,$P$) is increased by
 $M(P)*(P*Ln(10)/Ln(P)-x)$.
 For small $x$ this will be the dominant contribution to the complexity.
 
-If the Bernoulli numbers are not precomputed, then their calculation dominates the complexity of the algorithm.
+On the other hand, if the Bernoulli numbers are not available precomputed, then their calculation dominates the complexity of the algorithm.
 
 *A Gamma function!by Sweeney-Brent method
 
@@ -146,7 +144,7 @@ $$ (Integrate(u,0,M) u^(x-1)*Exp(-u)) = M^x*Sum(n,0,Infinity, ((-1)^n*M^n)/((n+x
 This series is an alternating series and its computation requires a significant increase of working precision, but the series absolutely converges for any finite $M$.
 The second integral can be approximated by an asymptotic series using standard methods of finding the asymptotics of integrals.
 
-*REM FIXME
+*REM FIXME -- fill in the details
 
 Calculations are somewhat faster if $M$ is chosen as an integer value.
 
@@ -242,6 +240,8 @@ The numbers of this column are computed sequentially by short operations, starti
 The recurrence relation for $A[k]$ is not just some multiplication by rational numbers, but also contains an addition of $B[k]$.
 However, if we also use the rectangular method for $V(n)$, the number $x^(r*j)*B[r*j]$ will be known and so we will be able to use the recurrence relation to get $x^(r*j)*A[r*j+1]$ and all following numbers of the column.
 
+	    Derivation of Brent's method
+
 Brent's "B1" method can be derived from the Taylor series for the modified Bessel function $BesselI(nu,z)$,
 $$ BesselI(nu,z) = Sum(k,0,Infinity, z^(nu+2*k)/(2^(nu+2*k)*Gamma(nu+k+1)*k!)) $$,
 and the definition of the modified Bessel function $K0(z)$,
@@ -261,28 +261,29 @@ $$ gamma <=> S0(2*n)/I0(2*n)-Ln(n)+O(Exp(-4*n)) $$.
 
 *A Bernoulli numbers
 
-Riemann's Zeta function $zeta(s)$ is defined for complex $s$ such that $Re(s)>0$ as a sum of inverse powers of integers:
-$$zeta(s) := Sum(n,0,Infinity, 1/n^s)$$.
+Riemann's Zeta function $Zeta(s)$ is defined for complex $s$ such that $Re(s)>0$ as a sum of inverse powers of integers:
+$$Zeta(s) := Sum(n,0,Infinity, 1/n^s)$$.
 This function can be analytically continued to the entire complex plane except
 the point $s=1$ where it diverges. It satisfies several identities, for
 example, a formula useful for negative $Re(s)$,
-$$zeta(1-s) = (2*Gamma(s))/(2*Pi)^s*Cos((Pi*s)/2)*zeta(s)$$,
+$$Zeta(1-s) = (2*Gamma(s))/(2*Pi)^s*Cos((Pi*s)/2)*Zeta(s)$$,
 and a formula for even integers that helps in numerical testing,
-$$zeta(2*n) = ((-1)^(n+1)*(2*Pi)^(2*n))/(2*(2*n)!)*B[2*n]$$,
+$$Zeta(2*n) = ((-1)^(n+1)*(2*Pi)^(2*n))/(2*(2*n)!)*B[2*n]$$,
 where $B[n]$ are Bernoulli numbers.
+(The values at negative integer $n$ are given by $Zeta(-n)= -B[n+1]/(n+1)$.)
 
-The classic book [Bateman <i>et al.</i> 1953], vol. 1, describes many results concerning the properties of $zeta(s)$.
+The classic book [Bateman <i>et al.</i> 1953], vol. 1, describes many results concerning the properties of $Zeta(s)$.
 
 For the numerical evaluation of Riemann's Zeta function with arbitrary
 precision to become feasible, one needs special algorithms. Recently P. Borwein [Borwein 1995]
 gave a simple and quick approximation algorithm for positive $Re(s)$. See
-also [Borwein <i>et al.</i> 1999] for a review of methods.
+also [Borwein <i>et al.</i> 1999] for a review of all methods.
 
 *A Riemann's Zeta function!by Borwein's algorithm
 
 It is the "third" algorithm (the simplest one) from P. Borwein's paper which is implemented in
 Yacas. The approximation formula valid for $Re(s) > -(n-1)$ is
-$$ zeta(s) = 1/(2^n*(1-2^(1-s)))*Sum(j,0,2*n-1, e[j]/(j+1)^s) $$,
+$$ Zeta(s) = 1/(2^n*(1-2^(1-s)))*Sum(j,0,2*n-1, e[j]/(j+1)^s) $$,
 where the coefficients $e[j]$ for $j=0$, ..., $2*n-1$ are defined by
 $$ e[j] := (-1)^(j-1)*(Sum(k,0,j-n, n! /(k! *(n-k)!))-2^n) $$,
 and the empty sum (for $j<n$) is taken to be zero. The parameter $n$ must be
@@ -292,6 +293,10 @@ $$error < 8^(-n)$$
 for the relative precision, which means that to achieve $P$ correct digits we
 must have $n>P*Ln(10)$/$Ln(8)$.
 
+This method requires to compute $n$ times the exponential and the logarithm to find the power $(j+1)^(-s)$.
+This power can be computed in asymptotic time $O(M(P)*Ln(P))$, unless $s$ is an integer, in which case this computation is $O(M(P))$, the cost of one division by an integer $(j+1)^s$.
+Therefore the complexity of this method is at most $O(P*M(P)*Ln(P))$.
+
 The function {Zeta(s)} calls {ZetaNum(s)} to compute this approximation formula
 for $Re(s)>1/2$ and uses the identity above to get the value for other $s$.
 
@@ -300,9 +305,9 @@ for $Re(s)>1/2$ and uses the identity above to get the value for other $s$.
 For very large values of $s$, it is faster to use more direct methods implemented in the routines {ZetaNum1(s,N)} and {ZetaNum2(s,N)}.
 If the required precision is $P$ digits and
 $s > 1 + Ln(10)/Ln(P)*P$,
-then it is enough to compute the defining series for $zeta(n)$,
-$$zeta(n) <=> Sum(k,1,N, 1/k^n)$$,
-up to a certain number of terms $N$.
+then it is more efficient to compute the defining series for $Zeta(s)$,
+$$Zeta(s) <=> Sum(k,1,N, 1/k^s)$$,
+up to a certain number of terms $N$, than to use Borwein's method.
 The required number of terms $N$ is given by $$N = 10^(P/(s-1))$$.
 This is implemented in the routine
 {ZetaNum1(s)}.
@@ -310,11 +315,12 @@ For example, at 100 digits of precision it is advisable to use
 {ZetaNum1(s)} only for $s>50$, since it would require $N<110$ terms in
 the series, whereas the expression used in {ZetaNum(s)} uses
 $n=Ln(10)/Ln(8)*P$ terms (of a different series).
+The complexity of this method is $O(N)*M(P)$.
 
 *A Riemann's Zeta function!by product over primes
 
 Alternatively, one can use {ZetaNum2(n,N)} which computes the infinite product over prime numbers $p[i]$
-$$1/zeta(n) <=> Factorize(k,1,M,(1-1/p[k]^s))$$.
+$$1/Zeta(n) <=> Factorize(k,1,M,(1-1/p[k]^s))$$.
 Here $M$ must be chosen such that the $M$-th prime number $p[M]>N$.
 To obtain $P$ digits of precision, $N$ must be chosen as above, i.e.
 $N > 10^(P/(s-1))$.
@@ -322,6 +328,80 @@ Since only prime numbers $p[i]$ are used, this formula is asymptotically faster 
 (Prime numbers have to be obtained and tested but this is quick for numbers of size $n$, compared with other operations.)
 The number of primes up to $N$ is asymptotically
 $pi(N) <> N/Ln(N)$ and therefore this procedure is faster by a factor $O(Ln(N)) <> O(Ln(n))$. However, for $n<250$ it is better (with Yacas internal math) to use the {ZetaNum1} routine because it involves fewer multiplications.
+
+	    Zeta function at special arguments
+
+Recently some identities dating back to S. Ramanujan have been studied in relation to Riemann's Zeta function.
+A side result was the development of fast methods for computing the Zeta function at odd integer arguments
+(see [Borwein <i>et al.</i> 1999] for a review)
+and at small rational arguments ([Kanemitsu <i>et al.</i> 2001]).
+
+*A Riemann's Zeta function!integer arguments
+
+The value $Zeta(3)$, also known as the Apery's constant, can be computed using the following geometrically convergent series:
+$$ Zeta(3) = 5/2*Sum(k,1,Infinity, (-1)^(k-1)/(k^3*Bin(2*k,k))) $$.
+
+For other odd integers $n$ there is no general analogous formula.
+The corresponding expressions for $Zeta(5)$ and $Zeta(7)$ are
+$$ Zeta(5) =  2*Sum(k,1,Infinity, (-1)^(k-1)/(k^5*Bin(2*k,k))) - 5/2*Sum(k,1,Infinity, (-1)^(k-1)/(k^3*Bin(2*k,k))*Sum(j,1,k-1,1/j^2)) $$;
+$$ Zeta(7) =  5/2*Sum(k,1,Infinity, (-1)^(k-1)/(k^7*Bin(2*k,k))) + 25/2*Sum(k,1,Infinity, (-1)^(k-1)/(k^3*Bin(2*k,k))*Sum(j,1,k-1,1/j^4)) $$.
+
+In these series the term $Bin(2*k,k)$ grows approximately as $4^k$ and therefore one can take no more than $P*Ln(10)/Ln(4)$ terms in the series to get $P$ decimal digits of relative precision.
+
+For odd integer $n$ there are the following special relations: for $n:=Mod(3,4)$,
+$$ Zeta(n) = (2*Pi)^n/(2*(n+1)!)*Sum(k,0,(n+1)/2, (-1)^(k-1)*Bin(n+1,2*k)*B[n+1-2*k]*B[2*k]) $$
+$$ - 2*Sum(k,1,Infinity,1/(k^n*(Exp(2*Pi*k)-1))) $$,
+and for $n:=Mod(1,4)$,
+$$ Zeta(n) = (2*Pi)^n/((n+1)! *(n-1)) $$
+$$ ... *Sum(k,0,(n+1)/4,(-1)^k*(n+1-4*k)*Bin(n+1,2*k)*B[n+1-2*k]*B[2*k]) $$
+$$ -2*Sum(k,1,Infinity, (Exp(2*Pi*k)*(1+(4*Pi*k)/(k-1))-1) / (k^n*(Exp(2*Pi*k)-1)^2)) $$.
+
+These relations contain geometrically convergent series,
+and it suffices to take $P*Ln(10)/(2*Pi)$ terms to obtain $P$ decimal digits of relative precision.
+
+Finally, [Kanemitsu <i>et al.</i> 2001] gave a curious formula for the values of Riemann's Zeta function at rational values between 0 and 2 (their "Corollary 1").
+This formula is very complicated but contains a geometrically convergent series.
+
+We shall have to define several auxiliary functions to make the formula more understandable.
+We shall be interested in the values of $Zeta(p/N)$ where $p$, $N$ are integers.
+For integer $h$, $N$ such that $0<=h<=N$,
+and for arbitrary real $x$,
+$$ Zeta((2*h-1)/N) = (N*x)/Pi*((2*Pi)/x)^((2*h-1)/N) * Sin((Pi*(2*h-1))/(2*N)) * L(x,N,h) $$,
+$$ Zeta((N-2*h+1)/N) = N/Gamma((N-2*h+1)/N)*x^((N-2*h+1)/N)*L(x,N,h) $$.
+Here the function $L(x,N,h)$ (containing the "Lambert series") is defined by
+$$ L(x,N,h) := Sum(n,1,Infinity, n^(N-2*h)/(Exp(n^N*x)-1))-S(x,N,h)$$
+$$+1/2*Zeta(-N+2*h)-Zeta(2*h)/x $$,
+and the function $S(x,N,h)$ is defined by
+$$ S(x,N,h) := (-1)^(h+1)/N*((2*Pi)/x)^((N-2*h+1)/N) $$
+$$ ... * Sum(n,0,Infinity, 1/n^((2*h-1)/N) * (Sum(k,1,N/2,f(2*k-1,x,n,N,h)))) $$
+for even $N$, and by
+$$ S(x,N,h) := (-1)^(h+1)/N*((2*Pi)/x)^((N-2*h+1)/N) $$
+$$ ... * Sum(n,0,Infinity, 1/n^((2*h-1)/N) * (f(0,x,n,N) + Sum(k,1,(N-1)/2,f(2*k,x,n,N,h)))) $$
+for odd $N$.
+The auxiliary function $f(j,x,n,N,h)$ is defined by
+$$ f(0,x,n,N) := Exp(-A)/(2*Sinh(A)) $$,
+$$ f(j,x,n,N,h):=(Cos(2*B+C) - Exp(-2*A)*Cos(C)) / (Cosh(2*A)-Cos(2*B)) $$
+for integer $j>=1$, and in these expressions
+$$ A:=Pi*((2*Pi*n)/x)^(1/N)*Cos((Pi*j)/(2*N)) $$,
+$$ B:=Pi*((2*Pi*n)/x)^(1/N)*Sin((Pi*j)/(2*N)) $$,
+and $C:=(Pi*j)/2*(2*h-1)/N$.
+
+Practical calculations using this formula are of the same asymptotic complexity as Borwein's method above. (It is not clear whether this method has a significant computational advantage.)
+The value of $x$ can be chosen at will, so we should find such $x$ as to minimize the cost of computation.
+There are two series to be computed: the terms in the first one decay as $Exp(-n^N*x)$ while the terms in the second one (containing $f$) decay only as
+$$ Exp(-2*A)<>Exp(-2*Pi*((2*Pi*n)/x)^(1/N)) $$.
+Also, there are about $N$ copies of the second series.
+Clearly, a very small value should be chosen for $x$ so that the second series converges somewhat faster.
+
+For a target precision of $P$ decimal digits, the required numbers of terms $n[1]$, $n[2]$ for the first and the second series can be estimated as
+$ n[1]<=>((P*Ln(10))/x)^(1/N) $,
+$ n[2]<=>x/(2*Pi)*((P*Ln(10))/(2*Pi))^N $.
+(Here we assume that $N$, the denominator of the fraction $p/N$, is at least $10$.
+This scheme is impractical for very large $N$ because it requires to add $O(N)$ slightly different variants of the second series.)
+The total cost is proportional to the time it takes to compute $Exp(x)$ or $Cos(x)$ and to roughly $n[1]+N*n[2]$.
+The value of $x$ that minimizes this cost function is approximately
+$$ x<=>(2*Pi)/N^2*((2*Pi)/(P*Ln(10)))^(N-1) $$.
+With this choice, the asymptotic total cost is $O(P*M(P))$.
 
 		Lambert's $W$ function
 
