@@ -1,6 +1,8 @@
 ;;                 Yacas editing support package
 
 (require 'font-lock)
+(require 'yacas-names)
+(require 'comint)
 (provide 'yacas)
 
 
@@ -138,32 +140,85 @@
     (yacas-add-keys map)
     (yacas-add-process-keys map)
     (define-key map "\C-c?" 'yacas-info-help)
+    (define-key map (kbd "M-TAB") 'yacas-complete)
     (setq yacas-mode-map map)))
 
-;; Font lock 
-(defconst yacas-font-lock-keywords (purecopy
-  (list
+;;; Font-locking 
+(setq yacas-match-symbol-predicates
+      (regexp-opt yacas-symbol-predicates 'word))
+
+(setq yacas-match-predicates 
+      (regexp-opt yacas-predicates 'word))
+
+(setq yacas-match-functions 
+      (regexp-opt yacas-functions 'word))
+
+(setq yacas-match-constants
+      (regexp-opt yacas-constants 'word))
+
+(setq yacas-match-control
+      (regexp-opt yacas-control 'word))
+
+(setq yacas-match-symbol-operators
+      (regexp-opt yacas-symbol-operators))
+
+(defconst yacas-font-lock-keywords
+  `(
    ; Constants
-   '("EndOfFile\\|False\\|I\\(?:nfinity\\)?\\|Pi\\|True"
-     0 font-lock-constant-face nil)
+    (,yacas-match-constants (0 font-lock-constant-face nil))
    ; Control flow
-   '("F\\(?:or\\(?:Each\\)?\\|unction\\)\\|If\\|Local\\|MacroLocal\\|Prog\\|Until\\|While"
-     0 font-lock-keyword-face nil)
+    (,yacas-match-control  (0 font-lock-keyword-face nil))
    ; Operators
-   '("\\+\\+\\|--\\|\\.\\.\\|/@\\|:=\\|<<\\|>>\\|[]!%(-+/:;@[{}^-]"
-     0 font-lock-keyword-face nil)
-   ;Predicates;
-   '("!=\\|<=\\|>=\\|And\\|CanProve\\|Equals\\|GreaterThan\\|Is\\(?:Atom\\|Bo\\(?:olean\\|und\\)\\|Constant\\|Even\\|F\\(?:reeOf\\|unction\\)\\|Generic\\|Hermitean\\|In\\(?:fi\\(?:nity\\|x\\)\\|teger\\)\\|List\\|Matrix\\|N\\(?:egative\\(?:\\(?:Integ\\|Numb\\)er\\)\\|o\\(?:n\\(?:Object\\|ZeroInteger\\)\\|tZero\\)\\|umber\\)\\|Odd\\|P\\(?:os\\(?:itive\\(?:\\(?:Integ\\|Numb\\)er\\)\\|tfix\\)\\|r\\(?:efix\\|ime\\(?:Power\\)?\\)\\)\\|Rational\\|String\\|Unitary\\|Zero\\(?:Vector\\)?\\)\\|LessThan\\|Math\\(?:And\\|Not\\|Or\\)\\|Not\\|Or\\|[<=>]"
-     0 font-lock-type-face nil)
-   ; Functions ;
-   '("A\\(?:bs\\|ntiDeriv\\|pp\\(?:end\\|ly\\)\\|r\\(?:c\\(?:Cos\\|\\(?:Si\\|Ta\\)n\\)\\|ray\\(?:Create\\(?:FromList\\)?\\|Get\\|S\\(?:et\\|ize\\)\\)\\)\\|ssoc\\(?:Indices\\)?\\|tom\\|verage\\)\\|B\\(?:aseVector\\|i\\(?:gOh\\|n\\|t\\(?:And\\|\\(?:O\\|Xo\\)r\\)\\)\\|odied\\|ubbleSort\\)\\|C\\(?:eil\\|h\\(?:aracteristicEquation\\|eck\\)\\|lear\\|o\\(?:Factor\\|ef\\|m\\(?:mutator\\|plex\\)\\|n\\(?:cat\\(?:Strings\\)?\\|jugate\\|t\\(?:Frac\\|ains\\|ent\\)\\)\\|s\\|unt\\)\\|rossProduct\\|url\\)\\|D\\(?:e\\(?:cimal\\|f\\(?:Load\\|aultDirectory\\)\\|gree\\|lete\\|nom\\|structive\\(?:Append\\|Delete\\|Insert\\|Re\\(?:\\(?:plac\\|vers\\)e\\)\\)\\|terminant\\)\\|i\\(?:agonalMatrix\\|fference\\|v\\(?:erge\\)?\\)\\|llLoad\\|rop\\)\\|E\\(?:cho\\|igenV\\(?:\\(?:alue\\|ector\\)s\\)\\|liminate\\(?:\\)?\\|val\\|x\\(?:ample\\|p\\(?:and\\)?\\)\\)\\|F\\(?:a\\(?:ctor\\(?:ize\\|s\\)?\\|st\\(?:Arc\\(?:Cos\\|\\(?:Si\\|Ta\\)n\\)\\|Cos\\|Exp\\|Log\\|Power\\|\\(?:Si\\|Ta\\)n\\)\\)\\|i\\(?:bonacci\\|llList\\|nd\\(?:File\\)?\\)\\|l\\(?:at\\(?:Copy\\|ten\\)\\|oor\\)\\|rom\\(?:Base\\|File\\|String\\)\\|ullForm\\)\\|G\\(?:cd\\|e\\(?:nericTypeName\\|tPrecision\\)\\)\\|H\\(?:e\\(?:ad\\|lp\\)\\|istorySize\\|old\\(?:Arg\\)?\\)\\|I\\(?:dentity\\|m\\|n\\(?:Product\\|fix\\|sert\\|te\\(?:grate\\|rsection\\)\\|verse\\(?:Taylor\\)?\\)\\)\\|L\\(?:a\\(?:grangeInterpolant\\|zyGlobal\\)\\|cm\\|e\\(?:adingCoef\\|ftPrecedence\\|ngth\\|viCivita\\)\\|i\\(?:mit\\|s\\(?:pRead\\|t\\(?:\\(?:FromArra\\|if\\)y\\)?\\)\\)\\|n\\|o\\(?:ad\\|calSymbols\\)\\)\\|M\\(?:a\\(?:cro\\(?:Clear\\|RuleBase\\|Set\\)\\|keVector\\|pSingle\\|th\\(?:A\\(?:bs\\|dd\\|rc\\(?:Cos\\|\\(?:Si\\|Ta\\)n\\)\\)\\|C\\(?:eil\\|os\\)\\|Div\\(?:ide\\)?\\|Exp\\|Floor\\|Gcd\\|Log\\|M\\(?:od\\|ultiply\\)\\|Power\\|S\\(?:in\\|\\(?:qr\\|ubtrac\\)t\\)\\|Tan\\)\\|xEvalDepth\\|[px]\\)\\|in\\(?:or\\)?\\|o\\(?:d\\|nic\\)\\)\\|N\\(?:ew\\(?:Line\\|ton\\)\\|ormalize\\|rArgs\\|th\\|umer\\)\\|O\\(?:bject\\|pPrecedence\\)\\|P\\(?:AdicExpand\\|Solve\\|a\\(?:rtition\\|tch\\(?:Load\\|String\\)\\)\\|ermutations\\|o\\(?:p\\(?:Back\\|Front\\)?\\|stfix\\)\\|r\\(?:e\\(?:cision\\|fix\\|tty\\(?:Form\\|Printer\\)\\)\\|imitivePart\\|og\\)\\|slq\\|ush\\)\\|R\\(?:a\\(?:dSimp\\(?:\\)?\\|ndom\\(?:IntegerVector\\|Poly\\)?\\|tionalize\\)\\|e\\(?:ad\\(?:Token\\)?\\|moveDuplicates\\|place\\|versePoly\\)?\\|ight\\(?:\\(?:Associativ\\|Precedenc\\)e\\)\\|ound\\|uleBase\\)\\|S\\(?:e\\(?:cure\\|lect\\|t\\(?:HelpBrowser\\)?\\)\\|hift\\(?:\\(?:Lef\\|Righ\\)t\\)\\|i\\(?:gn\\|mplify\\(?:\\)?\\|n\\)\\|olve\\(?:Matrix\\)?\\|pace\\|qrt\\|t\\(?:ring\\|ubApiC\\(?:F\\(?:ile\\|unction\\)\\|Include\\|Remark\\|S\\(?:etEnv\\|\\(?:hortIntegerConstan\\|t\\(?:ar\\|ruc\\)\\)t\\)\\)\\)\\|u\\(?:bst\\|chThat\\(?:\\)?\\|m\\)\\|wap\\|ystemCall\\)\\|T\\(?:a\\(?:ble\\(?:Form\\)?\\|il\\|ke\\|n\\|ylor\\)\\|o\\(?:Base\\|File\\|String\\)\\|r\\(?:a\\(?:ce\\(?:Exp\\|Rule\\|Stack\\)?\\|npose\\)\\|igSimpCombine\\(?:\\)?\\|uncRadian\\|yRetract\\)\\|ype\\)\\|U\\(?:n\\(?:Fence\\|List\\|\\(?:flatte\\|io\\)n\\)\\|se\\)\\|VarList\\|W\\(?:ithValue\\|rite\\(?:String\\)?\\)\\|Zero\\(?:Matrix\\|Vector\\)\\|[DN]"
-     0 font-lock-function-name-face nil)
-   '("\\W\\\"\\([^\\\"]*\\)\\\"\\W" 
-     1 font-lock-string-face t)
-   '("/\\*\\(.*\\)\\*/" 
-     0 font-lock-comment-face t)
-   '("//.*$" 0 font-lock-comment-face t)
-   "Additional expressions to highlight in Yacas mode.")))
+    (,yacas-match-symbol-operators (0 font-lock-keyword-face nil))
+   ;Predicates
+    (,yacas-match-symbol-predicates (0 font-lock-type-face nil))
+    (,yacas-match-predicates (0 font-lock-type-face nil))
+   ; Functions 
+    (,yacas-match-functions (0 font-lock-function-name-face nil))
+   ; Strings 
+    ("\\W\\\"\\([^\\\"]*\\)\\\"\\W" (1 font-lock-string-face t))
+   ; Comments
+    ("/\\*\\(.*\\)\\*/" (0 font-lock-comment-face t))
+    ("//.*$" (0 font-lock-comment-face t)))
+   "Expressions to highlight in Yacas mode.")
+
+;;; Completion
+(defvar yacas-words nil
+  "A list of words to use in completions")
+
+(setq yacas-words
+      (append yacas-predicates 
+              yacas-constants 
+              yacas-functions 
+              yacas-control 
+              yacas-words))
+
+(setq yacas-words (mapcar (lambda (x) (list x)) yacas-words))
+
+(defun yacas-word-beginning ()
+  (save-excursion
+    (backward-word 1)
+    (point)))
+
+(defun yacas-complete ()
+  "Dynamically complete word from list of candidates.
+A completions listing will be shown in a help buffer 
+if completion is ambiguous."
+  (interactive)
+  (let* ((stub  (buffer-substring-no-properties 
+                 (yacas-word-beginning) (point)))
+	 (completions (all-completions stub yacas-words)))
+    (cond ((null completions)
+	   (message "No completions of %s" stub))
+	  ((= 1 (length completions))	; Gotcha!
+	   (let ((completion (car completions)))
+	     (if (string-equal completion stub)
+		 (message "Sole completion")
+	       (insert (substring completion (length stub)))
+	       (message "Completed"))))
+	  (t				; There's no unique completion.
+             (comint-dynamic-list-completions completions)))))
+
 
 (defun yacas-mode ()
   "This is a mode intended to support program development in Yacas.
@@ -620,6 +675,7 @@ a yacas-syntax-table."
     (set-syntax-table yacas-mode-syntax-table)
     (setq yacas-shell-map (copy-keymap shell-mode-map))
     (define-key yacas-shell-map "\M-\C-k"    'yacas-kill-job) 
+    (define-key yacas-shell-map (kbd "M-TAB") 'yacas-complete)
     (define-key yacas-shell-map "\C-c=" 'yacas-recenter-output-buffer)
     (define-key yacas-shell-map "\C-a" 'comint-bol)
     (define-key yacas-shell-map "\C-c\C-h" 'yacas-help)
