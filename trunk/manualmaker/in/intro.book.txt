@@ -27,7 +27,7 @@ This makes it rather platform-independent. Apart from Unix-like systems, Yacas h
 compiled on Windows and on EPOC32, aka Psion (which doesn't come with a standard C++
 library!).
 The source code to compile Yacas for Windows can be found at the
-<*Sourceforge repository|http://www.sourceforge.net/projects/yacas/*>.
+<*Sourceforge repository|http://sourceforge.net/projects/yacas/*>.
 
 For Unix, compilation basically amounts to the standard sequence
 
@@ -431,37 +431,36 @@ Here is an example of a semi-real numerical calculation using Yacas. The task wa
 
 The function $g(q,phi,chi)$ is defined by
 $$g(q,phi,chi)=1/(2*Pi)*Sin(q*phi)/Sin(2*q*phi)+ 1/Pi*Sum(n, 0, Infinity, Cos(n*chi) * Sin(Sqrt(q^2-n^2)*phi) / Sin(Sqrt(q^2-n^2)*phi) )$$
-
 Here $q$, $phi$ and $chi$ are numerical parameters of the problem. We would like to plot this series evaluated at fixed $q$ and $phi$ as function of $chi$ between 0 and $2*Pi$.
 
 To solve this problem, we prepare a separate file with the following Yacas code:
 
 	  /* Auxiliary function */
 	g1(n, q, phi, chi) := [
-		Local(s);
-		s := q^2-n^2;
-		N(Cos(n*chi) * If(s=0,
-			1/2,	/* Special case of s=0: avoid division by 0 */
-			Sin(Sqrt(s)*phi)/Sin(2*Sqrt(s)*phi)	/* now s != 0 */
-				/* note that Sqrt(s) may be imaginary here */
-			)
-		);
+	    Local(s);
+	    s := q^2-n^2;
+	    N(Cos(n*chi) * If(s=0,
+	        1/2,    /* Special case of s=0: avoid division by 0 */
+	        Sin(Sqrt(s)*phi)/Sin(2*Sqrt(s)*phi) /* now s != 0 */
+	            /* note that Sqrt(s) may be imaginary here */
+	        )
+	    );
 	];
-		/* Main function */
+	    /* Main function */
 	g(q, phi, chi) := [
-		Local(M, n);
-		M := 16; /* Exp(-M) will be the precision */
-			/* Use N() to always force evaluation */
-		N(1/2*Sin(q*phi)/Sin(2*q*phi)) +
-			/* Estimate the necessary number of terms in the series */
-		Sum(n, 1, N(1+Sqrt(q^2+M^2/phi^2)), g1(n, q, phi, chi)) ;
+	    Local(M, n);
+	    M := 16; /* Exp(-M) will be the precision */
+	        /* Use N() to always force evaluation */
+	    N(1/2*Sin(q*phi)/Sin(2*q*phi)) +
+	        /* Estimate the necessary number of terms in the series */
+	    Sum(n, 1, N(1+Sqrt(q^2+M^2/phi^2)), g1(n, q, phi, chi)) ;
 	];
-		/* Parameters */
+	    /* Parameters */
 	q:=3.5;
 	phi:=2;
-		/* Make a function for plotting: it must have only one argument */
+	    /* Make a function for plotting: it must have only one argument */
 	f(x) := g(q, phi, x);
-		/* Plot from 0 to 2*Pi with 80 points */
+	    /* Plot from 0 to 2*Pi with 80 points */
 	GnuPlot(0, N(2*Pi), 80, f(x));
 
 Name this file "{fun1}" and execute this script by typing
