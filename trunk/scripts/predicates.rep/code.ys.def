@@ -30,6 +30,8 @@ IsOrthogonal
 IsUnitary
 IsVariable
 IsDiagonal
+IsUpperTriangular
+IsLowerTriangular
 IsNumericList
 HasExpr
 HasFunc
