@@ -1,5 +1,140 @@
 
 
+f:=x^8+x^6+10*x^4+10*x^3+8*x^2+2*x+8;
+p:=13;
+deg := Degree(f,x);
+u := Coef(f,x,0 .. (deg));
+
+Row(n):=
+[
+  Local(md,cf);
+  md :=Mod(x^(n*p),f);
+  cf := Coef(md,x,0 .. (deg-1));
+  Map("Mod",{cf,FillList(p,8)});
+];
+
+Pat(a,deg,p):=
+[
+  Local(t,i);
+  t:=a[1];
+  For(i:=1,i<=(deg),i++)
+  [
+    a[i] := Mod(a[i+1]-t*u[(deg+1)-i],p);
+  ];
+];
+
+ShowPat(a,Q):=
+[
+  Local(r);
+  r:=FlatCopy(a);
+  r:=DestructiveReverse(r);
+  r:=Tail(r);
+  DestructiveAppend(Q,r);
+];
+a := FillList(0,deg+1);
+a[deg] := 1;
+Q:={};
+ShowPat(a,Q);
+For (k:=1,k<deg,k++)
+[
+  For(j:=1,j<=p,j++)
+  [
+    Pat(a,deg,p);
+  ];
+  ShowPat(a,Q);
+];
+
+Q:=Q-Identity(deg);
+
+Q:=Transpose(Q); /* Transpose, because we want to access columns */
+/* TableForm(Q); */
+
+NDimod(n,p):=
+[
+  Local(m);
+  m:=1;
+  While(Mod(m*n,p) != p-1) [m++;];
+  m;
+];
+NListMod(list,p):=
+[
+  Local(i,nr);
+  nr:=Length(list);
+  For(i:=1,i<=nr,i++) [list[i] := Mod(list[i],p);];
+  list;
+];
+
+NullSpaceAlg(Q,deg,v):=
+[
+  Local(c,r,k);
+  c:=FillList(-1,deg);
+  r:=0;
+  For(k:=1,k<=deg,k++)
+  [
+    Local(j,jfound);
+    jfound:=0;
+    For(j:=1,j<=deg And jfound=0,j++)
+    [
+      If(Q[j][k]!=0 And c[j]<0,jfound:=j);
+    ];
+    If(jfound != 0,
+    [
+      Local(ak,i);
+      ak:=Q[jfound][k];
+
+      Q[jfound] := NListMod(Q[jfound] * NDimod(ak,p),p); /* (-1/ak); */
+      For(i:=1,i<=deg,i++)
+      [
+        If(i!=jfound,
+          Q[i] := NListMod(Q[i] + Q[i][k]*Q[jfound],p)
+          );
+      ];
+      c[jfound] := k;
+/*    TableForm(Q); */
+    ],
+    [
+      Local(vnew,j,s);
+      r:=r+1;
+      vnew:=FillList(0,deg);
+      vnew[k] := 1;
+      For(s:=1,s<=deg,s++)
+        For(j:=1,j<=deg,j++)
+        [
+          If(c[s] = j,vnew[j]:= Q[s][k]);
+        ];
+/*        Echo({r,vnew});*/
+        DestructiveAppend(v,vnew);
+    ]);
+  ];
+];
+
+v:={};
+NullSpaceAlg(Q,deg,v);
+/* TableForm(v); */
+
+For(j:=2,j<=Length(v),j++)
+[
+  Local(try,s);
+  try:=Sum(v[j]*x^(0 .. (deg-1)));
+  For(s:=0,s<p,s++)
+  [
+    Local(res);
+    Echo({s});
+/*TODO We need a modular Gcd for this one??? */
+    res:=Gcd(f,try-s);
+    If(Degree(res)>0, Echo({s,res}));
+/*
+    Echo({try});
+    Echo({s,res});
+*/    
+  ];
+/*  Echo({Sum(v[j]*x^(0 .. (deg-1)))});*/
+];
+
+EndOfFile;
+
+
+
 
 LogicTrivials :=
 {
