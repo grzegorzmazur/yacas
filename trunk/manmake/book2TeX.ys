@@ -89,11 +89,11 @@ HasTexChars(x) := [
 HtmlTerm(x) :=
 If(x = "Yacas",
 	"\\textsc{Yacas}",
-	If(
+	"{\\small " : If(
 		HasTexChars(x),
 		"\\verb|" : x : "|",
 		"\\texttt{" : x : "}"
-	)
+	) : "}"
 );
 
 TexEscapeTT(x) := [

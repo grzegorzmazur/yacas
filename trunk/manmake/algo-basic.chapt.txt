@@ -557,7 +557,7 @@ Note that an exp-number $z$ might be positive or negative, e.g.
 $z= -Exp(M*10^E)$.
 
 Arithmetic operations can be applied to the exp-numbers.
-However, exp-large arithmetic is of limited use because of almost certainly critical loss of precision.
+However, exp-large arithmetic is of limited use because of an almost certainly critical loss of precision.
 The power and logarithm operations can be meaningfully performed on exp-numbers $z$.
 For example, if $z=Exp(M*10^E)$ and $p$ is a normal floating-point number, then $z^p=Exp(p*M*10^E)$ and $Ln(z)=M*10^E$.
 We can also multiply or divide two exp-numbers.
@@ -566,7 +566,7 @@ Similarly, adding $z$ to anything else would result in a total underflow, since 
 So if $z1$ and $z2$ are exp-numbers, then $z1+z2$ is simply equal to either $z1$ or $z2$ depending on which of them is larger.
 
 We find that an exp-number $z$ acts as an effective "infinity" compared with normal numbers.
-But exp-numbers should not be used as a device for computing limits: the unavoidable underflow will almost certainly produce wrong results.
+But exp-numbers cannot be used as a device for computing limits: the unavoidable underflow will almost certainly produce wrong results.
 For example, trying to verify 
 $$ (Limit(x,0) (Exp(x)-1)/x)  = 1 $$
 by substituting $x=1/z$ with some exp-number $z$ gives 0 instead of 1.
@@ -598,4 +598,4 @@ A "computation" with exp-numbers is essentially a floating-point computation wit
 A practical problem that needs numbers of this magnitude can probably be restated in terms of more manageable logarithms of such numbers.
 In practice, exp-numbers could be useful not as a means to get a numerical answer,
 but as a warning sign of critical overflow or underflow.
-*FOOT Yacas currently does not implement exp-numbers or any other guards against overflow and underflow.
+*FOOT Yacas currently does not implement exp-numbers or any other guards against overflow and underflow. If a decimal exponential becomes too large, an incorrect answer may result.

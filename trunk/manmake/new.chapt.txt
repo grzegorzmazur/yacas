@@ -162,14 +162,15 @@ it is best to keep this in mind and keep the code passed to
 
 
 
-			The Yacas internal numeric library
+			The Yacas arithmetic library
 
 		Introduction
 
-Although there are quite good free arbitrary precision arithmetic
-libraries out there, {Yacas} comes with its own (default) implementation.
-Other libraries can be used too, but the addition of a small native 
-arithmetic library reduces dependencies on other packages.
+{Yacas} comes with its own arbitrary-precision arithmetic library,
+to reduce dependencies on other software.
+Several excellent and free arbitrary precision arithmetic
+libraries are available (such as {gmp} and {CLN}).
+These libraries can optionally be linked with the {Yacas} engine.
 
 This part describes how the arithmetic library is embedded into
 {Yacas}, and how to embed other arithmetic libraries.
@@ -178,7 +179,8 @@ This part describes how the arithmetic library is embedded into
 
 The interpreter (as of version 1.0.54) has the concept of an <i>atom</i>, an object
 which has a string representation.
-Numbers are also atoms and are initially entered into Yacas as strings.
+Numbers are also atoms and are initially entered into Yacas as decimal strings.
+*FOOT There are functions to work with numbers in non-decimal bases, but direct input/output of numbers is supported only in decimal notation.
 As soon as a calculation needs
 to be performed, the string representation is used to construct
 an object representing the number, in an internal representation that
@@ -189,28 +191,33 @@ arithmetic operations such as addition and multiplication, through a set of clas
 
 Integers and floating-point numbers are handled by the same class.
 
-The {BigNumber} class delegates the actual arithmetic operations to the two auxiliary classes, {BigInt} and {BigFloat}.
-These two classes are direct wrappers of the underlying arithmetic library.
+The {BigNumber} class delegates the actual arithmetic operations to the auxiliary classes {BigInt} and {BigFloat}.
+These two classes are direct wrappers of an underlying arithmetic library.
 The library implements a particular internal representation of numbers.
-Yacas must be compiled to use a specific number library.
-This library will be hidden from the class {BigNumber} by the classes {BigInt} and {BigFloat}.
+Yacas must be compiled to use a specific number library (one cannot switch to another arithmetic library at runtime).
 
-The class {BigNumber} performs precision tracking, floating-point formatting, error reporting, integer/floating conversions and so on, while {BigInt} and {BigFloat} only concern themselves with low-level arithmetic operations on integer and floating-point numbers, respectively.
-In this way Yacas does not require the arithmetic library to implement various extra features it needs.
+The class {BigNumber} performs precision tracking, floating-point formatting, error reporting, type checking and so on, while {BigInt} and {BigFloat} only concern themselves with low-level arithmetic operations on integer and floating-point numbers, respectively.
+In this way Yacas isolates higher-level features like precision tracking from the lower-level arithmetic operations.
+The number objects in a library should only be able to convert themselves to/from a string and perform basic arithmetic.
 
-It is impossible to have several number libraries operating at the same time.
+It is impossible to have several alternative number libraries operating at the same time.
+[In principle, one might write the classes {BigInt} and {BigFloat}
+as wrappers of two different arithmetic libraries, one for integers,
+but one cannot have two different libraries for integers at the same time.]
 Having several libraries in the same Yacas session does not seem to be very useful;
 it would also incur a lot of overhead because one would have to convert the numbers from one internal library representation to another.
-To compare the performance or for testing purposes, one can compile several copies of Yacas against different libraries.
+For performance benchmarking or for testing purposes one can compile separate versions of {Yacas} linked against different arithmetic libraries.
 
-The number object should be able to render itself back to a string,
-which can then be passed back to the interpreter as a result, if so needed.
+To embed an arbitrary-precision arithmetic library into Yacas, one needs to write two wrapper classes, {BigInt} and {BigFloat}.
+(Alternatively, one could write a full {BigNumber} wrapper class but that would result in code duplication unless the library happens to implement a large portion of the {BigNumber} API.
+There is already a standard implementation of {BigNumber} through {BigInt} and {BigFloat} in the file {numbers.cpp}.)
+The required API for the {BigNumber} class is described below.
 
 
+		Interface of the {BigNumber} class
 
-		Interface to the objects
 
-The following code demonstrates how to use the number objects.
+The following C++ code demonstrates how to use the objects of the {BigNumber} class.
 
 	// Calculate z=x+y where x=10 and y=15
 	BigNumber x("10",100,10);
@@ -242,16 +249,13 @@ specific object representing the number inside the numeric class
 is shared with other objects, it should not allow the destructive
 operation, as then other objects might start behaving differently.
 
-
-		Interface definition of the {BigNumber} class
-
 The basic arithmetic class {BigNumber} defines some simple arithmetic operations,
 through which other more elaborate functions can be built.
-Particular implementations of the multiple-precision library will be wrapped by the {BigNumber} class, and the rest of the Yacas core should only use the {BigNumber} API and should be ignorant of those implementations.
+Particular implementations of the multiple-precision library are wrapped by the {BigNumber} class, and the rest of the Yacas core should only use the {BigNumber} API.
 
 This API will not be completely exposed to Yacas scripts, because some of these functions are too low-level.
-(For the functions that seem to be useful for Yacas, suggested Yacas bindings are given below.)  
 Among the low-level functions, only those that are very useful for optimization will be available to the Yacas scripts.
+(For the functions that seem to be useful for Yacas, suggested Yacas bindings are given below.)  
 But the full API will be available to C++ plugins, so that multiple-precision algorithms could be efficiently implemented when performance is critical.
 Intermediate-level arithmetic functions such as {MathAdd}, {MathDiv}, {MathMod} and so on could be implemented either in the Yacas core or in plugins, through this low-level API.
 The library scripts will be able to transform numerical expressions such as {x:=y+z} into calls of these intermediate-level functions.
@@ -263,7 +267,7 @@ Here we list the basic arithmetic operations that need to be implemented by a mu
 The operations are divided into several categories for convenience.
 Equivalent Yacas script code is given, as well as examples of C++ usage.
 
-1. Input/output operations.
+*HEAD 1. Input/output operations.
 *	{BigNumber::SetTo} -- Construct a number from a string in given base.
 The format is the standard integer, fixed-point and floating-point representations of numbers.
 When the string does not contain the period character "{.}" or the exponent character "{e}" (the exponent character "{@}" should be used for $base>10$),
@@ -276,7 +280,7 @@ Here we encounter a problem of ambiguous hexadecimal exponent:
 	x.SetTo("2a8c.e2", 100, 16);
 It is not clear whether the above number is in exponential notation or not.
 But this is hopefully not a frequently encountered situation.
-We assume that the exponent character for $base>10$ is "{@}" and not "{e}".
+We may assume (following the example of the {gmp} library) that the exponent character for $base>10$ is "{@}" and not "{e}".
 *	The same function is overloaded to construct a number from a platform number (a 32-bit integer or a double precision value).
 C++:
 	x.SetTo(12345); y.SetTo(-0.001);
@@ -292,7 +296,8 @@ C++:
 C++:
 	double a=x.Double();
 
-2. Basic object manipulation. These operations, as a rule, do not need to change the numerical value of the object.
+*HEAD 2. Basic object manipulation.
+These operations, as a rule, do not need to change the numerical value of the object.
 *	{BigNumber::SetTo} -- Copy a number, {x := y}.
 This operation should copy the numerical value exactly, without change.
 C++:
@@ -312,11 +317,14 @@ will return {false}.
 (Both types are represented by the same class {BigNumber}, and we need to be able to distinguish them.)
 C++:
 	x.IsInt()==true;
-*	{BigNumber::IsIntValue} -- Check whether the number {x} has an integer value. (Not necessarily the same as the previous function, because a floating-point type can also have an integer value.)
+Yacas: part of the implementation of {IsInteger(x)}.
+*	{BigNumber::IsIntValue} -- Check whether the number {x} has an integer value.
+(Not the same as the previous function, because a floating-point type can also have an integer value.)
+Always returns {true} on objects of integer type.
 C++:
 	x.IsIntValue()==true;
-Yacas: part of the implementation of
-	IsInteger(x)
+Yacas:
+	FloatIsInt(x)
 *	{BigNumber::BecomeInt}, {BigNumber::BecomeFloat} -- Change the type of a number from integer to float without changing the numerical value.
 The precision is either set automatically (to enough digits to hold the integer), or explicitly to a given number of bits. (Roundoff might occur.)
 Change the type from float to integer, rounding off if necessary.
@@ -324,7 +332,7 @@ C++:
 	x.BecomeInt(); x.BecomeFloat();
 	x.BecomeFloat(100);
 
-3. Basic arithmetic operations.
+*HEAD 3. Basic arithmetic operations.
 Note that here "precision" always means the number of significant <i>bits</i>, i.e. digits in the base 2, <i>not decimal digits</i>.
 *	{BigNumber::LessThan} -- Compare two objects, {x<y}. Returns {true} if the numerical comparison holds, regardless of the value types (integer or float).
 C++:
@@ -338,38 +346,42 @@ C++:
 Yacas:
 	MathFloor(x)
 If there are enough digits in {x} to compute its integer part, then the result is an exact integer.
-Otherwise the floating-point value {x} is returned unchanged.
+Otherwise the floating-point value {x} is returned unchanged and an error message may be printed.
 *	{BigNumber::GetExactBits} -- Report the current precision of a number {x} in bits.
 C++:
 	prec=x.GetExactBits();
 Yacas:
 	GetExactBits(x)
 Every floating-point number contains information about how many significant bits of mantissa it currently has.
-(A particular implementation may hold more bits for convenience but they may not be guaranteed to be correct.)
-Integer numbers are always exact and do not have a concept of precision.
-This function is undefined on integers.
-The precision of a given number is changed automatically by arithmetic operations (due to round-off errors), by conversions from strings (to the given precision), or manually by the function {Precision}.
-It is not strictly guaranteed that {Precision} returns the number of correct digits.
-Rather, this number of digits is intended as an upper limit of the real achieved precision and as a rough measure of round-off errors.
+A particular implementation may hold more bits for convenience but the additional bits may be incorrect.
+[Integer numbers are always exact and do not have a concept of precision.
+This function should not be used on integers.]
+The precision of a given number is changed automatically by arithmetic operations, by conversions from strings (to the given precision), or manually by the function {SetExactBits}.
+It is not strictly guaranteed that {GetExactBits} returns the number of correct bits.
+Rather, this number of bits is intended as rough lower bound of the real achieved precision.
 (It is difficult to accurately track the round-off errors accumulated after many operations, without a time-consuming interval arithmetic or another similar technique.)
+Note: the number of bits is a platform signed integer (C++ type {long}).
 *	{BigNumber::SetExactBits} -- Set the precision of a number {x} and truncate (or expand) it to a given floating-point precision of {n} bits.
 This has an effect of converting the number to the floating-point type with {n} significant bits of mantissa.
-(No effect on integers.)
+[No effect on integers.]
 Note that the {Floor} function is not similar to {Precision} because
-1) {Floor} always converts to an integer value while {Precision} converts generally to a floating-point value,
+1) {Floor} always converts to an integer value while {Precision} converts to a floating-point value,
 2) {Floor} always decreases the number while {Precision} tries to find the closest approximation.
-For example, if $x= -1123.38$, then {x.Precision(1)} should return {-1024.}, since that's the best one-bit floating-point approximation.
-However, {Floor(-1123.38)} returns {-1124}.
+For example, if $x= -1123.38$ then {x.Precision(1)} should return "{-1024.}" which is the best one-bit floating-point approximation.
+However, {Floor(-1123.38)} returns {-1124}
+(the largest integer not greater than {-1123.38}).
 C++:
 	x.SetExactBits(300);
 Yacas:
 	SetExactBits(x, 300)
+Note: the number of bits is a platform signed integer (C++ type {long}).
 *	{BigNumber::Add} -- Add two numbers, {x := y+z}, at given precision.
 C++:
 	x.Add(y,z, 300);
 Yacas:
 	MathAdd(x,y)
 When subtracting almost equal numbers, a loss of precision will occur.
+The precision of the result will be adjusted accordingly.
 *	{BigNumber::Negate} -- Negate a number, {x := -y}.
 C++:
 	x.Negate(y);
@@ -387,8 +399,9 @@ C++:
 Yacas:
 	MathDivide(x,y)
 
-4. Auxiliary operations (useful for optimization purposes but can be performed using the basic arithmetic).
-All these operations are efficient to implement with a binary-based internal representation of big numbers.
+*HEAD 4. Auxiliary operations.
+Some additional operations useful for optimization purposes.
+These operations can be efficiently implemented with a binary-based internal representation of big numbers.
 *	{BigNumber::IsSmall} -- Check whether the number {x} fits into a platform type {long} or {double}. (Optimization of comparison.)
 Sometimes this helps avoid unnecessary calculations with big numbers.
 Note that the semantics of this operation is different for integers and for floats. An integer is "small" only when it fits into a platform {long} integer.
@@ -431,16 +444,16 @@ C++:
 	x.BitCount();
 Yacas:
 	MathBitCount(x)
+Note: the bit count is a platform signed integer (C++ type {long}).  
 *	{BigNumber::ShiftLeft}, {BigNumber::ShiftRight} -- Bit-shift the number (multiply or divide by the $n$-th power of $2$), {x := y >> n}, {x := y << n}.
 For integers, this operation can be efficiently implemented because it has hardware support.
 For floats, this operation is usually also much more efficient than multiplication or division by 2 (cf. the standard C function {ldexp}).
 (Optimization of multiplication and division by a power of 2.)
-Note that the shift amount is a big number.
+Note that the shift amount is a platform signed integer (C++ type {long}).
 C++:
 	x.ShiftLeft(y, n); x.ShiftRight(y, n);
 Yacas:
 	ShiftLeft(x,n); ShiftRight(x,n);
-(Versions of these functions with {n} a platform {long} integer are also provided for efficiency.)
 *	{BigNumber::BitAnd}, {BigNumber::BitOr}, {BigNumber::BitXor}, {BigNumber::BitNot} -- Perform bitwise arithmetic, like in C: {x = y&z}, {x = y|z}, {x = y^z}, {x = ~y}.
 This should be implemented only for integers.
 Integer values are interpreted as bit sequences starting from the least significant bit.
@@ -453,7 +466,8 @@ Yacas:
 	BitXor(y,z); BitNot(y);
 
 The API includes only the most basic operations.
-All other mathematical functions such as power, logarithm, cosine and so on, can be efficiently implemented using this basic interface.
+All other mathematical functions such as GCD, power, logarithm, cosine
+and so on, can be efficiently implemented using this basic interface.
 
 Note that generally the arithmetic functions will set the type of the resulting object to the type of the result of the operation.
 For example, operations that only apply to integers ({Mod}, {BitAnd} etc.) will set the type of the resulting object to integer if it is a float.
@@ -463,8 +477,7 @@ The results of these operations on non-integer arguments are undefined.
 
 All operations on integers are exact.
 Integers must grow or shrink when necessary, limited only by system memory.
-But with floating-point numbers, some management of precision is needed.
-Here we consider the problems of handling the precision of floating-point numbers.
+But floating-point numbers need some precision management.
 
 In some arithmetic operations (add, multiply, divide) the working precision is given explicitly.
 For example,
@@ -784,13 +797,13 @@ Two floats are equal only if their values differ by less than the largest of the
 In particular, it means that an integer zero is always equal to any floating zero, and any two floating zeros are equal.
 It follows that if {x=y}, then for any floating zeros {x+0.=y+0.} and {x-y=0.} as well.
 (So this arithmetic is not obviously inconsistent.)
-*	1. {IsInteger(x)} returns {True} if {x} has integer <i>type</i>;
+*	1. The Yacas function {IsInteger(x)} returns {True} if {x} has integer <i>type</i>;
 {IsIntValue(x)} returns {True} if {x} has either integer type or floating type but an integer value within its precision.
 For example,
 	IsInteger(0)  =True
 	IsIntValue(1.)=True
 	IsInteger(1.) =False
-*	1. {Precision(n)} sets a global parameter that controls the precision of
+*	1. The Yacas function {Precision(n)} sets a global parameter that controls the precision of
 <i>newly created floats</i>.
 It does not modify previously created floating-point numbers, and it has no effect on integer calculations.
 New number objects can be created in three ways: from literal strings, from integers, and from calculations with other floats.
@@ -1078,32 +1091,20 @@ if {{x,n}} is a floating zero, then $x$ does not change and $n$ is decremented (
 
 	    Large exponents
 
-One proposed feature of the {BigNumber} API is the support for large exponents for floating-point numbers.
-The idea is that a floating-point number $x$ is equivalent to two integers $M$, $N$ such that $x=M*2^N$. Here $M$ is the (denormalized) mantissa and $N$ is the (binary) exponent.
+The {BigNumber} API does not support large exponents for floating-point numbers.
+A floating-point number $x$ is equivalent to two integers $M$, $N$ such that $x=M*2^N$. Here $M$ is the (denormalized) mantissa and $N$ is the (binary) exponent.
 The integer $M$ must be a "big integer" that may represent thousands of significant bits.
-Then it seems natural to make the exponent $N$ also a big integer and not impose some platform-dependent limitations on its size.
-Implementing this idea will help avoid some cases of overflow and underflow, although one would not expect that most real-world calculations will be significantly affected.
-
-The only concern with this scheme is efficiency of operations.
-Arithmetic with floating-point numbers requires only very simple operations on their exponents (basically, addition and comparisons).
-The {BigNumber} API can be implemented efficiently so that there is not much loss of time when the numbers are actually small.
-This will reduce the overhead required for handling exponents.
-
-To realize this idea, the API specifies that big numbers are used in situations when normally one would expect a platform number.
-The relevant functions are {BitCount}, {ShiftLeft}, {ShiftRight}.
-At first sight, it seems unlikely that we shall need numbers with more than $2^32$ bits (although computer hardware may develop very quickly to cover that range).
-However, the real catch is the floating-point overflow and underflow.
-The bit count is defined as the integer part of the binary logarithm of the absolute value of the number.
-Defined in this way, the "bit count" of a floating-point number can exceed a 32-bit {long} value; consider for example $x=Exp(Exp(1000))$.
-Similarly, we may need to multiply a floating-point number by a very large power of $2$ using the very efficient {ShiftLeft} function.
-
-On the other hand, it is impractical to print several billion digits to the screen.
-So the precision argument in string printing functions should be not a big integer but a platform integer.
-Also, alternative versions of the API functions {BitCount}, {ShiftLeft}, {ShiftRight} may be provided with platform-typed arguments.
-
-
-In the future this limitation might be avoided if we use a 64-bit platform.
+But the exponent $N$ is a platform signed integer (C++ type {long}) which is at least {2^31}, allowing a vastly larger range than platform floating-point types.
+One would expect that this range of the exponent is enough for most real-world applications.
+In the future this limitation might be avoided if one uses a 64-bit platform.
 (Clearly, a 64-bit platform is a better choice for heavy-duty multiple-precision computations than a 32-bit platform.)
+
+We could have implemented the exponent $N$ as a big integer, but this would be inefficient most of the time, slowing down the calculations.
+Arithmetic with floating-point numbers requires only very simple operations on their exponents (basically, addition and comparisons).
+These operations would be dominated by the overhead of dealing with big integers, compared with platform integers.
+
+A known problem with this approach is the floating-point overflow and underflow.
+When the exponent becomes too large to be represented by a platform signed integer type, the code must signal overflow or underflow error.
 
 
 	    Library versions of mathematical functions
