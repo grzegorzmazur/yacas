@@ -177,6 +177,10 @@ void FltkConsole::LoadNotePad(LispCharPtr aFile)
   snprintf(buf,256,"Load(\"%s\");",aFile);
   yacas->Evaluate(buf);
 
+  extern LispString the_out;
+  the_out.SetNrItems(0);
+  the_out.Append('\0');
+
   iOutputHeight+=15; // for the cursor, TODO what was the define again for the cursor height?
   UpdateHeight(0);
 
@@ -636,6 +640,8 @@ void FltkConsole::handle_key(int key)
             SetOutputDirty();
             MakeSureHighlightedVisible();
             cursor = iSubLine.NrItems()-1;
+            redraw(); //output changed
+            Fl::flush();
             break;
         }
 #endif
@@ -653,6 +659,8 @@ void FltkConsole::handle_key(int key)
                 SetCurrentHighlighted(-1);
             SetOutputDirty();
             MakeSureHighlightedVisible();
+            redraw(); //output changed
+            Fl::flush();
             cursor = iSubLine.NrItems()-1;
             break;
         }
