@@ -155,6 +155,9 @@
 110 # ArcSin(Complex(_r,_i)) <--
     (- I) * Ln((I*Complex(r,i)) + ((1-(Complex(r,i)^2))^(1/2)));
 
+150 # ArcSin(- _x)_(Not IsConstant(x))             <-- -ArcSin(x);
+160 # (ArcSin(x_IsConstant))_(IsNegativeNumber(N(x))) <-- -ArcSin(-x);
+
 200 # ArcSin(0) <-- 0;
 200 # ArcSin(1/2) <-- Pi/6;
 200 # ArcSin(Sqrt(1/2)) <-- Pi/4;
@@ -186,6 +189,9 @@
 4 # ArcTan(-Tan(_x))           <-- -ArcTan(Tan(x));
 110 # ArcTan(Complex(_r,_i)) <--
      (- I*0.5)*Ln(Complex(1,Complex(r,i))/ Complex(1, - Complex(r,i)));
+
+150 # ArcTan(- _x)_(Not IsConstant(x))             <-- -ArcTan(x);
+160 # (ArcTan(x_IsConstant))_(IsNegativeNumber(N(x))) <-- -ArcTan(-x);
 
 200 # ArcTan(Sqrt(3)) <-- Pi/3;
 200 # ArcTan(-Sqrt(3)) <-- -Pi/3;
