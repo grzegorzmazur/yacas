@@ -2,4 +2,5 @@
 
 aclocal \
 && automake --gnu --add-missing \
-&& autoconf
+&& autoconf \
+&& (cd libltdl && automake && autoconf)
