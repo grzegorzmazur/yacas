@@ -149,7 +149,7 @@ LogicFindWith(_list,_n)<--
   result:= -1;
   For(i:=1,(result<0) And (i<=Length(list)),i++)
   [
-    If(Contains(list[i],n),result:=i);
+    If(Length(list[i])>1 And Contains(list[i],n),result:=i);
   ];
   result;
 ];
