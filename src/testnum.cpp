@@ -7,6 +7,8 @@
 #include <stdarg.h>
 #include <math.h>
 
+int verbose_debug=0; //linkage
+
 #define ENABLE_TESTS 1
 
 // whether to print detailed information about passed tests

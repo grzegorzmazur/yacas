@@ -283,11 +283,21 @@ MultiDivTerm(MultiNomial(_vars,_term1),MultiNomial(_vars,_term2)) <--
 MultiS(_g,_h,MultiNomial(_vars,_terms)) <--
 [
   Local(gamma);
+
   gamma :=Max(MultiDegree(g),MultiDegree(h));
-  Local(result);
+  Local(result,topterm);
+  topterm := MM(Factorize(vars^gamma)); 
+
+  result :=
+    MultiDivTerm(topterm,MultiLT(g))*g -
+    MultiDivTerm(topterm,MultiLT(h))*h;
+
+
+/*TODO remove, old incorrect code?
   result :=
     MultiDivTerm(MultiNomial(vars,{{gamma,1}}),MultiLT(g))*g -
     MultiDivTerm(MultiNomial(vars,{{gamma,1}}),MultiLT(h))*h;
+*/
   result;
 ];
 

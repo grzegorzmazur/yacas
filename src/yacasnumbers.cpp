@@ -910,7 +910,7 @@ BigNumber::BigNumber(const BigNumber& aOther)
 BigNumber::BigNumber(LispInt aPrecision)
 {
   iPrecision = aPrecision;
-  iNumber = NEW ANumber(aPrecision);
+  iNumber = NEW ANumber(bits_to_digits(aPrecision,10));
   SetIsInteger(LispTrue);
 }
 
@@ -928,11 +928,11 @@ void BigNumber::SetTo(const BigNumber& aOther)
 }
 void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase) const
 {
-  ANumber num(aPrecision);
+  ANumber num(bits_to_digits(aPrecision,aBase));
   num.CopyFrom(*iNumber);
   if (num.iExp > 1)
     num.RoundBits();
-  num.ChangePrecision(aPrecision);
+  num.ChangePrecision(bits_to_digits(aPrecision,aBase));
 
 #define ENABLE_SCI_NOTATION
 #ifdef ENABLE_SCI_NOTATION
@@ -989,10 +989,10 @@ const LispCharPtr BigNumber::NumericLibraryName()
 void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
   SetIsInteger(aX.IsInt() && aY.IsInt());
-  iNumber->ChangePrecision(aPrecision);
-  ANumber a1(aPrecision);
+  iNumber->ChangePrecision(bits_to_digits(aPrecision,10));
+  ANumber a1(bits_to_digits(aPrecision,10));
   a1.CopyFrom(*aX.iNumber);
-  ANumber a2(aPrecision);
+  ANumber a2(bits_to_digits(aPrecision,10));
   a2.CopyFrom(*aY.iNumber);
   :: Multiply(*iNumber,a1,a2);
 }
@@ -1005,9 +1005,9 @@ void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aP
 void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
   SetIsInteger(aX.IsInt() && aY.IsInt());
-  ANumber a1(aPrecision);
+  ANumber a1(bits_to_digits(aPrecision,10));
   a1.CopyFrom(*aX.iNumber);
-  ANumber a2(aPrecision);
+  ANumber a2(bits_to_digits(aPrecision,10));
   a2.CopyFrom(*aY.iNumber);
 	::Add(*iNumber, a1, a2);
 }
@@ -1022,11 +1022,11 @@ void BigNumber::Negate(const BigNumber& aX)
 }
 void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
-  ANumber a1(aPrecision);
+  ANumber a1(bits_to_digits(aPrecision,10));
   a1.CopyFrom(*aX.iNumber);
-  ANumber a2(aPrecision);
+  ANumber a2(bits_to_digits(aPrecision,10));
   a2.CopyFrom(*aY.iNumber);
-  ANumber remainder(aPrecision);
+  ANumber remainder(bits_to_digits(aPrecision,10));
 
   Check(!IsZero(a2),KLispErrInvalidArg);
   if (aX.IsInt() && aY.IsInt())
@@ -1166,7 +1166,7 @@ void BigNumber::BitCount(const BigNumber& aX)
 signed long BigNumber::BitCount() const
 {
   if (IsZero(*iNumber)) return -(1L<<30);
-  ANumber num(iPrecision);
+  ANumber num(bits_to_digits(iPrecision,10));
   num.CopyFrom(*iNumber);
   while (num.iTensExp < 0)
   {
@@ -1210,8 +1210,8 @@ LispInt BigNumber::Sign() const
 /// integer operation: *this = y mod z
 void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
 {
-    ANumber a1(iPrecision);
-    ANumber a2(iPrecision);
+    ANumber a1(bits_to_digits(iPrecision,10));
+    ANumber a2(bits_to_digits(iPrecision,10));
     a1.CopyFrom(*aY.iNumber);
     a2.CopyFrom(*aZ.iNumber);
     Check(a1.iExp == 0, KLispErrNotInteger);
@@ -1223,7 +1223,7 @@ void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
 
     if (iNumber->iNegative)
     {
-      ANumber a3(iPrecision);
+      ANumber a3(bits_to_digits(iPrecision,10));
       a3.CopyFrom(*iNumber);
       ::Add(*iNumber, a3, a2);
     }
@@ -1273,7 +1273,7 @@ void BigNumber::Floor(const BigNumber& aX)
 
     if (iNumber->iNegative && !fraciszero)
     {
-        ANumber orig(iPrecision);
+        ANumber orig(bits_to_digits(iPrecision,10));
         orig.CopyFrom(*iNumber);
         ANumber minone("-1",10);
         ::Add(*iNumber,orig,minone);
@@ -1284,12 +1284,13 @@ void BigNumber::Floor(const BigNumber& aX)
 
 void BigNumber::Precision(LispInt aPrecision)
 {//FIXME
-  if (aPrecision < iNumber->iPrecision)
+  if (aPrecision<0) aPrecision=0;
+  if (aPrecision < iPrecision)
   {
   }
   else
   {
-    iNumber->ChangePrecision(aPrecision);
+    iNumber->ChangePrecision(bits_to_digits(aPrecision,10));
   }
   SetIsInteger(iNumber->iExp == 0 && iNumber->iTensExp == 0);
   iPrecision = aPrecision;
@@ -1321,7 +1322,7 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
   BigNumber otherNeg;
   otherNeg.Negate(aOther);
   diff.Add(*this,otherNeg,GetPrecision());
-  diff.iNumber->ChangePrecision(iPrecision);
+  diff.iNumber->ChangePrecision(bits_to_digits(iPrecision,10));
 
   return !Significant(*diff.iNumber);
 /* */
@@ -1384,9 +1385,9 @@ void BigNumber::BecomeFloat(LispInt aPrecision)
   if (IsInt())
   {
     LispInt precision = aPrecision;
-    if (iNumber->iPrecision>aPrecision)
-      precision = iNumber->iPrecision;
-    iNumber->ChangePrecision(precision);	// is this OK or ChangePrecision means floating-point precision?
+    if (iPrecision > aPrecision)
+      precision = iPrecision;
+    iNumber->ChangePrecision(bits_to_digits(precision,10));	// is this OK or ChangePrecision means floating-point precision?
     SetIsInteger(LispFalse);
   }
 }
@@ -1394,9 +1395,9 @@ void BigNumber::BecomeFloat(LispInt aPrecision)
 
 LispBoolean BigNumber::LessThan(const BigNumber& aOther) const
 {
-  ANumber a1(iPrecision);
+  ANumber a1(bits_to_digits(iPrecision,10));
   a1.CopyFrom(*this->iNumber);
-  ANumber a2(iPrecision);
+  ANumber a2(bits_to_digits(iPrecision,10));
   a2.CopyFrom(*aOther.iNumber);
 	return ::LessThan(a1, a2);
 }
@@ -1441,6 +1442,7 @@ void BigNumber::SetTo(double aValue)
 void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {//FIXME
   iPrecision = aPrecision;
+  LispInt digits = bits_to_digits(aPrecision,10);
   LispBoolean isFloat = 0;
   const LispCharPtr ptr = aString;
   while (*ptr && *ptr != '.') ptr++;
@@ -1451,11 +1453,11 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
     const LispCharPtr start = ptr;
     while (IsDigit(*ptr)) ptr++;
     LispInt digits = ptr-start;
-    if (digits>aPrecision) 
-      aPrecision = digits;
+    if (ptr-start>digits) 
+      digits = ptr-start;
   }
-  if (iNumber == NULL)   iNumber = NEW ANumber(aPrecision);
-  iNumber->SetPrecision(aPrecision);
+  if (iNumber == NULL)   iNumber = NEW ANumber(digits);
+  iNumber->SetPrecision(digits);
   iNumber->SetTo(aString,aBase);
   
 //TODO remove old  iNumber = NEW ANumber(aString,aPrecision,aBase);

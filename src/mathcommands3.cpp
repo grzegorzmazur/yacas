@@ -76,7 +76,7 @@ void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispPtr& aAr
 {
     LispPtr result;
     InternalEval(aEnvironment, result, Argument(aArguments,aArgNr));
-    RefPtr<BigNumber> num; num = result.Get()->Number(aEnvironment.Precision());
+    RefPtr<BigNumber> num; num = result.Get()->Number(aEnvironment.BinaryPrecision());
     CHK_ARG(num.Ptr() != NULL,aArgNr);
     x = num;
 }
@@ -114,7 +114,7 @@ void LispArithmetic1(LispEnvironment& aEnvironment, LispPtr& aResult,
     CHK_ARG(IsNumber(str1->String(),LispTrue),1);
     aResult.Set(LispAtom::New(aEnvironment,func(str1->String(),
                                    aEnvironment.HashTable(),
-                                   aEnvironment.Precision())));
+                                   aEnvironment.BinaryPrecision())));
 }
 
 
@@ -158,8 +158,8 @@ void LispMultiply(LispEnvironment& aEnvironment, LispPtr& aResult,
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aArguments, 1);
       GetNumber(y,aEnvironment, aArguments, 2);
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
-      z->Multiply(*x.Ptr(),*y.Ptr(),aEnvironment.Precision());
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+      z->Multiply(*x.Ptr(),*y.Ptr(),aEnvironment.BinaryPrecision());
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
       return;
 #endif // USE_BIGFLOAT
@@ -187,8 +187,8 @@ void LispAdd(LispEnvironment& aEnvironment, LispPtr& aResult,
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aArguments, 1);
       GetNumber(y,aEnvironment, aArguments, 2);
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
-      z->Add(*x.Ptr(),*y.Ptr(),aEnvironment.Precision());
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+      z->Add(*x.Ptr(),*y.Ptr(),aEnvironment.BinaryPrecision());
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
       return;
 #endif // USE_BIGFLOAT
@@ -206,7 +206,7 @@ void LispSubtract(LispEnvironment& aEnvironment, LispPtr& aResult,
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aArguments, 1);
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->Negate(*x.Ptr());
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
       return;
@@ -222,8 +222,8 @@ void LispSubtract(LispEnvironment& aEnvironment, LispPtr& aResult,
       GetNumber(y,aEnvironment, aArguments, 2);
       BigNumber yneg;
       yneg.Negate(*y.Ptr());
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
-      z->Add(*x.Ptr(),yneg,aEnvironment.Precision());
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+      z->Add(*x.Ptr(),yneg,aEnvironment.BinaryPrecision());
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
       return;
 #endif // USE_BIGFLOAT
@@ -242,19 +242,20 @@ void LispDivide(LispEnvironment& aEnvironment, LispPtr& aResult,
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aArguments, 1);
       GetNumber(y,aEnvironment, aArguments, 2);
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
 	  // if both arguments are integers, then BigNumber::Divide would perform an integer divide, but we want a float divide here.
 	  if (x.Ptr()->IsInt() && y.Ptr()->IsInt())
 	  {
 		  // why can't we just say BigNumber temp; ?
-		  BigNumber *temp = NEW BigNumber(aEnvironment.Precision());
+		  BigNumber *temp = NEW BigNumber(aEnvironment.BinaryPrecision());
 		  temp->SetTo(*x.Ptr());
 		  temp->BecomeFloat();	// coerce x to float
-     	  z->Divide(*temp, *y.Ptr(),aEnvironment.Precision());
+     	  z->Divide(*temp, *y.Ptr(),aEnvironment.BinaryPrecision());
+      delete temp; 
 	  }
 	  else
 	  {
-		  z->Divide(*x.Ptr(), *y.Ptr(),aEnvironment.Precision());
+		  z->Divide(*x.Ptr(), *y.Ptr(),aEnvironment.BinaryPrecision());
 	  }
 	  aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
       return;
@@ -312,7 +313,7 @@ void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArgumen
 { \
       RefPtr<BigNumber> x; \
       GetNumber(x,aEnvironment, aArguments, 1); \
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision()); \
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision()); \
       z->BigNumName(*x.Ptr()); \
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
 }
@@ -323,7 +324,7 @@ void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArgumen
       RefPtr<BigNumber> y; \
       GetNumber(x,aEnvironment, aArguments, 1); \
       GetNumber(y,aEnvironment, aArguments, 2); \
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision()); \
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision()); \
       z->BigNumName(*x.Ptr(), *y.Ptr()); \
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
 }
@@ -353,7 +354,7 @@ void LispFloor(LispEnvironment& aEnvironment, LispPtr& aResult,
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aArguments, 1);
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->Floor(*x.Ptr());
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else
@@ -368,7 +369,7 @@ void LispCeil(LispEnvironment& aEnvironment, LispPtr& aResult,
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aArguments, 1);
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->Negate(*x.Ptr());
       z->Floor(*z);
       z->Negate(*z);
@@ -384,7 +385,7 @@ void LispAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aArguments, 1);
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->SetTo(*x.Ptr());
       if (x.Ptr()->Sign()<0)
 	      z->Negate(*x.Ptr());
@@ -412,8 +413,8 @@ void LispDiv(LispEnvironment& aEnvironment, LispPtr& aResult,
       GetNumber(y,aEnvironment, aArguments, 2);
 	  if (x.Ptr()->IsInt() && y.Ptr()->IsInt())
 	  {	// both integer, perform integer division
-    	  BigNumber *z = NEW BigNumber(aEnvironment.Precision());
-    	  z->Divide(*x.Ptr(),*y.Ptr(),aEnvironment.Precision());
+    	  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+    	  z->Divide(*x.Ptr(),*y.Ptr(),aEnvironment.BinaryPrecision());
     	  aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
     	  return;
 	  }
@@ -465,7 +466,7 @@ void LispFastIsPrime(LispEnvironment& aEnvironment, LispPtr& aResult,
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aArguments, 1);
       long result = primes_table_check((unsigned long)(x->Double()));
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->SetTo(result);
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else
@@ -496,7 +497,7 @@ void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArgumen
       RefPtr<BigNumber> x; \
       GetNumber(x,aEnvironment, aArguments, 1); \
       double result = PlatformName(x->Double()); \
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision()); \
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision()); \
       z->SetTo(result); \
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
 }
@@ -507,7 +508,7 @@ void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArgumen
       GetNumber(x,aEnvironment, aArguments, 1); \
       GetNumber(y,aEnvironment, aArguments, 2); \
       double result = PlatformName(x->Double(), y->Double()); \
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision()); \
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision()); \
       z->SetTo(result); \
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
 }
@@ -540,7 +541,7 @@ void LispFastSin(LispEnvironment& aEnvironment, LispPtr& aResult,
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aArguments, 1);
       double result = sin(x->Double());
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->SetTo(result);
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else
@@ -695,7 +696,7 @@ void LispFromBase(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispPtr oper;
     InternalEval(aEnvironment, oper, Argument(aArguments,1));
     // Check that result is a number, and that it is in fact an integer
-    RefPtr<BigNumber> num; num = oper.Get()->Number(aEnvironment.Precision());
+    RefPtr<BigNumber> num; num = oper.Get()->Number(aEnvironment.BinaryPrecision());
     CHK_ARG(num.Ptr() != NULL,1);
     CHK_ARG(num->IsInt(),1);
 
@@ -713,7 +714,7 @@ void LispFromBase(LispEnvironment& aEnvironment, LispPtr& aResult,
     CHK_ARG(str2 != NULL,2);
 
     // convert using correct base
-    BigNumber *z = NEW BigNumber(str2->String(),aEnvironment.Precision(),base);
+    BigNumber *z = NEW BigNumber(str2->String(),aEnvironment.BinaryPrecision(),base);
     aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 
 //TODO remove old code    LispArithmetic2(aEnvironment, aResult, aArguments, FromBase,LispTrue);
@@ -728,7 +729,7 @@ void LispToBase(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispPtr oper;
     InternalEval(aEnvironment, oper, Argument(aArguments,1));
     // Check that result is a number, and that it is in fact an integer
-    RefPtr<BigNumber> num; num = oper.Get()->Number(aEnvironment.Precision());
+    RefPtr<BigNumber> num; num = oper.Get()->Number(aEnvironment.BinaryPrecision());
     CHK_ARG(num.Ptr() != NULL,1);
     CHK_ARG(num->IsInt(),1);
 
@@ -744,7 +745,7 @@ void LispToBase(LispEnvironment& aEnvironment, LispPtr& aResult,
 
     // convert using correct base
     LispString str;
-    x->ToString(str,aEnvironment.Precision(),base);
+    x->ToString(str,aEnvironment.BinaryPrecision(),base);
     // Get unique string from hash table, and create an atom from it.
     aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str.String())));
 

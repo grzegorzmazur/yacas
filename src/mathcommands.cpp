@@ -2529,7 +2529,11 @@ void LispDefLoadFunction(LispEnvironment& aEnvironment,LispPtr& aResult,
             {
 #ifdef YACAS_DEBUG
                 /*Show loading... */
-                printf("Debug> Loading file %s for function %s\n",def->iFileName()->String(),oper.String());
+              {
+                extern int verbose_debug;
+                if (verbose_debug)
+                  printf("Debug> Loading file %s for function %s\n",def->iFileName()->String(),oper.String());
+              }
 #endif
                 multiUserFunc->iFileToOpen=NULL;
                 InternalUse(aEnvironment,def->iFileName());

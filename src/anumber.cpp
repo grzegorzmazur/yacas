@@ -302,11 +302,20 @@ void ANumber::CopyFrom(const ANumber& aOther)
 
     //TODO there HAS to be a faster way to copy...
     LispInt nr = aOther.NrItems();
-    ANumber::ElementTypePtr sptr = &( aOther[0]);
-    ANumber::ElementTypePtr tptr = &((*this)[0]);
-    while (nr--)
+    if (nr)
     {
-        *tptr++ = *sptr++;
+      ANumber::ElementTypePtr sptr = &( aOther[0]);
+      ANumber::ElementTypePtr tptr = &((*this)[0]);
+      while (nr--)
+      {
+          *tptr++ = *sptr++;
+      }
+    }
+    else
+    {
+      GrowTo(1);
+      SetNrItems(1);
+      (*this)[0] = 0;
     }
 }
 

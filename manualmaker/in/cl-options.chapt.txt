@@ -17,7 +17,7 @@ Here is a summary of options:
 *	{--patchload} (use {PatchLoad} to load files)
 *	{--rootdir} <i>directory</i>{/} (specify library directory)
 *	{--server} <i>port</i> (start {Yacas} as a network server on given port)
-
+*	{--verbose-debug} (turn on showing some additional debugging information on screen)
 Options can be combined, for example,
 	yacas -pc filename
 will read and execute the file {filename} non-interactively without using terminal capabilities and without printing prompts.

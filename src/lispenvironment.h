@@ -102,6 +102,7 @@ public:
 public:
     inline void SetPrecision(LispInt aPrecision);
     inline LispInt Precision(void);
+    inline LispInt BinaryPrecision(void);
 public:
     inline void SetPrettyPrinter(LispStringPtr aPrettyPrinter);
     inline LispStringPtr PrettyPrinter(void);
@@ -257,6 +258,14 @@ inline void LispEnvironment::SetPrecision(LispInt aPrecision)
 inline LispInt LispEnvironment::Precision(void)
 {
     return iPrecision;
+}
+
+inline LispInt LispEnvironment::BinaryPrecision(void)
+{
+//FIXME TODO need the right place for this function definition
+    extern unsigned long digits_to_bits(unsigned long digits, unsigned base);
+
+    return digits_to_bits(iPrecision,10);
 }
 
 inline LispCommands& LispEnvironment::Commands()
