@@ -47,8 +47,7 @@ KnownFailure(
 KnownFailure(
        (Taylor2(x,1,6) Ln(x)) =
        (x-1) - (x-1)^2/2 + (x-1)^3/3 - (x-1)^4/4 + (x-1)^5/5 - (x-1)^6/6);
-KnownFailure(
-       (Taylor2(x,0,6) x/(Exp(x)-1)) =
+Verify(Taylor2(x,0,6) x/(Exp(x)-1),
        1 - x/2 + x^2/12 - x^4/720 + x^6/30240);
 Verify(Taylor2(x,0,6) Sin(x)^2+Cos(x)^2, 1);
 KnownFailure(
@@ -57,6 +56,30 @@ KnownFailure(
 KnownFailure(
        (Taylor2(t,a+1,2) Exp(c*t)) =
        Exp(c*a+c) + c*Exp(c*a+c)*(t-a-1) + c^2*Exp(c*a+c)*(t-a-1)^2/2);
+
+// Consistency checks
+
+TestYacas(Taylor2(x,0,7) (Sin(x)+Cos(x)),
+          (Taylor2(x,0,7) Sin(x)) + (Taylor2(x,0,7) Cos(x)));
+TestYacas(Taylor2(x,0,7) (a*Sin(x)),
+          a * (Taylor2(x,0,7) Sin(x)));
+TestYacas(Taylor2(x,0,7) (Sin(x)-Cos(x)),
+          (Taylor2(x,0,7) Sin(x)) - (Taylor2(x,0,7) Cos(x)));
+TestYacas(Taylor2(x,0,7) (Sin(x)*Cos(x)),
+          Taylor2(x,0,7) ((Taylor2(x,0,7) Sin(x)) * (Taylor2(x,0,7) Cos(x))));
+TestYacas(Taylor2(x,0,7) (Sin(x)/Ln(1+x)), 
+          Taylor2(x,0,7) ((Taylor2(x,0,8) Sin(x)) / Taylor2(x,0,8) Ln(1+x)));
+TestYacas(Taylor2(t,0,7) (Sin(t)^2),
+          Taylor2(t,0,7) ((Taylor2(t,0,7) Sin(t))^2));
+
+100 # Taylor'LPS'CompOrder(_x, jn(_x)) <-- 5;
+100 # Taylor'LPS'CompCoeff(_x, jn(_x), _k) <-- Atom("jn":String(k));
+
+Verify(Taylor2(t,0,8) jn(t), jn5*t^5 + jn6*t^6 + jn7*t^7 + jn8*t^8);
+KnownFailure(
+       (Taylor2(x,0,10) Exp(jn(x))) =
+       1 + jn5/2*x^5 + jn6/2*x^6 + jn7/2*x^7 + jn8/2*x^8 
+         + jn9/2*x^9 + (jn10/2+jn5/6)*x^10);
 
 // Some examples of power series
 
@@ -101,9 +124,8 @@ Verify(Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, 1), 0, 7),
        {1, 0, 0, 0, 0, 0, 0, 0});
 Verify(Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, 0), 0, 7),
        {0, 0, 0, 0, 0, 0, 0, 0});
-KnownFailure(
-       Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, 1/x), 0, 7) =
-       {0, 0, 0, 0, 0, 0, 0, 0}); ClearErrors();
+Verify(Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, 1/x), 0, 7),
+       {0, 0, 0, 0, 0, 0, 0, 0}); 
 Verify(Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, x^2), 0, 7),
        {0, 0, 1, 0, 0, 0, 0, 0});
 Verify(Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, Exp(x)), 0, 7),
@@ -117,21 +139,13 @@ Verify(Taylor'LPS'Coeffs(Taylor'LPS'Construct(x, Cos(x)), 0, 7),
 
 // Check order of power series
 
-Verify(Taylor'LPS'GetOrder(p1, 0), 0);
-Verify(Taylor'LPS'GetOrder(p2, 0) >= 0, True);
-Verify(Taylor'LPS'GetOrder(p3, 1), 0);
-Verify(Taylor'LPS'GetOrder(p4, 0), -2);
-Verify(Taylor'LPS'GetOrder(p0, 216) >= 216, True);
-/*
-Verify(Taylor'LPS'GetOrder(Taylor'LPS'Construct(x, 1/x), 0), -1);
-Verify(Taylor'LPS'GetOrder(Taylor'LPS'Construct(x, 1/x), -1), -1);
-Verify(Taylor'LPS'GetOrder(Taylor'LPS'Construct(x, 1/x), -2) >= -2, True);
-*/
+Verify(Taylor'LPS'GetOrder(p1), {0,True});
+Verify(Taylor'LPS'GetOrder(Taylor'LPS'Construct(x, Cos(x))), {0,True});
+Verify(Taylor'LPS'GetOrder(Taylor'LPS'Construct(x, Sin(x))), {1,True});
+Verify(Taylor'LPS'GetOrder(Taylor'LPS'Construct(x, x-Sin(x))), {1,False});
+Verify(Taylor'LPS'GetOrder(Taylor'LPS'Construct(x, 1/x)), {-1,True});
 
 // User-defined power series
-
-100 # Taylor'LPS'CompOrder(_x, jn(_x)) <-- 5;
-100 # Taylor'LPS'CompCoeff(_x, jn(_x), _k) <-- Atom("jn":String(k));
 
 pju0 := Taylor'LPS(Undefined, {}, x, jn(x));
 pj40 := Taylor'LPS(5, {}, x, jn(x));
@@ -191,12 +205,6 @@ pj := FlatCopy(pj54); Verify(tlc(pj,4,6), pc46); Verify(pj, pj54);
 pj := FlatCopy(pj54); Verify(tlc(pj,5,7), pc57); Verify(pj, pj54);
 pj := FlatCopy(pj54); Verify(tlc(pj,6,8), pc68); Verify(pj, pj54);
 
-Verify(Taylor2(t,0,8) jn(t), jn5*t^5 + jn6*t^6 + jn7*t^7 + jn8*t^8);
-KnownFailure(
-       (Taylor2(x,0,10) Exp(jn(x))) =
-       1 + jn5/2*x^5 + jn6/2*x^6 + jn7/2*x^7 + jn8/2*x^8 
-         + jn9/2*x^9 + (jn10/2+jn5/6)*x^10);
-
 // Addition
 
 pp := Taylor'LPS(Undefined, {}, x, 
@@ -224,9 +232,6 @@ Verify(pp, Taylor'LPS(0, {1, 1, 1/2, 1/6, 1/24, 1/120+jn5},
            Where {pp1 == Taylor'LPS(0, {1,1,1/2,1/6,1/24,1/120}, a, Exp(a)),
                   pp2 == Taylor'LPS(5, {jn5}, a, jn(a))});
 
-TestYacas(Taylor2(x,0,7) (Sin(x)+Cos(x)),
-          (Taylor2(x,0,7) Sin(x)) + (Taylor2(x,0,7) Cos(x)));
-                      
 // Scalar multiplication
 
 pp := Taylor'LPS(Undefined, {}, x, Taylor'LPS'ScalarMult(5, FlatCopy(p1)));
@@ -242,9 +247,6 @@ Verify(Taylor'LPS'Coeffs(pp, -1, 4), {0, 0, -2, 0, 1/3, 0});
 Verify(pp, Taylor'LPS(1, {-2,0,1/3,0}, t, Taylor'LPS'ScalarMult(-2, pp1))
            Where pp1 == Taylor'LPS(1, {1,0,-1/6,0}, t, Sin(t))); 
 
-TestYacas(Taylor2(x,0,7) (a*Sin(x)),
-          a * (Taylor2(x,0,7) Sin(x)));
-
 // Subtraction
 
 pp := Taylor'LPS'Construct(x, Exp(x)-Cos(x)); 
@@ -256,9 +258,6 @@ Verify(pp, Taylor'LPS(1, {1,1,1/6,0}, x, Taylor'LPS'Add(pp1, pp2))
                                    Taylor'LPS'ScalarMult(-1, pp3))
            Where pp3 == Taylor'LPS(0, {1,0,-1/2,0,1/24}, x, Cos(x)));
            
-TestYacas(Taylor2(x,0,7) (Sin(x)-Cos(x)),
-          (Taylor2(x,0,7) Sin(x)) - (Taylor2(x,0,7) Cos(x)));
-                      
 // Multiplication
 
 pp := Taylor'LPS(Undefined, {}, x, 
@@ -279,19 +278,39 @@ Verify(pp, Taylor'LPS(3, {1,-1/2}, x, Taylor'LPS'Multiply(pp1,pp2))
            Where {pp1 == Taylor'LPS(2, {1,0}, x, x^2),
                   pp2 == Taylor'LPS(1, {1,-1/2}, x, Ln(x+1))});
                       
-TestYacas(Taylor2(x,0,7) (Sin(x)*Cos(x)),
-          Taylor2(x,0,7) ((Taylor2(x,0,7) Sin(x)) * (Taylor2(x,0,7) Cos(x))));
-                      
 // Inversion
-// TBA
+
+pp := Taylor'LPS(Undefined, {}, x, Taylor'LPS'Inverse(FlatCopy(p1)));
+Verify(Taylor'LPS'Coeffs(pp, 0, 3), {1,-1,1/2,-1/6});
+Verify(pp, Taylor'LPS(0, {1,-1,1/2,-1/6}, x, Taylor'LPS'Inverse(p1)));
+
+pp := Taylor'LPS(Undefined, {}, t, Taylor'LPS'Inverse(FlatCopy(p2)));
+Verify(Taylor'LPS'Coeffs(pp, 0, 2), {0,1/6,-0});
+Verify(pp, Taylor'LPS(-1, {1,0,1/6,0}, t, Taylor'LPS'Inverse(p2)));
+
+pp := Taylor'LPS(Undefined, {}, x, Taylor'LPS'Inverse(FlatCopy(p0)));
+Verify([Taylor'LPS'Coeffs(pp, 0, 0); ClearError("div-by-zero");], True);
+
+pp := Taylor'LPS'Construct(x, 1/jn(x));
+Verify(Taylor'LPS'Coeffs(pp, -7, -4), {0,0,1/jn5,-jn6/jn5^2});
+Verify(pp, Taylor'LPS(-5, {1/jn5,-jn6/jn5^2}, x, Taylor'LPS'Inverse(pp1))
+           Where pp1 == Taylor'LPS(5, {jn5,jn6}, x, jn(x)));
+
+pp := Taylor'LPS'Construct(x, 1/(Cos(x)^2+Sin(x)^2-1));
+Verify([Taylor'LPS'Coeffs(pp, 0, 5); ClearError("maybe-div-by-zero");], True);
 
 // Division
-// TBA
+
+pp := Taylor'LPS'Construct(x, Exp(x)/Cos(x)); 
+Verify(Taylor'LPS'Coeffs(pp, 0, 4), {1, 1, 1, 2/3, 1/2});
+Verify(pp, Taylor'LPS(0, {1,1,1,2/3,1/2}, x, Taylor'LPS'Multiply(pp1, pp2))
+           Where pp1 == Taylor'LPS(0, {1,1,1/2,1/6,1/24}, x, Exp(x))
+           Where pp2 == Taylor'LPS(0, {1,0,1/2,0,5/24}, x, 
+                                   Taylor'LPS'Inverse(pp3))
+           Where pp3 == Taylor'LPS(0, {1,0,-1/2,0,1/24}, x, Cos(x)));
 
 // Raising to a natural power
-
-TestYacas(Taylor2(x,0,7) (Sin(x)^2),
-          Taylor2(x,0,7) ((Taylor2(x,0,7) Sin(x))^2));
+// Taylor'LPS'Power is not implemented yet
  
 // Composition
 // TBA
