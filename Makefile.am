@@ -8,6 +8,9 @@ install-data-local:
 test:
 	cd scripts ; make test
 
+texdocs:
+	cd manualmaker ; make texdocs
+
 backup:
 	-rm yacas-*.tar.gz
 	make dist
