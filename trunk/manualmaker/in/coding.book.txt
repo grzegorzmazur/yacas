@@ -101,6 +101,7 @@ Evaluation of an atom goes as follows: if the atom is bound locally as a
 variable, the object it is bound to is returned, otherwise, if it is bound as a
 global variable then that is returned. Otherwise, the atom is returned
 unevaluated.
+Note that if an atom is bound to an expression, that expression is considered as final and is not evaluated again.
 
 Internal lists of atoms are generally interpreted in the following way: the first
 atom of the list is some command, and the atoms following in the list are
@@ -773,7 +774,7 @@ to simplify it numerically:
 One of the ideas behind the {Yacas} scripting language is that evaluation
 is used for simplifying expressions. One corrollary to this is that
 objects can be returned unevaluated when they can not be simplified
-further. This happens for variables that are unbound, functions that
+further. This happens to variables that are not assigned, functions that
 are not defined, or function invocations where the arguments passed
 in as parameters are not actually handled by any code in the scripts.
 An integral that can not be performed by {Yacas} should be returned 
@@ -1422,6 +1423,32 @@ call {B(x,0)}. We should use an explicit evaluation of {x} to accomplish this, f
 or
 	B(_x) <-- B @ {x, 0};
 Otherwise {B(x,y)} will not get the correct value of its first parameter {x}.
+
+	    Special behavior of {Hold}, {UnList} and {Eval}
+
+When an expression is evaluated, all matching rules are applied to it repeatedly until no more rules match. Thus an expression is "completely" evaluated. There are, however, two cases when recursive application of rules is stopped at a certain point, leaving an expression not "completely" evaluated:
+
+*	1. The expression which is the result of a call to a Yacas core function is
+not evaluated further, even if some rules apply to it.
+*	2. The expression is a variable that has a value assigned to it; for
+example, the variable {x} might have the expression {y+1} as the value. That
+value is not evaluated again, so even if {y} has been assigned another value,
+say, {y=2} a Yacas expression such as {2*x+1} will evaluate to {2*(y+1)+1} and
+not to {7}.
+
+The first possibility is mostly without consequence because  almost all core
+functions return a simple atom that does not require further evaluation.
+However, there are two core functions that can return a complicated expression:
+{Hold} and {UnList}. Thus, these functions can produce arbitrarily complicated
+Yacas expressions that will be left unevaluated.
+
+The second possibility is realized when a variable is assigned such an unevaluated expression and later used.
+
+In effect, evaluation can be stopped with {Hold} or {UnList}. It can also be
+explicitly restarted by using {Eval}. If several levels of un-evaluation are
+used, such as {Hold(Hold(...))}, then the same number of {Eval} calls will be
+needed to fully evaluate an expression.
+
 
 	    Correctness of parameters to functions is not checked
 
