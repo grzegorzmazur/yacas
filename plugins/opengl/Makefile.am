@@ -14,7 +14,8 @@ INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/ $(GL_CFLAGS)
 
 noinst_LTLIBRARIES = $(OPENGL_PLUGIN)
 EXTRA_LTLIBRARIES = libopengl.la
-libopengl_la_SOURCES = glutcode.cc openglapi.cc
+libopengl_la_SOURCES = glutcode.cc
+libopengl_la_LIBADD = openglapi.lo
 libopengl_la_LDFLAGS = $(GL_LIBS) -module -rpath `pwd`
 
 openglapi.cc : openglapi.stub
