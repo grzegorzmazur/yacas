@@ -239,9 +239,9 @@ LispStringPtr LispNumber::String()
     LispString *str = NEW LispString;
     // export the current number to string and store it as LispNumber::iString
     // FIXME API breach: precision must be in digits, not in bits here!
+	// must be replaced with bits_to_digits(iNumber->GetPrecision(), BASE10)
     iNumber->ToString(*str, iNumber->GetPrecision(), BASE10);
     // register the string with the hash table
-    // - do we actually want this to be done? (maybe only for small numbers?)
     LISPASSERT(iHashTable != NULL);
     iString = iHashTable->LookUp(str);
 //	iString = str;	// this does not work: various rules with explicit numbers fail
@@ -269,7 +269,7 @@ LispObject* LispNumber::Copy(LispInt aRecursed)
     return copied;
 }
 
-    /// create a BigNumber object out of a stored string, at given precision (in bits)
+    /// create a BigNumber object out of a stored string, at given precision (in decimal!)
 BigNumber* LispNumber::Number(LispInt aPrecision)
 {
   if (iNumber.Ptr() == NULL)
@@ -280,17 +280,20 @@ BigNumber* LispNumber::Number(LispInt aPrecision)
 //#endif
     RefPtr<LispString> str;
     str = iString.Ptr();
-    // FIXME API breach: aPrecision is supposed to be in digits, not in bits!
+    // aPrecision is in digits, not in bits, ok
     iNumber = NEW BigNumber(str->String(), aPrecision, BASE10);
   }
+  // FIXME: GetPrecision() returns bits, but aPrecision is in digits
+  // solution: use bits_to_digits(iNumber->GetPrecision(), BASE10) or digits_to_bits(aPrecision, BASE10)
   else if (iNumber->GetPrecision() < aPrecision && !iNumber->IsInt())
   {
     if (iString.Ptr())
-    {// FIXME same API breach
+    {// aPrecision is in digits, not in bits, ok
       iNumber->SetTo(iString.Ptr()->String(),aPrecision);
     }
     else
-    {	// precision in bits, ok
+    {	// FIXME API breach: precision must be in bits, not in digits
+		// replace aPrecision by digits_to_bits(aPrecision, BASE10)
       iNumber->Precision(aPrecision);
     }
   }
