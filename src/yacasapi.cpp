@@ -114,7 +114,6 @@ input(iEnvironment.iInputStatus)
 
     SetCommand(LispIsFunction    ,"IsFunction");
     SetCommand(LispIsAtom        ,"IsAtom");
-    SetCommand(LispIsUnix        ,"IsUnix");
     SetCommand(LispIsPromptShown        ,"IsPromptShown");
     SetCommand(LispIsNumber      ,"IsNumber");
     SetCommand(LispIsInteger     ,"IsInteger");
