@@ -34,6 +34,7 @@ public:
     inline void SetPrecision(LispInt aPrecision) {iPrecision = aPrecision;}
     void ChangePrecision(LispInt aPrecision);
     void RoundBits(void);
+    void DropTrailZeroes();
 
 public:
     LispInt iExp;
