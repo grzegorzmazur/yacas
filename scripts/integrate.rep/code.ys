@@ -125,9 +125,9 @@ UnFence("IntegrateMultiplicative",4);
 // function, Integrate by parts.
 //
 ////////////////////////////////////////////////
-70 # IntegrateMultiplicative(_var,(exy_CanBeUni(var)) * _exx,_dummy1,_dummy2)
+1570 # IntegrateMultiplicative(_var,(exy_CanBeUni(var)) * _exx,_dummy1,_dummy2)
      <-- IntByParts(var,exy*exx,AntiDeriv(var,exx));
-70 # IntegrateMultiplicative(_var,_exx * (exy_CanBeUni(var)),_dummy1,_dummy2)
+1570 # IntegrateMultiplicative(_var,_exx * (exy_CanBeUni(var)),_dummy1,_dummy2)
      <-- IntByParts(var,exy*exx,AntiDeriv(var,exx));
 10 # IntByParts(_var,_exy * _exx,Integrate(_var)(_something)) <--
      `Hold(AntiDeriv(@var,((@exy)*(@exx))));
@@ -147,7 +147,7 @@ UnFence("IntegrateMultiplicative",4);
 // polynomials.
 //
 ////////////////////////////////////////////////
-70 # IntegrateMultiplicative(_var,(exy_CanBeUni(var)) / (exx_CanBeUni(var)),_dummy1,_dummy2) <--
+1570 # IntegrateMultiplicative(_var,(exy_CanBeUni(var)) / (exx_CanBeUni(var)),_dummy1,_dummy2) <--
      IntRat(var,exy/exx,MakeUni(exy,var),MakeUni(exx,var));
 
 10 # IntRat(_var,_exy / _exx,_exyu,_exxu)_
@@ -216,7 +216,7 @@ UnFence("IntegrateMultiplicative",4);
 // Could not find anti-derivative, return unsimplified
 //
 ////////////////////////////////////////////////
-100 # IntegrateMultiplicative(_var,_exp,_a,_b) <-- `Hold(Integrate(@var)(@exp));
+1600 # IntegrateMultiplicative(_var,_exp,_a,_b) <-- `Hold(Integrate(@var)(@exp));
 
 ////////////////////////////////////////////////
 //
@@ -226,11 +226,15 @@ UnFence("IntegrateMultiplicative",4);
 // Example: IntFunc(x,Cos(_x),Sin(x));
 //
 ////////////////////////////////////////////////
-IntFunc(_vr,_from,_to) <--
+LocalSymbols(intpred)
 [
-  `(50 # IntegrateMultiplicative(_var,@from,_dummy1,_dummy2)_MatchLinear(var,@vr) <-- (@to)/a);
+  intpred := 50;
+  IntFunc(_vr,_from,_to) <--
+  [
+    `((@intpred) # IntegrateMultiplicative(_var,@from,_dummy1,_dummy2)_MatchLinear(var,@vr) <-- (@to)/a);
+    intpred++;
+  ];
 ];
-
 
 /** MatchPureSquared(variable,expression) - matches expressions
  *  of the form a*x^2+b.
@@ -319,8 +323,8 @@ IntFunc(x,Cos(Ln(_x)),x*Sin(Ln(x))/2 - x*Cos(Ln(x))/2 );
 IntFunc(x,1/((_x)*Ln(_x)),Ln(Ln(x)));
 
 IntFunc(x,(_x)^(-1),Ln(x));
-IntFunc(x,(_x)^(n_IsFreeOf(x)),x^(n+1)/(n+1));
 
+IntFunc(x,(_x)^(n_IsFreeOf(x)),x^(n+1)/(n+1));
 IntFunc(x,Sinh(_x),Cosh(x));
 IntFunc(x,Sinh(_x)^2,Sinh(2*x)/4 - x/2);
 IntFunc(x,1/Sinh(_x),Ln(Tanh(x/2)));
@@ -368,4 +372,7 @@ IntPureSquare(x,num_IsFreeOf(var)/(_x),1,1,(num/(a*Sqrt(b/a)))*ArcTan(var/Sqrt(b
 
 
 ///// Integrating Special Functions
-IntFunc(x,Erf(x), x*Erf(x)+ 1/(Exp(x^2)*Sqrt(Pi)) );
+IntFunc(x,Erf(_x), x*Erf(x)+ 1/(Exp(x^2)*Sqrt(Pi)) );
+
+
+
