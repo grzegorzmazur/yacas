@@ -154,17 +154,23 @@ BuiltIn() := WriteString("
 
 AddBody(string) := WriteString(string);
 
-SeeAlso(list) := WriteString(
-Nl() : PrintList(MapSingle("HtmlTerm", list), ", ") : Nl()
-);
+// make SeeAlso print "See also" and do not do the Topical thing
+SeeAlso(list) := WriteString("
+\\begin{flushleft}\\textbf{\\small See also:}
+" : PrintList(MapSingle("HtmlTerm", list), ", ")
+: "
+\\end{flushleft}
+");
 
 AddAnchor(string) := "";
 HtmlAnchor(string) := "";
 
 Bodied("HtmlAnchor", 60000);
-Topical(string) := WriteString(
+Topical(string) := If(string = "See also:", "",
+	WriteString(
 "\\begin{flushleft}\\textbf{\\small " : string : "}\\end{flushleft}
-");
+")
+);
 Bodied("Topical",60000);
 // special escapes
 Gt() := ">";
