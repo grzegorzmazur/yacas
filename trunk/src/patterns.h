@@ -39,6 +39,18 @@ protected:
     LispStringPtr iString;
 };
 
+class MatchNumber : public YacasParamMatcherBase
+{
+public:
+    MatchNumber(BigNumber* aNumber);
+    virtual LispBoolean ArgumentMatches(LispEnvironment& aEnvironment,
+                                        LispPtr& aExpression,
+                                        LispPtr* arguments);
+protected:
+    RefPtr<BigNumber> iNumber;
+};
+
+
 class MatchSubList : public YacasParamMatcherBase
 {
 public:

@@ -12,7 +12,7 @@
 #include "lispeval.h"
 #include "standard.h"
 
-//#include "lispparser.h" //TODO debug only! remove
+#define noMATCH_NUMBERS
 
 
 //#define YACAS_LOGGING
@@ -48,6 +48,27 @@ LispBoolean MatchAtom::ArgumentMatches(LispEnvironment& aEnvironment,
     */
     return (iString == aExpression.Get()->String());
 }
+
+
+
+
+
+
+
+MatchNumber::MatchNumber(BigNumber* aNumber) : iNumber(aNumber)
+{
+}
+
+LispBoolean MatchNumber::ArgumentMatches(LispEnvironment& aEnvironment,
+                                       LispPtr& aExpression,
+                                       LispPtr* arguments)
+{
+  if (aExpression.Get()->Number(aEnvironment.Precision()))
+    return iNumber->Equals(*aExpression.Get()->Number(aEnvironment.Precision()));
+  return LispFalse;
+}
+
+
 
 
 MatchVariable::MatchVariable(LispInt aVarIndex) : iVarIndex(aVarIndex)
@@ -139,7 +160,12 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
 {
     if (aPattern == NULL)
         return NULL;
-
+#ifdef MATCH_NUMBERS
+    if (aPattern->Number(aEnvironment.Precision()))
+    {
+        return NEW MatchNumber(aPattern->Number(aEnvironment.Precision()));
+    }
+#endif
     // Deal with atoms
     if (aPattern->String())
     {
