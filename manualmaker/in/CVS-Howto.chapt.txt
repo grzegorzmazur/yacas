@@ -19,12 +19,15 @@ part of the distribution. The {Makefile.am} files contain the lists
 of files that are part of the distribution, and are in the 
 respective directory. If a file is added by a developer, but it is
 not added to the list in the file {Makefile.am}, it will not be
-added to the tar ball which is uploaded to the back up repository. 
+added to the tarball {yacas-*.tar.gz} which is uploaded to the backup repository. 
 It has the nice side effect that you can have local files which
 don't automatically get added to the distribution.
 
 Adding a directory requires adding the directory name to various
-places also, in configure scripts etcerera.
+places also, in configure scripts etc.
+To make sure that the {tar.gz} distribution is complete, you can run the command
+	make distcheck
+This may take a little while, as it needs to rebuild and test the whole system from the {tar.gz} tarball.
 
 	    Maintaining Yacas through a {cvs} repository
 
@@ -86,19 +89,18 @@ To check out as a maintainer, type:
 
 	export CVS_RSH=ssh1
 
-This will tell CVS to use ssh1 for communication. Then, in order to get yacas, type
+This will tell CVS to use ssh1 for communication. Then, in order to download the yacas source tree, type
 
 	cvs -d:ext:loginname@cvs.yacas.sourceforge.
 	  net:/cvsroot/yacas co yacas
-
 where {loginname} is your name on the sourceforge system.
-This then creates a directory {yacas/} with the full most recent distribution.
+This creates a directory {yacas/} with the full most recent distribution.
 You need to enter your password there, but other than that, that's it!
 
-Those lines typed above are long and intimidating, but it is also
+Those lines typed above are long and obscure, but it is also
 the last time you need to type them. From now on, if you want to do 
 anything with cvs, just go into the {yacas/} directory you just checked
-out, and type the cvs command without the {-d}... flag. This flag
+out, and type the cvs command without the {-d:}... flag. This flag
 just tells cvs where to find the repository. But future cvs commands
 will know where to find them, which is why you don't need that flag.
 
@@ -127,19 +129,24 @@ You got the latest version, but saw this huge, glaring omission in
 Yacas, and start hacking away to add it yourself. After a while, 
 after playing with the code you wrote, and if you think you are
 finished with it, you decide you like to add it to the cvs repository.
-First, you added a few files, which you need to add:
+
+First, you should test the new Yacas system:
+	make test
+If there are any failed tests, you need to fix them.
+
+Now you can start entering your changes to the CVS. If you created some new files, you need to tell CVS to add them to the source tree:
 
 {cvs add } [list of file names of ascii text files]
 
-which adds ascii text files. If you added binary files (GIF images
+This adds ascii text files. If you added binary files (GIF images
 in the documentation directory, or something like that), you can 
-add it with 
+add it to the CVS with 
 
 {cvs add -kb } [list of file names of binary files]
 
 Note that, when adding files to the CVS, you should normally also add them to
-the distribution list. This is done by adding the file name to the {EXTRA_DIST}
-variable in the file {Makefile.am} in the directory where you adding the file.
+the Yacas {tar.gz} distribution. This is done by adding the file name to the {EXTRA_DIST}
+variable in the file {Makefile.am} in the directory where you were adding the file.
 
 In case files need to be removed, there are two options:
 
@@ -159,6 +166,7 @@ who can then scan the diff files for changes, to see if they
 agree with the changes, and perhaps fix mistakes made (if any).
 
 If there is a collision, the commit fails (it will tell you so). 
+This might happen because someone else also edited the same place in a file and their changes cannot be automatically merged with yours.
 In case of a collision, you need to invoke {cvs update} twice.
 The {cvs update} outputs a list of file names with a character
 in front of them. The important ones are the files with a 'C' before
