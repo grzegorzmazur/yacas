@@ -135,6 +135,7 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 ];
 1 # Mod(n_IsPositiveInteger,m_IsPositiveInteger) <-- MathMod(n,m);
 2 # Mod(0,_m) <-- 0;
+2 # Mod(_n,Infinity) <-- n;
 3 # Mod(n_IsInteger,m_IsInteger) <-- MathMod(n,m);
 4 # Mod(n_IsNumber,m_IsNumber) <-- Mod(Rationalize(n),Rationalize(m));
 
@@ -147,6 +148,11 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
   m2:=Denom(m);
   Mod(n1*m2,m1*n2)/(n2*m2);
 ];
+
+6 # Mod(n_IsList,m_IsList) <-- Map("Mod",{n,m});
+7 # Mod(n_IsList,_m) <-- Map("Mod",{n,FillList(m,Length(n))});
+
+
 30 # Mod(n_CanBeUni,m_CanBeUni) <--
 [
   Local(vars);

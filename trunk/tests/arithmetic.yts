@@ -54,6 +54,11 @@ Verify(Mod(10,3),1);
 Verify(Div(10,3),3);
 Verify(MathGcd(55,10),5);
 
+Verify(Mod(2,Infinity),2);
+Verify(Mod({0,1,2,3,4,5,6},2),{0,1,0,1,0,1,0});
+Verify(Mod({0,1,2,3,4,5,6},{2,2,2,2,2,2,2}),{0,1,0,1,0,1,0});
+
+
 Testing("Rounding");
 Verify(Floor(1.2),1);
 Verify(Floor(-1.2),-2);
