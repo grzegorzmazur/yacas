@@ -146,6 +146,7 @@ AC_OUTPUT(yacas.spec
 	scripts/Makefile
 	colorcode/Makefile
 	ramscripts/Makefile
+	epoc/Makefile
 	tests/Makefile
         manmake/Makefile
         compile/Makefile
