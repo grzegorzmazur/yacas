@@ -69,6 +69,8 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispEquals        ,"Equals");
     SetCommand(LispEquals        ,"=");
     SetCommand(LispWrite         ,"Write");
+    SetCommand(LispMathLibName         ,"MathLibrary");
+    SetCommand(LispVersion         ,"Version");
     /*TODO remove!
     Set*Command(LispSpace         ,"Space");
     Set*Command(LispNewLine       ,"NewLine");
@@ -112,6 +114,8 @@ input(iEnvironment.iInputStatus)
 
     SetCommand(LispIsFunction    ,"IsFunction");
     SetCommand(LispIsAtom        ,"IsAtom");
+    SetCommand(LispIsUnix        ,"IsUnix");
+    SetCommand(LispIsPromptShown        ,"IsPromptShown");
     SetCommand(LispIsNumber      ,"IsNumber");
     SetCommand(LispIsInteger     ,"IsInteger");
     SetCommand(LispIsList        ,"IsList");

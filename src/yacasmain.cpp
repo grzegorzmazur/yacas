@@ -189,7 +189,7 @@ void ShStack(LispEnvironment& aEnvironment, LispPtr& aResult,
 }
 
 
-
+// this function is declared in yacasapi.cpp
 void LispVersion(LispEnvironment& aEnvironment, LispPtr& aResult,
                  LispPtr& aArguments)
 {
@@ -365,9 +365,11 @@ void LoadYacas()
 
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispExit),
                                            (*yacas)()().HashTable().LookUp("Exit"));
+	// this function is declared in yacasapi.cpp rather than here
+/*
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispVersion),
                                            (*yacas)()().HashTable().LookUp("Version"));
-
+*/
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispHistorySize),
                                            (*yacas)()().HashTable().LookUp("HistorySize"));
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispStackSize),

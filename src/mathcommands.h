@@ -9,435 +9,210 @@
 #include "lispglobals.h"
 
 
+#define CORE_FUNCTION(NAME) void NAME(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments);
+
 //
 // Evaluation direction.
 //
-void LispQuote(LispEnvironment& aEnvironment, LispPtr& aResult,
-                        LispPtr& aArguments);
-void LispEval(LispEnvironment& aEnvironment,LispPtr& aResult,
-              LispPtr& aArguments);
-
+CORE_FUNCTION(LispQuote)
+CORE_FUNCTION(LispEval)
 //
 // Input/output functions
 //
-void LispWrite(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispWriteString(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFullForm(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispDefaultDirectory(LispEnvironment& aEnvironment, LispPtr& aResult,
-                          LispPtr& aArguments);
-void LispFromFile(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFromString(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-
-void LispRead(LispEnvironment& aEnvironment, LispPtr& aResult,
-              LispPtr& aArguments);
-void LispReadToken(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments);
-void LispToFile(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispToString(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-
+CORE_FUNCTION(LispWrite)
+CORE_FUNCTION(LispWriteString)
+CORE_FUNCTION(LispFullForm)
+CORE_FUNCTION(LispDefaultDirectory)
+CORE_FUNCTION(LispFromFile)
+CORE_FUNCTION(LispFromString)
+CORE_FUNCTION(LispRead)
+CORE_FUNCTION(LispReadToken)
+CORE_FUNCTION(LispToFile)
+CORE_FUNCTION(LispToString)
+CORE_FUNCTION(LispLoad)
 //
 // Variable setting/clearing
 //
-void LispSetVar(LispEnvironment& aEnvironment, LispPtr& aResult,
-                LispPtr& aArguments);
-void LispMacroSetVar(LispEnvironment& aEnvironment, LispPtr& aResult,
-                LispPtr& aArguments);
-void LispClearVar(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispMacroClearVar(LispEnvironment& aEnvironment,
-                  LispPtr& aResult,LispPtr& aArguments);
-void LispNewLocal(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispMacroNewLocal(LispEnvironment& aEnvironment, LispPtr& aResult,
-                       LispPtr& aArguments);
-
-
+CORE_FUNCTION(LispSetVar)
+CORE_FUNCTION(LispMacroSetVar)
+CORE_FUNCTION(LispClearVar)
+CORE_FUNCTION(LispMacroClearVar)
+CORE_FUNCTION(LispNewLocal)
+CORE_FUNCTION(LispMacroNewLocal)
 //
 // List and compound object manipulation
 //
-void LispHead(LispEnvironment& aEnvironment, LispPtr& aResult,
-              LispPtr& aArguments);
-void LispNth(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispTail(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispDestructiveReverse(LispEnvironment& aEnvironment, LispPtr& aResult,
-                            LispPtr& aArguments);
-void LispLength(LispEnvironment& aEnvironment, LispPtr& aResult,
-                LispPtr& aArguments);
-void LispList(LispEnvironment& aEnvironment, LispPtr& aResult,
-              LispPtr& aArguments);
-void LispUnList(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispListify(LispEnvironment& aEnvironment, LispPtr& aResult,
-                 LispPtr& aArguments);
-void LispConcatenate(LispEnvironment& aEnvironment, LispPtr& aResult,
-              LispPtr& aArguments);
-void LispConcatenateStrings(LispEnvironment& aEnvironment, LispPtr& aResult,
-              LispPtr& aArguments);
-void LispNoCacheConcatenateStrings(LispEnvironment& aEnvironment, LispPtr& aResult,
-              LispPtr& aArguments);
-void LispDelete(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispInsert(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispReplace(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispAtomize(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispStringify(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments);
-void LispDestructiveDelete(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispDestructiveInsert(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispDestructiveReplace(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFlatCopy(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-
+CORE_FUNCTION(LispHead)
+CORE_FUNCTION(LispNth)
+CORE_FUNCTION(LispTail)
+CORE_FUNCTION(LispDestructiveReverse)
+CORE_FUNCTION(LispLength)
+CORE_FUNCTION(LispList)
+CORE_FUNCTION(LispUnList)
+CORE_FUNCTION(LispListify)
+CORE_FUNCTION(LispConcatenate)
+CORE_FUNCTION(LispConcatenateStrings)
+CORE_FUNCTION(LispNoCacheConcatenateStrings)
+CORE_FUNCTION(LispDelete)
+CORE_FUNCTION(LispInsert)
+CORE_FUNCTION(LispReplace)
+CORE_FUNCTION(LispAtomize)
+CORE_FUNCTION(LispStringify)
+CORE_FUNCTION(LispDestructiveDelete)
+CORE_FUNCTION(LispDestructiveInsert)
+CORE_FUNCTION(LispDestructiveReplace)
+CORE_FUNCTION(LispFlatCopy)
 //
 // Program control flow
 //
-void LispProgBody(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispWhile(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispIf(LispEnvironment& aEnvironment, LispPtr& aResult,
-            LispPtr& aArguments);
-void LispCheck(LispEnvironment& aEnvironment,LispPtr& aResult,
-               LispPtr& aArguments);
-
-
+CORE_FUNCTION(LispProgBody)
+CORE_FUNCTION(LispWhile)
+CORE_FUNCTION(LispIf)
+CORE_FUNCTION(LispCheck)
 //
 // User function definition
 //
-void LispPreFix(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispInFix(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispPostFix(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispBodied(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispMacroRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
-                       LispPtr& aArguments);
-void LispRuleBaseListed(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispMacroRuleBaseListed(LispEnvironment& aEnvironment, LispPtr& aResult,
-                             LispPtr& aArguments);
-
-void LispHoldArg(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispNewRule(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispMacroNewRule(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispUnFence(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispRetract(LispEnvironment& aEnvironment, LispPtr& aResult,
-                 LispPtr& aArguments);
-
+CORE_FUNCTION(LispPreFix)
+CORE_FUNCTION(LispInFix)
+CORE_FUNCTION(LispPostFix)
+CORE_FUNCTION(LispBodied)
+CORE_FUNCTION(LispRuleBase)
+CORE_FUNCTION(LispMacroRuleBase)
+CORE_FUNCTION(LispRuleBaseListed)
+CORE_FUNCTION(LispMacroRuleBaseListed)
+CORE_FUNCTION(LispHoldArg)
+CORE_FUNCTION(LispNewRule)
+CORE_FUNCTION(LispMacroNewRule)
+CORE_FUNCTION(LispUnFence)
+CORE_FUNCTION(LispRetract)
 //
 // Predicates
 //
-void LispNot(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispLazyAnd(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispLazyOr(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispEquals(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispLessThan(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispGreaterThan(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispIsFunction(LispEnvironment& aEnvironment,LispPtr& aResult,
-              LispPtr& aArguments);
-void LispIsAtom(LispEnvironment& aEnvironment,LispPtr& aResult,
-              LispPtr& aArguments);
-void LispIsNumber(LispEnvironment& aEnvironment,LispPtr& aResult,
-              LispPtr& aArguments);
-void LispIsInteger(LispEnvironment& aEnvironment,LispPtr& aResult,
-              LispPtr& aArguments);
-void LispIsList(LispEnvironment& aEnvironment,LispPtr& aResult,
-              LispPtr& aArguments);
-void LispIsString(LispEnvironment& aEnvironment,LispPtr& aResult,
-              LispPtr& aArguments);
-void LispIsBound(LispEnvironment& aEnvironment,LispPtr& aResult,
-              LispPtr& aArguments);
-
-
+CORE_FUNCTION(LispNot)
+CORE_FUNCTION(LispLazyAnd)
+CORE_FUNCTION(LispLazyOr)
+CORE_FUNCTION(LispEquals)
+CORE_FUNCTION(LispLessThan)
+CORE_FUNCTION(LispGreaterThan)
+CORE_FUNCTION(LispIsFunction)
+CORE_FUNCTION(LispIsAtom)
+CORE_FUNCTION(LispIsUnix)
+CORE_FUNCTION(LispIsPromptShown)
+CORE_FUNCTION(LispMathLibName)
+CORE_FUNCTION(LispVersion)
+CORE_FUNCTION(LispIsNumber)
+CORE_FUNCTION(LispIsInteger)
+CORE_FUNCTION(LispIsList)
+CORE_FUNCTION(LispIsString)
+CORE_FUNCTION(LispIsBound)
 //
 // Math functions (REQUIRING number inputs).
 //
-void LispMultiply(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispAdd(LispEnvironment& aEnvironment, LispPtr& aResult,
-             LispPtr& aArguments);
-void LispSubtract(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispDivide(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispSin(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispCos(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispTan(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispArcSin(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispArcCos(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispArcTan(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispPrecision(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments);
-void LispSqrt(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFloor(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispCeil(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispMod(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispDiv(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispLog(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispExp(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispPower(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispPi(LispEnvironment& aEnvironment, LispPtr& aResult,
-            LispPtr& aArguments);
-void LispGcd(LispEnvironment& aEnvironment, LispPtr& aResult,
-             LispPtr& aArguments);
-
-void LispSystemCall(LispEnvironment& aEnvironment,LispPtr& aResult,
-               LispPtr& aArguments);
-
-
-void LispFastSin(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFastCos(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFastTan(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFastArcSin(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFastArcCos(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFastArcTan(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFastExp(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFastLog(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFastPower(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-
-void LispFastSqrt(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFastPi(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFastFloor(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFastCeil(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFastMod(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFastAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-
-void LispShiftLeft(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispShiftRight(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispFromBase(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispToBase(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-
-
-void LispMaxEvalDepth(LispEnvironment& aEnvironment, LispPtr& aResult,
-                      LispPtr& aArguments);
-
-void LispDefLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-
-void LispUse(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-
-void LispRightAssociative(LispEnvironment& aEnvironment, LispPtr& aResult,
-                          LispPtr& aArguments);
-void LispLeftPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
-                          LispPtr& aArguments);
-void LispRightPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
-                          LispPtr& aArguments);
-
-
-void LispIsBodied(LispEnvironment& aEnvironment, LispPtr& aResult,
-               LispPtr& aArguments);
-void LispIsInFix(LispEnvironment& aEnvironment, LispPtr& aResult,
-               LispPtr& aArguments);
-void LispIsPreFix(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispIsPostFix(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments);
-void LispGetPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
-                       LispPtr& aArguments);
-void LispGetLeftPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
-                           LispPtr& aArguments);
-void LispGetRightPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
-                            LispPtr& aArguments);
-void LispGetPrecision(LispEnvironment& aEnvironment, LispPtr& aResult,
-                      LispPtr& aArguments);
-
-
-void LispBitAnd(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispBitOr(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-void LispBitXor(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-
-void LispSecure(LispEnvironment& aEnvironment,LispPtr& aResult,
-              LispPtr& aArguments);
-
-
-void LispFindFile(LispEnvironment& aEnvironment,LispPtr& aResult,
-              LispPtr& aArguments);
-void LispFindFunction(LispEnvironment& aEnvironment,LispPtr& aResult,
-                      LispPtr& aArguments);
-
+CORE_FUNCTION(LispMultiply)
+CORE_FUNCTION(LispAdd)
+CORE_FUNCTION(LispSubtract)
+CORE_FUNCTION(LispDivide)
+CORE_FUNCTION(LispSin)
+CORE_FUNCTION(LispCos)
+CORE_FUNCTION(LispTan)
+CORE_FUNCTION(LispArcSin)
+CORE_FUNCTION(LispArcCos)
+CORE_FUNCTION(LispArcTan)
+CORE_FUNCTION(LispPrecision)
+CORE_FUNCTION(LispSqrt)
+CORE_FUNCTION(LispFloor)
+CORE_FUNCTION(LispCeil)
+CORE_FUNCTION(LispAbs)
+CORE_FUNCTION(LispMod)
+CORE_FUNCTION(LispDiv)
+CORE_FUNCTION(LispLog)
+CORE_FUNCTION(LispExp)
+CORE_FUNCTION(LispPower)
+CORE_FUNCTION(LispPi)
+CORE_FUNCTION(LispGcd)
+CORE_FUNCTION(LispSystemCall)
+CORE_FUNCTION(LispFastSin)
+CORE_FUNCTION(LispFastCos)
+CORE_FUNCTION(LispFastTan)
+CORE_FUNCTION(LispFastArcSin)
+CORE_FUNCTION(LispFastArcCos)
+CORE_FUNCTION(LispFastArcTan)
+CORE_FUNCTION(LispFastExp)
+CORE_FUNCTION(LispFastLog)
+CORE_FUNCTION(LispFastPower)
+CORE_FUNCTION(LispFastSqrt)
+CORE_FUNCTION(LispFastPi)
+CORE_FUNCTION(LispFastFloor)
+CORE_FUNCTION(LispFastCeil)
+CORE_FUNCTION(LispFastMod)
+CORE_FUNCTION(LispFastAbs)
+CORE_FUNCTION(LispShiftLeft)
+CORE_FUNCTION(LispShiftRight)
+CORE_FUNCTION(LispFromBase)
+CORE_FUNCTION(LispToBase)
+CORE_FUNCTION(LispMaxEvalDepth)
+CORE_FUNCTION(LispDefLoad)
+CORE_FUNCTION(LispUse)
+CORE_FUNCTION(LispRightAssociative)
+CORE_FUNCTION(LispLeftPrecedence)
+CORE_FUNCTION(LispRightPrecedence)
+CORE_FUNCTION(LispIsBodied)
+CORE_FUNCTION(LispIsInFix)
+CORE_FUNCTION(LispIsPreFix)
+CORE_FUNCTION(LispIsPostFix)
+CORE_FUNCTION(LispGetPrecedence)
+CORE_FUNCTION(LispGetLeftPrecedence)
+CORE_FUNCTION(LispGetRightPrecedence)
+CORE_FUNCTION(LispGetPrecision)
+CORE_FUNCTION(LispBitAnd)
+CORE_FUNCTION(LispBitOr)
+CORE_FUNCTION(LispBitXor)
+CORE_FUNCTION(LispSecure)
+CORE_FUNCTION(LispFindFile)
+CORE_FUNCTION(LispFindFunction)
 /* Generic objecs support */
-void LispIsGeneric(LispEnvironment& aEnvironment,LispPtr& aResult,
-                   LispPtr& aArguments);
-void LispGenericTypeName(LispEnvironment& aEnvironment,LispPtr& aResult,
-                         LispPtr& aArguments);
-void GenArrayCreate(LispEnvironment& aEnvironment,LispPtr& aResult,
-                    LispPtr& aArguments);
-void GenArraySize(LispEnvironment& aEnvironment,LispPtr& aResult,
-                  LispPtr& aArguments);
-void GenArrayGet(LispEnvironment& aEnvironment,LispPtr& aResult,
-                 LispPtr& aArguments);
-void GenArraySet(LispEnvironment& aEnvironment,LispPtr& aResult,
-                 LispPtr& aArguments);
-
-void LispTrace(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments);
-void LispTraceRule(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments);
-void LispTraceStack(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments);
-
-void LispReadLisp(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-
-void LispType(LispEnvironment& aEnvironment,LispPtr& aResult,
-              LispPtr& aArguments);
-
-void LispStringMid(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments);
-void LispSetStringMid(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments);
-
-
+CORE_FUNCTION(LispIsGeneric)
+CORE_FUNCTION(LispGenericTypeName)
+CORE_FUNCTION(GenArrayCreate)
+CORE_FUNCTION(GenArraySize)
+CORE_FUNCTION(GenArrayGet)
+CORE_FUNCTION(GenArraySet)
+CORE_FUNCTION(LispTrace)
+CORE_FUNCTION(LispTraceRule)
+CORE_FUNCTION(LispTraceStack)
+CORE_FUNCTION(LispReadLisp)
+CORE_FUNCTION(LispType)
+CORE_FUNCTION(LispStringMid)
+CORE_FUNCTION(LispSetStringMid)
 /* Pattern matching */
-void GenPatternCreate(LispEnvironment& aEnvironment,LispPtr& aResult,
-                      LispPtr& aArguments);
-void GenPatternMatches(LispEnvironment& aEnvironment,LispPtr& aResult,
-                       LispPtr& aArguments);
-
-void LispRuleBaseDefined(LispEnvironment& aEnvironment,LispPtr& aResult,
-                         LispPtr& aArguments);
-void LispDefLoadFunction(LispEnvironment& aEnvironment,LispPtr& aResult,
-                         LispPtr& aArguments);
-void LispRuleBaseArgList(LispEnvironment& aEnvironment,LispPtr& aResult,
-                         LispPtr& aArguments);
-
-
-void LispNewRulePattern(LispEnvironment& aEnvironment, LispPtr& aResult,
-                        LispPtr& aArguments);
-void LispMacroNewRulePattern(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-
-
-void LispSubst(LispEnvironment& aEnvironment, LispPtr& aResult,
-               LispPtr& aArguments);
-void LispLocalSymbols(LispEnvironment& aEnvironment, LispPtr& aResult,
-                      LispPtr& aArguments);
-
-
-void LispFac(LispEnvironment& aEnvironment, LispPtr& aResult,
-                  LispPtr& aArguments);
-
-void LispApplyPure(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments);
-
-void LispPrettyPrinter(LispEnvironment& aEnvironment, LispPtr& aResult,
-                       LispPtr& aArguments);
-
-
-void LispGarbageCollect(LispEnvironment& aEnvironment, LispPtr& aResult,
-                        LispPtr& aArguments);
-
-void LispLazyGlobal(LispEnvironment& aEnvironment, LispPtr& aResult,
-                    LispPtr& aArguments);
-
-void LispPatchLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments);
-void LispPatchString(LispEnvironment& aEnvironment, LispPtr& aResult,
-                     LispPtr& aArguments);
-
-void LispDllLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
-                 LispPtr& aArguments);
-void LispDllUnload(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments);
-void LispDllEnumerate(LispEnvironment& aEnvironment, LispPtr& aResult,
-                      LispPtr& aArguments);
-
-void LispSetExtraInfo(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments);
-void LispGetExtraInfo(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments);
-
-
-void LispBerlekamp(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments);
-
-void LispDefaultTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments);
-void LispCTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments);
-void LispXmlTokenizer(LispEnvironment& aEnvironment, LispPtr& aResult,
-                      LispPtr& aArguments);
-
-void LispExplodeTag(LispEnvironment& aEnvironment, LispPtr& aResult,
-                    LispPtr& aArguments);
-
-void LispFastAssoc(LispEnvironment& aEnvironment, LispPtr& aResult,
-                   LispPtr& aArguments);
-
-void LispCurrentFile(LispEnvironment& aEnvironment, LispPtr& aResult,
-                     LispPtr& aArguments);
-void LispCurrentLine(LispEnvironment& aEnvironment, LispPtr& aResult,
-                     LispPtr& aArguments);
-
-void LispBackQuote(LispEnvironment& aEnvironment, LispPtr& aResult,
-                     LispPtr& aArguments);
-
+CORE_FUNCTION(GenPatternCreate)
+CORE_FUNCTION(GenPatternMatches)
+CORE_FUNCTION(LispRuleBaseDefined)
+CORE_FUNCTION(LispDefLoadFunction)
+CORE_FUNCTION(LispRuleBaseArgList)
+CORE_FUNCTION(LispNewRulePattern)
+CORE_FUNCTION(LispMacroNewRulePattern)
+CORE_FUNCTION(LispSubst)
+CORE_FUNCTION(LispLocalSymbols)
+CORE_FUNCTION(LispFac)
+CORE_FUNCTION(LispApplyPure)
+CORE_FUNCTION(LispPrettyPrinter)
+CORE_FUNCTION(LispGarbageCollect)
+CORE_FUNCTION(LispLazyGlobal)
+CORE_FUNCTION(LispPatchLoad)
+CORE_FUNCTION(LispPatchString)
+CORE_FUNCTION(LispDllLoad)
+CORE_FUNCTION(LispDllUnload)
+CORE_FUNCTION(LispDllEnumerate)
+CORE_FUNCTION(LispSetExtraInfo)
+CORE_FUNCTION(LispGetExtraInfo)
+CORE_FUNCTION(LispBerlekamp)
+CORE_FUNCTION(LispDefaultTokenizer)
+CORE_FUNCTION(LispCTokenizer)
+CORE_FUNCTION(LispXmlTokenizer)
+CORE_FUNCTION(LispExplodeTag)
+CORE_FUNCTION(LispFastAssoc)
+CORE_FUNCTION(LispCurrentFile)
+CORE_FUNCTION(LispCurrentLine)
+CORE_FUNCTION(LispBackQuote)
 #endif
-
-
-

@@ -1199,6 +1199,34 @@ should then at least be faster than the arbitrary precision versions.
 Shift bits to the left or to the right.
 
 
+*CMD IsUnix --- check if running under Unix
+*CORE
+*CALL
+	IsUnix()
+*DESC
+Returns {True} if Yacas has been compiled under a Unix-like environment, and {False} otherwise (i.e. Windows).
+
+*CMD IsPromptShown --- test for the Yacas prompt option
+*CORE
+*CALL
+	IsPromptShown()
+*DESC
+Returns {False} if Yacas has been started with the option to suppress the prompt, and {True} otherwise.
+
+*CMD MathLibrary --- obtain current math library name
+*CORE
+*CALL
+	MathLibrary()
+*DESC
+Returns a string that describes the currently used arbitrary-precision arithmetic library name.
+
+Possible names are {"Internal"} and {"Gmp"}, indicating the internal math library {libyacasnumbers} and the GNU Multiple Precision library {libgmp}.
+
+*EG
+	In>  MathLibrary()
+	Out> "Internal";
+
+
 
 		Full listing of core functions
 
