@@ -2,29 +2,29 @@
 
 /// These functions should return the command line necessary to accomplish tasks.
 
-DeleteFile(filename) := "del " : filename;
+DeleteFileCmd(filename) := "del \"" : filename : "\"";
 
-DeleteDirectory(dirname) := "deltree " : dirname;
+DeleteDirCmd(dirname) := "deltree \"" : dirname : "\"";
 
-CopyFile(filename1, filename2) := "copy /b " : filename1 : " " : filename2;
+CopyFileCmd(filename1, filename2) := "copy /b \"" : filename1 : "\" \"" : filename2 : "\"";
 
-MakeDirectory(dirname) := "md " : dirname;
+MakeDirCmd(dirname) := "md \"" : dirname : "\"";
 
-ChangeDirectory(dirname) := "cd " : dirname;
+ChangeDirCmd(dirname) := "cd \"" : dirname : "\"";
 
-PrintFile(filename) := "type " : filename;
+PrintFileCmd(filename) := "type \"" : filename : "\"";
 
 // execute a given command in the background
-BackgroundCommand(command'line) := "start " : command'line;
+BackgroundCmd(command'line) := "start " : command'line;
 
 /// These functions should return some system-dependent strings.
 
-TemporaryDirectory() := "%TEMP%";
+TemporaryDir() := "%TEMP%";
 
 NullFileName() := "nul.";
 
 // this is a cludge - I don't know how to create a temporary file in DOS
-TemporaryFileName() := "%TEMP%\\yacas.tmp";
+TemporaryFile() := "%TEMP%\\yacas.tmp";
 
 // this depends on PS files being associated to a viewer (GSview does this)
 PSViewer() := "start";

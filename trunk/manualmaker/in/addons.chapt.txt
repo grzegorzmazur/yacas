@@ -1,7 +1,7 @@
 			Platform-dependent packages
 
-*INTRO Certain facilities have been developed for use on the Unix platform,
-which is currently the main development platform for Yacas. These packages are described in this chapter.
+*INTRO Certain facilities have been developed for use on Unix-like platforms,
+which is currently the main development target for Yacas. Other facilities have limited support on the Windows platform as well. These functions are described in this chapter.
 
 *CMD GetYacasPID --- obtain Yacas process number
 *UNIX
@@ -10,6 +10,7 @@ which is currently the main development platform for Yacas. These packages are d
 
 *DESC
 Returns an integer containing the process number (PID) of the Yacas session.
+This number can be used to create unique file names.
 
 Requires: a Unix shell.
 
@@ -28,7 +29,7 @@ Requires: a Unix shell.
 {expr} -- any expression (not evaluated)
 
 *DESC
-Exports a Yacas expression to $LaTeX$, generates a Postscript file and shows it in a viewer. The free viewer {gv} must be available on the Unix shell path. An alternative viewer can be specified by assigning to the global variable PSViewCommand.
+Exports a Yacas expression to $LaTeX$, generates a Postscript file and shows it in a viewer. The free Postscript viewer {gv} must be available on the Unix shell path. An alternative viewer can be specified by assigning to the global variable PSViewCommand.
 
 Requires: a Unix shell, {latex}, {dvips}, {gv} or another Postscript viewer.
 
@@ -121,6 +122,11 @@ functions can be used for comparing version numbers. This
 method is only guaranteed, however, if the version is always expressed
 in the form {d.d.dd} as above.
 
+Note that on the Windows platforms the output may be different:
+
+	In> Version()
+	Out> "Windows-latest";
+
 *SEE LessThan, GreaterThan
 
 
@@ -148,7 +154,9 @@ If editing a function, the command will jump directly to the first
 occurrence of the name of the function in the file (usually the 
 beginning of a definition of a function).
 
-For {Vi()} to be really useful, you need to start Yacas from the {scripts/} directory in the development tree. In that case, {FindFunction()} will return the filename under that directory. Otherwise,  {FindFunction()} will return a name in the systemwide installation directory (or directory specified in the {--rootdir} option).
+If you would like to use {Vi()} to actually edit the Yacas library source file where the function is defined,
+you need to start Yacas from the {scripts/} directory in the development tree.
+In that case, {FindFunction()} will return the filename under that directory. Otherwise,  {FindFunction()} will return a name in the systemwide installation directory (or directory specified in the {--rootdir} option).
 
 *E.G.
 
@@ -159,3 +167,90 @@ For {Vi()} to be really useful, you need to start Yacas from the {scripts/} dire
 
 *SEE FindFunction
 
+
+*CMD CopyFile, DeleteFile, DeleteDir, MakeDir, MakeFilePath, TemporaryDir, TemporaryFile --- manipulate files and directories
+*CORE
+*CALL
+	CopyFile("src","dest")
+	DeleteFile("file", ...)
+	DeleteDir("dir", ...)
+	MakeDir("dir1", ...)
+	MakeFilePath("dir1", "dir2", ..., "file")
+	TemporaryDir()
+	TemporaryFile()
+
+*PARMS
+
+"src", "dest", "file", "dir" -- strings, names of files and directories
+
+*DESC
+
+These functions provide a platform-independent interface to file operations on the underlying operating system (OS):
+
+*	{CopyFile} will copy a file {"src"} to another file or directory {"dest"}.
+*	{DeleteFile} will delete one or more files.
+*	{DeleteDir} will delete one or more directories with all their contents.
+*	{MakeDir} will create new directories. Under Windows, all intermediate subdirectories must exist for this to work. Under Unix, any intermediate subdirectories will be created automatically if needed.
+*	{MakeFilePath} returns a string which is the file path to the given file under given subdirectories. It uses the global variable {FilePathSeparator} which is the forward slash {/} on Unix and the backward slash {\} on Windows.
+*	{TemporaryDir} and {TemporaryFile} return the names of a temporary directory and a temporary file. (These names are OS-dependent.)
+
+Absolute file paths or relative file paths can be given (the current directory is the directory where Yacas was started).
+
+File and directory names may contain spaces, although the behavior on Windows platform may be incorrect due to its broken filesystem and command interpreter.
+File and directory names should not contain double quotes ({"}). (On Unix, double quotes may be escaped by a backslash.)
+
+When operating on many files or directories at once, there may be errors associated with some files but not others.
+The functions return {True} only if all operations succeeded.
+The error messages from the OS may be printed
+
+*E.G.
+
+	In> MakeFilePath("", "usr", "bin", "yacas")
+	Out> "/usr/bin/yacas";
+	In> TemporaryDir()
+	Out> "/tmp";
+If the file {f1.txt} exists:
+	In> CopyFile("f1.txt", "f2.txt")
+	Out> True;
+Create a subdirectory {subdir} under the temporary directory:
+	In> MakeDir(d:=MakeFilePath(TemporaryDir(), \
+	  "subdir"))
+	Out> True;
+	In> d
+	Out> "/tmp/subdir";
+Copy a file into the newly created temporary location:
+	In> CopyFile("f2.txt", d)
+	Out> True;
+An unsuccessful attempt to delete a directory:
+	In> DeleteDir("C:\\WINDOWS")
+	rm: cannot remove `C:\\WINDOWS': No such file
+	  or directory
+	Out> False;
+
+*SEE SystemCall
+
+
+*CMD BackgroundCmd --- execute a system command in the background
+*CORE
+*CALL
+	BackgroundCmd("command")
+
+*PARMS
+
+"command" -- string, command line to execute
+
+*DESC
+
+This function is similar to {SystemCall} except the command is executed in the background.
+This is useful, for example, to start a GUI program while not interrupting the Yacas session.
+
+Unlike the {SystemCall} function, the return status of the command is not available.
+
+
+*E.G.
+
+	In> BackgroundCmd("mozilla")
+	Out> True;
+(The Yacas session continues right away, but the disk starts to churn until finally the Mozilla window appears.)
+
+*SEE SystemCall
