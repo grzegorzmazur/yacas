@@ -50,7 +50,7 @@ for scr in $SCRIPTS; do
     fi
     echo "Running $scr"
     ($CMD $f || echo "Error: exit status $?") | tee $TMPFILE
-    if grep "\*\*\*\*\*\*\|Error" $TMPFILE > /dev/null; then
+    if grep -E "\*\*\*\*\*\*|Error" $TMPFILE > /dev/null; then
         FAILED_TESTS="$FAILED_TESTS $scr"
         FAILURES=`expr $FAILURES + 1`
     fi
