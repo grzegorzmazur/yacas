@@ -1,5 +1,60 @@
 
 
+
+10 # PowerMod(x_IsPositiveInteger,n_IsPositiveInteger,m_IsPositiveInteger)_((n&1) = 1) <--
+     Mod(PowerMod(Mod(x*x,m),n>>1,m)*x,m);
+15 # PowerMod(x_IsPositiveInteger,n_IsPositiveInteger,m_IsPositiveInteger) <--
+     PowerMod(Mod(x*x,m),n>>1,m);
+20 # PowerMod(x_IsPositiveInteger,0,m_IsPositiveInteger) <-- 1;
+
+Verify(PowerMod(165850066684781158,157096713508806848,2101168546281212491),1753484498340281299);
+EndOfFile;
+
+PowerMod(x_IsPositiveInteger,n_IsPositiveInteger,m_IsPositiveInteger) <--
+[
+  Local(result);
+  result:=1;
+  x:=Mod(x,m);
+  While(n != 0)
+  [
+    if ((n&1) = 1) [ result := Mod(result*x,m); ];
+    x := Mod(x*x,m);
+    n := n>>1;
+  ];
+  result;
+];
+Verify(PowerMod(165850066684781158,157096713508806848,2101168546281212491),1753484498340281299);
+
+
+EndOfFile;
+
+
+10 # CharAt(string_IsString,index_IsInteger) <-- StringMid(index,1,string);
+20 # CharAt(string_IsString,index_IsList   ) <-- MapSingle("CharAt",index);
+     CharAt(index_IsInteger)                 <-- CharAt(string,index);
+UnFence("CharAt",1);
+[
+  pairs := {};
+  sqrs  := MapSingle("String",(N(Ceil(Sqrt(1000))) .. N(Floor(Sqrt(9999))))^2);
+  neuns := Select({{i},CharAt(i,1) = CharAt(i,4)},sqrs);
+  ForEach(vier,sqrs)
+    ForEach(neun,neuns)
+      if (CharAt(vier,3) = CharAt(neun,2))
+        if (Length(VarList(CharAt(vier:neun,1 .. 8))) = 6) 
+          [ pairs := {vier,neun} : pairs; ];
+  sides := Transpose(pairs);
+  result:={};
+  ForEach(solution,pairs)
+    if (Count(sides[1],solution[1]) = 1 And Count(sides[2],solution[2]) = 1)
+      [ result := (solution:result); ];
+  Echo({result});
+];
+
+
+
+EndOfFile;
+
+
 /*
   SubstituteHeld does a substitute without evaluating the intermediate
   expressions. For this, Held(...) is used (Held(x) makes sure x is
