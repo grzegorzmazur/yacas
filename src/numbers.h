@@ -142,34 +142,38 @@ protected: // I don't want any one to construct this class any other way!
 };
 #endif //0
 
+/// Virtual base class for low-level multiple-precision arithmetic.
+/// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
 class NumberBase : public YacasBase
 {
 public: //constructors
   /// ToString : return string representation of number in aResult 
-  virtual void ToString(LispString& aResult, LispInt aBase) = 0;
+  virtual void ToString(LispString& aResult, LispInt aBase) const = 0;
 public: //information retrieval on library used  
   /// Numeric library name
-  virtual const LispCharPtr NumericLibraryName() = 0;
+  virtual const LispCharPtr NumericLibraryName() const = 0;
 public://arithmetic
-  /// Multiply two numbers, and return result in aResult
+  /// Multiply two numbers at given precision and put result in *this
   virtual void Multiply(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
   /** Multiply two numbers, and add to aResult (this is useful and generally efficient to implement).
    * This is most likely going to be used by internal functions only, using aResult as an accumulator.
    */
-  virtual void MultiplyAdd(NumberBase& aResult, const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
-  /// Add two numbers, and return result in aResult
+ static virtual void MultiplyAdd(NumberBase& aResult, const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
+  /// Add two numbers at given precision and return result in *this
   virtual void Add(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
-  /// Negate the current number, and return it
+  /// Negate the given number, return result in *this
   virtual void Negate(const NumberBase& aX) = 0;
-  /// Divide, and return result. Note: if the two arguments are integer, it should return an integer result!
+  /// Divide two numbers and return result in *this. Note: if the two arguments are integer, it should return an integer result!
   virtual void Divide(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
 
-public://bitwise operations  
+public:/// Bitwise operations, return result in *this.
   virtual void ShiftLeft( const NumberBase& aX, LispInt aNrToShift) = 0;
   virtual void ShiftRight( const NumberBase& aX, LispInt aNrToShift) = 0;
   virtual void BitAnd(const NumberBase& aX, const NumberBase& aY) = 0;
   virtual void BitOr(const NumberBase& aX, const NumberBase& aY) = 0;
   virtual void BitXor(const NumberBase& aX, const NumberBase& aY) = 0;
+  /// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
+  virtual LispInt BitCount() const = 0;
 };
 
 
