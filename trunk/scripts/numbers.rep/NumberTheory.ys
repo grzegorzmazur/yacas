@@ -1,0 +1,149 @@
+/* Implementation of some number theoretical functions for Yacas */
+/* (C) 2002 Pablo De Napoli <pdenapo@yahoo.com> under GNU GPL */
+
+/* DivisorsList(n) = the list of divisors of n */
+
+DivisorsList(n_IsPositiveInteger) <--
+[
+ Local(nFactors,f,result,oldresult,x);
+ nFactors:= Factors(n); 
+ result := {1};
+ ForEach (f,nFactors)   
+    [ 
+      oldresult := result;
+      For (k:=1,k<=f[2],k++)
+        ForEach (x,oldresult) 
+	  result:=Append(result,x*f[1]^k);
+    ]; 
+  result;
+];
+
+/* This function performs a sum where sumvar runs through 
+   the divisors of n 
+   For example SumForDivisors(d,10,d^2) 
+   sums d^2 with d walking through the divisors of 10 
+   LocalSymbols is needed since we use Eval() inside 
+   Look at Programming in Yacas: Evaluating Variables in the Wrong
+   Scope */
+
+Function ("SumForDivisors",{sumvar,n,sumbody}) LocalSymbols(s,d)
+[
+   Local(s,d);
+   s:=0;
+   ForEach (d,DivisorsList(n))
+   [
+    MacroLocal(sumvar);
+    MacroSet(sumvar,d);	
+    s:=s+Eval(sumbody);
+   ];
+   s;
+];
+UnFence("SumForDivisors",3);
+HoldArg("SumForDivisors",sumvar);
+HoldArg("SumForDivisors",sumbody); 
+
+/* Returns a list of the square-free divisors of n */
+SquareFreeDivisorsList(n_IsPositiveInteger) <--
+[
+ Local(nFactors,f,result,oldresult,x);
+ nFactors:= Factors(n); 
+ result := {1};
+ ForEach (f,nFactors)   
+    [ 
+      oldresult := result;
+        ForEach (x,oldresult) 
+	  result:=Append(result,x*f[1]);
+    ]; 
+  result;
+];
+
+/* Returns a list of pairs {d,m}
+   where d runs through the square free divisors of  n 
+   and m=Moebius(m) 
+   This is much more efficient than making a list of all 
+   square-free divisors of n, and then compute Moebius on each of them.
+   It is useful for computing the Cyclotomic polinomials. 
+   It can be useful in other computations based on
+   Moebius inversion formula. */
+
+MoebiusDivisorsList(n_IsPositiveInteger) <--
+[
+ Local(nFactors,f,result,oldresult,x);
+ nFactors:= Factors(n); 
+ result := {{1,1}};
+ ForEach (f,nFactors)   
+    [ 
+      oldresult := result;
+        ForEach (x,oldresult) 
+	  result:=Append(result,{x[1]*f[1],-x[2]});
+    ]; 
+  result;
+];
+
+/*  Returns the cyclotomic polinomial in the variable x
+    (which is the minimal polynomial of the n-th primitive
+    roots of the unit). 
+    For n even, we write n= m*k, where k is a Power of 2 
+    and m is odd, and redce it to the case m even since:
+
+    Cyclotomic(n,x) = Cyclotomic(m,-x^{k/2}) 
+
+If m=1, n is a power of 2, and Cyclotomic(n,x)= x^k+1 */
+
+5 # Cyclotomic(1,x) <-- x-1;
+
+10 # Cyclotomic(n_IsEven,x) <--
+     [
+      Local(k,m); 
+      /*  */ 
+       k := 1;
+       m := n;
+	While(IsEven(m))
+       [
+	k := k*2;
+        m := m/2;
+       ];
+       k := k/2 ;
+       If(m>1,Expand(Subst(x,-x^k) Cyclotomic(m,x)),x^k+1);
+     ]; 
+
+/*  For n odd, the algoritm is based on the formula
+
+     Cyclotomic(n,x) := Prod (x^(n/d)-1)^Moebius(d) 
+ 
+where d runs through the divisors of n.
+In order to compute this in a efficient way, we use the function
+SquareFreeDivisorsListMoebius. Then we compute in poly1 the product
+of (x^(n/d)-1) with Moebius(d)=1 , and in poly2 the product of these polynomials
+with  Moebius(d)=-1. Finally we compute the quotient poly1/poly2 */
+
+20 # Cyclotomic(n_IsOdd,x)_(n>1) <--
+[
+ Local(divisors,poly1,poly2,q,d);
+ divisors := MoebiusDivisorsList(n); 
+ poly1 :=1 ;
+ poly2 := 1;
+ ForEach (d,divisors)
+ [ 
+   q:=n/d[1];
+   If (d[2]=1,(poly1:=poly1*(x^q-1)),(poly2:=poly2*(x^q-1)));
+ ];
+ poly1 := Expand(poly1);
+ poly2 := Expand(poly2);
+ Div(poly1,poly2);
+];
+
+/* RamanujanSum(k,n) = the sum of the n-th powers of the
+k-th primitive roots of the identity */
+
+10 # RamanujanSum(k_IsPositiveInteger,0) <-- Totient(k);
+
+20 # RamanujanSum(k_IsPositiveInteger,n_IsPositiveInteger) <--
+[
+ Local(s,gcd,d);
+ s:= 0;
+ gcd := Gcd(n,k);
+ ForEach (d,DivisorsList(gcd))
+  s:=s+d*Moebius(k/d);
+ s;
+];
