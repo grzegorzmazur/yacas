@@ -202,6 +202,7 @@ Function("TableForm",{list})
 112 # _y - (_x + _y) <-- - x;
 113 # (- _x) - _y <-- -(x+y);
 113 # (x_IsNegativeNumber) - _y <-- -((-x)+y);
+113 # (x_IsNegativeNumber)/_y - _z <-- -((-x)/y+z);
 
 /* TODO move to this precedence everywhere? */
 10 # (x_IsList) - (y_IsList) <-- Map({{xarg,yarg},xarg-yarg},{x,y});
