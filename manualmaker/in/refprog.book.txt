@@ -855,8 +855,9 @@ Note that {OK} is not printed.
 *CMD Assert --- signal "soft" custom error
 *STD
 *CALL
-	Assert(pred) "str"
-	Assert(pred, "str") expr
+	Assert("str", expr) pred
+	Assert("str") pred
+	Assert() pred
 (bodied function, precedence 60000)
 *PARMS
 
@@ -877,10 +878,12 @@ Otherwise the function returns {True}.
 Unlike the "hard" error function {Check}, the function {Assert} does not stop
 the execution of the program.
 
-The error object consists of the string {"str"} and optionally an arbitrary
+The error object consists of the string {"str"} and an arbitrary
 expression {expr}. The string should be used to classify the kind of error that
-has occurred. The association list of error objects is currently the global
+has occurred, for example "domain" or "format". The association list of error objects is currently the global
 variable {ErrorTableau}.
+
+If the parameter {expr} is missing, {Assert} substitutes {True}. If both optional parameters {"str"} and {expr} are missing, {Assert} creates an error of class {"generic"}.
 
 Errors can be handled by a
 custom error handler in the portion of the code that is able to handle a certain class of
@@ -890,9 +893,9 @@ be eventually printed to the screen. This is the behavior of prettyprinters
 
 *E.G.
 
-	In> Assert(1=0, "bad value") "must be zero"
+	In> Assert("bad value", "must be zero") 1=0
 	Out> False;
-	In> Assert(1=1, "bad value") "must be one"
+	In> Assert("bad value", "must be one") 1=1
 	Out> True;
 	In> IsError()
 	Out> True;
@@ -972,7 +975,7 @@ object was found and deleted, and {False} otherwise.
 
 	In> x:=1
 	Out> 1;
-	In> Assert(x=0, "bad value") {x,"must be zero"}
+	In> Assert("bad value", {x,"must be zero"}) x=0
 	Out> False;
 	In> GetError("bad value")
 	Out> {1, "must be zero"};

@@ -690,7 +690,7 @@ assigned just before the error occurred. Also, sometimes it is better
 for the program to be able to catch the error and continue.
 
 The "soft" error reporting is provided by the functions {Assert} and {IsError}, e.g.
-	Assert(x>0, "domain") x;
+	Assert("domain", x) x>0;
 	If(IsError("domain"), ...);
 The error will be reported but execution will continue normally until
 some other function "handles" the error (prints the error message or

@@ -29,7 +29,7 @@ IsError(error'class_IsString) <--
 ];
 
 /// post an error if assertion fails
-(Assert(_predicate, _error'class) _error'object) <--
+(Assert(_error'class, _error'object) _predicate) <--
 [
 	CheckErrorTableau();
 	If(Equals(predicate, True),	// if it does not evaluate to True, it's an error
@@ -42,7 +42,10 @@ IsError(error'class_IsString) <--
 ];
 
 /// interface
-(Assert(_predicate) _error'class) <-- Assert(predicate, error'class) True;
+(Assert(_error'class) _predicate) <-- Assert(error'class, True) predicate;
+
+/// interface
+(Assert() _predicate) <-- Assert("generic", True) predicate;
 
 /// print all errors and clear the tableau
 DumpErrors() <--
