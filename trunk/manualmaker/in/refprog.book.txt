@@ -296,6 +296,205 @@ that their arguments are evaluated before
 the required action is performed. This is
 useful in macro-like procedures.
 
+
+*CMD Back-quoting --- Back-quoting, macro expansion
+*CORE
+*CALL
+	`(expression)
+
+*PARMS
+
+{expression} - expression containing {@var} pairs to substitute the value of variable {var}
+
+*DESC
+
+Back-quoting is a powerful mechanism where variables get expanded
+inside an expression, and the expression then gets evaluated.
+To invoke this functionality, a back-quote {`} needs to be placed
+in front of an expression. If the {@var} pair is in place of a function 
+the function is replaced.
+
+One way to view back-quoting is to view it as a parametric expression
+generator. {@var} pairs get substituted with the value of th variable
+{var}. 
+
+This operation is relatively slow since a new expression is built
+before it is evaluated, but it is a powerful mechanism nonetheless,
+allowing for great simplifications.
+
+*E.G.
+
+	In> Decl(f1,f2) := \
+	In>     `(@f1(x_IsNumber) <-- N(@f2(x)));
+	Out> True;
+	In> Decl(nSin,Sin)
+	Out> True;
+	In> Sin(1)
+	Out> Sin(1);
+	In> nSin(1)
+	Out> 0.8414709848;
+
+The above example defines a function that automatically evaluates to a
+number as soon as the argument is a number (a lot of functions 
+do this only when inside a {N(...)} section).
+
+	In> SetF(var,func,value) := \
+	In>     `(Set(@var,@func(@value)));
+	Out> True;
+	In> SetF(a,Sin,x)
+	Out> True;
+	In> a
+	Out> Sin(x);
+
+The above example assigns {func(value)} to variable {var}.
+
+
+*SEE MacroSet, MacroLocal, MacroRuleBase
+
+*CMD SetExtraInfo, GetExtraInfo --- Annotate objects with additional tag information
+*CORE
+*CALL
+	SetExtraInfo(expression,tag)
+	GetExtraInfo(expression)
+
+*PARMS
+
+{expression} - expression to tag
+{tag} - tag information
+
+*DESC
+
+Sometimes it is useful to be able to add extra annotational tag information
+to objects. The functions {SetExtraInfo} and {GetExtraInfo} enable this.
+
+The function {SetExtraInfo} returns the tagged expression, leaving
+the original expression alone. This means there is a common gotcha:
+be sure to assign the returned value to a variable, or the tagged
+expression is lost.
+
+The original expression is left alone, and the tagged expression
+returned, in order to keep the atomic objects small. To tag an
+object, a new type of object is created from the old object, with
+one added property: a tag.
+
+No part of Yacas uses tags in a way that is visible to the outside
+world, so for specific programs, a programmer can devise a format
+to use for tagging information. Association lists are a natural fit
+for this, but it is not required. The tag is free-form, although
+using association lists is highly advised since it is most likely
+to be the format used by other parts of the system, making the code
+compatible with other parts.
+
+*E.G.
+
+	In> a:=2*b
+	Out> 2*b;
+	In> a:=SetExtraInfo(a,{{"type","integer"}})
+	Out> 2*b;
+	In> a
+	Out> 2*b;
+	In> GetExtraInfo(a)
+	Out> {{"type","integer"}};
+	In> GetExtraInfo(a)["type"]
+	Out> "integer";
+	In> c:=a
+	Out> 2*b;
+	In> GetExtraInfo(c)
+	Out> {{"type","integer"}};
+	In> c
+	Out> 2*b;
+
+*SEE Assoc
+
+*CMD GarbageCollect --- Do garbage collection on unused memory
+*CORE
+*CALL
+	GarbageCollect()
+
+*PARMS
+
+none
+
+*DESC
+
+{GarbageCollect()} garbage-collects unused memory. The Yacas system
+uses a reference counting system for most objects, so this call
+is usually not necessary. 
+
+Reference counting refers to bookkeeping where in each object a 
+counter is held, keeping track of the number of parts in the system 
+using that object. When this count drops to zero, the object is 
+automatically removed. Reference counting is not the fastest way
+of doing garbage collection, but it can be implemented in a very
+clean way with very little code.
+
+Among the most important objects that are not reference counted are
+the strings. {GarbageCollect()} collects these and disposes of them
+when they are not used any more. 
+
+{GarbageCollect()} is useful when doing a lot of text processing,
+to clean up the text buffers. It is not highly needed, but it keeps
+memory use low.
+
+*CMD CurrentFile, CurrentLine --- Show current file and line of input
+*CORE
+*CALL
+	CurrentFile()
+	CurrentLine()
+
+*PARMS
+
+none
+
+*DESC
+
+The functions {CurrentFile()} and {CurrentLine()} return a string
+with the file name of the current file, and the current line 
+of input respectively.
+
+These functions are most useful in batch file calculations, where
+there is a need to determine at which line an error occurred. It is
+easy to define a function 
+
+	tst() := Echo({CurrentFile(),CurrentLine()});
+
+which can then be spread out over the input file at various places,
+to see how far the interpreter reaches before an error occurs.
+
+*E.G.
+
+	none
+
+*SEE Echo
+
+*CMD FindFunction --- Finding the file a function is defined in
+*CORE
+*CALL
+	FindFunction(function)
+
+*PARMS
+
+{function} - a function name in string format
+
+*DESC
+
+This function is useful for quickly finding the file a function is
+defined in. It is likely to only be useful for developers. The
+function {FindFunction()} scans the def files that were loaded at
+start-up. This means that functions that were not defined in def
+files, but were loaded directly, will not be found with 
+{FindFunction()}.
+
+*E.G.
+
+	In> FindFunction("Sum")
+	Out> "sums.rep/code.ys";
+	In> FindFunction("Integrate")
+	Out> "integrate.rep/code.ys";
+
+*SEE Vi
+
+
 *CMD Secure --- guard the host OS
 *CORE
 *CALL
@@ -804,4 +1003,207 @@ Creates an array from the contents of the list passed in.
 ListFromArray(array)
 
 Creates a list from the contents of the array passed in.
+
+
+
+			The Yacas test suite
+
+*INTRO Yacas comes with a test suite which can be found in
+the directory {tests/}. Typing 
+
+	make test
+
+on the command line after Yacas was built will run the test.
+This test can be run even before {make install}, as it only 
+uses files in the local directory of the Yacas source tree.
+The default extension for test scripts is {.yts}, (Yacas test script).
+
+The verification commands described in this chapter only 
+display the expressions that don't match. They don't terminate
+the current execution, and they don't return a value representing
+success and failure, since they are meant to be used in test
+scripts.
+
+
+*CMD Verify, TestYacas, LogicVerify --- Verifying equivalence of two expressions
+*STD
+*CALL
+	Verify(question,answer)
+	TestYacas(question,answer)
+	LogicVerify(question,answer)
+
+*PARMS
+
+{question} - expression to check for
+
+{answer} - expected result after evaluation
+
+*DESC
+
+The commands {Verify}, {TestYacas}, {LogicVerify} can be
+used to verify that an expression is <I>equivalent</I> to 
+a correct answer after evaluation. 
+
+For most calculations, the demand that two expressions
+are <I>equal</I> syntactically is too stringent. The 
+Yacas system might change at various places in the future,
+but $ 1+x $ would still be equivalent, from a mathematical
+point of view, to $ x+1 $.
+
+The general problem of deciding that two expressions $ a $ and $ b $
+are equivalent, which is the same as saying that $ a-b=0 $ , 
+is generally hard to decide on. The following commands solve
+this by having domain-specific comparisons.
+
+The comparison commands do the following comparison types:
+
+*	{Verify} - verify for literal equality. 
+This is the fastest and simplest comparison, and can be 
+used for testing that an expression simplifies to for instance $ 2 $.
+*	{TestYacas} - compare two expressions after simplification for 
+multivariate polynomials. If the two arguments are equivalent
+multivariate polynomials, this test succeeds.
+*	{LogicVerify} - Perform a test by using {CanProve} to verify that from 
+{question} the expression {answer} follows. This test command is 
+used for testing the logic theorem prover in Yacas.
+
+*E.G.
+
+	In> Verify(1+2,3)
+	Out> True;
+	In> Verify(x*(1+x),x^2+x)
+	******************
+	x*(x+1) evaluates to x*(x+1) which differs from x^2+x
+	******************
+	Out> False;
+	In> TestYacas(x*(1+x),x^2+x)
+	Out> True;
+	In> Verify(a And c Or b And Not c,a Or b)
+	******************
+	 a And c Or b And Not c evaluates to  a And c Or b And Not c which differs from  a Or b
+	******************
+	Out> False;
+	In> LogicVerify(a And c Or b And Not c,a Or b)
+	Out> True;
+	In> LogicVerify(a And c Or b And Not c,b Or a)
+	Out> True;
+
+*SEE Simplify, CanProve, KnownFailure
+
+
+*CMD KnownFailure --- Mark a test as a known failure
+*STD
+*CALL
+	KnownFailure(test)
+
+*PARMS
+
+{test} - test command that should fail
+
+*DESC
+
+The command {KnownFailure} marks a test as known to fail
+by displaying a message to that effect on screen. 
+
+This might be used by a developer when he doesn't have time
+to fix the defect, but doesn't wish to alarm users who download
+Yacas and type {make test}.
+
+*E.G.
+
+	In> KnownFailure(Verify(1,2))
+	Known failure:
+	******************
+	 1 evaluates to  1 which differs from  2
+	******************
+	Out> False;
+	In> KnownFailure(Verify(1,1))
+	Known failure:
+	Failure resolved!
+	Out> True;
+
+*SEE Verify, TestYacas, LogicVerify
+
+*CMD RoundTo --- Round a real-valued result to a set number of digits
+*STD
+*CALL
+	RoundTo(number,precision)
+
+*PARMS
+
+{number} - number to round off
+
+{precision} - precision to use for round-off
+
+*DESC
+
+The function {RoundTo} rounds a floating point number to a
+specified precision, allowing for testing for correctness
+using the {Verify} command.
+
+*E.G.
+
+	In> N(RoundTo(Exp(1),30),30)
+	Out> 2.71828182110230114951959786552;
+	In> N(RoundTo(Exp(1),20),20)
+	Out> 2.71828182796964237096;
+
+*SEE Verify
+
+
+
+	VerifyArithmetic
+	VerifyDiv
+
+
+
+*CMD VerifyArithmetic, VerifyDiv --- Special purpose arithmetic verifiers
+*STD
+*CALL
+	VerifyArithmetic(x,n,m)
+	RandVerifyArithmetic(n)
+	VerifyDiv(u,v)
+
+*PARMS
+
+{x}, {n}, {m}, {u}, {v} - integer arguments
+
+*DESC
+
+The commands {VerifyArithmetic} and {VerifyDiv} test a 
+mathematic equality which should hold, testing that the
+result returned by the system is mathematically correct
+according to a mathematically provable theorem.
+
+VerifyArithmetic verifies for an arbitrary set of numbers
+$ x $, $ n $ and $ m $ that
+
+$$ (x^n-1)*(x^m-1) = x^(n+m)-(x^n)-(x^m)+1 $$
+
+The left and right side represent two ways to arrive at the
+same result, and so an arithmetic module actually doing the
+calculation does the calculation in two different ways. 
+The result should be exactly equal.
+
+RandVerifyArithmetic calls VerifyArithmetic {n} times, with
+random values.
+
+VerifyDiv checks that 
+
+$$ u = v*Div(u,v) + Rem(u,v) $$
+
+
+*E.G.
+
+	In> VerifyArithmetic(100,50,60)
+	Out> True;
+	In> RandVerifyArithmetic(4)
+	Out> True;
+	In> VerifyDiv(x^2+2*x+3,x+1)
+	Out> True;
+	In> VerifyDiv(3,2)
+	Out> True;
+
+*SEE Verify
+
 

@@ -621,3 +621,45 @@ equivalent to the fact that the columns of $A$ build an orthonormal system
 
 *SEE IsHermitean
 
+
+*CMD SylvesterMatrix --- Calculate the Sylvester matrix of two polynomials
+*STD
+*CALL
+	SylvesterMatrix(poly1,poly2,variable)
+
+*PARMS
+
+{poly1} - polynomial
+
+{poly2} - polynomial
+
+{variable} - variable to express the matrix for
+
+*DESC
+
+The function {SylvesterMatrix} calculates the Sylvester matrix
+for a pair of polynomials.
+
+The Sylvester matrix is closely related to the resultant, which
+is defined as the determinant of the Sylvester matrix. Two polynomials
+share common roots only if the resultant is zero.
+
+*E.G.
+
+	In> ex1:= x^2+2*x-a
+	Out> x^2+2*x-a;
+	In> ex2:= x^2+a*x-4
+	Out> x^2+a*x-4;
+	In> SylvesterMatrix(ex1,ex2,x)
+	Out> {{1,2,-a,0},{0,1,2,-a},{1,a,-4,0},{0,1,a,-4}};
+	In> Determinant(%)
+	Out> 16-a^2*a- -8*a-4*a+a^2- -2*a^2-16-4*a;
+	In> Simplify(%)
+	Out> 3*a^2-a^3;
+
+The above example shows that the two polynomials have common
+zeros if $ a = 3 $.
+
+*SEE Determinant, Simplify, Solve, PSolve
+
+

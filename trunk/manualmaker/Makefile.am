@@ -19,14 +19,15 @@ REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt \
 	in/linalg.chapt.txt in/univar.chapt.txt in/lists.chapt.txt \
 	in/functional.chapt.txt in/controlflow.chapt.txt in/preds.chapt.txt \
 	in/logic.chapt.txt in/const.chapt.txt in/vars.chapt.txt in/io.chapt.txt \
-	in/strings.chapt.txt in/addons.chapt.txt
+	in/strings.chapt.txt in/addons.chapt.txt 
 
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
-	CVS-Howto.chapt YacasDocs.chapt new.chapt
+	CVS-Howto.chapt YacasDocs.chapt YacasDebugger.chapt new.chapt
 
 
 ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
-	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt in/new.chapt.txt
+	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt \
+        in/YacasDebugger.chapt.txt in/new.chapt.txt
 
 EXTRA_DIST = \
 	manualmaker styleplain in/all \
@@ -108,6 +109,9 @@ noindex: intro.html ref.html coding.html
 # dist-hook copies the html files into the distributed .tar.gz file.
 dist-hook: 
 	-cp $(srcdir)/*.html  $(distdir) 
+
+distcheck-hook:
+	make test
 
 install-data-local: books.html 
 	$(mkinstalldirs) $(yacas_helpdir)/

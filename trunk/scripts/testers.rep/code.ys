@@ -32,8 +32,10 @@ Function("Testing",{aLeft})
 
 Function("KnownFailure",{expr})
 [
+  Local(rfail);
   Echo({"Known failure:"});
-  Eval(expr);
+  Set(rfail,Eval(expr));
+  If(rfail,Echo({"Failure resolved!"}));
 ];
 HoldArg("KnownFailure",expr);
 
@@ -95,7 +97,7 @@ VerifyDiv(_u,_v) <--
 [
   Local(q,r);
   q:=Div(u,v);
-  r:=Mod(u,v);
+  r:=Rem(u,v);
 
   Verify(Expand(u),Expand(q*v+r));
 ];

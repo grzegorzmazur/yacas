@@ -125,3 +125,69 @@ We find that 101 is not enough points to accurately represent this function. How
 
 *SEE NFunction, MakeFunctionPlugin
 
+*CMD Version --- Show version of Yacas
+*CORE
+*CALL
+	Version()
+
+*PARMS
+
+none
+
+*DESC
+
+The function {Version()} returns the version of the Yacas interpreter,
+as a string.
+
+*E.G.
+
+	In> Version()
+	Out> "1.0.48rev3";
+	In> LessThan(Version(), "1.0.47")
+	Out> False;
+	In> GreaterThan(Version(), "1.0.47")
+	Out> True;
+
+The last two calls show that the {LessThan} and {GreaterThan}
+functions can be used for comparing version numbers. This 
+method is only guaranteed, however, if the version is always expressed
+in the form {d.d.dd} as above.
+
+*SEE LessThan, GreaterThan
+
+
+*CMD Vi --- Edit a file or function
+*UNIX
+*CALL
+	Vi(filename);
+	Vi(functionname);
+
+*PARMS
+
+{filename} - name of a file to edit
+
+{functionname} - name of a function to find for editing
+
+*DESC
+
+{Vi} will try to edit a file, or if the argument passed is a
+function, it will try to edit the file the function is defined in.
+It will try to do so by invoking vi.
+
+It finds the function by scanning the *.def files that have been
+reported to the system (using the function {FindFunction}).
+If editing a function, the command will jump directly to the first
+occurrence of the name of the function in the file (usually the 
+beginning of a definition of a function).
+
+To be really useful, you need to go to the directory containing
+the original files, to edit the original files.
+
+*E.G.
+
+	In> Vi("yacasinit.ys")
+	Out> True;
+	In> Vi("Sum")
+	Out> True;
+
+*SEE FindFunction
