@@ -13,7 +13,7 @@
 
 #include "win32commandline.h"
 #include "standard.h"
-#include "win32config.h"
+#define VERSION "Windows-latest"
 
 #ifdef USE_RAMSCRIPTS
 #include "ramdisk.h" //TODO keep this?
@@ -25,6 +25,8 @@ static LispBoolean busy=true;
 static LispBoolean scripts=false;
 static char yacas_dir[_MAX_PATH];
 static char cfg_file_name[_MAX_PATH];
+static char *init_script="yacasinit.ys";
+static char *root_dir=NULL;
 
 void ReportNrCurrent()
 {
@@ -153,16 +155,38 @@ void loadYacasScriptDir(){
 #else
 	FILE *config;
 	char fullpath[512];
-
+    if (root_dir)
+    {
+      strcpy(scriptdir,root_dir);
+        {
+          char*ptr=scriptdir;
+          while (*ptr)
+          {
+            if (*ptr=='\\')
+              *ptr='/';
+            ptr++;
+          }
+        }
+        sprintf(fullpath, "DefaultDirectory(\"%s\");", scriptdir);
+        printf("Default directory: %s \n", scriptdir);
+		  yacas->Evaluate(fullpath);
+		  if(yacas->Error()[0] != '\0'){
+        {
+          if(config = fopen(cfg_file_name, "r")) goto LOADDIR;
+          goto getdir;
+        }
+		  }
+    }else
     if(config = fopen(cfg_file_name, "r")) {
+LOADDIR:
 		fgets(scriptdir, 512, config);	// Use the location specified
 
         sprintf(fullpath, "DefaultDirectory(\"%s\")", scriptdir);
         printf("Default directory: %s \n", scriptdir);
 		yacas->Evaluate(fullpath);
 
+		fclose(config);
 		if(yacas->Error()[0] != '\0'){
-			fclose(config);
 			goto getdir;
 		}
 	} else {
@@ -186,8 +210,8 @@ getdir:
 
 		fputs(scriptdir, config);			// Store the location of scripts for
 											// reference later
+  	fclose(config);
 	}
-	fclose(config);
 
 	strcpy(fullpath, "DefaultDirectory(\"");
 	strcat(fullpath, scriptdir);
@@ -197,7 +221,11 @@ getdir:
 
 #endif	// USE_RAMSCRIPTS
 
-    yacas->Evaluate("Load(\"yacasinit.ys\");");
+    {
+      char buf[500];
+      sprintf(buf,"Load(\"%s\");",init_script);
+      yacas->Evaluate(buf);
+    }
     //yacas->Evaluate("FullForm(a_3+a_4)");
     if (yacas->Error()[0] != '\0'){
         ShowResult("");
@@ -257,7 +285,22 @@ void parseCommandLine(int argc, char *argv[]) {
 				exit(1);
 			}
 		}else
-        if(!strcmp(argv[i],"-e") || !strcmp(argv[i],"--eval")) {
+    if (!strcmp(argv[i],"--init"))
+    {
+        i++;
+        init_script = argv[i];
+            continue;
+    }
+    else if (!strcmp(argv[i],"--rootdir"))
+    {
+        i++;
+        root_dir = argv[i];
+            continue;
+    } else 
+
+      
+      
+      if(!strcmp(argv[i],"-e") || !strcmp(argv[i],"--eval")) {
             i++;
             loadYacasScriptDir();
             const char* inpline = argv[i];
