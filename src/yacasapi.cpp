@@ -219,7 +219,12 @@ input(iEnvironment.iInputStatus)
     SetCommand(GenArrayGet,"ArrayGet");
     SetCommand(GenArraySet,"ArraySet");
 
-    SetCommand(LispTrace,"TraceExp");
+    SetCommand(LispCustomEval,"CustomEval");
+    SetCommand(LispCustomEvalExpression,"CustomEval'Expression");
+    SetCommand(LispCustomEvalResult,"CustomEval'Result");
+    SetCommand(LispCustomEvalLocals,"CustomEval'Locals");
+    SetCommand(LispCustomEvalStop,"CustomEval'Stop");
+
     SetCommand(LispTraceRule,"TraceRule");
     SetCommand(LispTraceStack,"TraceStack");
     SetCommand(LispReadLisp,"LispRead");

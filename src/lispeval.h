@@ -55,14 +55,17 @@ private:
 class BasicEvaluator : public LispEvaluatorBase
 {
 public:
-    virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
+  virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
 };
 
 class TracedEvaluator : public BasicEvaluator
 {
 public:
-    virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
-    virtual void Interact();
+  TracedEvaluator() :  errorOutput(errorStr){}
+  virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
+protected:
+  LispString errorStr;
+  StringOutput errorOutput;
 };
 
 
@@ -113,17 +116,31 @@ public:
                        LispPtr& aExpression) = 0;
     virtual void Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
                        LispPtr& aExpression) = 0;
+    virtual void Error(LispEnvironment& aEnvironment) = 0;
+    virtual LispBoolean Stopped() = 0;
 };
 
 class DefaultDebugger : public YacasDebuggerBase
 {
 public:
-    virtual void Start();
-    virtual void Finish();
-    virtual void Enter(LispEnvironment& aEnvironment, 
-                       LispPtr& aExpression);
-    virtual void Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
-                       LispPtr& aExpression);
+  inline DefaultDebugger(LispPtr& aEnter, LispPtr& aLeave, LispPtr& aError) 
+    : iEnter(aEnter), iLeave(aLeave), iError(aError), iStopped(LispFalse) {};
+  virtual void Start();
+  virtual void Finish();
+  virtual void Enter(LispEnvironment& aEnvironment, 
+                      LispPtr& aExpression);
+  virtual void Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
+                      LispPtr& aExpression);
+  virtual void Error(LispEnvironment& aEnvironment);
+  virtual LispBoolean Stopped();
+  LispPtr iEnter;
+  LispPtr iLeave;
+  LispPtr iError;
+  LispPtr iTopExpr;
+  LispPtr iTopResult;
+  LispBoolean iStopped;
+protected:
+  BasicEvaluator defaultEval;
 };
 
 

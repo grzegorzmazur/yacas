@@ -33,7 +33,7 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
     iSecure(0),
     iLastUniqueId(1),
     iErrorOutput(iError),
-    iDebugger(NEW DefaultDebugger),
+    iDebugger(NULL),
     iLocalsList(NULL),
     iCommands(aCommands),
     iUserFunctions(aUserFunctions),
@@ -124,7 +124,7 @@ LispEnvironment::~LispEnvironment()
     iProg        ->DecreaseRefCount();
 
     delete iEvaluator;
-    delete iDebugger;
+    if (iDebugger) delete iDebugger;
     delete iArchive;
 }
 
@@ -237,6 +237,24 @@ void LispEnvironment::NewLocal(LispStringPtr aVariable,LispObject* aValue)
     LISPASSERT(iLocalsList != NULL);
     iLocalsList->Add(NEW LispLocalVariable(aVariable, aValue));
 }
+
+void LispEnvironment::CurrentLocals(LispPtr& aResult)
+{
+  LispEnvironment::LocalVariableFrame* fr = iLocalsList;
+  LispEnvironment::LispLocalVariable* ptr = fr->iFirst;
+
+  LispEnvironment& aEnvironment = *this; //Pity, but we need this for the macros to work
+  LispObject* locals = NULL;
+  while (ptr != NULL)
+  {
+    locals = LA(ATOML(ptr->iVariable->String()))+LA(locals);
+//    printf("%s ",ptr->iVariable->String());
+    ptr = ptr->iNext;
+  }
+  aResult.Set(LIST(LA(ATOML("List")) + LA(locals)));  
+}
+
+
 
 LispPrinter& LispEnvironment::CurrentPrinter()
 {

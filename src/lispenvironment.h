@@ -38,7 +38,7 @@ class LispMultiUserFunction;
 class LispEvaluatorBase;
 class BasicEvaluator;
 class LispDllBase;
-class YacasDebuggerBase;
+class DefaultDebugger;
 class LispEnvironment;
 class CDllArray : public CDeletingArrayGrower<LispDllBase*>
 {
@@ -71,6 +71,8 @@ public:
     void PushLocalFrame(LispBoolean aFenced);
     void PopLocalFrame();
     void NewLocal(LispStringPtr aVariable,LispObject* aValue);
+    void CurrentLocals(LispPtr& aResult);
+
 public:
     inline LispCommands& Commands();
     void SetCommand(LispEvalCaller aEvaluatorFunc, LispCharPtr aString);
@@ -164,7 +166,7 @@ public: // Error reporting
     LispString iError;
     StringOutput iErrorOutput;
     CDllArray iDlls;
-    YacasDebuggerBase* iDebugger;
+    DefaultDebugger* iDebugger;
     
 private:
     LispPtr *FindLocal(LispStringPtr aVariable);
