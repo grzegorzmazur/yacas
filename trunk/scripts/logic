@@ -55,8 +55,19 @@ RuleBase("=>",{a,b});
 28  # LogicSimplify(((_x) >= (_y))   Or  ((_x) < (_y)))     <-- True;
 28  # LogicSimplify(((_x) < (_y))    Or  ((_x) >= (_y)))    <-- True;
 
-31  # LogicSimplify((_x)  Or  (_y))_(x!= LogicSimplify(x) Or y!=LogicSimplify(y))               /* Transform subexpression */
-                                                <-- LogicSimplify(LogicSimplify(x) Or LogicSimplify(y));
+
+/*
+31  # LogicSimplify((_x)  Or  (_y))_(x!= LogicSimplify(x) Or y!=LogicSimplify(y))               
+                                              <--
+  LogicSimplify(LogicSimplify(x) Or LogicSimplify(y));
+*/
+
+120  # LogicSimplify((_x)  Or  (_y)) <-- LogOr(x,y,LogicSimplify(x),LogicSimplify(y));
+10 # LogOr(_x,_y,_x,_y) <-- x Or y;
+20 # LogOr(_x,_y,_u,_v) <-- LogicSimplify(u Or v);
+
+
+
 35  # LogicSimplify( Not  (_x))_(x != LogicSimplify(x))
                                                 <-- LogicSimplify(Not LogicSimplify(x));        /* Transform subexpression */
 
@@ -114,9 +125,7 @@ CanProveAux(_proposition) <--
     result:= result And UnFlatten(item,"Or",False);
   ];
 
-  /* Second pass: simplify the resulting expression */
-
-  LogicSimplify(result);
+  result;
 ];
 
 /* CanProve tries to prove that the negation of the negation of
