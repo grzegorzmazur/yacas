@@ -12,7 +12,7 @@ Plugins currently have to be written in C++ and require certain include files fr
 
 Here is what we need to do to make a new plugin:
 
-*	Decide on an interface that will be visible in Yacas. In this example, we will create a new Yacas function {Func1(x,y)}, where {x}, {y} are floating-point real numbers; {Func1(x,y)} should return a floating-point real number. So, our "API" consists of a single function with the following C++ prototype:
+*	Decide on an interface that will be visible in Yacas. In this example, we will create a new Yacas function {Func1(x,y)}, where {x}, {y} are floating-point real numbers; {Func1(x,y)} should return a floating-point real number corresponding to $Sin(x/y)$. So, our "API" consists of a single function with the following C++ prototype:
 
 	// FILE: func1.h
 	double func1_cc (double x, double y);
@@ -90,7 +90,6 @@ We can generate some C++ code that calculates this function for given floating-p
 
 	In> CForm(f(x,y));
 	Out> "sin(2 * x * Pi) + sqrt(2) * cos(y * Pi)";
-
 (Note that we would need to define {Pi} in the C++ file.)
 
 Now, it is clear that all the steps needed to compile, link, and load a plugin that implements {f(x,y)} can be performed automatically by a Yacas script. (You would need a C++ compiler on your system, of course.)

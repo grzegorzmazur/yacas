@@ -23,11 +23,16 @@ EXTRA_DIST = \
 
 %.dvi: %.tex
 	latex $<
+	latex $<
 
-%.pdf %.ps: %.dvi
+%.ps: %.dvi
+	dvips -o $@ $<
+	@echo Documentation created: $*.ps
+
+%.pdf: %.dvi
 #	dvipdf $<
 	pdflatex $*
-	dvips -o $@ $<
+	@echo Documentation created: $*.pdf
 
 # TeX/PS/PDF top target
 texdocs: coding.book.ps coding.book.pdf intro.book.ps intro.book.pdf

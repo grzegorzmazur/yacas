@@ -45,7 +45,10 @@ while (<STDIN>) {
 		$in_text = 1;
 	}	# Now not TAB-indented lines
 	elsif (/^\s*$/) {	# New paragraph
-#		&start_text();
+	if (0 == 1) {	# This is for debugging only: breaks HTML docs
+		&finish_text();
+		&start_text();
+	}
 		if (not $have_par) {
 			&close_quote();
 			&start_text();
@@ -152,8 +155,8 @@ sub escape_term {
 	}
 	$text =~ s/\{($regex)\}/":HtmlTerm("$1"):"/go;
 	# math
-	$text =~ s/\$\$([^\$]+)\$\$/":TeXMathD("$1"):"/g;
-	$text =~ s/\$([^\$]+)\$/":TeXMath("$1"):"/g;
+	$text =~ s/\$\$([^\$]+)\$\$/":TeXMathD($1):"/g;
+	$text =~ s/\$([^\$]+)\$/":TeXMath($1):"/g;
 	# <i>emphasis</i>
 	$text =~ s/<i>((?:[^<]|<[^\/]|<\/[^i]|<\/i[^>])*)<\/i>/":HtmlEmphasis("$1"):"/gi;
 	# explicit hyperlinks
