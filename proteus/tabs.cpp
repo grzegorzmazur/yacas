@@ -541,7 +541,9 @@ void GetProteusConfiguration()
     return;
 #else
     FILE*f;
-    f = fopen("/etc/proteus.conf","r");
+    char conffile[128];
+    sprintf(conffile,"%s/proteus.conf",SYSCONFDIR);
+    f = fopen(conffile,"r");
     if (!f) f=fopen("proteus.conf","r");
     if (f)
     {
@@ -550,7 +552,7 @@ void GetProteusConfiguration()
     }
     else
     {
-        printf("Error: could not find file /etc/proteus.conf");
+        printf("Error: could not find file %s",conffile);
         exit(-1);
     }
 #endif

@@ -2,7 +2,7 @@
 
 if BUILD_PROTEUS
 
-INCLUDES = @FLTK_INCS@ -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/
+INCLUDES = @FLTK_INCS@ -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/ -DSYSCONFDIR=\"@sysconfdir@\"
 
 bin_PROGRAMS = proteusworksheet
 
@@ -35,7 +35,8 @@ proteusworksheet_datafiles = hints \
 proteusworksheet_docfiles = proteusbooks.html
 
 install-data-local: $(proteusworksheet_datafiles) $(proteusworksheet_docfiles)
-	echo $(DESTDIR)$(pkgdatadir) > $(DESTDIR)$(sysconfdir)/proteus.conf
+	$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/
+	echo $(DESTDIR)$(pkgdatadir)/ > $(DESTDIR)$(sysconfdir)/proteus.conf
 	-for file in $(proteusworksheet_datafiles); do \
 		$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdatadir)/$$file; \
 	done
