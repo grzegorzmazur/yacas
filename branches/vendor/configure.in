@@ -1,11 +1,11 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(src/yacasmain.cc)
+AC_INIT(src/yacasmain.cpp)
 AM_CONFIG_HEADER(config.h)
 
 PACKAGE=yacas
 MAJOR=1
 MINOR=0
-MICRO=41rev6
+MICRO=41rev7
 RELEASE=1
 
 VERSION=$MAJOR.$MINOR.$MICRO
