@@ -101,13 +101,12 @@ HoldArg("TruncRadian",r);
 100 # Tan(_x)*Cos(_x) <-- Sin(x);
 100 # Cos(_x)*Tan(_x) <-- Sin(x);
 100 # Sin(_x)/Cos(_x) <-- Tan(x);
-100 # Cos(_x)/Sin(_x) <-- Cot(x);
-//100 # 1/Cos(_x)		<-- Sec(x);
-//100 # 1/Sin(_x)		<-- Csc(x);
 100 # 1/Cot(_x)		<-- Tan(x);
-//100 # 1/Tan(_x)		<-- Cot(x);
 100 # 1/Sec(_x)		<-- Cos(x);
 100 # 1/Csc(_x)		<-- Sin(x);
+100 # Sec(_x)		<-- 1/Cos(x);
+100 # Csc(_x)		<-- 1/Sin(x);
+100 # Cot(_x)		<-- 1/Tan(x);
 
 100 # Sin(_x)*Csc(x)  <-- 1;
 100 # Cos(_x)*Sec(x)  <-- 1;
@@ -211,49 +210,39 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 200 # ArcTan(-Infinity) <-- -Pi/2;
 200 # ArcTan(Undefined) <-- Undefined;
 
-2   # Sec(x_IsNumber)_(Numeric) <-- N(1/Cos(x));
-2   # Csc(x_IsNumber)_(Numeric) <-- N(1/Sin(x));
-2   # Cot(x_IsNumber)_(Numeric) <-- N(1/Tan(x));
-2   # SinH(x_IsNumber)_(Numeric) <-- N((Exp(x)-Exp(-x))/2);
-2   # CosH(x_IsNumber)_(Numeric) <-- N((Exp(x)+Exp(-x))/2);
-2   # TanH(x_IsNumber)_(Numeric) <-- N(SinH(x)/CosH(x));
-2   # CotH(x_IsNumber)_(Numeric) <-- N(CosH(x)/SinH(x));
-2   # SecH(x_IsNumber)_(Numeric) <-- N(1/CosH(x));
-2   # CscH(x_IsNumber)_(Numeric) <-- N(1/SinH(x));
+2   # Sinh(x_IsNumber)_(Numeric) <-- N((Exp(x)-Exp(-x))/2);
+2   # Cosh(x_IsNumber)_(Numeric) <-- N((Exp(x)+Exp(-x))/2);
+2   # Tanh(x_IsNumber)_(Numeric) <-- N(Sinh(x)/Cosh(x));
 
 
-/* Hyperbolic stuff */
-100 # 1/CotH(_x)	<-- TanH(x);
-100 # 1/SecH(_x)	<-- CosH(x);
-100 # 1/CscH(_x)	<-- SinH(x);
-//100 # 1/TanH(_x)	<-- CotH(x);
-//100 # 1/SinH(_x)	<-- CscH(x);
-//100 # 1/CosH(_x)	<-- SecH(x);
+/* hyperbolic stuff */
+100 # 1/Coth(_x)	<-- Tanh(x);
+100 # 1/Sech(_x)	<-- Cosh(x);
+100 # 1/Csch(_x)	<-- Sinh(x);
+100 # Sech(_x)		<-- 1/Cosh(x);
+100 # Csch(_x)		<-- 1/Sinh(x);
+100 # Coth(_x)		<-- 1/Tanh(x);
 
-5   # CosH(- _x)	<-- CosH(x);
-5   # SinH(- _x)	<-- -SinH(x);
+5   # Cosh(- _x)	<-- Cosh(x);
+5   # Sinh(- _x)	<-- -Sinh(x);
 
-100 # SinH(_x)^2-CosH(_x)^2 	<-- 1;
-100 # SinH(_x)+CosH(_x)		<-- Exp(x);
-100 # SinH(_x)-CosH(_x)		<-- Exp(-x);
+100 # Sinh(_x)^2-Cosh(_x)^2 	<-- 1;
+100 # Sinh(_x)+Cosh(_x)		<-- Exp(x);
+100 # Sinh(_x)-Cosh(_x)		<-- Exp(-x);
 
-100 # SinH(I*_x)        <-- I*Sin(x);
-100 # CosH(I*_x)        <-- Cos(x);
-100 # SinH(_x)/CosH(_x) <-- TanH(x);
-100 # CosH(_x)/SinH(_x) <-- CotH(x);
-100 # SinH(_x)*CscH(_x) <-- 1;
-100 # CosH(_x)*SecH(_x) <-- 1;
-100 # TanH(_x)*CosH(_x) <-- SinH(x);
-100 # CotH(_x)*SinH(_x) <-- CosH(x);
-200 # SinH(0)		<-- 0;
-200 # SinH(Infinity)	<-- Infinity;
-200 # SinH(-Infinity)	<-- -Infinity;
-200 # CosH(0)		<-- 1;
-200 # CosH(Infinity)	<-- Infinity;
-200 # CosH(-Infinity)	<-- Infinity;
-200 # CscH(0)		<-- Infinity;
-200 # CotH(0)		<-- Infinity;
-
+100 # Sinh(I*_x)        <-- I*Sin(x);
+100 # Cosh(I*_x)        <-- Cos(x);
+100 # Sinh(_x)/Cosh(_x) <-- Tanh(x);
+100 # Sinh(_x)*Csch(_x) <-- 1;
+100 # Cosh(_x)*Sech(_x) <-- 1;
+100 # Tanh(_x)*Cosh(_x) <-- Sinh(x);
+100 # Coth(_x)*Sinh(_x) <-- Cosh(x);
+200 # Sinh(0)		<-- 0;
+200 # Sinh(Infinity)	<-- Infinity;
+200 # Sinh(-Infinity)	<-- -Infinity;
+200 # Cosh(0)		<-- 1;
+200 # Cosh(Infinity)	<-- Infinity;
+200 # Cosh(-Infinity)	<-- Infinity;
 
 10 # Abs(Infinity) 	<-- Infinity;
 10 # Factorial(Infinity)<-- Infinity;
@@ -262,10 +251,18 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 Sin(xlist_IsList) <-- MapSingle("Sin",xlist);
 Cos(xlist_IsList) <-- MapSingle("Cos",xlist);
 Tan(xlist_IsList) <-- MapSingle("Tan",xlist);
+Sinh(xlist_IsList) <-- MapSinhgle("Sinh",xlist);
+Cosh(xlist_IsList) <-- MapSinhgle("Cosh",xlist);
+Tanh(xlist_IsList) <-- MapSinhgle("Tanh",xlist);
+
 
 ArcSin(xlist_IsList) <-- MapSingle("ArcSin",xlist);
 ArcCos(xlist_IsList) <-- MapSingle("ArcCos",xlist);
 ArcTan(xlist_IsList) <-- MapSingle("ArcTan",xlist);
+ArcSinh(xlist_IsList) <-- MapSingle("ArcSinh",xlist);
+ArcCosh(xlist_IsList) <-- MapSingle("ArcCosh",xlist);
+ArcTanh(xlist_IsList) <-- MapSingle("ArcTanh",xlist);
+
 
 Exp(xlist_IsList) <-- MapSingle("Exp",xlist);
 Ln(xlist_IsList) <-- MapSingle("Ln",xlist);
