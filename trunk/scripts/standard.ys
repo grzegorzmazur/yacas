@@ -463,22 +463,6 @@ LocalSymbols(x)
 80 # x_IsNegativeNumber ^ n_IsEven <-- (-x)^n;
 80 # x_IsNegativeNumber ^ n_IsOdd <-- -((-x)^n);
 
-/*TODO remove?
-80 # x_IsRationalOrNumber ^ n_IsPositiveInteger <--
-[
-  Local(mult,result);
-  Set(mult,x);
-  Set(result,1);
-  While(n>0)
-  [
-    If(n&1 != 0, Set(result, result*mult));
-    Set(n,n>>1);
-    Set(mult,mult*mult);
-  ];
-  result;
-//  x*x^(n-1);
-];
-*/
 
 100  # ((_x)*(_x ^ _m)) <-- x^(m+1);
 100  # ((_x ^ _n)*(_x ^ _m)) <-- x^(m+n);
@@ -489,16 +473,10 @@ LocalSymbols(x)
 100 # Sqrt(_n)^(m_IsEven) <-- n^(m/2);
 
 
-/*
-100 # ((_x)^(_n))^((_m)/(_p)) <-- x^(n*m/p);
-100 # ((_x)^((_m)/(_p)))^(_n) <-- x^(n*m/p);
-
-100 # ((_x)^((_m)/(_p)))^((_n)/(_q)) <-- x^((n*m)/(p*q));
- */
-200 # xlist_IsList ^ nlist_IsList <-- Map("^",{xlist,nlist});
-201 # xlist_IsList ^ n_IsConstant <-- Map({{xx},xx^n},{xlist});
-202 # _x ^ n_IsList <-- Map({{xx},x^xx},{n});
-
+200 # x_IsMatrix ^ n_IsPositiveInteger <-- x*(x^(n-1));
+204 # xlist_IsList ^ nlist_IsList <-- Map("^",{xlist,nlist});
+205 # xlist_IsList ^ n_IsConstant <-- Map({{xx},xx^n},{xlist});
+206 # _x ^ n_IsList <-- Map({{xx},x^xx},{n});
 249 # x_IsInfinity ^ 0 <-- Undefined;
 250 # Infinity ^ (_n) <-- Infinity;
 250 # ((-Infinity) ^ (n_IsNumber))_(IsEven(n)) <-- Infinity;
