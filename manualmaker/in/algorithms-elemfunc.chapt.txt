@@ -231,7 +231,7 @@ Since the cost of an addition is linear in the number of bits, the total complex
 *A roots!by Newton's method
 
 An efficient method for computing the square root is found by using Newton's iteration for the equation $r^2-x=0$.
-The initial value of $r$ is obtained by bit counting and shifting, as in the bisection method.
+The initial value of $r$ can be obtained by bit counting and shifting, as in the bisection method.
 The iteration formula is
 $$ r'=r/2+x/(2*r) $$.
 The convergence is quadratic, so we double the number of correct digits at each step.
@@ -258,10 +258,24 @@ Only half-precision long multiplications are needed at the last iteration.
 
 These optimizations do not change the asymptotic complexity of the method, although they may reduce the constant in front of $O()$.
 
+	    Method 3: argument reduction and interpolation
 
-	    Method 3: Halley's iteration
+*A roots!by argument reduction
+
+Before using Newton's method, we might apply some argument reduction to speed up the convergence of the iterations.
+Suppose we need to find $Sqrt(x)$.
+Choose an integer $n$ such that $1/4<x':=4^n*x<=1$.
+The value of $n$ is easily found from bit counting: if $b$ is the bit count of $x$, then $n$.
+We find $Sqrt(x)=2^(-n)*Sqrt(x')$.
+To compute $Sqrt(x')$, we use Newton's method with the initial value $x'[0]$ obtained by interpolation of the function $Sqrt(x)$ on the interval [$1/4$,$1$].
+A suitable interpolation function might be taken as simply $(2*x+1)/3$ or more precisely $1/90*(-28*x^2+95*x+23)$.
+By using a particular interpolation function, we can guarantee a certain number of precise bits at every iteration.
+This may save a few iterations, at the small expense of evaluating the interpolation function once at the beginning.
+
+	    Method 4: Halley's iteration
 
 *A {IntNthRoot}
+*A roots!by Halley's method
 
 A separate function {IntNthRoot} is provided to compute the integer part of $n^(1/s)$ for integer $n$ and $s$.
 For a given $s$, it evaluates the integer part of $n^(1/s)$ using only integer arithmetic with integers of size $n^(1+1/s)$. This can be done by Halley's iteration method, solving the equation $x^s=n$. For this function, the Halley iteration sequence is monotonic.
@@ -272,6 +286,7 @@ To speed up the Halley iteration in the worst case when $s^s>n$, it is combined 
 
 If $b$ is very large, the convergence of both Newton's and Halley's iterations is almost linear until the final few iterations.
 Therefore  it is faster to evaluate the floating-point power for large $b$ using the exponential and the logarithm.
+
 
 		Logarithm
 
