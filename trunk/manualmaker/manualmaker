@@ -304,6 +304,7 @@ NewLine();
       bodytext:=bodytext : (HtmlAnchor() ChapterTag(pcc["Index"]))
                 : ChapterHeader(pcc["Commands"]) : pcc["Intro"] : pcc["Body"] 
                 : "<p>  </P><HR>";
+      GarbageCollect();
     ];
 
     WriteString(
@@ -361,6 +362,7 @@ NewLine();
     str := str : pcc["Body"];
     str := HtmlTitle(chapter) : newline : HtmlTag(body, HtmlTag(font, str));
     ToFile(HtmlFile(file)) WriteString(HtmlTag(html, str));
+    GarbageCollect();
   ];
 ];
 
