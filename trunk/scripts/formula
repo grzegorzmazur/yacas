@@ -5,16 +5,43 @@ TODO:
 - clean up the code!
   - document the code!!!
 - prefix/postfix currently not used!!!
-- arrays, vectors and matrices!
 - some rules for rendering the formula are slooooww....
   
-- sqrt, integral, summation, limits, vectors, matrices.
+- bin, derivative, sqrt, integral, summation, limits, 
+      ___
+     / a |
+ \  /  -
+  \/   b
 
    /
    |
    |
    |
    /
+
+  d
+ --- f( x )
+ d x
+
+   2
+  d
+ ----  f( x )
+    2
+ d x
+ 
+  Infinity
+    ___
+    \
+     \    n
+     /   x
+    /__
+    n = 0
+                 Sin(x)
+     lim         ------
+ x -> Infinity    x
+
+
+    
 */
 
 /*
