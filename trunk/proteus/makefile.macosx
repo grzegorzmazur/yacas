@@ -12,7 +12,7 @@ INCS =  -I$(YACAS_INCLUDE) -I$(YACAS_INCLUDE)/plat/linux32
 
 CXXFLAGS	= -O2 -Wno-return-type   
 
-POSTBUILD       = /Developer/Tools/Rez -t APPL -o
+POSTBUILD       = /Developer/Tools/Rez -t APPL -o proteus /usr/local/include/FL/mac.r
 
 LDLIBS		=  -lm -L../libltdl/ -ldl -lltdl -framework Carbon -framework ApplicationServices -lsupc++
 GLDLIBS		=  -lm -framework AGL -framework OpenGL  -framework Carbon -framework ApplicationServices -lsupc++ -lfltk -L/Users/ayalpink/fltk/fltk-1.1.3/lib/ 
@@ -26,6 +26,7 @@ all-inclusive: yacdefines.h proteus  hints
 # proteuscalculator
 install:
 	cp proteus /usr/local/bin/
+	/Developer/Tools/Rez -t APPL -o /usr/local/bin/proteus /usr/local/include/FL/mac.r
 	cp proteus.conf /etc/proteus.conf
 	cp hints WorksheetBanner flplot.ys flplot.ys.def /usr/local/share/yacas/
 	cp proteusbooks.html /usr/local/share/yacas/documentation/proteusbooks.html
