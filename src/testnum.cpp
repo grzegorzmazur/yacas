@@ -152,7 +152,8 @@ void TestTypes1(double value)
 	//	Check(!x.IsIntValue(), "is not an integer value");
 	x.BecomeFloat(x.GetPrecision());
 	Check(!x.IsInt(), "still float type");
-	CheckValues(x.Double(),value, "value is still correct");
+	returned_value = x.Double();
+  CheckValues(returned_value==value, "value is still correct");
 	Check(x.IsSmall(), "value is small");
 	CheckValues(x.Sign(),sign, "sign is correct");
 

@@ -51,6 +51,9 @@
 /* Define to 1 if you have the `socket' function. */
 #define HAVE_SOCKET 1
 
+/* Define to 1 if you have the <stdarg.h> header file. */
+#define HAVE_STDARG_H 1
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
 

@@ -6,6 +6,15 @@
 #include "errors.h"
 #include "infixparser.h"
 
+#ifdef HAVE_STDIO_H
+  #include <stdio.h>
+#endif
+
+#ifdef HAVE_STDARG_H
+  #include <stdarg.h>
+#endif
+
+
 #define InternalEval aEnvironment.iEvaluator->Eval
 
 
@@ -133,6 +142,25 @@ void CheckArgType(LispInt aPredicate, LispInt aArgNr, LispPtr& aArguments,LispEn
 
 
 
+
+char theGenericErrorBuf[512];
+char *GenericErrorBuf()
+{
+  return theGenericErrorBuf;
+}
+
+void RaiseError(char* str,...)
+{
+#ifdef HAVE_STDARG_H
+  va_list arg;
+  va_start (arg, str);
+  vsnprintf (theGenericErrorBuf, 500, str, arg);
+  va_end (arg);
+#else
+  PlatMemCopy(theGenericErrorBuf, str, PlatStrLen(str))
+#endif
+  Check(LispFalse,KLispErrGenericFormat);
+}
 
 
 

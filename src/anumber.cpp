@@ -596,6 +596,8 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, Lisp
     while (nr>1 && aNumber[nr-1] == 0) nr--;
     aNumber.SetNrItems(nr);
 
+    LispInt tensExp = aNumber.iTensExp;
+
     //Formatting small numbers can be done faster.
     if (aNumber.iExp == 0 && nr == 1)
     {
@@ -770,13 +772,13 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, Lisp
 
     //Handle tens exp
 TENSEXP:
-    if (aNumber.iTensExp != 0 && 
+    if (tensExp != 0 && 
         !(aResult[0] == '0' && aResult.NrItems() == 1))
     {
         aResult.Append('e');
         LispString tens;
         //hier
-        LispInt tenex = aNumber.iTensExp;
+        LispInt tenex = tensExp;
         if (tenex<0)
         {
           aResult.Append('-');
@@ -1429,11 +1431,13 @@ void ANumber::ChangePrecision(LispInt aPrecision)
     iExp = newExp;
     Delete(0,oldExp-iExp);
   }
-  else if (iExp > oldExp)
+  else if (newExp > oldExp)
   {
-//    PlatWord zero = 0;
-//    Insert(0,zero,iExp-oldExp);
+    iExp = newExp;
+    PlatWord zero = 0;
+    Insert(0,zero,newExp-oldExp);
   }
+/*
   LispInt todel;
   todel=0;
   ElementTypePtr ptr = &((*this)[0]);
@@ -1447,4 +1451,5 @@ void ANumber::ChangePrecision(LispInt aPrecision)
       iExp-=todel;
       Delete(0,todel);
   }
+*/
 }

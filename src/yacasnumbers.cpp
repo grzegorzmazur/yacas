@@ -931,6 +931,30 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
   ANumber num(aPrecision);
   num.CopyFrom(*iNumber);
   num.ChangePrecision(aPrecision);
+
+/* enable this to get scientific notation
+  if (!IsInt())
+  {
+    for(;;)
+    {
+      LispInt i;
+      LispBoolean greaterOne = LispFalse;
+      if (num.iExp >= num.NrItems()) break;
+      for (i=num.iExp;i<num.NrItems();i++)
+      {
+        if (num[i] != 0) 
+        {
+          greaterOne=LispTrue;
+          break;
+        }
+      }
+      if (!greaterOne) break;
+      PlatDoubleWord carry=0;
+      BaseDivideInt(num,10, WordBase, carry);
+      num.iTensExp++;
+    }
+  }
+*/
   ANumberToString(aResult, num, aBase,(iType == KFloat));
 }
 double BigNumber::Double() const
@@ -967,7 +991,9 @@ void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrec
 }
 void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {//FIXME
-  LISPASSERT(0);
+  BigNumber mult;
+  mult.Multiply(aX,aY,aPrecision);
+  Add(*this,mult,aPrecision);
 }
 void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
@@ -1301,7 +1327,10 @@ void BigNumber::BecomeInt()
 /// Note that aPrecision=0 means automatic setting (just enough digits to represent the integer).
 void BigNumber::BecomeFloat(LispInt aPrecision)
 {//FIXME: need to specify precision explicitly
-  iNumber->ChangePrecision(aPrecision);	// is this OK or ChangePrecision means floating-point precision?
+  LispInt precision = aPrecision;
+  if (iNumber->iPrecision>aPrecision)
+    precision = iNumber->iPrecision;
+  iNumber->ChangePrecision(precision);	// is this OK or ChangePrecision means floating-point precision?
   SetIsInteger(LispFalse);
 }
 
