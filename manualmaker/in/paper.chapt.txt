@@ -327,7 +327,7 @@ After entering these two rules, the following interactive session is possible:
 Integration of the new function {log} can be defined by adding a rule for the
 {AntiDeriv} function atom,
 
-	AntiDeriv(log(_x),_x) <-- x*log(x)-x;
+	AntiDeriv(_x,log(_x)) <-- x*log(x)-x;
 Now {Yacas} can do integrations involving the newly defined {log} function, for example:
 
 	In> Integrate(x)log(a*x^n)

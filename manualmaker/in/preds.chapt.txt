@@ -850,3 +850,41 @@ expression. {Pi} is considered a constant.
 
 *SEE IsNumber, IsInteger, VarList
 
+
+
+
+
+*CMD MatchLinear --- Match an expression to a polynomial of degree one in a variable
+*STD
+*CALL
+	MatchLinear(variable,expression)
+
+*PARMS
+
+{variable} - variable to express the univariate polynomial in
+
+{expression} - expression to match
+
+*DESC
+
+MatchLinear tries to match an expression to a linear (degree less than
+two) polynomial. The function returns True if it could match, and
+it stores the resulting coefficients in the variables 'a' and 'b'
+as a side effect. The function calling this predicate should declare
+local variables 'a' and 'b' for this purpose.
+MatchLinear tries to match to constant coefficients which don't
+depend on the variable passed in, trying to find a form 'a*x+b'
+with 'a' and 'b' not depending on 'x' if 'x' is given as the variable.
+
+*E.G.
+
+	In> MatchLinear(x,(R+1)*x+(T-1))
+	Out> True;
+	In> {a,b};
+	Out> {R+1,T-1};
+	In> MatchLinear(x,Sin(x)*x+(T-1))
+	Out> False;
+
+*SEE Integrate
+
+

@@ -1409,7 +1409,7 @@ menubar.")
 
 (defun yacas-fn-antideriv ()
   (interactive)
-  (insert "AntiDeriv()")
+  (insert "Integrate()")
   (forward-char -1)
   (message "Args: expression, variable"))
 

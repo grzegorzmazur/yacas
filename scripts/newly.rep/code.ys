@@ -436,3 +436,27 @@ GuessRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 ];
 
 
+
+/** MatchLinear(variable,expression)
+ */
+10 # MatchLinear(var_IsAtom,_expr)_CanBeUni(expr,var) <--
+[
+  Set(expr,MakeUni(expr,var));
+  MatchLinear(expr);
+];
+20 # MatchLinear(_var,_expr) <-- False;
+
+10 # MatchLinear(_expr)_(Degree(expr,var)<2) <--
+[
+  Check(IsUniVar(expr),ToString()Echo({"Incorrect argument ",expr," passed to MatchLinear"}));
+  Check(Not IsBound(A), "Found bound variable which should have been unbound, in MatchLinear");
+  Check(Not IsBound(B), "Found bound variable which should have been unbound, in MatchLinear");
+  a := Coef(expr,1);
+  b := Coef(expr,0);
+  True;
+];
+20 # MatchLinear(_expr) <-- False;
+UnFence("MatchLinear",1);
+UnFence("MatchLinear",2);
+
+

@@ -3,269 +3,60 @@
 TODO:
 - check that the Where and AddTo are correct in the manual
 - add test code for Where and Addto
+- Where should also accept the form currently returned by Solve.
+- We should use something like intersection or union in stead of
+  AddTo
+- IsFreeOf should have its arguments reversed
+- document the left_right(arg) behaviour
 - Add MatchLinear to the distro, in a proper place.
-- Finish integration: rational functions, poly*f(x), Abs(f(x)),
-  if(...)... etcetera
+- Finish integration:
 - add a more complete table of integrals
 - document the workings of integrate, showing some nice integration
   examples if possible.
 - make lots of tests on integration.
 - numerically test integration.
 - improve Solve like I intended.
+x- Finish integration: Abs(f(x)),
+x- Finish integration: if(...)... etcetera
+x- Finish integration: rational functions,
+x- Finish integration: poly*f(x),
 
-14 # AntiDeriv(Tan(_exx),_var)_
-    (CanBeUni(exx,var) And Length(MakeUni(exx,var)[3]) <= 2) <--
-[
-  Ln(Abs(Sec(exx)));
-];
+		Integration
 
-14 # AntiDeriv(Cot(_exx),_var)_
-    (CanBeUni(exx,var) And Length(MakeUni(exx,var)[3]) <= 2) <--
-[
-  Ln(Abs(Sin(exx)));
-];
+Integration can be performed by the function Integrate, which
+has two calling conventions:
+
+*	Integrate(variable)expression
+*	Integrate(variable,from,to)expression
+
+Integrate can have its own set of rules for specific integrals,
+which might return a correct answer immediately. Alternatively,
+it calls the function AntiDeriv, to see if the anti-derivative
+can be determined for the integral requested. If this is the
+case, the anti-derivative is used to compose the output.
+The function {IntegrateFinal} performs this last step. The anti-derivative
+should be passed to this function.
+
+	    Trigonometric functions
+
+The function {HasTrig} detects that a function contains trigonometric
+functions, and calls {TrigSimpCombine} to simplify the expression
+such that multiplications between such functions are replaced by
+additions. This is generally an easier form to integrate.
+
+The step performed by {TrigSimpCombine} is done at the very end,
+to give the transformation rules that can deal with simple trigonometric
+functions a first chance to simplify it.
+
+@@@TODO important corrollary: Integrate(x)Sin(Sin(x)) never halts!
+@@@TODO add test code and fix this problem
+@@@TODO fix the broken @ in functional.rep
+@@@TODO make into module by using LocalSymbols
 
 
 
 */
 
-// Declare 
-RuleBase("IntegrateMultiplicative",{var,from,a,b});
-UnFence("IntegrateMultiplicative",4);
-Bodied("integrate",60000);
-
-(integrate(_var)(_expr)) <-- Int(var,IntClean(var,expr));
-
-////////////////////////////////////////////////
-//
-// Integrate over a range
-//
-////////////////////////////////////////////////
-(integrate(_var,_from,_to)(_expr))
-    <-- indefIntegrate(var,from,to,expr,a,b);
-
-////////////////////////////////////////////////
-//
-// separate rules can be added here for specific integrals
-// to indefIntegrate
-//
-////////////////////////////////////////////////
-100 # indefIntegrate(_var,_from,_to,_expr,_a,_b) 
-    <-- integrateRange(var,expr,from,to,Int(var,expr));
-
-////////////////////////////////////////////////
-//
-// No anti-derivative found, return unavaluated.
-//
-////////////////////////////////////////////////
-10 # integrateRange(_var,_expr,_from,_to,integrate(_var)_expr2)
-    <-- `Hold(integrate(@var,@from,@to)@expr);
-    
-////////////////////////////////////////////////
-//
-// Anti-derivative found, return result.
-//
-////////////////////////////////////////////////
-20 # integrateRange(_var,_expr,_from,_to,_antideriv)
-    <--
-[
-  `Local(@var);
-  `(@antideriv Where @var == @to) - `(@antideriv Where @var == @from);
-];
-
-////////////////////////////////////////////////
-//
-// IntClean cleans up an expression before passing
-// it on to integration. This function normalized
-// an expression in a way desirable for integration.
-// TrigSimpCombine, for instance, expands expressions
-// containing trigonometric functions so that they are
-// additive as opposed to multiplicative.
-//
-////////////////////////////////////////////////
-10 # IntClean(_var,_expr) <-- TrigSimpCombine(expr);
-
-////////////////////////////////////////////////
-//
-// Anti-derivative of a univariate polynomial
-//
-////////////////////////////////////////////////
-5  # Int(_var, _poly )_CanBeUni(poly,var)
-     <-- NormalForm(Int(var,`MakeUni(@poly,@var)));
-5 # Int(_var,UniVariate(_var,_first,_coefs)) <--
-[
-  Local(result);
-  result:=FlatCopy(coefs);
-  For(i:=1,i<=Length(result),i++)
-  [
-    result[i]:= result[i]/(first+i);
-  ];
-  UniVariate(var,first+1,result);
-];
-
-
-
-////////////////////////////////////////////////
-//
-// Standard additive properties of integration.
-//
-////////////////////////////////////////////////
-10 # Int(_var,_x + _y) <-- Int(var,x) + Int(var,y);
-10 # Int(_var,_x - _y) <-- Int(var,x) - Int(var,y);
-10 # Int(_var,   - _y) <--            - Int(var,y);
-
-////////////////////////////////////////////////
-//
-// Rational functions: f(x)/g(x) where f and g are
-// polynomials.
-//
-////////////////////////////////////////////////
-/*
-70 # Int(_var,_exy / _exx)_
-        (CanBeUni(exx,var) And CanBeUni(exy,var)) <--
-   [
-     exy:=MakeUni(exy,var);
-     exx:=MakeUni(exx,var);
-//Echo({exy,exx});
-//Echo({NormalForm(Div(exy,exx))});
-//Echo({NormalForm(Mod(exy,exx))/NormalForm(exx)});
-//Echo({GcdReduce(NormalForm(Mod(exy,exx))/NormalForm(exx),var)});
-     Int(var,NormalForm(Div(exy,exx))) +
-       IntRat(var,GcdReduce(NormalForm(Mod(exy,exx))/NormalForm(exx),var));
-   ];
-
-70 # IntRat(_var,_exy / _exx)_(Degree(exx,var) > 1) <--
-[
-  Local(ee);
-  ee:=Apart(exy/exx,var);
-  `Int(@var,@ee);
-];
-70 # IntRat(_var,_exy / _exx) <--
-   [
-     `Int(@var,@exy/(@exx));
-   ];
-*/
-
-////////////////////////////////////////////////
-//
-// No simple form, try something else
-//
-////////////////////////////////////////////////
-100 # Int(_var,_exp) <--
-[
-  IntegrateMultiplicative(var,exp,a,b);
-];
-
-
-////////////////////////////////////////////////
-//
-// Could not find anti-derivative, return unsimplified
-//
-////////////////////////////////////////////////
-100 # IntegrateMultiplicative(_var,_exp,_a,_b) <-- `Hold(integrate(@var)(@exp));
-
-////////////////////////////////////////////////
-//
-// IntFunc declares the anti-derivative of a function
-// that has one argument.
-// Calling sequence: IntFunc(variable,from,to);
-// Example: IntFunc(x,Cos(_x),Sin(x));
-//
-////////////////////////////////////////////////
-IntFunc(_vr,_from,_to) <--
-[
-  `(50 # IntegrateMultiplicative(_var,@from,_dummy1,_dummy2)_MatchLinear(var,@vr) <-- (@to)/a);
-];
-
-////////////////////////////////////////////////
-//
-// Declaration of the anti-derivatives of a few analytic functions
-//
-////////////////////////////////////////////////
-IntFunc(x,Sin(_x),-Cos(x));
-IntFunc(x,Cos(_x),Sin(x));
-IntFunc(x,Tan(_x),-Ln(Cos(x)));
-IntFunc(x,Exp(_x),Exp(x));
-IntFunc(x,1/(_x),Ln(x));
-IntFunc(x,Ln(_x),x*Ln(x)-x);
-IntFunc(x,SinH(_x),CosH(x));
-IntFunc(x,CosH(_x),SinH(x));
-IntFunc(x,TanH(_x),Ln(CosH(x)));
-
-
-
-/** MatchLinear(variable,expression)
-
-    MatchLinear tries to match an expression to a linear (degree less than
-    two) polynomial. The function returns True if it could match, and
-    it stores the resulting coefficients in the variables 'a' and 'b'
-    as a side effect. The function calling this predicate should declare
-    local variables 'a' and 'b' for this purpose.
-    MatchLinear tries to match to constant coefficients which don't
-    depend on the variable passed in, trying to find a form 'a*x+b'
-    with 'a' and 'b' not depending on 'x' if 'x' is given as the variable.
-
-    Examples:
-    In> MatchLinear(x,(R+1)*x+(T-1))
-    Out> True;
-    In> {a,b};
-    Out> {R+1,T-1};
-    In> MatchLinear(x,Sin(x)*x+(T-1))
-    Out> False;
-
-    
- */
-
-10 # MatchLinear(var_IsAtom,_expr)_CanBeUni(expr,var) <--
-[
-  Set(expr,MakeUni(expr,var));
-  MatchLinear(expr);
-];
-20 # MatchLinear(_var,_expr) <-- False;
-
-10 # MatchLinear(_expr)_(Degree(expr,var)<2) <--
-[
-  Check(IsUniVar(expr),ToString()Echo({"Incorrect argument ",expr," passed to MatchLinear"}));
-  Check(Not IsBound(A), "Found bound variable which should have been unbound, in MatchLinear");
-  Check(Not IsBound(B), "Found bound variable which should have been unbound, in MatchLinear");
-  a := Coef(expr,1);
-  b := Coef(expr,0);
-  True;
-];
-20 # MatchLinear(_expr) <-- False;
-UnFence("MatchLinear",1);
-UnFence("MatchLinear",2);
-
-
-/* Test code */
-LocalSymbols(TestMatchLinearTrue,TestMatchLinearFalse) [
-
-  TestMatchLinearTrue(_var,_expr,_expected) <--
-  [
-    Local(a,b);
-    Verify(MatchLinear(var,expr),True);
-    a:=Simplify(a-expected[1]);
-    b:=Simplify(b-expected[2]);
-    `TestYacas(@a,0);
-    `TestYacas(@b,0);
-  ];
-  TestMatchLinearFalse(_var,_expr) <--
-  [
-    Local(a,b);
-    Verify(MatchLinear(var,expr),False);
-  ];
-
-  TestMatchLinearTrue(x,(R+1)*x+(T-1),{(R+1),(T-1)});
-  TestMatchLinearTrue(x,x+T,{1,T});
-  TestMatchLinearTrue(x,a*x+b,{a,b});
-  TestMatchLinearFalse(x,Sin(x)*x+(T-1));
-  TestMatchLinearFalse(x,x+Sin(x));
-
-];
-
-
-/*
-*/
 
 EndOfFile;
 

@@ -90,13 +90,13 @@ DoNext("Compute the derivative of |x|.");
 BenchShow(D(x)Abs(x));
 
 DoNext("Compute an antiderivative of |x|.");
-BenchShow(AntiDeriv(Abs(x),x));
+BenchShow(AntiDeriv(x,Abs(x)));
 
 DoNext("Compute the derivative of |x| (piecewise defined).");
 BenchShow(D(x)(if (x<0) (-x) else x));
 
 DoNext("Compute the antiderivative of |x| (piecewise defined).");
-BenchShow( AntiDeriv(if (x<0) (-x) else x,x));
+BenchShow( AntiDeriv(x,if (x<0) (-x) else x));
 
 DoNext("Compute the first terms of the Taylor expansion of 1/sqrt(1-v^2/c^2) at v=0. ");
 BenchCall(ans:=Taylor(v,0,4)Sqrt(1/(1-v^2/c^2)));

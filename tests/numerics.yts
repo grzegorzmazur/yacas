@@ -128,7 +128,7 @@ Gamma(9/2)
 );
 
 KnownFailure(
-Verify(Gamma(-10.5), (-2048*Sqrt(Pi))/13749310575));
+TestYacas(Gamma(-10.5), (-2048*Sqrt(Pi))/13749310575));
 
 
 TestYacas(
