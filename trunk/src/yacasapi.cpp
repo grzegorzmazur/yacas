@@ -70,8 +70,8 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispEquals        ,"=");
     SetCommand(LispWrite         ,"Write");
     /*TODO remove!
-    SetCommand(LispSpace         ,"Space");
-    SetCommand(LispNewLine       ,"NewLine");
+    Set*Command(LispSpace         ,"Space");
+    Set*Command(LispNewLine       ,"NewLine");
 */
     SetCommand(LispWriteString   ,"WriteString");
     SetCommand(LispProgBody      ,"Prog");
