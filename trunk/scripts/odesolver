@@ -38,7 +38,7 @@ OdeConstantList(n_IsInteger) <--
 [
   Local(result,i);
   result:=ZeroVector(n);
-  For (i:=1,i<=n,i++) result[i]:=(LocalSymbols(C)C);
+  For (i:=1,i<=n,i++) result[i]:=UniqueConstant();
   result;
 ];
 

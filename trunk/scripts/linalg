@@ -1,8 +1,8 @@
 
 
 /* Binomials */
-RuleBase("Bin",{n,m});
-Rule("Bin",2,0,True) n! /(m! *(n-m)!);
+10 # Bin(n_IsPositiveInteger,m_IsPositiveInteger)_(m <= n) <-- n! /(m! *(n-m)!);
+20 # Bin(n_IsInteger,m_IsInteger) <-- 0;
 
 /* Levi-civita symbol */
 Function("LeviCivita",{indices})

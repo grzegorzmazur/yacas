@@ -40,10 +40,22 @@ public:
         virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
         virtual LispInt Precedence() const;
         virtual LispPtr& Body();
-    private:
+    protected:
+        BranchRule() {};
+    protected:
         LispInt iPrecedence;
         LispPtr iBody;
         LispPtr iPredicate;
+    };
+    class BranchRuleTruePredicate : public BranchRule
+    {
+    public:
+        BranchRuleTruePredicate(LispInt aPrecedence,LispPtr& aBody)
+        {
+            iPrecedence = aPrecedence;
+            iBody.Set(aBody.Get());
+        }
+        virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
     };
     
     class BranchPattern : public BranchRuleBase
@@ -81,6 +93,7 @@ public:
     virtual LispInt Arity() const;
     virtual void DeclareRule(LispInt aPrecedence, LispPtr& aPredicate,
                              LispPtr& aBody);
+    virtual void DeclareRule(LispInt aPrecedence, LispPtr& aBody);
     void DeclarePattern(LispInt aPrecedence, LispPtr& aPredicate,
                         LispPtr& aBody);
     void InsertRule(LispInt aPrecedence,BranchRuleBase* newRule);

@@ -1,5 +1,17 @@
 
 
+/*
+  SubstituteHeld does a substitute without evaluating the intermediate
+  expressions. For this, Held(...) is used (Held(x) makes sure x is
+  never evaluated). SubstituteHeld has two arguments, body and change.
+  Body is the expression to be worked on, and change is a function
+  that can change a sub-expression e. It gets the argument in the
+  form of Held(e1), and it should return a resulting expression, also
+  in that same form, eg. Held(e2). the change function can return
+  the expression unchanged, in which case the routine continues to
+  traverse the arguments of the expression at hand.
+*/
+
 RuleBase("Held",{expr});
 HoldArg("Held",expr);
 RuleBase("MakeHeld",{expr});
@@ -17,34 +29,70 @@ MakeHeldList(list_IsList) <--
 
 UnHold(Held(_x)) <-- x;
 
-UniqueConstant() <--
+
+
+
+Function("SubstituteHeld",{body,change})
 [
-  Local(result);
-  result := String(LocalSymbols(c)(c));
-
-  Atom(StringMid(2,Length(result)-1,result));
+  UnHold(SubstituteHeld(MakeHeld(body)));
 ];
+/* HoldArg("SubstituteHeld",body);  */
+HoldArg("SubstituteHeld",predicate);
+HoldArg("SubstituteHeld",change);
+UnFence("SubstituteHeld",2);
+RuleBase("SubstituteHeld",{body});
+UnFence("SubstituteHeld",1);
 
-10 # Variab2(Held(x_IsNumber)) <-- MakeHeld(x);
-20 # Variab2(Held(x_IsAtom)) <-- MakeHeld(UniqueConstant()*x);
-
-40 # Variab2(Held(f_IsFunction)) <--
+10 # SubstituteHeldF(Held(f_IsFunction)) <--
 [
   Local(lst,args);
   lst := Listify(f);
   args:=Tail(lst);
   args:=MakeHeldList(args);
-  args:=MapSingle("Variab2",args);
+  args:=MapSingle("SubstituteHeld",args);
   args:=MapSingle("UnHold",args);
   MakeHeld(UnList(Head(lst):args));
 ];
-
-Function("Variab",{expr})
+20 # SubstituteHeldF(_f) <--
 [
-  UnHold(Variab2(MakeHeld(expr)));
+  f;
 ];
-HoldArg("Variab",expr);
+UnFence("SubstituteHeldF",1);
 
+SubstituteHeld(_body) <--
+[
+  Local(s);
+  s :=  Apply(change,{body});
+  If (s = body, SubstituteHeldF(body),s);
+];
+
+
+
+10 # Variab2(Held(x_IsNumber)) <-- MakeHeld(x);
+20 # Variab2(Held(x_IsAtom)) <-- MakeHeld(UniqueConstant()*x);
+100 # Variab2(Held(_x)) <-- MakeHeld(x);
+
+
+10 # FlatPlus(Held(_x - _y)) <-- MakeHeld(UnList({Atom("+"),x,-y}));
+20 # FlatPlus(_x) <-- x;
+
+10 # FlatHeld(Held(xheld_IsFunction))_(Type(xheld) = flatheldop)
+    <--
+    [
+     Local(r);
+      r := Tail(Listify(xheld));
+      r := MakeHeldList(r);
+      r := MapSingle("SubstituteHeld",r);
+      r := Flatten(r,"List");
+      r := MapSingle("UnHold",r);
+      r := Apply("Concat",r);
+      r := MakeHeld(r);
+      r;
+    ];
+30 # FlatHeld(Held(_x)) <-- MakeHeld({x});
+UnFence("FlatHeld",1);
+
+FlattenHeld(function,flatheldop) := SubstituteHeld(function,"FlatHeld");
 
 EndOfFile;
 

@@ -332,7 +332,15 @@ void LispEnvironment::DefineRule(LispStringPtr aOperator,LispInt aArity,
     Check(userFunc != NULL, KLispErrCreatingRule);
     
     // Declare a new evaluation rule
-    userFunc->DeclareRule(aPrecedence, aPredicate,aBody);
+    
+
+    if (IsTrue(*this, aPredicate))
+    {
+//        printf("FastPredicate on %s\n",aOperator->String());
+        userFunc->DeclareRule(aPrecedence, aBody);
+    }
+    else
+        userFunc->DeclareRule(aPrecedence, aPredicate,aBody);
 }
 
 void LispEnvironment::DefineRulePattern(LispStringPtr aOperator,LispInt aArity,

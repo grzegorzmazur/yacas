@@ -88,20 +88,12 @@ Function("Flatten",{body,flattenoper})
   DoFlatten(body);
 ];
 
-
 RuleBase("DoFlatten",{doflattenx});
 UnFence("DoFlatten",1);
 
-Rule("DoFlatten",1,1,Type(doflattenx)=flattenoper)
-[
-  Apply("Concat",MapSingle("DoFlatten",Tail(Listify(doflattenx))));
-];
-Rule("DoFlatten",1,2,True)
-[
-  {
-    doflattenx
-  };
-];
+10 # DoFlatten(_doflattenx)_(Type(doflattenx)=flattenoper) <--
+     Apply("Concat",MapSingle("DoFlatten",Tail(Listify(doflattenx))));
+20 # DoFlatten(_doflattenx) <-- { doflattenx };
 
 
 10 # UnFlatten({},_op,_identity) <-- identity;
