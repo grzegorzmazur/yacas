@@ -7,9 +7,9 @@
 
 /* The truly required files (Yacas NEEDS to load). */
 Use("stdopers.ys");
-Use("patterns/code.ys");
-Use("deffunc/code.ys");
-Use("constants/code.ys");
+Use("patterns.rep/code.ys");
+Use("deffunc.rep/code.ys");
+Use("constants.rep/code.ys");
 Use("standard.ys");
 
 /* Maintain an array of deffiles */
@@ -26,47 +26,47 @@ Rule("CntDefLoad",1,1,True)
  * functions defined in the file solve. Each time a function is invoked
  * for which the interpreter can not find a definition, the file is loaded.
  */
-CntDefLoad("solve/code.ys");
-CntDefLoad("deriv/code.ys");
-CntDefLoad("linalg/code.ys");
-CntDefLoad("random/code.ys");
-CntDefLoad("lists/code.ys");
-CntDefLoad("controlflow/code.ys");
-CntDefLoad("complex/code.ys");
-CntDefLoad("stdfuncs/code.ys");
-CntDefLoad("sums/code.ys");
-CntDefLoad("newly/code.ys");
-CntDefLoad("univar/code.ys");
-CntDefLoad("stubs/code.ys");
-CntDefLoad("numbers/code.ys");
-CntDefLoad("integrate/code.ys");
-CntDefLoad("substitute/code.ys");
-CntDefLoad("simplify/code.ys");
-CntDefLoad("functional/code.ys");
-CntDefLoad("assoc/code.ys");
-CntDefLoad("html/code.ys");
-CntDefLoad("fakedb/code.ys");
-CntDefLoad("array/code.ys");
-CntDefLoad("example/code.ys");
-CntDefLoad("trigsimp/code.ys");
-CntDefLoad("formula/code.ys");
-CntDefLoad("predicates/code.ys");
-CntDefLoad("stats/code.ys");
-CntDefLoad("padic/code.ys");
-CntDefLoad("factors/code.ys");
-CntDefLoad("testers/code.ys");
-CntDefLoad("tensor/code.ys");
-CntDefLoad("texform/code.ys");
-CntDefLoad("logic/code.ys");
-CntDefLoad("radsimp/code.ys");
-CntDefLoad("pslq/code.ys");
-CntDefLoad("odesolver/code.ys");
-CntDefLoad("c_form/code.ys");
-CntDefLoad("limit/code.ys");
-CntDefLoad("localrules/code.ys");
-CntDefLoad("rabinmiller/code.ys");
-CntDefLoad("orthopoly/code.ys");
-CntDefLoad("openmath/code.ys");
+CntDefLoad("solve.rep/code.ys");
+CntDefLoad("deriv.rep/code.ys");
+CntDefLoad("linalg.rep/code.ys");
+CntDefLoad("random.rep/code.ys");
+CntDefLoad("lists.rep/code.ys");
+CntDefLoad("controlflow.rep/code.ys");
+CntDefLoad("complex.rep/code.ys");
+CntDefLoad("stdfuncs.rep/code.ys");
+CntDefLoad("sums.rep/code.ys");
+CntDefLoad("newly.rep/code.ys");
+CntDefLoad("univar.rep/code.ys");
+CntDefLoad("stubs.rep/code.ys");
+CntDefLoad("numbers.rep/code.ys");
+CntDefLoad("integrate.rep/code.ys");
+CntDefLoad("substitute.rep/code.ys");
+CntDefLoad("simplify.rep/code.ys");
+CntDefLoad("functional.rep/code.ys");
+CntDefLoad("assoc.rep/code.ys");
+CntDefLoad("html.rep/code.ys");
+CntDefLoad("fakedb.rep/code.ys");
+CntDefLoad("array.rep/code.ys");
+CntDefLoad("example.rep/code.ys");
+CntDefLoad("trigsimp.rep/code.ys");
+CntDefLoad("formula.rep/code.ys");
+CntDefLoad("predicates.rep/code.ys");
+CntDefLoad("stats.rep/code.ys");
+CntDefLoad("padic.rep/code.ys");
+CntDefLoad("factors.rep/code.ys");
+CntDefLoad("testers.rep/code.ys");
+CntDefLoad("tensor.rep/code.ys");
+CntDefLoad("texform.rep/code.ys");
+CntDefLoad("logic.rep/code.ys");
+CntDefLoad("radsimp.rep/code.ys");
+CntDefLoad("pslq.rep/code.ys");
+CntDefLoad("odesolver.rep/code.ys");
+CntDefLoad("c_form.rep/code.ys");
+CntDefLoad("limit.rep/code.ys");
+CntDefLoad("localrules.rep/code.ys");
+CntDefLoad("rabinmiller.rep/code.ys");
+CntDefLoad("orthopoly.rep/code.ys");
+CntDefLoad("openmath.rep/code.ys");
 
 /* set the help system. This can be overridden in ~/.yacasrc */
 
