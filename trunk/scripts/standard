@@ -154,7 +154,7 @@ Function("TableForm",{list})
 
 
 220 # + x_IsList          <-- MapSingle("+",x);
-220 # x_IsList + y_IsList <-- Map("+",{x,y});
+220 # xlist_IsList + ylist_IsList <-- Map("+",{xlist,ylist});
 
 240 # (x_IsList + y_IsNonObject)_Not(IsList(y)) <-- y+x;
 241 # (x_IsNonObject + y_IsList)_Not(IsList(x)) <--
