@@ -36,6 +36,8 @@ CLEANFILES = chartables.c
 ## Ensure we always build barepluginapi.man.txt
 # all-local: barepluginapi.man.txt
 
+pcre.lo: chartables.c
+
 pcre.dylib: pcre.lo 
 	c++ -module -dynamic -undefined suppress -flat_namespace -dynamiclib -o $@ pcre.lo
 
