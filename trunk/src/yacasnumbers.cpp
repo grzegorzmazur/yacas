@@ -625,8 +625,9 @@ BigNumber::BigNumber(const LispCharPtr aString,LispInt aBasePrecision,LispInt aB
 }
 BigNumber::BigNumber(const BigNumber& aOther)
 {
-  iNumber = NULL; //TODO remove NEW ANumber(aOther.GetPrecision());
-  SetTo(aOther);
+  iPrecision = aOther.GetPrecision();
+  iNumber = NEW ANumber(*aOther.iNumber);
+  SetIsInteger(aOther.IsInt());
 }
 BigNumber::BigNumber(LispInt aPrecision)
 {
