@@ -476,6 +476,11 @@ Verify(Limit(x,Infinity)(1+2/x)^x,Exp(2));
 Verify(Limit(x,Infinity)(1+1/x)^(2*x),Exp(2));
 Verify(Limit(x,Infinity)-2*x,-Infinity);
 Verify(Limit(x,Infinity)(x^2+1)/(-x^3+1),0);
+
+Verify(Limit(x,0)1/x,Undefined);
+Verify(Limit(x,0,Right)1/x,Infinity);
+Verify(Limit(x,0,Left)1/x,-Infinity);
+
 Verify([Local(a);a:=0.1;Simplify((a*b*c)/(a*c*b));],1);
 Verify(CanProve(P Or (Not P And Not Q)),P Or Not Q);
 Verify(CanProve(A>0 And A<=0),False);

@@ -2736,19 +2736,28 @@ IsFreeOf
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-Limit(variable,value) expression
+
+Limit(variable,value) expression <br>
+Limit(variable,value,direction) expression
+
 <H5>
 Parameters:
 </H5>
 variable - a variable <br>
 value - a number <br>
+direction - a direction (Left or Right) <br>
 expression - an expression
 <H5>
 Description:
 </H5>
 Determine the
 value "expression" converges to when "variable"
-goes to "value" from positive infinity.
+goes to "value". <p>
+
+You can also specify a direction for the limit, Left or Right.
+Specifying Right will take the limit from positive Infinity, and
+Left will take the limit from -Infinity.
+
 <H5>
 Examples:
 </H5>
@@ -2757,6 +2766,12 @@ Examples:
 Out> 1;
 In> Limit(x,0) (Sin(x)-Tan(x))/(x^3)
 Out> -1/2;
+In> Limit(x,0)1/x
+Out> Undefined;
+In> Limit(x,0,Left)1/x
+Out> -Infinity;
+In> Limit(x,0,Right)1/x
+Out> Infinity;
 </PRE></TR>
 </TABLE>
 

@@ -1,13 +1,48 @@
 
 Use("coeffguess");
 
+Use("odesolver");
+
+Single(i_IsInteger,n_IsInteger) <-- If(i = n,1,0);
+DoSingle(i) := Single(globalDeg,i);
+
+
+10 # CofFromDEaux(_x + _y) <-- CofFromDEaux(x) + CofFromDEaux(y);
+10 # CofFromDEaux(_x - _y) <-- CofFromDEaux(x) - CofFromDEaux(y);
+10 # CofFromDEaux(   - _y) <--              - CofFromDEaux(y);
+10 # CofFromDEaux(_x * _y) <-- MakeCofM(CofFromDEaux(x), CofFromDEaux(y)); 
+20 # CofFromDEaux(yyy(0)) <-- psi;
+30 # CofFromDEaux(yyy(_n)) <-- DerivCofAllN(psi,n);
+
+35 # CofFromDEaux(x) <--
+[
+  globalDeg := 1;
+  MakeCof(Multiplex("DoSingle","+",0));
+];
+
+35 # CofFromDEaux(x^n_IsInteger) <--
+[
+  globalDeg := n;
+  MakeCof(Multiplex("DoSingle","+",0));
+];
+
+35 # CofFromDEaux(constant_IsAtom) <--
+[
+  globalDeg := 0;
+  
+  CofMul(E,MakeCof(Multiplex("DoSingle","*",1)));
+];
+
+CofFromDE(_f) <-- CofFromDEaux(OdeNormalForm(f));
+
+
+
 10 # Alt(n_IsEven) <-- (-1)^(n/2);
 20 # Alt(n_IsInteger) <-- 0;
 
 /* Taylor for -Exp(-(x^2)) */
 Effic(_n) <-- (Alt(n)/((n >> 1)!));
 
-Single(i_IsInteger,n_IsInteger) <-- If(i = n,1,0);
 
 /*
  *  D(2,x)psi - Exp(-x^2)*psi = E * psi
@@ -20,7 +55,7 @@ CofDoEffic(_deg,_dim)<--
   CofDim(dim);
   psi:=MakeCof();
   potential:= MakeCof(-1*Multiplex("Effic","*",1));
-  CofEq(DerivCofAll2(psi) +MakeCofM(potential,psi) - CofMul(E,psi));
+  CofEq(DerivCofAllN(psi,2) +MakeCofM(potential,psi) - CofMul(E,psi));
 ];
 
 
@@ -37,7 +72,7 @@ CofDoYukawa(_deg,_dim)<--
   CofDim(dim);
   psi:=MakeCof();
   potential:= MakeCof(-1*Multiplex("Yukawa","*",1));
-  CofEq(DerivCofAll2(psi) +MakeCofM(potential,psi) - CofMul(E,psi));
+  CofEq(DerivCofAllN(psi,2) +MakeCofM(potential,psi) - CofMul(E,psi));
 ];
 
 
@@ -51,20 +86,22 @@ CofDoHarmonic(_deg,_dim)<--
   CofDegree(deg);
   CofDim(dim);
   psi:=MakeCof();
-  CofEq(DerivCofAll2(psi) - CofMul(E,psi));
+  CofEq(DerivCofAllN(psi,2) - CofMul(E,psi));
 ];
 
 /*
  *  D(1,x)psi = E * psi
  *
  * (solution is Exp(x)-like)
+ * y' == E*y
  */
 CofDoDiffuse(_deg,_dim)<--
 [
   CofDegree(deg);
   CofDim(dim);
   psi:=MakeCof();
-  CofEq(DerivCofAll1(psi) - CofMul(E,psi));
+  CofEq(CofFromDE(y' == E*y)); 
+/*  CofEq(DerivCofAllN(psi,1) - CofMul(E,psi)); */
 ];
 
 
@@ -79,7 +116,7 @@ CofDoXsqr(_deg,_dim)<--
   CofDim(dim);
   psi:=MakeCof();
   potential:= MakeCof(Multiplex("Single2","+",0));
-  CofEq(DerivCofAll2(psi) +MakeCofM(potential,psi) - CofMul(E,psi));
+  CofEq(DerivCofAllN(psi,2) +MakeCofM(potential,psi) - CofMul(E,psi));
 ];
 
 /*
@@ -93,7 +130,7 @@ CofDoNormal(_deg,_dim)<--
   CofDim(dim);
   psi:=MakeCof();
   potential:= MakeCof(Multiplex("Single1","+",0));
-  CofEq(DerivCofAll1(psi) +MakeCofM(potential,psi) - CofMul(E,psi));
+  CofEq(DerivCofAllN(psi,1) +MakeCofM(potential,psi) - CofMul(E,psi));
 ];
 
 
@@ -113,18 +150,26 @@ CofPlot()<--
   CofPlot(-3,3,20);
 ];
 
+CofTry(_deg,_dim,_eq,_extra) <--
+[
+  CofDegree(deg);
+  CofDim(dim);
+  psi:=MakeCof();
+  CofEq(CofFromDE(eq)); 
+  CofSetUp(extra);
+];
 
 
+
+/* diffuse */
 /*
-CofDoDiffuse(10,1);
-CofSetUp({aS0==1,aS1==1,E==1});
+CofTry(10,1,y' == E*y,{aS0==1,aS1==1,E==1});
 */
 
 
-/*
+/* harmonic (solutions are sin,cos) */
 CofDoHarmonic(12,1);
-CofSetUp({aS0==0,aS1==1,aS3== -1/6});
-*/
+CofTry(10,1,y'' + E*y == 0,{aS0==0,aS1==1,aS3== -1/6});
 
 
 /*
@@ -137,8 +182,10 @@ CofDoNormal(20,1);
 CofSetUp({aS0==1,aS1==0,E == 0});
 */
 
+/*
 CofDoNormal(3,2);
 CofSetUp({});
+*/
 
 /*
 CofDoYukawa(5,1);
@@ -146,10 +193,15 @@ CofSetUp({alpha==1,E==0,aS1==1,aS3==1});
 */
 
 
-
-/*
 CofSolve();
+/*
 CofPlot();
 */
 
+
+/*
+CofDegree(5);
+CofDim(1);
+psi:=MakeCof();
+*/
 

@@ -257,30 +257,23 @@ CofTry(_extra) <--
   CofSolve();
 ];
 
-DerivCofAll2(_term) <--
+DerivCofAllN(_term,_n) <--
 [
   Local(x,result);
   result:=0;
   x:=MakeVector(x,cofdim);
   ForEach(item,x)
   [
-    result:=result+DerivCof(DerivCof(term,item),item);
+    Local(i,t);
+    t:=term;
+    For(i:=1,i<=n,i++)
+    [
+      t:=DerivCof(t,item);
+    ];
+    result := result + t;
   ];
   result;
 ];
-
-DerivCofAll1(_term) <--
-[
-  Local(x,result);
-  result:=0;
-  x:=MakeVector(x,cofdim);
-  ForEach(item,x)
-  [
-    result:=result+DerivCof(term,item);
-  ];
-  result;
-];
-
 
 CofTaylor(_cof,_n) <--
 [
