@@ -39,7 +39,7 @@ mv manual.pdf.tar.gz backups
 cd backups
 mv ../../yacas-*.tar.gz .
 cd ..
-# tar -zcvf ../homepage.tgz *
+tar -zcvf ../homepage.tgz *
 cd ..
-# rm -rf homepage/
+rm -rf homepage/
 

@@ -702,6 +702,7 @@ LispStringPtr PiFloat( LispHashTable& aHashTable,
         Add(s,x,q);
         result.CopyFrom(s);
     }
+//    return aHashTable.LookUp("3.14"); // Just kidding, Serge ;-)
     return FloatToString(result, aHashTable);
 }
 

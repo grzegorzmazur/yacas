@@ -31,6 +31,7 @@ ctokenizer.o: ctokenizer.cpp yacasprivate.h plat/linux32/lisptype.h \
  lispglobals.h lispplugin.h ctokenizer.h xmltokenizer.h \
  plat/linux32/platfileio.h lispatom.h lispeval.h mathenvironment.h \
  lispuserfunc.h numbers.h standard.h standard.inl
+debugmem.o: debugmem.cpp debugmem.h lispassert.h choices.h
 deffile.o: deffile.cpp yacasprivate.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h stubs.h plat/linux32/stubs.inl deffile.h \
  yacasbase.h lisphash.h grower.h grower.inl lispassert.h choices.h \
