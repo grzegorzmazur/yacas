@@ -7,11 +7,24 @@ Bodied("Function",60000);
 HoldArg("Function",oper);
 HoldArg("Function",args);
 HoldArg("Function",body);
-Rule("Function",3,1025,True)
+
+// function with variable number of arguments: Function("func",{x,y, ...})body;
+Rule("Function",3,2047,
+	MathAnd(GreaterThan(Length(args), 1), Equals( MathNth(args, Length(args)), Atom("...") ))
+)
 [
-  Retract(oper,Length(args)); 
+  DestructiveDelete(args,Length(args));	// remove trailing "..."
+  Retract(oper,Length(args));
+  MacroRuleBaseListed(oper,args);
+  MacroRule(oper,Length(args),1025,True) body;	// at precedence 1025, for flexibility
+];
+
+// function with a fixed number of arguments
+Rule("Function",3,2048,True)
+[
+  Retract(oper,Length(args));
   MacroRuleBase(oper,args);
-  MacroRule(oper,Length(args),0,True) body;
+  MacroRule(oper,Length(args),1025,True) body;
 ];
 
 RuleBase("TemplateFunction",{oper,args,body});
@@ -19,7 +32,7 @@ Bodied("TemplateFunction",60000);
 HoldArg("TemplateFunction",oper);
 HoldArg("TemplateFunction",args);
 HoldArg("TemplateFunction",body);
-Rule("TemplateFunction",3,1025,True)
+Rule("TemplateFunction",3,2047,True)
 [
   Retract(oper,Length(args)); 
   Local(arglist);
@@ -29,7 +42,7 @@ Rule("TemplateFunction",3,1025,True)
   arglist:=ApplyPure("LocalSymbols",arglist);
 
   MacroRuleBase(oper,arglist[1]);
-  MacroRule(oper,Length(args),0,True) arglist[2];
+  MacroRule(oper,Length(args),1025,True) arglist[2];
 
 ];
 
@@ -50,19 +63,20 @@ HoldArg(":=",aLeftAssign);
 HoldArg(":=",aRightAssign);
 
 /* := assignment. */
+// assign a variable
 Rule(":=",2,0,IsAtom(aLeftAssign))
 [
   MacroSet(aLeftAssign,Eval(aRightAssign));
   Eval(aLeftAssign);
 ];
 
-
+// assign lists
 Rule(":=",2,0,IsList(aLeftAssign))
 [
   Map(":=",{aLeftAssign,Eval(aRightAssign)});
 ];
 
-
+// auxiliary function to help assign arrays using :=
 RuleBase("AssignArray",{setlistterm,setlistindex,setlistresult});
 UnFence("AssignArray",3);
 Rule("AssignArray",3,1,IsString(setlistindex))
@@ -75,7 +89,7 @@ Rule("AssignArray",3,1,IsString(setlistindex))
      );
   True;
 ];
-
+// assign generic arrays
 Rule("AssignArray",3,1,
    MathAnd(
            Equals(IsGeneric(setlistterm),True),
@@ -93,6 +107,7 @@ Rule("AssignArray",3,2,True)
   True;
 ];
 
+// a[x] := ... assigns to an array element
 Rule(":=",2,10,IsFunction(aLeftAssign) And (Head(Listify(aLeftAssign)) = Nth))
 [
  Local(frst,scnd);
@@ -106,18 +121,35 @@ Rule(":=",2,10,IsFunction(aLeftAssign) And (Head(Listify(aLeftAssign)) = Nth))
 
  AssignArray(frst,scnd,Eval(aRightAssign));
 ];
-Rule(":=",2,20,IsFunction(aLeftAssign) And aLeftAssign[0] != Atom(":="))
+
+// f(x):=... defines a new function
+Rule(":=",2,30,IsFunction(aLeftAssign) And aLeftAssign[0] != Atom(":="))
 [
   Local(oper,args,arity);
   Set(oper,String(aLeftAssign[0]));
   Set(args,Tail(Listify(aLeftAssign)));
-  Set(arity,Length(args));
-  Retract(oper,arity); 
-  MacroRuleBase(oper, args);
+  If(
+	MathAnd(GreaterThan(Length(args), 1), Equals( MathNth(args, Length(args)), Atom("...") )),
+	// function with variable number of arguments
+	[
+	  DestructiveDelete(args,Length(args));	// remove trailing "..."
+	  Set(arity,Length(args));
+	  Retract(oper,arity); 
+	  MacroRuleBaseListed(oper, args);
+	],
+	// function with a fixed number of arguments
+	[
+	  Set(arity,Length(args));
+	  Retract(oper,arity); 
+	  MacroRuleBase(oper, args);
+	]
+  );
   UnHoldable(aRightAssign);
   MacroRule(oper,arity,1025,True) aRightAssign;
 ];
 
+// this will "unhold" a variable - used to make sure that := with Eval()
+// immediately on the right hand side evaluates its argument
 RuleBase("UnHoldable",{var});
 HoldArg("UnHoldable",var);
 UnFence("UnHoldable",1);
