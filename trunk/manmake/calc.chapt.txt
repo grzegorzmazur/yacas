@@ -1364,7 +1364,7 @@ a denominator vanishes.
 returned by {Solve}. A good strategy is to substitute the solutions
 back in the equation.
 
-*E.G.
+*E.G. notest
 
 First a simple example, where everything works as it should. The
 quadratic equation $x^2 + x == 0$ is solved. Then the result is
