@@ -206,8 +206,8 @@ Plot2D'adaptive(_func, _var, {_a,_b,_c}, {_fa, _fb, _fc}, _depth, _epsilon) <--
 	If(
 		depth<=0 Or
 		(
-		  // condition for the signs not to change too rapidly
-		  smooth'sign'change(fa, fa1, fb) And smooth'sign'change(fa1, fb, fb1) And smooth'sign'change(fb, fb1, fc)
+		  // condition for the values not to oscillate too rapidly
+		  sign'change(fa, fa1, fb) + sign'change(fa1, fb, fb1) + sign'change(fb, fb1, fc) <= 2
 		  And
 		  // condition for the values not to change too rapidly
 		  Abs( (fa-5*fa1+9*fb-7*fb1+2*fc)/24 )	// this is the Simpson quadrature for the (fb,f1) subinterval (using points b,b1,c), subtracted from the 4-point Newton-Cotes quadrature for the (fb,fb1) subinterval (using points a, a1, b, b1)
@@ -227,12 +227,14 @@ Plot2D'adaptive(_func, _var, {_a,_b,_c}, {_fa, _fb, _fc}, _depth, _epsilon) <--
 	);
 ];
 
-/// utility function: check that the sign does not change too rapidly in given 3 numbers
-smooth'sign'change(x,y,z) :=
+/// utility function: check whether the derivative changes sign in given 3 numbers, return 0 or 1
+sign'change(x,y,z) :=
+If(
 	IsNumber(x) And IsNumber(y) And IsNumber(z)
 	And Not (
-		x>0 And y<0 And z>0
+		x>y And y<z
 			Or
-		x<0 And y>0 And z<0
-	); 
+		x<y And y>z
+	)
+, 1, 0); 
 
