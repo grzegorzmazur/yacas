@@ -251,6 +251,21 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
         return LispTrue;
     }
 
+#ifndef NO_USE_BIGFLOAT
+    BigNumber *n1 = aExpression1.Get()->Number(aEnvironment.Precision());
+    BigNumber *n2 = aExpression2.Get()->Number(aEnvironment.Precision());
+    if (!(n1 == NULL && n2 == NULL) )
+    {
+        if (n1 == n2)
+        {
+            return LispTrue;
+        }
+        if (n1 == NULL) return LispFalse;
+        if (n2 == NULL) return LispFalse;
+        if (!n1->Equals(*n2)) return LispFalse;
+    }
+#endif
+
     // Now check the sublists
     if (aExpression1.Get()->SubList())
     {

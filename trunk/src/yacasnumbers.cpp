@@ -1097,8 +1097,12 @@ void BigNumber::Precision(LispInt aPrecision)
 
 //basic object manipulation
 bool BigNumber::Equals(const BigNumber& aOther) const
-{//FIXME
-  return false; // function has to return *some* result
+{
+  BigNumber diff;
+  BigNumber otherNeg;
+  otherNeg.Negate(aOther);
+  diff.Add(*this,otherNeg,GetPrecision());
+  return !Significant(*diff.iNumber);
 }
 
 

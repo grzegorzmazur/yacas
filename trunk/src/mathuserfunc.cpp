@@ -491,7 +491,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
         }
         aResult.Set(LispSubList::New(full.Get()));
     }
-FINISH:
+//FINISH:
     if (Traced())
     {
         LispPtr tr;

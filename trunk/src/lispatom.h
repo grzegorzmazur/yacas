@@ -159,6 +159,7 @@ private:
     GenericClass* iClass;
 };
 
+#ifndef NO_USE_BIGFLOAT
 class LispHashTable;
 class LispNumber : public LispObject
 {
@@ -177,7 +178,7 @@ private:
     LispHashTable* iHashTable;
 };
 
-
+#endif
 
 #endif
 

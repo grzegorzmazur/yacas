@@ -11,11 +11,13 @@
 LispObject* LispAtom::New(LispStringPtr aString)
 {
   LispObject* self;
+#ifndef NO_USE_BIGFLOAT
   if (IsNumber(aString->String(),LispTrue))
   {
     self = NEW LispNumber(aString);
   }
   else
+#endif
   {
     self = NEW LispAtom(aString);
   }
@@ -198,6 +200,7 @@ LispObject* LispGenericClass::SetExtraInfo(LispPtr& aData)
     return result;
 }
 
+#ifndef NO_USE_BIGFLOAT
 
 
 LispNumber::LispNumber(LispHashTable* aHashTable, BigNumber* aNumber,LispStringPtr aString)
@@ -219,6 +222,7 @@ LispNumber::LispNumber(LispStringPtr aString)
 {
   iString = aString;
   iNumber = NULL;
+  Number(10);
 }
 LispStringPtr LispNumber::String() const
 {
@@ -262,6 +266,10 @@ printf("Converting from string representation %s\n",iString->String()); //DEBUG
 #endif
     iNumber = NEW BigNumber(iString->String(),aPrecision);
   }
+  else if (iNumber->GetPrecision() < aPrecision)
+  {
+    iNumber = NEW BigNumber(iString->String(),aPrecision);
+  }
   return iNumber.Ptr();
 }
 
@@ -273,3 +281,4 @@ LispObject* LispNumber::SetExtraInfo(LispPtr& aData)
     return result;
 }
 
+#endif
