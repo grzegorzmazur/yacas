@@ -752,7 +752,7 @@ with numerical values and not with symbolic arguments.
 *DESC
 
 This commands tests whether the expression "expr" is a rational
-number. This is the case if the top-level operator of "expr" is {/}.
+number, i.e. an integer or a fraction of integers.
 
 *E.G.
 
@@ -760,8 +760,10 @@ number. This is the case if the top-level operator of "expr" is {/}.
 	Out> False;
 	In> IsRational(2/7)
 	Out> True;
+	In> IsRational(0.5)
+	Out> False;
 	In> IsRational(a/b)
-	Out> True;
+	Out> False;
 	In> IsRational(x + 1/x)
 	Out> False;
 

@@ -41,8 +41,8 @@ Macro(DebugBreakIf,{predicate})
   breakpredicate:= Hold(@predicate);
 ];
 
-BreakpointsClear() <-- 
-[ 
+BreakpointsClear() <--
+[
   breakpredicate:=False;
   breakpoints := {};
 ];
@@ -56,14 +56,14 @@ Macro(DebugLocals,{})
   ];
   Echo("");
 ];
-DebugCallstack() <-- 
+DebugCallstack() <--
 [
   Echo("");
   Echo("*************** Function call stack ****************");
   ForEach(item,debugcallstack)
   [
     if(IsFunction(item))
-      Echo("      Function ",Type(item))
+      Echo("      Function ",Type(item)," : ",item)
     else
       Echo("      Variable ",item);
   ];
@@ -74,7 +74,7 @@ Macro(DebugEnter,{})
 [
   debugcallstack := CustomEval'Expression():debugcallstack;
   // custom breakpoint (custom predicate thought up by the programmer)
-  If(debugging = False And 
+  If(debugging = False And
       Eval(breakpredicate) = True,
       [
         breakpredicate:=False;
@@ -82,7 +82,7 @@ Macro(DebugEnter,{})
       ]);
   // the standard breakpoint
   If(debugging = False And
-      IsFunction(CustomEval'Expression()) And 
+      IsFunction(CustomEval'Expression()) And
       Contains(breakpoints,Type(CustomEval'Expression())),   debugging:=True);
    nextdebugging:=False;
    If (debugging,Echo(">>> ",CustomEval'Expression()));
@@ -115,7 +115,7 @@ ProfileStart():=
 [
     profilefn:={};
 ];
-10 # ProfileEnter()_(IsFunction(CustomEval'Expression())) <-- 
+10 # ProfileEnter()_(IsFunction(CustomEval'Expression())) <--
 [
     Local(fname);
     fname:=Type(CustomEval'Expression());

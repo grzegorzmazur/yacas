@@ -7,6 +7,9 @@
 
 Precision(10);
 
+KnownFailure(N(Sqrt(2),5) = 1.41421);		// no idea where the problem is
+KnownFailure(N(N(1+Pi)-Pi,20) = 1);		// "N" should have "HoldArg" in some way, so inner "N" is evaluated with outer precision 20
+
 /* Got the first digits of Pi from the following page:
    http://www.cecm.sfu.ca/projects/ISC/dataB/isc/C/pi10000.txt
   Just checking that Yacas agrees.
@@ -139,6 +142,7 @@ RoundTo(N(Tan(N(ArcTan(500000)))), 38)
 //)
 );
 
+Precision(60);  // obviously, 50 is not enough for the following
 //KnownFailure(
 Verify(
 RoundTo(N((Pi/2-ArcTan(N(Tan(N(Pi/2)-10^(-24)))))*10^24 ), 25)
@@ -147,7 +151,7 @@ RoundTo(N((Pi/2-ArcTan(N(Tan(N(Pi/2)-10^(-24)))))*10^24 ), 25)
 );
 
 /// special functions
-Precision(20);	// let's be gentle
+Precision(20);  // let's be gentle
 
 TestYacas(
 Gamma(10.5)
