@@ -363,6 +363,12 @@ int main(int argc, char** argv)
     unsigned char first_stack_var=0;
     the_first_stack_var = &first_stack_var;
 
+/*
+    printf("sizeof(LispAtom) = %d\n",sizeof(LispAtom));
+    printf("sizeof(LispSubList) = %d\n",sizeof(LispSubList));
+    printf("sizeof(LispString) = %d\n",sizeof(LispString));
+*/
+    
     char* file_to_load=NULL;
     int fileind=1;
     if (argc > 1)

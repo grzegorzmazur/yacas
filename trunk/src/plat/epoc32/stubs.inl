@@ -23,8 +23,4 @@ inline void PlatMemSet(LispCharPtr aTarget, LispChar aByte, LispInt aNrBytes)
 }
 
 
-inline void PlatFree(LispCharPtr aOrig)
-{
-  User::Free(aOrig);
-}
 

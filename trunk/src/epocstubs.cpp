@@ -17,5 +17,9 @@ LispCharPtr PlatReAlloc(LispCharPtr aOrig, LispInt aNrBytes)
     Check(result!=NULL,KLispErrNotEnoughMemory);
     return result;
 }
+void PlatFree(LispCharPtr aOrig)
+{
+  User::Free(aOrig);
+}
 
 

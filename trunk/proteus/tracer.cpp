@@ -55,6 +55,8 @@ char wouldbefile[200];
 int last_selected;
 };
 
+
+
 Fl_Tabs* mainTabs;
 Fl_My_Browser *tracer;
 Fl_My_Browser *fileViewer;
@@ -275,7 +277,7 @@ REDO:
 //printf("%s %s",fileViewer->oldfile,fileViewer->wouldbefile);
     if (changed == 0 && locked->value() && lineptr != NULL && strcmp(fileViewer->oldfile,fileViewer->wouldbefile))
         goto REDO;
-    
+
     if (lineptr != NULL)
     {
         lineinfo =  (LineInfo *)tracer->data(selected);
@@ -304,6 +306,30 @@ void multistepovercb(Fl_Widget *, void *)
 {
     DoStep(1,1);
 }
+
+void steptostopcb(Fl_Widget *, void *)
+{
+    
+    const char* curlinestring = "";
+    int selected =tracer->my_lineno(tracer->my_selection());
+    while (!strstr(curlinestring,"STOPPED"))
+    {
+        LineInfo *lineinfo =  (LineInfo *)tracer->data(selected);
+        if (lineinfo)
+        {
+            if (!lineinfo->expanded)
+            {
+                lineinfo->expanded = tracer->load_in(selected+1, lineinfo->toExpand);
+            }
+        }
+        selected++;
+        curlinestring = tracer->text(selected);
+        printf("%s\n",curlinestring);
+        //         getchar();
+     }
+    tracer->select(selected,1);
+}
+
 
 int get_string(char*expression,char*scriptdir,char*tempdir,
               char*pre_eval)
@@ -479,8 +505,10 @@ int main(int argc, char **argv)
       b->callback(multistepcb,0);
       b = new Fl_Button(100, 375, 40, 20, "\\/");
       b->callback(multistepovercb,0);
+      b = new Fl_Button(140, 375, 40, 20, "*");
+      b->callback(steptostopcb,0);
 
-      locked = new Fl_Round_Button(150,375,100,20,"Lock file");
+      locked = new Fl_Round_Button(190,375,100,20,"Lock file");
 
       b = new Fl_Button(350, 375, 40, 20, "New");
       b->callback(newcb,0);
