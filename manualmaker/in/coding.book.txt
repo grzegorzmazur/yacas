@@ -1434,20 +1434,58 @@ not evaluated further, even if some rules apply to it.
 example, the variable {x} might have the expression {y+1} as the value. That
 value is not evaluated again, so even if {y} has been assigned another value,
 say, {y=2} a Yacas expression such as {2*x+1} will evaluate to {2*(y+1)+1} and
-not to {7}.
+not to {7}. Thus, a variable can have some unevaluated expression as its value
+and the expression will not be re-evaluated when the variable is used.
 
 The first possibility is mostly without consequence because  almost all core
 functions return a simple atom that does not require further evaluation.
 However, there are two core functions that can return a complicated expression:
 {Hold} and {UnList}. Thus, these functions can produce arbitrarily complicated
 Yacas expressions that will be left unevaluated.
+For example, the result of 
+	UnList({Sin, 0})
+is the same as the result of
+	Hold(Sin(0))
+and is the unevaluated expression {Sin(0)} rather than {0}.
 
-The second possibility is realized when a variable is assigned such an unevaluated expression and later used.
+Typically you want to use {UnList} because you need to construct a
+function call out of some objects that you have. But you need to call
+{Eval(UnList(...))} to actually evaluate this function call. For example:
 
-In effect, evaluation can be stopped with {Hold} or {UnList}. It can also be
+	In> UnList({Sin, 0})
+	Out> Sin(0);
+	In> Eval(UnList({Sin, 0}))
+	Out> 0;
+
+In effect, evaluation can be stopped with {Hold} or {UnList} and can be
 explicitly restarted by using {Eval}. If several levels of un-evaluation are
 used, such as {Hold(Hold(...))}, then the same number of {Eval} calls will be
 needed to fully evaluate an expression.
+
+	In> a:=Hold(Sin(0))
+	Out> Sin(0);
+	In> b:=Hold(a)
+	Out> a;
+	In> c:=Hold(b)
+	Out> b;
+	In> Eval(c)
+	Out> a;
+	In> Eval(Eval(c))
+	Out> Sin(0);
+	In> Eval(Eval(Eval(c)))
+	Out> 0;
+
+A function {FullEval} can be defined for "complete" evaluation of expressions, as follows:
+
+	LocalSymbols(x,y)
+	[
+	  FullEval(_x) <-- FullEval(x,Eval(x));
+	  10 # FullEval(_x,_x) <-- x;
+	  20 # FullEval(_x,_y) <-- FullEval(y,Eval(y));
+	];
+Then the example above will be concluded with:
+	In> FullEval(c);
+	Out> 0;
 
 
 	    Correctness of parameters to functions is not checked
