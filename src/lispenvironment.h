@@ -345,15 +345,29 @@ public:
 //printf("STACKSIZE %d\n",aStackSize);
     }
     inline LispInt GetStackTop() const {return iStackTop;}
+    inline void RaiseStackOverflowError() const
+    {
+      RaiseError("Argument stack reached maximum. Please extend argument stack with --stack argument on the command line.");
+    }
     inline void PushArgOnStack(LispObject* aObject) 
     {
       if (iStackTop >= iStack.Size())
       {
-        RaiseError("Argument stack reached maximum. Please extend argument stack with --stack argument on the command line.");
+        RaiseStackOverflowError();
       }
       iStack.SetElement(iStackTop,aObject);
       iStackTop++;
     }
+
+    inline void PushNulls(LispInt aNr) 
+    {
+      if (iStackTop+aNr > iStack.Size())
+      {
+        RaiseStackOverflowError();
+      }
+      iStackTop+=aNr;
+    }
+
     inline LispPtr& GetElement(LispInt aPos) 
     {
       LISPASSERT(aPos>=0 && aPos < iStackTop);

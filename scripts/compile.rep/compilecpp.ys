@@ -1,14 +1,14 @@
 
 /* 
 to do list:
-- passing along the locals, and how to access them, in every compile call
-- code to handle local variables
 - code to handle global variables
-- process corefunctions.h so that all these functions are automatically known
-- check number of arguments passed
-- implement the most important macro type functions: Prog, If, While, Local.
-- actually emit compilable code
-- emit system calls to compile to plugin, and load and try
+- passing along the locals, and how to access them, in every compile call
+x code to handle local variables
+x process corefunctions.h so that all these functions are automatically known
+x check number of arguments passed
+x implement the most important macro type functions: Prog, If, While, Local.
+x actually emit compilable code
+x emit system calls to compile to plugin, and load and try
 */
 
 /* Compile : compile an expression
@@ -35,6 +35,8 @@ HoldArg("CountRegisters",expression);
 30 # CountRegisters(expression_IsFunction)
    <-- Add(MapSingle("CountRegisters",Tail(Listify(expression))));
 
+
+
 CompileStatement(Defun(_cn,_ag) (_body)) <--
 [
   Local(callName,compiledName,args,stack,i,nrArgs,nrRegisters);
@@ -49,11 +51,12 @@ CompileStatement(Defun(_cn,_ag) (_body)) <--
   ForwardDeclareFixedFunction(@cn,nrArgs);
 //  funcDecls[(@cn)] := {compiledName,Function,Fixed,nrArgs};
 
-Echo("VmFunction(",@cn,", ",nrRegisters,");");
+Echo("VmFunction(",@cn,");");
+  Echo("  VmPushNulls(",nrRegisters,");");
 //  Echo("void ",compiledName,"(LispEnvironment& aEnvironment,LispInt aStackTop)");
 //  Echo("VmFunctionBegin();");
 
-  Set(currentLastRegister,0);
+  Set(currentLastRegister,nrArgs+1);
   Set(stack,NewStack());
   PushStackFrame(stack,fenced);
   For(i:=1,i<=nrArgs,i++)
@@ -63,8 +66,8 @@ Echo("VmFunction(",@cn,", ",nrRegisters,");");
   ];  
   CompileBody(Hold(@body),stack);
   PopStackFrame(stack);
-  Echo("  VmSetResult();");
-  Echo("  VmPop(1);");
+  Echo("  VmSetRegister(RESULT);");
+  Echo("  VmPop(",nrRegisters+1,");");
   Echo("VmFunctionEnd();");
   Echo("");
   Echo("");
@@ -105,19 +108,25 @@ funcPrototypes := funcPrototypes:
 
 CompileStatement(f_IsFunction := _body) <--
 [
-  Local(callName,compiledName,args,stack,i,nrArgs);
+  Local(callName,compiledName,args,stack,i,nrArgs,nrRegisters);
   Set(callName,Type(@f));
   Set(args,Tail(Listify(@f)));
   Set(compiledName,"Compiled_":Type(@f));
   Set(nrArgs,NrArgs(@f));  
+  Set(currentLastRegister,nrArgs+1);
+
 //  Echo("CORE_KERNEL_FUNCTION(\"",Type(@f),"\",",compiledName,",",nrArgs,",YacasEvaluator::Function | YacasEvaluator::Fixed)");
 
 //TODO remove  funcDecls := {Type(@f),compiledName,nrArgs} : funcDecls;
 //  funcDecls[Type(@f)] := {compiledName,Function,Fixed,nrArgs};
   ForwardDeclareFixedFunction(Type(@f),nrArgs);
 
-  Echo("void ",compiledName,"(LispEnvironment& aEnvironment,LispInt aStackTop)");
-  Echo("{");
+  Set(nrRegisters,CountRegisters(Hold(@body)));
+Echo("VmFunction(",callName,", ",nrRegisters,");");
+  Echo("  VmPushNulls(",nrRegisters,");");
+
+//  Echo("void ",compiledName,"(LispEnvironment& aEnvironment,LispInt aStackTop)");
+//  Echo("{");
   Set(stack,NewStack());
   PushStackFrame(stack,fenced);
   For(i:=1,i<=nrArgs,i++)
@@ -127,9 +136,9 @@ CompileStatement(f_IsFunction := _body) <--
   ];  
   CompileBody(Hold(@body),stack);
   PopStackFrame(stack);
-  Echo("  VmSetResult();");
-  Echo("  VmPop(1);");
-  Echo("}");
+  Echo("  VmSetRegister(RESULT);");
+  Echo("  VmPop(",nrRegisters+1,");");
+  Echo("VmFunctionEnd();");
 ];
 
 Use("corefunctions.ys");
@@ -176,6 +185,11 @@ Use("corefunctions.ys");
 //  Echo("  PUSH(ATOM(",String(String(body)),"));");
 ];
 
+
+// Optimizations of specific transformation rules
+15 # CompileBody(- n_IsNumber,_stack) <-- CompileBody(MathNegate(n),stack);
+
+
 20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "Local") <--
 [
   Echo("/* ",body," */");
@@ -190,9 +204,9 @@ Use("corefunctions.ys");
 
     AddToStack(stack,String(body[i]));
 //    FindOnStack(stack,String(body[i]))["call"] := String(body[i]);
-    FindOnStack(stack,String(body[i]))["call"] := "REGISTER(":String(currentLastRegister):")";
+    FindOnStack(stack,String(body[i]))["call"] := "ARGUMENT(":String(currentLastRegister):")";
 //hier
-    Echo("  VmInitRegister(",currentLastRegister,", ",CompiledConstant(String(body[i])),");");
+    Echo("  VmInitRegister(ARGUMENT(",currentLastRegister,"), ",CompiledConstant(String(body[i])),");");
 //    Echo("REGISTER(":String(currentLastRegister):").Set(",CompiledConstant(String(body[i])),");");
     currentLastRegister++;
 //    Echo("LispPtr ",body[i],"; ",body[i],".Set(",CompiledConstant(String(body[i])),");");
@@ -207,7 +221,7 @@ Use("corefunctions.ys");
   Echo("/* ",body," */");
   Set(body,Tail(Listify(body)));
   CompileBody(body[2],stack);
-  Echo("  VmPopRegister(",FindOnStack(stack,String(body[1]))["call"],");");
+  Echo("  VmSetRegister(",FindOnStack(stack,String(body[1]))["call"],");");
 ];
 
 20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "Prog") <--
@@ -275,28 +289,14 @@ Echo("VmLabel(",elseClause,");");
 Echo("VmLabel(",pastClause,");");
 ];
 
-//LocalSymbols(item,body,stack)
+30 # CompileBody(body_IsList,_stack) <--
 [
-  30 # CompileBody(body_IsList,_stack) <--
-  [
-  Echo("  VmPushNull();");
-  Echo("  {");
-  Echo("    LispPtr all;");
-  Echo("    all.Set(aEnvironment.iList->Copy(LispFalse));");
-  Echo("    LispIterator tail(all);");
-  Echo("    tail.GoNext();");
-  
+  Echo("  VmPushConstant(",CompiledConstant("List"),");");
   ForEach(item,body)
   [
     CompileBody(item,stack);
-  
-  Echo("      tail.Ptr()->Set(STACK(STACKTOP()-1).Get()->Copy(LispFalse));");
-  Echo("      tail.GoNext();");
-  Echo("  VmPop(1);");
   ];
-  Echo("    STACK(STACKTOP()-1).Set(LispSubList::New(all.Get()));");
-  Echo("  }");
-  ];
+  Echo("  VmConsList(",Length(body),");");
 ];
 
 LocalSymbols(cFn)
@@ -309,7 +309,7 @@ LocalSymbols(cFn)
   [
     Local(compileFn);
     Set(compileFn,cFn);
-    Echo("  VmPushNull();");
+    Echo("  VmPushNulls(1);");
 //    Echo("  {");
   
     Local(i,args,nrArgs);
@@ -384,7 +384,7 @@ fileBuildString:=
 #define ATOM(_x) LispAtom::New(aEnvironment,_x)
 #define RESULT _this_stack.GetElement(aStackTop)
 #define ARGUMENT(i) _this_stack.GetElement(aStackTop+i)
-#define REGISTER(_index) _registers.GetElement(_index)
+
 #define PUSH(_x)   _this_stack.PushArgOnStack(_x)
 #define POP(_i)    _this_stack.PopTo(_this_stack.GetStackTop() - _i)
 #define STACKTOP() _this_stack.GetStackTop()
@@ -396,7 +396,7 @@ fileBuildString:=
 
 
 
-#define VmFunction(name,nrRegisters)    void Compiled_##name(LispEnvironment& aEnvironment,LispInt aStackTop) { register LispEnvironment::YacasArgStack& _this_stack = aEnvironment.iStack; LispPtrArray _registers(nrRegisters,NULL);
+#define VmFunction(name)    void Compiled_##name(LispEnvironment& aEnvironment,LispInt aStackTop) { register LispEnvironment::YacasArgStack& _this_stack = aEnvironment.iStack; 
 #define VmFunctionEnd()        }
 
 #define VmJumpIfTrue(_label)   if (ISTRUE (STACK(STACKTOP()-1))) goto _label
@@ -404,18 +404,28 @@ fileBuildString:=
 #define VmJump(_label)         goto _label
 #define VmLabel(_label)          _label:
 
-#define VmPushNull()            _this_stack.PushArgOnStack(NULL)
+#define VmPushNulls(_nr)            _this_stack.PushNulls(_nr)
 #define VmPush(_index)          PUSH(_index.Get())
 #define VmPushConstant(_constnt) PUSH(_constnt)
 
-#define VmInitRegister(_index,_constant) REGISTER(_index).Set(_constant)
-#define VmPopRegister(_index) (_index).Set(STACK(STACKTOP()-1).Get())
-
+#define VmInitRegister(_index,_constant) (_index).Set(_constant)
+#define VmSetRegister(_index) (_index).Set(STACK(STACKTOP()-1).Get())
 
 #define VmPop(_i)               _this_stack.PopTo(_this_stack.GetStackTop() - _i)
 #define VmCall(fname,nargs)     fname(aEnvironment,STACKTOP()-(nargs+1) )
-#define VmSetResult()           RESULT.Set(STACK(STACKTOP()-1).Get())
 
+
+#define VmConsList(_n)                                                     \\
+   {                                                                       \\
+     LispInt i,stacktop = STACKTOP();                                      \\
+     for (i=0;i<_n;i++)                                                    \\
+     {                                                                     \\
+       STACK(stacktop-2).Set(STACK(stacktop-2).Get()->Copy(LispFalse));    \\
+       STACK(stacktop-2).Get()->Next().Set(STACK(stacktop-1).Get());       \\
+       POP(1);  stacktop--;                                                \\
+     }                                                                     \\
+     STACK(stacktop-1).Set(LispSubList::New(STACK(stacktop-1).Get()));     \\
+   }
 
 
 

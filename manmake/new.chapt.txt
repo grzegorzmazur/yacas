@@ -1486,6 +1486,10 @@ Also constructs using {LocalSymbols} don't yet work, although
 this should be fixed soon. {LocalSymbols} is <i>the</i> mechanism
 used in {Yacas} to limit access to resources.
 
+Global variables currently do not work yet (one can not use
+a global variable in a compiled script yet, it returns itself
+unevaluated).
+
 Also, groups of transformation rules can currently not be 
 converted to compiled code. This will only be a problem in 
 cases where the transformation rules dominate performance.
@@ -1500,6 +1504,15 @@ arguments in the kernel are supported, and some macros and
 functions or macros with variable number of arguments.
 
 This will be extended over time.
+
+There is specific code in the compiler that can handle compilation
+of specific transformation rules (in order to make it easier for
+the people writing the code that gets compiled). One example is
+an expression {- n} where {n} is a number. Officially, this would
+have to go through the transformation rules, where one rule would
+determine that this can be replaced with the evaluation of 
+{MathNegate(n)}. The compiler will make this transformation.
+
 
 		Bootstrapping scripts as plugins into {Yacas}
 
@@ -1532,5 +1545,260 @@ The steps involved in making a script that can get compiled are:
 *	1. Define the script in the {base.rep/} directory. It is important that the file does not have an associated {def} file, or has an empty one.
 *	1. Add code in {src/Makefile.am} to compile the plugin. See the {libmath} as an example template that gets compiled from {base.rep/math.ys}. The steps involved are to first convert from script to {C++}, and then from the generated {C++} file to a binary plugin.
 *	1. Add code to {yacasinit.ys} to load the plugin or alternatively the script file. See support for {libmath} as an example.
+
+
+			Internal workings of the compiler
+
+The compiler targets an instruction set described below, writing out
+the routines one by one in terms of this instruction set. The functions
+have the same interface as the core kernel routines. The compiled
+functions use the same stack in the same way. The code in a routine
+pushes arguments on the stack and then calls other routines, or
+it can jump (conditionally or unconditionally). In addition there
+is the option of registering as many "registers" for the routine
+to use as is necessary. This section describes the instruction set
+and the calling convention used.
+
+		The Yacas calling convention
+
+The environment passed in to a routine has a stack. The 
+routine also gets passed in a stack position, {sp}.
+{sp} points to the slot on the stack that will receive
+the result to be returned by the routine. For interpreted
+routines this return slot {stack[sp]} is initialized
+with the expression being evaluated, so that if an error occurs
+a useful error can be generated (most importantly, this expression
+has the function name of the function that is executing).
+For compiled functions this slot is initialized to NULL, so that
+the error handling code knows it is failing in compiled code.
+
+For a function that accepts {n} arguments the following 
+{n} slots on the stack contain the values of the arguments
+(which have already been evaluated). Thus for a function that
+accepts 2 arguments, {stack[sp]} is the slot for the return 
+value, and {stack[sp+1]} and {stack[sp+2]} contain the
+two arguments to the function.
+
+The routine that called this function is responsible for 
+popping the arguments off of the stack. This model fits
+nicely with the evaluation order. Before a function gets
+evaluated (applied to its arguments), the arguments get
+evaluated first. Evaluating each argument leaves a new
+result on the stack. Then the function is applied to this
+set of arguments.
+
+The called routine can infer the number of arguments on the
+stack because the stack also knows its size, {stack.size}.
+
+The result slot is referred to with {RESULT}, and the arguments
+are referred to through {ARGUMENT(i)} where i is a value between
+{1} and the number of arguments {n}.
+
+		Registers
+
+In essence, the stack used by a routine starts at {stack[sp]}.
+The expression {ARGUMENT(i)} is used to access {stack[sp+i]}.
+{ARGUMENT(0)} has a special definition, it being the slot for
+the return value of the function. It is also defined as {RESULT}.
+{ARGUMENT(i)} for {i} from 1 to {n} accesses the {n} arguments.
+In addition the function can start off by adding {m} extra 
+reserve slots on the stack, which can be used as slots for
+storage of additional information. We will call these "registers".
+
+If {m} registers are needed, they can then be referred to through 
+{ARGUMENT(n+i)} where {n} is the number of arguments, and {i} has 
+a value between {1} and {m}.
+
+Currently a separate register is created for each
+local variable declared through {Local(...)}. This is done
+at the beginning of the execution of the routine. The necessary
+amount of slots is pushed onto the stack for use as a register.
+At the end the function needs to pop them again, because the caller
+does not know about the registers the function uses.
+
+The stack starting at {stack[sp+n+m+1]} is used to pass arguments
+to other functions called from within this function.
+
+
+		The compiler instruction set
+
+A function declaration starts with 
+
+	VmFunction(name)
+
+where {name} represents the calling name. 
+
+At the end, a function is closed through
+
+	VmFunctionEnd()
+
+Objects can be pushed onto a stack through 
+
+	VmPushNulls(nr)
+	VmPush(register)
+	VmPushConstant(constant)
+
+When pushing an object onto the stack, it is stored in the
+slot {stack[stack.size]}, and {stack.size} is incremented 
+by one afterwards. Values that can be pushed on the stack are:
+
+*	1. one or more {NULL}, an empty slot that can receive the result of some evaluation, or act as a register
+*	1. A register {ARGUMENT(i)} (or {RESULT})
+*	1. A constant. Constants are objects that are pre-stored in the environment, when the compiled code is loaded. This saves time in constructing the objects.
+
+Objects can be popped from the stack through
+
+	VmPop(i)
+
+When this instruction is invoked, {i} arguments are removed from the
+stack.
+
+Registers can be initialized through
+
+
+	VmInitRegister(register,constant)
+
+Where {register} can have the form {ARGUMENT(i)} or {RESULT}. This is 
+usually called at the place where the local variable got
+declared (through the {Local(...)} macro). Variables that
+have no value evaluate to themselves. This can be simulated by
+setting the variable to a constant.
+
+After some evaluation has taken place, {stack[stack.size-1]}
+usually contains the result of the calculation. This result can
+be stored in a register through
+
+	VmSetRegister(register)
+
+where again {register} usually has the form {ARGUMENT(i)}.
+This operation does not pop the value off the stack, it just
+copies it to the register. {register} could in principle also
+be {RESULT}.
+
+At the end of a function for instance the result of the last
+calculation is usually stored in the result slot on the stack
+through a call {VmSetRegister(RESULT)}.
+
+In principle all sorts of optimizations would be possible by
+smart re-use of the slots {RESULT} and {ARGUMENT(i)} on the stack
+at places where they are not needed. The values stored in the 
+arguments slot could be replaced with other values, and combined
+with a jump statement that jumps to the beginning of the routine.
+Calculating a factorial could be implemented for instance
+without needing extra registers. The {RESULT} slot could keep
+the current result, while {ARGUMENT(1)} gets replaced with 
+{ARGUMENT(1)-1} and the routine terminates if {ARGUMENT(1)} equals
+one.
+
+Control flow can be controlled through labels and (conditional)
+jumps to these labels. A label is defined through
+
+	VmLabel(label)
+
+where {label} is some unique name. One can jump to that label from
+any other part of the routine through
+
+	VmJump(label)
+
+In addition, one can do a conditional jump with
+
+	VmJumpIfTrue(label)
+	VmJumpIfFalse(label)
+
+These instructions perform a jump if the value stored in 
+{stack[stack.size-1]} is {True} or {False} respectively.
+It doesn't pop the value from the stack.
+
+Calling a function (after its arguments have been put on the
+stack) can be done with
+
+	VmCall(fname,nrArgs)
+
+where {fname} is the calling name of the routine and {nrArgs}
+the number of arguments that were pushed.
+
+The instruction set has one instruction to build a list from
+elements currently on the stack. The procedure to use this
+would start by pushing a constant, {List}, onto the stack, and
+then evaluating {n} expressions. The instruction to combine this
+into a list is
+
+	VmConsList(n)
+
+it combines the {n} arguments on the stack, together with the
+initial constant {List} into a list, and stores it in the
+slot where {List} was initially stored. This operation is expensive
+on stack use but it is intended to be used for short lists any way.
+
+		An example
+
+The following code, when compiled 
+
+	Defun("fac",{n})
+	[
+	  If(Equals(n,1),1,MathMultiply(n,fac(MathAdd(n,-1))));
+	];
+
+results in 
+
+
+	VmFunction(fac);
+	  VmPushNulls(1);
+	  VmPush(ARGUMENT(1));
+	  VmPushConstant(_constant0);
+	  VmCall(LispEquals, 2 );
+	  VmPop(2 );
+	  VmJumpIfFalse(C20 );
+	  VmPop(1);
+	  VmPushConstant(_constant0);
+	  VmJump(C21 );
+	VmLabel(C20 );
+	  VmPop(1);
+	  VmPushNulls(1);
+	  VmPush(ARGUMENT(1));
+	  VmPushNulls(2);
+	  VmPush(ARGUMENT(1));
+	  VmPushConstant(_constant1);
+	  VmCall(LispAdd, 2 );
+	  VmPop(2 );
+	  VmCall(Compiled_fac, 1 );
+	  VmPop(1 );
+	  VmCall(LispMultiply, 2 );
+	  VmPop(2 );
+	VmLabel(C21 );
+	  VmSetRegister(RESULT);
+	  VmPop(1 );
+	VmFunctionEnd();
+
+Only the indented lines generate instructions, so this would be
+23 instructions. 
+
+
+		Execution
+
+The compiler currently supports emitting a {C++} file
+with macros defined for each of the instructions described
+above. 
+
+On the other end of the spectrum there is the byte code compiler.
+A conversion to byte code, for execution through
+a virtual machine, could also be performed. Code could then
+be compiled dynamically while {Yacas} is running, platform-independently,
+at a small performance cost. The byte code loader would have to
+handle preparing the constants at load time, and linking of 
+function calls. One extra advantage is the compactness of 
+the generated byte code.
+
+If size is important, a mix of {C++} with a byte code interpreter
+is possible. This leaves linking to the actual {C++} linker.
+One has a {C++} file which can be compiled into a plugin, but which
+defines the function through a byte array with the byte code. This would
+come at a performance cost, since interpreting the byte code would slow
+the system down.
+
+
+
+
+
 
 
