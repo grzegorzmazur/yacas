@@ -46,7 +46,7 @@ right after the first paragraph of "chapter intro". For the printed (PS/PDF) doc
 
 	    Formatting of source text files
 
-*A documentation!source format
+*A documentation!plain text markup
 Formatting of source text files uses TAB symbols; if your editor does not support them and converts them to spaces, you should convert the results back to contain real TAB symbols using the standard Unix {unexpand} utility or a custom perl script.
 
 You may want to examine the source of this file ({manualmaker/} {in/}
@@ -132,7 +132,7 @@ to implement a real parser.
 or
 	<*click here|somewebpage.html*>
 
-*A documentation!mathematics
+*A documentation!equations
 *	Mathematical expressions should be typed in Yacas syntax (not in $TeX$
 notation) and surrounded by dollar signs. Both delimiting dollar signs
 <i>must</i> be within one line of text. For example: {$}
@@ -199,7 +199,7 @@ will insert the string `
 
 	    Formatting text for the reference manual
 
-*A documentation!reference manual format
+*A documentation!reference manual markup
 The formatting explained in the previous section is enough to create most of the user guide and tutorial documentation. The script {txt2yacasdoc.pl} also implements some additional markup features to help create the reference manual.
 
 A typical reference manual subsection documenting a certain function may look like this in plain text:
@@ -305,6 +305,11 @@ This effect can be achieved with the {!} topic separator:
 	*A gnus!wild
 This is a special feature of {makeindex}.
 
+Currently, it is possible to include a command or an equation into an index entry, for example,
+	*A {InterestingCommand}
+	*A calculation of $Sqrt(x)$
+But this may sometimes conflict with the topic separator.
+
 	    Summary of mark-up labels
 
 *A documentation!summary of markup
@@ -345,7 +350,7 @@ Special labels without arguments that generate headings for the reference manual
 
 	    Debugging the manual
 
-*A documentation!debugging
+*A documentation!markup debugging
 Sometimes the manual compilation {make} or {make texdocs} will break after you edit the plaintext manual sources. This can happen for one of these reasons:
 *	1. A math syntax error. You have used a mathematical formula that does not evaluate to a Yacas expression. Unbalanced parentheses, invalid infix operators such as {>-}, or forgotten punctuation inside the formula such as {x+1:} are the most frequent culprits. This will break both HTML and $TeX$ manual formats.
 *	2. The HTML format compiles but the $TeX$ does not ({latex} never finishes, i.e. it shows an error message which you do not see because it is redirected to {/dev/null} and waits for your input). This means that the generated $TeX$ code is incorrect. You probably forgot to balance braces {{}} or something more subtle happened.
@@ -353,7 +358,7 @@ Sometimes the manual compilation {make} or {make texdocs} will break after you e
 unintentionally split by reformatting paragraphs in a text editor. This will sometimes not break the compilation but will always give undesired results.
 
 In case of a math syntax error, the documentation exporter cannot print the paragraph where the error occurred, but it usually prints the preceding paragraph. Currently, the easiest way to locate the error is to generate the {.tex} output and look at it, e.g.:
-	{make ref.book.tex; less ref.book.tex}
+	make ref.book.tex; less ref.book.tex
 The last line in the {.tex} file must be {\end{document}}. If it is not, then the last portion of the text you see in the {.tex} file is the text directly before the paragraph where the error occurred. Most probably, there is a malformatted math formula in the next paragraph of your plaintext source.
 
 If the last line is  {\end{document}} but {latex} does not finish, you will have to run {latex} by hand, e.g.
@@ -420,7 +425,7 @@ Not all features of Yacas documentation are compatible with $TeX$ typesetting. T
 
 For example, the symbols {%}, {{ }}, {< >}, {#}, {\}, {_} and {&} are special to $TeX$. They should not normally be used in plain text; it is okay to use them in "typerwriter" text (within braces {{}}) or code samples -- but <i>not</i> in section or chapter heads, because it makes it difficult to export to $TeX$ correctly. $TeX$ commands may be entered but will not be correctly rendered in HTML online documentation.
 
-*A documentation!hanging text
+*A documentation!lines too wide
 Sometimes fixed-font text will hang over the right edge of the printed
 page. A workaround is to break the fixed-font text into shorter
 fragments or to rephrase the text.

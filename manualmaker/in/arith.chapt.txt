@@ -265,7 +265,8 @@ behaviour, in which expressions are kept in symbolic form (eg. {Sqrt(2)} instead
 Application of the {N} operator will make Yacas
 calculate floating point representations of functions whenever
 possible. In addition, the variable {Pi} is bound to
-the value of $Pi$ up to the required precision.
+the value of $Pi$ calculated at the current precision.
+(This value is a "cached constant", so it is not recalculated each time {N} is used, unless the precision is increased.)
 
 *E.G.
 
@@ -282,7 +283,7 @@ the value of $Pi$ up to the required precision.
 	In> N(Pi,20)
 	Out> 3.14159265358979323846;
 
-*SEE Precision, GetPrecision, Pi
+*SEE Precision, GetPrecision, Pi, CachedConstant
 
 *CMD Rationalize --- convert floating point numbers to fractions
 *STD
