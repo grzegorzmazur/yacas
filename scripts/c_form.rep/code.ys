@@ -6,6 +6,7 @@
 	0.1	CForm() derived from TeXForm() v0.4. Have basic functionality. Do not allow list manipulation, unevaluated derivatives, set operations, limits, integrals, Infinity, explicit matrices. Complex numbers and expressions are handled just like real ones. Indexed symbols are assumed to be arrays and handled literally. No declarations or prototypes are supplied. Function definitions are not handled. Sum() is left as is (can be defined as a C function).
 	0.2 Fix for extra parens in Sin() and other functions; fixes for Exp(), Abs() and inverse trig functions
 	0.3 Fix for indexed expressions: support a[2][3][4]
+	0.3.1 Fix for CForm(integer): add a decimal point
 */
 
 /* To do:
@@ -31,7 +32,8 @@ TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equa
 100 # CForm(_x) <-- CForm(x, TeXFormMaxPrec);
 
 /* Replace numbers and variables -- never bracketed except explicitly */
-110 # CForm(x_IsNumber, _p) <-- String(x);
+110 # CForm(x_IsInteger, _p) <-- ConcatStrings(String(x), ".");
+112 # CForm(x_IsNumber, _p) <-- String(x);
 /* Variables are left as is */
 200 # CForm(x_IsAtom, _p) <-- String(x);
 
