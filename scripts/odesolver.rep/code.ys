@@ -102,36 +102,75 @@ OdeTermFail() <-- OdeTerm(Error,FillList(Error,10));
  */
 OdeSolveLinearHomogeneousConstantCoefficients(_e) <--
 [
-  Local(roots,consts);
+  Local(roots,consts,auxeqn);
 
   /* Try solution Exp(aaa*x), and divide by Exp(aaa*x), which
    * should yield a polynomial in aaa.
    */
   e:=OdeSubstitute(e,{{n},aaa^n*Exp(aaa*x)});
   e:=Subst(Exp(aaa*x),1)e;
-  e:=Subst(aaa,x)e;
+  auxeqn:=Simplify(Subst(aaa,x)e);
+  e:=auxeqn;
+  If(Verbose, Echo("OdeSolve: Auxilliary Eqn ",auxeqn) );
+
   
   /* Solve the resulting polynomial */
   e := Apply("RootsWithMultiples",{e});
   e := RemoveDuplicates(e);
-  roots:=Transpose(e);
 
   /* Generate dummy constants */
-  consts:= MapSingle(Hold({{nn},Add(OdeConstantList(nn)*(x^(0 .. (nn-1))))}),roots[2]);
-  roots:=roots[1];
+  if( Length(e) > 0 )[
+    roots:=Transpose(e);
+    consts:= MapSingle(Hold({{nn},Add(OdeConstantList(nn)*(x^(0 .. (nn-1))))}),roots[2]);
+    roots:=roots[1];
 
-  /* Return results */
-  //Sum(consts * Exp(roots*x));
-  Add( consts * Exp(roots*x) );
+    /* Return results */
+    //Sum(consts * Exp(roots*x));
+    Add( consts * Exp(roots*x) );
+  ] else if ( Degree(auxeqn,x) = 2 ) [
+    // we can solve second order equations without RootsWithMultiples
+    Local(a,b,c,roots);
+    roots:=ZeroVector(2);
+
+    // this should probably be incorporated into RootsWithMultiples
+    {c,b,a} := Coef(auxeqn,x,0 .. 2);
+
+    // I would like to RadSimp here, but yacas can't
+    // do RadSimp( (-Sqrt(8))/2 ) == Sqrt(2), so there is no point right now
+
+    roots[1] :=  (-b+Sqrt(b^2-4*a*c))/(2*a) ;
+    roots[2] :=  (-b-Sqrt(b^2-4*a*c))/(2*a) ;
+
+    If(Verbose,Echo("OdeSolve: Roots of quadratic:",roots) );
+
+    // assuming real coefficients, the roots must come in a complex
+    // conjugate pair, so we don't have to check both
+    // also, we don't need to check to repeated root case, because
+    // RootsWithMultiples (hopefully) catches those
+
+    if( IsNumber(N(roots[1])) )[
+	If(Verbose,Echo("OdeSolve: Real roots"));
+	Add(OdeConstantList(2)*{Exp(roots[1]*x),Exp(roots[2]*x)});
+    ] else [
+      If(Verbose,Echo("OdeSolve: Complex conjugate pair roots"));
+      Local(alpha,beta); 
+      alpha:=Re(roots[1]);
+      beta:=Im(roots[1]);
+      Exp(alpha*x)*Add( OdeConstantList(2)*{Sin(beta*x),Cos(beta*x)} );
+    ];
+
+  ] else [
+    Echo("OdeSolve: Could not find roots of auxilliary equation");
+  ];
 ];
 
 OdeSolve(_e) <--
 [
   Local(h);
   e:=OdeNormalForm(e);
-  //Echo("normal form is",e);
+  If(Verbose,Echo("OdeSolve: Normal form is",e));
   h:=OdeFlatTerm(OdeCoefList(e));
-  //Echo("flatterm is",h);
+  If(Verbose,Echo("OdeSolve: Flatterm is",h));
   if (IsFreeOf(Error,h))
   [
     OdeSolveLinear(e,h);
