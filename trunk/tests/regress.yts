@@ -172,17 +172,17 @@ Verify( Infinity + I, Infinity );
 Verify( Infinity - I, Infinity );
 Verify( I - Infinity,-Infinity );
 Verify( I + Infinity, Infinity );
-Verify( I*Infinity,Infinity);
-Verify(-I*Infinity,-Infinity);
-Verify( Infinity*I,Infinity);
-Verify(  Infinity^I,Infinity);
+Verify( I*Infinity,Complex(0,Infinity)); //Changed Ayal: I didn't like the old definition
+Verify(-I*Infinity,Complex(0,-Infinity)); //Changed Ayal: I didn't like the old definition
+Verify( Infinity*I,Complex(0,Infinity)); //Changed Ayal: I didn't like the old definition
+Verify(  Infinity^I,Undefined);//Changed Ayal: I didn't like the old definition (it is undefined, right?)
 Verify( (2*I)^Infinity, Infinity );
 Verify( Infinity/I,Infinity );
 Verify( Sign(Infinity), 1 );
 Verify( Sign(-Infinity), -1 );
 
 Verify( Limit(n, Infinity) (n+1)/(2*n+3)*I, Complex(0,1/2) );
-Verify( Limit(x, Infinity) x*I, Infinity );
+Verify( Limit(x, Infinity) x*I, Complex(0,Infinity) ); //Changed Ayal: I didn't like the old definition
 
 Verify(Integrate(x) z^100, z^100*x );
 Verify(Integrate(x) x^(-1),Ln(x) );
