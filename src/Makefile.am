@@ -78,7 +78,7 @@ $(srcdir)/libmath.cpp: yacas $(top_srcdir)/scripts/base.rep/math.ys gencorefunct
 	(cd ../scripts && make packages.ys corefunctions.ys)
 	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
 	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
-	./yacas --rootdir $(top_srcdir)/scripts/ -pc --init compileinit.txt compile.txt
+	./yacas --rootdir  $(srcdir)/../scripts:../scripts -pc --init compileinit.txt compile.txt
 	mv libmath.cpp $(srcdir)/libmath.cpp
 
 EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp \
