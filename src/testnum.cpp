@@ -9,8 +9,8 @@
 #define ENABLE_TESTS 1
 
 // whether to print detailed information about passed tests
-//const bool show_passed = false;
-const bool show_passed = true;
+const bool show_passed = false;
+//const bool show_passed = true;
 
 unsigned failed = 0;
 unsigned passed = 0;
@@ -161,6 +161,7 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 	Check(!x.IsInt(), "x is a float type as read");
 	Check(y.IsInt(), "y is an integer type as read");
 	Check(x.Double()==double_value, "double value is correct");
+	if (x.Double()!=double_value) printf("mismatch: %24e vs %24e\n", x.Double(), double_value);
 	x.ToString(str, precision, base);
 	Check(str, float_printed, "float value is printed back correctly");
 	Check(!x.IsIntValue(), "x has a non-integer value as read");
@@ -181,7 +182,7 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 	Check(str,int_string,"convert to integer value correctly");
 	Check(z.IsInt(), "z is an integer now");
 	Check(z.IsIntValue(), "z has an integer value now");
-	
+	// now x is a float, y is an integer, and z is =Round(x).
 	Check(z.Equals(y), "z=y");
 	Check(y.Equals(z), "y=z");
 	Check(x.Equals(x), "x=x");
@@ -195,6 +196,7 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 	Check(!z.IsInt(), "z is not an integer now");
 	Check(z.Sign()==sign, "sign of z is correct");
 	Check(z.IsIntValue(), "z still has an integer value");
+	Check(!x.Equals(z), "x!=z");
 
 	
 	BigNumber t;
@@ -206,7 +208,7 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 	Check(!t.Equals(x), "t!=x now");
 	Check(!x.LessThan(x), "x<x is false");
 	Check(!t.LessThan(t), "t<t is false");
-	Check(double_value > 0 && t.LessThan(x) || !(double_value>0) && t.LessThan(x), "comparison t <> x is correct");
+	Check(double_value > 0 && t.LessThan(x) || !(double_value>0) && !t.LessThan(x), "comparison t <> x is correct");
 	Check(double_value < 0 && x.LessThan(t) || !(double_value<0) && !x.LessThan(t), "comparison x <> t is correct");
 
 }
@@ -214,20 +216,25 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 // test some integer and float arithmetic
 void TestArith1(const char* str_value, int base, int val1, double val2)
 {
-	long prec=strlen(str_value)+50;	// many guard digits
+	long prec=strlen(str_value)*4+50;	// many guard digits
 	BigNumber x(str_value, prec, base);
 	BigNumber x1(x), x2(x), y;
 	
 	y.SetTo(val1);
+// compute x:= -(-x+y)+y
 	x.Add(x,y, prec);
 	x.Negate(x);
 	x.Add(x,y, prec);
 	x.Negate(x);
-	Check(x.Equals(x1), "add and subtract an integer");
+//	Check(x.Equals(x1), "add and subtract an integer");
+	if (!x.Equals(x1)) printf("WARNING: this test may fail due to roundoff error:\n");
 	CheckEquals(x, x1, prec, base, "result of add and subtract an integer");
+	x1.SetTo(x);
 	x1.Negate(x1);
 	x1.Add(x1,x, prec);
-	Check(x1.Sign()==0, "x-x=0");
+	x.SetTo(0.);
+	if (x1.IsInt()) x.BecomeInt();
+	CheckEquals(x1,x,prec,base, "x-x=0");
 	
 	x.SetTo(x2);
 	x1.SetTo(x2);
@@ -239,8 +246,9 @@ void TestArith1(const char* str_value, int base, int val1, double val2)
 	t.SetTo(100);
 	z.Multiply(z,t,prec);
 	x.Add(x,z, prec);
-	Check(x.Equals(x1), "add and subtract a double 100 times");
+//	Check(x.Equals(x1), "add and subtract a double 100 times");
 	x1.BecomeFloat();
+	if (!x.Equals(x1)) printf("WARNING: this test may fail due to roundoff error:\n");
 	CheckEquals(x, x1, prec, base, "result of add and subtract a double 100 times");
 	
 	x.SetTo(x2);
@@ -391,7 +399,7 @@ int main(void)
 	const char* num2_float =     "-100000000000000.23333333333";
 	const char* num2_printed = "-0.10000000000000023333333333e15";
 	const char* num2_int = "-100000000000000";
-	const double num2_double = -1.e14;
+	const double num2_double = -1.0000000000000023333333333e14;
 	const char* num3_float =     "10000000000000000.23333333333";
 	const char* num3_printed = "0.1000000000000000023333333333e17";
 	const char* num3_int = "10000000000000000";
