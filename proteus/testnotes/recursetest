@@ -1,0 +1,20 @@
+:n:Clear(x);
+:n:PrettyPrinter("PrettyForm");
+:iel:True
+Given x^2 - 4 = 0, what is x?
+
+:
+:h:x:=
+:iel:True
+Check answer: press enter on this field.
+:
+x^2-4;
+:iel:True
+The above answer should be zero.
+
+If you found the right answer, please press submit. This will
+bring you back to the index if you had the anwer right.
+
+:
+:il:if(x^2-4 = 0)Notepad(FindFile("index")) else Verify(x^2-4,0);
+Submit

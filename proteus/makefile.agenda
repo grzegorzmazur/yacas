@@ -1,0 +1,33 @@
+
+.SUFFIXES: .cpp
+
+YACAS_DIR = ../src
+
+CXX		=mipsel-linux-g++
+INCS = -I$(YACAS_DIR) -I$(YACAS_DIR)/plat/linux32 -Iyaglview
+CXXFLAGS	= -msoft-float -mips2 -s -O2 -Wall -Wno-return-type -I/usr/include  -I/usr/X11R6/include
+
+LDLIBS		=  -L/usr/mipsel-linux/lib/X11R6/lib -lX11 -lXext  -lm -ldl
+GLDLIBS		=  -L/usr/mipsel-linux/lib/X11R6/lib  -lGLU -lGL -lX11 -lXext  -lm
+FLTKLIBS        = -lfltk 
+
+LIBS = $(LDLIBS) $(FLTKLIBS)
+GLIBS = $(GLDLIBS) $(FLTKLIBS)
+
+THISFILE = makefile.agenda
+
+all-inclusive: conf
+	make clean      -f $(THISFILE)
+	make calculator -f $(THISFILE)
+	make clean      -f $(THISFILE)
+	make worksheet  -f $(THISFILE)
+
+calculator:
+	make proteus EXENAME=proteuscalculator DEFINES=-DCALCULATOR -f $(THISFILE)
+
+worksheet:
+	make proteus EXENAME=proteusworksheet DEFINES=-DWORKSHEET -f $(THISFILE)
+
+include makeinclude
+
+
