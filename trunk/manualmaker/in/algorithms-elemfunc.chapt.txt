@@ -18,11 +18,13 @@ $x^(n-q) = a*x^(-q)$ with $q=(n-1)/2$. This iteration has a cubic convergence ra
 $$ x' = x* ( (n-1)/(n+1)*(2*n-1)/(2*n+1) *x^(2*n) + 2*(2*n-1)/(n+1)*x^n*a + a^2) / (x^(2*n)+2*(2*n-1)/(n+1)*x^n*a+(n-1)/(n+1)*(2*n-1)/(2*n+1)*a^2) $$,
 require more arithmetic operations per step and are in fact less efficient at high precision.
 
-Halley's method can be generalized to any function $f(x)$. A cubically convergent iteration is obtained if we replace the equation $f(x)=0$ by an equivalent equation
+Halley's method can be generalized to any function $f(x)$. A cubically convergent iteration is always obtained if we replace the equation $f(x)=0$ by an equivalent equation
 $$ g(x):=f(x)/Sqrt(Abs(D(x)f(x))) = 0 $$.
-Here the function $g(x)$ was chosen so that its second derivative vanishes ($D(x,2)g(x)=0$) at the root of the equation $f(x)=0$, independently of where this root is. The Newton iteration for the equation $g(x)=0$ can be written as
+Here the function $g(x)$ was chosen so that its second derivative vanishes ($D(x,2)g(x)=0$) at the root of the equation $f(x)=0$, independently of where this root is.
+(There is no unique choice of the function $g(x)$ and sometimes another choice is needed to make the iteration more easily computable.)
+The Newton iteration for the equation $g(x)=0$ can be written as
 $$ x'=x-(2*f(x)*D(x)f(x))/(2*(D(x)f(x))^2-f(x)*Deriv(x,2)f(x)) $$.
-It is sometimes simpler to apply Newton's iteration directly to the modified equation $g(x)=0$.
+For example, the equation $Exp(x)=a$ is transformed into $g(x) := Exp(x/2)-a*Exp(-x/2)=0$.
 
 Halley's iteration, despite its faster convergence rate, may be more cumbersome to evaluate than Newton's iteration and so it may not provide a more efficient numerical method for some functions. Only in some special cases is Halley's iteration just as simple to compute as Newton's iteration. But Halley's method has another advantage: it is generally less sensitive to the choice of the initial point $x[0]$. An extreme example of sensitivity to the initial point is the equation $x^(-2)= 12$ for which Newton's iteration $x'=3*x/2-6*x^3$ converges to the root only from initial points $0<x[0] <0.5$ and wildly diverges otherwise, while Halley's iteration converges to the root from any $x[0]>0$.
 
@@ -33,6 +35,19 @@ converges only for $Exp(a-2)<x<Exp(a+2)$.
 
 
 When it converges, Halley's iteration can still converge very slowly for certain functions $f(x)$, for example, for $f(x)=x^n-a$ if $n^n>a$. For such functions that have very large and rapidly changing derivatives, no general method can converge faster than linearly. In other words, a simple bisection will generally do just as well as any sophisticated iteration, until the root is approximated relatively precisely. Halley's iteration combined with bisection seems to be a good choice for such problems.
+
+For practical evaluation, iterations must be supplemented with error control.
+For example, if $x0$ and $x1$ are two consecutive approximations that are
+already very close, we can quickly compute the achieved (relative) precision by
+finding the number of leading zeros in the number $Abs(x0-x1)/Max(x0,x1)$. This
+is easily done using the integer logarithm. After performing a small number of
+initial iterations at low precision, we can make sure that $x1$ has at least a
+certain number of correct digits of the root. Then we know which precision to
+use for the next iteration (e.g. triple precision if we are using a cubically
+convergent scheme). It is important to perform each iteration at the precision
+of the root which it will give and not at a higher precision; this saves a
+great deal of time since multiple-precision calculations quickly become very
+slow at high precision.
 
 		Fast evaluation of Taylor series
 
@@ -77,6 +92,7 @@ The definition of the AGM sequence for complex values requires to take a square 
 Unlike the Newton iteration, the AGM sequence does not correct errors and all elements need to be computed with full precision. Actually, slightly more precision is needed to compensate for accumulated roundoff error. Brent (paper {rpb028}, see below) says that $O(Ln(Ln(n)))$ bits of accuracy are lost to roundoff error if there are total of $n$ iterations.
 
 The AGM sequence can be used for fast computations of $Pi$, $Ln(x)$ and $ArcTan(x)$.
+However, currently the limitations of Yacas internal math make these methods less efficient than simpler methods based on Taylor series and Newton iterations.
 
 		Elementary functions
 
@@ -97,12 +113,16 @@ Real powers (as opposed to integer powers and roots) are computed by using the e
 
 	    Logarithm
 
+There are two functions for the logarithm: one for the integer argument and one for the real argument.
 
-The "integer logarithm", defined as the integer part of $Ln(x)/Ln(b)$, is computed using a special routine {IntLog(x, b)} with purely integer math. This is much faster than evaluating the full logarithm when both arguments are integers and only the integer part of the logarithm is needed. The algorithm consists of (integer) dividing $x$ by $b$ repeatedly until $x$ becomes 0 and counting the number of divisions. A speed-up for large $x$ is achieved by first comparing $x$ with $b$, then with $b^2$, $b^4$, etc., until the factor $b^(2^n)$ is larger than $x$. At this point, $x$ is divided by that power of $b$ and the remaining value is iteratively compared with and divided by successively smaller powers of $b$.
+The "integer logarithm", defined as the integer part of $Ln(x)/Ln(b)$, where $x$ and $b$ are integers, is computed using a special routine {IntLog(x, b)} with purely integer math.
+This is much faster than evaluating the full logarithm when both arguments are integers and only the integer part of the logarithm is needed. The algorithm consists of (integer) dividing $x$ by $b$ repeatedly until $x$ becomes 0 and counting the number of divisions. A speed-up for large $x$ is achieved by first comparing $x$ with $b$, then with $b^2$, $b^4$, etc., until the factor $b^(2^n)$ is larger than $x$. At this point, $x$ is divided by that power of $b$ and the remaining value is iteratively compared with and divided by successively smaller powers of $b$.
 
 The logarithm function $Ln(x)$ for general (complex) $x$ can be computed using its Taylor series,
 $$Ln(1+x) = x - x/2 + x^2/3 -...$$
 This series converges only for $Abs(x)<1$, so for all other values of $x$ one first needs to bring the argument into this range by taking several square roots and then using the identity $Ln(x) = 2^k*Ln(x^(2^(-k)))$. This is implemented in the Yacas core (for real $x$).
+
+Currently the routine {LnNum} uses the Halley method for the equation $Exp(x)=a$ to find $x=Ln(a)$. This is currently much faster than other methods.
 
 A much faster algorithm based on the AGM sequence was given by Salamin (see R. P. Brent: <i>Multiple-precision zero-finding methods and the complexity of elementary function evaluation</i>, in <i>Analytic Computational Complexity</i>, ed. by J. F. Traub, Academic Press, 1975, p. 151; also available online from Oxford Computing Laboratory, as the paper {rpb028}).
 The formula is based on an asymptotic relation,
