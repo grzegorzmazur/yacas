@@ -1,4 +1,56 @@
 
+ LocalSymbols(theConsts,theFreeVars,msres,msvars,nrconsts,nrvars)
+   [
+     Expect(_expr,_freeVars) <--
+     [
+       MM(x);
+       Local(terms,realvars,consts);
+       realvars:=MultiExpressionList(expr);
+//Echo("realvars is ",realvars);
+
+//       freeVars := Concat(freeVars,Select("IsExpect",realvars));
+
+       consts:=Difference(realvars,freeVars);
+//Echo("realvars is ",realvars);
+//Echo("consts is ",consts);
+//Echo("freevars is ",freeVars);
+
+       msvars:=Concat(consts,freeVars);
+       theConsts:=consts;  theFreeVars:=freeVars;
+       nrconsts:=Length(consts); nrvars:=Length(msvars);
+       Check(Length(Intersection(msvars,realvars))=Length(realvars),"Not all variables enumerated!");
+       terms:=MM(expr,msvars)[2];
+
+Echo(expr,  " == ",NormalForm(MM(expr,msvars)));
+       msres:=0;
+       SparseTreeMap("ExpectOp",Length(msvars),terms);
+       msres;
+     ];
+
+10 # IsExpect(Expect(_a,_b)) <-- True;
+20 # IsExpect(_rest) <-- False;
+
+     ExpectOp(deg,coef) :=
+     [
+       Local(constdeg,freedeg,free,const);
+       constdeg:=deg[1 .. nrconsts];
+       const:=1;
+       If(nrconsts>0,const:=Factorize(theConsts^constdeg));
+       freedeg:=deg[(nrconsts+1) .. nrvars];
+       free:=Factorize(theFreeVars^freedeg);
+
+//Echo(coef," * ",const," * Rexpect ",free);
+
+       msres:=msres+coef*const*ReExpect(free);
+     ];
+     10 # ReExpect(n_IsConstant) <-- n;
+     20 # ReExpect(_rest) <-- UnList({Expect,rest,theFreeVars});
+   ];
+
+
+
+
+EndOfFile;
 
 LocalSymbols(n)
 [

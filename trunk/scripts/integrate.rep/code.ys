@@ -161,6 +161,8 @@ UnFence("IntegrateMultiplicative",4);
      `Hold(AntiDeriv(@var,((@exy)/(@exx))));
 
 
+30 # AntiDeriv(_var,Deriv(_var)(_expr)) <-- expr;
+
 ////////////////////////////////////////////////
 //
 // No simple form, try something else
