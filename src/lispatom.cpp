@@ -8,13 +8,13 @@
 
 #include <stdio.h> //DEBUG
 
-LispObject* LispAtom::New(LispStringPtr aString)
+LispObject* LispAtom::New(LispEnvironment& aEnvironment, LispStringPtr aString)
 {
   LispObject* self;
 #ifndef NO_USE_BIGFLOAT
   if (IsNumber(aString->String(),LispTrue))
   {
-    self = NEW LispNumber(aString);
+    self = NEW LispNumber(aEnvironment.HashTable(), aString, aEnvironment.Precision());
   }
   else
 #endif
@@ -84,6 +84,12 @@ LispPtr* LispSubList::SubList()
 {
     return &iSubList;
 }
+
+LispStringPtr LispSubList::String()
+{
+    return NULL;
+}
+
 
 /*TODO remove?
 EvalFuncBase* LispSubList::EvalFunc()
@@ -158,6 +164,10 @@ LispGenericClass* LispGenericClass::New(GenericClass* aClass)
     Check(self!=NULL,KLispErrNotEnoughMemory);
     return self;
 }
+LispStringPtr LispGenericClass::String()
+{
+    return NULL;
+}
 
 LispGenericClass::LispGenericClass(GenericClass* aClass)
 {
@@ -217,16 +227,15 @@ LispNumber::LispNumber(LispHashTable& aHashTable, BigNumber* aNumber)
   iString = NULL;
   iNumber =aNumber;
 }
-LispNumber::LispNumber(LispStringPtr aString)
-  : iHashTable(NULL)
+LispNumber::LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt aPrecision)
+  : iHashTable(&aHashTable)
 {
   iString = aString;
   iNumber = NULL;
-  Number(10);
+  Number(aPrecision);
 }
 LispStringPtr LispNumber::String() 
 {
-  if (iString.Ptr() != NULL) return iString.Ptr();
   if (iString.Ptr() == NULL)
   {
     LISPASSERT(iNumber.Ptr() != NULL);
@@ -234,7 +243,6 @@ LispStringPtr LispNumber::String()
     LispString *str = NEW LispString;
     iNumber->ToString(*str,iNumber->GetPrecision());
     LISPASSERT(iHashTable != NULL);
-//    return iHashTable->LookUp(str.String());
     iString = iHashTable->LookUp(str);
 
 #ifdef YACAS_DEBUG
@@ -270,10 +278,19 @@ BigNumber* LispNumber::Number(LispInt aPrecision)
     RefPtr<LispString> str; str = iString.Ptr();
     iNumber = NEW BigNumber(str->String(),aPrecision);
   }
-  else if (iNumber->GetPrecision() < aPrecision)
+  else if (iNumber->GetPrecision() < aPrecision && !iNumber->IsInt())
   {
-    RefPtr<LispString> str; str = iString.Ptr();
-    iNumber = NEW BigNumber(str->String(),aPrecision);
+    iNumber->Precision(aPrecision);
+/*
+    LISPASSERT(iHashTable != NULL);
+    {
+      LispString str;
+      iNumber->ToString(str,aPrecision);
+      BigNumber* newNum = NEW BigNumber(str.String(),aPrecision);
+      iNumber = newNum;
+      iString = NULL;
+    }
+*/
   }
   return iNumber.Ptr();
 }

@@ -158,7 +158,7 @@ void ReturnShortInteger(LispEnvironment& aEnvironment, LispPtr& aResult, LispInt
 {
     char s[100];
     InternalIntToAscii(s,r);
-    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(s)));
+    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(s)));
 }
 
 void SetShortIntegerConstant(LispEnvironment& aEnvironment,
@@ -178,7 +178,7 @@ double GetDoubleFloatArgument(LispArgGetter& g,LispInt aEvaluate)
 void ReturnDoubleFloat(LispEnvironment& aEnvironment,
                               LispPtr& aResult, double r)
 {
-    aResult.Set(LispAtom::New(Double(r, aEnvironment.HashTable())));
+    aResult.Set(LispAtom::New(aEnvironment,Double(r, aEnvironment.HashTable())));
 }
 
 void ReturnVoidStruct(LispEnvironment& aEnvironment,

@@ -60,9 +60,9 @@ LispBoolean SubstBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
     return LispFalse;
 }
 
-LocalSymbolBehaviour::LocalSymbolBehaviour(LispStringPtr* aOriginalNames,
+LocalSymbolBehaviour::LocalSymbolBehaviour(LispEnvironment& aEnvironment,LispStringPtr* aOriginalNames,
                      LispStringPtr* aNewNames, LispInt aNrNames)
-: iOriginalNames(aOriginalNames),iNewNames(aNewNames), iNrNames(aNrNames)
+: iEnvironment(aEnvironment),iOriginalNames(aOriginalNames),iNewNames(aNewNames), iNrNames(aNrNames)
 {
 }
 
@@ -77,7 +77,7 @@ LispBoolean LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
     {
         if (name == iOriginalNames[i])
         {
-            aResult.Set(LispAtom::New(iNewNames[i]));
+            aResult.Set(LispAtom::New(iEnvironment,iNewNames[i]));
 #ifdef YACAS_DEBUG
             aResult.Get()->SetFileAndLine(aElement.Get()->iFileName,aElement.Get()->iLine);
 #endif

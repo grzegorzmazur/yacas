@@ -105,7 +105,7 @@ void LispArithmetic1(LispEnvironment& aEnvironment, LispPtr& aResult,
     str1 = result1.Get()->String();
     CHK_ARG(str1 != NULL,1);
     CHK_ARG(IsNumber(str1->String(),LispTrue),1);
-    aResult.Set(LispAtom::New(func(str1->String(),
+    aResult.Set(LispAtom::New(aEnvironment,func(str1->String(),
                                    aEnvironment.HashTable(),
                                    aEnvironment.Precision())));
 }
@@ -137,7 +137,7 @@ void LispArithmetic2(LispEnvironment& aEnvironment, LispPtr& aResult,
         CHK_ARG(IsNumber(str2->String(),LispTrue) ,2);
     }
 
-    aResult.Set(LispAtom::New(func(str1->String(),str2->String(),
+    aResult.Set(LispAtom::New(aEnvironment,func(str1->String(),str2->String(),
                                    aEnvironment.HashTable(),
                                    aEnvironment.Precision())));
 }
@@ -587,7 +587,7 @@ void LispPatchString(LispEnvironment& aEnvironment, LispPtr& aResult,
 
     PatchLoad(&oper[0], newOutput, aEnvironment);
 
-    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUpStringify(str.String())));
+    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(str.String())));
 }
 
 void LispDllLoad(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -934,7 +934,7 @@ void LispCurrentFile(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
     // Check that we have zero arguments.
     TESTARGS(1);
-    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUpStringify(aEnvironment.iInputStatus.FileName())));
+    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(aEnvironment.iInputStatus.FileName())));
 }
 
 void LispCurrentLine(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -944,7 +944,7 @@ void LispCurrentLine(LispEnvironment& aEnvironment, LispPtr& aResult,
     TESTARGS(1);
     LispChar s[30];
     InternalIntToAscii(s, aEnvironment.iInputStatus.LineNumber());
-    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(s)));
+    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(s)));
 }
 
 void LispBackQuote(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -962,7 +962,7 @@ void LispBackQuote(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispVersion(LispEnvironment& aEnvironment, LispPtr& aResult,
                  LispPtr& aArguments)
 {
-    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp("\"" VERSION "\"")));
+    aResult.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp("\"" VERSION "\"")));
 }
 
 

@@ -312,7 +312,7 @@ void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput)
     LispTokenizer tok;
     InfixParser parser(tok,
                        *aEnvironment.CurrentInput(),
-                       aEnvironment.HashTable(),
+                       aEnvironment,
                        aEnvironment.PreFix(),
                        aEnvironment.InFix(),
                        aEnvironment.PostFix(),
@@ -322,7 +322,7 @@ void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput)
     {
         LispPtr readIn;
         // Read expression
-        parser.Parse(readIn,aEnvironment);
+        parser.Parse(readIn);
 
         Check(readIn.Get() != NULL, KLispErrReadingFile);
         // Check for end of file
@@ -387,7 +387,7 @@ void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
     Check(InternalIsString(aOperator),KLispErrNotString);
 
     LispObject *head =
-        LispAtom::New(SymbolName(aEnvironment, aOperator->String()));
+        LispAtom::New(aEnvironment,SymbolName(aEnvironment, aOperator->String()));
     head->Next().Set(aArgs.Get());
     LispPtr body;
     body.Set(LispSubList::New(head));
@@ -471,12 +471,12 @@ void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispPtr lispexpr;
     LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
     InfixParser parser(tok, input,
-                       aEnvironment.HashTable(),
+                       aEnvironment,
                        aEnvironment.PreFix(),
                        aEnvironment.InFix(),
                        aEnvironment.PostFix(),
                        aEnvironment.Bodied());
-    parser.Parse(lispexpr,aEnvironment);
+    parser.Parse(lispexpr);
 
     InternalEval(aEnvironment, aResult, lispexpr);
 }
@@ -525,12 +525,12 @@ void ParseExpression(LispPtr& aResult,LispCharPtr aString,LispEnvironment& aEnvi
     LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
     InfixParser parser(tok,
                        input,
-                       aEnvironment.HashTable(),
+                       aEnvironment,
                        aEnvironment.PreFix(),
                        aEnvironment.InFix(),
                        aEnvironment.PostFix(),
                        aEnvironment.Bodied());
-    parser.Parse(aResult,aEnvironment);
+    parser.Parse(aResult);
 }
 
 void ReturnUnEvaluated(LispPtr& aResult,LispPtr& aArguments,

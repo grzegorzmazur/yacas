@@ -45,6 +45,38 @@ Function("KnownFailure",{expr})
 ];
 HoldArg("KnownFailure",expr);
 
+
+/*
+Macro("Verify",{aLeft,aRight})
+[
+
+	Local(result);
+	result := @aLeft;	// to save time
+  If (Not(Equals(result,@aRight)),
+    [
+      WriteString("******************");
+      NewLine();
+      ShowLine();
+      NewLine();
+      Write(Hold(@aLeft));
+      NewLine();
+      WriteString(" evaluates to ");
+      NewLine();
+	  Write(result);
+	  WriteString(" which differs from ");
+      NewLine();
+      Write(Hold(@aRight));
+      NewLine();
+      WriteString("******************");
+      NewLine();
+      False;
+    ],
+    True
+  );
+];
+*/
+
+
 Function("Verify",{aLeft,aRight})
 [
 
@@ -55,10 +87,15 @@ Function("Verify",{aLeft,aRight})
       WriteString("******************");
       NewLine();
       ShowLine();
+      NewLine();
       Write(aLeft);
+      NewLine();
       WriteString(" evaluates to ");
+      NewLine();
 	  Write(result);
+      NewLine();
 	  WriteString(" which differs from ");
+      NewLine();
       Write(aRight);
       NewLine();
       WriteString("******************");
@@ -162,6 +199,48 @@ HoldArg("BenchShow",expr);
    answer.
    Use with algebraic expressions only, since we need Simplify() for that to work.
  */
+
+
+
+/*
+Macro ("TestYacas", {expr, ans})
+[
+	Local(diff,exprEval, ansEval);
+  exprEval:= @expr;
+  ansEval:= @ans;
+  
+	diff := Simplify(exprEval - ansEval);
+		If (Simplify(diff)=0, True,
+			[
+			  WriteString("******************");
+			  NewLine();
+			  ShowLine();
+			  Write(Hold(@expr));
+			  WriteString(" evaluates to ");
+			  NewLine();
+			  Write(exprEval);
+			  NewLine();
+			  WriteString(" which differs from ");
+			  NewLine();
+			  Write(ansEval);
+			  NewLine();
+			  WriteString(" by ");
+			  NewLine();
+			  Write(diff);
+			  NewLine();
+			  WriteString("******************");
+			  NewLine();
+			  False;
+			 ]
+			);
+];
+*/
+
+
+
+
+
+
 
 Function ("TestYacas", {expr, ans})
 [

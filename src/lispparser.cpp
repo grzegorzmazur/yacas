@@ -3,23 +3,24 @@
 #include "lispparser.h"
 #include "lispatom.h"
 #include "lisperror.h"
+#include "lispenvironment.h"
 
 LispParser::LispParser(LispTokenizer& aTokenizer, LispInput& aInput,
-           LispHashTable& aHashTable)
-    : iTokenizer(aTokenizer), iInput(aInput),iHashTable(aHashTable),
+           LispEnvironment& aEnvironment)
+    : iTokenizer(aTokenizer), iInput(aInput),iEnvironment(aEnvironment),
     iListed(LispFalse) {}
 
 LispParser::~LispParser() {}
-void LispParser::Parse(LispPtr& aResult, LispEnvironment& aEnvironment)
+void LispParser::Parse(LispPtr& aResult)
 {
     aResult.Set(NULL);
 
     LispStringPtr token;
     // Get token.
-    token = iTokenizer.NextToken(iInput,iHashTable);
+    token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
     if (token->String()[0] == '\0')
     {
-        aResult.Set(LispAtom::New(iHashTable.LookUp("EndOfFile")));
+        aResult.Set(LispAtom::New(iEnvironment,iEnvironment.HashTable().LookUp("EndOfFile")));
         return;
     }
     ParseAtom(aResult,token);
@@ -32,7 +33,7 @@ void LispParser::ParseAtom(LispPtr& aResult, LispStringPtr aToken)
         return;
     // else if token is "(" read in a whole array of objects until ")",
     //   and make a sublist
-    if (aToken == iHashTable.LookUp("("))
+    if (aToken == iEnvironment.HashTable().LookUp("("))
     {
         LispPtr subList;
         ParseList(subList);
@@ -40,7 +41,7 @@ void LispParser::ParseAtom(LispPtr& aResult, LispStringPtr aToken)
         return;
     }
     // else make a simple atom, and return it.
-    aResult.Set(LispAtom::New(aToken));
+    aResult.Set(LispAtom::New(iEnvironment,aToken));
 }
 
 void LispParser::ParseList(LispPtr& aResult)
@@ -50,17 +51,17 @@ void LispParser::ParseList(LispPtr& aResult)
     LispPtr* iter = &aResult;
     if (iListed)
     {
-        aResult.Set(LispAtom::New(iHashTable.LookUp("List")));
+        aResult.Set(LispAtom::New(iEnvironment,iEnvironment.HashTable().LookUp("List")));
         iter  = &(aResult.Get()->Next());
     }
     for (;;)
     {
         //Get token.
-        token = iTokenizer.NextToken(iInput,iHashTable);
+        token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
         // if token is empty string, error!
         Check(token->String()[0],KInvalidToken);
         // if token is ")" return result.
-        if (token == iHashTable.LookUp(")"))
+        if (token == iEnvironment.HashTable().LookUp(")"))
         {
             return;
         }

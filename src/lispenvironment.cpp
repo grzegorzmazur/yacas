@@ -84,8 +84,8 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
     iTrue        ->IncreaseRefCount();
     iFalse       ->IncreaseRefCount();
 
-    iTrueAtom.Set(LispAtom::New(iTrue));
-    iFalseAtom.Set(LispAtom::New(iFalse));
+    iTrueAtom.Set(LispAtom::New(*this,iTrue));
+    iFalseAtom.Set(LispAtom::New(*this,iFalse));
     PushLocalFrame(LispTrue);
     iCTokenizer.SetRemarkReceiver(*this);
 }

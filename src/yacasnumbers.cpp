@@ -63,11 +63,11 @@ void NumberDestroy(void* aNumber)
 LispStringPtr GcdInteger(LispCharPtr int1, LispCharPtr int2,
                          LispHashTable& aHashTable)
 {
-    ANumber i1(int1);
-    ANumber i2(int2);
+    ANumber i1(int1,10);
+    ANumber i2(int2,10);
     Check(i1.iExp == 0, KLispErrNotInteger);
     Check(i2.iExp == 0, KLispErrNotInteger);
-    ANumber res;
+    ANumber res(10);
     BaseGcd(res,i1,i2);
     LispStringPtr result = FloatToString(res, aHashTable);
     return result;
@@ -149,7 +149,7 @@ static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
     ANumber x2(sum.iPrecision);
     Multiply(x2,x,x);
     ANumber one("1",sum.iPrecision);
-    ANumber dummy;
+    ANumber dummy(10);
 
     LispInt requiredDigits = WordDigits(sum.iPrecision, 10)+
         x2.NrItems()-x2.iExp+1;
@@ -331,7 +331,7 @@ static void ExpFloat(ANumber& aResult, ANumber& x)
     aResult.SetTo("1");
     // term <- 1
     ANumber term("1",aResult.iPrecision);  
-    ANumber dummy;
+    ANumber dummy(10);
 
     LispInt requiredDigits = WordDigits(aResult.iPrecision, 10)+
         x.NrItems()-x.iExp+1;
@@ -411,7 +411,7 @@ static void LnFloat(ANumber& aResult, LispCharPtr int1)
     aResult.SetTo("0");
     // term <- 1
     ANumber term("-1",precision);
-    ANumber dummy;
+    ANumber dummy(10);
 
     ANumber one("1",precision);
     // While (term>epsilon)
@@ -491,7 +491,7 @@ LispStringPtr PowerFloat(LispCharPtr int1, LispCharPtr int2,
         if (neg)
         {
             ANumber one("1",aPrecision);
-            ANumber dummy;
+            ANumber dummy(10);
             copy.CopyFrom(result);
             Divide(result,dummy,one,copy);
         }
@@ -614,7 +614,7 @@ LispStringPtr FloorFloat( LispCharPtr int1, LispHashTable& aHashTable,
     {
         ANumber orig(aPrecision);
         orig.CopyFrom(i1);
-        ANumber minone("-1");
+        ANumber minone("-1",10);
         Add(i1,orig,minone);
     }
     return FloatToString(i1, aHashTable,10);
@@ -638,7 +638,7 @@ LispStringPtr CeilFloat( LispCharPtr int1, LispHashTable& aHashTable,
     {
         ANumber orig(aPrecision);
         orig.CopyFrom(i1);
-        ANumber one("1");
+        ANumber one("1",10);
         Add(i1,orig,one);
     }
     return FloatToString(i1, aHashTable,10);
@@ -894,6 +894,19 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
 BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {
   iPrecision = aPrecision;
+
+  const LispCharPtr ptr = aString;
+  while (*ptr && *ptr != '.') ptr++;
+  if (*ptr == '.')
+  {
+    ptr++;
+    const LispCharPtr start = ptr;
+    while (IsDigit(*ptr)) ptr++;
+    LispInt digits = ptr-start;
+    if (digits>aPrecision) 
+      aPrecision = digits;
+  }
+
   iNumber = NEW ANumber(aString,aPrecision,aBase);
 }
 BigNumber::BigNumber(const BigNumber& aOther)
@@ -904,7 +917,7 @@ BigNumber::BigNumber(const BigNumber& aOther)
 BigNumber::BigNumber(LispInt aPrecision)
 {
   iPrecision = aPrecision;
-  iNumber = NEW ANumber();
+  iNumber = NEW ANumber(aPrecision);
 }
 
 BigNumber::~BigNumber()
@@ -918,14 +931,19 @@ void BigNumber::SetTo(const BigNumber& aOther)
 }
 void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase) const
 {
-  ANumberToString(aResult, *iNumber, aBase);
+  ANumber num(aPrecision);
+  num.CopyFrom(*iNumber);
+  num.ChangePrecision(aPrecision);
+  ANumberToString(aResult, num, aBase);
 }
 double BigNumber::Double() const
 {
 // There are platforms that don't have strtod
 #ifdef HAVE_STRTOD
   LispString str;
-  ANumberToString(str, *iNumber, 10);
+  ANumber num(iNumber->iPrecision);
+  num.CopyFrom(*iNumber);
+  ANumberToString(str, num, 10);
   char* endptr;
   return strtod(str.String(),&endptr);
 #else
@@ -941,7 +959,11 @@ const LispCharPtr BigNumber::NumericLibraryName()
 
 void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
-  :: Multiply(*iNumber,*aX.iNumber,*aY.iNumber);
+  ANumber a1(aPrecision);
+  a1.CopyFrom(*aX.iNumber);
+  ANumber a2(aPrecision);
+  a2.CopyFrom(*aY.iNumber);
+  :: Multiply(*iNumber,a1,a2);
 }
 void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {//FIXME
@@ -949,7 +971,11 @@ void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aP
 }
 void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
-	::Add(*iNumber, *aX.iNumber, *aY.iNumber);
+  ANumber a1(aPrecision);
+  a1.CopyFrom(*aX.iNumber);
+  ANumber a2(aPrecision);
+  a2.CopyFrom(*aY.iNumber);
+	::Add(*iNumber, a1, a2);
 }
 void BigNumber::Negate(const BigNumber& aX)
 {
@@ -962,8 +988,12 @@ void BigNumber::Negate(const BigNumber& aX)
 }
 void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
-    ANumber remainder(aPrecision);
-    ::Divide(*iNumber,remainder,*aX.iNumber,*aY.iNumber);
+  ANumber a1(aPrecision);
+  a1.CopyFrom(*aX.iNumber);
+  ANumber a2(aPrecision);
+  a2.CopyFrom(*aY.iNumber);
+  ANumber remainder(aPrecision);
+  ::Divide(*iNumber,remainder,a1,a2);
 }
 void BigNumber::ShiftLeft(const BigNumber& aX, LispInt aNrToShift)
 {
@@ -1092,6 +1122,14 @@ void BigNumber::Floor(const BigNumber& aX)
 
 void BigNumber::Precision(LispInt aPrecision)
 {//FIXME
+  if (aPrecision < iNumber->iPrecision)
+  {
+  }
+  else
+  {
+    iNumber->ChangePrecision(aPrecision);
+  }
+  iPrecision = aPrecision;
 }
 
 
@@ -1102,13 +1140,23 @@ bool BigNumber::Equals(const BigNumber& aOther) const
   BigNumber otherNeg;
   otherNeg.Negate(aOther);
   diff.Add(*this,otherNeg,GetPrecision());
+  diff.iNumber->ChangePrecision(iPrecision);
+
   return !Significant(*diff.iNumber);
 }
 
 
 bool BigNumber::IsInt() const
-{//FIXME
-  return false; // function has to return *some* result
+{//FIXME (done? Working?)
+  if (iNumber->iTensExp != 0) return false;
+  if (iPrecision == iNumber->iPrecision)
+  {
+    return (iNumber->iExp == 0 && iNumber->iTensExp == 0);
+  }
+  ANumber num(iPrecision);
+  num.CopyFrom(*iNumber);
+  num.ChangePrecision(iPrecision);
+  return (num.iExp == 0 && num.iTensExp == 0);
 }
 
 
@@ -1136,7 +1184,11 @@ void BigNumber::BecomeFloat()
 
 bool BigNumber::LessThan(const BigNumber& aOther) const
 {
-	return ::LessThan(*(this->iNumber), *(aOther.iNumber));
+  ANumber a1(iPrecision);
+  a1.CopyFrom(*this->iNumber);
+  ANumber a2(iPrecision);
+  a2.CopyFrom(*aOther.iNumber);
+	return ::LessThan(a1, a2);
 }
 
 // assign from a platform type

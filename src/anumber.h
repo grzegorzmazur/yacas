@@ -24,9 +24,9 @@
 class ANumber : public CArrayGrower<PlatWord>
 {
 public:
-    ANumber(const LispCharPtr aString,LispInt aPrecision=10,LispInt aBase=10);
-    ANumber(LispInt aPrecision=10);
-    ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision=10);
+    ANumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
+    ANumber(LispInt aPrecision);
+    ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision);
     inline ANumber(ANumber& aOther) {CopyFrom(aOther);}
     ~ANumber();
     void CopyFrom(const ANumber& aOther);

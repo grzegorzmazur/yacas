@@ -20,10 +20,12 @@
 #define KFlagIsNumeric 0x01  // Quoted (after executing the args for
                           // a LispLambda, or for a LispSetQuoted)
 
+class LispEnvironment;
+
 class LispAtom : public LispObject
 {
 public:
-    static LispObject* New(LispStringPtr aString);
+    static LispObject* New(LispEnvironment& aEnvironment, LispStringPtr aString);
     virtual ~LispAtom();
     virtual LispStringPtr String();
     virtual LispObject* Copy(LispInt aRecursed);
@@ -41,7 +43,7 @@ class LispAnnotatedObject : public LispObject
 public:
     LispAnnotatedObject(LispObject* aOriginal);
 public:
-    virtual LispStringPtr String() const;
+    virtual LispStringPtr String();
     virtual LispPtr* SubList();
     virtual GenericClass* Generic();
 /*TODO remove?
@@ -74,7 +76,7 @@ LispPtr* LispAnnotatedObject<T>::ExtraInfo()
 { return &iAdditionalInfo; }
 
 template<class T>
-LispStringPtr LispAnnotatedObject<T>::String() const
+LispStringPtr LispAnnotatedObject<T>::String()
 {
     return iObject.Get()->String();
 }
@@ -127,6 +129,7 @@ public:
     static LispSubList* New(LispObject* aSubList);
     virtual ~LispSubList();
     virtual LispPtr* SubList();
+    virtual LispStringPtr String();
     virtual LispObject* Copy(LispInt aRecursed);
 /*TODO remove?
     virtual EvalFuncBase* EvalFunc();
@@ -150,6 +153,7 @@ public:
     static LispGenericClass* New(GenericClass* aClass);
     virtual ~LispGenericClass();
     virtual GenericClass* Generic();
+    virtual LispStringPtr String();
     virtual LispObject* Copy(LispInt aRecursed);
 public:
     virtual LispObject* SetExtraInfo(LispPtr& aData);
@@ -166,7 +170,7 @@ class LispNumber : public LispObject
 public:
     LispNumber(LispHashTable* aHashTable, BigNumber* aNumber,LispStringPtr aString);
     LispNumber(LispHashTable& aHashTable, BigNumber* aNumber);
-    LispNumber(LispStringPtr aString);
+    LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt aPrecision);
     virtual ~LispNumber();
     virtual LispObject* Copy(LispInt aRecursed);
     virtual LispStringPtr String();

@@ -71,7 +71,7 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispPtr& aResult,
     }
     
 
-    LocalSymbolBehaviour behaviour(names,localnames,nrSymbols);
+    LocalSymbolBehaviour behaviour(aEnvironment,names,localnames,nrSymbols);
     LispPtr result;
     InternalSubstitute(result, Argument(aArguments, nrArguments-1), behaviour);
     PlatFree(names);
