@@ -359,7 +359,7 @@ equivalent expression" :
 HtmlCommand("
 (...( c(n) * x + c(n-1) ) * x + ...  + c(1) ) * x + c(0)") : "
 Both expression are equal, but the latter form gives a more
-efficient way to evaluate the polynomial as there the powers have
+efficient way to evaluate the polynomial as  the powers have
 disappeared.";
 
 Topical()"Examples";
