@@ -36,7 +36,7 @@ it can be used for any textual work, regardless of subject matter or
 whether it is published as a printed book.  We recommend this License
 principally for works whose purpose is instruction or reference.
 
-		Applicability and Definitions
+	    Applicability and Definitions
 
 This License applies to any manual or other work that contains a
 notice placed by the copyright holder saying it can be distributed
@@ -97,7 +97,7 @@ the text near the most prominent appearance of the work's title,
 preceding the beginning of the body of the text.
 
 
-		Verbatim Copying
+	    Verbatim Copying
 
 You may copy and distribute the Document in any medium, either
 commercially or noncommercially, provided that this License, the
@@ -113,7 +113,7 @@ You may also lend copies, under the same conditions stated above, and
 you may publicly display copies.
 
 
-		Copying in Quantity
+	    Copying in Quantity
 
 If you publish printed copies of the Document numbering more than 100,
 and the Document's license notice requires Cover Texts, you must enclose
@@ -151,7 +151,7 @@ Document well before redistributing any large number of copies, to give
 them a chance to provide you with an updated version of the Document.
 
 
-		Modifications
+	    Modifications
 
 You may copy and distribute a Modified Version of the Document under
 the conditions of sections 2 and 3 above, provided that you release
@@ -235,7 +235,7 @@ give permission to use their names for publicity for or to assert or
 imply endorsement of any Modified Version.
 
 
-		Combining Documents
+	    Combining Documents
 
 You may combine the Document with other documents released under this
 License, under the terms defined in section 4 above for modified
@@ -260,7 +260,7 @@ and any sections entitled ``Dedications''.  You must delete all sections
 entitled ``Endorsements.''
 
 
-		Collections of Documents
+	    Collections of Documents
 
 You may make a collection consisting of the Document and other documents
 released under this License, and replace the individual copies of this
@@ -275,7 +275,7 @@ other respects regarding verbatim copying of that document.
 
 
 
-		Aggregation With Independent Works
+	    Aggregation With Independent Works
 
 A compilation of the Document or its derivatives with other separate
 and independent documents or works, in or on a volume of a storage or
@@ -293,7 +293,7 @@ covers that surround only the Document within the aggregate.
 Otherwise they must appear on covers around the whole aggregate.
 
 
-		Translation
+	    Translation
 
 Translation is considered a kind of modification, so you may
 distribute translations of the Document under the terms of section 4.
@@ -307,7 +307,7 @@ between the translation and the original English version of this
 License, the original English version will prevail.
 
 
-		Termination
+	    Termination
 
 You may not copy, modify, sublicense, or distribute the Document except
 as expressly provided for under this License.  Any other attempt to
@@ -318,7 +318,7 @@ License will not have their licenses terminated so long as such
 parties remain in full compliance.
 
 
-		Future Revisions of This License
+	    Future Revisions of This License
 
 The Free Software Foundation may publish new, revised versions
 of the GNU Free Documentation License from time to time.  Such new
