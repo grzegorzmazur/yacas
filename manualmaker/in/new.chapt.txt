@@ -175,7 +175,7 @@ it is best to keep this in mind and keep the code passed to
 
 			YACAS: yet another computer algebra system
 
-*HEAD Ayal Pinkus and Serge Winitzki
+*HEAD Ayal Zwi Pinkus and Serge Winitzki
 
 	    Abstract
 
@@ -286,13 +286,16 @@ Rule-based programming is not the only syntax that can be used in Yacas
 scripts. There are alternatives that may be more useful in some situations. For
 example, the standard {if} / {else}, {While}, {For} loops of C are supported,
 as well as the familiar procedural programming patterns such as defining
-functions that return values with code blocks and temporary local variables. Users may freely combine rules with procedures and write code such as
+functions that return values with code blocks and temporary local variables.
+Users may freely combine rules with C-like procedures or LISP-like recursive list
+processing primitives such as {Head}, {Tail}, for example
 	_x ** y_IsList <--
 	[
 	  Local(i, A, B);
 	  For(i:=1, i<=Length(y), i++)
 	  [
 	  	... // some code
+		x ** Tail(y); // may contain recursion
 	  ];
 	  A; // return resulting value
 	];
@@ -360,11 +363,11 @@ the kernel, but can be easily enforced by the  scripts if necessary for a
 particular problem. The language offers features, but does not enforce their
 use.
 
-	    The Yacas kernel
+	    The Yacas kernel functionality
 
 Yacas script is a functional language based on various ideas that seemed
-useful  of list-based data structures, object properties, and recursive
-functional programming a la LISP; term rewriting [TermRewriting] with pattern
+useful for an implementation of CAS: list-based data structures, object properties, and recursive
+functional programming (a la LISP); term rewriting [TermRewriting] with pattern
 matching somewhat along the lines of Mathematica; user-defined infix operators
 a la PROLOG; and delayed evaluation of expressions.  Garbage collection and
 memory management are automatic.
@@ -373,23 +376,29 @@ The kernel provides three basic data types: arbitrary-precision numbers, strings
 
 The interpreter engine recursively evaluates expression trees according to
 user-defined rewriting rules from the script library. This is the only
-evaluation scheme but it is flexible enough because rewriting rules have
-predicates that control whether a rule should be applied to an expression, and
-precedence that controls the order of rules to be attempted. This flexibility
-is taken further: predicates can be any Yacas expressions that evaluate to the
-atoms {True} or {False}, and new rules can be defined dynamically, that is, it
-is possible to define a "rule closure" that defines rules depending on its
-arguments, or to erase rules. Thus, the script library does not necessarily
-represent a fixed set of rewriting rules; an certain implementation of machine
-learning is possible in Yacas.
+evaluation scheme. However, the language is much more flexible than a
+traditional rewriting system based on a fixed set of rules.
 
-Certain functions are defined to allow a more straightforward procedural
-programming a la C and a more convenient syntax to define new rewriting rules.
-Users can freely write code using {While} or {For} loops together with
-recursive rewriting rule definitions or list processing primitives such as
-{Head}, {Tail}. The interpreter is sufficiently flexible so that the functions
-{While}, {For}, {ForEach}, {if}, {else} etc. can be defined in the script
-library itself rather than in the kernel.
+Firstly, rewriting rules in Yacas have predicates that control whether a rule
+should be applied to an expression. Predicates can be any Yacas expressions
+that evaluate to the atoms {True} or {False} and are functions of the matching
+context (i.e. parts of the expression being matched by the rule).
+
+Secondly, rules are assigned a precedence value (a positive integer) that
+controls the order of rules to be attempted. 
+
+Thirdly, new rules can be defined dynamically, which means that there is no
+predefined "ranking alphabet" of "ground terms" (in the terminology of [TATA]).
+It is also possible to define a "rule closure" that defines rules depending on
+its arguments, or to erase rules. Thus, the Yacas script library does not
+necessarily represent a fixed tree rewriting automaton. An implementation of
+machine learning is possible in Yacas (among other things).
+
+Convenience functions are defined in the script library to allow a more
+straightforward procedural programming a la C and a more convenient syntax to
+define new rewriting rules. The interpreter is sufficiently flexible so that
+the functions {While}, {For}, {ForEach}, {if}, {else} etc. can be defined in
+the script library itself rather than in the kernel.
 
 		The Yacas scripting language
 
