@@ -718,6 +718,9 @@ DivPoly(_A,_B,_var,_deg) <--
   NormalForm(UniVariate(var,0,c));
 ];
 
+// I fully realize that many of these functions
+// need better names, they are just temporary.
+
 /*
 	polyDivide()
 	A,B -- polynomials
@@ -732,7 +735,8 @@ DivPoly(_A,_B,_var,_deg) <--
 polyDivide(_A,_B,_var) <--
 [
 	Local(Q,R);
-	Check( LeadingCoef(B,var) != 0, "polyDivide: Cannot divide by zero polynomial");
+	Check( LeadingCoef(B,var) != 0,
+		"polyDivide: Cannot divide by zero polynomial");
 	//Echo("in polydiv");
 
 	if( Degree(B) = 0 )[
@@ -806,6 +810,10 @@ polyGCDExt(_A,_B,_var) <--
 	{a1,a2,A};
 
 ];
+// The content of a polynomial is defined as the GCD of its
+// coefficients. 
+polyContent(_poly,_var) <-- Gcd( Coef(poly, 0 .. Degree(poly)) );
+
 // The Extended GCD, Version 2
 // Given A,B, finds the GCD g and
 // the polys s,t such that s*A + t*B = g
