@@ -1,14 +1,14 @@
 #! /bin/bash
 
 # clean
-rm yacas-*.tar.gz
+rm -f yacas-*.tar.gz
 make clean
 
 # Rebuild yacas and the documentation
 ./makemake
-./configure
+#./configure
 make
-make install
+#make install
 make dist
 # make distcheck
 
@@ -40,7 +40,7 @@ mv manual.pdf.tar.gz backups
 cd backups
 mv ../../yacas-*.tar.gz .
 cd ..
-tar -zcvf ../homepage.tgz *
+tar -zcf ../homepage.tgz *
 cd ..
 rm -rf homepage/
 
