@@ -16,6 +16,8 @@ to general issues related to the Yacas system development and maintenance.
 
 *INCLUDE Plugins-Howto.chapt
 
+*INCLUDE SimpleTools.chapt
+
 			For Yacas developers
 
 *INCLUDE CVS-Howto.chapt
