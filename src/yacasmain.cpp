@@ -115,6 +115,8 @@ int trace_history = 0;
 int use_texmacs_out = 0;
 int compiled_plugins = 1;
 
+int stack_size = 50000;
+
 #ifdef YACAS_DEBUG
   int verbose_debug=0;
 #endif
@@ -486,9 +488,9 @@ void LoadYacas(LispOutput* aOutput=NULL)
   restart=LispFalse;
 
   if (aOutput)
-    yacas = CYacas::NewL(aOutput);
+    yacas = CYacas::NewL(aOutput,stack_size);
   else
-    yacas = CYacas::NewL();
+    yacas = CYacas::NewL(stack_size);
 
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) (*yacas)()().SetCommand(fname,iname,nrargs,flags);
@@ -1251,6 +1253,18 @@ int main(int argc, char** argv)
                   server_port = atoi(argv[fileind]);
                 }                
             }
+
+
+            else if (!strcmp(argv[fileind],"--stacksize"))
+            {    
+                fileind++;
+
+                if (fileind<argc)
+                {
+                  stack_size = atoi(argv[fileind]);
+                }                
+            }
+
 
             else if (!strcmp(argv[fileind],"--uncompressed-archive"))
             {

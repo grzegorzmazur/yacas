@@ -26,7 +26,7 @@ DefaultYacasEnvironment::~DefaultYacasEnvironment()
 
 
 
-DefaultYacasEnvironment::DefaultYacasEnvironment(LispOutput* aOutput)
+DefaultYacasEnvironment::DefaultYacasEnvironment(LispOutput* aOutput, LispInt aStackSize)
 :output(aOutput),infixprinter(prefixoperators,
              infixoperators,
              postfixoperators,
@@ -34,7 +34,7 @@ DefaultYacasEnvironment::DefaultYacasEnvironment(LispOutput* aOutput)
 iEnvironment(coreCommands,userFunctions,
                  globals,hash,output,infixprinter,
                  prefixoperators,infixoperators,
-                 postfixoperators,bodiedoperators,&input),
+                 postfixoperators,bodiedoperators,&input,aStackSize),
 input(iEnvironment.iInputStatus)
 {
     // Define the built-in functions by tying their string representation
@@ -56,14 +56,14 @@ input(iEnvironment.iInputStatus)
 
 
 
-LISPEXPORT CYacas* CYacas::NewL()
+LISPEXPORT CYacas* CYacas::NewL(LispInt aStackSize)
 {
-  CYacas* self = NEW CYacas(NEW StdUserOutput());
+  CYacas* self = NEW CYacas(NEW StdUserOutput(),aStackSize);
   return self;
 }
-LISPEXPORT CYacas* CYacas::NewL(LispOutput* aOutput)
+LISPEXPORT CYacas* CYacas::NewL(LispOutput* aOutput,LispInt aStackSize)
 {
-  CYacas* self = NEW CYacas(aOutput);
+  CYacas* self = NEW CYacas(aOutput,aStackSize);
   return self;
 }
 
@@ -72,8 +72,8 @@ LISPEXPORT CYacas::~CYacas()
 }
 
 
-CYacas::CYacas(LispOutput* aOutput)
-: environment(aOutput),iResultOutput(iResult)
+CYacas::CYacas(LispOutput* aOutput,LispInt aStackSize)
+: environment(aOutput,aStackSize),iResultOutput(iResult)
 {
 }
 

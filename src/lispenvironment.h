@@ -19,6 +19,7 @@
 #include "lispplugin.h"
 #include "ctokenizer.h"
 #include "xmltokenizer.h"
+#include "errors.h"
 
 class CCompressedArchive; /* defined in archiver.h */
 
@@ -65,7 +66,8 @@ public:
                     LispOperators &aInFixOperators,
                     LispOperators &aPostFixOperators,
                     LispOperators &aBodiedOperators,
-                    LispInput*    aCurrentInput);
+                    LispInput*    aCurrentInput,
+                    LispInt aStackSize);
     ~LispEnvironment();
     //@}
 
@@ -338,10 +340,17 @@ public:
   {
   public:
     //TODO appropriate constructor?
-    YacasArgStack() : iStack(50000,NULL),iStackTop(0) {}
+    YacasArgStack(LispInt aStackSize) : iStack(aStackSize,NULL),iStackTop(0) 
+    {
+//printf("STACKSIZE %d\n",aStackSize);
+    }
     inline LispInt GetStackTop() const {return iStackTop;}
     inline void PushArgOnStack(LispObject* aObject) 
     {
+      if (iStackTop >= iStack.Size())
+      {
+        RaiseError("Argument stack reached maximum. Please extend argument stack with --stack argument on the command line.");
+      }
       iStack.SetElement(iStackTop,aObject);
       iStackTop++;
     }

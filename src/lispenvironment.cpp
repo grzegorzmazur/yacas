@@ -28,7 +28,8 @@ LispEnvironment::LispEnvironment(
                     LispOperators &aInFixOperators,
                     LispOperators &aPostFixOperators,
                     LispOperators &aBodiedOperators,
-                    LispInput*    aCurrentInput)
+                    LispInput*    aCurrentInput,
+                    LispInt aStackSize)
     : 
     iPrecision(10),	// default user precision of 10 decimal digits
 	iBinaryPrecision(34),	// same as 34 bits
@@ -55,7 +56,8 @@ LispEnvironment::LispEnvironment(
     iCurrentInput(aCurrentInput),
     theUserError(NULL),
     iPrettyPrinter(NULL),
-    iCurrentTokenizer(&iDefaultTokenizer)
+    iCurrentTokenizer(&iDefaultTokenizer),
+    iStack(aStackSize)
 {
     iTrue = LispAtom::New(*this,"True");
     iFalse = LispAtom::New(*this,"False");

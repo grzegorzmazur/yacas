@@ -30,7 +30,7 @@ class DefaultYacasEnvironment : public YacasBase
 {
 public:
     DefaultYacasEnvironment();
-    DefaultYacasEnvironment(LispOutput* aOutput);
+    DefaultYacasEnvironment(LispOutput* aOutput, LispInt aStackSize);
     virtual ~DefaultYacasEnvironment();
     LispEnvironment& operator() () {return iEnvironment;}
     
@@ -70,12 +70,12 @@ public:
     /// Pseudo-constructor.
     /// \return A new instance of CYacas, with output connected to a
     /// new instance of StdUserOutput. 
-    LISPIMPORT static CYacas* NewL(); 
+    LISPIMPORT static CYacas* NewL(LispInt aStackSize=50000); 
 
     /// Pseudo-constructor.
     /// \return A new instance of CYacas, with output connected to \p
     /// aOutput. 
-    LISPIMPORT static CYacas* NewL(LispOutput* aOutput); 
+    LISPIMPORT static CYacas* NewL(LispOutput* aOutput,LispInt aStackSize=50000); 
 
     /// Destructor.
     LISPIMPORT virtual ~CYacas();
@@ -105,7 +105,7 @@ private:
     
     /// Constructor.
     /// The output of #environment is directed to \p aOutput.
-    CYacas(LispOutput* aOutput);
+    CYacas(LispOutput* aOutput,LispInt aStackSize);
 
 private:
 
