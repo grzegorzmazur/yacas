@@ -394,7 +394,7 @@ fileBuildString:=
 #include \"mathcommands.h\"
 
 // The define OPTIMIZE_COMPILED_PLUGIN_SIZE should be defined somewhere else.
-// #define OPTIMIZE_COMPILED_PLUGIN_SIZE
+#define OPTIMIZE_COMPILED_PLUGIN_SIZE
 
 #ifdef OPTIMIZE_COMPILED_PLUGIN_SIZE
 #include \"vm.h\"
