@@ -182,8 +182,21 @@ Rule("NormalForm",1,1000,True) expression;
 
 
 LocalSymbols(x)
-[
-  220 # + x_IsList          <-- MapSingle("+",x);
+[	// a new definition: + {list} is the sum of all elements of the list
+//  220 # + x_IsList          <-- MapSingle("+",x);	// this rule was never active
+// the precedence must be less than 100 b/c we have a rule 100 # + _x <-- x 
+  20 # + x_IsList <--
+  [
+  	Local(i, sum);
+	sum := 0;
+	i := 1;
+	While(i<=Length(x))
+	[
+		sum := sum + x[i];
+		i++;
+	];
+	sum;
+  ];
 ];
 220 # xlist_IsList + ylist_IsList <-- Map("+",{xlist,ylist});
 
