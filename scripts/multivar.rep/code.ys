@@ -34,6 +34,7 @@ MultiSimp(_expr) <--
 [
   Local(c1,c2,gcd,cmn);
 
+  gcd:=MultiGcd(a,b);
   c1:=MultiContent(a);
   c2:=MultiContent(b);
 
@@ -358,38 +359,42 @@ DropZeroLC(MultiNomial(_vars,_terms)) <-- MultiNomial(vars,DropZeroLC(terms));
 10 # MultiDivide(f_IsMulti,g_IsList) <--
 [
   Local(i,nr,q,r,p,v);
-  nr := Length(g);
-  v := MultiVars(f);
-  q:=FillList(0,nr);
-  r:=0;
-  p:=f;
+  Set(nr, Length(g));
+  Set(v, MultiVars(f));
+  Set(q, FillList(0,nr));
+  Set(r, 0);
+  Set(p, f);
   While (Not MultiZero(p))
   [
     Local(plt,glt);
-    plt:=MultiLT(p);
+    Set(plt, MultiLT(p));
     For(i:=1,i<=nr,i++)
     [
-      glt:=MultiLT(g[i]);
+      Set(glt, MultiLT(g[i]));
       if (MultiLM(glt) = MultiLM(plt) Or MultiTermLess({MultiLM(glt),1}, {MultiLM(plt),1}))
       [
         Local(ff);
-        ff := MultiNomial(v,{{MultiLM(plt)-MultiLM(glt),MultiLC(plt)/MultiLC(glt)}});
+        Set(ff, MultiNomial(v,{{MultiLM(plt)-MultiLM(glt),MultiLC(plt)/MultiLC(glt)}}));
         q[i] := q[i] + ff;
-        p := p - ff*g[i];
-        i:=nr+2;
+        Set(p, p - ff*g[i]);
+        Set(i,nr+2);
       ];
     ];
     if (i = nr+1)
     [
-      r := r + LocalSymbols(a,b)(Subst(a,b)plt);
-      p := p - LocalSymbols(a,b)(Subst(a,b)plt);
+      Set(r, r + LocalSymbols(a,b)(Subst(a,b)plt));
+      Set(p,  p - LocalSymbols(a,b)(Subst(a,b)plt));
     ];
-    p:=DropZeroLC(p);
+    Set(p,DropZeroLC(p));
   ];
   {q,r};
 ];
 
 //TODO optimize this! keeps on converting to and from internal format!
+
+10 # MultiGcd( 0,_g) <-- 1;
+10 # MultiGcd(_f, 0) <-- 1;
+
 20 # MultiGcd(_f,_g) <--
 [
   Local(v);
@@ -403,6 +408,8 @@ DropZeroLC(MultiNomial(_vars,_terms)) <-- MultiNomial(vars,DropZeroLC(terms));
   MultiGcd(g,f);
 ];
 
+5  # MultiGcd(MultiNomial(_vars,_terms),g_IsMulti)_(NormalForm(g) = 0)
+     <-- MultiNomial(vars,{FillList(0,Length(vars)),0});
 10 # MultiGcd(f_IsMulti,g_IsMulti) <--
 [
   LocalSymbols(a)
@@ -421,9 +428,62 @@ DropZeroLC(MultiNomial(_vars,_terms)) <-- MultiNomial(vars,DropZeroLC(terms));
 ];
 
 
-tst:= (-2*m^3*y)/M^2-(m^2*y)/M+m*y+1/(1/(2*y*m+(-6*y*m^2)/M+(4*m^3*y)/M^2)+1/((-6*m^2*y)/M+(4*m^3*y)/M^2+2*y*m));
+MultiDivTerm(MultiNomial(_vars,{_term1}),MultiNomial(_vars,{_term2})) <--
+[
+  MultiNomial(vars,{{term1[1]-term2[1],term1[2]/term2[2]}});
+];
+MultiS(_g,_h,MultiNomial(_vars,_terms)) <--
+[
+  Local(gamma);
+  gamma :=Max(MultiDegree(g),MultiDegree(h));
+  Local(result);
+  result :=
+    MultiDivTerm(MultiNomial(vars,{{gamma,1}}),MultiLT(g))*g -
+    MultiDivTerm(MultiNomial(vars,{{gamma,1}}),MultiLT(h))*h;
+  result;
+];
 
 /*
+  Groebner : Calculate the Groebner basis of a set of polynomials.
+  Nice example of its power is
+
+In> TableForm(Groebner({x*(y-1),y*(x-1)}))
+ x*y-x
+ x*y-y
+ y-x
+ y^2-y
+In> Factor(y^2-y)
+Out> y*(y-1);
+
+From which you can see that x = y, and x^2 = x so x is 0 or 1.
+  
+*/
+
+Groebner(f_IsList) <--
+[
+  Local(vars,i,j,S,nr,r);
+  nr:=Length(f);
+  vars:=VarList(f);
+  For(i:=1,i<=nr,i++)
+  [
+    f[i] := MakeMultiNomial(f[i],vars);
+  ];
+  S:={};
+  For(i:=1,i<nr,i++)
+  For(j:=i+1,j<=nr,j++)
+  [
+    r := (MultiDivide(MultiS(f[i],f[j],f[i]),f)[2]);
+    If(NormalForm(r) != 0, S:= r:S);
+    f:=Concat(f,S);
+    S:={};
+    nr:=Length(f);
+  ];
+  MapSingle("NormalForm",Concat(f));
+];
+
+
+/*
+tst:= (-2*m^3*y)/M^2-(m^2*y)/M+m*y+1/(1/(2*y*m+(-6*y*m^2)/M+(4*m^3*y)/M^2)+1/((-6*m^2*y)/M+(4*m^3*y)/M^2+2*y*m));
 
 try(f):=
 [
