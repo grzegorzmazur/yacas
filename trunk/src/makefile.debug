@@ -1,5 +1,6 @@
 
 RANLIB = ranlib
+CC = cc # gcc
 
 # Uncomment these if you want to use gmp for numerics
 # NUMBER_LIB = gmpnumbers-d.o
@@ -24,7 +25,7 @@ OBJS = anumber-d.o arggetter-d.o arrayclass-d.o commandline-d.o \
 .SUFFIXES: .cpp 
 
 %-d.o: %.cpp
-	gcc -x c++ $(INC) -c $< -o $@
+	$(CC) -x c++ $(INC) -c $< -o $@
 
 all: libyacasdebug.a yacasdebug
 
@@ -33,10 +34,10 @@ INC = -I./plat/linux32/  -DUSE_ASSERT -DDEBUG_MODE -DSCRIPT_DIR="\"./\"" -DVERSI
 
 libyacasdebug.a : $(OBJS)
 	$(AR) cru libyacasdebug.a $(OBJS)
-	$(RANLIB) libyacasdebug.a
+	$(RANLIB) -s libyacasdebug.a
 
 yacasdebug: yacasmain-d.o elfdll-d.o commandline-d.o unixcommandline-d.o stdcommandline-d.o debugmem-d.o libyacasdebug.a
-	gcc -o yacasdebug yacasmain-d.o elfdll-d.o commandline-d.o unixcommandline-d.o stdcommandline-d.o debugmem-d.o libyacasdebug.a -lm -ldl $(NUMBER_LN)
+	$(CC) -o yacasdebug yacasmain-d.o elfdll-d.o commandline-d.o unixcommandline-d.o stdcommandline-d.o debugmem-d.o libyacasdebug.a -lm  $(NUMBER_LN)
 
 #	-rm -f libyacasdebug.a
 
