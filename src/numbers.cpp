@@ -111,7 +111,7 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
 			  sig_digits--;	// this is when we have "1.000001" where "." is not a digit, so need to decrement
 	  }
 	  // ok, so we need to represent MAX(aPrecision,sig_digits) digits in base aBase
-		  iPrecision=(LispInt) (1.51+double(MAX(aPrecision,sig_digits)) * log2_table_lookup(unsigned(aBase)));
+	  iPrecision=(LispInt) (0.5001 + double(MAX(aPrecision,sig_digits)) * log2_table_lookup(unsigned(aBase)));
 
 	  turn_float();
 	  float_.SetTo(aString, iPrecision+GUARD_BITS, aBase);
@@ -152,7 +152,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
   }
   if (IsInt())
   {	// find how many chars we need
-	LispInt size=(LispInt) (1.51 + double(int_.BitCount()) / log2_table_lookup(aBase));
+	LispInt size=(LispInt) (0.5001 + double(int_.BitCount()) / log2_table_lookup(aBase));
 	char* buffer=(char*)malloc(size+2);
 	int_.ToString(buffer, size, aBase);
 	// assign result
@@ -173,7 +173,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 		aPrecision = 1;	// refuse to print with 0 or fewer digits
     unsigned long size=(unsigned long)aPrecision;
     // how many precise base digits we have. Print not more than print_prec digits.
-    unsigned long print_prec = (unsigned long) (1.51+double(iPrecision) / log2_table_lookup(unsigned(aBase)));
+    unsigned long print_prec = (unsigned long) (0.5001 + double(iPrecision) / log2_table_lookup(unsigned(aBase)));
 	print_prec = MIN(print_prec, (unsigned long)aPrecision);
 	
     // the size needed to print the exponent cannot be more than 200 chars since we refuse to print exp-floats
@@ -732,12 +732,20 @@ void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
 void BigNumber::Floor(const BigNumber& aX)
 {
 // check that aX is a float and that it has enough digits to evaluate its integer part
-  if (!aX.IsInt() && !aX.IsExpFloat() && aX.GetPrecision() >= aX.BitCount())
+  if (!aX.IsInt() && !aX.IsExpFloat())
   {	// now aX is a float for which we can evaluate Floor()
-    turn_float();	// just in case we are integer; we are not aX
-    // we are float now
-    float_.Floor(aX.float_);
-    BecomeInt();	// we are integer now
+    if(aX.GetPrecision() >= aX.BitCount())
+    {	// now aX is a float for which we can evaluate Floor()
+      turn_float();	// just in case we are integer; we are not aX
+      // we are float now
+      float_.Floor(aX.float_);
+      BecomeInt();	// we are integer now
+    }
+    else
+    {	// do not have enough precision, raise error
+      RaiseError("BigNumber::Floor: error: not enough precision of argument %e (%ld bits)", aX.Double(), aX.GetPrecision());
+      SetTo(aX);
+    }
   }
   else if (this != &aX) // no change for integers or for exp floats, or if we don't have enough digits; just assign the value
   {

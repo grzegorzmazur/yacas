@@ -1778,7 +1778,7 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
 			  sig_digits--;	// this is when we have "1.000001" where "." is not a digit, so need to decrement
 	  }
 	  // ok, so we need to represent MAX(aPrecision,sig_digits) digits in base aBase
-	  iPrecision=(LispInt) (1.51+double(MAX(aPrecision,sig_digits)) * log2_table_lookup(unsigned(aBase)));
+	  iPrecision=(LispInt) (0.5001 + double(MAX(aPrecision,sig_digits)) * log2_table_lookup(unsigned(aBase)));
 
 	  turn_float();
 //	mpf_set_d(float_, 1.);	// otherwise gmp doesn't really set the precision? FIXME
@@ -1854,7 +1854,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 		aPrecision = 1;	// refuse to print with 0 or fewer digits
     unsigned long size=(unsigned long)aPrecision;
     // how many base digits to print
-    unsigned long print_prec = (unsigned long) (1.51+double(iPrecision) / log2_table_lookup(unsigned(aBase)));
+    unsigned long print_prec = (unsigned long) (0.5001 + double(iPrecision) / log2_table_lookup(unsigned(aBase)));
 	print_prec = MIN(print_prec, (unsigned long)aPrecision);
     // the size needed to print the exponent cannot be more than 200 chars since we refuse to print exp-floats
     size += 200;
@@ -2436,16 +2436,24 @@ void BigNumber::PowerMod(const BigNumber& aX, const BigNumber& aY, const BigNumb
   }
 }
 */
-
 void BigNumber::Floor(const BigNumber& aX)
 {
 // check that aX is a float and that it has enough digits to evaluate its integer part
-  if (!aX.IsInt() && !aX.IsExpFloat() && aX.GetPrecision() >= aX.BitCount())
-  {	// now aX is a float for which we can evaluate Floor()
-    turn_float();	// just in case we are integer; we are not aX
-    // we are float now
-    mpf_floor(float_, aX.float_);
-    BecomeInt();	// we are integer now
+  if (!aX.IsInt() && !aX.IsExpFloat())
+  {
+    if(aX.GetPrecision() >= aX.BitCount())
+    {	// now aX is a float for which we can evaluate Floor()
+      turn_float();	// just in case we are integer; we are not aX
+      // we are float now
+      mpf_floor(float_, aX.float_);
+      BecomeInt();	// we are integer now
+    }
+    else
+    {	// do not have enough precision, raise error
+#define RaiseError1 printf
+      RaiseError("BigNumber::Floor: error: not enough precision of argument %e (%ld bits)", aX.Double(), aX.GetPrecision());
+      SetTo(aX);
+    }
   }
   else if (this != &aX) // no change for integers or for exp floats, or if we don't have enough digits; just assign the value
   {
