@@ -29,11 +29,11 @@ enum TAllocTypes
     EAlloc=0
 };
 
-inline void* operator new(unsigned long size)
+inline void* operator new(size_t size)
 {
     return PlatAlloc(size);
 }
-inline void* operator new[](unsigned long size)
+inline void* operator new[](size_t size)
 {
     return PlatAlloc(size);
 }
