@@ -37,10 +37,10 @@ research symbolic mathematics algorithms. A secondary future goal is to evolve
 exploration and prototyping of algorithms of symbolic
 computation.  The main advantage of {Yacas} is its rich and flexible
 scripting language. The language is closely related to LISP {WH89} but has
-a recursive descent infix grammar parser {ASU86}, includes expression
-transformation (term rewriting), and supports defining infix operators at run time
-similarly to Prolog {B86}.
-
+a recursive descent infix grammar parser {ASU86} which supports defining 
+infix operators at run time similarly to Prolog {B86}, and includes 
+expression transformation (term rewriting) as a basic feature of the
+language.
 
 The {Yacas} language interpreter comes with a library of scripts that implement a set of computer algebra features. The {Yacas} script library
 is in active development and at the present stage does not offer the rich functionality of
@@ -52,7 +52,8 @@ development goals.
 {Yacas} handles input and output in plain ASCII,
 either interactively or in batch mode. (A graphical interface is under development.) There is also an optional plugin mechanism
 whereby external libraries can be linked into the system to provide extra
-functionality.
+functionality. Basic facilities are in place to compile Yacas scripts
+to C++ so they can be compiled into plugins.
 
 
 		Basic design
@@ -78,8 +79,12 @@ precision numerics. The kernel does not contain any definitions of symbolic
 mathematical operations and tries to be as general and free as possible of
 predefined notions or policies in the domain of symbolic computation.
 
-
-The plugin inter-operability mechanism allows to extend the {Yacas} kernel or to use external libraries, e.g. GUI toolkits or implementations of special-purpose algorithms. A simple C++ API is provided for writing ``stubs'' that make external functions appear in {Yacas} as new core functions. Plugins are on the same footing as the {Yacas} kernel and can in principle manipulate all {Yacas} internal structures. Plugins can be compiled either statically or dynamically as shared libraries to be loaded at runtime from {Yacas} scripts. 
+The plugin inter-operability mechanism allows extension of the {Yacas} kernel and the use of external libraries, e.g. GUI toolkits or implementations of special-purpose algorithms. A simple C++ API is provided for writing ``stubs'' that make external functions appear in {Yacas} as new core functions. Plugins are on the same footing as the {Yacas} kernel and can in principle manipulate all {Yacas} internal structures. Plugins can be compiled either statically or dynamically as shared libraries to be loaded at runtime from {Yacas} scripts. 
+In addition, {Yacas} scripts can be compiled to C++ code for further
+compilation into a plugin. Systems that don't support plugins can then
+link these modules in statically. The system can also be run without
+the plugins, for debugging and development purposes. The scripts
+will be interpreted in that case.
 
 The script library contains declarations of transformation rules and of function
 syntax (prefix, infix etc.). The intention is that all symbolic manipulation algorithms, definitions
@@ -97,7 +102,7 @@ EPOC32 platform).
 
 The primary development platform is GNU/Linux. Currently {Yacas} runs under
 various Unix variants, Windows environments, Psion organizers (EPOC32),
-Ipaq PDAs running the Linux kernel,
+Ipaq PDAs,
 BeOS, and Apple iMacs. Creating an executable for another platform (including embedded platforms)
 should not be difficult.
 
@@ -148,8 +153,8 @@ annihilation operators of quantum field theory. It takes about 20 lines of
 {Yacas} script code to define an infix operation "{**}" to express non-commutative
 multiplication with the appropriate commutation relations and to automatically
 normal-order all expressions involving these symbols and other (commutative)
-factors. Once the operator {**} is defined (with precedence 4),
-	Infix("**", 4);
+factors. Once the operator {**} is defined (with precedence 40),
+	Infix("**", 40);
 the rules that express distributivity of the operation {**} with
 respect to addition may look like this:
 	15 # (_x + _y) ** _z <-- x ** z + y ** z;
@@ -189,7 +194,7 @@ libraries can be dynamically linked into {Yacas} using the plugin mechanism.
 The core engine of the {Yacas} system interprets the Yacas script language.
 The reason to implement yet another LISP-based custom language interpreter
 instead of taking an already existing one was to have full control over the
-system and to make it self-contained.
+design of the system and to make it self-contained.
 While most of the features of the {Yacas} script language are "syntactic sugar" on top of a LISP 
 interpreter, some features not commonly found in LISP systems were added.
 
@@ -247,7 +252,9 @@ Garbage collection is implemented through reference counting.
 The kernel provides three basic data types: numbers,
 strings, and atoms, and two container types: list and static array (for speed).
 Atoms are implemented as strings that can be assigned values and evaluated.
-Boolean values are simply atoms {True} and {False}. Expression trees, association (hash) tables,
+Boolean values are simply atoms {True} and {False}. Numbers are 
+represented by objects on which arithmetic can be performed
+immediately. Expression trees, association (hash) tables,
 stacks, and closures (pure functions) are all implemented using nested lists. In
 addition, more data types can be provided by plugins. Kernel primitives are
 available for arbitrary-precision arithmetic, string manipulation, array and
@@ -255,7 +262,7 @@ list access and manipulation, for basic control flow, for assigning variables (a
 
 The interpreter engine recursively evaluates expression trees according to
 user-defined transformation rules from the script library.
-Evaluation proceeds bottom-up, that is, for each function term, the arguments are evaluated first and then the function.
+Evaluation proceeds bottom-up, that is, for each function term, the arguments are evaluated first and then the function is applied to these values.
 
 A {HoldArg()} primitive is provided to not evaluate certain arguments of
 certain functions before passing them on as parameters to these functions. The
@@ -267,7 +274,9 @@ which was previously held unevaluated.
 When an expression can not be transformed any further, that is, when no more rules apply to it, the expression is returned
 unevaluated. For instance, a variable that is not assigned a value will
 return unevaluated. This is a desired behavior in a symbolic manipulation
-system.
+system. Evaluation is treated as a form of ``simplification", in
+that evaluating an expression returns a simplified form of the
+input expression.
 
 Rules are matched by a pattern expression which can contain <i>pattern variables</i>, i.e. atoms marked by the "{_}" operator. During matching, each pattern variable atom becomes a local variable and is tentatively assigned the subexpression being matched. For example, the pattern {_x + _y} can match an expression {a*x+b} and then the pattern variable {x} will be assigned the value {a*x} (unevaluated) and the variable {y} will have the value {b}.
 
@@ -317,7 +326,7 @@ as needed.
 
 		The {Yacas} scripting language
 
-The {Yacas} interpreter is sufficiently powerful so that the functions {While},
+The {Yacas} interpreter is sufficiently powerful so that the functions 
 {For}, {ForEach}, {if}, {else} etc., as well as the convenient shorthand
 "...{<--}..." for defining new rules, can be defined in the script library
 itself rather than in the kernel. This power is fully given to the user, since
@@ -562,7 +571,7 @@ expressions:
 	
 	Ln( x ) + Ln( y )
 	
-	In> Sum(x^(1 .. 5))
+	In> Add(x^(1 .. 5))
 	
 	     2    3    4    5
 	x + x  + x  + x  + x 
@@ -611,8 +620,9 @@ interface under the GNU Emacs editor is available. There is also an experimental
 graphical interface ({proteus}) for Unix and Windows environments.
 
 Debugging facilities are implemented, allowing to trace execution of a
-function, trace application of a given rule pattern, or examine the stack when
-recursion did not terminate. An experimental debugger version of the {Yacas}
+function, trace application of a given rule pattern, examine the stack when
+recursion did not terminate, or an online debugger from the
+command line. An experimental debug version of the {Yacas}
 executable that provides more detailed information can be compiled.
 
 		Documentation
@@ -623,8 +633,9 @@ guides (user's introduction and programmer's introduction), a collection of
 essays that describe some advanced features in more detail, and a full
 reference manual.
 
-{Yacas} currently comes with its own document formatting module that allows to
-maintain documentation in a special plain text format with a minimal markup.
+{Yacas} currently comes with its own document formatting module that allows 
+maintenance of documentation in a special plain text format with a minimal 
+markup.
 This text format is automatically converted to HTML, $LaTeX$, PostScript and
 PDF formats. The HTML version of the documentation is hyperlinked and is used
 as online help available from the {Yacas} prompt.

@@ -744,7 +744,7 @@ int main(int argc, char **argv)
 
   w->callback(quit_cb);
   w->show(1, argv);
-  w->resize(50,50,1024,760);
+  w->resize(50,50,800,600);
 //  w->fullscreen(); //TODO is this acceptable?
   atexit(myexit);
 
