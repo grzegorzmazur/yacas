@@ -294,7 +294,8 @@ BigNumber* LispNumber::Number(LispInt aPrecision)
     {
 	// do not have string representation, cannot extend precision!
 		// FIXME: the statement below should be removed
-    iNumber->Precision(digits_to_bits(aPrecision,BASE10));
+    //Serge: fixed? I agree with you, Ayal.
+//TODO remove    iNumber->Precision(digits_to_bits(aPrecision,BASE10));
     }
   }
   return iNumber.Ptr();
