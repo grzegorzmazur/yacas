@@ -917,7 +917,7 @@ equivalently Inverse($A$) = Transpose($A$).
 
 *DESC
 
-{IsDiagonal(A)} returns {True} if {A} is diagonal and {False} otherwise.
+{IsDiagonal(A)} returns {True} if {A} is a diagonal square matrix and {False} otherwise.
 
 *E.G.
 	In> IsDiagonal(Identity(5))
@@ -925,9 +925,10 @@ equivalently Inverse($A$) = Transpose($A$).
 	In> IsDiagonal(HilbertMatrix(5))
 	Out> False;
 
-*CMD IsUpperTriangular --- test for an upper triangular  matrix
+*CMD IsLowerTriangular, IsUpperTriangular --- test for a lower or upper triangular matrix
 *STD
 *CALL
+	IsLowerTriangular(A)
 	IsUpperTriangular(A)
 
 *PARMS
@@ -936,36 +937,25 @@ equivalently Inverse($A$) = Transpose($A$).
 
 *DESC
 
-{IsUpperTriangular(A)} returns {True} if {A} is upper triangular and {False} otherwise.
-A upper triangular matrix is one which has all zero entries below the diagonal.
+A lower/upper triangular matrix is a square matrix which has all zero entries above/below the diagonal.
+
+{IsLowerTriangular(A)} returns {True} if {A} is a lower triangular matrix and {False} otherwise.
+{IsUpperTriangular(A)} returns {True} if {A} is an upper triangular matrix and {False} otherwise.
 
 *E.G.
 	In> IsUpperTriangular(Identity(5))
 	Out> True;
+	In> IsLowerTriangular(Identity(5))
+	Out> True;
+	In> IsLowerTriangular({{1,2},{0,1}})
+	Out> False;
+	In> IsUpperTriangular({{1,2},{0,1}})
+	Out> True;
+A non-square matrix cannot be triangular:
+	In> IsUpperTriangular({{1,2,3},{0,1,2}})
+	Out> False;
 
-*SEE IsDiagonal, IsLowerTriangular
-
-
-*CMD IsLowerTriangular --- test for an lower triangular  matrix
-*STD
-*CALL
-        IsLowerTriangular(A)
-
-*PARMS  
-
-{A} -- a matrix
-
-*DESC
-
-{IsLowerTriangular(A)} returns {True} if {A} is upper triangular and {False} otherwise.
-A upper triangular matrix is one which has all zero entries above the diagonal.
-
-*E.G.
-        In> IsLowerTriangular(Identity(5))
-        Out> True;
-
-*SEE IsDiagonal, IsUpperTriangular
-
+*SEE IsDiagonal
 
 *CMD IsSymmetric --- test for a symmetric matrix
 *STD
@@ -974,13 +964,12 @@ A upper triangular matrix is one which has all zero entries above the diagonal.
 
 *PARMS
 
-{A} -- a square matrix
+{A} -- a matrix
 
 *DESC
 
 {IsSymmetric(A)} returns {True} if {A} is symmetric and {False} otherwise.
-$A$ is symmetric iff Transpose ($A$) =$A$. All Hermitian matrices are
-symmetric. 
+$A$ is symmetric iff Transpose ($A$) =$A$.
 
 *E.G.
 

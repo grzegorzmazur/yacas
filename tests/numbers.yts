@@ -109,6 +109,8 @@ Verify(IsPrime(4),False);
 Verify(IsPrime(5),True);
 Verify(IsPrime(6),False);
 Verify(IsPrime(7),True);
+Verify(IsPrime(-60000000000),False);
+Verify(IsPrime(6.1),False);
 
 
 Testing("Random numbers");
