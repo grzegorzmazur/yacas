@@ -440,7 +440,7 @@ void LoadYacas(LispOutput* aOutput=NULL)
       yacas = CYacas::NewL();
 
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispPlatformOS),
-                                           (*yacas)()().HashTable().LookUp("PlatformOS"));
+                                           (*yacas)()().HashTable().LookUp("OSVersion"));
 
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispExit),
                                            (*yacas)()().HashTable().LookUp("Exit"));

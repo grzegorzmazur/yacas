@@ -179,32 +179,39 @@ In that case, {FindFunction()} will return the filename under that directory. Ot
 *SEE FindFunction
 
 
-*CMD PlatformOS, FilePathseparator --- OS-dependent constants
+*CMD PlatformOS, OSVersion, FilePathSeparator --- OS-dependent constants
 *STD
 *CALL
-	PlatformOS
-	PlatformOS()
 	FilePathSeparator
+	PlatformOS()
+	OSVersion()
 
 *DESC
 
-The constant {PlatformOS} and the function {PlatformOS()} give a string with an abbreviated description of the platform on which the current Yacas interpreter is running.
-Possible values are for instance {"gnu-linux"}, {"Win32"} or {"solaris2.6"}.
-This constant can be used in scripts if one needs to know the platform.
+The functions {OSVersion()} and {PlatformOS()} return strings with an abbreviated description of the platform for which the current Yacas interpreter was compiled.
+Possible values are for instance {"linux-gnu"}, {"Win32"} or {"solaris2.6"}.
+These constants can be used in scripts if one needs to know the platform.
 
-Implementation: The value of {PlatformOS} is determined when Yacas is
-compiled. It is usually the operating system as reported by the
-{config.guess} script. However, it may be overridden (on non-Unix
-systems, the script cannot be run and the OS must be specified by
-hand). 
+The value of {OSVersion()} is normally determined when Yacas is
+compiled. It is usually the operating system name and version as reported by the
+{config.guess} script.
+However, it may be overridden at build time (on non-Unix
+systems, the script cannot be run and the value must be specified by hand).
 
-The constant {FilePathSeparator} is the string that separates directories in the file system tree. This is the forward slash ({/}) on Unix and the backslash ({\}) on Windows.
+The value of {PlatformOS()} is defined in the library (in {osdep.rep/}).
+Thus the library is able to override the platform-specific value.
+The scripts should use {PlatformOS()} to distinguish between broad classes of systems.
+The currently supported values are {"Unix"} and {"Win32"}.
 
-*EG
+The constant {FilePathSeparator} is the string that separates directories in the file system tree. This is the forward slash "{/}" on Unix and the backslash "{\}" on Windows.
 
-	In> Check(StringMid(1, 5, PlatformOS)="linux", \
+*E.G.
+
+	In> Check(StringMid(1, 5, OSVersion())="linux", \
 	          "BAAA! I WANT LINUX!")
 	Out> True;
+	In> PlatformOS()
+	Out> "Unix";
 
 *SEE MakeFilePath
 

@@ -2,6 +2,13 @@
 
 // this file should load the OS-specific module that handles MakeDir() etc.
 
+// first, define PlatformOS(). Supported values so far: "Unix", "Win32"
+PlatformOS() := Eval(
+   If(GreaterThan(Length(OSVersion()),5) And StringMid(1,5,OSVersion()) = "linux",   "Unix", 
+   If(GreaterThan(Length(OSVersion()),7) And StringMid(1,7,OSVersion()) = "solaris", "Unix",
+   If(OSVersion() = "Win32",                  "Win32", 
+   /* otherwise */                             "Unknown"))));
+
 // this lists the available OS-specific modules
 SupportedOSes :=
 {
@@ -16,17 +23,17 @@ FilePathSeparators :=
 	{"Win32", "\\"},
 };
 
-/** The variable PlatformOS determines which module we should load.
-It can be set in yacasinit.ys or here, to override PlatformOS(), e.g.:
-PlatformOS:="Win32";
-scripts should not use PlatformOS(), instead they should use
-the global constant PlatformOS, because it might have been set differently by the user's yacasinit (in the standard library, both values are the same.)
+/** The string PlatformOS() determines which module we should load.
+It can be set in yacasinit.ys or here, to override OSVersion(), e.g.:
+PlatformOS():="Win32";
+scripts should not use OSVersion(), instead they should use
+PlatformOS(), because it might have been set differently by the user's yacasinit (in the standard library, both values are the same.)
 
-Currently the variable PlatformOS is assigned to PlatformOS() in yacasinit, and the only supported variants are "Win32" and "Unix".
+Currently the only supported variants of PlatformOS()  are "Win32" and "Unix".
 
 */
 
-FilePathSeparator := FilePathSeparators[PlatformOS];
+FilePathSeparator := FilePathSeparators[PlatformOS()];
 
 // definitions of variable-argument functions
 
@@ -76,7 +83,7 @@ LoadOSDependentModule() := Use(
   ConcatStrings(
 	"osdep.rep/",
 // use this file path separator because it works on Windows and on Unix, and for other platforms we can use the archive
-	SupportedOSes[PlatformOS]
+	SupportedOSes[PlatformOS()]
   )
 );
 
