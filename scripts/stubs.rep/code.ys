@@ -172,7 +172,17 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 
 
 /* Least common multiple */
-Lcm(a,b):=Div(a*b,Gcd(a,b));
+5  # Lcm(a_IsInteger,b_IsInteger) <-- Div(a*b,Gcd(a,b));
+
+10 # Lcm(list_IsList)_(Length(list)>2) <--
+[
+	Local(first);
+	first:=Lcm(list[1],list[2]);
+	Lcm(first:Tail(Tail(list)));
+];
+
+10 # Lcm(list_IsList)_(Length(list)==2) <-- Lcm(list[1],list[2]);
+
 
 /* Expand expands polynomials.
  */

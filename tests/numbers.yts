@@ -81,5 +81,10 @@ Verify( IsIrregularPrime(11), False );
 Verify( Gcd( 324 + 1608*I, -11800 + 7900*I ),Complex(-52,16) );
 Verify( Gcd( 7300 + 12*I, 2700 + 100*I), Complex(-4,4) );
 
+Verify( Lcm({7,11,13,17}), 7*11*13*17 );
+Verify( IsCoprime(11,13), True );
+Verify( IsCoprime(1 .. 10), False );
+Verify( IsCoprime({9,40}), True );
+
 Verify( IsCarmichaelNumber( {561,1105,1729,2465,2821,6601,8911} ),{True,True,True,True,True,True,True} );
 
