@@ -111,6 +111,12 @@ UnFence("Verify",2);
 HoldArg("Verify",aRight);
 */
 
+Macro("Verify", {a,b,message})
+[
+	If(Verify(@a, @b), True, Echo("*** test failed: ", @message));
+];
+
+
 Function("LogicVerify",{aLeft,aRight})
 [
   If(aLeft != aRight,

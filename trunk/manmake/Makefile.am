@@ -92,11 +92,11 @@ LISPPROGRAMMINGCHAPTERS = LispLanguage.chapt FDL.chapt
 LISPPROGRAMMINGSOURCES = LispLanguage.chapt.txt FDL.chapt.txt
 
 
-# Yacas code extracted from the docs
-CODESNIPPETS = wester-1994.ys
+# Yacas test code extracted from the docs
+TESTCODESNIPPETS = wester-1994.ys ref.book.yts refprog.book.yts
 
-## This means: build wester-1994.ys if running tests
-check_SCRIPTS = wester-1994.ys
+## This means: build wester-1994.ys etc. if running tests
+check_SCRIPTS = $(TESTCODESNIPPETS)
 
 
 EXTRA_DIST = api2txt.pl txt2example.pl book2txt.sh book2txt.ys \
@@ -142,6 +142,16 @@ SUFFIXES = .chapt.txt .chapt .book.tex .book.txt .book .tex .dvi .ps .pdf .ys
 .chapt.ys:
 	sh $(srcdir)/book2ys.sh -run "$(ouryacas)" $< $@
 
+# generate test code from book sources
+
+ref.book.yts: $(REFSOURCES) $(srcdir)/txt2example.pl
+	@echo "// tests for ref.book" > $@
+	for file in $(REFSOURCES); do perl $(srcdir)/txt2example.pl $(srcdir)/$$file >> $@; done
+
+refprog.book.yts: $(REFPROGSOURCES) $(srcdir)/txt2example.pl
+	@echo "// tests for refprog.book" > $@
+	for file in $(REFPROGSOURCES); do perl $(srcdir)/txt2example.pl $(srcdir)/$$file >> $@; done
+
 
 # specify books that need chapters
 essays.book.tex: essays.book $(ESSAYCHAPTERS)
@@ -167,7 +177,7 @@ pdf-docs: $(PDF_DOCS)
 CLEANFILES = books.html *.tex *.dvi *.aux *.idx *.ind *.ilg *.toc *.log *.ps *.pdf \
 	coding*.html intro*.html ref*.html essays*.html Algo*.html LispProgramming*.html *.o core *~ texdocs.c \
 	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(LISPPROGRAMMINGCHAPTERS) $(NEWDESIGNCHAPTERS) \
-	$(CODESNIPPETS) $(ALGOCHAPTERS) yacasapi.chapt.txt $(BOOKS) manicon.html
+	$(TESTCODESNIPPETS) $(ALGOCHAPTERS) yacasapi.chapt.txt $(BOOKS) manicon.html
 
 # The top HTML docs target is now "manicon.html" that is built by GenerateIndex().
 # The dependence on $(HTMLBOOKS) is only to make sure that all HTML docs

@@ -159,7 +159,7 @@ while (<STDIN>) {
 	#############################################################
 	# stuff for refman
 	#############################################################
-	elsif (/^\*([-A-Z.]+)\s*$/ and defined($star_labels{$1})) {	# labels without parameters
+	elsif (/^\*([-A-Z.0-9]+)/ and defined($star_labels{$1})) {	# uppercase labels without parameters (if parameters are given, they are ignored)
 		&finish_text_close_quote();
 		$have_par = 1;
 		print $star_labels{$1} . "\n";
