@@ -461,10 +461,76 @@ void LispFac(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispFastIsPrime(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {//FIXME
+#ifndef NO_USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      GetNumber(x,aEnvironment, aArguments, 1);
+      LispInt result = primes_table_check((unsigned long)(x->Double()));
+      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+      z->SetTo(result);
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+#else
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatIsPrime);
+#endif
 }
 
+// define a macro to replace all platform math functions
+#ifndef NO_USE_BIGFLOAT
 
+  #ifndef HAVE_MATH_H
+  // this warning is here just to be sure what we are compiling
+    #warning do not have math.h
+    #define PLATFORM_UNARY(LispName, PlatformName, LispBackupName, OldName) \
+void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+{ \
+      LispBackupName(aEnvironment, aResult, aArguments); \
+}
+    #define PLATFORM_BINARY(LispName, PlatformName, LispBackupName) \
+void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+{ \
+      LispBackupName(aEnvironment, aResult, aArguments); \
+}
+  #else	// HAVE_MATH_H
+    #define PLATFORM_UNARY(LispName, PlatformName, LispBackupName, OldName) \
+void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+{ \
+      RefPtr<BigNumber> x; \
+      GetNumber(x,aEnvironment, aArguments, 1); \
+      double result = PlatformName(x->Double()); \
+      BigNumber *z = NEW BigNumber(aEnvironment.Precision()); \
+      z->SetTo(result); \
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
+}
+    #define PLATFORM_BINARY(LispName, PlatformName, LispBackupName, OldName) \
+void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+{ \
+      RefPtr<BigNumber> x, y; \
+      GetNumber(x,aEnvironment, aArguments, 1); \
+      GetNumber(y,aEnvironment, aArguments, 2); \
+      double result = PlatformName(x->Double(), y->Double()); \
+      BigNumber *z = NEW BigNumber(aEnvironment.Precision()); \
+      z->SetTo(result); \
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
+}
+  #endif
+#else	// NO_USE_BIGFLOAT
+  // this warning is here just to be sure what we are compiling
+  #warning not using BigNumber:: functions
+  #define PLATFORM_UNARY(LispName, PlatformName, LispBackupName, OldName) \
+void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+{ \
+    LispArithmetic1(aEnvironment, aResult, aArguments, OldName);
+}
+  #define PLATFORM_BINARY(LispName, PlatformName, LispBackupName, OldName) \
+void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+{ \
+    LispArithmetic2(aEnvironment, aResult, aArguments, OldName);
+}
+#endif
+
+// now we can define all such functions, e.g.:
+//	PLATFORM_UNARY(LispFastSin, sin, LispSin, PlatSin)
+// this will generate the following equivalent code:
+/*
 
 void LispFastSin(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
@@ -486,6 +552,25 @@ void LispFastSin(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatSin);
 }
 
+*/
+
+// some or all of these functions should be moved to scripts
+	PLATFORM_UNARY(LispFastSin, sin, LispSin, PlatSin)
+	PLATFORM_UNARY(LispFastCos, cos, LispCos, PlatCos)
+	PLATFORM_UNARY(LispFastTan, tan, LispTan, PlatTan)
+	PLATFORM_UNARY(LispFastArcSin, asin, LispArcSin, PlatArcSin)
+	PLATFORM_UNARY(LispFastArcCos, acos, LispArcCos, PlatArcCos)
+	PLATFORM_UNARY(LispFastArcTan, atan, LispArcTan, PlatArcTan)
+	PLATFORM_UNARY(LispFastExp, exp, LispExp, PlatExp)
+	PLATFORM_UNARY(LispFastLog, log, LispLn, PlatLn)
+	PLATFORM_UNARY(LispFastAbs, fabs, LispAbs, PlatAbs)
+	PLATFORM_UNARY(LispFastFloor, floor, LispFloor, PlatFloor)
+	PLATFORM_UNARY(LispFastCeil, ceil, LispCeil, PlatCeil)
+	PLATFORM_UNARY(LispFastSqrt, sqrt, LispSqrt, PlatSqrt)
+	PLATFORM_BINARY(LispFastPower, pow, LispPower, PlatPower)
+	PLATFORM_BINARY(LispFastMod, fmod, LispMod, PlatMod)
+
+/* this will be gone 
 void LispFastCos(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {//FIXME
@@ -546,6 +631,7 @@ void LispFastCeil(LispEnvironment& aEnvironment, LispPtr& aResult,
 {//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatCeil);
 }
+
 void LispFastMod(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {//FIXME
@@ -557,6 +643,7 @@ void LispFastAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
 {//FIXME
     LispArithmetic1(aEnvironment, aResult, aArguments, PlatAbs);
 }
+up to here */
 
 /*
 BINARYFUNCTION(LispShiftLeft, ShiftLeft, ShiftLeft)
@@ -595,7 +682,7 @@ void LispBitXor(LispEnvironment& aEnvironment, LispPtr& aResult,
 {//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, BitXor);
 }
-/**/
+/* up to here */
 
 
 void LispFromBase(LispEnvironment& aEnvironment, LispPtr& aResult,
