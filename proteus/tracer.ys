@@ -27,7 +27,7 @@ Dump():=
     ForEach(item,head)
     [
       Echo({item[1]});
-      Echo({item[2]});
+      Echo({indent,item[2],item[3]});
     ];
     Echo({"end"});
   ];
@@ -35,7 +35,8 @@ Dump():=
 
 TrEnter(_expr) <--
 [
-  DestructiveAppend(traceStack[1],{-1,indent:"ENTER: ":expr});
+  If(Length(expr)>100,expr:=StringMid(1,100,expr):"...");
+  DestructiveAppend(traceStack[1],{-1,"ENTER: ",expr});
   traceStack := {}:traceStack;
   indent := Indent();
 ];
@@ -56,7 +57,7 @@ TrLeave(_expr,_result) <--
     traceStack := Tail(traceStack);
   ];
   indent := Indent();
-  DestructiveAppend(traceStack[1],{-1,indent:"LEAVE: ":result});
+  DestructiveAppend(traceStack[1],{-1,"LEAVE: ",result});
 ];
 HoldArg("TrLeave",arg1);
 HoldArg("TrLeave",arg2);
@@ -72,7 +73,7 @@ ThunkToTracer() <--
   Load("trace.tmp");
   While(Length(traceStack)>1) TrLeave("STOPPED","STOPPED");
   Dump();
-  traceStack := {{{traceFile,"BEGIN"},{-1,"END"}}};
+  traceStack := {{{traceFile,"BEGIN",""},{-1,"END",""}}};
   traceFile := 0;
   Dump();
 ];

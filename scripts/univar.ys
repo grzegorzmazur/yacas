@@ -15,10 +15,12 @@ RuleBase("NormalForm",{expression});
 Rule("NormalForm",1,1000,True) expression;
 
 
-
+0 # NormalForm(UniVariate(_var,_first,_coefs)) <--
+    ExpandUniVariate(var,first,coefs);
+/*TODO remove
 Rule("NormalForm",1,0,Type(expression) = "UniVariate")
     ExpandUniVariate(expression[1],expression[2],expression[3]);
-
+*/
 
 Function("ExpandUniVariate",{var,first,coefs})
 [
@@ -34,7 +36,12 @@ Function("ExpandUniVariate",{var,first,coefs})
 ];
 
 
+10 # IsUniVar(UniVariate(_var,_first,_coefs)) <-- True;
+20 # IsUniVar(_anything) <-- False;
+
+/*TODO remove?
 Function("IsUniVar",{expr}) Type(expr) = "UniVariate";
+*/
 
 RuleBase("UniVariate",{var,first,coefs});
 
@@ -56,81 +63,84 @@ Rule("Degree",1,0, IsUniVar(expr))
   While(i >= min And IsZero(Coef(expr,i))) i--;
   i;
 ];
-Rule("Degree",1,1, True)
-    Degree(MakeUni(expr));
 
-0 # Degree(_poly,_var) <--
-[
-  Local(uni);
-  uni := MakeUni(poly,var);
-  Degree(uni);
-];
+10 # Degree(_poly)      <-- Degree(MakeUni(poly));
+10 # Degree(_poly,_var) <-- Degree(MakeUni(poly,var));
 
 
-500 # (aLeft_IsUniVar + aRight_IsUniVar)_(aLeft[1] = (aRight[1])) <--
+
+500 # UniVariate(_var,_f1,_c1) + UniVariate(_var,_f2,_c2) <--
 [
   Local(from,result);
   Local(curl,curr,left,right);
 
-  curl:=aLeft[2];
-  curr:=aRight[2];
-  left:=aLeft[3];
-  right:=aRight[3];
-  result:={};
-  from:=Min(curl,curr);
+  Set(curl, f1);
+  Set(curr, f2);
+  Set(left, c1);
+  Set(right, c2);
+  Set(result, {});
+  Set(from, Min(curl,curr));
 
-  While(curl<curr And left != {})
+  While(MathAnd(LessThan(curl,curr),left != {}))
   [
     DestructiveAppend(result,Head(left));
-    left:=Tail(left);
-    curl++;
+    Set(left,Tail(left));
+    Set(curl,MathAdd(curl,1));
   ];
-  While(curl<curr)
+  While(LessThan(curl,curr))
   [
     DestructiveAppend(result,0);
-    curl++;
+    Set(curl,MathAdd(curl,1));
   ];
-  While(curr<curl And right != {})
+  While(MathAnd(LessThan(curr,curl), right != {}))
   [
     DestructiveAppend(result,Head(right));
-    right:=Tail(right);
-    curr++;
+    Set(right,Tail(right));
+    Set(curr,MathAdd(curr,1));
   ];
-  While(curr<curl)
+  While(LessThan(curr,curl))
   [
     DestructiveAppend(result,0);
-    curr++;
+    Set(curr,MathAdd(curr,1));
   ];
-  While(left != {} And right != {})
+  While(MathAnd(left != {}, right != {}))
   [
     DestructiveAppend(result,Head(left)+Head(right));
-    left  := Tail(left);
-    right := Tail(right);
+    Set(left, Tail(left));
+    Set(right, Tail(right));
   ];
-
-
   While(left != {})
   [
     DestructiveAppend(result,Head(left));
-    left  := Tail(left);
+    Set(left, Tail(left));
   ];
   While(right != {})
   [
     DestructiveAppend(result,Head(right));
-    right := Tail(right);
+    Set(right, Tail(right));
   ];
 
-  UniVariate(aLeft[1],from,result);
+  UniVariate(var,from,result);
 ];
 
 
+200 # UniVariate(_var,_first,_coefs) + a_IsNumber <--
+      UniVariate(var,first,coefs) + UniVariate(var,0,{a});
+200 # a_IsNumber + UniVariate(_var,_first,_coefs) <--
+      UniVariate(var,first,coefs) + UniVariate(var,0,{a});
+
+/*TODO remove?
 200 # aLeft_IsUniVar + aRight_IsNumber <-- aRight+aLeft;
 200 # aLeft_IsNumber + aRight_IsUniVar <--
     UniVariate(aRight[1],0,{aLeft})+aRight;
+*/
 
+200 # - UniVariate(_var,_first,_coefs) <-- UniVariate(var,first,-coefs);
+
+/*TODO remove?
 200 # - (aLeft_IsUniVar) <--
      Apply("UniVariate",{aLeft[1],aLeft[2],-(aLeft[3])});
-
+*/
 
 200 # aLeft_IsUniVar - aRight_IsUniVar <--
 [
@@ -195,30 +205,22 @@ Rule("Degree",1,1, True)
 20 # RepeatedSquaresMultiply(_a,n_IsInteger) <--
 [
   Local(m,b);
-  m:=1;
-  b:=1;
-  While(m<=n) m:=(m<<1);
-  m:= (m>>1);
+  Set(m,1);
+  Set(b,1);
+  While(m<=n) Set(m,(ShiftLeft(m,1)));
+  Set(m, ShiftRight(m,1));
   While(m>0)
   [
-    b:=b*b;
-    If (BitAnd(m,n) != 0,b:=b*a);
-    m:= (m>>1);
+    Set(b,b*b);
+    If (MathNot(Equals(BitAnd(m,n), 0)),Set(b,b*a));
+    Set(m, ShiftRight(m,1));
   ];
   b;
 ];
 
 200 # aLeft_IsUniVar ^ aRight_IsPositiveInteger <--
-[
+      RepeatedSquaresMultiply(aLeft,aRight);
 
-  Local(result);
-  result:=RepeatedSquaresMultiply(aLeft,aRight);
-  result;
-
-/*
-  aLeft*(aLeft^(aRight-1));
-*/
-];
 
 
 /*TODO this can be made twice as fast!*/
@@ -238,24 +240,41 @@ MaxUniOrder:=3000;
 Function("SetOrder",{order}) MaxUniOrder:=order;
 
 
+ShiftUniVar(UniVariate(_var,_first,_coefs),_fact,_shift)
+   <-- UniVariate(var,first+shift,fact*coefs);
+
+
+200 # UniVariate(_var,_f1,_c1) * UniVariate(_var,_f2,_c2) <--
+[
+  Local(i,j,n,shifted,result);
+  Set(result,MakeUni(0,var));
+
+  Set(n,Length(c1));
+  For(i:=1,i<=n,i++)
+  [
+    Set(result,result+ShiftUniVar(UniVariate(var,f2,c2),MathNth(c1,i),f1+i-1));
+  ];
+  result;
+];
+
+/*TODO remove?
 Function("ShiftUniVar",{uni,fact,shift})
 [
  Apply("UniVariate",{uni[1],uni[2]+shift,fact*(uni[3])});
 ];
-
 200 # (aLeft_IsUniVar * aRight_IsUniVar)_(aLeft[1] = aRight[1]) <--
 [
   Local(i,j,n,shifted,result);
-  result:=MakeUni(0,aLeft[1]);
+  Set(result,MakeUni(0,aLeft[1]));
 
-  n:=Length(aLeft[3]);
+  Set(n,Length(aLeft[3]));
   For(i:=1,i<=n,i++)
   [
     result:=result+ShiftUniVar(aRight,aLeft[3][i],aLeft[2]+i-1);
   ];
   result;
 ];
-
+*/
 
 5 # Coef(uv_IsUniVar,order_IsList) <--
 [
@@ -319,12 +338,8 @@ Function("MakeUni",{expression}) MakeUni(expression,VarList(expression));
 /* Convert normal form to univariate expression */
 RuleBase("MakeUni",{expression,var});
 
-Rule("MakeUni",2,1,var = {})
-[
-  UniVariate(dummyvar,0,{expression});
-];
-
-Rule("MakeUni",2,2,IsList(var))
+1 # MakeUni(_expr,{}) <-- UniVariate(dummyvar,0,{expression});
+2 # MakeUni(_expr,var_IsList) <-- 
 [
   Local(result,item);
   result:=expression;
@@ -335,6 +350,24 @@ Rule("MakeUni",2,2,IsList(var))
   result;
 ];
 
+10 # MakeUni(UniVariate(_var,_first,_coefs),_var) <--
+    UniVariate(var,first,coefs);
+
+20 # MakeUni(UniVariate(_v,_first,_coefs),_var) <--
+[
+  Local(reslist,item);
+  reslist:={};
+  ForEach(item,expression[3])
+  [
+    If(IsFreeOf(item,var),
+      DestructiveAppend(reslist,item),
+      DestructiveAppend(reslist,MakeUni(item,var))
+      );
+  ];
+  UniVariate(expression[1],expression[2],reslist);
+];
+
+/*TODO remove?
 Rule("MakeUni",2,10,Type(expression) = "UniVariate")
 [
   Local(reslist,item);
@@ -348,9 +381,19 @@ Rule("MakeUni",2,10,Type(expression) = "UniVariate")
   ];
   Apply("UniVariate",{expression[1],expression[2],reslist});
 ];
+*/
 
+20 # MakeUni(_expression,_var)_(IsFreeOf(expression,var))
+     <-- UniVariate(var,0,{expression});
+30 # MakeUni(_var,_var) <-- UniVariate(var,1,{1});
+30 # MakeUni(_a + _b,_var) <-- MakeUni(a,var) + MakeUni(b,var);
+30 # MakeUni(_a - _b,_var) <-- MakeUni(a,var) - MakeUni(b,var);
+30 # MakeUni(   - _b,_var) <--                - MakeUni(b,var);
+30 # MakeUni(_a * _b,_var) <-- MakeUni(a,var) * MakeUni(b,var);
+30 # MakeUni(_a ^ n_IsInteger,_var) <-- MakeUni(a,var) ^ n;
+30 # MakeUni(_a / _b,_var)_(IsFreeOf(b,var)) <-- MakeUni(a,var) * (1/b);
 
-
+/*TODO remove?
 Rule("MakeUni",2,20,IsFreeOf(expression,var)) UniVariate(var,0,{expression});
 
 Rule("MakeUni",2,30,expression=var)       UniVariate(var,1,{1});
@@ -370,6 +413,7 @@ Rule("MakeUni",2,30,Type(expression) = "/" And
 
 Rule("MakeUni",2,30,Type(expression) = "-" And NrArgs(expression) = 2)
      MakeUni(expression[1],var)-MakeUni(expression[2],var);
+*/
 
 
 0 # Div(n_IsUniVar,m_IsUniVar)_(Degree(n) < Degree(m)) <-- 0;

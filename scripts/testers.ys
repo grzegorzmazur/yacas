@@ -16,10 +16,11 @@ Function("NextTest",{aLeft})
 WriteString("
 ":String(curline):". ":aLeft:" : "
            );
+  NewLine();
 ];
 Function("Testing",{aLeft})
 [
- WriteString(aLeft); Space();
+ WriteString(aLeft); NewLine();
 ];
 
 

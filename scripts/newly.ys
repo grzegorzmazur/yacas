@@ -24,35 +24,21 @@ UniqueConstant() <--
 ];
 
 
-RuleBase("IsFreeOf",{expr,var});
+1 # IsFreeOf(_expr,{}) <-- True;
+2 # IsFreeOf(_expr,var_IsList) <-- MathAnd(IsFreeOf(expr,Head(var)), IsFreeOf(expr,Tail(var)));
 
-Rule("IsFreeOf",2,1,var={}) True;
-Rule("IsFreeOf",2,2,IsList(var))
-[
-  IsFreeOf(expr,var[1]) And IsFreeOf(expr,Tail(var));
-];
+4 # IsFreeOf({},_var) <-- True;
+5 # IsFreeOf(expr_IsList,_var) <-- MathAnd(IsFreeOf(Head(expr),var), IsFreeOf(Tail(expr),var));
 
 /* Accept any variable. */
-Rule("IsFreeOf",2,10,expr = var) False;
+10 # IsFreeOf(_expr,_expr) <-- False;
 
 /* Otherwise check all leafs of a function. */
-Rule("IsFreeOf",2,11,IsFunction(expr))
-[
-  Local(item,result, flatlist);
-  flatlist:=Tail(Listify(expr));
-  result:=True;
-  ForEach(item,flatlist)
-    result:=(result And IsFreeOf(item,var));
-  result;
-];
+11 # IsFreeOf(expr_IsFunction,_var) <-- IsFreeOf(Tail(Listify(expr)),var);
 
 /* Else it doesn't depend on any variable. */
-Rule("IsFreeOf",2,12,True) True;
+12 # IsFreeOf(_expr,_var) <-- True;
 
-
-
-
-    
 
 Function("IsZeroVector",{aList}) aList = ZeroVector(Length(aList));
 
