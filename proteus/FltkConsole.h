@@ -5,6 +5,7 @@
 
 
 #include <FL/Fl_Widget.H>
+#include <FL/x.H>
 #include "grower.h"
 #include "lispstring.h"
 #include "commandline.h"
@@ -79,6 +80,7 @@ class ConsoleDrawer : public ConsoleOutBase
 {
 public:
     ConsoleDrawer(LispEnvironment& aEnvironment,LispPtr& aExecute,int aWidth,int aHeight);
+    virtual ~ConsoleDrawer();
     virtual void draw(int x, int y, int width,int draw_input=1);
     virtual int height(int draw_input=1);
     virtual LispCharPtr input();
@@ -89,6 +91,7 @@ private:
     LispPtr iExecute;
     int iWidth;
     int iHeight;
+    Fl_Offscreen pixmap;
 };
 
 

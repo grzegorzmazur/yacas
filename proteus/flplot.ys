@@ -29,16 +29,13 @@
   Local(execute);
   execute:={};
   
-  `[
+  `FlGraphStart(Hold([
     Local(dowidth,crect,plist);
     dowidth:=(@dowidth);
     crect:=(@crect);
     plist:=(@plist);
     @flplot2d2;
-  ];
-//  execute:=Hold(FlTranslate(FlWindow[1],FlWindow[2])):execute;
-//  DestructiveAppend(execute,Hold(FlTranslate(-FlWindow[1],-FlWindow[2])));
-  FlGraphStart(execute,640,260);
+  ]),340,260);
   True;
 ]);
 
@@ -50,14 +47,6 @@ GraphColorForLine(1) <-- FlColor(255,0,0);
 GraphColorForLine(2) <-- FlColor(0,255,0);
 GraphColorForLine(3) <-- FlColor(0,0,255);
 GraphColorForLine(0) <-- FlColor(255,0,255);
-
-
-Macro(ExB,{op,args})
-[
-  Local(a);
-  Set(a,@args);
-  DestructiveAppend(execute,UnList((@op):a));
-];
 
   flplot2d2 := Hold(
   [
@@ -87,32 +76,42 @@ Macro(ExB,{op,args})
     ];
 //    crect := FlWindow;
     /* Clear the screen */
-    ExB(FlColor,{224,224,224});
-    ExB(FlBeginPolygon,{});
-    ExB(FlVertex,{flx,fly});
-    ExB(FlVertex,{flx,fly+flh});
-    ExB(FlVertex,{flx+flw+1,fly+flh+1});
-    ExB(FlVertex,{flx+flw+1,fly+1});
-    ExB(FlEndPolygon,{});
+    FlColor(255,255,255);
+    FlBeginPolygon();
+    FlVertex(0,0);
+    FlVertex(0,260);
+    FlVertex(341,261);
+    FlVertex(341,0);
+    FlEndPolygon();
 
-    ExB(FlColor,{0,0,0});
+
+    // Grey box
+    FlColor(224,224,224);
+    FlBeginPolygon();
+    FlVertex(flx,fly);
+    FlVertex(flx,fly+flh);
+    FlVertex(flx+flw+1,fly+flh+1);
+    FlVertex(flx+flw+1,fly+1);
+    FlEndPolygon();
+
+    FlColor(0,0,0);
     For(line:=1,line<=2,line++)
     [
-      ExB(FlBeginLine,{});
-      ExB(FlVertex,{flx-line,fly-line});
-      ExB(FlVertex,{flx-line,fly+flh+line});
-      ExB(FlVertex,{flx+line+flw,fly+flh+line});
-      ExB(FlVertex,{flx+line+flw,fly-line});
-      ExB(FlVertex,{flx-line,fly-line});
-      ExB(FlEndLine,{});
+      FlBeginLine();
+      FlVertex(flx-line,fly-line);
+      FlVertex(flx-line,fly+flh+line);
+      FlVertex(flx+line+flw,fly+flh+line);
+      FlVertex(flx+line+flw,fly-line);
+      FlVertex(flx-line,fly-line);
+      FlEndLine();
     ];
 
     For(line:=1,line<=Length(mlist),line++)
     [
         Local(ll,h);
         ll:=mlist[line];
-        ExB(GraphColorForLine,{line&3});
-        ExB(FlBeginLine,{});
+        GraphColorForLine(line&3);
+        FlBeginLine();
         For(i:=1,i<=dowidth,i++)
         [
           if (Length(ll)>0)
@@ -122,38 +121,17 @@ Macro(ExB,{op,args})
             if (Length(h) > 1)
               if (IsNumber(h[1]) And IsNumber(h[2]))
               [
-                ExB(FlVertex,{h[1],h[2]});
+                FlVertex(h[1],h[2]);
               ];
             ll:=Tail(ll);
           ];
         ];
-        ExB(FlEndLine,{});
+        FlEndLine();
      ];
    ]);
 
 
 
-
-/*
-  Frm(render,width,height);
-FrmWidth(Frm(_r,_w,_h)) <-- w;
-FrmHeight(Frm(_r,_w,_h)) <-- h;
-FrmRender(Frm(_r,_w,_h)) <-- r;
-
-
-10 # FrmForm(_x/_y)
-   <--
-   [
-     x:=FrmForm(x);
-     y:=FrmForm(y);
-     Local(w);
-     w:=Max(FrmWidth(x),FrmWidth(y));          
-     
-   ];
-
-10 # FrmForm(x_IsAtom)
-   <-- Frm();
-*/
 
 
 
