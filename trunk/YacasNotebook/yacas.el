@@ -145,10 +145,10 @@
   :group 'yacas
   :type 'string)
 
-;(defcustom yacas-output-prompt-string "Out> "
-;  "A string for the standard Yacas prompt."
-;  :group 'yacas
-;  :type 'string)
+(defcustom yacas-output-prompt-string "Out> "
+  "A string for the standard Yacas prompt."
+  :group 'yacas
+  :type 'string)
 
 ;;;;;;;;;;;;;
 
