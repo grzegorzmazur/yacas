@@ -857,7 +857,8 @@ M-s will bring the next input matching
         (setq yacas-input-end (point))
         (comint-send-input))
   (while (not (yacas-new-prompt-p))
-    (sit-for 0.100)))
+    (sit-for 0.100))
+  (goto-char (point-max)))
 
 (defun yacas-in-comment-p ()
   "Non-nil means that the point is in a comment."
