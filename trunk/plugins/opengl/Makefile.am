@@ -9,7 +9,7 @@ pkglib_LTLIBRARIES = $(OPENGL_PLUGIN)
 EXTRA_LTLIBRARIES = opengl.la
 opengl_la_SOURCES = glutcode.cc openglapi.stub glutcode.h
 opengl_la_LIBADD = openglapi.lo
-opengl_la_LDFLAGS = $(GL_LIBS) -module -avoid-version -no-undefined -rpath $(pkglibdir)
+opengl_la_LDFLAGS = $(GL_LIBS) -module -avoid-version -rpath $(pkglibdir)
 
 CLEANFILES = openglapi.cc openglapi.man.txt
 

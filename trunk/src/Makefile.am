@@ -72,11 +72,11 @@ libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 
 # The libmath.cpp source file is generated as follows
 
-libmath.cpp: $(top_srcdir)/scripts/base.rep/math.ys yacas
+libmath.cpp: $(top_srcdir)/scripts/base.rep/math.ys yacas$(EXEEXT)
 	(cd ../scripts && make packages.ys corefunctions.ys)
 	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
 	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
-	./yacas --rootdir  $(top_srcdir)/scripts -pc --init compileinit.txt compile.txt
+	./yacas$(EXEEXT) --rootdir  $(top_srcdir)/scripts -pc --init compileinit.txt compile.txt
 
 # We used to have "libmath_la_LIBADD = libmath.lo" because libmath.cpp
 # is a built source. However, this broke the build process on some
