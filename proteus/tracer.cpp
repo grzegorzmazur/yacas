@@ -599,7 +599,7 @@ return;
         sprintf(buf,"DefaultDirectory(\"%s\");",scriptdir);
         yacas->Evaluate(buf);
         yacas->Evaluate("Load(\"yacasinit.ys\");");
-        yacas->Evaluate("ForEach(item,DefPackages)Use(item);");
+        yacas->Evaluate("ForEach(item,DefPackages())Use(item);");
         yacas->Evaluate("Load(\"tracer.ys\");");
         if (pre_eval[0])
         {

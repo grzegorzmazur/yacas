@@ -983,7 +983,7 @@ static void MultiFix(LispEnvironment& aEnvironment, LispPtr& aResult,
     CHK_ARG(precedence.Get()->String() != NULL, 2);
     LispInt prec = InternalAsciiToInt(precedence.Get()->String()->String());
     CHK_ARG(prec <= KMaxPrecedence, 2);
-    aOps.SetOperator(prec,aEnvironment.HashTable().LookUpUnStringify(orig->String()));
+    aOps.SetOperator(prec,SymbolName(aEnvironment,orig->String()));
     InternalTrue(aEnvironment,aResult);
 }
 
@@ -1003,7 +1003,7 @@ static void SingleFix(LispInt aPrecedence, LispEnvironment& aEnvironment, LispPt
     CHK_ARG(Argument(aArguments,1).Get() != NULL, 1);
     LispStringPtr orig = Argument(aArguments,1).Get()->String();
     CHK_ARG(orig != NULL, 1);
-    aOps.SetOperator(aPrecedence,aEnvironment.HashTable().LookUpUnStringify(orig->String()));
+    aOps.SetOperator(aPrecedence,SymbolName(aEnvironment,orig->String()));
     InternalTrue(aEnvironment,aResult);
 }
 void LispPreFix(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -1124,7 +1124,7 @@ static void InternalRuleBase(LispEnvironment& aEnvironment, LispPtr& aResult,
     CHK_ISLIST(args,2);
 
     // Finally define the rule base
-    aEnvironment.DeclareRuleBase(aEnvironment.HashTable().LookUpUnStringify(orig->String()),
+    aEnvironment.DeclareRuleBase(SymbolName(aEnvironment,orig->String()),
                                  args.Get()->SubList()->Get()->Next(),aListed);
     
     // Return LispTrue
@@ -1167,9 +1167,7 @@ void LispHoldArg(LispEnvironment& aEnvironment, LispPtr& aResult,
     // The arguments
     LispStringPtr tohold = Argument(aArguments,2).Get()->String();
     CHK_ARG(tohold != NULL, 2);
-
-    aEnvironment.HoldArgument(aEnvironment.HashTable().LookUpUnStringify(orig->String()),
-                              tohold);
+    aEnvironment.HoldArgument(SymbolName(aEnvironment,orig->String()), tohold);
     // Return LispTrue
     InternalTrue(aEnvironment,aResult);
 }
@@ -1224,7 +1222,7 @@ static void InternalNewRule(LispEnvironment& aEnvironment, LispPtr& aResult,
     precedence = InternalAsciiToInt(pr.Get()->String()->String());
     
     // Finally define the rule base
-    aEnvironment.DefineRule(aEnvironment.HashTable().LookUpUnStringify(orig->String()),
+    aEnvironment.DefineRule(SymbolName(aEnvironment,orig->String()),
                             arity,
                             precedence,
                             predicate,
@@ -1262,7 +1260,7 @@ void LispUnFence(LispEnvironment& aEnvironment, LispPtr& aResult,
     CHK_ARG(Argument(aArguments,2).Get()->String() != NULL, 2);
     LispInt arity = InternalAsciiToInt(Argument(aArguments,2).Get()->String()->String());
 
-    aEnvironment.UnFenceRule(aEnvironment.HashTable().LookUpUnStringify(orig->String()),
+    aEnvironment.UnFenceRule(SymbolName(aEnvironment,orig->String()),
                             arity);
     
     // Return LispTrue
@@ -1405,14 +1403,14 @@ void LispRetract(LispEnvironment& aEnvironment, LispPtr& aResult,
     CHK_ARG(evaluated.Get() != NULL, 1);
     LispStringPtr orig = evaluated.Get()->String();
     CHK_ARG(orig != NULL, 1);
-    LispString oper;
-    InternalUnstringify(oper, orig);
+    LispStringPtr oper = SymbolName(aEnvironment,orig->String());
+//TODO remove    InternalUnstringify(oper, orig);
     
     LispPtr arity;
     InternalEval(aEnvironment, arity, Argument(aArguments,2));
     CHK_ARG(arity.Get()->String() != NULL, 2);
     LispInt ar = InternalAsciiToInt(arity.Get()->String()->String());
-    aEnvironment.Retract(aEnvironment.HashTable().LookUp(oper.String()), ar);
+    aEnvironment.Retract(oper, ar);
     InternalTrue(aEnvironment,aResult);
 }
 
@@ -1720,7 +1718,7 @@ void LispRightAssociative(LispEnvironment& aEnvironment, LispPtr& aResult,
     CHK_ARG(Argument(aArguments,1).Get() != NULL, 1);
     LispStringPtr orig = Argument(aArguments,1).Get()->String();
     CHK_ARG(orig != NULL, 1);
-    aEnvironment.InFix().SetRightAssociative(aEnvironment.HashTable().LookUpUnStringify(orig->String()));
+    aEnvironment.InFix().SetRightAssociative(SymbolName(aEnvironment,orig->String()));
     InternalTrue(aEnvironment,aResult);
 }
 
@@ -1740,7 +1738,7 @@ void LispLeftPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
     CHK_ARG(index.Get()->String() != NULL, 2);
     LispInt ind = InternalAsciiToInt(index.Get()->String()->String());
 
-    aEnvironment.InFix().SetLeftPrecedence(aEnvironment.HashTable().LookUpUnStringify(orig->String()),ind);
+    aEnvironment.InFix().SetLeftPrecedence(SymbolName(aEnvironment,orig->String()),ind);
     InternalTrue(aEnvironment,aResult);
 }
 
@@ -1760,7 +1758,7 @@ void LispRightPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
     CHK_ARG(index.Get()->String() != NULL, 2);
     LispInt ind = InternalAsciiToInt(index.Get()->String()->String());
 
-    aEnvironment.InFix().SetRightPrecedence(aEnvironment.HashTable().LookUpUnStringify(orig->String()),ind);
+    aEnvironment.InFix().SetRightPrecedence(SymbolName(aEnvironment,orig->String()),ind);
     InternalTrue(aEnvironment,aResult);
 }
 
@@ -1795,7 +1793,7 @@ static LispInFixOperator* OperatorInfo(LispEnvironment& aEnvironment,
 
     //
     LispInFixOperator* op = aOperators.LookUp(
-                                              aEnvironment.HashTable().LookUpUnStringify(orig->String()));
+                                              SymbolName(aEnvironment,orig->String()));
     return op;
 }
 
@@ -2463,7 +2461,7 @@ static void InternalNewRulePattern(LispEnvironment& aEnvironment, LispPtr& aResu
     precedence = InternalAsciiToInt(pr.Get()->String()->String());
     
     // Finally define the rule base
-    aEnvironment.DefineRulePattern(aEnvironment.HashTable().LookUpUnStringify(orig->String()),
+    aEnvironment.DefineRulePattern(SymbolName(aEnvironment,orig->String()),
                             arity,
                             precedence,
                             predicate,

@@ -17,11 +17,14 @@ Use("constants.rep/code.ys");
 Use("standard.ys");
 
 /* Maintain an array of deffiles */
-DefPackages:={};
+Set(defPackages,{});
+RuleBase("DefPackages",{});
+Rule("DefPackages",0,1,True) defPackages;
+
 RuleBase("CntDefLoad",{file});
 Rule("CntDefLoad",1,1,True)
 [
-  DestructiveInsert(DefPackages,1,file);
+  DestructiveInsert(defPackages,1,file);
   DefLoad(file);
 ];
 
@@ -78,8 +81,8 @@ CntDefLoad("plots.rep/code.ys");
 
 /* set the help system. This can be overridden in ~/.yacasrc */
 
-//Echo({DefPackages});
-//ForEach(item,DefPackages)Use(item);
+//Echo({defPackages});
+//ForEach(item,defPackages)Use(item);
 
 RuleBase("SetHelpBrowser",{browser});
 Rule("SetHelpBrowser",1,1,True)
