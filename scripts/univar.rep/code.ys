@@ -341,8 +341,8 @@ Function("MakeUni",{expression}) MakeUni(expression,VarList(expression));
 /* Convert normal form to univariate expression */
 RuleBase("MakeUni",{expression,var});
 
-1 # MakeUni(_expr,{}) <-- UniVariate(dummyvar,0,{expression});
-2 # MakeUni(_expr,var_IsList) <-- 
+5 # MakeUni(_expr,{}) <-- UniVariate(dummyvar,0,{expression});
+6 # MakeUni(_expr,var_IsList) <-- 
 [
   Local(result,item);
   result:=expression;
@@ -394,7 +394,7 @@ LocalSymbols(a,b,var,expression)
   30 # MakeUni(_a - _b,_var) <-- MakeUni(a,var) - MakeUni(b,var);
   30 # MakeUni(   - _b,_var) <--                - MakeUni(b,var);
   30 # MakeUni(_a * _b,_var) <-- MakeUni(a,var) * MakeUni(b,var);
-  30 # MakeUni(_a ^ n_IsInteger,_var) <-- MakeUni(a,var) ^ n;
+  1 # MakeUni(_a ^ n_IsInteger,_var) <-- MakeUni(a,var) ^ n;
   30 # MakeUni(_a / _b,_var)_(IsFreeOf(b,var)) <-- MakeUni(a,var) * (1/b);
 ];
 
