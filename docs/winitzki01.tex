@@ -1,8 +1,8 @@
 \documentclass{llncs}
 \usepackage{graphicx}
 \usepackage{amssymb}
-\usepackage[T1]{fontenc}
-\usepackage[latin1]{inputenc}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin1]{inputenc}
 %\usepackage{babel}
 
 \begin{document}
@@ -18,7 +18,7 @@
 
 \begin{abstract}
 A heuristic method to construct uniform approximations to analytic transcendental
-functions is developed as a generalization of the Hermite-Padé interpolation
+functions is developed as a generalization of the Hermite-Pad\'e interpolation
 to infinite intervals. The resulting uniform approximants
 are built from elementary functions using known series and asymptotic
 expansions of the given transcendental function.
@@ -45,8 +45,8 @@ do not provide a uniform approximation valid for all $x\in \left(0,+\infty \righ
 The purpose of this article is to introduce a simple heuristic method
 for finding uniform approximations to transcendental functions across
 an infinite range of the argument. The approximants which we call
-the {}``global Padé approximants'' are combinations of elementary
-functions. The method is in a certain sense a generalization of Hermite-Padé
+the {}``global Pad\'e approximants'' are combinations of elementary
+functions. The method is in a certain sense a generalization of Hermite-Pad\'e
 approximation and requires the knowledge of series expansions of $f\left(x\right)$
 at several points, including infinity. We obtained uniform approximations
 for the elliptic function $\textrm{dn}\left(x,m\right)$, the error
@@ -95,16 +95,16 @@ only a few terms of the series at both ends of the interval.
 %
 \begin{figure}[htbp]
 \begin{center}\includegraphics[  width=8cm,
-  height=4cm]{winitzki01-fig01.eps}\end{center}
+  height=4cm]{winitzki01-fig01}\end{center}
 
 
-\caption{A global Padé approximant of degree 3 (dashed line) for the function
+\caption{A global Pad\'e approximant of degree 3 (dashed line) for the function
 of Eq.~(\ref{eq:expex-fn}) (solid line).\label{fig:expex}}
 \end{figure}
 
 
 
-\subsection{Global Padé approximants}
+\subsection{Global Pad\'e approximants}
 
 \label{sec:globalPade} Let us consider the above approximation problem
 more formally. We need to approximate a function $f\left(x\right)$
@@ -131,10 +131,10 @@ has the correct expansions at $x=0$ and at $x=+\infty $. Since the
 leading term of the expansion of Eq.~(\ref{eq:frat}) at $x=+\infty $
 is $p_{\nu }/q_{\nu }$, we can set $p_{\nu }=q_{\nu }=1$.
 
-This formulation is similar to the problem of Hermite-Padé interpolation
+This formulation is similar to the problem of Hermite-Pad\'e interpolation
 with two anchor points \cite{GG99}, except that one of the points
 is at infinity where we need to use an expansion in $x^{-1}$. We
-call a {}``global Padé approximant'' an ansatz of the form of Eq.~(\ref{eq:frat}).
+call a {}``global Pad\'e approximant'' an ansatz of the form of Eq.~(\ref{eq:frat}).
 The unknown coefficients $p_{i}$, $q_{i}$ are found from a system
 of linear equations written compactly as\begin{eqnarray}
 p\left(x\right)-q\left(x\right)a\left(x\right) & = & O\left(x^{m}\right)\textrm{ at }x=0,\label{eq:pq1}\\
@@ -159,8 +159,8 @@ exists, $q\left(x\right)$ sometimes has zeros within the interval
 $\left(0,+\infty \right)$. In these cases one has to choose a higher
 degree $\nu $.
 
-One can show that the construction of {}``global Padé approximants''
-is equivalent to Hermite-Padé interpolation after a projective transformation
+One can show that the construction of {}``global Pad\'e approximants''
+is equivalent to Hermite-Pad\'e interpolation after a projective transformation
 of the form\begin{equation}
 x\rightarrow \frac{ax+b}{cx+d}.\end{equation}
 Our procedure is however more direct and easier to follow in hand
@@ -227,7 +227,7 @@ expansion of the form $f\left(x\right)=x^{l}\left(b_{0}+b_{1}x^{-1}+...\right)$
 at $x\rightarrow +\infty $ {[}here $l>0${]}, we should select the
 degree of the polynomial $q\left(x\right)$ in Eq.~(\ref{eq:frat})
 to be $l$ units less than the degree of $p\left(x\right)$. Then
-essentially the same procedure as above will yield a global Padé approximant
+essentially the same procedure as above will yield a global Pad\'e approximant
 for the function $f\left(x\right)$.
 
 The presence of an essential singularity is usually clear from the
@@ -270,7 +270,7 @@ g\left(x\right) & = & 1-\frac{1}{2x^{2}}+\frac{3}{4x^{4}}+O\left(x^{-6}\right).
 \end{eqnarray}
 The problem to approximate $g\left(x\right)$ is now in the form of
 Sec.~\ref{sec:globalPade}. We may obtain, for instance, the following
-global Padé approximant of degree 2,\begin{equation}
+global Pad\'e approximant of degree 2,\begin{equation}
 g\left(x\right)\approx \frac{x\sqrt{\pi }+\left(\pi -2\right)x^{2}}{1+x\sqrt{\pi }+\left(\pi -2\right)x^{2}}.\end{equation}
  This provides a uniform approximation to $\textrm{erf}\, x$ with
 an error less than $2\%$.
@@ -333,8 +333,8 @@ becomes more difficult for higher orders.
 %
 \begin{figure}[htbp]
 \begin{center}\includegraphics[  width=6cm,
-  height=3.5cm]{winitzki01-fig02.eps}\includegraphics[  width=6cm,
-  height=3.5cm]{winitzki01-fig03.eps}\end{center}
+  height=3.5cm]{winitzki01-fig02}\includegraphics[  width=6cm,
+  height=3.5cm]{winitzki01-fig03}\end{center}
 
 
 \caption{Global approximants (dashed lines) for $J_{0}\left(x\right)$ and
@@ -372,7 +372,7 @@ approximates the Airy function to about 20\% for $x<0$ and to about
 %
 \begin{figure}[htbp]
 \begin{center}\includegraphics[  width=5cm,
-  height=3.5cm]{winitzki01-fig04.eps}\end{center}
+  height=3.5cm]{winitzki01-fig04}\end{center}
 
 
 \caption{Approximation of the Airy function $\textrm{Ai}\left(x\right)$ by
@@ -449,7 +449,7 @@ with the standard choices of the branch cuts for $\sqrt{z}$ and $\ln z$.
 
 In this paper, we have presented a heuristic method for approximating
 transcendental functions $f\left(x\right)$ using combinations of
-elementary functions. This method is a generalization of the Hermite-Padé
+elementary functions. This method is a generalization of the Hermite-Pad\'e
 interpolation to infinite intervals and non-rational functions. We
 showed several examples where the approximations are easy to construct
 by hand, given the first few terms of series expansions of $f\left(x\right)$
