@@ -3,11 +3,10 @@ IsMatrix
 IsVector
 IsSquareMatrix
 IsRational
-IsRationalNumeric
 IsRationalOrNumber
-IsRationalOrInteger
-IsNegativeNumber
 IsPositiveNumber
+IsNegativeNumber
+IsNonNegativeNumber
 IsZero
 IsNotZero
 IsNonZeroInteger

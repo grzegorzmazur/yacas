@@ -324,13 +324,13 @@ Historic remarks:
 
 // Combine neighboring identical factors to powers
 1000 # _x * _x <-- x^2;
-100 # _x * _x ^ n_IsNumber <-- x^(n+1);
-100 # _x ^ n_IsNumber * _x <-- x^(n+1);
-100 # _x ^ n1_IsNumber * _x ^ n2_IsNumber <-- x^(n1+n2);
-100 # _x * (_x * _y) <-- x^2 * y;
-100 # _x ^ n_IsNumber * (_x * _y) <-- x^(n+1) * y;
-100 # _x * (_x ^ n_IsNumber * _y) <-- x^(n+1) * y;
-100 # _x ^ n1_IsNumber * (_x ^ n2_IsNumber * _y) <-- x^(n1+n2) * y;
+1000 # _x * _x ^ n_IsNumber <-- x^(n+1);
+1000 # _x ^ n_IsNumber * _x <-- x^(n+1);
+1000 # _x ^ n1_IsNumber * _x ^ n2_IsNumber <-- x^(n1+n2);
+1000 # _x * (_x * _y) <-- x^2 * y;
+1000 # _x ^ n_IsNumber * (_x * _y) <-- x^(n+1) * y;
+1000 # _x * (_x ^ n_IsNumber * _y) <-- x^(n+1) * y;
+1000 # _x ^ n1_IsNumber * (_x ^ n2_IsNumber * _y) <-- x^(n1+n2) * y;
 
 
 10 # Undefined ^ _y <-- Undefined;
@@ -370,18 +370,19 @@ Historic remarks:
 
 /*
    The whole subject of Infinity without the context of a proper limes
-   is mathematically extremely flaky.
+   is mathematically extremely dangerous.
    As a simple example, just consider the function 1/x which has
    a sign changing pole at x=0. So is 1/0=Infinity or -Infinity?
-   Now, if the sign of Infinity cannot be distinguished, most of the
-   following rules should collaps to Undefined and the whole concept
-   of Infinity can be dropped as well.
 
-   For the moment, I'll leave arithmetics on Infinity in for compatibility
-   reasons. In the long run it should be dropped (keeping Infinity only as
-   a symbol for specifying limits.
+   Finding a general set of rules to do calculations with infinity (like it is
+   tried here) is not really possible, as "Infinity" may have many different
+   meanings depending on the context.
+
+   For the moment, the arithmetics are left as they are, but the subject still has
+   to be discussed further.
 */
 
+/*
 20  # x_IsZero / y_IsZero <-- Sign(x)*Infinity;
 30  # x_IsNumber / y_IsZero <-- Sign(x)*Infinity;
 30  # x_IsZero * Infinity <-- Undefined;
@@ -439,7 +440,7 @@ Historic remarks:
 100 # (_a - Infinity) - _b <-- (a-b)-Infinity;
 
 100 # _a * Infinity <-- Infinity*a;
-
+*/
 
 
 
