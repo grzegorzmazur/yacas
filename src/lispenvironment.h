@@ -75,7 +75,7 @@ public:
                             LispInt aPrecedence, LispPtr& aPredicate,
                             LispPtr& aBody);
     void UnFenceRule(LispStringPtr aOperator,LispInt aArity);
-    void TryRetract(LispStringPtr aOperator,LispInt aArity);
+    void Retract(LispStringPtr aOperator,LispInt aArity);
     void HoldArgument(LispStringPtr  aOperator,LispStringPtr aVariable);
 
 public:

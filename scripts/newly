@@ -4,6 +4,18 @@ Nl():=
 "
 ";
 
+NewLine() := WriteN(Nl(),1);
+NewLine(n):= WriteN(Nl(),n);
+Space() := WriteN(" ",1);
+Space(n):= WriteN(" ",n);
+
+WriteN(string,n) :=
+[
+  Local(i);
+  For(i:=1,i<=n,i++) WriteString(string);
+  True;
+];
+
 UniqueConstant() <--
 [
   Local(result);

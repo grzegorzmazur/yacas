@@ -2373,7 +2373,7 @@ menubar.")
 
 (defun yacas-fn-tryretract ()
   (interactive)
-  (insert "TryRetract()")
+  (insert "Retract()")
   (forward-char -1)
   (message "Args: \"operator\", arity"))
 
@@ -3202,7 +3202,7 @@ menubar.")
    ["String" yacas-fn-string]
    ["Subst" yacas-fn-subst]
    ["SystemCall" yacas-fn-systemcall]
-   ["TryRetract" yacas-fn-tryretract]
+   ["Retract" yacas-fn-tryretract]
    ["Type" yacas-fn-type]
    ["UnFence" yacas-fn-unfence]
    ["VarList" yacas-fn-varlist]

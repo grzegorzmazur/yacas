@@ -176,7 +176,7 @@ Function("count",{from,to})
 Testing("Function definitions");
 Verify(count(1,11),55);
 
-TryRetract("count",2);
+Retract("count",2);
 
 [
   Local(l);
@@ -429,7 +429,7 @@ TestYacas(TSimplify( TSum({j,i}) Delta(i,j)*Delta(i,j) ), Ndim);
 TestYacas(TSimplify( TSum({j,i}) Delta(i,j)*Delta(j,i) ), Ndim);
 TestYacas(TSimplify( TSum({j}) Delta(i,j)*Delta(j,k) ), Delta(i,k));
 TestYacas(TSimplify( TSum({i}) v(i)*v(i) ), TSum({i})(v(i)^2));
-TryRetract("v",1);
+Retract("v",1);
 RuleBase("v",{ii});
 f(i,j):=v(i)*v(j);
 TestYacas(f(i,i),v(i)^2);
@@ -507,6 +507,6 @@ Verify();
 NextTest("Tests completed");
 NewLine();
 
-TryRetract("Next",1);
+Retract("Next",1);
 
 

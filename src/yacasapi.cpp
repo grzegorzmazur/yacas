@@ -68,8 +68,10 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispEquals        ,"Equals");
     SetCommand(LispEquals        ,"=");
     SetCommand(LispWrite         ,"Write");
+    /*TODO remove!
     SetCommand(LispSpace         ,"Space");
     SetCommand(LispNewLine       ,"NewLine");
+*/
     SetCommand(LispWriteString   ,"WriteString");
     SetCommand(LispProgBody      ,"Prog");
     SetCommand(LispNewLocal      ,"Local");
@@ -101,7 +103,7 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispNewRule       ,"Rule");
     SetCommand(LispMacroNewRule  ,"MacroRule");
     SetCommand(LispUnFence       ,"UnFence");
-    SetCommand(LispTryRetract    ,"TryRetract");
+    SetCommand(LispRetract       ,"Retract");
 
     SetCommand(LispIsFunction    ,"IsFunction");
     SetCommand(LispIsAtom        ,"IsAtom");
