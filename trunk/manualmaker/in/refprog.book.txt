@@ -1124,7 +1124,7 @@ execution of the Yacas script that uses these testing commands, since they are
 meant to be used in test scripts.
 
 
-*CMD Verify, TestYacas, LogicVerify --- Verifying equivalence of two expressions
+*CMD Verify, TestYacas, LogicVerify --- verifying equivalence of two expressions
 *STD
 *CALL
 	Verify(question,answer)
@@ -1143,8 +1143,8 @@ The commands {Verify}, {TestYacas}, {LogicVerify} can be used to verify that an
 expression is <I>equivalent</I> to  a correct answer after evaluation. All
 three commands return {True} or {False}.
 
-For most calculations, the demand that two expressions
-are <I>equal</I> syntactically is too stringent. The 
+For some calculations, the demand that two expressions
+are <I>identical</I> syntactically is too stringent. The 
 Yacas system might change at various places in the future,
 but $ 1+x $ would still be equivalent, from a mathematical
 point of view, to $ x+1 $.
@@ -1158,10 +1158,10 @@ The comparison commands do the following comparison types:
 
 *	{Verify} -- verify for literal equality. 
 This is the fastest and simplest comparison, and can be 
-used for testing that an expression simplifies to for instance $ 2 $.
-*	{TestYacas} -- compare two expressions after simplification for 
+used, for example, to test that an expression evaluates to $ 2 $.
+*	{TestYacas} -- compare two expressions after simplification as 
 multivariate polynomials. If the two arguments are equivalent
-multivariate polynomials, this test succeeds. {TestYacas} uses {Simplify()}.
+multivariate polynomials, this test succeeds. {TestYacas} uses {Simplify()}. Note: {TestYacas} currently should not be used to test equality of lists.
 *	{LogicVerify} -- Perform a test by using {CanProve} to verify that from 
 {question} the expression {answer} follows. This test command is 
 used for testing the logic theorem prover in Yacas.
@@ -1199,7 +1199,7 @@ used for testing the logic theorem prover in Yacas.
 
 *PARMS
 
-{test} -- expression that should return False on failure
+{test} -- expression that should return {False} on failure
 
 *DESC
 
