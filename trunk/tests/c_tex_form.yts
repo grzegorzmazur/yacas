@@ -20,7 +20,7 @@ TeXForm(Hold(Exp(A*B)/C/D/(E+F)*G-(-(a+b)-(c-d))-b^(c^d) -(a^b)^c))
 );
 
 Verify(
-TeXForm(Hold(Cos(A-B)*Sin(a)*f(b,c,d*(e+1))*Sqrt(C+D)-g(a+b)^(c+d)^(c+d)))
+TeXForm(Hold(Cos(A-B)*Sin(a)*f(b,c,d*(e+1))*Sqrt(C+D)-(g(a+b)^(c+d))^(c+d)))
 ,"$\\cos \\left( A - B\\right)  \\sin a f\\left( b, c, d \\left( e + 1\\right) \\right)  \\sqrt{C + D} - \\left( g\\left( a + b\\right)  ^{c + d}\\right)  ^{c + d}$"
 );
 
@@ -84,7 +84,7 @@ TeXForm()
 */
 
 Verify(
-CForm(Hold(Cos(A-B)*Sin(a)*func(b,c,d*(e+Pi))*Sqrt(Abs(C)+D)-g(a+b)^(c+d)^(c+d)))
+CForm(Hold(Cos(A-B)*Sin(a)*func(b,c,d*(e+Pi))*Sqrt(Abs(C)+D)-(g(a+b)^(c+d))^(c+d)))
 ,"cos(A - B) * sin(a) * func(b, c, d * ( e + Pi) ) * sqrt(fabs(C) + D) - pow(pow(g(a + b), c + d), c + d)" 
 );
 

@@ -25,6 +25,7 @@ RightPrecedence("-",40);
 Infix("/",30);
 Infix("*",40);
 Infix("^",20);
+RightAssociative("^");
 Prefix("+",50);
 Prefix("-",50);
 RightPrecedence("-",40);
