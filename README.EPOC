@@ -1,0 +1,54 @@
+
+Readme for EPOC Users/Developers
+--------------------------------
+
+In order to compile Yacas for EPOC, you need Microsoft Visual C++ version 6, and the Symbian C++ SDK for EPOC release 5 (free download on www.epocworld.com).
+
+Install the tools on a new drive (this release assumes P:), and extract this zip file in the top level.
+
+a) From a command prompt, create the scripts.dat file containing all the maths routines:
+
+cd ramscripts
+compress.bat
+
+b) Go to P:\Yacas-1.0.53\src and type the following:
+
+makmake epoccli marm
+makmake epocserv marm
+
+See below for details of how to compile for MSVC and the EPOC emulator.
+
+c) To compile the projects, go to P:\Yacas-1.0.53\epoc and run
+
+epocbuild.bat
+
+This should generate a .sis file in \Yacas-1.0.53\epoc - install this to your EPOC device (on any drive.)  If the compilation fails for any reason, look at the log files in epoc\ and src\
+
+
+Notes on Yacas Compatibility
+----------------------------
+
+On the EPOC device, the history file can be found in C:\System\Apps\Yacas\YacasHistory.txt.
+
+You can create your own customisable startup script as C:\System\Apps\Yacas\YacasRC.txt - this is loaded on startup.
+
+
+Compiling for MSVC and the EPOC emulator
+----------------------------------------
+
+If you want to debug these projects using MSVC and the EPOC emulator for windows,
+
+a) Go to P:\Yacas-1.0.53\src and type the following:
+
+makmake epoccli vc5
+makmake epocserv vc5
+
+b) Double click on the resultant .dsw files.  You must select build/set active configuration/win32 debug.
+
+For epocserv, remove compressedfiles.cpp and minilzo.c from the header files, because otherwise these files will be compiled twice.
+
+LispVersion and LispMathLibName: remove from mathcommands.cpp and from  yacasapi.cpp. The code doesn't depend on it yet, so it is safe to remove these.
+
+c) copy the scripts.dat file to \epoc32\wins\c\, so Yacas knows where to find it (when you start the debug version).
+
+c) To run the emulator, the executable is P:\epoc32\release\wins\deb\epoc.exe
