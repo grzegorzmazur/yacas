@@ -36,9 +36,9 @@ REDO:
     else if (c == ']') {}
     else if (c == ',') {}
     else if (c == ';') {}
-    else if (c == '%') {}
     else if (c == '~') {}
     else if (c == '?') {}
+    else if (c == '\\') {}
     else if (c == '.' && !IsDigit(aInput.Peek()) )
     {
         while (aInput.Peek() == '.')
@@ -117,24 +117,37 @@ REDO:
     }
     else if (IsDigit(c) || c == '.')
     {
-        while (IsDigit( aInput.Peek())) aInput.Next();
-        if (aInput.Peek() == '.')
+        if (c == '0' && aInput.Peek() == 'x')
         {
             aInput.Next();
-            while (IsDigit( aInput.Peek())) aInput.Next();
-        }
-        if (NumericSupportForMantissa())
-        {
-            if (aInput.Peek() == 'e' || aInput.Peek() == 'E')
+            while (IsDigit(aInput.Peek()) ||
+                   (aInput.Peek() >= 'a' && aInput.Peek() <= 'f') ||
+                   (aInput.Peek() >= 'A' && aInput.Peek() <= 'F')
+                  )
             {
                 aInput.Next();
-                if (aInput.Peek() == '-' || aInput.Peek() == '+')
-                    aInput.Next();
+            }
+        }
+        else
+        {
+            while (IsDigit( aInput.Peek())) aInput.Next();
+            if (aInput.Peek() == '.')
+            {
+                aInput.Next();
                 while (IsDigit( aInput.Peek())) aInput.Next();
+            }
+            if (NumericSupportForMantissa())
+            {
+                if (aInput.Peek() == 'e' || aInput.Peek() == 'E')
+                {
+                    aInput.Next();
+                    if (aInput.Peek() == '-' || aInput.Peek() == '+')
+                        aInput.Next();
+                    while (IsDigit( aInput.Peek())) aInput.Next();
+                }
             }
         }
     }
-    // Treat the char as a space.
     else
     {
         switch (c)
@@ -142,7 +155,6 @@ REDO:
         case '<':
         case '>':
         case '#':
-        case '%':
         case '!':
         case '=':
         case '+':
@@ -150,6 +162,7 @@ REDO:
         case '*':
         case '/':
         case '^':
+        case '\%':
         case '&':
         case ':':
         case '|':
@@ -164,7 +177,7 @@ REDO:
                 case '*':
                 case '/':
                 case '^':
-                case '%':
+                case '\%':
                 case '&':
                 case '=':
                 case '|':
@@ -174,6 +187,7 @@ REDO:
                     {
                         int take=0;
                         if (c2 == '=') take = 1;
+                        if (c == '-' && c2 == '>') take = 1;
                         if (c == '+' && c2 == '+') take = 1;
                         if (c == '|' && c2 == '|') take = 1;
                         if (c == '&' && c2 == '&') take = 1;
