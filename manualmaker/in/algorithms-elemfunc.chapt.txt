@@ -34,6 +34,33 @@ converges only for $Exp(a-2)<x<Exp(a+2)$.
 
 When it converges, Halley's iteration can still converge very slowly for certain functions $f(x)$, for example, for $f(x)=x^n-a$ if $n^n>a$. For such functions that have very large and rapidly changing derivatives, no general method can converge faster than linearly. In other words, a simple bisection will generally do just as well as any sophisticated iteration, until the root is approximated relatively precisely. Halley's iteration combined with bisection seems to be a good choice for such problems.
 
+		Fast evaluation of Taylor series
+
+Taylor series for elementary functions can be used for evaluating the functions when no faster method is available. For example, to straightforwardly evaluate
+$$Exp(x)<=>Sum(k,0,N-1,x^k/k!)$$
+with $P$ decimal digits of precision and $x<2$, one would need about $N<=>P*Ln(10)/Ln(P)$ terms of the series and therefore $N-1$ long multiplications to sequentially compute $x^2$, ..., $x^N$. (Divisions by $k!$ do not require long multiplications.)
+
+If we do not know in advance how many terms of the Taylor series we need, we cannot do any better than just evaluate each term and check if it is already small enough. So in this case we will have to do $O(P)$ multiplications. However, we can organize the calculation much more efficiently if we can estimate the necessary number of terms and if we can afford some storage.
+
+Suppose we need to evaluate $Sum(k,0,N-1, a[k]*x^k)$ and we know that $N$ terms are enough for $P$ decimal digits. Typically $N$ will be $O(P)$. Suppose also that the coefficients $a[k]$ are known rational numbers, so a  multiplication $a[k]*x$ is not a long multiplication. Then we can organize the calculation in a rectangular array with $n$ columns and $N/n$ rows like this,
+$$ a[0]+a[1]*x+...+a[n-1]*x^(n-1) $$+
+$$ x^n*(a[n]+a[n+1]*x)+... $$+
+$$ ... $$+
+$$ x^(N-n)*(a[N-n]+a[N-n+1]*x+...+a[N-1]*x^(n-1)) $$.
+The time savings comes from not having to multiply $x$ by itself quite so many
+times, at cost of using $N/n$ units of storage for long numbers. This is how it
+works: To evaluate this rectangle, we need to compute the powers $x^2$, $x^3$,
+..., $x^n$, and then we need the $N/n-1$ successive powers of $x^n$, namely
+$x^(2*n)$, $x^(3*n)$, ..., $x^(N-n)$. This takes $n+N/n-2$ long
+multiplications; we have potentially saved time because we do not
+need to evaluate powers such as $x^(n+1)$ separately. After this, we need $N/n-1$ more
+multiplications for the rows. All of the $N/n$ rows are evaluated in parallel,
+step by step as the successive powers $x^2$, $x^3$, ..., $x^(n-1)$ are
+computed, and intermediate row results are stored in the $N/n$ temporary units.
+
+The total required number of long multiplications is $n+2*N/n-3$ which is equal to its minimum $Sqrt(8*N)$ when $n=Sqrt(2*N)$. Therefore, by arranging the Taylor series in a rectangle of sides $n$ and $n/2$, we have obtained an algorithm which scales as $O(Sqrt(N))$ instead of $O(N)$ although it requires $Sqrt(N/2)$ units of storage.
+
+One might wonder if we should not try to arrange the Taylor series in a cube or another multidimensional matrix instead of a rectangle. However, calculations show that this does not save time: the optimal arrangement is the two-dimensional rectangle.
 
 		The AGM sequence algorithms
 
@@ -85,9 +112,12 @@ If $x$ is large enough, the numerator is very close to 1 and can be disregarded.
 $$r=Ln(10^P*4)/(2*Ln(x))$$, $$s=P*Ln(10)/(2*Ln(2))+1-Ln(x)/Ln(2)$$. 
 These parameters can be found quickly by using the integer logarithm procedure {IntLog}, while constant values such as $Ln(10)/Ln(2)$ can be simply approximated by rational numbers because $r$ and $s$ do not need to be very precise (but they do need to be large enough). For the second calculation, $Ln(2)$ must be precomputed to the same precision $P$. Also, the subtraction of a large number $s*Ln(2)$ leads to a certain loss of precision, namely, about $Ln(s)/Ln(10)$ decimal digits are lost, therefore the operating precision must be increased by this number of digits. (The quantity $Ln(s)/Ln(10)$ is computed, of course, by the integer logarithm procedure.)
 
-If $x<1$, then ($-Ln(x^(-1))$) is computed. Finally, there is a special case when $x$ is very close to 1, where the Taylor series converges quickly but the AGM algorithm would require to multiply $x$ by a large power of 2 and then subtract two almost equal numbers, leading to a great loss of precision. Suppose $1<x<1+2^(-M)$ where $M$ is large; then, if the geometric mean $Sqrt(a*b)$ takes an equivalent of $c$ multiplications (say $c=6$), then the AGM sequence requires $2*c*Ln(P)/Ln(2)$ multiplications, while the Taylor series for $x$ would take $(P*Ln(10))/(M*Ln(2))$ multiplications. Therefore the Taylor series is more efficient for
-$$M > 1/(2*c)*(P*Ln(10))/Ln(P)$$.
-For larger $x$, it is necessary to increase the required precision to $P+M*Ln(2)/Ln(10)$.
+If $x<1$, then ($-Ln(1/x)$) is computed. Finally, there is a special case when $x$ is very close to 1, where the Taylor series converges quickly but the AGM algorithm requires to multiply $x$ by a large power of 2 and then subtract two almost equal numbers, leading to a great loss of precision. Suppose $1<x<1+10^(-M)$, where $M$ is large (say of order $P$). The Taylor series for $Ln(1+epsilon)$ needs about $N= -P*Ln(10)/Ln(epsilon)$=$P/M$ terms;
+if we evaluate the Taylor series using the rectangular scheme, we need $Sqrt(8*N)$ multiplications and $Sqrt(N/2)$ units of storage. On the other hand, the main slow operation for the AGM sequence is the geometric mean $Sqrt(a*b)$. If $Sqrt(a*b)$ takes an equivalent of $c$ multiplications (Brent's estimate would be $c=13/2$ but it may be more in practice), then the AGM sequence requires $2*c*Ln(P)/Ln(2)$ multiplications. Therefore the Taylor series method is more efficient for
+$$ M > 2/c^2*P*(Ln(2)/Ln(P))^2 $$.
+In this case it requires at most $c/2*Ln(P)/Ln(2)$ units of storage and $2*c*Ln(P)/Ln(2)$ multiplications.
+
+For larger $x>1+10^(-M)$, it is necessary to increase the required precision to $P+M*Ln(2)/Ln(10)$ but this does not decrease the asymptotic speed of the algorithm. To compute $Ln(x)$ with $P$ digits of precision for any $x$, only $O(Ln(P))$ multiplications are required.
 
 	    Exponential
 
@@ -97,7 +127,7 @@ This series converges for all (complex) $x$, but if $Abs(x)$ is large, it conver
 $$Exp(x) = (Exp(2^(-k)*x))^(2^k)$$,
 where $k$ is chosen sufficiently large so that the Taylor series converges quickly at $2^(-k)*x$. The threshold value for $x$ is in the variable {MathExpThreshold} in {stdfuncs}. If $x$ is large and negative, then it is easier to compute 1/$Exp(-x)$.
 
-An alternative way to compute $x=Exp(a)$ at large precision would be to solve the equation $Ln(x)=a$. A cubically convergent iteration is obtained if we replace $Ln(x)=a$ by an equivalent equation
+An alternative way to compute $x=Exp(a)$ at large precision would be to solve the equation $Ln(x)=a$ using a fast logarithm routine. A cubically convergent formula is obtained if we replace $Ln(x)=a$ by an equivalent equation
 $$ (Ln(x)-a)/(Ln(x)-a-2) = 0$$.
 For this equation, Newton's method gives the iteration
 $$ x' = x*(1+(a+1-Ln(x))^2)/2 $$.

@@ -169,7 +169,7 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 2 # Ln(Undefined)                   <-- Undefined;
 
 /* 2 # Ln(-Infinity)                    <-- 0; */
-2 # Ln(x_IsNegativeNumber)_(Numeric) <-- Complex(MathLog(-x), Pi);
+2 # Ln(x_IsNegativeNumber)_(Numeric) <-- Complex(Ln(-x), Pi);
 3 # Ln(x_IsNumber)_(Numeric) <-- MathLog(x);
 4 # Ln(Exp(_x))              <-- x;
 
