@@ -16,8 +16,6 @@ to general issues related to the Yacas system development.
 
 *INCLUDE YacasDocs.chapt
 
-*INCLUDE YacasDebugger.chapt
-
 *INCLUDE Algorithms.chapt
 
 *INCLUDE new.chapt

@@ -317,8 +317,7 @@ This function returns the real part of the complex number "x".
 *CMD Im --- Imaginary part of a complex number
 *STD
 *CALL
-
-Im(x)
+	Im(x)
 
 *PARMS
 
@@ -385,8 +384,7 @@ unbound variables are real.
 *CMD Arg --- Argument of a complex number
 *STD
 *CALL
-
-Arg(x)
+	Arg(x)
 
 *PARMS
 
@@ -414,8 +412,7 @@ argument of 0 is {Undefined}.
 *CMD ! --- Factorial
 *STD
 *CALL
-
-n!
+	n!
 
 *PARMS
 
@@ -423,12 +420,16 @@ n - argument to the function
 
 *DESC
 
-This function calculate "n" factorial. For nonnegative integers, n!
-equals $n*(n-1)*(n-2)*...*1$. The factorial of half-integers,
-defined via the gamma function, is also evaluated.
+This function calculates the factorial of integer or half-integer numbers. For
+nonnegative integers, $n!$ equals $n*(n-1)*(n-2)*...*1$. The factorial of
+half-integers, defined via the gamma function, is also evaluated.
 
 This function is threaded, meaning that if the argument "x" is a
 list, the function is applied to all the entries in the list.
+
+For reasons of Yacas syntax, the factorial sign {!} cannot precede other
+non-letter symbols such as {+} or {*}. Therefore, you should enter a space
+after {!} in expressions such as {x! +1}.
 
 *E.G.
 

@@ -1,8 +1,6 @@
 		The Yacas debugger program
 
-	    Introduction
-
-This essay describes the yacas debugger that comes with the 
+A debugging version of yacas comes with the 
 distribution. The yacas debugger consists of:
 *	{./yacasdebug}, a separate program
 *	{libyacasdebug.a}, a static library that can be linked in

@@ -557,7 +557,7 @@ When writing a code segment, it is generally a good idea to separate the
 problem into many small functions. Not only can you then reuse these
 functions on other problems, but it makes debugging easier too.
 
-For debugging a faulty function, in addition to the usual trial-and-error method and the "print everything" method, Yacas offers some trace facilities. You can try to trace applications of rules during evaluation of the function ({TraceRule()}, {TraceExp()}) or see the stack after an error has occurred ({TraceStack()}).
+For debugging a faulty function, in addition to the usual trial-and-error method and the "print everything" method, Yacas offers some trace facilities. You can try to trace applications of rules during evaluation of the function ({TraceRule()}, {TraceExp()}) or see the stack after an error has occurred ({TraceStack()}). Finally, you may want to run a debugging version of Yacas.
 
 		The trace facilities
 
@@ -584,6 +584,9 @@ Which should then show something to the effect of
 	        TrArg(4,4);
 	    TrLeave(2+3*5+4,21);
 	Out> 21;
+
+
+*INCLUDE YacasDebugger.chapt
 
 
 			Advanced example 2: implementing a non-commutative algebra

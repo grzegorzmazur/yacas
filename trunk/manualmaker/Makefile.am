@@ -24,19 +24,21 @@ REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt \
 REFPROGCHAPTERS = yacasapi.chapt
 
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
-	CVS-Howto.chapt YacasDocs.chapt YacasDebugger.chapt \
+	CVS-Howto.chapt YacasDocs.chapt \
 	new.chapt Algorithms.chapt
 
+CODINGCHAPTERS = YacasDebugger.chapt
+CODINGSOURCES = in/YacasDebugger.chapt.txt 
 
 ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt \
-        in/YacasDebugger.chapt.txt in/new.chapt.txt \
+        in/new.chapt.txt \
 		in/Algorithms.chapt.txt
 
 EXTRA_DIST = \
 	manualmaker styleplain in/all \
 	in/intromaker in/codingmaker in/refmaker in/refprogmaker in/essaysmaker\
-	$(REFSOURCES) $(ALLBOOKSOURCES) $(ESSAYSOURCES) \
+	$(REFSOURCES) $(ALLBOOKSOURCES) $(ESSAYSOURCES) $(CODINGSOURCES) \
 	in/dummies newhelp yacasinit.ys .cvsignore
 
 # Stuff for automatic generation of Yacas books
@@ -66,7 +68,9 @@ EXTRA_DIST = \
 essays.book.tex: essays.book $(ESSAYCHAPTERS)
 ref.book.tex : ref.book $(REFCHAPTERS)
 refprog.book.tex : refprog.book $(REFPROGCHAPTERS)
+coding.book.tex : coding.book $(CODINGCHAPTERS)
 
+# special "virtual" chapter built from yacasapi.cpp
 in/yacasapi.chapt.txt : ../src/yacasapi.cpp
 	perl ../manmake/api2txt.pl < ../src/yacasapi.cpp > in/yacasapi.chapt.txt
 
@@ -82,12 +86,13 @@ texdocs: \
 clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.toc *.log *.ps *.pdf \
 	coding*html intro*html ref*html essays*html .o core *~ texdocs.c \
-	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) \
+	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS) \
 	in/yacasapi.chapt.txt $(ALLBOOKS) manicon.html
 
 yacas_helpdir = $(datadir)/yacas/documentation
 
-books.html:  $(ALLBOOKS) $(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS)
+books.html:  $(ALLBOOKS) $(REFCHAPTERS) $(ESSAYCHAPTERS) \
+   $(REFPROGCHAPTERS) $(CODINGCHAPTERS)
 	-$(ouryacas) in/all
 	echo "done" > books.html.c
 
@@ -96,8 +101,7 @@ intro.html : intro.book
 	-$(ouryacas) in/intromaker 
 	touch books.html
 
-# No separate chapters
-coding.html : coding.book
+coding.html : coding.book $(CODINGCHAPTERS)
 	-$(ouryacas) in/codingmaker
 	touch books.html
 
