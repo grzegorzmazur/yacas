@@ -2014,3 +2014,86 @@ void BigNumber::export_gmp(mpf_t gmp_float) const
 //////////////////////////////////////////////////
 ///// End of BigNumber implementation
 //////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////
+///// Hooks to some GMP functions for efficiency
+//////////////////////////////////////////////////
+
+/// These are examples of how we could add more hooks later.
+/// Right now the functions export_gmp and import_gmp *copy* everything,
+/// but in principle we could avoid this and pass pointers to valid gmp objects.
+/// this would avoid copying and initializing/clearing.
+
+/// Square root (return float for an integer result).
+void math_sqrt(BigNumber& result, const BigNumber& x)
+{
+	if(x.IsInt())
+	{
+		mpz_t temp_int;
+		mpz_init(temp_int);
+		x.export_gmp(temp_int);
+		mpf_t temp_float;
+		mpf_init2(temp_float,32);
+		mpf_set_z(temp_float, temp_int);
+		mpf_sqrt(temp_float, temp_float);
+		result.BecomeFloat();
+		result.import_gmp(temp_float);
+		mpz_clear(temp_int);
+		mpf_clear(temp_float);
+	}
+	else
+	{
+		mpf_t temp_float;
+		mpf_init2(temp_float,32);
+		x.export_gmp(temp_float);
+		mpf_sqrt(temp_float, temp_float);
+		result.BecomeFloat();
+		result.import_gmp(temp_float);
+		mpf_clear(temp_float);
+	}
+}
+
+/// Compute the GCD of two integers, result is an integer.
+/// If arguments are floats, do nothing (FIXME: should signal error).
+void math_gcd(BigNumber& result, const BigNumber& x, const BigNumber& y)
+{
+	if (x.IsInt() && y.IsInt())
+	{
+		mpz_t temp_int, temp1, temp2;
+		mpz_init(temp_int);
+		mpz_init(temp1);
+		mpz_init(temp2);
+		x.export_gmp(temp1);
+		y.export_gmp(temp2);
+		mpz_gcd(temp_int, temp1, temp2);
+		result.BecomeInt();
+		result.import_gmp(temp_int);
+		mpz_clear(temp_int);
+	}
+	else
+	{
+/// If one of the arguments is a float, do nothing (FIXME: should signal error).
+	}
+}
+
+/// Compute factorial of a number x, when x is integer and fits into unsigned long.
+/// (Otherwise need to signal error.)
+void math_factorial(BigNumber& result, const BigNumber& x)
+{
+	if (x.IsInt() && x.IsSmall())
+	{
+		mpz_t temp_int;
+		mpz_init(temp_int);
+		unsigned long arg = (unsigned long) x.Double();
+		mpz_fac_ui(temp_int, arg);
+		result.BecomeInt();
+		result.import_gmp(temp_int);
+		mpz_clear(temp_int);
+	}
+	else
+	{
+/// FIXME: should signal error
+	}
+}
+
