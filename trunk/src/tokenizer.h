@@ -24,6 +24,7 @@ private:
 
 // utility functions
 LispBoolean IsAlpha(LispChar c);
+LispBoolean IsAlNum(LispChar c);
 LispBoolean IsSymbolic(LispChar c);
 
 

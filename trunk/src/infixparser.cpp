@@ -362,7 +362,7 @@ void ParsedObject::ReadAtom()
 
 void InfixPrinter::WriteToken(LispOutput& aOutput,LispCharPtr aString)
 {
-    if (IsAlpha(iPrevLastChar) && IsAlpha(aString[0]))
+    if (IsAlNum(iPrevLastChar) && IsAlpha(aString[0]))
     {
         aOutput.Write(" ");
     }

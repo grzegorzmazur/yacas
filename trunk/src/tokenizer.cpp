@@ -24,7 +24,7 @@ LispBoolean IsAlpha(LispChar c)
     return ( (c>='a' && c<='z') || (c>='A' && c<='Z') || (c == '\'') );
 }
 
-static LispBoolean IsAlNum(LispChar c)
+LispBoolean IsAlNum(LispChar c)
 {
     return (IsAlpha(c) || IsDigit(c));
 }
