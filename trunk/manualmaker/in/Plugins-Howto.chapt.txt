@@ -174,22 +174,22 @@ The simplest "hello world"-type example is {example2}, which reads:
 	{
 	  yacas_init();
 	  yacas_eval("D(x)Sin(x)");
-	  if (!yacas_error()) printf("%s\n",yacas_result());  
+	  if (!yacas_error())
+	    printf("%s\n",yacas_result());  
 	  yacas_exit();
 	  return 0;
 	}
 
 And yields on the command line:
 
-	[user@localhost embed]# ./example2
+	$ ./example2
 	Cos(x);
-	[user@localhost embed]# 
 
 
 The example {example1} allows you to pass expressions on the command 
 line:
 
-	[root@localhost embed]# ./example1 "D(x)Sin(x)" "Taylor(x,0,5)Sin(x)"
+	$ ./example1 "D(x)Sin(x)" "Taylor(x,0,5)Sin(x)"
 	Input> D(x)Sin(x)
 	Output> Cos(x);
 	Input> Taylor(x,0,5)Sin(x)
