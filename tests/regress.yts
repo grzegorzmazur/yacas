@@ -244,3 +244,8 @@ Verify((1+2*I)^(+10), Complex(237,-3116));
 
 // expansion of negative powers of fractions
 Verify( (-1/2)^(-10), 1024);
+
+Verify( I^(Infinity), Undefined );
+Verify( I^(-Infinity), Undefined );
+Verify( Limit(n,Infinity) n*I^n, Undefined );
+
