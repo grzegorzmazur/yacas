@@ -1,3 +1,7 @@
+*BLURB 
+This document gives a short introduction on Yacas.
+Included is a brief tutorial on the syntax and some
+commands to get you started using Yacas. There are also some examples.
 				Introduction to Yacas: tutorial and examples
 
 			Getting started with Yacas

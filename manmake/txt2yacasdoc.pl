@@ -27,6 +27,11 @@ $in_htmlcommand = 0;
 	"EG" => "Topical() \"Example:\";",
 );
 
+%intro_labels = (
+	"BLURB" => "Blurb()",
+	"INTRO" => "ChapterIntro()",
+);
+
 while (<STDIN>) {
 	chomp;
 	s/\\/\\\\/g;	# escape all backslashes in the source text
@@ -166,11 +171,12 @@ while (<STDIN>) {
 			}
 		}
 		print "CmdDescription(\"" . $names . "\", \"" . &escape_term($title) . "\");\n";
-	} elsif (/^\*INTRO\s\s*(.*)$/ or /^\*INTRO\s*()$/) {	# ChapterIntro()
-		$text = $1;
+	} elsif (/^\*(INTRO|BLURB)\s*(.*)$/) {	# ChapterIntro() and Blurb()
+		$label = $1;
+		$text = $2;
 		&finish_text_close_quote();
 		$have_par = ($text =~ /^\s*$/) ? 1 : 0;
-		print "ChapterIntro()\"" . &escape_term($text) . "\n";
+		print $intro_labels{$label} . "\"" . &escape_term($text) . "\n";
 		$in_quotes = 1;
 		$have_Text = 1;
 	} else {

@@ -21,6 +21,8 @@ REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt \
 	in/logic.chapt.txt in/const.chapt.txt in/vars.chapt.txt in/io.chapt.txt \
 	in/strings.chapt.txt in/addons.chapt.txt 
 
+REFPROGCHAPTERS = yacasapi.chapt
+
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
 	CVS-Howto.chapt YacasDocs.chapt YacasDebugger.chapt \
 	new.chapt Algorithms.chapt
@@ -33,7 +35,7 @@ ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 
 EXTRA_DIST = \
 	manualmaker styleplain in/all \
-	in/intromaker in/codingmaker in/refmaker in/refprogmaker \
+	in/intromaker in/codingmaker in/refmaker in/refprogmaker in/essaysmaker\
 	$(REFSOURCES) $(ALLBOOKSOURCES) $(ESSAYSOURCES) \
 	in/dummies newhelp yacasinit.ys .cvsignore
 
@@ -63,6 +65,10 @@ EXTRA_DIST = \
 # specify books that need chapters
 essays.book.tex: essays.book $(ESSAYCHAPTERS)
 ref.book.tex : ref.book $(REFCHAPTERS)
+refprog.book.tex : refprog.book $(REFPROGCHAPTERS)
+
+in/yacasapi.chapt.txt : ../src/yacasapi.cpp
+	perl ../manmake/api2txt.pl < ../src/yacasapi.cpp > in/yacasapi.chapt.txt
 
 # TeX/PS/PDF top target
 texdocs: \
@@ -76,37 +82,38 @@ texdocs: \
 clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.toc *.log *.ps *.pdf \
 	coding*html intro*html ref*html essays*html .o core *~ texdocs.c \
-	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(ALLBOOKS) manicon.html
+	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) \
+	in/yacasapi.chapt.txt $(ALLBOOKS) manicon.html
 
 yacas_helpdir = $(datadir)/yacas/documentation
 
-books.html:  $(ALLBOOKS) $(REFCHAPTERS) $(ESSAYCHAPTERS)
+books.html:  $(ALLBOOKS) $(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS)
 	-$(ouryacas) in/all
 	echo "done" > books.html.c
 
 # No separate chapters
-intro.html : in/intro.book
+intro.html : intro.book
 	-$(ouryacas) in/intromaker 
 	touch books.html
 
 # No separate chapters
-coding.html : in/coding.book
+coding.html : coding.book
 	-$(ouryacas) in/codingmaker
 	touch books.html
 
-#essays.html : in/essays.book $(ESSAYCHAPTERS)
-#	-$(ouryacas) in/essaysmaker
-#	touch books.html
+essays.html : essays.book $(ESSAYCHAPTERS)
+	-$(ouryacas) in/essaysmaker
+	touch books.html
 
-ref.html : in/ref.book $(REFCHAPTERS)
+ref.html : ref.book $(REFCHAPTERS)
 	-$(ouryacas) in/refmaker
 	touch books.html
 
-refprog.html : in/refprog.book
+refprog.html : refprog.book $(REFPROGCHAPTERS)
 	-$(ouryacas) in/refprogmaker
 	touch books.html
 
-noindex: intro.html ref.html coding.html
+noindex: intro.html ref.html coding.html essays.html refprog.html
 
 # dist-hook copies the html files into the distributed .tar.gz file.
 dist-hook: 

@@ -1,4 +1,7 @@
-
+*BLURB 
+This is a book of essays on using Yacas. It covers various topics, from
+using the Yacas system for specific calculations
+to general issues related to the Yacas system development.
 				Essays on Yacas
 
 			On Yacas programming

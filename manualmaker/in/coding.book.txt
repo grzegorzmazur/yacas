@@ -1,4 +1,6 @@
-
+*BLURB
+This document should get you started programming in Yacas. There
+are some basic explanations and hands-on tutorials.
 				Programming in Yacas
 
 			Yacas under the hood

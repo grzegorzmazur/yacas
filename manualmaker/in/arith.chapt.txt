@@ -288,8 +288,7 @@ the value of $Pi$ up to the required precision.
 *CMD Rationalize --- Convert floating point numbers to fractions
 *STD
 *CALL
-
-Rationalize(expr)
+	Rationalize(expr)
 
 *PARMS
 
@@ -321,8 +320,7 @@ division of integers.
 *CMD IsPrime --- Test for a prime number
 *STD
 *CALL
-
-IsPrime(n)
+	IsPrime(n)
 
 *PARMS
 
@@ -357,8 +355,7 @@ long time for large numbers.
 *CMD IsPrimePower --- Test for a power of a prime number
 *STD
 *CALL
-
-IsPrime(n)
+	IsPrimePower(n)
 
 *PARMS
 
@@ -390,8 +387,7 @@ large numbers.
 *CMD Factors --- Factorization
 *STD
 *CALL
-
-Factors(x)
+	Factors(x)
 
 *PARMS
 
@@ -421,8 +417,7 @@ is returned as {{{p1,n1}, ..., {p9,n9}}}.
 *CMD Factor --- Factorization, in pretty form
 *STD
 *CALL
-
-Factors(x)
+	Factors(x)
 
 *PARMS
 
@@ -605,35 +600,46 @@ rationals without loss of precision, the functions {GuessRational()} and
 {NearRational()} are intended to find the best rational that is <i>approximately</i>
 equal to a given value.
 
-The function {GuessRational()} is useful if you have obtained a floating-point
-representation of a rational number and you know approximately how many digits
-its exact representation should contain. This function takes an optional second
-parameter {digits} which limits the number of decimal digits in the denominator
-of the resulting rational number. If this parameter is not given, it defaults
-to half the current precision. This function truncates the continuous fraction expansion when it encounters an unusually large value (see example).
+The function {GuessRational()} is useful if you have obtained a
+floating-point representation of a rational number and you know
+approximately how many digits its exact representation should contain.
+This function takes an optional second parameter {digits} which limits
+the number of decimal digits in the denominator of the resulting
+rational number. If this parameter is not given, it defaults to half
+the current precision. This function truncates the continuous fraction
+expansion when it encounters an unusually large value (see example).
+This procedure does not always give the "correct" rational number; a
+rule of thumb is that the floating-point number should have at least as
+many digits as the combined number of digits in the numerator and the
+denominator of the correct rational number.
 
-The function {NearRational(x)} is useful if you would like to find an "optimal"
-rational number that lies in a certain small interval around a certain value
-{x}. This function takes an optional second parameter {digits} which has
-slightly different meaning: it specifies the number of digits of precision of
-the approximation; in other words, the difference between {x} and the resulting
-rational number should be at most one digit of that precision. The parameter
-{digits} also defaults to half of the current precision.
+The function {NearRational(x)} is useful if you would like to simply
+approximate a given value, i.e. to find an "optimal" rational number
+that lies in a certain small interval around a certain value {x}. This
+function takes an optional second parameter {digits} which has slightly
+different meaning: it specifies the number of digits of precision of
+the approximation; in other words, the difference between {x} and the
+resulting rational number should be at most one digit of that
+precision. The parameter {digits} also defaults to half of the current
+precision.
 
 *E.G.
 
-	In> x:=0.943731490621
-	Out> 0.943731490621
+Start with a rational number and obtain a floating-point approximation:
+	In> x:=N(956/1013)
+	Out> 0.9437314906
 	In> Rationalize(x)
-	Out> 47186574531/50000000000;
+	Out> 4718657453/5000000000;
 	In> V(GuessRational(x))
 	GuessRational: using 10 terms of the
 	  continued fraction
 	Out> 956/1013;
 	In> ContFracList(x)
 	Out> {0,1,16,1,3,2,1,1,1,1,508848,3,1,2,1,2,2};
+The first 10 terms of this continued fraction correspond to the correct continued fraction for the original rational number.
 	In> NearRational(x)
 	Out> 218/231;
+This function found a different rational number closeby because the precision was not high enough.
 	In> NearRational(x, 10)
 	Out> 956/1013;
 
@@ -668,31 +674,22 @@ elements are the initial digits before the period sets in.
 *CMD TruncRadian --- remainder modulo $2*Pi$
 *STD
 *CALL
-
-TruncRadian(r)
+	TruncRadian(r)
 
 *PARMS
 
-r - a radian
+{r} - a number
 
 *DESC
 
-TruncRadian calculates r mod $2*Pi$, returning a value
-between 0 and $2*Pi$. This function is used in the trigonometry
-functions, just before doing the numerical calculation. It
-greatly speeds up the calculation if the value passed is a big
-number.
+{TruncRadian} calculates $Mod(r,2*Pi)$, returning a value between $0$
+and $2*Pi$. This function is used in the trigonometry functions, just
+before doing a numerical calculation using a Taylor series. It greatly
+speeds up the calculation if the value passed is a large number.
 
 The library uses the formula
-
-	*
-	             /   r    \
-	r - MathFloor| ------ | * 2 * Pi
-	             \ 2 * Pi /
-	
-	
-
-where r and $2*Pi$ are calculated with twice the precision used in the
+$$TruncRadian(r) = r - Floor( r/(2*Pi) )*2*Pi
+where $r$ and $2*Pi$ are calculated with twice the precision used in the
 environment to make sure there is no rounding error in the significant
 digits.
 
@@ -710,8 +707,7 @@ digits.
 *CMD Floor --- Round a number downwards
 *STD
 *CALL
-
-Floor(x)
+	Floor(x)
 
 *PARMS
 
@@ -733,8 +729,7 @@ This function returns the largest integer smaller than "x".
 *CMD Ceil --- Round a number upwards
 *STD
 *CALL
-
-Ceil(x)
+	Ceil(x)
 
 *PARMS
 
@@ -756,8 +751,7 @@ This function returns the smallest integer larger than "x".
 *CMD Round --- Round a number to the nearest integer
 *STD
 *CALL
-
-Round(x)
+	Round(x)
 
 *PARMS
 
@@ -789,7 +783,7 @@ rounded upwards.
 
 *PARMS
 
-xlist - list of numbers
+{xlist} - list of numbers
 
 precision - required number of digits precision of calculation
 
