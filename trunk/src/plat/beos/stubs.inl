@@ -36,6 +36,10 @@ inline void PlatMemCopy(LispCharPtr aTarget, LispCharPtr aSource, LispInt aNrByt
 {
     memcpy(aTarget, aSource, aNrBytes);
 }
+inline void PlatMemMove(LispCharPtr aTarget, LispCharPtr aSource, LispInt aNrBytes)
+{
+    memmove(aTarget, aSource, aNrBytes);
+}
 
 
 inline void PlatMemSet(LispCharPtr aTarget, LispChar aByte, LispInt aNrBytes)
