@@ -23,6 +23,11 @@ AC_CHECK_PROG(have_makeindex, makeindex, yes, no)
 AC_CHECK_PROG(have_pdflatex, pdflatex, yes, no)
 AC_CHECK_PROG(have_dvips, dvips, yes, no)
 AC_CHECK_PROG(have_gzip, gzip, yes, no)
+AC_CHECK_TOOL(AR, ar, :)
+
+if test "$AR" = ":"; then
+  AC_MSG_ERROR([The tool 'ar', required for compilation, was not found.])
+fi
 
 # If using GNU compilers, use extra flags to get warnings
 if test "$GCC" = yes; then
