@@ -36,7 +36,6 @@ currentBody := Assoc("Body",plain["Chapters"][currentChapter]);
   plain["Chapters"][currentChapter]["Intro"]:=HtmlTag(chapter, title);
   plain["Chapters"][currentChapter]["Commands"]:={};
 
-/*TODO remove? AddAnchor(ChapterTag(currentChapterIndex)); */
 ];
 
 ChapterIntro(text) :=
@@ -49,10 +48,10 @@ Bodied("ChapterIntro", 60000);
 
 AddAnchor(aAnchor):=
 [
-  AddBody(HtmlAnchor()aAnchor);
-  plain["Chapters"][currentChapter]["Commands"] :=
+  /*AddBody*/(HtmlAnchor()aAnchor);
+/*  plain["Chapters"][currentChapter]["Commands"] :=
      Concat(plain["Chapters"][currentChapter]["Commands"], 
-            {{ChapterLink(aAnchor), ""}});
+            {{ChapterLink(aAnchor), ""}}); */
 ];
 
 SectionTag(chapterIndex,sectionIndex):=
@@ -594,3 +593,5 @@ AddBody(ToString()
 );
 
 HoldArgNr("DocEval", 1, 1);
+
+DocFootnote(x) := "<h6>" : x : "</h6>";
