@@ -5,9 +5,10 @@
 
 static CYacas *yacas = NULL;
 
+StringOutput output;
 void yacas_init()
 {
-    yacas = CYacas::NewL();
+    yacas = CYacas::NewL(&output);
     yacas->Evaluate("DefaultDirectory(\"" SCRIPT_DIR "\");");
     yacas->Evaluate("Load(\"yacasinit.ys\");");
 
@@ -16,6 +17,8 @@ void yacas_eval(char* expression)
 {
     if (yacas)
     {
+        output.SetLength(0);
+        output.Append('\0');
         yacas->Evaluate(expression);
     }
     else
