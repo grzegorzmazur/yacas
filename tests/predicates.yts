@@ -112,3 +112,34 @@ Verify(IsConstant(x), False);
 Verify(IsConstant(Infinity), True);
 Verify(IsConstant(-Infinity), True);
 Verify(IsConstant(Undefined), True);
+
+
+Testing("-- Matrix Predicates");
+
+Testing("---- IsMatrix");
+Verify(IsMatrix(1),False);
+Verify(IsMatrix({}),False);
+Verify(IsMatrix({a,b}),False);
+Verify(IsMatrix({{}}),True);
+Verify(IsMatrix({{a}}),True);
+Verify(IsMatrix({{},a}),False);
+Verify(IsMatrix({{a},b}),False);
+Verify(IsMatrix({{},{}}),True);
+Verify(IsMatrix({{},{{}}}),False);
+Verify(IsMatrix({{a,b},{c}}),False);
+Verify(IsMatrix({{a,b},{c,d}}),True);
+Verify(IsMatrix({{{}}}), False);
+Verify(IsMatrix({{{a}}}), False);
+Verify(IsMatrix({{{{a}}},{{{b}}}}),False);
+
+Testing("---- IsSquareMatrix");
+Verify(IsSquareMatrix({{}}),False);
+Verify(IsSquareMatrix({{a}}),True);
+Verify(IsSquareMatrix({{},{}}),False);
+Verify(IsSquareMatrix({{a,b}}),False);
+Verify(IsSquareMatrix({{a,b},{c,d}}),True);
+Verify(IsSquareMatrix({{a,b},{c,d},{e,f}}),False);
+Verify(IsSquareMatrix({{a,b,c},{d,e,f},{g,h,i}}),True);
+Verify(IsSquareMatrix({{a,b,c},{d,e,f}}),False);
+Verify(IsSquareMatrix({{{a,b}},{{c,d}}}), False);
+
