@@ -1,4 +1,18 @@
 
+/*
+1) Flatten, based on addition, and process all terms.
+2) Separate F(n,k) into G(n)*G(k), and work on them.
+3) separate out constants. 
+*/
+pat:=
+{
+  (_n + m_IsInteger)! <- (n+m)*(n+(m-1))!,
+  (_n - m_IsInteger)! <- (n-(m-1))! / (n-(m-1))
+};
+FactorialSimplify(_expr) <-- Factor(Simplify(expr /:: pat));
+
+EndOfFile;
+
  LocalSymbols(theConsts,theFreeVars,msres,msvars,nrconsts,nrvars)
    [
      Expect(_expr,_freeVars) <--

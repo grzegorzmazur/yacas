@@ -35,11 +35,11 @@ void print_table()
 	printf(" const unsigned long primes_table_limit = %d;\n const unsigned char primes_table[] = {\n", primes_table_limit);
 	for(i=0; i<primes_table_size; ++i)
 		printf("0x%02x,\n", primes_table[i]);
-	printf("};
-");
+	printf("};\n");
 }
 
 int main()
 {
 	print_table();
+  return 0;
 }
