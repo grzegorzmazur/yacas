@@ -17,6 +17,7 @@ public:
     /// or an empty list.
     virtual LispStringPtr NextToken(LispInput& aInput,
                                     LispHashTable& aHashTable);
+    virtual ~LispTokenizer(){}
 private:
     LispString iToken; //Can be used as a token container.
 };
