@@ -1,5 +1,5 @@
 //////
-// $Id: nthroot.ys,v 1.2 2002-09-16 21:38:52 dreusch Exp $
+// $Id: nthroot.ys,v 1.3 2002-11-28 20:40:38 ayalpinkus Exp $
 // calculation/simplifaction of nth roots of nonnegative integers
 // NthRoot         - interface function
 // NthRoot'Calc    - actually calculate/simplifies
@@ -40,16 +40,18 @@ Function("NthRoot'Calc",{m,n})
 [
    Local(i,j,f,r,in);
    Set(i,2);
-   Set(j,Ceil(FastPower(m,N(1/n))+1));
+   Set(j,Ceil(FastPower(m,N(1.0/n))+1));
    Set(f,1);
    Set(r,m);
    // for large j (approx >4000)
    // using Factors instead of the
    // following.  would this be 
    // faster in general?
+//Echo("i j ",i," ",j);
    While(LessThan(i,j))
    [
       Set(in,MathPower(i,n));
+//Echo("r in mod ",r, " ",in," ",MathMod(r,in));
       While(Equals(MathMod(r,in),0))
       [
 	 Set(f,MathMultiply(f,i));
@@ -59,7 +61,7 @@ Function("NthRoot'Calc",{m,n})
 	 Set(r,MathDiv(r,i));         //
       //Set(i,NextPrime(i));
       Set(i,NextPseudoPrime(i));
-      Set(j,Ceil(FastPower(r,N(1/n))+1));
+      Set(j,Ceil(FastPower(r,N(1.0/n))+1));
    ];
    //List(f,r);
    List(f,MathDiv(m,MathPower(f,n))); //

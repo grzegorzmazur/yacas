@@ -3,7 +3,7 @@
 /* acconfig.h */
 
 #define PACKAGE "yacas"
-#define VERSION "1.0.53rev8"
+#define VERSION "1.0.53rev9"
 
 #define ACCEPT_TYPE_ARG1 int
 #define ACCEPT_TYPE_ARG2 struct sockaddr *
@@ -124,7 +124,7 @@
 /* #undef USE_ASSERT */
 
 /* Version number of package */
-#define VERSION "1.0.53rev8"
+#define VERSION "1.0.53rev9"
 
 /* Define to 1 if the X Window System is missing or not being used. */
 #define X_DISPLAY_MISSING 1
