@@ -145,16 +145,18 @@ IsPositiveInteger(x):= IsInteger(x) And x > 0;
 10 # IsZero(x_IsNumber) <-- (MathDivide( Round( MathMultiply(x, 10^GetPrecision()) ), 10^GetPrecision() ) = 0);
 10 # IsNotZero(x_IsNumber)       <-- ( RoundTo(x,GetPrecision()) != 0);
 */
-
-10 # IsZero(x_IsNumber) <-- ( MathAbs(x)  < MathPower(10, -GetPrecision()));
+// these should be calls to MathSign() and the math library should do this. Or it should be just MathEquals(x,0).
+// for now, avoid underflow and avoid IsZero(10^(-GetPrecision())) returning True.
+10 # IsZero(x_IsNumber) <-- ( MathSign(x) = 0 Or MathAbs(x)  < MathPower(10, -GetPrecision()));
 60000 # IsZero(_x) <-- False;
 
-10 # IsNotZero(x_IsNumber) <-- ( MathAbs(x)  > MathPower(10, -GetPrecision()));
+10 # IsNotZero(x_IsNumber) <-- ( MathAbs(x)  >= MathPower(10, -GetPrecision()));
 10 # IsNotZero(x_IsInfinity) <-- True;
 60000 # IsNotZero(_x) <-- False;
 
 IsNonZeroInteger(x) := (IsInteger(x) And x != 0);
 
+// why do we need this? Why doesn't x=1 not work?
 10 # IsOne(x_IsNumber) <-- IsZero(MathSubtract(x,1));
 60000 # IsOne(_x) <-- False;
 
