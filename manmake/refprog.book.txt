@@ -1087,7 +1087,8 @@ the same, and "False" otherwise.
 *CMD GreaterThan, LessThan --- comparison predicates
 *CORE
 *CALL
-	LessThan(a,b), GreaterThan(a,b)
+	GreaterThan(a,b)
+	LessThan(a,b)
 
 *PARMS
 {a}, {b} -- numbers or strings
@@ -1123,22 +1124,28 @@ Comparing numbers or strings (lexicographically).
 *A {MathDiv}
 *CMD Math... --- arbitrary-precision math functions
 *CORE
-*CALL
 *REM these are not made into code examples to save space
-
-MathGcd(n,m)  (Greatest Common Divisor),
-MathAdd(x,y),
-MathSubtract(x,y),
-MathMultiply(x,y),
-MathDivide(x,y),
-MathSqrt(x)  (square root),
-MathFloor(x), MathCeil(x),
-MathAbs(x),
-MathExp(x), MathLog(x) (natural logarithm),
-MathPower(x,y),
-MathSin(x), MathCos(x), MathTan(x),
-MathArcSin(x), MathArcCos(x), MathArcTan(x),
-MathDiv(x,y), MathMod(x,y)
+*CALL
+	MathGcd(n,m)  (Greatest Common Divisor)
+	MathAdd(x,y)
+	MathSubtract(x,y)
+	MathMultiply(x,y)
+	MathDivide(x,y)
+	MathSqrt(x)  (square root)
+	MathFloor(x) 
+	MathCeil(x)
+	MathAbs(x)
+	MathExp(x)
+	MathLog(x) (natural logarithm)
+	MathPower(x,y)
+	MathSin(x)
+	MathCos(x) 
+	MathTan(x)
+	MathArcSin(x)
+	MathArcCos(x)
+	MathArcTan(x)
+	MathDiv(x,y) 
+	MathMod(x,y)
 
 *DESC
 
@@ -1898,7 +1905,7 @@ using the {Verify} command.
 
 
 
-*CMD VerifyArithmetic, VerifyDiv --- Special purpose arithmetic verifiers
+*CMD VerifyArithmetic, RandVerifyArithmetic, VerifyDiv --- Special purpose arithmetic verifiers
 *STD
 *CALL
 	VerifyArithmetic(x,n,m)

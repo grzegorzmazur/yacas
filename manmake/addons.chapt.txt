@@ -284,7 +284,7 @@ An unsuccessful attempt to delete a directory:
 *CMD SystemCallBg --- execute a system command in the background
 *STD
 *CALL
-	SystemCallbg("command")
+	SystemCallBg("command")
 
 *PARMS
 

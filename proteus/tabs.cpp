@@ -50,6 +50,9 @@ Fl_Group* grapher;
 
 Fl_Scroll *console_scroll = NULL;
 
+char notepad_to_load[256];
+int release_structure = 1;
+int custom_notepad = 0;
 
 HelpView* helpview_;
 Fl_Button *back_;
@@ -290,7 +293,11 @@ void help_intro_cb(Fl_Widget *,void *page)
 {
   extern char defdir[128];
   char buf[120];
-  sprintf(buf,"%s/%s",defdir,(char*)page);
+  if (release_structure)
+    sprintf(buf,"%s/documentation/%s",defdir,(char*)page);
+  else
+    sprintf(buf,"%s/manmake/%s",defdir,(char*)page);
+
   HelpGo(buf);
   mainTabs->value(helptab);
 }
@@ -303,7 +310,11 @@ void help_detailed_function_cb(Fl_Widget *,void *)
   {
     extern char defdir[128];
     char buf[256];
-    snprintf(buf,256,"%s/documentation/ref.html#%s",defdir,input);
+
+    if (release_structure)
+      snprintf(buf,256,"%s/documentation/ref.html#%s",defdir,input);
+    else
+      snprintf(buf,256,"%s/manmake/ref.html#%s",defdir,input);
     HelpGo(buf);
     mainTabs->value(helptab);
   }
@@ -514,23 +525,22 @@ CORE_KERNEL_FUNCTION("Proteus'FontColor",LispNotepadFontColor,1,YacasEvaluator::
 
 
     char cmd[128];
-    sprintf(cmd,"DefaultDirectory(\"%s\");",defdir);
+    if (release_structure)
+      sprintf(cmd,"DefaultDirectory(\"%s\");",defdir);
+    else
+      sprintf(cmd,"DefaultDirectory(\"%s/scripts/\");",defdir);
+      
     yacas->Evaluate(cmd);
-
     AddGraphingCapabilities((*yacas)()());
     yacas->Evaluate("Load(\"yacasinit.ys\");");
-
     yacas->Evaluate("DefLoad(\"flplot.ys\");");
-
+    console->LoadNotePad(notepad_to_load);
+    if (!custom_notepad)
     {
-        extern char defdir[128];
-        char buf[128];
-        sprintf(buf,"%sWorksheetBanner",defdir);
-        console->LoadNotePad(buf);
-        console->handle_key(eEscape); // Highlight should be on bottom line
+      console->handle_key(eEscape); // Highlight should be on bottom line
     }
-
 }
+
 
 
 void myexit()
@@ -546,6 +556,32 @@ void myexit()
 int main(int argc, char **argv)
 {
   GetProteusConfiguration();
+  sprintf(notepad_to_load,"%sWorksheetBanner",defdir);
+  {
+    int i=1;
+    while (i<argc)
+    {
+      if (!strcmp(argv[i],"--rootdir"))
+      {
+        i++;
+        if (i<argc)
+          strncpy(defdir,argv[i],128);
+      }
+      else if (!strcmp(argv[i],"--srcdir-structure"))
+      {
+        release_structure = 0;
+        sprintf(notepad_to_load,"%sproteus/WorksheetBanner",defdir);
+      }
+      else break;
+      i++;
+    }
+    if (i<argc)
+    {
+      strncpy(notepad_to_load, argv[i],256);
+      custom_notepad = 1;
+    }
+  }
+
   curoutlen=10;
   outbuf = (char*)malloc(curoutlen);
 
@@ -628,7 +664,10 @@ int main(int argc, char **argv)
 #ifdef WIN32
           sprintf(helpfile,"proteusbooks.html");
 #else
-          sprintf(helpfile,"%sdocumentation/%s",defdir,YACAS_DOC);
+          if (release_structure)
+            sprintf(helpfile,"%sdocumentation/%s",defdir,YACAS_DOC);
+          else
+            sprintf(helpfile,"%smanmake/%s",defdir,YACAS_DOC);
 #endif
           helpview_->load(helpfile);
         }
@@ -650,11 +689,13 @@ int main(int argc, char **argv)
   w->show(1, argv);
   w->fullscreen(); //TODO is this acceptable?
   atexit(myexit);
+/*
   if (argc>1)
   {
     console->LoadNotePad(argv[1]);
     console->redraw();
   }
+*/
   return Fl::run();
 }
 

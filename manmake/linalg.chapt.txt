@@ -60,8 +60,8 @@ the original list.
 *CMD Dot, . --- get dot product of tensors
 *STD
 *CALL
-        Dot(t1,t2)
-        t1 . t2
+	Dot(t1,t2)
+	t1 . t2
 Precedence:
 *EVAL OpPrecedence(".")
 
@@ -413,9 +413,9 @@ Something is considered to be a scalar if it's not a list.
 *STD
 *CALL
 
-        IsVector(expr)
+	IsVector(expr)
 
-        IsVector(pred,expr)
+	IsVector(pred,expr)
 
 *PARMS
 
@@ -711,7 +711,7 @@ $(-1)^(i+j)$.
 *CMD MatrixPower --- get nth power of a square matrix
 *STD
 *CALL
-        MatrixPower(mat,n)
+	MatrixPower(mat,n)
 
 *PARMS
 

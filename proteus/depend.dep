@@ -10,8 +10,9 @@ FltkConsole.o: FltkConsole.cpp \
   /usr/local/share/yacas/include/lispassert.h \
   /usr/local/share/yacas/include/lispstring.h \
   /usr/local/share/yacas/include/refcount.h \
-  /usr/local/share/yacas/include/lispstring.inl FltkHintWindow.h \
-  HelpView.h /usr/local/share/yacas/include/yacas.h \
+  /usr/local/share/yacas/include/lispstring.inl \
+  /usr/local/share/yacas/include/commandline.h \
+  /usr/local/share/yacas/include/yacas.h \
   /usr/local/share/yacas/include/stringio.h \
   /usr/local/share/yacas/include/lispio.h \
   /usr/local/share/yacas/include/tokenizer.h \
@@ -38,7 +39,8 @@ FltkConsole.o: FltkConsole.cpp \
   /usr/local/share/yacas/include/lispatom.h \
   /usr/local/share/yacas/include/lispeval.h \
   /usr/local/share/yacas/include/mathenvironment.h \
-  /usr/local/share/yacas/include/lispuserfunc.h
+  /usr/local/share/yacas/include/lispuserfunc.h FltkHintWindow.h \
+  HelpView.h
 FltkHintWindow.o: FltkHintWindow.cpp FltkHintWindow.h \
   /usr/local/share/yacas/include/plat/linux32/lisptype.h \
   /usr/local/share/yacas/include/choices.h
@@ -118,7 +120,16 @@ grapher.o: grapher.cpp /usr/local/share/yacas/include/yacasprivate.h \
   /usr/local/share/yacas/include/arggetter.h \
   /usr/local/share/yacas/include/platmath.h \
   /usr/local/share/yacas/include/genericstructs.h \
-  /usr/local/share/yacas/include/errors.h fltkgraphstub.cc
+  /usr/local/share/yacas/include/errors.h FltkConsole.h \
+  /usr/local/share/yacas/include/commandline.h \
+  /usr/local/share/yacas/include/yacas.h \
+  /usr/local/share/yacas/include/infixparser.h \
+  /usr/local/share/yacas/include/lispparser.h \
+  /usr/local/share/yacas/include/stdfileio.h \
+  /usr/local/share/yacas/include/plat/linux32/platfileio.h \
+  /usr/local/share/yacas/include/lispeval.h \
+  /usr/local/share/yacas/include/mathenvironment.h \
+  /usr/local/share/yacas/include/lispuserfunc.h fltkgraphstub.cc
 tabs.o: tabs.cpp /usr/local/share/yacas/include/yacas.h \
   /usr/local/share/yacas/include/yacasbase.h \
   /usr/local/share/yacas/include/yacasprivate.h \
@@ -159,7 +170,8 @@ tabs.o: tabs.cpp /usr/local/share/yacas/include/yacas.h \
   /usr/local/share/yacas/include/lispeval.h \
   /usr/local/share/yacas/include/mathenvironment.h \
   /usr/local/share/yacas/include/lispuserfunc.h editor.h HelpView.h \
-  FltkConsole.h yacdefines.h grapher.h \
+  FltkConsole.h /usr/local/share/yacas/include/commandline.h yacdefines.h \
+  grapher.h /usr/local/share/yacas/include/arggetter.h \
   /usr/local/share/yacas/include/standard.h \
   /usr/local/share/yacas/include/numbers.h \
   /usr/local/share/yacas/include/standard.inl \
