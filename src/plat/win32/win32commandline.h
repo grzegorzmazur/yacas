@@ -25,7 +25,9 @@ public:
     // new functionality
     void color_print(const LispCharPtr str, WORD text_attrib);
     void color_read(LispCharPtr str, WORD text_attrib);
-    
+protected:
+  void ShowLine();
+  LispCharPtr iLastPrompt;
 private:
     HANDLE out_console;
     HANDLE in_console;

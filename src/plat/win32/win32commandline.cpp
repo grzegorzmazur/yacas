@@ -79,7 +79,8 @@ void CWin32CommandLine::color_read(LispCharPtr str, WORD text_attrib){
 
 void CWin32CommandLine::NewLine()
 {
-    color_print("\n", 0);
+  ShowLine();
+  color_print("\n", 0);
 }
 
 void CWin32CommandLine::Pause()
@@ -89,18 +90,23 @@ void CWin32CommandLine::Pause()
 }
 
 void CWin32CommandLine::ReadLineSub(LispCharPtr prompt){
-    if(_is_NT_or_later){
-        char buff[BufSz];
-        color_print(prompt, FOREGROUND_RED | FOREGROUND_INTENSITY );
-        color_read(buff, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-        iSubLine = buff;
-    }else{
+//    if(_is_NT_or_later){
+//        char buff[BufSz];
+//        color_print(prompt, FOREGROUND_RED | FOREGROUND_INTENSITY );
+//        color_read(buff, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+//        iSubLine = buff;
+//    }else{
         CCommandLine::ReadLineSub(prompt);
-    }
+//    }
+}
+
+void CWin32CommandLine::ShowLine(){
+  ShowLine(iLastPrompt, strlen(iLastPrompt), strlen(iLastPrompt)+iSubLine.NrItems());
 }
 
 void CWin32CommandLine::ShowLine(LispCharPtr prompt, LispInt promptlen, LispInt cursor){
-    putchar('\r');							// clear line
+  iLastPrompt = prompt;
+  putchar('\r');							// clear line
 	for (int i=0;i<79;i++) putchar(' ');
 
     assert(iSubLine.NrItems() != 0);
@@ -109,9 +115,9 @@ void CWin32CommandLine::ShowLine(LispCharPtr prompt, LispInt promptlen, LispInt 
     color_print(str, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY );
 
 
-	/*i = strlen(&iSubLine[0]) + promptlen;		// position cursor
+	i = strlen(&iSubLine[0]) + promptlen;		// position cursor
 	for (;i > cursor+promptlen; i--)
-		putchar('\b');*/
+		putchar('\b');
     fflush(stdout);
 }
 
@@ -133,7 +139,8 @@ CWin32CommandLine::CWin32CommandLine() :
         ( (osvi.dwMajorVersion > 4) ||
         ( (osvi.dwMajorVersion == 4) && (osvi.dwMinorVersion > 0) ) );*/
  
-    if(!_is_NT_or_later){
+//    if(!_is_NT_or_later)
+    {
         FILE*f=fopen("history.log", "r");
         if(f){
             if(f){
@@ -156,7 +163,8 @@ CWin32CommandLine::CWin32CommandLine() :
 
 CWin32CommandLine::~CWin32CommandLine()
 {
-    if(!_is_NT_or_later){
+//    if(!_is_NT_or_later)
+    {
         FILE*f=fopen("history.log","w");
         if (f){
             int i;
@@ -173,9 +181,9 @@ LispInt CWin32CommandLine::GetKey(){
     LispInt c;
     c = _getch();
 
-    if(!_is_NT_or_later){
-        return c;
-    }
+//    if(!_is_NT_or_later){
+//        return c;
+//    }
 
 	switch (c) {
 		case 8:
