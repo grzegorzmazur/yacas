@@ -162,7 +162,7 @@ to compile the examples (it is in a separate makefile because it is
 not yet guaranteed to work on all platforms, so it might otherwise
 break builds on some platforms).
 
-The simplest (hello world) example is {example2}, which reads:
+The simplest "hello world"-type example is {example2}, which reads:
 
 	#include <stdio.h>
 	#include "cyacas.h"
@@ -192,10 +192,10 @@ line:
 	Input> Taylor(x,0,5)Sin(x)
 	Output> x-x^3/6+x^5/120;
 
-and {example3} shows a piece of code accepting an expression
+The file {example3} shows a piece of code accepting an expression
 in Lisp syntax, the result being printed to the console using {PrettyForm}.
 
-The interface described above will probably not change much in the future,
+The interface described above will probably not change very much in the future,
 but the way to compile and link might. In an ideal world, there would be
 one library {libcyacas.a} and one header file {cyacas.h}, which get
 installed in a place where all programs can find it. Perhaps a dynamic

@@ -502,28 +502,27 @@ the end of an input file is encountered, the token atom {EndOfFile} is returned.
 
 *SEE FromFile, FromString, LispRead, ReadToken, Write
 
-*CMD LispRead --- read an expression in LISP-syntax
-*CMD LispReadListed --- read an expression in LISP-syntax, and return result in Yacas lists in stead of expressions
+*CMD LispRead, ListReadListed --- read expressions in the LISP syntax
 *CORE
 *CALL
 	LispRead()
-
 	LispReadListed()
 
 *DESC
 
-Read an expression in LISP syntax from the current input, and return
+The function {LispRead} reads an expression in the LISP syntax from the current input, and returns
 it unevaluated. When the end of an input file is encountered, the
-token atom {EndOfFile} is returned.
+special token atom {EndOfFile} is returned.
 
-The expression {a+b} is written in LISP syntax as {(+ a b)}. The advantage of this syntax is that it is
+The Yacas expression {a+b} is written in the LISP syntax as {(+ a b)}. The advantage of this syntax is that it is
 less ambiguous than the infix operator grammar that Yacas uses by
 default.
 
-The function {LispReadListed} reads lisp expressions, and returns
-them in a lists, in stead of the form usual to Yacas (expressions).
-This is more useful for reading real Lisp expressions, where the 
-first object in a list can be a list again.
+The function {LispReadListed} reads a LISP expression and returns
+it in a list, instead of the form usual to Yacas (expressions).
+The result can be thought of as applying {Listify} to {LispRead}.
+The function {LispReadListed} is more useful for reading arbitrary LISP expressions, because the 
+first object in a list can be itself a list (this is never the case for Yacas expressions where the first object in a list is always a function atom).
 
 *E.G.
 
