@@ -8,6 +8,15 @@ Verify(ArcCos(Cos(a)),a);
 //TODO ??? this is not always the correct answer! Verify(ArcTan(Tan(a)),a);
 Verify(Tan(Pi/2),Infinity);
 Verify(Tan(Pi),0);
+Verify( Limit(x,Infinity) Sin(x), Undefined );
+Verify( Limit(x,Infinity) Cos(x), Undefined );
+Verify( Limit(x,Infinity) Tan(x), Undefined );
+Verify( Limit(x,Infinity) Gamma(x), Infinity );
+Verify( Limit(x,Infinity) Abs(x), Infinity );
+Verify( Limit(x,Infinity) Factorial(x), Infinity);
+
+
+
 
 Verify(2+I*3,Complex(2,3));
 Verify(Re(2+I*3),2);
