@@ -146,7 +146,7 @@ void TestTypes1(double value)
 }
 
 // test big numbers: assignment, types, comparison
-void TestTypes2(const char* float_string, const char* int_string, double double_value)
+void TestTypes2(const char* float_string, const char* float_printed, const char* int_string, double double_value)
 {
 	const LispInt base = 10;
 	const LispInt precision = 4*strlen(float_string);
@@ -160,9 +160,9 @@ void TestTypes2(const char* float_string, const char* int_string, double double_
 
 	Check(!x.IsInt(), "x is a float type as read");
 	Check(y.IsInt(), "y is an integer type as read");
-	Check(x.Double()==double_value, "value is correct");
+	Check(x.Double()==double_value, "double value is correct");
 	x.ToString(str, precision, base);
-	Check(str, float_string, "float value is printed back correctly");
+	Check(str, float_printed, "float value is printed back correctly");
 	Check(!x.IsIntValue(), "x has a non-integer value as read");
 	Check(y.IsIntValue(), "y has an integer value as read");
 	y.ToString(str, precision, base);
@@ -382,28 +382,32 @@ int main(void)
 	TestTypes1(15416.563);
 
 	Next("test big integers and floats 1");
-	// values must be out of range for platform numbers. Usage:
-	// TestTypes2("float value", "equivalent integer value", double_value, base);
+	// values must be out of range for platform numbers; float values must be non-integer. Usage:
+	// TestTypes2("float value", "printed float value", "equivalent integer value", double_value, base);
 	const char* num1_float = "3.00000000000000000000000000000000000000099999999999992";
+	const char* num1_printed = num1_float;
 	const char* num1_int = "3";
 	const double num1_double = 3;
-	const char* num2_float = "-100000000000000.23333333333";
+	const char* num2_float =     "-100000000000000.23333333333";
+	const char* num2_printed = "-0.10000000000000023333333333e15";
 	const char* num2_int = "-100000000000000";
 	const double num2_double = -1.e14;
-	const char* num3_float = "10000000000000000.23333333333";
+	const char* num3_float =     "10000000000000000.23333333333";
+	const char* num3_printed = "0.1000000000000000023333333333e17";
 	const char* num3_int = "10000000000000000";
 	const double num3_double = 1.e16;
 	const char* num4_float = "123.33233233233233233232333333111111111111199797797973333";
+	const char* num4_printed = num4_float;
 	const char* num4_int = "123";
 	const double num4_double = 123.332332332332332332323333333333;
 
-	TestTypes2(num1_float, num1_int, num1_double);
+	TestTypes2(num1_float, num1_printed, num1_int, num1_double);
 	Next("test big integers and floats 2");
-	TestTypes2(num2_float, num2_int, num2_double);
+	TestTypes2(num2_float, num2_printed, num2_int, num2_double);
 	Next("test big integers and floats 3");
-	TestTypes2(num3_float, num3_int, num3_double);
+	TestTypes2(num3_float, num3_printed, num3_int, num3_double);
 	Next("test big integers and floats 4");
-	TestTypes2(num4_float, num4_int, num4_double);
+	TestTypes2(num4_float, num4_printed, num4_int, num4_double);
 	
 	Next("test copy constructor");
 	y.SetTo(-15416.0);
@@ -659,7 +663,56 @@ int main(void)
 	y.SetTo(4.);
 	z.Divide(x,y,10);
 	CheckStringValue(z, "3.75", 10, 10, "15/4==3.75");
+	x.SetTo(1.);
+	y.SetTo(7.);
+	x.Divide(x,y,200);
+	CheckStringValue(x, "0.142857142857142857142857142857142857142857142857142857142857142857143", 1000, 10, "high-precision division");
+
+	x.SetTo("3.000000000000000000000000000000000000000050104", 150, 10);
+	y.SetTo("3.000000000000000000000000000000000000000050204", 150, 10);
+	Check(!x.Equals(y), "read a large number of digits from string");
+	{
+		LispString str;
+		x.ToString(str, 50, 10);
+		Check(str, "3.000000000000000000000000000000000000000050104","printed back a large number of digits from string");
+	}
+	y.SetTo(-3.);
+	x.Add(x, y, 200);
+	Check(x.Sign()>0, "read big float value correctly");
 	
+	{
+		BigNumber a("3.000000000000000000000000000000000000000050104", 150, 10);
+		LispString str;
+		a.ToString(str, 50, 10);
+		Check(str, "3.000000000000000000000000000000000000000050104","constructor from string");
+		
+	}
+	{
+		BigNumber a("3.000000000000000000000000000000000000000050104", 150, 10);
+		BigNumber b(a);
+		LispString str;
+		b.ToString(str, 50, 10);
+		Check(str, "3.000000000000000000000000000000000000000050104","copy constructor");
+		
+	}
+	{
+		BigNumber a;
+		a.SetTo("3.000000000000000000000000000000000000000050104", 150, 10);
+		LispString str;
+		a.ToString(str, 50, 10);
+		Check(str, "3.000000000000000000000000000000000000000050104","assignment from string using a fresh number");
+		
+	}
+	{
+		BigNumber a;
+		a.SetTo("3.000000000000000000000000000000000000000050104", 150, 10);
+		BigNumber b;
+		b.SetTo(a);
+		LispString str;
+		b.ToString(str, 50, 10);
+		Check(str, "3.000000000000000000000000000000000000000050104","assignment from string and a copy operation");
+		
+	}
 	
 	Next("multiply-add");
 	x.SetTo(10);
