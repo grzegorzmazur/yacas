@@ -1910,6 +1910,16 @@ void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
 }
 
 
+void BigNumber::BitNot(const BigNumber& aX)
+{
+  if (aX.IsInt())
+  {
+  	if (!IsInt()) turn_int();
+	mpz_com(int_, aX.int_);
+  }
+}
+
+
 /// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
 void BigNumber::BitCount(const BigNumber& aX)
 {

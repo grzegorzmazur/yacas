@@ -558,6 +558,9 @@ int main(void)
 	z.ShiftLeft(y,t);
 	t.SetTo("61236123612361236123612361236123612361230", 0, 16);
 	Check(z.Equals(t), "ShiftLeft operation correct (big shift)");
+	z.BitNot(z);
+	t.SetTo("9EDC9EDC9EDC9EDC9EDC9EDC9EDC9EDC9EDC9EDCF", 0, 16);
+	Check(z.Equals(t), "BitNot operation correct");
 	
 	Next("precision");
 	x.BecomeFloat();

@@ -541,12 +541,14 @@ For non-integers, this operation is usually also more efficient than multiplicat
 Note that the shift amount is a big number.
 	x.ShiftLeft(y, n); x.ShiftRight(y, n);
 (Versions of these functions with {n} a platform {long} integer are also provided for efficiency.)
-*	Perform bitwise arithmetic, {x := y&z}, {x := y|z}, {x := y^z}.
+*	Perform bitwise arithmetic, like in C: {x = y&z}, {x = y|z}, {x = y^z}, {x = ~y}.
 This should be implemented only for integers.
 Integer values are interpreted as bit sequences starting from the least significant bit.
 (Optimization of operations on bit streams and some arithmetic involving powers of 2.)
-	x.BitAnd(y,z); x.BitOr(y,z); x.BitXor(y,z);
+	x.BitAnd(y,z); x.BitOr(y,z);
+	x.BitXor(y,z); x.BitNot(y);
 
+The API includes only the most basic operations.
 All other mathematical functions such as power, logarithm, cosine and so on, can be efficiently implemented using this basic interface.
 
 Note that generally the arithmetic functions will set the type of the resulting object to the type of the result of the operation.
@@ -611,11 +613,13 @@ Second, we might compile the library wrapper as a plugin, replacing the script-l
 This solution is easier in some ways because it doesn't require any changes to the Yacas core, only to the script library.
 However, the library wrapper will only be available to the Yacas scripts and not to the Yacas core functions.
 The basic assumption of the plugin architecture is that plugins can provide new external objects and functions to the scripts, but plugins cannot modify anything in the kernel.
+So plugins can replace a function defined in the scripts, but cannot replace a kernel function.
 Suppose that some other function, such as a computation of the elliptic integral which heavily uses the square root, were implemented in the core using the {BigNumber} API.
 Then it will not be able to use the square root function supplied by the plugin because it has been already compiled into the Yacas kernel.
 
 Third, we might put all functions that use the basic API ({MathSqrt}, {MathSin} etc.) into the script library and not into the Yacas kernel.
-When Yacas is compiled with a particular numerical library, the functions available from the library will also be compiled as the kernel versions of {MathSqrt}, {MathPower} and so on.
+When Yacas is compiled with a particular numerical library, the functions available from the library will also be compiled as the kernel versions of {MathSqrt}, {MathPower} and so on
+(using conditional compilation or configured at build time).
 Since Yacas tries to call the kernel functions before the script library functions, the available kernel versions of {MathSqrt} etc. will supersede the script versions, but other functions such as {BesselJ} will be used from the script library.
 The only drawback of this scheme is that a plugin will not be able to use the faster versions of the functions, unless the plugin was compiled specifically with the requirement of the particular numerical library.
 
