@@ -36,16 +36,42 @@ DoNext("Compute a numerical approximation of e^(Pi*sqrt(163)) to 50 digits.");
 BenchCall(Precision(50));
 BenchShow(N(Exp(Pi*Sqrt(163))));
 
+DoNext("Compute an infinite decimal representation of 1/7");
+BenchShow(Decimal(1/7));
+
+DoNext("Compute the first terms of the continued fraction of Pi.");
+BenchShow(PrettyForm(ContFrac(Pi())));
+
+DoNext("Simplify sqrt(2*sqrt(3)+4).");
+BenchShow(RadSimp(Sqrt(2*Sqrt(3)+4)));
+
+DoNext("Simplify sqrt(14+3*sqrt(3+2*sqrt(5-12*sqrt(3-2*sqrt(2))))).");
+BenchShow(RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2)))))));
+
 DoNext("Simplify 2*infinity-3.");
 BenchShow(2*Infinity-3);
 
 Echo({"Infinity is also defined for comparisons like a &lt Infinity"});
 
+DoNext("Compute the normal form of (x^2-4)/(x^2+4x+4).");
+BenchShow(PrettyForm(GcdReduce((x^2-4)/(x^2+4*x+4),x)));
 
 DoNext("Expand (x+1)^5, then differentiate and factorize.");
 BenchCall(ans:=Factors(D(x)Expand((x+1)^5)));
 BenchShow(PrettyForm(FW(ans)));
 
+DoNext("Simplify sqrt(997) - (997^3)^(1/6).");
+BenchShow(RadSimp(Sqrt(997) - (997^3)^(1/6)));
+
+DoNext("Simplify sqrt(999983) - (999983^3)^(1/6).");
+BenchShow(RadSimp(Sqrt(999983) - (999983^3)^(1/6)));
+
+DoNext("Recognize that (2^(1/3)+4^(1/3))^3-6*(2^(1/3)+4^(1/3)) - 6 is 0.");
+BenchShow(RadSimp( (2^(1/3)+4^(1/3))^3-6*(2^(1/3)+4^(1/3)) - 6));
+
+
+DoNext("Simplify log e^z into z only for -Pi < Im(z) <= Pi.");
+BenchShow(Simplify(Ln(Exp(z))));
 
 DoNext("Invert the 2x2 matrix [[a,b],[1,ab]]. ");
 BenchCall(A:={{a,b},{1,a*b}});

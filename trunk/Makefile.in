@@ -72,7 +72,7 @@ scriptdir = @scriptdir@
 
 SUBDIRS = docs inprogress YacasNotebook scripts src ramscripts manualmaker colorcode plugins
 
-EXTRA_DIST = yacas.spec yacas.spec.in makemake mkhomepage mkmanual yacas.sh yacas_client doxy_yacas yacas.el
+EXTRA_DIST = yacas.spec yacas.spec.in makemake mkhomepage mkmanual yacas.sh yacas_client doxy_yacas yacas.el README.beos
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
