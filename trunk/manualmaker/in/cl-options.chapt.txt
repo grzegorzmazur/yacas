@@ -133,6 +133,11 @@ that it is not tested, at this time, that the build process works on all
 platforms.
 (Right now it works on Unix, MacOSX, and Win32.)
 
+Alternatively, configure Yacas with
+	./configure --enable-archive
+and the archive file {scripts.dat} will be created in the {ramscripts/}
+subdirectory.
+
 When an archive is present, Yacas will try to load it before it looks for scripts from the library directories.
 Typing 
 	make archivetest -f makefile.compressor
