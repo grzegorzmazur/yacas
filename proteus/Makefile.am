@@ -42,6 +42,11 @@ install-data-local: $(proteusworksheet_datafiles) $(proteusworksheet_docfiles)
 	done
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/documentation
 	$(INSTALL_DATA) proteusbooks.html $(DESTDIR)$(pkgdatadir)/documentation/proteusbooks.html
+if MACOS_REZ
+#	/Developer/Tools/Rez -t APPL -o $(bindir)/proteus 
+	`fltk-config --post $(bindir)/proteus`
+endif
+
 
 
 # EXTRA_DIST = COPYING.HelpDialog browse.cpp \
