@@ -96,3 +96,8 @@ void LispPrinter::Print(LispPtr& aExpression, LispOutput& aOutput, LispEnvironme
     } // print next element
 }
 
+// does nothing in the LispPrinter but is used in derived classes
+void LispPrinter::RememberLastChar(LispChar aChar)
+{
+}
+

@@ -884,6 +884,8 @@ void LispWriteString(LispEnvironment& aEnvironment, LispPtr& aResult,
     {
         aEnvironment.CurrentOutput()->PutChar((*str)[i]);
     }
+	// pass last printed character to the current printer
+	aEnvironment.CurrentPrinter().RememberLastChar((*str)[nr-1]);	// hacky hacky
     InternalTrue(aEnvironment,aResult);
 }
 
