@@ -1,0 +1,41 @@
+# Using the -O2 option, size decreased from 898288 to 768488,
+# load time from 29" to 13" (non Snow), and D(x)Sin(x) from
+# 39" to 17". Since then, code has been modified.
+# -msoft-float made size go from 768552 to 768120.
+# -mips2 further reduced it to 669912.
+# Remove -DPROMPT_SHOW_FREE_MEMORY if you prefer the prompt
+# not to show the amount of free memory.
+CXX_OPTS=-msoft-float -mips2 -O2 -DPROMPT_SHOW_FREE_MEMORY
+
+
+
+OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
+	deffile.o errors.o genericobject.o genericstructs.o \
+	grower.o infixparser.o lispatom.o lispcleanupstack.o         \
+	lispenvironment.o lispeval.o lispevalhash.o lisphash.o       \
+	lispio.o lispobject.o lispparser.o lispplugin.o lispstring.o  \
+	lispuserfunc.o mathcommands.o mathcommands2.o mathcommands3.o  \
+	mathenvironment.o mathuserfunc.o mathutil.o patcher.o          \
+	patternclass.o patterns.o platmath.o standard.o                \
+	stdcommandline.o stdfileio.o stdstubs.o stringio.o             \
+	substitute.o tokenizer.o                                       \
+	yacasapi.o yacasmain.o yacasnumbers.o unipoly.o                \
+	unixcommandline.o elfdll.o
+
+.SUFFIXES: .cpp 
+
+.cpp.o:
+	mipsel-linux-g++ $(CXX_OPTS) $(INC) -c $<
+
+
+all: yacas
+
+INC = -I./plat/linux32  -DSCRIPT_DIR=\"/usr/local/share/yacas/\" -DVERSION=\"Agenda\"
+
+yacas : $(OBJS) makefile.agenda
+	mipsel-linux-gcc -lm -ldl $(CXX_OPTS) $(OBJS) -o yacas
+	mipsel-linux-strip yacas
+
+clean :
+	rm -f $(OBJS)
+	rm -f yacas
