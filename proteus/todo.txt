@@ -1,5 +1,9 @@
 
 
+- 'new' button, allowing for new calculations.
+- starting with empty view, and a dialog for new calculation.
+- now fill the profiling view.
+
 
 
 

@@ -230,6 +230,10 @@ REDO:
         lineptr = tracer->my_item_first();
         selected = 1;
     }
+
+    if (lineptr == NULL)
+        return;
+
     LineInfo *lineinfo =  (LineInfo *)tracer->data(selected);
     if (lineinfo != NULL)
     {
@@ -347,32 +351,10 @@ int get_string(char*expression,char*scriptdir,char*tempdir,
 }
 
 
-
-int main(int argc, char **argv)
+void NewCalculation()
 {
-    expression[0] = '\0';
-    strcpy(scriptdir,"/usr/local/share/yacas/");
-    strcpy(tempdir,"/tmp/proteusdebugger/");
-    pre_eval[0] = '\0';
-
-    {
-        FILE* f = fopen("tracerrc","r");
-        if (f)
-        {
-            fgets(expression,199,f);
-            expression[strlen(expression)-1] = '\0';
-            fgets(scriptdir,199,f);
-            scriptdir[strlen(scriptdir)-1] = '\0';
-            fgets(tempdir,199,f);
-            tempdir[strlen(tempdir)-1] = '\0';
-            fgets(pre_eval,199,f);
-            pre_eval[strlen(pre_eval)-1] = '\0';
-            fclose(f);
-        }
-    }
-    
     if (!get_string(expression,scriptdir,tempdir, pre_eval))
-        return 0;
+        return;
     {
         FILE* f = fopen("tracerrc","w");
         if (f)
@@ -415,8 +397,43 @@ int main(int argc, char **argv)
         }
         delete yacas;
     }
+    fileViewer->clear();
+    tracer->clear();
+    tracer->load_in(1,0);
+    selected = 1;
+    lineptr = NULL;
+
+}
+
+void newcb(Fl_Widget *, void *)
+{
+    NewCalculation();
+}
 
 
+int main(int argc, char **argv)
+{
+    expression[0] = '\0';
+    strcpy(scriptdir,"/usr/local/share/yacas/");
+    strcpy(tempdir,"/tmp/proteusdebugger/");
+    pre_eval[0] = '\0';
+
+    {
+        FILE* f = fopen("tracerrc","r");
+        if (f)
+        {
+            fgets(expression,199,f);
+            expression[strlen(expression)-1] = '\0';
+            fgets(scriptdir,199,f);
+            scriptdir[strlen(scriptdir)-1] = '\0';
+            fgets(tempdir,199,f);
+            tempdir[strlen(tempdir)-1] = '\0';
+            fgets(pre_eval,199,f);
+            pre_eval[strlen(pre_eval)-1] = '\0';
+            fclose(f);
+        }
+    }
+    
     int i;
     int file=0;
 //  if (!Fl::args(argc,argv,i)) Fl::fatal(Fl::help);
@@ -424,8 +441,6 @@ int main(int argc, char **argv)
   Fl_Window window(400,400,"Proteus Debugger");
   window.box(FL_NO_BOX); // because it is filled with browser
   window.resizable(window);
-  selected = 1;
-  lineptr = NULL;
   
   mainTabs = new Fl_Tabs(0, 0, 400, 400);
   window.resizable(mainTabs);
@@ -439,9 +454,11 @@ int main(int argc, char **argv)
       fileViewer = new Fl_My_Browser(0,20,400,190,0);
       fileViewer->align(FL_ALIGN_CLIP);
 
+      
       tracer = new Fl_My_Browser(0,210,400,160,0);
       tracer->callback(b_cb);
-      tracer->load_in(1,0);
+      //      tracer->load_in(1,0);
+      
 //      tracer->position(0);
       tracer->align(FL_ALIGN_CLIP);
       
@@ -459,6 +476,10 @@ int main(int argc, char **argv)
       b->callback(multistepovercb,0);
 
       locked = new Fl_Round_Button(150,375,100,20,"Lock file");
+
+      b = new Fl_Button(350, 375, 40, 20, "New");
+      b->callback(newcb,0);
+
       o->end();
       o->resizable(t);
       Fl_Group::current()->resizable(t);
@@ -483,8 +504,12 @@ int main(int argc, char **argv)
       o->end();
       Fl_Group::current()->resizable(o);
   }
+
+
   
   window.show(argc,argv);
+  NewCalculation();
+
   return Fl::run();
 }
 
