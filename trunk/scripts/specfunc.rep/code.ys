@@ -320,7 +320,7 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
         RoundTo(N(result),prec);
 
 ];
-
+/* this is very slow at high precision
 20 # PolyLog(_n,_x)_(Numeric And x > 0 And x <= 1) <-- [
 	Local(result,prec,term,k,eps);
 	prec:=GetPrecision();
@@ -328,6 +328,7 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 	eps:=10^(-prec);
 	result:=0;
 	// Sorry Serge, I was only getting 2 digits of precision with this
+		// so why didn't you ask me? :) -- Serge
 	//terms:=Floor(10 + N(prec*Ln(10)/Ln(prec) - 1));
 	//Precision( prec + Floor(N(Ln(6*terms)/Ln(10))) );
 	//result:=SumTaylorNum(x, {{k}, x^(k+1)/(k+1)^n }, terms );
@@ -335,11 +336,26 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 	For(k:=1,Abs(term)>eps,k++)[
 		term:=N(x^k/k^n);
 		result:=result+term;
-	];	
+	];
 	Precision(prec);
 	RoundTo(result,prec);
 ];
+*/
 
+20 # PolyLog(_n,_x)_(Numeric And x > 0 And x < 1) <--
+[	// use Taylor series x^(k+1)/(k+1)^n, converges for -1<x<1
+	Local(prec, result, terms);
+	prec:=GetPrecision();
+	Precision(15);	// to calculate the number of terms
+	terms := Floor(-prec*Ln(10)/Ln(x));
+	terms := Floor(-(prec*Ln(10)-(n-1)*Ln(terms))/Ln(x));
+//	Echo("used", terms, "terms");
+	If(terms < 4, terms := 4);
+	Precision(prec+2*IntLog(prec,10)+5);
+	result := x*SumTaylorNum(x, {{k}, 1/(k+1)^n}, terms);
+	Precision(prec);
+	RoundTo(result, prec);
+];
 
 // This is really slow for x <= 3
 5  # DirichletBeta(1)		<-- Pi/4;
