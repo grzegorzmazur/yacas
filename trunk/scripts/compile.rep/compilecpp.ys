@@ -26,23 +26,34 @@ Macro()CompileStatement(expression);
     ]);
 ];
 
+
+Function()CountRegisters(expression);
+HoldArg("CountRegisters",expression);
+10 # CountRegisters(expression_IsAtom) <-- 0;
+20 # CountRegisters(expression_IsFunction)_(Type(expression) = "Local") 
+   <-- Length(Listify(expression))-1;
+30 # CountRegisters(expression_IsFunction)
+   <-- Add(MapSingle("CountRegisters",Tail(Listify(expression))));
+
 CompileStatement(Defun(_cn,_ag) (_body)) <--
 [
-  Local(callName,compiledName,args,stack,i,nrArgs);
+  Local(callName,compiledName,args,stack,i,nrArgs,nrRegisters);
   Set(callName,(@cn));
   Set(args,(@ag));
   Set(compiledName,"Compiled_":(@cn));
   Set(nrArgs,Length(@ag));  
+  Set(nrRegisters,CountRegisters(Hold(@body)));
 //  Echo("CORE_KERNEL_FUNCTION(\"",Type(@f),"\",",compiledName,",",nrArgs,",YacasEvaluator::Function | YacasEvaluator::Fixed)");
 
 //TODO remove  funcDecls := {Type(@f),compiledName,nrArgs} : funcDecls;
   ForwardDeclareFixedFunction(@cn,nrArgs);
 //  funcDecls[(@cn)] := {compiledName,Function,Fixed,nrArgs};
 
-  Echo("void ",compiledName,"(LispEnvironment& aEnvironment,LispInt aStackTop)");
-  Echo("{
-    register LispEnvironment::YacasArgStack& _this_stack = aEnvironment.iStack;
-    ");
+Echo("VmFunction(",@cn,", ",nrRegisters,");");
+//  Echo("void ",compiledName,"(LispEnvironment& aEnvironment,LispInt aStackTop)");
+//  Echo("VmFunctionBegin();");
+
+  Set(currentLastRegister,0);
   Set(stack,NewStack());
   PushStackFrame(stack,fenced);
   For(i:=1,i<=nrArgs,i++)
@@ -52,9 +63,11 @@ CompileStatement(Defun(_cn,_ag) (_body)) <--
   ];  
   CompileBody(Hold(@body),stack);
   PopStackFrame(stack);
-  Echo("  RESULT.Set(STACK(STACKTOP()-1).Get());");
-  Echo("  POP(1);");
-  Echo("}");
+  Echo("  VmSetResult();");
+  Echo("  VmPop(1);");
+  Echo("VmFunctionEnd();");
+  Echo("");
+  Echo("");
 ];
 
 
@@ -114,8 +127,8 @@ CompileStatement(f_IsFunction := _body) <--
   ];  
   CompileBody(Hold(@body),stack);
   PopStackFrame(stack);
-  Echo("  RESULT.Set(STACK(STACKTOP()-1).Get());");
-  Echo("  POP(1);");
+  Echo("  VmSetResult();");
+  Echo("  VmPop(1);");
   Echo("}");
 ];
 
@@ -127,8 +140,6 @@ Use("corefunctions.ys");
 
 
 30  # CompileFn(_fname)_(funcDecls[fname] != Empty) <-- funcDecls[fname] /*[1]*/;
-//hier
-// 40  # CompileFn(_fname) <-- "Compiled_":fname;
 
 100 # CompileFn(_rest) <-- Empty;
 
@@ -140,28 +151,28 @@ Use("corefunctions.ys");
 10 # CompileBody(body_IsNumber,_stack) <--
 [
   Echo("/* number : ",body," */");
-  Echo("  PUSH(",CompiledConstant(String(body)),");");
+  Echo("  VmPushConstant(",CompiledConstant(String(body)),");");
 //  Echo("  PUSH(ATOM(",String(String(body)),"));");
 ];
 
 10 # CompileBody(body_IsString,_stack) <--
 [
   Echo("/* string : ",body," */");
-  Echo("  PUSH(",CompiledConstant("\\\"":body:"\\\""),");");
+  Echo("  VmPushConstant(",CompiledConstant("\\\"":body:"\\\""),");");
 //  Echo("  PUSH(ATOM(\"\\\"",body,"\\\"\"));");
 ];
 
 11 # CompileBody(body_IsAtom,_stack)_(IsOnStack(stack,String(body))) <--
 [
   Echo("/* local : ",body," */");
-  Echo("  PUSH(",FindOnStack(stack,String(body))["call"],".Get());");
+  Echo("  VmPush(",FindOnStack(stack,String(body))["call"],");");
 ];
 
 //TODO handle global variables
 12 # CompileBody(body_IsAtom,_stack) <--
 [
   Echo("/* atom : ",body," */");
-  Echo("  PUSH(",CompiledConstant(String(body)),");");
+  Echo("  VmPushConstant(",CompiledConstant(String(body)),");");
 //  Echo("  PUSH(ATOM(",String(String(body)),"));");
 ];
 
@@ -176,12 +187,18 @@ Use("corefunctions.ys");
     //TODO handle initialization
 
 
-    Echo("LispPtr ",body[i],"; ",body[i],".Set(",CompiledConstant(String(body[i])),");");
-//    Echo("LispPtr ",body[i],"; ",body[i],".Set(ATOM(",String(String(body[i])),"));");
+
     AddToStack(stack,String(body[i]));
-    FindOnStack(stack,String(body[i]))["call"] := String(body[i]);
+//    FindOnStack(stack,String(body[i]))["call"] := String(body[i]);
+    FindOnStack(stack,String(body[i]))["call"] := "REGISTER(":String(currentLastRegister):")";
+//hier
+    Echo("  VmInitRegister(",currentLastRegister,", ",CompiledConstant(String(body[i])),");");
+//    Echo("REGISTER(":String(currentLastRegister):").Set(",CompiledConstant(String(body[i])),");");
+    currentLastRegister++;
+//    Echo("LispPtr ",body[i],"; ",body[i],".Set(",CompiledConstant(String(body[i])),");");
+
   ];
-  Echo("  PUSH(",CompiledConstant("True"),");");
+  Echo("  VmPushConstant(",CompiledConstant("True"),");");
 ];
   
 
@@ -190,7 +207,7 @@ Use("corefunctions.ys");
   Echo("/* ",body," */");
   Set(body,Tail(Listify(body)));
   CompileBody(body[2],stack);
-  Echo("  ",FindOnStack(stack,String(body[1]))["call"],".Set(STACK(STACKTOP()-1).Get());");
+  Echo("  VmPopRegister(",FindOnStack(stack,String(body[1]))["call"],");");
 ];
 
 20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "Prog") <--
@@ -203,24 +220,29 @@ Use("corefunctions.ys");
   [
     CompileBody(Head(body),stack);
     Set(body,Tail(body));
-    If(Length(body)>0,Echo("  POP(1);"));
+    If(Length(body)>0,Echo("  VmPop(1);"));
   ];
   PopStackFrame();
 ];
 
 20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "While") <--
 [
+  Local(loopLabel,breakLabel);
+  loopLabel:=UniqueConstant();
+  breakLabel:=UniqueConstant();
   Set(body,Tail(Listify(body)));
   Echo("/* While (",body[1],") */");
-  Echo("   for(;;)");
-  Echo("{");
+  Echo("VmLabel(",loopLabel,");");
+//  Echo("   for(;;)");
+//  Echo("{");
   CompileBody(body[1],stack);
-//Echo("printf(\"Got here\\\n\");");
-//Echo("printf(\"atom is [%s]\\n\",STACK(STACKTOP()-1).Get()->String()->String());");
-  Echo("   if (ISFALSE(STACK(STACKTOP()-1))) break;");
+  Echo("  VmJumpIfFalse(",breakLabel,");");
+//  Echo("   if (ISFALSE(STACK(STACKTOP()-1))) break;");
   CompileBody(body[2],stack);
-  Echo("  POP(2);");
-  Echo("}");
+  Echo("  VmPop(2);");
+//  Echo("}");
+  Echo("  VmJump(",loopLabel,");");
+  Echo("VmLabel(",breakLabel,");");
 ];
 
 
@@ -231,18 +253,25 @@ Use("corefunctions.ys");
   If(Length(body) = 3,Echo("/* else ",body[3]," */"));
 
   CompileBody(body[1],stack);
-  Echo("   if (ISTRUE(STACK(STACKTOP()-1)))");
-  Echo("  {");
-  Echo("    POP(1);");
+Local(elseClause,pastClause);
+elseClause:=UniqueConstant();
+pastClause:=UniqueConstant();
+Echo("  VmJumpIfFalse(",elseClause,");");
+//  Echo("   if (ISTRUE(STACK(STACKTOP()-1)))");
+//  Echo("  {");
+  Echo("  VmPop(1);");
   CompileBody(body[2],stack);
-  Echo("  }");
+Echo("  VmJump(",pastClause,");");
+//  Echo("  }");
+Echo("VmLabel(",elseClause,");");
   If(Length(body) = 3,
   [
-    Echo("  else");
-    Echo("  {");
-    Echo("    POP(1);");
+//    Echo("  else");
+//    Echo("  {");
+    Echo("  VmPop(1);");
     CompileBody(body[3],stack);
-    Echo("  }");
+//    Echo("  }");
+Echo("VmLabel(",pastClause,");");
   ]);
 ];
 
@@ -250,7 +279,7 @@ Use("corefunctions.ys");
 [
   30 # CompileBody(body_IsList,_stack) <--
   [
-  Echo("  PUSH(NULL);");
+  Echo("  VmPushNull();");
   Echo("  {");
   Echo("    LispPtr all;");
   Echo("    all.Set(aEnvironment.iList->Copy(LispFalse));");
@@ -263,7 +292,7 @@ Use("corefunctions.ys");
   
   Echo("      tail.Ptr()->Set(STACK(STACKTOP()-1).Get()->Copy(LispFalse));");
   Echo("      tail.GoNext();");
-  Echo("      POP(1);");
+  Echo("  VmPop(1);");
   ];
   Echo("    STACK(STACKTOP()-1).Set(LispSubList::New(all.Get()));");
   Echo("  }");
@@ -280,8 +309,8 @@ LocalSymbols(cFn)
   [
     Local(compileFn);
     Set(compileFn,cFn);
-    Echo("  PUSH(NULL);");
-    Echo("  {");
+    Echo("  VmPushNull();");
+//    Echo("  {");
   
     Local(i,args,nrArgs);
     Set(args,Tail(Listify(body)));
@@ -298,10 +327,12 @@ LocalSymbols(cFn)
   
   //hier
   //  Echo("    void ",compileFn,"(LispEnvironment& aEnvironment,LispInt aStackTop);");
-  
-    Echo("    ",compileFn[1],"(aEnvironment,STACKTOP()-",(nrArgs+1),");");
-    If(nrArgs != 0,Echo("    POP(",nrArgs,");"));
-    Echo("  }");
+
+
+    Echo("  VmCall(",compileFn[1],", ",nrArgs,");");
+//    Echo("    ",compileFn[1],"(aEnvironment,STACKTOP()-",(nrArgs+1),");");
+    If(nrArgs != 0,Echo("  VmPop(",nrArgs,");"));
+//    Echo("  }");
   ];
 ];
 
@@ -353,6 +384,7 @@ fileBuildString:=
 #define ATOM(_x) LispAtom::New(aEnvironment,_x)
 #define RESULT _this_stack.GetElement(aStackTop)
 #define ARGUMENT(i) _this_stack.GetElement(aStackTop+i)
+#define REGISTER(_index) _registers.GetElement(_index)
 #define PUSH(_x)   _this_stack.PushArgOnStack(_x)
 #define POP(_i)    _this_stack.PopTo(_this_stack.GetStackTop() - _i)
 #define STACKTOP() _this_stack.GetStackTop()
@@ -360,6 +392,31 @@ fileBuildString:=
 
 #define ISTRUE(_x) IsTrue(aEnvironment, _x)
 #define ISFALSE(_x) IsFalse(aEnvironment, _x)
+
+
+
+
+#define VmFunction(name,nrRegisters)    void Compiled_##name(LispEnvironment& aEnvironment,LispInt aStackTop) { register LispEnvironment::YacasArgStack& _this_stack = aEnvironment.iStack; LispPtrArray _registers(nrRegisters,NULL);
+#define VmFunctionEnd()        }
+
+#define VmJumpIfTrue(_label)   if (ISTRUE (STACK(STACKTOP()-1))) goto _label
+#define VmJumpIfFalse(_label)  if (ISFALSE(STACK(STACKTOP()-1))) goto _label
+#define VmJump(_label)         goto _label
+#define VmLabel(_label)          _label:
+
+#define VmPushNull()            _this_stack.PushArgOnStack(NULL)
+#define VmPush(_index)          PUSH(_index.Get())
+#define VmPushConstant(_constnt) PUSH(_constnt)
+
+#define VmInitRegister(_index,_constant) REGISTER(_index).Set(_constant)
+#define VmPopRegister(_index) (_index).Set(STACK(STACKTOP()-1).Get())
+
+
+#define VmPop(_i)               _this_stack.PopTo(_this_stack.GetStackTop() - _i)
+#define VmCall(fname,nargs)     fname(aEnvironment,STACKTOP()-(nargs+1) )
+#define VmSetResult()           RESULT.Set(STACK(STACKTOP()-1).Get())
+
+
 
 
 <?
@@ -450,6 +507,18 @@ LispPluginBase* <?WriteString(\"make_\":pluginName);?>(void)
      cst;
    ];
 20 # CompiledConstant(string_IsString) <-- constDefs[string];
+
+
+/* CompileExpression can be used to compile one single function.
+ */
+Macro("CompileExpression",{expression})
+[
+  Set(funcDecls,{});
+  Set(funcPrototypes,"");
+  Set(constDefs,{});
+  Set(constCount,0);
+  CompileStatement(@expression);
+];
 
 CompileCpp(file_IsString,pluginName_IsString)<--
 [
