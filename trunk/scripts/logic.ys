@@ -108,16 +108,16 @@ CanProveAux(_proposition)                           <-- LogicSimplify(propositio
   Local(cnf, list, clauses);
   Check(level > 1, "Wrong level");
   // First get the CNF version of the proposition
-  cnf := CNF(proposition);
+  Set(cnf, CNF(proposition));
 
   If(level <= 1, cnf, [
-    list    := Flatten(cnf, "And");
-    clauses := {};
+    Set(list, Flatten(cnf, "And"));
+    Set(clauses, {});
     ForEach(clause, list)
     [
       Local(newclause);
       /*newclause := BubbleSort(LogicRemoveTautologies(Flatten(clause,"Or")), LexLessThan);*/
-      newclause := LogicRemoveTautologies(Flatten(clause, "Or"));
+      Set(newclause, LogicRemoveTautologies(Flatten(clause, "Or")));
       If(newclause != {True}, DestructiveAppend(clauses, newclause));
     ];
 
@@ -126,18 +126,18 @@ CanProveAux(_proposition)                           <-- LogicSimplify(propositio
         i.e. if we have (A And B) And ( B And A), only the first one will
         persist.
     */
-    clauses := RemoveDuplicates(clauses);
-    If((level = 3) And (Length(clauses) != 0), [
-        clauses := LogicCombine(clauses);
+    Set(clauses, RemoveDuplicates(clauses));
+    If(Equals(level, 3) And (Length(clauses) != 0), [
+        Set(clauses, LogicCombine(clauses));
     ]);
 
-    If(Length(clauses) = 0, True, [
+    If(Equals(Length(clauses), 0), True, [
         /* assemble the result back into a boolean expression */
         Local(result);
-        result := True;
+        Set(result, True);
         ForEach(item,clauses)
         [
-            result:= result And UnFlatten(item, "Or", False);
+            Set(result, result And UnFlatten(item, "Or", False));
         ];
 
         result;
@@ -167,31 +167,32 @@ care of duplicates in one pass */
 LogicRemoveTautologies(_e) <--
 [
   Local(i, len, negationfound); len := Length(e);
-  negationfound := False;
+  Set(negationfound, False);
 
-  For(i := 1, (i <= len) And (Not negationfound), i++)
+  For(Set(i, 1), (i <= len) And (Not negationfound), i++)
   [
     Local(x, n, j);
-    x := e[i];
-    n := SimpleNegate(e[i]);      /* this is all we have to do because of
+    Set(x, MathNth(e,i));
+    Set(n, SimpleNegate(MathNth(e,i)));      /* this is all we have to do because of
                                      the kind of expressions we can have coming in */
 
-    For(j := i+1, (j <= len) And (Not negationfound), j++)
+    For(Set(j, i+1), (j <= len) And (Not negationfound), j++)
     [
-        Local(y); y := e[j];
+        Local(y);
+        Set(y, MathNth(e,j));
 
         If(Equals(y, n),
             [
 /*                Echo({"Deleting from ", e, " i=", i, ", j=", j, Nl()}); */
 
-                negationfound := True;
+                Set(negationfound, True);
 /*                Echo({"Removing clause ", i, Nl()}); */
             ],
         If(Equals(y, x),
             [
 /*                Echo({"Deleting from ", e, " j=", j, Nl()});    */
                 DestructiveDelete(e, j);
-                len--;
+                Set(len,MathSubtract(len,1));
             ])
         );
     ];
@@ -206,10 +207,10 @@ LogicFindWith(_list,_n)<--
 [
   Local(i);
   Local(result);
-  result:= -1;
-  For(i:=1,(result<0) And (i<=Length(list)),i++)
+  Set(result, -1);
+  For(Set(i,1),(result<0) And (i<=Length(list)),Set(i,MathAdd(i,1)))
   [
-    If( /*Length(list[i])>1 And */ Contains(list[i],n),result:=i);
+    If( Contains(MathNth(list,i),n),Set(result,i));
   ];
   result;
 ];
@@ -222,34 +223,34 @@ LogicFindWith(_list,_n)<--
 LogicCombine(_list) <--
 [
   Local(i, j);
-  For(i:=1, i<=Length(list), i++)
+  For(Set(i,1), i<=Length(list), Set(i,MathAdd(i,1)))
   [
 /*    Echo({"list[", i, "/", Length(list), "]: ", list[i], Nl()}); */
     Local(redo);
-    redo := False;
+    Set(redo, False);
 
-    For(j:=1, Not(redo) And (j<=Length(list[i])),j++)
+    For(j:=1, Not(redo) And (j<=Length(MathNth(list,i))),j++)
     [
     Local(tocombine, n);
-    n := SimpleNegate(Not (list[i][j]));
+    Set(n, SimpleNegate(Not (list[i][j])));
 
-    tocombine := LogicFindWith(list, n);  // this is the list we will combine the current one with
+    Set(tocombine, LogicFindWith(list, n));  // this is the list we will combine the current one with
     If(tocombine > 0 And i<tocombine,
         [
         If(i>=tocombine,Echo({"WRONG!!!"}));
 
-        DestructiveDelete(list[i],j);
-        DestructiveDelete(list[tocombine],Find(list[tocombine],n));
-        list[i]:= LogicRemoveTautologies(Concat(list[i],list[tocombine]));
+        DestructiveDelete(MathNth(list,i),j);
+        DestructiveDelete(MathNth(list,tocombine),Find(MathNth(list,tocombine),n));
+        list[i]:= LogicRemoveTautologies(Concat(MathNth(list,i),MathNth(list,tocombine)));
         DestructiveDelete(list,tocombine);
-        If(list[i] = {False}, list[i]:={});
-        If(list[i] = {},
+        If(Equals(MathNth(list,i), {False}), list[i]:={});
+        If(Equals(MathNth(list,i), {}),
             [
-            list:={{}};
-            i:=Length(list)+1;
+            Set(list,{{}});
+            Set(i,MathAdd(Length(list)+1));
             ],
-            i:=0);
-        redo := True;
+            Set(i,0));
+        Set(redo, True);
         ]
         );
     ];
