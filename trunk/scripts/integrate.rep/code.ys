@@ -276,6 +276,7 @@ IntPureSquare(_vr,_from,_sign2,_sign0,_to) <--
 ////////////////////////////////////////////////
 
 
+IntFunc(x,Sqrt(_x),(2*Sqrt(x)^(3))/3);
 IntFunc(x,1/_x^(_n),x^(1-n)/(1-n) );
 IntFunc(x,Sin(_x),-Cos(x));
 IntFunc(x,1/Sin(_x), Ln( 1/Sin(x) - Cos(x)/Sin(x) ) );
