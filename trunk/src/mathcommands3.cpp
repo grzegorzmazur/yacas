@@ -373,10 +373,14 @@ void LispGetExactBits(LispEnvironment& aEnvironment, LispPtr& aResult,
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aArguments, 1);
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
-      z->SetTo(x.Ptr()->GetPrecision());
+      z->SetTo(
+	    (x.Ptr()->IsInt())
+		? x.Ptr()->BitCount()	// for integers, return the bit count
+	  	: x.Ptr()->GetPrecision() 	// for floats, return the precision
+      );
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else	// this is not defined without BigNumber, so return something
-    RaiseError("Function MathGetExactBits not supported without BigNumber support");
+    RaiseError("Function MathGetExactBits is not available without BigNumber support");
     LispArithmetic1(aEnvironment, aResult, aArguments, FloorFloat);
 #endif
 }
@@ -390,13 +394,15 @@ void LispSetExactBits(LispEnvironment& aEnvironment, LispPtr& aResult,
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aArguments, 1);
-      GetNumber(y,aEnvironment, aArguments, 2);	// how to make sure it has 2 args?
+      GetNumber(y,aEnvironment, aArguments, 2);
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->SetTo(*x.Ptr());
-	  z->Precision((long)y->Double());	// segfaults unless y is defined?
+	  // do nothing for integers
+	  if (!(z->IsInt()))
+	    z->Precision((long)(y->Double()));	// segfaults unless y is defined?
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else	// this is not defined without BigNumber, so return something
-    RaiseError("Function MathSetExactBits not supported without BigNumber support");
+    RaiseError("Function MathSetExactBits is not available without BigNumber support");
     LispArithmetic1(aEnvironment, aResult, aArguments, FloorFloat);
 #endif
 }
