@@ -834,10 +834,12 @@ Efficient iterative algorithms for computing $pi$ with arbitrary precision have 
 
 *A computation of $pi$!by Newton's method
 
-The file {examples/pi.ys} implements five different algorithms that
+The file {examples/pi.ys} implements several different algorithms that
 duplicate the functionality of {Pi()}. See
-[Gourdon <i>et al.</i> 2001] for details of computations of $pi$ and
+[Gourdon <i>et al.</i> 2001] for more details of computations of $pi$ and
 generalizations of Newton-Raphson iteration.
+
+	    Method 1: solve $Sin(x)=0$
 
 {PiMethod0()}, {PiMethod1()}, {PiMethod2()} are all based on a generalized Newton-Raphson method of solving equations.
 
@@ -857,14 +859,18 @@ $$ ArcTan(x) = x - x^3/3 + x^5/5 - x^7/7 + ... $$,
 for the value of $x$ obtained as the tangent of the initial guess for $pi$; in other words, if $x=pi+epsilon$ where $epsilon$ is small, then $Tan(x)=Tan(epsilon)$, therefore $epsilon = ArcTan(Tan(x))$ and $pi$ is found as $pi = x - epsilon$. If the initial guess is good (i.e. $epsilon$ is very small), then the Taylor series for $ArcTan(x)$ converges very quickly (although linearly, i.e. it gives a fixed number of digits of $pi$ per term). Only a single full-precision evaluation of $Tan(x)$ is necessary at the beginning of the algorithm.
 The complexity of this algorithm is proportional to the number of digits and to the time of a long multiplication.
 
+	    Method 2: Borwein's iteration
+
 The routines {PiBrentSalamin()} and {PiBorwein()} are based on much more advanced mathematics.
 (See papers by P. Borwein for review and explanations of the methods.)
 These methods do not require evaluations of trigonometric functions, but they do require taking a few square roots at each iteration, and all calculations must be done using full precision. Using modern algorithms, one can compute a square root roughly in the same time as a division; but Yacas's internal math is not yet up to it. Therefore, these two routines perform poorly compared to the more simple-minded {PiMethod0()}.
 
+	    Method 3: AGM sequence (Brent-Salamin)
+
 *A computation of $pi$!by Brent-Salamin method
 
 The algorithm of Brent and Salamin uses the AGM sequence.
-The calculation can be summarized as follows.
+The calculation can be summarized as follows:
 
 $$ [a=1; b=1/Sqrt(2); c=1/2; k=1;] $$
 	While(Not enough precision) [
@@ -875,6 +881,29 @@ $$ k=k+1 $$
 	];
 
 At each iteration, the variable $pi$ will have twice as many correct digits as it had at the previous iteration.
+
+	    Method 4: Ramanujan's series
+
+*A computation of $pi$!by Ramanujan's series
+
+Another method for fast computation of $Pi$ is based on the following mysterious series,
+$$ 1/Pi = 12/(C*Sqrt(C))*Sum(n,0,Infinity, ((-1)^n)*(6*n)! *(A+n*B)/((3*n)! * (n!)^3 * C^(3*n))) $$,
+where $A=13591409$, $B=545140134$, and $C=640320$.
+This formula was found by the Chudnovsky brothers, but it traces back to Ramanujan's notebooks.
+
+To obtain the value of $Pi$ with $P$ decimal digits, one needs to take 
+$$ n <=> P*Ln(10)/(3*Ln(C/12))<479/6793*P $$
+terms of the series.
+
+If this series is evaluated using Horner's scheme (the routine {PiChudnovsky}), then about $Ln(n)/Ln(10)$ extra digits are needed to compensate for roundoff error while adding $n$ terms.
+This method does not require any long multiplications and costs $O(P^2)$ operations.
+
+A potentially much faster way to evaluate this series at high precision is by using the binary splitting technique.
+This would give the asymptotic cost $O(M(P*Ln(P))*Ln(P))$.
+
+	    Which method to use
+
+This remains to be seen.
 
 		Trigonometric functions
 
