@@ -468,3 +468,9 @@ StandardLib() <-- AddBody("Standard math library<br>");
 
 /* alias for Load() that can be redefined */
 IncludeFile(x) := Load(x);
+
+/* mathematical expressions */
+TeXMath(x) := "<b>" : x : "</b>";
+TeXMathD(x) := "
+<p><center><b> " : x : " </b></center></p>
+";

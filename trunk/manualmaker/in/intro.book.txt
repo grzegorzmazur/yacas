@@ -9,8 +9,12 @@ general-purpose computer algebra language. The syntax uses a infix-operator
 grammar parser. The distribution contains a small library of mathematical
 functions, but its real strength is in the language in which you can easily
 write your own symbolic manipulation algorithms. The core engine supports
-arbitrary precision arithmetic (it can also optionally be linked with
-the GNU arbitrary precision math library {libgmp2}) and is able to execute symbolic manipulations on various mathematical objects by following user-defined rules.
+arbitrary precision arithmetic (for faster calculations, it can also optionally
+be linked with the GNU arbitrary precision math library {libgmp}) and is able
+to execute symbolic manipulations on various mathematical objects by following
+user-defined rules.
+
+Currently, the Yacas programming language is stable and seems powerful enough for all computer algebra applications. External libraries providing additional functionality may be dynamically loaded into Yacas via the "plugin" mechanism.
 
 		Installing Yacas
 
@@ -18,54 +22,50 @@ Read the file {INSTALL} for instructions on how to compile Yacas. Yacas is
 portable across most Unix-ish platforms and requires only a standard C++
 compiler such as {g++}.
 
-At the base Yacas accepts text as input and returns text as output.
-This makes it very platform-independent. Apart from Unix Yacas has been
-compiled on Windows and EPOC32 aka Psion (which doesn't come with a standard c++
+The base Yacas application accepts text as input and returns text as output.
+This makes it rather platform-independent. Apart from Unix-like systems, Yacas has been
+compiled on Windows and on EPOC32, aka Psion (which doesn't come with a standard c++
 library!).
 The source code to compile Yacas for Windows can be found at the
-Sourceforge repository.
+<*Sourceforge repository|http://www.sourceforge.net/projects/yacas/*>.
 
 For Unix, compilation basically amounts to the standard sequence
 
 	./configure
 	make
 	make install
+This will install the binaries to {/usr/local/bin} and the library files to {/usr/local/share/yacas/}.
 
-The arbitrary precision math in Yacas will be generally faster if you compile Yacas with the "libgmp" library (configure option --enable-gmp). Precompiled Red Hat (RPM) and Debian (DEB) packages are also available.
+The arbitrary precision math in Yacas will be generally faster if you compile Yacas with the {libgmp} library (configure option {--enable-gmp}). Precompiled Red Hat (RPM) and Debian (DEB) packages are also available.
 
 		Using the console mode
 
 You can run Yacas in the console mode simply by typing {yacas}. The Yacas command prompt looks like this:
-
 	In>
-
 and Yacas's answers appear after the prompt
-
 	Out>
 
-A Yacas session may be terminated by typing {Exit()} or
-{quit}. Pressing {^C} will also quit Yacas;
-however, pressing {^C} while Yacas is busy with a calculation will stop
-just that calculation.
-A session can be restarted (forgetting all previous
-definitions and results) by typing {restart}
+A Yacas session may be terminated by typing {Exit()} or {quit}. Pressing {^C}
+will also quit Yacas; however, pressing {^C} while Yacas is busy with a
+calculation will stop just that calculation. A session can be restarted
+(forgetting all previous definitions and results) by typing
+	restart
 
 Typically, you would enter one statement per line, for example
 
 	In> Sin(Pi/2);
 	Out> 1;
 
-Statements should end with a semicolon ({;}) although this is not required (Yacas will append a {;} at end of line to finish the statement).
+Statements should end with a semicolon ({;}) although this is not required (Yacas will append a semicolon at end of line to finish the statement).
 
 All documentation is accessible from the Yacas prompt. If you type
 
 	In> ??
-
-you should be able to read all available manuals (Yacas will run {lynx} to show you the HTML documentation). You can also get help on individual functions: to read about the function {Sum()}, type
+you should be able to read all available manuals; Yacas will run {lynx} or another text-mode browser to show you the HTML documentation. You can also get help on individual functions: to read about the function {Sum()}, type
 
 	In> ?Sum
 
-You can also type {Example();} to get some random examples of Yacas calculations.
+Type {Example();} to get some random examples of Yacas calculations.
 
 The command line has a history list, so it should be easy to
 browse through the expressions you entered previously using the Up and Down arrow keys.
@@ -84,8 +84,9 @@ Commands spanning multiple lines can (and actually have to) be entered by using 
 	In> a:=2+3+ \
 	In> 1
 	Out> 6;
+The error after our first attempt occurred because Yacas has appended a semicolon at end of the first line and {2+3+;} is not a valid Yacas expression.
 
-The error after our first attempt occurred because Yacas has appended a semicolon at end of the first line and {2+3+;} is not a valid Yacas expression. Incidentally, any text Yacas prints without a prompt is either messages printed by functions as their side-effect, or error messages. Resulting values of expressions are always printed after an {Out>}  prompt.
+Incidentally, any text Yacas prints without a prompt is either messages printed by functions as their side-effect, or error messages. Resulting values of expressions are always printed after an {Out>}  prompt.
 
 		Yacas as a symbolic calculator
 
@@ -108,7 +109,7 @@ symbolic simplification of basic algebraic functions. Any names such as {x} are 
 	In> Simplify(%)
 	Out> 6*x^2*y+2*y^3;
 
-The special operator {%} automatically recalls the result from the previous line. The function Simplify attempts to reduce an expression to a simpler form. Note that standard function names in Yacas are typically capitalized. Multiple capitalization such as "ArcSin" is sometimes used. The underscore character {_} is a reserved operator symbol and cannot be part of variable or function names.
+The special operator {%} automatically recalls the result from the previous line. The function Simplify attempts to reduce an expression to a simpler form. Note that standard function names in Yacas are typically capitalized. Multiple capitalization such as {ArcSin} is sometimes used. The underscore character {_} is a reserved operator symbol and cannot be part of variable or function names.
 
 Yacas can deal with arbitrary precision numbers:
 
@@ -121,7 +122,6 @@ When dealing with floating point numbers, the command {Precision(n);} can be use
 	Out> True;
 	In> 1.0/243;
 	Out> 0.004115226337448559670781893004;
-
 Note that we need to enter {1.0} as a floating-point constant to force the approximate calculation, otherwise the fraction would have been left unevaluated. The value {True} is a boolean constant.
 
 Analytic derivatives of functions can be evaluated:
@@ -131,21 +131,18 @@ Analytic derivatives of functions can be evaluated:
 	In> D(x) D(x) Sin(x);
 	Out> -Sin(x);
 
-Rational numbers will stay rational as long as the numerator and
-denominator are integers, so {55/10} will evaluate to
-{11/2}. You can override this behaviour by using the
-numerical evaluation function {N()}: for example, {N(55/10)} will evaluate to {5.5} . This
-behaviour holds for most math functions. Yacas will try to maintain an
-exact answer (in terms of integers or fractions) instead of using
-floating point numbers, unless {N()} is used. If the
-value for the constant <i>pi</i> is needed, use {Pi}.
-This will be replaced by the (approximate) numerical value when
-{N(Pi)} is called. Yacas knows some simplification rules
-using {Pi} (especially with trigonometric functions). The
-imaginary unit <i>i</i> is denoted {I} and complex
-numbers can be entered as either expressions involving
-{I} or explicitly {Complex(a,b)} for
-<i>a+i*b</i>.
+Rational numbers will stay rational as long as the numerator and denominator
+are integers, so {55/10} will evaluate to {11/2}. You can override this
+behaviour by using the numerical evaluation function {N()}. For example,
+{N(55/10)} will evaluate to {5.5} . This behaviour holds for most math
+functions. Yacas will try to maintain an exact answer (in terms of integers or
+fractions) instead of using floating point numbers, unless {N()} is used. Where
+the value for the constant $\pi$ is needed, use the built-in variable {Pi}. It
+will be replaced by the (approximate) numerical value when {N(Pi)} is called.
+Yacas knows some simplification rules using {Pi} (especially with trigonometric
+functions). The imaginary unit $i$ is denoted {I} and complex numbers can be
+entered as either expressions involving {I} or explicitly {Complex(a,b)} for
+$a+i*b$.
 
 Some simple equation solving algorithms are in place:
 

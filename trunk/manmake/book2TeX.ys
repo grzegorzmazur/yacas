@@ -51,7 +51,8 @@ HtmlNewParagraph() := "
 
 ";
 
-HtmlCommand(x) := "\\begin{quote}\\begin{verbatim}" : x : "\\end{verbatim}\\end{quote}"; /* use "quote" and not "quotation" */
+HtmlCommand(x) := "\\begin{quote}\\begin{verbatim}" : x : "\\end{verbatim}\\end{quote}
+"; /* use "quote" and not "quotation" */
 
 HtmlEmphasis(x) := "\\emph{" : x : "}";
 
@@ -93,3 +94,6 @@ HtmlLink(text, url, param1, param2) :=
 	  If(param1 != "", "#" : param1, "" )
 	: "|)"
 );
+
+TeXMath(x) := "$" : x : "$";
+TeXMathD(x) := "$$" : x : "$$";

@@ -23,13 +23,10 @@ EXTRA_DIST = \
 
 %.dvi: %.tex
 	latex $<
-	latex $<
 
-%.pdf: %.dvi
+%.pdf %.ps: %.dvi
 #	dvipdf $<
 	pdflatex $*
-
-%.ps: %.dvi
 	dvips -o $@ $<
 
 # TeX/PS/PDF top target
