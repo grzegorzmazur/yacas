@@ -23,7 +23,7 @@ CompileStatement(f_IsFunction := _body) <--
   Set(nrArgs,NrArgs(@f));  
 //  Echo("CORE_KERNEL_FUNCTION(\"",Type(@f),"\",",compiledName,",",nrArgs,",YacasEvaluator::Function | YacasEvaluator::Fixed)");
 
-  funcDecls := {compiledName,Type(@f),nrArgs} : funcDecls;
+  funcDecls := {Type(@f),compiledName,nrArgs} : funcDecls;
 
   Echo("void ",compiledName,"(LispEnvironment& aEnvironment,LispInt aStackTop)");
   Echo("{");
@@ -191,7 +191,15 @@ CompileStatement(f_IsFunction := _body) <--
 10  # CompileFn("CurrentLine") <-- "LispCurrentLine";
 10  # CompileFn("MathLibrary") <-- "LispMathLibName";
 10  # CompileFn("Version") <-- "LispVersion";
+
+
+
+30  # CompileFn(_fname)_(funcDecls[fname] != Empty) <-- funcDecls[fname];
 100 # CompileFn(_rest) <-- Empty;
+
+
+
+//
 
 
 10 # CompileBody(body_IsNumber,_stack) <--
@@ -292,8 +300,9 @@ CompileStatement(f_IsFunction := _body) <--
 
 100 # CompileBody(_body,_stack) <-- 
 [
-  Echo("Expression ",body);
-  Check(False,"Unhandled expression type");
+  
+  
+  Check(False,ToString()Echo("Unhandled expression type ",body));
 ];
 
 
@@ -332,7 +341,7 @@ fileBuildString:=
 #include \"mathcommands.h\"
 
 
-#define ATOM(_x) LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(_x))
+#define ATOM(_x) LispAtom::New(aEnvironment,_x)
 #define RESULT aEnvironment.iStack.GetElement(aStackTop)
 #define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
 #define PUSH(_x)   aEnvironment.iStack.PushArgOnStack(_x)
@@ -362,7 +371,7 @@ void BarePlugin::Add(LispEnvironment& aEnvironment)
   Local(cname,fname,nrargs);
   ForEach(item,funcDecls)
   [
-    {cname,fname,nrargs}:=item;   
+    {fname,cname,nrargs}:=item;   
 Echo(\"  aEnvironment.SetCommand(\",cname,\",\",String(fname),\",\",nrargs,\",YacasEvaluator::Function | YacasEvaluator::Fixed);\");
   ];
 ];
@@ -375,7 +384,7 @@ void BarePlugin::Remove(LispEnvironment& aEnvironment)
   Local(cname,fname,nrargs);
   ForEach(item,funcDecls)
   [
-    {cname,fname,nrargs}:=item;   
+    {fname,cname,nrargs}:=item;   
     Echo(\"aEnvironment.RemoveCoreCommand(\",String(fname),\");\");
   ];
 ];
