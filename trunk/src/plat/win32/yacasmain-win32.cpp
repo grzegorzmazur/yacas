@@ -13,6 +13,7 @@
 
 #include "win32commandline.h"
 #include "standard.h"
+#include "config.h"
 #include "ramdisk.h" //TODO keep this?
 
 //#define USE_RAMSCRIPTS
@@ -219,7 +220,7 @@ void parseCommandLine(int argc, char *argv[])
 		}
 
 		if (!strcmp(argv[i],"-h") || !strcmp(argv[i],"--help") || !strcmp(argv[i],"/?")) {
-			printf("Yacas windows client -- version 1.0.29rev2\n");
+			printf("Yacas Windows client -- version %s\n", VERSION);
 			printf("The following command line options are available:\n\n");
 			printf("\t-d  --scriptdir\t\tPrints the path of the script directory.\n");
 			printf("\t-f  --runfile\t\tLoad and evaluate the file provided\n");
@@ -235,7 +236,7 @@ void parseCommandLine(int argc, char *argv[])
 		}
 
 		if (!strcmp(argv[i],"-v") || !strcmp(argv[i],"--version")) {
-			printf("1.0.29rev2\n");
+			puts(VERSION);
 			exit(0);
 		}
 
