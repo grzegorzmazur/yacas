@@ -1206,8 +1206,65 @@ whatsoever. The compiler does however have to check that arguments passed
 in have a valid type.
 
 By the same token, the interpreter could be modified to handle the typed
-expressions, and just ignore the typing information.
+expressions, and just ignore the typing information. The interpreter
+could easily be extended to ignore the typing information given:
 
+	In> (defun foo-untyped (n) (+ n 2))
+	Out> foo-untyped
+	In> (defun (foo-typed INTEGER) ( (n INTEGER) ) (+ n 2) )
+	Out> (foo-typed INTEGER )
+	In> (foo-untyped 3)
+	Out> 5
+	In> (foo-typed 3)
+	Out> 5
+
+The change from {<name>} to {(<name> <type>)} is a trivial one.
+But this extra information can easily be mapped to strong typed
+compiled languages, which is why it is a useful step.
+
+Indeed, 100 lines of Yacas (Yacas already had an interpreter at the
+time of writing of this document, version 1.0.53 had an interpreter
+written in c++) code can render the following:
+
+	(defun foo 
+	    (n )
+	    (IntegerToObject 
+	      (+ 
+	        (ObjectToInteger n )2 )))
+
+
+to
+
+	LispObject foo(LispObject n)
+	{
+	   LispObject result ;
+	   {
+	      result  = IntegerToObject(ObjectToInteger(n)+2);
+	   }
+	   return result;
+	}
+
+and
+
+	(defun 
+	    (foo INTEGER )
+	    ((n INTEGER ))
+	    (+ n 2 ))
+
+to
+
+	BigInteger foo(BigInteger n)
+	{
+	   BigInteger result ;
+	   {
+	      result  = n+2;
+	   }
+	   return result;
+	}
+
+The typing information in effect gives the compiler enough information
+to directly convert expressions to another syntax. The compiler thus
+just becomes a simple expression transformer.
 
 
 
