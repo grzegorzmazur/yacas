@@ -2,7 +2,7 @@
 	version 0.2 */
 
 /* If one of these occurs inside an HtmlTerm block, it must be made \\verb| |*/
-TexCharsToEscape := { "{", "}", "#", "_", "&", "\\", "^", "%", "$"};
+TexCharsToEscape := { "{", "}", "#", "_", "&", "\\", "^", "%", "$", "~"};
 
 Book(x) := [	/* this is the first declaration in a file */
 	WriteString("
@@ -56,7 +56,7 @@ HtmlCommand(x) := "\\begin{quote}\\begin{verbatim}" : x : "\\end{verbatim}\\end{
 
 HtmlEmphasis(x) := "\\emph{" : x : "}";
 
-/* decide whether to use "verb" or "texttt" based on whether the string contains any of the special characters #, _, \, &, {, } */
+/* decide whether to use "verb" or "texttt" based on whether the string contains any of the special characters #, _, \, &, {, }, ~ */
 
 HasTexChars(x) := [
 	Local(i);

@@ -47,7 +47,8 @@ HtmlEmphasis(x) := "<i>" : StripNl(x) : "</i>";
 HtmlTerm(x) := "{" : StripNl(x) : "}";
 HtmlBreak() := Nl();
 
-HtmlAnchor(string) := "";// "*A " : string : Nl();
+HtmlAnchor(string) := "
+*A " : string : Nl();
 Bodied("HtmlAnchor", 60000);
 AddBody(string) := WriteString(string);
 SeeAlso(list) := WriteString(
@@ -104,4 +105,5 @@ CmdDescription(cmd, desc) := WriteString("
 Gt() := "\\>";
 Lt() := "\\<";
 
-AddAnchor(string) := AddBody(HtmlAnchor() string);
+AddAnchor(string) := AddBody("
+*AA " : string : Nl());

@@ -1,0 +1,30 @@
+
+				Yacas users function reference
+
+*INCLUDE config.chapt
+
+*INCLUDE arith.chapt
+
+*INCLUDE calc.chapt
+
+*INCLUDE linalg.chapt
+
+*INCLUDE univar.chapt
+
+*INCLUDE lists.chapt
+
+*INCLUDE functional.chapt
+
+*INCLUDE controlflow.chapt
+
+*INCLUDE preds.chapt
+
+*INCLUDE logic.chapt
+
+*INCLUDE const.chapt
+
+*INCLUDE vars.chapt
+
+*INCLUDE io.chapt
+
+*INCLUDE strings.chapt

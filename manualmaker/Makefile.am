@@ -6,11 +6,11 @@ EXTRA_DIST = \
 	in/all in/arith.chapt in/built.chapt in/calc.chapt \
 	in/coding.book.txt in/const.chapt in/functional.chapt  \
 	in/intro.book.txt in/io.chapt in/linalg.chapt in/dummies  \
-	in/lists.chapt in/preds.chapt in/prog.chapt        \
-        in/refprog.book in/controlflow.chapt newhelp in/plugins.chapt   \
-	in/ref.book in/univar.chapt in/vars.chapt yacasinit.ys in/generic.chapt \
+	in/lists.chapt in/preds.chapt in/prog.chapt in/refprog.book.txt   \
+	in/controlflow.chapt newhelp in/plugins.chapt   \
+	in/univar.chapt in/vars.chapt yacasinit.ys in/generic.chapt \
 	in/intromaker in/refmaker in/refprogmaker in/codingmaker in/logic.chapt \
-        in/config.chapt in/strings.chapt .cvsignore
+        in/config.chapt in/strings.chapt .cvsignore in/ref.book.txt
 
 # Stuff for automatic generation of Yacas books
 %.chapt: %.txt
@@ -41,12 +41,12 @@ texdocs: coding.book.ps coding.book.pdf intro.book.ps intro.book.pdf
 clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.toc *.log *.ps *.pdf \
 	coding*html intro*html ref*html .o core *~ texdocs.c \
-	in/coding.book in/intro.book
+	in/coding.book in/intro.book in/ref.book in/refprog.book
 
 yacas_helpdir = $(datadir)/yacas/documentation
 
 books.html: in/arith.chapt in/built.chapt in/calc.chapt \
-	in/coding.book in/const.chapt in/functional.chapt  \
+	in/coding.book in/refprog.book in/const.chapt in/functional.chapt  \
 	in/intro.book in/io.chapt in/linalg.chapt in/plugins.chapt \
 	in/lists.chapt in/preds.chapt in/prog.chapt in/controlflow.chapt \
 	in/ref.book in/univar.chapt in/vars.chapt in/generic.chapt in/logic.chapt
