@@ -196,3 +196,12 @@ IntNthRoot(_n, s_IsInteger) <--
 	];
 	If(y=n, x, x-1);	// subtract 1 if we undershot
 ];
+
+
+CatalanNumber(_n) <-- 
+[	
+	Check( IsPositiveInteger(n), "n is negative" );
+	Bin(2*n,n)/(n+1);
+];
+
+
