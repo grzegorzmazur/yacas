@@ -1528,8 +1528,7 @@ void Sqrt(ANumber& aResult, ANumber& N)
 {
     LispInt digs = WordDigits(N.iPrecision, 10);
     PlatWord zero=0;
-
-   if ((N.iTensExp&1) != 0)
+    if ((N.iTensExp&1) != 0)
     {
       WordBaseTimesInt(N,10);
       N.iTensExp--;
@@ -1539,12 +1538,20 @@ void Sqrt(ANumber& aResult, ANumber& N)
         N.Insert(0,zero);
         N.iExp++;
     }
+/*hier
+    while (N.iTensExp<0)
+    {
+      PlatDoubleWord carry = 0;
+      BaseDivideInt(N,10,WordBase,carry);
+      N.iTensExp++;
+    }
+*/
     LispInt resultDigits = N.iExp/2;
+    LispInt resultTensExp = N.iTensExp/2;
     
     BaseSqrt(aResult, N);
     aResult.iExp=resultDigits;
-
-    aResult.iTensExp = (N.iTensExp/2);
+    aResult.iTensExp = resultTensExp;
 }
 
 
