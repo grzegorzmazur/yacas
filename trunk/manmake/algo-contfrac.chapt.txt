@@ -6,7 +6,7 @@ $$ a[0]+b[0]/(a[1]+b[1]/(a[2]+b[2]/(a[3]+...)))$$.
 The coefficients $a[i]$, $b[i]$ are called the "terms" of the fraction.
 (Usually one has $a[i]!=0$, $b[i]!=0$.)
 The above continued fraction is sometimes written as
-$$ a[0]+(b[0]/(a[1]+ ...))*(b[1]/(a[2]+...))*(b[2]/(a[3]+...))*... $$.
+$$ a[0]+(b[0]/(a[1]+ ...))*(b[1]/(a[2]+...))*(b[2]/(a[3]+...))*... $$
 
 Usually one considers infinite continued fractions, i.e. the sequences $a[i]$, $b[i]$ are infinite.
 The value of an infinite continued fraction is defined as the limit of the fraction truncated after a very large number of terms.
@@ -50,8 +50,7 @@ If $r$ is a real number which is known by its floating-point representation at s
 rational numbers.
 
 Real numbers known by their exact representations can sometimes be expressed as infinite continued fractions, for example
-$$ Sqrt(11) = [3;3;6;3;6;3;6;...;] $$,
-or
+$$ Sqrt(11) = [3;3;6;3;6;3;6;...;] $$;
 $$ Exp(1/p)=[1;p-1;1;1;3*p-1;1;1;5*p-1;...;] $$.
 
 *A {GuessRational}
@@ -378,15 +377,16 @@ The complementary error function $Erfc(x)$ can be computed using the
 continued fraction due to Laplace (e.g. [Thacher 1963]),
 $$ Sqrt(Pi)/2*x*Exp(x^2)*Erfc(x)=1/(1+v/(1+(2*v)/(1+(3*v)/(1+...)))) $$,
 where $v:=(2*x^2)^(-1)$.
-This continued fraction converges for all (complex) $x$.
+This continued fraction converges for all (complex) $x$ except pure imaginary $x$.
 
 *A continued fraction approximation!of $Gamma(a,z)$
 
 The error function is a particular case of the incomplete Gamma function
 $$ Gamma(a,z) := Integrate(x,z,+Infinity) x^(a-1)*Exp(-x) $$.
-There exists an analogous continued fraction representation due to Legendre (e.g. ***[Abramowitz <i>et al.</i>], 6.5.31),
+There exists an analogous continued fraction representation due to Legendre (e.g. [Abramowitz <i>et al.</i>], 6.5.31),
 $$ Gamma(a,z) = (z^(a-1)*Exp(-z))/(1+((1-a)*v)/(1+v/(1+((2-a)*v)/(1+(2*v)/(1+...))))) $$,
 where $v:=z^(-1)$.
+*REM is this statement correct? FIXME
 This continued fraction also converges for all complex $a$, $z$.
 
 
@@ -394,13 +394,14 @@ This continued fraction also converges for all complex $a$, $z$.
 		Estimating convergence of continued fractions
 
 Elsewhere in this book we have used elementary considerations to find the required number of terms in a power series.
-But to estimate the convergence rate of a continued fraction is much more difficult.
-In some cases this can be done using the theory of complex variable.
+It is much more difficult
+to estimate the convergence rate of a continued fraction.
+In many cases this can be done using the theory of complex variable.
 Below we shall consider some cases when this computation is analytically tractable.
 
 *A continued fraction approximation!convergence rate
 
-Suppose we are given the terms $a[k]$, $b[k]$ that define an infinite continued fraction, and we need to estimate its rate of convergence. 
+Suppose we are given the terms $a[k]$, $b[k]$ that define an infinite continued fraction, and we need to estimate its convergence rate.
 We have to find the number of terms $n$ for which the error of approximation is less than a given $epsilon$.
 In our notation, we need to solve
 $ Abs(f[n+1]) < epsilon $
@@ -410,7 +411,6 @@ The formula that we derived for $f[n+1]$ gives an error estimate for
 the continued fraction truncated at the $n$-th term.
 But this formula contains the numbers $Q[n]$ in the denominator.
 The main problem is to find how quickly the sequence $Q[n]$ grows.
-
 The recurrence relation for this sequence can be rewritten as
 $$ Q[n+2]=a[n+1]*Q[n+1]+b[n]*Q[n] $$,
 for $k>=0$, with initial values $Q[0]=0$ and $Q[1]=1$.
@@ -422,7 +422,7 @@ It is not always easy to get a handle on this sequence, because in most cases th
 
 A simple lower bound on the growth of $Q[n]$ can be obtained from the recurrence relation for $Q[n]$.
 Assume that $a[k]>0$, $b[k]>0$.
-It is clear that all $Q[n]$ are positive, and so $Q[n+1]>=a[n]*Q[n]$.
+It is clear that all $Q[n]$ are positive, so $Q[n+1]>=a[n]*Q[n]$.
 Therefore $Q[n]$ grows at least as the product of all $a[n]$:
 $$ Q[n+1] >= Factorize(i,1,n, a[n]) $$.
 This result gives the following upper bound on the precision,
@@ -528,27 +528,30 @@ This procedure is more general but requires a detailed understanding of the beha
 
 In the particular case of the continued fraction for $Erfc(x)$, the calculations are somewhat easier if $Re(v)>0$ (where $v:=1/(2*x^2)$).
 Full details are given in a separate section.
-The result is
-$$ Q[n] <=> ((v*n)^(n/2))/Sqrt(2*n*Abs(v))*Exp(Sqrt(n/v)-1/(4*v)-n/2) $$.
+The result for $Re(v)>0$ is
+$$ Q[n] <=> ((v*n)^(n/2))/Sqrt(2*n*v)*Exp(Sqrt(n/v)-1/(4*v)-n/2) $$.
 This, together with Stirling's formula
 $$ n! <=> Sqrt(2*Pi*n)*(n/e)^n $$,
 allows to estimate the error of the continued fraction approximation:
-$$ Abs(f[n+1]) <=> 2*Sqrt((2*Pi)/Abs(v))*Exp(-2*Sqrt(n/v)+1/(2*v)) $$.
+$$ f[n+1] <=> 2*(-1)^(n+1)*Sqrt((2*Pi)/v)*Exp(-2*Sqrt(n/v)+1/(2*v)) $$.
 
-Note that this is not merely a bound but an actual asymptotic estimate of $Abs(f[n+1])$.
-(By the way, Stirling's formula can be derived using the method of
+Note that this is not merely a bound but an actual asymptotic estimate of $f[n+1]$.
+(Stirling's formula can also be derived using the method of
 steepest descent from an integral representation of the Gamma function,
 in a similar way.)
 
+Defined as above, the value of $f[n+1]$ is in general a complex number. The absolute value of $f[n+1]$ can be found using the formula
+$$ Re(Sqrt(n/v)) = Sqrt(n/2)*Sqrt(1+Re(v)/Abs(v)) $$.
+We obtain
+$$ Abs(f[n+1]) <=> 2*Sqrt((2*Pi)/Abs(v)) * Exp( -Sqrt(2*n)*Sqrt(1+Re(v)/Abs(v)) + Re(v)/(2*Abs(v)^2)) $$. 
 
-The estimate shows that the error of the continued fraction approximation to $Erfc(x)$
-decreases with $n$ slower than a geometric progression, for any $v$.
+When $Re(v)<=0$, the same formula can be used (this can be shown by a more careful consideration of the branches of the square roots).
+The continued fraction does not converge when $Re(v)<0$ and $Im(v)=0$ (i.e. for pure imaginary $x$).
+This can be seen from the above formula: in that case $Re(v)= -Abs(v)$ and $Abs(f[n+1])$ does not decrease when $n$ grows.
+
+These estimates show that the error of the continued fraction approximation to $Erfc(x)$ (when it converges)
+decreases with $n$ slower than in a geometric progression.
 This means that we need to take $O(P^2)$ terms to get $P$ digits of precision.
-
-
-*REM FIXME: need a more rigorous derivation for $Re(v)<0$
-
-When $Re(v)<0$, the same formula can be used as a rough guide.
 
 	    Derivations for the example with $Erfc(x)$
 
@@ -594,12 +597,8 @@ We find that the peak at $t1$ gives a larger contribution, by the factor $Exp(2*
 This factor is never small since $n>1$ and $v<1/2$.
 So it is safe to ignore the peak at $t2$ for the purposes of our analysis.
 
-*A Stirling's formula
-
 Then we obtain the estimate
 $$ Q[n+1] <=> 1/Sqrt(2)*Exp(Sqrt(n/v)-1/(4*v)-n/2)*(v*n)^(n/2) $$.
-Note that Stirling's formula for $(n-1)!$ gives
-$$ (n-1)! = Sqrt(2*Pi)*Exp(-n)*n^(n-1/2) $$.
 
 
 *HEAD The contour integral approach
@@ -622,7 +621,7 @@ $$ 1/(2*Pi)*(Integrate(s)Exp(g(s)))=1/Sqrt(2*Pi*Abs(g2))*Exp(g(s0)) $$.
 (The integral will have a negative sign if the contour crosses the point $s0$ in the negative imaginary direction.)
 
 We have to choose a new contour and check the convergence of the resulting integral separately.
-In each case we may need to isolate the singularities of $G(s)$ or to find the regions of infinity where $G(s)$ quickly decays.
+In each case we may need to isolate the singularities of $G(s)$ or to find the regions of infinity where $G(s)$ quickly decays (so that the infinite parts of the contour might be moved there).
 There is no prescription that works for all functions $G(s)$.
 
 Let us return to our example.
@@ -643,7 +642,12 @@ $$ s1 = (Sqrt(4*n*v+1)-1)/(2*v) $$.
 The second derivative of $g(s)$ at the stationary point is approximately $2*v$.
 The contour of integration can be deformed into a line passing through the dominant stationary point in the positive imaginary direction.
 Then the leading asymptotic is found using the Gaussian approximation (assuming $Re(v)>0$):
-$$ Q[n] = ((n-1)! *v^(n/2))/ Sqrt(4*Pi*Abs(v)) * Exp((n*(1-Ln(n)))/2 + Sqrt(n/v)-1/(4*v)) $$.
-This formula agrees with the asymptotic for $Q[n+1]$ found above for real $v>0$, when we use Stirling's asymptotic for $(n-1)!$.
+$$ Q[n] = ((n-1)! *v^(n/2))/ Sqrt(4*Pi*v) * Exp((n*(1-Ln(n)))/2 + Sqrt(n/v)-1/(4*v)) $$.
 
+*A Stirling's formula
+
+This formula agrees with the asymptotic for $Q[n+1]$ found above for real $v>0$, when we use Stirling's formula for $(n-1)!$:
+$$ (n-1)! = Sqrt(2*Pi)*e^(-n)*n^(n-1/2) $$.
+
+The treatment for $Re(v)<0$ is similar.
 
