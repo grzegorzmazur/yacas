@@ -8,7 +8,7 @@
 
 <FONT face="Helvetica" size="3">
 
-<h1>Release of version 1.0.42 (??? 2000)</h1>
+<h1>Release of version 1.0.42 (November 12th 2000)</h1>
 <ul>
   <li> Allowed CForm to accept if (predicate) body; and
        if (predicate) body else other;
@@ -23,7 +23,12 @@
   <li> Initial checkin into sourceforge CVS. Thanks to Vladimir Livshits!
   <li> Fixed some windows compilation problems. ElfDll being explicitly
        mentioned in mathcommands3.cc, and explicitly including elfdll.h.
-  
+  <li> added initial versions for the c-like &amp, | % and ^ operators,
+       and if (...) ... else ... . This will probably make it possible in the
+       future to write code that is a lot more readable than If(..., ..., ...).
+       The else clause binds to the last if, just like in c.
+       So this means you can now enter expressions like:
+        if(3 &lt 3) a else if (3 &gt 3) b else c;
 </ul>
 
 <h1>Release of version 1.0.41 (September 8th 2000)</h1>

@@ -417,4 +417,20 @@ HoldArg(":=+",xleft);
 HoldArg(":=+",yright);
 
 
+a_IsPositiveInteger & b_IsPositiveInteger <-- BitAnd(a,b);
+a_IsPositiveInteger | b_IsPositiveInteger <-- BitOr(a,b);
+a_IsPositiveInteger % b_IsPositiveInteger <-- Mod(a,b);
+a_IsPositiveInteger ^ b_IsPositiveInteger <-- BitXor(a,b);
+
+RuleBase("if",{predicate,body});
+if(_predicate) _body <-- If(Eval(predicate),Eval(body));
+HoldArg("if",predicate);
+HoldArg("if",body);
+
+RuleBase("else",{ifthen,otherwise});
+(if (_predicate) _body else _otherwise) <-- If(Eval(predicate),Eval(body), Eval(otherwise));
+HoldArg("else",ifthen);
+HoldArg("else",otherwise);
+
+
 
