@@ -756,7 +756,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispPtr& aResult,
         name.SetNrItems(0);
         name.Append('\"');
         
-        LispCharPtr start = str;
+//TODO remove?        LispCharPtr start = str;
         while (IsAlpha(*str))
         {
             LispChar c = *str++;

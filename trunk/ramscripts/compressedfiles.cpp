@@ -14,7 +14,7 @@
 
 
 CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, LispInt aCompressed)
-: iFullBuffer(aBuffer), iFullSize(aFullSize), iCompressed(aCompressed)
+: iFullBuffer(aBuffer), iCompressed(aCompressed),iFullSize(aFullSize)
 {
     iIndex = NULL;
     iIsValid = LispFalse;
@@ -47,7 +47,7 @@ CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, Lis
         for (i=1;i<iNrFiles;i++)
         {
             LispInt offset         = GetInt(ptr);
-            LispInt origsize       = GetInt(ptr);
+            /* LispInt origsize = */ GetInt(ptr);
             LispInt compressedsize = GetInt(ptr);
 
             if (offset<=iIndexSize) return;
@@ -118,9 +118,9 @@ LispCharPtr CompressedFiles::Name(LispInt aIndex)
     LISPASSERT(IsValid());
     LISPASSERT(aIndex >= 0 && aIndex < iNrFiles);
     unsigned char * ptr=iIndex[aIndex];
-    LispInt offset         = GetInt(ptr);
-    LispInt origsize       = GetInt(ptr);
-    LispInt compressedsize = GetInt(ptr);
+    /* LispInt offset = */         GetInt(ptr);
+    /* LispInt origsize = */       GetInt(ptr);
+    /* LispInt compressedsize = */ GetInt(ptr);
     return (LispCharPtr)ptr;
 }
 void CompressedFiles::Sizes(LispInt& aOriginalSize, LispInt& aCompressedSize, LispInt aIndex)
@@ -128,7 +128,7 @@ void CompressedFiles::Sizes(LispInt& aOriginalSize, LispInt& aCompressedSize, Li
     LISPASSERT(IsValid());
     LISPASSERT(aIndex >= 0 && aIndex < iNrFiles);
     unsigned char * ptr=iIndex[aIndex];
-    LispInt offset    = GetInt(ptr);
+    /* LispInt offset = */ GetInt(ptr);
     aOriginalSize   = GetInt(ptr);
     aCompressedSize = GetInt(ptr);
 }
@@ -150,7 +150,7 @@ LispCharPtr CompressedFiles::Contents(LispInt aIndex)
     if (iCompressed)
     {
         r = lzo1x_decompress((unsigned char*)&iFullBuffer[offset],compressedsize,(unsigned char*)expanded,&new_len,NULL);
-        if (new_len != origsize)
+        if ((LispInt)new_len != (LispInt)origsize)
         {
             PlatFree(expanded);
             return NULL;

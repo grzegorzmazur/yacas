@@ -1,5 +1,51 @@
 
 
+LocalSymbols(n)
+[
+// interface part
+    0 # zeroVector(n_IsInteger) <-- ZeroVector'(n);
+60000 # zeroVector(_n) <-- 
+        [
+	    ZeroVector'PostErrors(n);
+	    UnList({ZeroVector,n});
+        ];
+
+// implementation
+Function("ZeroVector'",{n})
+[
+    Local(i,result);
+    result:={};
+    For(i:=1,i<=n,i++)
+    [
+      DestructiveInsert(result,1,0);
+    ];
+    result;
+];
+
+// errors
+Function("ZeroVector'PostErrors",{n})
+[
+   Assert("ZeroVector:", "argument is not integer")
+	 IsInteger(n) Or IsScalar(n) And IsVariable(n);
+];
+
+]; // LocalSymbols(n)
+
+
+
+EndOfFile;
+
+// zeroVector as a mathematical object
+    0 # zeroVector(n_IsNonNegativeInteger) <-- zeroVector'(n);
+
+// zeroVector' as an utility function
+    0 # zeroVector'(n_IsNonNegativeInteger) <-- FillList(0,n);
+60000 # zeroVector'(_n) <-- Check(False,"zeroVector' : argument is not an integer");
+
+
+
+EndOfFile;
+
 
 //F(x,y,n) := x*(y^n)
 

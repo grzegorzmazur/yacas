@@ -23,15 +23,23 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
                     LispOperators &aPostFixOperators,
                     LispOperators &aBodiedOperators,
                     LispInput*    aCurrentInput)
-    : iPrecision(10),iEvalDepth(0),iMaxEvalDepth(1000),
-    iEvaluator(NEW BasicEvaluator),iSecure(0),iLastUniqueId(1),
-    iErrorOutput(iError),iCommands(aCommands),
+    : 
+    iPrecision(10),
+    iEvalDepth(0),
+    iMaxEvalDepth(1000),
+    iArchive(NULL),
+    iEvaluator(NEW BasicEvaluator),
+    iSecure(0),
+    iLastUniqueId(1),
+    iErrorOutput(iError),
+    iDebugger(NEW DefaultDebugger),
+    iLocalsList(NULL),
+    iCommands(aCommands),
     iUserFunctions(aUserFunctions),
     iHashTable(aHashTable),
     iPrinter(aPrinter),
     iCurrentOutput(aOutput),
     iGlobals(aGlobals),
-    iLocalsList(NULL),
     iPreFixOperators(aPreFixOperators),
     iInFixOperators(aInFixOperators),
     iPostFixOperators(aPostFixOperators),
@@ -39,9 +47,7 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
     iCurrentInput(aCurrentInput),
     theUserError(NULL),
     iPrettyPrinter(NULL),
-    iDebugger(NEW DefaultDebugger),
-    iCurrentTokenizer(&iDefaultTokenizer),
-    iArchive(NULL)
+    iCurrentTokenizer(&iDefaultTokenizer)
 {
     iTrue=NULL;
     iFalse=NULL;

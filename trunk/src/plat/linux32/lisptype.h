@@ -77,12 +77,12 @@
         _o.Write("\n"); \
     }
 
-//            CHECKPTR(_e.iInputStatus.FileName());\
-//            _o.Write("Error on line ");\
-//            _o.Write(linenum);\
-//            _o.Write(" in file [");\
-//            _o.Write(_e.iInputStatus.FileName());\
-//            _o.Write("]\n"); \
+//            CHECKPTR(_e.iInputStatus.FileName());
+//            _o.Write("Error on line ");
+//            _o.Write(linenum);
+//            _o.Write(" in file [");
+//            _o.Write(_e.iInputStatus.FileName());
+//            _o.Write("]\n"); 
 
 
 // The following line should also be printed. BUT: it causes
