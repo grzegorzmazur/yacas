@@ -129,7 +129,7 @@ numbers are trivially square-free.
 	In> IsSquareFree(18)
 	Out> False;
 
-*SEE Moebius
+*SEE Moebius, SquareFreeDivisorsList
 
 
 *CMD IsPrimePower --- test for a power of a prime number
@@ -293,7 +293,7 @@ is returned as {{{p1,n1}, ..., {p9,n9}}}.
 	In> Factors(2*x^3 + 3*x^2 - 1);
 	Out> {{2,1},{x+1,2},{x-1/2,1}};
 
-*SEE Factor, IsPrime
+*SEE Factor, IsPrime, GaussianFactors
 
 *CMD IsAmicablePair --- test for a pair of amicable numbers
 *STD
@@ -469,7 +469,7 @@ $Moebius(1)==1$.
 	In> Moebius(13)
 	Out> -1;
 
-*SEE DivisorsSum, ProperDivisors, ProperDivisorsSum, Moebius
+*SEE DivisorsSum, ProperDivisors, ProperDivisorsSum, MoebiusDivisorsList
 
 *CMD CatalanNumber --- return the {n}th Catalan Number
 *STD
@@ -861,3 +861,92 @@ $a^2+b^2$.
 
 *SEE IsGaussianInteger
 
+*CMD IsGaussianUnit ---  test for a Gaussian unit
+*STD
+*CALL
+	IsGaussianUnit(z)
+*PARMS
+
+{z} -- a Gaussian integer	
+
+*DESC
+
+This function returns {True} if the argument is a unit in the Gaussian 
+integers and {False} otherwise. A unit in a ring is an element that divides 
+any other element.
+
+There are four "units" in the ring of Gaussian integers, which are 
+$1$, $-1$, $I$, and $-I$.
+	
+*E.G.
+	In> IsGaussianInteger(I)
+	Out> True;
+	In> IsGaussianUnit(5+6*I)
+	Out> False;
+
+*SEE  IsGaussianInteger, IsGaussianPrime, GaussianNorm
+
+
+*CMD IsGaussianPrime ---  test for a Gaussian prime
+*STD
+*CALL
+	IsGaussianPrime(z)
+*PARMS
+
+{z} -- a complex or real number
+
+*DESC
+
+This function returns {True} if the argument
+is a Gaussian prime and {False} otherwise.
+
+A prime element $x$ of a ring is divisible only by the units of
+the ring and by associates of $x$.
+("Associates" of $x$ are elements of the form $x*u$ where $u$ is
+a unit of the ring).
+
+Gaussian primes are Gaussian integers $z=a+b*I$ that satisfy one of the 
+following properties:
+
+*	If $Re(z)$ and $Im(z)$ are nonzero then $z$ is a Gaussian prime if and only 
+if $Re(z)^2 + Im(z)^2$ is an ordinary prime.
+*	If $Re(z)==0$ then $z$ is a Gaussian prime if and only if $Im(z)$ is an
+ordinary prime and $Im(z):=Mod(3,4)$.
+*	If $Im(z)==0$ then $z$ is a Gaussian prime
+if and only if $Re(z)$ is an ordinary prime and $Re(z):=Mod(3,4)$.
+
+*E.G.
+	In> IsGaussianPrime(13)
+	Out> False;
+	In> IsGaussianPrime(2+2*I)
+	Out> False;
+	In> IsGaussianPrime(2+3*I)
+	Out> True;
+	In> IsGaussianPrime(3)
+	Out> True;
+
+*SEE  IsGaussianInteger, GaussianFactors
+
+*CMD Gcd --- greatest common divisor
+*STD
+*CALL
+	Gcd(z,w)
+
+*PARMS
+
+{z}, {w} -- Gaussian integers 
+
+*DESC
+
+This function returns thre greatest common divisor, in the ring of Gaussian
+integers, computed using Euclid's algorithm. Note that in the Gaussian
+integers, the greatest common divisor is only defined up to associates.
+
+*E.G.
+
+	In> Gcd(2+I,5)
+	Out> Complex(2,1);
+	In> Gcd(2+I,3+I)
+	Out> -1;
+
+*SEE Gcd, Lcm
