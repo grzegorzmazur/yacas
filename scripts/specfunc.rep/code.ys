@@ -403,7 +403,7 @@ Function("BesselJNsmall",{n,x})
         Local(prec,eps,tmp);
         prec:=GetPrecision();
         Precision(Ceil(1.2*prec)); // this is a guess
-        eps:=.5*10^(-prec);
+        eps:=5*10^(-prec);
 
         term:=1;
         k:=0;
