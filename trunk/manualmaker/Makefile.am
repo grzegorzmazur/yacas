@@ -25,13 +25,13 @@ ALGOSOURCES = in/algo-basic.chapt.txt in/algo-numapprox.chapt.txt in/algorithms-
 
 REFCHAPTERS = config.chapt arith.chapt calc.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
-	preds.chapt logic.chapt const.chapt vars.chapt io.chapt \
+	preds.chapt logic.chapt const.chapt vars.chapt io.chapt numtheory.chapt \
 	strings.chapt probability-and-statistics.chapt addons.chapt FDL.chapt
 
 REFSOURCES = in/config.chapt.txt in/arith.chapt.txt in/calc.chapt.txt \
 	in/linalg.chapt.txt in/univar.chapt.txt in/lists.chapt.txt \
 	in/functional.chapt.txt in/controlflow.chapt.txt in/preds.chapt.txt \
-	in/logic.chapt.txt in/const.chapt.txt in/vars.chapt.txt in/io.chapt.txt \
+	in/logic.chapt.txt in/const.chapt.txt in/vars.chapt.txt in/io.chapt.txt in/numtheory.chapt.txt \
 	in/strings.chapt.txt in/probability-and-statistics.chapt.txt in/addons.chapt.txt in/FDL.chapt.txt
 
 REFPROGCHAPTERS = yacasapi.chapt FDL.chapt

@@ -122,10 +122,10 @@ functions can be used for comparing version numbers. This
 method is only guaranteed, however, if the version is always expressed
 in the form {d.d.dd} as above.
 
+*REM
 Note that on the Windows platforms the output may be different:
-
-	In> Version()
-	Out> "Windows-latest";
+In> Version()
+Out> "Windows-latest";
 
 *SEE LessThan, GreaterThan
 
@@ -172,13 +172,14 @@ In that case, {FindFunction()} will return the filename under that directory. Ot
 *STD
 *CALL
 	PlatformOS
+	PlatformOS()
 	FilePathSeparator
 
 *DESC
 
-The constant {PlatformOS} is a string with an abbreviated description of the platform on which the current Yacas interpreter is running.
-Supported values are {"Unix"} and {"Win32"}.
-This constant can be used in scripts where one needs to know the platform.
+The constant {PlatformOS} and the function {PlatformOS()} give a string with an abbreviated description of the platform on which the current Yacas interpreter is running.
+Supported values are currently {"Unix"} and {"Win32"}.
+This constant can be used in scripts if one needs to know the platform.
 
 The constant {FilePathSeparator} is the string that separates directories in the file system tree. This is the forward slash ({/}) on Unix and the backslash ({\}) on Windows.
 
