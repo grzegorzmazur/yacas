@@ -23,7 +23,7 @@
   <li> added a new package repository "specfunc" with special functions and
        documented them in a separate chapter of the reference manual
   <li> bug fixed: exact factorials of negative half-integers were not given
-  <li> introduced new "<>" (\sim) and "<=>" (\approx) infix operators
+  <li> introduced new "&lt&gt" (\sim) and "&lt=/&gt>" (\approx) infix operators
        for cosmetic purposes (used in the manual)
   <li> New functions ContFracList, ContFracEval, GuessRational,
        NearRational to find optimal rational approximations to numbers
@@ -38,6 +38,8 @@
   <li> Ayal: yacaslogo.gif didn't get installed.
   <li> Ayal: changed Verify to get left arg unevaluated, so it shows a correct error.
   <li> Ayal: Fixed KnownFailure in numerics so it is passed in a Verify(...)
+  <li> Ayal: postfix operators can now be applied after each other without
+       braces, eg "3! !"
   <li> moved short descriptions of books ("blurb") into books themselves out of
        the build scripts
   <li> fixed documentation building scripts so that individual (non-framed) html
