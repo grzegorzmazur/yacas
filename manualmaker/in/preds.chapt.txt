@@ -235,7 +235,7 @@ expression with evaluated arguments.
 
 *PARMS
 
-{a}1, ..., {a}N - boolean values (may evaluate to {True} or {False})
+{a}1, ..., {a}N -- boolean values (may evaluate to {True} or {False})
 
 *DESC
 
@@ -269,7 +269,7 @@ arguments that didn't evaluate to {True} or {False} yet.
 
 *PARMS
 
-{a}1, ..., {a}N - boolean expressions (may evaluate to {True} or {False})
+{a}1, ..., {a}N -- boolean expressions (may evaluate to {True} or {False})
 
 *DESC
 
@@ -615,7 +615,7 @@ functions that return a boolean result, e.g.
 
 *PARMS
 
-{n} - number to test
+{n} -- number to test
 
 *DESC
 
@@ -638,7 +638,7 @@ if $n<0$. If {n} is not a number, the functions return {False}.
 
 *PARMS
 
-{n} - integer to test
+{n} -- integer to test
 
 *DESC
 
@@ -662,7 +662,7 @@ negative. The negative integers are -1, -2, -3, -4, -5, etcetera. If
 
 *PARMS
 
-{n} - number to test
+{n} -- number to test
 
 *DESC
 
@@ -685,7 +685,7 @@ if $n>0$. If {n} is not a number the function returns {False}.
 
 *PARMS
 
-{n} - integer to test
+{n} -- integer to test
 
 *DESC
 
@@ -709,7 +709,7 @@ function returns {False}.
 
 *PARMS
 
-{n} - number to test
+{n} -- number to test
 
 *DESC
 
@@ -732,7 +732,7 @@ number, the function returns {False}.
 
 *PARMS
 
-{n} - integer to test
+{n} -- integer to test
 
 *DESC
 
@@ -755,7 +755,7 @@ not an integer, the result is {False}.
 
 *PARMS
 
-{expr} - expression to test
+{expr} -- expression to test
 
 *DESC
 
@@ -778,7 +778,7 @@ case if {expr} is either {Infinity} or {-Infinity}.
 
 *PARMS
 
-{expr} - expression to test
+{expr} -- expression to test
 
 *DESC
 
@@ -808,7 +808,7 @@ Yacas can not determine the sign of this expression.
 
 *PARMS
 
-{expr} - expression to test
+{expr} -- expression to test
 
 *DESC
 
@@ -838,7 +838,7 @@ Yacas can not determine the sign of this expression.
 
 *PARMS
 
-{expr} - some expression
+{expr} -- some expression
 
 *DESC
 
@@ -865,7 +865,7 @@ expression. {Pi} is considered a constant.
 	IsGaussianInteger(z)
 *PARMS
 
-{z} - a complex or real number	
+{z} -- a complex or real number	
 
 *DESC
 
@@ -887,20 +887,20 @@ integer if and only if {a} and {b} are integers.
 *CMD IsGaussianPrime ---  test for a Gaussian prime
 *STD
 *CALL
-        IsGaussianPrime(z)
+	IsGaussianPrime(z)
 *PARMS
 
-{z} - a complex or real number
+{z} -- a complex or real number
 
 *DESC
 
 This function returns a boolean value depending on whether or not the argument
 is a Gaussian prime. Gaussian primes are Gaussian integers $z=a+b*I$
-that satisfy one of the following properties. If {Re(z)} and {Im(z)} are nonzero then,
-$z$ is a Gaussian prime if and only if {Re(z)^2 + Im(z)^2} is an ordinary
-prime. If {Re(z)==0}, then {z} is a Gaussian prime if and only if {Im(z)} is an
-ordinary prime and {Im(z)%4==3} .If {Im(z)==0}, then {Re(z)} is a Gaussian prime
-if and only if {Re(z)} is an ordinary prime and {Re(z)%4==3}. 
+that satisfy one of the following properties. If $Re(z)$ and $Im(z)$ are nonzero then,
+$z$ is a Gaussian prime if and only if $Re(z)^2 + Im(z)^2$ is an ordinary
+prime. If $Re(z)==0$, then $z$ is a Gaussian prime if and only if $Im(z)$ is an
+ordinary prime and $Im(z):=Mod(3,4)$. If $Im(z)==0$, then $z$ is a Gaussian prime
+if and only if $Re(z)$ is an ordinary prime and $Re(z):=Mod(3,4)$. 
 
 *E.G.
 	In> IsGaussianPrime(13)
@@ -923,9 +923,9 @@ if and only if {Re(z)} is an ordinary prime and {Re(z)%4==3}.
 
 *PARMS
 
-{variable} - variable to express the univariate polynomial in
+{variable} -- variable to express the univariate polynomial in
 
-{expression} - expression to match
+{expression} -- expression to match
 
 *DESC
 
