@@ -2,7 +2,7 @@
 
 SUBDIRS =  example forth opengl yacas_gsl
 
-EXTRA_DIST = doc.txt   README   makefile.plugin 
+EXTRA_DIST = doc.txt   README    
 
 macosx:
 	cd example ; make libexample.dylib

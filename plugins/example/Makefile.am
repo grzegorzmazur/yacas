@@ -2,8 +2,6 @@
 EXTRA_DIST = \
 	bareplugin.h               \
 	barepluginapi.stub         \
-	depend.dep                 \
-	makefile.plugin            \
 	testload.cc                
 
 
