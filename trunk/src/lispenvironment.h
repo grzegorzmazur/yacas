@@ -34,6 +34,7 @@ class LispMultiUserFunction;
 class LispEvaluatorBase;
 class BasicEvaluator;
 class LispDllBase;
+class YacasDebuggerBase;
 class LispEnvironment
 {
 public:
@@ -127,7 +128,8 @@ public: // Error reporting
     LispString iError;
     StringOutput iErrorOutput;
     CDeletingArrayGrower<LispDllBase*> iDlls;
-
+    YacasDebuggerBase* iDebugger;
+    
 private:
     LispPtr *FindLocal(LispStringPtr aVariable);
 

@@ -55,8 +55,10 @@ Dump():=
 TrEnter(_function,_expr,_file,_line) <--
 [
   If(GreaterThan(Length(expr),100),Set(expr,StringMid(1,100,expr):"..."));
+
   DestructiveAppend(Head(traceStack),{-1,"ENTER: ",expr,file,line});
   DestructiveInsert(traceStack,1,{});
+  
   Set(indent, Indent());
 ];
 HoldArg("TrEnter",arg1);

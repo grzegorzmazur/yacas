@@ -87,6 +87,34 @@ void TraceShowArg(LispEnvironment& aEnvironment,LispPtr& aParam,
                   LispPtr& aValue);
 
 
+void ShowExpression(LispString& outString, LispEnvironment& aEnvironment,
+                    LispPtr& aExpression);
+
+
+class YacasDebuggerBase
+{
+public:
+    virtual ~YacasDebuggerBase();
+    virtual void Start() = 0;
+    virtual void Finish() = 0;
+    virtual void Enter(LispEnvironment& aEnvironment, 
+                       LispPtr& aExpression) = 0;
+    virtual void Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
+                       LispPtr& aExpression) = 0;
+};
+
+class DefaultDebugger : public YacasDebuggerBase
+{
+public:
+    virtual void Start();
+    virtual void Finish();
+    virtual void Enter(LispEnvironment& aEnvironment, 
+                       LispPtr& aExpression);
+    virtual void Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
+                       LispPtr& aExpression);
+};
+
+
 #endif
 
 

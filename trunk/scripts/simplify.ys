@@ -68,11 +68,11 @@ SimpTermMatches(SimpTerm(_n1,_d1),SimpTerm(_n2,_d2)) <--
 10 # SimpBuildTermList(_expr) <--
 [
   Local(rest,numer,denom);
-  rest:=NumerDenom(expr);
-  numer:=ExplodeTerm(rest[1]);
-  denom:=ExplodeTerm(rest[2]);
-  nc := Factorize(numer[1]);
-  dc := Factorize(denom[1]);
+  Set(rest,NumerDenom(expr));
+  Set(numer,ExplodeTerm(rest[1]));
+  Set(denom,ExplodeTerm(rest[2]));
+  Set(nc, Factorize(numer[1]));
+  Set(dc, Factorize(denom[1]));
   SubtractTerms(numer,denom);
   {SimpTerm(numer[2],denom[2]),nc/dc};
 ];
@@ -104,15 +104,15 @@ UnFence("DoFlatten",1);
 Function("GroupIndex",{list,element})
 [
   Local(result,count);
-  result:= -1;
-  count:=1;
+  Set(result, -1);
+  Set(count,1);
   While(result<0 And list != {})
   [
-    If((list[1][1]) = element,
-      result := count
+    If((Head(Head(list))) = element,
+      Set(result , count)
       );
-    list:=Tail(list);
-    count++;
+    Set(list,Tail(list));
+    Set(count,MathAdd(count,1));
   ];
   result;
 ];
@@ -121,8 +121,8 @@ Function("GroupIndex",{list,element})
 Function("ExplodeTerm",{list})
 [
   Local(compact,exponents,consts,combined,index);
-  consts:={};
-  compact:={};
+  Set(consts,{});
+  Set(compact,{});
 
   ForEach(item,list)
   [
@@ -130,7 +130,7 @@ Function("ExplodeTerm",{list})
     If (IsNumber(item),
        DestructiveAppend(consts,item),
        [
-         index:=GroupIndex(compact,item);
+         Set(index,GroupIndex(compact,item));
          If (index>0,
             compact[index][2]:=(compact[index][2])+1,
             DestructiveInsert(compact,1,{item,1})
@@ -144,18 +144,18 @@ Function("ExplodeTerm",{list})
 Function("ImplodeTerm",{list,oper,multi,unity})
 [
   Local(cnst,term,fact,result);
-  cnst:=unity;
-  term:=unity;
+  Set(cnst,unity);
+  Set(term,unity);
   ForEach(item,list[1])
   [
-    cnst:=Apply(oper,{cnst,item});
+    Set(cnst,Apply(oper,{cnst,item}));
   ];
   ForEach(item,list[2])
   [
-    fact:=Apply(multi,{item[1],item[2]});
-    term:=Apply(oper,{fact,term});
+    Set(fact,Apply(multi,{item[1],item[2]}));
+    Set(term,Apply(oper,{fact,term}));
   ];
-  result:=Apply(oper,{cnst,term});
+  Set(result,Apply(oper,{cnst,term}));
   result;
 ];
 
@@ -167,10 +167,10 @@ SubtractTerms(_term1,_term2) <--
   Local(index,drop);
   ForEach(item,term2[2])
   [
-    index:=GroupIndex(term1[2],item[1]);
+    Set(index,GroupIndex(term1[2],item[1]));
     If(index>0,
        [
-         drop:=Min(item[2],term1[2][index][2]);
+         Set(drop,Min(item[2],term1[2][index][2]));
          item[2]:=item[2]-drop;
          term1[2][index][2]:=term1[2][index][2]-drop;
        ]
@@ -180,10 +180,7 @@ SubtractTerms(_term1,_term2) <--
 
 Simplify(_expr) <--
 [
-  Local(ii);
-  ii:=Simplify1(expr);
-  ii:=Simplify1(ii);
-  ii;
+  Simplify1(Simplify1(expr));
 ];
 
 
@@ -202,10 +199,10 @@ Simplify(_expr) <--
 
 100 # Simplify1(_expr) <--
 [
-  expr:=SimpFlatten(expr);
-  expr:=SimpImplode(expr);
-  expr:=SimpExpandBrackets(expr);
-  expr:=Simplify2(expr);
+  Set(expr,SimpFlatten(expr));
+  Set(expr,SimpImplode(expr));
+  Set(expr,SimpExpandBrackets(expr));
+  Set(expr,Simplify2(expr));
   expr;
 ];
 
@@ -215,13 +212,13 @@ Rule("Simplify2",1,1,Type(expr)="SimpMul" Or Type(expr)="SimpDiv")
 [
   Local(rest,numer,denom,gcd,nc,dc);
 
-  rest:=NumerDenom(expr);
+  Set(rest,NumerDenom(expr));
 
-  numer:=ExplodeTerm(rest[1]);
-  denom:=ExplodeTerm(rest[2]);
-  nc := Factorize(numer[1]);
-  dc := Factorize(denom[1]);
-  gcd:=Gcd(nc,dc);
+  Set(numer,ExplodeTerm(rest[1]));
+  Set(denom,ExplodeTerm(rest[2]));
+  Set(nc , Factorize(numer[1]));
+  Set(dc , Factorize(denom[1]));
+  Set(gcd,Gcd(nc,dc));
   numer[1] := {nc/gcd};
   denom[1] := {dc/gcd};
   SubtractTerms(numer,denom);
@@ -233,9 +230,9 @@ Rule("Simplify2",1,1,Type(expr)="SimpMul" Or Type(expr)="SimpDiv")
 ProcessGroupAdd(_result,{_simpterm,_factor}) <--
     [
      Local(index,i,nr);
-     index:= -1;
-     nr:=Length(result);
-     For(i:=1,i<=nr And index = -1,i++)
+     Set(index, -1);
+     Set(nr,Length(result));
+     For(Set(i,1),i<=nr And index = -1,i++)
      [
       If(SimpTermMatches(simpterm,result[i][1]),index:=i);
      ];
@@ -251,25 +248,25 @@ Rule("Simplify2",1,1, Type(expr)="SimpAdd")
  Local(terms);
 
  /* Flatten the list with respect to addition */
- terms:=Flatten(expr,"SimpAdd");
+ Set(terms,Flatten(expr,"SimpAdd"));
 
  /* Simplify all the terms */
- terms:=MapSingle("Simplify1",terms);
+ Set(terms,MapSingle("Simplify1",terms));
  /* Redo the simpflatten normalization */
- terms:=MapSingle("SimpFlatten",terms);
+ Set(terms,MapSingle("SimpFlatten",terms));
 
  /* Make a assoc lookup table. */
- terms:=MapSingle("SimpBuildTermList",terms);
+ Set(terms,MapSingle("SimpBuildTermList",terms));
 
  /* Group like terms */
  Local(restlist);
- restlist:={};
+ Set(restlist,{});
  ForEach(item,terms)
  [
    ProcessGroupAdd(restlist,item);
  ];
  /* Implode each entry in the assoc list */
- terms:=MapSingle("SimpImplodeTerm",restlist);
+ Set(terms,MapSingle("SimpImplodeTerm",restlist));
  /* Sum up all the terms */
  Sum(terms);
 ];
@@ -290,11 +287,11 @@ Rule("Simplify2",1,11,True)
 [
   Local(hd,rest,i,nr);
 
-  hd:=NumerDenom(x);
+  Set(hd,NumerDenom(x));
   DestructiveAppendList(numer,hd[1]);
   DestructiveAppendList(denom,hd[2]);
 
-  rest:=NumerDenom(y);
+  Set(rest,NumerDenom(y));
   DestructiveAppendList(denom,rest[1]);
   DestructiveAppendList(numer,rest[2]);
 ];
@@ -310,10 +307,10 @@ Rule("Simplify2",1,11,True)
 NumerDenom(_expr) <--
 [
   Local(L1,numer,denom);
-  L1:=Flatten(expr,"SimpMul");
+  Set(L1,Flatten(expr,"SimpMul"));
 
-  numer:={};
-  denom:={};
+  Set(numer,{});
+  Set(denom,{});
   ForEach(item,L1)
   [
     NumerDenomProcess(numer,denom,item);
@@ -334,12 +331,12 @@ SimpExpandBracketsPredicate(_expr) <--
 40 #  SimpExpandBracketsChange(SimpDiv(_y , SimpAdd(_z , _x))) <--
     [
      Local(r);
-     r:=SimpDiv(SimpAdd(z , x),y);
-     r:=SimpExpandBracketsChange(r);
-     r:=Simplify1(r);
-     r:=SimpDiv(1,r);
-     r:=SimpExpand(r);
-     r:=SimpFlatten(r);
+     Set(r,SimpDiv(SimpAdd(z , x),y));
+     Set(r,SimpExpandBracketsChange(r));
+     Set(r,Simplify1(r));
+     Set(r,SimpDiv(1,r));
+     Set(r,SimpExpand(r));
+     Set(r,SimpFlatten(r));
      r;
     ];
     

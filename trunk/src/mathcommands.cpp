@@ -1995,7 +1995,9 @@ void LispTrace(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArgumen
 {
     TESTARGS(2);
     LispLocalEvaluator local(aEnvironment,new TracedEvaluator);
+    aEnvironment.iDebugger->Start();
     InternalEval(aEnvironment, aResult, Argument(aArguments,1));
+    aEnvironment.iDebugger->Finish();
 }
 
 void LispTraceStack(LispEnvironment& aEnvironment,LispPtr& aResult, LispPtr& aArguments)
