@@ -1102,7 +1102,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispObject* info = NULL;
 
     while (*str == ' ') str++;
-    while (*str != '>')
+    while (*str != '>' && *str != '/')
     {
         LispString name;
         name.SetNrItems(0);
@@ -1134,12 +1134,12 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
         while (*str == ' ') str++;
 
 //printf("End is %c\n",str[0]);
-        if (*str == '/')
-        {
-            type = "\"OpenClose\"";
-            str++;
-            while (*str == ' ') str++;
-        }
+    }
+    if (*str == '/')
+    {
+      type = "\"OpenClose\"";
+      str++;
+      while (*str == ' ') str++;
     }
     
     info = LIST(LA(ATOML("List")) + LA(info));
