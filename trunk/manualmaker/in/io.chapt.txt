@@ -884,6 +884,14 @@ singularity.
 endpoints and the {points} parameter could be chosen to avoid numerical
 singularities.)
 
+*WIN32
+
+On the Wind*ws platforms, there are some limitations:
+*	The {gnuplot} program must be installed on the path, or in the same directory as Yacas is started.
+The executable must be called {wgnupl32.exe} and the file {wgnuplot.mnu} must be there as well.
+*	The {plotutils} backend is not yet supported.
+*	Some extra messages are printed to the console.
+*	All files are created in the subdirectory {plot.tmp} under the current directory; also the system cannot determine whether the current directory is writable and whether the {plot.tmp} subdirectory has been successfully created.
 
 *E.G.
 	In> Plot2D({(2+x)/(2-x),Exp(y)},-1.8:1.5)
@@ -1012,6 +1020,10 @@ endpoints and the {xpoints}, {ypoints} parameters could be chosen to avoid numer
 singularities.)
 
 The {filename} option is optional if using graphical backends, but can be used to specify the location of the created data file.
+
+*WIN32
+
+Same limitations as {Plot2D}.
 
 *E.G.
 	In> Plot3DS(a*b^2)
