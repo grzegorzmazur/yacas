@@ -282,7 +282,7 @@ CYacas::CYacas(LispOutput* aOutput)
 
 
 
-void CYacas::Evaluate(LispCharPtr aExpression)
+void CYacas::Evaluate(const LispCharPtr aExpression)
 {
 
   iResult.SetNrItems(1);
@@ -293,7 +293,7 @@ void CYacas::Evaluate(LispCharPtr aExpression)
     LispPtr result;
     LispTrap(
      {
-         LispString full(aExpression);
+         LispString full((LispCharPtr)aExpression);
          full[full.NrItems()-1] = ';';
          full.Append('\0');
          StringInput input(full,environment().iInputStatus);
