@@ -116,11 +116,16 @@
 #define PlatSignedDoubleWord signed short
 */
 
-/*TODO*/
-#define PlatWord unsigned short
-#define PlatDoubleWord unsigned long
-#define PlatSignedDoubleWord signed long
-/**/
+//#define SUPPORT_LONG_LONG
+#ifdef  SUPPORT_LONG_LONG
+#  define PlatWord unsigned long
+#  define PlatDoubleWord unsigned long long
+#  define PlatSignedDoubleWord signed long long
+#else
+#  define PlatWord unsigned short
+#  define PlatDoubleWord unsigned long
+#  define PlatSignedDoubleWord signed long
+#endif
 
 
 

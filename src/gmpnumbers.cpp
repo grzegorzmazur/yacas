@@ -2438,6 +2438,9 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
 	// FIXME: this does not work for KExpFloat
 }
 
+void BigNumber::DumpDebugInfo()
+{//FIXME
+}
 
 
 /// integer operation: *this = y mod z
@@ -2802,5 +2805,7 @@ void math_factorial(BigNumber& result, const BigNumber& x)
 /// FIXME: should signal error
 	}
 }
+
+
 
 #endif // USE_NEW_BIGNUM

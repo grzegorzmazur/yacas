@@ -143,6 +143,16 @@ void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
 }
 
 
+void LispDumpBigNumberDebugInfo(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+#ifndef NO_USE_BIGFLOAT
+  RefPtr<BigNumber> x;
+  GetNumber(x,aEnvironment, aStackTop, 1);
+  x->DumpDebugInfo();
+#endif
+  InternalTrue(aEnvironment,RESULT);
+}
+
 void LispMultiply(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 #ifndef NO_USE_BIGFLOAT
