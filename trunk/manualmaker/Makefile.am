@@ -28,7 +28,8 @@ ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
 
 ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt \
-        in/YacasDebugger.chapt.txt in/new.chapt.txt
+        in/YacasDebugger.chapt.txt in/new.chapt.txt \
+		in/Algorithms.chapt.txt
 
 EXTRA_DIST = \
 	manualmaker styleplain in/all \
