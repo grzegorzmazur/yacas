@@ -1183,6 +1183,25 @@ Possible names are {"Internal"} and {"Gmp"}, indicating the internal math librar
 	Out> "Internal";
 
 
+*CMD GetTime --- measure the time taken by an evaluation
+*CORE
+*CALL
+	GetTime(expr)
+*PARMS
+{expr} -- any expression
+*DESC
+The function {GetTime(expr)} evaluates the expression {expr} and returns the time needed for the evaluation.
+The result is returned as a floating-point number of seconds.
+The value of the expression {expr} is lost.
+
+The result is the "user time" as reported by the OS, not the real ("wall clock") time.
+Therefore, any CPU-intensive processes running alongside Yacas will not significantly affect the result of {GetTime}.
+
+*EG
+	In> GetTime(Simplify((a*b)/(b*a)))
+	Out> 0.09;
+
+*SEE Time
 
 		Full listing of core functions
 

@@ -1,5 +1,5 @@
 
-LocalSymbols(TraceStart,TraceEnter,TraceLeave,DebugStart,DebugEnter,DebugLeave,ProfileStart,ProfileEnter) [
+LocalSymbols(TraceStart,TraceEnter,TraceLeave,DebugStart,DebugEnter, DebugLeave,ProfileStart,ProfileEnter,result) [
 
 TraceStart() := [indent := 0;];
 TraceEnter() :=
@@ -124,6 +124,13 @@ Macro(Profile,{expression})
       Echo("Function ",item[1]," called ",item[2]," times");
 ];
 
+/// Measure the time taken by evaluation and print results.
+Macro(Time,{expression})
+[
+	Local(result);
+	Echo(GetTime(Set(result, @expression)), "seconds taken");
+	result;
+];
 
 
 ]; //LocalSymbols

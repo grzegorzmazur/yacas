@@ -468,10 +468,10 @@ void LoadYacas(LispOutput* aOutput=NULL)
 #ifdef _TESTCODE_
     (*yacas)()().Commands().SetAssociation(LispEvaluator(DummyTestFunction),
                                            (*yacas)()().HashTable().LookUp("DummyTestFunction"));
-#endif
+#endif // _TESTCODE_
 
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispTime),
-                                           (*yacas)()().HashTable().LookUp("Time"));
+                                           (*yacas)()().HashTable().LookUp("GetTime"));
     
     
 

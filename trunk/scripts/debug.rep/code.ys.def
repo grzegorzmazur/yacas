@@ -10,4 +10,5 @@ BreakpointsClear
 DebugCallstack
 DebugBreakIf
 DebugLocals
+Time
 }
