@@ -113,14 +113,17 @@ $$Gcd(a,b,c) = Gcd(Gcd(a,b),c)$$.
 *STD
 *CALL
 	Lcm(n,m)
+	Lcm(list)
 
 *PARMS
 
 {n}, {m} -- integers or univariate polynomials
+{list}	 -- list of integers
 
 *DESC
 
-This command returns the least common multiple of "n" and "m".
+This command returns the least common multiple of "n" and "m" or all of
+the integers in the list {list}.
 The least common multiple of two numbers "n" and "m" is the lowest
 number which is an integer multiple of both "n" and "m".
 It is calculated with the formula
@@ -133,6 +136,9 @@ them.
 
 	In> Lcm(60,24)
 	Out> 120;
+	In> Lcm({3,5,7,9})
+	Out> 315;
+
 
 *SEE Gcd
 
@@ -378,6 +384,32 @@ neither prime nor composite.
 	Out> {4,6,8,9,10,12,14,15,16,18,20};
 
 *SEE IsPrime
+
+*CMD IsCoprime --- test if integers are coprime 
+*STD
+*CALL
+	IsCoprime(m,n)
+	IsCoprime(list)
+*PARMS
+
+{m},{n} -- positive integers
+
+{list}  -- list of positive integers
+
+*DESC
+
+This function returns {True} if the given pair or list of integers are coprime,
+also called relatively prime. A pair or list of numbers are coprime if they 
+share no common factors.
+
+*E.G.
+
+	In> IsCoprime({3,4,5,8})
+	Out> False;
+	In> IsCoprime(15,17)
+	Out> True;
+
+*SEE Prime
 
 *CMD IsSquareFree --- test for a square free number
 *STD

@@ -408,7 +408,8 @@ Function("FermatNumber",{n})[
 
 IsPerfect(n_IsPositiveInteger) <-- ProperDivisorsSum(n)=n;
 
-IsCoprime(n_IsInteger,m_IsInteger)      <-- (Gcd(n,m)=1);
+5  # IsCoprime(list_IsList)                     <-- (Lcm(list) == Product(list));
+10 # IsCoprime(n_IsInteger,m_IsInteger)		<-- (Gcd(n,m) == 1);
 
 // Algorithm adapted from:
 // Elementary Number Theory, David M. Burton
@@ -542,3 +543,31 @@ Function("FactorGaussianInteger",{x}) [
 ];
 
 IsCarmichaelNumber(n_IsList) <-- MapSingle("IsCarmichaelNumber",n);
+
+// approximation to the number of additive partitions of an integer
+// this is the first term in Rademachers explicit infinite series 
+// formula
+PartitionsNumApprox(n_IsPositiveInteger) <--
+[
+	Local(C,lambda,m,pa);
+	C:=Pi*Sqrt(2/3);
+	lambda:=Sqrt(m - 1/24);
+
+	pa:= Deriv(m) Exp(C*lambda)/lambda;
+	GlobalPush(GetPrecision());
+	Precision(80);
+	pa:=Round(N(pa/(2*Pi*Sqrt(2)) Where m==n));
+	Precision(GlobalPop());
+	pa;
+
+];
+
+// the product of all the elements of a list
+Product(list_IsList) <--
+[
+	Local(product);
+	product:=1;
+	ForEach(i,list)
+		product:=product*i;
+	product;	
+];
