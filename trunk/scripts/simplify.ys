@@ -1,0 +1,359 @@
+
+
+
+/* Cases not handled:
+ */
+
+
+Eliminate(_var,_replace,_function) <-- Simplify(Subst(var,replace)function);
+ExpandBrackets(_xx) <-- SimpExpand(SimpImplode(SimpFlatten(xx)));
+
+
+RuleBase("SimpAdd",{x,y});
+RuleBase("SimpMul",{x,y});
+RuleBase("SimpDiv",{x,y});
+
+
+10 # SimpFlatten((_x)+(_y)) <-- SimpAdd(SimpFlatten(x),SimpFlatten(y));
+10 # SimpFlatten((_x)-(_y)) <-- SimpAdd(SimpFlatten(x),SimpMul(-1,SimpFlatten(y)));
+10 # SimpFlatten(    -(_y)) <-- SimpMul(-1,SimpFlatten(y));
+
+10 # SimpFlatten((_x)*(_y)) <-- SimpMul(SimpFlatten(x),SimpFlatten(y));
+10 # SimpFlatten((_x)/(_y)) <-- SimpDiv(SimpFlatten(x),SimpFlatten(y));
+10 # SimpFlatten((_x)^(n_IsPositiveInteger)) <--
+     SimpMul(SimpFlatten(x),SimpFlatten(x^(n-1)));
+
+100 # SimpFlatten(_x) <--
+[
+  x;
+];
+
+10 # SimpExpand(SimpAdd(_x,_y)) <-- SimpExpand(x) + SimpExpand(y);
+10 # SimpExpand(SimpMul(_x,_y)) <-- SimpExpand(x) * SimpExpand(y);
+10 # SimpExpand(SimpDiv(_x,_y)) <-- SimpExpand(x) / SimpExpand(y);
+20 # SimpExpand(_x) <-- x;
+
+/* Distributed multiplication rule */
+10 # SimpImplode(SimpMul(SimpAdd(_x,_y),_z)) <--
+     SimpImplode(SimpAdd(SimpImplode(SimpMul(x,z)),
+                 SimpImplode(SimpMul(y,z))));
+10 # SimpImplode(SimpMul(_z,SimpAdd(_x,_y))) <--
+     SimpImplode(SimpAdd(SimpImplode(SimpMul(z,x)),
+                 SimpImplode(SimpMul(z,y))));
+/* Distributed division rule  */
+10 # SimpImplode(SimpDiv(SimpAdd(_x,_y),_z)) <--
+     SimpImplode(SimpAdd(SimpImplode(SimpDiv(x,z)),
+     SimpImplode(SimpDiv(y,z))));
+
+
+
+20 # SimpImplode(SimpAdd(_x,_y)) <--
+     SimpAdd(SimpImplode(x),SimpImplode(y));
+20 # SimpImplode(SimpMul(_x,_y)) <--
+     SimpMul(SimpImplode(x),SimpImplode(y));
+20 # SimpImplode(SimpDiv(_x,_y)) <--
+     SimpDiv(SimpImplode(x),SimpImplode(y));
+30 # SimpImplode(_x) <-- x;
+
+/* SimpTerm(numer,denom) */
+RuleBase("SimpTerm",{n,d});
+
+10 # SimpAssocMatches(_a1,_a2)_(Length(a1) != Length(a2)) <-- False;
+20 # SimpAssocMatches(_a1,_a2) <-- Length(Union(a1,a2)) = Length(a1);
+    
+
+SimpTermMatches(SimpTerm(_n1,_d1),SimpTerm(_n2,_d2)) <--
+    SimpAssocMatches(n1,n2) And SimpAssocMatches(d1,d2);
+
+10 # SimpBuildTermList(_expr) <--
+[
+  Local(rest,numer,denom);
+  rest:=NumerDenom(expr);
+  numer:=ExplodeTerm(rest[1]);
+  denom:=ExplodeTerm(rest[2]);
+  nc := Factorize(numer[1]);
+  dc := Factorize(denom[1]);
+  SubtractTerms(numer,denom);
+  {SimpTerm(numer[2],denom[2]),nc/dc};
+];
+
+SimpImplodeTerm({SimpTerm(_n,_d),_fact}) <--
+[
+ ImplodeTerm({{fact},n},"*","^",1)/ImplodeTerm({{1},d},"*","^",1);
+];
+
+                  
+Function("Flatten",{body,flattenoper})
+[
+  DoFlatten(body);
+];
+
+RuleBase("DoFlatten",{doflattenx});
+UnFence("DoFlatten",1);
+
+10 # DoFlatten(_doflattenx)_(Type(doflattenx)=flattenoper) <--
+     Apply("Concat",MapSingle("DoFlatten",Tail(Listify(doflattenx))));
+20 # DoFlatten(_doflattenx) <-- { doflattenx };
+
+
+10 # UnFlatten({},_op,_identity) <-- identity;
+20 # UnFlatten(list_IsList,_op,_identity) <--
+     Apply(op,{Head(list),UnFlatten(Tail(list),op,identity)});
+
+
+Function("GroupIndex",{list,element})
+[
+  Local(result,count);
+  result:= -1;
+  count:=1;
+  While(result<0 And list != {})
+  [
+    If((list[1][1]) = element,
+      result := count
+      );
+    list:=Tail(list);
+    count++;
+  ];
+  result;
+];
+
+
+Function("ExplodeTerm",{list})
+[
+  Local(compact,exponents,consts,combined,index);
+  consts:={};
+  compact:={};
+
+  ForEach(item,list)
+  [
+/*    If (IsConstant(item), */
+    If (IsNumber(item),
+       DestructiveAppend(consts,item),
+       [
+         index:=GroupIndex(compact,item);
+         If (index>0,
+            compact[index][2]:=(compact[index][2])+1,
+            DestructiveInsert(compact,1,{item,1})
+            );
+       ]);     
+  ];
+
+  {consts,compact};
+];
+
+Function("ImplodeTerm",{list,oper,multi,unity})
+[
+  Local(cnst,term,fact,result);
+  cnst:=unity;
+  term:=unity;
+  ForEach(item,list[1])
+  [
+    cnst:=Apply(oper,{cnst,item});
+  ];
+  ForEach(item,list[2])
+  [
+    fact:=Apply(multi,{item[1],item[2]});
+    term:=Apply(oper,{fact,term});
+  ];
+  result:=Apply(oper,{cnst,term});
+  result;
+];
+
+/* Use subtracterms to reduce a term1/term2. It removes the duplicate
+   multiplicities in the two lists.
+ */
+SubtractTerms(_term1,_term2) <--
+[
+  Local(index,drop);
+  ForEach(item,term2[2])
+  [
+    index:=GroupIndex(term1[2],item[1]);
+    If(index>0,
+       [
+         drop:=Min(item[2],term1[2][index][2]);
+         item[2]:=item[2]-drop;
+         term1[2][index][2]:=term1[2][index][2]-drop;
+       ]
+    );
+  ];
+];
+
+Simplify(_expr) <--
+[
+  Local(ii);
+  ii:=Simplify1(expr);
+  ii:=Simplify1(ii);
+  ii;
+];
+
+
+10 # Simplify1(expr_IsList) <-- MapSingle("Simplify1",expr);
+
+15 # Simplify1(Complex(_r,_i)) <-- Complex(Simplify1(r),Simplify1(i));
+
+20 # Simplify1((_xex) == (_yex)) <-- (Simplify1(xex-yex) == 0);
+
+20 # Simplify1((_xex) > (_yex)) <-- (Simplify1(xex-yex) > 0);
+20 # Simplify1((_xex) < (_yex)) <-- (Simplify1(xex-yex) < 0);
+20 # Simplify1((_xex) >= (_yex)) <-- (Simplify1(xex-yex) >= 0);
+20 # Simplify1((_xex) <= (_yex)) <-- (Simplify1(xex-yex) <= 0);
+20 # Simplify1((_xex) !== (_yex)) <-- (Simplify1(xex-yex) !== 0);
+
+
+100 # Simplify1(_expr) <--
+[
+  expr:=SimpFlatten(expr);
+  expr:=SimpImplode(expr);
+  expr:=SimpExpandBrackets(expr);
+  expr:=Simplify2(expr);
+  expr;
+];
+
+RuleBase("Simplify2",{expr});
+
+Rule("Simplify2",1,1,Type(expr)="SimpMul" Or Type(expr)="SimpDiv")
+[
+  Local(rest,numer,denom,gcd,nc,dc);
+
+  rest:=NumerDenom(expr);
+
+  numer:=ExplodeTerm(rest[1]);
+  denom:=ExplodeTerm(rest[2]);
+  nc := Factorize(numer[1]);
+  dc := Factorize(denom[1]);
+  gcd:=Gcd(nc,dc);
+  numer[1] := {nc/gcd};
+  denom[1] := {dc/gcd};
+  SubtractTerms(numer,denom);
+  ImplodeTerm(numer,"*","^",1)/ImplodeTerm(denom,"*","^",1);
+];
+
+
+
+ProcessGroupAdd(_result,{_simpterm,_factor}) <--
+    [
+     Local(index,i,nr);
+     index:= -1;
+     nr:=Length(result);
+     For(i:=1,i<=nr And index = -1,i++)
+     [
+      If(SimpTermMatches(simpterm,result[i][1]),index:=i);
+     ];
+     If (index = -1,
+         DestructiveAppend(result,{simpterm,factor}),
+         result[index][2] := result[index][2]+factor
+        );
+    ];
+    
+                
+Rule("Simplify2",1,1, Type(expr)="SimpAdd")
+[
+ Local(terms);
+
+ /* Flatten the list with respect to addition */
+ terms:=Flatten(expr,"SimpAdd");
+
+ /* Simplify all the terms */
+ terms:=MapSingle("Simplify1",terms);
+ /* Redo the simpflatten normalization */
+ terms:=MapSingle("SimpFlatten",terms);
+
+ /* Make a assoc lookup table. */
+ terms:=MapSingle("SimpBuildTermList",terms);
+
+ /* Group like terms */
+ Local(restlist);
+ restlist:={};
+ ForEach(item,terms)
+ [
+   ProcessGroupAdd(restlist,item);
+ ];
+ /* Implode each entry in the assoc list */
+ terms:=MapSingle("SimpImplodeTerm",restlist);
+ /* Sum up all the terms */
+ Sum(terms);
+];
+
+Rule("Simplify2",1,10,IsFunction(expr)) MapArgs(expr,"Simplify2");
+
+Rule("Simplify2",1,11,True)
+    [
+     SimpExpand(expr);
+    ];
+
+
+/* - Can not automatically do x^2*a*b*x (so expand x^2 to x*x
+*/
+
+
+20 # NumerDenomProcess(_numer,_denom,SimpDiv(_x,_y)) <--
+[
+  Local(hd,rest,i,nr);
+
+  hd:=NumerDenom(x);
+  DestructiveAppendList(numer,hd[1]);
+  DestructiveAppendList(denom,hd[2]);
+
+  rest:=NumerDenom(y);
+  DestructiveAppendList(denom,rest[1]);
+  DestructiveAppendList(numer,rest[2]);
+];
+
+20 # NumerDenomProcess(_numer,_denom,SimpAdd(_x,_y)) <--
+    DestructiveAppend(numer,SimpExpand(SimpAdd(x,y)));
+    
+
+100 # NumerDenomProcess(_numer,_denom,_x) <--
+    DestructiveAppend(numer,x);
+
+
+NumerDenom(_expr) <--
+[
+  Local(L1,numer,denom);
+  L1:=Flatten(expr,"SimpMul");
+
+  numer:={};
+  denom:={};
+  ForEach(item,L1)
+  [
+    NumerDenomProcess(numer,denom,item);
+  ];
+
+  {numer,denom};
+];
+
+
+SimpExpandBracketsPredicate(_expr) <--
+    (SimpExpandBracketsChange(expr) != expr);
+10 #  SimpExpandBracketsChange(SimpMul(_x , SimpAdd(_y , _z))) <--
+    SimpAdd(SimpExpandBracketsChange(SimpMul(x,y)),SimpExpandBracketsChange(SimpMul(x,z)));
+20 #  SimpExpandBracketsChange(SimpMul(SimpAdd(_y , _z) , _x)) <--
+    SimpAdd(SimpExpandBracketsChange(SimpMul(y,x)),SimpExpandBracketsChange(SimpMul(z,x)));
+30 #  SimpExpandBracketsChange(SimpDiv(SimpAdd(_y , _z) , _x)) <--
+    SimpAdd(SimpExpandBracketsChange(SimpDiv(y,x)),SimpExpandBracketsChange(SimpDiv(z,x)));
+40 #  SimpExpandBracketsChange(SimpDiv(_y , SimpAdd(_z , _x))) <--
+    [
+     Local(r);
+     r:=SimpDiv(SimpAdd(z , x),y);
+     r:=SimpExpandBracketsChange(r);
+     r:=Simplify1(r);
+     r:=SimpDiv(1,r);
+     r:=SimpExpand(r);
+     r:=SimpFlatten(r);
+     r;
+    ];
+    
+100 #  SimpExpandBracketsChange(_expr) <-- expr;
+    
+SimpExpandBrackets(_expr) <--
+[
+  Substitute(expr,"SimpExpandBracketsPredicate","SimpExpandBracketsChange");
+];
+
+
+
+
+
+
+
+

@@ -1,0 +1,208 @@
+
+/* code to generate html */
+
+
+/* Global defines */
+anchor:={};
+anchor["0"]:="A";
+anchor["NAME"]:="";
+
+link:={};
+link["0"]:="A";
+link["HREF"]:="";
+
+frameset:={};
+frameset["0"]:="FRAMESET";
+frameset["BORDER"]:="0";
+
+frame:={};
+frame["0"]:="FRAME";
+
+caption:={};
+caption["0"]:="CAPTION";
+
+table:={};
+table["0"]:="TABLE";
+
+form:={};
+form["0"]:="FORM";
+
+textarea:={};
+textarea["0"]:="TEXTAREA";
+
+textfield:={};
+textfield["0"]:="INPUT";
+textfield["TYPE"]:="TEXT";
+
+button:={};
+button["0"]:="INPUT";
+button["TYPE"]:="SUBMIT";
+
+bullets:={};
+bullets["0"]:="UL";
+
+bullet:={};
+bullet["0"]:="LI";
+
+newline:="
+";
+Gt():="&gt;";
+Lt():="&lt;";
+
+
+
+
+HtmlNewParagraph():= (newline : "<P>" : newline);
+
+HtmlTitle(title):=
+[
+  "<HEAD><TITLE>" : title : "</TITLE></HEAD>";
+];
+
+HtmlAnchor(name):=
+[
+  anchor["NAME"]:=name;
+  HtmlTag(anchor,"");
+];
+Bodied("HtmlAnchor",60000);
+
+HtmlTable(cellpadding,width,body):=
+[
+  table["CELLPADDING"]:=String(cellpadding);
+  table["WIDTH"]:=width;
+  HtmlTag(table,body);
+];
+
+Bullets(list):=HtmlTag(bullets,list);
+Bullet (list):=HtmlTag(bullet ,list);
+
+
+HtmlCaption(title):=
+[
+ HtmlTag(caption,title);
+];
+
+HtmlForm(action,body):=
+[
+  form["METHOD"]:="GET";
+  form["ACTION"]:=action;
+  HtmlTag(form,body);
+];
+
+
+HtmlTextArea(name,width,height,body) :=
+[
+  textarea["NAME"]:=name;
+  textarea["COLS"]:=String(width);
+  textarea["ROWS"]:=String(height);
+  HtmlTag(textarea,body);
+];
+
+HtmlTextField(name,size,value):=
+[
+  textfield["NAME"]:=name;
+  textfield["SIZE"]:=String(size);
+  textfield["VALUE"]:=value;
+  HtmlTag(textfield,"");
+];
+
+HtmlSubmitButton(name,value):=
+[
+  button["NAME"]:=name;
+  button["VALUE"]:=value;
+  HtmlTag(button,"");
+];
+
+
+HtmlLink(description,file,tag,target):=
+[
+  If(tag != "",
+    link["HREF"]:= file : "#" : tag,
+    link["HREF"]:= file);
+    
+  link["TARGET"] :=target;
+  HtmlTag(link,description);
+];
+
+HtmlFrameSetRows(columns,body):=
+[
+  frameset["COLS"]:="";
+  frameset["ROWS"]:=columns;
+  HtmlTag(frameset,body);
+];
+
+HtmlFrameSetCols(columns,body):=
+[
+  frameset["COLS"]:=columns;
+  frameset["ROWS"]:="";
+  HtmlTag(frameset,body);
+];
+
+HtmlFrame(source,name):=
+[
+  frame["SRC"]:=source;
+  frame["NAME"]:=name;
+  HtmlTag(frame,"");
+];
+
+
+/* export a html tag type, using the specifications in the
+   tags assoc list.
+   */
+HtmlTag(tags,content):=
+[
+  Local(result,tag);
+  result:="<" : tags["0"];
+  ForEach(tag,AssocIndices(tags))
+  [
+    If (tag != "0" And tags[tag] != "",
+       result:= result : " " : tag : "=" : "\"" : tags[tag] : "\""
+       ); 
+  ];
+  
+  result:= result : ">" : newline :
+           content : newline :
+           "</" : tags["0"] : ">" : newline;
+  
+  result;
+];
+
+/* output directory management */
+htmldir:="";
+SetHtmlDirectory(dir):= [htmldir:=dir;];
+HtmlFile(file) := [htmldir : file;];
+
+
+/* loading and saving site info */
+site:={};
+ClearSite() := [site:={};];
+LoadSite():=
+[
+  FromFile("siteall")
+  [
+    site:=Read();
+  ];
+];
+
+SaveSite():=
+[
+  ToFile("siteall")
+  [
+    Write(site);
+    WriteString(";");
+  ];
+];
+
+MySQLQuery(pidstr,string):=
+[
+  Local(result);
+  ToFile("sqlin":pidstr) WriteString(string);
+  SystemCall("mysql mysql < ":"sqlin":pidstr:" > sqlout":pidstr);
+  SystemCall(FindFile("tools/mysqlstubs"):" sqlout":pidstr:" sqlout_":pidstr);
+  result:= FromFile("sqlout_":pidstr)Read();
+  SystemCall("rm -rf sqlin":pidstr);
+  SystemCall("rm -rf sqlout":pidstr);
+  SystemCall("rm -rf sqlout_":pidstr);
+  result;
+];
+

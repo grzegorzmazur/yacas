@@ -1,0 +1,164 @@
+
+/*
+Plotting a one-dimensional function: an example using threading
+
+Most programming languages in use are imperial, and thus force the
+programmer to write out an algorithm in detail, step by step
+instructions. The interpreter language in Yacas is one derived
+from Lisp, and thus has many functional properties. Functional
+descriptions of algorithms are usually a lot shorter.
+
+This example shows the use of threading, to write a function plotter
+in a few lines. It also shows how to build up a nice program from
+small functions.
+
+Threading can be used to evaluate a function at multiple values:
+	x:={a,b,c};
+	Sin(x);
+
+should return something to the effect of
+
+	{Sin(a),Sin(b),Sin(c)}
+
+
+This can be useful for plotting functions. For instance,
+
+	(0 .. 5)/5
+
+
+evaluates to
+
+	{0,1/5,2/5,3/5,4/5,1};
+
+And
+
+	N((0 .. 5)/5)
+
+evaluates to
+
+	{0,0.2,0.4,0.6,0.8,1};
+
+So this in effect generates a list of values from 0 to 1 in 5 steps.
+So entering
+
+	a + (0 .. 5)/5
+
+will result in
+
+	{a,a+1/5,a+2/5,a+3/5,a+4/5,a+1};
+
+which is a list from a to (a+1).
+
+A list of values we want to evaluate the
+function at can then be built like this:
+
+*/
+	Iterate(start_IsNumber, end_IsNumber, steps_IsInteger) <--
+		start + ( (0 .. steps)/steps) * (end-start);
+
+/*
+This function uses the
+threading facilities, where addition, multiplication and division
+on lists work on a per-element basis.
+
+Save the function 'Iterate' in a file, start up yacas, and load the file
+using Load("file"), and then type
+
+	Iterate(0,1,4);
+
+This should return {0,1/4,1/2,3/4,1}
+
+Now, type
+
+	x:=Iterate(0,1,4);
+	N(Sin(x));
+
+This should give you a list of Sin(x) evaluated at the four points.
+Again N(...) should be used, to force evaluation of Sin on a number.
+Now, if you type
+
+    Transpose({x,N(Sin(x))});
+
+You will get a list of the form
+
+	{
+	  {x0, Sin(x0)},
+	  {x1, Sin(x1)},
+	  {x2, Sin(x2)},
+	  {x3, Sin(x3)}
+	}
+
+We need to be able to write this out as something a plotting library
+like gnuplot accepts. Suppose we create a function
+*/
+
+	WriteTuple(tuple_IsList) <--
+	  [
+		ForEach(item,tuple)
+		[
+		  Write(item);
+		  Space();
+		];
+		NewLine();
+	  ];
+
+/*
+We could then write out each item in the list:
+
+	list:=Transpose(x,N(Sin(x)));
+	ForEach(item,list) WriteTuple(item);
+
+
+To store this to a file, ToFile can be used:
+
+	ToFile("data.dat") ForEach(item,list) WriteTuple(item);
+
+Plotting in gnuplot can then be achieved by using "plot 'data.dat' with lines" in
+gnuplot.
+
+So the full sequence for plotting Sin(x) with x from -3 to 3 in 10 steps
+would become:
+
+    Load("myplot.ys");
+	x:=Iterate(-3,3,10);
+	list:=Transpose({x,N(Sin(x))});
+	ToFile("data.dat") ForEach(item,list) WriteTuple(item);
+
+Where the file "myplot" should contain the functions Iterate and WriteTuple.
+
+*/
+
+PlotX(from_IsNumber,to_IsNumber,steps_IsInteger,_function) <--
+[
+  Local(x,list);
+  x:=N(Iterate(from,to,steps));
+  function:=N(function);
+  If(IsList(function[1]),function:=function[1]);
+  list:=Transpose({x,function});
+  ForEach(item,list) WriteTuple(item);
+];
+/* HoldArg("PlotX",arg4); */
+
+10 # GnuPlot(from_IsNumber,to_IsNumber,steps_IsInteger,list_IsList) <--
+[
+  Local(i,exec);
+  exec := "plot ";
+  For(i:=1,i<=Length(list),i++)
+  [
+    ToFile("gnudata.in":String(i))PlotX(from,to,steps,list[i]);
+    exec:=exec:"\"gnudata.in":String(i):"\" with lines";
+    If(i<Length(list),exec:=exec:", ");
+  ];
+  ToFile("gnuplot.in")WriteString(exec);
+  SystemCall("gnuplot -persist gnuplot.in");
+];
+
+20 # GnuPlot(from_IsNumber,to_IsNumber,steps_IsInteger,_function) <--
+[
+  ToFile("gnudata.in")PlotX(from,to,steps,function);
+  ToFile("gnuplot.in")WriteString("plot \"gnudata.in\" with lines");
+  SystemCall("gnuplot -persist gnuplot.in");
+];
+HoldArg("GnuPlot",arg4);
+
+
