@@ -206,7 +206,7 @@ void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
 
         // Map to a char base number
         LispInt nr = fraction.NrItems()-1; //Excluding the zero terminator
-        typename LispString::ElementTypePtr fractionPtr = &fraction[0];
+        LispString::ElementTypePtr fractionPtr = &fraction[0];
 
         for (i=0;i<nr>>1;i++)
         {
@@ -246,7 +246,7 @@ void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
 
             {
                 LispInt nrc=fraction.NrItems();
-                typename LispString::ElementTypePtr fractionPtr = &fraction[0];
+                LispString::ElementTypePtr fractionPtr = &fraction[0];
                 PlatDoubleWord factor=1;
                 for (j=nr;j<nrc;j++)
                 {
@@ -861,7 +861,7 @@ void BaseShiftRight(ANumber& a, LispInt aNrBits)
 
     LispInt nr = a.NrItems();
 
-    typename ANumber::ElementTypePtr ptr = &a[0];
+    ANumber::ElementTypePtr ptr = &a[0];
 
     for (i=0;i<nr-wordsShifted;i++)
     {
@@ -915,7 +915,7 @@ void BaseShiftLeft(ANumber& a, LispInt aNrBits)
         a.Append(0);
     }
 
-    typename ANumber::ElementTypePtr ptr = &a[0];
+    ANumber::ElementTypePtr ptr = &a[0];
     
     for (i=nr+wordsShifted;i>=wordsShifted;i--)
     {
