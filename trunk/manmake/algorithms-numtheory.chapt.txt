@@ -704,7 +704,7 @@ with $lc(d(x)) = 1$ would thus look like:
 The reason we can get away with factoring modulo $2^n$
 as opposed to factoring modulo some prime $p$ in later
 sections is that the divisor $d(x)$ is monic. Its leading 
-coefficient is thus one and thus $q(x)$ and $r(x)$ can be 
+coefficient is one and thus $q(x)$ and $r(x)$ can be 
 uniquely determined. If $p$ is not prime and $lc(d(x))$
 is not equal to one, there might be multiple combinations
 for which $p(x) = q(x)*d(x)+r(x)$, and we are interested
@@ -813,9 +813,56 @@ solution, maintaining a list of potential solutions.
 This list can grow exponentially in certain instances.
 For instance, factoring $(x-a)*(x-2*a)*(x-3*a)* ... $
 implies a that the roots have common factors. There
-are examples where the number
-of potential solutions doubles with each iteration, and thus
-the algorithm becomes exponential.
+are inputs where the number
+of potential solutions (almost) doubles with each iteration. 
+For these inputs the algorithm becomes exponential. The worst-case
+performance is therefore exponential. The list of potential
+solutions while iterating will contain a lot of false roots
+in that case.
+
+		Efficiently deciding if a polynomial divides another
+
+Given the polynomial $p(x)$, and a potential divisor 
+$$ f_i(x) = x-p $$ modulo some $q=2^n$ an expression for
+the remainder after division is
+
+$$ rem(p)=Sum(i,0,n,a_i*p^i) $$
+
+For the initial solutions modulo 2, where the possible 
+solutions are $x$ and $x-1$. For $p=0$, $rem(0) = a_0$.
+For $p=1$, $rem(1) = Sum(i,0,n,a_i)$ .
+
+Given a solution $x-p$ modulo $q=2^n$, we consider
+the possible solutions $Mod(x-p,2^(n+1))$ and 
+$Mod(x-(p+2^n),2^n+1)$.
+
+$x-p$ is a possible solution if $Mod(rem(p),2^(n+1)) = 0$.
+
+$x-(p+q)$ is a possible solution if $Mod(rem(p+q),2^(n+1)) = 0$.
+Expanding $Mod(rem(p+q),2*q)$ yields:
+
+$$ Mod(rem(p+q),2*q) = Mod(rem(p) + extra(p,q),2*q) $$
+
+When expanding this expression, some terms
+grouped under $extra(p,q)$ have factors like $2*q$ 
+or $q^2$. Since $q=2^n$, these terms vanish if the
+calculation is done modulo $2^(n+1)$.
+
+The expression for $extra(p,q)$ then becomes 
+$$ extra(p,q) = q*Sum(i,1,n/2, (2*i-1)*a(2*i)*p^(2*i-2)) $$
+
+An efficient approach to determining if $x-p$ or $x-(p+q)$
+divides $p(x)$ modulo $2^(n+1)$ is then to first calculate
+$Mod(rem(p),2*q)$. If this is zero, $x-p$ divides $p(x)$.
+In addition, if $Mod(rem(p)+extra(p,q),2*q)$ is zero, 
+$x-(p+q)$ is a potential candidate.
+
+Other efficiencies are derived from the fact that the operations
+are done in binary. Eg. if $q=2^n$, then $q_next=2^(n+1) = 2*q = q<<1 $ is 
+used in the next iteration. Also, calculations modulo $2^n$
+are equivalent to performing a bitwise and with $2^n-1$. These
+operations can in general be performed efficiently on 
+todays hardware which is based on binary representations.
 
 
 		Extending the algorithm
