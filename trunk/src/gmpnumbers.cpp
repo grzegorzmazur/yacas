@@ -1682,6 +1682,7 @@ const void* BigInt::ExportData() const
 // test precision on from/to string conversion.
 // implement exp-float.
 
+/*Serge, I moved these to the numbers.h file, they seem to be of general use?
 const unsigned GUARD_BITS = 8;	// we leave this many guard bits untruncated in various situations when we need to truncate precision by hand
 
 template<class T> inline T MAX(T x, T y) { if (x<y) return y; else return x; }
@@ -1689,7 +1690,7 @@ template<class T> inline T MIN(T x, T y) { if (x>y) return y; else return x; }
 
 const long DIST_BITS = 3;	// at least this many bits of difference
 template<class T> inline T DIST(T x, T y) { return (x>=y && x>=y+DIST_BITS || y>=x && y>=x+DIST_BITS) ? 0 : 1; }
-
+*/
 
 BigNumber::BigNumber(LispInt aPrecision) { iPrecision = aPrecision; init(); }
 

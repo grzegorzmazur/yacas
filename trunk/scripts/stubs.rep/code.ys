@@ -188,6 +188,8 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
   NormalForm(Gcd(MakeUni(n,vars),MakeUni(m,vars)));
 ];
 
+100 # Gcd(n_IsNumber,m_IsNumber) <-- 1;
+ 
 
 /* Least common multiple */
 5  # Lcm(a_IsInteger,b_IsInteger) <-- Div(a*b,Gcd(a,b));

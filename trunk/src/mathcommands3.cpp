@@ -187,7 +187,8 @@ void LispAdd(LispEnvironment& aEnvironment, LispPtr& aResult,
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aArguments, 1);
       GetNumber(y,aEnvironment, aArguments, 2);
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+      LispInt bin = aEnvironment.BinaryPrecision();
+      BigNumber *z = NEW BigNumber(bin);
       z->Add(*x.Ptr(),*y.Ptr(),aEnvironment.BinaryPrecision());
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
       return;
@@ -247,11 +248,13 @@ void LispDivide(LispEnvironment& aEnvironment, LispPtr& aResult,
 	  if (x.Ptr()->IsInt() && y.Ptr()->IsInt())
 	  {
 		  // why can't we just say BigNumber temp; ?
-		  BigNumber *temp = NEW BigNumber(aEnvironment.BinaryPrecision());
-		  temp->SetTo(*x.Ptr());
-		  temp->BecomeFloat();	// coerce x to float
-     	  z->Divide(*temp, *y.Ptr(),aEnvironment.BinaryPrecision());
-      delete temp; 
+		  BigNumber tempx(aEnvironment.BinaryPrecision());
+		  tempx.SetTo(*x.Ptr());
+		  tempx.BecomeFloat(aEnvironment.BinaryPrecision());	// coerce x to float
+		  BigNumber tempy(aEnvironment.BinaryPrecision());
+		  tempy.SetTo(*y.Ptr());
+		  tempy.BecomeFloat(aEnvironment.BinaryPrecision());	// coerce x to float
+      z->Divide(tempx, tempy,aEnvironment.BinaryPrecision());
 	  }
 	  else
 	  {

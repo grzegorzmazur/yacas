@@ -986,6 +986,7 @@ const LispCharPtr BigNumber::NumericLibraryName()
   return "Internal Yacas numbers";
 }
 
+
 void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
   SetIsInteger(aX.IsInt() && aY.IsInt());
@@ -994,7 +995,9 @@ void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrec
   a1.CopyFrom(*aX.iNumber);
   ANumber a2(bits_to_digits(aPrecision,10));
   a2.CopyFrom(*aY.iNumber);
+//  iNumber->ChangePrecision(bits_to_digits(aY.GetPrecision()+GUARD_BITS,10));
   :: Multiply(*iNumber,a1,a2);
+//  iPrecision = MIN(aPrecision, aY.GetPrecision());
 }
 void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {//FIXME
