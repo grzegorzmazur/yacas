@@ -19,7 +19,7 @@ yacas_gslapi.cc : yacas_gslapi.stub gsl_auto.stub
 	../../src/yacas --rootdir ../../scripts/:$(top_srcdir)/scripts/ -pc $(srcdir)/yacas_gslapi.stub
 
 gsl_auto.stub : $(srcdir)/../extract_stub.pl
-	cat `gsl-config --prefix`/include/gsl/*.h | perl $(srcdir)/../extract_stub.pl > gsl_auto.stub
+	cat `gsl-config --prefix`/include/gsl/gsl_{sf,sys,pow_int,randist,math}*.h | perl $(srcdir)/../extract_stub.pl > gsl_auto.stub
 
 yacas_gsl.dylib: yacas_gsl.lo yacas_gslapi.lo
 	c++ -module -dynamic -undefined suppress -flat_namespace -dynamiclib -o $@ yacas_gsl.lo yacas_gslapi.lo $(LIBS)

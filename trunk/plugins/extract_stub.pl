@@ -15,7 +15,7 @@ while(<STDIN>)
 	# specify type here
 	$type = "double|int|unsigned|long|unsigned long|unsigned int|gsl_mode_t";
 	
-	if (/^\s*($type)\s+([0-9A-Za-z_]+)\((const )?($type) [0-9A-Za-z_]+(, ?(const )?($type) [0-9A-Za-z_]+)*\);\s*$/o)
+	if (/^\s*($type)\s+([0-9A-Za-z_]+)\s*\(\s*(const\s+)?($type)\s+[0-9A-Za-z_]+(,\s*(const\s+)?($type)\s+[0-9A-Za-z_]+)*\)\s*;\s*$/o)
 	{
 		# now $1 is the type, $2 is the function name
 		$return_type = $1;
@@ -26,7 +26,7 @@ while(<STDIN>)
 		# create an argument list of the form {{"int", "x"}, {"double", "y"}}
 		$text = $_;
 		# strip everything except argument list
-		$text =~ s/^\s*($type)\s+([0-9A-Za-z_]+)\((.*)\);\s*$/$3/;
+		$text =~ s/^\s*($type)\s+([0-9A-Za-z_]+)\s*\((.*)\)\s*;\s*$/$3/;
 		# prettyprint
 		$arg_list = $text;
 		# strip extra spaces
