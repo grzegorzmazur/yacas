@@ -111,8 +111,8 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 	Verify(Simplify(Integrate(x) Abs(x)),
 	  Abs(x)*x/2);
 *	78. (OK) Compute derivative of $Abs(x)$, piecewise defined.
-	Verify(D(x)if(x<0) (-x) else x,
-	  if(x<0) -1 else 1);
+	Verify(Simplify(D(x)if(x<0) (-x) else x),
+	  Simplify(if(x<0) -1 else 1));
 *	79. (OK) Integrate $Abs(x)$, piecewise defined.
 	Verify(Simplify(Integrate(x)
 	  if(x<0) (-x) else x),
