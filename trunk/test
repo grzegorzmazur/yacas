@@ -1,5 +1,102 @@
 
 
+/* Sparse multinomial representation */
+RuleBase("MultiNomial",{vars,terms});
+
+NormalForm(MultiNomial(vars_IsList,terms_IsList)) <--
+[
+  Local(result);
+  result:=0;
+  ForEach(t,terms)
+  [
+    result := result + t[2] * Factorize(vars^(t[1]));
+  ];
+  result;
+];
+
+MakeMultiNomial(_expr) <-- MakeMultiNomial(ExpandBrackets(expr),VarList(expr));
+
+LocalSymbols(a,vars)  [
+  10 #  MakeMultiNomial(a_IsConstant,vars_IsList) <--
+        MultiNomial(vars,{{FillList(0,Length(vars)),a}});
+];
+
+LocalSymbols(a,vars,pow)  [
+  MultiSingleFactor(_vars,_a,_pow) <--
+    [
+      Local(term);
+      term:={FillList(0,Length(vars)),1};
+      term[1][Find(vars,a)] := pow;
+      MultiNomial(vars,{term});
+    ];
+];
+
+LocalSymbols(a,vars)  [
+  20 #  MakeMultiNomial(a_IsAtom,vars_IsList) <-- MultiSingleFactor(vars,a,1);
+];
+
+LocalSymbols(x,y,vars)  [
+  30 #  MakeMultiNomial(_x + _y,vars_IsList) <--
+        MultiNomialAdd(MakeMultiNomial(x,vars),MakeMultiNomial(y,vars));
+];  
+LocalSymbols(x,y,vars)  [
+  30 #  MakeMultiNomial(_x * _y,vars_IsList) <--
+        MultiNomialMultiply(MakeMultiNomial(x,vars),MakeMultiNomial(y,vars));
+];  
+
+LocalSymbols(x,vars) [
+  30 #  MakeMultiNomial(- _x,vars_IsList) <--
+        MultiNomialNegate(MakeMultiNomial(x,vars));
+];
+LocalSymbols(x,y,vars) [
+  30 #  MakeMultiNomial(_x - _y,vars_IsList) <--
+        MultiNomialAdd(MakeMultiNomial(x,vars),MultiNomialNegate(MakeMultiNomial(y,vars)));
+];
+
+LocalSymbols(x,n,vars)  [
+  30 #  MakeMultiNomial(x_IsAtom ^ n_IsInteger,vars_IsList) <--
+	MultiSingleFactor(vars,x,n);
+];
+
+
+MultiNomialAdd(MultiNomial(_vars,_terms1),MultiNomial(_vars,_terms2)) <--
+[
+  ForEach(t,terms2) MultiAddTerm(terms1,t);
+  MultiNomial(vars,terms1);
+];
+
+10 # MultiAddTerm(_terms,_t)_(Assoc(t[1],terms) = Empty) <-- 
+     DestructiveAppend(terms,t);
+20 # MultiAddTerm(_terms,_t) <--
+     [
+       Local(as);
+       as := Assoc(t[1],terms);
+       as[2] := as[2] + t[2];
+     ];
+
+
+MultiNomialMultiply(MultiNomial(_vars,_terms1),MultiNomial(_vars,_terms2)) <--
+[
+  Local(result,t);
+  result := {};
+  ForEach(t1,terms1)
+    ForEach(t2,terms2)
+    [
+      t := t1;
+      t[1] := t[1] + t2[1];
+      t[2] := t[2] * t2[2];
+      MultiAddTerm(result,t);
+    ];
+  MultiNomial(vars,result);
+];
+
+
+MultiNomialNegate(MultiNomial(_vars,_terms)) <-- ForEach(t,terms) [t[2] := -t[2]; ];
+
+
+EndOfFile;
+
+
 LocalSymbols(f,x,n)
   Nest(_f,_x,n_IsInteger) <--
   [
