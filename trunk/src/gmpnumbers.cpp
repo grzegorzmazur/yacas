@@ -1754,7 +1754,6 @@ void BigNumber::SetTo(const BigNumber& aOther)
 // assign from string, result is always a float type
 void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {// FIXME: we use gmp to read into float_, so we cannot read expfloats, e.g. 1.3e123412341234123412341234, which should be possible.
-	//FIXME: need to check that aBase is between 2 and 32
   if (aBase<2 || aBase>32)
   {
   	RaiseError("BigNumber::SetTo(string): error: aBase should be between 2 and 32, not %d\n", aBase);
@@ -1764,12 +1763,23 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
   if (strchr(aString, '.') || aBase<=10 && (strchr(aString, 'e') || strchr(aString,'E')) || strchr(aString, '@'))
   {	// converting to a float
 	// estimate the number of bits we need to have
-	 // no exponent, so we find the first and the last nonzero digits
-	  LispInt digit1 = strspn(aString, ".-0");
-	  LispInt digit2 = strcspn(aString+digit1, (aBase<=10) ? ".-0eE@" : ".-0@");
-	  if (digit2<=0) digit2=1;
-	  // ok, so we need to represent MAX(aPrecision,digit2) digits in base aBase
-	  iPrecision=(LispInt) (1.51+double(MAX(aPrecision,digit2)) * log2_table_lookup(unsigned(aBase)));
+	  // find the first significant digit:
+	  LispInt digit1 = strspn(aString, ".-0");	// initial zeros are not significant
+	 // find the number of significant base digits (sig_digits)
+	  LispInt sig_digits = strcspn(aString+digit1, (aBase<=10) ? "-eE@" : "-@"); // trailing zeros and . *are* significant, do not include them in the sets
+	  if (sig_digits<=0)
+	  {	// this is when we have "0." in various forms
+		  sig_digits=1;
+		  // precision of 0.: for now let's set it to 1 significant digits (in principle we might allow things like 0.00e10 to denote special floating zeros but it's probably not very useful, since our floating zeros have binary precision and not decimal)
+	  }
+	  else
+	  {	// our number is nonzero
+		  if (strchr(aString+digit1, '.'))
+			  sig_digits--;	// this is when we have "1.000001" where "." is not a digit, so need to decrement
+	  }
+	  // ok, so we need to represent MAX(aPrecision,sig_digits) digits in base aBase
+	  iPrecision=(LispInt) (1.51+double(MAX(aPrecision,sig_digits)) * log2_table_lookup(unsigned(aBase)));
+
 	  turn_float();
 //	mpf_set_d(float_, 1.);	// otherwise gmp doesn't really set the precision? FIXME
 	  // GMP does NOT read all digits from the string unless the precision is preset to the right number of bits.
@@ -1840,6 +1850,8 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
     }
 	// note: aPrecision means *base digits* here
 	LISPASSERT(aPrecision>0);
+	if (aPrecision <=0)
+		aPrecision = 1;	// refuse to print with 0 or fewer digits
     unsigned long size=(unsigned long)aPrecision;
     // how many base digits to print
     unsigned long print_prec = (unsigned long) (1.51+double(iPrecision) / log2_table_lookup(unsigned(aBase)));
@@ -2278,7 +2290,7 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
 			  mpf_set_prec(float_, mpf_get_prec(aY.float_));
 			  mpf_set(float_, aY.float_);
 		  }
-		  iPrecision = aY.GetPrecision()-DIST(B_x, B_Dy-1);
+		  iPrecision = MIN((long)aPrecision, aY.GetPrecision()-DIST(B_x, B_Dy-1));
 	  }
 	  else
 	  if (B_y<=B_Dx-1)
@@ -2289,25 +2301,34 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
 	  {
 		  // precision needed for computing x+y
 		  long xy_prec = 1+MAX(B_x, B_y)-MAX(B_Dx, B_Dy);
+		  // precision with which we shall actually be performing the addition
+		  long real_xy_prec = xy_prec+GUARD_BITS;
 		  // need to introduce a temporary here, because otherwise we might wrongly truncate float_
 		  mpf_t result;
     	  // GMP performs all calculations in target precision, need to set it here
-		  mpf_init2(result,MIN((long)aPrecision, xy_prec)+GUARD_BITS);
+		  mpf_init2(result, real_xy_prec);
     	  mpf_add(result, aX.float_, aY.float_);
 		  long B_z = 0;
 		  (void) mpf_get_d_2exp(&B_z, result);	// bit count of z=x+y
-		  long p = B_z-1 - MAX(B_Dx, B_Dy) - DIST(B_Dx, B_Dy);	// actual precision of the result
-		  p=MIN((long)aPrecision, p);
-		  // check for underflow again
-		  if (Sign()!=0 && p < 0)
-		  {	// underflow, set float_ to zero and reset precision
-			  p = p-B_z;
-			  mpf_set_d(result, 0);
+		  // compute the actual precision p of the result (z)
+		  // not always optimal but a good first value:
+		  long p = B_z-1 - MAX(B_Dx, B_Dy) - DIST(B_Dx, B_Dy);
+		  if (B_Dx > B_Dy && B_x > B_y || B_Dx < B_Dy && B_x < B_y)
+		  {	// the error of x dominates and the value of x also dominates, or ditto for y
+			  p++;
 		  }
 		  // check for minimum roundoff (when both arguments are of the same sign)
 		  if (aX.Sign()*aY.Sign()==1)
 		  {
 			  p = MAX(p, (long)MIN(aX.GetPrecision(), aY.GetPrecision()));
+		  }
+		  // do not make the result more precise than asked
+		  p = MIN((long)aPrecision, p);
+		  // check for underflow again
+		  if (p < 0 && mpf_sgn(result)!=0)
+		  {	// underflow, set result to zero and reset precision
+			  p = p-B_z;
+			  mpf_set_d(result, 0);
 		  }
 		  import_gmp(result);
 		  mpf_clear(result);

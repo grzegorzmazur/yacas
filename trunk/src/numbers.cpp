@@ -96,12 +96,23 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
   if (strchr(aString, '.') || aBase<=10 && (strchr(aString, 'e') || strchr(aString,'E')) || strchr(aString, '@'))
   {	// converting to a float
 	// estimate the number of bits we need to have
-	 // no exponent, so we find the first and the last nonzero digits
-	  LispInt digit1 = strspn(aString, ".-0");
-	  LispInt digit2 = strcspn(aString+digit1, (aBase<=10) ? ".-0eE@" : ".-0@");
-	  if (digit2<=0) digit2=1;
-	  // ok, so we need to represent MAX(aPrecision,digit2) digits in base aBase
-	  iPrecision=(LispInt) (1.51+double(MAX(aPrecision,digit2)) * log2_table_lookup(unsigned(aBase)));
+	  // find the first significant digit:
+	  LispInt digit1 = strspn(aString, ".-0");	// initial zeros are not significant
+	 // find the number of significant base digits (sig_digits)
+	  LispInt sig_digits = strcspn(aString+digit1, (aBase<=10) ? "-eE@" : "-@"); // trailing zeros and . *are* significant, do not include them in the sets
+	  if (sig_digits<=0)
+	  {	// this is when we have "0." in various forms
+		  sig_digits=1;
+		  // precision of 0.: for now let's set it to 1 significant digits (in principle we might allow things like 0.00e10 to denote special floating zeros but it's probably not very useful, since our floating zeros have binary precision and not decimal)
+	  }
+	  else
+	  {	// our number is nonzero
+		  if (strchr(aString+digit1, '.'))
+			  sig_digits--;	// this is when we have "1.000001" where "." is not a digit, so need to decrement
+	  }
+	  // ok, so we need to represent MAX(aPrecision,sig_digits) digits in base aBase
+		  iPrecision=(LispInt) (1.51+double(MAX(aPrecision,sig_digits)) * log2_table_lookup(unsigned(aBase)));
+
 	  turn_float();
 	  float_.SetTo(aString, iPrecision+GUARD_BITS, aBase);
   }
@@ -158,6 +169,8 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
     }
 	// note: aPrecision means *base digits* here. Print not more than aPrecision digits.
 	LISPASSERT(aPrecision>0);
+	if (aPrecision <=0)
+		aPrecision = 1;	// refuse to print with 0 or fewer digits
     unsigned long size=(unsigned long)aPrecision;
     // how many precise base digits we have. Print not more than print_prec digits.
     unsigned long print_prec = (unsigned long) (1.51+double(iPrecision) / log2_table_lookup(unsigned(aBase)));
@@ -570,7 +583,7 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
     else	// float + float
     {
       if (IsInt()) turn_float(); // if we are int, then we are not aX or aY, can clear our values
-	  // bit counts of aX, aY, and of absolute errors of aX, aY
+	  // bit counts of aX, aY, and of absolute errors DeltaX, DeltaY
 	  long B_x = aX.BitCount();
 	  long B_y = aY.BitCount();
 	  long B_Dx = B_x-aX.GetPrecision();
@@ -582,10 +595,9 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
 		  {
 			  float_.SetTo(aY.float_);
 		  }
-		  iPrecision = aY.GetPrecision()-DIST(B_x, B_Dy-1);
+		  iPrecision = MIN((long)aPrecision, aY.GetPrecision()-DIST(B_x, B_Dy-1));
 	  }
-	  else
-	  if (B_y<=B_Dx-1)
+	  else if (B_y<=B_Dx-1)
 	  {	// neglect y, assign z=x, set precision
 		  Add(aY, aX, aPrecision);
 	  }
@@ -594,23 +606,31 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
 		  // precision needed for computing x+y
 		  long xy_prec = 1+MAX(B_x, B_y)-MAX(B_Dx, B_Dy);
 		  // need to introduce a temporary here, because otherwise we might wrongly truncate float_
+		  // precision with which we shall actually be performing the addition
+		  long real_xy_prec = xy_prec+GUARD_BITS;
 		  BigFloat result;
-		  long real_xy_prec = MIN((long)aPrecision, xy_prec)+GUARD_BITS;
 		  result.Precision(real_xy_prec);
     	  result.Add(aX.float_, aY.float_, real_xy_prec);
 		  long B_z = result.GetBinaryExp();	// bit count of z=x+y
-		  long p = B_z-1 - MAX(B_Dx, B_Dy) - DIST(B_Dx, B_Dy);	// actual precision of the result
-		  p=MIN((long)aPrecision, p);
-		  // check for underflow again
-		  if (Sign()!=0 && p < 0)
-		  {	// underflow, set float_ to zero and reset precision
-			  p = p-B_z;
-			  result.SetTo(0);
+		  // compute the actual precision p of the result (z)
+		  // not always optimal but a good first value:
+		  long p = B_z - 1 - MAX(B_Dx, B_Dy) - DIST(B_Dx, B_Dy);
+		  if (B_Dx > B_Dy && B_x > B_y || B_Dx < B_Dy && B_x < B_y)
+		  {	// the error of x dominates and the value of x also dominates, or ditto for y
+			  p++;
 		  }
 		  // check for minimum roundoff (when both arguments are of the same sign)
 		  if (aX.Sign()*aY.Sign()==1)
 		  {
 			  p = MAX(p, (long)MIN(aX.GetPrecision(), aY.GetPrecision()));
+		  }
+		  // do not make the result more precise than asked
+		  p = MIN((long)aPrecision, p);
+		  // check for underflow again
+		  if (p < 0 && result.Sign()!=0)
+		  {	// underflow, set result to zero and reset precision
+			  p = p-B_z;
+			  result.SetTo(0);
 		  }
 
 		  float_.SetTo(result);
