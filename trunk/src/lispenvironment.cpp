@@ -22,23 +22,22 @@ LispEnvironment::LispEnvironment(LispCommands& aCommands,
                     LispOperators &aPostFixOperators,
                     LispOperators &aBodiedOperators,
                     LispInput*    aCurrentInput)
-    : iPrecision(10),iEvalDepth(0),iMaxEvalDepth(1000),iSecure(0),
-    iEvaluator(new BasicEvaluator),iLastUniqueId(1),
-    iCommands(aCommands),
+    : iPrecision(10),iEvalDepth(0),iMaxEvalDepth(1000),
+    iEvaluator(new BasicEvaluator),iSecure(0),iLastUniqueId(1),
+    iErrorOutput(iError),iCommands(aCommands),
     iUserFunctions(aUserFunctions),
     iHashTable(aHashTable),
     iPrinter(aPrinter),
     iCurrentOutput(aOutput),
     iGlobals(aGlobals),
+    iLocalsList(NULL),
     iPreFixOperators(aPreFixOperators),
     iInFixOperators(aInFixOperators),
     iPostFixOperators(aPostFixOperators),
     iBodiedOperators(aBodiedOperators),
     iCurrentInput(aCurrentInput),
     theUserError(NULL),
-    iPrettyPrinter(NULL),
-    iErrorOutput(iError),
-    iLocalsList(NULL)
+    iPrettyPrinter(NULL)
 {
     iTrue=NULL;
     iFalse=NULL;

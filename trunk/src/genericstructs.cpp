@@ -2,7 +2,7 @@
 #include "genericstructs.h"
 
 GenericStruct::GenericStruct(LispCharPtr aTypeName, void* aData, void (*aDestructor)(void*))
-:iTypeName(aTypeName),iData(aData),iDestructor(aDestructor)
+:iData(aData),iTypeName(aTypeName),iDestructor(aDestructor)
 {
 }
 GenericStruct::~GenericStruct()
