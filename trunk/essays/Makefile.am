@@ -11,3 +11,6 @@ clean:
 
 essays:
 	make -f makefile.essays
+
+texdocs:
+	make texdocs -f makefile.essays

@@ -12,7 +12,7 @@ Plugins currently have to be written in C++ and require certain include files fr
 
 Here is what we need to do to make a new plugin:
 
-*	Decide on an interface that will be visible in Yacas. In this example, we will create a new Yacas function Func1(x,y), where x, y are floating-point real numbers; Func1(x,y) should return a floating-point real number. So, our "API" consists of a single function with the following C++ prototype:
+*	Decide on an interface that will be visible in Yacas. In this example, we will create a new Yacas function {Func1(x,y)}, where {x}, {y} are floating-point real numbers; {Func1(x,y)} should return a floating-point real number. So, our "API" consists of a single function with the following C++ prototype:
 
 	// FILE: func1.h
 	double func1_cc (double x, double y);
@@ -103,4 +103,4 @@ This is implemented in the function {MakeFunctionPlugin()} (see file {funcplug.y
 	In> fFast(2,3);
 	Out> -1.41421;
 
-Now we can use the function {fFast(x,y)} which is implemented using an external plugin library. The function {MakeFunctionPlugin()} assumes that all arguments and return values of functions are real floating-point numbers. The plugin libraries it creates are always in the plugins/ subdirectory of current working directory and are named like {libNNN_cc_plugin.so}.
+Now we can use the function {fFast(x,y)} which is implemented using an external plugin library. The function {MakeFunctionPlugin()} assumes that all arguments and return values of functions are real floating-point numbers. The plugin libraries it creates are always in the {plugins/} subdirectory of current working directory and are named like {libNNN_cc_plugin.so}.

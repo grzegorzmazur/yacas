@@ -1,15 +1,17 @@
-		A crash course in Yacas Maintenance for developers
+		A crash course in Yacas maintenance for developers
 
 This document intends to give a concise description of the way
 Yacas is maintained. There are a few parts to maintenance to
 take into account:
 
-*	The autoconf/automake part - makefile maintenance over various systems.
-*	The cvs system - enabling developers to work together.
-*	The back up repository - storage of tar balls with versions of Yacas.
-This can be found at <*http://www.xs4all.nl/~apinkus/backups/*>.
+*	The {autoconf}/{automake} part -- makefile maintenance over various systems.
+*	The {cvs} system -- enabling developers to work together.
+*	The back up repository -- storage of tarballs with versions of Yacas.
+This can be found at the following address:
 
-	    The autoconf/automake system
+<*http://www.xs4all.nl/~apinkus/backups/*>
+
+	    The {autoconf}/{automake} system
 
 The important thing to remember with the autoconf/automake system is
 that there are files enumerating the files and directories that are
@@ -24,9 +26,9 @@ don't automatically get added to the distribution.
 Adding a directory requires adding the directory name to various
 places also, in configure scripts etcerera.
 
-	    Maintaining Yacas through the cvs repository
+	    Maintaining Yacas through a {cvs} repository
 
-Cvs provides an efficient way for developers to work together, automatically
+{CVS} provides an efficient way for developers to work together, automatically
 merging changes various developers make, and at the same tile is a back up 
 system (uploading your changes to another computer from which you can
 easily obtain it at a later time). After a little effort setting it
@@ -34,14 +36,14 @@ up it becomes very easy to use. This section describes the few commands
 needed for keeping your version and the version in the Yacas repository
 up to date.
 
-	    How does cvs work?
+	    How does {cvs} work?
 
-Cvs has a copy of the files in the repository somewhere in a directory
+CVS has a copy of the files in the repository somewhere in a directory
 on some system, possibly your computer. Then there is such a thing
 as a cvs server which you can talk to to synchronize your version of
 the source code with the version on the server. 
 
-Cvs uses a diff-like scheme for merging differences: it looks at two
+CVS uses a diff-like scheme for merging differences: it looks at two
 text files, determines the different lines, and merges accordingly.
 It discovers the changes you made by looking at the version you checked
 out last and the version you have now, to discover which lines changed
@@ -93,7 +95,7 @@ You need to enter your password there, but other than that, that's it!
 Those lines typed above are long and intimidating, but it is also
 the last time you need to type them. From now on, if you want to do 
 anything with cvs, just go into the {yacas/} directory you just checked
-out, and type the cvs command without the {-d...} flag. This flag
+out, and type the cvs command without the {-d}... flag. This flag
 just tells cvs where to find the repository. But future cvs commands
 will know where to find them, which is why you don't need that flag.
 
@@ -126,7 +128,7 @@ First, you added a few files, which you need to add:
 
 	cvs add [list of file names of ascii text files]
 
-which adds ascii text files. If you added binary files (gif images
+which adds ascii text files. If you added binary files (GIF images
 in the documentation directory, or something like that), you can 
 add it with 
 
@@ -137,6 +139,8 @@ In case files need to be removed, there are two options:
 *	The file is still on your drive: call {cvs remove -f [filename]} to remove
 the file from both your computer and the cvs repository.
 *	You already removed the file from your system: call {cvs remove [filename]}
+
+There seems to be no easy way to rename or move files; you would have to remove them at their old location and add them at a new location.
 
 Now, when finished with that, you might want to 'commit' all
 changes with

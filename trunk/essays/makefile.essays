@@ -1,7 +1,7 @@
 CHAPTERS = ABIN-grammar.chapt MaintenanceHowto.chapt\
   Plugin_factory.chapt txt2yacasdoc.chapt
 
-all: $(CHAPTERS) essays.book essays.html essays.book.tex essays.book.ps essays.book.pdf
+all: $(CHAPTERS) essays.book essays.html essays.book.tex
 
 %.chapt: %.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
@@ -15,7 +15,9 @@ clean:
 	-rm -f *.chapt essays.book *.html core *~ \
 	  *.tex *.dvi *.log *.aux *.toc *.ps *.pdf
 
-%.book.tex: %.book
+texdocs: essays.book.pdf essays.book.ps
+
+%.book.tex: %.book $(CHAPTERS)
 	../manmake/book2TeX.sh $<
 
 %.dvi: %.tex
