@@ -27,12 +27,12 @@ Knowledge := {
 	{"persons", {} }
 };
 
-/// articles are the same as quantifiers and can be used only with countable objects
+/// articles a, an are the same as quantifiers and can be used only with countable objects
 10 # (an _x) _(Not IsList(x) And IsCountableObject(PluralFromSingular(x)))  <-- {PluralFromSingular(x), 1};
 10 # (a _x) _(Not IsList(x) And IsCountableObject(PluralFromSingular(x)))  <-- {PluralFromSingular(x), 1};
-// countable
+// "the" with countable
 10 # (the _x) _(Not IsList(x) And IsCountableObject(PluralFromSingular(x)))  <-- {PluralFromSingular(x), 1};
-// not countable
+// "the" with uncountable
 20 # (the _x) _(Not IsList(x) And IsSomeObject(x))  <-- {x, 1};
 
 20 # _x is a person <-- DeclarePerson(x);
@@ -45,13 +45,14 @@ Knowledge := {
 /// "some"
 some _obj <-- {obj, True};
 
+/// declare many objects or many persons at once
 20 # x_IsList are persons <-- MapSingle("DeclarePerson", x);
 20 # x_IsList are objects <-- MapSingle("DeclareObject", x);
 
 10 # there are many xs_IsList <-- MapSingle("DeclareCountable", xs);
 20 # there are many _xs <-- DeclareCountable(xs);
 
-
+/// aux function
 DeclarePerson(x) :=
 	// check that hasn't been already declared
 	If (
@@ -64,12 +65,17 @@ DeclarePerson(x) :=
 		]
 );
 
+/// predicates
 IsPerson(x) := Contains(AssocIndices(Knowledge["persons"]), String(x));
+/// countable objects are always in plural (IsCountableObject(apple) <-- False if "apples" is defined)
 IsCountableObject(x) := Contains(Knowledge["countable objects"], String(x));
+/// IsSomeObject(x) means that either x is uncountable, or the plural form of x is countable
 IsSomeObject(x) := Contains(Knowledge["objects"], String(x));
 
+/// AssumeIsPerson will always return True and will declare a person if needed
 AssumeIsPerson(x) := If(IsPerson(x), True, DeclarePerson(x));
 
+/// declare uncountable object
 DeclareObject(x) :=
 	// check that hasn't been already declared
 	If (
@@ -105,7 +111,7 @@ DeclareCountable(x) := [
 
 
 
-/// singular forms from plural, e.g. apples->apple
+/// get singular forms from plural, e.g. apples->apple
 SingularFromPlural(x) := [
 	Local(singular);
 	singular := String(x);	// cut the ending "s"
@@ -113,17 +119,19 @@ SingularFromPlural(x) := [
 	Atom(singular);
 ];
 
-/// plural forms from singular, e.g. apple->apples
+/// get plural forms from singular, e.g. apple->apples
 PluralFromSingular(x) := [
 	Local(plural);
 	plural := ConcatStrings(String(x), "s");	// add the ending "s"
 	Atom(plural);
 ];
 
-/// find out how much they have
+/// find out how much they have and print an atom as a result
+/// note that "x has {list}" is a predicate defined below
+/// print number for countable objects and "some" or "no" for uncountable
 10 # (_x has _obj)_(Not IsList(obj)) <-- [
 	Local(quantity);
-	// just to save typing
+	// defined "quantity" just to save typing
 	quantity := Knowledge["persons"][String(x)][String(obj)];
 	If(
 		IsPerson(x),
@@ -135,7 +143,7 @@ PluralFromSingular(x) := [
 	);
 ];
 
-/// predicates to check who has what
+/// predicates to check who has what -- note difference from the above function
 10 # _x has {_obj, True} <-- IsPerson(x) And Knowledge["persons"][String(x)][String(obj)] != Empty And Knowledge["persons"][String(x)][String(obj)] > 0;
 20 # _x has {_obj, n_IsInteger} <-- IsPerson(x) And Knowledge["persons"][String(x)][String(obj)] = n;
 
@@ -144,7 +152,7 @@ PluralFromSingular(x) := [
 /// when _obj is supposed to match *any* prefix operator.
 /// therefore we shall transform object quantifiers first.
 
-/// "x had N As" 
+/// "x had N As" parsed into "Serge had {apples, 6}"
 10 # (x_AssumeIsPerson had {_obj, n_IsInteger}) _ (IsCountableObject(obj) Or n = 1 And IsSomeObject(obj)) <-- [
 	// check knowledge: did they have it before? if yes, print warning
 	If(
@@ -181,6 +189,7 @@ If(
 	]
 );
 
+/// aux function to print diagnostic messages
 Synopsis(x, obj) := Echo({"OK, ", x, " has ", x has obj, " ", obj, " now."});
 
 /// X ate some A (uncountable only)
@@ -196,8 +205,11 @@ Synopsis(x, obj) := Echo({"OK, ", x, " has ", x has obj, " ", obj, " now."});
 /// X ate A
 30 # (x_AssumeIsPerson ate _obj)_ (Not IsList(obj) And IsSomeObject(obj)) <-- x ate {If(IsCountableObject(PluralFromSingular(obj)), PluralFromSingular(obj), obj), 1};
 
+/// interface for "had" in case we are dealing with uncountable objects
+/// {obj, True} is a result of "some obj"
 20 # (x_AssumeIsPerson had {_obj, True}) _ (Not IsList(obj)) <-- x had {obj, 1};
-30 # (x_AssumeIsPerson had _obj) _ (Not IsList(obj)) <-- x had {obj, 1};
+/// just "obj" means "1 obj" or "1 objs" depending on whether "obj" is countable
+30 # (x_AssumeIsPerson had _obj) _ (Not IsList(obj)) <-- x had {If(IsCountableObject(PluralFromSingular(obj)), PluralFromSingular(obj), obj), 1};
 
 /// making new objects
 10 # (x_AssumeIsPerson made {_obj, n_IsInteger}) _ (IsCountableObject(obj) Or n = 1 And IsSomeObject(obj)) <-- [
@@ -211,11 +223,12 @@ Synopsis(x, obj) := Echo({"OK, ", x, " has ", x has obj, " ", obj, " now."});
 	Synopsis(x, obj);
 ];
 
+/// interface for making "some" new object
 20 # (x_AssumeIsPerson made {_obj, True}) _ (Not IsList(obj) And IsSomeObject(obj) And Not IsCountableObject(PluralFromSingular(obj))) <-- x made {obj, 1};
 30 # (x_AssumeIsPerson made _obj) _ (Not IsList(obj)) <-- x made {If(IsCountableObject(PluralFromSingular(obj)), PluralFromSingular(obj), obj), 1};
 
 /// giving objects to other people
-10 # x_AssumeIsPerson gave _obj to y_AssumeIsPerson <-- [
+10 # _x gave _obj to _y <-- [
 	x ate obj;
 	y made obj;
 ];
