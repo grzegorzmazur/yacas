@@ -11,7 +11,6 @@ when programming in Yacas.
 *CMD	/*, */, // --- comments
 *CORE
 *CALL
-
 	/* comment */
 	// comment
 
@@ -28,7 +27,6 @@ Introduce a comment block in a source file, similar to C++ comments.
 *CMD Prog, [, ] --- block of statements
 *CORE
 *CALL
-
 	Prog(statement1, statement2, ...)
 	[ statement1; statement2; ... ]
 
@@ -54,7 +52,7 @@ function bodies. The {[...]} construct is a syntactically nicer version of the
 
 *PARMS
 
-predicate -- expression returning {True} or {False}
+{predicate} -- expression returning {True} or {False}
 
 *DESC
 If {predicate} doesn't evaluate to {True},
@@ -76,12 +74,17 @@ against internal errors).
 
 *PARMS
 
-"op" -- string, the name of a function
+{"op"} -- string, the name of a function
 
-precedence -- nonnegative integer (evaluated)
+{precedence} -- nonnegative integer (evaluated)
 
 *DESC
-Declares a function for the parser to understand as a bodied, infix, postfix, or prefix operator. Function name can be any string but meaningful usage would require it to be either made up entirely of letters or entirely of non-letter characters (such as "+", ":" etc.). Precedence can be specified (will be 0 by default).
+
+Declares a function for the parser to understand as a bodied, infix, postfix,
+or prefix operator. Function name can be any string but meaningful usage would
+require it to be either made up entirely of letters or entirely of non-letter
+characters (such as "+", ":" etc.). Precedence can be specified (will be 0 by
+default).
 
 *E.G.
 	In> YY x := x+1;
@@ -112,10 +115,12 @@ Declares a function for the parser to understand as a bodied, infix, postfix, or
 
 *PARMS
 
-"op" -- string, the name of a function
+{"op"} -- string, the name of a function
 
 *DESC
-Check whether the function with given name "op" has been declared as a "bodied", infix, postfix, or prefix operator, and  return {True} or {False}.
+
+Check whether the function with given name "op" has been declared as a
+"bodied", infix, postfix, or prefix operator, and  return {True} or {False}.
 
 *E.G.
 
@@ -137,9 +142,10 @@ Check whether the function with given name "op" has been declared as a "bodied",
 
 *PARMS
 
-"op" -- string, the name of a function
+{"op"} -- string, the name of a function
 
 *DESC
+
 Returns the precedence of the function named "op" which should have been declared as a bodied function or an infix, postfix, or prefix operator. Generates an error message if the string str does not represent a type of function that can have precedence.
 
 For infix operators, right precedence can differ from left precedence. Bodied functions and prefix operators cannot have left precedence, while postfix operators cannot have right precedence; for these operators, there is only one value of precedence.
@@ -159,14 +165,15 @@ For infix operators, right precedence can differ from left precedence. Bodied fu
 
 *PARMS
 
-"op" -- string, the name of a function
+{"op"} -- string, the name of a function
 
+*DESC
 This makes the operator right-associative. Example:
-
 	RightAssociative("*")
-would make multiplication right-associative. Take care not to abuse
-this function, because the reverse, making an infix operator
-left-associative, is not implemented.
+would make multiplication right-associative. Take care not to abuse this
+function, because the reverse, making an infix operator left-associative, is
+not implemented. (All infix operators are by default left-associative until
+they are declared to be right-associative.)
 
 *SEE OpPrecedence
 
@@ -179,19 +186,23 @@ left-associative, is not implemented.
 
 *PARMS
 
-"op" -- string, the name of a function
+{"op"} -- string, the name of a function
 
-precedence -- nonnegative integer
+{precedence} -- nonnegative integer
 
 *DESC
 
-"op" should be an infix operator. This function call tells the
+{"op"} should be an infix operator. This function call tells the
 infix expression printer to bracket the left or right hand side of
 the expression if its precedence is larger than precedence.
 
-This functionality was required in order to display a-(b-c)
-correctly. Thus, a+b+c is the same as a+(b+c), but a-(b-c) is not
-the same as a-b-c.
+This functionality was required in order to display expressions like {a-(b-c)}
+correctly. Thus, {a+b+c} is the same as {a+(b+c)}, but {a-(b-c)} is not
+the same as {a-b-c}.
+
+Note that the left and right precedence of an infix operator does not affect the way Yacas interprets expressions typed by the user. You cannot make Yacas parse {a-b-c} as {a-(b-c)} unless you declare the operator "{-}" to be right-associative.
+
+*SEE OpPrecedence, OpLeftPrecedence, OpRightPrecedence, RightAssociative
 
 *CMD RuleBase --- define function name
 *CORE
@@ -225,8 +236,9 @@ a rule with precedence 0 will be tried before a rule with precedence 1.
 
 *PARMS
 
-"operator" -- string, name of a function
-parameter -- atom, symbolic name of parameter
+{"operator"} -- string, name of a function
+
+{parameter} -- atom, symbolic name of parameter
 
 *DESC
 Specify that parameter should
@@ -242,22 +254,30 @@ The {parameter} must be an atom from the list of symbolic arguments used when ca
 *CMD Retract --- erase rules for a function
 *CORE
 *CALL
-Retract("operator",arity)
+	Retract("operator",arity)
 
-Remove a rulebase with some specific arity,
-if it exists at all.
+*DESC
+
+Remove a rulebase with some specific arity, if it exists at all. This will make
+Yacas forget all rules defined for a given function. Rules for functions with
+the same name but different arities are not affected.
+
+Assignment {:=} of a function does this to the function being (re)defined.
 
 *CMD UnFence --- change local variable scope for a function
 *CORE
 *CALL
-UnFence("operator",arity)
+	UnFence("operator",arity)
 
 *DESC
+
 When applied to a user function, the bodies
 defined for the rules for "operator" with given
 arity can see the local variables from the calling
 function. This is useful for defining macro-like
-procedures (looping and the such). The standard library functions {For} and {ForEach} use {UnFence()}.
+procedures (looping and such).
+
+The standard library functions {For} and {ForEach} use {UnFence()}.
 
 *CMD HoldArgNr --- specify argument as not evaluated
 *STD
@@ -265,13 +285,16 @@ procedures (looping and the such). The standard library functions {For} and {For
 	HoldArgNr("function", arity, argNum)
 
 *PARMS
-"function" -- string, function name
+{"function"} -- string, function name
 
-arity, argNum -- positive integers
+{arity}, {argNum} -- positive integers
 
 *DESC
 
-Declares the argument number {argNum} of the function named {"function"} with specified {arity} to be unevaluated. Useful if you don't know symbolic names of parameters, for instance, when the function was not declared using an explicit {RuleBase} call.
+Declares the argument numbered {argNum} of the function named {"function"} with
+specified {arity} to be unevaluated ("held"). Useful if you don't know symbolic
+names of parameters, for instance, when the function was not declared using an
+explicit {RuleBase} call. Otherwise you could use {HoldArg()}.
 
 *SEE HoldArg, RuleBase
 
@@ -282,24 +305,30 @@ Declares the argument number {argNum} of the function named {"function"} with sp
 	RuleBaseArgList("operator", arity)
 
 *PARMS
-"operator" -- string, name of function
+{"operator"} -- string, name of function
 
-arity -- integer
+{arity} -- integer
 
 *DESC
 
-Returns a list of atoms, symbolic parameters specified in the {RuleBase()} call for the function named {"operator"} with the specific {arity}.
+Returns a list of atoms, symbolic parameters specified in the {RuleBase()} call
+for the function named {"operator"} with the specific {arity}.
 
 *SEE RuleBase, HoldArgNr, HoldArg
 
 
-*CMD MacroSet, MacroClear, MacroLocal, MacroRuleBase, MacroRule --- manipulate symbols
+*CMD MacroSet, MacroClear, MacroLocal, MacroRuleBase, MacroRule --- define rules in functions
 
-Same as their non-macro counterparts, except
-that their arguments are evaluated before
-the required action is performed. This is
-useful in macro-like procedures.
+*DESC
 
+These functions have the same effect as their non-macro counterparts, except
+that their arguments are evaluated before the required action is performed.
+This is useful in macro-like procedures or in functions that need to define new
+rules based on parameters.
+
+Make sure that the arguments of {Macro}... commands evaluate to expressions that would normally be used in the non-macro versions!
+
+*SEE Set, Clear, Local, RuleBase, Rule
 
 *CMD Back-quoting --- Lisp back-quoting, macro expansion
 *CORE
@@ -358,38 +387,49 @@ The above example assigns {func(value)} to variable {var}.
 *CMD SetExtraInfo, GetExtraInfo --- annotate objects with additional information
 *CORE
 *CALL
-	SetExtraInfo(expression,tag)
-	GetExtraInfo(expression)
+	SetExtraInfo(expr,tag)
+	GetExtraInfo(expr)
 
 *PARMS
 
-{expression} - expression to tag
-{tag} - tag information
+{expr} - any expression
+
+{tag} - tag information (any other expression)
 
 *DESC
 
-Sometimes it is useful to be able to add extra annotational tag information
-to objects. The functions {SetExtraInfo} and {GetExtraInfo} enable this.
+Sometimes it is useful to be able to add extra tag information to "annotate"
+objects or to label them as having certain "properties". The functions
+{SetExtraInfo} and {GetExtraInfo} enable this.
 
 The function {SetExtraInfo} returns the tagged expression, leaving
 the original expression alone. This means there is a common pitfall:
 be sure to assign the returned value to a variable, or the tagged
 expression is lost when the temporary object is destroyed.
 
-The original expression is left alone, and the tagged expression
+The original expression is left unmodified, and the tagged expression
 returned, in order to keep the atomic objects small. To tag an
 object, a new type of object is created from the old object, with
-one added property: a tag.
+one added property (the tag). The tag can be any expression whatsoever.
 
-No part of Yacas uses tags in a way that is visible to the outside
-world, so for specific programs, a programmer can devise a format
-to use for tagging information. Association lists are a natural fit
-for this, but it is not required. The tag is free-form, although
-using association lists is highly advised since it is most likely
-to be the format used by other parts of the system, making the code
-compatible with other parts.
+The function {GetExtraInfo(x)} retrieves this tag expression from an object
+{x}. If an object has no tag, it looks the same as if it had a tag with value
+{False}.
 
-Note that {FlatCopy()} currently does <i>not</i> copy the tag information.
+No part of the Yacas core uses tags in a way that is visible to the outside
+world, so for specific purposes a programmer can devise a format to use for tag
+information. Association lists (hashes) are a natural fit for this, although it
+is not required and a tag can be any object (except the atom {False} because it
+is indistinguishable from having no tag information). Using association lists
+is highly advised since it is most likely to be the format used by other parts
+of the library, and one needs to avoid clashes with other library code.
+Typically, an object will either have no tag or a tag which is an associative
+list (perhaps empty). A script that uses tagged objects will check whether an
+object has a tag and if so, will add or modify certain entries of the
+association list, preserving any other tag information.
+
+Note that {FlatCopy()} currently does <i>not</i> copy the tag information (see
+examples).
 
 *E.G.
 
@@ -409,8 +449,12 @@ Note that {FlatCopy()} currently does <i>not</i> copy the tag information.
 	Out> {{"type","integer"}};
 	In> c
 	Out> 2*b;
+	In> d:=FlatCopy(a);
+	Out> 2*b;
+	In> GetExtraInfo(d)
+	Out> False;
 
-*SEE Assoc
+*SEE Assoc, :=
 
 *CMD GarbageCollect --- do garbage collection on unused memory
 *CORE
@@ -523,6 +567,7 @@ Built-in bodied functions and infix operators are declared in the same file.
 The following Yacas functions are currently declared in {yacasapi.cpp}
 as core functions:
 
+
 *INCLUDE yacasapi.chapt
 
 
@@ -552,22 +597,23 @@ arguments should cause side effects when they are evaluated.
 *CMD MathOr --- built-in logical "or"
 *CORE
 *CALL
-
 	MathOr(...)
 
-{MathOr} is the basic logical "or" function. Similarly to {And}, it is lazy-evaluated.
-{And(...)} and {Or(...)} do also exist. You can define
-them as infix operators
-yourself, so you have the choice of precedence. In the standard scripts
-they are in fact declared as infix operators, so you can write
-{expr1 And expr}.
+{MathOr} is the basic logical "or" function. Similarly to {And}, it is
+lazy-evaluated. {And(...)} and {Or(...)} do also exist, defined in the script
+library. You can redefine them as infix operators yourself, so you have the
+choice of precedence. In the standard scripts they are in fact declared as
+infix operators, so you can write {expr1 And expr}.
 
 *CMD BitAnd, BitOr, BitXor --- bitwise arithmetic
 *CORE
 *CALL
-BitAnd(n,m), BitOr(n,m), BitXor(n,m)
+	BitAnd(n,m)
+	BitOr(n,m)
+	BitXor(n,m)
 
-BitAnd(n,m), BitOr(n,m), BitXor(n,m) : return bitwise and, or and xor
+*DESC
+These functions return bitwise "and", "or" and "xor"
 of two numbers.
 
 *CMD Equals --- check equality
@@ -619,10 +665,10 @@ to be numbers.
 *CORE
 *CALL
 
-FastExp(x), FastLog(x) (Natural logarithm),
+FastExp(x), FastLog(x) (natural logarithm),
 FastPower(x,y),
 FastSin(x), FastCos(x), FastTan(x),
-FastArcSin(x), FastArcCos(x), FastArcTan(x) :
+FastArcSin(x), FastArcCos(x), FastArcTan(x)
 
 *DESC
 Versions of these functions using the internal C++ version. These
@@ -689,22 +735,22 @@ This chapter assumes the reader is comfortable programming in C++.
 	DllEnumerate()
 
 *PARMS
-file - file name of the plugin
+{file} - file name of the plugin
 
 *DESC
 
-DllLoad forces Yacas to load the dynamic link library (.so file
+{DllLoad} forces Yacas to load the dynamic link library ({.so} file
 under Linux). The full path to the DLL has to be specified,
-or the file needs to be in a path where dlopen can find it.
+or the file needs to be in a path where {dlopen} can find it.
 
-DllUnload unloads a dynamic link library previously loaded with
-DllLoad. Note the dll file name has to be exactly the same,
+{DllUnload} unloads a dynamic link library previously loaded with
+{DllLoad}. Note the dll file name has to be exactly the same,
 or the system will not be able to determine which dll to unload.
 It will scan all the dll files, and delete the first one found
 to exactly match, and return silently if it didn't find the dll.
-DllUnload always returns True.
+{DllUnload} always returns {True}.
 
-DllEnumerate() returns a list with all loaded dynamic link libraries.
+{DllEnumerate()} returns a list with all loaded dynamic link libraries.
 
 *E.G.
 
@@ -716,10 +762,7 @@ DllEnumerate() returns a list with all loaded dynamic link libraries.
 *CMD StubApiCStart --- start of C++ plugin API
 *STD
 *CALL
-
-StubApiCStart()
-
-*PARMS
+	StubApiCStart()
 
 *DESC
 
@@ -733,14 +776,13 @@ a stub C++ file.
 *CMD StubApiCShortIntegerConstant --- declare integer constant in plugin
 *STD
 *CALL
-
-StubApiCShortIntegerConstant(const,value)
+	StubApiCShortIntegerConstant(const,value)
 
 *PARMS
 
-const - string representing the global variable to be bound runtime
+{const} - string representing the global variable to be bound runtime
 
-value - integer value the global should be bound to
+{value} - integer value the global should be bound to
 
 *DESC
 
@@ -765,7 +807,7 @@ the library header file.
 
 *PARMS
 
-file - file to include from the library the plugin is based on
+{file} - file to include from the library the plugin is based on
 
 *DESC
 
@@ -812,7 +854,7 @@ The argument values that are currently supported
 are "{int}", "{double}", and "{input_string}".
 
 Argument types can be specified simply as a string referring to their
-type, like "int", or they can be lists with an additional element
+type, like {"int"}, or they can be lists with an additional element
 stating the name of the variable: {{"int","n"}}. The variable
 will then show up in the automatically generated documentation as
 having the name "n".
@@ -834,13 +876,13 @@ doubles and returns void:
 
 *PARMS
 
-string - remark string to be added to the documentation
+{string} - comment string to be added to the documentation
 
 *DESC
 
 StubApiCRemark adds a piece of text to the stub documentation
 file that gets generated automatically. The documentation is put in
-a .description file while the input file is being processed, so adding
+a {.description} file while the input file is being processed, so adding
 a remark on a function just after a function declaration adds a remark
 on that function.
 
@@ -853,7 +895,7 @@ on that function.
 
 *PARMS
 
-func - function to call to set the environment variable
+{func} - name of the function to call to set the environment variable
 
 *DESC
 
@@ -882,12 +924,11 @@ in the plugin will then have access to the Yacas environment.
 *CMD StubApiCFile --- set file name for plugin API
 *STD
 *CALL
-
-StubApiCFile(basename)
+	StubApiCFile(basename)
 
 *PARMS
 
-basename - basename for the generation of the stub file
+{basename} - name for the generation of the stub file
 
 *DESC
 
@@ -900,16 +941,14 @@ generated while adding functions and constants to the stub.
 *CMD StubApiCStruct --- declare C struct in plugin
 *STD
 *CALL
-
-StubApiCStruct(name)
-
-StubApiCStruct(name,freefunction)
+	StubApiCStruct(name)
+	StubApiCStruct(name,freefunction)
 
 *PARMS
 
-name - name of structure
+{name} - name of structure
 
-freefunction - function that can be called to clean up the object
+{freefunction} - function that can be called to clean up the object
 
 *DESC
 
@@ -948,71 +987,82 @@ can be accessed through the Yacas interpreter.
 *CMD IsGeneric --- check for generic object
 *CORE
 *CALL
-IsGeneric(object)
+	IsGeneric(object)
 
-IsGeneric(object) : returns whether an object is a generic object
+*DESC
+Returns {True} if an object is of a generic object
 type.
 
 *CMD GenericTypeName --- get type name
 *CORE
 *CALL
-GenericTypeName(object)
+	GenericTypeName(object)
 
-GenericTypeName(object) : returns a string representation of
+*DESC
+Returns a string representation of
 the name of a generic object.
 
-Example: GenericTypeName(ArrayCreate(10,1)) sould return "Array".
+EG
+
+	In> GenericTypeName(ArrayCreate(10,1))
+	Out> "Array";
 
 *CMD ArrayCreate --- create array
 *CORE
 *CALL
-ArrayCreate(size,init)
+	ArrayCreate(size,init)
 
-Create an array the with size elements, all initialized to the
-value init.
+*DESC
+Creates an array with {size} elements, all initialized to the
+value {init}.
 
 *CMD ArraySize --- get array size
 *CORE
 *CALL
-ArraySize(array)
+	ArraySize(array)
 
-Return the size of an array (number of elements in the array).
+*DESC
+Returns the size of an array (number of elements in the array).
 
 *CMD ArrayGet --- fetch array element
 *CORE
 *CALL
-ArrayGet(array,index)
+	ArrayGet(array,index)
 
-Get the element at position index in the array passed. Arrays are treated
-as base-one, so index set to 1 would return the first element.
+*DESC
+Returns the element at position index in the array passed. Arrays are treated
+as base-one, so {index} set to 1 would return the first element.
 
-Arrays can also be accessed through the [] operators. So
-array[index] would return the same as ArrayGet(array,index).
+Arrays can also be accessed through the {[]} operators. So
+{array[index]} would return the same as {ArrayGet(array, index)}.
 
 *CMD ArraySet --- set array element
 *CORE
 *CALL
-ArraySet(array,index,element)
+	ArraySet(array,index,element)
 
-Set the element at position index in the array passed to the value
+*DESC
+Sets the element at position index in the array passed to the value
 passed in as argument to element. Arrays are treated
-as base-one, so index set to 1 would set first element.
+as base-one, so {index} set to 1 would set first element.
 
-Arrays can also be accessed through the [] operators. So
-array[index]:=element would do the same as ArraySet(array,index,element).
+Arrays can also be accessed through the {[]} operators. So
+{array[index] := element} would do the same as {ArraySet(array, index,element)}.
 
 *CMD ArrayCreateFromList --- convert list to array
 *CORE
 *CALL
-ArrayCreateFromList(list)
+	ArrayCreateFromList(list)
 
+*DESC
 Creates an array from the contents of the list passed in.
 
 *CMD ListFromArray --- convert array to list
 *CORE
 *CALL
-ListFromArray(array)
+	ListFromArray(array)
 
+*DESC
 Creates a list from the contents of the array passed in.
 
 
@@ -1024,7 +1074,6 @@ of Yacas.
 
 Yacas comes with a test suite which can be found in
 the directory {tests/}. Typing 
-
 	make test
 on the command line after Yacas was built will run the test.
 This test can be run even before {make install}, as it only 
@@ -1162,12 +1211,7 @@ using the {Verify} command.
 	In> N(RoundTo(Exp(1),20),20)
 	Out> 2.71828182796964237096;
 
-*SEE Verify
-
-
-
-	VerifyArithmetic
-	VerifyDiv
+*SEE Verify, VerifyArithmetic, VerifyDiv
 
 
 
@@ -1189,7 +1233,7 @@ mathematic equality which should hold, testing that the
 result returned by the system is mathematically correct
 according to a mathematically provable theorem.
 
-VerifyArithmetic verifies for an arbitrary set of numbers
+{VerifyArithmetic} verifies for an arbitrary set of numbers
 $ x $, $ n $ and $ m $ that
 
 $$ (x^n-1)*(x^m-1) = x^(n+m)-(x^n)-(x^m)+1 $$
@@ -1199,10 +1243,10 @@ same result, and so an arithmetic module actually doing the
 calculation does the calculation in two different ways. 
 The result should be exactly equal.
 
-RandVerifyArithmetic calls VerifyArithmetic {n} times, with
+{RandVerifyArithmetic(n)} calls {VerifyArithmetic()} {n} times, with
 random values.
 
-VerifyDiv checks that 
+{VerifyDiv(u,v)} checks that 
 
 $$ u = v*Div(u,v) + Mod(u,v) $$
 
