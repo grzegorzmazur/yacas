@@ -1796,11 +1796,29 @@ void BigNumber::Floor(const BigNumber& aX)
   }
 }
 
-
+// round to a given precision (in bits) and set target precision. Does nothing if the current precision is lower, or if the number is an integer.
 void BigNumber::Precision(LispInt aPrecision)
 {
   if (!IsInt())
   {
+  	long int exp_small = 0, shift_amount = 0;
+	// determine the binary exponent
+	(void) mpf_get_d_2exp(&exp_small, float_);
+	// determine the shift amount
+	shift_amount = exp_small - aPrecision;
+	// truncate at aPrecision bits
+	if (shift_amount > 0)
+	{
+		mpf_div_2exp(float_, float_, (unsigned) shift_amount);
+		mpf_trunc(float_, float_);
+		mpf_mul_2exp(float_, float_, (unsigned) shift_amount);
+	}
+	else if (shift_amount < 0)
+	{
+		mpf_mul_2exp(float_, float_, (unsigned) (-shift_amount));
+		mpf_trunc(float_, float_);
+		mpf_div_2exp(float_, float_, (unsigned) (-shift_amount));
+	}
   	mpf_set_prec(float_, aPrecision);
   }
 }
