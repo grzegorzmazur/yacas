@@ -230,7 +230,7 @@ void LispSubtract(LispEnvironment& aEnvironment, LispPtr& aResult,
 void LispDivide(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
-//FIXME Serge, what was the deal again with divide, floats and integers mixed in the same function?
+// Serge, what was the deal again with divide, floats and integers mixed in the same function?
 //	divide works differently on integers and on floats -- see new.chapt -- Serge
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
@@ -332,10 +332,18 @@ void LispDiv(LispEnvironment& aEnvironment, LispPtr& aResult,
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aArguments, 1);
       GetNumber(y,aEnvironment, aArguments, 2);
-      BigNumber *z = NEW BigNumber(aEnvironment.Precision());
-      z->Divide(*x.Ptr(),*y.Ptr(),aEnvironment.Precision());
-      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
-      return;
+	  if (x.Ptr()->IsInt() && y.Ptr()->IsInt())
+	  {	// both integer, perform integer division
+    	  BigNumber *z = NEW BigNumber(aEnvironment.Precision());
+    	  z->Divide(*x.Ptr(),*y.Ptr(),aEnvironment.Precision());
+    	  aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+    	  return;
+	  }
+	  else
+	  {// FIXME: either need to report error that one or both of the arguments are not integer, or coerce them to integers
+		  return;
+	  }
+	  
 #endif // USE_BIGFLOAT
     LispArithmetic2(aEnvironment, aResult, aArguments, DivFloat);
 }

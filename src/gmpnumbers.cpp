@@ -6,6 +6,7 @@
  */
 
 #include <gmp.h>
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -1230,8 +1231,10 @@ LispStringPtr BitXor(LispCharPtr int1, LispCharPtr int2,
 /// The exp-float mode is to be used only for really large or really small exponents.
 
 // TO DO:
-// - optimize some arithmetic functions to use _ui or _si versions in case some operands are small integers. (IsSmall() checks that it fits into signed long.)
-
+// no need to call _ui / _si functions, as gmp tells us not to worry.
+// make sure that precision control works correctly.
+// test precision on from/to string conversion.
+// implement exp-float.
 
 BigNumber::BigNumber(LispInt aPrecision) { iPrecision = aPrecision; init(); }
 
@@ -1240,8 +1243,6 @@ void BigNumber::init()
 	turn_int();	// by default all numbers are created integer
 	mpz_init2(int_, 32);	// default precision
 	mpf_init2(float_, 32);
-//	mpf_set_d(float_, 2);	// default value 1 to fool gmp into allocating more memory
-//	mpf_set_prec(float_, 32);
 	mpz_init2(exponent_, 32);
 }
 
@@ -1254,7 +1255,7 @@ BigNumber::~BigNumber()
 // construct from string
 BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {
-  iPrecision = aPrecision;
+//	iPrecision = aPrecision;	// iPrecision is going to be set in SetTo
 	init();
 	SetTo(aString, aPrecision, aBase);
 }
@@ -1263,7 +1264,7 @@ BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 /// copy constructor
 BigNumber::BigNumber(const BigNumber& aOther)
 {
-  iPrecision = aOther.GetPrecision();
+	iPrecision = aOther.GetPrecision();
 	init();
 	SetTo(aOther);
 }
@@ -1274,6 +1275,7 @@ void BigNumber::SetTo(const BigNumber& aOther)
 {
   if (this == &aOther)
 	return;
+  else
   if (aOther.IsInt())
   {
 	turn_int();
@@ -1281,22 +1283,23 @@ void BigNumber::SetTo(const BigNumber& aOther)
   }
   else
   {
+	iPrecision = aOther.GetPrecision();
 	turn_float();
 	mpf_set_d(float_, 1.);	// otherwise gmp doesn't really set the precision
-	// FIXME?: precision is set by hand here, instead of setting it from the string automatically... not sure whether to change the API about this.
 
 	mpf_set_prec(float_, mpf_get_prec(aOther.float_));
 	mpf_set(float_, aOther.float_);
 	if (aOther.IsExpFloat())
 	  mpz_set(exponent_, aOther.exponent_);
   }
-  
   type_ = aOther.type_;
 }
 
 // assign from string, result is always a float type
-void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10)
+void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {// FIXME: we use gmp to read into float_, so we cannot read expfloats, e.g. 1.3e123412341234123412341234, which should be possible.
+	// estimate the number of bits we are going to have
+	iPrecision = (LispInt) (1+double(aPrecision) * log(aBase)/log(2));
 	// decide whether the string is an integer or a float
   if (strchr(aString, '.') || aBase<10 && (strchr(aString, 'e') || strchr(aString,'E')) || strchr(aString, '@'))
   {	// converting to a float
@@ -1336,6 +1339,7 @@ void BigNumber::SetTo(double value)
 {
   turn_float();
   mpf_set_d(float_, value);
+  iPrecision = 53;	// standard double has 53 bits
 }
 
 
@@ -1369,7 +1373,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
     char* buffer=(char*)malloc(size);
     if (!buffer)
     {
-	    fprintf(stderr, "BigNumber::ToString: out of memory, need %d chars\n", size);
+	    fprintf(stderr, "BigNumber::ToString: out of memory, need %ld chars\n", size);
 	    return;
     }
     char* offset = buffer;
@@ -1398,7 +1402,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 			if (Sign()<0) ++point_pos;
 			// decide if the point is within the printed part of the string
 			size=strlen(offset);
-			if (point_pos-offset>=size)
+			if (point_pos-offset>=(signed)size) // ok here because point_pos-offset is always positive if exp_small>0
 			{	// no moving required, but perhaps need to pad with zeros, and we need to add the point
 				int i=size;
 				for(; i<point_pos-offset; ++i)
@@ -1501,7 +1505,7 @@ bool BigNumber::Equals(const BigNumber& aOther) const
 	temp.BecomeFloat();
 	return this->Equals(temp);
     }
-    else // two floats are equal when they are equal and both not ExpFloat, or if they are both ExpFloat and their exponents are also equal
+    else // two floats are equal when the values are equal and both not ExpFloat, or if they are both ExpFloat and their exponents are also equal
     	return
 		mpf_cmp(float_, aOther.float_)==0
 		&& (!IsExpFloat() && !aOther.IsExpFloat() 
@@ -1536,17 +1540,17 @@ bool BigNumber::IsSmall() const
   if (IsInt())
   	return mpz_fits_slong_p(int_);
   else
-  // this function is not present in GMP, need to code a workaround to determine whether a mpf_t fits into double.
+  // a function to test smallness of a float is not present in GMP, need to code a workaround to determine whether a mpf_t fits into double.
   {
 	long exp_small;
 	(void) mpf_get_d_2exp(&exp_small, float_);
 	return
 	(
 		!IsExpFloat() 
-		// && mpf_get_prec(float_)<=64
+		&& iPrecision <= 53	// standard float is 53 bits
 		&& fabs(exp_small)<1021
 	);
-	// standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021. But GMP sets the precision rather arbitrarily. Let's see how well this "64" works. (This should at least not say that small numbers are big.) IsSmall() on floats and decisions based on that should be deprecated, really.
+	// standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021
   }
 
 }
@@ -1565,7 +1569,10 @@ void BigNumber::BecomeInt()
 void BigNumber::BecomeFloat()
 {
   if (IsInt())
-  {
+  {	// the precision of the resulting float is the number of bits in the int_, i.e. its bit count
+	  long int exponent;
+	(void) mpz_get_d_2exp(&exponent, int_);
+	iPrecision = (LispInt)exponent;
   	turn_float();
 	mpf_set_z(float_, int_);
   }
@@ -1622,6 +1629,7 @@ void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrec
     else	// float + float
     {
       if (IsInt()) turn_float(); // if we are int, then we are not aX or aY, can clear our values
+	  // set our new precision
       Precision(aPrecision);	// GMP does calculations in target precision
       mpf_mul(float_, aX.float_, aY.float_);
       // FIXME: this does not work for KExpFloat
@@ -1799,25 +1807,25 @@ void BigNumber::Floor(const BigNumber& aX)
   }
 }
 
-// round to a given precision (in bits) and set target precision. Does nothing if the current precision is lower, or if the number is an integer.
+// round to a given precision (in bits) and set target precision. Does not change the number if the current precision is lower, or if the number is an integer.
 void BigNumber::Precision(LispInt aPrecision)
 {
   if (!IsInt())
-  {
+  {	// set precision flags
 	iPrecision = aPrecision;
+  	mpf_set_prec(float_, aPrecision);
   	long int exp_small = 0, shift_amount = 0;
 	// determine the binary exponent
 	(void) mpf_get_d_2exp(&exp_small, float_);
 	// determine the shift amount
 	shift_amount = exp_small - aPrecision;
 	// truncate at aPrecision bits
-  	mpf_set_prec(float_, aPrecision);
 	if (shift_amount >= 0)
 	{
 		mpf_div_2exp(float_, float_, (unsigned) shift_amount);
 		mpf_trunc(float_, float_);
 		mpf_mul_2exp(float_, float_, (unsigned) shift_amount);
-	}	// otherwise we don't have to truncate
+	}
 	else if (shift_amount < 0)
 	{
 		mpf_mul_2exp(float_, float_, (unsigned) (-shift_amount));
