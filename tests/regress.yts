@@ -291,3 +291,10 @@ Verify(Conjugate({a}),{a});
 
 // not yet fixed (dr)
 Verify(Abs(Undefined),Undefined);
+
+// broke Plot2D() on singular functions with Abs()
+Verify(Undefined<1, False);
+Verify(Undefined>Undefined, False);
+Verify(Undefined>1, False);
+Verify(Undefined >= -4, False);
+Verify(Undefined <= -4, False);
