@@ -522,6 +522,135 @@ the first argument of {Set} would be unevaluated.
 
 *SEE MacroSet, MacroLocal, MacroRuleBase, Hold, HoldArg
 
+
+
+*CMD DefMacroRuleBase --- Define a macro (in stead of function)
+*STD
+*CALL
+	DefMacroRuleBase(name,params)
+
+*PARMS
+
+{name} -- string, name of function
+
+{params} -- list of arguments to function
+
+*DESC
+
+{DefMacroRuleBase} is similar to {RuleBase}, with the difference that it declares a macro,
+in stead of a function.
+
+With the usual functions, the evaluation model is that of the <i>applicative-order model of 
+substitution</i>, meaning that first the arguments are evaluated, and then the function 
+is applied to the result of evaluating these arguments. The function is entered, and the
+code inside the function can not access local variables outside of its own local variables.
+
+With macros, the evaluation model is that of the <i>normal-order model of substitution</i>,
+meaning that occurrences of variables in an expression first get substituted into the 
+body of the macro, and only then is the resulting expression evaluated <i>in its
+calling environment</i>. This is important, because in principle then macro bodies
+can access the local variables from the calling environment, where functions can not do that.
+
+As an example, suppose there is a function {square}, which squares its argument, and a function
+{add}, which adds its arguments. Suppose the definitions of these functions are:
+
+	add(x,y) <-- x + y
+
+and
+
+	square(x) <-- x*x
+
+In applicative-order mode (the usual way functions are evaluated), in the following expression
+
+	add(square(2),square(3))
+
+first the arguments to {add} get evaluated. So, first {square(2)} is evaluated.
+To evaluate this, first {2} is evaluated, but this evaluates to itself. Then
+the {square} function is applied to it, {2*2}, which returns 4. The same
+is done for {square(3)}, resulting in {9}. Only then, after evaluating these two
+arguments, is {add} applied to them, which is equivalent to
+
+	add(4,9)
+
+resulting in calling {4+9}, which in turn results in {13}.
+
+In contrast, when {add} is a macro, the arguments to {add} are first
+expanded. So 
+
+	add(square(2),square(3))
+
+first expands to 
+
+	square(2) + square(3)
+
+and then that is evaluated. 
+
+One more difference between macros and 
+
+Macros are useful for customizing syntax, and compilers can potentially
+greatly optimize macros, as they can be inlined in the calling environment,
+and optimized accordingly. 
+
+There are disadvantages, however. In interpreted mode, macros are slower,
+as the requirement for substitution means that a new expression to be evaluated
+has to be created on the fly. Also, when one of the parameters to the macro
+occur more than once in the body of the macro, it is evaluated multiple times.
+
+When defining transformation rules for macros, the variables to be substituted
+need to be prepended by the {@} operator, similar to the back-quoting mechanism.
+Apart from that, the two are similar, and all transformation rules can also be
+applied to macros.
+
+Macros can co-exist with functions. One can have a function {foo(a,b)}
+with two arguments, but a macro {foo(a,b,c)} with three arguments.
+
+
+*EG
+
+The following example defines a function {myfor}, and shows one use, referencing
+a variable {a} from the calling environment.
+
+	In> DefMacroRuleBase("myfor",{init,pred,inc,body})
+	Out> True;
+	In> myfor(_init,_pred,_inc,_body)<--[@init;While(@pred)[@body;@inc;];True;];
+	Out> True;
+	In> a:=10
+	Out> 10;
+	In> myfor(i:=1,i<10,i++,Echo(a*i))
+	10 
+	20 
+	30 
+	40 
+	50 
+	60 
+	70 
+	80 
+	90 
+	Out> True;
+	In> i
+	Out> 10;
+
+*SEE RuleBase, Backquoting, DefMacroRuleBaseListed
+
+*CMD DefMacroRuleBaseListed --- define macro with variable number of arguments
+*CORE
+*CALL
+	DefMacroRuleBaseListed("name", params)
+
+*PARMS
+
+{"name"} -- string, name of function
+
+{params} -- list of arguments to function
+
+*DESC
+
+This does the same as {DefMacroRuleBase} (define a macro), but with a variable
+number of arguments, similar to {RuleBaseListed}.
+
+*SEE RuleBase, RuleBaseListed, Backquoting, DefMacroRuleBase
+
+
 *A object properties
 *CMD SetExtraInfo, GetExtraInfo --- annotate objects with additional information
 *CORE

@@ -3,10 +3,14 @@
  * with only one rule.
  */
 RuleBase("Function",{oper,args,body});
-Bodied("Function",60000);
 HoldArg("Function",oper);
 HoldArg("Function",args);
 HoldArg("Function",body);
+
+RuleBase("Macro",{oper,args,body});
+HoldArg("Macro",oper);
+HoldArg("Macro",args);
+HoldArg("Macro",body);
 
 // function with variable number of arguments: Function("func",{x,y, ...})body;
 Rule("Function",3,2047,
@@ -27,9 +31,30 @@ Rule("Function",3,2048,True)
   MacroRule(oper,Length(args),1025,True) body;
 ];
 
+
+// macro with variable number of arguments: Macro("func",{x,y, ...})body;
+Rule("Macro",3,2047,
+	MathAnd(GreaterThan(Length(args), 1), Equals( MathNth(args, Length(args)), Atom("...") ))
+)
+[
+  DestructiveDelete(args,Length(args));	// remove trailing "..."
+  Retract(oper,Length(args));
+  `DefMacroRuleBaseListed(@oper,@args);
+  MacroRule(oper,Length(args),1025,True) body;	// at precedence 1025, for flexibility
+];
+
+// macro with a fixed number of arguments
+Rule("Macro",3,2048,True)
+[
+  Retract(oper,Length(args));
+  `DefMacroRuleBase(@oper,@args);
+  MacroRule(oper,Length(args),1025,True) body;
+];
+
+
 /// shorthand function declarations
-// function with variable number of arguments: Function() f(x,y, ...)
 RuleBase("Function",{oper});
+// function with variable number of arguments: Function() f(x,y, ...)
 Rule("Function",1,2047,
 	MathAnd(IsFunction(oper), GreaterThan(Length(oper), 1), Equals( MathNth(oper, Length(oper)), Atom("...") ))
 )
@@ -54,6 +79,39 @@ Rule("Function",1,2048,
 		MacroRuleBase(Type(oper),args)
 	);
 ];
+
+
+RuleBase("Macro",{oper});
+// macro with variable number of arguments: Macro() f(x,y, ...)
+Rule("Macro",1,2047,
+	MathAnd(IsFunction(oper), GreaterThan(Length(oper), 1), Equals( MathNth(oper, Length(oper)), Atom("...") ))
+)
+[
+	Local(args,name);
+	Set(args,Tail(Listify(oper)));
+	DestructiveDelete(args,Length(args));	// remove trailing "..."
+  Set(name,Type(oper));
+	If(RuleBaseDefined(Type(oper),Length(args)),
+		False,	// do nothing
+		`DefMacroRuleBaseListed(@name,@args)
+	);
+];
+// macro with a fixed number of arguments
+Rule("Macro",1,2048,
+	MathAnd(IsFunction(oper))
+)
+[
+	Local(args,name);
+	Set(args,Tail(Listify(oper)));
+  Set(name,Type(oper));
+	If(RuleBaseDefined(Type(oper),Length(args)),
+		False,	// do nothing
+		[
+      `DefMacroRuleBase(@name,@args);
+    ]
+	);
+];
+
 
 RuleBase("TemplateFunction",{oper,args,body});
 Bodied("TemplateFunction",60000);

@@ -102,5 +102,8 @@ Infix("<=>", OpPrecedence("="));
 Infix("Where", 1100);
 Infix("AddTo", 200);
 
+Bodied("Function",60000);
+Bodied("Macro",60000);
+
 Bodied(Assert, 60000);
 

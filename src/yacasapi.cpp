@@ -107,6 +107,7 @@ input(iEnvironment.iInputStatus)
     SetCommand(LispMacroRuleBaseListed ,"MacroRuleBaseListed");
 
     SetCommand(LispDefMacroRuleBase ,"DefMacroRuleBase");
+    SetCommand(LispDefMacroRuleBaseListed ,"DefMacroRuleBaseListed");
 
     SetCommand(LispHoldArg       ,"HoldArg");
     SetCommand(LispNewRule       ,"Rule");

@@ -83,6 +83,8 @@ public:
     LispDefFiles& DefFiles();
     void DeclareRuleBase(LispStringPtr aOperator, LispPtr& aParameters,
                          LispInt aListed);
+    void DeclareMacroRuleBase(LispStringPtr aOperator, LispPtr& aParameters, 
+                         LispInt aListed);
     void DefineRule(LispStringPtr aOperator,LispInt aArity,
                             LispInt aPrecedence, LispPtr& aPredicate,
                             LispPtr& aBody);
@@ -90,7 +92,6 @@ public:
                             LispInt aPrecedence, LispPtr& aPredicate,
                             LispPtr& aBody);
 
-    void DeclareMacroRuleBase(LispStringPtr aOperator, LispPtr& aParameters);
 
     void UnFenceRule(LispStringPtr aOperator,LispInt aArity);
     void Retract(LispStringPtr aOperator,LispInt aArity);
