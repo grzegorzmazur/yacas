@@ -289,6 +289,42 @@ LocalSymbols(x)
 100 # (_f  * _x)_(f= -1)  <-- -x;
 100 # (_x  * _f)_(f= -1)  <-- -x;
 
+95 # x_IsMatrix * y_IsMatrix <-- 
+[
+   Local(i,j,k,row,result);
+   result:=ZeroMatrix(Length(x),Length(y[1]));
+   For(i:=1,i<=Length(x),i++)
+   For(j:=1,j<=Length(y),j++)
+   For(k:=1,k<=Length(y[1]),k++)
+   [
+     row:=result[i];
+     row[k]:= row[k]+x[i][j]*y[j][k];
+   ];
+   result;
+];
+
+
+96 # x_IsMatrix * y_IsList <-- 
+[
+   Local(i,result);
+   result:={};
+   For(i:=1,i<=Length(x),i++)
+   [ DestructiveInsert(result,i,x[i] . y); ];
+   result;
+];
+
+
+97 # (x_IsList * y_IsNonObject)_Not(IsList(y)) <-- y*x;
+98 # (x_IsNonObject * y_IsList)_Not(IsList(x)) <--
+[
+   Local(i,result);
+   result:={};
+   For(i:=1,i<=Length(y),i++)
+   [ DestructiveInsert(result,i,x * y[i]); ];
+   result;
+];
+
+
 100  # 0 * Infinity <-- Undefined;
 100  # Infinity * 0 <-- Undefined;
 
@@ -321,42 +357,6 @@ LocalSymbols(x)
 107 # -( (-(_x))/(_y)) <-- x/y;
 107 # -( (_x)/(-(_y))) <-- x/y;
 
-
-
-200 # x_IsMatrix * y_IsMatrix <-- 
-[
-   Local(i,j,k,row,result);
-   result:=ZeroMatrix(Length(x),Length(y[1]));
-   For(i:=1,i<=Length(x),i++)
-   For(j:=1,j<=Length(y),j++)
-   For(k:=1,k<=Length(y[1]),k++)
-   [
-     row:=result[i];
-     row[k]:= row[k]+x[i][j]*y[j][k];
-   ];
-   result;
-];
-
-
-210 # x_IsMatrix * y_IsList <-- 
-[
-   Local(i,result);
-   result:={};
-   For(i:=1,i<=Length(x),i++)
-   [ DestructiveInsert(result,i,x[i] . y); ];
-   result;
-];
-
-
-240 # (x_IsList * y_IsNonObject)_Not(IsList(y)) <-- y*x;
-241 # (x_IsNonObject * y_IsList)_Not(IsList(x)) <--
-[
-   Local(i,result);
-   result:={};
-   For(i:=1,i<=Length(y),i++)
-   [ DestructiveInsert(result,i,x * y[i]); ];
-   result;
-];
 
 250  # x_IsNumber * y_IsInfinity <-- Sign(x)*y;
 250  # x_IsComplex * y_IsInfinity <-- Sign(Re(x))*Infinity;
