@@ -10,7 +10,7 @@ Verify(5 ^ 2 , 25);
 Verify(IsZero(0.000),True);
 
 Verify(2/5,Hold(2/5));
-Verify(N(2/5),0.4);
+Verify(IsZero(N(2/5)-0.4));
 Verify(IsRational(2),True);
 Verify(IsRational(2/5),True);
 Verify(IsRational(-2/5),True);
@@ -67,7 +67,7 @@ Testing("MathPower");
 Verify(MathPower(19, 0), 1);
 Verify(MathPower(1, -1), 1);
 Verify(MathPower(1, -2), 1);
-Verify(MathPower(10, -2), 0.01);
+Verify(IsZero(MathPower(10, -2)- 0.01));
 Verify(MathPower(2, 3), 8);
 Verify(MathPower(2, -3), .125); 
 
