@@ -89,7 +89,7 @@ yacas_LDADD = libyacas.a libyacasplatform.a @NUMBERS_LIB@ @NUMBERS_LDFLAGS@
 # supports elf binaries?
 #
 
-yacas_LDFLAGS = -ldl -rdynamic
+yacas_LDFLAGS = $(LIBS)
 
 testnum_SOURCES = anumber.cpp grower.cpp lispstring.cpp stdstubs.cpp 	testnum.cpp mathutil.cpp
 
