@@ -490,3 +490,7 @@ EscapeLtGt(string) := [
 	For(i:=1, i<=Length(string), i:=i+1) result := result : If(Contains(AssocIndices(EscapeLtGtStrings), string[i]), EscapeLtGtStrings[string[i]], string[i]);
 	result;
 ];
+
+/// this is just cosmetic, used in the manual
+If(Not Infix("<>"), Infix("<>", OpPrecedence("=")));
+If(Not Infix("<=>"), Infix("<=>", OpPrecedence("=")));
