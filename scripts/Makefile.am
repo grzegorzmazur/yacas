@@ -33,9 +33,11 @@ SCRIPTFILES = 	        										    \
 	odesolver.rep/code.ys odesolver.rep/code.ys.def 						    \
 	openmath.rep/code.ys openmath.rep/code.ys.def 							    \
 	orthopoly.rep/code.ys orthopoly.rep/code.ys.def 						    \
+	osdep.rep/code.ys osdep.rep/code.ys.def osdep.rep/unix.ys osdep.rep/win32.ys                        \
 	padic.rep/code.ys padic.rep/code.ys.def 							    \
 	patterns.rep/code.ys patterns.rep/code.ys.def 							    \
-	plots.rep/code.ys plots.rep/code.ys.def plots.rep/backends-2d.ys 				    \
+	plots.rep/code.ys plots.rep/code.ys.def plots.rep/backends-2d.ys plots.rep/backends-3d.ys           \
+        plots.rep/plot2d.ys.def plots.rep/plot3d.ys.def plots.rep/plot2d.ys plots.rep/plot3d.ys             \
 	predicates.rep/code.ys predicates.rep/code.ys.def 						    \
 	pslq.rep/code.ys pslq.rep/code.ys.def 								    \
 	rabinmiller.rep/code.ys rabinmiller.rep/code.ys.def 						    \

@@ -29,7 +29,7 @@ test: check
 dvi: texdocs
 
 texdocs:
-	cd manualmaker ; make texdocs
+	cd manualmaker ; make ps-docs 
 
 backup:
 	-rm yacas-*.tar.gz
