@@ -4,6 +4,11 @@
 /* Round to specified number of digits */
 RoundTo(x_IsNumber, prec_IsPositiveInteger) <-- N(Round(x*10^prec)*10^(-prec));
 
+
+//
+ShoLine() := [Echo({CurrentFile(),":",CurrentLine()});];
+
+
 /* Logging functions */
 // curline:=0;
 
@@ -41,12 +46,14 @@ HoldArg("KnownFailure",expr);
 
 Function("Verify",{aLeft,aRight})
 [
+
 	Local(result);
 	result := Eval(aLeft);	// to save time
   If (Not(Equals(result,aRight)),
     [
       WriteString("******************");
       NewLine();
+ShoLine();
       Write(aLeft);
       WriteString(" evaluates to ");
 	  Write(result);
@@ -162,6 +169,7 @@ Function ("TestYacas", {expr, ans})
 			[
 			  WriteString("******************");
 			  NewLine();
+ShoLine();
 			  Write(expr);
 			  WriteString(" evaluates to ");
 			  NewLine();

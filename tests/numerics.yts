@@ -116,7 +116,6 @@ RoundTo(N((Pi/2-ArcTan(N(Tan(N(Pi/2)-10^(-24)))))*10^24 ), 25)
 /// special functions
 Precision(20);	// let's be gentle
 
-
 TestYacas(
 Gamma(10.5)
 , (654729075*Sqrt(Pi))/1024
@@ -128,7 +127,6 @@ Gamma(9/2)
 );
 
 KnownFailure(TestYacas(Gamma(-10.5), (-2048*Sqrt(Pi))/13749310575));
-
 
 TestYacas(
 Gamma(-7/2)

@@ -16,7 +16,10 @@ Verify( Limit(x,Infinity) Abs(x), Infinity );
 Verify( Limit(x,Infinity) Factorial(x), Infinity);
 
 Verify( Sin(x)/Cos(x), Tan(x) );
+// Jonathan, are you sure you want the expression below to 
+// flag as a known failure?
 KnownFailure(Verify( Sin(x)^2 + Cos(x)^2, 1 ));
+Verify( TrigSimpCombine(Sin(x)^2 + Cos(x)^2), 1 );
 Verify( Cos(x)/Sin(x), Cot(x) );
 Verify( SinH(x)-CosH(x), Exp(-x));
 Verify( SinH(x)+CosH(x), Exp(x) );

@@ -124,7 +124,7 @@ RandomIntegerVector(_count,_coefmin,_coefmax) <--
   Table(MathFloor(coefmin+Random()*(coefmax+1-coefmin)),i,1,count,1);
 
 
-Function("Identity",{n})
+Identity(n_IsNonNegativeInteger) <--
 [
     Local(i,result);
     result:={};
@@ -161,7 +161,7 @@ Function("Normalize",{vector})
   (1/(norm^(1/2)))*vector;
 ];
 
-Function("ZeroMatrix",{n,m})
+ZeroMatrix(n_IsNonNegativeInteger,m_IsNonNegativeInteger) <--
 [
   Local(i,result);
   result:={};
@@ -171,7 +171,7 @@ Function("ZeroMatrix",{n,m})
 ];
 
 
-Function("Transpose",{matrix})
+Transpose(matrix_IsMatrix) <--
 [
   Local(i,j,result);
   result:=ZeroMatrix(Length(matrix[1]),Length(matrix));

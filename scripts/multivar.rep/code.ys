@@ -27,6 +27,7 @@ MultiSimp(_expr) <--
 [
   Local(vars);
   vars:=MultiExpressionList(expr);
+//Echo({"step1 ",MM(expr,vars)});
   MultiSimp2(MM(expr,vars));
 ];
 
@@ -52,6 +53,11 @@ MultiSimp(_expr) <--
 
 20 # MultiSimp2(expr_IsMulti) <--
 [
+//Echo({"step2 ",expr});
+//Echo({"content ",MultiContent(expr)});
+//Echo({"content ",NormalForm(MultiContent(expr))});
+//Echo({"pp ",MultiPrimitivePart(expr)});
+//Echo({"pp ",NormalForm(MultiPrimitivePart(expr))});
   NormalForm(MultiContent(expr))*NormalForm(MultiPrimitivePart(expr));
 ];
 30 # MultiSimp2(_expr) <-- expr;
