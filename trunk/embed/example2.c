@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "cyacas.h"
 
+int verbose_debug = 0;	// avoid linkage error
+
 int main(int argc, char** argv)
 {
   
