@@ -79,7 +79,7 @@ This allows to efficiently compute even extremely large modular powers of intege
 *A powers!by repeated squaring!improvements
 
 The squaring algorithm can be improved a little bit if we are willing to use recursion or to obtain the bits of $n$ in the reverse order.
-(This was suggested in an exercise in the book
+(This was suggested in the exercise 4.21 in the book
 [von zur Gathen <i>et al.</i> 1999].)
 Let us represent the power $n$ in base $4$ instead of base $2$.
 If $q[k]$ are the digits of $n$ in base $4$, then we can express
@@ -128,9 +128,9 @@ power.
 For integer $ N $, the following steps are performed:
 
 *	0. Find the highest bit set, $ l2 $, in the number $ N $.
-*	0. $ 1<<(l2/2) $ is at least a bit that is set in the end result. Start
-by setting that bit in the result, $ u = 1<<l2 $ . It is also the highest 
-bit set.
+*	0. $ 1<<(l2/2) $ is definitely a bit that is set in the result.
+Start by setting that bit in the result, $ u = 1<<l2 $.
+It is also the highest bit set in the result.
 *	0. Now, traverse all the lower bits, one by one. For each lower
 bit, starting at $ lnext = l2-1 $, set $ v = 1<<lnext $. Now, 
 $ (u+v)^2 = (u^2+2*u*v+v^2) $. If $ (u+v)^2 <= N $, then the bit set
@@ -180,9 +180,9 @@ Below is some {Yacas} script code to perform the calculation for integers.
 	  u2 := u << l2;
 	
 	  // Now for each lower bit:
-	  l2--;
 	  While( l2 != 0 )
 	  [
+		l2--;
 	     // Get that bit in v, and v2 == v^2.
 	      v  := 1<<l2;
 	      v2 := v<<l2;

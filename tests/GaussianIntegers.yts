@@ -8,9 +8,9 @@ is a Gaussian Unit */
 TestGaussianFactors(z_IsGaussianInteger) <--
 [
  Local(r,gfactors,Ok);
- Echo("TestGaussianFactors: factoring ",z);
+// Echo("TestGaussianFactors: factoring ",z);
  gfactors := GaussianFactors(z);
- Echo(gfactors);
+// Echo(gfactors);
  Ok := True;
  r :=1;
  ForEach(p,gfactors)
@@ -18,9 +18,9 @@ TestGaussianFactors(z_IsGaussianInteger) <--
   r  := r*p[1]^p[2];
   Ok := Ok And IsGaussianPrime(p[1]);
  ];
- Echo(r);
+// Echo(r);
  Ok := Ok And IsGaussianUnit(r/z);
- If(Ok,Echo("passed!"),Echo("FAILED"));
+ If(Ok,True,Echo("FAILED: GaussianFactors(", z, ")=", gfactors, " which is wrong."));
 ];
 
 TestGaussianFactors((9!)+1);

@@ -1,0 +1,106 @@
+/** This file contains routines for numerical evaluation of elementary functions:
+ *  MathPower, MathExp, MathSin etc.
+ *  It is assumed that the arguments are real (not complex) floating-point or integer numbers. (The {Numeric} flag does not have to be set.)
+ *  The result is an exact integer or a floating-point number correct to GetPrecision() digits.
+ *
+ *  If a better optimized version of these functions is available through the kernel,
+ *  then the kernel version will automatically shadow these functions.
+ */
+
+/// MathPower(x,y).
+/// Compute x^y. Generally, x must be positive, except for integer y.
+// identities:
+5 # MathPower(0, _y) <-- 0;
+5 # MathPower(1, _y) <-- 1;
+// integer powers:
+10 # MathPower(_x, y_IsInteger) <-- IntMultiplyNum(x, y, MathMultiply, 1);
+// real powers:
+20 # MathPower(_x, _y) <-- MathExp(MathMultiply(y,MathLn(x)));
+
+/// MathSqrt(x).
+/// Compute square root(x) with nonnegative x.
+10 # MathSqrt(0) <-- 0;
+20 # MathSqrt(x_IsInteger) <-- BisectSqrt(x);
+30 # MathSqrt(x_IsPositiveNumber) <-- x*NewtonNum({{r}, r+r*(1-x*r^2)/2}, FastPower(x,-0.5), 4, 2);
+
+//{BisectSqrt(N)} computes the integer part of $ Sqrt(N) $ for integer $N$.
+	//sqrt(1) = 1, sqrt(0) = 0
+10 # BisectSqrt(0) <-- 0;
+10 # BisectSqrt(1) <-- 1;
+
+20 # BisectSqrt(N_IsPositiveInteger) <--
+[
+  Local(l2,u,v,u2,v2,uv2,n);
+
+  // Find highest set bit, l2
+  u  := N;
+  l2 := 0;
+  While (u!=0)
+  [
+    u:=u>>1;
+    l2++;
+  ];
+  l2--;
+
+  // 1<<(l2/2) now would be a good under estimate 
+  // for the square root. 1<<(l2/2) is definitely 
+  // set in the result. Also it is the highest
+  // set bit.
+  l2 := l2>>1;
+
+  // initialize u and u2 (u2==u^2).
+  u  := 1 << l2;
+  u2 := u << l2;
+ 
+  // Now for each lower bit:
+  While( l2 != 0 )
+  [
+ 	 l2--;
+     // Get that bit in v, and v2 == v^2.
+      v  := 1<<l2;
+      v2 := v<<l2;
+
+      // uv2 == 2*u*v, where 2==1<<1, and 
+      // v==1<<l2, thus 2*u*v == 
+      // (1<<1)*u*(1<<l2) == u<<(l2+1)
+      uv2 := u<<(l2 + 1);
+ 
+      // n = (u+v)^2  = u^2 + 2*u*v + v^2 
+      //   = u2+uv2+v2
+       n := u2 + uv2 + v2;
+
+      // if n (possible new best estimate for 
+      // sqrt(N)^2 is smaller than N, then the 
+      // bit l2 is set in the result, and 
+      // add v to u.
+      if( n <= N )
+      [
+	u  := u+v;  // u <- u+v
+	u2 := n;    // u^2 <- u^2 + 2*u*v + v^2
+      ];
+    ];
+    u; // return result, accumulated in u.
+];
+
+/// MathGcd(x,y). Compute the GCD of two integers using the binary Euclidean algorithm.
+5 # MathGcd(x_IsNegativeInteger, y_IsInteger) <-- MathGcd(-x, y);
+5 # MathGcd(y_IsNegativeInteger, x_IsNegativeInteger) <-- MathGcd(x, -y);
+6 # MathGcd(0, _x) <-- 0;
+6 # MathGcd(_x, 0) <-- 0;
+
+10 # MathGcd(x_IsInteger, y_IsInteger) <--
+[
+	While(x!=y)
+	[
+		While(x<y)
+		[
+			y:=y-x;
+			While((y&1) = 0)
+			[
+				y := y>>1;
+			];
+		];
+		{x,y} := {y,x};
+	];
+	x;
+];

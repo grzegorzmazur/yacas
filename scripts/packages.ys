@@ -61,6 +61,7 @@ Set(DefFileList, {
 "statistics.rep/statistics.ys",
 "stats.rep/code.ys",
 "stdfuncs.rep/code.ys",
+"stdfuncs.rep/elemfuncs.ys",
 "stdfuncs.rep/numerical.ys",
 "stdfuncs.rep/nummethods.ys",
 "stubs.rep/code.ys",

@@ -62,8 +62,8 @@ SCRIPTFILES2 = \
 	stats.rep/code.ys stats.rep/code.ys.def 							    \
 	stdfuncs.rep/code.ys stdfuncs.rep/code.ys.def stdfuncs.rep/om.ys stdfuncs.rep/numerical.ys 	    \
 	stdfuncs.rep/numerical.ys.def stdfuncs.rep/nummethods.ys stdfuncs.rep/nummethods.ys.def 	    \
-	stubs.rep/code.ys stubs.rep/code.ys.def stubs.rep/om.ys 					    \
-	substitute.rep/code.ys substitute.rep/code.ys.def 						    \
+	stubs.rep/code.ys stubs.rep/code.ys.def stubs.rep/om.ys stdfuncs.rep/elemfuncs.ys                   \
+	substitute.rep/code.ys substitute.rep/code.ys.def stdfuncs.rep/elemfuncs.ys.def 		    \
 	sums.rep/code.ys sums.rep/code.ys.def 								    \
 	tensor.rep/code.ys tensor.rep/code.ys.def 							    \
 	testers.rep/code.ys testers.rep/code.ys.def 							    \

@@ -4,6 +4,18 @@
 A number-theoretic function is any function that takes integer arguments,
 produces integer values, and is of interest to number theory.
 
+		Euclidean GCD algorithms
+
+*A GCD!binary Euclidean method
+
+The easiest case is the calculation of the GCD of two integers.
+The main algorithm for the integer GCD calculation is the binary Euclidean algorithm.
+It is based on the following identities: $ Gcd(a,b) = Gcd(b,a) $,
+$ Gcd(a,b) = Gcd(a-b,b)$, and for odd $b$, $Gcd(2*a,b) = Gcd(a,b)$.
+Thus we can produce a sequence of pairs with the same GCD as the original two numbers, and each pair will be at least half the size of the previous pair.
+The number of steps is logarithmic in the number of digits in $a$, $b$.
+The only operations needed for this algorithm are binary shifts and subtractions (no modular division is necessary).
+The low-level function for this is {MathGcd}.
 
 		Prime numbers: the Miller-Rabin algorithm and its improvements
 
