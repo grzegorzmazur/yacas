@@ -709,17 +709,29 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 		aug[i][rowsb+1] := b[i];
 
 	// gaussian elimination
-	ForEach(i, 1 .. (rowsb-1) )
+	ForEach(i, 1 .. (rowsb-1) )[
+		// If our pivot element is 0 we need to switch
+		// this row with a row that has a nonzero element
+		If(aug[i][i] = 0, [
+			Local(p,tmp);
+			p:=i+1;
+			While( aug[p][p] = 0 )[ p++; ];
+			If(Verbose, Echo({"switching row ",i,"with ",p}) );
+			tmp:=aug[i];
+			aug[i]:=aug[p];
+			aug[p]:=tmp;
+		]);
+			
+	
 		ForEach(k, (i+1) .. rowsb )[
 			s:=aug[k][i];
 			ForEach(j, i .. (rowsb+1) )[
-				//If( aug[i][i] = 0 )[
 				aug[k][j] := aug[k][j] - (s/aug[i][i])*aug[i][j];
 				//Echo({"aug[",k,"][",j,"] =", aug[k][j]," - ", 
 				//	aug[k][i],"/",aug[i][i],"*",aug[i][j]," k i =", k,i  });
 			];
 		];
-
+	];
 	//PrettyForm(aug);
 	x[rowsb]:=aug[rowsb][rowsb+1]/aug[rowsb][rowsb];
 	If(Verbose,Echo({"set x[",rowsb,"] = ",x[rowsb] }));
