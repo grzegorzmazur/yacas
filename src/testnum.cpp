@@ -1226,7 +1226,6 @@ int main(void)
    test_string2string("0.10000000000000000000001e-11");
    test_string2string("-0.10000000000000000000001e-11");
 
-/**/
 	Next("read strings with many extra zeros correctly");
 	test_string2float(0., "000.0000", 0, 10);
 	test_string2float(0., "000.", 0, 10);
@@ -1268,9 +1267,9 @@ int main(void)
 		z.Negate(z);
 		CheckValues(z.GetPrecision(), prec1, "z has correct precision");
 		//z.MultiplyAdd(x,y,10);
-		x.Multiply(x,y,10);
+		x.Multiply(x,y,prec1);
 		CheckValues(x.GetPrecision(), prec1-1, "x has correct precision");
-		z.Add(z,x,10);
+		z.Add(z,x,prec1);
 		CheckValues(z.GetPrecision(), prec1-2, "z has correct precision");
 		CheckValues(z.Sign(),0,"z has correct sign");
 		CheckStringValue(z, "0.", 10, 10, "z is equal to 0.");
@@ -1295,10 +1294,10 @@ int main(void)
 		t1.Negate(z0);
 		CheckValues(t1.GetPrecision(), prec1, "t1 has correct precision");
 		BigNumber t2(10);
-		t2.Multiply(x,y,10);
+		t2.Multiply(x,y,prec1);
 		CheckValues(t2.GetPrecision(), prec1-1, "t2 has correct precision");
 		BigNumber z(10);
-		z.Add(t2,t1, 10);
+		z.Add(t2,t1, prec1);
 		CheckValues(z.GetPrecision(), prec1-2, "z has correct precision");
 		CheckValues(z.Sign(),0,"z has correct sign");
 		CheckStringValue(z, "0.", 10, 10, "z is equal to 0.");
@@ -1308,7 +1307,7 @@ int main(void)
 		CheckValues(x.GetPrecision(), prec1, "x has correct precision");
 		BigNumber y("0.5", 10, 10);
 		CheckValues(y.GetPrecision(), prec1, "y has correct precision");
-		BigNumber z(10);
+		BigNumber z(100);
 		z.Add(x,y,10);
 		
 		CheckValues(z.GetPrecision(), 10, "z has correct precision");
@@ -1622,11 +1621,136 @@ int main(void)
 		z.Add(z,y,x.GetPrecision());	// -1.000...0126... + 1 is just below 0
 		Check(z.Sign() == -1, "-x+1 < 0");
 		Check(z.GetPrecision()<x.GetPrecision()-90, "at least 90 bits of precision are lost on subtraction");
-	}
-//	Next("precision control for multiplication");
-//	Next("precision control for division");
-//	Next("precision control for mixed integer/float arithmetic");
+		
+		// test how two numbers with equal absolute errors are added. 
+		// Note that the last digit may be rounded off, so put one more bit as guard bit.
+		x.SetTo("1.0001000", 0, 2);
+		y.SetTo("0.0001010", 0, 2);
+		CheckValues(x.GetPrecision(), 8, "x has 8 bits");
+		CheckValues(y.GetPrecision(), 4, "y has 4 bits");
+		z.SetTo("0", 0, 2);	// set to integer, to see if it works correctly
+		z.Add(x,y, 8);	// enough bits to add correctly
+		CheckValues(z.GetPrecision(), 7, "x+y has 7 bits");
+		CheckStringValue(z, "1.001001", 10, 2, "x+y prints correctly");
+		z.SetTo("0", 0, 2);
+		z.Add(x,y,5);	// not enough bits, need to lose precision here
+		CheckValues(z.GetPrecision(), 5, "x+y has 5 bits");
+		CheckStringValue(z, "1.001", 10, 2, "x+y prints correctly at lower precision");
+		
+		// one number is much more precise than the other, precision of the answer should be unchanged
+		x.SetTo("1.0001000", 0, 2);
+		y.SetTo("0.0001010000000", 0, 2);
+		CheckValues(x.GetPrecision(), 8, "x has 8 bits");
+		CheckValues(y.GetPrecision(), 10, "y has 10 bits");
+		z.Add(x,y,20);	// enough bits to add correctly
+		CheckValues(z.GetPrecision(), 8, "x+y has 8 bits");
+		CheckStringValue(z, "1.001001", 10, 2, "x+y prints correctly");
+		
+		// one number is smaller than the absolute error of another, answer should be unchanged
+		x.SetTo( "1.0001", 8, 2);
+		y.SetTo("-0.0000000001", 4, 2);
+		//answer: 1.0001000 with 8 bits
+		CheckValues(x.GetPrecision(), 8, "x has 8 bits");
+		CheckValues(y.GetPrecision(), 4, "y has 4 bits");
+		CheckValues(x.BitCount(), 1, "x has bit count 1");
+		CheckValues(y.BitCount(), -9, "y has bit count -9");
+		z.Add(x,y,20);	// enough bits to add correctly
+		CheckValues(z.GetPrecision(), 8, "x+y has 8 bits");
+		CheckStringValue(z, "1.0001", 10, 2, "x+y prints correctly");
+		
+		// loss of precision due to subtraction only
+		x.SetTo( "1.0001010", 0, 2);
+		y.SetTo("-1.000000001000", 0, 2);
+		//answer: 0.0001010
+		CheckValues(x.GetPrecision(), 8, "x has 8 bits");
+		CheckValues(y.GetPrecision(), 13, "y has 13 bits");
+		z.Add(x,y,20);	// enough bits to add correctly
+		CheckValues(z.GetPrecision(), 4, "x+y has 4 bits");
+		CheckStringValue(z, "0.000101", 10, 2, "x+y prints correctly");
 
+		// loss of precision due to subtraction and to roundoff error (one more bit should be lost than in the previous case)
+		x.SetTo( "1.000101000", 0, 2);
+		y.SetTo("-1.000001000", 0, 2);
+		//answer: 0.00010000
+		CheckValues(x.GetPrecision(), 10, "x has 10 bits");
+		CheckValues(y.GetPrecision(), 10, "y has 10 bits");
+		z.Add(x,y,20);	// enough bits to add correctly
+		CheckValues(z.GetPrecision(), 5, "x+y has 5 bits");
+		CheckStringValue(z, "0.0001", 10, 2, "x+y prints correctly");
+		
+		// one number is smaller than the other, but its error is larger
+		x.SetTo( "1.0001010010", 0, 2);
+		y.SetTo( "0.0000010", 0, 2);
+		//answer: 1.0001100
+		CheckValues(x.GetPrecision(), 11, "x has 10 bits");
+		CheckValues(y.GetPrecision(), 2, "y has 2 bits");
+		z.Add(x,y,20);	// enough bits to add correctly
+		CheckValues(z.GetPrecision(), 8, "x+y has 8 bits");
+		CheckStringValue(z, "1.00011", 100, 2, "x+y prints correctly");	
+	}
+	{
+		Next("precision control for multiplication");
+		// one number is more precise than the other
+		x.SetTo( "1.0001010010", 0, 2);
+		y.SetTo( "1.00", 0, 2);
+		//answer: 1.00
+		CheckValues(x.GetPrecision(), 11, "x has 11 bits");
+		CheckValues(y.GetPrecision(), 3, "y has 3 bits");
+		z.Multiply(x,y,20);	// enough bits
+		CheckValues(z.GetPrecision(), 3, "x*y has 3 bits");
+		CheckStringValue(z, "1.", 100, 2, "x*y prints correctly");
+
+		// both numbers are equally precise, losing 1 bit
+		x.SetTo( "1.0001010010", 0, 2);
+		y.SetTo( "1.0100010001", 0, 2);
+		CheckValues(x.GetPrecision(), 11, "x has 11 bits");
+		CheckValues(y.GetPrecision(), 11, "y has 11 bits");
+		z.Multiply(x,y,20);	// enough bits
+		CheckValues(z.GetPrecision(), 10, "x*y has 10 bits");
+		CheckStringValue(z, "1.0101111", 100, 2, "x*y prints correctly");
+		z.Multiply(x,y,5);	// not enough bits
+		CheckValues(z.GetPrecision(), 5, "x*y has 5 bits");
+		CheckStringValue(z, "1.011", 100, 2, "x*y prints correctly");
+	}
+	{
+		Next("precision control for division");
+		// one number is more precise than the other
+		x.SetTo( "1.0001010010", 0, 2);
+		y.SetTo( "1.00", 0, 2);
+		//answer: 1.00
+		CheckValues(x.GetPrecision(), 11, "x has 11 bits");
+		CheckValues(y.GetPrecision(), 3, "y has 3 bits");
+		z.Divide(x,y,20);	// enough bits
+		CheckValues(z.GetPrecision(), 3, "x/y has 3 bits");
+		CheckStringValue(z, "1.", 100, 2, "x/y prints correctly");
+
+		// both numbers are equally precise, losing 1 bit
+		x.SetTo( "1.1111101010", 0, 2);
+		y.SetTo( "1.0001010010", 0, 2);
+		CheckValues(x.GetPrecision(), 11, "x has 11 bits");
+		CheckValues(y.GetPrecision(), 11, "y has 11 bits");
+		z.Divide(x,y,20);	// enough bits
+		CheckValues(z.GetPrecision(), 10, "x/y has 10 bits");
+		CheckStringValue(z, "1.11010101", 100, 2, "x/y prints correctly");
+		z.Divide(x,y,5);	// not enough bits
+		CheckValues(z.GetPrecision(), 5, "x/y has 5 bits");
+		CheckStringValue(z, "1.1101", 100, 2, "x/y prints correctly");
+	}
+	{
+		Next("precision control for mixed integer/float arithmetic");
+		BigNumber x(  "1.1010101", 0, 2);
+		BigNumber y("100", 0, 2);
+		CheckValues(x.GetPrecision(), 8, "x has 8 bits");
+		// add integer to float, precision is determined by the absolute error of the float
+		BigNumber z;
+		z.Add(x,y,20);	// enough bits
+		CheckValues(z.GetPrecision(), 10, "x+y has 10 bits");
+		CheckStringValue(z, "101.1010101", 100, 2, "x+y prints correctly");
+
+		z.Multiply(x,y,20);	// enough bits
+		CheckValues(z.GetPrecision(), 8, "x*y has 8 bits");
+		CheckStringValue(z, "110.10101", 100, 2, "x*y prints correctly");
+	}
 	{
 		Next("precision control for floating-point shifts");
 		BigNumber x("0.1010101", 0, 2), y;
@@ -1638,9 +1762,23 @@ int main(void)
 		x.ShiftLeft(x, 10);
 		CheckValues(x.GetPrecision(), 7, "x has 7 bits");
 	}
+	{
+		Next("precision control for Floor()");
+		BigNumber x("10000.110", 0, 2), y;
+		CheckValues(x.GetPrecision(), 8, "x has 8 bits");
 
-//	Next("precision control for Floor()");
-
+		y.Floor(x);
+		Check(y.IsInt(), "y has int type");
+		Check(y.IsIntValue(), "y has int value");
+		CheckValues(y.Double(), 16, "y = 16");
+		
+		y.Negate(x);
+		y.Floor(y);
+		Check(y.IsInt(), "y has int type");
+		Check(y.IsIntValue(), "y has int value");
+		CheckValues(y.Double(), -17, "y = -17");
+		
+	}
 }	// end of the comprehensive test suite
 
 
@@ -1648,4 +1786,4 @@ int main(void)
     Finish();
     return 0;
 }
-         
+

@@ -2201,11 +2201,14 @@ void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrec
 	  else
 	  {
 		// both aX and aY are nonzero
+		  // determine the precision needed for the multiplication
 		long xy_prec = MIN(aX.GetPrecision(), aY.GetPrecision()) - DIST(aX.GetPrecision(), aY.GetPrecision());
+		xy_prec = MIN(xy_prec, long(aPrecision+GUARD_BITS));
 		// set our new precision
-		mpf_set_prec(float_, MIN((long)aPrecision, xy_prec)+GUARD_BITS);	// GMP does calculations in target precision
+		mpf_set_prec(float_, xy_prec);	// GMP does calculations in target precision
 		mpf_mul(float_, aX.float_, aY.float_);
-		iPrecision = xy_prec;
+		// this will be the precision of the resulting number
+		iPrecision = MIN(xy_prec, (long)aPrecision);
 		if (iPrecision<=0)
 			RaiseError("BigNumber::Multiply: loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());
 
@@ -2292,18 +2295,17 @@ void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision
 	  if (B_x<=B_Dy-1)
 	  {	// neglect x, assign z=y, set precision
 		  if (this!= &aY)
-		  {
+		  {	// this->SetTo(aY)
 			  mpf_set_prec(float_, mpf_get_prec(aY.float_));
 			  mpf_set(float_, aY.float_);
 		  }
 		  iPrecision = MIN((long)aPrecision, aY.GetPrecision()-DIST(B_x, B_Dy-1));
-/**/
+//REMOVE		  printf("debug: apriori underflow with (%d,%d,%d,%d), resulting precision %d\n", B_x, B_y, B_Dx, B_Dy, iPrecision);
 		  if (iPrecision<=0)
 		  {	// underflow, set ourselves to 0
 			  mpf_set_d(float_, 0);
-//			RaiseError("BigNumber::Add: apriori loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());
+//REMOVE			RaiseError("BigNumber::Add: apriori loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());
 		  }
-/**/
 	  }
 	  else
 	  if (B_y<=B_Dx-1)
@@ -2368,7 +2370,7 @@ void BigNumber::Negate(const BigNumber& aX)
   else
   {
     if (IsInt()) turn_float();	// we are not aX
-	mpf_set_prec(float_, aX.GetPrecision());
+	mpf_set_prec(float_, mpf_get_prec(aX.float_));
     mpf_neg(float_, aX.float_);
   }
   iPrecision = aX.GetPrecision();
