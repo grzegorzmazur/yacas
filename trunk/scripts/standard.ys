@@ -260,7 +260,7 @@ LocalSymbols(x)
 /* TODO move to this precedence everywhere? */
 LocalSymbols(x,y,xarg,yarg)
 [
-  10 # (x_IsList) - (y_IsList) <-- 
+  10 # ((x_IsList) - (y_IsList))_(Length(x)=Length(y)) <-- 
   [
 //TODO remove Echo("HIER",x," ",y);
     Map({{xarg,yarg},xarg-yarg},{x,y});
@@ -378,7 +378,8 @@ LocalSymbols(x,y,xarg,yarg)
 /* Note: this rule MUST be past all the transformations on
  * matrices, since they are lists also.
  */
-230 # aLeft_IsList * aRight_IsList <-- Map("*",{aLeft,aRight});
+230 # (aLeft_IsList * aRight_IsList)_(Length(aLeft)=Length(aRight)) <-- 
+	 Map("*",{aLeft,aRight});
 // fractions
 242 # (x_IsInteger / y_IsInteger) * (v_IsInteger / w_IsInteger) <-- (x*v)/(y*w);
 243 #  x_IsInteger * (y_IsInteger / z_IsInteger) <--  (x*y)/z;
@@ -425,10 +426,11 @@ LocalSymbols(x,y,xarg,yarg)
 200 # (_x / _y)/ _z <-- x/(y*z);
 230 # _x / (_y / _z) <-- (x*z)/y;
 
-240 # xlist_IsList / ylist_IsList <-- Map("/",{xlist,ylist});
+240 # (xlist_IsList / ylist_IsList)_(Length(xlist)=Length(ylist)) <-- 
+	 Map("/",{xlist,ylist});
 
 
-250 # x_IsList / _y <--
+250 # (x_IsList / _y)_(Not(IsList(y))) <--
 [
    Local(i,result);
    result:={};
@@ -437,7 +439,7 @@ LocalSymbols(x,y,xarg,yarg)
    result;
 ];
 
-250 # _x / y_IsList <--
+250 # (_x / y_IsList)_(Not(IsList(x))) <--
 [
    Local(i,result);
    result:={};
@@ -504,9 +506,11 @@ LocalSymbols(x,y,xarg,yarg)
 
 
 200 # x_IsMatrix ^ n_IsPositiveInteger <-- x*(x^(n-1));
-204 # xlist_IsList ^ nlist_IsList <-- Map("^",{xlist,nlist});
-205 # xlist_IsList ^ n_IsConstant <-- Map({{xx},xx^n},{xlist});
-206 # _x ^ n_IsList <-- Map({{xx},x^xx},{n});
+204 # (xlist_IsList ^ nlist_IsList)_(Length(xlist)=Length(nlist)) <-- 
+	 Map("^",{xlist,nlist});
+205 # (xlist_IsList ^ n_IsConstant)_(Not(IsList(n))) <-- 
+	 Map({{xx},xx^n},{xlist});
+206 # (_x ^ n_IsList)_(Not(IsList(x))) <-- Map({{xx},x^xx},{n});
 249 # x_IsInfinity ^ 0 <-- Undefined;
 250 # Infinity ^ (_n) <-- Infinity;
 250 # Infinity ^ (_x_IsComplex) <-- Infinity;
