@@ -81,3 +81,5 @@ Verify( IsIrregularPrime(11), False );
 Verify( Gcd( 324 + 1608*I, -11800 + 7900*I ),Complex(-52,16) );
 Verify( Gcd( 7300 + 12*I, 2700 + 100*I), Complex(-4,4) );
 
+Verify( IsCarmichaelNumber( {561,1105,1729,2465,2821,6601,8911} ),{True,True,True,True,True,True,True} );
+

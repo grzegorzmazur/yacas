@@ -351,6 +351,62 @@ long time for large numbers.
 
 *SEE IsPrimePower, Factors
 
+*CMD IsComposite --- test for a composite number
+*STD
+*CALL
+	IsComposite(n)
+
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+This function is the logical negation of {IsPrime}, except for the number 1, which is
+neither prime nor composite.
+
+*E.G.
+
+	In> IsComposite(1)
+	Out> False;
+	In> IsComposite(7)
+	Out> False;
+	In> IsComposite(8)
+	Out> True;
+	In> Select(IsComposite,1...20)
+	Out> {4,6,8,9,10,12,14,15,16,18,20};
+
+*SEE IsPrime
+
+*CMD IsSquareFree --- test for a square free number
+*STD
+*CALL
+	IsSquareFree(n)
+
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+This function uses the {Moebius} function to tell if the given number is square free, which
+means it has distinct prime factors. If $Mobius(n)!=0$, then {n} is square free. All prime
+numbers are trivially square free.
+
+*E.G.
+
+	In> IsSquareFree(37)
+	Out> True;
+	In> IsSquareFree(4)
+	Out> False;
+	In> IsSquareFree(16)
+	Out> False;
+	In> IsSquareFree(18)
+	Out> False;
+
+*SEE Moebius
+
+
 *CMD IsPrimePower --- test for a power of a prime number
 *STD
 *CALL
@@ -455,6 +511,35 @@ are  37, 59 and 67. Asymptotically, roughly 40{%} of primes are irregular.
 	Out> {37,59,67};
 
 *SEE IsPrime
+
+*CMD IsCarmichaelNumber --- test for a Carmichael number
+*STD
+*CALL
+	IsCarmichaelNumber(n)
+
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+This fuction returns {True} if {n} is a Carmichael number, also called an absolute pseudoprime.
+They have the property that $ b^(n-1) % n == 1 $ for all $b$ satisfying $Gcd(b,n)==1$. These numbers
+cannot be proved composite by Fermat's little theorem. Because the previous property is extremely
+slow to check for, the follow property is checked for by Yacas: for all prime factors $p_i$ of $n$,
+$(n-1) % (p_i - 1) == 0$ and $n$ must be square free. Also, Carmichael numbers must be odd and have
+at least three prime factors. Although these numbers are rare (there are only 43 less than a million),
+it has recently been proven that there are infinitely many of them.
+
+*E.G.
+
+	In> IsCarmichaelNumber(561)
+	Out> True;
+	In> Time(  Select(IsCarmichaelNumber,1...10000) )
+	504.19 seconds taken
+	Out> {561,1105,1729,2465,2821,6601,8911};
+
+*SEE IsSquareFree, IsComposite
 
 
 *CMD Factors --- factorization
