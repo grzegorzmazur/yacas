@@ -101,14 +101,12 @@ RuleBase("=>",{a,b});
 
 20 # CNFInEq((_xex) == (_yex))        <-- (CNFInEqSimplify(xex-yex) ==  0);
 20 # CNFInEq((_xex) > (_yex))         <-- (CNFInEqSimplify(xex-yex) >   0);
-20 # CNFInEq((_xex) < (_yex))         <-- (CNFInEqSimplify(xex-yex) <   0);
 20 # CNFInEq((_xex) >= (_yex))        <-- (CNFInEqSimplify(xex-yex) >=  0);
-20 # CNFInEq((_xex) <= (_yex))        <-- (CNFInEqSimplify(xex-yex) <=  0);
-20 # CNFInEq((_xex) !== (_yex))       <-- (CNFInEqSimplify(xex-yex) !== 0);
 30 # CNFInEq(_exp)                    <-- (CNFInEqSimplify(exp));
 
 10 # CNFInEqSimplify((_x) - (_x))     <-- 0;        // strictly speaking, this is not always valid, i.e. 1/0 - 1/0 != 0...
-100# CNFInEqSimplify(_x)              <-- x;        // former "Simplify";
+100# CNFInEqSimplify(_x)              <-- [Echo({"Hit the bottom of CNFInEqSimplify with ", x, Nl()}); x;];
+                                                    // former "Simplify";
 
 // Some shortcuts to match prev interface
 CanProveAux(_proposition)                           <-- LogicSimplify(proposition, 3);
@@ -127,7 +125,7 @@ CanProveAux(_proposition)                           <-- LogicSimplify(propositio
     ForEach(clause, list)
     [
       Local(newclause);
-      /*newclause := BubbleSort(LogicRemoveTautologies(Flatten(clause,"Or")), LexLessThan);*/
+      //newclause := BubbleSort(LogicRemoveTautologies(Flatten(clause, "Or")), LexLessThan);
       Set(newclause, LogicRemoveTautologies(Flatten(clause, "Or")));
       If(newclause != {True}, DestructiveAppend(clauses, newclause));
     ];
@@ -137,15 +135,14 @@ CanProveAux(_proposition)                           <-- LogicSimplify(propositio
         i.e. if we have (A And B) And ( B And A), only the first one will
         persist.
     */
-
-
-
     Set(clauses, RemoveDuplicates(clauses));
 
     If(Equals(level, 3) And (Length(clauses) != 0), [
         Set(clauses, DoUnitSubsumptionAndResolution(clauses));
         Set(clauses, LogicCombine(clauses));
     ]);
+
+    Set(clauses, RemoveDuplicates(clauses));
 
     If(Equals(Length(clauses), 0), True, [
         /* assemble the result back into a boolean expression */
@@ -181,6 +178,17 @@ CanProve(_proposition)      <-- CanProveAux( proposition );
 /* this can be optimized to walk through the lists a bit more efficiently and also take
 care of duplicates in one pass */
 
+LocalCmp(_e1, _e2) <-- [
+    Local(s1, s2);
+    Set(s1, ToString() Write(e1));
+    Set(s2, ToString() Write(e2));
+
+    LexLessThan(s1, s2);
+];
+
+// we may want to add other expression simplifers for new expression types
+100 # SimplifyExpression(_x)        <-- x;
+
 // Return values:
 //  {True} means True
 //  {} means False
@@ -189,15 +197,19 @@ LogicRemoveTautologies(_e) <--
   Local(i, len, negationfound); Set(len, Length(e));
   Set(negationfound, False);
 
+  //Echo(e);
+  e := BubbleSort(e, "LocalCmp");
+
   For(Set(i, 1), (i <= len) And (Not negationfound), i++)
   [
     Local(x, n, j);
+    // we can register other simplification rules for expressions
+    //e[i] := MathNth(e,i) /:: {gamma(_y) <- SimplifyExpression(gamma(y))};
     Set(x, MathNth(e,i));
-    Set(n, SimpleNegate(MathNth(e,i)));      /* this is all we have to do because of
-                                     the kind of expressions we can have coming in */
+    Set(n, SimpleNegate(x));                    /* this is all we have to do because of
+                                                the kind of expressions we can have coming in */
 
-    For(Set(j, i+1), (j <= len) And (Not negationfound), j++)
-    [
+    For(Set(j, i+1), (j <= len) And (Not negationfound), j++) [
         Local(y);
         Set(y, MathNth(e,j));
 
@@ -226,6 +238,7 @@ LogicRemoveTautologies(_e) <--
 12 # Contradict((_x) == (_y), (_x) == (_z))_(y != z)             <-- True;
 13 # Contradict((_x) - (_y) == 0, (_x) - (_z) >= 0)_(z > y)      <-- True;
 14 # Contradict((_x) - (_y) == 0, (_x) - (_z) >  0)_(z > y)      <-- True;
+14 # Contradict(Not (_x) - (_y) >= 0, (_x) - (_z) >  0)_(z > y)  <-- True;
 15 # Contradict(_a, _b)                                          <-- Equals(SimpleNegate(a), b);
 
 /* find the number of the list that contains n in it, a pointer to a list of lists in passed */
