@@ -378,12 +378,47 @@ BernoulliArray1(n_IsEven) _ (n>=2) <--
 20 # BesselJ(3/2,_x)	<-- Sqrt(2/(x*Pi))*(Sin(x)/x - Cos(x));
 20 # BesselJ(-3/2,_x)	<-- Sqrt(2/(x*Pi))*(Cos(x)/x + Sin(x));
 20 # BesselJ(5/2,_x)	<-- Sqrt(2/(x*Pi))*( (3/x^2 -1)*Sin(x) - 3*Cos(x)/x );
-20 # BesselJ(-5/2,_x)   <-- Sqrt(2/(x*Pi))*( (3/x^2 -1)*Cos(x) + 3*Sin(x)/x );
+20 # BesselJ(-5/2,_x)      <-- Sqrt(2/(x*Pi))*( (3/x^2 -1)*Cos(x) + 3*Sin(x)/x );
 
 30 # BesselJ(_n,_z)_(n<0 And IsInteger(n) ) <-- (-1)^n*BesselJ(-n,z);
+
+// When I put "And Numeric" on the next rule, I lose precision. Why ?
+40 # BesselJ(_n,x_IsComplex)_(Abs(x)<=1)  <-- N(BesselJNsmall(n,x));
+
 50 # BesselJ(0,x_IsComplex)_(Numeric) <-- N(BesselJN0(x));
 
 //50 # BesselJ(_n_IsPositiveNumber,_z_IsComplex) <-- BesselJN(n,z);
+
+// When x is <= 1, the series is monotonely decreasing from the
+// start, so we don't have to worry about loss of precision from the
+// series definition. 
+// When {n} is an integer, this is fast.
+// When {n} is not, it is pretty slow due to Gamma() 
+
+Function("BesselJNsmall",{n,x})
+[
+        Local(term,result,k);
+        Local(prec,eps);
+        prec:=GetPrecision();
+        Precision(Ceil(1.2*prec)); // this is a guess
+        eps:=.5*10^(-prec);
+
+        term:=1;
+        k:=0;
+        result:=0;
+        While( Abs(term) >= eps )[
+                term:=x^(2*k+n);
+		If(k%2=1, term:=term*-1 );
+		term:=N(term/(2^(2*k+n)* k! * Gamma(k+n+1) ));
+                //Echo({"term is ",term});
+                result:=result+term;
+                k:=k+1;
+        ];
+        Precision(prec);
+	// This should not round, only truncate
+	// some outputs will be off by one in the last digit
+	RoundTo(result,prec);
+];
 
 // Seems to get about 8 digits precision for most real numbers
 // Only about 2 digits precision for complex
