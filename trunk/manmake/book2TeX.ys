@@ -21,10 +21,15 @@ Book(x) := [	/* this is the first declaration in a file */
 " : x : "}
 \\author{by the \\textsc{Yacas} team
 \\thanks{
-This text is part of the \\textsc{Yacas} software package and may be freely
-distributed under the terms of the GNU Free Documentation License (GFDL) version 1.1 or later. Copyleft 2002.
-Principal documentation authors:
+This text is part of the \\textsc{Yacas} software package.
+Copyright 2000--2002. Principal documentation authors:
 Ayal Zwi Pinkus, Serge Winitzki, Jitse Niesen.
+Permission is granted to copy, distribute and/or modify this
+document under the terms of the GNU Free Documentation License,
+Version 1.1 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover Texts and
+no Back-Cover Texts.  A copy of the license is included in the
+section entitled ``GNU Free Documentation License''.
 }}
 \\date{\\textsc{Yacas} version: " : Version() : "
 \\\\

@@ -43,6 +43,13 @@ mentioned in the {.def} file, therefore Yacas will know to load the package
 knows where to look for any given function without actually loading the
 file where the function is defined.
 
+There is one exception to the strategy of delayed loading of the library
+scripts. Namely, the syntax definitions of infix, prefix, postfix and bodied
+functions, such as {Infix("*",4)} cannot be delayed (it is currently in the
+file {stdopers.ys}). If it were delayed, the Yacas parser would encounter {1+2}
+(typed by the user) and generate a syntax error before it has a chance to load
+the definition of the operator "{+}".
+
 		Object types
 
 Yacas supports two basic kinds of objects: atoms and compounds. Atoms are (integer or real, arbitrary-precision) numbers such as {2.71828}, symbolic variables such as {A3} and character strings. Compounds include functions and expressions, e.g. {Cos(a-b)} and lists, e.g. {{1+a,2+b,3+c}}.
@@ -150,7 +157,7 @@ circumstances. This design is more suitable for symbolic manipulations.
 A function is identified by its name as returned by {Type}
 and the number of arguments, or "arity". The same name can be used with
 different arities to define different functions: {f(x)} is
-said to 'have arity 1' and {f(x,y)} has arity 2. Each of
+said to "have arity 1" and {f(x,y)} has arity 2. Each of
 these functions may possess its own set of specific rules, which we shall
 call a "rule database" of a function.
 
@@ -486,7 +493,7 @@ calling environment; to do this, declare
 on that function.
 
 
-			Evaluation of Expressions
+			Evaluation of expressions
 
 When programming in some language, it helps to have a mental
 model of what goes on behind the scenes when evaluating expressions,
@@ -495,9 +502,9 @@ or in this case simplifying expressions.
 This section aims to explain how evaluation (and simplification)
 of expressions works internally, in {Yacas}.
 
-		The LISP Heritage
+		The LISP heritage
 
-	    Representation
+	    Representation of expressions
 
 Much of the inner workings is based on how LISP-like languages
 are built up. When an expression is entered, or composed in some
@@ -506,8 +513,7 @@ in LISP:
 
 	a+b    ->    (+ a b)
 	Sin(a) ->    (Sin a)
-
-Here the sub-expression is changed into a list of so-called 'atoms', 
+Here the sub-expression is changed into a list of so-called "atoms", 
 where the first atom is a function name of the function to be 
 invoked, and the atoms following are the arguments to be passed in
 as parameters to that function. 
@@ -547,19 +553,19 @@ values, so these arguments are available as local values.
 
 For instance, suppose we are evaluating {2*3+4}. This first gets
 changed to the internal representation {(+ (* 2 3 )4 )}. Then,
-during evaluation, the top expression refers to function '+'.
+during evaluation, the top expression refers to function "{+}".
 Its arguments are {(* 2 3)} and {4}. First {(* 2 3)} gets evaluated.
-This is a function call to the function '*' with arguments {2}
-and {3}, which evaluate to themselves. Then the function '*' is
+This is a function call to the function "{*}" with arguments {2}
+and {3}, which evaluate to themselves. Then the function "{*}" is
 invoked with these arguments. The {Yacas} standard script library
 has code that accepts numeric input and performs the multiplication
 numerically, resulting in {6}. 
 
-The second argument to the top-level '+' is {4}, which evaluates
+The second argument to the top-level "{+}" is {4}, which evaluates
 to itself. 
 
-Now, both arguments to the '+' function have been evaluated, and
-the results are {6} and {4}. Now the '+' function is invoked.
+Now, both arguments to the "{+}" function have been evaluated, and
+the results are {6} and {4}. Now the "{+}" function is invoked.
 This function also has code in the script library to actually
 perform the addition when the arguments are numeric, so the result
 is 10:
@@ -570,15 +576,15 @@ is 10:
 	In> 2*3+4
 	Out> 10;
 
-Note that in {Yacas}, the basic language doesn't have a '+' function
-by default. This is all implemented in the scripting language.
-The feature "when the arguments to '+' are numeric, perform the numeric
-addition" is concidered to be a 'policy' which should be configurable.
-It should not be part of the language.
+Note that in {Yacas}, the script language does not define a "{+}" function
+in the core. This and other functions are all implemented in the script library.
+The feature "when the arguments to "{+}" are numeric, perform the numeric
+addition" is concidered to be a "policy" which should be configurable.
+It should not be a part of the core language.
 
 It is surprisingly difficult to keep in mind that evaluation is 
 bottom up, and that arguments are evaluated before the function call
-is evaluated. In some sense, you might feel that theevaluation of the 
+is evaluated. In some sense, you might feel that the evaluation of the 
 arguments is part of evaluation of the function. It is not. Arguments
 are evaluated before the function gets called.
 
@@ -670,16 +676,18 @@ local variables more explicit:
 	In> f2(1,2)
 	Out> a+1;
 
-	    Implicit Condition Statement Building
+	    Using different rules in different cases
 
 In a lot of cases, the algorithm to be invoked depends on the type
 of the arguments. Or the result depends on the form of the input
-expression. This results in the typical 'cond' or 'switch' statement,
+expression. This results in the typical "case" or "switch" statement,
 where the code to evaluate to determine the result depends on the 
-form of the input expression, or the type of the arguments.
+form of the input expression, or the type of the arguments, or some other conditions.
 
-{Yacas} has the concept of transformation rules, which are combined
-together to form a body of a function. Suppose the function
+{Yacas} allows to define several transformation rules
+for one and the same function, if the rules are to be applied under different conditions.
+
+Suppose the function
 {f} is defined, a factorial function:
 
 
@@ -704,7 +712,7 @@ the substitution essentially means return the result of evaluating the
 right-hand side. Transformation rules are re-applied, on the right hand
 side of the transformation rule, and the original expression can be thought
 of as been substituted by the result of evaluating this right-hand side,
-which is supposed to be a 'simpler' expression, or a result closer to what
+which is supposed to be a "simpler" expression, or a result closer to what
 the user wants.
 
 Internally, the function {f} is built up to resemble the following
@@ -740,33 +748,33 @@ modifying the original source code:
 
 This is generally not advisable, due to the fact that it alters
 the behaviour of the entire system. But it can be useful in some
-instances. For instance, when introducing a new function f(x),
+instances. For instance, when introducing a new function {f(x)},
 one can decide to define a derivative explicitly, and a way
 to simplify it numerically:
 
-	In> ex(_x)_(Numeric) <-- Exp(x)
+	In> f(_x)_(Numeric) <-- Exp(x)
 	Out> True;
-	In> (Deriv(_x)ex(_y)) <-- ex(y)*(Deriv(x)y);
+	In> (Deriv(_x)f(_y)) <-- f(y)*(Deriv(x)y);
 	Out> True;
-	In> ex(2)
-	Out> ex(2);
-	In> N(ex(2))
+	In> f(2)
+	Out> f(2);
+	In> N(f(2))
 	Out> 7.3890560989;
 	In> Exp(2)
 	Out> Exp(2);
 	In> N(Exp(2))
 	Out> 7.3890560989;
-	In> D(x)ex(a*x)
-	Out> ex(a*x)*a;
+	In> D(x)f(a*x)
+	Out> f(a*x)*a;
 
 
-	    The 'Evaluation is Simplification' hack
+	    The "Evaluation is Simplification" hack
 
 One of the ideas behind the {Yacas} scripting language is that evaluation
 is used for simplifying expressions. One corrollary to this is that
 objects can be returned unevaluated when they can not be simplified
 further. This happens for variables that are unbound, functions that
-are not defined, or function invokations where the arguments passed
+are not defined, or function invocations where the arguments passed
 in as parameters are not actually handled by any code in the scripts.
 An integral that can not be performed by {Yacas} should be returned 
 unevaluated:
@@ -788,49 +796,57 @@ unevaluated:
 	In> 3!
 	Out> 6;
 
-Other languages usually don't allow evaluation of unbound variables,
-or undefined functions. In {Yacas}, these are taken to be as-of-yet
+Other languages usually do not allow evaluation of unbound variables,
+or undefined functions. In {Yacas}, these are interpreted as some yet
 undefined global variables or functions, and returned unevaluated.
 
 		Destructive operations
 
-{Yacas} tries to keep as little copies of objects in memory as
-is possible. Thus when assigning the value of one variable to another,
-a reference is copied, and both variables refer to the same memoy,
-physically. This is relevant when programming, for destructive 
-operations. Destructive operations are generally recognized 
-by having the name prepended with 'Desctructive', and will
-thus typically have a name {Destructive...}. One other destructive
+{Yacas} tries to keep as few copies of objects in memory as
+possible. Thus when assigning the value of one variable to another,
+a reference is copied, and both variables refer to the same memory,
+physically. This is relevant for programming; for example, one
+should use {FlatCopy} to actually make a new copy of an object.
+Another feature relevant to reference semantics is "destructive 
+operations"; these are functions that modify their arguments rather than work on a copy. Destructive operations on lists are generally recognized 
+because their name starts with "Destructive",
+e.g. {DestructiveDelete}. One other destructive
 operation is assignment of a list element through {list[index] := ...}.
 
-A short example to illustrate the point:
+Some examples to illustrate destructive operations on lists:
 
 	In> x1:={a,b,c}
 	Out> {a,b,c};
+A list {x1} is created.
 	In> FullForm(x1)
 	(List a b c )
 	Out> {a,b,c};
 	In> x2:=z:x1
 	Out> {z,a,b,c};
+A new list {x2} is {z} appended to {x1}. The {:} operation creates a copy of {x1} before appending, so {x1} is unchanged by this.
 	In> FullForm(x2)
 	(List z a b c )
 	Out> {z,a,b,c};
 	In> x2[1]:=y
 	Out> True;
-	In> x1
-	Out> {a,b,c};
+We have modified the first element of {x2}, but {x1} is still the same.
 	In> x2
 	Out> {y,a,b,c};
+	In> x1
+	Out> {a,b,c};
 	In> x2[2]:=A
 	Out> True;
+We have modified the second element of {x2}, but {x1} is still the same.
 	In> x2
 	Out> {y,A,b,c};
 	In> x1
 	Out> {a,b,c};
 	In> x2:=x1
 	Out> {A,b,c};
+Now {x2} and {x1} refer to the same list.
 	In> x2[1]:=A
 	Out> True;
+We have modified the first element of {x2}, and {x1} is also modified.
 	In> x2
 	Out> {A,b,c};
 	In> x1
@@ -838,7 +854,7 @@ A short example to illustrate the point:
 
 A programmer should always be cautious when dealing with 
 destructive operations. Sometimes it is not desirable to 
-chang the original expression. The language deals with it
+change the original expression. The language deals with it
 this way because of performance conciderations. Operations
 can be made non-destructive by using {FlatCopy}:
 
@@ -855,8 +871,8 @@ can be made non-destructive by using {FlatCopy}:
 	In> x1
 	Out> {a,b,c};
 
-{FlatCopy} copies the elements of an expression one deep.
-So if a list contains sub-lists, they are not copied, but
+{FlatCopy} copies the elements of an expression only at the top level of nesting.
+This means that if a list contains sub-lists, they are not copied, but
 references to them are copied instead:
 
 	In> dict1:={}
@@ -1009,7 +1025,7 @@ Here are some examples of this behavior:
 To implement this behavior, {Gamma} and other mathematical functions usually
 have two variants: the "symbolic" one and the "numerical" one. For instance,
 there are {Sin} and {MathSin}, {Ln} and {LnNum}, {Gamma} and {GammaNum}. (Here
-{MathSin} happens to be a core function but it's not essential.) The "numerical"
+{MathSin} happens to be a core function but it is not essential.) The "numerical"
 functions always evaluate to floating-point results. The "symbolic" function
 serves as a front-end; it evaluates when the result can be expressed exactly,
 or calls the "numerical" function if {Numeric}={True}, and otherwise returns
@@ -1227,7 +1243,7 @@ No programming language is without programming pitfalls, and
 
 
 
-		All Rules are Global
+		All rules are global
 
 All rules are global, and a consequence is that rules can clash or 
 silently shadow each other, if the user defines two rules with the 
@@ -1241,27 +1257,27 @@ For example:
 	Out> True;
 
 This can happen in practice, if care is not taken. Here two 
-transformation rules are defined which both have precedence 
-zero, so they both have the same precedence. In that case 
+transformation rules are defined which both have the same precedence 
+(since their precedence was not explicitly set). In that case 
 {Yacas} gets to decide which one to try first. 
 Such problems can also occur where one transformation rule (possibly
 defined in some other file) has a wrong precedence, and thus masks
 another transformation rule. It is necessary to think of a scheme
-for assigning precedences first, if the order of transformation
-rules to apply matters.
+for assigning precedences first. In many cases, the order in which transformation
+rules are applied is important.
 
 In the above example, because {Yacas} gets to decide which rule
 to try first, it is possible that f(0) invokes the second rule,
 which would then mask the first so the first rule is never called.
-Indeed, in version 1.0.51, 
+Indeed, in {Yacas} version 1.0.51, 
 
 	In> f(0)
 	Out> Undefined;
 
 The order the rules are applied in is undefined if the precedences
 are the same. The precedences should only be the same if order
-doesn't matter, if for instance the two rules could not possibly
-mask eachother.
+does not matter. This is the case if, for instance, the two rules apply to different argument patters that could not possibly
+mask each other.
 
 The solution could have been either:
 
@@ -1271,9 +1287,7 @@ The solution could have been either:
 	Out> True;
 	In> f(0)
 	Out> 1;
-
 or
-
 	In> f(0) <-- 1
 	Out> True;
 	In> f(x_IsConstant)_(x != 0) <-- Sin(x)/x
@@ -1281,11 +1295,12 @@ or
 	In> f(0)
 	Out> 1;
 
-So either the rules have distinct precedences, or they don't collide.
+So either the rules should have distinct precedences, or they should have
+mutually exclusive predicates, so that they do not collide.
 
-		Objects That Look Like Functions
+		Objects that look like functions
 
-An expression like  {AbcDef(x,y)}, is
+An expression that looks like a "function", for example {AbcDef(x,y)}, is in fact
 either a call to a "core function" or  to a "user function", and there 
 is a huge difference between the behaviors. Core functions immediately 
 evaluate to something, while user functions are really just symbols to which
@@ -1306,37 +1321,41 @@ For example:
 	In> MathAdd(2,3)
 	Out> 5;
 
-Here the {+} operator will return the object unsimplified if the arguments
+The {+} operator will return the object unsimplified if the arguments
 are not numeric. The {+} operator is defined in the standard scripts.
-{MathAdd}, however, is an utility function defined in the "core", and
-it performs the numeric addition. It can only do this if the arguments
-are numeric (the {+} operator calls {MathAdd} after it has verified that
-the arguments passed to it are numeric).
+{MathAdd}, however, is a function defined in the "core" to
+performs the numeric addition. It can only do this if the arguments
+are numeric and it fails on symbolic arguments.  (The {+} operator calls {MathAdd} after it has verified that
+the arguments passed to it are numeric.)
 
-So {MathAdd} is an utility function, and {+} an operator with which
-objects can be formed, which might or might not be simplified.
+A core function such as {MathAdd} can never return unevaluated, but an operator such as "{+}" is a "user function"
+which might or might not be evaluated to something.
 
-A consequence of this is that a typo in a function name or a variable name 
+A user function does not have to be defined before it is used. A consequence of this is that a typo in a function name or a variable name 
 will always go unnoticed.
-
 For example:
 
 	In> f(x_IsInteger,y_IsInteger) <-- Mathadd(x,y)
 	Out> True;
 	In> f(1,2)
 	Out> Mathadd(1,2);
+Here we made a typo: we should have written {MathAdd}, but wrote
+{Mathadd} instead. {Yacas} happily assumed that we mean a new and (so far) undefined "user function" {Mathadd} and returned the expression unevaluated.
 
-Here we made a typo, we should have written {MathAdd}, but wrote
-{Mathadd} instead. This becomes more dangerous when it this mistake
-is made in some part of some procedure. A call that should have
-been mae to an internal function, but where a typo was made, passes
-silently without error.
+In the above example it was easy to spot the error. But this feature becomes more dangerous when it this mistake
+is made in a part of some procedure. A call that should have
+been made to an internal function, if a typo was made, passes
+silently without error and returns unevaluated.
+The real problem occurs if we meant to call a function that has side-effects
+and we  not use its return value. In this case we shall not immediately find
+that the function was not evaluated, but instead we shall encounter a
+mysterious bug later.
 
 		Guessing when arguments are evaluated and when not
 
-If your new function does not work as expected, there is a 50 percent chance
-that it's because you don't expect some expression which is an argument
-to be passed to a function to be evaluated when it is in fact evaluated. 
+If your new function does not work as expected, there is a good chance
+that it happened because you did not expect some expression which is an argument
+to be passed to a function to be evaluated when it is in fact evaluated, or vice versa. 
 
 For example:
 
@@ -1352,7 +1371,59 @@ For example:
 Here the first argument to the differentiation function is not
 evaluated, so {y} is not evaluated to {x}, and {D(y)p} is indeed 0.
 
-	    Correctness of parameters to functions not checked
+	    The confusing effect of {HoldArg}
+
+The problem of distinguishing evaluated and unevaluated objects becomes worse when we need to create a function that does not evaluate its arguments.
+
+Since in {Yacas} evaluation starts from the bottom of the expression tree, all "user functions" will appear to evaluate their arguments by default. But sometimes it is convenient to prohibit evaluation of a particular argument (using {HoldArg} or {HoldArgNr}).
+
+For example, suppose we need a function {A(x,y)} that, as a side-effect, assigns the variable {x} to the sum of {x} and {y}. This function will be called when {x} already has some value, so clearly the argument {x} in {A(x,y)} should be unevaluated. It is possible to make this argument unevaluated by putting {Hold()} on it and always calling {A(Hold(x), y)}, but this is not very convenient and easy to forget. It would be better to define {A} so that it always keeps its first argument unevaluated.
+
+If we define a rule base for {A} and declare {HoldArg},
+	Function() A(x,y);
+	HoldArg("A", x);
+then we shall encounter a difficulty when working with the argument {x} inside of a rule body for {A}. For instance, the simple-minded implementation
+	A(_x, _y) <-- (x := x+y);
+does not work:
+	In> [ a:=1; b:=2; A(a,b);]
+	Out> a+2;
+In other words, the {x} inside the body of {A(x,y)} did not evaluate to {1}
+when we called the function {:=}. Instead, it was left unevaluated as the atom
+{x} on the left hand side of {:=}, since {:=} does not evaluate its left
+argument. It however evaluates its right argument, so the {y} argument was
+evaluated to {2} and the {x+y} became {a+2}.
+
+The evaluation of {x} in the body of {A(x,y)} was prevented by the {HoldArg}
+declaration. So in the body, {x} will just be the atom {x}, unless it is
+evaluated again. If you pass {x} to other functions, they will just get
+the atom {x}. Thus in our example, we passed {x} to the function {:=}, thinking that it will get {a}, but it got an unevaluated atom {x} on the left side and proceeded with that.
+
+We need an explicit evaluation of {x} in this case. It can be performed using
+{Eval}, or with backquoting, or by using a core function that evaluates its
+argument. Here is some code that illustrates these three possibilities:
+	A(_x, _y) <-- [ Local(z); z:=Eval(x); z:=z+y; ]
+(using explicit evaluation) or
+	A(_x, _y) <-- `(@x := @x + y);
+(using backquoting) or
+	A(_x, _y) <-- MacroSet(x, x+y);
+(using a core function {MacroSet} that evaluates its first argument).
+
+However, beware of a clash of names when using explicit evaluations (as
+explained above). In other words, the function {A} as defined
+above will not work correctly if we give it a variable also named {x}. The
+{LocalSymbols} call should be used to get around this problem.
+
+Another caveat is that when we call another function that does not evaluate its
+argument, we need to substitute an explicitly evaluated {x} into it. A frequent
+case is the following: suppose we have a function {B(x,y)} that  does not
+evaluate {x}, and we need to write an interface function {B(x)} which will just
+call {B(x,0)}. We should use an explicit evaluation of {x} to accomplish this, for example
+	B(_x) <-- `B(@x,0);
+or
+	B(_x) <-- B @ {x, 0};
+Otherwise {B(x,y)} will not get the correct value of its first parameter {x}.
+
+	    Correctness of parameters to functions is not checked
 
 Because {Yacas} does not enforce type checking of arguments,
 it is possible to call functions with invalid arguments. The default
@@ -1370,15 +1441,16 @@ For example:
 	Out> True;
 	In> f(3)
 	Out> 6;
-	In> f(a)
-	CommandLine(1) : Max evaluation stack depth reached.
-	Please use MaxEvalDepth to increase the stack size as needed.
+	In> f(1.3)
+	CommandLine(1): Max evaluation stack depth reached.
 
 Here, the function {f} is defined to be a factorial function,
 but the function fails to check that its argument is a positive
 integer, and thus exhausts the stack when called with a non-integer
 argument.
-
+A better way would be to write
+	In> 20 # f(n_IsPositiveInteger) <-- n*f(n-1);
+Then the function would have returned unevaluated when passed a non-integer or a symbolic expression.
 
 		Evaluating variables in the wrong scope
 
@@ -1711,3 +1783,9 @@ Finally, we try some example calculations to test our rules:
 	Out> delta(l-y)*delta(k-x)+delta(l-x)
 	  *delta(k-y);
 Things now work as expected. Yacas's {Simplify()} facilities can be used on the result of {VEV()} if it needs simplification.
+
+
+
+
+*REM GNU Free Documentation License
+*INCLUDE FDL.chapt
