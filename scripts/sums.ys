@@ -171,7 +171,7 @@ Rule("Fibonacci",1,1, IsInteger(n) And n > 2)
 11 # Lucas(n_IsPositiveInteger) <--
 [
    Local(result, residue, z, t);
-   {z,t}:=Lucas(N(Floor(n/2)));
+   {z,t}:=Lucas(ShiftRight(n,1));
    residue:=Mod(n,4);
    If(residue=0, [
      t:=z*t-1;
