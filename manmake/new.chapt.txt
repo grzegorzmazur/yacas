@@ -492,13 +492,23 @@ Otherwise we will be wasting a lot of time on computations with many meaningless
 
 	    Automatic precision tracking
 
-The precision of arithmetic operations on floating-point numbers can be maintained automatically, in a version of "poor man's interval arithmetic".
+The precision of arithmetic operations on floating-point numbers can be maintained automatically.
+A rigorous way to do it is to represent each imprecise real number $x$ by an interval with rational bounds within which $x$ is guaranteed to be.
+This is usually called "interval arithmetic".
+A result of an interval-arithmetic calculation is "exact" in the sense that the actual number is always within the resulting interval.
+However, this is computationally expensive.
+A "poor man's interval arithmetic" is proposed where the precision is represented by the "number of correct bits".
+The precision is not tracked exactly but almost always adequately.
+This kind of precision tracking can catch a critical roundoff error or
+indicate an unexpected loss of precision in numerical calculations.
 
 Suppose we have two floating-point numbers $x$ and $y$ and we know that they have certain numbers of correct mantissa bits, say $m$ and $n$.
-In other words, $x$ is an approximation to an unknown real number $x'=x*(1+delta)$ and we know that $Abs(delta)<2^(-m)$; and similarly for $y$: $y'=y*(1+epsilon)$ with $Abs(epsilon)<2^(-n)$.
-Here $delta$ and $epsilon$ are the relative errors for $x$ and $y$ and are typically much smaller than $1$.
+In other words, $x$ is an approximation to an unknown real number $x'=x*(1+delta)$ and we know that $Abs(delta)<2^(-m)$; and similarly $y'=y*(1+epsilon)$ with $Abs(epsilon)<2^(-n)$.
+Here $delta$ and $epsilon$ are the relative errors for $x$ and $y$.
+Typically $delta$ and $epsilon$ are much smaller than $1$.
 
-Suppose that every floating-point number comes with its number of significant digits, i.e. we symbolically represent the numbers as pairs {{x,m}} or {{y,n}}.
+Suppose that every floating-point number knows the number of its correct digits.
+We symbolically represent such numbers as pairs {{x,m}} or {{y,n}}.
 When we perform an arithmetic operation on numbers, we need to update the precision component as well.
 Now we shall consider the basic arithmetic operations to see how the precision is updated.
 
@@ -590,8 +600,8 @@ Therefore the subtraction will have to be performed using all available digits.
 
 *HEAD The floating zero
 
-When we obtain a zero, it is always a result of subtraction.
-An integer zero is exact, so {0*1.1} is exactly zero, also an integer.
+When we obtain a floating-point zero, it is always a result of a subtraction.
+An integer zero is exact, so the result of {0*1.1} is exactly zero (also an integer).
 However, {x:=1.1-1.1} is a floating-point zero (a "floating zero" for short) of which we can only be sure about the first digit, {x=0.0}.
 The number {x} might represent {0.01} or {-0.02} for all we know.
 
@@ -652,7 +662,7 @@ just as efficiently as with any "reasonable" definition of the floating-point eq
 
 	    How to increase of the working precision
 
-Suppose we declare {Precision(5)}, write {x:=0.1}, 
+Suppose that in a {Yacas} session we declare {Precision(5)}, write {x:=0.1}, 
 and then increase 
 precision to 10 digits. What is {x} now? There are several approaches:
 
@@ -661,7 +671,8 @@ digits. In terms of the internal binary representation, the number is
 padded with binary zeros. This means that now e.g. {1+x} will not be equal
 to 1.1 but to something like 1.100000381 (to 10 digits). And actually x
 itself should evaluate to 0.1000003815 now. This was 0.1 to 5 digits but
-it is a little different if we print it to 10 digits.
+it looks a little different if we print it to 10 digits.
+(A "binary-padded decimal".)
 
 This problem may look horrible at first sight -- "how come I can't write
 0.1 any more??" -- but this seems so because we are used to
@@ -688,32 +699,84 @@ automatically compensated and the algorithm will work equally well no
 matter how we extend {x} to more digits; but it's a lot slower to go 
 through the decimal representation every time.
 
+3) The approach currently being implemented in {Yacas} is a compromise between the above two.
+We distinguish number objects that were given as decimal strings
+(not by any calculations), for instance {x:=1.2},
+from floats that are results of calculations, for instance {y:=1.2*1.4}.
+Objects of the first kind are interpreted as exact rational numbers given by a decimal fraction,
+while objects of the second kind are interpreted as inexact floating-point numbers known to a limited precision.
+Suppose {x} and {y} are first assigned as indicated, under precision of 5 digits,
+and then the precision is increased to 10 digits
+and {x} and {y} are used in some calculation.
+Then {x} will be converted from the string representation "{1.2}" to 10 decimal digits, effectively making {1.2} a shorthand for {1.200000000}.
+But the value of {y} will be binary-padded in some efficient way and may be different from {1.680000000}.
+
+In this way, efficiency is not lost (there are no repeated conversions from binary to decimal and back),
+and yet the cosmetic problem of binary-padded decimals does not appear.
+An explicitly given decimal string such as "{1.2}" is interpreted as a shorthand for {1.2000}...
+with as many zeroes as needed for any currently selected precision.
+But numbers that are results of arithmetic operations are not converted back to
+a decimal representation for zero-padding.
+Here are some example calculations:
+
+	In> Precision(5)
+	Out> True
+	In> x:=1.2
+	Out> 1.2
+	In> y:=N(1/3)
+	Out> 0.33333
+The number {y} is a result of a calculation and has a limited precision.
+Now we shall increase the precision:
+	In> Precision(20)
+	Out> True
+	In> y
+	Out> 0.33333
+The number {y} is printed with 5 digits only, because it knows that it has only 5 correct digits.
+	In> y+0
+	Out> 0.33333333325572311878
+In a calculation, {y} was binary-padded, so the last digits are incorrect.
+	In> x+0
+	Out> 1.2
+However, {x} has not been padded and remains an "exact" {1.2}.
+	In> z:=y+0
+	Out> 0.33333333325572311878
+	In> Precision(40)
+	Out> True
+	In> z
+	Out> 0.33333333325572311878
+Now we can see how the number {z} is padded again:
+	In> z+0
+	Out> 0.33333333325572311878204345703125
+
+
 	    The meaning of the {Precision()} call
 
 We could use different interpretations:
 The first interpretation is that {Precision(10)} means "I want all answers 
 to contain 10 correct digits".
-The second interpretation is "do all calculations with at least 10 
-digits when floating-point is needed".
+The second interpretation is "do all calculations with floating-point numbers
+using at least 10 digits".
 
-Suppose we have floating-point numbers {x} and {y}, known to 2 and 3 significant
+Suppose we have floating-point numbers {x} and {y}, known only to 2 and 3 significant
 digits respectively. For example, {x=1.6} and {y=2.00}. These {x} and {y} are
 results of previous calculations and we do not have any more digits than this.  If we now say
 	Precision(10);
 	x*y;
 then clearly the system cannot satisfy the first interpretation because there
-aren't enough digits of $x$ and $y$ to know the 10 digits of $x*y$. But we
-can satisfy the second interpretation, even if we print "3.2028214767" or 
-something like that. The garbage after the third digit is unavoidable 
+aren't enough digits of $x$ and $y$ to find 10 digits of $x*y$.
+But we
+can satisfy the second interpretation, even if we print "3.2028214767" instead of the expected {3.2}.
+The garbage after the third digit is unavoidable 
 and harmless unless our calculation really depends on having 10 correct 
 digits of $x*y$. But if our calculation depends on the way we choose the extra digits, then we are using a bad algorithm.
 
 The first interpretation of {Precision()} is only possible to satisfy if
-we are given a self-contained calculation starting with rational
+we are given a self-contained calculation starting with integer
 numbers. For example,
-	N(Sin(Sqrt(3)-10^(50)), 50)
-This can be computed to 50 digits with some effort. (But only if
-we are smart enough to use 100 digits in the calculation of the argument
+	N(Sin(Sqrt(3/2)-10^(20)), 50)
+This can be computed to 50 digits with some effort,
+but only if
+we are smart enough to use 70 digits in the calculation of the argument
 of {Sin()}.)
 The result of this calculation will have 50 digits and 
 not a digit more; we cannot put the result inside another expression 
@@ -728,7 +791,7 @@ sensible as a general-purpose prescription.
 But let's look at a particular case (for simplicity I am talking about
 decimal digits but in the implementation they will be binary digits).
 Suppose we have {x} precise to 10 digits and {y} precise to 20 digits, and
-the user says {Precision(50)} and {z:=x*y+1.4}. What happens now in this
+the user says {Precision(50)} and {z:=1.4+x*y}. What happens now in this
 calculation? (Assume that {x} and {y} are small numbers of order 1; the
 other cases are similar.)
 
@@ -746,8 +809,7 @@ result will only be correct to 10 digits. (b) we could truncate 1.4 to
 10 digits (1.400000000) and obtain the sum to 10 digits.
 In both cases the result will "know" that it only has 10 correct digits.
 
-It seems that the option (b) is better because we don't waste time with
-extra digits
+It seems that the option (b) is better because we do not waste time with extra digits.
 
 The result is a number that is precise to 10 digits. However, the user
 wants to see this result with 50 digits. Even if we chose the option
@@ -755,26 +817,26 @@ wants to see this result with 50 digits. Even if we chose the option
 somewhat random round-off error. Should we print 10 correct digits and
 40 bogus digits? It seems better to print only 10 correct
 digits in this case.
-The GMP library already has this functionality in its string printing functions: it does not print more digits than the number actually knows to be correct.
+The GMP library already has this functionality in its string printing functions: it does not print more digits than the number actually holds.
 
-If we choose this route, then the only effect of {Precision(50)} was to 
-interpret a literal constant 1.4 as a 50-digit number. All other numbers already know their 
+If we choose this route, then the only effect of {Precision(50)} will be to 
+interpret a literal constant {1.4} as a 50-digit number. All other numbers already know their 
 real precision and will not invent any bogus digits.
 
 In some calculations, however, we do want to explicitly extend the precision of a
 number to some more digits. For example, in Newton's method we are given
 a first approximation $x[0]$ to a root of $f(x)=0$ and we want to have more
 digits of that root. Then we need to pad $x[0]$ with some more digits and
-re-evaluate $f(x[0])$ to more digits, to get a better
-approximation to the correct root. This padding operation seems rather
-special, and directed at a particular number, not at all numbers at
+re-evaluate $f(x[0])$ to more digits (this is needed to get a better
+approximation to the root). This padding operation seems rather
+special and directed at a particular number, not at all numbers at
 once. For example, if $f(x)$ itself contains some floating-point numbers,
 then we should be unable to evaluate it with higher precision than
-possible. So it seems that we need access to low-level operations:  the
+allowed by the precision of these numbers.
+So it seems that we need access to these two low-level operations: the
 padding and the query of current precision.
-The proposed interface is {GetExactBits(x)}
-and {SetExactBits(x,n)}.
-These operations are directed at particular number objects.
+The proposed interface is {GetExactBits(x)} and {SetExactBits(x,n)}.
+These operations are directed at a particular number object {x}.
 
 	    Summary of arbitrary-precision semantics
 
@@ -805,8 +867,10 @@ For example,
 	IsInteger(1.) =False
 *	1. The Yacas function {Precision(n)} sets a global parameter that controls the precision of
 <i>newly created floats</i>.
-It does not modify previously created floating-point numbers, and it has no effect on integer calculations.
-New number objects can be created in three ways: from literal strings, from integers, and from calculations with other floats.
+It does not modify previously created floating-point numbers
+and has no effect on copying floats or on any integer calculations.
+New float objects can be created in three ways (aside from simple copying from other floats):
+from literal strings, from integers, and from calculations with other floats.
 For example,
 	x:=1.33;
 	y:=x/3;
@@ -816,7 +880,7 @@ and {y} is created as a result of division of two floats.
 Converting an integer to a float is similar to converting from a literal string representing the integer.
 A new number object created from a literal string must have at least as many bits of mantissa as is required to represent the value given by the string.
 The string might be very long but we want to retain all information from a string, so we may have to make the number much more precise than the currently declared {Precision}.
-*FOOT Note that the argument {n} of {Precision(n)} means <i>decimal</i> digits, not bits.
+*FOOT Note that the argument {n} of {Precision(n)} means <i>decimal</i> digits, not bits. This is more convenient for {Yacas} sessions.
 But if the necessary number of digits to represent the string is less than {n}, then the new number object will have the number of bits that corresponds to {n} decimal digits.
 Thus, in creating objects from strings or from integers, {Precision} sets the <i>minimum</i> precision of the resulting floating-point number.
 On the other hand, a new number object created from a calculation will already have an error estimate and will "know" its real precision.
@@ -836,10 +900,11 @@ how precise they really are. Then in most cases it
 will be unnecessary to call {SetExactBits} or {GetExactBits} explicitly.
 This will be needed only in certain numerical applications that need to control the working precision for efficiency.
 
-	    Formal definitions for precision of arithmetic operations
+	    Formal definitions of precision tracking
 
 Here we shall consider arithmetic operations on floats $x$ and $y$, represented as pairs {{x,m}} and {{y,n}}.
 The result of the operation is $z$, represented as a pair {{z,p}}.
+Here {x}, {y}, {z} are floats and {m}, {n}, {p} are integers.
 
 We give formulae for $p$ in terms of $x$, $y$, $m$, and $n$.
 Sometimes the bit count of a number $x$ is needed; it is denoted $B(x)$ for brevity.
@@ -1032,7 +1097,7 @@ $$ m>=1+n+B(x)-B(y) $$.
 In practice we may allow for a few guard bits over the minimum $m$ given by this formula.
 
 Sometimes the formula gives a negative value for the minimum $m$;
-this means underflow while adding the integer (e.g. adding $1$ to $1.11e150$).
+this means underflow while adding the integer (e.g. adding 1 to 1.11e150).
 In this case we do not need to perform any addition at all.
 
 
@@ -1073,6 +1138,7 @@ When $x=0$ and $y!=0$, the result of division {{0.,m}/{y,n}} is a floating zero 
 When $x$ is an integer zero, the result is also an integer zero.
 
 Division by an integer zero or by a floating zero is not permitted.
+The code should signal a zero division error.
 
 *HEAD {ShiftLeft()}, {ShiftRight()}
 
@@ -1095,16 +1161,21 @@ The {BigNumber} API does not support large exponents for floating-point numbers.
 A floating-point number $x$ is equivalent to two integers $M$, $N$ such that $x=M*2^N$. Here $M$ is the (denormalized) mantissa and $N$ is the (binary) exponent.
 The integer $M$ must be a "big integer" that may represent thousands of significant bits.
 But the exponent $N$ is a platform signed integer (C++ type {long}) which is at least {2^31}, allowing a vastly larger range than platform floating-point types.
-One would expect that this range of the exponent is enough for most real-world applications.
-In the future this limitation might be avoided if one uses a 64-bit platform.
-(Clearly, a 64-bit platform is a better choice for heavy-duty multiple-precision computations than a 32-bit platform.)
+One would expect that this range of exponents is enough for most real-world applications.
+In the future this limitation may be relaxed if one uses a 64-bit platform.
+(A 64-bit platform seems to be a better choice for heavy-duty multiple-precision computations than a 32-bit platform.)
+However, code should not depend on having 64-bit exponent range.
 
-We could have implemented the exponent $N$ as a big integer, but this would be inefficient most of the time, slowing down the calculations.
+We could have implemented the exponent $N$ as a big integer
+but this would be inefficient most of the time, slowing down the calculations.
 Arithmetic with floating-point numbers requires only very simple operations on their exponents (basically, addition and comparisons).
 These operations would be dominated by the overhead of dealing with big integers, compared with platform integers.
 
-A known problem with this approach is the floating-point overflow and underflow.
-When the exponent becomes too large to be represented by a platform signed integer type, the code must signal overflow or underflow error.
+A known issue with limited exponents is the floating-point overflow and exponent underflow.
+(This is not the same underflow as with adding $1$ to a very small number.)
+When the exponent becomes too large to be represented by a platform signed integer type,
+the code must signal an overflow error (e.g. if the exponent is above $2^31$)
+or an underflow error (e.g. if the exponent is negative and below $-2^31$).
 
 
 	    Library versions of mathematical functions
