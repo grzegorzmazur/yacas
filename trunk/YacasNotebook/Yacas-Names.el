@@ -1,13 +1,21 @@
-;;; Use regexp-opt strings to create regexp for fontlock
+;;; Lists of names for font-locking and completion.
+
+(provide 'yacas-names)
 
 ;;Predicates  DONE
-(regexp-opt (list
+
+(setq yacas-symbol-predicates
+(list
 "<"
 ">"
 "<="
 ">="
 "!="
-"="
+"="))
+
+
+(setq yacas-predicates
+(list
 "And"
 "Or"
 "Not"
@@ -55,7 +63,8 @@
 
 
 ;;Functions DONE
-(regexp-opt (list
+(setq yacas-functions
+(list
 "Example"
 "TrigSimpCombine"
 "Eliminate"
@@ -318,7 +327,8 @@
 
 
 ;;Constants DONE
-(regexp-opt (list
+(setq yacas-constants
+(list
 "Pi"
 "I"
 "True"
@@ -329,7 +339,8 @@
 
 
 ;;Control DONE
-(regexp-opt (list
+(setq yacas-control
+(list
 "Local"
 "MacroLocal"
 "While" 
@@ -343,7 +354,8 @@
 
 
 ;;Operators  DONE
-(regexp-opt (list
+(setq yacas-symbol-operators
+(list
 ";"
 "("
 ")"
@@ -368,4 +380,6 @@
 "--"
 ":="
 ))
+
+
 
