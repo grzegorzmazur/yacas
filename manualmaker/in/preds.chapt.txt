@@ -537,12 +537,9 @@ within quotes, eg. {"duh"}.
 *SEE IsAtom, IsNumber
 
 *CMD IsNumber --- Test whether argument is a number
-
 *CORE
-
 *CALL
-
-IsNumber(expr)
+	IsNumber(expr)
 
 *PARMS
 
@@ -594,7 +591,21 @@ between curly braces, like {{2, 3, 5}}.
 
 *SEE IsFunction
 
-*CMD IsBound --- Test whether a variable is bound to a value
+*CMD IsNumericList --- test for a list of numbers
+*STD
+*CALL
+	IsNumericList({list})
+
+*PARMS
+
+{{list}} -- a list
+
+*DESC
+Returns {True} when called on a list of numbers or expressions that evaluate to numbers using {N()}. Returns {False} otherwise.
+
+*SEE N, IsNumber
+
+*CMD IsBound --- test whether a variable is bound to a value
 
 *CORE
 
