@@ -1,5 +1,5 @@
 *BLURB 
-This document gives a short introduction on Yacas.
+This document gives a short introduction to Yacas.
 Included is a brief tutorial on the syntax and some
 commands to get you started using Yacas. There are also some examples.
 				Introduction to Yacas: tutorial and examples
@@ -70,7 +70,9 @@ Typically, you would enter one statement per line, for example
 	In> Sin(Pi/2);
 	Out> 1;
 
-Statements should end with a semicolon ({;}) although this is not required ({Yacas} will append a semicolon at end of line to finish the statement).
+Statements should end with a semicolon ({;}) although this is not required
+in interactive sesions
+({Yacas} will append a semicolon at end of line to finish the statement).
 
 *A online help
 *A {??}
@@ -93,7 +95,7 @@ hitting the TAB key makes {Yacas} recall the last expression
 in the history list that matches these first characters.
 
 *A multi-line commands
-Commands spanning multiple lines can (and actually have to) be entered by using a trailing backslash \ at end of each continued line. For example:
+Commands spanning multiple lines can (and actually have to) be entered by using a trailing backslash {\} at end of each continued line. For example:
 
 	In> a:=2+3+
 	Error on line 1 in file [CommandLine]
@@ -122,7 +124,7 @@ symbolic simplification of basic algebraic functions. Any names such as {x} are 
 	Out> x;
 	In> x+1*y;
 	Out> x+y;
-	In> Sin(ArcSin(alpha))+ArcCos(Cos(beta));
+	In> Sin(ArcSin(alpha))+Tan(ArcTan(beta));
 	Out> alpha+beta;
 	In> (x+y)^3-(x-y)^3
 	Out> (x+y)^3-(x-y)^3;
@@ -344,7 +346,7 @@ Many more list operations are described in the reference manual.
 
 		Linear Algebra
 
-Vectors of fixed dimension are represented as lists of their components. The list {{1,2,3}} would be a three-dimensional vector with components 1, 2 and 3. Matrices are represented as a vector of vectors.
+Vectors of fixed dimension are represented as lists of their components. The list {{1, 2+x, 3*Sin(p)}} would be a three-dimensional vector with components $1$, $2+x$ and $3*Sin(p)$. Matrices are represented as a vector of vectors.
 
 Vector components can be assigned values just like list items, since they are in fact list items:
 *A {ZeroVector}
@@ -426,7 +428,7 @@ hundred commands, of which only a few are shown here.
 Additional example calculations including the results can be found
 here:
 
-*	A selection of calculations from the <*Wester benchmark|westerbench.html*>.
+*	A selection of calculations from the <*Wester benchmark|yacasdoc://essays/2/*>.
 *	Some additional <*example calculations|mybench2.html*> that {Yacas} can currently perform.
 
 		Miscellaneous capabilities
@@ -487,7 +489,8 @@ Create a partial fraction expansion of a polynomial.
 
 		A longer calculation with plotting
 
-Here is an example of a semi-real numerical calculation using {Yacas}. The task was to visualize a particular exact solution of an elliptical differential equation. The solution was found as an infinite series. We need to evaluate this infinite series numerically and plot it for particular values of the parameters.
+Here is an example of a semi-realistic numerical calculation using {Yacas}.
+The task was to visualize a particular exact solution of an elliptical differential equation. The solution was found as an infinite series. We need to evaluate this infinite series numerically and plot it for particular values of the parameters.
 
 The function $g(q,phi,chi)$ is defined by
 $$g(q,phi,chi)=1/(2*Pi)*Sin(q*phi)/Sin(2*q*phi)+ 1/Pi*Sum(n, 0, Infinity, Cos(n*chi) * Sin(Sqrt(q^2-n^2)*phi) / Sin(2*Sqrt(q^2-n^2)*phi) )$$.
@@ -592,7 +595,7 @@ Use a compressed archive instead of the script library.
 one file, and accessed through this command line option. The advantages
 are:
 
-*	0. smaller disk/memory use (useful if {Yacas} is used on small hand-held computers).
+*	0. Smaller disk/memory use (useful if {Yacas} is used on small hand-held computers).
 *	0. No problems with directory path separators: "{path}/{file}" will always
 resolve to the right file, no matter what platform (read: Windows) it runs on.
 *	0. The start-up time of the program might improve a little, since 
