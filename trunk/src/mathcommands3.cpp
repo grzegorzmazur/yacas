@@ -464,7 +464,7 @@ void LispFastIsPrime(LispEnvironment& aEnvironment, LispPtr& aResult,
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aArguments, 1);
-      LispInt result = primes_table_check((unsigned long)(x->Double()));
+      long result = primes_table_check((unsigned long)(x->Double()));
       BigNumber *z = NEW BigNumber(aEnvironment.Precision());
       z->SetTo(result);
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));

@@ -608,6 +608,7 @@ The bit count of an integer or a floating $0$ is arbitrarily defined to be 1.
 (Optimization of the binary logarithm.)
 C++:
 	x.BitCount(y);
+	x.BitCount();
 Yacas:
 	MathBitCount(x)
 *	{BigNumber::ShiftLeft}, {BigNumber::ShiftRight} -- Bit-shift the number (multiply or divide by the $n$-th power of $2$), {x := y >> n}, {x := y << n}.

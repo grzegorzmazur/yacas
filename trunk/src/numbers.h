@@ -126,7 +126,8 @@ public: //constructors
   // assign from string
   void SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
     // assign from a platform type
-  void SetTo(LispInt value);
+  void SetTo(long value);
+  inline void SetTo(LispInt value) { SetTo(long(value)); };
   void SetTo(double value);
 public: // Convert back to other types
   /// ToString : return string representation of number in aResult to given precision (base digits)
@@ -177,6 +178,10 @@ public:/// Bitwise operations, return result in *this.
   void BitNot(const BigNumber& aX);
   /// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
   void BitCount(const BigNumber& aX);
+  /// give bit count as a platform integer if we can
+  signed long BitCount() const;
+  /// return true if the bit count fits into LispInt
+  LispBoolean BitCountIsSmall() const;
   
   /// Give sign (-1, 0, 1)
   LispInt Sign() const;

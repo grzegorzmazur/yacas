@@ -1313,12 +1313,12 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
 {// FIXME: we use gmp to read into float_, so we cannot read expfloats, e.g. 1.3e123412341234123412341234, which should be possible.
 	//FIXME: need to check that aBase is between 2 and 32
 	// decide whether the string is an integer or a float
-	char* pos = aString;
-  if (strchr(aString, '.') || aBase<=10 && ((pos=strchr(aString, 'e')) || (pos=strchr(aString,'E'))) || (pos=strchr(aString, '@')))
+//	char* pos = aString;
+  if (strchr(aString, '.') || aBase<=10 && (strchr(aString, 'e') || strchr(aString,'E')) || strchr(aString, '@'))
   {	// converting to a float
 	// estimate the number of bits we need to have
 	  // pos points to the position of exponent or to beginning of string if we don't have any exponent
-	  if (pos==aString) pos=aString+strlen(aString);
+	  //if (pos==aString) pos=aString+strlen(aString);
 	 // now pos points to the end of the interesting part of the string
 	 // no exponent, so we find the first and the last nonzero digits
 	  LispInt digit1 = strspn(aString, ".-0");
@@ -1351,7 +1351,7 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase
 
 
 // assign from a platform type
-void BigNumber::SetTo(LispInt value)
+void BigNumber::SetTo(long value)
 {
   turn_int();
   mpz_set_si(int_, value);
@@ -1826,14 +1826,15 @@ void BigNumber::PowerMod(const BigNumber& aX, const BigNumber& aY, const BigNumb
 
 void BigNumber::Floor(const BigNumber& aX)
 {
-
-  if (!aX.IsInt() && !aX.IsExpFloat())
-  {	// aX is float for which we can evaluate Floor()
+// check that aX is a float and that it has enough digits to evaluate its integer part
+  if (!aX.IsInt() && !aX.IsExpFloat() && aX.GetPrecision() >= aX.BitCount())
+  {	// now aX is a float for which we can evaluate Floor()
     turn_float();	// just in case we are integer
     // we are float now
     mpf_floor(float_, aX.float_);
+    BecomeInt();	// we are integer now
   }
-  else if (this != &aX) // no change for integers or for exp floats, but need to assign values
+  else if (this != &aX) // no change for integers or for exp floats, or if we don't have enough digits, but need to assign values
   {
 	SetTo(aX);
   }
@@ -1982,22 +1983,32 @@ void BigNumber::BitNot(const BigNumber& aX)
 }
 
 
-/// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
-void BigNumber::BitCount(const BigNumber& aX)
+/// return true if the bit count fits into signed long
+LispBoolean BigNumber::BitCountIsSmall() const
 {
+	return !IsExpFloat();
+}
+
+// give BitCount as platform integer; if it is an expfloat, give the bit count of the float part
+signed long BigNumber::BitCount() const
+{
+//  LISPASSERT(0);
   long bit_count;
-  if (aX.IsInt())
+  if (IsInt())
   {
-  	(void) mpz_get_d_2exp(&bit_count, aX.int_);	// find the # of digits in base 2
+  	(void) mpz_get_d_2exp(&bit_count, int_);	// find the # of digits in base 2
   }
   else
   {
-  	(void) mpf_get_d_2exp(&bit_count, aX.float_);
+  	(void) mpf_get_d_2exp(&bit_count, float_);
   }
-  // now careful not to overwrite *this
-  if (!IsInt()) turn_int();
-  mpz_set_si(int_, bit_count);
-  if (aX.IsExpFloat()) mpz_add(int_, int_, aX.exponent_);
+  return bit_count;
+}
+/// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
+void BigNumber::BitCount(const BigNumber& aX)
+{
+	SetTo(aX.BitCount());
+	if (aX.IsExpFloat()) mpz_add(int_, int_, aX.exponent_);
 }
 
 
