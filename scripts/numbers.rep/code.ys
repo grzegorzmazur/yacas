@@ -420,7 +420,12 @@ IsCoprime(n_IsInteger,m_IsInteger)      <-- (Gcd(n,m)=1);
         If(a^((p-1)/2) % p == 1, True, False);
 ];
 
-IsGaussianInteger(x_IsComplex)  <-- (IsInteger(Re(x)) And IsInteger(Im(x)));
+5  # IsGaussianInteger(x_IsList)	<-- False;
+// ?????? 
+5  # IsGaussianInteger(ProductPrimesTo257)	<-- False;
+10 # IsGaussianInteger(x_IsComplex)  	<-- (IsInteger(Re(x)) And IsInteger(Im(x)));
+// to catch IsGaussianInteger(x+2) from Apart
+15 # IsGaussianInteger(_x)	<-- False;
 Function("IsGaussianPrime",{x})
 [
         if( IsGaussianInteger(x) )[
@@ -462,4 +467,11 @@ IsAmicablePair(m_IsPositiveInteger,n_IsPositiveInteger) <-- ( ProperDivisorsSum(
 	];
 	irregular;
 
+];
+
+IsSquareFree(n_IsInteger)	<-- ( Moebius(n) != 0 );
+
+10 # GaussianGcd(n_IsGaussianInteger,m_IsGaussianInteger) <--
+[
+	If(N(Abs(m))==0,n, GaussianGcd(m,n - m*Round(n/m) ) );
 ];

@@ -69,7 +69,7 @@ If {Div(x,y)} returns "a" and {Mod(x,y)} equals "b", then these numbers satisfy 
 
 *PARMS
 
-{n}, {m} -- integers or univariate polynomials
+{n}, {m} -- integers or Gaussian integers or univariate polynomials
 
 {list} -- a list of all integers or all univariate polynomials
 
@@ -90,7 +90,7 @@ greatest common divisor:
 *	4. if both $n$ and $m$ are odd and, say, $n>m$ then return $Gcd((n-m)/2,m)$
 
 This is a rather fast algorithm on computers that can efficiently shift
-integers.
+integers. When factoring Gaussian integers, a slower recursive algorithm is used.
 
 If the second calling form is used, {Gcd} will
 return the greatest common divisor of all the integers or polynomials
@@ -103,6 +103,9 @@ $$Gcd(a,b,c) = Gcd(Gcd(a,b),c)$$.
 	Out> 5;
 	In> Gcd({60,24,120})
 	Out> 12;
+	In> Gcd( 7300 + 12*I, 2700 + 100*I)
+	Out> Complex(-4,4);
+
 
 *SEE Lcm
 

@@ -27,4 +27,6 @@ DigitalRoot
 IsTwinPrime
 IsAmicablePair
 IsIrregularPrime
+IsSquareFree
+GaussianGcd
 }

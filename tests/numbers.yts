@@ -78,3 +78,6 @@ Verify( IsIrregularPrime(59), True );
 Verify( IsIrregularPrime(1), False );
 Verify( IsIrregularPrime(11), False );
 
+Verify( Gcd( 324 + 1608*I, -11800 + 7900*I ),Complex(-52,16) );
+Verify( Gcd( 7300 + 12*I, 2700 + 100*I), Complex(-4,4) );
+

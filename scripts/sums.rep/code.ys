@@ -276,4 +276,3 @@ Function("Subfactorial",{n})
 ];
 
 30 # Subfactorial(n_IsList) <-- MapSingle("Subfactorial",n);
-

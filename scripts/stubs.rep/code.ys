@@ -144,6 +144,7 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 1 # Gcd(0,_m) <-- m;
 1 # Gcd(_n,0) <-- n;
 2 # Gcd(n_IsInteger,m_IsInteger) <-- MathGcd(n,m);
+3 # Gcd(_n,_m)_(IsGaussianInteger(m) And IsGaussianInteger(n) )<-- GaussianGcd(n,m);
 
 5 # Gcd(n_IsRationalOrInteger,m_IsRationalOrInteger) <--
 [
@@ -231,6 +232,8 @@ Rule("Gcd",2,100,True)
 20 # Floor(x_IsRational) _ (IsNumber(Numer(x)) And IsNumber(Denom(x))) <-- MathFloor(N(x));
 20 # Ceil (x_IsRational) _ (IsNumber(Numer(x)) And IsNumber(Denom(x))) <-- MathCeil (N(x));
 20 # Round(x_IsRational) _ (IsNumber(Numer(x)) And IsNumber(Denom(x))) <-- MathFloor(N(x+0.5));
+20 # Round(x_IsComplex)  _ (IsRationalOrNumber(Re(x)) And IsRationalOrNumber(Im(x)) ) 
+		<-- MathFloor(N(Re(x)+0.5)) + MathFloor(N(Im(x)+0.5))*I;
 
 //
 // II is the imaginary number Sqrt(-1), and remains that way.
