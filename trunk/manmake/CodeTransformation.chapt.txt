@@ -1,0 +1,403 @@
+
+
+			Syntax conversion for programs written in other languages
+
+		Introduction
+
+At the current writing, {Yacas} is still in its infancy.
+There are currently systems available 
+that have many more years of development behind them.
+{Maxima} for instance has a license that is compatible
+with the {Yacas} license (they are both GPL).
+These systems already implement features and algorithms
+that {Yacas} has yet to implement.
+
+The big difference, in this respect, to the other systems
+is the programming language the code is written in. All these
+algorithms will have to be re-implemented simply because
+{Yacas} runs on top of the {Yacas} scripting language, which
+is different from the languages in which the larger systems
+are implemented.
+
+Another difference is of course that functions (algorithms)
+defined in these systems are built on top of other functions
+defined in these languages. It would thus at first seem
+that one can not simply take a small part of a system
+without taking the entire rest of the system with it.
+
+This chapter addresses the first problem, the one where
+the algorithms are already defined in other languages,
+but with a different syntax. A simple scheme is presented
+here that will hopefully allow conversion of algorithms
+written in a certain syntax to the {Yacas} syntax. The aim
+is to preserve the structure of the original files as much
+as possible. Comments should thus be left untouched.
+Because of this, standard parsing and compilation techniques
+are not fully usable, as these schemes usually throw away
+comments from code parsed in as soon as possible, and the
+intermediate data structures don't offer a place for
+storing comments with sub-expressions.
+
+The potential is huge; hundreds of man-years of 
+research and development went into the other systems,
+and it would thus be a big boost to {Yacas} to be able
+to use these facilities. For this the licensing issues
+with these systems need to be resolved too.
+
+This document will end with a discussion of the second
+problem; being able to take over parts of other systems
+as opposed to having to take over the entire system.
+
+There are two steps to converting code so that it can
+be used in another system:
+
+*	1. converting the syntax so that the code can
+<i>in principle</i> be parsed by the parser for the 
+target language. 
+*	2. converting the 'semantics' of the program,
+so that if the program gets run in the target languag
+the right results follow.
+
+Converting the syntax is usually a large and cumbersome
+task which, as this document will try to show, can easily
+be explained to a computer. The second step, changing the
+semantics, might require hand-work.
+
+
+
+		Rationale
+
+This is an interesting project in the domain of {Yacas}
+for several reasons:
+
+*	1. A 'compiler', which is essentially a program that converts
+code written in text but which can be seen as a definition of data
+that can be represented in a tree structure to some other form (usually
+assembly) is a symbolic transformation operation in a sense. It requires
+reading in the program and automatically converting it to some other
+form using transformation rules. This is something {Yacas} should
+excel at.
+*	1. There is currently a huge code base out on the internet
+which could potentially be used, if it was converted to a form
+that the {Yacas} interpreter accepts.
+*	1. The {Yacas} LISP dialect was designed to make it
+easy to prototype language design ideas in it. As such, it should
+be a good platform for emulating for instance Common Lisp.
+This should facilitate running code from other systems inside
+the {Yacas} system.
+
+
+		General approach
+
+There are three steps to the process of processing source
+code as data. The three steps come close to the {read-eval-print}
+concept from LISP:
+
+*	1. {READ} - read in the tokens
+*	2. {EVAL} - in this case convert the input tokens to the required output.
+*	3. {PRINT} - output the result
+
+The general steps taken by the interpreter are as follows: 
+
+*	1. the system first reads in the entire list of tokens, including
+the spaces and comments between program tokens.
+*	2. The program then parses the file, using a grammar parser 
+appropriate for that language. The structures held in memory refer
+to indices into the array of tokens. So instead of storing the
+tokens, the indices to the tokens in the input stream are remembered.
+*	3. The algorithm proceeds to copy all the tokens to an output 
+stream, which will be the stream of tokens to be written out as the
+final result at the end.
+*	4. Normal {Yacas} transformation rules can then match such
+expressions, and perform transformations as if a programmer was editing
+the file. This is the important part; the algorithm is going to be
+wired as if it is an automated programmer, performing the mechanical
+operations required to change the program. For this, the pattern matcher
+can match tokens in the input stream, and then replace a token
+place holder in the output stream with one or more other tokens in
+the output stream. When replacing, the original tokens in the original
+stream are removed, apart from the comments, which are left alone.
+The result is an output stream where the syntax is converted to
+{Yacas} syntax (hopefully).
+*	5. The final step is to write out the output stream, representing
+a {Yacas} syntax version of the original file.
+
+
+		Applications
+
+The applications are essentially encoded in the middle process,
+where input tokens are converted to output tokens. For the 
+support of one programming language, the {READ} and {PRINT}
+steps will stay the same, but the {EVAL} step will depend on
+what the aim is. The possible operations that the {EVAL} step
+could perform include (but are not limited to):
+
+*	1. Conversion from one programming language to another. This
+is a challenging task, as languages might not map very well.
+*	2. Mapping from the language onto the same language. This
+is also called refactoring. Here, one
+might want to change some constructs, globally. For instance, one
+might want to change a function name, or a variable name, or 
+one might want to force the code to use a function call instead
+of a global variable, etcetera.
+*	3. Code analysis. Some program could perform some automated
+static code checks, to verify that for instance coding standards
+are upheld, or it might point to dangerous constructs in the code.
+*	4. Annotation. One might want to export the source code to
+html form so it can be browsed easily through a web browser. This is
+useful for programmers that try to understand a huge code base they
+see for the first time.
+
+Converting to another programming language is a difficult task, 
+and the author is not aware of other projects that succeeded in 
+this arena. There are alternative approaches; for instance one
+could simply write a parser that converts to an internal format,
+and write a layer of macros to emulate the other programming 
+language. However, the chances are that some handwork will
+be required to get the code in the desirable form. In this
+case an initial conversion into a form that is accepted
+by the normal parser of the programming language already
+aids a lot.
+
+		Implementation
+
+
+		Organization of the source files
+
+The files are organized as follows:
+
+*	1. {codetransform.ys} - this file contains the main code shared by
+all code transformation operations. The code transformation operations 
+defined in this module are explained elsewhere in this document.
+*	2. {[language].ys} - a placeholder for a possible set of macros
+that simulate the programming language in {Yacas}.
+*	3. {[language]reader.ys} - a file defining the tokenizer and 
+parser for a language.
+*	4. {[language][operation].ys} - defines a specific operation to
+be performed on the source files.
+
+In general it should only be necessary to load the
+{[language][operation].ys} file. This file should include the
+file {[language]reader.ys} which in turn should include 
+the file {codetransform.ys}.
+
+		Optimizers
+
+
+		Examples
+
+
+
+		Compatibility modes
+
+The first step is converting {LISP} code to code that
+can be parsed by the {Yacas} interpreter. The next
+step is to get the code to run at all. An initial method
+for this is to define macros that 'simulate' the Common
+Lisp environment. 
+
+The second step is to convert the code to the native
+{Yacas} coding standards. There are two things to consider;
+the general coding standards of the entire system (including
+the use of the facilities provided by Common Lisp), and
+the coding standards used by isolated programmers.
+This is an issue since lots of programmers have worked
+on these large systems, in general. For this it might be
+necessary to write specific optimizers for specific routines,
+as opposed to optimizers for the entire system. The alternative
+is of course to optimize by hand.
+
+		Problems with Common Lisp code interpretation
+
+There are a few problems with Common Lisp that make it difficult
+to emulate it inside Yacas:
+
+*	1. ambiguous semantics - NIL, or {()}, can mean an empty
+list, or it can mean {False} when seen as the result of a predicate.
+{Yacas} has two different concepts for this: "{}" for an empty list,
+and "False" as a "false" return value from a predicate. For each
+function that accepts a boolean as an argument, the transformation
+from  {predicate} to {predicate != {} } needs to be made, and
+for predicates there needs to be a compatibility layer that returns
+"T" or "{}" based on its input.
+*	2. Where Common Lisp can have a list like {(a b c)}, which
+can also be a function call, In {Yacas} {(a b c)} means a function
+call to function {a} with arguments {b} and {c}, whereas a list
+is represented as {(List a b c)}. This means the converter needs
+to figure out if the data at hand is a function call or a list.
+
+
+			Parsing a language
+
+After the tokenizing phase described in the previous section,
+a parser needs to be defined to effectively read in expressions
+in order to manipulate them. The fact that all tokens are
+in memory makes the process of parsing a little easier.
+
+The module {genericparser.ys} defines some functions that
+allow definition of a grammar. The algorithm implemented
+is a recursive-descent parser. This parser can be used with
+the tokenizer implemented in the rest of the code (that is,
+the code maintaining indices into the arrays of tokens).
+
+The code is not concerned about whether the grammar is
+ambiguous per se. Interaction between the tokenizer
+and the parser might be necessary for some languages
+(like C++), if the parser is to read preprocessor 
+directives and template definitions correctly (the 
+tokenizer can temporarily switch to another set of 
+definitions of tokens).
+
+The top-level routine to call is:
+
+	MatchGrammar(grammar);
+
+
+Where a grammar is defined as follows. A grammar is either:
+
+*	1. A string literal. The current token has to match
+this string literal.
+*	1. AcceptToken(type). This accepts a token of a specified
+type, as mentioned in the list of regular expressions.
+*	1. AnyOf(list). Match any of the string literals in the list.
+*	1. A list of sentences. The routine then tries to match 
+the statements, one at a time, and returns the first sentence
+that matches. The full sentence has to match, or no match is made
+at all (and the routine proceeds to the next sentence).
+
+A sentence has the form:
+
+	{Tag,grammar_1,grammar_2,...,grammar_n}
+
+The result returned will be a list with {Tag} as the
+first element (so that pattern matchers can recognize
+it later), and one element for each grammar matched.
+
+
+As a very simple example, consider the following
+definition of a grammar, defined in examplegrammar1.ys:
+
+
+
+	Use("codecheck.rep/codetransform.ys");
+	Use("codecheck.rep/genericparser.ys");
+
+	Expr'Tokens :=
+	{
+	  {"^[\\s]+",Spaces},
+	  {"^//.*?\\n",Comments},
+	  {"^[\\(\\)]",Brackets},
+	  {"^[0-9]+",Atoms},
+	  {"^[\\+\\-\\*]",Operators},
+	  {"^[\\;]",Delimiters},
+	  {"^[a-zA-Z_][a-zA-Z0-9_]*",Atoms},
+	  {"^.+",UnParsed}
+	};
+	statement:=
+	  {
+	    {Statement,expression,";"}
+	  };
+	expression := 
+	  {
+	    {Expr2,term,"+",expression},
+	    {Expr3,term,"-",expression},
+	    {Expr4,term}
+	  };
+	term:=
+	  {
+	    {Term5,factor,"*",term},
+	    {Term6,factor},
+	  };
+	factor :=
+	  {
+	    {SubExpression,"(",expression,")"},
+	    {SimpleAtom,AcceptToken(Atoms)}
+	  };
+
+	100 # Expr'Test'TokenMap(_rest) <-- rest;
+	Expr'Test'PreProcess():= [ ];
+	Expr'Test'PostProcess():=
+	[
+	  Local(nrInputTokens);
+	  nrInputTokens:=Length(CodeTrans'input);
+	  tokenIndex:=0;
+	  NextToken();
+	  While(tokenIndex < nrInputTokens)
+	  [
+	    Local(expression);
+	    expression := MatchGrammar(statement);
+	    MakePostFix(GetInputTokens(expression));
+	  ];
+	];
+	10 # MakePostFix({Statement,_expression,";"} ) 
+	   <--
+	   [
+	     ConvertExpression(expression);
+	     Echo(";");
+	   ];
+	10 # ConvertExpression({Expr2,_term,"+",_expression})
+	   <-- 
+	[
+	  ConvertExpression(term);
+	  Space(1);
+	  ConvertExpression(expression);
+	  Space(1);
+	  WriteString("+");
+	];
+	10 # ConvertExpression({Expr3,_term,"-",_expression}) 
+	   <-- 
+	[
+	  ConvertExpression(term);
+	  Space(1);
+	  ConvertExpression(expression);
+	  Space(1);
+	  WriteString("-");
+	];
+	10 # ConvertExpression({Expr4,_term}) <-- ConvertExpression(term);
+	10 # ConvertExpression({Term5,_factor,"*",_term})
+	   <-- 
+	[
+	  ConvertExpression(factor);
+	  Space(1);
+	  ConvertExpression(term);
+	  Space(1);
+	  WriteString("*");
+	];
+	10 # ConvertExpression({Term6,_factor}) <-- ConvertExpression(factor);
+	10 # ConvertExpression({SimpleAtom,_atom}) <-- WriteString(atom);
+	10 # ConvertExpression({SubExpression,"(",_expression,")"}) <-- ConvertExpression(expression);
+	100 # ConvertExpression(_rest) <-- Echo("UNHANDLED! ",rest);
+
+
+This code defines a simple grammar with addition, subtraction
+and multiplication. Statements are expressions that are
+terminated by a ";". Brackets can be used to define a 
+sub-expression. The code further proceeds to convert 
+the input infix expressions to postfix, as the following
+example interaction will show:
+
+
+	In> Load("examplegrammar1.ys")
+	Out> True;
+	In> FromString("A+B*2;")CodeTransform("Expr","Test")
+	A B 2 * +;
+	A+B*2;Out> True;
+	In> FromString("(A+B)*2;")CodeTransform("Expr","Test")
+	A B + 2 *;
+	(A+B)*2;Out> True;
+
+
+This example also clearly shows how transformation rules
+would map naturally to the lists returned by the parser.
+The variable parts of the sentences can just be matched
+to variables.
+
+The function also outputs the original input, which has
+not been transformed. This facility would allow converting
+the code in place.
+
+
+
+
+
+

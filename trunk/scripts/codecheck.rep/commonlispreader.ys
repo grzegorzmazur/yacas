@@ -1,0 +1,64 @@
+
+
+Use("codecheck.rep/codetransform.ys");
+
+/*
+ * Parser part for reading Common Lisp expressions
+ */
+
+/*
+ * Tokens the LISP tokenizer needs to understand.
+ */
+CommonLisp'Tokens :=
+{
+  {"^[\\s]+",Spaces},
+  {"^;.*?\\n",Comments},
+  {"^[\\(\\)]",Brackets},
+  {"^[\\'\\`\\,]",Quote},
+//TODO remove?  {"^[0-9]+",Integers},
+  {"^\\\".*?\\\"",Atoms},
+  {"^\\#",Atoms},
+  {"^[0-9]*\\.[0-9]+",Atoms},
+  {"^[0-9]+\\.",Atoms},
+  {"^[0-9]+",Atoms},
+  {"^\\.",Atoms},
+  {"^[a-zA-Z0-9\\+\\-\\$\\%\\@\\=\\*\\!\\_\\<\\>\\&\\?\\/]+",Atoms},
+//  {"^[\\S]*",Atoms},
+
+  {"^.+",UnParsed}
+};
+
+
+/*
+ * Convert a source file: scan for S-Expressions, and return (nested)
+lists
+ * of token indices into the input stream.
+ */
+CommonLisp'GetExpression() :=
+[
+  Local(expression);
+  expression:={tokenIndex};
+  tokenIndex++;
+  While (CodeTrans'input[tokenIndex][1] !=  ")")
+  [
+    if (CodeTrans'input[tokenIndex][1] = "(")
+    [
+//      Echo("He?",tokenIndex);
+      DestructiveAppend(expression,CommonLisp'GetExpression());
+    ]
+    else
+    [
+      if (CodeTrans'input[tokenIndex][2] != Spaces And CodeTrans'input[tokenIndex][2] != Comments)
+      [
+        DestructiveAppend(expression,tokenIndex);
+      ];
+      tokenIndex++;
+    ];
+  ];
+  DestructiveAppend(expression,tokenIndex);
+  tokenIndex++;
+  expression;
+];
+
+
+
