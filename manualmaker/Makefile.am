@@ -52,6 +52,7 @@ EXTRA_DIST = \
 # Stuff for automatic generation of Yacas books
 %.chapt: in/%.chapt.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
+
 %.book: in/%.book.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
 
@@ -68,9 +69,9 @@ EXTRA_DIST = \
 	@echo Documentation created: $*.ps
 
 %.pdf: %.dvi
-#	dvipdf $<
 	pdflatex $* > /dev/null
 	@echo Documentation created: $*.pdf
+#	dvipdf $<
 
 # experimental: extract Yacas code from books
 %.ys: %.chapt
