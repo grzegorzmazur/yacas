@@ -804,7 +804,7 @@ causing Yacas to flood its stack:
 The expression "expr" is evaluated with the tracing facility turned
 on. This means that every subexpression, which is evaluated, is shown
 before and after evaluation. Before evaluation, it is shown in the
-forn {TrEnter(x)}, where {x}
+form {TrEnter(x)}, where {x}
 denotes the subexpression being evaluated. After the evaluation the
 line {TrLeave(x,y)} is printed, where {y} is the result of the evaluation. The indentation
 shows the nesting level.
