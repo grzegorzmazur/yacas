@@ -370,10 +370,26 @@ void LoadYacas()
             int fullsize = ftell(fin);
             fseek(fin,0,SEEK_SET);
             unsigned char* fullbuf = (unsigned char*)PlatAlloc(fullsize);
-            fread(fullbuf,1,fullsize,fin);
+            if (fullbuf)
+            {
+                fread(fullbuf,1,fullsize,fin);
+                CCompressedArchive *a =
+                    NEW CCompressedArchive(fullbuf, fullsize, 1);
+                if (a->iFiles.IsValid())
+                {
+                    (*yacas)()().iArchive = a;
+                }
+                else
+                {
+                    printf("Error, %s is not a valid archive file.\n",archive);
+                    delete a;
+                }
+            }
+            else
+            {
+                printf("Archive file %s too large, perhaps it is time we\nimplement disk-accessed compressed files.\n",archive);
+            }
             fclose(fin);
-            (*yacas)()().iArchive =
-                NEW CCompressedArchive(fullbuf, fullsize, 1);
         }
     }
     
