@@ -362,3 +362,7 @@ HessianMatrix(f,v):=GenMatrix({{i,j}, Deriv(v[i]) Deriv(v[j]) f},Length(v),Lengt
 
 // this takes N funcs in 1 var
 WronskianMatrix(f,v):=GenMatrix({{i,j}, Deriv(v,i-1) f[j]}, Length(f), Length(f) );
+
+// notoriously hard to manipulate numerically
+// has analytical expression for H^-1
+HilbertMatrix(n):=GenMatrix({{i,j}, 1/(i+j-1)}, n,n );
