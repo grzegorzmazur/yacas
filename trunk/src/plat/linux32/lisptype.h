@@ -77,6 +77,7 @@
         _o.Write("\n"); \
     }
 
+//            CHECKPTR(_e.iInputStatus.FileName());\
 //            _o.Write("Error on line ");\
 //            _o.Write(linenum);\
 //            _o.Write(" in file [");\

@@ -12,6 +12,7 @@
 	0.4.3 bugfixes: complex I, indeterminate integration; relaxed bracketing of Sin()-like functions; implemented $TeX$ and $LaTeX$ correctly now (using \textrm{})
 	0.4.4 use ordinary instead of partial derivative if expression has only one variable
 	0.4.5 fixes for bracketing of Sum(); added <> to render as \sim and <=> to render as \approx; added Bin()
+        0.4.6 moved the <> and <=> operators to stdopers.ys
 */
 
 /* To do:

@@ -91,6 +91,8 @@ Infix("/:",10000);
 Infix("/::",10000);
 Infix("<-",1000);
 
-
+/* Operators used for manual layout */
+Infix("<>", OpPrecedence("="));
+Infix("<=>", OpPrecedence("="));
 
 

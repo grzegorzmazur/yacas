@@ -283,9 +283,11 @@ LispUserFunction* LispEnvironment::UserFunction(LispPtr& aArguments)
 {
     LispMultiUserFunction* multiUserFunc =
         iUserFunctions.LookUp(aArguments.Get()->String());
+//    CHECKPTR(multiUserFunc);
     if (multiUserFunc != NULL)
     {
         LispInt arity = InternalListLength(aArguments)-1;
+        CHECKPTR(multiUserFunc->UserFunc(arity));
         return  multiUserFunc->UserFunc(arity);
     }
     return NULL;

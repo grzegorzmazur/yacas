@@ -17,6 +17,7 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
 {
     LispObject* head = subList->Get();
     LispUserFunction* userFunc = aEnvironment.UserFunction(*subList);
+    CHECKPTR(userFunc);
     if (userFunc != NULL)
     {
         return userFunc;
@@ -25,9 +26,11 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
     {
         LispMultiUserFunction* multiUserFunc =
         aEnvironment.MultiUserFunction(head->String());
+//        CHECKPTR(multiUserFunc);
         if (multiUserFunc->iFileToOpen!=NULL)
         {
             LispDefFile* def = multiUserFunc->iFileToOpen;
+//            CHECKPTR(def);
 #ifdef YACAS_DEBUG
             /*Show loading... */
             printf("Debug> Loading file %s for function %s\n",def->iFileName->String(),head->String()->String());
@@ -41,6 +44,7 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
             userFunc = aEnvironment.UserFunction(*subList);
         }
     }
+    CHECKPTR(userFunc);
     return userFunc;
 }
 
@@ -82,6 +86,7 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
     }
 
     LispStringPtr str = aExpression.Get()->String();
+    CHECKPTR(str);
 
     // Evaluate an atom: find the bound value (treat it as a variable)
     if (str)
@@ -107,6 +112,7 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
         EvalFuncBase* func = aExpression.Get()->EvalFunc();
         LispPtr* subList = aExpression.Get()->SubList();
 
+//      CHECKPTR(func);
         /*TODO I have to be REALLY sure about this one... */
         if (func)
         {
@@ -121,6 +127,7 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
             {
                 LispEvaluator* evaluator =
                     aEnvironment.Commands().LookUp(head->String());
+//                CHECKPTR(evaluator);
 
                 // Try to find a built-in command
                 if (evaluator)
@@ -136,6 +143,7 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
                     LispUserFunction* userFunc;
 
                     userFunc = GetUserFunction(aEnvironment, subList);
+                    CHECKPTR(userFunc);
                     if (userFunc != NULL)
                     {
                         aExpression.Get()->SetEvalFunc(userFunc);

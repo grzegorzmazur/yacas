@@ -13,7 +13,7 @@ OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
 	patternclass.o patterns.o platmath.o standard.o                \
 	stdcommandline.o stdfileio.o stdstubs.o obmalloc.o stringio.o             \
 	substitute.o tokenizer.o  ctokenizer.o xmltokenizer.o         \
-	yacasapi.o yacasnumbers.o unipoly.o elfdll.o
+	yacasapi.o yacasnumbers.o unipoly.o elfdll.o obmalloc.o
 
 .SUFFIXES: .cpp 
 
@@ -22,7 +22,7 @@ OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
 
 all: libyacasdebug.a yacasdebug
 
-INC = -I./plat/linux32/  -DDEBUG_MODE -DSCRIPT_DIR="\"./\"" -DVERSION="\"Debug\"" \
+INC = -I./plat/linux32/  -DUSE_ASSERT -DDEBUG_MODE -DSCRIPT_DIR="\"./\"" -DVERSION="\"Debug\"" \
 	-DUSE_ASSERT -DYACAS_DEBUG
 
 libyacasdebug.a : $(OBJS)
@@ -34,6 +34,7 @@ yacasdebug: yacasmain.o elfdll.o commandline.o unixcommandline.o stdcommandline.
 
 #	-rm -f libyacasdebug.a
 
+include depend.dep
 
 testscriptdir = ../scripts/
 yacastest = ./yacasdebug -pc --rootdir $(testscriptdir)

@@ -149,6 +149,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     for (i=0;i<nrRules;i++)
     {
         BranchRuleBase* thisRule = iRules[i];
+        CHECKPTR(thisRule);
         LISPASSERT(thisRule != NULL);
 
         st.iRulePrecedence = thisRule->Precedence();
