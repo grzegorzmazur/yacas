@@ -108,11 +108,11 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
   debugmem.h \
 	win32dllresource.h win32yacasdll.h win32yacasdll.cpp \
 	win32yacasdllresource.h yacasdll.dsp yacasdll.dsw yacasdll.rc \
-	setup.py yacasc.i yacas.py \
+	setup.py yacasc.i yacas.py fastprimes.c \
 	epoccli.cpp epoccli.h epoccli.mmp epocclsv.h epocserv.cpp epocserv.h \
 	epocserv.mmp yacas.rss elfdll.cpp
 
-CLEANFILES = fastprimes.c
+CLEANFILES = 
 
 platmath.cpp: fastprimes.c
 
