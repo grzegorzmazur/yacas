@@ -13,6 +13,12 @@ Returns an integer containing the process number (PID) of the Yacas session.
 
 Requires: a Unix shell.
 
+*EG
+	In> GetYacasPID()
+	Out> 26456;
+
+*SEE SystemCall
+
 *CMD ShowPS --- view equations graphically
 *UNIX
 *CALL
@@ -32,6 +38,8 @@ Requires: a Unix shell, {latex}, {dvips}, {gv} or another Postscript viewer.
 	Expression exported as /tmp/yacas-tmp
 	file-28802.tex
 	Out> True;
+
+*SEE TeXForm
 
 *CMD MakeFunctionPlugin --- compile numerical functions into plugins
 *UNIX
@@ -88,7 +96,7 @@ After creating these files, {MakeFunctionPlugin()} will:
 
 If you call {MakeFunctionPlugin()} repeatedly to define a function with the same name, old files will be overwritten and old libraries will be unloaded with {DllUnload()}.
 
-*SEE DllLoad, DllUnload, DllEnumerate
+*SEE DllLoad, DllUnload, DllEnumerate, CForm
 
 
 *CMD GnuPlot --- plot functions of one variable
@@ -120,7 +128,7 @@ this! If you have defined some {f(x)} which accepts a number but does not
 accept an undefined variable, {GnuPlot()} will fail to plot it. Use
 {NFunction()} to overcome this difficulty.
 
-*EG
+*E.G.
 
 	In> f(x) := Cos(( Abs(Pi/x))^1.5);
 	Out> True;
