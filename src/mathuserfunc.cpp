@@ -6,6 +6,7 @@
 #include "standard.h"
 #include "patterns.h"
 #include "patternclass.h"
+#include "substitute.h"
 
 #define InternalEval aEnvironment.iEvaluator->Eval
 
@@ -350,5 +351,167 @@ void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEn
     BranchingUserFunction::Evaluate(aResult, aEnvironment, newArgs);
 }
 
+
+LispBoolean MacroUserFunction::MacroRule::Matches(LispEnvironment& aEnvironment, LispPtr* aArguments)
+{
+  return LispTrue;
+}
+LispInt MacroUserFunction::MacroRule::Precedence() const
+{
+  return 0;
+}
+LispPtr& MacroUserFunction::MacroRule::Body()
+{
+  return iBody;
+}
+
+
+MacroUserFunction::MacroUserFunction(LispPtr& aParameters)
+  : BranchingUserFunction(aParameters)
+{
+    LispIterator iter(aParameters);
+    LispInt i=0;
+    while (iter())
+    {
+        Check(iter()->String() != NULL,KLispErrCreatingUserFunction);
+        iParameters[i].iHold = LispTrue;
+        iter.GoNext();
+        i++;
+    }
+    UnFence();
+}
+
+void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
+              LispPtr& aArguments)
+{
+    LispInt arity = Arity();
+    LispInt i;
+
+    //hier
+    if (Traced())
+    {
+        LispPtr tr;
+        tr.Set(LispSubList::New(aArguments.Get()));
+        TraceShowEnter(aEnvironment,tr);
+        tr.Set(NULL);
+    }
+
+    LispIterator iter(aArguments);
+    iter.GoNext();
+
+    // unrollable arguments 
+    LispPtr* arguments;
+    if (arity==0)
+        arguments = NULL;
+    else
+    {
+        LISPASSERT(arity>0);
+        arguments = NEW LispPtr[arity];
+    }
+    LocalArgs args(arguments);
+
+    // Walk over all arguments, evaluating them as necessary
+    for (i=0;i<arity;i++)
+    {
+        Check(iter() != NULL, KLispErrWrongNumberOfArgs);
+        if (iParameters[i].iHold)
+        {
+            arguments[i].Set(iter()->Copy(LispFalse));
+        }
+        else
+        {
+            Check(iter.Ptr() != NULL, KLispErrWrongNumberOfArgs);
+            InternalEval(aEnvironment, arguments[i], *iter.Ptr());
+        }
+        iter.GoNext();
+    }
+
+    if (Traced())
+    {
+        LispIterator iter(aArguments);
+        iter.GoNext();
+        for (i=0;i<arity;i++)
+        {
+            TraceShowArg(aEnvironment,*iter.Ptr(),
+                  arguments[i]);
+
+            iter.GoNext();
+        }
+    }
+
+    LispPtr substedBody;
+    {
+      // declare a new local stack.
+      LispLocalFrame frame(aEnvironment,LispTrue);
+  
+      // define the local variables.
+      for (i=0;i<arity;i++)
+      {
+          LispStringPtr variable = iParameters[i].iParameter;
+          // set the variable to the new value
+          aEnvironment.NewLocal(variable,arguments[i].Get());
+      }
+  
+      // walk the rules database, returning the evaluated result if the
+      // predicate is LispTrue.
+      LispInt nrRules = iRules.NrItems();
+      UserStackInformation &st = aEnvironment.iEvaluator->StackInformation();
+      for (i=0;i<nrRules;i++)
+      {
+          BranchRuleBase* thisRule = iRules[i];
+          CHECKPTR(thisRule);
+          LISPASSERT(thisRule != NULL);
+  
+          st.iRulePrecedence = thisRule->Precedence();
+          LispBoolean matches = thisRule->Matches(aEnvironment, arguments);
+          if (matches)
+          {
+              st.iSide = 1;
+
+              BackQuoteBehaviour behaviour(aEnvironment);
+              InternalSubstitute(substedBody, thisRule->Body(), behaviour);
+//              InternalEval(aEnvironment, aResult, thisRule->Body());
+              break;
+          }
+  
+          // If rules got inserted, walk back
+          while (thisRule != iRules[i] && i>0) i--;
+      }
+    }
+      
+
+    if (substedBody.Get())
+    {
+        InternalEval(aEnvironment, aResult, substedBody);
+    }
+    else
+    // No predicate was LispTrue: return a new expression with the evaluated
+    // arguments.
+      {
+        LispPtr full;
+        full.Set(aArguments.Get()->Copy(LispFalse));
+        if (arity == 0)
+        {
+            full.Get()->Next().Set(NULL);
+        }
+        else
+        {
+            full.Get()->Next().Set(arguments[0].Get());
+            for (i=0;i<arity-1;i++)
+            {
+                arguments[i].Get()->Next().Set(arguments[i+1].Get());
+            }
+        }
+        aResult.Set(LispSubList::New(full.Get()));
+    }
+FINISH:
+    if (Traced())
+    {
+        LispPtr tr;
+        tr.Set(LispSubList::New(aArguments.Get()));
+        TraceShowLeave(aEnvironment, aResult,tr);
+        tr.Set(NULL);
+    }
+}
 
 

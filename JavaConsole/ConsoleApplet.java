@@ -6,7 +6,7 @@ just random thoughts for now.
 1) typing 'restart' on the command line restarts the system
 2) You can perform initialization calls by adding parameters "initN" in the html
    code, where N is a number from 1 upwards, which have to be in consecutive order.
-
+3) add to the history with "historyN" parameters to the applet
 */
 
 
@@ -46,7 +46,6 @@ public class ConsoleApplet extends Applet implements KeyListener
 
   public void start()
   {  
-    ResetInput();
     out.println("");
     out.println("Welcome to the Yacas console applet!");
     out.println("You can type 'restart' to restart the engine, ");
@@ -73,6 +72,20 @@ public class ConsoleApplet extends Applet implements KeyListener
       PerformRequest("Init>",s);
       i++;
     }
+
+    i=1;
+    while (true)
+    {
+      String argn = "history"+i;
+      String s = getParameter(argn);
+      if (s == null) break;
+      s = unescape(s);
+      history[currentHistoryLine] = s;
+      currentHistoryLine++;
+      i++;
+    }
+
+    ResetInput();
 
   }
   public void stop()

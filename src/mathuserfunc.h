@@ -79,7 +79,7 @@ public:
         virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
         virtual LispInt Precedence() const;
         virtual LispPtr& Body();
-    private:
+    protected:
         LispInt iPrecedence;
         LispPtr iBody;
         LispPtr iPredicate;
@@ -100,7 +100,7 @@ public:
                         LispPtr& aBody);
     void InsertRule(LispInt aPrecedence,BranchRuleBase* newRule);
     virtual LispPtr& ArgList();
-private:
+protected:
     CArrayGrower<BranchParameter> iParameters;
     CDeletingArrayGrower<BranchRuleBase*>     iRules;
     LispPtr iParamList;
@@ -114,6 +114,28 @@ public:
     virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
                   LispPtr& aArguments);
 };
+
+
+class MacroUserFunction : public BranchingUserFunction
+{
+public:
+    MacroUserFunction(LispPtr& aParameters);
+    virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
+                  LispPtr& aArguments);
+    class MacroRule : public BranchRuleBase
+    {
+    public:
+        inline MacroRule(LispPtr& aBody) : iBody(aBody){}
+        virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
+        virtual LispInt Precedence() const;
+        virtual LispPtr& Body();
+    private:
+        LispPtr iBody;
+    };
+
+};
+
+
 
 #endif
 
