@@ -379,6 +379,72 @@ void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
     InternalEval(aEnvironment, aResult, body);
 }
 
+void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnvironment& aEnvironment)
+{
+//LispString text;
+//    {
+//        PrintExpression(text, oper,aEnvironment, 80);
+//        printf("oper %s\n",text.String());
+//
+//    }
+//printf("0...\n");
+    Check(oper.Get()->SubList() != NULL,KLispErrInvalidArg);
+    Check(oper.Get()->SubList()->Get() != NULL,KLispErrInvalidArg);
+    LispPtr oper2;
+    oper2.Set(oper.Get()->SubList()->Get()->Next().Get());
+    Check(oper2.Get() != NULL,KLispErrInvalidArg);
+//printf("1...\n");
+
+    LispPtr body;
+    body.Set(oper2.Get()->Next().Get());
+    Check(body.Get() != NULL,KLispErrInvalidArg);
+
+//printf("2...\n");
+    Check(oper2.Get()->SubList() != NULL,KLispErrInvalidArg);
+    Check(oper2.Get()->SubList()->Get() != NULL,KLispErrInvalidArg);
+    oper2.Set(oper2.Get()->SubList()->Get()->Next().Get());
+
+//printf("3...\n");
+    LispLocalFrame frame(aEnvironment,LispFalse);
+
+//printf("4...\n");
+    while (oper2.Get() != NULL)
+    {
+//printf("4.1..\n");
+        Check(args2.Get() != NULL,KLispErrInvalidArg);
+
+//printf("4.2..\n");
+        LispStringPtr var = oper2.Get()->String();
+        Check(var != NULL,KLispErrInvalidArg);
+
+//PrintExpression(text, args2,aEnvironment, 80);
+//printf("arg %s\n",text.String());
+//printf("4.3..\n");
+        LispPtr newly;
+        newly.Set(args2.Get()->Copy(LispFalse));
+//printf("4.4..\n");
+        aEnvironment.NewLocal(var,newly.Get());
+
+//printf("4.5..\n");
+        oper2.Set(oper2.Get()->Next().Get());
+//printf("4.6..\n");
+        args2.Set(args2.Get()->Next().Get());
+//printf("4.7..\n");
+    }
+//printf("5...\n");
+
+    Check(args2.Get() == NULL,KLispErrInvalidArg);
+//printf("Before eval\n");
+    InternalEval(aEnvironment, aResult, body);
+
+//    {
+//        PrintExpression(text, aResult,aEnvironment, 80);
+//        printf("result %s\n",text.String());
+//
+//    }
+
+}
+
 
 void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
                         LispCharPtr aString)

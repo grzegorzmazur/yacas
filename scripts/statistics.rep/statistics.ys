@@ -11,8 +11,8 @@ Median(x) :=
  If(Mod(n,2) == 1, sx[n2+1], (sx[n2]+sx[n2+1])/2);
 ];
 
-Variance(x) := Sum((x-Mean(x))^2)/Length(x);
-UnbiasedVariance(x) := Sum((x-Mean(x))^2)/(Length(x)-1);
+Variance(x) := Add((x-Mean(x))^2)/Length(x);
+UnbiasedVariance(x) := Add((x-Mean(x))^2)/(Length(x)-1);
 
 // stdev in Wester benchmark
 StandardDeviation(x) := Sqrt(UnbiasedVariance(x)); 

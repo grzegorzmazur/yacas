@@ -407,41 +407,11 @@ void LispApplyPure(LispEnvironment& aEnvironment, LispPtr& aResult,
     }
     else
     {   // Apply a pure function {args,body}.
-        CHK_ARG(oper.Get()->SubList() != NULL,1);
-        CHK_ARG(oper.Get()->SubList()->Get() != NULL,1);
-        LispPtr oper2;
-        oper2.Set(oper.Get()->SubList()->Get()->Next().Get());
-        CHK_ARG(oper2.Get() != NULL,1);
-
-        LispPtr body;
-        body.Set(oper2.Get()->Next().Get());
-        CHK_ARG(body.Get() != NULL,1);
-
-        CHK_ARG(oper2.Get()->SubList() != NULL,1);
-        CHK_ARG(oper2.Get()->SubList()->Get() != NULL,1);
-        oper2.Set(oper2.Get()->SubList()->Get()->Next().Get());
-
         LispPtr args2;
         args2.Set(args.Get()->SubList()->Get()->Next().Get());
-
-        LispLocalFrame frame(aEnvironment,LispFalse);
-
-        while (oper2.Get() != NULL)
-        {
-            CHK_ARG(args2.Get() != NULL,2);
-
-            LispStringPtr var = oper2.Get()->String();
-            CHK_ARG(var != NULL,1);
-
-            LispPtr newly;
-            newly.Set(args2.Get()->Copy(LispFalse));
-            aEnvironment.NewLocal(var,newly.Get());
-
-            oper2.Set(oper2.Get()->Next().Get());
-            args2.Set(args2.Get()->Next().Get());
-        }
-        CHK_ARG(args2.Get() == NULL,2);
-        InternalEval(aEnvironment, aResult, body);
+        CHK_ARG(oper.Get()->SubList() != NULL,1);
+        CHK_ARG(oper.Get()->SubList()->Get() != NULL,1);
+        InternalApplyPure(oper,args2,aResult,aEnvironment);
     }
 }
 
