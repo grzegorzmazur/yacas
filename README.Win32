@@ -25,8 +25,3 @@ was extracted into {c:\myprogs\yacas\}, then it can be invoked with the command
 
 	c:\myprogs\yacas\yacas.exe --archive c:\myprogs\yacas\scripts.dat
 
-
-		Usage notes
-
-The windows version currently works as a console application, so you would need to run it from a command prompt. On first execution, Yacas will ask you for the full path to the library directory. You should enter "C:\Yacas\scripts\" with the trailing backslash (if that is where you installed the library scripts).
-
