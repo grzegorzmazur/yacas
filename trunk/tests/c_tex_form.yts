@@ -63,8 +63,8 @@ TeXForm({a[3]*b[5]-c[1][2],{a,b,c,d}})
 ,"$\\left( a _{3} b _{5} - c _{\\left( 1, 2\\right) }, \\left( a, b, c, d\\right) \\right) $" 
 );
 
-Bodied("aa", 20);
-Infix("bar", 10);
+Bodied("aa", 200);
+Infix("bar", 100);
 
 Verify(
 TeXForm(aa(x,y) z + 1 bar y!)
