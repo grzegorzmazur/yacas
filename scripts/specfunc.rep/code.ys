@@ -139,6 +139,7 @@ Function("ApproxInfSum",{expr,start,x})[
 	ApproxInfSum(expr,start,x,{0});
 ];
 
+/// FIXME this has a roundoff problem when Numeric=True
 // Summation must be on k
 Function("ApproxInfSum",{expr,start,x,c})
 [

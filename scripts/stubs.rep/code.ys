@@ -215,6 +215,15 @@ Rule("Gcd",2,100,True)
 100 # Sign(_a)^n_IsEven <-- 1;
 100 # Sign(_a)^n_IsOdd <-- Sign(a);
 
+5 # Floor(Infinity) <-- Infinity;
+5 # Floor(-Infinity) <-- -Infinity;
+5 # Floor(Undefined) <-- Undefined;
+5 # Ceil(Infinity) <-- Infinity;
+5 # Ceil(-Infinity) <-- -Infinity;
+5 # Ceil(Undefined) <-- Undefined;
+5 # Round(Infinity) <-- Infinity;
+5 # Round(-Infinity) <-- -Infinity;
+5 # Round(Undefined) <-- Undefined;
 10 # Floor(x_IsNumber) <-- MathFloor(x);
 10 # Ceil (x_IsNumber) <-- MathCeil (x);
 10 # Round(x_IsNumber) <-- MathFloor(x+0.5);

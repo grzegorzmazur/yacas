@@ -71,31 +71,7 @@ Function("NrArgs",{aLeft}) Length(Listify(aLeft))-1;
 1 # Denom(_x / _y)      <-- y;
 2 # Denom(x_IsNumber)   <-- 1;
 
-/* Cache the most recently computed value of Pi and its precision
-  This helps because right now every N() requires a new evaluation of Pi
-REMOVE */
-//Set(PiCache, {40, 3.1415926535897932384626433832795028841971694});
-	/* return numerical value recalculated only if necessary
-	  we could get more speed if we also passed the previous value of pi
-	  to MathPi() as its initial guess but that can wait for now */
-/*
-Function("Pi", {})
-[
-	Local(new'prec, new'pi);
-	Set(new'prec, GetPrecision());
-	If ( LessThan(MathNth(PiCache,1), new'prec),
-	[
-		Set(new'pi, MathPi());
-		Set(PiCache, {new'prec, new'pi});
-		new'pi;
-	],
-	MathNth(PiCache,2)
-	);
-];
-*/
-/* Cache the most recently computed value of a constant and its precision
- */
-
+/// Cache the most recently computed value of a constant and its precision in this list
 Set(CacheOfConstants, {});	// format: { {"Pi", 7, 3.1415926}, ...}
 
 /// declare a new cached constant C'atom and its associated function C'atom().
@@ -115,6 +91,7 @@ Rule("CachedConstant", 2, 10, MathAnd(IsAtom(C'atom), IsFunction(C'func)))
 		MacroClear(C'atom);
 		DestructiveInsert(CacheOfConstants, 1, {C'name, 0, 0});
 		// define the new function C'atom()
+		// note: this should only be called when Numeric=True, so no N()
 		MacroRuleBase(C'name, {});
 		`( Rule(@C'name, 0, 1024, True)
 		[
@@ -125,8 +102,8 @@ Rule("CachedConstant", 2, 10, MathAnd(IsAtom(C'atom), IsFunction(C'func)))
 			If(
 			  LessThan(MathNth(cached'C, 2), new'prec),
 			  [	// need to recalculate at current precision
+				If(Equals(Verbose,True), Echo("CachedConstant: Info: constant ", @C'name, " is being recalculated at precision ", new'prec));
 				Set(new'C, Eval(@C'func));
-				If(Equals(Verbose,True), Echo("CachedConstant: Info: constant", @C'name, "is being recalculated at precision ", new'prec));
 				DestructiveReplace(cached'C, 2, new'prec);
 				DestructiveReplace(cached'C, 3, new'C);
 				new'C;
@@ -136,7 +113,7 @@ Rule("CachedConstant", 2, 10, MathAnd(IsAtom(C'atom), IsFunction(C'func)))
 			);
 		]);
 		// calculate C'atom at current precision for the first time
-		Eval(UnList({C'atom}));	//C'name @ {};
+		Eval(UnList({C'atom}));	// C'name @ {};
 	  ],
 	  Echo("CachedConstant: Warning: constant ", C'atom, " already defined")		
 	);
@@ -147,7 +124,6 @@ Rule("CachedConstant", 2, 20, True)
 
 /// declare some constants now
 CachedConstant(Pi, MathPi());
-//CachedConstant(Ln2, BrentLn(2));
 
 /// assign numerical values to all cached constants
 Function("AssignCachedConstants", {})
