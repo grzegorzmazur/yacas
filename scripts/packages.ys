@@ -73,6 +73,7 @@ Set(DefFileList, {
 "tensor.rep/code.ys",
 "testers.rep/code.ys",
 "texform.rep/code.ys",
+"transforms.rep/code.ys",
 "trigsimp.rep/code.ys",
 "univar.rep/Cyclotomic.ys",
 "univar.rep/code.ys",
