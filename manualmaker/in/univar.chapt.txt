@@ -892,8 +892,8 @@ Returns the number of real roots of a polynom $ p $.
 
 *DESC
 
-Return minimum and maximum boubds for the absolute values of the real
-roots of a polynom p. The polynom has to be converted to one with
+Return minimum and maximum bounds for the absolute values of the real
+roots of a polynom {p}. The polynom has to be converted to one with
 rational coefficients first, and be made square-free.
 
 *E.G.
