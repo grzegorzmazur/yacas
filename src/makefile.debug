@@ -12,7 +12,7 @@ OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
 	mathenvironment.o mathuserfunc.o mathutil.o patcher.o          \
 	patternclass.o patterns.o platmath.o standard.o                \
 	stdcommandline.o stdfileio.o stdstubs.o stringio.o             \
-	substitute.o tokenizer.o                                       \
+	substitute.o tokenizer.o  ctokenizer.o                         \
 	yacasapi.o yacasnumbers.o unipoly.o elfdll.o
 
 .SUFFIXES: .cpp 

@@ -11,7 +11,6 @@
 
 #include "ctokenizer.h"
 
-
 LispStringPtr CTokenizer::NextToken(LispInput& aInput,
                                              LispHashTable& aHashTable)
 {
@@ -38,7 +37,8 @@ REDO:
     else if (c == ',') {}
     else if (c == ';') {}
     else if (c == '%') {}
-//    else if (c == '\'') {}
+    else if (c == '~') {}
+    else if (c == '?') {}
     else if (c == '.' && !IsDigit(aInput.Peek()) )
     {
         while (aInput.Peek() == '.')
@@ -76,6 +76,27 @@ REDO:
         {
             if (aInput.Peek() == '\\')
             {
+                aResult.Append('\\');
+                aInput.Next();
+                Check(!aInput.EndOfStream(),KLispErrParsingInput);
+            }
+            aResult.Append(aInput.Next());
+            Check(!aInput.EndOfStream(),KLispErrParsingInput);
+        }
+        aResult.Append(aInput.Next()); // consume the close quote
+        aResult.Append('\0');
+        return aHashTable.LookUp(aResult.String());
+    }
+    else if (c == '\'')
+    {
+        LispString aResult;
+        aResult.SetNrItems(0);
+        aResult.Append(c);
+        while (aInput.Peek() != '\'')
+        {
+            if (aInput.Peek() == '\\')
+            {
+                aResult.Append('\\');
                 aInput.Next();
                 Check(!aInput.EndOfStream(),KLispErrParsingInput);
             }
@@ -94,23 +115,6 @@ REDO:
             aInput.Next();
         }
     }
-
-    else if (IsSymbolic(c))
-    {
-        while (IsSymbolic( aInput.Peek()))
-        {
-            aInput.Next();
-        }
-    }
-    /*REMOVED
-     else if (c == '_')
-    {
-        while (aInput.Peek() == '_')
-        {
-            aInput.Next();
-        }
-        }
-        */
     else if (IsDigit(c) || c == '.')
     {
         while (IsDigit( aInput.Peek())) aInput.Next();
@@ -133,12 +137,114 @@ REDO:
     // Treat the char as a space.
     else
     {
-        goto REDO;
+        switch (c)
+        {
+        case '<':
+        case '>':
+        case '#':
+        case '%':
+        case '!':
+        case '=':
+        case '+':
+        case '-':
+        case '*':
+        case '/':
+        case '^':
+        case '&':
+        case ':':
+        case '|':
+            {
+                int c2 = '\0';
+                if (!aInput.EndOfStream())
+                    c2 = aInput.Peek();
+                switch (c)
+                {
+                case '+':
+                case '-':
+                case '*':
+                case '/':
+                case '^':
+                case '%':
+                case '&':
+                case '=':
+                case '|':
+                case '!':
+                case '<':
+                case '>':
+                    {
+                        int take=0;
+                        if (c2 == '=') take = 1;
+                        if (c == '+' && c2 == '+') take = 1;
+                        if (c == '|' && c2 == '|') take = 1;
+                        if (c == '&' && c2 == '&') take = 1;
+                        if (c == '-' && c2 == '-') take = 1;
+                        if (c == '<' && c2 == '<')
+                        {
+                            aInput.Next();
+                            c2 = aInput.Peek();
+                            if (c2 == '=')
+                                take = 1;
+                        }
+                        if (c == '>' && c2 == '>')
+                        {
+                            aInput.Next();
+                            c2 = aInput.Peek();
+                            if (c2 == '=')
+                                take = 1;
+                        }
+                        if (take)
+                        {
+                            aInput.Next();
+                            c2 = aInput.Peek();
+                        }
+                    }
+                    goto FINISH;
+                case '#':
+                    {
+                        int take=0;
+                        if (c2 == '#') take = 1;
+                        if (take)
+                        {
+                            aInput.Next();
+                            c2 = aInput.Peek();
+                        }
+                        else
+                        {
+                            iPreProcessLine = 1;
+                        }
+                    }
+                    goto FINISH;
+                case ':':
+                    {
+                        int take=0;
+                        if (c2 == ':') take = 1;
+                        if (take)
+                        {
+                            aInput.Next();
+                            c2 = aInput.Peek();
+                        }
+                    }
+                    goto FINISH;
+                default:
+                    goto REDO;
+                }
+                c = c2;
+            }
+
+        case '\n':
+            if (iPreProcessLine)
+            {
+                iPreProcessLine = 0;
+                return aHashTable.LookUpCounted("@EndLine@",9);
+            }
+            goto REDO;
+        default:
+            goto REDO;
+        }
     }
 
 FINISH:
     return aHashTable.LookUpCounted(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos);
 }
-
 
 
