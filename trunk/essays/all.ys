@@ -29,6 +29,7 @@ Chapter()"Essays";
 
 Load("ABIN-grammar.chapt");
 Load("MaintenanceHowto.chapt");
+Load("Plugin_factory.chapt");
 
 //Echo({"1..."});
 //EndOfFile;
