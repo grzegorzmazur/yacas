@@ -1,4 +1,5 @@
 #! /bin/sh
-autoconf
-automake --gnu --include-deps
-./configure
+
+aclocal \
+&& automake --gnu --add-missing \
+&& autoconf
