@@ -224,6 +224,7 @@ private:
     };
 public: //Well... only because I want to be able to show the stack to the outside world...
     LocalVariableFrame *iLocalsList;
+    LispOutput*    iInitialOutput;
 private:
     YacasCoreCommands& iCoreCommands;
     LispUserFunctions& iUserFunctions;

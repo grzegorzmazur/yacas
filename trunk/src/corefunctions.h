@@ -11,6 +11,7 @@ OPERATOR(bodied,KMaxPrecedence,FromFile);
 OPERATOR(bodied,KMaxPrecedence,FromString);
 OPERATOR(bodied,KMaxPrecedence,ToFile);
 OPERATOR(bodied,KMaxPrecedence,ToString);
+OPERATOR(bodied,KMaxPrecedence,ToStdout);
 OPERATOR(bodied,KMaxPrecedence,TraceRule);
 OPERATOR(bodied,KMaxPrecedence,Subst);
 OPERATOR(bodied,KMaxPrecedence,LocalSymbols);
@@ -40,6 +41,7 @@ CORE_KERNEL_FUNCTION("Read",LispRead,0,YacasEvaluator::Function | YacasEvaluator
 CORE_KERNEL_FUNCTION("ReadToken",LispReadToken,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("ToFile",LispToFile,2,YacasEvaluator::Macro | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("ToString",LispToString,1,YacasEvaluator::Macro | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("ToStdout",LispToStdout,1,YacasEvaluator::Macro | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("Load",LispLoad,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 
 //
