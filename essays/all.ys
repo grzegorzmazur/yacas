@@ -1,0 +1,49 @@
+
+DefaultDirectory("../manualmaker/");
+
+ToFile("manicon.html")
+WriteString("<HTML>
+<BODY BGCOLOR=ffffff>
+<A HREF=\"books.html\" TARGET=\"_parent\">
+  <img src=\"yacaslogo.gif\" BORDER=0>
+</A>
+</BODY>
+</HTML>");
+
+
+Use("html.ys");
+SetHtmlDirectory("");
+Use("styleplain");  /* style cheet for the documentation */
+Use("manualmaker"); /* engine that renders book to html */
+
+InitBooks();        /* Initialize book building */
+
+InitBook("essays");
+Blurb()
+"This is a section with essays on using Yacas, varying from
+using the Yacas system for calculations to programming in
+the Yacas scripting language.";
+
+Book()"Essays on Yacas";
+Chapter()"Essays";
+
+Load("ABIN-grammar.chapt");
+//Echo({"1..."});
+//EndOfFile;
+//  GarbageCollect();
+
+/* Emit framed version of the manual. */
+SelectBook("essays");
+EmitHtmlFramed();
+EmitHtmlSimple();
+
+//  GarbageCollect();
+
+/* make the index of framed books */
+EmitBookIndex();
+
+//  GarbageCollect();
+
+
+
+

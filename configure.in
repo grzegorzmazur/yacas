@@ -69,6 +69,7 @@ AC_OUTPUT(yacas.spec
 	inprogress/Makefile
 	proteus/Makefile
 	YacasNotebook/Makefile
+	essays/Makefile
 	manualmaker/Makefile
 	plugins/Makefile
 	scripts/Makefile

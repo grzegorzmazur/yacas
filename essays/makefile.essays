@@ -1,0 +1,13 @@
+
+
+all: ABIN-grammar.chapt essays.html
+
+ABIN-grammar.chapt: ABIN-grammar.txt
+	../manmake/txt2yacasdoc.pl < ABIN-grammar.txt > ABIN-grammar.chapt
+
+essays.html: ABIN-grammar.chapt
+	../src/yacas -pc all.ys
+
+clean:
+	-rm *.chapt *.html core *~
+

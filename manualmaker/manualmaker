@@ -130,7 +130,7 @@ Enumerate(body):=
 [
   "<UL>" : body : "</UL>";
 ];
-Bodied("Enumerate",60000);
+Bodied("Enumerate",2);
 
 Item(body):=
 [
