@@ -274,3 +274,8 @@ RoundTo(.79409678926793169113034892342, 19)
 Verify( RoundTo(N(Erf(50*I+20)/10^910),19), // verified with Maple
 RoundTo(1.09317119002909585408+I*0.00475463306931818955275, 19)
 );
+
+// testing GammaConstNum against Maple
+Testing("Gamma constant");
+Precision(40);
+Verify(GammaConstNum(), 0.5772156649015328606065120900824024310422);
