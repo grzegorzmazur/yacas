@@ -1793,8 +1793,17 @@ void LispGetPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispInFixOperator* op = OperatorInfo(aEnvironment,
                                          aArguments,
                                          aEnvironment.InFix());
-    CHK(op!=NULL, KLispErrIsNotInFix);
-
+    if (op == NULL) {	// also need to check for a postfix or prefix operator
+	    op = OperatorInfo(aEnvironment,
+                          aArguments,
+                          aEnvironment.PreFix());
+        if (op == NULL) {
+			op = OperatorInfo(aEnvironment,
+                              aArguments,
+                              aEnvironment.PostFix());
+    	 	CHK(op!=NULL, KLispErrIsNotInFix);
+		}
+	}
     LispChar buf[30];
     InternalIntToAscii(buf, op->iPrecedence);
     aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(buf)));
@@ -1808,7 +1817,12 @@ void LispGetLeftPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispInFixOperator* op = OperatorInfo(aEnvironment,
                                          aArguments,
                                          aEnvironment.InFix());
-    CHK(op!=NULL, KLispErrIsNotInFix);
+    if (op == NULL) {	// infix and postfix operators have left precedence
+	    op = OperatorInfo(aEnvironment,
+                          aArguments,
+                          aEnvironment.PostFix());
+   	 	CHK(op!=NULL, KLispErrIsNotInFix);
+	}
 
     LispChar buf[30];
     InternalIntToAscii(buf, op->iLeftPrecedence);
@@ -1821,7 +1835,12 @@ void LispGetRightPrecedence(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispInFixOperator* op = OperatorInfo(aEnvironment,
                                          aArguments,
                                          aEnvironment.InFix());
-    CHK(op!=NULL, KLispErrIsNotInFix);
+    if (op == NULL) {	// infix and prefix operators have right precedence
+	    op = OperatorInfo(aEnvironment,
+                          aArguments,
+                          aEnvironment.PreFix());
+   	 	CHK(op!=NULL, KLispErrIsNotInFix);
+	}
 
     LispChar buf[30];
     InternalIntToAscii(buf, op->iRightPrecedence);

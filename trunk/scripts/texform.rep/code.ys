@@ -41,9 +41,11 @@ TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equa
 100 # TeXForm(_x) <-- ConcatStrings("$", TeXForm(x, TeXFormMaxPrec), "$");
 
 /* Replace numbers and variables -- never bracketed except explicitly */
-//110 # TeXForm(Pi, _p) <-- "\\pi ";
-//110 # TeXForm(I, _p) <-- "i";
-//110 # TeXForm(Infinity, _p) <-- "\\infty ";
+
+/* This doesn't work: try TeXForm(I) vs TeXForm(I+1) ... */
+//110 # TeXForm(I, _p) <-- TeXFormSpecialNames["I"];
+//110 # TeXForm(Complex(0, 1), _p) <-- TeXFormSpecialNames["I"];
+
 110 # TeXForm(x_IsNumber, _p) <-- String(x);
 /* Variables */
 200 # TeXForm(x_IsAtom, _p) <-- TeXFormTextify(String(x));
@@ -63,8 +65,8 @@ TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equa
 /* arithmetic */
 
 	/* addition, subtraction, multiplication, all comparison and logical operations are "regular" */
-
-TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv "}, {"=="," = "}, {"="," = "}, {"!=","\\neq "}, {"<=","\\leq "}, {">=","\\geq "}, {"<"," < "}, {">"," > "}, {"And"," \\& "}, {"Or"," | "} };
+/* binary ops */
+TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv "}, {"=="," = "}, {"="," = "}, {"!=","\\neq "}, {"<=","\\leq "}, {">=","\\geq "}, {"<"," < "}, {">"," > "}, {"And"," \\wedge "}, {"Or"," \\vee "} };
 
 	/* This is the template for "regular" binary infix operators:
 100 # TeXForm(_x + _y, _p) <-- TeXFormBracketIf(p<OpPrecedence("+"), ConcatStrings(TeXForm(x, OpLeftPrecedence("+")), " + ", TeXForm(y, OpRightPrecedence("+")) ) );
@@ -72,11 +74,15 @@ TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv "}, {
 
 120 # TeXForm(expr_IsFunction, _p)_(NrArgs(expr)=2 And Contains(AssocIndices(TeXFormRegularOps), Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence(Type(expr)), ConcatStrings(TeXForm(Listify(expr)[2], OpLeftPrecedence(Type(expr))), TeXFormRegularOps[Type(expr)], TeXForm(Listify(expr)[3], OpRightPrecedence(Type(expr))) ) );
 
-	/* unary addition */
-100 # TeXForm(+ _y, _p) <-- TeXFormBracketIf(p<OpPrecedence("+"), ConcatStrings(" + ", TeXForm(y, OpRightPrecedence("+")) ) );
+/* unary ops */
 
-	/* unary subtraction */
-100 # TeXForm(- _y, _p) <-- TeXFormBracketIf(p<OpPrecedence("-"), ConcatStrings(" - ", TeXForm(y, OpRightPrecedence("-")) ) );
+TeXFormRegularPrefixOps := { {"+"," + "}, {"-"," - "}, {"Not"," \\neg "} };
+	/* unary addition */
+	/* Template for "regular" unary prefix operators:
+100 # TeXForm(+ _y, _p) <-- TeXFormBracketIf(p<OpPrecedence("+"), ConcatStrings(" + ", TeXForm(y, OpRightPrecedence("+")) ) );
+	*/
+
+100 # TeXForm(expr_IsFunction, _p)_(NrArgs(expr)=1 And Contains(AssocIndices(TeXFormRegularPrefixOps), Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence(Type(expr)), ConcatStrings(TeXFormRegularPrefixOps[Type(expr)], TeXForm(Listify(expr)[2], OpRightPrecedence(Type(expr))) ) );
 
 	/* division and its operands are never bracketed */
 100 # TeXForm(_x / _y, _p) <-- ConcatStrings("\\frac{", TeXForm(x, TeXFormMaxPrec), "}{", TeXForm(y, TeXFormMaxPrec), "} ");
@@ -92,7 +98,7 @@ TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv "}, {
 
 TeXFormGreekLetters := {"Gamma", "Delta", "Theta", "Lambda", "Xi", "Pi", "Sigma", "Upsilon", "Phi", "Psi", "Omega", "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu", "nu", "xi", "pi", "rho", "sigma", "tau", "upsilon", "phi", "chi", "psi", "omega", "varpi", "varrho", "varsigma", "varphi", "varepsilon"};
 
-TeXFormSpecialNames := { {"I", "i"}, {"Pi", "\\pi "}, {"Infinity", "\\infty "} };
+TeXFormSpecialNames := { {"I", "\\imath "}, {"Pi", "\\pi "}, {"Infinity", "\\infty "} };
 
 /* this function will take a user-defined variable or function name and output either this name unmodified if it's only 2 characters long, or the name in normal text if it's longer, or a TeX Greek letter code */
 Function ("TeXFormTextify", {string})

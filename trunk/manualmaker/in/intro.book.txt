@@ -430,7 +430,7 @@ Create a partial fraction expansion of a polynomial.
 Here is an example of a semi-real numerical calculation using Yacas. The task was to visualize a particular exact solution of an elliptical differential equation. The solution was found as an infinite series. We need to evaluate this infinite series numerically and plot it for particular values of the parameters.
 
 The function $g(q,phi,chi)$ is defined by
-$$g(q,phi,chi)=1/(2*Pi)*Sin(q*phi)/Sin(2*q*phi)+ 1/Pi*Sum(n, 0, Infinity, Cos(n*chi) * Sin(Sqrt(q^2-n^2)*phi) / Sin(Sqrt(q^2-n^2)*phi) )$$
+$$g(q,phi,chi)=1/(2*Pi)*Sin(q*phi)/Sin(2*q*phi)+ 1/Pi*Sum(n, 0, Infinity, Cos(n*chi) * Sin(Sqrt(q^2-n^2)*phi) / Sin(2*Sqrt(q^2-n^2)*phi) )$$
 Here $q$, $phi$ and $chi$ are numerical parameters of the problem. We would like to plot this series evaluated at fixed $q$ and $phi$ as function of $chi$ between 0 and $2*Pi$.
 
 To solve this problem, we prepare a separate file with the following Yacas code:
