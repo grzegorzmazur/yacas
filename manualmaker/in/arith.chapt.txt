@@ -966,16 +966,19 @@ This function is used to test numbers for prime powers.
 
 *PARMS
 
-{m} -- an non-negative integer (m>0)
+{m} -- a non-negative integer ($m>0$)
 
-{n} -- a positive integer greater than 1 (n>1)
+{n} -- a positive integer greater than 1 ($n>1$)
 
 *DESC
 
-{NthRoot(m,n)} calculates/simplifies the nth rooth m^(1/n) and
+{NthRoot(m,n)} calculates the integer part of the $n$-th root $m^(1/n)$ and
 returns a list {{f,r}}. {f} and {r} are both positive integers
-and represent f*r^(1/n)=m^(1/n). For large {m} and small {n}
-{NthRoot} may work quite slow. Every result {{f,r}} for given
+that satisfy $f^n*r$=$m$.
+In other words, $f$ is the largest integer such that $m$ divides $f^n$ and $r$ is the remaining factor.
+
+For large {m} and small {n}
+{NthRoot} may work quite slowly. Every result {{f,r}} for given
 {m}, {n} is saved in a lookup table, thus subsequent calls to
 {NthRoot} with the same values {m}, {n} will be executed quite
 fast.
@@ -1006,9 +1009,9 @@ fast.
 
 *DESC
 
-This command computes the p-adic expansion of "n". In other words,
-"n" is expanded in powers of "p". The argument "n" can be either
-an integer or a univariate polynomial. The base "p" should be of the
+This command computes the $p$-adic expansion of $n$. In other words,
+$n$ is expanded in powers of $p$. The argument $n$ can be either
+an integer or a univariate polynomial. The base $p$ should be of the
 same type.
 
 *E.G.
