@@ -73,9 +73,8 @@ libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 libmath_la_SOURCES = 
 libmath_la_LIBADD = libmath.lo
 
-libmath.cpp: $(top_srcdir)/scripts/base.rep/math.ys
+libmath.cpp: $(top_srcdir)/scripts/base.rep/math.ys yacas
 	(cd ../scripts && make packages.ys corefunctions.ys)
-	make yacas
 	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
 	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
 	./yacas --rootdir  $(top_srcdir)/scripts -pc --init compileinit.txt compile.txt
