@@ -98,7 +98,7 @@ IsStronglyProbablyPrime(b_IsPositiveInteger, n_IsPositiveInteger) <--
   While (continue And prime And (i < 8))
   [	// we do not really need to collect the information about roots of -1 here, so we do not do anything with root
     {root, prime} := IsStronglyProbablyPrime(primetable[i], n);
-    If(Verbose And prime, Echo("RabinMiller: Info:", n, " is spp base", primetable[i]));
+    If(Verbose And prime, Echo("RabinMiller: Info: ", n, "is spp base", primetable[i]));
     continue := (n >= pseudotable[i]);
     i++;
   ];

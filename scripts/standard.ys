@@ -584,9 +584,9 @@ HoldArg(":=+",xleft);
 HoldArg(":=+",yright);
 
 
-a_IsPositiveInteger & b_IsPositiveInteger <-- BitAnd(a,b);
-a_IsPositiveInteger | b_IsPositiveInteger <-- BitOr(a,b);
-a_IsPositiveInteger % b_IsPositiveInteger <-- Mod(a,b);
+a_IsNonNegativeInteger & b_IsNonNegativeInteger <-- BitAnd(a,b);
+a_IsNonNegativeInteger | b_IsNonNegativeInteger <-- BitOr(a,b);
+a_IsNonNegativeInteger % b_IsPositiveInteger <-- Mod(a,b);
 
 RuleBase("if",{predicate,body});
 (if(True) _body) <-- Eval(body);

@@ -16,5 +16,6 @@ ProperDivisors
 ProperDivisorsSum
 Moebius
 Totient
+IsPerfect
 }
 
