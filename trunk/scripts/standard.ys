@@ -466,6 +466,7 @@ LocalSymbols(x)
 70  # (_x ^ m_IsRationalOrNumber) ^ n_IsRationalOrNumber <-- x^(n*m);
 
 80 # (x_IsNumber/y_IsNumber) ^ n_IsPositiveInteger <-- x^n/y^n;
+80 # (x_IsNumber/y_IsNumber) ^ n_IsNegativeInteger <-- y^(-n)/x^(-n);
 80 # x_IsNegativeNumber ^ n_IsEven <-- (-x)^n;
 80 # x_IsNegativeNumber ^ n_IsOdd <-- -((-x)^n);
 
