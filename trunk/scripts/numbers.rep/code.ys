@@ -532,10 +532,10 @@ Function("FactorGaussianInteger",{x}) [
 	if( length < 3)[
 		 carmichael:=False;
 	] else [
-		For(i:=1,i<=length,i++)[
+		For(i:=1,i<=length And carmichael,i++)[
 			//Echo( n-1,"%",factors[i][1]-1,"=", Mod(n-1,factors[i][1]-1) );
 			If( Mod(n-1,factors[i][1]-1) != 0, carmichael:=False );
-			If(factors[i][2]>1,carmichael:=False);
+			If(factors[i][2]>1,carmichael:=False);	// squarefree
 		];
 	];
 	carmichael;
