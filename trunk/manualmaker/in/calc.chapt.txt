@@ -462,7 +462,7 @@ The factorial functions terminate and print an error message if the arguments ar
 *DESC
 
 This function calculates the binomial coefficient "n" above
-"m", which equals $$n! / (n! * (n-m)!)$$
+"m", which equals $$n! / (m! * (n-m)!)$$
 
 This is equal to the number of ways
 to choose "m" objects out of a total of "n" objects if order is
