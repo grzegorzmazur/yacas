@@ -6,7 +6,13 @@ INCLUDES = @FLTK_INCS@ -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/ -DS
 
 bin_PROGRAMS = proteusworksheet
 
-proteusworksheet_LDADD = $(top_srcdir)/src/libyacas.la $(top_srcdir)/src/libyacasplatform.la $(top_srcdir)/src/@NUMBERS_LIB@ @LIBLTDL@ @NUMBERS_LDFLAGS@ @FLTK_LIBS@
+# proteusworksheet_LDADD = $(top_srcdir)/src/libyacas.la $(top_srcdir)/src/libyacasplatform.la $(top_srcdir)/src/@NUMBERS_LIB@ @LIBLTDL@ @NUMBERS_LDFLAGS@ @FLTK_LIBS@
+
+
+proteusworksheet_LDADD = $(top_builddir)/src/libyacas.la $(top_builddir)/src/libyacasplatform.la $(top_builddir)/src/@NUMBERS_LIB@ @LIBLTDL@ @NUMBERS_LDFLAGS@ @FLTK_LIBS@
+
+
+# $(top_srcdir)/
 
 proteusworksheet_cpp_sources = tabs.cpp \
 	editor.cpp \
@@ -41,10 +47,11 @@ install-data-local: $(proteusworksheet_datafiles) $(proteusworksheet_docfiles)
 		$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdatadir)/$$file; \
 	done
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/documentation
-	$(INSTALL_DATA) proteusbooks.html $(DESTDIR)$(pkgdatadir)/documentation/proteusbooks.html
+	$(INSTALL_DATA) $(top_srcdir)/proteus/proteusbooks.html $(DESTDIR)$(pkgdatadir)/documentation/proteusbooks.html
 if MACOS_REZ
-#	/Developer/Tools/Rez -t APPL -o $(bindir)/proteus 
 	`fltk-config --post $(bindir)/proteus`
+
+#	/Developer/Tools/Rez -t APPL -o $(bindir)/proteus 
 endif
 
 
