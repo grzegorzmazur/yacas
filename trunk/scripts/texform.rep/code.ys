@@ -203,3 +203,28 @@ Function ("TeXFormPrintMatrix", {M})
 	ConcatStrings(result, " \\end{array} ");
 ];
 
+/* show a Yacas expression graphically in a PS file */
+TeXShowPS(expr) := [
+/* Read the PID of the Yacas process into the variable PID */
+/*
+	SystemCall("echo $PPID ';' > /tmp/yacas-tmp");
+	PID := FromFile("/tmp/yacas-tmp") Read();
+*/
+	/* Create a temporary file */
+	SystemCall("echo \\\"/tmp/yacas-tmpfile-$$\\\" ';' > /tmp/yacas-tmp");
+	filename := FromFile("/tmp/yacas-tmp") Read();
+	SystemCall("rm -f /tmp/yacas-tmp");
+	ToFile(filename : ".tex") WriteString(
+"\\documentclass{article} \\begin{document} \\thispagestyle{empty}
+" : TeXForm(expr) : "
+\\end{document}
+");
+	WriteString("Expression exported as " : filename : ".tex" : Nl());
+	/* Make PS and determine the minimal bounding box */
+	SystemCall("cd /tmp; latex " : filename : "; dvips -o " : filename : ".ps " : filename : ".dvi");
+	SystemCall("gs -sDEVICE=bbox -dNOPAUSE -dBATCH -q " : filename : ".ps 2>&1 | head -1 | sed -e 's/%%BoundingBox: \\(.*\\)/\"\\1\";/' > " : filename : ".bbox");
+	bbox := FromFile(filename : ".bbox") Read();
+	/* Patch the PS file to display only that bbox */
+	SystemCall("sed -e 's/\\(%%BoundingBox:\\).*/\\1 " : bbox : "/' < " : filename : ".ps > " : filename : ".cut.ps ; gv " : filename : ".cut.ps; rm -f " : filename : ".*");
+
+];
