@@ -15,6 +15,11 @@ yacas_gsl_la_LDFLAGS = $(GSL_LIBS) -module -avoid-version -no-undefined -rpath $
 
 CLEANFILES = yacas_gslapi.cc yacas_gslapi.man.txt gsl_auto.stub
 
+## Ensure we always build yacas_gslapi.man.txt
+all-local: yacas_gslapi.man.txt
+
+if BUILD_GSL_PLUGIN
+
 yacas_gslapi.cc yacas_gslapi.man.txt: yacas_gslapi.stub gsl_auto.stub
 	../../src/yacas --rootdir ../../scripts/:$(top_srcdir)/scripts/ -pc $(srcdir)/yacas_gslapi.stub
 
@@ -23,3 +28,11 @@ gsl_auto.stub : $(srcdir)/../extract_stub.pl
 
 yacas_gsl.dylib: yacas_gsl.lo yacas_gslapi.lo
 	c++ -module -dynamic -undefined suppress -flat_namespace -dynamiclib -o $@ yacas_gsl.lo yacas_gslapi.lo $(LIBS)
+
+else
+
+## If we do not build the GSL plugin, then an empty .man.txt suffices.
+yacas_gslapi.man.txt:
+	touch yacas_gslapi.man.txt
+
+endif
