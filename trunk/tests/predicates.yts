@@ -128,11 +128,13 @@ Verify(IsVector({1,{2,a},4}),False);
 Verify(IsVector({{a,b,c}}),False);
 
 Testing("-- IsVector(IsNumber)");
+Verify(IsVector(IsNumber,1),False);
+Verify(IsVector(IsNumber,{}),True);
 Verify(IsVector(IsNumber,{a,b,c}),False);
 Verify(IsVector(IsNumber,{a,2,c}),False);
 Verify(IsVector(IsNumber,{2,2.5,4}),True);
 Verify(IsVector(IsNumber,{Pi,2,3}),False);
-
+Verify(IsVector(IsNumber,{{1},{2}}),False);
 
 Testing("-- Matrix Predicates");
 
