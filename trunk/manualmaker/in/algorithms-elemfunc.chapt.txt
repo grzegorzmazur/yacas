@@ -313,8 +313,10 @@ The convergence of the continued fraction expansion of $ArcTan(x)$ is indeed bet
 
 This can be understood by the following elementary argument. The difference between two partial continued fractions that differ only by one extra last term can be estimated by
 $$ Abs(delta) := Abs(b[0]/(a[1]+b[1]/(...+b[n-1]/a[n])) - b[0]/(a[1]+b[1]/(...+b[n]/a[n+1])) ) < (b[0]*b[1]*...*b[n])/ ((a[1]*...*a[n])^2 * a[n+1]) $$.
-(This is a conservative estimate that could be slightly improved with more careful analysis. See also the section on numerical continued fractions.) For the above continued fraction for $ArcTan(x)$, this directly gives the following estimate,
-$$ Abs(delta) < (x^(2*n+1)*(n!)^2)/((2*n+1)*((2*n-1)!!)^2) <> x*(x/2)^(2*n) $$.
+(This is a conservative estimate that could be improved with more careful analysis.
+See also the section on numerical continued fractions.)
+For the above continued fraction for $ArcTan(x)$, this directly gives the following estimate,
+$$ Abs(delta) < (x^(2*n+1)*(n!)^2)/((2*n+1)*((2*n-1)!!)^2) <=> Pi*(x/2)^(2*n+1) $$.
 This formula only gives a meaningful bound if $x<2$, but it is clear that the precision generally becomes worse when $x$ grows. If we need $P$ digits of precision, then, for a given $x$, the number of terms $n$ has to be large enough so that the relative precision is sufficient, i.e. $$delta/ArcTan(x) < 10^(-P)$$. This gives $n > (P*Ln(10))/(Ln(4)-2*Ln(x))$ and for $x=1$, $n>3/2*P$. This estimate is very close for small $x$ and only slightly suboptimal for larger $x$: numerical experimentation shows that for $x<=1$, the required number of terms for $P$ decimal digits is only about $4/3*P$, and for $x<=0.42$, $n$ must be $3/4*P$. If $x<1$ is very small then one needs a much smaller number of terms $n > P*Ln(10)/(Ln(4)-2*Ln(x))$.
 Roundoff errors may actually make the result less precise if a larger number of terms is used.
 
@@ -334,11 +336,11 @@ Therefore, at high enough precision the continued fraction method will be much l
 
 *A factorial
 
-*A staggered factorial $n!!$
+*A double factorial $n!!$
 
 The factorial is defined by $n! := n*(n-1)*...*1$ for integer $n$ and the binomial coefficient is defined as
 $$Bin(n,m) := n! / (m! * (n-m)!)$$.
-A "staggered factorial" $n!! := n*(n-2)*(n-4)*...$ is also useful for some calculations.
+A "double factorial" $n!! := n*(n-2)*(n-4)*...$ is also useful for some calculations.
 
 There are two tasks related to the factorial: the exact integer calculation and an approximate calculation to some floating-point precision. Factorial of $n$ has approximately $n*Ln(n)/Ln(10)$ decimal digits, so an exact calculation is practical only for relatively small $n$. In the current implementation, exact factorials for $n>65535$ are not computed but print an error message advising the user to avoid exact computations. For example, {LnGammaNum(n+1)} is able to compute $Ln(n!)$ for very large $n$ to the desired floating-point precision.
 
@@ -359,10 +361,10 @@ $(1 *** m) * ((m+1) *** n)$ for some integer $m$ near $n/2$. The partial factori
 
 Therefore, the tree method wins over the simple method if the cost of multiplication is lower than quadratic.
 
-The tree method can also be used to compute "staggered factorials" ($n!!$). This is faster than to use the identities
+The tree method can also be used to compute "double factorials" ($n!!$). This is faster than to use the identities
 $(2*n)!! = 2^n*n! $ and
 $$ (2*n-1)!! = (2*n)! / (2^n*n!)$$.
-Staggered factorials are used in the exact calculation of the Gamma function of half-integer argument.
+Double factorials are used in the exact calculation of the Gamma function of half-integer argument.
 
 *A binomial coefficients
 
