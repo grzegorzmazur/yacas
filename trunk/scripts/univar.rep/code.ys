@@ -385,16 +385,18 @@ Rule("MakeUni",2,10,Type(expression) = "UniVariate")
   Apply("UniVariate",{expression[1],expression[2],reslist});
 ];
 */
-
-20 # MakeUni(_expression,_var)_(IsFreeOf(expression,var))
-     <-- UniVariate(var,0,{expression});
-30 # MakeUni(_var,_var) <-- UniVariate(var,1,{1});
-30 # MakeUni(_a + _b,_var) <-- MakeUni(a,var) + MakeUni(b,var);
-30 # MakeUni(_a - _b,_var) <-- MakeUni(a,var) - MakeUni(b,var);
-30 # MakeUni(   - _b,_var) <--                - MakeUni(b,var);
-30 # MakeUni(_a * _b,_var) <-- MakeUni(a,var) * MakeUni(b,var);
-30 # MakeUni(_a ^ n_IsInteger,_var) <-- MakeUni(a,var) ^ n;
-30 # MakeUni(_a / _b,_var)_(IsFreeOf(b,var)) <-- MakeUni(a,var) * (1/b);
+LocalSymbols(a,b,var,expression)
+[
+  20 # MakeUni(_expression,_var)_(IsFreeOf(expression,var))
+       <-- UniVariate(var,0,{expression});
+  30 # MakeUni(_var,_var) <-- UniVariate(var,1,{1});
+  30 # MakeUni(_a + _b,_var) <-- MakeUni(a,var) + MakeUni(b,var);
+  30 # MakeUni(_a - _b,_var) <-- MakeUni(a,var) - MakeUni(b,var);
+  30 # MakeUni(   - _b,_var) <--                - MakeUni(b,var);
+  30 # MakeUni(_a * _b,_var) <-- MakeUni(a,var) * MakeUni(b,var);
+  30 # MakeUni(_a ^ n_IsInteger,_var) <-- MakeUni(a,var) ^ n;
+  30 # MakeUni(_a / _b,_var)_(IsFreeOf(b,var)) <-- MakeUni(a,var) * (1/b);
+];
 
 /*TODO remove?
 Rule("MakeUni",2,20,IsFreeOf(expression,var)) UniVariate(var,0,{expression});

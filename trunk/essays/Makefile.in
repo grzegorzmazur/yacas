@@ -70,7 +70,7 @@ RELEASE = @RELEASE@
 VERSION = @VERSION@
 scriptdir = @scriptdir@
 
-EXTRA_DIST = ABIN-grammar.txt ABIN.ys all.ys makefile.essays yacasinit.ys
+EXTRA_DIST = ABIN-grammar.txt ABIN.ys all.ys makefile.essays yacasinit.ys MaintenanceHowto.txt
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 

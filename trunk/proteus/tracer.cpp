@@ -145,7 +145,15 @@ int Fl_My_Browser::load_in(int line, int fileNo)
             sscanf(cmd,"%s",fn);
             file = strdup(fn);
         }
-        fgets(cmd,8192,f);
+
+        int nrs=0;
+//HIER
+        fscanf(f,"%d ",&nrs);
+        if (nrs>7192) nrs=7192;
+        if (nrs) memset(cmd,' ',nrs);
+        cmd[nrs] = '\0';
+//HIER
+        fgets(&cmd[nrs],8192-nrs,f);
         my_insert_line(line, info, cmd,file,l);
         line++;
         added++;
@@ -431,6 +439,11 @@ void NewCalculation()
     fileViewer->clear();
     tracer->clear();
     tracer->load_in(1,0);
+    {
+        char fn[200];
+        sprintf(fn,"%sprofile.sortcounted",tempdir);
+        profiler->load(fn);
+    }
     selected = 1;
     lineptr = NULL;
 

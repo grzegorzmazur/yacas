@@ -120,8 +120,8 @@ OMSymbol :=
   { "", { "error", "unexpected_symbol", {} } }
 };
 
-Load("constants/om.ys");
-Load("stdfuncs/om.ys");
-Load("stubs/om.ys");
-Load("logic/om.ys");
-Load("complex/om.ys");
+Load("constants.rep/om.ys");
+Load("stdfuncs.rep/om.ys");
+Load("stubs.rep/om.ys");
+Load("logic.rep/om.ys");
+Load("complex.rep/om.ys");

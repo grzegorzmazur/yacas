@@ -70,6 +70,9 @@ CntDefLoad("openmath.rep/code.ys");
 CntDefLoad("multivar.rep/code.ys");
 /* set the help system. This can be overridden in ~/.yacasrc */
 
+//Echo({DefPackages});
+//ForEach(item,DefPackages)Use(item);
+
 SetHelpBrowser(browser):=
 [
   Browser:=browser;

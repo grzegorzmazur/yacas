@@ -1,4 +1,5 @@
 
+
 /* example using javascript for outputting a trace of an execution.
  * NiceTraceExp does the same as TraceExp, but exporting the result
  * as a html file with an expandable list (using javascript).
@@ -10,12 +11,16 @@
  */
 
 
-Indent() :=
+TrIndent() :=
 [
+/*TODO remove?
   Local(result,i);
   Set(result,"");
   For(Set(i,Length(traceStack)),i>=1,Set(i,i-1)) [Set(result, result:"    ");];
   result;
+*/
+  2*Length(traceStack);
+
 ];
 Last(list) := list[Length(list)];
 
@@ -23,21 +28,27 @@ Last(list) := list[Length(list)];
 10 # Dump({_expand,_expr1,_expr2}) <--
 [
       Write(expand);Space();Write(0);NewLine();
-      WriteString(indent); WriteString(expr1); WriteString(expr2);NewLine();
+      //TODO remove? WriteString(indent);
+      WriteString(String(indent):":":"Dummy":":");
+      WriteString(expr1); WriteString(expr2);NewLine();
 ];
 10 # Dump({_expand,_expr1,_expr2,_file,0}) <-- 
 [
       Write(expand);Space();Write(0);NewLine();
-      WriteString(indent); WriteString(expr1); WriteString(expr2);NewLine();
+      //TODO remove? WriteString(indent);
+      WriteString(String(indent):":":"Dummy":":");
+      WriteString(expr1); WriteString(expr2);NewLine();
 ];
 20 # Dump({_expand,_expr1,_expr2,_file,_line}) <-- 
 [
       Write(expand);Space();Write(line);NewLine();
       WriteString(file);NewLine();
-      WriteString(indent); WriteString(expr1); WriteString(expr2);NewLine();
+      //TODO remove? WriteString(indent);
+      WriteString(String(indent):":":"Dummy":":");
+      WriteString(expr1); WriteString(expr2);NewLine();
 ];
 
-Dump():=
+TrDump():=
 [
   Local(head);
   Set(head, Head(traceStack));
@@ -48,7 +59,7 @@ Dump():=
       Dump(Head(head));
       Set(head,Tail(head));
     ];
-    Echo({"end"});
+    Echo({"0: :end"});
   ];
 ];
 
@@ -58,8 +69,7 @@ TrEnter(_function,_expr,_file,_line) <--
 
   DestructiveAppend(Head(traceStack),{-1,"ENTER: ",expr,file,line});
   DestructiveInsert(traceStack,1,{});
-  
-  Set(indent, Indent());
+  Set(indent, TrIndent());
 ];
 HoldArg("TrEnter",arg1);
 
@@ -68,7 +78,7 @@ TrLeave(_expr,_result) <--
 [
   if (Length(Head(traceStack)) > 0)
   [
-    Dump();
+    TrDump();
     Set(traceStack, Tail(traceStack));
     Last(Head(traceStack))[1] := traceFile;
     Set(traceFile,traceFile+1);
@@ -77,7 +87,7 @@ TrLeave(_expr,_result) <--
   [
     Set(traceStack, Tail(traceStack));
   ];
-  Set(indent, Indent());
+  Set(indent, TrIndent());
   DestructiveAppend(Head(traceStack),{-1,"LEAVE: ",result});
 ];
 HoldArg("TrLeave",arg1);
@@ -90,14 +100,14 @@ ThunkToTracer() <--
 [
   traceFile := 1;
   traceStack := {{}};
-  indent := Indent();
+  indent := TrIndent();
   last:={};
   Load("trace.tmp");
   While(Length(traceStack)>1) TrLeave("STOPPED","STOPPED");
-  Dump();
+  TrDump();
   traceStack := {{{traceFile,"BEGIN",""},{-1,"END",""}}};
   traceFile := 0;
-  Dump();
+  TrDump();
 ];
 
 
