@@ -62,9 +62,9 @@ and {Yacas}'s answers appear after the prompt
 
 *A {Exit}
 *A {quit}
-*A {^C}
-A {Yacas} session may be terminated by typing {Exit()} or {quit}. Pressing {^C}
-will also quit {Yacas}; however, pressing {^C} while {Yacas} is busy with a
+*A {^}{C}
+A {Yacas} session may be terminated by typing {Exit()} or {quit}. Pressing {^}{C}
+will also quit {Yacas}; however, pressing {^}{C} while {Yacas} is busy with a
 calculation will stop just that calculation. A session can be restarted
 (forgetting all previous definitions and results) by typing
 *A {restart}

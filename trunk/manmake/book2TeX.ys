@@ -90,19 +90,20 @@ HtmlTerm(x) :=
 If(x = "Yacas",
 	"\\textsc{Yacas}",
 	If(
-		HasTexChars(x),
-		"\\small{\\verb|" : x : "|}",
-		"\\small{\\texttt{" : x : "}}"
+		HasTexChars(x)
+//		,"\\verb|" : x : "|",
+		,"\\small{\\texttt{" : TexEscapeTT(x) : "}}"
+		,"\\small{\\texttt{" : x : "}}"
 	)
 );
 
 TexEscapeTT(x) := [
 	Local(i, result);
 	For ([i:=1; result:="";], i<=Length(x), i:=i+1) [
-		If (Contains(TexCharsToEscape, x[i]),
-			result := result : "\\"
+		result := result : If (Contains(TexCharsToEscape, x[i]),
+			"\\" : x[i] : "",
+			x[i]
 		);
-		result := result : x[i];
 	];
 	result;
 ];

@@ -4,7 +4,9 @@ Use("cstubgen.rep/code.ys");
 /* Start generating a c stub file */
 StubApiCStart("GSL");
 
-StubApiCRemark("This plugin links to the Gnu Scientific Library.");
+StubApiCPrettyName("GSL library");
+
+StubApiCPluginPurpose("This plugin provides access to functions from the GNU Scientific Library (GSL). See <*http://www.gnu.org/software/gsl/*> for more information and for documentation on specific library functions.");
 
 /* define an include file for the stub file */
 StubApiCInclude("\"yacas_gsl.h\"");

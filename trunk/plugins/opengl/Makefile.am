@@ -12,9 +12,9 @@ opengl_la_SOURCES = glutcode.cc openglapi.stub glutcode.h
 opengl_la_LIBADD = openglapi.lo
 opengl_la_LDFLAGS = $(GL_LIBS) -module -avoid-version -no-undefined -rpath $(pkglibdir)
 
-CLEANFILES = openglapi.cc openglapi.description
+CLEANFILES = openglapi.cc openglapi.man.txt
 
-openglapi.cc : openglapi.stub
+openglapi.cc openglapi.man.txt: openglapi.stub
 	../../src/yacas --rootdir ../../scripts/:$(top_srcdir)/scripts/ -pc $(srcdir)/openglapi.stub
 
 opengl.dylib: opengl.la

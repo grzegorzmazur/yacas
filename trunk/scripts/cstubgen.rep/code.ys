@@ -17,6 +17,7 @@ StubApiCStart(s_IsString) <--
   prelog := "";
   postlog:="";
   pluginname := s:"Plugin";
+  plugin'pretty'name := s;	// default name, may be overridden
   cstructs:={};
 ];
 
@@ -26,9 +27,9 @@ StubApiCPostlog(s_IsString) <-- [postlog := postlog:s;];
 StubApiCStruct(name) := StubApiCStruct(name,"PlatFree");
 StubApiCStruct(name,free):=
 [
-  cremarks:=cremarks:
-  "----------------------------------------":Nl():
-  "Declared struct ":name:Nl();
+  cremarks:=cremarks:"
+Declared struct {":name:"}
+";
   cstructs[name]:=free;
 ];
 
@@ -38,6 +39,29 @@ StubApiCRemark(text):=
   cremarks:=cremarks:text:Nl();
 ];
 
+StubApiCPrettyName(text) :=
+[
+	plugin'pretty'name := text;
+];
+
+// default purpose is empty, to allow plugins that don't have purpose
+plugin'purpose := "";
+StubApiCPluginPurpose(text) :=
+[
+	plugin'purpose := text;
+];
+// prepare a title for the documentation
+StubMakeTitle() :=
+[
+"
+		The ":plugin'pretty'name:" plugin
+
+":plugin'purpose:"
+
+";
+];
+
+
 StubApiCSetEnv(string):=
 [
   cadders := cadders: "  ":string:"(aEnvironment);
@@ -46,10 +70,8 @@ StubApiCSetEnv(string):=
 
 StubApiCShortIntegerConstant(const,val) :=
 [
-  cremarks:=cremarks:
-  "----------------------------------------":Nl():
-  "Constant ":const:" referred to in the library as ":val:
-"
+  cremarks:=cremarks:"
+Constant {":const:"} refers to the library name	{":val:"}
 ";
   cconsts:= cconsts:PatchString(
 "  SetShortIntegerConstant(aEnvironment, <?Write(const);?>, <?WriteString(val  );?>);
@@ -251,19 +273,28 @@ WriteString(postlog);
 
 StubApiCDocumentFunction(returntype,fname,fname2,args):=
 [
-  cremarks:=cremarks:
-  "----------------------------------------":Nl():
-  "Function ":fname2:Nl():" (referred to within the original library as ":fname:
-  ")":Nl():" with return type ":CArgType(returntype):" and arguments:
-";
-  Local(arg,i);
-  i:=1;
-  ForEach(arg,args)
-  [
-    cremarks:=cremarks:String(i):". ":CArgType(arg):" ":CArgName(arg,i):Nl();
-    i++;
-  ];
+  Local(arg, bare'args, dressed'args, i);
+  /* create a documentation entry of the form
 
+Function {func}({x,y}),
+calls {double func(double x, double y)}
+
+*/
+  bare'args := "";
+  dressed'args := "";
+  i := 1;
+  ForEach(arg, args)
+  [
+  	bare'args := bare'args : If(i=1, "", ",") : CArgName(arg, i);
+	dressed'args := dressed'args : If(i=1, "", "}, {") : CArgType(arg) : "} {" : CArgName(arg, i);
+	i++;
+  ];
+  dressed'args := "{" : dressed'args : "}";
+  cremarks:=cremarks:
+"
+Function {" : fname2  : "}({" : bare'args : "}),
+calls {" : CArgType(returntype) : " " : fname : "} (" : dressed'args : ")
+";
 ];
 
 StubApiCFunction(returntype,fname,args) :=
@@ -288,5 +319,5 @@ StubApiCFunction(returntype,fname,fname2,args) :=
 StubApiCFile(file):=
 [
   ToFile(file:".cc")WriteString(PatchString(fileapi));
-  ToFile(file:".description")WriteString(cremarks);
+  ToFile(file:".man.txt")WriteString(ConcatStrings(StubMakeTitle(), cremarks));
 ];
