@@ -5,7 +5,7 @@
  * both arguments are numbers. The value Infinity is also understood.
 */
 
-10 # n_IsNumber < m_IsNumber <-- LessThan(n,m);
+10 # n_IsAtom < m_IsAtom <-- LessThan(n,m);
 20 # (n1_IsNumber/n2_IsNumber) < (m1_IsNumber/m2_IsNumber) <--
      n1*m2 < m1*n2;
 20 # (n1_IsNumber            ) < (m1_IsNumber/m2_IsNumber) <--
@@ -17,7 +17,7 @@
 30 # n_IsNumber < -Infinity <-- False;
 30 # -Infinity < n_IsNumber <-- True;
 
-10 # n_IsNumber > m_IsNumber <-- GreaterThan(n,m);
+10 # n_IsAtom > m_IsAtom <-- GreaterThan(n,m);
 20 # (n1_IsNumber/n2_IsNumber) > (m1_IsNumber/m2_IsNumber) <--
      n1*m2 > m1*n2;
 20 # (n1_IsNumber            ) > (m1_IsNumber/m2_IsNumber) <--
