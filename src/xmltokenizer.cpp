@@ -22,7 +22,7 @@ LispStringPtr XmlTokenizer::NextToken(LispInput& aInput,
                                 LispHashTable& aHashTable)
 {
     LispChar c;
-    LispInt firstpos;
+    LispInt firstpos=0;
 
     if (aInput.EndOfStream())
         goto FINISH;

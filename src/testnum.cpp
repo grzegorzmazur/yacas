@@ -57,7 +57,7 @@ void CheckStringValue(const BigNumber& x, const char* value, LispInt precision, 
     Check(str, value, test_description);
 }
 
-// check that the two numbers are equal by their string representation in given base
+// check that the two numbers are equal by their string representation in given base to given number of base digits
 void CheckEquals(const BigNumber& x1, const BigNumber& x2, LispInt precision, LispInt base, const char* test_description)
 {
     LispString str1, str2;
@@ -216,7 +216,8 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 // test some integer and float arithmetic
 void TestArith1(const char* str_value, int base, int val1, double val2)
 {
-	long prec=strlen(str_value)*4+50;	// many guard digits
+	const long prec=strlen(str_value)*4+50;	// many guard digits
+	const long print_prec = strlen(str_value)+20;	// at least 20 more digits must be correct
 	BigNumber x(str_value, prec, base);
 	BigNumber x1(x), x2(x), y;
 	
@@ -227,8 +228,8 @@ void TestArith1(const char* str_value, int base, int val1, double val2)
 	x.Add(x,y, prec);
 	x.Negate(x);
 //	Check(x.Equals(x1), "add and subtract an integer");
-	if (!x.Equals(x1)) printf("WARNING: this test may fail due to roundoff error:\n");
-	CheckEquals(x, x1, prec, base, "result of add and subtract an integer");
+	if (!x.Equals(x1)) printf("WARNING: this test may fail due to roundoff error, please check:\n");
+	CheckEquals(x, x1, print_prec, base, "result of add and subtract an integer");
 	x1.SetTo(x);
 	x1.Negate(x1);
 	x1.Add(x1,x, prec);
@@ -248,8 +249,8 @@ void TestArith1(const char* str_value, int base, int val1, double val2)
 	x.Add(x,z, prec);
 //	Check(x.Equals(x1), "add and subtract a double 100 times");
 	x1.BecomeFloat();
-	if (!x.Equals(x1)) printf("WARNING: this test may fail due to roundoff error:\n");
-	CheckEquals(x, x1, prec, base, "result of add and subtract a double 100 times");
+	if (!x.Equals(x1)) printf("WARNING: this test may fail due to roundoff error, please check:\n");
+	CheckEquals(x, x1, print_prec, base, "result of add and subtract a double 100 times");
 	
 	x.SetTo(x2);
 	x1.SetTo(x2);
@@ -263,6 +264,52 @@ void TestArith1(const char* str_value, int base, int val1, double val2)
 	
 }
 
+// both values should be nonzero. We check some basic arithmetic on these double values at normal precision and at high precision
+void TestArith2(double a, double b)
+{
+	BigNumber x;
+	const LispInt prec = 200;
+	x.SetTo(a);
+	BigNumber y;
+	y.SetTo(b);
+	x.Precision(prec);
+	y.Precision(prec);
+	// compute 1/a/b*b*a and compare with 1
+	BigNumber z, t;
+	t.SetTo(1.);
+	z.SetTo(1);	// this is integer but no matter
+	z.Divide(z,x,prec);
+	z.Divide(z,y,prec);
+/*
+	z.Add(z,t,prec);
+	t.Negate(t);
+	z.Add(z,t,prec);
+	t.Negate(t);
+*/
+	z.Multiply(z,x,prec);
+	z.Multiply(z,y,prec);
+//	z.Precision(prec-2);	// round off a little
+	CheckEquals(z,t,50,10,"correct arithmetic at double precision");
+	
+	// compute 2^(-400) * a* b * 2^400 / a/ b and compare with 1
+	t.SetTo(1.);	// this must not be integer
+	t.ShiftRight(t, 4*prec);
+	z.SetTo(x);
+	z.Multiply(z,t,prec);
+	z.Multiply(z,y,prec);
+/*
+	z.Add(z,t,prec);
+	t.Negate(t);
+	z.Add(z,t,prec);
+	t.Negate(t);
+*/
+	z.ShiftLeft(z,4*prec);
+	t.ShiftLeft(t,4*prec);
+	z.Divide(z,x,prec);
+	z.Divide(z,y,prec);
+//	z.Precision(prec-2);	// round off a little
+	CheckEquals(z,t,50,10,"correct arithmetic at high precision");
+}
 
 void TestStringIO(double value, const char* test_string, LispInt precision, LispInt base)
 {	
@@ -342,8 +389,37 @@ int main(void)
 	Next("constructor");
 	BigNumber x;	// default constructor
 	Next("call some functions on objects with undefined values");
+	x.Sign();
 	x.IsInt();
+	Next("1");
 	x.Double();	// value is undefined
+	Next("2");
+	x.Negate(x);
+	Next("3");
+	x.Multiply(x,x,100);
+	Next("4");
+	x.Divide(x,x,100);
+	Next("5");
+	x.Add(x,x,100);
+	Next("6");
+	x.MultiplyAdd(x,x,100);
+	Next("7");
+	x.IsIntValue();
+	Next("8");
+	x.IsSmall();
+	Next("9");
+	x.ShiftLeft(x, 2);
+	Next("10");
+	x.BecomeFloat();
+	Next("11");
+	x.Precision(100);
+	Check(x.GetPrecision()==100, "set precision successfully");
+	x.BecomeInt();
+	Next("12");
+	x.BitOr(x,x);
+	Next("13");
+	x.BitCount(x);
+	
 	Next("construct 0 from string");
 	BigNumber y("0", 10);	// construct
 	Check(y.Double()==0, "value of 0");
@@ -607,6 +683,29 @@ int main(void)
 	y.Precision(10);
 	Check(y.IsIntValue(), "y has integer value due to low precision");
 	CheckStringValue(y, "1234.", 10, 10, "value of y is printed correctly");
+	x.SetTo(1024);
+	x.ShiftRight(x, 10);
+	CheckStringValue(x, "1", 10, 10, "correct ShiftRight on integer 1024");
+	x.ShiftRight(x, 1);
+	CheckStringValue(x, "0", 10, 10, "correct ShiftRight on integer 1");
+	x.ShiftRight(x, 1);
+	CheckStringValue(x, "0", 10, 10, "correct ShiftRight on integer 0");
+	x.SetTo(-1024);
+	x.ShiftLeft(x, 2);
+	CheckStringValue(x, "-4096", 10, 10, "correct ShiftRight on integer -1024");
+	x.ShiftRight(x, 12);
+	CheckStringValue(x, "-1", 10, 10, "correct ShiftRight on integer -4096");
+	x.ShiftRight(x, 1);
+	CheckStringValue(x, "0", 10, 10, "correct ShiftRight on integer -1");
+	x.SetTo(-0.25);
+	x.ShiftRight(x,2);
+	Check(!x.IsInt(), "x has float type");
+	Check(!x.IsIntValue(), "x has float value");
+	CheckStringValue(x, "-0.0625", 10, 10, "correct ShiftRight on float -0.25");
+	x.ShiftLeft(x, 5);
+	Check(!x.IsInt(), "x still has float type");
+	Check(x.IsIntValue(), "x has integer value");
+	CheckStringValue(x, "-2.", 10, 10, "correct ShiftRight on float -0.0625");
 
 	Next("Floor()");
 	x.BecomeFloat();
@@ -732,6 +831,45 @@ int main(void)
 	Check(x.Double()==21, "x==22");
 	CheckStringValue(x, "21.", 10, 10, "10+2*5.5 = 21.");
 	
+	Next("arithmetic 2");
+	TestArith2(1, 2);
+	TestArith2(-1, 2);
+	TestArith2(-1, -2);
+	TestArith2(10,10);
+	TestArith2(0.4, 142);
+	TestArith2(400.1881, -4);
+	TestArith2(-1., 1000000);
+	TestArith2(253,1./253.);
+	TestArith2(1.0e-15, -2.0e-15);
+	
+	Next("precision control");
+	{// compute ((1+2^(-149)) - 1) * 2^149 with 150 bits and compare with 1
+	    BigNumber x;
+	    LispInt prec = 150;
+	    x.SetTo(1.);
+	    x.Precision(prec);
+	    CheckStringValue(x, "1.", 10, 10, "x=1.");
+	    Check(x.GetPrecision()==prec, "correct precision is set on x");
+	    BigNumber y;
+	    y.SetTo(1.);
+	    y.Precision(prec);
+	    y.ShiftRight(y,prec-1);
+	    x.Add(x,y,prec);	// now should be slightly different from 1
+	    y.SetTo(-1);
+	    x.Add(x,y,prec);	// now should be positive
+	    Check(x.Sign()==1, "x is positive");
+	    x.ShiftLeft(x,prec-1);
+	    CheckStringValue(x, "1.", 10, 10, "x=1. again");
+	// compute  (1+10^(-60))-1, this should be 0 with 150 bits
+	    y.SetTo(1.e-60);
+	    y.Precision(prec);
+	    x.SetTo(1.);
+	    x.Precision(prec);
+	    x.Add(x,y,prec);
+	    y.SetTo(-1);
+	    x.Add(x,y,prec);	// now should be 0 due to roundoff
+	    CheckStringValue(x, "0.", 10, 10, "x=0 now");
+	}
 }
 	
 
