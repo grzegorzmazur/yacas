@@ -7,7 +7,8 @@
 # newly compiled version of yacas in ../src (not necessarily under $(srcdir))
 ouryacas = ../src/yacas --rootdir $(top_srcdir)/scripts/:../scripts/
 
-noinst_DATA = @BOOKS_HTML@ # books.html
+# top target
+all-am: @BOOKS_HTML@ @PS_DOCS@ @PDF_DOCS@
 
 BOOKS = intro.book coding.book ref.book refprog.book essays.book Algo.book
 
@@ -106,25 +107,17 @@ yacasapi.chapt.txt : $(top_srcdir)/src/yacasapi.cpp
 yacasapi.chapt: yacasapi.chapt.txt
 	perl $(top_srcdir)/manmake/txt2yacasdoc.pl < $< > $@
 
+PS_DOCS = intro.book.ps coding.book.ps essays.book.ps ref.book.ps refprog.book.ps Algo.book.ps
 
+ps-docs: $(PS_DOCS)
 
-# TeX/PS/PDF top target
-texdocs: \
-		intro.book.tex intro.book.ps intro.book.pdf \
-		coding.book.tex coding.book.ps coding.book.pdf \
-		essays.book.tex essays.book.ps essays.book.pdf \
-		ref.book.tex ref.book.ps ref.book.pdf \
-		refprog.book.tex refprog.book.ps refprog.book.pdf \
-		Algo.book.tex Algo.book.ps Algo.book.pdf
-	echo "done" > texdocs.c
+pdf-docs: intro.book.pdf coding.book.pdf essays.book.pdf ref.book.pdf refprog.book.pdf Algo.book.pdf
 
 clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.idx *.ind *.ilg *.toc *.log *.ps *.pdf \
 	coding*html intro*html ref*html essays*html .o core *~ texdocs.c \
 	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS) \
 	$(CODESNIPPETS) $(ALGOCHAPTERS) in/yacasapi.chapt.txt $(BOOKS) manicon.html
-
-yacas_helpdir = $(datadir)/yacas/documentation
 
 # Newly-built version of yacas with an extended search path
 ouryacas2 = ../src/yacas --rootdir $(top_srcdir)/scripts/:../scripts/:$(srcdir)/:$(srcdir)/in/
@@ -157,13 +150,21 @@ refprog.html : refprog.book $(REFPROGCHAPTERS)
 noindex: intro.html ref.html coding.html essays.html refprog.html
 
 ## Hook to install documentation
-install-data-local: @INSTALL_HTML@ 
+install-data-local: @INSTALL_HTML@ @INSTALL_PS@
 
 install-html: books.html 
-	$(mkinstalldirs) $(yacas_helpdir)/
-	cp $(top_srcdir)/docs/yacaslogo.gif $(yacas_helpdir)/
+	$(mkinstalldirs) $(htmldir)/
+	$(INSTALL_DATA) $(top_srcdir)/docs/yacaslogo.gif $(htmldir)/
 	-for file in *.html; do \
-	$(INSTALL_DATA) $$file $(yacas_helpdir)/$$file; \
+	   $(INSTALL_DATA) $$file $(htmldir)/$$file; \
 	done
 
+install-ps: ps-docs
+	$(mkinstalldirs) $(psdir)/
+	-for file in $(PS_DOCS); do \
+	   $(INSTALL_DATA) $$file $(psdir)/$$file; \
+	   gzip $(psdir)/$$file; \
+	done
+
+	
 
