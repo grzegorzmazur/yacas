@@ -64,5 +64,6 @@ Set(DefFileList, {
 "statistics.rep/statistics.ys",
 "statistics.rep/incompletegamma.ys",
 "statistics.rep/hypothesystest.ys",
+"statistics.rep/distributions.ys",
 "probability.rep/code.ys",
 });
