@@ -76,7 +76,7 @@ SystemCallBg(command) := SystemCall(BackgroundCmd(command));
 	[
 		If(
 			StringMid(i, 1, path) = FilePathSeparator,
-			SetStringMid(i, FilePathSeparators[OSname], path)
+			path:=SetStringMid(i, FilePathSeparators[OSname], path)
 		);
 	];
 	path;
