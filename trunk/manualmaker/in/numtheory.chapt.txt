@@ -927,7 +927,7 @@ if and only if $Re(z)$ is an ordinary prime and $Re(z):=Mod(3,4)$.
 
 *SEE  IsGaussianInteger, GaussianFactors
 
-*CMD Gcd --- greatest common divisor
+*CMD GaussianGcd --- greatest common divisor in Gaussian integers
 *STD
 *CALL
 	Gcd(z,w)
@@ -944,9 +944,9 @@ integers, the greatest common divisor is only defined up to associates.
 
 *E.G.
 
-	In> Gcd(2+I,5)
+	In> GaussianGcd(2+I,5)
 	Out> Complex(2,1);
-	In> Gcd(2+I,3+I)
+	In> GaussianGcd(2+I,3+I)
 	Out> -1;
 
 *SEE Gcd, Lcm
