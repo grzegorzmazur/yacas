@@ -72,9 +72,9 @@ libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 
 
 libmath_la_SOURCES = libmath.cpp
-libmath_la_DEPENDENCIES = yacas gencorefunctions
+libmath_la_DEPENDENCIES = # TODO FIXME need correct dependencies!   yacas gencorefunctions
 
-$(srcdir)/libmath.cpp: yacas $(top_srcdir)/scripts/base.rep/math.ys gencorefunctions core_yacasmain.h 
+$(srcdir)/libmath.cpp: yacas $(top_srcdir)/scripts/base.rep/math.ys  core_yacasmain.h # gencorefunctions
 	(cd ../scripts && make packages.ys corefunctions.ys)
 	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
 	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt

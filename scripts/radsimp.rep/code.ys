@@ -5,9 +5,12 @@
 RadSimp(_n) <--
 [
   Local(max);
+//  Set(n,N(n));
   Set(max, MathCeil(N(n^2)));
   Set(result,0);
   Set(result,RadSimpTry(n,0,1,max));
+
+//Echo("result is ",result);
   if (CheckRadicals(n,result))
     result
   else
@@ -25,6 +28,7 @@ CheckRadicals(_n,_test) <-- Abs(N(n-test,20)) < 0.000001;
 
 RadSimpTry(_n,_result,_current,_max)<--
 [
+//Echo(result," ",n," ",current);
   if (LessThan(N(result-n), 0))
   [
     Local(i);

@@ -56,17 +56,58 @@ Pslq(x, precision) :=
   For(k:=1,k<=n,k++)
   [
     tmp:=0;
-    For (j:=k,j<=n,j++) tmp:=tmp + x[j]^2;
-    s[k]:=N(Eval(Sqrt(tmp)));
+    For (j:=k,j<=n,j++) tmp:=tmp + N(x[j]^2);
+//tmp:=MathDivide(tmp,1.0);
+//Echo("tmp is ",tmp);
+//MathDebugInfo(tmp);
+/*If(Not IsPositiveNumber(tmp),
+  Echo("******** not a positive number: ",tmp)
+);
+If(Not IsNumber(tmp),
+  Echo("******** not a number: ",tmp)
+);
+If(LessThan(tmp,0),
+[
+  Echo("******** not positive: ",tmp);
+]
+);*/
+
+    s[k]:=MathSqrt(tmp);
+
+
+/*If(Not IsNumber(tmp),
+[
+Echo("************** tmp = ",tmp);
+]);
+If(Not IsNumber(s[k]),
+[
+Echo("************** s[k] = ",s[k]);
+]);*/
+
   ];
 
 //Echo("3...");
 
-  tmp:=s[1];
+  tmp:=N(Eval(s[1]));
+/*If(Not IsNumber(tmp),
+[
+Echo("************** tmp = ",tmp);
+]);*/
+
   For (k:= 1,k<= n,k++)
   [
     y[k]:=N(Eval(x[k]/tmp));
     s[k]:=N(Eval(s[k]/tmp));
+
+/*If(Not IsNumber(y[k]),
+[
+Echo("************** y[k] = ",y[k]);
+]);
+If(Not IsNumber(s[k]),
+[
+Echo("************** s[k] = ",s[k]);
+]);*/
+
   ];
   H:=ZeroMatrix(n, n-1);
 
@@ -74,14 +115,21 @@ Pslq(x, precision) :=
   For (i:=1,i<= n,i++)
   [
 
-    if (i <= n-1)  [ H[i][i]:=s[i + 1]/s[i]; ];
+    if (i <= n-1)  [ H[i][i]:=N(s[i + 1]/s[i]); ];
 
 //Echo("4.1...");
     For (j:= 1,j<=i-1,j++)
     [
 //Echo("4.2...");
-      H[i][j]:= -(y[i]*y[j])/(s[j]*s[j + 1]);
+      H[i][j]:= N(-(y[i]*y[j])/(s[j]*s[j + 1]));
 //Echo("4.3...");
+
+/*If(Not IsNumber(H[i][j]),
+[
+Echo("************** H[i][j] = ",H[i][j]);
+]
+);*/
+
     ];
   ];
 
@@ -111,8 +159,11 @@ Pslq(x, precision) :=
   While (Not(found))
   [
     m:=1;
+//Echo("1...");
     maxi:=N(gam*Abs(H[1][1]));
+//Echo("2...",maxi);
     gami:=gam;
+//Echo("3...");
     For (i:= 2,i<= n-1,i++)
     [
       gami:=gami*gam;
@@ -123,9 +174,11 @@ Pslq(x, precision) :=
         m:=i;
       ];
     ];
+//Echo("4...",maxi);
     tmp:=y[m + 1];
     y[m + 1]:=y[m];
     y[m]:=tmp;
+//Echo("5...");
     For (i:= 1,i<=n,i++)
     [
       tmp:=A[m + 1][ i];
@@ -135,25 +188,36 @@ Pslq(x, precision) :=
       B[i][ m + 1]:=B[i][ m];
       B[i][ m]:=tmp;
     ];
+//Echo("6...");
     For (i:=1,i<=n-1,i++)
     [
       tmp:=H[m + 1][ i];
+
       H[m + 1][ i]:=H[m][ i];
       H[m][ i]:=tmp;
     ];
+//Echo("7...");
     if (m < n-1)
     [
       t0:=N(Eval(Sqrt(H[m][ m]^2 + H[m][ m + 1]^2)));
+
       t1:=H[m][ m]/t0;
       t2:=H[m][ m + 1]/t0;
       For (i:=m,i<=n,i++)
       [
         t3:=H[i][ m];
         t4:=H[i][ m + 1];
+//Echo("    t1 = ",t1);
+//Echo("    t2 = ",t2);
+//Echo("    t3 = ",t3);
+//Echo("    t4 = ",t4);
         H[i][ m]:=t1*t3 + t2*t4;
+//Echo("7.1... ",H[i][ m]);
         H[i][ m + 1]:= -t2*t3 + t1*t4;
+//Echo("7.2... ",H[i][ m+1]);
       ];
     ];
+//Echo("8...");
     For (i:= 1,i<= n,i++)
     [
       For (j := Min(i-1, m + 1),j>= 1,j--)
@@ -168,17 +232,27 @@ Pslq(x, precision) :=
         ];
       ];
     ];
+//Echo("9...",N(H[1],10));
+
     /* Precision(10);*/ /*low precision*/
-    maxi := (H[1] .  H[1]);
+    maxi := N(H[1] .  H[1],10);
+
+//Echo("9... maxi = ",maxi);
+
     For (j:=2,j<=n,j++)
     [
-      tmp:=(H[j] . H[j]);
+//Echo("9.1...");
+      tmp:=N(H[j] . H[j],10);
+//Echo("9.2...");
       if (maxi < tmp) [ maxi:=tmp; ];
+//Echo("9.3...");
     ];
+//Echo("10...");
     norme:=N(Eval(1/Sqrt(maxi)));
     m:=1;
     mini:=N(Eval(Abs(y[1])));
     maxi:=mini;
+//Echo("11...");
     For (j:=2,j<=n,j++)
     [
       tmp:=N(Eval(Abs(y[j])));
@@ -190,7 +264,7 @@ Pslq(x, precision) :=
       if (tmp > maxi) [ maxi:=tmp; ];
     ];
     /* following line may be commented */
-//    Echo({"Norm bound:",norme," Min=",mini," Conf=",mini/maxi}); 
+//Echo({"Norm bound:",norme," Min=",mini," Conf=",mini/maxi," required ",Confidence}); 
     if ((mini/maxi) < Confidence) /*prefered to : if mini < 10^(- precision) then*/
     [
     /* following line may be commented */
@@ -204,12 +278,15 @@ Pslq(x, precision) :=
       maxi:=Abs(A[1][ 1]);
       For (i:=1,i<=n,i++)
       [
+//Echo("i = ",i," n = ",n);
         For (j:=1,j<=n,j++)
         [
+//Echo("j = ",j," n = ",n);
           tmp:=Abs(A[i][ j]);
           if (maxi < tmp) [ maxi:=tmp;];
         ];
       ];
+//Echo("maxi = ",maxi);
       if (maxi > 10^(precision))
       [
         Precision(ndigits);
@@ -217,6 +294,7 @@ Pslq(x, precision) :=
         found:=True;
       ];
       Precision(precision+2);
+//Echo("CLOSE");
     ];
   ];
   result;

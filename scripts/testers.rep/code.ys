@@ -2,7 +2,7 @@
 /* Functions that aid in testing */
 
 /* Round to specified number of digits */
-RoundTo(x_IsNumber, prec_IsPositiveInteger) <-- 
+10 # RoundTo(x_IsNumber, prec_IsPositiveInteger) <-- 
 [
   Local(oldPrec,result);
   oldPrec:=GetPrecision();
@@ -12,7 +12,11 @@ RoundTo(x_IsNumber, prec_IsPositiveInteger) <--
   result;
 ];
 // complex numbers too
-RoundTo(Complex(r_IsNumber, i_IsNumber), prec_IsPositiveInteger) <-- Complex(RoundTo(r, prec), RoundTo(i, prec));
+10 # RoundTo(Complex(r_IsNumber, i_IsNumber), prec_IsPositiveInteger) <-- Complex(RoundTo(r, prec), RoundTo(i, prec));
+
+// Infinities, rounding does not apply.
+20 # RoundTo( Infinity,prec_IsPositiveInteger) <--  Infinity;
+20 # RoundTo(-Infinity,prec_IsPositiveInteger) <-- -Infinity;
 
 Macro(NumericEqual,{left,right,precision})
 [

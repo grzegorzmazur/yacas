@@ -1110,6 +1110,12 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
     if (precision<aOther.GetPrecision()) precision = aOther.GetPrecision();
     diff.Add(*this,otherNeg,BITS_TO_DIGITS(precision,10));
 
+#ifdef CORRECT_DIVISION
+    // if the numbers are float, make sure they are normalized
+    if (diff.iNumber->iExp || diff.iNumber->iTensExp) NormalizeFloat(*diff.iNumber,WordDigits(diff.iNumber->iPrecision, 10));
+#endif // CORRECT_DIVISION
+
+
     return !Significant(*diff.iNumber);
   }
 }
