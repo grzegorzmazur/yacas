@@ -111,6 +111,8 @@ returned.
 This algorithm works well if the initial number of points and the {depth}
 parameter are large enough.
 
+Singularities in the function are handled by the step 3. Namely, the algorithm checks whether the function returns a non-number (e.g. {Infinity}) and if so, the sign change is always considered to be "too rapid". Thus, the intervals immediately adjacent to the singularity will be plotted at the highest allowed refinement level. When plotting the resulting data, the singular points are simply not printed the data file and the plotting programs do not have any problems.
+
 The meaning of Newton-Cotes quadrature coefficients is that an integral is approximated as
 
 $$(Integrate(x,a[0],a[n]) f(x)) <=> h*Sum(k,0,n,c[k]*f(a[k]))$$,
