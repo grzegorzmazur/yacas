@@ -23,6 +23,12 @@ CountBits(value) :=
 /* Fast prime testing: if n is a prime, then 24 divides (n^2-1) */
 5 # IsPrime(n_IsPositiveInteger)_(n > 4 And Mod(n^2-1,24)!=0) <-- False;
 
+/* Determine if a number is prime, using Rabin Miller primality
+   testing. Code submitted by Christian Obrecht
+ */
+10 # IsPrime(n_IsPositiveInteger) <-- RabinMiller(n);
+
+/*TODO remove?
 10 # IsPrime(n_IsPositiveInteger) <--
 [
   Local(result);
@@ -35,7 +41,7 @@ CountBits(value) :=
   result;
 ];
 20 # IsPrime(_n) <-- False;
-
+*/
 
 /*code by Bernhard Oemer, borrowed from OpenQuBit
  * project.

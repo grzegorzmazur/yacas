@@ -1,0 +1,177 @@
+/*
+Orthogonal polynomials
+version 1.0
+(Serge Winitzki)
+
+Usage:
+	OrthoP(n, x) gives the n-th Legendre polynomial, evaluated on x
+	OrthoP(n, a, b, x) gives the n-th Jacobi polynomial with parameters a, b, evaluated on x
+	OrthoG(n, a, x) gives the n-th Gegenbauer polynomial
+	OrthoH(n, x) gives the n-th Hermite polynomial
+	OrthoL(n, a, x) gives the n-th Laguerre polynomial
+	OrthoT(n, x) gives the n-th Tschebyscheff polynomial of the 1st kind
+	OrthoU(n, x) gives the n-th Tschebyscheff polynomial of the 2nd kind
+	Here n must be an integer, n>=0
+
+An internal function that may be useful:
+	OrthoPolyCoeffs(name_IsString, n_IsInteger, parameters_IsList) returns a list of coefficients of the polynomial. Here "name" must be one of the predefined names: "Jacobi", "Gegenbauer", "Hermite", "Laguerre", "Tscheb1",  "Tscheb2"; and "parameters" is a list of extra parameters for the given family of polynomials, e.g. {a,b} for the Jacobi, {a} for Laguerre and {} for Hermite polynomials.
+
+We represent polynomials by a list of coefficients rather than as expressions, for efficiency. Polynomials are evaluated using the Horner scheme. On numerical arguments, evaluations are direct and the coefficients are not computed, only the results.
+*/
+
+OrthoP(n_IsInteger, _x)_(n>=0) <-- OrthoP(n, 0, 0, x);
+OrthoP(n_IsInteger, a_IsRationalOrNumber, b_IsRationalOrNumber, _x)_(n>=0 And a> -1 And b> -1) <-- OrthoPoly("Jacobi", n, {a, b}, x);
+
+OrthoG(n_IsInteger, a_IsRationalOrNumber, _x)_(n>=0 And a> -1/2) <-- OrthoPoly("Gegenbauer", n, {a}, x);
+
+OrthoH(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Hermite", n, {}, x);
+
+OrthoL(n_IsInteger, a_IsRationalOrNumber, _x)_(n>=0 And a> -1) <-- OrthoPoly("Laguerre", n, {a}, x);
+
+OrthoT(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Tscheb1", n, {}, x);
+OrthoU(n_IsInteger, _x)_(n>=0) <-- OrthoPoly("Tscheb2", n, {}, x);
+
+/*
+All orthogonal polynomials are evaluated using a general routine OrthoPolyCoeffs that generates their coefficients recursively.
+
+The recurrence relations start with n=0 (the polynomial is always 1 at n=0) and n=1 and continue for n>1. The argument "p" is a list of extra parameters.
+
+	For Legendre/Jacobi polynomials: (a>-1, b>-1)
+P(0,a,b,x):=1
+P(1,a,b,x):=(a-b)/2+x*(1+(a+b)/2)
+P(n,a,b,x):=(2*n+a+b-1)*(a^2-b^2+x*(2*n+a+b-2)*(2*n+a+b))/(2*n*(n+a+b)*(2*n+a+b-2))*P(n-1,a,b,x)-(n+a-1)*(n+b-1)*(2*n+a+b)/(n*(n+a+b)*(2*n+a+b-2))*P(n-2,a,b,x)
+
+	For Hermite polynomials:
+H(0,x):=1
+H(1,x):=2*x
+H(n,x):=2*x*H(n-1,x)-2*(n-1)*H(n-2,x)
+
+	For Gegenbauer polynomials: (a>-1/2)
+G(0,a,x):=1
+G(1,a,x):=2*a*x
+G(n,a,x):=2*(1+(a-1)/n)*x*G(n-1,a,x)-(1+2*(a-2)/n)*G(n-2,a,x)
+ 
+	For Laguerre polynomials: (a>-1)
+L(0,a,x):=1
+L(1,a,x):=a+1-x
+L(n,a,x):=(2+(a-1-x)/n)*L(n-1,a,x)-(1+(a-1)/n)*L(n-2,a,x)
+
+	For Tschebycheff polynomials of the first kind:
+T(0,x):=1
+T(1,x):=x
+T(n,x):=2*x*T(n-1,x)-T(n-2,x)
+
+	For Tschebycheff polynomials of the second kind:
+U(0,x):=1
+U(1,x):=2*x
+U(n,x):=2*x*U(n-1,x)-U(n-2,x)
+
+The database "KnownOrthoPoly" contains closures that return coefficients for the recurrence relations of each family of polynomials. KnownOrthoPoly["name"] is a closure that takes two arguments: the order (n) and the extra parameters (p), and returns a list of two lists: the first list contains the coefficients {A,B} of the n=1 polynomial, i.e. "A+B*x"; the second list contains the coefficients {A,B,C} in the recurrence relation, i.e. "P_n = (A+B*x)*P_{n-1}+C*P_{n-2}". (So far there are only 3 coefficients in the second list, i.e. no "C+D*x", but we don't want to be limited.)
+*/
+
+KnownOrthoPoly := Hold({
+	{"Jacobi", {{n, p}, {{(p[1]-p[2])/2, 1+(p[1]+p[2])/2}, {(2*n+p[1]+p[2]-1)*((p[1])^2-(p[2])^2)/(2*n*(n+p[1]+p[2])*(2*n+p[1]+p[2]-2)), (2*n+p[1]+p[2]-1)*(2*n+p[1]+p[2])/(2*n*(n+p[1]+p[2])), -(n+p[1]-1)*(n+p[2]-1)*(2*n+p[1]+p[2])/(n*(n+p[1]+p[2])*(2*n+p[1]+p[2]-2))}}}},
+	{"Gegenbauer", {{n, p}, {{0, 2*p[1]}, {0, 2+2*(p[1]-1)/n, -1-2*(p[1]-1)/n}}}},
+	{"Laguerre", {{n, p}, {{p[1]+1, -1}, {2+(p[1]-1)/n, -1/n, -1-(p[1]-1)/n}}}},
+	{"Hermite", {{n, p}, {{0,2}, {0, 2, -2*(n-1)}}}},
+	{"Tscheb1", {{n, p}, {{0,1}, {0,2,-1}}}},
+	{"Tscheb2", {{n, p}, {{0,2}, {0,2,-1}}}}
+});
+/* Numeric arguments are processed by a faster routine */
+10 # OrthoPoly(name_IsString, _n, p_IsList, x_IsRationalOrNumber) _ (KnownOrthoPoly[name] != Empty) <-- OrthoPolyNumeric(name, n, p, x);
+20 # OrthoPoly(name_IsString, _n, p_IsList, _x) _ (KnownOrthoPoly[name] != Empty) <-- EvaluateHornerScheme(OrthoPolyCoeffs(name, n, p), x);
+
+/* OrthoPolyNumeric computes the value of the polynomial from recurrence relations directly. Do not use with non-numeric arguments! */
+OrthoPolyNumeric(name_IsString, n_IsInteger, p_IsList, _x) <-- [
+	Local(value1, value2, value3, ruleCoeffs, index);
+	value1 := 1;
+	ruleCoeffs := Apply(KnownOrthoPoly[name], {n, p})[1];	
+	value2 := ruleCoeffs[1] + x*ruleCoeffs[2];
+	index := 1;
+	While(index<n) [
+		index := index + 1;
+		ruleCoeffs := Apply(KnownOrthoPoly[name], {index, p})[2];		
+		value3 := (ruleCoeffs[1] + x*ruleCoeffs[2])*value2 + ruleCoeffs[3]*value1;
+		value1 := value2;
+		value2 := value3;
+	];
+	value2;
+];
+
+/* OrthoPolyCoeffs(name, n, p) returns the list of coefficients for orthogonal polynomials, starting with the lowest powers. */
+
+10 # OrthoPolyCoeffs(name_IsString, 0, p_IsList) <-- {1};
+10 # OrthoPolyCoeffs(name_IsString, 1, p_IsList) <-- Apply(KnownOrthoPoly[name], {1, p})[1];
+
+/* Simple implementation, very slow, for testing only: recursive rule matches, no loops
+20 # OrthoPolyCoeffs(name_IsString, n_IsInteger, p_IsList)_(n>1) <-- [
+	Local(ruleCoeffs, newCoeffs);
+	ruleCoeffs := Apply(KnownOrthoPoly[name], {n, p})[2];
+	newCoeffs := OrthoPolyCoeffs(name, n-1, p);
+	Concat(newCoeffs,{0})*ruleCoeffs[1] + Concat(OrthoPolyCoeffs(name, n-2, p),{0,0})*ruleCoeffs[3] + Concat({0}, newCoeffs)*ruleCoeffs[2];
+];
+*/
+/* A faster implementation: explicit loop, no recursion */
+/* Still too slow and resource-hungry for real work, e.g. cannot compute OrthoP(1500, 0.3) */
+/* 20 # OrthoPolyCoeffs(name_IsString, n_IsInteger, p_IsList)_(n>1) <-- [
+	Local(ruleCoeffs, newCoeffs, prevCoeffs, index);
+	prevCoeffs := {1};
+	newCoeffs := Apply(KnownOrthoPoly[name], {n, p})[1];
+	index := 1;
+	While(index<n) [
+		index := index + 1;
+		Echo(index);
+		ruleCoeffs := Apply(KnownOrthoPoly[name], {index, p})[2];
+		{ prevCoeffs, newCoeffs } := { newCoeffs, Concat(newCoeffs,{0}) * ruleCoeffs[1] + Concat({0}, newCoeffs) * ruleCoeffs[2] + Concat(prevCoeffs, {0,0}) * ruleCoeffs[3] };
+	];
+	newCoeffs;
+];
+*/
+/* A fast implementation that works directly with lists */
+/* note: here we pass "name" instead of "KnownOrthoPoly[name]" for efficiency, but strictly speaking we don't need to use this global constant */
+20 # OrthoPolyCoeffs(name_IsString, n_IsInteger, p_IsList)_(n>1) <-- [
+	Local(ruleCoeffs, tmpCoeffs, newCoeffs, prevCoeffs, index, jndex, tmptmpCoeffs);
+	/* For speed, allocate all lists now. Length is n+1 */
+	prevCoeffsA := ZeroVector(n+1);
+	newCoeffsA := ZeroVector(n+1);
+	tmpCoeffsA := ZeroVector(n+1);
+	/* pointers to arrays */
+	prevCoeffs := prevCoeffsA;
+	newCoeffs := newCoeffsA;
+	tmpCoeffs := tmpCoeffsA;
+	/* Initialize: n=0 and n=1 */
+	prevCoeffs[1] := 1;
+	ruleCoeffs := Apply(KnownOrthoPoly[name], {n, p})[1];
+	newCoeffs[1] := ruleCoeffs[1];
+	newCoeffs[2] := ruleCoeffs[2];
+	/* Invariant: answer ready in "newCoeffs" at value of index */
+	index := 1;
+	/* main loop */
+	While(index < n) [
+		index := index + 1;
+		/* Echo({"index ", index}); */
+		ruleCoeffs := Apply(KnownOrthoPoly[name], {index, p})[2];
+		tmpCoeffs[1] := ruleCoeffs[1]*newCoeffs[1] + ruleCoeffs[3]*prevCoeffs[1];
+		For(jndex:=2, jndex <= index, jndex:=jndex+1) [
+			tmpCoeffs[jndex] := ruleCoeffs[1]*newCoeffs[jndex] + ruleCoeffs[3]*prevCoeffs[jndex] + ruleCoeffs[2]*newCoeffs[jndex-1];
+		];
+		tmpCoeffs[index+1] := ruleCoeffs[2]*newCoeffs[index];
+/*
+		prevCoeffs := FlatCopy(newCoeffs);
+		newCoeffs := FlatCopy(tmpCoeffs);
+*/
+		tmptmpCoeffs := prevCoeffs;
+		prevCoeffs := newCoeffs;
+		newCoeffs := tmpCoeffs;
+		tmpCoeffs := tmptmpCoeffs;
+	];
+	newCoeffs;
+];
+
+/* EvaluateHornerScheme(coefficients, x) returns the Horner-evaluated polynomial on x. The "coefficients" is a list that starts at the lowest power. For example, EvaluateHornerScheme({a,b,c}, x) should return (a+x*(b+x*c))
+*/
+
+10 # EvaluateHornerScheme({}, _x) <-- 0;
+/* Strictly speaking, the following rule is not needed, but it doesn't hurt */
+10 # EvaluateHornerScheme({_coeffs}, _x) <-- coeffs;
+20 # EvaluateHornerScheme(coeffs_IsList, _x) <-- Head(coeffs)+x*EvaluateHornerScheme(Tail(coeffs), x);
