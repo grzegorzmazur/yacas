@@ -1464,9 +1464,9 @@ void LispToFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispCheck(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     //TESTARGS(3);
-
-    InternalEval(aEnvironment, RESULT, ARGUMENT(1));
-    if (!IsTrue(aEnvironment,RESULT))
+    LispPtr pred;
+    InternalEval(aEnvironment, pred, ARGUMENT(1));
+    if (!IsTrue(aEnvironment,pred))
     {
         LispPtr evaluated;
         InternalEval(aEnvironment, evaluated, ARGUMENT(2));
@@ -1474,6 +1474,7 @@ void LispCheck(LispEnvironment& aEnvironment,LispInt aStackTop)
         aEnvironment.SetUserError(evaluated.Get()->String()->String());
         CHK_CORE(0,KLispErrUser);
     }
+    RESULT.Set(pred.Get());
 }
 
 
