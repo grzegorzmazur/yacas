@@ -4,8 +4,9 @@ This reference contains all functions that might be useful
 when programming in Yacas.
 				Yacas programmer's function reference
 
-
 			Programming
+
+*INTRO This chapter describes functions useful for writing Yacas scripts.
 
 *CMD	/*, */, // --- comments
 *CORE
@@ -300,7 +301,7 @@ the required action is performed. This is
 useful in macro-like procedures.
 
 
-*CMD Back-quoting --- Back-quoting, macro expansion
+*CMD Back-quoting --- Lisp back-quoting, macro expansion
 *CORE
 *CALL
 	`(expression)
@@ -354,7 +355,7 @@ The above example assigns {func(value)} to variable {var}.
 
 *SEE MacroSet, MacroLocal, MacroRuleBase
 
-*CMD SetExtraInfo, GetExtraInfo --- Annotate objects with additional tag information
+*CMD SetExtraInfo, GetExtraInfo --- annotate objects with additional information
 *CORE
 *CALL
 	SetExtraInfo(expression,tag)
@@ -371,9 +372,9 @@ Sometimes it is useful to be able to add extra annotational tag information
 to objects. The functions {SetExtraInfo} and {GetExtraInfo} enable this.
 
 The function {SetExtraInfo} returns the tagged expression, leaving
-the original expression alone. This means there is a common gotcha:
+the original expression alone. This means there is a common pitfall:
 be sure to assign the returned value to a variable, or the tagged
-expression is lost.
+expression is lost when the temporary object is destroyed.
 
 The original expression is left alone, and the tagged expression
 returned, in order to keep the atomic objects small. To tag an
@@ -387,6 +388,8 @@ for this, but it is not required. The tag is free-form, although
 using association lists is highly advised since it is most likely
 to be the format used by other parts of the system, making the code
 compatible with other parts.
+
+Note that {FlatCopy()} currently does <i>not</i> copy the tag information.
 
 *E.G.
 
@@ -409,7 +412,7 @@ compatible with other parts.
 
 *SEE Assoc
 
-*CMD GarbageCollect --- Do garbage collection on unused memory
+*CMD GarbageCollect --- do garbage collection on unused memory
 *CORE
 *CALL
 	GarbageCollect()
@@ -435,7 +438,7 @@ when they are not used any more.
 to clean up the text buffers. It is not highly needed, but it keeps
 memory use low.
 
-*CMD CurrentFile, CurrentLine --- Show current file and line of input
+*CMD CurrentFile, CurrentLine --- show current file and line of input
 *CORE
 *CALL
 	CurrentFile()
@@ -444,7 +447,7 @@ memory use low.
 *DESC
 
 The functions {CurrentFile()} and {CurrentLine()} return a string
-with the file name of the current file, and the current line 
+with the file name of the current file and the current line 
 of input respectively.
 
 These functions are most useful in batch file calculations, where
@@ -459,7 +462,7 @@ to see how far the interpreter reaches before an error occurs.
 *SEE Echo
 
 
-*CMD FindFunction --- Find the file where a function is defined
+*CMD FindFunction --- find the file where a function is defined
 *CORE
 *CALL
 	FindFunction(function)
@@ -497,21 +500,25 @@ and system calls are not allowed. This can protect the system
 when an unsafe evaluation is done, e.g. a script sent over the
 Internet to be evaluated on a remote computer.
 
+*SEE SystemCall
 
 			Built-in (core) functions
 
-*INTRO Yacas comes with a small core of built-in functions and a large library
-of user-defined functions. It is important for a developer to know which
-functions are built-in and cannot be redefined or {Retract}-ed. All core
-functions are listed in the file {yacasapi.cpp} in the {src/} subdirectory of
-the Yacas source tree. The declarations typically look like this:
+*INTRO
+Yacas comes with a small core of built-in functions and a large library of
+user-defined functions. Some of these core functions are documented in this
+chapter.
 
+It is important for a developer to know which functions are built-in and cannot
+be redefined or {Retract}-ed. Also, core functions may be somewhat faster to
+execute than functions defined in the script library. All core functions are
+listed in the file {yacasapi.cpp} in the {src/} subdirectory of the Yacas
+source tree. The declarations typically look like this:
 	SetCommand(LispSubtract, "MathSubtract");
 Here {LispSubtract} is the Yacas internal name for the function and {MathSubtract} is the name visible to the Yacas language.
-
 Built-in bodied functions and infix operators are declared in the same file.
 
-		Listing of core functions
+		Full listing of core functions
 
 The following Yacas functions are currently declared in {yacasapi.cpp}
 as core functions:
@@ -618,7 +625,7 @@ FastSin(x), FastCos(x), FastTan(x),
 FastArcSin(x), FastArcCos(x), FastArcTan(x) :
 
 *DESC
-Versions of these functions using the internal C version. These
+Versions of these functions using the internal C++ version. These
 should then at least be faster than the arbitrary precision versions.
 
 *CMD ShiftLeft, ShiftRight --- built-in bit shifts
@@ -635,39 +642,41 @@ Shift bits to the left or to the right.
 			The Yacas plugin structure
 
 *INTRO
-Yacas supports dynamically loading libraries at runtime. This allows
-it to interface with other libraries that support additional
-functionality. For example, there could be a plugin enabling
-the user to script a user interface from within Yacas, or a
-specific powerful library to do numeric calculations.
+Yacas supports dynamically loading libraries at runtime. This chapter describes functions for working with plugins.
+
+
+The plugin feature allows Yacas to interface with other libraries that support
+additional functionality. For example, there could be a plugin enabling the
+user to script a user interface from within Yacas, or a specific powerful
+library to do numeric calculations.
 
 The plugin feature is currently in an experimental stage. There
-are some examples in the plugins/ directory. These are not built
+are some examples in the {plugins/} directory. These are not built
 by default because they cannot be guaranteed to compile on every
 platform (yet). The plugins need to be compiled after Yacas itself
-has been compiled and installed successfully. The plugins/ directory
-contains a README file with more details on compilation.
+has been compiled and installed successfully. The {plugins/} directory
+contains a {README} file with more details on compilation.
 
 In addition to the plugin structure in the Yacas engine, there is
-a 'cstubgen' module (currently still in development) that allows
+a module {cstubgen} (currently still under development) that allows
 rapid scripting of a plugin. Essentially all that is required is
 to write a file that looks like the header file of the original
-library, but written in Yacas syntax. the 'cstubgen' module is then
+library, but written in Yacas syntax. The module {cstubgen} is then
 able to write out a C++ file that can be compiled and linked with
 the original library, and then loaded from within Yacas. Including
 a function in the plugin will typically take just one line of
-Yacas code. There are a few examples in the plugins/
-directory (the files ending with api.stub). The make file
-makefile.plugin is configured to automatically convert these to
-the required C++ files.
+Yacas code. There are a few examples in the {plugins/}
+directory (the files ending with api.stub). The file
+{makefile.plugin} is configured to automatically convert these to
+the required C++ files. See also an essay on plugins for a worked-out example.
 
-In addition to the C++ stub file cstubgen also automatically generates
+In addition to the C++ stub file, {cstubgen} also automatically generates
 some documentation on the functions included in the stub. This
 documentation is put in a file with extension 'description'.
 
 The plugin facility is not supported for each platform yet. Specifically,
 it is only supported on platforms that support the elf binary format.
-(loading DLLs is platform-dependent).
+(Loading DLLs is platform-dependent).
 
 This chapter assumes the reader is comfortable programming in C++.
 
@@ -762,7 +771,7 @@ file - file to include from the library the plugin is based on
 
 Declare an include file (a header file for the library, for instance)
 The delimiters need to be specified too. So, for a standard library
-like the one needed for opengl, you need to specify
+like the one needed for OpenGL, you need to specify
 	StubApiCInclude("\<GL/gl.h\>")
 and for user include file:
 	StubApiCInclude("\"GL/gl.h\"")
@@ -810,7 +819,7 @@ having the name "n".
 
 *E.G.
 
-To define the opengl function {glVertex3d} that accepts three
+To define an OpenGL function {glVertex3d} that accepts three
 doubles and returns void:
 
 	StubApiCFunction("void","glVertex3d",
@@ -928,12 +937,12 @@ Then in the stub file you can declare this struct by calling:
 
 	StubApiCStruct("SomeStruct*")
 
-*SEE
+*SEE StubApiCFunction
 
 
 			Generic objects
 
-Generic objects are objects that are implemented in C++, but
+*INTRO Generic objects are objects that are implemented in C++, but
 can be accessed through the Yacas interpreter.
 
 *CMD IsGeneric --- check for generic object
@@ -1010,21 +1019,22 @@ Creates a list from the contents of the array passed in.
 
 			The Yacas test suite
 
-*INTRO Yacas comes with a test suite which can be found in
+*INTRO This chapter describes commands used for verifying correct performance
+of Yacas.
+
+Yacas comes with a test suite which can be found in
 the directory {tests/}. Typing 
 
 	make test
-
 on the command line after Yacas was built will run the test.
 This test can be run even before {make install}, as it only 
 uses files in the local directory of the Yacas source tree.
-The default extension for test scripts is {.yts}, (Yacas test script).
+The default extension for test scripts is {.yts} (Yacas test script).
 
-The verification commands described in this chapter only 
-display the expressions that don't match. They don't terminate
-the current execution, and they don't return a value representing
-success and failure, since they are meant to be used in test
-scripts.
+The verification commands described in this chapter only  display the
+expressions that do not evaluate correctly. Errors do not terminate the
+execution of the Yacas script that uses these testing commands, since they are
+meant to be used in test scripts.
 
 
 *CMD Verify, TestYacas, LogicVerify --- Verifying equivalence of two expressions
@@ -1042,9 +1052,9 @@ scripts.
 
 *DESC
 
-The commands {Verify}, {TestYacas}, {LogicVerify} can be
-used to verify that an expression is <I>equivalent</I> to 
-a correct answer after evaluation. 
+The commands {Verify}, {TestYacas}, {LogicVerify} can be used to verify that an
+expression is <I>equivalent</I> to  a correct answer after evaluation. All
+three commands return {True} or {False}.
 
 For most calculations, the demand that two expressions
 are <I>equal</I> syntactically is too stringent. The 
@@ -1055,7 +1065,7 @@ point of view, to $ x+1 $.
 The general problem of deciding that two expressions $ a $ and $ b $
 are equivalent, which is the same as saying that $ a-b=0 $ , 
 is generally hard to decide on. The following commands solve
-this by having domain-specific comparisons.
+this problem by having domain-specific comparisons.
 
 The comparison commands do the following comparison types:
 
@@ -1064,7 +1074,7 @@ This is the fastest and simplest comparison, and can be
 used for testing that an expression simplifies to for instance $ 2 $.
 *	{TestYacas} - compare two expressions after simplification for 
 multivariate polynomials. If the two arguments are equivalent
-multivariate polynomials, this test succeeds.
+multivariate polynomials, this test succeeds. {TestYacas} uses {Simplify()}.
 *	{LogicVerify} - Perform a test by using {CanProve} to verify that from 
 {question} the expression {answer} follows. This test command is 
 used for testing the logic theorem prover in Yacas.
@@ -1075,14 +1085,16 @@ used for testing the logic theorem prover in Yacas.
 	Out> True;
 	In> Verify(x*(1+x),x^2+x)
 	******************
-	x*(x+1) evaluates to x*(x+1) which differs from x^2+x
+	x*(x+1) evaluates to x*(x+1) which differs
+	  from x^2+x
 	******************
 	Out> False;
 	In> TestYacas(x*(1+x),x^2+x)
 	Out> True;
 	In> Verify(a And c Or b And Not c,a Or b)
 	******************
-	 a And c Or b And Not c evaluates to  a And c Or b And Not c which differs from  a Or b
+	 a And c Or b And Not c evaluates to  a And c
+	  Or b And Not c which differs from  a Or b
 	******************
 	Out> False;
 	In> LogicVerify(a And c Or b And Not c,a Or b)
@@ -1100,15 +1112,15 @@ used for testing the logic theorem prover in Yacas.
 
 *PARMS
 
-{test} - test command that should fail
+{test} - expression that should return False on failure
 
 *DESC
 
 The command {KnownFailure} marks a test as known to fail
 by displaying a message to that effect on screen. 
 
-This might be used by a developer when he doesn't have time
-to fix the defect, but doesn't wish to alarm users who download
+This might be used by developers when they have no time
+to fix the defect, but do not wish to alarm users who download
 Yacas and type {make test}.
 
 *E.G.
@@ -1192,7 +1204,7 @@ random values.
 
 VerifyDiv checks that 
 
-$$ u = v*Div(u,v) + Rem(u,v) $$
+$$ u = v*Div(u,v) + Mod(u,v) $$
 
 
 *E.G.
