@@ -94,7 +94,8 @@ Function("CharacteristicEquation",{matrix,var})
    Determinant(matrix-var*Identity(Length(matrix)));
 HoldArg("CharacteristicEquation",var);
 
-EigenValues(matrix_IsMatrix) <-- Roots(CharacteristicEquation(matrix,xx));
+10 # EigenValues(matrix_IsDiagonal) <-- Diagonal(matrix);
+20 # EigenValues(matrix_IsMatrix) <-- Roots(CharacteristicEquation(matrix,xx));
 
 EigenVectors(_matrix,_eigenvalues) <--
 [

@@ -153,7 +153,17 @@ Identity(n_IsNonNegativeInteger) <--
 ];
 
 
-
+Function("Diagonal",{A})
+[
+	Local(result,i,n);
+	n:=Length(A);
+	result:=ZeroVector(n);
+	For(i:=1,i<=n,i++)
+	[
+		result[i] := A[i][i];
+	];      
+	result;
+];
 
 Function("DiagonalMatrix",{list})
 [
