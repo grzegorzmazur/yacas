@@ -27,8 +27,8 @@ Arrays are faster than lists but the array size cannot be changed.
 
 *SEE ArrayCreate
 
-*A atom
-	    atom
+*A atoms
+	    atoms
 
 Atoms are basic Yacas objects that are used to represent symbols, numbers, and function names.
 An atom has a string representation which is shown when it is displayed.
@@ -47,8 +47,8 @@ An atom can also have a property object.
 
 Abbreviation for "computer algebra system". {Yacas} is a CAS.
 
-*A constant
-	    constant
+*A constants
+	    constants
 
 Constants such as {I}, {Pi} or {GoldenRatio} are symbolic atoms that are specially interpreted by {Yacas}.
 For example, there are simplification rules that transform expressions such as {Sin(Pi)} into {0}.
@@ -59,9 +59,9 @@ These are the "cached constants".
 
 *SEE N, CachedConstant, Pi, GoldenRatio, CatalanConstant, gamma, I, Precision
 
-*A equation
+*A equations
 *A {==}
-	    equation
+	    equations
 
 To denote symbolic equations, the operator {==} is used.
 This operator does not assign or compare its sides.
@@ -74,8 +74,8 @@ The symbolic equation operator {==} is also useful to represent solutions of equ
 
 *SEE Solve, Where, Plot2D
 
-*A function
-	    function
+*A functions
+	    functions
 
 A function is a symbolic atom that is bound to a rule or several rules.
 A function can have none, one, or more arguments.
@@ -109,8 +109,8 @@ However, a user-defined function may simply return unevaluated in such cases.
 
 *SEE Function, Rule, <--
 
-*A list
-	    list
+*A lists
+	    lists
 
 A list is a basic {Yacas} container object. A list is written as e.g. {{a, b, c}} or {{}} (empty list).
 Individual elements of a list can be accessed using the {[]} operation.
@@ -129,8 +129,8 @@ For example, the expression {Cos(x+1)} is represented internally as a nested lis
 
 *SEE List, Listify, UnList, Length, FullForm
 
-*A matrix
-	    matrix
+*A matrices
+	    matrices
 
 A matrix is represented as a list of lists.
 Matrices are represented in the "row-major" order: a matrix is a list of rows, and each row is a list of its elements.
@@ -139,8 +139,8 @@ Some basic linear algebra operations on matrices are supported.
 
 *SEE Determinant, Identity, IsDiagonal, EigenValues
 
-*A operator
-	    operator
+*A operators
+	    operators
 
 Operators are functions that have special syntax declared for them.
 An operator can be "bodied", infix, prefix or postfix.
@@ -180,8 +180,19 @@ For example, the operator "{+}" binds less tightly (i.e. has a higher precedence
 
 *SEE Bodied, OpPrecedence
 
-*A rule
-	    rule
+*A properties
+	    properties
+
+Properties are special additional objects (tags) that can be tied to expressions.
+For example, the expression {1+x} may be tagged by an expression {y} by the command
+	In> a:= SetExtraInfo(1+x,y);
+	Out> 1+x;
+Now {a} refers to an expression {1+x} which is different from all other copies of {1+x} because it is tagged by {y}.
+
+*SEE GetExtraInfo, SetExtraInfo
+
+*A rules
+	    rules
 
 Rules are the principal mechanism of expression evaluation in {Yacas}.
 A rule specifies that a certain symbolic expression is to be replaced by another expression.
@@ -201,8 +212,8 @@ Rules can be erased or added at run time.
 
 *SEE Rule, <--, Retract
 
-*A string
-	    string
+*A strings
+	    strings
 
 A string is an atom with character string value, for example, {"abcd"}.
 Individual characters of the string can be accessed using the {[]} operation.
