@@ -430,7 +430,7 @@ void NewCalculation()
             char buf[300];
             sprintf(buf,"ToFile(\"trace.tmp\")TraceExp(%s);",expression);
             YacasDebuggerBase* prev = (*yacas)()().iDebugger;
-            (*yacas)()().iDebugger = new ProteusDebugger(tempdir);
+            (*yacas)()().iDebugger = NEW ProteusDebugger(tempdir);
             yacas->Evaluate(buf);
             delete (*yacas)()().iDebugger;
             (*yacas)()().iDebugger = prev;
