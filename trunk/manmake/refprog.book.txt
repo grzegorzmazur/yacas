@@ -1245,18 +1245,20 @@ Some kernel functions are additionally declared as operators (bodied, prefix, in
 *INTRO
 Yacas supports dynamically loading libraries at runtime. This chapter describes functions for working with plugins.
 
-
 The plugin feature allows Yacas to interface with other libraries that support
 additional functionality. For example, there could be a plugin enabling the
 user to script a user interface from within Yacas, or a specific powerful
 library to do numeric calculations.
 
-The plugin feature is currently in an experimental stage. There
-are some examples in the {plugins/} directory. These are not built
-by default because they cannot be guaranteed to compile on every
-platform (yet). The plugins need to be compiled after Yacas itself
-has been compiled and installed successfully. The {plugins/} directory
-contains a {README} file with more details on compilation.
+The plugin feature is currently in an experimental stage, and it will
+not work on each platform. To be precise, the {libltdl} library is
+used to load the plugins. This will only work on platforms which are
+supported by {libltdl}, which includes Linux, Mac OS X, Solaris, and
+HP-UX.
+
+The remainder of the section is only of interest to users who want to
+write plugins themselves. It is assumed that the reader is comfortable
+programming in C++.
 
 In addition to the plugin structure in the Yacas engine, there is
 a module {cstubgen} (currently still under development) that allows
@@ -1267,52 +1269,133 @@ able to write out a C++ file that can be compiled and linked with
 the original library, and then loaded from within Yacas. Including
 a function in the plugin will typically take just one line of
 Yacas code. There are a few examples in the {plugins/}
-directory (the files ending with api.stub). The file
-{makefile.plugin} is configured to automatically convert these to
-the required C++ files. See also an essay on plugins for a worked-out example.
+directory (the files ending with api.stub). The build system
+converts these automatically to the required C++ files. 
 
 In addition to the C++ stub file, {cstubgen} also automatically generates
 some documentation on the functions included in the stub. This
 documentation is put in a file with extension 'description'.
 
-The plugin facility is not supported for each platform yet. Specifically,
-it is only supported on platforms that support the elf binary format.
-(Loading DLLs is platform-dependent).
+An example describing the use of {cstubgen} can be found in the essay
+<*"Creating plugins for Yacas"|yacasdoc://essays/3/3/*>. 
+See <*yacasdoc://essays/5/#build system!plugins*> for a description of
+the integration of plugins in the build system.
 
-This chapter assumes the reader is comfortable programming in C++.
 
-
-*CMD DllLoad, DllUnload, DllEnumerate --- manipulate plugins
+*CMD DllLoad --- load a plugin
 *CORE
 *CALL
 	DllLoad(file)
-	DllUnload(file)
-	DllEnumerate()
 
 *PARMS
 {file} -- file name of the plugin
 
 *DESC
 
-{DllLoad} forces Yacas to load the dynamic link library ({.so} file
-under Linux). The full path to the DLL has to be specified,
-or the file needs to be in a path where {dlopen} can find it.
+{DllLoad} loads the plugin {file} into Yacas. Neither the directory
+nor the extension of {file} need to be specified. The result is {True}
+if the plugin is loaded successfully, and {False} otherwise.
 
-{DllUnload} unloads a dynamic link library previously loaded with
-{DllLoad}. Note the dll file name has to be exactly the same,
-or the system will not be able to determine which dll to unload.
-It will scan all the dll files, and delete the first one found
-to exactly match, and return silently if it didn't find the dll.
-{DllUnload} always returns {True}.
+If the argument {file} does not specify a directory, all directories
+in the path for Yacas plugins are searched. This path is built up by
+calls to {DllDirectory}. In addition, it contains the default plugin
+directory which is specified by the command line option {--dlldir} 
+(see <*yacasdoc://ref/1/#command-line options!summary*>).
+If this option is not present, the default plugin directory is as
+specified at compile time (the default value is
+{/usr/local/lib/yacas}).
 
-{DllEnumerate} returns a list with all loaded dynamic link libraries.
+If the argument {file} does not specify the extension, then first the
+extension {.la} is appended. This is the standard extension for
+Libtool libraries. If no plugin with this name can be found, a
+platform-specific extension is tried (as an example, this is {.so} on
+platforms with ELF libraries).
 
 *EG
 
-	In> DllLoad("./libopengl.so");
-	Out> True;
+The following commands load the example plugin, and then call the
+function {AddTwoIntegers} which is defined in this plugin.
 
-*SEE
+	 In> DllLoad("example");
+	 Out> True
+	 In> AddTwoIntegers(2,3);
+	 Out> 5
+
+Note that it suffices to specify the string {example}. Yacas knows
+that the plugin resides in the file {/usr/local/lib/yacas/example.la}
+(if plugins are installed in the default locations).
+
+*SEE DllDirectory, DllUnload, DllEnumerate
+
+
+*CMD DllUnload --- unload a plugin
+*CORE
+*CALL
+	DllUnload\file)
+
+*PARMS
+{file} -- file name of the plugin
+
+*DESC
+
+{DllUnload} unloads a plugin previously loaded with {DllLoad}.  The
+argument {file} has to be exactly the same as specified in the call to
+{DllLoad}, or the system will not be able to determine which plugin to
+unload.  It will scan all plugins which are currently loaded, and
+delete the first one found to exactly match.
+
+{DllUnload} always returns {True}, even if no plugin with the name
+{file} is found.
+
+*EG
+
+First, we load the example plugin, and call the function
+{AddTwoIntegers} which is defined in this plugin.
+
+	In> DllLoad("example");
+	Out> True
+	In> AddTwoIntegers(2,3);
+	Out> 5
+
+Then, we unload the plugin, and we check that the function
+{AddTwoIntegers} is indeed no longer defined.
+
+	In> DllUnload("example");
+	Out> True
+	In> AddTwoIntegers(2,3);
+	Out> AddTwoIntegers(2,3)
+
+*SEE DllLoad, DllEnumerate
+
+
+*CMD DllEnumerate --- enumerate all loaded plugins
+*CORE
+*CALL
+	DllEnumerate()
+
+*DESC
+
+{DllEnumerate} returns a list with the names of all the plugins which
+are currently loaded.
+
+*EG
+
+At startup, no plugins are loaded, so {DllEnumerate()} evaluates to
+the empty list.
+
+	In> DllEnumerate();
+	Out> {}
+
+This changes after we load the example plugin.
+
+	In> DllLoad("example");
+	Out> True
+	In> DllEnumerate();
+	Out> {"example"}
+
+*SEE DllLoad, DllUnload
+
+
 
 *CMD StubApiCStart --- start of C++ plugin API
 *STD
