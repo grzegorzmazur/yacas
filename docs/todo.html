@@ -8,12 +8,45 @@
 
 <FONT face="Helvetica" size="3">
 
-Current:
+Current work Ayal:<br>
+I am currently working on cleaning up the system, making it
+more consistent. 
 <ul>
-  <li> Test code, documentation for multivariate polys.
-  <li> Solve broken, and not as powerful as if can be.
-  <li> Clean up this file: prioritize.
+  <li> fix reference counting problems: right now, where reference
+       counting is optional, this is causing problems. Eg: strings
+       not being freed after an error occurred, the user functions
+       table corrupted after a reload.
+  <li> Clean up integration code, and document algorithm used.
   <li> Document some long-standing undocumented functions.
+  <li> extend plugin facilities a bit: the plugins directory
+       could (should?) contain some plugins for specific
+       platforms and libraries, to extend Yacas capabilities,
+       and possible plugins that implement capabilities more
+       efficiently than the current code.
+    <ol>
+      <li> make changes to the core so functions defined in
+           plugins can replace functions defined in scripts.
+           This is already done, partially, because the system
+           searches c++ defined functions before searching for
+           a scripted function. But more needs to be replacable.
+           It would be nice, for instance, to be able to mount
+           a different file system, one that loads files from
+           over the net, or reads scripts from a zip file.
+      <li> Change Yacas code to put most functions supported
+           in plugins. This will allow us to more easily
+           replace functions in the core kernel itself.
+      <li> extensions so c++ objects can be addressed too.
+      <li> code to process standard c/c++ header files, to automatically
+           create a plugin for it.
+    </ol>
+  <li> Finalize error reporting (in yacasdebug).
+    <ol>
+      <li> STILL not all errors dump a stack.
+      <li> when stack overflow occurs, it still doesn't show all arguments
+           evaluated.
+    </ol>
+  <li> Solve broken, and not as powerful as if can be.
+  <li> Test code, documentation for multivariate polys.
 </ul>
 
 <H1>Future plans</h1>

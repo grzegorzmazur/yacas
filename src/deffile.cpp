@@ -9,17 +9,25 @@
 #include "tokenizer.h"
 #include "stringio.h"
 
+
+LispDefFile::LispDefFile(const LispDefFile& aOther)
+{
+    iFileName.Set(aOther.iFileName());
+    iIsLoaded=aOther.iIsLoaded;
+}
+
 LispDefFile::LispDefFile(LispStringPtr aFileName)
 {
-    iFileName = aFileName;
-    aFileName->IncreaseRefCount();
+    iFileName.Set(aFileName);
+//TODO remove?    aFileName->IncreaseRefCount();
     iIsLoaded=0;
 }
 
 
 LispDefFile::~LispDefFile()
 {
-    iFileName->DecreaseRefCount();
+    iFileName.Set(NULL);
+//TODO remove?    iFileName->DecreaseRefCount();
 }
 
 void LispDefFile::SetLoaded()

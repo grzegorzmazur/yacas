@@ -76,5 +76,34 @@ LispInt LispString::operator==(const LispString& aString)
     return StrEqual(ptr1,ptr2);
 }
 
+LispString::~LispString()
+{
+    LISPASSERT(ReferenceCount() == 0);
+}
+
+
+void LispStringSmartPtr::Set(LispStringPtr aString)
+{
+    if (iString)
+    {
+//        printf("refcount was %d\n",iString->ReferenceCount());
+        iString->DecreaseRefCount();
+        if (iString->ReferenceCount() == 0)
+            delete iString;
+//        printf("refcount becomes %d\n",iString->ReferenceCount());
+    }
+    iString = aString;
+    if (iString)
+    {
+//        printf("refcount was %d\n",iString->ReferenceCount());
+        iString->IncreaseRefCount();
+//        printf("refcount becomes %d\n",iString->ReferenceCount());
+    }
+}
+LispStringSmartPtr::~LispStringSmartPtr()
+{
+    Set(NULL);
+}
+
 
 

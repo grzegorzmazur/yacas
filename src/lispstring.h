@@ -10,6 +10,9 @@
 #include "grower.h"
 #include "refcount.h"
 
+class LispStringSmartPtr;
+
+
 /** \class LispString : zero-terminated byte-counted string.
  * Also keeps a reference count for any one interested.
  * LispString is derived from CArrayGrower, so the function
@@ -61,6 +64,7 @@ public:
      */
     void SetStringStringified(LispCharPtr aString);
 
+    ~LispString();
 private:
     void SetString(LispCharPtr aString,
                    LispBoolean aStringOwnedExternally=LispFalse);
@@ -70,6 +74,24 @@ private:
 #define LispStringRef LispString &
 #define LispStringPtr LispString *
 
+/** \class LispStringSmartPtr for managing strings outside
+ of normal objects. This is the equivalent of LispPtr, maintaining
+ a reference count for the string object.
+ */
+class LispStringSmartPtr
+{
+public:
+    LispStringSmartPtr():iString(NULL){};
+    ~LispStringSmartPtr();
+    inline LispStringPtr operator() () const {return iString;}
+    void Set(LispStringPtr aString);
+    //TODO remove! Ugly hack! (or at least, make accessible only from LispHash)
+    inline void SetInitial(LispStringPtr aString) {iString=NULL;Set(aString);};
+private:
+    LispStringSmartPtr(const LispStringSmartPtr& aOther){Set(aOther());};
+    // do not allow this type of copying!
+    LispStringPtr iString;
+};
 
 #include "lispstring.inl"
 #endif

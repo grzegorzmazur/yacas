@@ -44,7 +44,10 @@ public:
     // GarbageCollect
     void GarbageCollect();
 private:
-    CDeletingArrayGrower<LispStringPtr> iHashTable[KSymTableSize];
+    void AppendString(LispInt bin,LispStringPtr result);
+    
+private:
+    CArrayGrower<LispStringSmartPtr> iHashTable[KSymTableSize];
 };
 
 

@@ -6,6 +6,25 @@
 
 LispHashTable::~LispHashTable()
 {
+    int bin;
+    for (bin=0;bin<KSymTableSize;bin++)
+    {
+        LispInt i,nr;
+        nr = iHashTable[bin].NrItems();
+        for (i=0;i<nr;i++)
+        {
+#ifdef YACAS_DEBUG
+            if (iHashTable[bin][i]()->ReferenceCount()!=1)
+            {
+                printf("ERROR: string objects with invalid reference counts during destruction of the hashtable!\n");
+                printf("%d:%s",iHashTable[bin][i]()->ReferenceCount(),
+                      iHashTable[bin][i]()->String());
+            }
+#endif
+            LISPASSERT(iHashTable[bin][i]()->ReferenceCount()==1);
+            iHashTable[bin][i].Set(NULL);
+        }
+    }
 }
 
 
@@ -113,9 +132,9 @@ LispStringPtr LispHashTable::LookUp(LispCharPtr aString,
     LispInt nrc=iHashTable[bin].NrItems();
     for (i=0;i<nrc;i++)
     {
-        if (StrEqual((iHashTable[bin][i])->String(), aString))
+        if (StrEqual((iHashTable[bin][i]())->String(), aString))
         {
-            return iHashTable[bin][i];
+            return iHashTable[bin][i]();
         }
     }
 
@@ -123,10 +142,18 @@ LispStringPtr LispHashTable::LookUp(LispCharPtr aString,
 #ifdef YACAS_DEBUG
     theNrTokens++;
 #endif
-    iHashTable[bin].Append(NEW LispString(aString,aStringOwnedExternally));
-    return iHashTable[bin][iHashTable[bin].NrItems()-1];
+    LispStringPtr result = NEW LispString(aString,aStringOwnedExternally);
+    AppendString(bin,result);
+    return result;
 }
 
+void LispHashTable::AppendString(LispInt bin,LispStringPtr result)
+{
+    LispStringSmartPtr smartptr;
+    int index = iHashTable[bin].NrItems();
+    iHashTable[bin].GrowTo(index+1);
+    iHashTable[bin][index].SetInitial(result);
+}
 
 // If string not yet in table, insert. Afterwards return the string.
 LispStringPtr LispHashTable::LookUp(LispStringPtr aString)
@@ -138,10 +165,14 @@ LispStringPtr LispHashTable::LookUp(LispStringPtr aString)
     LispInt nrc=iHashTable[bin].NrItems();
     for (i=0;i<nrc;i++)
     {
-        if (StrEqual((iHashTable[bin][i])->String(), aString->String()))
+        if (StrEqual((iHashTable[bin][i]())->String(), aString->String()))
         {
-            delete aString;
-            return iHashTable[bin][i];
+            //TODO we shouldn't be doing refcounting here???
+            if (aString->ReferenceCount() == 0)
+            {
+                delete aString;
+            }
+            return iHashTable[bin][i]();
         }
     }
 
@@ -149,8 +180,8 @@ LispStringPtr LispHashTable::LookUp(LispStringPtr aString)
 #ifdef YACAS_DEBUG
     theNrTokens++;
 #endif
-    iHashTable[bin].Append(aString);
-    return iHashTable[bin][iHashTable[bin].NrItems()-1];
+    AppendString(bin,aString);
+    return aString;
 }
 
 
@@ -177,9 +208,9 @@ LispStringPtr LispHashTable::LookUpCounted(LispCharPtr aString,
     LispInt nrc=iHashTable[bin].NrItems();
     for (i=0;i<nrc;i++)
     {
-        if (StrEqualCounted((iHashTable[bin][i])->String(), aString,aLength))
+        if (StrEqualCounted((iHashTable[bin][i]())->String(), aString,aLength))
         {
-            return iHashTable[bin][i];
+            return iHashTable[bin][i]();
         }
     }
 
@@ -190,8 +221,8 @@ LispStringPtr LispHashTable::LookUpCounted(LispCharPtr aString,
     LispStringPtr str = NEW LispString();
     str->SetStringCounted(aString,aLength);
 
-    iHashTable[bin].Append(str);
-    return iHashTable[bin][iHashTable[bin].NrItems()-1];
+    AppendString(bin,str);
+    return str;
 }
 
 LispInt StrEqualStringified(LispCharPtr ptr1, LispCharPtr ptr2)
@@ -245,9 +276,9 @@ LispStringPtr LispHashTable::LookUpStringify(LispCharPtr aString,
     LispInt nrc=iHashTable[bin].NrItems();
     for (i=0;i<nrc;i++)
     {
-        if (StrEqualStringified((iHashTable[bin][i])->String(), aString))
+        if (StrEqualStringified((iHashTable[bin][i]())->String(), aString))
         {
-            return iHashTable[bin][i];
+            return iHashTable[bin][i]();
         }
     }
 
@@ -258,8 +289,8 @@ LispStringPtr LispHashTable::LookUpStringify(LispCharPtr aString,
     LispStringPtr str = NEW LispString();
     str->SetStringStringified(aString);
 
-    iHashTable[bin].Append(str);
-    return iHashTable[bin][iHashTable[bin].NrItems()-1];
+    AppendString(bin,str);
+    return str;
 }
 // If string not yet in table, insert. Afterwards return the string.
 LispStringPtr LispHashTable::LookUpUnStringify(LispCharPtr aString,
@@ -273,9 +304,9 @@ LispStringPtr LispHashTable::LookUpUnStringify(LispCharPtr aString,
     LispInt nrc=iHashTable[bin].NrItems();
     for (i=0;i<nrc;i++)
     {
-        if (StrEqualUnStringified((iHashTable[bin][i])->String(), aString))
+        if (StrEqualUnStringified((iHashTable[bin][i]())->String(), aString))
         {
-            return iHashTable[bin][i];
+            return iHashTable[bin][i]();
         }
     }
 
@@ -285,8 +316,8 @@ LispStringPtr LispHashTable::LookUpUnStringify(LispCharPtr aString,
 #endif
     LispStringPtr str = NEW LispString();
     str->SetStringUnStringified(aString);
-    iHashTable[bin].Append(str);
-    return iHashTable[bin][iHashTable[bin].NrItems()-1];
+    AppendString(bin,str);
+    return str;
 }
 
 
@@ -301,10 +332,10 @@ void LispHashTable::GarbageCollect()
         LispInt nritems = iHashTable[bin].NrItems();
         for (j=0;j<nritems;j++)
         {
-            if (iHashTable[bin][j]->ReferenceCount() == 0)
+            if (iHashTable[bin][j]()->ReferenceCount() == 1)
             {
-//printf("deleting [%s]\n",iHashTable[bin][j]->String());
-                delete iHashTable[bin][j];
+                //printf("deleting [%s]\n",iHashTable[bin][j]->String());
+                iHashTable[bin][j].Set(NULL);
                 iHashTable[bin].Delete(j);
                 j--;
                 nritems--;
