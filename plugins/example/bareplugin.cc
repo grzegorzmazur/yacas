@@ -20,6 +20,7 @@ Bla* CreateBla(int aa, int ab)
     Bla* bla = (Bla*)PlatAlloc(sizeof(Bla));
     bla->a = aa;
     bla->b = ab;
+    return bla;
 }
 void BlaSetA(Bla* bla, int a)
 {
