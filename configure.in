@@ -49,9 +49,6 @@ AC_CHECK_FUNCS(select socket strtod)
 # checks for libraries
 AC_CHECK_LIB(dl,dlopen,LIBS="$LIBS -ldl -rdynamic",,-rdynamic)
 
-AC_FUNC_ACCEPT_ARGTYPES
-TYPE_SOCKLEN_T
-
 
 # Choice of arbitrary precision library
 AC_ARG_ENABLE(gmp, [  --enable-gmp            use GNU MP [default=no]])
@@ -147,6 +144,7 @@ else
 fi
 AC_SUBST(psdir)
 
+# libtool support
 AC_DEFINE(LTDL_OBJDIR, "../src")
 AC_SUBST(INCLTDL)
 AC_SUBST(LIBLTDL)
