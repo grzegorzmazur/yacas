@@ -449,7 +449,7 @@ void ParseExpression(LispPtr& aResult,LispCharPtr aString,LispEnvironment& aEnvi
     parser.Parse(aResult,aEnvironment);
 }
 
-void ReturnUnEvaluated(LispPtr& aResult,LispPtr aArguments,
+void ReturnUnEvaluated(LispPtr& aResult,LispPtr& aArguments,
                        LispEnvironment& aEnvironment)
 {
     LispPtr full;

@@ -71,7 +71,7 @@ LispObject* operator+(const LispObjectAdder& left, const LispObjectAdder& right)
 #define PARSE(_r,_s) ParseExpression(_r,_s,aEnvironment)
 void ParseExpression(LispPtr& aResult,LispCharPtr aString,LispEnvironment& aEnvironment);
 
-void ReturnUnEvaluated(LispPtr& aResult,LispPtr aArguments,
+void ReturnUnEvaluated(LispPtr& aResult,LispPtr& aArguments,
                        LispEnvironment& aEnvironment);
 
 
