@@ -115,7 +115,7 @@ while (<STDIN>) {
 	#############################################################
 	# stuff for refman
 	#############################################################
-	elsif (/^\*(CALL|PARMS|DESC|STD|CORE|E\.G\.)\s*$/) {	# labels without parameters
+	elsif (/^\*([-A-Z.]+)\s*$/ and defined($star_labels{$1})) {	# labels without parameters
 		&finish_text();
 		$have_par = 1;
 		print $star_labels{$1} . "\n";
