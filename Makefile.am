@@ -10,8 +10,8 @@
 ## "manualmaker".
 
 SUBDIRS = . docs inprogress YacasNotebook scripts libltdl src ramscripts \
-	essays manualmaker colorcode plugins proteus tests manmake compile \
-	embed JavaConsole epoc
+	essays colorcode plugins proteus manmake tests compile embed \
+	JavaConsole epoc
 
 ## A script to be installed in the directory for binaries
 bin_SCRIPTS = yacas_client
@@ -30,7 +30,7 @@ test: check
 dvi: texdocs
 
 texdocs:
-	cd manualmaker ; make ps-docs 
+	cd manmake ; make ps-docs 
 
 backup:
 	-rm yacas-*.tar.gz

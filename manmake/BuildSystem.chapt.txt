@@ -154,7 +154,7 @@ if the user decides to use separate source and build trees (see
 {make} does not define {$<} correctly in other rules;
 *	do not use pattern rules (like {%.o: %.c}) as they are not
 supported on all platforms, use suffix rules (like {.c.o:})
-instead. (This rule is currently not adhered to.)
+instead. 
 
 We currently assume {automake} version 1.4 or later. Note that version
 1.5 breaks backward compatibility and should be avoided. Version 1.6
@@ -462,7 +462,7 @@ all files present in the {scripts/} hierarchy are indeed listed.
 The documentation system for Yacas is explained in <*yacasdoc://essays/5/2/*>. 
 
 The documentation is generated from plain text source files with the
-{txt} extension in the {manualmaker/in} directory. The source files
+{txt} extension in the {manmake} directory. The source files
 are converted to Yacas code by the {txt2yacasdoc.pl} script.
 The result is a set of Yacas source files containing the text of the documentation.
 These Yacas source files are not well suited for human reading and must be further processed to obtain the books in HTML and PS/PDF formats.
@@ -497,8 +497,7 @@ is generated from the Yacas source by the perl script {api2txt.pl}.
 <i>M. Wester's CAS benchmark and Yacas</i>, built from
 {wester-1994.chapt.txt}, is extracted with the {book2ys.sh}
 script. This code is used for testing (see below).
-*	All the scripts described can be found in the {manmake}
-and {manualmaker} directories.
+*	All the scripts described can be found in the {manmake} directory.
 
 
 	    The test suite

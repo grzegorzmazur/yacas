@@ -230,7 +230,6 @@ AC_OUTPUT(yacas.spec
 	proteus/Makefile
 	YacasNotebook/Makefile
 	essays/Makefile
-	manualmaker/Makefile
 	plugins/Makefile
 	plugins/example/Makefile
 	plugins/forth/Makefile
