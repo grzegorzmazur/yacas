@@ -1,4 +1,74 @@
 
+
+
+Function() LocalRules(name,rules);
+HoldArg(LocalRules,rules);
+Bodied(LocalRules,0);
+LocalRules(_name)(rules_IsList) <--
+[
+  Local(enabler);
+  Set(enabler,Enabler(name));
+  MacroSet(enabler,False);
+  ForEach(rule,rules)
+  [
+    DeclareLocalRule(rule);
+  ];
+];
+
+Enabler(name):=  Atom(String(name):"Enabled");
+
+Function() DeclareLocalRule(rule);
+UnFence(DeclareLocalRule,1);
+
+10 # DeclareLocalRule((_n) # (_pattern)_(_post) <-- _body) 
+   <--
+   [ 
+     `((@n) # (@pattern)_((@enabler) And (@post)) <-- (@body) ); 
+   ];
+20 # DeclareLocalRule((_pattern)_(_post) <-- _body) 
+   <--
+   [
+     `((@pattern)_((@enabler) And (@post)) <-- (@body) );
+   ];
+30 # DeclareLocalRule((_n) # (_pattern) <-- _body) 
+   <--
+   [
+     `((@n) # (@pattern)_(@enabler) <-- (@body) );
+   ];
+40 # DeclareLocalRule((_pattern) <-- _body) 
+   <--
+   [
+     `((@pattern)_(@enabler) <-- (@body) );
+   ];
+
+
+
+Function()ApplyRules(name,expression);
+ApplyRules(_name,_expression)<--
+[
+  Local(enabler,oldenable,result);
+  Set(enabler,Enabler(name));
+  Set(oldenabler,Eval(enabler));
+  MacroSet(enabler,True);
+  Set(result,Eval(expression));
+  MacroSet(enabler,oldenabler);
+  result;
+];
+
+
+
+LocalRules(expandBracketsRules)
+{
+       ((_a + _b) * _c) <-- a*c+b*c
+};
+expandBrackets(_x) <-- ApplyRules(expandBracketsRules,x);
+
+
+
+EndOfFile;
+
+
+
 /*
 TODO:
 - check that the Where and AddTo are correct in the manual
