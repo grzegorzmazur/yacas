@@ -2,7 +2,7 @@ EXTRA_DIST = COPYING.HelpDialog FltkConsole.cpp FltkConsole.h FltkHintWindow.cpp
 	FltkHintWindow.h HelpView.cpp HelpView.h  browse.cpp                     \
 	books.html.in depend.dep editor.cpp editor.h                             \
 	fl_adjustable_file_chooser.H fl_adjustable_file_chooser.cpp              \
-	flplot flplot.def fltkgraph.stub fltkgraphstub.cc fltkgraphstub.description         \
+	flplot.ys flplot.ys.def fltkgraph.stub fltkgraphstub.cc fltkgraphstub.description         \
 	grapher.cpp grapher.h graphtest hints                     \
 	makefile.linux makefile.macosx  makeinclude                  \
 	mkbackup proteus.conf proteus.dsp proteus.dsw proteusbooks.html          \
