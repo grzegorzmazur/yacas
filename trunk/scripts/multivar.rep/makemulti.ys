@@ -68,6 +68,8 @@ LocalSymbols(x,y,z,vars,gcd,a,a)  [
      <-- MakeMultiNomial((x*z) / y,vars_IsList);
   20 #  MakeMultiNomial((_x / _y) / _z,vars_IsList)
      <-- MakeMultiNomial((x*z) / y,vars_IsList);
+  25 #  MakeMultiNomial(_x / y_IsConstant,vars_IsList)
+     <-- MakeMultiNomial(1/y,vars)*MakeMultiNomial(x,vars);
   30 #  MakeMultiNomial(_x / _y,vars_IsList) <--
         [
           Local(result);
