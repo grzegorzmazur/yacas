@@ -428,6 +428,45 @@ CatalanConstNum() :=
 	RoundTo(result,prec);
 ];
 
+/* geometric convergence as 16^(-n) */
+
+CatalanConstNum2() :=
+[
+	Local(prec, n, result1, result2);
+	prec:=GetPrecision();
+
+	// first series
+	// number of terms
+	n := 1+Div(prec*534+642,643); // prec*Ln(10)/Ln(16)
+	Precision(prec+2);	// 2 guard digits
+	
+	result1 := 0;
+	While(n>=0)
+	[
+		result1 := MathDivide(result1, 16)+N(
+			+1/(8*n+1)^2 -1/(8*n+2)^2 +1/2/(8*n+3)^2 -1/4/(8*n+5)^2 +1/4/(8*n+6)^2 -1/8/(8*n+7)^2 
+		);
+		n := n-1;
+	];
+
+	// second series
+	// number of terms
+	n := 1+Div(prec*178+642,643); // prec*Ln(10)/Ln(4096)
+	Precision(prec+2);	// 2 guard digits
+	
+	result2 := 0;
+	While(n>=0)
+	[
+		result2 := MathDivide(result2, 4096)+N(
+			+1/(8*n+1)^2 +1/2/(8*n+2)^2 +1/8/(8*n+3)^2 -1/64/(8*n+5)^2 -1/128/(8*n+6)^2 -1/512/(8*n+7)^2 
+		);
+		n := n-1;
+	];
+	result1 := MultiplyNum(result1, 3/2) - MultiplyNum(result2, 1/4);
+	Precision(prec);
+	RoundTo(result1,prec);
+];
+
 
 
 10 # Digamma(_n)_(IsPositiveInteger(n)) <-- Sum(m,1,n-1,1/m) - gamma;

@@ -326,6 +326,11 @@ $$ gamma <=> S0(2*n)/I0(2*n)-Ln(n)+O(Exp(-4*n)) $$.
 
 Catalan's constant $G$ is defined by
 $$ G = Sum(n,0,Infinity,(-1)^n/(2*n+1)^2) $$.
+This series converges very slowly.
+There are several alternative methods that can be used instead.
+
+	    Best method so far
+
 A fast series to evaluate this constant is based on Ramanujan's identity:
 $$ G = Pi/8*Ln(2+Sqrt(3)) + 3/8*Sum(n,0,Infinity,(n!)^2/((2*n)! *(2*n+1)^2))$$.
 
@@ -334,6 +339,21 @@ The sum can be efficiently evaluated using Horner's scheme, for example
 $$ 1+1/(2*3)*(1/3+2/(2*5)*(1/5+3/(2*7)*(1/7+ ...) ) ) $$.
 This takes $O(P^2)$ operations because there are $O(P)$ short multiplications and divisions of $P$-digit numbers by small integers.
 At very high precision, the binary splitting technique can be used instead of Horner's scheme to further reduce the computation time to $O(M(P)*Ln(P)^2)$.
+
+	    Other methods
+
+Another method is based on the formula
+$$ G = Sum(k,0,Infinity,(k!)^2/(2*k+1)! *2^(k-1)*Sum(j,0,k,1/(2*j+1))) $$.
+The $k$-th term of the outer sum is of order $2^(-k)$ and so we need to take about $P*Ln(10)/Ln(2)$ terms for $P$ decimal digits.
+But each term is more complicated than in the first method's series.
+The running time of this formula is a few times slower.
+
+A third formula is more complicated but the convergence is much faster and there is no need to evaluate any other transcendental functions.
+This formula is called "" in [Adamtchik 2000].
+$$ G = 3/2*Sum() - 1/4*Sum() $$.
+We need to take only $P*Ln(10)/Ln(16)$ terms of the first series and $P*Ln(10)/Ln(4096)$ terms of the second series.
+However, each term is about six times more complicated than one term of the first method's series.
+So there are no computational savings (unless $Ln(x)$ is excessively slow).
 
 		Riemann's Zeta function
 
