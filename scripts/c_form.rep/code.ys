@@ -97,6 +97,7 @@ CFormMathFunctions :=
     {"Abs","fabs"},
     {"Floor","floor"},
     {"Ceil","ceil"},
+	{"!","factorial"}
   };
 
 /* Precedence of 120 because we'd like to process some special functions like pow() first */
