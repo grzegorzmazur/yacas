@@ -190,15 +190,12 @@ Plot3DS'get'data(_func, _var, _init'values, _deltas, _options'hash) <--
 	// also store this in the final list ("result");
 	// then, go in the y direction and compute the 1th row; call the adaptive routine and add all points it gives along the way. update the row cache along the way.
 	// in cases when depth=0, the adaptive routine gives no extra points, and we must make sure that the "result" array contains the grid in exact order
-	row'cache := MapSingle(
-	 { {i},
-	  [
-		Local(ya);
+	row'cache := {init'values};
+	For(i:=1, i<=options'hash["ypoints"], i++)
+	[
 		ya := N(init'values[2]+i*deltas[2]);
-		{init'values[1], ya, N(Apply({var, func}, {init'values[1], ya}))};
-	  ]
-	 }, 0 .. options'hash["ypoints"]
-	);
+		DestructiveAppend(row'cache, {init'values[1], ya, N(Apply({var, func}, {init'values[1], ya}))});
+	];
 	result := row'cache;
 	// now loop over the x direction
 	For(i:=1, i<=options'hash["xpoints"], i++)
@@ -275,7 +272,7 @@ y1	11  31  21
 		sign'change(f11,f13,f12) + sign'change(f13,f12,f32) + sign'change(f12,f32,f22) <= 2 And sign'change(f22,f23,f21) + sign'change(f23,f21,f31) + sign'change(f21,f31,f11) <= 2
 		And
 		// condition for the values not to change too rapidly
-		Abs( (f11-f23)/2-(f12-f21)/3+(f22-f13)/6+2*(f32-f33)/3 )
+		N(Abs( (f11-f23)/2-(f12-f21)/3+(f22-f13)/6+2*(f32-f33)/3 ))
 			<= N( epsilon*(	// the expression here will be nonnegative because we subtract the minimum value
 			// cubature normalized to 1
 		(f11 + f12 + f21 + f22)/12 + 2*f33/3
