@@ -75,7 +75,7 @@ on a function.
 *DESC
 
 This function returns the order of the differential equation, which is
-order of the highest derivative. If no derivative appear, zero is returned.
+order of the highest derivative. If no derivatives appear, zero is returned.
 
 *E.G.
 
