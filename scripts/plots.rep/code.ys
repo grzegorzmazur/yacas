@@ -105,7 +105,7 @@ Plot2D'<backend> on that data.
 		// compute the first point to see if it's okay
 		c := range[1];
 		fc := N(Apply({var, func}, {c}));
-		Check(IsNumber(fc),
+		Check(IsNumber(fc) Or fc=Infinity Or fc= -Infinity Or fc=Undefined,
 			"Plot2D: Error: cannot evaluate function '"
 			:(ToString()Write(func))
 			:"' at point '"
@@ -202,7 +202,9 @@ Plot2D'adaptive(_func, _var, {_a,_b,_c}, {_fa, _fb, _fc}, _depth, _epsilon) <--
 			(5*fb+8*fb1-fc)/12	// this is the Simpson quadrature for the (fb,f1) subinterval
 			- Min({fa,fa1,fb,fb1,fc}) ) )
 		),
+		// okay, do not refine any more
 		{{a,fa}, {a1,fa1}, {b,fb}, {b1,fb1}, {c,fc}},
+		// not okay, need to refine more
 		Concat(
 			// recursive call on two halves of the interval; relax precision by factor of 2
 			Plot2D'adaptive(func, var, {a, a1, b}, {fa, fa1, fb}, depth-1, epsilon*2),	// Tail() omits the pair {b, fb}
@@ -212,9 +214,11 @@ Plot2D'adaptive(_func, _var, {_a,_b,_c}, {_fa, _fb, _fc}, _depth, _epsilon) <--
 ];
 
 /// utility function: check that the sign does not change too rapidly in given 3 numbers
-smooth'sign'change(x,y,z) := Not (
-	x>0 And y<0 And z>0
-	Or
-	x<0 And y>0 And z<0
-); 
+smooth'sign'change(x,y,z) :=
+	IsNumber(x) And IsNumber(y) And IsNumber(z)
+	And Not (
+		x>0 And y<0 And z>0
+			Or
+		x<0 And y>0 And z<0
+	); 
 

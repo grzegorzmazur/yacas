@@ -20,6 +20,7 @@ Plot2D'outputs() := {
 	{values} is a list of lists of pairs of the form {{{x1, y1}, {x2, y2}, ...}, {{x1, z1}, {x2, z2}, ...}, ...} corresponding to the functions y(x), z(x), ... to be plotted. The abscissa points x[i] are not the same for all functions.
 	The backend should prepare the graph of the function(s). The "datafile" backend Plot2D'datafile(values, options'hash) may be used to output all data to file(s), in which case the file name should be given by the value options'hash["filename"]. Multiple files are created with names obtained by appending numbers to the filename.
 	Note that the "data" backend does not do anything and simply returns the data.
+	The backend Plot2D'datafile takes care not to write "Infinity" or "Undefined" data points (it just ignores them). Custom backends should either use Plot2D'datafile or take care of this themselves.
 */
 
 /// trivial backend: return data list (do not confuse with Plot2D'get'data() defined in the main code which is the middle-level plotting routine)
@@ -98,15 +99,19 @@ Plot2D'datafile(values_IsList, _options'hash) <--
 	filename'list;
 ];
 
-/// service function. Similar to WriteTuple() from GnuPlot
+/// service function. WriteDataItem({1,2,3}, {}) will output "1 2 3" on a separate line.
+/// Writes data points to the current output stream, omits non-numeric values.
 WriteDataItem(tuple_IsList, _options'hash) <--
 [
   Local(item);
-  ForEach(item,tuple)
-  [
-	Write(item);
-	Space();
-  ];
+  If(	// do not write anything if one of the items is not a number
+  	IsNumericList(tuple),
+	ForEach(item,tuple)
+	[
+		Write(item);
+		Space();
+	]
+  );
   NewLine();
 ];
 
