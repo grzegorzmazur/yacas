@@ -160,7 +160,7 @@ while (<STDIN>) {
 				print "AddBody(HtmlAnchor() \"" . $name . "\");\n";
 			}
 		}
-		print "CmdDescription(\"" . $names . "\", \"" . $title . "\");\n";
+		print "CmdDescription(\"" . $names . "\", \"" . &escape_term($title) . "\");\n";
 	} elsif (/^\*INTRO\s\s*(.*)$/ or /^\*INTRO\s*()$/) {	# ChapterIntro()
 		$text = $1;
 		&finish_text();
