@@ -360,28 +360,31 @@ libraries out there, {Yacas} comes with its own (default) implementation.
 Other libraries can be used too, but the addition of a native 
 small arithmetic library reduces dependencies on other packages.
 
-This part describes the way the arithmetic library is embedded into
-{Yacas}, and how it can be used to embed other arithmetic libraries.
+This part describes how the arithmetic library is embedded into
+{Yacas}, and how to embed other arithmetic libraries.
 
 		The link between the interpreter and the arithmetic library
 
-The interpreter (as of version 1.0.54) has the concept of an atom,
+The interpreter (as of version 1.0.54) has the concept of an <i>atom</i>, an object
 which has a string representation. As soon as a calculation needs
 to be performed, the string representation is used to construct
 an object representing the number, in an internal representation that
 the arithmetic library can work with.
 
-The basic layout is as follows: there is a base class YacasBigNumber,
-which is a pure abstract class, and thus needs to be sub-classed.
-This class contains the internal representation, and offers simple
-arithmetic operations like addition and multiplication through an interface.
+The basic layout is as follows: there is a base class {NumberBase},
+which is a pure abstract class.
+This class offers basic numerical functions,
+arithmetic operations such as addition and multiplication, through a set of pure virtual methods.
 
-With this class there should be a {c} function which can create such
+Integers and floating-point numbers are to be handled by the same class.
+
+An actual number class will be a subclass of {NumberBase} that implements a particular internal representation of numbers and 
+With a subclass of {NumberBase} one should supply a {C++} function which can create such
 a class given a string representation (and in addition a precision
 and number base).
 
-This set up allows for different arithmetic libraries to be used;
-each library has to be hidden behind a sub-class of {YacasBigNumber},
+This setup allows different arithmetic libraries to be used;
+each library has to be hidden behind a sub-class of {NumberBase}
 and have a function to create an object representing the number.
 
 The number object should be able to render itself back to a string,
@@ -389,7 +392,7 @@ which can then be passed back to the interpreter as a result.
 
 		Interface to the objects
 
-The following code demonstrates how to use arithmetic support.
+The following code demonstrates how to use the number objects.
 
 	// Calculate z=x+y where x=10 and y=15
 	YacasBigNumberPtr x(MakeNativeNumber("10",100,10));
@@ -415,19 +418,37 @@ the {YacasBigNumber*}, passes it in, and when finished destroys
 the {YacasBigNumberPtr}. This in effect also cleans up the
 original {YacasBigNumber*} if it isn't used any more. 
 
-Call-by-value could have been used, but that is a little bit more
+Call-by-value could have been used instead of pointers, but that is a little bit more
 expensive as copy-constructors then need to be called.
-The smart pointer is small (4 bytes) and all it does is
+The smart pointer is small (4 bytes on 32-bit platforms) and all it does is
 increment and decrement a reference count, as opposed to having
 to allocate new memory for the number.
 
 		Interface definition
 
-The basic arithmetic class defines some simple arithmetic functions,
-from which other more elaborate functions can be built. They
+The basic arithmetic class defines some simple arithmetic operations,
+from which other more elaborate functions can be built.
+*REM They
 could even be implemented in {Yacas} script, as most time is
 spent doing the arithmetic (and the scripts could still be converted
-to c++ code). 
+to C++ code). 
 
+The basic arithmetic operations that need to be implemented by the arithmetic library are:
+*	Copy a number, {x := y}
+*	Compare two numbers for equality, {x = y}
+*	Compute the integer part of the number {x}
+*	Check that the number {x} is an integer
+*	Add two numbers, {x := y+z}
+*	Negate a number, {x := -y}
+*	Multiply two numbers, {x := y*z}
+*	Multiply two numbers and add to the third, {x := x+y*z}
+*	Divide two numbers, {x := y/z}
+*	Obtain the sign of the number {x}
+*	Obtain an approximate representation of {x} as double-precision number
+*	Obtain the "bit count" of the number {x} (more precisely, the integer part of the binary logarithm of the absolute value of {x}).
+For integers, this function counts the significant bits.
+For floating-point numbers, this function should return the binary exponent of the number (with sign).
+*	Bit-shift the number (multiply or divide by 2), {x := x >> n}, {x := x << n} (for integers as well as for non-integers)
+*	Perform bitwise arithmetic {x := y&z}, {x := y|z}, {x := y^z} (for integers only)
 
-
+All other functions such as power, logarithm, cosine and so on, can be efficiently implemented using this basic interface.
