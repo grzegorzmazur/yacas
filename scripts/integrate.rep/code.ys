@@ -267,6 +267,7 @@ IntFunc(x,1/Sin(_x), Ln( 1/Sin(x) - Cos(x)/Sin(x) ) );
 IntFunc(x,Cos(_x),Sin(x));
 IntFunc(x,1/Cos(_x),Ln(1/Cos(x)+Tan(x)));
 IntFunc(x,Tan(_x),-Ln(Cos(x)));
+IntFunc(x,1/Tan(_x),Ln(Sin(x)) );
 IntFunc(x,Cos(_x)/Sin(_x),Ln(Sin(x)));
 IntFunc(x,Exp(_x),Exp(x));
 IntFunc(x,(C_IsFreeOf(var))^(_x),C^x/Ln(C));
@@ -282,9 +283,11 @@ IntFunc(x,1/Cos(_x)^2,Tan(x) );
 IntFunc(x,1/(Sin(_x)*Tan(_x)),-1/Sin(x));
 IntFunc(x,Tan(_x)/Cos(_x),1/Cos(x));
 IntFunc(x,1/Sinh(_x)^2,-1/Tanh(x));
-IntFunc(x,1/Cosh(_x)^2,TanH(x));
+IntFunc(x,1/Cosh(_x)^2,Tanh(x));
 IntFunc(x,1/(Sinh(_x)*Tan(_x)),-1/Sinh(x));
 IntFunc(x,Tanh(_x)/Cosh(_x),-1/Cosh(x));
+
+IntFunc(x,1/Sqrt(m_IsFreeOf(x)-_x^2),ArcSin(x/Sqrt(m)) );
 
 IntFunc(x,Exp(n_IsNumber*_x)*Sin(m_IsNumber*_x),Exp(n*x)*(n*Sin(m*x)- m*Cos(m*x))/(m^2+n^2) );
 
@@ -325,10 +328,10 @@ IntFunc(x,ArcCosh(_x),x*ArcCosh(x) - Sqrt(x-1)*Sqrt(x+1) );
 
 
 // n^2 > x^2 
-//IntFunc(x,num_IsFreeOf(var)/(-(_x)^2 + n_IsNumber),num*ArcTanH(x/Sqrt(n))/n);
+//IntFunc(x,num_IsFreeOf(var)/(-(_x)^2 + n_IsNumber),num*ArcTanh(x/Sqrt(n))/n);
 
 // x^2 > n^2
-//IntFunc(x,num_IsFreeOf(var)/((_x)^2 - n_IsNumber),num * -ArcCotH(x/Sqrt(n))/Sqrt(n));
+//IntFunc(x,num_IsFreeOf(var)/((_x)^2 - n_IsNumber),num * -ArcCoth(x/Sqrt(n))/Sqrt(n));
 
 // n^2 > x^2
 //IntFunc(x,num_IsFreeOf(var)/Sqrt(n_IsNumber - (_x)^2),num*ArcSin(x/Sqrt(n)));
@@ -345,3 +348,7 @@ IntFunc(x,num_IsFreeOf(var)/(m_IsNumber*Exp(p_IsNumber*(_x)) + n_IsNumber),num*x
 
 IntPureSquare(x,num_IsFreeOf(var)/(_x),1,1,(num/(a*Sqrt(b/a)))*ArcTan(var/Sqrt(b/a)));
 
+
+
+///// Integrating Special Functions
+IntFunc(x,Erf(x), x*Erf(x)+ 1/(Exp(x^2)*Sqrt(Pi)) );
