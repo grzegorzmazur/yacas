@@ -405,6 +405,54 @@ fact prime.
 
 *SEE IsPrime
 
+*CMD IsTwinPrime --- test for a twin prime
+*STD
+*CALL
+	IsTwinPrime(n)
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+This function returns {True} if {n} is a twin prime. By definition, a twin
+prime is a prime number {n} such that {n+2} is also a prime number. 
+
+*E.G.
+	In> IsTwinPrime(101)
+	Out> True;
+	In> IsTwinPrime(7)
+	Out> False;
+	In> Select(IsTwinPrime, 1...100)
+	Out> {3,5,11,17,29,41,59,71};
+
+*SEE IsPrime
+
+*CMD IsIrregularPrime --- test for a irregular prime
+*STD
+*CALL
+	IsIrregularPrime(n)
+
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+This function returns {True} if {n} is an irregular prime. A prime number {n}
+is irregular, if and only if {n} divides the numerator of a Bernoulli number {Bernoulli(2*i)},
+where {2*i+1 < n }. Small irregular primes are quite rare, the only irregular primes under 100
+are  37, 59 and 67. Asymptotically, roughly 40% of prime are irregular.
+
+*E.G.
+
+	In> IsIrregularPrime(5)
+	Out> False;
+	In> Select(IsIrregularPrime,1...100)
+	Out> {37,59,67};
+
+*SEE IsPrime
+
 
 *CMD Factors --- factorization
 *STD
@@ -435,6 +483,32 @@ is returned as {{{p1,n1}, ..., {p9,n9}}}.
 	Out> {{2,1},{x+1,2},{x-1/2,1}};
 
 *SEE Factor, IsPrime
+
+*CMD IsAmicablePair --- test for a pair of amicable numbers
+*STD
+*CALL
+	IsAmicablePair(m,n)
+
+*PARMS
+
+{m,n} -- positive integers
+
+*DESC
+
+This function tests if a pair of numbers are amicable. A pair of 
+numbers has this property if the sum of the proper divisors of {m} is
+{n} and the sum of the proper divisors of {n} is {m}. More clearly,
+{  ProperDivisorsSum(m)==n And ProperDivisorsSum(n)==m }.
+
+*E.G.
+
+	In> IsAmicablePair(200958394875 ,209194708485 )
+	Out> True;
+	In> IsAmicablePair(220,284)
+	Out> True;
+
+*SEE ProperDivisorsSum
+
 
 *CMD Factor --- factorization, in pretty form
 *STD
