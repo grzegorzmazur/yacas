@@ -1,0 +1,98 @@
+		Arbitrary-precision numerical algorithms
+
+	    Calculation of $Pi$
+
+In Yacas, the constant $pi$ is computed by the library routine {Pi()} which uses the internal routine {MathPi()} to compute the value to current precision {Precision()}. The result is stored in the global variable {PiCache} which is a list of the form {{precision, value}} where {precision} is the number of digits of $pi$ that have already been found and {value} is the multiple-precision value. This is done to avoid recalculating $pi$ if a precise enough value for it has already been found.
+
+Efficient iterative algorithms for computing $pi$ with arbitrary precision have been recently developed by Brent, Salamin, Borwein and others. However, limitations of the current multiple-precision implementation in Yacas (compiled with the "internal" math option) make these advanced algorithms run slower because they require many more arbitrary-precision multiplications at each iteration.
+
+The example file {examples/pi.ys} implements five different algorithms that
+duplicate the functionality of {Pi()}. See
+<*http://numbers.computation.free.fr/Constants/*> for details of computations of $pi$ and
+generalizations of Newton-Raphson iteration.
+
+{PiMethod0()}, {PiMethod1()}, {PiMethod2()} are all based on a generalized Newton-Raphson method of solving equations. The basic method is widely known: If $f(x)=0$ must be solved, one starts with a value of $x$ that is close to some root and iterates $$x'=x-f(x)*(D(x)f(x))^(-1)$$
+For initial value of $x$ sufficiently close to the root, each iteration gives at least twice as many correct digits of the root as the previous one. Generalizations of this method require computation of higher derivatives of the function $f(x)$ but successive approximations to the root converge much faster.
+
+Since $pi$ is a solution of $Sin(x)=0$, one may start sufficiently close, e.g. at $x0 = 3.14159265$ and iterate $x'=x+Tan(x)$. In fact it is faster to iterate
+$x'=x+Sin(x)$ which finds the root of a different equation for $pi$. {PiMethod0()} is the straightforward implementation of the latter iteration. A significant speed improvement is achieved by doing calculations at each iteration only with the precision of the root that we expect to get from that iteration. Any imprecision introduced by round-off will be automatically corrected at the next iteration.
+
+If at some iteration $x=pi+epsilon$ for small $epsilon$, then from the Taylor expansion of $Sin(x)$ it follows that the value $x'$ at the next iteration will differ from $pi$ by $O(epsilon^3)$. Therefore, the number of correct digits triples at each iteration. If we know the number of correct digits of $pi$ in the initial approximation, we can decide in advance how many iterations to compute and what precision to use.
+
+The final speed-up in {PiMethod0()} is to avoid computing at unnecessarily high precision. This may happen if, for example, we need to evaluate 200 digits of $pi$ starting with 20 correct digits. After 2 iterations we would be calculating with 180 digits; the next iteration would have given us 540 digits but we only need 200, so the third iteration would be wasteful. This can be avoided by first computing $pi$ to just over 1/3 of the required precision, i.e. to 67 digits, and then executing the last iteration at full 200 digits. There is still a wasteful step when we would go from 60 digits to 67, but much less time would be wasted than in the calculation with 200 digits of precision.
+
+Newton's method is based on approximating the function $f(x)$ by a straight line. One can achieve better approximation and therefore faster convergence to the root if one approximates the function with a polynomial curve of higher order. The routine {PiMethod1()} uses the iteration 
+$$ x'=x+Sin(x)+1/6*Sin(x)^3 + 3/40*Sin(x)^5 + 5/112*Sin(x)^7$$
+which has a faster convergence, giving 9 times as many digits at every iteration. (The series is the Taylor series for $ArcSin(y)$ cut at $O(y^9)$.) The same speed-up tricks are used as in {PiMethod0()}. In addition, the last iteration, which must be done at full precision, is performed with the simpler iteration $x'=x+Sin(x)$ to reduce the number of high-precision multiplications.
+
+Both {PiMethod0()} and {PiMethod1()} require a computation of $Sin(x)$ at every iteration. An industrial-strength arbitrary precision library such as {gmp} can multiply numbers much faster than it can evaluate a trigonometric function. Therefore, it would be good to have a method which does not require trigonometrics. {PiMethod2()} is a simple attempt to remedy the problem. It computes the Taylor series for $ArcTan(x)$,
+$$ ArcTan(x) = x - x^3/3 + x^5/5 - x^7/7 + ... $$
+for the value of $x$ obtained as the tangent of the initial guess for $pi$; in other words, if $x=pi+epsilon$ where $epsilon$ is small, then $Tan(x)=Tan(epsilon)$, therefore $epsilon = ArcTan(Tan(x))$ and $pi$ is found as $pi = x - epsilon$. If the initial guess is good (i.e. $epsilon$ is very small), then the Taylor series for $ArcTan(x)$ converges very quickly (although linearly, i.e. it gives a fixed number of digits of $pi$ per term). Only a single full-precision evaluation of $Tan(x)$ is necessary at the beginning of the algorithm.
+
+The routines {PiBrentSalamin()} and {PiBorwein()} are based on much more advanced mathematics. (See papers of P. Borwein for review and explanations of the methods.) They do not require evaluations of trigonometric functions, but they do require taking a few square roots at each iteration, and all calculations must be done using full precision. Using modern algorithms, one can compute a square root roughly in the same time as a division; but Yacas's internal math is not yet up to it. Therefore, these two routines perform poorly compared to the more simple-minded {PiMethod0()}.
+
+Note that the GNU muptiple-precision library {gmp} implements its own routine to compute $pi$.
+
+	    Elementary functions
+
+The exponential function is computed using its Taylor series,
+$$ Exp(x) = 1 + x + x^2/2! + ...$$
+This series converges for all (complex) $x$, but if $Abs(x)$ is large, it converges slowly. A speed-up trick used for large $x$ is to divide the argument by some power of 2 and then square the result several times, i.e.
+$$Exp(x) = (Exp(2^(-k)*x))^(2^k)$$
+where $k$ is chosen sufficiently large so that the Taylor series converges quickly at $2^(-k)*x$. The threshold value for $x$ is in the variable {MathExpThreshold} in {stdfuncs}. If $x$ is large and negative, then it is easier to compute 1/$Exp(-x)$.
+
+The (real) logarithm function is computed using its Taylor series,
+$$Ln(1+x) = x - x/2 + x^2/3 -...$$
+This series converges only for $Abs(x)<1$, so for all other values of $x$ one first needs to bring the argument into this range by taking several square roots and then using the identity $Ln(x) = 2^k*Ln(x^(2^(-k)))$. This speed-up is implemented in the Yacas core.
+
+Trigonometric functions $Sin(x)$, $Cos(x)$ are computed by subtracting $2*Pi$ from $x$ until it is in the range $0<x<2*Pi$ and then using Taylor series.
+Tangent is computed by dividing $Sin(x)/Cos(x)$.
+
+Inverse trigonometric functions are computed by Newton's method (for {ArcSin}) and by continuous fraction expansion (for {ArcTan}),
+$$ArcTan(x) = x/(1+x^2/(3+(2*x)^2/(5+(3*x)^2/(7+...))))$$
+The convergence of this expansion for large $Abs(x)$ is improved by using the identity
+$$ArcTan(x) = Pi/2*Sign(x) - ArcTan(1/x)$$
+This is implemented in the standard library scripts.
+
+By the identity $ArcCos(x) := Pi/2 - ArcSin(x)$, the inverse cosine is reduced to the inverse sine. Newton's method for $ArcSin(x)$ consists of solving the equation $Sin(y)=x$ for $y$. Implementation is similar to the calculation of $pi$ in {PiMethod0()}.
+
+Hyperbolic and inverse hyperbolic functions are reduced to exponentials and logarithms.
+
+	    Euler's $Gamma$-function
+
+For integer values of the argument, Euler's $Gamma$-function ({Gamma()})
+$$ Gamma(n+1) := n! $$
+is computed exactly (the multiple-precision factorial routine is implemented in Yacas core for speed). For half-integer values it is also computed exactly, using the following identities (here $n$ is a nonnegative integer):
+$$ (+(2*n+1)/2)! = Sqrt(Pi)*(2*n+1)! / (2^(2*n+1)*n!) $$
+$$ (-(2*n+1)/2)! = (-1)^n*Sqrt(Pi) * (2^(2*n)*n!) / (2*n)! $$
+
+For arbitrary complex arguments with nonnegative real part, the function {GammaNum()} computes a uniform appoximation of Lanczos and Spouge (with the so-called "less precise coefficients of Spouge"). See: C. J. Lanczos, J. SIAM of Num. Anal. Ser. B, vol. 1, 86 (1964); J. L. Spouge, J. SIAM of Num. Anal., vol. 31, 931 (1994). See also: Paul Godfrey 2001 (unpublished): <*http://winnie.fit.edu/~gabdo/gamma.txt*> for some explanations on the method. 
+The method gives the $Gamma$-function only for arguments with positive real part; at negative values of the real part of the argument, the $Gamma$-function is computed via the identity
+$$Gamma(x)*Gamma(1-x) = Pi/Sin(Pi*x)$$
+
+The approximation formula used in Yacas depends on a parameter $a$,
+$$Gamma(z) = (Sqrt(2*Pi)*(z+a)^(z-1/2)) / (z*e^(z+a)) * (1+e^(a-1)/Sqrt(2*Pi) * Sum(k, 1, N, c[k]/(z+k)))$$
+with $N := Ceil(a)-1$. The coefficients $c[k]$ are defined by
+$$ c[k] = (-1)^(k-1)*(a-k)^(k-1/2)/(e^(k-1)*(k-1)!) $$
+The parameter $a$ is a free parameter of the approximation that determines also the number of terms in the sum. Some choices of $a$ may lead to a slightly more precise approximation, but larger $a$ is always better. The number of terms $N$ must be large enough to produce the required precision. The error estimate for this formula is valid for all $z$ such that $Re(z)>0$ and is
+$$error < (2*Pi)^(-a)/Sqrt(2*Pi*a)*(a/(a+z))$$
+The lowest value of $a$ to produce $P$ correct digits is estimated as
+$$a = 0.9 * P*Ln(10)/Ln(2*Pi)$$
+
+The choice of coefficients $c[k]$ and of the parameter $a$ can be made to
+achieve a greater precision of the approximation formula. However, the recipe
+for the coefficients $c[k]$ given in the paper by Lanczos is too complicated
+for practical calculations in arbitrary precision: the time it would take to
+compute the array of $N$ coefficients $c[k]$ grows as $N^3$. Therefore it is
+better to use less precise but much simpler formulae derived by Spouge.
+
+In the calculation of the sum $Sum(k, 1, N, c[k]*(z+k)^(-1))$, round-off error
+can lead to a serious loss of precision. At version 1.0.49, Yacas is limited in
+its internal arbitrary precision facility in that does not support
+floating-point numbers with mantissa; this hinders precise calculations with
+floating-point numbers. (This concern does not apply to Yacas linked with
+{gmp}.) In the current version of the {GammaNum()} function, two workarounds
+are implemented. First, a Horner scheme is used to compute the sum; this is
+faster and leads to smaller roundoff errors. Second, intermediate calculations
+are performed at 40{%} higher precision than requested. This is much slower but
+allows to obtain results at desired precision.

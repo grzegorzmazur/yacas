@@ -93,7 +93,9 @@ TeXFormRegularPrefixOps := { {"+"," + "}, {"-"," - "}, {"Not"," \\neg "} };
 100 # TeXForm(_x / _y, _p) <-- ConcatStrings("\\frac{", TeXForm(x, TeXFormMaxPrec), "}{", TeXForm(y, TeXFormMaxPrec), "} ");
 
 	/* power's argument is never bracketed but it must be put in braces. Chained powers must be bracketed. Powers of 1/n are displayed as roots. */
-100 # TeXForm(_x ^ (1/_y), _p) <-- ConcatStrings("\\sqrt[", TeXForm(y, TeXFormMaxPrec), "]{", TeXForm(x, TeXFormMaxPrec), "}");
+100 # TeXForm(_x ^ (1/2), _p) <-- ConcatStrings("\\sqrt{", TeXForm(x, TeXFormMaxPrec), "}");
+101 # TeXForm(_x ^ (1/_y), _p) <-- ConcatStrings("\\sqrt[", TeXForm(y, TeXFormMaxPrec), "]{", TeXForm(x, TeXFormMaxPrec), "}");
+
 
 120 # TeXForm(_x ^ _y, _p) <-- TeXFormBracketIf(p<=OpPrecedence("^"), ConcatStrings(TeXForm(x, OpPrecedence("^")), " ^{", TeXForm(y, TeXFormMaxPrec), "}" ) );
 
@@ -187,7 +189,7 @@ TeXFormMathFunctions := { {"Cos","\\cos "}, {"Sin","\\sin "}, {"Tan","\\tan "}, 
 
 /* Some functions with limits: Lim, Sum, Integrate */
 
-100 # TeXForm(Sum(_x, _x1, _x2, _expr), _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\sum _{", TeXForm(x, TeXFormMaxPrec), " = ", TeXForm(x1, TeXFormMaxPrec), "} ^{", TeXForm(x2, TeXFormMaxPrec), "} ", TeXForm(expr, OpPrecedence("/")) ) );
+100 # TeXForm(Sum(_x, _x1, _x2, _expr), _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\sum _{", TeXForm(x, TeXFormMaxPrec), " = ", TeXForm(x1, TeXFormMaxPrec), "} ^{", TeXForm(x2, TeXFormMaxPrec), "} ", TeXForm(expr, OpPrecedence("*")) ) );
 
 100 # TeXForm(Integrate(_x, _x1, _x2) _expr, _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings(
 "\\int _{", TeXForm(x1, TeXFormMaxPrec), "} ^{", TeXForm(x2, TeXFormMaxPrec), " } ", TeXForm(expr, OpPrecedence("*")), " d", TeXForm(x, TeXFormMaxPrec)

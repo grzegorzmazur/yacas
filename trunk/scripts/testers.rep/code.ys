@@ -157,7 +157,7 @@ Function ("TestYacas", {expr, ans})
 			[
 			  WriteString("******************");
 			  NewLine();
-			  Write(Hold(expr));
+			  Write(expr);
 			  WriteString(" evaluates to ");
 			  NewLine();
 			  Write(Eval(expr));

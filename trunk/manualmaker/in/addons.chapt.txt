@@ -95,32 +95,46 @@ If you call {MakeFunctionPlugin()} repeatedly to define a function with the same
 *UNIX
 *CALL
 	GnuPlot(x1, x2, numpoints, function)
+	GnuPlot(x1, x2, numpoints, {expression_list}
 
 *PARMS
 
-x1, x2 -- interval in which to plot the function
-numpoints -- number of points in the interval
-function -- expression containing a variable
+{x1}, {x2} -- interval in which to plot the function
+
+{numpoints} -- number of points in the interval
+
+{function} -- unevaluated expression containing a variable
+
+{expression_list} -- list of functions to plot
 
 *DESC
 
-Requires {gnuplot}. Calls the {gnuplot} plotting program to plot a graph of the given function in the given range, using {numpoints} equally spaced points. Creates data files {gnuplot.in} and {gnudata.in} in the current working directory, so you can use those files to prepare better graphs.
+Requires {gnuplot} software. Calls the {gnuplot} plotting program to plot a
+graph of the given function in the given range, using {numpoints} equally
+spaced points. Creates data files {gnuplot.in} and {gnudata.in} in the {plot.tmp/} subdirectory of the current
+working directory, so you can use those files to prepare better graphs. If several functions are to be plotted at once, it creates files {gnudata.in1}, {gnudata.in2} etc.
 
-Most frequently encountered problem: {function} <i>must</i> evaluate to an expression that contains a variable. Test your function! If you have defined {f(x)} which only accepts a number but does not accept an undefined variable, {GnuPlot()} will fail to plot it. Use {NFunction()} to overcome this difficulty.
+Most frequently encountered problem: the {function} parameter <i>must</i>
+evaluate to an expression that contains a variable. Test your function for
+this! If you have defined some {f(x)} which accepts a number but does not
+accept an undefined variable, {GnuPlot()} will fail to plot it. Use
+{NFunction()} to overcome this difficulty.
 
 *EG
 
 	In> f(x) := Cos(( Abs(Pi/x))^1.5);
 	Out> True;
 	In> GnuPlot(-1, 1, 101, f(x) );
+	GnuPlot: created file gnuplot.tmp/gnudata.in
 	Out> True;
 We find that 101 is not enough points to accurately represent this function. However, calculations with more points would take a long time. To speed up the calculation, compile this function online:
 
 	In> MakeFunctionPlugin("f1", f(x));
-	Function f1(x) loaded from plugins.tmp
-	/libf1_plugin_cc.so
+	Function f1(x) loaded from plugins.tmp/
+	libf1_plugin_cc.so
 	Out> True;
 	In> GnuPlot(-1, 1, 10001, f1(x))
+	GnuPlot: created file gnuplot.tmp/gnudata.in
 	Out> True;
 
 *SEE NFunction, MakeFunctionPlugin

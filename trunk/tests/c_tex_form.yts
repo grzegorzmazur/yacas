@@ -64,6 +64,11 @@ TeXForm(aa(x,y) z + 1 bar y!)
 ,"$aa\\left( x, y\\right) z + 1\\mathrm{ bar }y!$" 
 );
 
+Verify(
+TeXForm(x^(1/3)+x^(1/2))
+, "$\\sqrt[3]{x} + \\sqrt{x}$"
+);
+
 /*
 Verify(
 TeXForm()
