@@ -1393,4 +1393,29 @@ zeros if $ a = 3 $.
 
 *SEE Determinant, Simplify, Solve, PSolve
 
+*CMD MatrixSolve --- solve a system of equations
+*STD
+*CALL
+	MatrixSolve(A,b)
+
+*PARMS
+
+{A} -- coefficient matrix
+
+{b} -- row vector
+
+*DESC
+
+{MatrixSolve} solves the matrix equations {A*x = b} using Gaussian Elimination
+with Backward substitution. If your matrix is triangular or diagonal, it will
+be recognized as such and a faster algorithm will be used.
+
+*E.G.
+
+	In> A:={{2,4,-2,-2},{1,2,4,-3},{-3,-3,8,-2},{-1,1,6,-3}};
+	Out> {{2,4,-2,-2},{1,2,4,-3},{-3,-3,8,-2},{-1,1,6,-3}};
+	In> b:={-4,5,7,7};
+	Out> {-4,5,7,7};
+	In> MatrixSolve(A,b);
+	Out> {1,2,3,4};
 
