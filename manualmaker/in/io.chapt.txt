@@ -17,7 +17,7 @@ which simply read a specified file.
 
 *PARMS
 
-expr - The expression to be printed in LISP-format
+expr - expression to be printed in LISP-format
 
 *DESC
 
@@ -154,7 +154,7 @@ to show 'input = output'.
 
 *PARMS
 
-expr -- an expression to be exported
+{expr} -- an expression to be exported
 
 *DESC
 
@@ -194,7 +194,7 @@ expr -- an expression to be exported
 
 *PARMS
 
-expr - the expression to be printed
+{expr} -- expression to be printed
 
 *DESC
 
@@ -222,7 +222,7 @@ immediately follows the output of {Write}.
 
 *PARMS
 
-string - the string to be printed
+{string} -- the string to be printed
 
 *DESC
 
@@ -251,7 +251,7 @@ so the {Out>} prompt immediately follows the output.
 
 *PARMS
 
-nr - the number of spaces to print
+{nr} -- the number of spaces to print
 
 *DESC
 
@@ -274,7 +274,7 @@ output. The result is always True.
 
 *PARMS
 
-nr - the number of newlines to print
+{nr} -- the number of newline characters to print
 
 *DESC
 
@@ -297,15 +297,15 @@ current output. The result is always True.
 
 *PARMS
 
-name - the name of the file to read
+{name} - string, the name of the file to read
 
-body - the command to be executed
+{body} - expression to be evaluated
 
 *DESC
 
-The current input is connected to the file "name". Then the command
-"body" is executed. Everything that the commands in "body" read
-from current input, is now read from the file "name". Finally, the
+The current input is connected to the file "name". Then the expression
+"body" is evaluated. If some functions in "body" try to read
+from current input, they will now read from the file "name". Finally, the
 file is closed and the result of evaluating "body" is returned.
 
 *E.G.
@@ -332,7 +332,7 @@ Then we can have the following dialogue:
 
 str - a string containing the text to parse
 
-body - the command to be executed
+body - expression to be evaluated
 
 *DESC
 
@@ -358,20 +358,28 @@ result of "body" is returned.
 
 *PARMS
 
-name - the name of the file to write the result to
+name - string, the name of the file to write the result to
 
-body - the command to be executed
+body - expression to be evaluated
 
 *DESC
 
-The current output is connected to the file "name". Then the command
-"body" is executed. Everything that the commands in "body" print
+The current output is connected to the file "name". Then the expression
+"body" is evaluated. Everything that the commands in "body" print
 to the current output, ends up in the file "name". Finally, the
 file is closed and the result of evaluating "body" is returned.
 
 *E.G.
 
-Take first a look at the following command:
+Here is how one can create a file with C code to evaluate an expression:
+
+	In> ToFile("expr1.c") WriteString(
+	  CForm(Sqrt(x-y)*Sin(x)) );
+	Out> True;
+The file {expr1.c} was created in the current working directory and it contains
+	sqrt(x-y)*sin(x)
+
+As another example, take a look at the following command:
 
 	In> [ Echo("Result:");  \
 	  PrettyForm(Taylor(x,0,9) Sin(x)); ];
@@ -407,12 +415,11 @@ After this command the file {out} contains:
 *CMD ToString --- Connect current output to a string
 *CORE
 *CALL
-
-ToString() body
+	ToString() body
 
 *PARMS
 
-body - the command to be executed
+body - expression to be evaluated
 
 *DESC
 
@@ -431,12 +438,7 @@ collected in a string and this string is returned.
 *CMD Read --- Read an expression from current input
 *CORE
 *CALL
-
-Read()
-
-*PARMS
-
-none
+	Read()
 
 *DESC
 
@@ -455,12 +457,7 @@ the end of an input file is encountered, the token atom {EndOfFile} is returned.
 *CMD LispRead --- Read an expression in LISP-syntax
 *CORE
 *CALL
-
-LispRead()
-
-*PARMS
-
-none
+	LispRead()
 
 *DESC
 
@@ -485,12 +482,7 @@ default.
 *CMD ReadToken --- Read an token from current input
 *CORE
 *CALL
-
-ReadToken()
-
-*PARMS
-
-none
+	ReadToken()
 
 *DESC
 
@@ -520,12 +512,11 @@ combination of the semantics of the tokens. Hence {a := foo} consists of three t
 *CMD Load --- Evaluate all expressions in a file
 *CORE
 *CALL
-
-Load(name)
+	Load(name)
 
 *PARMS
 
-name - name of the file to load
+name - string, name of the file to load
 
 *DESC
 
@@ -537,12 +528,11 @@ evaluated. {Load} always returns {true}.
 *CMD Use --- Load a file, but not twice
 *CORE
 *CALL
-
-Use(name)
+	Use(name)
 
 *PARMS
 
-name - name of the file to load
+name - string, name of the file to load
 
 *DESC
 
@@ -559,12 +549,11 @@ least have been loaded, but is not loaded twice.
 *CMD DefLoad --- Load a {.def} file
 *CORE
 *CALL
-
-DefLoad(name)
+	DefLoad(name)
 
 *PARMS
 
-name - name of the file (without {.def} suffix)
+name - string, name of the file (without {.def} suffix)
 
 *DESC
 
@@ -586,7 +575,7 @@ which functions.
 
 *PARMS
 
-name - name of the file or directory to find
+name - string, name of the file or directory to find
 
 *DESC
 
@@ -606,18 +595,18 @@ searched for a file called "name". If such a file is not found, {FindFile} retur
 
 *PARMS
 
-name - the file to patch
+name - string, name of the file to "patch"
 
 *DESC
 
-PatchLoad loads in a file and outputs the contents to the current
+{PatchLoad} loads in a file and outputs the contents to the current
 output. The file can contain blocks delimited by {<?} and {?>}
-(meaning Yacas Begin and Yacas End). The piece of text between
+(meaning "Yacas Begin" and "Yacas End"). The piece of text between
 such delimiters is treated as a separate file with Yacas instructions,
 which is then loaded and executed. All output of write statements
 in that block will be written to the same current output.
 
-This is similar to the way php works. You can have a static text file
+This is similar to the way PHP works. You can have a static text file
 with dynamic content generated by Yacas.
 
 *SEE PatchString, Load
@@ -652,7 +641,7 @@ case {L} (from "line").
 
 *PARMS
 
-{expression} - expression to be evaluated in verbose mode
+{expression} -- expression to be evaluated in verbose mode
 
 *DESC
 
