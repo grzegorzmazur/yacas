@@ -19,7 +19,7 @@ LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
     if (lt_dlinit() != 0)
     {
         err = lt_dlerror();
-	if (err) printf("LtDll::Open: lt_dlinit says %s\n",err);
+        if (err) printf("LtDll::Open: lt_dlinit says %s\n",err);
     }
     handle = lt_dlopen(aDllFile/*,RTLD_LAZY*/);
     if (handle)
@@ -31,15 +31,15 @@ LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
         if (iPlugin)
         {
 #ifdef YACAS_DEBUG
-	    printf("LtDll::Open: plugin found\n");
+          printf("LtDll::Open: plugin found\n");
 #endif
-            iPlugin->Add(aEnvironment);
+          iPlugin->Add(aEnvironment);
         }
     } 
     else
     {
         err = lt_dlerror();
-	if (err) printf("LtDll::Open: lt_dlopen says %s\n",err);
+        if (err) printf("LtDll::Open: lt_dlopen says %s\n",err);
     }
     return (handle != NULL && iPlugin != NULL);
 }

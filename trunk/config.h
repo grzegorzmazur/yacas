@@ -30,17 +30,11 @@
 /* Define to 1 if you have the <dl.h> header file. */
 /* #undef HAVE_DL_H */
 
+/* Define to 1 if you have the <GL/glut.h> header file. */
+/* #undef HAVE_GL_GLUT_H */
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
-
-/* Define to 1 if you have the `gsl' library (-lgsl). */
-#define HAVE_LIBGSL 1
-
-/* Define to 1 if you have the `gslcblas' library (-lgslcblas). */
-#define HAVE_LIBGSLCBLAS 1
-
-/* Define to 1 if you have the `m' library (-lm). */
-#define HAVE_LIBM 1
 
 /* Define to 1 if you have the <malloc.h> header file. */
 /* #undef HAVE_MALLOC_H */
@@ -119,6 +113,9 @@
 
 /* Version number of package */
 #define VERSION "1.0.53rev6"
+
+/* Define to 1 if the X Window System is missing or not being used. */
+#define X_DISPLAY_MISSING 1
 
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */
