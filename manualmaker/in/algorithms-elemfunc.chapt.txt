@@ -98,13 +98,15 @@ However, currently the limitations of Yacas internal math make these methods les
 
 	    Powers
 
-Integer powers are computed by a fast algorithm with repeated squarings, as 
-described in Knuth's book. The algorithm scans bits in the power
+Integer powers $x^n$ are computed by a fast algorithm with repeated squarings, as 
+described in Knuth's book, <i>The art of computer programming</i>. The algorithm scans bits in the power
 to raise the number to, so the algorithm is linear in the number of 
-decimals, or logarithmic in the power. In Yacas script form, the
-algorithm looks like:
+decimals, or logarithmic in the power.
+The number $x$ is squared repeatedly (hence the name), and when the appropriate
+bit in the exponent is set, the result is multiplied by $x$.
+In Yacas script form, the algorithm looks like this:
 
-	power(x_IsPositiveInteger, n_IsPositiveInteger) <--
+	power(x_IsPositiveInteger, n_IsPositiveInteger)<--
 	[
 	  Local(result);
 	  result:=1;
@@ -119,17 +121,13 @@ algorithm looks like:
 	  ];
 	  result;
 	];
-
-power(m,n) calculates the result of $ m^n $ for $ n>0 $, $ m>0 $, 
+{power(m,n)} calculates the result of $ m^n $ for $ n>0 $, $ m>0 $, 
 integer $ n $ and integer $ m $.
 
-The number is squared repeatedly (hence the name), and when the appropriate
-bit in the exponent is set, the result is multiplied by that number.
-
 The square root is computed by using the bisection method, which
-works well for integer square roots. The general approach is to scan
-each bit, to see if it should be set in the resulting integer.
-As such, it is linear in the number of decimals, or logarithmic in
+works well for integers. The general approach is to scan
+each bit of the input number and to see if a certain bit should be set in the resulting integer.
+The time is linear in the number of decimals, or logarithmic in
 the input number. The method is very similar in approach to the
 repeated squaring method described above for raising numbers to a
 power.
@@ -138,32 +136,32 @@ For integer $ N $, the following steps are performed:
 
 *	0. Find the highest bit set, $ l2 $, in the number $ N $.
 *	0. $ 1<<(l2/2) $ is at least a bit that is set in the end result. Start
-by setting that bit in the result, $ u := 1<<l2 $ . It is also the highest 
+by setting that bit in the result, $ u = 1<<l2 $ . It is also the highest 
 bit set.
 *	0. Now, traverse all the lower bits, one by one. For each lower
-bit, starting at $ lnext := l2-1 $, set $ v := 1<<lnext $. Now, 
-$ (u+v)^2 := (u^2+2*u*v+v^2) $. If $ (u+v)^2 <= N $, then the bit set
+bit, starting at $ lnext = l2-1 $, set $ v = 1<<lnext $. Now, 
+$ (u+v)^2 = (u^2+2*u*v+v^2) $. If $ (u+v)^2 <= N $, then the bit set
 in $ v $ should also be set in the result, $ u $, otherwise that bit should 
-be cleared
-*	0. Set $ lnext:=lnext-1$, and repeat until all bits are tested, 
+be cleared.
+*	0. Set $ lnext=lnext-1$, and repeat until all bits are tested, 
 and $ lnext = 0 $ and return the result found.
 
 The intermediate results, $ u^2 $, $ v^2 $ and $ 2*u*v $ can be 
 maintained easily too, due to the nature of the numbers 
-involved ( $ v $ having one bit set, and it being known which bit that
+involved ($ v $ having only one bit set, and it being known which bit that
 is).
 
-For floating point numbers, first $ p $, the required decimals after
-the decimal point, is determined. Then the input number $ N $ is
-set to double that precision, $ 2*p $ decimals. Then the calculation
-is performed, and the resulting number has $ p $ digits precision.
+For floating point numbers, first the required number of decimals $p$ after
+the decimal point is determined. Then the input number $ N $ is
+multiplied by a power of 10 until it has $ 2*p $ decimal. Then the integer square root calculation
+is performed, and the resulting number has $ p $ digits of precision.
 
 Below is some {Yacas} script code to perform the calculation for integers.
 
 	//sqrt(1) = 1, sqrt(0) = 0
 	10 # BisectSqrt(0) <-- 0;
 	10 # BisectSqrt(1) <-- 1;
-
+	
 	20 # BisectSqrt(N_IsPositiveInteger) <--
 	[
 	  Local(l2,u,v,u2,v2,uv2,n);
@@ -218,11 +216,10 @@ Below is some {Yacas} script code to perform the calculation for integers.
 	    ];
 	    u; // return result, accumulated in u.
 	];
+{BisectSqrt(N)} computes the integer part of $ Sqrt(N) $ for integer $N$.
 
-BisectSqrt(N) computes the result of $ Sqrt(N) $ for integer N.
 
-
-A separate function {IntNthRoot} is provided to compute integer part of $n^(1/s)$ for integer $n$ and $s$.
+A separate function {IntNthRoot} is provided to compute the integer part of $n^(1/s)$ for integer $n$ and $s$.
 For a given $s$, it evaluates the integer part of $n^(1/s)$ using only integer arithmetic with integers of size $n^(1+1/s)$. This can be done by Halley's iteration method, solving the equation $x^s=n$. For this function, the Halley iteration sequence is monotonic.
 The initial guess is obtained by bit counting using the integer logarithm function, $x[0]=2^(b(n)/s)$ where $b(n)$ is the number of bits in $n$. It is clear that the initial guess is accurate to within a factor of 2. Since the relative error is squared at every iteration, we need as many iteration steps as bits in $n^(1/s)$.
 
