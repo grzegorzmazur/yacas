@@ -1,4 +1,7 @@
+MathBitCount
 MathPower
 MathSqrt
 MathGcd
+MathExp
+MathMul2Exp
 }

@@ -180,6 +180,10 @@ In> SumTaylorNum(1,{{k},1/k!}, 10 )
 Out> 2.7182818007;
 */
 
+//////////////////////////////////////////////////
+/// Numerical method: multiply floats by rationals
+//////////////////////////////////////////////////
+
 /// aux function: optimized numerical multiplication. Use MathMultiply() and MathDivide().
 /// optimization consists of multiplying or dividing by integers if one of the arguments is a rational number. This is presumably always better than floating-point calculations, except if we use Rationalize() on everything.
 /// note that currently this is not a big optimization b/c of slow arithmetic but it already helps for rational numbers under Numeric:=True and it will help even more when faster math is done
@@ -315,6 +319,10 @@ LN(x_IsNumber)_(x>1 ) <--
 ];
 /**/
 
+//////////////////////////////////////////////////
+/// Numerical method: integer powers by binary reduction
+//////////////////////////////////////////////////
+
 /// generalized integer Power function using the classic binary method.
 5 # IntPowerNum(_x, 0, _func, _unity) <-- unity;
 10 # IntPowerNum(_x, n_IsInteger, _func, _unity) <--
@@ -337,3 +345,39 @@ LN(x_IsNumber)_(x>1 ) <--
 	];
 	result;
 ];
+
+//////////////////////////////////////////////////
+/// Numerical method: binary splitting technique for simple series
+//////////////////////////////////////////////////
+
+/// Binary splitting for series of the form
+/// S(m,n) = Sum(k,m,n, a(k)/b(k)*(p(0)*...*p(k))/(q(0)*...*q(k)))
+
+
+/// High-level interface routine
+BinSplitNum(m,n,a,b,p,q) := BinSplitFinal(BinSplitData(m,n,a,b,p,q));
+
+/// Low-level routine: compute the floating-point answer from P, Q, B, T data
+BinSplitFinal({_P,_Q,_B,_T}) <-- MathDivide(T, MathMultiply(B, Q));
+
+/// Low-level routine: combine two binary-split intermediate results
+BinSplitCombine({_P1, _Q1, _B1, _T1}, {_P2, _Q2, _B2, _T2}) <-- {P1*P2, Q1*Q2, B1*B2, B1*P1*T2+B2*Q2*T1};
+
+/// Low-level routine: compute the list of four integers P, Q, B, T. (T=BQS)
+/// Input: m, n and four functions a,b,p,q of one integer argument.
+
+// base of recursion
+10 # BinSplitData(_m, _n, _a, _b, _p, _q)_(m>n) <-- {1,1,1,0};
+
+10 # BinSplitData(_m, _n, _a, _b, _p, _q)_(m=n) <-- {p@m, q@m, b@m, (a@m)*(p@m)};
+
+10 # BinSplitData(_m, _n, _a, _b, _p, _q)_(m+1=n) <-- {(p@m)*(p@n), (q@m)*(q@n), (b@m)*(b@n), (p@m)*((a@m)*(b@n)*(q@n)+(a@n)*(b@m)*(p@n))};
+
+// could implement some more cases of recursion base, to improve speed
+
+// main recursion step
+20 # BinSplitData(_m, _n, _a, _b, _p, _q) <--
+[
+	BinSplitCombine(BinSplitData(m,(m+n)>>1, a,b,p,q), BinSplitData(1+((m+n)>>1),n, a,b,p,q));
+];
+

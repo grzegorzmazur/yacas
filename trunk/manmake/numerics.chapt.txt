@@ -234,3 +234,61 @@ Compute $Mod(3^100,7)$:
 	Out> 4;
 
 *SEE MultiplyNum, MathPower, MatrixPower
+
+*CMD BinSplitNum, BinSplitData, BinSplitFinal --- computations of series by the binary splitting method
+*STD
+*CALL
+	BinSplitNum(n1, n2, a, b, c, d)
+	BinSplitData(n1,n2, a, b, c, d)
+	BinSplitFinal({P,Q,B,T})
+
+*PARMS
+
+{n1}, {n2} -- integers, initial and final indices for summation
+
+{a}, {b}, {c}, {d} -- functions of one argument, coefficients of the series
+
+{P}, {Q}, {B}, {T} -- numbers, intermediate data as returned by {BinSplitData}
+
+*DESC
+
+The binary splitting method is an efficient way to evaluate many series when fast multiplication is available and when the series contains only rational numbers.
+The function {BinSplitNum} evaluates a series of the form
+$$ S(n[1],n[2])=Sum(k,n[1],n[2], a(k)/b(k)*(p(0)/q(0)) * ... * p(k)/q(k)) $$.
+Most series for elementary and special functions at rational points are of this form when the functions $a(k)$, $b(k)$, $p(k)$, $q(k)$ are chosen appropriately.
+
+The last four arguments of {BinSplitNum} are functions of one argument that give the coefficients $a(k)$, $b(k)$, $p(k)$, $q(k)$.
+In most cases these will be short integers that are simple to determine.
+The binary splitting method will work also for non-integer coefficients, but the calculation will take much longer in that case.
+
+Note: the binary splitting method outperforms the straightforward summation only if the multiplication of integers is faster than quadratic in the number of digits.
+See <*the algorithm documentation|yacasdoc://Algo/3/14/*> for more information.
+
+The two other functions are low-level functions that allow a finer control over the calculation.
+The use of the low-level routines allows checkpointing or parallelization of a binary splitting calculation.
+
+The binary splitting method recursively reduces the calculation of $S(n[1],n[2])$ to the same calculation for the two halves of the interval [$n[1]$, $n[2]$].
+The intermediate results of a binary splitting calculation are returned by {BinSplitData} and consist of four integers $P$, $Q$, $B$, $T$.
+These four integers are converted into the final answer $S$ by the routine {BinSplitFinal} using the relation
+$$ S = T / (B*Q) $$.
+
+*EG
+
+Compute the series for $e=Exp(1)$ using binary splitting.
+(We start from $n=1$ to simplify the coefficient functions.)
+	In> Precision(21)
+	Out> True;
+	In>  BinSplitNum(1,21, {{k},1},
+	  {{k},1},{{k},1},{{k},k})
+	Out> 1.718281828459045235359;
+	In> N(Exp(1)-1)
+	Out> 1.71828182845904523536;
+	In>  BinSplitData(1,21, {{k},1},
+	  {{k},1},{{k},1},{{k},k})
+	Out> {1,51090942171709440000,1,
+	  87788637532500240022};
+	In> BinSplitFinal(%)
+	Out> 1.718281828459045235359;
+
+*SEE SumTaylorNum
+

@@ -989,7 +989,7 @@ $$Q(0,N) := q(0)* ... *q(N-1)$$,
 $$B(0,N) := b(0) * ... *b(N-1)$$, and
 $$T(0,N) := B(0,N)*Q(0,N)*S(0,N)$$.
 At first sight it seems difficult to compute $T$, but the computation is organized recursively.
-These four integers are computed for the left ($l$) half and for the right ($r$) half of the range [$0$, $N$) and then combined using the obvious recurrence relations $P=P[l]*P[r]$, $Q=Q[l]*Q[r]$, $B=B[l]*P[r]$, and the slightly less obvious relation
+These four integers are computed for the left ($l$) half and for the right ($r$) half of the range [$0$, $N$) and then combined using the obvious recurrence relations $P=P[l]*P[r]$, $Q=Q[l]*Q[r]$, $B=B[l]*B[r]$, and the slightly less obvious relation
 $$T=B[r]*Q[r]*T[l]+B[l]*P[l]*T[r]$$.
 Here we used the shorthand $P[l] := P(0,N/2-1)$, $P[r] := P(N/2, N-1)$ and so on.
 
