@@ -2,11 +2,15 @@
 
 INCLUDES = $(GSL_CFLAGS) -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/ 
 
-# noinst_ in stead of pkglib_ because it doesn't currently work on MacOSX 
 pkglib_LTLIBRARIES = $(GSL_PLUGIN)
 EXTRA_LTLIBRARIES = yacas_gsl.la
-yacas_gsl_la_SOURCES = yacas_gsl.cc yacas_gslapi.cc yacas_gsl.h yacas_gslapi.stub gsl_auto.stub
-yacas_gsl_la_LIBADD = # used to be yacas_gslapi.cc which seems wrong
+
+## yacas_gsl_la_SOURCES should only contain files that should be distributed
+## The library is built from objects created from C++ files in sources
+## Additional objects to be put in the library, are listed in yacas_gsl_la_LIBADD
+ 
+yacas_gsl_la_SOURCES = yacas_gsl.cc yacas_gsl.h yacas_gslapi.stub
+yacas_gsl_la_LIBADD = yacas_gslapi.lo
 yacas_gsl_la_LDFLAGS = $(GSL_LIBS) -module -avoid-version -no-undefined -rpath $(pkglibdir)
 
 CLEANFILES = yacas_gslapi.cc yacas_gslapi.description gsl_auto.stub
