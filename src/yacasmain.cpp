@@ -413,9 +413,12 @@ void DeclarePath(char *ptr2)
   yacas->Evaluate(buf);
 }
 
-void LoadYacas()
+void LoadYacas(LispOutput* aOutput=NULL)
 {
-    yacas = CYacas::NewL();
+    if (aOutput)
+      yacas = CYacas::NewL(aOutput);
+    else
+      yacas = CYacas::NewL();
 
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispPlatformOS),
                                            (*yacas)()().HashTable().LookUp("PlatformOS"));
@@ -626,6 +629,17 @@ void InterruptHandler(int errupt)
 
 
 #ifdef SUPPORT_SERVER
+
+CYacas* clientToStop = NULL;
+void stopClient(int sig)
+{
+  if (clientToStop)
+  {
+    (*clientToStop)()().iEvalDepth = (*clientToStop)()().iMaxEvalDepth+100;
+  }
+}
+
+#define MAX_CONNECTIONS 10
 int runserver(int argc,char** argv)
 {
     int server_sockfd, client_sockfd;
@@ -634,16 +648,19 @@ int runserver(int argc,char** argv)
     struct sockaddr_in client_address;
     int result;
     int maxConnections;
-    int process;
+    int nrSessions = 0;
     fd_set readfds, testfds;
+    LispString outStrings[MAX_CONNECTIONS];
+
     CYacas* used_clients[FD_SETSIZE];
     int serverbusy;
+
 
     int seconds = 30; // give each calculation only so many calculations
 
     serverbusy=1;
-    maxConnections=10;
-    process=0;
+    maxConnections=MAX_CONNECTIONS;
+    nrSessions=0;
 
 
     signal(SIGPIPE,SIG_IGN);
@@ -731,17 +748,24 @@ int runserver(int argc,char** argv)
                         FD_CLR(fd, &readfds);
                         delete used_clients[fd];
                         used_clients[fd] = NULL;
+                        nrSessions--;
 #ifdef YACAS_DEBUG
                         printf("Removing client on %d\n",fd);
 #endif
                     }
                     else
                     {
-                        process++;
-                        LispString cmd;
-                        cmd.SetNrItems(0);
-                        char* buffer = (char*)malloc(nread);
+//                        LispString cmd;
+//                        cmd.SetNrItems(0);
+                        char* buffer = (char*)malloc(nread+1);
+                        if (!buffer) 
+                        {
+                          printf("Error: seem to have run out of memory\n");
+                          exit(-1);
+                        }
                         read(fd, buffer, nread);
+                        buffer[nread] = '\0';
+/*
                         int i;
                         for (i=0;i<nread;i++) 
                         {
@@ -750,31 +774,49 @@ int runserver(int argc,char** argv)
                         free(buffer);
                         cmd.Append('\0');                        
 
+*/
 #ifdef YACAS_DEBUG
 printf("Servicing on %d (%ld)\n",fd,used_clients[fd]);
 #endif
                             if (used_clients[fd] == NULL)
                             {
+                              if (nrSessions >= maxConnections)
+                              {
+                                char* limtxt = "Maximum number of connections reached, sorry\r\n";
+                                write(fd, limtxt, strlen(limtxt));
+                                continue;
+                              }
+
+
 #ifdef YACAS_DEBUG
   printf("Loading new Yacas environment\n");
 #endif
-                              LoadYacas();
+                              StringOutput *out = NEW StringOutput(outStrings[fd]);
+                              LoadYacas(out);
                               used_clients[fd] = yacas;
                               yacas = NULL;
+                              nrSessions++;
                             }
 
 // enable if fork needed
 //                        if (fork() == 0)
                         {
                             int clfd = fd;
-                            char* response = cmd.String();
+                            char* response = buffer;
                             (*used_clients[clfd])()().iSecure = 1;
                             if (seconds>0)
                             {
-                                signal(SIGALRM,exit);
+                                clientToStop = used_clients[clfd];
+                                signal(SIGALRM,stopClient);
                                 alarm(seconds);
                             }
-                            used_clients[clfd]->Evaluate(cmd.String());
+#ifdef YACAS_DEBUG
+                            printf("In> %s\n",buffer);
+#endif
+                            outStrings[fd].SetNrItems(1);
+                            outStrings[fd][0] = '\0';
+                            used_clients[clfd]->Evaluate(buffer);
+                            free(buffer);
                             if (seconds>0)
                             {
                                 signal(SIGALRM,SIG_IGN);
@@ -790,18 +832,19 @@ printf("Servicing on %d (%ld)\n",fd,used_clients[fd]);
 
                             int buflen=strlen(response);
 #ifdef YACAS_DEBUG
-                            printf("In> %s\n",cmd.String());
+                            printf("%s",outStrings[fd].String());
                             printf("Out> %s\n",response);
 #endif
                             if (response)
                             {
-                                if (buflen>0)
-                                    write(fd, response, buflen);
-                                char c;
-                                c = '\r';
-                                write(fd,&c,1);
-                                c = '\n';
-                                write(fd,&c,1);
+                              write(fd, outStrings[fd].String(), strlen(outStrings[fd].String()));
+                              write(fd,"]\r\n",3);
+                              if (buflen>0)
+                              {
+                                write(fd, response, buflen);
+                                write(fd,"\r\n",2);
+                              }
+                              write(fd,"]\r\n",3);
                             }
 
 // enable if fork needed

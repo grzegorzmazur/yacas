@@ -88,6 +88,13 @@ local files, amongst other things. Something that has not been
 taken care of yet is memory use. A calculation could take up all
 memory, but not for longer than 30 seconds. 
 
+The server is single-threaded, but has persistent sessions for
+at most 10 users at a time, from which it can service requests
+in a sequenial order. To make the service multi-threaded, a
+solution might be to have a proxy in front of the service listening
+to the port, redirecting it to different processes which get
+started up for users (this has not been tried yet).
+
 	yacas --rootdir [directory]/
 Tells the system where to find the library scripts. Here, {directory/} is a
 path that is passed to {DefaultDirectory}, and file names will be simply
