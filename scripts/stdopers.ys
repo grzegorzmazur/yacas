@@ -5,104 +5,95 @@
  * function hasn't been defined yet.
  */
 
-Infix("=",9);
-Infix("And",100);
+Infix("=",90);
+Infix("And",1000);
 RightAssociative("And");
-Infix("Or", 101);
-Prefix("Not", 10);
-Infix("<",9);
-Infix(">",9);
-Infix("<=",9);
-Infix(">=",9);
-Infix("!=",9);
+Infix("Or", 1010);
+Prefix("Not", 100);
+Infix("<",90);
+Infix(">",90);
+Infix("<=",90);
+Infix(">=",90);
+Infix("!=",90);
 
-Infix(":=",1000);
+Infix(":=",10000);
 RightAssociative(":=");
 
-Infix("+",7);
-Infix("-",7);
-RightPrecedence("-",4);
-Infix("/",3);
-Infix("*",4);
-Infix("^",2);
-Prefix("+",5);
-Prefix("-",5);
-RightPrecedence("-",4);
+Infix("+",70);
+Infix("-",70);
+RightPrecedence("-",40);
+Infix("/",30);
+Infix("*",40);
+Infix("^",20);
+Prefix("+",50);
+Prefix("-",50);
+RightPrecedence("-",40);
 Bodied("For",60000);
 Bodied("Until",60000);
-Postfix("++",0);
-Postfix("--",0);
+Postfix("++",5);
+Postfix("--",5);
 Bodied("ForEach",60000);
-Infix("<<",1);
-Infix(">>",1);
+Infix("<<",10);
+Infix(">>",10);
 Bodied("D",60000);
 Bodied("Deriv",60000);
-Infix("X",3);
-Infix(".",3);
-Infix("o",3);
-Postfix("!", 3);
-Postfix("!!", 3);
-Infix("***", 5);
+Infix("X",30);
+Infix(".",30);
+Infix("o",30);
+Postfix("!", 30);
+Postfix("!!", 30);
+Infix("***", 50);
 Bodied("Integrate",60000);
 
 Bodied("Limit",60000);
 
-/*TODO remove?
-Infix("+-",5);
-Infix("/-",3);
-Infix("*-",4);
-Infix("^-",2);
-Infix(":=-",1000);
-Infix(":=+",1000);
-*/
-
 /* functional operators */
-Infix(":",7);
+Infix(":",70);
 RightAssociative(":");
-Infix("@",60);
-Infix("/@",60);
-Infix("..",60);
+Infix("@",600);
+Infix("/@",600);
+Infix("..",600);
 
 Bodied("Taylor",60000);
 Bodied("InverseTaylor",60000);
 
-Infix("<--",1000);
-Infix("#",990);
+Infix("<--",10000);
+Infix("#",9900);
 
 Bodied("TSum",60000);
 Bodied("TExplicitSum",60000);
-Bodied("TD",0);  /* Tell the Yacas interpreter that TD is to be used as TD(i)f */
+Bodied("TD",5);  /* Tell the Yacas interpreter that TD is to be used as TD(i)f */
 
 /* Operator to be used for non-evaluating comparisons */
-Infix("==",9);
-Infix("!==",9);
+Infix("==",90);
+Infix("!==",90);
 
 /* Operators needed for propositional logic theorem prover */
-Infix("=>",1000); /* implication, read as 'implies' */
+Infix("=>",10000); /* implication, read as 'implies' */
 
 
-Bodied("if",0);
+Bodied("if",5);
 Infix("else",60000);
 RightAssociative("else");
 /* Bitwise operations we REALLY need. Perhaps we should define them
    also as Yacas operators?
  */
-Infix("&",5);
-Infix("|",5);
-Infix("%",5);
+Infix("&",50);
+Infix("|",50);
+Infix("%",50);
 
 /* local pattern replacement operators */
-Infix("/:",10000);
-Infix("/::",10000);
-Infix("<-",1000);
+Infix("/:",20000);
+Infix("/::",20000);
+Infix("<-",10000);
 
 /* Operators used for manual layout */
 Infix("<>", OpPrecedence("="));
 Infix("<=>", OpPrecedence("="));
 
 /* Operators for Solve: Where and AddTo */
-Infix("Where", 1100);
-Infix("AddTo", 200);
+Infix("Where", 11000);
+Infix("AddTo", 2000);
 
 Bodied("Function",60000);
 Bodied("Macro",60000);
