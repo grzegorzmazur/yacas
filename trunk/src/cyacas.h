@@ -63,7 +63,7 @@ YACASDLL_API void yacas_interrupt();
     
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 

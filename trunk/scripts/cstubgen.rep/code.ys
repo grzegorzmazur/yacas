@@ -262,7 +262,7 @@ LispPluginBase* <?Echo(\"make_\":plfname);?>(void)
     return NEW <? WriteString(pluginname); ?>;
 }
 
-};
+}
 
 <?
 WriteString(postlog);

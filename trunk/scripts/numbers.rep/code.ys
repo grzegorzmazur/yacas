@@ -635,7 +635,9 @@ Eulerian(n_IsInteger,k_IsInteger) <-- Sum(j,0,k+1,(-1)^j*Bin(n+1,j)*(k-j+1)^n);
 20 # StirlingNumber1(n_IsInteger,m_IsInteger) <-- 
 	Sum(k,0,n-m,(-1)^k*Bin(k+n-1,k+n-m)*Bin(2*n-m,n-k-m)*StirlingNumber2(k-m+n,k));
 
-StirlingNumber2(n_IsInteger,k_IsInteger) <-- Sum(i,0,k-1,(-1)^i*Bin(k,i)*(k-i)^n)/ k! ;
+//TODO remove, is this wrong? StirlingNumber2(n_IsInteger,k_IsInteger) <-- Sum(i,0,k-1,(-1)^i*Bin(k,i)*(k-i)^n)/ k! ;
+10 # StirlingNumber2(n_IsInteger,0) <-- If(n=0,1,0);
+20 # StirlingNumber2(n_IsInteger,k_IsInteger) <-- Sum(i,0,k-1,(-1)^i*Bin(k,i)*(k-i)^n)/ k! ;
 
 10 # BellNumber(n_IsInteger)		<-- Sum(k,1,n,StirlingNumber2(n,k));
 

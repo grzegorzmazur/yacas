@@ -30,10 +30,12 @@
   execute:={};
   
   `FlGraphStart(Hold([
-    Local(dowidth,crect,plist);
+    Local(dowidth,crect,plist,min,max);
     dowidth:=(@dowidth);
     crect:=(@crect);
     plist:=(@plist);
+    min  :=(@min);
+    max  :=(@max)+(@min);
     @flplot2d2;
   ]),340,260);
   True;
@@ -128,6 +130,14 @@ GraphColorForLine(0) <-- FlColor(255,0,255);
         ];
         FlEndLine();
      ];
+
+//Also draw minimum and maximum value of y, so you can see a rough
+// estimate of the scale
+     FlColor(0,0,0);
+     FlFont(FlHelvetica,10);
+     FlDraw(ToString()Write(max),20,10+fly);
+     FlDraw(ToString()Write(min),20,flh-fly);
+
    ]);
 
 
