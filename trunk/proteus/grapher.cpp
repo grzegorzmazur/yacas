@@ -12,6 +12,7 @@
 #include "platmath.h"
 #include "genericstructs.h"
 #include "errors.h"
+#include "FltkConsole.h"
 
 #include "fltkgraphstub.cc"
 
@@ -26,12 +27,22 @@ LispPtr graph;
 
 static void FlGraphStart(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
+  extern ConsoleOutBase* cell_to_insert;
+  if (cell_to_insert)
+  {
+    delete cell_to_insert;
+  }
+  cell_to_insert = new ConsoleDrawer(aEnvironment,ARGUMENT(1),320,200);
+  InternalTrue(aEnvironment,RESULT);
+
+/*TODO remove?
     graphEnvironment = &aEnvironment;
     graph.Set(ARGUMENT(1).Get());
     extern Fl_Tabs* mainTabs;
     extern Fl_Group* grapher;
     mainTabs->value(grapher);
     InternalTrue(aEnvironment,RESULT);
+*/
 }
 
 

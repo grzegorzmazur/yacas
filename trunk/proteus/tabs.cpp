@@ -67,7 +67,7 @@ int max_  = 0;
 int line_[100];
 char file_[100][256];
 
-static Fl_Menu_Bar *menubar;
+Fl_Menu_Bar *menubar;
 
 void HelpGo(char* f)
 {
@@ -383,6 +383,13 @@ void LispNotepadAddCommand(LispEnvironment& aEnvironment,LispInt aStackTop)
     {
       console->AddText(yacas->Result(), FL_BLUE,"Out> ",currentNotepadFontType,currentNotepadFontSize);
     }
+    extern ConsoleOutBase* cell_to_insert;
+    if (cell_to_insert)
+    {
+      console->iOutputHeight+=cell_to_insert->height();
+      console->iLast->Add(cell_to_insert);
+      cell_to_insert = NULL;
+    }
   }
   extern LispString the_out;
   the_out.SetNrItems(0);
@@ -558,8 +565,8 @@ int main(int argc, char **argv)
           menubar->textfont(10);
           menubar->textsize(12);
         }
-        console_scroll = new Fl_Scroll(11,43,618,265);
-        console = new FltkConsole(11,43,2048,265,12);
+        console_scroll = new Fl_Scroll(11,43,619,267);
+        console = new FltkConsole(11,43,2048,267,12);
 //        console->resize(console->x(),console->y(),console->w()+1024,console->h()+1024);
 //        console = new FltkConsole(11,43,618,265,12);
         console_scroll->end();
@@ -567,16 +574,21 @@ int main(int argc, char **argv)
 //        Fl_Group::current()->resizable(o);
         Fl_Group::current()->resizable(console_scroll);
       }
+
+/*TODO remove, graphs are now embedded
       {
         Fl_Group* o = grapher = new Fl_Group(10, 20, 630, 310, "Graph");
         drawing = new Drawer(11,23,618,285);
         o->end();
       }
+*/
+/*TODO editor shouild be separate app, with debugger
       {
         Fl_Group* o = new Fl_Group(10, 20, 630, 310, "Edit");
          editor_add_items(11,23,618, 285);
         o->end();
       }
+*/
       {
         Fl_Group* helptab;
         Fl_Group* o = helptab = new Fl_Group(10, 20, 630, 310, "Help");
@@ -636,6 +648,7 @@ int main(int argc, char **argv)
 
   w->callback(quit_cb);
   w->show(1, argv);
+  w->fullscreen(); //TODO is this acceptable?
   atexit(myexit);
   if (argc>1)
   {

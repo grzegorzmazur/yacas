@@ -26,7 +26,16 @@
   if (max>0) [y:=y/max;];
   plist := Eval(y);
 
-  FlGraphStart(Eval(flplot2d));
+//  FlGraphStart(Eval(flplot2d));
+
+  `FlGraphStart(
+  [
+    Local(dowidth,crect,plist);
+    dowidth:=(@dowidth);
+    crect:=(@crect);
+    plist:=(@plist);
+    @flplot2d;
+  ]);
 
   True;
 ]);
