@@ -37,8 +37,9 @@ Function() Plot2D(func, range, options, ...);
 	Local(var, func, delta, options'hash, c, fc, all'values, dummy);
 	all'values := {};
 	options'hash := "ListToHash" @ {options'list};
-	// store variable name and function representation
-	options'hash["xname"] := String(VarList(func'list[1])[1]);
+	// this will be a string - name of independent variable
+	options'hash["xname"] := "";
+	// this will be a list of strings - printed forms of functions being plotted
 	options'hash["yname"] := {};
 	// parse range
 	If (
@@ -104,6 +105,11 @@ Function() Plot2D(func, range, options, ...);
 		);
 		// Allow plotting of constant functions
 		If(Length(var)=0, var:={dummy});
+		// store variable name if not already done so
+		If(
+			options'hash["xname"] = "",
+			options'hash["xname"] := String(VarList(var)[1])
+		);
 		// store function name in options
 		DestructiveAppend(options'hash["yname"], ToString()Write(func));
 		// compute the first point to see if it's okay
