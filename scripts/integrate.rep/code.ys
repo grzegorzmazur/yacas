@@ -245,7 +245,7 @@ IntFunc(x,Sec(_x),Ln(Sec(x)+Tan(x)));
 IntFunc(x,Tan(_x),-Ln(Cos(x)));
 IntFunc(x,Cot(_x),Ln(Sin(x)));
 IntFunc(x,Exp(_x),Exp(x));
-IntFunc(x,(A_IsFreeOf2(var))^(_x),A^x/Ln(A));
+IntFunc(x,(C_IsFreeOf2(var))^(_x),C^x/Ln(C));
 //TODO ugly hack, IsFreeOf2
 IsFreeOf2(_var,_expr) <-- IsFreeOf(expr,var);
 IntFunc(x,num_IsFreeOf2(var) / (_x),num*Ln(Abs(x)));
