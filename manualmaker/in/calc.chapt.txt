@@ -1313,8 +1313,7 @@ equations in the second command.
 
 An example which {Solve} cannot solve:
 
-	In> Solve({x^2-x == y^2-y, x^2-x == y^3+y}, \
-	  {x,y});
+	In> Solve({x^2-x == y^2-y,x^2-x == y^3+y},{x,y});
 	Out> {};
 
 *SEE SuchThat, Eliminate, PSolve, ==
@@ -1322,8 +1321,7 @@ An example which {Solve} cannot solve:
 *CMD SuchThat --- Find a value which makes some expression zero
 *STD
 *CALL
-
-SuchThat(expr, var)
+	SuchThat(expr, var)
 
 *PARMS
 
@@ -1336,10 +1334,10 @@ var - variable (or subexpression) to solve for
 This functions tries to find a value of the variable "var" which
 makes the expression "expr" zero. It is also possible to pass a
 subexpression as "var", in which case {SuchThat}
-will try to eliminate for that subexpression.
+will try to solve for that subexpression.
 
 Basically, only expressions in which "var" occurs only once are
-handled; and in fact, {SuchThat} may even give wrong
+handled; in fact, {SuchThat} may even give wrong
 results if the variables occurs more than once. This is a consequence
 of the implementation, which repeatedly applies the inverse of the top
 function until the variable "var" is reached.
@@ -1360,8 +1358,7 @@ function until the variable "var" is reached.
 *CMD Eliminate --- Substitute and simplify
 *STD
 *CALL
-
-Eliminate(var, value, expr)
+	Eliminate(var, value, expr)
 
 *PARMS
 
@@ -1390,8 +1387,7 @@ resulting expression, and returns the result.
 *CMD PSolve --- Solve a polynomial equation
 *STD
 *CALL
-
-PSolve(poly, var)
+	PSolve(poly, var)
 
 *PARMS
 
@@ -1418,29 +1414,28 @@ handled.
 
 *SEE Solve, Factor
 
-*CMD Pi --- Numerical approximation of $Pi$
+*CMD Pi() --- Numerical approximation of $Pi$
 *CORE
 *CALL
-
-Pi()
-
-*PARMS
-
-none
+	Pi()
 
 *DESC
 
-This commands returns the mathematical constant $pi$ to the current
+This commands returns the value of the mathematical constant $pi$ at the current
 precision, as set by {Precision}. Usually this
-function will not be called directly. The constant {Pi} can (and should) be used to represent $pi$, as it is recognized by
-the simplification rules. Then when the function {N}
-is invoked, {Pi} will be replaced with the value
+function should not be called directly. The constant {Pi} can (and should) be used to represent the exact value of $pi$, as it is recognized by
+the simplification rules. When the function {N}
+is invoked on an expression, {Pi} will be replaced with the value
 returned by {Pi()}.
 
 *E.G.
 
 	In> Pi()
 	Out> 3.14159265358979323846;
+	In> Sin(3*Pi/2)
+	Out> -1;
+	In> Sin(3*Pi()/2)
+	Out> Sin(4.7123889804);
 	In> Precision(35)
 	Out> True;
 	In> Pi()
@@ -1451,12 +1446,7 @@ returned by {Pi()}.
 *CMD Random --- Random number between 0 and 1
 *STD
 *CALL
-
-Random()
-
-*PARMS
-
-none
+	Random()
 
 *DESC
 
@@ -1469,8 +1459,7 @@ generated in every Yacas session.
 *CMD VarList --- List of variables appearing in some expression
 *STD
 *CALL
-
-VarList(expr)
+	VarList(expr)
 
 *PARMS
 
@@ -1493,10 +1482,8 @@ expression "expr".
 *CMD Limit --- Limit of an expression
 *STD
 *CALL
-
-Limit(var, val) expr
-
-Limit(var, val, dir) expr
+	Limit(var, val) expr
+	Limit(var, val, dir) expr
 
 *PARMS
 
@@ -1548,8 +1535,7 @@ expr - expression to simplify
 
 This function applies the product rules of trigonometry, like
 $Cos(u)*Sin(v) = (1/2)*(Sin(v-u) + Sin(v+u))$. As a
-result, all products of the trigonometric functions {Cos} and {Sin} disappear. The
-function also tries to simplify the resulting expression as much as
+result, all products of the trigonometric functions {Cos} and {Sin} disappear. The function also tries to simplify the resulting expression as much as
 possible by combining all like terms.
 
 This function is used in for instance {Integrate},
@@ -1641,7 +1627,7 @@ polynomial.
 	
 	  y2 * ( x - x1 ) * ( x - x3 )
 	+ ----------------------------
-       ( x2 - x1 ) * ( x2 - x3 )
+	   ( x2 - x1 ) * ( x2 - x3 )
 	
 	  y3 * ( x - x1 ) * ( x - x2 )
 	+ ----------------------------
@@ -1654,8 +1640,7 @@ polynomial.
 *CMD Fibonacci --- Fibonacci sequence
 *STD
 *CALL
-
-Fibonacci(n)
+	Fibonacci(n)
 
 *PARMS
 
@@ -1665,9 +1650,9 @@ n - an integer
 
 This command calculates and returns the "n"-th Fibonacci number.
 
-The Fibonacci sequence is 1, 1, 2, 3, 5, 8, 13, 21, ..., where every
+The Fibonacci sequence is 1, 1, 2, 3, 5, 8, 13, 21, ... where every
 number is the sum of the two preceding numbers. Formally, it is
-defined by F(1) = 1, F(2) = 1, and F(n+1) = F(n) + F(n-1), where F(n)
+defined by $F(1) = 1$, $F(2) = 1$, and $F(n+1) = F(n) + F(n-1)$, where F(n)
 denotes the n-th Fibonacci number.
 
 *E.G.

@@ -714,6 +714,6 @@ the {N} operator is applied on them.
 	Out> {1,-2,-3};
 
 Note: in this example the system detects correctly that
-$1 * (2*Pi+3*E) + (-2) * (Pi) + (-3) * (E) = 0$.
+$1 * (2*Pi+3*e) + (-2) * Pi + (-3) * e = 0$.
 
 *SEE N
