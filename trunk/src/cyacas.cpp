@@ -36,6 +36,13 @@ char* yacas_result()
         return yacas->Result();
     return NULL;
 }
+
+void yacas_interrupt()
+{
+  if (yacas)
+    (*yacas)()().iEvalDepth = (*yacas)()().iMaxEvalDepth+100;
+}
+
 void yacas_exit()
 {
     delete yacas;

@@ -30,6 +30,11 @@ char* yacas_result();
  *  evaluation environment
  */
 void yacas_exit();
+
+/** yacas_interrupt : interrupt a calculation.
+ */
+void yacas_interrupt();
+
     
 
 #ifdef __cplusplus

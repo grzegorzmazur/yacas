@@ -152,6 +152,10 @@ of {yacas_result} should be considered undefined.
 Clean up all things related to the main Yacas
 evaluation environment
 
+	void yacas_interrupt();
+Interrupt a calculation.
+
+
 The directory {embed/} contains some examples demonstrating calling
 Yacas from your own programs. Use the {makefile.examples} makefile
 to compile the examples (it is in a separate makefile because it is
