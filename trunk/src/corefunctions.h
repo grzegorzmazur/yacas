@@ -35,6 +35,7 @@ CORE_KERNEL_FUNCTION("Write",LispWrite,1,YacasEvaluator::Function | YacasEvaluat
 CORE_KERNEL_FUNCTION("WriteString",LispWriteString,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("FullForm",LispFullForm,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("DefaultDirectory",LispDefaultDirectory,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("DllDirectory",LispDllDirectory,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("FromFile",LispFromFile,2,YacasEvaluator::Macro | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("FromString",LispFromString,2,YacasEvaluator::Macro | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("Read",LispRead,0,YacasEvaluator::Function | YacasEvaluator::Fixed);

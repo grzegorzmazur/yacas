@@ -1,12 +1,3 @@
-
-
-#ifdef HAVE_CONFIG_H
-#include "../config.h"
-#endif
-
-//DLFCN support better done by elfdll.cpp
-#if 1 // !HAVE_DLFCN_H
-
 #include <stdio.h>
 
 #include "yacasprivate.h"
@@ -33,7 +24,8 @@ LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
           RaiseError("LtDll::Open: lt_dlinit says %s\n",err);
         }
     }
-    lt_dlsetsearchpath(PLUGIN_DIR);
+    for (LispInt i=0; i<aEnvironment.iDllDirectories.NrItems(); i++)
+        lt_dladdsearchdir(aEnvironment.iDllDirectories[i]->String());
     handle = lt_dlopenext(aDllFile);
     if (handle)
     {
@@ -108,5 +100,3 @@ LispPluginBase* LtDll::GetPlugin(void)
     /* lt_dlexit(); */
     return maker();
 }
-
-#endif //HAVE_DLFCN_H
