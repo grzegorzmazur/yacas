@@ -252,7 +252,26 @@ Function("Inverse",{matrix})
   (1/det)*inv;
 ];
 
-Function("Trace",{matrix})
+Tr(x_IsList) <--
+[
+   Local(i,j,n,d,r,aux,result);
+   d:=Dimensions(x);
+   r:=Length(d); // tensor rank
+   n:=Min(d);    // minimal dim
+   result:=0;
+   For(i:=1,i<=n,i++)
+   [
+      aux:=x[i];
+      For(j:=2,j<=r,j++)
+	 aux:=aux[i];
+      result:=result+aux;
+   ];
+   result;
+];
+
+
+Trace(matrix_IsList) <-- Tr(matrix);
+/*TODO remove
 [
   Local(i,result);
   result:=0;
@@ -260,6 +279,7 @@ Function("Trace",{matrix})
     result:=result+matrix[i][i];
   result;
 ];
+*/
 
 x X y := CrossProduct(x,y);
 x . y := InProduct(x,y);
@@ -440,6 +460,9 @@ LocalSymbols(x,i,n,m,aux,dim,result)
     [
       Local(i,n,m,aux,dim,result);
       result:=List(Length(x));
+//Echo("GETTING ",x);
+//Echo(Length(Select(IsList,x)));
+//Echo("END");
       If(Length(x)>0 And Length(Select(IsList,x))=Length(x),
       [
         n:=Length(x);
@@ -454,6 +477,7 @@ LocalSymbols(x,i,n,m,aux,dim,result)
 	    i:=m+1);
         ];
       ]);
+//Echo(x,result);
       result;
     ];
 

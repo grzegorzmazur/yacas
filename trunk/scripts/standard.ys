@@ -200,8 +200,8 @@ Rule("NormalForm",1,1000,True) expression;
 
 //  220 # + x_IsList          <-- MapSingle("+",x);	// this rule is never active
 
-220 # xlist_IsList + ylist_IsList <-- Map("+",{xlist,ylist});
-
+220 # (xlist_IsList + ylist_IsList)_(Length(xlist)=Length(ylist)) <-- Map("+",{xlist,ylist});
+    
 SumListSide(_x, y_IsList) <--
 [
    Local(i,result);
