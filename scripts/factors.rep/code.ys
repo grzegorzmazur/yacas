@@ -20,7 +20,7 @@
 
 /// Simple trial factorization: can be very slow for integers > 1,000,000.
 // Try all prime factors up to Sqrt(n)
-2# TrialFactorize(n_IsPrimePower) <-- {GetPrimeFactors(n)};
+2# TrialFactorize(n_IsPrimePower) <-- {GetPrimePower(n)};
 3# TrialFactorize(n_IsInteger) <--
 [
 	Local(factorization);
@@ -94,7 +94,7 @@ RandomInteger(n) := MathFloor(Random()*n);
 /// Polynomial for the Pollard Rho iteration
 PollardRhoPolynomial(_x) <-- x^2+1;
 
-2# PollardRhoFactorize(n_IsPrimePower) <-- {GetPrimeFactors(n)};
+2# PollardRhoFactorize(n_IsPrimePower) <-- {GetPrimePower(n)};
 3# PollardRhoFactorize(_n) <--
 [
   Local(x,y,restarts,gcd,repeat);

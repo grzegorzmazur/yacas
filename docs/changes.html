@@ -13,7 +13,7 @@
 	   arguments now uses fast staggered factorials; all documented (SW)
   <li> Removed HTML files from tar.gz to save 30% space -- they are regenerated
 	   anyway, and users can download documentation separately if they can't
-	   make it (note: generating HTML or PS/PDF docs currently requires Perl)
+	   make it (note: generating HTML or PS/PDF docs currently requires Perl) (SW)
   <li> Ayal: Out &gt now not shown any more if PrettyPrinter is used.
   <li> Ayal: Fixed bug: TrigSimpCombine(Exp(A*X))
   <li> Ayal: added SolutionTuples.txt, as a specification of how I think
@@ -33,37 +33,39 @@
        code from documentation (SW)
   <li> Implemented adaptive 2D plotting {Plot2D} in {plots.rep} and multiple
        backends architecture (so far only gnuplot or plotutils but easy to
-       add support for more) - replaces {GnuPlot()} which was removed (SW)
+       add support for more) - replaces {GnuPlot()} (SW)
+  <li> Removed {GnuPlot} altogether -- people should use {Plot2D} since it's much better
   <li> Improved integer factorization algorithm: Factor(50!) now works, avoiding
        infinite loop in PollardRhoFactorize(); added factorization tests (SW)
+  <li> New algorithm for IsPrimePower/GetPrimeFactors (SW)
   <li> Added some tests for Deriv (Jonathan Leto)
 
 </ul>
 
 <h1>Release of version 1.0.50 (March 12th,  2002)</h1>
 <ul>
-  <li> Started essay chapter on numerical algorithms used in Yacas
-  <li> Fixed bug in the definition of IsEven() and IsOdd()
-  <li> Fixed GnuPlot() to plot a more broad set of functions
+  <li> Started essay chapter on numerical algorithms used in Yacas (SW)
+  <li> Fixed bug in the definition of IsEven() and IsOdd() (SW)
+  <li> Fixed GnuPlot() to plot a more broad set of functions (SW)
   <li> Added arbitrary-precision and analytic implementations of Gamma function,
-       Zeta function and Bernoulli numbers and polynomials
-  <li> Improved layout of TeX documentation (use smaller monospaced font)
-  <li> Added various arbitrary-precision implementations of Pi() in examples/pi.ys
+       Zeta function and Bernoulli numbers and polynomials (SW)
+  <li> Improved layout of TeX documentation (use smaller monospaced font) (SW)
+  <li> Added various arbitrary-precision implementations of Pi() in examples/pi.ys (SW)
   <li> small bug fix:
   	In> Integrate(x) x^x
 	Out> x^(x+1)/(x+1)+C39;
-  <li> speeded up calculation of MathPi() by factor of 3
+  <li> speeded up calculation of MathPi() by factor of 3 (SW)
   <li> added a new package repository "specfunc" with special functions and
-       documented them in a separate chapter of the reference manual
-  <li> bug fixed: exact factorials of negative half-integers were not given
+       documented them in a separate chapter of the reference manual (SW)
+  <li> bug fixed: exact factorials of negative half-integers were not given (SW)
   <li> introduced new "&lt&gt" (\sim) and "&lt=/&gt>" (\approx) infix operators
        for cosmetic purposes (used in the manual)
   <li> New functions ContFracList, ContFracEval, GuessRational,
-       NearRational to find optimal rational approximations to numbers
+       NearRational to find optimal rational approximations to numbers (SW)
   <li> added section in the manual with a full listing of all core functions
-       (generated automagically from yacasapi.cpp)
+       (generated automagically from yacasapi.cpp) (SW)
   <li> {yacasdebug} now can be built together with non-debug {yacas} (renamed
-       all *.o files to *-d.o)
+       all *.o files to *-d.o) (SW)
   <li> Ayal: added email addresses to AUTHORS
   <li> Ayal: Removed Windows-style new lines from various files
   <li> Ayal: made make clean remove all generated binaries, including the yacasdebug ones
@@ -77,15 +79,14 @@
        to get loaded at startup.
   <li> LispString objects now maintained with smart pointers in more places (work in progress).
   <li> moved short descriptions of books ("blurb") into books themselves out of
-       the build scripts
+       the build scripts (SW)
   <li> fixed documentation building scripts so that individual (non-framed) html
-       files can now be built
+       files can now be built (SW)
   <li> added a paper describing Yacas (in essays book) and a short conference
        paper (docs/paper1.tex, docs/llncs.cls)
-  <li> implemented fast sorting ({HeapSort}) for lists and generic arrays
-  <li> fixed Swap() to work on generic arrays as well
-  <li> fixed Postfix() to accept precedence argument
-  <li> a small improvement to Bernoulli numbers
+  <li> implemented fast sorting ({HeapSort}) for lists and generic arrays (SW)
+  <li> fixed Swap() to work on generic arrays as well (SW)
+  <li> fixed Postfix() to accept precedence argument (SW)
 
 </ul>
 
@@ -128,26 +129,26 @@
        and sorted by call count.
   <li> Added the function DllUnload to unload plugins.
   <li> Added DllEnumerate, which returns a list of loaded DLLs/plugins.
-  <li> Added MakeFunctionPlugin() to dynamically generate plugins (Unix only)
-  <li> Added GetYacasPID() to get a session ID (Unix only)
+  <li> Added MakeFunctionPlugin() to dynamically generate plugins (Unix only) (SW)
+  <li> Added GetYacasPID() to get a session ID (Unix only) (SW)
   <li> Added a manual chapter on platform-specific add-ons, documented GnuPlot
   <li> Floats obtained from a system call now get mapped to
        24 decimals precision iso. the default 6. (platmath.cpp)
   <li> Added the '--init [file]' and '--rootdir [path]' options.
   <li> Initial version of LaTeX exporter for Yacas documentation; optional
-       target "make texdocs" will prepare all Postscript and PDF versions
-  <li> ShowPS() will display an expression in a Postscript viewer (Unix only)
-  <li> Fixed Op{,Right,Left}Precedence() for prefix/postfix/bodied operators
+       target "make texdocs" will prepare all Postscript and PDF versions (SW)
+  <li> ShowPS() will display an expression in a Postscript viewer (Unix only) (SW)
+  <li> Fixed Op{,Right,Left}Precedence() for prefix/postfix/bodied operators (SW)
   <li> Fixed broken Windows version, was due to command line support
        trying to use WinNT-native command line.
   <li> All documentation is now maintained in plain text format and exported
-       to HTML. All five documentation books are hyperlinked and installed.
+       to HTML. All five documentation books are hyperlinked and installed. (SW)
   <li> Fixed the ArcSin, ArcCos, ArcTan functions to work correctly with
-       multiple-precision numbers (when using internal math).
-  <li> Added tests/numerics.yts to test multiple-precision math.     
-  <li> 30% speedup of numerical calculations by caching previously found
-       multiple-precision value of Pi.
-  <li> Added utility functions IsNumericList(), NFunction(), PrintList()
+       multiple-precision numbers (when using internal math). (SW)
+  <li> Added tests/numerics.yts to test multiple-precision math. (SW)     
+  <li> 30% speedup of all numerical calculations by caching previously found
+       multiple-precision value of Pi. (SW)
+  <li> Added utility functions IsNumericList(), NFunction(), PrintList() (SW)
   <li> Documented HoldArgNr, RuleBaseArgList, Op{Left,Right}Precedence
   <li> made a yacasdebug executable (built with makefile.debug) which
        also does memory heap checking.
