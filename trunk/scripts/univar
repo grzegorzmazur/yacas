@@ -648,3 +648,35 @@ Horner(_e,_v) <--
   result;
 ];
 
+
+DivPoly(_A,_B,_var,_deg) <--
+[
+  Local(a,b,c,i,j,denom);
+  b:=MakeUni(B,var);
+  denom:=Coef(b,0);
+
+  if (denom = 0)
+  [
+    Local(f);
+    f:=Content(b);
+    b:=PrimitivePart(b);
+    A:=Simplify(A/f);
+    denom:=Coef(b,0);
+  ];
+  a:=MakeUni(A,var);
+
+  c:=FillList(0,deg+1);
+  For(i:=0,i<=deg,i++)
+  [
+    Local(sum,j);
+    sum:=0;
+    For(j:=0,j<i,j++)
+    [
+      sum := sum + c[j+1]*Coef(b,i-j);
+    ];
+    c[i+1] := (Coef(a,i)-sum) / denom;
+  ];
+  NormalForm(UniVariate(var,0,c));
+];
+
+

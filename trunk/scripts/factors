@@ -200,7 +200,85 @@ If(Degree(g)=0,
 
 /* New factorization : split between integers and polynomials. */
 10 # Factors(p_IsInteger) <-- PollardRhoFactorize(p);
-20 # Factors(p_CanBeUni) <--  FactorUniVarSec(p);
+20 # Factors(p_CanBeUni)_(Length(VarList(p)) = 1) <--  FactorUniVarSec(p);
+
+
+/*
+20 # Factors(p_CanBeUni)_(Length(VarList(p)) > 1) <-- FactorFactors(p);
+
+TryMod(_f,_g,_v) <--
+[
+  Local(result,item);
+  result:=0;
+  ForEach(item,v)
+  [
+    if (NormalForm(Mod(MakeUni(f,item),MakeUni(g,item))) = 0)
+    [
+      ForEach(i2,v)
+      [
+        Local(new);
+        new :=NormalForm(Div(MakeUni(f,i2),MakeUni(g,i2)));
+        if (CanBeUni(new)) (result:=new);
+      ];
+    ];
+  ];
+  result;
+];
+
+FactorFactors(_p) <--
+[
+  Local(vars,nr,result);
+  vars := VarList(p);
+  nr:=Length(vars);
+  result:={};
+  While(Not IsConstant(p))
+  [
+    Local(i,j,found);
+    found:=False;
+    For(i:=1,i<=nr,i++)
+    [
+      For(j:=i+1,j<=nr,j++)
+      [
+        Local(try,trymod);
+        Local(count);
+        try := vars[i]+vars[j];
+
+        count:=0;
+        trymod:=TryMod(p,try,vars);
+        While (trymod != 0)
+        [
+Echo({p});
+          found:=True;
+          count++;
+          p:=trymod;
+          trymod:=TryMod(p,try,vars);
+        ];
+        if (count > 0) DestructiveAppend(result,{try,count});
+
+        try := vars[i]-vars[j];
+        count:=0;
+        trymod:=TryMod(p,try,vars);
+        While (trymod != 0)
+        [
+Echo({p});
+          found:=True;
+          count++;
+          p:=trymod;
+          trymod:=TryMod(p,try,vars);
+        ];
+        if (count > 0) DestructiveAppend(result,{try,count});
+      ];
+    ];
+    if (found = False)
+    [
+      DestructiveAppend(result,{p,1});
+      p := 1;
+    ];
+  ];
+  if (p != 1) DestructiveAppend(result,{p,1});
+  result;
+];
+*/
 
 Factor(_p) <-- FW(Factors(p));
 
