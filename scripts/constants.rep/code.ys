@@ -105,7 +105,17 @@ Function("ClearCachedConstantsN", {})
 UnFence("ClearCachedConstantsN", 0);
 
 /// declare some constants now
-CachedConstant(CacheOfConstantsN, Pi, MathPi());
+CachedConstant(CacheOfConstantsN, Pi,
+[// it seems necessary to precompute Pi to a few more digits
+// so that Cos(0.5*Pi)=0 at precision 10
+// FIXME: find a better solution
+	Local(result);
+	Precision(GetPrecision()+5);
+	result := MathPi();
+	Precision(GetPrecision()-5);
+	result;
+]
+);
 CachedConstant(CacheOfConstantsN, gamma, GammaConstNum());
 CachedConstant(CacheOfConstantsN, GoldenRatio, N( (1+Sqrt(5))/2 ) );
 CachedConstant(CacheOfConstantsN, Catalan, CatalanConstNum() );
