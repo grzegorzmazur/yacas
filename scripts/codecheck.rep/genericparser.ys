@@ -21,6 +21,11 @@ SetTokenPosition(aPosition) := [ tokenIndex := aPosition;];
   [
     tokenIndex++;
   ];
+
+//VerboseParse
+//If(tokenIndex <= Length(CodeTrans'input),Echo(CodeTrans'input[tokenIndex][4]," : ",CodeTrans'input[tokenIndex][1]));
+
+  True;
 ];
 
 
@@ -33,24 +38,6 @@ SetTokenPosition(aPosition) := [ tokenIndex := aPosition;];
  */
 
 
-
-/*
-5 # MatchGrammar(_grammar)_(tokenIndex > Length(CodeTrans'input)) <-- {};
-
-// If the token is a pattern matcher, accept it plain
-8  # MatchGrammar(_grammar)_(CodeTrans'input[tokenIndex][2] = Patterns)
-   <--
-[
-  Local(result);
-//Echo("GRAMMAR ",grammar);
-  Set(result, GetTokenPosition());
-  NextToken();
-  {Pattern1,result};
-];
-
-9  # MatchGrammar(_grammar)_(CodeTrans'input[tokenIndex][2] = Patterns)
-   <-- {};
-*/
 
 // Accept a specific token, written out as a string
 10 # MatchGrammar(grammar_IsString)_(GetCurrentToken() = grammar) 
@@ -110,6 +97,12 @@ SetTokenPosition(aPosition) := [ tokenIndex := aPosition;];
   result;
 ];
 
+
+Macro(DefineGrammar,{name,grammar})
+[
+  0 # MatchGrammar(@name) <-- MatchGrammar(@grammar);
+];
+
 30 # MatchGrammar(_grammar) 
    <-- 
       Check(False,ReportParseError(ToString()Echo("Undefined grammar ",grammar),tokenIndex));
@@ -125,7 +118,11 @@ SetTokenPosition(aPosition) := [ tokenIndex := aPosition;];
   [
 //Echo("Trying to match ",Head(stmt));
 //Echo("First token to match to: ",GetInputTokens(tokenIndex));
-    Set(current, MatchGrammar(Eval(Head(stmt))));
+
+//VerboseParse
+//If(IsAtom(Head(stmt)),Echo("SUB ",Head(stmt)));
+
+    Set(current, MatchGrammar(Head(stmt)));
 //if (current = {})
 //  Echo("FAILED to match ",Head(stmt))
 //else

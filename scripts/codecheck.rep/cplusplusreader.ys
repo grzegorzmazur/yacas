@@ -56,7 +56,7 @@ CPP'Tokens :=
 };
 
 
-CPP'grammar:=
+DefineGrammar(CPP'grammar,
   {
     {Template1,"template","<",CPP'templateDeclList,">",CPP'grammar}
    ,{StrctType1,CPP'objDef,";"}
@@ -65,28 +65,28 @@ CPP'grammar:=
    ,{GlobalDefinedFunction, CPP'typeDecl,CPP'annotatedVar,CPP'argList,CPP'statement}
    ,{GlobalDefinedFunction, CPP'storageClass,CPP'annotatedVar,CPP'argList,":",CPP'initList,CPP'statement}
    ,{GlobalDefinedFunction, CPP'storageClass,CPP'annotatedVar,CPP'argList,CPP'statement}
-  };
+  });
 
 
-CPP'templateDeclList :=
+DefineGrammar(CPP'templateDeclList,
   {
     {TempType1,CPP'templateTypeDecl,",",CPP'templateDeclList}
    ,{TempType1,CPP'templateTypeDecl}
-  };
-CPP'templateTypeDecl :=
+  });
+DefineGrammar(CPP'templateTypeDecl,
   {
     {Temp1,"class",CPP'tokenName}
-  };
+  });
 
 
-CPP'varDecl:=
+DefineGrammar(CPP'varDecl,
   {
     {Pattern1,"vardecl",AcceptToken(Patterns)}
    ,{VarDefInit, CPP'typeDecl,CPP'annotatedVar,"=",CPP'expression}
    ,{VarDefNonInit, CPP'typeDecl,CPP'annotatedVar}
-  };
+  });
 
-CPP'annotatedVar :=
+DefineGrammar(CPP'annotatedVar,
   {
     {Pattern1,"varname",AcceptToken(Patterns)},
     {Pointer1,"*",CPP'annotatedVar}
@@ -97,200 +97,205 @@ CPP'annotatedVar :=
    ,{Operator1,"operator",AcceptToken(Operators)}
    ,{VarName, CPP'symbolName,CPP'arrayAugment}
    ,{SimpleAtom,CPP'tokenName}
-  };
+  });
 
-CPP'arrayAugment :=
+DefineGrammar(CPP'arrayAugment,
   {
     {EmptyArray1,"[","]",CPP'arrayAugment}
    ,{Array1,"[",CPP'expression,"]",CPP'arrayAugment}
    ,{EmptyArray1}
-  };
+  });
 
-CPP'typeDecl:=
+DefineGrammar(CPP'typeDecl,
   {
     {Pattern1,"typenamed",AcceptToken(Patterns)}
-    ,{Type1,CPP'storageClass,CPP'plainType,"<",CPP'templateTypeList,">"}
-    ,{Type1,CPP'storageClass,CPP'plainType}
+    ,{Type1,CPP'storageClass,CPP'plainType,CPP'templateParams}
     ,{StrctType1,CPP'storageClass,"struct",CPP'block}
     ,{StrctType1,CPP'storageClass,"class",CPP'block}
 //    ,{StrctType1,"union",CPP'block}
-  };
+  });
 
-CPP'templateTypeList :=
+DefineGrammar(CPP'templateParams,
+  {
+    {TemplateParams1,"<",CPP'templateTypeList,">"}
+   ,{TemplateParams1}
+  });
+
+DefineGrammar(CPP'templateTypeList,
   {
     {TempType1,CPP'typeDecl,CPP'typePost,",",CPP'templateTypeList}
    ,{TempType1,CPP'typeDecl,CPP'typePost}
-  };
+  });
 
-CPP'typePost :=
+DefineGrammar(CPP'typePost,
   {
     {TypeInst1,"*"}
    ,{TypeInst1}
-  };
+  });
 
-CPP'plainType :=
+DefineGrammar(CPP'plainType,
   {
     {PlainType1,AnyOf(CPP'typeList),CPP'plainType2}
    ,{PlainType1,CPP'plainType3}
-  };
+  });
 
-CPP'plainType2 :=
+DefineGrammar(CPP'plainType2,
   {
     {PlainType2,AnyOf(CPP'typeList),CPP'plainType2}
    ,{PlainType2}
-  };
-CPP'plainType3 :=
+  });
+DefineGrammar(CPP'plainType3,
   {
     {PlainType2,CPP'tokenName}
-  };
+  });
 
-CPP'storageClass:=
+DefineGrammar(CPP'storageClass,
   {
     {StorageClass1,AnyOf({"inline","virtual","static","register","auto","volatile","const"}),CPP'storageClass}
    ,{StorageClass1}
-  };
+  });
 
   
 CPP'typeList :=
   {"signed","unsigned","char","short","int","long","float","void"};
 
 
-CPP'symbolName := 
+DefineGrammar(CPP'symbolName,
   { 
     {SymbolnamePointer,"*",CPP'symbolName},
     {SymbolnameNameSpaced,CPP'tokenName,"::","~",CPP'tokenName},
     {SymbolnameNameSpaced,CPP'tokenName,"::",CPP'tokenName},
     {SimpleAtom,CPP'tokenName}
-  };
+  });
 
 
 
 // CPP'tokenName can be either a name of some symbol that will end up in the symbol
 // table, or an expression with the $ sign that gets translated into a pattern to be recognized.
-CPP'tokenName :=
+DefineGrammar(CPP'tokenName,
   {
      {Pattern1,"tokenname",AcceptToken(Patterns)}
     ,{Token1,AcceptToken(Atoms)}
-  };
+  });
 
 
-CPP'argList := 
+DefineGrammar(CPP'argList,
 {
   {Pattern1,"arglist",AcceptToken(Patterns)}
   ,{NormalArgList1,"(",")",CPP'accessModifier}
   ,{NormalArgList1,"(",CPP'restargs,")",CPP'accessModifier}
   ,{SimpleAtom,CPP'tokenName}
-};
+});
 
-CPP'restargs := 
+DefineGrammar(CPP'restargs,
 {
    {Pattern1,"restargs",AcceptToken(Patterns)}
   ,{RestArgList1,"..."}
   ,{RestArgList1,CPP'varDecl,",",CPP'restargs}
   ,{RestArgList1,CPP'varDecl}
-};
+});
 
-CPP'accessModifier:=
+DefineGrammar(CPP'accessModifier,
   {
     {Access1,"const"}
    ,{Access1}
-  };
+  });
 
 /*
 Operators:
 ,	|= ^= &= >>= <<= -= += %= /= *= = ?: || && | ^ & != == >= > <= < >> << - + % / * (cast)x ! ~ - + * & --x ++x sizeof -> 
 */
 
-CPP'expression := 
+DefineGrammar(CPP'expression,
   {
      {Pattern1,"expression",AcceptToken(Patterns)}
      ,{Expression,CPP'expr0}
-  };
+  });
 
-CPP'expr0 := {{Expr1,CPP'expr1,CPP'exprRest0}}; 
+DefineGrammar(CPP'expr0,{{Expr1,CPP'expr1,CPP'exprRest0}});
 
-CPP'exprRest0 := 
+DefineGrammar(CPP'exprRest0,
   {
     {Expr1,","  ,CPP'expr0},
     {Expr1}
-  };
-CPP'expr1 := {{Expr1,CPP'expr2,CPP'exprRest1}}; 
-CPP'exprRest1 := 
+  });
+DefineGrammar(CPP'expr1, {{Expr1,CPP'expr2,CPP'exprRest1}}); 
+DefineGrammar(CPP'exprRest1,
   {
     {Expr1,AnyOf({"|=" ,"^=" ,"&=" ,">>=","<<=","-=" ,"+=" ,"%=" ,"/=" ,"*=" ,"="})   ,CPP'expr1},
     {Expr1}
-  };
+  });
 
-CPP'expr2:= {{Expr1,CPP'expr3,CPP'exprRest2}};
-CPP'exprRest2:= 
+DefineGrammar(CPP'expr2, {{Expr1,CPP'expr3,CPP'exprRest2}});
+DefineGrammar(CPP'exprRest2,
   {
     {Expr1,"?",CPP'expression,":",CPP'expr2},
     {Expr1}
-  };
+  });
 
 
-CPP'expr3:= {{Expr1,CPP'expr4,CPP'exprRest3}};
-CPP'exprRest3:= {{Expr1,"||",CPP'expr3},{Expr1}};
+DefineGrammar(CPP'expr3, {{Expr1,CPP'expr4,CPP'exprRest3}});
+DefineGrammar(CPP'exprRest3, {{Expr1,"||",CPP'expr3},{Expr1}});
 
-CPP'expr4:= {{Expr1,CPP'expr5,CPP'exprRest4}};
-CPP'exprRest4:= {{Expr1,"&&",CPP'expr4},{Expr1}};
+DefineGrammar(CPP'expr4, {{Expr1,CPP'expr5,CPP'exprRest4}});
+DefineGrammar(CPP'exprRest4, {{Expr1,"&&",CPP'expr4},{Expr1}});
 
-CPP'expr5:= {{Expr1,CPP'expr6,CPP'exprRest5}};
-CPP'exprRest5:= {{Expr1,"|",CPP'expr5},{Expr1}};
+DefineGrammar(CPP'expr5, {{Expr1,CPP'expr6,CPP'exprRest5}});
+DefineGrammar(CPP'exprRest5, {{Expr1,"|",CPP'expr5},{Expr1}});
 
-CPP'expr6:= {{Expr1,CPP'expr7,CPP'exprRest6}};
-CPP'exprRest6:= {{Expr1,"^",CPP'expr6},{Expr1}};
+DefineGrammar(CPP'expr6, {{Expr1,CPP'expr7,CPP'exprRest6}});
+DefineGrammar(CPP'exprRest6, {{Expr1,"^",CPP'expr6},{Expr1}});
 
-CPP'expr7:= {{Expr1,CPP'expr8,CPP'exprRest7}};
-CPP'exprRest7:= {{Expr1,"&",CPP'expr7},{Expr1}};
+DefineGrammar(CPP'expr7, {{Expr1,CPP'expr8,CPP'exprRest7}});
+DefineGrammar(CPP'exprRest7, {{Expr1,"&",CPP'expr7},{Expr1}});
 
-CPP'expr8:= {{Expr1,CPP'expr9,CPP'exprRest8}};
-CPP'exprRest8:= 
+DefineGrammar(CPP'expr8, {{Expr1,CPP'expr9,CPP'exprRest8}});
+DefineGrammar(CPP'exprRest8, 
   {
     {Expr1,AnyOf({"!=","=="}),CPP'expr8},
     {Expr1}
-  };
+  });
 
-CPP'expr9:= {{Expr1,CPP'expr10,CPP'exprRest9}};
-CPP'exprRest9:= 
+DefineGrammar(CPP'expr9, {{Expr1,CPP'expr10,CPP'exprRest9}});
+DefineGrammar(CPP'exprRest9, 
   {
     {Expr1,AnyOf({">=",">","<=","<"}),CPP'expr9},
     {Expr1}
-  };
+  });
 
-CPP'expr10:= {{Expr1,CPP'expr11,CPP'exprRest10}};
-CPP'exprRest10:= 
+DefineGrammar(CPP'expr10, {{Expr1,CPP'expr11,CPP'exprRest10}});
+DefineGrammar(CPP'exprRest10,
   {
     {Expr1,AnyOf({">>","<<"}),CPP'expr10},
     {Expr1}
-  };
+  });
 
-CPP'expr11:= {{Expr1,CPP'expr12,CPP'exprRest11}};
-CPP'exprRest11:= 
+DefineGrammar(CPP'expr11, {{Expr1,CPP'expr12,CPP'exprRest11}});
+DefineGrammar(CPP'exprRest11,
   {
     {Expr1,AnyOf({"+","-"}),CPP'expr11},
     {Expr1}
-  };
+  });
 
 
 
-CPP'expr12:= {{Expr1,CPP'expr13,CPP'exprRest12}};
-CPP'exprRest12:=
+DefineGrammar(CPP'expr12, {{Expr1,CPP'expr13,CPP'exprRest12}});
+DefineGrammar(CPP'exprRest12,
   {
     {Expr1,AnyOf({"*","/","%"}),CPP'expr12},
     {Expr1}
-  };
+  });
 
-CPP'expr13:= 
+DefineGrammar(CPP'expr13,
   {
     {Expr1,AnyOf({"sizeof","++","--","&","*","+","-","~","!"}),CPP'expr13},
     {Expr1,"(",CPP'typeDecl,")",CPP'expr14},
     {Expr1,CPP'expr14}
-  };
+  });
 
 
-CPP'expr14:= { {Expr1,CPP'expr15,CPP'exprRest14} };
-CPP'exprRest14:= 
+DefineGrammar(CPP'expr14, { {Expr1,CPP'expr15,CPP'exprRest14} });
+DefineGrammar(CPP'exprRest14,
   {
     {Expr1,AnyOf({"++","--"})},
     {Expr1,"[","]",CPP'exprRest14},
@@ -299,30 +304,30 @@ CPP'exprRest14:=
     {Expr1,"(",CPP'expression,")",CPP'exprRest14},
     {Expr1,AnyOf({".","->"}),CPP'expression,CPP'exprRest14},
     {Expr1}
-  };
-CPP'expr15 := 
+  });
+DefineGrammar(CPP'expr15,
   { 
     {SubExpression,"(",CPP'expression,")"}
     ,{SimpleAtom,CPP'tokenName}
-  };
+  });
 
 
-CPP'block := 
+DefineGrammar(CPP'block,
   {
     {Pattern1,"block",AcceptToken(Patterns)}
     ,{BlockStatement,"{",CPP'restStmt}
     ,{EmptyStmt,";"}
-  };
+  });
 
-CPP'restStmt := 
+DefineGrammar(CPP'restStmt,
   {
     {StmtClose,"}"},
     {Stmt,CPP'statement,CPP'restStmt}
-  };
-CPP'statement:=
+  });
+DefineGrammar(CPP'statement,
   {
     {EmptyStmt,";"},
-    {ReturnStmt,"return",optExpr},
+    {ReturnStmt,"return",CPP'optExpr},
     {BreakStmt,"break",";"},
     {ContinueStmt,"continue",";"},
     {DoWhile,"do",CPP'statement,"while","(",CPP'expression,")",";"},
@@ -330,7 +335,7 @@ CPP'statement:=
     {IfIf,"if","(",CPP'expression,")",CPP'statement},
     {SwitchStmt,"switch","(",CPP'expression,")",CPP'statement},
     {WhileStmt,"while","(",CPP'expression,")",CPP'statement},
-    {ForStmt,"for","(",optExpr,optExpr,CPP'optClose,CPP'statement},
+    {ForStmt,"for","(",CPP'optExpr,CPP'optExpr,CPP'optClose,CPP'statement},
     {BreakStmt,"goto",CPP'tokenName,";"},
     {LabelStmt,CPP'tokenName,":"},
     {CaseStmt,"case",CPP'tokenName,":"},
@@ -345,50 +350,50 @@ CPP'statement:=
    ,{StrctType1,CPP'objDef,";"}
 //   ,{StrctType1,"union",CPP'tokenName,CPP'block,";"}
    ,{BlockStmt,CPP'block}
-  };
+  });
 
-CPP'initList :=
+DefineGrammar(CPP'initList,
   {
     {InitList1,CPP'init,",",CPP'initList}
    ,{InitList1,CPP'init}
-  };
+  });
 
-CPP'init :=
+DefineGrammar(CPP'init,
   {
     {Init1,CPP'tokenName,"(",CPP'expression,")"} 
-  };
+  });
 
-CPP'objDef :=
+DefineGrammar(CPP'objDef,
   {
     {StrctType1,"struct",CPP'tokenName,CPP'block}
    ,{StrctType1,"class",CPP'tokenName,":",CPP'superList,CPP'block}
    ,{StrctType1,"class",CPP'tokenName,CPP'block}
-  };
+  });
 
-CPP'superList :=
+DefineGrammar(CPP'superList,
   {
     {SuperList1,CPP'super,",",CPP'superList}
    ,{SuperList1,CPP'super}
-  };
+  });
 
-CPP'super :=
+DefineGrammar(CPP'super,
   {
-    {Super1,"public",CPP'tokenName}
-   ,{Super1,"protected",CPP'tokenName}
-   ,{Super1,"private",CPP'tokenName}
-  };
+    {Super1,"public",CPP'tokenName,CPP'templateParams}
+   ,{Super1,"protected",CPP'tokenName,CPP'templateParams}
+   ,{Super1,"private",CPP'tokenName,CPP'templateParams}
+  });
 
-optExpr := 
+DefineGrammar(CPP'optExpr, 
   {
     {EmptyOpt,";"},
     {ExprOpt,CPP'expression,";"}
-  };
+  });
 
-CPP'optClose :=
+DefineGrammar(CPP'optClose,
   {
     {EmptyOpt,")"},
     {ExprOpt,CPP'expression,")"}
-  };
+  });
 
 CPP'GetExpression() := CPP'GetExpression(CPP'grammar);
 

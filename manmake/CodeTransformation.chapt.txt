@@ -273,6 +273,13 @@ The result returned will be a list with {Tag} as the
 first element (so that pattern matchers can recognize
 it later), and one element for each grammar matched.
 
+Grammars can be defined with the {DefineGrammar} macro. The syntax
+is:
+
+	DefineGrammar(name,grammar);
+
+where {name} is an atom, and other grammars can refer to this grammar
+using this name, and {grammar} is the grammar to recognize.
 
 As a very simple example, consider the following
 definition of a grammar, defined in examplegrammar1.ys:
@@ -293,26 +300,26 @@ definition of a grammar, defined in examplegrammar1.ys:
 	  {"^[a-zA-Z_][a-zA-Z0-9_]*",Atoms},
 	  {"^.+",UnParsed}
 	};
-	statement:=
+	DefineGrammar(statement,
 	  {
 	    {Statement,expression,";"}
-	  };
-	expression := 
+	  });
+	DefineGrammar(expression,
 	  {
 	    {Expr2,term,"+",expression},
 	    {Expr3,term,"-",expression},
 	    {Expr4,term}
-	  };
-	term:=
+	  });
+	DefineGrammar(term,
 	  {
 	    {Term5,factor,"*",term},
 	    {Term6,factor},
-	  };
-	factor :=
+	  });
+	DefineGrammar(factor,
 	  {
 	    {SubExpression,"(",expression,")"},
 	    {SimpleAtom,AcceptToken(Atoms)}
-	  };
+	  });
 
 	100 # Expr'Test'TokenMap(_rest) <-- rest;
 	Expr'Test'PreProcess():= [ ];
