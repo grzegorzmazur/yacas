@@ -1,6 +1,7 @@
 /// special functions coded for Yacas by Serge Winitzki: Gamma, Zeta, Bernoulli, LambertW
 
-/// coded by Jonathan Leto: Bessel*, Erf*, Fresnel*, Beta
+/// coded by Jonathan Leto: PolyLog, Dirichlet*, Digamma, Bessel*, Erf*, Fresnel*, Beta,
+///			    CatalanConstNum, Sinc, Beta, DawsonIntegral
 
 /////////////////////////////////////////////////
 /// Euler's Gamma function
@@ -215,7 +216,7 @@ LocalSymbols(n'max, k)
 10 # Erfi(_x)		<-- -I*Erf(x*I);
 
 /////////////////////////////////////////////////
-/// Fresnel integrals
+/// aaxresnel integrals
 /////////////////////////////////////////////////
 
 10 # FresnelSin(0)		<-- 0;
@@ -300,11 +301,12 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 	Local(prec,result);
 	prec:=GetPrecision();
 	Precision(prec+5);
+	Echo("Warning: PolyLog is only currently accurate for x in [-1,1]");
 	result:= (-1)^(n-1)*PolyLog(n,1/x) - ((Ln(-x))^n)/n! - 
 	Sum(r,1,Round(n/2), 
 		2^(2*r-2)*Pi^(2*r)*Abs(Bernoulli(2*r))*Ln(-x)^(n-2*r)/( (2*r)! * (n - 2*r)! ) );
 	Precision(prec);
-	RoundTo(result,prec);
+	RoundTo(N(result),prec);
 ];
 20 # PolyLog(_n,_x)_(Numeric And x>= -1 And x < 0 ) <-- [
 	// this makes the domain [-1,0) into [0,1],
@@ -315,22 +317,22 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 
 	result:=PolyLog(n,x^2)/2^(n-1) - PolyLog(n,-x) ;	
         Precision(prec);
-        RoundTo(result,prec);
+        RoundTo(N(result),prec);
 
 ];
 
 20 # PolyLog(_n,_x)_(Numeric And x > 0 And x <= 1) <-- [
 	Local(result,prec,term,k,eps);
 	prec:=GetPrecision();
+        Precision(prec+5);
 	eps:=10^(-prec);
 	result:=0;
 	// Sorry Serge, I was only getting 2 digits of precision with this
 	//terms:=Floor(10 + N(prec*Ln(10)/Ln(prec) - 1));
 	//Precision( prec + Floor(N(Ln(6*terms)/Ln(10))) );
 	//result:=SumTaylorNum(x, {{k}, x^(k+1)/(k+1)^n }, terms );
-	Precision(prec+5);
 	term:=1;
-	For(k:=1,term>eps,k++)[
+	For(k:=1,Abs(term)>eps,k++)[
 		term:=N(x^k/k^n);
 		result:=result+term;
 	];	
@@ -339,5 +341,63 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 ];
 
 
+// This is really slow for x <= 3
+5  # DirichletBeta(1)		<-- Pi/4;
+5  # DirichletBeta(2)		<-- Catalan;
+5  # DirichletBeta(3)		<-- Pi^3/32;
+6  # DirichletBeta(n_IsOdd)	<-- [
+		Local(k);
+		k:=(n-1)/2;
+		(-1)^k*Euler(2*k)*(Pi/2)^(2*k+1)/(2*(2*k)!);
+];
 
 
+10 # DirichletBeta(x_IsRationalOrNumber)_(Numeric And x>=1 ) <-- [
+	Local(prec,eps,term,result,k);
+	prec:=GetPrecision();
+        Precision(prec+3);
+	eps:=10^(-prec);
+	result:=0;
+	term:=1;
+	For(k:=0, Abs(term) > eps, k++ )[
+		term:=(-1)^k/(2*k+1)^x;
+		Echo("term is ",term);
+		result:=result+term;
+	];
+	Precision(prec);
+	RoundTo(result,prec);
+];
+
+CatalanConstNum() := 
+[
+        Local(prec,eps,term,result,k,i);
+        prec:=GetPrecision();
+        Precision(prec+5);
+        eps:=10^(-prec);
+        result:=0;
+        term:=1;
+        For(k:=0, Abs(term) > eps, k++ )[
+                term:=(k!)^2 * 2^(k-1);
+		term:=term/(2*k+1)!;
+		term:=term*Sum(i,0,k,1/(2*i+1));
+		term:=N(term);
+                //Echo("term is ",term);
+                result:=result+term;
+        ];
+        Precision(prec);
+	RoundTo(result,prec);	
+];
+
+10 # Digamma(_n)_(IsPositiveInteger(n)) <-- Sum(m,1,n-1,1/m) - gamma;
+// needs Erf() that takes complex argument
+/*
+10 # DawsonIntegral(_x) <-- [
+	Local(result,prec);
+	prec:=GetPrecision();
+	Precision(prec+5);
+	result:=N(I*Sqrt(Pi)*Exp(-x^2)*Erf(-I*x)/2);
+	Precision(prec);
+	RoundTo(result,prec);
+];
+*/
+		
