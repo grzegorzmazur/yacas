@@ -117,6 +117,10 @@ In this case it is faster to take the square of the cubic root of $x$.
 Then the case of negative $x$ should be handled separately.
 This speedup is not implemented in Yacas.
 
+Note that the relative precision changes when taking powers.
+If $x$ is known to relative precision $epsilon$, i.e. $x$ represents a real number that could be $x*(1+epsilon)$, then $x^2<=>x*(1+2*epsilon)$ has relative precision $2*epsilon$, while $Sqrt(x)$ has relative precision $epsilon/2$.
+So if we square a number $x$, we lose one significant bit of $x$, and when we take a square root of $x$, we gain one significant bit.
+
 		Roots
 
 Computation of roots $r=x^(1/n)$ is efficient when $n$ is a small integer.
@@ -239,7 +243,7 @@ $$ r'=r/2+x/(2*r) $$.
 The convergence is quadratic, so we double the number of correct digits at each step.
 Therefore, if the initial guess is accurate to one bit, the number of steps $n$ needed to obtain $P$ decimal digits is
 $$ n = Ln(P*Ln(10)/Ln(2))/Ln(2) = O(Ln(P))$$.
-However, we need to perform one long division at each step.
+We need to perform one long division at each step; a long division costs $O(M(P))$.
 Therefore the total complexity of this algorithm is $O(M(P)*Ln(P))$.
 This is better than the $O(P^2)$ algorithm if the cost of multiplication is below $O(P^2)$.
 
@@ -255,17 +259,45 @@ As usual with Newton's method, all errors are automatically corrected, so the wo
 The full precision of $P$ digits is used only at the last iteration; the last-but-one iteration uses $P/2$ digits and so on.
 
 An optimization trick is to combine the multiplication by $x$ with the last iteration.
-Then computations can be organized in a special way to avoid any full-precision multiplications.
-Only half-precision long multiplications are needed at the last iteration.
-(This is described in [Karp <i>et al.</i> 1997].)
+Then computations can be organized in a special way to avoid the last full-precision multiplication.
+(This is described in [Karp <i>et al.</i> 1997] where the same trick is also applied to Newton's iteration for division.)
 
-These optimizations do not change the asymptotic complexity of the method, although they may reduce the constant in front of $O()$.
+The idea is the following: let $r$ be the $P$-digit approximation to $1/Sqrt(x)$ at the beginning of the last iteration.
+(In this notation, $2*P$ is the precision of the final result, so $x$ is also known to about $2*P$ digits.)
+The unmodified procedure would have run as follows:
+$$ r' = r+r*(1-r^2*x)/2 $$,
+$$ s = x*r' $$.
+Then $s$ would have been the final result, $Sqrt(x)$ to $2*P$ digits.
+We would need one multiplication $M(P)$ with $2*P$-digit result to compute $r^2$, then one $M(2*P)$ to compute $r^2*x$ (the product of a $P$-digit $r^2$ and a $2*P$-digit $x$).
+Then we subtract this from $1$ and lose $P$ digits since $r$ was already a $P$-digit approximation to $1/Sqrt(x)$.
+The value $y:=(1-r^2*x)$ is of order $10^(-P)$ and has $P$ significant digits.
+So the third multiplication, $r*y$, is only $M(P)$.
+The fourth multiplication $s*x$ is again $M(2*P)$.
+The total cost is then $2*M(P)+2*M(2*P)$.
+
+Now consider Newton's iteration for $s<=>Sqrt(x)$,
+$$ s' = s+1/s*(1-s^2*x)/2 $$.
+The only reason we are trying to avoid it is the division by $s$.
+However, after all but the last iterations for $r$ we already have a $P$-digit approximation for $1/s$, which is $r$.
+Therefore we can simply define $s=r*x$ and perform the last iteration for $s$, taking $1/s<=>r$.
+This is slightly inexact, but the error is higher-order than the precision of the final result, because Newton's method erases any accumulated errors.
+So this will give us $2*P$ digits of $s$ without divisions, and lower the total computational cost.
+
+Consider the cost of the last iteration of this combined method.
+First, we compute $s=x*r$, but since we only need $P$ correct digits of $s$, we can use only $P$ digits of $x$, so this costs us $M(P)$.
+Then we compute $s^2*x$ which, as before, costs $M(P)+M(2*P)$, and then we compute $r*(1-s^2*x)$ which costs only $M(P)$.
+The total cost is therefore $3*M(P)+M(2*P)$, so we have traded one multiplication with $2*P$ digits for one multiplication with $P$ digits.
+Since the time of the last iteration dominates the total computing time, this is a significant cost savings.
+For example, if the multiplication is quadratic, $M(P)=O(P^2)$, then this saves about 30{%} of total execution time; for linear multiplication, the savings is about 16.67{%}.
+
+These optimizations do not change the asymptotic complexity of the method, although they do reduce the constant in front of $O()$.
 
 	    Method 3: argument reduction and interpolation
 
 *A roots!by argument reduction
 
-Before using Newton's method, we might apply some argument reduction to speed up the convergence of the iterations.
+Before using the bisection or Newton's method, we might apply some argument reduction to speed up the convergence of the iterations and to simplify finding the first approximation.
+
 Suppose we need to find $Sqrt(x)$.
 Choose an integer $n$ such that $1/4<x':=4^(-n)*x<=1$.
 The value of $n$ is easily found from bit counting: if $b$ is the bit count of $x$, then $$n=Floor((b+1)/2)$$.
@@ -274,7 +306,10 @@ To compute $Sqrt(x')$, we use Newton's method with the initial value $x'[0]$ obt
 A suitable interpolation function might be taken as simply $(2*x+1)/3$ or more precisely
 $$Sqrt(x) <=> 1/90*(-28*x^2+95*x+23)$$.
 By using a particular interpolation function, we can guarantee a certain number of precise bits at every iteration.
+
 This may save a few iterations, at the small expense of evaluating the interpolation function once at the beginning.
+However, in computing with high precision the initial iterations are very fast and this argument reduction does not give a significant speed gain.
+But the gain may be important at low precisions, and this technique is sometimes used in microprocessors.
 
 	    Method 4: Halley's iteration
 
@@ -291,6 +326,37 @@ To speed up the Halley iteration in the worst case when $s^s>n$, it is combined 
 If $s$ is very large ($s^s>n$), the convergence of both Newton's and Halley's iterations is almost linear until the final few iterations.
 Therefore  it is faster to evaluate the floating-point power for large $b$ using the exponential and the logarithm.
 
+	    Method 5: higher-order iterations
+
+*A roots!by higher-order methods
+
+A higher-order generalization of Newton's iteration for inverse square root $1/Sqrt(x)$ is:
+$$ r' = r + r/2*(1-r^2*x) + 3*r/8*(1-r^2*x)^2 + ... $$
+The more terms of the series we add, the higher is the convergence rate.
+This is the Taylor series for $(1-y)^(-1/2)$ where $y:=1-r^2*x$.
+If we take the terms up to $y^(n-1)$, the precision at the next iteration will be multiplied by $n$.
+The usual second-order iteration (our "method 2") corresponds to $n=2$.
+
+The trick of combining the last iteration with the final multiplication by $x$ can be also used with all higher-order schemes.
+
+Consider the cost of one iteration of $n$-th order.
+Let the initial precision of $r$ be $P$; then the final precision is $k*P$ and we use up to $n*P$ digits of $x$.
+First we compute $y:=1-r^2*x$ to $P*(n-1)$ digits, this costs $M(P)$ for $r^2$ and then $M(P*n)$ for $r^2*x$.
+The value of $y$ is of order $10^(-P)$ and it has $P*(n-1)$ digits, so we only need to use that many digits to multiply it by $r$, and $r*y$ now costs us $M(P*(n-1))$.
+To compute $y^k$ (here $2<=k<=n-1$), we need $M(P*(n-k))$ digits of $y$; since we need all consecutive powers of $y$, it is best to compute the powers one after another, lowering the precision on the way.
+The cost of computing $r*(y^k)*y$ after having computed $r*y^k$ is therefore $M(P*(n-k-1))$.
+The total cost of the iteration comes to
+$$ 2*M(P)+M(2*P)+...+M((n-1)*P)+M(n*P) $$.
+
+From the general considerations in the previous chapter (see the section on Newton's method)
+it follows that the optimal order is $n=2$ and that higher-order schemes are slower in this case.
+
+	    Which method to use
+
+The bisection method (1) for square roots is probably the fastest for small integers or low-precision floats.
+Argument reduction and/or interpolation (3) can be used to simplify the iterative algorithm or to make it more robust.
+
+Newton's method (2) is best for all other cases: large precision and/or roots other than square roots.
 
 		Logarithm
 
@@ -324,8 +390,10 @@ The number of squarings needed to compute $b^(2^n)$ is logarithmic in $P$. Howev
 These multiplications take the time $O(M(P))$.
 Then we need to perform another long division and a series of progressively shorter divisions.
 The total cost is still $O(M(P))$.
-For large $P$, the cost of multplication $M(P)$ is less than $O(P^2)$ and therefore this method is preferable. 
+For large $P$, the cost of multiplication $M(P)$ is less than $O(P^2)$ and therefore this method is preferable. 
 
+There is one special case, the binary (base $2$) logarithm.
+Since the internal representation of floating-point numbers is usually in binary, the integer part of the binary logarithm can be usually implemented as a constant-time operation.
 
 	    Real logarithms
 
@@ -567,6 +635,9 @@ Therefore the total cost is $O(M(P)*Ln(P)^2)$.
 
 *REM FIXME: fill in the details
 
+Essentially the same method can be used to evaluate a complex logarithm, $Ln(a+I*b)$.
+It is slower but the asymptotic cost is the same.
+
 	    Method 8: continued fraction
 
 *A logarithm!by continued fraction
@@ -607,6 +678,10 @@ However, the rectangular method of Taylor summation cuts the time down to $O(Sqr
 Therefore, the bisection method may give an advantage only at very low precisions.
 (This is why it is sometimes used in microprocessors.)
 The similar method for the exponential function requires a square root at every iteration and is never competitive with the Taylor series.
+
+	    Which method to use
+
+This remains to be seen.
 
 		Exponential
 
@@ -725,6 +800,9 @@ $$Exp(x) = Exp(x[0])*Exp(r[0])*Exp(r[1])*...$$.
 
 The cost of this method is $O(M(P*Ln(P))*Ln(P))$ operations.
 
+Essentially the same method can be used to compute the complex exponential, $Exp(a+I*b)$.
+This is slower but the asymptotic cost is the same.
+
 	    Method 6: continued fraction
 
 *A exponential function $Exp(x)$!by continued fraction
@@ -734,6 +812,10 @@ $$ Exp(-x) = 1-x/(1+x/(2-x/(3+x/(2-x/(5+x/(2- ...)))))) $$.
 This fraction converges for all $x$, although the speed of convergence varies with the magnitude of $x$.
 
 This method does not seem to provide a computational advantage compared with the other methods.
+
+	    Which method to use
+
+This remains to be seen.
 
 
 		Calculation of $Pi$
@@ -835,6 +917,11 @@ Alternatively, $ArcSin(x)$ may be found from the Taylor series and inverted to o
 
 This method seems to be of marginal value since efficient direct methods for $Cos(x)$, $Sin(x)$ are available.
 
+
+	    Which method to use
+
+This remains to be seen.
+
 		Inverse trigonometric functions
 
 *A computation of $ArcTan(x)$
@@ -920,6 +1007,11 @@ However, a Taylor series can be evaluated efficiently using $O(Sqrt(n))$ long mu
 Therefore, at high enough precision the continued fraction method will be much less efficient than the Taylor series.
 
 
+	    Which method to use
+
+This remains to be seen.
+
+
 		Factorials and binomial coefficients
 
 *A factorial
@@ -976,6 +1068,10 @@ This is always much faster than computing the three factorials in the definition
 A floating-point computation of the factorial may proceed either via Euler's Gamma function, $n! = Gamma(n+1)$,
 or by a direct method (multiplying the integers and maintaining a certain floating-point precision).
 If the required precision is much less than the number of digits in the exact factorial, then almost all multiplications will be truncated to the precision $P$ and the tree method $O(n*M(P))$ is always slower than the simple method $O(n*P)$.
+
+	    Which method to use
+
+This remains to be seen.
 
 		Classical orthogonal polynomials: general case
 

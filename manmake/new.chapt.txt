@@ -1201,10 +1201,15 @@ However, the first operation {z:=x+y} must be performed with the precision speci
 
 If an integer {x} needs to be added to a float {{y,n}}, then we should formally use the same procedure as if {x} had infinitely many precise bits.
 In practice we can take some shortcuts.
-It is enough to convert the integer to a float {{x,m}} with a certain finite precision $m$ and then follow the general procedure.
+
+It is enough to convert the integer to a float {{x,m}} with a certain finite precision $m$ and then follow the general procedure for adding floats.
 The precision $m$ must be large enough so that the absolute error of {{x,m}} is smaller than the absolute error of {{y,n}}: $B(x)-m<=B(y)-n-1$, hence
 $$ m>=1+n+B(x)-B(y) $$.
-In practice we may allow for a few guard bits over the minimum $m$.
+In practice we may allow for a few guard bits over the minimum $m$ given by this formula.
+
+Sometimes the formula gives a negative value for the minimum $m$;
+this means underflow while adding the integer (e.g. adding $1$ to $1.11e150$).
+In this case we do not need to perform any addition at all.
 
 
 *HEAD Multiplication
