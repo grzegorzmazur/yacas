@@ -135,12 +135,14 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 110 # Tan(Complex(_r,_i))       <-- Sin(Complex(r,i))/Cos(Complex(r,i));
 
 200 # Tan(0)                  <-- 0;
+200 # Tan(Pi)		      <-- 0;
 200 # Tan(n_IsInteger*Pi)     <-- 0;
 200 # Tan(Pi*n_IsInteger)     <-- 0;
 200 # Tan((n_IsInteger/2)*Pi) <-- Infinity;
 200 # Tan((n_IsInteger/2)*Pi) <-- Infinity;
 200 # Tan(Pi*(n_IsInteger/2)) <-- Infinity;
 200 # Tan(Pi*(n_IsInteger/2)) <-- Infinity;
+200 # Tan(Pi/2)		      <-- Infinity;
 
 2 # Ln(0)                    <-- -Infinity;
 2 # Ln(1)                    <-- 0;
