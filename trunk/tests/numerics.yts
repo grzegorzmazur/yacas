@@ -204,7 +204,7 @@ RoundTo(ZetaNum(1.5), 19)
 
 // test correctness of Zeta(3)
 Verify(
-RoundTo(ZetaNum(3)-Zeta(3), 20)
+RoundTo(ZetaNum(3)-N(Zeta(3)), 20)
 , 0
 );
 
