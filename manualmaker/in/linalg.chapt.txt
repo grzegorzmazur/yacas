@@ -783,6 +783,45 @@ The {ij}th element of the Vandermonde matrix is defined as {i^(j-1)}.
 	| ( 1 ) ( 8 ) ( 27 ) ( 64 )  |
 	\                            /
 
+*CMD HessianMatrix --- Calculate the Hessian matrix
+*STD
+*CALL
+        HessianMatrix(function,var)
+*PARMS
+
+{function} -- An function in {n} variables
+
+{var} -- An {n} dimensian vector of variables
+
+*DESC
+
+The function {HessianMatrix} calculates the Hessian matrix
+of a vector.
+
+The {ij}th element of the Hessian matrix is defined as 
+$ Deriv(var[i]) Deriv(var[j]) function $. If the third
+order mixed partials are continuous, then the Hessian
+matrix is symmetric.
+
+The Hessian matrix is used in the second derivative test 
+to discern if a critical point is a local maximum, local
+minimum or a saddle point.
+
+
+*E.G.
+
+	In> HessianMatrix(3*x^2-2*x*y+y^2-8*y, {x,y} )
+	Out> {{6,-2},{-2,2}};
+	In> PrettyForm(%)
+	/                \
+	| ( 6 )  ( -2 )  |
+	|                |
+	| ( -2 ) ( 2 )   |
+	\                /
+
+
+
+
 *CMD WronskianMatrix --- Calculate the Wronskian matrix
 *STD
 *CALL
