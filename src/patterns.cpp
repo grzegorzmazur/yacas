@@ -168,8 +168,14 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
                         third.Set(second->Next().Get()->Copy(LispFalse));
                         LispCharPtr str = second->String()->String();
                         third.Get()->Next().Set(LispAtom::New(aEnvironment.HashTable().LookUp(str)));
+#ifdef DEBUG_MODE
+                        third.Get()->Next().Get()->SetFileAndLine(second->iFileName,second->iLine);
+#endif
                         LispPtr *pred = new LispPtr;
                         pred->Set(LispSubList::New(third.Get()));
+#ifdef DEBUG_MODE
+                        pred->Get()->SetFileAndLine(head->iFileName,head->iLine);
+#endif
                         iPredicates.Append(pred);
                     }
 

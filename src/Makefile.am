@@ -76,7 +76,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp \
 	plat/win32/win32commandline.h   \
 	plat/win32/yacas.dsp            \
 	plat/win32/yacas_exe.dsp        \
-	plat/win32/yacasmain-win32.cpp
+	plat/win32/yacasmain-win32.cpp makefile.debug
 
 
 include depend.dep
