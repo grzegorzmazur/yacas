@@ -411,10 +411,6 @@ compatible with other parts.
 *CALL
 	GarbageCollect()
 
-*PARMS
-
-none
-
 *DESC
 
 {GarbageCollect()} garbage-collects unused memory. The Yacas system
@@ -442,10 +438,6 @@ memory use low.
 	CurrentFile()
 	CurrentLine()
 
-*PARMS
-
-none
-
 *DESC
 
 The functions {CurrentFile()} and {CurrentLine()} return a string
@@ -461,29 +453,25 @@ easy to define a function
 which can then be spread out over the input file at various places,
 to see how far the interpreter reaches before an error occurs.
 
-*E.G.
-
-	none
-
 *SEE Echo
 
-*CMD FindFunction --- Finding the file a function is defined in
+
+*CMD FindFunction --- Find the file where a function is defined
 *CORE
 *CALL
 	FindFunction(function)
 
 *PARMS
 
-{function} - a function name in string format
+function - string, the name of a function
 
 *DESC
 
-This function is useful for quickly finding the file a function is
-defined in. It is likely to only be useful for developers. The
-function {FindFunction()} scans the def files that were loaded at
-start-up. This means that functions that were not defined in def
-files, but were loaded directly, will not be found with 
-{FindFunction()}.
+This function is useful for quickly finding the file where a standard library
+function is defined. It is likely to only be useful for developers. The
+function {FindFunction()} scans the {.def} files that were loaded at start-up.
+This means that functions that were not defined in {.def} files, but were loaded
+directly, will not be found with {FindFunction()}.
 
 *E.G.
 
@@ -494,7 +482,6 @@ files, but were loaded directly, will not be found with
 
 *SEE Vi
 
-
 *CMD Secure --- guard the host OS
 *CORE
 *CALL
@@ -502,10 +489,10 @@ files, but were loaded directly, will not be found with
 
 *DESC
 
-{Secure} evaluates body in a safe environment, where file opening
+{Secure} evaluates body in a "safe" environment, where file opening
 and system calls are not allowed. This can protect the system
-when an unsafe evaluation is done (Like a script sent over the
-internet to be evaluated on a computer).
+when an unsafe evaluation is done, e.g. a script sent over the
+Internet to be evaluated on a remote computer.
 
 
 			Built-in (core) functions
@@ -525,9 +512,10 @@ Built-in bodied functions and infix operators are declared in the same file.
 *CMD MathNot --- built-in logical "not"
 *CORE
 *CALL
-MathNot(expression)
+	MathNot(expression)
 
-MathNot(expression) :
+*DESC
+
 Returns "False" if "expression" evaluates
 to "True", and vice versa.
 
@@ -539,7 +527,7 @@ to "True", and vice versa.
 Lazy logical {And}: returns {True} if all args evaluate to
 {True}, and does this by looking at first, and then at the
 second argument, until one is {False}.
-If one is {False} it immediately returns {False} without
+If one of the arguments is {False}, {And} immediately returns {False} without
 evaluating the rest. This is faster, but also means that none of the
 arguments should cause side effects when they are evaluated.
 
@@ -564,23 +552,23 @@ BitAnd(n,m), BitOr(n,m), BitXor(n,m)
 BitAnd(n,m), BitOr(n,m), BitXor(n,m) : return bitwise and, or and xor
 of two numbers.
 
-*CMD Equals --- built-in equality check
+*CMD Equals --- check equality
 *CORE
 *CALL
-Equals(a,b)
+	Equals(a,b)
 
-Equals(a,b) :
-Compares evaluated a and b recursively
-(stepping into expressions). so "Equals(a,b)" returns
+*DESC
+Compares evaluated {a} and {b} recursively
+(stepping into expressions). So "Equals(a,b)" returns
 "True" if the expressions would be printed exactly
 the same, and "False" otherwise.
 
 *CMD GreaterThan, LessThan --- arithmetic predicates
 *CORE
 *CALL
-LessThan(a,b), GreaterThan(a,b)
+	LessThan(a,b), GreaterThan(a,b)
 
-LessThan(a,b), GreaterThan(a,b) :
+*DESC
 Comparing numbers.
 
 *CMD Math... --- arbitrary-precision math functions
@@ -600,8 +588,10 @@ MathSin(x), MathCos(x), MathTan(x),
 MathArcSin(x), MathArcCos(x), MathArcTan(x),
 MathDiv(x,y), MathMod(x,y)
 
+*DESC
 
-Calculation of sin,cos,tan etc. of x. x HAS to
+Calculation of sin, cos, tan and other mathematical functions.
+The argument <i>must</i>
 be a number. The reason {Math} is prepended to
 the names is you might want to derive equivalent
 non-evaluating functions. The {Math}... versions require the arguments
@@ -616,7 +606,8 @@ FastPower(x,y),
 FastSin(x), FastCos(x), FastTan(x),
 FastArcSin(x), FastArcCos(x), FastArcTan(x) :
 
-Versions of these functions using the internal c version. These
+*DESC
+Versions of these functions using the internal C version. These
 should then at least be faster than the arbitrary precision versions.
 
 *CMD ShiftLeft, ShiftRight --- built-in bit shifts

@@ -622,7 +622,7 @@ equivalent to the fact that the columns of $A$ build an orthonormal system
 *SEE IsHermitean
 
 
-*CMD SylvesterMatrix --- Calculate the Sylvester matrix of two polynomials
+*CMD SylvesterMatrix --- calculate the Sylvester matrix of two polynomials
 *STD
 *CALL
 	SylvesterMatrix(poly1,poly2,variable)
