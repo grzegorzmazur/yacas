@@ -150,6 +150,7 @@ void TestTypes1(double value)
   CheckValues(returned_value,value, "value is correct");
 // value doesn't have to be float
 	//	Check(!x.IsIntValue(), "is not an integer value");
+  // x should be unchanged after this:
 	x.BecomeFloat(x.GetPrecision());
 	Check(!x.IsInt(), "still float type");
 	returned_value = x.Double();
@@ -254,7 +255,7 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 // test some integer and float arithmetic
 void TestArith1(const char* str_value, int base, int val1, double val2)
 {
-	const long prec=strlen(str_value)*4+50;	// many guard digits
+	const long prec=strlen(str_value)*3+20*3+10;	// many guard digits
 	const long print_prec = strlen(str_value)+20;	// at least 20 more digits must be correct
 	BigNumber x(str_value, prec, base);
 	BigNumber x1(x), x2(x), y;
@@ -279,15 +280,19 @@ void TestArith1(const char* str_value, int base, int val1, double val2)
 	x1.SetTo(x2);
 	BigNumber z;
 	z.SetTo(val2);
+	z.Precision(prec);	// consider z to have the same precision as x,x1,x2
 	for (int i=0; i<100; ++i) x.Add(x,z, prec);
 	z.Negate(z);
+	CheckValues(z.GetPrecision(), prec, "z has the same precision");
 	BigNumber t;
 	t.SetTo(100);
+	Check(t.IsInt(), "t is integer");
 	z.Multiply(z,t,prec);
+	CheckValues(z.GetPrecision(), prec, "z has the same precision");
 	x.Add(x,z, prec);
 //	Check(x.Equals(x1), "add and subtract a double 100 times");
-	x1.BecomeFloat();
-	if (!x.Equals(x1)) printf("WARNING: this test may fail due to roundoff error, please check:\n");
+	x1.BecomeFloat(prec);
+	if (!x.Equals(x1)) printf("WARNING: this test may fail due to roundoff error, please check:\n-------- precision of x is %d, precision of x1 is %d bits\n", x.GetPrecision(), x1.GetPrecision());
 	CheckEquals(x, x1, print_prec, base, "result of add and subtract a double 100 times");
 	
 	x.SetTo(x2);
@@ -295,7 +300,7 @@ void TestArith1(const char* str_value, int base, int val1, double val2)
 	for (int i=0; i<100; ++i) x.Add(x,x, prec);
 	y.SetTo(1);
 	y.ShiftLeft(y, 100);
-	
+	Check(y.IsInt(), "y is integer");
 	x1.Multiply(x1,y, prec);
 	Check(x.Equals(x1), "add to itself 100 times");
 	CheckEquals(x, x1, prec, base, "result of add to itself 100 times");
@@ -665,23 +670,21 @@ int main(void)
 	Check(x.IsInt(), "bit count is integer");
 	CheckValues(x.Double(),17, "bit count of 65537 is 17");
 	Check(x.Double()!=16, "bit count of 65537 is not 16");
-//	x.SetTo(1./1050000.);
-	x.SetTo(1./1048576.); // 2^20 equals 1048576 I believe...
+	x.SetTo(1./1050000.);
 	Check(!x.IsInt(), "x is a floating-point value");
 	CheckValues(x.Sign(),1, "x is positive");
-
-/*
-  LispString str;
-  x.ToString(str,40);
-  char* pt = str.String();
-*/
 	x.BitCount(x);
-
-
 	Check(x.IsInt(), "bit count is integer");
-	CheckValues(x.Double(),-20, "bit count of 2^(-20)");
-	Check(x.Double()!=-21, "bit count of 2^(-20) is not -21");
-	Check(x.Double()!=-19, "bit count of 2^(-20) is not -19");
+	CheckValues(x.Double(),-20, "bit count of 1./1050000. is (-20)");
+	Check(x.Double()!=-21, "bit count is not -21");
+	Check(x.Double()!=-19, "bit count is not -19");
+	x.SetTo(1./1048576.);
+	x.BitCount(x);
+	CheckValues(x.Double(),-19, "bit count of 1./1048576. is (-19)");
+	Check(x.Double()!=-20, "bit count is not -20");
+	Check(x.Double()!=-18, "bit count is not -18");
+
+
 	
 	long B_x;
 #define test_bit_count(a) \
@@ -739,11 +742,11 @@ int main(void)
 	test_int_eq_string(-13, "-d", 10, 16);
 	test_float_eq_string(-13.0, "-d.", 10, 16);
 	test_float_eq_string(13.1245e-15, "0.131245e-13", 10, 10);
-	test_float2string(13.1245e-15, "0.131e-13", 3, 10);	// print fewer digits than we have
+	test_float2string(10.1245e-15, "0.101e-13", 3, 10);	// print fewer digits than we have
 	test_float2string(13.1e-15, "0.131e-13", 10, 10);	// do not print more digits than we have
 	test_string2float(13.1245e-15, "0.131245e-13", 3, 10);	// do not read fewer digits
 	test_float_eq_string(13.1245e-15, "0.131245e-13", 6, 10);
-	test_float2string(-13.1245e-15, "-0.131e-13", 3, 10);	// print fewer digits than we have
+	test_float2string(-10.1245e-15, "-0.101e-13", 3, 10);	// print fewer digits than we have
 	test_float2string(-13.1e-15, "-0.131e-13", 10, 10);	// do not print more digits than we have
 	test_string2float(-13.1245e-15, "-0.131245e-13", 3, 10);	// do not read fewer digits
 
@@ -948,15 +951,25 @@ int main(void)
 
 	Next("division by zero");
 	x.SetTo(0);
+	Check(x.IsInt(), "x=0 as integer");
   try
   {
-    x.Divide(x,x,100);
+	x.Divide(y,y,100);
   }
   catch (LispInt err)
   {
-    printf("Correctly caught division by zero exception.\n");
+    printf("Correctly caught integer division by zero.\n");
   }
-
+	y.SetTo(0.);
+  try
+  {
+	y.Divide(y,y,100);
+  }
+  catch (LispInt err)
+  {
+    printf("Correctly caught floating division by zero.\n");
+  }
+    Next("conversions with large strings");
 	x.SetTo("3.000000000000000000000000000000000000000050104", 150, 10);
 	y.SetTo("3.000000000000000000000000000000000000000050204", 150, 10);
 	Check(!x.Equals(y), "read a large number of digits from string");
@@ -1011,8 +1024,16 @@ int main(void)
 	x.MultiplyAdd(y,z,10);
 	Check(!x.IsInt(), "x is now float");
 	Check(x.IsIntValue(), "x has integer value");
-	CheckValues(x.Double(),21, "x==22");
+	CheckValues(x.Double(),21, "x==21");
 	CheckStringValue(x, "21.", 10, 10, "10+2*5.5 = 21.");
+
+	x.SetTo(10);
+	y.SetTo(2);
+	z.SetTo(5);
+	x.MultiplyAdd(y,z,10);
+	Check(x.IsInt(), "x is int");
+	CheckValues(x.Double(),20, "x==20");
+	CheckStringValue(x, "20", 10, 10, "10+2*5 = 20");
 	
 	Next("arithmetic 2");
 	TestArith2(1, 2);
@@ -1044,7 +1065,7 @@ int main(void)
 	    CheckValues(x.Sign(),1, "x is positive");
 	    x.ShiftLeft(x,prec-shift_amount); // x = 2^(150-s)* x
 	    CheckStringValue(x, "1.", 10, 10, "x=1. again");
-	    CheckValues(x.GetPrecision(), shift_amount-2, "x has correct precision");
+	    CheckValues(x.GetPrecision(), shift_amount-1, "x has correct precision");
 	// compute  (1+10^(-60))-1, this should be 0 with 150 bits
 	    y.SetTo(1.e-60);	// at least 60
 	    y.Precision(prec);
