@@ -1,0 +1,13 @@
+
+/* Definition of constants. */
+
+
+/* TODO:
+ * There is a problem with defining I this way: if I is used, but the
+ * file "complex" has not been loaded, the interpreter can not deal
+ * with "Complex".
+ */
+
+I := Complex(0,1);
+LazyGlobal(I);
+

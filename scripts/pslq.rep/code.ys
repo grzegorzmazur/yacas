@@ -1,0 +1,209 @@
+
+
+/*********************************************************************************************#
+#                       The PSLQ Integer Relation Algorithm                                   #
+#                                                                                             #
+# Aut.: Helaman R.P. Ferguson and David Bailey "A Polynomial Time, Numerically Stable         #
+#       Integer Relation Algorithm" (RNR Technical Report RNR-92-032)    helaman@super.org    #
+# Ref.: David Bailey and Simon Plouffe "Recognizing Numerical Constants" dbailey@nas.nasa.gov #
+# Cod.: Raymond Manzoni  raymman@club-internet.fr                                             #
+#*********************************************************************************************#
+# Creation:97/11                    #
+# New termination criteria:97/12/15 #
+# this code is free...              #
+
+Ported to Yacas 2000 Ayal Pinkus.
+
+Given a list of constants x find coefficients sol[i] such that
+      sum(sol[i]*x[i], i=1..n) = 0    (where n=Length(x))              
+                                                                  
+    x is the list of real expressions           
+          N(x[i]) must evaluate to floating point numbers!
+    precision is the number of digits needed for completion;         
+          must be greater or equal to log10(max(sol[i]))*n               
+    returns the list of solutions with initial precision
+          and the confidence (the lower the better)
+
+    Example:
+
+    In> Pslq({2*Pi-4*Exp(1),Pi,Exp(1)},20)
+    Out> {1,-2,4};
+
+*/
+
+Pslq(x, precision) :=
+[
+  Local (ndigits, gam, A, B, H, n, i, j, k, s, y, tmp, t, m, maxi, gami,
+	 t0, t1, t2, t3, t4, mini, Confidence, norme,result);
+  n:=Length(x);
+  ndigits:=GetPrecision();
+  Precision(precision+2);
+  Confidence:=10^(-MathFloor(N(Eval(precision/3))));
+  gam:=N(Sqrt(4/3));
+  For (i:=1, i<=n,i++) x[i]:=N(x[i]);
+
+  A:=Identity(n); /*A and B are of Integer type*/
+  B:=Identity(n); /*but this doesn't speed up*/
+  s:=ZeroVector(n);
+  y:=ZeroVector(n);
+
+  For(k:=1,k<=n,k++)
+  [
+    tmp:=0;
+    For (j:=k,j<=n,j++) tmp:=tmp + x[j]^2;
+    s[k]:=N(Eval(Sqrt(tmp)));
+  ];
+  tmp:=s[1];
+  For (k:= 1,k<= n,k++)
+  [
+    y[k]:=N(Eval(x[k]/tmp));
+    s[k]:=N(Eval(s[k]/tmp));
+  ];
+  H:=ZeroMatrix(n, n-1);
+
+  For (i:=1,i<= n,i++)
+  [
+
+    if (i <= n-1)  [ H[i][i]:=s[i + 1]/s[i]; ];
+    For (j:= 1,j<=i-1,j++)
+    [
+      H[i][j]:= -(y[i]*y[j])/(s[j]*s[j + 1]);
+    ];
+  ];
+
+  For (i:=2,i<=n,i++)
+  [
+    For (j:=i-1,j>= 1,j--)
+    [
+      t:=Round(H[i][j]/H[j][j]);
+      y[j]:=y[j] + t*y[i];
+      For (k:=1,k<=j,k++) [ H[i][k]:=H[i][k]-t*H[j][k]; ];
+      For (k:=1,k<=n,k++)
+      [
+        A[i][k]:=A[i][k]-t*A[j][k];
+        B[k][j]:=B[k][j] + t*B[k][i];
+      ];
+    ];
+  ];
+  Local(found);
+  found:=False;
+
+  While (Not(found))
+  [
+    m:=1;
+    maxi:=N(gam*Abs(H[1][1]));
+    gami:=gam;
+    For (i:= 2,i<= n-1,i++)
+    [
+      gami:=gami*gam;
+      tmp:=N(gami*Abs(H[i][i]));
+      if (maxi < tmp)
+      [
+        maxi:=tmp;
+        m:=i;
+      ];
+    ];
+    tmp:=y[m + 1];
+    y[m + 1]:=y[m];
+    y[m]:=tmp;
+    For (i:= 1,i<=n,i++)
+    [
+      tmp:=A[m + 1][ i];
+      A[m + 1][ i]:=A[m][ i];
+      A[m][ i]:=tmp;
+      tmp:=B[i][ m + 1];
+      B[i][ m + 1]:=B[i][ m];
+      B[i][ m]:=tmp;
+    ];
+    For (i:=1,i<=n-1,i++)
+    [
+      tmp:=H[m + 1][ i];
+      H[m + 1][ i]:=H[m][ i];
+      H[m][ i]:=tmp;
+    ];
+    if (m < n-1)
+    [
+      t0:=N(Eval(Sqrt(H[m][ m]^2 + H[m][ m + 1]^2)));
+      t1:=H[m][ m]/t0;
+      t2:=H[m][ m + 1]/t0;
+      For (i:=m,i<=n,i++)
+      [
+        t3:=H[i][ m];
+        t4:=H[i][ m + 1];
+        H[i][ m]:=t1*t3 + t2*t4;
+        H[i][ m + 1]:= -t2*t3 + t1*t4;
+      ];
+    ];
+    For (i:= 1,i<= n,i++)
+    [
+      For (j := Min(i-1, m + 1),j>= 1,j--)
+      [
+        t:=Round(H[i][ j]/H[j][ j]);
+        y[j]:=y[j] + t*y[i];
+        For (k:=1,k<=j,k++) H[i][ k]:=H[i][ k]-t*H[j][ k];
+        For (k:= 1,k<=n,k++)
+        [
+          A[i][ k]:=A[i][ k]-t*A[j][ k];
+          B[k][ j]:=B[k][ j] + t*B[k][ i];
+        ];
+      ];
+    ];
+    /* Precision(10);*/ /*low precision*/
+    maxi := (H[1] .  H[1]);
+    For (j:=2,j<=n,j++)
+    [
+      tmp:=(H[j] . H[j]);
+      if (maxi < tmp) [ maxi:=tmp; ];
+    ];
+    norme:=N(Eval(1/Sqrt(maxi)));
+    m:=1;
+    mini:=N(Eval(Abs(y[1])));
+    maxi:=mini;
+    For (j:=2,j<=n,j++)
+    [
+      tmp:=N(Eval(Abs(y[j])));
+      if (tmp < mini)
+      [
+        mini:=tmp;
+        m:=j;
+      ];
+      if (tmp > maxi) [ maxi:=tmp; ];
+    ];
+    /* following line may be commented */
+/*    Echo({"Norm bound:",norme," Min=",mini," Conf=",mini/maxi}); */
+    if ((mini/maxi) < Confidence) /*prefered to : if mini < 10^(- precision) then*/
+    [
+    /* following line may be commented */
+/*      Echo({"Found with Confidence ",mini/maxi}); */
+      Precision(ndigits);
+      result:=Transpose(B)[m];
+      found:=True;
+    ]
+    else
+    [
+      maxi:=Abs(A[1][ 1]);
+      For (i:=1,i<=n,i++)
+      [
+        For (j:=1,j<=n,j++)
+        [
+          tmp:=Abs(A[i][ j]);
+          if (maxi < tmp) [ maxi:=tmp;];
+        ];
+      ];
+      if (maxi > 10^(precision))
+      [
+        Precision(ndigits);
+        result:=Fail;
+        found:=True;
+      ];
+      Precision(precision+2);
+    ];
+  ];
+  result;
+];
+
+/* end of file */
+
+
+
+

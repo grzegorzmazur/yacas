@@ -1,0 +1,127 @@
+
+
+10 # OMForm(_expression)
+//     <-- "<OMOBJ>" : OMFormExpression(expression) : "</OMOBJ>";
+     <--
+     [
+     omindent := 0;
+     OMEcho("<OMOBJ>");
+     OMIndent();
+     OMFormExpression(expression);
+     OMUndent();
+     OMEcho("</OMOBJ>");
+     ];
+
+10 # OMFormExpression(i_IsString)  <-- OMEcho(i);
+11 # OMFormExpression(i_IsInteger) <-- OMEcho("<OMI>":String(i):"</OMI>");
+12 # OMFormExpression(i_IsNumber)  <-- OMEcho("<OMF dec=\"":String(i):"\"/>");
+13 # OMFormExpression(i_IsConstant)_(OMSymbol[ String(i) ] != Empty)
+     <--
+     [
+     OMEcho("<OMS cd=\"":OMSymbol[ String(i) ][1]:"\" name=\"":OMSymbol[ String(i) ][2]:"\"/>");
+     ];
+14 # OMFormExpression(i_IsConstant)
+     <--
+     [
+     OMEcho("<OMS cd=\"yacas\" name=\"":String(i):"\"/>");
+     ];
+15 # OMFormExpression(i_IsVariable)_(OMSymbol[ String(i) ] != Empty)
+     <--
+     [
+     OMEcho("<OMS cd=\"":OMSymbol[ String(i) ][1]:"\" name=\"":OMSymbol[ String(i) ][2]:"\"/>");
+     ];
+16 # OMFormExpression(i_IsVariable)<-- OMEcho("<OMV name=\"":String(i):"\"/>");
+
+10 # OMFormExpression(function_IsFunction)
+     <--
+     [
+     OMEcho("<OMA>");
+     OMIndent();
+     OMFormFunction(function);
+     OMUndent();
+     OMEcho("</OMA>");
+     ];
+10 # OMFormFunction(_function)_(OMSymbol[ Type(function) ] != Empty)
+     <--
+     [
+     OMEcho("<OMS cd=\"":OMSymbol[ Type(function) ][1]:"\" name=\"":OMSymbol[ Type(function) ][2]:"\"/>");
+     If(OMSymbol[ Type(function) ][3] = {},
+        [ ForEach(arg, function) OMFormExpression(arg);
+        ],
+        [ arity := Length(function);
+          ForEach(i, OMSymbol[ Type(function) ][3])
+            [
+             If(IsNumber(i),
+                If(i <= arity,  OMFormExpression(function[i]) ),
+                If(IsString(i), OMFormExpression(i)           )
+                );
+            ];
+        ]
+        );
+     ];
+11 # OMFormFunction(_function)
+     <--
+     [
+     OMEcho("<OMS cd=\"yacas\" name=\"":Type(function):"\"/>");
+     ForEach(arg, function) OMFormExpression(arg);
+     ];
+
+omindent := 0;
+OMIndentSpace() :=
+[
+  Space(omindent);
+];
+
+OMEcho(_expression) <--
+[
+  OMIndentSpace();
+  Echo({expression});
+];
+OMIndent() := [omindent := omindent + 2;];
+OMUndent() := [omindent := omindent - 2;];
+
+
+HoldArgNr("OMForm",1,1);
+//HoldArgNr("OMFormExpression",1,1);
+//HoldArgNr("OMFormFunction",1,1);
+
+
+OMSymbol :=
+{
+  // [20010916 AGP] I couldn't find these symbols in the def files:
+  //{ "E",         { "nums1", "e",        {} } },
+  //{ "Gamma",     { "nums1", "gamma",    {} } },
+  { "Infinity",  { "nums1", "infinity",   {} } },
+  { "Undefined", { "nums1", "NaN",        {} } },
+  { "Pi",        { "nums1", "pi",         {} } },
+  // [20010916 AGP] From stdopers.ys:
+  { "And"   , { "logic1", "and",        {} } },
+  { "=="    , { "logic1", "equivalent", {} } },
+  { "!=="   , { "logic1", "not",
+                { "<OMA><OMS cd=\"logic1\" name=\"equivalent\"/>",
+                  1,
+                  2,
+                  "</OMA>"
+                }
+              }                              },
+  { "False" , { "logic1", "false",      {} } },
+  { "Or"    , { "logic1", "or",         {} } },
+  { "True"  , { "logic1", "true",       {} } },
+  //{ "Xor"   , { "logic1", "xor",        {} } },//[20010916 AGP ] Not in Yacas
+  { "&" , { "yacas", "bitwise_and", {} } },
+  { "|" , { "yacas", "bitwise_or",  {} } },
+  { "%" , { "yacas", "bitwise_xor", {} } },
+  { "/" , { "arith1", "divide", {} } },
+  { "-" , { "arith1", "minus",  {} } },
+  { "+" , { "arith1", "plus",   {} } },
+  { "^" , { "arith1", "power",  {} } },
+  { "*" , { "arith1", "times",  {} } },
+  { "+" , { "arith1", "plus",   {} } },
+  { "", { "error", "unexpected_symbol", {} } }
+};
+
+Load("constants/om.ys");
+Load("stdfuncs/om.ys");
+Load("stubs/om.ys");
+Load("logic/om.ys");
+Load("complex/om.ys");
