@@ -70,7 +70,7 @@ RELEASE = @RELEASE@
 VERSION = @VERSION@
 scriptdir = @scriptdir@
 
-noinst_PROGRAMS = books.html texdocs
+noinst_PROGRAMS = books.html 
 
 EXTRA_DIST =  	manualmaker styleplain 	in/all in/arith.chapt in/built.chapt in/calc.chapt 	in/coding.book.txt in/const.chapt in/functional.chapt  	in/intro.book.txt in/io.chapt in/linalg.chapt in/dummies  	in/lists.chapt in/preds.chapt in/prog.chapt                in/refprog.book in/controlflow.chapt newhelp in/plugins.chapt   	in/ref.book in/univar.chapt in/vars.chapt yacasinit.ys in/generic.chapt 	in/intromaker in/refmaker in/refprogmaker in/codingmaker in/logic.chapt         in/config.chapt in/strings.chapt .cvsignore
 
@@ -91,11 +91,6 @@ books_html_OBJECTS =  books.html.o
 books_html_LDADD = $(LDADD)
 books_html_DEPENDENCIES = 
 books_html_LDFLAGS = 
-texdocs_SOURCES = texdocs.c
-texdocs_OBJECTS =  texdocs.o
-texdocs_LDADD = $(LDADD)
-texdocs_DEPENDENCIES = 
-texdocs_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -107,8 +102,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = books.html.c texdocs.c
-OBJECTS = books.html.o texdocs.o
+SOURCES = books.html.c
+OBJECTS = books.html.o
 
 all: all-redirect
 .SUFFIXES:
@@ -270,9 +265,6 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 %.book: %.book.txt
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
 
-texdocs:
-	echo "done" > texdocs.c
-
 books.html: in/arith.chapt in/built.chapt in/calc.chapt \
 	in/coding.book in/const.chapt in/functional.chapt  \
 	in/intro.book in/io.chapt in/linalg.chapt in/plugins.chapt \
@@ -280,6 +272,9 @@ books.html: in/arith.chapt in/built.chapt in/calc.chapt \
 	in/ref.book in/univar.chapt in/vars.chapt in/generic.chapt in/logic.chapt
 	-../src/yacas in/all
 	echo "done" > books.html.c
+
+texdocs:
+	echo "done" > texdocs.c
 
 intro.html : in/intro.book
 	-../src/yacas in/intromaker 
