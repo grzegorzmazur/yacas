@@ -1,21 +1,3 @@
-/*: Count number of bits in a number */
-CountBits(value) :=
-[
-  Local(nbits);
-  nbits:=0;
-  Check(value>=0,"CountBits: Error: argument " : (ToString()Write(value))
-    : ", should be a positive integer");
-  While(value != 0)
-  [
-    nbits++;
-    value := value >> 1;
-  ];
-  If(
-  	IsZero(nbits),
-	1,
-	nbits
-  );
-];
 
 /// Return integer part of the logarithm of x in given base. Use only integer arithmetic.
 10 # IntLog(_x, _base) _ (base<=1) <-- Undefined;
