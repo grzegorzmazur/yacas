@@ -1,4 +1,104 @@
-;;                 Yacas editing support package
+;;; yacas.el --- Major modes for writing Yacas code
+
+;; Copyright (C) 2001,2002 Jay Belanger
+
+;; Author: Jay Belanger
+;; Maintainer: Jay Belanger <belanger@truman.edu>
+;; Keywords: yacas
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 2 of
+;; the License, or (at your option) any later version.
+;;          
+;; This program is distributed in the hope that it will be
+;; useful, but WITHOUT ANY WARRANTY; without even the implied
+;; warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+;; PURPOSE.  See the GNU General Public License for more details.
+;;          
+;; You should have received a copy of the GNU General Public
+;; License along with this program; if not, write to the Free
+;; Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+;; MA 02111-1307 USA
+;;
+;;
+;; Please send suggestions and bug reports to <belanger@truman.edu>. 
+;; You will need yacas.el, yacas-names.el and yacas-functions.el
+
+;;; Commentary:
+
+;; Quick intro
+;;
+;; To install, put this file (as well as yacas-names.el and
+;; yacas-functions.el) somewhere in your emacs load path.
+;; To make sure that `yacas.el' is loaded when necessary, whether to
+;; edit a file in yacas-mode or interact with Yacas in an Emacs buffer,
+;; put the lines
+;;  (autoload 'yacas-mode "yacas" "Yacas mode" t)
+;;  (autoload 'yacas "yacas" "Yacas interaction" t)
+;; in your `.emacs' file.  If you want any file ending in `.ys' to begin
+;; in `yacas-mode', for example, put the line
+;;  (setq auto-mode-alist (cons '("\\.ys" . yacas-mode) auto-mode-alist))
+;; to your `.emacs' file.
+;;
+;; By default, yacas-mode assumes that the Yacas documentation is in
+;; the directory "/usr/share/yacas/documentation/"
+;; If the documentation is somewhere else, you need to change the value
+;; of the variable `yacas-documentation-directory'
+;;
+;; Yacas mode:
+;; This is a mode intended to support program development in Yacas.
+;; The following control constructs can be entered automatically.
+
+;;  C-c C-p Start a function (procedure)    
+;;  C-c C-l Local
+;;  C-c TAB If
+;;  C-c C-e Else
+;;  C-c C-f For
+;;  C-c C-w While
+;;  C-c C-a ForEach
+;;  C-c C-u Until
+
+;; The Local command is used to add new local variables in a procedure.
+;; The If, While and Until commands will prompt for a predicate.
+;; The For command will prompt for start, predicate and increment,
+;; the ForEach command will prompt for an item and a list.
+
+;; C-M-b and C-M-f 
+;; move backward and forward respectively to the next line having the same 
+;; (or lesser) level of indentation.
+;; The variable yacas-indent controls the number of spaces for each indentation.
+;; C-c ; will comment out a region, and 
+;; C-c : will un-comment it out.
+;; C-c ] will indent a region to the level of the line before the region.
+;; C-c # will add an inline comment, and
+;; C-c * will add an environment for a longer comment.
+
+;; Use C-c C-r to run Yacas on the current region under
+;; a special subshell.  C-c C-b does the whole buffer, and
+;; C-c C-c just does the current line.  C-c C-k can
+;; be used to kill the yacas process.
+;;
+;; Inferior Yacas mode:
+;; Major mode for interacting with an inferior Yacas process.
+;;
+;; <M-tab> will complete the Yacas symbol as much as possible, providing
+;;      a completion buffer if there is more than one possible completion.
+;; <C-tab> will cycle through possible completions.
+;;
+;; C-c C-h will get help on a Yacas topic.
+;; C-c C-k will kill the process and the buffer, after asking for
+;;   confirmation.  To kill without confirmation, give C-c C-k an
+;;   argument.
+;;
+;; To scroll through previous commands,
+;; M-p (or up arrow) will bring the previous input to the current prompt,
+;; M-n (or down arrow) will bring the next input to the prompt.
+;; M-r will bring the previous input matching
+;;   a regular expression to the prompt,
+;; M-s will bring the next input matching
+;;   a regular expression to the prompt.
+
 
 (require 'font-lock)
 (require 'yacas-names)
@@ -616,7 +716,26 @@ If not found, point is left at start of last line in buffer."
     (setq inferior-yacas-mode-map map)))
     
 (defun inferior-yacas-mode ()
-  " "
+  "Inferior Yacas mode:
+Major mode for interacting with an inferior Yacas process.
+
+<M-tab> will complete the Yacas symbol as much as possible, providing
+     a completion buffer if there is more than one possible completion.
+<C-tab> will cycle through possible completions.
+
+C-c C-h will get help on a Yacas topic.
+C-c C-k will kill the process and the buffer, after asking for
+  confirmation.  To kill without confirmation, give C-c C-k an
+  argument.
+
+To scroll through previous commands,
+M-p (or up arrow) will bring the previous input to the current prompt,
+M-n (or down arrow) will bring the next input to the prompt.
+M-r will bring the previous input matching
+  a regular expression to the prompt,
+M-s will bring the next input matching
+  a regular expression to the prompt.
+"
   (interactive)
   (comint-mode)
   (setq major-mode 'inferior-yacas-mode)

@@ -1,7 +1,7 @@
 ;; yacas-notebook.el  Mode for interaction with Yacas from TeX buffer
 ;;; Written 2/12/1991 by Dan Dill dan@chem.bu.edu
-;;; Modified 2000-2001 by Jay Belanger
-;;; Copyright (C) 1991, 1993 Dan Dill (dan@chem.bu.edu) 1999 Jay Belanger
+;;; Modified 2000-2002 by Jay Belanger
+;;; Copyright (C) 1991, 1993 Dan Dill (dan@chem.bu.edu) 1999-2002 Jay Belanger
 ;;; (belanger@truman.edu)
 ;;; This is part of Yacas-Notebook
 ;;;
@@ -18,13 +18,125 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with this program; if not, write to the Free Software
 ;;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+;;
+;; Commentary
+;;
+;; `Yacas-Notebook' is a major mode for Emacs that allows the user to
+;; write documents while interacting with _Yacas_.
+;; yacas-mode is a mode intended to support program development in
+;; _Yacas_ by inserting control constructs in the buffer, help in
+;; formatting the code (for example, a <RET> will start a new line
+;; indented the correct amount)(1), and interacting with a _Yacas_
+;; process. 
+
+;; INSTALLATION
+;; ============
+;; Yacas-Notebook:
+;; The `Yacas-Notebook' package consists of the files `yacas.el',
+;; `yacas-names.el', `yacas-functions.el', `yacas-notebook.el', 
+;; and `yacas-notebook.sty'.
+;; To install, place `yacas-notebook.el', `yacas.el', `yacas-names.el',
+;; and `yacas-functions.el'  somewhere in the load path for Emacs.
+;; If you want to run LaTeX on the resulting document, put
+;; `yacas-notebook.sty' somewhere in the TeX inputs path.
+;;    To make sure that `yacas-notebook.el' is loaded when necessary, the
+;; line
+;;      (autoload 'yacas-notebook-mode "yacas-notebook" "Yacas-Notebook" t)
+;; can be inserted into your `.emacs' file.  Then typing `M-x
+;; yacas-notebook-mode' will start `Yacas-Notebook' mode.  The command
+;; `M-x ynb-mark-file-as-yacas-notebook' will put the line
+;;      %-*-Yacas-Notebook-*-
+;; at the beginning of the file, if it isn't there already, and will ensure
+;; that the next time the file is opened, it will be in
+;; `yacas-notebook-mode'.  This can be done automatically everytime a file
+;; is put in `yacas-notebook-mode' by putting the line
+;;      (add-hook 'yacas-notebook-mode-hook 'ynb-mark-file-as-yacas-notebook)
+;; somewhere in your `.emacs' file.
+
+;; DESCRIPTION
+;; ===========
+;; Yacas-Notebook:
+;; This is a mode intended to allow the user to write documents that
+;; include Yacas code.  The file can be LaTeXed to produce nice 
+;; looking output (although that isn't necessary, of course), and so the
+;; mode is an extension of TeX-mode (AucTeX, if you use that).
+;; The units of Yacas code that are worked with are "cells", which are 
+;; delimited by "\yacas" and "\endyacas". The cells can be evaluated 
+;; individually, as a group, and the output can be returned as Yacas output 
+;; or in TeX form.  Evaluating a cell and returning the output is called 
+;; "updating" the cell.  This mode also supports some literate programming 
+;; constructs.
+;; The commands for working with cells are:
+;;  C-c C-o  create a cell         
+;;  C-c C-u a update all the cells 
+;;  C-c C-u A update all the cells in TeX form 
+;;  C-c +     go to the next cell 
+;;  C-c -     go to the previous cell
+;;  C-c C-u q evaluate all  initialization cells
+;;  C-c C-u i update all the initialization cells
+;;  C-c C-u I update all the initialization cells in TeX form
+
+;; (With a prefix, C-u C-c C-u a and C-u C-c C-u A will update the cells 
+;; without prompting)
+;; Single lines can be evaluated:
+;;  C-c C-u l replace the current line with Yacas output
+;;  C-c C-u L replace the current line with Yacas output 
+;; in TeX form.
+
+;; Within a cell, the following commands are available:
+;;  C-c C-d  delete the cell's output
+;;  C-c C-u c  update a cell 
+;;  C-c C-u C update a cell in TeX form
+;;  C-c C-q toggle initialization cells
+;;  C-c @  assemble a cell which defines a package
+;;  C-u C-c @  assemble a cell with references
+
+;; Finally, the command M-x ynb-mark-file-as-yacas-notebook will 
+;; insert a 
+;; %-*-Yacas-Notebook-*- at the beginning
+;; of the file (if there isn't one there already) so the file will begin in
+;; yacas-notebook-mode next time it's opened.
+
 
 (require 'yacas)
 (require 'font-lock)
 
-(defvar ynb-use-tex 'auctex
+(defgroup ynb nil
+  "Yacas Notebook"
+  :prefix "ynb-"
+  :tag "Yacas Notebook")
+
+(defcustom yacas-documentation-directory
+  "/usr/share/yacas/documentation/"
+  "Path where the yacas documentation is kept."
+  :group 'yacas
+  :type 'directory)
+  
+(defcustom ynb-use-tex 
+  'auctex
   "Determines which TeX mode yacas-notebook should use.
-Choices are 'auctex, 'tex and nil")
+Choices are 'auctex, 'tex and nil"
+  :group 'ynb
+  :type '(choice :menu-tag "TeX style"
+                 :tag      "TeX style"
+                 (const auctex)
+                 (const tex) 
+                 (const nil)))
+  
+(defcustom ynb-abbreviations-allowed nil
+  "*If non-nil, then `...' abbreviations are allowed in cell labels 
+and references. Note that enabling this options will slow cell and 
+package assembly."
+  :group 'ynb
+  :type 'boolean)
+
+(defcustom ynb-max-references 5
+  "*Number of references in a cell below which cell references are fetched
+as needed, scanning the entire document for each reference.  At or above this
+number, all cells in a document for the given filename are precollated in a
+single scan of the document."
+  :group 'ynb
+  :type 'integer)
 
 (defvar ynb-temp-dir
   "/tmp/"
@@ -33,17 +145,6 @@ Specify \"\" to use the directory of the Yacas-Notebook document buffer.")
 
 (defvar ynb-output-marker "\\output"
   "*Contents of line separating input and output portion of cell.")
-
-(defvar ynb-abbreviations-allowed nil
-  "*If non-nil, then `...' abbreviations are allowed in cell labels 
-and references. Note that enabling this options will slow cell and 
-package assembly.")
-
-(defvar ynb-max-references 5
-  "*Number of references in a cell below which cell references are fetched
-as needed, scanning the entire document for each reference.  At or above this
-number, all cells in a document for the given filename are precollated in a
-single scan of the document.")
 
 (defvar ynb-tex-string
   "TeXForm(%);")
@@ -1300,11 +1401,11 @@ output."
   (let ((map (copy-keymap texmode-map)))
     (define-key map "\C-c+" 'ynb-forward-cell)
     (define-key map "\C-c-" 'ynb-backward-cell)
-    (define-key map "\C-c\C-va" 'ynb-update-all)
-    (define-key map "\C-c\C-vA" 'ynb-tex-update-all)
-    (define-key map "\C-c\C-vq" 'ynb-eval-init)
-    (define-key map "\C-c\C-vi" 'ynb-update-init)
-    (define-key map "\C-c\C-vI" 'ynb-tex-update-init)
+    (define-key map "\C-c\C-ua" 'ynb-update-all)
+    (define-key map "\C-c\C-uA" 'ynb-tex-update-all)
+    (define-key map "\C-c\C-uq" 'ynb-eval-init)
+    (define-key map "\C-c\C-ui" 'ynb-update-init)
+    (define-key map "\C-c\C-uI" 'ynb-tex-update-init)
     (define-key map "\C-c?" 'ynb-info-help)
     (define-key map "\C-c\C-u" nil)
     (define-key map "\C-c\C-o" 'ynb-create-cell)
