@@ -109,13 +109,19 @@ simplification will be possible.
 *DESC
 
 {Undefined} is a token that can be returned by a function when it considers
-its input to be invalid. The resulting output is then "undefined".
+its input to be invalid or when no meaningful answer can be given. The result is then "undefined".
+
+Most functions also return {Undefined} when evaluated on it.
 
 *E.G.
 
 	In> 2*Infinity
 	Out> Infinity;
 	In> 0*Infinity
+	Out> Undefined;
+	In> Sin(Infinity);
+	Out> Undefined;
+	In> Undefined+2*Exp(Undefined);
 	Out> Undefined;
 
 *SEE Infinity

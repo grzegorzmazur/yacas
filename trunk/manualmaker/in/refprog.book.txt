@@ -207,14 +207,14 @@ Note that the left and right precedence of an infix operator does not affect the
 
 *SEE OpPrecedence, OpLeftPrecedence, OpRightPrecedence, RightAssociative
 
-*CMD RuleBase --- define function name with fixed number of arguments
+*CMD RuleBase --- define function with a fixed number of arguments
 *CORE
 *CALL
-	RuleBase(operator,params)
+	RuleBase(name,params)
 
 *PARMS
 
-{operator} -- string containing the function name
+{name} -- string, name of function
 
 {params} -- list of arguments to function
 
@@ -234,48 +234,46 @@ with different number of arguments.
 
 
 
-*CMD RuleBaseListed --- define function name with variable number of arguments
+*CMD RuleBaseListed --- define function with variable number of arguments
 *CORE
 *CALL
-	RuleBaseListed(operator,params)
+	RuleBaseListed("name", params)
 
 *PARMS
 
-{operator} -- string containing the function name
+{"name"} -- string, name of function
 
 {params} -- list of arguments to function
 
 *DESC
 
-This function essentially works the same as {RuleBase}, with the
-exception that it declares a function to have a variable number of
-arguments. If the number of arguments passed in is larger than the
-number of parameters, the last argument will be a list containing
-all the remaining arguments.
+The command {RuleBaseListed} defines a new function. It essentially works the
+same way as {RuleBase}, except that it declares a new function with a variable
+number of arguments. The list of parameters {params} determines the smallest
+number of arguments that the new function will accept. If the number of
+arguments passed to the new function is larger than the number of parameters in
+{params}, then the last argument actually passed to the new function will be a
+list containing all the remaining arguments.
 
-For all intents and purposes, with a {RuleBase}-defined function,
-the arity is the number of parameters. A {RuleBaseListed}-defined 
-function can accept any number of arguments as long as the number
-of arguments is at least the number of parameters.
+A function defined using {RuleBaseListed} will appear to have the arity equal
+to the number of parameters in the {param} list, and it can accept any number
+of arguments greater or equal than that. As a consequence, it will be impossible to define a new function with the same name and with a greater arity.
 
-There is one step before evaluation: if the number of arguments exceeds
-the number of parameters, the evaluator puts the end
-arguments in a list first, and only then pass it on to the function,
-so reducing the number of arguments to exactly the number of parameters.
-The rest then works like a {RuleBase}-defined function, and transformation
-rules can be defined for this function.
+The function body will know that the function is passed more arguments than the
+length of the {param} list, because the last argument will then be a list. The
+rest then works like a {RuleBase}-defined function with a fixed number of
+arguments. Transformation rules can be defined for the new function as usual.
 
 
 *E.G.
 
-The definition
+The definitions
 
 	RuleBaseListed("f",{a,b,c})
-	10 # f(_a,_b,{_c,_d}) <-- Echo({"four arguments",a,b,c,d});
-	20 # f(_a,_b,c_IsList) <-- Echo({"more than four arguments",a,b,c});
-	30 # f(_a,_b,_c) <-- Echo({"three arguments",a,b,c});
-
-gives the following interaction:
+	10 # f(_a,_b,{_c,_d}) <-- Echo({"4 args",a,b,c,d});
+	20 # f(_a,_b,c_IsList) <-- Echo({">4 args",a,b,c});
+	30 # f(_a,_b,_c) <-- Echo({"3 args",a,b,c});
+give the following interaction:
 
 	In> f(A)
 	Out> f(A);
@@ -294,23 +292,33 @@ gives the following interaction:
 	more than four arguments A B {C,D,E,E} 
 	Out> True;
 
+The function {f} now appears to occupy all arities greater than 3:
+
+	In> RuleBase("f", {x,y,z,t});
+	CommandLine(1) : Rule base with this arity
+	  already defined
+
+
 *SEE RuleBase, Retract, Echo
 
 
-*CMD Rule --- define rule
-
+*CMD Rule --- define a rewrite rule
+*CORE
 *CALL
 	Rule("operator", arity,
 	  precedence, predicate) body
 
 *DESC
+
 Define a rule for the function "operator" with
 "arity", "precedence", "predicate" and
 "body". The "precedence" goes from low to high: rules with low precedence will be applied first.
+
 The arity for a rules database equals the number of arguments. Different
 rules data bases can be built for functions with the same name but with
 a different number of arguments.
-Rules with a low value will be tried before rules with a high value, so
+
+Rules with a low precedence value will be tried before rules with a high value, so
 a rule with precedence 0 will be tried before a rule with precedence 1.
 
 *CMD HoldArg --- mark argument as not evaluated
@@ -414,7 +422,7 @@ for the function named {"operator"} with the specific {arity}.
 
 
 *CMD MacroSet, MacroClear, MacroLocal, MacroRuleBase, MacroRuleBaseListed, MacroRule --- define rules in functions
-
+*CORE
 *DESC
 
 These functions have the same effect as their non-macro counterparts, except
@@ -424,24 +432,24 @@ rules based on parameters.
 
 Make sure that the arguments of {Macro}... commands evaluate to expressions that would normally be used in the non-macro versions!
 
-*SEE Set, Clear, Local, RuleBase, Rule, Back-quoting
+*SEE Set, Clear, Local, RuleBase, Rule, Backquoting
 
-*CMD Back-quoting --- LISP back-quoting, macro expansion
+*CMD Backquoting --- LISP backquoting (macro expansion)
 *CORE
 *CALL
 	`(expression)
 
 *PARMS
 
-{expression} -- expression containing "{@var}" to substitute the value of variable "{var}"
+{expression} -- expression containing "{@var}" combinations to substitute the value of variable "{var}"
 
 *DESC
 
-Back-quoting is a macro substitution mechanism. A backquoted {expression}
+Backquoting is a macro substitution mechanism. A backquoted {expression}
 is evaluated in two stages: first, variables prefixed by {@} are evaluated
 inside an expression, and second, the new expression is evaluated.
 
-To invoke this functionality, a back-quote {`} needs to be placed in front of
+To invoke this functionality, a backquote {`} needs to be placed in front of
 an expression. Parentheses around the expression are needed because the
 backquote binds tighter than other operators.
 
@@ -453,14 +461,14 @@ e.g. "{@f(x)}", then at the first stage of evaluation the function name itself
 is replaced, not the return value of the function (see example); so at the
 second stage of evaluation, a new function may be called.
 
-One way to view back-quoting is to view it as a parametric expression
+One way to view backquoting is to view it as a parametric expression
 generator. {@var} pairs get substituted with the value of the variable {var}
 even in contexts where nothing would be evaluated. This effect can be also
 achieved using {UnList()} and {Hold()} but the resulting code is much more
 difficult to read and maintain.
 
 This operation is relatively slow since a new expression is built
-before it is evaluated, but nonetheless back-quoting is a powerful mechanism
+before it is evaluated, but nonetheless backquoting is a powerful mechanism
 that sometimes allows to greatly simplify code.
 
 *E.G.
@@ -662,11 +670,15 @@ Yacas comes with a small core of built-in functions and a large library of
 user-defined functions. Some of these core functions are documented in this
 chapter.
 
+
+
+
 It is important for a developer to know which functions are built-in and cannot
 be redefined or {Retract}-ed. Also, core functions may be somewhat faster to
 execute than functions defined in the script library. All core functions are
 listed in the file {yacasapi.cpp} in the {src/} subdirectory of the Yacas
 source tree. The declarations typically look like this:
+
 	SetCommand(LispSubtract, "MathSubtract");
 Here {LispSubtract} is the Yacas internal name for the function and {MathSubtract} is the name visible to the Yacas language.
 Built-in bodied functions and infix operators are declared in the same file.
@@ -676,6 +688,7 @@ Built-in bodied functions and infix operators are declared in the same file.
 The following Yacas functions are currently declared in {yacasapi.cpp}
 as core functions:
 
+*REM yacasapi.chapt is generated from yacasapi.cpp
 
 *INCLUDE yacasapi.chapt
 

@@ -18,6 +18,10 @@ Plot2D'<backend> on that data.
 
 	LocalSymbols(var, func, range, option, options'list, delta, options'hash, c, fc, all'values, dummy)
 [
+
+// declaration of Plot2D with variable number of arguments
+RuleBaseListed("Plot2D",{func,range,options});
+
 /// interface routines
 1 # Plot2D(_func) <-- Plot2D(func, -5:5);
 2 # Plot2D(_func, _range) <-- "Plot2D" @ {func, range, {}};

@@ -124,7 +124,7 @@ parser happy, if "n" is a number. So one should write "{1 .. 4}" instead of "{1.
 	NFunction("newname","funcname", {arglist})
 
 *PARMS
-"newname" -- name of new function
+{"newname"} -- name of new function
 
 {"funcname"} -- name of an existing function
 
@@ -170,10 +170,9 @@ Now we can plot the function.
 *STD
 *CALL
 	expr Where x==v
-
 	expr Where x1==v1 And x2==v2 And ...
-
-	expr Where {x1==v1 And x2==v2,x1==v3 And x2==v4,...}
+	expr Where {x1==v1 And x2==v2,x1==v3
+	  And x2==v4,...}
 
 *PARMS
 
@@ -193,7 +192,8 @@ It accepts sets of variable/value pairs defined as
 and fills in the corresponding values. Lists of value pairs are
 also possible, as:
 
-	{var1==val1 And var2==val2 , var1==val3 And var2==val4}
+	{var1==val1 And var2==val2 , var1==val3
+	  And var2==val4}
 
 These values might be obtained through {Solve}.
 
@@ -211,7 +211,7 @@ These values might be obtained through {Solve}.
 *SEE Solve, AddTo
 
 
-*CMD Addto --- add an equation to a set of equations or set of set of equations
+*CMD AddTo --- add an equation to a set of equations or set of set of equations
 *STD
 *CALL
 	eq1 AddTo eq2
@@ -230,7 +230,8 @@ AddTo then acts as a AND operation:
 
 	(a or b) and (c or d) => 
 	(a or b) Addto (c or d) => 
-	(a and c) or (a and d) or (b and c) or (b and d)
+	(a and c) or (a and d) or (b and c)
+	  or (b and d)
 
 This function is useful for adding an identity to an already
 existing set of equations. Suppose a solve command returned
@@ -238,7 +239,8 @@ existing set of equations. Suppose a solve command returned
 then a new identity a==2 could be added as follows:
 
 	In> a==2 AddTo {a>=0 And x==a,a<0 And x== -a}
-	Out> {a==2 And a>=0 And x==a,a==2 And a<0 And x== -a};
+	Out> {a==2 And a>=0 And x==a,a==2 And a<0
+	  And x== -a};
 
 Passing this set of set of identities back to solve, solve
 should recognize that the second one is not a possibility
@@ -247,9 +249,11 @@ any more, since a==2 And a<0 can never be true at the same time.
 *E.G.
 
 	In> {A==2,c==d} AddTo {b==3 And  d==2}
-	Out> {A==2 And b==3 And d==2,c==d And b==3 And d==2};
+	Out> {A==2 And b==3 And d==2,c==d
+	  And b==3 And d==2};
 	In> {A==2,c==d} AddTo {b==3, d==2}
-	Out> {A==2 And b==3,A==2 And d==2,c==d And b==3,c==d And d==2};
+	Out> {A==2 And b==3,A==2 And d==2,c==d
+	  And b==3,c==d And d==2};
 
 *SEE Where, Solve
 

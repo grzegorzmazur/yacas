@@ -42,25 +42,21 @@ so on.
 	
 	True
 
-	Out>
 	In> Expand((1+x)^5);
 	
 	 5        4         3         2
 	x  + 5 * x  + 10 * x  + 10 * x  + 5 * x + 1
 
-	Out>
 	In> Expand((1+x-y)^2, x);
 	
 	 2                                2
 	x  + 2 * ( 1 - y ) * x + ( 1 - y )
 
-	Out>
 	In> Expand((1+x-y)^2, {x,y});
 	
 	 2                         2
 	x  + ( -2 * y + 2 ) * x + y  - 2 * y + 1
 	
-	Out>
 
 *SEE ExpandBrackets
 
@@ -432,7 +428,6 @@ Most of the work is performed by the internal function {OrthoPoly}.
 	
 	True
 	
-	Out>
 	In> OrthoP(3, x);
 	
 	    /      2     \
@@ -440,14 +435,12 @@ Most of the work is performed by the internal function {OrthoPoly}.
 	x * | ------ - - |
 	    \   2      2 /
 	
-	Out>
 	In> OrthoP(3, 1, 2, x);
 	
 	1       /     / 21 * x   7 \   7 \
 	- + x * | x * | ------ - - | - - |
 	2       \     \   2      2 /   2 /
 	
-	Out>
 	In> Expand(%)
 	
 	      3        2
@@ -455,12 +448,10 @@ Most of the work is performed by the internal function {OrthoPoly}.
 	----------------------------
 	             2
 	
-	Out>
 	In> OrthoP(3, 1, 2, 0.5);
 	
 	-0.8124999999
 	
-	Out>
 
 *SEE OrthoPSum, OrthoG, OrthoPoly
 
@@ -746,13 +737,13 @@ polynomial expression.
 
 *PARMS
 
-{name} - string containing name of orthogonal family
+{name} -- string containing name of orthogonal family
 
-{c} - list of coefficients
+{c} -- list of coefficients
 
-{par} - list of values for the parameters
+{par} -- list of values for the parameters
 
-{x} - point to evaluate at
+{x} -- point to evaluate at
 
 *DESC
 

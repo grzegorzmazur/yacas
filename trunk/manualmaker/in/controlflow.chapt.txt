@@ -58,14 +58,14 @@ be reached without the presence of infinite recursion. The function {MaxEvalDept
 	3060929499671638825347975351183310878921541258291423
 	92955373084335320859663305248773674411336138752;
 
-*CMD Hold --- do not evaluate the argument
+*CMD Hold --- keep expression unevaluated
 *CORE
 *CALL
 	Hold(expr)
 
 *PARMS
 
-{expr} -- expression to hold
+{expr} -- expression to keep unevaluated
 
 *DESC
 
@@ -83,7 +83,7 @@ The function {UnList()} also leaves its result unevaluated. Both functions stop 
 
 *SEE Eval, HoldArg, UnList
 
-*CMD Eval --- evaluate the argument
+*CMD Eval --- force evaluation of expression
 *CORE
 *CALL
 	Eval(expr)
@@ -221,9 +221,9 @@ construct in the programming language C.
 
 {pred} -- predicate to test
 
-{then} -- expression to evaluate if "pred" is True
+{then} -- expression to evaluate if "pred" is {True}
 
-{else} -- expression to evaluate if "pred" is False
+{else} -- expression to evaluate if "pred" is {False}
 
 *DESC
 
@@ -282,23 +282,30 @@ In a UNIX environment, the command {SystemCall("ls")} would list the contents of
 *CMD Function --- define a function
 *STD
 *CALL
-	Function("op", {arg,...}) body
+	Function("op", {arglist}) body
+	Function("op", {arglist, ...}) body
 
 *PARMS
 
-{op} -- name of the function
+{"op"} -- string, name of the function
 
-{arg} -- formal argument to the function
+{{arglist}} -- list of atoms, formal arguments to the function
 
-{body} -- expression compromising the body of the function
+{...} -- literal ellipsis symbol "{...}" used to denote a variable number of arguments
+
+{body} -- expression comprising the body of the function
 
 *DESC
 
-This command can be used to declare a simple function. It is
-equivalent to the rule {op(_arg, ...) <-- body}. Any
-previous rules associated with "op" (with the same arity) will be
-discarded. More complicated function can be defined using a rule
-database.
+This command can be used to declare a new function. It is equivalent to a
+single rule such as {op(_arg1, _arg2) <-- body}. The rule will be declared at
+precedence 1025. Any previous rules associated with {"op"} (with the same
+arity) will be discarded. More complicated functions (with more than one body)
+can be defined by adding more rules.
+
+The number of arguments of the new function and their names are determined by the list {arglist}. With the ellipsis "{...}" following the last atom in {arglist}, functions with variable number of arguments can be declared (using {RuleBaseListed}). Note that the ellipsis cannot be the only element of {arglist} and <i>must</i> be preceded by an atom.
+
+A function with variable number of arguments can take more arguments than elements in {arglist}; in this case, it obtains its last argument as a list containing all extra arguments.
 
 *E.G.
 
@@ -306,12 +313,20 @@ database.
 	Out> True;
 	In> FirstOf({a,b,c});
 	Out> a;
-
 This defines a function {FirstOf} which returns the
 first element of a list. Equivalent definitions would be
 {FirstOf(_list) <-- list[1]} or {FirstOf(list) := list[1]}.
 
-*SEE TemplateFunction, Rule, RuleBase, :=
+The following function will print all arguments to a string:
+	In> Function("PrintAll",{x, ...}) If(IsList(x),
+	  PrintList(x), ToString()Write(x));
+	Out> True;
+	In> PrintAll(1):
+	Out> " 1";
+	In> PrintAll(1,2,3);
+	Out> " 1 2 3";
+
+*SEE TemplateFunction, Rule, RuleBase, :=, Retract, RuleBaseListed
 
 *CMD Use --- load a file, but not twice
 *CORE
