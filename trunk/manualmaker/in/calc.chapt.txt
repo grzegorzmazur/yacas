@@ -509,7 +509,31 @@ if "m" is negative or greater than "n"; {Bin(0,0)}=1.
 	In> 10! / (4! * 6!)
 	Out> 210;
 
-*SEE !
+*SEE !, Eulerian
+
+*CMD Eulerian --- Eulerian numbers
+*STD
+*CALL
+	Eulerian(n,m)
+
+*PARMS
+
+{n}, {m} --- integers
+
+*DESC
+
+The Eulerian numbers can be viewed as a generalization of the binomial coefficients,
+and are given explicitly by $$ Sum(j,0,k+1,(-1)^j*Bin(n+1,j)*(k-j+1)^n) $$ .
+
+*E.G.
+
+	In> Eulerian(6,2)
+	Out> 302;
+	In> Eulerian(10,9)
+	Out> 1;
+
+*SEE Bin
+
 
 *CMD Add --- find sum of a list of values
 *STD
