@@ -119,4 +119,5 @@ Verify( IsIdempotent(ZeroMatrix(10,10)), True );
 
 Verify(VandermondeMatrix({1,2,3,4}),{{1,1,1,1},{1,2,3,4},{1,4,9,16},{1,8,27,64}});
 
+Verify( JacobianMatrix( {x^4*y,Cos(y)}, { x, y}), {{4*x^3*y,x^4},{0,-Sin(y)}} );
 

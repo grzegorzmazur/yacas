@@ -723,6 +723,66 @@ to any power is $A$.
 	Out> True;
 
 
+*CMD JacobianMatrix --- Calculate the Jacobian matrix of n functions in n variables
+*STD
+*CALL
+        JacobianMatrix(functions,variables)
+
+*PARMS
+
+{functions} -- An {n} dimensional vector of functions
+
+{variables} -- An {n} dimensional vector of variables
+
+*DESC
+
+The function {JacobianMatrix} calculates the Jacobian matrix
+of n functions in n variables.
+
+The {ij}th element of the Jacobian matrix is defined as the derivative
+of {i}th function with respect to the {j}th variable.
+
+*E.G.
+
+	In> JacobianMatrix( {Sin(x),Cos(y)}, {x,y} ); 
+	Out> {{Cos(x),0},{0,-Sin(y)}};
+	In> PrettyForm(%)
+	/                                 \
+	| ( Cos( x ) ) ( 0 )              |
+	|                                 |
+	| ( 0 )        ( -( Sin( y ) ) )  |
+	\                                 /
+
+
+*CMD VandermondeMatrix --- Calculate the Vandermonde matrix
+*STD
+*CALL
+	VandermondeMatrix({vector})
+*PARMS
+
+{vector} -- An {n} dimensional vector 
+
+*DESC
+
+The function {VandermondeMatrix} calculates the Vandermonde matrix
+of a vector.
+
+The {ij}th element of the Vandermonde matrix is defined as {i^(j-1)}.
+
+*E.G.
+	In> VandermondeMatrix({1,2,3,4})
+	Out> {{1,1,1,1},{1,2,3,4},{1,4,9,16},{1,8,27,64}};
+	/                            \
+	| ( 1 ) ( 1 ) ( 1 )  ( 1 )   |
+	|                            |
+	| ( 1 ) ( 2 ) ( 3 )  ( 4 )   |
+	|                            |
+	| ( 1 ) ( 4 ) ( 9 )  ( 16 )  |
+	|                            |
+	| ( 1 ) ( 8 ) ( 27 ) ( 64 )  |
+	\                            /
+
+
 *CMD SylvesterMatrix --- calculate the Sylvester matrix of two polynomials
 *STD
 *CALL
