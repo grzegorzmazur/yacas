@@ -362,6 +362,39 @@ void LispFloor(LispEnvironment& aEnvironment, LispPtr& aResult,
 }
 */
 
+/// obtain internal precision data on a number object.
+void LispGetExactBits(LispEnvironment& aEnvironment, LispPtr& aResult,
+                  LispPtr& aArguments)
+{
+#ifndef NO_USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      GetNumber(x,aEnvironment, aArguments, 1);
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+      z->SetTo(x.Ptr()->GetPrecision());
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+#else	// this is not defined without BigNumber, so return something
+    LispArithmetic1(aEnvironment, aResult, aArguments, FloorFloat);
+#endif
+}
+/// set internal precision data on a number object.
+void LispSetExactBits(LispEnvironment& aEnvironment, LispPtr& aResult,
+                  LispPtr& aArguments)
+{
+#ifndef NO_USE_BIGFLOAT
+      RefPtr<BigNumber> x;
+      RefPtr<BigNumber> y;
+      GetNumber(x,aEnvironment, aArguments, 1);
+      GetNumber(y,aEnvironment, aArguments, 2);	// how to make sure it has 2 args?
+      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+      z->SetTo(*x.Ptr());
+	  z->Precision((long)y->Double());	// segfaults unless y is defined?
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
+#else	// this is not defined without BigNumber, so return something
+    LispArithmetic1(aEnvironment, aResult, aArguments, FloorFloat);
+#endif
+}
+
+
 void LispCeil(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
@@ -370,7 +403,7 @@ void LispCeil(LispEnvironment& aEnvironment, LispPtr& aResult,
       GetNumber(x,aEnvironment, aArguments, 1);
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->Negate(*x.Ptr());
-      z->Floor(*z);
+      z->Floor(*z);	// danger: possible exception raised in Floor() leads to a memory leak because z is not destroyed
       z->Negate(*z);
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z));
 #else
