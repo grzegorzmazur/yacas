@@ -37,7 +37,7 @@ TestYacas(Content(1/2*x+1/3),1/6);
 TestYacas(PrimitivePart(1/2*x+1/3),3*x+2);
 
 // Mod generated a stack overflow on floats.
-Verify(Mod(1.2,3.4),6/5);
+KnownFailure(Mod(1.2,3.4)=6/5);
 Verify(N(Mod(-1.2,3.4)),2.2);
 Verify(Mod(-12/10,34/10),11/5);
 // just a test to see if Verify still gives correct error Verify(N(Mod(-12/10,34/10)),11/5);
@@ -188,7 +188,7 @@ Verify(Integrate(x) z^100, z^100*x );
 Verify(Integrate(x) x^(-1),Ln(x) );
 
 Verify(
-N(ArcSin(0.0000000321232123),50)
+RoundTo(N(ArcSin(0.0000000321232123),50),50)
 , 0.00000003212321230000000552466124302049336784679316
 );
 

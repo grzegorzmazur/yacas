@@ -316,6 +316,7 @@ inline void BaseAddMultiply(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
     }
 }
 
+//#include <stdio.h>
 template<class T>
 inline void WordBaseAddMultiply(T& aTarget, T& x, T& y)
 {
@@ -323,6 +324,8 @@ inline void WordBaseAddMultiply(T& aTarget, T& x, T& y)
     LispInt nry=y.NrItems();
     GrowDigits(aTarget,nrx+nry+1);
     LispInt ix,iy;
+
+//printf("nrx=%d,nry=%d\n",nrx,nry);
 
     typename T::ElementType *targetPtr = &aTarget[0];
     typename T::ElementType *xPtr = &x[0];
@@ -342,8 +345,18 @@ inline void WordBaseAddMultiply(T& aTarget, T& x, T& y)
             targetPtr[ix+iy] = (typename T::ElementType)(word);
             carry          = word >> WordBits;
         }
-        targetPtr[ix+nry] += (typename T::ElementType)(carry);
+        {
+
+            PlatDoubleWord word = static_cast<PlatDoubleWord>(targetPtr[ix+nry])+carry;
+            targetPtr[ix+nry] = (typename T::ElementType)(word);
+            carry          = word >> WordBits;
+            LISPASSERT(carry == 0);
+
+//          targetPtr[ix+nry] += (typename T::ElementType)(carry);
+        }
     }
+
+//printf("TARGET: %d words, %d decimal\n",aTarget.NrItems(),aTarget.iExp);
 }
 
 

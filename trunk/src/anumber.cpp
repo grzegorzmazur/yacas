@@ -29,15 +29,33 @@ void BaseSqrt(ANumber& aResult, ANumber& N);
 #define NUMBER_GRANULARITY 2 
 
 
-/*TESTCODE
+#ifdef HAVE_STDIO_H 
 #include <stdio.h>
+#endif
 void PrintNumber(char* prefix,ANumber& aNumber)
 {
-  LispString result;
-	ANumberToString(result, aNumber, 10);
-  printf("%s : %s\n",prefix,result.String());
+#ifdef HAVE_STDIO_H 
+  printf("%s\n",prefix);
+  printf("%d words, %d of them decimals\n",aNumber.NrItems(),aNumber.iExp);
+  int i;
+  for (i=aNumber.NrItems()-1;i>=0;i--)
+  {
+    if (aNumber.iExp == i+1) printf(".\n");
+    PlatWord w = (aNumber)[i];
+    PlatWord bit = (WordBase)>>1;
+    int k=0;
+    while (bit)
+    {
+      if ((k&3)==0) printf(" ");
+      k++;
+      if (w&bit) printf("1");
+      else printf("0");
+      bit>>=1;
+    }
+    printf("\n");
+  }
+#endif
 }
-*/
 
 static LispInt DigitIndex(LispInt c)
 {
@@ -302,6 +320,7 @@ void ANumber::SetTo(const LispCharPtr aString,LispInt aBase)
         iTensExp = PlatAsciiToInt((LispCharPtr)&aString[endFloatIndex+1]);
 //printf("%s mapped to %d\n",&aString[endFloatIndex+1],iTensExp);
     }
+
     DropTrailZeroes();
 //PrintNumber("      ",*this);
 }
@@ -397,6 +416,9 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
     // Multiply
     BaseMultiplyFull(aResult,a1,a2);
 
+//PrintNumber("Mult",aResult);
+
+
     // Adjust the sign
     if (IsPositive(a1) && IsPositive(a2))
         aResult.iNegative = LispFalse;
@@ -415,6 +437,8 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
         a2.Append(0);
     while(aResult.NrItems()<aResult.iExp+1)
         aResult.Append(0);
+
+
     aResult.DropTrailZeroes();
 }
 

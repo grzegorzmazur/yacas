@@ -50,8 +50,11 @@ Echo("roots ",roots);
 
 sl();
 
-Verify(FindRealRoots((x+2)^9*(x-4)^5*(x-1)^4),{-2.,1.,4.});
-
+[
+  Local(p);
+  p := FindRealRoots((x+2)^9*(x-4)^5*(x-1)^4)-{-2.,1.,4.};
+  Verify(p . p,0);
+];
 sl();
 
 //TODO TryRandomRoots(3,-10,10);  sl();
@@ -68,7 +71,11 @@ Verify(MaximumBound(4),Infinity);  sl();
 Verify(NumRealRoots(x^2-1),2);     sl();
 Verify(NumRealRoots(x^2+1),0);     sl();
 
-Verify(FindRealRoots(Expand((x*(x-10)^3*(x+2)^2))),{0,-2.,10.});
+[
+  Local(p);
+  p:=FindRealRoots(Expand((x*(x-10)^3*(x+2)^2)))-{0,-2.,10.};
+  Verify(p . p,0);
+];
 Verify(FindRealRoots((x^2+20)*(x^2+10)),{});
 Verify(NumRealRoots((x^2+20)*(x^2+10)),0);
 
@@ -91,13 +98,17 @@ sl();
   Local(p);
 
   p:=Expand((x-3.1)*(x+6.23));
-  Verify(FindRealRoots(p),{-6.23,3.1});
+  p:=FindRealRoots(p)-{-6.23,3.1};
+  Verify(p . p,0);
 ];
 
 sl();
 Verify(GetPrecision(),5);
-Verify(FindRealRoots(Expand((x-3.1)*(x+6.23))),{-6.23,3.1});
-
+[ 
+  Local(res);
+  res:=FindRealRoots(Expand((x-3.1)*(x+6.23)))-{-6.23,3.1};
+  Verify(res . res , 0);
+];
 sl();
 
 TryRandomPoly(5,5,1000);  sl();

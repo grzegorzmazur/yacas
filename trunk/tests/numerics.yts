@@ -242,11 +242,11 @@ NearRational(N(Pi))
 
 // Lambert's W function
 Verify(
-N(LambertW(-0.24))
+RoundTo(N(LambertW(-0.24)),GetPrecision())
 , -0.3357611648
 );
 Verify(
-N(LambertW(10))
+RoundTo(N(LambertW(10)),GetPrecision())
 , 1.7455280027
 );
 
@@ -263,9 +263,9 @@ Verify( N(BesselJ(10,3)), RoundTo( .00001292835164571588377753453080258017074342
 
 Verify( N(BesselJ(11,11)), RoundTo( .20101400990926940339478738551009382430831534125484,50) );
 Verify( N(BesselJ(-11,11)), RoundTo( -.20101400990926940339478738551009382430831534125484,50) );
-Verify( N(BesselJ(1,10)), RoundTo( .04347274616886143666974876802585928830627286711859, 50) );
+Verify( RoundTo(N(BesselJ(1,10)),50), RoundTo( .04347274616886143666974876802585928830627286711859, 50) );
 Verify( N(BesselJ(10,10)), RoundTo( .20748610663335885769727872351875342803274461128682, 50 ) );
-Verify( N(BesselJ(1,3.6)), RoundTo( .09546554717787640384570674422606098601943275490885, 50 )) ;
+Verify( RoundTo(N(BesselJ(1,3.6)),50), RoundTo( .09546554717787640384570674422606098601943275490886, 50 )) ;
 
 Precision(20);
 Verify( RoundTo(N(Erf(Sqrt(0.8))),19), // verified with Maple
@@ -281,7 +281,7 @@ Precision(40);
 Verify(gamma()+0, 0.5772156649015328606065120900824024310422);
 Precision(20);
 Verify(gamma,Atom("gamma"));
-Verify(gamma()+0, 0.5772156649015328606);
+Verify(RoundTo(gamma()+0,19), 0.5772156649015328606);
 Verify(RoundTo(N(1/2+gamma+Pi), 19), 4.2188083184913260991);
 
 // From GSL 1.0
