@@ -139,6 +139,7 @@ SeeAlso(list) := WriteString(
 Nl() : PrintList(MapSingle("HtmlTerm", list), ", ") : Nl()
 );
 
+AddAnchor(string) := "";
 HtmlAnchor(string) := "";
 
 Bodied("HtmlAnchor", 60000);
@@ -146,3 +147,6 @@ Topical(string) := WriteString(
 "\\begin{quote}\\textbf{\\large " : string : "}\\end{quote}"
 );
 Bodied("Topical",60000);
+// special escapes
+Gt() := ">";
+Lt() := "<";

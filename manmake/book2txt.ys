@@ -64,9 +64,13 @@ TopicalStrings := {
 	{"Calling Sequence", "*CALL"},
 	{"Calling sequence", "*CALL"},
 	{"See Also", ""},
+	{"See also", ""},
 	{"Parameters", "*PARMS"},
+	{"parameters", "*PARMS"},
 	{"Description", "*DESC"},
+	{"Descriptions", "*DESC"},
 	{"Examples", "*E.G."},
+	{"Example", "*E.G."},
 };
 
 Topical(string) := WriteString(

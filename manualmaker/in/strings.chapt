@@ -144,10 +144,10 @@ Topical()"Description";
 Text()
 "Given the symbols passed as the first arguments to LocalSymbols
 a set of local symbols will be created, and creates unique ones
-for them, typically of the form $<symbol><number>, where
+for them, typically of the form ":HtmlTerm("$<symbol><number>"):", where
 symbol was the symbol entered by the user, and number is a unique
 number. This scheme was used
-to such a generated symbol can not accientally be entered by a user.
+to such a generated symbol can not accidentally be entered by a user.
 ":
 HtmlNewParagraph():
 "

@@ -1,5 +1,5 @@
 
-				Yacas users function reference
+				Yacas user's function reference
 
 *INCLUDE config.chapt
 
