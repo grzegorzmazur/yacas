@@ -1,5 +1,8 @@
 			Platform-dependent packages
 
+*INTRO Certain facilities have been developed for use on the Unix platform,
+which is currently the main development platform for Yacas. These packages are described in this chapter.
+
 *CMD GetYacasPID --- obtain Yacas process number
 *UNIX
 *CALL
@@ -8,7 +11,7 @@
 *DESC
 Returns an integer containing the process number (PID) of the Yacas session.
 
-Requires: Unix shell.
+Requires: a Unix shell.
 
 *CMD ShowPS --- view equations graphically
 *UNIX
@@ -21,7 +24,7 @@ Requires: Unix shell.
 *DESC
 Exports a Yacas expression to $LaTeX$, generates a Postscript file and shows it in a viewer. The free viewer {gv} must be available on the Unix shell path. An alternative viewer can be specified by assigning to the global variable PSViewCommand.
 
-Requires: Unix shell, LaTeX, dvips, gv or another Postscript viewer.
+Requires: a Unix shell, {latex}, {dvips}, {gv} or another Postscript viewer.
 
 *EG
 	In> [ PSViewCommand := "ghostview"; \
@@ -47,21 +50,20 @@ Compiles an external plugin library that computes a user-defined numerical
 function and dynamically loads it into Yacas, enabling a new function called
 "name".
 
-Requires: Unix shell, compiler named "c++" with ELF {.so} support; Yacas
-headers in {FindFile("")/include}; current directory must be writable. The
-{body} expression must be a {CForm()}-exportable function of the arguments and
-may contain numerical constants ({Pi} is allowed and will be converted to
-floating-point).
+Requires: a Unix shell, a compiler named "c++" with ELF {.so} support, Yacas
+headers in {FindFile("")/include}; current directory must be writable.
+
+The {body} expression must be a {CForm()}-exportable function of the arguments and may contain numerical constants. {Pi} is allowed and will be converted to
+floating-point.
 
 All arguments and the return value of the function are assumed
-to be double precision real numbers.
-The result of passing a non-numerical argument will be an unevaluated expression.
+to be double precision real numbers. The result of passing a non-numerical argument will be an unevaluated expression.
 	
 	Example:
 	
 	In> MakeFunctionPlugin("f1", {x,y}, Sin(x/y))
 	Function f1(x,y) loaded from
-	  plugins.tmp/libf1_plugin_cc.so
+	plugins.tmp/libf1_plugin_cc.so
 	Out> True;
 	In> f1(2,3)
 	Out> 0.618369803069736989620253;
@@ -80,9 +82,9 @@ The function creates the following files in subdirectory {plugins.tmp/} of curre
 Note that all files have names matching "{*_plugin*}".
 
 After creating these files, {MakeFunctionPlugin()} will:
-*	1. Run a "c++" compiler command;
+*	1. Run a "c++" compiler command; if compilation fails, all error messages will appear on the screen;
 *	1. Load resulting .so object with {DllLoad()};
-*	1. Print an information message on success and all error messages if compilation fails.
+*	1. Print an information message on success.
 
 If you call {MakeFunctionPlugin()} repeatedly to define a function with the same name, old files will be overwritten and old libraries will be unloaded with {DllUnload()}.
 
@@ -112,7 +114,7 @@ Most frequently encountered problem: {function} <i>must</i> evaluate to an expre
 	Out> True;
 	In> GnuPlot(-1, 1, 101, f(x) );
 	Out> True;
-We find that 101 is too few points to accurately represent this function. However, calculations with more points would take a long time. To speed up the calculation, compile this function online:
+We find that 101 is not enough points to accurately represent this function. However, calculations with more points would take a long time. To speed up the calculation, compile this function online:
 
 	In> MakeFunctionPlugin("f1", f(x));
 	Function f1(x) loaded from plugins.tmp

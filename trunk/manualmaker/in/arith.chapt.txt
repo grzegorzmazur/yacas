@@ -159,17 +159,11 @@ shifts, so they act like multiplication or division by powers of 2.
 	In> -1024 >> 10
 	Out> -1;
 
-*A FromBase
-
-*A ToBase
-
 *CMD FromBase, ToBase --- Conversion from/to non-decimal base
 *CORE
 *CALL
-
-FromBase(base,number)
-
-ToBase(base,number)
+	FromBase(base,number)
+	ToBase(base,number)
 
 *PARMS
 
@@ -202,8 +196,7 @@ in decimal base. The second command converts {255}
 *CMD Precision --- Sets the precision
 *CORE
 *CALL
-
-Precision(n)
+	Precision(n)
 
 *PARMS
 
@@ -233,12 +226,7 @@ at least "n" digits after the decimal point.
 *CMD GetPrecision --- Returns the current precision
 *CORE
 *CALL
-
-GetPrecision()
-
-*PARMS
-
-none
+	GetPrecision()
 
 *DESC
 

@@ -2,19 +2,18 @@
 			Input/Output
 
 *INTRO
-This chapter contains command to use for input and output. All output
-commands write to the same destination, called the "current
-output". This is initially the screen, but the current output is
+This chapter contains commands to use for input and output. All output
+commands write to the same destination stream, called the "current
+output". This is initially the screen, but may be
 redirected by some commands. Similarly, most input commands
-read from the "current input", which can also be redirected. The
-exception to this rule are the commands for reading in script files,
-which simply read  the specified file.
+read from the "current input" stream, which can also be redirected. The
+exception to this rule are the commands for reading script files,
+which simply read a specified file.
 
 *CMD FullForm --- Print an expression in LISP-format
 *CORE
 *CALL
-
-FullForm(expr)
+	FullForm(expr)
 
 *PARMS
 
@@ -48,10 +47,8 @@ is printed.
 *CMD Echo --- High-level printing routine
 *STD
 *CALL
-
-Echo(item)
-
-Echo(list)
+	Echo(item)
+	Echo(list)
 
 *PARMS
 
@@ -81,7 +78,7 @@ marks. All other entries are followed by a space.
 	The square of two is  4
 	Out> True;
 
-Note that one must use the second calling sequence if one wishes to
+Note that one must use the second calling format if one wishes to
 print a list:
 
 	In> Echo({a,b,c});
@@ -96,8 +93,7 @@ print a list:
 *CMD PrettyForm --- Print an expression nicely with ASCII art
 *STD
 *CALL
-
-PrettyForm(expr)
+	PrettyForm(expr)
 
 *PARMS
 
@@ -154,8 +150,7 @@ to show 'input = output'.
 *CMD Write --- Low-level printing routine
 *CORE
 *CALL
-
-Write(expr, ...)
+	Write(expr, ...)
 
 *PARMS
 
@@ -183,8 +178,7 @@ immediately follows the output of {Write}.
 *CMD WriteString --- Low-level printing routine for strings
 *CORE
 *CALL
-
-WriteString(string)
+	WriteString(string)
 
 *PARMS
 
