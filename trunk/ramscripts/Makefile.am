@@ -5,7 +5,7 @@ EXTRA_DIST = README ramscripts-win32.cpp \
 	README.LZO lzoconf.h minilzo.c minilzo.h decompressor.cpp \
 	compressor.cpp filescanner.cpp filescanner.h \
 	test.sh README.compressor compressedfiles.h compress.bat \
-	compressor.dsp compressor.dsw
+	compressor.dsp compressor.dsw win32rcwriter.cpp
 
 
 
