@@ -630,11 +630,21 @@ inline void WordBaseMultiply(T& aTarget, T& x, T& y)
 template<class T>
 inline LispBoolean IsZero(T& a)
 {
-    LispInt i;
-    for (i=0;i<a.NrItems();i++)
-        if (a[i] != 0)
-            return LispFalse;
-    return LispTrue;
+  register typename T::ElementType *ptr = &a[0];
+  register typename T::ElementType *endptr = ptr+a.NrItems();
+  while (ptr != endptr)
+  {
+    if (*ptr++ != 0)
+      return LispFalse;
+  }
+  return LispTrue;
+/*
+  LispInt i;
+  for (i=0;i<a.NrItems();i++)
+      if (a[i] != 0)
+          return LispFalse;
+  return LispTrue;
+*/
 }
 
 
