@@ -11,6 +11,7 @@
 
 #undef LTDL_OBJDIR
 
+#undef HAVE_LIBGSL
 
 /* end acconfig.h */
 

@@ -51,6 +51,12 @@ AC_CHECK_FUNCS(select socket strtod strchr)
 AC_CHECK_LIB(dl,dlopen,LIBS="$LIBS -ldl -rdynamic",,-rdynamic)
 
 
+# check for the existence of the Gnu Scientific Library on this machine
+AC_CHECK_LIB(m,main)
+AC_CHECK_LIB(gslcblas,main)
+AC_CHECK_LIB(gsl,main)
+
+
 # Choice of arbitrary precision library
 AC_ARG_ENABLE(gmp, [  --enable-gmp            use GNU MP [default=no]])
 AC_MSG_CHECKING([checking which arbitrary precision library to use])
@@ -196,6 +202,7 @@ AC_OUTPUT(yacas.spec
 	plugins/example/Makefile
 	plugins/forth/Makefile
 	plugins/opengl/Makefile
+	plugins/yacas_gsl/Makefile
 	scripts/Makefile
 	colorcode/Makefile
 	ramscripts/Makefile
