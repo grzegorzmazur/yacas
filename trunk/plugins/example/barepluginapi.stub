@@ -1,5 +1,5 @@
 
-Use("cstubgen");
+Use("cstubgen.ys");
 
 /* Start generating a c stub file */
 StubApiCStart();

@@ -6,13 +6,19 @@
 #include <dirent.h>
 #include <string.h>
 
-int main(void)
+int main(int argc, char** argv)
 {
     DIR *dp;
     struct dirent* entry;
     struct stat statbuf;
-    char dir[100];
+    char dir[500];
     strcpy(dir,"../scripts/"); //"/root/myprojects/yacas-latest/ramscripts");
+
+    if (argc>1)
+    {
+        strcpy(dir,argv[1]); //"/root/myprojects/yacas-latest/ramscripts");
+        
+    }
     
     if ((dp = opendir(dir)) == NULL)
         exit(0);
@@ -25,15 +31,18 @@ int main(void)
         if (!memcmp(entry->d_name,"Makefile",8))
             continue;
 
+        
 printf(
 "      (*yacas)()().iRamDisk.SetAssociation(\n"
 "        LispRamFile(\n");
 
 {
-    char filename[100];
+    char filename[500];
     char c;
-    strcpy(filename, dir);
-    strcat(filename,entry->d_name);
+//    strcpy(filename, dir);
+//    strcat(filename,entry->d_name);
+    strcpy(filename,entry->d_name);
+printf("// %s\n",filename);
     FILE* fin=fopen(filename,"r");
 
     printf("\"");
@@ -41,6 +50,33 @@ printf(
     {
         switch (c)
         {
+        case '/':
+            {
+                char c2 = fgetc(fin);
+                if (c2 == '/')
+                {
+                    while (c!='\n') c = fgetc(fin);
+                    break;
+                }
+                else if (c2 == '*')
+                {
+                    c = fgetc(fin);
+                    c2 = fgetc(fin);
+                    for (;;)
+                    {
+                        if (c == '*' && c2 == '/')
+                            break;
+                        c = c2;
+                        c2 = fgetc(fin);
+                    }
+                    break;
+                }
+                else
+                {
+                    ungetc(c2,fin);
+                    goto NORMAL;
+                }
+            }
         case '\'':
         case '\\':
         case '\"':
@@ -50,6 +86,7 @@ printf(
             printf(" \"\n\"");
             break;
         default:
+        NORMAL:
             printf("%c",c);
         }
     }
