@@ -144,7 +144,7 @@ special function {Knowledge()} prints everything the system currently knows.
 Now we shall see how this system can be implemented in Yacas with very little
 difficulty.
 
-	    Parsing the sentences
+	    Parsing sentences
 
 A sentence such as "{Mary had a lamb}" should be parsed as a valid Yacas expression. Since this sentence contains more than one atom, it should be parsed as a function invocation, or else Yacas will simply give a syntax error when we type it in.
 
