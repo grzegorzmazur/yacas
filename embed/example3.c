@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "cyacas.h"
 
+int verbose_debug = 0;	// avoid linkage error
+
 
 void eval_lisp(char* expr)
 {
