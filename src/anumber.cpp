@@ -88,7 +88,7 @@ void IntToBaseString(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
     while (aInt!=0)
     {
         aString.GrowTo(i+1);
-        aString[i] = aInt%aBase;
+        aString[i] = (LispChar)(aInt%aBase);
         aInt/=aBase;
         i++;
     }
@@ -97,12 +97,12 @@ void IntToBaseString(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
 
 void IntToAscii(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
 {
-    //    LispBoolean negative = (aInt<0);
-    LispBoolean negative = false;
+
+//TODO?    LispBoolean negative = false;
     
-    // Sign will be handled separately
-    if (negative)
-        aInt = -aInt;
+//TODO?    // Sign will be handled separately
+//TODO?    if (negative)
+//TODO?        aInt = -aInt;
 
     IntToBaseString(aString,aInt,aBase);
     LispInt i;
@@ -117,11 +117,11 @@ void IntToAscii(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
     {
         aString[(nr>>1)] = Digit(aString[(nr>>1)]);
     }
-    if (negative)
-    {
-        LispChar c = '-';
-        aString.Insert(0,c);
-    }
+//TODO?    if (negative)
+//TODO?    {
+//TODO?        LispChar c = '-';
+//TODO?        aString.Insert(0,c);
+//TODO?    }
     aString.Append('\0');
 }
 
@@ -240,7 +240,7 @@ void ANumber::SetTo(LispCharPtr aString,LispInt aBase)
                 PlatDoubleWord factor=1;
                 for (j=nr;j<nrc;j++)
                 {
-                    word = word + fraction[j]*factor;
+                    word = word + (PlatWord)(fraction[j]*factor);
                     factor = factor*aBase;
                 }
             }
@@ -627,7 +627,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase)
                 BaseTimesInt(number, aBase, WordBase);
                 if (number.NrItems() > number.iExp)
                 {
-                    aResult.Append(number[number.iExp]);
+                    aResult.Append((LispChar)(number[number.iExp]));
                     number.SetNrItems(number.iExp);
                 }
                 else
@@ -1072,7 +1072,7 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
         LISPASSERT(carry == 0);
             
         //D5:
-        aQuotient[j] = q;
+        aQuotient[j] = (PlatWord)q;
         //D7:
         j--;
         
@@ -1113,7 +1113,7 @@ void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber
 
         BaseDivideInt(aQuotient,a2[0], WordBase, carry);
         aRemainder.SetNrItems(1);
-        aRemainder[0] = carry;
+        aRemainder[0] = (PlatWord)carry;
 
         /*
          {

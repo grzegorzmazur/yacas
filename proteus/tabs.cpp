@@ -588,217 +588,217 @@ int main(int argc, char **argv)
 					Fl_Button* o = num_seven_ = new Fl_Button(2,184,12,12,"7");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"7");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"7");
 				}
 				{
 					Fl_Button* o = num_four_ = new Fl_Button(2,196,12,12,"4");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"4");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"4");
 				}
 				{
 					Fl_Button* o = num_one_ = new Fl_Button(2,208,12,12,"1");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"1");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"1");
 				}
 				{
 					Fl_Button* o = num_eight_ = new Fl_Button(14,184,12,12,"8");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"8");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"8");
 				}
 				{
 					Fl_Button* o = num_five_ = new Fl_Button(14,196,12,12,"5");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"5");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"5");
 				}
 				{
 					Fl_Button* o = num_two_ = new Fl_Button(14,208,12,12,"2");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"2");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"2");
 				}
 				{
 					Fl_Button* o = num_nine_ = new Fl_Button(26,184,12,12,"9");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"9");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"9");
 				}
 				{
 					Fl_Button* o = num_six_ = new Fl_Button(26,196,12,12,"6");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"6");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"6");
 				}
 				{
 					Fl_Button* o = num_three_ = new Fl_Button(26,208,12,12,"3");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"3");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"3");
 				}
 				{
 					Fl_Button* o = num_plus_ = new Fl_Button(38,184,12,12,"+");
                 	o->labelfont(1);
                 	o->labelsize(10);
-                	o->callback((Fl_Callback*)cb_menu_insert,"+");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"+");
 				}
 				{
 					Fl_Button* o = num_minus_ = new Fl_Button(38,196,12,12,"-");
                 	o->labelfont(1);
                 	o->labelsize(10);
-                	o->callback((Fl_Callback*)cb_menu_insert,"-");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"-");
 				}
 				{
 					Fl_Button* o = num_zero_ = new Fl_Button(38,208,12,12,"0");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"0");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"0");
 				}
 				{
 					Fl_Button* o = num_times_ = new Fl_Button(50,184,12,12,"*");
                 	o->labelfont(1);
                 	o->labelsize(10);
-                	o->callback((Fl_Callback*)cb_menu_insert,"*");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"*");
 				}
 				{
 					Fl_Button* o = num_divide_ = new Fl_Button(50,196,12,12,"/");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"/");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"/");
 				}
 				{
 					Fl_Button* o = num_point_ = new Fl_Button(50,208,12,12,".");
                 	o->labelfont(1);
                 	o->labelsize(12);
-                	o->callback((Fl_Callback*)cb_menu_insert,".");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)".");
 				}
 				{
 					Fl_Button* o = num_power_ = new Fl_Button(62,184,12,12,"^");
                 	o->labelfont(1);
                 	o->labelsize(10);
-                	o->callback((Fl_Callback*)cb_menu_insert,"^");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"^");
 				}
 				{
 					Fl_Button* o = num_space_ = new Fl_Button(62,196,12,12," ");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert," ");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)" ");
 				}
 				{
 					Fl_Button* o = num_comma_ = new Fl_Button(62,208,12,12,",");
                 	o->labelfont(1);
                 	o->labelsize(12);
-                	o->callback((Fl_Callback*)cb_menu_insert,",");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)",");
 				}
 				{
 					Fl_Button* o = num_leftpar_ = new Fl_Button(74,184,12,12,"(");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"(");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"(");
 				}
 				{
 					Fl_Button* o = num_leftbrace_ = new Fl_Button(74,196,12,12,"{");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"{");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"{");
 				}
 				{
 					Fl_Button* o = num_colon_ = new Fl_Button(74,208,12,12,":");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,":");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)":");
 				}
 				{
 					Fl_Button* o = num_rightpar_ = new Fl_Button(86,184,12,12,")");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,")");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)")");
 				}
 				{
 					Fl_Button* o = num_rightbrace_ = new Fl_Button(86,196,12,12,"}");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"}");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"}");
 				}
 				{
 					Fl_Button* o = num_equal_ = new Fl_Button(86,208,12,12,"=");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"=");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"=");
 				}
 				{
 					Fl_Button* o = num_x_ = new Fl_Button(98,184,12,12,"x");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"x");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"x");
 				}
 				{
 					Fl_Button* o = num_a_ = new Fl_Button(98,196,12,12,"a");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"a");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"a");
 				}
 				{
 					Fl_Button* o = num_i_ = new Fl_Button(98,208,12,12,"i");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"i");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"i");
 				}
 				{
 					Fl_Button* o = num_y_ = new Fl_Button(110,184,12,12,"y");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"y");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"y");
 				}
 				{
 					Fl_Button* o = num_b_ = new Fl_Button(110,196,12,12,"b");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"b");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"b");
 				}
 				{
 					Fl_Button* o = num_j_ = new Fl_Button(110,208,12,12,"j");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"j");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"j");
 				}
 				{
 					Fl_Button* o = num_z_ = new Fl_Button(122,184,12,12,"z");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"z");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"z");
 				}
 				{
 					Fl_Button* o = num_c_ = new Fl_Button(122,196,12,12,"c");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"c");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"c");
 				}
 				{
 					Fl_Button* o = num_k_ = new Fl_Button(122,208,12,12,"k");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"k");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"k");
 				}
 				{
 					Fl_Button* o = num_f_ = new Fl_Button(134,184,12,12,"f");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"f");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"f");
 				}
 				{
 					Fl_Button* o = num_g_ = new Fl_Button(134,196,12,12,"%");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"%");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"%");
 				}
 				{
 					Fl_Button* o = num_t_ = new Fl_Button(134,208,12,12,"t");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"t");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"t");
 				}
 				{
 					Fl_Button* o = num_enter_ = new Fl_Button(146,184,12,12,"@#<-");
@@ -810,7 +810,7 @@ int main(int argc, char **argv)
 					Fl_Button* o = num_help_ = new Fl_Button(146,196,12,12,"?");
                 	o->labelfont(1);
                 	o->labelsize(9);
-                	o->callback((Fl_Callback*)cb_menu_insert,"?");
+                	o->callback((Fl_Callback*)cb_menu_insert,(void*)"?");
 				}
 				{
 					Fl_Button* o = num_back_ = new Fl_Button(146,208,12,12,"@returnarrow");

@@ -30,7 +30,7 @@ enum ESpecialChars
     eEnd,
     eEnter,
     eTab,
-    eEscape,
+    eEscape
 };
 
 /**
@@ -51,7 +51,7 @@ enum ESpecialChars
 class CCommandLine
 {
 public:
-    CCommandLine() : history(0),iHistoryUnchanged(0), iTraceHistory(0){};
+    CCommandLine() : iHistoryUnchanged(0), history(0),iTraceHistory(0){};
     virtual ~CCommandLine();
     /// Call this function if the user needs to enter an expression.
     virtual void ReadLine(LispCharPtr prompt);

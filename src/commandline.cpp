@@ -74,7 +74,8 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
 
     for (;;)
     {
-        int c=GetKey();
+        int c;
+        c=GetKey();
         switch (c)
         {
         case eDelete:

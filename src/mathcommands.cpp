@@ -424,7 +424,6 @@ void LispConcatenateStrings(LispEnvironment& aEnvironment, LispPtr& aResult,
         InternalEval(aEnvironment, evaluated, *iter.Ptr());
         CHK_ISSTRING(evaluated,arg);
 
-        LispInt i;
         LispInt length = evaluated.Get()->String()->NrItems()-2;
         LispCharPtr ptr=evaluated.Get()->String()->String();
         
@@ -868,7 +867,7 @@ static void InternalNewLocal(LispEnvironment& aEnvironment, LispPtr& aResult,
     LispInt arg;
     for (arg=1;arg<nrArguments;arg++)
     {
-        LispStringPtr variable;
+        LispStringPtr variable=NULL;
         if (aMacroMode)
         {
             LispPtr result;

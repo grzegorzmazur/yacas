@@ -28,15 +28,15 @@ inline void BaseTimesInt(T& a,PlatDoubleWord aNumber, PlatDoubleWord aBase)
     for (i=0;i<nr;i++)
     {
         PlatDoubleWord word = ((PlatDoubleWord)(*aptr))*aNumber+carry;
-        PlatWord digit = word % aBase;
-        PlatWord newCarry= word / aBase;
+        PlatWord digit = (PlatWord)(word % aBase);
+        PlatWord newCarry= (PlatWord)(word / aBase);
         *aptr = digit;
         aptr++;
         carry= newCarry;
     }
     if (carry)
     {
-      a.Append(carry);
+      a.Append((typename T::ElementType)carry);
       carry = 0;
     }
     LISPASSERT(carry == 0);
@@ -55,8 +55,8 @@ inline void BaseDivideInt(T& a,PlatDoubleWord aNumber, PlatDoubleWord aBase, Pla
     for (i=nr-1;i>=0;i--)
     {
         PlatDoubleWord word = ((carry*aBase)+((PlatDoubleWord)(aptr[i])));
-        PlatWord digit = word /aNumber;
-        PlatWord newCarry= word % aNumber;
+        PlatWord digit = (PlatWord)(word / aNumber);
+        PlatWord newCarry= (PlatWord)(word % aNumber);
         aptr[i] = digit;
         carry= newCarry;
     }
@@ -120,7 +120,7 @@ inline void BaseAdd(T& aTarget, const T& aSource, LispInt aBase)
             (PlatDoubleWord)aSource[digit] + carry;
          PlatDoubleWord newDigit = (word%aBase);
          PlatDoubleWord newCarry = (word/aBase);
-         aTarget[digit] = newDigit;
+         aTarget[digit] = (typename T::ElementType)newDigit;
          carry          = newCarry;
     }
     while (carry != 0)
@@ -173,7 +173,7 @@ inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
             ww = ww + WordBase;
             newCarry = newCarry - 1;
         }
-        aResult[nr+offset]=ww;
+        aResult[nr+offset]=(typename T::ElementType)ww;
         carry = newCarry;
         offset++;
     }
@@ -221,10 +221,10 @@ inline void BaseAddMultiply(T& aTarget, T& x, T& y, LispInt aBase)
             // This calculates aTarget[ix+iy]+x[ix]*y[iy]+carry;
 
 
-            targetPtr[ix+iy] = word % aBase;
+            targetPtr[ix+iy] = (typename T::ElementType)(word % aBase);
             carry          = word / aBase;
         }
-        targetPtr[ix+nry] += carry;
+        targetPtr[ix+nry] += (typename T::ElementType)(carry);
     }
 }
 
@@ -594,7 +594,7 @@ inline void BaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2, PlatDoubleWord
         LISPASSERT(carry == 0);
             
         //D5:
-        aQuotient[j] = q;
+        aQuotient[j] = (typename T::ElementType)q;
         //D7:
         j--;
         
