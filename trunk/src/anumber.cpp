@@ -1308,3 +1308,20 @@ LispBoolean Significant(ANumber& a)
 }
 
 
+void ANumber::ChangePrecision(LispInt aPrecision)
+{
+  LispInt oldExp = iExp;
+  
+  iPrecision = aPrecision;
+  iExp = WordDigits(iPrecision,10);
+
+  if (iExp < oldExp)
+  {
+    Delete(0,oldExp-iExp);
+  }
+  else if (iExp > oldExp)
+  {
+    PlatWord zero = 0;
+    Insert(0,zero,iExp-oldExp);
+  }
+}

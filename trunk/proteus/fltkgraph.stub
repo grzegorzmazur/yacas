@@ -1,5 +1,5 @@
 
-Use("cstubgen");
+Use("cstubgen.rep/code.ys");
 
 StubApiCStart();
 
