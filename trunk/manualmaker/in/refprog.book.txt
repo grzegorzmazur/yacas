@@ -17,6 +17,7 @@ Introduce a comment block in a source file, similar to C++ comments.
 {//} makes everything until the end of the line a comment, while {/*} and {*/} may delimit a multi-line comment.
 
 *E.G.
+
 	a+b; // get result
 	a + /* add them */ b;
 
@@ -45,7 +46,6 @@ function bodies. The {[...]} construct is a syntactically nicer version of the
 *CMD Check --- report errors
 *CORE
 *CALL
-
 	Check(predicate,"error text")
 
 *PARMS
@@ -63,7 +63,6 @@ against internal errors).
 *CMD Bodied, Infix, Postfix, Prefix --- define function syntax
 *CORE
 *CALL
-
 	Bodied("op", precedence)
 	Infix("op")
 	Infix("op", precedence)
@@ -150,7 +149,7 @@ For infix operators, right precedence can differ from left precedence. Bodied fu
 
 
 *CMD RightAssociative --- declare associativity
-
+*CORE
 *CALL
 	RightAssociative("op")
 
@@ -169,7 +168,7 @@ left-associative, is not implemented.
 
 
 *CMD LeftPrecedence, RightPrecedence --- set operator precedence
-
+*CORE
 *CALL
 	LeftPrecedence("op",precedence)
 	RightPrecedence("op",precedence)
@@ -191,7 +190,7 @@ correctly. Thus, a+b+c is the same as a+(b+c), but a-(b-c) is not
 the same as a-b-c.
 
 *CMD RuleBase --- define function name
-
+*CORE
 *CALL
 	RuleBase("operator",{params})
 
@@ -208,36 +207,44 @@ function "operator", with {params} as the parameter list.
 *DESC
 Define a rule for the function "operator" with
 "arity", "precedence", "predicate" and
-"body". "precedence" is checked from low to high.
+"body". The "precedence" goes from low to high: rules with low precedence will be applied first.
 The arity for a rules database equals the number of arguments. Different
 rules data bases can be built for functions with the same name but with
 a different number of arguments.
 Rules with a low value will be tried before rules with a high value, so
 a rule with precedence 0 will be tried before a rule with precedence 1.
 
-*CMD HoldArg --- ...
-
+*CMD HoldArg --- mark argument as not evaluated
+*CORE
 *CALL
-HoldArg("operator",parameter)
+	HoldArg("operator",parameter)
+
+*PARMS
+
+"operator" -- string, name of a function
+parameter -- atom, symbolic name of parameter
 
 *DESC
-Specify that parameter (which should be part of
-a parameter list for a function "operator") should
+Specify that parameter should
 not be evaluated before used. This will be
 declared for all arities of "operator", at the moment
 this function is called, so it is best called
-after all RuleBase calls for this operator.
+after all {RuleBase} calls for this operator.
 
-*CMD Retract --- ...
+The {parameter} must be an atom from the list of symbolic arguments used when calling {RuleBase}.
 
+*SEE RuleBase, HoldArgNr, RuleBaseArgList
+
+*CMD Retract --- erase rules for a function
+*CORE
 *CALL
 Retract("operator",arity)
 
 Remove a rulebase with some specific arity,
 if it exists at all.
 
-*CMD UnFence --- ...
-
+*CMD UnFence --- change local variable scope for a function
+*CORE
 *CALL
 UnFence("operator",arity)
 
@@ -248,6 +255,38 @@ arity can see the local variables from the calling
 function. This is useful for defining macro-like
 procedures (looping and the such). The standard library functions {For} and {ForEach} use {UnFence()}.
 
+*CMD HoldArgNr --- specify argument as not evaluated
+*STD
+*CALL
+	HoldArgNr("function", arity, argNum)
+
+*PARMS
+"function" -- string, function name
+
+arity, argNum -- positive integers
+
+*DESC
+
+Declares the argument number {argNum} of the function named {"function"} with specified {arity} to be unevaluated. Useful if you don't know symbolic names of parameters, for instance, when the function was not declared using an explicit {RuleBase} call.
+
+*SEE HoldArg, RuleBase
+
+
+*CMD RuleBaseArgList --- obtain list of arguments
+*CORE
+*CALL
+	RuleBaseArgList("operator", arity)
+
+*PARMS
+"operator" -- string, name of function
+
+arity -- integer
+
+*DESC
+
+Returns a list of atoms, symbolic parameters specified in the {RuleBase()} call for the function named {"operator"} with the specific {arity}.
+
+*SEE RuleBase, HoldArgNr, HoldArg
 
 
 *CMD MacroSet, MacroClear, MacroLocal, MacroRuleBase, MacroRule --- manipulate symbols
@@ -258,7 +297,7 @@ the required action is performed. This is
 useful in macro-like procedures.
 
 *CMD Secure --- guard the host OS
-
+*CORE
 *CALL
 	Secure(body)
 
@@ -284,8 +323,8 @@ Here {LispSubtract} is the Yacas internal name for the function and {MathSubtrac
 Built-in bodied functions and infix operators are declared in the same file.
 
 
-*CMD MathNot --- ...
-
+*CMD MathNot --- built-in logical "not"
+*CORE
 *CALL
 MathNot(expression)
 
@@ -293,32 +332,30 @@ MathNot(expression) :
 Returns "False" if "expression" evaluates
 to "True", and vice versa.
 
-*CMD MathAnd --- ...
+*CMD MathAnd --- built-in logical "and"
 
 *CALL
 	MathAnd(...)
 
-MathAnd(...) :
-Lazy {And}: returns {True} if all args evaluate to
+Lazy logical {And}: returns {True} if all args evaluate to
 {True}, and does this by looking at first, and then at the
 second argument, until one is {False}.
 If one is {False} it immediately returns {False} without
 evaluating the rest. This is faster, but also means that none of the
 arguments should cause side effects when they are evaluated.
 
-*CMD MathOr --- ...
+*CMD MathOr --- built-in logical "or"
 *CORE
 *CALL
 
 	MathOr(...)
 
-MathOr(...) :
-MathOr is the or equivalent of And. It is lazy-evaluated too.
-"And(...)" and "Or(...)" do also exist. You can define
+{MathOr} is the basic logical "or" function. Similarly to {And}, it is lazy-evaluated.
+{And(...)} and {Or(...)} do also exist. You can define
 them as infix operators
 yourself, so you have the choice of precedence. In the standard scripts
 they are in fact declared as infix operators, so you can write
-"expr1 And expr".
+{expr1 And expr}.
 
 *CMD BitAnd, BitOr, BitXor --- bitwise arithmetic
 *CORE
@@ -328,7 +365,7 @@ BitAnd(n,m), BitOr(n,m), BitXor(n,m)
 BitAnd(n,m), BitOr(n,m), BitXor(n,m) : return bitwise and, or and xor
 of two numbers.
 
-*CMD Equals --- ...
+*CMD Equals --- built-in equality check
 *CORE
 *CALL
 Equals(a,b)
@@ -347,10 +384,9 @@ LessThan(a,b), GreaterThan(a,b)
 LessThan(a,b), GreaterThan(a,b) :
 Comparing numbers.
 
-*CMD Math... --- arbitrary-precision math
-
+*CMD Math... --- arbitrary-precision math functions
+*CORE
 *CALL
-
 MathGcd(n,m)  (Greatest Common Divisor),
 MathAdd(x,y),
 MathSubtract(x,y),
@@ -373,7 +409,7 @@ non-evaluating functions. The {Math}... versions require the arguments
 to be numbers.
 
 *CMD Fast... --- double-precision math functions
-
+*CORE
 *CALL
 
 FastExp(x), FastLog(x) (Natural logarithm),
@@ -384,9 +420,8 @@ FastArcSin(x), FastArcCos(x), FastArcTan(x) :
 Versions of these functions using the internal c version. These
 should then at least be faster than the arbitrary precision versions.
 
-*CMD ShiftLeft, ShiftRight --- ...
-
-
+*CMD ShiftLeft, ShiftRight --- built-in bit shifts
+*CORE
 *CALL
 	ShiftLeft(expr,bits)
 	ShiftRight(expr,bits)
@@ -468,10 +503,8 @@ DllEnumerate() returns a list with all loaded dynamic link libraries.
 
 *SEE
 
-*CMD StubApiCStart --- ...
-
+*CMD StubApiCStart --- start of C++ plugin API
 *STD
-
 *CALL
 
 StubApiCStart()
@@ -487,10 +520,8 @@ a stub C++ file.
 
 *SEE StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCFile, StubApiCSetEnv
 
-*CMD StubApiCShortIntegerConstant --- ...
-
+*CMD StubApiCShortIntegerConstant --- declare integer constant in plugin
 *STD
-
 *CALL
 
 StubApiCShortIntegerConstant(const,value)
@@ -517,11 +548,10 @@ the library header file.
 
 
 
-*CMD StubApiCInclude --- ...
+*CMD StubApiCInclude --- declare include file in plugin
 *STD
 *CALL
-
-StubApiCInclude(file)
+	StubApiCInclude(file)
 
 *PARMS
 
@@ -532,22 +562,18 @@ file - file to include from the library the plugin is based on
 Declare an include file (a header file for the library, for instance)
 The delimiters need to be specified too. So, for a standard library
 like the one needed for opengl, you need to specify
-
 	StubApiCInclude("\<GL/gl.h\>")
 and for user include file:
 	StubApiCInclude("\"GL/gl.h\"")
 
 *SEE StubApiCStart, StubApiCShortIntegerConstant, StubApiCFunction, StubApiCFile, StubApiCSetEnv
 
-*CMD StubApiCFunction --- ...
-
+*CMD StubApiCFunction --- declare C++ function in plugin
 *STD
-
 *CALL
-
-StubApiCFunction(returntype,fname,args)
-
-StubApiCFunction(returntype,fname,fname2,args)
+	StubApiCFunction(returntype,fname,args)
+	StubApiCFunction(returntype,fname,
+	  fname2,args)
 
 *PARMS
 
@@ -591,13 +617,10 @@ doubles and returns void:
 
 *SEE StubApiCStart, StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFile, StubApiCSetEnv
 
-*CMD StubApiCRemark --- ...
-
+*CMD StubApiCRemark --- documentation string in plugin
 *STD
-
 *CALL
-
-StubApiCRemark(string)
+	StubApiCRemark(string)
 
 *PARMS
 
@@ -613,13 +636,10 @@ on that function.
 
 *SEE StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCSetEnv, StubApiCFile
 
-*CMD StubApiCSetEnv --- ...
-
+*CMD StubApiCSetEnv --- access Yacas environment in plugin
 *STD
-
 *CALL
-
-StubApiCSetEnv(func)
+	StubApiCSetEnv(func)
 
 *PARMS
 
@@ -649,10 +669,8 @@ in the plugin will then have access to the Yacas environment.
 
 *SEE StubApiCStart, StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCFile
 
-*CMD StubApiCFile --- ...
-
+*CMD StubApiCFile --- set file name for plugin API
 *STD
-
 *CALL
 
 StubApiCFile(basename)
@@ -669,10 +687,8 @@ generated while adding functions and constants to the stub.
 
 *SEE StubApiCStart, StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCSetEnv
 
-*CMD StubApiCStruct --- ...
-
+*CMD StubApiCStruct --- declare C struct in plugin
 *STD
-
 *CALL
 
 StubApiCStruct(name)
@@ -720,7 +736,7 @@ Generic objects are objects that are implemented in C++, but
 can be accessed through the Yacas interpreter.
 
 *CMD IsGeneric --- check for generic object
-
+*CORE
 *CALL
 IsGeneric(object)
 
@@ -728,7 +744,7 @@ IsGeneric(object) : returns whether an object is a generic object
 type.
 
 *CMD GenericTypeName --- get type name
-
+*CORE
 *CALL
 GenericTypeName(object)
 
@@ -738,7 +754,7 @@ the name of a generic object.
 Example: GenericTypeName(ArrayCreate(10,1)) sould return "Array".
 
 *CMD ArrayCreate --- create array
-
+*CORE
 *CALL
 ArrayCreate(size,init)
 
@@ -746,14 +762,14 @@ Create an array the with size elements, all initialized to the
 value init.
 
 *CMD ArraySize --- get array size
-
+*CORE
 *CALL
 ArraySize(array)
 
 Return the size of an array (number of elements in the array).
 
 *CMD ArrayGet --- fetch array element
-
+*CORE
 *CALL
 ArrayGet(array,index)
 
@@ -764,7 +780,7 @@ Arrays can also be accessed through the [] operators. So
 array[index] would return the same as ArrayGet(array,index).
 
 *CMD ArraySet --- set array element
-
+*CORE
 *CALL
 ArraySet(array,index,element)
 
@@ -776,14 +792,14 @@ Arrays can also be accessed through the [] operators. So
 array[index]:=element would do the same as ArraySet(array,index,element).
 
 *CMD ArrayCreateFromList --- convert list to array
-
+*CORE
 *CALL
 ArrayCreateFromList(list)
 
 Creates an array from the contents of the list passed in.
 
 *CMD ListFromArray --- convert array to list
-
+*CORE
 *CALL
 ListFromArray(array)
 
