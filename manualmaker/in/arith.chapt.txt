@@ -85,10 +85,10 @@ greatest common divisor:
 
 *HEAD	Routine for calculating {Gcd(n,m)}
 	
-*	1. if n = m then return n
-*	2. if both n and m are even then return 2*Gcd(n/2,m/2)
-*	3. if exactly one of n or m (say n) is even then return Gcd(n/2,m)
-*	4. if both n and m are odd and, say, n>m then return Gcd((n-m)/2,m)
+*	1. if $n = m$ then return $n$
+*	2. if both $n$ and $m$ are even then return $2*Gcd(n/2,m/2)$
+*	3. if exactly one of $n$ or $m$ (say $n$) is even then return $Gcd(n/2,m)$
+*	4. if both $n$ and $m$ are odd and, say, $n>m$ then return $Gcd((n-m)/2,m)$
 
 This is a rather fast algorithm on computers that can efficiently shift
 integers.
@@ -96,8 +96,7 @@ integers.
 If the second calling form is used, {Gcd} will
 return the greatest common divisor of all the integers or polynomials
 in "list". It uses the identity
-
-	Gcd({a,b,c}) = Gcd(Gcd(a,b),c)
+$$Gcd(a,b,c) = Gcd(Gcd(a,b),c)$$
 
 *E.G.
 
@@ -124,7 +123,7 @@ The least common multiple of two numbers "n" and "m" is the lowest
 number which is an integer multiple of both "n" and "m".
 It is calculated with the formula:
 
-	Lcm(n,m) = Div(n*m,Gcd(n,m))
+	$$Lcm(n,m) = Div(n*m,Gcd(n,m))$$
 
 This means it also works on polynomials, since {Div}, {Gcd} and multiplication are also defined for
 them.

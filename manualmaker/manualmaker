@@ -120,7 +120,7 @@ HtmlTable(3,"90%",
          );
 ];
 
-HtmlTerm(term):= ("<B><TT>" : term : "</TT></B>");
+HtmlTerm(term):= ("<B><TT>" : EscapeLtGt(term) : "</TT></B>");
 
 HtmlEmphasis(word) := ("<I>" : word : "</I>");
 
@@ -475,10 +475,18 @@ StandardLib() <-- AddBody("Standard math library<br>");
 IncludeFile(x) := [ Load(x); GarbageCollect(); ];
 
 /* mathematical expressions */
-TeXMath(x) := "<b>" : (ToString() Write(x)) : "</b>";
+TeXMath(x) := "<b>" : EscapeLtGt(ToString() Write(x)) : "</b>";
 TeXMathD(x) := "
-<p><center><b> " : (ToString() Write(x)) : " </b></center></p>
+<p><center><b> " : EscapeLtGt(ToString() Write(x)) : " </b></center></p>
 ";
 HoldArg("TeXMath",x);
 HoldArg("TeXMathD",x);
 
+/* Replace all < and > characters in a string by &lt; and &gt; */
+EscapeLtGtStrings := { {"<", "&lt;"}, {">", "&gt;"}, {"&", "&amp;"} };
+EscapeLtGt(string) := [
+	Local(i, result);
+	result := "";
+	For(i:=1, i<=Length(string), i:=i+1) result := result : If(Contains(AssocIndices(EscapeLtGtStrings), string[i]), EscapeLtGtStrings[string[i]], string[i]);
+	result;
+];
