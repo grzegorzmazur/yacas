@@ -213,6 +213,9 @@ Rule("Gcd",2,100,True)
 10 # Ceil (x_IsNumber) <-- MathCeil (x);
 10 # Round(x_IsNumber) <-- MathFloor(x+0.5);
 
+20 # Floor(x_IsRational) _ (IsNumber(Numer(x)) And IsNumber(Denom(x))) <-- MathFloor(N(x));
+20 # Ceil (x_IsRational) _ (IsNumber(Numer(x)) And IsNumber(Denom(x))) <-- MathCeil (N(x));
+20 # Round(x_IsRational) _ (IsNumber(Numer(x)) And IsNumber(Denom(x))) <-- MathFloor(N(x+0.5));
 
 //
 // II is the imaginary number Sqrt(-1), and remains that way.

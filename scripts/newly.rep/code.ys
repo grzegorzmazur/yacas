@@ -387,7 +387,7 @@ ContFracEval(list_IsList) <-- ContFracEval(list, 0);
 
 /// find rational number with smallest num./denom. near a given number x
 /// See: HAKMEM, MIT AI Memo 239, 02/29/1972, Item 101C
-NearRational(_x) <-- NearRational(x, Floor(N(1/2*GetPrecision())));
+NearRational(_x) <-- NearRational(x, Floor(1/2*GetPrecision()));
 NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 	Local(x1, x2, i,  old'prec);
 	old'prec := GetPrecision();
@@ -419,7 +419,7 @@ NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 
 /// guess the rational number behind an imprecise number
 /// prec parameter is the max number of digits you can have in the denominator
-GuessRational(_x) <-- GuessRational(x, Floor(N(1/2*GetPrecision())));
+GuessRational(_x) <-- GuessRational(x, Floor(1/2*GetPrecision()));
 GuessRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 	Local(denom'estimate, cf, i);
 	denom'estimate := 1;
