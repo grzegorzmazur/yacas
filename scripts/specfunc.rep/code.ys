@@ -540,7 +540,7 @@ Function("ApproxInfSum",{expr,start,x,c})
 10 # Erfc(Infinity)	<-- 0;
 10 # Erf(x)_(x<0)	<-- Erf(-x);
 10 # Erfc(x)		<-- 1 - Erf(x);
-40 # Erf(_x)_(Abs(x) <= 1 )  <-- ApproxInfSum((-1)^k*x^(2*k+1)/((2*k+1)*k!),0,x);
+40 # Erf(_x)_(Abs(x) <= 1 )  <-- N(2/Sqrt(Pi)*ApproxInfSum((-1)^k*x^(2*k+1)/((2*k+1)*k!),0,x));
 
 
 ///////////////// Fresnel Sin/Cos
