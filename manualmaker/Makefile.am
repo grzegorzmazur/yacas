@@ -28,14 +28,14 @@ CODINGCHAPTERS = YacasDebugger.chapt
 CODINGSOURCES = in/YacasDebugger.chapt.txt
 
 ESSAYCHAPTERS = ABIN-grammar.chapt Plugins-Howto.chapt \
-	CVS-Howto.chapt YacasDocs.chapt \
+	CVS-Howto.chapt YacasDocs.chapt wester-1994.chapt \
 	new.chapt paper.chapt Algorithms.chapt wordproblems.chapt \
 	algorithms-specfunc.chapt algorithms-elemfunc.chapt \
 	algorithms-integration.chapt
 
 ESSAYSOURCES = in/ABIN-grammar.chapt.txt in/Plugins-Howto.chapt.txt \
 	in/CVS-Howto.chapt.txt in/YacasDocs.chapt.txt \
-        in/new.chapt.txt in/paper.chapt.txt \
+        in/new.chapt.txt in/paper.chapt.txt in/wester-1994.chapt.txt \
 		in/Algorithms.chapt.txt in/wordproblems.chapt.txt \
 	in/algorithms-specfunc.chapt.txt in/algorithms-elemfunc.chapt.txt \
 	in/algorithms-integration.chapt.txt
@@ -53,7 +53,7 @@ EXTRA_DIST = \
 	perl ../manmake/txt2yacasdoc.pl < $< > $@
 
 %.book.tex: %.book
-	../manmake/book2TeX.sh $< $@
+	sh ../manmake/book2TeX.sh $< $@
 
 %.dvi: %.tex
 	latex $< > /dev/null
@@ -68,6 +68,11 @@ EXTRA_DIST = \
 #	dvipdf $<
 	pdflatex $* > /dev/null
 	@echo Documentation created: $*.pdf
+
+# experimental: extract Yacas code from books
+%.ys: %.chapt
+	sh ../manmake/book2ys.sh $< $@
+
 
 # specify books that need chapters
 essays.book.tex: essays.book $(ESSAYCHAPTERS)
