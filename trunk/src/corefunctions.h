@@ -86,7 +86,13 @@ CORE_KERNEL_FUNCTION("FlatCopy",LispFlatCopy,1,YacasEvaluator::Function | YacasE
 CORE_KERNEL_FUNCTION("Prog",LispProgBody,1,YacasEvaluator::Macro | YacasEvaluator::Variable);
 CORE_KERNEL_FUNCTION("While",LispWhile,2,YacasEvaluator::Macro | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("If",LispIf,2,YacasEvaluator::Macro | YacasEvaluator::Variable);
+//
+// Error handling
+//
 CORE_KERNEL_FUNCTION("Check",LispCheck,2,YacasEvaluator::Macro | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("TrapError",LispTrapError,2,YacasEvaluator::Macro | YacasEvaluator::Fixed);
+CORE_KERNEL_FUNCTION("GetCoreError",LispGetCoreError,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+
 //
 // User function definition
 //
@@ -249,5 +255,17 @@ CORE_KERNEL_FUNCTION("`",LispBackQuote,1,YacasEvaluator::Macro | YacasEvaluator:
 //
 // Information functions
 //
+<<<<<<< corefunctions.h
+CORE_KERNEL_FUNCTION("MathLibrary",LispMathLibName,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("Version",LispVersion,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+
+
+
+
+
+
+
+=======
 CORE_KERNEL_FUNCTION("MathLibrary",LispMathLibName,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("Version",LispVersion,0,YacasEvaluator::Function | YacasEvaluator::Fixed);
+>>>>>>> 1.2
