@@ -543,7 +543,7 @@ the {--archive} flag, it uses the contents of this file. This is
 useful for binary releases, as one needs only two files: the Yacas
 executable and the library archive.
 
-Support for the library archive resides in the {ramscripts/}
+Support for the library archive resides in the {src/}
 directory. It contains the code for the {compressor} program. This
 program generates the library archive.
 

@@ -150,9 +150,9 @@ in memory, which might be a lot faster than loading from disk.
 An additional savings is due to the fact that the script files are 
 stripped from white spaces and comments, making them smaller and faster loading.
 
-To prepare the compressed library archive, go into the {ramscripts/} directory
-and type
-	make -f makefile.compressor
+To prepare the compressed library archive, run {./configure}
+with the command line option {--enable-archive}.
+
 The result should be the archive file {scripts.dat}.
 Then launch {Yacas} with the command line option {--archive scripts.dat},
 with the file {scripts.dat} in the current directory.
