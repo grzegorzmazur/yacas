@@ -187,7 +187,7 @@ Function("ApproxInfSum",{expr,start,x,c})
 LocalSymbols(k)
 [
 	40 # Erf(_x)_(Numeric And (IsNumber(x) Or IsComplex(x)) And Abs(x) <= 1) <-- 2 / MathSqrt(Pi()) * x 
-	* SumTaylorNum(x^2, {{k}, 1}, {{k}, -(2*k-1)/(2*k+1)/k},
+	* SumTaylorNum(x^2, 1, {{k}, -(2*k-1)/(2*k+1)/k},
 	// the number of terms n must satisfy n*Ln(n/Exp(1))>10^prec 
 //	Hold({{k}, [Echo(k); k;]}) @
 		N(1+87/32*Exp(LambertW(GetPrecision()*421/497)), 10)
@@ -218,7 +218,7 @@ LocalSymbols(n'max, k)
 		)
 	) <-- If(Re(x)!=0, Sign(Re(x)), 0) - Exp(-x^2)/x/MathSqrt(Pi())
 	// the series is 1 - 1/2/x^2 + 1*3/2^2/x^4 - 1*3*5/2^3/x^6 + ...
-	* SumTaylorNum(1/x^2, {{k}, 1}, {{k}, -(2*k-1)/2 }, Max(0, Floor(n'max)));
+	* SumTaylorNum(1/x^2, 1, {{k}, -(2*k-1)/2 }, Max(0, Floor(n'max)));
 
 ];	// LocalSymbols(n'max, k)
 
