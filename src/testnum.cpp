@@ -16,7 +16,7 @@ unsigned failed = 0;
 unsigned passed = 0;
 
 #define Check(a,b) CheckL(__LINE__,a,b)
-#define Check3(a,b,c) CheckL(__LINE__,a,b,c)
+#define CheckStringEquals(a,b,c) CheckL(__LINE__,a,b,c)
 #define CheckStringValue(a,b,c,d,e) CheckStringValueL(__LINE__,a,b,c,d,e) 
 #define CheckEquals(a,b,c,d,e) CheckEqualsL(__LINE__,a,b,c,d,e) 
 
@@ -173,23 +173,23 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
 	Check(x.Double()==double_value, "double value is correct");
 	if (x.Double()!=double_value) printf("mismatch: %24e vs %24e\n", x.Double(), double_value);
 	x.ToString(str, precision, base);
-	Check3(str, float_printed, "float value is printed back correctly");
+	CheckStringEquals(str, float_printed, "float value is printed back correctly");
 	Check(!x.IsIntValue(), "x has a non-integer value as read");
 	Check(y.IsIntValue(), "y has an integer value as read");
 	y.ToString(str, precision, base);
-	Check3(str, int_string, "int value is printed back correctly");
+	CheckStringEquals(str, int_string, "int value is printed back correctly");
 	Check(x.Sign()==sign, "sign of x is correct");
 	Check(y.Sign()==sign, "sign of y is correct");
 
 	y.ToString(str,precision, base);
-	Check3(str,int_string,"read integer value correctly");
+	CheckStringEquals(str,int_string,"read integer value correctly");
 	BigNumber z(x);
 	Check(!z.IsInt(), "z has float type");
 	Check(!z.IsIntValue(), "z has a float value");
 	z.BecomeInt();
 	Check(z.Sign()==sign, "sign of z is correct");
 	z.ToString(str,precision,base);
-	Check3(str,int_string,"convert to integer value correctly");
+	CheckStringEquals(str,int_string,"convert to integer value correctly");
 	Check(z.IsInt(), "z is an integer now");
 	Check(z.IsIntValue(), "z has an integer value now");
 	// now x is a float, y is an integer, and z is =Round(x).
@@ -321,36 +321,63 @@ void TestArith2(double a, double b)
 	CheckEquals(z,t,50,10,"correct arithmetic at high precision");
 }
 
-void TestStringIO2(double value, const char* test_string, LispInt precision, LispInt base)
+// test only reading from string and comparing to the correct value
+void test_string2float(double value, const char* test_string, LispInt precision, LispInt base)
 {
 	BigNumber x;
 	x.SetTo(value);
+	Check(!x.IsInt(), "x has a float type");
 	BigNumber y(test_string, precision, base);
+	Check(!y.IsInt(), "y has a float type");
+	
 	CheckEquals(x,y,precision,base,"value read from string matches");
 }
 
-void TestStringIO(double value, const char* test_string, LispInt precision, LispInt base)
-{	
+void test_float2string(double value, const char* test_string, LispInt precision, LispInt base)
+{
 	BigNumber x;
 	x.SetTo(value);
-	Check(!x.IsInt(), "have a float value");
+	Check(!x.IsInt(), "x has a float type");
 	LispString str;
 	x.ToString(str, precision, base);
-	Check3(str, test_string, "printed string value matches");
-	TestStringIO2(value,test_string, precision,base);
+	CheckStringEquals(str, test_string, "printed string value matches");
 }
-
-void TestStringIO_int(int value, const char* test_string, LispInt precision, LispInt base)
-{	
+void test_string2int(LispInt value, const char* test_string, LispInt precision, LispInt base)
+{
 	BigNumber x;
 	x.SetTo(value);
-	Check(x.IsInt(), "have an integer value");
-	LispString str;
-	x.ToString(str, precision, base);
-	Check3(str, test_string, "printed string value matches");
+	Check(x.IsInt(), "x has int type");
+	BigNumber y(test_string, precision, base);
+	Check(y.IsInt(), "y has int type");
+	
+	CheckEquals(x,y,precision,base,"value read from string matches");
 }
 
-#endif // test numbers
+void test_int2string(LispInt value, const char* test_string, LispInt precision, LispInt base)
+{
+	BigNumber x;
+	x.SetTo(value);
+	Check(x.IsInt(), "x has int type");
+	LispString str;
+	x.ToString(str, precision, base);
+	CheckStringEquals(str, test_string, "printed string value matches");
+}
+
+// test printing to string and reading from string
+void test_float_eq_string(double value, const char* test_string, LispInt precision, LispInt base)
+{
+	test_float2string(value, test_string, precision, base);
+	test_string2float(value, test_string, precision, base);
+}
+
+void test_int_eq_string(LispInt value, const char* test_string, LispInt precision, LispInt base)
+{
+	test_int2string(value, test_string, precision, base);
+	test_string2int(value, test_string, precision, base);
+}
+
+
+#endif // whether to test numbers
 
 int main(void)
 {
@@ -377,25 +404,25 @@ int main(void)
     // cast the result to a string
     LispString  str;
     z.ToString(str,10);
-    Check3(str,"25", "adding 10 and 15");
+    CheckStringEquals(str,"25", "adding 10 and 15");
 
 }
 {
     BigNumber n1("65535",100,10);
     n1.ToString(str,20,10);
-    Check3(str,"65535", "reading 65535 from string");
+    CheckStringEquals(str,"65535", "reading 65535 from string");
     n1.ToString(str,20,10);
-    Check3(str,"65535", "reading 65535 from string again");
+    CheckStringEquals(str,"65535", "reading 65535 from string again");
     n1.ToString(str,30,2);
-    Check3(str,"1111111111111111", "printing in binary");
+    CheckStringEquals(str,"1111111111111111", "printing in binary");
     n1.Negate(n1);
     n1.ToString(str,20,10);
-    Check3(str,"-65535", "negate 65535");
+    CheckStringEquals(str,"-65535", "negate 65535");
 
     BigNumber res1;
     res1.Add(n1,n1,10);    
     res1.ToString(str,20, 10);
-    Check3(str,"-131070", "add -65535 to itself");
+    CheckStringEquals(str,"-131070", "add -65535 to itself");
 }
 #endif
 {
@@ -637,69 +664,75 @@ int main(void)
 	Check(x.Equals(y), "15^N = 3^N*5^N");
 	
 	Next("string input/output");
-	// TestStringIO tests that the string representation and the numerical representation are equivalent;
-	// TestStringIO_int does this for integers.
-	// TestStringIO_2 does not compare the printed string to the given string (used to test capital E exponents)
-	TestStringIO_int(0, "0", 10, 10);
-	TestStringIO(0., "0.", 10, 10);
-	TestStringIO2(0., "-0.", 10, 10);
-	TestStringIO_int(1, "1", 10, 10);
-	TestStringIO(1., "1.", 10, 10);
-	TestStringIO_int(-1, "-1", 10, 10);
-	TestStringIO(-1., "-1.", 10, 2);
-	TestStringIO_int(-1, "-1", 10, 3);
-	TestStringIO_int(-13, "-111", 10, 3);
-	TestStringIO(-13., "-111.", 10, 3);
-	TestStringIO_int(-13, "-1101", 10, 2);
-	TestStringIO_int(13, "13", 10, 10);
-	TestStringIO_int(1000000000, "1000000000", 10, 10);
-	TestStringIO(1000000000., "0.1e10", 10, 10);
-	TestStringIO_int(-13, "-d", 10, 16);
-	TestStringIO(-13.0, "-d.", 10, 16);
-	TestStringIO(13.1245e-15, "0.131245e-13", 10, 10);
-	TestStringIO(13.1245e-15, "0.131e-13", 3, 10);
-	TestStringIO(13.1245e-15, "0.131245e-13", 6, 10);
-	TestStringIO(-13.1245e-15, "-0.131e-13", 3, 10);
-	TestStringIO(-13.1245e-15, "-0.131245e-13", 6, 10);
+	// test_float_eq_string tests that the string representation and the numerical representation are equivalent;
+	// test_int_eq_string does this for integers.
+	// test_float2string, test_string2int etc. are for testing the conversions only in one direction (used  e.g.to test capital E exponents and other non-canonical representations).
+	// For example: to test that "10" is read as integer 10 and printed back as "10", use test_int_and_strnig(10, "10", precision, base). Here precision is the number of "base" digits that we need to represent the number. If fewer digits are given, then fewer digits will be printed.
+	// To test that "0.0001E4" is read as floating 1., use test_string2float(1., "0.0001E4, precision, base). ("1." will of course not be printed like that.)
+	// To test that "0.14e-100" is read as equal to floating 140e-103 and that floating 140e-103 is printed back as 0.14e-100, use test_float_eq_string(140e-103, "0.14e-100", precision, base)
+	
+	test_int_eq_string(0, "0", 10, 10);
+	test_float_eq_string(0., "0.", 10, 10);
+	test_string2float(0., "-0.", 10, 10);
+	test_int_eq_string(1, "1", 10, 10);
+	test_float_eq_string(1., "1.", 10, 10);
+	test_int_eq_string(-1, "-1", 10, 10);
+	test_float_eq_string(-1., "-1.", 10, 2);
+	test_int_eq_string(-1, "-1", 10, 3);
+	test_int_eq_string(-13, "-111", 10, 3);
+	test_float_eq_string(-13., "-111.", 10, 3);
+	test_int_eq_string(-13, "-1101", 10, 2);
+	test_int_eq_string(13, "13", 10, 10);
+	test_int_eq_string(1000000000, "1000000000", 10, 10);
+	test_float_eq_string(1000000000., "0.1e10", 10, 10);
+	test_int_eq_string(-13, "-d", 10, 16);
+	test_float_eq_string(-13.0, "-d.", 10, 16);
+	test_float_eq_string(13.1245e-15, "0.131245e-13", 10, 10);
+	test_float2string(13.1245e-15, "0.131e-13", 3, 10);	// print fewer digits than we have
+	test_float2string(13.1e-15, "0.131e-13", 10, 10);	// do not print more digits than we have
+	test_string2float(13.1245e-15, "0.131245e-13", 3, 10);	// do not read fewer digits
+	test_float_eq_string(13.1245e-15, "0.131245e-13", 6, 10);
+	test_float2string(-13.1245e-15, "-0.131e-13", 3, 10);	// print fewer digits than we have
+	test_float2string(-13.1e-15, "-0.131e-13", 10, 10);	// do not print more digits than we have
+	test_string2float(-13.1245e-15, "-0.131245e-13", 3, 10);	// do not read fewer digits
 
+	// test reading of strings in different variations
 // lowercase e
-	TestStringIO(13.0e15, "0.13e17", 10, 10);
-	TestStringIO(13.e15, "0.13e17", 10, 10);
-	TestStringIO(13e15, "0.13e17", 10, 10);
-	TestStringIO(-13.0e15, "-0.13e17", 10, 10);
-	TestStringIO(-13.e15, "-0.13e17", 10, 10);
-	TestStringIO(-13e15, "-0.13e17", 10, 10);
-
-	TestStringIO(13.0e-15, "0.13e-13", 10, 10);
-	TestStringIO(13.e-15, "0.13e-13", 10, 10);
-	TestStringIO(13e-15, "0.13e-13", 10, 10);
-	TestStringIO(-13.0e-15, "-0.13e-13", 10, 10);
-	TestStringIO(-13.e-15, "-0.13e-13", 10, 10);
-	TestStringIO(-13e-15, "-0.13e-13", 10, 10);
+	test_string2float(0.13e17, "13.0e15", 10, 10);
+	test_string2float(0.13e17, "13.e15", 10, 10);
+	test_string2float(0.13e17, "13e15", 10, 10);
+	test_string2float(-0.13e17, "-13.0e15", 10, 10);
+	test_string2float(-0.13e17, "-13.e15", 10, 10);
+	test_string2float(-0.13e17, "-13e15", 10, 10);
+	test_string2float(0.13e-13, "13.0e-15", 10, 10);
+	test_string2float(0.13e-13, "13.e-15", 10, 10);
+	test_string2float(0.13e-13, "13e-15", 10, 10);
+	test_string2float(-0.13e-13, "-13.0e-15", 10, 10);
+	test_string2float(-0.13e-13, "-13.e-15", 10, 10);
+	test_string2float(-0.13e-13, "-13e-15", 10, 10);
 
 // uppercase e
-	TestStringIO2(13.0e15, "0.13E17", 10, 10);
-	TestStringIO2(13.e15, "0.13E17", 10, 10);
-	TestStringIO2(13e15, "0.13E17", 10, 10);
-	TestStringIO2(-13.0e15, "-0.13E17", 10, 10);
-	TestStringIO2(-13.e15, "-0.13E17", 10, 10);
-	TestStringIO2(-13e15, "-0.13E17", 10, 10);
+	test_string2float(0.13e17, "13.0E15", 10, 10);
+	test_string2float(0.13e17, "13.E15", 10, 10);
+	test_string2float(0.13e17, "13E15", 10, 10);
+	test_string2float(-0.13e17, "-13.0E15", 10, 10);
+	test_string2float(-0.13e17, "-13.E15", 10, 10);
+	test_string2float(-0.13e17, "-13E15", 10, 10);
+	test_string2float(0.13e-13, "13.0E-15", 10, 10);
+	test_string2float(0.13e-13, "13.E-15", 10, 10);
+	test_string2float(0.13e-13, "13E-15", 10, 10);
+	test_string2float(-0.13e-13, "-13.0E-15", 10, 10);
+	test_string2float(-0.13e-13, "-13.E-15", 10, 10);
+	test_string2float(-0.13e-13, "-13E-15", 10, 10);
 
-	TestStringIO2(13.0e-15, "0.13E-13", 10, 10);
-	TestStringIO2(13.e-15, "0.13E-13", 10, 10);
-	TestStringIO2(13e-15, "0.13E-13", 10, 10);
-	TestStringIO2(-13.0e-15, "-0.13E-13", 10, 10);
-	TestStringIO2(-13.e-15, "-0.13E-13", 10, 10);
-	TestStringIO2(-13e-15, "-0.13E-13", 10, 10);
-
-	TestStringIO(0.0011, "0.0011", 10, 10);
-	TestStringIO(0.01, "0.01", 10, 10);
-	TestStringIO(0.001, "0.001", 10, 10);
-	TestStringIO(0.1, "0.1", 10, 10);
-	TestStringIO(-0.001, "-0.001", 10, 10);
-	TestStringIO_int(1234, "1234", 10, 10);
-	TestStringIO_int(12345, "12345", 10, 10);
-	TestStringIO_int(123456, "123456", 10, 10);
+	test_float_eq_string(0.0011, "0.0011", 10, 10);
+	test_float_eq_string(0.01, "0.01", 10, 10);
+	test_float_eq_string(0.001, "0.001", 10, 10);
+	test_float_eq_string(0.1, "0.1", 10, 10);
+	test_float_eq_string(-0.001, "-0.001", 10, 10);
+	test_int_eq_string(1234, "1234", 10, 10);
+	test_int_eq_string(12345, "12345", 10, 10);
+	test_int_eq_string(123456, "123456", 10, 10);
 	
 	Next("determine types from string");
 	x.SetTo("1234",0,10);
@@ -869,7 +902,7 @@ int main(void)
 	{
 		LispString str;
 		x.ToString(str, 50, 10);
-		Check3(str, "3.000000000000000000000000000000000000000050104","printed back a large number of digits from string");
+		CheckStringEquals(str, "3.000000000000000000000000000000000000000050104","printed back a large number of digits from string");
 	}
 	y.SetTo(-3.);
 	x.Add(x, y, 200);
@@ -879,7 +912,7 @@ int main(void)
 		BigNumber a("3.000000000000000000000000000000000000000050104", 150, 10);
 		LispString str;
 		a.ToString(str, 50, 10);
-		Check3(str, "3.000000000000000000000000000000000000000050104","constructor from string");
+		CheckStringEquals(str, "3.000000000000000000000000000000000000000050104","constructor from string");
 		
 	}
 	{
@@ -887,7 +920,7 @@ int main(void)
 		BigNumber b(a);
 		LispString str;
 		b.ToString(str, 50, 10);
-		Check3(str, "3.000000000000000000000000000000000000000050104","copy constructor");
+		CheckStringEquals(str, "3.000000000000000000000000000000000000000050104","copy constructor");
 		
 	}
 	{
@@ -895,7 +928,7 @@ int main(void)
 		a.SetTo("3.000000000000000000000000000000000000000050104", 150, 10);
 		LispString str;
 		a.ToString(str, 50, 10);
-		Check3(str, "3.000000000000000000000000000000000000000050104","assignment from string using a fresh number");
+		CheckStringEquals(str, "3.000000000000000000000000000000000000000050104","assignment from string using a fresh number");
 		
 	}
 	{
@@ -905,7 +938,7 @@ int main(void)
 		b.SetTo(a);
 		LispString str;
 		b.ToString(str, 50, 10);
-		Check3(str, "3.000000000000000000000000000000000000000050104","assignment from string and a copy operation");
+		CheckStringEquals(str, "3.000000000000000000000000000000000000000050104","assignment from string and a copy operation");
 		
 	}
 	
@@ -930,7 +963,7 @@ int main(void)
 	TestArith2(253,1./253.);
 	TestArith2(1.0e-15, -2.0e-15);
 	
-	Next("precision control");
+	Next("rough precision control");
 	{// compute ((1+2^(-149)) - 1) * 2^149 with 150 bits and compare with 1
 	    BigNumber x;
 	    LispInt prec = 150;
@@ -941,24 +974,41 @@ int main(void)
 	    BigNumber y;
 	    y.SetTo(1.);
 	    y.Precision(prec);
-	    y.ShiftRight(y,prec-1);
-	    x.Add(x,y,prec);	// now should be slightly different from 1
+	    y.ShiftRight(y,prec-1); // y = 2 ^ (-149)
+	    x.Add(x,y,prec);	// now x should be slightly different from 1
 	    y.SetTo(-1);
-	    x.Add(x,y,prec);	// now should be positive
+	    x.Add(x,y,prec);	// now x should be positive, equal to 2^(-149)
 	    Check(x.Sign()==1, "x is positive");
-	    x.ShiftLeft(x,prec-1);
+	    x.ShiftLeft(x,prec-1); // x = 2^149* x
 	    CheckStringValue(x, "1.", 10, 10, "x=1. again");
 	// compute  (1+10^(-60))-1, this should be 0 with 150 bits
 	    y.SetTo(1.e-60);
 	    y.Precision(prec);
 	    x.SetTo(1.);
 	    x.Precision(prec);
-	    x.Add(x,y,prec);
+	    x.Add(x,y,prec);	// x = 1+10^(-60) must be equal to 1 due to roundoff
 	    y.SetTo(-1);
-	    x.Add(x,y,prec);	// now should be 0 due to roundoff
-	    CheckStringValue(x, "0.", 10, 10, "x=0 now");
+	    x.Add(x,y,prec);	// now should be 0
+	    CheckStringValue(x, "0.", 10, 10, "x=0 now due to roundoff");
 	}
-}
+/* not yet implemented
+	Next("precision control for Equals()");
+	Next("precision control for LessThan()");
+	Next("precision control for SetTo()");
+	Next("precision control for IsIntValue()");
+	Next("precision control for floating zero");
+	Next("Sign() of floating zero");
+	Next("precision control for addition");
+	Next("precision control for negation");
+	Next("precision control for multiplication");
+	Next("precision control for division");
+	Next("precision control for mixed integer/float arithmetic");
+	Next("precision control for floating-point shifts");
+	Next("precision control for Floor()");
+	Next("precision control for BecomeFloat()");
+*/
+
+}	// end of the comprehensive test suite
 	
 
 /*

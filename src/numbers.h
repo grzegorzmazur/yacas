@@ -143,7 +143,7 @@ public://basic object manipulation
   LispBoolean IsIntValue() const;
   LispBoolean IsSmall() const;
   void BecomeInt();
-  void BecomeFloat();
+  void BecomeFloat(LispInt aPrecision=0);
   LispBoolean LessThan(const BigNumber& aOther) const;
 public://arithmetic
   /// Multiply two numbers at given precision and put result in *this
@@ -237,6 +237,7 @@ private:
   
   /// GMP wrapper ends here.
   #else
+  /// Internal library wrapper starts here.
     inline void SetIsInteger(LispBoolean aIsInteger) {iType = (aIsInteger ? KInt : KFloat);}
     enum ENumType
     {
@@ -245,6 +246,7 @@ private:
     };
     ENumType iType;
     ANumber* iNumber;
+  /// Internal library wrapper ends here.
   #endif
 #endif
 };

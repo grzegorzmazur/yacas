@@ -1279,9 +1279,11 @@ void BigNumber::BecomeInt()
   SetIsInteger(LispTrue);
 }
 
-
-void BigNumber::BecomeFloat()
-{
+/// Transform integer to float, setting a given bit precision.
+/// Note that aPrecision=0 means automatic setting (just enough digits to represent the integer).
+void BigNumber::BecomeFloat(LispInt aPrecision)
+{//FIXME: need to specify precision explicitly
+  iNumber->ChangePrecision(aPrecision);	// is this OK or ChangePrecision means floating-point precision?
   SetIsInteger(LispFalse);
 }
 
