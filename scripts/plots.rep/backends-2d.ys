@@ -29,7 +29,7 @@ Plot2D'data(values_IsList, _options'hash) <-- values;
 Plot2D'gnuplot(values_IsList, _options'hash) <--
 [
   Local(item, dirBase, filename, filename'list);
-  dirBase := "plot.tmp/";
+  dirBase := "/tmp/plot.tmp/";
   filename := "data";
   // the "filename" option should not be used
   options'hash["filename"] := dirBase : filename;
@@ -62,7 +62,7 @@ Plot2D'gnuplot(values_IsList, _options'hash) <--
 Plot2D'plotutils(values_IsList, _options'hash) <--
 [
   Local(item, dirBase, filename, filename'list);
-  dirBase := "plot.tmp/";
+  dirBase := "/tmp/plot.tmp/";
   filename := "data";
   // the "filename" option should not be used
   options'hash["filename"] := dirBase : filename;
