@@ -4,6 +4,11 @@
 M. Abramowitz and I. A. Stegun,
 <i>Handbook of Mathematical Functions</i>, National Bureau of Standards, Washington, D.C., 1964.
 
+[Ahlgren <i>et al.</i> 2001]
+S. Ahlgren and K. Ono,
+<i>Addition and counting: the arithmetic of partitions</i>,
+Notices of the AMS 48 (2001), p. 978.
+
 [Bateman <i>et al.</i> 1953]
 Bateman and Erdelyi,
 <i>Higher Transcendental Functions</i>, McGraw-Hill, 1953.
@@ -63,7 +68,8 @@ X. Gourdon and P. Sebah,
 <i>The Euler constant</i>;
 <i>The Bernoulli numbers</i>;
 <i>The Gamma Function</i>;
-and other essays, online at <*http://numbers.computation.free.fr/Constants/*> (2001).
+<i>The binary splitting method</i>;
+and other essays, available online at <*http://numbers.computation.free.fr/Constants/*> (2001).
 
 [Haible <i>et al.</i> 1998]
 B. Haible and T. Papanikolaou,
@@ -112,6 +118,10 @@ D. M. Smith,
 [Spouge 1994]
 J. L. Spouge,
 J. SIAM of Num. Anal. 31 (1994), p. 931.
+
+[Sweeney 1963]
+D. W. Sweeney,
+Math. Comp. 17 (1963), p. 170.
 
 [Thacher 1963]
 H. C. Thacher, Jr.,

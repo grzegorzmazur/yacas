@@ -430,6 +430,8 @@ decreases with $n$ in a geometric progression
 
 The Newton-Raphson method of numerical solution of algebraic equations can be used to obtain multiple-precision values of several elementary functions.
 
+	    Newton's method
+
 *A Newton's method
 
 The basic formula is widely known: If $f(x)=0$ must be solved, one starts with a value of $x$ that is close to some root and iterates $$x'=x-f(x)*(D(x)f(x))^(-1)$$.
@@ -450,6 +452,8 @@ However, Newton's method suffers from sensitivity to the initial guess. If the i
 *A Newton's method!cubic convergence
 
 For some equations $f(x)=0$, Newton's method converges faster; for example, solving $Sin(x)=0$ in the neighborhood of $x=3.14159$ gives "cubic" convergence, i.e. the number of correct digits is tripled at each step. This happens because $Sin(x)$ near its root $x=Pi$ has vanishing second derivative and thus the function is particularly well approximated by a straight line.
+
+	    Halley's method
 
 *A Halley's method
 
@@ -537,6 +541,13 @@ we obtain an algorithm which costs $O(Sqrt(N))$ instead of $O(N)$ long multiplic
 
 One might wonder if we should not try to arrange the Taylor series in a cube or another multidimensional matrix instead of a rectangle. However, calculations show that this does not save time: the optimal arrangement is the two-dimensional rectangle.
 
+Note that the rectangular method saves the number of long multiplications by $x$ but increases the number of short multiplications and additions.
+If $x$ is a small integer or a small rational number, multiplications by $x$ are fast and it does not make sense to use the rectangular method.
+Direct evaluation of the series is more efficient in that case.
+When the coefficients of the series are also small rationals, and when a fast multiplication is available (faster than quadratic), then the binary splitting method (see below) is the best one to use.
+
+	    Speed-up for some functions
+
 *A Taylor series!$O(N^(1/3))$ method
 
 An additional speed-up is possible if the function allows a transformation that reduces $x$ and makes the Taylor series converge faster.
@@ -557,7 +568,7 @@ The number of long multiplications in the rectangular method is $2*Sqrt(N)$.
 The total number of long multiplications, as a function of $l$, has its minimum at
 $$ l <=> (32*Ln(10)/Ln(3)*P)^(1/3)-(Ln(P)-Ln(x))/Ln(3) $$,
 where it has a value roughly proportional to $P^(1/3)$.
-Therefore we shall minimize the total number of long multiplications if we first perform about $l$ steps of trisection and then use the rectangular method to compute about $N$ terms of the Taylor series.
+Therefore we shall minimize the total number of long multiplications if we first perform $l$ steps of trisection and then use the rectangular method to compute  $N$ terms of the Taylor series.
 
 		Using asymptotic series for calculations
 
@@ -586,8 +597,18 @@ even if we select a large value of $x$.
 
 The way to use an
 asymptotic series for a numerical calculation is to truncate the series
-<i>before</i> the terms start to grow. The error of this
-approximation is usually not greater than the first discarded term.
+<i>well before</i> the terms start to grow.
+
+Error estimates of the asymptotic series are sometimes difficult, but the rule of thumb seems to be that the error of the
+approximation is usually not greater than the first discarded term of the series.
+This can be understood intuitively as follows.
+Suppose we truncate the asymptotic series at a point where the terms still decrease, safely before they start to grow.
+For example, let the terms around the 100-th term be $A[100]$, $A[101]$, $A[102]$, ...,
+each of these numbers being significantly smaller than the previous one,
+and suppose we retain $A[100]$ but drop the terms after it.
+Then clearly our approximation would have been a lot better if we retained $A[101]$ as well.
+Therefore the error of the approximation is approximately equal to $A[101]$.
+
 
 The inherent limitation of the method of asymptotic series is that for a given
 $x$, there will be a certain place in the series where the term has the minimum
@@ -666,4 +687,71 @@ Brent (in [Brent 1975]) says that $O(Ln(Ln(n)))$ bits of accuracy are lost to ro
 
 The AGM sequence can be used for fast computations of $Pi$, $Ln(x)$ and $ArcTan(x)$.
 However, currently the limitations of Yacas internal math make these methods less efficient than simpler methods based on Taylor series and Newton iterations.
+
+		The binary splitting method
+
+*A binary splitting
+
+The method of binary splitting is well explained in [Haible <i>et al.</i> 1998].
+Some examples are also given in [Gourdon <i>et al.</i> 2001].
+This method applies to power series of rational numbers and to hypergeometric series.
+Most series for transcendental functions belong to this category.
+
+If we need to take $O(P)$ terms of the series to obtain $P$ digits of precision, then ordinary methods would require $O(P^2)$ arithmetic operations.
+(Each term needs $O(P)$ operations because all coefficients are rational numbers with $O(P)$ digits and we need to perform a few short multiplications or divisions.)
+The binary splitting method replaces the ordinary methods with $O(P^2)$ operations by $O(M(P*Ln(P))*Ln(P))$ operations.
+In other words, we need to perform long multiplications of integers of size $O(P*Ln(P))$ digits, but we need only $O(Ln(P))$ such multiplications.
+The binary splitting method performs better than the straightforward summation method if the cost of multiplication is smaller than $O(P^2)/Ln(P)$.
+
+Thus there are two main limitations of the binary splitting method:
+*	we can only compute functions of small integer or rational arguments;
+*	the method is faster only at high enough precision, when advanced multiplication methods become more efficient than simple $O(P^2)$ methods.
+
+Some advantages of the method are:
+*	the method is asymptotically fast and, when applicable, outperforms most other methods at very high precision;
+*	the method uses exact integer arithmetic, so one can store exact intermediate results of the calculation for checkpointing and parallelization, and also one can later resume the summation to get more precision.
+
+	    Description of the method
+
+We follow [Haible <i>et al.</i> 1998].
+The method applies to any series of rational numbers of the form
+$$ S = Sum(n,0,N-1, A(n)/B(n)) $$,
+where $A$, $B$ are integer coefficients with $O(n*Ln(n))$ bits.
+Usually the series is of the particular form
+$$ S(0,N) := Sum(n,0,N-1, a(n)/b(n)*(p(0)* ... *p(n))/(q(0)* ... *q(n))) $$,
+where $a$, $b$, $p$, $q$ are polynomials in $n$ with small integer coefficients and values that fit into $O(Ln(n))$ bits.
+
+For example, the Taylor series for $ArcSin(x)$ is of this form:
+$$ ArcSin(x) = x + 1/2*x^3/3+(1*3)/(2*4)*x^5/5+(1*3*5)/(2*4*6)*x^7/7 + ...$$
+This example is of the above form with the definitions $a=1$, $b(n)=2*n+1$, $p(n)=x^2*(2*n-1)$, $q(n)=2*n$ for $n>=1$ and $p(0)=x$, $q(0)=1$.
+(The method will apply only if $x$ is a rational number.)
+
+The goal is to compute the sum $S(0,N)$ with a chosen number of terms $N$.
+Instead of computing the rational number $S$, the binary splitting method computes the following four integers $P$, $Q$, $B$, and $T$:
+$$P(0,N) := p(0)* ... *p(N-1)$$,
+$$Q(0,N) := q(0)* ... *q(N-1)$$,
+$$B(0,N) := b(0) * ... *b(N-1)$$, and
+$$T(0,N) := B(0,N)*Q(0,N)*S(0,N)$$.
+At first sight it seems difficult to compute $T$, but the computation is organized recursively.
+These four integers are computed for the left ($l$) half and for the right ($r$) half of the range [$0$, $N$) and then combined using the obvious recurrence relations $P=P[l]*P[r]$, $Q=Q[l]*Q[r]$, $B=B[l]*P[r]$, and the slightly less obvious relation
+$$T=B[r]*Q[r]*T[l]+B[l]*P[l]*T[r]$$.
+Here we used the shorthand $P[l] := P(0,N/2-1)$, $P[r] := P(N/2, N-1)$ and so on.
+
+Thus the range [$0$, $N$) is split in half on each step.
+At the base of recursion the four integers $P$, $Q$, $B$, and $T$ are computed directly.
+At the end of the calculation (top level of recursion), one floating-point division is performed to recover $S=T/(B*Q)$.
+It is clear that the four integers carry the full information needed to continue the calculation with more terms.
+So this algorithm is easy to checkpoint and parallelize.
+
+The integers $P$, $Q$, $B$, and $T$ grow during the calculation to $O(N*Ln(N))$ bits, and we need to multiply these large integers.
+However, there are only $O(Ln(N))$ steps of recursion and therefore $O(Ln(N))$
+long multiplications are used.
+If the series converges linearly, we need $N=O(P)$ terms to obtain $P$ digits of precision.
+Therefore, the total asymptotic cost of the method is $O(M(P*Ln(P))*Ln(P))$ operations.
+
+This is a somewhat general form of the binary splitting technique.
+In particular cases the algorithm may be simplified.
+
+*REM FIXME: fill in the details and give examples
+
 

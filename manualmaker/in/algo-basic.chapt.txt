@@ -172,7 +172,7 @@ The current solution in the {Plot3DS} function is to use the {dgrid3d} command a
 This quite possibly generates many more grid points than necessary, but a more optimal solution would be more much more time-consuming or would require a specialized external program.
 One such set of programs is the {GMT} ("generic mapping tools") utility suite.
 
-	    Parametric plots
+		Parametric plots
 
 *A plotting!parametric
 
@@ -294,7 +294,11 @@ Typically all operations will fall into the following categories
 Some algorithms also need moderate storage space
 (e.g. an efficient algorithm for summation of the Taylor series uses $O(Ln(P))$ temporary $P$-digit numbers).
 
-	    Estimating convergence of a series
+Below we shall normally denote by $P$ the required number of decimal digits.
+The formulae will frequently contain conspicuous factors of $Ln(10)$, so it is obvious how to obtain the analogous expression for another base.
+(Most implementations use a binary base rather than a decimal base since it is more convenient for many calculations.)
+
+		Estimating convergence of a series
 
 *A Taylor series!required number of terms
 
@@ -350,9 +354,9 @@ terms in the Taylor series to compute $Exp(x)$ for $Abs(x)<1$ to $P$
 decimal digits. (Of course, if $x$ is much smaller than 1, many fewer
 terms will suffice.)
 
-	    Estimating round-off error
+		Estimating the unavoidable round-off error
 
-*A arbitrary-precision computation!round-off error estimate
+*A arbitrary-precision computation!round-off error estimates
 
 As the required precision $P$ grows, an arbitrary-precision algorithm
 will need more iterations or more terms of the series. So the round-off
@@ -362,11 +366,13 @@ calculations with a few more digits and compensate for round-off error.
 It is however imperative to know in advance how many more digits we
 need to take for our "working precision". We should also take that
 increase into account when estimating the total cost of the method.
+(In most cases this increase is small.)
 
-Here is a simple estimate of the round-off error in a computation of
-$n$ terms of a power series. Suppose that adding each term requires two
+Here is a simple estimate of the normal round-off error in a computation of
+$n$ terms of a power series.
+Suppose that the terms monotonically decrease in magnitude and that adding one term requires two
 multiplications and one addition. If all calculations are performed
-with relative precision $epsilon=10^(-P)$, then the accumulated
+with relative precision $epsilon=10^(-P)$, then the total accumulated
 relative round-off error is $3*n*epsilon$. (This is an optimistic
 estimate that needs to be verified in each particular case; what if the
 series begins with some large terms but converges to a very small
@@ -385,6 +391,50 @@ Below we shall have to perform similar estimates of the required number
 of terms and of the accumulated round-off error in our analysis of the
 algorithms.
 
+		Catastrophic round-off error
+
+*A arbitrary-precision computation!catastrophic round-off error
+
+Sometimes the round-off error of a particular method of computation becomes so large that the method becomes highly inefficient.
+
+Consider the computation of $Sin(x)$ by the truncated Taylor series
+$$ Sin(x) <=>Sum(k,0,N-1,(-1)^k*(x)^(2*k+1)/(2*k+1)!) $$,
+when $x$ is large.
+We know that this series converges for all $x$, no matter how large.
+Assume that $x=10^M$ with $M>=1$, and that we need $P$ decimal digits of precision in the result.
+
+First, we determine the necessary number of terms $N$.
+The magnitude of the sum is never larger than $1$.
+Therefore we need the $N$-th term of the series to be smaller than $10^(-P)$.
+The inequality is
+$ (2*N+1)! > 10^(P+M*(2*N+1)) $.
+We obtain that $2*N+2>e*10^M$ is a necessary condition, and if $P$ is large, we find approximately
+$$ 2*N+2 <=> ((P-M)*Ln(10)) / (Ln(P-M)-1-M*Ln(10)) $$.
+
+However, taking enough terms does not yet guarantee a good result.
+The terms of the series grow at first and then start to decrease.
+The sum of these terms is, however, small.
+Therefore there is some cancellation and we need to increase the working precision to avoid the round-off.
+Let us estimate the required working precision.
+
+We need to find the magnitude of the largest term of the series.
+The ratio of the next term to the previous term is $x/(2*k+1)$ and therefore the maximum will be when this ratio becomes equal to $1$, i.e. for $2*k+1<=>10^M=x$.
+Therefore the largest term is of order $x^x/x! <=> Exp(x)$ and so we need about $10^M/Ln(10)$ decimal digits before the decimal point to represent this term.
+But we also need to keep at least $P$ digits after the decimal point, or else the round-off error will erase the significant digits of the result.
+Therefore, the required working precision is at least $P+10^M/Ln(10)$.
+
+In addition, we will have unavoidable roundoff error due to $O(P)$ arithmetic operations.
+So we should increase precision again by $Ln(P)/Ln(10)$ digits plus a few guard digits.
+
+As an example, to compute $Sin(10)$ to $50$ decimal digits with this method, we need a working precision of about $60$ digits, while to compute $Sin(1000)$ we need to work with about $490$ digits.
+This shows how inefficient the Taylor series for $Sin(x)$ becomes for large arguments $x$.
+A simple transformation $x=2*Pi*n+x'$ would have reduced $x$ to at most 7, and the unnecessary computations with $490$ digits would be avoided.
+The main cause of this inefficiency is that we have to subtract extremely large numbers of order $Exp(10^M)$ to get a relatively small result of order $1$.
+
+We find that the method of Taylor series for $Sin(x)$ at large $x$ is highly inefficient because of round-off error and should be complemented by other methods.
+
+
+
 		Basic arbitrary-precision arithmetic
 
 *A arbitrary-precision computation!Yacas internal math
@@ -399,11 +449,15 @@ the number of digits of precision, then multiplication and division take
 $M(P)=O(P^2)$ operations in the internal math. (Of course, multiplication and division by a short integer takes time linear in $P$.)
 Much faster algorithms
 (Karatsuba, Toom-Cook, FFT multiplication, Newton-Raphson division etc.) are
-implemented in {gmp} where the cost of multiplication is $M(P)=O(P*Ln(P))$ for very large precision. For the
-estimates of computation cost in this book we shall assume that $M(P)$ is at
-least linear in $P$ and maybe slower.
+implemented in {gmp}, {CLN} and some other libraries.
+The asymptotic cost of multiplication for very large precision is $M(P)<=>O(P^1.6)$ for the Karatsuba method and $M(P)=O(P*Ln(P))$ for the FFT method.
+In the estimates of computation cost in this book we shall assume that $M(P)$ is at
+least linear in $P$ and maybe a bit slower.
+The asymptotically fastest method of FFT multiplication is only cost-effective at the precision of about 10,000 or more decimal digits.
+For very small precision up to about 200 digits the simple $O(P^2)$ multiplication is the most efficient.
 
 Warning: calculations with internal Yacas math using precision exceeding 10,000 digits are currently impractically slow.
+
 
 *A continued fraction approximation!estimating $Ln(2)$
 

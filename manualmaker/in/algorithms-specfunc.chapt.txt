@@ -10,6 +10,8 @@ rearranging this integral; for example, $Gamma(z+1)=z*Gamma(z)$. This identity
 defines $Gamma(z)$ for all complex $z$. The Gamma function is regular
 everywhere except nonpositive integers (0, -1, -2, ...) where it diverges.
 
+	    Special arguments
+
 For real integers $n>0$, the Gamma function is the same as the factorial, 
 $$ Gamma(n+1) := n! $$,
 so the factorial notation can be used for the Gamma function too. Some formulae
@@ -25,11 +27,24 @@ $$ (+(2*n+1)/2)! = Sqrt(Pi)*(2*n+1)! / (2^(2*n+1)*n!) $$,
 $$ (-(2*n+1)/2)! = (-1)^n*Sqrt(Pi) * (2^(2*n)*n!) / (2*n)! $$.
 For efficiency, "double factorials" are used in this calculation.
 
+*A Gamma function!rational arguments
+
+For "small" rational arguments, i.e. for numbers $s=p/q$ where $p$, $q$ are small integers, [Haible <i>et al.</i> 1998] give a faster method for computing $Gamma(s)$.
+Partial integration repeated many times gives the expansion
+$$ Gamma(s) = M^s*Exp(-M)*Sum(n,0,Infinity,M^n/(s*(s+1)*...*(s+n))) $$
+$$ + (Integrate(u,M,Infinity) u^(s-1)*Exp(-u)) $$.
+Suppose that $1<=s<=2$.
+Then the last integral is smaller than $M*Exp(-M)$.
+By choosing $M$ large enough, this can be made small enough to discard that integral.
+Then we can evaluate the series using the binary splitting technique.
+This method is currently not implemented in Yacas.
+
+	    General arguments
+
 *A Gamma function!by Lanczos-Spouge method
 
 For arbitrary complex arguments with nonnegative real part, the library
-function {GammaNum(x)} computes a uniform appoximation of Lanczos [Lanczos 1964] and Spouge [Spouge 1994]
-(with the so-called "less precise coefficients of Spouge").
+function {GammaNum(x)} computes a uniform appoximation of Lanczos [Lanczos 1964] modified by Spouge [Spouge 1994].
 (See also [Godfrey 2001] for some more explanations on the method.)
 
 The method gives the $Gamma$-function only for arguments with positive
@@ -69,19 +84,20 @@ are implemented. First, a Horner scheme is used to compute the sum; this is some
 faster and leads to smaller roundoff errors. Second, intermediate calculations
 are performed at 40{%} higher precision than requested. This is much slower but
 allows to obtain results at desired precision.
+*FOOT More precisely, the working precision necessary to compensate for the cancellations must be $1.152*P$ digits for $P$ digits of the result.
 
-If the factorial of a large integer or half-integer $n$ needs to be computed not exactly but only with a certain floating-point precision, it is faster (for large enough $Abs(n)$) not to evaluate an exact integer product, but to use the {GammaNum} approximation.
-
-
-One c or Stirling's asymptotic formula,
-$$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)+1/(12*n)-1/(360*n^3)+...$$
+If the factorial of a large integer or half-integer $n$ needs to be computed not exactly but only with a certain floating-point precision, it is faster (for large enough $Abs(n)$) not to evaluate an exact integer product, but to use the numerical approximation.
 This method is currently not implemented in Yacas.
+
+*A Stirling's formula
+
+There is also the famous Stirling's asymptotic formula for large factorials,
+$$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)+1/(12*n)-1/(360*n^3)+...$$
+
 
 	    Other methods for the Gamma function
 
 More traditional ways of calculating the Gamma function are the Stirling asymptotic series and the Sweeney-Brent method of combined series.
-
-*A Stirling's formula
 
 *A Gamma function!by asymptotic series
 
@@ -131,17 +147,19 @@ On the other hand, if the Bernoulli numbers are not available precomputed, then 
 *A Gamma function!by Sweeney-Brent method
 
 The second method for the Gamma function was used in R. P. Brent's Fortran MP package [Brent 1978].
-Brent refers to a 1963 paper by D. W. Sweeney for the origin of this method. Therefore we called this method the "Sweeney-Brent" method.
+Brent refers to [Sweeney 1963] for the origin of this method.
+Therefore, we called this method the "Sweeney-Brent" method.
 
 The idea is to represent the Gamma function as a sum of two integrals,
 $$ Gamma(x) = (Integrate(u,0,M) u^(x-1)*Exp(-u)) + (Integrate(u,M,Infinity) u^(x-1)*Exp(-u)) $$.
-The above equation is clearly an identity for any $M$.
+The above identity clearly holds for any $M$.
 Both integrals in this equation can be approximated by power series.
-The parameter $M$ can be chosen to minimize the error of the approximation, as we shall see below.
+The parameter $M$ and the numbers of terms in the series can be chosen to minimize the computational cost, as we shall see below.
 
 The first integral in this equation can be found as a sum of the Taylor series (expanding $Exp(-u)$ near $u=0$),
 $$ (Integrate(u,0,M) u^(x-1)*Exp(-u)) = M^x*Sum(n,0,Infinity, ((-1)^n*M^n)/((n+x)*n!)) $$.
-This series is an alternating series and its computation requires a significant increase of working precision, but the series absolutely converges for any finite $M$.
+This series is an alternating series and its computation requires a 100{%} increase of working precision, but the series absolutely converges for any finite $M$.
+(It is quicker to compute this if $x$ is a small rational number.)
 The second integral can be approximated by an asymptotic series using standard methods of finding the asymptotics of integrals.
 
 *REM FIXME -- fill in the details
@@ -167,7 +185,7 @@ A much faster method can be used, based on some identities of Bessel functions.
 
 The basic formulae for the "fast" method (Brent's method "B1") are:
 $$gamma <=> S(n) / V(n) - Ln(n) $$,
-where $S(n)$ and $V(n)$ are some auxiliary functions, and $n$ is chosen appropriately (basically, "high enough"; precise estimates are given).
+where $S(n)$ and $V(n)$ are some auxiliary functions, and $n$ is chosen to be high enough (precise estimates are given below).
 
 First, the sequence $H[n]$ is defined as the partial sum of the harmonic series:
 $$ H[n] := Sum(k,1,n,1/k) $$.
