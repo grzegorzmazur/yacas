@@ -145,7 +145,7 @@ Function("Taylor",{taylorvariable,taylorat,taylororder,taylorfunction})
   result;
 ];
 
-
+/*
 RuleBase("Fibonacci",{n});
 Rule("Fibonacci",1,0, IsInteger(n) And IsZero(n-1)) 1;
 Rule("Fibonacci",1,0, IsInteger(n) And IsZero(n-2)) 1;
@@ -164,5 +164,35 @@ Rule("Fibonacci",1,1, IsInteger(n) And n > 2)
     i++;
   ];
   result;
+];
+*/
+
+10 # Lucas(0) <-- {2,1};
+11 # Lucas(n_IsPositiveInteger) <--
+[
+   Local(result, residue, z, t);
+   {z,t}:=Lucas(N(Floor(n/2)));
+   residue:=Mod(n,4);
+   If(residue=0, [
+     t:=z*t-1;
+     z:=z*z-2;
+   ], If(residue=1, [
+     z:=z*t-1;
+     t:=2+t*t;
+   ], If(residue=2, [
+     t:=1+z*t;
+     z:=2+z*z;
+   ], If(residue=3, [
+     z:=1+z*t;
+     t:=t*t-2;
+   ]))));
+   {z,t};
+];
+
+10 # Fibonacci(n_IsPositiveInteger) <--
+[
+   Local(z,t);
+   {z,t}:=Lucas(n-1);
+   ((z << 1)+t)/5;
 ];
 
