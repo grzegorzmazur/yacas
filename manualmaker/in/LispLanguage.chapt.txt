@@ -42,7 +42,7 @@ To drive home this point, {(* a 1)} would raise an error when given
 to the Lisp {eval} function if the variable {a} is not bound to a 
 value, but would be perfectly valid data when passed to a CAS. In 
 fact, one would like it to return {a} in this case. The {*}
-operator is actually a function call when invoked from Lisp (it 
+operator is actually a function call when invoked from Lisp ( {(* a 1)} 
 is a <i>program</i>), but is data when passed to a CAS.
 
 One can conclude that {Yacas}, an engine for simplifying symbolic 
@@ -55,19 +55,13 @@ of Lisp, and then proceed to show how the {yacas} function can be
 implemented in Lisp in general. Clearness of concepts explained will 
 be favoured over efficiency and performance. A small subset of Lisp 
 will be used, so it should be easy to take the code along to various 
-different Lisp dialects, or to print a little Lisp implementation to 
+different Lisp dialects, or to write a little Lisp implementation to 
 implement the {yacas} function.
 
 The first chapter briefly describes a small Lisp dialect. A small subset 
 of what is usually found in the average Lisp interpreter is described. 
 The Lisp dialect is different in small subtle ways from normal
 Lisp implementations. Simplicity is put first. 
-
-To use {Yacas} script code in a Lisp interpreter other than the
-one described in this section, a little interpreter needs to be
-written that does works as described in this book. The disadvantage
-is a slower CAS system, but the advantage is a Lisp dialect closer
-to the specific task at hand, designing a computer algebra system.
 
 For the Lisp dialect presented, one was chosen that is different
 from the Lisp dialect that represents {Yacas}. This separation
@@ -94,7 +88,7 @@ There are various sources on the internet describing the early history
 of Lisp.
 
 *REM should we put up a list here? Or have our own short history? Mention
-McCarthy etcetera?
+*REM McCarthy etcetera?
 
 		The Lisp interactive command line interface
 
@@ -119,10 +113,11 @@ that evaluates to itself, or otherwise a lexical word that refers
 to a variable. When it is a variable, the Lisp system looks up its
 value, and returns the value the variable is bound to, in what
 is called the 'environment' the Lisp interpreter is evaluating in.
-When a variable is not bound, in this implementation, the variable
-is returned unevaluated. The noted difference with the usual Lisp
-dialects is that the system raises an error when an expression tries
-to evaluate a variable that is not bound to a value. 
+When a variable is not bound, an error is raised. 
+The noted difference with the usual Lisp
+dialects is that a normal Lisp system raises an error when an expression 
+tries to evaluate a variable that is not bound to a value, whereas
+in a CAS, the variable is a free parameter in some expression.
 
 When a list of expressions is encountered, the first element in
 the list is a function that should be called, and the rest of the
@@ -169,22 +164,27 @@ bound to the variable {a} without re-evaluating it.
 	In> 'a
 	Out> a
 	In> (eval a)
-	Out> (this is (this is a list ) list )
+	ERROR: function not defined : this
+	Out> nil
 
-With {quote} we can withquote evaluating a, and with {eval}
-we can re-evaluate {a}. Since {a} is also an atom in its list,
-it gets inserted at that point.
+With {quote} we can withhold evaluating a, and with {eval}
+we can re-evaluate {a}. Since {this} is not a defined function
+in this case, an error is raised.
 
-
-Note that evaluation as defined in other Lisp dialects is less suitable for 
-CAS systems. The above example shows expressions returning unevaluated,
-which is what you want in a CAS.
+Note that evaluation as defined in Lisp dialects is less suitable for 
+CAS systems. A CAS would return expressions unevaluated,
+which is what you want in a CAS. It then represents some function
+which has not been specified yet. In a Lisp intepreter, it is nice
+to have the interpreter raise an error, but in a CAS, where it
+is data, it should not be simplified further.
 
 For atoms that refer to variables that are not yet bound, the variables
 should be returned unevaluated by default, and functions that are 
 called but not defined should be returned as the same function but with their 
 arguments evaluated. evaluation as defined in most Lisp dialects is not suited
-to simplifying expressions. 
+to simplifying expressions. Later in this book an evaluator will
+be developed in Lisp itself that is closer to a sense of 'simplification'
+required for CAS.
 
 Sometimes the user wants to refer to a function without having to define it, 
 because transformation rules for the function can be given without explaining
@@ -192,7 +192,7 @@ explicitly how to go about evaluating the function. Certain functions
 have properties, and sometimes it is easier to work with the properties
 than to evaluate them explicitly.
 
-Also, for the rest of this book, it is assumed that the 
+For the rest of this book, it is assumed that the 
 semi-colon, {;}, means that the rest of the input line
 up to the end of line or end of file is a human readable comment, 
 not to be executed.
@@ -233,8 +233,8 @@ but not implementing it does make the effort rather complex.
 
 The following sections will describe the following minimal 
 set of commands; 
-*	0. macro-like commands {quote}, {if}, {cond}, {setf}, {while}, {progn}, {defun} and {defmacro}.
-*	0. function-like commands {assoc}, {eval}, {first}, {rest}, {cons}, {atom}, {list}, {equal}, {+}, {-} and {<}.
+*	0. macro-like commands {quote}, {if}, {cond}, {setf}, {while}, {progn}, {eval}, {defun} and {defmacro}.
+*	0. function-like commands {assoc}, {first}, {rest}, {cons}, {atom}, {listp}, {list}, {equal}, {+}, {integerp}, {-} and {<}.
 
 In the next sections, whenever a function call is explained,
 the arguments to the function will be delimited by {<} and {>}.
@@ -244,7 +244,6 @@ Arguments are evaluated unless stated otherwise.
 
 The set of primitives described in this section are meant to be
 used as building blocks for building a final bigger system.
-
 
 	    Controlling evaluation
 
@@ -256,18 +255,6 @@ takes one argument, and returns it unevaluated.
 *	0. {(eval <expression>)} - {eval} also takes one argument, and evaluates
 it when {eval} is called. When {eval} is called, its argument was
 evaluated already.
-*	0. {(apply <function> <argument-list>)} - apply a function to an atom. 
-This will not work with macro's.
-
-In addition to the examples already given for {eval} and {quote},
-here is an example for {apply}.
-
-	In> (setf add '(lambda (x y) (+ x y)))
-	Out> add
-	In> (add 2 3)
-	Out> 5
-	In> (apply add '(2 3))
-	Out> 5
 
 	    Assigning variables and functions
 
@@ -280,7 +267,7 @@ whose name is {function-name}, and a list of arguments {argument-list}.
 This function can then be called from anywhere. Its arguments are first 
 evaluated, and a set of local variables (listed in the {argument-list} argument) 
 are reserved, and bound to the values passed in.
-*	0. {(Defmacro <macro-name> <argument-list> <expression>)} - does the
+*	0. {(defmacro <macro-name> <argument-list> <expression>)} - does the
 same as {defun}, but with the arguments not evaluated before evaluating the
 body {expression}. Also, the {expression} is evaluated from within the
 calling scope, so the {expression} can use variables from its calling
@@ -298,9 +285,9 @@ are not evaluated first, and the variables defined in the calling
 environment are visible while expressions using arguments on the
 command line are evaluated. A macro can be viewed as a bit of
 code that got pasted in to the place where it got called, by the 
-interpreter.
+interpreter (in fact, this is what a compiler can do).
 
-The {Defmacro} function allows the programmer to expand the language
+The {defmacro} function allows the programmer to expand the language
 by adding functions that act as if they were defined in the core
 part of the interpreter. 
 
@@ -380,8 +367,6 @@ strictly required to build a CAS. When implementing a more
 mature Lisp interpreter, it is wise to define {lambda} and {macro},
 for the convenience of the programmer.
 
-*REM TODO I need a macro example, as soon as it works!
-
 	    Creating and dissecting lists of expressions
 
 Lists of expressions are used to build more elaborate structures.
@@ -424,6 +409,8 @@ Examples:
 
 *REM TODO missing setf to set up the list!!!
 
+	In> (setf list '( ("name" "Peter") ("age" 28) ) )
+	Out> list
 	In> (assoc '"name" list)
 	Out> ("name" "Peter" )
 	In> (assoc '"age" list)
@@ -433,10 +420,10 @@ Examples:
 
 	    Predicates
 
-Common Lisp has two special atoms, {T} and {NIL}. {T}
-stands for <i>true</i>, whereas {NIL} stands for <i>false</i>.
-{NIL} is actually usually also the empty list. Typing an empty
-list {()} is the same as typing {NIL}:
+Common Lisp has two special atoms, {t} and {nil}. {t}
+stands for <i>true</i>, whereas {nil} stands for <i>false</i>.
+{nil} is actually usually also the empty list. Typing an empty
+list {()} is the same as typing {nil}:
 
 
 	In> ()
@@ -444,11 +431,11 @@ list {()} is the same as typing {NIL}:
 	In> nil
 	Out> nil
 
-In Common Lisp, {NIL} is considered to mean <i>false</i> when 
+In Common Lisp, {nil} is considered to mean <i>false</i> when 
 considered as a boolean result from a list, and anything different
-from {NIL} is considered to mean <i>true</i>. This is then used 
+from {nil} is considered to mean <i>true</i>. This is then used 
 as an efficient way to find items in lists. The result returned
-can then either be a found result, or {NIL} which means nothing
+can then either be a found result, or {nil} which means nothing
 was found.
 
 	In> (rest '(a b))
@@ -456,10 +443,10 @@ was found.
 	In> (rest '(a))
 	Out> nil
 
-The author feels uneasy with having the {NIL} atom overloaded
+The author feels uneasy with having the {nil} atom overloaded
 as both an empty list and <i>false</i> when used in predicates,
 because it makes code harder take along to another language.
-In some cases {NIL} means an empty list, and in some cases
+In some cases {nil} means an empty list, and in some cases
 it means <i>false</i>, which complicates converting code,
 due to the fact that the code has to be examined more closely
 for this. {Yacas} has a distinct set of atoms, {True} and {False}
@@ -471,16 +458,20 @@ symbols for <i>true</i> and <i>false</i>, {#t} and {#f} respectively.
 
 Two predicates needed for operating on lists are then:
 
-*	0. {(Islist <expression>)} - {Islist} returns {T} if <expression>
-is a list, {NIL} otherwise.
+*	0. {(listp <expression>)} - {listp} returns {t} if <expression>
+is a list, {nil} otherwise.
 *	0. {atom <expression>} - {atom} returns {T} if the {expression}
 passed in is an atom (a word).
-*	0. (equal <expression-1> <expression-2>) - returns {T} if the
-two expressions are the same, {NIL} otherwise. Common Lisp has more
+*	0. (equal <expression-1> <expression-2>) - returns {t} if the
+two expressions are the same, {nil} otherwise. Common Lisp has more
 equality operators. They are more efficient for specific types of
 comparisons. {equal} is the most generic form which works on all types
 of input. As we are composing a minimum subset of functions to work
 with in this part of this book, we will only mention {equal}.
+
+Note the difference in {atom} and {listp}, which was taken from
+Common Lisp. In Common Lisp predicates are supposed to be suffixed
+by a 'p', but apparently not so with {atom}.
 
 	    Variable scoping
 
@@ -491,7 +482,7 @@ When {setf} is called, first the local variables are searched
 for a candidate variable to set, and after that the global variables
 are searched. When entering a function body, a local frame of local
 variables for that function are defined, and the parameter variables
-are bound to the arguments passed in to the function. {Let} allows
+are bound to the arguments passed in to the function. {let} allows
 the programmer to declare additional local variables. 
 
 The following example sets up variables {n} and {m} and assigns them
@@ -504,19 +495,17 @@ values locally. {n} is bound to {a}, and {m} bound to {(b c)}.
 	Out> nil
 
 
-The {expression} part in the {Let} form gets evaluated after 
+The {expression} part in the {let} form gets evaluated after 
 the local variables have been assigned. Note that evaluation of
-the expressions in the {Let} form are performed in the scope 
-where the {Let} form is called, thus expressions in the {Let}
+the expressions in the {let} form are performed in the scope 
+where the {let} form is called, thus expressions in the {let}
 form can use local variables from its surroundings.
 
 Local variables that are declared in a certain scope where the
 variable already had a value mask the older declaration of the
 variable.
 
-Note 1: you can declare local variables without first assigning them values. 
-
-Note 2: the values that will be assigned to the local variables are
+Note: the values that will be assigned to the local variables are
 evaluated <i>before</i> being assigned to the local variables.
 So the expressions in the {assign-list} cannot refer to other variables
 declared in the same {assign-list}. 
@@ -525,18 +514,17 @@ declared in the same {assign-list}.
 
 No language is complete without conditional execution and looping.
 *	0. {(if <predicate> <then-clause> <else-clause>)} - an if
-statement: if {predicate} doesn't evaluate to {NIL} return the 
+statement: if {predicate} doesn't evaluate to {nil} return the 
 result of evaluating the {then-clause} expression, otherwise
 return the result of evaluating the {else-clause}.
 *	0. {(while <predicate> <body>)} - this 
-function evaluates {body} until {predicate} returns {NIL} ({predicate}
+function evaluates {body} until {predicate} returns {nil} ({predicate}
 is called before each iteration), and the result of the last
 evaluation of {body} is returned afterwards.
 *	0. {(cond (<pred-1> <body-1>) ... (<pred-n> <body-n>))} - 
 similar to {cond} in Lisp: the items are traversed one at a time, from
 front to end, evaluating the predicates. if one does not evaluate 
-to {NIL}, its {body} is evaluated, and the result of evaluating returned.
-are lists with two elements: a predicate and a body.
+to {nil}, its {body} is evaluated, and the result of evaluating returned.
 *	0. {(progn <body-1> ... <body-n>)} - evaluate multiple 
 expressions, and return the result of evaluating the last expression,
 {body-n}.
@@ -544,7 +532,7 @@ expressions, and return the result of evaluating the last expression,
 This concludes the a set of functions required for building up a 
 computer algebra system. It is not a minimal set by any means, 
 as a following section will show; {if} can be defined by using
-{Defmacro} and {cond}, for instance.
+{defmacro} and {cond}, for instance.
 
 The next section will first introduce arbitrary number arithmetic
 support. It is not strictly necessary for the interpreter to work
@@ -554,7 +542,6 @@ that does not need arithmetic.
 
 The next sections after that will continue by introducing a few
 building blocks that are needed to implement a CAS like Yacas.
-
 
 		Arbitrary precision arithmetic
 
@@ -591,7 +578,21 @@ integer ({integerp}), and an ordering operator <i>less than</i>
 denoted {<}, other arithmetic operations like multiplication,
 division, exponentiation etcetera can be built.
 
-*REM TODO@@@ need an example showing IsInteger
+Some examples using {<} and {integerp}.
+
+	In> (integerp 4)
+	Out> t
+	In> (integerp -4)
+	Out> t
+	In> (integerp 'a)
+	Out> nil
+	In> Out> (a b c )
+	In> (integerp '(a b c))
+	Out> nil
+	In> (< 2 3)  
+	Out> t
+	In> (< 3 2)
+	Out> nil
 
 Note that a computer algebra system requires arbitrary precision
 arithmetic, as for certain algorithms the intermediate results
@@ -617,23 +618,23 @@ Some can be defined in terms of others. They are defined here
 because they are easy to define in an interpreter without making
 the interpreter much larger, but are used often, so efficiency
 is required.
-For instance, given the {Cond} and {Defmacro} operations, it is
+For instance, given the {cond} and {defmacro} operations, it is
 possible to define an {if} operation:
 
 	In> (defmacro Newif
-	  (pred then else)
-	  (Cond
-	     ( (eval pred) (eval then) )
-	     ( True        (eval else) )
-	) )
+	          (pred then else)
+	          (cond
+	             ( (eval pred) (eval then) )
+	             ( t           (eval else) )
+	        ) )
 	Out> Newif
-	In> (Newif (equal a b) c d)
+	In> (Newif (equal 'a 'b) 'c 'd)
 	Out> d
-	In> (Newif (equal a a) c d)
+	In> (Newif (equal 'a 'a) 'c 'd)
 	Out> c
-	In> (if (equal a b) c d)
+	In> (if (equal 'a 'b) 'c 'd)
 	Out> d
-	In> (if (equal a a) c d)
+	In> (if (equal 'a 'a) 'c 'd)
 	Out> c
 
 Now let us start by building a set of new primitives using
@@ -760,10 +761,6 @@ a function needed for CAS.
 The commands described here can be implemented in the interpreter,
 but they are not strictly necessary, or they can be implemented
 in Lisp code using more basic primitives.
-
-
-*REM @@@@@
-
 
 *	0. {(let ( (<var-1> <val-1>) ... (<var-n> <val-n>) ) <body>)} -
 evaluate the values {val-1} through <val-n> and declare new local variables
@@ -1239,10 +1236,19 @@ a bit of code between the two.
 In {Yacas}, when a function is not defined or a variable not bound
 to a value, the expression in question is returned unevaluated 
 (actually, in the case of a function call, its arguments are evaluated).
-Above that, for certain functions, the system can be told that
-certain arguments to certain functions should not be evaluated.
-And the {UnFence} function lets a function see the local variables from
-a calling environment.
+
+Since interpreting a Lisp program is just an algorithm, and any algorithm
+can be implemented in Lisp, one could write a Lisp interpreter in Lisp
+itself. In fact, it is very simple to do so. This section describes an
+example Lisp interpreter written in Lisp itself. It will be used in the
+end to implement an interpreter for {Yacas} code.
+
+The advantage of directly compiling to native code (c++/Java) is clear;
+one stands a chance of writing a Lisp interpreter in Lisp itself, and
+have it be as efficient as the internal interpreter itself (if the
+compiler
+is good enough). The interpreting code just needs to be compiled by a good
+compiler.
 
 		The system in action
 
