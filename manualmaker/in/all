@@ -40,6 +40,12 @@ Load("refprog.book");
 InitBook("Algo");
 Load("Algo.book");	// note: manualmaker crashes mysteriously when trying to emit a book that was not loaded
 
+  GarbageCollect();
+
+InitBook("LispProgramming");
+Load("LispProgramming.book");	// note: manualmaker crashes mysteriously when trying to emit a book that was not loaded
+
+
 /* Emit framed version of the manual. */
 SelectBook("intro");
 EmitHtmlFramed();
@@ -75,6 +81,9 @@ EmitHtmlSimple();
   GarbageCollect();
 
 SelectBook("Algo");
+EmitHtmlFramed();
+
+SelectBook("LispProgramming");
 EmitHtmlFramed();
 
   GarbageCollect();
