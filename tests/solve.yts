@@ -53,45 +53,45 @@ HoldArgNr("VerifySolve", 2, 1);
 
 Testing("Solve");
 
-Verify(Solve(a+x*y==z,x),(z-a)/y);
-Verify(Solve({a+x*y==z},{x}),{{(z-a)/y}});
+Verify(OldSolve(a+x*y==z,x),(z-a)/y);
+Verify(OldSolve({a+x*y==z},{x}),{{(z-a)/y}});
 
 
-VerifySolve(JNSolve(a+x*y == z, x), { x == (z-a)/y });
+VerifySolve(Solve(a+x*y == z, x), { x == (z-a)/y });
 
-VerifySolve(JNSolve(x^2-3*x+2, x), { x == 1, x == 2 });
+VerifySolve(Solve(x^2-3*x+2, x), { x == 1, x == 2 });
 
-VerifySolve(JNSolve(2^n == 32, n), { n == Ln(32)/Ln(2) });  
+VerifySolve(Solve(2^n == 32, n), { n == Ln(32)/Ln(2) });  
             /* Of course, Ln(32)/Ln(2) = 5 */
 
-VerifySolve(JNSolve(ArcTan(x^4) == Pi/4, x), 
+VerifySolve(Solve(ArcTan(x^4) == Pi/4, x), 
             { x == 1, x == -1, x == I, x == -I });
 
-VerifySolve(JNSolve(Exp(x)/(1-Exp(x)) == a, x), {x == Ln(a/(a+1))});
-VerifySolve(JNSolve(Exp(x)/(1-Exp(x)) == a, a), {a == Exp(x)/(1-Exp(x))});
+VerifySolve(Solve(Exp(x)/(1-Exp(x)) == a, x), {x == Ln(a/(a+1))});
+VerifySolve(Solve(Exp(x)/(1-Exp(x)) == a, a), {a == Exp(x)/(1-Exp(x))});
 
-VerifySolve(JNSolve(x^5 == 1, x), 
+VerifySolve(Solve(x^5 == 1, x), 
             { x == 1, x == Exp(2/5*I*Pi), x == Exp(4/5*I*Pi), 
               x == Exp(-2/5*I*Pi), x == Exp(-4/5*I*Pi)});
 
-VerifySolve(JNSolve(Sqrt(x) == 1, x),  { x == 1 });
-VerifySolve(JNSolve(Sqrt(x) == -1, x), { });
-VerifySolve(JNSolve(Sqrt(x) == I, x),  { x == -1 });
-VerifySolve(JNSolve(Sqrt(x) == -I, x), { });
-VerifySolve(JNSolve(Sqrt(x) == 0, x),  { x == 0 });
+VerifySolve(Solve(Sqrt(x) == 1, x),  { x == 1 });
+VerifySolve(Solve(Sqrt(x) == -1, x), { });
+VerifySolve(Solve(Sqrt(x) == I, x),  { x == -1 });
+VerifySolve(Solve(Sqrt(x) == -I, x), { });
+VerifySolve(Solve(Sqrt(x) == 0, x),  { x == 0 });
 
 
 /* The following equations have in fact infinitely many solutions */
 
-VerifySolve(JNSolve(Sin(x), x), { x == 0, x == Pi });
+VerifySolve(Solve(Sin(x), x), { x == 0, x == Pi });
 
-VerifySolve(JNSolve(x*Exp(x), x), { x == 0 });
+VerifySolve(Solve(x*Exp(x), x), { x == 0 });
 
-VerifySolve(JNSolve(Cos(a)^2 == 1/2, a), 
+VerifySolve(Solve(Cos(a)^2 == 1/2, a), 
             { a == Pi/4, a == 3/4*Pi, a == -3/4*Pi, a == -Pi/4 });
 
 /* This goes into an infinite recursion:
- * VerifySolve(JNSolve(Sin(a*Pi)^2-Sin(a*Pi)/2 == 1/2, a), 
+ * VerifySolve(Solve(Sin(a*Pi)^2-Sin(a*Pi)/2 == 1/2, a), 
  *             { a == 1/2, a == 7/6 });
  */
 
@@ -100,33 +100,40 @@ Verify(IsError(), False);
 /* This equation can be solved (the solution is x>0), but the current
  * code does not do this. The least we can expect is that no spurious
  * solutions are returned. */
-VerifySolve(JNSolve(0^x == 0, x), {});
-Verify(ClearError("JNSolve'Fails"), True);
+VerifySolve(Solve(0^x == 0, x), {});
+Verify(ClearError("Solve'Fails"), True);
 Verify(IsError(), False);
 
 /* This equation could be solved using the Lambert W function */
-VerifySolve(JNSolve(x^x == 1, x), {});
-Verify(ClearError("JNSolve'Fails"), True);
+VerifySolve(Solve(x^x == 1, x), {});
+Verify(ClearError("Solve'Fails"), True);
 Verify(IsError(), False);
 
 /* Another equation which cannot be solved at the moment */
-VerifySolve(JNSolve(BesselJ(1,x), x), {});
-Verify(ClearError("JNSolve'Fails"), True);
+VerifySolve(Solve(BesselJ(1,x), x), {});
+Verify(ClearError("Solve'Fails"), True);
 Verify(IsError(), False);
 
 /* And another one */
-VerifySolve(JNSolve(Exp(x)+Cos(x) == 3, x), {});
-Verify(ClearError("JNSolve'Fails"), True);
+VerifySolve(Solve(Exp(x)+Cos(x) == 3, x), {});
+Verify(ClearError("Solve'Fails"), True);
 Verify(IsError(), False);
 
 /* This equation could be solved if we knew that x >= 0 */
-VerifySolve(JNSolve(Sqrt(x) == a, x),  { });
-Verify(ClearError("JNSolve'Fails"), True);
+VerifySolve(Solve(Sqrt(x) == a, x),  { });
+Verify(ClearError("Solve'Fails"), True);
 Verify(IsError(), False);
 
 /* Test the type-checking mechanism */
-VerifySolve(JNSolve(2*x == 1, 1), {});
-Verify(ClearError("JNSolve'TypeError"), True);
+VerifySolve(Solve(2*x == 1, 1), {});
+Verify(ClearError("Solve'TypeError"), True);
+Verify(IsError(), False);
+
+/* This command is clearly nonsense, but it used to send Yacas in an
+ * infinite recursion, which should never happen.  Note that 'D(y)x == 0'
+ * is parsed as 'D(y)(x==0)'. */
+VerifySolve(Solve(D(y)x == 0, x),  { });
+Verify(ClearError("Solve'Fails"), True);
 Verify(IsError(), False);
 
 /*TODO PSolve, MatrixSolve*/

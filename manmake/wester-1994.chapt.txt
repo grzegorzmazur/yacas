@@ -85,14 +85,15 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 *	43. (NO) Assuming $Re(x)>0$, $Re(y)>0$, deduce $x^(1/n)*y^(1/n)-(x*y)^(1/n) = 0$.
 *	46. (NO) Transform equations, $(x==2)/2 + (1==1) => x/2+1==2$.  
 *	52. (BUG) Solve $Exp(x)=1$ and get all solutions.
-	Verify(Solve(Exp(x)==1,x), 0);
+	Verify(Solve(Exp(x)==1,x), {x==0});
 (get only one solution)
 *	54. (BUG) Solve $Tan(x)=1$ and get all solutions.
-	Verify(Solve(Tan(x)==1,x), Pi/4);
+	Verify(Solve(Tan(x)==1,x), {x==Pi/4});
 (get only one solution)
 *	60. (OK) Solve a degenerate 3x3 linear system.
-	Verify(Solve({x+y+z==6, 2*x+y+2*z==10,
+	Verify(OldSolve({x+y+z==6, 2*x+y+2*z==10,
 	  x+3*y+z==10}, {x,y,z}), {{4-z,2,z}});
+(the new routine {Solve} cannot do this yet)
 *	62. (OK) Invert a 2x2 symbolic matrix.
 	Verify(Simplify(Inverse({{a,b},{1,a*b}})),
 	  {{a/(a^2-1), -1/(a^2-1)},
