@@ -24,7 +24,7 @@ Rule("@",2,2,True       ) Apply(func,{arg});
 
 Function("/@",{func,lst}) Apply("MapSingle",{func,lst});
 
-Function("..",{from,to}) Table(i,i,from,to,1);
+Function("..",{count'from,count'to}) Table(i,i,count'from,count'to,1);
 
 
 /* NFunction("new'func", "old'func" {arg'list}) will define a wrapper function

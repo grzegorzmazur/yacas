@@ -1,10 +1,10 @@
 
 
-10 # Min(a_IsList,b_IsList) <-- Map("Min",{a,b});
-10 # Max(a_IsList,b_IsList) <-- Map("Max",{a,b});
+10 # Min(l1_IsList,l2_IsList) <-- Map("Min",{l1,l2});
+10 # Max(l1_IsList,l2_IsList) <-- Map("Max",{l1,l2});
 
-20 # Min(_a,_b) <-- If(a<b,a,b);
-20 # Max(_a,_b) <-- If(a>b,a,b);
+20 # Min(_l1,_l2) <-- If(l1<l2,l1,l2);
+20 # Max(_l1,_l2) <-- If(l1>l2,l1,l2);
 
 Min(list_IsList) <--
 [
