@@ -17,7 +17,7 @@ TestGaussianFactors(z_IsGaussianInteger) <--
  ];
  Echo(r);
  Ok := Ok And IsGaussianUnit(r/z);
- If(Ok,Echo("passed!"));
+ If(Ok,Echo("passed!","FAILED"));
 ];
 
 TestGaussianFactors((9!)+1);
