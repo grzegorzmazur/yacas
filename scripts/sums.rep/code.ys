@@ -338,7 +338,7 @@ SumFunc(_sumvar,sumfrom_IsInteger,_sumto,_sumbody,_sum) <--
 	     <-- 
 	     [
 	          Local(sub);
-		  `(sub := Eval(UnList({Sum,sumvar'arg,@sumfrom,p-1,sumbody'arg})));
+		  (sub := Eval(UnList({Sum,sumvar'arg,@sumfrom,p-1,sumbody'arg})));
 		  Simplify(Eval(@sum) - sub );
              ]);
 ];

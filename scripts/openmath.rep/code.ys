@@ -125,3 +125,117 @@ Load("stdfuncs.rep/om.ys");
 Load("stubs.rep/om.ys");
 Load("logic.rep/om.ys");
 Load("complex.rep/om.ys");
+
+
+/* The code below implements OMParse, which can parse OpenMath expressions
+*/
+
+OMNextToken():=
+[
+  omtoken:=XmlExplodeTag(String(ReadToken()));
+];
+
+OMParse():=
+[
+  Local(result);
+  TrapError(
+  [
+    XmlTokenizer();
+    OMNextToken();
+    result := MatchOMOBJ(omtoken);
+    DefaultTokenizer();
+  ],
+  [
+    DefaultTokenizer();
+    result:=False;
+    Echo(GetCoreError());
+  ]);
+  result;
+];
+
+
+OMDump(str):=
+FromString(str:" EndOfFile")
+[
+  Local(result);
+  XmlTokenizer();
+  OMNextToken();
+  While(omtoken != "EndOfFile")
+  [
+    Echo("Exploded ",omtoken);
+    OMNextToken();
+  ];
+  DefaultTokenizer();
+  True;
+];
+
+
+
+10 # MatchClose(_x)_(x = omtoken) <-- [OMNextToken();True;];
+20 # MatchClose(_x) <-- Check(False,ToString()Echo("unexpected closing brace")); //@@@ TODO better error reporting
+
+10 # MatchOMOBJ(XmlTag("OMOBJ",{},"Open")) <--
+[
+  Local(result);
+  OMNextToken();
+  result := ReadOMOBJ(omtoken);
+  MatchClose(XmlTag("OMOBJ",{},"Close"));
+  result;
+];
+20 # MatchOMOBJ(_rest) <-- Check(False,ToString()Echo("Not an OMOBJ :",rest));
+
+
+10 # ReadOMOBJ(XmlTag("OMI",{},"Open")) <--
+[
+  Local(result);
+  OMNextToken();
+  result := Atom(omtoken);
+  OMNextToken();
+  MatchClose(XmlTag("OMI",{},"Close"));
+  result;
+];
+
+10 # ReadOMOBJ(XmlTag("OMV",{{"NAME",_name}},"OpenClose")) <--
+[
+  OMNextToken();
+  Atom(name);
+];
+
+10 # ReadOMOBJ(XmlTag("OMA",{},"Open")) <--
+[
+  Local(result, new);
+  result:={};
+  OMNextToken();
+  While (omtoken !=XmlTag("OMA",{},"Close"))
+  [
+    new:=ReadOMOBJ(omtoken);
+    DestructiveAppend(result,new);
+  ];
+  MatchClose(XmlTag("OMA",{},"Close"));
+  UnList(result);
+];
+
+Macro(OMSymbol,{cd,name,to})
+[
+  10 # ReadOMOBJ(XmlTag("OMS",_props,"OpenClose"))_(props["CD"] = (@cd) And props["NAME"] = (@name)) <--
+  [
+    OMNextToken();
+    Atom(@to);
+  ];
+];
+
+
+ForEach(item,OMSymbol)
+[
+  Local(cd,name,to);
+  to:=item[1];
+  cd:=item[2][1];
+  name:=item[2][2];
+  `OMSymbol(@cd,@name,@to);
+];
+
+100 # ReadOMOBJ(_rest) <-- Check(False,ToString()Echo("Unhandled tag :",rest));
+
+
+
+

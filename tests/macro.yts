@@ -48,7 +48,7 @@
   z:=u;
   y:={@z,@z};
   Verify(`{@x,@y},{x,{@z,@z}});
-  Verify(`{@x,`(@y)},{x,{u,u}});
+  Verify(`{@x,`(@y)},{x,{@u,@u}});
   y:=Hold(`{@z,@z});
 
   Verify(`{@x,@y},{x,{u,u}});
@@ -67,5 +67,17 @@
   Verify(bar(3),6);
 ];
 
+//check that with nested backquotes expansion only expands the top-level expression
+[
+  Local(a,b);
+  a:=2;
+  b:=3;
+  Verify(
+  `[
+     Local(c);
+     c:=@a+@b;
+     `((@c)*(@c));
+  ],25);
+];
 
 

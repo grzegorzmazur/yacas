@@ -10,7 +10,7 @@
 # They run the scripts in $(TESTFILES) through yacas.
 # Special case: the test file "webster.yts" is extracted from the documentation
 
-TESTFILES = macro.yts arithmetic.yts c_tex_form.yts calculus.yts canprove.yts \
+TESTFILES = openmath.yts macro.yts arithmetic.yts c_tex_form.yts calculus.yts canprove.yts \
 	comments.yts complex.yts deriv.yts dimensions.yts dot.yts \
 	integrate.yts lists.yts logic_simplify_test.yts matrixpower.yts \
 	nthroot.yts outer.yts predicates.yts ode.yts \

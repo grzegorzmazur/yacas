@@ -1,5 +1,18 @@
 
 
+mdivide(x,y):=
+[
+  Local(v); MM(1);
+  v:=MultiExpressionList(x+y);
+  v:=MultiDivide(MM(x,v),{MM(y,v)});
+  {NormalForm(v[1][1]),NormalForm(v[2])};
+];
+
+mgcd(x,y):=MultiGcd(x,y);
+
+
+EndOfFile;
+
 OMReadEvalPrint():=
 [
   Local(input,stringOut,result);
