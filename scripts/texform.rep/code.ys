@@ -8,7 +8,7 @@
 	0.3 fixed bracketing of lists, changed bracketing of math functions, modified TeX representation of user-defined functions (up to two-letter functions are in italics), added TeX Greek letters
 	0.4 added nth roots, Sum, Limit, Integrate, hyperbolics, set operations, Abs, Max, Min, "==", ":=", Infinity; support indexed expressions A[i] and matrices.
 	0.4.1 bugfixes for [] operator, support for multiple indices a[1][2][3]
-	0.4.2 fix for TeX, LaTeX special names, variable names ending on digits "a2" represented as "a_2"
+	0.4.2 fix for variable names ending on digits "a2" represented as "a_2"
 */
 
 /* To do:
@@ -92,7 +92,7 @@ TeXFormRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," "}, {":=","\\equiv "}, {
 
 TeXFormGreekLetters := {"Gamma", "Delta", "Theta", "Lambda", "Xi", "Pi", "Sigma", "Upsilon", "Phi", "Psi", "Omega", "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu", "nu", "xi", "pi", "rho", "sigma", "tau", "upsilon", "phi", "chi", "psi", "omega", "varpi", "varrho", "varsigma", "varphi", "varepsilon"};
 
-TeXFormSpecialNames := { {"I", "i"}, {"Pi", "\\pi "}, {"Infinity", "\\infty "}, {"TeX", "\\TeX\\/"}, {"LaTeX", "\\LaTeX\\/"} };
+TeXFormSpecialNames := { {"I", "i"}, {"Pi", "\\pi "}, {"Infinity", "\\infty "} };
 
 /* this function will take a user-defined variable or function name and output either this name unmodified if it's only 2 characters long, or the name in normal text if it's longer, or a TeX Greek letter code */
 Function ("TeXFormTextify", {string})
