@@ -146,7 +146,7 @@ sub escape_term {
 	}
 	$text =~ s/\{($regex)\}/":HtmlTerm("$1"):"/go;
 	# <i>emphasis</i>
-	$text =~ s/<i>(.*)<\/i>/":HtmlEmphasis("$1"):"/gi;
+	$text =~ s/<i>((?:[^<]|<[^\/]|<\/[^i]|<\/i[^>])*)<\/i>/":HtmlEmphasis("$1"):"/gi;
 	# explicit hyperlinks
 	$text =~ s/<\*((?:[^*]|\*[^>])+)\*>/&make_link($1);/ge;
 	$text;

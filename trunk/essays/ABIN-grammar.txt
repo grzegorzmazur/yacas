@@ -2,7 +2,7 @@
 
 To illustrate the use of rules, consider a theorem prover in a simple formal
 grammar. (The example is the "ABIN system" from the book: W. Robinson,
-"Computers, minds and intelligence".)
+<i>Computers, minds and robots</i>, Temple University Press, 1992.)
 
 Well-formed expressions consist of symbols {A}, {B}, {I}, {N} and are either
 
@@ -24,12 +24,12 @@ be proved. The task at hand is to decide whether a given sequence of symbols is
 a provable statement of the ABIN language.
 
 (An interpretation of the language suggested in the book is to assume that all
-"B", "BI" etc. are some false statements that one can denote "B0", "B1"
-according to the number of "I" symbols, "N" is logical {Not} and "A" is logical
-{And}. Then the statement {NABIB} means "it is false that both B0 and B1 are
-true" and {NANBB} means "it is false that both B0 and negation of B0 are true".
-The {NANBB} statement is true in this interpretation but the deductive system
-of ABIN is too weak to obtain its proof.)
+"B", "BI" etc. are some false statements that one could denote "B0", "B1"
+according to the number of "I" symbols; "N" is logical {Not} and "A" is logical
+{And}. Then the statement {NABIB} would mean "it is false that both B0 and B1
+are true" and {NANBB} would mean "it is false that both B0 and negation of B0
+are true". The {NANBB} statement is true in this interpretation but the
+deductive system of ABIN is too weak to obtain its proof.)
 
 	    Implementation using predicates
 

@@ -51,3 +51,4 @@ test:
 	../src/yacas -pc ../tests/sums.yts
 	../src/yacas -pc ../tests/tensors.yts
 	../src/yacas -pc ../tests/orthopoly.yts
+	../src/yacas -pc ../tests/c_tex_form.yts

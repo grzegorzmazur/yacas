@@ -462,11 +462,13 @@ the four arithmetic actions.
 
 As we have seen in the tutorial, Yacas represents all expressions as trees, or equivalently, as lists of lists. For example, the expression "{a+b+c+d+e}" is for Yacas a tree of depth 4 that could be visualized as
 
-	     "+"
-	   a    "+"
-	       b   "+"
-	          c   "+"
-	              d  e
+	   "+"
+	 a   "+"
+	    b  "+"
+	      c  "+"
+	        d   e
+
+or as a nested list {("+" a ("+" b ("+" c ("+" d e))))}. 
 
 Complicated expressions are thus built from simple ones in a general and flexible way. If we want a function that acts on sums of any number of terms, we only need to define this function on a single atom and on a sum of two terms, and the Yacas engine will recursively perform the action on the entire tree.
 

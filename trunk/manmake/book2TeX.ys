@@ -1,0 +1,85 @@
+/* book2TeX - convert Yacas docs back to TeX format
+	version 0.1 */
+Book(x) := [	/* this is the first declaration in a file */
+	WriteString(
+"\\documentclass[12pt]{report}
+
+\\setlength{\\topmargin}{-1.3in}
+\\setlength{\\oddsidemargin}{-0.4in}
+\\setlength{\\evensidemargin}{-0.6in}
+\\setlength{\\textwidth}{7.5in}
+\\setlength{\\textheight}{10.2in}
+
+\\begin{document}
+
+\\title{" : x : "}
+\\author{by the Yacas team}
+
+\\date{Yacas version: " : Version() : "}
+\\maketitle
+\\tableofcontents
+");
+];
+
+Text(x) := WriteString(x);
+Chapter(x) := WriteString(
+"\\chapter{" : x : "}
+");
+Section(x) := WriteString(
+"\\section{" : x : "}
+");
+SubSection(x) := WriteString(
+"\\subsection{" : x : "}
+");
+
+Itemize(body) :=
+"\\begin{itemize}
+" : body : "
+\\end{itemize}";
+
+Enumerate(body) :=
+"\\begin{enumerate}
+" : body : "
+\\end{enumerate}";
+
+
+Item(body) := "\\item{" : body : "}";
+
+HtmlNewParagraph() := "
+
+";
+
+HtmlCommand(x) := "\\begin{quote}\\begin{verbatim}" : x : "\\end{verbatim}\\end{quote}"; /* use "quote" and not "quotation" */
+
+HtmlEmphasis(x) := "\\emph{" : x : "}";
+
+/* decide whether to use "verb" or "texttt" based on whether the string contains any of the special characters #, _, \, & */
+HtmlTerm(x) := [
+	Local(i);
+	For (i:=1, i<=Length(x) And Not Contains({"#", "_", "&", "\\"}, x[i]), i:=i+1) [];
+	If (i<=Length(x),
+	"\\verb|" : x : "|",
+	"\\texttt{" : x : "}");
+];
+
+HtmlBreak() := "
+";
+
+Bodied("Item",2);	/* competes with prec. 7 of ":" */
+Bodied("Book",60000);
+Bodied("Title",60000);
+Bodied("Author",60000);
+Bodied("Chapter",60000);
+Bodied("Section",60000);
+Bodied("SubSection",60000);
+Bodied("Topical",60000);
+Bodied("Text",60000);
+Bodied("Blurb",60000);
+Bodied("Itemize",2);
+Bodied("Enumerate",2);
+
+TeXFinishUp() := WriteString("
+\\end{document}
+");
+
+IncludeFile(x) := Load(x);

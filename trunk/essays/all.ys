@@ -11,7 +11,6 @@ WriteString("<HTML>
 </HTML>");
 
 
-//Use("html.ys");
 SetHtmlDirectory("");
 Use("styleplain");  /* style cheet for the documentation */
 Use("manualmaker"); /* engine that renders book to html */
@@ -20,28 +19,11 @@ InitBooks();        /* Initialize book building */
 
 InitBook("essays");
 Blurb()
-"This is a section with essays on using Yacas, varying from
-using the Yacas system for calculations to programming in
-the Yacas scripting language.";
+"This is a book of essays on using Yacas: from
+using the Yacas system for specific calculations
+to general issues related to the Yacas system.";
 
-Book()"Essays on Yacas";
-Chapter()"Yacas programming";
-
-/* Load each chapter */
-"Load" /@ {
-"ABIN-grammar.chapt",
-"Plugin_factory.chapt",
-};
-
-Chapter()"For Yacas developers";
-"Load" /@ {
-"MaintenanceHowto.chapt",
-"txt2yacasdoc.chapt"
-};
-
-//Echo({"1..."});
-//EndOfFile;
-//  GarbageCollect();
+Load("essays.book");
 
 /* Emit framed version of the manual. */
 SelectBook("essays");

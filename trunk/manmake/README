@@ -9,5 +9,10 @@ This then gets converted to ManP(section,text) with text
 enclosed in quotes. All text outside such special sections
 are part of the section named 'text'.
 
+txt2yacasdoc.pl: a Perl script to convert plain-text documentation to Yacas language.
+
+book2txt.sh: a shell/perl/Yacas script to convert Yacas-language documentation back to plain text (does not work on all docs)
+
+book2TeX.sh: a shell/perl/Yacas script to convert Yacas-language documentation to TeX (does not work on all docs)
 
 

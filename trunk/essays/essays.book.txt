@@ -1,0 +1,14 @@
+
+				Essays on Yacas
+
+			Yacas programming
+
+*INCLUDE ABIN-grammar.chapt
+
+*INCLUDE Plugin_factory.chapt
+
+			For Yacas developers
+
+*INCLUDE MaintenanceHowto.chapt
+
+*INCLUDE txt2yacasdoc.chapt
