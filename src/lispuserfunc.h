@@ -22,6 +22,7 @@ public:
     virtual void HoldArgument(LispStringPtr aVariable) = 0;
     virtual void DeclareRule(LispInt aPrecedence, LispPtr& aPredicate,
                              LispPtr& aBody) = 0;
+    virtual void DeclareRule(LispInt aPrecedence, LispPtr& aBody) = 0;
     virtual void DeclarePattern(LispInt aPrecedence, LispPtr& aPredicate,
                              LispPtr& aBody) = 0;
     virtual LispPtr& ArgList() = 0;

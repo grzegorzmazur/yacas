@@ -61,6 +61,7 @@ CntDefLoad("logic");
 CntDefLoad("radsimp");
 CntDefLoad("pslq");
 CntDefLoad("odesolver");
+CntDefLoad("c_form");
 
 /* set the help system. This can be overridden in ~/.yacasrc */
 

@@ -147,7 +147,7 @@ CFormArgs(list_IsList) <--
 
 cindent:=1;
 
-Nl():=
+NlIndented():=
 [
   Local(result);
   result:=
@@ -172,22 +172,22 @@ CUndent() :=
 ];
 
 
-CFormStatement(_x) <-- CForm(x):";":Nl();
+CFormStatement(_x) <-- CForm(x):";":NlIndented();
 
 120 # CForm(_x,_p)_(Type(x) = "Prog") <--
 [
   Local(result);
-  result:=CIndent():"{":Nl();
+  result:=CIndent():"{":NlIndented();
   ForEach(item,Tail(Listify(x)))
   [
     result:=result:CFormStatement(item);
   ];
-  result:=result:"}":CUndent():Nl();
+  result:=result:"}":CUndent():NlIndented();
   result;
 ];
 
 120 # CForm(For(_from,_to,_step)_body,_p) <--
-    "for(":CForm(from,TeXFormMaxPrec):";":CForm(to,TeXFormMaxPrec):";":CForm(step,TeXFormMaxPrec):")":CIndent():Nl():CFormStatement(body):CUndent();
+    "for(":CForm(from,TeXFormMaxPrec):";":CForm(to,TeXFormMaxPrec):";":CForm(step,TeXFormMaxPrec):")":CIndent():NlIndented():CFormStatement(body):CUndent();
 
 /*TODO test
 test:=Hold(

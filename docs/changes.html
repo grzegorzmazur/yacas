@@ -8,6 +8,18 @@
 
 <FONT face="Helvetica" size="3">
 
+<h1>Release of version 1.0.46 (?? 2001)</h1>
+<ul>
+  <li> Bug fix: N(Sin(a)) returning 0 (also a problem with Cos).
+       The problem was due to the system trying to do a SinMap,
+       where Pi becomes a number, and the converting to a univariate
+       polynomial in Pi screws up.
+  <li> better support for mapping numeric arguments of Cos back to
+       the 0 to Pi range.
+  <li> made rules that are always true a little faster.
+</ul>
+
+
 <h1>Release of version 1.0.45 (Februari 22nd 2001)</h1>
 <ul>
   <li> Fixed bug: Floor or Ceil working on 0.5 would result in

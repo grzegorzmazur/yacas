@@ -30,6 +30,11 @@ BranchingUserFunction::BranchRule::~BranchRule()
 {
 }
 
+ LispBoolean BranchingUserFunction::BranchRuleTruePredicate::Matches(LispEnvironment& aEnvironment, LispPtr* aArguments)
+{
+    return LispTrue;
+}
+
 LispBoolean BranchingUserFunction::BranchPattern::Matches(LispEnvironment& aEnvironment, LispPtr* aArguments)
 {
     return iPatternClass->Matches(aEnvironment,aArguments);
@@ -65,15 +70,6 @@ BranchingUserFunction::BranchingUserFunction(LispPtr& aParameters)
 
 BranchingUserFunction::~BranchingUserFunction()
 {
-    /*TODO remove???
-     LispInt i;
-    LispInt nrc=iRules.NrItems();
-    for (i=0;i<nrc;i++)
-    {
-        delete iRules[i];
-        iRules[i] = NULL;
-        }
-        */
 }
 
 void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
@@ -219,6 +215,14 @@ void BranchingUserFunction::DeclareRule(LispInt aPrecedence, LispPtr& aPredicate
 {
     // New branching rule.
     BranchRule* newRule = new BranchRule(aPrecedence,aPredicate,aBody);
+    Check(newRule != NULL,KLispErrCreatingRule);
+
+    InsertRule(aPrecedence,newRule);
+}
+ void BranchingUserFunction::DeclareRule(LispInt aPrecedence, LispPtr& aBody)
+{
+    // New branching rule.
+    BranchRule* newRule = new BranchRuleTruePredicate(aPrecedence,aBody);
     Check(newRule != NULL,KLispErrCreatingRule);
 
     InsertRule(aPrecedence,newRule);

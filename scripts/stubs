@@ -180,6 +180,9 @@ Rule("Gcd",2,100,True)
 
 
 10 # Abs(n_IsNumber) <-- MathAbs(n);
+10 # Abs(n_IsIsPositiveNumber/m_IsPositiveNumber) <-- n/m;
+10 # Abs(n_IsIsNegativeNumber/m_IsPositiveNumber) <-- (-n)/m;
+10 # Abs(n_IsIsPositiveNumber/m_IsNegativeNumber) <-- n/(-m);
 20 # Abs(n_IsList) <-- MapSingle("Abs",n);
 
 100 # Abs(_a)^n_IsEven <-- a^n;

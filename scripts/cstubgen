@@ -15,9 +15,6 @@ StubApiCStart():=
   cremarks:="";
   cstructs:={};
 ];
-Nl():=
-"
-";
 
 
 

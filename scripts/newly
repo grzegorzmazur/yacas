@@ -1,5 +1,15 @@
 
 
+Nl():=
+"
+";
+
+UniqueConstant() <--
+[
+  Local(result);
+  result := String(LocalSymbols(C)(C));
+  Atom(StringMid(2,Length(result)-1,result));
+];
 
 
 RuleBase("IsFreeOf",{expr,var});
