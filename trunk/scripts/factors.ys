@@ -76,126 +76,160 @@ PollardCombineLists(_left,_right) <--
 ];
 
 
-
-DistinctDegreeDecompose(_poly,_q)<--
-[
-  Local(g,glist,h,f,i);
-  glist:={};
-  f:=poly;
-  h:=poly[1];
-  i:=0;
-  g:=0;
-  While (g != 1) /*  Degree(f)>2*(i+1) */
-  [
-    i:=1+1;
-    h:=Mod(h^q,poly);
-    g:=Monic(Gcd(h-poly[1],f));
-    f:=Div(f,g);
-    If(g = 1,
-      DestructiveAppend(glist,f),
-      DestructiveAppend(glist,g)
-      );
-  ];
-  glist;
-];
-
-10 # LastFacSecondDegree(_poly) <--
-[
-  Local(uni);
-  uni:=MakeUni(poly);
-  Local(a,b,c,d);
-  c:=Coef(uni,0);
-  b:=Coef(uni,1);
-  a:=Coef(uni,2);
-  d:=b*b-4*a*c;
-  
-  Local(var);
-  var:=uni[1];
-  {
-    {Expand(var - (-b+Sqrt(d))/(2*a)),1},
-    {Expand(var - (-b-Sqrt(d))/(2*a)),1}
-  };
-];
-
-10 # LastFactorize(_poly)_(Degree(poly) = 2) <--
-   LastFacSecondDegree(poly);
-
-20 # LastFactorize(_poly)_(Degree(poly)>2) <--
-[
-  EqualDegreeDecompose(poly,3);
-];
-
-30 # LastFactorize(_poly) <-- { {Expand(poly),1} };
-
-
-/* equal degree decomposition is needed for the situations like
-   (x^2+1)*(x^2+4) , where there are a couple of second-degree
-   factors with complex coefficients.
+/* TODO for Bk:
+   - Handling special case (x-a)^n more efficiently
+   - (x+2)^5*(x-1) goes wrong: last factorization is missed!
+     results in (x+2)^4*(x^2+x-2)
+   - calculations don't terminate if pp(poly) is not monic.
+     we need the Knuth thing for handling non-monic polys,
+     as low as possible (below the handling of rational coeffs).
+   - (x+1)*(x-10) goes wrong (too low prime selected?) It returns
+     x^2+2*x+1
+   - (x+1/2)^3*(x-2)
+   - possibility: factoring over several small primes. See which one
+     is the biggest.
 */
-EqualDegreeDecompose(_poly,_q) <--
+
+
+10 # FindMod(_poly,_item,_p,_n)_(Degree(Gcd(poly,item)) > 0) <-- Expand(item);
+11 # FindMod(_poly,_item,_p,_n) <-- FindModAux(poly,item,p,n);
+
+11 # FindModAux(_poly,_item,_p,_n)_(Mod(poly,item+n*p) = 0) <-- Expand(item+n*p);
+12 # FindModAux(_poly,_item,_p,_n)_(Mod(poly,item-n*p) = 0) <-- Expand(item-n*p);
+20 # FindModAux(_poly,_item,_p,_n) <--
 [
-  Local(g,a,max,m,coefs);
-  g:=1;
-  poly:=MakeUni(poly);
-  coefs:=poly[3];
-  max:=Max(coefs);
-  coefs:=Select({{num},num!= Infinity And num != -Infinity},1/coefs);
-  m:=Max(coefs);
-  If(m>max,max:=m);
+/* Echo({item,p,"n = ",n}); */
+  FindModAux(poly,item,p,n+1);
+];
 
-  While(IsEven(max) Or Not(IsPrimePower(max)))
+MergeTerm(_f,_i) <-- MergeTerm(f,i,Assoc(i[1],f));
+10 # MergeTerm(_f,_i,Empty) <-- DestructiveAppend(f,i);
+20 # MergeTerm(_f,_i,list_IsList) <--
+[
+  list[2] := list[2] + i[2];
+];
+
+10 # MergeFactors(_f,_s) <--
+[
+  ForEach(i,s)
+    MergeTerm(f,{Monic(i[1]),i[2]});
+  f;
+];
+
+FactorUniVarSec(_poly) <--
+[
+  Local(checked);
+  checked := Bk(poly);
+  Local(pre);
+/*
+Echo(poly);
+Echo(checked);
+*/
+  pre:=Div(poly,FW(checked));
+  if (pre != 1)
   [
-    max++;
+    checked := {pre,1}:checked;
   ];
-  
-  While (Degree(g) = 0)
-  [
-/* Echo({MakeUni(poly,x)}); */
-   a:=1;
-   While(Degree(a)=0)
-     a:=Monic(MakeUni(RandomPoly(poly[1],Degree(poly)-1,0,max-1)));
-/* Echo({"max is ",max,"poly is ",poly,"a = ",a}); */
-    g:=Monic(Gcd(a,poly));
-    If(g = f,g := 1);
-
-If(Degree(g)=0,
-       [
-         a:= Monic(MakeUni(Mod(a^((max^2-1)>>1),poly))); 
-/*         a:= Monic(MakeUni(Mod(a^4,poly))); */
-         g:=Monic(MakeUni(Gcd(a-1,poly)));
-	 If(g = f,g := 1);
-/*         If(Degree(g)>0,Echo({"DOING"})); */
-       ]
-      ); 
-
-  ];
-  PollardCombineLists(LastFactorize(g),LastFactorize(Div(poly,g)));
+  checked;
 ];
 
 
-
-10 # FactorUniVarSec(poly_IsUniVar) <--
+Bk(_poly) <--
 [
-  Local(result,uni,cont);
-  result:={};
-  uni:=PrimitivePart(poly);
-  cont:=Content(poly);
-  lc:=LeadingCoef(uni);
+  Local(p,checked,factored,result);
 
-  PollardCombineLists(result,{{cont*lc,1}});
-  uni:=uni/lc;
+  // result will contain the final result returned to the user. 
+  checked := {};
+  result:= {};
+  // Create a internal representation, to speed up processing
+  poly := MakeUni(poly,VarList(poly));
 
-  If(Degree(uni)<3,
-    PollardCombineLists(result,LastFactorize(uni)),
-    ForEach(item,DistinctDegreeDecompose(uni,3))
+  // Convert from polynomial containing rational coefficients
+  // to one containing integer coefficients
+  [
+    Local(cf,t1,t2);
+    cf := MapSingle("Denom",Abs(Coef(poly,(0 .. Degree(poly)))));
+    cf := Select({{n},Not IsZero(n)},cf);
+
+    While (Length(cf) > 1)
     [
-      PollardCombineLists(result,LastFactorize(item));
-    ]
-    );
+      t1:=Head(cf);
+      cf:=Tail(cf);
+      t2:=Head(cf);
+      cf:=Tail(cf);
+      cf := Lcm(t1,t2):cf;
+    ];
+    poly := poly*(cf[1]);
+  ];
+
+  // Trivial factors
+  if (poly[2] > 0)
+  [
+    poly := UniVariate(poly[1],0,poly[3]);
+  ];
+
+  // square-free factorization
+  [
+    Local(dv,dd);
+    dd := Apply("D",{x,poly});
+    dv:=Gcd(poly,dd);
+    if (Degree(dv)>0)
+    [
+      dv := Monic(dv);
+      poly := Monic(Div(poly,dv));
+      MergeFactors(checked, Bk(dv));
+    ];
+  ];
+
+  p:=Max(1+Abs(Coef(poly,(0 .. Degree(poly)))));
+  if (p<5) [p := 5;];
+  if (p > 100) [ p := 100; ];
+  While (Not IsPrime(p)) p++;
+
+/*
+  [
+    Local(pp,lc);
+    pp := 1;
+    lc := LeadingCoef(poly);
+    
+    While(Mod(lc*pp,p) != 1)
+    [
+//      Echo({pp});
+      pp++;
+    ];
+    poly := poly*pp;
+  ];
+*/
+
+
+  factored := Bk(poly,p);
+  ForEach(item,factored)
+  [
+    MergeFactors(result,{{FindMod(poly,item[1],p,0),item[2]}});
+  ];
+  MergeFactors(checked,result);
+  checked;
+];
+Bk(_poly,_prime) <--
+[
+  Local(coefs,result);
+  if (Degree(poly)<2)
+  [
+    result := {{poly,1}};
+  ]
+  else
+  [
+    coefs := MakeUni(poly)[3];
+    result := Berlekamp(coefs,prime);
+    Local(i);
+    For(i:=1,i<=Length(result),i++)
+    [
+      result[i] := {NormalForm(UniVariate(x,0,result[i])),1};
+    ];
+  ];
   result;
 ];
 
-20 # FactorUniVarSec(poly_CanBeUni) <-- FactorUniVarSec(MakeUni(poly));
 
 
 /* New factorization : split between integers and polynomials. */
