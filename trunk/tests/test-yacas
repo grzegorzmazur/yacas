@@ -75,3 +75,5 @@ EQS=`echo $RES | sed 's/./=/g'`
 echo $EQS
 echo $RES
 echo $EQS
+
+exit $FAILURES
