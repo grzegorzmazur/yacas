@@ -121,6 +121,15 @@ void StripScript(char *contents,int &stripsize)
 void DoFile(char* base,char* file)
 {
     filename[totalfiles] = strdup(file);
+    {
+      char* ptr = filename[totalfiles];
+      while (*ptr)
+      {
+        if (*ptr == '\\')
+          *ptr = '/';
+        ptr++;
+      }
+    }
     totalfiles++;
 }
 void PostProcessFile(FILE* tmpfilef,char* base,int index)
