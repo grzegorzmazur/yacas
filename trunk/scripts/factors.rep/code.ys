@@ -1,6 +1,76 @@
 
 /* This module implements factorizing integers and polynomials */
 
+/// Middle level function: returns a list of prime factors and their powers.
+/// E.g. FactorizeInt(50) returns {{2, 1}, {5, 2}}.
+1# FactorizeInt(0) <-- {};
+1# FactorizeInt(1) <-- {};
+
+/// Call TrialFactorize() for small numbers and PollardRhoFactorize() for large numbers.
+2# FactorizeInt(n_IsInteger)_(Abs(n)<100000) <-- TrialFactorize(Abs(n));
+3# FactorizeInt(n_IsInteger) <--
+[
+  Local(small'powers);
+  // first, find powers of 2, 3, ..., p with p=200 currently -- this speeds up PollardRho and sometimes avoids its worst-case performance
+  small'powers := TrialFactorize(Abs(n), 200);	// value is {n1, {p1,q1}, {p2,q2}, ...} and n1=1 if completely factorized into these factors, and the remainder otherwise
+  n := small'powers[1];	// remainder
+  If(n=1, Tail(small'powers),
+  // if n!=1, need to factorize the remainder; but first check that it is not a prime power
+	If(IsPrimePower(n), PollardCombineLists(Tail(small'powers), {GetPrimeFactors(n)}),
+  // otherwise proceed with Pollard Rho algorithm
+	  PollardCombineLists(Tail(small'powers), PollardRhoFactorize(n))
+	)
+  );
+];
+
+/// Simple trial factorization: can be very slow for integers > 1,000,000.
+// Try all prime factors up to Sqrt(n)
+2# TrialFactorize(n_IsPrimePower) <-- {GetPrimeFactors(n)};
+3# TrialFactorize(n_IsInteger) <--
+[
+	Local(factorization);
+	factorization := TrialFactorize(n, n);	// TrialFactorize will limit to Sqrt(n) automatically
+	If(
+		Head(factorization) = 1,	// all factors were smaller than Sqrt(n)
+		Tail(factorization),
+		// the first element needs to be replaced
+		Concat(Tail(factorization), {{Head(factorization),1}})
+	);
+];
+
+/// Auxiliary function. Return the power of a given prime contained in a given integer and remaining integer.
+/// E.g. FindPrimeFactor(42, 3) returns {14, 1} and FindPrimeFactor(42,17) returns {42, 0}
+FindPrimeFactor(n, prime) :=
+[
+	Local(power);
+	power := 0;
+	While(Mod(n, prime)=0)
+	[
+		n := Div(n, prime);
+		power++;
+	];
+	{n, power};
+];
+
+/// Auxiliary function. Factorizes by trials. Return prime factors up to given limit and the remaining number.
+/// E.g. TrialFactorize(42, 2) returns {21, {{2, 1}}} and TrialFactorize(37, 4) returns {37}
+TrialFactorize(n, limit) :=
+[
+	Local(power, prime, result);
+	result := {n};	// first element of result will be replaced by the final value of n
+	prime := 2;	// first prime
+	While(prime <= limit And n>1 And prime*prime <= n)
+	[	// find the max power of prime which divides n
+		{n, power} := FindPrimeFactor(n, prime);
+		If(
+			power>0,
+			DestructiveAppend(result, {prime,power})
+		);
+		prime := NextPrime(prime);
+	];
+	// replace the first element which was n by the new n
+	DestructiveReplace(result, 1, n);
+];
 
 /* This is Pollard's Rho method of factorizing, as described in
  * "Modern Computer Algebra". It is a rather fast algorithm for
@@ -17,37 +87,51 @@
  *
  */
 
-PollardRhoRandom(n_IsInteger) <-- MathFloor(Random()*n);
+/*
+Warning: The Pollard Rho algorithm cannot factor some numbers, e.g. 703, and
+can enter an infinite loop. This currently results in an error message: "failed to factorize".
+Hopefully the TrialFactorize() step will avoid these situations by excluding
+small prime factors.
+This problem could also be circumvented by trying a different random initial value for x when a loop is encountered -- hopefully another initial value will not get into a loop. (currently this is not implemented)
+*/
 
-10 # PollardRhoFactorize(n_IsPrimePower) <-- {GetPrimeFactors(n)};
-15 # PollardRhoFactorize(0) <-- {};
-20 # PollardRhoFactorize(_n) <--
+RandomInteger(n) := MathFloor(Random()*n);
+/// Polynomial for the Pollard Rho iteration
+PollardRhoPolynomial(_x) <-- x^2+1;
+
+2# PollardRhoFactorize(n_IsPrimePower) <-- {GetPrimeFactors(n)};
+3# PollardRhoFactorize(_n) <--
 [
-  Local(x,y,i,gcd);
-
+  Local(x,y,i,gcd,repeat);
   gcd:=n;
   While(gcd = n)
   [
     /* Pick a random value between 0 and n-1 */
-    x:=PollardRhoRandom(n);
+    x:= 1;//RandomInteger(n);	// will start with 2 on first iteration
 
     /* Initialize loop */
-    gcd:=1; y:=x; i:=0;
-
+    gcd:=1; y:=x;
+	repeat := 2;	// allow at most this many repetitions
+//		Echo({"entering gcd loop, n=", n});
+ 
     /* loop until failure or success found */
-    While(gcd = 1)
+    While(gcd = 1 And repeat>=0)
     [
-      x:= Mod( ((x^2)+1), n);
-      y:= Mod( ((y^2)+1)^2+1, n);
-      i++;
-      If(x-y = 0,
-         gcd := 1,
-         gcd:=Gcd(x-y,n)
-         );
-    ];
+      x:= Mod( PollardRhoPolynomial(x), n);
+   	  y:= Mod( PollardRhoPolynomial(PollardRhoPolynomial(y)), n);
+   	  If(x-y = 0,
+       	 [
+		 	gcd := 1;
+		 	repeat--;	// guard against infinite loop but allow a few repetitions
+		 ],
+       	 gcd:=Gcd(x-y,n)
+       	 );
+//		Echo({"gcd=",gcd," x=", x," y=", y});
+   	];
+	Check(repeat>=0, "PollardRhoFactorize: Warning: failed to factorize " : String(n));
   ];
   /* Return result found */
-  PollardCombineLists(PollardRhoFactorize(gcd),PollardRhoFactorize(Div(n,gcd)));
+  PollardCombineLists(PollardRhoFactorize(gcd), PollardRhoFactorize(Div(n,gcd)));
 ];
 
 /* PollardCombineLists combines two assoc lists used for factoring.
@@ -277,7 +361,7 @@ Bk(_poly,_prime) <--
 
 
 /* New factorization : split between integers and polynomials. */
-10 # Factors(p_IsInteger) <-- PollardRhoFactorize(p);
+10 # Factors(p_IsInteger) <-- FactorizeInt(p);
 20 # Factors(p_CanBeUni)_(Length(VarList(p)) = 1) <--  FactorUniVarSec(p);
 
 

@@ -48,6 +48,7 @@ CountBits(value) :=
  */
 /* Returns whether n is a prime^m. */
 10 # IsPrimePower(n_IsPrime) <-- True;
+10 # IsPrimePower(0) <-- False;
 10 # IsPrimePower(1) <-- False;
 20 # IsPrimePower(n_IsPositiveInteger) <--
 [
