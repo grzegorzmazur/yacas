@@ -4,8 +4,15 @@
 #include "lisperror.h"
 #include "stubs.h"
 
+/* If we have no globals, don't compile in obmalloc, but use the
+ standard allocators */
+#ifdef NO_GLOBALS
+#define PlatStubAlloc PlatAlloc
+#define PlatStubReAlloc PlatReAlloc
+#define PlatStubFree PlatFree
+#endif
 
-LispCharPtr PlatAlloc(LispInt aNrBytes)
+LispCharPtr PlatStubAlloc(LispInt aNrBytes)
 {
     /*Test code: report on memory usage
      static int nrsmall=0,nrlarge=0;
@@ -20,13 +27,13 @@ LispCharPtr PlatAlloc(LispInt aNrBytes)
     return result;
 }
 
-LispCharPtr PlatReAlloc(LispCharPtr aOrig, LispInt aNrBytes)
+LispCharPtr PlatStubReAlloc(LispCharPtr aOrig, LispInt aNrBytes)
 {
     LispCharPtr result = (LispCharPtr)realloc(aOrig, aNrBytes);
     Check(result!=NULL,KLispErrNotEnoughMemory);
     return result;
 }
-void PlatFree(LispCharPtr aOrig)
+void PlatStubFree(LispCharPtr aOrig)
 {
     free(aOrig);
 }

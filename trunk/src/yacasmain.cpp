@@ -410,6 +410,26 @@ int main(int argc, char** argv)
                 return 0;
             }
 #endif
+
+#ifndef NO_GLOBALS
+            if (strchr(argv[1],'m'))
+            {
+                extern void
+                    Malloc_SetHooks( void *(*malloc_func)(size_t),
+                                     void *(*calloc_func)(size_t, size_t),
+                                     void *(*realloc_func)(void *, size_t),
+                                     void (*free_func)(void *) );
+                
+                    Malloc_SetHooks( malloc,
+                                     calloc,
+                                     realloc,
+                                     free );
+
+
+
+            }
+#endif
+            
             fileind++;
         }
         if (fileind<argc)

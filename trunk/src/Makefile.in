@@ -91,11 +91,12 @@ yacas_LDADD = libyacas.a libyacasplatform.a @NUMBERS_LIB@ @NUMBERS_LDFLAGS@
 
 yacas_LDFLAGS = $(LIBS)
 
-testnum_SOURCES = anumber.cpp grower.cpp lispstring.cpp stdstubs.cpp 	testnum.cpp mathutil.cpp
+testnum_SOURCES = anumber.cpp grower.cpp lispstring.cpp stdstubs.cpp obmalloc.cpp 	testnum.cpp mathutil.cpp
 
 libyacas_a_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp 	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp 	lispio.cpp lispobject.cpp lispparser.cpp  	lispuserfunc.cpp mathcommands.cpp mathenvironment.cpp 	mathuserfunc.cpp standard.cpp  stdfileio.cpp arggetter.cpp 	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp         lispplugin.cpp elfdll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp
 
-libyacasplatform_a_SOURCES = platmath.cpp grower.cpp stdstubs.cpp lisphash.cpp 	lispstring.cpp mathutil.cpp
+
+libyacasplatform_a_SOURCES = platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp 	lispstring.cpp mathutil.cpp
 
 libyacasplatform_a_LIBADD = @NUMBERS_LIB@
 libyacasnumbers_a_SOURCES = anumber.cpp yacasnumbers.cpp 
@@ -116,8 +117,8 @@ libgmpnumbers_a_OBJECTS =  gmpnumbers.o
 libyacasnumbers_a_LIBADD = 
 libyacasnumbers_a_OBJECTS =  anumber.o yacasnumbers.o
 libyacasplatform_a_DEPENDENCIES = 
-libyacasplatform_a_OBJECTS =  platmath.o grower.o stdstubs.o lisphash.o \
-lispstring.o mathutil.o
+libyacasplatform_a_OBJECTS =  platmath.o grower.o stdstubs.o obmalloc.o \
+lisphash.o lispstring.o mathutil.o
 libyacas_a_LIBADD = 
 libyacas_a_OBJECTS =  deffile.o infixparser.o lispatom.o \
 lispcleanupstack.o lispenvironment.o lispeval.o lispio.o lispobject.o \
@@ -133,8 +134,8 @@ PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 yacas_OBJECTS =  yacasmain.o commandline.o unixcommandline.o \
 stdcommandline.o
 yacas_DEPENDENCIES =  libyacas.a libyacasplatform.a
-testnum_OBJECTS =  anumber.o grower.o lispstring.o stdstubs.o testnum.o \
-mathutil.o
+testnum_OBJECTS =  anumber.o grower.o lispstring.o stdstubs.o obmalloc.o \
+testnum.o mathutil.o
 testnum_LDADD = $(LDADD)
 testnum_DEPENDENCIES = 
 testnum_LDFLAGS = 
