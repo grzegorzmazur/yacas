@@ -1,4 +1,21 @@
 
+
+Load("inprogress/factortest.ys");
+
+f(ex,dv,n):=
+[
+  expr:=Expand(ex);
+  
+  list2:=Mkd(Mkc(expr),Mkc(dv),n);
+  Echo("Division ",list2);
+  expr2:=Expand(Mkpc(list2[1])*dv)+Mkpc(list2[2]);
+  
+  list3:=Mkc(expr-expr2);
+  Echo("Subtracted ",MkMod(list3,n));
+];
+
+EndOfFile;
+
 LocalSymbols(realvars,rest)
 [
   OutBracket(_expr) <--
