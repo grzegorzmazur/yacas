@@ -13,7 +13,7 @@ TestNonIntegrable(_expr) <-- Verify(Type(expr) = "Integrate",True);
 // loop. Fixed in version 1.0.51
 // FIXED!!! TestNonIntegrable(Integrate(x)(x*Ln(x)));
 TestNonIntegrable(Integrate(x)Sin(Exp(x)));
-TestNonIntegrable(Integrate(x) x^(-1));
+Verify(Integrate(x) x^(-1),Ln(x)); // Well done Jonathan! ;-)
 TestNonIntegrable(Integrate(x) x^(1/x));
 TestNonIntegrable(Integrate(x) x^(Sin(x)));
 TestNonIntegrable(Integrate(x) Exp(x^2));
