@@ -31,20 +31,20 @@ EXTRA_DIST = $(SCRIPTFILES) \
         addons/gnuplot.ys.def
 
 test:
-	yacas -pc ../tests/arithmetic.yts
-	yacas -pc ../tests/calculus.yts
-	yacas -pc ../tests/canprove.yts
-	yacas -pc ../tests/comments.yts
-	yacas -pc ../tests/linalg.yts
-	yacas -pc ../tests/lists.yts
-	yacas -pc ../tests/logic_simplify_test.yts
-	yacas -pc ../tests/poly.yts
-	yacas -pc ../tests/predicates.yts
-	yacas -pc ../tests/programming.yts
-	yacas -pc ../tests/radsimp.yts
-	yacas -pc ../tests/regress.yts
-	yacas -pc ../tests/simplify.yts
-	yacas -pc ../tests/solve.yts
-	yacas -pc ../tests/sums.yts
-	yacas -pc ../tests/tensors.yts
+	../src/yacas -pc ../tests/arithmetic.yts
+	../src/yacas -pc ../tests/calculus.yts
+	../src/yacas -pc ../tests/canprove.yts
+	../src/yacas -pc ../tests/comments.yts
+	../src/yacas -pc ../tests/linalg.yts
+	../src/yacas -pc ../tests/lists.yts
+	../src/yacas -pc ../tests/logic_simplify_test.yts
+	../src/yacas -pc ../tests/poly.yts
+	../src/yacas -pc ../tests/predicates.yts
+	../src/yacas -pc ../tests/programming.yts
+	../src/yacas -pc ../tests/radsimp.yts
+	../src/yacas -pc ../tests/regress.yts
+	../src/yacas -pc ../tests/simplify.yts
+	../src/yacas -pc ../tests/solve.yts
+	../src/yacas -pc ../tests/sums.yts
+	../src/yacas -pc ../tests/tensors.yts
 
