@@ -22,19 +22,19 @@ Last(list) := list[Length(list)];
 
 10 # Dump({_expand,_expr1,_expr2}) <--
 [
-      Echo({expand,0});
-      Echo({indent,expr1,expr2});
+      Write(expand);Space();Write(0);NewLine();
+      WriteString(indent); WriteString(expr1); WriteString(expr2);NewLine();
 ];
 10 # Dump({_expand,_expr1,_expr2,_file,0}) <-- 
 [
-      Echo({expand,0});
-      Echo({indent,expr1,expr2});
+      Write(expand);Space();Write(0);NewLine();
+      WriteString(indent); WriteString(expr1); WriteString(expr2);NewLine();
 ];
 20 # Dump({_expand,_expr1,_expr2,_file,_line}) <-- 
 [
-      Echo({expand,line});
-      Echo({file});
-      Echo({indent,expr1,expr2});
+      Write(expand);Space();Write(line);NewLine();
+      WriteString(file);NewLine();
+      WriteString(indent); WriteString(expr1); WriteString(expr2);NewLine();
 ];
 
 Dump():=
@@ -43,9 +43,10 @@ Dump():=
   Set(head, Head(traceStack));
   ToFile(TraceFile(traceFile))
   [
-    ForEach(item,head)
+    While(Not(Equals(head,{})))
     [
-      Dump(item);
+      Dump(Head(head));
+      Set(head,Tail(head));
     ];
     Echo({"end"});
   ];
@@ -53,8 +54,8 @@ Dump():=
 
 TrEnter(_function,_expr,_file,_line) <--
 [
-  If(Length(expr)>100,Set(expr,StringMid(1,100,expr):"..."));
-  DestructiveAppend(traceStack[1],{-1,"ENTER: ",expr,file,line});
+  If(GreaterThan(Length(expr),100),Set(expr,StringMid(1,100,expr):"..."));
+  DestructiveAppend(Head(traceStack),{-1,"ENTER: ",expr,file,line});
   DestructiveInsert(traceStack,1,{});
   Set(indent, Indent());
 ];
@@ -75,7 +76,7 @@ TrLeave(_expr,_result) <--
     Set(traceStack, Tail(traceStack));
   ];
   Set(indent, Indent());
-  DestructiveAppend(traceStack[1],{-1,"LEAVE: ",result});
+  DestructiveAppend(Head(traceStack),{-1,"LEAVE: ",result});
 ];
 HoldArg("TrLeave",arg1);
 HoldArg("TrLeave",arg2);
@@ -88,6 +89,7 @@ ThunkToTracer() <--
   traceFile := 1;
   traceStack := {{}};
   indent := Indent();
+  last:={};
   Load("trace.tmp");
   While(Length(traceStack)>1) TrLeave("STOPPED","STOPPED");
   Dump();
