@@ -8,6 +8,7 @@ static Fl_Menu_Item menuitems[] =
 {
  {"&File", FL_ALT+'f',  0, NULL, 64, 0, 0, font_size, 0},
    {"&new", FL_ALT+'n',  new_cb, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"&restart", FL_ALT+'r',  restart_cb, (void*)"TODO", 0, 0, 0, font_size, 0},
    {"l&oad", FL_ALT+'o',  cb_notepad, (void*)NULL, 0, 0, 0, font_size, 0},
 //TODO   {"TODO save", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
    {"s&ave as", FL_ALT+'a',  cb_save_notepad, (void*)NULL, 0, 0, 0, font_size, 0},

@@ -294,8 +294,18 @@ void quit_cb(Fl_Widget *,void *)
     exit(0);
 }
 
+void restart_cb(Fl_Widget *,void *)
+{
+  console->Restart();
+}
+
 void new_cb(Fl_Widget *,void *)
 {
+  extern char defdir[128];
+  if (release_structure)
+    sprintf(notepad_to_load,"%sWorksheetBanner",defdir);
+  else
+    sprintf(notepad_to_load,"%sproteus/WorksheetBanner",defdir);
   console->Restart();
 }
 
@@ -631,7 +641,7 @@ int main(int argc, char **argv)
 /*TODO editor shouild be separate app, with debugger*/
       {
         Fl_Group* o = new Fl_Group(10, 20, 630, 310, "Edit");
-         editor_add_items(11,23,618, 285);
+         editor_add_items(o,11,23,618, 285);
         o->end();
       }
 /**/
@@ -697,15 +707,17 @@ int main(int argc, char **argv)
 
   w->callback(quit_cb);
   w->show(1, argv);
-  w->fullscreen(); //TODO is this acceptable?
+  w->resize(50,50,800,600);
+//  w->fullscreen(); //TODO is this acceptable?
   atexit(myexit);
-/*
+
   if (argc>1)
   {
+    load_file(argv[1], -1);
     console->LoadNotePad(argv[1]);
     console->redraw();
   }
-*/
+
   return Fl::run();
 }
 
