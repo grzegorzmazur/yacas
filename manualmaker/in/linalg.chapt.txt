@@ -255,6 +255,7 @@ matrix has ones on the diagonal while the other entries are zero.
 *CMD ZeroMatrix --- make a zero matrix
 *STD
 *CALL
+	ZeroMatrix(n)
 	ZeroMatrix(n, m)
 
 *PARMS
@@ -265,13 +266,17 @@ matrix has ones on the diagonal while the other entries are zero.
 
 *DESC
 
-This command returns a matrix with "n" rows and "m" columns,
-completely filled with zeroes.
+This command returns a matrix with {n} rows and {m} columns,
+completely filled with zeroes. If only given one parameter,
+it returns the square {n} by {n} zero matrix.
 
 *E.G.
 
 	In> ZeroMatrix(3,4)
 	Out> {{0,0,0,0},{0,0,0,0},{0,0,0,0}};
+	In> ZeroMatrix(3)
+	Out> {{0,0,0},{0,0,0},{0,0,0}};
+
 
 *SEE ZeroVector, Identity
 
@@ -1168,6 +1173,37 @@ minimum or a saddle point.
 	|                |
 	| ( -2 ) ( 2 )   |
 	\                /
+*CMD Sparsity --- get the sparsity of a matrix
+*STD
+*CALL
+	Sparsity(matrix)
+*PARMS
+
+{matrix} -- a matrix
+
+*DESC
+
+The function {Sparsity} returns a number between {0} and {1} which 
+represents the percentage of zero entries in the matrix. Although
+there is no definite critical value, a sparsity of {0.75}  or more
+is almost universally considered a "sparse" matrix. These type of
+matrices can be handled in a different manner than "full" matrices
+which speedup many calculations by orders of magnitude.
+
+*E.G.
+
+	In> Sparsity(Identity(2))
+	Out> 0.5;
+	In> Sparsity(Identity(10))
+	Out> 0.9;
+	In> Sparsity(HankelMatrix(10))
+	Out> 0.45;
+	In> Sparsity(HankelMatrix(100))
+	Out> 0.495;
+	In> Sparsity(HilbertMatrix(10))
+	Out> 0;
+	In> Sparsity(ZeroMatrix(10,10))
+	Out> 1;
 
 *CMD HilbertMatrix --- create a Hilbert matrix
 *STD
