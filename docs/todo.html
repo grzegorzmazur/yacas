@@ -49,6 +49,64 @@ more consistent.
   <li> Test code, documentation for multivariate polys.
 </ul>
 
+<p>
+This is a list of some expressions that currently go wrong:
+
+<pre>
+<ul>
+  <li> parsing errors:  FromBase(16,7d)
+  <li> exponential algorithm for Limit:
+       Taylor(x,0,5)Sin(x)/x; 
+       seems to keep on going for ever, actually due to Limits:
+       Limit(x,0)D(x,2)Sin(x)/x; // never terminates, causing the taylor to never terminate
+  <li> infinite recursion in Integrate:
+       Integrate(x)x*Ln(x); // goes into an infinite loop, exhausting the stack
+       due to integration by parts entering a recursion. integrating Ln(x) returns
+       x*Ln(x), which then causes reintegrating Ln(x), etcetera.
+  <li> infinite recursion in Integrate:
+       Integrate(x)Sin(Exp(x)); // exhausted stack
+       this one is due to the incorrect assumption that TrigSimpCombine will always
+       bring expressions with trigonometric functions in them into a form that is integrable.
+  <li> In> Factor(17041024)
+       Out> 19*13*11*2^7*7^2;
+       In> Factor(170410240)
+       never stops: problem in PollardRhoFactorize()? why doesn't it detect
+       just one extra factor of 10?
+  <li> In> Limit(n, Infinity) n^5/2^n
+       Out> Infinity/(Infinity*Ln(2));
+       wrong answer -- L'Hospital's theorem is not always the correct thing to
+       do... but it's not easy to decide the growth of exp-log and powers.
+       There is a paper by Richardson, Salvy et al "Asymptotic expansions of
+       exp-log functions" that may be helpful.
+  <li> In> Limit(n, Infinity) (n+1)/(2*n+3)*I
+       Out> 0;
+       apparently, it doesn't work with complex numbers although it works with
+       reals. Probably a trivial bug.
+  <li> In> Simplify(2*x/4.5)
+       never stops
+  <li> In> Simplify( a*(Sqrt(Pi))^2/2)
+       never stops, even though the following examples work:
+  <li> In> Simplify( 3*(Sqrt(Pi))^2/2)
+       Out> (3*Pi)/2;  // ok
+  <li> In> Simplify( a*(Sqrt(b))^2/2)
+       Out> (a*b)/2;   // ok
+  <li> In> Integrate(x) x^(-1)
+       Out> Undefined+C20;
+  <li> In> Integrate(x) x^(1/x)
+       Out> x^(1/x+1)/(1/x+1)+C29;
+  <li> In> Integrate(x) x^(Sin(x))
+       Out> x^(Sin(x)+1)/(Sin(x)+1)+C30;
+  <li> In> Integrate(x) Ln(0)
+       Out> C35-Infinity*x;
+  <li> In> Integrate(x) Exp(x^2)
+       Out> Undefined*Exp(x^2)+C41;
+  <li> In> Integrate(x) Sin(x^2)
+       Out> C44-Undefined*Cos(x^2);
+</ul>
+</pre>
+
+
+
 <H1>Future plans</h1>
 
 This is a todo list of things I want to get out of the way before version
