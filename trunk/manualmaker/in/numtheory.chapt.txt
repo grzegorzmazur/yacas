@@ -940,13 +940,14 @@ if and only if $Re(z)$ is an ordinary prime and $Re(z):=Mod(3,4)$.
 
 This function returns thre greatest common divisor, in the ring of Gaussian
 integers, computed using Euclid's algorithm. Note that in the Gaussian
-integers, the greatest common divisor is only defined up to associates.
+integers, the greatest common divisor is only defined up to a Gaussian unit factor.
 
 *E.G.
 
 	In> GaussianGcd(2+I,5)
 	Out> Complex(2,1);
+The GCD of two mutually prime Gaussian integers might come out to be equal to some Gaussian unit instead of $1$:
 	In> GaussianGcd(2+I,3+I)
 	Out> -1;
 
-*SEE Gcd, Lcm
+*SEE Gcd, Lcm, IsGaussianUnit
