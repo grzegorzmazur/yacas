@@ -231,7 +231,7 @@ void LispDivide(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {
 // Serge, what was the deal again with divide, floats and integers mixed in the same function?
-//	divide works differently on integers and on floats -- see new.chapt -- Serge
+//	yes, divide works differently on integers and on floats -- see new.chapt -- Serge
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
@@ -311,17 +311,33 @@ void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArgumen
       z->BigNumName(*x.Ptr()); \
       aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
 }
+#define BINARYFUNCTION(LispName, BigNumName, OldName) \
+void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+{ \
+      RefPtr<BigNumber> x; \
+      RefPtr<BigNumber> y; \
+      GetNumber(x,aEnvironment, aArguments, 1); \
+      GetNumber(y,aEnvironment, aArguments, 2); \
+      BigNumber *z = NEW BigNumber(aEnvironment.Precision()); \
+      z->BigNumName(*x.Ptr(), *y.Ptr()); \
+      aResult.Set(NEW LispNumber(aEnvironment.HashTable(),z)); \
+}
 #else
 #define UNARYFUNCTION(LispName, BigNumName, OldName) \
 void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
 { \
     LispArithmetic1(aEnvironment, aResult, aArguments, OldName); \
 }
+#define BINARYFUNCTION(LispName, BigNumName, OldName) \
+void LispName(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aArguments) \
+{ \
+    LispArithmetic2(aEnvironment, aResult, aArguments, OldName); \
+}
 #endif
 
-UNARYFUNCTION(LispFloor, Floor, FloorFloat);
+UNARYFUNCTION(LispFloor, Floor, FloorFloat)
 // these functions are not yet in yacasapi.cpp but should be eventually
-//UNARYFUNCTION(LispBitCount, BitCount, MathBitCount);
+//UNARYFUNCTION(LispBitCount, BitCount, MathBitCount)
 //UNARYFUNCTION(LispSign, Sign, MathSign)
 //UNARYFUNCTION(LispNegate, Negate, MathNegate)
 
@@ -372,12 +388,14 @@ void LispAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
    LispArithmetic1(aEnvironment, aResult, aArguments, AbsFloat);
 #endif
 }
-
+BINARYFUNCTION(LispMod, Mod, ModFloat)
+/*
 void LispMod(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, ModFloat);
 }
+*/
 
 void LispDiv(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
@@ -520,7 +538,15 @@ void LispFastAbs(LispEnvironment& aEnvironment, LispPtr& aResult,
 }
 
 
+BINARYFUNCTION(LispShiftLeft, ShiftLeft, ShiftLeft)
+BINARYFUNCTION(LispShiftRight, ShiftRight, ShiftRight)
 
+BINARYFUNCTION(LispBitAnd, BitAnd, BitAnd)
+BINARYFUNCTION(LispBitOr, BitOr, BitOr)
+BINARYFUNCTION(LispBitXor, BitXor, BitXor)
+// BitNot not yet in yacasapi etc.
+//BINARYFUNCTION(LispBitNot, BitNot, BitNot)
+/*
 void LispShiftLeft(LispEnvironment& aEnvironment, LispPtr& aResult,
                   LispPtr& aArguments)
 {//FIXME
@@ -547,7 +573,7 @@ void LispBitXor(LispEnvironment& aEnvironment, LispPtr& aResult,
 {//FIXME
     LispArithmetic2(aEnvironment, aResult, aArguments, BitXor);
 }
-
+*/
 
 
 void LispFromBase(LispEnvironment& aEnvironment, LispPtr& aResult,
