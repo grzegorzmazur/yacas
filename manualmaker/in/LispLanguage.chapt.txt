@@ -1010,9 +1010,9 @@ this function. For this the function {import} was defined, which
 makes importing a function from another module into a module a little
 bit easier:
 
-	In> (import INTEGER +)
+	In> (import INTEGER + AddInt)
 	Out> t
-	In> (+ 2 3)
+	In> (AddInt 2 3)
 	Out> 5
 
 Note that for this language we chose the construct of {namespace}
@@ -1037,7 +1037,7 @@ a function {bar} in the module {foo} as follows:
 	In> (bar 2 3)
 	ERROR: function not defined : bar
 	Out> nil
-	In> (import foo bar)
+	In> (import foo bar bar)
 	Out> t
 	In> (bar 2 3)
 	Out> (head 2 3 )
@@ -1054,7 +1054,7 @@ syntax is {(functionp <namespace> <functionname>)}:
 	Out> nil
 	In> (functionp 'INTEGER '+)
 	Out> t
-	In> (import INTEGER +)
+	In> (import INTEGER + +)
 	Out> t
 	In> (functionp 'std '+)
 	Out> t
