@@ -124,7 +124,7 @@ pdf-docs: intro.book.pdf coding.book.pdf essays.book.pdf ref.book.pdf refprog.bo
 
 clean:
 	rm -f books.html.c *.tex *.dvi *.aux *.idx *.ind *.ilg *.toc *.log *.ps *.pdf \
-	coding*html intro*html ref*html essays*html Algo*html .o core *~ texdocs.c \
+	coding*.html intro*.html ref*.html essays*.html Algo*.html LispProgramming*.html *.o core *~ texdocs.c \
 	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS) $(LISPPROGRAMMINGCHAPTERS) \
 	$(CODESNIPPETS) $(ALGOCHAPTERS) yacasapi.chapt.txt $(BOOKS) manicon.html
 
