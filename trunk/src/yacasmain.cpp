@@ -689,7 +689,16 @@ RESTART:
                             printf("%c",TEXMACS_DATA_END);
                         }
 
+#ifdef PROMPT_SHOW_FREE_MEMORY
+                        char full_prompt[30];
+                        if (show_prompt)
+                          build_full_prompt(full_prompt, outprompt, 30);
+                        else
+                          full_prompt[0] = (char) 0;
+                        ShowResult(full_prompt);
+#else
                         ShowResult(outprompt);
+#endif
                     }
                 }
             }
