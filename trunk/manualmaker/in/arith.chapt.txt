@@ -468,6 +468,148 @@ it shows the result in a nicer human readable format.
 
 *SEE Factors, IsPrime, PrettyForm
 
+*CMD Divisors --- number of divisors
+*STD
+*CALL
+	Divisors(n)
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+{Divisors} returns the number of positive divisors of a number.
+A number is prime if and only if it has two divisors, 1 and itself.
+
+*E.G.
+	In> Divisors(180)
+	Out> 18;
+	In> Divisors(37)
+	Out> 2;
+
+*SEE DivisorsSum, ProperDivisors, ProperDivisorsSum, Moebius
+
+*CMD DivisorsSum --- the sum of  divisors
+*STD
+*CALL
+	DivisorsSum(n)
+*PARMS
+
+{n}	-- positive integer
+
+*DESC
+
+{DivisorsSum} returns the sum all numbers that divide it. A number
+{n} is prime if and only if the sum of its divisors are {n+1}.
+
+*E.G.
+
+	In> DivisorsSum(180)
+	Out> 546;
+	In> DivisorsSum(37)
+	Out> 38;
+
+*SEE DivisorsSum, ProperDivisors, ProperDivisorsSum, Moebius
+
+
+*CMD ProperDivisors --- the number of proper divisors
+*STD
+*CALL
+        ProperDivisors(n)
+*PARMS
+
+{n}     -- positive integer
+
+*DESC
+
+{ProperDivisors} returns the number of proper divisors, i.e {Divisors(n)-1},
+since {n} is not counted. 
+{n} is prime if and only if it has {1} proper divisor.
+
+*E.G.
+
+	In> ProperDivisors(180)
+	Out> 17;
+	In> ProperDivisors(37)
+	Out> 1;
+
+*SEE DivisorsSum, ProperDivisors, ProperDivisorsSum, Moebius
+
+
+*CMD ProperDivisorsSum --- the sum of proper divisors
+*STD 
+*CALL
+        ProperDivisorsSum(n)
+*PARMS  
+
+{n}     -- positive integer
+
+*DESC
+
+{ProperDivisorsSum} returns the sum of proper divisors, i.e {ProperDivisors(n)-n},
+since {n} is not counted.
+{n} is prime if and only if {ProperDivisorsSum(n)==1}.
+
+*E.G.
+	In> ProperDivisorsSum(180)
+	Out> 366;
+	In> ProperDivisorsSum(37)
+	Out> 1;
+
+
+*SEE DivisorsSum, ProperDivisors, ProperDivisorsSum, Moebius
+
+
+
+*CMD Moebius --- the Moebius function
+*STD 
+*CALL
+        Moebius(n)
+*PARMS  
+
+{n}     -- positive integer
+
+*DESC
+
+The Moebius function is {0} when a prime factor is repeated (which means it
+is not square-free) and is {(-1)^r} if {n} has {r} distinct factors. Also,
+{Moebius(1)==1}.
+
+*E.G.
+	In> Moebius(10)
+	Out> 1;
+	In> Moebius(11)
+	Out> -1;
+	In> Moebius(12)
+	Out> 0;
+	In> Moebius(13)
+	Out> -1;
+
+*SEE DivisorsSum, ProperDivisors, ProperDivisorsSum, Moebius
+
+
+
+*CMD FermatNumber --- return the {n}th Fermat Number
+*STD
+*CALL
+        FermatNumber(n)
+*PARMS  
+
+{n}     -- positive integer
+        
+*DESC
+
+This function returns the {n}th Fermat number, which is defined as
+{2^(2^n) + 1}. 
+
+*E.G.
+
+	In> FermatNumber(7)
+	Out> 340282366920938463463374607431768211457;
+
+*SEE	Factor
+
+
 *CMD IntLog --- integer part of logarithm
 *STD
 *CALL

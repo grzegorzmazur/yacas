@@ -1,4 +1,3 @@
-
 /*: Count number of bits in a number */
 CountBits(value) :=
 [
@@ -293,3 +292,84 @@ HarmonicNumber(n_IsInteger,r_IsPositiveInteger) <--
 		Sum(k,1,n,1/k^r);	
 	];
 ];
+Function("FermatNumber",{n})[
+	Check(IsPositiveInteger(n),
+		"FermatNumber: argument must be a positive integer");
+	2^(2^n)+1;
+];
+5  # Divisors(0)	<-- 0;
+5  # Divisors(1)	<-- 1;
+
+// Unsure about if there should also be a function that returns
+// n's divisors, may have to change name in future
+10 # Divisors(_n)	<--
+[
+	Check(IsPositiveInteger(n),
+		"Divisors: argument must be positive integer");
+	Local(sum,factors,i);
+	sum:=1;
+	factors:=Factors(n);
+	len:=Length(factors);
+	For(i:=1,i<=len,i++)[
+		sum:=sum*(factors[i][2]+1);
+	];
+	sum;
+];
+10 # ProperDivisors(_n) <--
+[
+        Check(IsPositiveInteger(n),
+                "ProperDivisors: argument must be positive integer");
+	Divisors(n)-1;
+];
+10 # ProperDivisorsSum(_n) <--
+[
+        Check(IsPositiveInteger(n),
+                "ProperDivisorsSum: argument must be positive integer");
+        DivisorsSum(n)-n;
+];
+
+5  # DivisorsSum(0)	<-- 0;
+5  # DivisorsSum(1)	<-- 1;
+10 # DivisorsSum(_n) 	<--
+[
+	Check(IsPositiveInteger(n),
+		"DivisorsSum: argument must be positive integer");
+	Local(factors,i,sum,len,p,k);
+	p:=0;k:=0;
+	factors:={};
+	factors:=Factors(n);
+	len:=Length(factors);
+	sum:=1;
+	For(i:=1,i<=len,i++)[
+		p:=factors[i][1];
+		k:=factors[i][2];
+		sum:=sum*(p^(k+1)-1)/(p-1);
+	];
+	sum;
+];
+
+5  # Moebius(1)	<-- 1;
+10 # Moebius(_n)	<--
+[
+        Local(factors,i,repeat);
+	repeat:=0;
+        factors:=Factors(n);
+        len:=Length(factors);
+        For(i:=1,i<=len,i++)[
+		If(factors[i][2]>1,repeat:=1);
+        ];
+	// very innefficient, because ProperDivisors has to factor it again
+	If(repeat==0,(-1)^len,0);
+
+];
+
+
+
+
+
+
+
+
+
+
+
