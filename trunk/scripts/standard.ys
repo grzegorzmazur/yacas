@@ -59,8 +59,6 @@ Rule("Nth",2,40,Equals(IsString(aindex),True))
   as;
 ];
 
-
-
 Function("NrArgs",{aLeft}) Length(Listify(aLeft))-1;
 
 10 # IsNonObject(Object(_x)) <-- False;
@@ -70,78 +68,6 @@ Function("NrArgs",{aLeft}) Length(Listify(aLeft))-1;
 2 # Numer(x_IsNumber)   <-- x;
 1 # Denom(_x / _y)      <-- y;
 2 # Denom(x_IsNumber)   <-- 1;
-
-/// Cache the most recently computed value of a constant and its precision in this list
-Set(CacheOfConstants, {});	// format: { {"Pi", 7, 3.1415926}, ...}
-
-/// declare a new cached constant C'atom and its associated function C'atom().
-/// C'atom() will call C'func() at current precision to evaluate C'atom if it has not yet been cached at that precision. (note: any arguments to C'func() must be included)
-RuleBase("CachedConstant", {C'atom, C'func});
-UnFence("CachedConstant", 2);	// not sure if this is useful
-HoldArgNr("CachedConstant", 2, 2);
-// check syntax: must be called on an atom and a function
-Rule("CachedConstant", 2, 10, MathAnd(IsAtom(C'atom), IsFunction(C'func)))
-[
- 	Local(C'name);
-	Set(C'name, String(C'atom));
-	// declare it if it does not already exist
-	If(
-	  Equals(FastAssoc(C'name, CacheOfConstants), Empty),	// not already defined
-	  [
-		MacroClear(C'atom);
-		DestructiveInsert(CacheOfConstants, 1, {C'name, 0, 0});
-		// define the new function C'atom()
-		// note: this should only be called when Numeric=True, so no N()
-		MacroRuleBase(C'name, {});
-		`( Rule(@C'name, 0, 1024, True)
-		[
-			Local(new'prec, new'C, cached'C);
-//			Clear(@C'atom);
-			Set(new'prec, GetPrecision());
-			Set(cached'C, FastAssoc(@C'name, CacheOfConstants));
-			If(
-			  LessThan(MathNth(cached'C, 2), new'prec),
-			  [	// need to recalculate at current precision
-				If(Equals(Verbose,True), Echo("CachedConstant: Info: constant ", @C'name, " is being recalculated at precision ", new'prec));
-				Set(new'C, Eval(@C'func));
-				DestructiveReplace(cached'C, 2, new'prec);
-				DestructiveReplace(cached'C, 3, new'C);
-				new'C;
-			  ],
-			  // return cached value of C'atom
-			  MathNth(cached'C, 3)
-			);
-		]);
-		// calculate C'atom at current precision for the first time
-		Eval(UnList({C'atom}));	// C'name @ {};
-	  ],
-	  Echo("CachedConstant: Warning: constant ", C'atom, " already defined")		
-	);
-];
-
-Rule("CachedConstant", 2, 20, True)
-	Echo("CachedConstant: Error: ", C'atom, " must be an atom and ", C'func, " must be a function.");
-
-/// declare some constants now
-CachedConstant(Pi, MathPi());
-
-/// assign numerical values to all cached constants
-Function("AssignCachedConstants", {})
-[
-	Local(var);
-	ForEach(var, AssocIndices(CacheOfConstants))
-		MacroSet(Atom(var), Eval(UnList({Atom(var)})));
-];
-UnFence("AssignCachedConstants", 0);
-
-/// clear values from all cached constants
-Function("ClearCachedConstants", {})
-[
-	Local(var);
-	ForEach(var, AssocIndices(CacheOfConstants))
-		MacroClear(Atom(var));
-];
-UnFence("ClearCachedConstants", 0);
 
 Set(Numeric,False);
 
@@ -612,64 +538,3 @@ HoldArg("else",ifthen);
 HoldArg("else",otherwise);
 UnFence("else",2);
 
-//////////////////////////////////////////////////
-/// ErrorTableau, Assert, IsError --- global error reporting
-//////////////////////////////////////////////////
-
-/// global error tableau. Its entries do not have to be lists.
-Set(ErrorTableau, {});
-
-ClearErrors() <-- Set(ErrorTableau, {});
-
-CheckErrorTableau() <--
-If(	// check for corrupt tableau
-	Not IsList(ErrorTableau),
-	Set(ErrorTableau, {{"general", "corrupted ErrorTableau"}})
-);
-
-IsError() <--
-[
-	CheckErrorTableau();
-	Length(ErrorTableau)>0;
-];
-
-/// post an error if assertion fails
-Assert(_predicate, _error'class, _error'object) <--
-[
-	CheckErrorTableau();
-	If(Equals(predicate, True),	// if it does not evaluate to True, it's an error
-		True,
-		[	// error occurred, need to post error'object
-			Push(ErrorTableau, {error'class, error'object});
-			False;
-		]
-	);
-];
-
-/// interface
-Assert(_predicate, _error'class) <-- Assert(predicate, error'class, True);
-
-Bodied(Assert, 60000);
-
-/// print all errors and clear the tableau
-DumpErrors() <--
-[
-	Local(index);
-	CheckErrorTableau();
-	ForEach(index, ErrorTableau)
-	[
-		If(
-			IsList(index),
-			If(	// special case: {"error'class", True}
-				Length(index)=2 And index[2]=True,
-				Echo("Error: ", index[1]),
-				Echo(Concat({"Error: ", index[1], ": "}, Tail(index)))
-			),
-			// index is not a list: just print it
-			Echo("Error: ", index)
-		);
-	];
-	ClearErrors();
-];
-
-//////////////////////////////////////////////////

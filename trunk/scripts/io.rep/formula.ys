@@ -407,6 +407,8 @@ Function("PrettyForm",{ff})
 
   NewLine();
   WriteCharField(cf,FormulaMaxWidth);
+  
+  DumpErrors();
   True;
 ];
 /*

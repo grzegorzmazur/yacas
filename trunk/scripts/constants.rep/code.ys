@@ -11,3 +11,79 @@
 I := Complex(0,1);
 LazyGlobal(I);
 
+//////////////////////////////////////////////////
+/// Cached constants support and definition of Pi
+//////////////////////////////////////////////////
+
+/// Cache the most recently computed value of a constant and its precision in this list
+Set(CacheOfConstants, {});	// format: { {"Pi", 7, 3.1415926}, ...}
+
+/// declare a new cached constant C'atom and its associated function C'atom().
+/// C'atom() will call C'func() at current precision to evaluate C'atom if it has not yet been cached at that precision. (note: any arguments to C'func() must be included)
+RuleBase("CachedConstant", {C'atom, C'func});
+UnFence("CachedConstant", 2);	// not sure if this is useful
+HoldArg("CachedConstant", C'func);
+// check syntax: must be called on an atom and a function
+Rule("CachedConstant", 2, 10, MathAnd(IsAtom(C'atom), IsFunction(C'func)))
+[
+ 	Local(C'name);
+	Set(C'name, String(C'atom));
+	// declare it if it does not already exist
+	If(
+	  Equals(FastAssoc(C'name, CacheOfConstants), Empty),	// not already defined
+	  [
+		MacroClear(C'atom);
+		DestructiveInsert(CacheOfConstants, 1, {C'name, 0, 0});
+		// define the new function C'atom()
+		// note: this should only be called when Numeric=True, so no N()
+		MacroRuleBase(C'name, {});
+		`( Rule(@C'name, 0, 1024, True)
+		[
+			Local(new'prec, new'C, cached'C);
+//			Clear(@C'atom);
+			Set(new'prec, GetPrecision());
+			Set(cached'C, FastAssoc(@C'name, CacheOfConstants));
+			If(
+			  LessThan(MathNth(cached'C, 2), new'prec),
+			  [	// need to recalculate at current precision
+				If(Equals(Verbose,True), Echo("CachedConstant: Info: constant ", @C'name, " is being recalculated at precision ", new'prec));
+				Set(new'C, Eval(@C'func));
+				DestructiveReplace(cached'C, 2, new'prec);
+				DestructiveReplace(cached'C, 3, new'C);
+				new'C;
+			  ],
+			  // return cached value of C'atom
+			  MathNth(cached'C, 3)
+			);
+		]);
+		// calculate C'atom at current precision for the first time
+		Eval(UnList({C'atom}));	// C'name @ {};
+	  ],
+	  Echo("CachedConstant: Warning: constant ", C'atom, " already defined")		
+	);
+];
+
+Rule("CachedConstant", 2, 20, True)
+	Echo("CachedConstant: Error: ", C'atom, " must be an atom and ", C'func, " must be a function.");
+
+/// assign numerical values to all cached constants
+Function("AssignCachedConstants", {})
+[
+	Local(var);
+	ForEach(var, AssocIndices(CacheOfConstants))
+		MacroSet(Atom(var), Eval(UnList({Atom(var)})));
+];
+UnFence("AssignCachedConstants", 0);
+
+/// clear values from all cached constants
+Function("ClearCachedConstants", {})
+[
+	Local(var);
+	ForEach(var, AssocIndices(CacheOfConstants))
+		MacroClear(Atom(var));
+];
+UnFence("ClearCachedConstants", 0);
+
+/// declare some constants now
+CachedConstant(Pi, MathPi());
+

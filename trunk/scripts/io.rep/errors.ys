@@ -1,0 +1,61 @@
+//////////////////////////////////////////////////
+/// ErrorTableau, Assert, IsError --- global error reporting
+//////////////////////////////////////////////////
+
+/// global error tableau. Its entries do not have to be lists.
+Set(ErrorTableau, {});
+
+ClearErrors() <-- Set(ErrorTableau, {});
+
+CheckErrorTableau() <--
+If(	// check for corrupt tableau
+	Not IsList(ErrorTableau),
+	Set(ErrorTableau, {{"general", "corrupted ErrorTableau"}})
+);
+
+IsError() <--
+[
+	CheckErrorTableau();
+	Length(ErrorTableau)>0;
+];
+
+/// post an error if assertion fails
+Assert(_predicate, _error'class, _error'object) <--
+[
+	CheckErrorTableau();
+	If(Equals(predicate, True),	// if it does not evaluate to True, it's an error
+		True,
+		[	// error occurred, need to post error'object
+			Push(ErrorTableau, {error'class, error'object});
+			False;
+		]
+	);
+];
+
+/// interface
+Assert(_predicate, _error'class) <-- Assert(predicate, error'class, True);
+
+Bodied(Assert, 60000);
+
+/// print all errors and clear the tableau
+DumpErrors() <--
+[
+	Local(index);
+	CheckErrorTableau();
+	ForEach(index, ErrorTableau)
+	[
+		If(
+			IsList(index),
+			If(	// special case: {"error'class", True}
+				Length(index)=2 And index[2]=True,
+				Echo("Error: ", index[1]),
+				Echo(Concat({"Error: ", index[1], ": "}, Tail(index)))
+			),
+			// index is not a list: just print it
+			Echo("Error: ", index)
+		);
+	];
+	ClearErrors();
+];
+
+//////////////////////////////////////////////////
