@@ -73,13 +73,12 @@ libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 libmath_la_SOURCES = libmath.cpp
 libmath_la_DEPENDENCIES = yacas gencorefunctions
 
-# assuming the directory below does not have plugins!
 $(srcdir)/libmath.cpp: yacas $(top_srcdir)/scripts/base.rep/math.ys gencorefunctions core_yacasmain.h 
 	(cd ../scripts && make packages.ys corefunctions.ys)
 	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
 	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
 	./yacas --rootdir  $(srcdir)/../scripts:../scripts -pc --init compileinit.txt compile.txt
-	mv libmath.cpp $(srcdir)/libmath.cpp
+	if [ $(srcdir) != . ]; then mv libmath.cpp $(srcdir)/libmath.cpp; fi
 
 EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp \
 	epocyacas.hrh epocyacas.mmp epocyacasconsole.mmp \
