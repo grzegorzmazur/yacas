@@ -92,6 +92,9 @@ private:
     void Combine(LispInt aNrArgsToCombine);
     void InsertAtom(LispStringPtr aString);
 private:
+    void Fail(); // called when parsing fails, raising an exception
+
+private:
     InfixParser& iParser;
 private:
     LispBoolean iError;
