@@ -30,4 +30,8 @@ HilbertMatrix
 HilbertInverseMatrix
 HankelMatrix
 FrobeniusNorm
+PNorm
+Norm
+OrthogonalBasis
+OrthonormalBasis
 }

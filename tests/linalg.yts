@@ -117,7 +117,7 @@ Verify( IsIdempotent(Identity(20)), True );
 Verify( IsIdempotent(ZeroMatrix(10,10)), True );
 
 
-Verify(VandermondeMatrix({1,2,3,4}),{{1,1,1,1},{1,2,3,4},{1,4,9,16},{1,8,27,64}});
+Verify( VandermondeMatrix({1,2,3,4}),{{1,1,1,1},{1,2,3,4},{1,4,9,16},{1,8,27,64}});
 
 Verify( JacobianMatrix( {x^4*y,Cos(y)}, { x, y}), {{4*x^3*y,x^4},{0,-Sin(y)}} );
 
@@ -128,4 +128,17 @@ Verify( Determinant(HilbertMatrix(5)), 1/266716800000 );
 Verify( HilbertMatrix(6)*HilbertInverseMatrix(6), Identity(6) );
 
 Verify( FrobeniusNorm({{1,2},{3,4}}), Sqrt(30) );
+
+Verify( Norm({1,2,3}), Sqrt(14) );
+
+Verify( OrthogonalBasis({{1,1,0},{2,0,1},{2,2,1}}) , {{1,1,0},{1,-1,1},{-1/3,1/3,2/3}} );
+Verify( OrthogonalBasis({{1,0,1,0},{1,1,1,0},{0,1,0,1}}), {{1,0,1,0},{0,1,0,0},{0,0,0,1}} );
+Verify( OrthonormalBasis({{1,0,1,0},{1,1,1,0},{0,1,0,1}}), 
+	{{Sqrt(1/2),0,Sqrt(1/2),0},{0,1,0,0},{0,0,0,1}} );
+Verify( OrthonormalBasis({{1,1,1},{0,1,1},{0,0,1}}),
+	{{Sqrt(1/3),Sqrt(1/3),Sqrt(1/3)},
+	{-Sqrt(2/3),Sqrt(1/6),Sqrt(1/6)},
+	{0,-Sqrt(1/2),Sqrt(1/2)}} );
+
+
 
