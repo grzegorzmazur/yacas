@@ -2356,6 +2356,11 @@ done on floating point numbers and the algorithm is unstable.
 Converting the floating point numbers to rational numbers will force
 calculations to be done with infinite precision (by using rational
 numbers as representations).
+<p> </p>
+It does this by finding the smallest integer n such that multiplying
+the number with 10^n is an integer. Then it divides by 10^n again,
+depending on the internal gcd calculation to reduce the resulting
+division of integers.
 <H5>
 Examples:
 </H5>

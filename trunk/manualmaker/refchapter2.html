@@ -5,26 +5,23 @@
 <A NAME="c2">
 
 </A>
-<A HREF="refchapter2.html#+" TARGET="Chapters">
-+
-</A>
-, <A HREF="refchapter2.html#-" TARGET="Chapters">
--
-</A>
-, <A HREF="refchapter2.html#*" TARGET="Chapters">
-*
-</A>
-, <A HREF="refchapter2.html#/" TARGET="Chapters">
-/
-</A>
-, <A HREF="refchapter2.html#^" TARGET="Chapters">
-^
+<A HREF="refchapter2.html#+, -, *, /, ^" TARGET="Chapters">
++, -, *, /, ^
 </A>
 .
 <H1>
 Arithmetic
 </H1>
 <p> </p>
+<CENTER><TABLE>
+<TR BGCOLOR=#E0E0E0>
+<TD><A HREF="refchapter2.html#+, -, *, /, ^" TARGET="Chapters">
++, -, *, /, ^
+</A>
+</TD>
+<TD>Arithmetic operations</TD>
+</TR>
+</TABLE></CENTER>
 <A NAME="+">
 
 </A>
@@ -40,19 +37,22 @@ Arithmetic
 <A NAME="^">
 
 </A>
+<A NAME="+, -, *, /, ^">
+
+</A>
 <H3>
-<HR>Arithmetic operations
+<HR>+, -, *, /, ^ -- Arithmetic operations
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-x+y (precedence 6)  <br>
+x+y  (precedence 6)  <br>
 +x                   <br>
-x-y (precedence 5)   <br>
+x-y  (precedence 5)   <br>
 -x                   <br>
-x*y (precedence 3)   <br>
-x/y (precedence 3)   <br>
-x^y (precedence 2)   
+x*y  (precedence 3)   <br>
+x/y  (precedence 3)   <br>
+x^y  (precedence 2)   
 
 <H5>
 Parameters:
@@ -62,7 +62,8 @@ x and y - some objects for which arithmetic operations are defined.
 Description:
 </H5>
 These are the basic arithmetic operations. They can work on integers,
-rational numbers, complex numbers, vectors, matrices and lists. <br>
+rational numbers, complex numbers, vectors, matrices and lists. 
+<p> </p>
 These operators are implemented in the standard math library (as opposed
 to being built-in). This means that they can be extended by the user.
 <H5>
@@ -76,9 +77,6 @@ Out> 6;
 </PRE></TR>
 </TABLE>
 
-<H5>
-See Also:
-</H5>
 
 </FONT>
 

@@ -333,20 +333,8 @@ See Also:
 <p>  </P><HR><A NAME="c2">
 
 </A>
-<A HREF="refchapter2.html#+" TARGET="Chapters">
-+
-</A>
-, <A HREF="refchapter2.html#-" TARGET="Chapters">
--
-</A>
-, <A HREF="refchapter2.html#*" TARGET="Chapters">
-*
-</A>
-, <A HREF="refchapter2.html#/" TARGET="Chapters">
-/
-</A>
-, <A HREF="refchapter2.html#^" TARGET="Chapters">
-^
+<A HREF="refchapter2.html#+, -, *, /, ^" TARGET="Chapters">
++, -, *, /, ^
 </A>
 .
 <H1>
@@ -367,19 +355,22 @@ Arithmetic
 <A NAME="^">
 
 </A>
+<A NAME="+, -, *, /, ^">
+
+</A>
 <H3>
-<HR>Arithmetic operations
+<HR>+, -, *, /, ^ -- Arithmetic operations
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-x+y (precedence 6)  <br>
+x+y  (precedence 6)  <br>
 +x                   <br>
-x-y (precedence 5)   <br>
+x-y  (precedence 5)   <br>
 -x                   <br>
-x*y (precedence 3)   <br>
-x/y (precedence 3)   <br>
-x^y (precedence 2)   
+x*y  (precedence 3)   <br>
+x/y  (precedence 3)   <br>
+x^y  (precedence 2)   
 
 <H5>
 Parameters:
@@ -389,7 +380,8 @@ x and y - some objects for which arithmetic operations are defined.
 Description:
 </H5>
 These are the basic arithmetic operations. They can work on integers,
-rational numbers, complex numbers, vectors, matrices and lists. <br>
+rational numbers, complex numbers, vectors, matrices and lists. 
+<p> </p>
 These operators are implemented in the standard math library (as opposed
 to being built-in). This means that they can be extended by the user.
 <H5>
@@ -403,17 +395,11 @@ Out> 6;
 </PRE></TR>
 </TABLE>
 
-<H5>
-See Also:
-</H5>
 <p>  </P><HR><A NAME="c3">
 
 </A>
-<A HREF="refchapter3.html#Div" TARGET="Chapters">
-Div
-</A>
-, <A HREF="refchapter3.html#Mod" TARGET="Chapters">
-Mod
+<A HREF="refchapter3.html#Div, Mod" TARGET="Chapters">
+Div, Mod
 </A>
 , <A HREF="refchapter3.html#Gcd" TARGET="Chapters">
 Gcd
@@ -421,17 +407,11 @@ Gcd
 , <A HREF="refchapter3.html#Lcm" TARGET="Chapters">
 Lcm
 </A>
-, <A HREF="refchapter3.html#&lt;&lt;" TARGET="Chapters">
-&lt;&lt;
+, <A HREF="refchapter3.html#&lt;&lt;, &gt;&gt;" TARGET="Chapters">
+&lt;&lt;, &gt;&gt;
 </A>
-, <A HREF="refchapter3.html#&gt;&gt;" TARGET="Chapters">
-&gt;&gt;
-</A>
-, <A HREF="refchapter3.html#FromBase" TARGET="Chapters">
-FromBase
-</A>
-, <A HREF="refchapter3.html#ToBase" TARGET="Chapters">
-ToBase
+, <A HREF="refchapter3.html#FromBase, ToBase" TARGET="Chapters">
+FromBase, ToBase
 </A>
 , <A HREF="refchapter3.html#Precision" TARGET="Chapters">
 Precision
@@ -485,14 +465,20 @@ Pslq
 <H1>
 Other operations on numbers
 </H1>
+Besides the arithmetical operations defined in the
+previous chapter, one can also use the following operations on
+numbers. Many of these also work on polynomials.
 <A NAME="Div">
 
 </A>
 <A NAME="Mod">
 
 </A>
+<A NAME="Div, Mod">
+
+</A>
 <H3>
-<HR>Div and Mod
+<HR>Div, Mod -- Division with remainder
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -503,12 +489,15 @@ Mod(x,y)
 <H5>
 Parameters:
 </H5>
-x and y - integers
+x, y - integers, or univariate polynomials
 <H5>
 Description:
 </H5>
-Div performs integer division and Mod returns the remainder
-after division. Div and Mod are also defined for polynomials.
+<B><TT>Div</TT></B> performs integer division and <B><TT>Mod</TT></B> returns the remainder after division. <B><TT>Div</TT></B> and
+<B><TT>Mod</TT></B> are also defined for polynomials.
+<p> </p>
+If <B><TT>Div(x,y)</TT></B> returns "a" and <B><TT>Mod(x,y)</TT></B> equals "b", then these numbers satisfy x =
+a*y + b and 0 <= b < y.
 <H5>
 Examples:
 </H5>
@@ -523,11 +512,17 @@ Out> 2;
 <H5>
 See Also:
 </H5>
-<A NAME="Gcd">
+<A HREF="ref.html#Gcd" TARGET="Chapters">
+Gcd
+</A>
+, <A HREF="ref.html#Lcm" TARGET="Chapters">
+Lcm
+</A>
+.<A NAME="Gcd">
 
 </A>
 <H3>
-<HR>Gcd
+<HR>Gcd -- Greatest common divisor
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -544,14 +539,13 @@ list - a list of all integers or all univariate polynomials
 <H5>
 Description:
 </H5>
-Gcd(n,m) returns the greatest common divisor of n and m.
-The gcd is the largest number that divides n and m.
-The library code calls MathGcd, which is an internal function.
-This function implements the binary Euclidean algorithm for
-determining the greatest common divisor:
 
-
-<TABLE CELLPADDING="3" WIDTH="90%">
+This function returns the greatest common divisor of "n" and "m".
+The gcd is the largest number that divides "n" and "m".  It is
+also known as the highest common factor (hcf).  The library code calls
+<B><TT>MathGcd</TT></B>, which is an internal function.  This
+function implements the binary Euclidean algorithm for determining the
+greatest common divisor: <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Routine for calculating Gcd(n,m)
 
 1) if n = m then return n
@@ -560,20 +554,17 @@ determining the greatest common divisor:
 4) if both n and m are odd and, say, n>m then return Gcd( (n-m)/2,m)
 </PRE></TR>
 </TABLE>
+
 This is a rather fast algorithm on computers that can efficiently shift
-integers. <br>
-
-Gcd(list), with list a list of arbitrary length
-of integers, will return the greatest common divisor of all the integers
-listed.
-For lists Gcd uses the identity
-
-
+integers. 
+<p> </p>
+If the second calling form is used, <B><TT>Gcd</TT></B> will
+return the greatest common divisor of all the integers or polynomials
+in "list". It uses the identity
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Gcd({a,b,c}) = Gcd(Gcd(a,b),c)
 </PRE></TR>
 </TABLE>
-
 
 <H5>
 Examples:
@@ -596,7 +587,7 @@ Lcm
 
 </A>
 <H3>
-<HR>Lcm
+<HR>Lcm -- Least common multiple
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -605,23 +596,22 @@ Lcm(n,m)
 <H5>
 Parameters:
 </H5>
-n,m - integers
+n, m - integers, or univariate polynomials
 <H5>
 Description:
 </H5>
-Lcm(n,m) : returns the least common multiple of a and b.
-The least common multiple L of two numbers n,m is the number L=Lcm(n,m)
-for which there are two integers p,q so such that p*n=q*m=L.
-This is calculated with the formula:
+
+This command returns the least common multiple of "n" and "m".
+The least common multiple of two numbers "n" and "m" is the lowest
+number which is an integer multiple of both "n" and "m".
+It is calculated with the formula:
 <TABLE CELLPADDING="3" WIDTH="90%">
 <TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Lcm(n,m) = Div(n*m,Gcd(n,m))
 </PRE></TR>
 </TABLE>
 
-This means it also works
-on polynomials, since Div, Gcd and multiplication are also defined
-for them.
-
+This means it also works on polynomials, since <B><TT>Div</TT></B>, <B><TT>Gcd</TT></B> and multiplication are also defined for
+them.
 <H5>
 Examples:
 </H5>
@@ -643,13 +633,16 @@ Gcd
 <A NAME="&gt;&gt;">
 
 </A>
+<A NAME="&lt;&lt;, &gt;&gt;">
+
+</A>
 <H3>
-<HR>&lt;&lt; and &gt;&gt;
+<HR>&lt;&lt;, &gt;&gt; -- Shift operators
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-n&lt;&lt;m and n&gt;&gt;m
+n&lt;&lt;m <br> n&gt;&gt;m
 <H5>
 Parameters:
 </H5>
@@ -658,16 +651,17 @@ n,m - integers
 Description:
 </H5>
 These operators shift integers to the left or to the right.
-They are similar to the c shift operators. These are sign-extended
+They are similar to the C shift operators. These are sign-extended
 shifts, so they act like multiplication or division by powers of 2.
 <H5>
 Examples:
 </H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>Examples:
-1&lt;&lt;10; should evaluate to 1024
--1024&gt;&gt;10; should evaluate to -1
-</PRE></TR>
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> 1 &lt;&lt; 10
+Out> 1024;
+In> -1024 &gt;&gt; 10
+Out> -1;</PRE></TR>
 </TABLE>
 
 <A NAME="FromBase">
@@ -676,8 +670,11 @@ Examples:
 <A NAME="ToBase">
 
 </A>
+<A NAME="FromBase, ToBase">
+
+</A>
 <H3>
-<HR>FromBase and ToBase
+<HR>FromBase, ToBase -- Conversion from/to non-decimal base
 </H3>
 Internal function<br><H5>
 Calling Sequence:
@@ -693,8 +690,10 @@ number - a number to write out in the base representation
 <H5>
 Description:
 </H5>
-Conversion of numbers to and from base 10 numbers.<p>  </p>
-
+<B><TT>FromBase</TT></B> converts "number", written in base
+"base", to base 10. <B><TT>ToBase</TT></B> converts "number",
+written in base 10, to base "base".
+<p> </p>
 These functions use the p-adic expansion capabilities of the built-in
 arbitrary precision math libraries.  
 
@@ -709,36 +708,36 @@ Out> ff;
 </PRE></TR>
 </TABLE>
 
+The first command writes the binary number <B><TT>111111</TT></B>
+in decimal base. The second command converts <B><TT>255</TT></B>
+(in decimal base) to hexadecimal base.
 <H5>
 See Also:
 </H5>
-<A NAME="Precision">
-
+<A HREF="ref.html#PAdicExpand" TARGET="Chapters">
+PAdicExpand
 </A>
-<A NAME="GetPrecision">
+.<A NAME="Precision">
 
 </A>
 <H3>
-<HR>Precision and GetPrecision
+<HR>Precision -- Sets the precision
 </H3>
 Internal function<br><H5>
 Calling Sequence:
 </H5>
-Precision(n) <br>
-GetPrecision()
+Precision(n)
 <H5>
 Parameters:
 </H5>
-n - required number of digits precision
-           required for following calculations, in base 10.
+n - new precision
 <H5>
 Description:
 </H5>
-Precision and GetPrecision can be used to get and set the
-required number of digits of precision in base 10 in the environment.
-All subsequent floating point operations will allow for at least n
-digits after the decimal point.
 
+This command sets the number of binary digits to be used in
+calculations. All subsequent floating point operations will allow for
+at least "n" digits after the decimal point.
 <H5>
 Examples:
 </H5>
@@ -759,38 +758,83 @@ Out> 20;
 <H5>
 See Also:
 </H5>
-<A HREF="ref.html#N" TARGET="Chapters">
+<A HREF="ref.html#GetPrecision" TARGET="Chapters">
+GetPrecision
+</A>
+, <A HREF="ref.html#N" TARGET="Chapters">
+N
+</A>
+.<A NAME="GetPrecision">
+
+</A>
+<H3>
+<HR>GetPrecision -- Returns the current precision
+</H3>
+Internal function<br><H5>
+Calling Sequence:
+</H5>
+GetPrecision()
+<H5>
+Parameters:
+</H5>
+none
+<H5>
+Description:
+</H5>
+
+This command returns the current precision, as set by <B><TT>Precision</TT></B>.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> GetPrecision();
+Out> 10;
+In> Precision(20);
+Out> True;
+In> GetPrecision();
+Out> 20;</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Precision" TARGET="Chapters">
+Precision
+</A>
+, <A HREF="ref.html#N" TARGET="Chapters">
 N
 </A>
 .<A NAME="N">
 
 </A>
 <H3>
-<HR>N
+<HR>N -- Numerical approximation
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-N(expression) <br>
-N(expression,precision)
+
+N(expr) <br>
+N(expr, prec)
 <H5>
 Parameters:
 </H5>
-expression - expression to evaluate <br>
-precision - precision to use
+expr - expression to evaluate <br>
+prec - precision to use
 <H5>
 Description:
 </H5>
-Normally numeric values are left as-is as long
-as possible in calculations using division, or trigonometric functions
-like Sin, Cos, etcetera.
-N forces Yacas to calculate floating point representations
-of functions whenever possible, using the current precision or the
-specified precision. <p>  </p>
 
-In addition, the variable Pi is bound to the value of pi up to the
-required precision.
-
+This function forces Yacas to give a numerical approximation to the
+expression "expr", using "prec" digits if the second calling
+sequence is used, and the precision as set by <B><TT>SetPrecision</TT></B> otherwise. This overrides the normal
+behaviour, in which expressions are kept in symbolic form (eg. <B><TT>Sqrt(2)</TT></B> instead of <B><TT>1.41421</TT></B>).
+<p> </p>
+Application of the <B><TT>N</TT></B> operator will make Yacas
+calculate floating point representations of functions whenever
+possible. In addition, the variable <B><TT>Pi</TT></B> is bound to
+the value of pi up to the required precision.
 <H5>
 Examples:
 </H5>
@@ -819,157 +863,321 @@ Precision
 , <A HREF="ref.html#GetPrecision" TARGET="Chapters">
 GetPrecision
 </A>
+, <A HREF="ref.html#Pi" TARGET="Chapters">
+Pi
+</A>
 .<A NAME="Rationalize">
 
 </A>
 <H3>
-<HR>Rationalize
+<HR>Rationalize -- Convert floating point numbers to fractions
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-Rationalize(expression)
+Rationalize(expr)
 <H5>
 Parameters:
 </H5>
-expression - expression to rationalize
+expr - an expression containing real numbers
 <H5>
 Description:
 </H5>
-Rationalize scans the entire expression replacing all floating
-point values into rational representations p/q for some integers p and
-q, such that the division of p by q gives the original floating point
-value up to the number of digits of the original floating point value. <p>  </p>
 
-It does this by finding the smallest integer n such that
-multiplying the number with 10^n is an integer. Then it divides by 10^n
-again, depending on the internal gcd calculation to reduce the resulting
+This command converts every real number in the expression "expr"
+into a rational number. This is useful when a calculation needs to be
+done on floating point numbers and the algorithm is unstable.
+Converting the floating point numbers to rational numbers will force
+calculations to be done with infinite precision (by using rational
+numbers as representations).
+<p> </p>
+It does this by finding the smallest integer n such that multiplying
+the number with 10^n is an integer. Then it divides by 10^n again,
+depending on the internal gcd calculation to reduce the resulting
 division of integers.
-
 <H5>
 Examples:
 </H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Sin(1.234)
-Out> Sin(1.234);
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> {1.2,3.123,4.5}
+Out> {1.2,3.123,4.5};
 In> Rationalize(%)
-Out> Sin(617/500);
-</PRE></TR>
+Out> {6/5,3123/1000,9/2};</PRE></TR>
 </TABLE>
 
 <H5>
 See Also:
 </H5>
-<A HREF="ref.html#N" TARGET="Chapters">
-N
-</A>
-, <A HREF="ref.html#Precision" TARGET="Chapters">
-Precision
-</A>
-, <A HREF="ref.html#GetPrecision" TARGET="Chapters">
-GetPrecision
+<A HREF="ref.html#IsRational" TARGET="Chapters">
+IsRational
 </A>
 .<A NAME="IsPrime">
 
 </A>
 <H3>
-<HR>IsPrime(n)
-</H3>
-IsPrime(n) : returns True if n is prime, False otherwise.
-<A NAME="IsPrimePower">
-
-</A>
-<H3>
-<HR>IsPrimePower(n)
-</H3>
-IsPrimePower(n) : returns True if there is a prime p such that
-p^m = n.
-<A NAME="Factors">
-
-</A>
-<A NAME="Factor">
-
-</A>
-<H3>
-<HR>Factor and Factors
+<HR>IsPrime -- Test whether argument is a prime number
 </H3>
 Standard math library<br><H5>
-Calling Sequence:
+Calling sequence:
 </H5>
-Factor(x) <br>
-Factors(x)
+IsPrime(n)
 <H5>
 Parameters:
 </H5>
-x - an integer number or univariate polynomial to factor
+n - integer to test
 <H5>
 Description:
 </H5>
-Factors decomposes integer numbers or univariate polynomials
-into a product of primes or irreducible polynomials. <p>  </p>
 
-The result of Factors is a list of lists of the form {p,n}, where each
-p^n divides the original x. <p>  </p>
-
-Factor shows the result of Factors in a nicer human readable format.
-
+This command tests whether "n", which should be a positive integer,
+is a prime number. A number is a prime number if it is only divisible
+by 1 and itself. As a special case, 1 is not a prime number.
+<p> </p>
+This function essentially checks for all integers between 2 and the
+square root of "n" whether they divide "n", and hence may take a
+long time for large numbers.
 <H5>
 Examples:
 </H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> Factors(12)
-Out> {{2,2},{3,1}};
-In> PrettyForm(Factor(12))
-
- 2    
-2  * 3
-
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> IsPrime(1)
+Out> False;
+In> IsPrime(2)
+Out> True;
+In> IsPrime(10)
+Out> False;
+In> IsPrime(23)
+Out> True;
+In> Select("IsPrime", 1 .. 100)
+Out> {2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97};
 </PRE></TR>
 </TABLE>
 
 <H5>
 See Also:
 </H5>
-<A NAME="PAdicExpand">
+<A HREF="ref.html#IsPrimePower" TARGET="Chapters">
+IsPrimePower
+</A>
+, <A HREF="ref.html#Factors" TARGET="Chapters">
+Factors
+</A>
+.<A NAME="IsPrimePower">
 
 </A>
 <H3>
-<HR>PAdicExpand(n,p)
+<HR>IsPrimePower -- Test whether argument is a prime power
 </H3>
+Standard math library<br><H5>
+Calling sequence:
+</H5>
+IsPrime(n)
+<H5>
+Parameters:
+</H5>
+n - integer to test
+<H5>
+Description:
+</H5>
 
-PAdicExpand returns the p-adic expansion of n:
-
-<P>
-
-
-n = a0 +a1*p +a2*p^2+...
-
-<P>
-
-
-So for instance
-
+This command tests whether "n", which should be a positive integer,
+is a prime power, that is whether it is of the form "p^m", with
+"p" prime and "m" an integer.
+<p> </p>
+This function essentially checks for all integers between 2 and the
+square root of "n" for the largest divisor, and then tests whether
+"n" is a power of this divisor. So it will take a long time for
+large numbers.
+<H5>
+Examples:
+</H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> PrettyForm(PAdicExpand(1234,10))
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> IsPrimePower(9)
+Out> True;
+In> IsPrimePower(10)
+Out> False;
+In> Select("IsPrimePower", 1 .. 50)
+Out> {2,3,4,5,7,8,9,11,13,16,17,19,23,25,27,29,31,32,37,41,43,47,49};</PRE></TR>
+</TABLE>
 
-                   2     3
-4 + 3 * 10 + 2 * 10  + 10 
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#IsPrime" TARGET="Chapters">
+IsPrime
+</A>
+, <A HREF="ref.html#Factors" TARGET="Chapters">
+Factors
+</A>
+.<A NAME="Factors">
+
+</A>
+<H3>
+<HR>Factors -- Factorization
+</H3>
+Standard math library<br><H5>
+Calling sequence:
+</H5>
+Factors(x)
+<H5>
+Parameters:
+</H5>
+x - integer or univariate polynomial
+<H5>
+Description:
+</H5>
+
+This function decomposes the integer number "x" into a product of
+numbers. Alternatively, if "x" is a univariate polynomial, it is
+decomposed in irreducible polynomials.
+<p> </p>
+The factorization is returned as a list of pairs. The first member of
+each pair is the factor, while the second member denotes the power to
+which this factor should be raised. So the factorization "x = p1^n1 *
+... * p9^n9" is returned as <B><TT>{{p1,n1}, ..., {p9,n9}}</TT></B>.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> Factors(24);
+Out> {{2,3},{3,1}};
+In> Factors(2*x^3 + 3*x^2 - 1);
+Out> {{2,1},{x+1,2},{x-1/2,1}};
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Factor" TARGET="Chapters">
+Factor
+</A>
+, <A HREF="ref.html#IsPrime" TARGET="Chapters">
+IsPrime
+</A>
+.<A NAME="Factor">
+
+</A>
+<H3>
+<HR>Factor -- Factorization, in pretty form
+</H3>
+Standard math library<br><H5>
+Calling sequence:
+</H5>
+Factors(x)
+<H5>
+Parameters:
+</H5>
+x - integer or univariate polynomial
+<H5>
+Description:
+</H5>
+
+This function factorizes "x", like <B><TT>Factors</TT></B>, but
+it shows the result in a nicer human readable format.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> PrettyForm(Factor(24));
+
+ 3    
+2  * 3
+
+Out> True;
+In> PrettyForm(Factor(2*x^3 + 3*x^2 - 1));
+
+             2   /     1 \
+2 * ( x + 1 )  * | x - - |
+                 \     2 /
 
 Out> True;</PRE></TR>
 </TABLE>
 
-This function should also work on polynomials.
-
-<A NAME="ContFrac">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Factors" TARGET="Chapters">
+Factors
+</A>
+, <A HREF="ref.html#IsPrime" TARGET="Chapters">
+IsPrime
+</A>
+, <A HREF="ref.html#PrettyForm" TARGET="Chapters">
+PrettyForm
+</A>
+.<A NAME="PAdicExpand">
 
 </A>
 <H3>
-<HR>ContFrac
+<HR>PAdicExpand -- p-adic expansion
+</H3>
+Standard math library<br><H5>
+Calling sequence:
+</H5>
+PAdicExpand(n, p)
+<H5>
+Parameters:
+</H5>
+
+n - number, or polynomial, to expand <br>
+p - base to expand in
+<H5>
+Description:
+</H5>
+
+This command computes the p-adic expansion of "n". In other words,
+"n" is expanded in powers of "p". The argument "n" can be either
+an integer or a univariate polynomial. The base "p" should be of the
+same type.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> PrettyForm(PAdicExpand(1234, 10));
+
+               2     3    
+3 * 10 + 2 * 10  + 10  + 4
+
+Out> True;
+In> PrettyForm(PAdicExpand(x^3, x-1));
+
+                             2            3    
+3 * ( x - 1 ) + 3 * ( x - 1 )  + ( x - 1 )  + 1
+
+Out> True;</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#Mod" TARGET="Chapters">
+Mod
+</A>
+, <A HREF="ref.html#ContFrac" TARGET="Chapters">
+ContFrac
+</A>
+, <A HREF="ref.html#FromBase, ToBase" TARGET="Chapters">
+FromBase, ToBase
+</A>
+.<A NAME="ContFrac">
+
+</A>
+<H3>
+<HR>ContFrac -- Continued fraction expansion
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
 </H5>
-ContFrac(x) or ContFrac(x,maxdepth)
+
+ContFrac(x) <br> 
+ContFrac(x, maxdepth)
 <H5>
 Parameters:
 </H5>
@@ -979,40 +1187,62 @@ maxdepth - maximum required depth of result
 <H5>
 Description:
 </H5>
-Return the continued fraction expansion of a floating point
-number, or of a polynomial. This is especially useful for
-polynomials, since series expansions that converge slowly
-will typically converge a lot faster if calculated using
-a continued fraction expansion.
+
+This command returns the continued fraction expansion of "n", which
+should be either a floating point number or a polynomial. If
+"maxdepth" is not specified, it defaults to 6. The remainder is
+denoted by <B><TT>rest</TT></B>.
+<p> </p>
+This is especially useful for polynomials, since series expansions
+that converge slowly will typically converge a lot faster if
+calculated using a continued fraction expansion.
 <H5>
 Examples:
 </H5>
 <TABLE CELLPADDING="3" WIDTH="90%">
-<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> PrettyForm(ContFrac(N(Pi)))
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>
+In> PrettyForm(ContFrac(N(Pi)))
 
-                 1             
-3 + ---------------------------
-                   1           
-    7 + -----------------------
-                     1         
-        15 + ------------------
-                       1       
-             1 + --------------
-                          1    
-                 292 + --------
-                       1 + rest
+             1                 
+--------------------------- + 3
+           1                   
+----------------------- + 7    
+        1                      
+------------------ + 15        
+      1                        
+-------------- + 1             
+   1                           
+-------- + 292                 
+rest + 1                       
 
-</PRE></TR>
+Out> True;
+In> PrettyForm(ContFrac(x^2+x+1, 3))
+
+       x            
+---------------- + 1
+         x          
+1 - ------------    
+       x            
+    -------- + 1    
+    rest + 1        
+
+Out> True;</PRE></TR>
 </TABLE>
 
 <H5>
 See Also:
 </H5>
-<A NAME="Decimal">
+<A HREF="ref.html#PAdicExpand" TARGET="Chapters">
+PAdicExpand
+</A>
+, <A HREF="ref.html#N" TARGET="Chapters">
+N
+</A>
+.<A NAME="Decimal">
 
 </A>
 <H3>
-<HR>Decimal
+<HR>Decimal -- Decimal representation of a rational
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1025,13 +1255,12 @@ frac - a rational number
 <H5>
 Description:
 </H5>
-Decimal returns the infinite decimal representation
-of a number. This function returns a list, with the first
-element being the number before the decimal point and the
-last element the sequence of digits that will repeat
-forever. All the intermediate list elements are the initial
-digits.
 
+This function returns the infinite decimal representation of the
+rational number "frac".  It returns a list, with the first element
+being the number before the decimal point and the last element the
+sequence of digits that will repeat forever. All the intermediate list
+elements are the initial digits.
 <H5>
 Examples:
 </H5>
@@ -1043,11 +1272,17 @@ Out> 0.045454545454545454545454545454;
 </PRE></TR>
 </TABLE>
 
-<A NAME="TruncRadian">
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#N" TARGET="Chapters">
+N
+</A>
+.<A NAME="TruncRadian">
 
 </A>
 <H3>
-<HR>TruncRadian
+<HR>TruncRadian -- Remainder modulo 2*Pi
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1113,7 +1348,7 @@ Tan
 
 </A>
 <H3>
-<HR>Floor
+<HR>Floor -- Round a number downwards
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1126,7 +1361,7 @@ x - a number
 <H5>
 Description:
 </H5>
-Floor returns the largest integer smaller than x.
+This function returns the largest integer smaller than "x".
 <H5>
 Examples:
 </H5>
@@ -1151,7 +1386,7 @@ Round
 
 </A>
 <H3>
-<HR>Ceil
+<HR>Ceil -- Round a number upwards
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1164,7 +1399,7 @@ x - a number
 <H5>
 Description:
 </H5>
-Ceil returns the smallest integer larger than x.
+This function returns the smallest integer larger than "x".
 <H5>
 Examples:
 </H5>
@@ -1189,7 +1424,7 @@ Round
 
 </A>
 <H3>
-<HR>Round
+<HR>Round -- Round a number to the nearest integer
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1202,7 +1437,9 @@ x - a number
 <H5>
 Description:
 </H5>
-Round returns the integer closest to x. 0.5 is rounded down.
+This function returns the integer closest to "x". Half-integers
+(ie. numbers of the form "n + 0.5", with "n" an integers) are
+rounded upwards.
 <H5>
 Examples:
 </H5>
@@ -1215,7 +1452,6 @@ In> Round(-1.49)
 Out> -1;
 In> Round(-1.51)
 Out> -2;
-
 </PRE></TR>
 </TABLE>
 
@@ -1232,7 +1468,7 @@ Ceil
 
 </A>
 <H3>
-<HR>Pslq
+<HR>Pslq -- Search for integer relations between reals
 </H3>
 Standard math library<br><H5>
 Calling Sequence:
@@ -1241,19 +1477,20 @@ Pslq(xlist,precision)
 <H5>
 Parameters:
 </H5>
-xlist - list of floating point numbers <br>
+xlist - list of numbers <br>
 precision - required number of digits precision of calculation
 
 <H5>
 Description:
 </H5>
-The Pslq is an integer relation detection algorithm.
 
-Given a list of constants x find coefficients sol[i] such that
-<B><TT>sum(sol[i]*x[i], i=1..n) = 0</TT></B> (where n=Length(x)).
-x is the list of real expressions. N(x[i]) must evaluate to floating
-point numbers.
-
+This function is an integer relation detection algorithm. This means
+that, given the numbers "x[i]" in the list "xlist", it tries
+to find integer coefficients "a[i]" such that "a[1]*x[1] + ... +
+a[n]*x[n] = 0". The list of integer coefficients is returned.
+<p> </p>
+The numbers in "xlist" must evaluate to floating point numbers if
+the <B><TT>N</TT></B> operator is applied on them.
 <H5>
 Examples:
 </H5>
@@ -1263,11 +1500,14 @@ Out> {1,-2,-3};
 </PRE></TR>
 </TABLE>
 Note: in this example the system detects correctly that
-<B><TT>1* (2*Pi+3*E) -2*(Pi) - 3*(E) = 0</TT></B>
+<B><TT>1 * (2*Pi+3*E) + (-2) * (Pi) + (-3) * (E) = 0</TT></B>
 <H5>
 See Also:
 </H5>
-<p>  </P><HR><A NAME="c4">
+<A HREF="ref.html#N" TARGET="Chapters">
+N
+</A>
+.<p>  </P><HR><A NAME="c4">
 
 </A>
 <A HREF="refchapter4.html#Sin, Cos, Tan" TARGET="Chapters">
@@ -3282,6 +3522,11 @@ done on floating point numbers and the algorithm is unstable.
 Converting the floating point numbers to rational numbers will force
 calculations to be done with infinite precision (by using rational
 numbers as representations).
+<p> </p>
+It does this by finding the smallest integer n such that multiplying
+the number with 10^n is an integer. Then it divides by 10^n again,
+depending on the internal gcd calculation to reduce the resulting
+division of integers.
 <H5>
 Examples:
 </H5>

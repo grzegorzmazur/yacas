@@ -1,22 +1,23 @@
 
-Chapter()"Arithmetic";
+Chapter() "Arithmetic";
 
-AddAnchor("+");
-AddAnchor("-");
-AddAnchor("*");
-AddAnchor("/");
-AddAnchor("^");
-SubSection()"Arithmetic operations";
+AddBody(HtmlAnchor() "+");
+AddBody(HtmlAnchor() "-");
+AddBody(HtmlAnchor() "*");
+AddBody(HtmlAnchor() "/");
+AddBody(HtmlAnchor() "^");
+CmdDescription("+, -, *, /, ^", "Arithmetic operations");
 StandardLib();
+
 Topical()"Calling Sequence";
 Text()
-"x+y (precedence 6)  <br>
+"x+y  (precedence 6)  <br>
 +x                   <br>
-x-y (precedence 5)   <br>
+x-y  (precedence 5)   <br>
 -x                   <br>
-x*y (precedence 3)   <br>
-x/y (precedence 3)   <br>
-x^y (precedence 2)   
+x*y  (precedence 3)   <br>
+x/y  (precedence 3)   <br>
+x^y  (precedence 2)   
 ";
 
 Topical()"Parameters";
@@ -24,7 +25,8 @@ Text()"x and y - some objects for which arithmetic operations are defined.";
 
 Topical()"Description";
 Text()"These are the basic arithmetic operations. They can work on integers,
-rational numbers, complex numbers, vectors, matrices and lists. <br>
+rational numbers, complex numbers, vectors, matrices and lists. 
+<p> </p>
 These operators are implemented in the standard math library (as opposed
 to being built-in). This means that they can be extended by the user.";
 
@@ -37,18 +39,19 @@ In> 2*3
 Out> 6;
 ");
 
-Topical()"See Also"; 
-SeeAlso({});
-
-
 
 
 Chapter()"Other operations on numbers";
 
+ChapterIntro("Besides the arithmetical operations defined in the
+previous chapter, one can also use the following operations on
+numbers. Many of these also work on polynomials.");
 
-AddAnchor("Div");
-AddAnchor("Mod");
-SubSection()"Div and Mod";
+
+
+AddBody(HtmlAnchor() "Div");
+AddBody(HtmlAnchor() "Mod");
+CmdDescription("Div, Mod", "Division with remainder");
 StandardLib();
 Topical()"Calling Sequence";
 Text()
@@ -57,11 +60,17 @@ Mod(x,y)
 ";
 
 Topical()"Parameters";
-Text()"x and y - integers";
+Text()"x, y - integers, or univariate polynomials";
 
 Topical()"Description";
-Text()"Div performs integer division and Mod returns the remainder
-after division. Div and Mod are also defined for polynomials.";
+Text() 
+HtmlTerm("Div") : " performs integer division and " : HtmlTerm("Mod")
+: " returns the remainder after division. " : HtmlTerm("Div") : " and
+" : HtmlTerm("Mod") : " are also defined for polynomials.
+<p> </p>
+If " : HtmlTerm("Div(x,y)") : " returns \"a\" and " :
+HtmlTerm("Mod(x,y)") : " equals \"b\", then these numbers satisfy x =
+a*y + b and 0 <= b < y.";
 
 Topical()"Examples";
 Text()
@@ -73,12 +82,11 @@ Out> 2;
 ");
 
 Topical()"See Also"; 
-SeeAlso({});
+SeeAlso({"Gcd", "Lcm"});
 
 
 
-AddAnchor("Gcd");
-SubSection()"Gcd";
+CmdDescription("Gcd", "Greatest common divisor");
 StandardLib();
 Topical()"Calling Sequence";
 Text()
@@ -92,35 +100,30 @@ list - a list of all integers or all univariate polynomials
 ";
 
 Topical()"Description";
-Text()
-"Gcd(n,m) returns the greatest common divisor of n and m.
-The gcd is the largest number that divides n and m.
-The library code calls MathGcd, which is an internal function.
-This function implements the binary Euclidean algorithm for
-determining the greatest common divisor:
-
-
-":HtmlCommand(
+Text() "
+This function returns the greatest common divisor of \"n\" and \"m\".
+The gcd is the largest number that divides \"n\" and \"m\".  It is
+also known as the highest common factor (hcf).  The library code calls
+" : HtmlTerm("MathGcd") : ", which is an internal function.  This
+function implements the binary Euclidean algorithm for determining the
+greatest common divisor: "
+: HtmlCommand(
 "Routine for calculating Gcd(n,m)
 
 1) if n = m then return n
 2) if both n and m are even then return 2*Gcd(n/2,m/2)
 3) if exactly one of n or m (say n) is even then return Gcd(n/2,m)
 4) if both n and m are odd and, say, n>m then return Gcd( (n-m)/2,m)
-"):
-"This is a rather fast algorithm on computers that can efficiently shift
-integers. <br>
-
-Gcd(list), with list a list of arbitrary length
-of integers, will return the greatest common divisor of all the integers
-listed.
-For lists Gcd uses the identity
-
-
+") : "
+This is a rather fast algorithm on computers that can efficiently shift
+integers. 
+<p> </p>
+If the second calling form is used, " : HtmlTerm("Gcd") : " will
+return the greatest common divisor of all the integers or polynomials
+in \"list\". It uses the identity
 ":HtmlCommand(
 "Gcd({a,b,c}) = Gcd(Gcd(a,b),c)
-"):"
-";
+");
 
 Topical()"Examples";
 Text()
@@ -138,28 +141,26 @@ SeeAlso({"Lcm"});
 
 
 
-AddAnchor("Lcm");
-SubSection()"Lcm";
+CmdDescription("Lcm", "Least common multiple");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Lcm(n,m)";
 
 Topical()"Parameters";
-Text()"n,m - integers";
+Text()"n, m - integers, or univariate polynomials";
 
 Topical()"Description";
-Text()
-"Lcm(n,m) : returns the least common multiple of a and b.
-The least common multiple L of two numbers n,m is the number L=Lcm(n,m)
-for which there are two integers p,q so such that p*n=q*m=L.
-This is calculated with the formula:
+Text() "
+This command returns the least common multiple of \"n\" and \"m\".
+The least common multiple of two numbers \"n\" and \"m\" is the lowest
+number which is an integer multiple of both \"n\" and \"m\".
+It is calculated with the formula:
 ":HtmlCommand(
 "Lcm(n,m) = Div(n*m,Gcd(n,m))
 "):"
-This means it also works
-on polynomials, since Div, Gcd and multiplication are also defined
-for them.
-";
+This means it also works on polynomials, since " : HtmlTerm("Div") :
+", " : HtmlTerm("Gcd") : " and multiplication are also defined for
+them.";
 
 Topical()"Examples";
 Text()
@@ -174,34 +175,33 @@ SeeAlso({"Gcd"});
 
 
 
-AddAnchor(Lt():Lt());
-AddAnchor(Gt():Gt());
-SubSection() Lt():Lt(): " and ":Gt():Gt();
+AddBody(HtmlAnchor() Lt():Lt());
+AddBody(HtmlAnchor() Gt():Gt());
+CmdDescription(Lt():Lt():", ":Gt():Gt(), "Shift operators");
 StandardLib();
 Topical()"Calling Sequence";
-Text()"n":Lt():Lt():"m and n":Gt():Gt():"m";
+Text()"n":Lt():Lt():"m <br> n":Gt():Gt():"m";
 
 Topical()"Parameters";
 Text()"n,m - integers";
 
 Topical()"Description";
 Text()"These operators shift integers to the left or to the right.
-They are similar to the c shift operators. These are sign-extended
+They are similar to the C shift operators. These are sign-extended
 shifts, so they act like multiplication or division by powers of 2.";
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"Examples:
-1":Lt():Lt():"10; should evaluate to 1024
--1024":Gt():Gt():"10; should evaluate to -1
-");
+Text() HtmlCommand("
+In> 1 ":Lt():Lt():" 10
+Out> 1024;
+In> -1024 ":Gt():Gt():" 10
+Out> -1;");
 
 
 
-AddAnchor("FromBase");
-AddAnchor("ToBase");
-SubSection()"FromBase and ToBase";
+AddBody(HtmlAnchor() "FromBase");
+AddBody(HtmlAnchor() "ToBase");
+CmdDescription("FromBase, ToBase", "Conversion from/to non-decimal base");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()
@@ -215,9 +215,11 @@ Text()
 number - a number to write out in the base representation";
 
 Topical()"Description";
-Text()
-"Conversion of numbers to and from base 10 numbers.<p>  </p>
-
+Text() 
+HtmlTerm("FromBase") : " converts \"number\", written in base
+\"base\", to base 10. " : HtmlTerm("ToBase") : " converts \"number\",
+written in base 10, to base \"base\".
+<p> </p>
 These functions use the p-adic expansion capabilities of the built-in
 arbitrary precision math libraries.  
 ";
@@ -229,31 +231,30 @@ HtmlCommand(
 Out> 63;
 In> ToBase(16,255)
 Out> ff;
-");
+") : "
+The first command writes the binary number " : HtmlTerm("111111") : "
+in decimal base. The second command converts " : HtmlTerm("255") : "
+(in decimal base) to hexadecimal base.";
 
 Topical()"See Also"; 
-SeeAlso({});
+SeeAlso({"PAdicExpand"});
 
 
-AddAnchor("Precision");
-AddAnchor("GetPrecision");
-SubSection()"Precision and GetPrecision";
+
+CmdDescription("Precision", "Sets the precision");
 BuiltIn();
 Topical()"Calling Sequence";
 Text()
-"Precision(n) <br>
-GetPrecision()";
+"Precision(n)";
 
 Topical()"Parameters";
-Text()"n - required number of digits precision
-           required for following calculations, in base 10.";
+Text() "n - new precision";
 
 Topical()"Description";
-Text()"Precision and GetPrecision can be used to get and set the
-required number of digits of precision in base 10 in the environment.
-All subsequent floating point operations will allow for at least n
-digits after the decimal point.
-";
+Text()"
+This command sets the number of binary digits to be used in
+calculations. All subsequent floating point operations will allow for
+at least \"n\" digits after the decimal point.";
 
 Topical()"Examples";
 Text()
@@ -271,36 +272,63 @@ Out> 20;
 ");
 
 Topical()"See Also"; 
-SeeAlso({"N"});
+SeeAlso({"GetPrecision", "N"});
 
 
 
-
-
-AddAnchor("N");
-SubSection()"N";
-StandardLib();
+CmdDescription("GetPrecision", "Returns the current precision");
+BuiltIn();
 Topical()"Calling Sequence";
-Text()
-"N(expression) <br>
-N(expression,precision)";
+Text() "GetPrecision()";
+
+Topical()"Parameters";
+Text() "none";
+
+Topical()"Description";
+Text()"
+This command returns the current precision, as set by " :
+HtmlTerm("Precision") : ".";
+
+Topical()"Examples";
+Text() HtmlCommand("
+In> GetPrecision();
+Out> 10;
+In> Precision(20);
+Out> True;
+In> GetPrecision();
+Out> 20;");
+
+Topical()"See Also"; 
+SeeAlso({"Precision", "N"});
+
+
+
+CmdDescription("N", "Numerical approximation");
+StandardLib();
+
+Topical()"Calling Sequence";
+Text() "
+N(expr) <br>
+N(expr, prec)";
 
 Topical()"Parameters";
 Text()
-"expression - expression to evaluate <br>
-precision - precision to use";
+"expr - expression to evaluate <br>
+prec - precision to use";
 
 Topical()"Description";
-Text()"Normally numeric values are left as-is as long
-as possible in calculations using division, or trigonometric functions
-like Sin, Cos, etcetera.
-N forces Yacas to calculate floating point representations
-of functions whenever possible, using the current precision or the
-specified precision. <p>  </p>
-
-In addition, the variable Pi is bound to the value of pi up to the
-required precision.
-";
+Text()"
+This function forces Yacas to give a numerical approximation to the
+expression \"expr\", using \"prec\" digits if the second calling
+sequence is used, and the precision as set by " :
+HtmlTerm("SetPrecision") : " otherwise. This overrides the normal
+behaviour, in which expressions are kept in symbolic form (eg. " :
+HtmlTerm("Sqrt(2)") : " instead of " : HtmlTerm("1.41421") : ").
+<p> </p>
+Application of the " : HtmlTerm("N") : " operator will make Yacas
+calculate floating point representations of functions whenever
+possible. In addition, the variable " : HtmlTerm("Pi") : " is bound to
+the value of pi up to the required precision.";
 
 Topical()"Examples";
 Text()
@@ -320,137 +348,234 @@ Out> 3.14159265358979323846;
 ");
 
 Topical()"See Also"; 
-SeeAlso({"Precision","GetPrecision"});
+SeeAlso({"Precision","GetPrecision","Pi"});
 
 
 
-
-
-AddAnchor("Rationalize");
-SubSection()"Rationalize";
+CmdDescription("Rationalize", "Convert floating point numbers to fractions");
 StandardLib();
+
 Topical()"Calling Sequence";
-Text()"Rationalize(expression)";
+Text()"Rationalize(expr)";
 
 Topical()"Parameters";
-Text()"expression - expression to rationalize";
+Text()"expr - an expression containing real numbers";
 
 Topical()"Description";
-Text()"Rationalize scans the entire expression replacing all floating
-point values into rational representations p/q for some integers p and
-q, such that the division of p by q gives the original floating point
-value up to the number of digits of the original floating point value. <p>  </p>
-
-It does this by finding the smallest integer n such that
-multiplying the number with 10^n is an integer. Then it divides by 10^n
-again, depending on the internal gcd calculation to reduce the resulting
-division of integers.
-";
+Text() "
+This command converts every real number in the expression \"expr\"
+into a rational number. This is useful when a calculation needs to be
+done on floating point numbers and the algorithm is unstable.
+Converting the floating point numbers to rational numbers will force
+calculations to be done with infinite precision (by using rational
+numbers as representations).
+<p> </p>
+It does this by finding the smallest integer n such that multiplying
+the number with 10^n is an integer. Then it divides by 10^n again,
+depending on the internal gcd calculation to reduce the resulting
+division of integers.";
 
 Topical()"Examples";
-Text()
-HtmlCommand(
-"In> Sin(1.234)
-Out> Sin(1.234);
+Text() HtmlCommand("
+In> {1.2,3.123,4.5}
+Out> {1.2,3.123,4.5};
 In> Rationalize(%)
-Out> Sin(617/500);
-");
+Out> {6/5,3123/1000,9/2};");
 
 Topical()"See Also"; 
-SeeAlso({"N","Precision","GetPrecision"});
+SeeAlso({"IsRational"});
 
 
 
-
-
-
-AddAnchor("IsPrime");
-SubSection()"IsPrime(n)";
-Text()"IsPrime(n) : returns True if n is prime, False otherwise.";
-
-AddAnchor("IsPrimePower");
-SubSection()"IsPrimePower(n)";
-Text()"IsPrimePower(n) : returns True if there is a prime p such that
-p^m = n.";
-
-
-
-AddAnchor("Factors");
-AddAnchor("Factor");
-SubSection()"Factor and Factors";
+CmdDescription("IsPrime", "Test whether argument is a prime number");
 StandardLib();
-Topical()"Calling Sequence";
-Text()
-"Factor(x) <br>
-Factors(x)";
 
-Topical()"Parameters";
-Text()"x - an integer number or univariate polynomial to factor";
+Topical() "Calling sequence";
+Text() "IsPrime(n)";
 
-Topical()"Description";
-Text()"Factors decomposes integer numbers or univariate polynomials
-into a product of primes or irreducible polynomials. <p>  </p>
+Topical() "Parameters";
+Text() "n - integer to test";
 
-The result of Factors is a list of lists of the form {p,n}, where each
-p^n divides the original x. <p>  </p>
+Topical() "Description";
+Text() "
+This command tests whether \"n\", which should be a positive integer,
+is a prime number. A number is a prime number if it is only divisible
+by 1 and itself. As a special case, 1 is not a prime number.
+<p> </p>
+This function essentially checks for all integers between 2 and the
+square root of \"n\" whether they divide \"n\", and hence may take a
+long time for large numbers."; 
 
-Factor shows the result of Factors in a nicer human readable format.
-";
+Topical() "Examples";
+Text() HtmlCommand("
+In> IsPrime(1)
+Out> False;
+In> IsPrime(2)
+Out> True;
+In> IsPrime(10)
+Out> False;
+In> IsPrime(23)
+Out> True;
+In> Select(\"IsPrime\", 1 .. 100)
+Out> {2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97};
+");
+
+Topical() "See Also";
+SeeAlso({"IsPrimePower", "Factors"});
+
+
+
+CmdDescription("IsPrimePower", "Test whether argument is a prime power");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "IsPrime(n)";
+
+Topical() "Parameters";
+Text() "n - integer to test";
+
+Topical() "Description";
+Text() "
+This command tests whether \"n\", which should be a positive integer,
+is a prime power, that is whether it is of the form \"p^m\", with
+\"p\" prime and \"m\" an integer.
+<p> </p>
+This function essentially checks for all integers between 2 and the
+square root of \"n\" for the largest divisor, and then tests whether
+\"n\" is a power of this divisor. So it will take a long time for
+large numbers.";  
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> IsPrimePower(9)
+Out> True;
+In> IsPrimePower(10)
+Out> False;
+In> Select(\"IsPrimePower\", 1 .. 50)
+Out> {2,3,4,5,7,8,9,11,13,16,17,19,23,25,27,29,31,32,37,41,43,47,49};");
+
+Topical() "See Also";
+SeeAlso({"IsPrime", "Factors"});
+
+
+
+CmdDescription("Factors", "Factorization");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "Factors(x)";
+
+Topical() "Parameters";
+Text() "x - integer or univariate polynomial";
+
+Topical() "Description";
+Text() "
+This function decomposes the integer number \"x\" into a product of
+numbers. Alternatively, if \"x\" is a univariate polynomial, it is
+decomposed in irreducible polynomials.
+<p> </p>
+The factorization is returned as a list of pairs. The first member of
+each pair is the factor, while the second member denotes the power to
+which this factor should be raised. So the factorization \"x = p1^n1 *
+... * p9^n9\" is returned as " : HtmlTerm("{{p1,n1}, ..., {p9,n9}}") :
+".";
 
 /* TODO add a description on the algorithms used here! */
 
-Topical()"Examples";
-Text()
-HtmlCommand(
-"In> Factors(12)
-Out> {{2,2},{3,1}};
-In> PrettyForm(Factor(12))
-
- 2    
-2  * 3
-
+Topical() "Examples";
+Text() HtmlCommand("
+In> Factors(24);
+Out> {{2,3},{3,1}};
+In> Factors(2*x^3 + 3*x^2 - 1);
+Out> {{2,1},{x+1,2},{x-1/2,1}};
 ");
 
-Topical()"See Also"; 
+Topical() "See Also";
+SeeAlso({"Factor", "IsPrime"});
 /*TODO add references to the functions used! */
-SeeAlso({});
 
 
 
-
-
-
-AddAnchor("PAdicExpand");
-SubSection()"PAdicExpand(n,p)";
-Text()"
-PAdicExpand returns the p-adic expansion of n:
-":HtmlNewParagraph():"
-
-n = a0 +a1*p +a2*p^2+...
-":HtmlNewParagraph():"
-
-So for instance
-
-":HtmlCommand(
-"In> PrettyForm(PAdicExpand(1234,10))
-
-                   2     3
-4 + 3 * 10 + 2 * 10  + 10 
-
-Out> True;"):
-
-"
-This function should also work on polynomials.
-";
-
-
-
-
-AddAnchor("ContFrac");
-SubSection()"ContFrac";
+CmdDescription("Factor", "Factorization, in pretty form");
 StandardLib();
+
+Topical() "Calling sequence";
+Text() "Factors(x)";
+
+Topical() "Parameters";
+Text() "x - integer or univariate polynomial";
+
+Topical() "Description";
+Text() "
+This function factorizes \"x\", like " : HtmlTerm("Factors") : ", but
+it shows the result in a nicer human readable format.";
+
+Topical()"Examples";
+Text() HtmlCommand("
+In> PrettyForm(Factor(24));
+
+ 3    
+2  * 3
+
+Out> True;
+In> PrettyForm(Factor(2*x^3 + 3*x^2 - 1));
+
+             2   /     1 \\
+2 * ( x + 1 )  * | x - - |
+                 \\     2 /
+
+Out> True;");
+
+Topical() "See Also";
+SeeAlso({"Factors", "IsPrime", "PrettyForm"});
+
+
+
+CmdDescription("PAdicExpand", "p-adic expansion");
+StandardLib();
+
+Topical() "Calling sequence";
+Text() "PAdicExpand(n, p)";
+
+Topical() "Parameters";
+Text() "
+n - number, or polynomial, to expand <br>
+p - base to expand in";
+
+Topical() "Description";
+Text() "
+This command computes the p-adic expansion of \"n\". In other words,
+\"n\" is expanded in powers of \"p\". The argument \"n\" can be either
+an integer or a univariate polynomial. The base \"p\" should be of the
+same type.";
+
+Topical() "Examples";
+Text() HtmlCommand("
+In> PrettyForm(PAdicExpand(1234, 10));
+
+               2     3    
+3 * 10 + 2 * 10  + 10  + 4
+
+Out> True;
+In> PrettyForm(PAdicExpand(x^3, x-1));
+
+                             2            3    
+3 * ( x - 1 ) + 3 * ( x - 1 )  + ( x - 1 )  + 1
+
+Out> True;");
+
+Topical() "See Also";
+SeeAlso({"Mod", "ContFrac", "FromBase, ToBase"});
+
+
+
+CmdDescription("ContFrac", "Continued fraction expansion");
+StandardLib();
+
 Topical()"Calling Sequence";
-Text()"ContFrac(x) or ContFrac(x,maxdepth)";
+Text()"
+ContFrac(x) <br> 
+ContFrac(x, maxdepth)";
 
 Topical()"Parameters";
 Text()"x - expression to break down<br>
@@ -458,38 +583,52 @@ maxdepth - maximum required depth of result
 ";
 
 Topical()"Description";
-Text()
-"Return the continued fraction expansion of a floating point
-number, or of a polynomial. This is especially useful for
-polynomials, since series expansions that converge slowly
-will typically converge a lot faster if calculated using
-a continued fraction expansion.";
+Text() "
+This command returns the continued fraction expansion of \"n\", which
+should be either a floating point number or a polynomial. If
+\"maxdepth\" is not specified, it defaults to 6. The remainder is
+denoted by " : HtmlTerm("rest") : ".
+<p> </p>
+This is especially useful for polynomials, since series expansions
+that converge slowly will typically converge a lot faster if
+calculated using a continued fraction expansion.";
 
 Topical()"Examples";
 Text()
-HtmlCommand(
-"In> PrettyForm(ContFrac(N(Pi)))
+HtmlCommand("
+In> PrettyForm(ContFrac(N(Pi)))
 
-                 1             
-3 + ---------------------------
-                   1           
-    7 + -----------------------
-                     1         
-        15 + ------------------
-                       1       
-             1 + --------------
-                          1    
-                 292 + --------
-                       1 + rest
+             1                 
+--------------------------- + 3
+           1                   
+----------------------- + 7    
+        1                      
+------------------ + 15        
+      1                        
+-------------- + 1             
+   1                           
+-------- + 292                 
+rest + 1                       
 
-");
+Out> True;
+In> PrettyForm(ContFrac(x^2+x+1, 3))
+
+       x            
+---------------- + 1
+         x          
+1 - ------------    
+       x            
+    -------- + 1    
+    rest + 1        
+
+Out> True;");
 
 Topical()"See Also"; 
-SeeAlso({});
+SeeAlso({"PAdicExpand", "N"});
 
 
-AddAnchor("Decimal");
-SubSection()"Decimal";
+
+CmdDescription("Decimal", "Decimal representation of a rational");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Decimal(frac)";
@@ -498,14 +637,12 @@ Topical()"Parameters";
 Text()"frac - a rational number";
 
 Topical()"Description";
-Text()
-"Decimal returns the infinite decimal representation
-of a number. This function returns a list, with the first
-element being the number before the decimal point and the
-last element the sequence of digits that will repeat
-forever. All the intermediate list elements are the initial
-digits.
-";
+Text() "
+This function returns the infinite decimal representation of the
+rational number \"frac\".  It returns a list, with the first element
+being the number before the decimal point and the last element the
+sequence of digits that will repeat forever. All the intermediate list
+elements are the initial digits.";
 
 Topical()"Examples";
 Text()
@@ -516,9 +653,12 @@ In> N(1/22,30)
 Out> 0.045454545454545454545454545454;
 ");
 
+Topical()"See Also"; 
+SeeAlso({"N"});
 
-AddAnchor("TruncRadian");
-SubSection()"TruncRadian";
+
+
+CmdDescription("TruncRadian", "Remainder modulo 2*Pi");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"TruncRadian(r)";
@@ -566,10 +706,7 @@ SeeAlso({"Sin","Cos","Tan"});
 
 
 
-
-
-AddAnchor("Floor");
-SubSection()"Floor";
+CmdDescription("Floor", "Round a number downwards");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Floor(x)";
@@ -579,7 +716,7 @@ Text()"x - a number";
 
 Topical()"Description";
 Text()
-"Floor returns the largest integer smaller than x.";
+"This function returns the largest integer smaller than \"x\".";
 
 Topical()"Examples";
 Text()
@@ -594,8 +731,8 @@ Topical()"See Also";
 SeeAlso({"Ceil","Round"});
 
 
-AddAnchor("Ceil");
-SubSection()"Ceil";
+
+CmdDescription("Ceil", "Round a number upwards");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Ceil(x)";
@@ -605,7 +742,7 @@ Text()"x - a number";
 
 Topical()"Description";
 Text()
-"Ceil returns the smallest integer larger than x.";
+"This function returns the smallest integer larger than \"x\".";
 
 Topical()"Examples";
 Text()
@@ -620,8 +757,8 @@ Topical()"See Also";
 SeeAlso({"Floor","Round"});
 
 
-AddAnchor("Round");
-SubSection()"Round";
+
+CmdDescription("Round", "Round a number to the nearest integer");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Round(x)";
@@ -631,7 +768,9 @@ Text()"x - a number";
 
 Topical()"Description";
 Text()
-"Round returns the integer closest to x. 0.5 is rounded down.";
+"This function returns the integer closest to \"x\". Half-integers
+(ie. numbers of the form \"n + 0.5\", with \"n\" an integers) are
+rounded upwards.";
 
 Topical()"Examples";
 Text()
@@ -644,7 +783,6 @@ In> Round(-1.49)
 Out> -1;
 In> Round(-1.51)
 Out> -2;
-
 ");
 
 Topical()"See Also"; 
@@ -652,30 +790,26 @@ SeeAlso({"Floor","Ceil"});
 
 
 
-
-
-
-AddAnchor("Pslq");
-SubSection()"Pslq";
+CmdDescription("Pslq", "Search for integer relations between reals");
 StandardLib();
 Topical()"Calling Sequence";
 Text()"Pslq(xlist,precision)";
 
 Topical()"Parameters";
 Text()
-"xlist - list of floating point numbers <br>
+"xlist - list of numbers <br>
 precision - required number of digits precision of calculation
 ";
 
 Topical()"Description";
-Text()
-"The Pslq is an integer relation detection algorithm.
-
-Given a list of constants x find coefficients sol[i] such that
-":HtmlTerm("sum(sol[i]*x[i], i=1..n) = 0"):" (where n=Length(x)).
-x is the list of real expressions. N(x[i]) must evaluate to floating
-point numbers.
-";
+Text() "
+This function is an integer relation detection algorithm. This means
+that, given the numbers \"x[i]\" in the list \"xlist\", it tries
+to find integer coefficients \"a[i]\" such that \"a[1]*x[1] + ... +
+a[n]*x[n] = 0\". The list of integer coefficients is returned.
+<p> </p>
+The numbers in \"xlist\" must evaluate to floating point numbers if
+the " : HtmlTerm("N") : " operator is applied on them.";
 
 Topical()"Examples";
 Text()
@@ -684,15 +818,7 @@ HtmlCommand(
 Out> {1,-2,-3};
 "):
 "Note: in this example the system detects correctly that
-":HtmlTerm("1* (2*Pi+3*E) -2*(Pi) - 3*(E) = 0"):"";
+":HtmlTerm("1 * (2*Pi+3*E) + (-2) * (Pi) + (-3) * (E) = 0");
 
 Topical()"See Also"; 
-SeeAlso({});
-
-
-
-
-
-/*
-
-*/
+SeeAlso({"N"});
