@@ -597,17 +597,16 @@ void InterruptHandler(int errupt)
 #include "platmath.h"
 void TestNum()
 {//numeric test code
-  YacasBigNumberPtr doer(MakeNativeNumber("0",10));
-  YacasBigNumberPtr result(doer->Multiply(
-                                MakeNativeNumber("23",10),
-                                MakeNativeNumber("45.23e3",10)
-                                        ,10));
+  NativeNumber result;
+  NativeNumber x("23",10);
+  NativeNumber y("45.23e3",10);
+  result.Multiply(x,y,10);
   LispString str;
-  result->ToString(str,10);
+  result.ToString(str,10);
   printf("23*45.23e3 = %s\n",str.String());
 
-  YacasBigNumberPtr minusOne(MakeNativeNumber("-1.0",10));
-  minusOne->ToString(str,10);
+  NativeNumber minusOne("-1.0",10);
+  minusOne.ToString(str,10);
   printf("-1 = %s\n",str.String());
 }
 

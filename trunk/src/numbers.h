@@ -95,6 +95,8 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
  *
  */
  
+//TODO remove!!!
+#if 0
 // reference-counting through a smart pointer, so we can do automatic clean up on numbers
 class YacasBigNumber;
 typedef const RefPtr<YacasBigNumber> YacasBigNumberPtr;
@@ -138,6 +140,40 @@ protected: // I don't want any one to construct this class any other way!
 
 
 };
+#endif //0
+
+class NumberBase : public YacasBase
+{
+public: //constructors
+  /// ToString : return string representation of number in aResult 
+  virtual void ToString(LispString& aResult, LispInt aBase) = 0;
+public: //information retrieval on library used  
+  /// Numeric library name
+  virtual const LispCharPtr NumericLibraryName() = 0;
+public://arithmetic
+  /// Multiply two numbers, and return result in aResult
+  virtual void Multiply(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
+  /** Multiply two numbers, and add to aResult (this is useful and generally efficient to implement).
+   * This is most likely going to be used by internal functions only, using aResult as an accumulator.
+   */
+  virtual void MultiplyAdd(NumberBase& aResult, const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
+  /// Add two numbers, and return result in aResult
+  virtual void Add(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
+  /// Negate the current number, and return it
+  virtual void Negate(const NumberBase& aX) = 0;
+  /// Divide, and return result. Note: if the two arguments are integer, it should return an integer result!
+  virtual void Divide(const NumberBase& aX, const NumberBase& aY, LispInt aPrecision) = 0;
+
+public://bitwise operations  
+  virtual void ShiftLeft( const NumberBase& aX, LispInt aNrToShift) = 0;
+  virtual void ShiftRight( const NumberBase& aX, LispInt aNrToShift) = 0;
+  virtual void BitAnd(const NumberBase& aX, const NumberBase& aY) = 0;
+  virtual void BitOr(const NumberBase& aX, const NumberBase& aY) = 0;
+  virtual void BitXor(const NumberBase& aX, const NumberBase& aY) = 0;
+};
+
+
+
 
 /*DEPRECATED, TODO remove
 public: //base conversions

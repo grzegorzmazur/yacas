@@ -65,29 +65,31 @@ int main(void)
 {
 
     // Calculate z=x+y where x=10 and y=15
-    YacasBigNumberPtr x(MakeNativeNumber("10",100,10));
-    YacasBigNumberPtr y(MakeNativeNumber("15",100,10));
-    YacasBigNumberPtr z(x->Add(x,y,10));    
+    NativeNumber x("10",100,10);
+    NativeNumber y("15",100,10);
+    NativeNumber z;
+    z.Add(x,y,10);    
     // cast the result to a string
     LispString  str;
-    z->ToString(str,10);
+    z.ToString(str,10);
     Check(str,"25");
 
 }
 
-    const YacasBigNumberPtr n1(MakeNativeNumber("65535",100,10));
-    n1->ToString(str,10);
+    NativeNumber n1("65535",100,10);
+    n1.ToString(str,10);
     Check(str,"65535");
-    n1->ToString(str,10);
+    n1.ToString(str,10);
     Check(str,"65535");
-    n1->ToString(str,2);
+    n1.ToString(str,2);
     Check(str,"1111111111111111");
-    n1->Negate();
-    n1->ToString(str,10);
+    n1.Negate(n1);
+    n1.ToString(str,10);
     Check(str,"-65535");
 
-    const YacasBigNumberPtr res1(n1->Add(n1,n1,10));    
-    res1->ToString(str,10);
+    NativeNumber res1;
+    res1.Add(n1,n1,10);    
+    res1.ToString(str,10);
     Check(str,"-131070");
 
 /*
