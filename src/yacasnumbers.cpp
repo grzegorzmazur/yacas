@@ -1143,8 +1143,17 @@ void BigNumber::Floor(const BigNumber& aX)
 //TODO FIXME slow code! But correct
     LispString str;
     iNumber->CopyFrom(*aX.iNumber);
-    if (iNumber->iExp>1)
-      iNumber->RoundBits();
+    
+
+/*
+    if (iNumber->iPrecision<iNumber->iTensExp)
+      iNumber->ChangePrecision(iNumber->iTensExp);
+    else
+*/
+    {
+      if (iNumber->iExp>1)
+        iNumber->RoundBits();
+    }
 
 //    aX.ToString(str,aX.GetPrecision());
 //    iNumber->SetTo(str.String());
@@ -1226,16 +1235,24 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
 
   {
     //TODO optimize!!!!
+    LispInt precision = GetPrecision();
+    if (precision<aOther.GetPrecision()) precision = aOther.GetPrecision();
     BigNumber diff;
     BigNumber otherNeg;
     otherNeg.Negate(aOther);
-    LispInt precision = GetPrecision();
-    if (precision<aOther.GetPrecision()) precision = aOther.GetPrecision();
     diff.Add(*this,otherNeg,BITS_TO_DIGITS(precision,10));
 
 #ifdef CORRECT_DIVISION
     // if the numbers are float, make sure they are normalized
-    if (diff.iNumber->iExp || diff.iNumber->iTensExp) NormalizeFloat(*diff.iNumber,WordDigits(diff.iNumber->iPrecision, 10));
+    if (diff.iNumber->iExp || diff.iNumber->iTensExp)
+    {
+      LispInt pr = diff.iNumber->iPrecision;
+      if (pr<iPrecision)
+        pr = iPrecision;
+      if (pr<aOther.iPrecision)
+        pr = aOther.iPrecision;
+      NormalizeFloat(*diff.iNumber,WordDigits(pr, 10));
+    }
 #endif // CORRECT_DIVISION
 
 

@@ -422,10 +422,19 @@ void LispCeil(LispEnvironment& aEnvironment, LispInt aStackTop)
 #ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aStackTop, 1);
+/*
+      LispInt prec = aEnvironment.Precision();
+      if (x->iNumber->TensExp > x->iNumber->iPrecision)
+      {
+        aEnvironment.SetPrecision(x->iNumber->iTensExp);
+        GetNumber(x,aEnvironment, aStackTop, 1);
+      }
+*/
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->Negate(*x.Ptr());
       z->Floor(*z);	// danger: possible exception raised in Floor() leads to a memory leak because z is not destroyed
       z->Negate(*z);
+//      aEnvironment.SetPrecision(prec);
       RESULT.Set(NEW LispNumber(z));
 #else
    LispArithmetic1(aEnvironment, aStackTop, CeilFloat);

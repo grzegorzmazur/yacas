@@ -325,5 +325,18 @@ HasFuncArith(expr, atom) := HasFuncSome(expr, atom, {Atom("+"), Atom("-"), *, /}
 /// TODO FIXME document this: FloatIsInt returns True if the argument is integer after removing potential trailing 
 /// zeroes after the decimal point
 // but in fact this should be a call to BigNumber::IsIntValue()
-FloatIsInt(_x) <-- IsZero(x-Floor(x)) Or IsZero(x-Ceil(x));
-
+FloatIsInt(_x) <-- 
+   [
+     x:=N(x);
+     Local(prec,result,n);
+     Set(prec,GetPrecision());
+     If(x>0,
+       Set(n,2+MathFloor(N(FastLog(x)/FastLog(10)))),
+       Set(n,2+MathFloor(N(FastLog(-x)/FastLog(10))))
+       );
+     Precision(n+prec);
+     Set(result,IsZero(RoundTo(x-Floor(x),prec)) Or IsZero(RoundTo(x-Ceil(x),prec)));
+     Precision(prec);
+     result;
+   ];
+//  

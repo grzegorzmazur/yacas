@@ -1565,7 +1565,9 @@ LispBoolean Significant(ANumber& a)
 #ifdef CORRECT_DIVISION
     LispInt significantDigits = WordDigits(a.iPrecision, 10);
     NormalizeFloat(a,significantDigits);
-    if ((-a.iTensExp) > a.iPrecision+2)
+    //hier
+    LispInt nrExt = (a.NrItems()-a.iExp)*((WordBits)/3);
+    if ((-a.iTensExp) > a.iPrecision+2+nrExt)
     {
       return LispFalse;
     }
