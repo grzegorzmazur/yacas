@@ -125,7 +125,7 @@ LocalSymbols(a,x)
 [
 Function("Conjugate",{a}) 
   Substitute(a,{{x},Type(x)="Complex"},{{x},Complex(x[1],-(x[2]))});
-]; LocalSymbols(a)
+]; // LocalSymbols(a,x)
 
 Function("Magnitude",{x}) [
 	Sqrt(Re(x)^2 + Im(x)^2);
