@@ -29,7 +29,15 @@ testnum_SOURCES = testnum.cpp
 testnum_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
 testnum_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la
 
+# the program 'gencorefunctions' will prepare a listing of all core functions
 gencorefunctions_SOURCES = gencorefunctions.cpp 
+
+# force core_yacasmain.h to be created
+$(srcdir)/gencorefunctions.cpp: core_yacasmain.h corefunctions.h
+
+# this file is generated from yacasmain.cpp
+core_yacasmain.h: $(srcdir)/yacasmain.cpp
+	grep '^CORE_KERNEL_FUNCTION' $(srcdir)/yacasmain.cpp > $@
 
 mkfastprimes_SOURCES = mkfastprimes.cpp 
 
@@ -99,7 +107,8 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	epoccli.cpp epoccli.h epoccli.mmp epocclsv.h epocserv.cpp epocserv.h \
 	epocserv.mmp yacas.rss elfdll.cpp
 
-CLEANFILES = fastprimes.c
+# list some extra generated files
+CLEANFILES = fastprimes.c core_yacasmain.h
 
 $(srcdir)/platmath.cpp: fastprimes.c
 
