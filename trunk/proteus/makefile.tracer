@@ -17,7 +17,7 @@ DEFINES = -DDEBUG_MODE
 
 TRACER_OBJS = tracer.o editor.o fl_adjustable_file_chooser.o
 
-proteustracer: $(TRACER_OBJS)
+proteustracer: $(TRACER_OBJS) ../src/libyacasdebug.a
 	$(CXX) $(TRACER_OBJS) ../src/libyacasdebug.a -o proteustracer $(CXXFLAGS) $(LIBS) -lm
 
 

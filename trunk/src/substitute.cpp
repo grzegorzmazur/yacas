@@ -24,6 +24,9 @@ void InternalSubstitute(LispPtr& aTarget, LispPtr& aSource,
             }
 
             aTarget.Set(LispSubList::New(newList.Get()));
+#ifdef DEBUG_MODE
+            aTarget.Get()->SetFileAndLine(object->iFileName,object->iLine);
+#endif
         }
         else
         {
@@ -68,6 +71,9 @@ LispBoolean LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
         if (name == iOriginalNames[i])
         {
             aResult.Set(LispAtom::New(iNewNames[i]));
+#ifdef DEBUG_MODE
+            aResult.Get()->SetFileAndLine(aElement.Get()->iFileName,aElement.Get()->iLine);
+#endif
             return LispTrue;
         }
     }
