@@ -352,3 +352,10 @@ Verify(XmlExplodeTag("<p / >"), XmlTag("P",{},"OpenClose"));
 Verify(ToBase(16,30),"1e");
 Verify(FromBase(16,"1e"),30);
 
+// numbers are too small because of wrong precision handling
+Precision(30);
+Verify(0.00000000000000000005421010862 = 0, False);
+Verify(0.00000000000000000001 = 0, False);
+Verify(0.00000000000000000000000000001 = 0, False);
+Verify(0.000000000000000000000000000001 = 0, False);
+Verify(0.0000000000000000000000000000000000000001 = 0, False);
