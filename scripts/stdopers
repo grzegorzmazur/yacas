@@ -78,6 +78,7 @@ Infix("=>",1000); /* implication, read as 'implies' */
 
 Bodied("if",0);
 Infix("else",60000);
+RightAssociative("else");
 /* Bitwise operations we REALLY need. Perhaps we should define them
    also as Yacas operators?
  */
