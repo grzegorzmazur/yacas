@@ -406,7 +406,7 @@ LocalSymbols(x,y,xarg,yarg)
      [
        Local(gcd);
        Set(gcd,MathGcd(x,y));
-       MathDivide(x,gcd)/MathDivide(y,gcd);
+       MathDiv(x,gcd)/MathDiv(y,gcd);
      ];
     
 
@@ -461,7 +461,7 @@ LocalSymbols(x,y,xarg,yarg)
 59 # _x ^ 1 <-- x;
 59 # 1 ^ _n <-- 1;
 59 # 0 ^ 0 <-- Undefined;
-60 # 0 ^ n_IsRationalOrNumber <-- 0;
+60 # (x_IsNumber ^ n_IsRationalOrNumber)_(FloatIsInt(x) And IsZero(Floor(x))) <-- 0;
 // This is to fix:
 // In> 0.0000^2
 // Out> 0.0000^2;

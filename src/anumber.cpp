@@ -583,14 +583,14 @@ LispBoolean LessThan(ANumber& a1, ANumber& a2)
 }
 
 
-void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase)
+void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, LispBoolean aForceFloat)
 {
     LispInt nr = aNumber.NrItems();
     while (nr>1 && aNumber[nr-1] == 0) nr--;
     aNumber.SetNrItems(nr);
 
     //Formatting small numbers can be done faster.
-    if (aNumber.iExp == 0 && nr == 1)
+    if (!aForceFloat && aNumber.iExp == 0 && nr == 1)
     {
         BaseIntNumber(aResult, aNumber[0], aBase);
         nr=aResult.NrItems();
@@ -681,7 +681,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase)
         while(number.NrItems()<number.iExp)
             number.Append(0);
         number.SetNrItems(number.iExp);
-        if (number.iExp > 0 && !IsZero(number))
+        if (aForceFloat || (number.iExp > 0 && !IsZero(number)))
         {
             LispInt digitPos = aResult.NrItems();
 
@@ -720,7 +720,6 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase)
                 }
             }
             aResult.SetNrItems(aResult.NrItems()-1);
-
             // Insert dot
             LispChar c='.';
             aResult.Insert(digitPos,c);
@@ -731,7 +730,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase)
             {
                 nr--;
             }
-            if (aResult[nr-1] == '.')
+            if (aResult[nr-1] == '.' && nr == 2 && aResult[0] == 0)
                 nr--;
             aResult.SetNrItems(nr);
         }

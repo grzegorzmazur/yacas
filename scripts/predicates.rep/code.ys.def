@@ -40,4 +40,5 @@ HasFuncSome
 ListHasFunc
 HasExprArith
 HasFuncArith
+FloatIsInt
 }

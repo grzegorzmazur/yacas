@@ -894,31 +894,19 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
 
 BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {
-  iPrecision = aPrecision;
-
-  const LispCharPtr ptr = aString;
-  while (*ptr && *ptr != '.') ptr++;
-  if (*ptr == '.')
-  {
-    ptr++;
-    const LispCharPtr start = ptr;
-    while (IsDigit(*ptr)) ptr++;
-    LispInt digits = ptr-start;
-    if (digits>aPrecision) 
-      aPrecision = digits;
-  }
-
-  iNumber = NEW ANumber(aString,aPrecision,aBase);
+  iNumber = NULL;
+  SetTo(aString, aPrecision, aBase);
 }
 BigNumber::BigNumber(const BigNumber& aOther)
 {
-  iPrecision = aOther.GetPrecision();
-  iNumber = NEW ANumber(*aOther.iNumber);
+  iNumber = NEW ANumber(aOther.GetPrecision());
+  SetTo(aOther);
 }
 BigNumber::BigNumber(LispInt aPrecision)
 {
   iPrecision = aPrecision;
   iNumber = NEW ANumber(aPrecision);
+  SetIsInteger(false);
 }
 
 BigNumber::~BigNumber()
@@ -928,14 +916,17 @@ BigNumber::~BigNumber()
 
 void BigNumber::SetTo(const BigNumber& aOther)
 {
+  iPrecision = aOther.GetPrecision();
+  if (iNumber == NULL) iNumber = NEW ANumber(aOther.GetPrecision());
   iNumber->CopyFrom(*aOther.iNumber);
+  SetIsInteger(aOther.IsInt());
 }
 void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase) const
 {
   ANumber num(aPrecision);
   num.CopyFrom(*iNumber);
   num.ChangePrecision(aPrecision);
-  ANumberToString(aResult, num, aBase);
+  ANumberToString(aResult, num, aBase,(iType == KFloat));
 }
 double BigNumber::Double() const
 {
@@ -960,6 +951,7 @@ const LispCharPtr BigNumber::NumericLibraryName()
 
 void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
+  SetIsInteger(aX.IsInt() && aY.IsInt());
   iNumber->ChangePrecision(aPrecision);
   ANumber a1(aPrecision);
   a1.CopyFrom(*aX.iNumber);
@@ -973,6 +965,7 @@ void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aP
 }
 void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
+  SetIsInteger(aX.IsInt() && aY.IsInt());
   ANumber a1(aPrecision);
   a1.CopyFrom(*aX.iNumber);
   ANumber a2(aPrecision);
@@ -986,7 +979,7 @@ void BigNumber::Negate(const BigNumber& aX)
     iNumber->CopyFrom(*aX.iNumber);
   }
   ::Negate(*iNumber);
-
+  SetIsInteger(aX.IsInt());
 }
 void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
@@ -995,7 +988,20 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
   ANumber a2(aPrecision);
   a2.CopyFrom(*aY.iNumber);
   ANumber remainder(aPrecision);
-  ::Divide(*iNumber,remainder,a1,a2);
+
+  if (aX.IsInt() && aY.IsInt())
+  { 
+    Check(a1.iExp == 0, KLispErrNotInteger);
+    Check(a2.iExp == 0, KLispErrNotInteger);
+    Check(!IsZero(a2),KLispErrInvalidArg);
+    SetIsInteger(true);
+    ::IntegerDivide(*iNumber, remainder, a1, a2);
+  }
+  else
+  {
+    SetIsInteger(false);
+    ::Divide(*iNumber,remainder,a1,a2);
+  }
 }
 void BigNumber::ShiftLeft(const BigNumber& aX, LispInt aNrToShift)
 {
@@ -1114,11 +1120,47 @@ LispInt BigNumber::Sign() const
 
 /// integer operation: *this = y mod z
 void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
-{//FIXME
+{
+    ANumber a1(iPrecision);
+    ANumber a2(iPrecision);
+    a1.CopyFrom(*aY.iNumber);
+    a2.CopyFrom(*aZ.iNumber);
+    Check(a1.iExp == 0, KLispErrNotInteger);
+    Check(a2.iExp == 0, KLispErrNotInteger);
+    Check(!IsZero(a2),KLispErrInvalidArg);
+
+    ANumber quotient(static_cast<LispInt>(0));
+    ::IntegerDivide(quotient, *iNumber, a1, a2);
+    SetIsInteger(true);
 }
 
 void BigNumber::Floor(const BigNumber& aX)
-{//FIXME
+{
+//TODO FIXME slow code! But correct
+    LispString str;
+    aX.ToString(str,aX.GetPrecision());
+    iNumber->SetTo(str.String());
+//    iNumber->CopyFrom(*aX.iNumber);
+
+    LispInt i=0;
+    LispInt fraciszero=LispTrue;
+    while (i<iNumber->iExp && fraciszero)
+    {
+        PlatWord digit = (*iNumber)[i];
+        if (digit != 0)
+            fraciszero=LispFalse;
+        i++;
+    }
+    iNumber->Delete(0,iNumber->iExp);
+    iNumber->iExp=0;
+    if (iNumber->iNegative && !fraciszero)
+    {
+        ANumber orig(iPrecision);
+        orig.CopyFrom(*iNumber);
+        ANumber minone("-1",10);
+        ::Add(*iNumber,orig,minone);
+    }
+    SetIsInteger(true);
 }
 
 
@@ -1131,6 +1173,7 @@ void BigNumber::Precision(LispInt aPrecision)
   {
     iNumber->ChangePrecision(aPrecision);
   }
+  SetIsInteger(iNumber->iExp == 0 && iNumber->iTensExp == 0);
   iPrecision = aPrecision;
 }
 
@@ -1150,29 +1193,34 @@ bool BigNumber::Equals(const BigNumber& aOther) const
 
 bool BigNumber::IsInt() const
 {
-  return (iNumber->iExp == 0 && iNumber->iTensExp == 0);
+  return (iType == KInt);
+//  return (iNumber->iExp == 0 && iNumber->iTensExp == 0);
 }
 
 
 bool BigNumber::IsIntValue() const
 {//FIXME
+  LISPASSERT(0);
   return false; // function has to return *some* result
 }
 
 
 bool BigNumber::IsSmall() const
 {//FIXME
+  LISPASSERT(0);
   return false; // function has to return *some* result
 }
 
 
 void BigNumber::BecomeInt()
-{//FIXME
+{
+  SetIsInteger(true);
 }
 
 
 void BigNumber::BecomeFloat()
-{//FIXME
+{
+  SetIsInteger(false);
 }
 
 
@@ -1188,27 +1236,46 @@ bool BigNumber::LessThan(const BigNumber& aOther) const
 // assign from a platform type
 void BigNumber::SetTo(LispInt value)
 {//FIXME
+  LISPASSERT(0);
 }
 
 
 void BigNumber::SetTo(double value)
 {//FIXME
+  LISPASSERT(0);
 }
 
 
 // assign from string
 void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
 {//FIXME
+  iPrecision = aPrecision;
+  const LispCharPtr ptr = aString;
+  while (*ptr && *ptr != '.') ptr++;
+  if (*ptr == '.')
+  {
+    ptr++;
+    const LispCharPtr start = ptr;
+    while (IsDigit(*ptr)) ptr++;
+    LispInt digits = ptr-start;
+    if (digits>aPrecision) 
+      aPrecision = digits;
+  }
+  if (iNumber)   delete iNumber;
+  iNumber = NEW ANumber(aString,aPrecision,aBase);
+  SetIsInteger(iNumber->iExp == 0 && iNumber->iTensExp == 0);
 }
 
 
 void BigNumber::ShiftLeft(const BigNumber& aX, const BigNumber& aNrToShift)
 {//FIXME
+  LISPASSERT(0);
 }
 
 
 void BigNumber::ShiftRight(const BigNumber& aX, const BigNumber& aNrToShift)
 {//FIXME
+  LISPASSERT(0);
 }
 
 #endif

@@ -6,7 +6,7 @@ make clean
 
 # Rebuild yacas and the documentation
 ./makemake
-./configure CXXFLAGS="" CFLAGS="" --enable-ps-doc --enable-pdf-doc
+./configure CXXFLAGS="" CFLAGS="" --enable-server --enable-ps-doc --enable-pdf-doc
 cd src ; make version.h ; cd ..
 make
 cd src ; make -f makefile.ibook ; cd ..
