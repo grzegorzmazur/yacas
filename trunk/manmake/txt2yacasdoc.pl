@@ -166,7 +166,7 @@ while (<STDIN>) {
 		$text = $1;
 		&finish_text();
 		$have_par = ($text =~ /^\s*$/) ? 1 : 0;
-		print "ChapterIntro()\"" . $text . "\n";
+		print "ChapterIntro()\"" . &escape_term($text) . "\n";
 		$in_text = 1;
 		$have_Text = 1;
 	} else {
