@@ -2440,6 +2440,9 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
 
 void BigNumber::DumpDebugInfo()
 {//FIXME
+#ifdef HAVE_STDIO_H
+	printf("Type: %s, 2-prec.: %d\n", (this->IsInt() ? "int" : "float"), iPrecision);
+#endif
 }
 
 
