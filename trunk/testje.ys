@@ -1,4 +1,71 @@
 
+
+Macro()DO(for,expr);
+Infix("DO",1001);
+Prefix("FOR",1000);
+Infix("IN",999);
+(FOR _var IN _list DO _expr) <-- ForEach(@var,@list)(@expr);
+
+
+Y:=1;
+Z := [
+      if (Y = 1)
+      [
+        Echo("@spot 1:  Y= ",T);
+        2 + Y;
+      ]
+      else if (K = 1) 
+      [
+        {};
+      ]
+      else
+      0;
+    ];
+
+
+
+MergeRangesUnion(r1,r2) := Concat(r1,r2);
+
+Macro()ExistsOneRange(var,ranges);
+20 # ExistsOneRange(_var,_r1 Or _r2) <-- MergeRangesUnion(ExistsOneRange(@var,@r1),ExistsOneRange(@var,@r2));
+20 # ExistsOneRange(_var,_a < _var)  <-- {{@a,Infinity}};
+20 # ExistsOneRange(_var,_a <= _var)  <-- {{@a,Infinity}};
+20 # ExistsOneRange(_var,_a > _var)  <-- {{-Infinity,@a}};
+20 # ExistsOneRange(_var,_a >= _var)  <-- {{-Infinity,@a}};
+20 # ExistsOneRange(_var,_var > _a)  <-- {{@a,Infinity}};
+20 # ExistsOneRange(_var,_var >= _a)  <-- {{@a,Infinity}};
+20 # ExistsOneRange(_var,_var< _a)  <-- {{-Infinity,@a}};
+20 # ExistsOneRange(_var,_var<= _a)  <-- {{-Infinity,@a}};
+20 # ExistsOneRange(_var,_var = _a)  <-- {{@a,@a}};
+20 # ExistsOneRange(_var,_a < _var < _b)  <-- {{@a,@b}};
+20 # ExistsOneRange(_var,_a < _var <= _b)  <-- {{@a,@b}};
+20 # ExistsOneRange(_var,_a <= _var < _b)  <-- {{@a,@b}};
+20 # ExistsOneRange(_var,_a <= _var <= _b)  <-- {{@a,@b}};
+
+Macro()Exists(var,ranges1,ranges2);
+Exists(_var,_r1,_r2) <--
+[
+  Local(ranges1,ranges2,result,min,max);
+  ranges1 := ExistsOneRange(@var,@r1);
+  ranges2 := ExistsOneRange(@var,@r2);
+  result:={};
+  ForEach(item1,ranges1)
+    ForEach(item2,ranges2)
+    [
+      min:=Max(item1[1],item2[1]);
+      max:=Min(item1[2],item2[2]);
+      if (min <= max)
+      [
+        DestructiveAppend(result,{min,max});
+      ];
+    ];
+  result;
+];
+
+
+EndOfFile;
+
+
   10 # f(UniVariate(_var,_first,_coefs),_var) <-- UniVariate(var,0,Concat(FillList(1,first),(coefs+1)));
   20 # f(_expr,_var) <-- NormalForm(f(MakeUni(expr,var),var));
 
