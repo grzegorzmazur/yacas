@@ -21,7 +21,7 @@ scripts are on equal footing with any code the user executes interactively
 or any files the user loads.
 
 Generally, all core functions have plain names and almost all are not
-"bodied" or infix operators. The file {src/yacasapi.cpp} in the source
+"bodied" or infix operators. The file {corefunctions.h} in the source
 tree lists declarations of all kernel functions callable from Yacas; consult it for reference.
 For many of the core functions, the script library already provides
 convenient aliases. For instance, the addition operator "{+}" is defined in

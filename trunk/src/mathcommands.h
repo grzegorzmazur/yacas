@@ -13,9 +13,11 @@
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) void fname(LispEnvironment& aEnvironment, LispInt aStackTop);
 #define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) 
+#define OPERATOR(kind, prec, yacas_name)
 
 #include "corefunctions.h"
 #undef CORE_KERNEL_FUNCTION
 #undef CORE_KERNEL_FUNCTION_ALIAS
+#undef OPERATOR
 
 #endif
