@@ -19,8 +19,9 @@ CountBits(value) :=
 ];
 
 /// Return integer part of the logarithm of x in given base. Use only integer arithmetic.
+10 # IntLog(_x, _base) _ (base<=1) <-- Undefined;
 /// Use variable steps to speed up operation for large numbers x
-IntLog(x, base) :=
+20 # IntLog(_x, _base) <--
 [
 	Local(result, step, old'step, factor, old'factor);
 	result := 0;
