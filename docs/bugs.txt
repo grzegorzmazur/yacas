@@ -1,0 +1,219 @@
+This files lists some bugs that are still present in Yacas
+It is maintained by hand, until the developers have agreed on a 
+better alternative.
+
+----------------------------------------------------------------------
+
+Summary:
+
+ 1. [Calculus] Limit(x,0)D(x,2)Sin(x)/x never terminates
+ 2. [Calculus] Various limit bugs
+ 3. [Number theory] Gcd bugs when arguments are not natural numbers
+ 4. [Calculus] 2^Infinity not simplified at startup
+ 5. [Calculus] Limit(n,Infinity) Sqrt(n+1) - Sqrt(n)
+ 6. [Complex] D(z) Conjugate(z) returns 1
+ 7. [Complex] Im() and Undefined or Infinity
+ 8. [Linear Algebra] EigenValues() with complex matrix hangs
+ 9. [Calculus] Integration through singularities
+10. [Simplify] Simplify(x^(-2)/(1-x)^3) returns 0
+11. [Trigonometry] ArcCos(Cos(beta)) returns beta
+12. [Calculus] 'Limit(n, Infinity) n^5/2^n' uses L'Hopital incorrectly
+13. [Trigonometry] 'TrigSimpCombine(x^500)' returns nothing
+14. [Calculus] Some limits not working correctly when using infinity
+15. [Core] 'MathPower(0,0.5)' locks up
+
+----------------------------------------------------------------------
+
+Bug #1
+Title: [Calculus] Limit(x,0)D(x,2)Sin(x)/x never terminates
+Submitted by: Jonathan Leto
+Date: 2002-05-23
+Description:
+
+This expression never terminates, which in turn causes
+Taylor(x,0,5)Sin(x)/x to never terminate.
+
+----------------------------------------------------------------------
+
+Bug #2
+Title: [Calculus] Various limit bugs
+Submitted by: Jonathan Leto
+Date: 2002-05-03
+Description:
+
+In> Limit(x,Infinity) x^n/Ln(x)
+Out> n*Infinity  // should be Infinity
+
+In> Limit(x,0,Right) x^( Ln(a)/(1+Ln(x)) )
+Out> 1  // should be a
+
+In> Limit(x,0) (x+1)^(Ln(a)/x)
+Out> 1  // should be a
+
+----------------------------------------------------------------------
+
+Bug #3
+Title: [Number theory] Gcd bugs when arguments are not natural numbers
+Submitted by: Jonathan Leto
+Date: 2002-05-23
+Description:
+
+In> Gcd(10,3.3)
+Out> 1
+// should error with floats, or return unevaluated
+// like 'Gcd(10,Pi)' and 'Gcd(Exp(1),Exp(2))' do
+
+In> Gcd(-10,0)
+Out> -10
+In> Gcd(0,-10)
+Out> -10
+// according to "Number Theory", Andrews (1971)
+// Gcd(a,0) = Abs(a)
+
+----------------------------------------------------------------------
+
+Bug #4
+Title: [Calculus] 2^Infinity not simplified at startup
+Submitted by: Jonathan Leto
+Date: 2002-05-24
+Description:
+
+// From startup:
+In> 2^(Infinity)
+Out> 2^Infinity
+In> 2^(Infinity)
+Out> Infinity
+
+----------------------------------------------------------------------
+
+Bug #5
+Title: [Calculus] Limit(n,Infinity) Sqrt(n+1) - Sqrt(n)
+Submitted by: Jonathan Leto
+Date: 2002-05-24
+Description:
+
+The limit is zero, but nothing (?) is returned:
+In> foo := Limit(n,Infinity) Sqrt(n+1) - Sqrt(n)
+In> foo
+Out> foo;
+
+----------------------------------------------------------------------
+
+Bug #6
+Title: [Complex] D(z) Conjugate(z) returns 1
+Submitted by: Jonathan Leto
+Date: 2002-05-24
+Description:
+
+In> D(z) Conjugate(z)
+Out> 1;
+
+But the (complex) derivative is undefined.
+This is related to the fact that 'Conjugate(z)' yields 'z'.
+
+----------------------------------------------------------------------
+
+Bug #7
+Title: [Complex] Im() and Undefined or Infinity
+Submitted by: Jonathan Leto
+Date: 2002-05-30
+Description:
+
+In> Im(3+I*Undefined)
+Out> 0;
+In> Im(3+I*Infinity)
+Out> 0;
+
+----------------------------------------------------------------------
+
+Bug #8
+Title: [Linear Algebra] EigenValues() with complex matrix hangs
+Submitted by: Jonathan Leto
+Date: 2002-05-30
+Description:
+
+In> A:={{1,2,3,4},{0,1,2,3},{0,0,1,2},{I,0,I,I}};
+Out> {{1,2,3,4},{0,1,2,3},{0,0,1,2},{Complex(0,1),0,Complex(0,1),Complex(0,1)}};
+In> EigenValues(A)
+[ no response ]
+
+----------------------------------------------------------------------
+
+Bug #9
+Title: [Calculus] Integration through singularities
+Submitted by: Jonathan Leto
+Date: 2002-05-30
+Description:
+
+In>  Integrate(x,-1,1) 1/x
+Out> Complex(0,-Pi)
+In>  Integrate(x,-1,1) 1/x^2
+Out> -2
+
+Integrate() should check for singularities.
+
+----------------------------------------------------------------------
+
+Bug #10
+Title: [Simplify] Simplify(x^(-2)/(1-x)^3) returns 0
+Submitted by: Jonathan Leto
+Date: 2002-06-30
+
+----------------------------------------------------------------------
+
+Bug #11
+Title: [Trigonometry] ArcCos(Cos(beta)) returns beta
+Submitted by: Jonathan Leto
+Date: 2002-07-14
+Description:
+
+In> ArcCos(Cos(beta))
+Out> beta
+
+ArcCos(Cos(beta)) does NOT equal to beta e.g. for beta=10 
+
+----------------------------------------------------------------------
+
+Bug #12
+Title: [Calculus] 'Limit(n, Infinity) n^5/2^n' uses L'Hopital incorrectly
+Submitted by: Ayal Pinkus
+Description:
+
+In> Limit(n, Infinity) n^5/2^n
+Out> Infinity/(Infinity*Ln(2))
+
+wrong answer -- L'Hopital's theorem is not always the correct thing to
+do... but it's not easy to decide the growth of exp-log and powers.
+There is a paper by Richardson, Salvy et al "Asymptotic expansions of
+exp-log functions" that may be helpful.
+
+----------------------------------------------------------------------
+
+Bug #13
+Title: [Trigonometry] 'TrigSimpCombine(x^500)' returns nothing
+Submitted by: Ayal Pinkus
+Description:
+
+In> foo := TrigSimpCombine(x^500)
+In> foo
+Out> foo
+
+----------------------------------------------------------------------
+
+Bug #14
+Title: [Calculus] Some limits not working correctly when using infinity
+Submitted by: Ayal Pinkus
+Description:
+
+In> Limit(x,Infinity) Zeta(x)
+Out> Zeta(Infinity)
+In> Limit(x,Infinity) Factorial(x)
+Out> Factorial(Infinity)
+
+----------------------------------------------------------------------
+
+Bug #15
+Title: [Core] 'MathPower(0,0.5)' locks up
+Submitted by: Ayal Pinkus
+
+----------------------------------------------------------------------
