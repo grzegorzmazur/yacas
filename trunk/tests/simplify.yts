@@ -38,3 +38,8 @@ Verify(
 ExpandBrackets(ExpandFrac((x+1)/(x-1)+1/x))
 , (x^2+2*x-1)/(x^2-x)
 );
+
+// these currently fail.
+KnownFailure([Local(a);a:=0.1;Simplify(a*b);]= 0.1*b);
+KnownFailure([Local(a);a:=0.1;Simplify(a/b);] = 0.1/b);
+
