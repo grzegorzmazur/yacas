@@ -37,6 +37,30 @@ may be entered as {y(n)}, where {n} is any integer.
 	In> OdeSolve( y'' +2*y' + y == 0 )
 	Out> (C183+C184*x)*Exp(-x);
 
-
 *SEE Solve, RootsWithMultiples
+
+*CMD OdeTest --- test the solution of an ODE
+*STD
+*CALL
+	OdeTest(eqn,testsol)
+*PARMS
+
+{eqn} -- equation to test
+
+{testsol} -- test solution
+
+*DESC
+
+This function automates the verification of the solution of an ODE.
+It can also be used to quickly see how a particular equation operates
+on a function.
+
+*E.G.
+
+	In> OdeTest(y''+y,Sin(x)+Cos(x))
+	Out> 0;
+	In> OdeTest(y''+2*y,Sin(x)+Cos(x))
+	Out> Sin(x)+Cos(x);
+
+*SEE OdeSolve
 
