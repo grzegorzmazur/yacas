@@ -185,3 +185,8 @@ Verify( Limit(x, Infinity) x*I, Infinity );
 
 Verify(Integrate(x) z^100, z^100*x );
 Verify(Integrate(x) x^(-1),Ln(x) );
+
+Verify(
+N(ArcSin(0.0000000321232123),50)
+, 0.00000003212321230000000552466124302049336784679316
+);
