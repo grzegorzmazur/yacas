@@ -189,7 +189,7 @@ The Bernoulli polynomials $B(x)[n]$ can be found by first computing an array of 
 In this definition, the first Bernoulli numbers are $B[0]=1$, $B[1]= -1/2$, $B[2]=4$, $B[3]=0$,  $B[4]= -1/30$.
 
 We consider two distinct computational tasks: evaluate a Bernoulli number exactly as
-rationals, or find it approximately to a specified floating-point precision.
+a rational, or find it approximately to a specified floating-point precision.
 There are also two possible problem settings: either we need to
 evaluate <i>all</i> Bernoulli numbers $B[n]$ up to some $n$, or we only
 need one isolated value $B[n]$ for some $n$. Depending on how large $n$
