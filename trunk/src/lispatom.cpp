@@ -239,7 +239,7 @@ LispStringPtr LispNumber::String()
     LispString *str = NEW LispString;
     // export the current number to string and store it as LispNumber::iString
     // FIXME API breach: precision must be in digits, not in bits here!
-    iNumber->ToString(*str,iNumber->GetPrecision());
+    iNumber->ToString(*str, iNumber->GetPrecision(), BASE10);
     // register the string with the hash table
     // - do we actually want this to be done? (maybe only for small numbers?)
     LISPASSERT(iHashTable != NULL);

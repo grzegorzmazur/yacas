@@ -6,6 +6,14 @@
  * lisp atom if it is in a list.
  * The local class LispPtr implements automatic garbage collection
  * through reference counting.
+ *
+ * The class LispNumber inherits from LispAtom and holds a numeric atom
+ * in the string representation and in the numeric representation (BigNumber).
+ * The string representation is converted to BigNumber (using the current precision for floats) when a numeric
+ * operation is first requested on the atom. The BigNumber representation is
+ * converted to the string representation whenever the number needs to be printed i.e. LispAtom::String() method is requested.
+ * The string is held in the number (to avoid repeated conversions) and also cached in the string cache (this caching will eventually be abandoned).
+ * Usually the BigNumber inside the LispNumber will not change by itself.
  */
 
 #ifndef __lispatom_h__
@@ -156,16 +164,16 @@ public:
     LispNumber(LispHashTable& aHashTable, LispStringPtr aString, LispInt aPrecision);
     virtual ~LispNumber();
     virtual LispObject* Copy(LispInt aRecursed);
-    /// return a string representation in decimal with maximum allowed decimal precision?
+    /// return a string representation in decimal with maximum decimal precision allowed by the inherent accuracy of the number
     virtual LispStringPtr String();
-    /// create a BigNumber object out of a stored string, at given precision (in bits)
+    /// give access to the BigNumber object; if necessary, will create a BigNumber object out of the stored string, at given precision (in decimal?)
     virtual BigNumber* Number(LispInt aPrecision);
     /// annotate
     LispObject* SetExtraInfo(LispPtr& aData);
 private:
-    /// number object
+    /// number object; NULL if not yet converted from string
     RefPtr<BigNumber> iNumber;
-    /// string representation in decimal
+    /// string representation in decimal; NULL if not yet converted from BigNumber
     RefPtr<LispString> iString;
     /// hash table pointer (for saving strings)
     LispHashTable* iHashTable;
