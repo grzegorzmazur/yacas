@@ -1,5 +1,6 @@
 
 
+/*TODO remove, old 
 Function("IsMatrix",{aLeft})
 [
   If(IsList(aLeft),
@@ -7,13 +8,25 @@ Function("IsMatrix",{aLeft})
       Local(result);
       result:=True;
 
-      /*TODO also check nr elements! */
+      //TODO also check nr elements! 
       ForEach(item,aLeft)
         If(Not(IsList(item)),result:=False);
       result;
     ],
     False
     );
+];
+*/
+
+/* IsList is checked first, as it is hoped this greatly speeds up checking if something is a matrix.
+ */
+Function("IsMatrix",{x}) If(IsList(x),Length(Dimensions(x))=2,False);
+
+IsSquareMatrix(_x) <--
+[
+   Local(d);
+   d:=Dimensions(x);
+   Length(d)=2 And d[1]=d[2];
 ];
 
 
