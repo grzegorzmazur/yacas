@@ -240,7 +240,7 @@ WriteString(cremovers);
 extern \"C\" {
 LispPluginBase* maker(void)
 {
-    return new ThisPlugin;
+    return NEW ThisPlugin;
 }
 
 };
