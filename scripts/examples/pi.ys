@@ -179,13 +179,46 @@ PiMethod3() :=
 	result*2;
 ];
 
+PiChudnovsky() :=
+[	// use the Ramanujan series found by Chudnovsky brothers
+	Local(A, B, C, n, result, term);
+	A:=13591409; B:=545140134; C:=640320; // black magic, Rama, Rama, Ramanujan
+	prec := GetPrecision();
+	GlobalPush(Numeric);
+	Numeric := True;
+	n:=Div(prec*479,6793)+1;	// n> P*Ln(10)/(3*Ln(C/12))
+	Echo({"Method: Chudnovsky, using ", n, " terms"});
+	Precision(prec+IntLog(n,10)+5);
+	result := (A+n*B);
+	While(n>0)
+	[
+//	Echo(n,result);
+		result := A+(n-1)*B-24*(6*n-1)*(2*n-1)*(6*n-5) /(C*n)^3 *result;
+		n--;
+	];
+	result := C/12*Sqrt(C)/Abs(result);
+	Numeric := GlobalPop();
+	Precision(prec);
+	RoundTo(result,prec);
+];
+
 BenchmarkPi(prec) :=
 [
 	Local(result);
 	GlobalPush(GetPrecision());
 	Precision(prec);
 	
-	result := {Time(MathPi()), Time(PiMethod0()), Time(PiMethod1()), Time(PiMethod2()),  Time(PiMethod3()),  Time(PiMethod4()), Time(PiBrentSalamin()), Time(PiBorwein()),};
+	result := {
+		Time(MathPi()),
+		Time(PiMethod0()),
+		Time(PiMethod1()),
+		Time(PiMethod2()),
+		Time(PiMethod3()),
+//		Time(PiMethod4()),
+		Time(PiChudnovsky()),
+		Time(PiBrentSalamin()),
+		Time(PiBorwein()),
+	};
 	result := N(Sin(result));
 	Precision(GlobalPop());
 	result;
