@@ -574,3 +574,27 @@ Dot1(_t1,_t2,_m,_n) <--
 
 //////
 //////
+
+//////
+// power of a matrix (dr)
+//////
+
+MatrixPower(x_IsSquareMatrix, n_IsNonNegativeInteger) <--
+[
+   Local(result);
+   result:=Identity(Length(x));
+   While(n != 0)
+   [
+      If(IsOdd(n),
+         result:=Dot(result,x));
+      x:=Dot(x,x);
+      n:=n>>1;
+   ];
+   result;
+];
+
+MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
+   MatrixPower(Inverse(x),-n);
+
+//////
+//////

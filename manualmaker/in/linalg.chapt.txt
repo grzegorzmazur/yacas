@@ -672,6 +672,40 @@ $(-1)^(i+j)$.
 
 *SEE Minor, Determinant, Inverse
 
+
+*CMD MatrixPower --- get nth power of a square matrix
+*STD
+*CALL
+        MatrixPower(mat,n)
+
+*PARMS
+
+{mat} -- a square matrix
+
+{n} -- an integer
+
+*DESC
+
+{MatrixPower(mat,n)} returns the {n}th power of a square matrix {mat}. For
+positve {n} it evaluates dot products of {mat} with itself. For negative
+{n} the nth power of the inverse of {mat} is returned. For {n}=0 the identity
+matrix is returned.
+
+*EG
+	In> A:={{1,2},{3,4}}
+	Out> {{1,2},{3,4}};
+	In> MatrixPower(A,0)
+	Out> {{1,0},{0,1}};
+	In> MatrixPower(A,1)
+	Out> {{1,2},{3,4}};
+	In> MatrixPower(A,3)
+	Out> {{37,54},{81,118}};
+	In> MatrixPower(A,-3)
+	Out> {{-59/4,27/4},{81/8,-37/8}};
+
+*SEE IsSquareMatrix, Inverse, Dot
+
+
 *CMD SolveMatrix --- solve a linear system
 *STD
 *CALL

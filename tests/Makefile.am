@@ -13,7 +13,7 @@
 TESTFILES = arithmetic.yts c_tex_form.yts calculus.yts canprove.yts \
 	comments.yts complex.yts deriv.yts dimensions.yts dot.yts \
 	integrate.yts lists.yts \
-	logic_simplify_test.yts outer.yts predicates.yts \
+	logic_simplify_test.yts matrixpower.yts outer.yts predicates.yts \
 	tensors.yts trace.yts tr.yts multivar.yts numbers.yts io.yts \
 	programming.yts regress.yts simplify.yts solve.yts sums.yts \
 	radsimp.yts linalg.yts orthopoly.yts poly.yts sturm.yts numerics.yts \
