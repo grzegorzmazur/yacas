@@ -38,7 +38,7 @@
   ];
 //  execute:=Hold(FlTranslate(FlWindow[1],FlWindow[2])):execute;
 //  DestructiveAppend(execute,Hold(FlTranslate(-FlWindow[1],-FlWindow[2])));
-  FlGraphStart(execute,320,240);
+  FlGraphStart(execute,640,260);
   True;
 ]);
 
@@ -63,10 +63,10 @@ Macro(ExB,{op,args})
   [
     Local(flx,fly,flw,flh,i,line,ll);
     
-    flx:=0;
-    fly:=0;
-    flw:=FlWindowWidth;
-    flh:=FlWindowHeight;
+    flx:=12;
+    fly:=2;
+    flw:=322;
+    flh:=242;
 
     Local(nr);
     nr := Length(plist);
@@ -87,13 +87,25 @@ Macro(ExB,{op,args})
     ];
 //    crect := FlWindow;
     /* Clear the screen */
-    ExB(FlColor,{192,192,192});
+    ExB(FlColor,{224,224,224});
     ExB(FlBeginPolygon,{});
     ExB(FlVertex,{flx,fly});
     ExB(FlVertex,{flx,fly+flh});
-    ExB(FlVertex,{flx+flw,fly+flh});
-    ExB(FlVertex,{flx+flw,fly});
+    ExB(FlVertex,{flx+flw+1,fly+flh+1});
+    ExB(FlVertex,{flx+flw+1,fly+1});
     ExB(FlEndPolygon,{});
+
+    ExB(FlColor,{0,0,0});
+    For(line:=1,line<=2,line++)
+    [
+      ExB(FlBeginLine,{});
+      ExB(FlVertex,{flx-line,fly-line});
+      ExB(FlVertex,{flx-line,fly+flh+line});
+      ExB(FlVertex,{flx+line+flw,fly+flh+line});
+      ExB(FlVertex,{flx+line+flw,fly-line});
+      ExB(FlVertex,{flx-line,fly-line});
+      ExB(FlEndLine,{});
+    ];
 
     For(line:=1,line<=Length(mlist),line++)
     [

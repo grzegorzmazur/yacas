@@ -9,24 +9,26 @@ FltkHintWindow::FltkHintWindow(int aTextSize)
 }
 void FltkHintWindow::AddLine(LispCharPtr aText)
 {
-    iText[iNrLines] = aText;
+  if (iNrLines >= MAX_HINT_LINES) return;
+  iText[iNrLines] = aText;
 
-    fl_font(FL_HELVETICA,iTextSize);
-    int width = (int)fl_width(iText[iNrLines]);
-    if (width>iMaxWidth)
-        iMaxWidth = width;
-    iNrLines++;
+  fl_font(FL_HELVETICA,iTextSize);
+  int width = (int)fl_width(iText[iNrLines]);
+  if (width>iMaxWidth)
+      iMaxWidth = width;
+  iNrLines++;
 }
 
 void FltkHintWindow::AddDescription(LispCharPtr aText)
 {
-    iDescription[iNrDescriptions] = aText;
+  if (iNrDescriptions >= MAX_HINT_LINES) return;
+  iDescription[iNrDescriptions] = aText;
 
-    fl_font(FL_HELVETICA_BOLD,iTextSize);
-    int width = (int)fl_width(iDescription[iNrDescriptions]);
-    if (width>iMaxWidth)
-        iMaxWidth = width;
-    iNrDescriptions++;
+  fl_font(FL_HELVETICA_BOLD,iTextSize);
+  int width = (int)fl_width(iDescription[iNrDescriptions]);
+  if (width>iMaxWidth)
+      iMaxWidth = width;
+  iNrDescriptions++;
 }
 
 

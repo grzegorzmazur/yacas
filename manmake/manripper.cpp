@@ -31,7 +31,7 @@ void GetBf(char* buf, int size, FILE*f)
 
 void ProcessFile(char* fname)
 {
-fprintf(stderr,"FILE %s\n",fname);
+  fprintf(stderr,"\tFILE %s\n",fname);
 
   FILE*f = fopen(fname,"r");
   if (!f) return;
@@ -116,7 +116,7 @@ int main(int argc, char** argv)
   int i;
   for (i=1;i<argc;i++)
   {
-    fprintf(stderr,"******* BOOK ******* %s\n",argv[i]);
+    fprintf(stderr,"BOOK %s\n",argv[i]);
     ProcessFile(argv[i]);
   }
 }

@@ -2,6 +2,18 @@
 #include "yacasprivate.h"
 #include "commandline.h"
 
+//TODO maybe fix the assignment operator on String?
+static inline void CopyString(LispString& aTrg, LispString& aSrc)
+{
+  aTrg.SetNrItems(0);
+  LispInt i;
+  for (i=0;i<aSrc.NrItems();i++)
+  {
+    aTrg.Append(aSrc[i]);
+  }
+//  aTrg.Append('\0');
+}
+
 
 CCommandLine::~CCommandLine()
 {
@@ -12,9 +24,10 @@ void CCommandLine::GetHistory(LispInt aLine)
 {
     iSubLine.SetNrItems(0);
     LispInt i;
-    for (i=0;i<iHistory[aLine]->NrItems();i++)
+    LispStringPtr line = iHistoryList.GetLine(aLine);
+    for (i=0;i<line->NrItems();i++)
     {
-        iSubLine.Append((*iHistory[aLine])[i]);
+        iSubLine.Append((*line)[i]);
     }
 }
 
@@ -51,16 +64,18 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
     LispInt cursor=0;
     int promptlen = PlatStrLen(prompt);
 
-    if (//iHistoryUnchanged &&
-        history<iHistory.NrItems()-1 && iTraceHistory)
+/*TODO remove?
+    if (history<iHistory.NrItems()-1 && iTraceHistory)
     {
         history++;
         GetHistory(history);
         cursor = iSubLine.NrItems()-1;
     }
     else
+*/
     {
-        history=iHistory.NrItems();
+      iHistoryList.ResetHistoryPosition();
+//TODO remove?        history=iHistory.NrItems();
         iHistoryUnchanged = 0;
     }
     
@@ -101,11 +116,13 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
             break;
 
 
-
-
-
-
       case eUp:
+        if (iHistoryList.ArrowUp(iSubLine,cursor))
+        {
+          iFullLineDirty = 1;
+          iHistoryUnchanged = 1;
+        }
+/*TODO remove?
         {
           LispString prefix;
           if (iHistoryUnchanged && cursor == iSubLine.NrItems()-1) cursor = 0;
@@ -131,8 +148,23 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
             iHistoryUnchanged = 1;
           }
         }
+*/
         break;
       case eDown:
+
+        if (iHistoryList.ArrowDown(iSubLine,cursor))
+          {
+            iFullLineDirty = 1;
+            iHistoryUnchanged = 1;
+          }
+          else 
+          {
+            iFullLineDirty = 1;
+            iHistoryUnchanged = 1;
+          }
+        
+
+/*TODO remove?
         {
           LispString prefix;
           if (iHistoryUnchanged && cursor == iSubLine.NrItems()-1) cursor = 0;
@@ -180,42 +212,15 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
             iHistoryUnchanged = 1;
           }
         }
+*/
         break;
 
 
-
-/*
-
-        case eUp:
-            if (history>0)
-            {
-                history--;
-                GetHistory(history);
-                cursor = iSubLine.NrItems()-1;
-                iFullLineDirty = 1;
-                iHistoryUnchanged = 1;
-            }
-            break;
-        case eDown:
-            if (history<iHistory.NrItems()-1)
-            {
-                history++;
-                GetHistory(history);
-                cursor = iSubLine.NrItems()-1;
-                iFullLineDirty = 1;
-                iHistoryUnchanged = 1;
-            }
-            else if (history == iHistory.NrItems()-1)
-            {
-                iSubLine.SetNrItems(1);
-                iSubLine[0] = '\0';
-                cursor = iSubLine.NrItems()-1;
-                history++;
-                iFullLineDirty = 1;
-            }
-            break;
-*/
         case eTab:
+            iHistoryList.Complete(iSubLine,cursor);
+            iFullLineDirty = 1;
+            iHistoryUnchanged = 1;
+/*TODO remove
             {
                 LispInt prevhistory=history;
                 history = iHistory.NrItems()-1;
@@ -241,6 +246,7 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
                 if (history<0)
                     history = prevhistory;
             }
+*/
             break;
         case eEscape:
             iSubLine.SetNrItems(1);
@@ -248,7 +254,8 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
             cursor = iSubLine.NrItems()-1;
             iFullLineDirty = 1;
             iHistoryUnchanged = 0;
-            history=iHistory.NrItems();
+            iHistoryList.ResetHistoryPosition();
+//TODO remove            history=iHistory.NrItems();
             break;
         case eHome:
             cursor=0;
@@ -260,11 +267,16 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
             if (iSubLine.NrItems()>1)
             {
                 NewLine();
+
+                iHistoryList.AddLine(iSubLine);
+                  return; 
+
+/*TODO remove
                 if (!iHistoryUnchanged)
                 {
                   LispStringPtr ptr = NEW LispString();
                   *ptr = iSubLine.String();
-                  iHistory.Append(ptr);
+                  iHistoryList.AddLine(ptr);
                   return; 
                 }
                 else if (history<iHistory.NrItems())
@@ -278,6 +290,7 @@ void CCommandLine::ReadLineSub(LispCharPtr prompt)
                   iHistory[iHistory.NrItems()-1] = orig;
                   return; 
                 }
+*/
             }
             iFullLineDirty = 1;
             break;
@@ -326,3 +339,155 @@ void CCommandLine::ShowOpen(LispCharPtr prompt,LispInt promptlen,
         Pause();
     }
 }
+
+void CConsoleHistory::Append(LispStringPtr aString)
+{
+  iHistory.Append(aString);
+  history=iHistory.NrItems();
+}
+
+void CConsoleHistory::AddLine(LispString& aString)
+{
+
+
+  LispInt historyChanged = 0;
+  if (!(history<iHistory.NrItems())) 
+  {
+    historyChanged=1;
+    history++;
+  }
+  else if (!(*iHistory[history] == aString))
+  {
+    historyChanged = 1;
+  }
+  
+
+  if (historyChanged)
+  {
+    LispStringPtr ptr = NEW LispString();
+    CopyString(*ptr, aString);
+    iHistory.Append(ptr);
+    return; 
+  }
+  else 
+  {
+    LispStringPtr orig = iHistory[history];
+    LispInt i;
+    for (i=history;i<iHistory.NrItems()-1;i++)
+    {
+      iHistory[i] = iHistory[i+1];
+    }
+    iHistory[iHistory.NrItems()-1] = orig;
+    return; 
+  }
+}
+
+
+LispInt CConsoleHistory::ArrowUp(LispString& aString,LispInt &aCursorPos)
+{
+  LispString prefix;
+  //if (aCursorPos == aString.NrItems()-1) aCursorPos = 0;
+  prefix.SetStringCounted(aString.String(),aCursorPos);
+
+  int i = history - 1;
+
+//printf("Searching for [%s] starting at %d (of %d)\n",prefix.String(),i,iHistory.NrItems());
+  LispString histpre;
+  while (i >= 0)
+  {
+    histpre.SetStringCounted(iHistory[i]->String(),aCursorPos);
+    if (histpre == prefix)
+      break;
+    i--;
+  }
+  if (i >= 0 && i != history && histpre == prefix)
+  {
+    history = i;
+    CopyString(aString, (*iHistory[history]));
+//    if (aCursorPos == 0) aCursorPos = aString.NrItems()-1;
+    return 1;
+  }
+  return 0;
+}
+
+LispInt CConsoleHistory::ArrowDown(LispString& aString,LispInt &aCursorPos)
+{
+  LispString prefix;
+  //  if (aCursorPos == aString.NrItems()-1) aCursorPos = 0;
+  prefix.SetStringCounted(aString.String(),aCursorPos);
+  int i = history + 1;
+  LispString histpre;
+  while (i < iHistory.NrItems())
+  {
+    histpre.SetStringCounted(iHistory[i]->String(),aCursorPos);
+    if (histpre == prefix)
+      break;
+    i++;
+  }
+  if (i < iHistory.NrItems() && histpre == prefix)
+  {
+    history = i;
+    CopyString(aString, (*iHistory[history]));
+//    if (aCursorPos == 0) aCursorPos = aString.NrItems()-1;
+    return 1;
+  }
+  else
+  {
+    history = iHistory.NrItems();
+    CopyString(aString,prefix);
+/*TODO remove
+    {
+      aString.SetNrItems(0);
+      LispInt i;
+      for (i=0;i<prefix.NrItems();i++)
+      {
+        aString.Append(prefix[i]);
+      }
+      aString.Append('\0');
+    }
+*/
+  }
+  return 0;
+}
+
+LispInt CConsoleHistory::NrLines()
+{
+  return iHistory.NrItems();
+}
+
+LispStringPtr CConsoleHistory::GetLine(LispInt aLine)
+{
+  return iHistory[aLine];
+}
+void CConsoleHistory::ResetHistoryPosition()
+{
+  history=iHistory.NrItems();
+}
+
+LispInt CConsoleHistory::Complete(LispString& aString,LispInt &aCursorPos)
+{
+    LispInt prevhistory=history;
+    history = iHistory.NrItems()-1;
+    while (history>=0)
+    {
+        LispInt j=0;
+        while (j<aString.NrItems()-1 &&
+                j<iHistory[history]->NrItems())
+        {
+            if (aString[j] != (*iHistory[history])[j])
+                goto CONTINUE;
+            j++;
+        }
+        CopyString(aString, (*iHistory[history]));
+        aCursorPos = aString.NrItems()-1;
+        break;
+    CONTINUE:
+        history--;
+    }
+    if (history<0)
+        history = prevhistory;
+
+    return 1;
+}
+
+

@@ -1,7 +1,7 @@
 
 
 
-all : conf proteus hints
+all : yacdefines.h proteus
 
 distclean:  clean
 	-rm -f proteus
@@ -10,9 +10,9 @@ depend :
 	gcc -MM *.cpp $(INCS) > depend.dep
 
 clean :
-	-rm -rf *.o *~ *.a hints core *.zip 
+	-rm -rf *.o *~ *.a core *.zip 
 
-conf:
+yacdefines.h: yacasconf
 	yacas -pc yacasconf
 
 
@@ -62,13 +62,6 @@ proteusmanual.book.tex: $(PROTEUSMANUALCHAPTERS) proteusmanual.book
 
 fltkgraphstub.cc: fltkgraph.stub
 	yacas -pc fltkgraph.stub
-
-hints:
-	g++ manripper.cpp -o manripper
-	cd ../manmake ; ../proteus/manripper ref.book.txt refprog.book.txt > ../proteus/hints.unsorted ; cd ../proteus
-	sort -t ":" hints.unsorted > hints.sorted
-	echo "::::" > tail.txt
-	cat hints.sorted tail.txt > hints
 
 include depend.dep
 

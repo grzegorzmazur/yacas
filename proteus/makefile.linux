@@ -18,7 +18,7 @@ LIBS = $(LDLIBS) $(FLTKLIBS) $(YACASLIBS)
 
 POSTBUILD       = ls
 
-all-inclusive: conf proteus  hints
+all-inclusive: yacdefines.h proteus  hints
 
 # proteuscalculator
 install:

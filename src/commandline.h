@@ -48,10 +48,32 @@ enum ESpecialChars
  *  and for externalizing the history list to disk when the system
  *  shuts down.
  */
+
+/// \class CConsoleHistory, implement history list the user can browse through.
+class CConsoleHistory
+{
+public:
+  CConsoleHistory() : history(0) {}
+  void ResetHistoryPosition();
+  void AddLine(LispString& aString);
+  void Append(LispStringPtr aString);
+  LispInt ArrowUp(LispString& aString,LispInt &aCursorPos);
+  LispInt ArrowDown(LispString& aString,LispInt &aCursorPos);
+  LispInt Complete(LispString& aString,LispInt &aCursorPos);
+  LispInt NrLines();
+  LispStringPtr GetLine(LispInt aLine);
+protected:
+  CDeletingArrayGrower<LispStringPtr> iHistory;
+  LispInt history;
+};
+
+
+
+ 
 class CCommandLine : public YacasBase
 {
 public:
-    CCommandLine() : iHistoryUnchanged(0), history(0),iTraceHistory(0){};
+    CCommandLine() : iHistoryUnchanged(0), iTraceHistory(0){};
     virtual ~CCommandLine();
     /// Call this function if the user needs to enter an expression.
     virtual void ReadLine(LispCharPtr prompt);
@@ -82,15 +104,20 @@ private:
 protected:
     LispInt iFullLineDirty;
     LispInt iHistoryUnchanged;
-    LispInt history;
     
 public:
     LispString iLine;
     LispString iSubLine;
+    //TODO should we remove all occurrences of iTraceHistory? Is any one using that?
     LispInt iTraceHistory;
-    
+
+    CConsoleHistory iHistoryList;
+/*TODO remove?
     CDeletingArrayGrower<LispStringPtr> iHistory;
+    LispInt history;
+*/
 };
+
 
 #endif
 

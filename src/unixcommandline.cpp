@@ -72,13 +72,12 @@ CUnixCommandLine::CUnixCommandLine()
                     ;
                 buff[i++] = '\0';
                 LispStringPtr ptr = NEW LispString(buff);
-                iHistory.Append(ptr);
+                iHistoryList.Append(ptr);
                 
             }
             fclose(f);
         }
     }
-    history=iHistory.NrItems();
     iMaxLines = 1024;
 
 }
@@ -99,14 +98,16 @@ CUnixCommandLine::~CUnixCommandLine()
         int from=0;
         if (iMaxLines>=0)
         {
-            if (iHistory.NrItems()>iMaxLines)
+            if (iHistoryList.NrLines()>iMaxLines)
             {
-                from = iHistory.NrItems()-iMaxLines;
+                from = iHistoryList.NrLines()-iMaxLines;
             }
         }
-        for (i=from;i<iHistory.NrItems();i++)
+        for (i=from;i<iHistoryList.NrLines();i++)
         {
-            fprintf(f,"%s\n",iHistory[i]->String());
+          LispStringPtr ptr = iHistoryList.GetLine(i);
+
+            fprintf(f,"%s\n",ptr->String());
         }
         fclose(f);
     }
