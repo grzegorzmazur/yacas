@@ -35,24 +35,18 @@ UnFence("PartialDenseTreeMap", 3);
 10 # PartialDenseTreeScan2({_first,_list},1,_coefs)
    <--
    [
-//Echo({"pd1..."});
    Local(i);
    For(i:=1,i<=Length(list),i++)
    [
      ApplyPure(op,{Concat(coefs,{first+i-1}),list[i]});
    ];
-//Echo({"pd2..."});
    ];
 20 # PartialDenseTreeScan2({_first,_list},_depth,_coefs) 
    <--
-   [
    ForEach(item,list)
    [
-//Echo({"pd3...",item});
      PartialDenseTreeScan2(item,MathAdd(depth,-1),Concat(coefs,{first}));
      Set(first,MathAdd(first,1));
-//Echo({"pd4..."});
-   ];
    ];
 UnFence("PartialDenseTreeScan", 3);
 [Local(fn);fn:=String(PartialDenseTreeScan2);`UnFence(@fn,3);];
@@ -60,6 +54,53 @@ UnFence("PartialDenseTreeScan", 3);
 AddPartialDenseTrees(_depth,_x,_y)
     <-- MultiplyAddPartialDenseTrees(depth,x,y,FillList(0,depth),1);
 
+
+10 # MultiplyAddPartialDenseTrees(_depth,_x,_y,_coefs,_fact) <--
+[
+  Local(first1,list1,max1);
+  Local(first2,list2,max2);
+  Local(first,last,result,i,index,item,nr);
+  Set(first1,x[1]);
+  Set(first2,y[1]+coefs[1]);
+  Set(list1,x[2]);
+  Set(list2,y[2]);
+  Set(first,Min(first1,first2));
+  Set(max1,first1+Length(list1));
+  Set(max2,first2+Length(list2));
+  Set(last,Max(max1,max2));
+  Set(index,CreatePartialDenseTree(Tail(coefs),0));
+  Set(result,FillList(index,last-first));
+//  Set(result,ArrayCreate(last-first,index));
+  Set(nr,Length(list1));
+  Set(index,first1-first);
+  For(i:=1,i<=nr,i++)
+  [
+    Set(index,MathAdd(index,1));
+    result[index] := list1[i];
+  ];
+  Set(nr,Length(list2));
+  if(depth=1)
+  [
+    Set(index,first2-first);
+    For(i:=1,i<=nr,i++)
+    [
+      Set(index,MathAdd(index,1));
+      result[index] := result[index] + fact*list2[i];
+    ];
+  ]
+  else
+  [
+    Set(index,first2-first);
+    For(i:=1,i<=Length(list2),i++)
+    [
+      Set(index,MathAdd(index,1));
+      result[index] := MultiplyAddPartialDenseTrees(depth-1,
+          result[index],list2[i],Tail(coefs),fact);
+    ];
+  ];
+  {first,result};
+];
+/*TODO remove?
 10 # MultiplyAddPartialDenseTrees(_depth,_x,_y,_coefs,_fact) <--
 [
   Local(first1,list1,max1);
@@ -124,6 +165,7 @@ AddPartialDenseTrees(_depth,_x,_y)
 //Echo({"leave",result});
   {first,result};
 ];
+*/
 
 /*TODO remove
 meraddu(_a,_b) <--
