@@ -55,4 +55,3 @@ z:= ArcTan((2*x*y)/(x^2 - y^2)); f();
 Testing("Pslq");
 Verify(Pslq({ Pi+2*Exp(1) , Pi , Exp(1) },20),{1,-1,-2}); f();
 Verify(Pslq({ 2*Pi+3*Exp(1) , Pi , Exp(1) },20),{1,-2,-3}); f();
-
