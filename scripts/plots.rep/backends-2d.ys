@@ -35,7 +35,7 @@ Plot2D'gnuplot(values_IsList, _options'hash) <--
   If(
     options'hash["filename"] != Empty,
   	True,
-  	options'hash["filename"] := MakeFilePath(dirBase, "data")
+	options'hash["filename"] := MakeFilePath(dirBase, "data")
   );
   // create directory if it does not exist
   Check(MakeDir(dirBase), "Problem creating a temporary directory, plotting aborted.");
@@ -66,12 +66,17 @@ Plot2D'gnuplot(values_IsList, _options'hash) <--
 	WriteString("plot ");
 	For(item:=1, item<=Length(values), item++)
 	[
-		WriteString("\"" : filename'list[item] : "\" title \"" : options'hash["yname"][item] : "\" with lines");
+		// need to convert the data file name to the Unix format, otherwise Gnuplot doesn't work b/c its Windows version doesn't understand the Windows directory separator "\"
+		WriteString("\"" : ConvertOSPath(filename'list[item], "Unix") : "\" title \"" : options'hash["yname"][item] : "\" with lines");
 		// add a comma if necessary
 		If(item<Length(values), WriteString(", "));
 	];
+	WriteString(Nl());
+	// special handling for Win32 platforms
+	WriteString(GnuplotExtraCmd());
   ];
-  SystemCall("gnuplot -persist " : control'file);
+  // again special handling for different platforms
+  SystemCall(GnuplotCmd(control'file));
 ];
 
 /// backend: use "graph" from GNU plotutils

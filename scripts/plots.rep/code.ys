@@ -67,3 +67,17 @@ WriteDataItem(tuple_IsList, _options'hash) <--
 	];
 	list;
 ];
+
+// gnuplot commands differ by platform
+GnuplotCmd(control'file) :=
+{
+	{"Unix", "gnuplot -persist " : control'file},
+	{"Win32", "wgnupl32.exe " : control'file},
+} [PlatformOS];
+
+// this is needed for gnuplot at the end of the control file
+GnuplotExtraCmd() := {
+	{"Unix", ""},
+	{"Win32", "pause -1 \"Press OK to close the plot window.\""},
+} [PlatformOS];
+

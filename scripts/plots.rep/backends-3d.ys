@@ -79,12 +79,15 @@ Plot3DS'gnuplot(values_IsList, _options'hash) <--
 	WriteString("splot ");
 	For(item:=1, item<=Length(values), item++)
 	[
-		WriteString("\"" : filename'list[item] : "\" title \"" : options'hash["zname"][item] : "\" with lines");
+		WriteString("\"" : ConvertOSPath(filename'list[item], "Unix") : "\" title \"" : options'hash["zname"][item] : "\" with lines");
 		// add a comma if necessary
 		If(item<Length(values), WriteString(", "));
 	];
+	WriteString(Nl());
+	// special handling for Win32 platforms
+	WriteString(GnuplotExtraCmd());
   ];
-  SystemCall("gnuplot -persist " : control'file);
+  SystemCall(GnuplotCmd(control'file));
 ];
 
 /// backend: write data into file.

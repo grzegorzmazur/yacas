@@ -2,4 +2,6 @@ ListToHash
 sign'change
 WriteDataItem
 RemoveRepeated
+GnuplotCmd
+GnuplotExtraCmd
 }
