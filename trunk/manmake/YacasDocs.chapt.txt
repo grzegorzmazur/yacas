@@ -456,7 +456,8 @@ Other special markup:
 
 *	{*BREAK} -- insert an explicit line break at this point (no new paragraph)
 *	{*NEWPAGE} -- start a new page at this point ($LaTeX$ documentation only)
-*	{<*} ... {*>} -- insert a hyperlink
+*	{<*}
+... {*>} -- insert a hyperlink
 
 	    Summary of special markup syntax
 
@@ -470,11 +471,13 @@ Special syntax entities include:
 "{{}}": inline code samples, names of functions or variables (monospaced font)
 *	special delimiters
 "{<i>}"
-and "{</i>}": italics (for emphasis, not for mathematics)
+and "{</i>}": italics (for emphasis, not for mathematics).
+Both delimiters must be on the same line.
 *	dollar signs "{$}", "{$}{$}": inline and displayed mathematical equations
 *	special delimiters
 "{<*}" and
-"{*>}": Web hyperlinks and documentation hyperlinks
+"{*>}": Web hyperlinks and documentation hyperlinks.
+Both delimiters must be on the same line.
 *	the exclamation mark
 "{!}": nested index entries (use inside the {*A} label)
 
