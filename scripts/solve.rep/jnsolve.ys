@@ -1,0 +1,201 @@
+/* Proposed replacement for Solve */
+
+Retract("JNSolve", 2);
+Retract("JNSolve'Poly", 2);
+Retract("JNSolve'Reduce", 2);
+Retract("JNSolve'Context", 2);
+Retract("JNSolve'Simple", 3);
+Retract("JNSolve'Union", 2);
+
+/*
+ * Strategy for JNSolve(expr, x):
+ *
+ * 10. Get rid of "==" in 'expr'
+ * 20. Special cases
+ * 30. If 'expr' is a polynomial in 'x', try to use PSolve
+ * 40. If 'expr' is a product, solve for either factor 
+ * 50. If 'expr' is a quotient, solve for the denominator
+ * 60. If 'expr' is a sum and one of the terms is free of 'x', 
+ *     try to use JNSolve'Simple
+ * 70. If every occurance of 'x' is in the same context, use this to reduce 
+ *     the equation. For example, in 'Cos(x) + Cos(x)^2 == 1', the variable
+ *     'x' always occurs in the context 'Cos(x)', and hence we can attack  
+ *     the equation by first solving 'y + y^2 == 1', and then 'Cos(x) == y'.
+ *     This does not work for 'Exp(x) + Cos(x) == 2'.
+ * 80. Apply Simplify to 'expr', and try again.
+ */
+
+LocalSymbols(res)
+[
+/*
+  10 # JNSolve(_lhs == _rhs, _var)_(Not HasExpr(rhs,var) And (res := JNSolve'Simple(lhs,rhs,var)) != Failed) <-- res;
+  10 # JNSolve(_lhs == _rhs, _var)_(Not HasExpr(lhs,var) And (res := JNSolve'Simple(rhs,lhs,var)) != Failed) <-- res;
+*/
+  11 # JNSolve(_lhs == _rhs, _var) <-- JNSolve(lhs - rhs, var);
+  20 # JNSolve(0, _var) <-- {var};
+  21 # JNSolve(a_IsConstant, _var) <-- {};
+  /*   JNSolve(_expr, _var)_(Not HasExpr(expr,var)) <-- ???; */
+  30 # JNSolve(_expr, _var)_((res := JNSolve'Poly(expr, var)) != Failed) <-- res;
+  40 # JNSolve(_e1 * _e2, _var) <-- JNSolve'Union(JNSolve(e1,var), JNSolve(e2,var));
+  50 # JNSolve(_e1 / _e2, _var) <-- JNSolve(e1, var);
+  60 # JNSolve(_e1 + _e2, _var)_(Not HasExpr(e2,var) And (res := JNSolve'Simple(e1,-e2,var)) != Failed) <-- res;
+  60 # JNSolve(_e1 + _e2, _var)_(Not HasExpr(e1,var) And (res := JNSolve'Simple(e2,-e1,var)) != Failed) <-- res;
+  60 # JNSolve(_e1 - _e2, _var)_(Not HasExpr(e2,var) And (res := JNSolve'Simple(e1,e2,var)) != Failed) <-- res;
+  60 # JNSolve(_e1 - _e2, _var)_(Not HasExpr(e1,var) And (res := JNSolve'Simple(e2,e1,var)) != Failed) <-- res;
+  65 # JNSolve(_expr, _var)_((res := JNSolve'Simple(expr, 0, var)) != Failed) <-- res;
+  70 # JNSolve(_expr, _var)_((res := JNSolve'Reduce(expr, var)) != Failed) <-- res;
+  80 # JNSolve(_expr, _var)_((res := Simplify(expr)) != expr) <-- JNSolve(res, var);
+];
+
+/********** JNSolve'Poly **********/
+
+/* Tries to solve by calling PSolve */
+/* Returns Failed if this doesn't work, and the solution otherwise */
+
+/* CanBeUni is not documented, but defined in univar.rep/code.ys */
+/* It returns True iff 'expr' is a polynomial in 'var' */
+
+10 # JNSolve'Poly(_expr, _var)_(Not CanBeUni(var, expr)) <-- Failed;
+
+/* The call to PSolve can have three kind of results 
+ *   1) PSolve returns a single root 
+ *   2) PSolve returns a list of roots
+ *   3) PSolve remains unevaluated
+ */
+
+20 # JNSolve'Poly(_expr, _var) <--
+[
+  Local(roots);
+  roots := PSolve(expr, var); 
+  If(IsAtom(roots), 
+     {roots},           /* Case 1 */
+     If(Head(Listify(roots)) = PSolve, 
+        Failed,         /* Case 3 */
+        If(Head(Listify(roots)) = List,
+           roots,       /* Case 2 */
+           {roots})));  /* Case 1 */
+];
+
+/********** JNSolve'Reduce **********/
+
+/* Tries to solve by reduction strategy */
+/* Returns Failed if this doesn't work, and the solution otherwise */
+
+10 # JNSolve'Reduce(_expr, _var) <--
+[
+  Local(context, expr2, var2, res, sol, sol2, i);
+  context := JNSolve'Context(expr, var);
+  If(context = False,  
+     res := Failed,
+     [
+       expr2 := Subst(context, var2) expr;
+       If(CanBeUni(var2, expr2) And Degree(expr2, var2) = 1 And Coef(expr2, var2, 1) = 1,
+          res := Failed, /* to prevent infinite recursion */
+          [
+    	    sol2 := JNSolve(expr2, var2);
+    	    If (Head(Listify(sol2)) != List,
+    		res := Failed,
+    		[
+    		  res := {};
+    		  i := 1;
+    		  While(i <= Length(sol2) And res != Failed) [
+    		    sol := JNSolve(context == sol2[i], var);
+    		    If(Head(Listify(sol)) != List,
+    		       res := Failed,
+    		       res := Union(res, sol));
+    		    i++;
+    		  ];
+    		]);
+      	   ]);
+     ]);
+  res;
+];
+
+/********** JNSolve'Context **********/
+
+/* Returns the unique context of 'var' in 'expr', */
+/* or {} if 'var' does not occur in 'expr',       */
+/* or False if the context is not unique.         */
+ 
+10 # JNSolve'Context(expr_IsAtom, _var) <-- If(expr=var, var, {});
+
+20 # JNSolve'Context(_expr, _var) <--
+[
+  Local(lst, foundVarP, context, i);
+  lst := Listify(expr);
+  foundVarP := False;
+  i := 2;
+  While(i <= Length(lst) And Not foundVarP) [
+    foundVarP := (lst[i] = var);
+    i++;
+  ];
+  If(foundVarP,
+     context := expr,
+     [
+       context := {};
+       i := 2;
+       While(i <= Length(lst) And context != False) [
+         res := JNSolve'Context(lst[i], var);
+	 If(res != {} And context != {} And res != context, context := False);
+	 If(res != {} And context = {}, context := res);
+	 i++;
+       ];
+     ]);
+  context;
+];
+
+/********** JNSolve'Simple **********/
+
+/* Simple solver of equations 
+ *
+ * Returns (possibly empty) list of solutions, 
+ * or Failed if it cannot handle the equation
+ *
+ * Calling format: JNSolve'Simple(lhs, rhs, var)
+ *                 to solve 'lhs == rhs'. 
+ *
+ * Note: 'rhs' should not contain 'var'.
+ */
+
+20 # JNSolve'Simple(_e1 + _e2, _rhs, _var)_(e1 = var And Not HasExpr(e2,var)) <-- { rhs-e2 };
+20 # JNSolve'Simple(_e1 + _e2, _rhs, _var)_(e2 = var And Not HasExpr(e1,var)) <-- { rhs-e1 };
+
+20 # JNSolve'Simple(_e1 - _e2, _rhs, _var)_(e1 = var And Not HasExpr(e2,var)) <-- { rhs+e2 };
+20 # JNSolve'Simple(_e1 - _e2, _rhs, _var)_(e2 = var And Not HasExpr(e1,var)) <-- { e1-rhs };
+
+/* Note: This may lead to division by zero */
+20 # JNSolve'Simple(_e1 * _e2, _rhs, _var)_(e1 = var And Not HasExpr(e2,var)) <-- { rhs/e2 };
+20 # JNSolve'Simple(_e1 * _e2, _rhs, _var)_(e2 = var And Not HasExpr(e1,var)) <-- { rhs/e1 };
+
+/* Note: What if e2 is zero */
+20 # JNSolve'Simple(_e1 / _e2, _rhs, _var)_(e1 = var And Not HasExpr(e2,var)) <-- { rhs*e2 };
+20 # JNSolve'Simple(_e1 / _e2, _rhs, _var)_(e2 = var And Not HasExpr(e1,var)) <-- { e1/rhs };
+
+/* Note: Too simplistic */
+20 # JNSolve'Simple(_e1 ^ _e2, _rhs, _var)_(e1 = var And Not HasExpr(e2,var)) <-- { rhs^(1/e2) };
+20 # JNSolve'Simple(_e1 ^ _e2, _rhs, _var)_(e2 = var And Not HasExpr(e1,var)) <-- { Ln(rhs)/Ln(e1) };
+
+/* Note: Misses multiple solutions */
+20 # JNSolve'Simple(Sin(_e1),    _rhs, _var)_(e1 = var) <-- { ArcSin(rhs) };
+20 # JNSolve'Simple(Cos(_e1),    _rhs, _var)_(e1 = var) <-- { ArcCos(rhs) };
+20 # JNSolve'Simple(Tan(_e1),    _rhs, _var)_(e1 = var) <-- { ArcTan(rhs) };
+20 # JNSolve'Simple(ArcSin(_e1), _rhs, _var)_(e1 = var) <-- { Sin(rhs) };
+20 # JNSolve'Simple(ArcCos(_e1), _rhs, _var)_(e1 = var) <-- { Cos(rhs) };
+20 # JNSolve'Simple(ArcTan(_e1), _rhs, _var)_(e1 = var) <-- { Tan(rhs) };
+
+/* Note: Second rule misses multiple solutions */
+10 # JNSolve'Simple(Exp(_e1),    0,    _var)_(e1 = var) <-- { };
+20 # JNSolve'Simple(Exp(_e1),    _rhs, _var)_(e1 = var) <-- { Ln(rhs) };
+20 # JNSolve'Simple(Ln(_e1),     _rhs, _var)_(e1 = var) <-- { Exp(rhs) };
+
+/* Note: Sqrt rule is wrong if rhs is negative */
+20 # JNSolve'Simple(-(_e1),      _rhs, _var)_(e1 = var) <-- { -rhs };
+20 # JNSolve'Simple(Sqrt(_e1),   _rhs, _var)_(e1 = var) <-- { rhs^2 };
+
+30 # JNSolve'Simple(_lhs, _rhs, _var) <-- Failed;
+
+/********** Utility Function **********/
+
+/* Take union, if both arguments are lists */
+10 # JNSolve'Union(e1_IsList, e2_IsList) <-- Union(e1, e2);
+
