@@ -67,7 +67,7 @@ NUMBERS_LIB = libyacasnumbers.a
 PACKAGE = yacas
 RANLIB = ranlib
 RELEASE = 1
-VERSION = 1.0.43rev2
+VERSION = 1.0.43rev3
 scriptdir = ${prefix}/share/yacas/
 
 noinst_PROGRAMS = ramscripts

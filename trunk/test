@@ -1,5 +1,63 @@
 
 
+ZReset():=
+[
+  Assign(A,0);
+  Assign(B,0);
+  Assign(C,0);
+  Assign(D,0);
+  Assign(E,0);
+  Assign(H,0);
+  Assign(L,0);
+];
+RuleBase("Mem",{ptr});
+Asm(list_IsList) <--
+[
+  Local(result);
+  result:={};
+  ForEach(st,list)
+  [
+    Local(t);
+    t:=Asm(st);
+    if (t!=False) DestructiveAppend(result,t);
+  ];
+  result;
+];
+
+Asm(Ld(_reg,_expr)) <-- Assign(reg,Eval(expr));
+Asm(ZAnd(_expr)) <-- Assign(A, Eval(A And expr));
+Asm(Inc(_reg))   <-- Assign(reg, Eval(reg+1));
+Asm(Dec(_reg))   <-- Assign(reg, Eval(reg-1));
+
+Assign(A,_expr) <-- [(A:=expr);False;];
+Assign(B,_expr) <-- [(B:=expr);BC:=(B<<8)+C;False;];
+Assign(C,_expr) <-- [(C:=expr);BC:=(B<<8)+C;False;];
+Assign(D,_expr) <-- [(D:=expr);DE:=(D<<8)+E;False;];
+Assign(E,_expr) <-- [(E:=expr);DE:=(D<<8)+E;False;];
+Assign(H,_expr) <-- [(H:=expr);HL:=(H<<8)+L;False;];
+Assign(L,_expr) <-- [(L:=expr);HL:=(H<<8)+L;False;];
+
+Assign(BC,_expr) <-- [(BC:=expr);B:=(BC>>8);C:=BC&255;False;];
+Assign(DE,_expr) <-- [(DE:=expr);D:=(DE>>8);E:=DE&255;False;];
+Assign(HL,_expr) <-- [(HL:=expr);H:=(HL>>8);L:=HL&255;False;];
+Assign(Mem(_expr1),_expr2) <-- [expr1:=Eval(expr1);expr2:=Eval(expr2);Mem(expr1) == expr2;];
+
+tst:=
+{
+  Ld(HL,DATA),
+  Ld(B,Mem(HL)),
+  Inc(HL),
+  Ld(C,Mem(HL)),
+  Inc(HL),
+  Ld(A,Mem(BC)),
+  Ld(B,Mem(HL)),
+  Inc(HL),
+  Ld(C,Mem(HL)),
+  Inc(HL),
+  Ld(Mem(BC),A),
+  
+};
+
 
 EndOfFile;
 
