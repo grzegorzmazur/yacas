@@ -279,3 +279,99 @@ Rule("Gcd",2,100,True)
 
 20 # Round(x_IsComplex)  _ (IsRationalOrNumber(Re(x)) And IsRationalOrNumber(Im(x)) )
 		<-- MathFloor(N(Re(x)+0.5)) + MathFloor(N(Im(x)+0.5))*I;
+
+
+// Canonicalise an expression so its terms are grouped to the right
+// ie a+(b+(c+d))
+// This doesn't preserve order of terms, when doing this would cause more
+// subtractions and nested parentheses than necessary.
+1 # CanonicalAdd((_a+_b)+_c) <-- CanonicalAdd(CanonicalAdd(a)+
+                                              CanonicalAdd(CanonicalAdd(b)+
+                                                           CanonicalAdd(c)));
+1 # CanonicalAdd((_a-_b)+_c) <-- CanonicalAdd(CanonicalAdd(a)+
+                                              CanonicalAdd(CanonicalAdd(c)-
+                                                           CanonicalAdd(b)));
+1 # CanonicalAdd((_a+_b)-_c) <-- CanonicalAdd(CanonicalAdd(a)+
+                                              CanonicalAdd(CanonicalAdd(b)-
+                                                           CanonicalAdd(c)));
+1 # CanonicalAdd((_a-_b)-_c) <-- CanonicalAdd(CanonicalAdd(a)-
+                                              CanonicalAdd(CanonicalAdd(b)+
+                                                           CanonicalAdd(c)));
+2 # CanonicalAdd(_a)         <-- a;
+
+////////////////////// Log rules stuff //////////////////////
+
+// LnExpand
+1 # LnExpand(Ln(x_IsInteger))
+                            <-- Add(Map({{n,m},m*Ln(n)},Transpose(Factors(x))));
+1 # LnExpand(Ln(_a*_b))     <-- LnExpand(Ln(a))+LnExpand(Ln(b));
+1 # LnExpand(Ln(_a/_b))     <-- LnExpand(Ln(a))-LnExpand(Ln(b));
+1 # LnExpand(Ln(_a^_n))     <-- LnExpand(Ln(a))*n;
+2 # LnExpand(_a)            <-- a;
+
+// LnCombine is nice and simple now
+LnCombine(_a) <-- DoLnCombine(CanonicalAdd(a));
+
+// Combine single terms.  This can always be done without a recursive call.
+1 # DoLnCombine(Ln(_a))              <-- Ln(a);
+1 # DoLnCombine(Ln(_a)*_b)           <-- Ln(a^b);
+1 # DoLnCombine(_b*Ln(_a))           <-- Ln(a^b);
+
+// Deal with the first two terms so they are both simple logs if at all
+// possible.  This involves converting a*Ln(b) to Ln(b^a) and moving log terms
+// to the start of expressions.  One of either of these operations always takes
+// us to a strictly simpler form than we started in, so we can get away with
+// calling DoLnCombine again with the partly simplified argument.
+
+// TODO: Make this deal with division everywhere it deals with multiplication
+
+// first term is a log multiplied by something
+2 # DoLnCombine(Ln(_a)*_b+_c)        <-- DoLnCombine(Ln(a^b)+c);
+2 # DoLnCombine(Ln(_a)*_b-_c)        <-- DoLnCombine(Ln(a^b)-c);
+2 # DoLnCombine(_b*Ln(_a)+_c)        <-- DoLnCombine(Ln(a^b)+c);
+2 # DoLnCombine(_b*Ln(_a)-_c)        <-- DoLnCombine(Ln(a^b)-c);
+
+// second term of a two-term expression is a log multiplied by something
+2 # DoLnCombine(_a+(_c*Ln(_b)))      <-- DoLnCombine(a+Ln(b^c));
+2 # DoLnCombine(_a-(_c*Ln(_b)))      <-- DoLnCombine(a-Ln(b^c));
+2 # DoLnCombine(_a+(Ln(_b)*_c))      <-- DoLnCombine(a+Ln(b^c));
+2 # DoLnCombine(_a-(Ln(_b)*_c))      <-- DoLnCombine(a-Ln(b^c));
+
+// second term of a three-term expression is a log multiplied by something
+2 # DoLnCombine(_a+((Ln(_b)*_c)+_d)) <-- DoLnCombine(a+(Ln(b^c)+d));
+2 # DoLnCombine(_a+((Ln(_b)*_c)-_d)) <-- DoLnCombine(a+(Ln(b^c)-d));
+2 # DoLnCombine(_a-((Ln(_b)*_c)+_d)) <-- DoLnCombine(a-(Ln(b^c)+d));
+2 # DoLnCombine(_a-((Ln(_b)*_c)-_d)) <-- DoLnCombine(a-(Ln(b^c)-d));
+
+2 # DoLnCombine(_a+((_c*Ln(_b))+_d)) <-- DoLnCombine(a+(Ln(b^c)+d));
+2 # DoLnCombine(_a+((_c*Ln(_b))-_d)) <-- DoLnCombine(a+(Ln(b^c)-d));
+2 # DoLnCombine(_a-((_c*Ln(_b))+_d)) <-- DoLnCombine(a-(Ln(b^c)+d));
+2 # DoLnCombine(_a-((_c*Ln(_b))-_d)) <-- DoLnCombine(a-(Ln(b^c)-d));
+
+// Combine the first two terms if they are logs, otherwise move one or both to
+// the front, then recurse on the remaining possibly-log-containing portion.
+// (the code makes more sense than this comment)
+3 # DoLnCombine(Ln(_a)+Ln(_b))       <-- Ln(a*b);
+3 # DoLnCombine(Ln(_a)-Ln(_b))       <-- Ln(a/b);
+3 # DoLnCombine(Ln(_a)+(Ln(_b)+_c))  <-- DoLnCombine(Ln(a*b)+c);
+3 # DoLnCombine(Ln(_a)+(Ln(_b)-_c))  <-- DoLnCombine(Ln(a*b)-c);
+3 # DoLnCombine(Ln(_a)-(Ln(_b)+_c))  <-- DoLnCombine(Ln(a/b)-c);
+3 # DoLnCombine(Ln(_a)-(Ln(_b)-_c))  <-- DoLnCombine(Ln(a/b)+c);
+
+// We know that at least one of the first two terms isn't a log
+4 # DoLnCombine(Ln(_a)+(_b+_c))      <-- b+DoLnCombine(Ln(a)+c);
+4 # DoLnCombine(Ln(_a)+(_b-_c))      <-- b+DoLnCombine(Ln(a)-c);
+4 # DoLnCombine(Ln(_a)-(_b+_c))      <-- DoLnCombine(Ln(a)-c)-b;
+4 # DoLnCombine(Ln(_a)-(_b-_c))      <-- DoLnCombine(Ln(a)+c)-b;
+
+4 # DoLnCombine(_a+(Ln(_b)+_c))      <-- a+DoLnCombine(Ln(b)+c);
+4 # DoLnCombine(_a+(Ln(_b)-_c))      <-- a+DoLnCombine(Ln(b)-c);
+4 # DoLnCombine(_a-(Ln(_b)+_c))      <-- a-DoLnCombine(Ln(b)+c);
+4 # DoLnCombine(_a-(Ln(_b)-_c))      <-- a-DoLnCombine(Ln(b)-c);
+
+// If we get here we know that neither of the first two terms is a log
+5 # DoLnCombine(_a+(_b+_c))          <-- a+(b+DoLnCombine(c));
+
+// Finished
+6 # DoLnCombine(_a)                  <-- a;
+
