@@ -303,6 +303,8 @@ void LispIsPromptShown(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void my_exit(void)
 {
+  if (yacas)
+  {
     if (show_prompt)
         printf("Quitting...\n");
     if (yacas) delete yacas; yacas = NULL;
@@ -311,12 +313,13 @@ void my_exit(void)
 #ifdef YACAS_DEBUG
     YacasCheckMemory();
 #endif
-
+  }
 #ifdef WIN32
   #ifdef SUPPORT_SERVER
     if (winsockinitialised)
     {
         WSACleanup();
+        winsockinitialised = 0;
     }
   #endif
 #endif
@@ -638,7 +641,10 @@ void InterruptHandler(int errupt)
     printf("^C pressed\n");
     (*yacas)()().iEvalDepth = (*yacas)()().iMaxEvalDepth+100;
     if (readmode)
-        exit(0);
+    {
+      my_exit();
+      exit(0);
+    }
 }
 
 /*
@@ -1239,12 +1245,13 @@ int main(int argc, char** argv)
     }
     */
 
-    atexit(my_exit);
+//    atexit(my_exit);
 
 #ifdef SUPPORT_SERVER
     if (server_mode)
     {
       runserver(argc,argv);
+      my_exit();
       return 0;
     }
 #endif
@@ -1311,6 +1318,7 @@ int main(int argc, char** argv)
             }
             fileind++;
         }
+        my_exit();
         exit(0);
     }
     if (show_prompt && (!use_texmacs_out))
@@ -1328,6 +1336,7 @@ int main(int argc, char** argv)
 
         yacas->Evaluate(buffer);
         ShowResult(outprompt);
+        my_exit();
         exit(0);
     }
 
@@ -1431,6 +1440,7 @@ RESTART:
     LoadYacas();
     goto RESTART;
   }
+  my_exit();
   return 0;
 }
 
