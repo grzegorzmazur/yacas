@@ -38,6 +38,9 @@ ForEach
 , <A HREF="refchapter9.html#Apply" TARGET="Chapters">
 Apply
 </A>
+, <A HREF="refchapter9.html#MapArgs" TARGET="Chapters">
+MapArgs
+</A>
 , <A HREF="refchapter9.html#Subst" TARGET="Chapters">
 Subst
 </A>
@@ -207,7 +210,48 @@ You can also apply pure functions, declared using the form {varlist,body}.
 Example: "Apply( {{x,y},x+y} , {2,3} );" would also evaluate to 5.
 
 
-<A NAME="Subst">
+<A NAME="MapArgs">
+
+</A>
+<H3>
+<HR>MapArgs
+</H3>
+Standard math library<br><H5>
+Calling Sequence:
+</H5>
+MapArgs(expression,operation)
+<H5>
+Parameters:
+</H5>
+expression - an expression to work on <br>
+operation - an operation to perform on each argument
+<H5>
+Description:
+</H5>
+MapArgs performs an operation on each argument to a function
+call specified in the expression.
+<H5>
+Examples:
+</H5>
+<TABLE CELLPADDING="3" WIDTH="90%">
+<TR><TD WIDTH=100% bgcolor=e0e0e0><PRE>In> MapArgs(f(x,y,z),"Sin")
+Out> f(Sin(x),Sin(y),Sin(z));
+</PRE></TR>
+</TABLE>
+
+<H5>
+See Also:
+</H5>
+<A HREF="ref.html#MapSingle" TARGET="Chapters">
+MapSingle
+</A>
+, <A HREF="ref.html#Map" TARGET="Chapters">
+Map
+</A>
+, <A HREF="ref.html#Apply" TARGET="Chapters">
+Apply
+</A>
+, <A NAME="Subst">
 
 </A>
 <H3>

@@ -137,6 +137,7 @@ void FltkConsole::DeleteAll()
     iCurrentHighlighted = -1;
 }
 
+
 void FltkConsole::LoadNotePad(LispCharPtr aFile)
 {
     int prevshow = iShowInput;
@@ -384,9 +385,14 @@ void FltkConsole::DoLine(char* inpline)
 #ifdef SUPPORT_NOTEPAD
     if (iCurrentHighlighted >= 0)
     {
-        iLast = (ConsoleGrouped*)iConsoleOut[iCurrentHighlighted];
-        iOutputHeight -= iLast->height();
-        iLast->DeleteAll();
+        if (iConsoleOut[iCurrentHighlighted]->IsEditable())
+        {
+            iLast = (ConsoleGrouped*)iConsoleOut[iCurrentHighlighted];
+            iOutputHeight -= iLast->height();
+            iLast->DeleteAll();
+        }
+        else
+            AddGroup();
     }
     else
         AddGroup();
@@ -829,16 +835,22 @@ void FltkConsole::CheckForNewHints()
 
 void FltkConsole::SetCurrentHighlighted(int i)
 {
-    iCurrentHighlighted = i;
-    
-    if (iCurrentHighlighted >= 0 && iConsoleOut[i]->InputIsVisible())
+
+    if (iCurrentHighlighted != i)
     {
-        LispCharPtr text = iConsoleOut[iCurrentHighlighted]->input();
-        SetInput(text, strlen(text)+1);
-    }
-    else
-    {
-        SetInput("", 1);
+        DeleteHints();
+
+        iCurrentHighlighted = i;
+
+        if (iCurrentHighlighted >= 0 && iConsoleOut[i]->InputIsVisible())
+        {
+            LispCharPtr text = iConsoleOut[iCurrentHighlighted]->input();
+            SetInput(text, strlen(text)+1);
+        }
+        else
+        {
+            SetInput("", 1);
+        }
     }
 }
 
@@ -889,6 +901,7 @@ int FltkConsole::handle(int event)
 
 #ifdef SUPPORT_NOTEPAD
                     {
+                        int prevHighlight = iCurrentHighlighted;
                         iCurrentHighlighted = -1;
                         fl_font(FL_HELVETICA,iDefaultFontSize);
                         int iy = y(), ih = h();
@@ -900,10 +913,18 @@ int FltkConsole::handle(int event)
                                 break;
                             if (lowy+iOutputOffsetY>iMouseDownY && lowy+iOutputOffsetY - iConsoleOut[i]->height()<iMouseDownY)
                             {
-                                SetCurrentHighlighted(i);
-                                SetInputDirty();
-                                SetOutputDirty();
-                                redraw();//input and output changed
+                                if (prevHighlight == i)
+                                {
+                                    iCurrentHighlighted = i;
+                                    //TODO maybe?  handle_key(eEnter);
+                                }
+                                else
+                                {
+                                    SetCurrentHighlighted(i);
+                                    SetInputDirty();
+                                    SetOutputDirty();
+                                    redraw();//input and output changed
+                                }
                                 break;
                             }
                             lowy = lowy - iConsoleOut[i]->height();

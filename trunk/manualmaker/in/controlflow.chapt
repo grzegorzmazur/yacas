@@ -105,6 +105,33 @@ Example: \"Apply( {{x,y},x+y} , {2,3} );\" would also evaluate to 5.
 
 
 
+AddAnchor("MapArgs");
+SubSection()"MapArgs";
+StandardLib();
+Topical()"Calling Sequence";
+Text()"MapArgs(expression,operation)";
+
+Topical()"Parameters";
+Text()
+"expression - an expression to work on <br>
+operation - an operation to perform on each argument";
+
+Topical()"Description";
+Text()
+"MapArgs performs an operation on each argument to a function
+call specified in the expression.";
+
+Topical()"Examples";
+Text()
+HtmlCommand(
+"In> MapArgs(f(x,y,z),\"Sin\")
+Out> f(Sin(x),Sin(y),Sin(z));
+");
+
+Topical()"See Also"; 
+SeeAlso({"MapSingle","Map", "Apply"});
+
+
 
 
 AddAnchor("Subst");
