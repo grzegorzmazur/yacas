@@ -1,0 +1,33 @@
+// TCONS0.HRH
+//
+// Copyright (c) 1997-1999 Symbian Ltd.  All rights reserved.
+//
+
+#define EMenuFontDialog					10
+
+#define EMenuScrollNone					15
+#define EMenuScrollHor					16
+#define EMenuScrollVert					17
+#define EMenuScrollBoth					18
+
+#define EMenuCommandLongLine			19
+
+#define EMenuScreenSize				    20
+#define EMenuCursorSize				    21
+#define EMenuWindowType				    22
+#define EMenuCommandFileExit			23
+
+#define EMenuCommandHideCursor			24
+#define EMenuCommandIgnoreCursor		25
+#define EMenuCommandScrollLock			26
+#define EMenuCommandPrintable			27
+
+#define EMenuCommandEditCopy			32
+#define EMenuCommandEditPaste			33
+
+#define EMenuCommandInverse				46
+#define EMenuCommandBold				47
+#define EMenuCommandItalic				48
+#define EMenuCommandUnderline			49
+#define EMenuCommandColor				50
+
