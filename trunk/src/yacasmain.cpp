@@ -93,6 +93,16 @@ void LispExit(LispEnvironment& aEnvironment, LispPtr& aResult,
     InternalTrue(aEnvironment, aResult);
 }
 
+unsigned char *the_first_stack_var;
+
+void LispStackSize(LispEnvironment& aEnvironment, LispPtr& aResult,
+              LispPtr& aArguments)
+{
+    LispChar buf[30];
+    InternalIntToAscii(buf, (int)(the_first_stack_var-(unsigned char*)&buf[0]));
+    aResult.Set(LispAtom::New(aEnvironment.HashTable().LookUp(buf)));
+}
+
 static void LispHistorySize(LispEnvironment& aEnvironment, LispPtr& aResult,
                             LispPtr& aArguments)
 {
@@ -149,7 +159,11 @@ void LoadYacas()
 
     (*yacas)()().Commands().SetAssociation(LispEvaluator(LispHistorySize),
                                            (*yacas)()().HashTable().LookUp("HistorySize"));
+    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispStackSize),
+                                           (*yacas)()().HashTable().LookUp("StaSiz"));
 
+
+    
 
     //TODO #include "../ramscripts/some.inc"
 
@@ -262,6 +276,9 @@ void InterruptHandler(int errupt)
 
 int main(int argc, char** argv)
 {
+    unsigned char first_stack_var=0;
+    the_first_stack_var = &first_stack_var;
+
     char* file_to_load=NULL;
     int fileind=1;
     if (argc > 1)

@@ -3,9 +3,12 @@
 
 if [ -d homepage ] ; then : ; else  mkdir homepage ; fi; 
 cd homepage
+if [ -d backups ] ; then : ; else  mkdir backups ; fi; 
 cp ../manualmaker/*.html .
 cp ../docs/*.gif ../docs/*.html .
-mv ../yacas-*.tar.gz yacas-latest.tar.gz
+cd backups
+mv ../../yacas-*.tar.gz .
+cd ..
 tar -zcvf ../homepage.tgz *
 cd ..
 rm -rf homepage/
