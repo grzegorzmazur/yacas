@@ -42,9 +42,6 @@ only to be installed on the developers' systems, not on the users'
 system (here, "users" refers to the people who do not want to make
 any changes to Yacas and includes those who just want to compile Yacas from a tar.gz source archive). 
 
-*A build system!libtool
-*A {libtool}
-
 The autotools suite consists of a number of utilities. These are
 developed separately, but are designed to be used together. They are
 *	{automake}. Its main goal is to produce a {Makefile.in} file
@@ -59,9 +56,8 @@ system, like the operating system and the location of certain programs
 used by the Yacas build system. This information is used in turn by the
 Makefiles.
 *	{libtool}. This utility provides a portable interface for
-building and using shared libraries. It is currently not used by Yacas.
-However, it is thought that the plug-in system may profit from it, so
-this may change.
+building and using libraries. Static libraries, shared libraries and
+dynamically loadable modules are all supported.
 
 *A build system!makemake
 *A {makemake}
@@ -106,8 +102,9 @@ directory contains a program called {yacas}. Hence it will be built if
 the {make all} command is executed, it will be installed at 
 {make install}, etcetera. Other useful primaries are {SCRIPTS} for
 executable scripts, {HEADERS} for header files, {LIBRARIES} for static
-libraries, and {DATA} for all files which are just copied verbatim at
-installation time (this includes Yacas scripts).
+libraries, {LTLIBRARIES} for libtool libraries, and {DATA} for all
+files which are just copied verbatim at installation time (this
+includes Yacas scripts). 
 
 The {bin} prefix in the example above says that {yacas} should be
 installed in the binary directory, as determined by the {configure}
@@ -219,6 +216,54 @@ package.
 We currently assume {autoconf} version 2.13 or later.
 
 
+	    The libtool utility
+
+*A build system!libtool
+*A {libtool}
+
+The {libtool} utility takes care of all the peculiarities of creating,
+linking and loading shared and static libraries across a great number
+of platforms, providing a uniform command line interface to the Yacas
+developer. The inner workings of {libtool} are fairly complicated, but
+fortunately Yacas developers very rarely need to concern themselves
+with it as {libtool} is tightly integrated with {automake} and
+{autoconf}. In fact, it should suffice to replace any {LIBRARIES}
+primary in {Makefile.am} with an {LTLIBRARIES} primary to indicate
+that libtool libraries should be used, and to keep in mind that the
+correct suffices are used: {.lo} for object files and {.la} for any
+libraries.
+
+For the people that want to know everything, we will now explain the
+idea of {libtool} in a nutshell by a simple example: suppose that we
+want to build and install a library from the source file
+{hello.c}. The following commands do the trick, on <i>any</i> system:
+
+	libtool gcc -c hello.c
+	libtool gcc -rpath /usr/local/lib -o libhello.la hello.lo
+	libtool cp libtrim.la /usr/local/lib
+
+The first command builds a <i>libtool object</i> with the name
+{hello.lo}. This file encapsulates the {hello.o} object file.
+Subsequently, the <i>libtool library</i> with the name {libhello.la}
+is built, which encapsulates both the static and the shared library.
+The last command installs both the static and the shared library in
+the {/usr/local/lib} directory. Note that the GNU compiler {gcc} need
+not be installed on the system; {libtool} will call the native
+compiler with the correct switches if necessary.
+
+*A build system!plugins
+*A plugins!building
+*A {libltdl}
+
+The {libtool} distribution includes {libltdl}, the LibTool Dynamic
+Loading library. This library implements a consistent API for handling
+dynamic loadable modules on a number of different architectures. The
+API is based on the Solaris interface (which is also used by Linux,
+amongst others). The {libltdl} library is distributed together with
+Yacas, and it is used to support Yacas plugins as explained in
+<*yacasdoc://essays/3/3/*>. 
+
+ 
 	    The configure script
 
 *A build system!configure
@@ -325,7 +370,9 @@ the <i>installed</i> version.
 *	{distcheck}. Check whether Yacas is ready for
 distribution. This creates a tar-ball, unpacks it in a different
 directory, compiles Yacas, installs it in a temporary directory, and
-finally checks that the installed version works correctly.
+finally checks that the installed version works correctly. Extra flags
+to be passed to the {configure} script (eg. {--enable-archive}) can be
+put in the {DISTCHECK_CONFIGURE_FLAGS} environment variable.
 *	{debug}. This is not a standard target. It builds a version of
 Yacas suitable for debugging. It does not respect the settings of the
 {configure} script.

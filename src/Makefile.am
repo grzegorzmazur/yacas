@@ -112,7 +112,7 @@ CLEANFILES = fastprimes.c
 platmath.cpp: fastprimes.c
 
 fastprimes.c: mkfastprimes.pl
-	perl mkfastprimes.pl > fastprimes.c
+	perl $(srcdir)/mkfastprimes.pl > fastprimes.c
  
 yacas_include = $(datadir)/yacas/include
 
