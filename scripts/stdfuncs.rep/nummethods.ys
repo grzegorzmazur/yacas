@@ -27,13 +27,17 @@ AG'Mean(a, b, eps) :=
 /// Numerical method: Taylor series, rectangular summation
 //////////////////////////////////////////////////
 
-/// fast summation of Taylor series using a rectangular scheme.
+/// Fast summation of Taylor series using a rectangular scheme.
 /// SumTaylorNum(x, nth'term'func, n'terms) = Sum(k, 0, n'terms, nth'term'func(k)*x^k)
-/// note that sufficient precision must be set to avoid roundoff errors (these methods do not modify precision).
-/// the only reason to try making these functions HoldArg is to make sure that the closures nth'term'func and next'term'factor are passed intact. But it's probably not desired in most cases because a closure might contain parameters that should be evaluated.
+/// Note that sufficient precision must be preset to avoid roundoff errors (these methods do not modify precision).
+/// The only reason to try making these functions HoldArg is to make sure that the closures nth'term'func and next'term'factor are passed intact. But it's probably not desired in most cases because a closure might contain parameters that should be evaluated.
 
-/// this is when only the nth term is known but no simple relation between a term and the next term.
-/// nth'term'func must be a function applicable to one argument.
+/// The short form is used when only the nth term is known but no simple relation between a term and the next term.
+/// The long form is used when there is a simple relation between consecutive terms. In that case, the n'th term function is not needed, only the 0th term value.
+
+/// SumTaylorNum0 is summing the terms with direct methods (Horner's scheme or simple summation). SumTaylorNum1 is for the rectangular method.
+
+/// nth'term'func and next'term'func must be functions applicable to one argument.
 
 /// interface
 SumTaylorNum0(_x, _nth'term'func, _n'terms) <-- SumTaylorNum0(x, nth'term'func, {}, n'terms);
@@ -80,7 +84,10 @@ If(
 	GlobalPush(Numeric);
 	Numeric := True;
 	x:=Eval(x);	// x must be floating-point
-	term := (nth'term'func @ 0);
+	If (IsConstant(nth'term'func),
+		term := nth'term'func,
+		term := (nth'term'func @ {0}),
+	);
 	sum := term;	// sum must be floating-point
 	Numeric := False;
 	delta := 1;
@@ -102,9 +109,9 @@ SumTaylorNum0(_x, _nth'term'func, _n'terms) <-- SumTaylorNum0(x, nth'term'func, 
 //HoldArgNr(SumTaylorNum0, 4, 3);
 
 /// this is to be used when a simple relation between a term and the next term is known.
-/// nth'term'func must be a function applicable to one argument.
-/// next'term'factor must be a function applicable to two arguments, so that if term = nth'term'func(k-1), then nth'term'func(k) = term / next'term'factor(k). (This is optimized for Taylor series of elementary functions)
-/// a special case: when next'term'factor is an empty list; then we act as if there is no next'term'factor available.
+/// next'term'factor must be a function applicable to one argument, so that if term = nth'term'func(k-1), then nth'term'func(k) = term / next'term'factor(k). (This is optimized for Taylor series of elementary functions.) In this case, nth'term'func is either a number, value of the 0th term, or a function.
+/// A special case: when next'term'factor is an empty list; then we act as if there is no next'term'factor available.
+/// In this case, nth'term'func must be a function applicable to one argument.
 /// Need IntLog(n'terms, 10) + 1 guard digits due to accumulated roundoff error.
 SumTaylorNum1(x, nth'term'func, next'term'factor, n'terms) :=
 [
@@ -125,7 +132,11 @@ SumTaylorNum1(x, nth'term'func, next'term'factor, n'terms) :=
 	If(
 		next'term'factor = {},
 		term'tmp := 1,
-		term'tmp := (nth'term'func @ 0)	// floating-point
+//		term'tmp := (nth'term'func @ 0)	// floating-point
+		If (IsConstant(nth'term'func),
+			term'tmp := nth'term'func,
+			term'tmp := (nth'term'func @ {0}),
+		)
 	);
 	Numeric := False;	// want to keep exact fractions below
 	// do horizontal summation using term'tmp to get the first element
@@ -137,7 +148,7 @@ SumTaylorNum1(x, nth'term'func, next'term'factor, n'terms) :=
 			// if we are using next'term'factor, then term'tmp is x^(rows*i)*a[rows*i]
 			// if we are not using it, then term'tmp is x^(rows*i)
 			If(
-				next'term'factor = {},	// no next'term'factor
+				next'term'factor = {},	// no next'term'factor, so nth'term'func must be given
 				[
 					rows'tmp[j+1] := rows'tmp[j+1] + MultiplyNum(term'tmp, nth'term'func @ {i*rows+j});
 				],
