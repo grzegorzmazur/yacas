@@ -466,3 +466,8 @@ Verify(500 < 0e-1,False);
 // result for 0.5.
 NumericEqual(N(Sqrt(500000e-6),20),N(Sqrt(0.0000005e6),20),20);
 NumericEqual(N(Sqrt(0.5),20),N(Sqrt(N(1/2)),20),20);
+
+// With the changes in numerics, RoundTo seems to have been broken. This line demonstrates the problem.
+// The last digit is suddenly rounded down (it used to be 4, correctly, and then gets rounded down to 3).
+KnownFailure(RoundTo(RoundTo(N(Cot(2),9),9),N(Cot(2),9),9)=0);
+
