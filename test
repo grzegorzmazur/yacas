@@ -1,16 +1,61 @@
 
+
+fun(x):=(Exp(-a*x*Sign(x))-1)/(x*Sign(x));
+/*
+g(x)  :=Eval(Simplify((Taylor(x,0,9)(Exp(-a*x)-1))/x));
+k(x):=f(x)
+          -a/Sign(x)-a
+          -a^3*x^2/(6*Sign(x))-a^3*x^2/6
+          -a^5*x^4/(120*Sign(x))-a^5*x^4/120
+          -a^7*x^6/(5040*Sign(x))-a^7*x^6/5040
+          -a^9*x^8/(362880*Sign(x))-a^9*x^8/362880;
+
+h(x):=Sum(n,0,10,
+          if(IsEven(n))
+              -(a^(n+1))*x^n/((n+1)!)
+          else
+              (a^(n+1))*x^n/(Sign(x)*((n+1)!))
+         );
+
+*/
+f(x)  :=Eval(Simplify((Taylor(x,0,9)(Exp(-a*x*Sign(x))-1))/(x*Sign(x))));
+h(x):=Sum(n,0,10,
+          x^n*((-1)^(n+1))*(a^(n+1))/(Sign(x)^n*((n+1)!))
+         );
+
+
+/*
+- ascii graph plotter
+- ascii help
+*/
+
+/*
+
+ll:=InverseTaylor(n,0,5)(p^n+q^n);
+ll:=Subst(Ln(p)+Ln(q),lnplnq)ll;
+ll:=Subst(Ln(p)^2+Ln(q)^2,lnplnq2)ll;
+ll:=Subst(Ln(p)^3+Ln(q)^3,lnplnq3)ll;
+ll:=Subst(Ln(p)^4+Ln(q)^4,lnplnq4)ll;
+ll:=Subst(Ln(p)^5+Ln(q)^5,lnplnq5)ll;
+ll:=Subst(n-2,nmin2)ll;
+ll:=Simplify(ll);
+PrettyForm(ll);
+*/
+
+/*
+10 # CBool(_a And _b) <-- CBool(a) And CBool(b);
+10 # CBool(_a Or _b) <-- CBool(a) Or CBool(b);
+10 # CBool(Not _a) <-- Not CBool(a);
+
+20 # CBool(0) <-- False;
+30 # CBool(n_IsInteger) <-- True;
+*/
+
 /* gamma(P, x, y) := (P And x) Or (Not P And y); */
 
+/*
 55 # LogicSimplify(gamma(_P,_x,_y)> _n) <--
        LogicSimplify(P And (x>n)) Or ( (Not p) And (y>n));
 
-
-- Use p^2-1 = 24*n
-- Use the fact that the above n, (n-1) cannot be divisible by 3.
-- Start with least significant digit.
-- Use the above to walk faster through n.
-- Use the above to truncate
-  multiplication routes (24*n = ...xyz, being an impossibility
-  for any n, so truncate).
-
+*/
 

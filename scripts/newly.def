@@ -11,4 +11,5 @@ Decimal
 LagrangeInterpolant
 ReversePoly
 InverseTaylor
+Series
 }

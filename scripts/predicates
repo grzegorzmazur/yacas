@@ -39,8 +39,8 @@ IsPositiveInteger(x):= IsInteger(x) And x > 0;
 
 IsNonZeroInteger(x) := (IsInteger(x) And x != 0);
 
-IsEven(n) := IsInteger(n) And ( ((n>>1)<<1) = n );
-IsOdd(n) := IsInteger(n) And ( ((n>>1)<<1) != n );
+10 # IsEven(n_IsInteger) <--  ( ((n>>1)<<1)  = n );
+10 # IsOdd(n_IsInteger) <--   ( ((n>>1)<<1) != n );
 
 
 10 # IsInfinity(Infinity) <-- True;

@@ -182,8 +182,23 @@ Rule("Gcd",2,100,True)
 10 # Abs(n_IsNumber) <-- MathAbs(n);
 20 # Abs(n_IsList) <-- MapSingle("Abs",n);
 
+100 # Abs(_a)^n_IsEven <-- a^n;
+100 # Abs(_a)^n_IsOdd <-- Sign(a)*a^n;
+
 10 # Sign(n_IsPositiveNumber) <-- 1;
+10 # Sign(n_IsZero) <-- 1;
 20 # Sign(n_IsNumber) <-- -1;
 15 # Sign(n_IsNumber/m_IsNumber) <-- Sign(n)*Sign(m);
 20 # Sign(n_IsList) <-- MapSingle("Sign",n);
+
+100 # Sign(_a)^n_IsEven <-- 1;
+100 # Sign(_a)^n_IsOdd <-- Sign(a);
+
+
+
+
+
+
+
+
 
