@@ -101,6 +101,18 @@ HoldArg("TruncRadian",r);
 100 # Tan(_x)*Cos(_x) <-- Sin(x);
 100 # Cos(_x)*Tan(_x) <-- Sin(x);
 100 # Sin(_x)/Cos(_x) <-- Tan(x);
+100 # Cos(_x)/Sin(_x) <-- Cot(x);
+100 # 1/Cos(_x)		<-- Sec(x);
+100 # 1/Sin(_x)		<-- Csc(x);
+100 # 1/Cot(_x)		<-- Tan(x);
+100 # 1/Tan(_x)		<-- Cot(x);
+100 # 1/Sec(_x)		<-- Cos(x);
+100 # 1/Csc(_x)		<-- Sin(x);
+
+100 # Sin(_x)*Csc(x)  <-- 1;
+100 # Cos(_x)*Sec(x)  <-- 1;
+100 # Tan(_x)*Cot(x)  <-- 1;
+
 
 2 # Exp(x_IsNumber)_(Numeric) <-- MyMathExp(x);
 4 # Exp(Ln(_x))           <-- x;
@@ -198,6 +210,40 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 200 # ArcTan(Infinity) <-- Pi/2;
 200 # ArcTan(-Infinity) <-- -Pi/2;
 200 # ArcTan(Undefined) <-- Undefined;
+
+/* Hyperbolic stuff */
+5   # SinH(_x_IsNumber) <-- (Exp(x)+Exp(-x))/2;
+100 # 1/CotH(_x)	<-- TanH(x);
+100 # 1/SecH(_x)	<-- CosH(x);
+100 # 1/CscH(_x)	<-- SinH(x);
+100 # 1/TanH(_x)	<-- CotH(x);
+100 # 1/SinH(_x)	<-- CscH(x);
+100 # 1/CosH(_x)	<-- SecH(x);
+
+5   # Cosh(- _x)	<-- CosH(x);
+5   # SinH(- _x)	<-- -SinH(x);
+
+100 # SinH(_x)^2-CosH(_x)^2 	<-- 1;
+100 # SinH(_x)+CosH(_x)		<-- Exp(x);
+100 # SinH(_x)-CosH(_x)		<-- Exp(-x);
+
+100 # SinH(I*_x)        <-- I*Sin(x);
+100 # CosH(I*_x)        <-- Cos(x);
+100 # SinH(_x)/CosH(_x) <-- TanH(x);
+100 # CosH(_x)/SinH(_x) <-- CotH(x);
+100 # SinH(_x)*CscH(_x) <-- 1;
+100 # CosH(_x)*SecH(_x) <-- 1;
+100 # TanH(_x)*CosH(_x) <-- SinH(x);
+100 # CotH(_x)*SinH(_x) <-- CosH(x);
+200 # SinH(0)		<-- 0;
+200 # SinH(Infinity)	<-- Infinity;
+200 # SinH(-Infinity)	<-- -Infinity;
+200 # CosH(0)		<-- 1;
+200 # CosH(Infinity)	<-- Infinity;
+200 # CosH(-Infinity)	<-- Infinity;
+200 # CscH(0)		<-- Infinity;
+200 # CotH(0)		<-- Infinity;
+
 
 10 # Abs(Infinity) 	<-- Infinity;
 10 # Gamma(Infinity)	<-- Infinity;
