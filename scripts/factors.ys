@@ -1,0 +1,347 @@
+
+/* This module implements factorizing integers and polynomials */
+
+
+/* This is Pollard's Rho method of factorizing, as described in
+ * "Modern Computer Algebra". It is a rather fast algorithm for
+ * factoring, but doesn't scale to polynomials regrettably.
+ *
+ * It acts 'by chance'. This is the Floyd cycle detection trick, where
+ * you move x(i+1) = f(x(i)) and y(i+1) = f(f(y(i))), so the y goes twice
+ * as fast as x, and for a certain i x(i) will be equal to y(i).
+ *
+ * "Modern Computer Algebra" reasons that if f(x) = (x^2+1) mod n for
+ * the value n to be factored, then chances are good that gcd(x-y,n)
+ * is a factor of n. The function x^2+1 is arbitrary, a higher order
+ * polynomial could have been chosen also.
+ *
+ */
+
+PollardRhoRandom(n_IsInteger) <-- MathFloor(Random()*n);
+
+10 # PollardRhoFactorize(n_IsPrimePower) <-- {GetPrimeFactors(n)};
+15 # PollardRhoFactorize(0) <-- {};
+20 # PollardRhoFactorize(_n) <--
+[
+  Local(x,y,i,gcd);
+
+  gcd:=n;
+  While(gcd = n)
+  [
+    /* Pick a random value between 0 and n-1 */
+    x:=PollardRhoRandom(n);
+
+    /* Initialize loop */
+    gcd:=1; y:=x; i:=0;
+
+    /* loop until failure or success found */
+    While(gcd = 1)
+    [
+      x:= Mod( ((x^2)+1), n);
+      y:= Mod( ((y^2)+1)^2+1, n);
+      i++;
+      If(x-y = 0,
+         gcd := 1,
+         gcd:=Gcd(x-y,n)
+         );
+    ];
+  ];
+  /* Return result found */
+  PollardCombineLists(PollardRhoFactorize(gcd),PollardRhoFactorize(Div(n,gcd)));
+];
+
+/* PollardCombineLists combines two assoc lists used for factoring.
+   the first element in each item list is the factor, and the second
+   the exponent. Thus, an assoc list of {{2,3},{3,5}} means 2^3*3^5.
+*/
+
+5 # PollardMerge(_list,{1,_n}) <-- True;
+10 # PollardMerge(_list,_item)_(Assoc(item[1],list) = Empty) <--
+  DestructiveInsert(list,1,item);
+
+20 # PollardMerge(_list,_item) <--
+[
+  Local(assoc);
+  assoc := Assoc(item[1],list);
+  assoc[2]:=assoc[2]+item[2];
+];
+
+PollardCombineLists(_left,_right) <--
+[
+  ForEach(item,right)
+  [
+    PollardMerge(left,item);
+  ];
+  left;
+];
+
+
+
+DistinctDegreeDecompose(_poly,_q)<--
+[
+  Local(g,glist,h,f,i);
+  glist:={};
+  f:=poly;
+  h:=poly[1];
+  i:=0;
+  g:=0;
+  While (g != 1) /*  Degree(f)>2*(i+1) */
+  [
+    i:=1+1;
+    h:=Mod(h^q,poly);
+    g:=Monic(Gcd(h-poly[1],f));
+    f:=Div(f,g);
+    If(g = 1,
+      DestructiveAppend(glist,f),
+      DestructiveAppend(glist,g)
+      );
+  ];
+  glist;
+];
+
+10 # LastFacSecondDegree(_poly) <--
+[
+  Local(uni);
+  uni:=MakeUni(poly);
+  Local(a,b,c,d);
+  c:=Coef(uni,0);
+  b:=Coef(uni,1);
+  a:=Coef(uni,2);
+  d:=b*b-4*a*c;
+  
+  Local(var);
+  var:=uni[1];
+  {
+    {Expand(var - (-b+Sqrt(d))/(2*a)),1},
+    {Expand(var - (-b-Sqrt(d))/(2*a)),1}
+  };
+];
+
+10 # LastFactorize(_poly)_(Degree(poly) = 2) <--
+   LastFacSecondDegree(poly);
+
+20 # LastFactorize(_poly)_(Degree(poly)>2) <--
+[
+  EqualDegreeDecompose(poly,3);
+];
+
+30 # LastFactorize(_poly) <-- { {Expand(poly),1} };
+
+
+/* equal degree decomposition is needed for the situations like
+   (x^2+1)*(x^2+4) , where there are a couple of second-degree
+   factors with complex coefficients.
+*/
+EqualDegreeDecompose(_poly,_q) <--
+[
+  Local(g,a,max,m,coefs);
+  g:=1;
+  poly:=MakeUni(poly);
+  coefs:=poly[3];
+  max:=Max(coefs);
+  coefs:=Select({{num},num!= Infinity And num != -Infinity},1/coefs);
+  m:=Max(coefs);
+  If(m>max,max:=m);
+
+  While(IsEven(max) Or Not(IsPrimePower(max)))
+  [
+    max++;
+  ];
+  
+  While (Degree(g) = 0)
+  [
+/* Echo({MakeUni(poly,x)}); */
+   a:=1;
+   While(Degree(a)=0)
+     a:=Monic(MakeUni(RandomPoly(poly[1],Degree(poly)-1,0,max-1)));
+/* Echo({"max is ",max,"poly is ",poly,"a = ",a}); */
+    g:=Monic(Gcd(a,poly));
+    If(g = f,g := 1);
+
+If(Degree(g)=0,
+       [
+         a:= Monic(MakeUni(Mod(a^((max^2-1)>>1),poly))); 
+/*         a:= Monic(MakeUni(Mod(a^4,poly))); */
+         g:=Monic(MakeUni(Gcd(a-1,poly)));
+	 If(g = f,g := 1);
+/*         If(Degree(g)>0,Echo({"DOING"})); */
+       ]
+      ); 
+
+  ];
+  PollardCombineLists(LastFactorize(g),LastFactorize(Div(poly,g)));
+];
+
+
+
+10 # FactorUniVarSec(poly_IsUniVar) <--
+[
+  Local(result,uni,cont);
+  result:={};
+  uni:=PrimitivePart(poly);
+  cont:=Content(poly);
+  lc:=LeadingCoef(uni);
+
+  PollardCombineLists(result,{{cont*lc,1}});
+  uni:=uni/lc;
+
+  If(Degree(uni)<3,
+    PollardCombineLists(result,LastFactorize(uni)),
+    ForEach(item,DistinctDegreeDecompose(uni,3))
+    [
+      PollardCombineLists(result,LastFactorize(item));
+    ]
+    );
+  result;
+];
+
+20 # FactorUniVarSec(poly_CanBeUni) <-- FactorUniVarSec(MakeUni(poly));
+
+
+/* New factorization : split between integers and polynomials. */
+10 # Factors(p_IsInteger) <-- PollardRhoFactorize(p);
+20 # Factors(p_CanBeUni)_(Length(VarList(p)) = 1) <--  FactorUniVarSec(p);
+
+
+/*
+20 # Factors(p_CanBeUni)_(Length(VarList(p)) > 1) <-- FactorFactors(p);
+
+TryMod(_f,_g,_v) <--
+[
+  Local(result,item);
+  result:=0;
+  ForEach(item,v)
+  [
+    if (NormalForm(Mod(MakeUni(f,item),MakeUni(g,item))) = 0)
+    [
+      ForEach(i2,v)
+      [
+        Local(new);
+        new :=NormalForm(Div(MakeUni(f,i2),MakeUni(g,i2)));
+        if (CanBeUni(new)) (result:=new);
+      ];
+    ];
+  ];
+  result;
+];
+
+FactorFactors(_p) <--
+[
+  Local(vars,nr,result);
+  vars := VarList(p);
+  nr:=Length(vars);
+  result:={};
+  While(Not IsConstant(p))
+  [
+    Local(i,j,found);
+    found:=False;
+    For(i:=1,i<=nr,i++)
+    [
+      For(j:=i+1,j<=nr,j++)
+      [
+        Local(try,trymod);
+        Local(count);
+        try := vars[i]+vars[j];
+
+        count:=0;
+        trymod:=TryMod(p,try,vars);
+        While (trymod != 0)
+        [
+Echo({p});
+          found:=True;
+          count++;
+          p:=trymod;
+          trymod:=TryMod(p,try,vars);
+        ];
+        if (count > 0) DestructiveAppend(result,{try,count});
+
+        try := vars[i]-vars[j];
+        count:=0;
+        trymod:=TryMod(p,try,vars);
+        While (trymod != 0)
+        [
+Echo({p});
+          found:=True;
+          count++;
+          p:=trymod;
+          trymod:=TryMod(p,try,vars);
+        ];
+        if (count > 0) DestructiveAppend(result,{try,count});
+      ];
+    ];
+    if (found = False)
+    [
+      DestructiveAppend(result,{p,1});
+      p := 1;
+    ];
+  ];
+  if (p != 1) DestructiveAppend(result,{p,1});
+  result;
+];
+*/
+
+Factor(_p) <-- FW(Factors(p));
+
+/* FW: pass FW the result of Factors, and it will show it in the
+ * form of p0^n0*p1^n1*...
+ */
+
+10 # FWatom({_a,1}) <-- a;
+20 # FWatom({_a,_n}) <-- UnList({Atom("^"),a, n});
+5  # FW(_list)_(Length(list) = 0) <-- 1;
+10 # FW(_list)_(Length(list) = 1) <-- FWatom(list[1]);
+20 # FW(_list) <--
+[
+  Local(result);
+  result:=FWatom(Head(list));
+  ForEach(item,Tail(list))
+  [
+   result := UnList({ Atom("*"),result,FWatom(item)});
+  ];
+  result;
+];
+
+10 # Roots(poly_CanBeUni) <--
+[
+  Local(factors,result,uni,root,i);
+  factors:=Factors(poly);
+  result:={};
+  ForEach(item,factors)
+  [
+    uni:=MakeUni(item[1]);
+    If(Degree(uni) = 1,
+      [
+        root:= -Coef(uni,0)/Coef(uni,1);
+        For(i:=0,i<item[2],i++)
+          result:= root : result;
+      ]
+      );
+  ];
+  result;
+];
+
+10 # RootsWithMultiples(poly_CanBeUni) <--
+[
+  Local(factors,result,uni,root,i);
+  factors:=Factors(poly);
+  result:={};
+  ForEach(item,factors)
+  [
+    uni:=MakeUni(item[1]);
+    If(Degree(uni) = 1,
+      [
+        root:= -Coef(uni,0)/Coef(uni,1);
+        For(i:=0,i<item[2],i++)
+          result:= {root,item[2]} : result;
+      ]
+      );
+  ];
+  result;
+];
+
+
+
+
+
+
+

@@ -1,0 +1,29 @@
+
+/* Slow but trivial implementation of a database (through assoc lists)
+ */
+
+FakeDbCreate(filename) :=
+[
+  FakeDbSave(filename,{});
+  True;
+];
+
+FakeDbLoad(filename):=  [ FromFile(filename) Read(); ];
+FakeDbSave(filename,database):=
+[
+  ToFile(filename)
+  [
+    Write(database);
+    WriteString(";");
+  ];
+];
+
+FakeDbAddRecord(database,key,record):= [ database[key]:=record; ];
+FakeDbFetchRecord(database,key) := database[key];
+FakeDbReplaceRecord(database,key,record):= [ database[key]:=record; ];
+FakeDbKeys(database):=AssocIndices(database);
+FakeDbDeleteRecord(database,key):=
+[
+  DestructiveDelete(database,Find(FakeDbKeys(database),key));
+];
+

@@ -1,0 +1,327 @@
+
+
+Function("Contains",{list,element})
+[
+  Local(result);
+  Set(result,False);
+  While(MathAnd(Not(result), Not(Equals(list, {}))))
+  [
+    If(Equals(Head(list),element),
+      Set(result, True),
+      Set(list, Tail(list))
+      );
+  ];
+  result;
+];
+
+Function("Find",{list,element})
+[
+  Local(result,count);
+  Set(result, -1);
+  Set(count, 1);
+  While(MathAnd(result<0, Not(Equals(list, {}))))
+  [
+    If(Equals(Head(list), element),
+      Set(result, count)
+      );
+    Set(list,Tail(list));
+    Set(count,MathAdd(count,1));
+  ];
+  result;
+];
+
+
+Function("Append",{list,element})
+[
+  Insert(list,Length(list)+1,element);
+];
+Function("DestructiveAppend",{list,element})
+[
+  DestructiveInsert(list,Length(list)+1,element);
+];
+
+Function("DestructiveAppendList",{list,toadd})
+[
+  Local(i,nr);
+  nr:=Length(toadd);
+  For(i:=1,i<=nr,i++)
+  [
+    DestructiveAppend(list,toadd[i]);
+  ];
+  True;
+];
+
+
+Function("RemoveDuplicates",{list})
+[
+   Local(result);
+   Set(result,{});
+   ForEach(item,list)
+     If(Not(Contains(result,item)),DestructiveAppend(result,item));
+   result;
+];
+
+Function("Union",{list1,list2})
+[
+  RemoveDuplicates(Concat(list1,list2));
+];
+
+Function("Intersection",{list1,list2})
+[
+  Local(l2,index,result);
+  l2:=FlatCopy(list2);
+  result:={};
+  ForEach(item,list1)
+  [
+    Set(index, Find(l2,item));
+    If(index>0,
+      [
+        DestructiveDelete(l2,index);
+        DestructiveInsert(result,1,item);
+      ]
+      );
+  ];
+  DestructiveReverse(result);
+];
+
+Function("Difference",{list1,list2})
+[
+  Local(l2,index,result);
+  l2:=FlatCopy(list2);
+  result:=FlatCopy(list1);
+  ForEach(item,list1)
+  [
+    Set(index,Find(l2,item));
+    If(index>0,
+      [
+        DestructiveDelete(l2,index);
+        DestructiveDelete(result,Find(result,item));
+      ]
+      );
+  ];
+  result;
+];
+
+Function("Push",{stack,element})
+[
+  DestructiveInsert(stack,1,element);
+];
+
+Function("Pop",{stack,index})
+[
+  Local(result);
+  result:=stack[index];
+  DestructiveDelete(stack,index);
+  result;
+];
+
+Function("PopFront",{stack}) Pop(stack,1);
+Function("PopBack",{stack})  Pop(stack,Length(stack));
+
+Function("Swap",{list,index1,index2})
+[
+  Local(item1,item2);
+  item1:=list[index1];
+  item2:=list[index2];
+  DestructiveReplace(list,index1,item2);
+  DestructiveReplace(list,index2,item1);
+];
+
+
+Function("Count",{list,element})
+[
+   Local(result);
+   Set(result,0);
+   ForEach(item,list) If(Equals(item, element), Set(result,MathAdd(result,1)));
+   result;
+];
+
+Function("BubbleSort",{list,compare})
+[
+  Local(i,j,length,left,right);
+
+  list:=FlatCopy(list);
+  length:=Length(list);
+
+  For (j:=length,j>1,j--)
+  [
+    For(i:=1,i<j,i++)
+    [
+      left:=list[i];
+      right:=list[i+1];
+      If(Not(Apply(compare,{left,right})),
+        [
+          DestructiveInsert(DestructiveDelete(list,i),i+1,left);
+        ]
+      );
+    ];
+  ];
+  list;
+];
+
+
+/* VarList: return the variables this expression depends on. */
+Function("VarList",{expr})  RemoveDuplicates(VarListAll(expr));
+
+/*
+ * RuleBase for VarListAll: recursively traverse an expression looking
+ * up all variables the expression depends on.
+ */
+RuleBase("VarListAll",{expr});
+
+/* Accept any variable. */
+Rule("VarListAll",1,0,IsAtom(expr) And Not(IsNumber(N(expr)))) {expr};
+
+/* Otherwise check all leafs of a function. */
+Rule("VarListAll",1,1,IsFunction(expr))
+[
+  Local(item,result, flatlist);
+  Set(flatlist,Tail(Listify(expr)));
+  Set(result,{});
+  ForEach(item,flatlist)
+    Set(result,Concat(result,VarListAll(item)));
+  result;
+];
+
+/* Else it doesn't depend on any variable. */
+Rule("VarListAll",1,2,True) {};
+
+
+
+/* Juan: TemplateFunction (as defined in the file "deffunc")
+ * also makes the arguments to the function local symbols.
+ * Use HoldArgNr to specify the index of a variable to hold
+ * (since they are defined as local symbols).
+ */
+
+TemplateFunction("Table",{body,var,from,to,step})
+  LocalSymbols(result,nr,i)
+  [
+    MacroLocal(var);
+    result:={};
+    nr := (to - from) / step;
+    i := 0;
+    While( i <= nr )
+      [
+       MacroSet( var, from + i * step );
+       DestructiveInsert( result,1,Eval(body) );
+       Set(i,MathAdd(i,1));
+      ];
+    DestructiveReverse(result);
+  ];
+HoldArgNr("Table",5,1); /* body */
+HoldArgNr("Table",5,2); /* var */
+UnFence("Table",5);
+
+
+
+TemplateFunction("MapSingle",{func,list})
+[
+  Local(mapsingleresult);
+  mapsingleresult:={};
+
+  ForEach(mapsingleitem,list)
+  [
+    DestructiveInsert(mapsingleresult,1,
+      Apply(func,{mapsingleitem}));
+  ];
+  DestructiveReverse(mapsingleresult);
+];
+UnFence("MapSingle",2);
+HoldArg("MapSingle",func);
+
+TemplateFunction("Map",{func,lists})
+[
+  Local(mapsingleresult,mapsingleitem);
+  mapsingleresult:={};
+  lists:=Transpose(lists);
+  ForEach(mapsingleitem,lists)
+  [
+    DestructiveInsert(mapsingleresult,1,Apply(func,mapsingleitem));
+  ];
+  DestructiveReverse(mapsingleresult);
+];
+UnFence("Map",2);
+HoldArg("Map",func);
+
+TemplateFunction("MapArgs",{expr,oper})
+[
+   UnList(Concat({expr[0]},
+     Apply("MapSingle",{oper,Tail(Listify(expr))})
+   ) );
+];
+UnFence("MapArgs",2);
+HoldArg("MapArgs",oper);
+
+Function("FillList", {aItem, aLength})
+[
+  Local(i, aResult);
+  aResult:={};
+  For(i:=0, i<aLength, i++)
+    DestructiveInsert(aResult,1,aItem);
+  aResult;
+];
+
+
+
+
+/* ···· Drop ···· */
+
+/* Needs to check the parameters */
+
+/*
+ * Drop( list, n ) gives 'list' with its first n elements dropped
+ * Drop( list, -n ) gives 'list' with its last n elements dropped
+ * Drop( list, {m,n} ) gives 'list' with elements m through n dropped
+ */
+
+RuleBase("Drop", {lst, range});
+
+Rule("Drop", 2, 1, IsList(range))
+    Concat(Take(lst,range[1]-1), Drop(lst, range[2]));
+
+Rule("Drop", 2, 2, range >= 0)
+    If( range = 0 Or lst = {}, lst, Drop( Tail(lst), range-1 ));
+
+Rule("Drop", 2, 2, range < 0)
+    Take( lst, Length(lst) + range );
+
+
+/* ···· Take ···· */
+
+/* Needs to check the parameters */
+
+/*
+ * Take( list, n ) gives the first n elements of 'list'
+ * Take( list, -n ) gives the last n elements of 'list'
+ * Take( list, {m,n} ) elements m through n of 'list'
+ */
+
+RuleBase("Take", {lst, range});
+
+Rule("Take", 2, 1, IsList(range))
+    Take( Drop(lst, range[1] -1), range[2] - range[1] + 1);
+
+Rule("Take", 2, 2, range >= 0)
+    If( Length(lst)=0 Or range=0, {},
+        Concat({Head(lst)}, Take(Tail(lst), range-1)));
+
+Rule("Take", 2, 2, range < 0)
+    Drop( lst, Length(lst) + range );
+
+
+/* ···· Partition ···· */
+
+/* Partition( list, n ) partitions 'list' into non-overlapping sublists of length n */
+
+Partition(lst, len):=
+	If( Length(lst) < len Or len = 0, {},
+        	Concat( {Take(lst,len)}, Partition(Drop(lst,len), len) ));
+
+
+
+
+
+
+
+

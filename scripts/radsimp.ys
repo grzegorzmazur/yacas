@@ -1,0 +1,65 @@
+
+/* Simplification of nested radicals.
+*/
+
+RadSimp(_n) <--
+[
+  Local(max);
+  max := MathCeil(N(Eval(n)^2));
+  result:=0;
+  result:=RadSimpTry(n,0,1,max);
+  if (CheckRadicals(n,result))
+    result
+  else
+    n;
+];
+
+/*Echo({"Try ",test}); */
+
+CheckRadicals(_n,_test) <-- Abs(N(Eval(n-test),20)) < 0.000001;
+
+
+RadSimpTry(_n,_result,_current,_max)<--
+[
+  if (N(Eval(result-n)) < 0)
+  [
+    Local(i);
+    For (i:=current,i<=max,i++)
+    [
+      Local(new, test);
+      test:=result+Sqrt(i);
+
+/* Echo({"Cut-try ",test});  */
+
+
+      if (CheckRadicals(n,test))
+      [
+        result:=test;
+        i:=max+1;
+      ];
+    ];
+
+    if (N(Eval(result-n)) < 0)
+    [
+      For (i:=current,i<=max,i++)
+      [
+        Local(new, test);
+        test:=result+Sqrt(i);
+
+/* Echo({"Full-try ",test}); */
+
+        new:=RadSimpTry(n,test,i,max);
+	if (CheckRadicals(n,new))
+        [
+          result:=new;
+          i:=max+1;
+        ];
+      ];
+    ];
+/*
+*/
+  ];
+  result;
+];
+
+
