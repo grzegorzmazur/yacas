@@ -19,6 +19,7 @@ struct ExeDllEntry
 #ifdef EXE_DLL_PLUGINS
 extern "C" {
 extern LispPluginBase* make_libmath(void);
+extern LispPluginBase* make_pcre(void);
 };
 #endif
 
@@ -27,6 +28,7 @@ static const ExeDllEntry exeDllentries[] =
 {
 #ifdef EXE_DLL_PLUGINS
   {"libmath",make_libmath},
+  {"pcre",make_pcre},
 #endif
 };
 
