@@ -82,6 +82,7 @@ AC_MSG_CHECKING([which arbitrary precision library to use])
 case $with_numlib in
   native) 
     NUMBERS_LIB="libyacasnumbers.la"
+    NUMBERS_LIB_SHORT="yacasnumbers"
     NUMBERS_LDFLAGS="-lm"
     NUMBERS_CFLAGS=""
     AC_MSG_RESULT(native);;
@@ -92,6 +93,7 @@ case $with_numlib in
       AC_MSG_ERROR([GNU MP library not found])
     fi
     NUMBERS_LIB="libgmpnumbers.la"
+    NUMBERS_LIB_SHORT="gmpnumbers"
     NUMBERS_LDFLAGS="-lgmp -lm"
     NUMBERS_CFLAGS="-DUSE_GMP";;
   yes)
@@ -102,6 +104,7 @@ case $with_numlib in
     AC_MSG_ERROR([Argument of --with-numlib ($with_numlib) not recognized]);;
 esac
 AC_SUBST(NUMBERS_LIB)
+AC_SUBST(NUMBERS_LIB_SHORT)
 AC_SUBST(NUMBERS_LDFLAGS)
 AC_SUBST(NUMBERS_CFLAGS)
 
