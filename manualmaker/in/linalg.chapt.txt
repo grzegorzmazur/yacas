@@ -1169,6 +1169,73 @@ minimum or a saddle point.
 	| ( -2 ) ( 2 )   |
 	\                /
 
+*CMD HilbertMatrix --- create a Hilbert matrix
+*STD
+*CALL
+	HilbertMatrix(n)
+	HilbertMatrix(n,m)
+*PARMS
+
+{n,m} -- positive integers
+
+*DESC
+
+The function {HilbertMatrix} returns the {n} by {m} Hilbert matrix
+if given two arguments, and the square {n} by {n} Hilbert matrix
+if given only one. The Hilbert matrix is defined as {A(i,j) = 1/(i+j-1)}.
+The Hilbert matrix is extremely sensitive to manipulate and invert numerically.
+
+*E.G.
+
+	In> PrettyForm(HilbertMatrix(4))
+	/                          \
+	| ( 1 ) / 1 \ / 1 \ / 1 \  |
+	|       | - | | - | | - |  |
+	|       \ 2 / \ 3 / \ 4 /  |
+	|                          |
+	| / 1 \ / 1 \ / 1 \ / 1 \  |
+	| | - | | - | | - | | - |  |
+	| \ 2 / \ 3 / \ 4 / \ 5 /  |
+	|                          |
+	| / 1 \ / 1 \ / 1 \ / 1 \  |
+	| | - | | - | | - | | - |  |
+	| \ 3 / \ 4 / \ 5 / \ 6 /  |
+	|                          |
+	| / 1 \ / 1 \ / 1 \ / 1 \  |
+	| | - | | - | | - | | - |  |
+	| \ 4 / \ 5 / \ 6 / \ 7 /  |
+	\                          /
+
+*SEE HilbertInverseMatrix
+
+*CMD HilbertInverseMatrix --- create a Hilbert inverse matrix
+*STD
+*CALL
+	HilbertInverseMatrix(n)
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+The function {HilbertInverseMatrix} returns the {n} by {n} inverse of the
+corresponding Hilbert matrix. All Hilbert inverse matrices have integer
+entries that grow in magnitude rapidly.
+
+*E.G.
+	In> PrettyForm(HilbertInverseMatrix(4))
+	/                                         \
+	| ( 16 )   ( -120 )  ( 240 )   ( -140 )   |
+	|                                         |
+	| ( -120 ) ( 1200 )  ( -2700 ) ( 1680 )   |
+	|                                         |
+	| ( 240 )  ( -2700 ) ( 6480 )  ( -4200 )  |
+	|                                         |
+	| ( -140 ) ( 1680 )  ( -4200 ) ( 2800 )   |
+	\                                         /
+
+*SEE HilbertMatrix
+
 
 *CMD ToeplitzMatrix --- create a Toeplitz matrix
 *STD
