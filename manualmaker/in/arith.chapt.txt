@@ -526,16 +526,16 @@ are  37, 59 and 67. Asymptotically, roughly 40{%} of primes are irregular.
 This fuction returns {True} if {n} is a Carmichael number, also called an absolute pseudoprime.
 They have the property that $ b^(n-1) % n == 1 $ for all $b$ satisfying $Gcd(b,n)==1$. These numbers
 cannot be proved composite by Fermat's little theorem. Because the previous property is extremely
-slow to check for, the follow property is checked for by Yacas: for all prime factors $p_i$ of $n$,
-$(n-1) % (p_i - 1) == 0$ and $n$ must be square free. Also, Carmichael numbers must be odd and have
-at least three prime factors. Although these numbers are rare (there are only 43 less than a million),
+slow to test, the following equivalent property is tested by Yacas: for all prime factors $p[i]$ of $n$,
+$(n-1) % (p[i] - 1) == 0$ and $n$ must be square free. Also, Carmichael numbers must be odd and have
+at least three prime factors. Although these numbers are rare (there are only 43 that are less than a million),
 it has recently been proven that there are infinitely many of them.
 
 *E.G.
 
 	In> IsCarmichaelNumber(561)
 	Out> True;
-	In> Time(  Select(IsCarmichaelNumber,1...10000) )
+	In> Time(Select(IsCarmichaelNumber,1 .. 10000))
 	504.19 seconds taken
 	Out> {561,1105,1729,2465,2821,6601,8911};
 
