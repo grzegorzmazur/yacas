@@ -131,8 +131,8 @@ Where the file "myplot" should contain the functions Iterate and WriteTuple.
 PlotX(from_IsNumber,to_IsNumber,steps_IsInteger,_function) <--
 [
   Local(x,list);
-  x:=Iterate(from,to,steps);
-  function:=Eval(Eval(function));
+  x:=N(Iterate(from,to,steps));
+  function:=N(function);
   If(IsList(function[1]),function:=function[1]);
   list:=Transpose({x,function});
   ForEach(item,list) WriteTuple(item);
@@ -145,7 +145,7 @@ PlotX(from_IsNumber,to_IsNumber,steps_IsInteger,_function) <--
   exec := "plot ";
   For(i:=1,i<=Length(list),i++)
   [
-    ToFile("gnudata.in":String(i))N(PlotX(from,to,steps,list[i]));
+    ToFile("gnudata.in":String(i))PlotX(from,to,steps,list[i]);
     exec:=exec:"\"gnudata.in":String(i):"\" with lines";
     If(i<Length(list),exec:=exec:", ");
   ];
@@ -155,7 +155,7 @@ PlotX(from_IsNumber,to_IsNumber,steps_IsInteger,_function) <--
 
 20 # GnuPlot(from_IsNumber,to_IsNumber,steps_IsInteger,_function) <--
 [
-  ToFile("gnudata.in")N(PlotX(from,to,steps,function));
+  ToFile("gnudata.in")PlotX(from,to,steps,function);
   ToFile("gnuplot.in")WriteString("plot \"gnudata.in\" with lines");
   SystemCall("gnuplot -persist gnuplot.in");
 ];
