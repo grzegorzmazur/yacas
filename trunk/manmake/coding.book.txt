@@ -1844,7 +1844,9 @@ TraceLeave() and {TraceExp()} as follows:
 	Macro(TraceExp,{expression})
 	[
 	   TraceStart();
-	   CustomEval(TraceEnter(),TraceLeave(),CustomEval'Stop(),@expression);
+	   CustomEval(TraceEnter(),
+	              TraceLeave(),
+	              CustomEval'Stop(),@expression);
 	];
 
 
@@ -1900,30 +1902,39 @@ The following code allows for simple interactive debugging:
 	];
 	DebugRun():= [debugging:=False;];
 	DebugStep():=[debugging:=False;nextdebugging:=True;];
-	DebugAddBreakpoint(fname_IsString) <-- [ breakpoints := fname:breakpoints;];
+	DebugAddBreakpoint(fname_IsString) <-- 
+	   [ breakpoints := fname:breakpoints;];
 	BreakpointsClear() <-- [ breakpoints := {};];
 	Macro(DebugEnter,{})
 	[
 	   Echo(">>> ",CustomEval'Expression());
 	   If(debugging = False And
 	      IsFunction(CustomEval'Expression()) And 
-	      Contains(breakpoints,Type(CustomEval'Expression())),   debugging:=True);
+	      Contains(breakpoints,
+	      Type(CustomEval'Expression())),   
+	        debugging:=True);
 	   nextdebugging:=False;
 	   While(debugging)
 	   [
-	      debugRes:=Eval(FromString(ReadCmdLineString("Debug> "):";")Read());
+	      debugRes:=
+	        Eval(FromString(
+	          ReadCmdLineString("Debug> "):";")
+	          Read());
 	      If(debugging,Echo("DebugOut> ",debugRes));
 	   ];
 	   debugging:=nextdebugging;
 	];
 	Macro(DebugLeave,{})
 	[
-	   Echo(CustomEval'Result()," <-- ",CustomEval'Expression());
+	   Echo(CustomEval'Result(),
+	        " <-- ",CustomEval'Expression());
 	];
 	Macro(Debug,{expression})
 	[
 	   DebugStart();
-	   CustomEval(DebugEnter(),DebugLeave(),debugging:=True,@expression);
+	   CustomEval(DebugEnter(),
+	              DebugLeave(),
+	              debugging:=True,@expression);
 	];
 
 This code allows for the following interaction:
@@ -2036,7 +2047,8 @@ called can be written such:
 	[
 	   profilefn:={};
 	];
-	10 # ProfileEnter()_(IsFunction(CustomEval'Expression())) <-- 
+	10 # ProfileEnter()
+	     _(IsFunction(CustomEval'Expression())) <-- 
 	[
 	   Local(fname);
 	   fname:=Type(CustomEval'Expression());
@@ -2046,9 +2058,11 @@ called can be written such:
 	Macro(Profile,{expression})
 	[
 	   ProfileStart();
-	   CustomEval(ProfileEnter(),True,CustomEval'Stop(),@expression);
+	   CustomEval(ProfileEnter(),True,
+	              CustomEval'Stop(),@expression);
 	   ForEach(item,profilefn)
-	     Echo("Function ",item[1]," called ",item[2]," times");
+	     Echo("Function ",item[1]," called ",
+	          item[2]," times");
 	];
 
 
