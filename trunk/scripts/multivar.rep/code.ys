@@ -63,6 +63,7 @@ MultiExpressionList(_expr) <-- VarList(expr,"IsMultiExpression");
 10 # IsMultiExpression(_x * _y) <-- False;
 10 # IsMultiExpression(_x / _y) <-- False;
 10 # IsMultiExpression(_x ^ y_IsInteger) <-- False;
+11 # IsMultiExpression(_x ^ _y)_(IsInteger(Simplify(y))) <-- False;
 10 # IsMultiExpression(x_IsConstant) <-- False;
 
 100 # IsMultiExpression(_x) <-- True;
@@ -224,6 +225,15 @@ LocalSymbols(x,n,vars)  [
             Set(mult,MultiNomialMultiply(mult,mult));
           ];
           result;
+        ];
+  50 #  MakeMultiNomial(_x ^ (_n),vars_IsList)_(Contains(vars,x)) <--
+        [
+//Echo({"ENTER!"});
+          Set(n,Simplify(n));
+          If(IsInteger(n),
+            MultiSingleFactor(vars,x,n),
+            MultiSingleFactor(vars,x^n,1)
+  	    );
         ];
 ];
 
