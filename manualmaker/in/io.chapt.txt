@@ -712,14 +712,20 @@ The initial grid of {points+1} points is refined between any grid points $a$, $b
 $Integrate(x,a,b)f(x)$ is not approximated within given precision by
 the existing grid.
 
-Default plotting range is {-5:5}. Range can also be specified by {x=-5:5};
-currently the variable name {x} is ignored.
+Default plotting range is {-5:5}. Range can also be specified as {x= -5:5} (note the mandatory space separating "{=}" and "{-}");
+currently the variable name {x} is ignored in this case.
 
 Options are of the form {option=value}. Currently supported option names
-are: "points", "precision", "depth", "output", "filename". Option values
-are either numbers or special unevaluated atoms such as {data}. If names of these atoms
-are needed in the program, strings can be used (e.g. {output="gnuplot"}). Several option/value pairs may be specified (the function {Plot2D} has a variable number of arguments).
+are: "points", "precision", "depth", "output", "filename", "yrange". Option values
+are either numbers or special unevaluated atoms such as {data}.
+If you need to use the names of these atoms
+in your script, strings can be used (e.g. {output="gnuplot"}). Several option/value pairs may be specified (the function {Plot2D} has a variable number of arguments).
 
+*	{yrange}: the range of ordinates to use for plotting, e.g.
+{yrange=0:20}. If no range is specified, the default is usually to
+leave the choice to the plotting backend. {gnuplot} and {plotutils}
+will choose the range automatically based on actual values (which may
+lead to inadequate plots if the function has a singularity).
 *	{points}: initial number of points (default 23) -- at least that
 many points will be plotted. The initial grid of this many points will be
 adaptively refined. 

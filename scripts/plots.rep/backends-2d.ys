@@ -47,6 +47,17 @@ Plot2D'gnuplot(values_IsList, _options'hash) <--
 	WriteString(" : ");
 	Write(options'hash["xrange"][2]);
 	WriteString("]" : Nl());
+	// 'set yrange [0:1]'
+	If(
+		options'hash["yrange"] != Empty,
+		[
+			WriteString("set yrange [");
+			Write(options'hash["yrange"][1]);
+			WriteString(" : ");
+			Write(options'hash["yrange"][2]);
+			WriteString("]" : Nl());
+		]
+	);
 	// 'plot "data1" title "y(x)" with lines, "data2" title "z(x)" with lines'
 	WriteString("plot ");
 	For(item:=1, item<=Length(values), item++)
@@ -74,7 +85,11 @@ Plot2D'plotutils(values_IsList, _options'hash) <--
   // build command line
   SystemCall(
   	"graph -T X --bitmap-size 640x480 -m 1 -C -h 0.54 -w 0.72 -r 0.15 -u 0.1"
-    : " -x " : (ToString()Write(options'hash["xrange"][1], options'hash["xrange"][2]))
+    : " --x-limits " : (ToString()Write(options'hash["xrange"][1], options'hash["xrange"][2]))
+    : If(
+		options'hash["yrange"] != Empty,
+		" --y-limits " : (ToString()Write(options'hash["yrange"][1], options'hash["yrange"][2]))
+	)
     : " -X " : (ToString()Write(options'hash["xname"]))
 	: " -Y \"" : PrintList(options'hash["yname"]) : "\" "
 	: PrintList(filename'list, " ")
