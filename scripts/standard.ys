@@ -256,8 +256,16 @@ LocalSymbols(x)
 113 # (x_IsNegativeNumber) - _y <-- -((-x)+y);
 113 # (x_IsNegativeNumber)/_y - _z <-- -((-x)/y+z);
 
+
 /* TODO move to this precedence everywhere? */
-10 # (x_IsList) - (y_IsList) <-- Map({{xarg,yarg},xarg-yarg},{x,y});
+LocalSymbols(x,y,xarg,yarg)
+[
+  10 # (x_IsList) - (y_IsList) <-- 
+  [
+//TODO remove Echo("HIER",x," ",y);
+    Map({{xarg,yarg},xarg-yarg},{x,y});
+  ];
+];
 
 240 # (x_IsList - y_IsNonObject)_Not(IsList(y)) <-- -(y-x);
 

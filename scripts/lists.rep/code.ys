@@ -364,19 +364,26 @@ TemplateFunction("MapSingle",{func,list})
 UnFence("MapSingle",2);
 HoldArg("MapSingle",func);
 
-TemplateFunction("Map",{func,lists})
+LocalSymbols(func,lists,mapsingleresult,mapsingleitem)
 [
-  Local(mapsingleresult,mapsingleitem);
-  mapsingleresult:={};
-  lists:=Transpose(lists);
-  ForEach(mapsingleitem,lists)
+  Function("Map",{func,lists})
   [
-    DestructiveInsert(mapsingleresult,1,Apply(func,mapsingleitem));
+//TODO remove Echo("ENTER ",func,lists);
+    Local(mapsingleresult,mapsingleitem);
+    mapsingleresult:={};
+    lists:=Transpose(lists);
+//TODO remove Echo("dimensions ",Dimensions(lists));
+//TODO remove Echo("transposed ",lists);
+    ForEach(mapsingleitem,lists)
+    [
+//TODO remove Echo("item ",mapsingleitem);
+      DestructiveInsert(mapsingleresult,1,Apply(func,mapsingleitem));
+    ];
+    DestructiveReverse(mapsingleresult);
   ];
-  DestructiveReverse(mapsingleresult);
+  UnFence("Map",2);
+  HoldArg("Map",func);
 ];
-UnFence("Map",2);
-HoldArg("Map",func);
 
 TemplateFunction("MapArgs",{expr,oper})
 [
