@@ -188,7 +188,8 @@ mathcommands3.o: mathcommands3.cpp lispenvironment.h lispobject.h \
  stdfileio.h plat/linux32/platfileio.h infixparser.h lispuserfunc.h \
  mathuserfunc.h platmath.h anumber.h anumber.inl arrayclass.h \
  arrayclass.inl patternclass.h patterns.h substitute.h errors.h \
- patcher.h plat/linux32/platdll.h plat/linux32/../../lispplugin.h
+ patcher.h plat/linux32/platdll.h plat/linux32/../../lispplugin.h \
+ unipoly.h
 mathenvironment.o: mathenvironment.cpp mathenvironment.h \
  lispenvironment.h lispobject.h plat/linux32/lisptype.h \
  plat/linux32/../../choices.h refcount.h lispassert.h choices.h \
@@ -287,6 +288,9 @@ tokenizer.o: tokenizer.cpp tokenizer.h lispstring.h \
  lispenvironment.h lispobject.h genericobject.h evalfunc.h \
  lispobject.inl lispevalhash.h lispcleanupstack.h deffile.h \
  deffile.inl ramdisk.h stringio.h lispglobals.h lispplugin.h
+unipoly.o: unipoly.cpp plat/linux32/lisptype.h \
+ plat/linux32/../../choices.h unipoly.h grower.h stubs.h \
+ plat/linux32/stubs.inl grower.inl lispassert.h choices.h
 unixcommandline.o: unixcommandline.cpp unixcommandline.h commandline.h \
  lispstring.h plat/linux32/lisptype.h plat/linux32/../../choices.h \
  grower.h stubs.h plat/linux32/stubs.inl grower.inl lispassert.h \

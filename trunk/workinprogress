@@ -1,4 +1,42 @@
 
+Bk(_poly,_prime) <--
+[
+  Local(coefs,result);
+  Local(dv,dd);
+  dd := Apply("D",{x,poly});
+  dv:=Gcd(poly,dd);
+  if (Degree(dv)>0)
+  [
+    dv := Monic(dv);
+/*    Echo({"squarefree",dv}); */
+    poly := Monic(Div(poly,dv));
+    dv:=Bk(dv,prime);
+  ]
+  else
+  [
+    dv := {};
+  ];
+  if (Degree(poly)<2)
+  [
+    result := poly:dv;
+  ]
+  else
+  [
+    coefs := MakeUni(poly)[3];
+    result := Berlekamp(coefs,prime);
+    Local(i);
+    For(i:=1,i<=Length(result),i++)
+    [
+      result[i] := NormalForm(UniVariate(x,0,result[i]));
+    ];
+    result:=Concat(dv,result);
+  ];
+  result;
+];
+
+
+EndOfFile;
+
 
 
 Berlekamp(f,var,p):=
@@ -32,6 +70,8 @@ Berlekamp(f,var,p):=
     [
       Local(res);
       res:=ModGcd(f,try-s,var,p); 
+
+Echo({s,res});
       If(Degree(res)>0,
       [
         DestructiveAppend(result,res);

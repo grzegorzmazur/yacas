@@ -162,6 +162,7 @@ void ShowResult(char *prompt)
     fflush(stdout);
 }
 
+
 void LoadYacas()
 {
     yacas = CYacas::NewL();
@@ -193,8 +194,8 @@ void LoadYacas()
     yacas->Evaluate("Load(\"yacasinit\");");
     if (yacas->Error()[0] != '\0')
         ShowResult("");
-//    if (use_texmacs_out)
-//        yacas->Evaluate("PrettyPrinter(\"TexForm\");");
+    if (use_texmacs_out)
+        yacas->Evaluate("PrettyPrinter(\"TexForm\");");
 
 
     /* renaming .cc to .cpp files (I know, doesn't belong here ;-) ) */
@@ -495,7 +496,17 @@ RESTART:
                     }
                     else
                     {
+                        if (use_texmacs_out)
+                        {
+                            //        printf("%cverbatim:",TEXMACS_DATA_BEGIN);
+                            printf("%clatex:",TEXMACS_DATA_BEGIN);
+                        }
                         yacas->Evaluate(inpline);
+                        if (use_texmacs_out)
+                        {
+                            printf("%c",TEXMACS_DATA_END);
+                        }
+
                         ShowResult(outprompt);
                     }
                 }
