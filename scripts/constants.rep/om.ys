@@ -1,3 +1,3 @@
 
 
-OMSymbol[ "I" ] := { "nums1", "i", {} };
+OMDef( "I",  "nums1", "i" );

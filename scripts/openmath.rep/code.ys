@@ -1,4 +1,39 @@
+////////////////////////
+// Written by Alberto González Palomo and Ayal Pinkus.
+////////////////////////
 
+/* The read-eval-print loop */
+RuleBase("OMREP",{});
+LocalSymbols(input,stringOut,result)
+Rule("OMREP",0,1,True)
+[
+  Local(input,stringOut,result);
+  While(Not(IsExitRequested()))
+  [
+    Set(errorString, "");
+    TrapError(Set(input, FromString(ConcatStrings(ReadCmdLineString("")," "))OMParse()),Set(errorString,GetCoreError()));
+    If(Not(errorString = ""), OMEcho(errorString));
+    If (Not(IsExitRequested()) And errorString="",
+    [
+      Set(stringOut,"");
+      Set(result,False);
+      TrapError(Set(stringOut,ToString()[Set(result,Eval(input));]),Set(errorString,GetCoreError()));
+      If(Not(errorString = ""), OMEcho(errorString));
+      If(Not(stringOut = ""), WriteString(stringOut));
+      Set(%,result);
+      LazyGlobal(%);
+      If(GetPrettyPrinter()="",
+      [
+        Apply("OMForm",{result});
+      ],
+      Apply(GetPrettyPrinter(),{result}));
+      Exit();
+    ]);
+  ];
+];
+
+
+// Output
 
 10 # OMForm(_expression)
 //     <-- "<OMOBJ>" : OMFormExpression(expression) : "</OMOBJ>";
@@ -7,30 +42,31 @@
      omindent := 0;
      OMEcho("<OMOBJ>");
      OMIndent();
+     If(IsAtom(expression),
+        If(expression = Atom("%"),
+           expression := Eval(expression)
+           )
+        );
      OMFormExpression(expression);
      OMUndent();
      OMEcho("</OMOBJ>");
      ];
 
-10 # OMFormExpression(i_IsString)  <-- OMEcho(i);
+10 # OMFormExpression(i_IsString)  <-- OMEcho("<OMSTR>":i:"</OMSTR>");
 11 # OMFormExpression(i_IsInteger) <-- OMEcho("<OMI>":String(i):"</OMI>");
 12 # OMFormExpression(i_IsNumber)  <-- OMEcho("<OMF dec=\"":String(i):"\"/>");
 13 # OMFormExpression(i_IsConstant)_(OMSymbol[ String(i) ] != Empty)
-     <--
-     [
-     OMEcho("<OMS cd=\"":OMSymbol[ String(i) ][1]:"\" name=\"":OMSymbol[ String(i) ][2]:"\"/>");
-     ];
-14 # OMFormExpression(i_IsConstant)
-     <--
-     [
-     OMEcho("<OMS cd=\"yacas\" name=\"":String(i):"\"/>");
-     ];
+     <-- OMEcho("<OMS cd=\"":OMSymbol[ String(i) ][1]
+                :"\" name=\"":OMSymbol[ String(i) ][2]:"\"/>"
+                );
+14 # OMFormExpression(i_IsConstant)// Should we rather evaluate it?
+     <-- OMEcho("<OMV name=\"":String(i):"\"/>");
 15 # OMFormExpression(i_IsVariable)_(OMSymbol[ String(i) ] != Empty)
-     <--
-     [
-     OMEcho("<OMS cd=\"":OMSymbol[ String(i) ][1]:"\" name=\"":OMSymbol[ String(i) ][2]:"\"/>");
-     ];
-16 # OMFormExpression(i_IsVariable)<-- OMEcho("<OMV name=\"":String(i):"\"/>");
+     <-- OMEcho("<OMS cd=\"":OMSymbol[ String(i) ][1]
+                :"\" name=\"":OMSymbol[ String(i) ][2]:"\"/>"
+                );
+16 # OMFormExpression(i_IsVariable)
+     <-- OMEcho("<OMV name=\"":String(i):"\"/>");
 
 10 # OMFormExpression(function_IsFunction)
      <--
@@ -41,30 +77,35 @@
      OMUndent();
      OMEcho("</OMA>");
      ];
+10 # OMFormFunction(_function)
+     <--
+     [
+     Local(arity);
+     arity := Length(function);
+     OMEcho("<OMS cd=\"yacas\" name=\"":Type(function):"\"/>");
+     If(arity > 0, ForEach(arg, function) OMFormExpression(arg));
+     ];
 10 # OMFormFunction(_function)_(OMSymbol[ Type(function) ] != Empty)
      <--
      [
-     OMEcho("<OMS cd=\"":OMSymbol[ Type(function) ][1]:"\" name=\"":OMSymbol[ Type(function) ][2]:"\"/>");
-     If(OMSymbol[ Type(function) ][3] = {},
-        [ 
-          ForEach(arg, Tail(Listify(function))) OMFormExpression(arg);
-        ],
-        [ arity := Length(function);
-          ForEach(i, OMSymbol[ Type(function) ][3])
-            [
-             If(IsNumber(i),
-                If(i <= arity,  OMFormExpression(function[i]) ),
-                If(IsString(i), OMFormExpression(i)           )
-                );
-            ];
-        ]
+     Local(symbolDef);
+     Local(arity);
+     symbolDef := OMSymbol[ OMSignature(function) ];
+     If(symbolDef = Empty,
+        symbolDef := OMSymbol[ Type(function) ]
         );
-     ];
-11 # OMFormFunction(_function)
-     <--
-     [
-     OMEcho("<OMS cd=\"yacas\" name=\"":Type(function):"\"/>");
-     ForEach(arg, function) OMFormExpression(arg);
+     arity := Length(function);
+     OMEcho("<OMS cd=\"":symbolDef[1]:"\" name=\"":symbolDef[2]:"\"/>");
+     If(symbolDef[3] = {},
+        If(arity > 0, ForEach(arg, function) OMFormExpression(arg)),
+        ForEach(i, symbolDef[3])
+          [
+           If(IsNumber(i),
+              If(i <= arity,  OMFormExpression(function[i]) ),
+              If(IsString(i), OMEcho(i)                     )
+              );
+          ]
+        );
      ];
 
 omindent := 0;
@@ -73,68 +114,283 @@ OMIndentSpace() :=
   Space(omindent);
 ];
 
+OMWrite(_expression) <--
+[
+  Write(expression);
+];
+
 OMEcho(_expression) <--
 [
   OMIndentSpace();
-  Echo({expression});
+  Write(expression);
+  NewLine();
+];
+OMEcho(expression_IsString) <--
+[
+  OMIndentSpace();
+  WriteString(expression);
+  NewLine();
+];
+OMEcho(expression_IsList) <--
+[
+  ForEach(arg, expression)
+  [
+    If (IsString(arg), WriteString(arg), Write(arg));
+  ];
+  NewLine();
+];
+
+OMWriteEscape(_expression) <--
+[
+  WriteString("<![CDATA[");
+  Write(expression);
+  WriteString("]]>");
+];
+OMWriteStringEscape(expression_IsString) <--
+[
+  WriteString("<![CDATA[");
+  WriteString(expression);
+  WriteString("]]>");
+];
+OMEchoEscape(_expression) <--
+[
+  OMWriteEscape(expression);
+  NewLine();
+];
+OMEchoEscape(expression_IsString) <--
+[
+  OMWriteStringEscape(expression);
+  NewLine();
+];
+OMEchoEscape(expression_IsList) <--
+[
+  WriteString("<![CDATA[");
+  ForEach(arg, expression)
+  [
+    If (IsString(arg), WriteString(arg), Write(arg));
+  ];
+  WriteString("]]>");
+  NewLine();
 ];
 OMIndent() := [omindent := omindent + 2;];
 OMUndent() := [omindent := omindent - 2;];
-
 
 HoldArgNr("OMForm",1,1);
 //HoldArgNr("OMFormExpression",1,1);
 //HoldArgNr("OMFormFunction",1,1);
 
 
-OMSymbol :=
-{
-  // [20010916 AGP] I couldn't find these symbols in the def files:
-  //{ "E",         { "nums1", "e",        {} } },
-  //{ "Gamma",     { "nums1", "gamma",    {} } },
-  { "Infinity",  { "nums1", "infinity",   {} } },
-  { "Undefined", { "nums1", "NaN",        {} } },
-  { "Pi",        { "nums1", "pi",         {} } },
-  // [20010916 AGP] From stdopers.ys:
-  { "And"   , { "logic1", "and",        {} } },
-  { "=="    , { "logic1", "equivalent", {} } },
-  { "!=="   , { "logic1", "not",
+OMSignature(_noFunction) <-- "";
+OMSignature(function_IsFunction) <--
+[
+  Local(makeSig);
+  makeSig := {ConcatStrings, Type(function), "_"};
+  Local(type);
+  type := "";// If "function" doesn't have arguments, the signature is "f_".
+  ForEach(arg, function)
+  [
+    If(Type(arg) = "List",
+       type := "L",
+       If(IsFunction(arg),
+          type := "F",
+          If(IsInteger(arg),
+             type := "I",
+             type := "V"
+             )
+          )
+       );
+    DestructiveAppend(makeSig, type);
+  ];
+  Eval(UnList(makeSig));
+];
+
+
+
+//////////////////////
+// Input
+
+OMNextToken() :=
+[
+  OMToken := XmlExplodeTag(String(ReadToken()));
+];
+OMRead():=
+[
+  Local(l);
+  l := {};
+  XmlTokenizer();
+  OMToken = Empty;
+  While (OMToken != "EndOfFile")
+  [
+    OMProcessToken(l, OMNextToken());
+  ];
+  // Remove the "EndOfFile" symbol if there is something else.
+  If(Length(l) > 1,
+     PopBack(l)
+     );
+  // Flatten if we have only one OMOBJ, which is the normal case.
+  // First element (index 0) is "List", then the OMOBJs.
+  If(Length(l) = 1,
+     l := l[1]
+     );
+  OMNextToken();// Without this, the parser (?) blocks on next expression.
+  DefaultTokenizer();
+  l;
+];
+
+
+10 # OMProcessToken(_l, XmlTag("OMOBJ",_values,"Open")) <--
+[
+  Local(obj);
+  obj := {};
+  Local(tagClosed);
+  tagClosed := False;
+  While (OMToken != "EndOfFile" And tagClosed = False)
+  [
+    tagClosed := OMProcessToken(obj, OMNextToken());
+  ];
+  If(Length(obj) > 1,
+     ReportError("An OpenMath object can only have one child element.")
+     );
+  If(Length(obj) > 0,
+     DestructiveAppend(l, obj[1])
+     );
+  False;
+];
+10 # OMProcessToken(_l, XmlTag("OMOBJ",_values,"Close")) <-- True;
+10 # OMProcessToken(_l, XmlTag("OMA",_values,"Open")) <--
+[
+  Local(obj);
+  obj := {};
+  Local(tagClosed);
+  tagClosed := False;
+  While (OMToken != "EndOfFile" And tagClosed = False)
+  [
+    tagClosed := OMProcessToken(obj, OMNextToken());
+  ];
+  DestructiveAppend(l, UnList(obj));
+  False;
+];
+10 # OMProcessToken(_l, XmlTag("OMA",_values,"Close")) <-- True;
+10 # OMProcessToken(_l, XmlTag("OMS",_values,"OpenClose"))
+     <--
+[
+  ReportError("OpenMath symbol not defined: cd=\"", values[ "CD" ],
+              "\", name=\"", values[ "NAME" ], "\"");
+  DestructiveAppend(l, Empty);// Some "Error" symbol would be better.
+  False;
+];
+10 # OMProcessToken(_l, XmlTag("OMS",_values,"OpenClose"))
+     _(OMSymbolReverse[ values[ "CD" ] ] != Empty)
+     _(OMSymbolReverse[ values[ "CD" ] ][ values [ "NAME" ] ] != Empty)
+     <--
+[
+  DestructiveAppend(l, Atom(OMSymbolReverse[ values[ "CD"   ] ]
+                                           [ values[ "NAME" ] ]));
+  False;
+];
+10 # OMProcessToken(_l, XmlTag("OMI",_values,"Open"))
+     <--
+[
+  Local(obj);
+  obj := {};
+  Local(tagClosed);
+  tagClosed := False;
+  While (OMToken != "EndOfFile" And tagClosed = False)
+  [
+    tagClosed := OMProcessToken(obj, OMNextToken());
+  ];
+  DestructiveAppend(l, obj[1]);
+  False;
+];
+10 # OMProcessToken(_l, XmlTag("OMI",_values,"Close")) <-- True;
+10 # OMProcessToken(_l, XmlTag("OMF",_values,"OpenClose"))
+     <--
+[
+  DestructiveAppend(l, Atom(values[ "DEC" ]));
+  False;
+];
+10 # OMProcessToken(_l, x_IsString)
+     <--
+[
+  DestructiveAppend(l, Atom(x));
+  False;
+];
+
+
+//////////////////////////////////////
+// Symbol tables
+
+OMSymbol := {};
+OMSymbolReverse := {};
+
+OMDef(yacasname_IsString, omcd_IsString, omname_IsString, args_IsList) <--
+[
+  OMSymbol[ yacasname ] := {omcd, omname, args};
+  If(OMSymbolReverse[ omcd ] = Empty,
+     OMSymbolReverse[ omcd ] := {{omname, yacasname}},
+     If(OMSymbolReverse[ omcd ][ omname ] = Empty,
+        OMSymbolReverse[ omcd ][ omname ] := yacasname
+        )// If you put a ";" here, the parser freaks out!
+     );
+];
+
+OMDef(yacasname_IsString, omcd_IsString, omname_IsString)
+<-- OMDef(yacasname, omcd, omname, {});
+
+OMDef(yacasalias_IsString, yacasname_IsString) <--
+[
+  OMSymbol[ yacasalias ] := OMSymbol[ yacasname ];
+];
+
+// [20010916 AGP] I couldn't find these symbols in the def files:
+//     "E"        ,  "nums1", "e"
+//     "Gamma"    ,  "nums1", "gamma"
+OMDef( "Infinity" ,  "nums1", "infinity" );
+OMDef( "Undefined",  "nums1", "NaN"      );
+OMDef( "Pi",         "nums1", "pi"       );
+// [20010916 AGP] From stdopers.ys:
+OMDef( "And"   ,  "logic1", "and"        );
+OMDef( "=="    ,  "logic1", "equivalent" );
+OMDef( "!=="   ,  "logic1", "not",
                 { "<OMA><OMS cd=\"logic1\" name=\"equivalent\"/>",
                   1,
                   2,
                   "</OMA>"
                 }
-              }                              },
-  { "False" , { "logic1", "false",      {} } },
-  { "Or"    , { "logic1", "or",         {} } },
-  { "True"  , { "logic1", "true",       {} } },
-  //{ "Xor"   , { "logic1", "xor",        {} } },//[20010916 AGP ] Not in Yacas
-  { "&" , { "yacas", "bitwise_and", {} } },
-  { "|" , { "yacas", "bitwise_or",  {} } },
-  { "%" , { "yacas", "bitwise_xor", {} } },
-  { "/" , { "arith1", "divide", {} } },
-  { "-" , { "arith1", "minus",  {} } },
-  { "+" , { "arith1", "plus",   {} } },
-  { "^" , { "arith1", "power",  {} } },
-  { "*" , { "arith1", "times",  {} } },
-  { "+" , { "arith1", "plus",   {} } },
-  { "", { "error", "unexpected_symbol", {} } }
-};
+      );
+OMDef( "False",  "logic1", "false" );
+OMDef( "Or"   ,  "logic1", "or"    );
+OMDef( "True" ,  "logic1", "true"  );
+//[20010916 AGP ] Xor is not available in Yacas.
+//     "Xor"  ,  "logic1", "xor"   );
+OMDef( "&" ,  "yacas", "bitwise_and" );
+OMDef( "|" ,  "yacas", "bitwise_or"  );
+OMDef( "%" ,  "yacas", "bitwise_xor" );
+OMDef( "/" ,  "arith1", "divide" );
+OMDef( "-" ,  "arith1", "minus"  );
+OMDef( "+" ,  "arith1", "plus"   );
+OMDef( "^" ,  "arith1", "power"  );
+OMDef( "*" ,  "arith1", "times"  );
+OMDef( "+" ,  "arith1", "plus"   );
 
-Load("constants.rep/om.ys");
-Load("stdfuncs.rep/om.ys");
-Load("stubs.rep/om.ys");
-Load("logic.rep/om.ys");
-Load("complex.rep/om.ys");
+
+Use("constants.rep/om.ys");
+Use("stdfuncs.rep/om.ys");
+Use("stubs.rep/om.ys");
+Use("logic.rep/om.ys");
+Use("complex.rep/om.ys");
+Use("integrate.rep/om.ys");
+Use("sums.rep/om.ys");
 
 
 /* The code below implements OMParse, which can parse OpenMath expressions
 */
 
-OMNextToken():=
+/*OMNextToken():=
 [
-  omtoken:=XmlExplodeTag(String(ReadToken()));
+  OMToken:=XmlExplodeTag(String(ReadToken()));
 ];
+*/
 
 OMParse():=
 [
@@ -143,7 +399,7 @@ OMParse():=
   [
     XmlTokenizer();
     OMNextToken();
-    result := MatchOMOBJ(omtoken);
+    result := MatchOMOBJ(OMToken);
     DefaultTokenizer();
   ],
   [
@@ -161,9 +417,9 @@ FromString(str:" EndOfFile")
   Local(result);
   XmlTokenizer();
   OMNextToken();
-  While(omtoken != "EndOfFile")
+  While(OMToken != "EndOfFile")
   [
-    Echo("Exploded ",omtoken);
+    Echo("Exploded ",OMToken);
     OMNextToken();
   ];
   DefaultTokenizer();
@@ -172,14 +428,15 @@ FromString(str:" EndOfFile")
 
 
 
-10 # MatchClose(_x)_(x = omtoken) <-- [OMNextToken();True;];
+10 # MatchClose(_x)_(x = OMToken) <-- [OMNextToken();True;];
 20 # MatchClose(_x) <-- Check(False,ToString()Echo("unexpected closing brace")); //@@@ TODO better error reporting
 
-10 # MatchOMOBJ(XmlTag("OMOBJ",{},"Open")) <--
+10 # MatchOMOBJ(XmlTag("OMOBJ",_attributes,"Open")) <--
 [
+  // Any attributes are ignored.
   Local(result);
   OMNextToken();
-  result := ReadOMOBJ(omtoken);
+  result := ReadOMOBJ(OMToken);
   MatchClose(XmlTag("OMOBJ",{},"Close"));
   result;
 ];
@@ -190,7 +447,7 @@ FromString(str:" EndOfFile")
 [
   Local(result);
   OMNextToken();
-  result := Atom(omtoken);
+  result := Atom(OMToken);
   OMNextToken();
   MatchClose(XmlTag("OMI",{},"Close"));
   result;
@@ -202,14 +459,20 @@ FromString(str:" EndOfFile")
   Atom(name);
 ];
 
+10 # ReadOMOBJ(XmlTag("OMF",{{"DEC",_dec}},"OpenClose")) <--
+[
+  OMNextToken();
+  Atom(dec);
+];
+
 10 # ReadOMOBJ(XmlTag("OMA",{},"Open")) <--
 [
   Local(result, new);
   result:={};
   OMNextToken();
-  While (omtoken !=XmlTag("OMA",{},"Close"))
+  While (OMToken !=XmlTag("OMA",{},"Close"))
   [
-    new:=ReadOMOBJ(omtoken);
+    new:=ReadOMOBJ(OMToken);
     DestructiveAppend(result,new);
   ];
   MatchClose(XmlTag("OMA",{},"Close"));
@@ -236,7 +499,4 @@ ForEach(item,OMSymbol)
 ];
 
 100 # ReadOMOBJ(_rest) <-- Check(False,ToString()Echo("Unhandled tag :",rest));
-
-
-
 

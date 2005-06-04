@@ -1,8 +1,8 @@
 
 
-OMSymbol[ "Complex"   ] := { "complex1", "complex_cartesian", {} };
-OMSymbol[ "Re"        ] := { "complex1", "real",              {} };
-OMSymbol[ "Im"        ] := { "complex1", "imaginary",         {} };
-OMSymbol[ "Conjugate" ] := { "complex1", "conjugate",         {} };
-OMSymbol[ "Arg"       ] := { "complex1", "argument",          {} };
-OMSymbol[ "IsComplex" ] := { "yacas", "is_complex", {} };
+OMDef( "Complex"   ,  "complex1", "complex_cartesian" );
+OMDef( "Re"        ,  "complex1", "real"              );
+OMDef( "Im"        ,  "complex1", "imaginary"         );
+OMDef( "Conjugate" ,  "complex1", "conjugate"         );
+OMDef( "Arg"       ,  "complex1", "argument"          );
+OMDef( "IsComplex" ,  "yacas", "is_complex" );

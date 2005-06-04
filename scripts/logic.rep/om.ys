@@ -1,12 +1,12 @@
 
 
-OMSymbol[ "=>" ] := { "logic1", "implies", {} };
-OMSymbol[ "CNF"           ] := { "yacas", "cnf",            {} };
-OMSymbol[ "LogicSimplify" ] := { "yacas", "logic_simplify", {} };
-OMSymbol[ "CanProve"      ] := { "yacas", "can_prove",      {} };
-OMSymbol[ "LogicRemoveTautologies" ] :=
-                               { "yacas", "logic_remove_tautologies", {} };
-// The following appear in the def file but nowhere else:
-//OMSymbol[ "//~" ] := { "yacas", "slash_slash_tilde", {} };
-//OMSymbol[ "//|" ] := { "yacas", "slash_slash_vertbar", {} };
-//OMSymbol[ "//&" ] := { "yacas", "slash_slash_ampersand", {} };
+OMDef( "=>" ,  "logic1", "implies");
+OMDef( "CNF"           ,         "yacas", "cnf"                     );
+OMDef( "LogicSimplify" ,         "yacas", "logic_simplify"          );
+OMDef( "CanProve"      ,         "yacas", "can_prove"               );
+OMDef( "LogicRemoveTautologies", "yacas", "logic_remove_tautologies");
+OMDef( "Subsumes"      ,         "yacas", "subsumes"                );
+// The following appear in the def file, but commented out:
+//     "~",  "yacas", "Not"
+//     "|",  "yacas", "Or"
+//     "&",  "yacas", "And"
