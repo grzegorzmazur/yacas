@@ -1,33 +1,33 @@
 
 
-OMSymbol[ "TruncRadian" ] := { "yacas",   "TruncRadian", {} };
-OMSymbol[ "Sin"         ] := { "transc1", "sin",         {} };
-OMSymbol[ "Cos"         ] := { "transc1", "cos",         {} };
-OMSymbol[ "Tan"         ] := { "transc1", "tan",         {} };
-OMSymbol[ "ArcSin"      ] := { "transc1", "arcsin",      {} };
-OMSymbol[ "ArcCos"      ] := { "transc1", "arccos",      {} };
-OMSymbol[ "ArcTan"      ] := { "transc1", "arctan",      {} };
-OMSymbol[ "Exp"         ] := { "transc1", "exp",         {} };
-OMSymbol[ "Ln"          ] := { "transc1", "ln",          {} };
+OMDef( "TruncRadian" ,  "yacas"  , "TruncRadian" );
+OMDef( "Sin"         ,  "transc1", "sin"         );
+OMDef( "Cos"         ,  "transc1", "cos"         );
+OMDef( "Tan"         ,  "transc1", "tan"         );
+OMDef( "ArcSin"      ,  "transc1", "arcsin"      );
+OMDef( "ArcCos"      ,  "transc1", "arccos"      );
+OMDef( "ArcTan"      ,  "transc1", "arctan"      );
+OMDef( "Exp"         ,  "transc1", "exp"         );
+OMDef( "Ln"          ,  "transc1", "ln"          );
 
 // Related OM symbols not yet defined in Yacas:
-//  {"ArcCosh", {"transc1", "arccosh", {} } },
-//  {"ArcCot",  {"transc1", "arccot",  {} } },
-//  {"ArcCoth", {"transc1", "arccoth", {} } },
-//  {"arccsc",  {"transc1", "arccsc",  {} } },
-//  {"arccsch", {"transc1", "arccsch", {} } },
-//  {"arcsec",  {"transc1", "arcsec",  {} } },
-//  {"arcsech", {"transc1", "arcsech", {} } },
-//  {"ArcSinh", {"transc1", "arcsinh", {} } },
-//  {"ArcTan",  {"transc1", "arctan",  {} } },
-//  {"ArcTanh", {"transc1", "arctanh", {} } },
-//  {"Cosh",    {"transc1", "cosh",    {} } },
-//  {"cot",     {"transc1", "cot",     {} } },
-//  {"coth",    {"transc1", "coth",    {} } },
-//  {"csc",     {"transc1", "csc",     {} } },
-//  {"csch",    {"transc1", "csch",    {} } },
-//  {"log",     {"transc1", "log",     {} } },
-//  {"sec",     {"transc1", "sec",     {} } },
-//  {"sech",    {"transc1", "sech",    {} } },
-//  {"Sinh",    {"transc1", "sinh",    {} } },
-//  {"Tanh",    {"transc1", "tanh",    {} } },
+//     "ArcCosh"     ,  "transc1", "arccosh"
+//     "ArcCot"      ,  "transc1", "arccot"
+//     "ArcCoth"     ,  "transc1", "arccoth"
+//     "arccsc"      ,  "transc1", "arccsc"
+//     "arccsch"     ,  "transc1", "arccsch"
+//     "arcsec"      ,  "transc1", "arcsec"
+//     "arcsech"     ,  "transc1", "arcsech"
+//     "ArcSinh"     ,  "transc1", "arcsinh"
+//     "ArcTan"      ,  "transc1", "arctan"
+//     "ArcTanh"     ,  "transc1", "arctanh"
+//     "Cosh"        ,  "transc1", "cosh"
+//     "cot"         ,  "transc1", "cot"
+//     "coth"        ,  "transc1", "coth"
+//     "csc"         ,  "transc1", "csc"
+//     "csch"        ,  "transc1", "csch"
+//     "log"         ,  "transc1", "log"
+//     "sec"         ,  "transc1", "sec"
+//     "sech"        ,  "transc1", "sech"
+//     "Sinh"        ,  "transc1", "sinh"
+//     "Tanh"        ,  "transc1", "tanh"

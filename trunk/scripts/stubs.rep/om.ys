@@ -1,24 +1,23 @@
 
 
-OMSymbol[ "Not" ] := { "logic1", "not", {} };
-OMSymbol[ "="  ] := { "relation1", "eq",  {} };
-OMSymbol[ ">=" ] := { "relation1", "geq", {} };
-OMSymbol[ ">"  ] := { "relation1", "gt",  {} };
-OMSymbol[ "<=" ] := { "relation1", "leq", {} };
-OMSymbol[ "<"  ] := { "relation1", "lt",  {} };
-OMSymbol[ "!=" ] := { "relation1", "neq", {} };
-OMSymbol[ "Gcd"  ] := { "arith1", "gcd",  {} };
-OMSymbol[ "Sqrt" ] := { "arith1", "sqrt", { 1, "<OMI>2</OMI>" } };
-OMSymbol[ "Abs"  ] := { "arith1", "abs", {} };
-OMSymbol[ "Lcm"  ] := { "arith1", "lcm", {} };
+OMDef( "Not" ,  "logic1", "not");
+OMDef( "="  ,  "relation1", "eq"  );
+OMDef( ">=" ,  "relation1", "geq" );
+OMDef( ">"  ,  "relation1", "gt"  );
+OMDef( "<=" ,  "relation1", "leq" );
+OMDef( "<"  ,  "relation1", "lt"  );
+OMDef( "!=" ,  "relation1", "neq" );
+OMDef( "Gcd"  ,  "arith1", "gcd"                         );
+OMDef( "Sqrt" ,  "arith1", "root", { 1, "<OMI>2</OMI>" } );
+OMDef( "Abs"  ,  "arith1", "abs"                         );
+OMDef( "Lcm"  ,  "arith1", "lcm"                         );
 
-// The "rounding1" CD is experiemental ("Extra" section) as of 20010916.
-OMSymbol[ "Floor" ] := { "rounding1", "floor",   {} };// Experimental CD.
-OMSymbol[ "Ceil"  ] := { "rounding1", "ceiling", {} };// Experimental CD.
-OMSymbol[ "Round" ] := { "rounding1", "round",   {} };// Experimental CD.
+OMDef( "Floor" ,  "rounding1", "floor"   );
+OMDef( "Ceil"  ,  "rounding1", "ceiling" );
+OMDef( "Round" ,  "rounding1", "round"   );
 
-OMSymbol[ "Div"    ] := { "yacas", "div",    {} };
-OMSymbol[ "Mod"    ] := { "yacas", "mod",    {} };
-OMSymbol[ "Expand" ] := { "yacas", "expand", {} };
-OMSymbol[ "Object" ] := { "yacas", "object", {} };
-OMSymbol[ "Sign"   ] := { "yacas", "sign",   {} };
+OMDef( "Div"    ,  "yacas", "div",    {} );
+OMDef( "Mod"    ,  "yacas", "mod",    {} );
+OMDef( "Expand" ,  "yacas", "expand", {} );
+OMDef( "Object" ,  "yacas", "object", {} );
+OMDef( "Sign"   ,  "yacas", "sign",   {} );
