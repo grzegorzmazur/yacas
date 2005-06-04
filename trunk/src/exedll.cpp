@@ -21,7 +21,7 @@ extern "C" {
 extern LispPluginBase* make_libmath(void);
 extern LispPluginBase* make_pcre(void);
 extern LispPluginBase* make_filescanner(void);
-};
+}
 #endif
 
 // This list has to be sorted alphabetically!
