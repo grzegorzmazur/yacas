@@ -568,7 +568,7 @@ LispPluginBase* <?WriteString(\"make_\":pluginName);?>(void);
 //#else
 //LispPluginBase* maker(void);
 //#endif
-};
+}
 //#ifdef EXE_DLL_PLUGINS
 LispPluginBase* <?WriteString(\"make_\":pluginName);?>(void)
 //#else
