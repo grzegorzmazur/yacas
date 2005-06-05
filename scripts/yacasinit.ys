@@ -35,14 +35,6 @@ Rule("Defun",3,0,True)
 // your own init file to disabling loading of scripts, by setting LoadPlugIns to 
 // false.
 
-//TODO FIXME Special case for now: support for loading plugins not supported properly on Mac OS X unfortunately.
-If(
-   And(
-       GreaterThan(Length(OSVersion()),6),
-       Equals(StringMid(1,6,OSVersion()),"darwin")
-      ),Set(LoadPlugIns,False));
-
-
 If(Equals(LoadPlugIns,False),
   [
     Use("base.rep/math.ys");
