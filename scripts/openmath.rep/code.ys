@@ -299,6 +299,15 @@ OMNextToken() :=
 OMSymbol := {};
 OMSymbolReverse := {};
 
+Macro(OMSymbol,{cd,name,to})
+[
+  10 # ReadOMOBJ(XmlTag("OMS",_props,"OpenClose"))_(props["CD"] = (@cd) And props["NAME"] = (@name)) <--
+  [
+    OMNextToken();
+    Atom(@to);
+  ];
+];
+
 OMDef(yacasname_IsString, omcd_IsString, omname_IsString, args_IsList) <--
 [
   OMSymbol[ yacasname ] := {omcd, omname, args};
@@ -308,6 +317,7 @@ OMDef(yacasname_IsString, omcd_IsString, omname_IsString, args_IsList) <--
         OMSymbolReverse[ omcd ][ omname ] := yacasname
         )// If you put a ";" here, the parser freaks out!
      );
+  `OMSymbol(@omcd, @omname, @yacasname);
 ];
 
 OMDef(yacasname_IsString, omcd_IsString, omname_IsString)
@@ -453,25 +463,6 @@ FromString(str:" EndOfFile")
   ];
   MatchClose(XmlTag("OMA",{},"Close"));
   UnList(result);
-];
-
-Macro(OMSymbol,{cd,name,to})
-[
-  10 # ReadOMOBJ(XmlTag("OMS",_props,"OpenClose"))_(props["CD"] = (@cd) And props["NAME"] = (@name)) <--
-  [
-    OMNextToken();
-    Atom(@to);
-  ];
-];
-
-
-ForEach(item,OMSymbol)
-[
-  Local(cd,name,to);
-  to:=item[1];
-  cd:=item[2][1];
-  name:=item[2][2];
-  `OMSymbol(@cd,@name,@to);
 ];
 
 100 # ReadOMOBJ(_rest) <-- Check(False,ToString()Echo("Unhandled tag :",rest));
