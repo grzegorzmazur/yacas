@@ -11,7 +11,7 @@ Rule("OMREP",0,1,True)
   While(Not(IsExitRequested()))
   [
     Set(errorString, "");
-    TrapError(Set(input, FromString(ConcatStrings(ReadCmdLineString("")," "))OMParse()),Set(errorString,GetCoreError()));
+    TrapError(Set(input, FromString(ConcatStrings(ReadCmdLineString("")," "))OMRead()),Set(errorString,GetCoreError()));
     If(Not(errorString = ""), OMEcho(errorString));
     If (Not(IsExitRequested()) And errorString="",
     [
@@ -213,30 +213,6 @@ OMNextToken() :=
 [
   OMToken := XmlExplodeTag(String(ReadToken()));
 ];
-OMRead():=
-[
-  Local(l);
-  l := {};
-  XmlTokenizer();
-  OMToken = Empty;
-  While (OMToken != "EndOfFile")
-  [
-    OMProcessToken(l, OMNextToken());
-  ];
-  // Remove the "EndOfFile" symbol if there is something else.
-  If(Length(l) > 1,
-     PopBack(l)
-     );
-  // Flatten if we have only one OMOBJ, which is the normal case.
-  // First element (index 0) is "List", then the OMOBJs.
-  If(Length(l) = 1,
-     l := l[1]
-     );
-  OMNextToken();// Without this, the parser (?) blocks on next expression.
-  DefaultTokenizer();
-  l;
-];
-
 
 10 # OMProcessToken(_l, XmlTag("OMOBJ",_values,"Open")) <--
 [
@@ -383,7 +359,7 @@ Use("integrate.rep/om.ys");
 Use("sums.rep/om.ys");
 
 
-/* The code below implements OMParse, which can parse OpenMath expressions
+/* The code below implements OMRead, which parses OpenMath expressions.
 */
 
 /*OMNextToken():=
@@ -392,7 +368,7 @@ Use("sums.rep/om.ys");
 ];
 */
 
-OMParse():=
+OMRead():=
 [
   Local(result);
   TrapError(

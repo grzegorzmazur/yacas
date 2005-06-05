@@ -1171,15 +1171,15 @@ Note that:
 *	2. The resulting expression is an atom with the string representation {<a>};
 it is <i>not</i> a string.
 
-*SEE OMParse, TrapError, XmlExplodeTag, ReadToken, FromFile, FromString
+*SEE OMRead, TrapError, XmlExplodeTag, ReadToken, FromFile, FromString
 
 
 
-*CMD OMForm, OMParse --- convert expressions to and from OpenMath
+*CMD OMForm, OMRead --- convert expressions to and from OpenMath
 *STD
 *CALL
 	OMForm(expression)
-	OMParse()
+	OMRead()
 
 *PARMS
 
@@ -1188,7 +1188,7 @@ it is <i>not</i> a string.
 *DESC
 
 {OMForm} prints an OpenMath representation of the input parameter {expression}
-to standard output. {OMParse} reads a OpenMath expression from standard
+to standard output. {OMRead} reads a OpenMath expression from standard
 input and returns a normal Yacas expression that matches the input OpenMath
 expression.
 
@@ -1210,7 +1210,7 @@ expression.
 	  </OMA>
 	</OMOBJ>
 	";
-	In> FromString(str)OMParse()
+	In> FromString(str)OMRead()
 	Out> 2+Sin(a*3);
 
 *SEE XmlTokenizer, XmlExplodeTag
