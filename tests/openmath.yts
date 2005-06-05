@@ -5,7 +5,7 @@ Macro(OMTest1,{expr})
 [
   Local(string,result);
   string:=ToString() OMForm(@expr);
-  result:=FromString(string)OMParse();
+  result:=FromString(string)OMRead();
 //  Echo(Hold(@expr),`Hold(@result));
   Verify(Hold(@expr),`Hold(@result));
 ];
