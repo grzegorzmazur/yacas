@@ -20,7 +20,7 @@ SCRIPTFILES1 = 	        										    \
 	fakedb.rep/code.ys fakedb.rep/code.ys.def 							    \
 	functional.rep/code.ys functional.rep/code.ys.def 						    \
 	html.rep/code.ys html.rep/code.ys.def 								    \
-	integrate.rep/code.ys integrate.rep/code.ys.def 						    \
+	integrate.rep/code.ys integrate.rep/code.ys.def integrate.rep/om.ys   \
 	io.rep/code.ys io.rep/code.ys.def io.rep/print.ys io.rep/formula.ys io.rep/errors.ys 		    \
 	io.rep/defaultprint.ys io.rep/defaultprint.ys.def 						    \
 	limit.rep/code.ys limit.rep/code.ys.def 							    \
@@ -52,7 +52,7 @@ SCRIPTFILES1 = 	        										    \
 	debug.rep/code.ys debug.rep/code.ys.def			  					    \
 	specfunc.rep/bessel.ys specfunc.rep/bessel.ys.def specfunc.rep/bernou.ys specfunc.rep/bernou.ys.def \
 	specfunc.rep/code.ys specfunc.rep/code.ys.def specfunc.rep/gammaconst.ys specfunc.rep/gammaconst.ys.def \
-	specfunc.rep/gamma.ys specfunc.rep/gamma.ys.def specfunc.rep/zeta.ys specfunc.rep/zeta.ys.def 	    \
+	specfunc.rep/gamma.ys specfunc.rep/gamma.ys.def specfunc.rep/zeta.ys specfunc.rep/zeta.ys.def specfunc.rep/om.ys  \
 	statistics.rep/hypothesystest.ys statistics.rep/incompletegamma.ys.def	 			    \
 	statistics.rep/regression.ys.def statistics.rep/hypothesystest.ys.def 				    \
 	statistics.rep/randomtest.ys statistics.rep/statistics.ys 					    \
