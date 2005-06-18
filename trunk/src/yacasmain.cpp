@@ -54,6 +54,7 @@
   #define PATH_SEPARATOR_2 "/"
 //#endif
 
+#include "plugins_available.h"
 #include "yacas.h"
 
 #ifndef WIN32
@@ -211,6 +212,23 @@ void LispExit(LispEnvironment& aEnvironment, LispInt aStackTop)
     busy=LispFalse;
     InternalTrue(aEnvironment, RESULT);
 }
+
+void LispPluginsCanBeLoaded(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+#ifndef DISABLE_DYNAMIC 
+  InternalTrue(aEnvironment, RESULT);
+#else // DISABLE_DYNAMIC 
+
+#ifdef EXE_DLL_PLUGINS
+  InternalTrue(aEnvironment, RESULT);
+#else // EXE_DLL_PLUGINS
+  InternalFalse(aEnvironment, RESULT);
+#endif // EXE_DLL_PLUGINS
+
+#endif // DISABLE_DYNAMIC 
+}
+
+
 
 void LispExitRequested(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
@@ -547,6 +565,8 @@ CORE_KERNEL_FUNCTION("IsPromptShown",LispIsPromptShown,0,YacasEvaluator::Functio
 CORE_KERNEL_FUNCTION("ReadCmdLineString",LispReadCmdLineString,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("FileSize",LispFileSize,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("PluginsCanBeLoaded",LispPluginsCanBeLoaded,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+
 
 #undef CORE_KERNEL_FUNCTION
     

@@ -695,3 +695,69 @@ support for MSDevStudio c++ 6.0. Alternatively, look in the
 {README.Win32} file. 
 *	{Psion Series}. Use the file {epocyacasconsole.mmp}.
 
+
+	    Compiling Yacas with plugins linked in statically
+
+Yacas consists of a small kernel written in C++, together with a set of scripts (the math library, and utility functions).
+Some scripts can be compiled to C++ code. The C++ code can then be further compiled to a plugin, which can be loaded in to
+Yacas at run time. In addition, there are some stand-alone plugins that have been hand-written in C or C++ that can be used 
+as plugins as well.
+
+A problem arises on platforms that don't support plugins that well. In other instances it is preferable to not have to provide
+additional dynamic link libraries. For this reason there is also a means to compile the Yacas so that the plugins are statically
+linked in to the Yacas kernel. One example is Mac OS X 10.4. For this platform pluginscan be used by configuring it as:
+
+	./configure CFLAGS="-O9 -DDISABLE_DYNAMIC" CXXFLAGS="-O9 -DDISABLE_DYNAMIC" --enable-server --disable-shared
+
+This chapter explains the inner workings of the boot strapping process that takes place when compiling the plugins in to the 
+Yacas kernel.
+
+	    Overview of the compilation process for statically linked in plugins
+
+The process of creating a small initial program, then have that program compile parts of itself and then recompile the system
+with these new parts added in is often called boot strapping. The mechanism works as follows: 
+
+There are C++ files that together
+define the minimum Yacas kernel. Compiling this in to an executable gives one the smallest Yacas kernel possible. The functionality
+available from the scripts is already available at this stage, as this micro kernel can interpret these scripts. 
+
+With this Yacas micro-kernel it is possible to compile scripts in to C++ code. The step after that is to re-compile the Yacas kernel
+telling the compiler the generated C++ files are available. After that, the Yacas kernel has the functionality compiled in.
+
+So the compilation is essentially a three-stage process:
+
+*	1. Compile the Yacas micro kernel
+*	2. Use the micro-kernel to compile scripts
+*	3. Re-compile the kernel, with the available scripts this time
+
+
+	    Inside the compilation process
+
+Compilation in to the Yacas kernel goes through the following process; one passes the flag {CFLAGS="-DDISABLE_DYNAMIC" CXFLAGS="-DDISABLE_DYNAMIC"} 
+to {./configure}, or something equivalent so that dynamic link libraries are not used any more.
+This tells the compiler that dynamic link libraries are not desired. The plugin file ExeDll.cpp is used in stead of its dynamic
+variants. This file makes sure the statically linked in variants can be accessed when they are available.
+
+Initially, one starts off without the compiled plugins (as the C++ code is not available yet). This
+A program built from check_plugins.cpp is used to check the availability of the generated plugins (to check if the generated C++
+files are available). The output of this program is a file plugins_available.h with either {EXE_DLL_PLUGINS} defined or not.
+
+The compilation system is controlled by two defines, EXE_DLL_PLUGINS and DISABLE_DYNAMIC. In order to make sure the dynamic version 
+does not recompile, {check_plugins} does not re-generate the file {plugins_available.h} if it didn't change (to avoid infinite recompilation).
+
+If {EXE_DLL_PLUGINS} is not defined, the plugins can not be loaded (ExeDll.cpp does not provide access to them). Also,
+a function in the kernel provides this information, through the function {PluginsCanBeLoaded()}. This way {yacasinit.ys} knows
+whether to load the plugins or rather load the scripts instead.
+
+In addition, there is a stub for each plugin, which roughly looks like:
+
+	#ifdef EXE_DLL_PLUGINS
+	#include "SomePlugin.cpp"
+	#endif // EXE_DLL_PLUGINS
+
+This in order to not have to change the files that need to be compiled. When {SomePlugin.cpp} is available, {EXE_DLL_PLUGINS}
+can be defined, and the code available. These stubs are generated with the program built from {plugin_stub_gen.cpp}.
+
+
+
+

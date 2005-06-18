@@ -395,7 +395,7 @@ fileBuildString:=
 
 // The define OPTIMIZE_COMPILED_PLUGIN_SIZE should be defined somewhere else.
 #ifndef WIN32 // some macro expansion is failing on Win platform, no idea why.
-#define OPTIMIZE_COMPILED_PLUGIN_SIZE
+// #define OPTIMIZE_COMPILED_PLUGIN_SIZE
 #endif // WIN32
 
 #ifdef OPTIMIZE_COMPILED_PLUGIN_SIZE
