@@ -3,6 +3,7 @@
 #include <stdio.h>
 #endif
 
+#include "plugins_available.h"
 #include "yacasprivate.h"
 #include "lispenvironment.h"
 #include "lispplugin.h"

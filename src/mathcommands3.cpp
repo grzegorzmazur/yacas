@@ -925,20 +925,23 @@ void LispDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 
   LispString oper;
   InternalUnstringify(oper, string);
-  LispDllBase *dll;
+  LispDllBase *dll=NULL;
   LispInt opened = LispFalse;
 
   ExePluginMaker maker = FindExePlugin(&oper[0]);
   if (maker != NULL)
   {
     dll  = NEW ExeDll(maker);
-    Check(dll != NULL,KLispErrNotEnoughMemory);
   }
+#ifndef DISABLE_DYNAMIC
   else
   {
     dll  = NEW DLLCLASS;
-    Check(dll != NULL,KLispErrNotEnoughMemory);
   }
+#endif // DISABLE_DYNAMIC
+  Check(dll != NULL,KLispErrNotEnoughMemory);
+
+
 #ifdef YACAS_DEBUG
   printf("DLL allocated\n");
 #endif// YACAS_DEBUG

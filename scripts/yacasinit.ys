@@ -35,6 +35,9 @@ Rule("Defun",3,0,True)
 // your own init file to disabling loading of scripts, by setting LoadPlugIns to 
 // false.
 
+// First, if statically linked in plugins, PluginsCanBeLoaded() tells us if we can load
+If(Equals(PluginsCanBeLoaded(),False),Set(LoadPlugIns,False));
+
 If(Equals(LoadPlugIns,False),
   [
     Use("base.rep/math.ys");

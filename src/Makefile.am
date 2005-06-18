@@ -3,7 +3,7 @@
 INCLUDES = @INCLTDL@ -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS =  yacas
-noinst_PROGRAMS = mkfastprimes testnum gencorefunctions @COMPRESSOR_PRG@
+noinst_PROGRAMS = mkfastprimes check_plugins plugin_stub_gen testnum gencorefunctions @COMPRESSOR_PRG@
 EXTRA_PROGRAMS = compressor
 
 lib_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
@@ -25,7 +25,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 
 yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
-yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c version.h GPL_stuff.h
+yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c version.h GPL_stuff.h plugins_available.h
 
 # order of libraries is important, @NUMBERS_LIB@ before libyacas.la and that is before libyacasplatform.la
 
@@ -45,6 +45,10 @@ core_yacasmain.h: $(srcdir)/yacasmain.cpp
 
 mkfastprimes_SOURCES = mkfastprimes.cpp 
 
+check_plugins_SOURCES = check_plugins.cpp
+
+plugin_stub_gen_SOURCES = plugin_stub_gen.cpp
+
 libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \
 	lispio.cpp lispobject.cpp lispparser.cpp vm.cpp \
@@ -53,9 +57,12 @@ libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp \
 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp \
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
-        lispplugin.cpp ltdll.cpp elfdll.cpp exedll.cpp genericstructs.cpp unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
-        archiver.cpp compressedfiles.cpp commandline.cpp
-
+        lispplugin.cpp ltdll.cpp elfdll.cpp exedll.cpp genericstructs.cpp \
+	unipoly.cpp ctokenizer.cpp xmltokenizer.cpp \
+        archiver.cpp compressedfiles.cpp commandline.cpp \
+	libmath_stub.cpp pcre_study_stub.c pcre_pcre_stub.c \
+	pcre_maketables_stub.c pcre_pcreposix_stub.c pcre_get_stub.c \
+	pcre_plugin_stub.cpp filescanner_stub.cpp filescanner_plugin_stub.cpp
 
 libcyacas_la_SOURCES = cyacas.cpp
 
@@ -149,6 +156,41 @@ fastprimes.c: mkfastprimes
 	./mkfastprimes > fastprimes.c
 # We don't want $(srcdir)/mkfastprimes because this executable
 # is not generated inside the $(srcdir). 
+
+
+dummy:
+
+plugins_available.h: check_plugins dummy
+	./check_plugins
+
+
+libmath_stub.cpp:plugin_stub_gen
+	./plugin_stub_gen libmath_stub.cpp libmath.cpp
+
+pcre_study_stub.c:plugin_stub_gen
+	./plugin_stub_gen pcre_study_stub.c ../plugins/pcre/study.c
+
+pcre_pcre_stub.c:plugin_stub_gen
+	./plugin_stub_gen pcre_pcre_stub.c ../plugins/pcre/pcre.c
+
+pcre_maketables_stub.c:plugin_stub_gen
+	./plugin_stub_gen pcre_maketables_stub.c ../plugins/pcre/maketables.c
+
+pcre_pcreposix_stub.c:plugin_stub_gen
+	./plugin_stub_gen pcre_pcreposix_stub.c ../plugins/pcre/pcreposix.c
+
+pcre_get_stub.c:plugin_stub_gen
+	./plugin_stub_gen pcre_get_stub.c ../plugins/pcre/get.c
+
+pcre_plugin_stub.cpp:plugin_stub_gen
+	./plugin_stub_gen pcre_plugin_stub.cpp ../plugins/pcre/plugin.cpp
+
+filescanner_stub.cpp:plugin_stub_gen
+	./plugin_stub_gen filescanner_stub.cpp filescanner.cpp
+
+filescanner_plugin_stub.cpp:plugin_stub_gen
+	./plugin_stub_gen filescanner_plugin_stub.cpp ../plugins/filescanner/plugin.cc
+
 
 yacas_include = $(datadir)/yacas/include
 
