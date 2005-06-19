@@ -739,10 +739,10 @@ This tells the compiler that dynamic link libraries are not desired. The plugin 
 variants. This file makes sure the statically linked in variants can be accessed when they are available.
 
 Initially, one starts off without the compiled plugins (as the C++ code is not available yet). This
-A program built from check_plugins.cpp is used to check the availability of the generated plugins (to check if the generated C++
-files are available). The output of this program is a file plugins_available.h with either {EXE_DLL_PLUGINS} defined or not.
+A program built from {check_plugins.cpp} is used to check the availability of the generated plugins (to check if the generated C++
+files are available). The output of this program is a file {plugins_available.h} with either {EXE_DLL_PLUGINS} defined or not.
 
-The compilation system is controlled by two defines, EXE_DLL_PLUGINS and DISABLE_DYNAMIC. In order to make sure the dynamic version 
+The compilation system is controlled by two defines, {EXE_DLL_PLUGINS} and {DISABLE_DYNAMIC}. In order to make sure the dynamic version 
 does not recompile, {check_plugins} does not re-generate the file {plugins_available.h} if it didn't change (to avoid infinite recompilation).
 
 If {EXE_DLL_PLUGINS} is not defined, the plugins can not be loaded (ExeDll.cpp does not provide access to them). Also,
