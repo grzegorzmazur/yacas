@@ -12,7 +12,7 @@
 
 int main(int argc, char** argv)
 {
-  char* define = "#undef";
+  char* define = "//#define";
 #ifdef DISABLE_DYNAMIC 
   {
 //printf("1...\n");
