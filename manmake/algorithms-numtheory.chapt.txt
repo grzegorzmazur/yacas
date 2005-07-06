@@ -50,7 +50,8 @@ However, we cannot test <i>every</i> base $x<n$; instead we test only some $x$, 
 So Fermat's test sometimes fails, i.e. says that $n$ is a prime when $n$ is in fact not a prime.
 Also there are infinitely many integers called "Carmichael numbers" which are not prime but pass the Fermat test for every base.
 
-The Miller-Rabin algorithm improves on this by using the property that for prime $n$ there are no nontrivial square roots of unity in the ring of integers modulo $n$ (this is Lagrange's theorem). In other words, if $x^2:=Mod(1,n)$ for some $x$, then $x$ must be equal to $1$ or $-1$ modulo $n$. (Note that $n-1$ is equal to $-1$ modulo $n$, so $n-1$ is a trivial square root of unity modulo $n$.) In fact, if $n$ is prime, there must be no divisors of $1$ at all, i.e. no numbers $x$ and $y$, not equal to $1$ or $-1$ modulo $n$, such that $x*y:=Mod(1,n)$. If we find such $x$, $y$, then $Gcd(x,n)>1$ or $Gcd(y,n)>1$ and $n$ is not prime.
+The Miller-Rabin algorithm improves on this by using the property that for prime $n$ there are no nontrivial square roots of unity in the ring of integers modulo $n$ (this is Lagrange's theorem). In other words, if $x^2:=Mod(1,n)$ for some $x$, then $x$ must be equal to $1$ or $-1$ modulo $n$. (Since $n-1$ is equal to $-1$ modulo $n$, we have $n-1$ as a trivial square root of unity modulo $n$.
+Note that even if $n$ is prime there may be nontrivial divisors of $1$, for example, $2*49:=Mod(1,97)$.)
 
 We can check that $n$ is odd before applying any primality test. (A test $n^2:=Mod(1,24)$ guarantees that $n$ is not divisible by $2$ or $3$.
 For large $n$ it is faster to first compute $Mod(n,24)$ rather than $n^2$, or test $n$ directly.)
