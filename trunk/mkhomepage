@@ -6,17 +6,13 @@ make clean
 
 # Rebuild yacas and the documentation
 ./makemake
-./configure CXXFLAGS="-O9" CFLAGS="-O9" --enable-server --enable-ps-doc --enable-pdf-doc --enable-archive
-#cd src ; make version.h ; cd ..
+./configure CXXFLAGS="-O9 -DDISABLE_DYNAMIC" CFLAGS="-O9 -DDISABLE_DYNAMIC" --enable-server --enable-ps-doc --enable-pdf-doc --enable-archive --disable-shared
+
 make
-#cd src ; make -f makefile.ibook ; cd ..
-#cd manmake ; make ; cd ..
+make # make a second time, for adding statically linked libraries
 sudo make install
 make dist
 # make distcheck
-
-# make ps/pdf documentation
-# make texdocs
 
 
 # Copy all the files to a homepage directory
