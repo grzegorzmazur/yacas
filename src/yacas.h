@@ -63,6 +63,8 @@ public:
 /// evaluate Yacas expressions. Every instance has its own Yacas
 /// environment, in which the expressions are evaluated.
 
+
+
 class CYacas : public YacasBase
 {
 public:

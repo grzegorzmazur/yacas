@@ -180,7 +180,7 @@ LispPluginBase* make_pcre(void)
     return NEW PcrePlugin;
 }
 
-};
+}
 
 
 

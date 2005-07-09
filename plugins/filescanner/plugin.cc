@@ -81,7 +81,7 @@ LispPluginBase* make_filescanner(void)
     return NEW FileScannerPlugin;
 }
 
-};
+}
 
 
 

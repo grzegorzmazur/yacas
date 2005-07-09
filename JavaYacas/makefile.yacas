@@ -1,0 +1,29 @@
+
+.SUFFIXES: .java .class 
+
+all: yacas.jar scripts.zip
+
+clean:
+	rm *.class *.jar *.tgz *.zip
+
+CLASSES = InputStatus.class LispInput.class LispOutput.class \
+          LispHashTable.class LispAssociatedHash.class \
+  LispArgList.class GenericClass.class LispInfixOperator.class LispPtr.class LispObject.class \
+  LispPrinter.class LispError.class LispTokenizer.class \
+   LispParser.class LispAtom.class LispNumber.class LispSubList.class LispStandard.class \
+  StringInput.class StringOutput.class \
+   InfixParser.class  LispEvaluatorBase.class \
+  YacasEvaluator.class YacasEvalCaller.class YacasCoreCommands.class UserStackInformation.class \
+  BasicEvaluator.class EvalFuncBase.class LispOperators.class LispUserFunction.class LispPtrArray.class LispLocalFrame.class LispIterator.class InfixPrinter.class LispEnvironment.class MathCommands.class \
+  \
+          YacasConsole.class ConsoleApplet.class 
+
+yacas.jar: $(CLASSES)
+	jar cvmf MANIFEST.MF yacas.jar *.class 
+
+scripts.zip:
+	cd ../scripts/ ; zip ../JavaYacas/scripts.zip * */* ; cd ../JavaYacas
+
+.java.class:
+	javac $*.java 
+
