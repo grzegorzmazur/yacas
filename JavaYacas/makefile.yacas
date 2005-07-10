@@ -1,7 +1,7 @@
 
 .SUFFIXES: .java .class 
 
-all: CVersion.java yacas.jar scripts.zip
+all: CVersion.java yacas.jar scripts.zip calc.html.hints
 
 clean:
 	rm *.class *.jar *.tgz *.zip
@@ -15,8 +15,13 @@ CLASSES = CVersion.class InputStatus.class LispInput.class LispOutput.class \
    InfixParser.class  LispEvaluatorBase.class \
   YacasEvaluator.class YacasEvalCaller.class YacasCoreCommands.class UserStackInformation.class \
   BasicEvaluator.class EvalFuncBase.class LispOperators.class LispUserFunction.class LispPtrArray.class LispLocalFrame.class LispIterator.class InfixPrinter.class LispEnvironment.class MathCommands.class \
-  \
-          YacasConsole.class ConsoleApplet.class 
+YacasConsole.class ConsoleApplet.class \
+CDataReader.class HintItem.class \
+HintWindow.class Hints.class SelectSymbol.class TResult.class \
+TSentence.class \
+TWord.class YacasGraphicsContext.class \
+YacasNotebookComponent.class calc.class tegicphone.class 
+
 
 yacas.jar: $(CLASSES)
 	jar cvmf MANIFEST.MF yacas.jar *.class 
@@ -31,4 +36,15 @@ scripts.zip:
 CVersion.java: ../config.h dumpversion.cpp
 	g++ dumpversion.cpp -o dumpversion
 	./dumpversion
+
+calc.html.hints:hints
+	cp hints calc.html.hints
+
+hints:
+	cp operators.txt hints.unsorted 
+	g++ tegicadd.cpp -o tegicadd.a
+	./tegicadd.a < ../manmake/hints.singlesorted >> hints.unsorted
+	sort -n -t "~" hints.unsorted > hints.sorted
+	echo "~~~~~~~" > tail.txt
+	cat hints.sorted tail.txt > hints
 
