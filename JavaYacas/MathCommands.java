@@ -2358,7 +2358,14 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : GetExactBits");//TODO FIXME
+      BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
+      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      z.SetTo(
+        (x.IsInt())
+      ? x.BitCount()	// for integers, return the bit count
+        : x.GetPrecision() 	// for floats, return the precision
+        );
+      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
 
@@ -2366,7 +2373,14 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : SetExactBits");//TODO FIXME
+      BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
+      BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
+      BigNumber z = new BigNumber(10/*TODO fixme aEnvironment.BinaryPrecision()*/);
+      z.SetTo(x);
+	  // do nothing for integers
+	  if (!(z.IsInt()))
+	    z.Precision((int)(y.Double()));	// segfaults unless y is defined?
+      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
 
@@ -2374,7 +2388,10 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : BitCount");//TODO FIXME
+      BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
+      BigNumber z = new BigNumber(10 /* TODO fixme aEnvironment.BinaryPrecision()*/);
+      z.SetTo(x.BitCount());
+      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
 
@@ -2412,7 +2429,10 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : Floor");//TODO FIXME
+      BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
+      BigNumber z = new BigNumber(10 /* TODO fixme aEnvironment.BinaryPrecision()*/);
+      z.Floor(x);	
+      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
 
@@ -2420,7 +2440,12 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : Ceil");//TODO FIXME
+      BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
+      BigNumber z = new BigNumber(10 /* TODO fixme aEnvironment.BinaryPrecision()*/);
+      z.Negate(x);
+      z.Floor(z);	
+      z.Negate(z);
+      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
 
@@ -2441,7 +2466,11 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : Mod");//TODO FIXME
+      BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
+      BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
+      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      z.Mod(x,y);
+      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
 
@@ -2469,7 +2498,22 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : BitsToDigits");//TODO FIXME
+      BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
+      BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
+      long result = 0;	// initialize just in case
+      if (x.IsInt() && x.IsSmall() && y.IsInt() && y.IsSmall())
+      {
+        // bits_to_digits uses unsigned long, see numbers.h
+        int base = (int)y.Double();
+        result = LispStandard.bits_to_digits((long)(x.Double()), base);
+      }
+      else
+      {
+        throw new Yacasexception("BitsToDigits: error: arguments ("+x.Double()+", "+y.Double()+") must be small integers");		  
+      }
+      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      z.SetTo((long)result);
+      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
 
@@ -2477,7 +2521,22 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : DigitsToBits");//TODO FIXME
+      BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
+      BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
+      long result = 0;	// initialize just in case
+      if (x.IsInt() && x.IsSmall() && y.IsInt() && y.IsSmall())
+      {
+        // bits_to_digits uses unsigned long, see numbers.h
+        int base = (int)y.Double();
+        result = LispStandard.digits_to_bits((long)(x.Double()), base);
+      }
+      else
+      {
+        throw new Yacasexception("BitsToDigits: error: arguments ("+x.Double()+", "+y.Double()+") must be small integers");		  
+      }
+      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      z.SetTo((long)result);
+      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
 

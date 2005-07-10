@@ -134,8 +134,27 @@ class BigNumber
   }
   public boolean IsSmall()
   {
-    //TODO FIXME
-    return false;
+    if (IsInt())
+    {
+      BigInteger i = integer.abs();
+      return (i.compareTo(new BigInteger("65535"))<0);
+    }
+    else
+    // a function to test smallness of a float is not present in ANumber, need to code a workaround to determine whether a number fits into double.
+    {
+      //TODO fixme
+      return true;
+/*
+      LispInt tensExp = iNumber->iTensExp;
+      if (tensExp<0)tensExp = -tensExp;
+      return
+      (
+        iNumber->iPrecision <= 53	// standard float is 53 bits
+        && tensExp<1021 // 306	// 1021 bits is about 306 decimals
+      );
+      // standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021
+*/
+    }
   }
   public void BecomeInt()
   {
@@ -242,9 +261,13 @@ class BigNumber
   }
 
   /// integer operation: *this = y mod z
-  public void Mod( BigNumber aY,  BigNumber aZ)
+  public void Mod( BigNumber aY,  BigNumber aZ) throws Exception
   {
-    //TODO FIXME
+    LispError.Check(aY.integer != null, LispError.KLispErrNotInteger);
+    LispError.Check(aZ.integer != null, LispError.KLispErrNotInteger);
+//TODO fixme    LispError.Check(!IsZero(aZ),LispError.KLispErrInvalidArg);
+    integer = aY.integer.mod(aZ.integer);
+    decimal = null;
   }
 
   /// For debugging purposes, dump internal state of this object into a string
@@ -256,12 +279,30 @@ class BigNumber
   /// assign self to Floor(aX) if possible
   public void Floor( BigNumber aX)
   {
-    //TODO FIXME
+    if (aX.decimal != null)
+    {
+      BigInteger rounded = aX.decimal.toBigInteger();
+      if (aX.decimal.signum()<0)
+      {
+        BigDecimal back =  new BigDecimal(rounded);
+        BigDecimal difference = aX.decimal.subtract(back);
+        if (difference.signum() != 0)
+        {
+          rounded = rounded.add(new BigInteger("-1"));
+        }
+      }
+      integer = rounded;
+    }
+    else
+    {
+      integer = aX.integer;
+    }
+    decimal = null;
   }
   /// set precision (in bits)
   public void Precision(int aPrecision)
   {
-    //TODO FIXME
+    iPrecision = aPrecision;
   }
 
   /// Bitwise operations, return result in *this.
@@ -316,8 +357,10 @@ class BigNumber
   /// give bit count as a platform integer
   public long BitCount()
   {
-    //TODO FIXME
-    return 1;
+    //TODO fixme check that it works as needed
+    if (integer != null)
+      return integer.bitLength();
+    return decimal.unscaledValue().bitLength();
   }
   
   /// Give sign (-1, 0, 1)

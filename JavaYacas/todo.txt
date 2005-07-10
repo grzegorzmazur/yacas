@@ -15,17 +15,10 @@
 - LispXmlTokenizer
 - LispExplodeTag
 
-- LispFloor
-- LispCeil
-- LispMod
 - LispArcCos
 - LispArcTan
 - LispGetExactBits
 - LispSetExactBits
-- LispBitCount
-- LispMathIsSmall
-- LispBitsToDigits
-- LispDigitsToBits
 - LispFastMod
 
 - LispPi
@@ -179,4 +172,11 @@ x LispFindFile
 x LispFindFunction
 x LispLessThan
 x LispGreaterThan
+x LispMod
+x LispBitCount
+x LispMathIsSmall
+x LispBitsToDigits
+x LispDigitsToBits
+x LispFloor
+x LispCeil
 
