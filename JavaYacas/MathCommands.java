@@ -3961,7 +3961,7 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      RESULT(aEnvironment,aStackTop).Set(LispAtom.New(aEnvironment,"\"Java version\""));
+      RESULT(aEnvironment,aStackTop).Set(LispAtom.New(aEnvironment,"\""+CVersion.VERSION+"\""));
     }
   }
 }
