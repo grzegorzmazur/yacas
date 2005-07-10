@@ -41,8 +41,20 @@ class CYacas
 
       StringBuffer string_out = new StringBuffer();
       LispOutput output = new StringOutput(string_out);
-      printer.Print(result, output, env);
-      rs = string_out.toString();
+
+      if (env.iPrettyPrinter != null)
+      {
+         LispPtr nonresult = new LispPtr();
+         LispStandard.InternalApplyString(env, nonresult,
+                             env.iPrettyPrinter,
+                             result);
+        rs = string_out.toString();
+      }
+      else
+      {
+        printer.Print(result, output, env);
+        rs = string_out.toString();
+      }
     }
     catch (Exception e)
     {

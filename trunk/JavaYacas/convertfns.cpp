@@ -58,11 +58,11 @@ void doit(FILE* fproto,FILE* fclass,char* iname,char* fname,int nrargs,char* fla
   fprintf(fclass,
 "  class %s extends YacasEvalCaller\n"
 "  {\n"
-"    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Yacasexception\n"
+"    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception\n"
 "    {\n"
-"      //TODO FIXME\n"
+"      aEnvironment.iCurrentOutput.Write(\"Function not yet implemented : %s\");//TODO FIXME\n"
 "    }\n"
-"  }\n\n",fname
+"  }\n\n",fname,fname
 );
 }
 
@@ -103,7 +103,19 @@ int main(int argc, char** argv)
   FILE* fclass = fopen("tempclass.tmp","wb");
 #define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) doit_alias(fproto,fclass,iname,#fname,nrargs,#flags);
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) doit(fproto,fclass,iname,#fname,nrargs,#flags);
-#include "corefunctions.txt"
+//#include "corefunctions.txt"
+
+CORE_KERNEL_FUNCTION("OSVersion",LispPlatformOS,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("Exit",LispExit,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("IsExitRequested",LispExitRequested,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("HistorySize",LispHistorySize,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("StaSiz",LispStackSize,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("IsPromptShown",LispIsPromptShown,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("ReadCmdLineString",LispReadCmdLineString,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("FileSize",LispFileSize,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
+
+
   fclose(fproto);
   fclose(fclass);
   return 0;

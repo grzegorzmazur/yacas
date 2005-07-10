@@ -452,5 +452,7 @@ class LispEnvironment
   LispDefFiles iDefFiles = new LispDefFiles();
   InputDirectories iInputDirectories = new InputDirectories();
 
+  String iPrettyPrinter = null;
+
 }
 
