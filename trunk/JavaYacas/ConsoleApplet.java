@@ -39,10 +39,21 @@ public class ConsoleApplet extends Applet implements KeyListener
     yacas = new CYacas(stdoutput);
     yacas.env.iCurrentInput = new CachedStdFileInput(yacas.env.iInputStatus);
 
-    out.println("");
-    out.println("Welcome to the Yacas console applet!");
-    out.println("You can type 'restart' to restart the engine, ");
-    out.println("or type 'Example()' to see some examples");
+    out.println("This is Yacas version '" + CVersion.VERSION + "'.");
+
+    out.println("Yacas is Free Software--Free as in Freedom--so you can redistribute Yacas or");
+    out.println("modify it under certain conditions. Yacas comes with ABSOLUTELY NO WARRANTY.");
+    out.println("See the GNU General Public License (GPL) for the full conditions.");
+//TODO fixme    out.println("Type ?license or ?licence to see the GPL; type ?warranty for warranty info.");
+    out.println("See http://yacas.sf.net for more information and documentation on Yacas.");
+    out.println("Numeric mode: \""+BigNumber.NumericLibraryName()+"\"\n");
+//TODO fixme    out.println("To exit Yacas, enter  Exit(); or quit or Ctrl-c. Type ?? for help.\n");
+//TODO fixme    out.println("Or type ?function for help on a function.\n");
+//TODO fixme    out.println("Type 'restart' to restart Yacas.\n");
+    out.println("To see example commands, keep typing Example();\n");
+	  out.println("Yacas in Java");
+
+
     {
       String docbase = getDocumentBase().toString();
       if (docbase.substring(0,4).equals("file"))

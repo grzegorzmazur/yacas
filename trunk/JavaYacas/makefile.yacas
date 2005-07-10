@@ -1,12 +1,12 @@
 
 .SUFFIXES: .java .class 
 
-all: yacas.jar scripts.zip
+all: CVersion.java yacas.jar scripts.zip
 
 clean:
 	rm *.class *.jar *.tgz *.zip
 
-CLASSES = InputStatus.class LispInput.class LispOutput.class \
+CLASSES = CVersion.class InputStatus.class LispInput.class LispOutput.class \
           LispHashTable.class LispAssociatedHash.class \
   LispArgList.class GenericClass.class LispInfixOperator.class LispPtr.class LispObject.class \
   LispPrinter.class LispError.class LispTokenizer.class \
@@ -26,4 +26,9 @@ scripts.zip:
 
 .java.class:
 	javac $*.java 
+
+
+CVersion.java: ../config.h dumpversion.cpp
+	g++ dumpversion.cpp -o dumpversion
+	./dumpversion
 

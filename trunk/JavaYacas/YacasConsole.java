@@ -110,6 +110,23 @@ catch(Exception e)
     }
     System.out.println("Out> "+yacas.Evaluate("Load(\"yacasinit.ys\");"));
 
+
+    System.out.println("This is Yacas version '" + CVersion.VERSION + "'.");
+
+    System.out.println("Yacas is Free Software--Free as in Freedom--so you can redistribute Yacas or");
+    System.out.println("modify it under certain conditions. Yacas comes with ABSOLUTELY NO WARRANTY.");
+    System.out.println("See the GNU General Public License (GPL) for the full conditions.");
+//TODO fixme    System.out.println("Type ?license or ?licence to see the GPL; type ?warranty for warranty info.");
+    System.out.println("See http://yacas.sf.net for more information and documentation on Yacas.");
+
+
+    System.out.println("Numeric mode: \""+BigNumber.NumericLibraryName()+"\"\n");
+//TODO fixme    System.out.println("To exit Yacas, enter  Exit(); or quit or Ctrl-c. Type ?? for help.\n");
+//TODO fixme    System.out.println("Or type ?function for help on a function.\n");
+//TODO fixme    System.out.println("Type 'restart' to restart Yacas.\n");
+    System.out.println("To see example commands, keep typing Example();\n");
+
+
 	  System.out.println("Yacas in Java");
 	  while (!quitting)
 	  {
