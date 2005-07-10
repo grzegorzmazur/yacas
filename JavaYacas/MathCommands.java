@@ -556,9 +556,6 @@ class MathCommands
          new YacasEvaluator(new LispPatchString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "PatchString");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispPluginsCanBeLoaded(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "PluginsCanBeLoaded");
-    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispDllLoad(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "DllLoad");
     aEnvironment.CoreCommands().SetAssociation(
@@ -618,6 +615,39 @@ class MathCommands
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispVersion(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "Version");
+
+
+    aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispPluginsCanBeLoaded(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "PluginsCanBeLoaded");
+    aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispPlatformOS(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "OSVersion");
+    aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispExit(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "Exit");
+    aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispExitRequested(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "IsExitRequested");
+    aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispHistorySize(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "HistorySize");
+    aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispStackSize(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "StaSiz");
+    aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispIsPromptShown(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "IsPromptShown");
+    aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispReadCmdLineString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "ReadCmdLineString");
+    aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispTime(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
+         "GetTime");
+    aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispFileSize(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "FileSize");
+
 
   }
 
@@ -2544,7 +2574,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispPi");//TODO FIXME
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispPi (returning a fixed approximation for it for now)");//TODO fixme
+      RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,"3.141592653589793238462643383279502884197169399"));
     }
   }
 
@@ -3410,7 +3441,7 @@ class MathCommands
       int count = Integer.parseInt(index.Get().String(),10);
 
       
-      String str = "\""+orig.substring(from+1,from+1+count)+"\"";
+      String str = "\""+orig.substring(from,from+count)+"\"";
       RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,str));
     }
   }
@@ -3650,7 +3681,21 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispFac");//TODO FIXME
+      LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ARGUMENT(aEnvironment, aStackTop, 1).Get().Number(0) != null,1);
+      LispPtr arg = ARGUMENT(aEnvironment, aStackTop, 1);
+     
+      //TODO fixme I am sure this can be optimized still
+      int nr = (int)arg.Get().Number(0).Long();
+      LispError.Check(nr>=0,LispError.KLispErrInvalidArg);
+      BigNumber fac = new BigNumber("1",10,10);
+      int i;
+      for (i=2;i<=nr;i++)
+      {
+        BigNumber m = new BigNumber(""+i,10,10);
+        m.Multiply(fac,m,0);
+        fac = m;
+      }
+      RESULT(aEnvironment, aStackTop).Set(new LispNumber(fac));
     }
   }
 
@@ -3688,7 +3733,21 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : PrettyPrinter");//TODO FIXME
+      int nrArguments = LispStandard.InternalListLength(ARGUMENT(aEnvironment, aStackTop, 0));
+      if (nrArguments == 1)
+      {
+        aEnvironment.iPrettyPrinter = null;
+      }
+      else
+      {
+        LispError.CHK_CORE(aEnvironment, aStackTop,nrArguments == 2,LispError.KLispErrWrongNumberOfArgs);
+        LispPtr oper = new LispPtr();
+        oper.Set(ARGUMENT(aEnvironment, aStackTop, 0).Get());
+        oper.GoNext();
+        LispError.CHK_ISSTRING_CORE(aEnvironment,aStackTop,oper,1);
+        aEnvironment.iPrettyPrinter = oper.Get().String();
+      }
+      LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
   }
 
@@ -3696,7 +3755,10 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : GetPrettyPrinter");//TODO FIXME
+      if (aEnvironment.iPrettyPrinter == null)
+        RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,"\"\""));
+      else
+        RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,aEnvironment.iPrettyPrinter));
     }
   }
 
@@ -3736,15 +3798,6 @@ class MathCommands
     }
   }
 
-
-  class LispPluginsCanBeLoaded extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      //TODO fixme need to enable this in the end if plugins are available
-      LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
-    }
-  }
 
   class LispDllLoad extends YacasEvalCaller
   {
@@ -3964,5 +4017,96 @@ class MathCommands
       RESULT(aEnvironment,aStackTop).Set(LispAtom.New(aEnvironment,"\""+CVersion.VERSION+"\""));
     }
   }
+
+
+
+  class LispPluginsCanBeLoaded extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
+    {
+      //TODO fixme need to enable this in the end if plugins are available
+      LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
+    }
+  }
+  class LispPlatformOS extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
+    {
+      RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,"\"J2SE\""));
+    }
+  }
+
+  class LispExit extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
+    {
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispExit");//TODO FIXME
+    }
+  }
+
+  class LispExitRequested extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
+    {
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispExitRequested");//TODO FIXME
+    }
+  }
+
+  class LispHistorySize extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
+    {
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispHistorySize");//TODO FIXME
+    }
+  }
+
+  class LispStackSize extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
+    {
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispStackSize");//TODO FIXME
+    }
+  }
+
+  class LispIsPromptShown extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
+    {
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispIsPromptShown");//TODO FIXME
+    }
+  }
+
+  class LispReadCmdLineString extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
+    {
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispReadCmdLineString");//TODO FIXME
+    }
+  }
+
+  class LispTime extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
+    {
+      long starttime = System.currentTimeMillis();
+      LispPtr res = new LispPtr();
+      aEnvironment.iEvaluator.Eval(aEnvironment, res, ARGUMENT(aEnvironment,aStackTop,1));
+      long endtime = System.currentTimeMillis();
+      double timeDiff;
+      timeDiff = endtime-starttime;
+      timeDiff /= 1000.0;
+      RESULT(aEnvironment,aStackTop).Set(LispAtom.New(aEnvironment,""+timeDiff));
+    }
+  }
+
+  class LispFileSize extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
+    {
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispFileSize");//TODO FIXME
+    }
+  }
+
+
 }
 

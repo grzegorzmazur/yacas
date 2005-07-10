@@ -1,8 +1,24 @@
 
-- Some more functions that are defined in yacasmain.cpp
-- PrettyPrinter, probably need some support for that
+- LispPi
+- LispFastIsPrime
+
+- Some more functions that are defined in yacasmain.cpp, 
+	OSVersion
+	Exit
+	IsExitRequested
+	HistorySize
+	StaSiz
+	IsPromptShown
+	ReadCmdLineString
+	FileSize
+
+- command line flags for console version, useful for doing the test scripts
+
 - Supporting the default read-eval-print loop from script?
 
+- Run the tests from Java
+- Give some performance statistics on comparison between Java and C++
+- button in applet that allows stopping current calculation
 - LispPatchLoad
 - LispPatchString
 
@@ -18,13 +34,8 @@
 
 - LispArcCos
 - LispArcTan
-- LispGetExactBits
-- LispSetExactBits
 - LispFastMod
 
-- LispPi
-- LispFac
-- LispFastIsPrime
 
 
 - LispCustomEval
@@ -35,8 +46,6 @@
 - LispTraceRule
 - LispTraceStack
 
-- LispPrettyPrinter
-- LispGetPrettyPrinter
 
 - LispDumpBigNumberDebugInfo
 
@@ -46,12 +55,6 @@
 
 - port over the user-defined function classes
 
-- LispLength
-- CYacas, Evaluate, %
-- LispGcd
-- LispMod
-
-- user-defined functions
 - FastMod
 - pre-port all functions (in one large file, so I can easily do a
   global query-replace everywhere, before copy-pasting the code
@@ -68,120 +71,4 @@
 - LispSecure
 
 
-x BigNumber
-x MathAdd as an example, and maybe some more...
-x LispIterator seems to be missing still
-x iProg, etcetera, string constants in LispEnvironment
-x Get InfixPrinter compiling
-x Port ParsedObject code
-x Get InfixParser compiling
-x Simple initial evaluator
-x read-eval-print loop that actually does infix operators
-x make a list of functions I need to port.
-x IsTrue, IsFalse -> LispWhile, LispIf
-x Prefix, Postfix, Infix, RightAssociative, etcetera.
-x IsGeneric, GenericTypeName
-x LispPrecision , LispGetPrecision
-x LispCharString
-x LispNot, LispLazyAnd, LispLazyOr
-x LispConcatenateStrings
-x shiftleft
-x shiftright
-x multiply, 
-x negate,
-x LispMaxEvalDepth
-x LispApplyPure
-x LispStringMid
-x LispMathSign
-x LispAbs
-x LispGetExtraInfo
-x LispSetExtraInfo
-x LispSetStringMid
-x subtract, 
-x divide, 
-x LispDiv
-x Variables, InternalSetVar, NewLocals, etcetera
-x LispFlatCopy
-x LispIsBound
-x LispDelete
-x LispDestructiveDelete
-x LispInsert
-x LispDestructiveInsert
-x LispReplace
-x LispDestructiveReplace
-x LispConcatenate
-x LispInDebugMode
-x LispDebugFile
-x LispDebugLine
-x LispSecure
-x LispLocalSymbols
-x stdoutput class
-x LispWrite
-x LispWriteString
-x LispFullForm
-x fill in LispMultiUserFunction
-x ToFile
-x ToString
-x ToStdout
-x HoldArgNr
-x UnFence
-x Read
-x LispTrapError
-x LispGetCoreError
-x Load
-x CurrrentPrinter -> Write, WriteString, etcetera
-x LispCheck, LispTrapError, LispGetCoreError
-x Equals, FastAssoc
-x LispGcd
-x LispBitAnd
-x LispBitOr
-x LispBitXor
-x LispFromBase
-x LispToBase
-x LispLength
-x GenArrayCreate
-x GenArraySize
-x GenArrayGet
-x GenArraySet
-x patterns.h/.cpp
-x patternclass.h/.cpp
-x GenPatternCreate
-x GenPatternMatches
-x mathuserfunc.h/.cpp
-x LispRuleBase
-x LispMacroRuleBase
-x LispNewRule
-x LispMacroNewRule
-x LispDefMacroRuleBase
-x LispDefMacroRuleBaseListed
-x LispRuleBaseListed
-x LispMacroRuleBaseListed
-x LispNewRulePattern
-x LispMacroNewRulePattern
-x LispRuleBaseArgList
-x CHECK THAT I DIDN'T BREAK ANY THING IN THE C++ PART ACCIDENTALLY!!!
-x For some reason user-defined functions don't work yet.
-x PluginsCanBeLoaded() that returns False
-x lazy global %
-x LispDefaultDirectory
-x allowing specifying --rootdir on command line, and in html file
-x re-add code that searches for input files (return input stream
-  for given file name, including searching jar files).
-x LispDefLoadFunction
-x LispDefLoad
-x LispFindFile
-x LispFindFunction
-x LispLessThan
-x LispGreaterThan
-x LispMod
-x LispBitCount
-x LispMathIsSmall
-x LispBitsToDigits
-x LispDigitsToBits
-x LispFloor
-x LispCeil
-x re-order the files to be compiled so that it compiles in one go
-x put the code and working make file in the Yacas repository
-x version number, dump to file some how class CVersion { static String VERSION = "1.0.57rev2"; }
-x console versions need to show the GPL banner also.
 
