@@ -67,7 +67,7 @@ catch(Exception e)
 
 
     String defaultDirectory = null;
-    String archive = "file:/Users/ayalpinkus/projects/JavaYacas/scripts.zip";
+    String archive = "file:/Users/ayalpinkus/projects/yacas/JavaYacas/scripts.zip";
     int i=0;
     while (i<argv.length)
     {
