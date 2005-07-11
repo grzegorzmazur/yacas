@@ -1,9 +1,10 @@
 
+- Bug: MathDivide(1,2) and MathDivide(1,2.0) return zero
+- Use the hints in the console version also!
 - LispPi
 - LispFastIsPrime
 
 - Some more functions that are defined in yacasmain.cpp, 
-	OSVersion
 	Exit
 	IsExitRequested
 	HistorySize
@@ -45,7 +46,6 @@
 - LispCustomEvalStop
 - LispTraceRule
 - LispTraceStack
-
 
 - LispDumpBigNumberDebugInfo
 
