@@ -156,7 +156,11 @@ YacasConsole.java YacasCoreCommands.java \
 YacasEvalCaller.java YacasEvaluator.java YacasParamMatcherBase.java \
 YacasPatternPredicateBase.java Yacasexception.java CommonLispTokenizer.java \
 convertfns.cpp makefile.yacas tmp.java \
-todo.txt yacasconsole.html
+todo.txt yacasconsole.html \
+CDataReader.java HintItem.java \
+HintWindow.java Hints.java SelectSymbol.java TResult.java TSentence.java \
+TWord.java YacasGraphicsContext.java YacasNotebook.java \
+YacasNotebookComponent.java calc.java tegicphone.java calc.html
 
 subdir = JavaYacas
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
