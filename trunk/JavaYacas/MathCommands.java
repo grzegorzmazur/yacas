@@ -1212,8 +1212,6 @@ class MathCommands
       String oper = LispStandard.InternalUnstringify(orig);
 
       // Open file for writing
-      
-      //TODO fixme: need to look in aEnvironment.iInputDirectories for files?
       FileOutputStream localFP = new FileOutputStream(oper);
       LispError.CHK_CORE(aEnvironment, aStackTop,localFP != null, LispError.KLispErrFileNotFound);
       StdFileOutput newOutput = new StdFileOutput(localFP);
@@ -2085,8 +2083,8 @@ class MathCommands
       result1.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get());
       result2.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2).Get());
       boolean cmp;
-      BigNumber n1 = result1.Get().Number(aEnvironment.iPrecision);
-      BigNumber n2 = result2.Get().Number(aEnvironment.iPrecision);
+      BigNumber n1 = result1.Get().Number(aEnvironment.Precision());
+      BigNumber n2 = result2.Get().Number(aEnvironment.Precision());
       if (n1 != null && n2 != null)
       {
         cmp =numfunc(n1,n2);
@@ -2198,7 +2196,7 @@ class MathCommands
       LispPtr result = new LispPtr();
       result.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
 
-      BigNumber num = result.Get().Number(aEnvironment.iPrecision);
+      BigNumber num = result.Get().Number(aEnvironment.Precision());
       if (num == null)
       {
         LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
@@ -2260,8 +2258,8 @@ class MathCommands
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
-      z.Multiply(x,y,10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
+      z.Multiply(x,y,aEnvironment.BinaryPrecision());
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
@@ -2288,9 +2286,9 @@ class MathCommands
       {
         BigNumber x = MathCommands.GetNumber(aEnvironment, aStackTop, 1);
         BigNumber y = MathCommands.GetNumber(aEnvironment, aStackTop, 2);
-//TODO fixme        int bin = aEnvironment.BinaryPrecision();
-        BigNumber z = new BigNumber(10/*TODO fixme bin*/);
-        z.Add(x,y,10/*TODO fixme aEnvironment.BinaryPrecision()*/);
+        int bin = aEnvironment.BinaryPrecision();
+        BigNumber z = new BigNumber(bin);
+        z.Add(x,y,aEnvironment.BinaryPrecision());
         RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
         return;
       }
@@ -2305,8 +2303,8 @@ class MathCommands
       if (length == 2)
       {
         BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
-        BigNumber z = new BigNumber(x/*aEnvironment.BinaryPrecision()*/);
-        z.Negate(x /* *x.Ptr() */);
+        BigNumber z = new BigNumber(x);
+        z.Negate(x);
         RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
         return;
       }
@@ -2316,8 +2314,8 @@ class MathCommands
         BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
         BigNumber yneg = new BigNumber(y);
         yneg.Negate(y);
-        BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
-        z.Add(x,yneg,10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+        BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
+        z.Add(x,yneg,aEnvironment.BinaryPrecision());
         RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
         return;
       }
@@ -2330,22 +2328,22 @@ class MathCommands
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       // if both arguments are integers, then BigNumber::Divide would perform an integer divide, but we want a float divide here.
       if (x.IsInt() && y.IsInt())
       {
         // why can't we just say BigNumber temp; ?
-        BigNumber tempx = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+        BigNumber tempx = new BigNumber(aEnvironment.BinaryPrecision());
         tempx.SetTo(x);
-        tempx.BecomeFloat(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);	// coerce x to float
-        BigNumber tempy = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+        tempx.BecomeFloat(aEnvironment.BinaryPrecision());	// coerce x to float
+        BigNumber tempy = new BigNumber(aEnvironment.BinaryPrecision());
         tempy.SetTo(y);
-        tempy.BecomeFloat(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);	// coerce x to float
-        z.Divide(tempx, tempy,10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+        tempy.BecomeFloat(aEnvironment.BinaryPrecision());	// coerce x to float
+        z.Divide(tempx, tempy,aEnvironment.BinaryPrecision());
       }
       else
       {
-        z.Divide(x, y,10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+        z.Divide(x, y,aEnvironment.BinaryPrecision());
       }
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
       return;
@@ -2379,7 +2377,7 @@ class MathCommands
 
       int ind = Integer.parseInt(index.Get().String(),10);
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ind>0,1);
-      aEnvironment.iPrecision = ind;
+      aEnvironment.SetPrecision(ind);
       LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
   }
@@ -2389,7 +2387,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(
         (x.IsInt())
       ? x.BitCount()	// for integers, return the bit count
@@ -2405,7 +2403,7 @@ class MathCommands
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
-      BigNumber z = new BigNumber(10/*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(x);
 	  // do nothing for integers
 	  if (!(z.IsInt()))
@@ -2419,7 +2417,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
-      BigNumber z = new BigNumber(10 /* TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(x.BitCount());
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2430,7 +2428,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(x.Sign());
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2449,7 +2447,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.Negate(x);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2460,7 +2458,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
-      BigNumber z = new BigNumber(10 /* TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.Floor(x);	
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2471,7 +2469,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
-      BigNumber z = new BigNumber(10 /* TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.Negate(x);
       z.Floor(z);	
       z.Negate(z);
@@ -2484,7 +2482,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(x);
       if (x.Sign()<0)
 	      z.Negate(x);
@@ -2498,7 +2496,7 @@ class MathCommands
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.Mod(x,y);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2512,8 +2510,8 @@ class MathCommands
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
       if (x.IsInt() && y.IsInt())
       {	// both integer, perform integer division
-          BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
-          z.Divide(x,y,10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+          BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
+          z.Divide(x,y,aEnvironment.BinaryPrecision());
           RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
           return;
       }
@@ -2541,7 +2539,7 @@ class MathCommands
       {
         throw new Yacasexception("BitsToDigits: error: arguments ("+x.Double()+", "+y.Double()+") must be small integers");		  
       }
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo((long)result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2564,7 +2562,7 @@ class MathCommands
       {
         throw new Yacasexception("BitsToDigits: error: arguments ("+x.Double()+", "+y.Double()+") must be small integers");		  
       }
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo((long)result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2585,7 +2583,7 @@ class MathCommands
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.Gcd(x,y);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2606,7 +2604,7 @@ class MathCommands
       BigNumber x;
       x = GetNumber(aEnvironment, aStackTop, 1);
       double result = Math.sin(x.Double());
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2619,7 +2617,7 @@ class MathCommands
       BigNumber x;
       x = GetNumber(aEnvironment, aStackTop, 1);
       double result = Math.cos(x.Double());
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2632,7 +2630,7 @@ class MathCommands
       BigNumber x;
       x = GetNumber(aEnvironment, aStackTop, 1);
       double result = Math.tan(x.Double());
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2645,7 +2643,7 @@ class MathCommands
       BigNumber x;
       x = GetNumber(aEnvironment, aStackTop, 1);
       double result = Math.asin(x.Double());
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2658,7 +2656,7 @@ class MathCommands
       BigNumber x;
       x = GetNumber(aEnvironment, aStackTop, 1);
       double result = Math.acos(x.Double());
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2671,7 +2669,7 @@ class MathCommands
       BigNumber x;
       x = GetNumber(aEnvironment, aStackTop, 1);
       double result = Math.atan(x.Double());
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2684,7 +2682,7 @@ class MathCommands
       BigNumber x;
       x = GetNumber(aEnvironment, aStackTop, 1);
       double result = Math.pow(Math.E,x.Double());
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2697,7 +2695,7 @@ class MathCommands
       BigNumber x;
       x = GetNumber(aEnvironment, aStackTop, 1);
       double result = Math.log(x.Double());
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2711,7 +2709,7 @@ class MathCommands
       x = GetNumber(aEnvironment, aStackTop, 1);
       y = GetNumber(aEnvironment, aStackTop, 2);
       double result = Math.pow(x.Double(), y.Double());
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2724,7 +2722,7 @@ class MathCommands
       BigNumber x;
       x = GetNumber(aEnvironment, aStackTop, 1);
       double result = Math.sqrt(x.Double());
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2735,7 +2733,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       double result = Math.PI;
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2748,7 +2746,7 @@ class MathCommands
       BigNumber x;
       x = GetNumber(aEnvironment, aStackTop, 1);
       double result = Math.floor(x.Double());
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2761,7 +2759,7 @@ class MathCommands
       BigNumber x;
       x = GetNumber(aEnvironment, aStackTop, 1);
       double result = Math.ceil(x.Double());
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2782,7 +2780,7 @@ class MathCommands
       BigNumber x;
       x = GetNumber(aEnvironment, aStackTop, 1);
       double result = Math.abs(x.Double());
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2795,7 +2793,7 @@ class MathCommands
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber n = GetNumber(aEnvironment, aStackTop, 2);
       long nrToShift = n.Long();
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.ShiftLeft(x,(int)nrToShift);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2808,7 +2806,7 @@ class MathCommands
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber n = GetNumber(aEnvironment, aStackTop, 2);
       long nrToShift = n.Long();
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.ShiftRight(x,(int)nrToShift);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2823,7 +2821,7 @@ class MathCommands
       LispPtr oper = new LispPtr();
       oper.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
       // Check that result is a number, and that it is in fact an integer
-      BigNumber num = oper.Get().Number(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber num = oper.Get().Number(aEnvironment.BinaryPrecision());
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,num != null,1);
     // check that the base is an integer between 2 and 32
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,num.IsInt()
@@ -2844,10 +2842,7 @@ class MathCommands
       str2 = aEnvironment.HashTable().LookUpUnStringify(str2);
 
       // convert using correct base
-    // fixme: API breach, must pass precision in base digits and not in bits!
-    // if converting an integer, the precision argument is ignored,
-    // but if converting a float, need to use bits_to_digits(BinaryPrecision, base)
-      BigNumber z = new BigNumber(str2,10 /*TODO fixme aEnvironment.BinaryPrecision()*/,base);
+      BigNumber z = new BigNumber(str2,aEnvironment.BinaryPrecision(),base);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
@@ -2861,7 +2856,7 @@ class MathCommands
       LispPtr oper = new LispPtr();
       oper.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
       // Check that result is a number, and that it is in fact an integer
-      BigNumber num = oper.Get().Number(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber num = oper.Get().Number(aEnvironment.BinaryPrecision());
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,num != null,1);
     // check that the base is an integer between 2 and 32
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,num.IsInt()
@@ -2875,10 +2870,7 @@ class MathCommands
 
       // convert using correct base
       String str;
-    // fixme: API breach, must pass precision in base digits and not in bits!
-    // if converting an integer, the precision argument is ignored,
-    // but if converting a float, need to use bits_to_digits(BinaryPrecision, base)
-      str = x.ToString(10/*TODO fixme aEnvironment.BinaryPrecision()*/,base);
+      str = x.ToString(aEnvironment.BinaryPrecision(),base);
       // Get unique string from hash table, and create an atom from it.
 
       RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,aEnvironment.HashTable().LookUpStringify(str)));
@@ -3096,7 +3088,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       // decimal precision
-      RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,""+aEnvironment.iPrecision));
+      RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,""+aEnvironment.Precision()));
     }
   }
 
@@ -3106,7 +3098,7 @@ class MathCommands
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.BitAnd(x,y);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -3118,7 +3110,7 @@ class MathCommands
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.BitOr(x,y);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -3130,7 +3122,7 @@ class MathCommands
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
-      BigNumber z = new BigNumber(10 /*TODO fixme aEnvironment.BinaryPrecision()*/);
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.BitXor(x,y);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -3974,7 +3966,9 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispDumpBigNumberDebugInfo");//TODO FIXME
+      BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
+      x.DumpDebugInfo(aEnvironment.iCurrentOutput);
+      LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
   }
 

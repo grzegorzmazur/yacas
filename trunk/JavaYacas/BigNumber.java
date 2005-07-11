@@ -53,9 +53,18 @@ class BigNumber
     int digits = aBasePrecision;
     iPrecision = CalculatePrecision(aString,aBasePrecision,aBase, isFloat);
     */
+//System.out.println("Precision requested "+aPrecision);
+    iPrecision = aPrecision;
     if (isFloat)
     {
       decimal = new BigDecimal(aString); //TODO FIXME does not listen to aBase!!!
+      int origScale = aPrecision-decimal.scale();
+      if (origScale>0)
+      {
+        decimal = decimal.setScale(origScale);
+      }
+      if (decimal.scale() > iPrecision)
+        iPrecision = decimal.scale();
     }
     else
     {
@@ -251,6 +260,9 @@ class BigNumber
       BigDecimal dX = GetDecimal(aX);
       BigDecimal dY = GetDecimal(aY);
       integer = null;
+      int newScale = aPrecision+dY.scale();
+      if (newScale > dX.scale())
+        dX = dX.setScale(newScale);
       decimal = dX.divide(dY,BigDecimal.ROUND_HALF_EVEN);
     }
     else
@@ -271,9 +283,16 @@ class BigNumber
   }
 
   /// For debugging purposes, dump internal state of this object into a string
-  public void DumpDebugInfo()
+  public void DumpDebugInfo(LispOutput aOutput) throws Exception
   {
-    //TODO FIXME
+    if (integer != null)
+    {
+      aOutput.Write("integer: "+integer.toString()+"\n");
+    }
+    else
+    {
+      aOutput.Write("decimal: "+decimal.unscaledValue()+" scale "+decimal.scale()+"\n");
+    }
   }
 
   /// assign self to Floor(aX) if possible

@@ -46,24 +46,24 @@ class LispNumber extends LispObject
       String str;
       str = iString;
       // aBasePrecision is in digits, not in bits, ok
-      iNumber = new BigNumber(str, 10 /*TODO FIXME aBasePrecision*/, 10/*TODO FIXME BASE10*/);
+      iNumber = new BigNumber(str, aPrecision, 10/*TODO FIXME BASE10*/);
 	  }
 
 	  // check if the BigNumber object has enough precision, if not, extend it
 	  // (applies only to floats). Note that iNumber->GetPrecision() might be < 0
-/*TODO FIXME
-	  else if (!iNumber->IsInt() && iNumber->GetPrecision() < (LispInt)digits_to_bits(aBasePrecision, BASE10))
+
+	  else if (!iNumber.IsInt() && iNumber.GetPrecision() < aPrecision)
 	  {
-      if (iString.Ptr())
+      if (iString != null)
       {// have string representation, can extend precision
-        iNumber->SetTo(iString.Ptr()->String(),aBasePrecision, BASE10);
+        iNumber.SetTo(iString,aPrecision, 10);
       }
       else
       {
       // do not have string representation, cannot extend precision!
       }
 	  }
-*/
+
 	  return iNumber;
 	}
     /// annotate

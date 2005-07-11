@@ -40,9 +40,18 @@ class LispEnvironment
   {
     return iPrecision;
   }
-  LispHashTable iHashTable = new LispHashTable();
-  int iPrecision = 10;
+  int BinaryPrecision()
+  {
+    //This is as intended! It would be really brain-dead to pass binary precision. I find binary precision to be a leaky abstraction any way.
+    return iPrecision;
+  }
+  void SetPrecision(int aPrecision) throws Exception
+  {
+    iPrecision = aPrecision;    // precision in decimal digits
+  }
+  private int iPrecision = 10;
 
+  LispHashTable iHashTable = new LispHashTable();
   LispObject iTrue;
   LispObject iFalse;
 
