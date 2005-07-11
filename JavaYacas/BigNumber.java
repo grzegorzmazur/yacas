@@ -58,11 +58,15 @@ class BigNumber
     if (isFloat)
     {
       decimal = new BigDecimal(aString); //TODO FIXME does not listen to aBase!!!
+/*
       int origScale = aPrecision-decimal.scale();
       if (origScale>0)
       {
         decimal = decimal.setScale(origScale);
       }
+      if (decimal.scale() > iPrecision)
+        iPrecision = decimal.scale();
+*/
       if (decimal.scale() > iPrecision)
         iPrecision = decimal.scale();
     }
@@ -260,10 +264,11 @@ class BigNumber
       BigDecimal dX = GetDecimal(aX);
       BigDecimal dY = GetDecimal(aY);
       integer = null;
-      int newScale = aPrecision+dY.scale();
+      int newScale = aPrecision+aY.GetPrecision();
       if (newScale > dX.scale())
         dX = dX.setScale(newScale);
       decimal = dX.divide(dY,BigDecimal.ROUND_HALF_EVEN);
+      iPrecision = decimal.scale();
     }
     else
     {
