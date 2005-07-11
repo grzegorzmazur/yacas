@@ -25,7 +25,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 
 yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
-yacas_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c version.h GPL_stuff.h plugins_available.h
+yacas_DEPENDENCIES = plugins_available.h @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c version.h GPL_stuff.h 
 
 # order of libraries is important, @NUMBERS_LIB@ before libyacas.la and that is before libyacasplatform.la
 
