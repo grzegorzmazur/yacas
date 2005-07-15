@@ -81,8 +81,14 @@ catch(Exception e)
         i++;
         archive = argv[i];
       }
+      else
+      {
+        break;
+      }
       i++;
     }
+    int scriptsToRun = i;
+
 
     StdFileOutput stdoutput = new StdFileOutput(System.out);
     CYacas yacas = new CYacas(stdoutput);
@@ -94,7 +100,7 @@ catch(Exception e)
       String zipFileName = archive;//"file:/Users/ayalpinkus/projects/JavaYacas/scripts.zip";
       java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI(zipFileName)));
       LispStandard.zipFile = z;
-      System.out.println("Succeeded in finding "+zipFileName);
+//      System.out.println("Succeeded in finding "+zipFileName);
     }
     catch(Exception e)
     {
@@ -106,9 +112,23 @@ catch(Exception e)
     if (defaultDirectory != null)
     {
       String toEvaluate = "DefaultDirectory(\""+defaultDirectory+"\");";
-      System.out.println("Out> "+yacas.Evaluate(toEvaluate));
+      String result = yacas.Evaluate(toEvaluate);
+      if (scriptsToRun == argv.length)
+        System.out.println("Out> "+result);
     }
-    System.out.println("Out> "+yacas.Evaluate("Load(\"yacasinit.ys\");"));
+    {
+      String result = yacas.Evaluate("Load(\"yacasinit.ys\");");
+      if (scriptsToRun == argv.length)
+        System.out.println("Out> "+result);
+    }
+    if (scriptsToRun < argv.length)
+    {
+      for (;scriptsToRun<argv.length;scriptsToRun++)
+      {
+        yacas.Evaluate("Load(\""+argv[scriptsToRun]+"\");");
+      }
+      return;
+    }
 
 
     System.out.println("This is Yacas version '" + CVersion.VERSION + "'.");
