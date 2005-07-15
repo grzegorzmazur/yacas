@@ -1,7 +1,22 @@
 
-- Bug: MathDivide(1,2) and MathDivide(1,2.0) return zero
-- Use the hints in the console version also!
+- Get MathSin MathPi etcetera working.
+- command line support for test scripts (-pc flags at least)
+- run test scripts
+
+- LispArcCos
+- LispArcTan
 - LispPi
+- LispFastMod
+
+- LispDllEnumerate
+- LispDllDirectory
+- LispDllLoad
+- LispDllUnload
+
+- LispPatchLoad
+- LispPatchString
+
+- Use the hints in the console version also!
 - LispFastIsPrime
 
 - Some more functions that are defined in yacasmain.cpp, 
@@ -20,12 +35,7 @@
 - Run the tests from Java
 - Give some performance statistics on comparison between Java and C++
 - button in applet that allows stopping current calculation
-- LispPatchLoad
-- LispPatchString
 
-- LispDllLoad
-- LispDllUnload
-- LispDllEnumerate
 
 - LispDefaultTokenizer
 - LispCommonLispTokenizer
@@ -33,9 +43,6 @@
 - LispXmlTokenizer
 - LispExplodeTag
 
-- LispArcCos
-- LispArcTan
-- LispFastMod
 
 
 
@@ -47,9 +54,7 @@
 - LispTraceRule
 - LispTraceStack
 
-- LispDumpBigNumberDebugInfo
 
-- LispDllDirectory
 
 
 
@@ -63,12 +68,7 @@
 - Remove LispPtr in favor of LispObject (needs lots of changes,
   getters and setters).
 - Change name of HashTable to StringTable
-- console applet and tegic applet
 - two methods were doubly defined in corefunctions.h (NewLocals and another one nearby)
 - Double-check that LocalFrame is handled correctly everywhere, eg the destructor is not called, so need to call its Delete method directly
-- find a way for Java version to report correct version
 - CommonLispTokenizer.java
-- LispSecure
-
-
 
