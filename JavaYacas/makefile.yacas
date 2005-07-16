@@ -1,7 +1,7 @@
 
 .SUFFIXES: .java .class 
 
-all: CVersion.java yacas.jar scripts.zip calc.html.hints
+all: CVersion.java yacas.jar scripts.zip calc.html.hints yacasconsole.html.hints
 
 clean:
 	rm *.class *.jar *.tgz *.zip
@@ -37,16 +37,24 @@ CVersion.java: ../config.h dumpversion.cpp
 	g++ dumpversion.cpp -o dumpversion
 	./dumpversion
 
-calc.html.hints:hints
-	cp hints calc.html.hints
 
-hints:
-	cp operators.txt hints.unsorted 
+calc.html.hints:
+	cp operators.txt calc.html.hints.unsorted 
 	g++ tegicadd.cpp -o tegicadd.a
-	./tegicadd.a < ../manmake/hints.singlesorted >> hints.unsorted
-	sort -n -t "~" hints.unsorted > hints.sorted
+	./tegicadd.a < ../manmake/hints.singlesorted >> calc.html.hints.unsorted
+	sort -n -t "~" calc.html.hints.unsorted > calc.html.hints.sorted
 	echo "~~~~~~~" > tail.txt
-	cat hints.sorted tail.txt > hints
+	cat calc.html.hints.sorted tail.txt > calc.html.hints
+
+
+yacasconsole.html.hints:
+	-rm yacasconsole.html.hints.unsorted 
+	touch yacasconsole.html.hints.unsorted 
+	g++ tegicadd.cpp -o tegicadd.a
+	./tegicadd.a < ../manmake/hints.singlesorted >> yacasconsole.html.hints.unsorted
+	sort -n -t "~" yacasconsole.html.hints.unsorted > yacasconsole.html.hints.sorted
+	echo "~~~~~~~" > tail.txt
+	cat yacasconsole.html.hints.sorted tail.txt > yacasconsole.html.hints
 
 
 NORMAL_TESTFILES = \
