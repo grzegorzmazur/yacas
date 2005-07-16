@@ -95,7 +95,17 @@ class BigNumber
     if (integer != null)
       return integer.toString(aBase);
     else
-      return decimal.toString();
+    {
+      String result = decimal.toString();
+      int dotPos = result.indexOf('.');
+      if (dotPos >= 0)
+      {
+        int endpos = result.length();
+        while (endpos>dotPos && result.charAt(endpos-1) == '0') endpos--;
+        result = result.substring(0,endpos);
+      }
+      return result;
+    }
   }
   /// Give approximate representation as a double number
   public double Double()

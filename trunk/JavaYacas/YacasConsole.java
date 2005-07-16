@@ -151,7 +151,7 @@ catch(Exception e)
 	  while (!quitting)
 	  {
 		  System.out.print("In>");
-//      String input = "[Precision(40);1.0;];";//"[Set(pat,PatternCreate(foo(_a,_b),True));PatternMatches(pat,bar(x,y));];";//"[Local(a);Set(a,2);MathAdd(a,1);];";//"Set(a,2);";//"1.0e3";//"MathNegate(1.1);";//"IsAtom({a,b,c});";// readLine(System.in);
+//      String input = "a:=-2;";//"[Precision(40);1.0;];";//"[Set(pat,PatternCreate(foo(_a,_b),True));PatternMatches(pat,bar(x,y));];";//"[Local(a);Set(a,2);MathAdd(a,1);];";//"Set(a,2);";//"1.0e3";//"MathNegate(1.1);";//"IsAtom({a,b,c});";// readLine(System.in);
 		  String input =  readLine(System.in);
 
       String rs = yacas.Evaluate(input);
