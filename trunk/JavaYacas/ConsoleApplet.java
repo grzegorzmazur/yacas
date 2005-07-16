@@ -16,18 +16,35 @@ import java.applet.*;
 import java.io.*;
 import java.net.*;
 
-public class ConsoleApplet extends Applet implements KeyListener
+public class ConsoleApplet extends Applet implements KeyListener, FocusListener
 {
   AppletOutput out;
 
   /// Applet initialization
   public void init() 
   {
+    setBackground(Color.white);
     setLayout (null);
     addKeyListener(this);
+    addFocusListener(this);
+
+//    addMouseListener(this);
 
     out = new AppletOutput(this);
     ResetInput();
+  }
+  boolean focusGained = false;
+  public void focusGained(FocusEvent evt) 
+  {
+    focusGained = true;
+    repaint();
+  }
+
+
+  public void focusLost(FocusEvent evt) 
+  {
+//    focusGained = false;
+//    repaint();
   }
 
   LispOutput stdoutput = null;
@@ -51,7 +68,7 @@ public class ConsoleApplet extends Applet implements KeyListener
 //TODO fixme    out.println("Or type ?function for help on a function.\n");
 //TODO fixme    out.println("Type 'restart' to restart Yacas.\n");
     out.println("To see example commands, keep typing Example();\n");
-	  out.println("Yacas in Java");
+//	  out.println("Yacas in Java");
 
 
     {
@@ -65,7 +82,7 @@ public class ConsoleApplet extends Applet implements KeyListener
         //  java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI("file:/Users/ayalpinkus/projects/JavaYacas/tempscripts.zip")));
           java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI(zipFileName)));
           LispStandard.zipFile = z;
-          out.println("Succeeded in finding "+zipFileName);
+//          out.println("Succeeded in finding "+zipFileName);
         }
         catch(Exception e)
         {
@@ -80,7 +97,7 @@ public class ConsoleApplet extends Applet implements KeyListener
 
     try
     {
-      PerformRequest("Connected: version of engine is ","Atom(Version())");
+//      PerformRequest("Connected: version of engine is ","Atom(Version())");
       out.println("");
     }
     catch (Exception e)
@@ -96,7 +113,7 @@ public class ConsoleApplet extends Applet implements KeyListener
       String s = getParameter(argn);
       if (s == null) break;
       s = unescape(s);
-      PerformRequest("Init>",s);
+      yacas.Evaluate(s);
       i++;
     }
 
@@ -323,8 +340,44 @@ public class ConsoleApplet extends Applet implements KeyListener
   }
 
   /// Drawing current view
+  Image yacasLogo = null;
 	public void paint (Graphics g) 
   {
+    if (!focusGained)
+    {
+      Dimension d = getSize();
+      String str = "Tap here to start";
+      if (yacasLogo == null)
+      {
+        try
+        {
+          String fname = getDocumentBase().toString();
+          int ind = fname.lastIndexOf("/");
+          if (ind >0)
+          {
+            fname = fname.substring(0,ind+1)+"yacas.gif";
+            yacasLogo = getImage(new URL(fname));
+          }
+        }
+        catch (Exception e)
+        {
+        }
+      }
+      if (yacasLogo != null)
+        g.drawImage(yacasLogo,(d.width-yacasLogo.getWidth(this))/2,0,Color.WHITE,this);
+      else
+        str = getDocumentBase().toString();
+      Font font = new Font("times", Font.BOLD + Font.PLAIN, 18);
+      java.awt.geom.Rectangle2D m = g.getFontMetrics().getStringBounds(str,g);
+      int x = (int)((d.width-m.getWidth())/2);
+      int y = (d.height-18)/2;
+      g.setColor(Color.blue);
+      g.setFont(font);
+      g.drawString(str, x, y);
+      return;
+    }
+
+
     FontMetrics metrics = getFontMetrics(font);
 
 // to always redraw everything, make the whole canvas dirty
