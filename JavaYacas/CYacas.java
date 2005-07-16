@@ -17,6 +17,8 @@ class CYacas
   }
   String Evaluate(String input)
   {
+    if (input.length() == 0)
+      return "";
     String rs = "";
     try
     {

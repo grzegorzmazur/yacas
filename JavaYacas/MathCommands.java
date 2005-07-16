@@ -1079,7 +1079,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : DllDirectory");//TODO FIXME
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : DllDirectory");//TODO fixme
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -2354,7 +2355,15 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : ArcCos");//TODO FIXME
+      /* TODO fixme this is wrong in the C++ version too, we need to have this in 
+       * arbitrary-precision format, defined in the scripts.
+       */
+      BigNumber x;
+      x = GetNumber(aEnvironment, aStackTop, 1);
+      double result = Math.acos(x.Double());
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
+      z.SetTo(result);
+      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
 
@@ -2362,7 +2371,15 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : ArcTan");//TODO FIXME
+      /* TODO fixme this is wrong in the C++ version too, we need to have this in 
+       * arbitrary-precision format, defined in the scripts.
+       */
+      BigNumber x;
+      x = GetNumber(aEnvironment, aStackTop, 1);
+      double result = Math.atan(x.Double());
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
+      z.SetTo(result);
+      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
 
@@ -2438,7 +2455,11 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : MathIsSmall");//TODO FIXME
+      BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
+      if(x.IsSmall())
+        LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
+      else
+        LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));      
     }
   }
 
@@ -2770,6 +2791,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : FastMod");//TODO FIXME
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3310,7 +3332,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : CustomEval");//TODO FIXME
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : CustomEval");////TODO fixme
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3318,7 +3341,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : CustomEvalExpression");//TODO FIXME
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : CustomEvalExpression");////TODO fixme
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3326,7 +3350,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : CustomEvalResult");//TODO FIXME
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : CustomEvalResult");////TODO fixme
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3334,7 +3359,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispCustomEvalLocals");//TODO FIXME
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispCustomEvalLocals");////TODO fixme
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3342,7 +3368,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispCustomEvalStop");//TODO FIXME
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispCustomEvalStop");////TODO fixme
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3350,7 +3377,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispTraceRule");//TODO FIXME
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispTraceRule");////TODO fixme
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3358,7 +3386,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : TraceStack");//TODO FIXME
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : TraceStack");////TODO fixme
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3797,6 +3826,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : PatchLoad");//TODO FIXME
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3805,6 +3835,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : PatchString");//TODO FIXME
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3813,7 +3844,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : DllLoad");//TODO FIXME
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : DllLoad");////TODO fixme
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3821,7 +3853,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : DllUnload");//TODO FIXME
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : DllUnload");////TODO fixme
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3829,7 +3862,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : DllEnumerate");//TODO FIXME
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : DllEnumerate");////TODO fixme
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3874,7 +3908,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispDefaultTokenizer");//TODO FIXME
+      aEnvironment.iCurrentTokenizer = aEnvironment.iDefaultTokenizer;
+      LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
   }
 
@@ -3883,6 +3918,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispCommonLispTokenizer");//TODO FIXME
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3891,6 +3927,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispCTokenizer");//TODO FIXME
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3898,7 +3935,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispXmlTokenizer");//TODO FIXME
+      aEnvironment.iCurrentTokenizer = aEnvironment.iXmlTokenizer;
+      LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
   }
 
@@ -3906,7 +3944,109 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispExplodeTag");//TODO FIXME
+      LispPtr out = new LispPtr();
+      out.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
+      LispError.CHK_ISSTRING_CORE(aEnvironment,aStackTop,out,1);
+
+      String str = out.Get().String();
+      int strInd = 0;
+      strInd++;
+      if (str.charAt(strInd) != '<')
+      {
+        RESULT(aEnvironment, aStackTop).Set(out.Get());
+        return;
+      }
+      LispError.CHK_ARG_CORE(aEnvironment,aStackTop,str.charAt(strInd) == '<',1);
+      strInd++;
+      String type = "\"Open\"";
+
+      if (str.charAt(strInd) == '/')
+      {
+        type = "\"Close\"";
+        strInd++;
+      }
+      String tag = new String();
+//TODO remove    tag.SetNrItems(0);
+    
+      tag = tag + "\"";
+      while (LispTokenizer.IsAlpha(str.charAt(strInd)))
+      {
+        char c = str.charAt(strInd);
+        strInd++;
+        if (c >= 'a' && c <= 'z')
+            c = (char)(c + ('A'-'a'));
+        tag = tag + c;
+      }
+      tag = tag + "\"";
+
+      LispObject info = null;
+
+      while (str.charAt(strInd) == ' ') strInd++;
+      while (str.charAt(strInd) != '>' && str.charAt(strInd) != '/')
+      {
+        String name = new String();
+        name = name + "\"";
+
+        while (LispTokenizer.IsAlpha(str.charAt(strInd)))
+        {
+            char c = str.charAt(strInd);
+            strInd++;
+            if (c >= 'a' && c <= 'z')
+                c = (char)(c + ('A'-'a'));
+            name = name + c;
+        }
+        name = name + "\"";
+        LispError.CHK_ARG_CORE(aEnvironment,aStackTop,str.charAt(strInd) == '=',1);
+        strInd++;
+        LispError.CHK_ARG_CORE(aEnvironment,aStackTop,str.charAt(strInd) == '\"',1);
+        String value = new String();
+
+        value = value + (str.charAt(strInd));
+        strInd++;
+        while (str.charAt(strInd) != '\"')
+        {
+            value = value + (str.charAt(strInd));
+            strInd++;
+        }
+        value = value + (str.charAt(strInd));
+        strInd++;
+
+//printf("[%s], [%s]\n",name.String(),value.String());
+        {
+          LispObject ls = LispAtom.New(aEnvironment,"List");
+          LispObject nm = LispAtom.New(aEnvironment,name);
+          LispObject vl = LispAtom.New(aEnvironment,value);
+          nm.Next().Set(vl);
+          ls.Next().Set(nm);
+          LispObject newinfo =  LispSubList.New(ls);
+          newinfo.Next().Set(info);
+          info = newinfo;
+        }
+        while (str.charAt(strInd) == ' ') strInd++;
+
+//printf("End is %c\n",str[0]);
+    }
+    if (str.charAt(strInd) == '/')
+    {
+      type = "\"OpenClose\"";
+      strInd++;
+      while (str.charAt(strInd) == ' ') strInd++;
+    }
+    
+    {
+      LispObject ls = LispAtom.New(aEnvironment,"List");
+      ls.Next().Set(info);
+      info = LispSubList.New(ls);
+    }
+
+    LispObject xm = LispAtom.New(aEnvironment,"XmlTag");
+    LispObject tg = LispAtom.New(aEnvironment,tag);
+    LispObject tp = LispAtom.New(aEnvironment,type);
+    info.Next().Set(tp);
+    tg.Next().Set(info);
+    xm.Next().Set(tg);
+    RESULT(aEnvironment, aStackTop).Set(LispSubList.New(xm));
+
     }
   }
 
@@ -4053,6 +4193,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispExit");//TODO FIXME
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -4061,6 +4202,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispExitRequested");//TODO FIXME
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -4069,6 +4211,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispHistorySize");//TODO FIXME
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -4077,6 +4220,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispStackSize");//TODO FIXME
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -4085,6 +4229,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispIsPromptShown");//TODO FIXME
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -4093,6 +4238,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispReadCmdLineString");//TODO FIXME
+      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -4115,7 +4261,33 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispFileSize");//TODO FIXME
+      LispPtr fnameObject = new LispPtr();
+      fnameObject.Set(ARGUMENT(aEnvironment,aStackTop,1).Get());
+      LispError.CHK_ISSTRING_CORE(aEnvironment,aStackTop,fnameObject,1);
+      String fname = LispStandard.InternalUnstringify(fnameObject.Get().String());
+      String hashedname = aEnvironment.HashTable().LookUp(fname);
+
+      long fileSize = 0;
+      InputStatus oldstatus = new InputStatus(aEnvironment.iInputStatus);
+      aEnvironment.iInputStatus.SetTo(hashedname);
+      try
+      {
+        // Open file
+        LispInput newInput = // new StdFileInput(hashedname, aEnvironment.iInputStatus);
+            LispStandard.OpenInputFile(aEnvironment, aEnvironment.iInputDirectories, hashedname, aEnvironment.iInputStatus);
+        
+        LispError.Check(newInput != null, LispError.KLispErrFileNotFound);
+        fileSize = newInput.StartPtr().length();
+      }
+      catch (Exception e)
+      {
+        throw e;
+      }
+      finally
+      {
+        aEnvironment.iInputStatus.RestoreFrom(oldstatus);
+      }
+      RESULT(aEnvironment,aStackTop).Set(LispAtom.New(aEnvironment,""+fileSize));
     }
   }
 

@@ -33,6 +33,6 @@ todo.txt yacasconsole.html \
 CDataReader.java HintItem.java \
 HintWindow.java Hints.java SelectSymbol.java TResult.java TSentence.java \
 TWord.java YacasGraphicsContext.java YacasNotebook.java \
-YacasNotebookComponent.java calc.java tegicphone.java calc.html
+YacasNotebookComponent.java calc.java tegicphone.java calc.html TempMathUtils.java XmlTokenizer.java
 
 

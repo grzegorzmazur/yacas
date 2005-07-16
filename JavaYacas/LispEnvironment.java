@@ -5,6 +5,7 @@ class LispEnvironment
 
   LispEnvironment(LispOutput aCurrentOutput/*TODO FIXME*/) throws Exception
   {
+    iCurrentTokenizer = iDefaultTokenizer;
     iInitialOutput = aCurrentOutput;
     iCurrentOutput = aCurrentOutput;
     iCurrentPrinter = new InfixPrinter(iPrefixOperators, iInfixOperators, iPostfixOperators, iBodiedOperators);
@@ -315,8 +316,9 @@ class LispEnvironment
   LispPrinter iCurrentPrinter = null;
   LispInput   iCurrentInput   = null;
   InputStatus iInputStatus    = new InputStatus();
-
-  LispTokenizer iCurrentTokenizer = new LispTokenizer();
+  LispTokenizer iCurrentTokenizer;
+  LispTokenizer iDefaultTokenizer = new LispTokenizer();
+  LispTokenizer iXmlTokenizer = new XmlTokenizer();
 
   LispUserFunctions iUserFunctions = new LispUserFunctions();
   

@@ -1,16 +1,6 @@
 
-- Get MathSin MathPi etcetera working.
 - run test scripts, and fix problems accordingly
-  - different way of printing numbers: should strip off all 
-    trailing zeroes when printing a number.
-  - CurrentFile/CurrentLine show strange things in test failures, as if 
-    InputStatus is not restored after an automated Use.
-
-- LispArcCos
-- LispArcTan
-- LispPi
 - LispFastMod
-
 - LispDllEnumerate
 - LispDllDirectory
 - LispDllLoad
