@@ -12,7 +12,7 @@ CLASSES = CVersion.class InputStatus.class LispInput.class LispOutput.class \
   LispPrinter.class LispError.class LispTokenizer.class \
    LispParser.class LispAtom.class LispNumber.class LispSubList.class LispStandard.class \
   StringInput.class StringOutput.class \
-   InfixParser.class  LispEvaluatorBase.class \
+   InfixParser.class  LispEvaluatorBase.class BigNumber.class \
   YacasEvaluator.class YacasEvalCaller.class YacasCoreCommands.class UserStackInformation.class \
   BasicEvaluator.class EvalFuncBase.class LispOperators.class LispUserFunction.class LispPtrArray.class LispLocalFrame.class LispIterator.class InfixPrinter.class LispEnvironment.class MathCommands.class \
 YacasConsole.class ConsoleApplet.class \

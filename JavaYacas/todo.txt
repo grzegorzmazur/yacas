@@ -1,7 +1,10 @@
 
 - Get MathSin MathPi etcetera working.
-- command line support for test scripts (-pc flags at least)
-- run test scripts
+- run test scripts, and fix problems accordingly
+  - different way of printing numbers: should strip off all 
+    trailing zeroes when printing a number.
+  - CurrentFile/CurrentLine show strange things in test failures, as if 
+    InputStatus is not restored after an automated Use.
 
 - LispArcCos
 - LispArcTan
@@ -17,7 +20,6 @@
 - LispPatchString
 
 - Use the hints in the console version also!
-- LispFastIsPrime
 
 - Some more functions that are defined in yacasmain.cpp, 
 	Exit
@@ -71,4 +73,20 @@
 - two methods were doubly defined in corefunctions.h (NewLocals and another one nearby)
 - Double-check that LocalFrame is handled correctly everywhere, eg the destructor is not called, so need to call its Delete method directly
 - CommonLispTokenizer.java
+
+
+TO DO Java UI, before I can use it comfortably too:
+- let the applet get focus immediately
+- screen is not white on Windows
+- try to find a proportional font that runs everywhere 
+- truncating strings (making them continue on the next line
+- hints for the console applet too 
+- Allow editing one file for loading
+- stop current execution
+- applet should be a notebook with embedded objects (graphs?)
+- nicely rendered formulae
+- nice link to help files.
+- easy getting started for beginners.
+
+
 

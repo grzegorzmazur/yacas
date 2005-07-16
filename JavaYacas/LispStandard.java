@@ -444,7 +444,7 @@ class LispStandard
 
     String hashedname = aEnvironment.HashTable().LookUp(oper);
 
-    InputStatus oldstatus = aEnvironment.iInputStatus;
+    InputStatus oldstatus = new InputStatus(aEnvironment.iInputStatus);
     aEnvironment.iInputStatus.SetTo(hashedname);
     try
     {

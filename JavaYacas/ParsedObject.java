@@ -84,7 +84,7 @@ class ParsedObject
 //printf("op [%s]\n",iLookAhead.String());
               if (LispTokenizer.IsSymbolic(iLookAhead.charAt(0)))
               {
-                int origlen = iLookAhead.length()-1;
+                int origlen = iLookAhead.length();
                 int len = origlen;
 //printf("IsSymbolic, len=%d\n",len);
 
@@ -99,7 +99,7 @@ class ParsedObject
 //if (op) printf("FOUND\n");
                   if (op != null)
                   {
-String toLookUp = iLookAhead.substring(len,origlen-len);
+String toLookUp = iLookAhead.substring(len,origlen);
                     String lookUpRight =
                       iParser.iEnvironment.HashTable().LookUp(toLookUp);
 

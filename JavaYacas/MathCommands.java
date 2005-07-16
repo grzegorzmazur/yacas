@@ -3665,7 +3665,25 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : FastIsPrime");//TODO FIXME
+      //TODO fixme this routine should actually be called SlowIsPrime ;-)
+      BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
+      long n = x.Long();
+      long result = 1;
+      
+      int i=2;
+      int max = (int)(1+Math.sqrt(n));
+//System.out.println("n = "+n+" max = "+max);
+      while (i<=max && result == 1)
+      {
+      //System.out.println(""+n+"%"+i+" = "+(n%i));
+        if ((n%i) == 0)
+          result = 0;
+        i++;
+      }
+      
+      BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
+      z.SetTo(result);
+      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
 
