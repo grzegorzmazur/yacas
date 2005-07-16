@@ -1,24 +1,5 @@
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class HintWindow
 {
   public  HintWindow(int aTextSize)
@@ -61,11 +42,17 @@ class HintWindow
             iMaxWidth = width;
       }
     }
+
+//System.out.println("iNrLines = "+iNrLines);
+//System.out.println("iMaxWidth = "+iMaxWidth);
+
     int ix = x;
     int iy = y;
     int w = 5+iMaxWidth;
     int h = height(aGraphicsContext);
     iy -= (h+4);
+
+//System.out.println("height = "+h);
 
     aGraphicsContext.SetColor(255,255,255);
     aGraphicsContext.FillRect(ix,iy,w,h);
@@ -74,6 +61,10 @@ class HintWindow
 
     int i;
     aGraphicsContext.SetFontSize(0,iTextSize);
+    
+//System.out.println("iTextSize = "+iTextSize);
+//System.out.println("aGraphicsContext.FontHeight() = "+aGraphicsContext.FontHeight());
+
     for (i=0;i<iNrLines;i++)
     {
         if (i == iCurrentPos)
@@ -98,6 +89,9 @@ class HintWindow
       }
     }
   }
+
+
+
   public  int height(YacasGraphicsContext  aGraphicsContext)
   {
     int h;

@@ -32,6 +32,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
 
     out = new AppletOutput(this);
     ResetInput();
+    
+    String hintsfilename = getDocumentBase().toString() + ".hints";
+    LoadHints(hintsfilename);
   }
   boolean focusGained = false;
   public void focusGained(FocusEvent evt) 
@@ -211,48 +214,80 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
       }
       else if (e.VK_ESCAPE == e.getKeyCode())
       {
-        ResetInput();
+        String str = inputLine.toString();
+//System.out.println("Trying to hint for "+str);
+        hintWindow = TryToHint(str, str.length());
+//        if (hintWindow != null)
+        {
+//          System.out.println("Hints found!");
+          repaint();
+          return;
+        }
+
+//        ResetInput();
       }
       else if (e.VK_UP == e.getKeyCode())
       {
-        String prefix = inputLine.substring(0,cursorPos);
-        int i = historyBrowse - 1;
-        while (i > 0)
+        if (hintWindow != null)
         {
-          if (history[i].startsWith(prefix))
-            break;
-          i--;
+          if (hintWindow.iCurrentPos >0)
+          {
+            hintWindow.iCurrentPos--;
+            repaint();
+            return;
+          }
         }
-        if (i >= 0 && i != historyBrowse && history[i].startsWith(prefix))
+        else
         {
-          historyBrowse = i;
-          inputLine = history[historyBrowse];
+          String prefix = inputLine.substring(0,cursorPos);
+          int i = historyBrowse - 1;
+          while (i > 0)
+          {
+            if (history[i].startsWith(prefix))
+              break;
+            i--;
+          }
+          if (i >= 0 && i != historyBrowse && history[i].startsWith(prefix))
+          {
+            historyBrowse = i;
+            inputLine = history[historyBrowse];
+          }
         }
       }
       else if (e.VK_DOWN == e.getKeyCode())
       {
-
-        String prefix = inputLine.substring(0,cursorPos);
-        int i = historyBrowse + 1;
-        while (i < currentHistoryLine)
+        if (hintWindow != null)
         {
-          if (history[i].startsWith(prefix))
-            break;
-          i++;
+          if (hintWindow.iCurrentPos < hintWindow.iNrLines-1)
+          {
+            hintWindow.iCurrentPos++;
+            repaint();
+            return;
+          }
         }
-        if (i < currentHistoryLine && history[i].startsWith(prefix))
+        else
         {
-          historyBrowse = i;
-          inputLine = history[historyBrowse];
+          String prefix = inputLine.substring(0,cursorPos);
+          int i = historyBrowse + 1;
+          while (i < currentHistoryLine)
+          {
+            if (history[i].startsWith(prefix))
+              break;
+            i++;
+          }
+          if (i < currentHistoryLine && history[i].startsWith(prefix))
+          {
+            historyBrowse = i;
+            inputLine = history[historyBrowse];
+          }
+          else 
+          {
+            int pos = cursorPos;
+            ResetInput();
+            inputLine = prefix;
+            cursorPos = pos;
+          }
         }
-        else 
-        {
-          int pos = cursorPos;
-          ResetInput();
-          inputLine = prefix;
-          cursorPos = pos;
-        }
-
       }
       else if (e.VK_RIGHT == e.getKeyCode())
       {
@@ -434,6 +469,20 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
         g.drawLine(inset+cursorLocation,y,inset+cursorLocation,y-fontHeight);
       }
     }
+    
+    if (hintWindow != null)
+    {
+//System.out.println("Rendering hints");
+      YacasGraphicsContext context = new YacasGraphicsContext(g,0,0);
+      context.SetFontSize(1,12);  
+      int nr_total_lines = 1; //nrLines;
+      Dimension d = getSize();
+//      hintWindow.draw(100,100,context);
+      hintWindow.draw(5,(int)(d.getHeight()-context.FontHeight()-nr_total_lines*context.FontHeight()),context);
+    }
+
+    
+    
     inputDirty=false;
   }
   String inputLine  = new String();
@@ -501,6 +550,115 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
       print("\n");
     }
     StringBuffer buffer = new StringBuffer();
+  }
+
+
+  HintWindow hintWindow = null;
+  Hints the_hints = new Hints();
+
+  void LoadHints(String filename)
+  {
+//    out.println("hints file : ["+filename+"]");
+    CDataReader file = new CDataReader();
+    int opened = 0;
+    try 
+    {
+      URL url = new URL(filename);
+      opened = file.Open(url);
+    }
+    catch (Exception e)
+    {
+    }
+    if (opened != 0)
+    {
+//      out.println("hints opened successfully");
+      String line = file.ReadLine();
+      String[] tokens = new String[16];
+      int nrTokens = 0;
+      while (line != null)
+      {
+      
+//        System.out.println("LINE : "+line);
+        if (line.substring(0,2).equals("~~"))
+          break;
+        int i=0;
+        nrTokens = 0;
+        while (i<line.length())
+        {
+          int start = i;
+          while (line.charAt(i) != '~') i++;
+          tokens[nrTokens] = line.substring(start,i);
+          nrTokens++;
+          i++;
+        }
+//        System.out.println("DIGITS : "+tokens[1]);
+        if (nrTokens>4)
+        {
+          HintItem hi = new HintItem();
+          hi.digits = tokens[1];
+          hi.base = tokens[2];
+          hi.hint = tokens[3];
+          hi.description = tokens[4];
+          the_hints.hintTexts[the_hints.nrHintTexts] = hi;
+          the_hints.nrHintTexts++;
+        }
+
+        line = file.ReadLine();
+      }
+      file.Close();
+    }
+    else
+    {
+      out.println("could not read hints");
+    }
+  }
+
+  HintWindow CreateHints(int fontsize)
+  {
+    return new HintWindow(fontsize);
+  }
+  
+  void AddHintLine(HintWindow hints, String aText, String aDescription)
+  {
+      hints.AddLine(aText);
+      if (aDescription.length() > 0)
+        hints.AddDescription(aDescription);
+  }
+  
+  
+  HintWindow TryToHint(String text, int length)
+  {
+    HintWindow hints = null;
+    int nrhints = the_hints.nrHintTexts;
+//System.out.println("nrhints = "+nrhints);
+    int i,start;
+    start = 0;//hoffsets[(unsigned char)text[0]];
+    if (start<0)
+        return null;
+    for (i = start;i<nrhints;i++)
+    {
+      if (text.charAt(0) > the_hints.hintTexts[i].base.charAt(0))
+      {
+        continue;
+      }
+      if (text.charAt(0) < the_hints.hintTexts[i].base.charAt(0))
+      {
+        continue;
+      }
+//System.out.println("base "+the_hints.hintTexts[i].base);
+      int baselen = the_hints.hintTexts[i].base.length();
+      if (length == baselen)
+      {
+        if (text.substring(0,baselen).equals(the_hints.hintTexts[i].base))
+        {
+//System.out.println("Adding hint line");
+          if (hints == null)
+              hints = CreateHints(12 /*iDefaultFontSize*/);
+          AddHintLine(hints, the_hints.hintTexts[i].hint,the_hints.hintTexts[i].description);
+        }
+      }
+    }
+    return hints;
   }
 
 }

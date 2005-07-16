@@ -1,4 +1,12 @@
 
+- Hints:
+  - reposition to place above where the match is
+  - find word that matches, while scrolling 
+    through possible matches with left/right arrow
+  - dynamically match
+  - escape removes the hints again
+  - find word even if not at the beginning of the sentence.
+
 - run test scripts, and fix problems accordingly
 - LispFastMod
 - LispDllEnumerate
