@@ -449,7 +449,6 @@ class LispStandard
     try
     {
       // Open file
-//TODO remove      StdFileInput newInput = new StdFileInput(hashedname,aEnvironment.iInputStatus);
       LispInput newInput = // new StdFileInput(hashedname, aEnvironment.iInputStatus);
           OpenInputFile(aEnvironment, aEnvironment.iInputDirectories, hashedname, aEnvironment.iInputStatus);
       
