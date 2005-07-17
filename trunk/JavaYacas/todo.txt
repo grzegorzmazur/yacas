@@ -1,11 +1,17 @@
 
-- Hints:
-  - reposition to place above where the match is
-  - find word that matches, while scrolling 
-    through possible matches with left/right arrow
-  - dynamically match
-  - escape removes the hints again
-  - find word even if not at the beginning of the sentence.
+- purpose: allow experienced users to enter programs in Java mode,
+  while allowing me to send others things they can copy-paste
+  in to the console.
+  x "cls" command to clean console
+  - copy to clipboard
+  - paste from clipboard
+  - text/end to enter new text, edit/end to edit it.
+  - "copy" to copy text file to clip board
+
+
+- Java applet: allow copy-pasting
+- Java applet: allow entering a full program (copy-paste)
+
 
 - run test scripts, and fix problems accordingly
 - LispFastMod
