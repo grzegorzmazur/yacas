@@ -1,5 +1,5 @@
 
-PROGS = example1 example2 example3
+PROGS = example1 example2 example3 example4
 
 all: $(PROGS)
 
@@ -28,4 +28,9 @@ example3: example3.c
 	gcc -c example3.c $(CFLAGS)
 	gcc example3.o $(LDFLAGS) -o example3
 	strip example3
+
+example4: example4.c
+	gcc -c example4.c $(CFLAGS)
+	gcc example4.o $(LDFLAGS) -o example4
+	strip example4
 

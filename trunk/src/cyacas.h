@@ -64,7 +64,38 @@ YACASDLL_API void yacas_secure();
  */
 YACASDLL_API void yacas_interrupt();
 
-    
+// Creating objects
+YACASDLL_API void* yacas_create_atom(char* atom);
+YACASDLL_API void* yacas_create_string(char* string);
+YACASDLL_API void* yacas_create_number_from_string(char* string);
+YACASDLL_API void* yacas_create_number_from_long(long number);
+YACASDLL_API void* yacas_create_number_from_double(double number);
+YACASDLL_API void* yacas_create_sublist(void* object);
+
+// Linking linked lists
+YACASDLL_API void* yacas_link_objects(void* head, void* tail);
+
+// executing an object
+YACASDLL_API void* yacas_execute(void* object);
+
+// pulling apart an object again
+YACASDLL_API void* yacas_get_sublist(void* object);
+YACASDLL_API char* yacas_get_atom(void* object);
+YACASDLL_API int  yacas_object_is_string(void* object);
+YACASDLL_API int  yacas_object_is_sublist(void* object);
+YACASDLL_API int  yacas_object_is_atom(void* object);
+YACASDLL_API int  yacas_object_is_number(void* object);
+YACASDLL_API int  yacas_object_is_integer(void* object);
+YACASDLL_API long yacas_get_long(void* object);
+YACASDLL_API double yacas_get_double(void* object);
+
+// Get the next in chain
+YACASDLL_API void* yacas_get_next(void* object);
+
+
+// Freeing object
+YACASDLL_API void yacas_delete_object(void* object);
+
 
 #ifdef __cplusplus
 }
