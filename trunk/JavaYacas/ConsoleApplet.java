@@ -202,7 +202,13 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
       }
       else if (e.VK_LEFT == e.getKeyCode())
       {
-        if (cursorPos>0) cursorPos--;  
+        if (cursorPos>0) 
+        {
+          cursorPos--;  
+          RefreshHintWindow();
+          repaint();
+          return;
+        }
       }
       else if (e.VK_BACK_SPACE == e.getKeyCode())
       {
@@ -210,24 +216,27 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
         {
           cursorPos--;  
           inputLine = new StringBuffer(inputLine).delete(cursorPos,cursorPos+1).toString();
+          RefreshHintWindow();
+          repaint();
+          return;
         }
       }
       else if (e.VK_ESCAPE == e.getKeyCode())
       {
-        String str = inputLine.toString();
-//System.out.println("Trying to hint for "+str);
-        hintWindow = TryToHint(str, str.length());
-//        if (hintWindow != null)
+        if (hintWindow != null)
         {
-//          System.out.println("Hints found!");
-          repaint();
-          return;
+          hintWindow = null;
         }
-
-//        ResetInput();
+        else
+        {
+          ResetInput();
+        }
+        repaint();
+        return;
       }
       else if (e.VK_UP == e.getKeyCode())
       {
+/*TODO remove
         if (hintWindow != null)
         {
           if (hintWindow.iCurrentPos >0)
@@ -238,6 +247,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
           }
         }
         else
+*/
         {
           String prefix = inputLine.substring(0,cursorPos);
           int i = historyBrowse - 1;
@@ -256,6 +266,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
       }
       else if (e.VK_DOWN == e.getKeyCode())
       {
+/*TODO remove
         if (hintWindow != null)
         {
           if (hintWindow.iCurrentPos < hintWindow.iNrLines-1)
@@ -266,6 +277,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
           }
         }
         else
+*/
         {
           String prefix = inputLine.substring(0,cursorPos);
           int i = historyBrowse + 1;
@@ -291,7 +303,13 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
       }
       else if (e.VK_RIGHT == e.getKeyCode())
       {
-        if (cursorPos<inputLine.length()) cursorPos++;  
+        if (cursorPos<inputLine.length()) 
+        {
+          cursorPos++;  
+          RefreshHintWindow();
+          repaint();
+          return;
+        }
       }
       else if (e.VK_ENTER == e.getKeyCode())
       {
@@ -302,16 +320,22 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
         PerformRequest("Out> ",inputLine);
 //        outputDirty = true;
 //        inputDirty = true;
-        repaint(0);
         ResetInput();
+        RefreshHintWindow();
+        repaint(0);
       }
       else
       {
-        inputLine = new StringBuffer(inputLine).insert(cursorPos,e.getKeyChar()).toString();
-        cursorPos++;
+        int c = (int)e.getKeyChar();
+        if (c>=32 && c < 128)
+        {
+          inputLine = new StringBuffer(inputLine).insert(cursorPos,e.getKeyChar()).toString();
+          cursorPos++;
+          RefreshHintWindow();
+        }
       }
       inputDirty=true;
-      repaint(0,getHeight()-2*fontHeight,getWidth(),2*fontHeight);
+      repaint();//0,getHeight()-2*fontHeight,getWidth(),2*fontHeight);
     }
   }
   void PerformRequest(String outputPrompt,String inputLine)
@@ -411,8 +435,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
       g.drawString(str, x, y);
       return;
     }
-
-
+    
     FontMetrics metrics = getFontMetrics(font);
 
 // to always redraw everything, make the whole canvas dirty
@@ -661,5 +684,113 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
     return hints;
   }
 
+  int search_start = 0;
+  private String FindWord(Hints aHints, String current_word)
+  {
+//System.out.println("search_start = "+search_start);
+    int nr = current_word.length();
+    if (nr>0)
+    {
+      int i;
+      while (true)
+      {
+        for (i=search_start;i<aHints.nrHintTexts;i++)
+        {
+          if (nr <= (aHints.hintTexts[i].digits).length()-1 && 
+              current_word.equals(aHints.hintTexts[i].base.substring(0,nr)))
+          {
+            search_start = i;
+            return aHints.hintTexts[i].base;
+          }
+        }
+        if (i == aHints.nrHintTexts && search_start != 0)
+        {
+          search_start = 0;
+//          goto REDO;
+        }
+        else
+        {
+          break;
+        }
+      }
+    }
+    return "";
+  }
+
+  void RefreshHintWindow()
+  {
+    int ito = cursorPos;
+
+    while (true)
+    {
+      if (ito==inputLine.length())
+        break;
+      if (!LispTokenizer.IsAlpha(inputLine.charAt(ito)))
+        break;
+      ito++;
+    }
+    if(ito>0)
+    {
+      int c = inputLine.charAt(ito-1);
+      if (c == ',' || c == ')')
+      {
+        int braces = -1;
+        if (c == ')')  
+        {
+          ito--;
+          braces = -2;
+        }
+        while (braces!=0)
+        {
+          if (ito<=0)
+            break;
+          if (inputLine.charAt(ito-1) == '(') braces++;
+          if (inputLine.charAt(ito-1) == ')') braces--;
+          ito--;
+        }
+      }
+    }
+    if(ito>0)
+    {
+      if (inputLine.charAt(ito-1) == '(')
+      {
+        ito--;
+      }
+    }
+    if (ito == 0)
+    {
+      while (true)
+      {
+        if (ito==cursorPos)
+          break;
+        if (!LispTokenizer.IsAlpha(inputLine.charAt(ito)))
+          break;
+        ito++;
+      }
+    }
+    int ifrom = ito;
+    while (true)
+    {
+      if (ifrom == 0)
+        break;
+      if (!LispTokenizer.IsAlpha(inputLine.charAt(ifrom-1)))
+        break;
+      ifrom--;
+    }
+
+    String word = "";//inputLine.toString();
+    if (ito>ifrom)
+    {
+      word = inputLine.substring(ifrom,ito);
+//System.out.println("ifrom = "+ifrom+" ito = "+ito);
+//System.out.println("word = "+word);
+    }
+
+    String str = FindWord(the_hints, word);
+    if (str.length()>0)
+      hintWindow = TryToHint(str, str.length());
+    else
+      hintWindow = null;
+  }
 }
 
