@@ -118,7 +118,7 @@ class HintWindow
   public  int iMaxWidth;
   public  int iTextSize;
   public  int iCurrentPos;
-};
+}
 
 
 
