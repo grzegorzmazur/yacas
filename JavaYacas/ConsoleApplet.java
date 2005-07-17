@@ -1,5 +1,18 @@
 
 /*
+
+1
+2
+
+foo():=\
+[\
+  For(i:=0,i<10,i++)\
+  [\
+    Echo(i);\
+  ];\
+];
+
+
 Documentation for the applet, starting it here, but has to move to main docs:
 just random thoughts for now.
 
@@ -10,13 +23,19 @@ just random thoughts for now.
 */
 
 
-import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.Toolkit;import java.awt.*;
 import java.awt.event.*;
 import java.applet.*;
 import java.io.*;
 import java.net.*;
 
-public class ConsoleApplet extends Applet implements KeyListener, FocusListener
+public class ConsoleApplet extends Applet implements KeyListener, FocusListener, ClipboardOwner
 {
   AppletOutput out;
 
@@ -48,6 +67,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
   {
 //    focusGained = false;
 //    repaint();
+  }
+
+  public void lostOwnership(Clipboard clipboard, Transferable contents)
+  {
   }
 
   LispOutput stdoutput = null;
@@ -161,6 +184,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
 
   private void ResetInput()
   {
+    if (inputLine.length()>0)
+      if (inputLine.charAt(inputLine.length()-1) != '\\')
+        gatheredMultiLine = "";
     inputLine = "";
     cursorPos = 0;
     historyBrowse = currentHistoryLine;
@@ -185,8 +211,93 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
 //    processKeyEvent(e);
   }
 
+
+  public void setClipboardContents( String aString )
+  {
+    StringSelection stringSelection = new StringSelection( aString );
+    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+    clipboard.setContents( stringSelection, this );
+  }
+  public String getClipboardContents() 
+  {
+    String result = "";
+    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+    //odd: the Object param of getContents is not currently used
+    Transferable contents = clipboard.getContents(null);
+    boolean hasTransferableText = (contents != null) &&
+                                  contents.isDataFlavorSupported(DataFlavor.stringFlavor);
+    if ( hasTransferableText ) 
+    {
+      try 
+      {
+        result = (String)contents.getTransferData(DataFlavor.stringFlavor);
+      }
+      catch (java.awt.datatransfer.UnsupportedFlavorException ex)
+      {
+        //highly unlikely since we are using a standard DataFlavor
+        System.out.println(ex);
+      }
+      catch (IOException ex) 
+      {
+        System.out.println(ex);
+      }
+    }
+    return result;
+  }
+
   protected void processKeyEvent(KeyEvent e)
   {
+
+    if ((e.getModifiers() & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK)
+    {
+      if (KeyEvent.KEY_PRESSED != e.getID())
+        return;
+      if (e.getKeyCode() == (int)'C')
+      {
+        //out.println("Copy");
+        setClipboardContents( gatheredMultiLine+inputLine );
+      }
+      else if (e.getKeyCode() == (int)'V')
+      {
+        try
+        {
+          String toInsert = getClipboardContents();
+          if (toInsert != null)
+          {
+            int cr = toInsert.indexOf('\n');
+            while (cr >= 0)
+            {
+              inputLine = inputLine+toInsert.substring(0,cr);
+              toInsert = toInsert.substring(cr+1,toInsert.length());
+              cr = toInsert.indexOf('\n');
+//System.out.println("");
+              history[currentHistoryLine] = inputLine;
+              currentHistoryLine++;
+              AddLine(inputPrompt+inputLine);
+              if (inputLine.charAt(inputLine.length()-1) == '\\')
+                gatheredMultiLine = gatheredMultiLine + inputLine.substring(0,inputLine.length()-1);
+              else
+                PerformRequest("Out> ",gatheredMultiLine+inputLine);
+              ResetInput();
+            }
+            inputLine = inputLine+toInsert;
+            RefreshHintWindow();
+            repaint();
+            return;
+          }
+          //  out.println("Paste");
+//          out.println(toInsert);
+        }
+        catch (Exception ex)
+        {
+        }
+      }
+      else
+      {
+        return;
+      }
+    }
+
     if (KeyEvent.KEY_PRESSED == e.getID())    
     {
       if (e.VK_SHIFT == e.getKeyCode()) {return;}
@@ -196,6 +307,16 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
       {
         cursorPos = 0;  
       }
+/*Does not seem to work?
+      else if (e.VK_COPY == e.getKeyCode())
+      {
+        System.out.println("COPY");
+      }
+      else if (e.VK_PASTE == e.getKeyCode())
+      {
+        System.out.println("PASTE");
+      }
+*/
       else if (e.VK_END == e.getKeyCode())
       {
         cursorPos = inputLine.length();  
@@ -236,18 +357,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
       }
       else if (e.VK_UP == e.getKeyCode())
       {
-/*TODO remove
-        if (hintWindow != null)
-        {
-          if (hintWindow.iCurrentPos >0)
-          {
-            hintWindow.iCurrentPos--;
-            repaint();
-            return;
-          }
-        }
-        else
-*/
         {
           String prefix = inputLine.substring(0,cursorPos);
           int i = historyBrowse - 1;
@@ -266,18 +375,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
       }
       else if (e.VK_DOWN == e.getKeyCode())
       {
-/*TODO remove
-        if (hintWindow != null)
-        {
-          if (hintWindow.iCurrentPos < hintWindow.iNrLines-1)
-          {
-            hintWindow.iCurrentPos++;
-            repaint();
-            return;
-          }
-        }
-        else
-*/
         {
           String prefix = inputLine.substring(0,cursorPos);
           int i = historyBrowse + 1;
@@ -316,10 +413,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
         history[currentHistoryLine] = inputLine;
         currentHistoryLine++;
         AddLine(inputPrompt+inputLine);
-
-        PerformRequest("Out> ",inputLine);
-//        outputDirty = true;
-//        inputDirty = true;
+        if (inputLine.charAt(inputLine.length()-1) == '\\')
+          gatheredMultiLine = gatheredMultiLine + inputLine.substring(0,inputLine.length()-1);
+        else
+          PerformRequest("Out> ",gatheredMultiLine+inputLine);
         ResetInput();
         RefreshHintWindow();
         repaint(0);
@@ -341,14 +438,20 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
   void PerformRequest(String outputPrompt,String inputLine)
   {
     boolean succeed = false;
-    if (inputLine.startsWith("restart"))
+    if (inputLine.equals("restart"))
     {
       stop();
       out.println("Restarting");
       start();
       return;
     }
-
+    
+    if (inputLine.equals("cls"))
+    {
+      int i;
+      for (i=0;i<nrLines;i++) lines[i] = null;
+      outputDirty = true;
+    }
     {
       outp.delete(0,outp.length());
       String response = yacas.Evaluate(inputLine);
@@ -503,12 +606,12 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener
 //      hintWindow.draw(100,100,context);
       hintWindow.draw(5,(int)(d.getHeight()-context.FontHeight()-nr_total_lines*context.FontHeight()),context);
     }
-
-    
     
     inputDirty=false;
   }
   String inputLine  = new String();
+  String gatheredMultiLine = new String();
+
   int cursorPos = 0;
   final int inset = 5;
   
