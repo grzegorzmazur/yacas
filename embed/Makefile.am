@@ -3,10 +3,12 @@
 EXTRA_DIST = README.TXT makefile.examples \
 	wintest1.cpp wintest1.dsp wintest1.dsw
 
-noinst_PROGRAMS = example1 example2 example3
+noinst_PROGRAMS = example1 example2 example3 example4
 example1_SOURCES = example1.c
 example2_SOURCES = example2.c
 example3_SOURCES = example3.c
+example4_SOURCES = example4.c
+
 INCLUDES = -I$(top_srcdir)/src
 
 ## We might want to link against the installed libraries, as soon as the libraries
