@@ -135,13 +135,24 @@ class BigNumber
     if (integer != null)
     {
       if (aOther.integer == null)
+      {
+        //hier
+        BigDecimal x = GetDecimal(this);
+        if (x.compareTo(aOther.decimal) == 0)
+          return true;
         return false;
+      }
       return (integer.compareTo(aOther.integer) == 0);
     }
     if (decimal != null)
     {
       if (aOther.decimal== null)
+      {
+        BigDecimal x = GetDecimal(aOther);
+        if (x.compareTo(decimal) == 0)
+          return true;
         return false;
+      }
       return (decimal.compareTo(aOther.decimal) == 0);
     }
     return true;
