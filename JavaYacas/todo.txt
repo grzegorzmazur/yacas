@@ -1,17 +1,8 @@
 
-- purpose: allow experienced users to enter programs in Java mode,
-  while allowing me to send others things they can copy-paste
-  in to the console.
-  x "cls" command to clean console
-  - copy to clipboard
-  - paste from clipboard
-  - text/end to enter new text, edit/end to edit it.
-  - "copy" to copy text file to clip board
-
-
-- Java applet: allow copy-pasting
-- Java applet: allow entering a full program (copy-paste)
-
+- test program for the cyacas.h api
+- test: ToBase to also work with real numbers
+- update changes.html
+- check that all files are checked in
 
 - run test scripts, and fix problems accordingly
 - LispFastMod
@@ -23,7 +14,6 @@
 - LispPatchLoad
 - LispPatchString
 
-- Use the hints in the console version also!
 
 - Some more functions that are defined in yacasmain.cpp, 
 	Exit

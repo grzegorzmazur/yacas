@@ -834,7 +834,7 @@ VOID CALLBACK stopClient(LPVOID lpArgToCompletionRoutine, DWORD dwTimerLowValue,
   }
 }
 
-#define MAX_CONNECTIONS  10
+#define MAX_CONNECTIONS  1000
 #define BUFFER_CHUNKSIZE 256
 
 int runserver(int argc,char** argv)
