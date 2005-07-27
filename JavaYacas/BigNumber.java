@@ -231,6 +231,9 @@ class BigNumber
       BigDecimal dY = GetDecimal(aY);
       integer = null;
       decimal = dX.multiply(dY);
+      int newScale = iPrecision;
+      if (newScale < decimal.scale())
+        decimal = decimal.setScale(newScale,BigDecimal.ROUND_HALF_EVEN);
     }
     else
     {
@@ -255,6 +258,9 @@ class BigNumber
       BigDecimal dY = GetDecimal(aY);
       integer = null;
       decimal = dX.add(dY);
+      int newScale = iPrecision;
+      if (newScale < decimal.scale())
+        decimal = decimal.setScale(newScale,BigDecimal.ROUND_HALF_EVEN);
     }
     else
     {

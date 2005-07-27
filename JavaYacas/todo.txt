@@ -3,6 +3,8 @@
 - test: ToBase to also work with real numbers
 - update changes.html
 - check that all files are checked in
+- fix for plugins_available.h not being available at the beginning
+- fix for the sockets in yacasmain.cpp
 
 - run test scripts, and fix problems accordingly
 - LispFastMod
