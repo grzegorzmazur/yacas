@@ -262,10 +262,16 @@ Verify(
 GuessRational(N(Pi))
 , 355/113
 );
+
+/*
+  For the NearRational test, perhaps better would be a real test that
+  checks that the result is correct up to the required number of digits
+  accuracy.
+*/
 Precision(10);
 Verify(
 NearRational(N(Pi))
-, 355/113
+, 333/106 // used to be 355/113, which could also be considered correct, and is in fact slightly better.
 );
 
 // Lambert's W function

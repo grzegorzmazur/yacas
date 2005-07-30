@@ -437,6 +437,8 @@ NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 		)
 	);
 	// recipe: x1dd 1 to the lx1st term unless it's the lx1st in the originx1l sequence
+	//Ayal added this line, i could become bigger than Length(x1)!
+	If(i>Length(x1),i:=Length(x1));
 	x1[i] := x1[i] + If(i=Length(x1), 0, 1);
 	If(Verbose, Echo({"NearRational: using ", i, "terms of the continued fraction"}));
 	Precision(old'prec);
