@@ -139,11 +139,12 @@ catch(Exception e)
 //TODO fixme    System.out.println("Type ?license or ?licence to see the GPL; type ?warranty for warranty info.");
     System.out.println("See http://yacas.sf.net for more information and documentation on Yacas.");
 
-
     System.out.println("Numeric mode: \""+BigNumber.NumericLibraryName()+"\"\n");
-//TODO fixme    System.out.println("To exit Yacas, enter  Exit(); or quit or Ctrl-c. Type ?? for help.\n");
-//TODO fixme    System.out.println("Or type ?function for help on a function.\n");
-//TODO fixme    System.out.println("Type 'restart' to restart Yacas.\n");
+/*TODO fixme    
+    System.out.println("To exit Yacas, enter  Exit(); or quit or Ctrl-c. Type ?? for help.\n");
+    System.out.println("Or type ?function for help on a function.\n");
+    System.out.println("Type 'restart' to restart Yacas.\n");
+*/
     System.out.println("To see example commands, keep typing Example();\n");
 
 

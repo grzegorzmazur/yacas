@@ -244,7 +244,6 @@ class BranchingUserFunction extends LispArityUserFunction
       for (i=0;i<nrRules;i++)
       {
           BranchRuleBase thisRule = ((BranchRuleBase)iRules.get(i));
-//TODO remove          CHECKPTR(thisRule);
           LispError.LISPASSERT(thisRule != null);
 
           st.iRulePrecedence = thisRule.Precedence();
@@ -262,7 +261,6 @@ class BranchingUserFunction extends LispArityUserFunction
                   tr.Set(null);
               }
   */
-  //TODO remove            goto FINISH;
               return;
           }
 
@@ -405,31 +403,28 @@ class BranchingUserFunction extends LispArityUserFunction
     // Otherwise, O(log n) search algorithm for place to insert
     for(;;)
     {
-        if (low>=high)
-        {
-            mid=low;
-            // Insert it
-            iRules.add(mid,newRule);return;
-        }
-        mid = (low+high)>>1;
+      if (low>=high)
+      {
+        mid=low;
+        // Insert it
+        iRules.add(mid,newRule);return;
+      }
+      mid = (low+high)>>1;
 
-        if (((BranchRuleBase)iRules.get(mid)).Precedence() > aPrecedence)
-        {
-            high = mid;
-        }
-        else if (((BranchRuleBase)iRules.get(mid)).Precedence() < aPrecedence)
-        {
-            low = (++mid);
-        }
-        else
-        {
-          // Insert it
-          iRules.add(mid,newRule);return;
-        }
+      if (((BranchRuleBase)iRules.get(mid)).Precedence() > aPrecedence)
+      {
+        high = mid;
+      }
+      else if (((BranchRuleBase)iRules.get(mid)).Precedence() < aPrecedence)
+      {
+        low = (++mid);
+      }
+      else
+      {
+        // Insert it
+        iRules.add(mid,newRule);return;
+      }
     }
-//    CONTINUE:
-    // Insert it
-//TODO remove    iRules.add(mid,newRule);return;
   }
 
   /// Return the argument list, stored in #iParamList

@@ -1,18 +1,6 @@
 
 /*
 
-1
-2
-
-foo():=\
-[\
-  For(i:=0,i<10,i++)\
-  [\
-    Echo(i);\
-  ];\
-];
-
-
 Documentation for the applet, starting it here, but has to move to main docs:
 just random thoughts for now.
 

@@ -215,12 +215,13 @@ void LispLexCompare2(LispEnvironment& aEnvironment, LispInt aStackTop,
 }
 
 // this function will eventually be moved to scripts
+/*TODO remove
 void LispPi(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     //TESTARGS(1);
     RESULT.Set(PiFloat(aEnvironment, aEnvironment.Precision()));
 }
-
+*/
 
 
 
