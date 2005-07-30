@@ -25,7 +25,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 
 yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp
 yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
-yacas_DEPENDENCIES = plugins_available.h @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c version.h GPL_stuff.h 
+yacas_DEPENDENCIES = $(srcdir)/plugins_available.h @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c version.h GPL_stuff.h 
 
 # order of libraries is important, @NUMBERS_LIB@ before libyacas.la and that is before libyacasplatform.la
 
@@ -79,11 +79,13 @@ libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 
 # The libmath.cpp source file is generated as follows
 
-$(srcdir)/libmath.cpp: $(top_srcdir)/scripts/base.rep/math.ys yacas$(EXEEXT)
+$(srcdir)/libmath.cpp: $(top_srcdir)/scripts/base.rep/math.ys yacas$(EXEEXT) check_plugins
 	(cd ../scripts && make packages.ys corefunctions.ys)
 	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
 	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
 	./yacas$(EXEEXT) --rootdir  $(top_srcdir)/scripts -pc --init compileinit.txt compile.txt
+	./check_plugins
+	make
 
 # We used to have "libmath_la_LIBADD = libmath.lo" because libmath.cpp
 # is a built source. However, this broke the build process on some
@@ -148,7 +150,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 
 
 # list some extra generated files
-CLEANFILES = fastprimes.c core_yacasmain.h $(srcdir)/libmath.cpp 
+CLEANFILES = fastprimes.c core_yacasmain.h $(srcdir)/libmath.cpp $(srcdir)/plugins_available.h
 
 $(srcdir)/platmath.cpp: fastprimes.c
 
@@ -160,36 +162,44 @@ fastprimes.c: mkfastprimes
 
 dummy:
 
-plugins_available.h: check_plugins dummy
+$(srcdir)/plugins_available.h: check_plugins dummy
 	./check_plugins
 
 
-libmath_stub.cpp:plugin_stub_gen
+libmath_stub.cpp:plugin_stub_gen $(srcdir)/plugins_available.h 
 	./plugin_stub_gen libmath_stub.cpp libmath.cpp
 
-pcre_study_stub.c:plugin_stub_gen
+pcre_study_stub.c:plugin_stub_gen $(srcdir)/plugins_available.h
 	./plugin_stub_gen pcre_study_stub.c ../plugins/pcre/study.c
 
-pcre_pcre_stub.c:plugin_stub_gen
+pcre_pcre_stub.c:plugin_stub_gen $(srcdir)/plugins_available.h
 	./plugin_stub_gen pcre_pcre_stub.c ../plugins/pcre/pcre.c
 
-pcre_maketables_stub.c:plugin_stub_gen
+pcre_maketables_stub.c:plugin_stub_gen $(srcdir)/plugins_available.h
 	./plugin_stub_gen pcre_maketables_stub.c ../plugins/pcre/maketables.c
 
-pcre_pcreposix_stub.c:plugin_stub_gen
+pcre_pcreposix_stub.c:plugin_stub_gen $(srcdir)/plugins_available.h
 	./plugin_stub_gen pcre_pcreposix_stub.c ../plugins/pcre/pcreposix.c
 
-pcre_get_stub.c:plugin_stub_gen
+pcre_get_stub.c:plugin_stub_gen $(srcdir)/plugins_available.h
 	./plugin_stub_gen pcre_get_stub.c ../plugins/pcre/get.c
 
-pcre_plugin_stub.cpp:plugin_stub_gen
+pcre_plugin_stub.cpp:plugin_stub_gen $(srcdir)/plugins_available.h
 	./plugin_stub_gen pcre_plugin_stub.cpp ../plugins/pcre/plugin.cpp
+	cd ../plugins/pcre/ ; make chartables.c
 
-filescanner_stub.cpp:plugin_stub_gen
+filescanner_stub.cpp:plugin_stub_gen $(srcdir)/plugins_available.h
 	./plugin_stub_gen filescanner_stub.cpp filescanner.cpp
 
-filescanner_plugin_stub.cpp:plugin_stub_gen
+filescanner_plugin_stub.cpp:plugin_stub_gen $(srcdir)/plugins_available.h
 	./plugin_stub_gen filescanner_plugin_stub.cpp ../plugins/filescanner/plugin.cc
+
+#workaround that hopefully allows compiling Yacas out of the box, 
+#dependency on the plugins_available.h header file
+
+exedll.cpp: $(srcdir)/plugins_available.h
+
+yacasmain.cpp: $(srcdir)/plugins_available.h
 
 
 yacas_include = $(datadir)/yacas/include
