@@ -93,6 +93,7 @@ inline void RefPtr<T>::SetTo(T* aOther)
     {
       delete iObject;
 #ifdef YACAS_DEBUG
+      extern void DecNrObjects();
       DecNrObjects();
 #endif
     }

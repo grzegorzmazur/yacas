@@ -149,13 +149,13 @@ void* yacas_create_number_from_string(char* string)
 }
 void* yacas_create_number_from_long(long number)
 {
-  BigNumber *z = new BigNumber();
+  BigNumber *z = NEW BigNumber();
   z->SetTo(number);
   return NEW LispNumber(z);
 }
 void* yacas_create_number_from_double(double number)
 {
-  BigNumber *z = new BigNumber();
+  BigNumber *z = NEW BigNumber();
   z->SetTo(number);
   return NEW LispNumber(z);
 }
