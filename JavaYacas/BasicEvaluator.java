@@ -47,7 +47,6 @@ class BasicEvaluator extends LispEvaluatorBase
       }
       else
       {
-//TODO FIXME        CHK2(aEnvironment.iEvalDepth<aEnvironment.iMaxEvalDepth, LispError.KLispErrMaxRecurseDepthReached);
         LispError.Check(aEnvironment.iEvalDepth<aEnvironment.iMaxEvalDepth, LispError.KLispErrMaxRecurseDepthReached);
       }
     }

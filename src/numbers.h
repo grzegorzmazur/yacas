@@ -35,7 +35,7 @@ LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aP
 LispObject* ModFloat( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,
                         LispInt aPrecision);
 
-LispObject* PiFloat( LispEnvironment& aEnvironment, LispInt aPrecision);
+//TODO remove LispObject* PiFloat( LispEnvironment& aEnvironment, LispInt aPrecision);
 LispObject* PowerFloat(LispObject* int1, LispObject* int2,
                          LispEnvironment& aEnvironment,LispInt aPrecision);
 LispObject* ShiftLeft( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision);

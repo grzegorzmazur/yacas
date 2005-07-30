@@ -241,13 +241,6 @@ class BigNumber
       integer = aX.integer.multiply(aY.integer);
     }
   }
-  /** Multiply two numbers, and add to *this (this is useful and generally efficient to implement).
-   * This is most likely going to be used by internal functions only, using aResult as an accumulator.
-   */
-  public void MultiplyAdd( BigNumber aX,  BigNumber aY, int aPrecision)
-  {
-    //TODO FIXME
-  }
   /// Add two numbers at given precision and return result in *this
   public void Add( BigNumber aX,  BigNumber aY, int aPrecision)
   {

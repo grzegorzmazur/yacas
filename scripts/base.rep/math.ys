@@ -177,3 +177,49 @@ Defun("MathPower", {x,y})
 
 
 
+
+Defun("MathPi",{})
+[
+  // Newton's method for finding pi:
+  // x[0] := 3.1415926
+  // x[n+1] := x[n] + Sin(x[n])
+  Local(initialPrec,curPrec,result,aPrecision);
+  Set(aPrecision,GetPrecision());
+	Set(initialPrec, aPrecision);	// target precision of first iteration, will be computed below
+  Set(curPrec, 40);  // precision of the initial guess
+  Set(result, 3.141592653589793238462643383279502884197169399);    // initial guess 
+
+	// optimize precision sequence
+	While (GreaterThan(initialPrec, MathMultiply(curPrec,3)))
+  [
+		Set(initialPrec, MathFloor(MathDivide(MathAdd(initialPrec,2),3)));
+  ];
+	Set(curPrec, initialPrec);
+  While (MathNot(GreaterThan(curPrec, aPrecision)))
+  [
+ 		// start of iteration code
+    // Get Sin(result)
+    Precision(curPrec);
+    Set(result,MathAdd(result,MathSin(result)));
+    // Calculate new result: result := result + Sin(result);
+		// end of iteration code
+		// decide whether we are at end of loop now
+		If (Equals(curPrec, aPrecision),	// if we are exactly at full precision, it's the last iteration
+    [
+			Set(curPrec, MathAdd(aPrecision,1));	// terminate loop
+    ],
+    [
+			Set(curPrec, MathMultiply(curPrec,3));	// precision triples at each iteration
+			// need to guard against overshooting precision
+ 			If (GreaterThan(curPrec, aPrecision),
+      [
+				Set(curPrec, aPrecision);	// next will be the last iteration
+      ]);
+		]);
+  ];
+  Precision(aPrecision);
+  result;
+];
+
+
+

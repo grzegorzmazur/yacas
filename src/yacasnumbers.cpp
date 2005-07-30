@@ -535,6 +535,7 @@ LispObject* ModFloat( LispObject* int1, LispObject* int2, LispEnvironment& aEnvi
 
 }
 
+/*TODO remove?
 LispObject* PiFloat( LispEnvironment& aEnvironment, LispInt aPrecision)
 {
     // Newton's method for finding pi:
@@ -585,7 +586,7 @@ LispObject* PiFloat( LispEnvironment& aEnvironment, LispInt aPrecision)
 
     return FloatToString(result, aEnvironment);
 }
-
+*/
 
 
 static LispObject* FloatToString(ANumber& aInt,

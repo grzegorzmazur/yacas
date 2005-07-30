@@ -1029,6 +1029,7 @@ LispStringPtr DivFloat( LispCharPtr int1, LispCharPtr int2, LispHashTable& aHash
   return result;
 }
 
+/*TODO remove?
 LispObject* PiFloat( LispEnvironment& aEnvironment, LispInt aPrecision)
 {
   GMPNumber x;
@@ -1038,6 +1039,7 @@ LispObject* PiFloat( LispEnvironment& aEnvironment, LispInt aPrecision)
   clearGMPNumber(x);
   return LispAtom::New(aEnvironment,result->String());
 }
+*/
 
 static LispStringPtr IntegerToString(mpz_t& aInt,
                                      LispHashTable& aHashTable)

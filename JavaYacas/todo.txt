@@ -1,10 +1,16 @@
 
+- Find out why MathPi is so slow when executed from script.
+  Perhaps conversions to/from string in MathSin?
+- one failing test, in numerics.yts:269: NearRational of Pi()
+  is off quite a bit.
+- Find out why Sqrt is not precise enough
+- find out why we are calling FastLn with Infinity
 - test program for the cyacas.h api
 - test: ToBase to also work with real numbers
-- update changes.html
-- check that all files are checked in
-- fix for plugins_available.h not being available at the beginning
-- fix for the sockets in yacasmain.cpp
+- real fix for the sockets in yacasmain.cpp
+x update changes.html
+x check that all files are checked in
+x fix for plugins_available.h not being available at the beginning
 
 - run test scripts, and fix problems accordingly
 - LispFastMod

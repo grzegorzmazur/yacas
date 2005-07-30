@@ -321,9 +321,11 @@ class MathCommands
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispDigitsToBits(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "DigitsToBits");
+/*TODO remove
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispPi(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "MathPi");
+*/
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispGcd(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "MathGcd");
@@ -2589,6 +2591,7 @@ class MathCommands
     }
   }
 
+/*TODO remove
   class LispPi extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
@@ -2597,7 +2600,7 @@ class MathCommands
       RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,"3.141592653589793238462643383279502884197169399"));
     }
   }
-
+*/
   class LispGcd extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
