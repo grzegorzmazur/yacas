@@ -1700,18 +1700,18 @@ class MathCommands
 
       if (LispStandard.IsTrue(aEnvironment,predicate))
       {
-          aEnvironment.iEvaluator.Eval(aEnvironment, RESULT(aEnvironment, aStackTop), Argument(ARGUMENT(aEnvironment, aStackTop, 0),2));
+        aEnvironment.iEvaluator.Eval(aEnvironment, RESULT(aEnvironment, aStackTop), Argument(ARGUMENT(aEnvironment, aStackTop, 0),2));
       }
       else
       {
           LispError.CHK_ARG_CORE(aEnvironment,aStackTop,LispStandard.IsFalse(aEnvironment,predicate),1);
           if (nrArguments == 4)
           {
-              aEnvironment.iEvaluator.Eval(aEnvironment, RESULT(aEnvironment, aStackTop), Argument(ARGUMENT(aEnvironment, aStackTop, 0),3));
+            aEnvironment.iEvaluator.Eval(aEnvironment, RESULT(aEnvironment, aStackTop), Argument(ARGUMENT(aEnvironment, aStackTop, 0),3));
           }
           else
           {
-              LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
+            LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
           }
       }
     }
@@ -3847,8 +3847,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : DllLoad");////TODO fixme
-      throw new Yacasexception("Function not yet supported");
+      aEnvironment.iCurrentOutput.Write("Warning: function not yet implemented : DllLoad");////TODO fixme
+      LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
   }
 

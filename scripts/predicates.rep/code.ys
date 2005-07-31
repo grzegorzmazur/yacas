@@ -330,10 +330,11 @@ FloatIsInt(_x) <--
      x:=N(x);
      Local(prec,result,n);
      Set(prec,GetPrecision());
+     If(IsZero(x),Set(n,2),
      If(x>0,
        Set(n,2+MathFloor(N(FastLog(x)/FastLog(10)))),
        Set(n,2+MathFloor(N(FastLog(-x)/FastLog(10))))
-       );
+       ));
      Precision(n+prec);
      Set(result,IsZero(RoundTo(x-Floor(x),prec)) Or IsZero(RoundTo(x-Ceil(x),prec)));
      Precision(prec);

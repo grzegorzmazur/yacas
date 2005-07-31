@@ -1,8 +1,8 @@
 
+- some code causes a lot to be printed in the tests
+
 - Find out why MathPi is so slow when executed from script.
   Perhaps conversions to/from string in MathSin?
-- one failing test, in numerics.yts:269: NearRational of Pi()
-  is off quite a bit.
 - Find out why Sqrt is not precise enough
 - find out why we are calling FastLn with Infinity
 - test program for the cyacas.h api
@@ -11,6 +11,7 @@
 x update changes.html
 x check that all files are checked in
 x fix for plugins_available.h not being available at the beginning
+x one failing test, in numerics.yts:269: NearRational of Pi() is off quite a bit.
 
 - run test scripts, and fix problems accordingly
 - LispFastMod

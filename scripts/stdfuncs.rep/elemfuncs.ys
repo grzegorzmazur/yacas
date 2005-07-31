@@ -414,17 +414,17 @@ MathPi() :=
 	// at this iteration we know the result to curprec digits
 		curprec := Min(prec, curprec * order-2);	// 2 guard digits
 		Precision(curprec+2);
-		Echo("Iteration ", k, " setting precision to ", GetPrecision());
+//		Echo("Iteration ", k, " setting precision to ", GetPrecision());
 //		Echo("old result=", MathCos(result));
-		Time([
+		/*Time*/([
 		delta := MathCos(result);
 		]);
-		Time([
+		/*Time*/([
 		deltasq := MathMultiply(delta,delta);
 		]);
-		result := Time(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*(5/112 + deltasq*(35/1152 + (deltasq*63)/2816))))));
+		result := /*Time*/(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*(5/112 + deltasq*(35/1152 + (deltasq*63)/2816))))));
 	];
-	Echo({"Method 3, using Pi/2 and order", order, ":", k, "iterations"});
+//	Echo({"Method 3, using Pi/2 and order", order, ":", k, "iterations"});
 	Numeric := GlobalPop();
 	result*2;
 ];
