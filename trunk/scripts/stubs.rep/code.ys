@@ -280,10 +280,11 @@ Rule("Gcd",2,100,True)
 //Echo("x = ",x);
      Local(prec,result,n);
      Set(prec,GetPrecision());
+     If(IsZero(x),Set(n,2),
      If(x>0,
        Set(n,2+MathFloor(N(FastLog(x)/FastLog(10)))),
        Set(n,2+MathFloor(N(FastLog(-x)/FastLog(10))))
-       );
+       ));
      If(n>prec,Precision(n));
 //Echo("Before");
      Set(result,MathFloor(x));
@@ -300,10 +301,11 @@ Rule("Gcd",2,100,True)
      x:=N(x);
      Local(prec,result,n);
      Set(prec,GetPrecision());
+     If(IsZero(x),Set(n,2),
      If(x>0,
        Set(n,2+MathFloor(N(FastLog(x)/FastLog(10)))),
        Set(n,2+MathFloor(N(FastLog(-x)/FastLog(10))))
-       );
+       ));
      If(n>prec,Precision(n));
      Set(result,MathCeil(x));
      Precision(prec);

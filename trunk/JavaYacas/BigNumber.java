@@ -22,14 +22,16 @@ class BigNumber
   public BigNumber(int aPrecision/* = 20*/)
   {
     iPrecision = aPrecision;
+    iTensExp = 0;
     integer = new BigInteger("0");
   }
   // assign from another number
   public void SetTo( BigNumber aOther)
   {
     iPrecision = aOther.GetPrecision();
-    integer = aOther.integer;
-    decimal = aOther.decimal;
+    iTensExp = aOther.iTensExp;
+    integer  = aOther.integer;
+    decimal  = aOther.decimal;
   }
   boolean IsFloat(String aString,int aBase)
   {
@@ -49,24 +51,22 @@ class BigNumber
     integer = null;
     decimal = null;
     boolean isFloat = IsFloat(aString,aBase);
-    /*TODO FIXME ??? Still needed???
-    int digits = aBasePrecision;
-    iPrecision = CalculatePrecision(aString,aBasePrecision,aBase, isFloat);
-    */
-//System.out.println("Precision requested "+aPrecision);
+
     iPrecision = aPrecision;
+    iTensExp = 0;
     if (isFloat)
     {
-      decimal = new BigDecimal(aString); //TODO FIXME does not listen to aBase!!!
-/*TODO remove?
-      int origScale = aPrecision-decimal.scale();
-      if (origScale>0)
+      int decimalPos;
+      decimalPos = aString.indexOf("e");
+      if (decimalPos < 0)
+        decimalPos = aString.indexOf("E");
+      if (decimalPos > 0) // will never be zero
       {
-        decimal = decimal.setScale(origScale);
+        iTensExp = Integer.parseInt(aString.substring(decimalPos+1,aString.length()));
+        aString = aString.substring(0,decimalPos);
       }
-      if (decimal.scale() > iPrecision)
-        iPrecision = decimal.scale();
-*/
+
+      decimal = new BigDecimal(aString); //TODO FIXME does not listen to aBase!!!
       if (decimal.scale() > iPrecision)
         iPrecision = decimal.scale();
     }
@@ -103,6 +103,10 @@ class BigNumber
         int endpos = result.length();
         while (endpos>dotPos && result.charAt(endpos-1) == '0') endpos--;
         result = result.substring(0,endpos);
+        if (iTensExp != 0)
+        {
+          result = result + "e"+iTensExp;
+        }
       }
       return result;
     }
@@ -203,6 +207,7 @@ class BigNumber
     if (integer != null)
     {
       decimal = new BigDecimal(integer);
+      iTensExp = 0;
       integer = null;
     }
   }
@@ -234,6 +239,7 @@ class BigNumber
       int newScale = iPrecision;
       if (newScale < decimal.scale())
         decimal = decimal.setScale(newScale,BigDecimal.ROUND_HALF_EVEN);
+      iTensExp = aX.iTensExp + aY.iTensExp;
     }
     else
     {
@@ -249,11 +255,24 @@ class BigNumber
     {
       BigDecimal dX = GetDecimal(aX);
       BigDecimal dY = GetDecimal(aY);
+
       integer = null;
+      if (aX.iTensExp > aY.iTensExp)
+      {
+        dY = dY.movePointLeft(aX.iTensExp-aY.iTensExp);
+        iTensExp = aX.iTensExp;
+      }
+      else if (aX.iTensExp < aY.iTensExp)
+      {
+        dX = dX.movePointLeft(aY.iTensExp-aX.iTensExp);
+        iTensExp = aY.iTensExp;
+      }
       decimal = dX.add(dY);
+/*TODO remove
       int newScale = iPrecision;
       if (newScale < decimal.scale())
         decimal = decimal.setScale(newScale,BigDecimal.ROUND_HALF_EVEN);
+*/
     }
     else
     {
@@ -273,6 +292,7 @@ class BigNumber
     {
       integer = null;
       decimal = aX.decimal.negate();
+      iTensExp = aX.iTensExp;
     }
   }
   /// Divide two numbers and return result in *this. Note: if the two arguments are integer, it should return an integer result!
@@ -289,6 +309,7 @@ class BigNumber
         dX = dX.setScale(newScale);
       decimal = dX.divide(dY,BigDecimal.ROUND_HALF_EVEN);
       iPrecision = decimal.scale();
+      iTensExp = aX.iTensExp-aY.iTensExp;
     }
     else
     {
@@ -316,7 +337,7 @@ class BigNumber
     }
     else
     {
-      aOutput.Write("decimal: "+decimal.unscaledValue()+" scale "+decimal.scale()+"\n");
+      aOutput.Write("decimal: "+decimal.unscaledValue()+" scale "+decimal.scale()+" x 10^("+iTensExp+")\n");
     }
   }
 
@@ -424,6 +445,7 @@ class BigNumber
   }
 
   int iPrecision;
+  int iTensExp;
 
   BigDecimal GetDecimal(BigNumber aNumber)
   {
