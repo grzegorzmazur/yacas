@@ -58,7 +58,7 @@ class BigNumber
     if (isFloat)
     {
       decimal = new BigDecimal(aString); //TODO FIXME does not listen to aBase!!!
-/*
+/*TODO remove?
       int origScale = aPrecision-decimal.scale();
       if (origScale>0)
       {
