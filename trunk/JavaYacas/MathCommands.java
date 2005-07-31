@@ -3701,6 +3701,10 @@ class MathCommands
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       long n = x.Long();
       long result = 1;
+
+      // We only want people to pass in small integers      
+      if (n>65535)
+        result = 0;
       
       int i=2;
       int max = (int)(1+Math.sqrt(n));

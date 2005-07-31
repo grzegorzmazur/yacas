@@ -1,6 +1,7 @@
 
-- some code causes a lot to be printed in the tests
-
+- Floor, Ceil, do not take iTensExp in to account!
+- Equals does not take iTensExp in to account
+- Maybe other functions do not take iTensExp in to account still?
 - Find out why MathPi is so slow when executed from script.
   Perhaps conversions to/from string in MathSin?
 - Find out why Sqrt is not precise enough
@@ -12,6 +13,8 @@ x update changes.html
 x check that all files are checked in
 x fix for plugins_available.h not being available at the beginning
 x one failing test, in numerics.yts:269: NearRational of Pi() is off quite a bit.
+x IsSmallPrime(65539) returns True, should apparently be false!
+  Probably just make FastIsPrime return 0 if number larger than 65535
 
 - run test scripts, and fix problems accordingly
 - LispFastMod
