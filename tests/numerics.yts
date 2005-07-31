@@ -271,7 +271,7 @@ GuessRational(N(Pi))
 Precision(10);
 Verify(
 NearRational(N(Pi))
-, 333/106 // used to be 355/113, which could also be considered correct, and is in fact slightly better.
+, 355/113, 
 );
 
 // Lambert's W function
