@@ -25,9 +25,17 @@ class YacasGraphicsContext
   {
     graphics.drawLine(xtop+x0,ytop+y0,xtop+x1,ytop+y1);
   }
+  public void DrawRoundRect(int x,int y, int width, int height, int arc)
+  {
+    graphics.drawRoundRect(xtop+x,ytop+y,width,height,arc,arc);
+  }
   public void DrawRect(int x,int y, int width, int height)
   {
     graphics.drawRect(xtop+x,ytop+y,width,height);
+  }
+  public void FillRoundRect(int x,int y, int width, int height,int arc)
+  {
+    graphics.fillRoundRect(xtop+x,ytop+y,width,height,arc,arc);
   }
   public void FillRect(int x,int y, int width, int height)
   {

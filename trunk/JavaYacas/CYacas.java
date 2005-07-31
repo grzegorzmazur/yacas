@@ -54,6 +54,7 @@ class CYacas
       }
       else
       {
+        printer.RememberLastChar(' ');
         printer.Print(result, output, env);
         rs = string_out.toString();
       }
