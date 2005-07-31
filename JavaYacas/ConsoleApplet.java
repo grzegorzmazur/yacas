@@ -8,6 +8,22 @@ just random thoughts for now.
 2) You can perform initialization calls by adding parameters "initN" in the html
    code, where N is a number from 1 upwards, which have to be in consecutive order.
 3) add to the history with "historyN" parameters to the applet
+
+
+<B>Note:</B> to allow supporting copy-pasting from and to this applet, you need to enable
+access to the clip board on your computer. On Unix-style computers this can be done 
+by appending the following lines to the file ~/.java.policy (create the file if it does
+not exist yet):
+<p>
+<TT>
+grant codeBase "http://www.xs4all.nl/~apinkus/*" {
+permission java.awt.AWTPermission "accessClipboard";
+};
+</TT>
+<p>
+You can then copy with CTRL-c and paste with CTRL-v.
+
+
 */
 
 
@@ -66,24 +82,57 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   StringBuffer outp = new StringBuffer();
   public void start()
   {
+
+    if (yacasLogo == null)
+    {
+      try
+      {
+        String fname = getDocumentBase().toString();
+        int ind = fname.lastIndexOf("/");
+        if (ind >0)
+        {
+          fname = fname.substring(0,ind+1)+"yacas.gif";
+          yacasLogo = getImage(new URL(fname));
+        }
+      }
+      catch (Exception e)
+      {
+      }
+    }
+
+
     stdoutput = new StringOutput(outp);
     yacas = new CYacas(stdoutput);
     yacas.env.iCurrentInput = new CachedStdFileInput(yacas.env.iInputStatus);
 
-    out.println("This is Yacas version '" + CVersion.VERSION + "'.");
 
-    out.println("Yacas is Free Software--Free as in Freedom--so you can redistribute Yacas or");
-    out.println("modify it under certain conditions. Yacas comes with ABSOLUTELY NO WARRANTY.");
-    out.println("See the GNU General Public License (GPL) for the full conditions.");
-//TODO fixme    out.println("Type ?license or ?licence to see the GPL; type ?warranty for warranty info.");
-    out.println("See http://yacas.sf.net for more information and documentation on Yacas.");
-    out.println("Numeric mode: \""+BigNumber.NumericLibraryName()+"\"\n");
-//TODO fixme    out.println("To exit Yacas, enter  Exit(); or quit or Ctrl-c. Type ?? for help.\n");
-//TODO fixme    out.println("Or type ?function for help on a function.\n");
-//TODO fixme    out.println("Type 'restart' to restart Yacas.\n");
-    out.println("To see example commands, keep typing Example();\n");
-//	  out.println("Yacas in Java");
+    if (yacasLogo != null)
+    {
+      lines[currentLine] = new ImageLine(yacasLogo,this);
+      currentLine = (currentLine+1)%nrLines;
+    }
 
+    {
+      Font font = new Font("helvetica", Font.PLAIN, 12);
+      Color c = new Color(96,96,96);
+
+      AddLineStatic(100, "","", font, c);
+      AddLineStatic(100, "","", font, c);
+
+      AddLineStatic(100, "","This is Yacas version '" + CVersion.VERSION + "'.", font, c);
+
+      AddLineStatic(100, "","Yacas is Free Software--Free as in Freedom--so you can redistribute Yacas or", font, c);
+      AddLineStatic(100, "","modify it under certain conditions. Yacas comes with ABSOLUTELY NO WARRANTY.", font, c);
+      AddLineStatic(100, "","See the GNU General Public License (GPL) for the full conditions.", font, c);
+//TODO fixme    AddLineStatic(100, "","Type ?license or ?licence to see the GPL; type ?warranty for warranty info.", font, c);
+      AddLineStatic(100, "","See http://yacas.sf.net for more information and documentation on Yacas.", font, c);
+      AddLineStatic(100, "","Numeric mode: \""+BigNumber.NumericLibraryName()+"\"\n", font, c);
+//TODO fixme    AddLineStatic(100, "","To exit Yacas, enter  Exit(); or quit or Ctrl-c. Type ?? for help.\n", font, c);
+//TODO fixme    AddLineStatic(100, "","Or type ?function for help on a function.\n", font, c);
+//TODO fixme    AddLineStatic(100, "","Type 'restart' to restart Yacas.\n", font, c);
+      AddLineStatic(100, "","To see example commands, keep typing Example();\n", font, c);
+
+    }
 
     {
       String docbase = getDocumentBase().toString();
@@ -261,7 +310,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 //System.out.println("");
               history[currentHistoryLine] = inputLine;
               currentHistoryLine++;
-              AddLine(inputPrompt+inputLine);
+              AddLinesStatic(48,inputPrompt,inputLine);
               if (inputLine.charAt(inputLine.length()-1) == '\\')
                 gatheredMultiLine = gatheredMultiLine + inputLine.substring(0,inputLine.length()-1);
               else
@@ -400,7 +449,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       {
         history[currentHistoryLine] = inputLine;
         currentHistoryLine++;
-        AddLine(inputPrompt+inputLine);
+        AddLinesStatic(48,inputPrompt,inputLine);
         if (inputLine.charAt(inputLine.length()-1) == '\\')
           gatheredMultiLine = gatheredMultiLine + inputLine.substring(0,inputLine.length()-1);
         else
@@ -429,7 +478,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     if (inputLine.equals("restart"))
     {
       stop();
-      out.println("Restarting");
+      int i;
+      for (i=0;i<nrLines;i++) lines[i] = null;
+      outputDirty = true;
       start();
       return;
     }
@@ -445,13 +496,13 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       String response = yacas.Evaluate(inputLine);
       if (outp.length() > 0)
       {
-        AddLinesStatic("",outp.toString());
+        AddLinesStatic(48,"",outp.toString());
       }
       if (yacas.iError != null)
       {
-        AddLinesStatic("ERROR> ",yacas.iError);
+        AddLinesStatic(48,"Error> ",yacas.iError);
       }
-      AddLinesStatic(outputPrompt,response);
+      AddLinesStatic(48, outputPrompt,response);
       succeed = true;
     }
     {
@@ -461,30 +512,139 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
     }
   }
-  void AddLinesStatic(String prompt,String str)
+  void AddLinesStatic(int indent, String prompt,String str)
   {
     String err = yacas.iError;
     int pos;
     while ((pos = str.indexOf('\n')) >=0)
     {
-      AddLineStatic(prompt+str.substring(0,pos));
+      AddLineStatic(indent, prompt,str.substring(0,pos),font,Color.black);
       str = str.substring(pos+1,str.length());
     }
-    if (str.length()>0) AddLineStatic(prompt+str);
+    if (str.length()>0) AddLineStatic(indent, prompt,str,font,Color.black);
   }
 
-  final static int nrLines =  60;
-  String lines[] = new String[nrLines];
-  int currentLine=0;
-  void AddLine(String text)
+  public abstract class MOutputLine
   {
-    AddLineStatic(text);
+    public abstract void draw(Graphics g, int x,int y);
+    public abstract int height(Graphics g);
+  }
+  class StringLine extends MOutputLine
+  {
+    StringLine(String aText, Font aFont, Color aColor)
+    {
+      iText = aText;
+      iFont = aFont;
+      iColor = aColor;
+    }
+    public void draw(Graphics g, int x,int y)
+    {
+      g.setColor(iColor);
+      g.setFont(iFont);
+      FontMetrics fontMetrics = g.getFontMetrics();
+      g.drawString(iText, x, y+fontMetrics.getHeight());
+    }
+    public int height(Graphics g)
+    {
+      FontMetrics fontMetrics = g.getFontMetrics();
+      return fontMetrics.getHeight();
+    }
+    private String iText;
+    private Font   iFont;
+    private Color  iColor;
+  }
+
+
+  class PromptedStringLine extends MOutputLine
+  {
+    PromptedStringLine(int aIndent, String aPrompt, String aText, Font aPromptFont, Font aFont, Color aPromptColor, Color aColor)
+    {
+      iIndent = aIndent;
+      iPrompt = aPrompt;
+      iText = aText;
+      iPromptFont = aPromptFont;
+      iFont = aFont;
+      iPromptColor = aPromptColor;
+      iColor = aColor;
+    }
+    public void draw(Graphics g, int x,int y)
+    {
+      {
+        g.setColor(iPromptColor);
+        g.setFont(iPromptFont);
+        FontMetrics fontMetrics = g.getFontMetrics();
+        g.drawString(iPrompt, x, y+fontMetrics.getHeight());
+        if (iIndent != 0)
+          x+=iIndent;
+        else
+          x+=fontMetrics.stringWidth(iPrompt);
+      }
+      {
+        g.setColor(iColor);
+        g.setFont(iFont);
+        FontMetrics fontMetrics = g.getFontMetrics();
+        g.drawString(iText, x, y+fontMetrics.getHeight());
+      }
+    }
+    public int height(Graphics g)
+    {
+      FontMetrics fontMetrics = g.getFontMetrics();
+      return fontMetrics.getHeight();
+    }
+    int iIndent;
+    private String iPrompt;
+    private String iText;
+    private Font   iPromptFont;
+    private Font   iFont;
+    private Color  iPromptColor;
+    private Color  iColor;
+  }
+
+
+
+  class ImageLine extends MOutputLine
+  {
+    ImageLine(Image aImage, Applet aApplet)
+    {
+      iImage = aImage;
+      iApplet = aApplet;
+    }
+    public void draw(Graphics g, int x,int y)
+    {
+      if (iImage != null)
+      {
+        Dimension d = iApplet.getSize();
+        g.drawImage(iImage,(d.width-iImage.getWidth(iApplet))/2,y,Color.WHITE,iApplet);
+      }
+    }
+    public int height(Graphics g)
+    {
+      return iImage.getHeight(iApplet);
+    }
+    Image iImage;
+    Applet iApplet;
+  }
+
+
+  final static int nrLines =  60;
+  MOutputLine lines[] = new MOutputLine[nrLines];
+  int currentLine=0;
+  void AddLine(int index, String text)
+  {
+    AddLineStatic(index, text);
     repaint(0);
   }
 
-  void AddLineStatic(String text)
+  void AddLineStatic(int indent, String text)
   {
-    lines[currentLine] = text;
+    AddLineStatic(indent, "",text,  font, Color.black);
+  }
+  
+  Color iPromptColor = new Color(128,128,128);
+  Font iPromptFont = new Font("helvetica", Font.PLAIN, 12);
+  void AddLineStatic(int indent, String prompt, String text,  Font aFont, Color aColor)
+  {
+    lines[currentLine] = new PromptedStringLine(indent, prompt,text,iPromptFont, aFont,iPromptColor, aColor);
     currentLine = (currentLine+1)%nrLines;
     outputDirty = true;
   }
@@ -493,26 +653,19 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   Image yacasLogo = null;
 	public void paint (Graphics g) 
   {
+    if ( g instanceof Graphics2D )
+    {
+    Graphics2D g2d = null;
+      g2d = (Graphics2D)g;
+      g2d.addRenderingHints( new RenderingHints( RenderingHints.KEY_ANTIALIASING ,
+                                              RenderingHints.VALUE_ANTIALIAS_ON ));
+    }
+
+
     if (!focusGained)
     {
       Dimension d = getSize();
       String str = "Tap here to start";
-      if (yacasLogo == null)
-      {
-        try
-        {
-          String fname = getDocumentBase().toString();
-          int ind = fname.lastIndexOf("/");
-          if (ind >0)
-          {
-            fname = fname.substring(0,ind+1)+"yacas.gif";
-            yacasLogo = getImage(new URL(fname));
-          }
-        }
-        catch (Exception e)
-        {
-        }
-      }
       if (yacasLogo != null)
         g.drawImage(yacasLogo,(d.width-yacasLogo.getWidth(this))/2,0,Color.WHITE,this);
       else
@@ -541,31 +694,43 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       yto -= 2*fontHeight;
       
     g.clearRect(0,yfrom,getWidth(),yto);
+//		g.setColor(Color.black);
+//    g.drawRect(0,0,getWidth()-1,getHeight()-1);
 		g.setColor(Color.black);
-    g.drawRect(0,0,getWidth()-1,getHeight()-1);
-		g.setColor(Color.blue);
 		g.setFont(font);
     //fontHeight*nrLines + offset = getHeight();
 
-    int y=getHeight()-fontHeight*(nrLines+1);
     int i;
+    int y=getHeight()-fontHeight; //-fontHeight*(nrLines+1);
     if (outputDirty)
     {
       for (i=0;i<nrLines;i++)
       {
-        if (y+fontHeight>0)
+        int index = (currentLine+i)%nrLines;
+        if (lines[index] != null) 
         {
-          int index = (currentLine+i)%nrLines;
-          if (lines[index] != null) 
-            g.drawString(lines[index], inset, y);
+          y-=lines[index].height(g);
         }
-        y+=fontHeight;
+      }
+
+      for (i=0;i<nrLines;i++)
+      {
+        int index = (currentLine+i)%nrLines;
+        if (lines[index] != null) 
+        {
+          if (y+lines[index].height(g)>0)
+          {
+            lines[index].draw(g,inset,y);
+          }
+          y+=lines[index].height(g);
+        }
       }
     }
     else
     {
-      y+=nrLines*fontHeight;
+      y=getHeight()-fontHeight;
     }
+    y+=fontHeight;
     outputDirty = false;
     if (inputDirty)
     {
@@ -588,7 +753,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
 //System.out.println("Rendering hints");
       YacasGraphicsContext context = new YacasGraphicsContext(g,0,0);
-      context.SetFontSize(1,12);  
+      context.SetFontSize(1,fontHeight/*12*/);  
       int nr_total_lines = 1; //nrLines;
       Dimension d = getSize();
 //      hintWindow.draw(100,100,context);
@@ -606,8 +771,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   final static String inputPrompt = "In> ";
   final static String outputPrompt = "Out> ";
 
-  static final int fontHeight = 12;
-	private Font font = new Font("Monaco", /*Font.ITALIC + Font.BOLD*/Font.PLAIN, fontHeight);
+  static final int fontHeight = 14;
+private Font font = new Font("courier", Font.BOLD, fontHeight);
+//  static final int fontHeight = 12;
+//	private Font font = new Font("Monaco", /*Font.ITALIC + Font.BOLD*/Font.PLAIN, fontHeight);
 //	private Font font = new Font("times", /*Font.ITALIC + Font.BOLD*/Font.PLAIN, fontHeight);
 //	private Font font = new Font("serif", /*Font.ITALIC + Font.BOLD*/Font.PLAIN, fontHeight);
 
@@ -631,7 +798,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       if (c == '\n')
       {
-        iApplet.AddLineStatic(buffer.toString());
+        iApplet.AddLineStatic(0,buffer.toString());
         buffer = new StringBuffer();
       }
       else
@@ -729,7 +896,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
   HintWindow CreateHints(int fontsize)
   {
-    return new HintWindow(fontsize);
+    HintWindow hw = new HintWindow(fontsize);
+    hw.iAllowSelection = false;
+    return hw;
   }
   
   void AddHintLine(HintWindow hints, String aText, String aDescription)

@@ -1,9 +1,34 @@
+FAILING TESTS:
 
-- Floor, Ceil, do not take iTensExp in to account!
-- Equals does not take iTensExp in to account
+1) Division in combination with Sqrt does strange things: N(1/Sqrt(2))
+   ../tests//linalg.yts: 62
+2) Gcd fails (wrong sign):
+  ../tests//numbers.yts: 88
+3) Sqrt not precise enough: 
+  ../tests//arithmetic.yts: 126 
+  ../tests//arithmetic.yts: 127
+  ../tests//regress.yts: 467
+  ../tests//regress.yts: 468
+  ../tests//numerics.yts: 10 
+4) Pslq seems to fail:
+  ../tests//calculus.yts: 62 
+  ../tests//calculus.yts: 63
+5) Bernouilli fails:
+  ../tests//regress.yts: 206
+6) Stack not deep enough: radsimp.yts
+7) Generic round-off problems:
+   ../tests//numerics.yts: 22
+   ../tests//numerics.yts: 24
+   ../tests//numerics.yts: 25 
+   ../tests//numerics.yts: 26 
+   ... lots of things in numerics.yts
+
+
+TODO:
+- Remove BinaryPrecision from the environment (Java)
 - Maybe other functions do not take iTensExp in to account still?
-- Find out why MathPi is so slow when executed from script.
-  Perhaps conversions to/from string in MathSin?
+- Find out why MathPi is so slow when executed from script. Perhaps conversions to/from string in MathSin?
+- document the mental model for arb precision numerics
 - Find out why Sqrt is not precise enough
 - find out why we are calling FastLn with Infinity
 - test program for the cyacas.h api
@@ -15,6 +40,8 @@ x fix for plugins_available.h not being available at the beginning
 x one failing test, in numerics.yts:269: NearRational of Pi() is off quite a bit.
 x IsSmallPrime(65539) returns True, should apparently be false!
   Probably just make FastIsPrime return 0 if number larger than 65535
+x Floor, Ceil, do not take iTensExp in to account!
+x Equals does not take iTensExp in to account
 
 - run test scripts, and fix problems accordingly
 - LispFastMod

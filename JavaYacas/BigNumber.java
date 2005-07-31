@@ -172,11 +172,6 @@ class BigNumber
   {
     return (integer != null && decimal == null);
   }
-  public boolean IsIntValue()
-  {
-    //TODO FIXME
-    return false;
-  }
   public boolean IsSmall()
   {
     if (IsInt())

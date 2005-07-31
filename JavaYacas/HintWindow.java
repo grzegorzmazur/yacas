@@ -26,6 +26,7 @@ class HintWindow
   }
   public  void draw(int x, int y, YacasGraphicsContext  aGraphicsContext)
   {
+    aGraphicsContext.SetFontSize(0,iTextSize);
     if (iMaxWidth == 0)
     {
       int i;
@@ -41,6 +42,7 @@ class HintWindow
         if (width>iMaxWidth)
             iMaxWidth = width;
       }
+      iMaxWidth = iMaxWidth + 8;
     }
 
 //System.out.println("iNrLines = "+iNrLines);
@@ -52,27 +54,38 @@ class HintWindow
     int h = height(aGraphicsContext);
     iy -= (h+4);
 
-//System.out.println("height = "+h);
-
-    aGraphicsContext.SetColor(255,255,255);
-    aGraphicsContext.FillRect(ix,iy,w,h);
+    if (!iAllowSelection)
+      aGraphicsContext.SetColor(128,128,128);
+    else
+      aGraphicsContext.SetColor(192,192,192);
+    aGraphicsContext.FillRoundRect(ix,iy,w,h,8);
     aGraphicsContext.SetColor(0,0,0);
-    aGraphicsContext.DrawRect(ix,iy,w,h);
+    aGraphicsContext.DrawRoundRect(ix,iy,w,h,8);
 
     int i;
-    aGraphicsContext.SetFontSize(0,iTextSize);
     
 //System.out.println("iTextSize = "+iTextSize);
 //System.out.println("aGraphicsContext.FontHeight() = "+aGraphicsContext.FontHeight());
 
     for (i=0;i<iNrLines;i++)
     {
+      if (!iAllowSelection)
+      {
+        aGraphicsContext.SetColor(255,255,255);
+      }
+      else
+      {
         if (i == iCurrentPos)
         {
           aGraphicsContext.SetColor(128,128,128);
           aGraphicsContext.FillRect(ix,iy+(i)*aGraphicsContext.FontHeight(),w,aGraphicsContext.FontHeight());
-          aGraphicsContext.SetColor(0,0,0);
+          aGraphicsContext.SetColor(255,255,255);
         }
+        else
+        {
+          aGraphicsContext.SetColor(255,255,255);
+        }
+      }
         aGraphicsContext.DrawText(ix+2,iy+(i+1)*aGraphicsContext.FontHeight()-aGraphicsContext.FontDescent(),iText[i]);
     }
 
@@ -113,7 +126,7 @@ class HintWindow
   public  String[] iText = new String[20];
   public  String[] iDescription = new String[20];
 
-
+  public  boolean iAllowSelection = true;
   public  int iNrDescriptions;
   public  int iMaxWidth;
   public  int iTextSize;
