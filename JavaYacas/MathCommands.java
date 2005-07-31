@@ -3703,7 +3703,7 @@ class MathCommands
       long result = 1;
 
       // We only want people to pass in small integers      
-      if (n>65535)
+      if (n>65538)
         result = 0;
       
       int i=2;

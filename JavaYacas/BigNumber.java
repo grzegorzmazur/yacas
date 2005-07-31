@@ -150,14 +150,21 @@ class BigNumber
     }
     if (decimal != null)
     {
-      if (aOther.decimal== null)
+      BigDecimal thisd = decimal;
+      BigDecimal otherd = aOther.decimal;
+      if (otherd == null)
       {
-        BigDecimal x = GetDecimal(aOther);
-        if (x.compareTo(decimal) == 0)
-          return true;
-        return false;
+        otherd = GetDecimal(aOther);
       }
-      return (decimal.compareTo(aOther.decimal) == 0);
+      if (iTensExp > aOther.iTensExp)
+      {
+        thisd = thisd.movePointRight(iTensExp - aOther.iTensExp);
+      }
+      else if (iTensExp < aOther.iTensExp)
+      {
+        otherd = otherd.movePointRight(iTensExp - aOther.iTensExp);
+      }
+      return (thisd.compareTo(otherd) == 0);
     }
     return true;
   }
@@ -346,7 +353,12 @@ class BigNumber
   {
     if (aX.decimal != null)
     {
-      BigInteger rounded = aX.decimal.toBigInteger();
+      BigDecimal d = aX.decimal;
+      if (aX.iTensExp != 0)
+      {
+        d = d.movePointRight(aX.iTensExp);
+      }
+      BigInteger rounded = d.toBigInteger();
       if (aX.decimal.signum()<0)
       {
         BigDecimal back =  new BigDecimal(rounded);
