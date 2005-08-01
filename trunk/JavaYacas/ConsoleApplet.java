@@ -128,9 +128,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       AddLineStatic(100, "","See http://yacas.sf.net for more information and documentation on Yacas.", font, c);
       AddLineStatic(100, "","Numeric mode: \""+BigNumber.NumericLibraryName()+"\"\n", font, c);
 //TODO fixme    AddLineStatic(100, "","To exit Yacas, enter  Exit(); or quit or Ctrl-c.\n", font, c);
-      AddLineStatic(100, "","Type ?, ?? or help for help, or type ?function for help on a function.\n", font, c);
-      AddLineStatic(100, "","Type 'restart' to restart Yacas, or cls to clear screen.\n", font, c);
-      AddLineStatic(100, "","To see example commands, keep typing Example();\n", font, c);
+      AddLineStatic(100, "","Type '?', '??' or 'help' for help, or type '?function' for help on a function.\n", font, c);
+      AddLineStatic(100, "","Type 'restart' to restart Yacas, or 'cls' to clear screen.\n", font, c);
+      AddLineStatic(100, "","To see example commands, keep typing 'Example();'\n", font, c);
 
     }
 
@@ -490,6 +490,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       int i;
       for (i=0;i<nrLines;i++) lines[i] = null;
       outputDirty = true;
+      succeed = true;
     }
     else if (inputLine.equals("help") || inputLine.equals("?") || inputLine.equals("??"))
     {
