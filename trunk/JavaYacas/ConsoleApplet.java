@@ -63,14 +63,14 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   public void focusGained(FocusEvent evt) 
   {
     focusGained = true;
+    inputDirty = true;
+    outputDirty = true;
     repaint();
   }
 
 
   public void focusLost(FocusEvent evt) 
   {
-//    focusGained = false;
-//    repaint();
   }
 
   public void lostOwnership(Clipboard clipboard, Transferable contents)
@@ -127,9 +127,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 //TODO fixme    AddLineStatic(100, "","Type ?license or ?licence to see the GPL; type ?warranty for warranty info.", font, c);
       AddLineStatic(100, "","See http://yacas.sf.net for more information and documentation on Yacas.", font, c);
       AddLineStatic(100, "","Numeric mode: \""+BigNumber.NumericLibraryName()+"\"\n", font, c);
-//TODO fixme    AddLineStatic(100, "","To exit Yacas, enter  Exit(); or quit or Ctrl-c. Type ?? for help.\n", font, c);
-//TODO fixme    AddLineStatic(100, "","Or type ?function for help on a function.\n", font, c);
-//TODO fixme    AddLineStatic(100, "","Type 'restart' to restart Yacas.\n", font, c);
+//TODO fixme    AddLineStatic(100, "","To exit Yacas, enter  Exit(); or quit or Ctrl-c.\n", font, c);
+      AddLineStatic(100, "","Type ?, ?? or help for help, or type ?function for help on a function.\n", font, c);
+      AddLineStatic(100, "","Type 'restart' to restart Yacas, or cls to clear screen.\n", font, c);
       AddLineStatic(100, "","To see example commands, keep typing Example();\n", font, c);
 
     }
@@ -485,13 +485,35 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       start();
       return;
     }
-    
-    if (inputLine.equals("cls"))
+    else if (inputLine.equals("cls"))
     {
       int i;
       for (i=0;i<nrLines;i++) lines[i] = null;
       outputDirty = true;
     }
+    else if (inputLine.equals("help") || inputLine.equals("?") || inputLine.equals("??"))
+    {
+      try
+      {
+        getAppletContext().showDocument( new URL("http://yacas.sourceforge.net/manindex.html"),"help");    
+        succeed = true;
+      }
+      catch (Exception e)
+      {
+      }
+    }
+    else if (inputLine.charAt(0) == '?')
+    {
+      try
+      {
+        getAppletContext().showDocument( new URL("http://yacas.sourceforge.net/ref.html#"+inputLine.substring(1,inputLine.length())),"help");    
+        succeed = true;
+      }
+      catch (Exception e)
+      {
+      }
+    }
+    else
     {
       outp.delete(0,outp.length());
       String response = yacas.Evaluate(inputLine);
@@ -714,23 +736,17 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     
     FontMetrics metrics = getFontMetrics(font);
 
-// to always redraw everything, make the whole canvas dirty
-//    inputDirty = outputDirty = true;
-
 		g.setColor(Color.white);
     int yfrom = 0;
     
 		g.setFont(font);
-    int inHeight = fontHeight;//+g.getFontMetrics().getDescent();
+    int inHeight = fontHeight;
     
     int yto = getHeight()-1;
     if (!outputDirty)
       yfrom += getHeight()-inHeight;
     if (!inputDirty)
       yto -= inHeight;
-
-System.out.println("fontHeight = "+fontHeight);
-System.out.println("g.getFontMetrics().getDescent() = "+g.getFontMetrics().getDescent());
       
     g.clearRect(0,yfrom,getWidth(),yto);
 		g.setColor(Color.black);
@@ -740,7 +756,6 @@ System.out.println("g.getFontMetrics().getDescent() = "+g.getFontMetrics().getDe
     
     if (outputDirty)
     {
-System.out.println("y before = "+y);
       for (i=0;i<nrLines;i++)
       {
         int index = (currentLine+i)%nrLines;
@@ -761,14 +776,11 @@ System.out.println("y before = "+y);
           y+=lines[index].height(g);
         }
       }
-System.out.println("y after = "+y);
     }
     y=getHeight()-g.getFontMetrics().getDescent();//-fontHeight;
-///    y+=fontHeight;
     outputDirty = false;
     if (inputDirty)
     {
-System.out.println("inputDirty");
       if (y+fontHeight>0)
       {
         int promptLength = metrics.stringWidth(inputPrompt);
@@ -797,11 +809,7 @@ System.out.println("inputDirty");
   final static String outputPrompt = "Out> ";
 
   static final int fontHeight = 14;
-private Font font = new Font("courier", Font.BOLD, fontHeight);
-//  static final int fontHeight = 12;
-//	private Font font = new Font("Monaco", /*Font.ITALIC + Font.BOLD*/Font.PLAIN, fontHeight);
-//	private Font font = new Font("times", /*Font.ITALIC + Font.BOLD*/Font.PLAIN, fontHeight);
-//	private Font font = new Font("serif", /*Font.ITALIC + Font.BOLD*/Font.PLAIN, fontHeight);
+  private Font font = new Font("courier", Font.BOLD, fontHeight);
 
   private static final int nrHistoryLines = 50;
   private String history[] = new String[nrHistoryLines]; 
@@ -864,7 +872,6 @@ private Font font = new Font("courier", Font.BOLD, fontHeight);
 
   void LoadHints(String filename)
   {
-//    out.println("hints file : ["+filename+"]");
     CDataReader file = new CDataReader();
     int opened = 0;
     try 
@@ -877,14 +884,11 @@ private Font font = new Font("courier", Font.BOLD, fontHeight);
     }
     if (opened != 0)
     {
-//      out.println("hints opened successfully");
       String line = file.ReadLine();
       String[] tokens = new String[16];
       int nrTokens = 0;
       while (line != null)
       {
-      
-//        System.out.println("LINE : "+line);
         if (line.substring(0,2).equals("~~"))
           break;
         int i=0;
@@ -897,7 +901,6 @@ private Font font = new Font("courier", Font.BOLD, fontHeight);
           nrTokens++;
           i++;
         }
-//        System.out.println("DIGITS : "+tokens[1]);
         if (nrTokens>4)
         {
           HintItem hi = new HintItem();
@@ -938,9 +941,8 @@ private Font font = new Font("courier", Font.BOLD, fontHeight);
   {
     HintWindow hints = null;
     int nrhints = the_hints.nrHintTexts;
-//System.out.println("nrhints = "+nrhints);
     int i,start;
-    start = 0;//hoffsets[(unsigned char)text[0]];
+    start = 0;
     if (start<0)
         return null;
     for (i = start;i<nrhints;i++)
@@ -953,13 +955,11 @@ private Font font = new Font("courier", Font.BOLD, fontHeight);
       {
         continue;
       }
-//System.out.println("base "+the_hints.hintTexts[i].base);
       int baselen = the_hints.hintTexts[i].base.length();
       if (length == baselen)
       {
         if (text.substring(0,baselen).equals(the_hints.hintTexts[i].base))
         {
-//System.out.println("Adding hint line");
           if (hints == null)
               hints = CreateHints(12 /*iDefaultFontSize*/);
           AddHintLine(hints, the_hints.hintTexts[i].hint,the_hints.hintTexts[i].description);
@@ -972,7 +972,6 @@ private Font font = new Font("courier", Font.BOLD, fontHeight);
   int search_start = 0;
   private String FindWord(Hints aHints, String current_word)
   {
-//System.out.println("search_start = "+search_start);
     int nr = current_word.length();
     if (nr>0)
     {
@@ -1067,8 +1066,6 @@ private Font font = new Font("courier", Font.BOLD, fontHeight);
     if (ito>ifrom)
     {
       word = inputLine.substring(ifrom,ito);
-//System.out.println("ifrom = "+ifrom+" ito = "+ito);
-//System.out.println("word = "+word);
     }
 
     String str = FindWord(the_hints, word);
