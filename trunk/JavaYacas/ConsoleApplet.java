@@ -284,6 +284,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
   protected void processKeyEvent(KeyEvent e)
   {
+    inputDirty = true;
 
     if ((e.getModifiers() & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK)
     {
@@ -546,6 +547,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
     public int height(Graphics g)
     {
+      g.setFont(iFont);
       FontMetrics fontMetrics = g.getFontMetrics();
       return fontMetrics.getHeight();
     }
@@ -588,6 +590,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
     public int height(Graphics g)
     {
+      g.setFont(iFont);
       FontMetrics fontMetrics = g.getFontMetrics();
       return fontMetrics.getHeight();
     }
@@ -651,11 +654,38 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
   /// Drawing current view
   Image yacasLogo = null;
-	public void paint (Graphics g) 
+  Image offImg = null;
+  Graphics offGra = null;
+	public void paint(Graphics g) 
+  {
+    // draw an offScreen drawing
+    Dimension dim = getSize();
+    if (offGra == null)
+    {
+      offImg = createImage(dim.width, dim.height);
+      offGra = offImg.getGraphics();
+    }
+    
+    // Render image
+    paintToBitmap(offGra);
+
+    // put the OffScreen image OnScreen
+    g.drawImage(offImg,0,0,null);
+    if (hintWindow != null)
+    {
+      YacasGraphicsContext context = new YacasGraphicsContext(g,0,0);
+      context.SetFontSize(1,fontHeight/*12*/);  
+      int nr_total_lines = 1; //nrLines;
+      Dimension d = getSize();
+      hintWindow.draw(5,(int)(d.getHeight()-context.FontHeight()-nr_total_lines*context.FontHeight()),context);
+    }
+  }
+  
+	public void paintToBitmap(Graphics g) 
   {
     if ( g instanceof Graphics2D )
     {
-    Graphics2D g2d = null;
+      Graphics2D g2d = null;
       g2d = (Graphics2D)g;
       g2d.addRenderingHints( new RenderingHints( RenderingHints.KEY_ANTIALIASING ,
                                               RenderingHints.VALUE_ANTIALIAS_ON ));
@@ -665,6 +695,8 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     if (!focusGained)
     {
       Dimension d = getSize();
+      g.setColor(Color.white);
+      g.clearRect(0,0,getWidth(),getHeight());
       String str = "Tap here to start";
       if (yacasLogo != null)
         g.drawImage(yacasLogo,(d.width-yacasLogo.getWidth(this))/2,0,Color.WHITE,this);
@@ -683,27 +715,32 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     FontMetrics metrics = getFontMetrics(font);
 
 // to always redraw everything, make the whole canvas dirty
-    inputDirty = outputDirty = true;
+//    inputDirty = outputDirty = true;
 
 		g.setColor(Color.white);
     int yfrom = 0;
+    
+		g.setFont(font);
+    int inHeight = fontHeight;//+g.getFontMetrics().getDescent();
+    
     int yto = getHeight()-1;
     if (!outputDirty)
-      yfrom += getHeight()-2*fontHeight;
+      yfrom += getHeight()-inHeight;
     if (!inputDirty)
-      yto -= 2*fontHeight;
+      yto -= inHeight;
+
+System.out.println("fontHeight = "+fontHeight);
+System.out.println("g.getFontMetrics().getDescent() = "+g.getFontMetrics().getDescent());
       
     g.clearRect(0,yfrom,getWidth(),yto);
-//		g.setColor(Color.black);
-//    g.drawRect(0,0,getWidth()-1,getHeight()-1);
 		g.setColor(Color.black);
-		g.setFont(font);
-    //fontHeight*nrLines + offset = getHeight();
 
     int i;
-    int y=getHeight()-fontHeight; //-fontHeight*(nrLines+1);
+    int y=getHeight()-inHeight-g.getFontMetrics().getDescent(); 
+    
     if (outputDirty)
     {
+System.out.println("y before = "+y);
       for (i=0;i<nrLines;i++)
       {
         int index = (currentLine+i)%nrLines;
@@ -712,7 +749,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
           y-=lines[index].height(g);
         }
       }
-
       for (i=0;i<nrLines;i++)
       {
         int index = (currentLine+i)%nrLines;
@@ -725,19 +761,19 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
           y+=lines[index].height(g);
         }
       }
+System.out.println("y after = "+y);
     }
-    else
-    {
-      y=getHeight()-fontHeight;
-    }
-    y+=fontHeight;
+    y=getHeight()-g.getFontMetrics().getDescent();//-fontHeight;
+///    y+=fontHeight;
     outputDirty = false;
     if (inputDirty)
     {
+System.out.println("inputDirty");
       if (y+fontHeight>0)
       {
         int promptLength = metrics.stringWidth(inputPrompt);
         g.setColor(Color.red);
+        g.setFont(font);
         g.drawString(inputPrompt, inset, y);
         g.drawString(inputLine, inset+promptLength, y);
         int cursorLocation = promptLength;
@@ -745,21 +781,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         {
           cursorLocation += metrics.charWidth(inputLine.charAt(i));
         }
+        y+=g.getFontMetrics().getDescent();
         g.drawLine(inset+cursorLocation,y,inset+cursorLocation,y-fontHeight);
       }
     }
-    
-    if (hintWindow != null)
-    {
-//System.out.println("Rendering hints");
-      YacasGraphicsContext context = new YacasGraphicsContext(g,0,0);
-      context.SetFontSize(1,fontHeight/*12*/);  
-      int nr_total_lines = 1; //nrLines;
-      Dimension d = getSize();
-//      hintWindow.draw(100,100,context);
-      hintWindow.draw(5,(int)(d.getHeight()-context.FontHeight()-nr_total_lines*context.FontHeight()),context);
-    }
-    
     inputDirty=false;
   }
   String inputLine  = new String();
