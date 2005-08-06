@@ -2410,11 +2410,12 @@ class MathCommands
       z.SetTo(
         (x.IsInt())
       ? x.BitCount()	// for integers, return the bit count
-        : x.GetPrecision() 	// for floats, return the precision
+        : LispStandard.digits_to_bits((long)(x.GetPrecision()), 10) 	// for floats, return the precision
         );
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
+     
 
   class LispSetExactBits extends YacasEvalCaller
   {
