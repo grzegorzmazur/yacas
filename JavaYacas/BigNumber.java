@@ -427,12 +427,34 @@ class BigNumber
   }
   /// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
   /// give bit count as a platform integer
+  private static BigDecimal zero = new BigDecimal("0");
+  private static BigDecimal one = new BigDecimal("1");
+  private static BigDecimal two = new BigDecimal("2");
   public long BitCount()
   {
     //TODO fixme check that it works as needed
     if (integer != null)
-      return integer.bitLength();
-    return decimal.unscaledValue().bitLength();
+      return integer.abs().bitLength();
+    {
+      BigDecimal d = decimal.abs();
+      if (d.compareTo(one)>0)
+        return d.toBigInteger().bitLength();
+      BigDecimal integerPart = new BigDecimal(d.toBigInteger());
+      integerPart = integerPart.negate();
+      d = d.add(integerPart);
+      if (d.compareTo(zero) == 0)
+        return 0;
+      int bitCount = 0;
+      
+      //TODO OPTIMIZE
+      d = d.multiply(two);
+      while (d.compareTo(one)<0)
+      {
+        d = d.multiply(two);
+        bitCount--;
+      }
+      return bitCount;
+    }
   }
   
   /// Give sign (-1, 0, 1)
