@@ -26,7 +26,7 @@ class LispEnvironment
     iList         = LispAtom.New(this,"List");
     iProg         = LispAtom.New(this,"Prog");
 
-    iStack = new YacasArgStack(5000 /*TODO FIXME*/);
+    iStack = new YacasArgStack(50000 /*TODO FIXME*/);
     MathCommands mc = new MathCommands();
     mc.AddCommands(this);
     mc=null;
