@@ -2,15 +2,20 @@ FAILING TESTS:
 
 
 TODO:
+- Systemcall seems to be available from "Runtime" class.
 - Remove BinaryPrecision from the environment (Java)
 - Maybe other functions do not take iTensExp in to account still?
 - Find out why MathPi is so slow when executed from script. Perhaps conversions to/from string in MathSin?
 - document the mental model for arb precision numerics
-- Find out why Sqrt is not precise enough
 - find out why we are calling FastLn with Infinity
 - test program for the cyacas.h api
 - test: ToBase to also work with real numbers
 - real fix for the sockets in yacasmain.cpp
+- implement plots from Java
+- implement plugins from Java
+- add the filescanner and pcre plugins
+
+x Find out why Sqrt is not precise enough
 x update changes.html
 x check that all files are checked in
 x fix for plugins_available.h not being available at the beginning
