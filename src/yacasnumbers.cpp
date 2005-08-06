@@ -1146,24 +1146,19 @@ void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
 
 void BigNumber::Floor(const BigNumber& aX)
 {
-//TODO FIXME slow code! But correct
-    LispString str;
     iNumber->CopyFrom(*aX.iNumber);
-    
+    //  If iExp is zero, then we can not look at the decimals and determine the floor. 
+    // This number has to have digits (see code later in this routine that does a division).
+    // Not extending the digits caused the MathFloor function to fail on n*10-m where n was an 
+    // integer. The code below divides away the 10^-m, but since iExp was zero, this resulted in a 
+    // premature truncation (seen when n<0)
+    if (iNumber->iExp == 0)
+      iNumber->ChangePrecision(iNumber->iPrecision);
 
-/*
-    if (iNumber->iPrecision<iNumber->iTensExp)
-      iNumber->ChangePrecision(iNumber->iTensExp);
-    else
-*/
-    {
-      if (iNumber->iExp>1)
-        iNumber->RoundBits();
-    }
+    if (iNumber->iExp>1)
+      iNumber->RoundBits();
 
-//    aX.ToString(str,aX.GetPrecision());
-//    iNumber->SetTo(str.String());
-
+    //TODO FIXME slow code! But correct
     if (iNumber->iTensExp > 0)
     {
       while (iNumber->iTensExp > 0)

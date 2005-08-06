@@ -83,9 +83,11 @@ Verify( IsIrregularPrime(11), False ); f();
 
 Verify( Gcd( 324 + 1608*I, -11800 + 7900*I ),Complex(-52,16) ); f();
 // I changed from Complex(-4,4) to Complex(4,4) as the GaussianGcd algorithm suddenly returned this instead.
-// I am assuming the result is correct if the two numbers, when divided by the resulting gcd, are gaussian integers
-// again?
-Verify( Gcd( 7300 + 12*I, 2700 + 100*I), Complex(4,4) ); f();
+// However, as it turned out it was a bug in MathFloor, introduced when
+// we moved to the new number classes (so the numbers did not get converted
+// to string and back any more). The number got prematurely truncated with
+// this test case (regression test added to regress.yts also).
+Verify( Gcd( 7300 + 12*I, 2700 + 100*I), Complex(-4,4) ); f();
 
 VerifyGaussianGcd(x,y):=
 [
