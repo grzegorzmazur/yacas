@@ -147,12 +147,14 @@ catch(Exception e)
 */
     System.out.println("To see example commands, keep typing Example();\n");
 
+//yacas.Evaluate("BubbleSort(N(PSolve(x^3-3*x^2+2*x,x)), \"<\");");
 
 	  System.out.println("Yacas in Java");
 	  while (!quitting)
 	  {
 		  System.out.print("In> ");
-//      String input = "MathAdd(1.0e4,1.0e-3);";//"a:=-2;";//"[Precision(40);1.0;];";//"[Set(pat,PatternCreate(foo(_a,_b),True));PatternMatches(pat,bar(x,y));];";//"[Local(a);Set(a,2);MathAdd(a,1);];";//"Set(a,2);";//"1.0e3";//"MathNegate(1.1);";//"IsAtom({a,b,c});";// readLine(System.in);
+
+//      String input = "Sin(a*Pi);";//"MathAdd(1.0e4,1.0e-3);";//"a:=-2;";//"[Precision(40);1.0;];";//"[Set(pat,PatternCreate(foo(_a,_b),True));PatternMatches(pat,bar(x,y));];";//"[Local(a);Set(a,2);MathAdd(a,1);];";//"Set(a,2);";//"1.0e3";//"MathNegate(1.1);";//"IsAtom({a,b,c});";// readLine(System.in);
 		  String input =  readLine(System.in);
 
       String rs = yacas.Evaluate(input);

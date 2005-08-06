@@ -3862,8 +3862,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : DllUnload");////TODO fixme
-      throw new Yacasexception("Function not yet supported");
+      aEnvironment.iCurrentOutput.Write("Warning: Function not yet implemented : DllUnload\n");////TODO fixme
+      LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
   }
 
@@ -3871,8 +3871,12 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : DllEnumerate");////TODO fixme
-      throw new Yacasexception("Function not yet supported");
+      aEnvironment.iCurrentOutput.Write("Warning: Function not yet implemented : DllEnumerate\n");////TODO fixme
+      
+      LispObject ls = LispAtom.New(aEnvironment,"List");
+      LispObject newinfo =  LispSubList.New(ls);
+      RESULT(aEnvironment, aStackTop).Set(newinfo);
+//TODO remove      throw new Yacasexception("Function not yet supported");
     }
   }
 
