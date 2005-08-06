@@ -1,7 +1,5 @@
 FAILING TESTS:
 
-1) Division in combination with Sqrt does strange things: N(1/Sqrt(2))
-   ../tests//linalg.yts: 62
 3) Sqrt not precise enough: 
   ../tests//arithmetic.yts: 126 
   ../tests//arithmetic.yts: 127
@@ -11,9 +9,6 @@ FAILING TESTS:
 4) Pslq seems to fail:
   ../tests//calculus.yts: 62 
   ../tests//calculus.yts: 63
-5) Bernouilli fails:
-  ../tests//regress.yts: 206
-6) Stack not deep enough: radsimp.yts
 7) Generic round-off problems:
    ../tests//numerics.yts: 22
    ../tests//numerics.yts: 24
@@ -22,6 +17,11 @@ FAILING TESTS:
    ... lots of things in numerics.yts
 x) Gcd fails (wrong sign):
   ../tests//numbers.yts: 88
+x) Division in combination with Sqrt does strange things: N(1/Sqrt(2))
+   ../tests//linalg.yts: 62
+x) Stack not deep enough: radsimp.yts
+x) Bernouilli fails:
+  ../tests//regress.yts: 206
 
 
 TODO:

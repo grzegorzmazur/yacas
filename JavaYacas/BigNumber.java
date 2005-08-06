@@ -375,6 +375,13 @@ class BigNumber
   public void Precision(int aPrecision)
   {
     iPrecision = aPrecision;
+    if (decimal != null)
+    {
+      if (decimal.scale() > aPrecision)
+      {
+        decimal = decimal.setScale(aPrecision, BigDecimal.ROUND_HALF_EVEN);
+      }
+    }
   }
 
   /// Bitwise operations, return result in *this.

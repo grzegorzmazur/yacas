@@ -2424,9 +2424,10 @@ class MathCommands
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
       BigNumber z = new BigNumber(aEnvironment.BinaryPrecision());
       z.SetTo(x);
+      
 	  // do nothing for integers
 	  if (!(z.IsInt()))
-	    z.Precision((int)(y.Double()));	// segfaults unless y is defined?
+	    z.Precision((int)(LispStandard.bits_to_digits((long)(y.Double()), 10)));	
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
