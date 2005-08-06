@@ -437,6 +437,7 @@ class BigNumber
   private static BigDecimal zero = new BigDecimal("0");
   private static BigDecimal one = new BigDecimal("1");
   private static BigDecimal two = new BigDecimal("2");
+  private static BigDecimal ten = new BigDecimal("10");
   public long BitCount()
   {
     //TODO fixme check that it works as needed
@@ -444,6 +445,8 @@ class BigNumber
       return integer.abs().bitLength();
     {
       BigDecimal d = decimal.abs();
+      if (iTensExp != 0)
+        d = d.movePointRight(iTensExp);
       if (d.compareTo(one)>0)
         return d.toBigInteger().bitLength();
       BigDecimal integerPart = new BigDecimal(d.toBigInteger());
