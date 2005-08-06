@@ -2,8 +2,6 @@ FAILING TESTS:
 
 1) Division in combination with Sqrt does strange things: N(1/Sqrt(2))
    ../tests//linalg.yts: 62
-2) Gcd fails (wrong sign):
-  ../tests//numbers.yts: 88
 3) Sqrt not precise enough: 
   ../tests//arithmetic.yts: 126 
   ../tests//arithmetic.yts: 127
@@ -22,6 +20,8 @@ FAILING TESTS:
    ../tests//numerics.yts: 25 
    ../tests//numerics.yts: 26 
    ... lots of things in numerics.yts
+x) Gcd fails (wrong sign):
+  ../tests//numbers.yts: 88
 
 
 TODO:

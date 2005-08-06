@@ -474,3 +474,19 @@ KnownFailure(RoundTo(RoundTo(N(Cot(2),9),9),N(Cot(2),9),9)=0);
 // MathLog used to hang on *all* input
 Verify(MathLog(2)!=0,True);
 
+// Bug that was introduced when going to the new numeric setup where
+// numbers were not converted to strings any more. In the situation
+// -n*10^-m where n and m positive integers, the number got truncated
+// prematurely, resulting in a wrong rounding.
+[
+  Local(n,m,nkeep,lcl);
+  n:=7300 + 12*I;
+  m:=2700 + 100*I;
+  nkeep:=n;
+  n:=m;
+  m:=nkeep - m*Round(nkeep/m);
+  lcl:=Re(N(n/m))+0.5;
+  Verify(MathFloor(lcl),-3);
+];
+
+
