@@ -1,4 +1,97 @@
 
+/*
+The purpose of the wizard applet is to make it easier for beginners to get started with Yacas.
+Initially, one is confronted with a command line prompt, and this can be intimidating for a beginner.
+The idea is to provide a wizard bar to the left?/right? that allows one to enter expressions without
+having to type them in, initially. This could include automatically sending commands to the
+console applet (automatically generated examples, static examples, little dialogs that allow you
+to enter arguments to specific commands like integrate and differentiate), but also possibly a link
+allowing the user to enter his/her own calculation, and submitting that for inclusion. Multi-step
+examples would also be nice.
+
+Ideally, this would be supported by some sort of mark-up language, perhaps even Yacas as an engine.
+
+TODO:
+- reading scripts from another zip file
+- sending strings to the other applet
+- rendering/layout of a page.
+
+Wizard'Main():=
+[
+  Wizard'Clear();
+  Wizard'Title({"Yacas Wizard"});
+  Wizard'Text({"This wizard provides various examples accessible from the links below."});
+  Wizard'List(
+  {
+    {Wizard'Link("About","Wizard'About")," this wizard."},
+    {"Some simple ",Wizard'Link("arithmetic","Wizard'Arithmetic")," examples"},
+    {"Some ",Wizard'Link("calculus","Wizard'Calculus")," examples"},
+    {"Some ",Wizard'Link("multi-step examples","Wizard'MultiStep")," examples"},
+    {"Edit dialogs for specific ",Wizard'Link("commands","Wizard'Commands")}
+  });
+];
+Wizard'Main();
+
+Wizard'Arithmetic():=
+[
+  Wizard'Clear();
+  Wizard'Title({"Simple arithmetic"});
+  Wizard'Text({"Some simple arithmetic."});
+  Wizard'List(
+  {
+    {Wizard'Link("Random addition","Wizard'RandomAddition")," example"}
+  });
+];
+
+Wizard'RandomAddition():=
+[
+  Canvas'SendCommand("1+1");
+];
+
+
+[title:Yacas Wizard]
+This wizard provides various examples accessible from the links below.
+[link:Aboud:about.sml] this wizard.
+
+Some simple [link:arithmetic:arith.sml] examples
+
+Some [link:calculus:calculus.sml] examples
+
+Some [link:multi-step:multistep.sml] examples
+
+Edit dialogs for specific [link:commands:commands.sml]
+
+
+
+Canvas'SetFont(name,type,size);
+Canvas'SetColor(r,g,b);
+Canvas'AddText(text,link);
+Canvas'Break();
+Canvas'Bullet();
+Canvas'SendCommand(command);
+
+class CWizardWord
+{
+  public int x;
+  public int y;
+  public int width;
+  public int height;
+  public Font font;
+  public Color color;
+  public String word;
+  public String link;
+  public void draw(Graphics g)
+  {
+    g.setColor(color);
+    g.setFont(font);
+    g.drawString(word, x, y);
+  }
+}
+
+
+*/
+
+
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.Transferable;
