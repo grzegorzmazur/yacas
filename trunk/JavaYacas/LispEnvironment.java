@@ -41,11 +41,6 @@ class LispEnvironment
   {
     return iPrecision;
   }
-  int BinaryPrecision()
-  {
-    //This is as intended! It would be really brain-dead to pass binary precision. I find binary precision to be a leaky abstraction any way.
-    return iPrecision;
-  }
   void SetPrecision(int aPrecision) throws Exception
   {
     iPrecision = aPrecision;    // precision in decimal digits
