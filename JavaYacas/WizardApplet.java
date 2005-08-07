@@ -70,25 +70,6 @@ Canvas'Break();
 Canvas'Bullet();
 Canvas'SendCommand(command);
 
-class CWizardWord
-{
-  public int x;
-  public int y;
-  public int width;
-  public int height;
-  public Font font;
-  public Color color;
-  public String word;
-  public String link;
-  public void draw(Graphics g)
-  {
-    g.setColor(color);
-    g.setFont(font);
-    g.drawString(word, x, y);
-  }
-}
-
-
 */
 
 
@@ -118,6 +99,18 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
   public void start()
   {
     repaint();
+    Clear();
+    Font font = new Font("courier", Font.BOLD, 14);
+    Color color = Color.black;
+   
+
+    int i;
+    for (i=0;i<10;i++) 
+    {
+      AddWord(font, color, "Hello", "");
+      AddWord(font, color, "world!", "");
+    }
+
   }
   public void stop()
   {
@@ -169,6 +162,7 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
     g.drawImage(offImg,0,0,null);
   }  
 
+  boolean outputDirty = true;
   void paintToBitmap(Graphics g)
   {
     if ( g instanceof Graphics2D )
@@ -178,12 +172,34 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
       g2d.addRenderingHints( new RenderingHints( RenderingHints.KEY_ANTIALIASING ,
                                               RenderingHints.VALUE_ANTIALIAS_ON ));
     }
-
     Dimension d = getSize();
-    g.setColor(Color.white);
-    g.clearRect(0,0,getWidth(),getHeight());
+    if (outputDirty)
+    {
+      g.setColor(Color.white);
+      g.clearRect(0,0,getWidth(),getHeight());
 
-    String str = "Hello world!!";
+      int i;
+      int x = 0;
+      int y = 18;
+      for (i=0;i<nrWords;i++)
+      {
+        g.setColor(words[i].color);
+        g.setFont(words[i].font);
+        int pixWidth = g.getFontMetrics().stringWidth(words[i].word);
+        if (x+pixWidth>d.width)
+        {
+          x=0;
+          y+=g.getFontMetrics().getHeight();
+        }
+        g.drawString(words[i].word, x, y);
+        x+=pixWidth+5;
+        
+      }
+
+      outputDirty = false;
+    }
+
+    String str = "Test text!!";
     Font font = new Font("courier", Font.BOLD, 14);
     java.awt.geom.Rectangle2D m = g.getFontMetrics().getStringBounds(str,g);
     int x = (int)((d.width-m.getWidth())/2);
@@ -191,5 +207,45 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
     g.setColor(Color.blue);
     g.setFont(font);
     g.drawString(str, x, y);
+
   }
+
+
+  class CWizardWord
+  {
+    public Font font;
+    public Color color;
+    public String word;
+    public String link;
+  }
+  static int MAX_WORDS = 1024;
+  CWizardWord words[] = new CWizardWord[MAX_WORDS];  
+  int nrWords = 0;
+  int xCur = 0;
+  int yCur = 0;
+  void Clear()
+  {
+    int i;
+    for (i=0;i<nrWords;i++)
+    {
+      words[i] = null;
+    }
+    nrWords = 0;
+    xCur = 0;
+    yCur = 0;
+    outputDirty = true;
+  }
+  void AddWord(Font font, Color color, String word, String link)
+  {
+    CWizardWord theWord = new CWizardWord();
+    theWord.font = font;
+    theWord.color = color;
+    theWord.word = word;
+    theWord.link = link;
+System.out.println("nrWords = "+nrWords);
+    words[nrWords] = theWord;
+    nrWords++;
+    outputDirty = true;
+  }
+
 }
