@@ -20,7 +20,7 @@ CDataReader.class HintItem.class \
 HintWindow.class Hints.class SelectSymbol.class TResult.class \
 TSentence.class \
 TWord.class YacasGraphicsContext.class \
-YacasNotebookComponent.class calc.class tegicphone.class 
+YacasNotebookComponent.class calc.class tegicphone.class WizardApplet.class
 
 
 yacas.jar: $(CLASSES)
