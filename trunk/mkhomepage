@@ -2,12 +2,11 @@
 
 # clean
 rm -f yacas-*.tar.gz
-make clean
+make distclean
 
 # Rebuild yacas and the documentation
 ./makemake
 ./configure CXXFLAGS="-O9 -DDISABLE_DYNAMIC" CFLAGS="-O9 -DDISABLE_DYNAMIC" --enable-server --enable-ps-doc --enable-pdf-doc --enable-archive --disable-shared
-
 make
 make # make a second time, for adding statically linked libraries
 sudo make install
@@ -51,5 +50,5 @@ cd ..
 # chmod -R 755 *
 tar -zcf ../homepage.tgz *
 cd ..
-#rm -rf homepage/
+rm -rf homepage/
 
