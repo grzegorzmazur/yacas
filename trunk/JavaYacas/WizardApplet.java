@@ -21,6 +21,9 @@ TODO:
 - change the release scripts to also include the wizard
 - give feedback as to which of the two applets has focus, so the user knows to click on the console again,
   or pass key events to the console applet, even better
+- feedback on which link was pressed.
+- Do not show the wizard until the console accepts input
+- automatically skip spaces after links(?)
 x rendering/layout of a page.
 
 */
