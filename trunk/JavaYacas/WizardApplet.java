@@ -14,61 +14,14 @@ Ideally, this would be supported by some sort of mark-up language, perhaps even 
 TODO:
 - reading scripts from another zip file
 - sending strings to the other applet
-- rendering/layout of a page.
-
-Wizard'Main():=
-[
-  Wizard'Clear();
-  Wizard'Title({"Yacas Wizard"});
-  Wizard'Text({"This wizard provides various examples accessible from the links below."});
-  Wizard'List(
-  {
-    {Wizard'Link("About","Wizard'About")," this wizard."},
-    {"Some simple ",Wizard'Link("arithmetic","Wizard'Arithmetic")," examples"},
-    {"Some ",Wizard'Link("calculus","Wizard'Calculus")," examples"},
-    {"Some ",Wizard'Link("multi-step examples","Wizard'MultiStep")," examples"},
-    {"Edit dialogs for specific ",Wizard'Link("commands","Wizard'Commands")}
-  });
-];
-Wizard'Main();
-
-Wizard'Arithmetic():=
-[
-  Wizard'Clear();
-  Wizard'Title({"Simple arithmetic"});
-  Wizard'Text({"Some simple arithmetic."});
-  Wizard'List(
-  {
-    {Wizard'Link("Random addition","Wizard'RandomAddition")," example"}
-  });
-];
-
-Wizard'RandomAddition():=
-[
-  Canvas'SendCommand("1+1");
-];
-
-
-[title:Yacas Wizard]
-This wizard provides various examples accessible from the links below.
-[link:Aboud:about.sml] this wizard.
-
-Some simple [link:arithmetic:arith.sml] examples
-
-Some [link:calculus:calculus.sml] examples
-
-Some [link:multi-step:multistep.sml] examples
-
-Edit dialogs for specific [link:commands:commands.sml]
-
-
-
-Canvas'SetFont(name,type,size);
-Canvas'SetColor(r,g,b);
-Canvas'AddText(text,link);
-Canvas'Break();
-Canvas'Bullet();
-Canvas'SendCommand(command);
+- maintaining a list of hotspots with links
+- responding to clicking on the links
+- prettifying the wizard
+- extending the examples in the wizard
+- change the release scripts to also include the wizard
+- give feedback as to which of the two applets has focus, so the user knows to click on the console again,
+  or pass key events to the console applet, even better
+x rendering/layout of a page.
 
 */
 
@@ -96,21 +49,89 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
     addFocusListener(this);
   }
 
+  static Font titleFont = new Font("courier", Font.BOLD, 18);
+  static Font normalFont = new Font("courier", Font.BOLD, 14);
+  static Font linkFont = new Font("courier", Font.ITALIC, 14);
+
+  void AddTextSentence(Font font, boolean underlined, Color color, String text, String link)
+  {
+//System.out.println("Text = "+text);
+    while (text.length()>0)
+    {
+      int j=1;
+      while (j<text.length() && text.charAt(j) != ' ' && text.charAt(j) != '\n') j++;
+      String word = text.substring(0,j);
+      char c = 0;
+//System.out.println("  Word = "+word);
+      if (j<text.length())
+      {
+        c = text.charAt(j);
+        text = text.substring(j+1,text.length());
+      }
+      else
+        text = "";
+      AddWord(font, underlined, color, word, link); 
+      if (c == '\n')
+        AddWord(null, false, null, null, null);
+    }
+  }
+  void ParsePage(String pageContents)
+  {
+    Clear();
+    while (pageContents.length() > 0)
+    {
+      int j=0;
+      while (j<pageContents.length() && pageContents.charAt(j) != '[') j++;
+      AddTextSentence(normalFont, false, Color.black, pageContents.substring(0,j),"");
+      pageContents = pageContents.substring(j,pageContents.length());
+      if (j<pageContents.length())
+      {
+        if (pageContents.charAt(j) == '[')
+        {
+          if (pageContents.startsWith("[title:"))
+          {
+            int closePos = pageContents.indexOf("]");
+            String title = pageContents.substring(7,closePos);
+            pageContents = pageContents.substring(closePos+1,pageContents.length());
+            AddTextSentence(titleFont, false, Color.black, title,"");
+            AddWord(null, false, null, null, null);
+          }
+          else if (pageContents.startsWith("[link:"))
+          {
+            pageContents = pageContents.substring(6,pageContents.length());
+            int ddotPos = pageContents.indexOf(":");
+            int closePos = pageContents.indexOf("]");
+            String words = pageContents.substring(0,ddotPos);
+            String link = pageContents.substring(ddotPos+1,closePos);
+            AddTextSentence(linkFont, true, Color.blue, words,link);
+
+            pageContents = pageContents.substring(closePos+1,pageContents.length());
+          }
+          else
+          {
+            int closePos = pageContents.indexOf("]");
+            pageContents = pageContents.substring(closePos+1,pageContents.length());
+          }
+        }
+      }
+    }
+  }
+
   public void start()
   {
     repaint();
     Clear();
-    Font font = new Font("courier", Font.BOLD, 14);
-    Color color = Color.black;
-   
 
-    int i;
-    for (i=0;i<10;i++) 
-    {
-      AddWord(font, color, "Hello", "");
-      AddWord(font, color, "world!", "");
-    }
-
+    ParsePage(
+      "[title:Yacas helper]"+
+      "This helper provide various examples accessible from the links below.\n"+
+      " \n"+
+      "- [link:about:about.sml] this wizard.\n"+
+      "- Some simple [link:arithmetic:arith.sml]examples\n"+
+      "- Some [link:calculus:calculus.sml]examples\n"+
+      "- Some [link:multi-step:multistep.sml]examples\n"+
+      "- Edit dialogs for [link:specific commands:commands.sml]\n"
+      );
   }
   public void stop()
   {
@@ -181,39 +202,48 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
       int i;
       int x = 0;
       int y = 18;
+      int maxHeight = 0;
       for (i=0;i<nrWords;i++)
       {
-        g.setColor(words[i].color);
-        g.setFont(words[i].font);
-        int pixWidth = g.getFontMetrics().stringWidth(words[i].word);
-        if (x+pixWidth>d.width)
+        if (words[i].word == null)
         {
           x=0;
-          y+=g.getFontMetrics().getHeight();
+          y+=maxHeight;
         }
-        g.drawString(words[i].word, x, y);
-        x+=pixWidth+5;
-        
+        else
+        {
+          g.setColor(words[i].color);
+          g.setFont(words[i].font);
+          int pixWidth = g.getFontMetrics().stringWidth(words[i].word);
+          if (x+pixWidth>d.width)
+          {
+            x=0;
+            y+=maxHeight;
+            maxHeight = 0;
+          }
+          if (g.getFontMetrics().getHeight() > maxHeight)
+            maxHeight = g.getFontMetrics().getHeight();
+          g.drawString(words[i].word, x, y);
+          int lineWidth = pixWidth;
+          if (words[i].underlined)
+          {
+            if (i<nrWords)
+              if (words[i+1].underlined)
+                lineWidth+=5;
+            g.drawLine(x,y,x+lineWidth,y);
+          }
+          x+=pixWidth+5;
+        }
       }
-
       outputDirty = false;
     }
-
-    String str = "Test text!!";
-    Font font = new Font("courier", Font.BOLD, 14);
-    java.awt.geom.Rectangle2D m = g.getFontMetrics().getStringBounds(str,g);
-    int x = (int)((d.width-m.getWidth())/2);
-    int y = (d.height-18)/2;
-    g.setColor(Color.blue);
-    g.setFont(font);
-    g.drawString(str, x, y);
-
   }
 
 
   class CWizardWord
   {
     public Font font;
+    boolean underlined;
     public Color color;
     public String word;
     public String link;
@@ -235,14 +265,15 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
     yCur = 0;
     outputDirty = true;
   }
-  void AddWord(Font font, Color color, String word, String link)
+  void AddWord(Font font, boolean underlined, Color color, String word, String link)
   {
     CWizardWord theWord = new CWizardWord();
     theWord.font = font;
+    theWord.underlined = underlined;
     theWord.color = color;
     theWord.word = word;
     theWord.link = link;
-System.out.println("nrWords = "+nrWords);
+//System.out.println("nrWords = "+nrWords);
     words[nrWords] = theWord;
     nrWords++;
     outputDirty = true;
