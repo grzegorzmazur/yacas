@@ -1,1 +1,2 @@
-Main-Class: YacasConsole
+Main-Class: net/sf/yacas/YacasConsole
+Class-Path: scripts.zip

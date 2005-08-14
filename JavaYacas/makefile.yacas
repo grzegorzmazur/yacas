@@ -1,30 +1,30 @@
 
 .SUFFIXES: .java .class 
 
-all: CVersion.java yacas.jar scripts.zip calc.html.hints yacasconsole.html.hints
+all: net/sf/yacas/CVersion.java yacas.jar scripts.zip calc.html.hints yacasconsole.html.hints
 
 clean:
-	rm *.class *.jar *.tgz *.zip
+	rm net/sf/yacas/*.class *.jar *.tgz *.zip
 
-CLASSES = CVersion.class InputStatus.class LispInput.class LispOutput.class \
-          LispHashTable.class LispAssociatedHash.class \
-  LispArgList.class GenericClass.class LispInfixOperator.class LispPtr.class LispObject.class \
-  LispPrinter.class LispError.class LispTokenizer.class \
-   LispParser.class LispAtom.class LispNumber.class LispSubList.class LispStandard.class \
-  StringInput.class StringOutput.class \
-   InfixParser.class  LispEvaluatorBase.class BigNumber.class \
-  YacasEvaluator.class YacasEvalCaller.class YacasCoreCommands.class UserStackInformation.class \
-  BasicEvaluator.class EvalFuncBase.class LispOperators.class LispUserFunction.class LispPtrArray.class LispLocalFrame.class LispIterator.class InfixPrinter.class LispEnvironment.class MathCommands.class \
-CYacas.class YacasConsole.class ConsoleApplet.class \
-CDataReader.class HintItem.class \
-HintWindow.class Hints.class SelectSymbol.class TResult.class \
-TSentence.class \
-TWord.class YacasGraphicsContext.class \
-YacasNotebookComponent.class calc.class tegicphone.class WizardApplet.class
+CLASSES = net/sf/yacas/CVersion.class net/sf/yacas/InputStatus.class net/sf/yacas/LispInput.class net/sf/yacas/LispOutput.class \
+          net/sf/yacas/LispHashTable.class net/sf/yacas/LispAssociatedHash.class \
+  net/sf/yacas/LispArgList.class net/sf/yacas/GenericClass.class net/sf/yacas/LispInfixOperator.class net/sf/yacas/LispPtr.class net/sf/yacas/LispObject.class \
+  net/sf/yacas/LispPrinter.class net/sf/yacas/LispError.class net/sf/yacas/LispTokenizer.class \
+   net/sf/yacas/LispParser.class net/sf/yacas/LispAtom.class net/sf/yacas/LispNumber.class net/sf/yacas/LispSubList.class net/sf/yacas/LispStandard.class \
+  net/sf/yacas/StringInput.class net/sf/yacas/StringOutput.class \
+   net/sf/yacas/InfixParser.class  net/sf/yacas/LispEvaluatorBase.class net/sf/yacas/BigNumber.class \
+  net/sf/yacas/YacasEvaluator.class net/sf/yacas/YacasEvalCaller.class net/sf/yacas/YacasCoreCommands.class net/sf/yacas/UserStackInformation.class \
+  net/sf/yacas/BasicEvaluator.class net/sf/yacas/EvalFuncBase.class net/sf/yacas/LispOperators.class net/sf/yacas/LispUserFunction.class net/sf/yacas/LispPtrArray.class net/sf/yacas/LispLocalFrame.class net/sf/yacas/LispIterator.class net/sf/yacas/InfixPrinter.class net/sf/yacas/LispEnvironment.class net/sf/yacas/MathCommands.class \
+net/sf/yacas/CYacas.class net/sf/yacas/YacasConsole.class net/sf/yacas/ConsoleApplet.class \
+net/sf/yacas/CDataReader.class net/sf/yacas/HintItem.class \
+net/sf/yacas/HintWindow.class net/sf/yacas/Hints.class net/sf/yacas/SelectSymbol.class net/sf/yacas/TResult.class \
+net/sf/yacas/TSentence.class \
+net/sf/yacas/TWord.class net/sf/yacas/YacasGraphicsContext.class \
+net/sf/yacas/YacasNotebookComponent.class net/sf/yacas/calc.class net/sf/yacas/tegicphone.class net/sf/yacas/WizardApplet.class
 
 
 yacas.jar: $(CLASSES)
-	jar cvmf MANIFEST.MF yacas.jar *.class 
+	jar cvmf MANIFEST.MF yacas.jar net/sf/yacas/*.class 
 
 scripts.zip:
 	cd ../scripts/ ; zip ../JavaYacas/scripts.zip * */* ; cd ../JavaYacas
@@ -33,7 +33,7 @@ scripts.zip:
 	javac $*.java 
 
 
-CVersion.java: ../config.h dumpversion.cpp
+net/sf/yacas/CVersion.java: ../config.h dumpversion.cpp
 	g++ dumpversion.cpp -o dumpversion
 	./dumpversion
 

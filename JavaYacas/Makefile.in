@@ -126,42 +126,42 @@ install_sh = @install_sh@
 psdir = @psdir@
 scriptdir = @scriptdir@
 
-EXTRA_DIST = ArrayClass.java BackQuoteBehaviour.java BasicEvaluator.java \
-BigNumber.java BranchingUserFunction.java CYacas.java \
-CachedStdFileInput.java ConsoleApplet.java EvalFuncBase.java \
-GenericClass.java InfixParser.java InfixPrinter.java \
-InputDirectories.java InputStatus.java JarInputFile.java \
-JavaYacas.1 JavaYacas.xcode LispArgList.java \
-LispArityUserFunction.java LispAssociatedHash.java LispAtom.java \
-LispDefFile.java LispDefFiles.java \
-LispEnvironment.java LispError.java \
-LispEvaluatorBase.java LispGenericClass.java \
-LispGlobal.java LispGlobalVariable.java \
-LispHashTable.java LispInfixOperator.java LispInput.java \
-LispIterator.java LispLocalFrame.java \
-LispMultiUserFunction.java LispNumber.java LispObject.java \
-LispOperators.java LispOutput.java LispParser.java \
-LispPrinter.java LispPtr.java LispPtrArray.java \
-LispStandard.java LispSubList.java LispTokenizer.java \
-LispUserFunction.java LispUserFunctions.java \
-ListedBranchingUserFunction.java ListedMacroUserFunction.java \
-LocalSymbolBehaviour.java MANIFEST.MF \
-MacroUserFunction.java Makefile.am Manifest MatchAtom.java \
-MatchNumber.java MatchSubList.java \
-MatchVariable.java MathCommands.java ParsedObject.java \
-PatternClass.java StdFileInput.java \
-StdFileOutput.java StringInput.java StringOutput.java \
-SubstBehaviour.java SubstBehaviourBase.java UserStackInformation.java \
-YacasConsole.java YacasCoreCommands.java \
-YacasEvalCaller.java YacasEvaluator.java YacasParamMatcherBase.java \
-YacasPatternPredicateBase.java Yacasexception.java CommonLispTokenizer.java \
-convertfns.cpp makefile.yacas tmp.java \
+EXTRA_DIST = net/sf/yacas/ArrayClass.java net/sf/yacas/BackQuoteBehaviour.java net/sf/yacas/BasicEvaluator.java \
+net/sf/yacas/BigNumber.java net/sf/yacas/BranchingUserFunction.java net/sf/yacas/CYacas.java \
+net/sf/yacas/CachedStdFileInput.java net/sf/yacas/ConsoleApplet.java net/sf/yacas/EvalFuncBase.java \
+net/sf/yacas/GenericClass.java net/sf/yacas/InfixParser.java net/sf/yacas/InfixPrinter.java \
+net/sf/yacas/InputDirectories.java net/sf/yacas/InputStatus.java net/sf/yacas/JarInputFile.java \
+JavaYacas.1 JavaYacas.xcode net/sf/yacas/LispArgList.java \
+net/sf/yacas/LispArityUserFunction.java net/sf/yacas/LispAssociatedHash.java net/sf/yacas/LispAtom.java \
+net/sf/yacas/LispDefFile.java net/sf/yacas/LispDefFiles.java \
+net/sf/yacas/LispEnvironment.java net/sf/yacas/LispError.java \
+net/sf/yacas/LispEvaluatorBase.java net/sf/yacas/LispGenericClass.java \
+net/sf/yacas/LispGlobal.java net/sf/yacas/LispGlobalVariable.java \
+net/sf/yacas/LispHashTable.java net/sf/yacas/LispInfixOperator.java net/sf/yacas/LispInput.java \
+net/sf/yacas/LispIterator.java net/sf/yacas/LispLocalFrame.java \
+net/sf/yacas/LispMultiUserFunction.java net/sf/yacas/LispNumber.java net/sf/yacas/LispObject.java \
+net/sf/yacas/LispOperators.java net/sf/yacas/LispOutput.java net/sf/yacas/LispParser.java \
+net/sf/yacas/LispPrinter.java net/sf/yacas/LispPtr.java net/sf/yacas/LispPtrArray.java \
+net/sf/yacas/LispStandard.java net/sf/yacas/LispSubList.java net/sf/yacas/LispTokenizer.java \
+net/sf/yacas/LispUserFunction.java net/sf/yacas/LispUserFunctions.java \
+net/sf/yacas/ListedBranchingUserFunction.java net/sf/yacas/ListedMacroUserFunction.java \
+net/sf/yacas/LocalSymbolBehaviour.java MANIFEST.MF \
+net/sf/yacas/MacroUserFunction.java Makefile.am Manifest net/sf/yacas/MatchAtom.java \
+net/sf/yacas/MatchNumber.java net/sf/yacas/MatchSubList.java \
+net/sf/yacas/MatchVariable.java net/sf/yacas/MathCommands.java net/sf/yacas/ParsedObject.java \
+net/sf/yacas/PatternClass.java net/sf/yacas/StdFileInput.java \
+net/sf/yacas/StdFileOutput.java net/sf/yacas/StringInput.java net/sf/yacas/StringOutput.java \
+net/sf/yacas/SubstBehaviour.java net/sf/yacas/SubstBehaviourBase.java net/sf/yacas/UserStackInformation.java \
+net/sf/yacas/YacasConsole.java net/sf/yacas/YacasCoreCommands.java \
+net/sf/yacas/YacasEvalCaller.java net/sf/yacas/YacasEvaluator.java net/sf/yacas/YacasParamMatcherBase.java \
+net/sf/yacas/YacasPatternPredicateBase.java net/sf/yacas/Yacasexception.java net/sf/yacas/CommonLispTokenizer.java \
+convertfns.cpp makefile.yacas net/sf/yacas/tmp.java \
 todo.txt yacasconsole.html \
-CDataReader.java HintItem.java \
-HintWindow.java Hints.java SelectSymbol.java TResult.java TSentence.java \
-TWord.java YacasGraphicsContext.java YacasNotebook.java \
-YacasNotebookComponent.java calc.java tegicphone.java calc.html TempMathUtils.java XmlTokenizer.java README.TXT \
-WizardApplet.java
+net/sf/yacas/CDataReader.java net/sf/yacas/HintItem.java \
+net/sf/yacas/HintWindow.java net/sf/yacas/Hints.java net/sf/yacas/SelectSymbol.java net/sf/yacas/TResult.java net/sf/yacas/TSentence.java \
+net/sf/yacas/TWord.java net/sf/yacas/YacasGraphicsContext.java net/sf/yacas/YacasNotebook.java \
+net/sf/yacas/YacasNotebookComponent.java net/sf/yacas/calc.java net/sf/yacas/tegicphone.java calc.html net/sf/yacas/TempMathUtils.java XmlTokenizer.java README.TXT \
+net/sf/yacas/WizardApplet.java
 
 subdir = JavaYacas
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -196,6 +196,7 @@ top_distdir = ..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
+	$(mkinstalldirs) $(distdir)/net/sf/yacas
 	@list='$(DISTFILES)'; for file in $$list; do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
