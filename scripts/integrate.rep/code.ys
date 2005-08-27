@@ -33,7 +33,12 @@ UnFence("IntegrateMultiplicative",4);
 ////////////////////////////////////////////////
 
 10 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(from = -to And IsOddFunction(expr,var)) <-- 0;
-10 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(from = -to And IsEvenFunction(expr,var)) <--
+
+// We need to define this case (integrating from 0 to 0 over an even function) explicitly, otherwise
+// the integration ends up going in to infinite recursion.
+10 # indefIntegrate(_var,0,0,_expr,_a,_b) <-- 0;
+
+11 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(from = -to And IsEvenFunction(expr,var)) <--
      2*indefIntegrate(var,0,to,expr,a,b);
 
 100 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(Type(AntiDeriv(var,IntClean(var,expr))) != "AntiDeriv") 
