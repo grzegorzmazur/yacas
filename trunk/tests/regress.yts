@@ -521,3 +521,7 @@ Verify(MathBitCount(-0.25),-1);
 Verify(MathBitCount(-0.125),-2);
 Verify(MathBitCount(-0.0125),-6);
 
+// This one ended in an infinite loop because 1 is an even function, and the indefinite integrator
+// then kept on calling itself because the left and right boundaries were equal to zero.
+Verify(Integrate(x,0,0)1,0);
+
