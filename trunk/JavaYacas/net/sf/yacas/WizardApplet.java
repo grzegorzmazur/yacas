@@ -150,10 +150,14 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
           try
           {
             zipFile = new java.util.zip.ZipFile(new File(new java.net.URI(zipFileName)));
-  //System.out.println("Succeeded in finding "+zipFileName);
+System.out.println("Succeeded in finding "+zipFileName);
           }
           catch(Exception e)
           {
+            ParsePage(
+            "[title:Yacas helper]"+
+            "The start page for the Yacas helper could not be found (the zip file "+zipFileName+" was not available).\n"
+            );
           }
         }
       }
@@ -167,6 +171,17 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
           StdFileInput input = new StdFileInput(s,status);
           ParsePage(input.StartPtr().toString());
         }
+      }
+      else
+      {
+        String docbase = getDocumentBase().toString();
+        int pos = docbase.lastIndexOf("/");
+        String zipFileName = "jar:"+docbase.substring(0,pos+1)+"wizard.zip!/"+fileName;
+System.out.println("Trying to find "+zipFileName);
+        InputStatus status = new InputStatus();
+        JarInputFile input = new JarInputFile(zipFileName, status);
+System.out.println("Succeeded in finding "+zipFileName);
+        ParsePage(input.StartPtr().toString());
       }
     }
     catch (Exception e)
