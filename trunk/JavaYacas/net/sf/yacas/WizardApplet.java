@@ -14,11 +14,13 @@ examples would also be nice.
 Ideally, this would be supported by some sort of mark-up language, perhaps even Yacas as an engine.
 
 TODO:
-- reading scripts from another zip file
+x reading scripts from another zip file
 - sending strings to the other applet
-- maintaining a list of hotspots with links
+x maintaining a list of hotspots with links
 - responding to clicking on the links
 - prettifying the wizard
+- optimzing things: it should not search for links linearly!
+- Ugly hack: fixed-length max number of links, needs to become a dynamic grownign array
 - extending the examples in the wizard
 - change the release scripts to also include the wizard
 - give feedback as to which of the two applets has focus, so the user knows to click on the console again,
@@ -44,7 +46,7 @@ import java.applet.*;
 import java.io.*;
 import java.net.*;
 
-public class WizardApplet extends Applet implements KeyListener, FocusListener, ClipboardOwner
+public class WizardApplet extends Applet implements KeyListener, FocusListener, ClipboardOwner, MouseListener
 {
   public void init() 
   {
@@ -52,11 +54,24 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
     setLayout (null);
     addKeyListener(this);
     addFocusListener(this);
+    addMouseListener(this);
   }
 
   static Font titleFont = new Font("courier", Font.BOLD, 18);
   static Font normalFont = new Font("courier", Font.BOLD, 14);
   static Font linkFont = new Font("courier", Font.ITALIC, 14);
+
+  class LinkRect
+  {
+    int x;
+    int y;
+    int width;
+    int height;
+    int word;
+  };
+  LinkRect links[] = new LinkRect[1024];
+  int nrlinks = 0;
+
 
   void AddTextSentence(Font font, boolean underlined, Color color, String text, String link)
   {
@@ -121,22 +136,52 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
       }
     }
   }
-
+  private static java.util.zip.ZipFile zipFile = null;
+  public void LoadFile(String fileName)
+  {
+    try
+    {
+      if (zipFile == null)
+      {
+        String docbase = getDocumentBase().toString();
+        {
+          int pos = docbase.lastIndexOf("/");
+          String zipFileName = docbase.substring(0,pos+1)+"wizard.zip";
+          try
+          {
+            zipFile = new java.util.zip.ZipFile(new File(new java.net.URI(zipFileName)));
+  //System.out.println("Succeeded in finding "+zipFileName);
+          }
+          catch(Exception e)
+          {
+          }
+        }
+      }
+      if  (zipFile != null)
+      {
+        java.util.zip.ZipEntry e = zipFile.getEntry(fileName);
+        if (e != null)
+        {
+          java.io.InputStream s = zipFile.getInputStream(e);
+          InputStatus status = new InputStatus();
+          StdFileInput input = new StdFileInput(s,status);
+          ParsePage(input.StartPtr().toString());
+        }
+      }
+    }
+    catch (Exception e)
+    {
+      ParsePage(
+      "[title:Yacas helper]"+
+      "The start page for the Yacas helper could not be found.\n"
+      );
+    }
+  }
   public void start()
   {
     repaint();
     Clear();
-
-    ParsePage(
-      "[title:Yacas helper]"+
-      "This helper provide various examples accessible from the links below.\n"+
-      " \n"+
-      "- [link:about:about.sml] this wizard.\n"+
-      "- Some simple [link:arithmetic:arith.sml]examples\n"+
-      "- Some [link:calculus:calculus.sml]examples\n"+
-      "- Some [link:multi-step:multistep.sml]examples\n"+
-      "- Edit dialogs for [link:specific commands:commands.sml]\n"
-      );
+    LoadFile("start.yml");
   }
   public void stop()
   {
@@ -155,6 +200,12 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
   }
   public void keyPressed(KeyEvent e)
   {
+    Applet console = getAppletContext().getApplet( "console");
+    if (console != null)
+    {
+      net.sf.yacas.ConsoleApplet cons = (net.sf.yacas.ConsoleApplet)console;
+      cons.keyPressed(e);
+    }
     //processKeyEvent(e);
   }
   public void keyTyped(KeyEvent e)
@@ -204,6 +255,8 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
       g.setColor(Color.white);
       g.clearRect(0,0,getWidth(),getHeight());
 
+      nrlinks = 0;
+
       int i;
       int x = 0;
       int y = 18;
@@ -237,6 +290,19 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
                 lineWidth+=5;
             g.drawLine(x,y,x+lineWidth,y);
           }
+          
+          if (words[i].link != null)
+          if (words[i].link.length() > 0)
+          {
+            LinkRect r = new LinkRect();
+            r.x = x;
+            r.y = y;
+            r.width = lineWidth;
+            r.height = maxHeight;
+            r.word = i;
+            links[nrlinks++] = r;
+          }
+          
           x+=pixWidth+5;
         }
       }
@@ -282,6 +348,63 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
     words[nrWords] = theWord;
     nrWords++;
     outputDirty = true;
+  }
+
+
+  // Invoked when the mouse button has been clicked (pressed and released) on a component.
+  public void	mouseClicked(MouseEvent e) 
+  {
+    int x = e.getX();
+    int y = e.getY();
+//System.out.println("mouseclick on "+x+", "+y);
+    int i;
+    for (i=0;i<nrlinks;i++)
+    {
+//System.out.println(""+i+" : ("+links[i].x+", "+links[i].y+") : ("+links[i].width+", "+links[i].height+")"+words[links[i].word].link);
+      if (x>=links[i].x && x<=links[i].x+links[i].width)
+      {
+        if (y<=links[i].y && y>=links[i].y-links[i].height)
+        {
+          String link = words[links[i].word].link;
+System.out.println("link pressed was "+link);
+          if (link.endsWith(".yml"))
+          {
+            LoadFile(words[links[i].word].link);
+            repaint();
+          }
+          else
+          {
+            Applet console = getAppletContext().getApplet( "console");
+            if (console != null)
+            {
+              net.sf.yacas.ConsoleApplet cons = (net.sf.yacas.ConsoleApplet)console;
+              cons.InvokeCalculation(link);
+            }
+          }
+          return;
+        }
+      }
+    }
+  }
+
+  // Invoked when the mouse enters a component.
+  public void	mouseEntered(MouseEvent e) 
+  {
+  }
+  
+  // Invoked when the mouse exits a component.
+  public void	mouseExited(MouseEvent e) 
+  {
+  }
+  
+  // Invoked when a mouse button has been pressed on a component.
+  public void	mousePressed(MouseEvent e) 
+  {
+  }
+  
+  // Invoked when a mouse button has been released on a component.
+  public void	mouseReleased(MouseEvent e) 
+  {
   }
 
 }

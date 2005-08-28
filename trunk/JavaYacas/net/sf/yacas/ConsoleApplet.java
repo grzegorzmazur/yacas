@@ -224,7 +224,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     return buf.toString();
   }
 
-  private void ResetInput()
+  public void ResetInput()
   {
     if (inputLine.length()>0)
       if (inputLine.charAt(inputLine.length()-1) != '\\')
@@ -824,8 +824,8 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   private Font font = new Font("courier", Font.BOLD, fontHeight);
 
   private static final int nrHistoryLines = 50;
-  private String history[] = new String[nrHistoryLines]; 
-  int currentHistoryLine = 0;
+  public String history[] = new String[nrHistoryLines]; 
+  public int currentHistoryLine = 0;
   int historyBrowse = 0;
 
   boolean inputDirty = true;
@@ -1086,5 +1086,20 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     else
       hintWindow = null;
   }
+
+  public void InvokeCalculation(String expression)
+  {
+    history[currentHistoryLine] = expression;
+    currentHistoryLine++;
+    AddLinesStatic(48,"In> ",expression);
+    PerformRequest("Out> ",expression);
+    ResetInput();
+    RefreshHintWindow();
+    focusGained = true;
+    inputDirty = true;
+    outputDirty = true;
+    repaint(0);
+  }
+
 }
 

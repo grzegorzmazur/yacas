@@ -38,7 +38,7 @@ cp ../JavaYacas/yacas.jar .
 cp ../JavaYacas/yacasconsole.html .
 cp ../JavaYacas/yacasconsole.html.hints .
 cp ../JavaYacas/scripts.zip .
-
+cp ../JavaYacas/wizard.zip .
 
 if [ -d backups ] ; then : ; else  mkdir backups ; fi; 
 mv manual.html.tar.gz backups
