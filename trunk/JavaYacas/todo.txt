@@ -1,21 +1,45 @@
 
-x copy all .java files to net/sf/yacas/
-x pre-pend all the files with package net.sf.yacas;
-x Change the generation of CVersion.java by adding the package line
-x make the makefile.net.sf.yacas that builds the files (see if I can get it to work).
-x test if both command line and html version still work
-x Change Makefile.am
-x add new files to cvs
-- remove other java files from cvs
-- check that everything still works
-- commit
+Yacas helper:
+- commands specific to the Java console
+  - restart
+  - cls
+  - ??
+- complex numbers (Re, Im)
+- integration
+- differentiation
+- factoring 
+- factorials, binomials, factorial simplification
+- simplifiers
+- Round, floor, ceil
+- Sqrt
+- Gcd
+- Sqrt, Sin, Cos, etcetera
+- Taylor series
+- Newton
+- Groebner
+- programming
+  - assigning variables
+  - defining functions
+  - groups of expressions
+  - local variables
+  - loops
+  - if statements
+  - patterns
+- Solvers
+- Advanced concepts
+  - threading
+- Advanced operators
+  - n .. m
+  - a:{}
+- Vectors
+- matrices
+- Version
 
 
-FAILING TESTS:
 
 
 TODO:
-- Embed Yacas in the web site somehow.
+-xEmbed Yacas in the web site somehow.
 - test: FromBase to also work with real numbers
 - test: ToBase to also work with real numbers
 - real fix for the sockets in yacasmain.cpp
