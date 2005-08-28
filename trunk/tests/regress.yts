@@ -525,3 +525,7 @@ Verify(MathBitCount(-0.0125),-6);
 // then kept on calling itself because the left and right boundaries were equal to zero.
 Verify(Integrate(x,0,0)1,0);
 
+// This code verifies that if integrating over a zero domain, the result
+// is zero. 
+Verify(Integrate(x,1,1)Sin(Exp(x^2)),0);
+
