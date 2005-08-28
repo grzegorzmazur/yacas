@@ -1,7 +1,7 @@
 
 .SUFFIXES: .java .class 
 
-all: net/sf/yacas/CVersion.java yacas.jar scripts.zip calc.html.hints yacasconsole.html.hints
+all: net/sf/yacas/CVersion.java yacas.jar scripts.zip calc.html.hints yacasconsole.html.hints wizard.zip
 
 clean:
 	rm net/sf/yacas/*.class *.jar *.tgz *.zip
@@ -28,6 +28,9 @@ yacas.jar: $(CLASSES)
 
 scripts.zip:
 	cd ../scripts/ ; zip ../JavaYacas/scripts.zip * */* ; cd ../JavaYacas
+
+wizard.zip:
+	zip wizard.zip *.yml
 
 .java.class:
 	javac $*.java 
