@@ -35,10 +35,13 @@ UnFence("IntegrateMultiplicative",4);
 10 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(from = -to And IsOddFunction(expr,var)) <-- 0;
 
 // We need to define this case (integrating from 0 to 0 over an even function) explicitly, otherwise
-// the integration ends up going in to infinite recursion.
-10 # indefIntegrate(_var,0,0,_expr,_a,_b) <-- 0;
+// the integration ends up going in to infinite recursion. Extended it a little bit more, since if
+// you are integrating from A to A, then the result is obviously zero. There are perhaps situations
+// where this does not work, where we need to simplify (to-from) first. A naive implementation caused
+// a test to fail.
+10 # indefIntegrate(_var,_from,_from,_expr,_a,_b) <-- 0;
 
-11 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(from = -to And IsEvenFunction(expr,var)) <--
+12 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(from = -to And IsEvenFunction(expr,var)) <--
      2*indefIntegrate(var,0,to,expr,a,b);
 
 100 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(Type(AntiDeriv(var,IntClean(var,expr))) != "AntiDeriv") 
