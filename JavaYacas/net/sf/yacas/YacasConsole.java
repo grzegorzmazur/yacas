@@ -78,7 +78,12 @@ catch(Exception e)
       {
         String detect = detectURL.getPath(); // file:/home/av/src/lib/scripts.zip!/yacasinit.ys
         archive = detect.substring(0, detect.lastIndexOf('!')); // file:/home/av/src/lib/scripts.zip
+//System.out.println("Found archive ["+archive+"]");
       }    
+      else
+      {
+//System.out.println("Archive not found!!!!");
+      }
     }
     int i=0;
     while (i<argv.length)

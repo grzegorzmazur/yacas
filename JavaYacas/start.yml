@@ -1,6 +1,7 @@
 [title:Yacas helper]
 This helper provide various examples accessible from the links below.
-- [link:about:about.yml] this helper pane.
+- [link:about:about.yml]this helper pane.
+- [link:Special commands:special.yml]for this console.
 - Some simple [link:random:Example();]examples.
 - Some simple [link:arithmetic:arith.yml]examples.
 - Some [link:calculus:calculus.yml]examples.
