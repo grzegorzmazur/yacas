@@ -1,6 +1,20 @@
 
+- Give "Where" a much lower precedence.
+
+- Touch-sensitivity of helper: links not always followed.
+
+
+- add the files:
+  - special.yml
+  - differentiate.yml
+  - integrate.yml
+  - analytic.yml
+
+
+
+
 Yacas helper:
-- commands specific to the Java console
+x commands specific to the Java console
   - restart
   - cls
   - ??
