@@ -353,6 +353,7 @@ OMDef( "&" ,  "yacas", "bitwise_and" );
 OMDef( "|" ,  "yacas", "bitwise_or"  );
 OMDef( "%" ,  "yacas", "bitwise_xor" );
 OMDef( "/" ,  "arith1", "divide" );
+OMDef( "-" ,  "arith1", "unary_minus");
 OMDef( "-" ,  "arith1", "minus"  );
 OMDef( "+" ,  "arith1", "plus"   );
 OMDef( "^" ,  "arith1", "power"  );
@@ -456,7 +457,7 @@ FromString(str:" EndOfFile")
   Local(result, new);
   result:={};
   OMNextToken();
-  While (OMToken !=XmlTag("OMA",{},"Close"))
+  While (OMToken != XmlTag("OMA",{},"Close"))
   [
     new:=ReadOMOBJ(OMToken);
     DestructiveAppend(result,new);
@@ -465,5 +466,4 @@ FromString(str:" EndOfFile")
   UnList(result);
 ];
 
-100 # ReadOMOBJ(_rest) <-- Check(False,ToString()Echo("Unhandled tag :",rest));
-
+100 # ReadOMOBJ(_rest) <-- Check(False,ToString()Echo("Unhandled tag: ",rest));
