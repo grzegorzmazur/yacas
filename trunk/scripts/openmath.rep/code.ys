@@ -466,4 +466,18 @@ FromString(str:" EndOfFile")
   UnList(result);
 ];
 
+// Special handling of the symbols in the "yacas" CD:
+
+10 # ReadOMOBJ(XmlTag("OMS",{{"CD","yacas"}, {"NAME",_name}},"OpenClose")) <--
+[
+  OMNextToken();
+  Atom(name);
+];
+
+10 # ReadOMOBJ(XmlTag("OMS",{{"NAME",_name}, {"CD","yacas"}},"OpenClose")) <--
+[
+  OMNextToken();
+  Atom(name);
+];
+
 100 # ReadOMOBJ(_rest) <-- Check(False,ToString()Echo("Unhandled tag: ",rest));
