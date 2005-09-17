@@ -91,24 +91,51 @@ void CYacas::Evaluate(const LispCharPtr aExpression)
     LispPtr result;
     LispTrap(
      {
-         LispString full((LispCharPtr)aExpression);
-         full[full.NrItems()-1] = ';';
-         full.Append('\0');
-         StringInput input(full,environment().iInputStatus);
-         environment().iInputStatus.SetTo("CommandLine");
          LispPtr lispexpr;
-         LispTokenizer &tok = *environment().iCurrentTokenizer;
-         InfixParser parser(tok, input,
-                            environment(),
-                            environment().PreFix(),
-                            environment().InFix(),
-                            environment().PostFix(),
-                            environment().Bodied());
-         parser.Parse(lispexpr);
+//printf("Input: [%s]\n",aExpression);
+         if (environment().PrettyReader() != NULL)
+         {
+            LispStringPtr prettyReader = environment().PrettyReader();
+            LispString full((LispCharPtr)aExpression);
+            full[full.NrItems()-1] = ';';
+            full.Append('\0');
+            StringInput input(full,environment().iInputStatus);
+            LispLocalInput localInput(environment(), &input);
+            LispPtr args;
+            args.Set(NULL);
+            InternalApplyString(environment(), lispexpr,
+                               prettyReader,
+                               args);
+         }
+         else
+         {
+           LispString full((LispCharPtr)aExpression);
+           full[full.NrItems()-1] = ';';
+           full.Append('\0');
+           StringInput input(full,environment().iInputStatus);
+           environment().iInputStatus.SetTo("CommandLine");
+           LispTokenizer &tok = *environment().iCurrentTokenizer;
+           InfixParser parser(tok, input,
+                              environment(),
+                              environment().PreFix(),
+                              environment().InFix(),
+                              environment().PostFix(),
+                              environment().Bodied());
+           parser.Parse(lispexpr);
+         }
+
+//LispString str;
+//PrintExpression(str, lispexpr, environment(), 10000);
+//printf("Read: [%s]\n",str.String());              
+
 
          environment().iEvalDepth=0;
          environment().iEvaluator->ResetStack();
          InternalEval(environment(), result, lispexpr);
+
+//PrintExpression(str, result, environment(), 10000);
+//printf("Result: [%s]\n",str.String());              
+
          // If no error encountered, print result
          if (environment().PrettyPrinter() != NULL)
          {
@@ -130,6 +157,9 @@ void CYacas::Evaluate(const LispCharPtr aExpression)
          LispStringPtr percent = environment().HashTable().LookUp("%");
          environment().SetVariable(percent,result);
          environment().SetGlobalEvaluates(percent);
+
+//printf("Finished: \n");              
+
          
      },environment().iErrorOutput,environment());
      

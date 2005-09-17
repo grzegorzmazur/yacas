@@ -810,27 +810,52 @@ void LispApplyPure(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
+void LispPrettyReader(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+  LispInt nrArguments = InternalListLength(ARGUMENT(0));
+
+  if (nrArguments == 1)
+  {
+    aEnvironment.SetPrettyReader(NULL);
+  }
+  else
+  {
+    CHK_CORE(nrArguments == 2,KLispErrWrongNumberOfArgs);
+    LispPtr oper;
+    oper.Set(ARGUMENT(0).Get());
+    oper.GoNext();
+    CHK_ISSTRING_CORE(oper,1);
+    aEnvironment.SetPrettyReader(oper.Get()->String());
+  }
+  InternalTrue(aEnvironment,RESULT);
+}
+
+void LispGetPrettyReader(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+  if (aEnvironment.PrettyReader() == NULL)
+    RESULT.Set(LispAtom::New(aEnvironment,"\"\""));
+  else
+    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.PrettyReader()->String()));
+}
+
 void LispPrettyPrinter(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispInt nrArguments = InternalListLength(ARGUMENT(0));
+  LispInt nrArguments = InternalListLength(ARGUMENT(0));
 
-    if (nrArguments == 1)
-    {
-        aEnvironment.SetPrettyPrinter(NULL);
-    }
-    else
-    {
-        CHK_CORE(nrArguments == 2,KLispErrWrongNumberOfArgs);
-        LispPtr oper;
-        oper.Set(ARGUMENT(0).Get());
-        oper.GoNext();
-/*TODO remove
-        oper.Set(Argument(ARGUMENT(0),1).Get());
-*/
-        CHK_ISSTRING_CORE(oper,1);
-        aEnvironment.SetPrettyPrinter(oper.Get()->String());
-    }
-    InternalTrue(aEnvironment,RESULT);
+  if (nrArguments == 1)
+  {
+    aEnvironment.SetPrettyPrinter(NULL);
+  }
+  else
+  {
+    CHK_CORE(nrArguments == 2,KLispErrWrongNumberOfArgs);
+    LispPtr oper;
+    oper.Set(ARGUMENT(0).Get());
+    oper.GoNext();
+    CHK_ISSTRING_CORE(oper,1);
+    aEnvironment.SetPrettyPrinter(oper.Get()->String());
+  }
+  InternalTrue(aEnvironment,RESULT);
 }
 
 void LispGetPrettyPrinter(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -840,8 +865,6 @@ void LispGetPrettyPrinter(LispEnvironment& aEnvironment, LispInt aStackTop)
   else
     RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.PrettyPrinter()->String()));
 }
-
-
 
 void LispGarbageCollect(LispEnvironment& aEnvironment, LispInt aStackTop)
 {

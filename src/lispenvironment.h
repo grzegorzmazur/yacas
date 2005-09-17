@@ -176,6 +176,10 @@ public:
 public:
     inline void SetPrettyPrinter(LispStringPtr aPrettyPrinter);
     inline LispStringPtr PrettyPrinter(void);
+    
+    inline void SetPrettyReader(LispStringPtr aPrettyReader);
+    inline LispStringPtr PrettyReader(void);
+    
 public:
     LispInt GetUniqueId();
 public:
@@ -324,6 +328,7 @@ private:
 
     LispCharPtr theUserError;
 
+    LispStringPtr iPrettyReader;
     LispStringPtr iPrettyPrinter;
 public:
     LispTokenizer iDefaultTokenizer;
@@ -553,13 +558,22 @@ private:
 
 
 
+inline void LispEnvironment::SetPrettyReader(LispStringPtr aPrettyReader)
+{
+  iPrettyReader = aPrettyReader;
+}
+inline LispStringPtr LispEnvironment::PrettyReader(void)
+{
+  return iPrettyReader;
+}
+
 inline void LispEnvironment::SetPrettyPrinter(LispStringPtr aPrettyPrinter)
 {
-    iPrettyPrinter = aPrettyPrinter;
+  iPrettyPrinter = aPrettyPrinter;
 }
 inline LispStringPtr LispEnvironment::PrettyPrinter(void)
 {
-    return iPrettyPrinter;
+  return iPrettyPrinter;
 }
 
 

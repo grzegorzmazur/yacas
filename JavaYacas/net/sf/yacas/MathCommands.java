@@ -542,11 +542,17 @@ class MathCommands
          new YacasEvaluator(new LispApplyPure(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "ApplyPure");
     aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispPrettyReader(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
+         "PrettyReader");
+    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispPrettyPrinter(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
          "PrettyPrinter");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispGetPrettyPrinter(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "GetPrettyPrinter");
+    aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispGetPrettyReader(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "GetPrettyReader");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispGarbageCollect(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "GarbageCollect");
@@ -3788,6 +3794,40 @@ class MathCommands
         LispError.CHK_ARG_CORE(aEnvironment,aStackTop,oper.Get().SubList().Get() != null,1);
         LispStandard.InternalApplyPure(oper,args2,RESULT(aEnvironment, aStackTop),aEnvironment);
       }
+    }
+  }
+
+
+  class LispPrettyReader extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
+    {
+      int nrArguments = LispStandard.InternalListLength(ARGUMENT(aEnvironment, aStackTop, 0));
+      if (nrArguments == 1)
+      {
+        aEnvironment.iPrettyReader = null;
+      }
+      else
+      {
+        LispError.CHK_CORE(aEnvironment, aStackTop,nrArguments == 2,LispError.KLispErrWrongNumberOfArgs);
+        LispPtr oper = new LispPtr();
+        oper.Set(ARGUMENT(aEnvironment, aStackTop, 0).Get());
+        oper.GoNext();
+        LispError.CHK_ISSTRING_CORE(aEnvironment,aStackTop,oper,1);
+        aEnvironment.iPrettyReader = oper.Get().String();
+      }
+      LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
+    }
+  }
+
+  class LispGetPrettyReader extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
+    {
+      if (aEnvironment.iPrettyReader == null)
+        RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,"\"\""));
+      else
+        RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,aEnvironment.iPrettyReader));
     }
   }
 
