@@ -55,6 +55,7 @@ LispEnvironment::LispEnvironment(
     iBodiedOperators(aBodiedOperators),
     iCurrentInput(aCurrentInput),
     theUserError(NULL),
+    iPrettyReader(NULL),
     iPrettyPrinter(NULL),
     iCurrentTokenizer(&iDefaultTokenizer),
     iStack(aStackSize)

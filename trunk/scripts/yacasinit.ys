@@ -109,7 +109,9 @@ Rule("REP",0,1,True)
   While(Not(IsExitRequested()))
   [
     Set(errorString, "");
-    TrapError(Set(input, FromString(ConcatStrings(ReadCmdLineString("In> "),";"))Read()),Set(errorString,GetCoreError()));
+    If(GetPrettyReader() = "",
+      TrapError(Set(input, FromString(ConcatStrings(ReadCmdLineString("In> "),";"))Read()),Set(errorString,GetCoreError())),
+      TrapError(Set(input, FromString(ReadCmdLineString("In> "))ApplyPure(GetPrettyReader(),{})),Set(errorString,GetCoreError())));
     If(Not(errorString = ""), WriteString(errorString));
     If (Not(IsExitRequested()) And errorString="",
     [

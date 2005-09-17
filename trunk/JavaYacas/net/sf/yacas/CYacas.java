@@ -25,17 +25,47 @@ public class CYacas
     try
     {
       iError = null;
-      InputStatus someStatus = new InputStatus();
-      StringBuffer inp = new StringBuffer();
-      inp.append(input);
-      inp.append(";");
-      StringInput input_str = new StringInput(inp,someStatus);
 
-//example creating an infix operator      env.iInfixOperators.SetOperator(10,"+");
-//      LispParser parser = new LispParser(tokenizer, input_str,env);
-      LispParser parser = new InfixParser(tokenizer, input_str, env, env.iPrefixOperators, env.iInfixOperators, env.iPostfixOperators, env.iBodiedOperators);
       LispPtr in_expr = new LispPtr();
-      parser.Parse( in_expr );
+      if (env.iPrettyReader != null)
+      {
+        InputStatus someStatus = new InputStatus();
+        StringBuffer inp = new StringBuffer();
+        inp.append(input);
+        InputStatus oldstatus = env.iInputStatus;
+        env.iInputStatus.SetTo("String");
+        StringInput newInput = new StringInput(new StringBuffer(input),env.iInputStatus);
+
+        LispInput previous = env.iCurrentInput;
+        env.iCurrentInput = newInput;
+        try
+        {
+         LispPtr args = new LispPtr();
+         LispStandard.InternalApplyString(env, in_expr,
+                             env.iPrettyReader,
+                             args);
+        }
+        catch (Exception e)
+        {
+          throw e;
+        }
+        finally
+        {
+          env.iCurrentInput = previous;
+          env.iInputStatus.RestoreFrom(oldstatus);
+        }
+      }
+      else
+      {
+        InputStatus someStatus = new InputStatus();
+        StringBuffer inp = new StringBuffer();
+        inp.append(input);
+        inp.append(";");
+        StringInput input_str = new StringInput(inp,someStatus);
+        LispParser parser = new InfixParser(tokenizer, input_str, env, env.iPrefixOperators, env.iInfixOperators, env.iPostfixOperators, env.iBodiedOperators);
+        parser.Parse( in_expr );
+      }
+
       LispPtr result = new LispPtr();
       env.iEvaluator.Eval(env, result, in_expr);
 
