@@ -192,8 +192,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       String s = getParameter(argn);
       if (s == null) break;
       s = unescape(s);
-      history[currentHistoryLine] = s;
-      currentHistoryLine++;
+      AppendHistoryLine(s);
+//TODO remove      history[currentHistoryLine] = s;
+//TODO remove      currentHistoryLine++;
       i++;
     }
 
@@ -203,7 +204,20 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   public void stop()
   {
   }
-
+  public void AppendHistoryLine(String line)
+  {
+    if (currentHistoryLine == nrHistoryLines)
+    {
+      int i;
+      for (i=0;i<currentHistoryLine-1;i++)
+      {
+        history[i] = history[i+1];
+      }
+      currentHistoryLine--;
+    }
+    history[currentHistoryLine] = line;
+    currentHistoryLine++;
+  }
 
   private String unescape(String s)
   {
@@ -314,8 +328,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
               toInsert = toInsert.substring(cr+1,toInsert.length());
               cr = toInsert.indexOf('\n');
 //System.out.println("");
-              history[currentHistoryLine] = inputLine;
-              currentHistoryLine++;
+              AppendHistoryLine(inputLine);
+//TODO remove              history[currentHistoryLine] = inputLine;
+//TODO remove              currentHistoryLine++;
               AddLinesStatic(48,inputPrompt,inputLine);
               if (inputLine.charAt(inputLine.length()-1) == '\\')
                 gatheredMultiLine = gatheredMultiLine + inputLine.substring(0,inputLine.length()-1);
@@ -453,8 +468,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
       else if (e.VK_ENTER == e.getKeyCode())
       {
-        history[currentHistoryLine] = inputLine;
-        currentHistoryLine++;
+        AppendHistoryLine(inputLine);
+//TODO remove        history[currentHistoryLine] = inputLine;
+//TODO remove        currentHistoryLine++;
         AddLinesStatic(48,inputPrompt,inputLine);
         if (inputLine.charAt(inputLine.length()-1) == '\\')
           gatheredMultiLine = gatheredMultiLine + inputLine.substring(0,inputLine.length()-1);
@@ -1089,8 +1105,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
   public void InvokeCalculation(String expression)
   {
-    history[currentHistoryLine] = expression;
-    currentHistoryLine++;
+    AppendHistoryLine(expression);
+
+//TODO remove    history[currentHistoryLine] = expression;
+//TODO remove    currentHistoryLine++;
     AddLinesStatic(48,"In> ",expression);
     PerformRequest("Out> ",expression);
     ResetInput();
