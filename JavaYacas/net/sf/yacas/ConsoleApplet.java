@@ -206,6 +206,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   }
   public void AppendHistoryLine(String line)
   {
+    //TODO optimize! We need to wrap around the history buffer, this is inefficient.
     if (currentHistoryLine == nrHistoryLines)
     {
       int i;
