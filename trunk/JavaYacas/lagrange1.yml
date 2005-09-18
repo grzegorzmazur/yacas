@@ -1,6 +1,9 @@
 [title:Lagrange interpolation method]
 
-Use the [link:Lagrange interpolation method:f(x):=Eval(LagrangeInterpolant({-4,2,3},{8,-3,10},x));f(x);]to define a function.
+Use the [link:Lagrange interpolation method:f(x):=Eval(LagrangeInterpolant({-4,2,3},{8,-3,10},x));]to define 
+a function that goes through certain points, in this case (x,y) = (-4,8), (2,-3) and (3,10).
+
+ 
 
 After clicking the above link, you can [link:view:lagrange2.yml]the result.
 
