@@ -1,8 +1,10 @@
 [title:Lagrange interpolation method 2]
 
-[link:View:f(x);]the resulting function.
+[link:Show:f(x);]the polynomial that results from the Lagrange interpolation method.
 
-Check that it is 8 for [link:x=-4:f(-4);], -3 for [link:x=2:f(2);]and 10 for[link:x=3:f(3);](interpolating values in between with a polynomial.
+ 
+
+Check that it evaluates to 8 for [link:x=-4:f(-4);], -3 for [link:x=2:f(2);]and 10 for[link:x=3:f(3);]. The polynomial further interpolates values in between the points it has to go through.
 
 [link:Back to previous menu:approx.yml]
 
