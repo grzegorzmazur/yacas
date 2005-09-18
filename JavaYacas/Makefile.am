@@ -36,9 +36,8 @@ net/sf/yacas/TWord.java net/sf/yacas/YacasGraphicsContext.java net/sf/yacas/Yaca
 net/sf/yacas/YacasNotebookComponent.java net/sf/yacas/calc.java net/sf/yacas/tegicphone.java calc.html net/sf/yacas/TempMathUtils.java XmlTokenizer.java README.TXT \
 net/sf/yacas/WizardApplet.java \
 about.yml arith.yml calculus.yml start.yml \
-analytic.yml differentiate.yml integrate.yml special.yml
-
-
-
+analytic.yml differentiate.yml integrate.yml special.yml \
+simplify.yml approx.yml programming.yml polynomials.yml \
+taylor1.yml taylor2.yml newton.yml lagrange1.yml lagrange2.yml contfrac1.yml contfrac2.yml
 
 

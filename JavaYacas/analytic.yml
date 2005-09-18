@@ -1,5 +1,13 @@
 [title:Basic analytic functions]
 
-@@@
+- Taking the [link:sine:Sin(Pi/3);].
+- Numeric approximation of [link:Sin(1):N(Sin(1),40);].
+- Numeric approximation of [link:Exp(1):N(Exp(1),40);].
+- Numeric approximation of [link:Cos(1):N(Cos(1),40);].
+- Numeric approximation of [link:Ln(2):N(Ln(2),20);].
+- Numeric approximation of [link:Sqrt(2):N(Sqrt(2),40);].
+- [link:Differentiating:D(x)x*Sin(x);]analytic functions.
+- [link:Taylor series expansions:Taylor(x,0,5)Sin(x);]of analytic functions.
+- [link:Integrating:Integrate(x,a,b)x^2;]analytic functions.
 
-[link:Back to main menu:start.yml]
+[link:Back to main menu:calculus.yml]

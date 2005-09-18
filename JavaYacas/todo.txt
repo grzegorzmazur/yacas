@@ -1,14 +1,58 @@
 
 - Give "Where" a much lower precedence.
 
-- Touch-sensitivity of helper: links not always followed.
+- fill in analytical functions
+- extend examples
+  x arithmetic
+    x larger numbers
+    x bit shift/bitwise operations
+  x analytic functions:
+   x- sin/cos/exp/ln/tan/arctan/sqrt
+  x simplifying expressions
+    x Simplify
+    x TrigSimpCombine
+    x CanProve
+    x FactorialSimplify
+  x approximating 
+    x Newton
+    x Taylor
+    x LagrangeInterpolant
+  - programming
+    - assigning variables
+    - defining functions
+    - lists
+      - creation, head/tail/set/get/concat/length
+    - strings
+      - concat/length/get/set
+    - subsitution (Subst)
+    - n .. m
+    - threading
+  - linear algebra
+    - vectors
+      - inproduct/crossproduct
+    - matrices
+      - inverse/determinant/diagonalmatrix
+  - polynomials
+    - expand
+    - factorize
+    - gcd
+    - divide
+  - misc
+    - limits
+    - factorials/binomials/factorialsimplify
+    - complex numbers
+      - creation, real, imaginary parts
+
+x changing mouse cursor on mouse going over?
 
 
-- add the files:
-  - special.yml
-  - differentiate.yml
-  - integrate.yml
-  - analytic.yml
+
+
+x add the files:
+  x special.yml
+  x differentiate.yml
+  x integrate.yml
+  x analytic.yml
 
 
 

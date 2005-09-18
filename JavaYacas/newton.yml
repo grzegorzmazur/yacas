@@ -1,0 +1,13 @@
+[title:Newton iteration]
+
+Approximating pi through [link:Newton iteration:Newton(Sin(x),x,3,10^(-GetPrecision()));]by trying to find the value for x for which Sin(x) is zero.
+
+ 
+
+[link:Change:Precision(10+Ceil(Random()*90));]the precision (after that, you can click on the link above to re-calculate the approximation to pi). This link will set the precision for calculation to some random number between 10 and 100.
+
+ 
+
+You can type [link:GetPrecision():GetPrecision();]to view the current precision.
+
+[link:Back to previous menu:approx.yml]
