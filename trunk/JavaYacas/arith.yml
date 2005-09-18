@@ -12,5 +12,6 @@
 - Determining whether a number is an [link:integer:IsInteger(12);].
 - Determining whether a number can be represented as a [link:rational number:IsRational(12/13);].
 - Writing numbers using [link:scientific notation:1.2e3+1;].
+- Bit-shifting [link:a number:1<<40;].
 
 [link:Back to main menu:start.yml]

@@ -46,7 +46,7 @@ import java.applet.*;
 import java.io.*;
 import java.net.*;
 
-public class WizardApplet extends Applet implements KeyListener, FocusListener, ClipboardOwner, MouseListener
+public class WizardApplet extends Applet implements KeyListener, FocusListener, ClipboardOwner, MouseListener, MouseMotionListener
 {
   public void init() 
   {
@@ -55,6 +55,7 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
     addKeyListener(this);
     addFocusListener(this);
     addMouseListener(this);
+    addMouseMotionListener(this);
   }
 
   static Font titleFont = new Font("courier", Font.BOLD, 18);
@@ -72,6 +73,31 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
   LinkRect links[] = new LinkRect[1024];
   int nrlinks = 0;
 
+  static Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+  static Cursor clickCursor = new Cursor(Cursor.HAND_CURSOR);
+  public void	mouseDragged(MouseEvent e) 
+  {
+  }
+  public void	mouseMoved(MouseEvent e) 
+  {
+    int x = e.getX();
+    int y = e.getY();
+//System.out.println("mouseclick on "+x+", "+y);
+    int i;
+    for (i=0;i<nrlinks;i++)
+    {
+//System.out.println(""+i+" : ("+links[i].x+", "+links[i].y+") : ("+links[i].width+", "+links[i].height+")"+words[links[i].word].link);
+      if (x>=links[i].x && x<=links[i].x+links[i].width)
+      {
+        if (y<=links[i].y && y>=links[i].y-links[i].height)
+        {
+          setCursor(clickCursor);
+          return;
+        }
+      }
+    }
+    setCursor(defaultCursor);
+  }
 
   void AddTextSentence(Font font, boolean underlined, Color color, String text, String link)
   {
@@ -123,7 +149,10 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
             int closePos = pageContents.indexOf("]");
             String words = pageContents.substring(0,ddotPos);
             String link = pageContents.substring(ddotPos+1,closePos);
-            AddTextSentence(linkFont, true, Color.blue, words,link);
+            if (link.endsWith(".yml"))
+              AddTextSentence(linkFont, true, Color.blue, words,link);
+            else
+              AddTextSentence(linkFont, true, Color.red, words,link);
 
             pageContents = pageContents.substring(closePos+1,pageContents.length());
           }
@@ -311,7 +340,7 @@ System.out.println("Succeeded in finding "+zipFileName);
           {
             LinkRect r = new LinkRect();
             r.x = x;
-            r.y = y;
+            r.y = y+g.getFontMetrics().getDescent();
             r.width = lineWidth;
             r.height = maxHeight;
             r.word = i;

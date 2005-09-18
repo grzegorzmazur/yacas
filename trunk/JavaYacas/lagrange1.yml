@@ -1,0 +1,7 @@
+[title:Lagrange interpolation method]
+
+Use the [link:Lagrange interpolation method:f(x):=Eval(LagrangeInterpolant({-4,2,3},{8,-3,10},x));f(x);]to define a function.
+
+After clicking the above link, you can [link:view:lagrange2.yml]the result.
+
+[link:Back to previous menu:approx.yml]
