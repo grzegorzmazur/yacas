@@ -214,6 +214,7 @@ OMNextToken() :=
   OMToken := XmlExplodeTag(String(ReadToken()));
 ];
 
+// [2005-09-28 11:41 matmota] These functions are probably not used any more.
 10 # OMProcessToken(_l, XmlTag("OMOBJ",_values,"Open")) <--
 [
   Local(obj);
@@ -233,6 +234,7 @@ OMNextToken() :=
   False;
 ];
 10 # OMProcessToken(_l, XmlTag("OMOBJ",_values,"Close")) <-- True;
+10 # OMProcessToken(_l, XmlTag("OMOBJ",_values,"OpenClose")) <-- True;
 10 # OMProcessToken(_l, XmlTag("OMA",_values,"Open")) <--
 [
   Local(obj);
@@ -426,6 +428,11 @@ FromString(str:" EndOfFile")
   result := ReadOMOBJ(OMToken);
   MatchClose(XmlTag("OMOBJ",{},"Close"));
   result;
+];
+10 # MatchOMOBJ(XmlTag("OMOBJ",_attributes,"OpenClose")) <--
+[
+  // Any attributes are ignored.
+  // This is a void expression.
 ];
 20 # MatchOMOBJ(_rest) <-- Check(False,ToString()Echo("Not an OMOBJ :",rest));
 
