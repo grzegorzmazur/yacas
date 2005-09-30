@@ -1,33 +1,30 @@
-
-
-OMDef( "TruncRadian" ,  "yacas"  , "TruncRadian" );
-OMDef( "Sin"         ,  "transc1", "sin"         );
-OMDef( "Cos"         ,  "transc1", "cos"         );
-OMDef( "Tan"         ,  "transc1", "tan"         );
-OMDef( "ArcSin"      ,  "transc1", "arcsin"      );
-OMDef( "ArcCos"      ,  "transc1", "arccos"      );
-OMDef( "ArcTan"      ,  "transc1", "arctan"      );
-OMDef( "Exp"         ,  "transc1", "exp"         );
-OMDef( "Ln"          ,  "transc1", "ln"          );
+// From "code.ys.def":
+OMDef( "ArcSin"  , "transc1" , "arcsin"  );
+OMDef( "ArcCos"  , "transc1" , "arccos"  );
+OMDef( "ArcTan"  , "transc1" , "arctan"  );
+OMDef( "ArcSec"  , "transc1" , "arcsec"  );
+OMDef( "ArcCsc"  , "transc1" , "arccsc"  );
+OMDef( "ArcCot"  , "transc1" , "arccot"  );
+OMDef( "ArcSinh" , "transc1" , "arcsinh" );
+OMDef( "ArcCosh" , "transc1" , "arccosh" );
+OMDef( "ArcTanh" , "transc1" , "arctanh" );
+OMDef( "ArcSech" , "transc1" , "arcsech" );
+OMDef( "ArcCsch" , "transc1" , "arccsch" );
+OMDef( "ArcCoth" , "transc1" , "arccoth" );
+OMDef( "Sin"     , "transc1" , "sin"     );
+OMDef( "Cos"     , "transc1" , "cos"     );
+OMDef( "Tan"     , "transc1" , "tan"     );
+OMDef( "Sec"     , "transc1" , "sec"     );
+OMDef( "Csc"     , "transc1" , "csc"     );
+OMDef( "Cot"     , "transc1" , "cot"     );
+OMDef( "Sinh"    , "transc1" , "sinh"    );
+OMDef( "Cosh"    , "transc1" , "cosh"    );
+OMDef( "Tanh"    , "transc1" , "tanh"    );
+OMDef( "Sech"    , "transc1" , "sech"    );
+OMDef( "Csch"    , "transc1" , "csch"    );
+OMDef( "Coth"    , "transc1" , "coth"    );
+OMDef( "Exp"     , "transc1" , "exp"     );
+OMDef( "Ln"      , "transc1" , "ln"      );
 
 // Related OM symbols not yet defined in Yacas:
-//     "ArcCosh"     ,  "transc1", "arccosh"
-//     "ArcCot"      ,  "transc1", "arccot"
-//     "ArcCoth"     ,  "transc1", "arccoth"
-//     "arccsc"      ,  "transc1", "arccsc"
-//     "arccsch"     ,  "transc1", "arccsch"
-//     "arcsec"      ,  "transc1", "arcsec"
-//     "arcsech"     ,  "transc1", "arcsech"
-//     "ArcSinh"     ,  "transc1", "arcsinh"
-//     "ArcTan"      ,  "transc1", "arctan"
-//     "ArcTanh"     ,  "transc1", "arctanh"
-//     "Cosh"        ,  "transc1", "cosh"
-//     "cot"         ,  "transc1", "cot"
-//     "coth"        ,  "transc1", "coth"
-//     "csc"         ,  "transc1", "csc"
-//     "csch"        ,  "transc1", "csch"
 //     "log"         ,  "transc1", "log"
-//     "sec"         ,  "transc1", "sec"
-//     "sech"        ,  "transc1", "sech"
-//     "Sinh"        ,  "transc1", "sinh"
-//     "Tanh"        ,  "transc1", "tanh"
