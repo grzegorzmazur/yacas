@@ -10,15 +10,15 @@ Rule("OMREP",0,1,True)
   Local(input,stringOut,result);
   While(Not(IsExitRequested()))
   [
-    Set(errorString, "");
-    TrapError(Set(input, FromString(ConcatStrings(ReadCmdLineString("")," "))OMRead()),Set(errorString,GetCoreError()));
-    If(Not(errorString = ""), OMEcho(errorString));
-    If (Not(IsExitRequested()) And errorString="",
+    Set(errorObject, "");
+    TrapError(Set(input, FromString(ConcatStrings(ReadCmdLineString("")," "))OMRead()),Set(errorObject,OMGetCoreError()));
+    If(Not(errorObject = ""), errorObject);
+    If (Not(IsExitRequested()) And errorObject="",
     [
       Set(stringOut,"");
       Set(result,False);
-      TrapError(Set(stringOut,ToString()[Set(result,Eval(input));]),Set(errorString,GetCoreError()));
-      If(Not(errorString = ""), OMEcho(errorString));
+      TrapError(Set(stringOut,ToString()[Set(result,Eval(input));]),Set(errorObject,OMGetCoreError()));
+      If(Not(errorObject = ""), errorObject);
       If(Not(stringOut = ""), WriteString(stringOut));
       Set(%,result);
       LazyGlobal(%);
@@ -33,6 +33,7 @@ Rule("OMREP",0,1,True)
 ];
 
 
+///////////////////////////////////////////////////////////////////////
 // Output
 
 10 # OMForm(_expression)
@@ -68,14 +69,39 @@ Rule("OMREP",0,1,True)
 16 # OMFormExpression(i_IsVariable)
      <-- OMEcho("<OMV name=\"":String(i):"\"/>");
 
+10 # OMFormExpression(function_IsFunction)_(Type(function) = "OMError")
+     <--
+     [
+        Local(cd, name);
+        If(IsList(function[1]),
+           [ cd := function[1][1]; name := function[1][2]; ],
+           [ cd := "error";        name := function[1];    ]);
+        OMEcho("<OME>");
+        OMIndent();
+        OMEcho("<OMS cd=\"":cd:"\" name=\"":name:"\"/>");
+        ForEach(i, Tail(function)) OMFormExpression(i);
+        OMUndent();
+        OMEcho("</OME>");
+     ];
+10 # OMFormExpression(function_IsFunction)_(Type(function) = "OMS")
+     <--
+     [
+        OMEcho("<OMS cd=\"":function[1]:"\" name=\"":function[2]:"\"/>");
+     ];
 10 # OMFormExpression(function_IsFunction)
      <--
      [
-     OMEcho("<OMA>");
-     OMIndent();
-     OMFormFunction(function);
-     OMUndent();
-     OMEcho("</OMA>");
+     Local(arity);
+     arity := Length(function);
+     If(arity > 0,
+        [
+        OMEcho("<OMA>");
+        OMIndent();
+        OMFormFunction(function);
+        OMUndent();
+        OMEcho("</OMA>");
+        ]
+        );
      ];
 10 # OMFormFunction(_function)
      <--
@@ -140,17 +166,21 @@ OMEcho(expression_IsList) <--
   NewLine();
 ];
 
+OMEscape(_expression) <--
+[
+  "<![CDATA[":String(expression):"]]>";
+];
+OMEscapeString(_expression_IsString) <--
+[
+  "<![CDATA[":expression:"]]>";
+];
 OMWriteEscape(_expression) <--
 [
-  WriteString("<![CDATA[");
-  Write(expression);
-  WriteString("]]>");
+  WriteString(OMEscape(expression));
 ];
 OMWriteStringEscape(expression_IsString) <--
 [
-  WriteString("<![CDATA[");
-  WriteString(expression);
-  WriteString("]]>");
+  WriteString(OMEscapeString(expression));
 ];
 OMEchoEscape(_expression) <--
 [
@@ -206,7 +236,7 @@ OMSignature(function_IsFunction) <--
 
 
 
-//////////////////////
+///////////////////////////////////////////////////////////////////////
 // Input
 
 OMNextToken() :=
@@ -214,89 +244,152 @@ OMNextToken() :=
   OMToken := XmlExplodeTag(String(ReadToken()));
 ];
 
-// [2005-09-28 11:41 matmota] These functions are probably not used any more.
-10 # OMProcessToken(_l, XmlTag("OMOBJ",_values,"Open")) <--
+OMRead():=
 [
-  Local(obj);
-  obj := {};
-  Local(tagClosed);
-  tagClosed := False;
-  While (OMToken != "EndOfFile" And tagClosed = False)
+  Local(result);
+  TrapError(
   [
-    tagClosed := OMProcessToken(obj, OMNextToken());
-  ];
-  If(Length(obj) > 1,
-     ReportError("An OpenMath object can only have one child element.")
-     );
-  If(Length(obj) > 0,
-     DestructiveAppend(l, obj[1])
-     );
-  False;
-];
-10 # OMProcessToken(_l, XmlTag("OMOBJ",_values,"Close")) <-- True;
-10 # OMProcessToken(_l, XmlTag("OMOBJ",_values,"OpenClose")) <-- True;
-10 # OMProcessToken(_l, XmlTag("OMA",_values,"Open")) <--
-[
-  Local(obj);
-  obj := {};
-  Local(tagClosed);
-  tagClosed := False;
-  While (OMToken != "EndOfFile" And tagClosed = False)
+    XmlTokenizer();
+    OMNextToken();
+    result := MatchOMOBJ(OMToken);
+    DefaultTokenizer();
+  ],
   [
-    tagClosed := OMProcessToken(obj, OMNextToken());
-  ];
-  DestructiveAppend(l, UnList(obj));
-  False;
-];
-10 # OMProcessToken(_l, XmlTag("OMA",_values,"Close")) <-- True;
-10 # OMProcessToken(_l, XmlTag("OMS",_values,"OpenClose"))
-     <--
-[
-  ReportError("OpenMath symbol not defined: cd=\"", values[ "CD" ],
-              "\", name=\"", values[ "NAME" ], "\"");
-  DestructiveAppend(l, Empty);// Some "Error" symbol would be better.
-  False;
-];
-10 # OMProcessToken(_l, XmlTag("OMS",_values,"OpenClose"))
-     _(OMSymbolReverse[ values[ "CD" ] ] != Empty)
-     _(OMSymbolReverse[ values[ "CD" ] ][ values [ "NAME" ] ] != Empty)
-     <--
-[
-  DestructiveAppend(l, Atom(OMSymbolReverse[ values[ "CD"   ] ]
-                                           [ values[ "NAME" ] ]));
-  False;
-];
-10 # OMProcessToken(_l, XmlTag("OMI",_values,"Open"))
-     <--
-[
-  Local(obj);
-  obj := {};
-  Local(tagClosed);
-  tagClosed := False;
-  While (OMToken != "EndOfFile" And tagClosed = False)
-  [
-    tagClosed := OMProcessToken(obj, OMNextToken());
-  ];
-  DestructiveAppend(l, obj[1]);
-  False;
-];
-10 # OMProcessToken(_l, XmlTag("OMI",_values,"Close")) <-- True;
-10 # OMProcessToken(_l, XmlTag("OMF",_values,"OpenClose"))
-     <--
-[
-  DestructiveAppend(l, Atom(values[ "DEC" ]));
-  False;
-];
-10 # OMProcessToken(_l, x_IsString)
-     <--
-[
-  DestructiveAppend(l, Atom(x));
-  False;
+    result := OMGetCoreError();
+    DefaultTokenizer();
+  ]);
+  result;
 ];
 
 
-//////////////////////////////////////
-// Symbol tables
+OMDump(str):=
+FromString(str:" EndOfFile")
+[
+  Local(result);
+  XmlTokenizer();
+  OMNextToken();
+  While(OMToken != "EndOfFile")
+  [
+    Echo("Exploded ",OMToken);
+    OMNextToken();
+  ];
+  DefaultTokenizer();
+  True;
+];
+
+
+
+10 # MatchClose(_x)_(x = OMToken) <-- [OMNextToken();True;];
+20 # MatchClose(_x) <-- Check(False,ToString()Echo("encodingError:unexpected closing brace")); //@@@ TODO better error reporting
+
+10 # MatchOMOBJ(XmlTag("OMOBJ",_attributes,"Open")) <--
+[
+  // Any attributes are ignored.
+  Local(result);
+  OMNextToken();
+  result := ReadOMOBJ(OMToken);
+  MatchClose(XmlTag("OMOBJ",{},"Close"));
+  result;
+];
+10 # MatchOMOBJ(XmlTag("OMOBJ",_attributes,"OpenClose")) <--
+[
+  // Any attributes are ignored.
+  // This is a void expression, of the form "<OMOBJ/>".
+  {};
+];
+20 # MatchOMOBJ(_rest) <-- Check(False,ToString()Echo("encodingError:not an OMOBJ :",rest));
+
+10 # ReadOMOBJ(XmlTag("OMOBJ",_attributes,"Close")) <--
+[
+  // This is a void expression, of the form "<OMOBJ></OMOBJ>".
+  {};
+];
+
+10 # ReadOMOBJ(XmlTag("OMI",{},"Open")) <--
+[
+  Local(result);
+  OMNextToken();
+  result := Atom(OMToken);
+  OMNextToken();
+  MatchClose(XmlTag("OMI",{},"Close"));
+  result;
+];
+
+10 # ReadOMOBJ(XmlTag("OMV",{{"NAME",_name}},"OpenClose")) <--
+[
+  OMNextToken();
+  Atom(name);
+];
+
+10 # ReadOMOBJ(XmlTag("OMF",{{"DEC",_dec}},"OpenClose")) <--
+[
+  OMNextToken();
+  Atom(dec);
+];
+
+10 # ReadOMOBJ(XmlTag("OMA",{},"Open")) <--
+[
+  Local(result, new);
+  result:={};
+  OMNextToken();
+  While (OMToken != XmlTag("OMA",{},"Close"))
+  [
+    new:=ReadOMOBJ(OMToken);
+    DestructiveAppend(result,new);
+  ];
+  MatchClose(XmlTag("OMA",{},"Close"));
+  UnList(result);
+];
+
+// Special handling of the symbols in the "yacas" CD:
+
+10 # ReadOMOBJ(XmlTag("OMS",{{"CD","yacas"}, {"NAME",_name}},"OpenClose")) <--
+[
+  OMNextToken();
+  Atom(name);
+];
+
+10 # ReadOMOBJ(XmlTag("OMS",{{"NAME",_name}, {"CD","yacas"}},"OpenClose")) <--
+[
+  OMNextToken();
+  Atom(name);
+];
+
+100 # ReadOMOBJ(XmlTag("OMS",{{"NAME",_name}, {"CD",_cd}},"OpenClose")) <-- OMCheck(False,OMError("unhandled_symbol", OMS(cd, name)));
+100 # ReadOMOBJ(XmlTag("OMS",{{"CD",_cd}, {"NAME",_name}},"OpenClose")) <-- OMCheck(False,OMError("unhandled_symbol", OMS(cd, name)));
+101 # ReadOMOBJ(_rest) <-- OMCheck(False,OMError({"moreerrors", "encodingError"}, ToString()Echo("unhandled tag: ",rest)));
+
+
+
+///////////////////////////////////////////////////////////////////////
+// Error reporting
+
+Macro(OMCheck,{predicate,error})
+[
+  If(Not(@predicate),
+  [
+    Assert("omErrorObject", @error) False;
+    Check(False,"omErrorObject");
+  ]
+  ,
+  True);
+];
+OMGetCoreError():=
+[
+  Local(result);
+  result := GetCoreError();
+  If(result != "",
+     If( IsError("omErrorObject"),
+        [result := GetError("omErrorObject");                     ],
+        [result := OMError({"moreerrors", "unexpected"}, result); ])
+    );
+  result;
+];
+
+
+
+///////////////////////////////////////////////////////////////////////
+// Symbol mapping tables
 
 OMSymbol := {};
 OMSymbolReverse := {};
@@ -370,121 +463,3 @@ Use("logic.rep/om.ys");
 Use("complex.rep/om.ys");
 Use("integrate.rep/om.ys");
 Use("sums.rep/om.ys");
-
-
-/* The code below implements OMRead, which parses OpenMath expressions.
-*/
-
-/*OMNextToken():=
-[
-  OMToken:=XmlExplodeTag(String(ReadToken()));
-];
-*/
-
-OMRead():=
-[
-  Local(result);
-  TrapError(
-  [
-    XmlTokenizer();
-    OMNextToken();
-    result := MatchOMOBJ(OMToken);
-    DefaultTokenizer();
-  ],
-  [
-    DefaultTokenizer();
-    result:=False;
-    Echo(GetCoreError());
-  ]);
-  result;
-];
-
-
-OMDump(str):=
-FromString(str:" EndOfFile")
-[
-  Local(result);
-  XmlTokenizer();
-  OMNextToken();
-  While(OMToken != "EndOfFile")
-  [
-    Echo("Exploded ",OMToken);
-    OMNextToken();
-  ];
-  DefaultTokenizer();
-  True;
-];
-
-
-
-10 # MatchClose(_x)_(x = OMToken) <-- [OMNextToken();True;];
-20 # MatchClose(_x) <-- Check(False,ToString()Echo("unexpected closing brace")); //@@@ TODO better error reporting
-
-10 # MatchOMOBJ(XmlTag("OMOBJ",_attributes,"Open")) <--
-[
-  // Any attributes are ignored.
-  Local(result);
-  OMNextToken();
-  result := ReadOMOBJ(OMToken);
-  MatchClose(XmlTag("OMOBJ",{},"Close"));
-  result;
-];
-10 # MatchOMOBJ(XmlTag("OMOBJ",_attributes,"OpenClose")) <--
-[
-  // Any attributes are ignored.
-  // This is a void expression.
-];
-20 # MatchOMOBJ(_rest) <-- Check(False,ToString()Echo("Not an OMOBJ :",rest));
-
-
-10 # ReadOMOBJ(XmlTag("OMI",{},"Open")) <--
-[
-  Local(result);
-  OMNextToken();
-  result := Atom(OMToken);
-  OMNextToken();
-  MatchClose(XmlTag("OMI",{},"Close"));
-  result;
-];
-
-10 # ReadOMOBJ(XmlTag("OMV",{{"NAME",_name}},"OpenClose")) <--
-[
-  OMNextToken();
-  Atom(name);
-];
-
-10 # ReadOMOBJ(XmlTag("OMF",{{"DEC",_dec}},"OpenClose")) <--
-[
-  OMNextToken();
-  Atom(dec);
-];
-
-10 # ReadOMOBJ(XmlTag("OMA",{},"Open")) <--
-[
-  Local(result, new);
-  result:={};
-  OMNextToken();
-  While (OMToken != XmlTag("OMA",{},"Close"))
-  [
-    new:=ReadOMOBJ(OMToken);
-    DestructiveAppend(result,new);
-  ];
-  MatchClose(XmlTag("OMA",{},"Close"));
-  UnList(result);
-];
-
-// Special handling of the symbols in the "yacas" CD:
-
-10 # ReadOMOBJ(XmlTag("OMS",{{"CD","yacas"}, {"NAME",_name}},"OpenClose")) <--
-[
-  OMNextToken();
-  Atom(name);
-];
-
-10 # ReadOMOBJ(XmlTag("OMS",{{"NAME",_name}, {"CD","yacas"}},"OpenClose")) <--
-[
-  OMNextToken();
-  Atom(name);
-];
-
-100 # ReadOMOBJ(_rest) <-- Check(False,ToString()Echo("Unhandled tag: ",rest));
