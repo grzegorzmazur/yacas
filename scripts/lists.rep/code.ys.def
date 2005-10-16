@@ -21,8 +21,10 @@ BSearch
 VarList
 VarListAll
 Table
+MacroMapSingle
 MapSingle
 Map
+MacroMapArgs
 MapArgs
 FillList
 Drop
