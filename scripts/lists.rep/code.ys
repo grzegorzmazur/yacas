@@ -383,6 +383,23 @@ TemplateFunction("MapSingle",{func,list})
 UnFence("MapSingle",2);
 HoldArg("MapSingle",func);
 
+/* Another Macro... hack for /: to work. */
+TemplateFunction("MacroMapSingle",{func,list})
+[
+  Local(mapsingleresult);
+  mapsingleresult:={};
+
+  ForEach(mapsingleitem,list)
+  [
+    DestructiveInsert(mapsingleresult,1,
+      `ApplyPure(func,{Hold(Hold(@mapsingleitem))}));
+  ];
+  DestructiveReverse(mapsingleresult);
+];
+UnFence("MacroMapSingle",2);
+HoldArg("MacroMapSingle",func);
+HoldArg("MacroMapSingle",list);
+
 LocalSymbols(func,lists,mapsingleresult,mapsingleitem)
 [
   Function("Map",{func,lists})
@@ -413,6 +430,23 @@ TemplateFunction("MapArgs",{expr,oper})
 ];
 UnFence("MapArgs",2);
 HoldArg("MapArgs",oper);
+
+/* Another Macro... hack for /: to work. */
+Macro("MacroMapArgs",{expr,oper})
+[
+  Local(ex,tl,op);
+  Set(op,@oper);
+  Set(ex,Listify(@expr));
+  Set(tl,Tail(ex));
+
+   UnList(Concat({ex[1]},
+     `MacroMapSingle(@op,Hold(@tl)))
+   );
+];
+UnFence("MapArgs",2);
+HoldArg("MapArgs",oper);
+
+
 
 Function("FillList", {aItem, aLength})
 [

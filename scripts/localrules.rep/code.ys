@@ -109,28 +109,28 @@ CompilePatterns(patterns) := LocPatterns(LocProcess(patterns));
 
 5 # (_expression /: LocPatterns(_patterns)) <--
 [
-  Substitute(expression,"LocPredicate","LocChange");
+  MacroSubstitute(expression,"LocPredicate","LocChange");
 ];
 10 # (_expression /: _patterns) <--
 [
   Set(patterns, LocProcess(patterns));
-  Substitute(expression,"LocPredicate","LocChange");
+  MacroSubstitute(expression,"LocPredicate","LocChange");
 ];
 
 5 # (_expression /:: LocPatterns(_patterns)) <--
 [
-  Substitute(expression,"LocPredicate","LocChange");
+  MacroSubstitute(expression,"LocPredicate","LocChange");
 ];
 10 # (_expression /:: _patterns) <--
 [
   Local(old);
   Set(patterns, LocProcess(patterns));
   Set(old, expression);
-  Set(expression, Substitute(expression,"LocPredicate","LocChange"));
+  Set(expression, MacroSubstitute(expression,"LocPredicate","LocChange"));
   While (expression != old)
   [
     Set(old, expression);
-    Set(expression, Substitute(expression,"LocPredicate","LocChange"));
+    Set(expression, MacroSubstitute(expression,"LocPredicate","LocChange"));
   ];
   expression;
 ];
