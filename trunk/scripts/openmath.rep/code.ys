@@ -17,7 +17,7 @@ Rule("OMREP",0,1,True)
     [
       Set(stringOut,"");
       Set(result,False);
-      TrapError(Set(stringOut,ToString()[Set(result,Eval(input));]),Set(errorObject,OMGetCoreError()));
+      TrapError(Set(stringOut,ToString()[Secure(Set(result,Eval(input)));]),Set(errorObject,OMGetCoreError()));
       If(Not(errorObject = ""), errorObject);
       If(Not(stringOut = ""), WriteString(stringOut));
       Set(%,result);
@@ -45,7 +45,7 @@ Rule("OMREP",0,1,True)
      OMIndent();
      If(IsAtom(expression),
         If(expression = Atom("%"),
-           expression := Eval(expression)
+           Secure(expression := Eval(expression))
            )
         );
      OMFormExpression(expression);
@@ -68,42 +68,56 @@ Rule("OMREP",0,1,True)
                 );
 16 # OMFormExpression(i_IsVariable)
      <-- OMEcho("<OMV name=\"":String(i):"\"/>");
+16 # OMFormExpression(i_IsVariable)_(i = Empty)
+     <-- False; // This is useful for void expressions.
 
 10 # OMFormExpression(function_IsFunction)_(Type(function) = "OMError")
      <--
      [
-        Local(cd, name);
-        If(IsList(function[1]),
-           [ cd := function[1][1]; name := function[1][2]; ],
-           [ cd := "error";        name := function[1];    ]);
-        OMEcho("<OME>");
-        OMIndent();
-        OMEcho("<OMS cd=\"":cd:"\" name=\"":name:"\"/>");
-        ForEach(i, Tail(function)) OMFormExpression(i);
-        OMUndent();
-        OMEcho("</OME>");
+     Local(cd, name);
+     If(IsList(function[1]),
+        [ cd := function[1][1]; name := function[1][2]; ],
+        [ cd := "error";        name := function[1];    ]);
+     OMEcho("<OME>");
+     OMIndent();
+     OMEcho("<OMS cd=\"":cd:"\" name=\"":name:"\"/>");
+     ForEach(i, Tail(function)) OMFormExpression(i);
+     OMUndent();
+     OMEcho("</OME>");
      ];
 10 # OMFormExpression(function_IsFunction)_(Type(function) = "OMS")
+     <-- OMEcho("<OMS cd=\"":function[1]:"\" name=\"":function[2]:"\"/>");
+10 # OMFormExpression(function_IsFunction)_(Type(function) = "OMBIND")
      <--
      [
-        OMEcho("<OMS cd=\"":function[1]:"\" name=\"":function[2]:"\"/>");
+     OMEcho("<OMBIND>");
+     OMIndent();
+     ForEach(i, function) OMFormExpression(i);
+     OMUndent();
+     OMEcho("</OMBIND>");
      ];
-10 # OMFormExpression(function_IsFunction)
+10 # OMFormExpression(function_IsFunction)_(Type(function) = "OMBVAR")
+     <--
+     [
+     OMEcho("<OMBVAR>");
+     OMIndent();
+     ForEach(i, function) OMFormExpression(i);
+     OMUndent();
+     OMEcho("</OMBVAR>");
+     ];
+11 # OMFormExpression(function_IsFunction)
      <--
      [
      Local(arity);
      arity := Length(function);
-     If(arity > 0,
-        [
-        OMEcho("<OMA>");
-        OMIndent();
-        OMFormFunction(function);
-        OMUndent();
-        OMEcho("</OMA>");
-        ]
-        );
+     OMEcho("<OMA>");
+     OMIndent();
+     OMFormFunction(function);
+     OMUndent();
+     OMEcho("</OMA>");
      ];
-10 # OMFormFunction(_function)
+
+11 # OMFormFunction(_function_IsFunction)
      <--
      [
      Local(arity);
@@ -111,27 +125,37 @@ Rule("OMREP",0,1,True)
      OMEcho("<OMS cd=\"yacas\" name=\"":Type(function):"\"/>");
      If(arity > 0, ForEach(arg, function) OMFormExpression(arg));
      ];
-10 # OMFormFunction(_function)_(OMSymbol[ Type(function) ] != Empty)
+10 # OMFormFunction(function_IsFunction)_(OMSymbol[ Type(function) ] != Empty)
      <--
      [
      Local(symbolDef);
-     Local(arity);
+     // [20051016 AGP] The "signature" feature is an old attept at pattern
+     // matching, but now that we have real predicates in the mappings it's
+     // probably obsolete. I'll think about removing it.
      symbolDef := OMSymbol[ OMSignature(function) ];
-     If(symbolDef = Empty,
-        symbolDef := OMSymbol[ Type(function) ]
-        );
-     arity := Length(function);
-     OMEcho("<OMS cd=\"":symbolDef[1]:"\" name=\"":symbolDef[2]:"\"/>");
-     If(symbolDef[3] = {},
-        If(arity > 0, ForEach(arg, function) OMFormExpression(arg)),
-        ForEach(i, symbolDef[3])
-          [
-           If(IsNumber(i),
-              If(i <= arity,  OMFormExpression(function[i]) ),
-              If(IsString(i), OMEcho(i)                     )
-              );
-          ]
-        );
+     If(symbolDef = Empty, symbolDef := OMSymbol[ Type(function) ] );
+     If(symbolDef = Empty Or Length(symbolDef) < 3 Or symbolDef[3] = {},
+        [
+        OMEcho("<OMS cd=\"":symbolDef[1]:"\" name=\"":symbolDef[2]:"\"/>");
+        ForEach(arg, function) OMFormExpression(arg);
+        ],
+        [
+        Local(result);
+        result := OMApplyMapping(function, symbolDef[3]);
+        //Check(IsList(result), ToString()Echo("Mapping result is not a list: ", result));
+        If(IsList(result),
+           [
+           result := UnList(Subst($, function[0]) result);
+           OMFormExpression(result[0]);
+           ForEach(i, result) OMFormExpression(i);
+           ],
+           If(result = Empty,
+              Echo("No rule matched ", function, symbolDef[3]),
+              Echo("Unexpected result value from OMApplyMapping(): ", result)
+             )
+          );
+        ]
+       );
      ];
 
 omindent := 0;
@@ -210,7 +234,7 @@ HoldArgNr("OMForm",1,1);
 //HoldArgNr("OMFormFunction",1,1);
 
 
-OMSignature(_noFunction) <-- "";
+OMSignature(_function) <-- "";
 OMSignature(function_IsFunction) <--
 [
   Local(makeSig);
@@ -231,8 +255,9 @@ OMSignature(function_IsFunction) <--
        );
     DestructiveAppend(makeSig, type);
   ];
-  Eval(UnList(makeSig));
+  Secure(Eval(UnList(makeSig)));
 ];
+HoldArgNr("OMSignature", 1, 1);
 
 
 
@@ -295,14 +320,14 @@ FromString(str:" EndOfFile")
 [
   // Any attributes are ignored.
   // This is a void expression, of the form "<OMOBJ/>".
-  {};
+  Empty;
 ];
 20 # MatchOMOBJ(_rest) <-- Check(False,ToString()Echo("encodingError:not an OMOBJ :",rest));
 
 10 # ReadOMOBJ(XmlTag("OMOBJ",_attributes,"Close")) <--
 [
   // This is a void expression, of the form "<OMOBJ></OMOBJ>".
-  {};
+  Empty;
 ];
 
 10 # ReadOMOBJ(XmlTag("OMI",{},"Open")) <--
@@ -338,8 +363,99 @@ FromString(str:" EndOfFile")
     DestructiveAppend(result,new);
   ];
   MatchClose(XmlTag("OMA",{},"Close"));
-  UnList(result);
+  OMApplyReverseMapping(UnList(result));
 ];
+
+10 # ReadOMOBJ(XmlTag("OMBIND",{},"Open")) <--
+[
+  Local(result, new);
+  result:={};
+  OMNextToken();
+  While (OMToken != XmlTag("OMBIND",{},"Close"))
+  [
+    new:=ReadOMOBJ(OMToken);
+    DestructiveAppend(result,new);
+  ];
+  MatchClose(XmlTag("OMBIND",{},"Close"));
+  result;
+];
+10 # ReadOMOBJ(XmlTag("OMBVAR",{},"Open")) <--
+[
+  Local(result, new);
+  result:={};
+  OMNextToken();
+  While (OMToken != XmlTag("OMBVAR",{},"Close"))
+  [
+    new:=ReadOMOBJ(OMToken);
+    DestructiveAppend(result,new);
+  ];
+  MatchClose(XmlTag("OMBVAR",{},"Close"));
+  result;
+];
+
+10 # OMApplyReverseMapping(yacasExp_IsFunction) <-- yacasExp;
+10 # OMApplyReverseMapping(yacasExp_IsFunction)_(OMSymbol[ Type(yacasExp) ] != Empty)
+     <--
+     [
+     Local(symbolDef);
+     symbolDef := OMSymbol[ Type(yacasExp) ];
+     If(symbolDef[4] = {},
+        result := yacasExp,
+        [
+          result := OMApplyMapping(yacasExp, symbolDef[4]);
+          result := Subst($, yacasExp[0]) result;
+          If(IsList(result), result := UnList(result));
+          //result := UnList(yacasExp[0] : result);
+        ]
+       );
+     result;
+     ];
+
+10 # OMApplyMapping(_function, _mapping) <--
+[
+  Local(expandRules, result);
+  expandRules := { _(_path) <- OMPathSelect(path, function) };
+  expandRules[1][2][2] := function;// the "function" variable is not expanded above.
+  
+  mapping := (mapping /: expandRules);// "/:" has lower precedence than ":=".
+  
+  Local(ruleMatched);
+  ruleMatched := False;
+  If(Type(mapping) = "|",
+     [
+     mapping := Flatten(mapping, "|");
+     ForEach(rule, mapping)
+       If(Not ruleMatched,
+          [
+          If(Type(rule) = "_",
+             If( Eval(rule[2]), [ result := rule[1]; ruleMatched := True; ] ),
+             [ result := rule; ruleMatched := True; ]
+            );
+          ]
+         );
+     ],
+     [
+     If(Type(mapping) = "_",
+        If(Eval(mapping[2]),
+           result := mapping[1],
+           result := Listify(function)
+          ),
+	result := mapping
+       );
+     ruleMatched := True;
+     ]
+    );
+  
+  If(ruleMatched, result, Empty);
+];
+
+11 # OMPathSelect(path_IsNumber, _expression) <-- expression[path];
+11 # OMPathSelect(path_IsList, _expression) <--
+[
+  ForEach(i, path) expression := expression[i];
+  expression;
+];
+HoldArgNr("OMPathSelect", 2, 2);
 
 // Special handling of the symbols in the "yacas" CD:
 
@@ -403,9 +519,9 @@ Macro(OMSymbol,{cd,name,to})
   ];
 ];
 
-OMDef(yacasname_IsString, omcd_IsString, omname_IsString, args_IsList) <--
+OMDef(yacasname_IsString, omcd_IsString, omname_IsString, directMapping_IsFunction, reverseMapping_IsFunction) <--
 [
-  OMSymbol[ yacasname ] := {omcd, omname, args};
+  OMSymbol[ yacasname ] := {omcd, omname, directMapping, reverseMapping};
   If(OMSymbolReverse[ omcd ] = Empty,
      OMSymbolReverse[ omcd ] := {{omname, yacasname}},
      If(OMSymbolReverse[ omcd ][ omname ] = Empty,
@@ -416,12 +532,14 @@ OMDef(yacasname_IsString, omcd_IsString, omname_IsString, args_IsList) <--
 ];
 
 OMDef(yacasname_IsString, omcd_IsString, omname_IsString)
-<-- OMDef(yacasname, omcd, omname, {});
+<-- OMDef(yacasname, omcd, omname, {}, {});
 
 OMDef(yacasalias_IsString, yacasname_IsString) <--
 [
   OMSymbol[ yacasalias ] := OMSymbol[ yacasname ];
 ];
+HoldArgNr("OMDef", 5, 4 );
+HoldArgNr("OMDef", 5, 5);
 
 // [20010916 AGP] I couldn't find these symbols in the def files:
 //     "E"        ,  "nums1", "e"
@@ -463,3 +581,4 @@ Use("logic.rep/om.ys");
 Use("complex.rep/om.ys");
 Use("integrate.rep/om.ys");
 Use("sums.rep/om.ys");
+Use("limit.rep/om.ys");
