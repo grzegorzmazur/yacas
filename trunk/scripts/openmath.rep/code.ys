@@ -449,10 +449,18 @@ FromString(str:" EndOfFile")
   If(ruleMatched, result, Empty);
 ];
 
-11 # OMPathSelect(path_IsNumber, _expression) <-- expression[path];
+11 # OMPathSelect(path_IsNumber, _expression) <--
+[
+  If(path >= 0 And path < Length(expression),
+     expression[path],
+     Undefined);
+];
 11 # OMPathSelect(path_IsList, _expression) <--
 [
-  ForEach(i, path) expression := expression[i];
+  ForEach(i, path)
+    If(IsFunction(expression) And i >= 0 And i < Length(expression),
+       expression := expression[i],
+       Undefined);
   expression;
 ];
 HoldArgNr("OMPathSelect", 2, 2);
