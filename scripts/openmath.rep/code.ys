@@ -581,5 +581,4 @@ Use("logic.rep/om.ys");
 Use("complex.rep/om.ys");
 Use("integrate.rep/om.ys");
 Use("sums.rep/om.ys");
-//Alberto, this file seems to be missing?
-//Use("limit.rep/om.ys");
+Use("limit.rep/om.ys");
