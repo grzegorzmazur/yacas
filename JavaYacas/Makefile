@@ -60,7 +60,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = 
-host_triplet = powerpc-apple-darwin8.2.0
+host_triplet = powerpc-apple-darwin8.3.0
 
 EXEEXT = 
 OBJEXT = o
@@ -108,7 +108,7 @@ RANLIB = ranlib
 RELEASE = 1
 SCRIPTS_DAT = scripts.dat
 STRIP = strip
-VERSION = 1.0.59
+VERSION = 1.0.60
 X_CFLAGS = 
 X_EXTRA_LIBS = 
 X_LIBS =  -L/usr/X11R6/lib

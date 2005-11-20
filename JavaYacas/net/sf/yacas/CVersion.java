@@ -1,2 +1,2 @@
 package net.sf.yacas;
-class CVersion { static String VERSION = "1.0.59"; }
+class CVersion { static String VERSION = "1.0.60"; }
