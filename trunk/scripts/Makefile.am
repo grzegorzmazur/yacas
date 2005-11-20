@@ -32,7 +32,7 @@ SCRIPTFILES1 = 	        										    \
 	multivar.rep/code.ys multivar.rep/code.ys.def multivar.rep/makemulti.ys  			    \
 	multivar.rep/sparsetree.ys multivar.rep/sparsetree.ys.def multivar.rep/sparsenomial.ys	 	    \
 	newly.rep/code.ys newly.rep/code.ys.def 							    \
-	numbers.rep/code.ys numbers.rep/code.ys.def 							    \
+	numbers.rep/code.ys numbers.rep/code.ys.def numbers.rep/om.ys					    \
 	numbers.rep/nthroot.ys numbers.rep/nthroot.ys.def                                                   \
 	odesolver.rep/code.ys odesolver.rep/code.ys.def 						    \
 	openmath.rep/code.ys openmath.rep/code.ys.def 							    \

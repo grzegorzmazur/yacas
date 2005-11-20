@@ -3,9 +3,18 @@
 ////////////////////////
 
 /* The read-eval-print loop */
+/* It can take one parameter, that is the evaluation count. If it is greater
+   than zero, only that number of iterations will be performed before
+   exiting. This is particularly useful when connecting to Yacas via pipes.
+*/
 RuleBase("OMREP",{});
-LocalSymbols(input,stringOut,result)
 Rule("OMREP",0,1,True)
+[
+  OMREP(0);// 0 means keep repeating, as usual.
+];
+RuleBase("OMREP",{count});
+LocalSymbols(input,stringOut,result)
+Rule("OMREP",1,1,True)
 [
   Local(input,stringOut,result);
   While(Not(IsExitRequested()))
@@ -27,7 +36,7 @@ Rule("OMREP",0,1,True)
         Apply("OMForm",{result});
       ],
       Apply(GetPrettyPrinter(),{result}));
-      Exit();
+      If(count > 0 And (count:=count-1) = 0, Exit());
     ]);
   ];
 ];
@@ -37,7 +46,6 @@ Rule("OMREP",0,1,True)
 // Output
 
 10 # OMForm(_expression)
-//     <-- "<OMOBJ>" : OMFormExpression(expression) : "</OMOBJ>";
      <--
      [
      omindent := 0;
@@ -85,6 +93,15 @@ Rule("OMREP",0,1,True)
      OMUndent();
      OMEcho("</OME>");
      ];
+10 # OMFormExpression(function_IsFunction)_(Type(function) = "OME")
+     <--
+     [
+     OMEcho("<OME>");
+     OMIndent();
+     ForEach(i, function) OMFormExpression(i);
+     OMUndent();
+     OMEcho("</OME>");
+     ];
 10 # OMFormExpression(function_IsFunction)_(Type(function) = "OMS")
      <-- OMEcho("<OMS cd=\"":function[1]:"\" name=\"":function[2]:"\"/>");
 10 # OMFormExpression(function_IsFunction)_(Type(function) = "OMBIND")
@@ -117,7 +134,7 @@ Rule("OMREP",0,1,True)
      OMEcho("</OMA>");
      ];
 
-11 # OMFormFunction(_function_IsFunction)
+11 # OMFormFunction(function_IsFunction)
      <--
      [
      Local(arity);
@@ -129,7 +146,7 @@ Rule("OMREP",0,1,True)
      <--
      [
      Local(symbolDef);
-     // [20051016 AGP] The "signature" feature is an old attept at pattern
+     // [20051016 AGP] The "signature" feature is an old attempt at pattern
      // matching, but now that we have real predicates in the mappings it's
      // probably obsolete. I'll think about removing it.
      symbolDef := OMSymbol[ OMSignature(function) ];
@@ -240,7 +257,7 @@ OMSignature(function_IsFunction) <--
   Local(makeSig);
   makeSig := {ConcatStrings, Type(function), "_"};
   Local(type);
-  type := "";// If "function" doesn't have arguments, the signature is "f_".
+  type := "";// If "function" doesn't have parameters, the signature is "f_".
   ForEach(arg, function)
   [
     If(Type(arg) = "List",
@@ -263,6 +280,10 @@ HoldArgNr("OMSignature", 1, 1);
 
 ///////////////////////////////////////////////////////////////////////
 // Input
+
+// Troubleshooting guide:
+// "encodingError:unexpected closing brace": this happens in the ReadOMOBJ
+//      rules. It means that you forgot to call OMNextToken() from your rule.
 
 OMNextToken() :=
 [
@@ -405,7 +426,6 @@ FromString(str:" EndOfFile")
           result := OMApplyMapping(yacasExp, symbolDef[4]);
           result := Subst($, yacasExp[0]) result;
           If(IsList(result), result := UnList(result));
-          //result := UnList(yacasExp[0] : result);
         ]
        );
      result;
@@ -451,14 +471,14 @@ FromString(str:" EndOfFile")
 
 11 # OMPathSelect(path_IsNumber, _expression) <--
 [
-  If(path >= 0 And path < Length(expression),
+  If(path >= 0 And path <= Length(expression),
      expression[path],
      Undefined);
 ];
 11 # OMPathSelect(path_IsList, _expression) <--
 [
   ForEach(i, path)
-    If(IsFunction(expression) And i >= 0 And i < Length(expression),
+    If(IsFunction(expression) And i >= 0 And i <= Length(expression),
        expression := expression[i],
        Undefined);
   expression;
@@ -479,8 +499,24 @@ HoldArgNr("OMPathSelect", 2, 2);
   Atom(name);
 ];
 
-100 # ReadOMOBJ(XmlTag("OMS",{{"NAME",_name}, {"CD",_cd}},"OpenClose")) <-- OMCheck(False,OMError("unhandled_symbol", OMS(cd, name)));
-100 # ReadOMOBJ(XmlTag("OMS",{{"CD",_cd}, {"NAME",_name}},"OpenClose")) <-- OMCheck(False,OMError("unhandled_symbol", OMS(cd, name)));
+// Previously, any unknown symbols where reported as errors.
+// Now, we just store them as OMS(cd, name) since Yacas is perfectly happy
+// with such unknown symbols, and will handle them right: When
+// producing an OpenMath result from them, they will be output back
+// unmodified, forming a valid OpenMath expression.
+// This way we don't have to bother defining bogus symbols for concepts that
+// Yacas does not handle.
+100 # ReadOMOBJ(XmlTag("OMS",{{"NAME",_name}, {"CD",_cd}},"OpenClose")) <--
+[
+  OMNextToken();
+  OMS(cd, name);
+];
+100 # ReadOMOBJ(XmlTag("OMS",{{"CD",_cd}, {"NAME",_name}},"OpenClose")) <--
+[
+  OMNextToken();
+  OMS(cd, name);
+];
+
 101 # ReadOMOBJ(_rest) <-- OMCheck(False,OMError({"moreerrors", "encodingError"}, ToString()Echo("unhandled tag: ",rest)));
 
 
@@ -590,3 +626,4 @@ Use("complex.rep/om.ys");
 Use("integrate.rep/om.ys");
 Use("sums.rep/om.ys");
 Use("limit.rep/om.ys");
+Use("numbers.rep/om.ys");// Sqrt is loaded before (stubs.rep) than IntNthRoot.
