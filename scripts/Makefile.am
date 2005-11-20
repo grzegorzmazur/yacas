@@ -23,7 +23,7 @@ SCRIPTFILES1 = 	        										    \
 	integrate.rep/code.ys integrate.rep/code.ys.def integrate.rep/om.ys   \
 	io.rep/code.ys io.rep/code.ys.def io.rep/print.ys io.rep/formula.ys io.rep/errors.ys 		    \
 	io.rep/defaultprint.ys io.rep/defaultprint.ys.def 						    \
-	limit.rep/code.ys limit.rep/code.ys.def 							    \
+	limit.rep/code.ys limit.rep/code.ys.def limit.rep/om.ys	    \
 	linalg.rep/code.ys linalg.rep/code.ys.def 							    \
 	lists.rep/code.ys lists.rep/code.ys.def 							    \
 	lists.rep/scopestack.ys lists.rep/scopestack.ys.def 						    \
