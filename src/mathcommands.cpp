@@ -264,17 +264,17 @@ void LispTail(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispUnList(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  CHK_ARG_CORE(ARGUMENT(1).Get(), 1);
-  CHK_ARG_CORE(ARGUMENT(1).Get()->SubList(), 1);
+  CHK_ARG_CORE(ARGUMENT(1).Get() != NULL, 1);
+  CHK_ARG_CORE(ARGUMENT(1).Get()->SubList() != NULL, 1);
   LispObject* subList = ARGUMENT(1).Get()->SubList()->Get();
-  CHK_ARG_CORE(subList, 1);
+  CHK_ARG_CORE(subList != NULL, 1);
   CHK_ARG_CORE(subList->String() == aEnvironment.iList->String(),1);
   InternalTail(RESULT, ARGUMENT(1));
 }
 
 void LispListify(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  CHK_ARG_CORE(ARGUMENT(1).Get()->SubList(), 1);
+  CHK_ARG_CORE(ARGUMENT(1).Get()->SubList() != NULL, 1);
   LispPtr head;
   head.Set(aEnvironment.iList->Copy(LispFalse));
   head.Get()->Next().Set(ARGUMENT(1).Get()->SubList()->Get());

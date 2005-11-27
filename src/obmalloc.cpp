@@ -540,7 +540,7 @@ _THIS_MALLOC(size_t nbytes)
 		watermark = 0;
 		/* Page-round up */
 		arenabase = bp + (SYSTEM_PAGE_SIZE -
-				  ((off_t )bp & SYSTEM_PAGE_SIZE_MASK));
+				  (((off_t )bp) & SYSTEM_PAGE_SIZE_MASK));
 		goto commit_pool;
 	}
 
@@ -577,7 +577,7 @@ _THIS_FREE(void *p)
 	if (p == NULL)	/* free(NULL) has no effect */
 		return;
 
-	offset = (off_t )p & POOL_SIZE_MASK;
+	offset = ((off_t )p) & POOL_SIZE_MASK;
 	pool = (poolp )((block *)p - offset);
 	if (pool->pooladdr != pool || pool->magic != (uint )POOL_MAGIC) {
 		_SYSTEM_FREE(p);
@@ -654,7 +654,7 @@ _THIS_REALLOC(void *p, size_t nbytes)
 		return _THIS_MALLOC(nbytes);
 
 	/* realloc(p, 0) on big blocks is redirected. */
-	pool = (poolp )((block *)p - ((off_t )p & POOL_SIZE_MASK));
+	pool = (poolp )((block *)p - (((off_t )p) & POOL_SIZE_MASK));
 	if (pool->pooladdr != pool || pool->magic != (uint )POOL_MAGIC) {
 		/* We haven't allocated this block */
 		if (!(nbytes > SMALL_REQUEST_THRESHOLD) && nbytes) {
