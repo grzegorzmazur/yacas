@@ -38,6 +38,7 @@ void CStdCommandLine::ReadLine(LispCharPtr prompt)
     int offs=0;
 MORE:
     fgets(&buffer[offs],4000-offs,stdin);
+if (feof(stdin)) strcpy(buffer,"quit");
     offs=strlen(buffer);
 
     if (buffer[offs-1] == '\n')

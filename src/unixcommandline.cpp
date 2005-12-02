@@ -123,6 +123,10 @@ LispInt CUnixCommandLine::GetKey()
 {
     LispInt c;
     c=getc(stdin);
+if (feof(stdin))
+{
+  exit(0);
+}
 
     if (c == term_chars[VERASE]) /* Backspace */
     {
