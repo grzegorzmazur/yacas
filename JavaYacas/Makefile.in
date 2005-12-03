@@ -162,6 +162,7 @@ net/sf/yacas/HintWindow.java net/sf/yacas/Hints.java net/sf/yacas/SelectSymbol.j
 net/sf/yacas/TWord.java net/sf/yacas/YacasGraphicsContext.java net/sf/yacas/YacasNotebook.java \
 net/sf/yacas/YacasNotebookComponent.java net/sf/yacas/calc.java net/sf/yacas/tegicphone.java calc.html net/sf/yacas/TempMathUtils.java net/sf/yacas/XmlTokenizer.java README.TXT \
 net/sf/yacas/WizardApplet.java tegicadd.cpp operators.txt dumpversion.cpp \
+net/sf/yacas/CVersion.java \
 about.yml arith.yml calculus.yml start.yml \
 analytic.yml differentiate.yml integrate.yml special.yml \
 simplify.yml approx.yml programming.yml polynomials.yml \

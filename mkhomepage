@@ -11,6 +11,7 @@ make
 make # make a second time, for adding statically linked libraries
 sudo make install
 cd JavaYacas
+rm scripts.zip
 make -f makefile.yacas
 cd ..
 make dist
