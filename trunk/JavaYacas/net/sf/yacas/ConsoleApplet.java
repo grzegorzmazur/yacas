@@ -124,6 +124,8 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
       AddLineStatic(100, "","This is Yacas version '" + CVersion.VERSION + "'.", font, c);
 
+      AddLineStatic(100, "","Running from location '" + getDocumentBase() + "'.", font, c);
+
       AddLineStatic(100, "","Yacas is Free Software--Free as in Freedom--so you can redistribute Yacas or", font, c);
       AddLineStatic(100, "","modify it under certain conditions. Yacas comes with ABSOLUTELY NO WARRANTY.", font, c);
       AddLineStatic(100, "","See the GNU General Public License (GPL) for the full conditions.", font, c);
@@ -160,6 +162,15 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         //  return;
         }
       }
+      if (docbase.startsWith("http"))
+      {
+        //jar:http://www.xs4all.nl/~apinkus/scripts.zip!/
+        int pos = docbase.lastIndexOf("/");
+        String scriptBase = "jar:"+ docbase.substring(0,pos+1)+"scripts.zip!/";
+//        AddLineStatic(100, ""," '" + scriptBase + "'.", font, Color.red);
+        yacas.Evaluate("DefaultDirectory(\""+scriptBase+"\");");
+      }
+      
     }
 
 
