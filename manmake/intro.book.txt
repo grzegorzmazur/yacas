@@ -40,6 +40,13 @@ For Unix, compilation basically amounts to the standard sequence
 	make install
 This will install the binaries to {/usr/local/bin} and the library files to {/usr/local/share/yacas/}.
 
+*A compiling for Mac OS X 10.4
+A note for MacOS X 10.4 users; for now loading dynamic link libraries does not work well (December 2005). So in order to build Yacas properly on Mac OS X the collowing configure command can be used:
+
+	./configure CFLAGS="-O9 -DDISABLE_DYNAMIC" CXXFLAGS="-O9 -DDISABLE_DYNAMIC" --enable-server --disable-shared
+
+
+
 *A compiling with {libgmp}
 The arbitrary precision math in {Yacas} will be generally faster if you compile {Yacas} with the {libgmp} library (the option {--with-numlib=gmp} for the {configure} script). Precompiled Red Hat (RPM) and Debian (DEB) packages are also available.
 
