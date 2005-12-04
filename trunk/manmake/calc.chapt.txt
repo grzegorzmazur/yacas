@@ -1733,7 +1733,7 @@ Each seed value will result in the same sequence of pseudo-random numbers.
 *CALL
 	RngCreate()
 	RngCreate(init)
-	RngCreate(option=value,...)
+	RngCreate(option==value,...)
 	RngSeed(r, init)
 	Rng(r)
 	
@@ -1769,6 +1769,12 @@ If the initial seed is not specified, the value of 76544321 will be used.
 
 The {gauss} option will create a RNG object that generates pairs of Gaussian distributed random numbers as a complex random number.
 The real and the imaginary parts of this number are independent random numbers taken from a Gaussian (i.e. "normal") distribution with unit variance.
+
+For the Gaussian distribution, the Box-Muller transform method is used.
+A good description of this method, along with the proof that the method
+generates normally distributed random numbers, can be found in Knuth, 
+"The Art of Computer Programming", Volume 2 (Seminumerical algorithms, third 
+edition), section 3.4.1 
 
 Note that unlike the global {Random} function, the RNG objects created with {RngCreate} are independent RNGs and do not affect each other.
 They generate independent streams of pseudo-random numbers.
