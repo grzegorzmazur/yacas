@@ -5,7 +5,12 @@ document:
 - StubApiCShortIntegerConstant(_onearg)
 */
 
-
+WriteYacasName(s) := 
+[ WriteString("\""); 
+  For(i:=1, i<=Length(s), i++) WriteString(If(s[i]="_","'",s[i]));
+  WriteString("\"");
+];
+  
 StubApiCStart(s_IsString) <--
 [
   cconsts := "";
@@ -74,7 +79,7 @@ StubApiCShortIntegerConstant(const,val) :=
 Constant {":const:"} refers to the library name	{":val:"}
 ";
   cconsts:= cconsts:PatchString(
-"  SetShortIntegerConstant(aEnvironment, <?Write(const);?>, <?WriteString(val  );?>);
+"  SetShortIntegerConstant(aEnvironment, <?WriteYacasName(const);?>, <?WriteString(val  );?>);
 ");
 ];
 
@@ -200,11 +205,11 @@ CReturnResult(returntype);
 
 
 cadderstring:=
-"  aEnvironment.SetCommand(base_<? WriteString(fname); ?>, <? Write(fname2); ?>,<?Write(Length(args));?>,YacasEvaluator::Function | YacasEvaluator::Fixed);
+"  aEnvironment.SetCommand(base_<? WriteString(fname); ?>, <? WriteYacasName(fname2); ?>,<?Write(Length(args));?>,YacasEvaluator::Function | YacasEvaluator::Fixed);
 ";
 
 cremoverstring:=
-"  aEnvironment.RemoveCoreCommand(<? Write(fname2); ?>);
+"  aEnvironment.RemoveCoreCommand(<? WriteYacasName(fname2); ?>);
 ";
 
 

@@ -287,6 +287,8 @@ void LispListify(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispDestructiveReverse(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispPtr reversed;
+  CHK_ISLIST_CORE(ARGUMENT(1),1);
+
   reversed.Set(aEnvironment.iList->Copy(LispFalse));
   InternalReverseList(reversed.Get()->Next(), ARGUMENT(1).Get()->SubList()->Get()->Next());
   RESULT.Set(LispSubList::New(reversed.Get()));
@@ -460,7 +462,8 @@ void LispDestructiveDelete(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispFlatCopy(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispPtr copied;
-    InternalFlatCopy(copied,*ARGUMENT(1).Get()->SubList());
+   CHK_ISLIST_CORE(ARGUMENT(1),1);
+   InternalFlatCopy(copied,*ARGUMENT(1).Get()->SubList());
     RESULT.Set(LispSubList::New(copied.Get()));
 }
 
