@@ -120,7 +120,7 @@ CachedStdFileInput::CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus
     iNrBytes = ftell(iFile);
     fseek(iFile,0,SEEK_SET);
     // Read in the full buffer
-    iBuffer = PlatAlloc(iNrBytes+1);
+    iBuffer = (LispCharPtr)PlatAlloc(iNrBytes+1);
     Check(iBuffer!=NULL,KLispErrNotEnoughMemory);
     iCurrentPos = 0;
     fread(iBuffer,iNrBytes,1,iFile);
