@@ -13,10 +13,11 @@
 
 
 #ifdef NO_GLOBALS
-  LispCharPtr PlatAlloc(LispInt aNrBytes);
-  LispCharPtr PlatReAlloc(LispCharPtr aOrig, LispInt aNrBytes);
-  void PlatFree(LispCharPtr aOrig);
+  #define PlatAlloc malloc
+  #define PlatReAlloc realloc
+  #define PlatFree free
   #define NEW new 
+  #define CHECKPTR(ptr)
 #else
 
   void *PlatObAlloc(size_t nbytes);

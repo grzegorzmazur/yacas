@@ -108,7 +108,7 @@ void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
 void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispObject* (*func)(LispObject* f1, LispEnvironment& aEnvironment,LispInt aPrecision))
 {
-    CHK_ARG_CORE(ARGUMENT(1).Get()->Number(0),1);
+    CHK_ARG_CORE(ARGUMENT(1).Get()->Number(0) != NULL,1);
     RESULT.Set(func(ARGUMENT(1).Get(), aEnvironment, aEnvironment.Precision())); 
 }
 
@@ -120,8 +120,8 @@ void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
 {
     if (!arbbase)
     {
-        CHK_ARG_CORE(ARGUMENT(1).Get()->Number(0) ,1);
-        CHK_ARG_CORE(ARGUMENT(2).Get()->Number(0) ,2);
+        CHK_ARG_CORE(ARGUMENT(1).Get()->Number(0)  != NULL,1);
+        CHK_ARG_CORE(ARGUMENT(2).Get()->Number(0)  != NULL,2);
     }
     RESULT.Set(func(ARGUMENT(1).Get(),ARGUMENT(2).Get(),
                                    aEnvironment,
@@ -156,8 +156,8 @@ void LispMultiply(LispEnvironment& aEnvironment, LispInt aStackTop)
 //TODO we need to have Gcd in BigNumber!
 void LispGcd(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    CHK_ARG_CORE(ARGUMENT(1).Get()->Number(0) ,1);
-    CHK_ARG_CORE(ARGUMENT(1).Get()->Number(0) ,2);
+    CHK_ARG_CORE(ARGUMENT(1).Get()->Number(0)  != NULL,1);
+    CHK_ARG_CORE(ARGUMENT(1).Get()->Number(0)  != NULL,2);
     RESULT.Set(GcdInteger(ARGUMENT(1).Get(),ARGUMENT(2).Get(),aEnvironment));
 }
 

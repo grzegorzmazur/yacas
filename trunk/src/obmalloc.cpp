@@ -53,6 +53,21 @@
 #include "lisptype.h"
 #include "stubs.h"
 //TODO is this always true?
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif // HAVE_CONFIG_H
+
+#ifdef HAVE_INTTYPES_H
+  #include <inttypes.h>
+#else  // HAVE_INTTYPES_H
+   // Assume 32-bit, non-Unix
+   typedef unsigned int uintptr_t
+   typedef int intptr_t
+#endif // HAVE_INTTYPES_H
+
+
+
 #define SIZEOF_LONG   (BITS_PER_LONG/8)
 #define SIZEOF_VOID_P (BITS_PER_LONG/8)
 
@@ -287,7 +302,7 @@
 #define ulong			unsigned long	/* assuming >= 32 bits */
 
 #undef  off_t
-#define off_t 			uint	/* 16 bits <= off_t <= 64 bits */
+#define off_t 			uintptr_t   /* 16 bits <= off_t <= 64 bits */
 
 /* When you say memory, my mind reasons in terms of (pointers to) blocks */
 typedef uchar block;
@@ -540,7 +555,7 @@ _THIS_MALLOC(size_t nbytes)
 		watermark = 0;
 		/* Page-round up */
 		arenabase = bp + (SYSTEM_PAGE_SIZE -
-				  (((off_t )bp) & SYSTEM_PAGE_SIZE_MASK));
+				  ((off_t )bp & SYSTEM_PAGE_SIZE_MASK));
 		goto commit_pool;
 	}
 
@@ -577,7 +592,7 @@ _THIS_FREE(void *p)
 	if (p == NULL)	/* free(NULL) has no effect */
 		return;
 
-	offset = ((off_t )p) & POOL_SIZE_MASK;
+	offset = (off_t )p & POOL_SIZE_MASK;
 	pool = (poolp )((block *)p - offset);
 	if (pool->pooladdr != pool || pool->magic != (uint )POOL_MAGIC) {
 		_SYSTEM_FREE(p);
@@ -654,7 +669,7 @@ _THIS_REALLOC(void *p, size_t nbytes)
 		return _THIS_MALLOC(nbytes);
 
 	/* realloc(p, 0) on big blocks is redirected. */
-	pool = (poolp )((block *)p - (((off_t )p) & POOL_SIZE_MASK));
+	pool = (poolp )((block *)p - ((off_t )p & POOL_SIZE_MASK));
 	if (pool->pooladdr != pool || pool->magic != (uint )POOL_MAGIC) {
 		/* We haven't allocated this block */
 		if (!(nbytes > SMALL_REQUEST_THRESHOLD) && nbytes) {
