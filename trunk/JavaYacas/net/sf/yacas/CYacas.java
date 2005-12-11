@@ -93,7 +93,7 @@ public class CYacas
     }
     catch (Exception e)
     {
-      e.printStackTrace();
+//      e.printStackTrace();
       System.out.println(e.toString());
       iError = e.toString();
     }
