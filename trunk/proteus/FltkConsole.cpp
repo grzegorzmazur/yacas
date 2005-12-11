@@ -1083,15 +1083,14 @@ void FltkConsole::SetCurrentHighlighted(int i)
 
         iCurrentHighlighted = i;
 
-        if (iCurrentHighlighted >= 0 && iConsoleOut[i]->InputIsVisible())
+        LispCharPtr text = "";
+        if (iCurrentHighlighted >= 0)
+        if (iCurrentHighlighted < iConsoleOut.NrItems())
+        if (iConsoleOut[i]->InputIsVisible())
         {
-            LispCharPtr text = iConsoleOut[iCurrentHighlighted]->input();
-            SetInput(text, strlen(text)+1);
+            text = iConsoleOut[iCurrentHighlighted]->input();
         }
-        else
-        {
-            SetInput("", 1);
-        }
+        SetInput(text, strlen(text)+1);
     }
 }
 

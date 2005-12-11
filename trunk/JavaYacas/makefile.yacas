@@ -18,7 +18,7 @@ CLASSES = net/sf/yacas/CVersion.class net/sf/yacas/InputStatus.class net/sf/yaca
 net/sf/yacas/CYacas.class net/sf/yacas/YacasConsole.class net/sf/yacas/ConsoleApplet.class \
 net/sf/yacas/CDataReader.class net/sf/yacas/HintItem.class \
 net/sf/yacas/HintWindow.class net/sf/yacas/Hints.class net/sf/yacas/SelectSymbol.class net/sf/yacas/TResult.class \
-net/sf/yacas/TSentence.class \
+net/sf/yacas/TSentence.class net/sf/yacas/YacasInterpreter.class \
 net/sf/yacas/TWord.class net/sf/yacas/YacasGraphicsContext.class \
 net/sf/yacas/YacasNotebookComponent.class net/sf/yacas/calc.class net/sf/yacas/tegicphone.class net/sf/yacas/WizardApplet.class
 
