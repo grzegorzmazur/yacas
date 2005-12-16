@@ -11,7 +11,7 @@ OMDef( "Gcd"  ,  "arith1", "gcd"  );
 // Watch the definition of "NthRoot" in "../numbers.rep/om.ys".
 // Depending on which file is loaded first, the translation from OpenMath
 // of OMA(OMS("arith1", "root"), 16, 2) would be Sqrt(16) or IntNthRoot(16,2),
-// which is not altering the meaning, but I think that using the square root
+// which does not alter the meaning, but I think that using the square root
 // when possible looks nicer.
 OMDef( "Sqrt" ,  "arith1", "root", { $, _1, 2 }, $(_1)_(_2=2) | ({IntNthRoot,_1,_2}) );// Using IntNthRoot(_1,_2) works, but it produces the evaluated result.
 // Test [result: Sqrt(16)]:

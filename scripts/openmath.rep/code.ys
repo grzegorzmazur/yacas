@@ -339,6 +339,7 @@ FromString(str:" EndOfFile")
 ];
 10 # MatchOMOBJ(XmlTag("OMOBJ",_attributes,"OpenClose")) <--
 [
+  OMNextToken();
   // Any attributes are ignored.
   // This is a void expression, of the form "<OMOBJ/>".
   Empty;
@@ -371,6 +372,20 @@ FromString(str:" EndOfFile")
 [
   OMNextToken();
   Atom(dec);
+];
+
+10 # ReadOMOBJ(XmlTag("OMSTR",{},"Open")) <--
+[
+  Local(result);
+  OMNextToken();
+  If(IsString(OMToken), [result := OMToken; OMNextToken();], result := "");
+  MatchClose(XmlTag("OMSTR",{},"Close"));
+  result;
+];
+10 # ReadOMOBJ(XmlTag("OMSTR",{},"OpenClose")) <--
+[
+  OMNextToken();
+  "";
 ];
 
 10 # ReadOMOBJ(XmlTag("OMA",{},"Open")) <--
@@ -585,6 +600,7 @@ OMDef(yacasalias_IsString, yacasname_IsString) <--
 HoldArgNr("OMDef", 5, 4 );
 HoldArgNr("OMDef", 5, 5);
 
+OMDef( "List", "list1", "list");
 // [20010916 AGP] I couldn't find these symbols in the def files:
 //     "E"        ,  "nums1", "e"
 //     "Gamma"    ,  "nums1", "gamma"
@@ -609,7 +625,8 @@ OMDef( "True" ,  "logic1", "true"  );
 OMDef( "&" ,  "yacas", "bitwise_and" );
 OMDef( "|" ,  "yacas", "bitwise_or"  );
 OMDef( "%" ,  "yacas", "bitwise_xor" );
-OMDef( "/" ,  "arith1", "divide" );
+OMDef( "/" , "arith1", "divide");// This definition is for OM arith1:divide to Yacas. In all other cases, the next one will be used.
+OMDef( "/" , "nums1", "rational", {$, _1, _2}_(IsRational(_1/_2)) | {OMS("arith1", "divide"), _1, _2}, {/, _1, _2});
 OMDef( "-" ,  "arith1", "unary_minus");
 OMDef( "-" ,  "arith1", "minus"  );
 OMDef( "+" ,  "arith1", "plus"   );
