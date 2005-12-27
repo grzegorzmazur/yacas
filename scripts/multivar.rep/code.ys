@@ -123,73 +123,39 @@ MultiVars(MultiNomial(_vars,_terms)) <-- vars;
 10 # MultiLC(MultiNomial(_vars,{})) <-- 0;
 20 # MultiLC(multi_IsMulti) <-- MultiLeadingCoef(multi);
 
-DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
-
-
-
-
-
-
-
-
-
-
-
-
-/*************************************************************
-  MultiDivide :
-  input
-    f - a multivariate polynomial
-    g[1 .. n] - a list of polynomials to divide by
-  output
-    {q[1 .. n],r} such that f = q[1]*g[1] + ... + q[n]*g[n] + r
-    
-  Basically quotient and remainder after division by a group of
-  polynomials.
-**************************************************************/
-20 # MultiDivide(_f,g_IsList) <--
+//Tfunc and T2 are just for test purposes. e.g. In> Tfunc(2);
+LocalSymbols(x,z)//making y local caused some confusing output
+//This statement effectively makes x and z global within the block.
+//as well as distinct from any x and z outside.
 [
-  Local(i,v,q,r,nr);
-  v:=MultiExpressionList(f+Sum(g));
-  f:=MakeMultiNomial(f,v);
-  nr := Length(g);
-  For(i:=1,i<=nr,i++)
-  [
-    g[i] := MakeMultiNomial(g[i],v);
-  ];
-  {q,r}:=MultiDivide(f,g);
-  q:=MapSingle("NormalForm",q);
-  r:=NormalForm(r);
-  {q,r};
+Tfunc(_y) <--
+[
+  z:=y;
+  x:=z;
+  Local(t);//This prevents T2 knowing t regardless of the Unfence statement.
+  t:=x;
+  While(T2()) [
+    z:=z+1;Echo("z=",z);];
+  x;
+];
+T2() <--
+[
+  x:=x*2;
+  if(x>10) [False;] else [Echo("T2: t=",t,"x= ",x,"y=",y,"z=",z);z:=z+3;True;];
+];
+Unfence(T2,0);//this seems to have no effect,T2 knows z regardless,but not y
 ];
 
-10 # MultiDivide(f_IsMulti,g_IsList) <--
-[
-  Local(i,nr,q,r,p,v,finished);
-  Set(nr, Length(g));
-  Set(v, MultiVars(f));
-  Set(q, FillList(0,nr));
-  Set(r, 0);
-  Set(p, f);
-  Set(finished,MultiZero(p));
-  Local(plt,glt);
-  While (Not finished)
-  [
-    Set(plt, MultiLT(p));
-    For(i:=1,i<=nr,i++)
-    [
-      Set(glt, MultiLT(g[i]));
-      
-      if (MultiLM(glt) = MultiLM(plt) Or MultiTermLess({MultiLM(glt),1}, {MultiLM(plt),1}))
-      if (Select({{n},n<0},MultiLM(plt)-MultiLM(glt)) = {})
+
+/*
+      //if (glm = plm Or MultiTermLess({glm,1}, {plm,1}))//tests glm<=plm in the ordering of terms
+      if (Select({{n},n<0},plm-glm) = {})
       [
         Local(ff);
-      Set(ff, CreateTerm(v,{MultiLM(plt)-MultiLM(glt),MultiLC(plt)/MultiLC(glt)}));
         q[i] := q[i] + ff;
         Local(ltbefore,ltafter);
         Set(ltbefore,MultiLeadingTerm(p));
 //        Echo(ltbefore,MultiLeadingTerm(p));
-        Set(p, p - ff*g[i]);
         Set(ltafter,MultiLeadingTerm(p));
 //        Echo(ltbefore,MultiLeadingTerm(p));
         if (ltbefore[1] = ltafter[1])
@@ -212,7 +178,7 @@ DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
   ];
   {q,r};
 ];
-
+*/
 
 //TODO optimize this! keeps on converting to and from internal format!
 
@@ -271,8 +237,6 @@ If(new[1][1]=0,
   MultiPrimitivePart(f);
 ];
 
-
-
 MultiDivTerm(MultiNomial(_vars,_term1),MultiNomial(_vars,_term2)) <--
 [
   Local(lm1,lm2);
@@ -280,62 +244,258 @@ MultiDivTerm(MultiNomial(_vars,_term1),MultiNomial(_vars,_term2)) <--
   Set(lm2,MultiLeadingTerm(MultiNomial(vars,term2)) );
   CreateTerm(vars,{lm1[1]-lm2[1],lm1[2] / lm2[2]});
 ];
-MultiS(_g,_h,MultiNomial(_vars,_terms)) <--
+
+LocalSymbols(k,zero,use,nf,vars,nvars)
 [
-  Local(gamma);
+/**************************************************************
+Usage of LocalSymbols
+'k' is output by MultiS and determines whether one of the f[i] can be deleted
+'zero' is boolean and is set by MultiDivide and means "the remainder is zero"
+'use' is a list of the same length as 'f' and is effectively boolean.
+use[i] = 0 means f[i] is effectively deleted (not used), otherwise use[i]=1.
+Hopefully, this will be faster than removing items from the list.
+'nf' is the Length (i.e. cardinality) of f.
+'vars' is the list of variables in the order they are found from the
+input polynomials.
+'nvars' is the cardinality of vars.
+These localsymbols are used by functions MultiDivide, MultiS and Groebner.
 
-  gamma :=Max(MultiDegree(g),MultiDegree(h));
-  Local(result,topterm);
-  topterm := MM(Factorize(vars^gamma)); 
+  MultiDivide :
+  input
+    g - a multivariate polynomial
+    f[1 .. n] - a list of polynomials to divide by
+ (Note: f,g swapped compared with earlier version to improve consistency
+  of notation in MultiDivide with MultiS and Groebner)
+  output
+    r such that g = q[1]*f[1] + ... + q[n]*f[n] + r
+    and r cannot be further reduced in the sense defined by the ordering
+    of monomials (lexicographic using the order of the variables in vars
+    as descending order). r is a normal form of g with respect to the
+    basis f[1 .. n]. This a generalisation of the remainder when g is
+    divided by f.
 
-  result :=
-    MultiDivTerm(topterm,MultiLT(g))*g -
-    MultiDivTerm(topterm,MultiLT(h))*h;
+In this version, q is not calculated because it is not needed for
+Groebner. This could be done later here or in another function to keep this
+function as fast as possible. (I could easily put it back if required)
 
-
-/*TODO remove, old incorrect code?
-  result :=
-    MultiDivTerm(MultiNomial(vars,{{gamma,1}}),MultiLT(g))*g -
-    MultiDivTerm(MultiNomial(vars,{{gamma,1}}),MultiLT(h))*h;
+*********** top level version ****************
+To use this, g and f[1],f[2]... must be multivariate polynomials in
+Yacas algebraic format (see eg example comments on Groebner)
 */
-  result;
-];
+20 # MultiDivide(_g,f_IsList) <--
+  [
+    Local(i);
+    vars:=Union(VarList(g),VarList(f));
+    Set(nvars, Length(vars));//number of variables
+    g:=MakeMultiNomial(g,vars);
+    nf := Length(f);
+    use:=FillList(1,nf);
+    zero:=False;
+    For(i:=1,i<=nf,i++)
+    [
+      f[i] := MakeMultiNomial(f[i],vars);
+    ];
+    NormalForm(MultiDivide(g,f));
+  ];
 
+//***********internally used version called by Groebner ****************
+10 # MultiDivide(g_IsMulti,_f) <--
+  [
+    Local(r,w,t,flt,flm,flc,glt,glm,glc,i,imax,temp);
+    Set(r,MultiNomial(vars,{}));
+    Set(zero, True);
+    g:=DropZeroLC(g);//deletes leading terms if they have coefficient =0
+    if(Not(CheckMultiZero(g)))
+    [
+      Set(glt, MultiLT(g));
+      Set(glm, MultiLM(glt));
+      Set(glc, MultiLC(glt));
+      flt:= FillList(-Infinity,nf);
+      flm:= FillList(-Infinity,nf);
+      flc:= FillList(-Infinity,nf); 
+      For(i:=1,i<=nf,i++)//for each of the f's get the leading term,monomial, and coefficient
+      [
+        if(use[i]=1)
+        [
+          flt[i]:= MultiLT(f[i]);
+          flm[i]:= MultiLM(f[i]);//can these be shortened
+          flc[i]:= MultiLC(f[i]);//by using different arg eg flm?
+        ];
+      ];
+    ];
+    While(Not(CheckMultiZero(g)))
+    [
+      Set(imax, 0); Set(w, FillList(0,nvars)); Local(t,j);
+//find greatest flm[i] in the sense of the monomial ordering
+      For(i:=1,i<=nf,i++)//for each f, test divisibility of glm by flm[i] to
+      [
+      if(use[i]=1)
+        [
+//t = divisibility of leading monomial of g by leading monomial of f[i]
+          t:=True;
+           For(j:=1,j<=nvars,j++) [
+             t:= (t And glm[j]-flm[i][j]+1 > 0);
+          ];
+          If(t,
+          [
+            If(MultiTermLess({w,1},{flm[i],1}), [ imax:=i; w:=flm[imax]; ]);
+          ]);//best i updated
+        ];
+      ];
+    //best i or no i found
+      if(imax!=0)//glm is divisible by leading monomial of f[imax]
+      [
+//g=g-glt*f[i]/flt[i] i.e 1 step of the "reduction" of f to normal
+//form using the basis f[i]
+        MultiNomialMultiplyAdd(g,f[imax],glm-flm[imax],-glc/flc[imax]);
+      ]
+      else 
+      [
+//g is now reduced as much as possible using its leading monomial
+//look at lower monomials of g
+        temp:=MultiLT(g);
+        zero:=(zero And CheckMultiZero(g));
+        MultiNomialAdd(g,MultiNomialNegate(temp));//remove leading term of g
+        MultiNomialAdd(r,MultiNomialNegate(temp));//add this term to r
+      ];
+      g:=DropZeroLC(g);//deletes leading terms if they have coefficient =0
+      glm:=MultiLM(g);
+      glc:=MultiLC(g);
+    ];//ends While
+    r;//the final remainder is the answer
+  ];
 
+//computes Buchberger's S-polynomial for g,h which are both assumed to be
+//in internal representation and without zero leading terms.
+//This will be true for when MultiS is called by Groebner. 
+//k set to 1 if coeff of g is constant and 2 if coeff of h is constant.
+//If both, set k=1, and k is 0 otherwise. The point of this is that if
+//a coefficient is constant, the S polynomial can replace the corresponding
+//g or h in the reduced Groebner basis.
+
+MultiS(_g,_h) <--
+  [
+    Local(exponents,topterm,lmg,lmh);
+    exponents :=Max(MultiDegree(g),MultiDegree(h));
+    topterm:=MultiMonomial(vars,exponents);
+    lmg:=MultiMonomial(vars,MultiLM(g));
+    lmh:=MultiMonomial(vars,MultiLM(h));
+    first:=MultiSM(MultiDivTerm(topterm,lmg),MultiLC(h));
+    second:=MultiSM(MultiDivTerm(topterm,lmh),MultiLC(g));
+    if(MultiConstant(first)) [k:=1;]
+    else
+    [ 
+      if(MultiConstant(second)) [k:=2;]
+      else
+      [k:=0;];
+    ];
+    first:=MultiNomialMultiply(first,g);
+    second:=MultiNomialMultiply(second,h);
+    result:=DropZeroLC(MultiNomialAdd(first,MultiNomialNegate(second)));
+//  Echo("S non-monic = ",result);
+    MultiSM(result,1/MultiLC(result));//reduce result to monic form;
+//This is mathematically equivalent to first*g - second*h;
+  ];
 /*
-  Groebner : Calculate the Groebner basis of a set of polynomials.
-  Nice example of its power is
+  Groebner : Calculate the reduced Groebner basis of a set of polynomials.
+  A simple example of its power is
 
-In> TableForm(Groebner({x*(y-1),y*(x-1)}))
- x*y-x
- x*y-y
- y-x
- y^2-y
-In> Factor(y^2-y)
-Out> y*(y-1);
+In> Groebner({x*(y-1),y*(x-1)})
+MultiNomial({x,y},{{1,{{0,1}}},{0,{{1,-1}}}})
+MultiNomial({x,y},{{0,{{2,1},{1,-1}}}})
+Out> True
+In> NormalForm(result[1]);
+Out> x-y
+In> NormalForm(result[2]);
+Out> y^2-y
+In> Factor(NormalForm(result[2]));
+Out> (y-1)*y
 
 From which you can see that x = y, and x^2 = x so x is 0 or 1.
-  
+Here is a more complicated example taken from
+http://www.risc.uni-linz.ac.at/people/buchberg/papers/2001-02-19-A.pdf
+
+In> Groebner({x*y-2*y*z-z,y^2-x^2*z+x*z,z^2-y^2*x+x});
+...
+
+In> result[1];
+Out> MultiNomial({x,y,z},{{1,{{0,{{0,1}}}}},{0,{{0,{{11,3442816/43083},{10,(-3106688)/43083},{9,2269472/43083},{8,(-672120)/4787},{7,354746/43083},{6,(-2475608)/43083},{5,1202033/43083},{4,409939/43083},{3,402334/43083},{2,69484/43083},{1,(-118717)/43083}}}}}})
+In> MultiSM(result[1],43083);//multiply by the scalar 43083 to clear fractions
+Out> MultiNomial({x,y,z},{{1,{{0,{{0,43083}}}}},{0,{{0,{{11,3442816},{10,-3106688},{9,2269472},{8,-6049080},{7,354746},{6,-2475608},{5,1202033},{4,409939},{3,402334},{2,69484},{1,-118717}}}}}})
+
+The corresponding Gröbner basis, w.r.t. the lexicographic ordering ranking
+x higher than y higher and y higher than z , is G1,G2,G3,G4 where
+
+G1:=z+4*z^3-17*z^4+3*z^5-45*z^6
++60*z^7-29*z^8+124*z^9-48*z^10+64*z^11-64*z^12;
+G2:=-22001*z+14361*y*z+16681*z^2+26380*z^3
++226657*z^4+11085*z^5-90346*z^6-472018*z^7
+-520424*z^8-139296*z^9-150784*z^10+490368*z^11;
+G3:=43083*y^2-11821*z+267025*z^2-583085*z^3+663460*z^4
+-2288350*z^5+2466820*z^6-3008257*z^7+4611948*z^8
+-2592304*z^9+2672704*z^10-1686848*z^11;
+G4:=43083*x-118717*z+69484*z^2+402334*z^3+409939*z^4
++1202033*z^5-2475608*z^6+354746*z^7-6049080*z^8
++2269472*z^9-3106688*z^10+3442816*z^11;
 */
 
 Groebner(f_IsList) <--
-[
-  Local(vars,i,j,S,nr,r);
-  nr:=Length(f);
-  vars:=VarList(f);
-  For(i:=1,i<=nr,i++)
   [
-    f[i] := MakeMultiNomial(f[i],vars);
-  ];
-  S:={};
-  For(i:=1,i<nr,i++)
-  For(j:=i+1,j<=nr,j++)
-  [
-    r := (MultiDivide(MultiS(f[i],f[j],f[i]),f)[2]);
-    If(NormalForm(r) != 0, S:= r:S);
-    f:=Concat(f,S);
-    S:={};
-    nr:=Length(f);
-  ];
-  MapSingle("NormalForm",Concat(f));
-];
+    Local(i,j,r,m);
+    nf:=Length(f);
+    use:=FillList(1,nf);
+    vars:=VarList(f);
+    nvars:=Length(vars);
+    For(i:=1,i<=nf,i++)
+    [
+      f[i] := MakeMultiNomial(f[i],vars);//express original polynomials
+//using the common set of variables (union)
+    ];
+    For(j:=2,j<=nf,j++)
+    [ 
+      if(use[j]=1)
+      [ 
+        For(i:=1,i<j,i++)
+        [
+//          Echo("i= ",i,"j= ",j);
+          if(use[i]=1)
+          [
+            m:=MultiS(f[i],f[j]);//k determines the f that
+//            Echo("S-poly = ",m);
+//can be discontinued, k=1 --- f[i],k=2 --- f[j], k=0 none
+            if(k=1) [ use[i]:=0;]//[ add i to discontinue list]
+            else if(k=2) [use[j]:=0;];//[ add j to discontinue list];
+//            Echo("k= ",k);
+            m:=MultiDivide(m,f);
+//            Echo("S = ",NormalForm(m));
+            if(Not zero)[
+              m:=MultiSM(m,1/MultiLC(m));//reduce m to monic form;
+//              Echo("S monic = ",NormalForm(m));
+              f:=Concat(f,{m});use:=Concat(use,{1});//add m to f;
+              nf++;
+            ];
+          ];
+        ];
+      ];
+    ];
+    For(i:=1,i<=nf,i++)//get reduced Groebner basis
+    [
+      if(use[i]=1)
+      [
+        use[i]:=0;
+        f[i]:=MultiDivide(f[i],f);
+        if(Not zero)
+        [
+          use[i]:=1;
+        ];
+      ];
+    ];
+//could there be any further reductions if this last step was repeated?
+    result:={};
+    For(i:=1,i<=nf,i++)
+    [
+      if(use[i]=1)[ result:=Concat(result,{f[i]});];
+    ];
+    TableForm(result);
+  ];//ends Groebner
+];//ends LocalSymbols
