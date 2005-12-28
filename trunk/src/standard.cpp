@@ -28,6 +28,9 @@ LispBoolean InternalIsList(LispPtr& aPtr)
         return LispFalse;
     if (aPtr.Get()->SubList()->Get() == NULL)
         return LispFalse;
+    // The following happens with IsList(UnList({foo(x), a, b}))
+    if (aPtr.Get()->SubList()->Get()->String() == NULL)
+        return LispFalse;
     //TODO this StrEqual is far from perfect. We could pass in a LispEnvironment object...
     if (!(StrEqual(aPtr.Get()->SubList()->Get()->String()->String(), "List")))
         return LispFalse;
