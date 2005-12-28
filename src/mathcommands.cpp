@@ -462,8 +462,11 @@ void LispDestructiveDelete(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispFlatCopy(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispPtr copied;
-   CHK_ISLIST_CORE(ARGUMENT(1),1);
-   InternalFlatCopy(copied,*ARGUMENT(1).Get()->SubList());
+    if (ARGUMENT(1).Get()->SubList() == NULL)
+    {
+      CHK_ISLIST_CORE(ARGUMENT(1),1);
+    }
+    InternalFlatCopy(copied,*ARGUMENT(1).Get()->SubList());
     RESULT.Set(LispSubList::New(copied.Get()));
 }
 
