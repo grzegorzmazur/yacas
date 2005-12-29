@@ -1237,13 +1237,13 @@ name as it has in Yacas.
 *CMD OMDef --- define translations from Yacas to OpenMath and vice-versa.
 *STD
 *CALL
-	OMDef(yacasSymbol, cd, name)
-	OMDef(yacasSymbol, cd, name, yacasToOM)
-	OMDef(yacasSymbol, cd, name, yacasToOM, omToYacas)
+	OMDef(yacasForm, cd, name)
+	OMDef(yacasForm, cd, name, yacasToOM)
+	OMDef(yacasForm, cd, name, yacasToOM, omToYacas)
 
 *PARMS
 
-{yacasSymbol} -- string with the name of a Yacas symbol
+{yacasForm} -- string with the name of a Yacas symbol, or a Yacas expression
 
 {cd} -- OpenMath Content Dictionary for the symbol
 
@@ -1256,7 +1256,27 @@ name as it has in Yacas.
 *DESC
 
 {OMDef} defines the translation rules for symbols between the Yacas
-representation and {OpenMath}. The definitions for the symbols in the Yacas
+representation and {OpenMath}.
+The first parameter, {yacasForm}, can be a string or an expression. The
+difference is that when giving an expression only the {omToYacas} translation
+is defined, and it uses the exact expression given. This is used for {OpenMath}
+symbols that must be translated into a whole subexpression in Yacas, such
+as {set1:emptyset} which gets translated to an empty list as follows:
+	In> OMDef( {}, "set1","emptyset" )
+	Out> True
+	In> FromString("<OMOBJ><OMS cd=\"set1\" name=\"emptyset\"/></OMOBJ> ")OMRead()
+	Out> {}
+	In> IsList(%)
+	Out> True
+Otherwise, a symbol that is not inside an application (OMA) gets translated to
+the Yacas atom with the given name:
+	In> OMDef( "EmptySet", "set1","emptyset" )
+	Warning: the mapping for set1:emptyset was already defined as {} , but is redefined now as EmptySet
+	Out> True
+	In> FromString("<OMOBJ><OMS cd=\"set1\" name=\"emptyset\"/></OMOBJ> ")OMRead()
+	Out> EmptySet
+
+The definitions for the symbols in the Yacas
 library are in the {*.rep} script subdirectories. In those modules for which
 the mappings are defined, there is a file called {om.ys} that contains the
 {OMDef} calls. Those files are loaded in {openmath.rep/om.ys}, so any new
@@ -1292,6 +1312,7 @@ symbol having a {CD} and {name}: Yacas symbols have only a name.
 Those special symbols are:
 
 *	{OMS(cd, name)}: {<OMS cd="cd" name="name">}
+*	{OMA(f x y ...)}: {<OMA>f x y ...</OMA>}
 *	{OMBIND(binderSymbol, bvars, expression)}: {<OMBIND>binderSymbol bvars expression</OMBIND>}, where {bvars} must be produced by using {OMBVAR(...)}.
 *	{OMBVAR(x y ...)}: {<OMBVAR>x y ...</OMBVAR>}
 *	{OME(...)}: {<OME>...</OME>}

@@ -18,12 +18,12 @@ SCRIPTFILES1 = 	        										    \
 	factors.rep/code.ys factors.rep/code.ys.def 							    \
 	factors.rep/binaryfactors.ys factors.rep/binaryfactors.ys.def 					    \
 	fakedb.rep/code.ys fakedb.rep/code.ys.def 							    \
-	functional.rep/code.ys functional.rep/code.ys.def 						    \
+	functional.rep/code.ys functional.rep/code.ys.def functional.rep/om.ys				    \
 	html.rep/code.ys html.rep/code.ys.def 								    \
 	integrate.rep/code.ys integrate.rep/code.ys.def integrate.rep/om.ys   \
 	io.rep/code.ys io.rep/code.ys.def io.rep/print.ys io.rep/formula.ys io.rep/errors.ys 		    \
 	io.rep/defaultprint.ys io.rep/defaultprint.ys.def 						    \
-	limit.rep/code.ys limit.rep/code.ys.def limit.rep/om.ys	    \
+	limit.rep/code.ys limit.rep/code.ys.def limit.rep/om.ys						    \
 	linalg.rep/code.ys linalg.rep/code.ys.def 							    \
 	lists.rep/code.ys lists.rep/code.ys.def 							    \
 	lists.rep/scopestack.ys lists.rep/scopestack.ys.def 						    \
