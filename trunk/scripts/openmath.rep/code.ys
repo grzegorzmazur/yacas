@@ -122,11 +122,20 @@ Rule("OMREP",1,1,True)
      OMUndent();
      OMEcho("</OMBVAR>");
      ];
+10 # OMFormExpression(function_IsFunction)_(Type(function) = "OMA")
+     <--
+     [
+     // This is not the same as the next rule: this is OMA(a,b,c,...),
+     // which is used for building OMA constructs in the mapping to OM.
+     OMEcho("<OMA>");
+     OMIndent();
+     ForEach(i, function) OMFormExpression(i);
+     OMUndent();
+     OMEcho("</OMA>");
+     ];
 11 # OMFormExpression(function_IsFunction)
      <--
      [
-     Local(arity);
-     arity := Length(function);
      OMEcho("<OMA>");
      OMIndent();
      OMFormFunction(function);
@@ -481,7 +490,13 @@ FromString(str:" EndOfFile")
      ]
     );
   
-  If(ruleMatched, result, Empty);
+  If(ruleMatched,
+     If(Type(result) = ":",
+        If(Length(result) = 2,
+           result[1]:result[2],
+           result),// Perhaps we should give a warning here.
+        result),
+     Empty);
 ];
 
 11 # OMPathSelect(path_IsNumber, _expression) <--
@@ -500,20 +515,6 @@ FromString(str:" EndOfFile")
 ];
 HoldArgNr("OMPathSelect", 2, 2);
 
-// Special handling of the symbols in the "yacas" CD:
-
-10 # ReadOMOBJ(XmlTag("OMS",{{"CD","yacas"}, {"NAME",_name}},"OpenClose")) <--
-[
-  OMNextToken();
-  Atom(name);
-];
-
-10 # ReadOMOBJ(XmlTag("OMS",{{"NAME",_name}, {"CD","yacas"}},"OpenClose")) <--
-[
-  OMNextToken();
-  Atom(name);
-];
-
 // Previously, any unknown symbols where reported as errors.
 // Now, we just store them as OMS(cd, name) since Yacas is perfectly happy
 // with such unknown symbols, and will handle them right: When
@@ -521,15 +522,26 @@ HoldArgNr("OMPathSelect", 2, 2);
 // unmodified, forming a valid OpenMath expression.
 // This way we don't have to bother defining bogus symbols for concepts that
 // Yacas does not handle.
-100 # ReadOMOBJ(XmlTag("OMS",{{"NAME",_name}, {"CD",_cd}},"OpenClose")) <--
+100 # ReadOMOBJ(XmlTag("OMS", _attributes, "OpenClose")) <--
 [
   OMNextToken();
-  OMS(cd, name);
-];
-100 # ReadOMOBJ(XmlTag("OMS",{{"CD",_cd}, {"NAME",_name}},"OpenClose")) <--
-[
-  OMNextToken();
-  OMS(cd, name);
+  Local(omcd, omname);
+  omcd   := attributes["CD"];
+  omname := attributes["NAME"];
+  If(omcd = Empty Or omname = Empty,
+     OMCheck(False,OMError({"moreerrors", "encodingError"}, ToString()Echo("missing \"cd\" or \"name\" attribute: ",attributes))),
+     [
+     Local(cdTable, yacasform);
+     cdTable := OMSymbolReverse[ omcd ];
+     If(cdTable != Empty, yacasform := cdTable[ omname ]);
+     // We can not optimize here by checking first whether the CD is "yacas"
+     // and avoiding the table lookup then, because for some symbols the
+     // OM name have to be different from the Yacas name (e.g. "/@").
+     If(yacasform = Empty,
+        If(cd = "yacas", Atom(omname), OMS(omcd, omname)),
+        If(IsString(yacasform), Atom(yacasform), yacasform));
+     ]
+    );
 ];
 
 101 # ReadOMOBJ(_rest) <-- OMCheck(False,OMError({"moreerrors", "encodingError"}, ToString()Echo("unhandled tag: ",rest)));
@@ -569,44 +581,61 @@ OMGetCoreError():=
 OMSymbol := {};
 OMSymbolReverse := {};
 
-Macro(OMSymbol,{cd,name,to})
+OMDef(_yacasform, omcd_IsString, omname_IsString, _directMapping, _reverseMapping) <--
 [
-  10 # ReadOMOBJ(XmlTag("OMS",_props,"OpenClose"))_(props["CD"] = (@cd) And props["NAME"] = (@name)) <--
-  [
-    OMNextToken();
-    Atom(@to);
-  ];
-];
-
-OMDef(yacasname_IsString, omcd_IsString, omname_IsString, directMapping_IsFunction, reverseMapping_IsFunction) <--
-[
-  OMSymbol[ yacasname ] := {omcd, omname, directMapping, reverseMapping};
-  If(OMSymbolReverse[ omcd ] = Empty,
-     OMSymbolReverse[ omcd ] := {{omname, yacasname}},
-     If(OMSymbolReverse[ omcd ][ omname ] = Empty,
-        OMSymbolReverse[ omcd ][ omname ] := yacasname
-        )// If you put a ";" here, the parser freaks out!
+  Local(cdTable);
+  If(IsString(yacasform),
+     OMSymbol[ yacasform ] := {omcd, omname, directMapping, reverseMapping}
      );
-  `OMSymbol(@omcd, @omname, @yacasname);
+  cdTable := OMSymbolReverse[ omcd ];
+  If(cdTable = Empty,
+     OMSymbolReverse[ omcd ] := {{omname, yacasform}},
+     [
+       Local(oldYacasform);
+       oldYacasform := cdTable[ omname ];
+       If(oldYacasform = Empty,
+          cdTable[ omname ] := yacasform,
+          [
+          If(oldYacasform != yacasform,
+             [
+             cdTable[ omname ] := yacasform;
+             Echo("Warning: the mapping for ", omcd, ":", omname,
+                  " was already defined as ", oldYacasform,
+                  ", but is redefined now as ", yacasform
+                  );
+             ]
+            );
+          ]
+         );
+      ]
+     );
+  True;
 ];
 
-OMDef(yacasname_IsString, omcd_IsString, omname_IsString)
-<-- OMDef(yacasname, omcd, omname, {}, {});
+OMDef(_yacasform, omcd_IsString, omname_IsString)
+<-- OMDef(yacasform, omcd, omname, {}, {});
 
 OMDef(yacasalias_IsString, yacasname_IsString) <--
 [
   OMSymbol[ yacasalias ] := OMSymbol[ yacasname ];
 ];
-HoldArgNr("OMDef", 5, 4 );
+HoldArgNr("OMDef", 5, 4);
 HoldArgNr("OMDef", 5, 5);
 
-OMDef( "List", "list1", "list");
+// Many objects, such as matrices and sets, do not have a specific
+// encoding in Yacas, but are represented as lists.
+OMDef( {},     "set1","emptyset" );
+OMDef( "List", "set1","set"      );
+OMDef( "List", "linalg2","matrix"    );
+OMDef( "List", "linalg2","matrixrow" );
+OMDef( "List", "linalg2","vector"    );
+OMDef( "List", "list1","list" );
+
 // [20010916 AGP] I couldn't find these symbols in the def files:
 //     "E"        ,  "nums1", "e"
 //     "Gamma"    ,  "nums1", "gamma"
 OMDef( "Infinity" ,  "nums1", "infinity" );
 OMDef( "Undefined",  "nums1", "NaN"      );
-OMDef( "Pi",         "nums1", "pi"       );
 // [20010916 AGP] From stdopers.ys:
 OMDef( "And"   ,  "logic1", "and"        );
 OMDef( "=="    ,  "logic1", "equivalent" );
@@ -628,11 +657,10 @@ OMDef( "%" ,  "yacas", "bitwise_xor" );
 OMDef( "/" , "arith1", "divide");// This definition is for OM arith1:divide to Yacas. In all other cases, the next one will be used.
 OMDef( "/" , "nums1", "rational", {$, _1, _2}_(IsRational(_1/_2)) | {OMS("arith1", "divide"), _1, _2}, {/, _1, _2});
 OMDef( "-" ,  "arith1", "unary_minus");
-OMDef( "-" ,  "arith1", "minus"  );
+OMDef( "-" ,  "arith1", "minus"  );// We need a way of testing the arity.
 OMDef( "+" ,  "arith1", "plus"   );
 OMDef( "^" ,  "arith1", "power"  );
 OMDef( "*" ,  "arith1", "times"  );
-OMDef( "+" ,  "arith1", "plus"   );
 
 
 Use("constants.rep/om.ys");
@@ -643,4 +671,5 @@ Use("complex.rep/om.ys");
 Use("integrate.rep/om.ys");
 Use("sums.rep/om.ys");
 Use("limit.rep/om.ys");
-Use("numbers.rep/om.ys");// Sqrt is loaded before (stubs.rep) than IntNthRoot.
+//Use("numbers.rep/om.ys");// Sqrt is loaded before (stubs.rep) than IntNthRoot.
+Use("functional.rep/om.ys");

@@ -1,36 +1,29 @@
-
-
-OMDef( "Min",  "minmax1", "min", { "<OMA>",
-                                   "<OMS cd=\"set1\" name=\"set\"/>",
-                                   1,2,3,4,5,6,7,8,9,10,11,12,13,14,
-                                   "</OMS>",
-                                   "</OMA>" } );
-OMDef( "Max",  "minmax1", "max", { "<OMA>",
-                                   "<OMS cd=\"set1\" name=\"set\"/>",
-                                   1,2,3,4,5,6,7,8,9,10,11,12,13,14,
-                                   "</OMS>",
-                                   "</OMA>" } );
-OMDef( "!",  "integer1", "factorial" );
-OMDef( "Bin", "combinat1", "binomial" );
-OMDef( "!!", "", "" );
-OMDef( "***", "", "" );
-OMDef( "Add", "", "" );
-OMDef( "Sum" ,  "arith1", "sum", // Same translation as Integrate.
-       { "<OMA><OMS cd=\"interval1\" name=\"interval\"/>",
-         2, 3,
-         "</OMA>",
-         "<OMBIND>",
-         "<OMS cd=\"fns1\" name=\"lambda\"/>",
-	 "<OMBVAR>",
-	 1,
-	 "</OMBVAR>",
-	 4,
-	 "</OMBIND>"
-        }
+// From code.ys.def:
+// [2005-12-28 matmota]: I have to implement some better solution for the
+// Yacas -> OM mapping for these symbols. See also "Average", in this file.
+OMDef( "Min", "minmax1","min",
+       { "<OMA>", "<OMS cd=\"set1\" name=\"set\"/>",
+         1,2,3,4,5,6,7,8,9,10,11,12,13,14,
+         "</OMS>", "</OMA>" },
+       ($):_1 );
+OMDef( "Max", "minmax1","max",
+       { "<OMA>", "<OMS cd=\"set1\" name=\"set\"/>",
+         1,2,3,4,5,6,7,8,9,10,11,12,13,14,
+         "</OMS>", "</OMA>" },
+       ($):_1 );
+OMDef( "!", "integer1","factorial" );
+OMDef( "Bin", "combinat1","binomial" );
+OMDef( "!!",  "yacas","double_factorial" );
+OMDef( "***", "yacas","partial_factorial" );
+OMDef( "Add", "yacas","Add" );
+OMDef( "Sum", "arith1","sum", // Same argument reordering as Integrate.
+       { $, _2 .. _3, OMBIND(OMS("fns1", "lambda"), OMBVAR(_1), _4) },
+       { $, _{2,2,1}, _{1,1}, _{1,2}, _{2,3} }
       );
-OMDef( "Average", "s_data1", "mean" );// TODO: flatten argument.
-OMDef( "Factorize", "yacas", "Factorize" );
-OMDef( "Taylor",    "yacas", "Taylor" );
-OMDef( "Fibonacci", "combinat1", "Fibonacci" );
-OMDef( "Lucas",        "yacas", "Lucas"        );
-OMDef( "Subfactorial", "yacas", "Subfactorial" );
+// The definition for "Average" to OM does not work fine yet, as it lacks the wrapping "set1:set" around the parameters.
+OMDef( "Average", "s_data1","mean", {}, ($):_1 );
+OMDef( "Factorize", "yacas","Factorize" );
+OMDef( "Taylor",    "yacas","Taylor" );
+OMDef( "Fibonacci", "combinat1","Fibonacci" );
+OMDef( "Lucas",        "yacas","Lucas"        );
+OMDef( "Subfactorial", "yacas","Subfactorial" );
