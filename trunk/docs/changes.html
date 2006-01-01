@@ -21,6 +21,8 @@
   <li> Introduced Lambda macro for pure functions. This function returns itself unevaluated, and can be passed in to the Apply function. The older method of defining
        pure functions was with lists, but because lists are evaluated this sometimes caused unwanted behaviour (premature evaluation of expressions in the body of the
        pure function).
+  <li> Made Solve a little bit more powerful so that it can for instance solve systems of equations like 
+       Solve({mean==(A/(A+B)),variance==((A*B)/(((A+B)^2) * (A+B+1)))},{A,B}).
 </ul>
 
 <h1>Release of version 1.0.61 (December 3rd, 2005)</h1>
