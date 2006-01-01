@@ -160,6 +160,7 @@ static int readmode = 0;
 int compressed_archive = 1;
 
 int server_mode = 0;
+int server_single_user = 0;
 int server_port = 9734;
 
 char* execute_commnd = NULL;
@@ -875,6 +876,8 @@ int runserver(int argc,char** argv)
 
 
     int seconds = 30; // give each calculation only so many calculations
+    if (server_single_user)
+      seconds = 0;
 
     serverbusy=1;
     maxConnections=MAX_CONNECTIONS;
@@ -1007,6 +1010,13 @@ int runserver(int argc,char** argv)
                         delete used_clients[clsockindex];
                         used_clients[clsockindex] = NULL;
                         nrSessions--;
+                        
+                        if (server_single_user && nrSessions == 0)
+                        {
+                          exit(0);
+                        }
+
+                        
 #ifdef YACAS_DEBUG
                         printf("Removing client on %d\n",fd);
 #endif
@@ -1109,7 +1119,8 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
    //                        if (fork() == 0)
                            {
                                char* response = finalbuffer;
-                               (*used_clients[clsockindex])()().iSecure = 1;
+                               if (!server_single_user) 
+                                 (*used_clients[clsockindex])()().iSecure = 1;
                                if (seconds>0)
                                {
                                    clientToStop = used_clients[clsockindex];
@@ -1131,6 +1142,12 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
                                outStrings[0] = '\0';
                                used_clients[clsockindex]->Evaluate(finalbuffer);
                                free(finalbuffer);
+
+                                if (server_single_user && !Busy())
+                                {
+                                  exit(0);
+                                }
+
                                if (seconds>0)
                                {
    #ifndef WIN32
@@ -1326,7 +1343,10 @@ int main(int argc, char** argv)
                   server_port = atoi(argv[fileind]);
                 }                
             }
-
+            else if (!strcmp(argv[fileind],"--single-user-server"))
+            {    
+            server_single_user = 1;
+            }
 
             else if (!strcmp(argv[fileind],"--stacksize"))
             {    
