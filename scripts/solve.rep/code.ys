@@ -247,6 +247,14 @@ Solve'System(_eqns, _vars) <-- Solve'SimpleBackSubstitution(eqns,vars);
 
 
 
+LocalSymbols(ats,FindTerms,var,list,expression)
+[
+  FindTerms(_var) <-- Contains(ats,var);
+  SolveVarlist'SetItems(_list) <-- [ats:=list;];
+  SolveVarlist'VarListAll(_expression) <--VarListAll(expression,FindTerms);
+];
+
+
 /* Solving sets of equations using simple backsubstitution.
  * Solve'SimpleBackSubstitution takes all combinations of equations and
  * variables to solve for, and it then uses SuchThat to find an expression
@@ -268,11 +276,13 @@ Solve'System(_eqns, _vars) <-- Solve'SimpleBackSubstitution(eqns,vars);
 
 /* Echo({eq});  */
 
+  SolveVarlist'SetItems(var);
+
   For(i:=1,i<=nrvar,i++)
   [
     For(j:=1,j<=nreq,j++)
     [
-      If(Count(VarListAll(eq[j]),var[i]) = 1,
+      If(Count(SolveVarlist'VarListAll(eq[j]),var[i]) = 1,
          [
            sub:=SuchThat(Listify(eq[j])[2],var[i]);
 /*
@@ -311,6 +321,7 @@ nreq--;
   tested:={};
   zeroeq:=FillList(0==0,nreq);
 
+/*
   ApplyPure("MacroLocal",var);
 
   ForEach(item,result)
@@ -323,6 +334,27 @@ nreq--;
       DestructiveAppend(tested,Map("==",{var,item}));
     ]);
   ];
+*/
+
+  ForEach(item,result)
+  [
+    Local(eqSimplified);
+    eqSimplified := eq;
+    ForEach(map,Transpose({var,item})) 
+    [
+//Echo("Before: eqSimplified = ",eqSimplified);
+      eqSimplified := Subst(map[1],map[2])eqSimplified;
+//Echo("After: eqSimplified = ",eqSimplified);
+    ];
+    eqSimplified := Simplify(eqSimplified);
+    If(eqSimplified = zeroeq,
+    [
+      DestructiveAppend(tested,Map("==",{var,item}));
+    ]);
+  ];
+
+
+
 /* Echo({"tested is ",tested});  */
  If(Verbose, Echo({"Leaving Solve'SimpleBackSubstitution"}));
   tested;

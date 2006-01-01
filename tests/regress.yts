@@ -303,10 +303,13 @@ Verify(Undefined <= -4, False);
 Precision(10);
 NumericEqual(N(Cos(Pi*.5)), 0,GetPrecision());
 
-// Jitse's bug report
-Verify(CForm(4), "4.");
+/* Jitse's bug report, extended with the changes that do not coerce integers to floats automatically 
+   any more (just enter a dot and the number becomes float if that is what is intended).
+ */
+Verify(CForm(4), "4");
 Verify(CForm(4.), "4.");
-Verify(CForm(0), "0.");
+Verify(CForm(0), "0");
+Verify(CForm(0.), "0.");
 
 // Discovered that Floor didn't handle new exponent notation
 Verify(Floor(1001.1e-1),100);
@@ -528,4 +531,13 @@ Verify(Integrate(x,0,0)1,0);
 // This code verifies that if integrating over a zero domain, the result
 // is zero. 
 Verify(Integrate(x,1,1)Sin(Exp(x^2)),0);
+
+/* Reverse and FlatCopy (and some friends) would segfault in the past if passed a string as argument.
+ * I am not opposed to overloading these functions to also work on strings per se, but for now just
+ * check that they return an error in stead of segfaulting.
+ */ 
+Verify(TrapError(Reverse("abc"),True),True);
+Verify(TrapError(FlatCopy("abc"),True),True);
+
+
 

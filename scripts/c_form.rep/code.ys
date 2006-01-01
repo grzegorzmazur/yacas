@@ -9,6 +9,7 @@
 	0.3.1 Fix for CForm(integer): add a decimal point
 	0.4 Support While()[]. Added IsCFormable. Use Concat() instead of Union() on lists.
 	0.4.1 Support False, True
+  0.4.2 Changed it so that integers are not coerced to floats any more automatically (one can coerce integers to floats manually nowadays by adding a decimal point to the string representation, eg. 1. instead of 1).
 */
 
 /* To do:
@@ -34,8 +35,8 @@ TeXFormMaxPrec := 60000;	 /* This precedence will never be bracketed. It is equa
 100 # CForm(_x) <-- CForm(x, TeXFormMaxPrec);
 
 /* Replace numbers and variables -- never bracketed except explicitly */
-110 # CForm(x_IsZero, _p) <-- "0.";
-111 # CForm(x_IsInteger, _p) <-- String(MathMultiply(x,1.0));
+110 # CForm(x_IsInteger, _p) <-- String(x);
+111 # CForm(x_IsZero, _p) <-- "0.";
 112 # CForm(x_IsNumber, _p) <-- String(x);
 /* Variables are left as is, except some special ones */
 190 # CForm(False, _p) <-- "false";

@@ -91,6 +91,22 @@ CForm(Hold(Cos(A-B)*Sin(a)*func(b,c,d*(e+Pi))*Sqrt(Abs(C)+D)-(g(a+b)^(c+d))^(c+d
 Verify(
 CForm(Hold([i:=0;While(i<10)[i++; a:=a+Floor(i);];]))
 , "{
+  i = 0;
+  while(i < 10)
+    {
+      ++(i);
+      a = a + floor(i);
+      }
+    ;
+    ;
+  }
+"
+);
+
+/* Check that we can still force numbers to be floats in stead of integers if we want to */
+Verify(
+CForm(Hold([i:=0.;While(i<10.)[i++; a:=a+Floor(i);];]))
+, "{
   i = 0.;
   while(i < 10.)
     {
@@ -102,6 +118,7 @@ CForm(Hold([i:=0;While(i<10)[i++; a:=a+Floor(i);];]))
   }
 "
 );
+
 
 Testing("IsCFormable");
 Verify(
