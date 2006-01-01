@@ -245,6 +245,18 @@ Solve'System(_eqns, _vars) <-- Solve'SimpleBackSubstitution(eqns,vars);
 
 // Check(False, "Solve'System: not implemented");
 
+10 # Solve'SimpleBackSubstitution'FindAlternativeForms((_lx) == (_rx)) <--
+[
+  Local(newEq);
+  newEq := (Simplify(lx) == Simplify(rx));
+  If (newEq != (lx == rx) And newEq != (0==0),DestructiveAppend(eq,newEq));
+  newEq := (Simplify(lx - rx) == 0);
+  If (newEq != (lx == rx) And newEq != (0==0),DestructiveAppend(eq,newEq));
+];
+20 # Solve'SimpleBackSubstitution'FindAlternativeForms(_equation) <--
+[
+];
+UnFence("Solve'SimpleBackSubstitution'FindAlternativeForms",1);
 
 /* Solving sets of equations using simple backsubstitution.
  * Solve'SimpleBackSubstitution takes all combinations of equations and
@@ -257,89 +269,108 @@ Solve'System(_eqns, _vars) <-- Solve'SimpleBackSubstitution(eqns,vars);
 [
  If(Verbose, Echo({"Entering Solve'SimpleBackSubstitution"}));
 
-  Local(result,i,j,nrvar,nreq,sub);
+  Local(result,i,j,nrvar,nreq,sub,nrSet,origEq);
+  eq:=FlatCopy(eq);
+  origEq:=FlatCopy(eq);
   nrvar:=Length(var);
-  nreq:=Length(eq);
   result:={FlatCopy(var)};
-  eq:=Simplify(eq);
+  nrSet := 0;
+
+//Echo("Before: ",eq);
+  ForEach(equation,origEq)
+  [
+//Echo("equation ",equation);
+    Solve'SimpleBackSubstitution'FindAlternativeForms(equation);
+  ];
+//  eq:=Simplify(eq);
+//Echo("After: ",eq);
+
+  nreq:=Length(eq);
 
   /* Loop over each variable, solving for it */
 
 /* Echo({eq});  */
 
-  For(i:=1,i<=nrvar,i++)
+  For(j:=1,j<=nreq And nrSet < nrvar,j++)
   [
-    For(j:=1,j<=nreq,j++)
+    Local(vlist);
+    vlist:=VarListAll(eq[j],`Lambda({pt},Contains(@var,pt)));
+    For(i:=1,i<=nrvar And nrSet < nrvar,i++)
     [
-      If(Count(VarListAll(eq[j],`Lambda({pt},Contains(@var,pt))),var[i]) = 1,
+
+//Echo("eq[",j,"] = ",eq[j]);
+//Echo("var[",i,"] = ",var[i]);
+//Echo("varlist = ",vlist);
+//Echo();
+
+      If(Count(vlist,var[i]) = 1,
          [
-           sub:=SuchThat(Listify(eq[j])[2],var[i]);
-/*
-DestructiveDelete(eq,j);
-nreq--;
-*/
- If(Verbose, Echo({"From ",eq[j]," it follows that ",var[i]," = ",sub})); 
-
-/*           result:=Eliminate(var[i],sub,result);*/
-
-	   result:=Simplify(Subst(var[i],sub)result);
-/*           eq:=Eliminate(var[i],sub,eq); */
-/*           eq[j] := (0 == 0);  */
+           sub := Listify(eq[j]);
+           sub := sub[2]-sub[3];
+//Echo("using ",sub);
+           sub:=SuchThat(sub,var[i]);
+           If(Verbose, Echo({"From ",eq[j]," it follows that ",var[i]," = ",sub})); 
+           If(SolveFullSimplify=True,
+             result:=Simplify(Subst(var[i],sub)result),
+             result[1][i]:=sub
+             );
+//Echo("result = ",result," i = ",i);
+           nrSet++;
+           
+//Echo("current result is ",result);
            Local(k,reset);
            reset:=False;
-           For(k:=1,k<=Length(eq),k++)
+           For(k:=1,k<=nreq  And nrSet < nrvar,k++)
+           If(Contains(VarListAll(eq[k],`Lambda({pt},Contains(@var,pt))),var[i]),
            [
              Local(original);
              original:=eq[k];
              eq[k]:=Subst(var[i],sub)eq[k];
-             eq[k]:=Simplify(eq[k]);
-             eq[k]:=Simplify(eq[k]); //@@@??? TODO I found one example where simplifying twice gives a different result from simplifying once!
+             If(Simplify(Simplify(eq[k])) = (0 == 0),
+               eq[k] := (0 == 0),
+               Solve'SimpleBackSubstitution'FindAlternativeForms(eq[k])
+               );
+//             eq[k]:=Simplify(eq[k]);
+//             eq[k]:=Simplify(eq[k]); //@@@??? TODO I found one example where simplifying twice gives a different result from simplifying once!
              If(original!=(0==0) And eq[k] = (0 == 0),reset:=True);
              If(Verbose, Echo({"   ",original," simplifies to ",eq[k]}));
-           ];
-/*           eq:=Simplify(Subst(var[i],sub)eq); */
-/* Echo({eq});  */
-           j:=nreq+1;
+           ]);
+           nreq:=Length(eq);
+           vlist:=VarListAll(eq[j],`Lambda({pt},Contains(@var,pt)));
+           i:=nrvar+1;
            // restart at the beginning of the variables.
-           If(reset,i:=1); 
+           If(reset,j:=1); 
          ]);
     ];
   ];
 
+
+//Echo("Finished finding results ",var," = ",result);
+//  eq:=origEq;
+//  nreq := Length(eq);
   Local(zeroeq,tested);
   tested:={};
-  zeroeq:=FillList(0==0,nreq);
+//  zeroeq:=FillList(0==0,nreq);
 
+  ForEach(item,result)
+  [
 /*
-  ApplyPure("MacroLocal",var);
-
-  ForEach(item,result)
-  [
-    Apply(":=",{var,item});
-//Echo(Simplify(Eval(eq)));
-    If(Simplify(Eval(eq)) = zeroeq,
-    [
-      ApplyPure("Local",var);
-      DestructiveAppend(tested,Map("==",{var,item}));
-    ]);
-  ];
-*/
-
-  ForEach(item,result)
-  [
     Local(eqSimplified);
     eqSimplified := eq;
     ForEach(map,Transpose({var,item})) 
     [
-//Echo("Before: eqSimplified = ",eqSimplified);
       eqSimplified := Subst(map[1],map[2])eqSimplified;
-//Echo("After: eqSimplified = ",eqSimplified);
     ];
-    eqSimplified := Simplify(eqSimplified);
+    eqSimplified := Simplify(Simplify(eqSimplified));
+    
+    Echo(eqSimplified);
+    
     If(eqSimplified = zeroeq,
     [
       DestructiveAppend(tested,Map("==",{var,item}));
     ]);
+*/
+    DestructiveAppend(tested,Map("==",{var,item}));
   ];
 
 
