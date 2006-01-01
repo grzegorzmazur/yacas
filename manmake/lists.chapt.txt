@@ -92,7 +92,8 @@ This function applies "fn" to every list of arguments to be found in
 "list". So the first entry of "list" should be a list containing
 the first, second, third, ... argument to "fn", and the same goes
 for the other entries of "list". The function can either be given as
-a string or as a pure function.
+a string or as a pure function (see Apply for more information on 
+pure functions).
 
 *E.G.
 
@@ -101,7 +102,7 @@ a string or as a pure function.
 	In> Map("+",{{a,b},{c,d}});
 	Out> {a+c,b+d};
 
-*SEE MapSingle, MapArgs
+*SEE MapSingle, MapArgs, Apply
 
 *CMD MapSingle --- apply a unary function to all entries in a list
 *STD
@@ -119,7 +120,7 @@ a string or as a pure function.
 The function "fn" is successively applied to all entries in
 "list", and a list containing the respective results is
 returned. The function can be given either as a string or as a pure
-function.
+function (see Apply for more information on pure functions).
 
 The {/@} operator provides a shorthand for
 {MapSingle}.
@@ -131,7 +132,7 @@ The {/@} operator provides a shorthand for
 	In> MapSingle({{x},x^2}, {a,2,c});
 	Out> {a^2,4,c^2};
 
-*SEE Map, MapArgs, /@
+*SEE Map, MapArgs, /@, Apply
 
 *CMD RandomIntegerVector --- generate a vector of random integers
 

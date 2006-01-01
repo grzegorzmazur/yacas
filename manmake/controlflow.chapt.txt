@@ -536,7 +536,16 @@ either be a string containing the name of a function  or a pure
 function. Pure functions, modeled after lambda-expressions, have the
 form "{varlist,body}", where "varlist" is the list of formal
 parameters. Upon application, the formal parameters are assigned the
-values in "arglist" (the second parameter of {Apply}) and the "body" is evaluated
+values in "arglist" (the second parameter of {Apply}) and the "body" is evaluated.
+
+Another way to define a pure function is with the Lambda construct.
+Here, in stead of passing in "{varlist,body}", one can pass in
+"Lambda(varlist,body)". Lambda has the advantage that its arguments
+are not evaluated (using lists can have undesirable effects because
+lists are evaluated). Lambda can be used everywhere a pure function
+is expected, in principle, because the function Apply is the only function
+dealing with pure functions. So all places where a pure function can
+be passed in will also accept Lambda.
 
 An shorthand for {Apply} is provided by the {@} operator.
 
@@ -546,6 +555,10 @@ An shorthand for {Apply} is provided by the {@} operator.
 	Out> 14;
 	In> Apply({{x,y}, x-y^2}, {Cos(a), Sin(a)});
 	Out> Cos(a)-Sin(a)^2;
+	In>  Apply(Lambda({x,y}, x-y^2), {Cos(a), Sin(a)});
+	Out> Cos(a)-Sin(a)^2
+	In>  Lambda({x,y}, x-y^2) @ {Cos(a), Sin(a)}
+	Out> Cos(a)-Sin(a)^2
 
 *SEE Map, MapSingle, @
 
@@ -564,7 +577,8 @@ An shorthand for {Apply} is provided by the {@} operator.
 
 Every top-level argument in "expr" is substituted by the result of
 applying "fn" to this argument. Here "fn" can be either the name
-of a function or a pure function.
+of a function or a pure function (see Apply for more information on 
+pure functions).
 
 *E.G.
 

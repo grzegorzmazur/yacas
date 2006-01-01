@@ -125,9 +125,18 @@ HoldArgNr("ForEach",3,1);
 HoldArgNr("ForEach",3,3);
 /* */
 
+/* Lambda was introduced as a form of pure function that can be passed on to the function Apply as a first argument.
+ * The original method, passing it in as a list, had the disadvantage that the list was evaluated, which caused the 
+ * arguments to be evaluated too. This resulted in unwanted behaviour sometimes (expressions being prematurely evaluated
+ * in the body of the pure function). The arguments to Lambda are not evaluated.
+ */
+DefMacroRuleBase("Lambda",{args,body});
+
 
 10 # Apply(_applyoper,_applyargs) _ (Or(IsString(applyoper), IsList(applyoper))) <-- ApplyPure(applyoper,applyargs);
-20 # Apply(_applyoper,_applyargs) <-- ApplyPure(String(applyoper),applyargs);
+20 # Apply(applyoper_IsAtom,_applyargs) <-- ApplyPure(String(applyoper),applyargs);
+
+30 # Apply(Lambda(_args,_body),_applyargs) <-- `ApplyPure(Hold({@args,@body}),applyargs);
 UnFence("Apply",2);
 
 
