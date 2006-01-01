@@ -246,15 +246,6 @@ Solve'System(_eqns, _vars) <-- Solve'SimpleBackSubstitution(eqns,vars);
 // Check(False, "Solve'System: not implemented");
 
 
-
-LocalSymbols(ats,FindTerms,var,list,expression)
-[
-  FindTerms(_var) <-- Contains(ats,var);
-  SolveVarlist'SetItems(_list) <-- [ats:=list;];
-  SolveVarlist'VarListAll(_expression) <--VarListAll(expression,FindTerms);
-];
-
-
 /* Solving sets of equations using simple backsubstitution.
  * Solve'SimpleBackSubstitution takes all combinations of equations and
  * variables to solve for, and it then uses SuchThat to find an expression
@@ -276,13 +267,11 @@ LocalSymbols(ats,FindTerms,var,list,expression)
 
 /* Echo({eq});  */
 
-  SolveVarlist'SetItems(var);
-
   For(i:=1,i<=nrvar,i++)
   [
     For(j:=1,j<=nreq,j++)
     [
-      If(Count(SolveVarlist'VarListAll(eq[j]),var[i]) = 1,
+      If(Count(VarListAll(eq[j],`Lambda({pt},Contains(@var,pt))),var[i]) = 1,
          [
            sub:=SuchThat(Listify(eq[j])[2],var[i]);
 /*

@@ -18,6 +18,9 @@
        to be so that Yacas would coerce a float to integer if there were only zeroes after the decimal. Nowadays the number stays float (a dot in the string
        representation). 
   <li> Also show output on screen if there was an error later on (up until now you would have to pass --read-eval-print "" on the command line to get this to happen).
+  <li> Introduced Lambda macro for pure functions. This function returns itself unevaluated, and can be passed in to the Apply function. The older method of defining
+       pure functions was with lists, but because lists are evaluated this sometimes caused unwanted behaviour (premature evaluation of expressions in the body of the
+       pure function).
 </ul>
 
 <h1>Release of version 1.0.61 (December 3rd, 2005)</h1>
