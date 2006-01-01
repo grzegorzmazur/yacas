@@ -11,6 +11,13 @@
   <li> polishings for the random number generator (fixes for mistakes in the comments and documentation).
   <li> plugin stub generator now takes C tokens with underscores and changes the underscores to single quotes (').
   <li> Added YacasInterpreter.java, which makes using Yacas from a command line console Java application a little easier (provided by qwert2003, alias Adrian V.).
+  <li> Various improvements to OpenMath support.
+  <li> Added the ability to Solve and Where to handle expressions more complex than just variables. One can now Solve for say x[1], or
+       Sin(x) (it only uses a simple comparison for now though).  One can now for instance enter Solve({x[1]-4*x[2]+x[3]==0},{x[2]}).
+  <li> Change to CForm: made it so that integers stay integers. You can force a number to be real-valued by appending a dot, (eg 1. instead of 1). It used
+       to be so that Yacas would coerce a float to integer if there were only zeroes after the decimal. Nowadays the number stays float (a dot in the string
+       representation). 
+  <li> Also show output on screen if there was an error later on (up until now you would have to pass --read-eval-print "" on the command line to get this to happen).
 </ul>
 
 <h1>Release of version 1.0.61 (December 3rd, 2005)</h1>
@@ -41,7 +48,8 @@
 
 <h1>Release of version 1.0.58 (August 7th, 2005)</h1>
 <ul>
-  <li> Support for Mac OS X 10.4: allow compiling the plugins in statically. You need to run ./configure with at least the following arguments for that: CXXFLAGS="-DDISABLE_DYNAMIC" CFLAGS="-DDISABLE_DYNAMIC" --disable-shared. 
+  <li> Support for Mac OS X 10.4: allow compiling the plugins in statically. You need to run ./configure with at least the following 
+       arguments for that: CXXFLAGS="-DDISABLE_DYNAMIC" CFLAGS="-DDISABLE_DYNAMIC" --disable-shared. 
   <li> Java version of Yacas.
 </ul>
 

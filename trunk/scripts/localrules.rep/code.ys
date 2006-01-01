@@ -140,7 +140,7 @@ RuleBase("Where",{left,right});
 //HoldArg("Where",left);
 //HoldArg("Where",right);
 UnFence("Where",2);
-10 # (_body Where _var == _value)
+10 # (_body Where var_IsAtom == _value)
      <-- `[Local(@var);@var := @value;@body;];
 20 # (_body Where (_a And _b))
      <--
@@ -172,6 +172,10 @@ UnFence("Where",2);
         ];
         body;
      ];
+
+
+60 # (_body Where _var == _value) <-- Subst(var,value)body;
+
 
 
 // (a or b) and (c or d) -> (a and c) or (a and d) or (b and c) or (b and d)

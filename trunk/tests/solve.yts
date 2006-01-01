@@ -185,4 +185,11 @@ VerifySolve(PSolve(x^4+x,x), {0, -1, Exp(1/3*Pi*I), Exp(-1/3*Pi*I)});
 /* Yacas has difficulties with more complicated equations, like the 
  * biquadratic x^4 - 3*x^2 + 2. */
 
+/* Added the ability to Solve and Where to handle expressions more complex than just variables. 
+   One can now Solve for say x[1], or Sin(x) (it only uses a simple comparison for now though).  
+   The following test just assures that that will never break.
+ */
+Verify(Simplify(x[1]-4*x[2]+x[3] Where (Solve({x[1]-4*x[2]+x[3]==0},{x[2]}))),{0});
+
+
 /*TODO MatrixSolve */

@@ -321,7 +321,7 @@ NumericEqual(RoundTo(N(1/2+gamma+Pi), 19), 4.2188083184913260991,19);
 // From GSL 1.0
 //NumericEqual( N(PolyLog(2,-0.001),20), -0.00099975011104865108, 20 );
 // PolyLog I didn't write PolyLog, but it seems to not always calculate correctly up to the last digit.
-KnownFailure( RoundTo(N(PolyLog(2,-0.001)+0.00099975011104865108,20),20)=0);
+Verify( RoundTo(N(PolyLog(2,-0.001)+0.00099975011104865108,20),20),0);
 
 Verify( Fibonacci(6,.5), 2.03125 );
 Verify( Fibonacci(3,.5), 1.25 );
