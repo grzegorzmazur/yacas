@@ -776,6 +776,27 @@ function by the operator {Apply}, the symbols {x} and {y} become
 local variables bound to the parameters passed, and {x+y}
 becomes the body of the function.
 
+Sometimes the fact that the pure function is defined as a list is
+undesirable because the list will be evaluated, thus resulting in
+premature evaluation of the body of the pure function. As an example:
+
+	In> Apply({{x},Length(x)},{"aaa"})
+	Out> Length
+
+This is clearly not what we want, as the result should have been
+the length of the string "aaa". To avoid this premature evaluation,
+one can use Lambda. For the example above:
+
+	In> Apply(Lambda({x},Length(x)),{"aaa"})
+	Out> 3
+
+Another way to invoke Apply is with the "@" operator:
+
+	In> Lambda({x,y},x+y) @ {4,3}
+	Out> 7
+
+
+
 		More on syntax
 
 The syntax is handled by an infix grammar parser. Precedence of operations
