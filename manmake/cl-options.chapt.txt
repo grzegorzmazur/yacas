@@ -19,6 +19,7 @@ Here is a summary of options:
 *	{--read-eval-print} <i>expression</i> (call this expression for the read-eval-print loop)
 *	{--rootdir} <i>directory</i> (specify default directory for scripts)
 *	{--server} <i>port</i> (start {Yacas} as a network server on given port)
+*	{--single-user-server} (If in server mode, start it in single-user mode)
 *	{--verbose-debug} (turn on showing some additional debugging information on screen)
 *	{--disable-compiled-plugins} (disable loading of compiled plugins, loading the script versions instead)
 *	{--stacksize} <i>size</i> (change size of stack arguments are stored on)
@@ -118,10 +119,16 @@ memory, but not for longer than 30 seconds.
 
 The server is single-threaded, but has persistent sessions for
 at most 10 users at a time, from which it can service requests
-in a sequenial order. To make the service multi-threaded, a
+in a sequential order. To make the service multi-threaded, a
 solution might be to have a proxy in front of the service listening
 to the port, redirecting it to different processes which get
 started up for users (this has not been tried yet).
+
+The flag --single-user-server can be passed on to instruct {yacas}
+to start in single-user mode. In this mode, unsecure operations can
+be performed (like reading from and writing to files), and the calculation
+may take more than 30 seconds. The {yacas} process will automatically be
+shut down when the last session is closed or when "Exit();" is sent.
 
 	yacas --rootdir [directory]
 Tells the system where to find the library scripts. Here, {directory} is a
