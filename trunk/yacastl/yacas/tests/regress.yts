@@ -1,0 +1,531 @@
+
+NextTest("Regression on bug reports");
+
+Verify(N(Sin(a)),Sin(a));
+LogicVerify(CanProve(P Or (Not P And Not Q)),P Or Not Q);
+Verify(Cos(0),1);
+Verify(Infinity/Infinity,Undefined);
+Verify(Sqrt(Infinity),Infinity);
+Verify(1^Infinity,Undefined);
+Verify((-2)*Infinity,-Infinity);
+Verify(Infinity*0,Undefined);
+Verify(Limit(x,Infinity) (-x^2+1)/(x+2),-Infinity);
+Verify(Limit(x,-Infinity)Exp(2*x),0);
+Verify(Limit(x,Infinity)(1+1/x)^x,Exp(1));
+Verify(Limit(x,Infinity)(1+2/x)^x,Exp(2));
+Verify(Limit(x,Infinity)(1+1/x)^(2*x),Exp(2));
+Verify(Limit(x,Infinity)-2*x,-Infinity);
+Verify(Limit(x,Infinity)(x^2+1)/(-x^3+1),0);
+
+Verify(Limit(x,0)1/x,Undefined);
+Verify(Limit(x,0,Right)1/x,Infinity);
+Verify(Limit(x,0,Left)1/x,-Infinity);
+
+Verify([Local(a);a:=0.1;Simplify((a*b*c)/(a*c*b));],1);
+
+LogicVerify(CanProve(P Or (Not P And Not Q)),P Or Not Q);
+LogicVerify(CanProve(A>0 And A<=0),False);
+LogicVerify(CanProve(A>0 Or A<=0),True);
+Verify(A<0,A<0);
+Verify(A>0,A>0);
+TestYacas(Arg(Exp(2*I*Pi/3)),2*Pi/3);
+
+TestYacas(Content(1/2*x+1/2),1/2);
+TestYacas(PrimitivePart(1/2*x+1/2),x+1);
+TestYacas(Content(1/2*x+1/3),1/6);
+TestYacas(PrimitivePart(1/2*x+1/3),3*x+2);
+
+// Mod generated a stack overflow on floats.
+Verify(Mod(1.2,3.4),6/5);
+NumericEqual(N(Mod(-1.2,3.4)),2.2,GetPrecision());
+Verify(Mod(-12/10,34/10),11/5);
+// just a test to see if Verify still gives correct error Verify(N(Mod(-12/10,34/10)),11/5);
+
+
+// some reports:
+
+LocalSymbols(f,p,a,b,x,n)
+[
+  f(_n) <-- Apply("D",{x,n, x^n});
+  Verify(f(10)-(10!));
+
+  p := a+2-(a+1);
+  Verify(Simplify(x^p),x);
+];
+
+LocalSymbols(f,p,a,b,x,n,simple,u,v)
+[
+  simple := {
+            Exp(_a)*Exp(_b) <- Exp(a+b), 
+            Exp(_a)*_u*Exp(_b) <- u*Exp(a+b),
+            _u*Exp(_a)*Exp(_b) <- u*Exp(a+b),
+            Exp(_a)*Exp(_b)*_u <- u*Exp(a+b),
+            _u*Exp(_a)*_v*Exp(_b) <- u*v*Exp(a+b),
+            Exp(_a)*_u*Exp(_b)*_v <- u*v*Exp(a+b),
+            _u*Exp(_a)*Exp(_b)*_v <- u*v*Exp(a+b),
+            _u*Exp(_a)*_v*Exp(_b)*_w <- u*v*w*Exp(a+b)
+          };
+
+  a := Simplify(Exp(x)*(D(x) x*Exp(-x)));
+  b := Exp(x)*Exp(-x)-Exp(x)*x*Exp(-x);
+
+  a:= (a /: simple);
+  b:= (b /: simple);
+  
+  Verify(Simplify(a-(1-x)),0);
+  Verify(Simplify(b-(1-x)),0);
+
+];
+
+// Verify that postfix operators can be applied one after the other
+// without brackets
+Verify((3!) !, 720);
+Verify(3! !, 720);
+
+TestYacas(TrigSimpCombine(Exp(A*X)),Exp(A*X));
+TestYacas(TrigSimpCombine(x^Sin(a*x+b)),x^Sin(a*x+b));
+Verify(CanBeUni(x^(-1)),False);
+
+
+f(x):=Eval(Factor(x))=x;
+Verify(f(703), True);
+Verify(f(485), True);
+Verify(f(170410240), True);
+
+
+
+
+
+/* bug reported by Jonathan:
+   All functions that do not have Taylor Expansions about
+   the given point go into infinite loops.
+ */
+
+Verify(Taylor(x,0,5) Ln(x),Undefined);
+Verify(Taylor(x,0,5) 1/x,Undefined);
+Verify(Taylor(x,0,5) 1/Sin(x),Undefined);
+
+// Yacas used to not simplify the following, due to Pi being
+// considered constant. The expression was thus not expanded
+// as a univariate polynomial in Pi
+TestYacas(2*Pi/3,(Pi-Pi/3));
+
+TestYacas(( a*(Sqrt(Pi))^2/2), (a*Pi)/2);
+TestYacas(( 3*(Sqrt(Pi))^2/2), (3*Pi)/2); 
+TestYacas(( a*(Sqrt(b ))^2/2), (a*b)/2);
+
+// Bug was found: gcd sometimes returned 0! Very bad, since the 
+// value returned by gcd is usually used to divide out greatest
+// common divisors, and dividing by zero is not a good idea.
+Verify(Gcd(0,0),1);
+Verify(Gcd({0}),1);
+
+// Factorize didn't check for correct input
+Verify(Factorize(10), Factorize(10));
+Verify(Factorize(-1), Factorize(-1));
+Verify(Factorize(Infinity), Factorize(Infinity));
+Verify(Factorize(1 .. 10),3628800);
+
+//
+TestYacas(Sin(Pi-22),-Sin(22-Pi));
+TestYacas(Cos(Pi-22), Cos(22-Pi));
+
+// Verify that some matrix functions accept only positive
+// integer arguments. Regression test for the fact that the functions
+// in linalg.rep/ didn't check their arguments. 
+
+// Note: Jonathan, perhaps some functions could return something
+// useful if the argument passed in is just a number? I'd imagine
+// Inverse(-2) <-- -1/2 would not be inconsistent?
+
+Verify(ZeroMatrix(-2,-2),ZeroMatrix(-2,-2));
+Verify(Identity(-2),Identity(-2));
+//Verify(LeviCivita(2),LeviCivita(2));
+//Verify(Permutations(2),Permutations(2));
+//Verify(InProduct(-2,-2),InProduct(-2,-2));
+//Verify(CrossProduct(-2,-2),CrossProduct(-2,-2));
+//Verify(BaseVector(-2,-2),BaseVector(-2,-2));
+//Verify(DiagonalMatrix(-2),DiagonalMatrix(-2));
+//Verify(Normalize(-2),Normalize(-2));
+//Verify(Transpose(-2),Transpose(-2));
+//Verify(Determinant(-2),Determinant(-2));
+//Verify(CoFactor(-2,-2,-2),CoFactor(-2,-2,-2));
+//Verify(Inverse(-2),Inverse(-2));
+//Verify(Trace(-2),Trace(-2));
+//Verify(SylvesterMatrix(-2,-2,-2),SylvesterMatrix(-2,-2,-2));
+Verify(ZeroVector(-2),ZeroVector(-2));
+
+Verify(Sech(x),1/Cosh(x));
+Verify(Cot(x),1/Tan(x));
+
+// Matrix operations failed: a^2 performed the squaring on each element
+Verify({{1,2},{3,4}}^2,{{7,10},{15,22}});
+// And check that raising powers still works on lists/vectors (dotproduct?) correctly
+Verify({2,3}^2,{4,9});
+
+Verify( D(x,0) Sin(x), Sin(x) );
+
+Verify( 2/3 >= 1/3, True);
+
+Verify( Infinity + I, Complex(Infinity,1) );
+Verify( Infinity - I, Complex(Infinity,-1) );
+Verify( I - Infinity,Complex(-Infinity,1) );
+Verify( I + Infinity, Complex(Infinity,1) );
+Verify( I*Infinity,Complex(0,Infinity)); //Changed Ayal: I didn't like the old definition
+Verify(-I*Infinity,Complex(0,-Infinity)); //Changed Ayal: I didn't like the old definition
+Verify( Infinity*I,Complex(0,Infinity)); //Changed Ayal: I didn't like the old definition
+Verify(  Infinity^I,Undefined);//Changed Ayal: I didn't like the old definition (it is undefined, right?)
+Verify( (2*I)^Infinity, Infinity );
+Verify( Infinity/I,Infinity );
+Verify( Sign(Infinity), 1 );
+Verify( Sign(-Infinity), -1 );
+
+Verify( Limit(n, Infinity) (n+1)/(2*n+3)*I, Complex(0,1/2) );
+Verify( Limit(x, Infinity) x*I, Complex(0,Infinity) ); //Changed Ayal: I didn't like the old definition
+
+Verify(Integrate(x) z^100, z^100*x );
+Verify(Integrate(x) x^(-1),Ln(x) );
+
+NumericEqual(
+RoundTo(N(ArcSin(0.0000000321232123),50),50)
+, 0.00000003212321230000000552466124302049336784679316
+,50);
+
+Verify(LnNum(1), 0);
+
+Verify(Bin(0,0),1 );
+
+Verify(0|1, 1);
+Verify(0&1, 0);
+Verify(0%1, 0);
+
+Verify(0.0/Sqrt(2),0);
+Verify(0.0000000000/Sqrt(2),0);
+Verify(0.0000^(24),0);
+
+Verify(Bernoulli(24), -236364091/2730);
+
+Verify(Gamma(1/2), Sqrt(Pi));
+
+// Coef accepted non-integer arguments as second argument, and
+// crashed on it.
+Verify(Coef(3*Pi,Pi),Coef(3*Pi,Pi));
+Verify(Coef(3*Pi,x), Coef(3*Pi,x));
+
+// Univariates in Pi did not get handled well, due to Pi being
+// considered a constant, non-variable.
+Verify(Degree(Pi,Pi),1);
+Verify(Degree(2*Pi,Pi),1);
+
+Verify(Sin(2*Pi), 0);
+Verify(Cos(2*Pi), 1);
+Verify(Cos(4*Pi), 1);
+Verify(Sin(3*Pi/2)+1, 0);
+Verify(Sin(Pi/2), 1);
+
+// - and ! operators didn't get handled correctly in the
+// parser/pretty printer (did you fix this, Serge?)
+Verify(ToString()Write((-x)!),"(-x)!");
+
+// some interesting interaction between the rules...
+Verify(x*x*x,x^3,);
+Verify(x+x+x,3*x);
+Verify(x+x-x+x,2*x);
+
+
+// bugs with complex numbers
+Verify((1+I)^0, 1);
+Verify((-I)^0, 1);
+Verify((2*I)^(-10), -1/1024);
+Verify((-I)^(-10), -1);
+Verify((1-I)^(-10), Complex(0,1/32));
+Verify((1-I)^(+10), Complex(0,-32));
+Verify((1+2*I)^(-10), Complex(237/9765625,3116/9765625));
+Verify((1+2*I)^(+10), Complex(237,-3116));
+
+// expansion of negative powers of fractions
+Verify( (-1/2)^(-10), 1024);
+
+Verify( I^(Infinity), Undefined );
+Verify( I^(-Infinity), Undefined );
+Verify( Limit(n,Infinity) n*I^n, Undefined );
+
+Verify(1 <= 1.0, True);
+Verify(-1 <= -1.0, True);
+Verify(0 <= 0.0, True);
+Verify(0.0 <= 0, True);
+Verify(1 >= 1.0, True);
+Verify(-1 >= -1.0, True);
+Verify(0 >= 0.0, True);
+Verify(0.0 >= 0, True);
+
+Verify((1==1) != True, True);
+Verify((a==a) != True, True);
+Verify((1==2) != False, True);
+Verify((a==2) != False, True);
+
+Verify( Integrate(x) x^5000, x^5001/5001 );
+
+Verify( Integrate(x) Sin(x)/2, (-Cos(x))/2 );
+
+Verify( 2^(-10), 1/1024 );
+
+// The following line catches a bug reported where Simplify
+// would go into an infinite loop. It doesn't check the correctness
+// of the returned value as such, but merely the fact that this
+// simplification terminates in the first place. 
+//
+// The problem was caused by a gcd calculation (from the multivariate
+// code) not terminating.
+Verify( Simplify((a^2+b^2)/(2*a)), (a^2+b^2)/(2*a) );
+
+// The following is a classical error: 0*x=0 is only true if
+// x is a number! In this case, it is checked for that the
+// multiplication of 0 with a vector returns a zero vector.
+// This would automatically be caught with type checking.
+// More tests of this ilk are possible: 0*matrix, etcetera.
+Verify(0*{a,b,c},{0,0,0});
+
+// the following broke evaluation (dr)
+Verify(Conjugate({a}),{a});
+
+// not yet fixed (dr)
+Verify(Abs(Undefined),Undefined);
+
+// broke Plot2D() on singular functions with Abs()
+Verify(Undefined<1, False);
+Verify(Undefined>Undefined, False);
+Verify(Undefined>1, False);
+Verify(Undefined >= -4, False);
+Verify(Undefined <= -4, False);
+
+// Jonathan's bug report
+Precision(10);
+NumericEqual(N(Cos(Pi*.5)), 0,GetPrecision());
+
+// Jitse's bug report
+Verify(CForm(4), "4.");
+Verify(CForm(4.), "4.");
+Verify(CForm(0), "0.");
+
+// Discovered that Floor didn't handle new exponent notation
+Verify(Floor(1001.1e-1),100);
+Verify(Floor(10.01e1),100);
+Verify(Floor(100.1),100);
+
+// Bugs discovered by Jonathan:
+Verify(Undefined*0,Undefined);
+// Actually, the following Groebner test is just to check that the program doesn't crash on this,
+// more than on the exact result (which is hopefully correct also ;-) )
+Verify(Groebner({x*(y-1),y*(x-1)}),{x*y-x,x*y-y,y-x,y^2-y});
+
+// Reported by Yannick Versley
+Verify((Integrate(x,a,b)Cos(x)^2) - ((b-Sin((-2)*b)/2)/2-(a-Sin((-2)*a)/2)/2),0);
+Verify(D(t) Integrate(x,a,b) f(x,t),Integrate(x,a,b)Deriv(t)f(x,t));
+
+// This was returning FWatom(Sin(x)) 
+Verify( Factor(Sin(x)), Factor(Sin(x)) );
+
+// should return unevaled
+Verify( BesselJ(0,x), BesselJ(0,x) );
+
+
+// Listify and UnList coredumped when their arguments were invalid
+Verify(Listify(Cos(x)),{Cos,x});
+Verify(UnList({Cos,x}),Cos(x));
+[
+  Local(error);
+  error:="";
+  TrapError(Listify(1.2),error:=GetCoreError());
+  Verify(IsString(error) And error != "");
+
+  error:="";
+  TrapError(UnList(1.2),error:=GetCoreError());
+  Verify(IsString(error) And error != "");
+];
+
+// Reported by Serge: xml tokenizer not general enough
+Verify(XmlExplodeTag("<p/>"),   XmlTag("P",{},"OpenClose"));
+Verify(XmlExplodeTag("<p / >"), XmlTag("P",{},"OpenClose"));
+
+Verify(ToBase(16,30),"1e");
+Verify(FromBase(16,"1e"),30);
+
+// numbers are too small because of wrong precision handling
+Precision(30);
+Verify(0.00000000000000000005421010862 = 0, False);	// 2^(-64)
+Verify(0.00000000000000000005421010862 / 1 = 0, False);
+Verify(0.00000000000000000005421010862 / 2 = 0, False);
+Verify(0.00000000000000000001 = 0, False);
+Verify(0.00000000000000000001 / 2 = 0, False);
+Verify(0.00000000000000000000000000001 = 0, False);
+Verify(0.000000000000000000000000000001 = 0, False);
+Verify((0.0000000000000000000000000000000000000001 = 0), False);
+// I added another one, the code will currently say that 0.0000...00001=0 is True
+// for a sufficient amount of zeroes, regardless of precision. Either that is good
+// or that is bad, but the above tests didn't go far enough. This one makes it
+// more explicit, unless we move over to a 128-bits system ;-)
+Verify((0.0000000000000000000000000000000000000000000000001 = 0), False);
+
+
+// Problem with FloatIsInt and gmp
+Verify(FloatIsInt(3.1415926535e9), False);
+Verify(FloatIsInt(3.1415926535e10), True);
+Verify(FloatIsInt(3.1415926535e20), True);
+Verify(FloatIsInt(0.3e20), True);
+
+/* Regression on bug reports from docs/bugs.txt */
+
+/* Bug #1 */
+/* Can't test: 'Limit(x,0)D(x,2)Sin(x)/x' never terminates */
+
+/* Bug #2 */
+KnownFailure((Limit(x,Infinity) x^n/Ln(x)) = Infinity);
+KnownFailure((Limit(x,0,Right) x^(Ln(a)/(1+Ln(x)))) = a);
+Verify((Limit(x,0) (x+1)^(Ln(a)/x)), a);
+/* Note paren's around bodied operators like Limit, D, Integrate;
+   otherwise it's parsed as Limit (... = ...) */
+
+/* Bug #3 */
+KnownFailure(Gcd(10,3.3) != 3.3 And Gcd(10,3.3) != 1);
+/* I don't know what the answer should be, but buth 1 and 3.3 seem */
+/* certainly wrong. */
+Verify(Gcd(-10, 0), 10);
+Verify(Gcd(0, -10), 10);
+
+/* Bug #4 */
+/* How can we test for this? */
+/* Bug says: at startup, 2^Infinity does not simplify to Infinity */
+
+/* Bug #5 */
+/* How can we test for this? */
+/* Bug says: Limit(n,Infinity) Sqrt(n+1)-Sqrt(n) floods stack */
+/* but 'MaxEvalDepth reached' exits Yacas, even inside TrapError */
+
+/* Bug #6 */
+KnownFailure((D(z) Conjugate(z)) = Undefined);
+
+/* Bug #7 */
+Verify(Im(3+I*Infinity), Infinity); /* resolved */
+Verify(Im(3+I*Undefined), Undefined);
+
+/* Bug #9 */
+Verify((Integrate(x,-1,1) 1/x), 0); /* or maybe Undefined? */
+Verify((Integrate(x,-1,1) 1/x^2), Infinity);
+
+/* Bug #10 */
+Verify(Simplify(x^(-2)/(1-x)^3) != 0);
+/* I don't know what we want to return, but '0' is definitely wrong! */
+
+/* Bug #11 */
+KnownFailure(ArcCos(Cos(beta)) != beta);
+
+/* Bug #12 */
+KnownFailure((Limit(n, Infinity) n^5/2^n) = 0);
+
+/* Bug #13 */
+/* Cannot test; TrigSimpCombine(x^500) floods stack */
+
+/* Bug #14 */
+Verify((Limit(x,Infinity) Zeta(x)), 1);
+// Actually, I changed the Factorial(x) to (x!)
+Verify((Limit(x,Infinity) (x!)), Infinity);
+
+/* Bug #15 */
+Verify(MathPower(0,0.55), 0);
+// MathLog(-1) locks up in gmpnumbers.cpp, will be fixed in scripts
+//FIXME this test should be uncommented eventually
+// Verify(TrapError(MathPower(-1,-0.5), error), error);
+
+/* Bug #16 */
+/* Can't test, bug in build system */
+
+/* Bug #17 */
+Verify(Assoc(x-1, Factors(x^6-1))[2], 1);
+
+/* Bug #18 */
+//Changed, see next line TestYacas(Integrate(x) x^(1/2), 2/3*x^(3/2));
+TestYacas(Integrate(x) x^(1/2), (2/3)*Sqrt(x)^(3));
+
+Verify(a[2]*Sin(x)/:{Sin(_x) <- sin(x)},a[2]*sin(x));
+
+// There was a bug, reported by Sebastian Ferraro, which caused the determinant
+// to return "Undefined" when one of the elements of the diagonal of a matrix
+// was zero. This was due to the numeric determinant algorithm applying 
+// Gaussian elimination, but taking the elements on the diagonal as pivot points.
+Verify(IsZero(Determinant( {{1,-1,0,0},{0,0,-1,1},{1,0,0,1},{0,1,1,0}} )),True);
+
+// The following failed when numerics changed so that 0e-1 was not matched to 0 any more in 
+// a transformation rule defining the less than operator.
+Verify(ExpNum(0),1);
+NumericEqual(ExpNum(0e-1),1.,GetPrecision());
+Verify(500 < 0e-1,False);
+
+// version 1.0.56: Due to MathBitCount returning negative values sometimes, functions depending on 
+// proper functioning failed. MathSqrtFloat failed for instance on N(1/2). It did give the right
+// result for 0.5.
+NumericEqual(N(Sqrt(500000e-6),20),N(Sqrt(0.0000005e6),20),20);
+NumericEqual(N(Sqrt(0.5),20),N(Sqrt(N(1/2)),20),20);
+
+// With the changes in numerics, RoundTo seems to have been broken. This line demonstrates the problem.
+// The last digit is suddenly rounded down (it used to be 4, correctly, and then gets rounded down to 3).
+KnownFailure(RoundTo(RoundTo(N(Cot(2),9),9),N(Cot(2),9),9)=0);
+
+// MathLog used to hang on *all* input
+Verify(MathLog(2)!=0,True);
+
+// Bug that was introduced when going to the new numeric setup where
+// numbers were not converted to strings any more. In the situation
+// -n*10^-m where n and m positive integers, the number got truncated
+// prematurely, resulting in a wrong rounding.
+[
+  Local(n,m,nkeep,lcl);
+  n:=7300 + 12*I;
+  m:=2700 + 100*I;
+  nkeep:=n;
+  n:=m;
+  m:=nkeep - m*Round(nkeep/m);
+  lcl:=Re(N(n/m))+0.5;
+  Verify(MathFloor(lcl),-3);
+];
+
+
+/* Here follow some tests for MathBitCount. These were written while creating
+   the Java version, fixing BitCount in the process.
+ */
+Verify(MathBitCount(3),2);
+Verify(MathBitCount(3.0),2);
+
+Verify(MathBitCount(4),3);
+Verify(MathBitCount(4.0),3);
+
+Verify(MathBitCount(0),0);
+Verify(MathBitCount(0.0),0);
+
+Verify(MathBitCount(0.5),0);
+Verify(MathBitCount(0.25),-1);
+Verify(MathBitCount(0.125),-2);
+Verify(MathBitCount(0.0125),-6);
+
+Verify(MathBitCount(-3),2);
+Verify(MathBitCount(-3.0),2);
+
+Verify(MathBitCount(-4),3);
+Verify(MathBitCount(-4.0),3);
+
+Verify(MathBitCount(-0),0);
+Verify(MathBitCount(-0.0),0);
+
+Verify(MathBitCount(-0.5),0);
+Verify(MathBitCount(-0.25),-1);
+Verify(MathBitCount(-0.125),-2);
+Verify(MathBitCount(-0.0125),-6);
+
+// This one ended in an infinite loop because 1 is an even function, and the indefinite integrator
+// then kept on calling itself because the left and right boundaries were equal to zero.
+Verify(Integrate(x,0,0)1,0);
+
+// This code verifies that if integrating over a zero domain, the result
+// is zero. 
+Verify(Integrate(x,1,1)Sin(Exp(x^2)),0);
+

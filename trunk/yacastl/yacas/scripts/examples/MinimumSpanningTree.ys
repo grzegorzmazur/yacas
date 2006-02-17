@@ -1,0 +1,111 @@
+
+/* Minimum spanning tree algorithm: example of a greedy algorithm.
+ * Given a set of nodes N, and edges E with each edge defined as
+ * {cost,node1,node2} in the list of edges Edges, return a list of
+ * edges such that every node is in the network and the network has
+ * the lowest cost possible.
+ *
+ * It can be proven that a greedy algorithm works in this case: at each
+ * step take the cheapest edge that adds one node to the network.
+ */
+
+
+EdgeCompare(edge1,edge2):= (edge1[1] < edge2[1]);
+
+MinimumSpanningTree(NrNodes_IsPositiveInteger,Edges_IsList) <--
+[
+  Local(CurrentNetwork,Result,Failed);
+  Failed := False;
+
+  /* Sort the edges by cost (cheapest first) */
+  Edges := BubbleSort(Edges,"EdgeCompare"); /* TODO Use Sort if defined */
+
+  /* Consume the first edge, it adds two nodes to the network. */
+  CurrentNetwork := FlatCopy(Tail(Edges[1]));
+  Result := {Edges[1]};
+  Edges := Tail(Edges);
+
+  /* Loop, trying to add every node once to the network */
+  While((Length(CurrentNetwork) < NrNodes) And Failed = False)
+  [
+    Local(EdgeFound,NodeAdded,Traverser);
+     EdgeFound := 0;
+     Traverser:=1;
+
+     /* Loop over all edges, searching for the cheapest edge that adds a node to
+ the
+      * current network.
+      */
+     While(EdgeFound = 0 And Traverser <= Length(Edges))
+     [
+       Local(CurrentEdge);
+
+       /* See if the current edge adds exactly one node to the currently
+cheapest network */
+       CurrentEdge := Edges[Traverser];
+
+       /* If not both nodes are already in the network */
+       if (Not(Contains(CurrentNetwork,CurrentEdge[2]) And
+Contains(CurrentNetwork,CurrentEdge[3])))
+       [
+          /* If the first node is already in the network, this edge adds the
+second */
+         if (Contains(CurrentNetwork,CurrentEdge[2]))
+          [
+            EdgeFound := Traverser;
+            NodeAdded := CurrentEdge[3];
+          ];
+
+          /* If the second node is already in the network, this edge adds the
+first */
+         if (Contains(CurrentNetwork,CurrentEdge[3]))
+          [
+            EdgeFound := Traverser;
+            NodeAdded := CurrentEdge[2];
+          ];
+       ];
+       Traverser ++;
+     ];
+
+     /* If no edge was found, there is no tree connecting all the nodes to the
+network. */
+     if (EdgeFound = 0)
+     [
+       Failed := True;
+       Result := {};
+     ]
+     else
+     [
+       /* Add the cheapest found edge */
+       DestructiveAppend(CurrentNetwork,NodeAdded);
+       DestructiveAppend(Result,Edges[EdgeFound]);
+       DestructiveDelete(Edges, EdgeFound);
+     ];
+  ];
+
+  /* Result contains the list of edges that are the minimum spanning tree of
+this
+   * network plus edges
+   */
+  Result;
+];
+
+TreeCost(Edges_IsList) <-- Sum(MapSingle("Head",Edges));
+
+
+
+/* Check minimum spanning tree algorithm */
+Verify(TreeCost(MinimumSpanningTree(5,
+               {
+                 {10,"Ayal","Diogo"},
+                 {5,"Diogo","Gus"},
+                 {15,"Diogo","Neil"},
+                 {7,"Ayal","Neil"},
+                 {17,"Gus","Edwin"},
+                 {15,"Diogo","Edwin"},
+                 {25,"Neil","Edwin"},
+                 {18,"Ayal","Diogo"}
+               }
+)),37);
+
+

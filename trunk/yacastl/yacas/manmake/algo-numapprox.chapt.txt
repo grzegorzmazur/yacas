@@ -1,0 +1,597 @@
+*REM the section on continued fractions is getting large
+*INCLUDE algo-contfrac.chapt
+
+		Newton's method and its improvements
+
+Newton's method (also called the Newton-Raphson method) of numerical solution of algebraic equations and its generalizations
+can be used to obtain multiple-precision values of several elementary functions.
+
+	    Newton's method
+
+*A Newton's method
+
+The basic formula is widely known: If $f(x)=0$ must be solved, one starts with a value of $x$ that is close to some root and iterates $$x'=x-f(x)*(D(x)f(x))^(-1)$$.
+This formula is based on the approximation of the function $f(x)$ by a tangent line at some point $x$. A Taylor expansion in the neighborhood of the root shows that (for an initial value $x[0]$ sufficiently close to the root) each iteration gives at least twice as many correct digits of the root as the previous one ("quadratic convergence"). Therefore the complexity of this algorithm is proportional to a logarithm of the required precision and to the time it takes to evaluate the function and its derivative. Generalizations of this method require computation of higher derivatives of the function $f(x)$ but successive approximations to the root converge several times faster (the complexity is still logarithmic).
+
+*A Newton's method!initial value
+
+Newton's method sometimes suffers from a sensitivity to the initial guess.
+If the initial value $x[0]$ is not chosen sufficiently close to the root, the iterations may converge very slowly or not converge at all. To remedy this, one can combine Newton's iteration with simple bisection. Once the root is bracketed inside an interval ($a$, $b$), one checks whether $(a+b)/2$ is a better approximation for the root than that obtained from Newton's iteration. This guarantees at least linear convergence in the worst case.
+
+*A Newton's method!cubic convergence
+
+For some equations $f(x)=0$, Newton's method converges faster than quadratically.
+For example, solving $Sin(x)=0$ in the neighborhood of $x=3.14159$ gives "cubic" convergence, i.e. the number of correct digits is tripled at each step.
+This happens because $Sin(x)$ near its root $x=Pi$ has a vanishing second derivative and thus the function is particularly well approximated by a straight line.
+
+	    Halley's method
+
+*A Halley's method
+
+<i>Halley's method</i> is an improvement over Newton's method that makes each equation well approximated by a straight line near the root.
+Edmund Halley computed fractional powers, $x=a^(1/n)$, by the iteration
+$$ x'=x*(n*(a+x^n)+(a-x^n))/(n*(a+x^n)-(a-x^n)) $$.
+This formula is equivalent to Newton's method applied to the equation
+$x^(n-q) = a*x^(-q)$ with $q=(n-1)/2$. This iteration has a cubic convergence rate. This is the fastest method to compute $n$-th roots ($n>=3$) with multiple precision. Iterations with higher order of convergence, for example, the method with quintic convergence rate
+$$ x' = x* ( (n-1)/(n+1)*(2*n-1)/(2*n+1) *x^(2*n) + 2*(2*n-1)/(n+1)*x^n*a + a^2) / (x^(2*n)+2*(2*n-1)/(n+1)*x^n*a+(n-1)/(n+1)*(2*n-1)/(2*n+1)*a^2) $$,
+require more arithmetic operations per step and are in fact less efficient at high precision.
+
+Halley's method can be generalized to any function $f(x)$. A cubically convergent iteration is always obtained if we replace the equation $f(x)=0$ by an equivalent equation
+$$ g(x):=f(x)/Sqrt(Abs(D(x)f(x))) = 0 $$
+and use the standard Newton's method on it.
+Here the function $g(x)$ is chosen so that its second derivative vanishes ($(Deriv(x,2)g(x))=0$) at the root of the equation $f(x)=0$, independently of where this root is.
+For example, the equation $Exp(x)=a$ is transformed into $g(x) := Exp(x/2)-a*Exp(-x/2)=0$.
+(There is no unique choice of the function $g(x)$ and sometimes another choice will make the iteration more quickly computable.)
+
+*A Halley's method!explicit formula
+
+The Halley iteration for the equation $f(x)=0$ can be written as
+$$ x'=x-(2*f(x)*D(x)f(x))/(2*(D(x)f(x))^2-f(x)*Deriv(x,2)f(x)) $$.
+
+Halley's iteration, despite its faster convergence rate, may be more cumbersome to evaluate than Newton's iteration and so it may not provide a more efficient numerical method for a given function.
+Only in some special cases is Halley's iteration just as simple to compute as Newton's iteration.
+
+Halley's method is sometimes less sensitive to the choice of the initial point $x[0]$.
+An extreme example of sensitivity to the initial point is the equation $x^(-2)= 12$ for which Newton's iteration $x'=3/2*x-6*x^3$ converges to the root only from initial points $0<x[0] <0.5$ and wildly diverges otherwise, while Halley's iteration converges to the root from any $x[0]>0$.
+
+It is at any rate not true that Halley's method always converges better than Newton's method. For instance, it diverges on the equation $2*Cos(x)=x$ unless started at $x[0]$ within the interval ($-1/6*Pi$,$7/6*Pi$). Another example is the equation $Ln(x)=a$. This equation allows to compute $x=Exp(a)$ if a fast method for computing $Ln(x)$ is available (e.g. the AGM-based method). For this equation, Newton's iteration
+$$ x' = x*(1+a-Ln(x)) $$
+converges for any $0<x<Exp(a+1)$, while Halley's iteration
+converges only if $Exp(a-2)<x<Exp(a+2)$.
+
+*A Halley's method!when to use
+
+When it converges, Halley's iteration can still converge very slowly for certain functions $f(x)$, for example, for $f(x)=x^n-a$ if $n^n>a$. For such functions that have very large and rapidly changing derivatives, no general method can converge faster than linearly. In other words, a simple bisection will generally do just as well as any sophisticated iteration, until the root is approximated very precisely.
+Halley's iteration combined with bisection seems to be a good choice for such problems.
+
+	    When to use Halley's method
+
+Despite its faster convergence, Halley's iteration frequently gives no advantage over Newton's method.
+To obtain $P$ digits of the result, we need about $Ln(P)/Ln(2)$ iterations of a quadratically convergent method and about $Ln(P)/Ln(3)$ iterations of a cubically convergent method.
+So the cubically convergent iteration is faster only if the time taken by cubic one iteration is less than about $Ln(3)/Ln(2)<=>1.6$ of the time of one quadratic iteration.
+
+	    Higher-order schemes
+
+*A Newton's method!higher-order schemes
+
+Sometimes it is easy to generalize Newton's iteration to higher-order schemes.
+There are general formulae such as Shroeder's and Householder's iterations.
+We shall give some examples where the construction is very straightforward.
+In all examples $x$ is the initial approximation and the next approximation is obtained by truncating the given series.
+
+*	1. Inverse $1/a$.
+Set $y=1-a*x$, then
+$$ 1/a = x/(1-y) = x*(1+y+y^2+...) $$.
+*	1. Square root $Sqrt(a)$.
+Set $y=1-a*x^2$, then
+$$ Sqrt(a) = Sqrt(1-y)/x = 1/x*(1-1/2*y-1/8*y^2-...) $$.
+*	1. Inverse square root $1/Sqrt(a)$.
+Set $y=1-a*x^2$, then
+$$ 1/Sqrt(a) = x/Sqrt(1-y) = x*(1+1/2*y+3/8*y^2+...) $$.
+*	1. $n$-th root $a^(1/n)$.
+Set $y=1-a*x^n$, then
+$$ a^(1/n) = (1-y)^(1/n)/x = 1/x*(1-1/n*y-(n-1)/(2*n^2)*y^2-...) $$.
+*	1. Exponential $Exp(a)$.
+Set $y=a-Ln(x)$, then
+$$ Exp(a) = x*Exp(y) = x*(1+y+y^2/2! + y^3/3! +...) $$.
+*	1. Logarithm $Ln(a)$.
+Set $y=1-a*Exp(-x)$, then
+$$ Ln(a) = x+Ln(1-y) = x-y-y^2/2-y^3/3-... $$.
+
+
+In the above examples, $y$ is a small quantity and the series represents corrections to the initial value $x$, therefore the order of convergence is equal to the first discarded order of $y$ in the series.
+
+These simple constructions are possible because the functions satisfy simple identities, such as $Exp(a+b)=Exp(a)*Exp(b)$ or $Sqrt(a*b)=Sqrt(a)*Sqrt(b)$.
+For other functions the formulae quickly become very complicated and unsuitable for practical computations.
+
+	    Precision control
+
+*A Newton's method!precision control
+
+
+Newton's method and its generalizations are particularly convenient for multiple precision calculations because of their insensitivity to accumulated errors:
+if at some iteration $x[k]$ is found with a small error, the error will be corrected at the next iteration.
+Therefore it is not necessary to compute all iterations with the full required precision; each iteration needs to be performed at the precision of the root expected from that iteration (plus a few more digits to allow for round-off error).
+For example, if we know that the initial approximation is accurate to 3 digits, then (assuming quadratic convergence)
+*FOOT This disregards the possibility that the convergence might be slightly slower. For example, when the precision at one iteration is $n$ digits, it might be $2*n-10$ digits at the next iteration. In these (fringe) cases, the initial approximation must be already precise enough (e.g. to at least 10 digits in this example).
+it is enough to perform the first iteration to 6 digits, the second iteration to 12 digits and so on. In this way, multiple-precision calculations are enormously speeded up.
+
+For practical evaluation, iterations must be supplemented with "quality control".
+For example, if $x0$ and $x1$ are two consecutive approximations that are
+already very close, we can quickly compute the achieved (relative) precision by
+finding the number of leading zeros in the number $$Abs(x0-x1)/Max(x0,x1)$$.
+This
+is easily done using the bit count function. After performing a small number of
+initial iterations at low precision, we can make sure that $x1$ has at least a
+certain number of correct digits of the root. Then we know which precision to
+use for the next iteration (e.g. triple precision if we are using a cubically
+convergent scheme). It is important to perform each iteration at the precision
+of the root which it will give and not at a higher precision; this saves a
+great deal of time since all calculations are very slow at high precision.
+
+	    Fine-tuning the working precision
+
+To reduce the computation time, it is important to write the iteration formula with explicit separation of higher-order quantities.
+For example, Newton's iteration for the inverse square root $1/Sqrt(a)$ can be written either as
+$$ x' = x*(3-a*x^2)/2 $$
+or equivalently as
+$$ x' = x + x*(1-a*x^2)/2 $$.
+At first sight the first formula seems simpler because it saves one long addition.
+However, the second formula can be computed significantly faster than the first one, if we are willing to exercise a somewhat more fine-grained control of the working precision.
+
+Suppose $x$ is an approximation that is correct to $P$ digits; then we expect the quantity $x'$ to be correct to $2*P$ digits.
+Therefore we should perform calculations in the first formula with $2*P$ digits;
+this means three long multiplications, $3*M(2*P)$.
+Now consider the calculation in the second formula.
+First, the quantity $y:=1-a*x^2$ is computed using two $2*P$-digit multiplications.
+*FOOT In fact, both multiplications are a little shorter, since $x$ is a number with only $P$ correct digits; we can compute $a*x$ and then $a*x^2$ as products of a $2*P$-digit number and a $P$-digit number, with a $2*P$-digit result. We ignore this small difference.
+Now, the number $y$ is small and has only $P$ nonzero digits.
+Therefore the third multiplication $x*y$ costs only $M(P)$, not $M(2*P)$.
+This is a significant time savings, especially with slower multiplication.
+The total cost is now $2*M(2*P)+M(P)$.
+
+The advantage is even greater with higher-order methods.
+For example, a fourth-order iteration for the inverse square root can be written as
+$$ x' = x + 1/2*x*y + 3/8*x*y^2 + 5/16*x*y^3 $$,
+where $y := 1-a*x^2$.
+Suppose $x$ is an approximation that is correct to $P$ digits; we expect $4*P$ correct digits in $x'$.
+We need two long multiplications in precision $4*P$ to compute $y$, then $M(3*P)$ to compute $x*y$, $M(2*P)$ to compute $x*y^2$, and $M(P)$ to compute $x*y^3$.
+The total cost is $2*M(4*P)+M(3*P)+M(2*P)+M(P)$.
+
+*A Newton's method!asymptotic cost
+
+The asymptotic cost of finding the root $x$ of the equation $f(x)=0$ with $P$ digits of precision is usually the same as the cost of computing $f(x)$ [Brent 1975].
+The main argument can be summarized by the following simple example.
+To get the result to $P$ digits, we need $O(Ln(P))$ Newton's iterations.
+At each iteration we shall have to compute the function $f(x)$ to a certain number of digits.
+Suppose that we start with one correct digit and that each iteration costs us $c*M(2*P)$ operations where $c$ is a given constant, while the number of correct digits grows from $P$ to $2*P$.
+Then the total cost of $k$ iterations is
+$$c*M(2)+c*M(4)+c*M(8)+...+c*M(2^k)$$.
+If the function $M(P)$ grows linearly with $P=2^k$, then we can estimate this sum roughly as $2*c*M(P)$; if $M(P)=O(P^2)$ then the result is about $4/3*c*M(P)$.
+It is easy to see that when $M(P)$ is some power of $P$ that grows faster than linear, the sum is not larger than a small multiple of $M(P)$.
+
+
+Thus, if we have a fast method of computing, say, $ArcTan(x)$, then we immediately obtain a method of computing $Tan(x)$ which is asymptotically as fast (up to a constant).
+
+
+	    Choosing the optimal order
+
+*A Newton's method!optimal order
+
+Suppose we need to compute a function by Newton's method to precision $P$.
+We can sometimes find iterations of any order of convergence.
+For example, a $k$-th order iteration for the reciprocal $1/a$ is
+$$ x' = x+x*y+x*y^2+...+x*y^(k-1) $$,
+where $y:=1-a*x$.
+The cost of one iteration with final precision $P$ is
+$$ C(k,P) := M(P/k)+M((2*P)/k)+M((3*P)/k)+...+c*M(P) $$.
+(Here the constant $c:=1$ is introduced for later convenience.
+It denotes the number of multiplications needed to compute $y$.)
+
+Increasing the order by $1$ costs us comparatively little, and
+we may change the order $k$ at any time.
+Is there a particular order $k$ that gives the smallest computational cost and should be used for all iterations, or the order needs to be adjusted during the computation?
+A natural question is to find the optimal computational strategy.
+
+It is difficult to fully analyze this question, but it seems that choosing a particular order $k$ for all iterations is close to the optimal strategy.
+
+A general "strategy" is a set of orders $S(P,P[0])$=($k[1]$, $k[2]$, ..., $k[n]$) to be chosen at the first, second, ..., $n$-th iteration, given the initial precision $P[0]$ and the required final precision $P$.
+At each iteration, the precision will be multiplied by the factor $k[i]$.
+The optimal strategy $S(P,P[0])$ is a certain function of $P[0]$ and $P$ such that the required precision is reached, i.e.
+$$ P[0]*k[1]*...*k[n] = P $$,
+and the cost
+$$ C(k[1],P[0]*k[1])+C(k[2],P[0]*k[1]*k[2])+ ...+C(k[n],P) $$
+is minimized.
+
+If we assume that the cost of multiplication $M(P)$ is proportional to some power of $P$, for instance $M(P)=P^mu$, then
+the cost of each iteration and the total cost are homogeneous functions of $P$ and $P[0]$.
+Therefore the optimal strategy is a function only of the ratio $P/P[0]$.
+We can multiply both $P[0]$ and $P$ by a constant factor and the optimal strategy will remain the same.
+We can denote the optimal strategy $S(P/P[0])$.
+
+We can check whether it is better to use several iterations at smaller orders instead of one iteration at a large order.
+Suppose that  $M(P)=P^mu$, the initial precision is 1 digit, and the final precision $P=k^n$.
+We can use either $n$ iterations of the order $k$ or 1 iteration of the order $P$.
+The cost of one iteration of order $P$ at target precision $P$ is
+$ C(P,P)$, whereas the total cost of $n$ iterations of order $k$ is
+$$ C(k,k)+C(k,k^2)+...+C(k,k^n) $$.
+With $C(k,P)$ defined above, we can take approximately
+$$ C(k,p) <=> p^mu*(c-1+k/(mu+1)) $$.
+Then the cost of one $P$-th order iteration is
+$$ P^mu*(c-1+P/(mu+1)) $$,
+while the cost of $n$ iterations of the order $k$ is clearly smaller since $k<P$,
+$$ P^mu*(c-1+k/(mu+1))*k^mu/(k^mu-1) $$.
+At fixed $P$, the best value of $k$ is found by minimizing this function.
+For $c=1$ (reciprocal) we find $k=(1+mu)^(1/mu)$ which is never above $2$.
+This suggests that $k=2$ is the best value for finding the reciprocal $1/a$.
+However, larger values of $c$ can give larger values of $k$.
+The  equation for the optimal value of $k$ is
+$$ k^(mu+1)/(mu+1)-k=mu*(c-1) $$.
+
+So far we have only considered strategies that use the same order $k$ for all iterations, and we have not yet shown that such strategies are the best ones.
+We now give a plausible argument (not quite a rigorous proof) to justify this claim.
+
+Consider the optimal strategy $S(P^2)$ for the initial precision $1$ and the final precision $P^2$, when $P$ is very large.
+Since it is better to use several iterations at lower orders, we may assume that the strategy $S(P^2)$ contains many iterations and that one of these iterations reaches precision $P$.
+Then the strategy $S(P^2)$ is equivalent to a sequence of the two optimal strategies to go from $1$ to $P$ and from $P$ to $P^2$.
+However, both strategies must be the same because the optimal strategy only depends on the ratio of precisions.
+Therefore, the optimal strategy $S(P^2)$ is a sequence of two identical strategies ($S(P)$, $S(P)$).
+
+Suppose that $k[1]$ is the first element of $S(P)$.
+The optimal strategy to go from precision $k[1]$ to precision $P*k[1]$ is also $S(P)$.
+Therefore the second element of $S(P)$ is also equal to $k[1]$, and by extension
+all elements of $S(P)$ are the same.
+
+A similar consideration gives the optimal strategy for other iterations that compute inverses of analytic functions, such as Newton's iteration for the inverse square root or for higher roots.
+The difference is that the value of $c$ should be chosen as the equivalent number of multiplications needed to compute the function.
+For instance, $c=1$ for division and $c=2$ for the inverse square root iteration.
+
+The conclusion is that in each case we should compute the optimal order $k$ in advance and use this order for all iterations.
+
+
+
+
+		Fast evaluation of Taylor series
+
+*A Taylor series
+
+Taylor series for analytic functions  is a common method of evaluation.
+
+	    Method 1: simple summation
+
+If we do not know the required number of terms in advance, we cannot do any better than just evaluate each term and check if it is already small enough.
+Take, for example, the series for $Exp(x)$.
+To straightforwardly evaluate
+$$Exp(x)<=>Sum(k,0,N-1,x^k/k!)$$
+with $P$ decimal digits of precision and $x<2$, one would need about $N<=>P*Ln(10)/Ln(P)$ terms of the series.
+
+Divisions by large integers $k!$ and separate evaluations of powers $x^k$ are avoided if we store the previous term.
+The next term can be obtained  by a short division of the previous term by $k$ and a long multiplication by $x$.
+Then we only need $O(N)$ long multiplications to evaluate the series.
+Usually the required number of terms $N=O(P)$, so the total cost is $O(P*M(P))$.
+
+There is no accumulation of round-off error in this method if $x$ is small enough (in the case of $Exp(x)$, a sufficient condition is $Abs(x)<1/2$).
+To see this, suppose that $x$ is known to $P$ digits (with relative error $10^(-P)$).
+Since $Abs(x)<1/2$, the $n$-th term $x^n/n! < 4^(-n)$ (this is a rough estimate but it is enough).
+Since each multiplication by $x$ results in adding 1 significant bit of relative round-off error, the relative error of $x^n/n!$ is about $2^n$ times the relative error of $x$, i.e. $2^n*10^(-P)$.
+So the absolute round-off error of $x^n/n!$ is not larger than
+$$ Delta<4^(-n)*2^n*10^(-P)=2^(-n)*10^(-P) $$.
+Therefore all terms with $n>1$ contribute less than $10^(-P)$ of absolute round-off error, i.e. less than was originally present in $x$.
+
+In practice, one could truncate the precision of $x^n/n!$ as $n$ grows, leaving a few guard bits each time to keep the round-off error negligibly small and yet to gain some computation speed.
+This however does not change the asymptotic complexity of the method---it remains $O(P*M(P))$.
+
+However, if $x$ is a small rational number, then the multiplication by $x$ is short and takes $O(P)$ operations.
+In that case, the total complexity of the method is $O(P^2)$ which is always faster than $O(P*M(P))$.
+
+	    Method 2: Horner's scheme
+
+*A Taylor series!by Horner's scheme
+*A Horner's scheme
+
+Horner's scheme is widely known and consists of the following rearrangement,
+$$ Sum(k,0,N-1,a[k]*x^k) = a[0]+x*(a[1]+x*(a[2]+x*( ... + x*a[N-1]))) $$
+The calculation is started from the last coefficient $a[N-1]$ toward the first.
+If $x$ is small, then the round-off error generated during the summation is constantly being multiplied by a small number $x$ and thus is always insignificant.
+Even if $x$ is not small or if the coefficients of the series are not small, Horner's scheme usually results in a smaller round-off error than the simple summation.
+
+If the coefficients $a[k]$ are related by a simple ratio, then Horner's scheme may be modified to simplify the calculations.
+For example, the Horner scheme for the Taylor series for $Exp(x)$ may be written as
+$$ Sum(k,0,N-1,x^k/k!) = 1+x*(1+x/2*(1+x/3*(...+x/(N-1)))) $$.
+This avoids computing the factorial function.
+
+Similarly to the simple summation method, the working precision for Horner's scheme may be adjusted to reduce the computation time: for example, $x*a[N-1]$ needs to be computed with just a few significant digits if $x$ is small.
+This does not change the asymptotic complexity of the method: it requires $O(N)=O(P)$ long multiplications by $x$, so for general real $x$ the complexity is again $O(P*M(P))$.
+However, if $x$ is a small rational number, then the multiplication by $x$ is short and takes $O(P)$ operations.
+In that case, the total complexity of the method is $O(P^2)$.
+
+	    Method 3: "rectangular" or "baby step/giant step"
+
+*A Taylor series!"rectangular" method
+*A Taylor series!"baby step/giant step" method
+
+We can organize the calculation much more efficiently if we are able to estimate the necessary number of terms and to afford some storage (see [Smith 1989]).
+
+The "rectangular" algorithm uses $2*Sqrt(N)$ long multiplications (assuming that the coefficients of the series are short rational numbers) and $Sqrt(N)$ units of storage.
+For high-precision floating-point $x$, this method provides a significant advantage over Horner's scheme.
+
+Suppose we need to evaluate $Sum(k,0,N, a[k]*x^k)$ and we know the number of terms $N$ in advance.
+Suppose also that the coefficients $a[k]$ are rational numbers with small numerators and denominators, so a  multiplication $a[k]*x$ is not a long multiplication (usually, either $a[k]$ or the ratio $a[k]$/$a[k-1]$ is a short rational number). Then we can organize the calculation in a rectangular array with $c$ columns and $r$ rows like this,
+$$ a[0]+a[r]*x^r+...+a[(c-1)*r]*x^((c-1)*r) $$+
+$$ x*(a[1]+a[r+1]*x^r+...+a[(c-1)*r+1]*x^((c-1)*r)) $$+
+$$ ... $$+
+$$ x^(r-1)*(a[r-1]+a[2*r+1]*x^r+...) $$.
+To evaluate this rectangle, we first compute $x^r$ (which, if done by the fast
+binary algorithm, requires $O(Ln(r))$ long multiplications). Then we compute
+the $c-1$ successive powers of $x^r$, namely
+$x^(2*r)$, $x^(3*r)$, ..., $x^((c-1)*r)$ in $c-1$ long
+multiplications. The partial sums in the $r$ rows are evaluated column by column as more powers of $x^r$ become available. This requires storage of $r$ intermediate results but no more long multiplications by $x$. If a simple formula relating the coefficients $a[k]$ and $a[k-1]$ is available, then a whole column can be computed and added to the accumulated row values using only short operations, e.g. $a[r+1]*x^r$ can be computed from $a[r]*x^r$ (note that each column contains some consecutive terms of the series). Otherwise, we would need to multiply each coefficient $a[k]$ separately by the power of $x$; if the coefficients $a[k]$  are short numbers, this is also a short operation. After this, we need $r-1$ more
+multiplications for the vertical summation of rows (using the Horner scheme). We have potentially saved time because we do not
+need to evaluate powers such as $x^(r+1)$ separately, so we do not have to multiply $x$ by itself quite so many
+times.
+
+The total required number of long multiplications is $r+c+Ln(r)-2$. The minimum number of multiplications, given that $r*c>=N$, is around  $2*Sqrt(N)$ at $r<=>Sqrt(N)-1/2$.
+Therefore, by arranging the Taylor series in a rectangle with sides $r$ and $c$,
+we obtain an algorithm which costs $O(Sqrt(N))$ instead of $O(N)$ long multiplications and requires $Sqrt(N)$ units of storage.
+
+One might wonder if we should not try to arrange the Taylor series in a cube or another multidimensional matrix instead of a rectangle. However, calculations show that this does not save time: the optimal arrangement is the two-dimensional rectangle.
+
+The rectangular method saves the number of long multiplications by $x$ but increases the number of short multiplications and additions.
+If $x$ is a small integer or a small rational number, multiplications by $x$ are fast and it does not make sense to use the rectangular method.
+Direct evaluation schemes are more efficient in that case.
+
+	    Truncating the working precision
+
+At the $k$-th step of the rectangular method, we are evaluating the $k$-th column with terms containing $x^(r*k)$.
+Since a power series in $x$ is normally used at small $x$, the number $x^(r*k)$ is typically much smaller than $1$.
+This number is to be multiplied by some $a[i]$ and added to the previously computed part of each row, which is not small.
+Therefore we do not need all $P$ floating-point digits of the number $x^(r*k)$,
+and the precision with which we obtain it can be gradually decreased from column to column.
+For example, if $x^r < 10^(-M)$, then we only need $P-k*M$ decimal digits of $x^(r*k)$ when evaluating the $k$-th column.
+(This assumes that the coefficients $a[i]$ do not grow, which is the case for most of the practically useful series.)
+
+Reducing the working precision saves some computation time.
+(We also need to estimate $M$ but this can usually be done quickly by bit counting.)
+Instead of $O(Sqrt(P))$ long multiplications at precision $P$, we now need one long multiplication at precision $P$, another long multiplication at precision $P-M$, and so on.
+This technique will not change the asymptotic complexity which remains $O(Sqrt(P)*M(P))$, but it will reduce the constant factor in front of the $O$.
+
+Like the previous two methods, there is no accumulated round-off error if $x$ is small.
+
+	    Which method to use
+
+There are two cases: first, the argument $x$ is a small integer or rational number with very few digits and the result needs to be found as a floating-point number with $P$ digits;
+second, the argument $x$ itself is a floating-point number with $P$ digits.
+
+In the first case, it is better to use either Horner's scheme (for small $P$, slow multiplication) or the binary splitting technique (for large $P$, fast multiplication).
+The rectangular method is actually <i>slower</i> than Horner's scheme if $x$ and the coefficients $a[k]$ are small rational numbers.
+In the second case (when $x$ is a floating-point number), it is better to use the "rectangular" algorithm.
+
+In both cases we need to know the number of terms in advance, as we will have to repeat the whole calculation if a few more terms are needed.
+The simple summation method rarely gives an advantage over Horner's scheme, because it is almost always the case that one can easily compute the number of terms required for any target precision.
+
+Note that if the argument $x$ is not small, round-off error will become significant and needs to be considered separately for a given series.
+
+	    Speed-up for some functions
+
+*A Taylor series!$O(N^(1/3))$ method
+
+An additional speed-up is possible if the function allows a transformation that reduces $x$ and makes the Taylor series converge faster.
+For example, $Ln(x)=2*Ln(Sqrt(x))$, $Cos(2*x)=2*Cos(x)^2-1$ (bisection), and $Sin(3*x)=3*Sin(x)-4*Sin(x)^3$ (trisection) are such transformations.
+It may be worthwhile to perform a number of such transformations before evaluating the Taylor series, if the time saved by its quicker convergence is more than the time needed to perform the transformations.
+The optimal number of transformations can be estimated.
+Using this technique in principle reduces the cost of Taylor series from $O(Sqrt(N))$ to $O(N^(1/3))$ long multiplications. However, additional round-off error may be introduced by this procedure for some $x$.
+
+For example, consider the Taylor series for $Sin(x)$,
+$$ Sin(x) <=>Sum(k,0,N-1,(-1)^k*(x)^(2*k+1)/(2*k+1)!) $$.
+It is sufficient to be able to evaluate $Sin(x)$ for $0<x<Pi/2$.
+Suppose we perform $l$ steps of the trisection and then use the Taylor series with the rectangular method.
+Each step of the trisection needs two long multiplications.
+The value of $x$ after $l$ trisection steps becomes much smaller, $x'=x*3^(-l)$.
+For this $x'$, the required number of terms in the Taylor series for $P$ decimal digits of precision is
+$$ N <=> (P*Ln(10))/(2*(Ln(P)-Ln(x')))-1 $$.
+The number of long multiplications in the rectangular method is $2*Sqrt(N)$.
+The total number of long multiplications, as a function of $l$, has its minimum at
+$$ l <=> (32*Ln(10)/Ln(3)*P)^(1/3)-(Ln(P)-Ln(x))/Ln(3) $$,
+where it has a value roughly proportional to $P^(1/3)$.
+Therefore we shall minimize the total number of long multiplications if we first perform $l$ steps of trisection and then use the rectangular method to compute  $N$ terms of the Taylor series.
+
+		Using asymptotic series for calculations
+
+*A asymptotic series
+
+Several important analytic functions have asymptotic series expansions.
+For example, the complementary error function $Erfc(x)$ and Euler's Gamma function $Gamma(x)$ have the following asymptotic expansions at large (positive) $x$:
+
+$$ Erfc(x) = e^(-x^2)/(x*Sqrt(Pi))*(1-1/(2*x^2) + ... + (2*n-1)!! /(-2*x^2)^n+...) $$,
+
+$$ Ln(Gamma(x)) = (x-1/2)*Ln(x)-x+Ln(2*Pi)/2 $$
+$$ + Sum(n,1,Infinity, B[2*n]/(2*n*(2*n-1)*x^(2*n-1))) $$
+(here $B[k]$ are Bernoulli numbers).
+
+The above series expansions are asymptotic in the following sense:
+if we truncate the series and then take the limit of very large $x$,
+then the difference between the two sides of the equation goes to zero.
+
+It is important that the series be first truncated and then the limit of large $x$ be taken.
+Usually, an asymptotic series, if taken as an infinite series,
+does not actually converge for any finite $x$.
+This can be seen in the examples above.
+For instance, in the asymptotic series for $Erfc(x)$ the $n$-th term has $(2*n-1)!!$ in the numerator which grows faster than the $n$-th power of any number.
+The terms of the series decrease at first but then eventually start to grow,
+even if we select a large value of $x$.
+
+The way to use an
+asymptotic series for a numerical calculation is to truncate the series
+<i>well before</i> the terms start to grow.
+
+Error estimates of the asymptotic series are sometimes difficult, but the rule of thumb seems to be that the error of the
+approximation is usually not greater than the first discarded term of the series.
+This can be understood intuitively as follows.
+Suppose we truncate the asymptotic series at a point where the terms still decrease, safely before they start to grow.
+For example, let the terms around the 100-th term be $A[100]$, $A[101]$, $A[102]$, ...,
+each of these numbers being significantly smaller than the previous one,
+and suppose we retain $A[100]$ but drop the terms after it.
+Then our approximation would have been a lot better if we retained $A[101]$ as well.
+(This step of the argument is really an assumption about the behavior of the series; it seems that this assumption is correct in many practically important cases.)
+Therefore the error of the approximation is approximately equal to $A[101]$.
+
+
+The inherent limitation of the method of asymptotic series is that for any given
+$x$, there will be a certain place in the series where the term has the minimum
+absolute value (after that, the series is unusable), and the error of the
+approximation cannot be smaller than that term.
+
+*A error function $Erf(x)$!by asymptotic series 
+*A asymptotic series!estimate of precision
+
+For example, take the above asymptotic series for $Erfc(x)$.
+The logarithm of the absolute value of the $n$-th term can be estimated using Stirling's formula for the factorial as
+$$ Ln((2*n-1)!! /(2*x^2)^n) <=> n*(Ln(n)-1-2*Ln(x)) $$.
+This function of $n$ has its minimum at $n=x^2$ where it is equal to $-x^2$.
+Therefore the best we can do with this series is to truncate it before this term.
+The resulting approximation to $Erfc(x)$ will have relative precision of order $Exp(-x^2)$.
+Suppose that $x$ is large and we need to compute $Erfc(x)$ with $P$ decimal digits of floating point.
+Then it follows that we can use the asymptotic series only if $x>Sqrt(P*Ln(10))$.
+
+We find that for a given finite $x$, no matter how large, there is a maximum
+precision that can be achieved with the asymptotic series; if we need more
+precision, we have to use a different method.
+
+However, sometimes the function we are evaluating allows identity transformations that relate $f(x)$ to $f(y)$ with $y>x$.
+For example, the Gamma function satisfies $x*Gamma(x)=Gamma(x+1)$.
+In this case we can transform the function so that we would need to
+evaluate it at  large enough $x$ for the asymptotic series to give us
+enough precision.
+
+		The AGM sequence algorithms
+
+*A AGM sequence
+
+Several algorithms are based on the arithmetic-geometric mean (AGM)
+sequence. If one takes two numbers $a$, $b$ and computes their arithmetic
+mean $(a+b)/2$ and their geometric mean $Sqrt(a*b)$, then one finds that the two means
+are generally much closer to each other than the original numbers. Repeating
+this process creates a rapidly converging sequence of pairs.
+
+More formally, one can define the function of two
+arguments $AGM(x,y)$ as the limit of the sequence $a[k]$ where
+$a[k+1]=1/2*(a[k]+b[k])$, $b[k+1]=Sqrt(a[k]*b[k])$, and the initial values
+are $a[0]=x$, $b[0]=y$. (The limit of the sequence $b[k]$ is the same.)
+This function is obviously linear, $AGM(c*x, c*y)=c*AGM(x,y)$, so in
+principle it is enough to compute $AGM(1,x)$ or arbitrarily select $c$ for convenience.
+
+*A AGM sequence!integral representation
+
+Gauss and Legendre knew that
+the limit of the AGM sequence is related to the complete elliptic integral,
+$$ Pi/2*1/AGM(a,Sqrt(a^2-b^2)) = Integrate(x,0,Pi/2)1/Sqrt(a^2-b^2*Sin(x)^2) $$.
+(Here $0<b<a$.) This integral can be rearranged to provide some other useful functions. For
+example, with suitable parameters $a$ and $b$, this integral is equal to
+$Pi$.
+Thus, one obtains a fast method of computing $Pi$ (the Brent-Salamin method).
+
+The AGM sequence is also defined for complex values $a$, $b$.
+One needs to take a square root $Sqrt(a*b)$, which requires a branch cut to be well-defined.
+Selecting the natural cut along the negative real semiaxis ($Re(x)<0$, $Im(x)=0$), we obtain an AGM sequence that converges for any initial values $x$, $y$ with positive real part.
+
+*A AGM sequence!convergence rate
+
+Let us estimate the convergence rate of the AGM sequence starting from $x$, $y$, following the paper [Brent 1975]. Clearly the worst case is when
+the numbers $x$ and $y$ are very different (one is much larger than another). In this case
+the numbers $a[k]$, $b[k]$ become approximately equal after about
+$k=1/Ln(2)*Ln(Abs(Ln(x/y)))$ iterations (note: Brent's paper online mistypes
+this as $1/Ln(2)*Abs(Ln(x/y))$).
+This is easy to see: if $x$ is much larger than $y$, then at each step the ratio $r:=x/y$ is transformed into $r'=1/2*Sqrt(r)$.
+When the two numbers become roughly equal to each other, one needs about $Ln(n)/Ln(2)$ more
+iterations to make the first $n$ (decimal) digits of $a[k]$ and $b[k]$
+coincide, because the relative error $epsilon=1-b/a$ decays approximately as
+$epsilon[k]<=>1/8*Exp(-2^k)$.
+
+Unlike Newton's iteration, the AGM sequence does not correct errors, so all numbers need to be computed with full precision.
+Actually, slightly more precision is needed to compensate for accumulated round-off error.
+Brent (in [Brent 1975]) says that $O(Ln(Ln(n)))$ bits of accuracy are lost to round-off error if there are total of $n$ iterations.
+
+The AGM sequence can be used for fast computations of $Pi$, $Ln(x)$ and $ArcTan(x)$.
+However, currently the limitations of Yacas internal math make these methods less efficient than simpler methods based on Taylor series and Newton iterations.
+
+		The binary splitting method
+
+*A binary splitting
+
+The method of binary splitting is well explained in [Haible <i>et al.</i> 1998].
+Some examples are also given in [Gourdon <i>et al.</i> 2001].
+This method applies to power series of rational numbers and to hypergeometric series.
+Most series for transcendental functions belong to this category.
+
+If we need to take $O(P)$ terms of the series to obtain $P$ digits of precision, then ordinary methods would require $O(P^2)$ arithmetic operations.
+(Each term needs $O(P)$ operations because all coefficients are rational numbers with $O(P)$ digits and we need to perform a few short multiplications or divisions.)
+The binary splitting method requires $O(M(P*Ln(P))*Ln(P))$ operations instead of the $O(P^2)$ operations.
+In other words, we need to perform long multiplications of integers of size $O(P*Ln(P))$ digits, but we need only $O(Ln(P))$ such multiplications.
+The binary splitting method performs better than the straightforward summation method if the cost of multiplication is lower than $O(P^2)/Ln(P)$.
+This is usually true only for large enough precision (at least a thousand digits).
+
+Thus there are two main limitations of the binary splitting method:
+*	As a rule, we can only compute functions of small integer or rational arguments.
+For instance, the method works for the calculation of a Bessel function $J0(1/3)$ but not for $J0(Pi)$.
+(As an exception, certain elementary functions <i>can</i> be computed by the binary splitting method for general floating-point arguments, with some clever tricks.)
+*	The method is fast only at high enough precision, when advanced multiplication methods become more efficient than simple $O(P^2)$ methods.
+The binary splitting method is actually <i>slower</i> than the simple summation when the long integer multiplication is $M(P)=O(P^2)$.
+
+The main advantages of the method are:
+*	The method is asymptotically fast and, when applicable, outperforms most other methods at very high precision.
+The best applications of this method are for computing various constants.
+*	There is no accumulated round-off error since the method uses only exact integer arithmetic.
+*	The sum of a long series can be split into many independent partial sums which can be computed in parallel.
+One can store exact intermediate results of a partial summation (a few long integers), which provides straightforward checkpointing: a failed partial summation can be repeated without repeating all other parts.
+One can also resume the summation later to get more precision and reuse the old results, instead of starting all over again.
+
+	    Description of the method
+
+We follow [Haible <i>et al.</i> 1998].
+The method applies to any series of rational numbers of the form
+$$ S = Sum(n,0,N-1, A(n)/B(n)) $$,
+where $A$, $B$ are integer coefficients with $O(n*Ln(n))$ bits.
+Usually the series is of the particular form
+$$ S(0,N) := Sum(n,0,N-1, a(n)/b(n)*(p(0)* ... *p(n))/(q(0)* ... *q(n))) $$,
+where $a$, $b$, $p$, $q$ are polynomials in $n$ with small integer coefficients and values that fit into $O(Ln(n))$ bits.
+
+For example, the Taylor series for $ArcSin(x)$ (when $x$ is a short rational number) is of this form:
+$$ ArcSin(x) = x + 1/2*x^3/3+(1*3)/(2*4)*x^5/5+(1*3*5)/(2*4*6)*x^7/7 + ...$$
+This example is of the above form with the definitions $a=1$, $b(n)=2*n+1$, $p(n)=x^2*(2*n-1)$, $q(n)=2*n$ for $n>=1$ and $p(0)=x$, $q(0)=1$.
+(The method will apply only if $x$ is a rational number with $O(Ln(N))$ bits in the numerator and the denominator.)
+The Taylor series for the hypergeometric function is also of this form.
+
+The goal is to compute the sum $S(0,N)$ with a chosen number of terms $N$.
+Instead of computing the rational number $S$ directly, the binary splitting method propose to compute the following four integers $P$, $Q$, $B$, and $T$:
+$$P(0,N) := p(0)* ... *p(N-1)$$,
+$$Q(0,N) := q(0)* ... *q(N-1)$$,
+$$B(0,N) := b(0) * ... *b(N-1)$$, and
+$$T(0,N) := B(0,N)*Q(0,N)*S(0,N)$$.
+At first sight it seems difficult to compute $T$, but the computation is organized recursively.
+These four integers are computed for the left ($l$) half and for the right ($r$) half of the range [$0$, $N$) and then combined using the obvious recurrence relations $P=P[l]*P[r]$, $Q=Q[l]*Q[r]$, $B=B[l]*B[r]$, and the slightly less obvious relation
+$$T=B[r]*Q[r]*T[l]+B[l]*P[l]*T[r]$$.
+Here we used the shorthand $P[l] := P(0,N/2-1)$, $P[r] := P(N/2, N-1)$ and so on.
+
+Thus the range [$0$, $N$) is split in half on each step.
+At the base of recursion the four integers $P$, $Q$, $B$, and $T$ are computed directly.
+At the end of the calculation (top level of recursion), one floating-point division is performed to recover $S=T/(B*Q)$.
+It is clear that the four integers carry the full information needed to continue the calculation with more terms.
+So this algorithm is easy to checkpoint and parallelize.
+
+The integers $P$, $Q$, $B$, and $T$ grow during the calculation to $O(N*Ln(N))$ bits, and we need to multiply these large integers.
+However, there are only $O(Ln(N))$ steps of recursion and therefore $O(Ln(N))$
+long multiplications are needed.
+If the series converges linearly, we need $N=O(P)$ terms to obtain $P$ digits of precision.
+Therefore, the total asymptotic cost of the method is $O(M(P*Ln(P))*Ln(P))$ operations.
+
+A more general form of the binary splitting technique is also given in [Haible <i>et al.</i> 1998].
+The generalization applies to series for the form
+$$ Sum(n,0,N-1, a(n)/b(n)*(p(0)* ... *p(n))/(q(0)* ... *q(n)) * (c(0)/d(0)+ ... +c(n)/d(n))) $$,
+Here $a(n)$, $b(n)$, $c(n)$, $d(n)$, $p(n)$, $q(n)$ are integer-valued functions with "short" values of size $O(Ln(n))$ bits.
+For example, the Ramanujan series for Catalan's constant is of this form.
+
+The binary splitting technique can also be used for series with complex integer coefficients, or more generally for coefficients in any finite algebraic extension of integers, e.q. $Z$[$Sqrt(2)$] (the ring of numbers of the form $p+q*Sqrt(2)$ where $p$, $q$ are integers).
+Thus we may compute the Bessel function $J0(Sqrt(3))$ using the binary splitting method and obtain exact intermediate results of the form $p+q*Sqrt(3)$.
+But this will still not help compute $J0(Pi)$.
+This is a genuine limitation of the binary splitting method.
+

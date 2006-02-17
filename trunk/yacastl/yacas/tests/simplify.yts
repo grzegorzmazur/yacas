@@ -1,0 +1,68 @@
+
+/* Test Simplify() */
+NextTest("Simplify");
+
+TestYacas( Simplify((x+y)*(x-y)-(x+y)^2), -2*y^2-2*x*y );
+TestYacas( Simplify(1+x+x+3*y-4*(x+y+2)), -2*x-y-7 );
+TestYacas( Simplify((1+I)^4), -4 );
+TestYacas( Simplify((x-y)/(x*y)), 1/y-1/x );
+//See below, now handled with II KnownFailure(TestYacas( Simplify((x+I)^4), x^4+4*x^3*I-6*x^2-4*x*I+1 ));
+
+TestYacas( Simplify((xx+II)^4), xx^4+4*xx^3*II-6*xx^2-4*xx*II+1 );
+
+TestYacas( Simplify(D(x,4)Exp(-x^2/2)), Exp(-x^2/2)*(x^4-6*x^2+3));
+
+TestYacas( Simplify(1),1);
+TestYacas( Simplify(1/x ), 1/x );
+TestYacas( Simplify( 1/(1/x+1) ),x/(x+1) );
+TestYacas( Simplify(1/(1/(1/x+1)+1) ),(x+1)/(2*x+1) );
+TestYacas( Simplify(1/(1/(1/(1/x+1)+1)+1) ),(2*x+1)/(3*x+2) );
+TestYacas( Simplify(1/(1/(1/(1/(1/x+1)+1)+1)+1) ),(3*x+2)/(5*x+3) );
+TestYacas( Simplify(1/(1/(1/(1/(1/(1/x+1)+1)+1)+1)+1) ),(5*x+3)/(8*x+5) );
+
+
+
+/*Serge: these are not handled yet ;-)
+TestYacas( Simplify((x^2-y^2)/(x+y)), x-y );
+*/
+
+TestYacas(ExpandFrac(x+y/x+1/3),(x^2+y+x/3)/x);
+
+// this did not work until the latest fix to ExpandBrackets using MM()
+Verify(
+ExpandBrackets(x*(a+b)*y*z)
+, x*a*y*z+x*b*y*z
+);
+
+Verify(
+ExpandBrackets(ExpandFrac((x+1)/(x-1)+1/x))
+, (x^2+2*x-1)/(x^2-x)
+);
+
+// these used to fail. Added by Serge, resolved by Ayal
+Verify([Local(a);a:=0.1;Simplify(a*b);], 0.1*b);
+Verify([Local(a);a:=0.1;Simplify(a/b);], 0.1/b);
+
+
+// Testing FactorialSimplify
+
+TestYacas(FactorialSimplify((n+1)! / n!),n+1);
+TestYacas(FactorialSimplify((n-k+2)! / (n-k)!),(n-k+2)*(n-k+1));
+TestYacas(FactorialSimplify(2^(n+2)/2^n),4);
+TestYacas(FactorialSimplify((-1)^(n+1)/(-1)^n),-1);
+TestYacas(FactorialSimplify((n+1)! / n! + (n-k+2)! / (n-k)!),n+1 + (n-k+2)*(n-k+1));
+
+TestYacas(FactorialSimplify((n+1)! / n! + (-1)^(n+1)/(-1)^n),n);
+
+/* And now for the piece de resistance: an example from
+   the book "A=B"
+ */
+
+TestYacas(FactorialSimplify(
+  (
+    (n+1)! / (2*k! *(n+1-k)!) -
+    n! / (k! * (n-k)!)        +
+    n! / (2*k! * (n-k)!)      -
+    n! / (2*(k-1)! * (n-k+1)!)
+  )*(k! *(n+1-k)!)/(n!)
+),0);

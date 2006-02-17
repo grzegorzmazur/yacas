@@ -1,0 +1,115 @@
+
+/* A reference print implementation. Expand at own leisure.
+ *
+ * This file implements Print, a scripted expression printer.
+ */
+
+
+/* 60000 is the maximum precedence allowed for operators */
+10 # Print(_x) <--
+[
+  Print(x,60000);
+  NewLine();
+  DumpErrors();
+];
+
+/* Print an argument within an environment of precedence n */
+10 # Print(x_IsAtom,_n) <-- Write(x);
+10 # Print(_x,_n)_(IsInfix(Type(x))And NrArgs(x) = 2) <--
+[
+  Local(bracket);
+  bracket:= (OpPrecedence(Type(x)) > n);
+  If(bracket,WriteString("("));
+  Print(x[1],OpLeftPrecedence(Type(x)));
+  Write(x[0]);
+  Print(x[2],OpRightPrecedence(Type(x)));
+  If(bracket,WriteString(")"));
+];
+
+10 # Print(_x,_n)_(IsPrefix(Type(x)) And NrArgs(x) = 1) <--
+[
+  Local(bracket);
+  bracket:= (OpPrecedence(Type(x)) > n);
+  Write(x[0]);
+  If(bracket,WriteString("("));
+  Print(x[1],OpRightPrecedence(Type(x)));
+  If(bracket,WriteString(")"));
+];
+
+10 # Print(_x,_n)_(IsPostfix(Type(x))And NrArgs(x) = 1) <--
+[
+  Local(bracket);
+  bracket:= (OpPrecedence(Type(x)) > n);
+  If(bracket,WriteString("("));
+  Print(x[1],OpLeftPrecedence(Type(x)));
+  Write(x[0]);
+  If(bracket,WriteString(")"));
+];
+
+20 # Print(_x,_n)_(Type(x) = "List") <--
+[
+  WriteString("{");
+  PrintArg(x);
+  WriteString("}");
+];
+
+20 # Print(_x,_n)_(Type(x) = "Prog") <--
+[
+  WriteString("[");
+  PrintArgProg(Tail(Listify(x)));
+  WriteString("]");
+];
+20 # Print(_x,_n)_(Type(x) = "Nth") <--
+[
+  Print(x[1],0);
+  WriteString("[");
+  Print(x[2],60000);
+  WriteString("]");
+];
+
+100 # Print(x_IsFunction,_n) <--
+ [
+   Write(x[0]);
+   WriteString("(");
+   PrintArg(Tail(Listify(x)));
+   WriteString(")");
+ ];
+
+
+/* Print the arguments of an ordinary function */
+10 # PrintArg({}) <-- True;
+
+20 # PrintArg(_list) <--
+[
+  Print(Head(list),60000);
+  PrintArgComma(Tail(list));
+];
+10 # PrintArgComma({}) <-- True;
+20 # PrintArgComma(_list) <--
+[
+  WriteString(",");
+  Print(Head(list),60000);
+  PrintArgComma(Tail(list));
+];
+
+
+18 # Print(Complex(0,1),_n)   <-- [WriteString("I");];
+19 # Print(Complex(0,_y),_n)  <-- [WriteString("I*");Print(y,4);];
+19 # Print(Complex(_x,1),_n)  <-- [Print(x,7);WriteString("+I");];
+20 # Print(Complex(_x,_y),_n) <-- [Print(x,7);WriteString("+I*");Print(y,4);];
+
+
+/* Tail-recursive printing the body of a compound statement */
+10 # PrintArgProg({}) <-- True;
+20 # PrintArgProg(_list) <--
+[
+   Print(Head(list),60000);
+   WriteString(";");
+   PrintArgProg(Tail(list));
+];
+
+
+
+
+
+

@@ -1,0 +1,1924 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>Wester's testsuite in MuPAD 1.3</TITLE>
+<META NAME="KEYWORDS" CONTENT="MuPAD; Wester test;">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso8859-1">
+<STYLE><!--
+H1 {font-family: verdana, arial, helvetica, sans-serif;}
+H2, H3, H4, H5, H6 {font-family: arial, helvetica, sans-serif;}
+--></STYLE>
+<META NAME="DESCRIPTION" CONTENT="A Web page of SciFace Software's Web site.
+Find informations about SciFace and MuPAD.">
+<META NAME="MS.LOCALE" CONTENT="EN-US">
+
+
+</HEAD>
+
+<!-- body style -->
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" VLINK="#336666" LINK="#000099"
+TOPMARGIN=0>
+<BASEFONT SIZE=2>
+<!-- section menu for page headers -->
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="0">
+<TR>
+<TD WIDTH="420" ROWSPAN="2" HEIGHT="32" VALIGN="TOP">
+    <NOBR>
+    <FONT SIZE=1>
+    <A HREF="/index.html"
+	    ><IMG SRC="/gifs/homeheader.gif" WIDTH="58" HEIGHT="32"
+	    ALT="Home" BORDER=0
+    ></A><A HREF="/products/index.shtml"
+	    ><IMG SRC="/gifs/productsareaheader.gif" WIDTH="58" HEIGHT="32"
+	    ALT="Products" BORDER=0
+    ></A><A HREF="/download/index.shtml"
+	    ><IMG SRC="/gifs/downloadheader.gif" WIDTH="58" HEIGHT="32"
+	    ALT="Download" BORDER=0
+    ></A><A HREF="/education/index.shtml"
+	    ><IMG SRC="/gifs/educationheader.gif" WIDTH="58" HEIGHT="32"
+	    ALT="Education" BORDER=0
+    ></A><A HREF="/support/index.shtml"
+	    ><IMG SRC="/gifs/supportheader.gif" WIDTH="58" HEIGHT="32"
+	    ALT="Support" BORDER=0
+    ></A><A HREF="/partners/index.shtml"
+	    ><IMG SRC="/gifs/partnersheader.gif" WIDTH="58" HEIGHT="32"
+	    ALT="Partners" BORDER=0
+    ></A><A HREF="/find/index.shtml"
+	    ><IMG SRC="/gifs/findheader.gif" WIDTH="58" HEIGHT="32"
+	    ALT="Find" BORDER=0
+    ></A></FONT>
+    </NOBR>
+</TD>
+<TD WIDTH="100%" HEIGHT=32>
+</TD>
+<TD WIDTH=150 ROWSPAN=2 ALIGN="RIGHT" VALIGN="TOP">
+    <FONT SIZE=1>
+    <A HREF="/sciface/index.shtml">
+	<IMG SRC="/gifs/scifaceheader.gif"
+	WIDTH="148" HEIGHT="32" ALT="SciFace" BORDER=0></A>
+    </FONT>
+</TD>
+</TR>
+</TABLE>
+<!-- tiny mupad cube -->
+<P ALIGN=RIGHT>
+<A HREF="/products/index.shtml"><IMG SRC="/gifs/cube_tiny.gif"
+WIDTH="205" HEIGHT="50" ALT="MuPAD" BORDER="0"></A></P>
+
+
+
+<!-- *** header line *** -->
+<H1>Wester's test suite in MuPAD 1.3</H1>
+
+<P><TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="6">
+<TR ALIGN="left" VALIGN="top">
+<TD WIDTH="45" BGCOLOR="#ffff80"><P>&nbsp;</P></TD>
+<TD WIDTH="90%">
+<!-- *** contents begin *** -->
+
+<PRE>
+Author: Paul Zimmermann
+Date  : 03. Mar. 1996
+Format: <A HREF="wester.dvi.gz">dvi</A>, <A HREF="wester.ps.gz">postscript</A>
+</PRE>
+<HR>
+
+<H2>Abstract</H2>
+
+In Dec. 1994, Michael Wester made a review 
+<A HREF="#Wester94">[Wester94]</A> of the mathematical capabilities 
+of different computer 
+algebra systems, namely Axiom, Derive, Macsyma, Maple, Mathematica 
+and Reduce. This review, which is available at:
+<UL>
+  <LI><A HREF="http://math.unm.edu/~wester/cas_review.html">http://math.unm.edu/~wester/cas_review.html</A>
+  <LI><A HREF="ftp://math.unm.edu/pub/cas/Paper.ps">ftp://math.unm.edu:/pub/cas/Paper.ps</A>
+</UL>
+consists of 131 tests in different domains of mathematics (arithmetic, 
+algebraic equations, differential equations, integration, operator 
+computation, series expansions, limits).
+<P>
+We describe in this paper the problems that can be solved with MuPAD 
+1.3, and how to solve them. The problems marked as 
+<IMG SRC="/gifs/red/atten12.gif"> are solved using new funcionalities 
+of the version 1.3 with respect to 1.2.2.
+- <B>[<A HREF="#Summary">Summary</A>]</B>
+
+<H2>Contents</H2>
+<UL>
+  <LI><A HREF="#Numbers">Numbers</A>
+  <LI><A HREF="#Statistics">Statistics</A>
+  <LI><A HREF="#Algebra">Algebra</A>
+  <LI><A HREF="#Inequalities">Inequalities</A>
+  <LI><A HREF="#Trigonometry">Trigonometry</A>
+  <LI><A HREF="#Zero">Determining Zero Equivalence</A>
+  <LI><A HREF="#Complex">The Complex Domain</A>
+  <LI><A HREF="#Equations">Equations</A>
+  <LI><A HREF="#Matrix">Matrix Algebra</A>
+  <LI><A HREF="#Sums">Sums and products</A>
+  <LI><A HREF="#Calculus">Calculus</A>
+  <LI><A HREF="#Indefinite">Indefinite Integrals</A>
+  <LI><A HREF="#Definite">Definite Integrals</A>
+  <LI><A HREF="#Series">Series</A>
+  <LI><A HREF="#Transforms">Transforms</A>
+  <LI><A HREF="#Differential">Differential Equations</A>
+  <LI><A HREF="#Operators">Operators</A>
+  <LI><A HREF="#Programming">Programming</A>
+  <LI><A HREF="#Translation">Translation</A>
+  <LI><A HREF="#Boolean">Boolean Logic</A>
+  <LI><A HREF="#Summary">Summary</A>
+  <LI><A HREF="#References">References</A>
+</UL>
+<HR>
+
+<OL>
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Numbers">Numbers</A></H2>
+
+
+<LI>Compute <EM>50!</EM>.
+<PRE>
+&gt;&gt; fact(50);
+
+     30414093201713378043612608166064768844377641568960512000000000000
+</PRE>
+
+
+<LI>Compute the prime decomposition of <EM>50!</EM>.
+<PRE>
+&gt;&gt; ifactor(fact(50));
+
+ [1, 2, 47, 3, 22, 5, 12, 7, 8, 11, 4, 13, 3, 17, 2, 19, 2, 23, 2, 29, 1,
+
+                    31, 1, 37, 1, 41, 1, 43, 1, 47, 1]
+</PRE>
+The function <EM>ifactor(n)</EM> returns a list [ e, p1, a1, ... , pk, ak ],
+where <EM>e</EM> is <EM>1</EM> or <EM>-1</EM> and 
+<EM>n = e * p1^a1 *...* pk^ak</EM>.
+<P>
+
+
+<LI>Compute <EM>1/2 + ... + 1/10</EM>.
+<PRE>
+&gt;&gt; _plus(1/i$i=2..10);
+
+                                 4861/2520
+</PRE>
+In MuPAD each arithmetic operator has a functional form, here <EM>_plus</EM>
+for addition, so for example <EM>_plus(a,b)</EM> is the same as <EM>a+b</EM>. 
+<P>
+
+
+<LI>Compute a numerical approximation of <EM>e^(Pi*sqrt(163))</EM> 
+    to 50 digits.
+<PRE>
+&gt;&gt; DIGITS:=50: float(exp(PI*sqrt(163)));
+
+          2.6253741264076874399999999999925007259719818568887e17
+</PRE>
+The floating-point numbers are output in scientific notation. This notation
+can be used as input too.
+<P>
+
+
+<LI>Compute a numerical approximation of <EM>J2(1+i)</EM>, where <EM>J</EM> 
+    is the Bessel function of the first kind.
+<PRE>
+&gt;&gt; besselJ(2,1.0+I);
+
+                     0.4157988694e-1 + 0.2473976415 I
+</PRE>
+Please note that floating-point numbers are ``contagious'': no <EM>float</EM>
+instruction is needed here.
+<P>
+
+
+<LI>Compute an infinite decimal representation of <EM>1/7</EM>.
+<PRE>
+&gt;&gt; export(numlib):
+&gt;&gt; decimal(1/7);
+
+                           0, [1, 4, 2, 8, 5, 7]
+</PRE>
+This result means that the decimal expansion of <EM>1/7</EM> is <EM>0.142857142857142...</EM>.
+Then <EM>export(numlib)</EM> exports the functions of this package, i.e.
+enables one to call them with a short name (otherwise we should write 
+<EM>numlib::decimal</EM>).
+<P>
+
+
+<LI>Compute the first terms of the continued fraction of <EM>Pi</EM>.
+<PRE>
+&gt;&gt; contfrac(PI,5);
+
+                                  1               
+                        ---------------------- + 3
+                                1                 
+                        ------------------ + 7    
+                              1                   
+                        ------------- + 15        
+                            1                     
+                        --------- + 1             
+                         1                        
+                        --- + 292                 
+                        ...                       
+</PRE>
+The second (optional) argument of <EM>contfrac</EM> specifies the
+number of digits to be taken into account before computing the continued
+fraction.
+<P>
+
+
+<LI>Simplify <EM>sqrt(2*sqrt(3)+4)</EM>.
+<PRE>
+&gt;&gt; radsimp(sqrt(2*sqrt(3)+4));
+
+                                  1/2    
+                                 3    + 1
+</PRE>
+
+
+<LI>Simplify <EM>sqrt(14+3*sqrt(3+2*sqrt(5-12*sqrt(3-2*sqrt(2)))))</EM>.
+<PRE>
+&gt;&gt; radsimp(sqrt(14 + 3*sqrt(3 + 2*sqrt(5 - 12*sqrt(3 - 2*sqrt(2))))));
+
+                                  1/2    
+                                 2    + 3
+</PRE>
+
+<LI>Simplify <EM>2*infinity-3</EM>.
+<PRE>
+&gt;&gt; 2*infinity-3;
+
+                                 infinity
+</PRE>
+The symbol <EM>infinity</EM> is implemented as a domain in MuPAD. This 
+allows the overloading of the basic arithmetic operations, together with 
+the comparisons. For example we can write in a MuPAD program 
+<EM>if a &lt; infinity then ... end_if</EM>.
+<P>
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Statistics">Statistics</A></H2>
+
+
+<LI>Compute the standard deviation of the sample <EM>[1,2,3,4,5]</EM>.
+<PRE>
+&gt;&gt; stats::stdev([1,2,3,4,5],Sample);
+
+                                  1/2  1/2
+                                 2    5   
+                                 ---------
+                                     2    
+</PRE>
+Here we have shown the other way to call package functions, without 
+exporting them.
+<P>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Determine how good of a guess is <EM>5</EM> for the mean of <EM>x</EM>, 
+    where <EM>10</EM> experiments gave <EM>1,-2,3,-4,5,-6,7,-8,9,10</EM>,
+    using the <EM>t</EM> distribution.
+<PRE>
+&gt;&gt; l:=[ 1, -2, 3, -4, 5, -6, 7, -8, 9, 10 ]:
+&gt;&gt; stats::meanTest(l,5);
+
+        /                                          /         1/2    \ \
+        |                                          |     7 10       | |
+        |                                  105 atan| - ------------ | |
+        |                         1/2              |      1/2   1/2 | |
+        | 105 PI     2416017695 10                 \   5 2    29    / |
+    128 | ------ - --------------------- + -------------------------- |
+        |  256                 1/2   1/2              128             |
+        \          1416468496 2    29                                 /
+    -------------------------------------------------------------------
+                                  105 PI
+
+&gt;&gt; float(%);
+
+                               0.05756660091
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Same problem, but with the normal distribution.
+<PRE>
+&gt;&gt; l:=[ 1, -2, 3, -4, 5, -6, 7, -8, 9, 10 ]:
+&gt;&gt; stats::meanTest(l,5,stats::normal);
+
+                              /      1/2 \
+                               | 21 10    |
+                            erf| -------- |
+                               |      1/2 |
+                               \ 10 29    /
+                          - --------------- + 1/2
+                                   2
+
+&gt;&gt; float(%);
+
+                               0.04058346175
+
+</PRE>
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Algebra">Algebra</A></H2>
+
+<LI>Compute the normal form of <EM>(x^2-4)/(x^2+4x+4)</EM>.
+<PRE>
+&gt;&gt; normal((x^2 - 4)/(x^2 + 4*x + 4));
+
+                                   x - 2
+                                   -----
+                                   x + 2
+</PRE>
+
+
+<LI>Simplify <EM>(e^x-1)/(e^(x/2)+1)</EM>.
+<PRE>
+&gt;&gt; simplify((exp(x)-1)/(exp(x/2)+1),exp);
+
+                                   / x \    
+                               exp | - | - 1
+                                   \ 2 /    
+</PRE>
+
+
+<LI>Expand <EM>(x+1)^20</EM>, then differentiate and factorize.
+<PRE>
+&gt;&gt; Factor(diff(expand((x + 1)^20),x));
+
+                                         19
+                               20 (x + 1)  
+</PRE>
+MuPAD provides two factorization functions: the toplevel function 
+<EM>Factor</EM> returns an expression, and the library function 
+<EM>factor</EM> returns a list <EM>[ e, p1, a1, ... , pk, ak ]</EM>
+where <EM>e</EM> is a scalar, the <EM>pi</EM> are irreducible 
+polynomials and the <EM>ai</EM> are the corresponding powers. 
+In the above example, <EM>factor</EM> would return 
+<EM>[ 20, x + 1, 19 ]</EM>.
+<P>
+
+
+<LI>Factor <EM>x^100-1</EM>.
+<PRE>
+&gt;&gt; Factor(x^100-1);
+
+                /  2     \ /      2    3    4     \ /        2    3    4  
+(x + 1) (x - 1) \ x  + 1 / \ x + x  + x  + x  + 1 / \ - x + x  - x  + x  +
+
+    \ /    2    4    6    8      \ /  5    10    15    20     \ /    5    
+ 1  / \ - x  + x  - x  + x  + 1  / \ x  + x   + x   + x   + 1 / \ - x  + x
+
+          10    15    20      \ /    10    20    30    40      \
+             - x   + x   + 1  / \ - x   + x   - x   + x   + 1  /
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Factor the polynomial <EM>x^4-3x^2+1</EM> over the algebraic extension
+    <EM>Q(p)</EM>, where <EM>p</EM> is a root of the polynomial
+    <EM>X^2-X-1</EM>.
+<PRE>
+&gt;&gt; Qphi:= AlgebraicExtension( Rational, X^2-X-1, phi ):
+&gt;&gt; Qphi::name := "Qphi";
+&gt;&gt; Factor( poly(x^4-3*x+1, Qphi) );
+
+         poly(x + phi, [x], Qphi) poly(x + phi - 1, [x], Qphi)
+         poly(x + phi + 1, [x], Qphi) poly(x - phi, [x], Qphi)
+</PRE>
+
+We have first defined the algebraic extension <EM>Qphi</EM> of the 
+rationals with the polynomial <EM>X^2-X-1</EM>,
+with <EM>phi</EM> being an alias for the roots of this polynomial.
+The command <EM>Qphi::name:="Qphi"</EM> was only used to have a simpler
+output for the algebraic extension name.
+<P>
+
+<LI>Factor the polynom <EM>x^4-3x^2+1</EM> modulo <EM>5</EM>.
+<PRE>
+&gt;&gt; factor(poly(x^4 - 3*x^2 + 1,[x],IntMod(5)));
+
+    [1, poly(x - 2, [x], IntMod(5)), 2, poly(x + 2, [x], IntMod(5)), 2]
+</PRE>
+This result means that <EM>x^4 - 3x^2 + 1</EM> factors into 
+<EM>(x-2)^2 (x+2)^2</EM> modulo <EM>5</EM>. MuPAD provides a special 
+representation <EM>poly</EM> for polynomials, that enables the 
+user to specify the variables and the coefficient field.
+<P>
+
+
+<LI>Compute the partial fraction decomposition of 
+    <EM>(x^2+2x+3)/(x^3+4x^2+5x+2)</EM>.
+<PRE>
+&gt;&gt; partfrac((x^2+2*x+3)/(x^3+4*x^2+5*x+2)); 
+
+                          2       3              - 2
+                      - ----- + ----- + 2 (x + 1)   
+                        x + 1   x + 2               
+</PRE>
+
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Inequalities">Inequalities</A></H2>
+
+<LI>
+<LI>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the inequality <EM>|x-1| &gt; 2</EM>.
+<PRE>
+&gt;&gt; solve( abs(x-1) &gt; 2, x );
+
+             {[-infinity &lt;= x, x &lt; -1], [3 &lt; x, x &lt;= infinity]}
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the inequality <EM>(x-1)(x-2)(x-3)(x-4)(x-5)) &lt; 0</EM>.
+<PRE>
+&gt;&gt; solve( expand((x-1)*(x-2)*(x-3)*(x-4)*(x-5)) &lt; 0, x );
+
+	    {[2 &lt; x, x &lt; 3], [-infinity &lt;= x, x &lt; 1], [4 &lt; x, x &lt; 5]}
+</PRE>
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Trigonometry">Trigonometry</A></H2>
+
+
+<LI>Rewrite <EM>cos(3x) cos(x)</EM>in terms 
+    of      <EM>cos(x)</EM> and <EM>sin(x)</EM>.
+<PRE>
+&gt;&gt; expand(cos(3*x)/cos(x));
+
+                                       2    
+                               4 cos(x)  - 3
+</PRE>
+
+
+<LI>Linearize <EM>cos(3x) cos(x)</EM>.
+<PRE>
+&gt;&gt; combine(expand(cos(3*x)/cos(x)),sincos);
+
+                              2 cos(2 x) - 1
+</PRE>
+
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Zero">Determining Zero Equivalence</A></H2>
+
+
+<LI>
+
+
+<LI>Simplify <EM>sqrt(997) - (997^3)^(1/6)</EM>.
+<PRE>
+&gt;&gt; sqrt(997)-(997^3)^(1/6);
+
+                                     1/6      1/2
+                          - 991026973    + 997   
+
+&gt;&gt; simplify(%);
+
+                                     0
+</PRE>
+
+
+<LI>Simplify <EM>sqrt(999983) - (999983^3)^(1/6)</EM>.
+<PRE>
+&gt;&gt; sqrt(999983)-(999983^3)^(1/6);
+
+                           1/2                     1/6
+                     999983    - 999949000866995087   
+
+&gt;&gt; simplify(%);
+
+                                     0
+</PRE>
+
+
+<LI>Recognize that <EM>(2^(1/3)+4^(1/3))^3-6*(2^(1/3)+4^(1/3)) - 6</EM> 
+    is <EM>0</EM>.
+<PRE>
+&gt;&gt; simplify(expand((2^(1/3)+4^(1/3))^3-6*(2^(1/3)+4^(1/3))-6));
+
+                                     0
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Simplify <EM>log tan(x/2+Pi/4) - sinh^(-1) tan x</EM> to <EM>0</EM>. 
+    In fact, this simplification is not valid in general in the complex 
+    plane:
+<PRE>
+&gt;&gt; f := ln(tan(x/2+PI/4))-asinh(tan(x)):
+&gt;&gt; float(subs(f,x=-2));
+
+                       - 3.046904887 + 3.141592653 I
+</PRE>
+and whence it is not possible to achieve it in MuPAD.
+<P>
+
+<LI>Show that the function <EM>log(tan(x/2+Pi/4))-sinh^(-1)(tan(x))</EM>
+    is <EM>0</EM> in <EM>x=0</EM> and that its derivative is <EM>0</EM>.
+<PRE>
+&gt;&gt; f := ln(tan(1/2*x + PI/4)) - asinh(tan(x)):
+&gt;&gt; eval(subs(f,x=0));
+
+                             0
+
+&gt;&gt; combine(normal(combine(normal(expand(diff(f,x))),sincos)),sincos);
+
+                             0
+
+&gt;&gt; combine(normal(expand(diff(f,x))),sincos);
+
+                                 /    1    \1/2    
+                        - cos(x) | ------- |    + 1
+                                 |       2 |       
+                                 \ cos(x)  /       
+                        ---------------------------
+                                  cos(x)           
+</PRE>
+
+As said previously, the function <EM>f</EM> is not zero everywhere in the 
+complex plane. The above expression tells us that the derivative vanishes 
+when the real part of <EM>cos x</EM> is positive, i.e. we can conclude that
+<EM>f(x)</EM> is really zero when <EM>-Pi/2 &lt; Re(x) &lt; Pi/2</EM>.
+
+<P>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Simplify <EM>log( (2 sqrt(r)+1) / sqrt(4r+4 sqrt(r)+1) )</EM>.
+<PRE>
+&gt;&gt; simplify(ln((2*sqrt(r)+1)/sqrt(4*r+4*sqrt(r)+1)));
+
+                                     0
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Simplify <EM>-2 sqrt(r) + (2 sqrt(r)+1) ^ (1/ (2 sqrt(r)+1))
+                 (4r+4 sqrt(r)+1)^(sqrt(r) 1/ (2 sqrt(r)+1)) -1</EM>.
+<PRE>
+&gt;&gt; e:=(4*r+4*sqrt(r)+1)^(sqrt(r)/(2*sqrt(r)+1))
+           *(2*sqrt(r)+1)^(1/(2*sqrt(r)+1))-2*sqrt(r)-1:
+&gt;&gt; assume(r>0):
+&gt;&gt; simplify(e);
+
+                                     0
+</PRE>
+Without the assumption <EM>r&gt;0</EM>, MuPAD cannot simplify the expression 
+because the transformation <EM>(z^a)^b --&gt; x^ab</EM> is not true in 
+general for <EM>z</EM> complex (here we have <EM>z=2 sqrt(r)+1</EM>, 
+<EM>a=2</EM>, and <EM>b=sqrt(r)/(2 sqrt(r)+1)</EM>.
+<P>
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Complex">The Complex Domain</A></H2>
+
+
+<LI>Compute the rectangular form <EM>a+ib</EM> of <EM>log(3+4i)</EM>.
+<PRE>
+&gt;&gt; rectform(ln(3+4*I));
+
+                            ln(5) + I atan(4/3)
+</PRE>
+The real and imaginary part are obtained with <EM>Re(..)</EM> and 
+<EM>Im(..)</EM> respectively.
+<P>
+
+
+<LI>Compute the rectangular form of <EM>tan(x+iy)</EM>.
+<PRE>
+&gt;&gt; rectform(tan(x+I*y),{x,y});
+
+                      sin(2 x)             I sinh(2 y)     
+                -------------------- + --------------------
+                cos(2 x) + cosh(2 y)   cos(2 x) + cosh(2 y)
+</PRE>
+Here the set <EM>{x,y}</EM> given as second argument specifies that the
+variables <EM>x</EM> and <EM>y</EM> are real. By default all variables 
+are considered as complex.
+<P>
+
+
+<LI>Simplify sqrt(x*y*|z|^2) / sqrt(x) / |z|.
+<PRE>
+&gt;&gt; sqrt(x*y*abs(z) / (sqrt(x)*abs(z));
+
+                    -1/2      1/2
+                   x     (x y)
+</PRE>
+
+<LI>
+
+
+<LI>Do not simplify <EM>sqrt(e^z)-e^(z/2)</EM> to <EM>0</EM> without 
+    any assumption on the imaginary part of <EM>z</EM>.
+<PRE>
+&gt;&gt; sqrt(exp(z))-exp(z/2);
+
+                                / z \         1/2
+                          - exp | - | + exp(z)   
+                                \ 2 /            
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Simplify <EM>sqrt(e^6i)</EM> into its correct value <EM>-e^3i</EM>.
+<PRE>
+&gt;&gt; sqrt(exp(6*I));
+
+                                 -exp(3 I)
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Simplify <EM>log e^z</EM> into <EM>z</EM> only for 
+             <EM>-Pi &lt; Im(z) &lt;= Pi</EM>.
+<PRE>
+&gt;&gt; simplify(ln(exp(z)));
+
+                                ln(exp(z))
+                                
+&gt;&gt; assume(x,Type::RealNum): ln(exp(x));
+
+                                     x
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the correct principal value of <EM>log e^10i</EM>, 
+    namely <EM>(10-4Pi)i</EM>.
+<PRE>
+&gt;&gt; ln(exp(10*I)); 
+
+                             (- 4 I) PI + 10 I
+
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Simplify <EM>(xy)^ (1/n) -x^ (1/n) y^(1/n)</EM> with respect to the 
+    domain of <EM>x, y, n</EM>.
+
+<PRE>
+&gt;&gt; e:=(x*y)^(1/n)-x^(1/n)*y^(1/n): simplify(e);
+
+                                   1    1  1
+                                   -    -  -
+                                   n    n  n
+                              (x y)  - x  y 
+
+&gt;&gt; assume(x>0): simplify(e);
+
+                                     0
+
+&gt;&gt; unassume(x): assume(y>0): simplify(e);
+
+                                     0
+</PRE>
+Here the command <EM>unassume(x)</EM> deletes all assumptions about 
+the variable <EM>x</EM>.
+<P>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Simplify <EM>tan^ (-1) tan(z)</EM> into <EM>z</EM> only for 
+    <EM>-Pi/2 &lt; z &lt;= Pi/2</EM>.
+
+<PRE>
+&gt;&gt; atan(tan(z));
+
+                               atan(tan(z))
+
+&gt;&gt; assume(x>-PI/2): assume(x<=PI/2): atan(tan(x));
+
+                                     x
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the correct value of <EM>tan^ (-1) tan(4)</EM>, 
+    namely <EM>4-Pi</EM>.
+
+<PRE>
+&gt;&gt; atan(tan(4));
+
+                                 - PI + 4
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Convert <EM>(x=0) /2 +1</EM> to <EM>x/2+1 = 1</EM>.
+<PRE>
+&gt;&gt; simplify( (x=0)/2+1, relation );
+
+                                 x
+                                 - + 1 = 1
+                                 2
+</PRE>
+
+<!-- ======================================================================= -->
+<H2><A NAME="Equations">Equations</A></H2>
+
+
+<LI>Solve the polynomial equation <EM>3x^3 -18x^2 +33x -19 = 0</EM>.
+<PRE>
+&gt;&gt; s:=solve( 3*x^3-18*x^2+33*x-19 ):
+&gt;&gt; simplify( rectform(s[i])) $ i=1..3;
+
+         1/2    / PI \                     1/2    / PI \      
+      2 3    cos| -- |                    3    cos| -- |      
+                \ 18 /           / PI \           \ 18 /      
+      ---------------- + 2, - sin| -- | - -------------- + 2, 
+             3                   \ 18 /         3             
+      
+                      1/2    / PI \    
+                     3    cos| -- |    
+            / PI \           \ 18 /    
+         sin| -- | - -------------- + 2
+            \ 18 /         3           
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the equation <EM>x^4+x^3+x^2+x+1=0</EM>.
+<PRE>
+&gt;&gt; p:=x^4+x^3+x^2+x+1: s:=solve(p,x);
+
+{        /    1/2       \1/2               /    1/2       \1/2       
+{        |   5          |                  |   5          |          
+{  1/2   | - ---- - 5/2 |            1/2   | - ---- - 5/2 |          
+{ 5      \    2         /           5      \    2         /          
+{ ---- - ------------------- - 1/4, ---- + ------------------- - 1/4,
+{  4              2                  4              2                
+
+            /  1/2       \1/2                 /  1/2       \1/2       }
+            | 5          |                    | 5          |          }
+      1/2   | ---- - 5/2 |              1/2   | ---- - 5/2 |          }
+     5      \  2         /             5      \  2         /          }
+   - ---- - ----------------- - 1/4, - ---- + ----------------- - 1/4 }
+      4             2                   4             2               }
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Verify a solution of the above equation.
+<PRE>
+&gt;&gt; expand(simplify(expand(subs(p,x=s[1]))));
+
+                                     0
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the equation:
+<PRE>
+&gt;&gt; solve(exp(2*x)+2*exp(x)+1=z,x);
+
+                                  1/2      
+  {(- 2 I) PI (0, 1, -1, ...) + ln(z    - 1),
+
+                                      1/2      
+   (- 2 I) PI (0, 1, -1, ...) + ln(- z    - 1)}
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the equation <EM> (x+1) (sin^2(x)+1)^2*cos^3(3x) = 0</EM>.
+<PRE>
+&gt;&gt; solve( (x+1)*(sin(x)^2*cos(3*x)^3) = 0, x );
+
+{                                                                              
+{ I asinh(1) + 2 PI (0, 1, -1, ...), (- I) asinh(1) + 2 PI (0, 1, -1, ...), -1,
+{                                                                              
+
+   PI   PI (0, 1, -1, ...)                                             
+   -- + ------------------, PI + (- I) asinh(1) + 2 PI (0, 1, -1, ...),
+   6            3                                                      
+
+                                          }
+   PI + I asinh(1) + 2 PI (0, 1, -1, ...) }
+                                          }
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the equation <EM>e^z = 1</EM>.
+<PRE>
+&gt;&gt; solve( exp(z) = 1, z );
+
+                         {(- 2 I) PI (0, 1, -1, ...)}
+
+Here again the variable k1 represents an arbitrary integer.
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the equation <EM>sin(x) = cos(x)</EM>.
+<PRE>
+&gt;&gt; solve( sin(x) = cos(x), x );
+
+      { PI                           3 PI                        }
+      { -- + 2 PI (0, 1, -1, ...), - ---- + 2 PI (0, 1, -1, ...) }
+      { 4                             4                          }
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the equation <EM>tan(x) = 1</EM>.
+<PRE>
+&gt;&gt; solve( tan(x) = 1, x );
+
+                        { PI                      }
+                        { -- + PI (0, 1, -1, ...) }
+                        { 4                       }
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the equation <EM>sin x = tan x</EM>.
+<PRE>
+&gt;&gt; solve(sin(x)=tan(x),x);
+
+                    {PI (0, 1, -1, ...), 2 PI (0, 1, -1, ...)}
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the equation <EM>sqrt(x^2+1) = x-2</EM>.
+<PRE>
+&gt;&gt; solve(sqrt(x^2+1)=x-2,x);
+
+                                    {}
+</PRE>
+The function <EM>sqrt</EM> in MuPAD represents the principal square 
+root, and the possible solution <EM>x=3/4</EM> does not correspond 
+to a principal square root.
+<P>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the equation <EM>e^ (2-x^2) = e^(-x)</EM>.
+<PRE>
+&gt;&gt; solve(exp(2-x^2)=exp(-x),x);
+
+{                             1/2                                      1/2       }
+{ (8 I PI (0, 1, -1, ...) + 9)             (8 I PI (0, 1, -1, ...) + 9)          }
+{ ------------------------------- + 1/2, - ------------------------------- + 1/2 }
+{                2                                        2                      }
+
+&gt;&gt; assume(x,Type::RealNum):
+&gt;&gt; solve(exp(2-x^2)=exp(-x),x);
+
+                                  {-1, 2}
+</PRE>
+The first solution assumes that <EM>x</EM> represents any complex number, 
+whereas in the second call MuPAD was asked to return only real solutions, 
+which correspond to the index <EM>0</EM> of the general solution.
+<P>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    solve the equation <EM>sqrt(log x) = log sqrt(x)</EM>.
+<PRE>
+&gt;&gt; solve(sqrt(ln(x))=ln(sqrt(x)),x);
+
+                                {1, exp(4)}
+</PRE>
+The above answer is returned without any assumption about <EM>x</EM>, 
+therefore <EM>1</EM> and <EM>e^4</EM> are the only roots in the whole 
+complex plane.
+<P>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the equation <EM>|x-1|=2</EM>.
+<PRE>
+&gt;&gt; solve( abs(x-1)=2, x );
+
+                             [3, -1]
+</PRE>
+
+
+<LI>Solve the linear (dependent) system <EM>x+y+z=6,2x+y+2z=10,x+3y+z=10</EM>.
+<PRE>
+&gt;&gt; linsolve({x+y+z=6,2*x+y+2*z=10,x+3*y+z=10},{x,y,z});
+
+                           [{y = 2, x = - z + 4 }]
+</PRE>
+
+
+<LI>Solve the system of nonlinear equations 
+     <EM>x^2y+3yz-4=0, -3x^2z+2y^2+1=0, 2yz^2-z^2-1=0</EM>.
+<PRE>
+&gt;&gt; s:=solve({ x^2*y + 3*y*z - 4, -3*x^2*z + 2*y^2 + 1, 2*y*z^2 - z^2 - 1}):
+
+   -- --          2       4                    
+   |  |        5 z    21 z        5      6     
+   |  |  y = - ---- - ----- + 24 z  - 9 z  - 1,
+   -- --        2       2                      
+
+                                                                           
+                        2       2      3       4      5       6       7    
+   x = RootOf(19 z + 6 x  - 48 z  + 2 z  + 48 z  + 3 z  - 48 z  + 18 z , x)
+                                                                           
+
+                                                         -- --
+                   2      4       6       7       8       |  |
+   , z = RootOf(3 z  + 5 z  + 21 z  - 48 z  + 18 z  + 1)  |  |
+                                                         -- --
+
+</PRE>
+Here the solution is expressed with the help of the <EM>RootOf</EM> notation. 
+There are 8 solutions, each one corresponding to <EM>z</EM> being one of the 
+roots of the polynomial <EM>18z^8-48z^7+21z^6+5z^4+3z^2+1</EM>, <EM>y</EM>
+is a polynomial in <EM>z</EM> as shown above, and <EM>x</EM> being one root 
+of a degree two polynomial dependent on <EM>z</EM>.
+<P>
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Matrix">Matrix Algebra</A></H2>
+
+
+<LI>Invert the <EM>2x2</EM> matrix <EM>[[a,b],[1,ab]]</EM>.
+<PRE>
+&gt;&gt; export(Dom): export(linalg):
+&gt;&gt; M := Matrix( ExpressionField(normal) ):
+&gt;&gt; m := M( [[a,b],[1,a*b]] ):
+&gt;&gt; 1/m;
+
+                        +-                      -+
+                        |    a            1      |
+                        |  ------  ,  ---------  |
+                        |   2            2       |
+                        |  a  - 1     - a  + 1   |
+                        |                        |
+                        |    1            a      |
+                        | -------- , ----------- |
+                        |      2            2    |
+                        | b - a  b   - b + a  b  |
+                        +-                      -+
+</PRE>
+Here we first export the necessary packages, then we define the domain 
+<EM>M</EM> of matrices whose coefficients are in the domain 
+<EM>ExpressionField(normal)</EM>, which means the set of all MuPAD 
+expressions after simplification by <EM>normal</EM>. We could have 
+written as well <EM>Matrix( ExpressionField )</EM> if we do not want
+the expressions to be normalized.
+Please note that no special command is necessary to invert the matrix:
+we can use the standard arithmetic operators due to the overloading
+mechanism of MuPAD.
+<P>
+
+
+<LI>Compute the determinant of the <EM>4x4</EM> Vandermonde matrix 
+    over <EM>w,x,y,z</EM>.
+<PRE>
+&gt;&gt; M := Dom::SquareMatrix(4):
+&gt;&gt; m := M([[1,1,1,1],[w,x,y,z],[w^2,x^2,y^2,z^2],[w^3,x^3,y^3,z^3]]):    
+&gt;&gt; Factor(det(m));
+
+              (w - x) (w - z) (x - z) (x - y) (w - y) (y - z)
+</PRE>
+
+
+<LI>Find the eigenvalues of the matrix 
+    <EM>[[5, -3, -7],[-2,  1,  2],[ 2, -3, -4]]</EM>.
+<PRE>
+&gt;&gt; m := Dom::SquareMatrix(3)([[5, -3, -7],[-2,  1,  2],[ 2, -3, -4]]):
+&gt;&gt; linalg::eigenValues(m);
+
+                                 [1, 3, - 2]
+</PRE>
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Sums">Sums and products</A></H2>
+
+<LI>
+<LI>
+
+<LI>Find a closed-form for the sum over <EM>k^3</EM> for <EM>k=1..n</EM>.
+<PRE>
+&gt;&gt; Factor(sum(k^3,k=1..n));
+
+                                   2        2
+                              1/4 n  (n + 1) 
+</PRE>
+
+
+<LI>Find a closed-form for the sum over <EM>1/k^2+1/k^3</EM> for 
+    <EM>k=1..infinity</EM>.
+<PRE>
+&gt;&gt; sum(1/k^2+1/k^3,k=1..infinity);
+
+                                           2
+                                         PI 
+                               zeta(3) + ---
+                                          6 
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Evaluate numerically the above sum.
+<PRE>
+&gt;&gt; misc::freeze(sum)(1/k^2+1/k^3,k=1..infinity);
+
+                         / 1    1                   \
+                         | -- + --, k = 1..infinity |
+                      sum|  2    3                  |
+                         \ k    k                   /
+
+&gt;&gt; float(%);
+
+                                2.84699097
+
+</PRE>
+The function <EM>misc::freeze</EM> enables one to make a MuPAD
+function like <EM>sum</EM> or <EM>int</EM> inert, but the attributes
+of the function (here the <EM>float</EM> attribute) are loaded. Here 
+MuPAD uses Euler-Maclaurin formula.
+<P>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the product of <EM>k</EM> from <EM>k = 1</EM> to <EM>n</EM>.
+<PRE>
+&gt;&gt; product(K, k=1..n);
+
+                           gamma(n + 1)
+</PRE>
+The command <TT>rewrite(%,fact)</TT> enables one to rewrite the answer in 
+terms of the factorial function.
+<P>
+
+<!-- ======================================================================= -->
+<H2><A NAME="Calculus">Calculus</A></H2>
+
+
+<LI>Compute the limit of <EM>(1+1/n)^n</EM> when <EM>n</EM> goes to 
+    infinity, and the limit of <EM>(1-cos x)/x^2</EM> when <EM>x</EM>
+    goes to zero.
+<PRE>
+&gt;&gt; limit((1+1/n)^n,n=infinity);
+
+                                     E
+
+&gt;&gt; limit((1-cos(x))/x^2,x=0);
+
+                                    1/2
+</PRE>
+It should be noted that the limit functions of MuPAD implements
+the best known algorithm to this date. 
+It is based on the concept of most-rapidly-varying subexpressions
+(MRV), and a comparison made by Dominik Gruntz on 19 exp-log
+expressions <A HREF="#Gruntz95">Gruntz95</A> showed that the algorithms 
+implemented in other computer algebra systems (except Maple and MuPAD)
+fail on many examples, and even return wrong values !
+<P>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the second derivative of <EM>y(x(t))</EM> with respect to <EM>t</EM>.
+<PRE>
+&gt;&gt; diff(y(x(t)),t$2);
+
+                                             2
+              D(D(x))(t) D(y)(x(t)) + D(x)(t)  D(D(y))(x(t))
+
+</PRE>
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Indefinite">Indefinite Integrals</A></H2>
+
+
+<LI>Integrate <EM>1/(x^3+2)</EM>, then differentiate and simplify.
+<PRE>
+&gt;&gt; int(1/(x^3+2),x);
+
+             /                              /       3         \ \
+         sum \ X2 ln(x + 6 X2), X2 = RootOf \ 108 X3  - 1, X3 / /
+
+&gt;&gt; diff(%,x);
+
+                                    1   
+                                  ------
+                                   3    
+                                  x  + 2
+</PRE>
+The output from <EM>int</EM> means that an antiderivative of <EM>1/(x^3+2)</EM>
+is the sum of the three functions <EM>ai*ln(x+6*ai)</EM>, where <EM>ai</EM>
+is one of the roots of the polynomial <EM>108 X^3-1</EM>.
+The <EM>sum</EM> expression can be differentiated, and the result is a sum
+of three rational functions, namely <EM>ai/(x+6*ai)</EM>,
+which is automatically normalized.
+More generally, the sum of any rational function over the roots of a polynomial
+simplifies to an expression involving the polynomial coefficients.
+The MuPAD syntax for this is <EM>sum(f,t=RootOf(..));</EM>
+for example <EM>sum(t^2,t=RootOf(x^3+a*x^2+b*x+c,x))</EM> 
+returns <EM>a^2-2*b</EM>.
+<P>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute an antiderivative of <EM>1/(a + b cos x)</EM> 
+    where <EM>a &lt; b</EM>.
+<PRE>
+&gt;&gt; assume(a^2&lt;b^2):
+&gt;&gt; int(1/(a+b*cos(x)),x);
+
+          2          2         2    2 1/2                2    2 1/2  
+   ln((I a  + (- I) b  + a (- a  + b )    + b cos(x) (- a  + b )    +
+
+                      2    2 1/2               2    2 1/2              2     
+   (- I) b sin(x) (- a  + b )   )   / b) / (- a  + b )    - ln(((- I) a  +
+   
+      2         2    2 1/2                2    2 1/2  
+   I b  + a (- a  + b )    + b cos(x) (- a  + b )    +
+
+                      2    2 1/2               2    2 1/2
+   (- I) b sin(x) (- a  + b )   )   / b) / (- a  + b )   
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Differentiate the above antiderivative and find again <EM>1/(a + b cos x)</EM>.
+<PRE>
+&gt;&gt; normal(expand(combine(normal(diff(%,x)),sincos)));
+
+                                    1      
+                               ------------
+                               a + b cos(x)
+</PRE>
+
+
+<LI>Compute the derivative of <EM>|x|</EM>.
+<PRE>
+&gt;&gt; diff(abs(x),x);
+
+                                  sign(x)
+</PRE>
+The extension of the functionality of MuPAD by such rules is very easy.
+For example to ``teach'' to MuPAD that the derivative of <EM>sin(f)</EM> 
+with respect to <EM>x</EM> is <EM>cos(f) f'</EM>, we simply write:
+<PRE>
+&gt;&gt; sin := funcattr(sin,"diff",proc(f,x) begin cos(f)*diff(f,x) end_proc);
+</PRE>
+
+
+<LI>Compute an antiderivative of <EM>|x|</EM>.
+<PRE>
+&gt;&gt; int(abs(x),x);
+
+                                 x abs(x)
+                                 --------
+                                    2    
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the derivative of <EM>|x|</EM> (piecewise defined).
+<PRE>
+&gt;&gt; a:=proc(x) begin if x < 0 then -x else x end_if end_proc:
+&gt;&gt; D(a);
+
+                             proc(x)
+                               name a;
+                             begin
+                               if x < 0 then
+                                 -1
+                               else
+                                 1
+                               end_if
+                             end_proc
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the antiderivative of <EM>|x|</EM> (piecewise defined).
+<PRE>
+&gt;&gt; a:=proc(x) begin if x < 0 then -x else x end_if end_proc:
+&gt;&gt; int(a);
+
+                             proc(x)
+                               name a;
+                             begin
+                               if x < 0 then
+                                 x^2*(-1/2)
+                               else
+                                 x^2*1/2
+                               end_if
+                             end_proc
+
+</PRE>
+
+
+<LI>Compute an antiderivative of <EM>x/(sqrt(1+x)+sqrt(1-x))</EM>.
+<PRE>
+&gt;&gt; int(x/(sqrt(1 + x) + sqrt(1 - x)), x);
+
+        / ln(x + 1) \ / x       \       / ln(- x + 1 ) \ /   x        \
+    exp | --------- | | - + 1/3 | + exp | ------------ | | - - + 1/3  |
+        \     2     / \ 3       /       \      2       / \   3        /
+</PRE>
+The result can be simplified using the <EM>expand</EM> command.
+<P>
+
+
+<LI>Compute an antiderivative of <EM>(sqrt(1+x)-sqrt(1-x))/2</EM>, which 
+    is the same as above.
+<PRE>
+&gt;&gt; int((sqrt(1 + x) - sqrt(1 - x))/2, x);
+
+        / ln(x + 1) \ / x       \       / ln(- x + 1 ) \ /   x        \
+    exp | --------- | | - + 1/3 | + exp | ------------ | | - - + 1/3  |
+        \     2     / \ 3       /       \      2       / \   3        /
+</PRE>
+MuPAD 1.2.1 was already able to solve these two examples, but you had to
+explicitly load the <EM>intlib</EM> package and to call <EM>intlib::int</EM>.
+Now there is a ``toplevel'' function <EM>int</EM> for definite and indefinite
+integration.
+<P>
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Definite">Definite Integrals</A></H2>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the Cauchy principal value of the integral over
+     <EM>1/(x-a)</EM> in the range <EM>x=a-1..a+1</EM>.
+<PRE>&gt;&gt; int(1/(x-a),x=a-1..a+1), int(1/(x-a),x=a-1..a+1,PrincipalValue);
+
+                               undefined, 0
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Check that the integral over <EM>1/(x-a)^2)</EM> in the range
+    <EM>x=a-1..a+1</EM>     is divergent.
+<PRE>
+&gt;&gt; int(1/(x-a)^2,x=a-1..a+1);
+
+                                 infinity
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the integral of <EM>sqrt(x +1/x -2)</EM> from <EM>0</EM>
+    to <EM>1</EM>.
+<PRE>
+&gt;&gt; int(sqrt(x+1/x-2),x=0..1);
+
+                                   4/3
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the integral of <EM>sqrt(x +1/x -2)</EM> from <EM>1</EM>
+    to <EM>2</EM>.
+<PRE>
+&gt;&gt; int(sqrt(x+1/x-2),x=1..2);
+
+                              (1/2)
+                           2 2
+                         - -------- + 4/3
+                              3
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the integral of <EM>sqrt(x +1/x -2)</EM> from <EM>0</EM>
+    to <EM>2</EM>.
+<PRE>
+&gt;&gt; int(sqrt(x+1/x-2),x=0..2);
+
+                              (1/2)
+                           2 2
+                         - -------- + 8/3
+                              3
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the integral over <EM>cos(x)/(x^2+a^2)</EM> for <EM>a &gt; 0</EM> 
+    in the range <EM>-infinity</EM> to <EM>infinity</EM>.
+<PRE>
+&gt;&gt; sign(a):=1:  int( cos(x)/(x^2+a^2), x=-infinity..infinity );
+
+                                PI exp(-a)
+                                ----------
+                                    a 
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the integral over <EM>t^ (a-1) / (1+t)</EM> for 
+   <EM>0 &lt;= Re(a) &lt;= 1</EM> in the range <EM>0</EM> to <EM>infinity</EM>.
+<PRE>
+&gt;&gt; assume(Re(a)>0): assume(Re(a)<1):
+&gt;&gt; int(t^(a-1)/(1+t),t=0..infinity);
+
+                          gamma(a) gamma(- a + 1)
+</PRE>
+
+
+<LI>
+
+
+<LI>Compute the integral 
+    <EM>int( x=0..a, int( y=0..b(1-x/a), int( z=0..c(1-x/a-y/b), 1 )</EM>.
+<PRE>
+&gt;&gt; int(int(int(1,z=0..c*(1-x/a-y/b)),y=0..b*(1-x/a)),x=0..a);
+
+                                   a b c
+                                   -----
+                                     6  
+</PRE>
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Series">Series</A></H2>
+
+
+<LI>Compute the first terms of the Taylor expansion of 
+    <EM>1/sqrt(1-v^2/c^2)</EM> at <EM>v=0</EM>.
+<PRE>
+&gt;&gt; series(1/sqrt(1-(v/c)^2),v=0);
+
+                     - 2  2      - 4  4               
+                    c    v    3 c    v          /  6 \
+                    ------- + --------- + 1 + O \ v  /
+                       2          8                   
+</PRE>
+
+
+<LI>Compute the inverse of the square of the above expansion.
+<PRE>
+&gt;&gt; 1/%^2;
+
+                            - 2  2         /  6 \
+                         - c    v  + 1 + O \ v  /
+</PRE>
+This is possible in MuPAD because of the domain facility, and the fact that
+standard arithmetic operations can be overloaded for domain elements.
+This allows to get <EM>O(x)</EM> as the result of <EM>O(x)-O(x)</EM>,
+whereas for example Maple gives <EM>0</EM>.
+<P>
+
+
+<LI>Compute the Taylor expansion of <EM>tan(x)</EM> at <EM>x=0</EM> by 
+    dividing the expansion of <EM>sin(x)</EM> by that of <EM>cos(x)</EM>.
+<PRE>
+&gt;&gt; series(sin(x),x)/series(cos(x),x)=series(tan(x),x);
+
+                 3      5                   3      5           
+                x    2 x      /  6 \       x    2 x      /  6 \
+            x + -- + ---- + O \ x  / = x + -- + ---- + O \ x  /
+                3     15                   3     15            
+
+&gt;&gt; bool(%);
+
+                                   TRUE
+</PRE>
+Here again, the results of a <EM>series</EM> command can be combined
+with any arithmetic operation.
+<P>
+
+
+<LI>
+
+
+<LI>Compute the expansion of <EM>log(sinh(z)) + log(cosh(z+w))</EM> 
+    at <EM>z=0</EM>.
+<PRE>
+&gt;&gt; series(ln(sinh(z))+ln(cosh(z+w)),z,3);
+
+                                      z sinh(w)     /  2 \
+                ln(z) + ln(cosh(w)) + --------- + O \ z  /
+                                       cosh(w)            
+</PRE>
+
+
+<LI>Subtract from the above expansion that of 
+    <EM>log( sinh(z) cosh(z+w) )</EM>.
+<PRE>
+&gt;&gt; %-series(ln(sinh(z)*cosh(z+w)),z,3);  
+
+                                   /  2 \
+                                 O \ z  /
+</PRE>
+
+
+<LI>Compute the expansion of <EM>log(sin x/x)</EM> at <EM>x=0</EM>.
+<PRE>
+&gt;&gt; series(ln(sin(x)/x),x);
+
+                              2    4            
+                             x    x       /  5 \
+                           - -- - --- + O \ x  /
+                             6    180           
+</PRE>
+
+
+<LI>
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Get a closed-form for the <EM>n</EM>th coefficient in the Taylor expansion
+    of <EM>exp -x sin x</EM> at <EM>x=0</EM>.
+<PRE>
+&gt;&gt; series(exp(-x)*sin(x),x,infinity);
+
+                /  n   n 1/2    / 3 n PI \                  \
+                | x  (2 )    sin| ------ |                  |
+             sum|               \   4    /                  |
+                | ------------------------, n = 0..infinity |
+                \         fact(n)                           /
+</PRE>
+
+
+<LI>Revert the Taylor expansion of <EM>sin(y) + cos(y)</EM> at <EM>y=0</EM>.
+<PRE>
+&gt;&gt; s:=series(sin(y)+cos(y),y=0);
+
+                        2    3    4    5                
+                       y    y    y    y           /  6 \
+                   y - -- - -- + -- + --- + 1 + O \ y  /
+                       2    6    24   120               
+
+&gt;&gt; t:=revert(s);
+
+             2            3                        5                     
+      (y - 1)    2 (y - 1)           4   17 (y - 1)          /        6 \
+  y + -------- + ---------- + (y - 1)  + ----------- - 1 + O \ (y - 1)  /
+         2           3                       10                          
+</PRE>
+We can check the result by asking for <EM>s @ t</EM> that computes the
+composition of <EM>s</EM> and <EM>t</EM>.
+<P>
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Transforms">Transforms</A></H2>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the Pade approximation to order <EM>2</EM> of <EM>exp(-x)</EM>
+    at <EM>x=0</EM>.
+<PRE>
+&gt;&gt; Dom::Pade(exp(-x),x,3);
+
+                                  - x + 2
+                                  -------
+                                   x + 2
+</PRE>
+The above fraction has the same Taylor expansion as <EM>exp(-x)</EM> up to 
+order <EM>2</EM>. The order given to <EMPade</EM> is the order of the error 
+term, like in the command <EM>series</EM>, therefore one more than the 
+wanted order.
+<P>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the Laplace transform of <EM>cos((w-1)t)</EM> with repsect to 
+    <EM>t</EM>.
+<PRE>
+&gt;&gt; laplace( cos((w-1)*t), t, s );
+
+                                     s      
+                               -------------
+                                2          2
+                               s  + (w - 1) 
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Compute the invers Laplace transform of result above.
+<PRE>
+&gt;&gt; ilaplace( %, s, t );
+
+                              cos(t (w - 1))
+</PRE>
+
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Differential">Differential Equations</A></H2>
+
+<LI>
+
+<LI>Solve the differential equation <EM>f''(t)+4f(t)=sin(2t)</EM> with 
+    the initial conditions <EM>f(0)=f'(0)=0</EM>.
+<PRE>
+&gt;&gt; ode({diff(f(t),t,t)+4*f(t)=sin(2*t),f(0)=0,D(f)(0)=0},f(t));
+
+ ode({D(f)(0) = 0, f(0) = 0, 4 f(t) + diff(f(t), t, t) = sin(2 t)}, f(t))
+
+&gt;&gt; solve(%);
+
+                        -- sin(2 t)   t cos(2 t) --
+                        |  -------- - ----------  |
+                        --    8           4      --
+</PRE>
+Here we first define the equation with the <EM>ode</EM> command, and 
+simply call <EM>solve</EM> on this equation.
+<P>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the above equation using Laplace transforms.
+<PRE>
+&gt;&gt; laplace( diff(f(t),t,t)+4*f(t)=sin(2*t), t, s);
+
+                                                                         2   
+  4 laplace(f(t), t, s) - D(f)(0) + s (s laplace(f(t), t, s) - f(0)) = ------
+                                                                        2    
+                                                                       s  + 4
+
+&gt;&gt; solve( subs(%,f(0)=0,D(f)(0)=0), laplace(f(t), t, s) );
+
+                              --     2     --
+                              |  ---------  |
+                              |    2     2  |
+                              -- (s  + 4)  --
+
+&gt;&gt; ilaplace( op(%),s,t );
+
+                          / sin(2 t)   t cos(2 t) \
+                        2 | -------- - ---------- |
+                          \    16          8      /
+</PRE>
+
+
+<LI>Solve the equation <EM>x^2 y'(x) + 3 x y(x) = sin x/x</EM>.
+<PRE>
+&gt;&gt; solve(ode(x^2*diff(y(x),x)+3*x*y(x)=sin(x)/x,y(x)));
+
+                        --     - 3    - 3        --
+                        |  C3 x    - x    cos(x)  |
+                        --                       --
+</PRE>
+
+
+<LI>Solve the equation <EM>y'' + y {y'}^3 = 0</EM> for <EM>y(x)</EM>.
+<PRE>
+&gt;&gt; solve(ode(diff(y(x),x,x)+y(x)*diff(y(x),x)^3=0,y(x)));
+
+             --            /                        3    \ --
+             |  C5, RootOf \ 6 x + 6 C6 + 6 C4 y - y , y /  |
+             --                                            --
+</PRE>
+This result says that the solution is either a constant function 
+<EM>y(x)=C5</EM>, or an algebraic function satisfying the equation 
+<EM>y(x)^3 = 6 C4 y(x)+6x+6 C6</EM> where <EM>C4</EM> and <EM>C6</EM> 
+are arbitrary constants.
+<P>
+
+
+<LI>Solve the equation <EM>d/dx ( y(x,a) = a*y(x,a) )</EM>.
+<PRE>
+&gt;&gt; solve(ode(diff(y(x,a),x)=a*y(x,a),y(x,a)));
+
+                               [C1 exp(a x)]
+</PRE>
+MuPAD recognizes equations with only one differential variable as ordinary
+differential equations.
+<P>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the equation <EM>y''(x) + k^2 *y(x) = 0</EM> with the initial
+    conditions <EM>y(0) = 0</EM> and <EM>y'(1)=0</EM>.
+<PRE>
+&gt;&gt; solve(ode({diff(y(x),x,x)+k^2*y(x),y(0)=0,D(y)(1)=0},y(x)));
+
+                               {0}
+
+&gt;&gt; solve(ode({diff(y(x),x,x)+(PI/2)^2*y(x),y(0)=0,D(y)(1)=0},y(x)));
+
+              {- C19 exp(1/2 I x PI) + C19 exp((- 1/2 I) x PI)}
+</PRE>
+The general equation has no solution valid for all values of <EM>k</EM>. 
+For <EM>k</EM> of the form <EM>Pi/2 + n*Pi</EM> where <EM>n</EM> is an integer, 
+it has solutions that MuPAD finds.
+<P>
+
+<LI>Solve the system <EM>x'(t)=x(t)-y(t), y'(t)=x(t)+y(t)</EM>.
+<PRE>
+&gt;&gt; sys := {diff(x(t),t)-x(t)+y(t)=0,diff(y(t),t)-x(t)-y(t)=0}:
+&gt;&gt; solve(ode(sys, {x(t),y(t)}));
+
+ [x(t) = (I) C5 exp((1 + I) t) + (- I) C6 exp((1 - I) t), y(t) = C5 exp((
+
+                      1 + I) t) + C6 exp((1 - I) t)]
+</PRE>
+
+
+<LI>Verify that the expression above is a solution.
+<PRE>
+&gt;&gt; eval(subs([op(sys)],op(%))); 
+
+                              [0 = 0, 0 = 0]
+</PRE>
+
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the triangular system 
+    <EM>x'(t) = x(t) * (1+cos(t) / (2+sin(t))) , y'(t)=x(t)-y(t)</EM>.
+<PRE>
+&gt;&gt; solve( ode({diff(x(t),t)=x(t)*(1+cos(t)/(2+sin(t))),
+                     diff(y(t),t)=x(t)-y(t)}, {x(t),y(t)}) );
+
+
+{ {                                 C1 cos(t) exp(t)   2 C1 sin(t) exp(t)
+{ { y(t) = C1 exp(t) + C2 exp(-t) - ---------------- + ------------------,
+{ {                                        5                   5
+
+                              } }
+x(t) = C1 exp(t) (sin(t) + 2) } }
+                              } }
+</PRE>
+
+    
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Solve the above system, one equation at a time.
+<PRE>
+&gt;&gt; solve( ode(diff(x(t),t)=x(t)*(1+cos(t)/(2+sin(t))),x(t)) );
+
+                         {C3 exp(t) (sin(t) + 2)}
+
+&gt;&gt; solve( ode(diff(y(t),t)=op(%)-y(t),y(t)) );
+
+    {                          C1 cos(t) exp(t)   2 C1 sin(t) exp(t) }
+    { C1 exp(t) + C2 exp(-t) - ---------------- + ------------------ }
+    {                                 5                   5          }
+</PRE>
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Operators">Operators</A></H2>
+
+
+<LI>Define the operator <EM>L = (D-1) (D+2)</EM> where <EM>D</EM> is 
+    the differentiation operator.
+<PRE>
+&gt;&gt; L := (D-id) @ (D+2*id);
+
+                          (- id + D )@(2 id + D)
+</PRE>
+In MuPAD, <EM>id</EM> stand for the identity, and <EM>@</EM> is the 
+composition operator.
+<P>
+
+
+<LI>Compute <EM>L(f)</EM> where <EM>L</EM> is the above defined operator.
+<PRE>
+&gt;&gt; L(f);
+
+                          - 2 f + D(f) + D(D(f))
+</PRE>
+
+
+<LI>Compute <EM>L(g)(y)</EM> where <EM>L</EM> is the above defined operator.
+<PRE>
+&gt;&gt; L(g)(y);
+
+                      - 2 g(y) + D(g)(y) + D(D(g))(y)
+</PRE>
+
+
+<LI>Apply the operator L to the function <EM>z --> A*sin(z^2)</EM>.
+<PRE>
+&gt;&gt; h:= func( A*sin(z^2), z ):
+&gt;&gt; L(h)(z);
+
+                 2             2             2         2      2
+        2 A cos(z ) - 2 A sin(z ) + 2 A cos(z ) - 4 A z  sin(z )
+</PRE>
+
+
+<LI>Define the operator <EM>T</EM> such that 
+   <EM>T(f)(x,a) = f(a) + f'(x) (x-a) + f''(a) (x-a)^2/2</EM>.
+<PRE>
+&gt;&gt; T:=proc(f) begin
+&amp;&gt;    eval(subsop(hold(func(f,x,a)),
+&amp;&gt;      1=_plus(f(a),_fconcat(D$k)(f)(a)/fact(k)*(x-a)^k$k=1..2)))
+&amp;&gt; end_proc:
+</PRE>
+
+
+<LI>Evaluate <EM>T</EM> for an unknown function <EM>f</EM>.
+<PRE>
+&gt;&gt; T(f);
+
+      func(f(a) + (-a + x)*D(f)(a) + (-a + x)^2*D(D(f))(a)*1/2, x, a)
+</PRE>
+
+
+<LI>Evaluate <EM>T</EM> for an unknown function <EM>g</EM> and a generic 
+    point <EM>(y,b)</EM>.
+<PRE>
+&gt;&gt; T(g)(y,b);
+
+                                                             2
+                                        D(D(g))(b) (- b + y ) 
+            g(b) + D(g)(b) (- b + y ) + ----------------------
+                                                  2           
+</PRE>
+
+
+<LI>Evaluate <EM>T</EM> for the function <EM>sin</EM> and a point 
+    <EM>(z,c)</EM>.
+<PRE>
+&gt;&gt; T(sin)(z,c);
+
+                                                            2
+                                           sin(c) (- c + z ) 
+              sin(c) + cos(c) (- c + z ) - ------------------
+                                                   2         
+</PRE>
+
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Programming">Programming</A></H2>
+
+
+<LI>Compute the Legendre polynomials directly.
+<PRE>
+&gt;&gt; p:= proc(n, x) begin
+    if n = 0 then 1
+    else normal(1/(2^n*fact(n)) * diff((x^2 - 1)^n, x$n))
+    end_if
+    end_proc:
+&gt;&gt; p(i,x) $ i=0..4;
+
+                   2                   3         2       4      
+                3 x           3 x   5 x      15 x    35 x       
+          1, x, ---- - 1/2, - --- + ---- , - ----- + ----- + 3/8
+                 2             2     2         4       8        
+</PRE>
+
+
+<LI>Compute the Legendre polynomials recursively, using their recurrence 
+    of order <EM>2</EM>.
+<PRE>
+&gt;&gt; pp:= proc(n, x) option remember; begin
+     if n=0 then 1
+     elif n=1 then x
+     else normal(((2*n - 1)*x*pp(n - 1, x) - (n - 1)*pp(n - 2, x))/n)
+     end_if
+     end_proc:
+&gt;&gt; pp(i,x) $ i=0..4;
+
+                   2                   3         2       4      
+                3 x           3 x   5 x      15 x    35 x       
+          1, x, ---- - 1/2, - --- + ---- , - ----- + ----- + 3/8
+                 2             2     2         4       8        
+</PRE>
+
+
+<LI>Evaluate the fourth Legendre polynomial at <EM>1</EM>.
+<PRE>
+&gt;&gt; pp(4,1);
+
+                                     1
+</PRE>
+The Legendre polynomials are already defined in the <EM>orthpoly</EM> 
+package, whence one can write <EM>orthpoly::legendre(4,1)</EM> too.
+<P>
+
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Translation">Translation</A></H2>
+
+
+<LI>Define the polynomial <EM>p = sum( i=1..5, ai*x^i )</EM>.
+<PRE>
+&gt;&gt; p:= poly(_plus(a.i * x^i $ i=1..5), [x]);
+
+                 /         2       3       4       5         \
+            poly \ x a1 + x  a2 + x  a3 + x  a4 + x  a5, [x] /
+</PRE>
+
+
+<LI>Apply Horner's rule to the above polynomial.
+<PRE>
+&gt;&gt; p(x);
+
+                 x (a1 + x (a2 + x (a3 + x (a4 + x a5))))
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Convert the above result to Fortran syntax.
+<PRE>
+&gt;&gt; generate::fortran(hold(p)=%);
+      p = x*(a(1)+x*(a(2)+x*(a(3)+x*(a(4)+x*a(5)))))
+</PRE>
+
+
+<!-- ======================================================================= -->
+<H2><A NAME="Boolean">Boolean Logic</A></H2>
+
+
+<LI>Evaluate <EM>TRUE and FALSE</EM>.
+<PRE>
+&gt;&gt; TRUE and FALSE;
+
+                                   FALSE
+</PRE>
+
+
+<LI>Simplify <EM>x or (not x)</EM>.
+<PRE>
+&gt;&gt; x or (not x);
+
+                                   TRUE
+</PRE>
+
+<LI><IMG SRC="/gifs/red/atten12.gif">
+    Simplify the boolean expression <EM>x or y or (x and y)</EM>
+<PRE>
+&gt;&gt; simplify( x or y or (x and y), logic );
+
+                                   x or y
+</PRE>
+
+</OL>
+<!-- ======================================================================= -->
+
+
+<HR>
+<H2><A NAME="Summary">Summary</A></H2>
+
+Number of solved problems:
+<B>122</B> over 131 (52 new problems with respect to MuPAD 1.2.2).
+As a comparison:<P>
+<B>Reduce</B>         can solve   <B> 65</B> problems,        <BR>
+<B>Axiom</B>          can solve   <B> 75</B> problems,        <BR>
+<B>Derive</B>         can solve   <B> 88</B> problems,        <BR>
+<B>Mathematica</B>    can solve   <B>102</B> problems,        <BR>
+<B>Maple</B>          can solve   <B>110</B> problems and     <BR>
+<B>PC Macsyma 2.1</B> can solve   <B>122</B> problems.        <BR>
+<!--
+<P>
+But none of these systems is public domain !</P>
+<P>
+You can get MuPAD by anonymous ftp from 
+<A HREF="ftp://math-ftp.uni-paderborn.de/MuPAD/">math-ftp.uni-paderborn.de:/MuPAD</A>
+(main site) and also from 
+<A HREF="ftp://ftp.inria.fr/lang/MuPAD/">ftp.inria.fr/lang/MuPAD</A> and 
+<A HREF="../../ftp.html">some other sites</A>. 
+<P>
+Also refer to 
+<A HREF="http://math-www.uni-paderborn.de/MuPAD/">http://math-www.uni-paderborn.de/MuPAD/</A> 
+for further information about new releases, news &amp; infos, FAQ's, a bibliography 
+and more ...
+<P>
+-->
+
+<P><STRONG>Acknowledgement:</STRONG> Many thanks to Michael Wester for his 
+very detailed comments on a first version of this paper.</P>
+
+
+<H2><A NAME="References">References</A></H2>
+<DL>
+  <DT>[<A NAME="Mupad93">Mupad93</A>]
+  <DD>Fuchssteiner, B., and al. 
+      <EM>MuPAD Benutzerhandbuch</EM>. 
+      Birkh&auml;user, Basel, 1993.
+      <P>
+  <DT>[<A NAME="Mupad94">Mupad94</A>]
+  <DD>Fuchssteiner, B., and al.       
+      <EM>MuPAD Tutorial</EM>.       
+      Birkh&auml;user, Basel, 1994.
+      <P>
+  <DT>[<A NAME="Gruntz95">Gruntz95</A>]
+  <DD>Gruntz, D.                                                           
+      <EM>On Computing Limits in a Symbolic Manipulation System</EM>.      
+      PhD thesis, Swiss Federal Institute of Technology Z&uuml;rich, 1995. 
+      <P>
+  <DT>[<A NAME="Shoup94">Shoup94</A>]
+  <DD>Shoup, V.
+      <EM>A new polynomial factorization algorithm and its implementation</EM>,
+      Aug. 1994. 46 pages. To appear in Journal of Symbolic Computation.
+      <P>
+  <DT>[<A NAME="Wester94">Wester94</A>]
+  <DD>Wester, M.                                                           
+      A review of cas mathematical capabilities.                           
+      <EM>Computer Algebra Nederland Nieuwsbrief 13</EM> (Dec. 1994), 41--48.
+      The newest version is available via WWW at
+      <A HREF="http://math.unm.edu/~wester/cas_review.html">http://math.unm.edu/~wester/cas_review.html</A> and via ftp from 
+      <A HREF="ftp://math.unm.edu/pub/cas/Paper.ps">math.unm.edu/pub/cas/Paper.ps</A>.
+</DL>
+
+<!-- *** contents end *** -->
+</TD>
+</TR>
+</TABLE>
+</P>
+
+<P><HR></P>
+<P><CENTER><FONT SIZE=-1><A HREF="mailto:info@sciface.com">Do you have
+questions or comments?</A></FONT></CENTER></P>
+<P><CENTER><FONT SIZE=-1>Copyright &COPY; SciFace Software GmbH &amp; Co.
+KG 1998</FONT></CENTER>
+
+
+</BODY>
+</HTML>
+

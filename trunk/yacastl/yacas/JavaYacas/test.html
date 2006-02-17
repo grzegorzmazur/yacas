@@ -1,0 +1,33 @@
+<HTML>
+  <HEAD>
+   <TITLE>Yacas in a browser</TITLE>
+  </HEAD>
+<BODY>
+
+
+<table width="75%" border="0" align="center">
+  <tr> 
+    <td colspan="3" height="201"> 
+      <p>
+<APPLET name="console" archive="yacas.jar" code="net.sf.yacas.ConsoleApplet" width=640 height=480>
+  <PARAM name="progressbar" value="true">
+  <PARAM name="boxmessage" value="Loading Yacas...">
+  <PARAM NAME="init1" value="Load(''yacasinit.ys'')">
+  <PARAM NAME="init2" value="PrettyPrinter(''PrettyForm'')">
+  Your browser does not support Java, so nothing is displayed.
+</APPLET>
+      </td>
+    <td colspan="3" height="201"> 
+      <p>
+<APPLET name="wizard" archive="yacas.jar" code="net.sf.yacas.WizardApplet" width=320 height=480>
+  <PARAM name="progressbar" value="true">
+  <PARAM name="boxmessage" value="Loading Yacas helper...">
+  Your browser does not support Java, so nothing is displayed.
+</APPLET>
+      </td>
+  </tr>
+</table>
+<p>
+
+</BODY>
+</HTML>

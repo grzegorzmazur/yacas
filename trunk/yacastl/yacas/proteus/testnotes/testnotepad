@@ -1,0 +1,40 @@
+
+
+Clear(x);
+PrettyPrinter("PrettyForm");
+
+Proteus'FontType(FlHelveticaBold);
+
+Proteus'FontSize(26);
+Proteus'AddLink("True","Some example calculations",False,False);
+
+
+Proteus'FontSize(18);
+Proteus'AddLink("True",
+"This is a test notepad.
+It has some basic calculations to play around with. This is
+experimental playing ground.
+ 
+Follows: a taylor series expansion
+",False,False);
+Proteus'FontSize(18);
+Proteus'AddCommand("Taylor(x,0,5)Sin(x);");
+
+Proteus'FontSize(18);
+Proteus'AddLink("True","And a derivative",False,False);
+Proteus'FontSize(15);
+Proteus'AddCommand("D(x)Sin(x);");
+
+Proteus'FontSize(18);
+Proteus'AddLink("True","And integration",False,False);
+Proteus'FontSize(15);
+Proteus'AddCommand("Integrate(x,a,b)Sin(x)");
+
+Proteus'FontSize(18);
+Proteus'AddLink("True","Summation",False,False);
+Proteus'FontSize(15);
+Proteus'AddCommand("Add(1 .. 10);");
+Proteus'FontColor(FlColorGreen);
+Proteus'AddLink("Notepad(FindFile(\"index\"));","Back to index",False,True);
+
+

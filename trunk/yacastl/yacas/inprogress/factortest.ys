@@ -1,0 +1,39 @@
+
+/*
+PowerMod(x_IsPositiveInteger, n_IsPositiveInteger, m_IsPositiveInteger) <--
+[
+  Local(result);
+  result:=1;
+  x:=Mod(x,m);
+  While(n != 0)
+  [
+    if ((n&1) = 1)
+  [
+      result := Mod(result*x,m);
+    ];
+    x := Mod(x*x,m);
+    n := n>>1;
+  ];
+  result;
+];
+nthroot(x,n):=
+[
+  Local(s,t,g,p,l,ln,pp);
+  Set(l,1);  Set(p,2);  Set(ln,1);
+  While ((1<<(n*p))<x) [Set(p,MathMultiply(p,2));Set(ln,MathAdd(ln,1));];
+  Set(t,1);  Set(g,1);  Set(s,1);  Set(pp,p);
+  While(l<=ln)
+  [
+    Set(g,MathMod(g-(t*g-x)*s,pp));
+    If(LessThan(g,0),Set(g,MathAdd(g,pp)));
+    Set(t,PowerMod(g,(n-1),pp*p));
+    If(LessThan(t,0),Set(t,MathAdd(t,pp*p)));
+    Set(s,MathMod(2*s-n*t*s*s,pp));
+    If(LessThan(s,0),Set(s,MathAdd(s,pp)));
+    Set(l,MathAdd(l,1));
+    Set(pp,MathMultiply(p,pp));
+  ];
+  g;
+];
+*/
+

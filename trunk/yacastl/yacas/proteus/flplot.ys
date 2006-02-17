@@ -1,0 +1,147 @@
+
+/*
+  Simple function plotter using plotter
+*/
+
+
+/* Globals: dowidth, plist, mlist, crect*/
+10 # FlPlot(f_IsList,_xfrom,_xto,_width) <--
+(
+[
+  Local(dx,x,y,min,max,i,nr);
+  dowidth := width;
+  crect:={0,0,0,0};
+  nr := Length(f);
+  y:=FillList(0,Length(f));
+  plist:=FillList(0,Length(f));
+  dx:=(xto-xfrom);
+  x := N(xfrom + dx*(0 .. (width-1) )/(width-1));
+  y := N(Eval(f));
+
+  min:=Min(Flatten(y,"List"));
+  max:=Max(Flatten(y,"List"));
+  max:=max-min;
+
+  y:=y-min;
+  if (max>0) [y:=y/max;];
+  plist := Eval(y);
+
+  Local(execute);
+  execute:={};
+  
+  `FlGraphStart(Hold([
+    Local(dowidth,crect,plist,min,max);
+    dowidth:=(@dowidth);
+    crect:=(@crect);
+    plist:=(@plist);
+    min  :=(@min);
+    max  :=(@max)+(@min);
+    @flplot2d2;
+  ]),340,260);
+  True;
+]);
+
+20 # FlPlot(_f,_xfrom,_xto,_width) <--
+     FlPlot({f},xfrom,xto,width);
+
+
+GraphColorForLine(1) <-- FlColor(255,0,0);
+GraphColorForLine(2) <-- FlColor(0,255,0);
+GraphColorForLine(3) <-- FlColor(0,0,255);
+GraphColorForLine(0) <-- FlColor(255,0,255);
+
+  flplot2d2 := Hold(
+  [
+    Local(flx,fly,flw,flh,i,line,ll);
+    
+    flx:=12;
+    fly:=2;
+    flw:=322;
+    flh:=242;
+
+    Local(nr);
+    nr := Length(plist);
+    /* Get the screen extent */
+//    if (crect != FlWindow) 
+    [
+      mlist:=FillList(0,nr);
+      N(
+      For(line:=1,line<=nr,line++)
+      [
+        ll:=FillList(0,dowidth);
+        For(i:=1,i<=dowidth,i++)
+        [
+          ll[i] := N({flx+((i-1)*flw)/(dowidth-1),fly+flh-(plist[line][i]*flh)});
+        ];
+        mlist[line] := ll;
+      ]);
+    ];
+//    crect := FlWindow;
+    /* Clear the screen */
+    FlColor(255,255,255);
+    FlBeginPolygon();
+    FlVertex(0,0);
+    FlVertex(0,260);
+    FlVertex(341,261);
+    FlVertex(341,0);
+    FlEndPolygon();
+
+
+    // Grey box
+    FlColor(224,224,224);
+    FlBeginPolygon();
+    FlVertex(flx,fly);
+    FlVertex(flx,fly+flh);
+    FlVertex(flx+flw+1,fly+flh+1);
+    FlVertex(flx+flw+1,fly+1);
+    FlEndPolygon();
+
+    FlColor(0,0,0);
+    For(line:=1,line<=2,line++)
+    [
+      FlBeginLine();
+      FlVertex(flx-line,fly-line);
+      FlVertex(flx-line,fly+flh+line);
+      FlVertex(flx+line+flw,fly+flh+line);
+      FlVertex(flx+line+flw,fly-line);
+      FlVertex(flx-line,fly-line);
+      FlEndLine();
+    ];
+
+    For(line:=1,line<=Length(mlist),line++)
+    [
+        Local(ll,h);
+        ll:=mlist[line];
+        GraphColorForLine(line&3);
+        FlBeginLine();
+        For(i:=1,i<=dowidth,i++)
+        [
+          if (Length(ll)>0)
+          [
+            h:=Head(ll);
+            if (IsList(h)) 
+            if (Length(h) > 1)
+              if (IsNumber(h[1]) And IsNumber(h[2]))
+              [
+                FlVertex(h[1],h[2]);
+              ];
+            ll:=Tail(ll);
+          ];
+        ];
+        FlEndLine();
+     ];
+
+//Also draw minimum and maximum value of y, so you can see a rough
+// estimate of the scale
+     FlColor(0,0,0);
+     FlFont(FlHelvetica,10);
+     FlDraw(ToString()Write(max),20,10+fly);
+     FlDraw(ToString()Write(min),20,flh-fly);
+
+   ]);
+
+
+
+
+
+

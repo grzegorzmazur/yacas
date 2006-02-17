@@ -1,0 +1,355 @@
+
+
+
+			How Yacas Deals With Sets of Solutions
+
+		Introduction
+
+*REM @@@@@@@@@@@@@@@@@@@@@@@@
+THIS IS A DRAFT, THE FUNCTIONALITY DESCRIBED BELOW IS NOT FULLY
+IMPLEMENTED YET!!! THIS IS JUST A PROPOSAL FOR HOW SOLVE MIGHT
+WORK.
+
+*HEAD (This is a draft)
+
+Worries: 
+
+*	need to change all code that uses Solve
+*	need a lot of changes in documentation
+*	arguments to solve are a bit more verbose than the previous
+version: Solve({eq1,eq2},vars) versus Solve(eq1 And eq2,vars). Suddenly
+things like Solve(leftlist==rightlist,vars) is not possible any more.
+This has to be done with extra commands (which is ok?). It can not
+stay the way it was, because lists now mean something else, a collection
+of disjunct solutions.
+
+*REM @@@@@@@@@@@@@@@@@@@@@@@@
+
+The difference between a problem stated and a solution given is
+a subtle one. From a mathematical standpoint, 
+
+	In> Integrate(x,0,B)Cos(x)
+	Out> Sin(B);
+
+And thus
+
+	Integrate(x,0,B)Cos(x) == Sin(B)
+
+is a true statement. Furthermore, the left hand side is mathematically
+equivalent to the right hand side. Working out the integration, to
+arrive at an expression that doesn't imply integration any more is
+generally perceived to be a more desirable result, even though
+the two sides are equivalent mathematically.
+
+This implies that the statement of a set of equations declaring
+equalities is on a same footing as the resulting equations stating
+a solution: 
+
+$$ a*x+b==c => x==(c-b)/a $$. 
+
+If the value of $x$ is needed, the right hand side is more desirable.
+
+Viewed in this way, the responsibility of a {Solve} function could
+be to manipulate a set of equations in such a way that a certain
+piece of information can be pried from it (in this case the value
+of $ x == x(a,b,c) $.
+
+A next step is to be able to use the result returned by a {Solve}
+operation. 
+
+		Implementation Semantics of Solve in Yacas
+
+Suppose there is a set of variables that has a specific combination
+of solutions and these solutions need to be filled in in an expression:
+the {Where} operator can be used for this:
+
+	In> x^2+y^2 Where x==2 And y==3
+	Out> 13;
+
+Solve can return one such solution tuple, or a list of tuples.
+The list of equations can be passed in to Solve in exactly the same
+way. Thus:
+
+	In> Solve(eq1,var)
+	Out> a1==b1;
+	In> Solve(eq1 And eq2 And eq3,varlist)
+	Out> {a1==b1 And a2==b2,a1==b3 And a2==b4};
+
+These equations can be seen as simple simplification rules, the
+left hand side showing the old value, and the right hand side
+showing the new value. Interpreted in that way, {Where} 
+is a little simplifier for expressions, using values found by Solve.
+
+Assigning values to the variables values globally can be handled with
+an expression like
+
+	solns := Solve(equations,{var1,var2});
+	{var1,var2} := Transpose({var1,var2} Where solns);
+
+Multiple sets of values can be applied:
+
+	In> x^2+y^2 Where {x==2 And y==2,x==3 And y==3}
+	Out> {8,18};
+
+This assigns the the variables lists of values. These variables
+can then be inserted into other expressions, where threading will
+fill in all the solutions, and return all possible answers.
+	
+Groups of equations can be combined, with
+
+	Equations := EquationSet1 AddTo EquationSet2
+
+or, 
+
+	Equations := Equations AddTo Solutions;
+
+Where {Solutions} could have been returned by {Solve}. This last
+step makes explicit the fact that equations are on a same footing,
+mathematically, as solutions to equations, and are just another
+way of looking at a problem.
+
+The equations returned can go farther in that multiple solutions
+can be returned: if the value of $ x $ is needed and the equation
+determining the value of $ x $ is $ x := Abs(a) $, then a set
+of returned solutions could look like:
+
+	Solutions := { a>=0 And x==a, a<0 And x== -a }
+
+The semantics of this list is:
+
+	either a >= 0 And x equals a, or
+	       a < 0 And x equals -a
+
+
+When more information is published, for instance the value
+of $ a $ has been determined, the sequence for solving this
+can look like:
+
+	In> Solve(a==2 AddTo Solutions,{x})
+	Out> x==2;
+
+The solution {a<0 And x==-a} can not be satisfied, and thus is removed
+from the list of solutions.
+
+Introducing new information can then be done with the AddTo
+operator:
+
+	In> Solutions2 := (a==2 AddTo Solutions);
+	Out> { a==2 And a>=0 And x==a, a==2
+	  And a<0 And x==-a };
+
+In the above case both solutions can not be true any more, and thus
+when passing this list to {Solve}:
+
+	In> Solve(Solutions2,{x})
+	Out> x==2;
+
+{AddTo} combines multiple equations through a tensor-product like
+scheme:
+
+	In> {A==2,c==d} AddTo {b==3 And  d==2}
+	Out> {A==2 And b==3 And d==2,c==d
+	  And b==3 And d==2};
+	In> {A==2,c==d} AddTo {b==3, d==2}
+	Out> {A==2 And b==3,A==2 And d==2,c==d
+	  And b==3,c==d And d==2};
+
+A list {a,b} means that a is a solution, OR b is a solution.
+AddTo then acts as a AND operation:
+	(a or b) and (c or d) => 
+	(a or b) Addto (c or d) => 
+	(a and c) or (a and d) or (b and c) or (b and d)
+
+
+{Solve} gathers information as a list of identities. The second
+argument is a hint as to what it needs to solve for. It can be a list
+of variables, but also "Ode" (to solve ordinary differential equations),
+"Trig" (to simplify for trigonometric identities), "Exp" to simplify
+for expressions of the form $ Exp(x) $, or "Logic" to simplify
+expressions containing logic. The "Logic" simplifier also should
+deal with $ a > 2 And a < 0 $ which it should be able to reduce 
+to {False}.
+
+{Solve} also leaves room for an 'assume' type mechanism, where the
+equations evolve to keep track of constraints. When for instance
+the equation $ x == Sin(y) $ is encountered, this might result
+in a solution set 
+
+	y == ArcSin(x) And x>=-1 And x <= 1
+
+
+		Use Case Scenarios
+
+*REM TODO@@@@ THIS SECTION IS GOING TO CONTAIN EXPLICIT EXAMPLES OF
+SOLVING INTERESTING SETS OF EQUATIONS, AND SHOWING THAT THE SOLVE
+SCHEME IS ACTUALLY EASY TO USE.
+
+*HEAD To be filled in
+
+
+
+
+			Reflection
+
+			Multi-valued expressions
+
+			Assume facilities
+
+			Defining a new function in the kernel
+
+This section will explain how to add a new kernel-level
+function to {Yacas}, and will explain why it is this way.
+
+			A user interface for Yacas
+
+In practice, for power users, {Yacas} is already a convenient
+system when accessible from the command line. The command
+line allows one to enter calculations rapidly when the user
+already knows the commands that are available, and knows
+what he wants to do and what is possible. This unfortunately
+includes all developers working on {Yacas}, so there is
+little incentive to create a user interface front end
+for {Yacas}.
+
+Nevertheless, this chapter will try to specify a graphical
+user interface that services users other than power users.
+
+The single big usability issue is currently that one
+already needs to know the system a bit before one can
+use it. The user is greeted with an intimidating flashing
+cursor, waiting for the user to enter a command. The user
+needs to know which commands are available, and when to use
+those commands. In short, the user, whether it is a new
+or experienced user, can be greatly helped with information
+that is more readily available.
+
+		Use case scenarios
+
+There are two use case scenarios the author can think of:
+
+*	1. The user wants to have some fun, and enjoys playing
+around with math. 
+*	1. The user has a specific calculation that needs to be
+performed, and hopes {Yacas} can do it quickly.
+
+The following sections describe the possible features a
+graphical front end could offer to facilitate these.
+
+		Yacas for fun
+
+When a user is bored and wants to be entertained, and when
+entertainment includes having fun with math, the user might
+start up the (currently hypothetical) graphical user interface
+and start to explore the possibilities. The first question
+the user will ask is "What can Yacas do?", and when an interesting
+subject is found, perhaps play with it, entering various parameters
+to a calculation model, generate graphs, and maybe even learn
+something new along the way.
+
+		Yacas for profit
+
+When the user has a real world problem, a calculation that
+needs to be performed, one that he knows he can do perhaps
+by looking it up in a book or writing dozens of pages
+until he reaches the result, or perhaps verify that a calculation
+is correct, the goal is much narrower. The user already 
+knows what he wants to do, but might want to know <i>how</i>
+he can do it.
+
+		The current solution
+
+With the command line version of {Yacas}, the solution
+for the above mentioned use case scenarios is to 
+read the manual, and perhaps try some examples until the
+user understands the tools available.
+
+The user can then play around with some commands, and
+finally set up a file with code that will perform the
+calculation and run that file.
+
+A graphical user interface offers the opportunity to
+allow the user to access relevant information more
+quickly than scanning the hundreds of pages of
+documentation (with the chance of getting lost).
+
+Of course documentation in combination with examples that show
+how to do specific types of calculations go a long
+way when a user needs to find out how to do a specific
+calculation, or wants to know what is possible.
+However, a user interface might provide the required
+information more readily.
+
+		Possible additional ways to offer information
+
+	    "What is available?" information
+
+When typing in a command, it happens often (even with experienced
+users) that the user forgot the exact arguments to that function,
+or the order of the arguments. 
+
+One solution might be to pop up a tip box with the possible
+ways the command can be completed.
+
+When the user doesn't know which command to use in the first
+place, the system could provide a list of possible commands,
+perhaps categorized by type of operation. For each command
+a short blurb could be shown about what the routine does,
+when it is applicable, and perhaps some examples for the user
+to try out to get a handle on the command.
+
+Arguably the last option is offered by the manual already.
+
+	    "How do I ...?" information
+
+For more elaborate use, the user might be better off
+with example calculations. A well-documented example
+showing how a calculation is done goes a long way.
+
+The user can then use the example as a template for his
+own calculation. The user interface could even offer 
+a facility to have a template for a calculation, where
+the user enters some final parameters for that specific
+calculation. With such a template, most of the work is
+already done, and all the user needs to do is change
+some parameters to reflect the calculation he wants to do.
+
+		Other facilities
+
+In addition to the features described above, where
+a graphical front end offers information in a more
+flexible way, there are other facilities a graphical
+front end could offer.
+
+	    Repeated calculations
+
+Computers are good at doing repetitive tasks. If some
+task is performed often, it might be a good idea to 
+extend the "template example with parameters" model
+to actually allow the user to design a user interface
+for a specific calculation so a calculation using that
+model can be entered more quickly. Enter a few parameters,
+and out come the numbers and graphs.
+
+
+	    Facilities for programmers
+
+For developers, a good debugger could be handy. The
+usual facilities like putting breakpoints, stepping
+through code, seeing (the values of) local variables,
+could be handy. The command line version already offers
+a useful command line interactive debugger, so this
+feature might not be too important.
+
+A tree view of the source code, allowing a programmer
+to easily navigate through the code could be useful.
+As a project (and the code body) becomes larger and larger
+it becomes harder to find things in the scripts.
+
+
+
+
+
+
+
+
+

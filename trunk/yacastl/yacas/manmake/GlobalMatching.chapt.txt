@@ -1,0 +1,490 @@
+
+
+			Algorithms requiring global pattern matchers
+
+		Introduction
+
+The default {Yacas} transformation rules work on expressions
+locally. For instance, one could write a transformation rule
+to replace $ 1*x $ with $ x $. This facility is not suitable
+for transformation rules that require a more global scope.
+For instance, this facility does not easily allow one to
+transform an expression $ a*b*c*a $ to $ a^2*b*c $. 
+
+This type of transformation is often required, and this chapter
+discusses this issue. The types of transformations required
+will be discussed, along with possible implementation schemes.
+
+		Types of transformations 
+
+	    Selections within terms
+
+A term is an expression with only factors, subexpressions multiplied.
+Its general form is $ a[1] * ... * a[n] $ for $ n $ factors.
+
+The first, basic type of expression one would like to be able
+to match is an expression like $ ... * a^n * ... * a^m * ... $, which
+in its most general form discovers that an expression 
+only contains multiplications, and that it contains a
+factor $ a^n $ and a factor $ a^m $. We would like this
+expression to be changed into $ ... * a^(n+m) * ... $.
+
+Another example is simplification using trigonometric identities,
+where a term containing two trigonometric factors is reduced to
+two terms with each one trigonometric factor. Identities like
+
+$$ Cos(u)*Sin(v) = (1/2)*(Sin(v-u) + Sin(v+u)) $$ 
+
+are easy to write down in one line. Ideally, {Yacas} would
+allow a programmer to write this down in one line and then
+have a global pattern matcher recognize when this pattern
+is applicable, and apply the transformation rule.
+
+Other examples include:
+
+$$ a^n/a^m = a^(n-m) $$
+
+$$ Exp(x)*Exp(y) = Exp(x+y) $$
+
+and for a given integer $ k $:
+
+$$ (n+k)! /(n!) = (n+k) * (n+k-1) * ... * (n+1) $$
+
+These are all patterns that could be found within one term
+containing only factors.
+
+
+	    Selections across terms
+
+In addition to being able to match a pattern within one term,
+it is sometimes useful to be able to recognize patterns
+across multiple terms. One example is 
+
+$$ Exp(x) + 2*Exp(x/2) + 1 $$
+
+In this case, it is possible to write this expression as:
+
+$$ Exp(x/2)^2 + 2*Exp(x/2) + 1 = 0 $$
+
+which in turn can be simplified further, by setting 
+
+$$ y = Exp(x/2) $$
+
+yielding 
+
+$$ (y+1)^2 = 0 $$
+
+and thus $ y = -1 $ , $Exp(x/2) = -1 $ after factoring.
+It then follows that the solution is $ x = I*2*Pi $:
+
+	In> Solve((Exp(x/2)+1)^2==0,x)
+	Out> Complex(0,2*Pi);
+	In> f(x):=N(Exp(x)+2*Exp(x/2)+1)
+	Out> True;
+	In> f(Complex(0,2*Pi))
+	Out> 0;
+
+
+		Flexible pattern matching
+
+In addition to using more flexible, global pattern
+matching facilities to simplify expressions, it is
+sometimes necessary to use such more global pattern
+matchers for other algorithms also. 
+
+For instance, for trigonometric identities, there is sometimes
+an exact result if the argument is a rational number
+times $ Pi $. One would like to be able to recognize
+$ Pi/2 $ , $ (1/2)*Pi $ , $ Pi*(1/2) $ , $ 4*Pi*(1/8) $,
+and perhaps even $ 0.5*Pi $ as being half Pi.
+
+With integration, there is often an antiderivative
+for an expression if an argument can be written as
+$ a*x+b $ where x is the variable being integrated
+over, and $ a $ and $ b $ are constants that do not
+depend on $ x $.
+
+
+
+		Towards a solution
+
+As soon as this facility is available, it is expected
+to be used frequently, and deep in the system. The
+consequence is that it should be implemented efficiently.
+
+Furthermore, in keeping with the rest of the design of the
+language, it should be possible to write only a few lines
+of code in order to specify patterns to be matched
+and transformations to be performed.
+
+
+	    Steps local transformation rules are suited for
+
+Before matching global patterns, the local transformation
+rules (which are efficient) can be used to do preliminary
+cleaning up of expressions. Expressions like $ a*(b+c)*d $
+can easily be converted to $ a*b*d + a*c*d $, or 
+$ a/(b/c) $ can be easily converted to $(a*c)/b $.
+
+
+	    Patterns within terms
+
+For patterns within terms, it is necessary to gather
+the relevant information from the term in order to be
+able to decide if a pattern matches. Suppose we want
+to recognize an expression of the form described
+in the beginning of this chapter: 
+
+$ ... * a^n * ... * a^m * ... $ .
+
+One solution is to do it in scripts. One needs to gather
+all the factors. The first option is to write a custom
+bit of code for this type of transformation, where
+all factors are gathered in a list, combining the symbol
+with its exponent. While traversing the expression,
+one adds items to this list. 
+
+For instance for an expression
+$ a*b^2*c*d*a $ one would first add {(a,1)}, then {(b,2)},
+{(c,1)} and {(d,1)}. Lastly, for the last factor, $ a $,
+the system could notice that it was already in the list,
+and just update this item to {(a,2)}. One would end up
+with the set {((a,2),(b,2),(c,1),(d,1))}. This could be
+called an internal representation. 
+
+After this process finishes, one can traverse this list,
+producing the required result $ a^2*b^2*c*d $.
+
+This process can be generalized. The steps involved are:
+
+*	1. traverse the expression to gather information (building an internal representation).
+*	1. for each item, combine it with the internal database of
+information already gathered. The internal database for this expression
+will change. The way it will change depends on the type of simplification
+needed.
+*	1. The internal database representing the required information
+from the expression is finished. It is an internal representation,
+however, so it needs to be converted back to a normal expression.
+
+The above scheme is flexible, in that the specific method of
+adding a sub-expression to the already existing database 
+can be customized for different types of simplification or
+pattern matching. transformations could even be done in-place.
+The specific algorithm for adding a term to the database then
+acts as a filter. 
+
+The difficult part is to choose the form of the database, as
+that ultimately defines the types of transformations and
+simplifications that are possible.
+
+When only transformations within one term are needed, the
+situation is not too difficult. 
+
+$$ (a[1][1] * ... *a[1][n1]) / (b[1][1] * ... * b[1][m1]) + ... +
+(a[p][1] * ... *a[p][np]) / (b[p][1] * ... * b[p][mp]) $$
+
+Eg. one could write an expression as a set of terms, where
+each term is a rational function, consisting of a numerator
+and denominator, each with just simple factors. One could
+then process each term, and maintain a database for each term.
+Thus one could readily simplify $ a^n/a^m $ to $ a^(n-m) $,
+or $ (n+1)! /(n!) $ to $ (n+1) $. The trigonometric simplification
+scheme described earlier in this chapter would be more sophisticated,
+as it would require changing one term to two (as a multiplication
+within a term is changed into an addition of two terms).
+
+	    Specifying transformation rules in the simplification scheme
+
+The algorithm described in the simplification section requires
+that factors be added to the database of information on the
+term the factor belongs to one at a time. 
+
+For instance, the 
+database might already have an entry representing $a^n$. 
+When a new term $a^m$ is encountered, one would want to
+combine these two into $a^(n+m)$. This is easy to do with
+custom code that can directly access the database internal
+representation.
+
+At the same time, one would ideally want to specify this
+transformation using notation similar to
+
+$$ a^n*a^m = a^(n+m) $$
+
+In stead of writing custom hand-written code for this
+transformation, one would want a system were the
+$a^n$ part is matched in the database and the $a^m$
+part in the expression being processed. The result,
+$a^(n+m)$, would be the result, and one would want the
+system to remove the $a^n$ from the database and put back
+$a^(n+m)$. 
+
+Actually, for efficiency reasons, one would
+want the system to change $a^n$ to $a^(n+m)$ in the
+database. But this is a very specific example where this
+is easily possible. For transformation rules like
+
+$$ (n+k_InInteger)! / n! = (n+k)* ... * (n+1) $$
+
+one needs a database for a rational function, and
+one needs to remove one factor and replace it with
+many other factors.
+
+In the case of the trigonometric identities, one
+needs to replace something of the form $A*B$ to
+something of the form $C+D$, which requires actually
+removing the actual term at hand (and not just one 
+factor) and replace it with two terms.
+
+One option is to have the $a^n*a^m=a^(n+m)$ 
+simplification be performed automatically, then
+convert the entire expression into internal 
+representation with one additional facility in the
+internal representation that one additional collection
+is made; one can collect factors or terms that
+one knows will be relevant for the simplification.
+when simplifying factorials, one can collect all
+factorials in a special part of the internal representation
+so they are all grouped together. The algorithm can
+then proceed to process only these parts. For instance,
+
+$$ ((n+2)! * a * b) / (c*n!) $$
+
+could be converted to
+
+$$ ((n+2)! * (n!)^(-1)) * a*b*c^-1 $$
+
+So that the left side part can be further simplified,
+resulting in 
+
+$$ (n+2) * (n+1) * a*b*c^-1 $$
+
+
+	    Dealing with rational functions
+
+A problem arises with rational functions. In the algorithm 
+described above for traversing an expression, gathering
+information, the fact that the numerator and denominator of
+the term being examined can have a greatest common denominator 
+which does not equal one, has not been taken into account.
+
+This can be a problem when the expression is brought into
+the form described above, as this normalization step
+would first convert $ (a+b)/c $ to $ a/c + b/c $. This breaks
+up the expression. If $ (a+b) $ and $ c $ had common factors,
+this is now lost.
+
+Thus the rational expression first needs to be scanned for greatest
+common divisors before being split up.
+
+The problem of finding greatest common divisors is
+a little bit more complicated than described here. For instance 
+the following expression
+
+$$ x/(x^2-1)+a+1/(x^2-1) $$
+
+is actually equivalent to 
+
+$$ a + 1/(x-1) $$
+
+This can only be discovered if the first and the last term are
+combined into one, leaving out the middle term. Perhaps the
+fact that the two denominators have a greatest common divisor
+not equal to one can be used to find terms that can be combined.
+
+Another option is to not split up rational terms
+when there is an addition involved in the denominator,
+as little is expected to be gained from the simplification
+any way after removing greatest common divisors. In stead,
+the numerator and denominator could be simplified as
+sub-expressions in their own simplification step.
+
+	    Global pattern matching in general
+
+Finding patterns in terms has been described above.
+The idea presented was to have a generic database
+format in which to collect information about the expression,
+and then have a routine traverse the expression, applying
+a filter to each term, bringing all terms to the database.
+
+This scheme might not be the most suitable solution when
+matching patterns for use in other algorithms. In such cases
+one is generally interested in whether an expression can
+possibly be brought into a specific form, which does not
+necessarily match the form the simplifier brings the
+expression in.
+
+Suppose we want to find out if an expression matches
+the form $ a*x+b $ where both $ a $ and $ b $ don't
+depend on $ x $. Further more, the algorithm is likely
+to need the actual values for $ a $ and $ b $.
+
+If the algorithm for simplification described earlier were
+used, one would end up with a list of terms, each with
+lists of factors in the intermediate format. The information
+that is needed would be missing. For example:
+
+$$ A+B+C*x+D+E*x+F $$
+
+would have to be written down as 
+
+$$ (C+E)*x + (A+B+D+F) $$
+
+before one can recognize that $ a*x+b $ fits, and 
+find the exact forms for $a$ and $b$.
+
+In a sense the method for arriving at this stage is 
+almost the same: first gather information, and then
+return the information in the requested form. The
+problem is that this feature, global pattern matching,
+requires more flexibility. 
+
+The fact that the algorithms and internal representation
+of the simplification scheme described above are not 
+suited for this task can be seen from the following
+example; suppose we wanted to match $ a*x+b $ to the
+expression
+
+$$ (A+x+B)/(E+D)+E $$
+
+One would want this expression written out as
+
+$$ 1/(E+D)*x + ((A+B)/(E+D)+E) $$
+
+so that the constants can readily be identified.
+However, as discussed in the section on rational
+terms, for simplification it is not wise to 
+split up such rational terms. It is required
+for this example, however. The filtering step
+could be made more sophisticated so that this
+operation can be dealt with.
+
+A more serious concern is with efficiency. 
+Apart from splitting up the expression in 
+too small chunks (one only needs $a$ and $b$,
+and thus would only need to gather these),
+there is another danger: the conversion to
+internal representation continues until the
+full expression is processed. 
+
+In practice, while the expression is being processed,
+if custom code were written, the matcher
+could decide <i> while </i> matching, that the
+pattern will never fit, and terminate immediately.
+For example, $a$ and $b$ should be independent of
+$x$, so if a factor like $Sin(x)$ is encountered
+the matching can stop immediately.
+
+If the scheme described in the section dealing with
+simplification is to be used for general pattern
+matching also, another step needs to be added to
+it; the filter operation should be able to terminate
+the process when it decides early on that code
+further upstream will fail any way.
+
+
+	    Other tools at our disposal
+
+The procedure for simplification offers some interesting
+opportunities. Apart from the filter returning early
+on whether it succeeded or failed, one could already
+have the filter perform transformations on (parts of)
+the expression, and return the transformed and untransformed
+parts.
+
+
+		Composite factors
+
+One important issue with simplification is normalization.
+Factors can be functions in stead of simple variables.
+In order to decide that $Sin(a*b)$ equals $Sin(b*a)$ and
+thus simplify $Sin(a*b)-Sin(b*a)$ to zero, it suffices
+for the system to bring expressions to normal form.
+
+In this case, if $Sin(b*a)$ were first converted to
+$Sin(a*b)$, the system could readily collect terms
+and discover that the terms described above cancel
+each other out and result in zero.
+
+For this, the system needs to impose an order for
+factors. For this, {LessThan} can be used. 
+{LessThan} defines an ordering for atoms:
+
+	In> LessThan(a,b)
+	Out> True;
+	In> LessThan(b,a)
+	Out> False;
+	In> LessThan(2,a)
+	Out> True;
+	In> LessThan(2,1)
+	Out> False;
+	In> LessThan(a,"b")
+	Out> False;
+
+Ordering for composed expressions can be created based on
+the {LessThan} function.
+
+		Simplification in the face of non-commuting algebras
+
+In non-commuting algebras, the rule
+
+$$ A*B = B*A $$
+
+does not hold. This has consequences for a system that
+is trying to simplify the expression passed in. When
+gathering information to be stored in the database,
+what the operation is in fact doing is moving factors
+around until they are next to each other and can be
+combined. For instance,
+
+$$ A^2*B*C*A $$
+
+would first be re-ordered to
+
+$$ A^2*A*B*C $$
+
+which then readily converts to 
+
+$$ A^3*B*C $$
+
+Extending this system to also support non-commuting 
+algebra involves disallowing these swaps. For 
+groups of symbols, one could specify that two 
+symbols do not commute. For the above example,
+supposing $A$ and $B$ do not commute, the resulting 
+expression could then terminate as:
+
+$$ A^2*B*A*C $$
+
+One step further would be to support commutation relations.
+Suppose that after one established that $A$ and $B$
+do not commute, that the following relation holds:
+
+$$ A*B - B*A = C $$
+
+Then the part of the expression $B*A$ could be converted
+to $A*B-C$. This could then result in the expression:
+
+$$A^2*(A*B-C)*C$$
+
+Which then can be written as:
+
+$$A^3*B-A^2*C^2$$
+ 
+Factoring could then yield:
+
+$$A^2*(A*B-C^2)$$
+
+A potential risk is with the global transformation rules,
+which do not necessarily adhere to the rules for non-commuting
+algebras. A special non-commuting multiplication operator
+could be defined for this to guarantee that this is never
+a problem.
+
+
+
+
+
+
+
+

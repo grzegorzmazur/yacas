@@ -1,0 +1,1076 @@
+\input texinfo
+@setfilename yacas-notebook.info
+@setchapternewpage off
+@c @tex
+@c \input yacas-notebook.sty
+@c \catcode`\@=0
+@c @end tex
+@macro yacas
+@emph{Yacas}
+@end macro
+@macro ynb
+@code{Yacas-Notebook}
+@end macro
+@settitle @ynb{}
+
+@ifinfo
+This file documents Yacas-Notebook
+
+Copyright (C) 1991 Dan Dill, 2000, 2001 Jay Belanger
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission notice
+identical to this one except for the removal of this paragraph (this
+paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+section entitled ``GNU General Public License'' is included exactly as
+in the original, and provided that the entire resulting derived work is
+distributed under the terms of a permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the section entitled ``GNU General Public License'' may be
+included in a translation approved by the author instead of in the
+original English.
+@end ifinfo
+
+@titlepage
+@title @ynb{}
+@c @subtitle @today
+@author Jay Belanger
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1991 Dan Dill, 2000, 2001 Jay Belanger
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Free Software Foundation.
+@end titlepage
+
+@ifinfo
+@node Top, Introduction, (dir), (dir)
+@top @ynb{}
+@ynb{} is a major mode for Emacs that allows the user to write documents
+while interacting with @yacas{}.
+@end ifinfo
+
+@menu
+* Introduction::                
+* Cells ::                      
+* Evaluating cells::            
+* Initialization Cells::        
+* Referencing Other Cells::     
+* WEB::                         
+* Miscellaneous::               
+* Installation::                
+* Customization::               
+* Yacas mode::                  
+* Running Yacas Interactively::  
+* Yacas-Notebook mode commands::  
+* Yacas mode commands::         
+* AUCTeX commands::          
+
+@end menu
+
+@node Introduction, Cells , Top, Top
+@chapter Introduction to @ynb{}
+
+@noindent
+@ynb{} is a major mode for Emacs that allows the user to write documents
+while interacting with @yacas{}.@footnote{It was originally base on
+@code{EMuPAD}, written by the same author, which in turn was based on
+previous packages.}
+While the @command{yacas-mode} provided by @file{yacas.el} is designed
+to help write @yacas{} programs, @ynb{} is designed to help write
+documents that include @yacas{} code.  @ynb{} is an extension of the
+La@TeX{} mode provided by AUCTeX@footnote{This can be configured so
+that @ynb{} extends the standard @TeX{} mode provided by Emacs, or just
+text mode.}, and so has the La@TeX{} mode commands available.  The
+resulting document can be run by La@TeX{}; this requires putting 
+@example
+\usepackage@{yacas-notebook@}
+@end example
+@noindent
+in the preamble.  If the output contains long lines, and the La@TeX{}
+breqn package is available, then put
+@example
+\usepackage[breqn]@{yacas-notebook@}
+@end example
+@noindent
+in the preamble instead.
+
+@node Cells , Evaluating cells, Introduction, Top
+@chapter Cells
+
+@noindent
+The basic unit of @yacas{} code in @ynb{} is a @dfn{cell}.  A cell
+consists of text between the delimiters
+@example
+\yacas
+@end example
+@noindent
+and
+@example
+\endyacas
+@end example
+@noindent
+A cell can be created by typing @kbd{C-c C-o}.  (The @kbd{C-o} in this
+case stands for @strong{o}pening a cell.)  The delimiters will then be
+placed in the buffer, and the point will be placed between them.
+While in a cell, the keybindings will mostly be those of
+@code{yacas-mode}@footnote{The exceptions are the bindings for
+@code{yacas-title} and @code{yacas-modify}, which don't make sense in
+a cell, and @key{C-c ?}, which will give information on @ynb{} rather
+than @code{yacas-mode}.}.  @xref{Yacas mode}. 
+
+When working with several cells, you can jump between them by using
+@kbd{C-c +} to go to the next cell and @kbd{C-c -} to go to the
+previous cell.
+
+@node Evaluating cells, Initialization Cells, Cells , Top
+@chapter Evaluating cells
+
+@noindent
+The contents of a cell can be sent to a buffer in which @yacas{} is
+running by the command @kbd{C-c C-s}.  If a @yacas{} process isn't
+running, one will be started.  (The @yacas{} 
+process can be killed when desired by the command @kbd{M-C-k}.)
+While the cell contents will then be evaluated,
+by default you won't be able to see the @yacas{} buffer.  To see the @yacas{}
+buffer in the bottom half of the window, you can use the command
+@kbd{C-c C-y}.  To hide the @yacas{} buffer
+again, repeat the command with an argument, @kbd{C-u C-c C-y}.
+However, @ynb{} is designed to
+have all of the action take place in the document buffer.  To see the
+@yacas{} output in the document buffer,
+the command @kbd{M-x ynb-get-output} will take
+the most recent output in the @yacas{} buffer and place it in the @ynb{}
+cell, separated from the input by the marker
+@example
+\output
+@end example
+@noindent
+The command @kbd{C-c C-v c} will both send the
+cell to the @yacas{} buffer and return the results@footnote{The prefix 
+@kbd{C-c C-v} will be used to update cells in different ways.}.
+To differentiate
+@math{sin(x^2)}, for example, type 
+@code{D(x)(Sin(x^2));} in a cell:
+@example
+\yacas
+D(x)(Sin(x^2));
+\endyacas
+@end example
+@noindent
+After typing @kbd{C-c C-v c}, it will look like
+@example
+\yacas
+D(x)(Sin(x^2));
+\output
+           /  2 \
+2 * x * Cos\ x  /
+\endyacas
+@end example
+@noindent
+To delete the output and return the cell to its original form, you can
+use the command @kbd{C-c C-d}.
+@c @iftex  
+@c If the document is to be @TeX{}ed, the above cell will look like:
+@c @tex
+@c \input yacas-notebook.sty
+@c \font\tiny = cmtt8
+@c \def\Yacas{\sl Yacas}
+@c \yacas
+@c diff(sin(x^2),x);
+@c \endyacas
+@c and the cell with output will look like:
+@c \yacas
+@c diff(sin(x^2),x);
+@c \output
+@c                                          2
+@c                                 2 x cos(x )
+@c \endyacas
+@c \catcode`\@=0
+@c @end tex
+@c @end iftex
+
+@ynb{} mode can take advantage of the fact that @yacas{} can give its
+output in La@TeX{} form.  The command @kbd{C-c C-v C}
+works the same as @kbd{C-c C-v c}, except now the output is in La@TeX{}
+form, ready to be formatted by La@TeX{}.  In general, if 
+@kbd{C-c C-v }@var{letter} returns @yacas{} output, then
+@kbd{C-c C-v }@var{capital letter} will return the output in
+@TeX{} form.  The above cell would become
+@example
+\yacas
+D(x)Sin(x^2);
+\outputtex
+\ys 2 x \left( \cos x ^@{2@}\right) \\
+\endyacas
+@end example
+@c @iftex
+@c which, when La@TeX{}ed, would become
+@c @tex
+@c \input yacas-notebook.sty
+@c \def\Yacas{\sl Yacas}
+@c \font\tiny = cmtt8
+@c \yacas
+@c diff(sin(x^2),x);
+@c \outputtex
+@c                          2 x \cos\left(x^2\right)
+@c 
+@c \endyacas
+@c \catcode`\@=0
+@c @end tex
+@c @end iftex
+@noindent
+(Note that whenever a cell is updated, any old output is discarded and
+replaced with new output.)  The command @kbd{C-c C-v a} will update all
+of the cells in your document, 
+stopping at each one to ask if you indeed want it updated.  Given an
+argument, @kbd{C-u C-c C-v a}, it will update all of the cells in your
+document without asking.  The command @kbd{C-c C-v A} behaves
+similarly, except now all the output is returned in La@TeX{}  form.
+
+@node Initialization Cells, Referencing Other Cells, Evaluating cells, Top
+@chapter Initialization Cells
+
+@noindent
+It is possible that you want certain cells evaluated separate from the
+others; perhaps, for example, you want certain cells evaluated whenever
+you open the document.  This can be done using initialization cells.
+An initialization cell is delimited by
+@example
+\yacas[* Initialization Cell *]
+@end example
+@noindent
+and
+@example
+\endyacas
+@end example
+@noindent
+The command @kbd{C-c C-q} will turn a cell into
+an initialization cell, applying @kbd{C-c C-q} again will turn it
+back into a regular cell.  
+@c @iftex
+@c When La@TeX{}ed, an initialization cell will look like
+@c @tex
+@c \yacas[* Initialization Cell *]
+@c diff(sin(x^2),x);
+@c \endyacas
+@c @end tex
+@c @end iftex
+
+Initialization cells behave like regular
+cells, except that they can be treated as a group.
+To evaluate all initialization cells (without displaying the output in
+the document buffer), the
+command @kbd{C-c C-v q} will go to each of the
+initialization cells and evaluate them.
+If you want the output of the initialization cells to be brought back 
+to the document buffer,  stopping at each one to see it
+you indeed want it updated, then use the command @kbd{C-c C-v i}.
+With an argument, @kbd{C-u C-c C-v i}, the
+initialization cells will be updated without asking.   The command 
+@kbd{C-c C-v I} behaves just like @kbd{C-c C-v i},
+except that the output is returned in @TeX{} form.
+
+@node Referencing Other Cells, WEB, Initialization Cells, Top
+@chapter Referencing Other Cells
+
+@noindent
+Instead of @yacas{} code, a cell can contain a reference to another cell,
+and when the original cell is sent to @yacas{}, the reference is replaced
+by the referenced cell's contents (but only in the @yacas{} process
+buffer, the cell's 
+content in the document's buffer is not changed).  In order to do
+this, the original cell must be marked by having a label of the form
+@code{<}@var{filename}@code{:}@var{cell label}@code{>}.
+(The reason for the @var{filename} will become apparent later, and
+@var{cell label} is optional for the referencing cell.)
+The referenced cell must also be labeled, with the same
+@var{filename} but a unique @var{cell label}.  To reference the
+other cell, the original cell need only contain the marker for the
+referenced cell.  For example, given cell 1:
+@example
+\yacas<filename:optional>
+<filename:definef>
+D(x)f(x);
+\endyacas
+@end example
+@noindent
+and cell 2:
+@example
+\yacas<filename:definef>
+f(x):=Sin(x^2);
+\endyacas
+@end example
+@noindent
+then the result of updating cell 1 (@kbd{C-c C-v c}) will be:
+@example
+\yacas<filename:optional>
+<filename:definef>
+D(x)f(x);
+\output
+           /  2 \
+2 * x * Cos\ x  /
+\endyacas
+@end example
+@noindent
+When @TeX{}ed, the top line will contain a copy of the marker.
+@c @example
+@c \yacas<filename:optional>
+@c <filename:definef>
+@c D(x)f(x);
+@c \output
+@c            /  2 \
+@c 2 * x * Cos\ x  /
+@c \endyacas
+@c @end example
+
+A cell can contain more than one reference, and referenced cells can
+themselves contain references.
+
+To aid in labelling the cells, the command @kbd{C-c C-x}
+will prompt for a label name and label the
+cell.  To aid in calling references, the command @kbd{C-c C-@key{TAB}}
+can be used for completing the
+the @var{filename} and @var{cell label} parts of a reference, 
+based on the current labels.  
+Another option is to set the Emacs variable
+@code{ynb-abbreviations-allowed} to @code{t}, say, by putting
+the line
+@example
+(setq ynb-abbreviations-allowed t)
+@end example
+@noindent
+in your @file{.emacs} file.  This will allow the @var{filename}
+and @var{cell label} parts of a reference to be abbreviated by enough
+of a prefix to uniquely identify it, followed by ellipses
+@code{...}
+For example, if there are cells labelled
+@example
+<filename:long description>
+<filename:lengthy description>
+@end example
+@noindent
+Then the reference
+@example
+<...:le...>
+@end example
+@noindent
+will suffice to refer to the second label above.
+
+If you want the references in a cell to be replaced by the actual
+code, the command @kbd{C-c @@} will expand all the
+references and put the code into a separate buffer (so it will not
+affect the original document).
+
+@node WEB, Miscellaneous, Referencing Other Cells, Top
+@chapter WEB
+
+@noindent
+The reason for the ability to reference other cells is so that you can
+write what Donald Knuth calls literate programs.  The idea is that the
+program is written in a form natural to the author rather than natural
+to the computer.  (Another aspect of Knuth's system is that the code
+is carefully documented, hence the name ``literate programming'', but
+that is done naturally in @ynb{}.)  Knuth called his original
+literate programming tool @code{WEB}, since, as he puts it,
+``the structure of a software program may be thought of as a web that
+is made up of many interconnected pieces.''  To create a
+program, the ``base cell'' or ``package cell'' should contain 
+a label of the form @code{<}@var{filename}@code{:>} 
+(no cell label), and can
+contain references of the form 
+@code{<}@var{filename}@code{:}@var{part}@code{>}
+(same file name as the base cell).  
+
+As a simple (and rather silly) example, suppose we want to create a
+program to sum the first @math{n} squares.  We could start:
+@example
+\yacas<squaresum:>
+SumOfSquares(n) :=
+[
+   Local(L);
+   <squaresum:makelist>
+   <squaresum:squarelist>
+   <squaresum:addlist>
+]; /* SumOfSquares(n) */
+\endyacas
+@end example
+@noindent
+We would then need cells:
+@example
+\yacas<squaresum:makelist>
+L:= 1 .. n;
+\endyacas
+@end example
+@example
+\yacas<squaresum:squarelist>
+<squaresum:definesquare>
+L:= MapSingle("square", L);
+\endyacas
+@end example
+@example
+\yacas<squaresum:addlist>
+Sum(L);
+\endyacas
+@end example
+@noindent
+and then also
+@example
+\yacas<squaresum:definesquare>
+square(x) := x^2;
+\endyacas
+@end example
+@noindent
+When @TeX{}ed, the header of the cell will say that it determines the
+file @code{squaresum}.  
+
+The command 
+@kbd{C-u C-c @@} will put all the pieces
+together in the file it determines.  The resulting file, in this case,
+will be @code{squaresum} and will look contain:
+@example
+SumOfSquares(n) :=
+[
+   Local(L);
+   L:= 1 .. n;
+   square(x) := x^2;
+   L:= MapSingle("square", L);
+   Sum(L);
+]; /* SumOfSquares(n) */
+@end example
+@noindent
+(Although the idea is that only the computer need look at this file.)
+
+@node Miscellaneous, Installation, WEB, Top
+@chapter Miscellaneous
+
+@noindent
+Some @yacas{} commands can be used even outside of cells.  The command 
+@kbd{C-c C-v l} send the current line to a
+@yacas{} process, comment out the current line, and insert the @yacas{}
+output in the current buffer.  The command 
+@kbd{C-c C-v L} will do the same, but
+return the result in @TeX{} form.
+
+@kbd{C-c ?} will bring up the info file for @ynb{}
+
+Some commands from @code{yacas-mode} will be available in
+@code{yacas-notebook-mode} even outside of cells.  
+It is possible that you want to evaluate part of your document that
+isn't a cell, whether it be a portion of a cell or not in a cell.  The
+command @kbd{M-C-r} will send the current region to
+the @yacas{} buffer.  This will usually only be useful when the @yacas{}
+buffer is visible. 
+The command @kbd{C-c C-h} will provide
+information on a prompted for function.
+
+@page
+@node Installation, Customization, Miscellaneous, Top
+@appendix Installation
+
+@noindent
+The @ynb{} package consists of the files @code{yacas.el},
+@code{yacas-notebook.el}, @code{yacas-notebook.sty} and @code{yacas-notebook.info}.  
+To install, place @code{yacas-notebook.el} and @code{yacas.el} somewhere in the
+load path for Emacs. Put @code{yacas-notebook.info} in the info directory
+(this usually @code{/usr/info/}) or set the variable
+@code{ynb-info-dir} to the directory where you put the file,
+including the trailing @code{/}. 
+Finally, if you want to run La@TeX{} on the resulting document, put
+@code{yacas-notebook.sty} somewhere in the @TeX{} inputs path.
+
+To make sure that @code{yacas-notebook.el} is loaded when necessary, the line
+@example
+(autoload 'yacas-notebook-mode "yacas-notebook" "Yacas-Notebook" t)
+@end example
+@noindent
+can be inserted into your @file{.emacs} file.  Then typing
+@kbd{M-x yacas-notebook-mode} will start @ynb{} mode.  The command 
+@kbd{M-x ynb-mark-file-as-yacas-notebook} will put the line
+@example
+%-*-Yacas-Notebook-*-
+@end example
+@noindent
+at the beginning of the file, if it isn't there already, and will ensure
+that the next time the file is opened, it will be in
+@code{yacas-notebook-mode}.   
+This can be done automatically everytime a file is put in
+@code{yacas-notebook-mode} by putting the line
+@example
+(add-hook 'yacas-notebook-mode-hook 'ynb-mark-file-as-yacas-notebook)
+@end example
+@noindent
+somewhere in your @file{.emacs} file.
+
+The variable @code{yacas-documentation-directory} is where @ynb{}
+expects to find the @yacas{} documentation, by default it is
+@code{"/usr/share/yacas/documentation."}.
+
+@node Customization, Yacas mode, Installation, Top
+@appendix Customizing Yacas-Notebook
+
+@noindent
+There are a few (very few) things that you can do to customize @ynb{}.  
+
+By default, @ynb{} is an extension of AUCTeX mode.  This can be
+changed by changing the variable @code{ynb-use-tex}.  The possible
+values are @code{'auctex}, @code{'tex} and @code{nil}.  Setting
+@code{ynb-use-tex} (the default) to @code{'auctex} will make @ynb{}
+an extension of AUCTeX, setting it to @code{'tex} will make @ynb{} an
+extension of Emacs's default @TeX{} mode, and setting
+@code{ynb-use-tex} to @code{nil} will make @ynb{} an extension of
+text-mode.  So, for example, putting 
+@example
+(setq ynb-use-tex nil)
+@end example
+@noindent
+in your @file{.emacs} file will make @ynb{} default to an extension of
+text mode. 
+
+@ynb{} will provide menus listing @emph{Cell} operations,
+@emph{Updating} operations, @emph{Process} operations, @emph{Control}
+constructs, @emph{Misc} commands, and @emph{Help} commands.  Each of
+these will be a seperate menu, and there will be a button
+@code{Yacas-Notebook>>} on the menu bar which will restore the standard Emacs
+menus.   To combine them into a single menu,
+labelled @emph{Yacas-Notebook}, set the variable @code{ynb-use-menus} to 1.
+To change the menus around, change @code{ynb-use-menus} to a suitable
+list, by default, it is set to
+@example
+'(yn cell update process control misc help)
+@end example
+
+Whether or not the dots (@dots{}) abbreviation is allowed in cell
+references is controlled by the elisp variable
+@code{ynb-abbreviations-allowed}, which is set to @code{t} by
+default.  Setting this to @code{nil} will disallow the abbreviations,
+but will speed up package assembly.
+
+The lines that appear around cells when the document is @TeX{}ed can be
+turned off with the command (in the La@TeX{} document)
+@example
+\yacaslinesfalse
+@end example
+@noindent
+They can be turned back on with the command
+@example
+\yacaslinestrue
+@end example
+
+The fonts used to display the @yacas{} input and output in a cell are by
+default @code{cmtt10}.  They can be changed, seperately, by changing the
+@TeX{} values of @code{\yacasinputfont} and @code{\yacasoutputfont}.
+
+The spacing in the cells can be controlled by changing the @TeX{}
+variables @code{\yacasinputbaselineskip} (by default 10 pt) and
+@code{\yacasoutputbaselineskip} (by default 14 pt), and similarly, the
+amount of space that appears after a cell can be changed by changing the
+value of @code{\postyacasspace} (by default, 1.5 ex).
+
+
+@node Yacas mode, Running Yacas Interactively, Customization, Top
+@appendix Yacas mode
+
+@noindent
+This is a mode intended to support program development in @yacas{} by
+inserting control constructs in the buffer, help in formatting the
+code (for example, a @key{RET} will start a new line indented the
+correct amount)@footnote{The variable @code{yacas-indent} controls the
+number of spaces for each indentation, by default it is 4.}, 
+and interacting with a @yacas{} process.  A complete
+list of the commands available are in 
+@ref{Yacas mode commands}.
+This can be installed (independently of @code{yacas-notebook-mode}) by
+inserting @code{yacas.el} somewhere in the load path for Emacs, and
+@code{yacas-notebook.info} in the info directory (this is usually
+@code{/usr/info/}, alternatively, the variable @code{yacas-info-dir} can
+be set the the directory containing @code{yacas-notebook.info}.
+@code{yacas-info-dir} must contain the ending @code{/}.)
+To make sure that @code{yacas.el} is loaded when necessary, put the line
+@example
+(autoload 'yacas-mode "yacas" "Yacas mode" t)
+@end example
+@noindent
+in your @file{.emacs} file.
+
+Most control constructs of @yacas{} can be reached by typing 
+@kbd{C-c C-}@var{first character of the construct}.
+For example, a @strong{for} loop can be entered with the command
+@kbd{C-c C-f}.  Information, such as the start, predicate and increment, 
+will be prompted for.  A procedure can be entered with the command
+@kbd{C-c C-p}.  Local variables will be prompted for, additional local
+variables can 
+later be added with @kbd{C-c C-l}.  
+
+To get help with @yacas{}, @kbd{C-c C-h}
+will give help on a specific @kbd{} topic@footnote{This uses Emacs-W3,
+and is a bit slow.}.
+@kbd{C-c ?} will bring up the info file for @yacas{}.@footnote{This
+currently doesn't work with XEmacs.}
+
+To help in moving around, the commands
+@kbd{C-c <}
+and 
+@kbd{C-c >}
+move backward and forward respectively to the next line
+having the same (or lesser) level of indentation.
+
+Since commenting is important, @code{yacas-mode} has various aids.
+The command @kbd{C-c \} will
+comment out a given region, and @kbd{C-c /}
+will remove the comments from a region.  To
+add an inline comment, @kbd{C-c C-#} will
+prompt for a one line comment to insert.  To add a lengthy comment,
+the command @kbd{C-c C-*} will add the
+necessary begin- and end-comment markers, and place the point between
+them with an addition level of indentation.
+
+The command @kbd{C-c C-t} will insert some useful
+title information at the beginning of the file, and the command 
+@kbd{C-c C-m} will change the modification date.
+
+To interact with @yacas{}, the command @kbd{M-C-r}
+will send the current region to a @yacas{} process.  @kbd{M-C-b}
+will do the same to the whole buffer, and 
+@kbd{M-C-l} just does the current line.
+The @yacas{} process can be killed with the command @kbd{M-C-k}, and it
+can be restarted with 
+@kbd{M-C-p}.
+In the @yacas{} subshell buffer (see @ref{Running Yacas Interactively}) 
+@kbd{C-n} and @kbd{C-p} will behave 
+as usual, and @kbd{C-@key{DOWN}} and @kbd{C-@key{UP}} can also be used
+to move to the next and previous lines.
+@key{UP} and @key{DOWN} will scroll through the previous commands
+(although these only work for commands which have been entered
+directly into the process buffer).
+
+
+@code{yacas-mode} will provide menus listing @emph{Contol} constructs,
+@emph{Process} operations, @emph{Formatting} commands, @emph{Motion}
+commands, @emph{Misc} commands, and @emph{Help} commands.  Each of
+these will be a seperate menu, and there will be a button
+@code{Yacas>>} on the menu bar which will restore the standard Emacs
+menus.   To combine them into a single menu,
+labelled @emph{Yacas}, set the variable @code{yacas-use-menus} to 1.
+To change the menus around, change @code{yacas-use-menus} to a suitable
+list, by default, it is set to
+@example
+'(ycs control process formatting motion misc help)
+@end example
+
+The variable @code{yacas-documentation-directory} is where @ynb{}
+expects to find the @yacas{} documentation, by default it is
+@code{"/usr/share/yacas/documentation."}.
+
+@node Running Yacas Interactively, Yacas-Notebook mode commands, Yacas mode, Top
+@appendix Running @emph{Yacas} Interactively
+
+@noindent
+@code{yacas.el} will allow @yacas{} to be run interactively within Emacs
+in a shell buffer.  To make sure that @file{yacas.el} is loaded when
+necessary, put the line
+@example
+(autoload 'yacas "yacas" "Running Yacas" t)
+@end example
+@noindent
+in your @file{.emacs} file.  Then the command @kbd{M-x yacas} will open
+a buffer running a @yacas{} process.
+In this @yacas{} buffer, @kbd{C-n} and @kbd{C-p}
+will behave as usual, and @kbd{C-@key{DOWN}} and @kbd{C-@key{UP}} can
+also be used to move to the next and previous lines.  @key{UP} and
+@key{DOWN} will move backward and forward respectively to the previous
+or next command in the buffer (although these only work for commands
+which have been entered directly into the buffer, as opposed to, say,
+from @code{yacas-mode}).
+
+The @yacas{} buffer will have menus for many @yacas{} functions.  There
+will be @emph{Arithmetic}, @emph{Functions}, @emph{Linear Algebra},
+@emph{Calculus}, @emph{Simplifying}, @emph{Solving}, @emph{Polynomial},
+@emph{Lists}, @emph{Configuration}, @emph{Programming}, @emph{Others},
+and @emph{Help} menus.  (These titles will be abbreviated.)If a function
+is inserted using the menus, the 
+list of arguments required by the function will appear in the
+minibuffer. (In some cases, some arguments are prompted for.)
+There will be a button
+@code{Yacas>>} on the menu bar can be used to quit the @yacas{} process
+or restore the standard Emacs
+menus.   To combine these menus into a single menu,
+labelled @emph{Yacas}, set the variable @code{yacas-shell-use-menus} to 1.
+To change the menus around, change @code{yacas-shell-use-menus} to a suitable
+list, by default, it is set to
+@example
+'(yacas arithmetic functions linalg calculus simplify solve poly lists
+config progm others help)
+@end example
+
+
+In the @yacas{} shell buffer, the following commands will also be
+available. 
+@multitable @columnfractions .15 .45 .45
+@item @kbd{M-C-k} 
+@tab @code{yacas-kill-process} 
+@tab Kill the current @yacas{} process (and the buffer)
+@item @kbd{C-c =}
+@tab @code{yacas-recenter-output-buffer}
+@tab Center the @yacas{} shell buffer
+@item @kbd{C-c C-h}
+@tab @code{yacas-help}
+@tab Get help on a specific @yacas{} topic
+@end multitable
+
+@page
+@node Yacas-Notebook mode commands, Yacas mode commands, Running Yacas Interactively, Top
+@appendix Yacas-Notebook mode commands
+
+@multitable @columnfractions .15 .45 .45
+@item @strong{Key} @tab @strong{Command} @tab @strong{Description}
+@item @kbd{C-c ?}
+@tab @code{ynb-info-help}
+@tab Bring up the info file for @ynb{}
+@item @kbd{C-c +}
+@tab @code{ynb-forward-cell}
+@tab Go the the next cell.
+@item @kbd{C-c -}
+@tab @code{ynb-previous-cell}
+@tab Go to the previous cell.
+@item @kbd{C-c C-y}
+@tab @code{ynb-show-yacas-buffer}
+@tab Display the @yacas{} buffer.
+@item @kbd{C-u C-c C-y}
+@tab @code{ynb-dont-show-yacas-buffer}
+@tab Hide the @yacas{} buffer.
+@item @kbd{C-c C-v a}
+@tab @code{ynb-update-all}
+@tab Update all of the cells.  With an argument, don't ask before updating.
+@item @kbd{C-c C-v A}
+@tab @code{ynb-tex-update-all}
+@tab Update all of the cells in @TeX{} form. With an argument don't ask
+before updating.
+@item @kbd{C-c C-v q}
+@tab @code{ynb-eval-init}
+@tab Evaluate all of the initialization cells.
+@item @kbd{C-c C-v i}
+@tab @code{ynb-update-init}
+@tab Update all of the initialization cells.  With an argument, don't
+ask before updating.
+@item @kbd{C-c C-v I}
+@tab @code{ynb-tex-update-init}
+@tab Update all of the initialization cells in @TeX{} form.  With an
+argument, don't ask before updating.
+@end multitable
+
+@noindent
+@strong{Commands only available in cells.}
+@multitable @columnfractions .15 .45 .45
+@item @strong{Key} @tab @strong{Command} @tab @strong{Description}
+@item @kbd{C-c C-s}
+@tab @code{ynb-send-cell}
+@tab Send the current cell to the @yacas{} process.
+@item @kbd{C-c C-v c}
+@tab @code{ynb-update-cell}
+@tab Update the current cell.
+@item @kbd{C-c C-v C}
+@tab @code{ynb-tex-update-cell}
+@tab Update the current cell in @TeX{} form.
+@item @kbd{C-c C-d}
+@tab @code{ynb-delete-output}
+@tab Delete the output from the current cell.
+@item @kbd{C-c C-q}
+@tab @code{ynb-toggle-init}
+@tab Toggle whether or not the current cell is an initialization cell.
+@item @kbd{C-c C-g}
+@tab @code{ynb-put-outputgraphics}
+@tab Insert a graphics environment for the output.
+@item @kbd{C-c C-x}
+@tab @code{ynb-package-part}
+@tab Insert a heading for the cell indicating that it's part of a
+package. 
+@item @kbd{C-c @@}
+@tab @code{ynb-assemble}
+@tab Assemble the references contained in the cell.  With an argument,
+assemble the package that the cell defines.
+@item @kbd{C-c C-@key{TAB}}
+@tab @code{ynb-insert-complete-name}
+@tab Complete a reference within a cell.
+@end multitable
+
+@noindent
+@strong{Commands only available outside of cells.}
+@multitable @columnfractions .15 .45 .45
+@item @strong{Key} @tab @strong{Command} @tab @strong{Description}
+@item @kbd{C-c C-o}
+@tab @code{ynb-create-cell}
+@tab Create a cell.
+@item @kbd{C-c C-v l}
+@tab @code{ynb-replace-line}
+@tab Send the current line to @yacas{}, and replace the line with the
+@yacas{} output.
+@item @kbd{C-c C-v L}
+@tab @code{ynb-replace-line-with-tex}
+@tab Send the current line to @yacas{}, and replace the line with the
+@yacas{} output in @TeX{} form.
+@end multitable
+
+@node Yacas mode commands, AUCTeX commands, Yacas-Notebook mode commands, Top
+@appendix Yacas mode commands
+
+@noindent
+@strong{Control constructs}
+@multitable @columnfractions .15 .45 .45
+@item @strong{Key} @tab @strong{Command} @tab @strong{Description}
+@item @kbd{C-c C-p}
+@tab @code{yacas-proc}
+@tab Insert a @yacas{} procedure.
+@item @kbd{C-c C-l}
+@tab @code{yacas-local}
+@tab Insert additional local variables into a procedure.
+@item @kbd{C-c C-f}
+@tab @code{yacas-for}
+@tab Insert a @strong{for} loop.
+@item @kbd{C-c C-a}
+@tab @code{yacas-foreach}
+@tab Insert a @strong{foreach} loop.
+@item @kbd{C-c C-i}
+@tab @code{yacas-if}
+@tab Insert an @strong{if} statement.
+@item @kbd{C-c C-e}
+@tab @code{yacas-else}
+@tab Insert an @strong{else}
+@item @kbd{C-c C-w}
+@tab @code{yacas-while}
+@tab Insert a @strong{while} statement.
+@item @kbd{C-c C-u}
+@tab @code{yacas-until}
+@tab Insert an @strong{until} statement.
+@item @kbd{C-c C-n}
+@tab @code{yacas-function}
+@tab Insert a function environment.
+@end multitable
+
+@noindent
+@strong{Commenting}
+@multitable @columnfractions .15 .45 .45
+@item @strong{Key} @tab @strong{Command} @tab @strong{Description}
+@item @kbd{C-c \}
+@tab @code{comment-region}
+@tab Comment out the region.
+@item @kbd{C-c /}
+@tab @code{yacas-uncomment-region}
+@tab Remove the comments about a region.
+@item @kbd{C-c #}
+@tab @code{yacas-short-comment}
+@tab Prompt for, and insert, a short comment.
+@item @kbd{C-c *}
+@tab @code{yacas-long-comment}
+@tab Insert a comment environment.
+@item @kbd{C-c C-t}
+@tab @code{yacas-title}
+@tab Insert title information at the beginning of the buffer.  With an
+argument, return to the previous position.
+@item @kbd{C-c C-m}
+@tab @code{yacas-modify}
+@tab Change the modification time in the title information.
+@end multitable
+
+@noindent
+@strong{Formatting commands}
+@multitable @columnfractions .15 .45 .45
+@item @strong{Key} @tab @strong{Command} @tab @strong{Description}
+@item @kbd{M-@key{TAB}}
+@tab @code{yacas-indent-line}
+@tab Indent the current line an appropriate amount.
+@item @kbd{C-c ]}
+@tab @code{yacas-indent-region}
+@tab Rigidly indent a region.
+@item @kbd{@key{TAB}}
+@tab @code{yacas-tab}
+@tab Add another level of indentation to the line.
+@item @kbd{@key{DEL}}
+@tab @code{yacas-untab}
+@tab Remove a level of indentation from the line.
+@item @kbd{@key{RET}}
+@tab @code{yacas-newline}
+@tab Start a new line at the appropriate level of indentation.
+@end multitable
+
+@noindent
+@strong{Interacting with @yacas{}}
+@multitable @columnfractions .15 .45 .45
+@item @strong{Key} @tab @strong{Command} @tab @strong{Description}
+@item @kbd{M-C-r}
+@tab @code{yacas-region}
+@tab Send the region to the @yacas{} process.
+@item @kbd{M-C-b}
+@tab @code{yacas-buffer}
+@tab Send the buffer to the @yacas{} process.
+@item @kbd{M-C-l}
+@tab @code{yacas-line}
+@tab Send the current line to the @yacas{} process.
+@item @kbd{M-C-p}
+@tab @code{yacas-start-process}
+@tab Start a @yacas{} process.
+@item @kbd{M-C-q}
+@tab @code{yacas-reset}
+@tab Reset the @yacas{} process.
+@item @kbd{M-C-k}
+@tab @code{yacas-kill-job}
+@tab Kill the @yacas{} process.
+@item @kbd{M-C-s}
+@tab @code{yacas-eval-string}
+@tab Prompt for a string to send to the @yacas{} process.
+@item @kbd{C-c =}
+@tab @code{yacas-recenter-output-buffer}
+@tab Recenter the output buffer.
+@end multitable
+
+@noindent
+@strong{Motion}
+@multitable @columnfractions .15 .45 .45
+@item @strong{Key} @tab @strong{Command} @tab @strong{Description}
+@item @kbd{C-c >}
+@tab @code{yacas-forward-to-same-indent}
+@tab Move forward to the next line having the same or lesser level of
+indentation. 
+@item @kbd{C-c <}
+@tab @code{yacas-backward-to-same-indent}
+@tab Move backward to the previous line having the same or lesser level
+of indentation. 
+@end multitable
+
+@noindent
+@strong{@yacas{} help}
+@multitable @columnfractions .15 .45 .45
+@item @strong{Key} @tab @strong{Command} @tab @strong{Description}
+@item @kbd{C-c C-h}
+@tab @code{yacas-help}
+@tab Get help on a (prompted for) subject.
+@item @kbd{C-c ?}
+@tab @code{yacas-info-help}
+@tab Bring up the info file for @yacas{}
+@end multitable
+
+@node AUCTeX commands,  , Yacas mode commands, Top
+@appendix AUCTeX commands
+
+@noindent
+@strong{Inserting commands}
+@multitable @columnfractions .3 .5
+@item @kbd{C-c C-e}
+@tab Insert an environment.
+@item @kbd{C-c C-s}
+@tab Insert a section.
+@item @kbd{C-c ]}
+@tab Close an environment.
+@item @kbd{C-c @key{RET}}
+@tab Insert an item into a list.
+@item @kbd{"}
+@tab Smart quote.
+@item @kbd{$}
+@tab Smart dollar sign.
+@item @kbd{C-c @}}
+@tab Insert double brace.
+@item @kbd{C-c C-m}
+@tab Insert @TeX{} macro.
+@item @kbd{M-@key{TAB}}
+@tab Complete @TeX{} macro.
+@end multitable
+
+@noindent
+@strong{Formatting}
+@multitable @columnfractions .3 .5
+@item @kbd{C-c C-q C-r}
+@tab Format region.
+@item @kbd{C-c C-q C-s}
+@tab Format section.
+@item @kbd{C-c C-q C-e}
+@tab Format environment.
+@item @kbd{C-c .}
+@tab Mark an environment.
+@item @kbd{C-c *}
+@tab Mark a section.
+@end multitable
+
+@noindent
+@strong{Commenting}
+@multitable @columnfractions .3 .5
+@item @kbd{C-c ;}
+@tab Comment a region.
+@item @kbd{C-u C-c ;}
+@tab Uncomment a region.
+@item @kbd{C-c %}
+@tab Comment a paragraph.
+@item @kbd{C-u C-c %}
+@tab Uncomment a paragraph.
+@end multitable
+
+@noindent
+@strong{Font selection}
+@multitable @columnfractions .3 .5
+@item @kbd{C-c C-f C-b}
+@tab Bold.
+@item @kbd{C-c C-f C-i}
+@tab Italics.
+@item @kbd{C-c C-f C-r}
+@tab Roman.
+@item @kbd{C-c C-f C-e}
+@tab Emphasized.
+@item @kbd{C-c C-f C-t}
+@tab Typewriter.
+@item @kbd{C-c C-f C-s}
+@tab Slanted.
+@item @kbd{C-c C-f C-d}
+@tab Delete font.
+@item @kbd{C-u C-c C-f}
+@tab Change font.
+@end multitable
+
+@noindent
+@strong{Running @TeX{}}
+
+@noindent
+(Commands: @command{TeX}, @command{TeX Interactive}, @command{LaTeX},
+@command{LaTeX Interactive}, @command{SliTeX}, @command{View},
+@command{Print}, @command{BibTeX}, @command{Index}, @command{Check},
+@command{File}, @command{Spell}.)
+@multitable @columnfractions .3 .5
+@item @kbd{C-c C-c}
+@tab Run a command on the master file.
+@item @kbd{C-c C-r}
+@tab Run a command on the current region.
+@item @kbd{C-c C-b}
+@tab Run a command on the buffer.
+@item @kbd{C-c `}
+@tab Go to the next error.
+@item @kbd{C-c C-k}
+@tab Kill the @TeX{} process.
+@item @kbd{C-c C-l}
+@tab Center the output buffer.
+@item @kbd{C-c C-^}
+@tab Switch to the master file.
+@item @kbd{C-c C-w}
+@tab Toggle debug of overful boxes.
+@end multitable
+
+@bye

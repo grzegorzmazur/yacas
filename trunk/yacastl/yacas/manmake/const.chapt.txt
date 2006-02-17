@@ -1,0 +1,130 @@
+
+			Constants
+
+*CMD % --- previous result
+*CORE
+*CALL
+	%
+
+*DESC
+
+{%} evaluates to the previous result on the command line. {%} is a global
+variable that is bound to the previous result from the command line.
+Using {%} will evaluate the previous result. (This uses the functionality
+offered by the {LazyGlobal} command).
+
+Typical examples are {Simplify(%)} and {PrettyForm(%)} to simplify and show the result in a nice
+form respectively.
+
+*E.G.
+
+	In> Taylor(x,0,5)Sin(x)
+	Out> x-x^3/6+x^5/120;
+	In> PrettyForm(%)
+	
+	     3    5
+	    x    x
+	x - -- + ---
+	    6    120
+	
+	
+
+*SEE LazyGlobal
+
+*CMD True, False --- boolean constants
+*CORE
+*CALL
+	True
+	False
+
+*DESC
+
+{True} and {False} are typically a result
+of boolean expressions such as {2 < 3} or {True And False}.
+
+*SEE And, Or, Not
+
+*CMD EndOfFile --- end-of-file marker
+*CORE
+*CALL
+	EndOfFile
+
+*DESC
+
+End of file marker when reading from file. If a file
+contains the expression {EndOfFile;} the
+operation will stop reading the file at that point.
+
+*CMD Infinity --- constant representing mathematical infinity
+*STD
+*CALL
+	Infinity
+
+*DESC
+
+Infinity represents infinitely large values. It can be the result of certain
+calculations.
+
+Note that for most analytic functions Yacas understands {Infinity} as a positive number.
+Thus {Infinity*2} will return {Infinity}, and {a < Infinity} will evaluate to {True}.
+
+*E.G.
+
+	In> 2*Infinity
+	Out> Infinity;
+	In> 2<Infinity
+	Out> True;
+
+*CMD Pi --- mathematical constant, $pi$
+*STD
+*CALL
+	Pi
+
+*DESC
+
+Pi symbolically represents the exact value of $pi$. When the {N()} function is
+used, {Pi} evaluates to a numerical value according to the current precision.
+This is performed by the function {Pi()} which always returns the numerical
+value. It is better to use {Pi} than {Pi()} except in numerical calculations, because exact
+simplification will be possible.
+
+This is a "cached constant" which is recalculated only when precision is increased.
+
+
+*E.G.
+
+	In> Sin(3*Pi/2)
+	Out> -1;
+	In> Sin(3*Pi()/2)
+	Out> Sin(4.7123889804);
+	In> Pi+1
+	Out> Pi+1;
+	In> N(Pi)
+	Out> 3.14159265358979323846;
+
+*SEE Sin, Cos, Precision, N, Pi(), CachedConstant
+
+*CMD Undefined --- constant signifying an undefined result
+*STD
+*CALL
+	Undefined
+
+*DESC
+
+{Undefined} is a token that can be returned by a function when it considers
+its input to be invalid or when no meaningful answer can be given. The result is then "undefined".
+
+Most functions also return {Undefined} when evaluated on it.
+
+*E.G.
+
+	In> 2*Infinity
+	Out> Infinity;
+	In> 0*Infinity
+	Out> Undefined;
+	In> Sin(Infinity);
+	Out> Undefined;
+	In> Undefined+2*Exp(Undefined);
+	Out> Undefined;
+
+*SEE Infinity

@@ -1,0 +1,10 @@
+*BLURB
+Lisp is a very simple language, one suited for doing computer algebra.
+Almost all CAS systems today owe a lot to the ideas that came from
+Lisp. This is a book on the Lisp language, and its connection to Yacas.
+Yacas is built on top of a Lisp dialect.
+				(IN PROGRESS) Lisp as an Implementation Language for Computer Algebra Systems
+
+*INCLUDE LispLanguage.chapt
+
+*INCLUDE FDL.chapt

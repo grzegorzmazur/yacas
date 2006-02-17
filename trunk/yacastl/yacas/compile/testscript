@@ -1,0 +1,87 @@
+
+Write(hello);
+
+/*
+Repeat(nr,body):=
+[
+  Local(i);
+  Set(i,0);
+  While(i<nr)
+  [
+    Eval(body);
+    Set(i,MathAdd(i,1));
+  ];
+  True;
+];
+HoldArg("Repeat",body);
+UnFence("Repeat",2);
+*/
+/*
+*/
+//DllLoad("./libplugin.so");
+Repeat(100000,Precision(20));
+
+EndOfFile;
+
+
+/* c++ version:
+PUSH();
+{
+  int i;
+  for (i=0;i<nr;i++)
+  {
+    EVALUATE(body);
+  }
+}
+SETTRUE(TOP(0));
+
+*/
+
+WriteString("
+********************************************************************
+*
+*  This is a est plugin used while building the Yacas compiler.
+*  It probably doesn't have any useful functions.
+*
+********************************************************************
+");
+NewLine(1);
+NewLine();
+
+Set(a,2);
+
+f1(x,y,z):= 3*2;
+f2(x):= x*2;
+f3(x):=
+[
+  Echo({"f3 called with one argument"});
+  Local(y,z);
+  y:=GetPrecision();
+  Echo({"Precision is ",y});
+  Precision(20);
+  y:=GetPrecision();
+  Echo({"Precision is ",y});
+  Echo({"f3 called! Now calling f2"});
+  x:=30;
+//  If(x>10,x:=10);
+  y:=f2(x);
+  Echo({"f2 returns ",y});
+  DummyResult;
+//  Check(False,"This shouldn't evaluate!!!");
+];
+
+
+f3(x,y):=
+[
+  Echo({"f3 called with two arguments"});
+  x*y;
+];
+
+/*
+f4():=
+[
+  Precision(20);
+  Echo({"Precision is ",GetPrecision()});
+  True;
+];
+*/

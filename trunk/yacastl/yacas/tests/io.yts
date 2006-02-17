@@ -1,0 +1,66 @@
+Testing("Error reporting");
+
+// generate no errors
+Verify(IsError(), False);
+Verify(IsError("testing"), False);
+Verify(Assert("testing") 1=1, True);
+Verify(IsError(), False);
+Verify(IsError("testing"), False);
+Verify(Assert("testing1234", {1,2,3,4}) 1=1, True);
+Verify(IsError(), False);
+Verify(IsError("testing"), False);
+Verify(IsError("testing1234"), False);
+
+Verify(ToString()DumpErrors(), "");
+
+// generate some errors
+Verify(Assert("testing") 1=0, False);
+Verify(IsError(), True);
+Verify(IsError("testing"), True);
+Verify(IsError("testing1234"), False);
+Verify(Assert("testing1234", {1,2,3,4}) 1=0, False);
+Verify(IsError(), True);
+Verify(IsError("testing"), True);
+Verify(IsError("testing1234"), True);
+
+// report errors
+Verify(ToString()DumpErrors(), "Error: testing
+Error: testing1234: {1, 2, 3, 4}
+");
+
+// no more errors now
+Verify(IsError(), False);
+Verify(IsError("testing"), False);
+Verify(IsError("testing1234"), False);
+
+// generate some more errors
+Verify(Assert("testing") 1=0, False);
+Verify(Assert("testing1234", {1,2,3,4}) 1=0, False);
+Verify(GetError("testing1234567"), False);
+
+// handle errors
+Verify(GetError("testing"), True);
+Verify(IsError(), True);
+Verify(IsError("testing"), True);
+Verify(IsError("testing1234"), True);
+
+Verify(ClearError("testing"), True);
+Verify(IsError(), True);
+Verify(IsError("testing"), False);
+Verify(IsError("testing1234"), True);
+// no more "testing" error
+Verify(ClearError("testing"), False);
+Verify(IsError(), True);
+Verify(IsError("testing"), False);
+Verify(IsError("testing1234"), True);
+
+Verify(GetError("testing1234"), {1,2,3,4});
+Verify(IsError(), True);
+Verify(IsError("testing"), False);
+Verify(IsError("testing1234"), True);
+
+Verify(ClearError("testing1234"), True);
+Verify(IsError(), False);
+Verify(IsError("testing"), False);
+Verify(IsError("testing1234"), False);
+Verify(ClearError("testing1234"), False);

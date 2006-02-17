@@ -1,0 +1,624 @@
+:Abs:Abs(x):absolute value or modulus:
+:Add:Add(val1, val2, ...):find sum of a list of values:
+:Add:Add({list})::
+:Append:Append(list, expr):append an entry at the end of a list:
+:Apply:Apply(fn, arglist):apply a function to arguments:
+:ArcCos:ArcCos(x):inverse trigonometric functions:
+:ArcSin:ArcSin(x):inverse trigonometric functions:
+:ArcTan:ArcTan(x):inverse trigonometric functions:
+:Arg:Arg(x):argument of a complex number:
+:ArrayCreate:ArrayCreate(size,init):create array:
+:ArrayCreateFromList:ArrayCreateFromList(list):convert list to array:
+:ArrayGet:ArrayGet(array,index):fetch array element:
+:ArraySet:ArraySet(array,index,element):set array element:
+:ArraySize:ArraySize(array):get array size:
+:Assert:Assert("str") pred::
+:Assert:Assert("str", expr) pred:signal "soft" custom error:
+:Assert:Assert() pred::
+:Assoc:Assoc(key, alist):return element stored in association list:
+:AssocDelete:AssocDelete(alist, "key"):delete an entry in an association list:
+:AssocDelete:AssocDelete(alist, {key, value})::
+:AssocIndices:AssocIndices(alist):return the keys in an association list:
+:Atom:Atom("string"):convert atom to string and vice versa:
+:Average:Average(list):average of a list of values:
+:BaseVector:BaseVector(k, n):base vector:
+:Bernoulli:Bernoulli(index):Bernoulli numbers and polynomials:
+:Bernoulli:Bernoulli(index, x)::
+:BernoulliArray:BernoulliArray(index):Bernoulli numbers and polynomials:
+:BernoulliDistribution:BernoulliDistribution(p):Bernoulli distribution:
+:BigOh:BigOh(poly, var, degree):drop all terms of a certain order in a polynomial:
+:Bin:Bin(n, m):binomial coefficients:
+:BinSplitData:BinSplitData(n1,n2, a, b, c, d):computations of series by the binary splitting method:
+:BinSplitFinal:BinSplitFinal({P,Q,B,T}):computations of series by the binary splitting method:
+:BinSplitNum:BinSplitNum(n1, n2, a, b, c, d):computations of series by the binary splitting method:
+:BinomialDistribution:BinomialDistribution(p,n):binomial distribution:
+:BitAnd:BitAnd(n,m):bitwise arithmetic:
+:BitOr:BitOr(n,m):bitwise arithmetic:
+:BitXor:BitXor(n,m):bitwise arithmetic:
+:Bodied:Bodied("op", precedence):define function syntax:
+:BracketRational:BracketRational(x, eps):find optimal rational approximations:
+:BubbleSort:BubbleSort(list, compare):sort a list:
+:CForm:CForm(expr):export expression to C++ code:
+:CTokenizer:CTokenizer():select a syntax for parsing the input:
+:CachedConstant:CachedConstant(cache, Cname, Cfunc):precompute multiple-precision constants:
+:CanProve:CanProve(proposition):try to prove statement:
+:Catalan:Catalan():Catalan's Constant:
+:CatalanNumber:CatalanNumber(n):return the {n}th Catalan Number:
+:Ceil:Ceil(x):round a number upwards:
+:CharacteristicEquation:CharacteristicEquation(matrix,var):get characteristic polynomial of a matrix:
+:Check:Check(predicate,"error text"):report "hard" errors:
+:ChiSquareTest:ChiSquareTest(observed,expected):Pearson's ChiSquare test:
+:ChiSquareTest:ChiSquareTest(observed,expected,params)::
+:Cholesky:Cholesky(A):find the Cholesky Decomposition:
+:Clear:Clear(var, ...):undo an assignment:
+:ClearError:ClearError("str"):custom errors handlers:
+:ClearErrors:ClearErrors():simple error handlers:
+:CoFactor:CoFactor(M,i,j):cofactor of a matrix:
+:Coef:Coef(expr, var, order):coefficient of a polynomial:
+:Commutator:Commutator(a, b):commutator of two objects:
+:Complex:Complex(r, c):construct a complex number:
+:Concat:Concat(list1, list2, ...):concatenate lists:
+:ConcatStrings:ConcatStrings(strings):concatenate strings:
+:Conjugate:Conjugate(x):complex conjugate:
+:ContFrac:ContFrac(x):continued fraction expansion:
+:ContFrac:ContFrac(x, depth)::
+:ContFracEval:ContFracEval(list):manipulate continued fractions:
+:ContFracEval:ContFracEval(list, rest)::
+:ContFracList:ContFracList(frac):manipulate continued fractions:
+:ContFracList:ContFracList(frac, depth)::
+:Contains:Contains(list, expr):test whether a list contains a certain element:
+:Content:Content(expr):content of a univariate polynomial:
+:CopyFile:CopyFile("src","dest"):manipulate files and directories:
+:Cos:Cos(x):trigonometric functions:
+:Count:Count(list, expr):count the number of occurrences of an expression:
+:CrossProduct:CrossProduct(a,b):outer product of vectors:
+:Curl:Curl(vector, basis):curl of a vector field:
+:CurrentFile:CurrentFile():show current file and line of input:
+:CurrentLine:CurrentLine():show current file and line of input:
+:Cyclotomic:Cyclotomic(n,x):construct the cyclotomic polynomial:
+:D:D(list) expr::
+:D:D(var) expr:differentiation:
+:D:D(var,n) expr::
+:Decimal:Decimal(frac):decimal representation of a rational:
+:DefLoad:DefLoad(name):load a {.def} file:
+:DefMacroRuleBase:DefMacroRuleBase(name,params):define a function as a macro:
+:DefMacroRuleBaseListed:DefMacroRuleBaseListed("name", params):define macro with variable number of arguments:
+:DefaultDirectory:DefaultDirectory(path):add directory to path for Yacas scripts:
+:DefaultTokenizer:DefaultTokenizer():select a syntax for parsing the input:
+:Degree:Degree(expr):degree of a polynomial:
+:Degree:Degree(expr, var)::
+:Delete:Delete(list, n):delete an element from a list:
+:DeleteDir:DeleteDir("dir", ...):manipulate files and directories:
+:DeleteFile:DeleteFile("file", ...):manipulate files and directories:
+:Denom:Denom(expr):denominator of an expression:
+:DestructiveDelete:DestructiveDelete(list, n):delete an element destructively from a list:
+:DestructiveInsert:DestructiveInsert(list, n, expr):insert an element destructively into a list:
+:DestructiveReplace:DestructiveReplace(list, n, expr):replace an entry destructively in a list:
+:DestructiveReverse:DestructiveReverse(list):reverse a list destructively:
+:Determinant:Determinant(M):determinant of a matrix:
+:Diagonal:Diagonal(A):extract the diagonal from a matrix:
+:DiagonalMatrix:DiagonalMatrix(d):construct a diagonal matrix:
+:Difference:Difference(l1, l2):return the difference of two lists:
+:Div:Div(x,y):division with remainder:
+:Diverge:Diverge(vector, basis):divergence of a vector field:
+:Divisors:Divisors(n):number of divisors:
+:DivisorsList:DivisorsList(n):the list of divisors:
+:DivisorsSum:DivisorsSum(n):the sum of  divisors:
+:DllDirectory:DllDirectory(path):add directory to path for Yacas plugins:
+:DllEnumerate:DllEnumerate():enumerate all loaded plugins:
+:DllLoad:DllLoad(file):load a plugin:
+:DllUnload:DllUnload(file):unload a plugin:
+:Drop:Drop(list, -n)::
+:Drop:Drop(list, n):drop a range of elements from a list:
+:Drop:Drop(list, {m,n})::
+:DumpErrors:DumpErrors():simple error handlers:
+:Echo:Echo(item):high-level printing routine:
+:Echo:Echo(item,item,item,...)::
+:Echo:Echo(list)::
+:EigenValues:EigenValues(matrix):get eigenvalues of a matrix:
+:EigenVectors:EigenVectors(A,eigenvalues):get eigenvectors of a matrix:
+:Eliminate:Eliminate(var, value, expr):substitute and simplify:
+:EndOfFile:EndOfFile:end-of-file marker:
+:Equals:Equals(a,b):check equality:
+:Euler:Euler(index):Euler numbers and polynomials:
+:Euler:Euler(index,x)::
+:Eulerian:Eulerian(n,m):Eulerian numbers:
+:Eval:Eval(expr):force evaluation of expression:
+:EvalFormula:EvalFormula(expr):print an evaluation nicely with ASCII art:
+:EvaluateHornerScheme:EvaluateHornerScheme(coeffs,x):fast evaluation of polynomials:
+:Exp:Exp(x):exponential function:
+:Expand:Expand(expr):transform a polynomial to an expanded form:
+:Expand:Expand(expr, var)::
+:Expand:Expand(expr, varlist)::
+:ExpandBrackets:ExpandBrackets(expr):expand all brackets:
+:Factorize:Factorize(list):product of a list of values:
+:Factorize:Factorize(var, from, to, body)::
+:Factors:Factors(x)::
+:Factors:Factors(x):factorization:
+:False:False:boolean constants:
+:FermatNumber:FermatNumber(n):return the {n}th Fermat Number:
+:Fibonacci:Fibonacci(n):Fibonacci sequence:
+:FilePathSeparator:FilePathSeparator:OS-dependent constants:
+:FillList:FillList(expr, n):fill a list with a certain expression:
+:Find:Find(list, expr):get the index at which a certain element occurs:
+:FindFile:FindFile(name):find a file in the current path:
+:FindFunction:FindFunction(function):find the library file where a function is defined:
+:FindRealRoots:FindRealRoots(p):find the real roots of a polynomial:
+:FlatCopy:FlatCopy(list):copy the top level of a list:
+:Flatten:Flatten(expression,operator):flatten expression w.r.t. some operator:
+:Floor:Floor(x):round a number downwards:
+:For:For(init, pred, incr) body:C-style {for} loop:
+:ForEach:ForEach(var, list) body:loop over all entries in list:
+:FromBase:FromBase(base,"string"):conversion from/to non-decimal base:
+:FromFile:FromFile(name) body:connect current input to a file:
+:FromString:FromString(str) body;:connect current input to a string:
+:FullForm:FullForm(expr):print an expression in LISP-format:
+:FuncList:FuncList(expr):list of functions used in an expression:
+:FuncListArith:FuncListArith(expr):list of functions used in an expression:
+:FuncListSome:FuncListSome(expr, list):list of functions used in an expression:
+:Function:Function("op", {arglist, ...}) body::
+:Function:Function("op", {arglist}) body::
+:Function:Function() func(arglist):declare or define a function:
+:Function:Function() func(arglist, ...)::
+:Gamma:Gamma(x):Euler's Gamma function:
+:GammaNum:GammaNum(number):Euler's Gamma function:
+:GarbageCollect:GarbageCollect():do garbage collection on unused memory:
+:GaussianFactors:GaussianFactors(z):factorization in Gaussian integers:
+:GaussianNorm:GaussianNorm(z):norm of a Gaussian integer:
+:Gcd:Gcd(list)::
+:Gcd:Gcd(n,m):greatest common divisor:
+:Gcd:Gcd(z,w)::
+:GenericTypeName:GenericTypeName(object):get type name:
+:GetCoreError:GetCoreError():get "hard" error string:
+:GetError:GetError("str"):custom errors handlers:
+:GetExtraInfo:GetExtraInfo(expr):annotate objects with additional information:
+:GetPrecision:GetPrecision():get the current precision:
+:GetPrettyPrinter:GetPrettyPrinter()::
+:GetTime:GetTime(expr):measure the time taken by an evaluation:
+:GetYacasPID:GetYacasPID():obtain Yacas process number:
+:GlobalPop:GlobalPop()::
+:GlobalPop:GlobalPop(var):save/restore variables using a global stack:
+:GlobalPush:GlobalPush(expr):save/restore variables using a global stack:
+:GoldenRatio:GoldenRatio():the Golden Ratio:
+:GuessRational:GuessRational(x):find optimal rational approximations:
+:GuessRational:GuessRational(x, digits)::
+:HarmonicNumber:HarmonicNumber(n):return the {n}th Harmonic Number:
+:HarmonicNumber:HarmonicNumber(n,r)::
+:HasExpr:HasExpr(expr, x):check for expression containing a subexpression:
+:HasExprArith:HasExprArith(expr, x):check for expression containing a subexpression:
+:HasExprSome:HasExprSome(expr, x, list):check for expression containing a subexpression:
+:HasFunc:HasFunc(expr, func):check for expression containing a function:
+:HasFuncArith:HasFuncArith(expr, func):check for expression containing a function:
+:HasFuncSome:HasFuncSome(expr, func, list):check for expression containing a function:
+:Head:Head(list):the first element of a list:
+:HeapSort:HeapSort(list, compare):sort a list:
+:Help:Help():get documentation for some command:
+:Help:Help(function)::
+:HessianMatrix:HessianMatrix(function,var):create the Hessian matrix:
+:HilbertInverseMatrix:HilbertInverseMatrix(n):create a Hilbert inverse matrix:
+:HilbertMatrix:HilbertMatrix(n):create a Hilbert matrix:
+:HilbertMatrix:HilbertMatrix(n,m)::
+:HistorySize:HistorySize(n):set size of history file:
+:Hold:Hold(expr):keep expression unevaluated:
+:HoldArg:HoldArg("operator",parameter):mark argument as not evaluated:
+:HoldArgNr:HoldArgNr("function", arity, argNum):specify argument as not evaluated:
+:Horner:Horner(expr, var):convert a polynomial into the Horner form:
+:I:I:imaginary unit:
+:Identity:Identity(n):make identity matrix:
+:If:If(pred, then):branch point:
+:If:If(pred, then, else)::
+:Im:Im(x):imaginary part of a complex number:
+:InProduct:InProduct(a,b):inner product of vectors (deprecated):
+:Infinity:Infinity:constant representing mathematical infinity:
+:Infix:Infix("op"):define function syntax:
+:Infix:Infix("op", precedence)::
+:Insert:Insert(list, n, expr):insert an element into a list:
+:IntLog:IntLog(n, base):integer part of logarithm:
+:IntNthRoot:IntNthRoot(x, n):integer part of $n$-th root:
+:IntPowerNum:IntPowerNum(x, n, mult, unity):optimized computation of integer powers:
+:Integrate:Integrate(var) expr::
+:Integrate:Integrate(var, x1, x2) expr:integration:
+:Intersection:Intersection(l1, l2):return the intersection of two lists:
+:Inverse:Inverse(M):get inverse of a matrix:
+:InverseTaylor:InverseTaylor(var, at, order) expr:Taylor expansion of inverse:
+:IsAmicablePair:IsAmicablePair(m,n):test for a pair of amicable numbers:
+:IsAtom:IsAtom(expr):test for an atom:
+:IsBodied:IsBodied("op"):check for function syntax:
+:IsBoolean:IsBoolean(expression):test for a Boolean value:
+:IsBound:IsBound(var):test for a bound variable:
+:IsCFormable:IsCFormable(expr):check possibility to export expression to C++ code:
+:IsCFormable:IsCFormable(expr, funclist)::
+:IsCarmichaelNumber:IsCarmichaelNumber(n):test for a Carmichael number:
+:IsComposite:IsComposite(n):test for a composite number:
+:IsConstant:IsConstant(expr):test for a constant:
+:IsCoprime:IsCoprime(list)::
+:IsCoprime:IsCoprime(m,n):test if integers are coprime :
+:IsDiagonal:IsDiagonal(A):test for a diagonal matrix:
+:IsError:IsError("str")::
+:IsError:IsError():check for custom error:
+:IsEven:IsEven(n):test for an even integer:
+:IsEvenFunction:IsEvenFunction(expression,variable):Return true if function is an even function, False otherwise:
+:IsFreeOf:IsFreeOf(var, expr):test whether expression depends on variable:
+:IsFreeOf:IsFreeOf({var, ...}, expr)::
+:IsFunction:IsFunction(expr):test for a composite object:
+:IsGaussianInteger:IsGaussianInteger(z):test for a Gaussian integer:
+:IsGaussianPrime:IsGaussianPrime(z):test for a Gaussian prime:
+:IsGaussianUnit:IsGaussianUnit(z):test for a Gaussian unit:
+:IsGeneric:IsGeneric(object):check for generic object:
+:IsHermitian:IsHermitian(A):test for a Hermitian matrix:
+:IsIdempotent:IsIdempotent(A):test for an idempotent matrix:
+:IsInfinity:IsInfinity(expr):test for an infinity:
+:IsInfix:IsInfix("op"):check for function syntax:
+:IsIrregularPrime:IsIrregularPrime(n):test for an irregular prime:
+:IsList:IsList(expr):test for a list:
+:IsLowerTriangular:IsLowerTriangular(A):test for a lower or an upper triangular matrix:
+:IsMatrix:IsMatrix(expr):test for a matrix:
+:IsNegativeInteger:IsNegativeInteger(n):test for a negative integer:
+:IsNegativeNumber:IsNegativeNumber(n):test for a negative number:
+:IsNegativeReal:IsNegativeReal(expr):test for a numerically negative value:
+:IsNonObject:IsNonObject(expr):test whether argument is not an {Object()}:
+:IsNonZeroInteger:IsNonZeroInteger(n):test for a nonzero integer:
+:IsNotZero:IsNotZero(n):test for a nonzero number:
+:IsNumber:IsNumber(expr):test for a number:
+:IsNumericList:IsNumericList({list}):test for a list of numbers:
+:IsOdd:IsOdd(n):test for an odd integer:
+:IsOddFunction:IsOddFunction(expression,variable):Return true if function is an odd function, False otherwise:
+:IsOrthogonal:IsOrthogonal(A):test for an orthogonal matrix:
+:IsPositiveInteger:IsPositiveInteger(n):test for a positive integer:
+:IsPositiveNumber:IsPositiveNumber(n):test for a positive number:
+:IsPositiveReal:IsPositiveReal(expr):test for a numerically positive value:
+:IsPostfix:IsPostfix("op"):check for function syntax:
+:IsPrefix:IsPrefix("op"):check for function syntax:
+:IsPrime:IsPrime(n):test for a prime number:
+:IsPrimePower:IsPrimePower(n):test for a power of a prime number:
+:IsPromptShown:IsPromptShown():test for the Yacas prompt option:
+:IsQuadraticResidue:IsQuadraticResidue(m,n):functions related to finite groups:
+:IsRational:IsRational(expr):test whether argument is a rational:
+:IsScalar:IsScalar(expr):test for a scalar:
+:IsSkewSymmetric:IsSkewSymmetric(A):test for a skew-symmetric matrix:
+:IsSmallPrime:IsSmallPrime(n):test for a prime number:
+:IsSquareFree:IsSquareFree(n):test for a square-free number:
+:IsSquareMatrix:IsSquareMatrix(expr):test for a square matrix:
+:IsString:IsString(expr):test for an string:
+:IsSymmetric:IsSymmetric(A):test for a symmetric matrix:
+:IsTwinPrime:IsTwinPrime(n):test for a twin prime:
+:IsUnitary:IsUnitary(A):test for a unitary matrix:
+:IsUpperTriangular:IsUpperTriangular(A):test for a lower or an upper triangular matrix:
+:IsZero:IsZero(n):test whether argument is zero:
+:IsZeroVector:IsZeroVector(list):test whether list contains only zeroes:
+:JacobiSymbol:JacobiSymbol(m,n):functions related to finite groups:
+:JacobianMatrix:JacobianMatrix(functions,variables):calculate the Jacobian matrix of $n$ functions in $n$ variables:
+:KnownFailure:KnownFailure(test):Mark a test as a known failure:
+:LagrangeInterpolant:LagrangeInterpolant(xlist, ylist, var):polynomial interpolation:
+:LambertW:LambertW(x):Lambert's $W$ function:
+:LambertWNum:LambertWNum(x):Lambert's $W$ function:
+:LaplaceTransform:LaplaceTransform(t,s,func)	:Laplace Transform:
+:LazyGlobal:LazyGlobal(var):global variable is to be evaluated lazily:
+:Lcm:Lcm(list)::
+:Lcm:Lcm(n,m):least common multiple:
+:LeadingCoef:LeadingCoef(poly):leading coefficient of a polynomial:
+:LeadingCoef:LeadingCoef(poly, var)::
+:LeftPrecedence:LeftPrecedence("op",precedence):set operator precedence:
+:LegendreSymbol:LegendreSymbol(m,n):functions related to finite groups:
+:Length:Length(object):the length of a list or string:
+:LessThan:LessThan(a,b), GreaterThan(a,b):comparison predicates:
+:LeviCivita:LeviCivita(list):totally anti-symmetric Levi-Civita symbol:
+:Limit:Limit(var, val) expr:limit of an expression:
+:Limit:Limit(var, val, dir) expr::
+:LispRead:LispRead():read expressions in LISP syntax:
+:LispReadListed:LispReadListed()::
+:List:List(expr1, expr2, ...):construct a list:
+:ListFromArray:ListFromArray(array):convert array to list:
+:Listify:Listify(expr):convert a function application to a list:
+:Ln:Ln(x):natural logarithm:
+:Load:Load(name):evaluate all expressions in a file:
+:Local:Local(var, ...)::
+:LocalSymbols:LocalSymbols(var1, var2, ...) body:create unique local symbols with given prefix:
+:LogicVerify:LogicVerify(question,answer):verifying equivalence of two expressions:
+:Macro:Macro("op", {arglist, ...}) body::
+:Macro:Macro("op", {arglist}) body::
+:Macro:Macro() func(arglist):declare or define a macro:
+:Macro:Macro() func(arglist, ...)::
+:MakeDir:MakeDir("dir1", ...):manipulate files and directories:
+:MakeFilePath:MakeFilePath("dir1", "dir2", ..., "file"):manipulate files and directories:
+:MakeFunctionPlugin:MakeFunctionPlugin("name", body):compile numerical functions into plugins:
+:MakeFunctionPlugin:MakeFunctionPlugin()::
+:MakeVector:MakeVector(var,n):vector of uniquely numbered variable names:
+:Map:Map(fn, list):apply an $n$-ary function to all entries in a list:
+:MapArgs:MapArgs(expr, fn):apply a function to all top-level arguments:
+:MapSingle:MapSingle(fn, list):apply a unary function to all entries in a list:
+:MatchLinear:MatchLinear(x,expr):match an expression to a polynomial of degree one in a variable:
+:MathAnd:MathAnd(...):built-in logical "and":
+:MathGetExactBits:MathGetExactBits(x):manipulate precision of floating-point numbers:
+:MathLibrary:MathLibrary():obtain current math library name:
+:MathNot:MathNot(expression):built-in logical "not":
+:MathOr:MathOr(...):built-in logical "or":
+:MathSetExactBits:MathSetExactBits(x,bits):manipulate precision of floating-point numbers:
+:MatrixSolve:MatrixSolve(A,b):solve a system of equations:
+:Max:Max(list)::
+:Max:Max(x,y):maximum of a number of values:
+:MaxEvalDepth:MaxEvalDepth(n):set depth of recursion stack:
+:MaxEvalDepth:MaxEvalDepth(n):set the maximum evaluation depth:
+:MaximumBound:MaximumBound(p):return upper/lower bounds on the absolute values of real roots of a polynomial:
+:Min:Min(list)::
+:Min:Min(x,y):minimum of a number of values:
+:MinimumBound:MinimumBound(p):return upper/lower bounds on the absolute values of real roots of a polynomial:
+:Minor:Minor(M,i,j):get principal minor of a matrix:
+:Mod:Mod(x,y):division with remainder:
+:Moebius:Moebius(n):the Moebius function:
+:MoebiusDivisorsList:MoebiusDivisorsList(n):the list of divisors and Moebius values:
+:Monic:Monic(poly):monic part of a polynomial:
+:Monic:Monic(poly, var)::
+:MultiplyNum:MultiplyNum(x,y):optimized numerical multiplication:
+:MultiplyNum:MultiplyNum(x,y,z,...)::
+:MultiplyNum:MultiplyNum({x,y,z,...})::
+:N:N(Catalan)::
+:N:N(GoldenRatio)::
+:N:N(expr):compute numerical approximation:
+:N:N(expr, prec)::
+:N:N(gamma)::
+:NFunction:NFunction("newname","funcname", {arglist}):make wrapper for numeric functions:
+:NearRational:NearRational(x):find optimal rational approximations:
+:NearRational:NearRational(x, digits)::
+:NewLine:NewLine():print one or more newline characters:
+:NewLine:NewLine(nr)::
+:Newton:Newton(expr, var, initial, accuracy):solve an equation numerically with Newton's method:
+:Newton:Newton(expr, var, initial, accuracy,min,max)::
+:NewtonNum:NewtonNum(func, x0)::
+:NewtonNum:NewtonNum(func, x0, prec0)::
+:NewtonNum:NewtonNum(func, x0, prec0, order):low-level optimized Newton's iterations:
+:NextPrime:NextPrime(i):generate a prime following a number:
+:Nl:Nl():the newline character:
+:Normalize:Normalize(v):normalize a vector:
+:Not:Not expr:logical negation:
+:NrArgs:NrArgs(expr):return number of top-level arguments:
+:Nth:Nth(list, n):return the $n$-th element of a list:
+:NumRealRoots:NumRealRoots(p):return the number of real roots of a polynomial:
+:Numer:Numer(expr):numerator of an expression:
+:OMForm:OMForm(expression):convert expressions to and from OpenMath:
+:OMParse:OMParse():convert expressions to and from OpenMath:
+:OSVersion:OSVersion():OS-dependent constants:
+:Object:Object("pred", exp):create an incomplete type:
+:OdeOrder:OdeOrder(eqn):return order of an ODE:
+:OdeSolve:OdeSolve(expr1==expr2):general ODE solver:
+:OdeTest:OdeTest(eqn,testsol):test the solution of an ODE:
+:OldSolve:OldSolve(eq, var):old version of {Solve}:
+:OldSolve:OldSolve(eqlist, varlist)::
+:OpLeftPrecedence:OpLeftPrecedence("op"):get operator precedence:
+:OpPrecedence:OpPrecedence("op"):get operator precedence:
+:OpRightPrecedence:OpRightPrecedence("op"):get operator precedence:
+:OrthoG:OrthoG(n, a, x);:Gegenbauer orthogonal polynomials:
+:OrthoGSum:OrthoGSum(c, a, x);:sums of series of orthogonal polynomials:
+:OrthoH:OrthoH(n, x);:Hermite orthogonal polynomials:
+:OrthoHSum:OrthoHSum(c, x);:sums of series of orthogonal polynomials:
+:OrthoL:OrthoL(n, a, x);:Laguerre orthogonal polynomials:
+:OrthoLSum:OrthoLSum(c, a, x);:sums of series of orthogonal polynomials:
+:OrthoP:OrthoP(n, a, b, x);::
+:OrthoP:OrthoP(n, x);:Legendre and Jacobi orthogonal polynomials:
+:OrthoPSum:OrthoPSum(c, a, b, x);::
+:OrthoPSum:OrthoPSum(c, x);:sums of series of orthogonal polynomials:
+:OrthoPoly:OrthoPoly(name, n, par, x):internal function for constructing orthogonal polynomials:
+:OrthoPolySum:OrthoPolySum(name, c, par, x):internal function for computing series of orthogonal polynomials:
+:OrthoT:OrthoT(n, x);:Chebyshev polynomials:
+:OrthoTSum:OrthoTSum(c, x);:sums of series of orthogonal polynomials:
+:OrthoU:OrthoU(n, x);:Chebyshev polynomials:
+:OrthoUSum:OrthoUSum(c, x);:sums of series of orthogonal polynomials:
+:OrthogonalBasis:OrthogonalBasis(W):create an orthogonal basis :
+:OrthonormalBasis:OrthonormalBasis(W):create an orthonormal basis :
+:Outer:Outer(t1,t2):get outer tensor product:
+:PAdicExpand:PAdicExpand(n, p):p-adic expansion:
+:PDF:PDF(dist,x):probability density function:
+:PSolve:PSolve(poly, var):solve a polynomial equation:
+:Partition:Partition(list, n):partition a list in sublists of equal length:
+:PatchLoad:PatchLoad(name):execute commands between {<?} and {?>} in file:
+:PatchString:PatchString(string):execute commands between {<?} and {?>} in strings:
+:Permutations:Permutations(list):get all permutations of a list:
+:Pi:Pi()::
+:Pi:Pi:mathematical constant, $pi$:
+:PlatformOS:PlatformOS():OS-dependent constants:
+:Plot2D:Plot2D(f(x)):adaptive two-dimensional plotting:
+:Plot2D:Plot2D(f(x), a b)::
+:Plot2D:Plot2D(f(x), a b, option=value)::
+:Plot2D:Plot2D(f(x), a b, option=value, ...)::
+:Plot2D:Plot2D(list, ...)::
+:Plot3DS:Plot3DS(f(x,y)):three-dimensional (surface) plotting:
+:Plot3DS:Plot3DS(f(x,y), a b, c d)::
+:Plot3DS:Plot3DS(f(x,y), a b, c d, option=value)::
+:Plot3DS:Plot3DS(f(x,y), a b, c d, option=value, ...)::
+:Plot3DS:Plot3DS(list, ...)::
+:Pop:Pop(stack, n):remove an element from a stack:
+:PopBack:PopBack(stack):remove an element from the bottom of a stack:
+:PopFront:PopFront(stack):remove an element from the top of a stack:
+:Postfix:Postfix("op"):define function syntax:
+:Postfix:Postfix("op", precedence)::
+:Precision:Precision(n):set the precision:
+:Prefix:Prefix("op"):define function syntax:
+:Prefix:Prefix("op", precedence)::
+:PrettyForm:PrettyForm(expr):print an expression nicely with ASCII art:
+:PrettyPrinter:PrettyPrinter()::
+:PrettyPrinter:PrettyPrinter(printer):set routine to use as pretty-printer:
+:PrimitivePart:PrimitivePart(expr):primitive part of a univariate polynomial:
+:PrintList:PrintList(list):print list with padding:
+:PrintList:PrintList(list, padding);::
+:Prog:Prog(statement1, statement2, ...):block of statements:
+:ProperDivisors:ProperDivisors(n):the number of proper divisors:
+:ProperDivisorsSum:ProperDivisorsSum(n):the sum of proper divisors:
+:Pslq:Pslq(xlist,precision):search for integer relations between reals:
+:Push:Push(stack, expr):add an element on top of a stack:
+:RadSimp:RadSimp(expr):simplify expression with nested radicals:
+:RamanujanSum:RamanujanSum(k,n):compute the "Ramanujan sum":
+:RandVerifyArithmetic:RandVerifyArithmetic(n)::
+:Random:Random():(pseudo-) random number generator:
+:RandomIntegerMatrix:RandomIntegerMatrix(rows,cols,from,to):generate a matrix of random integers:
+:RandomIntegerVector:RandomIntegerVector(nr, from, to):generate a vector of random integers:
+:RandomPoly:RandomPoly(var,deg,coefmin,coefmax):construct a random polynomial:
+:RandomSeed:RandomSeed(init):(pseudo-) random number generator:
+:Rationalize:Rationalize(expr):convert floating point numbers to fractions:
+:Rationalize:Rationalize(expr):convert floating point numbers to fractions:
+:Re:Re(x):real part of a complex number:
+:Read:Read():read an expression from current input:
+:ReadCmdLineString:ReadCmdLineString(prompt):read an expression from command line and return in string:
+:ReadToken:ReadToken():read a token from current input:
+:RemoveDuplicates:RemoveDuplicates(list):remove any duplicates from a list:
+:Replace:Replace(list, n, expr):replace an entry in a list:
+:Retract:Retract("function",arity):erase rules for a function:
+:Reverse:Reverse(list):return the reversed list (without touching the original):
+:ReversePoly:ReversePoly(f, g, var, newvar, degree):solve $h(f(x)) = g(x) + O(x^n)$ for $h$:
+:RightAssociative:RightAssociative("op"):declare associativity:
+:RightPrecedence:RightPrecedence("op",precedence):set operator precedence:
+:Rng:Rng(r):manipulate random number generators as objects:
+:RngCreate:RngCreate():manipulate random number generators as objects:
+:RngCreate:RngCreate(init)::
+:RngCreate:RngCreate(option=value,...)::
+:RngSeed:RngSeed(r, init):manipulate random number generators as objects:
+:RootsOfUnity:RootsOfUnity(n):find the $n$ complex roots of unity:
+:Round:Round(x):round a number to the nearest integer:
+:RoundTo:RoundTo(number,precision):Round a real-valued result to a set number of digits:
+:Rule:Rule("operator", arity,:define a rewrite rule:
+:RuleBase:RuleBase(name,params):define function with a fixed number of arguments:
+:RuleBaseArgList:RuleBaseArgList("operator", arity):obtain list of arguments:
+:RuleBaseListed:RuleBaseListed("name", params):define function with variable number of arguments:
+:Secure:Secure(body):guard the host OS:
+:Select:Select(pred, list):select entries satisfying some predicate:
+:Set:Set(var, exp):assignment:
+:SetExtraInfo:SetExtraInfo(expr,tag):annotate objects with additional information:
+:SetHelpBrowser:SetHelpBrowser(helpbrowser):set the HTML browser to use for help:
+:SetStringMid:SetStringMid(index,substring,string):change a substring:
+:ShiftLeft:ShiftLeft(expr,bits)::
+:ShiftRight:ShiftRight(expr,bits)::
+:ShowPS:ShowPS(expr):view equations graphically:
+:Sign:Sign(x):sign of a number:
+:Simplify:Simplify(expr):try to simplify an expression:
+:Sin:Sin(x):trigonometric functions:
+:Solve:Solve(eq, var):solve an equation:
+:SolveMatrix:SolveMatrix(M,v):solve a linear system:
+:Space:Space():print one or more spaces:
+:Space:Space(nr)::
+:Sparsity:Sparsity(matrix):get the sparsity of a matrix:
+:Sqrt:Sqrt(x):square root:
+:SquareFree:SquareFree(p):return the square-free part of polynomial:
+:SquareFreeDivisorsList:SquareFreeDivisorsList(n):the list of square-free divisors:
+:StirlingNumber1:StirlingNumber1(n,m):return the {n,m}th Stirling Number of the first kind:
+:String:String(atom):convert atom to string and vice versa:
+:StringMid:StringMid(index,length,string):retrieve a substring:
+:StubApiCFile:StubApiCFile(basename):set file name for plugin API:
+:StubApiCFunction:StubApiCFunction(returntype,fname,::
+:StubApiCFunction:StubApiCFunction(returntype,fname,args):declare C++ function in plugin:
+:StubApiCInclude:StubApiCInclude(file):declare include file in plugin:
+:StubApiCPluginPurpose:StubApiCPluginPurpose(text):document the purpose of the plugin:
+:StubApiCPrettyName:StubApiCPrettyName(name):give a descriptive name for documentation:
+:StubApiCRemark:StubApiCRemark(string):provide more documentation for plugin:
+:StubApiCSetEnv:StubApiCSetEnv(func):access Yacas environment in plugin:
+:StubApiCShortIntegerConstant:StubApiCShortIntegerConstant(const,value):declare integer constant in plugin:
+:StubApiCStart:StubApiCStart(name):begin a C++ plugin API description:
+:StubApiCStruct:StubApiCStruct(name):declare C struct in plugin:
+:StubApiCStruct:StubApiCStruct(name,freefunction)::
+:Subfactorial:Subfactorial(m):factorial and related functions:
+:Subst:Subst(from, to) expr:perform a substitution:
+:SuchThat:SuchThat(expr, var):special purpose solver:
+:Sum:Sum(var, from, to, body):find sum of a sequence:
+:SumForDivisors:SumForDivisors(var,n,expr):loop over divisors:
+:SumTaylorNum:SumTaylorNum(x, NthTerm, TermFactor, order)::
+:SumTaylorNum:SumTaylorNum(x, NthTerm, order):optimized numerical evaluation of Taylor series:
+:SumTaylorNum:SumTaylorNum(x, ZerothTerm, TermFactor, order)::
+:Swap:Swap(list, i1, i2):swap two elements in a list:
+:SylvesterMatrix:SylvesterMatrix(poly1,poly2,variable):calculate the Sylvester matrix of two polynomials:
+:SystemCall:SystemCall(str):pass a command to the shell:
+:SystemCallbg:SystemCallbg("command")::
+:Table:Table(body, var, from, to, step):evaluate while some variable ranges over interval:
+:TableForm:TableForm(list):print each entry in a list on a line:
+:Tail:Tail(list):returns a list without its first element:
+:Take:Take(list, -n)::
+:Take:Take(list, n):take a sublist from a list, dropping the rest:
+:Take:Take(list, {m,n})::
+:Tan:Tan(x):trigonometric functions:
+:Taylor:Taylor(var, at, order) expr:univariate Taylor series expansion:
+:TeXForm:TeXForm(expr):export expressions to $LaTeX$:
+:TemporaryDir:TemporaryDir():manipulate files and directories:
+:TemporaryFile:TemporaryFile():manipulate files and directories:
+:TestYacas:TestYacas(question,answer):verifying equivalence of two expressions:
+:Time:Time(expr):measure the time taken by a function:
+:ToBase:ToBase(base, number):conversion from/to non-decimal base:
+:ToFile:ToFile(name) body:connect current output to a file:
+:ToStdout:ToStdout() body:select initial output stream for output:
+:ToString:ToString() body:connect current output to a string:
+:ToeplitzMatrix:ToeplitzMatrix(N):create a Toeplitz matrix:
+:Trace:Trace(M):trace of a matrix:
+:TraceExp:TraceExp(expr):evaluate with tracing enabled:
+:TraceRule:TraceRule(template) expr:turn on tracing for a particular function:
+:TraceStack:TraceStack(expression):show calling stack after an error occurs:
+:Transpose:Transpose(M):get transpose of a matrix:
+:TrapError:TrapError(expression,errorHandler):trap "hard" errors:
+:TrigSimpCombine:TrigSimpCombine(expr):combine products of trigonometric functions:
+:True:True:boolean constants:
+:TruncRadian:TruncRadian(r):remainder modulo $2*Pi$:
+:Type:Type(expr):return the type of an expression:
+:UnFence:UnFence("operator",arity):change local variable scope for a function:
+:UnFlatten:UnFlatten(list,operator,identity):inverse operation of Flatten:
+:UnList:UnList(list):convert a list to a function application:
+:Undefined:Undefined:constant signifying an undefined result:
+:Union:Union(l1, l2):return the union of two lists:
+:UniqueConstant:UniqueConstant():create a unique identifier:
+:Until:Until(pred) body:loop until a condition is met:
+:Use:Use(name):load a file, but not twice:
+:Use:Use(name):load a file, but not twice:
+:V:V(expression):set verbose output mode:
+:VandermondeMatrix:VandermondeMatrix(vector):create the Vandermonde matrix:
+:VarList:VarList(expr):list of variables appearing in an expression:
+:VarListArith:VarListArith(expr):list of variables appearing in an expression:
+:VarListSome:VarListSome(expr, list):list of variables appearing in an expression:
+:Verify:Verify(question,answer):verifying equivalence of two expressions:
+:VerifyArithmetic:VerifyArithmetic(x,n,m):Special purpose arithmetic verifiers:
+:VerifyDiv:VerifyDiv(u,v):Special purpose arithmetic verifiers:
+:Version:Version():show version of Yacas:
+:Vi:Vi(filename);:edit a file or function:
+:Vi:Vi(functionname);::
+:While:While(pred) body:loop while a condition is met:
+:WithValue:WithValue(var, val, expr):temporary assignment during an evaluation:
+:WithValue:WithValue({var,...}, {val,...}, expr)::
+:Write:Write(expr, ...):low-level printing routine:
+:WriteString:WriteString(string):low-level printing routine for strings:
+:WronskianMatrix:WronskianMatrix(func,var):create the Wronskian matrix:
+:XmlExplodeTag:XmlExplodeTag(xmltext):convert XML strings to tag objects:
+:XmlTokenizer:XmlTokenizer():select a syntax for parsing the input:
+:ZeroMatrix:ZeroMatrix(n):make a zero matrix:
+:ZeroMatrix:ZeroMatrix(n, m)::
+:ZeroVector:ZeroVector(n):create a vector with all zeroes:
+:Zeta:Zeta(x):Riemann's Zeta function:
+:ZetaNum:ZetaNum(number):Riemann's Zeta function:
+:a1:a1 And a2::
+:a1:a1 Or a2::
+:a:a *** b::
+:a:a X b::
+:e1:e1 != e2::
+:e1:e1 < e2::
+:e1:e1 <= e2::
+:e1:e1 = e2::
+:e1:e1 > e2::
+:e1:e1 >= e2::
+:eq1:eq1 AddTo eq2::
+:expr:expr Where x1==v1 And x2==v2 And ...::
+:expr:expr Where x==v::
+:expr:expr Where {x1==v1 And x2==v2,x1==v3::
+:expression:expression /  patterns::
+:expressions:expressions /   patterns::
+:fn:fn /@ list::
+:fn:fn @ arglist::
+:fn:fn(arg1, arg2, ...)  = expr::
+:gamma:gamma():Euler's constant $gamma$:
+:item:item   list::
+:n:n .. m::
+:n:n!!::
+:n:n!::
+:n:n<<m::
+:n:n>>m::
+:quit:quit:C --- basic session control:
+:restart:restart:C --- basic session control:
+:string1:string1   string2::
+:t1:t1 o t2::
+:var:var  = expr::
+:var:var++::
+:var:var--::
+:var:var[i]  = expr::
+:x:x+y::
+::::

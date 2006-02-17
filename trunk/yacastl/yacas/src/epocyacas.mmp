@@ -1,0 +1,43 @@
+
+target          YACAS.APP
+targettype      APP
+targetpath      \SYSTEM\APPS\YACAS
+uid				0x1000006C 1227
+unicodeuid		0x100039CE 1527
+
+project         PRJ
+subproject		yacas
+resource		epocYACAS.RSS
+lang			SC
+
+
+USERINCLUDE    . .\plat\epoc32
+SYSTEMINCLUDE  \epoc32\include\libc  \epoc32\include 
+
+SOURCE			grower.cpp	           lispobject.cpp
+SOURCE			lispatom.cpp
+SOURCE			anumber.cpp    lispcleanupstack.cpp
+SOURCE			infixparser.cpp     
+SOURCE			lispeval.cpp        lisphash.cpp
+SOURCE			lispio.cpp          epocstubs.cpp
+SOURCE			lispparser.cpp      lispstring.cpp
+SOURCE			lispuserfunc.cpp    mathenvironment.cpp
+SOURCE			mathuserfunc.cpp    platmath.cpp
+SOURCE			standard.cpp        epocfileio.cpp
+SOURCE			stringio.cpp        tokenizer.cpp
+SOURCE			yacasapi.cpp        lispenvironment.cpp
+SOURCE			yacasnumbers.cpp    errors.cpp
+SOURCE          deffile.cpp mathcommands.cpp mathcommands2.cpp
+SOURCE          arrayclass.cpp patterns.cpp patternclass.cpp
+SOURCE          genericobject.cpp	lispevalhash.cpp mathutil.cpp
+SOURCE          substitute.cpp mathcommands3.cpp
+
+SOURCE          arggetter.cpp lispplugin.cpp patcher.cpp genericstructs.cpp
+
+source			EPOCMAIN.CPP
+
+EPOCSTACKSIZE 800000
+
+library			EUSER.LIB  BAFL.LIB  GDI.LIB     WS32.LIB
+library			ETEXT.LIB  CONE.LIB  APPARC.LIB  EIKON.LIB
+library  estlib.lib estor.lib fbscli.lib grid.lib efsrv.lib bitgdi.lib

@@ -1,0 +1,99 @@
+
+/* Example code to export to superficie file format.
+ *
+ * This module defines Plot3D and PlotHeight for your use.
+ *
+ * Usage:
+ *
+ * PlotHeight(var1,from1,to1,steps1,var2,from2,to2,steps2,function);
+ *  This function will generate a mesh of "steps1"*"steps2" vertices,
+ *  defining variable "var1" from "from1" to "to1", and "var2" from "from2"
+ *  to "to2". At each point, "var1" and "var2" are set, and "function" is
+ *  evaluated. The output is written to the current output.
+ *
+ * Examples:
+ *
+ * PlotHeight(x,-1,1,2,y,-1,1,2,x+y);
+ *   This plots one square, from (-1,-1) to (1,1), as a rectangle
+ *     with slope x+y. The output is written to screen.
+ * ToFile("test.sup") PlotHeight(x,-1,1,2,y,-1,1,2,x+y);
+ *   This does the same as above, but writes the output to file "test.sup"
+ *
+ */
+
+
+
+
+Function("Plot3D",{var1,from1,to1,steps1,var2,from2,to2,steps2,vector})
+[
+  Plot3DAux(var1,from1,to1,steps1,var2,from2,to2,steps2,vector);
+];
+HoldArg("Plot3D",var1);
+HoldArg("Plot3D",var2);
+HoldArg("Plot3D",vector);
+UnFence("Plot3D",9);
+
+Function("PlotHeight",{var1,from1,to1,steps1,var2,from2,to2,steps2,function})
+[
+  Plot3DAux(var1,from1,to1,steps1,var2,from2,to2,steps2,{var1,var2,function});
+];
+HoldArg("PlotHeight",var1);
+HoldArg("PlotHeight",var2);
+HoldArg("PlotHeight",vector);
+UnFence("PlotHeight",9);
+
+Function("Plot3DAux",{var1,from1,to1,steps1,var2,from2,to2,steps2,vector})
+[
+  Local(PrevNumeric);
+  PrevNumeric:=Numeric;
+  Numeric:=True;
+  WriteString("MESH");   NewLine();
+
+  /* Write the vertex array */
+  WriteString("vertex"); NewLine();
+  Write(3*steps1*steps2);  NewLine();
+  WriteString("{");NewLine();
+  Local(plotauxx,plotauxy);
+  For(plotauxx:=0,plotauxx<steps1,plotauxx++)
+  [
+    For(plotauxy:=0,plotauxy<steps2,plotauxy++)
+    [
+       If(plotauxx != 0 Or plotauxy != 0,WriteString(","));
+       MacroLocal(var1,var2);
+       MacroSet(var1,from1+(to1-from1)*plotauxx/(steps1-1));
+       MacroSet(var2,from2+(to2-from2)*plotauxy/(steps2-1));
+       Space(3);
+       Write(Eval(vector[1])); WriteString(", ");
+       Write(Eval(vector[2])); WriteString(", ");
+       Write(Eval(vector[3])); NewLine();
+    ];
+  ];
+  WriteString("}");NewLine();
+
+  /* Write the index array */
+  WriteString("index"); NewLine();
+
+  /* TODO The next line should actually be steps1*steps2! Somehow
+   * it then never finishes evaluation!!! This is because of the rewrite
+   * rule a*a -> a^2, after which a^2 is evaluated, which is VERY slow...).
+   */
+  Write(steps1*steps2);  NewLine();
+  WriteString("{");NewLine();
+  For(plotauxx:=0,plotauxx<steps1-1,plotauxx++)
+  [
+    For(plotauxy:=0,plotauxy<steps2-1,plotauxy++)
+    [
+       If(plotauxx != 0 Or plotauxy != 0,WriteString(","));
+       Space(3);
+       Write(plotauxx+plotauxy*steps1);  WriteString(",");
+       Write(plotauxx+(plotauxy+1)*steps1);  WriteString(",");
+       Write(plotauxx+1+(plotauxy+1)*steps1);   WriteString(",");
+       Write(plotauxx+1+plotauxy*steps1);  NewLine();
+    ];
+  ];
+  WriteString("}");NewLine();
+  Numeric:=PrevNumeric;
+];
+
+
+

@@ -1,0 +1,29 @@
+
+Clear(x);
+PrettyPrinter("PrettyForm");
+
+Proteus'FontType(FlHelveticaBold);
+
+Proteus'FontSize(26);
+Proteus'AddLink("True","Examples of limits",False,False);
+
+Proteus'FontSize(18);
+Proteus'AddLink("True",
+"And another notepad
+ 
+To not make this note pad *too* empty, a few limits ;-)",False,False);
+Proteus'FontSize(15);
+Proteus'AddCommand("Limit(x,0)Sin(x)/x");
+
+Proteus'FontSize(18);
+Proteus'AddLink("True",
+"The line below is \"held\", meaning it will not automatically be
+simplified at startup. But if you go and stand on the line and
+press enter it should simplify to 0.",False,False);
+
+Proteus'FontSize(15);
+Proteus'AddCommand("Limit(x,Infinity)Sin(x)/x");
+Proteus'FontColor(FlColorGreen);
+Proteus'AddLink("Notepad(FindFile(\"index\"));", "Back to index",False,True);
+
+

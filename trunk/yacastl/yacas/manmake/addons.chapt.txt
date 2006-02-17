@@ -1,0 +1,309 @@
+			Platform-dependent packages
+
+*INTRO Certain facilities have been developed for use on Unix-like platforms,
+which is currently the main development target for Yacas. Other facilities have limited support on the Windows platform as well. These functions are described in this chapter.
+
+*CMD GetYacasPID --- obtain Yacas process number
+*UNIX
+*CALL
+	GetYacasPID()
+
+*DESC
+Returns an integer containing the process number (PID) of the Yacas session.
+This number can be used to create unique file names.
+
+Requires: a Unix shell.
+
+*EG notest
+	In> GetYacasPID()
+	Out> 26456;
+
+*SEE SystemCall
+
+*CMD ShowPS --- view equations graphically
+*UNIX
+*CALL
+	ShowPS(expr)
+
+*PARMS
+{expr} -- any expression (not evaluated)
+
+*DESC
+Exports a Yacas expression to $LaTeX$, generates a Postscript file and shows it in a viewer. The free Postscript viewer {gv} must be available on the Unix shell path. An alternative viewer can be specified by assigning to the global variable PSViewCommand.
+
+Requires: a Unix shell, {latex}, {dvips}, {gv} or another Postscript viewer.
+
+*EG notest
+	In> [ PSViewCommand := "ghostview"; \
+	  ShowPS(x+2*Sin(x)); ]
+	Expression exported as /tmp/yacas-tmp
+	file-28802.tex
+	Out> True;
+
+*SEE TeXForm
+
+*CMD MakeFunctionPlugin --- compile numerical functions into plugins
+*UNIX
+*CALL
+	MakeFunctionPlugin("name", body)
+	MakeFunctionPlugin()
+
+*PARMS
+
+{"name"} -- string, name of a new function
+
+{body} -- expression, function of arguments, must evaluate to a function of some variables. 
+
+*DESC
+
+The first form of the function
+compiles an external plugin library that computes a user-defined numerical
+function and dynamically loads it into Yacas, enabling a new function called
+{"name"}.
+
+The second form of the function is a predicate that checks that the function plugin facility is supported.
+(It may not be available on all platforms.)
+
+Requires: a Unix shell, a compiler named {c++} with ELF {.so} support, Yacas
+headers in {FindFile("")/include}; current directory must be writable.
+Error messages will be printed otherwise.
+
+The {body} expression must be a {CForm()}-exportable function of the arguments and may contain numerical constants. {Pi} is allowed and will be converted to
+floating-point.
+
+All arguments and the return value of the function are assumed
+to be double precision real numbers. The result of passing a non-numerical argument will be an unevaluated expression.
+	
+The function creates the following files in subdirectory {plugins.tmp/} of current directory:
+*	{f1_plugin.h}, {f1_plugin.cc} -- C++ code of the plugin; the function in the above example is implemented in C++ as
+	double f1_plugin_cc(double x, double y)
+	  { return sin(x/y); }
+*	{f1_plugin.stub} -- Yacas-language stub
+*	{f1_plugin_api.cc} -- Yacas-generated C++ stub
+*	{f1_plugin_api.description} - Yacas-generated documentation
+*	{f1_plugin.compile} -- command line to compile
+*	{libf1_plugin_cc.so} -- compiled plugin
+Note that all files have names matching "{*_plugin*}".
+
+After creating these files, {MakeFunctionPlugin()} will:
+*	1. Run a {c++} compiler command; if compilation fails, all error messages will appear in the log file {f1_plugin.log};
+*	1. Load resulting .so object with {DllLoad()};
+*	1. Print an information message on success.
+
+If you call {MakeFunctionPlugin()} repeatedly to define a function with the same name, old files will be overwritten and old libraries will be unloaded with {DllUnload()}.
+
+If the numerical calculation does not return a number (for example,
+it might return the atom {nan}, "not a number", for some arguments),
+then the new function will return {Undefined}.
+This is the behavior of {NFunction} which is used to wrap the numerical routine.
+
+*EG notest
+	
+	In> MakeFunctionPlugin("f1", Sin(x/y))
+	Function f1(x,y) loaded from
+	plugins.tmp/libf1_plugin_cc.so
+	Out> True;
+	In> f1(2,3)
+	Out> 0.618369803069736989620253;
+	In> f1(x,5)
+	Out> f1(x,5);
+
+*SEE DllLoad, DllUnload, DllEnumerate, CForm, NFunction
+
+*CMD Version --- show version of Yacas
+*CORE
+*CALL
+	Version()
+
+*DESC
+
+The function {Version()} returns a string representing the version of the currently running Yacas interpreter.
+
+*E.G. notest
+
+	In> Version()
+	Out> "1.0.48rev3";
+	In> LessThan(Version(), "1.0.47")
+	Out> False;
+	In> GreaterThan(Version(), "1.0.47")
+	Out> True;
+
+The last two calls show that the {LessThan} and {GreaterThan}
+functions can be used for comparing version numbers. This 
+method is only guaranteed, however, if the version is always expressed
+in the form {d.d.dd} as above.
+
+*REM
+Note that on the Windows platforms the output may be different:
+In> Version()
+Out> "Windows-latest";
+
+*SEE LessThan, GreaterThan
+
+
+*CMD Vi --- edit a file or function
+*UNIX
+*CALL
+	Vi(filename);
+	Vi(functionname);
+
+*PARMS
+
+{filename} - name of a file to edit
+
+{functionname} - name of a function to find for editing
+
+*DESC
+
+{Vi} will try to edit a file, or if the argument passed is a
+function, it will try to edit the file the function is defined in.
+It will try to do so by invoking the editor {vi}.
+
+It finds the function by scanning the {*.def} files that have been
+reported to the system. ({Vi} calls  {FindFunction} for this.)
+If editing a function, the command will jump directly to the first
+occurrence of the name of the function in the file (usually the 
+beginning of a definition of a function).
+
+If you would like to use {Vi()} to actually edit the Yacas library source file where the function is defined,
+you need to start Yacas from the {scripts/} directory in the development tree.
+In that case, {FindFunction()} will return the filename under that directory. Otherwise,  {FindFunction()} will return a name in the systemwide installation directory (or directory specified in the {--rootdir} option).
+
+*E.G. notest
+
+	In> Vi("yacasinit.ys")
+	Out> True;
+	In> Vi("Sum")
+	Out> True;
+
+*SEE FindFunction
+
+
+*CMD PlatformOS, OSVersion, FilePathSeparator --- OS-dependent constants
+*STD
+*CALL
+	FilePathSeparator
+	PlatformOS()
+	OSVersion()
+
+*DESC
+
+The functions {OSVersion()} and {PlatformOS()} return strings with an abbreviated description of the platform for which the current Yacas interpreter was compiled.
+Possible values are for instance {"linux-gnu"}, {"Win32"} or {"solaris2.6"}.
+These constants can be used in scripts if one needs to know the platform.
+
+The value of {OSVersion()} is normally determined when Yacas is
+compiled. It is usually the operating system name and version as reported by the
+{config.guess} script.
+However, it may be overridden at build time (on non-Unix
+systems, the script cannot be run and the value must be specified by hand).
+
+The value of {PlatformOS()} is defined in the library (in {osdep.rep/}).
+Thus the library is able to override the platform-specific value.
+The scripts should use {PlatformOS()} to distinguish between broad classes of systems.
+The currently supported values are {"Unix"} and {"Win32"}.
+
+The constant {FilePathSeparator} is the string that separates directories in the file system tree. This is the forward slash "{/}" on Unix and the backslash "{\}" on Windows.
+
+*E.G. notest
+
+	In> Check(StringMid(1, 5, OSVersion())="linux", \
+	          "BAAA! I WANT LINUX!")
+	Out> True;
+	In> PlatformOS()
+	Out> "Unix";
+
+*SEE MakeFilePath
+
+*CMD CopyFile, DeleteFile, DeleteDir, MakeDir, MakeFilePath, TemporaryDir, TemporaryFile --- manipulate files and directories
+*STD
+*CALL
+	CopyFile("src","dest")
+	DeleteFile("file", ...)
+	DeleteDir("dir", ...)
+	MakeDir("dir1", ...)
+	MakeFilePath("dir1", "dir2", ..., "file")
+	TemporaryDir()
+	TemporaryFile()
+
+*PARMS
+
+{"src"}, {"dest"}, {"file"}, {"dir"} -- strings, names of files and directories
+
+*DESC
+
+These functions provide a platform-independent interface to file operations on the underlying operating system (OS):
+
+*	{CopyFile} will copy a file {"src"} to another file or directory {"dest"}.
+*	{DeleteFile} will delete one or more files. If a file does not exist, no error is generated on Unix.
+*	{DeleteDir} will delete one or more directories
+<i>with all their contents</i>. (No warnings or questions are printed,---use with caution!) If a directory does not exist, no error is generated on Unix.
+*	{MakeDir} will create new directories. Under Windows, all intermediate subdirectories must exist for this to work. Under Unix, any intermediate subdirectories will be created automatically if needed.
+*	{MakeFilePath} returns a string which is the file path to the given file under given subdirectories. It uses the global variable {FilePathSeparator}.
+*	{TemporaryDir} and {TemporaryFile} return the names of a temporary directory and a temporary file. (These names are OS-dependent.)
+
+Absolute file paths or relative file paths can be given (the current directory is the directory where Yacas was started).
+
+File and directory names may contain spaces, although the behavior on Windows platform may be incorrect due to its broken filesystem and command interpreter.
+File and directory names should not contain double quotes ({"}). (On Unix, double quotes may be escaped by a backslash.)
+
+When operating on many files or directories at once, there may be errors associated with some files but not others.
+The functions return {True} only if all operations succeeded.
+Error messages from the OS are printed on the console as usual for {SystemCall}.
+
+*E.G. notest
+
+	In> MakeFilePath("", "usr", "bin", "yacas")
+	Out> "/usr/bin/yacas";
+	In> TemporaryDir()
+	Out> "/tmp";
+If the file {f1.txt} exists, it can be copied:
+	In> CopyFile("f1.txt", "f2.txt")
+	Out> True;
+Create a subdirectory {subdir} under the temporary directory:
+	In> MakeDir(d:=MakeFilePath(TemporaryDir(), \
+	  "subdir"))
+	Out> True;
+	In> d
+	Out> "/tmp/subdir";
+Copy a file into the newly created temporary location:
+	In> CopyFile("f2.txt", d)
+	Out> True;
+On Unix, spaces can be included in a file name and quotes can be escaped like this:
+	In> MakeDir("a \\\"")
+	Out> True;
+Now a directory with the name "{a "}" is created.
+
+An unsuccessful attempt to delete a directory:
+	In> DeleteDir("C:\\WINDOWS")
+	Out> False;
+
+*SEE SystemCall, FilePathSeparator
+
+
+*CMD SystemCallBg --- execute a system command in the background
+*STD
+*CALL
+	SystemCallBg("command")
+
+*PARMS
+
+{"command"} -- string, command line to execute
+
+*DESC
+
+This function is similar to {SystemCall} except the command is executed in the background.
+This is useful, for example, to start a GUI program while not interrupting the Yacas session.
+
+Unlike the {SystemCall} function, the return status of the command is not available.
+
+Error messages from the OS are printed on the console as usual for {SystemCall}.
+
+
+*E.G. notest
+
+	In> SystemCallBg("mozilla")
+	Out> True;
+(The Yacas session continues right away, but the disk starts to churn until finally the Mozilla window appears.)
+
+*SEE SystemCall

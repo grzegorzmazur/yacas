@@ -1,0 +1,236 @@
+
+		Finding real roots of polynomials
+
+*A real roots
+
+This section deals with finding roots of polynomials in the field 
+of real numbers.
+
+Without loss of generality, the coefficients $a[i]$ of a polynomial
+$$ p = a[n]*x^n + ... + a[0] $$
+can be considered
+to be rational numbers, as real-valued numbers are truncated in 
+practice, when doing calculations on a computer.
+
+Assuming that the leading coefficient $a[n]=1$, the polynomial $p$ can also be written as
+$$ p = p[1]^n[1]* ... * p[m]^n[m] $$,
+where $p[i]$ are the $ m $ distinct irreducible monic factors of the form
+$p[i]=x-x[i]$, and $ n[i] $ are multiplicities of the factors. Here the roots
+are $x[i]$ and some of them may be complex. However, complex roots of a
+polynomial with real coefficients always come in conjugate pairs, so the
+corresponding irreducible factors should be taken as $p[i]=x^2+c[i]*x+d[i]$. In
+this case, there will be less than $m$ irreducible factors, and all
+coefficients will be real.
+
+*A square free decomposition
+
+To find roots, it is useful to first remove the
+multiplicities, i.e. to convert the polynomial to one with multiplicity 1
+for all irreducible factors, i.e. find the polynomial $p[1]*...*p[m]$. This is called the "square-free part" of the original polynomial $p$.
+
+The square-free part of the polynomial $p$ can be easily found using the polynomial GCD algorithm.
+The derivative of a polynomial $ p $
+can be written as:
+$$ p' = Sum(i,1,m,p[1]^n[1]* ... * n[i]*p[i]^(n[i]-1)*(D(x)p[i]) * ... * p[m]^n[m]) $$.
+
+The g.c.d. of $ p $ and $ p' $ equals
+$$ Gcd(p,p') = Factorize(i,1,m,p[i]^(n[i]-1)) $$. 
+So if we divide $ p $ by $Gcd(p,p')$, we get
+the square-free part of the polynomial:
+$$ SquareFree(p) := Div(p,Gcd(p,p')) = p[1]* ... * p[m] $$.
+
+In what follows we shall assume that all polynomials are square-free
+with rational coefficients.
+Given any polynomial, we can apply the functions {SquareFree} and {Rationalize} and reduce it to this form.
+The function {Rationalize} converts all numbers in an expression to
+rational numbers. The function {SquareFree} returns the square-free
+part of a polynomial. For example:
+
+	In> Expand((x+1.5)^5)
+	Out> x^5+7.5*x^4+22.5*x^3+33.75*x^2+25.3125*x
+	+7.59375;
+	In> SquareFree(Rationalize(%))
+	Out> x/5+3/10;
+	In> Simplify(%*5)
+	Out> (2*x+3)/2;
+	In> Expand(%)
+	Out> x+3/2;
+
+*REM		Bounding real roots
+
+	    Sturm sequences
+
+*A real roots!Sturm sequences
+
+For a polynomial $ p(x) $ of degree $ n $, the Sturm sequence
+$ p[0] $, $ p[1] $, ... $ p[n] $ is defined by the following
+equations (following the book [Davenport <i>et al.</i> 1989]):
+
+$$ p[0] = p(x) $$,
+$$ p[1] = p'(x) $$,
+$$ p[i] = -remainder(p[i-2],p[i-1]) $$,
+where $ remainder(p,q) $ is the remainder of division of polynomials
+$ p $,  $ q $.
+
+The polynomial $ p $ can be assumed to have no multiple factors, and thus $ p $ and
+$ p' $ are relatively prime. The sequence of polynomials in the 
+Sturm sequence are (up to a minus sign) the consecutive polynomials generated  by 
+Euclid's algorithm for the calculation of a 
+greatest common divisor for $ p $ and $ p' $, so the last 
+polynomial $p[n] $ will be a constant.
+
+In Yacas, the function {SturmSequence(p)}  returns the Sturm sequence of $ p $,
+assuming $ p $ is a univariate polynomial in $ x $, $ p = p(x) $.
+
+*A real roots!variations in Sturm sequences
+
+Given a Sturm sequence $ S = SturmSequence(p) $ of a polynomial $ p $, 
+the <I>variation</I> in the Sturm sequence $ V(S,y) $ is the number
+of sign changes in the sequence $ p[0] $, $ p[1] $ , ... , $ p[n] $, evaluated at point $y$, and
+disregarding zeroes in the sequence.
+
+Sturm's theorem states that if $ a $ and $ b $ are two real numbers
+which are not roots of $ p $, and $ a < b $, then the number of 
+roots between $ a $ and $ b $ is $ V(S,a) - V(S,b) $. A proof can
+be found in Knuth, <I>The Art of Computer Programming, Volume 2, Seminumerical Algorithms</I>. 
+
+For $ a $ and $ b $, the values $ -Infinity $ and $ Infinity $
+can also be used. In these cases, $ V(S,Infinity) $ is the number
+of sign changes between the leading coefficients of the elements
+of the Sturm sequence, and $ V(S,-Infinity) $ the same, but with
+a minus sign for the leading coefficients for which the degree is
+odd.
+
+*A real roots!number of
+
+Thus, the number of real roots of a polynomial is 
+$ V(S,-Infinity) - V(S,Infinity) $. The function
+{NumRealRoots(p)} returns the number of real roots of $ p $.
+
+The function {SturmVariations(S,y)} returns the number of sign changes between
+the elements in the Sturm sequence $ S $, at point $ x = y $:
+
+	In> p:=x^2-1
+	Out> x^2-1;
+	In> S:=SturmSequence(p)
+	Out> {x^2-1,2*x,1};
+	In> SturmVariations(S,-Infinity)- \
+	SturmVariations(S,Infinity)
+	Out> 2;
+	In> NumRealRoots(p)
+	Out> 2;
+	In> p:=x^2+1
+	Out> x^2+1;
+	In> S:=SturmSequence(p)
+	Out> {x^2+1,2*x,-1};
+	In> SturmVariations(S,-Infinity)- \
+	SturmVariations(S,Infinity)
+	Out> 0;
+	In> NumRealRoots(p)
+	Out> 0;
+
+	    Finding bounds on real roots
+
+*A real roots!bounds on
+
+Armed with the variations in the Sturm sequence given in the
+previous section, we can now find the number of real roots
+in a range  ($a$,$b$), for $ a < b $. We can thus bound all the roots
+by subdividing ranges until there is only one root in each range.
+To be able to start this process, we first need some upper bounds of
+the roots, or an interval that contains all roots. Davenport gives limits on the roots
+of a polynomial given the coefficients of the polynomial, as
+
+$$ Abs(a) <= Max(Abs(a[n-1]/a[n]), Abs(a[n-2]/a[n])^(1/2), ... , Abs(a[0]/a[n])^(1/n) ) $$,
+for all real roots $ a $ of $ p $. This gives the upper bound on the
+absolute value of the roots of the polynomial in question.
+if $ p(0) != 0 $, the minimum bound can be obtained also by considering
+the upper bound of $ p(1/x)*x^n $, and taking $ 1/bound $.
+
+We thus know that given 
+$$ a[max] = MaximumBound(p) $$
+and
+$$ a[min] = MinimumBound(p) $$
+for all roots $ a $ of polynomial, either 
+$$ -a[max] <= a <= -a[min] $$
+or
+$$ a[min] <= a <= a[max] $$.
+
+Now we can start the search for the bounds on all roots. The search
+starts with initial upper and lower bounds on ranges, subdividing
+ranges until a range contains only one root, and adding that range
+to the resulting list of bounds. If, when dividing a range, the middle
+of the range lands on a root, care must be taken, because the bounds
+should not be on a root themselves. This can be solved by observing
+that if $ c $ is a root, $ p $ contains a factor $ x-c $, and thus
+taking $ p(x+c) $ results in a polynomial with all the roots shifted 
+by a constant $ -c $, and the root $ c $ moved to zero, e.g. $ p(x+c) $
+contains a factor $ x $. Thus a new ranges to the left and right of
+$ c $ can be determined by first calculating the minimum bound $ M $
+of $ p(x+c)/x $. When the original range was ($a$,$b$), and $ c = (a+b)/2 $
+is a root, the new ranges should become ($a$,$c-M$) and ($c+M$,$b$).
+
+In Yacas, {MimimumBound(p)} returns the lower bound described above,
+and {MaximumBound(p)} returns the upper bound on the roots in $ p $.
+These bounds are returned as rational numbers.
+{BoundRealRoots(p)} returns a list with sublists with the bounds on
+the roots of a polynomial:
+
+	In> p:=(x+20)*(x+10)
+	Out> (x+20)*(x+10);
+	In> MinimumBound(p)
+	Out> 10/3;
+	In> MaximumBound(p)
+	Out> 60;
+	In> BoundRealRoots(p)
+	Out> {{-95/3,-35/2},{-35/2,-10/3}};
+	In> N(%)
+	Out> {{-31.6666666666,-17.5},
+	  {-17.5,-3.3333333333}};
+
+It should be noted that since all calculations are done with rational
+numbers, the algorithm for bounding the roots is very robust. This is
+important, as the roots can be very unstable for small variations
+in the coefficients of the polynomial in question (see Davenport).
+
+	    Finding real roots given the bounds on the roots
+
+*A real roots!finding
+
+Given the bounds on the real roots as determined in the previous section,
+two methods for finding roots are available: the secant method or the Newton method, where the function is locally approximated
+by a line, and extrapolated to find a new estimate for a root. This 
+method converges quickly when "sufficiently" near a root, but can easily fail otherwise.
+The secant method can easily send the search to infinity.
+
+The bisection method is more robust, but slower. It works by taking 
+the middle of the range, and checking signs of the polynomial to select the half-range where the root is.
+As there is only one root
+in the range ($a$,$b$), in general it will be true that $ p(a)*p(b) < 0 $,
+which is assumed by this method.
+
+Yacas finds the roots by first trying the secant method, starting
+in the middle of the range, $ c = (a+b)/2 $. If this fails the bisection
+method is tried.
+
+The function call to find the real roots of a polynomial $ p $ in variable $ x $
+is {FindRealRoots(p)}, for example:
+
+	In> p:=Expand((x+3.1)*(x-6.23))
+	Out> x^2-3.13*x-19.313;
+	In> FindRealRoots(p)
+	Out> {-3.1,6.23};
+	In> p:=Expand((x+3.1)^3*(x-6.23))
+	Out> x^4+3.07*x^3-29.109*x^2-149.8199\ 
+	In> *x-185.59793;
+	In> p:=SquareFree(Rationalize( \ 
+	In> Expand((x+3.1)^3*(x-6.23))))
+	Out> (-160000*x^2+500800*x+3090080)/2611467;
+	In> FindRealRoots(p)
+	Out> {-3.1,6.23};
+
+
+
+
+
+

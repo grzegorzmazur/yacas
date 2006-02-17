@@ -1,0 +1,59 @@
+
+/* This file was automatically generated with cstubgen.
+*/
+#include "lisptype.h"
+#include "lispenvironment.h"
+#include "lispatom.h"
+#include "standard.h"
+#include "arggetter.h"
+#include "lispplugin.h"
+#include "platmath.h"
+#include "stubs.h"
+#include "genericstructs.h"
+
+#include "lispasem.h"
+
+
+<?
+DriverDeclareSymbols();
+?>
+
+<?
+DriverDefineFunctions();
+?>
+
+
+class ThisPlugin : public LispPluginBase
+{
+public:
+    virtual void Add(LispEnvironment& aEnvironment);
+    virtual void Remove(LispEnvironment& aEnvironment);
+
+<?
+DriverDefineFunctionPrototypes();
+?>
+
+};
+void ThisPlugin::Add(LispEnvironment& aEnvironment)
+{
+<?
+DriverInitializeSymbols();
+DriverLinkFunctions();
+?>
+}
+
+
+void ThisPlugin::Remove(LispEnvironment& aEnvironment)
+{
+  //TODO this plugin cannot unload itself yet!
+}
+
+
+extern "C" {
+LispPluginBase* maker(void)
+{
+    return new ThisPlugin;
+}
+
+};
+

@@ -1,0 +1,161 @@
+ 
+Use("cstubgen.rep/code.ys");
+
+StubApiCStart("OpenGL");
+StubApiCPrelog(
+"
+#ifdef HAVE_CONFIG_H
+#include \"config.h\"
+#endif
+#ifdef HAVE_GL_GLUT_H
+");
+/* OpenGL section */
+StubApiCInclude("<GL/gl.h>");
+StubApiCInclude("<GL/glu.h>");
+
+
+/* Boolean values */
+StubApiCShortIntegerConstant("GL_FALSE");
+StubApiCShortIntegerConstant("GL_TRUE");
+
+/* Primitives */
+StubApiCShortIntegerConstant("GL_LINES");
+StubApiCShortIntegerConstant("GL_POINTS");
+StubApiCShortIntegerConstant("GL_LINE_STRIP");
+StubApiCShortIntegerConstant("GL_LINE_LOOP");
+StubApiCShortIntegerConstant("GL_TRIANGLES");
+StubApiCShortIntegerConstant("GL_TRIANGLE_STRIP");
+StubApiCShortIntegerConstant("GL_TRIANGLE_FAN");
+StubApiCShortIntegerConstant("GL_QUADS");
+StubApiCShortIntegerConstant("GL_QUAD_STRIP");
+StubApiCShortIntegerConstant("GL_POLYGON");
+StubApiCShortIntegerConstant("GL_EDGE_FLAG");
+
+
+
+StubApiCShortIntegerConstant("GL_CURRENT_BIT");
+StubApiCShortIntegerConstant("GL_POINT_BIT");
+StubApiCShortIntegerConstant("GL_LINE_BIT");
+StubApiCShortIntegerConstant("GL_POLYGON_BIT");
+StubApiCShortIntegerConstant("GL_POLYGON_STIPPLE_BIT");
+StubApiCShortIntegerConstant("GL_PIXEL_MODE_BIT");
+StubApiCShortIntegerConstant("GL_LIGHTING_BIT");
+StubApiCShortIntegerConstant("GL_FOG_BIT");
+StubApiCShortIntegerConstant("GL_DEPTH_BUFFER_BIT");
+StubApiCShortIntegerConstant("GL_ACCUM_BUFFER_BIT");
+StubApiCShortIntegerConstant("GL_STENCIL_BUFFER_BIT");
+StubApiCShortIntegerConstant("GL_VIEWPORT_BIT");
+StubApiCShortIntegerConstant("GL_TRANSFORM_BIT");
+StubApiCShortIntegerConstant("GL_ENABLE_BIT");
+StubApiCShortIntegerConstant("GL_COLOR_BUFFER_BIT");
+StubApiCShortIntegerConstant("GL_HINT_BIT");
+StubApiCShortIntegerConstant("GL_EVAL_BIT");
+StubApiCShortIntegerConstant("GL_LIST_BIT");
+StubApiCShortIntegerConstant("GL_TEXTURE_BIT");
+StubApiCShortIntegerConstant("GL_SCISSOR_BIT");
+StubApiCShortIntegerConstant("GL_ALL_ATTRIB_BITS");
+
+
+/* Matrix Mode */
+StubApiCShortIntegerConstant("GL_MATRIX_MODE");
+StubApiCShortIntegerConstant("GL_MODELVIEW");
+StubApiCShortIntegerConstant("GL_PROJECTION");
+StubApiCShortIntegerConstant("GL_TEXTURE");
+
+
+
+StubApiCFunction("void","glBegin",{"int"});
+StubApiCFunction("void","glVertex3d",
+	{{"double","x"},{"double","y"},{"double","z"}});
+StubApiCFunction("void","glEnd",{});
+
+StubApiCFunction("void","glClearColor",
+  	{{"double","red"},{"double","green"},
+        {"double","blue"},{"double","alpha"}});
+StubApiCFunction("void","glClear",{{"int","clear_flags"}});
+
+StubApiCFunction("void","glColor4d",{"double","double","double","double"});
+
+StubApiCFunction("void","glFrontFace",{ {"int",   "mode"} });
+StubApiCFunction("void","glPointSize",{ {"double","size" } } );
+StubApiCFunction("void","glLineWidth",{ {"double","width" } } );
+StubApiCFunction("void","glEnable",   { { "int",  "cap" } } );
+StubApiCFunction("void","glDisable",  { { "int",  "cap" } } );
+
+StubApiCFunction("void","glPushMatrix",  { });
+StubApiCFunction("void","glPopMatrix",   { });
+StubApiCFunction("void","glLoadIdentity",{ });
+StubApiCFunction("void","glRotated",{ {"double", "angle" },
+		{"double", "x"}, {"double", "y"}, {"double" ,"z"} });
+StubApiCFunction("void","glScaled",{
+		{"double", "x"}, {"double", "y"}, {"double" ,"z"} });
+StubApiCFunction("void","glTranslated",{
+		{"double", "x"}, {"double", "y"}, {"double" ,"z"} });
+StubApiCFunction("void","glNormal3d",{
+ 		{"double", "nx"}, {"double", "ny"}, {"double" ,"nz"} });
+
+/*
+ * Transformation
+*/
+StubApiCFunction("void","glMatrixMode", {{"int", "mode" }} );
+StubApiCFunction("void","glOrtho",{ { "double", "left"}, {"double" ,"right"},
+                                 {"double" ,"bottom"}, {"double" ,"top"},
+                                 {"double" ,"near_val"}, {"double", "far_val"} } );
+StubApiCFunction("void","glFrustum",{ { "double", "left"}, {"double" ,"right"},
+                                 {"double" ,"bottom"}, {"double" ,"top"},
+                                 {"double" ,"near_val"}, {"double", "far_val"} } );
+StubApiCFunction("void","glViewport",{ {"int" ,"x"}, {"int", "y"},
+                                    {"int", "width"}, {"int", "height"} } );
+
+
+
+/* Glut section */
+StubApiCInclude("<GL/glut.h>");
+StubApiCInclude("\"glutcode.h\"");
+
+/* Mouse buttons. */
+StubApiCShortIntegerConstant("GLUT_LEFT_BUTTON");
+StubApiCShortIntegerConstant("GLUT_MIDDLE_BUTTON");
+StubApiCShortIntegerConstant("GLUT_RIGHT_BUTTON");
+
+/* Mouse button  state. */
+StubApiCShortIntegerConstant("GLUT_DOWN");
+StubApiCShortIntegerConstant("GLUT_UP");
+
+
+StubApiCFunction("void","GlutMainLoop",
+	{{"input_string","window_title"},
+         {"int","window_width"},{"int","window_height"}});
+StubApiCFunction("int", "GlutViewWidth",{});
+StubApiCFunction("int" ,"GlutViewHeight",{});
+StubApiCFunction("void","GlutEnableAnimation",{});
+StubApiCFunction("void","GlutDisableAnimation",{});
+StubApiCFunction("void","glutPostRedisplay",{});
+StubApiCFunction("int" ,"GlutGetElapsedTime",{});
+
+
+StubApiCSetEnv("GlutSetEnv");
+
+StubApiCPostlog(
+"
+#else
+extern \"C\" {
+LispPluginBase* maker(void)
+{
+    return NULL;
+}
+};
+#endif //HAVE_GL_GLUT_H
+");
+
+StubApiCFile("opengl","openglapi");
+/*
+*/
+
+/*
+  glBegin(GL_LINE);
+  glVertex3d(10, -1.5, 3.2);
+  glVertex3d(20,  3.2, 5.0);
+  glEnd();
+*/
+

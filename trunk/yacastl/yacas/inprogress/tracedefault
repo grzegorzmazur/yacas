@@ -1,0 +1,46 @@
+
+/* Example code that outputs traces in a more human-readable form.
+ */
+
+trde:=0;
+ 
+TrReset() <--
+[
+  trde:=0;
+];
+
+TrEnter(_expr) <--
+[
+  Space(trde);
+  WriteString("ENTER: ");
+  Write(expr);
+  NewLine();
+  trde:=trde+2;
+];
+HoldArg("TrEnter",arg1);
+
+TrLeave(_expr,_result) <--
+[
+  trde:=trde-2;
+  Space(trde);
+  WriteString("LEAVE: ");
+  Write(expr);
+  WriteString(" <-- ");
+  Write(result);
+  NewLine();
+];
+HoldArg("TrLeave",arg1);
+HoldArg("TrLeave",arg2);
+
+TrArg(_expr,_result) <--
+[
+  Space(trde);
+  WriteString("ARG: ");
+  Write(expr);
+  WriteString(" <-- ");
+  Write(result);
+  NewLine();
+];
+HoldArg("TrArg",arg1);
+HoldArg("TrArg",arg2);
+

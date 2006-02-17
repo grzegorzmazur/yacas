@@ -1,0 +1,128 @@
+----------------------------------------
+Constant FlHelvetica referred to in the library as FL_HELVETICA
+----------------------------------------
+Constant FlHelveticaBold referred to in the library as FL_HELVETICA_BOLD
+----------------------------------------
+Constant FlHelveticaItalic referred to in the library as FL_HELVETICA_ITALIC
+----------------------------------------
+Constant FlHelveticaBoldItalic referred to in the library as FL_HELVETICA_BOLD_ITALIC
+----------------------------------------
+Constant FlCourier referred to in the library as FL_COURIER
+----------------------------------------
+Constant FlCourierBold referred to in the library as FL_COURIER_BOLD
+----------------------------------------
+Constant FlCourierItalic referred to in the library as FL_COURIER_ITALIC
+----------------------------------------
+Constant FlCourierBoldItalic referred to in the library as FL_COURIER_BOLD_ITALIC
+----------------------------------------
+Constant FlTimes referred to in the library as FL_TIMES
+----------------------------------------
+Constant FlTimesBold referred to in the library as FL_TIMES_BOLD
+----------------------------------------
+Constant FlTimesItalic referred to in the library as FL_TIMES_ITALIC
+----------------------------------------
+Constant FlTimesBoldItalic referred to in the library as FL_TIMES_BOLD_ITALIC
+----------------------------------------
+Constant FlSymbol referred to in the library as FL_SYMBOL
+----------------------------------------
+Constant FlScreen referred to in the library as FL_SCREEN
+----------------------------------------
+Constant FlScreenBold referred to in the library as FL_SCREEN_BOLD
+----------------------------------------
+Constant FlZapfDingbats referred to in the library as FL_ZAPF_DINGBATS
+----------------------------------------
+Function FlColor
+ (referred to within the original library as fl_color)
+ with return type void and arguments:
+1. int red
+2. int green
+3. int blue
+----------------------------------------
+Function FlFont
+ (referred to within the original library as fl_font)
+ with return type void and arguments:
+1. int face
+2. int size
+----------------------------------------
+Function FlDraw
+ (referred to within the original library as fl_draw)
+ with return type void and arguments:
+1. input_string text
+2. int x
+3. int y
+----------------------------------------
+Function FlHeight
+ (referred to within the original library as fl_height)
+ with return type int and arguments:
+----------------------------------------
+Function FlDescent
+ (referred to within the original library as fl_descent)
+ with return type int and arguments:
+----------------------------------------
+Function FlWidth
+ (referred to within the original library as fl_width)
+ with return type double and arguments:
+1. input_string text
+----------------------------------------
+Function FlPushMatrix
+ (referred to within the original library as fl_push_matrix)
+ with return type void and arguments:
+----------------------------------------
+Function FlPopMatrix
+ (referred to within the original library as fl_pop_matrix)
+ with return type void and arguments:
+----------------------------------------
+Function FlScale
+ (referred to within the original library as fl_scale)
+ with return type void and arguments:
+1. double x
+2. double y
+----------------------------------------
+Function FlTranslate
+ (referred to within the original library as fl_translate)
+ with return type void and arguments:
+1. double x
+2. double y
+----------------------------------------
+Function FlRotate
+ (referred to within the original library as fl_rotate)
+ with return type void and arguments:
+1. double d
+----------------------------------------
+Function FlBeginPoints
+ (referred to within the original library as fl_begin_points)
+ with return type void and arguments:
+----------------------------------------
+Function FlBeginLine
+ (referred to within the original library as fl_begin_line)
+ with return type void and arguments:
+----------------------------------------
+Function FlBeginLoop
+ (referred to within the original library as fl_begin_loop)
+ with return type void and arguments:
+----------------------------------------
+Function FlBeginPolygon
+ (referred to within the original library as fl_begin_polygon)
+ with return type void and arguments:
+----------------------------------------
+Function FlVertex
+ (referred to within the original library as fl_vertex)
+ with return type void and arguments:
+1. double x
+2. double y
+----------------------------------------
+Function FlEndPoints
+ (referred to within the original library as fl_end_points)
+ with return type void and arguments:
+----------------------------------------
+Function FlEndLine
+ (referred to within the original library as fl_end_line)
+ with return type void and arguments:
+----------------------------------------
+Function FlEndLoop
+ (referred to within the original library as fl_end_loop)
+ with return type void and arguments:
+----------------------------------------
+Function FlEndPolygon
+ (referred to within the original library as fl_end_polygon)
+ with return type void and arguments:
