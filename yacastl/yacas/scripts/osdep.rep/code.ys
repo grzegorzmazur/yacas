@@ -1,0 +1,95 @@
+// OS-dependent code (to be replaced or configured at build time)
+
+// this file should load the OS-specific module that handles MakeDir() etc.
+
+// first, define PlatformOS(). Supported values so far: "Unix", "Win32"
+PlatformOS() := Eval(
+   If(GreaterThan(Length(OSVersion()),5) And StringMid(1,5,OSVersion()) = "linux",   "Unix", 
+   If(GreaterThan(Length(OSVersion()),6) And StringMid(1,6,OSVersion()) = "darwin",  "Unix", 
+   If(GreaterThan(Length(OSVersion()),7) And StringMid(1,7,OSVersion()) = "solaris", "Unix",
+   If(GreaterThan(Length(OSVersion()),7) And StringMid(1,7,OSVersion()) = "freebsd", "Unix",
+   If(OSVersion() = "Win32",   "Win32",
+   If(OSVersion() = "cygwin",  "Unix", 
+   /* otherwise */             Check(False, "Unsupported platform ":OSVersion()))))))));
+
+// this lists the available OS-specific modules
+SupportedOSes :=
+{
+	{"Unix", "unix.ys"}, // Unix defaults will probably work on MacOSX and BeOS
+	{"Win32", "win32.ys"},
+    {"Unknown","unix.ys"}
+};
+
+// it seems that we need this here because otherwise we won't be able to load the module... or will we?
+FilePathSeparators :=
+{
+	{"Unix", "/"},
+	{"Win32", "\\"},
+};
+
+/** The string PlatformOS() determines which module we should load.
+It can be set in yacasinit.ys or here, to override OSVersion(), e.g.:
+PlatformOS():="Win32";
+scripts should not use OSVersion(), instead they should use
+PlatformOS(), because it might have been set differently by the user's yacasinit (in the standard library, both values are the same.)
+
+Currently the only supported variants of PlatformOS()  are "Win32" and "Unix".
+
+*/
+
+FilePathSeparator := FilePathSeparators[PlatformOS()];
+
+// definitions of variable-argument functions
+
+Function() MakeFilePath(file, ...);
+Function() MakeDir(dir, ...);
+Function() DeleteDir(dir, ...);
+Function() DeleteFile(file, ...);
+
+CopyFile(file1, file2) := SystemCall(CopyFileCmd(file1, file2));
+
+10 # MakeFilePath(file_IsString) <-- file;
+10 # MakeFilePath({file_IsString}) <-- file;
+20 # MakeFilePath(files_IsList) <-- ConcatStrings(files[1], FilePathSeparator, MakeFilePath(Tail(files)));
+
+10 # MakeDir(dir_IsString) <-- SystemCall(MakeDirCmd(dir));
+10 # MakeDir({dir_IsString}) <-- MakeDir(dir);
+20 # MakeDir(dirs_IsList) <-- MakeDir(Head(dirs)) And MakeDir(Tail(dirs));
+
+10 # DeleteDir(dir_IsString) <-- SystemCall(DeleteDirCmd(dir));
+10 # DeleteDir({dir_IsString}) <-- DeleteDir(dir);
+20 # DeleteDir(dirs_IsList) <-- DeleteDir(Head(dirs)) And DeleteDir(Tail(dirs));
+
+10 # DeleteFile(file_IsString) <-- SystemCall(DeleteFileCmd(file));
+10 # DeleteFile({file_IsString}) <-- DeleteFile(file);
+20 # DeleteFile(files_IsList) <-- DeleteFile(Head(files)) And DeleteFile(Tail(files));
+
+SystemCallBg(command) := SystemCall(BackgroundCmd(command));
+
+// convert a path in current OS convention to use separators of the given another OS
+10 # ConvertOSPath(path_IsString, OSname_IsString) _ (FilePathSeparators[OSname]=Empty) <-- path;
+20 # ConvertOSPath(path_IsString, OSname_IsString) <--
+[
+	Local(i);
+	For(i:=1, i<=Length(path), i++)
+	[
+		If(
+			StringMid(i, 1, path) = FilePathSeparator,
+			path:=SetStringMid(i, FilePathSeparators[OSname], path)
+		);
+	];
+	path;
+		
+];
+
+// this function should be called once when one of the OS-dependent functions is requested
+LoadOSDependentModule() := Use(
+  ConcatStrings(
+	"osdep.rep/",
+// use this file path separator because it works on Windows and on Unix, and for other platforms we can use the archive
+	SupportedOSes[PlatformOS()]
+  )
+);
+
+
+LoadOSDependentModule();

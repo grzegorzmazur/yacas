@@ -1,0 +1,11 @@
+[title:Integration]
+
+Yacas can do certain integrals. One can request the anti-derivative by typing in an expression of the form Integrate(variable)expression. The integration constant is not included.
+
+- [link:Integration example:Integrate(x)x^2;].
+
+One can then do an integration over a certain range with the syntactic form Integrate(variable, from, to)expression
+
+- [link:Integration example:Integrate(x,a,b)x^2;].
+
+[link:Back to main menu:calculus.yml]

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="manmake"
+	ProjectGUID="{D02596DB-AFA2-4C32-B0B3-B981DDFA2875}"
+	RootNamespace="manmake"
+	Keyword="ManagedCProj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2"
+			ManagedExtensions="TRUE">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				PreprocessorDefinitions="WIN32;_DEBUG"
+				MinimalRebuild="FALSE"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="1"
+				WarningLevel="3"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
+				LinkIncremental="2"
+				GenerateDebugInformation="TRUE"
+				AssemblyDebug="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2"
+			ManagedExtensions="TRUE">
+			<Tool
+				Name="VCCLCompilerTool"
+				PreprocessorDefinitions="WIN32;NDEBUG"
+				MinimalRebuild="FALSE"
+				RuntimeLibrary="0"
+				WarningLevel="3"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
+				LinkIncremental="1"
+				GenerateDebugInformation="TRUE"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
+			<File
+				RelativePath=".\manripper.cpp">
+			</File>
+			<File
+				RelativePath=".\removeduplicates.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
+		</Filter>
+		<Filter
+			Name="Misc"
+			Filter="">
+<File RelativePath=".cvsignore"> </File>
+<File RelativePath="ABIN-grammar.chapt.txt"> </File>
+<File RelativePath="Algo.book.txt"> </File>
+<File RelativePath="BuildSystem.chapt.txt"> </File>
+<File RelativePath="CVS-Howto.chapt.txt"> </File>
+<File RelativePath="CodeTransformation.chapt.txt"> </File>
+<File RelativePath="FDL.chapt.txt"> </File>
+<File RelativePath="GlobalMatching.chapt.txt"> </File>
+<File RelativePath="LispLanguage.chapt.txt"> </File>
+<File RelativePath="LispProgramming.book.txt"> </File>
+<File RelativePath="Makefile.am"> </File>
+<File RelativePath="NewDesign.book.txt"> </File>
+<File RelativePath="NewDesignMisc.chapt.txt"> </File>
+<File RelativePath="Plugins-Howto.chapt.txt"> </File>
+<File RelativePath="README"> </File>
+<File RelativePath="SimpleTools.chapt.txt"> </File>
+<File RelativePath="SturmSequences.chapt.txt"> </File>
+<File RelativePath="YacasDebugger.chapt.txt"> </File>
+<File RelativePath="YacasDocs.chapt.txt"> </File>
+<File RelativePath="addons.chapt.txt"> </File>
+<File RelativePath="algo-basic.chapt.txt"> </File>
+<File RelativePath="algo-contfrac.chapt.txt"> </File>
+<File RelativePath="algo-numapprox.chapt.txt"> </File>
+<File RelativePath="algo-refs.chapt.txt"> </File>
+<File RelativePath="algorithms-elemfunc.chapt.txt"> </File>
+<File RelativePath="algorithms-integration.chapt.txt"> </File>
+<File RelativePath="algorithms-multivar.chapt.txt"> </File>
+<File RelativePath="algorithms-numtheory.chapt.txt"> </File>
+<File RelativePath="algorithms-specfunc.chapt.txt"> </File>
+<File RelativePath="algorithms-transforms.chapt.txt"> </File>
+<File RelativePath="arith.chapt.txt"> </File>
+<File RelativePath="book2TeX.sh"> </File>
+<File RelativePath="book2TeX.ys"> </File>
+<File RelativePath="book2txt.sh"> </File>
+<File RelativePath="book2txt.ys"> </File>
+<File RelativePath="book2xml.sh"> </File>
+<File RelativePath="book2xml.ys"> </File>
+<File RelativePath="book2ys.sh"> </File>
+<File RelativePath="book2ys.ys"> </File>
+<File RelativePath="calc.chapt.txt"> </File>
+<File RelativePath="cl-options.chapt.txt"> </File>
+<File RelativePath="codecheck.chapt.txt"> </File>
+<File RelativePath="coding.book.txt"> </File>
+<File RelativePath="config.chapt.txt"> </File>
+<File RelativePath="const.chapt.txt"> </File>
+<File RelativePath="controlflow.chapt.txt"> </File>
+<File RelativePath="dummies"> </File>
+<File RelativePath="essays.book.txt"> </File>
+<File RelativePath="filescanner.chapt.txt"> </File>
+<File RelativePath="functional.chapt.txt"> </File>
+<File RelativePath="glossary.chapt.txt"> </File>
+<File RelativePath="indexmaker"> </File>
+<File RelativePath="intro.book.txt"> </File>
+<File RelativePath="io.chapt.txt"> </File>
+<File RelativePath="linalg.chapt.txt"> </File>
+<File RelativePath="lists.chapt.txt"> </File>
+<File RelativePath="logic.chapt.txt"> </File>
+<File RelativePath="manmake.vcproj"> </File>
+<File RelativePath="manripper.cpp"> </File>
+<File RelativePath="manualmaker"> </File>
+<File RelativePath="new.chapt.txt"> </File>
+<File RelativePath="numerics.chapt.txt"> </File>
+<File RelativePath="numtheory.chapt.txt"> </File>
+<File RelativePath="ode.chapt.txt"> </File>
+<File RelativePath="paper.chapt.txt"> </File>
+<File RelativePath="pcre.chapt.txt"> </File>
+<File RelativePath="plugin-docs.chapt.txt"> </File>
+<File RelativePath="preds.chapt.txt"> </File>
+<File RelativePath="probability-and-statistics.chapt.txt"> </File>
+<File RelativePath="ref.book.txt"> </File>
+<File RelativePath="refprog.book.txt"> </File>
+<File RelativePath="removeduplicates.cpp"> </File>
+<File RelativePath="strings.chapt.txt"> </File>
+<File RelativePath="styleplain"> </File>
+<File RelativePath="transforms.chapt.txt"> </File>
+<File RelativePath="txt2example.pl"> </File>
+<File RelativePath="txt2yacasdoc.pl"> </File>
+<File RelativePath="univar.chapt.txt"> </File>
+<File RelativePath="vars.chapt.txt"> </File>
+<File RelativePath="wester-1994.chapt.txt"> </File>
+<File RelativePath="wordproblems.chapt.txt"> </File>
+<File RelativePath="ys2book.pl"> </File>
+<File RelativePath="ytxt2tex"> </File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

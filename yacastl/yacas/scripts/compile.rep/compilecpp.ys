@@ -1,0 +1,639 @@
+
+/* 
+to do list:
+- code to handle global variables
+- passing along the locals, and how to access them, in every compile call
+x code to handle local variables
+x process corefunctions.h so that all these functions are automatically known
+x check number of arguments passed
+x implement the most important macro type functions: Prog, If, While, Local.
+x actually emit compilable code
+x emit system calls to compile to plugin, and load and try
+*/
+
+/* Compile : compile an expression
+ */
+ 
+
+Macro()CompileStatement(expression);
+
+1000 # CompileStatement(_rest) <--
+[
+  Check(False,
+    ToString()
+    [
+      Echo("Base statement can not be compiled ");
+    ]);
+];
+
+
+Function()CountRegisters(expression);
+HoldArg("CountRegisters",expression);
+10 # CountRegisters(expression_IsAtom) <-- 0;
+20 # CountRegisters(expression_IsFunction)_(Type(expression) = "Local") 
+   <-- Length(Listify(expression))-1;
+30 # CountRegisters(expression_IsFunction)
+   <-- Add(MapSingle("CountRegisters",Tail(Listify(expression))));
+
+
+
+CompileStatement(Defun(_cn,_ag) (_body)) <--
+[
+  Local(callName,compiledName,args,stack,i,nrArgs,nrRegisters);
+  Set(callName,(@cn));
+  Set(args,(@ag));
+  Set(compiledName,"Compiled_":(@cn));
+  Set(nrArgs,Length(@ag));  
+  Set(nrRegisters,CountRegisters(Hold(@body)));
+//  Echo("CORE_KERNEL_FUNCTION(\"",Type(@f),"\",",compiledName,",",nrArgs,",YacasEvaluator::Function | YacasEvaluator::Fixed)");
+
+//TODO remove  funcDecls := {Type(@f),compiledName,nrArgs} : funcDecls;
+  ForwardDeclareFixedFunction(@cn,nrArgs);
+//  funcDecls[(@cn)] := {compiledName,Function,Fixed,nrArgs};
+
+  
+Echo("VmFunction(",@cn,")"); Set(instructionCount,0);
+  If(nrRegisters>0,
+    [
+      Echo("  VmPushNulls(",nrRegisters,")"); instructionCount:=instructionCount+2;
+    ]);
+//  Echo("void ",compiledName,"(LispEnvironment& aEnvironment,LispInt aStackTop)");
+//  Echo("VmFunctionBegin();");
+
+  Set(currentLastRegister,nrArgs+1);
+  Set(stack,NewStack());
+  PushStackFrame(stack,fenced);
+  For(i:=1,i<=nrArgs,i++)
+  [
+    AddToStack(stack,String(args[i]));
+    FindOnStack(stack,String(args[i]))["call"] := "/*ARGUMENT*/(":String(i):")";
+  ];  
+  CompileBody(Hold(@body),stack);
+  PopStackFrame(stack);
+  Echo("  VmSetRegister(0/*RESULT*/)"); instructionCount:=instructionCount+2;
+  Echo("  VmPop(",nrRegisters+1,")"); instructionCount:=instructionCount+2;
+  Echo("VmFunctionEnd() /* ",instructionCount," bytes in byte code mode. */");
+  Echo("");
+  Echo("");
+];
+
+
+
+CompileStatement(ForwardDeclareFixedFunction(_name,_nrArgs)) <--
+[
+//Echo("Name is ",@name," nrArgs is",@nrArgs);
+//  /* funcDecls[name] := */ {"Compiled_bla",Function,Fixed,nrArgs};
+  ForwardDeclareFixedFunction(@name,@nrArgs);
+];
+ForwardDeclareFixedFunction(name,nrArgs):=
+[
+  Local(newEntry,compiledName);
+  Set(compiledName,"Compiled_":(name));
+  Set(newEntry,{compiledName,Function,Fixed,nrArgs});
+  If (funcDecls[name] = Empty,
+    [
+      funcDecls[name] := newEntry;
+funcPrototypes := funcPrototypes:
+"extern void ":compiledName:"(LispEnvironment& aEnvironment,LispInt aStackTop);
+";
+
+    ]);
+  Check(funcDecls[name] = newEntry,
+    ToString()
+    [
+      Echo("Function prototype for ",name," is declared more than once, incompatibly.");
+      Echo("  Original definition: ",funcDecls[name]);
+      Echo("  New definition: ",newEntry);
+    ]
+       );  
+  
+  True;
+];
+
+CompileStatement(f_IsFunction := _body) <--
+[
+  Local(callName,compiledName,args,stack,i,nrArgs,nrRegisters);
+  Set(callName,Type(@f));
+  Set(args,Tail(Listify(@f)));
+  Set(compiledName,"Compiled_":Type(@f));
+  Set(nrArgs,NrArgs(@f));  
+  Set(currentLastRegister,nrArgs+1);
+
+//  Echo("CORE_KERNEL_FUNCTION(\"",Type(@f),"\",",compiledName,",",nrArgs,",YacasEvaluator::Function | YacasEvaluator::Fixed)");
+
+//TODO remove  funcDecls := {Type(@f),compiledName,nrArgs} : funcDecls;
+//  funcDecls[Type(@f)] := {compiledName,Function,Fixed,nrArgs};
+  ForwardDeclareFixedFunction(Type(@f),nrArgs);
+
+  Set(nrRegisters,CountRegisters(Hold(@body)));
+Echo("VmFunction(",callName,")"); Set(instructionCount,0);
+  If(nrRegisters>0,
+    [
+      Echo("  VmPushNulls(",nrRegisters,")"); instructionCount:=instructionCount+2;
+    ]);
+
+//  Echo("void ",compiledName,"(LispEnvironment& aEnvironment,LispInt aStackTop)");
+//  Echo("{");
+  Set(stack,NewStack());
+  PushStackFrame(stack,fenced);
+  For(i:=1,i<=nrArgs,i++)
+  [
+    AddToStack(stack,String(args[i]));
+    FindOnStack(stack,String(args[i]))["call"] := "/*ARGUMENT*/(":String(i):")";
+  ];  
+  CompileBody(Hold(@body),stack);
+  PopStackFrame(stack);
+  Echo("  VmSetRegister(/*RESULT*/)"); instructionCount:=instructionCount+2;
+  Echo("  VmPop(",nrRegisters+1,")"); instructionCount:=instructionCount+2;
+  Echo("VmFunctionEnd()");
+];
+
+Use("corefunctions.ys");
+10  # CompileFn(_fname)_(coreFunctions[fname] != Empty 
+                        /* And
+                         coreFunctions[fname][2]=Function And
+                         coreFunctions[fname][3]=Fixed */) <-- coreFunctions[fname] /*[1] */;
+
+
+30  # CompileFn(_fname)_(funcDecls[fname] != Empty) <-- funcDecls[fname] /*[1]*/;
+
+100 # CompileFn(_rest) <-- Empty;
+
+
+
+//
+
+
+10 # CompileBody(body_IsNumber,_stack) <--
+[
+  Echo("/* number : ",body," */");
+  Echo("  VmPushConstant(",CompiledConstant(String(body)),")"); instructionCount:=instructionCount+3;
+//  Echo("  PUSH(ATOM(",String(String(body)),"));");
+];
+
+10 # CompileBody(body_IsString,_stack) <--
+[
+  Echo("/* string : ",body," */");
+  Echo("  VmPushConstant(",CompiledConstant("\\\"":body:"\\\""),")");  instructionCount:=instructionCount+3;
+//  Echo("  PUSH(ATOM(\"\\\"",body,"\\\"\"));");
+];
+
+11 # CompileBody(body_IsAtom,_stack)_(IsOnStack(stack,String(body))) <--
+[
+  Echo("/* local : ",body," */");
+  Echo("  VmPush(",FindOnStack(stack,String(body))["call"],")"); instructionCount:=instructionCount+2;
+];
+
+//TODO handle global variables
+12 # CompileBody(body_IsAtom,_stack) <--
+[
+  Echo("/* atom : ",body," */");
+  Echo("  VmPushConstant(",CompiledConstant(String(body)),")");  instructionCount:=instructionCount+3;
+//  Echo("  PUSH(ATOM(",String(String(body)),"));");
+];
+
+
+// Optimizations of specific transformation rules
+15 # CompileBody(- n_IsNumber,_stack) <-- CompileBody(MathNegate(n),stack);
+
+
+20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "Local") <--
+[
+  Echo("/* ",body," */");
+  Set(body,Tail(Listify(body)));
+  Local(i,nr);
+  Set(nr,Length(body));
+  For(i:=1,i<=nr,i++)
+  [
+    //TODO handle initialization
+
+
+
+    AddToStack(stack,String(body[i]));
+//    FindOnStack(stack,String(body[i]))["call"] := String(body[i]);
+    FindOnStack(stack,String(body[i]))["call"] := "/*ARGUMENT*/(":String(currentLastRegister):")";
+//hier
+    Echo("  VmInitRegister(/*ARGUMENT*/(",currentLastRegister,"), ",CompiledConstant(String(body[i])),")"); instructionCount:=instructionCount+4;
+//    Echo("REGISTER(":String(currentLastRegister):")/*.Set*/=(",CompiledConstant(String(body[i])),");");
+    currentLastRegister++;
+//    Echo("LispPtr ",body[i],"; ",body[i],"/*.Set*/=",CompiledConstant(String(body[i])),");");
+
+  ];
+  Echo("  VmPushConstant(",CompiledConstant("True"),")");  instructionCount:=instructionCount+3;
+];
+  
+
+20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "Set") <--
+[
+  Echo("/* ",body," */");
+  Set(body,Tail(Listify(body)));
+  CompileBody(body[2],stack);
+  Echo("  VmSetRegister(",FindOnStack(stack,String(body[1]))["call"],")"); instructionCount:=instructionCount+2;
+];
+
+20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "Prog") <--
+[
+  Set(body,Tail(Listify(body)));
+  If(Length(body)=0,Set(body,{True}));
+  PushStackFrame(stack,unfenced);
+//  Echo("  PUSH(",CompiledConstant("True"),");");
+  While(body != {})
+  [
+    CompileBody(Head(body),stack);
+    Set(body,Tail(body));
+    If(Length(body)>0,
+      [
+        Echo("  VmPop(1)");  instructionCount:=instructionCount+2;
+      ]);
+  ];
+  PopStackFrame();
+];
+
+20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "While") <--
+[
+  Local(loopLabel,breakLabel);
+  loopLabel:=UniqueConstant();
+  breakLabel:=UniqueConstant();
+  Set(body,Tail(Listify(body)));
+  Echo("/* While (",body[1],") */");
+  Echo("VmLabel(",loopLabel,")"); labelDefs[String(loopLabel)] := instructionCount;
+//  Echo("   for(;;)");
+//  Echo("{");
+  CompileBody(body[1],stack);
+  Echo("  VmJumpIfFalse(",breakLabel,")"); instructionCount := instructionCount+3;
+//  Echo("   if (ISFALSE(STACK(STACKTOP()-1))) break;");
+  CompileBody(body[2],stack);
+  Echo("  VmPop(2)"); instructionCount:=instructionCount+2;
+//  Echo("}");
+  Echo("  VmJump(",loopLabel,")"); instructionCount := instructionCount+3;
+  Echo("VmLabel(",breakLabel,")"); labelDefs[String(breakLabel)] := instructionCount;
+];
+
+
+20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "If") <--
+[
+  Set(body,Tail(Listify(body)));
+  Echo("/* If (",body[1],") ",body[2]," */");
+  If(Length(body) = 3,Echo("/* else ",body[3]," */"));
+
+  CompileBody(body[1],stack);
+Local(elseClause,pastClause);
+elseClause:=UniqueConstant();
+pastClause:=UniqueConstant();
+Echo("  VmJumpIfFalse(",elseClause,")"); instructionCount := instructionCount+3;
+//  Echo("   if (ISTRUE(STACK(STACKTOP()-1)))");
+//  Echo("  {");
+  Echo("  VmPop(1)"); instructionCount:=instructionCount+2;
+  CompileBody(body[2],stack);
+Echo("  VmJump(",pastClause,")"); instructionCount := instructionCount+3;
+//  Echo("  }");
+Echo("VmLabel(",elseClause,")"); labelDefs[String(elseClause)] := instructionCount;
+  If(Length(body) = 3,
+  [
+//    Echo("  else");
+//    Echo("  {");
+    Echo("  VmPop(1)"); instructionCount:=instructionCount+2;
+    CompileBody(body[3],stack);
+//    Echo("  }");
+  ]);
+Echo("VmLabel(",pastClause,")"); labelDefs[String(pastClause)] := instructionCount;
+];
+
+30 # CompileBody(body_IsList,_stack) <--
+[
+  Echo("  VmPushConstant(",CompiledConstant("List"),")"); instructionCount:=instructionCount+3;
+  ForEach(item,body)
+  [
+    CompileBody(item,stack);
+  ];
+  Echo("  VmConsList(",Length(body),")"); instructionCount:=instructionCount+2;
+];
+
+LocalSymbols(cFn)
+[
+  90 # CompileBody(body_IsFunction,_stack)_
+       [
+         Set(cFn,CompileFn(Type(body)));
+         (cFn != Empty);
+       ] <--
+  [
+    Local(compileFn);
+    Set(compileFn,cFn);
+    Echo("  VmPushNulls(1)"); instructionCount:=instructionCount+2;
+//    Echo("  {");
+  
+    Local(i,args,nrArgs);
+    Set(args,Tail(Listify(body)));
+    Set(nrArgs,NrArgs(body));
+
+    Check(compileFn[2]=Function,ToString()[Echo("Trying to call non-function ",Type(body));]);
+    Check(compileFn[3]=Fixed,ToString()[Echo("Trying to call function with variable number of arguments ",Type(body));]);
+    Check(compileFn[4]=nrArgs,ToString()[Echo("Trying to call function ",Type(body)," with ",nrArgs," arguments, expected ",compileFn[4]);]);
+
+    For(i:=1,i<=nrArgs,i++)
+    [
+      CompileBody(args[i],stack);
+    ];
+  
+  //hier
+  //  Echo("    void ",compileFn,"(LispEnvironment& aEnvironment,LispInt aStackTop);");
+
+
+    Echo("  VmCall(",compileFn[1],", ",nrArgs,")"); instructionCount:=instructionCount+2+(BitsPerLong/8);
+//    Echo("    ",compileFn[1],"(aEnvironment,STACKTOP()-",(nrArgs+1),");");
+    If(nrArgs != 0,
+      [
+        Echo("  VmPop(",nrArgs,")"); instructionCount:=instructionCount+2;
+      ]);
+//    Echo("  }");
+  ];
+];
+
+
+400 # CompileBody(_body,_stack) <-- 
+[
+  Check(False,ToString()Echo("Unhandled expression type ",body));
+];
+
+
+fileCompileString:=
+"
+<?
+LocalSymbols(expression)
+FromFile(file)
+[
+  Local(expression);
+  Set(expression,Read());
+//Echo(expression);
+  While(expression != EndOfFile)
+  [
+    `CompileStatement(@expression);
+    Set(expression,Read());
+//Echo(expression);
+  ];
+];
+?>
+";
+
+fileBuildString:=
+"
+/* <?WriteString(pluginName:\".cpp\");?>
+ * This file was generated from <?WriteString(file);?> by compilecpp.ys .
+*/
+
+//#include <stdio.h>
+
+#include \"lisptype.h\"
+#include \"lispenvironment.h\"
+#include \"lispatom.h\"
+#include \"standard.h\"
+#include \"arggetter.h\"
+#include \"lispplugin.h\"
+#include \"platmath.h\"
+#include \"stubs.h\"
+#include \"genericstructs.h\"
+#include \"mathcommands.h\"
+
+// The define OPTIMIZE_COMPILED_PLUGIN_SIZE should be defined somewhere else.
+#ifndef WIN32 // some macro expansion is failing on Win platform, no idea why.
+// #define OPTIMIZE_COMPILED_PLUGIN_SIZE
+#endif // WIN32
+
+#ifdef OPTIMIZE_COMPILED_PLUGIN_SIZE
+#include \"vm.h\"
+#endif // OPTIMIZE_COMPILED_PLUGIN_SIZE
+
+//#define _this_stack (aEnvironment.iStack)
+#define ATOM(_x) LispAtom::New(aEnvironment,_x)
+#define RESULT _this_stack.GetElement(aStackTop)
+#define ARGUMENT(i) _this_stack.GetElement(aStackTop+i)
+
+#define PUSH(_x)   _this_stack.PushArgOnStack(_x)
+#define POP(_i)    _this_stack.PopTo(_this_stack.GetStackTop() - _i)
+#define STACKTOP() _this_stack.GetStackTop()
+#define STACK(_i)  _this_stack.GetElement(_i)
+
+#define ISTRUE(_x) IsTrue(aEnvironment, _x)
+#define ISFALSE(_x) IsFalse(aEnvironment, _x)
+
+#ifdef OPTIMIZE_COMPILED_PLUGIN_SIZE
+
+    #define VmFunction(name) \\
+      void Compiled_##name(LispEnvironment& aEnvironment,LispInt aStackTop) \\
+      { \\
+        extern const unsigned char Code_##name[]; \\
+        RunFunction(aEnvironment,aStackTop, Code_##name, CONSTANTS); \\
+      } \\
+      const unsigned char Code_##name[] = {
+  
+  #define VmFunctionEnd()        CodeVmReturn};
+  
+  #define VmJumpIfTrue(label)   CodeVmJumpIfTrue,  ((label)>>8)&0xff, (label)&0xff,
+  #define VmJumpIfFalse(label)  CodeVmJumpIfFalse, ((label)>>8)&0xff, (label)&0xff,
+  #define VmJump(label)         CodeVmJump,        ((label)>>8)&0xff, (label)&0xff,
+  #define VmLabel(label)
+  #define VmPushNulls(_nr)       CodeVmPushNulls,_nr,
+  #define VmPush(_index)         CodeVmPush,_index,
+  #define VmPushConstant(_constnt) CodeVmPushConstant,((_constnt)>>8)&0xff, (_constnt)&0xff,
+  #define VmInitRegister(_index,_constnt) CodeVmInitRegister,_index,((_constnt)>>8)&0xff, (_constnt)&0xff,
+  #define VmSetRegister(_index)   CodeVmSetRegister,_index,
+  #define VmPop(_i)               CodeVmPop,_i,
+  #if (BITS_PER_LONG==32)
+    #define VmCall(fname,nrargs)     CodeVmCall,(((long)fname)>>24)&0xff, (((long)fname)>>16)&0xff,(((long)fname)>>8)&0xff, ((long)fname)&0xff,nrargs,
+  #endif
+  #if (BITS_PER_LONG==64)
+    #define VmCall(fname,nargs)     CodeVmCall, \\
+                                      (((long)fname)>>56)&0xff, (((long)fname)>>48)&0xff, \\
+                                      (((long)fname)>>40)&0xff, (((long)fname)>>32)&0xff, \\
+                                      (((long)fname)>>24)&0xff, (((long)fname)>>16)&0xff, \\
+                                      (((long)fname)>>8)&0xff, ((long)fname)&0xff,nrargs,
+  #endif
+  
+  #define VmConsList(_n)          CodeVmConsList,_n,
+
+#else
+
+  #define VmFunction(name)    void Compiled_##name(LispEnvironment& aEnvironment,LispInt aStackTop) { register LispEnvironment::YacasArgStack& _this_stack = aEnvironment.iStack; 
+  #define VmFunctionEnd()        }
+  
+  #define VmJumpIfTrue(_label)   if (ISTRUE (STACK(STACKTOP()-1))) goto _label;
+  #define VmJumpIfFalse(_label)  if (ISFALSE(STACK(STACKTOP()-1))) goto _label;
+  #define VmJump(_label)         goto _label;
+  #define VmLabel(_label)          _label:;
+  
+  #define VmPushNulls(_nr)            _this_stack.PushNulls(_nr);
+  #define VmPush(_index)          PUSH(ARGUMENT(_index)/*.Get()*/);
+  #define VmPushConstant(_constnt) PUSH(CONSTANTS[_constnt]);
+  
+  #define VmInitRegister(_index,_constant) ARGUMENT(_index)/*.Set*/=(CONSTANTS[_constant]);
+  #define VmSetRegister(_index) ARGUMENT(_index)/*.Set*/=(STACK(STACKTOP()-1)/*.Get()*/);
+
+  #define VmPop(_i)               _this_stack.PopTo(_this_stack.GetStackTop() - _i);
+  #define VmCall(fname,nargs)     fname(aEnvironment,STACKTOP()-(nargs+1) );
+  
+  #define VmConsList(_n)                                                     \\
+    {                                                                       \\
+      LispInt i,stacktop = STACKTOP();                                      \\
+      for (i=0;i<_n;i++)                                                    \\
+      {                                                                     \\
+        STACK(stacktop-2)/*.Set*/=(STACK(stacktop-2)/*.Get()*/->Copy(LispFalse));    \\
+        STACK(stacktop-2)/*.Get()*/->Next()/*.Set*/=(STACK(stacktop-1)/*.Get()*/);       \\
+        POP(1);  stacktop--;                                                \\
+      }                                                                     \\
+      STACK(stacktop-1)/*.Set*/=(LispSubList::New(STACK(stacktop-1)/*.Get()*/));     \\
+    }
+
+#endif // OPTIMIZE_COMPILED_PLUGIN_SIZE
+
+#define HAS_NEW_CONSTANTS_IMPL 0
+#if !HAS_NEW_CONSTANTS_IMPL
+static LispObject*        CONSTANTS[<?Write(Length(constDefs));?>];
+#else
+static RefPtr<LispObject> CONSTANTS[<?Write(Length(constDefs));?>];
+#endif
+
+#ifdef OPTIMIZE_COMPILED_PLUGIN_SIZE
+<?
+  ForEach(item,labelDefs)
+  [
+    Echo(\"#define \",item[1],\" \",item[2]);
+//    Echo(\"LispObject * \",item[2],\";\");
+  ];
+?>
+#endif // OPTIMIZE_COMPILED_PLUGIN_SIZE
+
+<?
+  Echo(funcPrototypes);
+?>
+
+<?
+WriteString(funcDefs);
+?>
+
+
+class <?WriteString(\"Plugin_\":pluginName);?> : public LispPluginBase
+{
+public:
+    virtual void Add(LispEnvironment& aEnvironment);
+    virtual void Remove(LispEnvironment& aEnvironment);
+};
+
+void <?WriteString(\"Plugin_\":pluginName);?>::Add(LispEnvironment& aEnvironment)
+{
+<?
+  [
+    Local(i);
+    Set(i,0);
+    ForEach(item,constDefs)
+    [
+      Echo(\"CONSTANTS[\",item[2],\"] = ATOM(\",String(item[1]),\");\");
+      Set(i,i+1);
+    ];
+  ];
+?>
+#if !HAS_NEW_CONSTANTS_IMPL
+   for (int ii = (sizeof(CONSTANTS)/sizeof(CONSTANTS[0]))-1; ii >= 0; --ii)
+   {
+      ++CONSTANTS[ii]->iReferenceCount;
+   }
+#endif
+<?
+[
+  Local(cname,fname,nrargs,t1,t2);
+  ForEach(item,funcDecls)
+  [
+    {fname,{cname,t1,t2,nrargs}}:=item;   
+Echo(\"  aEnvironment.SetCommand(\",cname,\",\",String(fname),\",\",nrargs,\",YacasEvaluator::Function | YacasEvaluator::Fixed);\");
+  ];
+];
+?>
+}
+
+void <?WriteString(\"Plugin_\":pluginName);?>::Remove(LispEnvironment& aEnvironment)
+{
+   for (int ii = (sizeof(CONSTANTS)/sizeof(CONSTANTS[0]))-1; ii >= 0; --ii)
+   {
+	  #if !HAS_NEW_CONSTANTS_IMPL
+         if (!--CONSTANTS[ii]->iReferenceCount) delete CONSTANTS[ii];
+      #else
+         CONSTANTS[ii] = 0;
+      #endif
+   }
+<?
+[
+  Local(cname,fname,nrargs,t1,t2);
+  ForEach(item,funcDecls)
+  [
+    {fname,{cname,t1,t2,nrargs}}:=item;   
+    Echo(\"aEnvironment.RemoveCoreCommand(\",String(fname),\");\");
+  ];
+];
+?>
+}
+
+extern \"C\" {
+//#ifdef EXE_DLL_PLUGINS
+LispPluginBase* <?WriteString(\"make_\":pluginName);?>(void);
+//#else
+//LispPluginBase* maker(void);
+//#endif
+}
+//#ifdef EXE_DLL_PLUGINS
+LispPluginBase* <?WriteString(\"make_\":pluginName);?>(void)
+//#else
+//LispPluginBase* maker(void)
+//#endif
+{
+    return NEW <?WriteString(\"Plugin_\":pluginName);?>;
+}
+
+// end of <?WriteString(pluginName:\"Plugin_\");?>
+";
+//{cname,fname,nrargs}
+
+10 # CompiledConstant(string_IsString)_(constDefs[string] = Empty) 
+   <--
+   [
+     Local(cst);
+     Set(cst,String(constCount));
+     constDefs[string] := cst;
+     constCount++;
+     cst;
+   ];
+20 # CompiledConstant(string_IsString) <-- constDefs[string];
+
+
+/* CompileExpression can be used to compile one single function.
+ */
+Macro("CompileExpression",{expression})
+[
+  Set(funcDecls,{});
+  Set(funcPrototypes,"");
+  Set(constDefs,{});
+  Set(constCount,0);
+  Set(labelDefs,{});
+  CompileStatement(@expression);
+];
+
+CompileCpp(file_IsString,pluginName_IsString)<--
+[
+  Local(funcDefs);
+  Set(funcDecls,{});
+  Set(funcPrototypes,"");
+  Set(constDefs,{});
+  Set(constCount,0);
+  Set(labelDefs,{});
+  Echo("Converting ",file," to C++ code");
+  Set(funcDefs,PatchString(fileCompileString));
+  Echo("Generating C++ file ",pluginName,".cpp");
+  ToFile(pluginName:".cpp")WriteString(PatchString(fileBuildString));
+];
+
+CcMacOSX(file_IsString,pluginName_IsString)<--
+[
+  Echo("Compiling C++ file ",pluginName,".cpp into plugin ",pluginName,".so");
+  SystemCall("/bin/sh ./libtool --mode=compile g++ -DHAVE_CONFIG_H  -I. -Isrc -Isrc/plat/linux32/ -O9 -Wall -pedantic -c ":pluginName:".cpp -o ":pluginName:".lo");
+  SystemCall("/bin/sh ./libtool --mode=link    g++  -O9 -Wall -pedantic -o ":pluginName:".la -rpath /usr/local/lib/yacas -module -avoid-version -no-undefined  ":pluginName:".lo");
+];
+
+

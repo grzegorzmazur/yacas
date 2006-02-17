@@ -1,0 +1,16 @@
+
+- now fill the profiling view.
+
+- LispObject::Equal is never used! Remove! IternalEquals
+  is used in stead.
+- Derivatives: Deriv(var,1)exp called where Deriv(var)exp
+  would suffice.
+- divisions: does a whole slew of things before deciding, that,
+  yes, the arguments are numbers so it doesn't need to do anything
+  with it.
+- Simplify Simplify.
+
+
+138:IsList:ENTER: IsList(x)
+
+

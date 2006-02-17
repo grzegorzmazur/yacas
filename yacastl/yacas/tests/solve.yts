@@ -1,0 +1,188 @@
+
+/* 
+ * VerifySolve(e1, e2) tests whether 'e1' evaluates to something
+ * "equal" to 'e2', and complains if it doesn't. 
+ *
+ * Here, "equal" means:
+ *  o  for lists: having the same entries, possibly in a different
+ *     order;
+ *  o  for equations: having the same right-hand sides, possibly after
+ *     'Simplify';
+ *  o  in all other cases: equality, possible after 'Simplify'.
+ * Hence, { a == 1, a == x+1 } is "equal" to { a == 1+x, a == 1 }.
+ */
+
+VerifySolve(_e1, _e2) <--
+If (VerifySolve'Equal(Eval(e1), Eval(e2)), 
+    True,
+    [ 
+      WriteString("******************");    NewLine();
+      ShowLine();                           NewLine();
+      Write(e1);                            NewLine();
+      WriteString(" evaluates to ");        NewLine();
+      Write(Eval(e1));                      NewLine();
+      WriteString(" which differs from ");  NewLine();
+      Write(e2);                            NewLine();
+      WriteString("******************");    NewLine();
+      False; 
+    ]); 
+HoldArgNr("VerifySolve", 2, 1);
+
+10 # VerifySolve'Equal({}, {}) <-- True;
+
+20 # VerifySolve'Equal({}, e2_IsList) <-- False;
+
+30 # VerifySolve'Equal(e1_IsList, e2_IsList) <--
+[
+  Local(i, found);
+  found := False;
+  i := 0;
+  While(i < Length(e2) And Not found) [
+    i++;
+    found := VerifySolve'Equal(Head(e1), e2[i]);
+  ];
+  If (found, VerifySolve'Equal(Tail(e1), Delete(e2, i)), False);
+];
+
+40 # VerifySolve'Equal(_l1 == _r1, _l2 == _r2) 
+<-- Equals(l1,l2) And Simplify(r1-r2)=0;
+
+50 # VerifySolve'Equal(_e1, _e2) <-- Simplify(e1-e2) = 0;
+
+/**********************************************************************/
+
+Testing("Solve");
+
+Verify(OldSolve(a+x*y==z,x),(z-a)/y);
+Verify(OldSolve({a+x*y==z},{x}),{{x==(z-a)/y}});
+
+// check that solving systems of equations works, at least at the
+// level of simple back-substitutions
+Verify(Solve({a+x*y==z},{x}),{{x==(z-a)/y}});
+[
+  Local(eq,res);
+  eq:={a-b==c,b==c};
+  res:=Solve(eq,{a,b});
+  Verify(eq Where res,{{c==c,c==c}});
+];
+
+VerifySolve(Solve(a+x*y == z, x), { x == (z-a)/y });
+
+VerifySolve(Solve(x^2-3*x+2, x), { x == 1, x == 2 });
+
+VerifySolve(Solve(2^n == 32, n), { n == Ln(32)/Ln(2) });  
+            /* Of course, Ln(32)/Ln(2) = 5 */
+
+VerifySolve(Solve(ArcTan(x^4) == Pi/4, x), 
+            { x == 1, x == -1, x == I, x == -I });
+
+VerifySolve(Solve(Exp(x)/(1-Exp(x)) == a, x), {x == Ln(a/(a+1))});
+VerifySolve(Solve(Exp(x)/(1-Exp(x)) == a, a), {a == Exp(x)/(1-Exp(x))});
+
+VerifySolve(Solve(x^5 == 1, x), 
+            { x == 1, x == Exp(2/5*I*Pi), x == Exp(4/5*I*Pi), 
+              x == Exp(-2/5*I*Pi), x == Exp(-4/5*I*Pi)});
+
+VerifySolve(Solve(Sqrt(x) == 1, x),  { x == 1 });
+VerifySolve(Solve(Sqrt(x) == -1, x), { });
+VerifySolve(Solve(Sqrt(x) == I, x),  { x == -1 });
+VerifySolve(Solve(Sqrt(x) == -I, x), { });
+VerifySolve(Solve(Sqrt(x) == 0, x),  { x == 0 });
+
+
+/* The following equations have in fact infinitely many solutions */
+
+VerifySolve(Solve(Sin(x), x), { x == 0, x == Pi });
+
+VerifySolve(Solve(x*Exp(x), x), { x == 0 });
+
+VerifySolve(Solve(Cos(a)^2 == 1/2, a), 
+            { a == Pi/4, a == 3/4*Pi, a == -3/4*Pi, a == -Pi/4 });
+
+/* This goes into an infinite recursion:
+ * VerifySolve(Solve(Sin(a*Pi)^2-Sin(a*Pi)/2 == 1/2, a), 
+ *             { a == 1/2, a == 7/6 });
+ */
+
+Verify(IsError(), False);
+
+/* This equation can be solved (the solution is x>0), but the current
+ * code does not do this. The least we can expect is that no spurious
+ * solutions are returned. */
+VerifySolve(Solve(0^x == 0, x), {});
+Verify(ClearError("Solve'Fails"), True);
+Verify(IsError(), False);
+
+/* This equation could be solved using the Lambert W function */
+VerifySolve(Solve(x^x == 1, x), {});
+Verify(ClearError("Solve'Fails"), True);
+Verify(IsError(), False);
+
+/* Another equation which cannot be solved at the moment */
+VerifySolve(Solve(BesselJ(1,x), x), {});
+Verify(ClearError("Solve'Fails"), True);
+Verify(IsError(), False);
+
+/* And another one */
+VerifySolve(Solve(Exp(x)+Cos(x) == 3, x), {});
+Verify(ClearError("Solve'Fails"), True);
+Verify(IsError(), False);
+
+/* This equation could be solved if we knew that x >= 0 */
+VerifySolve(Solve(Sqrt(x) == a, x),  { });
+Verify(ClearError("Solve'Fails"), True);
+Verify(IsError(), False);
+
+/* Test the type-checking mechanism */
+VerifySolve(Solve(2*x == 1, 1), {});
+Verify(ClearError("Solve'TypeError"), True);
+Verify(IsError(), False);
+
+/* This command is clearly nonsense, but it used to send Yacas in an
+ * infinite recursion, which should never happen.  Note that 'D(y)x == 0'
+ * is parsed as 'D(y)(x==0)'. */
+VerifySolve(Solve(D(y)(x == 0), x),  { });
+Verify(ClearError("Solve'Fails"), True);
+Verify(IsError(), False);
+
+/**********************************************************************/
+
+Testing("PSolve");
+
+/* Linear equations */
+
+VerifySolve(PSolve(x,x), 0);
+VerifySolve(PSolve(x+3*Sin(b)-1,x), 1-3*Sin(b));
+VerifySolve(PSolve(2*x-a,x), a/2);
+VerifySolve(PSolve(2*x-a,a), 2*x);
+
+/* Quadratic equations */
+
+VerifySolve(PSolve(x^2,x), {0,0});
+VerifySolve(PSolve(4*x^2-1,x), {1/2,-1/2});
+VerifySolve(PSolve(x^2+1,x), {I,-I});
+VerifySolve(PSolve(x^2-3*x+2,x), {1,2});
+
+/* Cubic equations */
+
+VerifySolve(PSolve(x^3,x), {0,0,0});
+VerifySolve(PSolve(x^3-1,x), {1, Exp(2/3*Pi*I), Exp(-2/3*Pi*I)});
+VerifySolve(PSolve(x^3+1,x), {-1, Exp(1/3*Pi*I), Exp(-1/3*Pi*I)});
+roots := BubbleSort(N(PSolve(x^3-3*x^2+2*x,x)), "<");
+NumericEqual(roots[1], 0, 10);
+NumericEqual(roots[2], 1, 10);
+NumericEqual(roots[3], 2, 10);
+/* Ideally, we want yacas to simplify the result of
+ * PSolve(x^3-3*x^2+2*x,x) to {0,1,2}, but that does not seem feasible,
+ * so we just test for numerical equality. */
+
+/* Quartic equations */
+
+VerifySolve(PSolve(x^4,x), {0,0,0,0});
+VerifySolve(PSolve(16*x^4-1,x), {1/2, -1/2, 1/2*I, -1/2*I});
+VerifySolve(PSolve(x^4-x,x), {0, 1, Exp(2/3*Pi*I), Exp(-2/3*Pi*I)});
+VerifySolve(PSolve(x^4+x,x), {0, -1, Exp(1/3*Pi*I), Exp(-1/3*Pi*I)});
+/* Yacas has difficulties with more complicated equations, like the 
+ * biquadratic x^4 - 3*x^2 + 2. */
+
+/*TODO MatrixSolve */

@@ -1,0 +1,10 @@
+;
+; Install file for Yacas
+;
+#{"Yacas"},(1227),1,0,53
+;
+"\epoc32\release\marm\rel\Yacas.app" - "!:\system\apps\Yacas\Yacas.app"
+"\epoc32\release\marm\rel\YacasServer.exe" - "!:\system\apps\Yacas\YacasServer.exe"
+"\epoc32\release\marm\rel\yacas.rsc" - "!:\system\apps\Yacas\Yacas.rsc"
+"\yacas-1.0.53\epoc\yacas.aif" - "!:\system\apps\Yacas\Yacas.aif"
+"\yacas-1.0.53\ramscripts\scripts.dat" - "!:\system\apps\Yacas\Scripts.dat"

@@ -1,0 +1,64 @@
+f():=[];//Echo(CurrentFile()," line ",CurrentLine());
+Testing("UnaryFunctionInverses");
+Verify(Sin(ArcSin(a)),a);  f();
+Verify(Cos(ArcCos(a)),a);  f();
+
+//TODO ??? Verify(Tan(ArcTan(a)),a);
+Verify(ArcSin(Sin(a)),a);  f();
+Verify(ArcCos(Cos(a)),a);  f();
+//TODO ??? this is not always the correct answer! Verify(ArcTan(Tan(a)),a);
+Verify(Tan(Pi/2),Infinity); f();
+Verify(Tan(Pi),0); f();
+
+Verify( Limit(x,Infinity) Sin(x), Undefined ); f();
+Verify( Limit(x,Infinity) Cos(x), Undefined ); f();
+Verify( Limit(x,Infinity) Tan(x), Undefined ); f();
+Verify( Limit(x,Infinity) Gamma(x), Infinity ); f();
+Verify( Limit(x,Infinity) Abs(x), Infinity ); f();
+Verify( Limit(x,Infinity) x!, Infinity); f();
+Verify( Sin(x)/Cos(x), Tan(x) ); f();
+Verify( TrigSimpCombine(Sin(x)^2 + Cos(x)^2), 1 ); f();
+
+Verify( Sinh(x)-Cosh(x), Exp(-x)); f();
+Verify( Sinh(x)+Cosh(x), Exp(x) ); f();
+Verify( Sinh(x)/Cosh(x), Tanh(x) ); f();
+Verify( Sinh(Infinity), Infinity); f();
+Verify( Sinh(x)*Csch(x), 1); f();
+Verify( 1/Coth(x), Tanh(x) ); f();
+Verify(2+I*3,Complex(2,3)); f();
+Verify(Magnitude(I+1),Sqrt(2)); f();
+
+Verify(Re(2+I*3),2); f();
+Verify(Im(2+I*3),3); f();
+// Shouldn't these be in linalg.yts?
+Verify(ZeroVector(3),{0,0,0}); f();
+Verify(BaseVector(2,3),{0,1,0}); f();
+Verify(Identity(3),{{1,0,0},{0,1,0},{0,0,1}}); f();
+
+Testing("Derivatives");
+Verify(D(x) a,0); f();
+Verify(D(x) x,1); f();
+Verify(D(x) (x+x),2); f();
+Verify(D(x) (x*x),2*x); f();
+Verify(D(x) D(x) Sin(x),-Sin(x)); f();
+
+
+Testing("Limits");
+Verify( Limit(x,0,Right) Ln(x)*Sin(x), 0 ); f();
+KnownFailure( Limit(k,Infinity) ((k-phi)/k)^(k+1/2) = Exp(-phi) ); f();
+
+// This function satisfies Laplaces eqn: D(x,2)z + D(y,2)z = 0
+z:= ArcTan((2*x*y)/(x^2 - y^2)); f();
+// Hangs
+// Verify(Simplify((D(x,2) z) + D(y,2) z), 0 );
+
+Testing("Pslq");
+VerifyPslq(left,right):=
+[
+  If(left=right,
+    Verify(True,True),
+    `Verify(@left,-(@right)));
+];
+VerifyPslq(Pslq({ Pi+2*Exp(1) , Pi , Exp(1) },20),{1,-1,-2}); f();
+VerifyPslq(Pslq({ 2*Pi+3*Exp(1) , Pi , Exp(1) },20),{1,-2,-3}); f();
+

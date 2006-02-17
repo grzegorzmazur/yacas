@@ -1,0 +1,120 @@
+			Probability and Statistics
+
+		Probability
+
+*INTRO
+Each distribution is represented as an entity. For each distribution
+known to the system the consistency of parameters is checked. If
+the parameters for a distribution are invalid, the functions return
+{Undefined}.
+For example, {NormalDistribution}{(a,-1)} evaluates to
+{Undefined}, because of negative variance.
+
+*CMD BernoulliDistribution --- Bernoulli distribution
+*STD
+*CALL 
+	BernoulliDistribution(p)
+
+*PARMS
+
+{p} -- number, probability of an event in a single trial
+
+*DESC 
+A random variable has a Bernoulli distribution with probability {p} if
+it can be interpreted as an indicator of an event, where {p} is the
+probability to observe the event in a single trial.
+
+Numerical value of {p} must satisfy $0<p<1$.
+
+*SEE BinomialDistribution
+
+*CMD BinomialDistribution --- binomial distribution
+*STD
+*CALL
+	BinomialDistribution(p,n)
+
+*PARMS
+{p} -- number, probability to observe an event in single trial
+
+{n} -- number of trials
+
+*DESC
+Suppose we repeat a trial {n} times, the probability to observe an
+event in a single trial is {p} and outcomes in all trials are mutually
+independent. Then the number of trials when the event occurred
+is distributed according to the binomial distribution. The probability
+of that is {BinomialDistribution}{(p,n)}.
+
+Numerical value of {p} must satisfy $0<p<1$. Numerical value
+of {n} must be a positive integer. 
+
+*SEE BernoulliDistribution
+
+*CMD tDistribution --- Student's $t$ distribution
+*STD
+*CALL
+	{tDistribution}(m)
+
+*PARMS 
+{m} -- integer, number of degrees of freedom
+
+*DESC
+
+*REM what does it do???
+The function {tDistribution} returns the ...
+
+Let $Y$ and $Z$ be independent random variables, $Y$ have the 
+NormalDistribution(0,1), {Z} have ChiSquareDistribution(m). Then 
+$Y/Sqrt(Z/m)$ has tDistribution(m).
+
+Numerical value of {m} must be positive integer.
+
+*CMD PDF --- probability density function
+*STD
+*CALL
+	PDF(dist,x)
+
+*PARMS
+{dist} -- a distribution type
+
+{x} -- a value of random variable
+
+*DESC
+If {dist} is a discrete distribution, then {PDF} returns the
+probability for a random variable with distribution {dist} to take a
+value of {x}. If {dist} is a continuous distribution, then {PDF}
+returns the density function at point $x$.
+
+*SEE CDF
+
+		Statistics
+
+*CMD ChiSquareTest --- Pearson's ChiSquare test
+*STD
+
+*CALL
+	ChiSquareTest(observed,expected)
+	ChiSquareTest(observed,expected,params)
+
+*PARMS
+{observed} -- list of observed frequencies
+
+{expected} -- list of expected frequencies
+
+{params} -- number of estimated parameters
+
+*DESC
+{ChiSquareTest} is intended to find out if our sample was drawn from a
+given distribution or not. To find this out, one has to calculate
+observed frequencies into certain intervals and expected ones. To
+calculate expected frequency the formula $n[i]:=n*p[i]$ must be used,
+where $p[i]$ is the probability measure of $i$-th interval, and $n$ is
+the total number of observations. If any of the parameters of the
+distribution were estimated, this number is given as
+{params}.
+
+The function returns a list of three local substitution rules. First
+of them contains the test statistic, the second contains the value of the parameters, and
+the last one contains the degrees of freedom. 
+
+The test statistic is distributed as ChiSquareDistribution.

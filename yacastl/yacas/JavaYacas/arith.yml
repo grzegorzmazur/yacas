@@ -1,0 +1,17 @@
+[title:Some arithmetic examples]
+
+- Calculate [link:one plus one:1+1;].
+- Multiplying [link:two numbers:2*3;].
+- Using [link:brackets:(1+1)*(2+3);]to group calculations.
+- Doing arithmetic on [link:large numbers:12345678912345678*76868768768768768;].
+- Raising [link:powers:2^40;].
+- Requesting a [link:numeric approximation:N(1/3,40);]of a division, up to 40 digits precision.
+- Getting the [link:numerator:Numer(2/5);]of a rational number.
+- Getting the [link:denominator:Denom(2/5);]of a rational number.
+- Determining whether a number is a [link:number:IsNumber(1.2);].
+- Determining whether a number is an [link:integer:IsInteger(12);].
+- Determining whether a number can be represented as a [link:rational number:IsRational(12/13);].
+- Writing numbers using [link:scientific notation:1.2e3+1;].
+- Bit-shifting [link:a number:1<<40;].
+
+[link:Back to main menu:start.yml]

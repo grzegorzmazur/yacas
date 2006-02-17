@@ -1,0 +1,40 @@
+
+target          yacasserver.exe
+targettype      exedll
+
+project         yacas-1.0.53
+subproject		src
+epocheapsize 1024000 3145728
+epocstacksize 800000
+
+USERINCLUDE    . .\plat\epoc32
+//TODO remove
+// We don't need this any more because the files in ramscripts were moved to src/ 
+// USERINCLUDE    ..\ramscripts
+SYSTEMINCLUDE  \epoc32\include \epoc32\include\libc
+
+SOURCE			EPOCSERV.CPP
+SOURCE			grower.cpp	        lispobject.cpp
+SOURCE			lispatom.cpp
+SOURCE			anumber.cpp         lispcleanupstack.cpp
+SOURCE			infixparser.cpp     exedll.cpp libmath.cpp
+SOURCE			lispeval.cpp        lisphash.cpp
+SOURCE			lispio.cpp          epocstubs.cpp
+SOURCE			lispparser.cpp      lispstring.cpp
+SOURCE			lispuserfunc.cpp    mathenvironment.cpp
+SOURCE			mathuserfunc.cpp    platmath.cpp
+SOURCE			standard.cpp        epocfileio.cpp
+SOURCE			stringio.cpp        tokenizer.cpp
+SOURCE			yacasapi.cpp        lispenvironment.cpp
+SOURCE			yacasnumbers.cpp    errors.cpp
+SOURCE			deffile.cpp mathcommands.cpp mathcommands2.cpp
+SOURCE			arrayclass.cpp patterns.cpp patternclass.cpp
+SOURCE			genericobject.cpp	lispevalhash.cpp mathutil.cpp
+SOURCE			substitute.cpp mathcommands3.cpp
+SOURCE			arggetter.cpp lispplugin.cpp patcher.cpp genericstructs.cpp
+SOURCE			unipoly.cpp archiver.cpp compressedfiles.cpp ctokenizer.cpp
+SOURCE			xmltokenizer.cpp obmalloc.cpp
+
+LIBRARY			euser.lib estlib.lib efsrv.lib cone.lib eikon.lib apparc.lib
+LIBRARY			bafl.lib gdi.lib ws32.lib etext.lib estor.lib fbscli.lib
+LIBRARY			grid.lib bitgdi.lib econs.lib

@@ -1,0 +1,36 @@
+
+
+DefaultDirectory("./testnotes/");
+//Use("print.ys");
+//PrettyPrinter("Print");
+
+Proteus'FontType(FlHelveticaBold);
+
+Proteus'FontSize(26);
+Proteus'AddLink("True","Some example notepads",False,False);
+Proteus'FontSize(18);
+Proteus'AddLink("True",
+"This is an example index for a notepad tutorial.
+Click on any one of the items below to go to a specific example.
+ 
+This is the next line after an empty line.
+",False,False);
+
+
+Proteus'FontColor(FlColorGreen);
+Proteus'FontSize(15);
+
+Proteus'AddLink("Notepad(FindFile(\"fonts\"));",
+  "Some fonts and colors",False,True);
+
+Proteus'AddLink("Notepad(FindFile(\"testnotepad\"));",
+  "First test notepad",False,True);
+Proteus'AddLink("Notepad(FindFile(\"testnotepad2\"));",
+  "Second test notepad",False,True);
+Proteus'AddLink("Notepad(FindFile(\"recursetest\"));",
+  "A Simple exercise: solve x^2-4=0.",False,True);
+Proteus'AddLink("Notepad(FindFile(\"graphtest2\"));",
+  "Plotting a graph.",False,True);
+Proteus'AddLink("restart",
+  "Quit this tutorial",False,True);
+

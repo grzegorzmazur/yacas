@@ -1,0 +1,35 @@
+//////
+// $Id: tr.yts,v 1.1 2006-02-17 13:08:55 peterdgilbert Exp $
+// Tests for Tr
+//////
+
+Testing("-- Tr (trace of tensor)");
+
+Verify(Tr(a),Hold(Tr(a)));
+Verify(Tr({}),0);
+Verify(Tr({a,b}),a+b);
+Verify(Tr({{}}),0);
+Verify(Tr({{a}}),a);
+Verify(Tr({{},a}),{});
+Verify(Simplify(Tr({{a},b})-{a+b}),{0});
+Verify(Tr({{},{}}),0);
+Verify(Tr({{},{{}}}),Hold({}+{{}}));     // bug in list addition?
+//Verify(Tr({{a,b},{c}}),Hold({a,b}+{c})); // bug in list addition?
+Verify(Tr({{a,b},{c,d}}),a+d);
+Verify(Tr({{a,b},{c,d},{e,f}}),a+d);
+Verify(Tr({{a,b,c},{d,e,f},{g,h,i}}),a+e+i);
+Verify(Tr({{a,b,c},{d,e,f}}),a+e);
+Verify(Tr({{{a,b}},{{c,d}}}),a);
+Verify(Tr({{{{a},{b}}},{{{c},d}}}),{a});
+Verify(Tr({{{{{a,b}}}},{{{c,d}}}}),{{a,b}});
+Verify(Tr({{{{{a,b}}}},{{{c},{d}}}}),{{{a,b}}});
+Verify(Tr({{{}}}),0);
+Verify(Tr({{{a}}}),a);
+Verify(Tr({{{{a}}},{{{b}}}}),a);
+Verify(Tr({{{{a},{b}}},{{{c},{d}}}}),a);
+Verify(Tr({{{{a,b}}},{{{c,d}}}}),a);
+Verify(Tr({{{{a,b}},{{c,d}}}}),a);
+Verify(Tr({{{{{{a,b},{c}}}}},{{{d},{e,f,g}}}}),{{{{a, b}, {c}}}});
+
+//////
+//////

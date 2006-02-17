@@ -1,0 +1,49 @@
+
+FlGraphStart(
+[
+  Local(x,y,w,h);
+
+  /* Get the screen extent */
+  x:=FlWindow[1];
+  y:=FlWindow[2];
+  w:=FlWindow[3];
+  h:=FlWindow[4];
+
+  /* Clear the screen */
+  FlColor(255,255,255);
+  FlBeginPolygon();
+  FlVertex(x,y);
+  FlVertex(x,y+h);
+  FlVertex(x+w,y+h);
+  FlVertex(x+w,y);
+  FlEndPolygon();
+
+  /* Draw a red rectangle */
+  FlColor(255,0,0);
+  FlBeginPolygon();
+  FlVertex(100,100);
+  FlVertex(100,200);
+  FlVertex(200,200);
+  FlVertex(200,100);
+  FlEndPolygon();
+
+  /* text demo */
+  Local(yt);
+  yt:=y+50;
+  FlColor(0,0,255);
+  FlFont(FlHelvetica,14);
+  FlDraw("Hello World!",x+40,yt);
+  yt:=yt+FlHeight();
+
+  FlFont(FlHelveticaBold,14);
+  FlDraw("Helvetica bold",x+40,yt);
+  yt:=yt+FlHeight();
+
+  FlColor(0,255,0);
+  FlFont(FlCourierBold,14);
+  FlDraw("Courier bold",x+40,yt);
+  yt:=yt+FlHeight();
+
+  True;
+]
+);

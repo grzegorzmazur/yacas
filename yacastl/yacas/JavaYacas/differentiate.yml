@@ -1,0 +1,22 @@
+[title:Differentiation]
+
+Taking the derivative of a function with respect to a variable can be done with the function D. the syntactic form is D(variable)expression.
+
+- [link:Derivative example:D(x)Sin(x);].
+
+One can also take the n-th derivative, through D(variable,n)expression. For instance, D(x)D(x)x^3 results in the same answer as D(x,2)x^3.
+
+- The result of entering [link:D(x)D(x)x^3;:D(x)D(x)x^3;].
+- The result of entering [link:D(x,2)x^3;:D(x,2)x^3;].
+
+One can take the derivative of a vector (or a list). This is taken to mean taking the derivative of each element of the vector with respect to the variable:
+
+- [link:Derivative of a vector:D(x){x^2,x^3};].
+
+If the variable is a list of variables, the derivative with respect to each variable in that list is taken, and returned as a vector:
+
+- [link:Derivative with respect to a list of variables:D({x,y})x*y;].
+
+Related to differentiation is the [link:Taylor series expansion:Taylor(x,0,5)Sin(x);].
+
+[link:Back to main menu:calculus.yml]

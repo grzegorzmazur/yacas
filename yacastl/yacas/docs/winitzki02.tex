@@ -1,0 +1,434 @@
+\documentclass{llncs}
+\usepackage{graphicx}
+\usepackage{amssymb}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin1]{inputenc}
+%\usepackage{babel}
+
+\begin{document}
+\title{Computing the incomplete Gamma function to arbitrary precision}
+
+\author{Serge Winitzki\inst{1}}
+\institute{Department of Physics, Ludwig-Maximilians University, Theresienstr.~37, 80333 Munich, Germany
+(\email{serge@theorie.physik.uni-muenchen.de})
+}
+
+\maketitle
+
+\begin{abstract}
+I consider an arbitrary-precision computation of the incomplete Gamma
+function from the Legendre continued fraction. Using the method of
+generating functions, I compute the convergence rate of the continued
+fraction and find a direct estimate of the necessary number of terms.
+This allows to compare the performance of the continued fraction and
+of the power series methods. As an application, I show that the incomplete
+Gamma function $\Gamma \left(a,z\right)$ can be computed to $P$
+digits in at most $O\left(P\right)$ long multiplications uniformly
+in $z$ for $Re\, z>0$. The error function of the real argument,
+$\textrm{erf}\, x$, requires at most $O(P^{2/3})$ long multiplications.
+\end{abstract}
+
+\section{Introduction}
+
+The incomplete Gamma function (see e.g.~\cite{AS64} Sec.~6.5)\begin{equation}
+\Gamma \left(a,z\right)=\int _{z}^{+\infty }t^{a-1}e^{-t}dt\end{equation}
+ is a generalization of such special functions as the Gamma function
+$\Gamma \left(a\right)$, the exponential integral $\textrm{Ei}\, x$,
+and the complementary error function $\textrm{erfc}\, z$. After an
+appropriate analytic continuation and branch cuts one obtains a definition
+of $\Gamma \left(a,z\right)$ valid for arbitrary complex $a$, $z$.
+
+I consider the general problem of computing $\Gamma \left(a,z\right)$
+to a precision of $P$ (decimal) digits. Several methods have been
+described in the literature for the computation of the incomplete
+Gamma function \cite{Gautschi79,DM86,Gautschi99,Smith01}. However,
+these methods were not analyzed in view of a computation at an asymptotically
+high precision. In particular, the convergence rate of the Legendre
+continued fraction has only been checked heuristically or numerically
+for a particular target precision. 
+
+The purpose of this paper is to present a calculation of the convergence
+rate of the continued fraction of Legendre and to perform a comparative
+analysis of efficiency of the existing methods for an asymptotically
+large target precision $P$.
+
+
+\section{Overview of methods}
+
+
+\subsection{Mathematical properties}
+
+The incomplete Gamma function admits two series expansions,\begin{equation}
+\Gamma \left(a,z\right)=\Gamma \left(a\right)-\sum _{n=0}^{\infty }\frac{\Gamma \left(a\right)e^{-z}z^{n+a}}{\Gamma \left(a+n+1\right)}=\Gamma \left(a\right)-\sum _{n=0}^{\infty }\frac{\left(-1\right)^{n}z^{n+a}}{\left(a+n\right)n!},\label{eq:Gam-ser1}\end{equation}
+ an asymptotic series for large $\left|z\right|$,\begin{equation}
+\Gamma \left(a,z\right)=z^{a-1}e^{-z}\sum _{n=0}^{\infty }\frac{\Gamma \left(a\right)}{\Gamma \left(a-n\right)z^{n}},\label{eq:Gam-ser2}\end{equation}
+ a continued fraction expansion due to Legendre,\begin{equation}
+\Gamma \left(a,z\right)=\frac{e^{-z}z^{a}}{z+}\frac{1-a}{1+}\frac{1}{z+}\frac{2-a}{1+}\frac{2}{z+}...,\end{equation}
+ and a recurrence relation,\begin{equation}
+\Gamma \left(a+n+1,z\right)=\Gamma \left(a+n,z\right)+\frac{\Gamma \left(a\right)e^{-z}z^{n+a}}{\Gamma \left(a+n+1\right)},\quad n\geq 0.\end{equation}
+ 
+
+Both series of Eq.~(\ref{eq:Gam-ser1}) converge unless $a$ is a
+negative integer. The recurrence relation was analyzed in \cite{Gautschi99}
+and found to be of limited use for general $a$ and $z$ because of
+round-off errors, but usable if $a$ is close to a negative integer.
+Another asymptotic expansion due to Temme \cite{Temme79} is cumbersome
+and requires costly computations of the Bernoulli numbers. Therefore
+we shall focus on the series expansions of Eqs.~(\ref{eq:Gam-ser1})-(\ref{eq:Gam-ser2})
+and on the continued fraction. (The asymptotic series will be efficient
+when $\left|z\right|\gg P$.)
+
+The error function is related to the incomplete Gamma function by
+$\sqrt{\pi }\, \textrm{erfc}\, z$$=\Gamma \left(1/2,z^{2}\right)$
+and has similar representations, in particular, the continued fraction
+due to Laplace,\begin{equation}
+\sqrt{\pi }xe^{x^{2}}\textrm{erfc}\, x=\frac{1}{1+}\frac{v}{1+}\frac{2v}{1+}\frac{3v}{1+}...,\label{eq:erfc-cf}\end{equation}
+where $v\equiv \left(2x^{2}\right)^{-1}$. This representation was
+used e.g.~in \cite{Thacher63}. Our analysis of the continued fraction
+method will include Eq.~(\ref{eq:erfc-cf}) as a particular case.
+
+
+\subsection{Computation of power series}
+
+A power series $\sum _{k=1}^{n}b_{k}x^{k}$, where all $b_{k}$ are
+rational numbers and $x$ is a floating-point number with $P$ digits,
+may be computed using $O\left(\sqrt{n}\right)$ long multiplications
+using the {}``rectangular'' or {}``baby step/giant step'' method
+(see e.g.~\cite{Smith89}). Power series of this form are most often
+encountered in approximations of analytic functions. The increased
+asymptotic speed of the {}``rectangular'' method is obtained when
+the ratios $b_{k}/b_{k-1}$ are rational numbers with {}``short''
+numerators and denominators with $O\left(\ln k\right)$ digits. If
+these ratios are not short, the best method
+is the Horner scheme requiring $O\left(n\right)$ long multiplications.
+
+The series of Eqs.~(\ref{eq:Gam-ser1}), (\ref{eq:Gam-ser2}) have
+rational coefficients only when $a$ is a short rational number, e.g.~$a=1/2$
+for the error function. If both $a$ and $z$ are short rational numbers,
+then the series may be computed using the binary splitting method
+\cite{HP98}. This method requires $O\left(\ln n\right)$ multiplications
+of $O\left(n\ln n\right)$-digit integers and is asymptotically the
+fastest, albeit with limited applicability.
+
+
+\subsection{Computation of continued fractions}
+
+There are two main classes of methods for the numerical evaluation
+of continued fractions: the forward or the backward recurrences (see
+e.g.~\cite{PTVF92} for details of various methods). The backward
+recurrences are more straightforward but one needs to know the necessary
+number of terms $n$ at the outset. The forward recurrences are significantly
+slower than the backward recurrences, but do not require to set the
+number of terms in advance. In our case, the number of terms can be
+estimated analytically and therefore the backward recurrences are
+preferable. The backward recurrences also have much better round-off
+error behavior \cite{JT74}. The asymptotic complexity of all methods
+is $O\left(n\right)$ long multiplications.
+
+Denote by $F_{m,n}$ the partial fraction \begin{equation}
+F_{m,n}=a_{m}+\frac{b_{m}}{a_{m+1}+}\frac{b_{m+1}}{a_{m+2}+}...\frac{b_{n-1}}{a_{n}}.\end{equation}
+There are two possible backward recurrences for $F_{m,n}$. First,
+one may compute the partial fractions directly,\begin{equation}
+F_{m,n}=a_{m}+\frac{b_{m}}{F_{m+1,n}},\end{equation}
+starting from $F_{n,n}=a_{n}$. This uses $n$ long divisions. Second,
+one may compute the numerators $p_{m,n}$ and the denominators $q_{m,n}$
+as separate sequences,\begin{equation}
+p_{m,n}=a_{m}p_{m+1,n}+b_{m}q_{m+1,n},\quad q_{m,n}=p_{m+1,n},\quad \left(\frac{p_{m,n}}{q_{m,n}}\equiv F_{m,n}\right)\end{equation}
+ with $p_{n,n}=a_{n}$, $q_{n,n}=1$, and perform the final division
+$F_{0,n}=p_{0,n}/q_{0,n}$. This requires $2n$ long multiplications.
+Since a division usually takes at least four times longer than a multiplication
+\cite{KM97}, the latter method is faster at high precision.
+
+A refinement of the backward recurrence method \cite{Ts88} is to
+use an ansatz for $F_{n,n}$ that more closely approximates the infinite
+remainder $F_{n,\infty }$ of the continued fraction. The ansatz follows
+from the assumption that $F_{n,\infty }$ changes slowly with $n$
+at large $n$; then one finds $F_{n,\infty }$ from the equation\begin{equation}
+F_{n,\infty }=a_{n}+\frac{b_{n}}{F_{n,\infty }}.\end{equation}
+Sometimes it is better to use instead the equation\begin{equation}
+F_{n,\infty }=a_{n}+\frac{b_{n}}{a_{n+1}+\frac{b_{n+1}}{F_{n,\infty }}}.\label{eq:Frem-est}\end{equation}
+The validity of the ansatz for $F_{n,\infty }$ needs to be checked
+in each particular case. Using an ansatz for $F_{n,\infty }$ does
+not give an asymptotic improvement of speed, but the precision of
+the approximation is typically improved by several orders. One could
+also obtain $F_{n,\infty }$ more rigorously as a series in $n^{-1}$,
+but numerical tests suggest that this does not give a significant
+advantage over Eq.~(\ref{eq:Frem-est}).
+
+Finally, when both $a$ and $z$ are short rational numbers, the binary
+splitting technique can be used to evaluate the continued fraction
+exactly (as a rational number). This would require $O\left(\ln n\right)$
+multiplications of $O\left(n\ln n\right)$-digit integers.
+
+
+\section{Convergence of Legendre's continued fraction}
+
+The continued fraction of Legendre can be rewritten similarly to Eq.~(\ref{eq:erfc-cf}),\begin{equation}
+e^{z}z^{1-a}\Gamma \left(a,z\right)=\frac{1}{1+}\frac{\left(1-a\right)v}{1+}\frac{v}{1+}\frac{\left(2-a\right)v}{1+}\frac{2v}{1+}...,\label{eq:iG-frac}\end{equation}
+where $v\equiv z^{-1}$. The terms are $a_{0}=0$, $b_{0}=1$, $a_{n}=1$,
+$b_{2n-1}=\left(n-a\right)v$, $b_{2n}=nv$ (for $n\geq 1$). This
+continued fraction converges for all $z$ except real $z\leq 0$;
+however, the speed of convergence varies with $z$. Below I assume
+that $a$ is not a positive integer (or else the continued fraction
+is finite).
+
+Analytic estimates of the convergence rate of continued fractions
+are not often found in the literature. The estimate in Ref.~\cite{Gautschi79}
+is partly heuristic and is only valid for real $a$. There is an analytic
+estimate for the continued fraction for Dawson's integral \cite{McCabe74},
+but that estimate is based on a special property that does not hold
+for $\Gamma \left(a,z\right)$. Several general error estimates are
+available \cite{Field77} but they require long computations. In this
+section I use the particular form of the Legendre continued fraction
+of Eq.~(\ref{eq:iG-frac}) to obtain a direct \emph{a priori} estimate
+of the required number of terms for a given absolute precision.
+
+The forward recurrence\begin{equation}
+F_{0,n}-F_{0,n-1}=\frac{\left(-1\right)^{n}b_{0}...b_{n-1}}{Q_{n}Q_{n+1}},\end{equation}
+where the sequence $Q_{n}$ is defined by $Q_{0}=0$, $Q_{1}=1$,
+$Q_{n+2}=a_{n+1}Q_{n+1}+b_{n}Q_{n}$, gives an estimate for the convergence
+rate, provided that we have an asymptotic expression for the growth
+of $Q_{n}$. We shall use an analogous expression for the staggered
+convergents,\begin{equation}
+F_{0,n}-F_{0,n-2}=\frac{\left(-1\right)^{n-1}a_{n}b_{0}...b_{n-2}}{Q_{n-1}Q_{n+1}}.\label{eq:F2diff}\end{equation}
+
+
+The sequence $Q_{n}$ for the continued fraction of Eq.~(\ref{eq:iG-frac})
+is defined by\begin{eqnarray}
+Q_{2n+2} & = & Q_{2n+1}+nvQ_{2n},\label{eq:Qeven}\\
+Q_{2n+1} & = & Q_{2n}+\left(n-a\right)vQ_{2n-1}.\label{eq:Qodd}
+\end{eqnarray}
+Equation~(\ref{eq:F2diff}) gives\[
+F_{0,2n}-F_{0,2n-2}=-\frac{\Gamma \left(n-a\right)v^{2n-2}\left(n-1\right)!}{\Gamma \left(1-a\right)Q_{2n-1}Q_{2n+1}}.\]
+ We now need to estimate the asymptotic growth of $Q_{n}$. Since
+the recurrences for the odd and the even terms $Q_{n}$ are different,
+we are motivated to consider a pair of generating functions\begin{equation}
+F\left(s\right)=\sum _{n=0}^{\infty }Q_{2n}\frac{s^{n}}{n!},\quad G\left(s\right)=\sum _{n=0}^{\infty }Q_{2n+1}\frac{s^{n}}{n!}.\end{equation}
+Using Eqs.~(\ref{eq:Qeven})-(\ref{eq:Qodd}), it is easy to show
+that\begin{equation}
+G=\left(1-vs\right)\frac{dF}{ds},\quad \frac{dF}{ds}=\left(1-vs\right)\frac{dG}{ds}-\left(1-a\right)vG.\end{equation}
+With the initial condition $G\left(0\right)=1$, one obtains\begin{equation}
+G\left(s\right)=\left(1-vs\right)^{a-1}\exp \left[\frac{s}{1-vs}\right].\end{equation}
+The asymptotic behavior of $Q_{2n-1}$ for large $n$ can be found
+by the method of steepest descents (see e.g.~\cite{Olver74}) on
+the contour integral around $s=0$,\begin{equation}
+Q_{2n-1}=\frac{\left(n-1\right)!}{2\pi i}\oint _{\left(0\right)^{+}}G\left(s\right)s^{-n}ds.\label{eq:Q-oint}\end{equation}
+The saddle points $s_{1,2}$ are found from the (quadratic) equation\begin{equation}
+\frac{dg}{ds}=-\frac{n}{s}-v\frac{a-1}{1-vs}+\frac{1}{\left(1-vs\right)^{2}}=0,\end{equation}
+where $g\left(s\right)\equiv \ln \left[G\left(s\right)s^{-n}\right]$.
+We are only interested in the leading asymptotic of the result for
+large $n$. The contribution of a saddle point $s_{i}$ to Eq.~(\ref{eq:Q-oint})
+is\begin{equation}
+\frac{2\pi iQ_{2n-1}}{\left(n-1\right)!}\sim \frac{\sqrt{2\pi }e^{g\left(s_{i}\right)}}{\sqrt{-g''\left(s_{i}\right)}}=i\sqrt{\pi n}\frac{\exp \left(\pm 2\sqrt{nz}-\frac{z}{2}\right)}{z^{n}\left(\pm \sqrt{\frac{n}{z}}\right)^{a+\frac{3}{2}}}\left(1+O\left(n^{-1/2}\right)\right).\end{equation}
+We find (using the standard branch cut $Re\, \sqrt{z}\geq 0$) that
+the point $s_{1}$ (upper signs) gives the dominant contribution unless
+$Re\, \sqrt{v}=0$. Then we obtain\begin{equation}
+\left|F_{0,2n}-F_{0,2n-2}\right|=\frac{4\pi \left|z^{\frac{3}{2}-a}\right|\sqrt{n}}{\left|\Gamma \left(1-a\right)\right|}\left|\exp \left(-4\sqrt{nz}+z\right)\right|\left(1+O\left(n^{-1/2}\right)\right).\label{eq:Fans}\end{equation}
+This asymptotic is valid for $n\gg \left|z\right|$, $\left|a\right|$.
+With our branch cut for $\sqrt{z}$, \begin{equation}
+\left|\exp \left(-\sqrt{z}\right)\right|=\exp \left(-\sqrt{\frac{\left|z\right|+Re\, z}{2}}\right),\end{equation}
+and it is clear that the sequence of Eq.~(\ref{eq:Fans}) decays
+with $n$ unless $z$ is real and $z\leq 0$. The number of terms
+$n$ needed to achieve an absolute precision $\varepsilon =10^{-P}$
+can be estimated from Eq.~(\ref{eq:Fans}); one finds that $n$ satisfies
+the equation\begin{equation}
+\sqrt{n}=\frac{P\ln 10+\ln \left(4\pi \sqrt{n}\right)+Re\, \left[z+\left(\frac{3}{2}-a\right)\ln z-\ln \Gamma \left(1-a\right)\right]}{\sqrt{8\left(\left|z\right|+Re\, z\right)}}.\label{eq:n-iter}\end{equation}
+To find $n$, it is enough to perform a few iterations of Eq.~(\ref{eq:n-iter})
+starting with $n=1$. It is clear that at fixed $z$ one needs $2n=O\left(P^{2}\right)$
+terms of the continued fraction for $P$ digits of precision; the
+constant of proportionality depends on $a$ and $z$. The required
+number of terms grows when $z$ approaches the negative real semiaxis
+or zero, or when $Re\, a>0$ and $\left|a-1\right|>e\left|z\right|$.
+
+Numerical tests show that the estimate of Eq.~(\ref{eq:Frem-est}),\begin{equation}
+F_{2n,\infty }\approx \frac{1}{2}\left(1+\frac{a-1}{z}+\sqrt{\frac{4n}{z}+\left(1-\frac{a-1}{z}\right)^{2}}\right),\end{equation}
+ gives a good approximation to the infinite remainder $F_{2n,\infty }$
+of the continued fraction of Eq.~(\ref{eq:iG-frac}) for large $n$.
+Use of this estimate improves the resulting precision by a few orders
+of magnitude but the convergence rate is unchanged.
+
+The same analysis holds for the continued fraction of Eq.~(\ref{eq:erfc-cf})
+which is a special case of Eq.~(\ref{eq:iG-frac}) with $a=1/2$.
+
+
+\section{Comparison of methods}
+
+
+\subsection{Convergence of the Taylor series}
+
+Both series of Eq.~(\ref{eq:Gam-ser1}) converge for all $a$ and
+$z$ (except when $a$ is a negative integer), but their convergence
+and round-off behavior are not uniform. The series are not efficient
+when $a$ is equal or close to a negative integer because of a cancellation
+between $\Gamma \left(a\right)$ and some terms of the form $1/(a+n)$.
+In this case, the recurrence relation can be used \cite{Gautschi99}.
+
+Consider the first series of Eq.~(\ref{eq:Gam-ser1}). The magnitude
+of the ratio of successive terms is $\left|z\right|/\left|a+n+1\right|$.
+If $Re\, \left(a+1\right)>0$ and $\left|a+1\right|>\left|z\right|$,
+or if $|Im\, a|>\left|z\right|$, then $\left|z\right|<\left|a+n+1\right|$
+for all $n$ and the convergence is monotonic. In this case it is
+enough to take $O\left(P/\ln P\right)$ terms for a precision of $P$
+digits. Otherwise, the rapid convergence regime begins only after
+$n_{0}=O\left(\left|z\right|\right)$ terms. More precisely, $n_{0}$
+is the largest positive integer for which $\left|a+n_{0}\right|<\left|z\right|$;
+approximately, \begin{equation}
+n_{0}\approx -Re\, a+\sqrt{\left|z\right|^{2}-\left(Im\, a\right)^{2}}.\label{eq:n01est}\end{equation}
+ The sum of the first $n_{0}$ terms may involve cancellations (especially
+for $Re\, z<0$), and the working precision may need to be increased
+by $O\left(P\right)$ digits. This will not change the asymptotic
+complexity of the calculation. Therefore, we may estimate the complexity
+of the first series by $O\left(P/\ln P\right)+O\left(\left|z\right|\right)$
+long multiplications.
+
+The second series of Eq.~(\ref{eq:Gam-ser1}) is simpler to analyze.
+The convergence is monotonic when $\left|z\right|<1$, while for $\left|z\right|>1$
+one needs $n_{0}=O\left(\left|z\right|\right)$ additional terms until
+the rapid convergence is achieved. (Again, we assume that $a$ is
+not close to a negative integer.) Unlike the first series, the largest
+cancellations occur with $Re\, z>0$. We obtain the same asymptotic
+complexity of $O\left(P/\ln P\right)+O\left(\left|z\right|\right)$
+long multiplications.
+
+
+\subsection{Convergence of the asymptotic series}
+
+The asymptotic series of Eq.~(\ref{eq:Gam-ser2}) starts to diverge
+after the $n_{0}$-th term,\begin{equation}
+n_{0}\approx Re\, a+\sqrt{\left|z\right|^{2}-\left(Im\, a\right)^{2}},\end{equation}
+ when the ratio of the successive terms $\left|n-a\right|/\left|z\right|$
+becomes large. Therefore, Eq.~(\ref{eq:Gam-ser2}) can be used for
+calculation if $\left|a\right|<\left|z\right|$, or if $\left|Im\, a\right|<\left|z\right|$
+and $Re\, a>0$. The minimum absolute error of the series is of the
+order of the $n_{0}$-th term,\begin{equation}
+\left|z^{a-1}e^{-z}\frac{\Gamma \left(a\right)z^{-n_{0}}}{\Gamma \left(a-n_{0}\right)}\right|\sim e^{-2n_{0}}\end{equation}
+(assuming $\left|z\right|>\left|a\right|$). This error is below the
+required precision $\varepsilon =10^{-P}$ when $2n_{0}\sim 2\left|z\right|>P\ln 10$.
+The working precision needs to be increased by $O\left(P\right)$
+digits. We find that the cost of computation for a precision $P$
+for $\left|z\right|\gg P$ is at most $O\left(P\right)$ multiplications.
+
+
+\subsection{Complexity of $\Gamma \left(a,z\right)$}
+
+It is usual that the series and the continued fraction methods have
+somewhat complementary domains of applicability. The series converge
+rapidly at small $z$, while the continued fraction is most efficient
+at $1<\left|a\right|<\left|z\right|$ or when $Re\, a<0$. Using the
+explicit estimates of Eqs.~(\ref{eq:n-iter}) and (\ref{eq:n01est}),
+one can find the best methods. 
+
+For the practically important case $Re\, z>0$, one could choose the
+series method for $\left|z\right|<P$ (which requires at most $O\left(P\right)$
+terms) and the continued fraction method for $\left|z\right|>P$ (using
+again $O\left(P^{2}/z\right)\sim O\left(P\right)$ terms) if $Re\, a<0$
+and $\left|a\right|<\left|z\right|$. The asymptotic series method
+is used for $\left|z\right|>P$, $Re\, a>0$ and $\left|z\right|>\left|a\right|$.
+Thus, the computation of the incomplete Gamma function $\Gamma \left(a,z\right)$
+for $Re\, z>0$ requires $O\left(P\right)$ long multiplications uniformly
+in $z$.
+
+As already noted in \cite{Gautschi79}, the computation of $\Gamma \left(a,z\right)$
+for $Re\, z<0$ is more computationally intensive. At the moment,
+a uniform bound on complexity does not seem to be available, although
+at fixed $z$ the complexity is $O\left(P\right)$ if any of the series
+of Eq.~(\ref{eq:Gam-ser1}) is used.
+
+
+\subsection{Complexity of $\textrm{erfc}\, x$}
+
+The complementary error function $\textrm{erfc}\, x$ can be computed
+somewhat faster than $\Gamma \left(a,z\right)$ because the {}``rectangular''
+method can be applied to the series of Eq.~(\ref{eq:Gam-ser1}),
+reducing their complexity to $O\left(\sqrt{P/\ln P+O\left(\left|z\right|\right)}\right)$
+long multiplications (here $z=x^{2}$). If we use the series for real
+$x$ such that $\left|x\right|<O\left(P^{2/3}\right)$ and the continued
+fraction for larger $\left|x\right|$, the overall complexity becomes
+$O\left(P^{2/3}\right)$ uniformly in $x$.
+
+
+\subsection{Rational arguments}
+
+If both $a$ and $z$ are {}``short'' rational numbers with $O\left(1\right)$
+digits in the numerators and the denominators, the binary splitting
+technique can be used for the series as well as for the continued
+fraction computations (see Appendix). The complexity of the binary
+splitting method at very high precision can be estimated as $O\left(\ln P\right)$
+multiplications of $O\left(P\ln P\right)$-digit integers. As before,
+this estimate is uniform in the argument $z$ if $Re\, z>0$.
+
+\appendix
+
+\section{The binary splitting technique for continued fractions}
+
+If a continued fraction\begin{equation}
+F_{0,n}=a_{0}+\frac{b_{0}}{a_{1}+}\frac{b_{1}}{a_{2}+}...\frac{b_{n-2}}{a_{n-1}+}\frac{b_{n-1}}{a_{n}}\label{eq:F0ndef}\end{equation}
+contains only {}``short'' terms, i.e.~$a_{n}$ and $b_{n}$ are
+$O\left(\ln n\right)$-digit integers or rationals, then the binary
+splitting technique can be applied to the computation of $F_{0,n}$.
+Here we sketch the algorithm and show that its complexity is equivalent
+to $O\left(\ln n\right)$ multiplications of $O\left(n\ln n\right)$-digit
+integers.
+
+Consider Eq.~(\ref{eq:F0ndef}) as a function of $a_{n}\equiv p_{n}/q_{n}$,
+and compute the coefficients $A\left(0,n\right)$, $B\left(0,n\right)$,
+$C\left(0,n\right)$, $D\left(0,n\right)$ of the equivalent projective
+transformation for $\left(p_{n},q_{n}\right)$:\begin{equation}
+F_{0,n}=\frac{A\left(0,n-1\right)a_{n}+B\left(0,n-1\right)}{C\left(0,n-1\right)a_{n}+D\left(0,n-1\right)}=\frac{A\left(0,n-1\right)p_{n}+B\left(0,n-1\right)q_{n}}{C\left(0,n-1\right)p_{n}+D\left(0,n-1\right)q_{n}}.\end{equation}
+When we compute these coefficients as exact integers, we would only
+need to substitute the desired value for $a_{n}$ to find $F_{0,n}$.
+
+The coefficients $A$, $B$, $C$, $D$ are computed for the subintervals
+$\left(0,n'-1\right)$ and $\left(n',n-1\right)$ recursively, using
+the matrix product of projective transformations,\begin{equation}
+T\equiv \left(\begin{array}{cc}
+ A & B\\
+ C & D\end{array}
+\right);\quad T\left(0,n-1\right)=T\left(0,n'-1\right)T\left(n',n-1\right).\end{equation}
+Each time $n'$ is chosen near the middle of the interval $\left(0,\, n-1\right)$.
+At the base of recursion,\begin{equation}
+T\left(k,k\right)=\left(\begin{array}{cc}
+ a_{k} & b_{k}\\
+ 1 & 0\end{array}
+\right).\end{equation}
+
+
+The complexity of this method can be found as follows. The depth of
+the recursion is $O\left(\ln n\right)$ and there are $2^{k}$ matrix
+multiplications at level $k$. The elements of the matrix $T\left(l,m\right)$
+have $O\left(\left(m-l\right)\ln m\right)$ digits, and therefore
+the matrices at level $k$ have elements with $O\left(n2^{-k}\ln n\right)$
+digits. Since a multiplication is at least linear in the number of
+digits, $2^{k}$ multiplications with $n2^{-k}$ digits are faster
+than one multiplication with $n$ digits. Therefore the total number
+of equivalent $O(n\ln n)$-digit multiplications is equal to the recursion
+depth $O\left(\ln n\right)$.
+
+\begin{thebibliography}{10}
+\bibitem{AS64}M. Abramowitz and I. Stegun, eds., \emph{Handbook of special functions},
+National Bureau of Standards, 1964.
+\bibitem{Gautschi79}W. Gautschi, ACM TOMS \textbf{5}, p. 466 (1979); \emph{ibid.}, {}``Algorithm
+542'', p. 482.
+\bibitem{DM86}A. R. DiDonato and A. H. Morris, Jr., ACM TOMS \textbf{12}, p. 377
+(1986).
+\bibitem{Gautschi99}W. Gautschi, ACM TOMS \textbf{25}, p. 101 (1999).
+\bibitem{Smith01}D. M. Smith, {}``Algorithm 814'', ACM TOMS \textbf{27}, p. 377 (2001).
+\bibitem{Temme79}N. M. Temme, SIAM J. Math.~Anal.~\textbf{10}, p. 757 (1979).
+\bibitem{Thacher63}H. C. Thacher, Jr., {}``Algorithm 180'', Comm.~ACM \textbf{6},
+p. 314 (1963).
+\bibitem{Smith89}D. M. Smith, Math. Comp. \textbf{52}, p. 131 (1989).
+\bibitem{HP98}B. Haible and T. Papanikolaou, LNCS \textbf{1423}, p. 338 (Springer,
+1998).
+\bibitem{PTVF92}W. H. Press, S. A. Teukolsky, W. T. Vetterling, B. P. Flannery, \emph{Numerical
+recipes in C}, 2nd ed., Cambridge University Press, 1992.
+\bibitem{JT74}W. B. Jones and W. J. Thron, Math. Comp. \textbf{28}, p. 795 (1974).
+\bibitem{KM97}A. H. Karp and P. Markstein, ACM TOMS \textbf{23}, p. 561 (1997). 
+\bibitem{Ts88}Sh.~E. Tsimring, \emph{Handbook of special functions and definite
+integrals: algorithms and programs for calculators}, Radio and communications
+(publisher), Moscow, 1988 (in Russian).
+\bibitem{McCabe74}J. H. McCabe, Math. Comp. \textbf{28}, p. 811 (1974).
+\bibitem{Field77}D. A. Field, Math. Comp. \textbf{31}, p. 495 (1977).
+\bibitem{Olver74}F. W. J. Olver, \emph{Asymptotics and special functions}, Academic
+Press, 1974.\end{thebibliography}
+
+\end{document}

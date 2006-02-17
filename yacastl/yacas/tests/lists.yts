@@ -1,0 +1,149 @@
+
+Verify(Intersection({aa,b,c},{b,c,d}),{b,c});
+Verify(Union({aa,b,c},{b,c,d}),{aa,b,c,d});
+Verify(Difference({aa,b,c},{b,c,d}),{aa});
+
+NextTest("VarList");
+Verify(VarList(x^2+y^3) , {x , y});
+Verify(List(1,2,3),{1 , 2 , 3});
+
+Testing("BubbleSort");
+Verify(BubbleSort({2,3,1},"<"),{1,2,3});
+Verify(BubbleSort({2,3,1},">"),{3,2,1});
+
+Testing("HeapSort");
+Verify(HeapSort({2,3,1},"<"),{1,2,3});
+Verify(HeapSort({2,1,3},">"),{3,2,1});
+Verify(HeapSort({7,3,1,2,6},"<"),{1,2,3,6,7});
+Verify(HeapSort({6,7,1,3,2},">"),{7,6,3,2,1});
+
+Verify(Type(Cos(x)),"Cos");
+Verify(NrArgs(Cos(x)),1);
+Verify(Contains({a,b,c},b),True);
+Verify(Contains({a,b,c},d),False);
+
+Verify(Append({a,b,c},d),{a,b,c,d});
+Verify(RemoveDuplicates({a,b,b,c}),{a,b,c});
+Verify(Count({a,b,b,c},b),2);
+Verify(VarList(x*Cos(x)),{x});
+
+
+[
+  Local(l);
+  l:={1,2,3};
+  DestructiveDelete(l,1);
+  Verify(l,{2,3});
+  DestructiveInsert(l,1,1);
+  Verify(l,{1,2,3});
+  l[1] := 2;
+  Verify(l,{2,2,3});
+  l[1] := 1;
+  DestructiveDelete(l,3);
+  Verify(l,{1,2});
+  DestructiveInsert(l,3,3);
+  Verify(l,{1,2,3});
+  DestructiveDelete(FlatCopy(l),1);
+  Verify(l,{1,2,3});
+];
+
+Verify(Table(i!,i,1,4,1),{1,2,6,24});
+Verify(Permutations({a,b,c}),{{a,b,c},{a,c,b},{c,a,b},{b,a,c},{b,c,a},{c,b,a}});
+
+Testing("ListOperations");
+Verify(Head({a,b,c}),a);
+Verify(Tail({a,b,c}),{b,c});
+Verify(DestructiveReverse({a,b,c}),{c,b,a});
+Verify(UnList({a,b,c}),a(b,c));
+Verify(Listify(a(b,c)),{a,b,c});
+
+Verify(Delete({a,b,c},2),{a,c});
+Verify(Insert({a,c},2,b),{a,b,c});
+
+Testing("Length");
+Verify(Length({a,b}),2);
+Verify(Length({}),0);
+
+Testing("Nth");
+Verify(Nth({a,b},1),a);
+Verify({a,b,c}[2],b);
+
+Testing("Concat");
+Verify(Concat({a,b},{c,d}),{a,b,c,d});
+//This is simply not true!!! Verify(Hold(Concat({a,b},{c,d})),Concat({a,b},{c,d}));
+
+
+Testing("Binary searching");
+Verify(BSearch(100,{{n},n^2-15}), -1);
+Verify(BSearch(100,{{n},n^2-16}), 4);
+Verify(BSearch(100,{{n},n^2-100002}), -1);
+Verify(BSearch(100,{{n},n^2-0}), -1);
+Verify(FindIsq(100,{{n},n^2-15}), 3);
+Verify(FindIsq(100,{{n},n^2-16}), 4);
+Verify(FindIsq(100,{{n},n^2-100002}), 100);
+Verify(FindIsq(100,{{n},n^2-0}), 1);
+
+Verify(Difference(FuncList(a*b/c*d), {*,/}), {});
+Verify(Difference(FuncListArith(0*x*Sin(a/b)*Ln(Cos(y-z)+Sin(a))), {*,Ln,Sin}), {});
+Verify(Difference(VarListArith(x+a*y^2-1), {x,a,y^2}), {});
+
+Verify(Difference(FuncList(IsCFormable([i:=0;While(i<10)[i++; a--; a:=a+i; {};];])), {IsCFormable,Prog,:=,While,<,++,--,Atom("+"),List}), {});
+Verify(FuncList({1,2,3}),{List});
+Verify(FuncList({{},{}}),{List});
+Verify(FuncList({}),{List});
+
+Testing("AssocDelete");
+hash:={{"A",1},{"A",2},{"B",3},{"B",4}};
+AssocDelete(hash,{"B",3});
+Verify(hash, {{"A",1},{"A",2},{"B",4}});
+Verify(AssocDelete(hash,"A"),True);
+Verify(hash, {{"A",2},{"B",4}});
+Verify(AssocDelete(hash,"C"),False);
+Verify(hash, {{"A",2},{"B",4}});
+AssocDelete(hash,"A");
+Verify(hash, {{"B",4}});
+AssocDelete(hash, {"A",2});
+AssocDelete(hash,"A");
+Verify(hash, {{"B",4}});
+Verify(AssocDelete(hash,"B"),True);
+Verify(hash, {});
+Verify(AssocDelete(hash,"A"),False);
+Verify(hash, {});
+
+Testing("-- Arithmetic Operations");
+Verifiy(1+{3,4},{4,5});
+Verifiy({3,4}+1,{4,5});
+Verifiy({1}+{3,4},Hold({1}+{3,4}));
+Verifiy({3,4}+{1},Hold({3,4}+{1}));
+Verifiy({1,2}+{3,4},{4,6});
+Verifiy(1-{3,4},{-2,-3});
+Verifiy({3,4}-1,{2,3});
+Verifiy({1}-{3,4},Hold({1}-{3,4}));
+Verifiy({3,4}-{1},Hold({3,4}-{1}));
+Verifiy({1,2}-{3,4},{-2,-2});
+Verifiy(2*{3,4},{6,8});
+Verifiy({3,4}*2,{6,8});
+Verifiy({2}*{3,4},Hold({2}*{3,4}));
+Verifiy({3,4}*{2},Hold({3,4}*{2}));
+Verifiy({1,2}*{3,4},{3,8});
+Verifiy(2/{3,4},{2/3,1/2});
+Verifiy({3,4}/2,{3/2,2});
+Verifiy({2}/{3,4},Hold({2}/{3,4}));
+Verifiy({3,4}/{2},Hold({3,4}/{2}));
+Verifiy({1,2}/{3,4},{1/3,1/2});
+Verifiy(2^{3,4},{8,16});
+Verifiy({3,4}^2,{9,16});
+Verifiy({2}^{3,4},Hold({2}^{3,4}));
+Verifiy({3,4}^{2},Hold({3,4}^{2}));
+Verifiy({1,2}^{3,4},{1,16});
+
+// non-destructive Reverse operation
+[
+  Local(lst,revlst);
+  lst:={a,b,c,13,19};
+  revlst:=Reverse(lst);
+  Verify(revlst,{19,13,c,b,a});
+  Verify(lst,{a,b,c,13,19});
+];
+Verify(IsBound(lst),False);
+Verify(IsBound(revlst),False);
+

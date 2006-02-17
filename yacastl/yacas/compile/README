@@ -1,0 +1,13 @@
+
+Experimental stage of the Yacas compiler
+
+Usage:
+- ./build.sh will generate a file libplugin.so from the Yacas script
+  file "testscript".
+- The plugin dll can be loaded with DllLoad("./libplugin.so"); when in
+  Yacas.
+
+You can hand-tune the c++ code generated, which is in plugin.cc,
+and then just recompile that file by typing "make".
+
+

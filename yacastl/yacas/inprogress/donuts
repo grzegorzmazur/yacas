@@ -1,0 +1,32 @@
+
+
+NewLine(3);
+WriteString("Rendering Some donuts... Please wait."); NewLine();
+WriteString("A window should pop up after a while."); NewLine(3);
+
+Function("Donut",{r1,r2})
+[
+Plot3D(u,0,TWOPI,12,v,0,TWOPI,12,
+     {FastCos(u)*(r1+r2*FastCos(v)),
+      FastSin(u)*(r1+r2*FastCos(v)),
+      r2*FastSin(v)},
+      {(1+FastCos(10*u))/2,(1+FastCos(29*u))/2,(1+FastCos(5*u))/2});
+];
+
+
+Use("glview");
+Precision(5);
+TWOPI:=2*Pi();
+
+Show(
+[
+  Donut(1,1/3);
+  glPushMatrix();
+  glRotatef(90,{1,0,0});
+  glTranslatef({1,0,0});
+  Donut(1,1/3);
+  glPopMatrix();
+  glTouchPoint(2,0,1.33);
+]
+);
+

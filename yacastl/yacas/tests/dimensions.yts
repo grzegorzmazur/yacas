@@ -1,0 +1,35 @@
+//////
+// $Id: dimensions.yts,v 1.1 2006-02-17 13:08:54 peterdgilbert Exp $
+// Tests for Dimensions
+//////
+
+Testing("-- Dimensions (Tensor Rank)");
+
+Verify(Dimensions(a),{});
+Verify(Dimensions({}),{0});
+Verify(Dimensions({a,b}),{2});
+Verify(Dimensions({{}}),{1,0});
+Verify(Dimensions({{a}}),{1,1});
+Verify(Dimensions({{},a}),{2});
+Verify(Dimensions({{a},b}),{2});
+Verify(Dimensions({{},{}}),{2,0});
+Verify(Dimensions({{},{{}}}),{2});
+Verify(Dimensions({{a,b},{c}}),{2});
+Verify(Dimensions({{a,b},{c,d}}),{2,2});
+Verify(Dimensions({{a,b},{c,d},{e,f}}),{3,2});
+Verify(Dimensions({{a,b,c},{d,e,f},{g,h,i}}),{3,3});
+Verify(Dimensions({{a,b,c},{d,e,f}}),{2,3});
+Verify(Dimensions({{{a,b}},{{c,d}}}), {2,1,2});
+Verify(Dimensions({{{{a},{b}}},{{{c},d}}}),{2,1,2});
+Verify(Dimensions({{{{{a,b}}}},{{{c,d}}}}),{2,1,1});
+Verify(Dimensions({{{{{a,b}}}},{{{c},{d}}}}),{2,1});
+Verify(Dimensions({{{}}}),{1,1,0});
+Verify(Dimensions({{{a}}}),{1,1,1});
+Verify(Dimensions({{{{a}}},{{{b}}}}),{2,1,1,1});
+Verify(Dimensions({{{{a},{b}}},{{{c},{d}}}}),{2,1,2,1});
+Verify(Dimensions({{{{a,b}}},{{{c,d}}}}),{2,1,1,2});
+Verify(Dimensions({{{{a,b}},{{c,d}}}}),{1,2,1,2});
+Verify(Dimensions({{{{{{a,b},{c}}}}},{{{d},{e,f,g}}}}), {2,1});
+
+//////
+//////

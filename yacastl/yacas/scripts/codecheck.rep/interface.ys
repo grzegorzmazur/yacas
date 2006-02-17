@@ -1,0 +1,252 @@
+
+LocalSymbols(FindDeclFuncs,FindDefFuncs,ProcessGlobalVar,RegisterFunc,alldef) [
+
+Set(alldef,{});
+CheckInterfaceInit():=
+[
+  Local(indef);
+  Set(indef,{});
+//  ScanDefFile("standard.ys.def",FindDeclFuncs);
+  ForEach(item,DefFileList)
+  [
+    ScanDefFile(item:".def",FindDeclFuncs);
+  ];
+  Set(alldef,indef);
+];
+
+CheckInterfaceAllScripts():=
+[
+  CheckInterface("standard.ys");
+//  CheckInterface("stdopers.ys");
+  ForEach(item,DefFileList)
+  [
+    CheckInterface(item);
+  ];
+];
+
+CheckInterface(base) := CheckInterface(base,{});
+CheckInterface(base,postfilters):=
+[
+  Echo("Checking ",base);
+  Local(localsymbols,locals);
+  Local(indef,gfuncs,gvars);
+  Set(indef,{});
+  Set(localsymbols,NewStack());
+  Set(locals,NewStack());
+  Set(gfuncs,{});
+  Set(gvars,{});
+
+  PushStackFrame(locals,unfenced);
+  ScanDefFile(base:".def",FindDeclFuncs);
+  ScanScriptFile(base,    FindDefFuncs:postfilters);
+  ForEach(item,indef)
+  [
+    if(gfuncs[item[1]] = Empty)
+    [
+      Echo(base,".def : ",item[1]," declared in def file but not defined in the script");
+    ];
+  ];
+  PopStackFrame(locals);
+];
+
+FindDeclFuncs(token) := 
+[
+  if (indef[token] != Empty)
+  [
+    ReportError(token," declared multiple times in def files");
+  ];
+  indef[token] := Declared;
+];
+HoldArg(FindDeclFuncs,token);
+UnFence(FindDeclFuncs,1);
+
+RuleBase(FindDefFuncs,{expr});
+HoldArg(FindDefFuncs,expr);
+UnFence(FindDefFuncs,1);
+
+
+10  # FindDefFuncs((f_IsAtom) := _body)    <-- ProcessGlobalVar(String(f));
+10  # FindDefFuncs(Set(f_IsAtom, _body)) <-- ProcessGlobalVar(String(f));
+
+RuleBase(ProcessGlobalVar,{f});
+UnFence(ProcessGlobalVar,1);
+
+10 # ProcessGlobalVar(_f)_(IsOnStack(locals,f)) <-- True;
+20 # ProcessGlobalVar(_f) <--
+[
+  Local(name);
+  if (Not IsOnStack(localsymbols,f))
+  [
+    // Warn about global variable declaration
+    ReportError("global variable assignment ",f);
+    Set(name,f);
+  ]
+  else
+  [
+    Set(name,FindOnStack(localsymbols,f)["RealName"]);
+    FindOnStack(localsymbols,f)["Used"] := True;
+  ];
+  if (gvars[f] != Empty)
+  [
+    // Warn about re-assignment of global.
+    ReportError("Variable ",f," reassigned");
+    if (gvars[f] != name)
+    [
+      // Warn about redeclaration in different scope
+      ReportError("Variable ",f," redeclared in a different scope");
+    ];
+  ]
+  else
+  [
+    gvars[f] := name;
+  ];
+];
+
+10  # FindDefFuncs(RuleBase(fname_IsString,_args))
+    <-- RegisterFunc(fname,Length(args),True);
+11  # FindDefFuncs(RuleBase(_fname,_args))
+    <-- RegisterFunc(String(fname),Length(args),True);
+
+10  # FindDefFuncs(Function(_fname,_args)(_body))
+    <-- RegisterFunc(fname,Length(args),True);
+10  # FindDefFuncs(Function()(f_IsFunction))
+    <-- RegisterFunc(Type(f),NrArgs(f),True);
+10  # FindDefFuncs(f_IsFunction := _body)
+    <-- 
+    [
+//TODO arity handling    
+      RegisterFunc(Type(f),NrArgs(f),True);
+    ];
+
+
+
+10  # FindDefFuncs(Macro(fname_IsString,_args)(_body))
+    <-- RegisterFunc(fname,Length(args),True);
+11  # FindDefFuncs(Macro(fname_IsAtom,_args)(_body))
+    <-- RegisterFunc(String(fname),Length(args),True);
+10  # FindDefFuncs(Macro()(f_IsFunction))
+    <-- RegisterFunc(Type(f),NrArgs(f),True);
+
+
+
+
+10  # FindDefFuncs(_n # (f_IsFunction)_(_post) <-- _body)
+    <-- RegisterFunc(Type(f),NrArgs(f),False);
+11  # FindDefFuncs(     (f_IsFunction)_(_post) <-- _body)
+    <-- RegisterFunc(Type(f),NrArgs(f),False);
+20  # FindDefFuncs(_n # f_IsFunction <-- _body)
+    <-- RegisterFunc(Type(f),NrArgs(f),False);
+21  # FindDefFuncs(     f_IsFunction <-- _body)
+    <-- RegisterFunc(Type(f),NrArgs(f),False);
+
+RegisterFunc(_f,_arity,_retracts) <--
+[
+  Local(name,prevname);
+
+  Local(isonstack,isindef,isinalldef);
+  Set(isonstack,IsOnStack(localsymbols,f));
+  Set(isindef,(indef[f] != Empty));
+  Set(isinalldef,(alldef[f] != Empty));
+//hier
+
+  if (isinalldef And Not(isindef) And retracts)
+    ReportError(f," defined in the wrong module, according to the def files");
+  Set(name,f);
+  if (isonstack)
+  [
+    Set(name,FindOnStack(localsymbols,f)["RealName"]);
+    FindOnStack(localsymbols,f)["Used"] := True;
+  ];
+  if (Not(isonstack) And Not(isindef) And Not(isinalldef And Not(retracts)))
+  [
+    // Warn about global variable declaration
+    if (gfuncs[f] != name)
+      ReportError("global function definition ",f," without a declaration in the def file");
+  ];
+  if (gfuncs[f] != Empty)
+  [
+    // Warn about re-assignment of global.
+//TODO arity handling    if (retracts)
+//TODO arity handling      ReportError("Function ",f," redeclared, masking older definition");
+    if (gfuncs[f] != name)
+    [
+      // Warn about redeclaration in different scope
+      ReportError("Function ",f," redeclared in a different scope");
+    ];
+  ]
+  else
+  [
+    gfuncs[f] := name;
+  ];
+];
+UnFence(RegisterFunc,3);
+
+80  # FindDefFuncs(f_IsFunction)_(Type(f) = "Prog")
+    <--
+    [
+      PushStackFrame(locals,unfenced);
+      ForEach(item,Tail(Listify(f))) `(FindDefFuncs(@item));
+      PopStackFrame(locals);
+    ];
+80  # FindDefFuncs(f_IsFunction)_(Type(f) = "LocalSymbols")
+    <--
+    [
+      Local(i,args,symbol);
+      args:=Tail(Listify(f));
+      PushStackFrame(localsymbols,unfenced);
+      For(i:=1,i<Length(args),i++)
+      [
+        Set(symbol,String(args[i]));
+        AddToStack(localsymbols,symbol);
+	FindOnStack(localsymbols,symbol)["RealName"] := (LocalSymbols(Symbol)Symbol);
+      ];
+      
+      Set(symbol,args[Length(args)]);
+      `FindDefFuncs(@symbol);
+
+      For(i:=1,i<Length(args),i++)
+      [
+        Set(symbol,String(args[i]));
+	if (FindOnStack(localsymbols,symbol)["Used"] = Empty) 
+	  ReportError("Symbol ",symbol," is declared local to the module but never used");
+      ];
+      PopStackFrame(localsymbols);
+    ];
+
+90 # FindDefFuncs(atom_IsAtom) <-- ReportError(atom," has no side effect");
+
+91 # FindDefFuncs(_expr)_(Type(expr) = "HoldArg") <-- True;
+91 # FindDefFuncs(_expr)_(Type(expr) = "UnFence") <-- True;
+
+91 # FindDefFuncs(_expr)_(Type(expr) = "Infix")
+   <--
+   [
+     ReportError("Infix operator defined locally in a script file");
+     Eval(expr);
+   ];
+91 # FindDefFuncs(_expr)_(Type(expr) = "Prefix")
+   <--
+   [
+     ReportError("Prefix operator defined locally in a script file");
+     Eval(expr);
+   ];
+91 # FindDefFuncs(_expr)_(Type(expr) = "Postfix")
+   <--
+   [
+     ReportError("Postfix operator defined locally in a script file");
+     Eval(expr);
+   ];
+
+91 # FindDefFuncs(_expr)_(Type(expr) = "Local")
+   <--
+   [
+     ForEach(item,Tail(Listify(expr)))
+       AddToStack(locals,String(item));
+   ];
+
+95 # FindDefFuncs(_expr)_(Type(expr) = "Use")
+   <-- ReportError("Loading module explicitly, whereas modules should depend on the def file mechanism to work");
+
+100 # FindDefFuncs(_expr) <-- ReportError("Unhandled expression, type is ",Type(expr));
+
+];

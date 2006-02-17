@@ -1,0 +1,6 @@
+Each of the four subdirectories contains the code for a Yacas plugin:
+
+example    A simple example of a plugin
+forth      A Forth interpreter 
+opengl     Bindings for OpenGL 
+yacas_gsl  Bindings for the GNU Scientific Library (GSL)  

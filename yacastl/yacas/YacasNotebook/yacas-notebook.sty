@@ -1,0 +1,405 @@
+%% Macros needed for EYacas.
+%% Jay Belanger (belanger@truman.edu)
+
+%% Some of this was taken from Dan Dill's TeX/MMA (in modified
+%% form, of course), and some was taken from other sources.  Some
+%% I may even have written myself.
+
+\def\Yacas{{\sffamily yacas\/}}
+\def\yacasheadersize{\tiny}
+
+%% Let's use some local macros
+
+\catcode`\@=11\relax
+\newdimen\yacasinputbaselineskip
+\newdimen\yacasoutputbaselineskip
+\newdimen\preyacasspace
+
+%% Here are the values that the user may wish to change.
+%% They can be changed here or in the main TeX file.
+
+\font\yacasinputfont = cmtt10
+\yacasinputbaselineskip = 10pt
+
+\font\yacasoutputfont = cmtt10
+\yacasoutputbaselineskip = 14pt
+
+\preyacasspace = 0pt
+
+%% Process any options
+\newif\ifyacasusebreqn
+\yacasusebreqnfalse
+\DeclareOption{breqn}{\yacasusebreqntrue}
+\ProcessOptions\relax
+
+
+%% First of all, set up some delimiters
+%% The units are in terms of em and ex, so if the font size is
+%% changed, the units will be changed accordingly
+
+%% To make things line up, we'll need the size of "Initial"
+
+\font\yac@sheaderfont=cmtt8  scaled 800
+\setbox0=\hbox{\yac@sheaderfont\ Initial}
+\newdimen\in@t
+\in@t = \wd0
+\advance\in@t by 1em
+
+\def\sm@llsk{\vskip 1ex}
+
+\def\yac@stop{
+\vskip -1ex
+\hbox to \hsize{\vrule depth 1ex  height .3pt width .4pt
+                \vrule height .4pt depth 0pt width 1.1em 
+                \lower .4ex \hbox{\yacasheadersize\ \Yacas} 
+                \hrulefill 
+                \vrule depth 1ex height .3pt width .4pt}
+\vskip 1ex}
+
+
+\def\yac@sinittop{
+\vskip -1ex
+\hbox to \hsize{\vrule depth 1ex  height .3pt width .4pt
+                \vrule height .4pt depth 0pt width 1.1em 
+                \lower .4ex \hbox{\yacasheadersize\ \Yacas} 
+                \hrulefill
+                \lower .4ex \hbox{\yac@sheaderfont\ Initial}
+                \vrule height .4pt depth 0pt width 1em 
+                \vrule depth 1ex height .3pt width .4pt}
+\vskip 1ex}
+
+\def\yac@sparttop#1{
+\vskip -1ex
+\hbox to \hsize{\vrule depth 1ex  height .3pt width .4pt
+                \vrule height .4pt depth 0pt width 1.1em 
+                \lower .4ex \hbox{\yacasheadersize\ \Yacas} 
+                \hrulefill
+                \lower .4ex \hbox{\yac@sheaderfont\ #1}
+                \hrulefill
+                \vrule height .4pt depth 0pt width \in@t
+                \vrule depth 1ex height .3pt width .4pt}
+\vskip 1ex}
+
+\def\yac@sinitparttop#1{
+\vskip -1ex
+\hbox to \hsize{\vrule depth 1ex  height .3pt width .4pt
+                \vrule height .4pt depth 0pt width 1.1em 
+                \lower .4ex \hbox{\yacasheadersize\ \Yacas} 
+                \hrulefill
+                \lower .4ex \hbox{\yac@sheaderfont\ #1}
+                \hrulefill
+                \lower .4ex \hbox{\yac@sheaderfont\ Initial}
+                \vrule height .4pt depth 0pt width 1em
+                \vrule depth 1ex height .3pt width .4pt}
+\vskip 1ex}
+
+
+\def\yac@soutput{
+        \vskip -1ex
+        \hbox to \hsize{\hskip 1.5em
+                        \vrule height .4pt depth 0pt width 3em
+                        \lower .4ex \hbox{\yac@sheaderfont\ Output}
+                        \hrulefill
+                        \hskip 1.5em
+                        }
+        \vskip 1ex
+}
+
+\def\yac@stexoutput{
+        \vskip -1ex
+        \hbox to \hsize{\hskip 1.5em
+                        \vrule height .4pt depth 0pt width 3em
+                        \lower .4ex \hbox{\yac@sheaderfont\ \TeX\ Output}
+                        \hrulefill
+                        \hskip 1.5em
+                        }
+        \vskip 1ex
+}
+
+\def\yac@sgraphicsoutput{
+        \vskip -1ex
+        \hbox to \hsize{\hskip 1.5em
+                        \vrule height .4pt depth 0pt width 3em
+                        \lower .4ex \hbox{\yac@sheaderfont\ Graphics}
+                        \hrulefill
+                        \hskip 1.5em
+                        }
+        \vskip 1ex
+}
+
+\def\yac@sbottom{
+\hbox to \hsize{\vrule depth 0ex height 1ex width .4pt
+                \hrulefill 
+                \vrule depth 0ex height 1ex width .4pt}
+}
+
+
+%% Next, it is necessary to have a verbatim environment for the Yacas
+%% input and output
+
+%% The verbatim environment for the input  is based mostly on the 
+%% environment from "TeX for the Impatient" and Tim Morgan's verbtim2.tex
+
+\def\yacasdeactivate{%
+        \catcode`\{ = 12
+        \catcode`\} = 12
+        \catcode`\$ = 12
+        \catcode`\& = 12
+        \catcode`\# = 12
+        \catcode`\% = 12
+        \catcode`\~ = 12
+        \catcode`\^ = 12
+        \catcode`\_ = 12
+        \catcode`\  = 12
+}
+
+{\catcode`\^^M=13
+ {\catcode`\ =13\gdef\yacasverbatimdefs{\def^^M{\par}\def\ {$\backslash$\par}}}
+ \gdef\verbatimgobble#1^^M{}}
+
+\def\yac@sinputverbatim{
+        \begingroup 
+        \setlength{\parskip}{0pt}                     %% added by WMS
+%        \everypar{In> }
+        \par
+        \yacasinputfont
+        \yacasdeactivate
+        \yacasverbatimdefs
+        \catcode`\ =13 
+        \catcode`\^^M=13
+}
+
+\let\endyac@sinputverbatim=\endgroup
+
+%% The verbatim for Yacas output is taken from the TeXbook.  
+%% It allows more symbols, but can't be used for the input
+%% since the input can be ended with more than one delimiter.
+
+\def\uncatcodespecials{\def\do##1{\catcode`##1=12 }\dospecials}
+
+\chardef\active=13
+\def\obeyspaces{\catcode`\ =\active}
+{\catcode`\^^M=\active %
+ \gdef\obeylines{\catcode`\^^M=\active \let^^M=\par}%
+ \global\let^^M=\par} %
+
+
+\def\setupyac@sverbatim{\yacasoutputfont
+\obeylines \uncatcodespecials \obeyspaces}
+{\obeyspaces\global\let =\ }
+
+
+\def\yac@soutputverbatim{\par\begingroup
+        \baselineskip = \yacasoutputbaselineskip
+        \setupyac@sverbatim\doyac@sverbatim}      
+{\catcode`\|=0 \catcode`\\=12 %
+ |obeylines|gdef|doyac@sverbatim^^M#1\endyacas{#1|endgroup|yac@sbottom|par|vskip 1.5ex|par|endgroup}}
+
+%% Now we need to set up the actual environments.
+%% We will need some "if"s to tell us where we are
+
+\newif\ifyac@sinput
+\newif\ifyac@soutput
+\newif\ifyac@stexoutput
+\newif\ifyac@sgraphics
+
+\def\not@k{}
+
+%% The top delimiter depends on whether or not it is an initial cell,
+%% etc.
+
+\def\yacas{
+     \begingroup
+     \par  \vskip \preyacasspace \par
+     \baselineskip = \yacasinputbaselineskip
+     \yac@sinputtrue
+     \futurelet\nextchar\yac@s
+}
+
+\def\yac@s{
+     \ifx\nextchar [%
+         \let\next = \yac@sinit
+     \else
+         \ifx\nextchar <%
+              \let\next = \yac@spart
+         \else
+               \let\next = \yac@sstart
+         \fi
+     \fi
+     \next
+}
+
+\def\yac@sinit[#1]{
+     \futurelet\nextchar%
+     \yac@s@nit}
+
+\def\yac@s@nit{
+     \ifx\nextchar <%
+          \let\next = \yac@sinitpart
+     \else
+          \let\next = \yac@sinitonly
+     \fi
+     \next
+}
+
+
+\def\yac@sinitonly{
+     \par
+     \vskip 1.5ex
+     \par
+     \yac@sinittop
+     \sm@llsk
+     \yac@sinputverbatim
+}
+
+
+\def\yac@sstart{
+     \par
+     \vskip 1.5ex
+     \par
+     \yac@stop
+     \sm@llsk
+     \yac@sinputverbatim
+}
+
+
+\def\yac@spart<#1:#2>{
+     \par
+     \vskip 1.5ex
+     \par
+     \def\testt@k{#2}
+     \ifx\testt@k\not@k
+         \def\yac@sparttext{Definition of package #1}
+     \else
+         \def\yac@sparttext{<#1:#2>}
+     \fi
+     \yac@sparttop\yac@sparttext
+     \futurelet\nextchar\yac@sp@rt
+}
+
+\def\yac@sp@rt{
+     \sm@llsk
+     \yac@sinputverbatim
+}
+
+
+\def\yac@sinitpart<#1:#2>{
+     \par
+     \vskip 1.5ex
+     \par
+     \def\testt@k{#2}
+     \ifx\testt@k\not@k
+         \def\yac@sparttext{Definition of package #1}
+     \else
+         \def\yac@sparttext{<#1:#2>}
+     \fi
+     \yac@sinitparttop\yac@sparttext
+     \futurelet\nextchar\yac@sp@rt
+}
+
+
+%% Now to take care of the various types of output
+
+\def\output{
+     \endyac@sinputverbatim
+     \sm@llsk
+     \yac@sinputfalse
+     \yac@soutputtrue
+     \yac@soutput
+%     \sm@llsk
+     \yac@soutputverbatim
+}      
+
+\ifyacasusebreqn
+  \usepackage[cmbase]{flexisym}
+  \usepackage{breqn}
+  \newenvironment{yacasmath}
+     {\begin{dmath*}}
+     {\end{dmath*}}
+\else
+  \newenvironment{yacasmath}
+     {\begin{displaymath}}
+     {\end{displaymath}}
+\fi
+  
+\def\yac@stexeqn#1;{\begin{yacasmath} #1 \end{yacasmath}}
+
+\def\outputtex{
+     \endyac@sinputverbatim
+     \sm@llsk
+     \yac@sinputfalse
+     \yac@stexoutputtrue
+     \yac@stexoutput
+     \sm@llsk
+     \begingroup
+     \def\out{\yac@stexeqn}
+%     \def\par{}
+%     $$
+}      
+
+\def\@ndtexoutput{
+%    $$
+    \endgroup
+    \yac@stexoutputfalse
+    \par
+}
+
+%% If the output is graphics, we'll need to load epsf.tex, but there's
+%% no need to load it if there are no graphics, and there is no need
+%% to load it more than once.
+
+\newif\ifnogr@phics
+\nogr@phicstrue
+\def\outputgraphics{
+    \endyac@sinputverbatim
+    \sm@llsk
+    \yac@sinputfalse
+    \yac@sgraphicstrue
+    \ifnogr@phics
+        \input epsf.tex
+        \nogr@phicsfalse
+    \fi
+    \yac@sgraphicsoutput    
+    \sm@llsk
+}
+
+\def\@ndoutputgraphics{}
+
+%% We'll need to have a macro for the graphics
+
+\def\mgraphics#1#2{
+    \centerline{ \epsfxsize = #1 \epsfbox{#2}}
+}
+
+
+\def\endyacas{
+     \ifyac@sinput 
+         \endyac@sinputverbatim
+         \yac@sinputfalse
+      \else
+         \ifyac@stexoutput
+             \@ndtexoutput
+         \else
+            \ifyac@sgraphics
+                \@ndoutputgraphics
+            \fi
+         \fi
+     \fi
+     \sm@llsk
+     \yac@sbottom
+     \par
+     \vskip 1.5 ex
+     \par
+     \endgroup
+}
+
+% Finally, to help with backslashes,
+\def\bs{$\backslash$}
+
+\catcode`\@=12\relax
+
+
+
+
+
+

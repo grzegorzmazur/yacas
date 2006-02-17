@@ -1,0 +1,46 @@
+
+NewLine(3);
+WriteString("Rendering a wavy disk... Please wait."); NewLine();
+WriteString("A window should pop up after a few seconds."); NewLine(3);
+
+Use("glview");
+
+WriteString("Starting"); NewLine();
+
+Precision(10);
+PI:=Pi();
+Precision(5);
+
+Show(
+[
+  PlotHeight(x,-1,1,8,y,-1,1,8,x^2+y^2,{(x+1)/2,(y+1)/2,(x+1)/4});
+  ShowBBox();
+]
+);
+
+
+/*
+Show(
+[
+  PlotHeight(x,-1,1,8,y,-1,1,8,x^2+y^2,{(x+1)/2,(y+1)/2,(x+1)/4});
+  ShowBBox();
+]
+);
+Show(
+[
+  Plot3D(x,-5,5,7,y,-5,5,7,{x,y,FastCos(2*Sqrt(x^2+y^2))},{(x+1)/2,(y+1)/2,(x+1)/4});
+  ShowBBox();
+]
+);
+
+
+Show(
+[
+  Plot3D(r,0,4,10,t,0,2,10,{r*FastCos(PI*t),r*FastSin(PI*t),FastCos(2*r)},{(1+FastCos(10*r))/2,(1+FastCos(29*r))/2,(1+FastCos(5*r))/2});
+  ShowBBox();
+]
+);
+*/
+
+
+

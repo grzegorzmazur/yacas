@@ -1,0 +1,27 @@
+README
+======
+This directory contains Emacs lisp files to aid in interacting with 
+Yacas from within Emacs.
+It contains the files
+  yacas.el   
+  yacas-names.el
+  yacas-functions.el
+  yacas-notebook.el
+  yacas-notebook.sty
+  yacas-doc.el
+
+yacas.el provides a mode for writing Yacas code, as well as a 
+  mode for interacting with Yacas inside an Emacs buffer.
+  It requires yacas-names.el and yacas-functions.el
+
+yacas-notebook.el provides a notebook interface for Yacas from
+  within Emacs.  It requires yacas.el (and so yacas-names.el 
+  and yacas-functions.el) and yacas-notebook.sty
+
+yacas-doc.el provides a mode for writing Yacas documentation
+  in Emacs.
+
+A quick introduction to these modes is provided at the beginning of
+each file.
+
+
