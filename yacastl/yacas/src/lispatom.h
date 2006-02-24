@@ -48,7 +48,7 @@ public:
 private:
     LispAtom(LispString * aString);
 public:
-	LispAtom::LispAtom(const LispAtom& other);
+	LispAtom(const LispAtom& other);
 private:
 #define HAS_NEW_AtomImpl 0	/* TODO: woof -- 0 performs better */
 #if !HAS_NEW_AtomImpl
