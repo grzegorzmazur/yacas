@@ -56,7 +56,7 @@ private:
 
 
 
-;
+
 /** VoidGrow is a helper class for LispAssociatedHash
  */
 class VoidGrow : public CArrayGrower<void*>

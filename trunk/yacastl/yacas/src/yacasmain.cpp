@@ -1107,7 +1107,7 @@ DBG_printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
                                 if (response)
                                 {
    #ifndef WIN32
-									write(fd, outStrings.String(), strlen(outStrings.String()));
+									write(fd, outStrings.c_str(), strlen(outStrings.c_str()));
 									write(fd,"]\r\n",3);
 									if (buflen>0)
 									{
