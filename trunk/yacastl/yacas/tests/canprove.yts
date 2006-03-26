@@ -3,10 +3,10 @@ NextTest("Propositional logic theorem prover");
 
 Verify(CanProve(( (a=>b) And (b=>c) => (a=>c) )),True);
 Verify(CanProve((((a=>b) And (b=>c))=> (a=>c) )),True);
-//rify(CanProve(( (a=>b) And((b=>c) => (a=>c)))),((Not a Or b)And(Not a Or b Or c)) );
-KnownFailure(BadOutput + WhenPreviousLine + IsUncommented);
+Verify(CanProve(( (a=>b) And((b=>c) => (a=>c)))),(((Not a) Or b)And((Not a) Or (b Or c))) );
+//KnownFailure(BadOutput + WhenPreviousLine + IsUncommented);
 //And *my* previous line (the KnownFailure) aborts.  (witnessed by no report from next line).
-Verify(CanProve( True ),False);
+Verify(CanProve( True ),True);
 
 Verify(CanProve(a Or Not a)                   ,True);
 Verify(CanProve(True Or a)                 ,True);

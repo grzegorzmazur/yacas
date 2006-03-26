@@ -102,7 +102,9 @@ $(srcdir)/libmath.cpp: \
 	./yacas --rootdir $(top_srcdir)/scripts -pc --init compileinit.txt compile.txt
 	./check_plugins || $(ITERATIVEMAKE) $(libmath_USES)
 
-$(srcdir)/plugins_available.h:
+dummy:
+
+$(srcdir)/plugins_available.h: check_plugins dummy
 	test -f check_plugins$(EXEEXT) || $(MAKE) $(MAKEFLAGS) check_plugins$(EXEEXT)
 	./check_plugins || echo "More to do..."
 
@@ -213,6 +215,9 @@ filescanner_plugin_stub.cpp:plugin_stub_gen $(srcdir)/plugins_available.h
 #workaround that hopefully allows compiling Yacas out of the box, 
 #dependency on the plugins_available.h header file
 exedll.$(OBJEXT) yacasmain.$(OBJEXT): $(srcdir)/plugins_available.h
+
+exedll.cpp yacasmain.cpp: $(srcdir)/plugins_available.h
+
 
 yacas_include = $(datadir)/yacas/include
 
