@@ -1,7 +1,7 @@
 
 #include "yacasprivate.h"
 
-LispInt PlatAsciiToInt(LispCharPtr aString)
+LispInt PlatAsciiToInt(LispChar * aString)
 {
     LispInt result=0;
     LispBoolean negative=LispFalse;

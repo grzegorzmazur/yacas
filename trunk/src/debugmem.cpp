@@ -8,42 +8,35 @@
 
 #ifdef YACAS_DEBUG
 
+#define DBG_(xxx) xxx
+
 #ifdef NO_GLOBALS
 #error "Memory heap checking only possible with global variables!"
 #endif
+
+// Bit-mask of selected 'intense' checks
+#define INTENSE ( 0 )
 
 typedef struct YacasMemBlock
 {
     char			iMagicPrefix[4];
     const char *	iFile;
-    int           iLine;
-    unsigned long			  iSize;
-    unsigned char*			iData;
+    int             iLine;
+    unsigned long	iSize;
+    unsigned char*	iData;
     char *			iMagicPostfix;
     //
     YacasMemBlock*			iPREV;
     YacasMemBlock*			iNEXT;
 } YacasMemBlock;
-#define Header(p) ((YacasMemBlock*)(((unsigned char*)p)-sizeof(YacasMemBlock)))
-
-
 
 YacasMemBlock*	iFirst	= NULL;
 YacasMemBlock*	iLast	= NULL;
-void CheckPtr( void * anAllocatedPtr,char* file, int line );
-void CheckAllPtrs()
-{
-  YacasMemBlock*	p = iFirst;
-  while (p!=NULL)
-  {
-    unsigned char* ptr = (unsigned char*)p;
-    ptr += sizeof(YacasMemBlock);
-    CheckPtr( ptr, __FILE__, __LINE__ );
-    p = p->iNEXT;
-  }	
-}
 
-void CheckPred(int pred, char* file, int line)
+//------------------------------------------------------------------------------
+// Three low-level check routines: CheckPred, CheckPtr, and CheckAllPtrs.
+
+void CheckPred(int pred, const char* file, int line)
 {
     if (!pred)
     {
@@ -51,13 +44,13 @@ void CheckPred(int pred, char* file, int line)
     }
 }
 
-void CheckPtr( void * anAllocatedPtr, char* file, int line )
+void CheckPtr( void * anAllocatedPtr, const char* file, int line )
 {
     if (anAllocatedPtr == NULL)
         return;
-    unsigned char* ptr = (unsigned char*)anAllocatedPtr;
-    ptr -= sizeof(YacasMemBlock);
-    YacasMemBlock* t = (YacasMemBlock*)ptr;
+
+	unsigned char * ptr = (unsigned char*)anAllocatedPtr;
+    YacasMemBlock * t = ((YacasMemBlock*)anAllocatedPtr)-1;
 
     CheckPred ( t->iMagicPrefix[0] == 'x',file,line );
     LISPASSERT( t->iMagicPrefix[0] == 'x' );
@@ -68,10 +61,10 @@ void CheckPtr( void * anAllocatedPtr, char* file, int line )
     CheckPred ( t->iMagicPrefix[3] == 0,file,line );
     LISPASSERT( t->iMagicPrefix[3] == 0 );
 
-    CheckPred ( t->iData		== ptr+sizeof(YacasMemBlock),file,line );
-    LISPASSERT( t->iData		== ptr+sizeof(YacasMemBlock) );
-    CheckPred ( (unsigned char*)t->iMagicPostfix	== ptr+sizeof(YacasMemBlock)+t->iSize,file,line );
-    LISPASSERT( (unsigned char*)t->iMagicPostfix	== ptr+sizeof(YacasMemBlock)+t->iSize );
+    CheckPred ( t->iData		== ptr,file,line );
+    LISPASSERT( t->iData		== ptr );
+    CheckPred ( (unsigned char*)t->iMagicPostfix	== ptr+t->iSize,file,line );
+    LISPASSERT( (unsigned char*)t->iMagicPostfix	== ptr+t->iSize );
 
     CheckPred ( t->iMagicPostfix[0] == 'x',file,line );
     LISPASSERT( t->iMagicPostfix[0] == 'x' );
@@ -81,77 +74,99 @@ void CheckPtr( void * anAllocatedPtr, char* file, int line )
     LISPASSERT( t->iMagicPostfix[2] == 'z' );
     CheckPred ( t->iMagicPostfix[3] == 0,file,line );
     LISPASSERT( t->iMagicPostfix[3] == 0 );
-
 }
 
-
-
-void* YacasMallocPrivate(unsigned long aSize, char* aFile, int aLine)
+void CheckAllPtrs(int final /*=0*/)
 {
-  if (aSize<=0) return NULL;
-  unsigned char* ptr = (unsigned char*)PlatObAlloc(aSize+sizeof(YacasMemBlock)+4);
-  YacasMemBlock* t = (YacasMemBlock*)ptr;
-  t->iMagicPrefix[0]= 'x';
-  t->iMagicPrefix[1]= 'y';
-  t->iMagicPrefix[2]= 'z';
-  t->iMagicPrefix[3]= 0;  
+    if (final && iFirst!= NULL)
+        printf("\n\n********** Memory leaks detected!!! ***********\n\n");
 
-  t->iFile  = aFile;
-  t->iLine  = aLine;
-  t->iSize	= aSize;
-  t->iData	= (ptr + sizeof(YacasMemBlock));
-  t->iMagicPostfix	= (char *)(ptr + sizeof(YacasMemBlock) + aSize);
-  t->iMagicPostfix[0] = 'x';
-  t->iMagicPostfix[1] = 'y';
-  t->iMagicPostfix[2] = 'z';
-  t->iMagicPostfix[3] = 0  ;
-
-  // maintain list of claimed elements!
-  t->iNEXT = NULL;
-  t->iPREV = NULL;
-  if ( iLast==NULL )
-  {
-    iFirst	= t;
-    iLast	= t;
-  }
-  else
-  {
-    iLast->iNEXT = t;
-    t->iPREV = iLast;
-    iLast = t;
-  }
-
-  //CheckAllPtrs();
-
-  ptr += sizeof(YacasMemBlock);
-  //CheckPtr( ptr );
-
-  LISPASSERT(ptr != NULL);
-  return ptr;
+    for (YacasMemBlock * p = iFirst; p; p = p->iNEXT)
+    {
+        if (final) printf("%s(%d) : error C6666: memory leak! (0x%p)\n",p->iFile,p->iLine,p+1);
+        CheckPtr(p + 1, __FILE__, __LINE__);
+    }
+    if (final && iFirst!= NULL)
+        printf("\n\n***********************************************\n\n");
 }
-void* YacasReAllocPrivate(void* orig, unsigned long size, char* aFile, int aLine)
+
+//------------------------------------------------------------------------------
+// YacasMallocPrivate, YacasReAllocPrivate, and YacasFreePrivate.
+
+void* YacasMallocPrivate(unsigned long aSize, const char* aFile, int aLine)
 {
-  void* result = YacasMallocPrivate(size, aFile, aLine);
-  if (orig)
-  {
-    unsigned long max = Header(orig)->iSize;
-    if (max > size) max = size;
-    memcpy(result,orig,max);
-    YacasFreePrivate(orig);
-  }
-//  CheckPtr( result );
+	if (aSize<=0) return NULL;
 
-  return result;
+	YacasMemBlock* t = (YacasMemBlock*)PlatObAlloc(aSize+sizeof(YacasMemBlock)+4);
+	unsigned char* ptr = (unsigned char*)(t+1);
+
+	t->iMagicPrefix[0]= 'x';
+	t->iMagicPrefix[1]= 'y';
+	t->iMagicPrefix[2]= 'z';
+	t->iMagicPrefix[3]= 0;  
+
+	t->iFile  = aFile;
+	t->iLine  = aLine;
+	t->iSize	= aSize;
+	t->iData	= (ptr);
+	t->iMagicPostfix	= (char *)(ptr + aSize);
+	t->iMagicPostfix[0] = 'x';
+	t->iMagicPostfix[1] = 'y';
+	t->iMagicPostfix[2] = 'z';
+	t->iMagicPostfix[3] = 0  ;
+
+	// maintain list of claimed elements!
+	t->iNEXT = NULL;
+	t->iPREV = NULL;
+	if ( iLast==NULL )
+	{
+		iFirst	= t;
+		iLast	= t;
+	}
+	else
+	{
+		iLast->iNEXT = t;
+		t->iPREV = iLast;
+		iLast = t;
+	}
+
+#if INTENSE & (1<<0)
+	CheckAllPtrs();
+#endif
+#if INTENSE & (1<<1)
+	CheckPtr( ptr, aFile, aLine );
+#endif
+
+	LISPASSERT(ptr);
+	return ptr;
 }
+
+void* YacasReAllocPrivate(void* orig, unsigned long size, const char* aFile, int aLine)
+{
+	void* result = YacasMallocPrivate(size, aFile, aLine);
+	if (orig)
+	{
+		unsigned long max = (((YacasMemBlock*)orig)-1)->iSize;
+		if (max > size) max = size;
+		memcpy(result,orig,max);
+		YacasFreePrivate(orig);
+	}
+#if INTENSE & (1<<2)
+	CheckPtr( result, aFile, aLine );
+#endif
+	return result;
+}
+
 void YacasFreePrivate(void* aOrig)
 {
   if (aOrig)
-  {
-//    CheckPtr( aOrig );
+  {{
 
-    unsigned char* ptr = (unsigned char*)aOrig;
-    ptr -= sizeof(YacasMemBlock);
-    YacasMemBlock* t = (YacasMemBlock*)ptr;
+    YacasMemBlock* t = ((YacasMemBlock*)aOrig)-1;
+
+#if INTENSE & (1<<3)
+	CheckPtr( aOrig, t->iFile, t->iLine );
+#endif
 
     t->iMagicPrefix[0] = 'F';
     t->iMagicPrefix[1] = 'r';
@@ -188,30 +203,56 @@ void YacasFreePrivate(void* aOrig)
             iLast->iNEXT = NULL;
         }
     }
-    //CheckAllPtrs();
-    //
-    PlatObFree( t );
-  }
-}
-
-
-void YacasCheckMemory()
-{
-    if (iFirst!= NULL && iLast!= NULL)
-    {
-        printf("\n\n********** Memory leaks detected!!! ***********\n\n");
-        YacasMemBlock*	p = iFirst;
-        while (p!=NULL)
-        {
-            printf("%s(%d) : error C6666: memory leak!\n",p->iFile,p->iLine);
-            unsigned char* ptr = (unsigned char*)p;
-            ptr += sizeof(YacasMemBlock);
-            CheckPtr( ptr, __FILE__, __LINE__ );
-            p = p->iNEXT;
-        }
-        printf("\n\n***********************************************\n\n");
-        CheckAllPtrs();
-    }
-}
-
+#if INTENSE & (1<<4)
+    CheckAllPtrs();
 #endif
+    PlatObFree( t );
+  }}
+}
+
+//------------------------------------------------------------------------------
+
+namespace {
+	class Warn
+	{
+		int warnings, wlimit; const char *msg1;
+	public:
+		Warn(int _wlimit, const char * _msg1) : warnings(0), wlimit(_wlimit), msg1(_msg1) {}
+		void warn();
+	};
+	void Warn::warn()
+	{
+		if (warnings >= wlimit) return;
+		printf(msg1, (++warnings >= wlimit) ? " (being quiet now)" : "");
+	}
+}
+
+void* operator new(size_t size) NEW_THROWER
+{
+	static Warn w(5, "WARNING! Global new called%s\n"); w.warn();
+	DBG_(while(0)) { int* ptr = NULL; *ptr = 1; }
+    return PlatAlloc(size);
+}
+
+void* operator new[](size_t size) NEW_THROWER
+{
+	static Warn w(5, "WARNING! Global new[] called%s\n"); w.warn();
+	DBG_(while(0)) { int* ptr = NULL; *ptr = 1; }
+    return PlatAlloc(size);
+}
+
+void operator delete(void* object) DELETE_THROWER
+{
+	static Warn w(5, "WARNING! Global delete called%s\n"); w.warn();
+	DBG_(while(0)) { int* ptr = NULL; *ptr = 1; }
+    PlatFree(object);
+}
+
+void operator delete[](void* object) DELETE_THROWER
+{
+	static Warn w(5, "WARNING! Global delete[] called%s\n"); w.warn();
+	DBG_(while(0)) { int* ptr = NULL; *ptr = 1; }
+    PlatFree(object);
+}
+
+#endif	// YACAS_DEBUG

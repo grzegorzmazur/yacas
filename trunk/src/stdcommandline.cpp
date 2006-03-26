@@ -14,7 +14,7 @@ void CStdCommandLine::Pause()
 {
 }
 
-void CStdCommandLine::ShowLine(LispCharPtr prompt,LispInt promptlen,LispInt cursor)
+void CStdCommandLine::ShowLine(LispChar * prompt,LispInt promptlen,LispInt cursor)
 {
 }
 
@@ -31,7 +31,7 @@ LispInt CStdCommandLine::GetKey()
     return '\n';
 }
 
-void CStdCommandLine::ReadLine(LispCharPtr prompt)
+void CStdCommandLine::ReadLine(LispChar * prompt)
 {
     printf(prompt); fflush(stdout);
     char buffer[4001];
@@ -52,7 +52,7 @@ if (feof(stdin)) strcpy(buffer,"quit");
     if (buffer[offs-1] == '\\')
         goto MORE;
     iLine.GrowTo(offs+1);
-    iLine.SetNrItems(offs+1);
+    //iLine.Resize(offs+1);
     strcpy(&iLine[0],buffer);
 }
 

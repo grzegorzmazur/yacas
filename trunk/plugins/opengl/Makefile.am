@@ -1,6 +1,6 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = new testscript glututils
+EXTRA_DIST = testscript glututils
 
 INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/plat/linux32/ $(GL_CFLAGS)
 # -I$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Libraries/CIncludes -framework AGL -framework OpenGL

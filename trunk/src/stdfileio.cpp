@@ -74,7 +74,7 @@ LispBoolean StdFileInput::EndOfStream()
     return feof(iFile);
 }
 
-LispCharPtr StdFileInput::StartPtr()
+LispChar * StdFileInput::StartPtr()
 {
     LISPASSERT(0);
     return NULL;
@@ -120,11 +120,12 @@ CachedStdFileInput::CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus
     iNrBytes = ftell(iFile);
     fseek(iFile,0,SEEK_SET);
     // Read in the full buffer
-    iBuffer = (LispCharPtr)PlatAlloc(iNrBytes+1);
-    Check(iBuffer!=NULL,KLispErrNotEnoughMemory);
+    char * ptr = PlatAllocN<char>(iNrBytes+1);      // sizeof(char) == 1
+    iBuffer = (LispChar *)ptr;                                        // sizeof(LispChar) == not so sure
+    Check(ptr!=NULL,KLispErrNotEnoughMemory);
     iCurrentPos = 0;
-    fread(iBuffer,iNrBytes,1,iFile);
-    iBuffer[iNrBytes] = '\0';
+    fread(ptr,iNrBytes,1,iFile);
+    ptr[iNrBytes] = '\0';
 }
 
 LispChar CachedStdFileInput::Next()
@@ -157,7 +158,7 @@ LispBoolean CachedStdFileInput::EndOfStream()
     return (iCurrentPos >= iNrBytes);
 }
 
-LispCharPtr CachedStdFileInput::StartPtr()
+LispChar * CachedStdFileInput::StartPtr()
 {
     return iBuffer;
 }
@@ -173,8 +174,9 @@ void CachedStdFileInput::SetPosition(LispInt aPosition)
 }
 
 
-void InternalFindFile(LispCharPtr aFileName, InputDirectories& aInputDirectories,
-                     LispCharPtr aFoundFile)
+// TODO: woof -- buffer overflow problems in here?
+void InternalFindFile(LispChar * aFileName, InputDirectories& aInputDirectories,
+                     LispChar * aFoundFile)
 {
     strcpy(aFoundFile,aFileName);
 
@@ -182,15 +184,15 @@ void InternalFindFile(LispCharPtr aFileName, InputDirectories& aInputDirectories
 
     FILE* file = fopen(aFoundFile,"rb");
     LispInt i=0;
-    while (file == NULL && i<aInputDirectories.NrItems())
+    while (!file && i<aInputDirectories.Size())
     {
-        strcpy(aFoundFile,aInputDirectories[i]->String());
+        strcpy(aFoundFile,aInputDirectories[i]->c_str());
         strcat(aFoundFile,aFileName);
         MapPathSeparators(aFoundFile);
         file = fopen(aFoundFile,"rb");
         i++;
     }
-    if (file != NULL)
+    if (file)
     {
         fclose(file);
     }
@@ -201,7 +203,7 @@ void InternalFindFile(LispCharPtr aFileName, InputDirectories& aInputDirectories
 }
 
 LispLocalFile::LispLocalFile(LispEnvironment& aEnvironment,
-                             LispCharPtr aFileName, LispBoolean aRead,
+                             LispChar * aFileName, LispBoolean aRead,
                              InputDirectories& aInputDirectories)
 : iEnvironment(aEnvironment)
 {
@@ -213,9 +215,9 @@ LispLocalFile::LispLocalFile(LispEnvironment& aEnvironment,
 
         iFile = fopen(othername,"rb");
         LispInt i=0;
-        while (iFile == NULL && i<aInputDirectories.NrItems())
+        while (!iFile && i<aInputDirectories.Size())
         {
-            strcpy(othername,aInputDirectories[i]->String());
+            strcpy(othername,aInputDirectories[i]->c_str());
             strcat(othername,aFileName);
             MapPathSeparators(othername);
             iFile = fopen(othername,"rb");
@@ -229,7 +231,7 @@ LispLocalFile::LispLocalFile(LispEnvironment& aEnvironment,
       iFile = fopen(othername,"w");
     }
 
-    if (iFile == NULL)
+    if (!iFile)
         iOpened=0;
     else
         iOpened=1;
@@ -271,7 +273,7 @@ LispChar CachedStdUserInput::Next()
 
 LispChar CachedStdUserInput::Peek()
 {
-    if (iCurrentPos == iBuffer.NrItems())
+    if (iCurrentPos == iBuffer.Size())
     {
         iBuffer.Append(fgetc(iFile));
     }
@@ -287,13 +289,13 @@ void CachedStdUserInput::Rewind()
 {
     // Make sure there is a buffer to point to.
     iBuffer.GrowTo(10);
-    iBuffer.SetNrItems(0);
+    iBuffer.Resize(0);
     iCurrentPos=0;
 }
 
-LispCharPtr CachedStdUserInput::StartPtr()
+LispChar * CachedStdUserInput::StartPtr()
 {
-    if (iBuffer.NrItems() == 0)
+    if (iBuffer.Size() == 0)
         Peek();
     return &iBuffer[0];
 }

@@ -193,7 +193,7 @@ void WalkDirs(char* base,char* dir)
 {
     CFileScanner scanner;
     CFileNode* node = scanner.First(base,dir);
-    while (node != NULL)
+    while (node)
     {
         if (node->IsDirectory())
         {

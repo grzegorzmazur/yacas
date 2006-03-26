@@ -45,14 +45,23 @@ enum ErrorCodes
 };
 
 
-
-inline void Check(LispBoolean hastobetrue, LispInt aError)
+template<typename T>
+inline void Check(T hastobetrue, LispInt aError)
 {
     if (!hastobetrue)
         LispThrow(aError); // TODO new LispException(aException)
 }
 
 
+#ifdef YACAS_DEBUG
+#define DBG_printf printf
+#define DBG_(xxx) xxx
+#else
+namespace{void inline noop(...) {}}
+// could change 'noop' to 'sizeof' below, but we get 'left-hand operand of comma has no effect' from g++
+#define DBG_printf while (0) noop
+#define DBG_(xxx) /*xxx*/
+#endif
 
 
 #endif

@@ -6,7 +6,7 @@
 
 StringInput::StringInput(LispString& aString,InputStatus& aStatus)
     : LispInput(aStatus),
-      iString(aString.String(),LispFalse)
+      iString(aString.c_str(),LispFalse)
 {
   iCurrent = 0;
 }
@@ -33,9 +33,9 @@ LispBoolean StringInput::EndOfStream()
     return (iString[ iCurrent ] == '\0');
 }
 
-LispCharPtr StringInput::StartPtr()
+LispChar * StringInput::StartPtr()
 {
-    return iString.String();
+    return iString.c_str();
 }
 LispInt StringInput::Position()
 {
@@ -44,7 +44,7 @@ LispInt StringInput::Position()
 void StringInput::SetPosition(LispInt aPosition)
 {
   LISPASSERT(aPosition>=0);
-  LISPASSERT(aPosition<iString.NrItems());
+  LISPASSERT(aPosition<iString.Size());
   iCurrent = aPosition;
 }
 
@@ -57,7 +57,7 @@ StringOutput::~StringOutput()
 
 void StringOutput::PutChar(LispChar aChar)
 {
-    iString[iString.NrItems()-1]=aChar;
+    iString[iString.Size()-1]=aChar;
     iString.Append('\0');
 }
 

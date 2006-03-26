@@ -44,13 +44,13 @@ class LispDllBase : public YacasBase
 {
 public:
     LispDllBase();
-    virtual LispInt Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment);
+    virtual LispInt Open(LispChar * aDllFile,LispEnvironment& aEnvironment);
     virtual LispInt Close(LispEnvironment& aEnvironment);
     LispPluginBase* Plugin(void);
     virtual ~LispDllBase();
-    LispCharPtr DllFileName() const;
+    LispChar * DllFileName() const;
 protected:
-    virtual LispPluginBase* GetPlugin(LispCharPtr aDllFile);
+    virtual LispPluginBase* GetPlugin(LispChar * aDllFile);
 protected:
     LispPluginBase* iPlugin;
     LispString iDllFileName;

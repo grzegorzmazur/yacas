@@ -15,7 +15,7 @@
 #include "lispassert.h"
 #include "platdll.h"
 
-LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
+LispInt LtDll::Open(LispChar * aDllFile,LispEnvironment& aEnvironment)
 {
 #if HAVE_DLFCN_H
     iDllFileName = aDllFile;
@@ -76,7 +76,7 @@ LtDll::~LtDll()
     }
     handle = NULL;
 }
-LispPluginBase* LtDll::GetPlugin(LispCharPtr aDllFile)
+LispPluginBase* LtDll::GetPlugin(LispChar * aDllFile)
 {
 #if HAVE_DLFCN_H
     LISPASSERT(handle != NULL);

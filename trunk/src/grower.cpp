@@ -3,97 +3,55 @@
 #include "grower.h"
 #include "lispassert.h"
 
-
-
-CArrayGrowerBase::~CArrayGrowerBase() 
-{ 
-    if (!iArrayOwnedExternally)
-    {
-        PlatFree(iArray);
+/*static*/
+void ArrOps::reserve(char** pArray, int& iCapacity, int aSize, int aItemSize)
+{
+	if (aSize > iCapacity)
+	{
+	    if (!*pArray)
+	        *pArray = (char*)PlatAlloc(aSize*aItemSize);
+		else
+			// we assume 'memcpy' suffices for moving the existing items.
+			*pArray = (char*)PlatReAlloc(*pArray,aSize*aItemSize);
+		iCapacity = aSize;
     }
 }
 
-void CArrayGrowerBase::Clear()
+/*static*/
+void ArrOps::resize(char** pArray, const ArrOps& opers, int& iSize, int& iCapacity, int aSize, int aItemSize, int ext)
 {
-    LISPASSERT(!iArrayOwnedExternally);
-    PlatMemSet(iArray,0,iNrItems*iItemSize);
-}
-
-int CArrayGrowerBase::BaseAppend(LispChar* aValue)
-{
-    LISPASSERT(!iArrayOwnedExternally);
-  GrowTo(iNrItems+1);
-  PlatMemCopy(BaseItem(iNrItems-1),aValue,iItemSize);
-  return iNrItems-1;
-}
-
-void CArrayGrowerBase::SetGranularity(LispInt aGranularity)
-{
-    LISPASSERT(aGranularity>0);
-    iGranularity=aGranularity;
-}
-
-
-void CArrayGrowerBase::GrowTo(int aNrItems)
-{
-    LISPASSERT(!iArrayOwnedExternally);
-    if (aNrItems > iNrAllocated)
-    {
-        /*
-         if (iNrAllocated == 0)
-            iNrAllocated = 1;
-        while (aNrItems > iNrAllocated)
-            iNrAllocated *= 2;
-        */
-        /**/
-
-        iNrAllocated = iGranularity*((aNrItems+iGranularity-1)/iGranularity);
-//         while (aNrItems > iNrAllocated)
-//             iNrAllocated += iGranularity;
-        /**/
-        if (iArray == NULL)
-        {
-            iArray = (LispChar*)PlatAlloc(iNrAllocated*iItemSize);
-        }
-        else
-        {
-            iArray = (LispChar*)PlatReAlloc(iArray,iNrAllocated*iItemSize);
-        }
+    if (aSize == iSize) return;
+	if (aSize > iCapacity)
+	{
+	    if (!*pArray)
+	        *pArray = (char*)PlatAlloc(aSize*aItemSize);
+		else
+			// we assume 'memcpy' suffices for moving the existing items.
+			*pArray = (char*)PlatReAlloc(*pArray,aSize*aItemSize);
+		iCapacity = aSize;
     }
-    SetNrItems(aNrItems);
-}
-
-void CArrayGrowerBase::Delete(int aIndex, int aCount)
-{
-    LISPASSERT(!iArrayOwnedExternally);
-    LISPASSERT(aIndex+aCount<=iNrItems);
-
-    PlatMemMove(&iArray[aIndex*iItemSize],
-                &iArray[(aIndex+aCount)*iItemSize],
-                (iNrItems-aCount-aIndex)*iItemSize
-               );
-
-    SetNrItems(iNrItems-aCount);
-}
-
-void CArrayGrowerBase::MoveBlock(int aSrcIndex, int aTrgIndex)
-{
-    int i;
-    LISPASSERT(!iArrayOwnedExternally);
-    if (aSrcIndex > aTrgIndex)
+    if (!opers.isPOD())
     {
-        for (i=(aSrcIndex-1)*iItemSize;i>=aTrgIndex*iItemSize;i--)
-        {
-            iArray[i+iItemSize] = iArray[i];
-        }
-    }
-    else if (aSrcIndex < aTrgIndex)
-    {
-        for (i=aSrcIndex*iItemSize;i<aTrgIndex*iItemSize;i++)
-        {
-            iArray[i] = iArray[i+iItemSize];
-        }
-    }
+		if (iSize < aSize)
+			for (int ii = iSize; ii < aSize; ii++)
+				opers.construct(*pArray + ii*aItemSize);
+		else
+			for (int ii = aSize; ii < iSize; ii++)
+				opers.destruct(*pArray + ii*aItemSize);
+	}
+    iSize = aSize;
 }
 
-
+/*static*/
+void ArrOps::remove(char** pArray, const ArrOps& opers, int& iSize, int aIndex, int aCount, int aItemSize)
+{
+	LISPASSERT(aIndex >= 0 && aCount >= 0 && aIndex+aCount <= iSize);
+	if (!opers.isPOD())
+		for (int ii = aIndex; ii < aIndex+aCount; ii++)
+			opers.destruct(*pArray + ii*aItemSize);
+    // we assume 'memcpy' suffices for moving the existing items.
+    PlatMemMove(*pArray + aIndex*aItemSize,
+                *pArray + (aIndex+aCount)*aItemSize,
+                (iSize-aCount-aIndex)*aItemSize);
+	iSize -= aCount;
+}

@@ -44,7 +44,7 @@ void AddPattern(const char* aPattern, LispPtr& aType)
     patterns[nrPatterns].re,             /* result of pcre_compile() */
     0,              /* no options exist */
     &error);        /* set to NULL or points to a message */
-  patterns[nrPatterns].type.Set(aType.Get());
+  patterns[nrPatterns].type = (aType);
   nrPatterns++;
 }
 
@@ -55,7 +55,7 @@ void FreePatterns(void)
   {
     free(patterns[i].pe);
     free(patterns[i].re);
-    patterns[i].type.Set(NULL);
+    patterns[i].type = (NULL);
   }
   nrPatterns=0;
 }
@@ -68,13 +68,13 @@ static void PcreNextToken(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   if (aEnvironment.CurrentInput()->EndOfStream())
   {
-    RESULT.Set(LispAtom::New(aEnvironment,"EndOfFile"));
+    RESULT = (LispAtom::New(aEnvironment,"EndOfFile"));
     return;
   }
 
 //printf("Entered PcreNextToken\n");
     LispInt pos = aEnvironment.CurrentInput()->Position();
-    LispCharPtr trav = &aEnvironment.CurrentInput()->StartPtr()[pos];
+    LispChar * trav = &aEnvironment.CurrentInput()->StartPtr()[pos];
 
 //printf("trav is %s\n",trav);
 
@@ -95,59 +95,59 @@ static void PcreNextToken(LispEnvironment& aEnvironment, LispInt aStackTop)
 //printf("count = %d, i = %d\n",count,i);
     if (count < 1)
     {
-      RESULT.Set(LispAtom::New(aEnvironment,"EndOfFile"));
+      RESULT = (LispAtom::New(aEnvironment,"EndOfFile"));
       return;
     }
-    char* resultbuf = (char*)PlatAlloc(ovector[1]-ovector[0]+3); //TODO use plat allocs!
-    char*trg = resultbuf;
+    char* resultbuf = PlatAllocN<char>(ovector[1]-ovector[0]+3); //TODO use plat allocs!
+    char* trg = resultbuf;
     *trg++ = '\"';
     memcpy(trg,&trav[ovector[0]],ovector[1]-ovector[0]);
-    trg[ovector[1]-ovector[0]] = '\0';
-    strcat(trg,"\"");
+	trg += ovector[1]-ovector[0];
+	*trg++ = '\"';
+	*trg++ = '\0';
     while (aEnvironment.CurrentInput()->Position() < pos+ovector[1]) aEnvironment.CurrentInput()->Next();
 
 //TODO remove    aEnvironment.CurrentInput()->SetPosition(pos+ovector[1]);
     LispObject *res = NULL;
-    res = LA(patterns[i].type.Get())+LA(res);
+    res = LA(patterns[i].type)+LA(res);
     res = LA(ATOML(resultbuf)) + LA(res);
-    RESULT.Set(LIST(LA(ATOML("List")) + LA(res)));
+    RESULT = (LIST(LA(ATOML("List")) + LA(res)));
     PlatFree(resultbuf); //TODO use plat allocs!
 }
 
 static void PcreLexer(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  FreePatterns();
-    LispPtr list;
-    list.Set(ARGUMENT(1).Get());
+    FreePatterns();
+    LispPtr list(ARGUMENT(1));
 
     LispObject* t;
 
     //Check that it is a compound object
-    CHK_ARG_CORE(list.Get()->SubList() != NULL, 1);
-    t = list.Get()->SubList()->Get();
-    CHK_ARG_CORE(t != NULL, 2);
-    t = t->Next().Get();
-    while (t != NULL)
+    CHK_ARG_CORE(list->SubList(), 1);
+    t = (*list->SubList());
+    CHK_ARG_CORE(t, 2);
+    t = t->Nixed();
+    while (t)
     {
         if (t->SubList())
         {
-            LispObject* sub = t->SubList()->Get();
+            LispObject* sub = (*t->SubList());
             if (sub)
             {
-                sub = sub->Next().Get();
+                sub = sub->Nixed();
                 if(sub == NULL) 
                   RaiseError("Invalid argument in PcreLexer: not enough elements in a sublist");
-                LispStringPtr pattern = aEnvironment.HashTable().LookUpUnStringify(sub->String()->String());
+                LispString * pattern = aEnvironment.HashTable().LookUpUnStringify(sub->String()->c_str());
                 LispPtr type;
-                if(sub->Next().Get() == NULL) 
+                if(!sub->Nixed()) 
                   RaiseError("Invalid argument in PcreLexer: not enough elements in a sublist");
-                type.Set(sub->Next().Get()->Copy(LispFalse));
+                type = (sub->Nixed()->Copy());
 
 //printf("Pattern \"%s\" type %d\n",pattern->String(),type);
-                AddPattern(pattern->String(),type);
+                AddPattern(pattern->c_str(),type);
             }
         }
-        t = t->Next().Get();
+        t = t->Nixed();
     }
 
   InternalTrue(aEnvironment, RESULT);

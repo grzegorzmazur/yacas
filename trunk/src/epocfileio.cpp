@@ -59,7 +59,7 @@ LispBoolean CachedStdUserInput::EndOfStream()
 
 
 
-LispCharPtr CachedStdUserInput::StartPtr()
+LispChar * CachedStdUserInput::StartPtr()
 
 {
 
@@ -193,7 +193,7 @@ LispBoolean StdFileInput::EndOfStream()
 
 
 
-LispCharPtr StdFileInput::StartPtr()
+LispChar * StdFileInput::StartPtr()
 
 {
 
@@ -215,7 +215,7 @@ LispInt StdFileInput::Position()
 
 LispLocalFile::LispLocalFile(LispEnvironment& aEnvironment,
 
-                             LispCharPtr aFileName, LispBoolean aRead,
+                             LispChar * aFileName, LispBoolean aRead,
 
                              InputDirectories& aInputDirectories)
 
@@ -237,7 +237,7 @@ LispLocalFile::LispLocalFile(LispEnvironment& aEnvironment,
 
       LispInt i=0;
 
-      while (err != KErrNone && i<aInputDirectories.NrItems())
+      while (err != KErrNone && i<aInputDirectories.Size())
 
       {
 
@@ -301,9 +301,9 @@ void LispLocalFile::Delete()
 
 
 
-void InternalFindFile(LispCharPtr aFileName, InputDirectories& aInputDirectories,
+void InternalFindFile(LispChar * aFileName, InputDirectories& aInputDirectories,
 
-                     LispCharPtr aFoundFile)
+                     LispChar * aFoundFile)
 
 {
   aFoundFile[0] = '\0';

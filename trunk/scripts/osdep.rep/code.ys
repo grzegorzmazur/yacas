@@ -5,18 +5,19 @@
 // first, define PlatformOS(). Supported values so far: "Unix", "Win32"
 PlatformOS() := Eval(
    If(GreaterThan(Length(OSVersion()),5) And StringMid(1,5,OSVersion()) = "linux",   "Unix", 
-   If(GreaterThan(Length(OSVersion()),6) And StringMid(1,6,OSVersion()) = "darwin",   "Unix", 
+   If(GreaterThan(Length(OSVersion()),6) And StringMid(1,6,OSVersion()) = "darwin",  "Unix", 
    If(GreaterThan(Length(OSVersion()),7) And StringMid(1,7,OSVersion()) = "solaris", "Unix",
    If(GreaterThan(Length(OSVersion()),7) And StringMid(1,7,OSVersion()) = "freebsd", "Unix",
-   If(OSVersion() = "Win32",   "Win32", 
-   /* otherwise */             Check(False, "Unsupported platform ":OSVersion())))))));
+   If(OSVersion() = "Win32",   "Win32",
+   If(OSVersion() = "cygwin",  "Unix", 
+   /* otherwise */             Check(False, "Unsupported platform ":OSVersion()))))))));
 
 // this lists the available OS-specific modules
 SupportedOSes :=
 {
 	{"Unix", "unix.ys"}, // Unix defaults will probably work on MacOSX and BeOS
 	{"Win32", "win32.ys"},
-  {"Unknown","unix.ys"}
+    {"Unknown","unix.ys"}
 };
 
 // it seems that we need this here because otherwise we won't be able to load the module... or will we?

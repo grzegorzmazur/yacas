@@ -12,12 +12,12 @@ PatternClass::~PatternClass()
     delete iPatternMatcher;
 }
 
-LispCharPtr PatternClass::Send(LispArgList& aArgList)
+LispChar * PatternClass::Send(LispArgList& aArgList)
 {
     return NULL;
 }
 
-LispCharPtr PatternClass::TypeName()
+LispChar * PatternClass::TypeName()
 {
     return "\"Pattern\"";
 }
@@ -25,7 +25,7 @@ LispCharPtr PatternClass::TypeName()
 LispBoolean PatternClass::Matches(LispEnvironment& aEnvironment,
                                   LispPtr& aArguments)
 {
-    LISPASSERT(iPatternMatcher != NULL);
+    LISPASSERT(iPatternMatcher);
     LispBoolean result;
     result = iPatternMatcher->Matches(aEnvironment, aArguments);
     return result;
@@ -34,7 +34,7 @@ LispBoolean PatternClass::Matches(LispEnvironment& aEnvironment,
 LispBoolean PatternClass::Matches(LispEnvironment& aEnvironment,
                                   LispPtr* aArguments)
 {
-    LISPASSERT(iPatternMatcher != NULL);
+    LISPASSERT(iPatternMatcher);
     LispBoolean result;
     result = iPatternMatcher->Matches(aEnvironment, aArguments);
     return result;

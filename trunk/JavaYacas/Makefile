@@ -38,10 +38,10 @@ pkglibdir = $(libdir)/yacas
 pkgincludedir = $(includedir)/yacas
 top_builddir = ..
 
-ACLOCAL = aclocal-1.6
-AUTOCONF = autoconf
-AUTOMAKE = automake-1.6
-AUTOHEADER = autoheader
+ACLOCAL = ${SHELL} /Users/ayalpinkus/projects/temp/temp/patched/yacas/missing --run aclocal-1.6
+AUTOCONF = ${SHELL} /Users/ayalpinkus/projects/temp/temp/patched/yacas/missing --run autoconf
+AUTOMAKE = ${SHELL} /Users/ayalpinkus/projects/temp/temp/patched/yacas/missing --run automake-1.6
+AUTOHEADER = ${SHELL} /Users/ayalpinkus/projects/temp/temp/patched/yacas/missing --run autoheader
 
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 INSTALL = /usr/bin/install -c
@@ -60,12 +60,12 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = 
-host_triplet = powerpc-apple-darwin8.3.0
+host_triplet = powerpc-apple-darwin8.5.0
 
 EXEEXT = 
 OBJEXT = o
 PATH_SEPARATOR = :
-AMTAR = tar
+AMTAR = ${SHELL} /Users/ayalpinkus/projects/temp/temp/patched/yacas/missing --run tar
 AR = ar
 AS = @AS@
 AWK = awk
@@ -122,7 +122,7 @@ have_makeindex = yes
 have_pdflatex = yes
 have_perl = yes
 htmldir = ${prefix}/share/yacas//documentation/
-install_sh = /Users/ayalpinkus/projects/yacas/install-sh
+install_sh = /Users/ayalpinkus/projects/temp/temp/patched/yacas/install-sh
 psdir = ${prefix}/share/yacas//documentation/
 scriptdir = ${prefix}/share/yacas/
 

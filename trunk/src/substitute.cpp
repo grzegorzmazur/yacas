@@ -14,30 +14,28 @@ SubstBehaviourBase::~SubstBehaviourBase()
 void InternalSubstitute(LispPtr& aTarget, LispPtr& aSource,
                         SubstBehaviourBase& aBehaviour)
 {
-    LispObject* object = aSource.Get();
-    LISPASSERT(object != NULL);
+    LispObject* object = aSource;
+    LISPASSERT(object);
     if (!aBehaviour.Matches(aTarget,aSource))
     {
         LispPtr* oldList = object->SubList();
-        if (oldList != NULL)
+        if (oldList)
         {
             LispPtr newList;
             LispPtr* next = &newList;
-            while (oldList->Get() != NULL)
+            while (!!(*oldList))
             {
                 InternalSubstitute(*next, *oldList, aBehaviour);
-                oldList = &oldList->Get()->Next();
-                next = &next->Get()->Next();
+                oldList = &(*oldList)->Nixed();
+                next = &(*next)->Nixed();
             }
 
-            aTarget.Set(LispSubList::New(newList.Get()));
-#ifdef YACAS_DEBUG
-            aTarget.Get()->SetFileAndLine(object->iFileName,object->iLine);
-#endif
+            aTarget = (LispSubList::New(newList));
+            DBG_( aTarget->SetFileAndLine(object->iFileName,object->iLine); )
         }
         else
         {
-            aTarget.Set(object->Copy(LispFalse));
+            aTarget = (object->Copy());
         }
     }
 }
@@ -54,22 +52,22 @@ LispBoolean SubstBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 {
     if (InternalEquals(iEnvironment, aElement, iToMatch))
     {
-        aResult.Set(iToReplaceWith.Get()->Copy(LispFalse));
+        aResult = (iToReplaceWith->Copy());
         return LispTrue;
     }
     return LispFalse;
 }
 
-LocalSymbolBehaviour::LocalSymbolBehaviour(LispEnvironment& aEnvironment,LispStringPtr* aOriginalNames,
-                     LispStringPtr* aNewNames, LispInt aNrNames)
+LocalSymbolBehaviour::LocalSymbolBehaviour(LispEnvironment& aEnvironment,LispString ** aOriginalNames,
+                     LispString ** aNewNames, LispInt aNrNames)
 : iEnvironment(aEnvironment),iOriginalNames(aOriginalNames),iNewNames(aNewNames), iNrNames(aNrNames)
 {
 }
 
 LispBoolean LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 {
-    LispStringPtr name = aElement.Get()->String();
-    if (name == NULL)
+    LispString * name = aElement->String();
+    if (!name)
         return LispFalse;
 
     LispInt i;
@@ -77,10 +75,8 @@ LispBoolean LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
     {
         if (name == iOriginalNames[i])
         {
-            aResult.Set(LispAtom::New(iEnvironment,iNewNames[i]->String()));
-#ifdef YACAS_DEBUG
-            aResult.Get()->SetFileAndLine(aElement.Get()->iFileName,aElement.Get()->iLine);
-#endif
+            aResult = (LispAtom::New(iEnvironment,iNewNames[i]->c_str()));
+            DBG_( aResult->SetFileAndLine(aElement->iFileName,aElement->iLine); )
             return LispTrue;
         }
     }
@@ -91,50 +87,43 @@ LispBoolean LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 
 LispBoolean BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 {
-    if (!aElement.Get()->SubList()) return LispFalse;
-    LispObject* ptr = aElement.Get()->SubList()->Get();
+    if (!aElement->SubList()) return LispFalse;
+    LispObject* ptr = (*aElement->SubList());
     if (!ptr) return LispFalse;
     if (!ptr->String()) return LispFalse;
 
-    if (StrEqual("`", ptr->String()->String())) 
+    if (StrEqual("`", ptr->String()->c_str())) 
     {
-      aResult.Set(aElement.Get());
+      aResult = (aElement);
       return LispTrue;
     }
 
-    if (!StrEqual("@", ptr->String()->String())) return LispFalse;
-    ptr = ptr->Next().Get();
+    if (!StrEqual("@", ptr->String()->c_str())) return LispFalse;
+    ptr = ptr->Nixed();
     if (!ptr) return LispFalse;
     if (ptr->String())
     {
-        LispPtr cur;
-        cur.Set(ptr);
+        LispPtr cur(ptr);
 /*
         LispPtr result;
         InternalEval(iEnvironment, result, cur);
         InternalSubstitute(aResult, result,*this);
 */
-
         InternalEval(iEnvironment, aResult, cur);
-
         return LispTrue;
     }
     else
     {
-        ptr = ptr->SubList()->Get();
-        LispPtr cur;
-        cur.Set(ptr);
-        LispPtr args;
-        args.Set(ptr->Next().Get());
+        ptr = (*ptr->SubList());
+        LispPtr cur(ptr);
+        LispPtr args(ptr->Nixed());
         LispPtr result;
         InternalEval(iEnvironment, result, cur);
-        result.Get()->Next().Set(args.Get());
-        LispPtr result2;
-        result2.Set(LispSubList::New(result.Get()));
+        result->Nixed() = (args);
+        LispPtr result2(LispSubList::New(result));
         InternalSubstitute(aResult, result2,*this);
         return LispTrue;
     }
     return LispFalse;
 }
-
 

@@ -32,7 +32,7 @@ BigNumber::~BigNumber()
 }
 
 // construct from string
-BigNumber::BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+BigNumber::BigNumber(const LispChar * aString,LispInt aPrecision,LispInt aBase)
 {
 	// iPrecision is going to be set in SetTo
 	init();
@@ -69,7 +69,7 @@ void BigNumber::SetTo(const BigNumber& aOther)
 }
 
 // assign from string, result is always a float type
-void BigNumber::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+void BigNumber::SetTo(const LispChar * aString,LispInt aPrecision,LispInt aBase)
 {
   if (aBase<2 || aBase>32)
   {
@@ -156,14 +156,14 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 	
     // the size needed to print the exponent cannot be more than 200 chars since we refuse to print exp-floats
     size += 200;
-    LispCharPtr buffer=(LispCharPtr)malloc(size);
+    LispChar * buffer=(LispChar *)malloc(size);
     if (!buffer)
     {
 	    RaiseError("BigNumber::ToString: out of memory, need %ld chars\n", size);
 	    return;
     }
-    LispCharPtr offset = buffer;
-	LispCharPtr end_of_buffer = buffer+size-1;
+    LispChar * offset = buffer;
+	LispChar * end_of_buffer = buffer+size-1;
     if (Sign()==0)
     {    // according to the latest revelations, the floating-point zero must be printed as "0."
 	    strcpy(offset, "0."); // end of string is here too
@@ -263,7 +263,7 @@ double BigNumber::Double() const
 }
 
 /// get library name
-const LispCharPtr BigNumber::NumericLibraryName()
+const LispChar * BigNumber::NumericLibraryName()
 {
 	return BigInt::NumericLibraryName();
 }

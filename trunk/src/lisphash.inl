@@ -7,7 +7,7 @@ template<class T>
 class LAssoc : public YacasBase
 {
 public:
-    inline LAssoc(LispStringPtr aString,const T& aData);
+    inline LAssoc(LispString * aString,const T& aData);
     inline ~LAssoc();
     LispStringSmartPtr iString;
     T iData;
@@ -16,34 +16,35 @@ private: //Functions no one is allowed to use
     inline LAssoc& operator=(const LAssoc& aOther);
 };
 template<class T>
-inline LAssoc<T>::LAssoc(LispStringPtr aString,const T& aData)
+inline LAssoc<T>::LAssoc(LispString * aString,const T& aData)
 : iData(aData)
 {
-    LISPASSERT(aString != NULL);
-    iString.Set(aString);
+    LISPASSERT(aString);
+    iString = (aString);
 }
 
 template<class T>
 inline LAssoc<T>::~LAssoc()
 {
-   iString.Set(NULL);
+   iString = (NULL);
 }
 
 
 #define LH  LispHashPtr(aString) // LispHash(aString->String())
 
 template<class T>
-inline T* LispAssociatedHash<T>::LookUp(LispStringPtr aString)
+inline T* LispAssociatedHash<T>::LookUp(LispString * aString)
 {
     LispInt bin = LH;
 
     LispInt i=0;
     // Find existing version of string
-    for (i = iHashTable[bin].NrItems()-1 ; i >= 0 ; i --)
+    for (i = iHashTable[bin].Size()-1 ; i >= 0 ; i --)
     {
+		// TODO: woof -- why a ref?
         LispStringSmartPtr &ptr = (((LAssoc<T>*)iHashTable[bin][i])->iString);
-        if (ptr() == aString)
-        {
+        if (ptr == aString)
+		{
             return &((LAssoc<T>*)iHashTable[bin][i])->iData;
         }
     }
@@ -51,16 +52,17 @@ inline T* LispAssociatedHash<T>::LookUp(LispStringPtr aString)
 }
 
 template<class T>
-inline void LispAssociatedHash<T>::SetAssociation(const T& aData, LispStringPtr aString)
+inline void LispAssociatedHash<T>::SetAssociation(const T& aData, LispString * aString)
 {
     LispInt bin = LH;
     LispInt i;
     
     // Find existing version of string
-    for (i=0;i<iHashTable[bin].NrItems();i++)
+    for (i=0;i<iHashTable[bin].Size();i++)
     {
+		// TODO: woof -- why a ref?
         LispStringSmartPtr &ptr = (((LAssoc<T>*)iHashTable[bin][i])->iString);
-        if (ptr() == aString)
+        if (ptr == aString)
         {
             //change existing version of association
             ((LAssoc<T>*)iHashTable[bin][i])->iData = aData;
@@ -74,16 +76,17 @@ inline void LispAssociatedHash<T>::SetAssociation(const T& aData, LispStringPtr 
 }
 
 template<class T>
-inline void LispAssociatedHash<T>::Release(LispStringPtr aString)
+inline void LispAssociatedHash<T>::Release(LispString * aString)
 {
     LispInt bin = LH;
     LispInt i;
     
     // Find existing version of string
-    for (i=0;i<iHashTable[bin].NrItems();i++)
+    for (i=0;i<iHashTable[bin].Size();i++)
     {
+		// TODO: woof -- why a ref?
         LispStringSmartPtr &ptr = (((LAssoc<T>*)iHashTable[bin][i])->iString);
-        if (ptr() == aString)
+        if (ptr == aString)
         {
             //change existing version of association
             delete ((LAssoc<T>*)iHashTable[bin][i]);
@@ -102,7 +105,7 @@ inline LispAssociatedHash<T>::~LispAssociatedHash()
     for (bin=0;bin<KSymTableSize;bin++)
     {
         LispInt j;
-        LispInt nritems = iHashTable[bin].NrItems();
+        LispInt nritems = iHashTable[bin].Size();
         for (j=0;j<nritems;j++)
         {
             delete ((LAssoc<T>*)iHashTable[bin][j]);

@@ -40,7 +40,7 @@ static void FlGraphStart(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 /*TODO remove?
     graphEnvironment = &aEnvironment;
-    graph.Set(ARGUMENT(1).Get());
+    graph = (ARGUMENT(1));
     extern Fl_Tabs* mainTabs;
     extern Fl_Group* grapher;
     mainTabs->value(grapher);

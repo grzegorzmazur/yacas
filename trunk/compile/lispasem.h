@@ -41,7 +41,7 @@ inline void shst(char* name)
 //    printf("%s = %d\n",name,(int)(stackCurrent-stack));
 }
 #define  PROLOG()   { shst("ENTER"); LispLocalFrame frame(aEnvironment,LispFalse); LispPtr* bottom=stackCurrent;
-#define  EPILOG()   shst("LEAVE"); while (stackCurrent != bottom) {stackCurrent--; stackCurrent->Set(NULL);} }
+#define  EPILOG()   shst("LEAVE"); while (stackCurrent != bottom) {stackCurrent--; (*stackCurrent) = (NULL);} }
 
 // Stack manipulation
 #define  VAR(_n)    (*(bottom[_n]))
@@ -50,24 +50,24 @@ inline void shst(char* name)
 #define  PUSH()     stackCurrent++;
 #define  POP()      MakePop()
 // means pop and then push, which sets top of stack to null pointer
-#define  CLEAR(_n) bottom[_n]->Set(NULL);
+#define  CLEAR(_n) (*bottom[_n]) = (NULL);
 
 
 #define  EVALUATE(_trg,_src) MakeEval(aEnvironment,_trg, _src)
 #define  B_ISTRUE(_e)  IsTrue(_e)
 
-inline LispObject* Object(const LispPtr& aObj) {return aObj.Get();}
-inline LispObject* Object(const LispPtr* aObj) {return aObj->Get();}
+inline LispObject* Object(const LispPtr& aObj) {return aObj;}
+inline LispObject* Object(const LispPtr* aObj) {return (*aObj);}
 inline LispObject* Object(const LispObjectAdder& aObj) {return aObj.iPtr;}
 inline LispObject* Object(const LispObjectAdder* aObj) {return aObj->iPtr;}
 
 // Setting values
-#define  SET(_trg,_src)      _trg.Set(Object(_src));
-#define  COPY(_trg,_src)     _trg.Set(_src.Get());
+#define  SET(_trg,_src)      _trg = (Object(_src));
+#define  COPY(_trg,_src)     _trg = (_src);
 #define  SETTRUE(_trg)       InternalTrue(aEnvironment, _trg)
 #define  SETFALSE(_trg)      InternalFalse(aEnvironment, _trg)
 
-#define  SETVAR(_var,_src)   aEnvironment.SetVariable(_var.Get()->String(), _src)
+#define  SETVAR(_var,_src)   aEnvironment.SetVariable(_var->String(), _src)
 #define  SETVARSTR(_var,_src)   aEnvironment.SetVariable(aEnvironment.HashTable().LookUp(_var), _src)
 #define LOCAL(_s)   MakeLocal(aEnvironment, _s)
 

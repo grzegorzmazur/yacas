@@ -14,7 +14,6 @@
   #include <stdarg.h>
 #endif
 
-
 #define InternalEval aEnvironment.iEvaluator->Eval
 
 
@@ -25,67 +24,37 @@ void ShowStack(LispEnvironment& aEnvironment)
 }
 
 
-
+namespace {
 void ShowFunctionError(LispPtr& aArguments,
                        LispEnvironment& aEnvironment)
 {
-  if (aArguments.Get() == NULL)
+  if (!aArguments)
   {
     aEnvironment.iErrorOutput.Write("Error in compiled code\n");
   }
   else
   {
-    LispStringPtr string = aArguments.Get()->String();
+    LispString * string = aArguments->String();
     if (string)
     {
       aEnvironment.iErrorOutput.Write("In function \"");
-      aEnvironment.iErrorOutput.Write(string->String());
+      aEnvironment.iErrorOutput.Write(string->c_str());
       aEnvironment.iErrorOutput.Write("\" : \n");
     }
   }
 }
+}	// end of namespace
 
 void CheckNrArgs(LispInt n, LispPtr& aArguments,
                  LispEnvironment& aEnvironment)
 {
     LispInt nrArguments = InternalListLength(aArguments);
-    if (nrArguments != n)
-    {
-        ErrorNrArgs(n-1, nrArguments-1, aArguments, aEnvironment);
-    }
-}
+    if (nrArguments == n) return;
+	
+	LispInt needed = n-1;
+	LispInt passed = nrArguments-1;
 
-void ErrorNrArgs(LispInt needed, LispInt passed, LispPtr& aArguments,
-                 LispEnvironment& aEnvironment)
-{
-  if (aArguments.Get() == NULL)
-  {
-    aEnvironment.iErrorOutput.Write("Error in compiled code\n");
-  }
-  else
-  {
-    ShowStack(aEnvironment);
-    ShowFunctionError(aArguments, aEnvironment);
-
-    LispChar str[20];
-    aEnvironment.iErrorOutput.Write("expected ");
-    InternalIntToAscii(str,needed);
-    aEnvironment.iErrorOutput.Write(str);
-    aEnvironment.iErrorOutput.Write(" arguments, got ");
-    InternalIntToAscii(str,passed);
-    aEnvironment.iErrorOutput.Write(str);
-    aEnvironment.iErrorOutput.Write("\n");
-    Check(passed == needed,KLispErrWrongNumberOfArgs);
-  }
-}
-
-
-void CheckFuncGeneric(LispInt aPredicate,LispInt aError,LispPtr& aArguments,
-                      LispEnvironment& aEnvironment)
-{
-  if (!aPredicate)
-  {
-    if (aArguments.Get() == NULL)
+	if (!aArguments)
     {
       aEnvironment.iErrorOutput.Write("Error in compiled code\n");
     }
@@ -93,87 +62,91 @@ void CheckFuncGeneric(LispInt aPredicate,LispInt aError,LispPtr& aArguments,
     {
       ShowStack(aEnvironment);
       ShowFunctionError(aArguments, aEnvironment);
-      Check(aPredicate,aError);
+
+      LispChar str[20];
+      aEnvironment.iErrorOutput.Write("expected ");
+      InternalIntToAscii(str,needed);
+      aEnvironment.iErrorOutput.Write(str);
+      aEnvironment.iErrorOutput.Write(" arguments, got ");
+      InternalIntToAscii(str,passed);
+      aEnvironment.iErrorOutput.Write(str);
+      aEnvironment.iErrorOutput.Write("\n");
+      Check(passed == needed,KLispErrWrongNumberOfArgs);
     }
-  }
 }
-void CheckFuncGeneric(LispInt aPredicate,LispInt aError,
+
+
+void CheckFuncGeneric(LispInt aError,LispPtr& aArguments,
                       LispEnvironment& aEnvironment)
 {
-  if (!aPredicate)
-  {
-    ShowStack(aEnvironment);
-    Check(aPredicate,aError);
-  }
+    if (!aArguments)
+    {
+      aEnvironment.iErrorOutput.Write("Error in compiled code\n");
+    }
+    else
+    {
+      ShowStack(aEnvironment);
+      ShowFunctionError(aArguments, aEnvironment);
+      Check(0,aError);
+    }
 }
 
-/*TODO remove??? */
-void CheckArgType(LispInt aPredicate, LispInt aArgNr, LispPtr& aArguments,
-                  LispEnvironment& aEnvironment)
+void CheckFuncGeneric(LispInt aError,
+                      LispEnvironment& aEnvironment)
 {
-    CheckArgType(aPredicate, aArgNr, aArguments,
-                 aEnvironment, KLispErrInvalidArg);
+    ShowStack(aEnvironment);
+    Check(0,aError);
 }
-/* */
 
-void CheckArgType(LispInt aPredicate, LispInt aArgNr, LispPtr& aArguments,LispEnvironment& aEnvironment,
+void CheckArgType(LispInt aArgNr, LispPtr& aArguments,LispEnvironment& aEnvironment,
                   LispInt aError)
 {
-    if (!aPredicate)
+	if (!aArguments)
     {
-        if (aArguments.Get() == NULL)
-        {
-          aEnvironment.iErrorOutput.Write("Error in compiled code\n");
-        }
-        else
-        {
-          ShowStack(aEnvironment);
-          ShowFunctionError(aArguments, aEnvironment);
+        aEnvironment.iErrorOutput.Write("Error in compiled code\n");
+    }
+    else
+    {
+        ShowStack(aEnvironment);
+        ShowFunctionError(aArguments, aEnvironment);
   
-          aEnvironment.iErrorOutput.Write("bad argument number ");
-          LispChar str[20];
-          InternalIntToAscii(str,aArgNr);
-          aEnvironment.iErrorOutput.Write(str);
-          aEnvironment.iErrorOutput.Write(" (counting from 1)\n");
+        aEnvironment.iErrorOutput.Write("bad argument number ");
+        LispChar str[20];
+        InternalIntToAscii(str,aArgNr);
+        aEnvironment.iErrorOutput.Write(str);
+        aEnvironment.iErrorOutput.Write(" (counting from 1)\n");
   
   #define LIM_AL 60
-          LispPtr& arg = Argument(aArguments,aArgNr);
-          LispString strout;
+        LispPtr& arg = Argument(aArguments,aArgNr);
+        LispString strout;
   
-          aEnvironment.iErrorOutput.Write("The offending argument ");
-          PrintExpression(strout, arg, aEnvironment, LIM_AL);
-          aEnvironment.iErrorOutput.Write(strout.String());
+        aEnvironment.iErrorOutput.Write("The offending argument ");
+        PrintExpression(strout, arg, aEnvironment, LIM_AL);
+        aEnvironment.iErrorOutput.Write(strout.c_str());
   //        aEnvironment.iErrorOutput.Write("\n");
   
   //        aEnvironment.iErrorOutput.Write("Argument ");
   //        PrintExpression(strout, arg, aEnvironment, LIM_AL);
   //        aEnvironment.iErrorOutput.Write(strout.String());
   
-          LispPtr eval;
-          InternalEval(aEnvironment, eval, arg);
-          aEnvironment.iErrorOutput.Write(" evaluated to ");
-          PrintExpression(strout, eval, aEnvironment, LIM_AL);
-          aEnvironment.iErrorOutput.Write(strout.String());
-          aEnvironment.iErrorOutput.Write("\n");
-  
-#ifdef YACAS_DEBUG
-          printf("Problem occurred at %s(%d)\n",
-                aArguments.Get()->iFileName,
-                aArguments.Get()->iLine
-                );
-#endif
-        }        
-        Check(aPredicate,aError);
+        LispPtr eval;
+        InternalEval(aEnvironment, eval, arg);
+        aEnvironment.iErrorOutput.Write(" evaluated to ");
+        PrintExpression(strout, eval, aEnvironment, LIM_AL);
+        aEnvironment.iErrorOutput.Write(strout.c_str());
+        aEnvironment.iErrorOutput.Write("\n");
+
+        DBG_( printf("Problem occurred at %s(%d)\n",
+			aArguments->iFileName,
+			aArguments->iLine ); )
     }
+    Check(0,aError);
 }
 
-
-
-
-char theGenericErrorBuf[512];
 char *GenericErrorBuf()
 {
-  return theGenericErrorBuf;
+   static char theGenericErrorBuf[512];
+   return theGenericErrorBuf;
 }
 
 void RaiseError(char* str,...)
@@ -182,14 +155,14 @@ void RaiseError(char* str,...)
   va_list arg;
   va_start (arg, str);
  #ifdef HAVE_VSNPRINTF
-  vsnprintf (theGenericErrorBuf, 500, str, arg);
+  vsnprintf (GenericErrorBuf(), 500, str, arg);
  #else
   /* Just cross fingers and hope the buffer is large enough */
-  vsprintf (theGenericErrorBuf, str, arg);
+  vsprintf (GenericErrorBuf(), str, arg);
  #endif  
   va_end (arg);
 #else
-  PlatMemCopy(theGenericErrorBuf, str, PlatStrLen(str));
+  PlatMemCopy(GenericErrorBuf(), str, PlatStrLen(str));
 #endif
   Check(LispFalse,KLispErrGenericFormat);
 }

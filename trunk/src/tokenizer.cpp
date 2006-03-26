@@ -48,7 +48,7 @@ LispBoolean IsSymbolic(LispChar c)
     return 0;
 }
 
-LispStringPtr LispTokenizer::NextToken(LispInput& aInput,
+LispString * LispTokenizer::NextToken(LispInput& aInput,
                                        LispHashTable& aHashTable)
 {
     LispChar c;
@@ -106,7 +106,7 @@ REDO:
     else if (c == '\"')
     {
         LispString aResult;
-        aResult.SetNrItems(0);
+        aResult.Resize(0);
         aResult.Append(c);
         while (aInput.Peek() != '\"')
         {
@@ -120,7 +120,7 @@ REDO:
         }
         aResult.Append(aInput.Next()); // consume the close quote
         aResult.Append('\0');
-        return aHashTable.LookUp(aResult.String());
+        return aHashTable.LookUp(aResult.c_str());
     }
     //parse atoms
     else if (IsAlpha(c))
@@ -179,7 +179,7 @@ FINISH:
 /*TODO the ugly thing here is this routine is a copy-and-tweak
  of the default tokenizer.
  */
-LispStringPtr CommonLispTokenizer::NextToken(LispInput& aInput,
+LispString * CommonLispTokenizer::NextToken(LispInput& aInput,
                                LispHashTable& aHashTable)
 {
     LispChar c;
@@ -236,7 +236,7 @@ REDO:
     else if (c == '\"')
     {
         LispString aResult;
-        aResult.SetNrItems(0);
+        aResult.Resize(0);
         aResult.Append(c);
         while (aInput.Peek() != '\"')
         {
@@ -250,7 +250,7 @@ REDO:
         }
         aResult.Append(aInput.Next()); // consume the close quote
         aResult.Append('\0');
-        return aHashTable.LookUp(aResult.String());
+        return aHashTable.LookUp(aResult.c_str());
     }
     //parse atoms
     else if (IsAlpha(c) || IsSymbolic(c))

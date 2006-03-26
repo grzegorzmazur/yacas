@@ -11,13 +11,30 @@ void ForthStack::Push(const ForthValue& aValue)
     Append(aValue);
 }
 
+#if HAS_NEW_ForthStackPop == 0
 const ForthValue& ForthStack::Pop(void)
 {
-    const ForthValue& v = Item(NrItems()-1);
+	// works, but I don't like it.
+	// after the Resize, v might no longer reference the element?
+    const ForthValue& v = elements()[Size()-1];
     //TODO optimize?
-    SetNrItems(NrItems()-1);
+    Resize(Size()-1);
     return v;
 }
+#else
+double ForthStack::PopDouble(void)
+{
+	double v = elements()[Size()-1].u.d;
+	Resize(Size()-1);
+	return v;
+}
+int ForthStack::PopInt(void)
+{
+	int v = elements()[Size()-1].u.i;
+	Resize(Size()-1);
+	return v;
+}
+#endif
 
 void ForthInterpreter::Run(LispInt method)
 {
@@ -55,21 +72,21 @@ void push_int(ForthInterpreter& aInterpreter)
 void double_add_double(ForthInterpreter& aInterpreter)
 {
     stack_push_double(aInterpreter,
-                      aInterpreter.Stack().Pop().u.d+
-                      aInterpreter.Stack().Pop().u.d);
+                      aInterpreter.Stack().PopDouble()+
+                      aInterpreter.Stack().PopDouble());
 }
 
 void int_add_int(ForthInterpreter& aInterpreter)
 {
     stack_push_int(aInterpreter,
-                   aInterpreter.Stack().Pop().u.i+
-                   aInterpreter.Stack().Pop().u.i);
+                   aInterpreter.Stack().PopInt()+
+                   aInterpreter.Stack().PopInt());
 }
 
 
 void int_to_double(ForthInterpreter& aInterpreter)
 {
-    stack_push_double(aInterpreter,aInterpreter.Stack().Pop().u.i);
+    stack_push_double(aInterpreter,aInterpreter.Stack().PopInt());
 }
 
 

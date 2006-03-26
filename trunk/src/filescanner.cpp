@@ -36,7 +36,7 @@ CFileNode* CFileScanner::First(char* base,char* dir)
 #ifdef _GCC_BUILD_
     if (dp) closedir(dp);
     dp = opendir(fulldir);
-    if (dp == NULL) return NULL;
+    if (!dp) return NULL;
 #endif
     return Next();
 }
@@ -70,10 +70,10 @@ REDO:
 
 
 #ifdef _GCC_BUILD_
-    if (dp == NULL) return NULL;
+    if (!dp) return NULL;
 REDO:
     entry = readdir(dp);
-    if (entry == NULL)
+    if (!entry)
     {
         closedir(dp);
         dp = NULL;

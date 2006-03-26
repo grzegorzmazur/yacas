@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
-#include <iostream.h>
+#include <iostream>
 
 int verbose_debug=0; //linkage
 
@@ -45,9 +45,9 @@ char* Message(char* str,...)
 // compare a given LispString value to a given character string and print diagnostic
 void CheckL(int line, LispString& str, const char* s, const char* test_description)
 {
-    if (strcmp(str.String(),s))
+    if (strcmp(str.c_str(),s))
     {
-        printf("@@@@@@@ (line %d) %s: failed: %s != %s\n",line, test_description, str.String(),s);
+        printf("@@@@@@@ (line %d) %s: failed: %s != %s\n",line, test_description, str.c_str(), s);
 		++failed;
     }
     else
@@ -110,7 +110,7 @@ void CheckEqualsL(int line,const BigNumber& x1, const BigNumber& x2, LispInt pre
     LispString str1, str2;
     x1.ToString(str1, precision, base);
     x2.ToString(str2, precision, base);
-    CheckL(line, str1, str2.String(), test_description);
+    CheckL(line, str1, str2.c_str(), test_description);
 }
 
 // print a progress message
@@ -404,7 +404,7 @@ void test_string2string(const char* test_string, LispInt precision=0, LispInt ba
   //  Check(x.GetPrecision()>3*strlen(test_string), Message("for string %s, precision of x is %d and must be at least %d", test_string, x.GetPrecision(), 3*strlen(test_string)));	// this is actually incorrect but helps debugging
   
   x.ToString(str,200,base); // Request it back with high precision
-  Check(!strcmp(test_string,str.String()),Message("String rep. %s != %s",test_string,str.String()));	
+  Check(!strcmp(test_string,str.c_str()),Message("String rep. %s != %s",test_string,str.c_str()));	
 }
 
 
@@ -1065,9 +1065,9 @@ int main(void)
 {
   LispString str;
   x.ToString(str,100,10);
-  printf("x = %s (should be 15.)\n",str.String());
+  printf("x = %s (should be 15.)\n",str.c_str());
   y.ToString(str,100,10);
-  printf("y = %s (should be 4.)\n",str.String());
+  printf("y = %s (should be 4.)\n",str.c_str());
 }
 
 	z.Divide(x,y,10);

@@ -4,8 +4,8 @@ inline LispBoolean LispDefFile::IsLoaded()
     return iIsLoaded;
 }
 
-inline LispStringPtr LispDefFile::FileName()
+inline LispString * LispDefFile::FileName()
 {
-    return iFileName();
+	return iFileName;
 }
 

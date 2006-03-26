@@ -10,7 +10,7 @@
 
 # This variable can be overriden; eg. to only run complex.yts,
 # do 'make TESTFILES=complex.yts check'.
-  
+
 NORMAL_TESTFILES = \
 	openmath.yts macro.yts arithmetic.yts c_tex_form.yts calculus.yts canprove.yts \
 	comments.yts complex.yts deriv.yts dimensions.yts dot.yts \
@@ -25,6 +25,7 @@ NORMAL_TESTFILES = \
 SPECIAL_TESTFILES = ../manmake/wester-1994.ys
 
 TESTFILES = $(NORMAL_TESTFILES) $(SPECIAL_TESTFILES)
+QUICKTESTFILES = simplify.yts sturm.yts
 
 # To run the version of yacas in the build tree
 BUILT_YACAS = ../src/yacas -pc --rootdir $(top_srcdir)/scripts/:../scripts/ --dlldir ../plugins/example:../src/ 
@@ -34,8 +35,13 @@ INSTALLED_YACAS = $(bindir)/yacas -pc
 
 EXTRA_DIST = test.bat _do_test.bat test-yacas $(NORMAL_TESTFILES)
 
+.PHONY : quicktest
+
+quicktest:
+	@$(srcdir)/test-yacas "$(BUILT_YACAS)" $(srcdir) $(QUICKTESTFILES)
+
 check-am: 
-	@$(srcdir)/test-yacas $(BUILT_YACAS) \; $(srcdir) $(TESTFILES)
+	@$(srcdir)/test-yacas "$(BUILT_YACAS)" $(srcdir) $(TESTFILES)
 
 installcheck-am: 
-	@$(srcdir)/test-yacas $(INSTALLED_YACAS) \; $(srcdir) $(TESTFILES)
+	@$(srcdir)/test-yacas "$(INSTALLED_YACAS)" $(srcdir) $(TESTFILES)

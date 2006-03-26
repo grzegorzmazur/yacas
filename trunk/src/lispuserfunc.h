@@ -22,7 +22,7 @@ public:
     virtual ~LispUserFunction();
     virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
                   LispPtr& aArguments)=0;
-    virtual void HoldArgument(LispStringPtr aVariable) = 0;
+    virtual void HoldArgument(LispString * aVariable) = 0;
     virtual void DeclareRule(LispInt aPrecedence, LispPtr& aPredicate,
                              LispPtr& aBody) = 0;
     virtual void DeclareRule(LispInt aPrecedence, LispPtr& aBody) = 0;
@@ -77,7 +77,7 @@ public:
     virtual ~LispMultiUserFunction();
 
     /// Specify that some argument should be held.
-    virtual void HoldArgument(LispStringPtr aVariable);
+    virtual void HoldArgument(LispString * aVariable);
 
     /// Add another LispArityUserFunction to #iFunctions.
     virtual void DefineRuleBase(LispArityUserFunction* aNewFunction);

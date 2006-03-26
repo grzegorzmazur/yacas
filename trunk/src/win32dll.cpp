@@ -9,7 +9,7 @@
 #include "lispassert.h"
 #include "platdll.h"
 
-LispInt Win32Dll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
+LispInt Win32Dll::Open(LispChar * aDllFile,LispEnvironment& aEnvironment)
 {
     iDllFileName = aDllFile;
     handle = LoadLibrary(aDllFile);
@@ -22,7 +22,7 @@ LispInt Win32Dll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
             iPlugin->Add(aEnvironment);
         }
     }
-    return (handle != NULL && iPlugin != NULL);
+    return (handle && iPlugin);
 }
 
 LispInt Win32Dll::Close(LispEnvironment& aEnvironment)
@@ -41,14 +41,14 @@ Win32Dll::~Win32Dll()
 {
     if (handle)
     {
-        LISPASSERT(iPlugin == NULL);
+        LISPASSERT(!iPlugin);
         FreeLibrary((HMODULE) handle);
     }
     handle = NULL;
 }
-LispPluginBase* Win32Dll::GetPlugin(LispCharPtr aDllFile)
+LispPluginBase* Win32Dll::GetPlugin(LispChar * aDllFile)
 {
-    LISPASSERT(handle != NULL);
+    LISPASSERT(handle);
     LispPluginBase* (*maker)(void);
     char buf[1024];
     //TODO potential buffer overflow!

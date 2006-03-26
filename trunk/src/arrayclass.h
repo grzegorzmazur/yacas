@@ -11,11 +11,11 @@ class ArrayClass : public GenericClass
 public: //required
     ArrayClass(LispInt aSize,LispObject* aInitialItem);
     virtual ~ArrayClass();
-    virtual LispCharPtr Send(LispArgList& aArgList);
-    virtual LispCharPtr TypeName();
+    virtual LispChar * Send(LispArgList& aArgList);
+    virtual LispChar * TypeName();
 public: //array-specific
     inline LispInt Size();
-    inline LispObject* GetElement(LispInt aItem);
+    inline LispObject* GetElement(LispInt aItem);	// TODO: 1-based, ...
     inline void SetElement(LispInt aItem,LispObject* aObject);
 
 private:

@@ -155,7 +155,7 @@ message = (errcode >= (int)(sizeof(pstring)/sizeof(char *)))?
 length = strlen(message) + 1;
 
 addmessage = " at offset ";
-addlength = (preg != NULL && (int)preg->re_erroffset != -1)?
+addlength = (preg && (int)preg->re_erroffset != -1)?
   strlen(addmessage) + 6 : 0;
 
 if (errbuf_size > 0)
@@ -215,7 +215,7 @@ if ((cflags & REG_NEWLINE) != 0) options |= PCRE_MULTILINE;
 preg->re_pcre = pcre_compile(pattern, options, &errorptr, &erroffset, NULL);
 preg->re_erroffset = erroffset;
 
-if (preg->re_pcre == NULL) return pcre_posix_error_code(errorptr);
+if (!preg->re_pcre) return pcre_posix_error_code(errorptr);
 
 preg->re_nsub = pcre_info(preg->re_pcre, NULL, NULL);
 return 0;
@@ -259,7 +259,7 @@ if (nmatch > 0)
   else
     {
     ovector = (int *)malloc(sizeof(int) * nmatch * 3);
-    if (ovector == NULL) return REG_ESPACE;
+    if (!ovector) return REG_ESPACE;
     allocated_ovector = TRUE;
     }
   }

@@ -57,16 +57,14 @@ BranchingUserFunction::BranchPattern::~BranchPattern()
 BranchingUserFunction::BranchingUserFunction(LispPtr& aParameters)
     
 {
-    iParamList.Set(aParameters.Get());
+    iParamList = (aParameters);
 
     LispIterator iter(aParameters);
-
-    while (iter())
-    {
-        Check(iter()->String() != NULL,KLispErrCreatingUserFunction);
-        BranchParameter param(iter()->String());
+    for ( ; iter.getObj(); ++iter)
+	{
+        Check(iter.getObj()->String(),KLispErrCreatingUserFunction);
+        BranchParameter param(iter.getObj()->String());
         iParameters.Append(param);
-        iter.GoNext();
     }
 }
 
@@ -83,14 +81,13 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     //hier
     if (Traced())
     {
-        LispPtr tr;
-        tr.Set(LispSubList::New(aArguments.Get()));
+        LispPtr tr(LispSubList::New(aArguments));
         TraceShowEnter(aEnvironment,tr);
-        tr.Set(NULL);
+        tr = (NULL);
     }
 
     LispIterator iter(aArguments);
-    iter.GoNext();
+    ++iter;
 
     // unrollable arguments 
     LispPtr* arguments;
@@ -99,38 +96,33 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     else
     {
         LISPASSERT(arity>0);
-        arguments = NEW LispPtr[arity];
+		arguments = NEW LispPtr[arity];
     }
     LocalArgs args(arguments);
 
     // Walk over all arguments, evaluating them as necessary
-    for (i=0;i<arity;i++)
-    {
-        Check(iter() != NULL, KLispErrWrongNumberOfArgs);
+	for (i=0;i<arity;i++,++iter)
+	{
+        Check(iter.getObj(), KLispErrWrongNumberOfArgs);
         if (iParameters[i].iHold)
         {
-            arguments[i].Set(iter()->Copy(LispFalse));
+            arguments[i] = (iter.getObj()->Copy());
         }
         else
         {
-            Check(iter.Ptr() != NULL, KLispErrWrongNumberOfArgs);
-            InternalEval(aEnvironment, arguments[i], *iter.Ptr());
+            //Check(iter.getObj(), KLispErrWrongNumberOfArgs);	// checked above
+            InternalEval(aEnvironment, arguments[i], *iter);
         }
-        iter.GoNext();
-    }
+	}
 
     if (Traced())
     {
         LispIterator iter(aArguments);
-        iter.GoNext();
         for (i=0;i<arity;i++)
         {
-            TraceShowArg(aEnvironment,*iter.Ptr(),
-                  arguments[i]);
-
-            iter.GoNext();
+            TraceShowArg(aEnvironment,*++iter,arguments[i]);
         }
-    }
+	}
     
     // declare a new local stack.
     LispLocalFrame frame(aEnvironment,Fenced());
@@ -138,20 +130,20 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     // define the local variables.
     for (i=0;i<arity;i++)
     {
-        LispStringPtr variable = iParameters[i].iParameter;
+        LispString * variable = iParameters[i].iParameter;
         // set the variable to the new value
-        aEnvironment.NewLocal(variable,arguments[i].Get());
+        aEnvironment.NewLocal(variable,arguments[i]);
     }
 
     // walk the rules database, returning the evaluated result if the
     // predicate is LispTrue.
-    LispInt nrRules = iRules.NrItems();
+    LispInt nrRules = iRules.Size();
     UserStackInformation &st = aEnvironment.iEvaluator->StackInformation();
     for (i=0;i<nrRules;i++)
     {
         BranchRuleBase* thisRule = iRules[i];
         CHECKPTR(thisRule);
-        LISPASSERT(thisRule != NULL);
+        LISPASSERT(thisRule);
 
         st.iRulePrecedence = thisRule->Precedence();
         LispBoolean matches = thisRule->Matches(aEnvironment, arguments);
@@ -170,37 +162,35 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     // arguments.
 
     {
-        LispPtr full;
-        full.Set(aArguments.Get()->Copy(LispFalse));
+        LispPtr full(aArguments->Copy());
         if (arity == 0)
         {
-            full.Get()->Next().Set(NULL);
+            full->Nixed() = (NULL);
         }
         else
         {
-            full.Get()->Next().Set(arguments[0].Get());
+            full->Nixed() = (arguments[0]);
             for (i=0;i<arity-1;i++)
             {
-                arguments[i].Get()->Next().Set(arguments[i+1].Get());
+                arguments[i]->Nixed() = (arguments[i+1]);
             }
         }
-        aResult.Set(LispSubList::New(full.Get()));
+        aResult = (LispSubList::New(full));
     }
 
 FINISH:
     if (Traced())
     {
-        LispPtr tr;
-        tr.Set(LispSubList::New(aArguments.Get()));
+        LispPtr tr(LispSubList::New(aArguments));
         TraceShowLeave(aEnvironment, aResult,tr);
-        tr.Set(NULL);
+        tr = (NULL);
     }
 }
 
-void BranchingUserFunction::HoldArgument(LispStringPtr aVariable)
+void BranchingUserFunction::HoldArgument(LispString * aVariable)
 {
     LispInt i;
-    LispInt nrc=iParameters.NrItems();
+    LispInt nrc=iParameters.Size();
     for (i=0;i<nrc;i++)
     {
         if (iParameters[i].iParameter == aVariable)
@@ -210,7 +200,7 @@ void BranchingUserFunction::HoldArgument(LispStringPtr aVariable)
 
 LispInt BranchingUserFunction::Arity() const
 {
-    return iParameters.NrItems();
+    return iParameters.Size();
 }
 
 LispInt BranchingUserFunction::IsArity(LispInt aArity) const
@@ -223,15 +213,16 @@ void BranchingUserFunction::DeclareRule(LispInt aPrecedence, LispPtr& aPredicate
 {
     // New branching rule.
     BranchRule* newRule = NEW BranchRule(aPrecedence,aPredicate,aBody);
-    Check(newRule != NULL,KLispErrCreatingRule);
+    Check(newRule,KLispErrCreatingRule);
 
     InsertRule(aPrecedence,newRule);
 }
- void BranchingUserFunction::DeclareRule(LispInt aPrecedence, LispPtr& aBody)
+
+void BranchingUserFunction::DeclareRule(LispInt aPrecedence, LispPtr& aBody)
 {
     // New branching rule.
     BranchRule* newRule = NEW BranchRuleTruePredicate(aPrecedence,aBody);
-    Check(newRule != NULL,KLispErrCreatingRule);
+    Check(newRule,KLispErrCreatingRule);
 
     InsertRule(aPrecedence,newRule);
 }
@@ -241,18 +232,17 @@ void BranchingUserFunction::DeclarePattern(LispInt aPrecedence, LispPtr& aPredic
 {
     // New branching rule.
     BranchPattern* newRule = NEW BranchPattern(aPrecedence,aPredicate,aBody);
-    Check(newRule != NULL,KLispErrCreatingRule);
+    Check(newRule,KLispErrCreatingRule);
 
     InsertRule(aPrecedence,newRule);
 }
-
 
 void BranchingUserFunction::InsertRule(LispInt aPrecedence,BranchRuleBase* newRule)
 {
     // Find place to insert
     LispInt low,high,mid;
     low=0;
-    high=iRules.NrItems();
+    high=iRules.Size();
 
     // Constant time: find out if the precedence is before any of the
     // currently defined rules or past them.
@@ -298,13 +288,10 @@ void BranchingUserFunction::InsertRule(LispInt aPrecedence,BranchRuleBase* newRu
     iRules.Insert(mid,newRule);
 }
 
-
 LispPtr& BranchingUserFunction::ArgList()
 {
     return iParamList;
 }
-
-
 
 ListedBranchingUserFunction::ListedBranchingUserFunction(LispPtr& aParameters)
     : BranchingUserFunction(aParameters)
@@ -325,47 +312,38 @@ void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEn
     LispIterator iter(aArguments);
     LispPtr* ptr =  &newArgs;
     LispInt arity = Arity();
-    LispInt i=0;
-    while (i < arity && iter() != NULL)
+	// TODO: woof -- still crummy (ptr)
+    for (LispInt i = 0; i < arity && iter.getObj(); i++,++iter)
     {
-        ptr->Set(iter()->Copy(LispFalse));
-        ptr = &(ptr->Get()->Next());
-        i++;
-        iter.GoNext();
+        (*ptr) = (iter.getObj()->Copy());
+        ptr = &((*ptr)->Nixed());
     }
-    if (iter()->Next().Get() == NULL)
+	if (!iter.getObj()->Nixed())
     {
-        ptr->Set(iter()->Copy(LispFalse));
-        ptr = &(ptr->Get()->Next());
-        i++;
-        iter.GoNext();
-        LISPASSERT(iter() == NULL);
+        (*ptr) = (iter.getObj()->Copy());
+        ptr = &((*ptr)->Nixed());
+        ++iter;
+        LISPASSERT(!iter.getObj());
     }
     else
     {
-        LispPtr head;
-        head.Set(aEnvironment.iList->Copy(LispFalse));
-        head.Get()->Next().Set(iter());
-        ptr->Set(LispSubList::New(head.Get()));
+        LispPtr head(aEnvironment.iList->Copy());
+        head->Nixed() = (iter.getObj());
+        (*ptr) = (LispSubList::New(head));
     }
     BranchingUserFunction::Evaluate(aResult, aEnvironment, newArgs);
 }
-
-
 
 MacroUserFunction::MacroUserFunction(LispPtr& aParameters)
   : BranchingUserFunction(aParameters)
 {
     LispIterator iter(aParameters);
-    LispInt i=0;
-    while (iter())
+    for (LispInt i=0; iter.getObj(); i++,++iter)
     {
-        Check(iter()->String() != NULL,KLispErrCreatingUserFunction);
+        Check(iter.getObj()->String(),KLispErrCreatingUserFunction);
         iParameters[i].iHold = LispTrue;
-        iter.GoNext();
-        i++;
     }
-    UnFence();
+	UnFence();
 }
 
 void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
@@ -377,14 +355,13 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
     //hier
     if (Traced())
     {
-        LispPtr tr;
-        tr.Set(LispSubList::New(aArguments.Get()));
+        LispPtr tr(LispSubList::New(aArguments));
         TraceShowEnter(aEnvironment,tr);
-        tr.Set(NULL);
+        tr = (NULL);
     }
 
     LispIterator iter(aArguments);
-    iter.GoNext();
+    ++iter;
 
     // unrollable arguments 
     LispPtr* arguments;
@@ -398,31 +375,29 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
     LocalArgs args(arguments);
 
     // Walk over all arguments, evaluating them as necessary
-    for (i=0;i<arity;i++)
+    for (i=0;i<arity;i++,++iter)
     {
-        Check(iter() != NULL, KLispErrWrongNumberOfArgs);
+        Check(iter.getObj(), KLispErrWrongNumberOfArgs);
         if (iParameters[i].iHold)
         {
-            arguments[i].Set(iter()->Copy(LispFalse));
+            arguments[i] = (iter.getObj()->Copy());
         }
         else
         {
-            Check(iter.Ptr() != NULL, KLispErrWrongNumberOfArgs);
-            InternalEval(aEnvironment, arguments[i], *iter.Ptr());
+            //Check(iter.getObj(), KLispErrWrongNumberOfArgs);	// checked above
+            InternalEval(aEnvironment, arguments[i], *iter);
         }
-        iter.GoNext();
-    }
+	}
 
     if (Traced())
     {
         LispIterator iter(aArguments);
-        iter.GoNext();
+		// TODO: woof -- still ugly
+        ++iter;
         for (i=0;i<arity;i++)
         {
-            TraceShowArg(aEnvironment,*iter.Ptr(),
-                  arguments[i]);
-
-            iter.GoNext();
+            TraceShowArg(aEnvironment,*iter,arguments[i]);
+            ++iter;
         }
     }
 
@@ -434,20 +409,20 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
       // define the local variables.
       for (i=0;i<arity;i++)
       {
-          LispStringPtr variable = iParameters[i].iParameter;
+          LispString * variable = iParameters[i].iParameter;
           // set the variable to the new value
-          aEnvironment.NewLocal(variable,arguments[i].Get());
+          aEnvironment.NewLocal(variable,arguments[i]);
       }
   
       // walk the rules database, returning the evaluated result if the
       // predicate is LispTrue.
-      LispInt nrRules = iRules.NrItems();
+      LispInt nrRules = iRules.Size();
       UserStackInformation &st = aEnvironment.iEvaluator->StackInformation();
       for (i=0;i<nrRules;i++)
       {
           BranchRuleBase* thisRule = iRules[i];
           CHECKPTR(thisRule);
-          LISPASSERT(thisRule != NULL);
+          LISPASSERT(thisRule);
   
           st.iRulePrecedence = thisRule->Precedence();
           LispBoolean matches = thisRule->Matches(aEnvironment, arguments);
@@ -465,51 +440,49 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
           while (thisRule != iRules[i] && i>0) i--;
       }
     }
-      
 
-    if (substedBody.Get())
+    if (!!substedBody)
     {
         InternalEval(aEnvironment, aResult, substedBody);
     }
     else
     // No predicate was LispTrue: return a new expression with the evaluated
     // arguments.
-      {
-        LispPtr full;
-        full.Set(aArguments.Get()->Copy(LispFalse));
+    {
+        LispPtr full(aArguments->Copy());
         if (arity == 0)
         {
-            full.Get()->Next().Set(NULL);
+            full->Nixed() = (NULL);
         }
         else
         {
-            full.Get()->Next().Set(arguments[0].Get());
+            full->Nixed() = (arguments[0]);
             for (i=0;i<arity-1;i++)
             {
-                arguments[i].Get()->Next().Set(arguments[i+1].Get());
+                arguments[i]->Nixed() = (arguments[i+1]);
             }
         }
-        aResult.Set(LispSubList::New(full.Get()));
+        aResult = (LispSubList::New(full));
     }
 //FINISH:
     if (Traced())
     {
-        LispPtr tr;
-        tr.Set(LispSubList::New(aArguments.Get()));
+        LispPtr tr(LispSubList::New(aArguments));
         TraceShowLeave(aEnvironment, aResult,tr);
-        tr.Set(NULL);
+        tr = (NULL);
     }
 }
-
 
 ListedMacroUserFunction::ListedMacroUserFunction(LispPtr& aParameters)
   : MacroUserFunction(aParameters)
 {
 }
+
 LispInt ListedMacroUserFunction::IsArity(LispInt aArity) const
 {
     return (Arity() <= aArity);
 }
+
 void ListedMacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
               LispPtr& aArguments)
 {
@@ -518,29 +491,27 @@ void ListedMacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnviro
     LispPtr* ptr =  &newArgs;
     LispInt arity = Arity();
     LispInt i=0;
-    while (i < arity && iter() != NULL)
+	// TODO: woof -- fix this ugliness!
+    while (i < arity && iter.getObj())
     {
-        ptr->Set(iter()->Copy(LispFalse));
-        ptr = &(ptr->Get()->Next());
+        (*ptr) = (iter.getObj()->Copy());
+        ptr = &((*ptr)->Nixed());
         i++;
-        iter.GoNext();
+        ++iter;
     }
-    if (iter()->Next().Get() == NULL)
+    if (!iter.getObj()->Nixed())
     {
-        ptr->Set(iter()->Copy(LispFalse));
-        ptr = &(ptr->Get()->Next());
+        (*ptr) = (iter.getObj()->Copy());
+        ptr = &((*ptr)->Nixed());
         i++;
-        iter.GoNext();
-        LISPASSERT(iter() == NULL);
+        ++iter;
+        LISPASSERT(!iter.getObj());
     }
     else
     {
-        LispPtr head;
-        head.Set(aEnvironment.iList->Copy(LispFalse));
-        head.Get()->Next().Set(iter());
-        ptr->Set(LispSubList::New(head.Get()));
+        LispPtr head(aEnvironment.iList->Copy());
+        head->Nixed() = (iter.getObj());
+        (*ptr) = (LispSubList::New(head));
     }
     MacroUserFunction::Evaluate(aResult, aEnvironment, newArgs);
 }
-
-

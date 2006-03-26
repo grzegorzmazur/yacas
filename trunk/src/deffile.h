@@ -15,12 +15,12 @@
 class LispDefFile : public YacasBase
 {
 public:
-    LispDefFile(LispStringPtr aFile);
+    LispDefFile(LispString * aFile);
     LispDefFile(const LispDefFile& aOther);
     ~LispDefFile();
     void SetLoaded();
     inline LispBoolean IsLoaded();
-    inline LispStringPtr FileName();
+    inline LispString * FileName();
 
     LispStringSmartPtr iFileName;
     LispBoolean   iIsLoaded;
@@ -37,10 +37,10 @@ class LispEnvironment;
 class LispDefFiles : public LispAssociatedHash<LispDefFile>
 {
 public:
-    LispDefFile* File(LispStringPtr aFileName);
+    LispDefFile* File(LispString * aFileName);
 };
 
-void LoadDefFile(LispEnvironment& aEnvironment, LispStringPtr aFileName);
+void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName);
 
 #include "deffile.inl"
 

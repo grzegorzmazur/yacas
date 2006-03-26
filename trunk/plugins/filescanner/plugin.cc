@@ -27,25 +27,25 @@ static void ScanFiles(LispEnvironment& aEnvironment, LispInt aStackTop)
   // Get the input, consisting of three strings
   CHK_ISSTRING_CORE(ARGUMENT(1),1);
   LispString baseDir;
-  InternalUnstringify(baseDir, ARGUMENT(1).Get()->String());
+  InternalUnstringify(baseDir, ARGUMENT(1)->String());
 
   CHK_ISSTRING_CORE(ARGUMENT(2),2);
   LispString subDir;
-  InternalUnstringify(subDir, ARGUMENT(2).Get()->String());
+  InternalUnstringify(subDir, ARGUMENT(2)->String());
 
   CHK_ISSTRING_CORE(ARGUMENT(3),3);
   LispString callFunc;
-  InternalUnstringify(callFunc, ARGUMENT(3).Get()->String());
+  InternalUnstringify(callFunc, ARGUMENT(3)->String());
 
 //printf("Basedir = %s\nSubdir = %s\nCall = %s\n",baseDir.String(),subDir.String(),callFunc.String());
 
   CFileScanner scanner;
-  CFileNode* node = scanner.First(baseDir.String(),subDir.String());
-  while (node != NULL)
+  CFileNode* node = scanner.First(baseDir.c_str(),subDir.c_str());
+  while (node)
   {
     //TODO @@@ potential buffer overflow!
     char buf[1024];
-    sprintf(buf,"%s(\"%s\",\"%s\",%s);\n",callFunc.String(),baseDir.String(),node->FullName(),node->IsDirectory()? "True":"False");
+    sprintf(buf,"%s(\"%s\",\"%s\",%s);\n",callFunc.c_str(),baseDir.c_str(),node->FullName(),node->IsDirectory()? "True":"False");
     LispPtr expr;
     PARSE(expr,buf);
     InternalEval(aEnvironment, RESULT, expr);

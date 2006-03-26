@@ -16,10 +16,10 @@ class ExeDll : public LispDllBase
 public:
     ExeDll(LispPluginBase* (*aMaker)(void)) : iMaker(aMaker) {}
     virtual ~ExeDll();
-    virtual LispInt Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment);
+    virtual LispInt Open(LispChar * aDllFile,LispEnvironment& aEnvironment);
     virtual LispInt Close(LispEnvironment& aEnvironment);
 protected:
-    virtual LispPluginBase* GetPlugin(LispCharPtr aDllFile);
+    virtual LispPluginBase* GetPlugin(LispChar * aDllFile);
 private:
     LispPluginBase* (*iMaker)(void);
 };

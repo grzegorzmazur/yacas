@@ -1,7 +1,5 @@
 
-
 //#include <stdio.h>
-
 
 #include "yacasprivate.h"
 #include "lispassert.h"
@@ -17,15 +15,14 @@
 
 void ParsedObject::Fail()
 {
-  iError = LispTrue; 
-  if (iLookAhead)
-    if (iLookAhead->String())
-    {
-//      if (IsSymbolic(iLookAhead->String()[0]))
-//        RaiseError("Error parsing expression, near token %s (maybe you forgot a space between two operators?)",iLookAhead->String()); 
-      RaiseError("Error parsing expression, near token %s",iLookAhead->String()); 
-    }
-  RaiseError("Error parsing expression"); 
+   iError = LispTrue;
+   if (iLookAhead && iLookAhead->c_str())
+   {
+//    if (IsSymbolic(iLookAhead->c_str()[0]))
+//       RaiseError("Error parsing expression, near token %s (maybe you forgot a space between two operators?)",iLookAhead->c_str()); 
+      RaiseError("Error parsing expression, near token %s",iLookAhead->c_str()); 
+   }
+   RaiseError("Error parsing expression"); 
 }
 #define RAISE_PARSE_ERROR Fail() 
 
@@ -63,31 +60,31 @@ void InfixParser::ParseCont(LispPtr& aResult)
     return ;
 }
 
-void LispOperators::SetOperator(LispInt aPrecedence, LispStringPtr aString)
+void LispOperators::SetOperator(LispInt aPrecedence, LispString * aString)
 {
     LispInFixOperator op(aPrecedence);
     SetAssociation(op, aString);
 }
 
 
-void LispOperators::SetRightAssociative(LispStringPtr aString)
+void LispOperators::SetRightAssociative(LispString * aString)
 {
     LispInFixOperator* op = LookUp(aString);
-    Check(op != NULL,KLispErrNotAnInFixOperator);
+    Check(op,KLispErrNotAnInFixOperator);
     op->SetRightAssociative();
 }
 
-void LispOperators::SetLeftPrecedence(LispStringPtr aString,LispInt aPrecedence)
+void LispOperators::SetLeftPrecedence(LispString * aString,LispInt aPrecedence)
 {
     LispInFixOperator* op = LookUp(aString);
-    Check(op != NULL,KLispErrNotAnInFixOperator);
+    Check(op,KLispErrNotAnInFixOperator);
     op->SetLeftPrecedence(aPrecedence);
 }
 
-void LispOperators::SetRightPrecedence(LispStringPtr aString,LispInt aPrecedence)
+void LispOperators::SetRightPrecedence(LispString * aString,LispInt aPrecedence)
 {
     LispInFixOperator* op = LookUp(aString);
-    Check(op != NULL,KLispErrNotAnInFixOperator);
+    Check(op,KLispErrNotAnInFixOperator);
     op->SetRightPrecedence(aPrecedence);
 }
 
@@ -97,11 +94,11 @@ void ParsedObject::ReadToken()
     // Get token.
     iLookAhead = iParser.iTokenizer.NextToken(iParser.iInput,
                                               iParser.iEnvironment.HashTable());
-    if (iLookAhead->String()[0] == '\0')
+    if (iLookAhead->c_str()[0] == '\0')
         iEndOfFile=LispTrue;
 }
 
-void ParsedObject::MatchToken(LispStringPtr aToken)
+void ParsedObject::MatchToken(LispString * aToken)
 {
     if (aToken != iLookAhead)
           RAISE_PARSE_ERROR; // iError=LispTrue;
@@ -113,7 +110,7 @@ void ParsedObject::Parse()
     ReadToken();
     if (iEndOfFile)
     {
-        iResult.Set(iParser.iEnvironment.iEndOfFile->Copy(LispTrue));
+        iResult = (iParser.iEnvironment.iEndOfFile->Copy());
         return;
     }
 
@@ -133,7 +130,7 @@ void ParsedObject::Parse()
 
     if (iError)
     {
-        iResult.Set(NULL);
+        iResult = (NULL);
     }
     Check(!iError,KLispErrInvalidExpression);
 }
@@ -141,60 +138,44 @@ void ParsedObject::Parse()
 
 void ParsedObject::Combine(LispInt aNrArgsToCombine)
 {
-    LispPtr subList;
-    subList.Set(LispSubList::New(iResult.Get()));
-#ifdef YACAS_DEBUG
-    subList.Get()->SetFileAndLine(
-                              iParser.iInput.Status().FileName(),
-                              iParser.iInput.Status().LineNumber()
-                             );
-#endif
+    LispPtr subList(LispSubList::New(iResult));
+    DBG_( subList->SetFileAndLine(
+		iParser.iInput.Status().FileName(),
+		iParser.iInput.Status().LineNumber() ); )
+
+	// TODO: woof -- such ugliness!
 
     LispIterator iter(iResult);
-    LispInt i;
-    for (i=0;i<aNrArgsToCombine;i++)
+    for (LispInt i=0; i<aNrArgsToCombine; i++, ++iter)
     {
-        if (iter() == NULL)
-        {
-            RAISE_PARSE_ERROR; // iError = LispTrue;
-            return;
-        }
-        iter.GoNext();
-    }
-    if (iter() == NULL)
-    {
-        RAISE_PARSE_ERROR; // iError = LispTrue;
-        return;
-    }
-    subList.Get()->Next().Set(iter()->Next().Get());
-    iter()->Next().Set(NULL);
+		if (!iter.getObj()) { RAISE_PARSE_ERROR; return; } // iError = LispTrue;
+	}
+	if (!iter.getObj()) { RAISE_PARSE_ERROR; return; } // iError = LispTrue;
+    subList->Nixed() = (*++iter);
+    *iter = (NULL);
 
-    InternalReverseList(subList.Get()->SubList()->Get()->Next(),
-                     subList.Get()->SubList()->Get()->Next());
+	InternalReverseList((*subList->SubList())->Nixed(),	// TODO: woof
+                     (*subList->SubList())->Nixed());
     iResult = subList;
 }
 
 void ParsedObject::GetOtherSide(LispInt aNrArgsToCombine, LispInt depth)
 {
-    LispStringPtr theOperator = iLookAhead;
+    LispString * theOperator = iLookAhead;
     MatchToken(iLookAhead);
     ReadExpression(depth);
     InsertAtom(theOperator);
     Combine(aNrArgsToCombine);
 }
 
-void ParsedObject::InsertAtom(LispStringPtr aString)
+void ParsedObject::InsertAtom(LispString * aString)
 {
-    LispPtr ptr;
-    ptr.Set(LispAtom::New(iParser.iEnvironment,aString->String()));
-#ifdef YACAS_DEBUG
-    ptr.Get()->SetFileAndLine(
-                              iParser.iInput.Status().FileName(),
-                              iParser.iInput.Status().LineNumber()
-                             );
-#endif
-    ptr.Get()->Next().Set(iResult.Get());
-    iResult.Set(ptr.Get());
+    LispPtr ptr(LispAtom::New(iParser.iEnvironment,aString->c_str()));
+    DBG_( ptr->SetFileAndLine(
+		iParser.iInput.Status().FileName(),
+		iParser.iInput.Status().LineNumber() ); )
+    ptr->Nixed() = (iResult);
+    iResult = (ptr);
 }
 
 
@@ -217,47 +198,47 @@ void ParsedObject::ReadExpression(LispInt depth)
             // Match closing bracket
             if (iLookAhead != iParser.iEnvironment.iProgClose->String())
             {
-                RaiseError("Expecting a ] close bracket for program block, but got %s instead",iLookAhead->String()); // RAISE_PARSE_ERROR; // iError = LispTrue;
+                RaiseError("Expecting a ] close bracket for program block, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = LispTrue;
                 return;
             }
             MatchToken(iLookAhead);
             // Build into Ntn(...)
-            LispStringPtr theOperator = iParser.iEnvironment.iNth->String();
+            LispString * theOperator = iParser.iEnvironment.iNth->String();
             InsertAtom(theOperator);
             Combine(2);
         }
         else
         {
             LispInFixOperator* op = iParser.iInfixOperators.LookUp(iLookAhead);
-            if (op == NULL)
+            if (!op)
             {
-//printf("op [%s]\n",iLookAhead->String());
+//printf("op [%s]\n",iLookAhead->c_str());
               if (IsSymbolic((*iLookAhead)[0]))
               {
-                LispInt origlen = iLookAhead->NrItems()-1;
+                LispInt origlen = iLookAhead->Size()-1;
                 LispInt len = origlen;
 //printf("IsSymbolic, len=%d\n",len);
 
                 while (len>1)
                 {
                   len--;
-                  LispStringPtr lookUp =
-                    iParser.iEnvironment.HashTable().LookUpCounted(iLookAhead->String(),len);
+                  LispString * lookUp =
+                    iParser.iEnvironment.HashTable().LookUpCounted(iLookAhead->c_str(),len);
 
-//printf("trunc %s\n",lookUp->String());
+//printf("trunc %s\n",lookUp->c_str());
                   op = iParser.iInfixOperators.LookUp(lookUp);
 //if (op) printf("FOUND\n");
                   if (op)
                   {
 
-                    LispStringPtr lookUpRight =
-                      iParser.iEnvironment.HashTable().LookUpCounted(&(iLookAhead->String()[len]),origlen-len);
+                    LispString * lookUpRight =
+                      iParser.iEnvironment.HashTable().LookUpCounted(&(iLookAhead->c_str()[len]),origlen-len);
 
-//printf("right: %s (%d)\n",lookUpRight->String(),origlen-len);
+//printf("right: %s (%d)\n",lookUpRight->c_str(),origlen-len);
 
                     if (iParser.iPrefixOperators.LookUp(lookUpRight))
                     {
-//printf("ACCEPT %s\n",lookUp->String());
+//printf("ACCEPT %s\n",lookUp->c_str());
                       iLookAhead = lookUp;
                       LispInput& input = iParser.iInput;
                       LispInt newPos = input.Position()-(origlen-len);
@@ -268,7 +249,7 @@ void ParsedObject::ReadExpression(LispInt depth)
                     else op=NULL;
                   }
                 }
-                if (op == NULL) return;
+                if (!op) return;
               }
               else
               {
@@ -297,9 +278,9 @@ void ParsedObject::ReadAtom()
     LispInFixOperator* op;
     // Parse prefix operators
     op = iParser.iPrefixOperators.LookUp(iLookAhead);
-    if (op != NULL)
+    if (op)
     {
-        LispStringPtr theOperator = iLookAhead;
+        LispString * theOperator = iLookAhead;
         MatchToken(iLookAhead);
         {
             ReadExpression(op->iPrecedence);
@@ -330,12 +311,12 @@ void ParsedObject::ReadAtom()
             }
             else if (iLookAhead != iParser.iEnvironment.iListClose->String())
             {
-                RaiseError("Expecting a } close bracket for a list, but got %s instead",iLookAhead->String()); // RAISE_PARSE_ERROR; // iError = LispTrue;
+                RaiseError("Expecting a } close bracket for a list, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = LispTrue;
                 return;
             }
         }
         MatchToken(iLookAhead);
-        LispStringPtr theOperator = iParser.iEnvironment.iList->String();
+        LispString * theOperator = iParser.iEnvironment.iList->String();
         InsertAtom(theOperator);
         Combine(nrargs);
 
@@ -344,14 +325,11 @@ void ParsedObject::ReadAtom()
     else if (iLookAhead == iParser.iEnvironment.iProgOpen->String())
     {
         LispInt nrargs=0;
-#ifdef YACAS_DEBUG
-        // For prog bodies at lease, I'd prefer the line it points to to be the line of the opening bracket.
+        // For prog bodies at least, I'd prefer the line it points to to be the line of the opening bracket.
         // Maybe we should change this for all expressions: the line number referring to the first atom in
         // the expression in stead of the last.
         // Ayal
-        LispInt startLine = iParser.iInput.Status().LineNumber();
-#endif
-
+        DBG_( LispInt startLine = iParser.iInput.Status().LineNumber(); )
 
         MatchToken(iLookAhead);
         while (iLookAhead != iParser.iEnvironment.iProgClose->String())
@@ -365,27 +343,24 @@ void ParsedObject::ReadAtom()
             }
             else
             {
-                RaiseError("Expecting ; end of statement in program block, but got %s instead",iLookAhead->String()); // RAISE_PARSE_ERROR; // iError = LispTrue;
+                RaiseError("Expecting ; end of statement in program block, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = LispTrue;
                 return;
             }
         }
         MatchToken(iLookAhead);
-        LispStringPtr theOperator = iParser.iEnvironment.iProg->String();
+        LispString * theOperator = iParser.iEnvironment.iProg->String();
         InsertAtom(theOperator);
 
         Combine(nrargs);
-#ifdef YACAS_DEBUG
         // Set the line to the beginning of the prog
-        iResult.Get()->SetFileAndLine(
-                                  iParser.iInput.Status().FileName(),
-                                  startLine
-                                );
-#endif
+        DBG_( iResult->SetFileAndLine(
+			iParser.iInput.Status().FileName(),
+			startLine ); )
     }
     // Else we have an atom.
     else
     {
-        LispStringPtr theOperator = iLookAhead;
+        LispString * theOperator = iLookAhead;
         MatchToken(iLookAhead);
 
         LispInt nrargs=-1;
@@ -404,7 +379,7 @@ void ParsedObject::ReadAtom()
                 }
                 else if (iLookAhead != iParser.iEnvironment.iBracketClose->String())
                 {
-                    RaiseError("Expecting ) closing bracket for sub-expression, but got %s instead",iLookAhead->String()); // RAISE_PARSE_ERROR; // iError = LispTrue;
+                    RaiseError("Expecting ) closing bracket for sub-expression, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = LispTrue;
                     return;
                 }
             }
@@ -425,7 +400,7 @@ void ParsedObject::ReadAtom()
 
     // Parse postfix operators
 
-    while ((op = iParser.iPostfixOperators.LookUp(iLookAhead)) != NULL)
+    while ((op = iParser.iPostfixOperators.LookUp(iLookAhead)))
     {
         InsertAtom(iLookAhead);
         MatchToken(iLookAhead);
@@ -434,7 +409,7 @@ void ParsedObject::ReadAtom()
 }
 
 
-void InfixPrinter::WriteToken(LispOutput& aOutput,LispCharPtr aString)
+void InfixPrinter::WriteToken(LispOutput& aOutput,LispChar * aString)
 {
     if (IsAlNum(iPrevLastChar) && (IsAlNum(aString[0]) || aString[0]=='_'))
     {
@@ -463,10 +438,10 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
 void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                          LispInt iPrecedence)
 {
-    LISPASSERT(aExpression.Get() != NULL);
+    LISPASSERT(aExpression);
 
-    LispStringPtr string = aExpression.Get()->String();
-    if (string != NULL)
+    LispString * string = aExpression->String();
+    if (string)
     {
         LispInt bracket=0;
         if (iPrecedence<KMaxPrecedence &&
@@ -477,28 +452,28 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
             bracket=1;
         }
         if (bracket) WriteToken(aOutput,"(");
-        WriteToken(aOutput,string->String());
+        WriteToken(aOutput,string->c_str());
         if (bracket) WriteToken(aOutput,")");
         return;
     }
 
-    if (aExpression.Get()->Generic() != NULL)
+    if (aExpression->Generic())
     {
         //TODO display genericclass
-        WriteToken(aOutput,aExpression.Get()->Generic()->TypeName());
+        WriteToken(aOutput,aExpression->Generic()->TypeName());
         return;
     }
 
-    LispPtr* subList = aExpression.Get()->SubList();
-    Check(subList!=NULL, KLispErrUnprintableToken);
-    if (subList->Get() == NULL)
+    LispPtr* subList = aExpression->SubList();
+    Check(subList, KLispErrUnprintableToken);
+    if (!subList)
     {
         WriteToken(aOutput,"( )");
     }
     else
     {
         LispInt length = InternalListLength(*subList);
-        string = subList->Get()->String();
+        string = (*subList)->String();
         LispInFixOperator* prefix  = iPrefixOperators.LookUp(string);
         LispInFixOperator* infix   = iInfixOperators.LookUp(string);
         LispInFixOperator* postfix = iPostfixOperators.LookUp(string);
@@ -525,16 +500,16 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
 
             if (prefix)
             {
-                right = &subList->Get()->Next();
+                right = &(*subList)->Nixed();
             }
             else if (infix)
             {
-                left  = &subList->Get()->Next();
-                right = &subList->Get()->Next().Get()->Next();
+                left  = &(*subList)->Nixed();
+                right = &(*subList)->Nixed()->Nixed();
             }
             else if (postfix)
             {
-                left = &subList->Get()->Next();
+                left = &(*subList)->Nixed();
             }
 
             if (iPrecedence < op->iPrecedence){
@@ -546,7 +521,7 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
             }
             if (left)
                 Print(*left, aOutput,op->iLeftPrecedence);
-            WriteToken(aOutput,string->String());
+            WriteToken(aOutput,string->c_str());
             if (right)
                 Print(*right, aOutput,op->iRightPrecedence);
             if (iPrecedence < op->iPrecedence)
@@ -554,36 +529,34 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
         }
         else
         {
-            LispIterator iter(subList->Get()->Next());
+            LispIterator iter((*subList)->Nixed());
             if (string == iCurrentEnvironment->iList->String())
             {
                 WriteToken(aOutput,"{");
-                while (iter())
-                {
-                    Print(*iter.Ptr(), aOutput, KMaxPrecedence);
-                    iter.GoNext();
-                    if (iter())
-                        WriteToken(aOutput,",");
+                for (int ii = 0; iter.getObj(); ii++, ++iter)
+				{
+					if (ii) WriteToken(aOutput,",");
+                    Print(*iter, aOutput, KMaxPrecedence);
                 }
                 WriteToken(aOutput,"}");
             }
             else if (string == iCurrentEnvironment->iProg->String())
             {
                 WriteToken(aOutput,"[");
-                while (iter())
+                while (iter.getObj())
                 {
-                    Print(*iter.Ptr(), aOutput, KMaxPrecedence);
-                    iter.GoNext();
+                    Print(*iter, aOutput, KMaxPrecedence);
+                    ++iter;
                     WriteToken(aOutput,";");
                 }
                 WriteToken(aOutput,"]");
             }
             else if (string == iCurrentEnvironment->iNth->String())
             {
-                Print(*iter.Ptr(), aOutput, 0);
-                iter.GoNext();
+                Print(*iter, aOutput, 0);
+                ++iter;
                 WriteToken(aOutput,"[");
-                Print(*iter.Ptr(), aOutput, KMaxPrecedence);
+                Print(*iter, aOutput, KMaxPrecedence);
                 WriteToken(aOutput,"]");
             }
             else
@@ -596,9 +569,9 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                     bracket = LispTrue;
                 }
                 if (bracket) WriteToken(aOutput,"(");
-                if (string != NULL)
+                if (string)
                 {
-                  WriteToken(aOutput,string->String());
+                  WriteToken(aOutput,string->c_str());
                 }
                 else
                 {
@@ -606,12 +579,12 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                 }
                 WriteToken(aOutput,"(");
 
-                LispIterator counter(*iter.Ptr());
+                LispIterator counter(*iter);
                 LispInt nr=0;
 
-                while (counter())
+                while (counter.getObj())
                 {
-                    counter.GoNext();
+                    ++counter;
                     nr++;
                 }
 
@@ -619,15 +592,14 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                     nr--;
                 while (nr--)
                 {
-                    Print(*iter.Ptr(), aOutput, KMaxPrecedence);
-
-                    iter.GoNext();
+                    Print(*iter, aOutput, KMaxPrecedence);
+                    ++iter;
                     if (nr)
                         WriteToken(aOutput,",");
                 }
                 WriteToken(aOutput,")");
-                if (iter())
-                    Print(*iter.Ptr(), aOutput, bodied->iPrecedence);
+                if (iter.getObj())
+                    Print(*iter, aOutput, bodied->iPrecedence);
 
                 if (bracket) WriteToken(aOutput,")");
             }

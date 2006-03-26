@@ -1,5 +1,5 @@
 //
-// "$Id: HelpView.cpp,v 1.2 2003-05-22 18:42:16 ayalpinkus Exp $"
+// "$Id: HelpView.cpp,v 1.3 2006-03-26 12:49:13 ayalpinkus Exp $"
 //
 //   Help Viewer widget routines.
 //
@@ -151,7 +151,7 @@ HelpView::add_link(const char *n,	// I - Name of link
   strncpy(temp->filename, n, sizeof(temp->filename));
   temp->filename[sizeof(temp->filename) - 1] = '\0';
 
-  if ((target = strrchr(temp->filename, '#')) != NULL)
+  if ((target = strrchr(temp->filename, '#')))
   {
     *target++ = '\0';
     strncpy(temp->name, target, sizeof(temp->name));
@@ -483,7 +483,7 @@ HelpView::draw()
 	    }
 	  }
 	  else if (strcasecmp(buf, "A") == 0 &&
-	           get_attr(attrs, "HREF", attr, sizeof(attr)) != NULL)
+	           get_attr(attrs, "HREF", attr, sizeof(attr)))
 	    fl_color(linkcolor_);
 	  else if (strcasecmp(buf, "/A") == 0)
 	    fl_color(textcolor_);
@@ -549,7 +549,7 @@ HelpView::draw()
 	  }
 	}
 	else if (strcasecmp(buf, "IMG") == 0 &&
-        	 get_attr(attrs, "ALT", attr, sizeof(attr)) != NULL)
+        	 get_attr(attrs, "ALT", attr, sizeof(attr)))
 	{
 	  // Show alt text...
 	  sprintf(buf, "[%s]", attr);
@@ -849,9 +849,9 @@ HelpView::format()
       }
       else if (strcasecmp(buf, "A") == 0)
       {
-        if (get_attr(attrs, "NAME", attr, sizeof(attr)) != NULL)
+        if (get_attr(attrs, "NAME", attr, sizeof(attr)))
 	  add_target(attr, yy - size - 2);
-	else if (get_attr(attrs, "HREF", attr, sizeof(attr)) != NULL)
+	else if (get_attr(attrs, "HREF", attr, sizeof(attr)))
 	{
 	  strncpy(link, attr, sizeof(link) - 1);
 	  link[sizeof(link) - 1] = '\0';
@@ -1125,7 +1125,7 @@ HelpView::format()
 
 	pushfont(font, size);
 
-        if (get_attr(attrs, "WIDTH", attr, sizeof(attr)) != NULL)
+        if (get_attr(attrs, "WIDTH", attr, sizeof(attr)))
 	{
 	  ww = atoi(attr);
 
@@ -1168,7 +1168,7 @@ HelpView::format()
 	popfont(font, size);
     }
     else if (strcasecmp(buf, "IMG") == 0 &&
-             get_attr(attrs, "ALT", attr, sizeof(attr)) != NULL)
+             get_attr(attrs, "ALT", attr, sizeof(attr)))
     {
       // Show alt text...
       ww = (int)(fl_width(attr) + fl_width('[') + fl_width(']'));
@@ -1672,7 +1672,7 @@ HelpView::load(const char *f)	// I - Filename to load (may also have target)
   else if (slash > directory_ && slash[-1] != '/')
     *slash = '\0';
 
-  if ((target = strrchr(filename_, '#')) != NULL)
+  if ((target = strrchr(filename_, '#')))
     *target++ = '\0';
 
   if (link_)
@@ -1680,7 +1680,7 @@ HelpView::load(const char *f)	// I - Filename to load (may also have target)
   else
     localname = filename_;
 
-  if (localname != NULL &&
+  if (localname &&
       (strncmp(localname, "ftp:", 4) == 0 ||
        strncmp(localname, "http:", 5) == 0 ||
        strncmp(localname, "https:", 6) == 0 ||
@@ -1688,11 +1688,11 @@ HelpView::load(const char *f)	// I - Filename to load (may also have target)
        strncmp(localname, "mailto:", 7) == 0 ||
        strncmp(localname, "news:", 5) == 0))
     localname = NULL;	// Remote link wasn't resolved...
-  else if (localname != NULL &&
+  else if (localname &&
            strncmp(localname, "file:", 5) == 0)
     localname += 5;	// Adjust for local filename...
       
-  if (value_ != NULL)
+  if (value_)
   {
     free((void *)value_);
     value_ = NULL;
@@ -1700,7 +1700,7 @@ HelpView::load(const char *f)	// I - Filename to load (may also have target)
 
   if (localname)
   {
-    if ((fp = fopen(localname, "rb")) != NULL)
+    if ((fp = fopen(localname, "rb")))
     {
       fseek(fp, 0, SEEK_END);
       len = ftell(fp);
@@ -1768,7 +1768,7 @@ HelpView::topline(const char *n)	// I - Target name
   target = (HelpTarget *)bsearch(&key, targets_, ntargets_, sizeof(HelpTarget),
                                  (int (*)(const void *, const void *))compare_targets);
 
-  if (target != NULL)
+  if (target)
     topline(target->y);
 }
 
@@ -1810,7 +1810,7 @@ HelpView::value(const char *v)	// I - Text to view
   if (!v)
     return;
 
-  if (value_ != NULL)
+  if (value_)
     free((void *)value_);
 
   value_ = strdup(v);
@@ -1834,5 +1834,5 @@ scrollbar_callback(Fl_Widget *s, void *)
 
 
 //
-// End of "$Id: HelpView.cpp,v 1.2 2003-05-22 18:42:16 ayalpinkus Exp $".
+// End of "$Id: HelpView.cpp,v 1.3 2006-03-26 12:49:13 ayalpinkus Exp $".
 //

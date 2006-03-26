@@ -62,7 +62,7 @@ public:
     {
         int           i;
         double        d;
-        LispStringPtr s;
+        LispString * s;
         ForthVariables* a; //array or object
     } u;
 };
@@ -72,11 +72,18 @@ class ForthVariables : public CArrayGrower<ForthValue>
 { 
 };
 
+#define HAS_NEW_ForthStackPop 1
+
 class ForthStack : CArrayGrower<ForthValue>
 {
 public:
     void Push(const ForthValue& aValue);
+#if HAS_NEW_ForthStackPop == 0
     const ForthValue& Pop(void);
+#else
+	double PopDouble(void);
+	int PopInt(void);
+#endif
 };
 
 
@@ -88,7 +95,7 @@ struct ForthCommand
         void (*command)(ForthInterpreter& aInterpreter);
         int int_value;
         double double_value;
-        LispStringPtr string_value;
+        LispString * string_value;
     } u;
 };
 

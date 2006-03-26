@@ -12,7 +12,7 @@ public:
     XmlTokenizer() {}
     /// NextToken returns a string representing the next token,
     /// or an empty list.
-    virtual LispStringPtr NextToken(LispInput& aInput,
+    virtual LispString * NextToken(LispInput& aInput,
                                     LispHashTable& aHashTable);
     virtual ~XmlTokenizer();
 };

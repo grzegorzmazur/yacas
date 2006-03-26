@@ -11,6 +11,7 @@
 #include "lispobject.h"
 #include "lispeval.h"
 #include "standard.h"
+#include "codecomment.h"
 
 #define MATCH_NUMBERS
 
@@ -28,7 +29,7 @@ YacasParamMatcherBase::~YacasParamMatcherBase()
 }
 
 
-MatchAtom::MatchAtom(LispStringPtr aString) : iString(aString)
+MatchAtom::MatchAtom(LispString * aString) : iString(aString)
 {
 }
 
@@ -38,9 +39,9 @@ LispBoolean MatchAtom::ArgumentMatches(LispEnvironment& aEnvironment,
 {
     /*
      LogPrintf("Enter match atom\n");
-    if (aExpression.Get()->String())
+    if (aExpression->String())
         LogPrintf("Atom match %s to %s\n",
-                  iString->String(),aExpression.Get()->String()->String());
+                  iString->String(),aExpression->String()->c_str());
     else
     {
         LogPrintf("trying to match atom to list\n");
@@ -48,12 +49,12 @@ LispBoolean MatchAtom::ArgumentMatches(LispEnvironment& aEnvironment,
     */
 
     // If it is a floating point, don't even bother comparing
-    if (aExpression.Get() != NULL)
-      if (aExpression.Get()->Number(0) != NULL)
-        if (!aExpression.Get()->Number(0)->IsInt())
+    if (!!aExpression)
+      if (aExpression->Number(0))
+        if (!aExpression->Number(0)->IsInt())
           return LispFalse;
       
-    return (iString == aExpression.Get()->String());
+    return (iString == aExpression->String());
 }
 
 
@@ -70,8 +71,8 @@ LispBoolean MatchNumber::ArgumentMatches(LispEnvironment& aEnvironment,
                                        LispPtr& aExpression,
                                        LispPtr* arguments)
 {
-  if (aExpression.Get()->Number(aEnvironment.Precision()))
-    return iNumber->Equals(*aExpression.Get()->Number(aEnvironment.Precision()));
+  if (aExpression->Number(aEnvironment.Precision()))
+    return iNumber->Equals(*aExpression->Number(aEnvironment.Precision()));
   return LispFalse;
 }
 
@@ -85,9 +86,9 @@ LispBoolean MatchVariable::ArgumentMatches(LispEnvironment& aEnvironment,
                                        LispPtr& aExpression,
                                        LispPtr* arguments)
 {
-    if (arguments[iVarIndex].Get() == NULL)
+    if (!arguments[iVarIndex])
     {
-        arguments[iVarIndex].Set(aExpression.Get());
+        arguments[iVarIndex] = (aExpression);
 //        LogPrintf("Set var %d\n",iVarIndex);
         return LispTrue;
     }
@@ -125,33 +126,37 @@ LispBoolean MatchSubList::ArgumentMatches(LispEnvironment& aEnvironment,
                                           LispPtr& aExpression,
                                           LispPtr* arguments)
 {
-    if (aExpression.Get()->SubList() == NULL)
+    if (!aExpression->SubList())
         return LispFalse;
-    LispInt i;
 
     LispIterator iter(aExpression);
-    iter.GoSub();
-    
-    for (i=0;i<iNrMatchers;i++)
-    {
-        LispPtr* ptr = iter.Ptr();
-        if (ptr == NULL)
+#if 0
+	iter.GoSub();
+#else
+	LispObject * pObj = iter.getObj();
+    Check(pObj,KLispErrInvalidArg);
+    LispPtr * pPtr = pObj->SubList();
+    Check(pPtr,KLispErrNotList);
+	iter = *pPtr;
+#endif
+
+    for (LispInt i=0;i<iNrMatchers;i++,++iter)
+	{
+		// TODO: woof -- fix this ugliness
+        if (!iter.getObj())
             return LispFalse;
-        if (iter() == NULL)
+        if (!iMatchers[i]->ArgumentMatches(aEnvironment,*iter,arguments))
             return LispFalse;
-        if (!iMatchers[i]->ArgumentMatches(aEnvironment,*ptr,arguments))
-            return LispFalse;
-        iter.GoNext();
-    }
-    if (iter() != NULL)
+	}
+    if (iter.getObj())
         return LispFalse;
     return LispTrue;
 }
 
-LispInt YacasPatternPredicateBase::LookUp(LispStringPtr aVariable)
+LispInt YacasPatternPredicateBase::LookUp(LispString * aVariable)
 {
     LispInt i;
-    for (i=0;i<iVariables.NrItems();i++)
+    for (i=0;i<iVariables.Size();i++)
     {
         if (iVariables[i] == aVariable)
         {
@@ -159,13 +164,13 @@ LispInt YacasPatternPredicateBase::LookUp(LispStringPtr aVariable)
         }
     }
     iVariables.Append(aVariable);
-    return iVariables.NrItems()-1;
+    return iVariables.Size()-1;
 }
 
 
 YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironment& aEnvironment, LispObject* aPattern)
 {
-    if (aPattern == NULL)
+    if (!aPattern)
         return NULL;
 #ifdef MATCH_NUMBERS
     if (aPattern->Number(aEnvironment.Precision()))
@@ -184,18 +189,18 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
     {
         // See if it is a variable template:
         LispPtr* sublist = aPattern->SubList();
-        LISPASSERT(sublist != NULL);
+        LISPASSERT(sublist);
 
         LispInt num = InternalListLength(*sublist);
 
         // variable matcher here...
         if (num>1)
         {
-            LispObject* head = sublist->Get();
+            LispObject* head = (*sublist);
             if (head->String() == aEnvironment.HashTable().LookUp("_"))
             {
-                LispObject* second = head->Next().Get();
-                if (second->String() != NULL)
+                LispObject* second = head->Nixed();
+                if (second->String())
                 {
                     LispInt index = LookUp(second->String());
 
@@ -204,53 +209,63 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
                     {
                         LispPtr third;
 
-                        LispObject* predicate = second->Next().Get();
-                        if (predicate->SubList() != NULL)
+                        LispObject* predicate = second->Nixed();
+                        if (predicate->SubList())
                         {
                             InternalFlatCopy(third, *predicate->SubList());
                         }
                         else
                         {
-                            third.Set(second->Next().Get()->Copy(LispFalse));
+                            third = (second->Nixed()->Copy());
                         }
 
-                        LispCharPtr str = second->String()->String();
-                        LispObject* last = third.Get();
-                        while (last->Next().Get() != NULL)
-                            last = last->Next().Get();
-                        
-                        last->Next().Set(LispAtom::New(aEnvironment,str));
+						// TODO: woof
+                        //LispChar * str = second->String()->c_str();
+                        LispObject* last = third;
+                        while (!!last->Nixed())
+                            last = last->Nixed();
 
-//                        third.Get()->Next().Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str)));
+                        last->Nixed() = (LispAtom::New(aEnvironment,second->String()->c_str()));
+
+//                        third->Nixed() = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str)));
+#if !HAS_NEW_iPredicates
                         LispPtr *pred = NEW LispPtr;
-                        pred->Set(LispSubList::New(third.Get()));
-#ifdef YACAS_DEBUG
-                        third.Get()->Next().Get()->SetFileAndLine(second->iFileName,second->iLine);
-                        pred->Get()->SetFileAndLine(head->iFileName,head->iLine);
+                        (*pred) = (LispSubList::New(third));
+						#define LP (*pred)
+						woof
+#else
+                        LispPtr pred(LispSubList::New(third));
+						#define LP pred
 #endif
-//LispPtr hold;
-//hold.Set(pred->Get());
-//aEnvironment.CurrentPrinter().Print(*pred,
+                        DBG_( third->Nixed()->SetFileAndLine(second->iFileName,second->iLine); )
+                        DBG_( LP->SetFileAndLine(head->iFileName,head->iLine); )
+//LispPtr hold(LP);
+//aEnvironment.CurrentPrinter().Print(LP,
 //                                    *aEnvironment.CurrentOutput());
-
-                        iPredicates.Append(pred);
+						#undef LP
+#if 0	// for testing
+						LispPtr src;
+						LispPtr dst;
+						ArrOpsCustom<LispPtr> opers;
+						opers.construct(&dst, &src);
+						const LispPtr aVal(src);
+						//opers.construct(&dst, &aVal);
+#endif
+						iPredicates.Append(pred);
                     }
                     return NEW MatchVariable(index);
                 }
             }
         }
-        
-        YacasParamMatcherBase** matchers = (YacasParamMatcherBase**)PlatAlloc(num*sizeof(YacasParamMatcherBase*));
 
-        LispInt i;
+        YacasParamMatcherBase** matchers = PlatAllocN<YacasParamMatcherBase*>(num);
         LispIterator iter(*sublist);
-        for (i=0;i<num;i++)
+        for (LispInt i=0;i<num;i++,++iter)
         {
-            matchers[i] = MakeParamMatcher(aEnvironment,iter());
-            LISPASSERT(matchers[i] != NULL);
-            iter.GoNext();
+            matchers[i] = MakeParamMatcher(aEnvironment,iter.getObj());
+            LISPASSERT(matchers[i]);
         }
-        return NEW MatchSubList(matchers, num);
+		return NEW MatchSubList(matchers, num);
     }
     
     return NULL;
@@ -260,44 +275,39 @@ YacasPatternPredicateBase::YacasPatternPredicateBase(LispEnvironment& aEnvironme
                                                      LispPtr& aPostPredicate)
 {
     LispIterator iter(aPattern);
-    
-    while (iter() != NULL)
-    {
-        YacasParamMatcherBase* matcher = MakeParamMatcher(aEnvironment,iter());
+    for ( ; iter.getObj(); ++iter)
+	{
+        YacasParamMatcherBase* matcher = MakeParamMatcher(aEnvironment,iter.getObj());
         LISPASSERT(matcher!=NULL);
         iParamMatchers.Append(matcher);
-        iter.GoNext();
-    }
+	}
+#if !HAS_NEW_iPredicates
     LispPtr* post = NEW LispPtr;
-    post->Set(aPostPredicate.Get());
+    (*post) = (aPostPredicate);
+#else
+	LispPtr post(aPostPredicate);
+#endif
     iPredicates.Append(post);
 }
 
 LispBoolean YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
                                               LispPtr& aArguments)
 {
-    LispInt i;
-
     LispPtr* arguments = NULL;
-    if (iVariables.NrItems() > 0)
-        arguments = NEW LispPtr[iVariables.NrItems()];
+    if (iVariables.Size() > 0)
+		arguments = NEW LispPtr[iVariables.Size()];
     LocalArgs args(arguments); //Deal with destruction
     LispIterator iter(aArguments);
-
-    for (i=0;i<iParamMatchers.NrItems();i++)
-    {
-        if (iter() == NULL)
+    for (LispInt i=0;i<iParamMatchers.Size();i++,++iter)
+	{
+        if (!iter.getObj())
             return LispFalse;
-        LispPtr* ptr = iter.Ptr();
-        if (ptr==NULL)
-            return LispFalse;
-        if (!iParamMatchers[i]->ArgumentMatches(aEnvironment,*ptr,arguments))
+        if (!iParamMatchers[i]->ArgumentMatches(aEnvironment,*iter,arguments))
         {
             return LispFalse;
         }
-        iter.GoNext();
-    }
-    if (iter() != NULL)
+	}
+    if (iter.getObj())
         return LispFalse;
 
     {
@@ -326,11 +336,11 @@ LispBoolean YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
     LispInt i;
 
     LispPtr* arguments = NULL;
-    if (iVariables.NrItems() > 0)
-        arguments = NEW LispPtr[iVariables.NrItems()];
+    if (iVariables.Size() > 0)
+        arguments = NEW LispPtr[iVariables.Size()];
     LocalArgs args(arguments); //Deal with destruction
 
-    for (i=0;i<iParamMatchers.NrItems();i++)
+    for (i=0;i<iParamMatchers.Size();i++)
     {
         if (!iParamMatchers[i]->ArgumentMatches(aEnvironment,aArguments[i],arguments))
         {
@@ -357,12 +367,15 @@ LispBoolean YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
 
 LispBoolean YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnvironment)
 {
-    LispInt i;
-    for (i=0;i<iPredicates.NrItems();i++)
+    for (LispInt i=0;i<iPredicates.Size();i++)
     {
         LispPtr pred;
+#if !HAS_NEW_iPredicates
         InternalEval(aEnvironment, pred, *(iPredicates[i]));
-        if (IsFalse(aEnvironment, pred))
+#else
+        InternalEval(aEnvironment, pred, iPredicates[i]);
+#endif
+		if (IsFalse(aEnvironment, pred))
         {
             return LispFalse;
         }
@@ -377,10 +390,10 @@ void YacasPatternPredicateBase::SetPatternVariables(LispEnvironment& aEnvironmen
                                                     LispPtr* arguments)
 {
     LispInt i;
-    for (i=0;i<iVariables.NrItems();i++)
+    for (i=0;i<iVariables.Size();i++)
     {
         // set the variable to the new value
-        aEnvironment.NewLocal(iVariables[i],arguments[i].Get());
+        aEnvironment.NewLocal(iVariables[i],arguments[i]);
     }
 }
 
@@ -389,4 +402,7 @@ YacasPatternPredicateBase::~YacasPatternPredicateBase()
 {
 }
 
+#define STR(tokens) #tokens
+#define SHOWSTR(ctce) #ctce " = " STR(ctce)
+namespace{CodeComment varname(SHOWSTR(HAS_NEW_iPredicates));}
 

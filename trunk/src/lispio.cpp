@@ -2,7 +2,7 @@
 #include "yacasprivate.h"
 #include "lispio.h"
 
-void InputStatus::SetTo(LispCharPtr aFileName)
+void InputStatus::SetTo(LispChar * aFileName)
 {
     iFileName = aFileName;
     iLineNumber=1;
@@ -23,7 +23,7 @@ LispOutput::~LispOutput()
 {
 }
 
-void LispOutput::Write(LispCharPtr aString)
+void LispOutput::Write(const LispChar * aString)
 {
     while (*aString != '\0')
         PutChar(*aString++);

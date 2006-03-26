@@ -416,7 +416,7 @@ _THIS_MALLOC(size_t nbytes)
 	uint size;
 
 #ifdef WITH_MALLOC_HOOKS	
-	if (malloc_hook != NULL)
+	if (malloc_hook)
 		return (*malloc_hook)(nbytes);
 #endif
 
@@ -437,7 +437,7 @@ _THIS_MALLOC(size_t nbytes)
 			 */
 			++pool->ref.count;
 			bp = pool->freeblock;
-			if ((pool->freeblock = *(block **)bp) != NULL) {
+			if ((pool->freeblock = *(block **)bp)) {
 				UNLOCK();
 				return (void *)bp;
 			}
@@ -471,7 +471,7 @@ _THIS_MALLOC(size_t nbytes)
 		 * Try to get a cached free pool
 		 */
 		pool = freepools;
-		if (pool != NULL) {
+		if (pool) {
 			/*
 			 * Unlink from cached pools
 			 */
@@ -539,7 +539,7 @@ _THIS_MALLOC(size_t nbytes)
 		 * per arena due to the required alignment on page boundaries.
 		 */
 		bp = (block *)_SYSTEM_MALLOC(ARENA_SIZE + SYSTEM_PAGE_SIZE);
-		if (bp == NULL) {
+		if (!bp) {
 			UNLOCK();
 			goto redirect;
 		}
@@ -583,13 +583,13 @@ _THIS_FREE(void *p)
 	off_t offset;
 
 #ifdef WITH_MALLOC_HOOKS
-	if (free_hook != NULL) {
+	if (free_hook) {
 		(*free_hook)(p);
 		return;
 	}
 #endif
 
-	if (p == NULL)	/* free(NULL) has no effect */
+	if (!p)	/* free(NULL) has no effect */
 		return;
 
 	offset = (off_t )p & POOL_SIZE_MASK;
@@ -603,7 +603,7 @@ _THIS_FREE(void *p)
 	/*
 	 * At this point, the pool is not empty
 	 */
-	if ((*(block **)p = pool->freeblock) == NULL) {
+	if (!(*(block **)p = pool->freeblock)) {
 		/*
 		 * Pool was full
 		 */
@@ -661,11 +661,11 @@ _THIS_REALLOC(void *p, size_t nbytes)
 	uint size;
 
 #ifdef WITH_MALLOC_HOOKS
-	if (realloc_hook != NULL)
+	if (realloc_hook)
 		return (*realloc_hook)(p, nbytes);
 #endif
 
-	if (p == NULL)
+	if (!p)
 		return _THIS_MALLOC(nbytes);
 
 	/* realloc(p, 0) on big blocks is redirected. */
@@ -697,8 +697,8 @@ _THIS_REALLOC(void *p, size_t nbytes)
 		malloc_copy_free:
 
 			bp = (block *)_THIS_MALLOC(nbytes);
-			if (bp != NULL) {
-				PlatMemCopy((LispCharPtr)bp, (LispCharPtr)p, size);
+			if (bp) {
+				PlatMemCopy(bp, p, size);
 				_THIS_FREE(p);
 			}
 		}
@@ -716,13 +716,13 @@ _THIS_CALLOC(size_t nbel, size_t elsz)
 	size_t nbytes;
 
 #ifdef WITH_MALLOC_HOOKS
-	if (calloc_hook != NULL)
+	if (calloc_hook)
 		return (*calloc_hook)(nbel, elsz);
 #endif
 
 	nbytes = nbel * elsz;
 	p = _THIS_MALLOC(nbytes);
-	if (p != NULL)
+	if (p)
 		memset(p, 0, nbytes);
 	return p;
 }
@@ -766,16 +766,16 @@ _FETCH_HOOKS( void *(**malloc_funcp)(size_t),
 #endif /* !WITH_MALLOC_HOOKS */
 
 /*
-LispCharPtr PlatAlloc(LispInt aNrBytes)
+void * PlatAlloc(LispInt aNrBytes)
 {
-    return (LispCharPtr)PlatObAlloc((size_t)aNrBytes);
+    return PlatObAlloc((size_t)aNrBytes);
 }
-LispCharPtr PlatReAlloc(LispCharPtr aOrig, LispInt aNrBytes)
+void * PlatReAlloc(void * aOrig, LispInt aNrBytes)
 {
-    return (LispCharPtr)PlatObReAlloc((void*)aOrig,(size_t)aNrBytes);
+    return PlatObReAlloc(aOrig,(size_t)aNrBytes);
 }
-void PlatFree(LispCharPtr aOrig)
+void PlatFree(void * aOrig)
 {
-    PlatObFree((void*)aOrig);
+    PlatObFree(aOrig);
 }
 */

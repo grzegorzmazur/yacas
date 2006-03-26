@@ -14,6 +14,8 @@ INCLUDES = -I$(top_srcdir)/src
 ## We might want to link against the installed libraries, as soon as the libraries
 ## are indeed installed.
 LDADD = -L../src -lcyacas -lyacas -lyacasplatform -l@NUMBERS_LIB_SHORT@ @LIBLTDL@ @NUMBERS_LDFLAGS@ -lstdc++
+## List some of the link-time dependencies.
+$(noinst_PROGRAMS): ../src/libcyacas.la ../src/libyacas.la ../src/libyacasplatform.la
 
 ## We can only check whether "example2" works after the script files are installed.
 installcheck: example2

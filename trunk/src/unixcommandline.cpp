@@ -16,7 +16,7 @@ void CUnixCommandLine::Pause()
     while (clock()<i);
 }
 
-void CUnixCommandLine::ShowLine(LispCharPtr prompt,LispInt promptlen,LispInt cursor)
+void CUnixCommandLine::ShowLine(LispChar * prompt,LispInt promptlen,LispInt cursor)
 {
     if (iFullLineDirty)
     {
@@ -71,7 +71,7 @@ CUnixCommandLine::CUnixCommandLine()
                 for(i=0;buff[i] && buff[i] != '\n';++i)
                     ;
                 buff[i++] = '\0';
-                LispStringPtr ptr = NEW LispString(buff);
+                LispString * ptr = NEW LispString(buff);
                 iHistoryList.Append(ptr);
                 
             }
@@ -105,9 +105,9 @@ CUnixCommandLine::~CUnixCommandLine()
         }
         for (i=from;i<iHistoryList.NrLines();i++)
         {
-          LispStringPtr ptr = iHistoryList.GetLine(i);
+          LispString * ptr = iHistoryList.GetLine(i);
 
-            fprintf(f,"%s\n",ptr->String());
+            fprintf(f,"%s\n",ptr->c_str());
         }
         fclose(f);
     }

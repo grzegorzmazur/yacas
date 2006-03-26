@@ -14,7 +14,7 @@ dnl
 dnl NOTE: This is just a modified version of the AC_FUNC_SELECT_ARGTYPES
 dnl macro. Credit for that one goes to David MacKenzie et. al.
 dnl
-dnl @version $Id: acinclude.m4,v 1.10 2003-03-09 21:59:19 ayalpinkus Exp $
+dnl @version $Id: acinclude.m4,v 1.11 2006-03-26 12:49:12 ayalpinkus Exp $
 dnl @author Daniel Richard G. <skunk@mit.edu>
 dnl
 AC_DEFUN([AC_FUNC_ACCEPT_ARGTYPES],
@@ -94,7 +94,7 @@ dnl URL accordingly.
 dnl
 dnl minor bugfix by ahmet inan <auto@ainan.org>
 dnl
-dnl @version $Id: acinclude.m4,v 1.10 2003-03-09 21:59:19 ayalpinkus Exp $
+dnl @version $Id: acinclude.m4,v 1.11 2006-03-26 12:49:12 ayalpinkus Exp $
 dnl @author Matthew D. Langston <langston@SLAC.Stanford.EDU>
 
 AC_DEFUN([MDL_HAVE_OPENGL],

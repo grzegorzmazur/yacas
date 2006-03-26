@@ -70,7 +70,7 @@ yield = (unsigned char*)(pcre_malloc)(tables_length);
 yield = (unsigned char*)malloc(tables_length);
 #endif
 
-if (yield == NULL) return NULL;
+if (!yield) return NULL;
 p = yield;
 
 /* First comes the lower casing table */

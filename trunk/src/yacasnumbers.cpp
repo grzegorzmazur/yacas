@@ -30,7 +30,7 @@ LispInt NumericSupportForMantissa()
   return LispTrue;
 }
 
-const LispCharPtr NumericLibraryName()
+const LispChar * NumericLibraryName()
 {
     return "Internal";
 }
@@ -73,9 +73,9 @@ static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
     ANumber dummy(10);
 
     LispInt requiredDigits = WordDigits(sum.iPrecision, 10)+
-        x2.NrItems()-x2.iExp+1;
+        x2.Size()-x2.iExp+1;
 //    printf("WordDigits=%d\n",requiredDigits);
-//    printf("[%d,%d]:",x.NrItems()-x.iExp,x.iExp);
+//    printf("[%d,%d]:",x.Size()-x.iExp,x.iExp);
 
     // While (term>epsilon)
     while (1 /* Significant(term)*/)      
@@ -131,7 +131,7 @@ static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
 
     }
 
-//    printf("[%d,%d]:",sum.NrItems()-sum.iExp,sum.iExp);
+//    printf("[%d,%d]:",sum.Size()-sum.iExp,sum.iExp);
 }
 
 static void SinFloat(ANumber& aResult, ANumber& x)
@@ -166,7 +166,7 @@ LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPr
 {
 //PrintNumber("Sin input: %s\n",*int1->Number(aPrecision)->iNumber);
   ANumber sum(aPrecision);
-  ANumber x(*int1->Number(aPrecision)->iNumber);
+  ANumber x(*int1->Number(aPrecision)->iNumber);	// woof
   x.ChangePrecision(aPrecision);
   SinFloat(sum, x);
   return FloatToString(sum, aEnvironment);
@@ -190,14 +190,14 @@ LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPr
     ANumber x(*int1->Number(aPrecision)->iNumber);
     x.ChangePrecision(aPrecision);
     SinFloat(s, x);
-//      SinFloat(s,int1->String()->String());
+//      SinFloat(s,int1->String()->c_str());
   }
   ANumber c(aPrecision);
   {
     ANumber x(*int1->Number(aPrecision)->iNumber);
     x.ChangePrecision(aPrecision);
     CosFloat(c, x);
-//      CosFloat(c,int1->String()->String());
+//      CosFloat(c,int1->String()->c_str());
   }
   ANumber result(aPrecision);
   ANumber dummy(aPrecision);
@@ -217,7 +217,7 @@ LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt 
 	// maybe, for y very close to 1 or to -1 convergence will
 	// suffer but seems okay in some tests
 //printf("%s(%d)\n",__FILE__,__LINE__);
-//printf("input: %s\n",int1->String()->String());
+//printf("input: %s\n",int1->String()->c_str());
 //PrintNumber("digits ",*int1->Number(aPrecision)->iNumber);
   RefPtr<LispObject> iResult(PlatArcSin(aEnvironment, int1,  0));
 	ANumber result(*iResult->Number(aPrecision)->iNumber);	// hack, hack, hack
@@ -292,7 +292,7 @@ static void ExpFloat(ANumber& aResult, ANumber& x)
     ANumber dummy(10);
 
     LispInt requiredDigits = WordDigits(aResult.iPrecision, 10)+
-        x.NrItems()-x.iExp+1;
+        x.Size()-x.iExp+1;
 
     // While (term>epsilon)
     while (Significant(term))      
@@ -477,6 +477,7 @@ LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnv
     ExpFloat(result, x);
     return FloatToString(result, aEnvironment);
 */
+	return 0;
 }
 
 
@@ -498,7 +499,7 @@ LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aP
 LispObject* ShiftLeft( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
   BigNumber *number = NEW BigNumber();
-  LispInt bits = InternalAsciiToInt(int2->String()->String());
+  LispInt bits = InternalAsciiToInt(int2->String());
   number->ShiftLeft(*int1->Number(aPrecision),bits);
   return NEW LispNumber(number);
 }
@@ -507,13 +508,13 @@ LispObject* ShiftLeft( LispObject* int1, LispObject* int2, LispEnvironment& aEnv
 LispObject* ShiftRight( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
   BigNumber *number = NEW BigNumber();
-  LispInt bits = InternalAsciiToInt(int2->String()->String());
+  LispInt bits = InternalAsciiToInt(int2->String());
   number->ShiftRight(*int1->Number(aPrecision),bits);
   return NEW LispNumber(number);
 }
 
 static void DivideInteger( ANumber& aQuotient, ANumber& aRemainder,
-                        LispCharPtr int1, LispCharPtr int2, 
+                        LispChar * int1, LispChar * int2, 
                         LispInt aPrecision)
 {
     ANumber a1(int1,aPrecision);
@@ -530,7 +531,7 @@ LispObject* ModFloat( LispObject* int1, LispObject* int2, LispEnvironment& aEnvi
 {
     ANumber quotient(static_cast<LispInt>(0));
     ANumber remainder(static_cast<LispInt>(0));
-    DivideInteger( quotient, remainder, int1->String()->String(), int2->String()->String(), aPrecision);
+    DivideInteger( quotient, remainder, int1->String()->c_str(), int2->String()->c_str(), aPrecision);
     return FloatToString(remainder, aEnvironment,10);
 
 }
@@ -594,13 +595,13 @@ static LispObject* FloatToString(ANumber& aInt,
 {
     LispString result;
     ANumberToString(result, aInt, aBase);
-    return LispAtom::New(aEnvironment, result.String());
+    return LispAtom::New(aEnvironment, result.c_str());
 }
 
 
 LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    LispInt nr = InternalAsciiToInt(int1->String()->String());
+    LispInt nr = InternalAsciiToInt(int1->String());
     Check(nr>=0,KLispErrInvalidArg);
     ANumber fac("1",aPrecision);
     LispInt i;
@@ -629,7 +630,7 @@ void tree_factorial(ANumber& result, LispInt iLeft, LispInt iRight, LispInt aPre
 	}
 }
 
-LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt aPrecision)
+LispString * LispFactorial(LispChar * int1, LispHashTable& aHashTable,LispInt aPrecision)
 {
     LispInt nr = InternalAsciiToInt(int1);
     Check(nr>=0,KLispErrInvalidArg);
@@ -648,7 +649,7 @@ LispStringPtr LispFactorial(LispCharPtr int1, LispHashTable& aHashTable,LispInt 
 #ifndef USE_NATIVE
 
 
-BigNumber::BigNumber(const LispCharPtr aString,LispInt aBasePrecision,LispInt aBase)
+BigNumber::BigNumber(const LispChar * aString,LispInt aBasePrecision,LispInt aBase)
 {
   iNumber = NULL;
   SetTo(aString, aBasePrecision, aBase);
@@ -674,7 +675,7 @@ BigNumber::~BigNumber()
 void BigNumber::SetTo(const BigNumber& aOther)
 {
   iPrecision = aOther.GetPrecision();
-  if (iNumber == NULL) 
+  if (!iNumber) 
   {
     iNumber = NEW ANumber(*aOther.iNumber);
   }
@@ -712,8 +713,8 @@ void BigNumber::ToString(LispString& aResult, LispInt aBasePrecision, LispInt aB
     {
       LispInt i;
       LispBoolean greaterOne = LispFalse;
-      if (num.iExp >= num.NrItems()) break;
-      for (i=num.iExp;i<num.NrItems();i++)
+      if (num.iExp >= num.Size()) break;
+      for (i=num.iExp;i<num.Size();i++)
       {
         if (num[i] != 0) 
         {
@@ -743,7 +744,7 @@ double BigNumber::Double() const
 //  num.CopyFrom(*iNumber);
   ANumberToString(str, num, 10);
   char* endptr;
-  return strtod(str.String(),&endptr);
+  return strtod(str.c_str(),&endptr);
 #else
   //FIXME
   LISPASSERT(0);
@@ -751,7 +752,7 @@ double BigNumber::Double() const
 #endif
 }
 
-const LispCharPtr BigNumber::NumericLibraryName()
+const LispChar * BigNumber::NumericLibraryName()
 {
   return "Internal Yacas numbers";
 }
@@ -949,8 +950,8 @@ void BigNumber::ShiftRight(const BigNumber& aX, LispInt aNrToShift)
 }
 void BigNumber::BitAnd(const BigNumber& aX, const BigNumber& aY)
 {
-  LispInt len1=aX.iNumber->NrItems(), len2=aY.iNumber->NrItems();
-  LispInt min=len1,max=len2;
+  LispInt lenX=aX.iNumber->Size(), lenY=aY.iNumber->Size();
+  LispInt min=lenX,max=lenY;
   if (min>max)
   {
     LispInt swap=min;
@@ -959,42 +960,30 @@ void BigNumber::BitAnd(const BigNumber& aX, const BigNumber& aY)
   }
   iNumber->GrowTo(min);
   LispInt i;
-  for (i=0;i<len1 && i<len2;i++)
-  {
-    (*iNumber)[i] = (*aX.iNumber)[i] & (*aY.iNumber)[i];
-  }
+  for (i=0;i<min;i++)	(*iNumber)[i] = (*aX.iNumber)[i] & (*aY.iNumber)[i];
 }
 void BigNumber::BitOr(const BigNumber& aX, const BigNumber& aY)
 {
-  LispInt len1=(*aX.iNumber).NrItems(), len2=(*aY.iNumber).NrItems();
-  LispInt min=len1,max=len2;
+  LispInt lenX=(*aX.iNumber).Size(), lenY=(*aY.iNumber).Size();
+  LispInt min=lenX,max=lenY;
   if (min>max)
   {
     LispInt swap=min;
     min=max;
     max=swap;
   }
-  
+
   iNumber->GrowTo(max);
 
   LispInt i;
-  for (i=0;i<len1 && i<len2;i++)
-  {
-    (*iNumber)[i] = (*aX.iNumber)[i] | (*aY.iNumber)[i];
-  }
-  for (i=len1;i<len2;i++)
-  {
-    (*iNumber)[i] = (*aY.iNumber)[i];
-  }
-  for (i=len2;i<len1;i++)
-  {
-    (*iNumber)[i] = (*aX.iNumber)[i];
-  }
+  for (i=0;i<min;i++)		(*iNumber)[i] = (*aX.iNumber)[i] | (*aY.iNumber)[i];
+  for (;i<lenY;i++)			(*iNumber)[i] = (*aY.iNumber)[i];
+  for (;i<lenX;i++)			(*iNumber)[i] = (*aX.iNumber)[i];
 }
 void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
 {
-  LispInt len1=(*aX.iNumber).NrItems(), len2=(*aY.iNumber).NrItems();
-  LispInt min=len1,max=len2;
+  LispInt lenX=(*aX.iNumber).Size(), lenY=(*aY.iNumber).Size();
+  LispInt min=lenX,max=lenY;
   if (min>max)
   {
     LispInt swap=min;
@@ -1005,31 +994,19 @@ void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
   iNumber->GrowTo(max);
 
   LispInt i;
-  for (i=0;i<len1 && i<len2;i++)
-  {
-    (*iNumber)[i] = (*aX.iNumber)[i] ^ (*aY.iNumber)[i];
-  }
-  for (i=len1;i<len2;i++)
-  {
-    (*iNumber)[i] = (*aY.iNumber)[i];
-  }
-  for (i=len2;i<len1;i++)
-  {
-    (*iNumber)[i] = (*aX.iNumber)[i];
-  }
+  for (i=0;i<min;i++)	(*iNumber)[i] = (*aX.iNumber)[i] ^ (*aY.iNumber)[i];
+  for (;i<lenY;i++)		(*iNumber)[i] = (*aY.iNumber)[i];
+  for (;i<lenX;i++)		(*iNumber)[i] = (*aX.iNumber)[i];
 }
 
 void BigNumber::BitNot(const BigNumber& aX)
 {// FIXME?
-  LispInt len=(*aX.iNumber).NrItems();
+  LispInt len=(*aX.iNumber).Size();
   
   iNumber->GrowTo(len);
 
   LispInt i;
-  for (i=0;i<len;i++)
-  {
-    (*iNumber)[i] = ~((*aX.iNumber)[i]);
-  }
+  for (i=0;i<len;i++)	(*iNumber)[i] = ~((*aX.iNumber)[i]);
 }
 
 
@@ -1041,7 +1018,7 @@ signed long BigNumber::BitCount() const
   int low=0;
   int high = 0;
   int i;
-  for (i=0;i<iNumber->NrItems();i++)
+  for (i=0;i<iNumber->Size();i++)
   {
     if ((*iNumber)[i] != 0)
     {
@@ -1080,7 +1057,7 @@ signed long BigNumber::BitCount() const
     num.iTensExp--;
   }
 
-  LispInt i,nr=num.NrItems();
+  LispInt i,nr=num.Size();
   for (i=nr-1;i>=0;i--) 
   {
     if (num[i] != 0) break;
@@ -1108,7 +1085,7 @@ LispInt BigNumber::Sign() const
 void BigNumber::DumpDebugInfo()
 {
 #ifdef HAVE_STDIO_H 
-  if (iNumber == NULL)
+  if (!iNumber)
   {
     printf("No number representation\n");
   }
@@ -1293,8 +1270,8 @@ LispBoolean BigNumber::IsSmall() const
 {
   if (IsInt())
   {
-    PlatWord* ptr = &((*iNumber)[iNumber->NrItems()-1]);
-    LispInt nr=iNumber->NrItems();
+    PlatWord* ptr = &((*iNumber)[iNumber->Size()-1]);
+    LispInt nr=iNumber->Size();
     while (nr>1 && *ptr == 0) {ptr--;nr--;}
     return (nr <= iNumber->iExp+1);
   }
@@ -1402,9 +1379,9 @@ void BigNumber::SetTo(double aValue)
 #endif
 }
 
-LispInt CalculatePrecision(const LispCharPtr aString,LispInt aBasePrecision,LispInt aBase, LispBoolean& aIsFloat)
+LispInt CalculatePrecision(const LispChar * aString,LispInt aBasePrecision,LispInt aBase, LispBoolean& aIsFloat)
 {
-  const LispCharPtr ptr = aString;
+  const LispChar * ptr = aString;
   while (*ptr)
   {
     switch (*ptr)
@@ -1494,7 +1471,7 @@ FND_2:
 
 // assign from string at given precision (the API says in base digits)
 // FIXME: API breach: aPrecision is passed in digits but used as if it were bits
-void BigNumber::SetTo(const LispCharPtr aString,LispInt aBasePrecision,LispInt aBase)
+void BigNumber::SetTo(const LispChar * aString,LispInt aBasePrecision,LispInt aBase)
 {//FIXME -- what?
 //  iPrecision = digits_to_bits(aBasePrecision,BASE10);
   LispBoolean isFloat = 0;
@@ -1502,14 +1479,14 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aBasePrecision,LispInt a
   iPrecision = CalculatePrecision(aString,aBasePrecision,aBase, isFloat);
 
 /*
-  const LispCharPtr ptr = aString;
+  const LispChar * ptr = aString;
   while (*ptr && *ptr != '.') ptr++;
   if (*ptr == '.')
   {
     isFloat = 1;
   }
 */
-  if (iNumber == NULL)   iNumber = NEW ANumber(digits);
+  if (!iNumber)   iNumber = NEW ANumber(digits);
   iNumber->SetPrecision(digits);
   iNumber->SetTo(aString,aBase);
   
@@ -1532,7 +1509,7 @@ void BigNumber::SetTo(const LispCharPtr aString,LispInt aBasePrecision,LispInt a
 
 
 /// assign a float from given string, using exactly aPrecision *bits*
-BigFloat::BigFloat(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+BigFloat::BigFloat(const LispChar * aString,LispInt aPrecision,LispInt aBase)
 {
 }
 
@@ -1570,7 +1547,7 @@ void BigFloat::SetTo(const BigInt& aOther, LispInt aPrecision)
 
 
 // assign from string, using exactly aPrecision *bits*
-void BigFloat::SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase)
+void BigFloat::SetTo(const LispChar * aString,LispInt aPrecision,LispInt aBase)
 {
 	Precision(aPrecision);
 }
@@ -1585,7 +1562,7 @@ void BigFloat::SetTo(double value)
 
 /// GetMantissaExp: return a string representation of the mantissa in aResult
 /// to given precision (base digits), and the exponent in the same base into aExponent
-void BigFloat::GetMantissaExp(LispCharPtr aBuffer, unsigned long aBufferSize, long* aExponent, LispInt aPrecision, LispInt aBase) const
+void BigFloat::GetMantissaExp(LispChar * aBuffer, unsigned long aBufferSize, long* aExponent, LispInt aPrecision, LispInt aBase) const
 {
 }
 
@@ -1598,7 +1575,7 @@ double BigFloat::Double() const
 
 
 /// Numeric library name
-const LispCharPtr BigFloat::NumericLibraryName()
+const LispChar * BigFloat::NumericLibraryName()
 {
 	return BigInt::NumericLibraryName();
 }
@@ -1714,7 +1691,7 @@ void BigInt::init()
 }
 
 /// assign an int from given string
-BigInt::BigInt(const LispCharPtr aString, LispInt aBase)
+BigInt::BigInt(const LispChar * aString, LispInt aBase)
 {
 }
 
@@ -1742,7 +1719,7 @@ void BigInt::SetTo(const BigInt& aOther)
 }
 
 // assign from string
-void BigInt::SetTo(const LispCharPtr aString, LispInt aBase)
+void BigInt::SetTo(const LispChar * aString, LispInt aBase)
 {
 }
 
@@ -1753,7 +1730,7 @@ void BigInt::SetTo(long value)
 
 
 /// ToString: return a string representation in the given aBuffer
-void BigInt::ToString(LispCharPtr aBuffer, unsigned long aBufferSize, LispInt aBase) const
+void BigInt::ToString(LispChar * aBuffer, unsigned long aBufferSize, LispInt aBase) const
 {
 }
 
@@ -1766,7 +1743,7 @@ double BigInt::Double() const
 
 
 /// Numeric library name
-const LispCharPtr BigInt::NumericLibraryName()
+const LispChar * BigInt::NumericLibraryName()
 {
 	return "Yacas";
 }

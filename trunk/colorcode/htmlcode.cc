@@ -158,7 +158,7 @@ void Htmlize(char* filename)
     strcat(infile,filename);
     
     fp=fopen(infile,"r");
-    if (fp == NULL)
+    if (!fp)
     {
         printf("Warning: could not find file %s\n",infile);
         return;
@@ -167,7 +167,7 @@ void Htmlize(char* filename)
     strcpy(htmlfile,filename);
     strcat(htmlfile,".html");
     htmlfp=fopen(htmlfile,"w");
-    if (htmlfp == NULL)
+    if (!htmlfp)
     {
         fclose(fp);
         return;

@@ -87,11 +87,11 @@ int main(int argc, char** argv)
 
     for (i=0;i<files.NrFiles();i++)
     {
-        LispCharPtr name = files.Name(i);
+        LispChar * name = files.Name(i);
         unsigned char buf[256];
         sprintf((char*)buf,"%s%s",argv[2],name);
 
-        LispCharPtr expanded = files.Contents(i);
+        LispChar * expanded = files.Contents(i);
         if (expanded)
         {
             MakeSureDirExists((char*)buf);

@@ -23,7 +23,7 @@ public:
     /// Return the height of the line
     virtual int height(int draw_input=1) = 0;
     /// input text associated with this block
-    virtual LispCharPtr input();
+    virtual LispChar * input();
     /// Whether the user can edit the input line of this object
     virtual int IsEditable();
     /// Whether the user can see the input line of this object
@@ -38,12 +38,12 @@ public:
 class ConsoleFlatText : public ConsoleOutBase
 {
 public:
-    ConsoleFlatText(LispCharPtr aText, int aColor, const char* aPrompt,
+    ConsoleFlatText(LispChar * aText, int aColor, const char* aPrompt,
                    int aFont = FL_HELVETICA,int aFontSize = 12);
     virtual void draw(int x, int y, int width,int draw_input=1);
     virtual int height(int draw_input=1);
     inline LispString& Text() {return iText;};
-    virtual LispCharPtr input();
+    virtual LispChar * input();
     virtual void Save(FILE* f);
     virtual int Fontsize() const;
 private:
@@ -62,7 +62,7 @@ public:
     void DeleteAll();
     virtual void draw(int x, int y, int width,int draw_input=1);
     virtual int height(int draw_input=1);
-    virtual LispCharPtr input();
+    virtual LispChar * input();
     virtual int IsEditable();
     virtual int InputIsVisible();
     virtual void Save(FILE* f);
@@ -84,7 +84,7 @@ public:
     virtual ~ConsoleDrawer();
     virtual void draw(int x, int y, int width,int draw_input=1);
     virtual int height(int draw_input=1);
-    virtual LispCharPtr input();
+    virtual LispChar * input();
     virtual void Save(FILE* f);
     virtual int Fontsize() const;
 private:
@@ -113,13 +113,13 @@ public:
 public:
     void AddGroup();
     void AddGroup(int aShowInput, int aEnableInput);
-    void AddText(LispCharPtr aText,int color, const char* aPrompt,
+    void AddText(LispChar * aText,int color, const char* aPrompt,
                               int aFont = FL_COURIER, int aFontSize = 12);
-    void InsertText(const LispCharPtr aText);
+    void InsertText(const LispChar * aText);
     void handle_key(int key);
-    void SetInput(LispCharPtr aText, LispInt nr);
-    void LoadNotePad(LispCharPtr aFile);
-    void SaveNotePad(LispCharPtr aFile);
+    void SetInput(LispChar * aText, LispInt nr);
+    void LoadNotePad(LispChar * aFile);
+    void SaveNotePad(LispChar * aFile);
     inline void ShowInput(int aShowInput)     {iShowInput   = aShowInput;};
     inline void EnableInput(int aEnableInput) {iEnableInput = aEnableInput;};
     void DeleteAll();
@@ -129,7 +129,7 @@ private:
     FltkHintWindow* TryToHint(char* text, int length);
     void DeleteHints();
     FltkHintWindow* CreateHints(int fontsize);
-    void AddHintLine(FltkHintWindow* hints, LispCharPtr aText, LispCharPtr aDescription);
+    void AddHintLine(FltkHintWindow* hints, LispChar * aText, LispChar * aDescription);
     void AddOutput(ConsoleOutBase* aOutput);
     void CommandLineStartNew();
     void CommandLineEnd();

@@ -39,7 +39,7 @@ public:
 public:
     virtual LispInt GetKey();
     virtual void NewLine();
-    virtual void ShowLine(LispCharPtr prompt,LispInt promptlen,LispInt cursor);
+    virtual void ShowLine(LispChar * prompt,LispInt promptlen,LispInt cursor);
     virtual void Pause();
 };
 
@@ -62,7 +62,7 @@ CEpocCommandLine::CEpocCommandLine()
       line.ZeroTerminate();
       if (line.Length() > 0)
       {
-        LispStringPtr string = new LispString();
+        LispString * string = new LispString();
         (*string) = (char*)&line[0];
         iHistory.Append(string);
       }
@@ -70,7 +70,7 @@ CEpocCommandLine::CEpocCommandLine()
     
     hist.Close();
   }
-    history=iHistory.NrItems();
+    history=iHistory.Size();
 
 }
 CEpocCommandLine::~CEpocCommandLine()
@@ -84,9 +84,9 @@ CEpocCommandLine::~CEpocCommandLine()
     TFileText text;
     text.Set(hist);
     TInt i;
-    for (i=0;i<iHistory.NrItems();i++)
+    for (i=0;i<iHistory.Size();i++)
     {
-      TInt length = iHistory[i]->NrItems()-1;
+      TInt length = iHistory[i]->Size()-1;
       TPtr ptr((unsigned char*)iHistory[i]->String(),length,length);
       text.Write(ptr);
     }
@@ -132,7 +132,7 @@ void CEpocCommandLine::NewLine()
     console->Write(_L("\n"));
 }
 
-void CEpocCommandLine::ShowLine(LispCharPtr prompt,LispInt promptlen,LispInt cursor)
+void CEpocCommandLine::ShowLine(LispChar * prompt,LispInt promptlen,LispInt cursor)
 {
     if (iFullLineDirty)
     {
@@ -233,7 +233,7 @@ void ShowResult(char *prompt)
     if (the_out->String()[0])
     {
       console->Write(_L(&the_out->String()[0]));
-      the_out->SetNrItems(0);
+      the_out->Resize(0);
       the_out->Append('\0');
     }
     console->Write(_L(prompt));

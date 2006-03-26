@@ -623,7 +623,7 @@ virtual LispCharPtr ExpressionCacher::TypeName()
 
 LispBoolean ExpressionCacher::IsCached(LispPtr& aExpression)
 {
-    LispInt nr=iCache.NrItems();
+    LispInt nr=iCache.Size();
     LispInt i;
     for (iLastCached=0;iLastCached<nr;iLastCached++)
     {
@@ -636,13 +636,13 @@ LispBoolean ExpressionCacher::IsCached(LispPtr& aExpression)
 
 void ExpressionCacher::GetLastCached(LispPtr& aResult)
 {
-    Check(iLastCached >= 0 && iLastCached < iCache.NrItems());
+    Check(iLastCached >= 0 && iLastCached < iCache.Size());
     aResult.Set(iCache[iLastCached].iValue.Get());
 }
 
 void ExpressionCacher::GetLastMatched(LispPtr& aResult)
 {
-    Check(iLastCached >= 0 && iLastCached < iCache.NrItems());
+    Check(iLastCached >= 0 && iLastCached < iCache.Size());
     aResult.Set(iCache[iLastCached].iExpression.Get());
 }
 
@@ -674,7 +674,7 @@ void ExpressionCacher::CachePrevious()
 void ExpressionCacher::CacheNext()
 {
     iLastCached++;
-    if (iLastCached>=iCache.NrItems())
+    if (iLastCached>=iCache.Size())
         iLastCached = -1;
 }
 
@@ -685,7 +685,7 @@ void ExpressionCacher::CacheResetFetch()
 
 LispBoolean ExpressionCacher::CacheIsSet()
 {
-    return (iLastCached >= 0 && iLastCached < iCache.NrItems());
+    return (iLastCached >= 0 && iLastCached < iCache.Size());
 
 }
 

@@ -122,8 +122,8 @@ int main(int argc, char *argv[]){
 	if(argc > 1)
 		parseCommandLine(argc, argv);
 
-    (*yacas)()().Commands().SetAssociation(LispEvaluator(LispExit),
-         (*yacas)()().HashTable().LookUp("Exit"));
+    yacas->getDefEnv().getEnv().Commands().SetAssociation(LispEvaluator(LispExit),
+         yacas->getDefEnv().getEnv().HashTable().LookUp("Exit"));
 
 	loadYacasScriptDir();
 	CWin32CommandLine commandline;

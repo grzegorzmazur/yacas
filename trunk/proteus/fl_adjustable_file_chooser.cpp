@@ -1,5 +1,5 @@
 //
-// "$Id: fl_adjustable_file_chooser.cpp,v 1.3 2001-12-01 20:25:24 ayalpinkus Exp $"
+// "$Id: fl_adjustable_file_chooser.cpp,v 1.4 2006-03-26 12:49:13 ayalpinkus Exp $"
 //
 // File chooser widget for the Fast Light Tool Kit (FLTK).
 //
@@ -680,5 +680,5 @@ char* fl_adjustable_file_chooser(const char* message, const char* pat, const cha
 }
 
 //
-// End of "$Id: fl_adjustable_file_chooser.cpp,v 1.3 2001-12-01 20:25:24 ayalpinkus Exp $".
+// End of "$Id: fl_adjustable_file_chooser.cpp,v 1.4 2006-03-26 12:49:13 ayalpinkus Exp $".
 //

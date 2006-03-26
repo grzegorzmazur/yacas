@@ -8,7 +8,7 @@
 #include "ltdl.h"
 #include "errors.h"
 
-LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
+LispInt LtDll::Open(LispChar * aDllFile,LispEnvironment& aEnvironment)
 {
     const char *err;
 
@@ -28,8 +28,8 @@ LispInt LtDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
           RaiseError("LtDll::Open: lt_dlinit says %s\n",err);
         }
     }
-    for (LispInt i=0; i<aEnvironment.iDllDirectories.NrItems(); i++)
-        lt_dladdsearchdir(aEnvironment.iDllDirectories[i]->String());
+    for (LispInt i=0; i<aEnvironment.iDllDirectories.Size(); i++)
+        lt_dladdsearchdir(aEnvironment.iDllDirectories[i]->c_str());
     handle = lt_dlopenext(aDllFile);
     if (handle)
     {
@@ -93,7 +93,7 @@ LtDll::~LtDll()
     handle = NULL;
 }
 
-LispPluginBase* LtDll::GetPlugin(LispCharPtr aDllFile)
+LispPluginBase* LtDll::GetPlugin(LispChar * aDllFile)
 {
     const char* err;
 

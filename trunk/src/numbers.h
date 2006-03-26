@@ -18,7 +18,7 @@
 LispInt NumericSupportForMantissa();
 
 /// Numeric library name
-const LispCharPtr NumericLibraryName();
+const LispChar * NumericLibraryName();
 
 LispObject* GcdInteger(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment);
 
@@ -81,7 +81,7 @@ class BigFloat
 friend class BigInt;
 public: //constructors
 /// assign a float from given string, using exactly aPrecision *bits*
-  BigFloat(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
+  BigFloat(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
 /// copy constructor
   BigFloat(const BigFloat& aOther);
   // no constructors from int or double to avoid automatic conversions
@@ -91,17 +91,17 @@ public: //constructors
   void SetTo(const BigFloat& aOther);
   void SetTo(const BigInt& aOther, LispInt aPrecision);
   // assign from string, using exactly aPrecision *digits*
-  void SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
+  void SetTo(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
     // assign from a platform type
   void SetTo(double value);
 public: // Convert back to other types
   /// GetMantissaExp: return a string representation of the mantissa in aResult to given precision (base digits), and the exponent in the same base into aExponent
-  void GetMantissaExp(LispCharPtr aBuffer, unsigned long aBufferSize, long* aExponent, LispInt aPrecision, LispInt aBase=10) const;
+  void GetMantissaExp(LispChar * aBuffer, unsigned long aBufferSize, long* aExponent, LispInt aPrecision, LispInt aBase=10) const;
   /// Give approximate representation as a double number
   double Double() const;
 
   /// Numeric library name
-static const LispCharPtr NumericLibraryName();
+static const LispChar * NumericLibraryName();
 
 public://basic object manipulation
   LispBoolean Equals(const BigFloat& aOther) const;
@@ -162,7 +162,7 @@ class BigInt
 friend class BigFloat;
 public:
 /// assign an int from given string
-  BigInt(const LispCharPtr aString, LispInt aBase=10);
+  BigInt(const LispChar * aString, LispInt aBase=10);
 /// copy constructor
   BigInt(const BigInt& aOther);
   // no constructors from int or double to avoid automatic conversions
@@ -172,17 +172,17 @@ public:
   void SetTo(const BigFloat& aOther);
   void SetTo(const BigInt& aOther);
   // assign from string
-  void SetTo(const LispCharPtr aString, LispInt aBase=10);
+  void SetTo(const LispChar * aString, LispInt aBase=10);
     // assign from a platform type
   void SetTo(long value);
 public: // Convert back to other types
   /// ToString: return a string representation in the given aBuffer
-  void ToString(LispCharPtr aBuffer, unsigned long aBufferSize, LispInt aBase=10) const;
+  void ToString(LispChar * aBuffer, unsigned long aBufferSize, LispInt aBase=10) const;
   /// Give approximate representation as a double number
   double Double() const;
 
   /// Numeric library name
-static const LispCharPtr NumericLibraryName();
+static const LispChar * NumericLibraryName();
 
 public://basic object manipulation
   LispBoolean Equals(const BigInt& aOther) const;
@@ -237,10 +237,12 @@ private:
 		
 /// Main class for multiple-precision arithmetic.
 /// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
-class BigNumber : public RefCountedObject
+class BigNumber : public YacasBase
 {
+public:
+	ReferenceCount iReferenceCount;	// TODO: woof
 public: //constructors
-  BigNumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
+  BigNumber(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
 /// copy constructor
   BigNumber(const BigNumber& aOther);
   // no constructors from int or double to avoid automatic conversions
@@ -249,7 +251,7 @@ public: //constructors
   // assign from another number
   void SetTo(const BigNumber& aOther);
   // assign from string, precision in base digits
-  void SetTo(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
+  void SetTo(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
     // assign from a platform type
   void SetTo(long value);
   inline void SetTo(LispInt value) { SetTo(long(value)); };
@@ -261,7 +263,7 @@ public: // Convert back to other types
   double Double() const;
 
   /// Numeric library name
-static const LispCharPtr NumericLibraryName();
+static const LispChar * NumericLibraryName();
 
 public://basic object manipulation
   LispBoolean Equals(const BigNumber& aOther) const;

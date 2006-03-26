@@ -21,8 +21,8 @@ public:
     LispBoolean Matches(LispEnvironment& aEnvironment,
                         LispPtr* aArguments);
 public: //From GenericClass
-    virtual LispCharPtr Send(LispArgList& aArgList);
-    virtual LispCharPtr TypeName();
+    virtual LispChar * Send(LispArgList& aArgList);
+    virtual LispChar * TypeName();
 protected:
     YacasPatternPredicateBase* iPatternMatcher;
 };

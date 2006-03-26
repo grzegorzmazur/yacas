@@ -23,10 +23,10 @@ public:
     inline ZZ Mod(ZZ x);
 private:
     LispInt iMod;
-    CArrayGrower<ZZ> iInverses;
+    CArrayGrower<ZZ, ArrOpsPOD<ZZ> > iInverses;
 };
 
-class ZZPoly : public CArrayGrower<ZZ>
+class ZZPoly : public CArrayGrower<ZZ, ArrOpsPOD<ZZ> >
 {
 public:
     void DropEndZeroes();
@@ -65,7 +65,7 @@ inline ZZ ZZMod::Mod(ZZ x)
 inline ZZ ZZPoly::Degree()
 {
     DropEndZeroes();
-    return NrItems()-1;
+    return Size()-1;
 }
 
 

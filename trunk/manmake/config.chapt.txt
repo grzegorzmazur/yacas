@@ -203,7 +203,7 @@ an empty string if the default pretty printer is used.
 
 
 
-*CMD PrettyReader, GetPrettyReader --- set/get routine to use as pretty-printer
+*CMD PrettyReader, GetPrettyReader --- set/get routine to use as pretty-reader
 
 *STD
 

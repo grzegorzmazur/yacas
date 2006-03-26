@@ -25,7 +25,7 @@
 #define ISFALSE(_x) IsFalse(aEnvironment, _x)
 
 void RunFunction(LispEnvironment& aEnvironment,LispInt aStackTop,
-            const unsigned char* code, LispObject** aConstants)
+            const unsigned char* code, LispObject* aConstants[])
 {
 //printf("1...\n");
   register LispEnvironment::YacasArgStack& _this_stack = aEnvironment.iStack; 
@@ -73,7 +73,7 @@ void RunFunction(LispEnvironment& aEnvironment,LispInt aStackTop,
         break;
       case CodeVmPush        :
 //printf("CodeVmPush\n");
-        PUSH(ARGUMENT(*ptr++).Get());
+        PUSH(ARGUMENT(*ptr++));
         break;
       case CodeVmPushConstant:
 //printf("CodeVmPushConstant\n");
@@ -85,12 +85,12 @@ void RunFunction(LispEnvironment& aEnvironment,LispInt aStackTop,
         {
           index = *ptr++;
           constant = *ptr++; constant <<= 8; constant |= *ptr++;
-          ARGUMENT(index).Set(aConstants[constant]);
+          ARGUMENT(index) = (aConstants[constant]);
         }
         break;
       case CodeVmSetRegister :
 //printf("CodeVmSetRegister\n");
-        ARGUMENT(*ptr++).Set(STACK(STACKTOP()-1).Get());
+        ARGUMENT(*ptr++) = (STACK(STACKTOP()-1));
         break;
       case CodeVmPop         :
 //printf("CodeVmPop\n");
@@ -124,11 +124,11 @@ void RunFunction(LispEnvironment& aEnvironment,LispInt aStackTop,
           LispInt i,stacktop = STACKTOP();
           for (i=0;i<_n;i++)
           {
-            STACK(stacktop-2).Set(STACK(stacktop-2).Get()->Copy(LispFalse));
-            STACK(stacktop-2).Get()->Next().Set(STACK(stacktop-1).Get());
+            STACK(stacktop-2) = (STACK(stacktop-2)->Copy());
+            STACK(stacktop-2)->Nixed() = (STACK(stacktop-1));
             POP(1);  stacktop--;
           }
-          STACK(stacktop-1).Set(LispSubList::New(STACK(stacktop-1).Get()));
+          STACK(stacktop-1) = (LispSubList::New(STACK(stacktop-1)));
         }
         break;
       case CodeVmReturn      :
