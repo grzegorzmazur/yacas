@@ -13,23 +13,22 @@ LispParser::LispParser(LispTokenizer& aTokenizer, LispInput& aInput,
 LispParser::~LispParser() {}
 void LispParser::Parse(LispPtr& aResult)
 {
-    aResult.Set(NULL);
+    aResult = (NULL);
 
-    LispStringPtr token;
     // Get token.
-    token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
-    if (token->String()[0] == '\0')
+    LispString * token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
+    if (token->c_str()[0] == '\0')
     {
-        aResult.Set(LispAtom::New(iEnvironment,"EndOfFile"));
+        aResult = (LispAtom::New(iEnvironment,"EndOfFile"));
         return;
     }
     ParseAtom(aResult,token);
 }
 
-void LispParser::ParseAtom(LispPtr& aResult, LispStringPtr aToken)
+void LispParser::ParseAtom(LispPtr& aResult, LispString * aToken)
 {
     // if token is empty string, return null pointer (no expression)
-    if (!aToken->String()[0])
+    if (!aToken->c_str()[0])
         return;
     // else if token is "(" read in a whole array of objects until ")",
     //   and make a sublist
@@ -37,29 +36,27 @@ void LispParser::ParseAtom(LispPtr& aResult, LispStringPtr aToken)
     {
         LispPtr subList;
         ParseList(subList);
-        aResult.Set(LispSubList::New(subList.Get()));
+        aResult = (LispSubList::New(subList));
         return;
     }
     // else make a simple atom, and return it.
-    aResult.Set(LispAtom::New(iEnvironment,aToken->String()));
+    aResult = (LispAtom::New(iEnvironment,aToken->c_str()));
 }
 
 void LispParser::ParseList(LispPtr& aResult)
 {
-    LispStringPtr token;
-
     LispPtr* iter = &aResult;
     if (iListed)
     {
-        aResult.Set(LispAtom::New(iEnvironment,"List"));
-        iter  = &(aResult.Get()->Next());
+        aResult = (LispAtom::New(iEnvironment,"List"));
+        iter  = &(aResult->Nixed());
     }
     for (;;)
     {
         //Get token.
-        token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
+	    LispString * token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
         // if token is empty string, error!
-        Check(token->String()[0],KInvalidToken);
+        Check(token->c_str()[0],KInvalidToken);
         // if token is ")" return result.
         if (token == iEnvironment.HashTable().LookUp(")"))
         {
@@ -69,7 +66,7 @@ void LispParser::ParseList(LispPtr& aResult)
         // results list.
 
         ParseAtom(*iter,token);
-        iter = &(iter->Get()->Next());
+        iter = &((*iter)->Nixed());
     }
 }
 
@@ -98,25 +95,25 @@ void LispPrinter::PrintExpression(LispPtr& aExpression, LispOutput& aOutput,
 {
     LispPtr* iter = &aExpression;
     LispInt item = 0;
-    while (iter->Get() != NULL)
+    while (!!(*iter))
     {
         // if String not null pointer: print string
-        LispStringPtr string = iter->Get()->String();
+        LispString * string = (*iter)->String();
 
-        if (string != NULL)
+        if (string)
         {
-            aOutput.Write(string->String());
+            aOutput.Write(string->c_str());
             aOutput.PutChar(' ');
         }
         // else print "(", print sublist, and print ")"
-        else if (iter->Get()->SubList() != NULL)
+        else if ((*iter)->SubList())
         {
 	    if (item != 0)
 	    {
 	      Indent(aOutput,aDepth+1);
 	    }
             aOutput.Write("(");
-            PrintExpression(*(iter->Get()->SubList()),aOutput, aEnvironment,aDepth+1);
+            PrintExpression(*((*iter)->SubList()),aOutput, aEnvironment,aDepth+1);
             aOutput.Write(")");
 	    item=0;
         }
@@ -124,7 +121,7 @@ void LispPrinter::PrintExpression(LispPtr& aExpression, LispOutput& aOutput,
         {
             aOutput.Write("[GenericObject]");
         }
-        iter = &(iter->Get()->Next());
+        iter = &((*iter)->Nixed());
 	item++;
     } // print next element
 }

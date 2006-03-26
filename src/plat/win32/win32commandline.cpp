@@ -32,7 +32,7 @@ static void win_assert(BOOL condition){
     exit(1);
 }
 
-void CWin32CommandLine::color_print(const LispCharPtr str, WORD text_attrib){
+void CWin32CommandLine::color_print(const LispChar * str, WORD text_attrib){
     BOOL status;
     unsigned len = strlen(str);
     CONSOLE_SCREEN_BUFFER_INFO old_info;
@@ -55,7 +55,7 @@ void CWin32CommandLine::color_print(const LispCharPtr str, WORD text_attrib){
     win_assert(status);
 }
 
-void CWin32CommandLine::color_read(LispCharPtr str, WORD text_attrib){
+void CWin32CommandLine::color_read(LispChar * str, WORD text_attrib){
     BOOL status;
     CONSOLE_SCREEN_BUFFER_INFO old_info;
 
@@ -89,7 +89,7 @@ void CWin32CommandLine::Pause()
     while (clock()<i);
 }
 
-void CWin32CommandLine::ReadLineSub(LispCharPtr prompt){
+void CWin32CommandLine::ReadLineSub(LispChar * prompt){
 //    if(_is_NT_or_later){
 //        char buff[BufSz];
 //        color_print(prompt, FOREGROUND_RED | FOREGROUND_INTENSITY );
@@ -101,16 +101,16 @@ void CWin32CommandLine::ReadLineSub(LispCharPtr prompt){
 }
 
 void CWin32CommandLine::ShowLine(){
-  ShowLine(iLastPrompt, strlen(iLastPrompt), strlen(iLastPrompt)+iSubLine.NrItems());
+  ShowLine(iLastPrompt, strlen(iLastPrompt), strlen(iLastPrompt)+iSubLine.Size());
 }
 
-void CWin32CommandLine::ShowLine(LispCharPtr prompt, LispInt promptlen, LispInt cursor){
+void CWin32CommandLine::ShowLine(LispChar * prompt, LispInt promptlen, LispInt cursor){
   iLastPrompt = prompt;
   putchar('\r');							// clear line
   int i;
 	for (i=0;i<79;i++) putchar(' ');
 
-    assert(iSubLine.NrItems() != 0);
+    assert(iSubLine.Size() != 0);
     char str[BufSz];
     sprintf(str, "\r%s%s", prompt, &iSubLine[0]);
     color_print(str, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY );
@@ -152,7 +152,7 @@ CWin32CommandLine::CWin32CommandLine() :
                     for(i=0;buff[i] && buff[i] != '\n';++i)
                         ;
                     buff[i++] = '\0';
-                    LispStringPtr ptr = new LispString(buff);
+                    LispString * ptr = NEW LispString(buff);
                     iHistoryList.Append(ptr);
                 
                 }
@@ -171,7 +171,7 @@ CWin32CommandLine::~CWin32CommandLine()
             int i;
             for (i=0;i<iHistoryList.NrLines();i++)
             {
-                fprintf(f,"%s\n",iHistoryList.GetLine(i)->String());
+                fprintf(f,"%s\n",iHistoryList.GetLine(i)->c_str());
             }
             fclose(f);
         }

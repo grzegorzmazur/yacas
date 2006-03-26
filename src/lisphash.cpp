@@ -1,53 +1,46 @@
-
-#ifdef YACAS_DEBUG
-#include <stdio.h>
-#endif
-
 #include "yacasprivate.h"
 #include "yacasbase.h"
 #include "lisperror.h"
 #include "lisphash.h"
 
+#ifdef YACAS_DEBUG
+#include <stdio.h>
+#endif
+
+#ifdef YACAS_DEBUG
+#define DBG_(xxx) xxx
+#else
+#define DBG_(xxx) /*xxx*/
+#endif
+
 
 LispHashTable::~LispHashTable()
 {
-    int bin;
+    for (LispInt bin = 0; bin < KSymTableSize; bin++)
+    {
+		CArrayGrower<LispStringSmartPtr> & aBin = iHashTable[bin];
+		for (LispInt i = 0, n = aBin.Size(); i < n; i++)
+        {
+			// Check that this LispHashTable is a unique pool!?
 #ifdef YACAS_DEBUG
-    for (bin=0;bin<KSymTableSize;bin++)
-    {
-      LispInt i,nr;
-      nr = iHashTable[bin].NrItems();
-      for (i=0;i<nr;i++)
-      {
-        if (iHashTable[bin][i]()->ReferenceCount()!=1)
-        {
-          printf("ERROR: string objects with invalid reference counts during destruction of the hashtable!\n");
-          printf("%d:%s\n",iHashTable[bin][i]()->ReferenceCount(),
-                iHashTable[bin][i]()->String());
-        }
-      }
-    }
-#endif // YACAS_DEBUG
-    for (bin=0;bin<KSymTableSize;bin++)
-    {
-        LispInt i,nr;
-        nr = iHashTable[bin].NrItems();
-        for (i=0;i<nr;i++)
-        {
-            LISPASSERT(iHashTable[bin][i]()->ReferenceCount()==1);
-            iHashTable[bin][i].Set(NULL);
+			if (aBin[i]->iReferenceCount != 1)
+			{
+				printf("ERROR: string objects with invalid reference counts during destruction of the hashtable!\n");
+				printf("%d:%s\n", aBin[i]->iReferenceCount, aBin[i]->c_str());
+			}
+#endif
+            LISPASSERT(aBin[i]->iReferenceCount == 1);
+            aBin[i] = (NULL);
         }
     }
 }
 
-
-
-LispInt  LispHash( char *s )
+LispInt  LispHash( const char *s )
 //
 // Simple hash function
 //
 {
-    LispChar *p;
+    const LispChar *p;
     LispUnsLong h=0;
 
     for (p=s;*p!='\0';p++)
@@ -57,7 +50,7 @@ LispInt  LispHash( char *s )
     return HASHBIN(h);
 }
 
-LispInt  LispHashCounted( char *s,LispInt length )
+LispInt  LispHashCounted( const char *s,LispInt length )
 //
 // Simple hash function
 //
@@ -72,12 +65,12 @@ LispInt  LispHashCounted( char *s,LispInt length )
     return HASHBIN(h);
 }
 
-LispInt  LispHashStringify( char *s )
+LispInt  LispHashStringify( const char *s )
 //
 // Simple hash function
 //
 {
-    LispChar *p;
+    const LispChar *p;
     LispUnsLong h=0;
 
     HashByte( h, '\"');
@@ -89,12 +82,12 @@ LispInt  LispHashStringify( char *s )
     return HASHBIN(h);
 }
 
-LispInt  LispHashUnStringify( char *s )
+LispInt  LispHashUnStringify( const char *s )
 //
 // Simple hash function
 //
 {
-    LispChar *p;
+    const LispChar *p;
     LispUnsLong h=0;
 
     for (p=s+1;p[1]!='\0';p++)
@@ -104,14 +97,12 @@ LispInt  LispHashUnStringify( char *s )
     return HASHBIN(h);
 }
 
-
-
-LispInt LispHashPtr(LispStringPtr aString)
+LispInt LispHashPtr(const LispString * aString)
 {
-    LispCharPtr p = (LispCharPtr)(&aString);
+    LispChar * p = (LispChar *)(&aString);
     LispUnsLong h=0;
 
-    switch (sizeof(LispStringPtr))
+    switch (sizeof(LispString *))
     {
     case 8: HashByte( h, *p++);
     case 7: HashByte( h, *p++);
@@ -129,76 +120,72 @@ LispInt LispHashPtr(LispStringPtr aString)
     return (HASHBIN(h));
 }
 
-
-#ifdef YACAS_DEBUG
-long theNrTokens=0;
-#endif
+DBG_( long theNrTokens=0; )
 
 // If string not yet in table, insert. Afterwards return the string.
-LispStringPtr LispHashTable::LookUp(LispCharPtr aString,
-                                    LispBoolean aStringOwnedExternally)
+LispString * LispHashTable::LookUp(const LispChar * aString, LispBoolean aStringOwnedExternally)
 {
     LispInt bin = LispHash(aString);
-    LispInt i;
 
     // Find existing version of string
-    LispInt nrc=iHashTable[bin].NrItems();
-    for (i=0;i<nrc;i++)
+	CArrayGrower<LispStringSmartPtr> & aBin = iHashTable[bin];
+	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
-        if (StrEqual((iHashTable[bin][i]())->String(), aString))
-        {
-            return iHashTable[bin][i]();
+		// expr ... typeof(expr)
+		// aBin ... CArrayGrower<LispStringSmartPtr>&
+		// aBin[i] ... LispStringSmartPtr&
+		// aBin[i].operator->() ... LispString*
+		// aBin[i].operator->()->c_str() ... LispChar*
+        if (StrEqual(aBin[i]->c_str(), aString))
+		{
+            return aBin[i];
         }
     }
 
     // Append a new string
-#ifdef YACAS_DEBUG
-    theNrTokens++;
-#endif
-    LispStringPtr result = NEW LispString(aString,aStringOwnedExternally);
+	DBG_( theNrTokens++; )
+	// The const_cast is tacky, but nearly correct.  'ownedexternally' bites.
+    LispString * result = NEW LispString(const_cast<LispChar*>(aString),aStringOwnedExternally);
     AppendString(bin,result);
     return result;
 }
 
-void LispHashTable::AppendString(LispInt bin,LispStringPtr result)
+void LispHashTable::AppendString(LispInt bin,LispString * result)
 {
     LispStringSmartPtr smartptr;
-    int index = iHashTable[bin].NrItems();
-    iHashTable[bin].GrowTo(index+1);
-    iHashTable[bin][index].SetInitial(result);
+    int index = iHashTable[bin].Size();
+    iHashTable[bin].GrowTo(index+1);	// change to GrowBy sometime
+    iHashTable[bin][index] = result;
+	//m_isDirty = true;
 }
 
 // If string not yet in table, insert. Afterwards return the string.
-LispStringPtr LispHashTable::LookUp(LispStringPtr aString)
+LispString * LispHashTable::LookUp(LispString * aString)
 {
-    LispInt bin = LispHash(aString->String());
-    LispInt i;
+    LispInt bin = LispHash(aString->c_str());
 
     // Find existing version of string
-    LispInt nrc=iHashTable[bin].NrItems();
-    for (i=0;i<nrc;i++)
+	CArrayGrower<LispStringSmartPtr> & aBin = iHashTable[bin];
+	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
-        if (StrEqual((iHashTable[bin][i]())->String(), aString->String()))
-        {
+        if (StrEqual(aBin[i]->c_str(), aString->c_str()))
+		{
             //TODO we shouldn't be doing refcounting here???
-            if (aString->ReferenceCount() == 0)
+            if (!aString->iReferenceCount)
             {
                 delete aString;
             }
-            return iHashTable[bin][i]();
-        }
+            return aBin[i];
+		}
     }
 
     // Append a new string
-#ifdef YACAS_DEBUG
-    theNrTokens++;
-#endif
+	DBG_( theNrTokens++; )
     AppendString(bin,aString);
     return aString;
 }
 
-
-LispInt StrEqualCounted(LispCharPtr ptr1, LispCharPtr ptr2,LispInt length)
+LispInt StrEqualCounted(const LispChar * ptr1, const LispChar * ptr2, LispInt length)
 {
     LispInt i;
     for (i=0;i<length;i++)
@@ -211,34 +198,30 @@ LispInt StrEqualCounted(LispCharPtr ptr1, LispCharPtr ptr2,LispInt length)
     return 1;
 }
 
-LispStringPtr LispHashTable::LookUpCounted(LispCharPtr aString,
-                                           LispInt aLength)
+LispString * LispHashTable::LookUpCounted(LispChar * aString, LispInt aLength)
 {
     LispInt bin = LispHashCounted(aString,aLength);
-    LispInt i;
 
     // Find existing version of string
-    LispInt nrc=iHashTable[bin].NrItems();
-    for (i=0;i<nrc;i++)
+	CArrayGrower<LispStringSmartPtr> & aBin = iHashTable[bin];
+	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
-        if (StrEqualCounted((iHashTable[bin][i]())->String(), aString,aLength))
+        if (StrEqualCounted(aBin[i]->c_str(), aString, aLength))
         {
-            return iHashTable[bin][i]();
+            return aBin[i];
         }
     }
 
     // Append a new string
-#ifdef YACAS_DEBUG
-    theNrTokens++;
-#endif
-    LispStringPtr str = NEW LispString();
+	DBG_( theNrTokens++; )
+    LispString * str = NEW LispString();
     str->SetStringCounted(aString,aLength);
 
     AppendString(bin,str);
     return str;
 }
 
-LispInt StrEqualStringified(LispCharPtr ptr1, LispCharPtr ptr2)
+LispInt StrEqualStringified(const LispChar * ptr1, const LispChar * ptr2)
 {
     if (*ptr1 != '\"')
         return 0;
@@ -257,7 +240,7 @@ LispInt StrEqualStringified(LispCharPtr ptr1, LispCharPtr ptr2)
     return 1;
 }
 
-LispInt StrEqualUnStringified(LispCharPtr ptr1, LispCharPtr ptr2)
+LispInt StrEqualUnStringified(const LispChar * ptr1, const LispChar * ptr2)
 {
     if (*ptr2 != '\"')
         return 0;
@@ -276,84 +259,74 @@ LispInt StrEqualUnStringified(LispCharPtr ptr1, LispCharPtr ptr2)
     return 1;
 }
 
-
-
 // If string not yet in table, insert. Afterwards return the string.
-LispStringPtr LispHashTable::LookUpStringify(LispCharPtr aString,
+LispString * LispHashTable::LookUpStringify(LispChar * aString,
                               LispBoolean aStringOwnedExternally)
 {
     LispInt bin = LispHashStringify(aString);
-    LispInt i;
 
     // Find existing version of string
-    LispInt nrc=iHashTable[bin].NrItems();
-    for (i=0;i<nrc;i++)
+	CArrayGrower<LispStringSmartPtr> & aBin = iHashTable[bin];
+	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
-        if (StrEqualStringified((iHashTable[bin][i]())->String(), aString))
+        if (StrEqualStringified(aBin[i]->c_str(), aString))
         {
-            return iHashTable[bin][i]();
+            return aBin[i];
         }
     }
 
     // Append a new string
-#ifdef YACAS_DEBUG
-    theNrTokens++;
-#endif
-    LispStringPtr str = NEW LispString();
+	DBG_( theNrTokens++; )
+    LispString * str = NEW LispString();
     str->SetStringStringified(aString);
 
     AppendString(bin,str);
     return str;
 }
+
 // If string not yet in table, insert. Afterwards return the string.
-LispStringPtr LispHashTable::LookUpUnStringify(LispCharPtr aString,
+LispString * LispHashTable::LookUpUnStringify(LispChar * aString,
                               LispBoolean aStringOwnedExternally)
 {
     Check(aString[0] == '\"',KLispErrInvalidArg);
     LispInt bin = LispHashUnStringify(aString);
-    LispInt i;
 
     // Find existing version of string
-    LispInt nrc=iHashTable[bin].NrItems();
-    for (i=0;i<nrc;i++)
+	CArrayGrower<LispStringSmartPtr> & aBin = iHashTable[bin];
+	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
-        if (StrEqualUnStringified((iHashTable[bin][i]())->String(), aString))
+        if (StrEqualUnStringified(aBin[i]->c_str(), aString))
         {
-            return iHashTable[bin][i]();
+            return aBin[i];
         }
-    }
+	}
 
     // Append a new string
-#ifdef YACAS_DEBUG
-    theNrTokens++;
-#endif
-    LispStringPtr str = NEW LispString();
+	DBG_( theNrTokens++; )
+    LispString * str = NEW LispString();
     str->SetStringUnStringified(aString);
     AppendString(bin,str);
     return str;
 }
 
-
-
 // GarbageCollect
 void LispHashTable::GarbageCollect()
 {
-    LispInt bin;
-    for (bin=0;bin<KSymTableSize;bin++)
+	//if (!m_isDirty) return;
+    for (LispInt bin = 0; bin < KSymTableSize; bin++)
     {
-        LispInt j;
-        LispInt nritems = iHashTable[bin].NrItems();
-        for (j=0;j<nritems;j++)
+		CArrayGrower<LispStringSmartPtr> & aBin = iHashTable[bin];
+		for (LispInt i = 0, n = aBin.Size(); i < n; i++)
         {
-            if (iHashTable[bin][j]()->ReferenceCount() == 1)
-            {
-                //printf("deleting [%s]\n",iHashTable[bin][j]->String());
-                iHashTable[bin][j].Set(NULL);
-                iHashTable[bin].Delete(j);
-                j--;
-                nritems--;
-            }
+            if (aBin[i]->iReferenceCount != 1) continue;
+            //printf("deleting [%s]\n",aBin[i]->String());
+			// this should be cheaper than 'aBin[i]=NULL;aBin.Delete(i)'
+			aBin[i] = aBin[n-1];
+			aBin[n-1] = (NULL);
+            aBin.Resize(n-1);
+            i--;
+            n--;
         }
     }
+	//m_isDirty = false;
 }
-

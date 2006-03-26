@@ -1,6 +1,5 @@
 /** \file choices.h switches that control debugging in source code.
  *  Uncomment the defines below to allow a specific type of compilation
- *
  */
 
 #ifndef __choices_h__
@@ -21,7 +20,6 @@
  */
 //#define NO_EXCEPTIONS
 
-
 /** Use Karatsuba multiplication instead of O(n^2) multiplication.
  *  WARNING! This is currently not working and not suggested unless
  *      you want to help debug it.
@@ -31,8 +29,6 @@
 /** Enable long reference counts. This makes EVERY object 2 bytes
  larger, so use only if needed.
  */
-// #define USE_LONG_REF_COUNTS
-
+//#define USE_LONG_REF_COUNTS
 
 #endif
-

@@ -15,7 +15,7 @@
 double GetDouble(LispObject* aInteger)
 {
   BigNumber* number = aInteger->Number(0);
-  if (number == NULL)
+  if (!number)
   {
     RaiseError("Argument is not a number: %s",aInteger->String());
   }

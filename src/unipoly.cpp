@@ -15,16 +15,16 @@
 void PrintPoly(ZZPoly& p)
 {
     int i;
-    for (i=0;i<p.NrItems();i++)
+    for (i=0;i<p.Size();i++)
     {
         printf("%d ",(int)(p[i]));
     }
-    printf("(%d)\n",p.NrItems());
+    printf("(%d)\n",p.Size());
 }
 void PrintPolyList(ZZPolyList& p)
 {
     int i;
-    for (i=0;i<p.NrItems();i++)
+    for (i=0;i<p.Size();i++)
         PrintPoly(*(p[i]));
     printf("\n");
 }
@@ -46,17 +46,17 @@ ZZMod::ZZMod(LispInt aMod) : iMod(aMod)
 
 void ZZPoly::DropEndZeroes()
 {
-    LispInt nr = NrItems();
-    if (nr>1) while (nr>1 && Item(nr-1) == 0) nr--;
-    SetNrItems(nr);
+    LispInt nr = Size();
+	value_type * aT = elements();
+    while (nr>1 && aT[nr-1] == 0) nr--;
+    Resize(nr);
 }
 inline void ZZPoly::Multiply(const ZZ& x,ZZMod& aMod)
 {
-    ZZ i,nr;
-    nr = NrItems();
-    for (i=0;i<nr;i++)
+	value_type * aT = elements();
+	for (ZZ i=0, nr = Size(); i < nr; i++)
     {
-        Item(i) = aMod.Mul(Item(i),x);
+        aT[i] = aMod.Mul(aT[i],x);
     }
 }
 
@@ -65,7 +65,7 @@ ZZPoly* ShowPat(ZZPoly& a)
 {
   ZZPoly* result = NEW ZZPoly();
   ZZ i;
-  for (i=a.NrItems()-2;i>=0;i--) result->Append(a[i]);
+  for (i=a.Size()-2;i>=0;i--) result->Append(a[i]);
   return result;
 }
 
@@ -172,7 +172,7 @@ void ModUniDivide(ZZPolyList& result,ZZPoly& u, ZZPoly& v, ZZMod& p)
             (*r)[j] = p.Mod((*r)[j] - (*q)[k]*v[j-k]);
         }
     }
-    r->SetNrItems(n);
+    r->Resize(n);
     r->DropEndZeroes();
     result.Append(q);
     result.Append(r);
@@ -291,7 +291,7 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
     PrintPolyList(v);
 #endif
 
-    if (v.NrItems()<2)
+    if (v.Size()<2)
     {
         ZZPoly *original = NEW ZZPoly;
         ZZ i;
@@ -303,8 +303,8 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
         aResult.Append(original);
         return;
     }
-    // aResult.NrItems() should be zero! 
-    LISPASSERT(aResult.NrItems() == 0);
+    // aResult.Size() should be zero! 
+    LISPASSERT(aResult.Size() == 0);
     ZZ s,nr;
     ZZPoly trial;
     ZZ tt;
@@ -333,18 +333,18 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
             delete res;
         }
     }
-    if (aResult.NrItems() == 0) return;
-    while(aResult.NrItems() < v.NrItems())
+    if (aResult.Size() == 0) return;
+    while(aResult.Size() < v.Size())
     {
         ZZPoly* next;
-//        LispInt nrr = aResult.NrItems();
-//        LispInt nrv = v.NrItems();
+//        LispInt nrr = aResult.Size();
+//        LispInt nrv = v.Size();
         next = aResult[0];
         aResult[0] = NULL;
         aResult.Delete(0);
         ZZPolyList newtoadd;
 
-        for(j=2;j<v.NrItems() && newtoadd.NrItems()+aResult.NrItems() <v.NrItems();j++)
+        for(j=2;j<v.Size() && newtoadd.Size()+aResult.Size() <v.Size();j++)
         {
             ZZ s,nr;
             ZZPoly trial;
@@ -352,7 +352,7 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
             nr = v[j]->Degree();
             for (s=0;s<=nr;s++) trial.Append((*v[j])[s]);
             tt = trial[0];
-            for(s=0;s<modulo && aResult.NrItems()+newtoadd.NrItems()<v.NrItems();s++)
+            for(s=0;s<modulo && aResult.Size()+newtoadd.Size()<v.Size();s++)
             {
                 ZZPoly* res;
                 trial[0] = p.Add(trial[0],-s);
@@ -371,7 +371,7 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
                 }
             }
         }
-        if (newtoadd.NrItems() == 0)
+        if (newtoadd.Size() == 0)
         {
             newtoadd.Append(next);
         }
@@ -381,7 +381,7 @@ void Berlekamp(ZZPolyList& aResult,ZZPoly& aPoly, ZZ modulo)
         }
         {
             ZZ i;
-            for (i=0;i<newtoadd.NrItems();i++)
+            for (i=0;i<newtoadd.Size();i++)
             {
                 aResult.Append(newtoadd[i]);
                 newtoadd[i] = NULL;

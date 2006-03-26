@@ -11,15 +11,15 @@ class FltkHintWindow
 {
 public:
   FltkHintWindow(int aTextSize);
-  void AddLine(LispCharPtr aText);
-  void AddDescription(LispCharPtr aText);
+  void AddLine(LispChar * aText);
+  void AddDescription(LispChar * aText);
   virtual void draw(int x, int y);
   int height();
 public:
-  LispCharPtr iText[MAX_HINT_LINES];
+  LispChar * iText[MAX_HINT_LINES];
   int iNrLines;
 
-  LispCharPtr iDescription[MAX_HINT_LINES];
+  LispChar * iDescription[MAX_HINT_LINES];
   int iNrDescriptions;
 
   int iMaxWidth;

@@ -1,5 +1,5 @@
 //
-// "$Id: fl_adjustable_file_chooser.H,v 1.1 2001-02-22 19:19:55 ayalpinkus Exp $"
+// "$Id: fl_adjustable_file_chooser.H,v 1.2 2006-03-26 12:49:13 ayalpinkus Exp $"
 //
 // File chooser header file for the Fast Light Tool Kit (FLTK).
 //
@@ -34,5 +34,5 @@ FL_EXPORT char *fl_adjustable_file_chooser(const char *message,const char *pat,c
 #endif
 
 //
-// End of "$Id: fl_adjustable_file_chooser.H,v 1.1 2001-02-22 19:19:55 ayalpinkus Exp $".
+// End of "$Id: fl_adjustable_file_chooser.H,v 1.2 2006-03-26 12:49:13 ayalpinkus Exp $".
 //

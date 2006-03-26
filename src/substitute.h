@@ -44,13 +44,13 @@ class LocalSymbolBehaviour : public SubstBehaviourBase
 {
 public:
     LocalSymbolBehaviour(LispEnvironment& aEnvironment,
-                         LispStringPtr* aOriginalNames,
-                         LispStringPtr* aNewNames, LispInt aNrNames);
+                         LispString ** aOriginalNames,
+                         LispString ** aNewNames, LispInt aNrNames);
     virtual LispBoolean Matches(LispPtr& aResult, LispPtr& aElement);
 private:
     LispEnvironment& iEnvironment;
-    LispStringPtr* iOriginalNames;
-    LispStringPtr* iNewNames;
+    LispString ** iOriginalNames;
+    LispString ** iNewNames;
     LispInt iNrNames;
 };
 

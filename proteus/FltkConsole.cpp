@@ -206,7 +206,7 @@ iInputDirty(1),iOutputDirty(1),iShowInput(1),iEnableInput(1)
                 for(i=0;buff[i] && buff[i] != '\n';++i)
                     ;
                 buff[i++] = '\0';
-                LispStringPtr ptr = NEW LispString(buff);
+                LispString * ptr = NEW LispString(buff);
                 iHistoryList.Append(ptr);
                 
             }
@@ -221,7 +221,7 @@ iInputDirty(1),iOutputDirty(1),iShowInput(1),iEnableInput(1)
 
 void FltkConsole::DeleteAll()
 {
-    int nr = iConsoleOut.NrItems();
+    int nr = iConsoleOut.Size();
     while (nr--)
     {
         delete iConsoleOut[0];
@@ -234,14 +234,14 @@ void FltkConsole::DeleteAll()
 }
 
 
-void FltkConsole::SaveNotePad(LispCharPtr aFile)
+void FltkConsole::SaveNotePad(LispChar * aFile)
 {
   FILE*f=fopen(aFile,"w");
   if(f)
   {
     fprintf(f,"Proteus'AddLink(\"True\",\"Saved note pad: %s\",False,False);\n",aFile);
     int i;
-    for (i=0;i<iConsoleOut.NrItems();i++)
+    for (i=0;i<iConsoleOut.Size();i++)
     {
       iConsoleOut[i]->Save(f);
     }
@@ -257,7 +257,7 @@ void FltkConsole::ResetNotepadState()
   iDefaultFontType = FL_HELVETICA_BOLD;
 }
 
-void FltkConsole::LoadNotePad(LispCharPtr aFile)
+void FltkConsole::LoadNotePad(LispChar * aFile)
 {
   ResetNotepadState();
 
@@ -268,7 +268,7 @@ void FltkConsole::LoadNotePad(LispCharPtr aFile)
   yacas->Evaluate(buf);
 
   extern LispString the_out;
-  the_out.SetNrItems(0);
+  the_out.Resize(0);
   the_out.Append('\0');
 
   iOutputHeight+=15; // for the cursor, TODO what was the define again for the cursor height?
@@ -367,7 +367,7 @@ void FltkConsole::LoadNotePad(LispCharPtr aFile)
                     }
                 }
             }
-            the_out.SetNrItems(0);
+            the_out.Resize(0);
             the_out.Append('\0');
         }
         fclose(f);
@@ -417,7 +417,7 @@ void FltkConsole::SaveHistory()
     }
     for (i=from;i<iHistoryList.NrLines();i++)
     {
-      LispStringPtr ptr = iHistoryList.GetLine(i);
+      LispString * ptr = iHistoryList.GetLine(i);
       fprintf(f,"%s\n",ptr->String());
     }
     fclose(f);
@@ -434,7 +434,7 @@ void FltkConsole::AddGroup(int aShowInput, int aEnableInput)
     AddOutput(iLast);
 }
 
-void FltkConsole::AddText(LispCharPtr aText,int color, const char* aPrompt,
+void FltkConsole::AddText(LispChar * aText,int color, const char* aPrompt,
                           int aFont, int aFontSize)
 {
     if (iLast == NULL)
@@ -487,7 +487,7 @@ void FltkConsole::Restart()
   DeleteAll();
   {
     extern LispPtr graph;
-    graph.Set(NULL);
+    graph = (NULL);
   }
   
   extern void RestartYacas();
@@ -591,7 +591,7 @@ void FltkConsole::DoLine(char* inpline)
         {
             if (addable)
               AddText(the_out.String(), FL_RED,printPrompt,FL_COURIER,font_size);
-            the_out.SetNrItems(0);
+            the_out.Resize(0);
             the_out.Append('\0');
         }
 
@@ -618,7 +618,7 @@ void FltkConsole::DoLine(char* inpline)
     }
 
 END:
-    LispCharPtr text = "";
+    LispChar * text = "";
     if (iCurrentHighlighted >= 0)
     {
         text = iConsoleOut[iCurrentHighlighted]->input();
@@ -637,16 +637,16 @@ END:
 }
  */
 
-void FltkConsole::SetInput(LispCharPtr aText, LispInt nr)
+void FltkConsole::SetInput(LispChar * aText, LispInt nr)
 {
-    iSubLine.SetNrItems(0);
+    iSubLine.Resize(0);
     LispInt i;
     for (i=0;i<nr;i++)
     {
         iSubLine.Append(aText[i]);
     }
-    if (cursor >= iSubLine.NrItems())
-    	cursor = iSubLine.NrItems()-1;
+    if (cursor >= iSubLine.Size())
+    	cursor = iSubLine.Size()-1;
 }
 void FltkConsole::GetHistory(LispInt aLine)
 {
@@ -667,7 +667,7 @@ void FltkConsole::MakeSureHighlightedVisible()
   }
   else
   {
-    int i,nr = iConsoleOut.NrItems();
+    int i,nr = iConsoleOut.Size();
     int iy = 0;
     for (i=0;i<nr && i<iCurrentHighlighted;i++)
     {
@@ -679,7 +679,7 @@ void FltkConsole::MakeSureHighlightedVisible()
     int hh=h();
     int ypos = console_scroll->yposition();
     int cellh = 0;
-    if (iConsoleOut.NrItems()>0)
+    if (iConsoleOut.Size()>0)
       cellh = iConsoleOut[iCurrentHighlighted]->height();
     if (iy < ypos || iy+cellh > ypos+cons_h)
     {
@@ -700,7 +700,7 @@ void FltkConsole::MakeSureHighlightedVisible()
     }
     else
     {
-        int i,nr = iConsoleOut.NrItems();
+        int i,nr = iConsoleOut.Size();
         int iy = y(), ih = h();
         int lowy = iy+ih-fl_height();
         int thisheight;
@@ -745,7 +745,7 @@ void FltkConsole::handle_key(int key)
     switch (key)
     {
     case eDelete:
-        if (cursor<iSubLine.NrItems()-1)
+        if (cursor<iSubLine.Size()-1)
         {
           if (iSubLine[cursor] == '(' || iSubLine[cursor] == ')')
           {
@@ -788,7 +788,7 @@ void FltkConsole::handle_key(int key)
         }
         break;
     case eRight:
-        if (cursor<iSubLine.NrItems()-1)
+        if (cursor<iSubLine.Size()-1)
         {
           if (iSubLine[cursor] == '(' || iSubLine[cursor] == ')')
           {
@@ -825,10 +825,10 @@ void FltkConsole::handle_key(int key)
             {
             }
             else
-              SetCurrentHighlighted(iConsoleOut.NrItems()-1);
+              SetCurrentHighlighted(iConsoleOut.Size()-1);
             SetOutputDirty();
             MakeSureHighlightedVisible();
-            cursor = iSubLine.NrItems()-1;
+            cursor = iSubLine.Size()-1;
             redraw(); //output changed
             Fl::flush();
             break;
@@ -852,7 +852,7 @@ void FltkConsole::handle_key(int key)
             if (iCurrentHighlighted < 0)
             {
             }
-            else if (iCurrentHighlighted < iConsoleOut.NrItems()-1)
+            else if (iCurrentHighlighted < iConsoleOut.Size()-1)
                 SetCurrentHighlighted(iCurrentHighlighted+1);
             else
                 SetCurrentHighlighted(-1);
@@ -860,7 +860,7 @@ void FltkConsole::handle_key(int key)
             MakeSureHighlightedVisible();
             redraw(); //output changed
             Fl::flush();
-            cursor = iSubLine.NrItems()-1;
+            cursor = iSubLine.Size()-1;
             break;
         }
 #endif
@@ -875,9 +875,9 @@ void FltkConsole::handle_key(int key)
         }
         break;
     case eEscape:
-        iSubLine.SetNrItems(1);
+        iSubLine.Resize(1);
         iSubLine[0] = '\0';
-        cursor = iSubLine.NrItems()-1;
+        cursor = iSubLine.Size()-1;
         iFullLineDirty = 1;
         DeleteHints();
         iCurrentHighlighted = -1;
@@ -888,11 +888,11 @@ void FltkConsole::handle_key(int key)
         cursor=0;
         break;
     case eEnd:
-        cursor=iSubLine.NrItems()-1;
+        cursor=iSubLine.Size()-1;
         break;
     case eEnter:
         DeleteHints();
-        if (iSubLine.NrItems()>1)
+        if (iSubLine.Size()>1)
         {
             iHistoryList.AddLine(iSubLine);
             CommandLineEnd();
@@ -904,7 +904,7 @@ void FltkConsole::handle_key(int key)
             if (iCurrentHighlighted>=0)
                 if (iConsoleOut[iCurrentHighlighted]->IsEditable())
                 {
-                    LispCharPtr text = strdup(iConsoleOut[iCurrentHighlighted]->input());
+                    LispChar * text = strdup(iConsoleOut[iCurrentHighlighted]->input());
                     DoLine(text);
                     free(text);
                 }
@@ -952,7 +952,7 @@ void DisposeHints()
 
 int LoadHints(char* file)
 {
-    hintTexts.SetNrItems(0);
+    hintTexts.Resize(0);
     FILE*f = fopen(file,"r");
 
     if (!f)
@@ -966,7 +966,7 @@ int LoadHints(char* file)
         int n = ftell(f);
         fseek(f,0,SEEK_SET);
         htex = (char*)malloc(n);
-        if(htex != NULL)
+        if(htex)
         {
             fread(htex,1,n,f);
             int i=0;
@@ -1002,7 +1002,7 @@ int LoadHints(char* file)
     {
         int i;
         for (i=0;i<256;i++) hoffsets[i] = -1;
-        int nr = hintTexts.NrItems();
+        int nr = hintTexts.Size();
         if (nr > 0)
         {
             hoffsets[(unsigned char)hintTexts[0].base[0]] = 0;
@@ -1015,14 +1015,14 @@ int LoadHints(char* file)
             }
         }
     }
-    return hintTexts.NrItems();
+    return hintTexts.Size();
 }
 
 
 FltkHintWindow* FltkConsole::TryToHint(char* text, int length)
 {
   FltkHintWindow* hints = NULL;
-  int nrhints = hintTexts.NrItems();
+  int nrhints = hintTexts.Size();
   int i,start;
   start = hoffsets[(unsigned char)text[0]];
   if (start<0)
@@ -1123,7 +1123,7 @@ int FltkConsole::handle(int event)
                 int i = 0;
                 int width = x() + (int)fl_width(INPUT_PROMPT);
 
-                for (i=0;i<iSubLine.NrItems()-1;i++)
+                for (i=0;i<iSubLine.Size()-1;i++)
                 {
                     int added = (int)fl_width(iSubLine[i]);
                     if (width + added > xx)
@@ -1151,7 +1151,7 @@ int FltkConsole::handle(int event)
                         fl_font(FL_HELVETICA,iDefaultFontSize);
                         int iy = y(), ih = h();
                         int lowy = iy+ih-fl_height();
-                        int i,nr = iConsoleOut.NrItems();
+                        int i,nr = iConsoleOut.Size();
                         for (i=nr-1;i>=0;i--)
                         {
                             if (lowy+0/*iOutputOffsetY*/ < iy)
@@ -1248,7 +1248,7 @@ int FltkConsole::handle(int event)
     return 1;
 }
 
-void FltkConsole::InsertText(const LispCharPtr aText)
+void FltkConsole::InsertText(const LispChar * aText)
 {
    while(*aText) 
    {
@@ -1288,7 +1288,7 @@ void FltkConsole::DrawInterEdit()
 {
     fl_clip(x(),y(),w(),h());
 
-    int i,nr = iConsoleOut.NrItems();
+    int i,nr = iConsoleOut.Size();
     int ix = x(),iy = y(), iw = w(), ih = h();
     int lowy = iy+ih-fl_height();
     int inputlowy = y()+h()-fl_height()-fl_descent();
@@ -1362,7 +1362,7 @@ void FltkConsole::DrawInputLine(int lowy)
 void FltkConsole::DrawUnderEdit()
 {
     int i,nr;
-    nr = iConsoleOut.NrItems();
+    nr = iConsoleOut.Size();
     int ix = x(),iy = y(), iw = w(), ih = h();
     int lowy = iy+ih-fl_height();
 
@@ -1422,7 +1422,7 @@ void FltkConsole::AddOutput(ConsoleOutBase* aOutput)
 
 void FltkConsole::DeleteHints()
 {
-    if (hints != NULL)
+    if (hints)
     {
         delete hints;
         hints = NULL;
@@ -1438,7 +1438,7 @@ FltkHintWindow* FltkConsole::CreateHints(int fontsize)
   iOutputDirty=1;
   return hints;
 }
-void FltkConsole::AddHintLine(FltkHintWindow* hints, LispCharPtr aText, LispCharPtr aDescription)
+void FltkConsole::AddHintLine(FltkHintWindow* hints, LispChar * aText, LispChar * aDescription)
 {
     hints->AddLine(aText);
     if (aDescription[0] != '\0')
@@ -1456,7 +1456,7 @@ void ConsoleFlatText::Save(FILE* f)
   fprintf(f,"Proteus'AddCommand(\"%s\");\n",iText.String());
 }
 
-ConsoleFlatText::ConsoleFlatText(LispCharPtr aText, int aColor, const char* aPrompt,
+ConsoleFlatText::ConsoleFlatText(LispChar * aText, int aColor, const char* aPrompt,
                                  int aFont,int aFontSize)
 {
     iText = aText;
@@ -1484,7 +1484,7 @@ int ConsoleFlatText::height(int draw_input)
     fl_font(iFont,iFontSize);
     return fl_height();
 }
-LispCharPtr ConsoleFlatText::input()
+LispChar * ConsoleFlatText::input()
 {
     return &iText[0];
 }
@@ -1497,7 +1497,7 @@ int ConsoleFlatText::Fontsize() const
 
 void ConsoleGrouped::Save(FILE* f)
 {
-  if (iConsoleOut.NrItems()>0 && iShowInput && iEnableInput)
+  if (iConsoleOut.Size()>0 && iShowInput && iEnableInput)
   {
     fprintf(f,":");
     if (!iShowInput) fprintf(f,"i");
@@ -1509,17 +1509,17 @@ void ConsoleGrouped::Save(FILE* f)
 
 int ConsoleGrouped::Fontsize() const
 {
-  if (iConsoleOut.NrItems()>0)
+  if (iConsoleOut.Size()>0)
     return iConsoleOut[0]->Fontsize();
   return 0;
 }
 
 
-LispCharPtr ConsoleGrouped::input()
+LispChar * ConsoleGrouped::input()
 {
     if (!iEnableInput)
         return "";
-    if (iConsoleOut.NrItems()>0)
+    if (iConsoleOut.Size()>0)
         return iConsoleOut[0]->input();
     return "";
 }
@@ -1536,7 +1536,7 @@ void ConsoleGrouped::draw(int x, int y, int width,int draw_input)
         from = 0;
     else
         from = 1;
-    nr = iConsoleOut.NrItems();
+    nr = iConsoleOut.Size();
     for (i=from;i<nr;i++)
     {
         iConsoleOut[i]->draw(x, y, width);
@@ -1551,7 +1551,7 @@ int ConsoleGrouped::height(int draw_input)
     else
         from = 1;
         
-    nr = iConsoleOut.NrItems();
+    nr = iConsoleOut.Size();
     h=0;
     for (i=from;i<nr;i++)
     {
@@ -1562,7 +1562,7 @@ int ConsoleGrouped::height(int draw_input)
 void ConsoleGrouped::DeleteAll()
 {
     int i,nr;
-    nr = iConsoleOut.NrItems();
+    nr = iConsoleOut.Size();
     for (i=0;i<nr;i++)
     {
         delete iConsoleOut[0];
@@ -1578,7 +1578,7 @@ int ConsoleGrouped::InputIsVisible()
     return iShowInput;
 }
 
-LispCharPtr ConsoleOutBase::input()
+LispChar * ConsoleOutBase::input()
 {
     return "";
 }
@@ -1608,7 +1608,7 @@ void ConsoleDrawer::draw(int x, int y, int width,int draw_input)
 {
   extern CYacas* yacas;
   extern LispString the_out;
-  if (iExecute.Get())
+  if (iExecute)
   {
     if (!pixmap)
     {
@@ -1635,7 +1635,7 @@ int ConsoleDrawer::height(int draw_input)
   return iHeight;
 }
 
-LispCharPtr ConsoleDrawer::input()
+LispChar * ConsoleDrawer::input()
 {
   return " ";
 }

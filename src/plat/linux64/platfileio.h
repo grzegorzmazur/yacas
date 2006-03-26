@@ -6,7 +6,7 @@ class LispLocalFile : public LispBase
 {
 public:
     LispLocalFile(LispEnvironment& aEnvironment,
-                  LispCharPtr aFileName, LispBoolean aRead,
+                  LispChar * aFileName, LispBoolean aRead,
                   InputDirectories& aInputDirectories);
     virtual ~LispLocalFile();
     virtual void Delete();
@@ -24,7 +24,7 @@ public:
     virtual LispChar Peek();
     virtual LispBoolean EndOfStream();
     void Rewind();
-    virtual LispCharPtr StartPtr();
+    virtual LispChar * StartPtr();
     virtual LispInt Position();
     virtual void SetPosition(LispInt aPosition);
 
@@ -47,12 +47,12 @@ public:
     virtual LispChar Peek();
     virtual LispBoolean EndOfStream();
     void Rewind();
-    virtual LispCharPtr StartPtr();
+    virtual LispChar * StartPtr();
     virtual LispInt Position();
     virtual void SetPosition(LispInt aPosition);
     
 private:
-    LispCharPtr iBuffer;
+    LispChar * iBuffer;
     LispInt iCurrentPos;
     LispInt iNrBytes;
 };
@@ -91,7 +91,7 @@ public:
     virtual LispChar Peek();
     virtual LispBoolean EndOfStream();
     void Rewind();
-    virtual LispCharPtr StartPtr();
+    virtual LispChar * StartPtr();
     virtual LispInt Position();
 
 private:
@@ -101,8 +101,8 @@ private:
 
 
 
-void InternalFindFile(LispCharPtr aFileName, InputDirectories& aInputDirectories,
-                     LispCharPtr aFoundFile);
+void InternalFindFile(LispChar * aFileName, InputDirectories& aInputDirectories,
+                     LispChar * aFoundFile);
 
 
 

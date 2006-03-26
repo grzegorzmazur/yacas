@@ -15,7 +15,7 @@ CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, Lis
 {
     iIndex = NULL;
     iIsValid = LispFalse;
-    if (iFullBuffer == NULL) return;
+    if (!iFullBuffer) return;
 
     // the archive cannot possibly be less than 8 bytes
     if (iFullSize < 8) return;
@@ -35,8 +35,8 @@ CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, Lis
     // from allocating too much memory
     if (iNrFiles>1000) return;
     
-    iIndex = (unsigned char **)PlatAlloc(iNrFiles*sizeof(unsigned char *));
-    if (iIndex == NULL) return;
+    iIndex = PlatAllocN<unsigned char *>(iNrFiles);
+    if (!iIndex) return;
 
     {
         LispInt i;
@@ -50,7 +50,7 @@ CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, Lis
             if (offset<=iIndexSize) return;
             if (offset+compressedsize > iFullSize) return;
             
-            ptr+=PlatStrLen((LispCharPtr)ptr)+1;
+            ptr+=PlatStrLen((LispChar *)ptr)+1;
 
             if ((ptr-iFullBuffer)>8+iIndexSize) return;
 
@@ -77,7 +77,7 @@ LispInt CompressedFiles::GetInt(unsigned char*&indptr)
     return ((((((c3<<8)+c2)<<8)+c1)<<8)+c0);
 }
 
-LispInt CompressedFiles::FindFile(LispCharPtr aName)
+LispInt CompressedFiles::FindFile(LispChar * aName)
 {
     LISPASSERT(IsValid());
     LispInt low=0, high=iNrFiles;
@@ -110,7 +110,7 @@ CONTINUE:
 }
 
 
-LispCharPtr CompressedFiles::Name(LispInt aIndex)
+LispChar * CompressedFiles::Name(LispInt aIndex)
 {
     LISPASSERT(IsValid());
     LISPASSERT(aIndex >= 0 && aIndex < iNrFiles);
@@ -118,7 +118,7 @@ LispCharPtr CompressedFiles::Name(LispInt aIndex)
     /* LispInt offset = */         GetInt(ptr);
     /* LispInt origsize = */       GetInt(ptr);
     /* LispInt compressedsize = */ GetInt(ptr);
-    return (LispCharPtr)ptr;
+    return (LispChar *)ptr;
 }
 void CompressedFiles::Sizes(LispInt& aOriginalSize, LispInt& aCompressedSize, LispInt aIndex)
 {
@@ -130,7 +130,7 @@ void CompressedFiles::Sizes(LispInt& aOriginalSize, LispInt& aCompressedSize, Li
     aCompressedSize = GetInt(ptr);
 }
 
-LispCharPtr CompressedFiles::Contents(LispInt aIndex)
+LispChar * CompressedFiles::Contents(LispInt aIndex)
 {
     LISPASSERT(IsValid());
     LISPASSERT(aIndex >= 0 && aIndex < iNrFiles);
@@ -140,13 +140,13 @@ LispCharPtr CompressedFiles::Contents(LispInt aIndex)
     LispInt compressedsize = GetInt(ptr);
 
 
-    LispCharPtr expanded = (LispCharPtr)PlatAlloc(origsize+1);
+    unsigned char * expanded = PlatAllocN<unsigned char>(origsize+1);
 
     lzo_uint new_len=origsize;
     int r = LZO_E_OK-1;
     if (iCompressed)
     {
-        r = lzo1x_decompress((unsigned char*)&iFullBuffer[offset],compressedsize,(unsigned char*)expanded,&new_len,NULL);
+        r = lzo1x_decompress(&iFullBuffer[offset],compressedsize,expanded,&new_len,NULL);
         if ((LispInt)new_len != (LispInt)origsize)
         {
             PlatFree(expanded);
@@ -158,7 +158,7 @@ LispCharPtr CompressedFiles::Contents(LispInt aIndex)
         if (compressedsize == origsize)
         {
             r = LZO_E_OK;
-            PlatMemCopy((LispCharPtr)expanded,(LispCharPtr)&iFullBuffer[offset],origsize);
+            PlatMemCopy(expanded,&iFullBuffer[offset],origsize);
         }
     }
     expanded[origsize] = '\0';
@@ -167,6 +167,6 @@ LispCharPtr CompressedFiles::Contents(LispInt aIndex)
         PlatFree(expanded);
         expanded = NULL;
     }
-    return expanded;
+    return (LispChar *)expanded;
 }
 

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-inline LispInt PlatStrLen(const LispCharPtr aString)
+inline LispInt PlatStrLen(const LispChar * aString)
 {
     return strlen(aString);
     /*Generic version
@@ -17,7 +17,7 @@ inline LispInt PlatStrLen(const LispCharPtr aString)
     */
 }
 
-inline LispInt StrEqual(LispCharPtr ptr1, LispCharPtr ptr2)
+inline LispInt StrEqual(const LispChar * ptr1, const LispChar * ptr2)
 {
     return !strcmp(ptr1,ptr2);
 /*
@@ -33,17 +33,17 @@ inline LispInt StrEqual(LispCharPtr ptr1, LispCharPtr ptr2)
 }
 
 
-inline void PlatMemCopy(LispCharPtr aTarget, LispCharPtr aSource, LispInt aNrBytes)
+inline void PlatMemCopy(void * aTarget, const void * aSource, LispInt aNrBytes)
 {
     memcpy(aTarget, aSource, aNrBytes);
 }
-inline void PlatMemMove(LispCharPtr aTarget, LispCharPtr aSource, LispInt aNrBytes)
+inline void PlatMemMove(void * aTarget, const void * aSource, LispInt aNrBytes)
 {
     memmove(aTarget, aSource, aNrBytes);
 }
 
 
-inline void PlatMemSet(LispCharPtr aTarget, LispChar aByte, LispInt aNrBytes)
+inline void PlatMemSet(LispChar * aTarget, LispChar aByte, LispInt aNrBytes)
 {
     memset(aTarget, aByte, aNrBytes);
 }

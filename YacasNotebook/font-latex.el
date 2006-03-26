@@ -9,7 +9,7 @@
 ;; Version:    0.504 (20 Oct 97)
 ;; Keywords:   LaTeX faces
 
-;; RCS $Id: font-latex.el,v 1.2 2001-03-06 18:04:35 belanger Exp $
+;; RCS $Id: font-latex.el,v 1.3 2006-03-26 12:49:13 ayalpinkus Exp $
 ;; Note: RCS version number does not correspond to release number.
 
 ;; LCD Archive Entry: (Not yet submitted!)

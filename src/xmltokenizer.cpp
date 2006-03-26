@@ -18,7 +18,7 @@ static int IsSpace(int c)
 }
 
 
-LispStringPtr XmlTokenizer::NextToken(LispInput& aInput,
+LispString * XmlTokenizer::NextToken(LispInput& aInput,
                                 LispHashTable& aHashTable)
 {
     LispChar c;

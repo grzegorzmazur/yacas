@@ -7,7 +7,7 @@ FltkHintWindow::FltkHintWindow(int aTextSize)
     : iNrLines(0), iNrDescriptions(0), iMaxWidth(0), iTextSize(aTextSize)
 {
 }
-void FltkHintWindow::AddLine(LispCharPtr aText)
+void FltkHintWindow::AddLine(LispChar * aText)
 {
   if (iNrLines >= MAX_HINT_LINES) return;
   iText[iNrLines] = aText;
@@ -19,7 +19,7 @@ void FltkHintWindow::AddLine(LispCharPtr aText)
   iNrLines++;
 }
 
-void FltkHintWindow::AddDescription(LispCharPtr aText)
+void FltkHintWindow::AddDescription(LispChar * aText)
 {
   if (iNrDescriptions >= MAX_HINT_LINES) return;
   iDescription[iNrDescriptions] = aText;

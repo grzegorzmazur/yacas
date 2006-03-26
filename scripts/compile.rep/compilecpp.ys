@@ -214,9 +214,9 @@ Use("corefunctions.ys");
     FindOnStack(stack,String(body[i]))["call"] := "/*ARGUMENT*/(":String(currentLastRegister):")";
 //hier
     Echo("  VmInitRegister(/*ARGUMENT*/(",currentLastRegister,"), ",CompiledConstant(String(body[i])),")"); instructionCount:=instructionCount+4;
-//    Echo("REGISTER(":String(currentLastRegister):").Set(",CompiledConstant(String(body[i])),");");
+//    Echo("REGISTER(":String(currentLastRegister):")/*.Set*/=(",CompiledConstant(String(body[i])),");");
     currentLastRegister++;
-//    Echo("LispPtr ",body[i],"; ",body[i],".Set(",CompiledConstant(String(body[i])),");");
+//    Echo("LispPtr ",body[i],"; ",body[i],"/*.Set*/=",CompiledConstant(String(body[i])),");");
 
   ];
   Echo("  VmPushConstant(",CompiledConstant("True"),")");  instructionCount:=instructionCount+3;
@@ -377,7 +377,8 @@ FromFile(file)
 
 fileBuildString:=
 "
-/* This file was automatically generated with compilecpp.
+/* <?WriteString(pluginName:\".cpp\");?>
+ * This file was generated from <?WriteString(file);?> by compilecpp.ys .
 */
 
 //#include <stdio.h>
@@ -402,7 +403,6 @@ fileBuildString:=
 #include \"vm.h\"
 #endif // OPTIMIZE_COMPILED_PLUGIN_SIZE
 
-
 //#define _this_stack (aEnvironment.iStack)
 #define ATOM(_x) LispAtom::New(aEnvironment,_x)
 #define RESULT _this_stack.GetElement(aStackTop)
@@ -416,8 +416,8 @@ fileBuildString:=
 #define ISTRUE(_x) IsTrue(aEnvironment, _x)
 #define ISFALSE(_x) IsFalse(aEnvironment, _x)
 
-
 #ifdef OPTIMIZE_COMPILED_PLUGIN_SIZE
+
     #define VmFunction(name) \\
       void Compiled_##name(LispEnvironment& aEnvironment,LispInt aStackTop) \\
       { \\
@@ -450,8 +450,8 @@ fileBuildString:=
   #endif
   
   #define VmConsList(_n)          CodeVmConsList,_n,
-#else
 
+#else
 
   #define VmFunction(name)    void Compiled_##name(LispEnvironment& aEnvironment,LispInt aStackTop) { register LispEnvironment::YacasArgStack& _this_stack = aEnvironment.iStack; 
   #define VmFunctionEnd()        }
@@ -462,31 +462,35 @@ fileBuildString:=
   #define VmLabel(_label)          _label:;
   
   #define VmPushNulls(_nr)            _this_stack.PushNulls(_nr);
-  #define VmPush(_index)          PUSH(ARGUMENT(_index).Get());
+  #define VmPush(_index)          PUSH(ARGUMENT(_index)/*.Get()*/);
   #define VmPushConstant(_constnt) PUSH(CONSTANTS[_constnt]);
   
-  #define VmInitRegister(_index,_constant) ARGUMENT(_index).Set(CONSTANTS[_constant]);
-  #define VmSetRegister(_index) ARGUMENT(_index).Set(STACK(STACKTOP()-1).Get());
-  
+  #define VmInitRegister(_index,_constant) ARGUMENT(_index)/*.Set*/=(CONSTANTS[_constant]);
+  #define VmSetRegister(_index) ARGUMENT(_index)/*.Set*/=(STACK(STACKTOP()-1)/*.Get()*/);
+
   #define VmPop(_i)               _this_stack.PopTo(_this_stack.GetStackTop() - _i);
   #define VmCall(fname,nargs)     fname(aEnvironment,STACKTOP()-(nargs+1) );
-  
   
   #define VmConsList(_n)                                                     \\
     {                                                                       \\
       LispInt i,stacktop = STACKTOP();                                      \\
       for (i=0;i<_n;i++)                                                    \\
       {                                                                     \\
-        STACK(stacktop-2).Set(STACK(stacktop-2).Get()->Copy(LispFalse));    \\
-        STACK(stacktop-2).Get()->Next().Set(STACK(stacktop-1).Get());       \\
+        STACK(stacktop-2)/*.Set*/=(STACK(stacktop-2)/*.Get()*/->Copy(LispFalse));    \\
+        STACK(stacktop-2)/*.Get()*/->Next()/*.Set*/=(STACK(stacktop-1)/*.Get()*/);       \\
         POP(1);  stacktop--;                                                \\
       }                                                                     \\
-      STACK(stacktop-1).Set(LispSubList::New(STACK(stacktop-1).Get()));     \\
+      STACK(stacktop-1)/*.Set*/=(LispSubList::New(STACK(stacktop-1)/*.Get()*/));     \\
     }
 
 #endif // OPTIMIZE_COMPILED_PLUGIN_SIZE
 
-static LispObject* CONSTANTS[<?Write(Length(constDefs));?>];
+#define HAS_NEW_CONSTANTS_IMPL 0
+#if !HAS_NEW_CONSTANTS_IMPL
+static LispObject*        CONSTANTS[<?Write(Length(constDefs));?>];
+#else
+static RefPtr<LispObject> CONSTANTS[<?Write(Length(constDefs));?>];
+#endif
 
 #ifdef OPTIMIZE_COMPILED_PLUGIN_SIZE
 <?
@@ -516,7 +520,6 @@ public:
 
 void <?WriteString(\"Plugin_\":pluginName);?>::Add(LispEnvironment& aEnvironment)
 {
-
 <?
   [
     Local(i);
@@ -524,12 +527,16 @@ void <?WriteString(\"Plugin_\":pluginName);?>::Add(LispEnvironment& aEnvironment
     ForEach(item,constDefs)
     [
       Echo(\"CONSTANTS[\",item[2],\"] = ATOM(\",String(item[1]),\");\");
-      Echo(\"CONSTANTS[\",item[2],\"]->IncreaseRefCount();\");
       Set(i,i+1);
     ];
   ];
 ?>
-
+#if !HAS_NEW_CONSTANTS_IMPL
+   for (int ii = (sizeof(CONSTANTS)/sizeof(CONSTANTS[0]))-1; ii >= 0; --ii)
+   {
+      ++CONSTANTS[ii]->iReferenceCount;
+   }
+#endif
 <?
 [
   Local(cname,fname,nrargs,t1,t2);
@@ -541,15 +548,17 @@ Echo(\"  aEnvironment.SetCommand(\",cname,\",\",String(fname),\",\",nrargs,\",Ya
 ];
 ?>
 }
+
 void <?WriteString(\"Plugin_\":pluginName);?>::Remove(LispEnvironment& aEnvironment)
 {
-<?
-  ForEach(item,constDefs)
-  [
-    Echo(\"if (!CONSTANTS[\",item[2],\"]->DecreaseRefCount()) delete CONSTANTS[\",item[2],\"];\");
-  ];
-?>
-
+   for (int ii = (sizeof(CONSTANTS)/sizeof(CONSTANTS[0]))-1; ii >= 0; --ii)
+   {
+	  #if !HAS_NEW_CONSTANTS_IMPL
+         if (!--CONSTANTS[ii]->iReferenceCount) delete CONSTANTS[ii];
+      #else
+         CONSTANTS[ii] = 0;
+      #endif
+   }
 <?
 [
   Local(cname,fname,nrargs,t1,t2);
@@ -578,10 +587,7 @@ LispPluginBase* <?WriteString(\"make_\":pluginName);?>(void)
     return NEW <?WriteString(\"Plugin_\":pluginName);?>;
 }
 
-
-
-
-
+// end of <?WriteString(pluginName:\"Plugin_\");?>
 ";
 //{cname,fname,nrargs}
 

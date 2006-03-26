@@ -135,7 +135,7 @@ void Drawer::draw()
 {
     extern LispEnvironment* graphEnvironment;
     extern LispPtr graph;
-    if (graph.Get())
+    if (graph)
     {
         char buf[300];
         sprintf(buf,"FlWindow:={%d,%d,%d,%d};",
@@ -144,7 +144,7 @@ void Drawer::draw()
                 (int)w(),
                 (int)h());
         yacas->Evaluate(buf);
-        the_out.SetNrItems(0);
+        the_out.Resize(0);
         the_out.Append('\0');
         fl_clip(x(),y(),w(),h());
         LispPtr result;
@@ -273,7 +273,7 @@ void cb_notepad(Fl_Widget* o, void* v)
 {
     char *newfile;
     newfile = fl_file_chooser("Open file?","*","");
-    if (newfile != NULL)
+    if (newfile)
     {
         console->LoadNotePad(newfile);
         console->redraw();
@@ -285,7 +285,7 @@ void cb_save_notepad(Fl_Widget* o, void* v)
 {
     char *newfile;
     newfile = fl_file_chooser("Save to file?",NULL,"");
-    if (newfile != NULL)
+    if (newfile)
     {
         console->SaveNotePad(newfile);
     }
@@ -415,9 +415,9 @@ void LispEnableInput(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispNotepad(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    CHK_ARG_CORE(ARGUMENT(1).Get() != NULL, 1);
-    LispStringPtr orig = ARGUMENT(1).Get()->String();
-    CHK_ARG_CORE(orig != NULL, 1);
+    CHK_ARG_CORE(ARGUMENT(1), 1);
+    LispString * orig = ARGUMENT(1)->String();
+    CHK_ARG_CORE(orig, 1);
     LispString oper;
     InternalUnstringify(oper, orig);
     if (oper[0] == '\0') RaiseError("Could not open notepad file %s for reading",&oper[0]);
@@ -428,9 +428,9 @@ void LispNotepad(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispNotepadAddCommand(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  CHK_ARG_CORE(ARGUMENT(1).Get() != NULL, 1);
-  LispStringPtr orig = ARGUMENT(1).Get()->String();
-  CHK_ARG_CORE(orig != NULL, 1);
+  CHK_ARG_CORE(ARGUMENT(1), 1);
+  LispString * orig = ARGUMENT(1)->String();
+  CHK_ARG_CORE(orig, 1);
   LispString oper;
   InternalUnstringify(oper, orig);
   console->AddGroup(1, 1);
@@ -460,22 +460,22 @@ void LispNotepadAddCommand(LispEnvironment& aEnvironment,LispInt aStackTop)
     }
   }
   extern LispString the_out;
-  the_out.SetNrItems(0);
+  the_out.Resize(0);
   the_out.Append('\0');
   InternalTrue(aEnvironment,RESULT);
 }
 
 void LispNotepadAddLink(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  LispStringPtr orig;
-  CHK_ARG_CORE(ARGUMENT(1).Get() != NULL, 1);
-  orig = ARGUMENT(1).Get()->String();
-  CHK_ARG_CORE(orig != NULL, 1);
+  LispString * orig;
+  CHK_ARG_CORE(ARGUMENT(1), 1);
+  orig = ARGUMENT(1)->String();
+  CHK_ARG_CORE(orig, 1);
   LispString oper;
   InternalUnstringify(oper, orig);
-  CHK_ARG_CORE(ARGUMENT(2).Get() != NULL, 2);
-  orig = ARGUMENT(2).Get()->String();
-  CHK_ARG_CORE(orig != NULL, 1);
+  CHK_ARG_CORE(ARGUMENT(2), 2);
+  orig = ARGUMENT(2)->String();
+  CHK_ARG_CORE(orig, 1);
   LispString text;
   InternalUnstringify(text, orig);
 
@@ -485,7 +485,7 @@ void LispNotepadAddLink(LispEnvironment& aEnvironment,LispInt aStackTop)
   console->AddGroup(showinput, enableinput);
   console->AddText(&oper[0], console->NotepadFontColor(),"",console->NotepadFontType(),console->NotepadFontSize());
 
-  char* buf = (char*)malloc(text.NrItems()+1); //TODO check for null pointer
+  char* buf = (char*)malloc(text.Size()+1); //TODO check for null pointer
   strcpy(buf,&text[0]);
   char*start=buf;
   char*end;
@@ -560,14 +560,15 @@ void GetProteusConfiguration()
 
 void RestartYacas()
 {
-    if (yacas != NULL)
+    if (yacas)
         delete yacas;
     yacas=NULL;
     line=0;
 
-    yacas = CYacas::NewL(new StringOutput(the_out));
+    yacas = CYacas::NewL(NEW StringOutput(the_out));
 
-#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) (*yacas)()().SetCommand(fname,iname,nrargs,flags)
+#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) yacas->getDefEnv().getEnv().SetCommand(fname,iname,nrargs,flags)
+
 CORE_KERNEL_FUNCTION("NoteShowInput",LispShowInput,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("NoteEnableInput",LispEnableInput,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
 CORE_KERNEL_FUNCTION("Notepad",LispNotepad,1,YacasEvaluator::Function | YacasEvaluator::Fixed);
@@ -592,7 +593,7 @@ CORE_KERNEL_FUNCTION("Proteus'FontColor",LispNotepadFontColor,1,YacasEvaluator::
       sprintf(cmd,"DefaultDirectory(\"%s/scripts/\");",defdir);
       
     yacas->Evaluate(cmd);
-    AddGraphingCapabilities((*yacas)()());
+    AddGraphingCapabilities(yacas->getDefEnv().getEnv());
     yacas->Evaluate("Load(\"yacasinit.ys\");");
     yacas->Evaluate("DefLoad(\"flplot.ys\");");
     console->LoadNotePad(notepad_to_load);

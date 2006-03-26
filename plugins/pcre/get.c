@@ -207,7 +207,7 @@ for (i = 0; i < double_count; i += 2)
   size += sizeof(char *) + ovector[i+1] - ovector[i] + 1;
 
 stringlist = (char **)(pcre_malloc)(size);
-if (stringlist == NULL) return PCRE_ERROR_NOMEMORY;
+if (!stringlist) return PCRE_ERROR_NOMEMORY;
 
 *listptr = (const char **)stringlist;
 p = (char *)(stringlist + stringcount + 1);
@@ -282,7 +282,7 @@ if (stringnumber < 0 || stringnumber >= stringcount)
 stringnumber *= 2;
 yield = ovector[stringnumber+1] - ovector[stringnumber];
 substring = (char *)(pcre_malloc)(yield + 1);
-if (substring == NULL) return PCRE_ERROR_NOMEMORY;
+if (!substring) return PCRE_ERROR_NOMEMORY;
 memcpy(substring, subject + ovector[stringnumber], yield);
 substring[yield] = 0;
 *stringptr = substring;

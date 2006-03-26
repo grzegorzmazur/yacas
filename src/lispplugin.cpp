@@ -16,7 +16,7 @@ LispDllBase::~LispDllBase()
 }
 
 /* default functionality fails to open a library */
-LispInt LispDllBase::Open(LispCharPtr aDllFile, LispEnvironment& aEnvironment)
+LispInt LispDllBase::Open(LispChar * aDllFile, LispEnvironment& aEnvironment)
 {
     return 0;
 }
@@ -25,7 +25,7 @@ LispInt LispDllBase::Close(LispEnvironment& aEnvironment)
     return 0;
 }
 
-LispCharPtr LispDllBase::DllFileName() const
+LispChar * LispDllBase::DllFileName() const
 {
     return &iDllFileName[0];
 }
@@ -37,7 +37,7 @@ LispPluginBase* LispDllBase::Plugin(void)
 }
 
 /* default functionality fails to open a library */
-LispPluginBase* LispDllBase::GetPlugin(LispCharPtr aDllFile)
+LispPluginBase* LispDllBase::GetPlugin(LispChar * aDllFile)
 {
     return NULL;
 }

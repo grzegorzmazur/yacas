@@ -17,7 +17,7 @@ double add_doubles(double a, double b)
 
 Bla* CreateBla(int aa, int ab)
 {
-    Bla* bla = (Bla*)PlatAlloc(sizeof(Bla));
+    Bla* bla = PlatAllocN<Bla>(1);
     bla->a = aa;
     bla->b = ab;
     return bla;
@@ -32,7 +32,7 @@ int BlaGetA(Bla* bla)
 }
 void Bla_free(void* bla)
 {
-    PlatFree((LispCharPtr)bla);
+    PlatFree(bla);
 }
 /*
  - StubApiCStructFree("base_Bla_free","Bla_free");

@@ -11,10 +11,10 @@ LispUserFunction* LispMultiUserFunction::UserFunc(LispInt aArity)
 {
     LispInt i;
     //Find function body with the right arity
-    LispInt nrc=iFunctions.NrItems();
+    LispInt nrc=iFunctions.Size();
     for (i=0;i<nrc;i++)
     {
-        LISPASSERT(iFunctions[i] != NULL);
+        LISPASSERT(iFunctions[i]);
         if (iFunctions[i]->IsArity(aArity))
         {
             return iFunctions[i];
@@ -30,10 +30,10 @@ void LispMultiUserFunction::DeleteBase(LispInt aArity)
 {
     LispInt i;
     //Find function body with the right arity
-    LispInt nrc=iFunctions.NrItems();
+    LispInt nrc=iFunctions.Size();
     for (i=0;i<nrc;i++)
     {
-        LISPASSERT(iFunctions[i] != NULL);
+        LISPASSERT(iFunctions[i]);
         if (iFunctions[i]->IsArity(aArity))
         {
             delete iFunctions[i];
@@ -49,12 +49,12 @@ LispMultiUserFunction::~LispMultiUserFunction()
 {
 }
 
-void LispMultiUserFunction::HoldArgument(LispStringPtr aVariable)
+void LispMultiUserFunction::HoldArgument(LispString * aVariable)
 {
     LispInt i;
-    for (i=0;i<iFunctions.NrItems();i++)
+    for (i=0;i<iFunctions.Size();i++)
     {
-        LISPASSERT(iFunctions[i] != NULL);
+        LISPASSERT(iFunctions[i]);
         iFunctions[i]->HoldArgument(aVariable);
     }
 }
@@ -63,11 +63,11 @@ void LispMultiUserFunction::DefineRuleBase(LispArityUserFunction* aNewFunction)
 {
     LispInt i;
     //Find function body with the right arity
-    LispInt nrc=iFunctions.NrItems();
+    LispInt nrc=iFunctions.Size();
     for (i=0;i<nrc;i++)
     {
-        LISPASSERT(iFunctions[i] != NULL);
-        LISPASSERT(aNewFunction != NULL);
+        LISPASSERT(iFunctions[i]);
+        LISPASSERT(aNewFunction);
         Check(!iFunctions[i]->IsArity(aNewFunction->Arity()),KLispErrArityAlreadyDefined);
         Check(!aNewFunction->IsArity(iFunctions[i]->Arity()),KLispErrArityAlreadyDefined);
     }

@@ -4033,7 +4033,7 @@ class MathCommands
         strInd++;
       }
       String tag = new String();
-//TODO remove    tag.SetNrItems(0);
+//TODO remove    tag.Resize(0);
     
       tag = tag + "\"";
       while (LispTokenizer.IsAlpha(str.charAt(strInd)))

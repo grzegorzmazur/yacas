@@ -139,7 +139,7 @@ void CYacasServerSession::Evaluate()
       result().text.Format(_L("%s\n%s\r\n"),
                            &theOutput->iString.String()[0],
                            iYacas->Result());
-      theOutput->iString.SetNrItems(0);
+      theOutput->iString.Resize(0);
       theOutput->iString.Append('\0');
     }
     else

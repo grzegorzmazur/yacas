@@ -42,11 +42,11 @@ additionally LaTeX, dvips, and makeindex to generate PostScript and PDF files.
 To compile and install, do the following:
 
 * login to the CVS server by giving the command
-     cvs -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas login
-  Press return when asked for a passward.
+     cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/yacas login
+  Press return when asked for a password.
 
 * checkout the source tree with the command
-     cvs -z3 -d:pserver:anonymous@cvs.yacas.sourceforge.net:/cvsroot/yacas co yacas
+     cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/yacas co yacas
 
 * change into the 'yacas' directory.
 

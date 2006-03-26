@@ -14,6 +14,10 @@
 // we need this only for digits_to_bits
 #include "numbers.h"
 
+#ifdef YACAS_DEBUG
+#include <stdio.h>
+#endif
+
 #define InternalEval iEvaluator->Eval
 
 
@@ -84,24 +88,16 @@ LispEnvironment::~LispEnvironment()
 {
     PopLocalFrame();
 
-    {
+	DBG_printf("Entered environment destructor, %d DLLs loaded\n",iDlls.Size());
+	for (LispInt i=0,nr=iDlls.Size(); i<nr; i++)
+	{
+		DBG_printf("Closing DLL \"%s\"\n",iDlls[i]->DllFileName());
+		iDlls[i]->Close(*this);
+		//delete iDlls[i]; iDlls[i] = NULL;	// TODO: not needed? right?
+	}
+	//iDlls.Clear();						// TODO: not needed? right?
 
-        LispInt i,nr=iDlls.NrItems();
-#ifdef YACAS_DEBUG
-      printf("Entered environment destructor, %d DLLs loaded\n",nr);
-#endif// YACAS_DEBUG
-        for (i=0;i<nr;i++)
-        {
-#ifdef YACAS_DEBUG
-          printf("Closing DLL \"%s\"\n",iDlls[i]->DllFileName());
-#endif // YACAS_DEBUG
-            iDlls[i]->Close(*this);
-            delete iDlls[i];
-            iDlls[i] = NULL;
-        }
-    }
-    
-    LISPASSERT(iLocalsList == NULL);
+    LISPASSERT(!iLocalsList);
     delete iEvaluator;
     if (iDebugger) delete iDebugger;
     delete iArchive;
@@ -119,13 +115,13 @@ LispInt LispEnvironment::GetUniqueId()
 }
 
 
-LispPtr *LispEnvironment::FindLocal(LispStringPtr aVariable)
+LispPtr *LispEnvironment::FindLocal(LispString * aVariable)
 {
-    Check(iLocalsList != NULL,KLispErrInvalidStack);
-//    Check(iLocalsList->iFirst != NULL,KLispErrInvalidStack);
+    Check(iLocalsList,KLispErrInvalidStack);
+//    Check(iLocalsList->iFirst,KLispErrInvalidStack);
     LispLocalVariable *t = iLocalsList->iFirst;
 
-    while (t != NULL)
+    while (t)
     {
         if (t->iVariable == aVariable)
         {
@@ -136,25 +132,25 @@ LispPtr *LispEnvironment::FindLocal(LispStringPtr aVariable)
     return NULL;
 }
 
-void LispEnvironment::SetVariable(LispStringPtr aVariable, LispPtr& aValue)
+void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue)
 {
     LispPtr *local = FindLocal(aVariable);
-    if (local != NULL)
+    if (local)
     {
-        local->Set(aValue.Get());
+        (*local) = (aValue);
         return;
     }
 
     iGlobals.SetAssociation(LispGlobalVariable(aValue), aVariable);
 }
 
-void LispEnvironment::GetVariable(LispStringPtr aVariable,LispPtr& aResult)
+void LispEnvironment::GetVariable(LispString * aVariable,LispPtr& aResult)
 {
-    aResult.Set(NULL);
+    aResult = (NULL);
     LispPtr *local = FindLocal(aVariable);
-    if (local != NULL)
+    if (local)
     {
-        aResult.Set(local->Get());
+        aResult = ((*local));
         return;
     }
     LispGlobalVariable *l = iGlobals.LookUp(aVariable);
@@ -163,31 +159,31 @@ void LispEnvironment::GetVariable(LispStringPtr aVariable,LispPtr& aResult)
         if (l->iEvalBeforeReturn)
         {
             InternalEval(*this, aResult, l->iValue);
-            l->iValue.Set(aResult.Get());
+            l->iValue = (aResult);
             l->iEvalBeforeReturn = LispFalse;
             return;
         }
         else
         {
-            aResult.Set(l->iValue.Get());
+            aResult = (l->iValue);
             return;
         }
     }
 }
 
-void LispEnvironment::SetGlobalEvaluates(LispStringPtr aVariable)
+void LispEnvironment::SetGlobalEvaluates(LispString * aVariable)
 {
     LispGlobalVariable *l = iGlobals.LookUp(aVariable);
-    Check(l != NULL,KLispErrInvalidArg);
+    Check(l,KLispErrInvalidArg);
     l->SetEvalBeforeReturn(LispTrue);
 }
 
-void LispEnvironment::UnsetVariable(LispStringPtr aString)
+void LispEnvironment::UnsetVariable(LispString * aString)
 {
     LispPtr *local = FindLocal(aString);
-    if (local != NULL)
+    if (local)
     {
-        local->Set(NULL);
+        (*local) = (NULL);
         return;
     }
     iGlobals.Release(aString);
@@ -211,15 +207,15 @@ void LispEnvironment::PushLocalFrame(LispBoolean aFenced)
 
 void LispEnvironment::PopLocalFrame()
 {
-    LISPASSERT(iLocalsList != NULL);
+    LISPASSERT(iLocalsList);
     LocalVariableFrame *nextFrame = iLocalsList->iNext;
     delete iLocalsList;
     iLocalsList = nextFrame;
 }
 
-void LispEnvironment::NewLocal(LispStringPtr aVariable,LispObject* aValue)
+void LispEnvironment::NewLocal(LispString * aVariable,LispObject* aValue)
 {
-    LISPASSERT(iLocalsList != NULL);
+    LISPASSERT(iLocalsList);
     iLocalsList->Add(NEW LispLocalVariable(aVariable, aValue));
 }
 
@@ -230,13 +226,13 @@ void LispEnvironment::CurrentLocals(LispPtr& aResult)
 
   LispEnvironment& aEnvironment = *this; //Pity, but we need this for the macros to work
   LispObject* locals = NULL;
-  while (ptr != NULL)
+  while (ptr)
   {
-    locals = LA(ATOML(ptr->iVariable->String()))+LA(locals);
-//    printf("%s ",ptr->iVariable->String());
+    locals = LA(ATOML(ptr->iVariable->c_str()))+LA(locals);
+//    printf("%s ",ptr->iVariable->c_str());
     ptr = ptr->iNext;
   }
-  aResult.Set(LIST(LA(ATOML("List")) + LA(locals)));  
+  aResult = (LIST(LA(ATOML("List")) + LA(locals)));  
 }
 
 
@@ -294,9 +290,8 @@ void LispEnvironment::SetCurrentOutput(LispOutput* aOutput)
 LispUserFunction* LispEnvironment::UserFunction(LispPtr& aArguments)
 {
     LispMultiUserFunction* multiUserFunc =
-        iUserFunctions.LookUp(aArguments.Get()->String());
-//    CHECKPTR(multiUserFunc);
-    if (multiUserFunc != NULL)
+        iUserFunctions.LookUp(aArguments->String());
+    if (multiUserFunc)
     {
         LispInt arity = InternalListLength(aArguments)-1;
         CHECKPTR(multiUserFunc->UserFunc(arity));
@@ -306,10 +301,10 @@ LispUserFunction* LispEnvironment::UserFunction(LispPtr& aArguments)
 }
 
 
-LispUserFunction* LispEnvironment::UserFunction(LispStringPtr aName,LispInt aArity)
+LispUserFunction* LispEnvironment::UserFunction(LispString * aName,LispInt aArity)
 {
     LispMultiUserFunction* multiUserFunc = iUserFunctions.LookUp(aName);
-    if (multiUserFunc != NULL)
+    if (multiUserFunc)
     {
         return  multiUserFunc->UserFunc(aArity);
     }
@@ -318,18 +313,18 @@ LispUserFunction* LispEnvironment::UserFunction(LispStringPtr aName,LispInt aAri
 
 
 
-void LispEnvironment::UnFenceRule(LispStringPtr aOperator,LispInt aArity)
+void LispEnvironment::UnFenceRule(LispString * aOperator,LispInt aArity)
 {
     LispMultiUserFunction* multiUserFunc =
         iUserFunctions.LookUp(aOperator);
 
-    Check(multiUserFunc != NULL, KLispErrInvalidArg);
+    Check(multiUserFunc, KLispErrInvalidArg);
     LispUserFunction* userFunc = multiUserFunc->UserFunc(aArity);
-    Check(userFunc != NULL, KLispErrInvalidArg);
+    Check(userFunc, KLispErrInvalidArg);
     userFunc->UnFence();
 }
 
-void LispEnvironment::Retract(LispStringPtr aOperator,LispInt aArity)
+void LispEnvironment::Retract(LispString * aOperator,LispInt aArity)
 {
     LispMultiUserFunction* multiUserFunc = iUserFunctions.LookUp(aOperator);
     if (multiUserFunc)
@@ -338,14 +333,14 @@ void LispEnvironment::Retract(LispStringPtr aOperator,LispInt aArity)
     }
 }
 
-void LispEnvironment::DeclareRuleBase(LispStringPtr aOperator,
+void LispEnvironment::DeclareRuleBase(LispString * aOperator,
                                       LispPtr& aParameters,
                                       LispInt aListed)
 {
     LispMultiUserFunction* multiUserFunc = MultiUserFunction(aOperator);
 
     /*
-     if (multiUserFunc->iFileToOpen != NULL)
+     if (multiUserFunc->iFileToOpen)
     {
         LISPASSERT(multiUserFunc->iFileToOpen->iIsLoaded);
         }
@@ -363,15 +358,10 @@ void LispEnvironment::DeclareRuleBase(LispStringPtr aOperator,
     }
     multiUserFunc->DefineRuleBase(newFunc);
 
-#ifdef YACAS_DEBUG
-    {
-        extern long theNrDefinedUser;
-        theNrDefinedUser++;
-    }
-#endif
+	DBG_({ extern long theNrDefinedUser; theNrDefinedUser++; })
 }
 
-void LispEnvironment::DeclareMacroRuleBase(LispStringPtr aOperator, LispPtr& aParameters, LispInt aListed)
+void LispEnvironment::DeclareMacroRuleBase(LispString * aOperator, LispPtr& aParameters, LispInt aListed)
 {
     LispMultiUserFunction* multiUserFunc = MultiUserFunction(aOperator);
     MacroUserFunction *newFunc;
@@ -385,31 +375,26 @@ void LispEnvironment::DeclareMacroRuleBase(LispStringPtr aOperator, LispPtr& aPa
     }
     multiUserFunc->DefineRuleBase(newFunc);
 
-#ifdef YACAS_DEBUG
-    {
-        extern long theNrDefinedUser;
-        theNrDefinedUser++;
-    }
-#endif
+	DBG_({ extern long theNrDefinedUser; theNrDefinedUser++; })
 }
 
 
 
 
-LispMultiUserFunction* LispEnvironment::MultiUserFunction(LispStringPtr aOperator)
+LispMultiUserFunction* LispEnvironment::MultiUserFunction(LispString * aOperator)
 {
     // Find existing multiuser func.
     LispMultiUserFunction* multiUserFunc =
         iUserFunctions.LookUp(aOperator);
 
     // If none exists, add one to the user functions list
-    if (multiUserFunc == NULL)
+    if (!multiUserFunc)
     {
         LispMultiUserFunction newMulti;
         iUserFunctions.SetAssociation(newMulti, aOperator);
         multiUserFunc =
             iUserFunctions.LookUp(aOperator);
-        Check(multiUserFunc != NULL, KLispErrCreatingUserFunction);
+        Check(multiUserFunc, KLispErrCreatingUserFunction);
     }
     return multiUserFunc;
 }
@@ -419,27 +404,27 @@ LispMultiUserFunction* LispEnvironment::MultiUserFunction(LispStringPtr aOperato
 
 
 
-void LispEnvironment::HoldArgument(LispStringPtr  aOperator, LispStringPtr aVariable)
+void LispEnvironment::HoldArgument(LispString *  aOperator, LispString * aVariable)
 {
     LispMultiUserFunction* multiUserFunc =
         iUserFunctions.LookUp(aOperator);
-    Check(multiUserFunc != NULL,KLispErrInvalidArg);
+    Check(multiUserFunc,KLispErrInvalidArg);
     multiUserFunc->HoldArgument(aVariable);
 }
 
 
-void LispEnvironment::DefineRule(LispStringPtr aOperator,LispInt aArity,
+void LispEnvironment::DefineRule(LispString * aOperator,LispInt aArity,
                                  LispInt aPrecedence, LispPtr& aPredicate,
                                  LispPtr& aBody)
 {
     // Find existing multiuser func.
     LispMultiUserFunction* multiUserFunc =
         iUserFunctions.LookUp(aOperator);
-    Check(multiUserFunc != NULL, KLispErrCreatingRule);
+    Check(multiUserFunc, KLispErrCreatingRule);
 
     // Get the specific user function with the right arity
     LispUserFunction* userFunc = multiUserFunc->UserFunc(aArity);
-    Check(userFunc != NULL, KLispErrCreatingRule);
+    Check(userFunc, KLispErrCreatingRule);
     
     // Declare a new evaluation rule
     
@@ -453,46 +438,43 @@ void LispEnvironment::DefineRule(LispStringPtr aOperator,LispInt aArity,
         userFunc->DeclareRule(aPrecedence, aPredicate,aBody);
 }
 
-void LispEnvironment::DefineRulePattern(LispStringPtr aOperator,LispInt aArity,
+void LispEnvironment::DefineRulePattern(LispString * aOperator,LispInt aArity,
                                         LispInt aPrecedence, LispPtr& aPredicate,
                                         LispPtr& aBody)
 {
     // Find existing multiuser func.
     LispMultiUserFunction* multiUserFunc =
         iUserFunctions.LookUp(aOperator);
-    Check(multiUserFunc != NULL, KLispErrCreatingRule);
+    Check(multiUserFunc, KLispErrCreatingRule);
 
     // Get the specific user function with the right arity
     LispUserFunction* userFunc = multiUserFunc->UserFunc(aArity);
-    Check(userFunc != NULL, KLispErrCreatingRule);
+    Check(userFunc, KLispErrCreatingRule);
     
     // Declare a new evaluation rule
     userFunc->DeclarePattern(aPrecedence, aPredicate,aBody);
 }
 
-
-
-void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, LispCharPtr aString,LispInt aNrArgs,LispInt aFlags)
+void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, LispChar * aString,LispInt aNrArgs,LispInt aFlags)
 {
-#ifdef YACAS_DEBUG
-    extern long theNrDefinedBuiltIn;
-    theNrDefinedBuiltIn++;
-#endif
+	DBG_({ extern long theNrDefinedBuiltIn; theNrDefinedBuiltIn++; })
     YacasEvaluator eval(aEvaluatorFunc,aNrArgs,aFlags);
+	// TODO: woof -- LispTrue below?
     CoreCommands().SetAssociation(eval,HashTable().LookUp(aString,LispTrue));
 }
 
-void LispEnvironment::RemoveCoreCommand(LispCharPtr aString)
+void LispEnvironment::RemoveCoreCommand(LispChar * aString)
 {
+	// TODO: woof -- LispTrue below?
     CoreCommands().Release(HashTable().LookUp(aString,LispTrue));
 }
 
-void LispEnvironment::SetUserError(LispCharPtr aErrorString)
+void LispEnvironment::SetUserError(LispChar * aErrorString)
 {
     theUserError=aErrorString;
 }
 
-LispCharPtr LispEnvironment::ErrorString(LispInt aError)
+LispChar * LispEnvironment::ErrorString(LispInt aError)
 {
     LISPASSERT(aError>=0 && aError < KLispNrErrors);
     switch (aError)
@@ -554,7 +536,7 @@ LispCharPtr LispEnvironment::ErrorString(LispInt aError)
     case KLispErrUserInterrupt:
         return "User interrupted calculation";
     case KLispErrUser:
-        if (theUserError != NULL) //TODO should always be true!
+        if (theUserError) //TODO should always be true!
             return theUserError;
         break;
     case KLispErrNonBooleanPredicateInPattern:
@@ -568,15 +550,15 @@ LispCharPtr LispEnvironment::ErrorString(LispInt aError)
 
 
 
-LispStringPtr LispEnvironment::FindCachedFile(LispCharPtr aFileName)
+LispString * LispEnvironment::FindCachedFile(LispChar * aFileName)
 {
     if (iArchive)
     {
         LispInt index = iArchive->iFiles.FindFile(aFileName);
         if (index>=0)
         {
-            LispCharPtr contents = iArchive->iFiles.Contents(index);
-            if (contents != NULL)
+            LispChar * contents = iArchive->iFiles.Contents(index);
+            if (contents)
             {
                 return NEW LispString(contents,LispFalse);
             }
@@ -650,9 +632,9 @@ void LispErrorNrArgs::PrintError(LispOutput& aOutput)
 }
 */
 
-void CDllArray::DeleteNamed(LispCharPtr aName, LispEnvironment& aEnvironment)
+void CDllArray::DeleteNamed(LispChar * aName, LispEnvironment& aEnvironment)
 {
-    LispInt i,nr=NrItems();
+    LispInt i,nr=Size();
     for (i=0;i<nr;i++)
     {
 //printf("DLL: %s ",(*this)[i]->DllFileName());
@@ -668,13 +650,3 @@ void CDllArray::DeleteNamed(LispCharPtr aName, LispEnvironment& aEnvironment)
 //printf("\n");
     }
 }
-
-
-
-
-
-
-
-
-
-

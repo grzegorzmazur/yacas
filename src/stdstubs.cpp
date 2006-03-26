@@ -13,7 +13,7 @@
 #define PlatStubFree PlatFree
 #endif
 
-LispCharPtr PlatStubAlloc(LispInt aNrBytes)
+void * PlatStubAlloc(LispInt aNrBytes)
 {
     /*Test code: report on memory usage
      static int nrsmall=0,nrlarge=0;
@@ -23,18 +23,19 @@ LispCharPtr PlatStubAlloc(LispInt aNrBytes)
         nrlarge++;
     printf("%d, %d\n",nrsmall,nrlarge);
     */
-    LispCharPtr result = (LispCharPtr)malloc(aNrBytes);
+    void * result = malloc(aNrBytes);
     Check(result!=NULL,KLispErrNotEnoughMemory);
     return result;
 }
 
-LispCharPtr PlatStubReAlloc(LispCharPtr aOrig, LispInt aNrBytes)
+void * PlatStubReAlloc(void * aOrig, LispInt aNrBytes)
 {
-    LispCharPtr result = (LispCharPtr)realloc(aOrig, aNrBytes);
+    void * result = realloc(aOrig, aNrBytes);
     Check(result!=NULL,KLispErrNotEnoughMemory);
     return result;
 }
-void PlatStubFree(LispCharPtr aOrig)
+
+void PlatStubFree(void * aOrig)
 {
     free(aOrig);
 }

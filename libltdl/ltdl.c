@@ -390,7 +390,7 @@ realloc (ptr, size)
   if (size == 0)
     {
       /* For zero or less bytes, free the original memory */
-      if (ptr != NULL)
+      if (ptr)
 	{
 	  lt_dlfree (ptr);
 	}
@@ -1932,7 +1932,7 @@ tryall_dlopen (handle, filename)
 
       cur->module = loader->module_open (data, filename);
 
-      if (cur->module != NULL)
+      if (cur->module)
 	{
 	  break;
 	}
@@ -2782,7 +2782,7 @@ try_dlopen (phandle, filename)
 	      errors += trim (&dlname, &line[sizeof (STR_LIBRARY_NAMES) - 1]);
 	      if (!errors
 		  && dlname
-		  && (last_libname = strrchr (dlname, ' ')) != NULL)
+		  && (last_libname = strrchr (dlname, ' ')))
 		{
 		  last_libname = lt_estrdup (last_libname + 1);
 		  if (!last_libname)

@@ -376,7 +376,7 @@ compile_data compile_block;
 
 *errorptr = NULL;
 
-if (re == NULL || re->magic_number != MAGIC_NUMBER)
+if (!re || re->magic_number != MAGIC_NUMBER)
   {
   *errorptr = "argument is not a compiled regular expression";
   return NULL;
@@ -418,7 +418,7 @@ don't have to change that code. */
 extra = (pcre_extra *)(pcre_malloc)
   (sizeof(pcre_extra) + sizeof(pcre_study_data));
 
-if (extra == NULL)
+if (!extra)
   {
   *errorptr = "failed to get memory";
   return NULL;

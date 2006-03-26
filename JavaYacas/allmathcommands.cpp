@@ -1067,7 +1067,7 @@ void LispDllLoad(LispEnvironment& aEnvironment, int aStackTop)
   aEnvironment.iDlls.Append(dll);
 
 #ifdef YACAS_DEBUG
-      printf("DLL added, %d DLLs loaded\n",aEnvironment.iDlls.NrItems());
+      printf("DLL added, %d DLLs loaded\n",aEnvironment.iDlls.Size());
 #endif// YACAS_DEBUG
 
   LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
@@ -1094,7 +1094,7 @@ void LispDllEnumerate(LispEnvironment& aEnvironment, int aStackTop)
     //TESTARGS(1);
     int i;
     LispObject *res = null;
-    for (i=aEnvironment.iDlls.NrItems()-1;i>=0;i--)
+    for (i=aEnvironment.iDlls.Size()-1;i>=0;i--)
     {
         LispString orig;
         orig = aEnvironment.iDlls[i].DllFileName();
@@ -1159,7 +1159,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, int aStackTop)
         str++;
     }
     LispString tag;
-    tag.SetNrItems(0);
+    tag.Resize(0);
     
     tag.Append('\"');
     while (IsAlpha(*str))
@@ -1178,7 +1178,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, int aStackTop)
     while (*str != '>' && *str != '/')
     {
         LispString name;
-        name.SetNrItems(0);
+        name.Resize(0);
         name.Append('\"');
 
         while (IsAlpha(*str))
@@ -1194,7 +1194,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, int aStackTop)
         str++;
         LispError.CHK_ARG_CORE(aEnvironment,aStackTop,str[0] == '\"',1);
         LispString value;
-        value.SetNrItems(0);
+        value.Resize(0);
         value.Append(*str++);
         while (*str != '\"')
         {

@@ -44,10 +44,10 @@ public:
 class LispOperators : public LispAssociatedHash<LispInFixOperator>
 {
 public:
-    void SetOperator(LispInt aPrecedence,LispStringPtr aString);
-    void SetRightAssociative(LispStringPtr aString);
-    void SetLeftPrecedence(LispStringPtr aString,LispInt aPrecedence);
-    void SetRightPrecedence(LispStringPtr aString,LispInt aPrecedence);
+    void SetOperator(LispInt aPrecedence,LispString * aString);
+    void SetRightAssociative(LispString * aString);
+    void SetLeftPrecedence(LispString * aString,LispInt aPrecedence);
+    void SetRightPrecedence(LispString * aString,LispInt aPrecedence);
 };
 
 class InfixParser : public LispParser
@@ -84,13 +84,13 @@ public:
     void Parse();
 private:
     void ReadToken();
-    void MatchToken(LispStringPtr aToken);
+    void MatchToken(LispString * aToken);
     void ReadExpression(LispInt depth);
     void ReadAtom();
 private:
     void GetOtherSide(LispInt aNrArgsToCombine, LispInt depth);
     void Combine(LispInt aNrArgsToCombine);
-    void InsertAtom(LispStringPtr aString);
+    void InsertAtom(LispString * aString);
 private:
     void Fail(); // called when parsing fails, raising an exception
 
@@ -99,7 +99,7 @@ private:
 private:
     LispBoolean iError;
     LispBoolean iEndOfFile;
-    LispStringPtr iLookAhead;
+    LispString * iLookAhead;
 public:
     LispPtr iResult;
 };
@@ -124,7 +124,7 @@ public:
 private:
     void Print(LispPtr& aExpression, LispOutput& aOutput,
                LispInt iPrecedence);
-    void WriteToken(LispOutput& aOutput,LispCharPtr aString);
+    void WriteToken(LispOutput& aOutput,LispChar * aString);
 private:
     
     LispOperators& iPrefixOperators;

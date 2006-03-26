@@ -11,51 +11,52 @@
 #include "errors.h"
 
 #define InternalEval iEnvironment.iEvaluator->Eval
-#define RESULT aEnvironment.iStack.GetElement(aStackTop)
-#define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
+#define RESULT       aEnvironment.iStack.GetElement(aStackTop)
+#define ARGUMENT(i)  aEnvironment.iStack.GetElement(aStackTop+i)
 
 
-
-LispStringPtr GetIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
+LispString * GetIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
-  LispStringPtr str;
-  str = ARGUMENT(aArgNr).Get()->String();
-  CHK_ARG_CORE(str != NULL,aArgNr);
-  CHK_ARG_CORE(IsNumber(str->String(),LispFalse),aArgNr);
+  LispString * str = ARGUMENT(aArgNr)->String();
+  CHK_ARG_CORE(str,aArgNr);
+  CHK_ARG_CORE(IsNumber(str->c_str(),LispFalse),aArgNr);
   return str;
 }
 
-void* GetVoidStruct(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr, LispCharPtr aTypeString)
+void* GetVoidStruct(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr, LispChar * aTypeString)
 {
-  GenericClass *gen = ARGUMENT(aArgNr).Get()->Generic();
-  CHK_ARG_CORE(gen != NULL ,aArgNr);
+  GenericClass *gen = ARGUMENT(aArgNr)->Generic();
+#if HAS_NEW_GC_dynamic_cast
+  GenericStruct *str = dynamic_cast<GenericStruct *>(gen);
+  CHK_ARG_CORE(str,aArgNr);
+#else
+  CHK_ARG_CORE(gen ,aArgNr);
   CHK_ARG_CORE(StrEqual(gen->TypeName(),aTypeString),aArgNr);
   GenericStruct *str = (GenericStruct*)gen;
+#endif
   return str->Data();
 }
 
 LispInt GetShortIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
-  LispStringPtr str = GetIntegerArgument(aEnvironment, aStackTop, aArgNr);
-  return InternalAsciiToInt(str->String());
+  LispString * str = GetIntegerArgument(aEnvironment, aStackTop, aArgNr);
+  return InternalAsciiToInt(str);
 }
 
-LispStringPtr GetStringArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
+LispString * GetStringArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
-  LispStringPtr str;
-  str = ARGUMENT(aArgNr).Get()->String();
+  LispString * str = ARGUMENT(aArgNr)->String();
   CHK_ARG_CORE(InternalIsString(str),aArgNr);
-  return aEnvironment.HashTable().LookUpUnStringify(str->String());
+  return aEnvironment.HashTable().LookUpUnStringify(str->c_str());
 }
 
 
 
-LispStringPtr GetAtomArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
+LispString * GetAtomArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
-  LispStringPtr str;
-  str = ARGUMENT(aArgNr).Get()->String();
-  CHK_ARG_CORE(str != NULL,aArgNr);
-  return aEnvironment.HashTable().LookUp(str->String());
+  LispString * str = ARGUMENT(aArgNr)->String();
+  CHK_ARG_CORE(str,aArgNr);
+  return aEnvironment.HashTable().LookUp(str->c_str());
 }
 
 
@@ -63,9 +64,9 @@ LispStringPtr GetAtomArgument(LispEnvironment& aEnvironment, LispInt aStackTop, 
 
 void GetListArgument(LispPtr& aResult, LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
-  aResult.Set(ARGUMENT(aArgNr).Get());
-  CHK_ARG_CORE(aResult.Get() != NULL,aArgNr);
-  CHK_ARG_CORE(aResult.Get()->SubList() != NULL, aArgNr);
+  aResult = (ARGUMENT(aArgNr));
+  CHK_ARG_CORE(aResult,aArgNr);
+  CHK_ARG_CORE(aResult->SubList(), aArgNr);
 }
 
 
@@ -73,11 +74,11 @@ void ReturnShortInteger(LispEnvironment& aEnvironment, LispPtr& aResult, LispInt
 {
   char s[100];
   InternalIntToAscii(s,r);
-  aResult.Set(LispAtom::New(aEnvironment,s));
+  aResult = (LispAtom::New(aEnvironment,s));
 }
 
 void SetShortIntegerConstant(LispEnvironment& aEnvironment,
-                                    LispCharPtr aName,
+                                    LispChar * aName,
                                     LispInt aValue)
 {
   LispPtr value;
@@ -86,21 +87,21 @@ void SetShortIntegerConstant(LispEnvironment& aEnvironment,
 }
 double GetDoubleFloatArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
-  return GetDouble(ARGUMENT(aArgNr).Get());
+  return GetDouble(ARGUMENT(aArgNr));
 }
 
 void ReturnDoubleFloat(LispEnvironment& aEnvironment, LispPtr& aResult, double r)
 {
-  aResult.Set(Double(aEnvironment,r));
+  aResult = (Double(aEnvironment,r));
 }
 
 void ReturnVoidStruct(LispEnvironment& aEnvironment,
                       LispPtr& aResult,
-                      LispCharPtr aName,
+                      LispChar * aName,
                       void* aData,
                       void (*aFree)(void*))
 {
-    aResult.Set(LispGenericClass::New(NEW GenericStruct(aName,aData,aFree)));
+    aResult = (LispGenericClass::New(NEW GenericStruct(aName,aData,aFree)));
 }
 
 

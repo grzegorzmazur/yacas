@@ -1,135 +1,82 @@
 
 #include "yacasprivate.h"
 #include "lispobject.h"
+//#include "lispatom.h"	// LispAnnotatedObject
+#include "codecomment.h"
 
 #ifdef YACAS_DEBUG
 long theNrCurrent=0;
 long theNrConstructed=0;
 long theNrDestructed=0;
-#endif
 void IncNrObjects()
 {
-#ifdef YACAS_DEBUG
     theNrConstructed++;
     theNrCurrent++;
-#else
-    LISPASSERT(0);
-#endif
 }
 void DecNrObjects()
 {
-#ifdef YACAS_DEBUG
     theNrDestructed++;
     theNrCurrent--;
-#else
-    LISPASSERT(0);
-#endif
 }
-
-
-
-
+#endif
 
 LispObject::~LispObject()
 {
-}
-
-/*
-LispStringPtr LispObject::String()
-{
-    return NULL;
-}
-*/
-LispPtr* LispObject::SubList()
-{
-    return NULL;
-}
-
-LispPtr* LispObject::ExtraInfo()
-{
-    return NULL;
-}
-
-BigNumber* LispObject::Number(LispInt aPrecision)
-{
-    return NULL;
-}
-
-GenericClass* LispObject::Generic()
-{
-    return NULL;
+   DecNrObjects_destructor();
 }
 
 LispInt LispObject::Equal(LispObject& aOther)
 {
     // next line handles the fact that either one is a string
     if (String() != aOther.String())
-        return 0;
+        return 0;	// return false
 
     //So, no strings.
     LispPtr *iter1 = SubList();
     LispPtr *iter2 = aOther.SubList();
-    LISPASSERT(iter1 != NULL && iter2 != NULL);
+    LISPASSERT(!!iter1 && !!iter2);
 
     // check all elements in sublist
-    while (iter1->Get()!= NULL && iter2->Get()!=NULL)
+    while (!!(*iter1) && !!(*iter2))
     {
-        if (! iter1->Get()->Equal(*iter2->Get() ))
+        if (! (*iter1)->Equal(*(*iter2) ))
             return 0;
     }
     //One list longer than the other?
-    if (iter1->Get()== NULL && iter2->Get()==NULL)
+    if (!(*iter1) && !(*iter2))
         return 1;
     return 0;
 }
 
-
-
-
-
-
-
-
-LispPtr& LispPtr::operator=(LispPtr& aOther)
-{
-    Set(aOther.Get());
-    return *this;
-}
-
-LispPtr& LispPtr::operator=(LispObject& aOther)
-{
-    Set(&aOther);
-    return *this;
-}
-
-
-LispIterator::LispIterator(LispPtr& aPtr)
-{
-    iPtr = &aPtr;
-}
-
-LispIterator& LispIterator::operator=(LispPtr& aPtr)
-{
-    iPtr = &aPtr;
-    return *this;
-}
-    
-
-
-
+#if HAS_NEW_LispPtrArray == 0
 LispPtrArray::LispPtrArray(LispInt aSize,LispObject* aInitialItem)
 {
     iSize=aSize;
     iArray = NEW LispPtr[aSize];
-    LispInt i;
-    for (i=0;i<aSize;i++)
-    {
-        SetElement(i,aInitialItem);
-    }
+	if (aInitialItem)
+		for (LispInt i=0;i<aSize;i++)
+		{
+			iArray[i] = (aInitialItem);
+		}
 }
 
 LispPtrArray::~LispPtrArray()
 {
     delete [] iArray;
 }
+#endif
 
+#define STR(tokens) #tokens
+#define SHOWSTR(ctce) #ctce " = " STR(ctce)
+#if defined(YACAS_DEBUG)
+namespace{CodeComment varnameA("YACAS_DEBUG");}
+#endif
+#if defined(USE_ASSERT)
+namespace{CodeComment varnameB("USE_ASSERT");}
+#endif
+#if defined(NO_EXCEPTIONS)
+namespace{CodeComment varnameC("NO_EXCEPTIONS");}
+#endif
+namespace{
+	//CodeComment varname6("ObjectHelper and no param to LispObject::Copy()");
+}

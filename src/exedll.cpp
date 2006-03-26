@@ -1,8 +1,3 @@
-
-#ifdef YACAS_DEBUG
-#include <stdio.h>
-#endif
-
 #include "plugins_available.h"
 #include "yacasprivate.h"
 #include "lispenvironment.h"
@@ -10,6 +5,11 @@
 #include "lispassert.h"
 #include "exedll.h"
 #include "errors.h"
+
+
+#ifdef YACAS_DEBUG
+#include <stdio.h>
+#endif
 
 struct ExeDllEntry
 {
@@ -76,28 +76,23 @@ CONTINUE:
 ExeDll::~ExeDll()
 {
 }
-LispInt ExeDll::Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment)
+LispInt ExeDll::Open(LispChar * aDllFile,LispEnvironment& aEnvironment)
 {
-  iDllFileName = aDllFile;
-#ifdef YACAS_DEBUG
-    printf("ExeDll::Open: Trying to open [%s]\n",aDllFile);
-#endif
+    iDllFileName = aDllFile;
+    DBG_printf("ExeDll::Open: Trying to open [%s]\n",aDllFile);
     if (iMaker)
     {
-#ifdef YACAS_DEBUG
-        printf("ExeDll::Open: handle opened\n");
-#endif
+        DBG_printf("ExeDll::Open: handle opened\n");
         iPlugin = GetPlugin(aDllFile);
         if (iPlugin)
         {
-#ifdef YACAS_DEBUG
-          printf("ExeDll::Open: plugin found\n");
-#endif
-          iPlugin->Add(aEnvironment);
+            DBG_printf("ExeDll::Open: plugin found\n");
+            iPlugin->Add(aEnvironment);
         }
-    } 
-    return (iMaker != NULL && iPlugin != NULL);
+    }
+    return (iMaker && iPlugin);
 }
+
 LispInt ExeDll::Close(LispEnvironment& aEnvironment)
 {
   if (iPlugin)
@@ -109,9 +104,9 @@ LispInt ExeDll::Close(LispEnvironment& aEnvironment)
   }
   return 0;
 }
-LispPluginBase* ExeDll::GetPlugin(LispCharPtr aDllFile)
+LispPluginBase* ExeDll::GetPlugin(LispChar * aDllFile)
 {
-  LISPASSERT(iMaker != NULL);
+  LISPASSERT(iMaker);
   if (!iMaker)
   {
     RaiseError("ExeDll::OpenGetPlugin error");

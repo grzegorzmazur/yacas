@@ -16,7 +16,7 @@ class LispTokenizer : public YacasBase
 public:
     /// NextToken returns a string representing the next token,
     /// or an empty list.
-    virtual LispStringPtr NextToken(LispInput& aInput,
+    virtual LispString * NextToken(LispInput& aInput,
                                     LispHashTable& aHashTable);
     virtual ~LispTokenizer(){}
 private:
@@ -26,7 +26,7 @@ private:
 class CommonLispTokenizer : public LispTokenizer
 {
 public:
-    virtual LispStringPtr NextToken(LispInput& aInput,
+    virtual LispString * NextToken(LispInput& aInput,
                                     LispHashTable& aHashTable);
 };
 

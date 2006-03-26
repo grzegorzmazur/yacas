@@ -16,63 +16,54 @@ class LispStringSmartPtr;
 /** \class LispString : zero-terminated byte-counted string.
  * Also keeps a reference count for any one interested.
  * LispString is derived from CArrayGrower, so the function
- * NrItems returns the length of the buffer. Since the string
+ * Size returns the length of the buffer. Since the string
  * is also zero-terminated (for better interfacing with the normal
- * c functions), the string length is NrItems()-1.
+ * c functions), the string length is Size()-1.
  *
  * This class also allows the string to point to a buffer which is owned
  * by another part of the system, in which case it cannot be resized.
  * The array will then not be freed by this class.
  */
-class LispString : public CArrayGrower<LispChar>, public RefCountedObjectBase
+class LispString : public CArrayGrower<LispChar,ArrOpsPOD<LispChar> >
 {
 public:
-    /** Constructor which allows the caller to specify whether
-     * the buffer is owned externally. Use the assignment operator
-     * to set the string after this.
-     */
+	// Constructors
+    // The constructors allow the caller to specify whether the storage is owned externally.
+	// Use the assignment operators to set the string after this.
     inline LispString(LispBoolean aStringOwnedExternally=LispFalse);
+    inline LispString(LispString &aString, LispBoolean aStringOwnedExternally=LispFalse);
+    inline LispString(LispChar * aString, LispBoolean aStringOwnedExternally);
+    inline LispString(const LispChar * aString);
 
-    /// Construct from another string
-    inline LispString(LispString &aString,
-                      LispBoolean aStringOwnedExternally=LispFalse);
-    /** Set string from assignment. The assignment abides by earlier
-     * functions setting the string as owned externally.
-     */
-    inline LispString& operator=(LispCharPtr aString);
-    /// Construct from string.
-    inline LispString(LispCharPtr aString,
-                      LispBoolean aStringOwnedExternally=LispFalse);
-    /// String() returns the pointer to the first character.
-    inline LispCharPtr String() const;
-    /** String comparison. If the string is in the hash table it is faster
-     * to compare the pointers to the strings, since in that case if they
-     * are equal they should in fact be literally the same object.
-     */
+	// Assignment
+	// This assignment abides by earlier functions setting the string as owned externally.
+    inline LispString& operator=(LispChar * aString);
+
+	// Assignments (with modifications).  This string cannot be owned externally.
+    // Set string by taking part of another string. 
+    void SetStringCounted(const LispChar * aString, LispInt aLength);
+    // Set string from other string, adding quotes around the string.
+    void SetStringUnStringified(const LispChar * aString);
+    // Set string from other string, removing quotes around the string.
+    void SetStringStringified(const LispChar * aString);
+
+	// Access
+    inline LispChar * c_str() const;	// pointer to asciz 'C-string'
+
+    // Comparison
+	// If the string is in the hash table it is faster to compare the pointers to the strings
+	// (instead of calling this routine), since in that case if they
+    // are equal they should in fact be literally the same object.
     LispInt operator==(const LispString& aString);
-    
-    /** Set string by taking part of another string. The string cannot
-     * be owned externally for this operation
-     */
-    void SetStringCounted(LispCharPtr aString,LispInt aLength);
-    /** Set string from other string, adding quotes around the string.
-     * The string cannot be owned externally for this operation
-     */
-    void SetStringUnStringified(LispCharPtr aString);
-    /** Set string from other string, removing quotes around the string.
-     * The string cannot be owned externally for this operation
-     */
-    void SetStringStringified(LispCharPtr aString);
 
     ~LispString();
 private:
-    void SetString(LispCharPtr aString,
-                   LispBoolean aStringOwnedExternally=LispFalse);
-
+    inline void SetString(LispChar * aString, LispBoolean aStringOwnedExternally);
+	void SetString(const LispChar * aString);
+public:
+	ReferenceCount iReferenceCount;	// TODO: woof
 };
 
-#define LispStringRef LispString &
-#define LispStringPtr LispString *
 
 /** \class LispStringSmartPtr for managing strings outside
  of normal objects. This is the equivalent of LispPtr, maintaining
@@ -81,16 +72,36 @@ private:
 class LispStringSmartPtr
 {
 public:
-    LispStringSmartPtr():iString(NULL){};
-    ~LispStringSmartPtr();
-    inline LispStringPtr operator() () const {return iString;}
-    void Set(LispStringPtr aString);
-    //TODO remove! Ugly hack! (or at least, make accessible only from LispHash)
-    inline void SetInitial(LispStringPtr aString) {iString=NULL;Set(aString);};
+	// Default constructor (not explicit, so it auto-initializes)
+    LispStringSmartPtr() : iString(0) {}
+
+	// Construct from pointer to LispString
+    //LispStringSmartPtr(LispString * aString) : iString(aString) {}
+
+	// Copy constructor
+	LispStringSmartPtr(const LispStringSmartPtr& aOther) : iString(aOther.iString) {}
+
+	// Destructor
+	~LispStringSmartPtr();
+
+	// Assignment from pointer.  (PDG - new method)
+	// (we return void, not *this).
+	void operator=(LispString * aString);
+
+	// Assignment from another (the *default* simply assigns members, not what we want).
+	// (we return void, not *this).
+	void operator=(const LispStringSmartPtr &aOther)
+	{ this->operator=(aOther.iString); }
+
+	// Expected pointer behavior.  (some unused are commented out).
+    operator LispString*()    const { return  iString; }	// implicit conversion to pointer to T
+    //LispString &operator*() const { return *iString; }	// so (*smartPtr) is a reference to T
+    LispString *operator->()  const { return  iString; }	// so (smartPtr->member) accesses T's member
+    //LispString *ptr()       const { return  iString; }	// so (smartPtr.ptr()) returns the pointer to T (boost calls this method 'get')
+    //bool operator!()        const { return !iString; }	// is null pointer
+
 private:
-    LispStringSmartPtr(const LispStringSmartPtr& aOther){Set(aOther());};
-    // do not allow this type of copying!
-    LispStringPtr iString;
+    LispString * iString;
 };
 
 #include "lispstring.inl"

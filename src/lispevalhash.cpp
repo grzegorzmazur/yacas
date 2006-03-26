@@ -27,10 +27,10 @@ void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,Lis
   LispInt stacktop = aEnvironment.iStack.GetStackTop();
 
   // Push a place holder for the result: push full expression so it is available for error reporting
-  aEnvironment.iStack.PushArgOnStack(aArguments.Get());
+  aEnvironment.iStack.PushArgOnStack(aArguments);
 
   LispIterator iter(aArguments);
-  iter.GoNext();
+  ++iter;
 
   LispInt i;
   LispInt nr = iNrArgs;
@@ -42,16 +42,15 @@ void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,Lis
   {
     for (i=0;i<nr;i++)
     {
-      Check(iter() != NULL, KLispErrWrongNumberOfArgs);
-      aEnvironment.iStack.PushArgOnStack(iter()->Copy(LispFalse));
-      iter.GoNext();
+      Check(iter.getObj(), KLispErrWrongNumberOfArgs);
+      aEnvironment.iStack.PushArgOnStack(iter.getObj()->Copy());
+      ++iter;
     }
     if (iFlags & Variable)
     {
-      LispPtr head;
-      head.Set(aEnvironment.iList->Copy(LispFalse));
-      head.Get()->Next().Set(iter());
-      aEnvironment.iStack.PushArgOnStack(LispSubList::New(head.Get()));
+      LispPtr head(aEnvironment.iList->Copy());
+      head->Nixed() = (iter.getObj());
+      aEnvironment.iStack.PushArgOnStack(LispSubList::New(head));
     }
   }
   else
@@ -59,11 +58,10 @@ void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,Lis
     LispPtr arg;
     for (i=0;i<nr;i++)
     {
-      Check(iter() != NULL, KLispErrWrongNumberOfArgs);
-      Check(iter.Ptr() != NULL, KLispErrWrongNumberOfArgs);
-      InternalEval(aEnvironment, arg, *iter.Ptr());
-      aEnvironment.iStack.PushArgOnStack(arg.Get());
-      iter.GoNext();
+      Check(iter.getObj(), KLispErrWrongNumberOfArgs);
+      InternalEval(aEnvironment, arg, *iter);
+      aEnvironment.iStack.PushArgOnStack(arg);
+      ++iter;
     }
     if (iFlags & Variable)
     {
@@ -71,11 +69,9 @@ void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,Lis
 //LispString res;
 
 //printf("Enter\n");
-      LispPtr head;
-      head.Set(aEnvironment.iList->Copy(LispFalse));
-      head.Get()->Next().Set(iter());
-      LispPtr list;
-      list.Set(LispSubList::New(head.Get()));
+      LispPtr head(aEnvironment.iList->Copy());
+      head->Nixed() = (iter.getObj());
+      LispPtr list(LispSubList::New(head));
 
 
 /*
@@ -90,13 +86,13 @@ PrintExpression(res, arg,aEnvironment,100);
 printf("after %s\n",res.String());
 */
 
-      aEnvironment.iStack.PushArgOnStack(arg.Get());
+      aEnvironment.iStack.PushArgOnStack(arg);
 //printf("Leave\n");
     }
   }
 
   iCaller(aEnvironment,stacktop);  
-  aResult.Set(aEnvironment.iStack.GetElement(stacktop).Get());
+  aResult = (aEnvironment.iStack.GetElement(stacktop));
   aEnvironment.iStack.PopTo(stacktop);
 }
 

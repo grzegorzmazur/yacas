@@ -5,8 +5,11 @@
 #include "yacasbase.h"
 #include "lispuserfunc.h"
 #include "grower.h"
-
+#if HAS_NEW_GC_dynamic_cast
+#include "patternclass.h"
+#else
 class PatternClass;
+#endif
 
 /// A mathematical function defined by several rules.
 /// This is the basic class which implements functions in Yacas.
@@ -22,10 +25,10 @@ public:
     class BranchParameter : public YacasBase
     {
     public:
-        BranchParameter(LispStringPtr aParameter,
+        BranchParameter(LispString * aParameter = NULL,
                         LispInt aHold=LispFalse)
             : iParameter(aParameter), iHold(aHold) {}
-        LispStringPtr iParameter;
+        LispString * iParameter;
         LispInt       iHold;
     };
 
@@ -48,8 +51,8 @@ public:
         BranchRule(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody)
         {
             iPrecedence = aPrecedence;
-            iPredicate.Set(aPredicate.Get());
-            iBody.Set(aBody.Get());
+            iPredicate = (aPredicate);
+            iBody = (aBody);
         }
 
 	/// Return true if the rule matches.
@@ -77,7 +80,7 @@ public:
         BranchRuleTruePredicate(LispInt aPrecedence,LispPtr& aBody)
         {
             iPrecedence = aPrecedence;
-            iBody.Set(aBody.Get());
+            iBody = (aBody);
         }
 	/// Return #LispTrue, always.
         virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
@@ -99,14 +102,19 @@ public:
         {
             iPatternClass = NULL;
             iPrecedence = aPrecedence;
-            iPredicate.Set(aPredicate.Get());
+            iPredicate = (aPredicate);
 
-            GenericClass *gen = aPredicate.Get()->Generic();
-            Check(gen != NULL,KLispErrInvalidArg);
+            GenericClass *gen = aPredicate->Generic();
+#if HAS_NEW_GC_dynamic_cast
+			PatternClass *pat = dynamic_cast<PatternClass *>(gen);
+            Check(pat,KLispErrInvalidArg);
+            iPatternClass = pat;
+#else
+            Check(gen,KLispErrInvalidArg);
             Check(StrEqual(gen->TypeName(),"\"Pattern\""),KLispErrInvalidArg);
-
             iPatternClass = (PatternClass*)gen;
-            iBody.Set(aBody.Get());
+#endif
+            iBody = (aBody);
         }
 
 	/// Return true if the corresponding pattern matches.
@@ -164,7 +172,7 @@ public:
     ///
     /// The \c iHold flag of the corresponding argument is set. This
     /// implies that this argument is not evaluated by Evaluate().
-    virtual void HoldArgument(LispStringPtr aVariable);
+    virtual void HoldArgument(LispString * aVariable);
 
     /// Return true if the arity of the function equals \a aArity.
     virtual LispInt IsArity(LispInt aArity) const;
@@ -198,7 +206,8 @@ public:
 
 protected:
     /// List of arguments, with corresponding \c iHold property.
-    CArrayGrower<BranchParameter> iParameters;
+	//woof
+    CArrayGrower<BranchParameter, ArrOpsPOD<BranchParameter> > iParameters;
 
     /// List of rules, sorted on precedence.
     CDeletingArrayGrower<BranchRuleBase*>     iRules;

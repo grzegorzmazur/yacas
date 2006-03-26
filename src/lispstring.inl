@@ -1,20 +1,36 @@
 
 // LispString inline functions.
 
-inline LispString& LispString::operator=(LispCharPtr aString)
+inline void LispString::SetString(LispChar * aString, LispBoolean aStringOwnedExternally)
 {
-    SetString(aString,iArrayOwnedExternally);
+    if (aStringOwnedExternally)
+    {
+		LispInt length = PlatStrLen(aString);  // my own strlen
+        SetExternalArray(aString, length+1);
+    }
+    else
+    {
+		SetString(aString);
+    }
+}
+
+inline LispString& LispString::operator=(LispChar * aString)
+{
+    SetString(aString,ArrayOwnedExternally());
     return *this;
 }
 
-inline LispString::LispString(LispString &aString,
-                              LispBoolean aStringOwnedExternally)
+inline LispString::LispString(LispString &aString, LispBoolean aStringOwnedExternally)
 {
-    SetString(aString.String(), aStringOwnedExternally);
+    SetString(aString.c_str(), aStringOwnedExternally);
 }
 
-inline LispString::LispString(LispCharPtr aString,
-                              LispBoolean aStringOwnedExternally)
+inline LispString::LispString(const LispChar * aString)
+{
+    SetString(aString);
+}
+
+inline LispString::LispString(LispChar * aString, LispBoolean aStringOwnedExternally)
 {
     SetString(aString, aStringOwnedExternally);
 }
@@ -24,9 +40,7 @@ inline LispString::LispString(LispBoolean aStringOwnedExternally)
     SetString("", aStringOwnedExternally);
 }
 
-
-inline LispCharPtr LispString::String() const
+inline LispChar * LispString::c_str() const
 {
-    return (LispCharPtr)iArray;
+    return elements();
 }
-

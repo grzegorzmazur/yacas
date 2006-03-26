@@ -59,7 +59,7 @@ FALSEALARM://TODO FIXME
 		else if (c == '\"')
 		{
 			LispString aResult;
-			aResult.SetNrItems(0);
+			aResult.Resize(0);
 			aResult.Append(c);
 			while (aInput.Peek() != '\"')
 			{

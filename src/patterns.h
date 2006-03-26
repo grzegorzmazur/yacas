@@ -43,12 +43,12 @@ public:
 class MatchAtom : public YacasParamMatcherBase
 {
 public:
-    MatchAtom(LispStringPtr aString);
+    MatchAtom(LispString * aString);
     virtual LispBoolean ArgumentMatches(LispEnvironment& aEnvironment,
                                         LispPtr& aExpression,
                                         LispPtr* arguments);
 protected:
-    LispStringPtr iString;
+    LispString * iString;
 };
 
 /// Class for matching an expression to a given number.
@@ -101,7 +101,7 @@ protected:
     LispInt iVarIndex;
 
     /// Not used.
-    LispStringPtr iString;
+    LispString * iString;
 };
 
 
@@ -176,7 +176,7 @@ protected:
     /// appears.
     ///
     /// If \a aVariable is not in #iVariables, it is added.
-    LispInt LookUp(LispStringPtr aVariable);
+    LispInt LookUp(LispString * aVariable);
 
 protected:
     /// Set local variables corresponding to the pattern variables.
@@ -197,10 +197,15 @@ protected:
     CDeletingArrayGrower<YacasParamMatcherBase*> iParamMatchers;
 
     /// List of variables appearing in the pattern.
-    CArrayGrower<LispStringPtr> iVariables;
+    CArrayGrower<LispString *> iVariables;
 
     /// List of predicates which need to be true for a match.
+#define HAS_NEW_iPredicates 1
+#if !HAS_NEW_iPredicates
     CDeletingArrayGrower<LispPtr*> iPredicates;
+#else
+    CArrayGrower<LispPtr> iPredicates;
+#endif
 };
 
 

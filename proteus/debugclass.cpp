@@ -65,8 +65,8 @@ void ProteusDebugger::Dump()
     FILE* f = fopen(filename,"w");
     if (!f) return;
 
-    LispInt i,nr = StackTop()->NrItems();
-    LispInt spaces = 1+4*traceStack->NrItems();
+    LispInt i,nr = StackTop()->Size();
+    LispInt spaces = 1+4*traceStack->Size();
 //    char* indent = (char*)malloc(spaces+1);
 //    memset(indent,' ',spaces);
 //    indent[spaces] = '\0';
@@ -113,8 +113,8 @@ void ProteusDebugger::AddStackFrame()
 }
 void ProteusDebugger::DropStackFrame()
 {
-    delete (*traceStack)[traceStack->NrItems()-1];
-    traceStack->SetNrItems(traceStack->NrItems()-1);
+    delete (*traceStack)[traceStack->Size()-1];
+    traceStack->Resize(traceStack->Size()-1);
 }
 
 void ProteusDebugger::Start()
@@ -134,13 +134,13 @@ void ProteusDebugger::Finish()
         running = 0;
 
         LispString result("STOPPED");
-        while (traceStack->NrItems() > 1)
+        while (traceStack->Size() > 1)
         {
-            if (StackTop()->NrItems() > 0)
+            if (StackTop()->Size() > 0)
             {
                 Dump();
                 DropStackFrame();
-                (*StackTop())[StackTop()->NrItems()-1]->iToEnter = traceFile;
+                (*StackTop())[StackTop()->Size()-1]->iToEnter = traceFile;
                 traceFile++;
             }
             else
@@ -206,7 +206,7 @@ void ProteusDebugger::Finish()
 
 DebugStackFrame* ProteusDebugger::StackTop()
 {
-    return (*traceStack)[traceStack->NrItems()-1];
+    return (*traceStack)[traceStack->Size()-1];
 }
 void ProteusDebugger::Enter(LispEnvironment& aEnvironment, 
                             LispPtr& aExpression)
@@ -220,11 +220,11 @@ void ProteusDebugger::Enter(LispEnvironment& aEnvironment,
 void ProteusDebugger::Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
                             LispPtr& aExpression)
 {
-    if (StackTop()->NrItems() > 0)
+    if (StackTop()->Size() > 0)
     {
         Dump();
         DropStackFrame();
-        (*StackTop())[StackTop()->NrItems()-1]->iToEnter = traceFile;
+        (*StackTop())[StackTop()->Size()-1]->iToEnter = traceFile;
         traceFile++;
     }
     else

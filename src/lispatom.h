@@ -24,6 +24,7 @@
 #include "yacasbase.h"
 #include "lispobject.h"
 #include "lispstring.h"
+#include "numbers.h"	// RefPtr<BigNumber> needs definition of BigNumber
 
 /// This should be used whenever constants 2, 10 mean binary and decimal.
 // maybe move somewhere else?
@@ -37,141 +38,83 @@
 
 class LispEnvironment;
 
-class LispAtom : public LispObject
+class LispAtom : public ObjectHelper<LispAtom>
 {
 public:
-    static LispObject* New(LispEnvironment& aEnvironment, LispCharPtr aString);
+    static LispObject* New(LispEnvironment& aEnvironment, const LispChar * aString);
     virtual ~LispAtom();
-    virtual LispStringPtr String();
-    virtual LispObject* Copy(LispInt aRecursed);
-public:
-    virtual LispObject* SetExtraInfo(LispPtr& aData);
+    virtual LispString * String();
+	virtual LispObject* Copy() { return NEW LispAtom(*this); }
 private:
-    LispAtom(LispStringPtr aString);
+    LispAtom(LispString * aString);
+public:
+	LispAtom(const LispAtom& other);
 private:
-    LispStringPtr iString;
-};
-
-template<class T>
-class LispAnnotatedObject : public LispObject
-{
-public:
-    LispAnnotatedObject(LispObject* aOriginal);
-public:
-    virtual LispStringPtr String();
-    virtual LispPtr* SubList();
-    virtual GenericClass* Generic();
-    virtual LispObject* Copy(LispInt aRecursed);
-public:
-    virtual LispObject* SetExtraInfo(LispPtr& aAdditionalInfo);
-    virtual LispPtr* ExtraInfo();
-private:
-    LispPtr iObject;
-    LispPtr iAdditionalInfo;
-};
-
-
-template<class T>
-LispAnnotatedObject<T>::LispAnnotatedObject(LispObject* aOriginal)
-{
-    LISPASSERT(aOriginal != NULL);
-    iObject.Set(aOriginal);
-}
-
-template<class T>
-LispObject* LispAnnotatedObject<T>::SetExtraInfo(LispPtr& aData)
-{ iAdditionalInfo.Set(aData.Get()); return this;}
-
-template<class T>
-LispPtr* LispAnnotatedObject<T>::ExtraInfo()
-{ return &iAdditionalInfo; }
-
-template<class T>
-LispStringPtr LispAnnotatedObject<T>::String()
-{
-    return iObject.Get()->String();
-}
-
-template<class T>
-LispPtr* LispAnnotatedObject<T>::SubList()
-{
-    return iObject.Get()->SubList();
-}
-
-template<class T>
-GenericClass* LispAnnotatedObject<T>::Generic()
-{
-    return iObject.Get()->Generic();
-}
-
-template<class T>
-LispObject* LispAnnotatedObject<T>::Copy(LispInt aRecursed)
-{
-    LispPtr copied;
-    copied.Set(iObject.Get()->Copy(aRecursed));
-    LispObject *result = NEW LispAnnotatedObject<T>(copied.Get());
-    copied.Set(iAdditionalInfo.Get()->Copy(aRecursed));
-    result->SetExtraInfo(copied);
-#ifdef YACAS_DEBUG
-    result->SetFileAndLine(iFileName, iLine);
+#define HAS_NEW_AtomImpl 0	/* TODO: woof -- 0 performs better */
+#if !HAS_NEW_AtomImpl
+	LispString * iString;
+#else
+    RefPtr<LispString> iString;	// PDG
 #endif
-    return result;
-}
+};
 
+//------------------------------------------------------------------------------
+// LispSublist
 
-class LispSubList : public LispObject
+class LispSubList : public ObjectHelper<LispSubList>
 {
 public:
     static LispSubList* New(LispObject* aSubList);
     virtual ~LispSubList();
-    virtual LispPtr* SubList();
-    virtual LispStringPtr String();
-    virtual LispObject* Copy(LispInt aRecursed);
-public:
-    virtual LispObject* SetExtraInfo(LispPtr& aData);
+	virtual LispPtr* SubList() { return &iSubList; }
+	virtual LispObject* Copy() { return NEW LispSubList(*this); }
 private:
-    LispSubList(LispObject* aSubList);
+	// Constructor is private -- use New() instead
+	LispSubList(LispObject* aSubList) : iSubList(aSubList) {}	// iSubList's constructor is messed up (it's a LispPtr, duh)
+public:
+	LispSubList(const LispSubList& other) : ASuper(other), iSubList(other.iSubList) {}
 private:
     LispPtr iSubList;
 };
 
 
-class LispGenericClass : public LispObject
+//------------------------------------------------------------------------------
+// LispGenericClass
+
+class LispGenericClass : public ObjectHelper<LispGenericClass>
 {
 public:
     static LispGenericClass* New(GenericClass* aClass);
     virtual ~LispGenericClass();
     virtual GenericClass* Generic();
-    virtual LispStringPtr String();
-    virtual LispObject* Copy(LispInt aRecursed);
-public:
-    virtual LispObject* SetExtraInfo(LispPtr& aData);
+	virtual LispObject* Copy() { return NEW LispGenericClass(*this); }
 private:
+	// Constructor is private -- use New() instead
     LispGenericClass(GenericClass* aClass);
+public:
+	LispGenericClass(const LispGenericClass& other) : ASuper(other), iClass(other.iClass) { iClass->iReferenceCount++; }
 private:
-    GenericClass* iClass;
+    GenericClass* iClass;	// TODO: woof
 };
 
 #ifndef NO_USE_BIGFLOAT
 class LispHashTable;
-class LispNumber : public LispObject
+class LispNumber : public ObjectHelper<LispNumber>
 {
 public:
     /// constructors:
     /// construct from another LispNumber
-    LispNumber(BigNumber* aNumber,LispStringPtr aString);
-    /// construct from a BigNumber; the string representation will be absent
-    LispNumber(BigNumber* aNumber);
-    /// construct from a decimal string representation (also create a number object) and use aBasePrecision decimal digits 
-    LispNumber(LispStringPtr aString, LispInt aBasePrecision);
-    virtual ~LispNumber();
-    virtual LispObject* Copy(LispInt aRecursed);
+	LispNumber(BigNumber* aNumber, LispString * aString = NULL) : iNumber(aNumber), iString(aString) {}
+	LispNumber(const LispNumber& other) : ASuper(other), iNumber(other.iNumber), iString(other.iString) {}
+	/// construct from a decimal string representation (also create a number object) and use aBasePrecision decimal digits 
+	LispNumber(LispString * aString, LispInt aBasePrecision) : iNumber(NULL), iString(aString) { Number(aBasePrecision); }
+
+	virtual ~LispNumber() {}
+	virtual LispObject* Copy() { return NEW LispNumber(*this); }
     /// return a string representation in decimal with maximum decimal precision allowed by the inherent accuracy of the number
-    virtual LispStringPtr String();
+    virtual LispString * String();
     /// give access to the BigNumber object; if necessary, will create a BigNumber object out of the stored string, at given precision (in decimal?)
     virtual BigNumber* Number(LispInt aPrecision);
-    /// annotate
-    LispObject* SetExtraInfo(LispPtr& aData);
 private:
     /// number object; NULL if not yet converted from string
     RefPtr<BigNumber> iNumber;

@@ -11,7 +11,7 @@ long theNrDefinedUser=0;
 #endif
 
 
-#define InternalEval environment().iEvaluator->Eval
+#define InternalEval env.iEvaluator->Eval
 
 #define OPERATOR(kind,prec,name) \
 	kind##operators.SetOperator(prec,hash.LookUp(#name));
@@ -39,32 +39,20 @@ input(iEnvironment.iInputStatus)
 {
     // Define the built-in functions by tying their string representation
     // to a kernel callable routine.
-
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags);
-
 #define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags);
-
 #include "corefunctions.h"
 #undef CORE_KERNEL_FUNCTION
 #undef CORE_KERNEL_FUNCTION_ALIAS
 #undef OPERATOR
-
 }
 
 
-
-
-
-
-LISPEXPORT CYacas* CYacas::NewL(LispInt aStackSize)
-{
-  CYacas* self = NEW CYacas(NEW StdUserOutput(),aStackSize);
-  return self;
-}
 LISPEXPORT CYacas* CYacas::NewL(LispOutput* aOutput,LispInt aStackSize)
 {
-  CYacas* self = NEW CYacas(aOutput,aStackSize);
-  return self;
+	CYacas* self = NEW CYacas(
+		aOutput ? aOutput : NEW StdUserOutput(), aStackSize);
+	return self;
 }
 
 LISPEXPORT CYacas::~CYacas()
@@ -79,103 +67,104 @@ CYacas::CYacas(LispOutput* aOutput,LispInt aStackSize)
 
 
 
-void CYacas::Evaluate(const LispCharPtr aExpression)
+void CYacas::Evaluate(const LispChar * aExpression)
 {
-  LispInt stackTop = environment().iStack.GetStackTop();
+  LispEnvironment& env = environment.getEnv();
+  LispInt stackTop = env.iStack.GetStackTop();
 
-  iResult.SetNrItems(1);
+  iResult.Resize(1);
   iResult[0]='\0';
-  environment().iError.SetNrItems(1);
-  environment().iError[0]='\0';
+  env.iError.Resize(1);
+  env.iError[0]='\0';
   
     LispPtr result;
     LispTrap(
      {
          LispPtr lispexpr;
 //printf("Input: [%s]\n",aExpression);
-         if (environment().PrettyReader() != NULL)
+         if (env.PrettyReader())
          {
-            LispStringPtr prettyReader = environment().PrettyReader();
-            LispString full((LispCharPtr)aExpression);
-            full[full.NrItems()-1] = ';';
+            LispString * prettyReader = env.PrettyReader();
+            LispString full(const_cast<LispChar *>(aExpression));	// TODO: woof
+            full[full.Size()-1] = ';';
             full.Append('\0');
-            StringInput input(full,environment().iInputStatus);
-            LispLocalInput localInput(environment(), &input);
-            LispPtr args;
-            args.Set(NULL);
-            InternalApplyString(environment(), lispexpr,
+            StringInput input(full,env.iInputStatus);
+            LispLocalInput localInput(env, &input);
+            LispPtr args(NULL);
+            InternalApplyString(env, lispexpr,
                                prettyReader,
                                args);
          }
          else
          {
-           LispString full((LispCharPtr)aExpression);
-           full[full.NrItems()-1] = ';';
+           LispString full((LispChar *)aExpression);
+           full[full.Size()-1] = ';';
            full.Append('\0');
-           StringInput input(full,environment().iInputStatus);
-           environment().iInputStatus.SetTo("CommandLine");
-           LispTokenizer &tok = *environment().iCurrentTokenizer;
+           StringInput input(full,env.iInputStatus);
+           env.iInputStatus.SetTo("CommandLine");
+           LispTokenizer &tok = *env.iCurrentTokenizer;
            InfixParser parser(tok, input,
-                              environment(),
-                              environment().PreFix(),
-                              environment().InFix(),
-                              environment().PostFix(),
-                              environment().Bodied());
+                              env,
+                              env.PreFix(),
+                              env.InFix(),
+                              env.PostFix(),
+                              env.Bodied());
            parser.Parse(lispexpr);
          }
 
 //LispString str;
-//PrintExpression(str, lispexpr, environment(), 10000);
+//PrintExpression(str, lispexpr, env, 10000);
 //printf("Read: [%s]\n",str.String());              
 
 
-         environment().iEvalDepth=0;
-         environment().iEvaluator->ResetStack();
-         InternalEval(environment(), result, lispexpr);
+         env.iEvalDepth=0;
+         env.iEvaluator->ResetStack();
+         InternalEval(env, result, lispexpr);
 
-//PrintExpression(str, result, environment(), 10000);
+//PrintExpression(str, result, env, 10000);
 //printf("Result: [%s]\n",str.String());              
 
          // If no error encountered, print result
-         if (environment().PrettyPrinter() != NULL)
+         if (env.PrettyPrinter())
          {
              LispPtr nonresult;
-             InternalApplyString(environment(), nonresult,
-                                 environment().PrettyPrinter(),
+             InternalApplyString(env, nonresult,
+                                 env.PrettyPrinter(),
                                  result);
          }
          else
          {
-             InfixPrinter infixprinter(environment().PreFix(),
-                                       environment().InFix(),
-                                       environment().PostFix(),
-                                       environment().Bodied());
+             InfixPrinter infixprinter(env.PreFix(),
+                                       env.InFix(),
+                                       env.PostFix(),
+                                       env.Bodied());
 
-             infixprinter.Print(result, iResultOutput, environment());
+             infixprinter.Print(result, iResultOutput, env);
              iResultOutput.Write(";");
          }
-         LispStringPtr percent = environment().HashTable().LookUp("%");
-         environment().SetVariable(percent,result);
-         environment().SetGlobalEvaluates(percent);
+         LispString * percent = env.HashTable().LookUp("%");
+         env.SetVariable(percent,result);
+         env.SetGlobalEvaluates(percent);
 
 //printf("Finished: \n");              
 
          
-     },environment().iErrorOutput,environment());
+     },env.iErrorOutput,env);
      
-//printf("stack top = %d (should be zero)\n",environment().iStack.GetStackTop());
-     environment().iStack.PopTo(stackTop);
-//     LISPASSERT(environment().iStack.GetStackTop() == 0);
+//printf("stack top = %d (should be zero)\n",env.iStack.GetStackTop());
+     env.iStack.PopTo(stackTop);
+//     LISPASSERT(env.iStack.GetStackTop() == 0);
 }
 
-LispCharPtr CYacas::Result()
+LispChar * CYacas::Result()
 {
-  return iResult.String();
+  return iResult.c_str();
 }
 
-LispCharPtr CYacas::Error()
+LispChar * CYacas::Error()
 {
-  return environment().iError.String();
+  LispEnvironment& env = environment.getEnv();
+  return env.iError.c_str();
 }
 
 

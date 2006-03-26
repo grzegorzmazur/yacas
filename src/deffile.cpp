@@ -12,20 +12,20 @@
 
 LispDefFile::LispDefFile(const LispDefFile& aOther)
 {
-    iFileName.Set(aOther.iFileName());
-    iIsLoaded=aOther.iIsLoaded;
+    iFileName = (aOther.iFileName);
+	iIsLoaded=aOther.iIsLoaded;
 }
 
-LispDefFile::LispDefFile(LispStringPtr aFileName)
+LispDefFile::LispDefFile(LispString * aFileName)
 {
-    iFileName.Set(aFileName);
+    iFileName = (aFileName);
     iIsLoaded=0;
 }
 
 
 LispDefFile::~LispDefFile()
 {
-    iFileName.Set(NULL);
+    iFileName = (NULL);
 }
 
 void LispDefFile::SetLoaded()
@@ -33,11 +33,11 @@ void LispDefFile::SetLoaded()
     iIsLoaded=1;
 }
 
-LispDefFile* LispDefFiles::File(LispStringPtr aFileName)
+LispDefFile* LispDefFiles::File(LispString * aFileName)
 {
     // Create a new entry
     LispDefFile* file = LookUp(aFileName);
-    if (file == NULL)
+    if (!file)
     {
         LispDefFile newfile(aFileName);
         // Add the new entry to the hash table
@@ -52,8 +52,8 @@ static void DoLoadDefFile(LispEnvironment& aEnvironment, LispInput* aInput,
 {
     LispLocalInput localInput(aEnvironment, aInput);
 
-    LispStringPtr eof = aEnvironment.HashTable().LookUp("EndOfFile");
-    LispStringPtr end = aEnvironment.HashTable().LookUp("}");
+    LispString * eof = aEnvironment.HashTable().LookUp("EndOfFile");
+    LispString * end = aEnvironment.HashTable().LookUp("}");
     LispBoolean endoffile = LispFalse;
 
     LispTokenizer tok;
@@ -61,8 +61,7 @@ static void DoLoadDefFile(LispEnvironment& aEnvironment, LispInput* aInput,
     while (!endoffile)
     {
         // Read expression
-        LispStringPtr token;
-        token = tok.NextToken(*aEnvironment.CurrentInput(),
+        LispString * token = tok.NextToken(*aEnvironment.CurrentInput(),
                               aEnvironment.HashTable());
 
         // Check for end of file
@@ -73,7 +72,7 @@ static void DoLoadDefFile(LispEnvironment& aEnvironment, LispInput* aInput,
         // Else evaluate
         else
         {
-            LispStringPtr str = token;
+            LispString * str = token;
             LispMultiUserFunction* multiUser = aEnvironment.MultiUserFunction(str);
             if (multiUser->iFileToOpen!=NULL)
             {
@@ -89,13 +88,13 @@ static void DoLoadDefFile(LispEnvironment& aEnvironment, LispInput* aInput,
 
 
 
-void LoadDefFile(LispEnvironment& aEnvironment, LispStringPtr aFileName)
+void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName)
 {
     LISPASSERT(aFileName!=NULL);
 
     LispString flatfile;
     InternalUnstringify(flatfile, aFileName);
-    flatfile[flatfile.NrItems()-1]='.';
+    flatfile[flatfile.Size()-1]='.';
     flatfile.Append('d');
     flatfile.Append('e');
     flatfile.Append('f');
@@ -103,13 +102,13 @@ void LoadDefFile(LispEnvironment& aEnvironment, LispStringPtr aFileName)
 
     LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
 
-    LispStringPtr contents = aEnvironment.FindCachedFile(flatfile.String());
+    LispString * contents = aEnvironment.FindCachedFile(flatfile.c_str());
 
     
-    LispStringPtr hashedname = aEnvironment.HashTable().LookUp(flatfile.String());
+    LispString * hashedname = aEnvironment.HashTable().LookUp(flatfile.c_str());
 
     InputStatus oldstatus = aEnvironment.iInputStatus;
-    aEnvironment.iInputStatus.SetTo(hashedname->String());
+    aEnvironment.iInputStatus.SetTo(hashedname->c_str());
 
     if (contents)
     {
@@ -119,7 +118,7 @@ void LoadDefFile(LispEnvironment& aEnvironment, LispStringPtr aFileName)
     }
     else
     {
-        LispLocalFile localFP(aEnvironment, hashedname->String(),LispTrue,
+        LispLocalFile localFP(aEnvironment, hashedname->c_str(),LispTrue,
                               aEnvironment.iInputDirectories);
         Check(localFP.iOpened != 0, KLispErrFileNotFound);
         FILEINPUT newInput(localFP,aEnvironment.iInputStatus);

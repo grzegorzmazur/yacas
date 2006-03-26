@@ -24,7 +24,7 @@
 class CCompressedArchive; /* defined in archiver.h */
 
 class LispDefFiles;
-class InputDirectories : public CDeletingArrayGrower<LispStringPtr>
+class InputDirectories : public CDeletingArrayGrower<LispString *>
 {
 };
 
@@ -43,7 +43,8 @@ class LispEnvironment;
 class CDllArray : public CDeletingArrayGrower<LispDllBase*>
 {
 public:
-    void DeleteNamed(LispCharPtr aName, LispEnvironment& aEnvironment);
+    void DeleteNamed(LispChar * aName, LispEnvironment& aEnvironment);
+	//~CDllArray();
 };
 
 
@@ -84,7 +85,7 @@ public:
     /// LispGlobalVariable is constructed, and it is associated with
     /// \a aValue in #iGlobals.
     /// \sa FindLocal
-    void SetVariable(LispStringPtr aString, LispPtr& aValue);
+    void SetVariable(LispString * aString, LispPtr& aValue);
 
     /// Get the value assigned to a variable.
     /// \param aVariable name of the variable
@@ -102,14 +103,14 @@ public:
     ///   #iEvalBeforeReturn is set to false, and a copy of the result
     ///   is returned in \a aResult.
     /// - Otherwise, \a aResult is set to #NULL.
-    void GetVariable(LispStringPtr aVariable,LispPtr& aResult);
+    void GetVariable(LispString * aVariable,LispPtr& aResult);
 
-    void SetGlobalEvaluates(LispStringPtr aVariable);
+    void SetGlobalEvaluates(LispString * aVariable);
 
-    void UnsetVariable(LispStringPtr aString);
+    void UnsetVariable(LispString * aString);
     void PushLocalFrame(LispBoolean aFenced);
     void PopLocalFrame();
-    void NewLocal(LispStringPtr aVariable,LispObject* aValue);
+    void NewLocal(LispString * aVariable,LispObject* aValue);
     void CurrentLocals(LispPtr& aResult);
     //@}
 
@@ -125,14 +126,14 @@ public:
     /// \param aString name of the command
     /// \param aNrArgs number of arguments
     /// \param aFlags flags, see YacasEvaluator::FunctionFlags
-    void SetCommand(YacasEvalCaller aEvaluatorFunc, LispCharPtr aString,LispInt aNrArgs,LispInt aFlags);
+    void SetCommand(YacasEvalCaller aEvaluatorFunc, LispChar * aString,LispInt aNrArgs,LispInt aFlags);
 
-    void RemoveCommand(LispCharPtr aString);
-    void RemoveCoreCommand(LispCharPtr aString);
+    void RemoveCommand(LispChar * aString);
+    void RemoveCoreCommand(LispChar * aString);
 
     inline  LispHashTable& HashTable();
     LispUserFunction* UserFunction(LispPtr& aArguments);
-    LispUserFunction* UserFunction(LispStringPtr aName,LispInt aArity);
+    LispUserFunction* UserFunction(LispString * aName,LispInt aArity);
 
     /// Return LispMultiUserFunction with given name.
     /// \param aArguments name of the multi user function
@@ -141,27 +142,27 @@ public:
     /// a user function with the given name exists, it is returned. 
     /// Otherwise, a new LispMultiUserFunction is constructed, added
     /// to #iUserFunctions, and returned. 
-    LispMultiUserFunction* MultiUserFunction(LispStringPtr aArguments);
+    LispMultiUserFunction* MultiUserFunction(LispString * aArguments);
 
     LispDefFiles& DefFiles();
-    void DeclareRuleBase(LispStringPtr aOperator, LispPtr& aParameters,
+    void DeclareRuleBase(LispString * aOperator, LispPtr& aParameters,
                          LispInt aListed);
-    void DeclareMacroRuleBase(LispStringPtr aOperator, LispPtr& aParameters, 
+    void DeclareMacroRuleBase(LispString * aOperator, LispPtr& aParameters, 
                          LispInt aListed);
-    void DefineRule(LispStringPtr aOperator,LispInt aArity,
+    void DefineRule(LispString * aOperator,LispInt aArity,
                             LispInt aPrecedence, LispPtr& aPredicate,
                             LispPtr& aBody);
-    void DefineRulePattern(LispStringPtr aOperator,LispInt aArity,
+    void DefineRulePattern(LispString * aOperator,LispInt aArity,
                             LispInt aPrecedence, LispPtr& aPredicate,
                             LispPtr& aBody);
 
 
-    void UnFenceRule(LispStringPtr aOperator,LispInt aArity);
-    void Retract(LispStringPtr aOperator,LispInt aArity);
-    void HoldArgument(LispStringPtr  aOperator,LispStringPtr aVariable);
+    void UnFenceRule(LispString * aOperator,LispInt aArity);
+    void Retract(LispString * aOperator,LispInt aArity);
+    void HoldArgument(LispString *  aOperator,LispString * aVariable);
     //@}
 
-    LispStringPtr FindCachedFile(LispCharPtr aFileName);
+    LispString * FindCachedFile(LispChar * aFileName);
     
 public:
     /// \name Precision
@@ -174,11 +175,11 @@ public:
     //@}
 
 public:
-    inline void SetPrettyPrinter(LispStringPtr aPrettyPrinter);
-    inline LispStringPtr PrettyPrinter(void);
+    inline void SetPrettyPrinter(LispString * aPrettyPrinter);
+    inline LispString * PrettyPrinter(void);
     
-    inline void SetPrettyReader(LispStringPtr aPrettyReader);
-    inline LispStringPtr PrettyReader(void);
+    inline void SetPrettyReader(LispString * aPrettyReader);
+    inline LispString * PrettyReader(void);
     
 public:
     LispInt GetUniqueId();
@@ -203,8 +204,8 @@ public:
     LispOutput* CurrentOutput();
     void SetCurrentOutput(LispOutput* aOutput);
 public:
-    void SetUserError(LispCharPtr aErrorString);
-    LispCharPtr ErrorString(LispInt aError);
+    void SetUserError(LispChar * aErrorString);
+    LispChar * ErrorString(LispInt aError);
     //@}
 
 protected:
@@ -249,26 +250,26 @@ public: // Error reporting
     DefaultDebugger* iDebugger;
     
 private:
-    LispPtr *FindLocal(LispStringPtr aVariable);
+    LispPtr *FindLocal(LispString * aVariable);
 
 private:
 
     class LispLocalVariable : public YacasBase
     {
     public:
-        LispLocalVariable(LispStringPtr aVariable,
+        LispLocalVariable(LispString * aVariable,
                           LispObject* aValue)
-            : iNext(NULL), iVariable(aVariable),iValue(*aValue)
+            : iNext(NULL), iVariable(aVariable),iValue(aValue)
         {
-            aVariable->IncreaseRefCount();
+            ++aVariable->iReferenceCount;
         };
         ~LispLocalVariable()
         {
-            iVariable->DecreaseRefCount();
+            --iVariable->iReferenceCount;
         }
     public:
         LispLocalVariable* iNext;
-        LispStringPtr iVariable;
+        LispString * iVariable;
         LispPtr iValue;
     };
     class LocalVariableFrame : public YacasBase
@@ -326,10 +327,10 @@ private:
 
     LispInput* iCurrentInput;
 
-    LispCharPtr theUserError;
+    LispChar * theUserError;
 
-    LispStringPtr iPrettyReader;
-    LispStringPtr iPrettyPrinter;
+    LispString * iPrettyReader;
+    LispString * iPrettyPrinter;
 public:
     LispTokenizer iDefaultTokenizer;
     CommonLispTokenizer iCommonLispTokenizer;
@@ -338,61 +339,84 @@ public:
     LispTokenizer* iCurrentTokenizer;
 
 public:
-  /** YacasArgStack implements a stack of pointers to objects that can be used to pass
-  *  arguments to functions, and receive results back.
-  */
-  class YacasArgStack
-  {
-  public:
-    //TODO appropriate constructor?
-    YacasArgStack(LispInt aStackSize) : iStack(aStackSize,NULL),iStackTop(0) 
-    {
-//printf("STACKSIZE %d\n",aStackSize);
-    }
-    inline LispInt GetStackTop() const {return iStackTop;}
-    inline void RaiseStackOverflowError() const
-    {
-      RaiseError("Argument stack reached maximum. Please extend argument stack with --stack argument on the command line.");
-    }
-    inline void PushArgOnStack(LispObject* aObject) 
-    {
-      if (iStackTop >= iStack.Size())
-      {
-        RaiseStackOverflowError();
-      }
-      iStack.SetElement(iStackTop,aObject);
-      iStackTop++;
-    }
-
-    inline void PushNulls(LispInt aNr) 
-    {
-      if (iStackTop+aNr > iStack.Size())
-      {
-        RaiseStackOverflowError();
-      }
-      iStackTop+=aNr;
-    }
-
-    inline LispPtr& GetElement(LispInt aPos) 
-    {
-      LISPASSERT(aPos>=0 && aPos < iStackTop);
-      return iStack.GetElement(aPos);
-    }
-    inline void PopTo(LispInt aTop) 
-    {
-      LISPASSERT(aTop<=iStackTop);
-      while (iStackTop>aTop)
-      {
-        iStackTop--;
-        iStack.SetElement(iStackTop,NULL);
-      }
-    }
-  protected:
-    LispPtrArray iStack;
-    LispInt iStackTop;
-  };
-
-  YacasArgStack iStack;
+	/** YacasArgStack implements a stack of pointers to objects that can be used to pass
+	*  arguments to functions, and receive results back.
+	*/
+	class YacasArgStack
+	{
+	public:
+		//TODO appropriate constructor?
+		#if HAS_NEW_LispPtrArray == 0
+		YacasArgStack(LispInt aStackSize) : iStack(aStackSize,NULL),iStackCnt(0) 
+		{
+			//printf("STACKSIZE %d\n",aStackSize);
+		}
+		#else
+		YacasArgStack(LispInt aStackSize) : iStack(),iStackCnt(0) 
+		{
+			iStack.GrowTo(aStackSize);
+			//printf("STACKSIZE %d\n",aStackSize);
+		}
+		#endif
+		inline LispInt GetStackTop() const {return iStackCnt;}
+		inline void RaiseStackOverflowError() const
+		{
+			RaiseError("Argument stack reached maximum. Please extend argument stack with --stack argument on the command line.");
+		}
+		inline void PushArgOnStack(LispObject* aObject) 
+		{
+			if (iStackCnt >= iStack.Size())
+			{
+				RaiseStackOverflowError();
+			}
+			#if HAS_NEW_LispPtrArray == 0
+				iStack.SetElement(iStackCnt,aObject);
+			#else
+				//LISPASSERT(iStackCnt>=0 /*&& iStackCnt<iStack.Size()*/);
+				iStack[iStackCnt] = (aObject);
+			#endif
+			iStackCnt++;
+		}
+		inline void PushNulls(LispInt aNr)
+		{
+			LispInt aStackCnt = iStackCnt + aNr;
+			if (aStackCnt > iStack.Size() || aStackCnt < 0)
+			{
+				RaiseStackOverflowError();
+			}
+			iStackCnt = aStackCnt;
+		}
+		inline LispPtr& GetElement(LispInt aPos)
+		{
+			LISPASSERT(0<=aPos && aPos<iStackCnt);
+			#if HAS_NEW_LispPtrArray == 0
+				return iStack.GetElement(aPos);
+			#else
+				//LISPASSERT(aPos>=0 && aPos<iStack.Size());
+				return iStack[aPos];
+			#endif
+		}
+		inline void PopTo(LispInt aTop)
+		{
+			LISPASSERT(0<=aTop && aTop<=iStackCnt);
+			while (iStackCnt>aTop)
+			{
+				iStackCnt--;
+				#if HAS_NEW_LispPtrArray == 0
+					iStack.SetElement(iStackCnt,NULL);
+				#else
+					iStack[iStackCnt] = (NULL);
+				#endif
+			}
+		}
+	protected:
+		// Invariants:
+		//		0 <= iStackCnt <= iStack.Size()
+		//		iStack[iStackCnt..iStack.Size()-1] = NULL
+		LispPtrArray iStack;
+		LispInt iStackCnt;		// number of items on the stack
+	};
+	YacasArgStack iStack;
 };
 
 /* this function is now in lispenvironment.cpp
@@ -541,6 +565,7 @@ private:
     LispUserFunction* iUserFunc;
 };
 
+// TODO: woof
 class LocalArgs : public YacasBase
 {
 public:
@@ -558,20 +583,20 @@ private:
 
 
 
-inline void LispEnvironment::SetPrettyReader(LispStringPtr aPrettyReader)
+inline void LispEnvironment::SetPrettyReader(LispString * aPrettyReader)
 {
   iPrettyReader = aPrettyReader;
 }
-inline LispStringPtr LispEnvironment::PrettyReader(void)
+inline LispString * LispEnvironment::PrettyReader(void)
 {
   return iPrettyReader;
 }
 
-inline void LispEnvironment::SetPrettyPrinter(LispStringPtr aPrettyPrinter)
+inline void LispEnvironment::SetPrettyPrinter(LispString * aPrettyPrinter)
 {
   iPrettyPrinter = aPrettyPrinter;
 }
-inline LispStringPtr LispEnvironment::PrettyPrinter(void)
+inline LispString * LispEnvironment::PrettyPrinter(void)
 {
   return iPrettyPrinter;
 }

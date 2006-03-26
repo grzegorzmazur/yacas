@@ -56,27 +56,25 @@ public:
   CConsoleHistory() : history(0) {}
   void ResetHistoryPosition();
   void AddLine(LispString& aString);
-  void Append(LispStringPtr aString);
+  void Append(LispString * aString);
   LispInt ArrowUp(LispString& aString,LispInt &aCursorPos);
   LispInt ArrowDown(LispString& aString,LispInt &aCursorPos);
   LispInt Complete(LispString& aString,LispInt &aCursorPos);
   LispInt NrLines();
-  LispStringPtr GetLine(LispInt aLine);
+  LispString * GetLine(LispInt aLine);
 protected:
-  CDeletingArrayGrower<LispStringPtr> iHistory;
+  CDeletingArrayGrower<LispString *> iHistory;
   LispInt history;
 };
 
 
-
- 
 class CCommandLine : public YacasBase
 {
 public:
     CCommandLine() : iHistoryUnchanged(0), iTraceHistory(0){};
     virtual ~CCommandLine();
     /// Call this function if the user needs to enter an expression.
-    virtual void ReadLine(LispCharPtr prompt);
+    virtual void ReadLine(LispChar * prompt);
 public: //platform stuff
     /** return a key press, which is either an ascii value, or one
      * of the values specified in ESpecialChars
@@ -87,7 +85,7 @@ public: //platform stuff
     /** Show the current line (in iSubLine), with the required prompt,
      *  and the cursor position at cursor (starting from the prompt).
      */
-    virtual void ShowLine(LispCharPtr prompt,
+    virtual void ShowLine(LispChar * prompt,
                           LispInt promptlen,LispInt cursor) = 0;
     /// Pause for a short while. Used when matching brackets.
     virtual void Pause() = 0;
@@ -96,15 +94,15 @@ public: //platform stuff
     virtual void MaxHistoryLinesSaved(LispInt aNrLines);
 
 protected:
-    virtual void ReadLineSub(LispCharPtr prompt);
+    virtual void ReadLineSub(LispChar * prompt);
 private:
     void GetHistory(LispInt aLine);
-    void ShowOpen(LispCharPtr prompt,LispInt promptlen,
+    void ShowOpen(LispChar * prompt,LispInt promptlen,
                   LispChar aOpen, LispChar aClose, LispInt aCurPos);
 protected:
     LispInt iFullLineDirty;
     LispInt iHistoryUnchanged;
-    
+
 public:
     LispString iLine;
     LispString iSubLine;
@@ -113,11 +111,9 @@ public:
 
     CConsoleHistory iHistoryList;
 /*TODO remove?
-    CDeletingArrayGrower<LispStringPtr> iHistory;
+    CDeletingArrayGrower<LispString *> iHistory;
     LispInt history;
 */
 };
 
-
 #endif
-

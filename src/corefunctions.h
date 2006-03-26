@@ -203,7 +203,7 @@ CORE_KERNEL_FUNCTION("BitXor",LispBitXor,2,YacasEvaluator::Function | YacasEvalu
 CORE_KERNEL_FUNCTION("Secure",LispSecure,1,YacasEvaluator::Macro | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("FindFile",LispFindFile,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("FindFunction",LispFindFunction,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
-// Generic objecs support 
+// Generic object support 
 CORE_KERNEL_FUNCTION("IsGeneric",LispIsGeneric,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("GenericTypeName",LispGenericTypeName,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("ArrayCreate",GenArrayCreate,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
@@ -273,3 +273,4 @@ CORE_KERNEL_FUNCTION("DebugLine",LispDebugLine,1,YacasEvaluator::Function | Yaca
 //
 CORE_KERNEL_FUNCTION("MathLibrary",LispMathLibName,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Version",LispVersion,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("CodeComment",LispCodeComment,0,YacasEvaluator::Function | YacasEvaluator::Fixed)

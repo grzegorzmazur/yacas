@@ -15,14 +15,14 @@ void PlatStubFree(void *aOrig);
 
 void* PlatStubAlloc(SIZE_T aNrBytes)
 {
-    LispCharPtr result = (LispCharPtr)User::Alloc(aNrBytes);
+    LispChar * result = (LispChar *)User::Alloc(aNrBytes);
     Check(result!=NULL,KLispErrNotEnoughMemory);
     return result;
 }
 
 void *PlatStubReAlloc(void *aOrig, SIZE_T aNrBytes)
 {
-    LispCharPtr result = (LispCharPtr)User::ReAlloc(aOrig, aNrBytes);
+    LispChar * result = (LispChar *)User::ReAlloc(aOrig, aNrBytes);
     Check(result!=NULL,KLispErrNotEnoughMemory);
     return result;
 }

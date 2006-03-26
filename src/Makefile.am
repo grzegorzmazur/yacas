@@ -5,6 +5,7 @@ INCLUDES = @INCLTDL@ -I$(srcdir)/plat/linux32
 bin_PROGRAMS =  yacas
 noinst_PROGRAMS = mkfastprimes check_plugins plugin_stub_gen testnum gencorefunctions @COMPRESSOR_PRG@
 EXTRA_PROGRAMS = compressor
+libmath_USES = yacas$(EXEEXT) check_plugins$(EXEEXT)
 
 lib_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
 EXTRA_LTLIBRARIES = libgmpnumbers.la libyacasnumbers.la 
@@ -77,15 +78,33 @@ libyacasnumbers_la_LDFLAGS = -rpath $(libdir)
 libgmpnumbers_la_SOURCES = gmpnumbers.cpp numbers.cpp
 libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 
-# The libmath.cpp source file is generated as follows
+# We need iteration (rebuilding the same target multiple times).
+# This variable ensures non-empty cmd-goals, taking automake's default, "all".
+# Thus, we can redo the original request, with additions.
+#ITERATIVEMAKE = $(MAKE) $(MAKEFLAGS) $(MAKECMDGOALS) `test -n "$(MAKECMDGOALS)" || all`
+# Belay that order, Mr. Sulu!  What if the request was "make clean test"?  Use the innocuous "check" for now.
+ITERATIVEMAKE = $(MAKE) $(MAKEFLAGS) check
 
-$(srcdir)/libmath.cpp: $(top_srcdir)/scripts/base.rep/math.ys yacas$(EXEEXT) check_plugins
-	(cd ../scripts && make packages.ys corefunctions.ys)
+# The libmath.cpp source file is generated as follows
+# TODO: Get the dependency (on .ys components) right, not piecemeal
+
+$(srcdir)/libmath.cpp: \
+		$(top_srcdir)/scripts/base.rep/math.ys \
+		$(top_srcdir)/scripts/compile.rep/compilecpp.ys
+	(cd ../scripts && $(MAKE) packages.ys corefunctions.ys)
 	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
 	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
-	./yacas$(EXEEXT) --rootdir  $(top_srcdir)/scripts -pc --init compileinit.txt compile.txt
-	./check_plugins
-	make
+	@need='' list='$(libmath_USES)'; for p in $$list; do \
+	  if test ! -f $$p; then need="$$need $$p"; fi; \
+	done; \
+    test -z "$$need" || $(MAKE) $(MAKEFLAGS) $$need
+	-@ echo "Bad if crash or abort between next two commands."
+	./yacas --rootdir $(top_srcdir)/scripts -pc --init compileinit.txt compile.txt
+	./check_plugins || $(ITERATIVEMAKE) $(libmath_USES)
+
+$(srcdir)/plugins_available.h:
+	test -f check_plugins$(EXEEXT) || $(MAKE) $(MAKEFLAGS) check_plugins$(EXEEXT)
+	./check_plugins || echo "More to do..."
 
 # We used to have "libmath_la_LIBADD = libmath.lo" because libmath.cpp
 # is a built source. However, this broke the build process on some
@@ -146,7 +165,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	README.LZO lzoconf.h minilzo.c minilzo.h decompressor.cpp \
 	compressor.cpp filescanner.cpp filescanner.h \
 	compressedfiles.h compress.bat \
-	compressor.dsp compressor.dsw win32rcwriter.cpp yacas.pas biginteger.cpp \
+	compressor.dsp compressor.dsw win32rcwriter.cpp yacas.pas biginteger.cpp libmath.cpp \
   libmath_stub.cpp pcre_study_stub.c pcre_pcre_stub.c pcre_maketables_stub.c \
   pcre_pcreposix_stub.c pcre_get_stub.c pcre_plugin_stub.cpp \
   filescanner_stub.cpp filescanner_plugin_stub.cpp \
@@ -162,13 +181,6 @@ fastprimes.c: mkfastprimes
 	./mkfastprimes > fastprimes.c
 # We don't want $(srcdir)/mkfastprimes because this executable
 # is not generated inside the $(srcdir). 
-
-
-dummy:
-
-$(srcdir)/plugins_available.h: check_plugins dummy
-	./check_plugins
-
 
 libmath_stub.cpp:plugin_stub_gen $(srcdir)/plugins_available.h 
 	./plugin_stub_gen libmath_stub.cpp libmath.cpp
@@ -200,10 +212,9 @@ filescanner_plugin_stub.cpp:plugin_stub_gen $(srcdir)/plugins_available.h
 
 #workaround that hopefully allows compiling Yacas out of the box, 
 #dependency on the plugins_available.h header file
+exedll.$(OBJEXT) yacasmain.$(OBJEXT): $(srcdir)/plugins_available.h
 
-exedll.cpp: $(srcdir)/plugins_available.h
-
-yacasmain.cpp: $(srcdir)/plugins_available.h
+exedll.cpp yacasmain.cpp: $(srcdir)/plugins_available.h
 
 
 yacas_include = $(datadir)/yacas/include

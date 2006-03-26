@@ -226,13 +226,13 @@ while (length-- > 0)
       p += rc;
       if (c < 256 && isprint(c))
         {
-        if (f != NULL) fprintf(f, "%c", c);
+        if (f) fprintf(f, "%c", c);
         yield++;
         }
       else
         {
         int n;
-        if (f != NULL) fprintf(f, "\\x{%02x}%n", c, &n);
+        if (f) fprintf(f, "\\x{%02x}%n", c, &n);
         yield += n;
         }
       continue;
@@ -243,12 +243,12 @@ while (length-- > 0)
 
   if (isprint(c = *(p++)))
     {
-    if (f != NULL) fprintf(f, "%c", c);
+    if (f) fprintf(f, "%c", c);
     yield++;
     }
   else
     {
-    if (f != NULL) fprintf(f, "\\x%02x", c);
+    if (f) fprintf(f, "\\x%02x", c);
     yield += 4;
     }
   }
@@ -294,7 +294,7 @@ if (callout_extra)
 datails. On subsequent calls in the same match, we use pchars just to find the
 printed lengths of the substrings. */
 
-if (f != NULL) fprintf(f, "--->");
+if (f) fprintf(f, "--->");
 
 pre_start = pchars((unsigned char *)cb->subject, cb->start_match, f);
 post_start = pchars((unsigned char *)(cb->subject + cb->start_match),
@@ -303,7 +303,7 @@ post_start = pchars((unsigned char *)(cb->subject + cb->start_match),
 (void)pchars((unsigned char *)(cb->subject + cb->current_position),
   cb->subject_length - cb->current_position, f);
 
-if (f != NULL) fprintf(f, "\n");
+if (f) fprintf(f, "\n");
 
 /* Always print appropriate indicators, with callout number if not already
 shown */
@@ -678,7 +678,7 @@ while (!done)
       for (i = 0; i < LOOPREPEAT; i++)
         {
         re = pcre_compile((char *)p, options, &error, &erroroffset, tables);
-        if (re != NULL) free(re);
+        if (re) free(re);
         }
       time_taken = clock() - start_time;
       fprintf(outfile, "Compile time %.3f milliseconds\n",
@@ -849,14 +849,14 @@ while (!done)
         for (i = 0; i < LOOPREPEAT; i++)
           extra = pcre_study(re, study_options, &error);
         time_taken = clock() - start_time;
-        if (extra != NULL) free(extra);
+        if (extra) free(extra);
         fprintf(outfile, "  Study time %.3f milliseconds\n",
           (((double)time_taken * 1000.0) / (double)LOOPREPEAT) /
             (double)CLOCKS_PER_SEC);
         }
 
       extra = pcre_study(re, study_options, &error);
-      if (error != NULL)
+      if (error)
         fprintf(outfile, "Failed to study: %s\n", error);
       else if (extra == NULL)
         fprintf(outfile, "Study returned NULL\n");
@@ -1335,7 +1335,7 @@ while (!done)
             {
             for (i = 0; i < count; i++)
               fprintf(outfile, "%2dL %s\n", i, stringlist[i]);
-            if (stringlist[i] != NULL)
+            if (stringlist[i])
               fprintf(outfile, "string list not terminated by NULL\n");
             /* free((void *)stringlist); */
             pcre_free_substring_list(stringlist);
@@ -1405,9 +1405,9 @@ while (!done)
   if (posix || do_posix) regfree(&preg);
 #endif
 
-  if (re != NULL) free(re);
-  if (extra != NULL) free(extra);
-  if (tables != NULL)
+  if (re) free(re);
+  if (extra) free(extra);
+  if (tables)
     {
     free((void *)tables);
     setlocale(LC_CTYPE, "C");

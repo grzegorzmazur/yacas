@@ -1,5 +1,5 @@
 //
-// "$Id: editor.cpp,v 1.7 2003-06-09 10:24:04 ayalpinkus Exp $"
+// "$Id: editor.cpp,v 1.8 2006-03-26 12:49:13 ayalpinkus Exp $"
 //
 // A simple text editor program for the Fast Light Tool Kit (FLTK).
 //
@@ -225,7 +225,7 @@ void redo_title()
         slash = strrchr(FileName(), '/');
         if (slash == NULL) slash = strrchr(FileName(), '\\');
 
-        if (slash != NULL) strcpy(title, slash + 1);
+        if (slash) strcpy(title, slash + 1);
         else strcpy(title, FileName());
     }
 
@@ -841,7 +841,7 @@ void find_cb(Fl_Widget* w, void* v) {
   const char *val;
 
   val = fl_input("Search String:", search);
-  if (val != NULL) {
+  if (val) {
     // User entered a string - go find it!
     strcpy(search, val);
     find2_cb(w, v);
@@ -876,7 +876,7 @@ void set_title(Fl_Window* w) {
 #ifdef WIN32
     if (slash == NULL) slash = strrchr(filename, '\\');
 #endif
-    if (slash != NULL) strcpy(title, slash + 1);
+    if (slash) strcpy(title, slash + 1);
     else strcpy(title, filename);
   }
 
@@ -941,13 +941,13 @@ static void open_cb(Fl_Widget*, void*)
   }
 
   char *newfile = fl_file_chooser("Open File?", "*", Document()->filename);
-  if (newfile != NULL) load_file(newfile, -1);
+  if (newfile) load_file(newfile, -1);
 }
 
 void insert_cb(Fl_Widget*, void *v) {
   char *newfile = fl_file_chooser("Insert File?", "*", Document()->filename);
 //  EditorWindow *w = (EditorWindow *)v;
-  if (newfile != NULL) load_file(newfile, Document()->editor->insert_position());
+  if (newfile) load_file(newfile, Document()->editor->insert_position());
 }
 
 void paste_cb(Fl_Widget*, void* v) {
@@ -1070,7 +1070,7 @@ void saveas_cb() {
   char *newfile;
 
   newfile = fl_file_chooser("Save File As?", "*", Document()->filename);
-  if (newfile != NULL) save_file(newfile);
+  if (newfile) save_file(newfile);
 }
 
 //Fl_Window* new_view();
@@ -1192,7 +1192,7 @@ int main(int argc, char **argv) {
 */
 
 //
-// End of "$Id: editor.cpp,v 1.7 2003-06-09 10:24:04 ayalpinkus Exp $".
+// End of "$Id: editor.cpp,v 1.8 2006-03-26 12:49:13 ayalpinkus Exp $".
 //
 
 
@@ -1235,7 +1235,7 @@ int main(int argc, char **argv) {
 #if 0 //TODO remove, older editor
 
 //
-// "$Id: editor.cpp,v 1.7 2003-06-09 10:24:04 ayalpinkus Exp $"
+// "$Id: editor.cpp,v 1.8 2006-03-26 12:49:13 ayalpinkus Exp $"
 //
 // A simple text editor program for the Fast Light Tool Kit (FLTK).
 //
@@ -1495,7 +1495,7 @@ void redo_title()
         slash = strrchr(FileName(), '/');
         if (slash == NULL) slash = strrchr(FileName(), '\\');
 
-        if (slash != NULL) strcpy(title, slash + 1);
+        if (slash) strcpy(title, slash + 1);
         else strcpy(title, FileName());
     }
 
@@ -1532,7 +1532,7 @@ void load_file(char *newfile)
   EditorInput()->value("");
   
   fp = fopen(newfile, "r");
-  if (fp != NULL) {
+  if (fp) {
     // Was able to open file; let's read from it...
     strcpy(FileName(), newfile);
     pos = 0;
@@ -1557,7 +1557,7 @@ void save_file(char *newfile) {
   FILE *fp;
 
   fp = fopen(newfile, "w");
-  if (fp != NULL) {
+  if (fp) {
     // Was able to create file; let's write to it...
     strcpy(FileName(), newfile);
 
@@ -1607,7 +1607,7 @@ void find_cb(void) {
   const char *val;
 
   val = fl_input("Search String:", search);
-  if (val != NULL) {
+  if (val) {
     // User entered a string - go find it!
     strcpy(search, val);
     find2_cb();
@@ -1627,7 +1627,7 @@ void find2_cb(void) {
   val   = EditorInput()->value() + EditorInput()->mark();
   found = strstr(val, search);
 
-  if (found != NULL) {
+  if (found) {
     // Found a match; update the position and mark...
     pos = EditorInput()->mark() + found - val;
     EditorInput()->position(pos, pos + strlen(search));
@@ -1658,7 +1658,7 @@ void open_cb(void)
 
     newfile = fl_file_chooser("Open File?", "*", FileName());
 
-    if (newfile != NULL)
+    if (newfile)
     {
         if (FileName()[0] == '\0' && *Changed() == 0) {}
         else
@@ -1702,7 +1702,7 @@ void replace2_cb() {
   val   = EditorInput()->value() + EditorInput()->position();
   found = strstr(val, find);
 
-  if (found != NULL) {
+  if (found) {
     // Found a match; update the position and replace text...
     pos = EditorInput()->position() + found - val;
     EditorInput()->replace(pos, pos + strlen(find), replace_with->value());
@@ -1733,14 +1733,14 @@ void replall_cb() {
     val   = EditorInput()->value() + EditorInput()->position();
     found = strstr(val, find);
 
-    if (found != NULL) {
+    if (found) {
       // Found a match; update the position and replace text...
       times ++;
       pos = EditorInput()->position() + found - val;
       EditorInput()->replace(pos, pos + strlen(find), replace_with->value());
       EditorInput()->position(pos + strlen(replace_with->value()));
     }
-  } while (found != NULL);
+  } while (found);
 
   if (times > 0) fl_message("Replaced %d occurrences.", times);
   else fl_alert("No occurrences of \'%s\' found!", find);
@@ -1794,7 +1794,7 @@ void saveas_cb(void) {
 
   newfile = fl_file_chooser("Save File As?", "*", FileName());
 
-  if (newfile != NULL) save_file(newfile);
+  if (newfile) save_file(newfile);
 }
 
 void undo_cb(void) {
@@ -1902,7 +1902,7 @@ void editor_add_items(Fl_Group* o,int minx,int miny,int width, int height, int f
 
 
 //
-// End of "$Id: editor.cpp,v 1.7 2003-06-09 10:24:04 ayalpinkus Exp $".
+// End of "$Id: editor.cpp,v 1.8 2006-03-26 12:49:13 ayalpinkus Exp $".
 //
 
 #endif

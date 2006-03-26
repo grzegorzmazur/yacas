@@ -34,30 +34,28 @@ void yacas_init()
     HMODULE hmod = (HMODULE)hThisModule;
     hResInfo = FindResource (hmod, "RC_DATA1", RT_RCDATA); 
 
-    if (hResInfo == NULL)
+    if (!hResInfo)
     {
       printf("Error %d\n",GetLastError());
     }
 
     int fullsize = 0;
-    if (hResInfo != NULL) 
+    if (hResInfo) 
     {
       fullsize = SizeofResource(hmod, (HRSRC)hResInfo);
       // Load the wave resource. 
       hRes = LoadResource (hmod, (HRSRC)hResInfo); 
 
-      if (hRes != NULL) 
+      if (hRes) 
       {
-        unsigned char* buffer;
         // Lock the wave resource and play it. 
-        buffer = (unsigned char*)PlatAlloc(fullsize);
-     
+        unsigned char* buffer = PlatAllocN<unsigned char>(fullsize);
         if (buffer)
         {
           memcpy(buffer, (unsigned char*)LockResource (hRes),fullsize);
           CCompressedArchive *a =
               NEW CCompressedArchive(buffer, fullsize, 1);
-          (*yacas)()().iArchive = a;
+          yacas->getDefEnv().getEnv().iArchive = a;
         }
       }
     }
@@ -73,7 +71,7 @@ void yacas_eval(char* expression)
 {
     if (yacas)
     {
-        stringout->SetNrItems(0);
+        stringout->Resize(0);
         stringout->Append('\0');
         yacas->Evaluate(expression);
     }
@@ -99,19 +97,19 @@ char* yacas_output()
 {
     if (yacas)
         if (stringout)
-            return stringout->String();
+            return stringout->c_str();
     return NULL;
 }
 
 void yacas_secure()
 {
   if (yacas)
-    (*yacas)()().iSecure = LispTrue;
+    yacas->getDefEnv().getEnv().iSecure = LispTrue;
 }
 void yacas_interrupt()
 {
   if (yacas)
-    (*yacas)()().iEvalDepth = (*yacas)()().iMaxEvalDepth+100;
+    yacas->getDefEnv().getEnv().iEvalDepth = yacas->getDefEnv().getEnv().iMaxEvalDepth+100;
 }
 
 void yacas_exit()
@@ -134,18 +132,18 @@ void yacas_exit()
 // Creating objects
 void* yacas_create_atom(char* atom)
 {
-  return LispAtom::New((*yacas)()(),atom);
+  return LispAtom::New(yacas->getDefEnv().getEnv(),atom);
 }
 void* yacas_create_string(char* string)
 {
   LispString orig(string);
   LispString stringified;
   InternalStringify(stringified, &orig);
-  return LispAtom::New((*yacas)()(),stringified.String());
+  return LispAtom::New(yacas->getDefEnv().getEnv(),stringified.c_str());
 }
 void* yacas_create_number_from_string(char* string)
 {
-  return LispAtom::New((*yacas)()(),string);
+  return LispAtom::New(yacas->getDefEnv().getEnv(),string);
 }
 void* yacas_create_number_from_long(long number)
 {
@@ -169,7 +167,7 @@ void* yacas_link_objects(void* head, void* tail)
 {
   LispObject *h = (LispObject *)head;
   LispObject *t = (LispObject *)tail;
-  h->Next().Set(t);
+  h->Nixed() = (t);
   return head;
 }
 
@@ -179,51 +177,53 @@ void* yacas_execute(void* object)
   LispPtr result;
   LispPtr input;
   LispObject* oin = ((LispObject*)object);
-  input.Set(oin);
-  (*yacas)()().iEvaluator->Eval((*yacas)()(), result, input);
+  input = (oin);
+  yacas->getDefEnv().getEnv().iEvaluator->Eval(yacas->getDefEnv().getEnv(), result, input);
 
-  oin->IncreaseRefCount();
-  input.Set(NULL);
-  oin->DecreaseRefCount();
-  LispObject* oout = result.Get();
-  oout->IncreaseRefCount();
-  result.Set(NULL);
-  oout->DecreaseRefCount();
+  ++oin->iReferenceCount;
+  input = (NULL);
+  --oin->iReferenceCount;
+  LispObject* oout = result;
+  ++oout->iReferenceCount;
+  result = (NULL);
+  --oout->iReferenceCount;
   return oout;
 }
 
 // pulling apart an object again
 void* yacas_get_sublist(void* object)
 {
-  return ((LispObject*)object)->SubList()->Get();
+  //return ((LispObject*)object)->SubList()->Get();
+	return (void*)&(*(*((LispObject*)object)->SubList()));
 }
 char* yacas_get_atom(void* object)
 {
-  return ((LispObject*)object)->String()->String();
+  return ((LispObject*)object)->String()->c_str();
 }
 int  yacas_object_is_string(void* object)
 {
-  if (((LispObject*)object)->String() == NULL)
+  if (!((LispObject*)object)->String())
     return 0;
-  if (((LispObject*)object)->String()->String()[0] != '\"')
+  if (((LispObject*)object)->String()->c_str()[0] != '\"')
     return 0;
   return 1;
 }
 int  yacas_object_is_sublist(void* object)
 {
-  return (((LispObject*)object)->SubList() != NULL);
+  return !!(((LispObject*)object)->SubList());
 }
 int  yacas_object_is_atom(void* object)
 {
-  return (((LispObject*)object)->String() != NULL);
+  return !!(((LispObject*)object)->String());
 }
 int  yacas_object_is_number(void* object)
 {
-  return (((LispObject*)object)->Number(0) != NULL);
+  return !!(((LispObject*)object)->Number(0));
 }
 int  yacas_object_is_integer(void* object)
 {
-  return (((LispObject*)object)->Number(0)->IsInt());
+  BigNumber * pNum = ((LispObject*)object)->Number(0);
+  return pNum ? pNum->IsInt() : 0;
 }
 long yacas_get_long(void* object)
 {
@@ -236,7 +236,7 @@ double yacas_get_double(void* object)
 
 void* yacas_get_next(void* object)
 {
-  return (((LispObject*)object)->Next().Get());
+  return (void*)&(*(((LispObject*)object)->Nixed()));
 }
 void yacas_delete_object(void* object)
 {

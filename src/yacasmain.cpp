@@ -205,7 +205,7 @@ void ReportNrCurrent()
 #define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
 void LispPlatformOS(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  RESULT.Set(LispAtom::New(aEnvironment,"\"" PLATFORM_OS "\""));
+  RESULT = (LispAtom::New(aEnvironment,"\"" PLATFORM_OS "\""));
 }
 
 void LispExit(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -246,7 +246,7 @@ void LispStackSize(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispChar buf[30];
     InternalIntToAscii(buf, (int)(the_first_stack_var-(unsigned char*)&buf[0]));
-    RESULT.Set(LispAtom::New(aEnvironment,buf));
+    RESULT = (LispAtom::New(aEnvironment,buf));
 }
 
 
@@ -258,7 +258,7 @@ REDO:
   readmode = 1;
   commandline->ReadLine(prompt);
   readmode = 0;
-  inpline =  commandline->iLine.String();
+  inpline =  commandline->iLine.c_str();
 
   if (inpline)
   {
@@ -308,13 +308,12 @@ REDO:
 
 static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispPtr promptObject;
-    promptObject.Set(ARGUMENT(1).Get());
+    LispPtr promptObject = (ARGUMENT(1));
     CHK_ISSTRING_CORE(promptObject,1);
     LispString prompt;
-    InternalUnstringify(prompt, promptObject.Get()->String());
-    char* output = ReadInputString(prompt.String());
-    RESULT.Set(LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(output)->String()));
+    InternalUnstringify(prompt, promptObject->String());
+    char* output = ReadInputString(prompt.c_str());
+    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(output)->c_str()));
 }
 
 static void LispHistorySize(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -346,7 +345,7 @@ void LispTime(LispEnvironment& aEnvironment, LispInt aStackTop)
 #else
     sprintf(buf,"%g",timeDiff);
 #endif
-    RESULT.Set(LispAtom::New(aEnvironment,buf));
+    RESULT = (LispAtom::New(aEnvironment,buf));
 }
 
 
@@ -354,14 +353,13 @@ void LispTime(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispFileSize(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispPtr fnameObject;
-    fnameObject.Set(ARGUMENT(1).Get());
+    LispPtr fnameObject = (ARGUMENT(1));
     CHK_ISSTRING_CORE(fnameObject,1);
     LispString fname;
-    InternalUnstringify(fname, fnameObject.Get()->String());
+    InternalUnstringify(fname, fnameObject->String());
 
     long fileSize = 0;
-    FILE* f = fopen(fname.String(),"rb");
+    FILE* f = fopen(fname.c_str(),"rb");
     if(f != NULL)
     {
       fseek(f,0,SEEK_END);
@@ -370,7 +368,7 @@ void LispFileSize(LispEnvironment& aEnvironment, LispInt aStackTop)
     }
     else
     {
-      printf("[[%s]]\n",fname.String());
+      printf("[[%s]]\n",fname.c_str());
     }    
     char buf[100];
     
@@ -379,7 +377,7 @@ void LispFileSize(LispEnvironment& aEnvironment, LispInt aStackTop)
 #else
     sprintf(buf,"%ld",fileSize);
 #endif
-    RESULT.Set(LispAtom::New(aEnvironment,buf));
+    RESULT = (LispAtom::New(aEnvironment,buf));
 }
 
 
@@ -502,7 +500,7 @@ void ShowResult(char *prompt)
     }
     else
     {
-        if ((*yacas)()().PrettyPrinter()==NULL)
+        if (yacas->getDefEnv().getEnv().PrettyPrinter()==NULL)
             printf("%s%s\n",prompt,yacas->Result());
     }
     if (use_texmacs_out)
@@ -546,16 +544,14 @@ void DeclareDllPath(char *ptr2)
 
 void LoadYacas(LispOutput* aOutput=NULL)
 {
+  if (yacas) return;
   busy=LispTrue;
   restart=LispFalse;
 
-  if (aOutput)
-    yacas = CYacas::NewL(aOutput,stack_size);
-  else
-    yacas = CYacas::NewL(stack_size);
+  yacas = CYacas::NewL(aOutput,stack_size);
 
 
-#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) (*yacas)()().SetCommand(fname,iname,nrargs,flags);
+#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) yacas->getDefEnv().getEnv().SetCommand(fname,iname,nrargs,flags);
 
 CORE_KERNEL_FUNCTION("OSVersion",LispPlatformOS,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Exit",LispExit,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
@@ -592,7 +588,7 @@ CORE_KERNEL_FUNCTION("PluginsCanBeLoaded",LispPluginsCanBeLoaded,0,YacasEvaluato
                     NEW CCompressedArchive(fullbuf, fullsize, compressed_archive);
                 if (a->iFiles.IsValid())
                 {
-                    (*yacas)()().iArchive = a;
+                    yacas->getDefEnv().getEnv().iArchive = a;
                 }
                 else
                 {
@@ -792,7 +788,7 @@ void InterruptHandler(int errupt)
 #endif
 {
     printf("^C pressed\n");
-    (*yacas)()().iEvalDepth = (*yacas)()().iMaxEvalDepth+100;
+    yacas->getDefEnv().getEnv().iEvalDepth = yacas->getDefEnv().getEnv().iMaxEvalDepth+100;
     if (readmode)
     {
       my_exit();
@@ -831,7 +827,7 @@ VOID CALLBACK stopClient(LPVOID lpArgToCompletionRoutine, DWORD dwTimerLowValue,
 {
   if (clientToStop)
   {
-    (*clientToStop)()().iEvalDepth = (*clientToStop)()().iMaxEvalDepth+100;
+    clientToStop->getDefEnv().getEnv().iEvalDepth = clientToStop->getDefEnv().getEnv().iMaxEvalDepth+100;
   }
 }
 
@@ -1120,7 +1116,9 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
                            {
                                char* response = finalbuffer;
                                if (!server_single_user) 
-                                 (*used_clients[clsockindex])()().iSecure = 1;
+                               {
+                                 used_clients[clsockindex]->getDefEnv().getEnv().iSecure = 1;
+                               }
                                if (seconds>0)
                                {
                                    clientToStop = used_clients[clsockindex];
@@ -1138,7 +1136,7 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
    #ifdef YACAS_DEBUG
                                printf("In> %s\n",finalbuffer);
    #endif
-                               outStrings.SetNrItems(1);
+                               outStrings.Resize(1);
                                outStrings[0] = '\0';
                                used_clients[clsockindex]->Evaluate(finalbuffer);
                                free(finalbuffer);
@@ -1171,13 +1169,13 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
 
                                int buflen=strlen(response);
    #ifdef YACAS_DEBUG
-                               printf("%s",outStrings.String());
+                               printf("%s",outStrings.c_str());
                                printf("Out> %s\n",response);
    #endif
                                if (response)
                                {
    #ifndef WIN32
-                                 write(fd, outStrings.String(), strlen(outStrings.String()));
+                                 write(fd, outStrings.c_str(), strlen(outStrings.c_str()));
                                  write(fd,"]\r\n",3);
                                  if (buflen>0)
                                  {
@@ -1186,7 +1184,7 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
                                  }
                                  write(fd,"]\r\n",3);
    #else
-                                 send(fd, outStrings.String(), strlen(outStrings.String()), 0);
+                                 send(fd, outStrings.c_str(), strlen(outStrings.c_str()), 0);
                                  send(fd,"]\r\n",3, 0);
                                  if (buflen>0)
                                  {
@@ -1505,7 +1503,7 @@ int main(int argc, char** argv)
 
     if (use_texmacs_out)
     {
-        (*yacas)()().SetPrettyPrinter((*yacas)()().HashTable().LookUp("\"TexForm\""));
+        yacas->getDefEnv().getEnv().SetPrettyPrinter(yacas->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
 //        yacas->Evaluate("ToString()PrettyPrinter(\"TexForm\");");
     }
 
@@ -1632,7 +1630,7 @@ RESTART:
 #else
         ReadInputString(inprompt);
 #endif
-        char *inpline =  commandline->iLine.String();
+        char *inpline =  commandline->iLine.c_str();
         if (use_texmacs_out)
         {
             printf("%cverbatim:",TEXMACS_DATA_BEGIN);
@@ -1672,7 +1670,7 @@ RESTART:
   }
   if (restart)
   {
-    delete yacas;
+    delete yacas; yacas = NULL;
     LoadYacas();
     goto RESTART;
   }

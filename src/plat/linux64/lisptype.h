@@ -14,7 +14,6 @@
 #define LispInt   signed long int
 #define LispUnsLong unsigned long int
 #define LispShort short int
-#define LispCharPtr LispChar *
 #define LispBoolean int
 
 #define LISPEXPORT

@@ -17,21 +17,33 @@
 #define WordBase  (((PlatDoubleWord)1)<<WordBits)
 #define WordMask  (WordBase-1)
 
+// The default is 8, but it is suspected mose numbers will be short integers that fit into
+// one or two words. For these numbers memory allocation will be a lot more friendly.
+class ANumberOps : public ArrOpsPOD<PlatWord>
+{
+public:
+	ANumberOps() {}
+	inline int granularity() const { return 2; }
+};
+
+
 /* Class ANumber represents an arbitrary precision number. it is
  * basically an array of PlatWord objects, with the first element
  * being the least significant. iExp <= 0 for integers.
  */
-class ANumber : public CArrayGrower<PlatWord>
+class ANumber : public CArrayGrower<PlatWord,ANumberOps>
 {
 public:
-    ANumber(const LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
+	typedef CArrayGrower<PlatWord,ANumberOps> ASuper;
+public:
+    ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
     ANumber(LispInt aPrecision);
     ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision);
     inline ANumber(ANumber& aOther) {CopyFrom(aOther);}
     ~ANumber();
     void CopyFrom(const ANumber& aOther);
     LispBoolean ExactlyEqual(const ANumber& aOther);
-    void SetTo(const LispCharPtr aString,LispInt aBase=10);
+    void SetTo(const LispChar * aString,LispInt aBase=10);
     inline void SetPrecision(LispInt aPrecision) {iPrecision = aPrecision;}
     void ChangePrecision(LispInt aPrecision);
     void RoundBits(void);

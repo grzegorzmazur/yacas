@@ -18,24 +18,17 @@ void InternalEval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExp
 class UserStackInformation : public YacasBase
 {
 public:
-    UserStackInformation():
-        iRulePrecedence(-1),iSide(0)
+    UserStackInformation() : iRulePrecedence(-1),iSide(0)
     {
-#ifdef YACAS_DEBUG
-        iFileName = "(no file)";
-        iLine = 0;
-#endif
+        DBG_( iFileName = "(no file)"; )
+        DBG_( iLine = 0; )
     }
     LispPtr iOperator;
     LispPtr iExpression;
     LispInt iRulePrecedence;
     LispInt iSide; // 0=pattern, 1=body
-
-#ifdef YACAS_DEBUG
-    LispCharPtr iFileName;
-    LispInt iLine;
-#endif
-    
+    DBG_( LispChar * iFileName; )
+    DBG_( LispInt iLine; )
 };
 
 /// Abstract evaluator for Lisp expressions.
@@ -91,6 +84,7 @@ public:
   /// element! Eg. its Next might be set... 
   ///
   virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
+  // TODO: woof - change above to *return* the LispPtr! (or a LispObject*)
 };
 
 class TracedEvaluator : public BasicEvaluator

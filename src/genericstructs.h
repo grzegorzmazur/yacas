@@ -20,14 +20,14 @@
 class GenericStruct : public GenericClass
 {
 public:
-    GenericStruct(LispCharPtr aTypeName, void* aData, void (*aDestructor)(void*));
+    GenericStruct(LispChar * aTypeName, void* aData, void (*aDestructor)(void*));
     virtual ~GenericStruct();
-    virtual LispCharPtr Send(LispArgList& aArgList);
-    virtual LispCharPtr TypeName();
+    virtual LispChar * Send(LispArgList& aArgList);
+    virtual LispChar * TypeName();
     inline void* Data() {return iData;}
 public:
     void* iData;
-    LispCharPtr iTypeName;
+    LispChar * iTypeName;
     void (*iDestructor)(void* data);
 };
 

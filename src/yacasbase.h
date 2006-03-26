@@ -4,56 +4,39 @@
 
 #define MY_ALLOCS
 
+#define STA static
+
 class YacasBase
 {
 public:
     inline YacasBase() {};
     inline ~YacasBase() {};
 #ifdef MY_ALLOCS
-
 #ifdef YACAS_DEBUG
-    inline void* operator new(size_t size, char* aFile, int aLine);
-    inline void* operator new[](size_t size, char* aFile, int aLine);
+    STA inline void* operator new(size_t size, char* aFile, int aLine)
+		{ return YacasMallocPrivate(size,aFile,aLine); }
+    STA inline void* operator new[](size_t size, char* aFile, int aLine)
+		{ return YacasMallocPrivate(size,aFile,aLine); }
+#if NEED_FUNNY_operator_delete || defined(_MSC_VER)	// TODO: woof woof woof
+    STA inline void operator delete(void* object, char* aFile, int aLine)
+		{ YacasFreePrivate(object); }
+    STA inline void operator delete[](void* object, char* aFile, int aLine)
+		{ YacasFreePrivate(object); }
+#endif
 #else
-    inline void* operator new(size_t size);
-    inline void* operator new[](size_t size);
+    STA inline void* operator new(size_t size)
+		{ return PlatAlloc(size); }
+    STA inline void* operator new[](size_t size)
+		{ return PlatAlloc(size); }
+#endif	// endif -- here, or two lines down? -- TODO: woof
+    STA inline void operator delete(void* object)
+		{ PlatFree(object); }
+    STA inline void operator delete[](void* object)
+		{ PlatFree(object); }
 #endif
-    inline void operator delete(void* object);
-    inline void operator delete[](void* object);
-#endif
+	// Placement form of new and delete.
+	STA inline void* operator new(size_t, void* where) { return where; }
+	STA inline void operator delete(void*, void*) {}
 };
 
-#ifdef MY_ALLOCS
-
-#ifdef YACAS_DEBUG
-inline void* YacasBase::operator new(size_t size, char* aFile, int aLine)
-{
-    return YacasMallocPrivate(size,aFile,aLine);
-}
-inline void* YacasBase::operator new[](size_t size, char* aFile, int aLine)
-{
-    return YacasMallocPrivate(size,aFile,aLine);
-}
-#else
-inline void* YacasBase::operator new(size_t size)
-{
-    return PlatAlloc(size);
-}
-inline void* YacasBase::operator new[](size_t size)
-{
-    return PlatAlloc(size);
-}
 #endif
-
-inline void YacasBase::operator delete(void* object)
-{
-    PlatFree((LispCharPtr)object);
-}
-inline void YacasBase::operator delete[](void* object)
-{
-    PlatFree((LispCharPtr)object);
-}
-#endif
-
-#endif
-

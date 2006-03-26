@@ -12,7 +12,7 @@ enum
 class DebugLine
 {
 public:
-    inline DebugLine(LispInt aToEnter, LispInt aType, LispString& aExpr, LispCharPtr aFile, LispInt aLine)
+    inline DebugLine(LispInt aToEnter, LispInt aType, LispString& aExpr, LispChar * aFile, LispInt aLine)
     {
         iToEnter = aToEnter;
         iType    = aType;
@@ -23,7 +23,7 @@ public:
     LispInt     iToEnter;
     LispInt     iType;
     LispString  iExpr;
-    LispCharPtr iFile;
+    LispChar * iFile;
     LispInt     iLine;
 };
 
@@ -39,7 +39,7 @@ class DebugStack : public CDeletingArrayGrower<DebugStackFrame*>
 class ProteusDebugger : public YacasDebuggerBase
 {
 public:
-    ProteusDebugger(LispCharPtr aTempDir);
+    ProteusDebugger(LispChar * aTempDir);
     virtual ~ProteusDebugger();
     virtual void Start();
     virtual void Finish();
@@ -59,7 +59,7 @@ private:
     DebugStack *traceStack;
     LispInt traceFile;
     LispInt running;
-    LispCharPtr iTempDir;
+    LispChar * iTempDir;
 };
 #endif
 

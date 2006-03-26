@@ -32,7 +32,7 @@ int main(int argc, char** argv)
   sprintf(new_buf,"#ifndef __plugins_available_h__\n#define __plugins_available_h__\n%s EXE_DLL_PLUGINS\n#endif // __plugins_available_h__\n",define);
 
   // To stop recursive recompiles, only write the file if it did not yet exist, or if it changed.
-  int do_save = 1;
+  int do_save = 1;	// equivalent to "changed"
   char old_buf[1024];
   old_buf[0] = '\0';
   {
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
 	}
 	else
 	{
-	  printf("plugins_available.h did not yet exist, creating it now\n");
+	  fprintf(stderr,"plugins_available.h did not yet exist, creating it now\n");
 	}
   }
   if (do_save)
@@ -70,5 +70,5 @@ int main(int argc, char** argv)
 	  printf("warning: could not create file plugins_available.h\n");
 	}
   }
-  return 0;
+  return do_save;
 }

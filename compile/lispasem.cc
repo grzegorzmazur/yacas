@@ -33,9 +33,9 @@ LispObject* MakeAtomInt(LispEnvironment& aEnvironment, int i)
 
 LispInt MakeGetInteger(LispPtr& aVal)
 {
-//TODO    CHK_ARG(TOP(0).Get() != NULL, 1);
-//TODO    CHK_ARG(TOP(0).Get()->String() != NULL, 1);
-    return InternalAsciiToInt(aVal.Get()->String()->String());
+//TODO    CHK_ARG(TOP(0), 1);
+//TODO    CHK_ARG(TOP(0)->String(), 1);
+    return InternalAsciiToInt(aVal->String()->c_str());
 }
 
 LispObject* MakeList(LispObject* obj)
@@ -44,7 +44,7 @@ LispObject* MakeList(LispObject* obj)
 }
 LispObject* AtomAdd(LispObject* obj1, LispObject* obj2)
 {
-    obj1->Next().Set(obj2);
+    obj1->Next() = (obj2);
     return obj1;
 }
 
@@ -56,13 +56,13 @@ void MakeLocal(LispEnvironment& aEnvironment, char* var)
 void MakePop()
 {
     stackCurrent--;
-    stackCurrent->Set(NULL);
+    (*stackCurrent) = (NULL);
 }
 void MakeEval(LispEnvironment& aEnvironment,LispPtr& aTrg, LispPtr& aSrc)
 {
     LispPtr r;
     aEnvironment.iEvaluator->Eval(aEnvironment,r,aSrc);
-    aTrg.Set(r.Get());
+    aTrg = (r);
 }
 
 LispInt MakePushArguments(LispEnvironment& aEnvironment, LispPtr& aArguments)
@@ -70,14 +70,14 @@ LispInt MakePushArguments(LispEnvironment& aEnvironment, LispPtr& aArguments)
     LispInt nr=0;
 
     LispPtr* loop = &aArguments;
-    loop = &loop->Get()->Next();
+    loop = &(*loop)->Next();
     
-    while(loop->Get())
+    while((*loop))
     {
         PUSH();
         nr++;
         SET(TOP(0) ,Argument(aArguments,nr));
-        loop = &loop->Get()->Next();
+        loop = &(*loop)->Next();
     }
     return nr;
 }
@@ -97,7 +97,7 @@ void DebugShowStack(char* str, LispEnvironment& aEnvironment)
     while (ptr<=stackCurrent)
     {
         printf("%d: ",i);
-        if (ptr->Get() != NULL)
+        if ((*ptr))
             MakeWrite(aEnvironment, *ptr);
         printf("\n");
         ptr++;

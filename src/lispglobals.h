@@ -40,7 +40,7 @@ class LispGlobal : public LispAssociatedHash<LispGlobalVariable>
 
 inline LispGlobalVariable::LispGlobalVariable(const LispGlobalVariable& aOther)
 {
-    iValue.Set(aOther.iValue.Get());
+    iValue = (aOther.iValue);
     iEvalBeforeReturn = LispFalse;
 }
 
@@ -52,7 +52,7 @@ inline void LispGlobalVariable::SetEvalBeforeReturn(LispBoolean aEval)
 
 inline LispGlobalVariable& LispGlobalVariable::operator=(const LispGlobalVariable& aOther)
 {
-    iValue.Set(aOther.iValue.Get());
+    iValue = (aOther.iValue);
     return *this;
 }
 

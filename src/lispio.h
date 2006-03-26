@@ -15,13 +15,13 @@ class InputStatus : public YacasBase
 public:
     InputStatus() : iFileName("none") , iLineNumber(-1)  {};
 	~InputStatus();
-    void SetTo(LispCharPtr aFileName);
+    void SetTo(LispChar * aFileName);
     void RestoreFrom(InputStatus& aPreviousStatus);
     inline LispInt LineNumber();
-    inline LispCharPtr FileName();
+    inline LispChar * FileName();
     inline void NextLine();
 private:
-    LispCharPtr iFileName;
+    LispChar * iFileName;
     LispInt	iLineNumber;
 };
 
@@ -29,7 +29,7 @@ inline LispInt InputStatus::LineNumber()
 {
     return iLineNumber;
 }
-inline LispCharPtr InputStatus::FileName()
+inline LispChar * InputStatus::FileName()
 {
     return iFileName;
 }
@@ -73,7 +73,7 @@ public:
      * the whole file should be in memory for the whole period the file
      * is being read.
      */
-    virtual LispCharPtr StartPtr() = 0;
+    virtual LispChar * StartPtr() = 0;
     virtual LispInt Position() = 0;
     virtual void SetPosition(LispInt aPosition) = 0;
 protected:
@@ -90,7 +90,7 @@ public:
     virtual void PutChar(LispChar aChar) = 0;
 
 public:
-    void Write(LispCharPtr aString);
+    void Write(const LispChar * aString);
 };
 
 #endif

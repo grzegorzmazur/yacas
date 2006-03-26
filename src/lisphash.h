@@ -13,11 +13,11 @@
 
 
 const LispInt KSymTableSize = 211;
-LispInt  LispHash( char *s );
-LispInt  LispHashCounted( char *s,LispInt length );
-LispInt  LispHashStringify( char *s );
-LispInt  LispHashUnStringify( char *s );
-LispInt LispHashPtr(LispStringPtr aString);
+LispInt LispHash( const char *s );
+LispInt LispHashCounted( const char *s, LispInt length );
+LispInt LispHashStringify( const char *s );
+LispInt LispHashUnStringify( const char *s );
+LispInt LispHashPtr(const LispString * aString);	// hash the *address*!
 
 /**
  * This is the symbol table, implemented as a hash table for fast
@@ -29,26 +29,31 @@ LispInt LispHashPtr(LispStringPtr aString);
 class LispHashTable : public YacasBase
 {
 public:
+	LispHashTable()
+		//: m_isDirty(false)
+	{}
     ~LispHashTable();
     // If string not yet in table, insert. Afterwards return the string.
-    LispStringPtr LookUp(LispCharPtr aString,
-                         LispBoolean aStringOwnedExternally=LispFalse);
+    LispString * LookUp(const LispChar * aString, LispBoolean aStringOwnedExternally=LispFalse);
     /// LookUp that takes ownership of the string
-    LispStringPtr LookUp(LispStringPtr aString);
-    LispStringPtr LookUpCounted(LispCharPtr aString,LispInt aLength);
-    LispStringPtr LookUpStringify(LispCharPtr aString,
+    LispString * LookUp(LispString * aString);
+    LispString * LookUpCounted(LispChar * aString,LispInt aLength);
+    LispString * LookUpStringify(LispChar * aString,
                          LispBoolean aStringOwnedExternally=LispFalse);
-    LispStringPtr LookUpUnStringify(LispCharPtr aString,
+    LispString * LookUpUnStringify(LispChar * aString,
                          LispBoolean aStringOwnedExternally=LispFalse);
 
     // GarbageCollect
     void GarbageCollect();
 private:
-    void AppendString(LispInt bin,LispStringPtr result);
+    void AppendString(LispInt bin,LispString * result);
     
 private:
     CArrayGrower<LispStringSmartPtr> iHashTable[KSymTableSize];
+	//bool m_isDirty;
 };
+
+
 
 
 
@@ -76,16 +81,16 @@ public:
     /// Find the data associated to \a aString.
     /// If \a aString is not stored in the hash table, this function
     /// returns #NULL.
-    inline T* LookUp(LispStringPtr aString);
+    inline T* LookUp(LispString * aString);
 
     /// Add an association to the hash table.
     /// If \a aString is already stored in the hash table, its 
     /// association is changed to \a aData. Otherwise, a new
     /// association is added.
-    inline void SetAssociation(const T& aData, LispStringPtr aString);
+    inline void SetAssociation(const T& aData, LispString * aString);
 
     /// Delete an association from the hash table.
-    inline void Release(LispStringPtr aString);
+    inline void Release(LispString * aString);
 
 private:
     // The next array is in fact an array of arrays of type LAssoc<T>

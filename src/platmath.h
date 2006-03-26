@@ -38,12 +38,12 @@ unsigned primes_table_range();
 class NativeNumber : public NumberBase
 {
 public: //constructors
-  NativeNumber(LispEnvironment& aEnvironment,LispCharPtr aString,LispInt aPrecision,LispInt aBase=10);
+  NativeNumber(LispEnvironment& aEnvironment,LispChar * aString,LispInt aPrecision,LispInt aBase=10);
 public: //constructors
   virtual void SetTo(LispEnvironment& aEnvironment,const NumberBase&);
   virtual void ToString(LispEnvironment& aEnvironment,LispString& aResult, LispInt aBase) const;
 public: //information retrieval on library used  
-  virtual const LispCharPtr NumericLibraryName(LispEnvironment& aEnvironment,) const;
+  virtual const LispChar * NumericLibraryName(LispEnvironment& aEnvironment,) const;
 public://arithmetic
   virtual void Multiply(LispEnvironment& aEnvironment,const NumberBase& aX, const NumberBase& aY, LispInt aPrecision);
   virtual void MultiplyAdd(LispEnvironment& aEnvironment,NumberBase& aResult,

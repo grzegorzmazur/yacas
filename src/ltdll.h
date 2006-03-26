@@ -10,10 +10,10 @@ class LtDll : public LispDllBase
 public:
     LtDll() : handle(NULL) {}
     virtual ~LtDll();
-    virtual LispInt Open(LispCharPtr aDllFile,LispEnvironment& aEnvironment);
+    virtual LispInt Open(LispChar * aDllFile,LispEnvironment& aEnvironment);
     virtual LispInt Close(LispEnvironment& aEnvironment);
 protected:
-    virtual LispPluginBase* GetPlugin(LispCharPtr aDllFile);
+    virtual LispPluginBase* GetPlugin(LispChar * aDllFile);
 private:
     void *handle;
 };

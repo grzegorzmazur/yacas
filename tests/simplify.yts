@@ -64,5 +64,5 @@ TestYacas(FactorialSimplify(
     n! / (k! * (n-k)!)        +
     n! / (2*k! * (n-k)!)      -
     n! / (2*(k-1)! * (n-k+1)!)
-   )*(k! *(n+1-k)!)/(n!)
-  ),0);
+  )*(k! *(n+1-k)!)/(n!)
+),0);

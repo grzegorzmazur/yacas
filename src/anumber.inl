@@ -6,7 +6,7 @@ template<class T>
 inline void Thunk(T& a)
 {
   int i;
-  for (i=0;i<a.NrItems();i++)
+  for (i=0;i<a.Size();i++)
     printf("%d ",a[i]);
   printf("\n");  
 }
@@ -27,9 +27,9 @@ inline void BaseTimesInt(T& a,PlatDoubleWord aNumber, PlatDoubleWord aBase)
 {
   PlatDoubleWord carry=0;
   LispInt i;
-  LispInt nr=a.NrItems();
+  LispInt nr=a.Size();
 
-  typename T::ElementTypePtr aptr = &a[0];
+  typename T::ElementType * aptr = &a[0];
   for (i=0;i<nr;i++)
   {
     PlatDoubleWord word = ((PlatDoubleWord)(*aptr))*aNumber+carry;
@@ -52,9 +52,9 @@ inline void BaseTimesInt(T& a,PlatDoubleWord aNumber)
 {
   PlatDoubleWord carry=0;
   LispInt i;
-  LispInt nr=a.NrItems();
+  LispInt nr=a.Size();
 
-  typename T::ElementTypePtr aptr = &a[0];
+  typename T::ElementType * aptr = &a[0];
   for (i=0;i<nr;i++)
   {
     PlatDoubleWord word = ((PlatDoubleWord)(*aptr))*aNumber+carry;
@@ -77,13 +77,13 @@ inline void BaseTimesInt(T& a,PlatDoubleWord aNumber)
 template<class T>
 inline void BaseDivideInt(T& a,PlatDoubleWord aNumber, PlatDoubleWord aBase, PlatDoubleWord& aCarry)
 {
-//    if (a[a.NrItems()-1] != 0)
+//    if (a[a.Size()-1] != 0)
 
     PlatDoubleWord carry=0;
     LispInt i;
-    LispInt nr=a.NrItems();
+    LispInt nr=a.Size();
 
-    typename T::ElementTypePtr aptr = &a[0];
+    typename T::ElementType * aptr = &a[0];
     for (i=nr-1;i>=0;i--)
     {
         PlatDoubleWord word = ((carry*aBase)+((PlatDoubleWord)(aptr[i])));
@@ -104,18 +104,18 @@ inline void GrowDigits(T& a,LispInt aDigits)
 {
     LispInt i;
 
-    if (aDigits <= a.NrItems())
+    if (aDigits <= a.Size())
         return;
     
     /*
-     LispInt nrToAdd = aDigits-a.NrItems();
+     LispInt nrToAdd = aDigits-a.Size();
 
     for (i=0;i<nrToAdd;i++)
         a.Append(0);
 */
-    LispInt origSize = a.NrItems();
+    LispInt origSize = a.Size();
     a.GrowTo(aDigits);
-    a.SetNrItems(aDigits);
+    //a.Resize(aDigits);
     if (aDigits<=origSize)
         return;
     typename T::ElementType* ptr = &a[origSize];
@@ -130,11 +130,11 @@ inline void BaseAdd(T& aTarget, const T& aSource, PlatDoubleWord aBase)
 {
     // Initialize result
 
-    GrowDigits(aTarget,aSource.NrItems());
+    GrowDigits(aTarget,aSource.Size());
     aTarget.Append(0);
     
-    LispInt nr1 = aTarget.NrItems();
-    LispInt nr2 = aSource.NrItems();
+    LispInt nr1 = aTarget.Size();
+    LispInt nr2 = aSource.Size();
     LispInt nr;
 
     // nr represents min(nr1,nr2), the number of digits to add
@@ -146,8 +146,8 @@ inline void BaseAdd(T& aTarget, const T& aSource, PlatDoubleWord aBase)
     PlatDoubleWord carry=0;
     LispInt digit;
 
-   typename T::ElementTypePtr sourcePtr = &aSource[0];
-   typename T::ElementTypePtr targetPtr = &aTarget[0];
+   typename T::ElementType * sourcePtr = &aSource[0];
+   typename T::ElementType * targetPtr = &aTarget[0];
    for (digit=0;digit<nr;digit++)
     {
         PlatDoubleWord word;
@@ -162,7 +162,7 @@ inline void BaseAdd(T& aTarget, const T& aSource, PlatDoubleWord aBase)
     {
         PlatSignedDoubleWord ww = targetPtr[nr];
         ww+=carry;
-        targetPtr[nr] = ww%aBase;
+        targetPtr[nr] = (typename T::ElementType)(ww%aBase);	// PDG - cast to avoid compile-time warning
         carry = ww/aBase;
         nr++;
     }
@@ -174,11 +174,11 @@ inline void BaseAdd(T& aTarget, const T& aSource)
 {
     // Initialize result
 
-    GrowDigits(aTarget,aSource.NrItems());
+    GrowDigits(aTarget,aSource.Size());
     aTarget.Append(0);
     
-    LispInt nr1 = aTarget.NrItems();
-    LispInt nr2 = aSource.NrItems();
+    LispInt nr1 = aTarget.Size();
+    LispInt nr2 = aSource.Size();
     LispInt nr;
 
     // nr represents min(nr1,nr2), the number of digits to add
@@ -190,15 +190,15 @@ inline void BaseAdd(T& aTarget, const T& aSource)
     PlatDoubleWord carry=0;
     LispInt digit;
 
-   typename T::ElementTypePtr sourcePtr = &aSource[0];
-   typename T::ElementTypePtr targetPtr = &aTarget[0];
+   typename T::ElementType * sourcePtr = &aSource[0];
+   typename T::ElementType * targetPtr = &aTarget[0];
    for (digit=0;digit<nr;digit++)
     {
         PlatDoubleWord word;
         word = (PlatDoubleWord)targetPtr[digit] +
             (PlatDoubleWord)sourcePtr[digit] + carry;
          PlatWord newDigit = (PlatWord)(word);
-         PlatWord newCarry = (word >> WordBits);
+         PlatWord newCarry = (PlatWord)(word >> WordBits);
          targetPtr[digit] = (typename T::ElementType)newDigit;
          carry          = newCarry;
     }
@@ -206,7 +206,7 @@ inline void BaseAdd(T& aTarget, const T& aSource)
     {
         PlatSignedDoubleWord ww = targetPtr[nr];
         ww+=carry;
-        targetPtr[nr] = ww;
+        targetPtr[nr] = (typename T::ElementType)ww;	// PDG - cast to avoid compile-time warning
         carry = ww >> WordBits;
         nr++;
     }
@@ -223,10 +223,10 @@ inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
         return;
     LISPASSERT(!IsZero(a2));
     // Initialize result
-    LispInt nr = a2.NrItems();
+    LispInt nr = a2.Size();
 
-    typename T::ElementTypePtr resultPtr = &aResult[0];
-    typename T::ElementTypePtr a2ptr = &a2[0];
+    typename T::ElementType * resultPtr = &aResult[0];
+    typename T::ElementType * a2ptr = &a2[0];
 
     while (a2ptr[nr-1] == 0)
         nr--;
@@ -252,7 +252,7 @@ inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
 
     while (carry != 0)
     {
-        LISPASSERT(nr+offset<aResult.NrItems());
+        LISPASSERT(nr+offset<aResult.Size());
 
         LispInt newCarry = 0;
         PlatSignedDoubleWord ww = resultPtr[nr+offset]+carry;
@@ -273,14 +273,19 @@ inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
 template<class T>
 inline void BaseIntNumber(T& aTarget, PlatSignedDoubleWord aNumber, PlatWord aBase)
 {
-    aTarget.SetNrItems(0);
+	// Assume aBase is an integer > 0.
+	// Assume aNumber is an integer > 0.
+	// Assume PlatDoubleWord is an integer type.
+	// Will maximum digit (i.e., aBase-1) convert to T::ElementType right?
+    //LISPASSERT( (typename T::ElementType)(aBase) == (aBase) );	// use aBase instead, to help CTCE
+    aTarget.Resize(0);
     while (aNumber != 0)
     {
         PlatDoubleWord digit = aNumber%aBase;
-        aTarget.Append(digit);
+		aTarget.Append((typename T::ElementType)(digit));	// PDG - cast to avoid compile-time warning
         aNumber/=aBase;
     }
-    if (aTarget.NrItems() == 0)
+    if (aTarget.Size() == 0)
         aTarget.Append(0);
 }
 
@@ -289,8 +294,8 @@ inline void BaseIntNumber(T& aTarget, PlatSignedDoubleWord aNumber, PlatWord aBa
 template<class T>
 inline void BaseAddMultiply(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
 {
-    LispInt nrx=x.NrItems();
-    LispInt nry=y.NrItems();
+    LispInt nrx=x.Size();
+    LispInt nry=y.Size();
     GrowDigits(aTarget,nrx+nry+1);
     LispInt ix,iy;
 
@@ -320,8 +325,8 @@ inline void BaseAddMultiply(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
 template<class T>
 inline void WordBaseAddMultiply(T& aTarget, T& x, T& y)
 {
-    LispInt nrx=x.NrItems();
-    LispInt nry=y.NrItems();
+    LispInt nrx=x.Size();
+    LispInt nry=y.Size();
     GrowDigits(aTarget,nrx+nry+1);
     LispInt ix,iy;
 
@@ -356,7 +361,7 @@ inline void WordBaseAddMultiply(T& aTarget, T& x, T& y)
         }
     }
 
-//printf("TARGET: %d words, %d decimal\n",aTarget.NrItems(),aTarget.iExp);
+//printf("TARGET: %d words, %d decimal\n",aTarget.Size(),aTarget.iExp);
 }
 
 
@@ -415,8 +420,8 @@ inline void BaseKaratsubaMultiply(ANumber& aTarget, ANumber& x, ANumber& y, Lisp
 
 inline void BaseAddMultiplyK(ANumber& aTarget, ANumber& x, ANumber& y, LispInt aBase)
 {
-    LispInt nrx=x.NrItems();
-    LispInt nry=y.NrItems();
+    LispInt nrx=x.Size();
+    LispInt nry=y.Size();
     LispInt i, i2;
 
     // Too small?  Use O(n^2) multiplication
@@ -462,8 +467,8 @@ inline void BaseAddMultiplyK(ANumber& aTarget, ANumber& x, ANumber& y, LispInt a
 template<class T>
 inline void BaseAddMultiplyK(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
 {
-	LispInt nrx=x.NrItems();
-	LispInt nry=y.NrItems();
+	LispInt nrx=x.Size();
+	LispInt nry=y.Size();
 	LispInt i, i2;
 	typename T::ElementType *iArray, *iXArray, *iYArray, *iSumArray;
 
@@ -480,21 +485,21 @@ inline void BaseAddMultiplyK(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
 	// numbers * 4 elements, clear it to zero, then copy x into the 
 	// into the start, y above it, and use the high half for recursion.
 	// ToDo: Is this portable ?!?
-	iArray = (typename T::ElementType *) PlatAlloc(i2*4*sizeof(T::ElementType));
-	PlatMemSet((LispChar *)iArray, 0, i2*4*sizeof(T::ElementType));
+	iArray = PlatAllocN<T::ElementType>(i2*4);
+	PlatMemSet(iArray, 0, i2*4*sizeof(T::ElementType));
 
 	// Split our array into x and y halves
 	iXArray = &iArray[0];
-	x.CopyToExternalArray(iXArray, true);
+	x.CopyToExternalArray(iXArray);
 
 	iYArray = &iArray[i2];
-	y.CopyToExternalArray(iYArray, true);
+	y.CopyToExternalArray(iYArray);
 
 	iSumArray = &iArray[i2*2];
 
 	BaseKaratsubaMultiply(aTarget, iXArray, iYArray, iSumArray, i2, aBase);
 
-	PlatFree((LispChar *) iArray);
+	PlatFree(iArray);
 }
 
 
@@ -594,7 +599,7 @@ void BaseKaratsubaMultiply(T& aTarget,
  #ifdef USE_KARATSUBA
 inline void BaseMultiply(ANumber& aTarget, ANumber& x, ANumber& y, LispInt aBase)
 {
-    aTarget.SetNrItems(1);
+    aTarget.Resize(1);
     aTarget[0] = 0;
     BaseAddMultiplyK(aTarget, x, y, aBase);
 }
@@ -604,7 +609,7 @@ inline void BaseMultiply(ANumber& aTarget, ANumber& x, ANumber& y, LispInt aBase
 template<class T>
 inline void BaseMultiply(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
 {
-    aTarget.SetNrItems(1);
+    aTarget.Resize(1);
     aTarget[0] = 0;
 #ifdef USE_KARATSUBA
     BaseAddMultiplyK(aTarget, x, y, aBase);
@@ -616,7 +621,7 @@ inline void BaseMultiply(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
 template<class T>
 inline void WordBaseMultiply(T& aTarget, T& x, T& y)
 {
-    aTarget.SetNrItems(1);
+    aTarget.Resize(1);
     aTarget[0] = 0;
 #ifdef USE_KARATSUBA
     BaseAddMultiplyK(aTarget, x, y, WordBase);
@@ -631,7 +636,7 @@ template<class T>
 inline LispBoolean IsZero(T& a)
 {
   register typename T::ElementType *ptr = &a[0];
-  register typename T::ElementType *endptr = ptr+a.NrItems();
+  register typename T::ElementType *endptr = ptr+a.Size();
   while (ptr != endptr)
   {
     if (*ptr++ != 0)
@@ -640,7 +645,7 @@ inline LispBoolean IsZero(T& a)
   return LispTrue;
 /*
   LispInt i;
-  for (i=0;i<a.NrItems();i++)
+  for (i=0;i<a.Size();i++)
       if (a[i] != 0)
           return LispFalse;
   return LispTrue;
@@ -654,12 +659,12 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
 {
     // Find the values n and m as described in Knuth II:
     LispInt n,m;
-    n=a2.NrItems();
+    n=a2.Size();
     LISPASSERT(n>0);
     LISPASSERT(a2[n-1] != 0);
     
-    //a1.NrItems() = m+n => m = a1.NrItems()-n
-    m = a1.NrItems()-n;
+    //a1.Size() = m+n => m = a1.Size()-n
+    m = a1.Size()-n;
     LISPASSERT(m>=0);
 
     aQuotient.GrowTo(m+1);
@@ -755,7 +760,7 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
     }
 
     //D8:
-    a1.SetNrItems(n);
+    a1.Resize(n);
     PlatDoubleWord carry;
     BaseDivideInt(a1, d, WordBase,carry);
     aRemainder.CopyFrom(a1);

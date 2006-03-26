@@ -9,17 +9,16 @@
 #include "lispatom.h"
 #include "numbers.h"
 
-
 // Prototypes
 class LispHashTable;
 
 LispBoolean InternalIsList(LispPtr& aPtr);
-LispBoolean InternalIsString(LispStringPtr aOriginal);
-void InternalUnstringify(LispString& aResult, LispStringPtr aOriginal);
-void InternalStringify(LispString& aResult, LispStringPtr aOriginal);
-void InternalIntToAscii(LispCharPtr aTrg,LispInt aInt);
-LispInt InternalAsciiToInt(LispCharPtr aString);
-LispBoolean IsNumber(LispCharPtr ptr,LispBoolean aAllowFloat);
+LispBoolean InternalIsString(LispString * aOriginal);
+void InternalUnstringify(LispString& aResult, LispString * aOriginal);
+void InternalStringify(LispString& aResult, LispString * aOriginal);
+void InternalIntToAscii(LispChar * aTrg,LispInt aInt);
+LispInt InternalAsciiToInt(LispString * aString);
+LispBoolean IsNumber(const LispChar * ptr,LispBoolean aAllowFloat);
 
 void InternalNth(LispPtr& aResult, LispPtr& aArg, LispInt n);
 void InternalTail(LispPtr& aResult, LispPtr& aArg);
@@ -46,18 +45,18 @@ inline LispBoolean IsFalse(LispEnvironment& aEnvironment, LispPtr& aExpression);
 inline void InternalNot(LispPtr& aResult, LispEnvironment& aEnvironment, LispPtr& aExpression);
 
 void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput);
-void InternalLoad(LispEnvironment& aEnvironment,LispStringPtr aFileName);
-void InternalUse(LispEnvironment& aEnvironment,LispStringPtr aFileName);
+void InternalLoad(LispEnvironment& aEnvironment,LispString * aFileName);
+void InternalUse(LispEnvironment& aEnvironment,LispString * aFileName);
 void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
-                         LispStringPtr aOperator,LispPtr& aArgs);
+                         LispString * aOperator,LispPtr& aArgs);
 void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnvironment& aEnvironment);
 
 void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
-                        LispCharPtr aString);
+                        LispChar * aString);
 
 #define ATOML(_s) LispAtom::New(aEnvironment,_s)
 #define LIST(_c) LispSubList::New(_c)
-class LispObjectAdder : public YacasBase
+class LispObjectAdder : public YacasBase	// TODO: woof
 {
 public:
     LispObjectAdder(LispObject* aPtr)
@@ -69,7 +68,7 @@ public:
 LispObject* operator+(const LispObjectAdder& left, const LispObjectAdder& right);
 
 #define PARSE(_r,_s) ParseExpression(_r,_s,aEnvironment)
-void ParseExpression(LispPtr& aResult,LispCharPtr aString,LispEnvironment& aEnvironment);
+void ParseExpression(LispPtr& aResult,LispChar * aString,LispEnvironment& aEnvironment);
 
 void ReturnUnEvaluated(LispPtr& aResult,LispPtr& aArguments,
                        LispEnvironment& aEnvironment);
@@ -82,7 +81,7 @@ void PrintExpression(LispString& aResult, LispPtr& aExpression,
                      LispEnvironment& aEnvironment,
                      LispInt aMaxChars);
 
-LispStringPtr SymbolName(LispEnvironment& aEnvironment,LispCharPtr aSymbol);
+LispString * SymbolName(LispEnvironment& aEnvironment,LispChar * aSymbol);
 
 
 

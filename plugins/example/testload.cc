@@ -1,5 +1,6 @@
-
+/*
 #include <dlfcn.h>
+*/
 #include <stdio.h>
 
 
@@ -20,14 +21,15 @@
 int main(void)
 {
     ElfDll dll;
+	char * filename = "./libbareplugin.so";
         
-    if (!dll.Open("./libbareplugin.so"))
+    if (!dll.Open(filename))
     {
         printf("could not open dll!\n");
         return 1;
     }
 
-    LispPluginBase* plugin = dll.GetPlugin();
+    LispPluginBase* plugin = dll.GetPlugin(filename);
     if (plugin == NULL)
     {
         printf("could not find maker!\n");
@@ -35,7 +37,7 @@ int main(void)
     }
     CYacas* yacas = CYacas::NewL();
 
-    plugin->Add((*yacas)()());
+    plugin->Add(yacas->getDefEnv().getEnv());
 
     delete yacas;
         

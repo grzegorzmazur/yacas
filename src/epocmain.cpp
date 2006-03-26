@@ -93,7 +93,7 @@ private:
   TBuf<256> iLine;
   TInt iCursorPos;
 
-  CDeletingArrayGrower<LispStringPtr> iHistory;
+  CDeletingArrayGrower<LispString *> iHistory;
   TInt history;
   LispString stringOutput;
   StringOutput *theOutput; 
@@ -120,7 +120,7 @@ void CConsoleControl::LoadHistory()
       line.ZeroTerminate();
       if (line.Length() > 0)
       {
-        LispStringPtr string = new LispString();
+        LispString * string = new LispString();
         (*string) = (char*)&line[0];
         iHistory.Append(string);
       }
@@ -128,7 +128,7 @@ void CConsoleControl::LoadHistory()
     
     hist.Close();
   }
-  history=iHistory.NrItems();
+  history=iHistory.Size();
 }
 void CConsoleControl::SaveHistory()
 {
@@ -141,9 +141,9 @@ void CConsoleControl::SaveHistory()
     TFileText text;
     text.Set(hist);
     TInt i;
-    for (i=0;i<iHistory.NrItems();i++)
+    for (i=0;i<iHistory.Size();i++)
     {
-      TInt length = iHistory[i]->NrItems()-1;
+      TInt length = iHistory[i]->Size()-1;
       TPtr ptr((unsigned char*)iHistory[i]->String(),length,length);
       text.Write(ptr);
     }
@@ -214,7 +214,7 @@ void CConsoleControl::ShowResult(char *prompt)
     if (theOutput->iString.String()[0])
     {
       iConsole->Write(_L(&theOutput->iString.String()[0]));
-      theOutput->iString.SetNrItems(0);
+      theOutput->iString.Resize(0);
       theOutput->iString.Append('\0');
     }
     iConsole->Write(_L(prompt));
@@ -537,10 +537,10 @@ TKeyResponse CConsoleControl::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCo
       iConsole->ClearToEndOfLine();
       break;
 		case EKeyDownArrow:
-      if (history<iHistory.NrItems())
+      if (history<iHistory.Size())
       {
         history++;
-        if (history == iHistory.NrItems())
+        if (history == iHistory.Size())
         {
           iLine.Zero();
           iLine.ZeroTerminate();
@@ -572,10 +572,10 @@ TKeyResponse CConsoleControl::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCo
             iConsole->Cr();
 				    iConsole->Lf();
             iLine.ZeroTerminate();
-            LispStringPtr ptr = new LispString;
-            *ptr = (LispCharPtr)iLine.Ptr();
+            LispString * ptr = new LispString;
+            *ptr = (LispChar *)iLine.Ptr();
             iHistory.Append(ptr);
-            history = iHistory.NrItems();
+            history = iHistory.Size();
 
             iLine.Append(';');
             iLine.ZeroTerminate();
@@ -604,12 +604,12 @@ TKeyResponse CConsoleControl::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCo
     case EKeyTab:
       {      
         LispInt prevhistory=history;
-        history = iHistory.NrItems()-1;
+        history = iHistory.Size()-1;
         while (history>=0)
         {
             LispInt j=0;
             while (j<iLine.Length()-1 &&
-                   j<iHistory[history]->NrItems())
+                   j<iHistory[history]->Size())
             {
                 if (iLine[j] != (*iHistory[history])[j])
                     goto CONTINUE;

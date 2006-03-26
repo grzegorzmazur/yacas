@@ -13,24 +13,23 @@
 #include "ctokenizer.h"
 #include "standard.h"
 
-void CTokenizer::EmitRemark(LispStringPtr remark)
+void CTokenizer::EmitRemark(LispString * remark)
 {
     if (iEnvironment)
     {
         //TODO ugly! Slow on resources!
-        remark = iEnvironment->HashTable().LookUpStringify(remark->String());
+        remark = iEnvironment->HashTable().LookUpStringify(remark->c_str());
         //TODO ugly!
         LispEnvironment& aEnvironment = *iEnvironment;
-        LispStringPtr oper = iEnvironment->HashTable().LookUp("\"TokenizerEmitRemark\"");
+        LispString * oper = iEnvironment->HashTable().LookUp("\"TokenizerEmitRemark\"");
         LispPtr result;
-        LispPtr args;
-        args.Set(ATOML(remark->String()));
+        LispPtr args(ATOML(remark->c_str()));
         InternalApplyString(*iEnvironment, result,oper,args);
     }
 }
 
 
-LispStringPtr CTokenizer::NextToken(LispInput& aInput,
+LispString * CTokenizer::NextToken(LispInput& aInput,
                                              LispHashTable& aHashTable)
 {
     LispChar c;
@@ -87,7 +86,7 @@ REDO:
 
             if (iEnvironment)
             {
-                LispStringPtr remark = iEnvironment->HashTable().LookUpCounted(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos);
+                LispString * remark = iEnvironment->HashTable().LookUpCounted(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos);
                 EmitRemark(remark);
             }
             goto REDO;
@@ -101,7 +100,7 @@ REDO:
 
         if (iEnvironment)
         {
-            LispStringPtr remark = iEnvironment->HashTable().LookUpCounted(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos);
+            LispString * remark = iEnvironment->HashTable().LookUpCounted(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos);
             EmitRemark(remark);
         }
 
@@ -111,7 +110,7 @@ REDO:
     else if (c == '\"')
     {
         LispString aResult;
-        aResult.SetNrItems(0);
+        aResult.Resize(0);
         aResult.Append(c);
         while (aInput.Peek() != '\"')
         {
@@ -126,12 +125,12 @@ REDO:
         }
         aResult.Append(aInput.Next()); // consume the close quote
         aResult.Append('\0');
-        return aHashTable.LookUp(aResult.String());
+        return aHashTable.LookUp(aResult.c_str());
     }
     else if (c == '\'')
     {
         LispString aResult;
-        aResult.SetNrItems(0);
+        aResult.Resize(0);
         aResult.Append(c);
         while (aInput.Peek() != '\'')
         {
@@ -146,7 +145,7 @@ REDO:
         }
         aResult.Append(aInput.Next()); // consume the close quote
         aResult.Append('\0');
-        return aHashTable.LookUp(aResult.String());
+        return aHashTable.LookUp(aResult.c_str());
     }
     //parse atoms
     else if (IsAlpha(c) || c == '_')

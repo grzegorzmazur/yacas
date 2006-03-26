@@ -6,19 +6,19 @@ inline LispPtr& Argument(LispPtr& cur, LispInt n)
     LISPASSERT(n>=0);
 
     LispPtr* loop = &cur;
-    while(n--) loop = &loop->Get()->Next();
+    while(n--) loop = &(*loop)->Nixed();
     return *loop;
 }
 
 // Boolean operations
 inline void InternalTrue(LispEnvironment& aEnvironment, LispPtr& aResult)
 {               
-    aResult.Set(aEnvironment.iTrue->Copy(LispFalse));
+    aResult = (aEnvironment.iTrue->Copy());
 }
 
 inline void InternalFalse(LispEnvironment& aEnvironment, LispPtr& aResult)
 {
-    aResult.Set(aEnvironment.iFalse->Copy(LispFalse));
+    aResult = (aEnvironment.iFalse->Copy());
 }
 
 inline void InternalBoolean(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -37,13 +37,13 @@ inline void InternalBoolean(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 inline LispBoolean IsTrue(LispEnvironment& aEnvironment, LispPtr& aExpression)
 {
-    LISPASSERT(aExpression.Get() != NULL);
-    return aExpression.Get()->String() == aEnvironment.iTrue->String();
+    LISPASSERT(aExpression);
+    return aExpression->String() == aEnvironment.iTrue->String();
 }
 inline LispBoolean IsFalse(LispEnvironment& aEnvironment, LispPtr& aExpression)
 {
-    LISPASSERT(aExpression.Get() != NULL);
-    return aExpression.Get()->String() == aEnvironment.iFalse->String();
+    LISPASSERT(aExpression);
+    return aExpression->String() == aEnvironment.iFalse->String();
 }
 
 
