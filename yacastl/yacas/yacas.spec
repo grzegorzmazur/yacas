@@ -6,7 +6,7 @@ Name: yacas
 Version: 1.0.61pdg
 Release: 1
 Group: Applications/Math
-Copyright: LGPL
+Copyright: GPL
 URL: http://www.xs4all.nl/~apinkus/yacas.html
 Summary: Yet Another Computer Algebra System
 
