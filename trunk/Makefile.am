@@ -25,7 +25,7 @@ PLOTTINGSCRIPTS = yacas-gmtplot2d.sh yacas-gmtplot3d.sh
 EXTRA_DIST = yacas.sgml yacas.spec yacas.spec.in makemake mkhomepage \
 	yacas.sh doxy_yacas README.beos README.Win32 ltmain.sh \
 	workinprogress.ys upload.txt readme.bin.win32.txt \
-	makewin.bat $(bin_SCRIPTS) $(PLOTTINGSCRIPTS)
+	makewin.bat $(bin_SCRIPTS) $(PLOTTINGSCRIPTS) conf-macosx.sh
 
 # The target "test" is an alias for "check"
 test: check
