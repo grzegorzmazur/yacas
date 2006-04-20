@@ -307,6 +307,9 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
     if (endNumberIndex > endFloatIndex+1)
     {
       if (aString[endFloatIndex] == '.') endFloatIndex++;
+
+      if (aString[endFloatIndex+1] == '+') endFloatIndex++;
+
         iTensExp = PlatAsciiToInt((LispChar *)&aString[endFloatIndex+1]);
 //printf("%s mapped to %d\n",&aString[endFloatIndex+1],iTensExp);
     }
