@@ -95,9 +95,9 @@ find this at http://www.ssh.org/download.html.
 
 To check out Yacas as anonymous user, type:
 
-	cvs -d:pserver:anonymous@cvs.yacas.
+	cvs -d:pserver:anonymous@yacas.cvs.
 	  sourceforge.net:/cvsroot/yacas login
-	cvs -z3 -d:pserver:anonymous@cvs.yacas.
+	cvs -z3 -d:pserver:anonymous@yacas.cvs.
 	  sourceforge.net:/cvsroot/yacas co yacas
 
 To check out as a maintainer, type:
@@ -106,7 +106,7 @@ To check out as a maintainer, type:
 
 This will tell CVS to use ssh1 for communication. Then, in order to download the yacas source tree, type
 
-	cvs -d:ext:loginname@cvs.yacas.sourceforge.
+	cvs -d:ext:loginname@yacas.cvs.sourceforge.
 	  net:/cvsroot/yacas co yacas
 where {loginname} is your name on the sourceforge system.
 This creates a directory {yacas/} with the full most recent distribution.
