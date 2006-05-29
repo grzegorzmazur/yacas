@@ -104,9 +104,9 @@ if [ $FAILURES -eq 0 ]; then
 else
     PASSFAIL=Fail
 fi
-REAL=`$CMD -i "Print($REALTOT);"`
-USER=`$CMD -i "Print($USERTOT);"`
-SYSS=`$CMD -i "Print($SYSSTOT);"`
+REAL=`$CMD -i "Print(RoundTo($REALTOT,2));"`
+USER=`$CMD -i "Print(RoundTo($USERTOT,2));"`
+SYSS=`$CMD -i "Print(RoundTo($SYSSTOT,2));"`
 LOGLINE="{\"Total\", $VERSION, \"`date "+%F %T"`\", $REAL, $USER, $SYSS, $PASSFAIL},"
 echo "$LOGLINE" | tee -a $LOGFILE
 

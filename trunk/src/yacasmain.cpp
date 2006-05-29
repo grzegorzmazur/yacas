@@ -25,6 +25,8 @@
 //      - c : inhibits printing the prompt to the console
 //      - t : follow history when entering on the command line
 //      - w : hides the console window in Windows
+//   4)
+//	-i <command> : execute <command>
 //
 // Example: 'yacas -pc' will use minimal command line interaction,
 //          showing no prompts, and with no readline functionality.
@@ -56,6 +58,7 @@
 
 #include "plugins_available.h"
 #include "yacas.h"
+#include "codecomment.h"
 
 #ifndef WIN32
   #include "unixcommandline.h"
@@ -124,8 +127,8 @@ int compiled_plugins = 1;
 
 int stack_size = 50000;
 
-#ifdef YACAS_DEBUG
-  int verbose_debug=0;
+#if YACAS_DEBUG
+int verbose_debug=0;
 #endif
 int patchload=0;
 int winsockinitialised=0;
@@ -399,6 +402,7 @@ void my_exit(void)
     // deleting the Yacas environment object, at least we have a saved history
     if (commandline) delete commandline; commandline = NULL;
     if (yacas) delete yacas; yacas = NULL;
+    //delete CodeComment::pCodeComments; CodeComment::pCodeComments = NULL;
     ReportNrCurrent();
 #ifdef YACAS_DEBUG
     YacasCheckMemory();
@@ -807,7 +811,7 @@ void BusErrorHandler(int errupt)
 #endif
 
     printf("Bus error/segfault\n");
-    (*yacas)()().iEvalDepth = (*yacas)()().iMaxEvalDepth+100;
+    yacas->getDefEnv().getEnv().iEvalDepth = yacas->getDefEnv().getEnv().iMaxEvalDepth+100;
 }
 */
 
@@ -1228,7 +1232,7 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
 
 
 
-#define SHOWSIZE(a)    printf("   sizeof(" #a ") = %ld\n",sizeof(a));
+#define SHOWSIZE(a)    printf("   sizeof(" #a ") = %ld\n",(long)sizeof(a));
 
 int main(int argc, char** argv)
 {
@@ -1265,13 +1269,17 @@ int main(int argc, char** argv)
     printf("sizeof(LispSubList) = %d\n",sizeof(LispSubList));
     printf("sizeof(LispString) = %d\n",sizeof(LispString));
 */
+
+#define USE_TEXMACS_OUT yacas->getDefEnv().getEnv().SetPrettyPrinter(yacas->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
+//  yacas->Evaluate("ToString()PrettyPrinter(\"TexForm\");");
     
     char* file_to_load=NULL;
-    
+    bool exit_after_files = false;
+
     int fileind=1;
     if (argc > 1)
     {
-        while (fileind<argc && argv[fileind][0] == '-')
+        for ( ; fileind<argc && argv[fileind][0] == '-'; fileind++)
         {
             if (!strcmp(argv[fileind],"--texmacs"))
             {
@@ -1302,7 +1310,6 @@ int main(int argc, char** argv)
             else if (!strcmp(argv[fileind],"--read-eval-print"))
             {
                 fileind++;
-
 //printf("rep %d\n",argv[fileind][0]);
                 if (fileind<argc)
                 {
@@ -1334,42 +1341,32 @@ int main(int argc, char** argv)
             else if (!strcmp(argv[fileind],"--server"))
             {    
                 fileind++;
-
                 if (fileind<argc)
                 {
-                  server_mode=1;
-                  server_port = atoi(argv[fileind]);
+                    server_mode=1;
+                    server_port = atoi(argv[fileind]);
                 }                
             }
             else if (!strcmp(argv[fileind],"--single-user-server"))
             {    
-            server_single_user = 1;
+                server_single_user = 1;
             }
-
             else if (!strcmp(argv[fileind],"--stacksize"))
             {    
                 fileind++;
-
                 if (fileind<argc)
                 {
                   stack_size = atoi(argv[fileind]);
                 }                
             }
-
-
             else if (!strcmp(argv[fileind],"--execute"))
             {    
                 fileind++;
-
                 if (fileind<argc)
                 {
                   execute_commnd = argv[fileind];
                 }                
             }
-
-
-
-
             else if (!strcmp(argv[fileind],"--uncompressed-archive"))
             {
                 // This is just test code, to see if the engine
@@ -1386,6 +1383,26 @@ int main(int argc, char** argv)
             else if (!strcmp(argv[fileind],"--disable-compiled-plugins"))
             {
               compiled_plugins = 0;
+            }
+			else if (!strcmp(argv[fileind],"-i"))
+			{
+				fileind++;
+				if (fileind<argc)
+				{
+					char* immediate = argv[fileind];
+					if (immediate)
+					{
+						LoadYacas();
+						if (use_texmacs_out) USE_TEXMACS_OUT;
+						yacas->Evaluate(immediate);
+						if (yacas->IsError())
+						{
+							printf("Error in immediate command %s:\n",immediate);
+							printf("%s\n",yacas->Error());
+						}
+						exit_after_files = true;
+					}
+				}
             }
             else
             {
@@ -1442,7 +1459,6 @@ int main(int argc, char** argv)
                 }
 #endif
             }
-            fileind++;
         }
         if (fileind<argc)
             file_to_load=argv[fileind];
@@ -1503,13 +1519,12 @@ int main(int argc, char** argv)
 
     if (use_texmacs_out)
     {
-        yacas->getDefEnv().getEnv().SetPrettyPrinter(yacas->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
-//        yacas->Evaluate("ToString()PrettyPrinter(\"TexForm\");");
+        USE_TEXMACS_OUT;
     }
 
-    if (fileind<argc)
+    
     {
-        while (fileind<argc)
+        for ( ; fileind<argc; fileind++)
         {
             char s[200];
             if (patchload)
@@ -1535,11 +1550,16 @@ int main(int argc, char** argv)
                 printf("Error in file %s:\n",argv[fileind]);
                 printf("%s\n",yacas->Error());
             }
-            fileind++;
+			exit_after_files = true;
         }
-        my_exit();
-        exit(0);
     }
+
+    if (exit_after_files)
+	{
+		my_exit();
+        exit(0);
+	}
+
     if (show_prompt && (!use_texmacs_out))
         ShowResult("");
     if (execute_commnd != NULL)
@@ -1603,7 +1623,7 @@ RESTART:
       while (Busy())
       {
 #ifdef YACAS_DEBUG
-        LispLocalEvaluator local((*yacas)()(),NEW TracedStackEvaluator);
+        LispLocalEvaluator local(yacas->getDefEnv().getEnv(),NEW TracedStackEvaluator);
 #endif
         yacas->Evaluate(read_eval_print);
         if (yacas->IsError())
@@ -1617,7 +1637,7 @@ RESTART:
       while (Busy())
       {
 #ifdef YACAS_DEBUG
-        LispLocalEvaluator local((*yacas)()(),NEW TracedStackEvaluator);
+        LispLocalEvaluator local(yacas->getDefEnv().getEnv(),NEW TracedStackEvaluator);
 #endif
         
 #ifdef PROMPT_SHOW_FREE_MEMORY
