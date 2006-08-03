@@ -272,11 +272,6 @@ class BigNumber
         iTensExp = aY.iTensExp;
       }
       decimal = dX.add(dY);
-/*TODO remove
-      int newScale = iPrecision;
-      if (newScale < decimal.scale())
-        decimal = decimal.setScale(newScale,BigDecimal.ROUND_HALF_EVEN);
-*/
     }
     else
     {

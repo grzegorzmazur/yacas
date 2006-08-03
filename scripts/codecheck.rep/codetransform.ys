@@ -85,11 +85,9 @@ ReadTokens(language):=
 [
   Local(token,result,currentfile,currentline,tokenmap);
   result:={};
-//TODO remove?  Set(tokenmap,language:"'":action:"'TokenMap");
   currentfile:=CurrentFile();
   currentline:=CurrentLine();
   Set(token,PcreNextToken());
-//TODO remove?  Set(token,Apply(tokenmap,{PcreNextToken()}));
   While (token != EndOfFile)
   [
     If(Head(Tail(token)) != UnParsed,
@@ -108,7 +106,6 @@ ReadTokens(language):=
     // Read in the next token.
     Set(currentline,CurrentLine());
     Set(token,PcreNextToken());
-//TODO remove?    Set(token,Apply(tokenmap,{PcreNextToken()}));
   ];
   // Finished. Return result.
   result := DestructiveReverse(result);
@@ -210,7 +207,6 @@ TranslatedExpression(language, grammar, string):=
     tokenIndex:=0;
     NextToken();
     Apply(language:"'GetExpression",{grammar});
-//TODO remove?    GenericParserNextExpression( grammar );
   ];  
 ];
 

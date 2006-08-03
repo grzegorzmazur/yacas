@@ -15,7 +15,6 @@
 #include "mathuserfunc.h"
 #include "platmath.h"
 #include "numbers.h"
-//TODO remove #include "anumber.h"
 #include "arrayclass.h"
 #include "patternclass.h"
 #include "substitute.h"
@@ -199,15 +198,6 @@ void LispLexCompare2(LispEnvironment& aEnvironment, LispInt aStackTop,
     
     InternalBoolean(aEnvironment,RESULT, cmp);
 }
-
-// this function will eventually be moved to scripts
-/*TODO remove
-void LispPi(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-    //TESTARGS(1);
-    RESULT = (PiFloat(aEnvironment, aEnvironment.Precision()));
-}
-*/
 
 
 

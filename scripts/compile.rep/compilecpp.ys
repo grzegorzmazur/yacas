@@ -47,7 +47,6 @@ CompileStatement(Defun(_cn,_ag) (_body)) <--
   Set(nrRegisters,CountRegisters(Hold(@body)));
 //  Echo("CORE_KERNEL_FUNCTION(\"",Type(@f),"\",",compiledName,",",nrArgs,",YacasEvaluator::Function | YacasEvaluator::Fixed)");
 
-//TODO remove  funcDecls := {Type(@f),compiledName,nrArgs} : funcDecls;
   ForwardDeclareFixedFunction(@cn,nrArgs);
 //  funcDecls[(@cn)] := {compiledName,Function,Fixed,nrArgs};
 
@@ -121,7 +120,6 @@ CompileStatement(f_IsFunction := _body) <--
 
 //  Echo("CORE_KERNEL_FUNCTION(\"",Type(@f),"\",",compiledName,",",nrArgs,",YacasEvaluator::Function | YacasEvaluator::Fixed)");
 
-//TODO remove  funcDecls := {Type(@f),compiledName,nrArgs} : funcDecls;
 //  funcDecls[Type(@f)] := {compiledName,Function,Fixed,nrArgs};
   ForwardDeclareFixedFunction(Type(@f),nrArgs);
 

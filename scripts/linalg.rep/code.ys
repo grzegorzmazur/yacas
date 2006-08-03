@@ -395,15 +395,7 @@ Tr(x_IsList) <--
 
 
 Trace(matrix_IsList) <-- Tr(matrix);
-/*TODO remove
-[
-  Local(i,result);
-  result:=0;
-  For(i:=1,i<=Length(matrix),i++)
-    result:=result+matrix[i][i];
-  result;
-];
-*/
+
 
 x X y := CrossProduct(x,y);
 // x . y := InProduct(x,y); // see Dot function below (dr)

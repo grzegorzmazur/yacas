@@ -127,7 +127,6 @@ Rule("FSimpTerm",2,1,Type(f) = "-" And NrArgs(f)=1)
   Local(result);
   result:=FSimpTerm(f[1],{{},{}});
   Substitute(result,"IsFTrig","TrigNegate");
-//TODO remove  Substitute(result,"IsFTrig","TrigNegate");
 ];
 Rule("FSimpTerm",2,1,Type(f) = "-" And NrArgs(f)=2)
 [

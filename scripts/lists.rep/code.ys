@@ -404,15 +404,11 @@ LocalSymbols(func,lists,mapsingleresult,mapsingleitem)
 [
   Function("Map",{func,lists})
   [
-//TODO remove Echo("ENTER ",func,lists);
     Local(mapsingleresult,mapsingleitem);
     mapsingleresult:={};
     lists:=Transpose(lists);
-//TODO remove Echo("dimensions ",Dimensions(lists));
-//TODO remove Echo("transposed ",lists);
     ForEach(mapsingleitem,lists)
     [
-//TODO remove Echo("item ",mapsingleitem);
       DestructiveInsert(mapsingleresult,1,Apply(func,mapsingleitem));
     ];
     DestructiveReverse(mapsingleresult);

@@ -15,7 +15,6 @@
 #include "mathuserfunc.h"
 #include "platmath.h"
 #include "numbers.h"
-//TODO remove #include "anumber.h"
 #include "arrayclass.h"
 #include "patternclass.h"
 #include "substitute.h"
@@ -24,7 +23,6 @@
 #include "platdll.h"
 #include "exedll.h"
 #include "codecomment.h"
-//TODO remove #include "unipoly.h"
 
 #ifdef HAVE_MATH_H
   #include <math.h>
@@ -78,15 +76,8 @@
 /// \param aArgNr the index of the argument to be converted
 void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
-    /*??? */
     x = ARGUMENT(aArgNr)->Number(aEnvironment.Precision());
     CHK_ARG_CORE(x,aArgNr);	// was: x.Ptr()
-/*TODO remove old?
-    RefPtr<BigNumber> num; 
-    num = ARGUMENT(aArgNr)->Number(aEnvironment.Precision());
-    CHK_ARG_CORE(num.Ptr(),aArgNr);
-    x = num;
-*/
 }
 #endif // USE_BIGFLOAT
 
@@ -282,8 +273,8 @@ void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
       RefPtr<BigNumber> x; \
       GetNumber(x,aEnvironment, aStackTop, 1); \
-      BigNumber *z = NEW BigNumber( /*???*/ *x /*TODO remove? aEnvironment.BinaryPrecision()*/); \
-      z->BigNumName(/*???*/ *z /*TODO remove? *x.Ptr() */); \
+      BigNumber *z = NEW BigNumber(  *x ); \
+      z->BigNumName( *z ); \
       RESULT = (NEW LispNumber(z)); \
 }
 #define BINARYFUNCTION(LispName, BigNumName, OldName) \
@@ -487,12 +478,7 @@ void LispDiv(LispEnvironment& aEnvironment, LispInt aStackTop)
 	  
 #endif // USE_BIGFLOAT
 }
-/*TODO remove
-void LispLog(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aStackTop, LnFloat);
-}
-*/
+
 
 void LispPower(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
@@ -1022,84 +1008,33 @@ void LispGetExtraInfo(LispEnvironment& aEnvironment, LispInt aStackTop)
     }
 }
 
-/*TODO remove
-void LispBerlekamp(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-    //TESTARGS(3);
-    LispPtr polyobj(ARGUMENT(1));
-    LispPtr primeobj(ARGUMENT(2));
-
-    LispInt prime = InternalAsciiToInt(primeobj->String());
-
-    ZZPoly poly;
-    CHK_ARG_CORE(polyobj->SubList(), 1);
-    LispPtr hold(polyobj);
-    polyobj = ((*polyobj->SubList()));
-
-    CHK_ARG_CORE(polyobj, 1);
-    polyobj = (polyobj->Nixed());
-
-    while (polyobj)
-    {
-        ZZ fact;
-        CHK_ARG_CORE(polyobj->String(), 1);
-        fact = InternalAsciiToInt(polyobj->String());
-        poly.Append(fact);
-        polyobj = (polyobj->Nixed());
-    }
-    ZZPolyList result;
-    Berlekamp(result, poly, prime);
-
-    LispInt i;
-    LispObject *res = NULL;
-    for (i=result.Size()-1;i>=0;i--)
-    {
-        LispInt j;
-        LispObject *sub = NULL;
-        for (j=result[i]->Degree();j>=0;j--)
-        {
-            LispChar s[20];
-            InternalIntToAscii(s,(*result[i])[j]);
-            sub = LA(ATOML(s)) + LA(sub);
-        }
-        res = LIST(LA(ATOML("List")) + LA(sub)) + LA(res);
-    }
-    RESULT = (LIST(LA(ATOML("List")) + LA(res)));
-}
-*/
-
 
 void LispDefaultTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(1);
-    aEnvironment.iCurrentTokenizer = &aEnvironment.iDefaultTokenizer;
-    InternalTrue(aEnvironment,RESULT);
+  aEnvironment.iCurrentTokenizer = &aEnvironment.iDefaultTokenizer;
+  InternalTrue(aEnvironment,RESULT);
 }
 
 void LispCommonLispTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(1);
-    aEnvironment.iCurrentTokenizer = &aEnvironment.iCommonLispTokenizer;
-    InternalTrue(aEnvironment,RESULT);
+  aEnvironment.iCurrentTokenizer = &aEnvironment.iCommonLispTokenizer;
+  InternalTrue(aEnvironment,RESULT);
 }
 
 void LispCTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(1);
-    aEnvironment.iCurrentTokenizer = &aEnvironment.iCTokenizer;
-    InternalTrue(aEnvironment,RESULT);
+  aEnvironment.iCurrentTokenizer = &aEnvironment.iCTokenizer;
+  InternalTrue(aEnvironment,RESULT);
 }
 
 void LispXmlTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(1);
-    aEnvironment.iCurrentTokenizer = &aEnvironment.iXmlTokenizer;
-    InternalTrue(aEnvironment,RESULT);
+  aEnvironment.iCurrentTokenizer = &aEnvironment.iXmlTokenizer;
+  InternalTrue(aEnvironment,RESULT);
 }
 
 void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispPtr out(ARGUMENT(1));
     CHK_ISSTRING_CORE(out,1);
 

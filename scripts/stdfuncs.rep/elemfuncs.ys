@@ -430,36 +430,3 @@ MathPi() :=
 ];
 
 
-// this is an old version
-/* TODO REMOVE
-MathSqrtFloat0(_A) <-- 
-[
-	Local(bitshift, a0, x0, x0sq, targetbits, gotbits, curprec, targetprec);
-	bitshift := ShiftRight(MathBitCount(A),1);
-	// this is how many bits of precision we need
-	targetprec := GetPrecision();
-
-	Precision(10);	// enough to compute at this point
-	// target bits cannot be more than 1 + the bits in A
-	// if this is less than the requested precision, the result will be silently less precise, such is life
-	targetbits := Min(DigitsToBits(targetprec, 10), 1+MathGetExactBits(A));
-	// initial approximation
-	a0 := MathMul2Exp(A, -bitshift*2);	// would be wrong for integers
-	x0 := MathDivide(2+4*a0, 5+a0);
-	// this approximation gives at least 6 bits of Sqrt(a0) for 1 <= a0 < 4
-	gotbits := 6;
-	curprec := 2;
-	While(gotbits <= targetbits) // Or curprec <= targetprec)
-	[
-		gotbits := 3*gotbits;	// Halley iteration; get 3n+2 bits, subtract 2 bits to allow for roundoff
-		curprec := 3*curprec;
-//		Echo("debug: curprec=", curprec);
-		Precision(curprec);
-		x0 := MathSetExactBits(x0, gotbits);
-		x0sq := MathMultiply(x0, x0);
-		x0 := MathMultiply(x0, MathDivide(3*a0+x0sq, a0+3*x0sq));
-	];
-	Precision(targetprec);
-	MathSetExactBits(MathMul2Exp(x0, bitshift), targetbits);
-];
-*/

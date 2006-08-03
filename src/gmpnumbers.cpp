@@ -1028,17 +1028,6 @@ LispString * DivFloat( LispChar * int1, LispChar * int2, LispHashTable& aHashTab
   return result;
 }
 
-/*TODO remove?
-LispObject* PiFloat( LispEnvironment& aEnvironment, LispInt aPrecision)
-{
-  GMPNumber x;
-  initGMPNumber(x);
-  GMPNumberPi(x,aPrecision);
-  LispString * result = GMPNumberToString(x, aEnvironment.HashTable(), aPrecision);
-  clearGMPNumber(x);
-  return LispAtom::New(aEnvironment,result->String());
-}
-*/
 
 static LispString * IntegerToString(mpz_t& aInt,
                                      LispHashTable& aHashTable)
@@ -2061,25 +2050,6 @@ LispBoolean BigNumber::IsIntValue() const
 	else
 		return LispFalse;
   }
-/*TODO REMOVE
-  // compute y=x-Floor(x)
-  BigNumber y;
-  y.Floor(*this);
-  y.Negate(y);
-  // note that during the next Add() operation there will be a loss of precision if the current number has int value due to insufficient precision
-  y.Add(y,*this,GetPrecision()+1);	// 1 guard digit here, but this is adding floats to ints, so the precision will be automatically right
-  // return true if B(y)<-n
-  if (y.Sign() == 0 || y.BitCount() < - GetPrecision())
-	 return LispTrue;
-  // if still here, need to check whether x-Floor(x)-1 is close to zero
-  BigNumber minus_one;
-  minus_one.SetTo(-1);
-  y.Add(y, minus_one, GetPrecision()+1);
-  if (y.Sign() == 0 || y.BitCount() < - GetPrecision())
-	  return LispTrue;
-  else
-	  return LispFalse;
-*/
 }
 
 // check whether the number fits into a system long or double type

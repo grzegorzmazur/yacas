@@ -204,8 +204,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       if (s == null) break;
       s = unescape(s);
       AppendHistoryLine(s);
-//TODO remove      history[currentHistoryLine] = s;
-//TODO remove      currentHistoryLine++;
       i++;
     }
 
@@ -339,10 +337,8 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
               inputLine = inputLine+toInsert.substring(0,cr);
               toInsert = toInsert.substring(cr+1,toInsert.length());
               cr = toInsert.indexOf('\n');
-//System.out.println("");
+
               AppendHistoryLine(inputLine);
-//TODO remove              history[currentHistoryLine] = inputLine;
-//TODO remove              currentHistoryLine++;
               AddLinesStatic(48,inputPrompt,inputLine);
               if (inputLine.charAt(inputLine.length()-1) == '\\')
                 gatheredMultiLine = gatheredMultiLine + inputLine.substring(0,inputLine.length()-1);
@@ -481,8 +477,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       else if (e.VK_ENTER == e.getKeyCode())
       {
         AppendHistoryLine(inputLine);
-//TODO remove        history[currentHistoryLine] = inputLine;
-//TODO remove        currentHistoryLine++;
         AddLinesStatic(48,inputPrompt,inputLine);
         if (inputLine.charAt(inputLine.length()-1) == '\\')
           gatheredMultiLine = gatheredMultiLine + inputLine.substring(0,inputLine.length()-1);
@@ -714,7 +708,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   Graphics offGra = null;
 	public void update(Graphics g) 
   {
-//TODO remove    System.out.println("update");
     paint(g);
   }
 
@@ -1118,9 +1111,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   public void InvokeCalculation(String expression)
   {
     AppendHistoryLine(expression);
-
-//TODO remove    history[currentHistoryLine] = expression;
-//TODO remove    currentHistoryLine++;
     AddLinesStatic(48,"In> ",expression);
     PerformRequest("Out> ",expression);
     ResetInput();

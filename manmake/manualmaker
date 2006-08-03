@@ -15,10 +15,6 @@ AddBody(text):=
   currentBody[2] := currentBody[2]:text;
   GarbageCollect();
   True;
-/*TODO remove?
-plain["Chapters"][currentChapter]["Body"]:=
-    plain["Chapters"][currentChapter]["Body"] : text;
-*/
 ];
 
 Chapter(title):=

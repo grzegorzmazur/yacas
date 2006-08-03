@@ -220,13 +220,6 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 RuleBase("Object",{pred,x});
 Rule("Object",2,0,Apply(pred,{x})=True) x;
 
-/*TODO remove
-Rule("Gcd",2,100,True)
-[
-   NormalForm(Gcd(MakeUni(n),MakeUni(m)));
-];
-*/
-
 10 # Abs(n_IsNumber) <-- MathAbs(n);
 10 # Abs(n_IsPositiveNumber/m_IsPositiveNumber) <-- n/m;
 10 # Abs(n_IsNegativeNumber/m_IsPositiveNumber) <-- (-n)/m;

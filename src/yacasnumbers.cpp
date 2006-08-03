@@ -332,85 +332,6 @@ LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPr
     return FloatToString(sum, aEnvironment);
 }
 
-/*TODO remove
-static void LnFloat(ANumber& aResult, ANumber& int1)
-{
-    // Optimization for convergence: the following taylor
-    // series converges faster when x is close to zero.
-    // So a trick is to first take the square root a couple
-    // of times, until x is sufficiently close to 1.
-    
-
-    // Ln(y) = Ln(1+x) = Sum(i=1 to inf) (-1)^(i+1) * x^(i) / i
-    // thus y=1+x => x = y-1
-    //
-
-
-    LispInt shifts=0;
-    LispBoolean smallenough=LispFalse;
-    LispInt precision = 2*aResult.iPrecision;
-    ANumber y(int1);
-
-    if (!Significant(y)) RaiseError("MathLog does not handle zero");
-    if (y.iNegative) RaiseError("MathLog does not handle negative numbers");
-
-    ANumber minusone("-1",precision);
-    ANumber x(precision);
-
-    ANumber delta("0.01",precision);
-    while (!smallenough)
-    {
-        ANumber tosquare(precision);
-        tosquare.CopyFrom(y);
-        Sqrt(y,tosquare);
-        shifts++;
-        Add(x,y,minusone);
-        if (BaseLessThan(x,delta))
-            smallenough=LispTrue;
-    }
-    // i <- 0
-    ANumber i("0",precision);
-    // sum <- 1
-    aResult.SetTo("0");
-    // term <- 1
-    ANumber term("-1",precision);
-    ANumber dummy(10);
-
-    ANumber one("1",precision);
-    // While (term>epsilon)
-    while (Significant(term))      
-    {
-        //   negate term
-        Negate(term);
-
-        ANumber orig(precision);
-
-        orig.CopyFrom(term);
-        Multiply(term,orig,x);
-        //
-        BaseAdd(i, one, WordBase);
-        orig.CopyFrom(term);
-        ANumber newTerm(precision);
-        Divide(newTerm, dummy, orig, i);
-
-        //   sum <- sum+term
-        orig.CopyFrom(aResult);
-        Add(aResult, orig, newTerm);
-    }
-    if (shifts)
-        BaseShiftLeft(aResult,shifts);
-}
-
-
-
-LispObject* LnFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
-{
-    ANumber sum(aPrecision);
-    ANumber x(*int1->Number(aPrecision)->iNumber);
-    LnFloat(sum, x);
-    return FloatToString(sum, aEnvironment);
-}
-*/
 LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     // If is integer
@@ -462,21 +383,6 @@ LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnv
         return FloatToString(result, aEnvironment);
     }
     Check(LispFalse, KLispErrNotInteger);
-
-/*TODO remove
-    ANumber lnn(aPrecision);
-    {
-      ANumber x(*int1->Number(aPrecision)->iNumber);
-      LnFloat(lnn, x);
-    }
-    ANumber exn(*int2->Number(aPrecision)->iNumber);
-
-    ANumber x(aPrecision);
-    Multiply(x,exn,lnn);
-    ANumber result(aPrecision);
-    ExpFloat(result, x);
-    return FloatToString(result, aEnvironment);
-*/
 	return 0;
 }
 
@@ -535,59 +441,6 @@ LispObject* ModFloat( LispObject* int1, LispObject* int2, LispEnvironment& aEnvi
     return FloatToString(remainder, aEnvironment,10);
 
 }
-
-/*TODO remove?
-LispObject* PiFloat( LispEnvironment& aEnvironment, LispInt aPrecision)
-{
-    // Newton's method for finding pi:
-    // x[0] := 3.1415926
-    // x[n+1] := x[n] + Sin(x[n])
-
-	LispInt initial_prec = aPrecision;	// target precision of first iteration, will be computed below
-    LispInt cur_prec = 40;  // precision of the initial guess
-    ANumber result("3.141592653589793238462643383279502884197169399",cur_prec + 3);    // initial guess is stored with 3 guard digits
-    ANumber x(cur_prec);
-	ANumber s(cur_prec);
-
-	// optimize precision sequence
-	while (initial_prec > cur_prec*3)
-		initial_prec = int((initial_prec+2)/3);
-	cur_prec = initial_prec;
-    while (cur_prec <= aPrecision)
-    {
- 		// start of iteration code
-		result.ChangePrecision(cur_prec);	// result has precision cur_prec now
-//    NormalizeFloat(result,cur_prec);
-        // Get Sin(result)
-        x.CopyFrom(result);
-		s.ChangePrecision(cur_prec);
-//    NormalizeFloat(s,cur_prec);
-        SinFloat(s, x);
-        // Calculate new result: result := result + Sin(result);
-        x.CopyFrom(result);	// precision cur_prec
-        Add(result,x,s);
-		// end of iteration code
-		// decide whether we are at end of loop now
-		if (cur_prec == aPrecision)	// if we are exactly at full precision, it's the last iteration
-			cur_prec = aPrecision+1;	// terminate loop
-		else {
-			cur_prec *= 3;	// precision triples at each iteration
-			// need to guard against overshooting precision
- 			if (cur_prec > aPrecision)
-				cur_prec = aPrecision;	// next will be the last iteration
-		}
-    }
-	
-//    return aHashTable.LookUp("3.14"); // Just kidding, Serge ;-)
-
-//NormalizeFloat(result,WordDigits(result.iPrecision,10));
-#ifdef CORRECT_DIVISION
-    NormalizeFloat(result,WordDigits(result.iPrecision,10));
-#endif
-
-    return FloatToString(result, aEnvironment);
-}
-*/
 
 
 static LispObject* FloatToString(ANumber& aInt,
@@ -795,11 +648,7 @@ void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrec
     :: Multiply(*iNumber,*aX.iNumber,*aY.iNumber);
   }
 */
-/*TODO remove old? 
-  ANumber a1(*aX.iNumber);
-  ANumber a2(*aY.iNumber);
-  :: Multiply(*iNumber,a1,a2);
-*/
+
 }
 void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {//FIXME

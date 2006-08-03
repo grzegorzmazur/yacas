@@ -305,13 +305,6 @@ String toLookUp = iLookAhead.substring(len,origlen);
   {
     LispPtr ptr = new LispPtr();
     ptr.Set(LispAtom.New(iParser.iEnvironment,aString));
-
-/*TODO remove
-LispObject o1 = ptr.Get();
-LispPtr n1 = o1.Next();
-LispObject o2 = iResult.Get();
-*/
-
     ptr.Get().Next().Set(iResult.Get());
     iResult.Set(ptr.Get());
   }

@@ -102,7 +102,6 @@ LocalSymbols(x,y,xarg,yarg)
 [
   10 # ((x_IsList) - (y_IsList))_(Length(x)=Length(y)) <-- 
   [
-//TODO remove Echo("HIER",x," ",y);
     Map({{xarg,yarg},xarg-yarg},{x,y});
   ];
 ];
@@ -215,11 +214,6 @@ LocalSymbols(x,y,xarg,yarg)
 
 250  # x_IsNumber * y_IsInfinity <-- Sign(x)*y;
 250  # x_IsInfinity * y_IsNumber <-- Sign(y)*x;
-
-/*TODO remove, handled in complex.rep/code.ys now?
-250  # x_IsComplex * y_IsInfinity <-- Complex(Re(x)*Infinity,Im(x)*Infinity);
-250  # x_IsInfinity * y_IsComplex <-- Complex(Re(y)*Infinity,Im(y)*Infinity);
-*/
 
 
 /* Note: this rule MUST be past all the transformations on
@@ -368,7 +362,6 @@ LocalSymbols(x,y,xarg,yarg)
 250 # ((-Infinity) ^ (n_IsNumber))_(IsOdd(n)) <-- -Infinity;
 
 250 # (x_IsNumber ^ Infinity)_(x> -1 And x < 1) <-- 0;
-//TODO remove, this is not true is it? 250 # (x_IsNumber ^ Infinity)_(x< -1) <-- - Infinity;
 250 # (x_IsNumber ^ Infinity)_(x> 1) <-- Infinity;
 
 // these Magnitude(x)s should probably be changed to Abs(x)s

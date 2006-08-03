@@ -16,7 +16,6 @@ CommonLisp'Tokens :=
   {"^;.*?\\n",Comments},
   {"^[\\(\\)]",Brackets},
   {"^[\\'\\`\\,]",Quote},
-//TODO remove?  {"^[0-9]+",Integers},
   {"^\\\".*?\\\"",Atoms},
   {"^\\#",Atoms},
   {"^[0-9]*\\.[0-9]+",Atoms},

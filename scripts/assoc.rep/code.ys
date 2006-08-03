@@ -5,12 +5,7 @@
 */
 
 Function("Assoc",{key,list})  FastAssoc(key,list);
-/*TODO remove
-RuleBase("Assoc",{key,list});
-Rule("Assoc",2,1,list = {}) Empty;
-Rule("Assoc",2,2,list[1][1] = key) list[1];
-Rule("Assoc",2,3,True) Assoc(key,Tail(list));
-*/
+
 
 AssocIndices(associndiceslist_IsList) <--
   DestructiveReverse(MapSingle("Head",associndiceslist));

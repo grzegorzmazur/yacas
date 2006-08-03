@@ -84,15 +84,6 @@ HoldArg("D",aFunc);
 2 # (Deriv(_var)Sqrt(_x)) <-- ((Deriv(var)x)/(2*Sqrt(x)));
 2 # (Deriv(_var)Complex(_r,_i)) <-- Complex(Deriv(var)r,Deriv(var)i);
 
-
-/*TODO remove
-LocalSymbols(var,var2,a,b,y)[
-  2 # (Deriv(_var)Integrate(_var)(_y)) <-- y;
-  2 # (Deriv(_var)Integrate(_var2,_a,_b)(_y)) <-- 
-        (Deriv(var)b)*(y Where var2 == b) -
-        (Deriv(var)a)*(y Where var2 == a);
-];
-*/
 LocalSymbols(var,var2,a,b,y)[
    2 # (Deriv(_var)Integrate(_var)(_y)) <-- y;
    2 # (Deriv(_var)Integrate(_var2,_a,_b)(y_IsFreeOf(var))) <-- 
@@ -122,15 +113,7 @@ LocalSymbols(var,var2,a,b,y)[
   UniVariate(var,first-1,result);
 ];
 
-/*
-Diverge(_f,_b) <-- D(b)f;
-Curl2(_f,_b) <--
-      (D({b[2],b[3],b[1]}){f[3],f[1],f[2]}) -
-      (D({b[3],b[1],b[2]}){f[2],f[3],f[1]});
-*/
 
-/*TODO remove?
-*/
 RuleBase("Diverge", {aFunc, aBasis});
 Rule("Diverge", 2, 1, IsList(aBasis) And IsList(aFunc) And Length(aBasis) = Length(aFunc))
 	Sum(Map("D", {aBasis,aFunc}));

@@ -4,16 +4,9 @@
 
 UniVarList(expr) := VarList(expr);
 
-/* we need to use "predicates" because we are adding to IsZero */
-//TODO remove we shouldn't explicitly use Use Use("predicates.rep/code.ys");
-
 
 0 # NormalForm(UniVariate(_var,_first,_coefs)) <--
     ExpandUniVariate(var,first,coefs);
-/*TODO remove
-Rule("NormalForm",1,0,Type(expression) = "UniVariate")
-    ExpandUniVariate(expression[1],expression[2],expression[3]);
-*/
 
 Function("ExpandUniVariate",{var,first,coefs})
 [
@@ -32,9 +25,6 @@ Function("ExpandUniVariate",{var,first,coefs})
 10 # IsUniVar(UniVariate(_var,_first,_coefs)) <-- True;
 20 # IsUniVar(_anything) <-- False;
 
-/*TODO remove?
-Function("IsUniVar",{expr}) Type(expr) = "UniVariate";
-*/
 
 RuleBase("UniVariate",{var,first,coefs});
 
@@ -122,18 +112,9 @@ Rule("Degree",1,0, IsUniVar(expr))
 200 # a_IsNumber + UniVariate(_var,_first,_coefs) <--
       UniVariate(var,first,coefs) + UniVariate(var,0,{a});
 
-/*TODO remove?
-200 # aLeft_IsUniVar + aRight_IsNumber <-- aRight+aLeft;
-200 # aLeft_IsNumber + aRight_IsUniVar <--
-    UniVariate(aRight[1],0,{aLeft})+aRight;
-*/
 
 200 # - UniVariate(_var,_first,_coefs) <-- UniVariate(var,first,-coefs);
 
-/*TODO remove?
-200 # - (aLeft_IsUniVar) <--
-     Apply("UniVariate",{aLeft[1],aLeft[2],-(aLeft[3])});
-*/
 
 200 # aLeft_IsUniVar - aRight_IsUniVar <--
 [
@@ -221,17 +202,15 @@ Rule("Degree",1,0, IsUniVar(expr))
 
 /*TODO this can be made twice as fast!*/
 
-//MRK TODO remove 201 # (aLeft_IsUniVar * _aRight)_(Not(Contains(UniVarList(aRight),aLeft[1]))) <--
+
 201 # (aLeft_IsUniVar * _aRight)_((IsFreeOf(aLeft[1],aRight))) <--
 [
     aRight*aLeft;
 ];
 
-//MRK TODO remove 200 # (_factor * UniVariate(_var,_first,_coefs))_(Not(Contains(UniVarList(factor),var))) <--
 200 # (_factor * UniVariate(_var,_first,_coefs))_((IsFreeOf(var,factor))) <--
   UniVariate(var,first,coefs*factor);
 
-//MRK TODO remove 200 # (UniVariate(_var,_first,_coefs)/_factor)_(Not(Contains(UniVarList(factor),var))) <--
 200 # (UniVariate(_var,_first,_coefs)/_factor)_((IsFreeOf(var,factor))) <--
   UniVariate(var,first,coefs/factor);
 
@@ -266,24 +245,6 @@ ShiftUniVar(UniVariate(_var,_first,_coefs),_fact,_shift)
   result;
 ];
 
-/*TODO remove?
-Function("ShiftUniVar",{uni,fact,shift})
-[
- Apply("UniVariate",{uni[1],uni[2]+shift,fact*(uni[3])});
-];
-200 # (aLeft_IsUniVar * aRight_IsUniVar)_(aLeft[1] = aRight[1]) <--
-[
-  Local(i,j,n,shifted,result);
-  Set(result,MakeUni(0,aLeft[1]));
-
-  Set(n,Length(aLeft[3]));
-  For(i:=1,i<=n,i++)
-  [
-    result:=result+ShiftUniVar(aRight,aLeft[3][i],aLeft[2]+i-1);
-  ];
-  result;
-];
-*/
 
 5 # Coef(uv_IsUniVar,order_IsList) <--
 [
@@ -376,21 +337,7 @@ RuleBase("MakeUni",{expression,var});
   UniVariate(expression[1],expression[2],reslist);
 ];
 
-/*TODO remove?
-Rule("MakeUni",2,10,Type(expression) = "UniVariate")
-[
-  Local(reslist,item);
-  reslist:={};
-  ForEach(item,expression[3])
-  [
-    If(IsFreeOf(var,item),
-      DestructiveAppend(reslist,item),
-      DestructiveAppend(reslist,MakeUni(item,var))
-      );
-  ];
-  Apply("UniVariate",{expression[1],expression[2],reslist});
-];
-*/
+
 LocalSymbols(a,b,var,expression)
 [
   20 # MakeUni(expression_IsFreeOf(var),_var)
