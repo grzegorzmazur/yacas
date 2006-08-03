@@ -47,48 +47,7 @@ Set(LocResult,True);
 20 # LocPredicate(_exp) <-- False;
 
 LocChange(_exp) <-- LocResult;
-/*TODO remove!
-10 # LocChange(exp_IsAtom) <-- 
-[
-  Local(tr,result);
-  tr:=patterns;
-  result:=False;
-  While (tr != {})
-  [
-    If (Head(Head(tr)) = exp,
-    [
-      result := Eval(Head(Tail(Head(tr))));
-      If(Verbose, Echo({exp," replaced with ",result}));
-      tr:={};
-    ],
-    [
-      tr := Tail(tr);
-    ]);
-  ];
-  result;
-];
 
-10 # LocChange(exp_IsFunction) <--
-[
-  Local(tr,result,head);
-  tr:=patterns;
-  result:=False;
-  While (tr != {})
-  [
-    head := Head(Head(tr));
-    If (Not(IsAtom(head)) And exp[0]=head[1] And PatternMatches(head[2], exp),
-    [
-      result := Eval(Head(Tail(Head(tr))));
-      If(Verbose, Echo({exp," replaced with ",result}));
-      tr:={};
-    ],
-    [
-      tr := Tail(tr);
-    ]);
-  ];
-  result;
-];
-*/
 
 UnFence("LocPredicate",1);
 UnFence("LocChange",1);

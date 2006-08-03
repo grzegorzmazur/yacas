@@ -69,7 +69,7 @@ catch(Exception e)
 
 
     String defaultDirectory = null;
-    String archive = "";//TODO remove "file:/Users/ayalpinkus/projects/yacas/JavaYacas/scripts.zip";
+    String archive = "";
 
     // Search the file scripts.zip. It contains yacasinit.ys
     {

@@ -40,12 +40,12 @@ TIMEFILE=/tmp/time-yacas.$$
 VERSIONF=/tmp/version-yacas-$$.ys
 LOGFILE=yacas-logfile.txt
 echo "Print(Version());" > $VERSIONF
-VERSION=`$CMD -c $VERSIONF`
+VERSION=`$CMD $VERSIONF`
 echo "Print(CodeComment());" > $VERSIONF
-COMMENT=`$CMD -c $VERSIONF`
+COMMENT=`$CMD $VERSIONF`
 #DATECMD="date \"+%F %T\""
 #echo "$DATECMD"
-rm $VERSIONF
+#rm $VERSIONF
 
 echo "/*" >> $LOGFILE
 echo "Command = \"$CMD\""      | tee -a $LOGFILE

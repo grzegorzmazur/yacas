@@ -1,23 +1,5 @@
 package net.sf.yacas;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class YacasNotebook
 {
   Hints the_hints;
@@ -31,8 +13,6 @@ class YacasNotebook
     selecter.draw(5,22,g);
 
     the_hints = new Hints();
-
-//#include "../cplusplus/hintsjava"
 
     HintWindow hints = new HintWindow(12);
     hints.AddLine("First line",g);

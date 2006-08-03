@@ -19,12 +19,6 @@ x support for passing arguments
 
 
 
-
-/*TODO remove
-PExprEcho(_e) <-- Echo(" ",e);
-PExpr := PExprEcho;
-*/
-
 Macro()CompileExpression(expression);
 //5 # CompileExpression(_rest) <-- Echo("PExpr is ",@PExpr);
 10 # CompileExpression(_x + _y) <-- [CompileExpression(@x);CompileExpression(@y);@PExpr("AddFloats");];

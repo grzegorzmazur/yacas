@@ -323,11 +323,6 @@ class MathCommands
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispDigitsToBits(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "DigitsToBits");
-/*TODO remove
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispPi(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathPi");
-*/
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispGcd(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "MathGcd");
@@ -2601,16 +2596,6 @@ class MathCommands
     }
   }
 
-/*TODO remove
-  class LispPi extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispPi (returning a fixed approximation for it for now)");//TODO fixme
-      RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,"3.141592653589793238462643383279502884197169399"));
-    }
-  }
-*/
   class LispGcd extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
@@ -2871,8 +2856,7 @@ class MathCommands
       BigNumber num = oper.Get().Number(aEnvironment.Precision());
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,num != null,1);
     // check that the base is an integer between 2 and 32
-      LispError.CHK_ARG_CORE(aEnvironment,aStackTop,num.IsInt()
-          /*TODO remove? && num.Double() >= BASE2 && num.Double() <= log2_table_range()*/, 1);
+      LispError.CHK_ARG_CORE(aEnvironment,aStackTop,num.IsInt(), 1);
 
       // Get a short platform integer from the first argument
       int base = (int)(num.Double());
@@ -2906,8 +2890,7 @@ class MathCommands
       BigNumber num = oper.Get().Number(aEnvironment.Precision());
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,num != null,1);
     // check that the base is an integer between 2 and 32
-      LispError.CHK_ARG_CORE(aEnvironment,aStackTop,num.IsInt()
-          /*TODO remove? && num.Double() >= BASE2 && num.Double() <= log2_table_range()*/, 1);
+      LispError.CHK_ARG_CORE(aEnvironment,aStackTop,num.IsInt(), 1);
 
       // Get a short platform integer from the first argument
       int base = (int)(num.Long());
@@ -3930,7 +3913,6 @@ class MathCommands
       LispObject ls = LispAtom.New(aEnvironment,"List");
       LispObject newinfo =  LispSubList.New(ls);
       RESULT(aEnvironment, aStackTop).Set(newinfo);
-//TODO remove      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -4033,7 +4015,6 @@ class MathCommands
         strInd++;
       }
       String tag = new String();
-//TODO remove    tag.Resize(0);
     
       tag = tag + "\"";
       while (LispTokenizer.IsAlpha(str.charAt(strInd)))

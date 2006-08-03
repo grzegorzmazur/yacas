@@ -63,23 +63,10 @@ void CCommandLine::ReadLineSub(LispChar * prompt)
 {
     LispInt cursor=0;
     int promptlen = PlatStrLen(prompt);
+    
+    iHistoryList.ResetHistoryPosition();
+    iHistoryUnchanged = 0;
 
-/*TODO remove?
-    if (history<iHistory.Size()-1 && iTraceHistory)
-    {
-        history++;
-        GetHistory(history);
-        cursor = iSubLine.Size()-1;
-    }
-    else
-*/
-    {
-      iHistoryList.ResetHistoryPosition();
-//TODO remove?        history=iHistory.Size();
-        iHistoryUnchanged = 0;
-    }
-    
-    
     iFullLineDirty = 1;
     ShowLine(prompt,promptlen,cursor);
 
@@ -122,33 +109,6 @@ void CCommandLine::ReadLineSub(LispChar * prompt)
           iFullLineDirty = 1;
           iHistoryUnchanged = 1;
         }
-/*TODO remove?
-        {
-          LispString prefix;
-          if (iHistoryUnchanged && cursor == iSubLine.Size()-1) cursor = 0;
-          prefix.SetStringCounted(iSubLine.c_str(),cursor);
-
-          int i = history - 1;
-
-//printf("Searching for [%s] starting at %d (of %d)\n",prefix.c_str(),i,iHistory.Size());
-          LispString histpre;
-          while (i >= 0)
-          {
-            histpre.SetStringCounted(iHistory[i]->c_str(),cursor);
-            if (histpre == prefix)
-              break;
-            i--;
-          }
-          if (i >= 0 && i != history && histpre == prefix)
-          {
-            history = i;
-            GetHistory(history);
-            if (cursor == 0) cursor = iSubLine.Size()-1;
-            iFullLineDirty = 1;
-            iHistoryUnchanged = 1;
-          }
-        }
-*/
         break;
       case eDown:
 
@@ -162,57 +122,6 @@ void CCommandLine::ReadLineSub(LispChar * prompt)
             iFullLineDirty = 1;
             iHistoryUnchanged = 1;
           }
-        
-
-/*TODO remove?
-        {
-          LispString prefix;
-          if (iHistoryUnchanged && cursor == iSubLine.Size()-1) cursor = 0;
-          prefix.SetStringCounted(iSubLine.c_str(),cursor);
-          int i = history + 1;
-          LispString histpre;
-          while (i < iHistory.Size())
-          {
-            histpre.SetStringCounted(iHistory[i]->c_str(),cursor);
-            if (histpre == prefix)
-              break;
-            i++;
-          }
-          if (i < iHistory.Size() && histpre == prefix)
-          {
-            history = i;
-            GetHistory(history);
-            if (cursor == 0) cursor = iSubLine.Size()-1;
-            iFullLineDirty = 1;
-            iHistoryUnchanged = 1;
-          }
-          else 
-          {
-
-//printf("end encountered: %d [%s]\n",i,prefix.c_str());
-            history = iHistory.Size();
-//            iSubLine = prefix;
-
-            {
-              iSubLine.Resize(0);
-              LispInt i;
-              for (i=0;i<prefix.Size();i++)
-              {
-                iSubLine.Append(prefix[i]);
-              }
-              iSubLine.Append('\0');
-            }
-//printf("set to: %d [%s]\n",history,iSubLine.c_str());
-
-//            int pos = cursorPos;
-//            ResetInput();
-//            inputLine = prefix;
-//            cursorPos = pos;
-            iFullLineDirty = 1;
-            iHistoryUnchanged = 1;
-          }
-        }
-*/
         break;
 
 
@@ -220,33 +129,6 @@ void CCommandLine::ReadLineSub(LispChar * prompt)
             iHistoryList.Complete(iSubLine,cursor);
             iFullLineDirty = 1;
             iHistoryUnchanged = 1;
-/*TODO remove
-            {
-                LispInt prevhistory=history;
-                history = iHistory.Size()-1;
-                while (history>=0)
-                {
-                    LispInt j=0;
-                    while (j<iSubLine.Size()-1 &&
-                           j<iHistory[history]->Size())
-                    {
-                        if (iSubLine[j] != (*iHistory[history])[j])
-                            goto CONTINUE;
-                        j++;
-                    }
-
-                    GetHistory(history);
-                    cursor = iSubLine.Size()-1;
-                    iFullLineDirty = 1;
-                    iHistoryUnchanged = 1;
-                    break;
-                CONTINUE:
-                    history--;
-                }
-                if (history<0)
-                    history = prevhistory;
-            }
-*/
             break;
         case eEscape:
             iSubLine.Resize(1);
@@ -255,7 +137,6 @@ void CCommandLine::ReadLineSub(LispChar * prompt)
             iFullLineDirty = 1;
             iHistoryUnchanged = 0;
             iHistoryList.ResetHistoryPosition();
-//TODO remove            history=iHistory.Size();
             break;
         case eHome:
             cursor=0;
@@ -266,30 +147,9 @@ void CCommandLine::ReadLineSub(LispChar * prompt)
         case eEnter:
             if (iSubLine.Size()>1)
             {
-                NewLine();
-
-                iHistoryList.AddLine(iSubLine);
-                  return; 
-
-/*TODO remove
-                if (!iHistoryUnchanged)
-                {
-                  LispString * ptr = NEW LispString(iSubLine.c_str());
-                  iHistoryList.AddLine(ptr);
-                  return; 
-                }
-                else if (history<iHistory.Size())
-                {
-                  LispString * orig = iHistory[history];
-                  LispInt i;
-                  for (i=history;i<iHistory.Size()-1;i++)
-                  {
-                    iHistory[i] = iHistory[i+1];
-                  }
-                  iHistory[iHistory.Size()-1] = orig;
-                  return; 
-                }
-*/
+              NewLine();
+              iHistoryList.AddLine(iSubLine);
+              return; 
             }
             iFullLineDirty = 1;
             break;
@@ -427,24 +287,12 @@ LispInt CConsoleHistory::ArrowDown(LispString& aString,LispInt &aCursorPos)
   {
     history = i;
     CopyString(aString, (*iHistory[history]));
-//    if (aCursorPos == 0) aCursorPos = aString.Size()-1;
     return 1;
   }
   else
   {
     history = iHistory.Size();
     CopyString(aString,prefix);
-/*TODO remove
-    {
-      aString.Resize(0);
-      LispInt i;
-      for (i=0;i<prefix.Size();i++)
-      {
-        aString.Append(prefix[i]);
-      }
-      aString.Append('\0');
-    }
-*/
   }
   return 0;
 }

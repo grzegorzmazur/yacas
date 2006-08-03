@@ -1140,28 +1140,4 @@ This expression is 1 modulo $x^8$, as can easily be shown:
 
 
 
-*REM TODO REMOVE?		The Berlekamp algorithm (small-prime factorization of polynomials)
-
-*REM TODO REMOVE? TODO
-
-*REM TODO REMOVE? 	    Hensel lifting
-
-*REM TODO REMOVE? TODO
-
-*REM TODO REMOVE? 	    Factoring non-monic polynomials
-
-*REM TODO REMOVE? TODO
-
-*REM TODO REMOVE? 	    Factoring multivariate polynomials
-
-*REM TODO REMOVE? TODO
-
-*REM TODO REMOVE? 	    The Yacas implementation of Berlekamp factoring
-
-*REM TODO REMOVE? TODO
-
-
-
-
-
 

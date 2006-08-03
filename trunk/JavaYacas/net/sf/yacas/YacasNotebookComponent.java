@@ -21,7 +21,7 @@ class YacasNotebookComponent // extends java.awt.Component
   CYacas yacas = null;
   StringBuffer outp = new StringBuffer();
 
-  YacasNotebookComponent(String hintsfilename/*TTODO remove ,String servername,int serverport*/,java.applet.Applet applet)
+  YacasNotebookComponent(String hintsfilename, java.applet.Applet applet)
   {
     iNrRows = 0;
     current_word = 0;

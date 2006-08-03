@@ -1,33 +1,12 @@
 
 
-/*TODO remove, old 
-Function("IsMatrix",{aLeft})
-[
-  If(IsList(aLeft),
-    [
-      Local(result);
-      result:=True;
-
-      //TODO also check nr elements! 
-      ForEach(item,aLeft)
-        If(Not(IsList(item)),result:=False);
-      result;
-    ],
-    False
-    );
-];
-*/
 
 LocalSymbols(p,x)
 [
 // test for a scalar
 Function("IsScalar",{x}) Not(IsList(x));
 
-/* IsList is checked first, as it is hoped this greatly speeds up checking if something is a matrix.
- */
-/* remove? (dr)
-Function("IsMatrix",{x}) If(IsList(x),Length(Dimensions(x))=2,False);
-*/
+
 
 // test for a vector
 Function("IsVector",{x})

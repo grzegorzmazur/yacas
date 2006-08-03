@@ -619,22 +619,11 @@ class LispStandard
     String flatfile = InternalUnstringify(aFileName) + ".def";
     LispDefFile def = aEnvironment.iDefFiles.File(aFileName);
 
-//TODO remove    LispStringPtr contents = aEnvironment.FindCachedFile(flatfile.String());
-
     String hashedname = aEnvironment.HashTable().LookUp(flatfile);
 
     InputStatus oldstatus = aEnvironment.iInputStatus;
     aEnvironment.iInputStatus.SetTo(hashedname);
 
-/*TODO remove
-    if (contents)
-    {
-        StringInput newInput(*contents,aEnvironment.iInputStatus);
-        DoLoadDefFile(aEnvironment, &newInput,def);
-        delete contents;
-    }
-    else
-*/
     {
       LispInput newInput = // new StdFileInput(hashedname, aEnvironment.iInputStatus);
           OpenInputFile(aEnvironment, aEnvironment.iInputDirectories, hashedname, aEnvironment.iInputStatus);

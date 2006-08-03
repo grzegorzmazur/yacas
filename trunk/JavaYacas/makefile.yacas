@@ -76,6 +76,6 @@ SPECIAL_TESTFILES = ../manmake/wester-1994.ys
 TESTFILES = $(NORMAL_TESTFILES) $(SPECIAL_TESTFILES)
 
 test:
-	../tests/test-yacas java -jar yacas.jar  \; ../tests/ $(TESTFILES)
+	../tests/test-yacas "java -jar ../JavaYacas/yacas.jar" ../tests/ $(TESTFILES)
 
 

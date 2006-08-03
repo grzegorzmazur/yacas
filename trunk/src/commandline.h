@@ -110,10 +110,6 @@ public:
     LispInt iTraceHistory;
 
     CConsoleHistory iHistoryList;
-/*TODO remove?
-    CDeletingArrayGrower<LispString *> iHistory;
-    LispInt history;
-*/
 };
 
 #endif

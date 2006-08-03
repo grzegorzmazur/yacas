@@ -185,10 +185,6 @@ BoundRealRoots(_p,_Mmin,_Mmax) <--
         [
           work:=Concat(work,{{c+M,b,Vcplus,Vb}});
         ];
-
-
-//TODO remove        work:=Concat(work,{{a,c,Va,Vc}});
-//TODO remove        work:=Concat(work,{{c,b,Vc,Vb}});
       ]
       else
       [

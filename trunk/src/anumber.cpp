@@ -1376,28 +1376,6 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
 #ifdef CORRECT_DIVISION
 
         NormalizeFloat(a2,digitsNeeded);
-/*TODO remove?
-{
-        if (a2.iExp - digitsNeeded > 0)
-        {
-          a2.Delete(0,a2.iExp-digitsNeeded);
-          a2.iExp -= (a2.iExp-digitsNeeded);
-        }
-
-        LispInt min = 1+digitsNeeded;
-        if (a2.iExp+1>min)
-          min = a2.iExp+1;
-        while (a2.Size()>min ||
-               (a2.Size()==min && a2[a2.Size()-1]>10))
-        {
-          PlatDoubleWord carry = 0;
-          BaseDivideInt(a2, 10, WordBase,carry);
-          if (a2[a2.Size()-1] == 0)
-            a2.Resize(a2.Size()-1);
-          a2.iTensExp++;
-        }
-}
-*/
 
         LispInt toadd = a2.iExp-a1.iExp; 
         {
@@ -1420,11 +1398,6 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
         }
 
 
-/*
-if (a1.iTensExp<-1000)
-  a1.iTensExp=-1000;
-*/
-
 #else // CORRECT_DIVISION
 
         LispInt toadd = digitsNeeded+a2.iExp-a1.iExp; 
@@ -1443,20 +1416,7 @@ if (a1.iTensExp<-1000)
 #ifdef CORRECT_DIVISION
 
         NormalizeFloat(aQuotient,digitsNeeded);
-/*TODO remove?
-        LispInt min = 1+digitsNeeded;
-        if (aQuotient.iExp+1>min)
-          min = aQuotient.iExp+1;
-        while (aQuotient.Size()>min ||
-               (aQuotient.Size()==min && aQuotient[aQuotient.Size()-1]>10))
-        {
-          PlatDoubleWord carry = 0;
-          BaseDivideInt(aQuotient, 10, WordBase,carry);
-          if (aQuotient[aQuotient.Size()-1] == 0)
-            aQuotient.Resize(aQuotient.Size()-1);
-          aQuotient.iTensExp++;
-        }
-*/
+
 #endif // CORRECT_DIVISION
 
 }

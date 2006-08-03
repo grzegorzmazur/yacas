@@ -52,42 +52,6 @@ TemplateFunction("WithValue",{var,val,expr})
   Eval(expr);
 ];
 
-/*TODO remove
-10 # LimitChange((_xex)/(_yex))_
-     ((IsZero(WithValue(var,lim,xex)) And
-       IsZero(WithValue(var,lim,yex))) Or
-      (IsInfinity(WithValue(var,lim,xex)) And
-       IsInfinity(WithValue(var,lim,yex)))) <--
-    LimitChange(Apply("D",{var,xex})/Apply("D",{var,yex}));
-20 # LimitChange(_xex) <--
-    [
-     WithValue(var,lim,xex);
-    ];
-UnFence("LimitChange",1);
-
-10 # LimitPredicate((_xex)/(_yex))_
-     ((IsZero(WithValue(var,lim,xex)) And
-       IsZero(WithValue(var,lim,yex))) Or
-      (IsInfinity(WithValue(var,lim,xex)) And
-       IsInfinity(WithValue(var,lim,yex)))) <-- True;
-20 # LimitPredicate(_x) <-- False;
-UnFence("LimitPredicate",1);
-
-(Limit(_var,_lim)(_fie)) <--
-    [
-     Local(ll);
-     ll:= WithValue(var,lim,fie);
-     If(IsInfinity(ll),
-        [
-         ll:=(Substitute(fie,"LimitPredicate","LimitChange"));
-         ll:=WithValue(var,lim,ll);
-        ]);
-     ll;
-     ];
-UnFence("Limit",3);
-
-*/
-
 
 
 Function("CharacteristicEquation",{matrix,var})
@@ -95,7 +59,6 @@ Function("CharacteristicEquation",{matrix,var})
 HoldArg("CharacteristicEquation",var);
 
 // diagonal matrices will be caught by IsUpperTriangular
-//10 # EigenValues(matrix_IsDiagonal) <-- Diagonal(matrix);
 10 # EigenValues(matrix_IsUpperTriangular) <-- Diagonal(matrix);
 10 # EigenValues(matrix_IsLowerTriangular) <-- Diagonal(matrix);
 

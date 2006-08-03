@@ -292,12 +292,6 @@ MultiS(_g,_h,MultiNomial(_vars,_terms)) <--
     MultiDivTerm(topterm,MultiLT(g))*g -
     MultiDivTerm(topterm,MultiLT(h))*h;
 
-
-/*TODO remove, old incorrect code?
-  result :=
-    MultiDivTerm(MultiNomial(vars,{{gamma,1}}),MultiLT(g))*g -
-    MultiDivTerm(MultiNomial(vars,{{gamma,1}}),MultiLT(h))*h;
-*/
   result;
 ];
 

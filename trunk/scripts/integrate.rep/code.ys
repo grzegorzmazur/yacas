@@ -372,9 +372,6 @@ IntFunc(x,num_IsFreeOf(var)/(A_IsNumber + B_IsNumber*(_x))^2,-num/(A*b + B^2*x))
 IntFunc(x,num_IsFreeOf(var)/(n_IsNumber + m_IsNumber*Exp(p_IsNumber*(_x))),num*x/n - num*Ln(n + m*Exp(p*x))/(n*p));
 IntFunc(x,num_IsFreeOf(var)/(m_IsNumber*Exp(p_IsNumber*(_x)) + n_IsNumber),num*x/n - num*Ln(n + m*Exp(p*x))/(n*p));
 
-//TODO remove, replaced correctly? 
-// IntFunc(x,num_IsFreeOf(var)/((_x)^2 + n_IsNumber ),num*ArcTan(x/Sqrt(n))/Sqrt(n));
-
 IntPureSquare(x,num_IsFreeOf(var)/(_x),1,1,(num/(a*Sqrt(b/a)))*ArcTan(var/Sqrt(b/a)));
 
 
